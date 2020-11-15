@@ -20,7 +20,6 @@
 #include "NoteComponent.h"
 #include "CutPointMark.h"
 #include "HybridRoll.h"
-#include "ColourIDs.h"
 
 #define KNIFE_TOOL_PADDING 2
 

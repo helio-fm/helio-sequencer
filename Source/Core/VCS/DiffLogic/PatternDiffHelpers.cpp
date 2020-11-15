@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "PatternDiffHelpers.h"
 #include "Clip.h"
-#include "Pattern.h"
 #include "SerializationKeys.h"
 
 namespace VCS

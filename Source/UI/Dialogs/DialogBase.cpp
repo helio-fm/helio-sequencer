@@ -20,7 +20,6 @@
 #include "DialogBackground.h"
 #include "HelioTheme.h"
 #include "MainLayout.h"
-#include "CommandIDs.h"
 #include "ColourIDs.h"
 
 struct DialogDragConstrainer final : public ComponentBoundsConstrainer

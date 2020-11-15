@@ -19,7 +19,6 @@
 #include "AnnotationDialog.h"
 
 #include "AnnotationsSequence.h"
-#include "CommandIDs.h"
 #include "ColourIDs.h"
 
 static Array<String> getDynamics()

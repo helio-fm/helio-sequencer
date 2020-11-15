@@ -19,15 +19,9 @@
 #include "TimelineMenu.h"
 #include "ProjectNode.h"
 #include "MainLayout.h"
-#include "Icons.h"
 #include "HybridRoll.h"
-#include "AnnotationEvent.h"
-#include "TimeSignatureEvent.h"
 #include "PianoTrackNode.h"
 #include "ProjectTimeline.h"
-#include "MidiSequence.h"
-#include "ModalDialogInput.h"
-#include "CommandIDs.h"
 
 template<typename T>
 const T *findSelectedEventOfType(MidiSequence *const sequence, float seekBeat)

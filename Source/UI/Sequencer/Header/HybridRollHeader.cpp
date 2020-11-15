@@ -18,10 +18,7 @@
 #include "Common.h"
 #include "HybridRollHeader.h"
 #include "HybridRoll.h"
-#include "MidiSequence.h"
 #include "Transport.h"
-#include "AnnotationsProjectMap.h"
-#include "Origami.h"
 #include "SelectionComponent.h"
 #include "SoundProbeIndicator.h"
 #include "TimeDistanceIndicator.h"
@@ -29,7 +26,6 @@
 #include "ClipRangeIndicator.h"
 #include "HelioCallout.h"
 #include "TimelineMenu.h"
-#include "CommandIDs.h"
 #include "ColourIDs.h"
 
 #define MIN_TIME_DISTANCE_INDICATOR_SIZE (40)

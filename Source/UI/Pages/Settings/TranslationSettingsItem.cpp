@@ -22,7 +22,6 @@
 #include "TranslationSettingsItem.h"
 
 //[MiscUserDefs]
-#include "Icons.h"
 #include "SettingsListItemHighlighter.h"
 #include "SettingsListItemSelection.h"
 #include "Config.h"

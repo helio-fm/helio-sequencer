@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "ColourButton.h"
 #include "IconComponent.h"
-#include "ComponentFader.h"
 #include "ColourIDs.h"
 
 class ColourButtonFrame final : public Component

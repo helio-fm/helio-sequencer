@@ -20,7 +20,6 @@
 #include "Workspace.h"
 #include "MainLayout.h"
 #include "UserProfile.h"
-#include "SuccessTooltip.h"
 
 // Try to update resources and versions info after:
 #if DEBUG

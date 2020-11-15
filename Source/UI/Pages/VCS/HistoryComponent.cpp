@@ -26,7 +26,6 @@
 #include "VersionControlEditor.h"
 #include "RevisionTreeComponent.h"
 #include "ViewportFitProxyComponent.h"
-#include "Revision.h"
 #include "CommandIDs.h"
 #include "ComponentIDs.h"
 #include "Icons.h"

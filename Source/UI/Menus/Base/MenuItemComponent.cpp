@@ -27,7 +27,6 @@
 #include "MenuPanel.h"
 #include "HelioTheme.h"
 #include "IconComponent.h"
-#include "Icons.h"
 #include "HotkeyScheme.h"
 #include "MainLayout.h"
 #include "Config.h"

@@ -19,10 +19,7 @@
 #include "Arpeggiator.h"
 #include "Note.h"
 #include "SequencerOperations.h"
-#include "MidiSequence.h"
 #include "SerializationKeys.h"
-#include "DocumentHelpers.h"
-#include "XmlSerializer.h"
 
 //===----------------------------------------------------------------------===//
 // Mapper common

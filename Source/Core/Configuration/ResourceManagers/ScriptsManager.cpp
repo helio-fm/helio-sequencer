@@ -19,8 +19,6 @@
 #include "ScriptsManager.h"
 #include "Script.h"
 #include "SerializationKeys.h"
-#include "DocumentHelpers.h"
-#include "Config.h"
 
 ScriptsManager::ScriptsManager() :
     ResourceManager(Serialization::Resources::scripts) {}

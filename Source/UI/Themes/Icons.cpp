@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "Icons.h"
-#include "BinaryData.h"
 #include "ColourIDs.h"
 
 static String getIconFileName(const String &string)

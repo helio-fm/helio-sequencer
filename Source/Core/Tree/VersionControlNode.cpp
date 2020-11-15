@@ -23,8 +23,6 @@
 #include "Head.h"
 #include "ProjectMetadata.h"
 #include "ProjectTimeline.h"
-#include "FailTooltip.h"
-#include "SuccessTooltip.h"
 #include "VersionControlMenu.h"
 #include "VersionControlEditor.h"
 #include "Icons.h"

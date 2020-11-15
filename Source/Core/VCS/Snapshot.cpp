@@ -17,9 +17,7 @@
 
 #include "Common.h"
 #include "Snapshot.h"
-#include "Head.h"
 #include "Diff.h"
-#include "DiffLogic.h"
 
 namespace VCS
 {

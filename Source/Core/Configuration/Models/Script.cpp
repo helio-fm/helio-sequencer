@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "Script.h"
 #include "SerializationKeys.h"
-#include "XmlSerializer.h"
 
 Script &Script::operator=(const Script &other)
 {

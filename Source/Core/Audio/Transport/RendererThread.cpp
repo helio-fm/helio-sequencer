@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "RendererThread.h"
 #include "Instrument.h"
-#include "SerializationKeys.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 

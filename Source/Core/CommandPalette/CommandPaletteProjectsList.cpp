@@ -19,7 +19,6 @@
 #include "CommandPaletteProjectsList.h"
 #include "ProjectNode.h"
 #include "PianoTrackNode.h"
-#include "UserProfile.h"
 
 CommandPaletteProjectsList::CommandPaletteProjectsList(Workspace &workspace) :
     workspace(workspace)

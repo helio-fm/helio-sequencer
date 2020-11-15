@@ -21,9 +21,7 @@
 #include "ProjectNode.h"
 #include "ProjectMetadata.h"
 
-#include "Note.h"
 #include "AnnotationEvent.h"
-#include "AutomationEvent.h"
 #include "KeySignatureEvent.h"
 
 #include "NoteComponent.h"
@@ -37,17 +35,11 @@
 #include "AnnotationsSequence.h"
 #include "KeySignaturesSequence.h"
 
-#include "MidiTrack.h"
 #include "Pattern.h"
-#include "Arpeggiator.h"
-#include "Transport.h"
 
 #include "UndoStack.h"
 #include "AutomationTrackActions.h"
-#include "PatternActions.h"
 
-#include "SerializationKeys.h"
-#include "UndoActionIDs.h"
 #include "ColourIDs.h"
 
 

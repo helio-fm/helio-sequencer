@@ -23,7 +23,6 @@
 #include "OrchestraPitNode.h"
 #include "PianoTrackNode.h"
 #include "Workspace.h"
-#include "CommandIDs.h"
 
 WorkspaceMenu::WorkspaceMenu(Workspace &workspace) :
     workspace(workspace)

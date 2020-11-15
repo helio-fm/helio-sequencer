@@ -18,13 +18,9 @@
 #include "Common.h"
 #include "AudioPluginSelectionMenu.h"
 #include "OrchestraPitNode.h"
-#include "InstrumentNode.h"
 #include "PluginScanner.h"
 #include "Workspace.h"
 #include "AudioCore.h"
-#include "Instrument.h"
-#include "CommandIDs.h"
-#include "Icons.h"
 
 AudioPluginSelectionMenu::AudioPluginSelectionMenu(const PluginDescription pd,
     OrchestraPitNode &orchestraNode, PluginScanner &scanner) :

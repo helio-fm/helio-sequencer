@@ -20,10 +20,7 @@
 
 #include "RecentProjectRow.h"
 #include "ProjectNode.h"
-#include "MainLayout.h"
 #include "Workspace.h"
-#include "CommandIDs.h"
-#include "ComponentIDs.h"
 
 DashboardMenu::DashboardMenu(Workspace *parentWorkspace) :
     workspace(parentWorkspace)

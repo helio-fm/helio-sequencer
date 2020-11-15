@@ -23,7 +23,6 @@
 
 //[MiscUserDefs]
 #include "DashboardMenu.h"
-#include "HelioTheme.h"
 #include "Icons.h"
 #include "IconComponent.h"
 

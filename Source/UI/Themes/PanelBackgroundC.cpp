@@ -24,7 +24,6 @@
 //[MiscUserDefs]
 #include "HelioTheme.h"
 #include "ColourIDs.h"
-#include "Icons.h"
 
 static void drawPanel(Graphics &g, HelioTheme &theme);
 //[/MiscUserDefs]

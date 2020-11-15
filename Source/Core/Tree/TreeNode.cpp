@@ -21,7 +21,6 @@
 #include "SerializationKeys.h"
 #include "MidiTrackNode.h"
 #include "ProjectNode.h"
-#include "MainLayout.h"
 
 //===----------------------------------------------------------------------===//
 // TreeNodeBase

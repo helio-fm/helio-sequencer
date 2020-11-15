@@ -26,7 +26,6 @@
 #include "AudioCore.h"
 
 #include "MainLayout.h"
-#include "HelioTheme.h"
 
 #include "MenuPanel.h"
 #include "HelioCallout.h"

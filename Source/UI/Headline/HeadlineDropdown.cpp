@@ -18,15 +18,9 @@
 #include "Common.h"
 #include "HeadlineDropdown.h"
 
-#include "IconComponent.h"
-#include "PanelBackgroundB.h"
 #include "HeadlineItemDataSource.h"
 #include "Headline.h"
-#include "MenuPanel.h"
-#include "RootNode.h"
-#include "MainLayout.h"
 #include "ColourIDs.h"
-#include "TreeNode.h"
 
 HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem, const Point<int> &position)
     : item(targetItem)

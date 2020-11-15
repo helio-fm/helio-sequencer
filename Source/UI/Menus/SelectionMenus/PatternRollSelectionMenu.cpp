@@ -21,7 +21,6 @@
 #include "ClipComponent.h"
 #include "MidiTrack.h"
 #include "Pattern.h"
-#include "Clip.h"
 #include "Lasso.h"
 
 #include "PatternOperations.h"
@@ -36,7 +35,6 @@
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "CommandIDs.h"
-#include "Icons.h"
 
 PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
     lasso(lasso)

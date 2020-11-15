@@ -25,7 +25,6 @@
 #include "Note.h"
 #include "SelectionComponent.h"
 #include "SequencerOperations.h"
-#include "Transport.h"
 #include "ColourIDs.h"
 
 #define RESIZE_CORNER 10

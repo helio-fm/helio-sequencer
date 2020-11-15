@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "ColourScheme.h"
 #include "SerializationKeys.h"
-#include <utility>
 
 ColourScheme::ColourScheme(const ColourScheme &other)
 {

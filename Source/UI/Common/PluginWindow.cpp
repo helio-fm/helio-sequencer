@@ -18,10 +18,8 @@
 #include "Common.h"
 #include "PluginWindow.h"
 
-#include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
-#include "Instrument.h"
 
 static OwnedArray<PluginWindow> activePluginWindows;
 

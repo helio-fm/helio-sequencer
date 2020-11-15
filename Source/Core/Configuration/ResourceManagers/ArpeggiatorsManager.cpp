@@ -19,8 +19,6 @@
 #include "ArpeggiatorsManager.h"
 #include "Arpeggiator.h"
 #include "SerializationKeys.h"
-#include "DocumentHelpers.h"
-#include "Config.h"
 
 ArpeggiatorsManager::ArpeggiatorsManager() :
     ResourceManager(Serialization::Resources::arpeggiators) {}

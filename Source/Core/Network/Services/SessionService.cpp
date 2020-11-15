@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "SessionService.h"
 #include "JsonSerializer.h"
-#include "Config.h"
 #include "MainLayout.h"
 #include "ProgressTooltip.h"
 

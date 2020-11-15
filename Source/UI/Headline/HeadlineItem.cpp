@@ -23,7 +23,6 @@
 
 //[MiscUserDefs]
 #include "IconComponent.h"
-#include "PanelBackgroundB.h"
 #include "Headline.h"
 #include "HeadlineDropdown.h"
 #include "CachedLabelImage.h"

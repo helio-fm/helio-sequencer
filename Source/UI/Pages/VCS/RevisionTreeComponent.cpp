@@ -22,7 +22,6 @@
 #include "HistoryComponent.h"
 #include "RevisionComponent.h"
 #include "RevisionConnectorComponent.h"
-#include "RevisionTooltipComponent.h"
 
 #define CONNECTOR_HEIGHT 20
 

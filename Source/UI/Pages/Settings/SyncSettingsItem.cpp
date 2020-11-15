@@ -23,10 +23,8 @@
 
 //[MiscUserDefs]
 #include "SettingsListItemHighlighter.h"
-#include "SettingsListItemSelection.h"
 #include "ResourceSyncService.h"
 #include "Network.h"
-#include "Icons.h"
 //[/MiscUserDefs]
 
 SyncSettingsItem::SyncSettingsItem(ListBox &parentListBox)

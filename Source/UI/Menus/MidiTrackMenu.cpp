@@ -18,28 +18,13 @@
 #include "Common.h"
 #include "MidiTrackMenu.h"
 #include "MidiTrackNode.h"
-#include "PianoTrackNode.h"
 
 #include "MainLayout.h"
 #include "AudioCore.h"
-#include "Instrument.h"
 #include "MidiSequence.h"
 #include "HybridRoll.h"
-#include "ProjectNode.h"
-#include "ModalDialogInput.h"
 
-#include "MidiSequence.h"
-#include "PianoTrackNode.h"
-#include "AutomationTrackNode.h"
-#include "MidiTrackActions.h"
-#include "PianoTrackActions.h"
-#include "AutomationTrackActions.h"
-#include "UndoStack.h"
 #include "Workspace.h"
-
-#include "CommandIDs.h"
-#include "ColourIDs.h"
-#include "Icons.h"
 
 MidiTrackMenu::MidiTrackMenu(MidiTrackNode &node) :
     trackNode(node)

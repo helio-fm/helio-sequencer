@@ -29,7 +29,6 @@
 #include "AutomationTrackActions.h"
 
 #include "Autosaver.h"
-#include "Document.h"
 #include "DocumentHelpers.h"
 #include "XmlSerializer.h"
 #include "BinarySerializer.h"

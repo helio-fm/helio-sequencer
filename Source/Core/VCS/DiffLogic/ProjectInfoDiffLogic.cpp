@@ -19,7 +19,6 @@
 #include "ProjectInfoDiffLogic.h"
 #include "SerializationKeys.h"
 #include "Diff.h"
-#include "ProjectMetadata.h"
 
 namespace VCS
 {

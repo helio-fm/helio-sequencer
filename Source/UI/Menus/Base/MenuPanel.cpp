@@ -18,14 +18,6 @@
 #include "Common.h"
 #include "MenuPanel.h"
 
-#include "MainLayout.h"
-#include "ProjectNode.h"
-#include "PlayerThread.h"
-#include "Icons.h"
-#include "HybridRoll.h"
-#include "MidiSequence.h"
-#include "MenuItemComponent.h"
-
 MenuPanel::MenuPanel()
 {
     this->setFocusContainer(false);

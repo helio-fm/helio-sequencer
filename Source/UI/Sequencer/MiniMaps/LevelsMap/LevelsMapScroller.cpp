@@ -17,11 +17,7 @@
 
 #include "Common.h"
 #include "LevelsMapScroller.h"
-#include "Playhead.h"
-#include "Transport.h"
 #include "HybridRoll.h"
-#include "PanelBackgroundC.h"
-#include "Origami.h"
 #include "ColourIDs.h"
 #include "HelioTheme.h"
 

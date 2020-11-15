@@ -20,7 +20,6 @@
 #include "VersionControl.h"
 #include "RevisionTooltipComponent.h"
 #include "CommandIDs.h"
-#include "Icons.h"
 
 static MenuPanel::Menu createDefaultPanel(VCS::Revision::Ptr revision, VersionControl &vcs)
 {

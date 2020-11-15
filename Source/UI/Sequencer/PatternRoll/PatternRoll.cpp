@@ -24,9 +24,6 @@
 
 #include "Pattern.h"
 #include "PianoTrackNode.h"
-#include "AutomationTrackNode.h"
-#include "VersionControlNode.h"
-#include "PatternEditorNode.h"
 
 #include "LassoListeners.h"
 #include "SmoothZoomController.h"
@@ -35,13 +32,11 @@
 #include "HybridRollHeader.h"
 #include "CutPointMark.h"
 
-#include "ModalDialogInput.h"
-#include "TrackPropertiesDialog.h"
-
 #include "UndoStack.h"
 #include "PatternOperations.h"
 #include "SequencerOperations.h"
 
+#include "TrackPropertiesDialog.h"
 #include "ProjectTimeline.h"
 #include "PianoSequence.h"
 #include "AutomationSequence.h"
@@ -52,13 +47,11 @@
 #include "DummyClipComponent.h"
 
 #include "HelioTheme.h"
-#include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 #include "ColourIDs.h"
 #include "Config.h"
-#include "Icons.h"
 
 inline static constexpr int rowHeight()
 {

@@ -31,8 +31,6 @@
 #include "HeadlineContextMenuController.h"
 #include "PluginScanner.h"
 #include "MainLayout.h"
-#include "CommandIDs.h"
-#include "Icons.h"
 
 #define CATEGORY_COLUMN_WIDTH (100)
 #define FORMAT_COLUMN_WIDTH (75)

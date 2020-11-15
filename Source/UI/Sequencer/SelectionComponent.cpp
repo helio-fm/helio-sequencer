@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "Lasso.h"
 #include "SelectionComponent.h"
-#include "HelioTheme.h"
 #include "ColourIDs.h"
 
 SelectionComponent::SelectionComponent() :

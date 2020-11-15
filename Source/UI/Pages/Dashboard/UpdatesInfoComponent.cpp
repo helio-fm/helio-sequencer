@@ -20,7 +20,6 @@
 #include "Config.h"
 #include "MenuPanel.h"
 #include "AppInfoDto.h"
-#include "SerializationKeys.h"
 #include "PanelBackgroundA.h"
 //[/Headers]
 

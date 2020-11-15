@@ -21,11 +21,8 @@
 #include "Playhead.h"
 #include "Transport.h"
 #include "HybridRoll.h"
-#include "PanelBackgroundC.h"
-#include "Origami.h"
 #include "ColourIDs.h"
 #include "HelioTheme.h"
-#include "PianoProjectMap.h"
 
 ProjectMapScroller::ProjectMapScroller(Transport &transportRef, SafePointer<HybridRoll> roll) :
     transport(transportRef),

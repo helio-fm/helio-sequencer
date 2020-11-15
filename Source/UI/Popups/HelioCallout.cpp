@@ -18,8 +18,6 @@
 #include "Common.h"
 #include "HelioCallout.h"
 #include "MainLayout.h"
-#include "ComponentFader.h"
-#include "CommandIDs.h"
 #include "ColourIDs.h"
 
 static int kClickCounterOnPopupClose = 0;

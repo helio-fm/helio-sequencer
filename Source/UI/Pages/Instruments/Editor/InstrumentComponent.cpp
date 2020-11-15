@@ -17,14 +17,9 @@
 
 #include "Common.h"
 #include "InstrumentComponent.h"
-#include "Instrument.h"
 #include "InstrumentEditor.h"
 #include "InstrumentEditorPin.h"
 #include "PluginWindow.h"
-
-#include "Workspace.h"
-#include "RootNode.h"
-#include "InstrumentNode.h"
 
 #if PLATFORM_DESKTOP
 #   define AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW 1

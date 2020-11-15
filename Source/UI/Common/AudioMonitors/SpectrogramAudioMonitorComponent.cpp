@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "SpectrogramAudioMonitorComponent.h"
 #include "ComponentFader.h"
-#include "AudioMonitor.h"
 #include "AudioCore.h"
 #include "ColourIDs.h"
 

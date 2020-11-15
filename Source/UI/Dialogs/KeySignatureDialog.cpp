@@ -23,8 +23,6 @@
 #include "ProjectMetadata.h"
 #include "Temperament.h"
 #include "Transport.h"
-
-#include "SerializationKeys.h"
 #include "CommandIDs.h"
 #include "Config.h"
 

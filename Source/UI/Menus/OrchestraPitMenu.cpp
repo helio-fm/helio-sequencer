@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "OrchestraPitMenu.h"
 #include "OrchestraPitNode.h"
-#include "Icons.h"
 #include "CommandIDs.h"
 #include "MainLayout.h"
 #include "PluginScanner.h"

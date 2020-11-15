@@ -30,7 +30,6 @@
 #include "ClipComponent.h"
 #include "Pattern.h"
 #include "Lasso.h"
-#include "SerializationKeys.h"
 #include "UndoActionIDs.h"
 
 static Pattern *getPattern(SelectionProxyArray::Ptr selection)

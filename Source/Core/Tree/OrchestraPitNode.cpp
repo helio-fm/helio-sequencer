@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "OrchestraPitNode.h"
 
-#include "TreeNodeSerializer.h"
 #include "InstrumentNode.h"
 #include "Instrument.h"
 #include "MainLayout.h"

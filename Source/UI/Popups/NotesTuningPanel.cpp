@@ -23,13 +23,8 @@
 
 //[MiscUserDefs]
 #include "PianoRoll.h"
-#include "Lasso.h"
 #include "SequencerOperations.h"
-#include "MidiTrack.h"
-#include "MidiSequence.h"
 #include "NoteComponent.h"
-#include "ProjectNode.h"
-#include "Transport.h"
 #include "CommandIDs.h"
 #include "MenuItemComponent.h"
 #include "PopupButton.h"

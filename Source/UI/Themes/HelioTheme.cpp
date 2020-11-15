@@ -18,27 +18,12 @@
 #include "Common.h"
 #include "HelioTheme.h"
 #include "SequencerSidebarLeft.h"
-#include "BinaryData.h"
-#include "Icons.h"
-#include "ColourIDs.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 
-#include "HybridRoll.h"
-#include "InstrumentEditor.h"
-#include "HelperRectangle.h"
-#include "PianoRoll.h"
-#include "PatternRoll.h"
-
-#include "SelectionComponent.h"
 #include "PanelBackgroundA.h"
 #include "PanelBackgroundB.h"
 #include "PanelBackgroundC.h"
-#include "FramePanel.h"
-#include "ProjectMapScroller.h"
-
-#include "BinaryData.h"
-#include "ColourScheme.h"
 
 #if PLATFORM_DESKTOP
 #   define SCROLLBAR_WIDTH (17)

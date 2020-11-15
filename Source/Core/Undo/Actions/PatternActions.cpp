@@ -19,7 +19,6 @@
 #include "PatternActions.h"
 #include "MidiTrackSource.h"
 #include "MidiSequence.h"
-#include "TreeNode.h"
 #include "SerializationKeys.h"
 
 //===----------------------------------------------------------------------===//

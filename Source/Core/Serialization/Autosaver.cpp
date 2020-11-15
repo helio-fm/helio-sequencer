@@ -17,9 +17,7 @@
 
 #include "Common.h"
 #include "Autosaver.h"
-
 #include "DocumentOwner.h"
-#include "Document.h"
 
 Autosaver::Autosaver(DocumentOwner &targetDocumentOwner, int waitDelayMs) :
     documentOwner(targetDocumentOwner),

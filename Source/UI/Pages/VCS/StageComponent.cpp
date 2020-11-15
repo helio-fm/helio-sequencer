@@ -30,9 +30,7 @@
 #include "MainLayout.h"
 #include "VersionControlStageSelectionMenu.h"
 #include "RevisionItemComponent.h"
-#include "Head.h"
 #include "ComponentIDs.h"
-#include "CommandIDs.h"
 
 #if PLATFORM_DESKTOP
 #    define VCS_STAGE_ROW_HEIGHT (65)

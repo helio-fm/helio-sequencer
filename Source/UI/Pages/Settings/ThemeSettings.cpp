@@ -22,16 +22,8 @@
 #include "ThemeSettings.h"
 
 //[MiscUserDefs]
-#include "SerializationKeys.h"
-#include "BinaryData.h"
 #include "ThemeSettingsItem.h"
-#include "MenuPanel.h"
-#include "ColourScheme.h"
-#include "ModalDialogConfirmation.h"
 #include "Config.h"
-#include "HelioTheme.h"
-#include "Workspace.h"
-#include "MainLayout.h"
 
 #if PLATFORM_DESKTOP
 #   define THEME_SETTINGS_ROW_HEIGHT (46)

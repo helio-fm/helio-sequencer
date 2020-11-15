@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "TempoDialog.h"
 #include "CommandIDs.h"
-#include "ColourIDs.h"
 #include "HelioTheme.h"
 
 class TapTempoComponent final : public Component, private Timer

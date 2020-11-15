@@ -17,8 +17,6 @@
 
 #include "Common.h"
 #include "MidiEventComponent.h"
-#include "MidiSequence.h"
-#include "MidiEvent.h"
 #include "HybridRoll.h"
 
 MidiEventComponent::MidiEventComponent(HybridRoll &editor, bool isGhost) noexcept :

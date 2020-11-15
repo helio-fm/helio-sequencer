@@ -23,7 +23,6 @@
 
 //[MiscUserDefs]
 #include "IconComponent.h"
-#include "ColourIDs.h"
 //[/MiscUserDefs]
 
 HeadlineItemHighlighter::HeadlineItemHighlighter(WeakReference<HeadlineItemDataSource> targetItem)

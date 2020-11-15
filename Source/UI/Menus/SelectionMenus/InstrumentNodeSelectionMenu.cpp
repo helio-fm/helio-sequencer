@@ -19,8 +19,6 @@
 #include "InstrumentNodeSelectionMenu.h"
 #include "PluginWindow.h"
 #include "Instrument.h"
-#include "CommandIDs.h"
-#include "Icons.h"
 
 InstrumentNodeSelectionMenu::InstrumentNodeSelectionMenu(Instrument &instrument,
     AudioProcessorGraph::Node::Ptr node) :

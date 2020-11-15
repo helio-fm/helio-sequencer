@@ -21,9 +21,7 @@
 #include "HeadlineItem.h"
 #include "ColourIDs.h"
 #include "MainLayout.h"
-#include "Workspace.h"
 #include "HelioTheme.h"
-#include "App.h"
 
 class ContextMenuComponent final : public Component
 {

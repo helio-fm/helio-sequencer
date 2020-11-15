@@ -19,8 +19,6 @@
 #include "ScalesManager.h"
 #include "Arpeggiator.h"
 #include "SerializationKeys.h"
-#include "DocumentHelpers.h"
-#include "Config.h"
 
 ScalesManager::ScalesManager() :
     ResourceManager(Serialization::Resources::scales),

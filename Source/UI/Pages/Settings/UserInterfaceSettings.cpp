@@ -23,14 +23,9 @@
 
 //[MiscUserDefs]
 #include "SerializationKeys.h"
-#include "ProjectNode.h"
-#include "BinaryData.h"
 #include "ThemeSettingsItem.h"
-#include "MenuPanel.h"
 #include "ModalDialogConfirmation.h"
 #include "Config.h"
-#include "HelioTheme.h"
-#include "Workspace.h"
 //[/MiscUserDefs]
 
 UserInterfaceSettings::UserInterfaceSettings()

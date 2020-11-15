@@ -24,7 +24,6 @@
 //[MiscUserDefs]
 
 #include "Icons.h"
-#include "HelioTheme.h"
 #include "ColourIDs.h"
 #include "HeadlineContextMenuController.h"
 

@@ -17,8 +17,6 @@
 
 #include "Common.h"
 #include "InstrumentEditor.h"
-#include "InternalPluginFormat.h"
-#include "PluginWindow.h"
 
 #include "PanelBackgroundC.h"
 
@@ -29,7 +27,6 @@
 #include "HeadlineContextMenuController.h"
 
 #include "AudioCore.h"
-#include "Icons.h"
 #include "MainLayout.h"
 
 static const AudioProcessorGraph::NodeID idZero;

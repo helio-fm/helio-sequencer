@@ -25,7 +25,6 @@
 #include "ProjectNode.h"
 #include "ProjectTimeline.h"
 #include "PianoClipComponent.h"
-#include "Clip.h"
 #include "Pattern.h"
 #include "PatternRoll.h"
 

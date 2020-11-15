@@ -23,7 +23,6 @@
 
 //[MiscUserDefs]
 #include "IconComponent.h"
-#include "PanelBackgroundB.h"
 #include "ColourIDs.h"
 #include "Workspace.h"
 //[/MiscUserDefs]

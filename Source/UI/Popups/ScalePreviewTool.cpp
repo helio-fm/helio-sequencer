@@ -25,14 +25,9 @@
 #include "NoteComponent.h"
 #include "PianoRoll.h"
 #include "PianoSequence.h"
-#include "Note.h"
 #include "Config.h"
-#include "Transport.h"
 #include "SerializationKeys.h"
 #include "MenuPanel.h"
-#include "Chord.h"
-#include "BinaryData.h"
-#include "Icons.h"
 #include "ColourIDs.h"
 
 #define NEWCHORD_POPUP_MENU_SIZE            (500)

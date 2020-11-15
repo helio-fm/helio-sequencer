@@ -21,21 +21,16 @@
 #include "Lasso.h"
 #include "SequencerOperations.h"
 
-#include "Arpeggiator.h"
 #include "NoteComponent.h"
 
 #include "ProjectNode.h"
 #include "ProjectMetadata.h"
-#include "Temperament.h"
 
 #include "ProjectTimeline.h"
-#include "MidiTrack.h"
 
 #include "CommandIDs.h"
-#include "Icons.h"
 
 #include "MainLayout.h"
-#include "ModalDialogInput.h"
 #include "Config.h"
 
 MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()

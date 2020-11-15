@@ -22,7 +22,6 @@
 #include "TranslationSettings.h"
 
 //[MiscUserDefs]
-#include "BackendRequest.h"
 #include "TranslationSettingsItem.h"
 #include "Network.h"
 #include "Config.h"

@@ -17,9 +17,7 @@
 
 #include "Common.h"
 #include "KeySelector.h"
-#include "MenuPanel.h"
 #include "ColourIDs.h"
-#include "Scale.h"
 
 KeySelector::KeySelector(const Temperament::Period &period)
 {

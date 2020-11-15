@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "InstrumentNode.h"
-#include "TreeNodeSerializer.h"
 
 #include "Instrument.h"
 #include "InstrumentEditor.h"

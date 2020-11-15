@@ -22,12 +22,6 @@
 #include "PlayerThread.h"
 #include "ProjectNode.h"
 #include "ProjectMetadata.h"
-#include "Temperament.h"
-
-#include "HelioTheme.h"
-#include "HelioCallout.h"
-#include "ProjectMenu.h"
-#include "CommandIDs.h"
 
 static String getTimeString(const RelativeTime &time)
 {

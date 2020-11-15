@@ -20,7 +20,6 @@
 #include "Scale.h"
 
 #include "PianoRoll.h"
-#include "MidiTrack.h"
 #include "PianoSequence.h"
 #include "Note.h"
 

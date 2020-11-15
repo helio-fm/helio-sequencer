@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "PatternEditorNode.h"
-#include "TreeNodeSerializer.h"
 #include "Icons.h"
 #include "MainLayout.h"
 #include "ProjectNode.h"

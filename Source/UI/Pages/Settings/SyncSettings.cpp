@@ -25,7 +25,6 @@
 #include "Workspace.h"
 #include "SyncSettingsItem.h"
 #include "ComponentsList.h"
-#include "UserProfile.h"
 #include "Config.h"
 
 #if PLATFORM_DESKTOP

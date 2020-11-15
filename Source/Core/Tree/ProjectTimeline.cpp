@@ -22,7 +22,6 @@
 #include "KeySignaturesSequence.h"
 #include "ProjectNode.h"
 #include "Pattern.h"
-#include "Icons.h"
 
 // A simple wrappers around the sequences
 // We don't need any patterns here

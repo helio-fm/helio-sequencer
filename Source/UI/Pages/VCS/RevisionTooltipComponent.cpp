@@ -23,8 +23,6 @@
 
 //[MiscUserDefs]
 #include "RevisionItemComponent.h"
-#include "RevisionItem.h"
-#include "Delta.h"
 
 #if PLATFORM_DESKTOP
 #    define REVISION_TOOLTIP_ROWS_ONSCREEN (4.5)

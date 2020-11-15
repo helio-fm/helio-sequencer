@@ -19,22 +19,19 @@
 #include "App.h"
 #include "AudioCore.h"
 #include "Network.h"
-
 #include "HelioTheme.h"
 #include "PluginScanner.h"
 #include "Config.h"
+#include "Icons.h"
 
 #include "DocumentHelpers.h"
 #include "XmlSerializer.h"
+#include "SerializationKeys.h"
+#include "SerializablePluginDescription.h"
 
 #include "MainLayout.h"
-#include "Document.h"
-#include "SerializationKeys.h"
-
-#include "Icons.h"
 #include "Workspace.h"
 #include "RootNode.h"
-#include "SerializablePluginDescription.h"
 
 //===----------------------------------------------------------------------===//
 // Window

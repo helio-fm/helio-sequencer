@@ -19,15 +19,12 @@
 #include "PianoProjectMap.h"
 #include "ProjectNode.h"
 #include "MidiTrack.h"
-#include "MidiSequence.h"
 #include "Pattern.h"
 #include "PianoSequence.h"
-#include "Temperament.h"
 #include "ProjectMetadata.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "AnnotationEvent.h"
-#include "MidiTrack.h"
 #include "ColourIDs.h"
 
 PianoProjectMap::PianoProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll) :

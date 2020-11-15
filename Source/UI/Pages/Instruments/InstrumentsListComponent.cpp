@@ -23,12 +23,10 @@
 
 //[MiscUserDefs]
 #include "OrchestraPitNode.h"
-#include "OrchestraPitPage.h"
 #include "InstrumentMenu.h"
 #include "HeadlineContextMenuController.h"
 #include "Instrument.h"
 #include "MainLayout.h"
-#include "Icons.h"
 //[/MiscUserDefs]
 
 InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot)

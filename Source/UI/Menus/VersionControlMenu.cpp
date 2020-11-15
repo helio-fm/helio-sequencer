@@ -18,15 +18,9 @@
 #include "Common.h"
 #include "VersionControlMenu.h"
 
-#include "StageComponent.h"
 #include "VersionControl.h"
-
 #include "Workspace.h"
-#include "UserProfile.h"
-
-#include "MenuPanel.h"
 #include "CommandIDs.h"
-#include "Icons.h"
 
 VersionControlMenu::VersionControlMenu(VersionControl &vcs)
 {

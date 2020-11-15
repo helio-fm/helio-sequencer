@@ -17,8 +17,6 @@
 
 #include "Common.h"
 #include "ProjectMetadataActions.h"
-#include "TreeNode.h"
-#include "MidiTrackSource.h"
 #include "SerializationKeys.h"
 
 //===----------------------------------------------------------------------===//

@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "CommandIDs.h"
-#include "TranslationKeys.h"
 
 #define CASE_FOR(x) \
     case constexprHash(#x): \
@@ -177,7 +176,7 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
         CASE_FOR(KeyMapCopyToClipboard)
         CASE_FOR(KeyMapPasteFromClipboard)
         default: return None;
-    };
+    }
 }
 
 #define TRANS_KEY(x, y) \
@@ -349,5 +348,5 @@ Identifier CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         TRANS_KEY(KeyMapCopyToClipboard, Menu::copy)
         TRANS_KEY(KeyMapPasteFromClipboard, Menu::paste)
         default: return {};
-    };
+    }
 }

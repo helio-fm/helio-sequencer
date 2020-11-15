@@ -17,12 +17,8 @@
 
 #include "Common.h"
 #include "DummyClipComponent.h"
-#include "ProjectNode.h"
-#include "MidiSequence.h"
-#include "MidiEvent.h"
 #include "HybridRoll.h"
 #include "Pattern.h"
-#include "MidiSequence.h"
 
 DummyClipComponent::DummyClipComponent(HybridRoll &editor, const Clip &clip) :
     ClipComponent(editor, clip) {}

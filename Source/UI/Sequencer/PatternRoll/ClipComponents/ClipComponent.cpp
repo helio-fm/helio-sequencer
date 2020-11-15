@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "ClipComponent.h"
-#include "MidiSequence.h"
 #include "MidiEvent.h"
 #include "PatternRoll.h"
 #include "Pattern.h"

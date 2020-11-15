@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "SettingsNode.h"
-#include "TreeNodeSerializer.h"
 #include "SerializationKeys.h"
 
 #include "SyncSettings.h"

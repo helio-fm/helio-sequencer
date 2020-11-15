@@ -22,7 +22,6 @@
 #include "HybridRollExpandMark.h"
 #include "MidiEvent.h"
 #include "MidiEventComponent.h"
-#include "MidiSequence.h"
 #include "SelectionComponent.h"
 
 #include "UndoStack.h"
@@ -31,14 +30,12 @@
 #include "PianoTrackActions.h"
 
 #include "ShadowDownwards.h"
-#include "ShadowUpwards.h"
 #include "TimelineWarningMarker.h"
 
 #include "LongTapController.h"
 #include "SmoothPanController.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
-#include "Origami.h"
 
 #include "Transport.h"
 #include "IconComponent.h"
@@ -66,11 +63,7 @@
 #include "AudioCore.h"
 #include "AudioMonitor.h"
 #include "Config.h"
-
-#include "SerializationKeys.h"
 #include "ColourIDs.h"
-
-#include <limits.h>
 
 #if PLATFORM_DESKTOP
 #   define ROLL_VIEW_FOLLOWS_PLAYHEAD 1

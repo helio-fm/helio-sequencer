@@ -25,7 +25,6 @@
 #include "MainLayout.h"
 #include "HelioTheme.h"
 #include "ColourIDs.h"
-#include "CommandIDs.h"
 
 class PlayButtonHighlighter final : public Component
 {

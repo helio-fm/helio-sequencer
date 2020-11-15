@@ -22,7 +22,6 @@
 #include "ModalDialogInput.h"
 #include "PluginScanner.h"
 #include "OrchestraPit.h"
-#include "CommandIDs.h"
 #include "Icons.h"
 
 InstrumentMenu::InstrumentMenu(InstrumentNode &instrumentNode,

@@ -22,16 +22,10 @@
 #include "ThemeSettingsItem.h"
 
 //[MiscUserDefs]
-#include "HelioTheme.h"
-#include "ProjectNode.h"
-#include "SerializationKeys.h"
 #include "IconComponent.h"
-#include "Workspace.h"
 #include "HighlightingScheme.h"
 #include "PianoRoll.h"
 #include "Config.h"
-#include "SettingsListItemHighlighter.h"
-#include "SettingsListItemSelection.h"
 #include "ColourIDs.h"
 
 class ThemeSettingsItemHighlighter final : public Component

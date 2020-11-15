@@ -17,14 +17,10 @@
 
 #include "Common.h"
 #include "RenderDialog.h"
-
-#include "DocumentOwner.h"
 #include "MainLayout.h"
 #include "ProjectNode.h"
-#include "PlayerThread.h"
 #include "ProgressIndicator.h"
 #include "MenuItemComponent.h"
-#include "CommandIDs.h"
 
 RenderDialog::RenderDialog(ProjectNode &parentProject,
     const File &renderTo, const String &formatExtension) :

@@ -18,10 +18,7 @@
 #include "Common.h"
 #include "TrackGroupNode.h"
 #include "ProjectNode.h"
-
-#include "TreeNodeSerializer.h"
 #include "PianoTrackNode.h"
-#include "MainLayout.h"
 #include "Icons.h"
 
 #define GROUP_COMPACT_SEPARATOR 5

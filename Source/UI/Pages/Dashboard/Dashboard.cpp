@@ -17,22 +17,15 @@
 
 //[Headers]
 #include "Common.h"
-#include "HelioTheme.h"
 //[/Headers]
 
 #include "Dashboard.h"
 
 //[MiscUserDefs]
 #include "MainLayout.h"
-#include "SerializationKeys.h"
-#include "DashboardMenu.h"
 #include "SpectralLogo.h"
-#include "Workspace.h"
-#include "IconComponent.h"
-#include "UserProfile.h"
 #include "UserProfileComponent.h"
 #include "LoginButton.h"
-#include "CommandIDs.h"
 //[/MiscUserDefs]
 
 Dashboard::Dashboard(MainLayout &workspaceRef)

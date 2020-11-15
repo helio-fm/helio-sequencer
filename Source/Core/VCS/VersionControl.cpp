@@ -19,8 +19,6 @@
 #include "VersionControl.h"
 #include "VersionControlEditor.h"
 #include "TrackedItem.h"
-#include "MidiSequence.h"
-#include "SerializationKeys.h"
 #include "SerializationKeys.h"
 #include "Network.h"
 #include "ProjectSyncService.h"

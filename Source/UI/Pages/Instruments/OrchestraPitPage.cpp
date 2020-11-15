@@ -25,11 +25,7 @@
 #include "PluginScanner.h"
 #include "OrchestraPitNode.h"
 #include "MainLayout.h"
-#include "AudioCore.h"
-#include "MenuItemComponent.h"
-#include "Icons.h"
 #include "ProgressTooltip.h"
-#include "CommandIDs.h"
 #include "Workspace.h"
 #include "ComponentIDs.h"
 //[/MiscUserDefs]

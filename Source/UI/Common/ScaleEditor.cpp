@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "ScaleEditor.h"
-#include "KeySelector.h"
 #include "ColourIDs.h"
 
 ScaleEditor::~ScaleEditor() {}

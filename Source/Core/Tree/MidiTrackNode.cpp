@@ -19,21 +19,15 @@
 #include "MidiTrackNode.h"
 #include "TrackGroupNode.h"
 
-#include "TreeNodeSerializer.h"
 #include "ProjectNode.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
-#include "Icons.h"
 
 #include "Pattern.h"
 #include "PianoSequence.h"
-#include "AutomationSequence.h"
 #include "PianoRoll.h"
 #include "Note.h"
-
 #include "InstrumentNode.h"
-#include "Instrument.h"
-
 #include "MidiTrackMenu.h"
 
 #include "UndoStack.h"

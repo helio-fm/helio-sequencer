@@ -19,7 +19,6 @@
 #include "HotkeySchemesManager.h"
 #include "Arpeggiator.h"
 #include "SerializationKeys.h"
-#include "DocumentHelpers.h"
 #include "Config.h"
 
 HotkeySchemesManager::HotkeySchemesManager() :

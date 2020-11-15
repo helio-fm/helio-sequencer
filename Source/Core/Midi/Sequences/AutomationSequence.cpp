@@ -20,7 +20,6 @@
 #include "AutomationEventActions.h"
 
 #include "ProjectNode.h"
-#include "ProjectListener.h"
 #include "MidiTrackNode.h"
 #include "UndoStack.h"
 

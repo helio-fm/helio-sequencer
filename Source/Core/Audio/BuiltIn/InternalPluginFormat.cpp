@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "InternalPluginFormat.h"
-#include "Instrument.h"
 
 const String InternalPluginFormat::formatName = "Internal";
 const String InternalPluginFormat::manufacturer = "Helio Workstation";

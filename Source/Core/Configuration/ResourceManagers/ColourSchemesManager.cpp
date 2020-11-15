@@ -19,7 +19,6 @@
 #include "ColourSchemesManager.h"
 #include "Arpeggiator.h"
 #include "SerializationKeys.h"
-#include "DocumentHelpers.h"
 #include "Config.h"
 
 ColourSchemesManager::ColourSchemesManager() :

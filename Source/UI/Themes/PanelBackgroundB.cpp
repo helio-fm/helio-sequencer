@@ -24,7 +24,6 @@
 //[MiscUserDefs]
 #include "HelioTheme.h"
 #include "ColourIDs.h"
-#include "Icons.h"
 //[/MiscUserDefs]
 
 PanelBackgroundB::PanelBackgroundB()

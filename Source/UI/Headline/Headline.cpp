@@ -23,11 +23,8 @@
 
 //[MiscUserDefs]
 #include "HeadlineItem.h"
-#include "IconButton.h"
 #include "HelioTheme.h"
-#include "Icons.h"
 #include "ColourIDs.h"
-#include "SequencerLayout.h"
 #include "MainLayout.h"
 
 //[/MiscUserDefs]

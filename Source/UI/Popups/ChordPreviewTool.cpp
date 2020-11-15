@@ -20,11 +20,7 @@
 
 #include "PianoSequence.h"
 #include "PianoRoll.h"
-#include "Transport.h"
 #include "KeySignaturesSequence.h"
-#include "KeySignatureEvent.h"
-#include "Chord.h"
-#include "CommandIDs.h"
 #include "Config.h"
 
 static Label *createPopupButtonLabel(const String &text)

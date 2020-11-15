@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "SequencerLayout.h"
-#include "AutomationSequence.h"
 #include "PianoRoll.h"
 #include "PatternRoll.h"
 #include "LassoListeners.h"
@@ -38,14 +37,12 @@
 #include "KnifeToolHelper.h"
 #include "CutPointMark.h"
 #include "RenderDialog.h"
-#include "SuccessTooltip.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "AudioMonitor.h"
 #include "Config.h"
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
-#include "ColourIDs.h"
 
 #define MINIMUM_ROLLS_HEIGHT 250
 #define VERTICAL_ROLLS_LAYOUT 1
