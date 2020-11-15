@@ -30,7 +30,7 @@ class RevisionItemComponent final : public DraggingListBoxComponent
 {
 public:
 
-    RevisionItemComponent(ListBox &parentListBox);
+    explicit RevisionItemComponent(ListBox &parentListBox);
     ~RevisionItemComponent();
 
     //[UserMethods]

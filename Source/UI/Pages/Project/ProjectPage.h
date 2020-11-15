@@ -31,7 +31,7 @@ class ProjectPage final : public Component,
 public:
 
     explicit ProjectPage(ProjectNode &parentProject);
-    ~ProjectPage();
+    ~ProjectPage() override;
 
     void updateContent();
 

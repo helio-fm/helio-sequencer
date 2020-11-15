@@ -32,7 +32,7 @@ class VersionControlEditor final : public Component,
 {
 public:
 
-    VersionControlEditor(VersionControl &versionControl);
+    explicit VersionControlEditor(VersionControl &versionControl);
     ~VersionControlEditor();
 
     //[UserMethods]

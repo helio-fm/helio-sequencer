@@ -29,7 +29,7 @@ class RevisionTooltipComponent final : public Component,
 {
 public:
 
-    RevisionTooltipComponent(const VCS::Revision::Ptr revision);
+    explicit RevisionTooltipComponent(const VCS::Revision::Ptr revision);
     ~RevisionTooltipComponent();
 
     //[UserMethods]

@@ -46,7 +46,7 @@ static Label *createLabel(const String &text)
     newLabel->setBounds(0, 0, size * 2, size);
     newLabel->setName(text + "_outline");
 
-    const float autoFontSize = float(size - 5.f);
+    const float autoFontSize = size - 5.f;
     newLabel->setFont(Font(autoFontSize, Font::plain));
     return newLabel;
 }

@@ -95,21 +95,19 @@ void MidiTrackMenu::initInstrumentSelectionMenu()
     }));
     
     const auto &audioCore = App::Workspace().getAudioCore();
-    const auto &instruments = audioCore.getInstruments();
     const auto *selectedInstrument = audioCore.findInstrumentById(this->trackNode.getTrackInstrumentId());
 
-    for (int i = 0; i < instruments.size(); ++i)
+    for (const auto *instrument : audioCore.getInstruments())
     {
-        const bool isTicked = (instruments[i] == selectedInstrument);
-        const String instrumentId = instruments[i]->getIdAndHash();
+        const bool isTicked = (instrument == selectedInstrument);
+        const String instrumentId = instrument->getIdAndHash();
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument,
-            instruments[i]->getName())->withAction([this, instrumentId]()
+            instrument->getName())->withAction([this, instrumentId]()
         {
             // no need to check if not toggled, the callback will do
             // DBG(instrumentId);
             this->trackNode.getChangeInstrumentCallback()(instrumentId);
             this->initDefaultMenu();
-            return;
         }));
     }
     

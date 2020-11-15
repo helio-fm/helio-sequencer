@@ -72,8 +72,8 @@ void MultiTouchController::mouseDown(const MouseEvent &event)
         this->listener.multiTouchCancelZoom();
     }
 
-    const float xLength = fabs(this->finger2Position.getX() - this->finger1Position.getX());
-    const float yLength = fabs(this->finger2Position.getY() - this->finger1Position.getY());
+    const float xLength = fabsf(this->finger2Position.getX() - this->finger1Position.getX());
+    const float yLength = fabsf(this->finger2Position.getY() - this->finger1Position.getY());
     this->zoomDiff.setXY(xLength, yLength);
 }
 

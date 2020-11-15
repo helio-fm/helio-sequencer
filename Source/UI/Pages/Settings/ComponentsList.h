@@ -21,7 +21,7 @@ class ComponentsList final : public Component
 {
 public:
 
-    ComponentsList(int paddingLeft = 0, int paddingRight = 0);
+    explicit ComponentsList(int paddingLeft = 0, int paddingRight = 0);
 
     void showChild(Component *child);
     void hideChild(Component *child);

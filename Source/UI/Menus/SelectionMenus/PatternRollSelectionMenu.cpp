@@ -105,10 +105,10 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         TRANS(I18n::Menu::trackRename))->
         disabledIf(!canRenamePatternSelection(this->lasso))->closesMenu());
 
-    const auto muteAction = PatternOperations::lassoContainsMutedClip(*this->lasso) ?
+    const auto muteAction = PatternOperations::lassoContainsMutedClip(*this->lasso.get()) ?
         TRANS(I18n::Menu::unmute) : TRANS(I18n::Menu::mute);
 
-    const auto soloAction = PatternOperations::lassoContainsSoloedClip(*this->lasso) ?
+    const auto soloAction = PatternOperations::lassoContainsSoloedClip(*this->lasso.get()) ?
         TRANS(I18n::Menu::unsolo) : TRANS(I18n::Menu::solo);
 
     menu.add(MenuItem::item(Icons::mute, CommandIDs::ToggleMuteClips, muteAction)->closesMenu());
@@ -141,7 +141,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         this->updateContent(this->createInstrumentSelectionMenu(), MenuPanel::SlideLeft);
     }));
 
-    const auto selectionInstrumentId = PatternOperations::getSelectedInstrumentId(*this->lasso);
+    const auto selectionInstrumentId = PatternOperations::getSelectedInstrumentId(*this->lasso.get());
     for (const auto *i : instruments)
     {
         if (i->getIdAndHash() == selectionInstrumentId)
@@ -213,12 +213,12 @@ MenuPanel::Menu PatternRollSelectionMenu::createInstrumentSelectionMenu()
         audioCore.findInstrumentById(uniqueInstrumentIds.getReference(0)) :
         nullptr;
 
-    for (int i = 0; i < instruments.size(); ++i)
+    for (const auto *instrument : instruments)
     {
-        const bool isTicked = (instruments[i] == singleInstrumentIfAny);
-        const auto instrumentId = instruments[i]->getIdAndHash();
+        const bool isTicked = (instrument == singleInstrumentIfAny);
+        const auto instrumentId = instrument->getIdAndHash();
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument,
-            instruments[i]->getName())->disabledIf(isTicked)->
+            instrument->getName())->disabledIf(isTicked)->
             withAction([this, instrumentId, uniqueTracks]()
         {
             //DBG(instrumentId);

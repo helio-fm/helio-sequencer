@@ -27,7 +27,7 @@ class AudioSettings final : public Component
 {
 public:
 
-    AudioSettings(AudioCore &core);
+    explicit AudioSettings(AudioCore &core);
     ~AudioSettings();
 
     //[UserMethods]

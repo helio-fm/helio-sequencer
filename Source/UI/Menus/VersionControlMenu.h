@@ -27,6 +27,6 @@ class VersionControlMenu final : public MenuPanel
 {
 public:
 
-    VersionControlMenu(VersionControl &vcs);
+    explicit VersionControlMenu(VersionControl &vcs);
 
 };

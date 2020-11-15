@@ -336,7 +336,7 @@ void MenuItemComponent::resized()
 
     const float xMargin = ICON_MARGIN * 1.2f;
     this->textLabel->setBounds(int(this->icon.getWidth() + xMargin),
-        int((this->getHeight() / 2) - (this->getHeight() / 2)),
+        (this->getHeight() / 2) - (this->getHeight() / 2),
         int(this->getWidth() - this->icon.getWidth() - xMargin),
         this->getHeight());
 

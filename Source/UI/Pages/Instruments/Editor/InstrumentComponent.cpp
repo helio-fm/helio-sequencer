@@ -182,8 +182,8 @@ void InstrumentComponent::resized()
                 ((180.f / (total + 1.f)) * (1 + index)) - 90.f;
 
             const float rAngle = (dAngle / 180.f) * float_Pi;
-            const float dx = cos(rAngle) * r;
-            const float dy = sin(rAngle) * r;
+            const float dx = cosf(rAngle) * r;
+            const float dy = sinf(rAngle) * r;
 
             pin->setBounds(xCenter + int(dx) - pinSize2, yCenter + int(dy) - pinSize2, pinSize, pinSize);
         }

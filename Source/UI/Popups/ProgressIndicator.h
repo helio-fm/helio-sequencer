@@ -55,7 +55,7 @@ public:
                     .getTransformToFit(allArea, this->getLocalBounds().toFloat());
 
             const float radius = 10;
-            const float indicatorRadian = float(360.f - this->indicatorDegree) * (MathConstants<float>::pi / 180.f);
+            const float indicatorRadian = (360.f - this->indicatorDegree) * (MathConstants<float>::pi / 180.f);
             const Point<float> indicatorPosition(radius * cosf(indicatorRadian), radius * sinf(indicatorRadian));
 
             const float numSegments = float(group->getNumChildComponents());

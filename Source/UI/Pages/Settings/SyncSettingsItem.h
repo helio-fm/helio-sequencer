@@ -29,7 +29,7 @@ class SyncSettingsItem final : public DraggingListBoxComponent,
 {
 public:
 
-    SyncSettingsItem(ListBox &parentListBox);
+    explicit SyncSettingsItem(ListBox &parentListBox);
     ~SyncSettingsItem();
 
     //[UserMethods]

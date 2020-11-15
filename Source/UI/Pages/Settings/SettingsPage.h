@@ -26,7 +26,7 @@ class SettingsPage final : public Component
 {
 public:
 
-    SettingsPage(Component *settingsList);
+    explicit SettingsPage(Component *settingsList);
     ~SettingsPage();
 
     //[UserMethods]

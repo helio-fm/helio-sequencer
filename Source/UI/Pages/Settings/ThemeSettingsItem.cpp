@@ -126,7 +126,7 @@ void ThemeSettingsItem::paint (Graphics& g)
         const int barWidth = 64;
         const int dynamicGridSize = 4;
         int i = int(paintStartY / barWidth) + 2;
-        const int j = int(this->getWidth() / barWidth);
+        const int j = this->getWidth() / barWidth;
         const int beatWidth = barWidth / dynamicGridSize;
 
         const Colour barStart = this->theme->findColour(ColourIDs::Roll::barLine);

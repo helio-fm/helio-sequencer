@@ -26,7 +26,7 @@ class WorkspaceMenu final : public MenuPanel
 {
 public:
     
-    WorkspaceMenu(Workspace &workspace);
+    explicit WorkspaceMenu(Workspace &workspace);
     
 private:
 

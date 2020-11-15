@@ -30,7 +30,7 @@ class ThemeSettingsItem final : public DraggingListBoxComponent
 {
 public:
 
-    ThemeSettingsItem(ListBox &parentListBox);
+    explicit ThemeSettingsItem(ListBox &parentListBox);
     ~ThemeSettingsItem();
 
     //[UserMethods]

@@ -228,7 +228,7 @@ void MidiRecorder::handleAsyncUpdate()
 
         String outTrackId;
         const auto trackTemplate = createPianoTrackTemplate(newName,
-                                                            this->lastCorrectPosition.get(), this->lastValidInstrumentId, outTrackId);
+            this->lastCorrectPosition.get(), this->lastValidInstrumentId, outTrackId);
 
         this->project.getUndoStack()->perform(
             new PianoTrackInsertAction(this->project,

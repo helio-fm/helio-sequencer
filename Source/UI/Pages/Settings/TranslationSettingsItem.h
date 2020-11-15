@@ -27,7 +27,7 @@ class TranslationSettingsItem final : public DraggingListBoxComponent
 {
 public:
 
-    TranslationSettingsItem(ListBox &parentListBox);
+    explicit TranslationSettingsItem(ListBox &parentListBox);
     ~TranslationSettingsItem();
 
     //[UserMethods]

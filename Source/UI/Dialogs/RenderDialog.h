@@ -34,8 +34,6 @@ public:
 
     ~RenderDialog();
 
-    void showImport(DocumentOwner *owner);
-
     void resized() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;

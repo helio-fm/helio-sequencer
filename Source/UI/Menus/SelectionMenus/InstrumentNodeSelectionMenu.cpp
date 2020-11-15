@@ -54,7 +54,7 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()
             // this callAsync trick is needed, because the menu is a modal component,
             // and after invoking this callback, it will dismiss, focusing the host window,
             // and pushing the plugin window in the background, which looks silly;
-            MessageManager::getInstance()->callAsync([window]()
+            MessageManager::callAsync([window]()
             {
                 // so we have to bring it to front asynchronously:
                 window->toFront(true);

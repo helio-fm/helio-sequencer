@@ -36,7 +36,7 @@ class StageComponent final : public Component,
 {
 public:
 
-    StageComponent(VersionControl &versionControl);
+    explicit StageComponent(VersionControl &versionControl);
     ~StageComponent();
 
     //[UserMethods]

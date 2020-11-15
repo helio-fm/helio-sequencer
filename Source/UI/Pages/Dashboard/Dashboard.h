@@ -38,7 +38,7 @@ class Dashboard final : public Component,
 {
 public:
 
-    Dashboard(MainLayout &workspaceRef);
+    explicit Dashboard(MainLayout &workspaceRef);
     ~Dashboard();
 
     //[UserMethods]

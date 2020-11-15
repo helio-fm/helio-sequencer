@@ -167,7 +167,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
             }
 
             const auto &scales = App::Config().getScales()->getAll();
-            SequencerOperations::rescale(*this->lasso, this->harmonicContextKey,
+            SequencerOperations::rescale(*this->lasso.get(), this->harmonicContextKey,
                 this->harmonicContextScale, scales[i], true);
         }));
     }
@@ -253,7 +253,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
 
             const auto arps = App::Config().getArpeggiators()->getAll();
             const auto temperament = this->project.getProjectInfo()->getTemperament();
-            SequencerOperations::arpeggiate(*this->lasso, temperament, this->harmonicContextScale,
+            SequencerOperations::arpeggiate(*this->lasso.get(), temperament, this->harmonicContextScale,
                 this->harmonicContextKey, arps[i], 1.0f, 0.0f, false, false, true);
         }));
     }
@@ -268,7 +268,7 @@ PianoRollSelectionMenu::PianoRollSelectionMenu(const ProjectNode &project, WeakR
     if (this->lasso->getNumSelected() > 0)
     {
         const Clip &clip = this->lasso->getFirstAs<NoteComponent>()->getClip();
-        if (!SequencerOperations::findHarmonicContext(*this->lasso, clip,
+        if (!SequencerOperations::findHarmonicContext(*this->lasso.get(), clip,
             this->project.getTimeline()->getKeySignatures(),
             this->harmonicContextScale, this->harmonicContextKey))
         {

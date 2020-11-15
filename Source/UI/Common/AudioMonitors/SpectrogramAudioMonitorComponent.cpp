@@ -217,7 +217,8 @@ inline void SpectrogramAudioMonitorComponent::SpectrumBand::processSignal(float 
 {
     const float valueInDb = jlimit(GENERIC_METER_MINDB,
         GENERIC_METER_MAXDB, 20.f * AudioCore::fastLog10(signal));
-    const float valueInY = float(AudioCore::iecLevel(valueInDb) * h);
+
+    const float valueInY = AudioCore::iecLevel(valueInDb) * h;
 
     if (this->value < valueInY)
     {

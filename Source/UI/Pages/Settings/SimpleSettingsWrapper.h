@@ -26,7 +26,7 @@ class SimpleSettingsWrapper final : public Component
 {
 public:
 
-    SimpleSettingsWrapper(Component *targetComponent);
+    explicit SimpleSettingsWrapper(Component *targetComponent);
     ~SimpleSettingsWrapper();
 
     //[UserMethods]

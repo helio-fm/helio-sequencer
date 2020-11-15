@@ -31,7 +31,7 @@ class HistoryComponent final : public Component,
 {
 public:
 
-    HistoryComponent(VersionControl &owner);
+    explicit HistoryComponent(VersionControl &owner);
     ~HistoryComponent();
 
     //[UserMethods]

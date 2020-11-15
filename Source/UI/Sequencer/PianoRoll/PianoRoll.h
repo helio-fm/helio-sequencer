@@ -34,6 +34,7 @@ class Scale;
 #include "NoteResizerRight.h"
 #include "HighlightingScheme.h"
 #include "CommandPaletteModel.h"
+#include "MidiTrack.h"
 
 class PianoRoll final :
     public HybridRoll,

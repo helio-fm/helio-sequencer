@@ -112,6 +112,9 @@ void ProjectMenu::handleCommandMessage(int commandId)
             App::showModalComponent(move(confirmationDialog));
             return;
         }
+
+        default:
+            break;
     }
 }
 
@@ -202,11 +205,11 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
         }));
 
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
-    for (int i = 0; i < instruments.size(); ++i)
+    for (const auto *instrument : instruments)
     {
-        const String instrumentId = instruments[i]->getIdAndHash();
+        const String instrumentId = instrument->getIdAndHash();
         menu.add(MenuItem::item(Icons::instrument,
-            instruments[i]->getName())->withAction([this, instrumentId]()
+            instrument->getName())->withAction([this, instrumentId]()
             {
                 auto &project = this->project;
                 String outTrackId;
@@ -468,14 +471,15 @@ void ProjectMenu::showSetInstrumentMenu()
     }));
 
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
-    for (int i = 0; i < instruments.size(); ++i)
+    for (const auto *instrument : instruments)
     {
+        const String instrumentId = instrument->getIdAndHash();
         menu.add(MenuItem::item(Icons::instrument,
-            instruments[i]->getName())->
+            instrument->getName())->
             closesMenu()->
-            withAction([this, i, instruments]()
+            withAction([this, instrumentId]()
             {
-                DBG(instruments[i]->getIdAndHash());
+                DBG(instrumentId);
 
                 const auto tracks = this->project.findChildrenOfType<MidiTrackNode>();
 
@@ -485,7 +489,6 @@ void ProjectMenu::showSetInstrumentMenu()
 
                     for (auto *track : tracks)
                     {
-                        const auto instrumentId = instruments[i]->getIdAndHash();
                         this->project.getUndoStack()->
                             perform(new MidiTrackChangeInstrumentAction(this->project,
                                 track->getTrackId(), instrumentId));

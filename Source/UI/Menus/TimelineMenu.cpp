@@ -30,7 +30,7 @@
 #include "CommandIDs.h"
 
 template<typename T>
-const T *findSelectedEventOfType(MidiSequence *const sequence, HybridRoll *const roll, float seekBeat)
+const T *findSelectedEventOfType(MidiSequence *const sequence, float seekBeat)
 {
     const T *selectedEvent = nullptr;
 
@@ -57,15 +57,15 @@ TimelineMenu::TimelineMenu(ProjectNode &parentProject) :
     const TimeSignatureEvent *selectedTimeSignature = nullptr;
     const ProjectTimeline *timeline = this->project.getTimeline();
 
-    if (auto *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
+    if (nullptr != this->project.getLastFocusedRoll())
     {
         const auto seekBeat = this->project.getTransport().getSeekBeat();
         const auto annotationsSequence = timeline->getAnnotations()->getSequence();
         const auto keySignaturesSequence = timeline->getKeySignatures()->getSequence();
         const auto timeSignaturesSequence = timeline->getTimeSignatures()->getSequence();
-        selectedAnnotation = findSelectedEventOfType<AnnotationEvent>(annotationsSequence, roll, seekBeat);
-        selectedKeySignature = findSelectedEventOfType<KeySignatureEvent>(keySignaturesSequence, roll, seekBeat);
-        selectedTimeSignature = findSelectedEventOfType<TimeSignatureEvent>(timeSignaturesSequence, roll, seekBeat);
+        selectedAnnotation = findSelectedEventOfType<AnnotationEvent>(annotationsSequence, seekBeat);
+        selectedKeySignature = findSelectedEventOfType<KeySignatureEvent>(keySignaturesSequence, seekBeat);
+        selectedTimeSignature = findSelectedEventOfType<TimeSignatureEvent>(timeSignaturesSequence, seekBeat);
     }
 
     MenuPanel::Menu menu;
@@ -91,7 +91,7 @@ TimelineMenu::TimelineMenu(ProjectNode &parentProject) :
             TRANS(I18n::Menu::timeSignatureAdd))->closesMenu());
     }
 
-    if (auto *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
+    if (nullptr != this->project.getLastFocusedRoll())
     {
         const auto annotationsSequence = timeline->getAnnotations()->getSequence();
 
@@ -111,13 +111,12 @@ TimelineMenu::TimelineMenu(ProjectNode &parentProject) :
                     closesMenu()->
                     withAction([this, i]()
                     {
-                        const auto timeline = this->project.getTimeline();
-                        const auto annotations = timeline->getAnnotations()->getSequence();
-                        if (auto roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
+                        if (auto *roll = this->project.getLastFocusedRoll())
                         {
-                            if (auto annotation = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i)))
+                            const auto annotations = this->project.getTimeline()->getAnnotations()->getSequence();
+                            if (auto *ae = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i)))
                             {
-                                this->project.getTransport().seekToBeat(annotation->getBeat());
+                                this->project.getTransport().seekToBeat(ae->getBeat());
                                 roll->scrollToSeekPosition();
                             }
                         }

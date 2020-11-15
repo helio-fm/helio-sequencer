@@ -40,9 +40,9 @@
 
 #include "JuceHeader.h"
 
-#include <limits.h>
-#include <float.h>
-#include <math.h>
+#include <climits>
+#include <cfloat>
+#include <cmath>
 
 //===----------------------------------------------------------------------===//
 // A better hash map
@@ -118,7 +118,7 @@ inline float roundf(float x)
 #endif
 
 #define forEachChildWithType(parentElement, child, requiredType) \
-    for (const auto &child : parentElement) if (child.hasType(requiredType))
+    for (const auto &(child) : (parentElement)) if ((child).hasType(requiredType))
 
 #define callbackOnMessageThread(cls, function, ...) \
     MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void* \
