@@ -593,6 +593,13 @@
 			path = ../../Source/Core/Midi/Sequences/Events/AnnotationEvent.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		14EA49BA18F30E1B5162E813 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = BuiltInSynth.cpp;
+			path = ../../Source/Core/Audio/BuiltIn/BuiltInSynth.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		1587694DB90816152BB1B9DD = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -3925,13 +3932,6 @@
 			path = ../../Source/UI/Sequencer/Header/HeaderSelectionIndicator.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		A912A6A08F330D5930EBC813 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = BuiltInSynthPiano.h;
-			path = ../../Source/Core/Audio/BuiltIn/BuiltInSynthPiano.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		A984E65188F536F4CCEE5A1A = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
@@ -3981,13 +3981,6 @@
 			path = ../../Source/UI/Pages/VCS/StageComponent.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		AB2BC2DABB162ECA463F507E = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = BuiltInSynthPiano.cpp;
-			path = ../../Source/Core/Audio/BuiltIn/BuiltInSynthPiano.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		AB43B7209B4383E4833E3C27 = {
 			isa = PBXFileReference;
 			lastKnownFileType = file.icns;
@@ -4014,6 +4007,13 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = HighlightingScheme.h;
 			path = ../../Source/UI/Sequencer/PianoRoll/HighlightingScheme.h;
+			sourceTree = "SOURCE_ROOT";
+		};
+		AC2018B94F8E40395D1FCAB9 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = BuiltInSynth.h;
+			path = ../../Source/Core/Audio/BuiltIn/BuiltInSynth.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		AC92C2151D0DEC9448D88839 = {
@@ -5883,8 +5883,8 @@
 				8DFA6152CAFF992C8A4B684C,
 				2AFCFD00C9479DA75E8F07CA,
 				8D52C00D94B8773F96D50DDB,
-				AB2BC2DABB162ECA463F507E,
-				A912A6A08F330D5930EBC813,
+				14EA49BA18F30E1B5162E813,
+				AC2018B94F8E40395D1FCAB9,
 				8F1526AF3D4EF5535F21DC29,
 				AD760424053DCEE86BE3E835,
 			);
@@ -7190,7 +7190,6 @@
 					"../../Source/Core/Network/Models",
 					"../../Source/Core/Network/Requests",
 					"../../Source/Core/Network/Services",
-					"../../Source/Core/Scripting",
 					"../../Source/Core/Serialization",
 					"../../Source/Core/Tree",
 					"../../Source/Core/Undo",
@@ -7265,7 +7264,6 @@
 					"../../Source/Core/Network/Models",
 					"../../Source/Core/Network/Requests",
 					"../../Source/Core/Network/Services",
-					"../../Source/Core/Scripting",
 					"../../Source/Core/Serialization",
 					"../../Source/Core/Tree",
 					"../../Source/Core/Undo",
@@ -7377,7 +7375,6 @@
 					"../../Source/Core/Network/Models",
 					"../../Source/Core/Network/Requests",
 					"../../Source/Core/Network/Services",
-					"../../Source/Core/Scripting",
 					"../../Source/Core/Serialization",
 					"../../Source/Core/Tree",
 					"../../Source/Core/Undo",
@@ -7453,7 +7450,6 @@
 					"../../Source/Core/Network/Models",
 					"../../Source/Core/Network/Requests",
 					"../../Source/Core/Network/Services",
-					"../../Source/Core/Scripting",
 					"../../Source/Core/Serialization",
 					"../../Source/Core/Tree",
 					"../../Source/Core/Undo",
