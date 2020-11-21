@@ -19,7 +19,8 @@
 #include "TreeNode.h"
 #include "TreeNodeSerializer.h"
 #include "SerializationKeys.h"
-#include "MidiTrackNode.h"
+#include "PianoTrackNode.h"
+#include "PatternEditorNode.h"
 #include "ProjectNode.h"
 
 //===----------------------------------------------------------------------===//
@@ -209,12 +210,17 @@ bool TreeNode::deleteNode(TreeNode *nodeToDelete, bool sendNotifications)
     {
         if (parentProject != nullptr)
         {
-            if (auto *sibling = parentProject->findChildOfType<MidiTrackNode>())
+            if (auto *sibling = parentProject->findChildOfType<PianoTrackNode>())
             {
                 sibling->setSelected(notificationType);
             }
+            else if (auto *patterns = parentProject->findChildOfType<PatternEditorNode>())
+            {
+                patterns->setSelected(notificationType);
+            }
             else
             {
+                jassertfalse;
                 parentProject->setSelected(notificationType);
             }
         }

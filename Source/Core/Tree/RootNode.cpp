@@ -77,7 +77,7 @@ ProjectNode *RootNode::openProject(const File &file)
     {
         if (myProject->getDocument()->getFullPath() == file.getFullPathName())
         {
-            myProject->selectChildOfType<PianoTrackNode>();
+            myProject->selectChildOfType<PianoTrackNode, PatternEditorNode>();
             return nullptr;
         }
     }
@@ -85,7 +85,7 @@ ProjectNode *RootNode::openProject(const File &file)
     DBG("Opening project: " + file.getFullPathName());
     if (file.existsAsFile())
     {
-        UniquePointer<ProjectNode> project(new ProjectNode(file));
+        auto project = make<ProjectNode>(file);
         this->addChildNode(project.get(), 1);
 
         if (!project->getDocument()->load(file.getFullPathName()))
@@ -98,12 +98,12 @@ ProjectNode *RootNode::openProject(const File &file)
         {
             if (myProject->getId() == project->getId())
             {
-                myProject->selectChildOfType<PianoTrackNode>();
+                myProject->selectChildOfType<PianoTrackNode, PatternEditorNode>();
                 return nullptr;
             }
         }
 
-        project->selectChildOfType<PianoTrackNode>();
+        project->selectChildOfType<PianoTrackNode, PatternEditorNode>();
         return project.release();
     }
 
@@ -220,7 +220,7 @@ ProjectNode *RootNode::importMidi(const File &file)
     this->addChildNode(project);
     addAllEssentialProjectNodes(project);
     project->importMidi(file);
-    project->selectChildOfType<PianoTrackNode>();
+    project->selectChildOfType<PianoTrackNode, PatternEditorNode>();
     return project;
 }
 

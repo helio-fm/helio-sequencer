@@ -33,8 +33,7 @@ Image PatternEditorNode::getIcon() const noexcept
 
 void PatternEditorNode::showPage()
 {
-    if (ProjectNode *parentProject =
-        this->findParentOfType<ProjectNode>())
+    if (auto *parentProject = this->findParentOfType<ProjectNode>())
     {
         parentProject->showPatternEditor(this);
     }

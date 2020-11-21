@@ -22,6 +22,7 @@
 #include "SettingsNode.h"
 #include "OrchestraPitNode.h"
 #include "PianoTrackNode.h"
+#include "PatternEditorNode.h"
 #include "Workspace.h"
 
 WorkspaceMenu::WorkspaceMenu(Workspace &workspace) :
@@ -68,7 +69,7 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
             closesMenu()->
             withAction([this, project]()
             {
-                project->selectChildOfType<PianoTrackNode>();
+                project->selectChildOfType<PianoTrackNode, PatternEditorNode>();
             }));
     }
 

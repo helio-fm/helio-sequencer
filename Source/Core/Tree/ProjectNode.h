@@ -75,12 +75,11 @@ public:
 
     void showPage() override;
     void recreatePage() override;
-
-    void safeRename(const String &newName, bool sendNotifications) override;
-
     void showPatternEditor(WeakReference<TreeNode> source);
     void showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeNode> source);
     WeakReference<TreeNode> getLastShownTrack() const noexcept;
+
+    void safeRename(const String &newName, bool sendNotifications) override;
 
     void setMidiRecordingTarget(MidiTrack *const track, const Clip *clip);
     void setEditableScope(MidiTrack *const activeTrack,

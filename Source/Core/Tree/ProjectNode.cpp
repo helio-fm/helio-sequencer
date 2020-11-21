@@ -389,6 +389,12 @@ void ProjectNode::removeTrack(const MidiTrack &track)
     {
         this->getUndoStack()->perform(new AutomationTrackRemoveAction(*this, this, trackId));
     }
+
+    // nothing to be focused on in the piano roll, switch to patterns:
+    if (this->findChildrenOfType<PianoTrackNode>().isEmpty())
+    {
+        this->selectChildOfType<PatternEditorNode>();
+    }
 }
 
 //===----------------------------------------------------------------------===//

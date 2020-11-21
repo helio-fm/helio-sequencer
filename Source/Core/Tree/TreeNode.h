@@ -117,6 +117,24 @@ public:
         return false;
     }
 
+    template<typename T1, typename T2>
+    bool selectChildOfType() const
+    {
+        if (T1 *child = this->findChildOfType<T1>())
+        {
+            child->setSelected();
+            return true;
+        }
+
+        if (T2 *child = this->findChildOfType<T2>())
+        {
+            child->setSelected();
+            return true;
+        }
+
+        return false;
+    }
+
     template<typename T>
     Array<T *> findChildrenOfType(bool pickOnlySelectedOnes = false) const
     {

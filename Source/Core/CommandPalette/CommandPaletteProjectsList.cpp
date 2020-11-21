@@ -19,6 +19,7 @@
 #include "CommandPaletteProjectsList.h"
 #include "ProjectNode.h"
 #include "PianoTrackNode.h"
+#include "PatternEditorNode.h"
 
 CommandPaletteProjectsList::CommandPaletteProjectsList(Workspace &workspace) :
     workspace(workspace)
@@ -59,7 +60,7 @@ void CommandPaletteProjectsList::reloadProjects()
                     // switch to it, don't unload:
                     //this->workspace.unloadProject(projectInfo->getProjectId(), false, false);
 
-                    if (!loadedProject->selectChildOfType<PianoTrackNode>())
+                    if (!loadedProject->selectChildOfType<PianoTrackNode, PatternEditorNode>())
                     {
                         loadedProject->setSelected();
                     }
