@@ -77,7 +77,7 @@ ProjectNode *RootNode::openProject(const File &file)
     {
         if (myProject->getDocument()->getFullPath() == file.getFullPathName())
         {
-            myProject->selectChildOfType<PianoTrackNode, PatternEditorNode>();
+            myProject->selectFirstChildOfType<PianoTrackNode, PatternEditorNode>();
             return nullptr;
         }
     }
@@ -98,12 +98,12 @@ ProjectNode *RootNode::openProject(const File &file)
         {
             if (myProject->getId() == project->getId())
             {
-                myProject->selectChildOfType<PianoTrackNode, PatternEditorNode>();
+                myProject->selectFirstChildOfType<PianoTrackNode, PatternEditorNode>();
                 return nullptr;
             }
         }
 
-        project->selectChildOfType<PianoTrackNode, PatternEditorNode>();
+        project->selectFirstChildOfType<PianoTrackNode, PatternEditorNode>();
         return project.release();
     }
 
@@ -189,7 +189,7 @@ ProjectNode *RootNode::addEmptyProject(const File &projectLocation, const String
     this->addChildNode(project);
     addAllEssentialProjectNodes(project);
     createProjectContentFromTemplate(project, templateName);
-    project->selectChildOfType<PianoTrackNode>();
+    project->selectFirstChildOfType<PianoTrackNode>();
     return project;
 }
 
@@ -200,7 +200,7 @@ ProjectNode *RootNode::addEmptyProject(const String &projectName, const String &
     this->addChildNode(project);
     addAllEssentialProjectNodes(project);
     createProjectContentFromTemplate(project, templateName);
-    project->selectChildOfType<PianoTrackNode>();
+    project->selectFirstChildOfType<PianoTrackNode>();
     return project;
 }
 
@@ -210,7 +210,7 @@ ProjectNode *RootNode::addExampleProject()
     this->addChildNode(project);
     addAllEssentialProjectNodes(project);
     createProjectContentFromTemplate(project, "exampleProject_json");
-    project->selectChildOfType<PianoTrackNode>();
+    project->selectFirstChildOfType<PianoTrackNode>();
     return project;
 }
 
@@ -220,7 +220,7 @@ ProjectNode *RootNode::importMidi(const File &file)
     this->addChildNode(project);
     addAllEssentialProjectNodes(project);
     project->importMidi(file);
-    project->selectChildOfType<PianoTrackNode, PatternEditorNode>();
+    project->selectFirstChildOfType<PianoTrackNode, PatternEditorNode>();
     return project;
 }
 

@@ -393,7 +393,7 @@ void ProjectNode::removeTrack(const MidiTrack &track)
     // nothing to be focused on in the piano roll, switch to patterns:
     if (this->findChildrenOfType<PianoTrackNode>().isEmpty())
     {
-        this->selectChildOfType<PatternEditorNode>();
+        this->selectFirstChildOfType<PatternEditorNode>();
     }
 }
 

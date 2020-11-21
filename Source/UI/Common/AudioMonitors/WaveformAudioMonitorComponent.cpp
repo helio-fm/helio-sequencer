@@ -21,10 +21,6 @@
 #include "AudioCore.h"
 #include "ColourIDs.h"
 
-#define WAVEFORM_METER_MAXDB (+4.0f)
-// -69 instead of -70 to have that nearly invisible horizontal line
-#define WAVEFORM_METER_MINDB (-69.0f)
-
 WaveformAudioMonitorComponent::WaveformAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer) :
     Thread("WaveformAudioMonitor"),
     colour(findDefaultColour(ColourIDs::AudioMonitor::foreground)),
@@ -61,7 +57,7 @@ void WaveformAudioMonitorComponent::run()
         const double b = Time::getMillisecondCounterHiRes();
 
         // Shift buffers:
-        for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE - 1; ++i)
+        for (int i = 0; i < WaveformAudioMonitorComponent::bufferSize - 1; ++i)
         {
             this->lPeakBuffer[i] = this->lPeakBuffer[i + 1].get();
             this->rPeakBuffer[i] = this->rPeakBuffer[i + 1].get();
@@ -69,7 +65,7 @@ void WaveformAudioMonitorComponent::run()
             this->rRmsBuffer[i] = this->rRmsBuffer[i + 1].get();
         }
 
-        const int i = WAVEFORM_METER_BUFFER_SIZE - 1;
+        const int i = WaveformAudioMonitorComponent::bufferSize - 1;
 
         // Push next values:
         this->lPeakBuffer[i] = this->audioMonitor->getPeak(0);
@@ -98,9 +94,12 @@ void WaveformAudioMonitorComponent::handleAsyncUpdate()
 
 inline static float waveformIecLevel(float peak)
 {
-    const float vauleInDb =
-        jlimit(WAVEFORM_METER_MINDB, WAVEFORM_METER_MAXDB,
-            20.0f * AudioCore::fastLog10(peak));
+    static constexpr auto maxDb = +4.0f;
+    static constexpr auto minDb = -69.0f;
+    // -69 instead of -70 to have that nearly invisible horizontal line
+
+    const float vauleInDb = jlimit(minDb, maxDb,
+        20.0f * AudioCore::fastLog10(peak));
 
     return AudioCore::iecLevel(vauleInDb);
 }
@@ -113,7 +112,7 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
     }
     
     const float midH = float(this->getHeight()) / 2.f;
-    constexpr int w = WAVEFORM_METER_BUFFER_SIZE;
+    constexpr int w = WaveformAudioMonitorComponent::bufferSize;
 
     g.setColour(this->colour.withAlpha(0.2f));
 

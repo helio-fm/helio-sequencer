@@ -21,9 +21,6 @@ class AudioMonitor;
 
 #include "SequencerLayout.h"
 
-// Set this depending on component width (or sidebar width):
-#define WAVEFORM_METER_BUFFER_SIZE (Globals::UI::sidebarWidth / 2)
-
 class WaveformAudioMonitorComponent final :
     public Component, private Thread, private AsyncUpdater
 {
@@ -49,11 +46,13 @@ private:
 
     WeakReference<AudioMonitor> audioMonitor;
     
-    Atomic<float> lPeakBuffer[WAVEFORM_METER_BUFFER_SIZE];
-    Atomic<float> rPeakBuffer[WAVEFORM_METER_BUFFER_SIZE];
+    static constexpr auto bufferSize = Globals::UI::sidebarWidth / 2;
 
-    Atomic<float> lRmsBuffer[WAVEFORM_METER_BUFFER_SIZE];
-    Atomic<float> rRmsBuffer[WAVEFORM_METER_BUFFER_SIZE];
+    Atomic<float> lPeakBuffer[bufferSize];
+    Atomic<float> rPeakBuffer[bufferSize];
+
+    Atomic<float> lRmsBuffer[bufferSize];
+    Atomic<float> rRmsBuffer[bufferSize];
 
     int skewTime = 0;
 

@@ -19,8 +19,6 @@
 
 #include "AudioMonitor.h"
 
-#define GENERIC_METER_NUM_BANDS 11
-
 class SpectrogramAudioMonitorComponent final :
     public Component, private Thread, private AsyncUpdater
 {
@@ -40,18 +38,22 @@ private:
     {
     public:
         
-        SpectrumBand();
+        SpectrumBand() = default;
         void reset();
         inline void processSignal(float v, float h, uint32 timeNow);
         
-        float value;
-        float valueDecay;
-        uint32 valueDecayStart;
+        static constexpr auto maxAlpha = 0.35f;
+        static constexpr auto bandFadeMs = 650;
+        static constexpr auto peakFadeMs = 1300;
 
-        float peak;
-        float peakDecay;
-        float peakDecayColour;
-        uint32 peakDecayStart;
+        float value = 0.f;
+        float valueDecay = 1.f;
+        uint32 valueDecayStart = 0;
+
+        float peak = 0.f;
+        float peakDecay = 1.f;
+        float peakDecayColour = SpectrumBand::maxAlpha;
+        uint32 peakDecayStart = 0;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumBand);
     };
@@ -69,7 +71,9 @@ private:
     UniquePointer<SpectrumBand> lPeakBand;
     UniquePointer<SpectrumBand> rPeakBand;
 
-    Atomic<float> values[GENERIC_METER_NUM_BANDS];
+    static constexpr auto numBands = 11;
+    Atomic<float> values[SpectrogramAudioMonitorComponent::numBands];
+
     Atomic<float> lPeak;
     Atomic<float> rPeak;
 

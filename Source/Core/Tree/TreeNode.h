@@ -106,7 +106,7 @@ public:
     }
 
     template<typename T>
-    bool selectChildOfType() const
+    bool selectFirstChildOfType() const
     {
         if (T *child = this->findChildOfType<T>())
         {
@@ -118,7 +118,7 @@ public:
     }
 
     template<typename T1, typename T2>
-    bool selectChildOfType() const
+    bool selectFirstChildOfType() const
     {
         if (T1 *child = this->findChildOfType<T1>())
         {

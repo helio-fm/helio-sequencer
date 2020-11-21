@@ -21,13 +21,6 @@
 #include "AudioCore.h"
 #include "ColourIDs.h"
 
-#define GENERIC_METER_MAXDB (+4.0f)
-#define GENERIC_METER_MINDB (-70.0f)
-#define GENERIC_METER_BAND_FADE_MS 650.f
-#define GENERIC_METER_PEAK_FADE_MS 1300.f
-#define GENERIC_METER_PEAK_MAX_ALPHA 0.35f
-#define GENERIC_METER_SHOWS_VOLUME_PEAKS 1
-
 static const float kPeakSpectrumFrequencies[] =
 {
     63.f,
@@ -47,13 +40,13 @@ SpectrogramAudioMonitorComponent::SpectrogramAudioMonitorComponent(WeakReference
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
 
-    for (int band = 0; band < GENERIC_METER_NUM_BANDS; ++band)
+    for (int band = 0; band < SpectrogramAudioMonitorComponent::numBands; ++band)
     {
         this->bands.add(new SpectrumBand());
     }
     
-    this->lPeakBand.reset(new SpectrumBand());
-    this->rPeakBand.reset(new SpectrumBand());
+    this->lPeakBand = make<SpectrumBand>();
+    this->rPeakBand = make<SpectrumBand>();
 
     if (this->audioMonitor != nullptr)
     {
@@ -84,7 +77,7 @@ void SpectrogramAudioMonitorComponent::run()
 
         if (this->isVisible())
         {
-            for (int i = 0; i < GENERIC_METER_NUM_BANDS; ++i)
+            for (int i = 0; i < SpectrogramAudioMonitorComponent::numBands; ++i)
             {
                 this->lPeak = this->audioMonitor->getPeak(0);
                 this->rPeak = this->audioMonitor->getPeak(1);
@@ -119,12 +112,10 @@ void SpectrogramAudioMonitorComponent::paint(Graphics &g)
         return;
     }
     
-    const float bw = 4.f; // w / float(GENERIC_METER_NUM_BANDS);
+    const float bw = 4.f;
     const float w = float(this->getWidth());
     const float h = float(this->getHeight());
     const uint32 timeNow = Time::getMillisecondCounter();
-
-#if GENERIC_METER_SHOWS_VOLUME_PEAKS
 
     this->lPeakBand->processSignal(this->lPeak.get(), h, timeNow);
     this->rPeakBand->processSignal(this->rPeak.get(), h, timeNow);
@@ -152,18 +143,16 @@ void SpectrogramAudioMonitorComponent::paint(Graphics &g)
     g.fillRect(w / 2.f, yPeakR, w / 2.f - 1.f, this->rPeakBand->peak);
     g.fillRect(w / 2.f, yPeakR, w / 2.f - 1.f, 1.f);
 
-#endif
-
     // Spectrum bands:
 
-    for (int i = 0; i < GENERIC_METER_NUM_BANDS; ++i)
+    for (int i = 0; i < SpectrogramAudioMonitorComponent::numBands; ++i)
     {
         this->bands[i]->processSignal(this->values[i].get(), h, timeNow);
     }
 
     g.setColour(this->colour.withAlpha(0.35f));
 
-    for (int i = 0; i < GENERIC_METER_NUM_BANDS; ++i)
+    for (int i = 0; i < SpectrogramAudioMonitorComponent::numBands; ++i)
     {
         const float x = i * bw + 1.f;
         for (int j = int(h + 1); j > (h - this->bands[i]->value); j -= 2)
@@ -172,7 +161,7 @@ void SpectrogramAudioMonitorComponent::paint(Graphics &g)
         }
     }
 
-    for (int i = 0; i < GENERIC_METER_NUM_BANDS; ++i)
+    for (int i = 0; i < SpectrogramAudioMonitorComponent::numBands; ++i)
     {
         const float x = i * bw + 1.f;
         g.setColour(this->colour.withAlpha(0.4f - this->bands[i]->peakDecayColour));
@@ -194,28 +183,22 @@ void SpectrogramAudioMonitorComponent::paint(Graphics &g)
     //}
 }
 
-SpectrogramAudioMonitorComponent::SpectrumBand::SpectrumBand() :
-    value(0.f),
-    valueDecay(1.f),
-    valueDecayStart(0),
-    peak(0.f),
-    peakDecay(1.f),
-    peakDecayColour(1.f),
-    peakDecayStart(0) {}
-
 void SpectrogramAudioMonitorComponent::SpectrumBand::reset()
 {
     this->value = 0.f;
     this->valueDecay = 1.f;
     this->peak = 0.f;
     this->peakDecay = 1.f;
-    this->peakDecayColour = GENERIC_METER_PEAK_MAX_ALPHA;
+    this->peakDecayColour = SpectrumBand::maxAlpha;
 }
 
 inline void SpectrogramAudioMonitorComponent::SpectrumBand::processSignal(float signal, float h, uint32 timeNow)
 {
-    const float valueInDb = jlimit(GENERIC_METER_MINDB,
-        GENERIC_METER_MAXDB, 20.f * AudioCore::fastLog10(signal));
+    static constexpr auto maxDb = +4.0f;
+    static constexpr auto minDb = -70.0f;
+
+    const float valueInDb = jlimit(minDb, maxDb,
+        20.f * AudioCore::fastLog10(signal));
 
     const float valueInY = AudioCore::iecLevel(valueInDb) * h;
 
@@ -228,7 +211,7 @@ inline void SpectrogramAudioMonitorComponent::SpectrumBand::processSignal(float 
     else
     {
         const auto msElapsed = int(timeNow - this->valueDecayStart);
-        float newProgress = msElapsed / GENERIC_METER_BAND_FADE_MS;
+        float newProgress = msElapsed / float(SpectrumBand::bandFadeMs);
         if (newProgress >= 0.f && newProgress < 1.f)
         {
             newProgress = ComponentFader::timeToDistance(newProgress);
@@ -252,19 +235,19 @@ inline void SpectrogramAudioMonitorComponent::SpectrumBand::processSignal(float 
     else
     {
         const auto msElapsed = int(timeNow - this->peakDecayStart);
-        float newProgress = msElapsed / GENERIC_METER_PEAK_FADE_MS;
+        float newProgress = msElapsed / float(SpectrumBand::peakFadeMs);
         if (newProgress >= 0.f && newProgress < 1.f)
         {
             newProgress = ComponentFader::timeToDistance(newProgress);
             jassert(newProgress >= this->peakDecay);
             const float delta = (newProgress - this->peakDecay) / (1.f - this->peakDecay);
-            this->peakDecayColour = (newProgress * newProgress * newProgress) * GENERIC_METER_PEAK_MAX_ALPHA;
+            this->peakDecayColour = (newProgress * newProgress * newProgress) * SpectrumBand::maxAlpha;
             this->peakDecay = newProgress;
             this->peak -= (this->peak * delta);
         }
         else
         {
-            this->peakDecayColour = GENERIC_METER_PEAK_MAX_ALPHA;
+            this->peakDecayColour = SpectrumBand::maxAlpha;
             this->peak = 0.f;
         }
     }

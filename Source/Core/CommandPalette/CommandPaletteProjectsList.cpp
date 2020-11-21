@@ -60,7 +60,7 @@ void CommandPaletteProjectsList::reloadProjects()
                     // switch to it, don't unload:
                     //this->workspace.unloadProject(projectInfo->getProjectId(), false, false);
 
-                    if (!loadedProject->selectChildOfType<PianoTrackNode, PatternEditorNode>())
+                    if (!loadedProject->selectFirstChildOfType<PianoTrackNode, PatternEditorNode>())
                     {
                         loadedProject->setSelected();
                     }

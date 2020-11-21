@@ -613,7 +613,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
         {
             if (this->project.getLastShownTrack() == nullptr)
             {
-                this->project.selectChildOfType<PianoTrackNode>();
+                this->project.selectFirstChildOfType<PianoTrackNode>();
             }
             else
             {
@@ -622,7 +622,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
         }
         else
         {
-            this->project.selectChildOfType<PatternEditorNode>();
+            this->project.selectFirstChildOfType<PatternEditorNode>();
         }
         break;
     default:

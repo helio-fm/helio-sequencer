@@ -474,7 +474,7 @@ void MainLayout::handleCommandMessage(int commandId)
         {
             if (project->getLastShownTrack() == nullptr)
             {
-                project->selectChildOfType<PianoTrackNode>();
+                project->selectFirstChildOfType<PianoTrackNode>();
             }
             else
             {
@@ -485,13 +485,13 @@ void MainLayout::handleCommandMessage(int commandId)
     case CommandIDs::SwitchToArrangeMode:
         if (auto *project = findParentProjectOfSelectedNode())
         {
-            project->selectChildOfType<PatternEditorNode>();
+            project->selectFirstChildOfType<PatternEditorNode>();
         }
         break;
     case CommandIDs::SwitchToVersioningMode:
         if (auto *project = findParentProjectOfSelectedNode())
         {
-            project->selectChildOfType<VersionControlNode>();
+            project->selectFirstChildOfType<VersionControlNode>();
         }
         break;
     case CommandIDs::ShowRootPage:

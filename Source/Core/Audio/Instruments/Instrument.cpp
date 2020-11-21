@@ -832,7 +832,7 @@ void Instrument::AudioCallback::audioDeviceIOCallback(const float** const inputC
     AudioBuffer<float> buffer(this->channels, totalNumChans, numSamples);
 
     {
-        const ScopedLock sl(lock);
+        const ScopedLock sl(this->lock);
 
         if (this->processor != nullptr)
         {
@@ -852,14 +852,14 @@ void Instrument::AudioCallback::audioDeviceIOCallback(const float** const inputC
     }
 }
 
-void Instrument::AudioCallback::audioDeviceAboutToStart(AudioIODevice* const device)
+void Instrument::AudioCallback::audioDeviceAboutToStart(AudioIODevice *const device)
 {
     const auto newSampleRate = device->getCurrentSampleRate();
     const auto newBlockSize = device->getCurrentBufferSizeSamples();
     const auto numChansIn = device->getActiveInputChannels().countNumberOfSetBits();
     const auto numChansOut = device->getActiveOutputChannels().countNumberOfSetBits();
 
-    const ScopedLock sl(lock);
+    const ScopedLock sl(this->lock);
 
     this->sampleRate = newSampleRate;
     this->blockSize = newBlockSize;
