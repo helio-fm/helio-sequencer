@@ -46,8 +46,8 @@
 
 #define MINIMUM_ROLLS_HEIGHT 250
 #define VERTICAL_ROLLS_LAYOUT 1
-#define ROLLS_ANIMATION_START_SPEED 0.35f
-#define MAPS_ANIMATION_START_SPEED 0.25f
+#define ROLLS_ANIMATION_START_SPEED 0.4f
+#define MAPS_ANIMATION_START_SPEED 0.35f
 #define SCROLLER_SHADOW_SIZE 16
 
 //===----------------------------------------------------------------------===//

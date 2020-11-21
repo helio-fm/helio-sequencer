@@ -281,9 +281,9 @@ static float getRectangleDistance(const Rectangle<float> &r1,
 void ProjectMapScroller::timerCallback()
 {
     const auto mb = this->getMapBounds().toFloat();
-    const auto mbLerp = lerpRectangle(this->oldMapBounds, mb, 0.2f);
+    const auto mbLerp = lerpRectangle(this->oldMapBounds, mb, 0.35f);
     const auto ib = this->getIndicatorBounds();
-    const auto ibLerp = lerpRectangle(this->oldAreaBounds, ib, 0.2f);
+    const auto ibLerp = lerpRectangle(this->oldAreaBounds, ib, 0.35f);
     const bool shouldStop = getRectangleDistance(this->oldAreaBounds, ib) < 0.5f;
     const auto targetAreaBounds = shouldStop ? ib : ibLerp;
     const auto targetMapBounds = shouldStop ? mb : mbLerp;

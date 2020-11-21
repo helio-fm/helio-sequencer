@@ -1511,7 +1511,7 @@ void HybridRoll::handleAsyncUpdate()
     if (this->isTimerRunning())
     {
         const int playheadX = this->getPlayheadPositionByBeat(this->lastTransportBeat.get(), double(this->getWidth()));
-        const int newX = playheadX - int(this->playheadOffset.get() * 0.75) -
+        const int newX = playheadX - int(this->playheadOffset.get() * 0.95) -
             (this->viewport.getViewWidth() / 2);
 
         this->viewport.setViewPosition(newX, this->viewport.getViewPositionY());

@@ -30,7 +30,7 @@ public:
         Thread("SmoothZoom"),
         listener(parent)
     {
-        this->startThread(8);
+        this->startThread(9);
     }
 
     ~SmoothZoomController() override
@@ -42,7 +42,7 @@ public:
 
     inline float getInitialZoomSpeed() const noexcept
     {
-        return this->initialZoomSpeed;
+        return SmoothZoomController::initialZoomSpeed;
     }
 
     inline bool isZooming() const noexcept
@@ -58,8 +58,8 @@ public:
 
     void zoomRelative(const Point<float> &from, const Point<float> &zoom) noexcept
     {
-        this->factorX = (this->factorX.get() + zoom.getX()) * this->zoomSmoothFactor;
-        this->factorY = (this->factorY.get() + zoom.getY()) * this->zoomSmoothFactor;
+        this->factorX = (this->factorX.get() + zoom.getX()) * SmoothZoomController::zoomSmoothFactor;
+        this->factorY = (this->factorY.get() + zoom.getY()) * SmoothZoomController::zoomSmoothFactor;
         this->originX = from.getX();
         this->originY = from.getY();
 
@@ -70,7 +70,7 @@ private:
 
     inline bool stillNeedsZoom() const noexcept
     {
-        return juce_hypot(this->factorX.get(), this->factorY.get()) >= this->zoomStopFactor;
+        return juce_hypot(this->factorX.get(), this->factorY.get()) >= SmoothZoomController::zoomStopFactor;
     }
 
     void run() override
@@ -84,11 +84,11 @@ private:
                     return;
                 }
 
-                this->factorX = this->factorX.get() * this->zoomDecayFactor;
-                this->factorY = this->factorY.get() * this->zoomDecayFactor;
+                this->factorX = this->factorX.get() * SmoothZoomController::zoomDecayFactor;
+                this->factorY = this->factorY.get() * SmoothZoomController::zoomDecayFactor;
 
                 this->triggerAsyncUpdate();
-                Thread::sleep(this->timerDelay);
+                Thread::sleep(SmoothZoomController::timerDelay);
             }
 
             this->cancelZoom();
@@ -118,11 +118,11 @@ private:
 
 private:
 
-    const int timerDelay = 8;
-    const float zoomStopFactor = 0.001f;
-    const float zoomDecayFactor = 0.825f;
-    const float zoomSmoothFactor = 0.9f;
-    const float initialZoomSpeed = 0.25f;
+    static constexpr auto timerDelay = 7;
+    static constexpr auto zoomStopFactor = 0.0005f;
+    static constexpr auto zoomDecayFactor = 0.725f;
+    static constexpr auto zoomSmoothFactor = 0.9f;
+    static constexpr auto initialZoomSpeed = 0.35f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SmoothZoomController)
 };

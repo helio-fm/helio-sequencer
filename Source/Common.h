@@ -229,8 +229,8 @@ namespace Globals
         static constexpr auto fadeInShort = 100;
         static constexpr auto fadeOutShort = 125;
 
-        static constexpr auto fadeInLong = 175;
-        static constexpr auto fadeOutLong = 200;
+        static constexpr auto fadeInLong = 150;
+        static constexpr auto fadeOutLong = 175;
     }
 }
 
