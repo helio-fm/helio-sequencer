@@ -969,7 +969,10 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::ZoomEntireClip:
         this->project.setEditableScope(this->activeTrack, this->activeClip, true);
-        this->zoomOutImpulse(0.25f); // A bit of fancy animation
+        this->zoomOutImpulse(0.35f);
+        break;
+    case CommandIDs::SwitchToClipInViewport:
+        this->switchToClipInViewport();
         break;
     case CommandIDs::RenameTrack:
         if (auto *trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveNode()))
@@ -1359,6 +1362,46 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
     this->addNewNoteMode = true;
     activeSequence->insert(Note(activeSequence, draggingRow, draggingColumn,
         this->newNoteLength, this->newNoteVolume), true);
+}
+
+void PianoRoll::switchToClipInViewport() const
+{
+    const auto fullArea = this->viewport.getViewArea();
+    // we'll try to be smart about what clip to switch to,
+    // and favor clips with notes in the centre of the viewport;
+    const auto centreArea = fullArea.reduced(fullArea.getWidth() / 4, fullArea.getHeight() / 4);
+
+    FlatHashMap<Clip, int, ClipHash> visibilityWeights;
+
+    forEachEventComponent(this->patternMap, e)
+    {
+        auto *nc = e.second.get();
+        if (nc->getBounds().intersects(centreArea))
+        {
+            visibilityWeights[nc->getClip()] += 4;
+        }
+        else if (nc->getBounds().intersects(fullArea))
+        {
+            visibilityWeights[nc->getClip()] += 1;
+        }
+    }
+
+    Clip clipToFocus;
+    int maxWeight = 0;
+    for (const auto &it : visibilityWeights)
+    {
+        if (maxWeight < it.second)
+        {
+            maxWeight = it.second;
+            clipToFocus = it.first;
+        }
+    }
+
+    if (clipToFocus.isValid())
+    {
+        //DBG("Switching to " + String(clipToFocus.getId()));
+        this->project.setEditableScope(clipToFocus.getPattern()->getTrack(), clipToFocus, false);
+    }
 }
 
 void PianoRoll::startCuttingEvents(const MouseEvent &e)

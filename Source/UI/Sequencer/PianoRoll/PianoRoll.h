@@ -194,6 +194,7 @@ private:
     void updateChildrenPositions() override;
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
+    void switchToClipInViewport() const;
     void insertNewNoteAt(const MouseEvent &e);
     int getYPositionByKey(int targetKey) const;
 

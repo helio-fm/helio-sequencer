@@ -236,6 +236,7 @@
 
       // Various
       { "command": "DuplicateTrack", "key": "F5" },
+      { "command": "SwitchToClipInViewport", "key": "F3" },
       { "command": "EditCurrentInstrument", "key": "F4" }
     ],
     "keyDown": [
