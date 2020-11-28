@@ -23,7 +23,7 @@ class RendererThread final : private Thread
 {
 public:
 
-    explicit RendererThread(Transport &parentTrasport);
+    explicit RendererThread(Transport &parentTransport);
     ~RendererThread() override;
     
     float getPercentsComplete() const;

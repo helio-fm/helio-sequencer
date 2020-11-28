@@ -18,10 +18,8 @@
 #include "Common.h"
 #include "CommandPaletteChordConstructor.h"
 #include "Scale.h"
-
 #include "PianoRoll.h"
 #include "PianoSequence.h"
-#include "Note.h"
 
 /*
     This tool attempts to parse chord symbols, as described in:
@@ -1370,7 +1368,7 @@ public:
                     outResult.insert(0, inverted);
                     i++;
                 }
-            };
+            }
         }
 
         const bool hasChanges = this->lastResult != outResult;
@@ -1492,16 +1490,16 @@ private:
     void initSuggestions(CommandPaletteActionsProvider::Actions &array,
         const String &firstElement, OtherElements... otherElements)
     {
-        array.add(this->createSuggeation(firstElement));
+        array.add(this->createSuggestion(firstElement));
         this->initSuggestions(array, otherElements...);
     }
 
     void initSuggestions(CommandPaletteActionsProvider::Actions &array, const String &firstElement)
     {
-        array.add(this->createSuggeation(firstElement));
+        array.add(this->createSuggestion(firstElement));
     }
 
-    CommandPaletteAction::Ptr createSuggeation(String text)
+    CommandPaletteAction::Ptr createSuggestion(String text)
     {
         return CommandPaletteAction::action(text, TRANS(I18n::CommandPalette::chordSuggestion), 0.f)->
             unfiltered()->withCallback([this, text](TextEditor &ed)
@@ -1598,7 +1596,6 @@ void CommandPaletteChordConstructor::previewIfNeeded()
             const auto clipKey = this->roll.getActiveClip().getKey();
             const auto clipBeat = this->roll.getActiveClip().getBeat();
             const auto targetBeat = this->roll.getTransport().getSeekBeat() - clipBeat;
-            const auto periodSize = this->roll.getPeriodSize();
 
             int minKey = this->roll.getNumKeys();
             int maxKey = 0;

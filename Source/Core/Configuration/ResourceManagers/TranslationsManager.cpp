@@ -144,11 +144,11 @@ String TranslationsManager::translate(const String &baseLiteral, int64 targetNum
         return baseLiteral.replace(Translations::metaSymbol, String(targetNumber));
     }
 
-    const String expessionToEvaluate =
+    const String expressionToEvaluate =
         this->currentTranslation->pluralEquation.replace(Translations::metaSymbol,
             String(targetNumber > 0 ? targetNumber : -targetNumber));
 
-    const Result result = this->engine->execute(expessionToEvaluate);
+    const Result result = this->engine->execute(expressionToEvaluate);
     if (!result.failed())
     {
         const String pluralForm = this->equationResult;

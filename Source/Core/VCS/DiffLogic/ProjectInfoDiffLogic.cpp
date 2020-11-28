@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "ProjectInfoDiffLogic.h"
-#include "SerializationKeys.h"
 #include "Diff.h"
 
 namespace VCS
@@ -174,12 +173,12 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
     // step 2:
     // resolve new delta types that may be missing in project history state
 
-    bool stateHasTmperaments = false;
+    bool stateHasTemperaments = false;
 
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         const Delta *stateDelta = initialState.getDelta(i);
-        stateHasTmperaments = stateHasTmperaments || stateDelta->hasType(ProjectInfoDeltas::projectTemperament);
+        stateHasTemperaments = stateHasTemperaments || stateDelta->hasType(ProjectInfoDeltas::projectTemperament);
     }
 
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
@@ -195,8 +194,8 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
             const Delta *targetDelta = this->target.getDelta(j);
             const auto targetDeltaData(this->target.getDeltaData(j));
 
-            const bool foundMissingTemperament = !stateHasTmperaments &&
-                targetDelta->hasType(ProjectInfoDeltas::projectTemperament);
+            const bool foundMissingTemperament = !stateHasTemperaments &&
+				targetDelta->hasType(ProjectInfoDeltas::projectTemperament);
 
             if (foundMissingTemperament)
             {

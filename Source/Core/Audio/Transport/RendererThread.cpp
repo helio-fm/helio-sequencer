@@ -17,13 +17,12 @@
 
 #include "Common.h"
 #include "RendererThread.h"
-#include "Instrument.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 
-RendererThread::RendererThread(Transport &parentTrasport) :
+RendererThread::RendererThread(Transport &parentTransport) :
     Thread("RendererThread"),
-    transport(parentTrasport) {}
+    transport(parentTransport) {}
 
 RendererThread::~RendererThread()
 {
@@ -258,11 +257,11 @@ void RendererThread::run()
         // step 3d. write resulting buffer to disk.
         {
             const ScopedLock lock(this->writerLock);
-            bool writedSuccessfullty = false;
+            bool writtenSuccessfully = false;
             
-            while (! writedSuccessfullty)
+            while (! writtenSuccessfully)
             {
-                writedSuccessfullty =
+                writtenSuccessfully =
                     this->writer->writeFromAudioSampleBuffer(mixingBuffer, 0, mixingBuffer.getNumSamples());
             }
         }
