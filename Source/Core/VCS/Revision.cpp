@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "Revision.h"
-#include "SerializationKeys.h"
 
 namespace VCS
 {

@@ -23,14 +23,12 @@
 #include "MidiTrack.h"
 #include "PianoTrackNode.h"
 #include "PianoSequence.h"
-#include "Transport.h"
 
 #include "PatternRoll.h"
 #include "SequencerOperations.h"
 #include "PianoTrackActions.h"
 #include "UndoStack.h"
 
-#include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "ColourIDs.h"

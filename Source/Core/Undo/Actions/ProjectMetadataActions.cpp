@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "ProjectMetadataActions.h"
-#include "SerializationKeys.h"
 
 //===----------------------------------------------------------------------===//
 // Change Temperament

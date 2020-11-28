@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "ScalesManager.h"
-#include "Arpeggiator.h"
 #include "SerializationKeys.h"
 
 ScalesManager::ScalesManager() :

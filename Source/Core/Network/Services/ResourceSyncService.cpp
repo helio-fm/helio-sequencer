@@ -18,8 +18,6 @@
 #include "Common.h"
 #include "ResourceSyncService.h"
 #include "Workspace.h"
-#include "MainLayout.h"
-#include "UserProfile.h"
 
 // Try to update resources and versions info after:
 #if DEBUG

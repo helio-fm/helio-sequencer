@@ -24,7 +24,6 @@
 //[MiscUserDefs]
 #include "SettingsListItemHighlighter.h"
 #include "ResourceSyncService.h"
-#include "Network.h"
 //[/MiscUserDefs]
 
 SyncSettingsItem::SyncSettingsItem(ListBox &parentListBox)

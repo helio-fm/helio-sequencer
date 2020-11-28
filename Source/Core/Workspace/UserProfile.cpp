@@ -18,11 +18,8 @@
 #include "Common.h"
 #include "UserProfile.h"
 #include "SessionService.h"
-#include "SerializationKeys.h"
 #include "ProjectSyncService.h"
 #include "ResourceSyncService.h"
-#include "Network.h"
-#include "Config.h"
 
 static UserSessionInfo kSessionsSort;
 static RecentProjectInfo kProjectsSort;

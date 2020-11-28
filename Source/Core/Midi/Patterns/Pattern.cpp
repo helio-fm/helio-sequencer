@@ -19,7 +19,6 @@
 #include "Pattern.h"
 #include "PatternActions.h"
 #include "ProjectNode.h"
-#include "ProjectEventDispatcher.h"
 #include "UndoStack.h"
 #include "SerializationKeys.h"
 #include "MidiTrack.h"

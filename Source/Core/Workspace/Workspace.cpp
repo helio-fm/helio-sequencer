@@ -18,16 +18,13 @@
 #include "Common.h"
 #include "Workspace.h"
 #include "Config.h"
-#include "SerializationKeys.h"
 #include "DocumentHelpers.h"
 #include "AudioCore.h"
-#include "AudioMonitor.h"
 #include "RootNode.h"
 #include "PluginScanner.h"
 #include "SettingsNode.h"
 #include "OrchestraPitNode.h"
 #include "ProjectNode.h"
-#include "Dashboard.h"
 #include "CommandPaletteProjectsList.h"
 
 Workspace::Workspace() {}

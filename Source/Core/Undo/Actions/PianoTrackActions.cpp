@@ -19,7 +19,6 @@
 #include "PianoTrackActions.h"
 #include "MidiTrackSource.h"
 #include "PianoTrackNode.h"
-#include "SerializationKeys.h"
 
 //===----------------------------------------------------------------------===//
 // Insert

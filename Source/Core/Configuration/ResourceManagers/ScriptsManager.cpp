@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "ScriptsManager.h"
-#include "Script.h"
 #include "SerializationKeys.h"
 
 ScriptsManager::ScriptsManager() :

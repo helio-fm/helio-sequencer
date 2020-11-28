@@ -18,8 +18,6 @@
 #include "Common.h"
 
 #include "PlayerThread.h"
-#include "Instrument.h"
-#include "MidiSequence.h"
 
 #define MINIMUM_STOP_CHECK_TIME_MS 1000
 
@@ -209,7 +207,7 @@ void PlayerThread::run()
         const bool shouldRewind =
             (isLooped && (messageBeat > this->context->endBeat));
 
-        const float nextEventBeat =
+        const auto nextEventBeat =
             float(shouldRewind ? this->context->endBeat : messageBeat);
 
         nextEventTimeDelta = currentTempo.get() * (nextEventBeat - previousEventBeat.get());

@@ -20,7 +20,6 @@
 #include "AudioCore.h"
 #include "DocumentHelpers.h"
 #include "XmlSerializer.h"
-#include "App.h"
 #include "Config.h"
 #include "MainLayout.h"
 #include "SerializationKeys.h"

@@ -34,11 +34,7 @@
 #include "BinarySerializer.h"
 
 #include "AudioCore.h"
-#include "PlayerThread.h"
 #include "Pattern.h"
-#include "MidiTrack.h"
-#include "MidiEvent.h"
-#include "TrackedItem.h"
 #include "HybridRoll.h"
 #include "UndoStack.h"
 #include "MidiRecorder.h"
@@ -46,21 +42,15 @@
 
 #include "ProjectMetadata.h"
 #include "ProjectTimeline.h"
-#include "ProjectListener.h"
 #include "ProjectPage.h"
 #include "ProjectMenu.h"
-
 #include "CommandPaletteTimelineEvents.h"
 
-#include "HelioTheme.h"
 #include "SequencerLayout.h"
 #include "MainLayout.h"
 #include "Workspace.h"
-
-#include "SerializationKeys.h"
 #include "ColourIDs.h"
 #include "Config.h"
-#include "Icons.h"
 
 ProjectNode::ProjectNode() :
     DocumentOwner({}, "helio"),

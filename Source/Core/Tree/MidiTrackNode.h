@@ -26,7 +26,6 @@
 class Pattern;
 class MidiSequence;
 class ProjectNode;
-class InstrumentDescription;
 
 class MidiTrackNode :
     public TreeNode,

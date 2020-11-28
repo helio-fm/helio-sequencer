@@ -17,8 +17,6 @@
 
 #include "Common.h"
 #include "RevisionsSyncThread.h"
-#include "SerializationKeys.h"
-#include "RevisionDto.h"
 #include "ProjectDto.h"
 #include "RevisionsSyncHelpers.h"
 #include "Workspace.h"

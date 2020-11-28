@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "BackendRequest.h"
 #include "Workspace.h"
-#include "UserProfile.h"
 #include "Network.h"
 
 // Let OS set the default timeout:

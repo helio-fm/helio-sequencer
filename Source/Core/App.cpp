@@ -16,11 +16,9 @@
 */
 
 #include "Common.h"
-#include "App.h"
 #include "AudioCore.h"
 #include "Network.h"
 #include "HelioTheme.h"
-#include "PluginScanner.h"
 #include "Config.h"
 #include "Icons.h"
 

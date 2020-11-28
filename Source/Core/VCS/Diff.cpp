@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "Diff.h"
-#include "DiffLogic.h"
 
 namespace VCS
 {

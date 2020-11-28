@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "ArpeggiatorsManager.h"
-#include "Arpeggiator.h"
 #include "SerializationKeys.h"
 
 ArpeggiatorsManager::ArpeggiatorsManager() :

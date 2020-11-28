@@ -25,7 +25,6 @@ class HybridRoll;
 class MidiEvent;
 class ProjectPage;
 class Origami;
-class TrackMap;
 class MidiRecorder;
 class ProjectMetadata;
 class ProjectTimeline;

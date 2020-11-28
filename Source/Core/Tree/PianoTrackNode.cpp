@@ -22,13 +22,7 @@
 #include "TreeNodeSerializer.h"
 #include "Icons.h"
 #include "Pattern.h"
-
 #include "MainLayout.h"
-#include "Instrument.h"
-#include "OrchestraPit.h"
-
-#include "Delta.h"
-#include "PianoTrackDiffLogic.h"
 
 PianoTrackNode::PianoTrackNode(const String &name) :
     MidiTrackNode(name, Serialization::Core::pianoTrack)

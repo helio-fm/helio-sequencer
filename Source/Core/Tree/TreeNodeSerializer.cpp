@@ -23,7 +23,6 @@
 #include "PianoTrackNode.h"
 #include "AutomationTrackNode.h"
 #include "OrchestraPitNode.h"
-#include "InstrumentNode.h"
 #include "VersionControlNode.h"
 #include "PatternEditorNode.h"
 #include "SettingsNode.h"

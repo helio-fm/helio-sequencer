@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "ProjectMetadata.h"
 #include "ProjectNode.h"
-#include "Delta.h"
 
 ProjectMetadata::ProjectMetadata(ProjectNode &parent) : project(parent)
 {

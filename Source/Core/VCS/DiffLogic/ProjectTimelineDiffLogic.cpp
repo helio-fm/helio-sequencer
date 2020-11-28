@@ -21,7 +21,6 @@
 #include "AnnotationsSequence.h"
 #include "TimeSignaturesSequence.h"
 #include "KeySignaturesSequence.h"
-#include "SerializationKeys.h"
 
 // TODO refactor, lots of duplicated code
 namespace VCS

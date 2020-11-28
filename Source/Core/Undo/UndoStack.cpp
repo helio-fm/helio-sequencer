@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "UndoStack.h"
-#include "UndoAction.h"
 #include "SerializationKeys.h"
 #include "ProjectNode.h"
 

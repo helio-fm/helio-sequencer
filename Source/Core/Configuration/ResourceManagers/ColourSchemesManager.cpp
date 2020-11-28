@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "ColourSchemesManager.h"
-#include "Arpeggiator.h"
 #include "SerializationKeys.h"
 #include "Config.h"
 

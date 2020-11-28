@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "HotkeySchemesManager.h"
-#include "Arpeggiator.h"
 #include "SerializationKeys.h"
 #include "Config.h"
 

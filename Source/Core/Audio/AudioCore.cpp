@@ -20,7 +20,6 @@
 #include "InternalPluginFormat.h"
 #include "BuiltInSynthFormat.h"
 #include "BuiltInSynthAudioPlugin.h"
-#include "Instrument.h"
 #include "SerializationKeys.h"
 #include "AudioMonitor.h"
 

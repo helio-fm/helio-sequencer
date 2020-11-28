@@ -17,8 +17,6 @@
 
 #include "Common.h"
 #include "Head.h"
-#include "TrackedItemsSource.h"
-#include "TrackedItem.h"
 #include "Diff.h"
 
 namespace VCS

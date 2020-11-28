@@ -27,14 +27,12 @@
 #include "PianoTrackNode.h"
 
 #include "Pattern.h"
-#include "PianoSequence.h"
 #include "ProjectMetadata.h"
 #include "WorkspaceMenu.h"
 #include "JsonSerializer.h"
 
 #include "MainLayout.h"
 #include "Workspace.h"
-#include "Icons.h"
 
 RootNode::RootNode(const String &name) :
     TreeNode(name, Serialization::Core::root) {}

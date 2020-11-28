@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "RevisionItem.h"
-#include "DiffLogic.h"
 
 namespace VCS
 {

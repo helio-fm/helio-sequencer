@@ -18,9 +18,7 @@
 #include "Common.h"
 #include "CommandPaletteCommonActions.h"
 #include "HotkeySchemesManager.h"
-#include "HotkeyScheme.h"
 #include "MainLayout.h"
-#include "CommandIDs.h"
 #include "Config.h"
 
 CommandPaletteCommonActions::CommandPaletteCommonActions()

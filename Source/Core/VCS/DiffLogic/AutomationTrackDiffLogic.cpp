@@ -21,7 +21,6 @@
 #include "PatternDiffHelpers.h"
 #include "AutomationEvent.h"
 #include "AutomationSequence.h"
-#include "SerializationKeys.h"
 
 namespace VCS
 {

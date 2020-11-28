@@ -19,7 +19,6 @@
 #include "PianoSequence.h"
 
 #include "PianoRoll.h"
-#include "Note.h"
 #include "NoteActions.h"
 #include "SerializationKeys.h"
 #include "UndoStack.h"

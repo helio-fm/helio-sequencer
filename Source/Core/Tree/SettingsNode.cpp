@@ -32,7 +32,6 @@
 #include "SettingsPage.h"
 #include "MainLayout.h"
 #include "Workspace.h"
-#include "Icons.h"
 
 SettingsNode::SettingsNode() :
     TreeNode("Settings", Serialization::Core::settings)

@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "TimeSignaturesSequence.h"
-#include "Note.h"
 #include "TimeSignatureEventActions.h"
 #include "SerializationKeys.h"
 #include "ProjectNode.h"

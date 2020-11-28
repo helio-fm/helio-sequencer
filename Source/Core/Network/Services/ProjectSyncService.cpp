@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "ProjectSyncService.h"
-#include "ResourceManager.h"
 #include "Config.h"
 #include "Workspace.h"
 #include "MainLayout.h"

@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "Arpeggiator.h"
-#include "Note.h"
 #include "SequencerOperations.h"
 #include "SerializationKeys.h"
 

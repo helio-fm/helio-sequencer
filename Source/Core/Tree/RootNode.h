@@ -24,7 +24,6 @@ class ProjectNode;
 class VersionControlNode;
 class TrackGroupNode;
 class MidiTrackNode;
-class ScriptTreeItem;
 
 class RootNode final : public TreeNode
 {

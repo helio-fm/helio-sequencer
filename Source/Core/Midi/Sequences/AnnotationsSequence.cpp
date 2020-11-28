@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "AnnotationsSequence.h"
-#include "Note.h"
 #include "AnnotationEventActions.h"
 #include "SerializationKeys.h"
 #include "ProjectNode.h"

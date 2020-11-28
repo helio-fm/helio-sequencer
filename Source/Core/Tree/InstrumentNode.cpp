@@ -32,8 +32,6 @@
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "AudioCore.h"
-#include "SerializationKeys.h"
-#include "Icons.h"
 
 InstrumentNode::InstrumentNode(Instrument *targetInstrument) :
     TreeNode({}, Serialization::Core::instrumentRoot),

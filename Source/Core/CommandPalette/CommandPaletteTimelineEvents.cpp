@@ -17,17 +17,13 @@
 
 #include "Common.h"
 #include "CommandPaletteTimelineEvents.h"
-
 #include "Transport.h"
-#include "ProjectTimeline.h"
 #include "ProjectMetadata.h"
 #include "HybridRoll.h"
 #include "AnnotationEvent.h"
 #include "TimeSignatureEvent.h"
 #include "KeySignatureEvent.h"
-#include "PianoTrackNode.h"
 #include "Pattern.h"
-#include "Clip.h"
 
 CommandPaletteTimelineEvents::CommandPaletteTimelineEvents(ProjectNode &project) :
     project(project)

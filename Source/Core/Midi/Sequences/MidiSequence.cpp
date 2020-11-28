@@ -17,10 +17,8 @@
 
 #include "Common.h"
 #include "MidiSequence.h"
-#include "ProjectEventDispatcher.h"
 #include "ProjectNode.h"
 #include "ProjectMetadata.h"
-#include "Temperament.h"
 #include "UndoStack.h"
 #include "MidiTrack.h"
 

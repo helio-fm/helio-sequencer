@@ -21,13 +21,9 @@
 
 #include "ProjectNode.h"
 #include "MainLayout.h"
-#include "AudioCore.h"
 
 #include "Pattern.h"
-#include "PianoSequence.h"
 #include "PianoRoll.h"
-#include "Note.h"
-#include "InstrumentNode.h"
 #include "MidiTrackMenu.h"
 
 #include "UndoStack.h"

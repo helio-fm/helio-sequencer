@@ -21,7 +21,6 @@
 #include "PatternDiffHelpers.h"
 #include "Note.h"
 #include "PianoSequence.h"
-#include "SerializationKeys.h"
 
 namespace VCS
 {

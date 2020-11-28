@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "OrchestraPitNode.h"
 
-#include "InstrumentNode.h"
 #include "Instrument.h"
 #include "MainLayout.h"
 #include "Icons.h"
