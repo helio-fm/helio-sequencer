@@ -120,8 +120,6 @@ public:
 
 protected:
 
-    void clearQuick();
-
     float lastEndBeat = 0.f;
     float lastStartBeat = 0.f;
 

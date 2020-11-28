@@ -51,13 +51,3 @@ protected:
     virtual MidiSequence *getSequenceByTrackId(const String &trackId) = 0;
 
 };
-
-class EmptyMidiTrackSource : public MidiTrackSource
-{
-protected:
-
-    MidiTrack *getTrackById(const String &trackId) override { return nullptr; };
-    Pattern *getPatternByTrackId(const String &trackId) override { return nullptr; };
-    MidiSequence *getSequenceByTrackId(const String &trackId) override { return nullptr; };
-
-};

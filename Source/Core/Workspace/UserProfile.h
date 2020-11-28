@@ -85,7 +85,6 @@ private:
 
     RecentProjectInfo *findProject(const String &id) const;
     UserSessionInfo *findSession(const String &deviceId) const;
-    SyncedConfigurationInfo *findResource(const Identifier &type, const String &name) const;
 
     Image avatar;
     String avatarThumbnail;

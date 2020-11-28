@@ -46,8 +46,6 @@ namespace VCS
 
     private:
 
-        void updateFetchCache(const String &revisionId, Time syncedAt);
-
         ReadWriteLock cacheLock;
         FlatHashMap<String, int64, StringHash> fetchCache;
         Time lastSyncTime;

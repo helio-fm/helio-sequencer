@@ -234,9 +234,6 @@ VCS::DiffLogic *ProjectTimeline::getDiffLogic() const
 void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
 {
     using namespace Serialization::VCS;
-    bool annotationsChanged = false;
-    bool timeSignaturesChanged = false;
-    bool keySignaturesChanged = false;
 
     for (int i = 0; i < newState.getNumDeltas(); ++i)
     {
@@ -246,17 +243,14 @@ void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
         if (newDelta->hasType(ProjectTimelineDeltas::annotationsAdded))
         {
             this->resetAnnotationsDelta(newDeltaData);
-            annotationsChanged = true;
         }
         else if (newDelta->hasType(ProjectTimelineDeltas::timeSignaturesAdded))
         {
             this->resetTimeSignaturesDelta(newDeltaData);
-            timeSignaturesChanged = true;
         }
         else if (newDelta->hasType(ProjectTimelineDeltas::keySignaturesAdded))
         {
             this->resetKeySignaturesDelta(newDeltaData);
-            keySignaturesChanged = true;
         }
     }
 }

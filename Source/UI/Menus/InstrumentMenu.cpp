@@ -75,10 +75,6 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
             App::showModalComponent(move(dialog));
         }));
 
-    // TODO:
-    //menu.add(MenuItem::item(Icons::icon, TRANS(I18n::Menu::instrument::seticon)));
-    //menu.add(MenuItem::item(Icons::colour, TRANS(I18n::Menu::instrument::setcolour)));
-
     menu.add(MenuItem::item(Icons::instrument,
         TRANS(I18n::Menu::instrumentAdd))->
         withSubmenu()->

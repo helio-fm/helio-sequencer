@@ -23,8 +23,6 @@ public:
 
     SerializablePluginDescription();
     explicit SerializablePluginDescription(const PluginDescription &other);
-    explicit SerializablePluginDescription(const PluginDescription *other);
-
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;

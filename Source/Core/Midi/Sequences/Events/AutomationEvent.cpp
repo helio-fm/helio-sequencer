@@ -36,11 +36,6 @@ AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner,
     controllerValue(parametersToCopy.controllerValue),
     curvature(parametersToCopy.curvature) {}
 
-float linearTween(float delta, float factor)
-{
-    return delta * factor;
-};
-
 float easeInExpo(float delta, float factor)
 {
     return delta * powf(2.f, 8.f * (factor - 1.f));
