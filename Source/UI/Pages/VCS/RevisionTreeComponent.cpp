@@ -138,7 +138,7 @@ RevisionComponent *RevisionTreeComponent::initComponents(int depth,
 
     this->addAndMakeVisible(revisionComponent);
 
-    for (const auto *childRevision : revision->getChildren())
+    for (const auto childRevision : revision->getChildren())
     {
         auto *childComponent = this->initComponents(depth + 1, childRevision, revisionComponent);
         revisionComponent->children.add(childComponent);

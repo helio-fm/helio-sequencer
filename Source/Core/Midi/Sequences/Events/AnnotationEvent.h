@@ -48,7 +48,7 @@ public:
     //===------------------------------------------------------------------===//
 
     String getDescription() const noexcept;
-    Colour getTrackColour() const noexcept;
+    Colour getColour() const noexcept;
     float getLength() const noexcept;
 
     //===------------------------------------------------------------------===//

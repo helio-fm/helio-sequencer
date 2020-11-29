@@ -18,8 +18,10 @@
 #include "Common.h"
 #include "CommandPaletteTimelineEvents.h"
 #include "Transport.h"
-#include "ProjectMetadata.h"
 #include "HybridRoll.h"
+#include "PianoTrackNode.h"
+#include "ProjectMetadata.h"
+#include "ProjectTimeline.h"
 #include "AnnotationEvent.h"
 #include "TimeSignatureEvent.h"
 #include "KeySignatureEvent.h"
@@ -75,7 +77,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
 
             this->annotationActionsCache.add(CommandPaletteAction::action(annotation->getDescription(),
                 Transport::getTimeString(startTimeMs), float(startTimeMs))->
-                withColour(annotation->getTrackColour())->
+                withColour(annotation->getColour())->
                 withCallback(action));
         }
 

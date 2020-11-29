@@ -39,7 +39,7 @@ void AnnotationLargeComponent::paint(Graphics &g)
 {
     const Colour baseColour(findDefaultColour(Label::textColourId));
 
-    g.setColour(this->event.getTrackColour()
+    g.setColour(this->event.getColour()
         .interpolatedWith(baseColour, 0.5f).withAlpha(0.65f));
 
     g.fillRect(1.f, 0.f, float(this->getWidth() - 1), 3.f);
@@ -47,7 +47,7 @@ void AnnotationLargeComponent::paint(Graphics &g)
     if (this->event.getDescription().isNotEmpty())
     {
         const Font labelFont(16.f, Font::plain);
-        g.setColour(this->event.getTrackColour().interpolatedWith(baseColour, 0.55f).withAlpha(0.9f));
+        g.setColour(this->event.getColour().interpolatedWith(baseColour, 0.55f).withAlpha(0.9f));
 
         GlyphArrangement arr;
         arr.addFittedText(labelFont,

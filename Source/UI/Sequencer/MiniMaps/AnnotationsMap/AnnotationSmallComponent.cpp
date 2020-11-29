@@ -42,7 +42,7 @@ AnnotationSmallComponent::~AnnotationSmallComponent() {}
 void AnnotationSmallComponent::paint(Graphics &g)
 {
     const Colour baseColour(findDefaultColour(Label::textColourId));
-    g.setColour(this->event.getTrackColour().interpolatedWith(baseColour, 0.55f).withAlpha(0.2f));
+    g.setColour(this->event.getColour().interpolatedWith(baseColour, 0.55f).withAlpha(0.2f));
     g.fillRect(0, this->getHeight() - 2, this->getWidth() - 4, 2);
 }
 
@@ -71,9 +71,9 @@ void AnnotationSmallComponent::setRealBounds(const Rectangle<float> bounds)
 void AnnotationSmallComponent::updateContent()
 {
     if (this->annotationLabel->getText() != this->event.getDescription() ||
-        this->lastColour != this->event.getTrackColour())
+        this->lastColour != this->event.getColour())
     {
-        this->lastColour = this->event.getTrackColour();
+        this->lastColour = this->event.getColour();
         this->annotationLabel->setText(this->event.getDescription(), dontSendNotification);
         const auto fgColour = findDefaultColour(Label::textColourId);
         this->annotationLabel->setColour(Label::textColourId, this->lastColour.interpolatedWith(fgColour, 0.55f));

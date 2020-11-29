@@ -127,7 +127,7 @@ AnnotationDialog::AnnotationDialog(Component &owner,
         this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
     }
 
-    this->colourSwatches->setSelectedColour(this->originalEvent.getTrackColour());
+    this->colourSwatches->setSelectedColour(this->originalEvent.getColour());
 
     this->textEditor->addListener(this);
     this->textEditor->setFont(21.f);
