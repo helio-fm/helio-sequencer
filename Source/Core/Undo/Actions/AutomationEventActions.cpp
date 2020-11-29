@@ -176,21 +176,16 @@ int AutomationEventChangeAction::getSizeInUnits()
 
 UndoAction *AutomationEventChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (AutomationSequence *sequence =
-        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
+    if (auto *nextChanger = dynamic_cast<AutomationEventChangeAction *>(nextAction))
     {
-        if (AutomationEventChangeAction *nextChanger =
-            dynamic_cast<AutomationEventChangeAction *>(nextAction))
+        const bool idsAreEqual =
+            (this->eventBefore.getId() == nextChanger->eventAfter.getId() &&
+                this->trackId == nextChanger->trackId);
+
+        if (idsAreEqual)
         {
-            const bool idsAreEqual = 
-                (this->eventBefore.getId() == nextChanger->eventAfter.getId() &&
-                    this->trackId == nextChanger->trackId);
-            
-            if (idsAreEqual)
-            {
-                return new AutomationEventChangeAction(this->source,
-                    this->trackId, this->eventBefore, nextChanger->eventAfter);
-            }
+            return new AutomationEventChangeAction(this->source,
+                this->trackId, this->eventBefore, nextChanger->eventAfter);
         }
     }
 
@@ -418,27 +413,22 @@ int AutomationEventsGroupChangeAction::getSizeInUnits()
 
 UndoAction *AutomationEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (AutomationSequence *sequence =
-        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
+    if (auto *nextChanger = dynamic_cast<AutomationEventsGroupChangeAction *>(nextAction))
     {
-        if (AutomationEventsGroupChangeAction *nextChanger =
-            dynamic_cast<AutomationEventsGroupChangeAction *>(nextAction))
+        if (nextChanger->trackId != this->trackId)
         {
-            if (nextChanger->trackId != this->trackId)
-            {
-                return nullptr;
-            }
-            
-            // это явно неполная проверка, но ее будет достаточно
-            bool arraysContainSameNotes =
-                (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
-                (this->eventsBefore[0].getId() == nextChanger->eventsAfter[0].getId());
-            
-            if (arraysContainSameNotes)
-            {
-                return new AutomationEventsGroupChangeAction(this->source,
-                    this->trackId, this->eventsBefore, nextChanger->eventsAfter);
-            }
+            return nullptr;
+        }
+
+        // это явно неполная проверка, но ее будет достаточно
+        bool arraysContainSameNotes =
+            (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
+            (this->eventsBefore[0].getId() == nextChanger->eventsAfter[0].getId());
+
+        if (arraysContainSameNotes)
+        {
+            return new AutomationEventsGroupChangeAction(this->source,
+                this->trackId, this->eventsBefore, nextChanger->eventsAfter);
         }
     }
 

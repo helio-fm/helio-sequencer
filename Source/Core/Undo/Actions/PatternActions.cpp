@@ -172,20 +172,16 @@ int ClipChangeAction::getSizeInUnits()
 
 UndoAction *ClipChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto *nextChanger = dynamic_cast<ClipChangeAction *>(nextAction))
     {
-        if (ClipChangeAction *nextChanger =
-            dynamic_cast<ClipChangeAction *>(nextAction))
-        {
-            const bool idsAreEqual =
-                (this->clipBefore.getId() == nextChanger->clipAfter.getId() &&
-                this->trackId == nextChanger->trackId);
+        const bool idsAreEqual =
+            (this->clipBefore.getId() == nextChanger->clipAfter.getId() &&
+            this->trackId == nextChanger->trackId);
 
-            if (idsAreEqual)
-            {
-                return new ClipChangeAction(this->source,
-                    this->trackId, this->clipBefore, nextChanger->clipAfter);
-            }
+        if (idsAreEqual)
+        {
+            return new ClipChangeAction(this->source,
+                this->trackId, this->clipBefore, nextChanger->clipAfter);
         }
     }
 
@@ -406,32 +402,29 @@ int ClipsGroupChangeAction::getSizeInUnits()
 
 UndoAction *ClipsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto nextChanger = dynamic_cast<ClipsGroupChangeAction *>(nextAction))
     {
-        if (auto nextChanger = dynamic_cast<ClipsGroupChangeAction *>(nextAction))
+        if (nextChanger->trackId != this->trackId)
         {
-            if (nextChanger->trackId != this->trackId)
-            {
-                return nullptr;
-            }
-
-            if (this->clipsBefore.size() != nextChanger->clipsAfter.size())
-            {
-                return nullptr;
-            }
-
-            for (int i = 0; i < this->clipsBefore.size(); ++i)
-            {
-                if (this->clipsBefore.getUnchecked(i).getId() !=
-                    nextChanger->clipsAfter.getUnchecked(i).getId())
-                {
-                    return nullptr;
-                }
-            }
-
-            return new ClipsGroupChangeAction(this->source,
-                this->trackId, this->clipsBefore, nextChanger->clipsAfter);
+            return nullptr;
         }
+
+        if (this->clipsBefore.size() != nextChanger->clipsAfter.size())
+        {
+            return nullptr;
+        }
+
+        for (int i = 0; i < this->clipsBefore.size(); ++i)
+        {
+            if (this->clipsBefore.getUnchecked(i).getId() !=
+                nextChanger->clipsAfter.getUnchecked(i).getId())
+            {
+                return nullptr;
+            }
+        }
+
+        return new ClipsGroupChangeAction(this->source,
+            this->trackId, this->clipsBefore, nextChanger->clipsAfter);
     }
 
     (void)nextAction;

@@ -176,21 +176,16 @@ int TimeSignatureEventChangeAction::getSizeInUnits()
 
 UndoAction *TimeSignatureEventChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+    if (auto *nextChanger = dynamic_cast<TimeSignatureEventChangeAction *>(nextAction))
     {
-        if (TimeSignatureEventChangeAction *nextChanger =
-            dynamic_cast<TimeSignatureEventChangeAction *>(nextAction))
+        const bool idsAreEqual =
+            (this->eventBefore.getId() == nextChanger->eventAfter.getId() &&
+                this->trackId == nextChanger->trackId);
+
+        if (idsAreEqual)
         {
-            const bool idsAreEqual = 
-                (this->eventBefore.getId() == nextChanger->eventAfter.getId() &&
-                    this->trackId == nextChanger->trackId);
-            
-            if (idsAreEqual)
-            {
-                return new TimeSignatureEventChangeAction(this->source,
-                    this->trackId, this->eventBefore, nextChanger->eventAfter);
-            }
+            return new TimeSignatureEventChangeAction(this->source,
+                this->trackId, this->eventBefore, nextChanger->eventAfter);
         }
     }
 
@@ -418,26 +413,21 @@ int TimeSignatureEventsGroupChangeAction::getSizeInUnits()
 
 UndoAction *TimeSignatureEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+    if (auto *nextChanger = dynamic_cast<TimeSignatureEventsGroupChangeAction *>(nextAction))
     {
-        if (TimeSignatureEventsGroupChangeAction *nextChanger =
-            dynamic_cast<TimeSignatureEventsGroupChangeAction *>(nextAction))
+        if (nextChanger->trackId != this->trackId)
         {
-            if (nextChanger->trackId != this->trackId)
-            {
-                return nullptr;
-            }
-            
-            bool arraysContainSameEvents =
-                (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
-                (this->eventsBefore[0].getId() == nextChanger->eventsAfter[0].getId());
-            
-            if (arraysContainSameEvents)
-            {
-                return new TimeSignatureEventsGroupChangeAction(this->source,
-                    this->trackId, this->eventsBefore, nextChanger->eventsAfter);
-            }
+            return nullptr;
+        }
+
+        bool arraysContainSameEvents =
+            (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
+            (this->eventsBefore[0].getId() == nextChanger->eventsAfter[0].getId());
+
+        if (arraysContainSameEvents)
+        {
+            return new TimeSignatureEventsGroupChangeAction(this->source,
+                this->trackId, this->eventsBefore, nextChanger->eventsAfter);
         }
     }
 

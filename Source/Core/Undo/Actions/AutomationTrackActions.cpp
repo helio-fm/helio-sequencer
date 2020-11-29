@@ -19,7 +19,6 @@
 #include "AutomationTrackActions.h"
 #include "MidiTrackSource.h"
 #include "AutomationTrackNode.h"
-#include "SerializationKeys.h"
 
 //===----------------------------------------------------------------------===//
 // Insert

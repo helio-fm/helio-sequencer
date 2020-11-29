@@ -176,21 +176,16 @@ int AnnotationEventChangeAction::getSizeInUnits()
 
 UndoAction *AnnotationEventChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+    if (auto *nextChanger = dynamic_cast<AnnotationEventChangeAction *>(nextAction))
     {
-        if (AnnotationEventChangeAction *nextChanger =
-            dynamic_cast<AnnotationEventChangeAction *>(nextAction))
+        const bool idsAreEqual =
+            (this->eventBefore.getId() == nextChanger->eventAfter.getId() &&
+                this->trackId == nextChanger->trackId);
+
+        if (idsAreEqual)
         {
-            const bool idsAreEqual =
-                (this->eventBefore.getId() == nextChanger->eventAfter.getId() &&
-                    this->trackId == nextChanger->trackId);
-            
-            if (idsAreEqual)
-            {
-                return new AnnotationEventChangeAction(this->source,
-                    this->trackId, this->eventBefore, nextChanger->eventAfter);
-            }
+            return new AnnotationEventChangeAction(this->source,
+                this->trackId, this->eventBefore, nextChanger->eventAfter);
         }
     }
 
@@ -418,27 +413,22 @@ int AnnotationEventsGroupChangeAction::getSizeInUnits()
 
 UndoAction *AnnotationEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+    if (auto *nextChanger = dynamic_cast<AnnotationEventsGroupChangeAction *>(nextAction))
     {
-        if (AnnotationEventsGroupChangeAction *nextChanger =
-            dynamic_cast<AnnotationEventsGroupChangeAction *>(nextAction))
+        if (nextChanger->trackId != this->trackId)
         {
-            if (nextChanger->trackId != this->trackId)
-            {
-                return nullptr;
-            }
-            
-            // simple checking the first and the last ones should be enough here
-            bool arraysContainSameEvents =
-                (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
-                (this->eventsBefore[0].getId() == nextChanger->eventsAfter[0].getId());
-            
-            if (arraysContainSameEvents)
-            {
-                return new AnnotationEventsGroupChangeAction(this->source,
-                    this->trackId, this->eventsBefore, nextChanger->eventsAfter);
-            }
+            return nullptr;
+        }
+
+        // simple checking the first and the last ones should be enough here
+        bool arraysContainSameEvents =
+            (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
+            (this->eventsBefore[0].getId() == nextChanger->eventsAfter[0].getId());
+
+        if (arraysContainSameEvents)
+        {
+            return new AnnotationEventsGroupChangeAction(this->source,
+                this->trackId, this->eventsBefore, nextChanger->eventsAfter);
         }
     }
 
