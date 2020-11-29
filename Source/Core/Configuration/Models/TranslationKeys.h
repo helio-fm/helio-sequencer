@@ -183,7 +183,6 @@ namespace I18n
             static const Identifier vcsSelectAll = "menu::selection::vcs::selectall";
             static const Identifier vcsSelectNone = "menu::selection::vcs::selectnone";
             static const Identifier vcsStage = "menu::selection::vcs::stage";
-            static const Identifier vcsStash = "menu::selection::vcs::stash";
         }
 
         static const Identifier timeSignatureAdd = "menu::timesignature::add";
@@ -221,7 +220,6 @@ namespace I18n
 
         static const Identifier vcsCommitAll = "menu::vcs::commitall";
         static const Identifier vcsResetAll = "menu::vcs::resetall";
-        static const Identifier vcsStash = "menu::vcs::stash";
         static const Identifier vcsSyncAll = "menu::vcs::syncall";
         static const Identifier workspaceProjectCreate = "menu::workspace::project::create";
         static const Identifier workspaceProjectOpen = "menu::workspace::project::open";

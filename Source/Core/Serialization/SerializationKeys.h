@@ -227,7 +227,7 @@ namespace Serialization
         static const Identifier endBeat = "endBeat";
         static const Identifier beatWidth = "beatWidth";
         static const Identifier rowHeight = "rowHeight";
-        static const Identifier viewportPositionX = "viewportX";
+        //static const Identifier viewportPositionX = "viewportX";
         static const Identifier viewportPositionY = "viewportY";
 
         static const Identifier positionX = "positionX";
@@ -362,10 +362,6 @@ namespace Serialization
         static const Identifier arpeggiator = "arpeggiator";
         static const Identifier name = "name";
         static const Identifier sequence = "sequence";
-        static const Identifier isReversed = "isReversed";
-        static const Identifier relativeMapping = "relativeMapping";
-        static const Identifier limitsToChord = "limitsToChord";
-
         static const Identifier type = "type";
 
         namespace Types
@@ -392,8 +388,6 @@ namespace Serialization
         static const Identifier clipboard = "clipboard";
         static const Identifier track = "track";
         static const Identifier trackId = "trackId";
-        static const Identifier trackType = "trackType";
-        static const Identifier trackMetaInfo = "trackMetaInfo";
         static const Identifier firstBeat = "firstBeat";
     } // namespace Clipboard
 
