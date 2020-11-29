@@ -31,7 +31,7 @@ public:
         return { new Arpeggiator() };
     }
 
-    inline const Array<Arpeggiator::Ptr> getAll() const
+    inline Array<Arpeggiator::Ptr> getAll() const
     {
         return this->getAllResources<Arpeggiator>();
     }

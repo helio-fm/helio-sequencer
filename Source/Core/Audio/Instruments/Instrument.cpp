@@ -559,8 +559,8 @@ void Instrument::deserialize(const SerializedData &data)
     
     forEachChildWithType(root, e, Audio::connection)
     {
-        const uint32 sourceNodeId = static_cast<int>(e.getProperty(Audio::sourceNodeId));
-        const uint32 destinationNodeId = static_cast<int>(e.getProperty(Audio::destinationNodeId));
+        const uint32 sourceNodeId = int(e.getProperty(Audio::sourceNodeId));
+        const uint32 destinationNodeId = int(e.getProperty(Audio::destinationNodeId));
         connectionDescriptions.add({
             sourceNodeId,
             destinationNodeId,

@@ -18,13 +18,9 @@
 #include "Common.h"
 #include "NavigationHistory.h"
 
-NavigationHistory::NavigationHistory() :
-    historyLock(nullptr),
-    currentPageIndex(0) {}
-
 UniquePointer<NavigationHistoryLock> NavigationHistory::lock()
 {
-    UniquePointer<NavigationHistoryLock> l(new NavigationHistoryLock());
+    auto l = make<NavigationHistoryLock>();
     this->historyLock = l.get();
     return l;
 }

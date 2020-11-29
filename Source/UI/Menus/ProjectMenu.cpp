@@ -258,12 +258,10 @@ void ProjectMenu::showNewAutomationMenu(AnimationType animationType)
                 &this->project, autoTrackParams, TRANS(I18n::Defaults::tempoTrackName)));
         }));
 
-    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
-    for (int i = 0; i < instruments.size(); ++i)
+    for (auto instrument : App::Workspace().getAudioCore().getInstruments())
     {
-        const WeakReference<Instrument> instrument = instruments[i];
         menu.add(MenuItem::item(Icons::instrument,
-            instruments[i]->getName())->withSubmenu()->withAction([this, instrument]()
+            instrument->getName())->withSubmenu()->withAction([this, instrument]()
             {
                 this->showControllersMenuForInstrument(instrument);
             }));

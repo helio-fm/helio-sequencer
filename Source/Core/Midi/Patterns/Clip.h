@@ -124,6 +124,6 @@ struct ClipHash
 {
     inline HashCode operator()(const Clip &key) const noexcept
     {
-        return key.id;
+        return static_cast<HashCode>(key.id);
     }
 };

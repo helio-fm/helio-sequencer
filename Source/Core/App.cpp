@@ -498,7 +498,7 @@ void App::initialise(const String &commandLine)
         helioTheme->initResources();
         helioTheme->initColours(this->config->getColourSchemes()->getCurrent());
 
-        this->theme.reset(helioTheme.release());
+        this->theme = move(helioTheme);
         LookAndFeel::setDefaultLookAndFeel(this->theme.get());
 
 #if JUCE_UNIT_TESTS

@@ -108,7 +108,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
                 AutomationEvent::interpolateEvents(this->controllerValue,
                     nextEvent->controllerValue, factor, this->curvature);
 
-            const float controllerDelta = fabs(interpolatedValue - lastAppliedValue);
+            const float controllerDelta = fabsf(interpolatedValue - lastAppliedValue);
             if (controllerDelta > AutomationEvent::curveInterpolationThreshold)
             {
                 const double interpolatedTs = (interpolatedBeat + clip.getBeat()) * timeFactor;

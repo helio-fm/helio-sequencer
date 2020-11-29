@@ -95,8 +95,8 @@ void MultiTouchController::mouseDrag(const MouseEvent &event)
         this->center2 = this->listener.getMultiTouchOrigin(event.position);
     }
         
-    const float vZoomLength = fabs(this->finger2Position.getX() - this->finger1Position.getX());
-    const float hZoomLength = fabs(this->finger2Position.getY() - this->finger1Position.getY());
+    const float vZoomLength = fabsf(this->finger2Position.getX() - this->finger1Position.getX());
+    const float hZoomLength = fabsf(this->finger2Position.getY() - this->finger1Position.getY());
     const auto zoomOffset = (Point<float>(vZoomLength, hZoomLength) - this->zoomDiff) * Point<float>(ZOOM_V_SPEED, ZOOM_H_SPEED);
 
     const Point<float> diffV(0.f, zoomOffset.getY());

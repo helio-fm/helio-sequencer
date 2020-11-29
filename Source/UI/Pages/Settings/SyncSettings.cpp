@@ -128,7 +128,7 @@ void SyncSettings::changeListenerCallback(ChangeBroadcaster *source)
         this->resourcesList->updateContent();
         // (worth noting that profile sends change messages quite frequently)
     }
-    else if (auto *resourceManager = dynamic_cast<ResourceManager *>(source))
+    else if (dynamic_cast<ResourceManager *>(source))
     {
         // re-read all configs (this shouldn't happen too often anyway)
         this->reloadConfigsList();

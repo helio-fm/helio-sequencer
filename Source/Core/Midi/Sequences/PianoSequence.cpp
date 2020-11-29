@@ -51,7 +51,7 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence, short timeFo
                 const float endBeat = MidiSequence::midiTicksToBeats(messageOff.getTimeStamp(), timeFormat);
                 if (endBeat > startBeat)
                 {
-                    const float length = float(endBeat - startBeat);
+                    const float length = endBeat - startBeat;
                     const Note note(this, key, startBeat, length, velocity);
                     this->importMidiEvent<Note>(note);
                 }

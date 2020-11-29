@@ -32,7 +32,7 @@ const T *findSelectedEventOfType(MidiSequence *const sequence, float seekBeat)
     {
         if (T *event = dynamic_cast<T *>(sequence->getUnchecked(i)))
         {
-            if (fabs(event->getBeat() - seekBeat) < 0.001f)
+            if (fabsf(event->getBeat() - seekBeat) < 0.001f)
             {
                 selectedEvent = event;
                 break;

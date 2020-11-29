@@ -138,7 +138,7 @@ RevisionComponent *RevisionTreeComponent::initComponents(int depth,
 
     this->addAndMakeVisible(revisionComponent);
 
-    for (const auto childRevision : revision->getChildren())
+    for (const auto *childRevision : revision->getChildren())
     {
         auto *childComponent = this->initComponents(depth + 1, childRevision, revisionComponent);
         revisionComponent->children.add(childComponent);
@@ -162,11 +162,10 @@ RevisionComponent *RevisionTreeComponent::firstWalk(RevisionComponent *v, float 
     }
     else
     {
-        RevisionComponent *default_ancestor = v->children[0];
+        auto *default_ancestor = v->children[0];
 
-        for (int i = 0; i < v->children.size(); ++i)
+        for (auto *child : v->children)
         {
-            RevisionComponent *child = v->children[i];
             firstWalk(child);
             default_ancestor = apportion(child, default_ancestor, distance);
         }
@@ -270,9 +269,8 @@ void RevisionTreeComponent::executeShifts(RevisionComponent *v)
     float shift = 0;
     float change = 0;
 
-    for (int i = 0; i < v->children.size(); ++i) // v.children[::-1] ???
+    for (auto *w : v->children)
     {
-        RevisionComponent *w = v->children[i];
         w->x += shift;
         w->mod += shift;
         change += w->change;
@@ -282,11 +280,12 @@ void RevisionTreeComponent::executeShifts(RevisionComponent *v)
 
 RevisionComponent *RevisionTreeComponent::ancestor(RevisionComponent *vil, RevisionComponent *v, RevisionComponent *default_ancestor)
 {
-    for (int i = 0; i < v->children.size(); ++i)
+    for (auto *child : v->children)
     {
-        RevisionComponent *child = v->children[i];
-
-        if (child == vil->ancestor) { return vil->ancestor; }
+        if (child == vil->ancestor)
+        {
+            return vil->ancestor;
+        }
     }
 
     return default_ancestor;
@@ -315,10 +314,8 @@ float RevisionTreeComponent::secondWalk(RevisionComponent *v, float &min, float 
 void RevisionTreeComponent::thirdWalk(RevisionComponent *v, float n)
 {
     v->x += n;
-
-    for (int i = 0; i < v->children.size(); ++i)
+    for (auto *w : v->children)
     {
-        RevisionComponent *w = v->children[i];
         this->thirdWalk(w, n);
     }
 }
@@ -339,11 +336,9 @@ void RevisionTreeComponent::postWalk(RevisionComponent *v)
         RevisionComponent *w = v->children[i];
         this->postWalk(w);
 
-        RevisionConnectorComponent *revisionConnector =
-            new RevisionConnectorComponent(v, w);
-
+        auto revisionConnector = make<RevisionConnectorComponent>(v, w);
         revisionConnector->resizeToFit();
-        this->addAndMakeVisible(revisionConnector);
+        this->addAndMakeVisible(revisionConnector.release());
     }
 }
 

@@ -315,9 +315,7 @@ void AudioPluginNode::showPage()
 
     if (!this->audioPluginEditor)
     {
-        const bool forceGenericEditor = false;
-
-        if (!forceGenericEditor && f->getProcessor()->hasEditor())
+        if (f->getProcessor()->hasEditor())
         {
             // Some plugins (including Kontakt 3!) misbehavior messes up all the controls
             // Turns out they attach themselves to the parent window :(

@@ -389,7 +389,7 @@ KeyboardMapping::KeyChannel KeyboardMapping::KeyChannel::fromString(const String
     KeyChannel result;
 
     int a = 0;
-    juce_wchar c = 0;
+    juce_wchar c;
     auto ptr = str.getCharPointer();
     do
     {

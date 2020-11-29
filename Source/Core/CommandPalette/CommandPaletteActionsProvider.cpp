@@ -23,7 +23,7 @@ struct CommandPaletteActionSortByMatch final
     static int compareElements(const CommandPaletteAction::Ptr first, const CommandPaletteAction::Ptr second)
     {
         // first, descending sort by match:
-        const auto matchResult = int(second->getMatchScore() - first->getMatchScore());
+        const auto matchResult = second->getMatchScore() - first->getMatchScore();
 
         const float orderDiff = first->getOrder() - second->getOrder();
         const int orderResult = (orderDiff > 0.f) - (orderDiff < 0.f);
@@ -273,7 +273,7 @@ static bool fuzzyMatch(String::CharPointerType pattern, String::CharPointerType 
     }
 
     // Determine if full pattern was matched
-    const bool matched = *pattern == 0 ? true : false;
+    const bool matched = (*pattern == 0);
 
     // Calculate score
     if (matched)

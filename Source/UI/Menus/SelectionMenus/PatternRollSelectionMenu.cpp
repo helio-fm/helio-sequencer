@@ -243,7 +243,6 @@ MenuPanel::Menu PatternRollSelectionMenu::createInstrumentSelectionMenu()
             }
 
             this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
-            return;
         }));
     }
 

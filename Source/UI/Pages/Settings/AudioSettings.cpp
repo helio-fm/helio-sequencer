@@ -304,12 +304,10 @@ void AudioSettings::applyMidiInput(AudioDeviceManager &deviceManager, const Stri
 {
     this->audioCore.setActiveMidiPlayer({}, false);
 
-    const auto &devices = MidiInput::getAvailableDevices();
-
-    for (int i = 0; i < devices.size(); ++i)
+    for (const auto &device : MidiInput::getAvailableDevices())
     {
-        const bool shouldBeEnabled = devices[i].identifier == deviceId;
-        deviceManager.setMidiInputDeviceEnabled(devices[i].identifier, shouldBeEnabled);
+        const bool shouldBeEnabled = device.identifier == deviceId;
+        deviceManager.setMidiInputDeviceEnabled(device.identifier, shouldBeEnabled);
     }
 
     this->syncMidiInputsList(deviceManager);
@@ -421,9 +419,9 @@ void AudioSettings::syncBufferSizesList(AudioDeviceManager &deviceManager)
 static bool areNoMidiInputsSelected(AudioDeviceManager &deviceManager,
     const Array<MidiDeviceInfo> &devices)
 {
-    for (int i = 0; i < devices.size(); ++i)
+    for (const auto &device : devices)
     {
-        if (deviceManager.isMidiInputDeviceEnabled(devices[i].identifier))
+        if (deviceManager.isMidiInputDeviceEnabled(device.identifier))
         {
             return false;
         }
@@ -436,11 +434,11 @@ static bool areNoMidiInputsSelected(AudioDeviceManager &deviceManager,
 static String getFirstSelectedMidiInputDevice(AudioDeviceManager &deviceManager,
     const Array<MidiDeviceInfo> &devices)
 {
-    for (int i = 0; i < devices.size(); ++i)
+    for (const auto &device : devices)
     {
-        if (deviceManager.isMidiInputDeviceEnabled(devices[i].identifier))
+        if (deviceManager.isMidiInputDeviceEnabled(device.identifier))
         {
-            return devices[i].name;
+            return device.name;
         }
     }
 
