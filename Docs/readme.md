@@ -65,7 +65,7 @@ In future, the app may sync more configs, including default scales, chords, arpe
 
 The projects files are created in the `Helio` subfolder of the user's default documents folder. The location of this directory is also platform-dependent:
 
-* Windows: %HOMEPATH%\Helio
+* Windows: %HOMEPATH%\Helio (for example, "c:\Users\Peter\Documents\Helio\")
 * macOS: ~/Documents/Helio
 * Linux: ~/Documents/Helio
 
