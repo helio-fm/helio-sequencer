@@ -97,6 +97,7 @@ public:
 
     Array<Instrument *> getInstruments() const override;
     Instrument *findInstrumentById(const String &id) const override;
+    Instrument *getDefaultInstrument() const noexcept override;
     void initDefaultInstrument();
 
     //===------------------------------------------------------------------===//
@@ -178,6 +179,8 @@ private:
     void deserializeDeviceManager(const SerializedData &tree);
 
     OwnedArray<Instrument> instruments;
+    WeakReference<Instrument> defaultInstrument;
+
     UniquePointer<AudioMonitor> audioMonitor;
 
     String lastActiveMidiPlayerId;

@@ -224,6 +224,13 @@ Instrument *AudioCore::findInstrumentById(const String &id) const
     return nullptr;
 }
 
+Instrument *AudioCore::getDefaultInstrument() const noexcept
+{
+    jassert(this->defaultInstrument != nullptr); // shouldn't happen
+    return this->defaultInstrument != nullptr ?
+        this->defaultInstrument.get() : this->instruments.getFirst();
+}
+
 void AudioCore::initDefaultInstrument()
 {
     OwnedArray<PluginDescription> descriptions;
@@ -232,7 +239,11 @@ void AudioCore::initDefaultInstrument()
     format.findAllTypesForFile(descriptions, BuiltInSynthAudioPlugin::instrumentId);
 
     PluginDescription desc(*descriptions[0]);
-    this->addInstrument(desc, BuiltInSynthAudioPlugin::instrumentName, [](Instrument *) {});
+    this->addInstrument(desc, BuiltInSynthAudioPlugin::instrumentName,
+        [this](Instrument *instrument)
+        {
+            this->defaultInstrument = instrument;
+        });
 }
 
 //===----------------------------------------------------------------------===//
@@ -507,6 +518,12 @@ void AudioCore::deserialize(const SerializedData &data)
             }
             else
             {
+                if (instrument->isDefaultInstrument())
+                {
+                    // try to detect the default instrument
+                    this->defaultInstrument = instrument.get();
+                }
+
                 this->instruments.add(instrument.release());
             }
         }
@@ -520,6 +537,8 @@ void AudioCore::deserialize(const SerializedData &data)
 
 void AudioCore::reset()
 {
+    this->defaultInstrument = nullptr;
+
     while (!this->instruments.isEmpty())
     {
         this->removeInstrument(this->instruments[0]);

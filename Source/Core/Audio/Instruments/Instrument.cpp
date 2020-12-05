@@ -85,6 +85,11 @@ bool Instrument::isValid() const noexcept
         this->lastValidStateFallback.isEmpty();
 }
 
+bool Instrument::isDefaultInstrument() const noexcept
+{
+    return this->instrumentName == BuiltInSynthAudioPlugin::instrumentName;
+}
+
 void Instrument::initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback)
 {
     this->processorGraph->clear();

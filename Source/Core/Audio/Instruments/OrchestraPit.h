@@ -34,10 +34,7 @@ public:
 
     virtual Array<Instrument *> getInstruments() const = 0;
     virtual Instrument *findInstrumentById(const String &id) const = 0;
-    Instrument *getDefaultInstrument() const noexcept
-    {
-        return this->getInstruments().getFirst();
-    }
+    virtual Instrument *getDefaultInstrument() const = 0;
 
 public:
 

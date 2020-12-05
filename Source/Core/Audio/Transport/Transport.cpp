@@ -942,13 +942,12 @@ TransportPlaybackCache Transport::getPlaybackCache()
 
 void Transport::updateLinkForTrack(const MidiTrack *track)
 {
-    const Array<Instrument *> instruments = this->orchestra.getInstruments();
+    const auto instruments = this->orchestra.getInstruments();
     
     // check by ids
-    for (int i = 1; i < instruments.size(); ++i)
+    for (int i = 0; i < instruments.size(); ++i)
     {
-        Instrument *instrument = instruments.getUnchecked(i);
-        
+        auto *instrument = instruments.getUnchecked(i);
         if (track->getTrackInstrumentId().contains(instrument->getInstrumentId()))
         {
             // corresponding node already exists, lets add
@@ -958,10 +957,9 @@ void Transport::updateLinkForTrack(const MidiTrack *track)
     }
     
     // check by hashes
-    for (int i = 1; i < instruments.size(); ++i)
+    for (int i = 0; i < instruments.size(); ++i)
     {
-        Instrument *instrument = instruments.getUnchecked(i);
-        
+        auto *instrument = instruments.getUnchecked(i);
         if (track->getTrackInstrumentId().contains(instrument->getInstrumentHash()))
         {
             this->linksCache[track->getTrackId()] = instrument;
