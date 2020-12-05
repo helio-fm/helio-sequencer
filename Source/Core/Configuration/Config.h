@@ -24,7 +24,6 @@ class Serializable;
 #include "ColourSchemesManager.h"
 #include "HotkeySchemesManager.h"
 #include "TemperamentsManager.h"
-#include "ScriptsManager.h"
 #include "ScalesManager.h"
 #include "ChordsManager.h"
 #include "UserInterfaceFlags.h"
@@ -47,7 +46,6 @@ public:
 
     ChordsManager *getChords() const noexcept;
     ScalesManager *getScales() const noexcept;
-    ScriptsManager *getScripts() const noexcept;
     TemperamentsManager *getTemperaments() const noexcept;
     TranslationsManager *getTranslations() const noexcept;
     ArpeggiatorsManager *getArpeggiators() const noexcept;
@@ -81,7 +79,6 @@ private:
     UniquePointer<ColourSchemesManager> colourSchemesManager;
     UniquePointer<HotkeySchemesManager> hotkeySchemesManager;
     UniquePointer<TemperamentsManager> temperamentsManager;
-    UniquePointer<ScriptsManager> scriptsManager;
     UniquePointer<ScalesManager> scalesManager;
     UniquePointer<ChordsManager> chordsManager;
 

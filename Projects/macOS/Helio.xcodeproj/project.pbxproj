@@ -345,13 +345,6 @@
 			path = ../../Source/UI/Themes/Icons.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		0998A047F3F63473B4D027F4 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = Script.cpp;
-			path = ../../Source/Core/Configuration/Models/Script.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		09DBE08B6238D7BA25B222C7 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -1960,13 +1953,6 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = UserInterfaceFlags.cpp;
 			path = ../../Source/Core/Configuration/UserInterfaceFlags.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
-		4CB4193955D65B4696E93440 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = Script.h;
-			path = ../../Source/Core/Configuration/Models/Script.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		4D0B55864C40A59306FD9A2B = {
@@ -4076,13 +4062,6 @@
 			path = ../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip/AutomationCurveHelper.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		AD88F6D4B1B520CC0ABC1D48 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = ScriptsManager.cpp;
-			path = ../../Source/Core/Configuration/ResourceManagers/ScriptsManager.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		AE27C22BE77524C3D0E07821 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -5497,13 +5476,6 @@
 			path = ../../Source/Common.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		F2C8AA97CB84C97903511850 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = ScriptsManager.h;
-			path = ../../Source/Core/Configuration/ResourceManagers/ScriptsManager.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		F2FCCDE78737C5ADD5E74958 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -5974,8 +5946,6 @@
 				5A14829FB5AB05981948C794,
 				8F5227E2FA0469B5E8181E51,
 				A808F944BD1E55E8A319C067,
-				0998A047F3F63473B4D027F4,
-				4CB4193955D65B4696E93440,
 				EAC405D2F3DC43BAAE5AE15E,
 				F3FFF7E6BC9AE0FE28822279,
 				E7198041504784409868B07B,
@@ -6000,8 +5970,6 @@
 				AAD9462C6D53C62127E8295B,
 				E4012B6231645F2E4B492CD2,
 				5C7810665BFC8C8CA86A478F,
-				AD88F6D4B1B520CC0ABC1D48,
-				F2C8AA97CB84C97903511850,
 				3D53BBC55853A41AFFBA08E0,
 				F824386C24E0394EF09006B0,
 				A533B6E5A65824292786111C,

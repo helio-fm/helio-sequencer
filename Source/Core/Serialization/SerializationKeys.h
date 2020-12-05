@@ -208,7 +208,6 @@ namespace Serialization
     {
         static const Identifier scales = "scales";
         static const Identifier chords = "chords";
-        static const Identifier scripts = "scripts";
         static const Identifier temperaments = "temperaments";
         static const Identifier arpeggiators = "arpeggiators";
         static const Identifier translations = "translations";
@@ -306,56 +305,6 @@ namespace Serialization
         static const Identifier pluralLiteral = "pluralLiteral";
         static const Identifier pluralForm = "pluralForm";
     }  // namespace Translations
-
-    namespace Scripts
-    {
-        static const Identifier script = "script";
-        static const Identifier name = "name";
-        static const Identifier type = "type";
-        static const Identifier content = "content";
-
-        namespace Types
-        {
-            // Receives current selection and harmonic context,
-            // should apply needed transformations to the selection object
-            static const Identifier transformSelection = "transformSelection";
-            // TODO what else types could be added?
-        }
-
-        namespace Api
-        {
-            namespace Note
-            {
-                static const Identifier key = "key";
-                static const Identifier position = "position";
-                static const Identifier length = "length";
-                static const Identifier volume = "volume";
-            }
-
-            namespace TimeSignature
-            {
-                static const Identifier position = "position";
-                static const Identifier numerator = "numerator";
-                static const Identifier denominator = "denominator";
-            }
-
-            namespace KeySignature
-            {
-                static const Identifier position = "position";
-                static const Identifier rootKey = "rootKey";
-                static const Identifier scale = "scale";
-            }
-
-            namespace Scale
-            {
-                static const Identifier name = "name";
-                static const Identifier basePeriod = "basePeriod";
-                static const Identifier getScaleKey = "getScaleKey";
-                static const Identifier getChromaticKey = "getChromaticKey";
-                static const Identifier hasKey = "hasKey";
-            }
-        }
-    } // namespace Scripts
 
     namespace Arps
     {

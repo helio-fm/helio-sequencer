@@ -31,7 +31,6 @@ Config::Config(int timeoutToSaveMs) :
     this->colourSchemesManager = make<ColourSchemesManager>();
     this->hotkeySchemesManager = make<HotkeySchemesManager>();
     this->temperamentsManager = make<TemperamentsManager>();
-    this->scriptsManager = make<ScriptsManager>();
     this->scalesManager = make<ScalesManager>();
     this->chordsManager = make<ChordsManager>();
 
@@ -41,7 +40,6 @@ Config::Config(int timeoutToSaveMs) :
     this->resources[colourSchemes] = this->colourSchemesManager.get();
     this->resources[hotkeySchemes] = this->hotkeySchemesManager.get();
     this->resources[temperaments] = this->temperamentsManager.get();
-    this->resources[scripts] = this->scriptsManager.get();
     this->resources[scales] = this->scalesManager.get();
     this->resources[chords] = this->chordsManager.get();
 
@@ -54,7 +52,6 @@ Config::~Config()
 
     this->chordsManager = nullptr;
     this->scalesManager = nullptr;
-    this->scriptsManager = nullptr;
     this->temperamentsManager = nullptr;
     this->hotkeySchemesManager = nullptr;
     this->colourSchemesManager = nullptr;
@@ -230,11 +227,6 @@ ChordsManager *Config::getChords() const noexcept
 ScalesManager *Config::getScales() const noexcept
 {
     return this->scalesManager.get();
-}
-
-ScriptsManager *Config::getScripts() const noexcept
-{
-    return this->scriptsManager.get();
 }
 
 TranslationsManager *Config::getTranslations() const noexcept
