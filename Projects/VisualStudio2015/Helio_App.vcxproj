@@ -3046,8 +3046,6 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\fstring.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\source\updatehandler.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\thread\include\flock.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\fst\fst_fst.h"/>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\fst\vestige.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\conststringtable.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\falignpop.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\falignpush.h"/>
@@ -3105,6 +3103,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstparameters.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstpresetfile.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\vestige\vestige.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_AU_Shared.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_AudioUnitPluginFormat.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_LADSPAPluginFormat.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_VST3Common.h"/>

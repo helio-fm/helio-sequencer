@@ -341,9 +341,6 @@
     <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base">
       <UniqueIdentifier>{9C295115-C0CD-3129-1C4D-FB53299B23FB}</UniqueIdentifier>
     </Filter>
-    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\fst">
-      <UniqueIdentifier>{7E7093B2-1566-FFA2-C412-B79E09C8EE7B}</UniqueIdentifier>
-    </Filter>
     <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base">
       <UniqueIdentifier>{65526A8B-3447-9DF0-FD5D-00D111126027}</UniqueIdentifier>
     </Filter>
@@ -5253,12 +5250,6 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\base\thread\include\flock.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\base\thread\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\fst\fst_fst.h">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\fst</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\fst\vestige.h">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\fst</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\conststringtable.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
     </ClInclude>
@@ -5429,6 +5420,9 @@
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\vestige\vestige.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\vestige</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_AU_Shared.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_AudioUnitPluginFormat.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>

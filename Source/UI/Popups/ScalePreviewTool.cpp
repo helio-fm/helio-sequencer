@@ -312,7 +312,7 @@ void ScalePreviewTool::onPopupButtonFirstAction(PopupButton *button)
     {
         const int dragDistance = this->draggingStartPosition.getDistanceFrom(this->draggingEndPosition);
         const bool dragPositionNotInitialized = (this->draggingStartPosition.getDistanceFromOrigin() == 0);
-        const double retinaScale = Desktop::getInstance().getDisplays().getMainDisplay().scale;
+        const double retinaScale = Desktop::getInstance().getDisplays().getPrimaryDisplay()->scale;
         const bool draggedThePopup = (double(dragDistance) > retinaScale);
         if (draggedThePopup || dragPositionNotInitialized) {
             App::Layout().hideTooltipIfAny();

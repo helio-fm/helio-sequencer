@@ -106,7 +106,7 @@ bool RendererThread::isRecording() const
 struct RenderBuffer final
 {
     Instrument *instrument;
-    AudioSampleBuffer sampleBuffer;
+    AudioBuffer<float> sampleBuffer;
     MidiBuffer midiBuffer;
 };
 
@@ -138,7 +138,7 @@ void RendererThread::run()
         Instrument *instrument = uniqueInstruments[i];
         auto *subBuffer = new RenderBuffer();
         subBuffer->instrument = instrument;
-        subBuffer->sampleBuffer = AudioSampleBuffer(numOutChannels, bufferSize);
+        subBuffer->sampleBuffer = AudioBuffer<float>(numOutChannels, bufferSize);
         subBuffers.add(subBuffer);
         //DBG("Adding instrument: " + String(instrument->getName()));
     }
@@ -149,8 +149,7 @@ void RendererThread::run()
         AudioProcessorGraph *graph = subBuffer->instrument->getProcessorGraph();
         graph->setPlayConfigDetails(numInChannels, numOutChannels, sampleRate, bufferSize);
         graph->releaseResources();
-        // TODO:
-        //graph->setProcessingPrecision(AudioProcessor::singlePrecision);
+        graph->setProcessingPrecision(AudioProcessor::singlePrecision);
         graph->prepareToPlay(graph->getSampleRate(), bufferSize);
         graph->setNonRealtime(true);
     }
@@ -166,7 +165,7 @@ void RendererThread::run()
     jassert(hasNextMessage);
     
     // TODO: add double precision rendering someday (for processor graphs who support it)
-    AudioSampleBuffer mixingBuffer(numOutChannels, bufferSize);
+    AudioBuffer<float> mixingBuffer(numOutChannels, bufferSize);
     
     double lastEventTick = 0.0;
     double prevEventTimeStamp = 0.0;
@@ -228,7 +227,7 @@ void RendererThread::run()
         // step 3b. call processBlock for every instrument.
         for (auto *subBuffer : subBuffers)
         {
-            AudioProcessorGraph *graph = subBuffer->instrument->getProcessorGraph();
+            auto *graph = subBuffer->instrument->getProcessorGraph();
             {
                 const ScopedLock lock(graph->getCallbackLock());
                 
@@ -281,6 +280,8 @@ void RendererThread::run()
     {
         auto *graph = subBuffer->instrument->getProcessorGraph();
         graph->setNonRealtime(false);
+        graph->reset();
+        graph->releaseResources();
     }
     
     {

@@ -41,6 +41,10 @@
 			isa = PBXBuildFile;
 			fileRef = 3F1E62A9CF59246B3DC7D662;
 		};
+		8A4CE3041AEEA59B6D1A0BF8 = {
+			isa = PBXBuildFile;
+			fileRef = 157AC67C9E595A004217F3C2;
+		};
 		5288AB786824098E996746D9 = {
 			isa = PBXBuildFile;
 			fileRef = 8611A29AB9757D44B75A36FF;
@@ -599,6 +603,13 @@
 			name = BuiltInSynth.cpp;
 			path = ../../Source/Core/Audio/BuiltIn/BuiltInSynth.cpp;
 			sourceTree = "SOURCE_ROOT";
+		};
+		157AC67C9E595A004217F3C2 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.framework;
+			name = Foundation.framework;
+			path = System/Library/Frameworks/Foundation.framework;
+			sourceTree = SDKROOT;
 		};
 		1587694DB90816152BB1B9DD = {
 			isa = PBXFileReference;
@@ -7102,6 +7113,7 @@
 				61F0F5481B6FC0DDA7DAAD87,
 				07C15EE793015A2B38B61F9E,
 				3F1E62A9CF59246B3DC7D662,
+				157AC67C9E595A004217F3C2,
 				8611A29AB9757D44B75A36FF,
 				0CEF35A2788947173CA159F1,
 				3D44010B9B71C7D67121D6C9,
@@ -7659,6 +7671,7 @@
 				A236C4B36AB5D27B60E71572,
 				0CCFAEF7FC986B49B6573C91,
 				6896459C435EA33C854C25E6,
+				8A4CE3041AEEA59B6D1A0BF8,
 				5288AB786824098E996746D9,
 				753122CF5A41F8679E0F0A00,
 				7ECCDACF6651F48C9F6935F9,
@@ -7684,7 +7697,7 @@
 		08DB4A16C7B3991E0F547761 = {
 			isa = PBXProject;
 			buildConfigurationList = CBBEDDA3CEDC22AE3C172D11;
-			attributes = { LastUpgradeCheck = 1100; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 1; }; }; }; }; };
+			attributes = { LastUpgradeCheck = 1220; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 1; }; }; }; }; };
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 0;
 			mainGroup = C26CB8AD40490BB25FE36466;

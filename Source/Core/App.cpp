@@ -257,11 +257,16 @@ class Clipboard &App::Clipboard() noexcept
 
 static Point<double> getScreenInCm()
 {
-    Rectangle<int> screenArea = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
-    const double retinaFactor = Desktop::getInstance().getDisplays().getMainDisplay().scale;
-    const double dpi = Desktop::getInstance().getDisplays().getMainDisplay().dpi;
-    const double cmWidth = (screenArea.getWidth() / dpi) * retinaFactor * 2.54;
-    const double cmHeight = (screenArea.getHeight() / dpi) * retinaFactor * 2.54;
+    const auto *mainDisplay = Desktop::getInstance().getDisplays().getPrimaryDisplay();
+    if (mainDisplay == nullptr)
+    {
+        jassertfalse;
+        return {};
+    }
+
+    const auto screenArea = mainDisplay->userArea;
+    const double cmWidth = (screenArea.getWidth() / mainDisplay->dpi) * mainDisplay->scale * 2.54;
+    const double cmHeight = (screenArea.getHeight() / mainDisplay->dpi) * mainDisplay->scale * 2.54;
     return Point<double>(cmWidth, cmHeight);
 }
 

@@ -7721,7 +7721,7 @@
 		08DB4A16C7B3991E0F547761 = {
 			isa = PBXProject;
 			buildConfigurationList = CBBEDDA3CEDC22AE3C172D11;
-			attributes = { LastUpgradeCheck = 1100; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
+			attributes = { LastUpgradeCheck = 1220; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 0;
 			mainGroup = C26CB8AD40490BB25FE36466;

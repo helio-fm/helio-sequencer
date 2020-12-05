@@ -55,8 +55,9 @@ HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
     }
     else
     {
+        const auto &displays = Desktop::getInstance().getDisplays();
         this->setAlwaysOnTop(true);
-        this->pointToAndFit(area, Desktop::getInstance().getDisplays().findDisplayForPoint(area.getCentre()).userArea);
+        this->pointToAndFit(area, displays.getDisplayForPoint(area.getCentre())->userArea);
         this->addToDesktop(ComponentPeer::windowIsTemporary);
     }
 }

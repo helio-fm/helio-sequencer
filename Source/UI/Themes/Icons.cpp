@@ -269,12 +269,17 @@ const int kRoundFactor = 8;
 
 Image Icons::findByName(Icons::Id id, int maxSize)
 {
-    const auto &dis = Desktop::getInstance().getDisplays().getMainDisplay();
+    const auto *display = Desktop::getInstance().getDisplays().getPrimaryDisplay();
+    if (display == nullptr)
+    {
+        jassertfalse;
+        return {};
+    }
 
 #if JUCE_ANDROID
     const int retinaFactor = 2;
 #else
-    const int retinaFactor = int(dis.scale);
+    const int retinaFactor = int(display->scale);
 #endif
 
     const int fixedSize = int(floorf(float(maxSize) / float(kRoundFactor))) * kRoundFactor * retinaFactor;
@@ -295,12 +300,17 @@ Image Icons::findByName(Icons::Id id, int maxSize)
 
 Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
 {
-    const auto &dis = Desktop::getInstance().getDisplays().getMainDisplay();
+    const auto *display = Desktop::getInstance().getDisplays().getPrimaryDisplay();
+    if (display == nullptr)
+    {
+        jassertfalse;
+        return {};
+    }
 
 #if JUCE_ANDROID
     const int retinaFactor = 2;
 #else
-    const int retinaFactor = int(dis.scale);
+    const int retinaFactor = int(display->scale);
 #endif
 
     const int fixedSize = int(floorf(float(maxSize) / float(kRoundFactor))) * kRoundFactor * retinaFactor;
@@ -312,12 +322,17 @@ Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
 
 void Icons::drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy)
 {
-    const auto &dis = Desktop::getInstance().getDisplays().getMainDisplay();
+    const auto *display = Desktop::getInstance().getDisplays().getPrimaryDisplay();
+    if (display == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
 
 #if JUCE_ANDROID
     const int scale = 2;
 #else
-    const int scale = int(dis.scale);
+    const int scale = int(display->scale);
 #endif
 
     const int w = image.getWidth();
