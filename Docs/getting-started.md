@@ -277,6 +277,22 @@ However, the pattern roll is helpful for rearranging experiments:
 
 Pattern roll also allows to tweak some track parameters, like key offset of velocity multiplier. In future, it may shift towards more parametric sequencer features.
 
+### Global tempo
+
+Pattern roll is also the place to edit various MIDI controller automation tracks - most notable, the tempo track(s):
+
+![tempo-automation]
+
+The tempo track, as any other automation track, interpolates the controller value between nodes, and those tiny points are displayed at the exact times each new MIDI event is sent.
+
+To interact with it:
+* delete nodes with right click,
+* use the pen tool (hotkey `2`) to add nodes,
+* use the cursor tool (hotkey `1`) to drag nodes or to adjust the interpolation curve,
+* click on the node to invoke the tempo dialog to set the exact BPM value, or to set tempo by tapping.
+
+Often, you only need one tempo for the whole song - for that, pick *"Set one tempo"* menu item in the tempo track menu, or project refactoring menu.
+
 
 [helio-ui]: images/screen-v3.png "UI overview"
 [orchestra-pit]: images/orchestra-pit.png "The instruments management page"
@@ -288,6 +304,7 @@ Pattern roll also allows to tweak some track parameters, like key offset of velo
 [piano-roll]: images/piano-roll.png "Interaction with piano roll canvas"
 [patterns]: images/patterns-arrange.png "Pattern mode for arrangements"
 [patterns-clips]: images/patterns-track-clips.png "Track instances (clips) and their modifications"
+[tempo-automation]: images/tempo-automation.png "Changing global tempo in pattern mode"
 
 [velocity-map-toggle]: images/velocity-map-toggle.png "Velocity map overview"
 [velocity-map-ramps]: images/velocity-map-ramps.png "Velocity map linear ramps"
