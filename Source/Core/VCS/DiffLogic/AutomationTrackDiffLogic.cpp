@@ -146,15 +146,15 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
         // for every supported type we need to spit out 
         // a delta of type eventsAdded with all events merged in there
 
-        UniquePointer<Delta> eventsDelta(new Delta(
+        auto eventsDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
-            AutoSequenceDeltas::eventsAdded));
+            AutoSequenceDeltas::eventsAdded);
 
         SerializedData eventsDeltaData;
 
-        UniquePointer<Delta> clipsDelta(new Delta(
+        auto clipsDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
-            PatternDeltas::clipsAdded));
+            PatternDeltas::clipsAdded);
 
         SerializedData clipsDeltaData;
 
@@ -172,25 +172,25 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
 
                 if (targetDelta->hasType(MidiTrackDeltas::trackPath))
                 {
-                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
                     SerializedData diffDeltaData = mergeAuthTrackPath(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackColour))
                 {
-                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
                     SerializedData diffDeltaData = mergeAutoTrackColour(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackInstrument))
                 {
-                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
                     SerializedData diffDeltaData = mergeAutoTrackInstrument(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackController))
                 {
-                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
                     SerializedData diffDeltaData = mergeAutoTrackController(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
@@ -275,9 +275,9 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         SerializedData clipsDeltaData;
-        UniquePointer<Delta> clipsDelta(new Delta(
+        auto clipsDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
-            PatternDeltas::clipsAdded));
+            PatternDeltas::clipsAdded);
 
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
@@ -458,9 +458,9 @@ DeltaDiff createAutoTrackPathDiff(const SerializedData &state, const SerializedD
     DeltaDiff res;
     using namespace Serialization::VCS;
     res.deltaData = changes.createCopy();
-    res.delta.reset(new Delta(DeltaDescription("moved from {x}",
+    res.delta = make<Delta>(DeltaDescription("moved from {x}",
         state.getProperty(Serialization::VCS::delta).toString()),
-        MidiTrackDeltas::trackPath));
+        MidiTrackDeltas::trackPath);
     return res;
 }
 
@@ -468,7 +468,7 @@ DeltaDiff createAutoTrackColourDiff(const SerializedData &state, const Serialize
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta.reset(new Delta(DeltaDescription("color changed"), MidiTrackDeltas::trackColour));
+    res.delta = make<Delta>(DeltaDescription("color changed"), MidiTrackDeltas::trackColour);
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -477,7 +477,7 @@ DeltaDiff createAutoTrackInstrumentDiff(const SerializedData &state, const Seria
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta.reset(new Delta(DeltaDescription("instrument changed"), MidiTrackDeltas::trackInstrument));
+    res.delta = make<Delta>(DeltaDescription("instrument changed"), MidiTrackDeltas::trackInstrument);
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -486,7 +486,7 @@ DeltaDiff createAutoTrackControllerDiff(const SerializedData &state, const Seria
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta.reset(new Delta(DeltaDescription("controller changed"), MidiTrackDeltas::trackController));
+    res.delta = make<Delta>(DeltaDescription("controller changed"), MidiTrackDeltas::trackController);
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -624,7 +624,7 @@ DeltaDiff serializeAutoTrackChanges(Array<const MidiEvent *> changes,
     const String &description, int64 numChanges, const Identifier &deltaType)
 {
     DeltaDiff changesFullDelta;
-    changesFullDelta.delta.reset(new Delta(DeltaDescription(description, numChanges), deltaType));
+    changesFullDelta.delta = make<Delta>(DeltaDescription(description, numChanges), deltaType);
     changesFullDelta.deltaData = serializeAutoSequence(changes, deltaType);
     return changesFullDelta;
 }

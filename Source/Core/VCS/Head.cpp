@@ -31,7 +31,7 @@ Head::Head(const Head &other) :
     rebuildingDiffMode(false),
     diff(other.diff),
     headingAt(other.headingAt),
-    state(new Snapshot(other.state.get())) {}
+    state(make<Snapshot>(other.state.get())) {}
 
 Head::Head(TrackedItemsSource &targetProject) :
     Thread("Diff Thread"),
@@ -40,7 +40,7 @@ Head::Head(TrackedItemsSource &targetProject) :
     rebuildingDiffMode(false),
     diff(new Revision()),
     headingAt(new Revision()),
-    state(new Snapshot()) {}
+    state(make<Snapshot>()) {}
 
 Revision::Ptr Head::getHeadingRevision() const
 {
@@ -140,7 +140,7 @@ bool Head::moveTo(const Revision::Ptr revision)
     // first, reset the snapshot state
     {
         const ScopedWriteLock lock(this->stateLock);
-        this->state.reset(new Snapshot());
+        this->state = make<Snapshot>();
     }
 
     // a path from the root to current revision
@@ -483,7 +483,7 @@ void Head::deserialize(const SerializedData &data)
 
 void Head::reset()
 {
-    this->state.reset(new Snapshot());
+    this->state = make<Snapshot>();
     this->setDiffOutdated(true);
 }
 
@@ -564,7 +564,7 @@ void Head::run()
         // state item was not found in project, adding `removed` record
         if (! foundItemInTarget)
         {
-            UniquePointer<Diff> emptyDiff(new Diff(*stateItem));
+            auto emptyDiff = make<Diff>(*stateItem);
             RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Removed, emptyDiff.get()));
             const ScopedWriteLock emptyDiffLock(this->diffLock);
             this->diff->addItem(revisionRecord);
@@ -662,7 +662,7 @@ void Head::rebuildDiffSynchronously()
         // state item was not found in project, adding `removed` record
         if (! foundItemInTarget)
         {
-            UniquePointer<Diff> emptyDiff(new Diff(*stateItem));
+            auto emptyDiff = make<Diff>(*stateItem);
             RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Removed, emptyDiff.get()));
             const ScopedWriteLock lock(this->diffLock);
             this->diff->addItem(revisionRecord);

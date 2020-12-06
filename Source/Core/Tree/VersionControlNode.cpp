@@ -261,7 +261,7 @@ void VersionControlNode::initVCS()
     auto *parentProject = this->findParentOfType<ProjectNode>();
     if (parentProject != nullptr && this->vcs == nullptr)
     {
-        this->vcs.reset(new VersionControl(*parentProject));
+        this->vcs = make<VersionControl>(*parentProject);
         this->vcs->addChangeListener(parentProject);
         parentProject->addChangeListener(this->vcs.get());
     }

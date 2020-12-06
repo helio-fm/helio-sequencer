@@ -35,9 +35,6 @@
 
 // todo for the future: handle pedal and more automation events
 
-// no need for updating too often, I guess:
-#define MIDI_RECORDER_UPDATE_TIME_HZ 15
-
 MidiRecorder::MidiRecorder(ProjectNode &project) :
     project(project)
 {
@@ -110,7 +107,7 @@ void MidiRecorder::onRecord()
 
         if (this->isPlaying.get())
         {
-            this->startTimerHz(MIDI_RECORDER_UPDATE_TIME_HZ);
+            this->startTimerHz(MidiRecorder::updateTimeHz);
         }
     }
 }
@@ -124,7 +121,7 @@ void MidiRecorder::onPlay() noexcept
 
         if (this->isRecording.get())
         {
-            this->startTimerHz(MIDI_RECORDER_UPDATE_TIME_HZ);
+            this->startTimerHz(MidiRecorder::updateTimeHz);
         }
     }
 }

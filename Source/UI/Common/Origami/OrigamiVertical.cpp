@@ -93,7 +93,7 @@ void OrigamiVertical::addShadowAtTheStart()
 {
     if (auto *page = this->pages.getLast())
     {
-        page->shadowAtStart.reset(new ShadowRightwards(ShadowType::Normal));
+        page->shadowAtStart = make<ShadowRightwards>(ShadowType::Normal);
         page->shadowAtStart->setSize(12, 12);
         this->addAndMakeVisible(page->shadowAtStart.get());
     }
@@ -103,7 +103,7 @@ void OrigamiVertical::addShadowAtTheEnd()
 {
     if (auto *page = this->pages.getLast())
     {
-        page->shadowAtEnd.reset(new ShadowLeftwards(ShadowType::Normal));
+        page->shadowAtEnd = make<ShadowLeftwards>(ShadowType::Normal);
         page->shadowAtEnd->setSize(12, 12);
         this->addAndMakeVisible(page->shadowAtEnd.get());
     }
@@ -115,13 +115,13 @@ void OrigamiVertical::addResizer(int minSize, int maxSize)
     {
         page->min = minSize;
         page->max = maxSize;
-        page->constrainer.reset(new Origami::ChildConstrainer(*this));
+        page->constrainer = make<Origami::ChildConstrainer>(*this);
         page->constrainer->setMinimumWidth(minSize);
         page->constrainer->setMaximumWidth(maxSize);
         page->constrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
 
-        page->resizer.reset(new ResizableEdgeComponent(page->component,
-            page->constrainer.get(), ResizableEdgeComponent::rightEdge));
+        page->resizer = make<ResizableEdgeComponent>(page->component,
+            page->constrainer.get(), ResizableEdgeComponent::rightEdge);
 
         this->addAndMakeVisible(page->resizer.get());
         page->resizer->toFront(false);

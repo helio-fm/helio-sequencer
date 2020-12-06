@@ -97,6 +97,9 @@ private:
 
     double getEstimatedPosition() const;
 
+    // no need for updating too often, I guess:
+    static constexpr auto updateTimeHz = 15;
+
     Atomic<float> lastCorrectPosition = 0.f;
     Atomic<double> lastUpdateTime = 0.0;
     Atomic<double> msPerQuarterNote = Globals::Defaults::msPerBeat;

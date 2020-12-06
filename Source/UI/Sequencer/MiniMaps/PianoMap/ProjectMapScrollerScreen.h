@@ -42,21 +42,7 @@ public:
 
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
-    void resized() override;
     void paint(Graphics &g) override;
-
-    //===------------------------------------------------------------------===//
-    // Constrainers
-    //===------------------------------------------------------------------===//
-
-    class ResizeConstrainer final : public ComponentBoundsConstrainer
-    {
-    public:
-        explicit ResizeConstrainer(ProjectMapScroller &scrollerRef) : scroller(scrollerRef) { }
-        void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override;
-    private:
-        ProjectMapScroller &scroller;
-    };
 
 private:
     
@@ -66,8 +52,7 @@ private:
     ProjectMapScroller &scroller;
     ComponentDragger dragger;
 
-    UniquePointer<ResizableBorderComponent> border;
     UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
-    UniquePointer<ComponentBoundsConstrainer> resizeConstrainer;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectMapScrollerScreen)
 };

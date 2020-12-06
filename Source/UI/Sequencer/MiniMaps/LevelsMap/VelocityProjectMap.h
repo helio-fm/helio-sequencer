@@ -22,8 +22,6 @@
 #include "ProjectListener.h"
 #include "ComponentFader.h"
 
-#define VELOCITY_MAP_HEIGHT (128.f)
-
 class HybridRoll;
 class ProjectNode;
 class VelocityMapNoteComponent;

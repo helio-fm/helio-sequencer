@@ -126,17 +126,17 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 
         // for every supported type we need to spit out 
         // a delta of type eventsAdded with all events merged in there
-        UniquePointer<Delta> annotationsDelta(
-            new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
-                      ProjectTimelineDeltas::annotationsAdded));
+        auto annotationsDelta = make<Delta>(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            ProjectTimelineDeltas::annotationsAdded);
 
-        UniquePointer<Delta> timeSignaturesDelta(
-            new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
-                      ProjectTimelineDeltas::timeSignaturesAdded));
+        auto timeSignaturesDelta = make<Delta>(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            ProjectTimelineDeltas::timeSignaturesAdded);
 
-        UniquePointer<Delta> keySignaturesDelta(
-            new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
-                ProjectTimelineDeltas::keySignaturesAdded));
+        auto keySignaturesDelta = make<Delta>(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            ProjectTimelineDeltas::keySignaturesAdded);
 
         SerializedData annotationsDeltaData;
         SerializedData timeSignaturesDeltaData;
@@ -264,17 +264,17 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
-        UniquePointer<Delta> annotationsDelta(
-            new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
-                ProjectTimelineDeltas::annotationsAdded));
+        auto annotationsDelta = make<Delta>(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            ProjectTimelineDeltas::annotationsAdded);
 
-        UniquePointer<Delta> keySignaturesDelta(
-            new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
-                ProjectTimelineDeltas::keySignaturesAdded));
+        auto keySignaturesDelta = make<Delta>(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            ProjectTimelineDeltas::keySignaturesAdded);
 
-        UniquePointer<Delta> timeSignaturesDelta(
-            new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
-                ProjectTimelineDeltas::timeSignaturesAdded));
+        auto timeSignaturesDelta = make<Delta>(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            ProjectTimelineDeltas::timeSignaturesAdded);
 
         SerializedData annotationsDeltaData;
         SerializedData keySignaturesDeltaData;
@@ -1112,7 +1112,7 @@ DeltaDiff serializeTimelineChanges(Array<const MidiEvent *> changes,
         const String &description, int64 numChanges, const Identifier &deltaType)
 {
     DeltaDiff changesFullDelta;
-    changesFullDelta.delta.reset(new Delta(DeltaDescription(description, numChanges), deltaType));
+    changesFullDelta.delta = make<Delta>(DeltaDescription(description, numChanges), deltaType);
     changesFullDelta.deltaData = serializeTimelineSequence(changes, deltaType);
     return changesFullDelta;
 }

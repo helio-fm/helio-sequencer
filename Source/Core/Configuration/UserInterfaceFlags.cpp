@@ -19,11 +19,6 @@
 #include "SerializationKeys.h"
 #include "Config.h"
 
-// all these options are expected to be toggled by hotkeys,
-// so let's have a sensible delay before we actually serialize anything:
-
-#define UI_FLAGS_SAVE_TIMEOUT (3000)
-
 //===----------------------------------------------------------------------===//
 // Global UI state
 //===----------------------------------------------------------------------===//
@@ -42,7 +37,7 @@ void UserInterfaceFlags::setScalesHighlightingEnabled(bool enabled)
 
     this->scalesHighlighting = enabled;
     this->listeners.call(&Listener::onScalesHighlightingFlagChanged, this->scalesHighlighting);
-    this->startTimer(UI_FLAGS_SAVE_TIMEOUT);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
 bool UserInterfaceFlags::isNoteNameGuidesEnabled() const noexcept
@@ -59,7 +54,7 @@ void UserInterfaceFlags::setNoteNameGuidesEnabled(bool enabled)
 
     this->noteNameGuides = enabled;
     this->listeners.call(&Listener::onNoteNameGuidesFlagChanged, this->noteNameGuides);
-    this->startTimer(UI_FLAGS_SAVE_TIMEOUT);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
 bool UserInterfaceFlags::isOpenGlRendererEnabled() const noexcept
@@ -76,7 +71,7 @@ void UserInterfaceFlags::setOpenGlRendererEnabled(bool enabled)
 
     this->useOpenGLRenderer = enabled;
     this->listeners.call(&Listener::onOpenGlRendererFlagChanged, this->useOpenGLRenderer);
-    this->startTimer(UI_FLAGS_SAVE_TIMEOUT);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 
 }
 
@@ -94,7 +89,7 @@ void UserInterfaceFlags::setNativeTitleBarEnabled(bool enabled)
 
     this->useNativeTitleBar = enabled;
     this->listeners.call(&Listener::onNativeTitleBarFlagChanged, this->useNativeTitleBar);
-    this->startTimer(UI_FLAGS_SAVE_TIMEOUT);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
 bool UserInterfaceFlags::isVelocityMapVisible() const noexcept

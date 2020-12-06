@@ -61,7 +61,7 @@ DeltaDiff PatternDiffHelpers::serializePatternChanges(Array<Clip> changes,
     const String &description, int64 numChanges, const Identifier &deltaType)
 {
     DeltaDiff changesFullDelta;
-    changesFullDelta.delta.reset(new Delta(DeltaDescription(description, numChanges), deltaType));
+    changesFullDelta.delta = make<Delta>(DeltaDescription(description, numChanges), deltaType);
     changesFullDelta.deltaData = serializePattern(changes, deltaType);
     return changesFullDelta;
 }

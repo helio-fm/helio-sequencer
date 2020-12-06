@@ -76,32 +76,32 @@ void SettingsNode::recreatePage()
     this->audioSettings = nullptr;
     this->settingsList = nullptr;
     
-    this->settingsList.reset(new ComponentsList(0, 6));
+    this->settingsList = make<ComponentsList>(0, 6);
     
-    this->translationSettings.reset(new TranslationSettings());
+    this->translationSettings = make<TranslationSettings>();
     const String untranslatedLanguageCaption(CharPointer_UTF8("Language / \xe8\xaf\xad\xe8\xa8\x80 / Sprache / \xd0\xaf\xd0\xb7\xd1\x8b\xd0\xba"));
-    this->translationSettingsWrapper.reset(new LabeledSettingsWrapper(this->translationSettings.get(), untranslatedLanguageCaption));
+    this->translationSettingsWrapper = make<LabeledSettingsWrapper>(this->translationSettings.get(), untranslatedLanguageCaption);
     this->settingsList->addAndMakeVisible(this->translationSettingsWrapper.get());
 
-    this->themeSettings.reset(new ThemeSettings());
-    this->themeSettingsWrapper.reset(new LabeledSettingsWrapper(this->themeSettings.get(), TRANS(I18n::Settings::ui)));
+    this->themeSettings = make<ThemeSettings>();
+    this->themeSettingsWrapper = make<LabeledSettingsWrapper>(this->themeSettings.get(), TRANS(I18n::Settings::ui));
     this->settingsList->addAndMakeVisible(this->themeSettingsWrapper.get());
 
 #if PLATFORM_DESKTOP
-    this->uiSettings.reset(new UserInterfaceSettings());
-    this->uiSettingsWrapper.reset(new SimpleSettingsWrapper(this->uiSettings.get()));
+    this->uiSettings = make<UserInterfaceSettings>();
+    this->uiSettingsWrapper = make<SimpleSettingsWrapper>(this->uiSettings.get());
     this->settingsList->addAndMakeVisible(this->uiSettingsWrapper.get());
 #endif
 
-    this->audioSettings.reset(new AudioSettings(App::Workspace().getAudioCore()));
-    this->audioSettingsWrapper.reset(new LabeledSettingsWrapper(this->audioSettings.get(), TRANS(I18n::Settings::audio)));
+    this->audioSettings = make<AudioSettings>(App::Workspace().getAudioCore());
+    this->audioSettingsWrapper = make<LabeledSettingsWrapper>(this->audioSettings.get(), TRANS(I18n::Settings::audio));
     this->settingsList->addAndMakeVisible(this->audioSettingsWrapper.get());
 
-    this->syncSettings.reset(new SyncSettings());
-    this->syncSettingsWrapper.reset(new LabeledSettingsWrapper(this->syncSettings.get(), TRANS(I18n::Settings::sync)));
+    this->syncSettings = make<SyncSettings>();
+    this->syncSettingsWrapper = make<LabeledSettingsWrapper>(this->syncSettings.get(), TRANS(I18n::Settings::sync));
     this->settingsList->addAndMakeVisible(this->syncSettingsWrapper.get());
 
-    this->settingsPage.reset(new SettingsPage(this->settingsList.get()));
+    this->settingsPage = make<SettingsPage>(this->settingsList.get());
 }
 
 bool SettingsNode::hasMenu() const noexcept

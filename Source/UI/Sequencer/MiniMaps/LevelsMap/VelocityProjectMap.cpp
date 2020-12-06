@@ -74,13 +74,13 @@ public:
     Line<float> getStartLine() const noexcept
     {
         const float x = this->getX() + this->dx;
-        return { x, 0.f, x, VELOCITY_MAP_HEIGHT };
+        return { x, 0.f, x, float(Globals::UI::levelsMapHeight) };
     }
 
     Line<float> getEndLine() const noexcept
     {
         const float x = this->getX() + this->dx + this->getWidth() + this->dw;
-        return{ x, 0.f, x, VELOCITY_MAP_HEIGHT };
+        return { x, 0.f, x, float(Globals::UI::levelsMapHeight) };
     }
 
     inline void updateColour()
@@ -150,8 +150,8 @@ public:
 
     void mouseDrag(const MouseEvent &e) override
     {
-        const auto newVelocity = jlimit(0.f, 1.f,
-            this->velocityAnchor - float(e.getDistanceFromDragStartY()) / VELOCITY_MAP_HEIGHT);
+        const auto newVelocity = jlimit(0.f, 1.f, this->velocityAnchor -
+            float(e.getDistanceFromDragStartY()) / float(Globals::UI::levelsMapHeight));
 
         static_cast<PianoSequence *>(this->note.getSequence())->
             change(this->note, this->note.withVelocity(newVelocity), true);
@@ -372,7 +372,7 @@ void VelocityProjectMap::mouseDown(const MouseEvent &e)
 
 constexpr float getVelocityByIntersection(const Point<float> &intersection)
 {
-    return 1.f - (intersection.y / VELOCITY_MAP_HEIGHT);
+    return 1.f - (intersection.y / float(Globals::UI::levelsMapHeight));
 }
 
 void VelocityProjectMap::mouseDrag(const MouseEvent &e)

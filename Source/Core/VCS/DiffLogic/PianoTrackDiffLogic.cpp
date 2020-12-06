@@ -135,15 +135,15 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
         // for every supported type we need to spit out 
         // a delta of type eventsAdded with all events merged in there
 
-        UniquePointer<Delta> notesDelta(new Delta(
+        auto notesDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
-            PianoSequenceDeltas::notesAdded));
+            PianoSequenceDeltas::notesAdded);
 
         SerializedData notesDeltaData;
 
-        UniquePointer<Delta> clipsDelta(new Delta(
+        auto clipsDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
-            PatternDeltas::clipsAdded));
+            PatternDeltas::clipsAdded);
 
         SerializedData clipsDeltaData;
 
@@ -158,20 +158,20 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
 
                 if (targetDelta->hasType(MidiTrackDeltas::trackPath))
                 {
-                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    SerializedData diffDeltaData = mergePath(stateDeltaData, targetDeltaData);
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
+                    auto diffDeltaData = mergePath(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackColour))
                 {
-                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    SerializedData diffDeltaData = mergeColour(stateDeltaData, targetDeltaData);
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
+                    auto diffDeltaData = mergeColour(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackInstrument))
                 {
-                    UniquePointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
-                    SerializedData diffDeltaData = mergeInstrument(stateDeltaData, targetDeltaData);
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
+                    auto diffDeltaData = mergeInstrument(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
             }
@@ -210,15 +210,18 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
 
                 if (targetDelta->hasType(PatternDeltas::clipsAdded))
                 {
-                    clipsDeltaData = PatternDiffHelpers::mergeClipsAdded(incrementalMerge ? clipsDeltaData : stateDeltaData, targetDeltaData);
+                    clipsDeltaData = PatternDiffHelpers::mergeClipsAdded(incrementalMerge ?
+                        clipsDeltaData : stateDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->hasType(PatternDeltas::clipsRemoved))
                 {
-                    clipsDeltaData = PatternDiffHelpers::mergeClipsRemoved(incrementalMerge ? clipsDeltaData : stateDeltaData, targetDeltaData);
+                    clipsDeltaData = PatternDiffHelpers::mergeClipsRemoved(incrementalMerge ?
+                        clipsDeltaData : stateDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->hasType(PatternDeltas::clipsChanged))
                 {
-                    clipsDeltaData = PatternDiffHelpers::mergeClipsChanged(incrementalMerge ? clipsDeltaData : stateDeltaData, targetDeltaData);
+                    clipsDeltaData = PatternDiffHelpers::mergeClipsChanged(incrementalMerge ?
+                        clipsDeltaData : stateDeltaData, targetDeltaData);
                 }
             }
         }
@@ -258,9 +261,9 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         SerializedData clipsDeltaData;
-        UniquePointer<Delta> clipsDelta(new Delta(
+        auto clipsDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
-            PatternDeltas::clipsAdded));
+            PatternDeltas::clipsAdded);
 
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
@@ -274,15 +277,18 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
 
                 if (targetDelta->hasType(PatternDeltas::clipsAdded))
                 {
-                    clipsDeltaData = PatternDiffHelpers::mergeClipsAdded(incrementalMerge ? clipsDeltaData : emptyClipDeltaData, targetDeltaData);
+                    clipsDeltaData = PatternDiffHelpers::mergeClipsAdded(incrementalMerge ?
+                        clipsDeltaData : emptyClipDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->hasType(PatternDeltas::clipsRemoved))
                 {
-                    clipsDeltaData = PatternDiffHelpers::mergeClipsRemoved(incrementalMerge ? clipsDeltaData : emptyClipDeltaData, targetDeltaData);
+                    clipsDeltaData = PatternDiffHelpers::mergeClipsRemoved(incrementalMerge ?
+                        clipsDeltaData : emptyClipDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->hasType(PatternDeltas::clipsChanged))
                 {
-                    clipsDeltaData = PatternDiffHelpers::mergeClipsChanged(incrementalMerge ? clipsDeltaData : emptyClipDeltaData, targetDeltaData);
+                    clipsDeltaData = PatternDiffHelpers::mergeClipsChanged(incrementalMerge ?
+                        clipsDeltaData : emptyClipDeltaData, targetDeltaData);
                 }
             }
         }
@@ -295,7 +301,6 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
 
     return diff;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Merge
@@ -428,9 +433,9 @@ DeltaDiff createPathDiff(const SerializedData &state, const SerializedData &chan
     DeltaDiff res;
     using namespace Serialization::VCS;
     res.deltaData = changes.createCopy();
-    res.delta.reset(new Delta(DeltaDescription("moved from {x}",
+    res.delta = make<Delta>(DeltaDescription("moved from {x}",
         state.getProperty(Serialization::VCS::delta).toString()),
-        MidiTrackDeltas::trackPath));
+        MidiTrackDeltas::trackPath);
     return res;
 }
 
@@ -438,8 +443,8 @@ DeltaDiff createColourDiff(const SerializedData &state, const SerializedData &ch
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta.reset(new Delta(DeltaDescription("color changed"),
-        MidiTrackDeltas::trackColour));
+    res.delta = make<Delta>(DeltaDescription("color changed"),
+        MidiTrackDeltas::trackColour);
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -448,8 +453,8 @@ DeltaDiff createInstrumentDiff(const SerializedData &state, const SerializedData
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta.reset(new Delta(DeltaDescription("instrument changed"),
-        MidiTrackDeltas::trackInstrument));
+    res.delta = make<Delta>(DeltaDescription("instrument changed"),
+        MidiTrackDeltas::trackInstrument);
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -467,7 +472,6 @@ Array<DeltaDiff> createEventsDiffs(const SerializedData &state, const Serialized
     deserializeLayerChanges(state, changes, stateNotes, changesNotes);
 
     Array<DeltaDiff> res;
-
 
     Array<const MidiEvent *> addedNotes;
     Array<const MidiEvent *> removedNotes;
@@ -593,7 +597,7 @@ DeltaDiff serializePianoTrackChanges(Array<const MidiEvent *> changes,
     const String &description, int64 numChanges, const Identifier &deltaType)
 {
     DeltaDiff changesFullDelta;
-    changesFullDelta.delta.reset(new Delta(DeltaDescription(description, numChanges), deltaType));
+    changesFullDelta.delta = make<Delta>(DeltaDescription(description, numChanges), deltaType);
     changesFullDelta.deltaData = serializePianoSequence(changes, deltaType);
     return changesFullDelta;
 }

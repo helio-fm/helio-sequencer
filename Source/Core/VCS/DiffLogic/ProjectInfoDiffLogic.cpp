@@ -246,7 +246,7 @@ DeltaDiff createLicenseDiff(const SerializedData &state, const SerializedData &c
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta.reset(new Delta(DeltaDescription("license changed"), ProjectInfoDeltas::projectLicense));
+    res.delta = make<Delta>(DeltaDescription("license changed"), ProjectInfoDeltas::projectLicense);
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -255,7 +255,7 @@ DeltaDiff createFullNameDiff(const SerializedData &state, const SerializedData &
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta.reset(new Delta(DeltaDescription("title changed"), ProjectInfoDeltas::projectTitle));
+    res.delta = make<Delta>(DeltaDescription("title changed"), ProjectInfoDeltas::projectTitle);
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -264,7 +264,7 @@ DeltaDiff createAuthorDiff(const SerializedData &state, const SerializedData &ch
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta.reset(new Delta(DeltaDescription("author changed"), ProjectInfoDeltas::projectAuthor));
+    res.delta = make<Delta>(DeltaDescription("author changed"), ProjectInfoDeltas::projectAuthor);
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -273,7 +273,7 @@ DeltaDiff createDescriptionDiff(const SerializedData &state, const SerializedDat
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta.reset(new Delta(DeltaDescription("description changed"), ProjectInfoDeltas::projectDescription));
+    res.delta = make<Delta>(DeltaDescription("description changed"), ProjectInfoDeltas::projectDescription);
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -282,7 +282,7 @@ DeltaDiff createTemperamentDiff(const SerializedData &state, const SerializedDat
 {
     DeltaDiff res;
     using namespace Serialization::VCS;
-    res.delta.reset(new Delta(DeltaDescription("temperament changed"), ProjectInfoDeltas::projectTemperament));
+    res.delta = make<Delta>(DeltaDescription("temperament changed"), ProjectInfoDeltas::projectTemperament);
     res.deltaData = changes.createCopy();
     return res;
 }

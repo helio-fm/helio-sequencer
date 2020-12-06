@@ -19,8 +19,6 @@
 #include "ProjectMapScrollerScreen.h"
 #include "ProjectMapScroller.h"
 
-#define TRACK_SCROLLER_MINIMAP_HAS_ACTIVE_BORDER 0
-
 ProjectMapScrollerScreen::ProjectMapScrollerScreen(ProjectMapScroller &scrollerRef) :
     colour(findDefaultColour(ColourIDs::TrackScroller::screenRangeFill)),
     scroller(scrollerRef)
@@ -28,20 +26,9 @@ ProjectMapScrollerScreen::ProjectMapScrollerScreen(ProjectMapScroller &scrollerR
     this->setPaintingIsUnclipped(true);
     this->setMouseClickGrabsKeyboardFocus(false);
 
-    this->moveConstrainer.reset(new ComponentBoundsConstrainer());
+    this->moveConstrainer = make<ComponentBoundsConstrainer>();
     this->moveConstrainer->setMinimumSize(4, 4);
     this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
-
-#if TRACK_SCROLLER_MINIMAP_HAS_ACTIVE_BORDER
-    this->resizeConstrainer.reset(new ResizeConstrainer(this->scroller));
-    this->resizeConstrainer->setMinimumSize(4, 4);
-    this->resizeConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
-
-    this->border.reset(new ResizableBorderComponent(this, this->resizeConstrainer));
-    this->addAndMakeVisible(this->border);
-    this->border->setBorderThickness(BorderSize<int>(3));
-    this->border->setRepaintsOnMouseActivity(false);
-#endif
 }
 
 //===----------------------------------------------------------------------===//
@@ -66,22 +53,4 @@ void ProjectMapScrollerScreen::paint(Graphics &g)
 {
     g.setColour(this->colour);
     g.fillRect(this->getLocalBounds());
-}
-
-void ProjectMapScrollerScreen::resized()
-{
-#if TRACK_SCROLLER_MINIMAP_HAS_ACTIVE_BORDER
-    this->border->setBounds(this->getLocalBounds());
-#endif
-}
-
-//===----------------------------------------------------------------------===//
-// Constrainers
-//===----------------------------------------------------------------------===//
-
-void ProjectMapScrollerScreen::ResizeConstrainer::applyBoundsToComponent(Component &component,
-        Rectangle<int> bounds)
-{
-    ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
-    this->scroller.xyMoveByUser();
 }

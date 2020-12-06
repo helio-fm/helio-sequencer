@@ -79,17 +79,17 @@ ProjectTimeline::ProjectTimeline(ProjectNode &parentProject, String trackName) :
     timeSignaturesTrackId(Uuid().toString()),
     keySignaturesTrackId(Uuid().toString())
 {
-    this->annotationsTrack.reset(new AnnotationsTrack(*this));
-    this->annotationsSequence.reset(new AnnotationsSequence(*this->annotationsTrack, *this));
+    this->annotationsTrack = make<AnnotationsTrack>(*this);
+    this->annotationsSequence = make<AnnotationsSequence>(*this->annotationsTrack, *this);
 
-    this->timeSignaturesTrack.reset(new TimeSignaturesTrack(*this));
-    this->timeSignaturesSequence.reset(new TimeSignaturesSequence(*this->timeSignaturesTrack, *this));
+    this->timeSignaturesTrack = make<TimeSignaturesTrack>(*this);
+    this->timeSignaturesSequence = make<TimeSignaturesSequence>(*this->timeSignaturesTrack, *this);
 
-    this->keySignaturesTrack.reset(new KeySignaturesTrack(*this));
-    this->keySignaturesSequence.reset(new KeySignaturesSequence(*this->keySignaturesTrack, *this));
+    this->keySignaturesTrack = make<KeySignaturesTrack>(*this);
+    this->keySignaturesSequence = make<KeySignaturesSequence>(*this->keySignaturesTrack, *this);
 
     using namespace Serialization::VCS;
-    this->vcsDiffLogic.reset(new VCS::ProjectTimelineDiffLogic(*this));
+    this->vcsDiffLogic = make<VCS::ProjectTimelineDiffLogic>(*this);
     this->deltas.add(new VCS::Delta({}, ProjectTimelineDeltas::annotationsAdded));
     this->deltas.add(new VCS::Delta({}, ProjectTimelineDeltas::keySignaturesAdded));
     this->deltas.add(new VCS::Delta({}, ProjectTimelineDeltas::timeSignaturesAdded));
