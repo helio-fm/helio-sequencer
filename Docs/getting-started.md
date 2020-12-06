@@ -81,7 +81,7 @@ To start a new project from scratch, navigate to the dashboard by pressing `Home
 
 There are several ways:
  * use the `/` hotkey to show the projects list in the [command palette](tips-and-tricks.md#command-palette),
- * or hover the `Studio` item in the breadcrumb control, which shows the menu with all open projects (the most inconvinient way so far),
+ * or hover the `Studio` item in the breadcrumb control, which shows the menu with all open projects (the most inconvenient way so far),
  * back and forward buttons also can be useful sometimes, the related hotkeys are `Alt + Cursor Left` and `Alt + Cursor Right`.
 
 
@@ -251,7 +251,7 @@ At the moment of writing, only linear ramps are implemented:
 
 ![velocity-map-ramps]
 
-You can also change note velocities without this editor, just by middle-button dragging the note componenets on the roll.
+You can also change note velocities without this editor, just by middle-button dragging the note components on the roll.
 
 ### MIDI recording
 
@@ -299,7 +299,7 @@ Often, you only need one tempo for the whole song - for that, pick *"Set one tem
 [instrument-routing]: images/instrument-routing.png "The instrument details page"
 
 [breadcrumbs-root-menu]: images/breadcrumbs-root-menu.png "Breadcrumbs control, root menu"
-[breadcrumbs-menus]: images/breadcrumbs-menus.png "Breadcrumbs control, conetxt menus"
+[breadcrumbs-menus]: images/breadcrumbs-menus.png "Breadcrumbs control, context menus"
 
 [piano-roll]: images/piano-roll.png "Interaction with piano roll canvas"
 [patterns]: images/patterns-arrange.png "Pattern mode for arrangements"

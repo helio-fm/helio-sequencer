@@ -1,10 +1,12 @@
 # Introduction
 
-Welcome to the documentation for the Helio project, a free lighweight music sequencer, which runs on the all major desktop and mobile operating systems.
+Welcome to the documentation for the Helio project, a free lightweight music sequencer, which runs on the all major desktop and mobile operating systems.
 
 Helio was designed to save me the time of struggling with the MIDI editor, so I could focus more on musical ideas. In this documentation, I'll also try to save some time and write it down as short and simple as I can.
 
 If you notice that something important is missing, which I'm pretty sure it is, send me an angry [email](mailto:peter.rudenko@gmail.com), or create a [PR](https://github.com/helio-fm/helio-workstation/pulls) on the Github.
+
+*If you're reading this page in the project's repository, some generated content will be missing, see the full rendered version at [docs.helio.fm](https://docs.helio.fm).*
 
 #### How to read this
 
@@ -37,7 +39,7 @@ At the moment of writing this, Helio does not support plugin sandboxing or hosti
 Master builds are the latest stable versions. You can keep up to date with the latest changes through the [release notes](changelog.md). If you'd like to preview the latest features or verify bug fixes, you can install the development build.
 
 
-## Configuration files
+## Used directories
 
 Helio keeps all files in two directories: one for the project files, and one for the configuration files.
 
@@ -51,15 +53,13 @@ All the configuration files are created on the first start under the user applic
 * macOS: ~/Library/Application Support/Helio
 * Linux: ~/.config/Helio
 
-#### `settings.helio`
+#### *settings.helio*
 
 This file basically contains all the settings, so if you delete or rename it, the app would run as if it was the first time. The settings are supposed to be human-readable and are stored in XML format.
 
-#### `translations.helio` and maybe others
+#### *translations.helio* and maybe others
 
-Some additional configuration resources are dynamically updated in the runtime, if the newer version is available. At the moment of writing, only translations are updated this way.
-
-In future, the app may sync more configs, including default scales, chords, arpeggiators, hotkey schemes, colour schemes, etc.
+Some additional [resources](configs.md) are dynamically updated in the runtime, if the newer version is available. At the moment of writing, only translations are updated this way.
 
 ### The projects directory
 

@@ -59,7 +59,7 @@ For more detailed info, please see the git log.
 
 ## Version 2.2
  - Long-overdue implementation of inline velocity map/editor (toggled by V button)
- - Arpeggiators can use advanced options, like length multiplier, invertion, randomness level (shift/ctrl/atl + arp button)
+ - Arpeggiators can use advanced options, like length multiplier, inversion, randomness level (shift/ctrl/atl + arp button)
  - Refactored instruments managements to fix rare crashes on the orchestra pit page
  - Fixed shift-drag-to-copy for notes, which was broken even before v2 release
  - Fixed automation curves interpolation
@@ -69,7 +69,7 @@ For more detailed info, please see the git log.
  - Clips now can be muted/soloed
  - Patterns can be grouped by name/colour/instrument
  - Notes can be split into triplets/quadruplets/quintuplets/etc
- - Binary size is much smaller and more optimised overall, due to unity build
+ - Binary size is much smaller and more optimized overall, due to unity build
 
 ## Version 2.0
  - Spent entire 2018 paying off the tech debt of version 1 (or tech mortgage, if you will), which was pretty much of a POC
