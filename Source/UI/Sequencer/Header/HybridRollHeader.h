@@ -81,9 +81,10 @@ protected:
     UniquePointer<TimeDistanceIndicator> timeDistanceIndicator;
     UniquePointer<HeaderSelectionIndicator> selectionIndicator;
 
+    static constexpr auto minTimeDistanceIndicatorSize = 40;
+
     void updateIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e);
     double getUnalignedAnchorForEvent(const MouseEvent &e) const;
-    double getAlignedAnchorForEvent(const MouseEvent &e) const;
     void updateTimeDistanceIndicator();
     void updateClipRangeIndicator();
 

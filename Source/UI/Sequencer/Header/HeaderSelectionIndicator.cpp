@@ -20,7 +20,7 @@
 #include "ColourIDs.h"
 
 HeaderSelectionIndicator::HeaderSelectionIndicator() :
-    fill(findDefaultColour(ColourIDs::SelectionComponent::outline)),
+    fill(findDefaultColour(ColourIDs::RollHeader::selection)),
     currentFill(fill)
 {
     this->setWantsKeyboardFocus(false);

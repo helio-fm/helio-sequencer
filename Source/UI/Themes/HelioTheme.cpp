@@ -804,6 +804,10 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     // Lasso
     this->setColour(ColourIDs::SelectionComponent::fill, s->getLassoFillColour().withAlpha(0.2f));
     this->setColour(ColourIDs::SelectionComponent::outline, s->getLassoBorderColour().withAlpha(0.75f));
+    // Similar things for the roll header tools
+    this->setColour(ColourIDs::RollHeader::selection, s->getLassoBorderColour().withAlpha(0.8f));
+    this->setColour(ColourIDs::RollHeader::soundProbe, s->getLassoBorderColour().withMultipliedBrightness(1.1f).withAlpha(0.75f));
+    this->setColour(ColourIDs::RollHeader::timeDistance, s->getTextColour().withAlpha(0.4f));
 
     // A hack for icon base colors
     this->setColour(ColourIDs::Icons::fill, s->getIconBaseColour());
@@ -858,7 +862,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::headerRecording, headerFill.interpolatedWith(Colours::red, 0.55f));
 
     this->setColour(ColourIDs::Roll::playheadShade, Colours::black.withAlpha(0.1f));
-    this->setColour(ColourIDs::Roll::playheadPlayback, s->getLassoBorderColour().withAlpha(0.65f));
+    this->setColour(ColourIDs::Roll::playheadPlayback, s->getLassoBorderColour().withAlpha(0.75f));
     this->setColour(ColourIDs::Roll::playheadRecording, s->getLassoBorderColour().interpolatedWith(Colours::red, 0.75f).withAlpha(0.55f));
     this->setColour(ColourIDs::Roll::trackHeaderFill, s->getWhiteKeyColour());
     this->setColour(ColourIDs::Roll::trackHeaderBorder, Colours::white.withAlpha(0.075f));

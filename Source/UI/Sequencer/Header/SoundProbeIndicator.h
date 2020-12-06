@@ -24,11 +24,8 @@ class SoundProbeIndicator final : public Component
 public:
 
     SoundProbeIndicator() :
-        colour(Colours::white
-            .interpolatedWith(Colours::yellow, 0.05f)
-            .withAlpha(0.4f)),
-        shadowColour(findDefaultColour(ColourIDs::Common::borderLineDark)
-            .withMultipliedAlpha(0.5f))
+        colour(findDefaultColour(ColourIDs::RollHeader::soundProbe)),
+        shadowColour(findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f))
     {
         this->setInterceptsMouseClicks(false, false);
         this->setPaintingIsUnclipped(true);
@@ -56,10 +53,17 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(this->shadowColour);
-        g.fillRect(this->getLocalBounds());
+        g.fillRect(0, 1, 1, this->getHeight());
+        g.fillRect(2, 1, 1, this->getHeight());
 
         g.setColour(this->colour);
-        g.fillRect(1, 1, 1, this->getHeight());
+        //constexpr auto dashLength = 8;
+        //for (int i = dashLength - 2; i < this->getHeight(); i += dashLength * 2)
+        //{
+        //    g.fillRect(0, i, 2, dashLength);
+        //}
+
+        g.fillRect(0, 1, 2, this->getHeight());
     }
 
     void parentHierarchyChanged() override
@@ -82,7 +86,7 @@ private:
     void updateBounds()
     {
         const int x = int(double(this->getParentWidth()) * this->absPosition -
-            double(this->getWidth()) / 2.0 + 0.5);
+            double(this->getWidth()) / 2.0 + 1.5);
 
         this->setBounds(x, 0, this->getWidth(), this->getParentHeight());
     }

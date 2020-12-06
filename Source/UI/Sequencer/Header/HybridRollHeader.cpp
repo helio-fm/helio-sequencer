@@ -28,8 +28,6 @@
 #include "TimelineMenu.h"
 #include "ColourIDs.h"
 
-#define MIN_TIME_DISTANCE_INDICATOR_SIZE (40)
-
 HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef, Viewport &viewportRef) :
     transport(transportRef),
     roll(rollRef),
@@ -85,14 +83,14 @@ void HybridRollHeader::showLoopMode(bool hasLoop, float startBeat, float endBeat
     this->repaint();
 }
 
-void HybridRollHeader::setSoundProbeMode(bool shouldPlayOnClick)
+void HybridRollHeader::setSoundProbeMode(bool shouldPreviewOnClick)
 {
-    if (this->soundProbeMode.get() == shouldPlayOnClick)
+    if (this->soundProbeMode.get() == shouldPreviewOnClick)
     {
         return;
     }
     
-    this->soundProbeMode = shouldPlayOnClick;
+    this->soundProbeMode = shouldPreviewOnClick;
     
     if (this->soundProbeMode.get())
     {
@@ -122,7 +120,11 @@ void HybridRollHeader::updateSubrangeIndicator(const Colour &colour, float first
 
 void HybridRollHeader::updateIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e)
 {
-    indicator->setAnchoredAt(this->getAlignedAnchorForEvent(e));
+    const auto parentEvent = e.getEventRelativeTo(&this->roll);
+    const float roundBeat = this->roll.getBeatByXPosition(float(parentEvent.x));
+    const int roundX = this->roll.getXPositionByBeat(roundBeat);
+    const auto anchor = double(roundX) / double(this->roll.getWidth());
+    indicator->setAnchoredAt(anchor);
 }
 
 double HybridRollHeader::getUnalignedAnchorForEvent(const MouseEvent &e) const
@@ -130,14 +132,6 @@ double HybridRollHeader::getUnalignedAnchorForEvent(const MouseEvent &e) const
     const auto parentEvent = e.getEventRelativeTo(&this->roll);
     const double absX = double(parentEvent.getPosition().getX()) / double(this->roll.getWidth());
     return absX;
-}
-
-double HybridRollHeader::getAlignedAnchorForEvent(const MouseEvent &e) const
-{
-    const auto parentEvent = e.getEventRelativeTo(&this->roll);
-    const float roundBeat = this->roll.getRoundBeatSnapByXPosition(parentEvent.x);
-    const int roundX = this->roll.getXPositionByBeat(roundBeat);
-    return double(roundX) / double(this->roll.getWidth());
 }
 
 void HybridRollHeader::updateTimeDistanceIndicator()
@@ -247,21 +241,21 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
 
                 if (this->timeDistanceIndicator == nullptr)
                 {
-                    // todo rebuild sequences if not playing, do nothing if playing
-                    this->transport.stopPlaybackAndRecording();
-                    
-                    if (distance > MIN_TIME_DISTANCE_INDICATOR_SIZE)
+                    if (distance > HybridRollHeader::minTimeDistanceIndicatorSize)
                     {
+                        this->transport.stopPlaybackAndRecording();
+                        this->transport.allNotesControllersAndSoundOff();
+
                         this->timeDistanceIndicator = make<TimeDistanceIndicator>();
                         this->roll.addAndMakeVisible(this->timeDistanceIndicator.get());
                         this->timeDistanceIndicator->setBounds(0, this->getBottom() + 4,
-                                                               0, this->timeDistanceIndicator->getHeight());
+                            0, this->timeDistanceIndicator->getHeight());
                         this->updateTimeDistanceIndicator();
                     }
                 }
                 else
                 {
-                    if (distance <= MIN_TIME_DISTANCE_INDICATOR_SIZE)
+                    if (distance <= HybridRollHeader::minTimeDistanceIndicatorSize)
                     {
                         this->timeDistanceIndicator = nullptr;
                     }
@@ -340,15 +334,11 @@ void HybridRollHeader::mouseMove(const MouseEvent &e)
     {
         this->updateIndicatorPosition(this->pointingIndicator.get(), e);
     }
-    
-    if (this->soundProbeMode.get())
+    else if (this->soundProbeMode.get())
     {
-        if (this->pointingIndicator == nullptr)
-        {
-            this->pointingIndicator = make<SoundProbeIndicator>();
-            this->roll.addAndMakeVisible(this->pointingIndicator.get());
-            this->updateIndicatorPosition(this->pointingIndicator.get(), e);
-        }
+        this->pointingIndicator = make<SoundProbeIndicator>();
+        this->roll.addAndMakeVisible(this->pointingIndicator.get());
+        this->updateIndicatorPosition(this->pointingIndicator.get(), e);
     }
 }
 
@@ -368,6 +358,11 @@ void HybridRollHeader::mouseExit(const MouseEvent &e)
 void HybridRollHeader::mouseDoubleClick(const MouseEvent &e)
 {
 #if PLATFORM_DESKTOP
+    if (this->soundProbeMode.get())
+    {
+        return;
+    }
+
     const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
     this->transport.stopPlaybackAndRecording();
     this->transport.seekToBeat(roundBeat);

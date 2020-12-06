@@ -17,11 +17,14 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class TimeDistanceIndicator final : public Component, private Timer
 {
 public:
 
-    TimeDistanceIndicator()
+    TimeDistanceIndicator() :
+        colour(findDefaultColour(ColourIDs::RollHeader::timeDistance))
     {
         this->timeLabel = make<Label>();
         this->addAndMakeVisible(this->timeLabel.get());
@@ -44,7 +47,7 @@ public:
             this->getBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
     }
 
-    Label *getTimeLabel() const
+    Label *getTimeLabel() const noexcept
     {
         return this->timeLabel.get();
     }
@@ -58,10 +61,15 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(Colour(0x3dffffff));
-        g.fillRect(4, 0, this->getWidth() - 8, 1);
-        g.fillRect(3, 1, this->getWidth() - 6, 2);
-        g.fillRect(4, 3, this->getWidth() - 8, 1);
+        g.setColour(this->colour);
+
+        constexpr auto dashLength = 8;
+        for (int i = dashLength; i < this->getWidth() - dashLength; i += dashLength * 2)
+        {
+            g.fillRect(i + 1, 0, dashLength, 1); // looks fancier)
+            g.fillRect(i, 1, dashLength, 2);
+            //g.fillRect(i, 0, dashLength, 3);
+        }
     }
 
     void resized() override
@@ -90,6 +98,8 @@ private:
             this->stopTimer();
         }
     }
+
+    const Colour colour;
 
     double startAbsPosition = 0.0;
     double endAbsPosition = 0.0;

@@ -146,6 +146,13 @@ namespace ColourIDs
         static const int outline                = 0x2001301;
     }
 
+    namespace RollHeader
+    {
+        static const int selection              = 0x2001310;
+        static const int soundProbe             = 0x2001311;
+        static const int timeDistance           = 0x2001312;
+    }
+
     namespace Logo
     {
         static const int fill                   = 0x2001500;
