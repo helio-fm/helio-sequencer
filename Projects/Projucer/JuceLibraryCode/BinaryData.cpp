@@ -1152,14 +1152,15 @@ static const unsigned char temp_binary_data_95[] =
 "      { \"name\": \"3\", \"keys\": \"1 3 5\" },\n"
 "      { \"name\": \"sus2\", \"keys\": \"1 2 5\" },\n"
 "      { \"name\": \"sus4\", \"keys\": \"1 4 5\" },\n"
-"      { \"name\": \"aug\", \"keys\": \"1 3 5#\" },\n"
-"      { \"name\": \"dim\", \"keys\": \"1 3 5b\" },\n"
+"      //{ \"name\": \"aug\", \"keys\": \"1 3 5#\" },\n"
+"      //{ \"name\": \"dim\", \"keys\": \"1 3 5b\" },\n"
 "      { \"name\": \"6\", \"keys\": \"1 3 5 6\" },\n"
 "      { \"name\": \"7\", \"keys\": \"1 3 5 7\" },\n"
-"      { \"name\": \"7sus2\", \"keys\": \"1 2 5 7\" },\n"
-"      { \"name\": \"7sus4\", \"keys\": \"1 4 5 7\" },\n"
+"      { \"name\": \"7 sus2\", \"keys\": \"1 2 5 7\" },\n"
+"      { \"name\": \"7 sus4\", \"keys\": \"1 4 5 7\" },\n"
 "      { \"name\": \"9\", \"keys\": \"1 3 5 7 9\" },\n"
 "      { \"name\": \"add9\", \"keys\": \"1 3 5 9\" },\n"
+"      { \"name\": \"add9 sus4\", \"keys\": \"1 4 5 9\" },\n"
 "      { \"name\": \"add11\", \"keys\": \"1 3 5 11\" }\n"
 "    ]\n"
 "  }\n"
@@ -1628,6 +1629,7 @@ static const unsigned char temp_binary_data_98[] =
 "{\n"
 "  \"scales\": {\n"
 "    \"scale\": [\n"
+"\n"
 "      // 12 edo scales; source: \"The Scale Omnibus\"\n"
 "      { \"period\": 12, \"name\": \"Ionian\", \"intervals\": \"2 2 1 2 2 2 1\" },\n"
 "      { \"period\": 12, \"name\": \"Aeolian\", \"intervals\": \"2 1 2 2 1 2 2\" },\n"
@@ -1669,6 +1671,7 @@ static const unsigned char temp_binary_data_98[] =
 "      { \"period\": 12, \"name\": \"Blues Mixed\", \"intervals\": \"3 1 1 1 1 3 2\" },\n"
 "      { \"period\": 12, \"name\": \"Blues Leading Tone\", \"intervals\": \"3 2 1 1 3 1 1\" },\n"
 "      { \"period\": 12, \"name\": \"Rock'n'Roll\", \"intervals\": \"3 1 1 2 2 1 2\" },\n"
+"\n"
 "      // 22 edo scales; source: https://en.xen.wiki/w/22edo\n"
 "      { \"period\": 22, \"name\": \"Harmonic Minor\", \"intervals\": \"4 2 3 4 2 5 2\" },\n"
 "      { \"period\": 22, \"name\": \"Superpyth, diatonic \", \"intervals\": \"4 1 4 4 4 1 4\" },\n"
@@ -1686,6 +1689,7 @@ static const unsigned char temp_binary_data_98[] =
 "      { \"period\": 22, \"name\": \"Porcupine bright major\", \"intervals\": \"4 3 3 3 3 4 2\" },\n"
 "      { \"period\": 22, \"name\": \"Porcupine bright minor\", \"intervals\": \"4 2 4 3 3 3 3\" },\n"
 "      { \"period\": 22, \"name\": \"Porcupine dark minor\", \"intervals\": \"4 2 3 4 3 3 3\" },\n"
+"\n"
 "      // 31 edo scales; source: https://en.xen.wiki/w/31edo\n"
 "      { \"period\": 31, \"name\": \"Major\", \"intervals\": \"5 5 3 5 5 5 3\" },\n"
 "      { \"period\": 31, \"name\": \"Natural Minor\", \"intervals\": \"5 3 5 5 3 5 5\" },\n"
@@ -3859,10 +3863,10 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xd91bf8d8:  numBytes = 3287; return exampleProject_json;
         case 0xe05deb51:  numBytes = 25962; return logov2_png;
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
-        case 0xd1d24c90:  numBytes = 712; return chords_json;
+        case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
         case 0x25669f2b:  numBytes = 14684; return hotkeySchemes_json;
-        case 0x048f5efe:  numBytes = 8354; return scales_json;
+        case 0x048f5efe:  numBytes = 8357; return scales_json;
         case 0x77719112:  numBytes = 839; return temperaments_json;
         case 0xf8655f25:  numBytes = 136297; return translations_json;
         default: break;
