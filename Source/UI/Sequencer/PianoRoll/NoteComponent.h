@@ -76,7 +76,6 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
-    void mouseDoubleClick(const MouseEvent &e) override;
     void paint(Graphics &g) noexcept override;
 
 private:
@@ -167,8 +166,30 @@ private:
     Note continueGroupScalingLeft(float absScaleFactor) const noexcept;
     void endGroupScalingLeft();
     
-    bool canResize() const noexcept;
-    bool isResizingOrScaling() const noexcept;
+    static constexpr auto maxDragPolyphony = 8;
+
+    static constexpr auto minResizableEdge = 4;
+    static constexpr auto maxResizableEdge = 12;
+
+    inline int getResizableEdge() const noexcept
+    {
+        return jlimit(minResizableEdge, maxResizableEdge, this->getWidth() / 8);
+    }
+
+    inline bool canResize() const noexcept
+    {
+        return this->getWidth() >=
+            (NoteComponent::maxResizableEdge + NoteComponent::maxResizableEdge);
+    }
+
+    inline bool isResizingOrScaling() const noexcept
+    {
+        return this->state == State::DraggingResizing ||
+            this->state == State::GroupScalingLeft ||
+            this->state == State::GroupScalingRight ||
+            this->state == State::ResizingLeft ||
+            this->state == State::ResizingRight;
+    }
 
 private:
 

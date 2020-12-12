@@ -27,9 +27,6 @@
 #include "SequencerOperations.h"
 #include "ColourIDs.h"
 
-#define RESIZE_CORNER 10
-#define MAX_DRAG_POLYPHONY 8
-
 static PianoSequence *getPianoSequence(const Lasso &selection)
 {
     const auto &firstEvent = selection.getFirstAs<NoteComponent>()->getNote();
@@ -78,20 +75,6 @@ void NoteComponent::updateColours()
     this->colourVolume = this->colour.darker(0.8f).withAlpha(ghost ? 0.f : 0.5f);
 }
 
-bool NoteComponent::isResizingOrScaling() const noexcept
-{
-    return this->state == State::DraggingResizing ||
-        this->state == State::GroupScalingLeft ||
-        this->state == State::GroupScalingRight ||
-        this->state == State::ResizingLeft ||
-        this->state == State::ResizingRight;
-}
-
-bool NoteComponent::canResize() const noexcept
-{
-     return (this->getWidth() >= (RESIZE_CORNER * 2));
-}
-
 bool NoteComponent::shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const
 {
     return (modifiers.isAltDown() || modifiers.isRightButtonDown()) && !this->isActive();
@@ -133,8 +116,9 @@ void NoteComponent::mouseMove(const MouseEvent &e)
         return;
     }
 
+    const auto resizeEdge = this->getResizableEdge();
     if (this->isResizingOrScaling() ||
-        (this->canResize() && (e.x >= (this->getWidth() - RESIZE_CORNER) || e.x <= RESIZE_CORNER)))
+        (this->canResize() && (e.x >= (this->getWidth() - resizeEdge) || e.x <= resizeEdge)))
     {
         this->setMouseCursor(MouseCursor::LeftRightResizeCursor);
     }
@@ -179,7 +163,8 @@ void NoteComponent::mouseDown(const MouseEvent &e)
 #if PLATFORM_MOBILE
         const bool shouldSendMidi = false;
 #elif PLATFORM_DESKTOP
-        const bool shouldSendMidi = (selection.getNumSelected() < MAX_DRAG_POLYPHONY);
+        const bool shouldSendMidi =
+            selection.getNumSelected() < NoteComponent::maxDragPolyphony;
 #endif
         
         if (shouldSendMidi)
@@ -187,8 +172,8 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             this->stopSound();
         }
 
-        if (this->canResize() &&
-            e.x >= (this->getWidth() - RESIZE_CORNER))
+        const auto resizeEdge = this->getResizableEdge();
+        if (this->canResize() && e.x >= (this->getWidth() - resizeEdge))
         {
             if (e.mods.isShiftDown())
             {
@@ -216,7 +201,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
                 }
             }
         }
-        else if (this->canResize() && e.x <= RESIZE_CORNER)
+        else if (this->canResize() && e.x <= resizeEdge)
         {
             if (e.mods.isShiftDown())
             {
@@ -302,7 +287,8 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 #if PLATFORM_MOBILE
         const bool shouldSendMidi = false;
 #elif PLATFORM_DESKTOP
-        const bool shouldSendMidi = (lastDeltaKey != deltaKey) && (selection.getNumSelected() < MAX_DRAG_POLYPHONY);
+        const bool shouldSendMidi = (lastDeltaKey != deltaKey) &&
+            (selection.getNumSelected() < NoteComponent::maxDragPolyphony);
 #endif
         lastDeltaKey = deltaKey;
 
@@ -440,7 +426,8 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 #if PLATFORM_MOBILE
         const bool shouldSendMidi = false;
 #elif PLATFORM_DESKTOP
-        const bool shouldSendMidi = (lastDeltaKey != deltaKey) && (selection.getNumSelected() < MAX_DRAG_POLYPHONY);
+        const bool shouldSendMidi = (lastDeltaKey != deltaKey) &&
+            (selection.getNumSelected() < NoteComponent::maxDragPolyphony);
 #endif
         lastDeltaKey = deltaKey;
         
@@ -602,9 +589,6 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     }
 }
 
-// This action is still free - TODO something useful:
-void NoteComponent::mouseDoubleClick(const MouseEvent &e) {}
-
 //===----------------------------------------------------------------------===//
 // Notes painting
 //===----------------------------------------------------------------------===//
@@ -662,6 +646,12 @@ void NoteComponent::paint(Graphics &g) noexcept
             g.fillRect(x + i * (w / tuplet), y, 1.5f, h);
         }
     }
+
+    // debug
+    //g.setColour(Colours::orangered);
+    //const auto edge = this->getResizableEdge();
+    //g.fillRect(0, 0, edge, this->getHeight());
+    //g.fillRect(this->getWidth() - edge, 0, edge, this->getHeight());
 }
 
 //===----------------------------------------------------------------------===//
