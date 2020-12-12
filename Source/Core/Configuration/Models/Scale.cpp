@@ -234,6 +234,22 @@ bool Scale::isEquivalentTo(const Scale *other) const
     return false;
 }
 
+
+int Scale::getDifferenceFrom(const Scale::Ptr other) const
+{
+    if (other == nullptr)
+    {
+        return INT_MAX;
+    }
+
+    int diff = 0;
+    for (int i = 0; i < jmax(this->keys.size(), other->keys.size()); ++i)
+    {
+        diff += abs(this->keys[i] - other->keys[i]);
+    }
+    return diff;
+}
+
 //===----------------------------------------------------------------------===//
 // BaseResource
 //===----------------------------------------------------------------------===//

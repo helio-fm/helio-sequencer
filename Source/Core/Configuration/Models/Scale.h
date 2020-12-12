@@ -115,6 +115,11 @@ public:
     bool isEquivalentTo(const Scale *other) const;
     bool isEquivalentTo(const Scale::Ptr other) const;
 
+    // Also used to determine similarity between two scales:
+    // simply returns the sum of abs(key1-key2) for all keys;
+    // the more the value, the bigger the difference
+    int getDifferenceFrom(const Scale::Ptr other) const;
+
     int hashCode() const noexcept;
 
 private:

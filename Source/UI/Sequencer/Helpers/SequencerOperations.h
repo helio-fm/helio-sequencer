@@ -25,6 +25,7 @@ class MidiTrack;
 class Pattern;
 class Clipboard;
 class PianoSequence;
+class KeySignaturesSequence;
 
 #include "Note.h"
 #include "Lasso.h"
@@ -100,8 +101,12 @@ struct SequencerOperations final
     static bool rescale(const ProjectNode &project, float startBeat, float endBeat,
         Note::Key rootKey, Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint = true);
 
-    static bool remapToTemperament(const ProjectNode &project,
+    static bool remapNotesToTemperament(const ProjectNode &project,
         Temperament::Ptr temperament, bool shouldCheckpoint = true);
+
+    static bool remapKeySignaturesToTemperament(KeySignaturesSequence *keySignatures,
+        Temperament::Ptr currentTemperament, Temperament::Ptr otherTemperament,
+        const Array<Scale::Ptr> &availableScales, bool shouldCheckpoint = true);
 
     static bool findHarmonicContext(const Lasso &selection, const Clip &clip,
         WeakReference<MidiTrack> keySignatures, Scale::Ptr &outScale, Note::Key &outRootKey);

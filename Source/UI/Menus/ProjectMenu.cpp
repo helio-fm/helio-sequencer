@@ -405,7 +405,7 @@ void ProjectMenu::showTemperamentsMenu(bool convertTracks)
             if (convertTracks)
             {
                 const bool hasMadeChanges =
-                    SequencerOperations::remapToTemperament(this->project, otherTemperament, true);
+                    SequencerOperations::remapNotesToTemperament(this->project, otherTemperament, true);
 
                 if (!hasMadeChanges)
                 {
@@ -418,60 +418,12 @@ void ProjectMenu::showTemperamentsMenu(bool convertTracks)
             }
 
             // let's also update key signatures (todo move this code somewhere):
-            auto *keySignatures = this->project.getTimeline()->getKeySignatures()->getSequence();
-            Array<KeySignatureEvent> groupBefore, groupAfter;
-            for (int i = 0; i < keySignatures->size(); ++i)
-            {
-                // the logic here is to map the root key using temperament's chromatic map
-                // then try to do the same with all the keys of the key signature's scale,
-                // then try to find a scale in the other temperament, which has the same keys,
-                // and, if found, use it, and if not found, use the converted scale anyway,
-                // but keep the name of the original scale
-                auto *signature = static_cast<KeySignatureEvent *>(keySignatures->getUnchecked(i));
+            auto *keySignatures = static_cast<KeySignaturesSequence *>(this->project.
+                getTimeline()->getKeySignatures()->getSequence());
 
-                auto originalScale = signature->getScale();
-
-                Array<int> newKeys;
-                for (const auto &k : originalScale->getKeys())
-                {
-                    const auto keyIndexInChromaticMap = currentTemperament->
-                        getChromaticMap()->getNearestScaleKey(k);
-
-                    const auto newKey = otherTemperament->getChromaticMap()->
-                        getChromaticKey(keyIndexInChromaticMap, 0, true);
-
-                    newKeys.add(newKey);
-                }
-
-                // this will be the default one, if the equivalent is not found:
-                Scale::Ptr convertedScale(new Scale(originalScale->getUnlocalizedName(),
-                    newKeys, otherTemperament->getPeriodSize()));
-
-                // but let's search for the equivalent:
-                for (const auto s : App::Config().getScales()->getAll())
-                {
-                    if (s->getBasePeriod() == otherTemperament->getPeriodSize() &&
-                        s->isEquivalentTo(convertedScale))
-                    {
-                        convertedScale = s;
-                        break;
-                    }
-                }
-
-                const auto rootIndexInChromaticMap = currentTemperament->
-                    getChromaticMap()->getNearestScaleKey(signature->getRootKey());
-
-                const auto newRootKey = otherTemperament->getChromaticMap()->
-                    getChromaticKey(rootIndexInChromaticMap, 0, true);
-
-                groupBefore.add(*signature);
-                groupAfter.add(signature->withScale(convertedScale).withRootKey(newRootKey));
-            }
-
-            if (!groupBefore.isEmpty())
-            {
-                static_cast<KeySignaturesSequence *>(keySignatures)->changeGroup(groupBefore, groupAfter, true);
-            }
+            SequencerOperations::remapKeySignaturesToTemperament(keySignatures,
+                currentTemperament, otherTemperament, App::Config().getScales()->getAll(),
+                false); // false == already did checkpoint earlier
 
             // finally, the temperament itself:
             this->project.getUndoStack()->perform(

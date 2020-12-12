@@ -1766,7 +1766,7 @@ bool SequencerOperations::rescale(const ProjectNode &project, float startBeat, f
     return hasMadeChanges;
 }
 
-bool SequencerOperations::remapToTemperament(const ProjectNode &project,
+bool SequencerOperations::remapNotesToTemperament(const ProjectNode &project,
     Temperament::Ptr temperament, bool shouldCheckpoint)
 {
     bool hasMadeChanges = false;
@@ -1864,6 +1864,86 @@ bool SequencerOperations::remapToTemperament(const ProjectNode &project,
     }
 
     return hasMadeChanges;
+}
+
+
+bool SequencerOperations::remapKeySignaturesToTemperament(KeySignaturesSequence *keySignatures,
+    Temperament::Ptr currentTemperament, Temperament::Ptr otherTemperament,
+    const Array<Scale::Ptr> &availableScales, bool shouldCheckpoint /*= true*/)
+{
+    bool hasMadeChanges = false;
+    bool didCheckpoint = !shouldCheckpoint;
+
+    Array<KeySignatureEvent> groupBefore, groupAfter;
+    for (int i = 0; i < keySignatures->size(); ++i)
+    {
+        // this will map the root key using temperaments' chromatic maps,
+        // then try to do the same with all the keys of the key signature's scale,
+        // then try to find the most similar (or equivalent) scale for the other temperament,
+        // and, if found, use it, and if not found, just use the converted scale
+        auto *signature = static_cast<KeySignatureEvent *>(keySignatures->getUnchecked(i));
+
+        auto originalScale = signature->getScale();
+
+        Array<int> newKeys;
+        for (const auto &k : originalScale->getKeys())
+        {
+            const auto keyIndexInChromaticMap = currentTemperament->
+                getChromaticMap()->getNearestScaleKey(k);
+
+            const auto newKey = otherTemperament->getChromaticMap()->
+                getChromaticKey(keyIndexInChromaticMap, 0, true);
+
+            newKeys.add(newKey);
+        }
+
+        // this will be the default one, if the equivalent is not found:
+        Scale::Ptr convertedScale(new Scale(originalScale->getUnlocalizedName(),
+            newKeys, otherTemperament->getPeriodSize()));
+
+        // but let's search for the most similar scale (if there are any):
+        Scale::Ptr similarScale = nullptr;
+        int minDifference = INT_MAX;
+        for (const auto s : availableScales)
+        {
+            if (s->getBasePeriod() != otherTemperament->getPeriodSize())
+            {
+                continue;
+            }
+
+            const auto diff = s->getDifferenceFrom(convertedScale);
+            if (diff < minDifference)
+            {
+                minDifference = diff;
+                similarScale = s;
+            }
+        }
+
+        const auto rootIndexInChromaticMap = currentTemperament->
+            getChromaticMap()->getNearestScaleKey(signature->getRootKey());
+
+        const auto newRootKey = otherTemperament->getChromaticMap()->
+            getChromaticKey(rootIndexInChromaticMap, 0, true);
+
+        groupBefore.add(*signature);
+        groupAfter.add(signature->withRootKey(newRootKey)
+            .withScale(similarScale != nullptr ? similarScale : convertedScale));
+    }
+
+    if (groupBefore.isEmpty())
+    {
+        return false;
+    }
+
+    if (!didCheckpoint)
+    {
+        keySignatures->checkpoint();
+        didCheckpoint = true;
+    }
+
+    hasMadeChanges = true;
+    keySignatures->changeGroup(groupBefore, groupAfter, true);
+    return true;
 }
 
 // Tries to detect if there's one key signature that affects the whole sequence.
