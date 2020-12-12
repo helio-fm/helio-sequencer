@@ -22,6 +22,9 @@
 Scale::Scale(const Scale &other) noexcept :
     name(other.name), basePeriod(other.basePeriod), keys(other.keys) {}
 
+Scale::Scale(const String &name, const Array<int> &keys, int basePeriod) noexcept :
+    name(name), basePeriod(basePeriod), keys(keys) {}
+
 Scale::Ptr Scale::withName(const String &name) const noexcept
 {
     Scale::Ptr s(new Scale(*this));
@@ -96,6 +99,16 @@ bool Scale::isValid() const noexcept
 String Scale::getLocalizedName() const
 {
     return TRANS(this->name);
+}
+
+String Scale::getUnlocalizedName() const noexcept
+{
+    return this->name;
+}
+
+const Array<int> &Scale::getKeys() const noexcept
+{
+    return this->keys;
 }
 
 Array<int> Scale::getChord(Chord::Ptr chord, Function fun, bool oneOctave) const

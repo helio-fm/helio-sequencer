@@ -26,6 +26,7 @@ public:
 
     Scale() = default;
     Scale(const Scale &other) noexcept;
+    Scale(const String &name, const Array<int> &keys, int basePeriod) noexcept;
 
     String getResourceId() const noexcept override;
     Identifier getResourceType() const noexcept override;
@@ -53,6 +54,8 @@ public:
     bool isValid() const noexcept;
     int getSize() const noexcept;
     String getLocalizedName() const;
+    String getUnlocalizedName() const noexcept;
+    const Array<int> &getKeys() const noexcept;
 
     // Render target chord into chromatic scale (tonic = 0)
     Array<int> getChord(const Chord::Ptr chord, Function fun, bool oneOctave) const;
