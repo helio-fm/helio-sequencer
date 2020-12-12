@@ -60,7 +60,7 @@ void KeySignaturesProjectMap::resized()
 
     for (int i = 0; i < this->keySignatureComponents.size(); ++i)
     {
-        KeySignatureComponent *current = this->keySignatureComponents.getUnchecked(i);
+        auto *current = this->keySignatureComponents.getUnchecked(i);
 
         if (previous != nullptr)
         {
@@ -89,11 +89,11 @@ void KeySignaturesProjectMap::onChangeMidiEvent(const MidiEvent &oldEvent, const
         const auto &keySignature = static_cast<const KeySignatureEvent &>(oldEvent);
         const auto &newKeySignature = static_cast<const KeySignatureEvent &>(newEvent);
 
-        if (auto *component = this->keySignaturesHash[keySignature])
+        if (auto *component = this->keySignaturesMap[keySignature])
         {
             this->alignKeySignatureComponent(component);
-            this->keySignaturesHash.erase(keySignature);
-            this->keySignaturesHash[newKeySignature] = component;
+            this->keySignaturesMap.erase(keySignature);
+            this->keySignaturesMap[newKeySignature] = component;
         }
     }
 }
@@ -149,7 +149,7 @@ void KeySignaturesProjectMap::onAddMidiEvent(const MidiEvent &event)
             this->applyKeySignatureBounds(previousEventComponent, component);
         }
 
-        this->keySignaturesHash[keySignature] = component;
+        this->keySignaturesMap[keySignature] = component;
 
         component->setAlpha(0.f);
         this->animator.animateComponent(component,
@@ -163,13 +163,13 @@ void KeySignaturesProjectMap::onRemoveMidiEvent(const MidiEvent &event)
     {
         const auto &keySignature = static_cast<const KeySignatureEvent &>(event);
 
-        if (auto *component = this->keySignaturesHash[keySignature])
+        if (auto *component = this->keySignaturesMap[keySignature])
         {
             this->animator.animateComponent(component,
                 component->getBounds(), 0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
 
             this->removeChildComponent(component);
-            this->keySignaturesHash.erase(keySignature);
+            this->keySignaturesMap.erase(keySignature);
 
             const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*component, component);
             KeySignatureComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
@@ -192,12 +192,6 @@ void KeySignaturesProjectMap::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void KeySignaturesProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks,
-    const ProjectMetadata *meta)
-{
-    this->reloadTrackMap();
-}
-
 void KeySignaturesProjectMap::onAddTrack(MidiTrack *const track)
 {
     if (this->project.getTimeline() != nullptr &&
@@ -217,15 +211,29 @@ void KeySignaturesProjectMap::onRemoveTrack(MidiTrack *const track)
     {
         for (int i = 0; i < track->getSequence()->size(); ++i)
         {
-            const KeySignatureEvent &keySignature =
+            const auto &keySignature =
                 static_cast<const KeySignatureEvent &>(*track->getSequence()->getUnchecked(i));
 
-            if (KeySignatureComponent *component = this->keySignaturesHash[keySignature])
+            if (auto *component = this->keySignaturesMap[keySignature])
             {
                 this->removeChildComponent(component);
-                this->keySignaturesHash.erase(keySignature);
+                this->keySignaturesMap.erase(keySignature);
                 this->keySignatureComponents.removeObject(component, true);
             }
+        }
+    }
+}
+
+void KeySignaturesProjectMap::onChangeProjectInfo(const ProjectMetadata *info)
+{
+    // track temperament changes to update signature descriptions:
+    if (this->keyboardSize != info->getKeyboardSize())
+    {
+        this->keyboardSize = info->getKeyboardSize();
+        const auto &keyNames = this->getProjectKeyNames();
+        for (auto *component : this->keySignatureComponents)
+        {
+            component->updateContent(keyNames);
         }
     }
 }
@@ -251,6 +259,13 @@ void KeySignaturesProjectMap::onChangeViewBeatRange(float firstBeat, float lastB
         this->rollLastBeat = lastBeat;
         this->resized();
     }
+}
+
+void KeySignaturesProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+    const ProjectMetadata *meta)
+{
+    this->keyboardSize = meta->getKeyboardSize();
+    this->reloadTrackMap();
 }
 
 //===----------------------------------------------------------------------===//
@@ -346,7 +361,7 @@ void KeySignaturesProjectMap::reloadTrackMap()
     }
 
     this->keySignatureComponents.clear();
-    this->keySignaturesHash.clear();
+    this->keySignaturesMap.clear();
 
     this->setVisible(false);
 
@@ -363,7 +378,7 @@ void KeySignaturesProjectMap::reloadTrackMap()
         component->updateContent(keyNames);
 
         this->keySignatureComponents.addSorted(*component, component);
-        this->keySignaturesHash[*keySignature] = component;
+        this->keySignaturesMap[*keySignature] = component;
     }
 
     this->resized();

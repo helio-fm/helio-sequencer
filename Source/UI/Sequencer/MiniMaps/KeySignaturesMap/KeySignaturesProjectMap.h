@@ -59,6 +59,7 @@ public:
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;
 
+    void onChangeProjectInfo(const ProjectMetadata *info) override;
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,
@@ -92,6 +93,8 @@ private:
     float rollFirstBeat = 0.f;
     float rollLastBeat = Globals::Defaults::projectLength;
     
+    int keyboardSize = Globals::twelveToneKeyboardSize;
+
     HybridRoll &roll;
     ProjectNode &project;
         
@@ -101,7 +104,7 @@ private:
     KeySignatureComponent *createComponent(const KeySignatureEvent &keySignature);
 
     OwnedArray<KeySignatureComponent> keySignatureComponents;
-    FlatHashMap<KeySignatureEvent, KeySignatureComponent *, MidiEventHash> keySignaturesHash;
+    FlatHashMap<KeySignatureEvent, KeySignatureComponent *, MidiEventHash> keySignaturesMap;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeySignaturesProjectMap)
 };
