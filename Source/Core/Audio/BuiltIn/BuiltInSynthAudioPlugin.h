@@ -38,12 +38,12 @@ public:
     // AudioPluginInstance
     //===------------------------------------------------------------------===//
 
-    const String getName() const;
+    const String getName() const override;
     void fillInPluginDescription(PluginDescription &description) const override;
 
-    void processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages);
-    void prepareToPlay(double sampleRate, int estimatedSamplesPerBlock);
-    void reset();
+    void processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages) override;
+    void prepareToPlay(double sampleRate, int estimatedSamplesPerBlock) override;
+    void reset() override;
 
     //===------------------------------------------------------------------===//
     // AudioProcessor

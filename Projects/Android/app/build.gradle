@@ -98,7 +98,7 @@ android {
     dependencies {
     }
 
-
+ndkVersion "21.3.6528147"
 
 }
 

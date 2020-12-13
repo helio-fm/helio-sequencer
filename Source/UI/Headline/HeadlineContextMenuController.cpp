@@ -62,7 +62,7 @@ public:
         return true;
     }
 
-    void childBoundsChanged(Component *child)
+    void childBoundsChanged(Component *child) override
     {
         this->syncBoundsWithContent();
     }
