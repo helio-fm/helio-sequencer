@@ -4,6 +4,14 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.3
+ - Added initial support for custom temperaments, the default list includes 22-EDO and 31-EDO; added commands to switch temperament or convert a piece into any other temperament
+ - Added keyboard mapping page for instruments, allowing to overcome the limits of MIDI 1.0 for microtonal music, or just to re-map any key for whatever purposes
+ - Forgive me father, for I have synthed: removed the built-in piano samples to reduce binary size (my OCD appreciates this immensely), and added a simple sine-like synth which works in any n-tone equal temperament out of the box; it sucks, but hopefully it will be improved in future
+ - Added a command to switch to the most visible track/clip in the viewport, hotkey F3
+ - Fixed note previewing for some instruments: now it sends note-off events after a delay
+ - Minor UI tweaks: made animations a but shorter and sharper, fixed several focus issues when deleting tracks, the resizable edge in note components now depends on the note width
+
 ## Version 3.2
  - Added tempo dialog with "tap tempo" control, invoked either by clicking at tempo track nodes, or by hitting "Set one tempo" menu item in project->refactor menu or tempo track context menu
  - Fixed the old and super annoying rows tiling bug in OpenGL mode
