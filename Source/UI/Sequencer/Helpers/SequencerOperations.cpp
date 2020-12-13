@@ -20,6 +20,7 @@
 
 #include "ProjectNode.h"
 #include "ProjectMetadata.h"
+#include "ProjectTimeline.h"
 
 #include "AnnotationEvent.h"
 #include "KeySignatureEvent.h"
@@ -1786,28 +1787,67 @@ bool SequencerOperations::remapNotesToTemperament(const ProjectNode &project,
     const auto periodSizeBefore = currentTemperament->getPeriodSize();
     const auto periodSizeAfter = temperament->getPeriodSize();
 
+    // a helper to find a key signature at certain beat
+    // works similarly to findHarmonicContext, but simpler:
+    auto *keySignatures = project.getTimeline()->getKeySignatures()->getSequence();
+    const auto findRootKey = [keySignatures](float beat)
+    {
+        if (keySignatures->size() == 0)
+        {
+            return 0;
+        }
+
+        const KeySignatureEvent *context = nullptr;
+
+        for (int i = 0; i < keySignatures->size(); ++i)
+        {
+            auto *ks = keySignatures->getUnchecked(i);
+            if (context == nullptr || ks->getBeat() <= beat)
+            {
+                // take the first one no matter where it resides;
+                // if event is still before the sequence beat, update the context anyway:
+                context = static_cast<KeySignatureEvent *>(ks);
+            }
+            else if (ks->getBeat() >= beat)
+            {
+                // no need to look further
+                break;
+            }
+        }
+
+        if (context != nullptr)
+        {
+            // we've found the only context that doesn't change within a sequence:
+            return context->getRootKey();
+        }
+
+        return 0;
+    };
+
     const auto pianoTracks = project.findChildrenOfType<PianoTrackNode>();
     for (const auto *track : pianoTracks)
     {
-        auto *sequence = static_cast<PianoSequence *>(track->getSequence());
-
-        Array<Note> notesBefore, notesAfter;
-
         // upscaling temperament from twelve-tone is really straightforward,
         // but we'll also support downscaling from larger temperament to smaller one:
         // for that we'll just round each key to the nearest key of chromatic approximation scale
+        auto *sequence = static_cast<PianoSequence *>(track->getSequence());
 
-        for (int i = 0; i < sequence->size(); ++i)
+        Array<Note> notesBefore, notesAfter;
+        for (int n = 0; n < sequence->size(); ++n)
         {
-            const auto *note = static_cast<Note *>(sequence->getUnchecked(i));
+            const auto *note = static_cast<Note *>(sequence->getUnchecked(n));
 
-            const auto key = note->getKey();
+            const auto rootKeyBefore = findRootKey(note->getBeat());
+            const auto rootIndexInChromaticMap = chromaticMapFrom->getNearestScaleKey(rootKeyBefore);
+            const auto rootKeyAfter = chromaticMapTo->getChromaticKey(rootIndexInChromaticMap, 0, true);
+
+            const auto key = note->getKey() - rootKeyBefore;
             const auto periodNum = key / periodSizeBefore;
             const auto relativeKey = key % periodSizeBefore;
 
             // now we need to round relative key to the nearest one in chromaticMapFrom 
             const auto keyIndexInChromaticMap = chromaticMapFrom->getNearestScaleKey(relativeKey);
-            const auto newRelativeKey = chromaticMapTo->getChromaticKey(keyIndexInChromaticMap, 0, false);
+            const auto newRelativeKey = chromaticMapTo->getChromaticKey(keyIndexInChromaticMap, rootKeyAfter, false);
             const auto newKey = periodNum * periodSizeAfter + newRelativeKey;
 
             notesBefore.add(*note);
