@@ -159,7 +159,7 @@ Just hit `!` and start typing a chord description, or pick some of the suggestio
 [range-select]: images/range-select.png "Range selection"
 
 [group-resizing]: images/group-resizing.png "Resizing notes with shift"
-[pen-tool-alt]: images/pen-tool-alt.png "Adding notes sith shift"
+[pen-tool-alt]: images/pen-tool-alt.png "Adding notes with shift"
 [drag-and-copy]: images/drag-and-copy.png "Drag-and-copy"
 
 [monitor-and-map]: images/monitor-and-map.png "Audio monitor and minimap view modes"

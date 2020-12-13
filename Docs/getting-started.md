@@ -81,7 +81,7 @@ To start a new project from scratch, navigate to the dashboard by pressing `Home
 
 There are several ways:
  * use the `/` hotkey to show the projects list in the [command palette](tips-and-tricks.md#command-palette),
- * or hover the `Studio` item in the breadcrumb control, which shows the menu with all open projects (the most inconvinient way so far),
+ * or hover the `Studio` item in the breadcrumb control, which shows the menu with all open projects (the most inconvenient way so far),
  * back and forward buttons also can be useful sometimes, the related hotkeys are `Alt + Cursor Left` and `Alt + Cursor Right`.
 
 
@@ -251,7 +251,7 @@ At the moment of writing, only linear ramps are implemented:
 
 ![velocity-map-ramps]
 
-You can also change note velocities without this editor, just by middle-button dragging the note componenets on the roll.
+You can also change note velocities without this editor, just by middle-button dragging the note components on the roll.
 
 ### MIDI recording
 
@@ -277,18 +277,34 @@ However, the pattern roll is helpful for rearranging experiments:
 
 Pattern roll also allows to tweak some track parameters, like key offset of velocity multiplier. In future, it may shift towards more parametric sequencer features.
 
+### Global tempo
+
+Pattern roll is also the place to edit various MIDI controller automation tracks - most notable, the tempo track(s):
+
+![tempo-automation]
+
+The tempo track, as any other automation track, interpolates the controller value between nodes, and those tiny points are displayed at the exact times each new MIDI event is sent.
+
+To interact with it:
+* delete nodes with right click,
+* use the pen tool (hotkey `2`) to add nodes,
+* use the cursor tool (hotkey `1`) to drag nodes or to adjust the interpolation curve,
+* click on the node to invoke the tempo dialog to set the exact BPM value, or to set tempo by tapping.
+
+Often, you only need one tempo for the whole song - for that, pick *"Set one tempo"* menu item in the tempo track menu, or project refactoring menu.
+
 ## Version control
 
-The concept of [version control](https://en.wikipedia.org/wiki/Version_control) comes from the software development world. If you're not familiar with it, you can think of it as of creating "savepoints" in your project, and tracking changes made since the last time you saved.
+The concept of [version control](https://en.wikipedia.org/wiki/Version_control) comes from the software development world. If you're not familiar with it, you can think of it as of creating "save points" in your project, and tracking changes made since the last time you saved.
 
-The point of having a version control is lowering the friction of committing changes: any changeset can be reset if you don't like it, any saved revision can be restored later. Helio was started as a prototyping tool, a playground for ideas, where you'd want to have several variations of your sketch — hence the idea of having a built-in version control.
+The point of having a version control is lowering the friction of committing changes: any changes can be reset if you don't like them, any saved revision can be restored later. Helio was started as a prototyping tool, a playground for ideas, where you'd want to have several variations of your sketch — hence the idea of having a built-in version control.
 
 Notable use cases are:
 
  * saving a project state at some point, and resetting to any earlier saved state,
  * resetting some of the recent changes (think of it as of another mechanism of undoing things),
- * hiding/unhiding recent changes to get the idea of what have been done since the last commit,
- * synchronizing projects across devices.
+ * hiding and restoring back the most recent changes to get the idea of what have been done since the last commit,
+ * [synchronizing](#synchronizing-projects) projects across devices.
 
 The UI of the versions page is split in two parts:
 
@@ -302,18 +318,18 @@ The right side shows the tree of all revisions that you have saved. Note a coupl
 
 // TODO
 
-
 [helio-ui]: images/screen-v3.png "UI overview"
 [orchestra-pit]: images/orchestra-pit.png "The instruments management page"
 [instrument-routing]: images/instrument-routing.png "The instrument details page"
 [version-control]: images/version-control.png "The version control page"
 
 [breadcrumbs-root-menu]: images/breadcrumbs-root-menu.png "Breadcrumbs control, root menu"
-[breadcrumbs-menus]: images/breadcrumbs-menus.png "Breadcrumbs control, conetxt menus"
+[breadcrumbs-menus]: images/breadcrumbs-menus.png "Breadcrumbs control, context menus"
 
 [piano-roll]: images/piano-roll.png "Interaction with piano roll canvas"
 [patterns]: images/patterns-arrange.png "Pattern mode for arrangements"
 [patterns-clips]: images/patterns-track-clips.png "Track instances (clips) and their modifications"
+[tempo-automation]: images/tempo-automation.png "Changing global tempo in pattern mode"
 
 [velocity-map-toggle]: images/velocity-map-toggle.png "Velocity map overview"
 [velocity-map-ramps]: images/velocity-map-ramps.png "Velocity map linear ramps"
