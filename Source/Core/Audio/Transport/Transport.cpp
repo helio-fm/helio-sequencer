@@ -706,6 +706,10 @@ void Transport::onDeactivateProjectSubtree(const ProjectMetadata *meta)
 void Transport::onActivateProjectSubtree(const ProjectMetadata *meta)
 {
     this->updateTemperamentInfoForBuiltInSynth(meta->getPeriodSize());
+
+    // let's reset midi caches, just in case some instrument's keyboard mapping
+    // has changed in the meanwhile (no idea how to observe kbm changes in transport)
+    this->playbackCacheIsOutdated = true;
 }
 
 void Transport::onChangeProjectInfo(const ProjectMetadata *meta)
