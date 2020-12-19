@@ -34,9 +34,7 @@ It aims to be a modern music creation software, featuring linear-based/pattern-b
 ## Links
 
  * [Homepage](https://helio.fm) with all latest builds and its [source code](https://github.com/helio-fm/muse-hackers).
- * Project page at [KVR database](https://www.kvraudio.com/product/helio-workstation-by-peter-rudenko).
  * Some [screencasts on Youtube](https://www.youtube.com/channel/UCO3K8iCd1k2FTqSocoE-WXw/).
- * [Discussion](https://news.ycombinator.com/item?id=14212054) at HN.
 
 
 ## Contributing
@@ -45,11 +43,11 @@ Helio is still a work in progress, and there are several ways you could help:
 
 * [Proofread and improve the translation](https://helio.fm/translations) for your native language.
 
-* Maintain a package for your favourite Linux distro - highly appreciated, please see the list of available and missing packages [here](https://repology.org/project/helio-workstation/versions).
+* Maintain a package for your favorite Linux distro - highly appreciated, please see the list of available and missing packages [here](https://repology.org/project/helio-workstation/versions).
 
 * Your thoughts on any usability improvements are welcome: friendly and lightweight UI is the main development priority in this project, so feel free to help me identify the main friction points.
 
-* Implement new features: some guys were asking me if I have any tasks for them to start working on, but, as a sole unpaid developer with limited amount of time and interest, I'm not planning stories or organising the board, instead I only work on the parts that are fun and important for me at the moment. If you don't know where to start, my suggestion is that you do the same: find a missing feature or behavior you're lacking the most, and make the app a little more convinient for yourself. Anyway, feel free to ask questions and create incomplete PR's to get intermediate feedback.
+* Implement new features: some guys were asking me if I have any tasks for them to start working on, but, as a sole unpaid developer with limited amount of time and interest, I'm not planning stories or organizing the board, instead I only work on the parts that are fun and important for me at the moment. If you don't know where to start, my suggestion is that you do the same: find a missing feature or behavior you're lacking the most, and make the app a little more convinient for yourself. Anyway, feel free to ask questions and create incomplete PR's to get intermediate feedback.
 
 
 ## Support the project
@@ -63,9 +61,9 @@ Helio is still a work in progress, and there are several ways you could help:
 
 GNU GPL v3 © Peter Rudenko and [contributors](https://github.com/helio-fm/helio-workstation/graphs/contributors), see ``LICENSE`` for more information.
 
-Icons taken from various [free icon fonts](https://icomoon.io) are licensed under [SIL Open Font License](http://scripts.sil.org/cms/scripts/page.php?id=OFL) and [CC-BY](https://creativecommons.org/licenses/by/3.0/). Built-in piano samples are the part of [Salamander Grand Piano](https://archive.org/details/SalamanderGrandPianoV3) by Alexander Holm, distributed under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
+Icons taken from various [free icon fonts](https://icomoon.io) are licensed under [SIL Open Font License](http://scripts.sil.org/cms/scripts/page.php?id=OFL) and [CC-BY](https://creativecommons.org/licenses/by/3.0/).
 
-All documentation, translations and logotypes are distrubuted under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
+All documentation, translations and logotypes are distributed under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
 
 ### Translation and proofreading credits
 
