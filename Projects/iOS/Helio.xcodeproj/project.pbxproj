@@ -4742,6 +4742,13 @@
 			path = ../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationLargeComponent.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
+		CF2C3A0E2B45E894742157AF = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.xml;
+			name = App.entitlements;
+			path = App.entitlements;
+			sourceTree = "SOURCE_ROOT";
+		};
 		CF47CEEE37E5DE880C371587 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -7137,6 +7144,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_ENTITLEMENTS = "App.entitlements";
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
@@ -7321,6 +7329,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_ENTITLEMENTS = "App.entitlements";
 				CODE_SIGN_STYLE = "Manual";
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
@@ -7689,7 +7698,7 @@
 		08DB4A16C7B3991E0F547761 = {
 			isa = PBXProject;
 			buildConfigurationList = CBBEDDA3CEDC22AE3C172D11;
-			attributes = { LastUpgradeCheck = 1220; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; }; }; }; };
+			attributes = { LastUpgradeCheck = 1220; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; com.apple.HardenedRuntime = { enabled = 0; }; com.apple.iCloud = { enabled = 1; }; }; }; }; };
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 0;
 			mainGroup = C26CB8AD40490BB25FE36466;

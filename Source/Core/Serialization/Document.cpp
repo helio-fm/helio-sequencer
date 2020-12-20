@@ -108,41 +108,57 @@ void Document::save()
 
 void Document::saveAs()
 {
-#if PLATFORM_DESKTOP
+    FileChooser fc(TRANS(I18n::Dialog::documentSave),
+        File::getCurrentWorkingDirectory(), ("*." + this->extension), true);
 
-        FileChooser fc(TRANS(I18n::Dialog::documentSave),
-            File::getCurrentWorkingDirectory(), ("*." + this->extension), true);
-
-        if (fc.browseForFileToSave(true))
-        {
-            this->internalSave(fc.getResult());
-        }
-
-#endif
+    if (fc.browseForFileToSave(true))
+    {
+        this->internalSave(fc.getResult());
+    }
 }
 
 void Document::exportAs(const String &exportExtension,
     const String &defaultFilenameWithExtension)
 {
-#if PLATFORM_DESKTOP
+    if (!FileChooser::isPlatformDialogAvailable())
+    {
+        return;
+    }
 
     FileChooser fc(TRANS(I18n::Dialog::documentExport),
         DocumentHelpers::getDocumentSlot(File::createLegalFileName(defaultFilenameWithExtension)),
         exportExtension, true);
 
-    if (fc.browseForFileToSave(true))
+    // https://forum.juce.com/t/native-ios-android-file-choosers/25206/64
+
+    fc.launchAsync(Globals::UI::FileChooser::forFileToSave, [this](const FileChooser &fc)
     {
         // FIXME: at this point, edited filename might come without extension
-        File result(fc.getResult());
-        const bool savedOk = this->owner.onDocumentExport(result);
-        
-        if (savedOk)
+
+        auto results = fc.getURLResults();
+        if (results.isEmpty())
+        {
+            return;
+        }
+
+        auto &url = results.getReference(0);
+        if (auto outStream = url.createOutputStream())
+        {
+            auto success = outStream->writeString("Hello World!");
+            jassert(success);
+        }
+
+        //auto result = fc.getResult();
+        //if (result == File())
+        //{
+        //    return; // cancelled
+        //}
+
+        if (this->owner.onDocumentExport(result))
         {
             App::Layout().showTooltip(TRANS(I18n::Dialog::documentExportDone));
         }
-    }
-
-#endif
+    });
 }
 
 
@@ -157,7 +173,6 @@ bool Document::load(const File &file, const File &relativeFile)
 
         if (!relativeFile.existsAsFile())
         {
-#if PLATFORM_DESKTOP
             FileChooser fc(TRANS(I18n::Dialog::documentLoad),
                 File::getCurrentWorkingDirectory(), ("*." + this->extension), true);
 
@@ -166,7 +181,6 @@ bool Document::load(const File &file, const File &relativeFile)
                 File result(fc.getResult());
                 return this->internalLoad(result);
             }
-#endif
         }
         else
         {
@@ -183,8 +197,6 @@ bool Document::load(const File &file, const File &relativeFile)
 
 void Document::import(const String &filePattern)
 {
-#if PLATFORM_DESKTOP
-
     FileChooser fc(TRANS(I18n::Dialog::documentImport),
                    File::getCurrentWorkingDirectory(), (filePattern), true);
 
@@ -193,8 +205,6 @@ void Document::import(const String &filePattern)
         File result(fc.getResult());
         this->owner.onDocumentImport(result);
     }
-
-#endif
 }
 
 bool Document::fileHasBeenModified() const

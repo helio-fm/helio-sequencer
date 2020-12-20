@@ -557,14 +557,12 @@ void SequencerLayout::resized()
     this->rollToolsSidebar->resized();
 }
 
-
 void SequencerLayout::proceedToRenderDialog(const String &extension)
 {
     const File initialPath = File::getSpecialLocation(File::userMusicDirectory);
     const String renderFileName = this->project.getName() + "." + extension.toLowerCase();
     const String safeRenderName = File::createLegalFileName(renderFileName);
 
-#if PLATFORM_DESKTOP
     FileChooser fc(TRANS(I18n::Dialog::renderCaption),
         File(initialPath.getChildFile(safeRenderName)), ("*." + extension), true);
 
@@ -572,10 +570,7 @@ void SequencerLayout::proceedToRenderDialog(const String &extension)
     {
         App::showModalComponent(make<RenderDialog>(this->project, fc.getResult(), extension));
     }
-#else
-    App::showModalComponent(make<RenderDialog>(this->project, initialPath.getChildFile(safeRenderName), extension));
-#endif
-    }
+}
 
 void SequencerLayout::handleCommandMessage(int commandId)
 {

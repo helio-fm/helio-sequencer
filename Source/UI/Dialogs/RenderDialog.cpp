@@ -121,7 +121,6 @@ void RenderDialog::handleCommandMessage(int commandId)
     }
     else if (commandId == CommandIDs::Browse)
     {
-#if PLATFORM_DESKTOP
         FileChooser fc(TRANS(I18n::Dialog::renderSelectFile),
                        File(this->getFileName()), ("*." + this->extension), true);
 
@@ -130,7 +129,6 @@ void RenderDialog::handleCommandMessage(int commandId)
             this->pathEditor->setText(fc.getResult().getParentDirectory().getFullPathName(), dontSendNotification);
             this->filenameEditor->setText(fc.getResult().getFileName(), dontSendNotification);
         }
-#endif
     }
 }
 

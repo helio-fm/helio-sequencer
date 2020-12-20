@@ -940,7 +940,7 @@ void ProjectNode::exportMidi(File &file) const
         file.deleteFile();
     }
 
-    UniquePointer<OutputStream> out(new FileOutputStream(file));
+    auto out = make<FileOutputStream>(file);
     tempFile.writeTo(*out);
 }
 

@@ -1441,7 +1441,10 @@
                   iosDevelopmentTeamID="EQL633LLC8" userNotes="" extraLinkerFlags=""
                   externalLibraries="" extraFrameworks="" iosDeviceFamily="1,2"
                   iPadScreenOrientation="UIInterfaceOrientationLandscapeLeft,UIInterfaceOrientationLandscapeRight"
-                  useHeaderMap="0" bundleIdentifier="fm.helio.mobile" unityBuild="1">
+                  useHeaderMap="0" bundleIdentifier="fm.helio.mobile" unityBuild="1"
+                  iosBackgroundBle="1" iCloudPermissions="1" iosContentSharing="1"
+                  iosBackgroundAudio="1" cameraPermissionNeeded="0" iosBluetoothPermissionNeeded="1"
+                  microphonePermissionNeeded="0" UISupportsDocumentBrowser="1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" iosCompatibility="9.0" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"

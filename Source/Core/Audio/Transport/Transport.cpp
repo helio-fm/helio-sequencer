@@ -87,12 +87,12 @@ String Transport::getTimeString(const RelativeTime &relTime, bool includeMillise
 int Transport::getTempoByControllerValue(float controllerValue) noexcept
 {
     const double safeCV = jlimit(0.00005, 0.99999, double(controllerValue));
-    return int((1.0 - log2(safeCV)) * Globals::Defaults::maxMsPerBeat * 1000);
+    return int((1.0 - log2(safeCV)) * Globals::maxMsPerBeat * 1000);
 }
 
 float Transport::getControllerValueByTempo(double secondsPerQuarterNote) noexcept
 {
-    const double cv = 1.0 - secondsPerQuarterNote / Globals::Defaults::maxMsPerBeat * 1000.0;
+    const double cv = 1.0 - secondsPerQuarterNote / Globals::maxMsPerBeat * 1000.0;
     const double value = pow(2.0, cv);
     return jlimit(0.f, 1.f, float(value));
 }

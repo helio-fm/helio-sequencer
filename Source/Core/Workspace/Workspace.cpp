@@ -348,7 +348,6 @@ void Workspace::failedDeserializationFallback()
 
 void Workspace::importProject(const String &filePattern)
 {
-#if PLATFORM_DESKTOP
     FileChooser fc(TRANS(I18n::Dialog::documentImport),
         File::getCurrentWorkingDirectory(), filePattern, true);
 
@@ -375,7 +374,6 @@ void Workspace::importProject(const String &filePattern)
             }
         }
     }
-#endif
 }
 
 //===----------------------------------------------------------------------===//
