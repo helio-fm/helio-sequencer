@@ -142,7 +142,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
     this->addAndMakeVisible(this->revealLocationButton.get());
     this->revealLocationButton->onClick = [this]()
     {
-        this->project.getDocument()->getFile().revealToUser();
+        this->project.getDocument()->revealToUser();
     };
 
     this->temperamentLabel = make<Label>();

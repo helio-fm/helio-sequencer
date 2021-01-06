@@ -67,8 +67,8 @@ public:
     HybridRollEditMode &getEditMode() noexcept;
     HybridRoll *getLastFocusedRoll() const;
     
-    void importMidi(const File &file);
-    void exportMidi(File &file) const;
+    void importMidi(InputStream &stream);
+    void exportMidi(OutputStream &stream) const;
 
     Image getIcon() const noexcept override;
 
@@ -193,11 +193,10 @@ protected:
     // DocumentOwner
     //===------------------------------------------------------------------===//
 
-    bool onDocumentLoad(File &file) override;
-    void onDocumentDidLoad(File &file) override;
-    bool onDocumentSave(File &file) override;
-    void onDocumentImport(File &file) override;
-    bool onDocumentExport(File &file) override;
+    bool onDocumentLoad(const File &file) override;
+    bool onDocumentSave(const File &file) override;
+    void onDocumentImport(InputStream &stream) override;
+    bool onDocumentExport(OutputStream &stream) override;
 
     //===------------------------------------------------------------------===//
     // MidiTrackSource

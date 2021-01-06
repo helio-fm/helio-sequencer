@@ -33,8 +33,8 @@ public:
         return serializer.loadFromString(data);
     }
 
-    // This tries to auto-detect a serializer type for a given file
-    // by extension and return a valid value tree
+    // This tries to auto-detect serializer type
+    // for the given file by extension and return a valid tree
     static SerializedData load(const File &file);
     static SerializedData load(const String &string);
 
@@ -43,6 +43,13 @@ public:
     {
         static T serializer;
         return serializer.loadFromFile(file);
+    }
+
+    template<typename T>
+    static SerializedData load(InputStream &stream)
+    {
+        static T serializer;
+        return serializer.loadFromStream(stream);
     }
 
     template<typename T>

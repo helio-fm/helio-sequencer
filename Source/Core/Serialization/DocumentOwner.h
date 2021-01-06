@@ -23,15 +23,11 @@ class DocumentOwner : public virtual ChangeBroadcaster
 {
 public:
 
-    DocumentOwner(const String &name, const String &extension)
-    {
-        this->document = make<Document>(*this, name, extension);
-    }
+    explicit DocumentOwner(const File &existingFile) :
+        document(make<Document>(*this, existingFile)) {}
 
-    DocumentOwner(const File &existingFile)
-    {
-        this->document = make<Document>(*this, existingFile);
-    }
+    DocumentOwner(const String &name, const String &extension) :
+        document(make<Document>(*this, name, extension)) {}
 
     Document *getDocument() const noexcept
     {
@@ -40,17 +36,15 @@ public:
 
 protected:
 
-    virtual bool onDocumentLoad(File &file) = 0;
-    virtual void onDocumentDidLoad(File &file) {}
-    virtual bool onDocumentSave(File &file) = 0;
-    virtual void onDocumentDidSave(File &file) {}
-    virtual void onDocumentImport(File &file) = 0;
-    virtual bool onDocumentExport(File &file) = 0;
+    virtual bool onDocumentLoad(const File &file) = 0;
+    virtual bool onDocumentSave(const File &file) = 0;
+    virtual void onDocumentImport(InputStream &stream) = 0;
+    virtual bool onDocumentExport(OutputStream &stream) = 0;
 
     friend class Document;
 
 private:
 
-    UniquePointer<Document> document;
+    const UniquePointer<Document> document;
 
 };
