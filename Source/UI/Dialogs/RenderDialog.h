@@ -19,6 +19,7 @@
 
 #include "DialogBase.h"
 #include "SeparatorHorizontalFading.h"
+#include "RenderFormat.h"
 
 class DocumentOwner;
 class ProjectNode;
@@ -30,8 +31,7 @@ class RenderDialog final : public DialogBase
 public:
 
     RenderDialog(ProjectNode &parentProject,
-        const File &renderTo, const String &formatExtension);
-
+        const URL &target, RenderFormat format);
     ~RenderDialog();
 
     void resized() override;
@@ -43,8 +43,6 @@ public:
 
 private:
 
-    String getFileName() const;
-
     static constexpr auto renderProgressTimer = 100;
     void timerCallback(int timerId) override;
 
@@ -54,7 +52,13 @@ private:
     ComponentAnimator animator;
     ProjectNode &project;
 
-    String extension;
+    const RenderFormat format;
+
+    URL renderTarget;
+    void updateRenderTargetLabels();
+
+    UniquePointer<FileChooser> renderFileChooser;
+    void launchFileChooser();
 
     void startOrAbortRender();
     void stopRender();
@@ -66,7 +70,7 @@ private:
     UniquePointer<ProgressIndicator> indicator;
     UniquePointer<MenuItemComponent> browseButton;
     UniquePointer<Label> pathEditor;
-    UniquePointer<SeparatorHorizontalFading> component3;
+    UniquePointer<SeparatorHorizontalFading> separator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RenderDialog)
 };

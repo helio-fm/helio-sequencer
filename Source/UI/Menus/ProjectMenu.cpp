@@ -310,13 +310,6 @@ void ProjectMenu::showRenderMenu()
 {
     MenuPanel::Menu menu;
 
-    // TODO! save rendered wavs on mobile in the same way as midi export
-#if PLATFORM_DESKTOP
-    const bool noRender = false;
-#else
-    const bool noRender = true;
-#endif
-
     menu.add(MenuItem::item(Icons::back,
         TRANS(I18n::Menu::back))->withAction([this]()
         {
@@ -324,10 +317,10 @@ void ProjectMenu::showRenderMenu()
         }));
 
     menu.add(MenuItem::item(Icons::render, CommandIDs::RenderToWAV,
-        TRANS(I18n::Menu::Project::renderWav))->disabledIf(noRender)->closesMenu());
+        TRANS(I18n::Menu::Project::renderWav))->closesMenu());
 
     menu.add(MenuItem::item(Icons::render, CommandIDs::RenderToFLAC,
-        TRANS(I18n::Menu::Project::renderFlac))->disabledIf(noRender)->closesMenu());
+        TRANS(I18n::Menu::Project::renderFlac))->closesMenu());
 
     menu.add(MenuItem::item(Icons::commit, CommandIDs::ExportMidi,
         TRANS(I18n::Menu::Project::renderMidi))->closesMenu());

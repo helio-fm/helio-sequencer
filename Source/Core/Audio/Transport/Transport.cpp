@@ -324,23 +324,21 @@ void Transport::disableLoopPlayback()
 // Rendering
 //===----------------------------------------------------------------------===//
 
-void Transport::startRender(const String &fileName)
+void Transport::startRender(const URL &renderTarget, RenderFormat format)
 {
-    if (this->renderer->isRecording())
+    if (this->renderer->isRendering())
     {
         return;
     }
     
     this->sleepTimer.setCanSleepAfter(0);
-
-    File file(File::getCurrentWorkingDirectory().getChildFile(fileName));
-    this->renderer->startRecording(file,
+    this->renderer->startRendering(renderTarget, format,
         this->fillPlaybackContextAt(this->getProjectFirstBeat()));
 }
 
 void Transport::stopRender()
 {
-    if (! this->renderer->isRecording())
+    if (! this->renderer->isRendering())
     {
         return;
     }
@@ -352,7 +350,7 @@ void Transport::stopRender()
 
 bool Transport::isRendering() const
 {
-    return this->renderer->isRecording();
+    return this->renderer->isRendering();
 }
 
 float Transport::getRenderingPercentsComplete() const

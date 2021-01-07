@@ -557,19 +557,35 @@ void SequencerLayout::resized()
     this->rollToolsSidebar->resized();
 }
 
-void SequencerLayout::proceedToRenderDialog(const String &extension)
+void SequencerLayout::proceedToRenderDialog(RenderFormat format)
 {
-    const File initialPath = File::getSpecialLocation(File::userMusicDirectory);
-    const String renderFileName = this->project.getName() + "." + extension.toLowerCase();
-    const String safeRenderName = File::createLegalFileName(renderFileName);
+    // this code nearly duplicates RenderDialog::launchFileChooser(),
+    // and the reason is that I want to simplify the workflow from user's perspective,
+    // so the dialog is shown only after selecting a target file (if any)
+    const auto extension = getExtensionForRenderFormat(format);
+    const auto defaultPath = File::getSpecialLocation(File::userMusicDirectory);
+    const auto defaultFileName = File::createLegalFileName(this->project.getName() + "." + extension);
 
-    FileChooser fc(TRANS(I18n::Dialog::renderCaption),
-        File(initialPath.getChildFile(safeRenderName)), ("*." + extension), true);
+    this->renderTargetFileChooser = make<FileChooser>(TRANS(I18n::Dialog::renderCaption),
+        File(defaultPath.getChildFile(defaultFileName)),
+        "*." + extension, true);
 
-    if (fc.browseForFileToSave(true))
+    this->renderTargetFileChooser->launchAsync(Globals::UI::FileChooser::forFileToSave,
+        [this, format](const FileChooser &fc)
     {
-        App::showModalComponent(make<RenderDialog>(this->project, fc.getResult(), extension));
-    }
+        const auto results = fc.getURLResults();
+        if (results.isEmpty())
+        {
+            return;
+        }
+
+        const auto &url = results.getReference(0);
+        // todo someday: render to any stream, not only local files
+        if (url.isLocalFile())
+        {
+            App::showModalComponent(make<RenderDialog>(this->project, url, format));
+        }
+    });
 }
 
 void SequencerLayout::handleCommandMessage(int commandId)
@@ -592,11 +608,10 @@ void SequencerLayout::handleCommandMessage(int commandId)
 #endif
         break;
     case CommandIDs::RenderToFLAC:
-        this->proceedToRenderDialog("FLAC");
+        this->proceedToRenderDialog(RenderFormat::FLAC);
         return;
-
     case CommandIDs::RenderToWAV:
-        this->proceedToRenderDialog("WAV");
+        this->proceedToRenderDialog(RenderFormat::WAV);
         return;
     case CommandIDs::SwitchBetweenRolls:
         if (!this->rollContainer->canAnimate(RollsSwitchingProxy::rolls))

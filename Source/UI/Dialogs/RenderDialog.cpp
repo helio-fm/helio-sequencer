@@ -23,10 +23,13 @@
 #include "MenuItemComponent.h"
 
 RenderDialog::RenderDialog(ProjectNode &parentProject,
-    const File &renderTo, const String &formatExtension) :
+    const URL &target, RenderFormat format) :
     project(parentProject),
-    extension(formatExtension.toLowerCase())
+    renderTarget(target),
+    format(format)
 {
+    jassert(target.isLocalFile());
+
     this->renderButton = make<TextButton>();
     this->addAndMakeVisible(this->renderButton.get());
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderProceed));
@@ -39,11 +42,11 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     this->addAndMakeVisible(this->filenameEditor.get());
     this->filenameEditor->setFont({ 28.f });
     this->filenameEditor->setJustificationType(Justification::topLeft);
-    this->filenameEditor->setText(renderTo.getFileName(), dontSendNotification);
-#if JUCE_MAC
-    this->filenameEditor->setEditable(false);
-#else
+
+#if PLATFORM_DESKTOP
     this->filenameEditor->setEditable(true, true, false);
+#elif PLATFORM_MOBILE
+    this->filenameEditor->setEditable(false);
 #endif
 
     this->filenameLabel = make<Label>();
@@ -71,17 +74,17 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     this->addAndMakeVisible(this->pathEditor.get());
     this->pathEditor->setFont({ 16.f });
     this->pathEditor->setJustificationType(Justification::centredLeft);
-    this->pathEditor->setText(renderTo.getParentDirectory().getFullPathName(), dontSendNotification);
 
-    this->component3 = make<SeparatorHorizontalFading>();
-    this->addAndMakeVisible(this->component3.get());
-    this->component3->setBounds(32, 121, 456, 8);
+    this->separator = make<SeparatorHorizontalFading>();
+    this->addAndMakeVisible(this->separator.get());
+    this->separator->setBounds(32, 121, 456, 8);
 
     // just in case..
     this->project.getTransport().stopPlaybackAndRecording();
 
     this->setSize(520, 224);
     this->updatePosition();
+    this->updateRenderTargetLabels();
 }
 
 RenderDialog::~RenderDialog() {}
@@ -121,15 +124,42 @@ void RenderDialog::handleCommandMessage(int commandId)
     }
     else if (commandId == CommandIDs::Browse)
     {
-        FileChooser fc(TRANS(I18n::Dialog::renderSelectFile),
-                       File(this->getFileName()), ("*." + this->extension), true);
-
-        if (fc.browseForFileToSave(true))
-        {
-            this->pathEditor->setText(fc.getResult().getParentDirectory().getFullPathName(), dontSendNotification);
-            this->filenameEditor->setText(fc.getResult().getFileName(), dontSendNotification);
-        }
+        this->launchFileChooser();
     }
+}
+
+void RenderDialog::launchFileChooser()
+{
+    const auto extension = getExtensionForRenderFormat(this->format);
+
+    this->renderFileChooser = make<FileChooser>(TRANS(I18n::Dialog::renderCaption),
+        this->renderTarget.getLocalFile(), "*." + extension, true);
+
+    this->renderFileChooser->launchAsync(Globals::UI::FileChooser::forFileToSave, [this](const FileChooser &fc)
+    {
+        const auto results = fc.getURLResults();
+        if (results.isEmpty())
+        {
+            return;
+        }
+
+        const auto &url = results.getReference(0);
+
+        // todo someday: test rendering to any stream, not only local files
+        if (url.isLocalFile())
+        {
+            this->renderTarget = url;
+            this->updateRenderTargetLabels();
+        }
+    });
+}
+
+void RenderDialog::updateRenderTargetLabels()
+{
+    jassert(this->renderTarget.isLocalFile());
+    const auto file = this->renderTarget.getLocalFile();
+    this->pathEditor->setText(file.getParentDirectory().getFullPathName(), dontSendNotification);
+    this->filenameEditor->setText(file.getFileName(), dontSendNotification);
 }
 
 bool RenderDialog::keyPressed(const KeyPress &key)
@@ -144,11 +174,10 @@ void RenderDialog::inputAttemptWhenModal()
 
 void RenderDialog::startOrAbortRender()
 {
-    Transport &transport = this->project.getTransport();
-
+    auto &transport = this->project.getTransport();
     if (! transport.isRendering())
     {
-        transport.startRender(this->getFileName());
+        transport.startRender(this->renderTarget, this->format);
         this->startTrackingProgress();
     }
     else
@@ -161,20 +190,12 @@ void RenderDialog::startOrAbortRender()
 
 void RenderDialog::stopRender()
 {
-    Transport &transport = this->project.getTransport();
-
+    auto &transport = this->project.getTransport();
     if (transport.isRendering())
     {
         transport.stopRender();
         this->stopTrackingProgress();
     }
-}
-
-String RenderDialog::getFileName() const
-{
-    const String safeRenderName = File::createLegalFileName(this->filenameEditor->getText(true));
-    const String absolutePath = this->pathEditor->getText();
-    return File(absolutePath).getChildFile(safeRenderName).getFullPathName();
 }
 
 void RenderDialog::timerCallback(int timerId)
@@ -184,8 +205,7 @@ void RenderDialog::timerCallback(int timerId)
         return;
     }
 
-    Transport &transport = this->project.getTransport();
-
+    auto &transport = this->project.getTransport();
     if (transport.isRendering())
     {
         const float percentsDone = transport.getRenderingPercentsComplete();
@@ -211,8 +231,8 @@ void RenderDialog::stopTrackingProgress()
 {
     this->stopTimer(RenderDialog::renderProgressTimer);
 
-    Transport &transport = this->project.getTransport();
-    const float percentsDone = transport.getRenderingPercentsComplete();
+    auto &transport = this->project.getTransport();
+    const auto percentsDone = transport.getRenderingPercentsComplete();
     this->slider->setValue(percentsDone, dontSendNotification);
 
     this->animator.fadeOut(this->indicator.get(), Globals::UI::fadeOutLong);

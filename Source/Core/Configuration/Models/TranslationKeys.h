@@ -70,7 +70,6 @@ namespace I18n
         static const Identifier renderAbort = "dialog::render::abort";
         static const Identifier renderCaption = "dialog::render::caption";
         static const Identifier renderProceed = "dialog::render::proceed";
-        static const Identifier renderSelectFile = "dialog::render::selectfile";
         static const Identifier scanFolderCaption = "dialog::scanfolder::caption";
         static const Identifier timeSignatureAddCaption = "dialog::timesignature::add::caption";
         static const Identifier timeSignatureEditCaption = "dialog::timesignature::edit::caption";

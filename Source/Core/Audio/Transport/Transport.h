@@ -25,8 +25,9 @@ class RendererThread;
 
 #include "TransportListener.h"
 #include "TransportPlaybackCache.h"
-#include "ProjectListener.h"
 #include "OrchestraListener.h"
+#include "ProjectListener.h"
+#include "RenderFormat.h"
 #include "Instrument.h"
 
 class Transport final : public Serializable,
@@ -70,7 +71,7 @@ public:
 
     void stopPlaybackAndRecording();
 
-    void startRender(const String &filename);
+    void startRender(const URL &renderTarget, RenderFormat format);
     bool isRendering() const;
     void stopRender();
     

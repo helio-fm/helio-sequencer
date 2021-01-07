@@ -29,52 +29,55 @@ RendererThread::~RendererThread()
     this->stop();
 }
 
-float RendererThread::getPercentsComplete() const
+float RendererThread::getPercentsComplete() const noexcept
 {
-    const ScopedReadLock lock(this->percentsLock);
-    return this->percentsDone;
+    return this->percentsDone.get();
 }
 
-void RendererThread::startRecording(const File &file,
+void RendererThread::startRendering(const URL &target, RenderFormat format,
     Transport::PlaybackContext::Ptr playbackContext)
 {
     this->stop();
 
+    this->format = format;
     this->context = playbackContext;
 
-    // Create an OutputStream to write to our destination file...
-    file.deleteFile();
-    UniquePointer<FileOutputStream> fileStream(file.createOutputStream());
+    // keep the url copy alive while rendering,
+    // since on iOS it contains a security bookmark:
+    this->renderTarget = target;
 
-    if (fileStream != nullptr)
+    if (this->renderTarget.isLocalFile() &&
+        this->renderTarget.getLocalFile().exists())
     {
-        {
-            const ScopedWriteLock pl(this->percentsLock);
-            this->percentsDone = 0.f;
-        }
+        this->renderTarget.getLocalFile().deleteFile();
+    }
+
+    if (auto outStream = this->renderTarget.createOutputStream())
+    {
+        this->percentsDone = 0.f;
         
         // 16 bits per sample should be enough for anybody :)
         // ..wanna fight about it? https://people.xiph.org/~xiphmont/demo/neil-young.html
         const int bitDepth = 16;
 
-        if (file.getFileExtension().endsWithIgnoreCase("wav"))
+        if (this->format == RenderFormat::WAV)
         {
             WavAudioFormat wavFormat;
             const ScopedLock sl(this->writerLock);
-            this->writer.reset(wavFormat.createWriterFor(fileStream.release(),
+            this->writer.reset(wavFormat.createWriterFor(outStream.release(),
                 this->context->sampleRate, this->context->numOutputChannels, bitDepth, {}, 0));
         }
-        else if (file.getFileExtension().endsWithIgnoreCase("flac"))
+        else if (this->format == RenderFormat::FLAC)
         {
             FlacAudioFormat flacFormat;
             const ScopedLock sl(this->writerLock);
-            this->writer.reset(flacFormat.createWriterFor(fileStream.release(),
+            this->writer.reset(flacFormat.createWriterFor(outStream.release(),
                 this->context->sampleRate, this->context->numOutputChannels, bitDepth, {}, 0));
         }
 
         if (writer != nullptr)
         {
-            DBG(file.getFullPathName());
+            DBG(this->renderTarget.getLocalFile().getFullPathName());
             this->startThread(9);
         }
     }
@@ -93,9 +96,8 @@ void RendererThread::stop()
     }
 }
 
-bool RendererThread::isRecording() const
+bool RendererThread::isRendering() const
 {
-    //return (this->writer != nullptr) && this->isThreadRunning();
     return this->isThreadRunning();
 }
 
@@ -115,7 +117,7 @@ void RendererThread::run()
     // step 0. init.
     this->transport.recacheIfNeeded();
     auto sequences = this->transport.getPlaybackCache();
-    const int bufferSize = 512;
+    constexpr auto bufferSize = 512;
 
     // assuming that number of channels and sample rate is equal for all instruments
     const int numOutChannels = sequences.getNumOutputChannels();
@@ -268,11 +270,8 @@ void RendererThread::run()
         // step 3e. finally, update counters.
         currentFrame += bufferSize;
 
-        {
-            const ScopedWriteLock lock(this->percentsLock);
-            this->percentsDone = float(currentFrame / lastFrame);
-            //DBG("this->percentsDone : " + String(this->percentsDone));
-        }
+        this->percentsDone = float(currentFrame / lastFrame);
+        //DBG("this->percentsDone : " + String(this->percentsDone));
     }
 
     // step 4. setNonRealtime false.
@@ -288,6 +287,9 @@ void RendererThread::run()
         const ScopedLock sl(this->writerLock);
         this->writer = nullptr;
     }
+
+    // dispose the URL object, so that its security bookmark can be released by iOS
+    this->renderTarget = {};
 
     App::Workspace().getAudioCore().setAwake();
 }

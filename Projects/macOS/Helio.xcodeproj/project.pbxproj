@@ -422,6 +422,13 @@
 			path = ../../Resources/Icons/annotation.svg;
 			sourceTree = "SOURCE_ROOT";
 		};
+		0C90AF88AC2D9A8F29F83CA5 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = RenderFormat.h;
+			path = ../../Source/Core/Audio/Transport/RenderFormat.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		0CECC8645E5BF399F3547CFC = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -5911,6 +5918,7 @@
 				80E4D81178BE3D1809845A9F,
 				71BA638BD9EBFA2DEB108AB5,
 				14326F12D07C180450688F9E,
+				0C90AF88AC2D9A8F29F83CA5,
 				09DBE08B6238D7BA25B222C7,
 				837D0D544F28E207D32C8997,
 				C84B4EE4E2A9080DD70653C5,
