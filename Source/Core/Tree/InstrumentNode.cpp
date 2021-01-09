@@ -365,7 +365,7 @@ public:
         MenuPanel::Menu menu;
 
         menu.add(MenuItem::item(Icons::browse, CommandIDs::KeyMapLoadScala,
-            TRANS(I18n::Menu::keyboardMappingLoadScala))); // closes menu only after the file dialog is gone
+            TRANS(I18n::Menu::keyboardMappingLoadScala))->closesMenu());
 
         menu.add(MenuItem::item(Icons::reset, CommandIDs::KeyMapReset,
             TRANS(I18n::Menu::keyboardMappingReset))->closesMenu());

@@ -61,7 +61,8 @@ private:
     bool canShowPreviousPage() const noexcept;
     bool canShowNextPage() const noexcept;
 
-    void loadScalaMappings() const;
+    void loadScalaMappings();
+    UniquePointer<FileChooser> importFileChooser;
 
     UniquePointer<HeadlineContextMenuController> contextMenuController;
 

@@ -512,7 +512,7 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
         useActiveClip ? activeClip : *trackFirstClip, false);
 }
 
-HybridRoll *SequencerLayout::getRoll() const
+HybridRoll *SequencerLayout::getRoll() const noexcept
 {
     if (this->rollContainer->isPatternMode())
     {
@@ -521,27 +521,6 @@ HybridRoll *SequencerLayout::getRoll() const
     else
     {
         return this->pianoRoll.get();
-    }
-}
-
-//===----------------------------------------------------------------------===//
-// FileDragAndDropTarget
-//===----------------------------------------------------------------------===//
-
-bool SequencerLayout::isInterestedInFileDrag(const StringArray &files)
-{
-    File file = File(files.joinIntoString({}, 0, 1));
-    return (file.hasFileExtension("mid") || file.hasFileExtension("midi"));
-}
-
-void SequencerLayout::filesDropped(const StringArray &filenames,
-    int mouseX, int mouseY)
-{
-    if (isInterestedInFileDrag(filenames))
-    {
-        String filename = filenames.joinIntoString({}, 0, 1);
-        DBG(filename);
-        //importMidiFile(File(filename));
     }
 }
 
@@ -596,16 +575,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
         this->project.getDocument()->import("*.mid;*.midi");
         break;
     case CommandIDs::ExportMidi:
-#if JUCE_IOS
-        {
-            const String safeName = TreeNode::createSafeName(this->project.getName()) + ".mid";
-            File midiExport = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(safeName);
-            this->project.exportMidi(midiExport);
-            App::Layout().showTooltip(TRANS(I18n::Menu::Project::renderSavedTo) + " '" + safeName + "'", MainLayout::TooltipType::Success);
-        }
-#else
         this->project.getDocument()->exportAs("*.mid;*.midi", this->project.getName() + ".mid");
-#endif
         break;
     case CommandIDs::RenderToFLAC:
         this->proceedToRenderDialog(RenderFormat::FLAC);

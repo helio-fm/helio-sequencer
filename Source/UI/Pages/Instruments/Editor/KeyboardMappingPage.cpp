@@ -281,15 +281,28 @@ bool KeyboardMappingPage::canShowNextPage() const noexcept
         Globals::twelveToneKeyboardSize < KeyboardMapping::numMappedKeys;
 }
 
-void KeyboardMappingPage::loadScalaMappings() const
+void KeyboardMappingPage::loadScalaMappings()
 {
-    FileChooser fc(TRANS(I18n::Dialog::workspaceCreateProjectCaption),
+    this->importFileChooser = make<FileChooser>(TRANS(I18n::Dialog::workspaceCreateProjectCaption),
         File::getSpecialLocation(File::userDocumentsDirectory), "*.kbm", true);
     
-    if (fc.browseForFileToOpen())
+    this->importFileChooser->launchAsync(Globals::UI::FileChooser::forFileToOpen,
+        [this](const FileChooser &fc)
     {
-        const auto result = fc.getResult();
-        const auto nameWithoutExtension = result.getFileNameWithoutExtension();
+        auto results = fc.getURLResults();
+        if (results.isEmpty())
+        {
+            return;
+        }
+
+        auto &url = results.getReference(0);
+        if (!url.isLocalFile())
+        {
+            return;
+        }
+
+        const auto file = url.getLocalFile();
+        const auto nameWithoutExtension = file.getFileNameWithoutExtension();
         
         Array<File> allFilesToImport;
 
@@ -302,14 +315,14 @@ void KeyboardMappingPage::loadScalaMappings() const
                 nameComponents.joinIntoString("_", 0, nameComponents.size() - 1);
 
             // search for "same_name_*.kbm" files for other channels' mappings
-            allFilesToImport = result.getParentDirectory()
+            allFilesToImport = file.getParentDirectory()
                 .findChildFiles(File::TypesOfFileToFind::findFiles, false,
                     nameTemplate + "_*.kbm");
         }
         else
         {
             // import a single file
-            allFilesToImport.add(result);
+            allFilesToImport.add(file);
         }
 
         auto *keyMap = this->instrument->getKeyboardMapping();
@@ -321,12 +334,5 @@ void KeyboardMappingPage::loadScalaMappings() const
             keyMap->loadScalaKbmFile(*readStream.get(),
                 i.getFileNameWithoutExtension());
         }
-    }
-
-    // a nasty fix for OpenGL issues I have no time to investigate;
-    // works fine when hiding the menu, if any, *after* the dialog is gone:
-    if (auto *popup = Component::getCurrentlyModalComponent())
-    {
-        popup->exitModalState(0);
-    }
+    });
 }
