@@ -1,0 +1,1 @@
+Helio aims to be a modern music creation software, featuring linear-based/pattern-based sequencer with uncluttered UI, built-in version control for synchronizing projects across devices, support for microtonal temperaments, translations to many languages and more. It is mainly targeted at hobbyist composers, game developers and indie artists.
