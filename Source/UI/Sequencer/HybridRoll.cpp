@@ -385,7 +385,8 @@ void HybridRoll::multiTouchZoomEvent(const Point<float> &origin, const Point<flo
 void HybridRoll::multiTouchPanEvent(const Point<float> &offset)
 {
     //this->smoothZoomController->cancelZoom();
-    this->smoothPanController->panByOffset(this->viewport.getViewPosition() + offset.toInt());
+    const auto absOffset = this->viewport.getViewPosition() + offset.toInt();
+    this->panByOffset(absOffset.x, absOffset.y);
 }
 
 void HybridRoll::multiTouchCancelZoom()
@@ -426,14 +427,14 @@ inline float getNumBeatsToExpand(float beatWidth)
     //DBG(numBeatsToExpand);
 }
 
-void HybridRoll::panByOffset(int offsetX, int offsetY)
+bool HybridRoll::panByOffset(int offsetX, int offsetY)
 {
     this->stopFollowingPlayhead();
 
-    const bool needsToStretchRight = (offsetX >= (this->getWidth() - this->viewport.getViewWidth()));
-    const bool needsToStretchLeft = (offsetX <= 0);
+    const bool stretchRight = (offsetX >= (this->getWidth() - this->viewport.getViewWidth()));
+    const bool stretchLeft = (offsetX <= 0);
 
-    if (needsToStretchRight)
+    if (stretchRight)
     {
         const float numBeatsToExpand = getNumBeatsToExpand(this->beatWidth);
         this->project.broadcastChangeViewBeatRange(this->firstBeat, this->lastBeat + numBeatsToExpand);
@@ -441,7 +442,7 @@ void HybridRoll::panByOffset(int offsetX, int offsetY)
         const float beatCloseToTheRight = this->lastBeat - numBeatsToExpand;
         this->header->addAndMakeVisible(new HybridRollExpandMark(*this, beatCloseToTheRight, int(numBeatsToExpand)));
     }
-    else if (needsToStretchLeft)
+    else if (stretchLeft)
     {
         const float numBeatsToExpand = getNumBeatsToExpand(this->beatWidth);
         const float deltaW = float(this->beatWidth * numBeatsToExpand);
@@ -456,6 +457,8 @@ void HybridRoll::panByOffset(int offsetX, int offsetY)
     }
 
     this->updateChildrenPositions();
+
+    return stretchRight || stretchLeft;
 }
 
 void HybridRoll::panProportionally(float absX, float absY)
@@ -1081,16 +1084,32 @@ void HybridRoll::mouseUp(const MouseEvent &e)
 void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
     // TODO check if any operation is in progress (lasso drag, knife tool drag, etc)
-    const float inititalSpeed = this->smoothZoomController->getInitialZoomSpeed();
-    const float forwardWheel = wheel.deltaY * (wheel.isReversed ? -inititalSpeed : inititalSpeed);
+    const float zoomSpeed = this->smoothZoomController->getInitialSpeed();
+    const float zoomWheel = wheel.deltaY * (wheel.isReversed ? -zoomSpeed : zoomSpeed);
     const auto mouseOffset = (event.position - this->viewport.getViewPosition().toFloat());
     if (event.mods.isAnyModifierKeyDown())
     {
-        this->startSmoothZoom(mouseOffset, Point<float>(0.f, forwardWheel));
+        if (event.mods.isShiftDown())
+        {
+            this->smoothZoomController->cancelZoom();
+
+            // let's try to make the panning speed feel consistent, regardless
+            // of the zoom level - slower when zoomed out, faster when zoomed in;
+            // but also not too fast, the upper limit depending on the screen width:
+            const auto viewWidth = float(this->viewport.getViewWidth());
+            const float panSpeed = jmin(viewWidth * 2.f,
+                this->smoothPanController->getInitialSpeed() * float(this->getWidth()) / viewWidth);
+            const float panWheel = wheel.deltaY * (wheel.isReversed ? panSpeed : -panSpeed);
+            this->smoothPanController->panByOffset({ panWheel, 0.f });
+        }
+        else
+        {
+            this->startSmoothZoom(mouseOffset, { 0.f, zoomWheel });
+        }
     }
     else
     {
-        this->startSmoothZoom(mouseOffset, Point<float>(forwardWheel, 0.f));
+        this->startSmoothZoom(mouseOffset, { zoomWheel, 0.f });
     }
 }
 
@@ -1601,7 +1620,8 @@ void HybridRoll::continueDragging(const MouseEvent &e)
 {
     this->draggedDistance = e.getDistanceFromDragStart();
     this->smoothZoomController->cancelZoom();
-    this->smoothPanController->panByOffset(this->getMouseOffset(e.source.getScreenPosition()).toInt());
+    const auto offset = this->getMouseOffset(e.source.getScreenPosition()).toInt();
+    this->panByOffset(offset.x, offset.y);
 }
 
 //===----------------------------------------------------------------------===//

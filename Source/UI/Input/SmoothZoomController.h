@@ -40,7 +40,7 @@ public:
         this->stopThread(500);
     }
 
-    static inline float getInitialZoomSpeed() noexcept
+    static inline float getInitialSpeed() noexcept
     {
         return SmoothZoomController::initialZoomSpeed;
     }

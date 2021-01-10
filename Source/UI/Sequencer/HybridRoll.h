@@ -163,9 +163,8 @@ public:
     // SmoothPanListener
     //===------------------------------------------------------------------===//
 
-    void panByOffset(int offsetX, int offsetY) override;
+    bool panByOffset(int offsetX, int offsetY) override;
     void panProportionally(float absX, float absY) override;
-
     Point<int> getPanOffset() const override;
 
     //===------------------------------------------------------------------===//

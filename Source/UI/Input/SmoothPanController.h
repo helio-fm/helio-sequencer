@@ -19,10 +19,6 @@
 
 #include "SmoothPanListener.h"
 
-#define SMOOTH_PAN_STOP_FACTOR 5
-#define SMOOTH_PAN_SLOWDOWN_FACTOR 0.95f
-#define SMOOTH_PAN_DISABLED 1
-
 class SmoothPanController final : private Timer
 {
 public:
@@ -30,21 +26,20 @@ public:
     explicit SmoothPanController(SmoothPanListener &parent) :
         listener(parent) {}
 
+    static inline float getInitialSpeed() noexcept
+    {
+        return SmoothPanController::initialPanSpeed;
+    }
+
     void cancelPan()
     {
         this->stopTimer();
     }
 
-    void panByOffset(Point<int> offset)
+    void panByOffset(Point<float> offset)
     {
-        #if SMOOTH_PAN_DISABLED
-
-        this->listener.panByOffset(offset.getX(), offset.getY());
-
-        #else
-
         this->origin = this->listener.getPanOffset().toFloat();
-        this->target = offset.toFloat();
+        this->target = this->origin + offset.toFloat();
 
         if (!this->isTimerRunning())
         {
@@ -55,11 +50,13 @@ public:
         {
             this->process();
         }
-
-        #endif
     }
 
 private:
+
+    static constexpr auto stopDistance = 5;
+    static constexpr auto slowdownFactor = 0.3f;
+    static constexpr auto initialPanSpeed = 150.f;
 
     void timerCallback() override
     {
@@ -69,12 +66,13 @@ private:
     inline void process()
     {
         const auto diff = this->target - this->origin;
-        this->origin += (diff * SMOOTH_PAN_SLOWDOWN_FACTOR);
+        this->origin += (diff * SmoothPanController::slowdownFactor);
 
-        this->listener.panByOffset(int(this->origin.getX()),
-            int(this->origin.getY()));
+        const bool hitTheBorder = 
+            this->listener.panByOffset(int(this->origin.getX()),
+                int(this->origin.getY()));
 
-        if (diff.getDistanceFromOrigin() < SMOOTH_PAN_STOP_FACTOR)
+        if (hitTheBorder || diff.getDistanceFromOrigin() < SmoothPanController::stopDistance)
         {
             this->stopTimer();
         }
