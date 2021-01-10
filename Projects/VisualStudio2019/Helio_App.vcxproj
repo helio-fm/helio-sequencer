@@ -2894,6 +2894,7 @@
     <ClInclude Include="..\..\Source\Core\Audio\Transport\PlayerThread.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\PlayerThreadPool.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\RendererThread.h"/>
+    <ClInclude Include="..\..\Source\Core\Audio\Transport\RenderFormat.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\Transport.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\TransportListener.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\TransportPlaybackCache.h"/>

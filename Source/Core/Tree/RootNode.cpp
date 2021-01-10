@@ -86,7 +86,7 @@ ProjectNode *RootNode::openProject(const File &file)
         auto project = make<ProjectNode>(file);
         this->addChildNode(project.get(), 1);
 
-        if (!project->getDocument()->load(file.getFullPathName()))
+        if (!project->getDocument()->load(file))
         {
             return nullptr;
         }
@@ -217,7 +217,8 @@ ProjectNode *RootNode::importMidi(const File &file)
     auto *project = new ProjectNode(file.getFileNameWithoutExtension());
     this->addChildNode(project);
     addAllEssentialProjectNodes(project);
-    project->importMidi(file);
+    auto stream = file.createInputStream();
+    project->importMidi(*stream.get());
     project->selectFirstChildOfType<PianoTrackNode, PatternEditorNode>();
     return project;
 }

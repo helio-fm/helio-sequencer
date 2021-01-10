@@ -25,8 +25,7 @@ Document::Document(DocumentOwner &documentOwner,
     const String &defaultName,
     const String &defaultExtension) :
     owner(documentOwner),
-    extension(defaultExtension),
-    hasChanges(true)
+    extension(defaultExtension)
 {
     if (defaultName.isNotEmpty())
     {
@@ -44,9 +43,9 @@ Document::Document(DocumentOwner &documentOwner,
 
 Document::Document(DocumentOwner &documentOwner, const File &existingFile) :
     owner(documentOwner),
-    extension(existingFile.getFileExtension().replace(".", ""))
+    extension(existingFile.getFileExtension().replace(".", "")),
+    workingFile(existingFile)
 {
-    this->workingFile = existingFile;
     this->owner.addChangeListener(this);
 }
 
@@ -60,14 +59,14 @@ void Document::changeListenerCallback(ChangeBroadcaster *source)
     this->hasChanges = true;
 }
 
-File Document::getFile() const
-{
-    return this->workingFile;
-}
-
 String Document::getFullPath() const
 {
     return this->workingFile.getFullPathName();
+}
+
+void Document::revealToUser() const
+{
+    this->workingFile.revealToUser();
 }
 
 void Document::renameFile(const String &newName)
@@ -100,192 +99,118 @@ void Document::renameFile(const String &newName)
 
 void Document::save()
 {
-    if (this->hasChanges && this->workingFile.getFullPathName().isNotEmpty())
+    if (this->hasChanges &&
+        this->workingFile.getFullPathName().isNotEmpty())
     {
-        this->internalSave(this->workingFile);
-    }
-}
-
-void Document::saveAs()
-{
-#if PLATFORM_DESKTOP
-
-        FileChooser fc(TRANS(I18n::Dialog::documentSave),
-            File::getCurrentWorkingDirectory(), ("*." + this->extension), true);
-
-        if (fc.browseForFileToSave(true))
+        const String fullPath = this->workingFile.getFullPathName();
+        const auto firstCharAfterLastSlash = fullPath.lastIndexOfChar(File::getSeparatorChar()) + 1;
+        const auto lastDot = fullPath.lastIndexOfChar('.');
+        const bool hasEmptyName = (lastDot == firstCharAfterLastSlash);
+        if (hasEmptyName)
         {
-            this->internalSave(fc.getResult());
+            return;
         }
 
-#endif
+        const bool savedOk = this->owner.onDocumentSave(this->workingFile);
+
+        if (savedOk)
+        {
+            this->hasChanges = false;
+            DBG("Document saved: " + this->workingFile.getFullPathName());
+            return;
+        }
+
+        DBG("Document save failed: " + this->workingFile.getFullPathName());
+    }
 }
 
 void Document::exportAs(const String &exportExtension,
     const String &defaultFilenameWithExtension)
 {
-#if PLATFORM_DESKTOP
+    if (!FileChooser::isPlatformDialogAvailable())
+    {
+        return;
+    }
 
-    FileChooser fc(TRANS(I18n::Dialog::documentExport),
+    this->exportFileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentExport),
         DocumentHelpers::getDocumentSlot(File::createLegalFileName(defaultFilenameWithExtension)),
         exportExtension, true);
 
-    if (fc.browseForFileToSave(true))
+    // todo on android also
+    // RuntimePermissions::request(RuntimePermissions::readExternalStorage, myCallback)
+    // https://forum.juce.com/t/native-ios-android-file-choosers/25206/64
+
+    this->exportFileChooser->launchAsync(Globals::UI::FileChooser::forFileToSave, [this](const FileChooser &fc)
     {
-        // FIXME: at this point, edited filename might come without extension
-        File result(fc.getResult());
-        const bool savedOk = this->owner.onDocumentExport(result);
-        
-        if (savedOk)
+        auto results = fc.getURLResults();
+        if (results.isEmpty())
         {
-            App::Layout().showTooltip(TRANS(I18n::Dialog::documentExportDone));
+            return;
         }
-    }
 
-#endif
+        auto &url = results.getReference(0);
+
+        if (url.isLocalFile() && url.getLocalFile().exists())
+        {
+            url.getLocalFile().deleteFile();
+        }
+
+        if (auto outStream = url.createOutputStream())
+        {
+            outStream->setPosition(0); // just in case
+            if (this->owner.onDocumentExport(*outStream.get()))
+            {
+                App::Layout().showTooltip(TRANS(I18n::Dialog::documentExportDone));
+            }
+        }
+    });
 }
-
 
 //===----------------------------------------------------------------------===//
 // Load
 //===----------------------------------------------------------------------===//
 
-bool Document::load(const File &file, const File &relativeFile)
+bool Document::load(const File &file)
 {
     if (!file.existsAsFile())
     {
-
-        if (!relativeFile.existsAsFile())
-        {
-#if PLATFORM_DESKTOP
-            FileChooser fc(TRANS(I18n::Dialog::documentLoad),
-                File::getCurrentWorkingDirectory(), ("*." + this->extension), true);
-
-            if (fc.browseForFileToOpen())
-            {
-                File result(fc.getResult());
-                return this->internalLoad(result);
-            }
-#endif
-        }
-        else
-        {
-            return this->internalLoad(relativeFile);
-        }
+        jassertfalse; // never happens?
+        return false;
     }
-    else
+
+    if (this->owner.onDocumentLoad(file))
     {
-        return this->internalLoad(file);
+        this->workingFile = file;
+        this->hasChanges = false;
+        return true;
     }
-    
+
+    DBG("Document load failed: " + this->workingFile.getFullPathName());
     return false;
 }
 
 void Document::import(const String &filePattern)
 {
-#if PLATFORM_DESKTOP
+    this->importFileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentImport),
+        File::getCurrentWorkingDirectory(), filePattern, true);
 
-    FileChooser fc(TRANS(I18n::Dialog::documentImport),
-                   File::getCurrentWorkingDirectory(), (filePattern), true);
-
-    if (fc.browseForFileToOpen())
+    this->importFileChooser->launchAsync(Globals::UI::FileChooser::forFileToOpen, [this](const FileChooser &fc)
     {
-        File result(fc.getResult());
-        this->owner.onDocumentImport(result);
-    }
+        auto results = fc.getURLResults();
+        if (results.isEmpty())
+        {
+            return;
+        }
 
-#endif
-}
+        auto &url = results.getReference(0);
 
-bool Document::fileHasBeenModified() const
-{
-    return this->fileModificationTime != this->workingFile.getLastModificationTime()
-           && (this->fileSize != this->workingFile.getSize()
-               || this->calculateFileHashCode(this->workingFile) != this->fileHashCode);
-}
+        // fixme:
+        // Note that on some platforms (Android, for example) it's not permitted to do any network
+        // action from the message thread, so you must only call it from a background thread.
 
-void Document::updateHash()
-{
-    this->fileModificationTime = this->workingFile.getLastModificationTime();
-    this->fileSize = this->workingFile.getSize();
-    this->fileHashCode = this->calculateFileHashCode(this->workingFile);
-}
-
-bool Document::hasUnsavedChanges() const noexcept
-{
-    return this->hasChanges;
-}
-
-//===----------------------------------------------------------------------===//
-// Protected
-//===----------------------------------------------------------------------===//
-
-int64 Document::calculateStreamHashCode(InputStream &in) const
-{
-    int64 t = 0;
-
-    const int bufferSize = 4096;
-    HeapBlock <uint8> buffer;
-    buffer.malloc(bufferSize);
-
-    for (;;)
-    {
-        const int num = in.read(buffer, bufferSize);
-
-        if (num <= 0)
-        { break; }
-
-        for (int i = 0; i < num; ++i)
-        { t = t * 65599 + buffer[i]; }
-    }
-
-    return t;
-}
-
-int64 Document::calculateFileHashCode(const File &file) const
-{
-    UniquePointer<FileInputStream> stream(file.createInputStream());
-    return stream != nullptr ? calculateStreamHashCode(*stream) : 0;
-}
-
-bool Document::internalSave(File result)
-{
-    const String fullPath = result.getFullPathName();
-    const auto firstCharAfterLastSlash = fullPath.lastIndexOfChar(File::getSeparatorChar()) + 1;
-    const auto lastDot = fullPath.lastIndexOfChar('.');
-    const bool hasEmptyName = (lastDot == firstCharAfterLastSlash);
-    if (hasEmptyName)
-    {
-        return false;
-    }
-
-    const bool savedOk = this->owner.onDocumentSave(result);
-
-    if (savedOk)
-    {
-        this->workingFile = result;
-        this->hasChanges = false;
-        this->owner.onDocumentDidSave(result);
-        DBG("Document saved: " + result.getFullPathName());
-        return true;
-    }
-
-    DBG("Document save failed: " + result.getFullPathName());
-    return false;
-}
-
-bool Document::internalLoad(File result)
-{
-    const bool loadedOk = this->owner.onDocumentLoad(result);
-
-    if (loadedOk)
-    {
-        this->workingFile = result;
-        this->hasChanges = false;
-        this->owner.onDocumentDidLoad(result);
-        return true;
-    }
-    
-    DBG("Document load failed: " + result.getFullPathName());
-    return false;
+        if (auto inStream = url.createInputStream(false))
+        {
+            this->owner.onDocumentImport(*inStream.get());
+        }
+    });
 }

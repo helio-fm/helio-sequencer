@@ -17,8 +17,6 @@
 
 #pragma once
 
-#include "Common.h"
-
 class DocumentOwner;
 
 class Document : public ChangeListener
@@ -34,54 +32,40 @@ public:
 
     ~Document() override;
 
-    void changeListenerCallback(ChangeBroadcaster* source) override;
-
-    File getFile() const;
     String getFullPath() const;
+    void revealToUser() const;
 
     void renameFile(const String &newName);
+
 
     //===------------------------------------------------------------------===//
     // Save
     //===------------------------------------------------------------------===//
 
     void save();
-    void saveAs();
     void exportAs(const String &exportExtension,
         const String &defaultFilename = "");
-
-    void updateHash();
-    bool hasUnsavedChanges() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Load
     //===------------------------------------------------------------------===//
 
-    bool load(const File &file, const File &relativeFile = {});
+    bool load(const File &file);
     void import(const String &filePattern);
 
+    void changeListenerCallback(ChangeBroadcaster* source) override;
 
-protected:
-
-    bool internalSave(File result);
-    bool internalLoad(File result);
-    bool fileHasBeenModified() const;
-
-    int64 calculateStreamHashCode(InputStream &in) const;
-    int64 calculateFileHashCode(const File &file) const;
-
-protected:
+private:
 
     DocumentOwner &owner;
 
-    bool hasChanges;
-    File workingFile;
     const String extension;
-    Time fileModificationTime;
-    int64 fileHashCode;
-    int64 fileSize;
+    bool hasChanges = true;
+    File workingFile;
 
-private:
+    // async-launched file choosers must have long enough lifetime
+    UniquePointer<FileChooser> exportFileChooser;
+    UniquePointer<FileChooser> importFileChooser;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Document)
 };

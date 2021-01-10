@@ -151,6 +151,9 @@ void Workspace::createEmptyProject(const String &templateName)
     const String newProjectName = TRANS(I18n::Defaults::newProjectName);
 
 #if PLATFORM_DESKTOP
+
+    // this file chooser will remain available only on desktop;
+    // on mobile we will always create projects in the docs directory
     const String fileName = newProjectName + ".helio";
     FileChooser fc(TRANS(I18n::Dialog::workspaceCreateProjectCaption),
         DocumentHelpers::getDocumentSlot(fileName), "*.helio", true);
@@ -163,12 +166,15 @@ void Workspace::createEmptyProject(const String &templateName)
                 p->getName(), p->getDocument()->getFullPath());
         }
     }
+
 #else
+
     if (auto *p = this->treeRoot->addEmptyProject(newProjectName, templateName))
     {
         this->userProfile.onProjectLocalInfoUpdated(p->getId(),
             p->getName(), p->getDocument()->getFullPath());
     }
+
 #endif
 }
 
@@ -348,14 +354,27 @@ void Workspace::failedDeserializationFallback()
 
 void Workspace::importProject(const String &filePattern)
 {
-#if PLATFORM_DESKTOP
-    FileChooser fc(TRANS(I18n::Dialog::documentImport),
+    this->importFileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentImport),
         File::getCurrentWorkingDirectory(), filePattern, true);
 
-    if (fc.browseForFileToOpen())
+    this->importFileChooser->launchAsync(Globals::UI::FileChooser::forFileToOpen,
+        [this](const FileChooser &fc)
     {
-        const File file(fc.getResult());
-        const String &extension = file.getFileExtension();
+        auto results = fc.getURLResults();
+        if (results.isEmpty())
+        {
+            return;
+        }
+
+        auto &url = results.getReference(0);
+        if (!url.isLocalFile())
+        {
+            return;
+        }
+
+        const auto file = url.getLocalFile();
+        const auto extension = file.getFileExtension();
+
         if (extension == ".mid" || extension == ".midi" || extension == ".smf")
         {
             if (auto *p = this->treeRoot->importMidi(file))
@@ -374,8 +393,7 @@ void Workspace::importProject(const String &filePattern)
                 this->autosave();
             }
         }
-    }
-#endif
+    });
 }
 
 //===----------------------------------------------------------------------===//

@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Transport.h"
+#include "RenderFormat.h"
 
 class RendererThread final : private Thread
 {
@@ -26,13 +27,13 @@ public:
     explicit RendererThread(Transport &parentTransport);
     ~RendererThread() override;
     
-    float getPercentsComplete() const;
+    float getPercentsComplete() const noexcept;
 
-    void startRecording(const File &file,
+    void startRendering(const URL &target, RenderFormat format,
         Transport::PlaybackContext::Ptr context);
 
     void stop();
-    bool isRecording() const;
+    bool isRendering() const;
 
 private:
 
@@ -46,12 +47,15 @@ private:
 
     Transport &transport;
     Transport::PlaybackContext::Ptr context;
+    RenderFormat format;
+
+    // this needs to be kept alive while rendering (why - because iOS)
+    URL renderTarget;
 
     CriticalSection writerLock;
     UniquePointer<AudioFormatWriter> writer;
 
-    ReadWriteLock percentsLock;
-    float percentsDone = 0.f;
-    
+    Atomic<float> percentsDone = 0.f;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RendererThread)
 };

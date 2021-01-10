@@ -178,14 +178,14 @@ namespace Globals
 
     static constexpr auto numChannels = 16;
 
+    // 240 bpm (== 250 ms per quarter note)
+    static constexpr auto maxMsPerBeat = 250.0;
+
     namespace Defaults
     {
         // Milliseconds per quarter note, default 120 BPM
         static constexpr auto msPerBeat = 500;
         static constexpr auto tempoBpm = 60000 / msPerBeat;
-
-        // 240 bpm (== 250 ms per quarter note)
-        static constexpr auto maxMsPerBeat = 250.0;
 
         // Any length here is in beats
         static constexpr auto projectLength = static_cast<float>(beatsPerBar * 8);
@@ -234,6 +234,22 @@ namespace Globals
 
         static constexpr auto fadeInLong = 150;
         static constexpr auto fadeOutLong = 175;
+
+        namespace FileChooser
+        {
+            static constexpr auto forFileToSave =
+                FileBrowserComponent::saveMode |
+                FileBrowserComponent::canSelectFiles |
+                FileBrowserComponent::warnAboutOverwriting;
+
+            static constexpr auto forFileToOpen =
+                FileBrowserComponent::openMode |
+                FileBrowserComponent::canSelectFiles;
+
+            static constexpr auto forDirectory =
+                FileBrowserComponent::openMode |
+                FileBrowserComponent::canSelectDirectories;
+        }
     }
 }
 

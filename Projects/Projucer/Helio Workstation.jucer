@@ -192,6 +192,7 @@
                   file="../../Source/Core/Audio/Transport/RendererThread.cpp"/>
             <FILE id="qHMFej" name="RendererThread.h" compile="0" resource="0"
                   file="../../Source/Core/Audio/Transport/RendererThread.h"/>
+            <FILE id="UhIQyR" name="RenderFormat.h" compile="0" resource="0" file="../../Source/Core/Audio/Transport/RenderFormat.h"/>
             <FILE id="iPdQ6w" name="Transport.cpp" compile="1" resource="0" file="../../Source/Core/Audio/Transport/Transport.cpp"/>
             <FILE id="k7oPSt" name="Transport.h" compile="0" resource="0" file="../../Source/Core/Audio/Transport/Transport.h"/>
             <FILE id="JViiXj" name="TransportListener.h" compile="0" resource="0"
@@ -1441,7 +1442,10 @@
                   iosDevelopmentTeamID="EQL633LLC8" userNotes="" extraLinkerFlags=""
                   externalLibraries="" extraFrameworks="" iosDeviceFamily="1,2"
                   iPadScreenOrientation="UIInterfaceOrientationLandscapeLeft,UIInterfaceOrientationLandscapeRight"
-                  useHeaderMap="0" bundleIdentifier="fm.helio.mobile" unityBuild="1">
+                  useHeaderMap="0" bundleIdentifier="fm.helio.mobile" unityBuild="1"
+                  iosBackgroundBle="1" iCloudPermissions="1" iosContentSharing="1"
+                  iosBackgroundAudio="1" cameraPermissionNeeded="0" iosBluetoothPermissionNeeded="1"
+                  microphonePermissionNeeded="0" UISupportsDocumentBrowser="1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" iosCompatibility="9.0" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"

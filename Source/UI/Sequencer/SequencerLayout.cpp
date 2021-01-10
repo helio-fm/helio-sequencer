@@ -512,7 +512,7 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
         useActiveClip ? activeClip : *trackFirstClip, false);
 }
 
-HybridRoll *SequencerLayout::getRoll() const
+HybridRoll *SequencerLayout::getRoll() const noexcept
 {
     if (this->rollContainer->isPatternMode())
     {
@@ -521,27 +521,6 @@ HybridRoll *SequencerLayout::getRoll() const
     else
     {
         return this->pianoRoll.get();
-    }
-}
-
-//===----------------------------------------------------------------------===//
-// FileDragAndDropTarget
-//===----------------------------------------------------------------------===//
-
-bool SequencerLayout::isInterestedInFileDrag(const StringArray &files)
-{
-    File file = File(files.joinIntoString({}, 0, 1));
-    return (file.hasFileExtension("mid") || file.hasFileExtension("midi"));
-}
-
-void SequencerLayout::filesDropped(const StringArray &filenames,
-    int mouseX, int mouseY)
-{
-    if (isInterestedInFileDrag(filenames))
-    {
-        String filename = filenames.joinIntoString({}, 0, 1);
-        DBG(filename);
-        //importMidiFile(File(filename));
     }
 }
 
@@ -557,25 +536,36 @@ void SequencerLayout::resized()
     this->rollToolsSidebar->resized();
 }
 
-
-void SequencerLayout::proceedToRenderDialog(const String &extension)
+void SequencerLayout::proceedToRenderDialog(RenderFormat format)
 {
-    const File initialPath = File::getSpecialLocation(File::userMusicDirectory);
-    const String renderFileName = this->project.getName() + "." + extension.toLowerCase();
-    const String safeRenderName = File::createLegalFileName(renderFileName);
+    // this code nearly duplicates RenderDialog::launchFileChooser(),
+    // and the reason is that I want to simplify the workflow from user's perspective,
+    // so the dialog is shown only after selecting a target file (if any)
+    const auto extension = getExtensionForRenderFormat(format);
+    const auto defaultPath = File::getSpecialLocation(File::userMusicDirectory);
+    const auto defaultFileName = File::createLegalFileName(this->project.getName() + "." + extension);
 
-#if PLATFORM_DESKTOP
-    FileChooser fc(TRANS(I18n::Dialog::renderCaption),
-        File(initialPath.getChildFile(safeRenderName)), ("*." + extension), true);
+    this->renderTargetFileChooser = make<FileChooser>(TRANS(I18n::Dialog::renderCaption),
+        File(defaultPath.getChildFile(defaultFileName)),
+        "*." + extension, true);
 
-    if (fc.browseForFileToSave(true))
+    this->renderTargetFileChooser->launchAsync(Globals::UI::FileChooser::forFileToSave,
+        [this, format](const FileChooser &fc)
     {
-        App::showModalComponent(make<RenderDialog>(this->project, fc.getResult(), extension));
-    }
-#else
-    App::showModalComponent(make<RenderDialog>(this->project, initialPath.getChildFile(safeRenderName), extension));
-#endif
-    }
+        const auto results = fc.getURLResults();
+        if (results.isEmpty())
+        {
+            return;
+        }
+
+        const auto &url = results.getReference(0);
+        // todo someday: render to any stream, not only local files
+        if (url.isLocalFile())
+        {
+            App::showModalComponent(make<RenderDialog>(this->project, url, format));
+        }
+    });
+}
 
 void SequencerLayout::handleCommandMessage(int commandId)
 {
@@ -585,23 +575,13 @@ void SequencerLayout::handleCommandMessage(int commandId)
         this->project.getDocument()->import("*.mid;*.midi");
         break;
     case CommandIDs::ExportMidi:
-#if JUCE_IOS
-        {
-            const String safeName = TreeNode::createSafeName(this->project.getName()) + ".mid";
-            File midiExport = File::getSpecialLocation(File::userDocumentsDirectory).getChildFile(safeName);
-            this->project.exportMidi(midiExport);
-            App::Layout().showTooltip(TRANS(I18n::Menu::Project::renderSavedTo) + " '" + safeName + "'", MainLayout::TooltipType::Success);
-        }
-#else
         this->project.getDocument()->exportAs("*.mid;*.midi", this->project.getName() + ".mid");
-#endif
         break;
     case CommandIDs::RenderToFLAC:
-        this->proceedToRenderDialog("FLAC");
+        this->proceedToRenderDialog(RenderFormat::FLAC);
         return;
-
     case CommandIDs::RenderToWAV:
-        this->proceedToRenderDialog("WAV");
+        this->proceedToRenderDialog(RenderFormat::WAV);
         return;
     case CommandIDs::SwitchBetweenRolls:
         if (!this->rollContainer->canAnimate(RollsSwitchingProxy::rolls))

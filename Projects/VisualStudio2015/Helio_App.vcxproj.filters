@@ -3519,6 +3519,9 @@
     <ClInclude Include="..\..\Source\Core\Audio\Transport\RendererThread.h">
       <Filter>Helio\Source\Core\Audio\Transport</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Audio\Transport\RenderFormat.h">
+      <Filter>Helio\Source\Core\Audio\Transport</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\Transport.h">
       <Filter>Helio\Source\Core\Audio\Transport</Filter>
     </ClInclude>

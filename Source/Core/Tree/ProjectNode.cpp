@@ -485,15 +485,23 @@ void ProjectNode::deserialize(const SerializedData &data)
     this->reset();
 
     const File fullPathFile = File(data.getProperty(Serialization::Core::filePath));
+
+    // iOS hack: the `documents` path will change between launches
     const File relativePathFile = DocumentHelpers::getDocumentSlot(fullPathFile.getFileName());
     
-    if (!fullPathFile.existsAsFile() && !relativePathFile.existsAsFile())
+    if (fullPathFile.existsAsFile())
     {
-        delete this;
+        this->getDocument()->load(fullPathFile);
         return;
     }
-    
-    this->getDocument()->load(fullPathFile, relativePathFile);
+    else if (relativePathFile.existsAsFile())
+    {
+        this->getDocument()->load(relativePathFile);
+        return;
+    }
+
+    jassertfalse;
+    delete this;
 }
 
 void ProjectNode::reset()
@@ -569,12 +577,10 @@ void ProjectNode::load(const SerializedData &tree)
     this->sequencerLayout->deserialize(root);
 }
 
-void ProjectNode::importMidi(const File &file)
+void ProjectNode::importMidi(InputStream &stream)
 {
     MidiFile tempFile;
-    FileInputStream in(file);
-
-    if (!tempFile.readFrom(in))
+    if (!tempFile.readFrom(stream))
     {
         DBG("Midi file appears corrupted");
         return;
@@ -849,57 +855,47 @@ void ProjectNode::broadcastChangeViewBeatRange(float firstBeat, float lastBeat)
 // DocumentOwner
 //===----------------------------------------------------------------------===//
 
-bool ProjectNode::onDocumentLoad(File &file)
+bool ProjectNode::onDocumentLoad(const File &file)
 {
-    if (file.existsAsFile())
+    const auto tree = DocumentHelpers::load(file);
+
+    if (tree.isValid())
     {
-        const auto tree = DocumentHelpers::load(file);
-        if (tree.isValid())
-        {
-            this->load(tree);
-            return true;
-        }
-    }
+        this->load(tree);
 
-    return false;
-}
+        App::Workspace().getUserProfile()
+            .onProjectLocalInfoUpdated(this->getId(), this->getName(),
+                this->getDocument()->getFullPath());
 
-void ProjectNode::onDocumentDidLoad(File &file)
-{
-    App::Workspace().getUserProfile()
-        .onProjectLocalInfoUpdated(this->getId(), this->getName(),
-            this->getDocument()->getFullPath());
-}
-
-bool ProjectNode::onDocumentSave(File &file)
-{
-    const auto projectNode(this->save());
-#if DEBUG
-    DocumentHelpers::save<XmlSerializer>(file.withFileExtension("xml"), projectNode);
-#endif
-    return DocumentHelpers::save<BinarySerializer>(file, projectNode);
-}
-
-void ProjectNode::onDocumentImport(File &file)
-{
-    if (file.hasFileExtension("mid") || file.hasFileExtension("midi"))
-    {
-        this->importMidi(file);
-    }
-}
-
-bool ProjectNode::onDocumentExport(File &file)
-{
-    if (file.hasFileExtension("mid") || file.hasFileExtension("midi"))
-    {
-        this->exportMidi(file);
         return true;
     }
 
     return false;
 }
 
-void ProjectNode::exportMidi(File &file) const
+bool ProjectNode::onDocumentSave(const File &file)
+{
+    const auto projectNode = this->save();
+#if DEBUG
+    DocumentHelpers::save<XmlSerializer>(file.withFileExtension("xml"), projectNode);
+#endif
+    return DocumentHelpers::save<BinarySerializer>(file, projectNode);
+}
+
+void ProjectNode::onDocumentImport(InputStream &stream)
+{
+    // assumes MIDI import, todo checks
+    this->importMidi(stream);
+}
+
+bool ProjectNode::onDocumentExport(OutputStream &stream)
+{
+    // assumes MIDI export, todo checks
+    this->exportMidi(stream);
+    return true;
+}
+
+void ProjectNode::exportMidi(OutputStream &stream) const
 {
     MidiFile tempFile;
     static const double midiClock = 960.0;
@@ -935,13 +931,7 @@ void ProjectNode::exportMidi(File &file) const
         tempFile.addTrack(sequence);
     }
     
-    if (file.exists())
-    {
-        file.deleteFile();
-    }
-
-    UniquePointer<OutputStream> out(new FileOutputStream(file));
-    tempFile.writeTo(*out);
+    tempFile.writeTo(stream);
 }
 
 //===----------------------------------------------------------------------===//

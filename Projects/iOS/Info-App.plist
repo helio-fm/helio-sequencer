@@ -36,6 +36,10 @@
     <false/>
     <key>UIViewControllerBasedStatusBarAppearance~ipad</key>
     <false/>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>This app requires access to Bluetooth to function correctly.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>This app requires access to Bluetooth to function correctly.</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>CFBundleExecutable</key>
@@ -56,6 +60,8 @@
     <string>3.3</string>
     <key>NSHighResolutionCapable</key>
     <true/>
+    <key>UISupportsDocumentBrowser</key>
+    <true/>
     <key>UIRequiresFullScreen</key>
     <true/>
     <key>UISupportedInterfaceOrientations</key>
@@ -64,6 +70,9 @@
       <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
     <key>UIBackgroundModes</key>
-    <array/>
+    <array>
+      <string>audio</string>
+      <string>bluetooth-central</string>
+    </array>
   </dict>
 </plist>

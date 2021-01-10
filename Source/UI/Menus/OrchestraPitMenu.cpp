@@ -37,9 +37,13 @@ OrchestraPitMenu::OrchestraPitMenu(OrchestraPitNode &parentOrchestra) :
             TRANS(I18n::Menu::instrumentsReload))->closesMenu());
     }
     
+#if PLATFORM_DESKTOP
+
     menu.add(MenuItem::item(Icons::browse,
         CommandIDs::ScanPluginsFolder,
         TRANS(I18n::Menu::instrumentsScanFolder))->closesMenu());
-        
+
+#endif
+
     this->updateContent(menu, MenuPanel::SlideRight);
 }

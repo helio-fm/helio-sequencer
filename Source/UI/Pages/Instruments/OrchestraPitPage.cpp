@@ -108,9 +108,11 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
 
         this->pluginScanner.runInitialScan();
     }
+
+#if PLATFORM_DESKTOP
+
     else if (commandId == CommandIDs::ScanPluginsFolder)
     {
-#if PLATFORM_DESKTOP
         FileChooser fc(TRANS(I18n::Dialog::scanFolderCaption),
             File::getCurrentWorkingDirectory(), ("*.*"), true);
 
@@ -122,8 +124,10 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
 
             this->pluginScanner.scanFolderAndAddResults(fc.getResult());
         }
-#endif
     }
+
+#endif
+
     //[/UserCode_handleCommandMessage]
 }
 

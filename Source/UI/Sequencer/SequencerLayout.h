@@ -31,10 +31,11 @@ class Origami;
 class Headline;
 class Clip;
 
+#include "RenderFormat.h"
+
 class SequencerLayout final :
     public Component,
     public Serializable,
-    public FileDragAndDropTarget,
     public UserInterfaceFlags::Listener
 {
 public:
@@ -45,15 +46,8 @@ public:
     void showPatternEditor();
     void showLinearEditor(WeakReference<MidiTrack> activeTrack);
 
-    HybridRoll *getRoll() const;
-
-    //===------------------------------------------------------------------===//
-    // FileDragAndDropTarget
-    //===------------------------------------------------------------------===//
-
-    void filesDropped(const StringArray &filenames, int mouseX, int mouseY) override;
-    bool isInterestedInFileDrag(const StringArray &files) override;
-
+    HybridRoll *getRoll() const noexcept;
+    
     //===------------------------------------------------------------------===//
     // UserInterfaceFlags::Listener
     //===------------------------------------------------------------------===//
@@ -78,10 +72,6 @@ public:
 
 private:
 
-    void proceedToRenderDialog(const String &extension);
-
-private:
-
     ProjectNode &project;
     
     UniquePointer<Viewport> pianoViewport;
@@ -99,6 +89,9 @@ private:
     UniquePointer<SequencerSidebarRight> rollToolsSidebar;
 
     UniquePointer<Origami> sequencerLayout; // all editors combined with sidebars
+
+    void proceedToRenderDialog(RenderFormat format);
+    UniquePointer<FileChooser> renderTargetFileChooser;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SequencerLayout);
 };
