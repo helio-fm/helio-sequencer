@@ -26,8 +26,4 @@ public:
     
     explicit PatternsMenu(PatternEditorNode &parentNode);
     
-private:
-
-    PatternEditorNode &node;
-    
 };

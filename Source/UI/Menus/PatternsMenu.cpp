@@ -17,28 +17,43 @@
 
 #include "Common.h"
 #include "PatternsMenu.h"
+#include "ProjectNode.h"
+#include "MidiTrack.h"
 #include "CommandIDs.h"
 
-PatternsMenu::PatternsMenu(PatternEditorNode &parentNode) :
-    node(parentNode)
+PatternsMenu::PatternsMenu(PatternEditorNode &parentNode)
 {
     MenuPanel::Menu menu;
 
+    auto grouping = MidiTrack::Grouping::GroupByName;
+    if (auto *project = parentNode.findParentOfType<ProjectNode>())
+    {
+        grouping = project->getTrackGroupingMode();
+    }
+
     menu.add(MenuItem::item(Icons::annotation,
         CommandIDs::PatternsGroupByName,
-        TRANS(I18n::Menu::groupByName))->closesMenu());
+        TRANS(I18n::Menu::groupByName))->
+        disabledIf(grouping == MidiTrack::Grouping::GroupByName)->
+        closesMenu());
     
     menu.add(MenuItem::item(Icons::colour,
         CommandIDs::PatternsGroupByColour,
-        TRANS(I18n::Menu::groupByColour))->closesMenu());
+        TRANS(I18n::Menu::groupByColour))->
+        disabledIf(grouping == MidiTrack::Grouping::GroupByColour)->
+        closesMenu());
 
     menu.add(MenuItem::item(Icons::instrument,
         CommandIDs::PatternsGroupByInstrument,
-        TRANS(I18n::Menu::groupByInstrument))->closesMenu());
+        TRANS(I18n::Menu::groupByInstrument))->
+        disabledIf(grouping == MidiTrack::Grouping::GroupByInstrument)->
+        closesMenu());
 
     menu.add(MenuItem::item(Icons::list,
         CommandIDs::PatternsGroupById,
-        TRANS(I18n::Menu::groupByNone))->closesMenu());
+        TRANS(I18n::Menu::groupByNone))->
+        disabledIf(grouping == MidiTrack::Grouping::GroupByNameId)->
+        closesMenu());
 
     this->updateContent(menu, MenuPanel::SlideRight);
 }
