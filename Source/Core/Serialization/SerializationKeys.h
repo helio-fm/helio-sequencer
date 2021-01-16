@@ -222,13 +222,15 @@ namespace Serialization
         static const Identifier pianoRoll = "pianoRoll";
         static const Identifier patternRoll = "patternRoll";
 
+        static const Identifier trackGrouping = "trackGrouping";
+
         static const Identifier startBeat = "startBeat";
         static const Identifier endBeat = "endBeat";
         static const Identifier beatWidth = "beatWidth";
         static const Identifier rowHeight = "rowHeight";
+
         //static const Identifier viewportPositionX = "viewportX";
         static const Identifier viewportPositionY = "viewportY";
-
         static const Identifier positionX = "positionX";
         static const Identifier positionY = "positionY";
 

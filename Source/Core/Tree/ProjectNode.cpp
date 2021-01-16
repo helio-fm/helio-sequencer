@@ -533,6 +533,7 @@ SerializedData ProjectNode::save() const
 
     tree.setProperty(Serialization::Core::treeNodeName, this->name);
     tree.setProperty(Serialization::Core::projectId, this->id);
+    tree.setProperty(Serialization::UI::trackGrouping, int(this->trackGroupingMode));
 
     tree.appendChild(this->metadata->serialize());
     tree.appendChild(this->timeline->serialize());
@@ -556,6 +557,9 @@ void ProjectNode::load(const SerializedData &tree)
     if (!root.isValid()) { return; }
 
     this->id = root.getProperty(Serialization::Core::projectId, Uuid().toString());
+    
+    const auto grouping = root.getProperty(Serialization::UI::trackGrouping, int(this->trackGroupingMode));
+    this->trackGroupingMode = MidiTrack::Grouping(int(grouping));
 
     this->metadata->deserialize(root);
     this->timeline->deserialize(root);
