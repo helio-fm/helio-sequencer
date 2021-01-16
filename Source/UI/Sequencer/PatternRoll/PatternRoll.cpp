@@ -72,27 +72,10 @@ struct StringComparator final
 
 static StringComparator kStringSort;
 
-static String getTrackGroupKey(PatternRoll::GroupMode grouping, const MidiTrack *const track)
-{
-    switch (grouping)
-    {
-    case PatternRoll::GroupByName:
-        return track->getTrackName();
-    case PatternRoll::GroupByNameId:
-        return track->getTrackName() + track->getTrackId();
-    case PatternRoll::GroupByColour:
-        return String(track->getTrackControllerNumber()) + track->getTrackColour().toString();
-    case PatternRoll::GroupByInstrument:
-    default:
-        return String(track->getTrackControllerNumber()) + track->getTrackInstrumentId();
-        break;
-    }
-}
-
 static void updateTrackRowPosition(Array<String> &rows,
-    PatternRoll::GroupMode grouping, const MidiTrack *const track)
+    MidiTrack::Grouping grouping, const MidiTrack *const track)
 {
-    const auto &trackGroupKey = getTrackGroupKey(grouping, track);
+    const auto &trackGroupKey = track->getTrackGroupKey(grouping);
     const auto indexOfSorted = rows.indexOfSorted(kStringSort, trackGroupKey);
     if (indexOfSorted < 0)
     {
@@ -155,6 +138,8 @@ void PatternRoll::reloadRollContent()
     this->tracks.clearQuick();
     this->rows.clearQuick();
 
+    const auto grouping = this->project.getTrackGroupingMode();
+
     HYBRID_ROLL_BULK_REPAINT_START
 
     for (auto *track : this->project.getTracks())
@@ -163,7 +148,7 @@ void PatternRoll::reloadRollContent()
         if (const auto *pattern = track->getPattern())
         {
             this->tracks.add(track);
-            updateTrackRowPosition(this->rows, this->groupMode, track);
+            updateTrackRowPosition(this->rows, grouping, track);
 
             for (int j = 0; j < pattern->size(); ++j)
             {
@@ -190,10 +175,10 @@ int PatternRoll::getNumRows() const noexcept
 void PatternRoll::reloadRowsGrouping()
 {
     this->rows.clearQuick();
-
+    const auto grouping = this->project.getTrackGroupingMode();
     for (const auto *track : this->tracks)
     {
-        updateTrackRowPosition(this->rows, this->groupMode, track);
+        updateTrackRowPosition(this->rows, grouping, track);
     }
 }
 
@@ -310,7 +295,8 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
     const auto *sequence = track->getSequence();
     jassert(sequence != nullptr);
 
-    const auto trackGroupKey = getTrackGroupKey(this->groupMode, track);
+    const auto grouping = this->project.getTrackGroupingMode();
+    const auto trackGroupKey = track->getTrackGroupKey(grouping);
     const int trackIndex = this->rows.indexOfSorted(kStringSort, trackGroupKey);
 
     const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
@@ -354,7 +340,8 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
     if (auto *pattern = track->getPattern())
     {
         this->tracks.add(track);
-        updateTrackRowPosition(this->rows, this->groupMode, track);
+        const auto grouping = this->project.getTrackGroupingMode();
+        updateTrackRowPosition(this->rows, grouping, track);
 
         for (int j = 0; j < pattern->size(); ++j)
         {
@@ -743,7 +730,7 @@ void PatternRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::PatternsGroupByName:
         this->deselectAll();
-        this->groupMode = GroupByName;
+        this->project.setTrackGroupingMode(MidiTrack::Grouping::GroupByName);
         this->reloadRowsGrouping();
         // Clip component positions should be updated:
         this->updateRollSize();
@@ -751,21 +738,21 @@ void PatternRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::PatternsGroupByColour:
         this->deselectAll();
-        this->groupMode = GroupByColour;
+        this->project.setTrackGroupingMode(MidiTrack::Grouping::GroupByColour);
         this->reloadRowsGrouping();
         this->updateRollSize();
         this->resized();
         break;
     case CommandIDs::PatternsGroupByInstrument:
         this->deselectAll();
-        this->groupMode = GroupByInstrument;
+        this->project.setTrackGroupingMode(MidiTrack::Grouping::GroupByInstrument);
         this->reloadRowsGrouping();
         this->updateRollSize();
         this->resized();
         break;
     case CommandIDs::PatternsGroupById:
         this->deselectAll();
-        this->groupMode = GroupByNameId;
+        this->project.setTrackGroupingMode(MidiTrack::Grouping::GroupByNameId);
         this->reloadRowsGrouping();
         this->updateRollSize();
         this->resized();
@@ -897,12 +884,13 @@ void PatternRoll::insertNewClipAt(const MouseEvent &e)
     const int rowNumber = jlimit(0, this->getNumRows() - 1,
         (e.y - Globals::UI::rollHeaderHeight) / PatternRoll::rowHeight);
     const auto &rowKey = this->rows.getReference(rowNumber);
+    const auto grouping = this->project.getTrackGroupingMode();
 
     float nearestClipdistance = FLT_MAX;
     Pattern *targetPattern = nullptr;
     for (const auto *track : this->tracks)
     {
-        const auto &trackKey = getTrackGroupKey(this->groupMode, track);
+        const auto &trackKey = track->getTrackGroupKey(grouping);
         if (trackKey == rowKey)
         {
             const float clickBeat = this->getBeatByMousePosition(track->getPattern(), e.x);

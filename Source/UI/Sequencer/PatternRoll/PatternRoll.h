@@ -111,14 +111,6 @@ public:
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
-    enum GroupMode
-    {
-        GroupByName,
-        GroupByNameId,
-        GroupByColour,
-        GroupByInstrument
-    };
 
 protected:
 
@@ -170,9 +162,6 @@ private:
     Array<String> rows;
     Array<const MidiTrack *> tracks;
     void reloadRowsGrouping();
-    GroupMode groupMode = GroupMode::GroupByName;
-
-private:
 
     OwnedArray<ClipComponent> ghostClips;
 

@@ -31,7 +31,6 @@ class ProjectTimeline;
 class CommandPaletteTimelineEvents;
 class UndoStack;
 class Pattern;
-class MidiTrack;
 class Clip;
 
 #include "TreeNode.h"
@@ -40,8 +39,9 @@ class Clip;
 #include "TrackedItemsSource.h"
 #include "HybridRollEditMode.h"
 #include "MidiSequence.h"
-#include "MidiTrackSource.h"
 #include "CommandPaletteModel.h"
+#include "MidiTrack.h"
+#include "MidiTrackSource.h"
 
 class ProjectNode final :
     public TreeNode,
@@ -115,6 +115,8 @@ public:
     Array<MidiTrack *> getTracks() const;
     Point<float> getProjectRangeInBeats() const;
     StringArray getAllTrackNames() const;
+    MidiTrack::Grouping getTrackGroupingMode() const noexcept;
+    void setTrackGroupingMode(MidiTrack::Grouping mode);
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -242,6 +244,8 @@ private:
     Array<const VCS::TrackedItem *> vcsItems;
 
     UniquePointer<UndoStack> undoStack;
+
+    MidiTrack::Grouping trackGroupingMode = MidiTrack::Grouping::GroupByName;
 
     mutable float firstBeatCache = 0.f;
     mutable float lastBeatCache = Globals::Defaults::projectLength;

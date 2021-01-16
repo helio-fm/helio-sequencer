@@ -192,7 +192,7 @@ bool Document::load(const File &file)
 void Document::import(const String &filePattern)
 {
     this->importFileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentImport),
-        File::getCurrentWorkingDirectory(), filePattern, true);
+        File::getSpecialLocation(File::userDocumentsDirectory), filePattern, true);
 
     this->importFileChooser->launchAsync(Globals::UI::FileChooser::forFileToOpen, [this](const FileChooser &fc)
     {

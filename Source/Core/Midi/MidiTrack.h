@@ -64,6 +64,35 @@ public:
     virtual Pattern *getPattern() const noexcept = 0;
 
     //===------------------------------------------------------------------===//
+    // Grouping
+    //===------------------------------------------------------------------===//
+
+    enum class Grouping : int
+    {
+        GroupByName = 0,
+        GroupByNameId = 1,
+        GroupByColour = 2,
+        GroupByInstrument = 3
+    };
+
+    String getTrackGroupKey(MidiTrack::Grouping grouping) const
+    {
+        switch (grouping)
+        {
+        case Grouping::GroupByName:
+            return this->getTrackName();
+        case Grouping::GroupByNameId:
+            return this->getTrackName() + this->getTrackId();
+        case Grouping::GroupByColour:
+            return String(this->getTrackControllerNumber()) + this->getTrackColour().toString();
+        case Grouping::GroupByInstrument:
+        default:
+            return String(this->getTrackControllerNumber()) + this->getTrackInstrumentId();
+            break;
+        }
+    }
+
+    //===------------------------------------------------------------------===//
     // Shorthands
     //===------------------------------------------------------------------===//
 

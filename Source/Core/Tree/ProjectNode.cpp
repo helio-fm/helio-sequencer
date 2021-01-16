@@ -466,6 +466,19 @@ StringArray ProjectNode::getAllTrackNames() const
     return names;
 }
 
+// this is only used in the pattern roll to display tracks,
+// and in the MIDI export; so now it's a simple getter/setter
+MidiTrack::Grouping ProjectNode::getTrackGroupingMode() const noexcept
+{
+    return this->trackGroupingMode;
+}
+
+void ProjectNode::setTrackGroupingMode(MidiTrack::Grouping mode)
+{
+    this->trackGroupingMode = mode;
+    this->sendChangeMessage();
+}
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -668,7 +681,8 @@ void ProjectNode::importMidi(InputStream &stream)
     this->isTracksCacheOutdated = true;
     this->broadcastReloadProjectContent();
     const auto range = this->broadcastChangeProjectBeatRange();
-    this->broadcastChangeViewBeatRange(range.getX(), range.getY());
+    this->broadcastChangeViewBeatRange(range.x - Globals::beatsPerBar,
+        range.y + Globals::beatsPerBar); // adding some margin
 
     this->getDocument()->save();
 }
@@ -905,15 +919,23 @@ void ProjectNode::exportMidi(OutputStream &stream) const
     static KeyboardMapping simpleMapping;
 
     // Solo flags won't be taken into account
-    // in midi export, as I believe they shouldn't:
+    // in MIDI export, as I believe they shouldn't:
     const bool soloFlag = false;
 
-    const auto &tracks = this->getTracks();
-    for (const auto *track : tracks)
-    {
-        MidiMessageSequence sequence;
-        // todo add more meta events like track name
+    const auto grouping = this->getTrackGroupingMode();
+    FlatHashMap<String, MidiMessageSequence, StringHash> sequences;
 
+    for (const auto *track : this->getTracks())
+    {
+        const auto groupKey = track->getTrackGroupKey(grouping);
+        if (!sequences.contains(groupKey))
+        {
+            sequences.insert({ groupKey, {} });
+        }
+
+        auto &sequence = sequences[groupKey];
+
+        // todo add more meta events like track name
         if (track->getPattern() != nullptr)
         {
             for (const auto *clip : track->getPattern()->getClips())
@@ -927,10 +949,13 @@ void ProjectNode::exportMidi(OutputStream &stream) const
             track->getSequence()->exportMidi(sequence, noTransform,
                 simpleMapping, soloFlag, 0.0, midiClock);
         }
-
-        tempFile.addTrack(sequence);
     }
-    
+
+    for (const auto &i : sequences)
+    {
+        tempFile.addTrack(i.second);
+    }
+
     tempFile.writeTo(stream);
 }
 
