@@ -17,13 +17,11 @@
 
 #pragma once
 
-#define ORIGAMI_DEFAULT_MIN_SIZE 100
-#define ORIGAMI_DEFAULT_MAX_SIZE 1000
-
 class Origami : public Component
 {
 public:
-    class ChildConstrainer : public ComponentBoundsConstrainer
+
+    class ChildConstrainer final : public ComponentBoundsConstrainer
     {
     public:
         explicit ChildConstrainer(Origami &origamiRef) : origami(origamiRef) { }
@@ -41,8 +39,8 @@ public:
         UniquePointer<Component> resizer;
         UniquePointer<Origami::ChildConstrainer> constrainer;
         int size = 0;
-        int min = ORIGAMI_DEFAULT_MIN_SIZE;
-        int max = ORIGAMI_DEFAULT_MAX_SIZE;
+        int min = Origami::defaultMinSize;
+        int max = Origami::defaultMaxSize;
         bool fixedSize = 0;
     };
 
@@ -71,6 +69,9 @@ protected:
     OwnedArray<Origami::Page> pages;
 
 private:
+
+    static constexpr auto defaultMinSize = 100;
+    static constexpr auto defaultMaxSize = 1000;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Origami)
 

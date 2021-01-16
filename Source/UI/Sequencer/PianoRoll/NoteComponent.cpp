@@ -695,8 +695,6 @@ bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int 
 
     int newKey = -1;
     float newBeat = -1;
-
-    // TODO: test this->clickOffset.getX() % (min snap length)
     this->getRoll().getRowsColsByComponentPosition(
         this->getX() + this->floatLocalBounds.getX() + 1 /*+ this->clickOffset.getX()*/,
         this->getY() + this->floatLocalBounds.getY() + this->clickOffset.getY(),

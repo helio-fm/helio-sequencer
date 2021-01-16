@@ -37,5 +37,8 @@ private:
 
     Transport::PlaybackContext::Ptr context;
 
+    // checking if the thread needs to stop at least once a second
+    static constexpr auto minStopCheckTimeMs = 1000;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerThread)
 };

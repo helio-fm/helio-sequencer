@@ -569,7 +569,7 @@ int HybridRoll::getXPositionByBeat(float targetBeat) const noexcept
     return int((targetBeat - this->firstBeat) * this->beatWidth);
 }
 
-float HybridRoll::getFloorBeatSnapByXPosition(int x) const
+float HybridRoll::getFloorBeatSnapByXPosition(int x) const noexcept
 {
     float d = FLT_MAX;
     float targetX = float(x);
@@ -1095,9 +1095,9 @@ void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails
 
             // let's try to make the panning speed feel consistent, regardless
             // of the zoom level - slower when zoomed out, faster when zoomed in;
-            // but also not too fast, the upper limit depending on the screen width:
+            // but also not too fast, with the screen width as the upper speed limit:
             const auto viewWidth = float(this->viewport.getViewWidth());
-            const float panSpeed = jmin(viewWidth * 2.f,
+            const float panSpeed = jmin(viewWidth,
                 this->smoothPanController->getInitialSpeed() * float(this->getWidth()) / viewWidth);
             const float panWheel = wheel.deltaY * (wheel.isReversed ? panSpeed : -panSpeed);
             this->smoothPanController->panByOffset({ panWheel, 0.f });

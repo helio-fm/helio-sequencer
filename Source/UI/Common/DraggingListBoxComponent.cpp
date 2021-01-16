@@ -90,7 +90,7 @@ void DraggingListBoxComponent::mouseUp(const MouseEvent &event)
     
     if (this->listCanBeScrolled())
     {
-        if (this->maxDragDistance < LISTBOX_DRAG_THRESHOLD)
+        if (this->maxDragDistance < DraggingListBoxComponent::dragStartThreshold)
         {
             this->setSelected(true);
             return;
@@ -123,8 +123,8 @@ void DraggingListBoxComponent::mouseDrag(const MouseEvent &event)
 void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event,
                                               const MouseWheelDetails &wheel)
 {
-    const int forwardWheel =
-        int(wheel.deltaY * (wheel.isReversed ? -LISTBOX_DRAG_SPEED : LISTBOX_DRAG_SPEED));
+    const int forwardWheel = int(wheel.deltaY *
+        (wheel.isReversed ? -DraggingListBoxComponent::dragSpeed : DraggingListBoxComponent::dragSpeed));
     
     if (this->parentViewport != nullptr)
     {

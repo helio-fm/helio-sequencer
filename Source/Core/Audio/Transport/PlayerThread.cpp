@@ -19,15 +19,13 @@
 
 #include "PlayerThread.h"
 
-#define MINIMUM_STOP_CHECK_TIME_MS 1000
-
 PlayerThread::PlayerThread(Transport &transport) :
     Thread("PlayerThread"),
     transport(transport) {}
 
 PlayerThread::~PlayerThread()
 {
-    this->stopThread(MINIMUM_STOP_CHECK_TIME_MS * 2);
+    this->stopThread(PlayerThread::minStopCheckTimeMs * 2);
 }
 
 //===----------------------------------------------------------------------===//
@@ -160,10 +158,10 @@ void PlayerThread::run()
                 Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
 
             // Give thread a chance to exit by checking at least once a, say, second
-            while (nextEventTimeDelta > MINIMUM_STOP_CHECK_TIME_MS)
+            while (nextEventTimeDelta > PlayerThread::minStopCheckTimeMs)
             {
-                nextEventTimeDelta -= MINIMUM_STOP_CHECK_TIME_MS;
-                Thread::sleep(MINIMUM_STOP_CHECK_TIME_MS);
+                nextEventTimeDelta -= PlayerThread::minStopCheckTimeMs;
+                Thread::sleep(PlayerThread::minStopCheckTimeMs);
                 if (this->threadShouldExit())
                 {
                     sendHoldingNotesOffAndMidiStop();
@@ -184,7 +182,7 @@ void PlayerThread::run()
             {
                 while (this->transport.isRecording() && !this->threadShouldExit())
                 {
-                    Thread::sleep(MINIMUM_STOP_CHECK_TIME_MS);
+                    Thread::sleep(PlayerThread::minStopCheckTimeMs);
                 }
 
                 sendHoldingNotesOffAndMidiStop();
@@ -220,10 +218,10 @@ void PlayerThread::run()
         if (uint32(nextEventTimeDelta) != 0)
         {
             const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
-            while (nextEventTimeDelta > MINIMUM_STOP_CHECK_TIME_MS)
+            while (nextEventTimeDelta > PlayerThread::minStopCheckTimeMs)
             {
-                nextEventTimeDelta -= MINIMUM_STOP_CHECK_TIME_MS;
-                Thread::sleep(MINIMUM_STOP_CHECK_TIME_MS);
+                nextEventTimeDelta -= PlayerThread::minStopCheckTimeMs;
+                Thread::sleep(PlayerThread::minStopCheckTimeMs);
                 if (this->threadShouldExit())
                 {
                     sendHoldingNotesOffAndMidiStop();

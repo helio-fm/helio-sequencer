@@ -356,7 +356,7 @@ bool PianoRoll::isNoteVisible(int key, float beat, float length) const
 
 void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const
 {
-    beatNumber = this->getRoundBeatSnapByXPosition(int(x)) - this->activeClip.getBeat(); /* - 0.5f ? */
+    beatNumber = this->getRoundBeatSnapByXPosition(int(x)) - this->activeClip.getBeat();
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
     noteNumber = jlimit(0, this->getNumKeys(), noteNumber);
 }

@@ -330,8 +330,8 @@ protected:
     void addTrackInteractively(MidiTrackNode *preset, UndoActionId whereToRollback, bool refocus,
         const String &defaultTrackName, const String &dialogTitle, const String &dialogOk);
 
-    float getFloorBeatSnapByXPosition(int x) const;
-    inline float getBeatByXPosition(float x) const
+    float getFloorBeatSnapByXPosition(int x) const noexcept;
+    inline float getBeatByXPosition(float x) const noexcept
     {
         const float beatNumber = roundBeat(x / this->beatWidth + this->firstBeat);
         return jlimit(this->firstBeat, this->lastBeat, beatNumber);

@@ -17,9 +17,6 @@
 
 #pragma once
 
-#define PATTERN_ROLL_CLIP_HEIGHT 48
-#define PATTERN_ROLL_TRACK_HEADER_HEIGHT 3
-
 class CutPointMark;
 class ClipComponent;
 
@@ -142,7 +139,13 @@ protected:
     float findNextAnchorBeat(float beat) const override;
     float findPreviousAnchorBeat(float beat) const override;
 
-public:
+private:
+
+    static constexpr auto clipHeight = 48;
+    static constexpr auto trackHeaderHeight = 3;
+    static constexpr auto rowHeight = clipHeight + trackHeaderHeight;
+
+private:
 
     Image rowPattern;
     static Image renderRowsPattern(const HelioTheme &theme, int height);

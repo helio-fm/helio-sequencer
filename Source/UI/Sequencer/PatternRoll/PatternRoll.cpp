@@ -53,11 +53,6 @@
 #include "ColourIDs.h"
 #include "Config.h"
 
-inline static constexpr int rowHeight()
-{
-    return PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT;
-}
-
 //void dumpDebugInfo(Array<MidiTrack *> tracks)
 //{
 //    DBG("--- tracks:");
@@ -258,9 +253,9 @@ void PatternRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor curso
 
 void PatternRoll::updateRollSize()
 {
-    const int addTrackHelper = PATTERN_ROLL_TRACK_HEADER_HEIGHT;
+    const int addTrackHelper = PatternRoll::trackHeaderHeight;
     const int h = Globals::UI::rollHeaderHeight +
-        this->getNumRows() * rowHeight() + addTrackHelper;
+        this->getNumRows() * PatternRoll::rowHeight + addTrackHelper;
     this->setSize(this->getWidth(), jmax(h, this->viewport.getHeight()));
 }
 
@@ -328,11 +323,11 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
 
     const float w = this->beatWidth * sequenceLength;
     const float x = this->beatWidth * (sequenceOffset + clipBeat - this->firstBeat);
-    const float y = float(trackIndex * rowHeight());
+    const float y = float(trackIndex * PatternRoll::rowHeight);
 
     return Rectangle<float>(x,
-        Globals::UI::rollHeaderHeight + y + PATTERN_ROLL_TRACK_HEADER_HEIGHT,
-        w, float(PATTERN_ROLL_CLIP_HEIGHT - 1));
+        Globals::UI::rollHeaderHeight + y + PatternRoll::trackHeaderHeight,
+        w, float(PatternRoll::clipHeight - 1));
 }
 
 float PatternRoll::getBeatForClipByXPosition(const Clip &clip, float x) const
@@ -340,7 +335,7 @@ float PatternRoll::getBeatForClipByXPosition(const Clip &clip, float x) const
     // One trick here is that displayed clip position depends on a sequence's first beat as well:
     const auto *sequence = clip.getPattern()->getTrack()->getSequence();
     const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
-    return this->getRoundBeatSnapByXPosition(int(x)) - sequenceOffset; /* - 0.5f ? */
+    return this->getRoundBeatSnapByXPosition(int(x)) - sequenceOffset;
 }
 
 float PatternRoll::getBeatByMousePosition(const Pattern *pattern, int x) const
@@ -900,7 +895,7 @@ float PatternRoll::findPreviousAnchorBeat(float beat) const
 void PatternRoll::insertNewClipAt(const MouseEvent &e)
 {
     const int rowNumber = jlimit(0, this->getNumRows() - 1,
-        (e.y - Globals::UI::rollHeaderHeight) / rowHeight());
+        (e.y - Globals::UI::rollHeaderHeight) / PatternRoll::rowHeight);
     const auto &rowKey = this->rows.getReference(rowNumber);
 
     float nearestClipdistance = FLT_MAX;
@@ -1044,7 +1039,7 @@ void PatternRoll::reset() {}
 Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height)
 {
     static const int width = 8;
-    const int shadowHeight = PATTERN_ROLL_TRACK_HEADER_HEIGHT * 2;
+    const int shadowHeight = PatternRoll::trackHeaderHeight * 2;
     Image patternImage(Image::RGB, width, height, false);
     Graphics g(patternImage);
 
@@ -1059,21 +1054,21 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height)
     while (yBase < height)
     {
         g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderFill));
-        g.fillRect(0, yBase, width, PATTERN_ROLL_TRACK_HEADER_HEIGHT);
+        g.fillRect(0, yBase, width, PatternRoll::trackHeaderHeight);
 
         g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorder));
         g.drawHorizontalLine(yBase, 0.f, float(width));
-        g.drawHorizontalLine(yBase + PATTERN_ROLL_TRACK_HEADER_HEIGHT - 1, 0.f, float(width));
+        g.drawHorizontalLine(yBase + PatternRoll::trackHeaderHeight - 1, 0.f, float(width));
 
         {
-            float x = 0, y = float(yBase + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
+            float x = 0, y = float(yBase + PatternRoll::trackHeaderHeight);
             g.setGradientFill(ColourGradient(shadowColour, x, y,
                 Colours::transparentBlack, x, float(shadowHeight + y), false));
             g.fillRect(int(x), int(y), width, shadowHeight);
         }
 
         {
-            float x = 0, y = float(yBase + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
+            float x = 0, y = float(yBase + PatternRoll::trackHeaderHeight);
             g.setGradientFill(ColourGradient(shadowColour, x, y,
                 Colours::transparentBlack, x, float((shadowHeight / 2) + y), false));
             g.fillRect(int(x), int(y), width, shadowHeight);
@@ -1093,7 +1088,7 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height)
             g.fillRect(int(x), int(y), width, shadowHeight);
         }
 
-        yBase += rowHeight();
+        yBase += PatternRoll::rowHeight;
     }
 
     HelioTheme::drawNoise(theme, g, 1.75f);
@@ -1103,5 +1098,5 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height)
 void PatternRoll::repaintBackgroundsCache()
 {
     const auto &theme = HelioTheme::getCurrentTheme();
-    this->rowPattern = PatternRoll::renderRowsPattern(theme, rowHeight() * 8);
+    this->rowPattern = PatternRoll::renderRowsPattern(theme, PatternRoll::rowHeight * 8);
 }

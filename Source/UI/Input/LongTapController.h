@@ -17,9 +17,6 @@
 
 #pragma once
 
-#define LONGTAP_MILLISECONDS 350
-#define LONGTAP_SQR_TOLERANCE 16
-
 #include "LongTapListener.h"
 
 class LongTapController final : public Timer, public MouseListener
@@ -41,7 +38,7 @@ public:
         {
             this->position = e.mouseDownPosition;
             this->component = e.eventComponent;
-            this->startTimer(LONGTAP_MILLISECONDS);
+            this->startTimer(LongTapController::delayMs);
         }
     }
 
@@ -50,7 +47,7 @@ public:
         if (this->isTimerRunning())
         {
             const auto sqrDragDistance = e.mouseDownPosition.getDistanceSquaredFrom(e.position);
-            if (sqrDragDistance > LONGTAP_SQR_TOLERANCE)
+            if (sqrDragDistance > LongTapController::sqrThreshold)
             {
                 this->reset();
             }
@@ -74,7 +71,10 @@ public:
 
 private:
 
-    void reset()
+    static constexpr auto delayMs = 350;
+    static constexpr auto sqrThreshold = 16;
+
+    inline void reset()
     {
         this->stopTimer();
     }

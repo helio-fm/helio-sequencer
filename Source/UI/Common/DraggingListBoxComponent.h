@@ -19,9 +19,6 @@
 
 #include "HighlightedComponent.h"
 
-#define LISTBOX_DRAG_THRESHOLD 5
-#define LISTBOX_DRAG_SPEED 100.f
-
 class DraggingListBoxComponent : public HighlightedComponent
 {
 public:
@@ -47,16 +44,19 @@ protected:
     virtual void setSelected(bool shouldBeSelected) = 0;
     
     SafePointer<Viewport> parentViewport;
-    
+
 private:
-    
+
     int maxDragDistance = 0;
     int viewportStartPosY = 0;
     bool isDraggingListbox = false;
     const bool shouldDisableAllChildren = false;
     
 private:
-    
+
     double dragStartMilliseconds = 0.0;
+
+    static constexpr auto dragStartThreshold = 5;
+    static constexpr auto dragSpeed = 100.f;
     
 };
