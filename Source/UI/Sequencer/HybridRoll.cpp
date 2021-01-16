@@ -484,14 +484,14 @@ void HybridRoll::startSmoothZoom(const Point<float> &origin, const Point<float> 
 
 void HybridRoll::zoomInImpulse(float factor)
 {
-    const auto origin = this->getViewport().getLocalBounds().getCentre();
+    const auto origin = this->viewport.getLocalBounds().getCentre();
     const Point<float> f(0.15f * factor, 0.15f * factor);
     this->startSmoothZoom(origin.toFloat(), f);
 }
 
 void HybridRoll::zoomOutImpulse(float factor)
 {
-    const auto origin = this->getViewport().getLocalBounds().getCentre();
+    const auto origin = this->viewport.getLocalBounds().getCentre();
     const Point<float> f(-0.15f * factor, -0.15f * factor);
     this->startSmoothZoom(origin.toFloat(), f);
 }
@@ -950,10 +950,19 @@ void HybridRoll::onChangeProjectBeatRange(float newFirstBeat, float newLastBeat)
 
 void HybridRoll::onChangeViewBeatRange(float newFirstBeat, float newLastBeat)
 {
+    jassert(newFirstBeat < newLastBeat);
     const auto viewPos = this->viewport.getViewPosition();
     const auto viewStartBeat = this->getBeatByXPosition(float(viewPos.x));
 
     this->setBeatRange(newFirstBeat, newLastBeat);
+
+    // If the beat range goes down (e.g. after midi import):
+    const auto viewWidth = float(this->viewport.getWidth());
+    const auto minBeatWidth = viewWidth / (newLastBeat - newFirstBeat);
+    if (this->beatWidth < minBeatWidth)
+    {
+        this->setBeatWidth(minBeatWidth);
+    }
 
     // It's often the case that I expand visible range in a pattern editor,
     // then switch back to piano roll and find the viewport focus fucked up;
@@ -976,6 +985,8 @@ void HybridRoll::onChangeProjectInfo(const ProjectMetadata *info)
 void HybridRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     const ProjectMetadata *meta)
 {
+    this->firstBeat = 0.f;
+    this->lastBeat = Globals::Defaults::projectLength;
     this->temperament = meta->getTemperament();
 }
 
