@@ -61,10 +61,11 @@ protected:
 
     struct MidiEventComponentFlags final
     {
-        bool isSelected : 1;
-        bool isActive : 1;
-        bool isGhost : 1;
-        bool isRecordingTarget : 1;
+        bool isSelected : 1;            // both clips and notes can be displayed as selected
+        bool isInstanceOfSelected : 1;  // used to highlights all "instances" of selected clips
+        bool isActive : 1;              // whether a note belongs to the selected track or not
+        bool isGhost : 1;               // indicates helper notes which are used for visual cue
+        bool isRecordingTarget : 1;     // indicates that a clip is used as a target to MIDI recording
     };
 
     union

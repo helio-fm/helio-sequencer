@@ -66,7 +66,8 @@ void ClipComponent::updateColours()
     this->headBrightColour = Colours::white
         .interpolatedWith(this->getClip().getTrackColour(), 0.55f)
         .withAlpha(this->flags.isGhost ? 0.2f : 0.7f)
-        .brighter(this->flags.isSelected ? 0.25f : 0.f);
+        .brighter(this->flags.isSelected ? 0.25f : 0.f)
+        .darker(this->flags.isInstanceOfSelected ? 0.25f : 0.f);
 
     this->headDarkColour = this->headBrightColour.withAlpha(0.25f);
 
@@ -126,7 +127,6 @@ void ClipComponent::mouseDown(const MouseEvent &e)
 
         forEachSelectedClip(selection, selectedClip)
         {
-            //if (selection.shouldDisplayGhostClips()) { selectedClip->getRoll().showGhostClipFor(selectedClip); }
             selectedClip->startDragging();
         }
     }
@@ -175,12 +175,12 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
             {
                 PatternOperations::duplicateSelection(this->getRoll().getLassoSelection(), false);
 
-                this->getRoll().hideAllGhostClips();
-
                 forEachSelectedClip(selection, clipComponent)
                 {
                     clipComponent->toFront(false);
                 }
+
+                this->getRoll().updateHighlightedInstances();
             }
 
             for (const auto &s : selection.getGroupedSelections())
@@ -282,6 +282,17 @@ void ClipComponent::paint(Graphics &g)
         g.drawText(this->clip.getPattern()->getTrack()->getTrackName(),
             textBounds, Justification::bottomLeft, false);
     }
+    else if (this->flags.isInstanceOfSelected)
+    {
+        constexpr float dashLength = 4.f;
+        constexpr float halfDash = dashLength / 2.f;
+        for (float i = halfDash; i < w - dashLength; i += dashLength * 2.f)
+        {
+            g.fillRect(i + 1.f, 1.f, dashLength, 1.f);
+            g.fillRect(i, 2.f, dashLength, 1.f);
+            //g.fillRect(i, 3.f, dashLength, 1.f);
+        }
+    }
     
     if (this->clip.getKey() != 0)
     {
@@ -304,6 +315,37 @@ void ClipComponent::paint(Graphics &g)
 
     // speedup: set colour to be used by all child components, so they don't have to 
     g.setColour(this->clip.isMuted() ? this->headDarkColour : this->eventColour);
+}
+
+//===----------------------------------------------------------------------===//
+// SelectableComponent
+//===----------------------------------------------------------------------===//
+
+void ClipComponent::setSelected(bool selected)
+{
+    const bool stateIsChanging = selected != this->isSelected();
+    MidiEventComponent::setSelected(selected);
+    if (stateIsChanging)
+    {
+        // this is not super effective (nested loops etc),
+        // but way simpler code and there won't be too much clips
+        // in the project anyway - tens, maybe hundreds:
+        this->getRoll().updateHighlightedInstances();
+    }
+}
+
+void ClipComponent::setHighlightedAsInstance(bool isHighlighted)
+{
+    // if already selected, don't highlight it as an instance:
+    const bool isInstanceOfSelected =
+        !this->flags.isSelected && isHighlighted;
+
+    if (this->flags.isInstanceOfSelected != isInstanceOfSelected)
+    {
+        this->flags.isInstanceOfSelected = isInstanceOfSelected;
+        this->updateColours();
+        this->roll.triggerBatchRepaintFor(this);
+    }
 }
 
 //===----------------------------------------------------------------------===//

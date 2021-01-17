@@ -66,6 +66,14 @@ public:
     void mouseUp(const MouseEvent &e) override;
     void paint(Graphics& g) override;
 
+    //===------------------------------------------------------------------===//
+    // SelectableComponent
+    //===------------------------------------------------------------------===//
+
+    void setSelected(bool selected) override;
+
+    void setHighlightedAsInstance(bool isHighlighted);
+
     static int compareElements(ClipComponent *first, ClipComponent *second);
 
 protected:
@@ -83,8 +91,6 @@ protected:
     void startTuning();
     Clip continueTuning(const MouseEvent &e) const noexcept;
     Clip continueTuningLinear(float delta) const noexcept;
-    Clip continueTuningMultiplied(float factor) const noexcept;
-    Clip continueTuningSine(float factor, float midline, float phase) const noexcept;
     void endTuning();
 
     friend class PatternRoll;

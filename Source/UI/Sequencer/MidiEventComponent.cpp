@@ -26,6 +26,7 @@ MidiEventComponent::MidiEventComponent(HybridRoll &editor, bool isGhost) noexcep
 {
     this->flags.isActive = true;
     this->flags.isSelected = false;
+    this->flags.isInstanceOfSelected = false;
     this->flags.isRecordingTarget = false;
     this->flags.isGhost = isGhost;
 

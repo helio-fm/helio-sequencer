@@ -39,13 +39,6 @@ public:
     int getNumRows() const noexcept;
 
     //===------------------------------------------------------------------===//
-    // Ghost clips
-    //===------------------------------------------------------------------===//
-    
-    void showGhostClipFor(ClipComponent *targetClipComponent);
-    void hideAllGhostClips();
-
-    //===------------------------------------------------------------------===//
     // Note management
     //===------------------------------------------------------------------===//
 
@@ -85,11 +78,12 @@ public:
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const Rectangle<int> &rectangle) override;
 
+    void updateHighlightedInstances();
+
     //===------------------------------------------------------------------===//
     // SmoothZoomListener
     //===------------------------------------------------------------------===//
 
-    // TODO: should we zoom rows?
     float getZoomFactorY() const noexcept override;
 
     //===------------------------------------------------------------------===//
@@ -158,12 +152,12 @@ private:
 
 private:
     
-    // Only needed for grouping:
+    // needed for grouping:
     Array<String> rows;
-    Array<const MidiTrack *> tracks;
     void reloadRowsGrouping();
 
-    OwnedArray<ClipComponent> ghostClips;
+    // for grouping and highlighting:
+    Array<const MidiTrack *> tracks;
 
     OwnedArray<ChangeListener> selectionListeners;
 

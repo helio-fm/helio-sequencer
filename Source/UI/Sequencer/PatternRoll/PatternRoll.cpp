@@ -53,15 +53,6 @@
 #include "ColourIDs.h"
 #include "Config.h"
 
-//void dumpDebugInfo(Array<MidiTrack *> tracks)
-//{
-//    DBG("--- tracks:");
-//    for (int i = 0; i < tracks.size(); i++)
-//    {
-//        DBG(tracks[i]->getTrackName());
-//    }
-//}
-
 struct StringComparator final
 {
     static int compareElements(const String &first, const String &second)
@@ -245,33 +236,6 @@ void PatternRoll::updateRollSize()
 }
 
 //===----------------------------------------------------------------------===//
-// Ghost clips
-//===----------------------------------------------------------------------===//
-
-void PatternRoll::showGhostClipFor(ClipComponent *targetClipComponent)
-{
-    auto *component = new DummyClipComponent(*this, targetClipComponent->getClip());
-    component->setEnabled(false);
-    component->setGhostMode();
-
-    this->addAndMakeVisible(component);
-    this->ghostClips.add(component);
-
-    this->batchRepaintList.add(component);
-    this->triggerAsyncUpdate();
-}
-
-void PatternRoll::hideAllGhostClips()
-{
-    for (int i = 0; i < this->ghostClips.size(); ++i)
-    {
-        this->fader.fadeOut(this->ghostClips.getUnchecked(i), Globals::UI::fadeOutShort);
-    }
-
-    this->ghostClips.clear();
-}
-
-//===----------------------------------------------------------------------===//
 // Clip management
 //===----------------------------------------------------------------------===//
 
@@ -401,7 +365,6 @@ void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
 void PatternRoll::onRemoveTrack(MidiTrack *const track)
 {
     this->selection.deselectAll();
-    this->hideAllGhostClips();
 
     this->tracks.removeAllInstancesOf(track);
     this->reloadRowsGrouping();
@@ -461,8 +424,6 @@ void PatternRoll::onRemoveClip(const Clip &clip)
 {
     if (const auto deletedComponent = this->clipComponents[clip].get())
     {
-        this->hideAllGhostClips();
-
         this->fader.fadeOut(deletedComponent, Globals::UI::fadeOutLong);
         this->selection.deselect(deletedComponent);
         this->clipComponents.erase(clip);
@@ -516,6 +477,32 @@ void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         {
             jassert(!itemsFound.contains(component));
             itemsFound.add(component);
+        }
+    }
+}
+
+void PatternRoll::updateHighlightedInstances()
+{
+    for (const auto *track : this->tracks)
+    {
+        bool hasSelectedClip = false;
+        const auto *pattern = track->getPattern();
+
+        // find out if at least one instance in a pattern is selected
+        for (const auto *clip : pattern->getClips())
+        {
+            const auto component = this->clipComponents.find(*clip);
+            if (component.value()->isSelected())
+            {
+                hasSelectedClip = true;
+                break;
+            }
+        }
+
+        for (const auto *clip : pattern->getClips())
+        {
+            const auto component = this->clipComponents.find(*clip);
+            component.value()->setHighlightedAsInstance(hasSelectedClip);
         }
     }
 }
