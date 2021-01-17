@@ -284,14 +284,20 @@ void ClipComponent::paint(Graphics &g)
     }
     else if (this->flags.isInstanceOfSelected)
     {
-        constexpr float dashLength = 4.f;
-        constexpr float halfDash = dashLength / 2.f;
-        for (float i = halfDash; i < w - dashLength; i += dashLength * 2.f)
+        constexpr float dash = 4.f;
+        constexpr float dash2 = dash * 2.f;
+        constexpr float halfDash = dash / 2.f;
+        const auto right = w - 2.f;
+        
+        float i = 1.f;
+        for (; i < right - dash; i += dash2)
         {
-            g.fillRect(i + 1.f, 1.f, dashLength, 1.f);
-            g.fillRect(i, 2.f, dashLength, 1.f);
-            //g.fillRect(i, 3.f, dashLength, 1.f);
+            g.fillRect(i + 1.f, 1.f, dash, 1.f);
+            g.fillRect(i, 2.f, dash, 1.f);
         }
+
+        g.fillRect(i + 1.f, 1.f, right - i - 1.f, 1.f);
+        g.fillRect(i, 2.f, right - i + 1.f, 1.f);
     }
     
     if (this->clip.getKey() != 0)
