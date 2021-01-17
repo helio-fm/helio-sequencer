@@ -30,6 +30,7 @@
 #include "Note.h"
 #include "NoteComponent.h"
 #include "NoteNameGuidesBar.h"
+#include "NotesTuningPanel.h"
 #include "HelperRectangle.h"
 #include "HybridRollHeader.h"
 #include "KnifeToolHelper.h"
@@ -1153,10 +1154,16 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->showChordTool(ToolType::ChordPreview, this->getDefaultPositionForPopup());
         break;
     case CommandIDs::ShowVolumePanel:
-        App::Config().getUiFlags()->toggleVelocityMapVisibility();
-        // TODO if shift is pressed:
-        //if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-        //HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
+        if (Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown())
+        {
+            // alternative mode:
+            if (this->selection.getNumSelected() == 0) { this->selectAll(); }
+            HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
+        }
+        else
+        {
+            App::Config().getUiFlags()->toggleVelocityMapVisibility();
+        }
         break;
     case CommandIDs::NotesVolumeRandom:
         HYBRID_ROLL_BULK_REPAINT_START
