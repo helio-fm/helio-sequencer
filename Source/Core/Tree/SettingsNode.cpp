@@ -25,8 +25,7 @@
 #include "UserInterfaceSettings.h"
 #include "TranslationSettings.h"
 
-#include "LabeledSettingsWrapper.h"
-#include "SimpleSettingsWrapper.h"
+#include "SettingsFrameWrapper.h"
 
 #include "ComponentsList.h"
 #include "SettingsPage.h"
@@ -34,12 +33,7 @@
 #include "Workspace.h"
 
 SettingsNode::SettingsNode() :
-    TreeNode("Settings", Serialization::Core::settings)
-{
-    // Too much garbage in the main tree,
-    // let's make it accessible from the button on the title page
-    //this->setVisible(false);
-}
+    TreeNode("Settings", Serialization::Core::settings) {}
 
 Image SettingsNode::getIcon() const noexcept
 {
@@ -80,25 +74,25 @@ void SettingsNode::recreatePage()
     
     this->translationSettings = make<TranslationSettings>();
     const String untranslatedLanguageCaption(CharPointer_UTF8("Language / \xe8\xaf\xad\xe8\xa8\x80 / Sprache / \xd0\xaf\xd0\xb7\xd1\x8b\xd0\xba"));
-    this->translationSettingsWrapper = make<LabeledSettingsWrapper>(this->translationSettings.get(), untranslatedLanguageCaption);
+    this->translationSettingsWrapper = make<SettingsFrameWrapper>(this->translationSettings.get(), untranslatedLanguageCaption);
     this->settingsList->addAndMakeVisible(this->translationSettingsWrapper.get());
 
     this->themeSettings = make<ThemeSettings>();
-    this->themeSettingsWrapper = make<LabeledSettingsWrapper>(this->themeSettings.get(), TRANS(I18n::Settings::ui));
+    this->themeSettingsWrapper = make<SettingsFrameWrapper>(this->themeSettings.get(), TRANS(I18n::Settings::ui));
     this->settingsList->addAndMakeVisible(this->themeSettingsWrapper.get());
 
 #if PLATFORM_DESKTOP
     this->uiSettings = make<UserInterfaceSettings>();
-    this->uiSettingsWrapper = make<SimpleSettingsWrapper>(this->uiSettings.get());
+    this->uiSettingsWrapper = make<SettingsFrameWrapper>(this->uiSettings.get());
     this->settingsList->addAndMakeVisible(this->uiSettingsWrapper.get());
 #endif
 
     this->audioSettings = make<AudioSettings>(App::Workspace().getAudioCore());
-    this->audioSettingsWrapper = make<LabeledSettingsWrapper>(this->audioSettings.get(), TRANS(I18n::Settings::audio));
+    this->audioSettingsWrapper = make<SettingsFrameWrapper>(this->audioSettings.get(), TRANS(I18n::Settings::audio));
     this->settingsList->addAndMakeVisible(this->audioSettingsWrapper.get());
 
     this->syncSettings = make<SyncSettings>();
-    this->syncSettingsWrapper = make<LabeledSettingsWrapper>(this->syncSettings.get(), TRANS(I18n::Settings::sync));
+    this->syncSettingsWrapper = make<SettingsFrameWrapper>(this->syncSettings.get(), TRANS(I18n::Settings::sync));
     this->settingsList->addAndMakeVisible(this->syncSettingsWrapper.get());
 
     this->settingsPage = make<SettingsPage>(this->settingsList.get());

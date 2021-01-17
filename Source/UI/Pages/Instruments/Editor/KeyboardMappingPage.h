@@ -19,6 +19,7 @@
 
 #include "Instrument.h"
 
+class IconButton;
 class HeadlineContextMenuController;
 
 class KeyboardMappingPage final :
@@ -68,8 +69,8 @@ private:
 
     UniquePointer<Component> background;
 
-    UniquePointer<Component> leftArrow;
-    UniquePointer<Component> rightArrow;
+    UniquePointer<IconButton> leftArrow;
+    UniquePointer<IconButton> rightArrow;
     UniquePointer<Label> rangeLabel;
 
     OwnedArray<Button> keyButtons;

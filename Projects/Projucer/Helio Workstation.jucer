@@ -960,22 +960,10 @@
                   file="../../Source/UI/Pages/Settings/ComponentsList.cpp"/>
             <FILE id="cSvomJ" name="ComponentsList.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Settings/ComponentsList.h"/>
-            <FILE id="cjGFIF" name="LabeledSettingsWrapper.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/LabeledSettingsWrapper.cpp"/>
-            <FILE id="f3JYry" name="LabeledSettingsWrapper.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Settings/LabeledSettingsWrapper.h"/>
-            <FILE id="P2xFl9" name="SimpleSettingsWrapper.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/SimpleSettingsWrapper.cpp"/>
-            <FILE id="XZVY6W" name="SimpleSettingsWrapper.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Settings/SimpleSettingsWrapper.h"/>
-            <FILE id="Lq3FxT" name="SettingsListItemHighlighter.cpp" compile="1"
-                  resource="0" file="../../Source/UI/Pages/Settings/SettingsListItemHighlighter.cpp"/>
-            <FILE id="weL74E" name="SettingsListItemHighlighter.h" compile="0"
-                  resource="0" file="../../Source/UI/Pages/Settings/SettingsListItemHighlighter.h"/>
-            <FILE id="RPfsT8" name="SettingsListItemSelection.cpp" compile="1"
-                  resource="0" file="../../Source/UI/Pages/Settings/SettingsListItemSelection.cpp"/>
-            <FILE id="q6ox0w" name="SettingsListItemSelection.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Settings/SettingsListItemSelection.h"/>
+            <FILE id="cjGFIF" name="SettingsFrameWrapper.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/SettingsFrameWrapper.cpp"/>
+            <FILE id="f3JYry" name="SettingsFrameWrapper.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/SettingsFrameWrapper.h"/>
             <FILE id="NQm5bG" name="SettingsPage.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/SettingsPage.cpp"/>
             <FILE id="KbKtdO" name="SettingsPage.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/SettingsPage.h"/>

@@ -110,9 +110,9 @@ void HeadlineNavigationPanel::handleCommandMessage (int commandId)
 void HeadlineNavigationPanel::updateState(bool canGoPrevious, bool canGoNext)
 {
     this->navigatePrevious->setInterceptsMouseClicks(canGoPrevious, false);
-    this->navigatePrevious->setAlpha(canGoPrevious ? 0.45f : 0.2f);
+    this->navigatePrevious->setIconAlphaMultiplier(canGoPrevious ? 0.45f : 0.2f);
     this->navigateNext->setInterceptsMouseClicks(canGoNext, false);
-    this->navigateNext->setAlpha(canGoNext ? 0.45f : 0.2f);
+    this->navigateNext->setIconAlphaMultiplier(canGoNext ? 0.45f : 0.2f);
 }
 //[/MiscUserCode]
 

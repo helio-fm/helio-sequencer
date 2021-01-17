@@ -32,8 +32,8 @@ public:
     const String &getName() const noexcept;
     const String &getHint() const noexcept;
     const Colour &getColor() const noexcept;
-    const Callback getCallback() const noexcept;
-    const bool isUnfiltered() const noexcept;
+    Callback getCallback() const noexcept;
+    bool isUnfiltered() const noexcept;
 
     void setMatch(int score, const uint8 *matches);
     int getMatchScore() const noexcept;

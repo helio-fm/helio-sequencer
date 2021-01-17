@@ -17,7 +17,6 @@
 
 #pragma once
 
-//[Headers]
 #include "Icons.h"
 #include "DraggingListBoxComponent.h"
 
@@ -81,39 +80,38 @@ struct MenuItem final : public ReferenceCountedObject
     static MenuItem::Ptr item(Icons::Id iconId, int commandId, const String &text = {});
     static MenuItem::Ptr item(Image image, int commandId, const String &text = {});
 };
-//[/Headers]
-
 
 class MenuItemComponent final : public DraggingListBoxComponent
 {
 public:
 
-    MenuItemComponent(Component *parentCommandReceiver, Viewport *parentViewport, const MenuItem::Ptr desc);
-    ~MenuItemComponent();
+    MenuItemComponent(Component *parentCommandReceiver,
+                      Viewport *parentViewport, const MenuItem::Ptr desc);
 
-    //[UserMethods]
+    ~MenuItemComponent();
 
     void setSelected(bool shouldBeSelected) override;
 
     void setChecked(bool shouldBeChecked);
-    void update(const MenuItem::Ptr description);
+    void update(MenuItem::Ptr description);
 
     Font getFont() const noexcept
     {
         return this->textLabel->getFont();
     }
 
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
-
+    void mouseDown(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
 private:
 
-    //[UserVariables]
+#if PLATFORM_DESKTOP
+    static constexpr auto iconMargin = 8;
+#elif PLATFORM_MOBILE
+    static constexpr auto iconMargin = 4;
+#endif
 
     Image icon;
     MenuItem::Ptr description;
@@ -133,15 +131,13 @@ private:
 
     // workaround странного поведения juce
     // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает
-    bool mouseDownWasTriggered;
+    bool mouseDownWasTriggered = false;
 
     void doAction();
-
-    //[/UserVariables]
 
     UniquePointer<Label> subLabel;
     UniquePointer<Label> textLabel;
     UniquePointer<IconComponent> submenuMarker;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MenuItemComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemComponent)
 };

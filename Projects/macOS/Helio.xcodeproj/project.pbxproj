@@ -772,13 +772,6 @@
 			path = ../../Source/Core/Serialization/DocumentOwner.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		1C60C4133FD2F92F269090AF = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SettingsListItemSelection.h;
-			path = ../../Source/UI/Pages/Settings/SettingsListItemSelection.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		1CF2F49FC7A5FC6653608442 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -1276,13 +1269,6 @@
 			path = ../../Source/UI/Sequencer/SelectionComponent.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		30EE086674D5E760D36E1BF1 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = LabeledSettingsWrapper.cpp;
-			path = ../../Source/UI/Pages/Settings/LabeledSettingsWrapper.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		310B427849EA3D5FD0BB3F82 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -1694,13 +1680,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = VersionControlStageSelectionMenu.h;
 			path = ../../Source/UI/Menus/SelectionMenus/VersionControlStageSelectionMenu.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		41B23BF18F28325AC94E7E55 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = SettingsListItemSelection.cpp;
-			path = ../../Source/UI/Pages/Settings/SettingsListItemSelection.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		41F2BB6B0C24E0F8D3707F25 = {
@@ -2401,13 +2380,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = InstrumentNodeSelectionMenu.h;
 			path = ../../Source/UI/Menus/SelectionMenus/InstrumentNodeSelectionMenu.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		639BE92D7ADB4ED632BD4038 = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = SimpleSettingsWrapper.cpp;
-			path = ../../Source/UI/Pages/Settings/SimpleSettingsWrapper.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
 		63D04F3AB88A091E6855B0D9 = {
@@ -4188,13 +4160,6 @@
 			path = ../../Source/UI/Popups/PopupButtonOwner.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		B2F0A32313689360FE3E778C = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = LabeledSettingsWrapper.h;
-			path = ../../Source/UI/Pages/Settings/LabeledSettingsWrapper.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		B305AF84BD2B31278E7F275E = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -4333,6 +4298,13 @@
 			lastKnownFileType = sourcecode.cpp.cpp;
 			name = FineTuningComponentDragger.cpp;
 			path = ../../Source/UI/Common/FineTuningComponentDragger.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
+		BC8B2AE81DB7ACAEA0B34D32 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = SettingsFrameWrapper.h;
+			path = ../../Source/UI/Pages/Settings/SettingsFrameWrapper.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		BC8D695AF62FA1C73069BE88 = {
@@ -5126,13 +5098,6 @@
 			path = ../../Source/UI/Pages/Settings/ComponentsList.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		E169862EBB0C6A84072C657B = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.cpp;
-			name = SettingsListItemHighlighter.cpp;
-			path = ../../Source/UI/Pages/Settings/SettingsListItemHighlighter.cpp;
-			sourceTree = "SOURCE_ROOT";
-		};
 		E1714B7BE059F5B254FFB8DE = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -5406,13 +5371,6 @@
 			path = ../../Source/Core/CommandPalette/CommandPaletteModel.h;
 			sourceTree = "SOURCE_ROOT";
 		};
-		F01FCFE9265AFDEEE3C4B7FD = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SettingsListItemHighlighter.h;
-			path = ../../Source/UI/Pages/Settings/SettingsListItemHighlighter.h;
-			sourceTree = "SOURCE_ROOT";
-		};
 		F090D4B2FEC26DBF67C75FFA = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -5553,6 +5511,13 @@
 			path = ../../Source/UI/Sequencer/HybridRollEditMode.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		F58E7088E21EEE373267FE8A = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = SettingsFrameWrapper.cpp;
+			path = ../../Source/UI/Pages/Settings/SettingsFrameWrapper.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		F5CD02A25BB21968413316D4 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -5628,13 +5593,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = AnnotationDialog.h;
 			path = ../../Source/UI/Dialogs/AnnotationDialog.h;
-			sourceTree = "SOURCE_ROOT";
-		};
-		FA77E4909909EA302A84D59F = {
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = SimpleSettingsWrapper.h;
-			path = ../../Source/UI/Pages/Settings/SimpleSettingsWrapper.h;
 			sourceTree = "SOURCE_ROOT";
 		};
 		FA8EBE25F4B30087F2A30446 = {
@@ -6613,14 +6571,8 @@
 				3274EE0D7653072660EED41E,
 				8D5E4B7612CD7AA5C3880C31,
 				E126076F062300172614B713,
-				30EE086674D5E760D36E1BF1,
-				B2F0A32313689360FE3E778C,
-				639BE92D7ADB4ED632BD4038,
-				FA77E4909909EA302A84D59F,
-				E169862EBB0C6A84072C657B,
-				F01FCFE9265AFDEEE3C4B7FD,
-				41B23BF18F28325AC94E7E55,
-				1C60C4133FD2F92F269090AF,
+				F58E7088E21EEE373267FE8A,
+				BC8B2AE81DB7ACAEA0B34D32,
 				52DEDEC4C6568D176EA4F388,
 				461B0A47DEBB557C063F731C,
 				6F0AA28913D0FB1EBA8573D9,

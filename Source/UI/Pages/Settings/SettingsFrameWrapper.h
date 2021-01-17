@@ -17,35 +17,37 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
+#include "FramePanel.h"
 
-#include "../../Themes/FramePanel.h"
-
-class LabeledSettingsWrapper final : public Component
+class SettingsFrameWrapper final : public Component
 {
 public:
 
-    LabeledSettingsWrapper(Component *targetComponent, const String &title);
-    ~LabeledSettingsWrapper();
+    SettingsFrameWrapper(Component *targetComponent, const String &title = {});
+    ~SettingsFrameWrapper() override;
 
-    //[UserMethods]
     void showNonOwned(Component *targetComponent, const String &title);
-    void visibilityChanged() override;
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
-
 
 private:
 
-    //[UserVariables]
     SafePointer<Component> target;
-    //[/UserVariables]
 
     UniquePointer<FramePanel> panel;
     UniquePointer<Label> titleLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LabeledSettingsWrapper)
+    static constexpr auto titleMargin = 8;
+    static constexpr auto titleHeight = 24;
+    static constexpr auto panelMargin = 6;
+
+    static constexpr auto contentMarginX = 4;
+    static constexpr auto contentMarginY = 6;
+
+    static constexpr auto labeledTotalMargins =
+        contentMarginY * 2 + titleHeight + titleMargin * 2 + panelMargin;
+
+    static constexpr auto simpleTotalMargins =
+        contentMarginY * 2 + panelMargin * 2;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingsFrameWrapper)
 };

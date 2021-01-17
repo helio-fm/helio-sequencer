@@ -23,8 +23,8 @@
 
 //[MiscUserDefs]
 #include "SerializationKeys.h"
-#include "ThemeSettingsItem.h"
 #include "ModalDialogConfirmation.h"
+#include "HelioTheme.h"
 #include "Config.h"
 //[/MiscUserDefs]
 

@@ -198,8 +198,6 @@ Identifier CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
     {
         TRANS_NONE(Back)
         TRANS_NONE(Cancel)
-        //TRANS_KEY(Back, Menu::back)
-        //TRANS_KEY(Cancel, Menu::cancel)
         TRANS_NONE(Browse)
         TRANS_NONE(IconButtonPressed)
         TRANS_NONE(HideDialog)

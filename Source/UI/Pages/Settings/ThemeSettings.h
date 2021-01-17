@@ -17,11 +17,8 @@
 
 #pragma once
 
-//[Headers]
 #include "ColourScheme.h"
 #include "MobileComboBox.h"
-//[/Headers]
-
 
 class ThemeSettings final : public Component,
                             public ListBoxModel,
@@ -32,8 +29,6 @@ public:
     ThemeSettings();
     ~ThemeSettings();
 
-    //[UserMethods]
-
     //===------------------------------------------------------------------===//
     // ListBoxModel
     //===------------------------------------------------------------------===//
@@ -43,15 +38,15 @@ public:
     void paintListBoxItem(int, Graphics&, int, int, bool) override {}
     void listBoxItemClicked(int, const MouseEvent &) override {}
 
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
-
 
 private:
 
-    //[UserVariables]
+#if PLATFORM_DESKTOP
+    static constexpr auto rowHeight = 46;
+#elif PLATFORM_MOBILE
+    static constexpr auto rowHeight = 57;
+#endif
 
     //===------------------------------------------------------------------===//
     // ChangeListener
@@ -61,8 +56,6 @@ private:
 
     Array<ColourScheme::Ptr> schemes;
     ColourScheme::Ptr currentScheme;
-
-    //[/UserVariables]
 
     UniquePointer<MobileComboBox::Primer> fontComboPrimer;
     UniquePointer<ListBox> themesList;

@@ -153,10 +153,10 @@ void KeyboardMappingPage::syncWithRange(int base)
     const auto canShowNextPage = this->canShowNextPage();
 
     this->leftArrow->setInterceptsMouseClicks(canShowPreviousPave, false);
-    this->leftArrow->setAlpha(canShowPreviousPave ? 1.f : 0.25f);
+    this->leftArrow->setIconAlphaMultiplier(canShowPreviousPave ? 1.f : 0.25f);
 
     this->rightArrow->setInterceptsMouseClicks(canShowNextPage, false);
-    this->rightArrow->setAlpha(canShowNextPage ? 1.f : 0.25f);
+    this->rightArrow->setIconAlphaMultiplier(canShowNextPage ? 1.f : 0.25f);
 
     for (int i = base; i < base + Globals::twelveToneKeyboardSize; ++i)
     {

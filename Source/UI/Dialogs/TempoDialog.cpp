@@ -215,7 +215,7 @@ TempoDialog::TempoDialog(int bpmValue)
 
 // still need to have this empty dtor here,
 // so that compiler can resolve the forward-declared TapTempo
-TempoDialog::~TempoDialog() {}
+TempoDialog::~TempoDialog() = default;
 
 void TempoDialog::resized()
 {

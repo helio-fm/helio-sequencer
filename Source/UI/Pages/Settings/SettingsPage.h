@@ -17,32 +17,21 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-#include "../../Themes/PanelBackgroundB.h"
+class PanelBackgroundB;
 
 class SettingsPage final : public Component
 {
 public:
 
     explicit SettingsPage(Component *settingsList);
-    ~SettingsPage();
+    ~SettingsPage() override;
 
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
 
-
 private:
-
-    //[UserVariables]
-    //[/UserVariables]
 
     UniquePointer<PanelBackgroundB> background;
     UniquePointer<Viewport> viewport;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsPage)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingsPage)
 };

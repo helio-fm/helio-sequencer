@@ -15,92 +15,46 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "ThemeSettings.h"
-
-//[MiscUserDefs]
 #include "ThemeSettingsItem.h"
 #include "Config.h"
 
-#if PLATFORM_DESKTOP
-#   define THEME_SETTINGS_ROW_HEIGHT (46)
-#elif PLATFORM_MOBILE
-#   define THEME_SETTINGS_ROW_HEIGHT (57)
-#endif
-
-//[/MiscUserDefs]
-
 ThemeSettings::ThemeSettings()
 {
-    this->fontComboPrimer.reset(new MobileComboBox::Primer());
-    this->addAndMakeVisible(fontComboPrimer.get());
-
-    this->themesList.reset(new ListBox());
-    this->addAndMakeVisible(themesList.get());
-
-
-    //[UserPreSize]
-    this->setOpaque(true);
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
 
+    this->fontComboPrimer = make<MobileComboBox::Primer>();
+    this->addAndMakeVisible(this->fontComboPrimer.get());
+
+    this->themesList = make<ListBox>();
+    this->addAndMakeVisible(this->themesList.get());
+
     this->schemes = App::Config().getColourSchemes()->getAll();
     this->currentScheme = App::Config().getColourSchemes()->getCurrent();
-    //[/UserPreSize]
 
-    this->setSize(600, 350);
-
-    //[Constructor]
     const int numSchemes = this->schemes.size();
-    this->setSize(600, 16 + numSchemes * THEME_SETTINGS_ROW_HEIGHT);
+    this->setSize(600, 16 + numSchemes * ThemeSettings::rowHeight);
 
     this->themesList->setModel(this);
-    this->themesList->setRowHeight(THEME_SETTINGS_ROW_HEIGHT);
+    this->themesList->setRowHeight(ThemeSettings::rowHeight);
     this->themesList->getViewport()->setScrollBarsShown(true, false);
 
     App::Config().getColourSchemes()->addChangeListener(this);
-    //[/Constructor]
 }
 
 ThemeSettings::~ThemeSettings()
 {
-    //[Destructor_pre]
     App::Config().getColourSchemes()->removeChangeListener(this);
-    //[/Destructor_pre]
-
-    fontComboPrimer = nullptr;
-    themesList = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void ThemeSettings::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
 void ThemeSettings::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    fontComboPrimer->setBounds(4, 4, getWidth() - 8, getHeight() - 8);
-    themesList->setBounds(8, 8, getWidth() - 24, getHeight() - 16);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->fontComboPrimer->setBounds(4, 4, this->getWidth() - 8, this->getHeight() - 8);
+    this->themesList->setBounds(8, 8, this->getWidth() - 24, this->getHeight() - 16);
 }
-
-
-//[MiscUserCode]
 
 //===----------------------------------------------------------------------===//
 // ChangeListener
@@ -152,25 +106,3 @@ int ThemeSettings::getNumRows()
 {
     return this->schemes.size();
 }
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="ThemeSettings" template="../../../Template"
-                 componentName="" parentClasses="public Component, public ListBoxModel, private ChangeListener"
-                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
-                 initialHeight="350">
-  <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT name="" id="1b5648cb76a38566" memberName="fontComboPrimer" virtualName=""
-                    explicitFocusOrder="0" pos="4 4 8M 8M" class="MobileComboBox::Primer"
-                    params=""/>
-  <GENERICCOMPONENT name="" id="5005ba29a3a1bbc6" memberName="themesList" virtualName=""
-                    explicitFocusOrder="0" pos="8 8 24M 16M" class="ListBox" params=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

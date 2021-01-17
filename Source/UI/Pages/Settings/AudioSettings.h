@@ -17,31 +17,23 @@
 
 #pragma once
 
-//[Headers]
-class AudioCore;
 #include "MobileComboBox.h"
-//[/Headers]
 
+class AudioCore;
 
 class AudioSettings final : public Component
 {
 public:
 
     explicit AudioSettings(AudioCore &core);
-    ~AudioSettings();
+    ~AudioSettings() override;
 
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
     void parentHierarchyChanged() override;
-    void handleCommandMessage (int commandId) override;
-
+    void handleCommandMessage(int commandId) override;
 
 private:
 
-    //[UserVariables]
     void applyDeviceType(AudioDeviceManager &deviceManager, const String &deviceTypeName);
     void applyDevice(AudioDeviceManager &deviceManager, const String &deviceName);
     void applySampleRate(AudioDeviceManager &deviceManager, double sampleRate);
@@ -55,7 +47,6 @@ private:
     void syncMidiInputsList(AudioDeviceManager &deviceManager);
 
     AudioCore &audioCore;
-    //[/UserVariables]
 
     UniquePointer<MobileComboBox::Primer> midiInputsComboPrimer;
     UniquePointer<MobileComboBox::Primer> sampleRateComboPrimer;
@@ -68,7 +59,5 @@ private:
     UniquePointer<TextEditor> bufferSizeEditor;
     UniquePointer<TextEditor> midiInputEditor;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioSettings)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioSettings)
 };
-
-

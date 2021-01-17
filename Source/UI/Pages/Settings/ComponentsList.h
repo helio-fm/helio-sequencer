@@ -30,8 +30,8 @@ public:
 
 private:
 
-    int paddingLeft;
-    int paddingRight;
+    const int paddingLeft;
+    const int paddingRight;
 
     Component *findContainerOf(Component *content);
 

@@ -1195,16 +1195,7 @@
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ComponentsList.cpp">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\LabeledSettingsWrapper.cpp">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\SimpleSettingsWrapper.cpp">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsListItemHighlighter.cpp">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsListItemSelection.cpp">
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsFrameWrapper.cpp">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsPage.cpp">
@@ -4218,16 +4209,7 @@
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ComponentsList.h">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\LabeledSettingsWrapper.h">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\SimpleSettingsWrapper.h">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsListItemHighlighter.h">
-      <Filter>Helio\Source\UI\Pages\Settings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsListItemSelection.h">
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsFrameWrapper.h">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsPage.h">

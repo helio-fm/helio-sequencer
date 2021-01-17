@@ -15,14 +15,8 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "MenuItemComponent.h"
-
-//[MiscUserDefs]
-
 #include "MenuItemComponentMarker.h"
 #include "MenuPanel.h"
 #include "HelioTheme.h"
@@ -31,13 +25,7 @@
 #include "MainLayout.h"
 #include "Config.h"
 
-#if PLATFORM_DESKTOP
-#   define ICON_MARGIN (8)
-#   define ICON_SIZE (20)
-#elif PLATFORM_MOBILE
-#   define ICON_MARGIN (4)
-#   define ICON_SIZE (20)
-#endif
+#include <utility>
 
 #if JUCE_MAC
 #   define HAS_OPENGL_BUG 1
@@ -82,7 +70,7 @@ MenuItem::Ptr MenuItem::item(Icons::Id iconId, int commandId, const String &text
 MenuItem::Ptr MenuItem::item(Image image, int commandId, const String &text /*= ""*/)
 {
     MenuItem::Ptr description(new MenuItem());
-    description->image = image;
+    description->image = move(image);
     description->commandText = text;
     description->commandId = commandId;
     description->hotkeyText = findHotkeyText(commandId);
@@ -201,115 +189,70 @@ public:
     }
 };
 
-//[/MiscUserDefs]
-
-MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver, Viewport *parentViewport, const MenuItem::Ptr desc)
-    : DraggingListBoxComponent(parentViewport),
-      parent(parentCommandReceiver),
-      description(MenuItem::empty()),
-      mouseDownWasTriggered(false)
+MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver,
+    Viewport *parentViewport, const MenuItem::Ptr desc) :
+    DraggingListBoxComponent(parentViewport),
+    parent(parentCommandReceiver),
+    description(MenuItem::empty())
 {
-    this->subLabel.reset(new Label(String(),
-                                    String()));
-    this->addAndMakeVisible(subLabel.get());
-    this->subLabel->setFont(Font (21.00f, Font::plain));
-    subLabel->setJustificationType(Justification::centredRight);
-    subLabel->setEditable(false, false, false);
-
-    this->textLabel.reset(new Label(String(),
-                                     String()));
-    this->addAndMakeVisible(textLabel.get());
-    this->textLabel->setFont(Font (21.00f, Font::plain));
-    textLabel->setJustificationType(Justification::centredLeft);
-    textLabel->setEditable(false, false, false);
-
-    this->submenuMarker.reset(new IconComponent(Icons::submenu, 0.25f));
-    this->addAndMakeVisible(submenuMarker.get());
-
-
-    //[UserPreSize]
+    this->subLabel = make<Label>();
+    this->addAndMakeVisible(this->subLabel.get());
+    this->subLabel->setFont({ 21.f });
+    this->subLabel->setJustificationType(Justification::centredRight);
     this->subLabel->setInterceptsMouseClicks(false, false);
-    this->textLabel->setInterceptsMouseClicks(false, false);
     this->subLabel->setColour(Label::textColourId, desc->colour.withMultipliedAlpha(0.5f));
+
+    this->textLabel = make<Label>();
+    this->addAndMakeVisible(this->textLabel.get());
+    this->textLabel->setFont({ 21.f });
+    this->textLabel->setJustificationType(Justification::centredLeft);
+    this->textLabel->setInterceptsMouseClicks(false, false);
+
+    this->submenuMarker = make<IconComponent>(Icons::submenu, 0.25f);
+    this->addAndMakeVisible(this->submenuMarker.get());
 
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
-    //[/UserPreSize]
 
-    this->setSize(512, 40);
-
-    //[Constructor]
-    this->setSize(this->getWidth(), COMMAND_PANEL_BUTTON_HEIGHT);
+    this->setSize(64, COMMAND_PANEL_BUTTON_HEIGHT);
     this->update(desc);
-    //[/Constructor]
 }
 
-MenuItemComponent::~MenuItemComponent()
+MenuItemComponent::~MenuItemComponent() = default;
+
+void MenuItemComponent::paint(Graphics &g)
 {
-    //[Destructor_pre]
-    //this->selectionComponent = nullptr;
-    //[/Destructor_pre]
-
-    subLabel = nullptr;
-    textLabel = nullptr;
-    submenuMarker = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void MenuItemComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-
-    if (this->parentViewport)
+    if (this->parentViewport != nullptr)
     {
+        g.setColour(Colour(0x06ffffff));
+        g.fillRect(0, 0, this->getWidth(), 1);
 
-    //[/UserPrePaint]
-
-    {
-        int x = 0, y = 0, width = getWidth() - 0, height = 1;
-        Colour fillColour = Colour (0x06ffffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-    }
-
-    {
-        int x = 0, y = getHeight() - 1, width = getWidth() - 0, height = 1;
-        Colour fillColour = Colour (0x0f000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-    }
-
-    //[UserPaint] Add your own custom painting code here..
-
+        g.setColour (Colour(0x0f000000));
+        g.fillRect (0, this->getHeight() - 1, this->getWidth(), 1);
     }
 
     g.setOpacity(1.f);
 
     const int iconX = this->hasText() ?
-        (this->icon.getWidth() / 2) + ICON_MARGIN : (this->getWidth() / 2);
+        (this->icon.getWidth() / 2) + MenuItemComponent::iconMargin : (this->getWidth() / 2);
 
     jassert(this->icon.isValid());
 
     Icons::drawImageRetinaAware(this->icon, g, iconX, this->getHeight() / 2);
-    //[/UserPaint]
 }
 
 void MenuItemComponent::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    constexpr auto iconSize = 20;
+    constexpr auto textLabelX = 48;
+    constexpr auto subLabelWidth = 128;
+    constexpr auto rightMargin = 4;
 
-    subLabel->setBounds(getWidth() - 4 - 128, (getHeight() / 2) - ((getHeight() - 0) / 2), 128, getHeight() - 0);
-    textLabel->setBounds(48, (getHeight() / 2) - ((getHeight() - 0) / 2), getWidth() - 56, getHeight() - 0);
-    submenuMarker->setBounds(getWidth() - 4 - 20, (getHeight() / 2) - (20 / 2), 20, 20);
-    //[UserResized] Add your own custom resize handling here..
+    this->subLabel->setBounds(this->getWidth() - subLabelWidth - rightMargin, 0, subLabelWidth, this->getHeight());
+    this->textLabel->setBounds(textLabelX, 0, this->getWidth() - textLabelX - rightMargin, this->getHeight());
+    this->submenuMarker->setBounds(this->getWidth() - iconSize - rightMargin,
+                                   (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
 
     if (this->checkMarker != nullptr)
     {
@@ -330,10 +273,10 @@ void MenuItemComponent::resized()
     }
     else
     {
-        this->icon = Icons::findByName(this->description->iconId, ICON_SIZE);
+        this->icon = Icons::findByName(this->description->iconId, iconSize);
     }
 
-    const float xMargin = ICON_MARGIN * 1.2f;
+    const int xMargin = MenuItemComponent::iconMargin + 2;
     this->textLabel->setBounds(int(this->icon.getWidth() + xMargin),
         (this->getHeight() / 2) - (this->getHeight() / 2),
         int(this->getWidth() - this->icon.getWidth() - xMargin),
@@ -342,13 +285,10 @@ void MenuItemComponent::resized()
     const float fontSize = 18.f ;//jmin(MAX_MENU_FONT_SIZE, float(this->getHeight() / 2) + 1.f);
     this->subLabel->setFont(Font(Font::getDefaultSansSerifFontName(), fontSize, Font::plain));
     this->textLabel->setFont(Font(Font::getDefaultSansSerifFontName(), fontSize, Font::plain));
-
-    //[/UserResized]
 }
 
-void MenuItemComponent::mouseDown (const MouseEvent& e)
+void MenuItemComponent::mouseDown(const MouseEvent &e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
     if (!this->hasText())
     {
         DraggingListBoxComponent::mouseDown(e);
@@ -377,12 +317,10 @@ void MenuItemComponent::mouseDown (const MouseEvent& e)
     }
 
     this->mouseDownWasTriggered = true;
-    //[/UserCode_mouseDown]
 }
 
-void MenuItemComponent::mouseUp (const MouseEvent& e)
+void MenuItemComponent::mouseUp(const MouseEvent &e)
 {
-    //[UserCode_mouseUp] -- Add your code here...
     if (! this->mouseDownWasTriggered)
     {
         return;
@@ -419,11 +357,7 @@ void MenuItemComponent::mouseUp (const MouseEvent& e)
     }
 
     this->mouseDownWasTriggered = false;
-    //[/UserCode_mouseUp]
 }
-
-
-//[MiscUserCode]
 
 void MenuItemComponent::setSelected(bool shouldBeSelected)
 {
@@ -588,42 +522,3 @@ void MenuItemComponent::hideCheckMark()
 {
     this->checkMarker = nullptr;
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="MenuItemComponent" template="../../../Template"
-                 componentName="" parentClasses="public DraggingListBoxComponent"
-                 constructorParams="Component *parentCommandReceiver, Viewport *parentViewport, const MenuItem::Ptr desc"
-                 variableInitialisers="DraggingListBoxComponent(parentViewport),&#10;parent(parentCommandReceiver),&#10;description(MenuItem::empty()),&#10;mouseDownWasTriggered(false)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="512" initialHeight="40">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <RECT pos="0 0 0M 1" fill="solid: 6ffffff" hasStroke="0"/>
-    <RECT pos="0 0Rr 0M 1" fill="solid: f000000" hasStroke="0"/>
-  </BACKGROUND>
-  <LABEL name="" id="8de701891a585730" memberName="subLabel" virtualName=""
-         explicitFocusOrder="0" pos="4Rr 0Cc 128 0M" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="34"/>
-  <LABEL name="" id="14908053d7863001" memberName="textLabel" virtualName=""
-         explicitFocusOrder="0" pos="48 0Cc 56M 0M" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
-  <GENERICCOMPONENT name="" id="1e71bff8af38b714" memberName="submenuMarker" virtualName=""
-                    explicitFocusOrder="0" pos="4Rr 0Cc 20 20" class="IconComponent"
-                    params="Icons::submenu, 0.25f"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

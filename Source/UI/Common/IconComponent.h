@@ -49,6 +49,7 @@ public:
         this->repaint();
     }
 
+    // where possible, use this instead of setAlpha, which is extremely slow
     void setIconAlphaMultiplier(float alpha)
     {
         this->alpha = alpha;

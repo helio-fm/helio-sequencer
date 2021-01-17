@@ -51,7 +51,7 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
     this->updatePosition();
 }
 
-ModalDialogConfirmation::~ModalDialogConfirmation() {}
+ModalDialogConfirmation::~ModalDialogConfirmation() = default;
 
 void ModalDialogConfirmation::resized()
 {

@@ -15,41 +15,21 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "SyncSettings.h"
-
-//[MiscUserDefs]
 #include "Workspace.h"
 #include "SyncSettingsItem.h"
 #include "ComponentsList.h"
 #include "Config.h"
 
-#if PLATFORM_DESKTOP
-#   define SYNC_SETTINGS_ROW_HEIGHT (32)
-#elif PLATFORM_MOBILE
-#   define SYNC_SETTINGS_ROW_HEIGHT (48)
-#endif
-//[/MiscUserDefs]
-
 SyncSettings::SyncSettings()
 {
-    this->resourcesList.reset(new ListBox());
-    this->addAndMakeVisible(resourcesList.get());
-
-
-    //[UserPreSize]
-    this->setOpaque(true);
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
-    //[/UserPreSize]
 
-    this->setSize(600, 265);
-
-    //[Constructor]
+    this->resourcesList = make<ListBox>();
+    this->addAndMakeVisible(this->resourcesList.get());
     
     this->reloadConfigsList();
     this->reloadSyncFlags();
@@ -61,52 +41,27 @@ SyncSettings::SyncSettings()
         configType.second->addChangeListener(this);
     }
 
-    this->setSize(100, this->resources.size() * SYNC_SETTINGS_ROW_HEIGHT);
+    this->setSize(100, this->resources.size() * SyncSettings::rowHeight);
 
     this->resourcesList->setModel(this);
-    this->resourcesList->setRowHeight(SYNC_SETTINGS_ROW_HEIGHT);
+    this->resourcesList->setRowHeight(SyncSettings::rowHeight);
     this->resourcesList->getViewport()->setScrollBarsShown(true, false);
-    //[/Constructor]
 }
 
 SyncSettings::~SyncSettings()
 {
-    //[Destructor_pre]
     for (auto resource : App::Config().getAllResources())
     {
         resource.second->removeChangeListener(this);
     }
 
     App::Workspace().getUserProfile().removeChangeListener(this);
-    //[/Destructor_pre]
-
-    resourcesList = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void SyncSettings::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
 void SyncSettings::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    resourcesList->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->resourcesList->setBounds(this->getLocalBounds());
 }
-
-
-//[MiscUserCode]
 
 //===----------------------------------------------------------------------===//
 // ChangeListener
@@ -212,7 +167,7 @@ void SyncSettings::reloadConfigsList()
     }
     else if (parentList != nullptr && shouldShow && !this->isEnabled())
     {
-        this->setSize(100, this->resources.size() * SYNC_SETTINGS_ROW_HEIGHT);
+        this->setSize(100, this->resources.size() * SyncSettings::rowHeight);
         parentList->showChild(this);
     }
 }
@@ -227,22 +182,3 @@ void SyncSettings::reloadSyncFlags()
                 this->resources.getUnchecked(i)->getResourceId()));
     }
 }
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="SyncSettings" template="../../../Template"
-                 componentName="" parentClasses="public Component, public ListBoxModel, private ChangeListener"
-                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
-                 initialHeight="265">
-  <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT name="" id="5005ba29a3a1bbc6" memberName="resourcesList" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 0M 0M" class="ListBox" params=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

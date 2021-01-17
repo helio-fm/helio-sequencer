@@ -17,14 +17,12 @@
 
 #pragma once
 
-//[Headers]
 #include "DraggingListBoxComponent.h"
 #include "HelioTheme.h"
 #include "ColourScheme.h"
+
 class IconComponent;
 class HelioTheme;
-//[/Headers]
-
 
 class ThemeSettingsItem final : public DraggingListBoxComponent
 {
@@ -33,22 +31,16 @@ public:
     explicit ThemeSettingsItem(ListBox &parentListBox);
     ~ThemeSettingsItem();
 
-    //[UserMethods]
-
     void setSelected(bool shouldBeSelected) override;
 
     void updateDescription(bool isLastRowInList,
         bool isCurrentTheme, const ColourScheme::Ptr colours);
 
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-
 
 private:
 
-    //[UserVariables]
     void applyTheme(const ColourScheme::Ptr theme);
 
     ColourScheme::Ptr colours;
@@ -63,8 +55,6 @@ private:
     Image icon2;
 
     Component *createHighlighterComponent() override;
-
-    //[/UserVariables]
 
     UniquePointer<Label> schemeNameLabel;
 

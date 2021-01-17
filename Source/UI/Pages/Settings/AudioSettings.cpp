@@ -15,102 +15,73 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "AudioSettings.h"
-
-//[MiscUserDefs]
 #include "AudioCore.h"
-//[/MiscUserDefs]
 
-AudioSettings::AudioSettings(AudioCore &core)
-    : audioCore(core)
+AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
 {
-    this->midiInputsComboPrimer.reset(new MobileComboBox::Primer());
-    this->addAndMakeVisible(midiInputsComboPrimer.get());
+    this->midiInputsComboPrimer = make<MobileComboBox::Primer>();
+    this->addAndMakeVisible(this->midiInputsComboPrimer.get());
 
-    this->sampleRateComboPrimer.reset(new MobileComboBox::Primer());
-    this->addAndMakeVisible(sampleRateComboPrimer.get());
+    this->sampleRateComboPrimer = make<MobileComboBox::Primer>();
+    this->addAndMakeVisible(this->sampleRateComboPrimer.get());
 
-    this->bufferSizeComboPrimer.reset(new MobileComboBox::Primer());
-    this->addAndMakeVisible(bufferSizeComboPrimer.get());
+    this->bufferSizeComboPrimer = make<MobileComboBox::Primer>();
+    this->addAndMakeVisible(this->bufferSizeComboPrimer.get());
 
-    this->deviceTypeComboPrimer.reset(new MobileComboBox::Primer());
-    this->addAndMakeVisible(deviceTypeComboPrimer.get());
+    this->deviceTypeComboPrimer = make<MobileComboBox::Primer>();
+    this->addAndMakeVisible(this->deviceTypeComboPrimer.get());
 
-    this->deviceComboPrimer.reset(new MobileComboBox::Primer());
-    this->addAndMakeVisible(deviceComboPrimer.get());
+    this->deviceComboPrimer = make<MobileComboBox::Primer>();
+    this->addAndMakeVisible(this->deviceComboPrimer.get());
 
-    this->deviceTypeEditor.reset(new TextEditor(String()));
-    this->addAndMakeVisible(deviceTypeEditor.get());
-    deviceTypeEditor->setMultiLine (false);
-    deviceTypeEditor->setReturnKeyStartsNewLine (false);
-    deviceTypeEditor->setReadOnly (true);
-    deviceTypeEditor->setScrollbarsShown (false);
-    deviceTypeEditor->setCaretVisible (false);
-    deviceTypeEditor->setPopupMenuEnabled (false);
-    deviceTypeEditor->setText (String());
+    this->deviceTypeEditor = make<TextEditor>();
+    this->addAndMakeVisible(this->deviceTypeEditor.get());
+    this->deviceTypeEditor->setReadOnly(true);
+    this->deviceTypeEditor->setScrollbarsShown(false);
+    this->deviceTypeEditor->setCaretVisible(false);
+    this->deviceTypeEditor->setPopupMenuEnabled(false);
+    this->deviceTypeEditor->setInterceptsMouseClicks(false, true);
+    this->deviceTypeEditor->setFont({ 18.f });
 
-    this->deviceEditor.reset(new TextEditor(String()));
-    this->addAndMakeVisible(deviceEditor.get());
-    deviceEditor->setMultiLine (false);
-    deviceEditor->setReturnKeyStartsNewLine (false);
-    deviceEditor->setReadOnly (true);
-    deviceEditor->setScrollbarsShown (false);
-    deviceEditor->setCaretVisible (false);
-    deviceEditor->setPopupMenuEnabled (false);
-    deviceEditor->setText (String());
+    this->deviceEditor = make<TextEditor>();
+    this->addAndMakeVisible(this->deviceEditor.get());
+    this->deviceEditor->setReadOnly(true);
+    this->deviceEditor->setScrollbarsShown(false);
+    this->deviceEditor->setCaretVisible(false);
+    this->deviceEditor->setPopupMenuEnabled(false);
+    this->deviceEditor->setInterceptsMouseClicks(false, true);
+    this->deviceEditor->setFont({ 18.f });
 
-    this->sampleRateEditor.reset(new TextEditor(String()));
-    this->addAndMakeVisible(sampleRateEditor.get());
-    sampleRateEditor->setMultiLine (false);
-    sampleRateEditor->setReturnKeyStartsNewLine (false);
-    sampleRateEditor->setReadOnly (true);
-    sampleRateEditor->setScrollbarsShown (false);
-    sampleRateEditor->setCaretVisible (false);
-    sampleRateEditor->setPopupMenuEnabled (false);
-    sampleRateEditor->setText (String());
+    this->sampleRateEditor = make<TextEditor>();
+    this->addAndMakeVisible(this->sampleRateEditor.get());
+    this->sampleRateEditor->setReadOnly(true);
+    this->sampleRateEditor->setScrollbarsShown(false);
+    this->sampleRateEditor->setCaretVisible(false);
+    this->sampleRateEditor->setPopupMenuEnabled(false);
+    this->sampleRateEditor->setInterceptsMouseClicks(false, true);
+    this->sampleRateEditor->setFont({ 18.f });
 
-    this->bufferSizeEditor.reset(new TextEditor(String()));
-    this->addAndMakeVisible(bufferSizeEditor.get());
-    bufferSizeEditor->setMultiLine (false);
-    bufferSizeEditor->setReturnKeyStartsNewLine (false);
-    bufferSizeEditor->setReadOnly (true);
-    bufferSizeEditor->setScrollbarsShown (false);
-    bufferSizeEditor->setCaretVisible (false);
-    bufferSizeEditor->setPopupMenuEnabled (false);
-    bufferSizeEditor->setText (String());
+    this->bufferSizeEditor = make<TextEditor>();
+    this->addAndMakeVisible(this->bufferSizeEditor.get());
+    this->bufferSizeEditor->setReadOnly(true);
+    this->bufferSizeEditor->setScrollbarsShown(false);
+    this->bufferSizeEditor->setCaretVisible(false);
+    this->bufferSizeEditor->setPopupMenuEnabled(false);
+    this->bufferSizeEditor->setInterceptsMouseClicks(false, true);
+    this->bufferSizeEditor->setFont({ 18.f });
 
-    this->midiInputEditor.reset(new TextEditor(String()));
-    this->addAndMakeVisible(midiInputEditor.get());
-    midiInputEditor->setMultiLine (false);
-    midiInputEditor->setReturnKeyStartsNewLine (false);
-    midiInputEditor->setReadOnly (true);
-    midiInputEditor->setScrollbarsShown (false);
-    midiInputEditor->setCaretVisible (false);
-    midiInputEditor->setPopupMenuEnabled (false);
-    midiInputEditor->setText (String());
-
-
-    //[UserPreSize]
-    //[/UserPreSize]
+    this->midiInputEditor = make<TextEditor>();
+    this->addAndMakeVisible(this->midiInputEditor.get());
+    this->midiInputEditor->setReadOnly(true);
+    this->midiInputEditor->setScrollbarsShown(false);
+    this->midiInputEditor->setCaretVisible(false);
+    this->midiInputEditor->setPopupMenuEnabled(false);
+    this->midiInputEditor->setInterceptsMouseClicks(false, true);
+    this->midiInputEditor->setFont({ 18.f });
 
     this->setSize(550, 244);
-
-    //[Constructor]
-    this->deviceTypeEditor->setFont(18.f);
-    this->deviceEditor->setFont(18.f);
-    this->sampleRateEditor->setFont(18.f);
-    this->bufferSizeEditor->setFont(18.f);
-    this->midiInputEditor->setFont(18.f);
-
-    this->deviceTypeEditor->setInterceptsMouseClicks(false, true);
-    this->deviceEditor->setInterceptsMouseClicks(false, true);
-    this->sampleRateEditor->setInterceptsMouseClicks(false, true);
-    this->bufferSizeEditor->setInterceptsMouseClicks(false, true);
-    this->midiInputEditor->setInterceptsMouseClicks(false, true);
 
     MenuPanel::Menu emptyMenu;
     this->deviceTypeComboPrimer->initWith(this->deviceTypeEditor.get(), emptyMenu);
@@ -118,82 +89,46 @@ AudioSettings::AudioSettings(AudioCore &core)
     this->sampleRateComboPrimer->initWith(this->sampleRateEditor.get(), emptyMenu);
     this->bufferSizeComboPrimer->initWith(this->bufferSizeEditor.get(), emptyMenu);
     this->midiInputsComboPrimer->initWith(this->midiInputEditor.get(), emptyMenu);
-    //[/Constructor]
 }
 
-AudioSettings::~AudioSettings()
-{
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    midiInputsComboPrimer = nullptr;
-    sampleRateComboPrimer = nullptr;
-    bufferSizeComboPrimer = nullptr;
-    deviceTypeComboPrimer = nullptr;
-    deviceComboPrimer = nullptr;
-    deviceTypeEditor = nullptr;
-    deviceEditor = nullptr;
-    sampleRateEditor = nullptr;
-    bufferSizeEditor = nullptr;
-    midiInputEditor = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void AudioSettings::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-#if 0
-    //[/UserPrePaint]
-
-    g.fillAll (Colours::black);
-
-    //[UserPaint] Add your own custom painting code here..
-#endif
-    //[/UserPaint]
-}
+AudioSettings::~AudioSettings() = default;
 
 void AudioSettings::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    const Rectangle<int> comboBounds(4, 4, this->getWidth() - 8, this->getHeight() - 8);
 
-    midiInputsComboPrimer->setBounds(4, 4, getWidth() - 8, getHeight() - 8);
-    sampleRateComboPrimer->setBounds(4, 4, getWidth() - 8, getHeight() - 8);
-    bufferSizeComboPrimer->setBounds(4, 4, getWidth() - 8, getHeight() - 8);
-    deviceTypeComboPrimer->setBounds(4, 4, getWidth() - 8, getHeight() - 8);
-    deviceComboPrimer->setBounds(4, 4, getWidth() - 8, getHeight() - 8);
-    deviceTypeEditor->setBounds(16, 12, getWidth() - 32, 32);
-    deviceEditor->setBounds(16, 60, getWidth() - 32, 32);
-    sampleRateEditor->setBounds(16, 108, getWidth() - 32, 32);
-    bufferSizeEditor->setBounds(16, 156, getWidth() - 32, 32);
-    midiInputEditor->setBounds(16, 200, getWidth() - 32, 32);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->midiInputsComboPrimer->setBounds(comboBounds);
+    this->sampleRateComboPrimer->setBounds(comboBounds);
+    this->bufferSizeComboPrimer->setBounds(comboBounds);
+    this->deviceTypeComboPrimer->setBounds(comboBounds);
+    this->deviceComboPrimer->setBounds(comboBounds);
+
+    const Rectangle<int> editorBounds(16, 0, this->getWidth() - 32, 32);
+
+    this->deviceTypeEditor->setBounds(editorBounds.withY(12));
+    this->deviceEditor->setBounds(editorBounds.withY(60));
+    this->sampleRateEditor->setBounds(editorBounds.withY(108));
+    this->bufferSizeEditor->setBounds(editorBounds.withY(156));
+    this->midiInputEditor->setBounds(editorBounds.withY(200));
 }
 
 void AudioSettings::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     if (this->isShowing())
     {
-        AudioDeviceManager &deviceManager = this->audioCore.getDevice();
-
+        auto &deviceManager = this->audioCore.getDevice();
         this->syncDeviceTypesList(deviceManager);
         this->syncDevicesList(deviceManager);
         this->syncSampleRatesList(deviceManager);
         this->syncBufferSizesList(deviceManager);
         this->syncMidiInputsList(deviceManager);
     }
-    //[/UserCode_parentHierarchyChanged]
 }
 
-void AudioSettings::handleCommandMessage (int commandId)
+void AudioSettings::handleCommandMessage(int commandId)
 {
-    //[UserCode_handleCommandMessage] -- Add your code here...
-    AudioDeviceManager &deviceManager = this->audioCore.getDevice();
-    const OwnedArray<AudioIODeviceType> &deviceTypes = deviceManager.getAvailableDeviceTypes();
+    auto &deviceManager = this->audioCore.getDevice();
+    const auto &deviceTypes = deviceManager.getAvailableDeviceTypes();
 
     const int deviceTypeIndex = commandId - CommandIDs::SelectAudioDeviceType;
     if (deviceTypeIndex >= 0 && deviceTypeIndex < deviceTypes.size())
@@ -239,18 +174,7 @@ void AudioSettings::handleCommandMessage (int commandId)
         this->applyMidiInput(deviceManager, midiDevices[miniInputDeviceIndex].identifier);
         return;
     }
-
-    //[/UserCode_handleCommandMessage]
 }
-
-
-//[MiscUserCode]
-
-// todo notify all instruments of config change
-//if (this->graph_)
-//{
-//    this->graph_->getProcessorGraph().removeIllegalConnections();
-//}
 
 void AudioSettings::applyDeviceType(AudioDeviceManager &deviceManager, const String &deviceTypeName)
 {
@@ -466,58 +390,3 @@ void AudioSettings::syncMidiInputsList(AudioDeviceManager &deviceManager)
 
     this->midiInputsComboPrimer->updateMenu(menu);
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="AudioSettings" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="AudioCore &amp;core"
-                 variableInitialisers="audioCore(core)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="550"
-                 initialHeight="244">
-  <METHODS>
-    <METHOD name="handleCommandMessage (int commandId)"/>
-    <METHOD name="parentHierarchyChanged()"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="ff000000"/>
-  <GENERICCOMPONENT name="" id="1d879d8f521cf625" memberName="midiInputsComboPrimer"
-                    virtualName="" explicitFocusOrder="0" pos="4 4 8M 8M" class="MobileComboBox::Primer"
-                    params=""/>
-  <GENERICCOMPONENT name="" id="b8d926f809ea9d18" memberName="sampleRateComboPrimer"
-                    virtualName="" explicitFocusOrder="0" pos="4 4 8M 8M" class="MobileComboBox::Primer"
-                    params=""/>
-  <GENERICCOMPONENT name="" id="f314396fef5c1957" memberName="bufferSizeComboPrimer"
-                    virtualName="" explicitFocusOrder="0" pos="4 4 8M 8M" class="MobileComboBox::Primer"
-                    params=""/>
-  <GENERICCOMPONENT name="" id="524df900a9089845" memberName="deviceTypeComboPrimer"
-                    virtualName="" explicitFocusOrder="0" pos="4 4 8M 8M" class="MobileComboBox::Primer"
-                    params=""/>
-  <GENERICCOMPONENT name="" id="1b5648cb76a38566" memberName="deviceComboPrimer"
-                    virtualName="" explicitFocusOrder="0" pos="4 4 8M 8M" class="MobileComboBox::Primer"
-                    params=""/>
-  <TEXTEDITOR name="" id="4fd07309a20b15b6" memberName="deviceTypeEditor" virtualName=""
-              explicitFocusOrder="0" pos="16 12 32M 32" initialText="" multiline="0"
-              retKeyStartsLine="0" readonly="1" scrollbars="0" caret="0" popupmenu="0"/>
-  <TEXTEDITOR name="" id="fa9f51f63481813" memberName="deviceEditor" virtualName=""
-              explicitFocusOrder="0" pos="16 60 32M 32" initialText="" multiline="0"
-              retKeyStartsLine="0" readonly="1" scrollbars="0" caret="0" popupmenu="0"/>
-  <TEXTEDITOR name="" id="269505831c2d23ad" memberName="sampleRateEditor" virtualName=""
-              explicitFocusOrder="0" pos="16 108 32M 32" initialText="" multiline="0"
-              retKeyStartsLine="0" readonly="1" scrollbars="0" caret="0" popupmenu="0"/>
-  <TEXTEDITOR name="" id="42608864c0766e06" memberName="bufferSizeEditor" virtualName=""
-              explicitFocusOrder="0" pos="16 156 32M 32" initialText="" multiline="0"
-              retKeyStartsLine="0" readonly="1" scrollbars="0" caret="0" popupmenu="0"/>
-  <TEXTEDITOR name="" id="c6b6f9044a138684" memberName="midiInputEditor" virtualName=""
-              explicitFocusOrder="0" pos="16 200 32M 32" initialText="" multiline="0"
-              retKeyStartsLine="0" readonly="1" scrollbars="0" caret="0" popupmenu="0"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

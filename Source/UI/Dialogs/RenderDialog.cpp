@@ -87,7 +87,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     this->updateRenderTargetLabels();
 }
 
-RenderDialog::~RenderDialog() {}
+RenderDialog::~RenderDialog() = default;
 
 void RenderDialog::resized()
 {

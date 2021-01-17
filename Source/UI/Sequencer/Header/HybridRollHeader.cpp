@@ -49,7 +49,7 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
     this->selectionIndicator->setTopLeftPosition(0, this->getHeight() - this->selectionIndicator->getHeight());
 }
 
-HybridRollHeader::~HybridRollHeader() {}
+HybridRollHeader::~HybridRollHeader() = default;
 
 void HybridRollHeader::updateColours()
 {

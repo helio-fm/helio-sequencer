@@ -725,16 +725,7 @@
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ComponentsList.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\LabeledSettingsWrapper.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\SimpleSettingsWrapper.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsListItemHighlighter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsListItemSelection.cpp">
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsFrameWrapper.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsPage.cpp">
@@ -3127,10 +3118,7 @@
     <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\AudioSettings.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ComponentsList.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\LabeledSettingsWrapper.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\SimpleSettingsWrapper.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsListItemHighlighter.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsListItemSelection.h"/>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsFrameWrapper.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SyncSettings.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SyncSettingsItem.h"/>

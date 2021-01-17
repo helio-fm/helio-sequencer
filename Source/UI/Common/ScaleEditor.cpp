@@ -19,7 +19,7 @@
 #include "ScaleEditor.h"
 #include "ColourIDs.h"
 
-ScaleEditor::~ScaleEditor() {}
+ScaleEditor::~ScaleEditor() = default;
 
 void ScaleEditor::resized()
 {

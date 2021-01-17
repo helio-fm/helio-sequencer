@@ -22,9 +22,62 @@
 #include "TranslationSettingsItem.h"
 
 //[MiscUserDefs]
-#include "SettingsListItemHighlighter.h"
-#include "SettingsListItemSelection.h"
 #include "Config.h"
+#include "ColourIDs.h"
+#include "IconComponent.h"
+
+class TranslationSettingsItemSelection final : public Component
+{
+public:
+
+    TranslationSettingsItemSelection()
+    {
+        this->setPaintingIsUnclipped(true);
+
+        this->iconComponent = make<IconComponent>(Icons::apply);
+        this->addAndMakeVisible(this->iconComponent.get());
+        this->iconComponent->setIconAlphaMultiplier(0.6f);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
+        g.fillRoundedRectangle(40.f, 2.f, float(this->getWidth() - 45), float(this->getHeight() - 5), 2.0f);
+    }
+
+    void resized() override
+    {
+        constexpr auto size = 28;
+        this->iconComponent->setBounds(6, (this->getHeight() / 2) - (size / 2) - 1, size, size);
+    }
+
+private:
+
+    UniquePointer<IconComponent> iconComponent;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationSettingsItemSelection)
+};
+
+class TranslationSettingsItemHighlighter final : public Component
+{
+public:
+
+    TranslationSettingsItemHighlighter()
+    {
+        this->setPaintingIsUnclipped(true);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
+        g.fillRoundedRectangle(40.f, 2.f, float(this->getWidth() - 45), float(this->getHeight() - 5), 2.f);
+    }
+
+private:
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationSettingsItemHighlighter)
+};
+
 //[/MiscUserDefs]
 
 TranslationSettingsItem::TranslationSettingsItem(ListBox &parentListBox)
@@ -48,7 +101,7 @@ TranslationSettingsItem::TranslationSettingsItem(ListBox &parentListBox)
     this->addAndMakeVisible(separator.get());
 
     //[UserPreSize]
-    this->selectionComponent.reset(new SettingsListItemSelection());
+    this->selectionComponent = make<TranslationSettingsItemSelection>();
     this->addChildComponent(this->selectionComponent.get());
     //[/UserPreSize]
 
@@ -125,7 +178,7 @@ void TranslationSettingsItem::updateDescription(bool isLastRowInList, bool isCur
 
 Component *TranslationSettingsItem::createHighlighterComponent()
 {
-    return new SettingsListItemHighlighter();
+    return new TranslationSettingsItemHighlighter();
 }
 
 //[/MiscUserCode]

@@ -15,87 +15,51 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "SyncSettingsItem.h"
-
-//[MiscUserDefs]
-#include "SettingsListItemHighlighter.h"
 #include "ResourceSyncService.h"
-//[/MiscUserDefs]
+#include "ColourIDs.h"
 
-SyncSettingsItem::SyncSettingsItem(ListBox &parentListBox)
-    : DraggingListBoxComponent(parentListBox.getViewport())
+class SyncSettingsItemHighlighter final : public Component
 {
-    this->separator.reset(new SeparatorHorizontal());
-    this->addAndMakeVisible(separator.get());
-    this->toggleButton.reset(new ToggleButton(String()));
-    this->addAndMakeVisible(toggleButton.get());
-    toggleButton->setButtonText(String());
-    toggleButton->addListener(this);
+public:
 
+    SyncSettingsItemHighlighter()
+    {
+        this->setPaintingIsUnclipped(true);
+    }
 
-    //[UserPreSize]
-    //[/UserPreSize]
+    void paint(Graphics &g) override
+    {
+        g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
+        g.fillRoundedRectangle(32.f, 2.f, float(this->getWidth() - 37), float(this->getHeight() - 5), 2.f);
+    }
 
-    this->setSize(350, 32);
+private:
 
-    //[Constructor]
-    //[/Constructor]
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SyncSettingsItemHighlighter)
+};
+
+SyncSettingsItem::SyncSettingsItem(ListBox &parentListBox) :
+    DraggingListBoxComponent(parentListBox.getViewport())
+{
+    this->setPaintingIsUnclipped(true);
+
+    this->separator = make<SeparatorHorizontal>();
+    this->addAndMakeVisible(this->separator.get());
+
+    this->toggleButton = make<ToggleButton>();
+    this->addAndMakeVisible(this->toggleButton.get());
 }
 
-SyncSettingsItem::~SyncSettingsItem()
-{
-    //[Destructor_pre]
-    //this->selectionComponent = nullptr;
-    //[/Destructor_pre]
-
-    separator = nullptr;
-    toggleButton = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void SyncSettingsItem::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
-}
+SyncSettingsItem::~SyncSettingsItem() = default;
 
 void SyncSettingsItem::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    separator->setBounds(40, getHeight() - 2, getWidth() - 46, 2);
-    toggleButton->setBounds(8, (getHeight() / 2) + -1 - (24 / 2), getWidth() - 14, 24);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    constexpr auto toggleSize = 24;
+    this->toggleButton->setBounds(8, (this->getHeight() / 2) - (toggleSize / 2) - 1, this->getWidth() - 14, toggleSize);
+    this->separator->setBounds(40, this->getHeight() - 2, this->getWidth() - 46, 2);
 }
-
-void SyncSettingsItem::buttonClicked(Button* buttonThatWasClicked)
-{
-    //[UserbuttonClicked_Pre]
-    //[/UserbuttonClicked_Pre]
-
-    if (buttonThatWasClicked == toggleButton.get())
-    {
-        //[UserButtonCode_toggleButton] -- add your button handler code here..
-        //[/UserButtonCode_toggleButton]
-    }
-
-    //[UserbuttonClicked_Post]
-    //[/UserbuttonClicked_Post]
-}
-
-
-//[MiscUserCode]
 
 void SyncSettingsItem::setSelected(bool shouldBeSelected)
 {
@@ -125,28 +89,5 @@ void SyncSettingsItem::updateDescription(bool isLastRowInList, bool isSynced, co
 
 Component *SyncSettingsItem::createHighlighterComponent()
 {
-    return new SettingsListItemHighlighter();
+    return new SyncSettingsItemHighlighter();
 }
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="SyncSettingsItem" template="../../../Template"
-                 componentName="" parentClasses="public DraggingListBoxComponent"
-                 constructorParams="ListBox &amp;parentListBox" variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport())"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="350" initialHeight="32">
-  <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="6f5a73e394d91c2a" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="40 0Rr 46M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
-             constructorParams=""/>
-  <TOGGLEBUTTON name="" id="d15a0d8489a53bdd" memberName="toggleButton" virtualName=""
-                explicitFocusOrder="0" pos="8 -1Cc 14M 24" buttonText="" connectedEdges="0"
-                needsCallback="1" radioGroupId="0" state="0"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

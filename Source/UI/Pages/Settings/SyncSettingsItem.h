@@ -17,43 +17,29 @@
 
 #pragma once
 
-//[Headers]
 #include "BaseResource.h"
 #include "DraggingListBoxComponent.h"
-//[/Headers]
+#include "SeparatorHorizontal.h"
 
-#include "../../Themes/SeparatorHorizontal.h"
-
-class SyncSettingsItem final : public DraggingListBoxComponent,
-                               public Button::Listener
+class SyncSettingsItem final : public DraggingListBoxComponent
 {
 public:
 
     explicit SyncSettingsItem(ListBox &parentListBox);
     ~SyncSettingsItem();
 
-    //[UserMethods]
-
     void setSelected(bool shouldBeSelected) override;
-
     void updateDescription(bool isLastRowInList, bool isSynced, const BaseResource::Ptr resource);
 
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button* buttonThatWasClicked) override;
-
 
 private:
 
-    //[UserVariables]
     Component *createHighlighterComponent() override;
     BaseResource::Ptr resource;
-    //[/UserVariables]
 
     UniquePointer<SeparatorHorizontal> separator;
     UniquePointer<ToggleButton> toggleButton;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SyncSettingsItem)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SyncSettingsItem)
 };

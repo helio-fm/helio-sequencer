@@ -17,10 +17,7 @@
 
 #pragma once
 
-//[Headers]
 #include "BaseResource.h"
-//[/Headers]
-
 
 class SyncSettings final : public Component,
                            public ListBoxModel,
@@ -31,8 +28,6 @@ public:
     SyncSettings();
     ~SyncSettings();
 
-    //[UserMethods]
-
     //===------------------------------------------------------------------===//
     // ListBoxModel
     //===------------------------------------------------------------------===//
@@ -41,15 +36,16 @@ public:
     Component *refreshComponentForRow(int, bool, Component *) override;
     void paintListBoxItem(int, Graphics &, int, int, bool) override {}
 
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
-
 
 private:
 
-    //[UserVariables]
+#if PLATFORM_DESKTOP
+    static constexpr auto rowHeight = 32;
+#elif PLATFORM_MOBILE
+    static constexpr auto rowHeight = 48;
+#endif
+
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
     Array<bool> syncFlags;
@@ -57,9 +53,8 @@ private:
 
     void reloadConfigsList();
     void reloadSyncFlags();
-    //[/UserVariables]
 
     UniquePointer<ListBox> resourcesList;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SyncSettings)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SyncSettings)
 };

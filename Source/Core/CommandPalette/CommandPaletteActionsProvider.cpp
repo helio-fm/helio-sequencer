@@ -40,7 +40,7 @@ CommandPaletteAction::Ptr CommandPaletteAction::action(String text, String hint,
 CommandPaletteAction::Ptr CommandPaletteAction::withCallback(Callback callback)
 {
     CommandPaletteAction::Ptr action(this);
-    action->callback = callback;
+    action->callback = move(callback);
     return action;
 }
 
@@ -136,12 +136,12 @@ const Colour &CommandPaletteAction::getColor() const noexcept
     return this->colour;
 }
 
-const CommandPaletteAction::Callback CommandPaletteAction::getCallback() const noexcept
+CommandPaletteAction::Callback CommandPaletteAction::getCallback() const noexcept
 {
     return this->callback;
 }
 
-const bool CommandPaletteAction::isUnfiltered() const noexcept
+bool CommandPaletteAction::isUnfiltered() const noexcept
 {
     return this->required;
 }
