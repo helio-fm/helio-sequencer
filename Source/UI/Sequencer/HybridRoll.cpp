@@ -1845,6 +1845,14 @@ void HybridRoll::addTrackInteractively(MidiTrackNode *trackPreset,
 
     const auto trackId = trackPreset->getTrackId();
     const auto trackTemplate = trackPreset->serialize();
+    this->addTrackInteractively(trackTemplate, trackId, checkpoint,
+        switchToNewTrack, defaultTrackName, dialogTitle, dialogConfirmation);
+}
+
+void HybridRoll::addTrackInteractively(const SerializedData &trackTemplate,
+    const String &trackId, UndoActionId checkpoint, bool switchToNewTrack,
+    const String &defaultTrackName, const String &dialogTitle, const String &dialogConfirmation)
+{
     const auto newName = SequencerOperations::generateNextNameForNewTrack(defaultTrackName,
         this->project.getAllTrackNames());
 

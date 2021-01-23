@@ -29,7 +29,10 @@ public:
     
     ProjectMenu(ProjectNode &parentProject, AnimationType animationType);    
     void handleCommandMessage(int commandId) override;
-    
+
+    static void showNewTrackDialog(ProjectNode &project,
+        const String &instrumentId, float beatPosition);
+
 private:
 
     ProjectNode &project;

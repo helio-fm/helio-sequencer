@@ -178,6 +178,7 @@ namespace CommandIDs
         ShowRescalePanel                = 0x4042,
         ShowScalePanel                  = 0x4043,
         ShowChordPanel                  = 0x4044,
+        ShowNewTrackPanel               = 0x4045,
 
         // Version control
         VersionControlToggleQuickStash  = 0x4060,

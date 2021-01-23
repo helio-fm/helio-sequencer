@@ -21,10 +21,11 @@
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "PluginWindow.h"
+#include "HelioCallout.h"
+#include "MenuPanel.h"
 
 #include "Pattern.h"
 #include "PianoTrackNode.h"
-
 #include "LassoListeners.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
@@ -229,7 +230,7 @@ void PatternRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor curso
 
 void PatternRoll::updateRollSize()
 {
-    const int addTrackHelper = PatternRoll::trackHeaderHeight;
+    constexpr auto addTrackHelper = PatternRoll::rowHeight;
     const int h = Globals::UI::rollHeaderHeight +
         this->getNumRows() * PatternRoll::rowHeight + addTrackHelper;
     this->setSize(this->getWidth(), jmax(h, this->viewport.getHeight()));
@@ -715,6 +716,10 @@ void PatternRoll::handleCommandMessage(int commandId)
             this->getTransport().disableLoopPlayback();
         }
         break;
+    case CommandIDs::ShowNewTrackPanel:
+        // inserting at the playhead position:
+        this->showNewTrackMenu(this->lastTransportBeat.get());
+        break;
     case CommandIDs::PatternsGroupByName:
         this->deselectAll();
         this->project.setTrackGroupingMode(MidiTrack::Grouping::GroupByName);
@@ -868,8 +873,14 @@ float PatternRoll::findPreviousAnchorBeat(float beat) const
 
 void PatternRoll::insertNewClipAt(const MouseEvent &e)
 {
-    const int rowNumber = jlimit(0, this->getNumRows() - 1,
-        (e.y - Globals::UI::rollHeaderHeight) / PatternRoll::rowHeight);
+    const int rowNumber = jmax(0, (e.y - Globals::UI::rollHeaderHeight) / PatternRoll::rowHeight);
+    if (rowNumber >= this->getNumRows())
+    {
+        this->deselectAll(); // just in case
+        this->showNewTrackMenu(this->getBeatByXPosition(float(e.x)));
+        return;
+    }
+
     const auto &rowKey = this->rows.getReference(rowNumber);
     const auto grouping = this->project.getTrackGroupingMode();
 
@@ -1074,4 +1085,52 @@ void PatternRoll::repaintBackgroundsCache()
 {
     const auto &theme = HelioTheme::getCurrentTheme();
     this->rowPattern = PatternRoll::renderRowsPattern(theme, PatternRoll::rowHeight * 8);
+}
+
+void PatternRoll::showNewTrackMenu(float beatToInsertAt)
+{
+    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
+    if (instruments.size() > 1)
+    {
+        MenuPanel::Menu menu;
+        for (const auto *instrument : instruments)
+        {
+            const String instrumentId = instrument->getIdAndHash();
+            menu.add(MenuItem::item(Icons::pianoTrack,
+                TRANS(I18n::Menu::Project::addTrack) + ": " + instrument->getName())->
+                withAction([this, instrumentId, beatToInsertAt]()
+            {
+                if (auto *modal = Component::getCurrentlyModalComponent(0))
+                {
+                    modal->exitModalState(0);
+                }
+
+                this->showNewTrackDialog(instrumentId, beatToInsertAt);
+            }));
+        }
+
+        auto panel = make<MenuPanel>();
+        panel->updateContent(menu, MenuPanel::AnimationType::Fading);
+        HelioCallout::emit(panel.release(), this, true);
+    }
+    else
+    {
+        this->showNewTrackDialog(instruments.getFirst()->getIdAndHash(), beatToInsertAt);
+    }
+}
+
+void PatternRoll::showNewTrackDialog(const String &instrumentId, float beatToInsertAt)
+{
+    this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
+
+    String outTrackId;
+    const auto trackTemplate =
+        SequencerOperations::createPianoTrackTemplate(project,
+            TRANS(I18n::Defaults::midiTrackName),
+            beatToInsertAt - this->projectFirstBeat,
+            instrumentId, outTrackId);
+
+    this->addTrackInteractively(trackTemplate, outTrackId,
+        UndoActionIDs::AddNewTrack, false, TRANS(I18n::Defaults::midiTrackName),
+        TRANS(I18n::Dialog::addTrackCaption), TRANS(I18n::Dialog::add));
 }

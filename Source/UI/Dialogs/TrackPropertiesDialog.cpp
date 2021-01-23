@@ -129,7 +129,7 @@ void TrackPropertiesDialog::inputAttemptWhenModal()
 
 void TrackPropertiesDialog::updateOkButtonState()
 {
-    const bool textIsEmpty = this->textEditor->getText().isEmpty();
+    const bool textIsEmpty = this->textEditor->getText().trim().isEmpty();
     this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
     this->okButton->setEnabled(!textIsEmpty);
 }

@@ -118,9 +118,8 @@ struct SequencerOperations final
     static bool setOneTempoForTrack(WeakReference<MidiTrack> track,
         float startBeat, float endBeat, int bpmValue, bool shouldCheckpoint = true);
 
-
     static SerializedData createPianoTrackTemplate(ProjectNode &project,
-       const String &name, const String &instrumentId, String &outTrackId);
+       const String &name, float beatPosition, const String &instrumentId, String &outTrackId);
     static SerializedData createAutoTrackTemplate(ProjectNode &project,
         const String &name, int controllerNumber, const String &instrumentId, String &outTrackId);
 

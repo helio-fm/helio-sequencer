@@ -25,6 +25,7 @@
 #include "PianoTrackNode.h"
 #include "AutomationTrackNode.h"
 #include "VersionControlNode.h"
+#include "PatternEditorNode.h"
 #include "KeySignaturesSequence.h"
 #include "AudioCore.h"
 #include "PianoSequence.h"
@@ -203,28 +204,7 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
         menu.add(MenuItem::item(Icons::instrument,
             instrument->getName())->withAction([this, instrumentId]()
             {
-                auto &project = this->project;
-                String outTrackId;
-                const auto trackTemplate =
-                    SequencerOperations::createPianoTrackTemplate(this->project,
-                        "", instrumentId, outTrackId);
-
-                auto inputDialog = ModalDialogInput::Presets::newTrack();
-                inputDialog->onOk = [trackTemplate, outTrackId, &project](const String &input)
-                {
-                    project.checkpoint();
-                    project.getUndoStack()->perform(new PianoTrackInsertAction(project,
-                        &project, trackTemplate, input));
-
-                    // select and auto-zoom the new track for convenience:
-                    if (auto *midiTrack = project.findTrackById<PianoTrackNode>(outTrackId))
-                    {
-                        const auto *clip = midiTrack->getPattern()->getClips().getFirst();
-                        project.setEditableScope(midiTrack, *clip, true);
-                    }
-                };
-
-                App::showModalComponent(move(inputDialog));
+                ProjectMenu::showNewTrackDialog(this->project, instrumentId, 0.f);
             }));
     }
 
@@ -463,4 +443,33 @@ void ProjectMenu::showSetInstrumentMenu()
     }
     
     this->updateContent(menu, MenuPanel::SlideLeft);
+}
+
+void ProjectMenu::showNewTrackDialog(ProjectNode &project,
+    const String &instrumentId, float beatPosition)
+{
+    String outTrackId;
+    const auto trackTemplate =
+        SequencerOperations::createPianoTrackTemplate(project,
+            "", beatPosition, instrumentId, outTrackId);
+
+    auto inputDialog = ModalDialogInput::Presets::newTrack();
+    inputDialog->onOk = [trackTemplate, outTrackId, &project](const String &input)
+    {
+        project.checkpoint();
+        project.getUndoStack()->perform(new PianoTrackInsertAction(project,
+            &project, trackTemplate, input));
+
+        if (!dynamic_cast<PatternEditorNode *>(project.findActiveNode()))
+        {
+            // when in piano roll, select and auto-zoom the new track for convenience:
+            if (auto *midiTrack = project.findTrackById<PianoTrackNode>(outTrackId))
+            {
+                const auto *clip = midiTrack->getPattern()->getClips().getFirst();
+                project.setEditableScope(midiTrack, *clip, true);
+            }
+        }
+    };
+
+    App::showModalComponent(move(inputDialog));
 }

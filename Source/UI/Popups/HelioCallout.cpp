@@ -68,7 +68,7 @@ HelioCallout::~HelioCallout()
 }
 
 
-class HelioCallOutCallback final : public ModalComponentManager::Callback //, private Timer
+class HelioCallOutCallback final : public ModalComponentManager::Callback
 {
 public:
     HelioCallOutCallback(Component *c, Component *pointAtComponent,
@@ -78,22 +78,10 @@ public:
     {
         this->callout.setVisible(true);
         this->callout.enterModalState(true, this);
-        //this->startTimer(200);
     }
     
     void modalStateFinished(int) override {}
-    
-    // this timer leads to critical bug, when callout presents modal input,
-    // then disappears, and user input is written to deleted string
-    
-    //void timerCallback() override
-    //{
-    //    if (! Process::isForegroundProcess())
-    //    {
-    //        this->callout.dismissAsync();
-    //    }
-    //}
-    
+
     UniquePointer<Component> content;
     HelioCallout callout;
     

@@ -140,10 +140,13 @@ private:
     void reloadRollContent();
     void insertNewClipAt(const MouseEvent &e);
 
+    void showNewTrackMenu(float beatToInsertAt);
+    void showNewTrackDialog(const String &instrumentId, float beatToInsertAt);
+
 private:
 
-    ClipComponent *newClipDragging = nullptr;
     bool addNewClipMode = false;
+    SafePointer<ClipComponent> newClipDragging = nullptr;
 
     UniquePointer<CutPointMark> knifeToolHelper;
     void startCuttingClips(const MouseEvent &e);

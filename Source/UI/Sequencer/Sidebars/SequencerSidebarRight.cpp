@@ -161,8 +161,6 @@ void SequencerSidebarRight::recreateMenu()
 
     this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::EditModeKnife)->toggled(scissorsMode));
 
-    //this->menu.add(MenuItem::item(Icons::record, CommandIDs::ToggleRecording)->toggled(transportIsPaused));
-
     if (this->menuMode == MenuMode::PianoRollTools)
     {
         this->menu.add(MenuItem::item(Icons::chordBuilder, CommandIDs::ShowChordPanel));
@@ -172,10 +170,12 @@ void SequencerSidebarRight::recreateMenu()
             this->menu.add(MenuItem::item(Icons::arpeggiate, CommandIDs::ShowArpeggiatorsPanel));
         }
 
-        //this->menu.add(MenuItem::item(Icons::script, CommandIDs::RunScriptTransform));
-
         this->menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents));
         this->menu.add(MenuItem::item(Icons::paste, CommandIDs::PasteEvents));
+    }
+    else if (this->menuMode == MenuMode::PatternRollTools)
+    {
+        this->menu.add(MenuItem::item(Icons::expand, CommandIDs::ShowNewTrackPanel));
     }
 
 #if PLATFORM_MOBILE

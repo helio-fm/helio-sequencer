@@ -2406,7 +2406,7 @@ UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
 
 String SequencerOperations::generateNextNameForNewTrack(const String &name, const StringArray &allNames)
 {
-    if (!allNames.contains(name))
+    if (!allNames.contains(name) || name.isEmpty())
     {
         return name;
     }
@@ -2441,12 +2441,12 @@ String SequencerOperations::generateNextNameForNewTrack(const String &name, cons
 }
 
 SerializedData SequencerOperations::createPianoTrackTemplate(ProjectNode &project,
-    const String &name, const String &instrumentId, String &outTrackId)
+    const String &name, float beatPosition, const String &instrumentId, String &outTrackId)
 {
     auto newNode = make<PianoTrackNode>(name);
 
     // We need to have at least one clip on a pattern:
-    const Clip clip(newNode->getPattern());
+    const Clip clip(newNode->getPattern(), beatPosition);
     newNode->getPattern()->insert(clip, false);
 
     Random r;

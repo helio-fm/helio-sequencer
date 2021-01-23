@@ -72,8 +72,8 @@ void ClipComponent::updateColours()
     this->headDarkColour = this->headBrightColour.withAlpha(0.25f);
 
     this->eventColour = this->getClip().getTrackColour()
-        .interpolatedWith(Colours::white, .35f)
-        .withAlpha(.15f + 0.5f * this->clip.getVelocity());
+        .interpolatedWith(Colours::white, 0.35f)
+        .withAlpha(0.15f + 0.5f * this->clip.getVelocity());
 }
 
 //===----------------------------------------------------------------------===//
