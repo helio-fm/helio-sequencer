@@ -493,7 +493,8 @@ void PatternRoll::updateHighlightedInstances()
         for (const auto *clip : pattern->getClips())
         {
             const auto component = this->clipComponents.find(*clip);
-            if (component.value()->isSelected())
+            if (component != this->clipComponents.end() &&
+                component.value()->isSelected())
             {
                 hasSelectedClip = true;
                 break;
@@ -503,7 +504,10 @@ void PatternRoll::updateHighlightedInstances()
         for (const auto *clip : pattern->getClips())
         {
             const auto component = this->clipComponents.find(*clip);
-            component.value()->setHighlightedAsInstance(hasSelectedClip);
+            if (component != this->clipComponents.end())
+            {
+                component.value()->setHighlightedAsInstance(hasSelectedClip);
+            }
         }
     }
 }
