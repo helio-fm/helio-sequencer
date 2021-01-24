@@ -134,18 +134,18 @@ String ProjectNode::getId() const noexcept
 
 String ProjectNode::getStats() const
 {
-    Array<MidiTrackNode *> layerItems(this->findChildrenOfType<MidiTrackNode>());
+    const auto tracks = this->findChildrenOfType<MidiTrackNode>();
     
     int numEvents = 0;
-    int numLayers = layerItems.size();
-
-    for (int i = 0; i < numLayers; ++i)
+    int numTracks = tracks.size();
+    for (int i = 0; i < numTracks; ++i)
     {
-        numEvents += layerItems[i]->getSequence()->size();
+        numEvents += tracks[i]->getSequence()->size();
     }
 
-    return String(TRANS_PLURAL("{x} layers", numLayers) + " " + 
-        TRANS(I18n::Common::conjunction) + " " + TRANS_PLURAL("{x} events", numEvents));
+    return String(TRANS_PLURAL("{x} layers", numTracks) + " " + 
+        TRANS(I18n::Common::conjunction) + " " +
+        TRANS_PLURAL("{x} events", numEvents));
 }
 
 Transport &ProjectNode::getTransport() const noexcept
@@ -1082,7 +1082,10 @@ void ProjectNode::onBeforeResetState()
 void ProjectNode::onResetState()
 {
     this->broadcastReloadProjectContent();
-    this->broadcastChangeProjectBeatRange();
+    const auto range = this->broadcastChangeProjectBeatRange();
+    this->broadcastChangeViewBeatRange(range.x - Globals::beatsPerBar,
+        range.y + Globals::beatsPerBar); // adding some margin
+
     // during vcs operations, notifications are not sent, including tree selection changes,
     // which happen, when something is deleted, so we need to do it afterwards:
     this->getRootNode()->findActiveNode()->sendSelectionNotification();
@@ -1111,8 +1114,6 @@ void ProjectNode::changeListenerCallback(ChangeBroadcaster *source)
     if (auto *vcs = dynamic_cast<VersionControl *>(source))
     {
         DocumentOwner::sendChangeMessage();
-        // still not sure if it's really needed after commit:
-        //this->getDocument()->forceSave();
     }
 }
 
@@ -1131,7 +1132,7 @@ void ProjectNode::rebuildTracksRefsCacheIfNeeded() const
         this->tracksRefsCache[this->timeline->getTimeSignatures()->getTrackId()] =
             this->timeline->getTimeSignatures();
         
-        const Array<MidiTrack *> children = this->findChildrenOfType<MidiTrack>();
+        const auto children = this->findChildrenOfType<MidiTrack>();
         
         for (int i = 0; i < children.size(); ++i)
         {
