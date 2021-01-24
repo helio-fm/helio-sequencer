@@ -7462,7 +7462,7 @@
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations";
 				PRODUCT_BUNDLE_IDENTIFIER = fm.helio.mobile;
 				PRODUCT_NAME = "Helio";
-				PROVISIONING_PROFILE = "Helio AppStore";
+				PROVISIONING_PROFILE = "Helio AppStore New";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SEPARATE_STRIP = YES;
 				STRIPFLAGS = "-x";

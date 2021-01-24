@@ -1440,7 +1440,7 @@
                        enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION name="Release" iosCompatibility="9.0" isDebug="0" optimisation="2"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
-                       customXcodeFlags="PROVISIONING_PROFILE=&quot;Helio AppStore&quot;, CODE_SIGN_STYLE = &quot;Manual&quot;"
+                       customXcodeFlags="PROVISIONING_PROFILE=&quot;Helio AppStore New&quot;, CODE_SIGN_STYLE = &quot;Manual&quot;"
                        enablePluginBinaryCopyStep="1" linkTimeOptimisation="0" stripLocalSymbols="1"
                        codeSigningIdentity="iPhone Distribution"/>
       </CONFIGURATIONS>
