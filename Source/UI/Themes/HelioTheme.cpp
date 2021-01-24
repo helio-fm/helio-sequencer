@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "HelioTheme.h"
 #include "SequencerSidebarLeft.h"
+#include "ColourIDs.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 

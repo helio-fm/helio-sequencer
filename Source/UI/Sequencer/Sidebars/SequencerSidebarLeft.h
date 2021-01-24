@@ -17,24 +17,20 @@
 
 #pragma once
 
-//[Headers]
+class AudioMonitor;
 class WaveformAudioMonitorComponent;
 class SpectrogramAudioMonitorComponent;
-class ModeIndicatorComponent;
 class MenuItemComponent;
-class ProjectNode;
-class AudioMonitor;
 
-#include "ComponentFader.h"
-#include "ModeIndicatorComponent.h"
-#include "UserInterfaceFlags.h"
+class ShadowUpwards;
+class ShadowDownwards;
+class SeparatorHorizontal;
+class SeparatorHorizontalReversed;
+
 #include "MenuPanel.h"
-//[/Headers]
-
-#include "../../Themes/ShadowUpwards.h"
-#include "../../Themes/SeparatorHorizontalReversed.h"
-#include "../../Themes/ShadowDownwards.h"
-#include "../../Themes/SeparatorHorizontal.h"
+#include "ComponentFader.h"
+#include "UserInterfaceFlags.h"
+#include "ModeIndicatorComponent.h"
 
 class SequencerSidebarLeft final : public ModeIndicatorOwnerComponent,
                                    protected UserInterfaceFlags::Listener,
@@ -42,32 +38,19 @@ class SequencerSidebarLeft final : public ModeIndicatorOwnerComponent,
 {
 public:
 
-    SequencerSidebarLeft(ProjectNode &project);
+    SequencerSidebarLeft();
     ~SequencerSidebarLeft();
 
-    //[UserMethods]
     void setAudioMonitor(AudioMonitor *audioMonitor);
     void handleChangeMode() override;
 
     void setLinearMode();
     void setPatternMode();
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
 
-
 private:
-
-    //[UserVariables]
-    ProjectNode &project;
-
-    ComponentFader buttonFader;
-    ComponentAnimator animator;
-    void switchMonitorsAnimated(Component *oldOne, Component *newOne);
-
-    UniquePointer<WaveformAudioMonitorComponent> waveformMonitor;
-    UniquePointer<SpectrogramAudioMonitorComponent> spectrogramMonitor;
 
     //===------------------------------------------------------------------===//
     // UserInterfaceFlags::Listener
@@ -92,6 +75,8 @@ private:
         PatternRollTools
     };
 
+    ComponentFader buttonFader;
+
     MenuMode menuMode = MenuMode::None;
     MenuPanel::Menu menu;
     void recreateMenu();
@@ -99,17 +84,22 @@ private:
     int getNumRows() override;
     Component *refreshComponentForRow(int, bool, Component *) override;
     void paintListBoxItem(int, Graphics &, int, int, bool) override {}
-    //[/UserVariables]
 
-    UniquePointer<ShadowUpwards> shadow;
-    UniquePointer<SeparatorHorizontalReversed> headLine;
+    UniquePointer<ShadowUpwards> footShadow;
+    UniquePointer<SeparatorHorizontalReversed> headRule;
     UniquePointer<ShadowDownwards> headShadow;
-    UniquePointer<SeparatorHorizontal> separator;
+    UniquePointer<SeparatorHorizontal> footRule;
     UniquePointer<ModeIndicatorTrigger> modeIndicatorSelector;
     UniquePointer<ModeIndicatorComponent> modeIndicator;
     UniquePointer<MenuItemComponent> switchPatternModeButton;
     UniquePointer<MenuItemComponent> switchLinearModeButton;
     UniquePointer<ListBox> listBox;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerSidebarLeft)
+    ComponentAnimator animator;
+    void switchMonitorsAnimated(Component *oldOne, Component *newOne);
+
+    UniquePointer<WaveformAudioMonitorComponent> waveformMonitor;
+    UniquePointer<SpectrogramAudioMonitorComponent> spectrogramMonitor;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SequencerSidebarLeft)
 };

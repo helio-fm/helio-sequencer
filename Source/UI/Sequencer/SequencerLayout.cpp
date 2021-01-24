@@ -423,7 +423,9 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     
     // add sidebars
     this->rollToolsSidebar = make<SequencerSidebarRight>(this->project);
-    this->rollNavSidebar = make<SequencerSidebarLeft>(this->project);
+    this->rollToolsSidebar->setSize(Globals::UI::sidebarWidth, this->getParentHeight());
+
+    this->rollNavSidebar = make<SequencerSidebarLeft>();
     this->rollNavSidebar->setSize(Globals::UI::sidebarWidth, this->getParentHeight());
     // Hopefully this doesn't crash, since sequencer layout is only created by a loaded project:
     this->rollNavSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());

@@ -17,18 +17,15 @@
 
 #pragma once
 
-//[Headers]
 class ProjectNode;
+class ShadowUpwards;
+class ShadowDownwards;
+class SeparatorHorizontal;
+class SeparatorHorizontalReversed;
+class TransportControlComponent;
 
 #include "TransportListener.h"
 #include "MenuPanel.h"
-//[/Headers]
-
-#include "../../Themes/SeparatorHorizontalReversed.h"
-#include "../../Themes/ShadowUpwards.h"
-#include "../../Themes/SeparatorHorizontal.h"
-#include "../../Themes/ShadowDownwards.h"
-#include "../../Common/TransportControlComponent.h"
 
 class SequencerSidebarRight final : public Component,
                                     protected TransportListener,
@@ -37,21 +34,16 @@ class SequencerSidebarRight final : public Component,
 {
 public:
 
-    SequencerSidebarRight(ProjectNode &parent);
+    explicit SequencerSidebarRight(ProjectNode &parent);
     ~SequencerSidebarRight();
 
-    //[UserMethods]
     void setLinearMode();
     void setPatternMode();
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint(Graphics& g) override;
     void resized() override;
 
-
 private:
-
-    //[UserVariables]
 
     //===------------------------------------------------------------------===//
     // SequencerSidebarRight
@@ -101,17 +93,13 @@ private:
     void onRecord() override;
     void onRecordFailed(const Array<MidiDeviceInfo> &devices) override;
 
-    //[/UserVariables]
-
     UniquePointer<ListBox> listBox;
-    UniquePointer<SeparatorHorizontalReversed> headLine;
-    UniquePointer<ShadowUpwards> shadow;
-    UniquePointer<SeparatorHorizontal> separator;
+    UniquePointer<SeparatorHorizontalReversed> headRule;
+    UniquePointer<ShadowUpwards> footShadow;
+    UniquePointer<SeparatorHorizontal> footRule;
     UniquePointer<ShadowDownwards> headShadow;
     UniquePointer<MenuItemComponent> annotationsButton;
     UniquePointer<TransportControlComponent> transportControl;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerSidebarRight)
 };
-
-

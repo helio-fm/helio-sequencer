@@ -15,66 +15,59 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "SequencerSidebarLeft.h"
-
-//[MiscUserDefs]
 
 #include "WaveformAudioMonitorComponent.h"
 #include "SpectrogramAudioMonitorComponent.h"
-#include "ModeIndicatorComponent.h"
 #include "MenuItemComponent.h"
-#include "MenuPanel.h"
-#include "ProjectNode.h"
+#include "ShadowUpwards.h"
+#include "ShadowDownwards.h"
+#include "SeparatorHorizontal.h"
+#include "SeparatorHorizontalReversed.h"
 #include "HelioTheme.h"
 #include "IconComponent.h"
-#include "Icons.h"
+
 #include "AudioCore.h"
 #include "ColourIDs.h"
 #include "CommandIDs.h"
 #include "Config.h"
+#include "Icons.h"
 
-static inline constexpr int getAudioMonitorHeight()
+SequencerSidebarLeft::SequencerSidebarLeft()
 {
-    return Globals::UI::projectMapHeight - 2;
-}
-
-//[/MiscUserDefs]
-
-SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
-    : project(project)
-{
-    this->shadow.reset(new ShadowUpwards(ShadowType::Light));
-    this->addAndMakeVisible(shadow.get());
-    this->headLine.reset(new SeparatorHorizontalReversed());
-    this->addAndMakeVisible(headLine.get());
-    this->headShadow.reset(new ShadowDownwards(ShadowType::Light));
-    this->addAndMakeVisible(headShadow.get());
-    this->separator.reset(new SeparatorHorizontal());
-    this->addAndMakeVisible(separator.get());
-    this->modeIndicatorSelector.reset(new ModeIndicatorTrigger());
-    this->addAndMakeVisible(modeIndicatorSelector.get());
-
-    this->modeIndicator.reset(new ModeIndicatorComponent(2));
-    this->addAndMakeVisible(modeIndicator.get());
-
-    this->switchPatternModeButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls)));
-    this->addAndMakeVisible(switchPatternModeButton.get());
-
-    this->switchLinearModeButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::piano, CommandIDs::SwitchBetweenRolls)));
-    this->addAndMakeVisible(switchLinearModeButton.get());
-
-    this->listBox.reset(new ListBox());
-    this->addAndMakeVisible(listBox.get());
-
-
-    //[UserPreSize]
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
+
+    this->footShadow = make<ShadowUpwards>(ShadowType::Light);
+    this->addAndMakeVisible(this->footShadow.get());
+
+    this->headRule = make<SeparatorHorizontalReversed>();
+    this->addAndMakeVisible(this->headRule.get());
+
+    this->headShadow = make<ShadowDownwards>(ShadowType::Light);
+    this->addAndMakeVisible(this->headShadow.get());
+
+    this->footRule = make<SeparatorHorizontal>();
+    this->addAndMakeVisible(this->footRule.get());
+
+    this->modeIndicatorSelector = make<ModeIndicatorTrigger>();
+    this->addAndMakeVisible(this->modeIndicatorSelector.get());
+
+    this->modeIndicator = make<ModeIndicatorComponent>(2);
+    this->addAndMakeVisible(this->modeIndicator.get());
+
+    this->switchPatternModeButton = make<MenuItemComponent>(this, nullptr,
+        MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls));
+    this->addAndMakeVisible(this->switchPatternModeButton.get());
+
+    this->switchLinearModeButton = make<MenuItemComponent>(this, nullptr,
+        MenuItem::item(Icons::piano, CommandIDs::SwitchBetweenRolls));
+    this->addAndMakeVisible(switchLinearModeButton.get());
+
+    this->listBox = make<ListBox>();
+    this->addAndMakeVisible(this->listBox.get());
 
     const auto *uiFlags = App::Config().getUiFlags();
     this->velocityMapVisible = uiFlags->isVelocityMapVisible();
@@ -89,7 +82,7 @@ SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
     this->switchLinearModeButton->setVisible(false);
     this->switchPatternModeButton->setVisible(false);
 
-    // todo save the default monitor option in global UI flags
+    // todo save the default monitor option in global UI flags?
     this->waveformMonitor = make<WaveformAudioMonitorComponent>(nullptr);
     this->spectrogramMonitor = make<SpectrogramAudioMonitorComponent>(nullptr);
 
@@ -97,81 +90,69 @@ SequencerSidebarLeft::SequencerSidebarLeft(ProjectNode &project)
     this->addChildComponent(this->spectrogramMonitor.get());
 
     this->waveformMonitor->setVisible(true);
-    //[/UserPreSize]
 
-    this->setSize(44, 640);
-
-    //[Constructor]
     MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
 
     App::Config().getUiFlags()->addListener(this);
-    //[/Constructor]
 }
 
 SequencerSidebarLeft::~SequencerSidebarLeft()
 {
-    //[Destructor_pre]
     App::Config().getUiFlags()->removeListener(this);
-
-    this->spectrogramMonitor = nullptr;
-    this->waveformMonitor = nullptr;
-
-    //tree->setRootItem(nullptr);
-    //[/Destructor_pre]
-
-    shadow = nullptr;
-    headLine = nullptr;
-    headShadow = nullptr;
-    separator = nullptr;
-    modeIndicatorSelector = nullptr;
-    modeIndicator = nullptr;
-    switchPatternModeButton = nullptr;
-    switchLinearModeButton = nullptr;
-    listBox = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
 }
 
-void SequencerSidebarLeft::paint (Graphics& g)
+void SequencerSidebarLeft::paint(Graphics &g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
     const auto &theme = HelioTheme::getCurrentTheme();
     g.setFillType({ theme.getBgCacheC(), {} });
     g.fillRect(this->getLocalBounds());
-    //[/UserPrePaint]
 
-    //[UserPaint] Add your own custom painting code here..
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
     g.fillRect(this->getWidth() - 1, 0, 1, this->getHeight());
-    //[/UserPaint]
 }
 
 void SequencerSidebarLeft::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    this->waveformMonitor->setBounds(0, this->getHeight() - getAudioMonitorHeight(),
-        this->getWidth(), getAudioMonitorHeight());
+    constexpr auto headerSize = Globals::UI::rollHeaderHeight;
+    constexpr auto footerSize = Globals::UI::projectMapHeight;
 
-    this->spectrogramMonitor->setBounds(0, this->getHeight() - getAudioMonitorHeight(),
-        this->getWidth(), getAudioMonitorHeight());
-    //[/UserPreResize]
+    this->listBox->setBounds(0, headerSize + 1, this->getWidth(),
+        this->getHeight() - headerSize - footerSize - 1);
 
-    shadow->setBounds(0, getHeight() - 79 - 6, getWidth() - 0, 6);
-    headLine->setBounds(0, 39, getWidth() - 0, 2);
-    headShadow->setBounds(0, 40, getWidth() - 0, 6);
-    separator->setBounds(0, getHeight() - 78 - 2, getWidth() - 0, 2);
-    modeIndicatorSelector->setBounds(0, getHeight() - 78, getWidth() - 0, 78);
-    modeIndicator->setBounds(0, getHeight() - 4 - 5, getWidth() - 0, 5);
-    switchPatternModeButton->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
-    switchLinearModeButton->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
-    listBox->setBounds(0, 41, getWidth() - 0, getHeight() - 121);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    constexpr auto shadowSize = 8;
+    this->headShadow->setBounds(0, headerSize, this->getWidth(), shadowSize);
+    this->footShadow->setBounds(0,
+        this->getHeight() - footerSize - shadowSize,
+        this->getWidth(), shadowSize);
+
+    this->headRule->setBounds(0, headerSize - 1, this->getWidth(), 2);
+    this->footRule->setBounds(0,
+        this->getHeight() - footerSize,
+        this->getWidth(), 2);
+
+    constexpr auto audioMonitorHeight = footerSize - 2;
+
+    this->waveformMonitor->setBounds(0,
+        this->getHeight() - audioMonitorHeight,
+        this->getWidth(), audioMonitorHeight);
+
+    this->spectrogramMonitor->setBounds(0,
+        this->getHeight() - audioMonitorHeight,
+        this->getWidth(), audioMonitorHeight);
+
+    this->modeIndicatorSelector->setBounds(0,
+        this->getHeight() - audioMonitorHeight,
+        this->getWidth(), audioMonitorHeight);
+
+    constexpr auto modeIndicatorSize = 5;
+    this->modeIndicator->setBounds(0,
+        this->getHeight() - modeIndicatorSize * 2,
+        this->getWidth(), modeIndicatorSize);
+
+    this->switchPatternModeButton->setBounds(0, 0, this->getWidth(), headerSize - 1);
+    this->switchLinearModeButton->setBounds(0, 0, this->getWidth(), headerSize - 1);
 }
 
-
-//[MiscUserCode]
 void SequencerSidebarLeft::setAudioMonitor(AudioMonitor *audioMonitor)
 {
     this->spectrogramMonitor->setTargetAnalyzer(audioMonitor);
@@ -195,9 +176,10 @@ void SequencerSidebarLeft::handleChangeMode()
 
 void SequencerSidebarLeft::switchMonitorsAnimated(Component *oldOne, Component *newOne)
 {
+    jassert(newOne->getY() == oldOne->getY());
     auto slideTime = Globals::UI::fadeOutLong;
     const int w = this->getWidth();
-    const int y = this->getHeight() - getAudioMonitorHeight();
+    const int y = newOne->getY();
     this->animator.animateComponent(oldOne,
         oldOne->getBounds().translated(-w, 0), 0.f, slideTime, true, 0.0, 1.0);
     oldOne->setVisible(false);
@@ -328,50 +310,3 @@ int SequencerSidebarLeft::getNumRows()
 {
     return this->menu.size();
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="SequencerSidebarLeft" template="../../../Template"
-                 componentName="" parentClasses="public ModeIndicatorOwnerComponent, protected UserInterfaceFlags::Listener, protected ListBoxModel"
-                 constructorParams="ProjectNode &amp;project" variableInitialisers="project(project)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="44" initialHeight="640">
-  <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 79Rr 0M 6" sourceFile="../../Themes/ShadowUpwards.cpp"
-             constructorParams="ShadowType::Light"/>
-  <JUCERCOMP name="" id="28ce45d9e84b729c" memberName="headLine" virtualName=""
-             explicitFocusOrder="0" pos="0 39 0M 2" sourceFile="../../Themes/SeparatorHorizontalReversed.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
-             explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../../Themes/ShadowDownwards.cpp"
-             constructorParams="ShadowType::Light"/>
-  <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="0 78Rr 0M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
-             constructorParams=""/>
-  <GENERICCOMPONENT name="" id="9e1622013601218a" memberName="modeIndicatorSelector"
-                    virtualName="" explicitFocusOrder="0" pos="0 0Rr 0M 78" class="ModeIndicatorTrigger"
-                    params=""/>
-  <GENERICCOMPONENT name="" id="4b6240e11495d88b" memberName="modeIndicator" virtualName=""
-                    explicitFocusOrder="0" pos="0 4Rr 0M 5" class="ModeIndicatorComponent"
-                    params="2"/>
-  <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="switchPatternModeButton"
-                    virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
-                    params="this, nullptr, MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls)"/>
-  <GENERICCOMPONENT name="" id="bbe7f83219439c7f" memberName="switchLinearModeButton"
-                    virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
-                    params="this, nullptr, MenuItem::item(Icons::piano, CommandIDs::SwitchBetweenRolls)"/>
-  <GENERICCOMPONENT name="" id="381fa571a3dfc5cd" memberName="listBox" virtualName=""
-                    explicitFocusOrder="0" pos="0 41 0M 121M" class="ListBox" params=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-
