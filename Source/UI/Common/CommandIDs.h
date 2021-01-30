@@ -102,6 +102,8 @@ namespace CommandIDs
 
         TimelineJumpNext                = 0x2000,
         TimelineJumpPrevious            = 0x2001,
+        TimelineJumpHome                = 0x2002,
+        TimelineJumpEnd                 = 0x2003,
 
         TransportRecordingAwait         = 0x2015,
         TransportRecordingStart         = 0x2016,

@@ -36,10 +36,10 @@
       { "command": "ShowNextPage", "key": "Control + Cursor Right" },
       { "command": "ShowNextPage", "key": "Alt + Cursor Right" },
 
-      { "command": "ShowRootPage", "key": "Home" },
       { "command": "SwitchToEditMode", "key": "Page Up" },
       { "command": "SwitchToArrangeMode", "key": "Page Down" },
-      { "command": "SwitchToVersioningMode", "key": "End" }
+      { "command": "SwitchToVersioningMode", "key": "Control + S" },
+      { "command": "SwitchToVersioningMode", "key": "Command + S" },
     ]
   }, // ANCHOR_END: MainLayout
   {  // ANCHOR: SequencerLayout
@@ -160,6 +160,8 @@
       { "command": "ZoomEntireClip", "key": "Control + Tab" },
       { "command": "TimelineJumpNext", "key": "." },
       { "command": "TimelineJumpPrevious", "key": "," },
+      { "command": "TimelineJumpHome", "key": "Home" },
+      { "command": "TimelineJumpEnd", "key": "End" },
 
       // Selection
       { "command": "SelectAllEvents", "key": "Command + A" },
@@ -280,6 +282,8 @@
       { "command": "ZoomEntireClip", "key": "Control + Tab" },
       { "command": "TimelineJumpNext", "key": "." },
       { "command": "TimelineJumpPrevious", "key": "," },
+      { "command": "TimelineJumpHome", "key": "Home" },
+      { "command": "TimelineJumpEnd", "key": "End" },
 
       // Selection
       { "command": "SelectAllClips", "key": "Command + A" },

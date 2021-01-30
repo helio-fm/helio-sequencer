@@ -1207,6 +1207,22 @@ void HybridRoll::handleCommandMessage(int commandId)
             this->scrollToSeekPosition();
         }
         break;
+    case CommandIDs::TimelineJumpHome:
+        if (!this->getTransport().isPlaying())
+        {
+            this->stopFollowingPlayhead();
+            this->getTransport().seekToBeat(this->projectFirstBeat);
+            this->scrollToSeekPosition();
+        }
+        break;
+    case CommandIDs::TimelineJumpEnd:
+        if (!this->getTransport().isPlaying())
+        {
+            this->stopFollowingPlayhead();
+            this->getTransport().seekToBeat(this->projectLastBeat);
+            this->scrollToSeekPosition();
+        }
+        break;
     case CommandIDs::StartDragViewport:
         this->header->setSoundProbeMode(true);
         this->setSpaceDraggingMode(true);
