@@ -154,7 +154,9 @@ UpdatesCheckThread *ResourceSyncService::prepareUpdatesCheckThread()
             DBG("All resources are up to date");
         }
 
-        // save all anyway, as versions info might have changed:
+        // save all anyway, as versions info might have changed;
+        // also don't care if the resource update thread will succeed or not,
+        // those updates are very optional (maybe todo fix it someday)
         App::Config().save(&info, Serialization::Config::lastUpdatesInfo);
     };
 

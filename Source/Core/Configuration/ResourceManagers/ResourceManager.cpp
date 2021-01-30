@@ -43,11 +43,9 @@ void ResourceManager::updateBaseResource(const SerializedData &resource)
 
     serializer.saveToFile(this->getDownloadedResourceFile(), resource);
 
-#if PLATFORM_DESKTOP
-    this->reloadResources();
-    // Do not send update message here, since resource update should go silently
-    //this->sendChangeMessage();
-#endif
+    // do not reload anything here to avoid possible issues,
+    // all updates will just appear at the next start:
+    //this->reloadResources();
 }
 
 void ResourceManager::updateUserResource(const BaseResource::Ptr resource)
