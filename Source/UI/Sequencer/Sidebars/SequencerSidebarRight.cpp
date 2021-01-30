@@ -175,10 +175,10 @@ void SequencerSidebarRight::recreateMenu()
     {
         this->menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips));
     }
-#endif
 
     this->menu.add(MenuItem::item(Icons::undo, CommandIDs::Undo));
     this->menu.add(MenuItem::item(Icons::redo, CommandIDs::Redo));
+#endif
 }
 
 //===----------------------------------------------------------------------===//
