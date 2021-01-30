@@ -37,6 +37,7 @@
 #include "SequencerLayout.h"
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
+#include "ColourIDs.h"
 #include "ColourSchemesManager.h"
 #include "CommandPaletteCommonActions.h"
 

@@ -176,24 +176,30 @@ void CommandPaletteActionsProvider::updateFilter(const String &pattern, bool ski
         patternPtr.getAndAdvance();
     }
 
-    for (const auto &action : this->getActions())
+    const auto updateFilteredListWith = [this, patternPtr](const Actions &actions)
     {
-        if (action->isUnfiltered())
+        for (const auto &action : actions)
         {
-            this->filteredActions.add(action);
-        }
-        else
-        {
-            int outScore = 0;
-            uint8 matches[FUZZY_MAX_MATCHES] = {};
-            const auto match = fuzzyMatch(patternPtr, action->getName().getCharPointer(), outScore, matches);
-            if (match)
+            if (action->isUnfiltered())
             {
-                action->setMatch(outScore, matches);
                 this->filteredActions.add(action);
             }
+            else
+            {
+                int outScore = 0;
+                uint8 matches[FUZZY_MAX_MATCHES] = {};
+                const auto match = fuzzyMatch(patternPtr, action->getName().getCharPointer(), outScore, matches);
+                if (match)
+                {
+                    action->setMatch(outScore, matches);
+                    this->filteredActions.add(action);
+                }
+            }
         }
-    }
+    };
+
+    updateFilteredListWith(this->additionalActions);
+    updateFilteredListWith(this->getActions());
 
     static CommandPaletteActionSortByMatch comparator;
     this->filteredActions.sort(comparator);
@@ -202,6 +208,7 @@ void CommandPaletteActionsProvider::updateFilter(const String &pattern, bool ski
 void CommandPaletteActionsProvider::clearFilter()
 {
     this->filteredActions.clearQuick();
+    this->filteredActions.addArray(this->additionalActions);
     this->filteredActions.addArray(this->getActions());
     for (const auto &action : this->filteredActions)
     {

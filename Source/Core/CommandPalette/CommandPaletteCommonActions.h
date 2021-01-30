@@ -23,21 +23,18 @@ class CommandPaletteCommonActions final : public CommandPaletteActionsProvider
 {
 public:
 
-    CommandPaletteCommonActions();
+    CommandPaletteCommonActions() = default;
 
     void setActiveCommandReceivers(const Array<Component *> &receivers);
 
-    bool usesPrefix(const Prefix prefix) const noexcept override
-    {
-        return (this->helpAndCommands.size() == this->help.size()) ? prefix == '?' : false;
-    }
-
 protected:
 
-    const Actions &getActions() const override;
+    const Actions &getActions() const override
+    {
+        return this->actions;
+    }
 
-    Actions help;
-    Actions helpAndCommands;
+    Actions actions;
 
     FlatHashMap<String, Actions, StringHash> commandsCache;
 

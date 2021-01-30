@@ -28,6 +28,7 @@
 #include "Pattern.h"
 
 CommandPaletteTimelineEvents::CommandPaletteTimelineEvents(ProjectNode &project) :
+    CommandPaletteActionsProvider(TRANS(I18n::CommandPalette::timeline), '@', -4.f),
     project(project)
 {
     this->project.addListener(this);

@@ -21,34 +21,6 @@
 #include "MainLayout.h"
 #include "Config.h"
 
-CommandPaletteCommonActions::CommandPaletteCommonActions()
-{
-    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::timeline), "@", -3.f)->
-        withCallback([](TextEditor &ed) { ed.setText("@"); return false; }));
-
-    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::chordBuilder), "!", -2.f)->
-        withCallback([](TextEditor &ed) { ed.setText("!"); return false; }));
-
-    this->help.add(CommandPaletteAction::action(TRANS(I18n::CommandPalette::projects), "/", -1.f)->
-        withCallback([](TextEditor &ed) { ed.setText("/"); return false; }));
-
-    // some thoughts for the future:
-
-    // # for quantization actions? with q as a hotkey?
-
-    // and ctrl + g calling go to == @
-
-    // time divisions as another action list? * for the mode key?
-
-    // add in the menu: time divisions, quantize to, go to, insert chord,
-    // all showing the command palette; and remove submenus?
-}
-
-const CommandPaletteActionsProvider::Actions &CommandPaletteCommonActions::getActions() const
-{
-    return this->helpAndCommands;
-}
-
 static CommandPaletteActionsProvider::Actions buildCommandsListFor(const Component *target)
 {
     //DBG("Building command palette actions for " + target->getComponentID());
@@ -83,22 +55,21 @@ static CommandPaletteActionsProvider::Actions buildCommandsListFor(const Compone
 
 void CommandPaletteCommonActions::setActiveCommandReceivers(const Array<Component *> &receivers)
 {
-    this->helpAndCommands.clearQuick();
-    this->helpAndCommands.addArray(this->help);
+    this->actions.clearQuick();
 
     for (const auto *receiver : receivers)
     {
         const auto commands = this->commandsCache.find(receiver->getComponentID());
         if (commands != this->commandsCache.end())
         {
-            this->helpAndCommands.addArray(commands->second);
+            this->actions.addArray(commands->second);
         }
         else
         {
             // fill it up once - commands and hotkeys are never updated in the runtime
             const auto cachedCommandsList = buildCommandsListFor(receiver);
             this->commandsCache[receiver->getComponentID()] = cachedCommandsList;
-            this->helpAndCommands.addArray(cachedCommandsList);
+            this->actions.addArray(cachedCommandsList);
         }
     }
 }

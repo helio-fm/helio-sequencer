@@ -104,7 +104,7 @@ void ChordPreviewTool::handleCommandMessage(int commandId)
     }
 }
 
-bool ChordPreviewTool::keyPressed (const KeyPress& key)
+bool ChordPreviewTool::keyPressed(const KeyPress &key)
 {
     if (key.isKeyCode(KeyPress::escapeKey))
     {
@@ -240,7 +240,6 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
                 key + this->clip.getKey(),
                 note.getVelocity(),
                 note.getLength());
-
         }
 
         this->hasMadeChanges = true;

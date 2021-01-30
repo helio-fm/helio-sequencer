@@ -17,9 +17,8 @@
 
 #pragma once
 
-//[Headers]
-class ProjectNode;
 class HybridRoll;
+class ProjectNode;
 
 #include "CommandPaletteActionsProvider.h"
 #include "CommandPaletteModel.h"
@@ -29,12 +28,6 @@ class CommandPaletteTextEditor final : public TextEditor
 public:
     bool keyPressed(const KeyPress &key) override;
 };
-//[/Headers]
-
-#include "../Themes/ShadowDownwards.h"
-#include "../Themes/PanelBackgroundC.h"
-#include "../Themes/ShadowLeftwards.h"
-#include "../Themes/ShadowRightwards.h"
 
 class CommandPalette final : public Component,
                              public TextEditor::Listener,
@@ -45,20 +38,13 @@ public:
     CommandPalette(ProjectNode *project, HybridRoll *roll);
     ~CommandPalette();
 
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
     void parentHierarchyChanged() override;
-    void handleCommandMessage (int commandId) override;
-    bool keyPressed (const KeyPress& key) override;
+    void handleCommandMessage(int commandId) override;
+    bool keyPressed(const KeyPress &key) override;
     void inputAttemptWhenModal() override;
 
-
 private:
-
-    //[UserVariables]
 
     static constexpr auto rowHeight = 28;
 
@@ -82,7 +68,7 @@ private:
     void moveRowSelectionBy(int offset);
 
     void applySelectedCommand();
-    int getHeightToFitActions() const;
+    int getHeightToFitActions();
     int getNumVisibleRows() const noexcept;
 
     void dismiss();
@@ -91,18 +77,14 @@ private:
 
     Array<WeakReference<CommandPaletteActionsProvider>> actionsProviders;
     WeakReference<CommandPaletteActionsProvider> currentActionsProvider;
-    WeakReference<CommandPaletteActionsProvider> defaultActionsProvider;
+    WeakReference<CommandPaletteActionsProvider> rootActionsProvider;
 
-    //[/UserVariables]
-
-    UniquePointer<ShadowDownwards> shadowDn;
-    UniquePointer<PanelBackgroundC> bg;
-    UniquePointer<ShadowLeftwards> shadowL;
-    UniquePointer<ShadowRightwards> shadowR;
+    UniquePointer<Component> shadowDn;
+    UniquePointer<Component> bg;
+    UniquePointer<Component> shadowL;
+    UniquePointer<Component> shadowR;
     UniquePointer<CommandPaletteTextEditor> textEditor;
     UniquePointer<ListBox> actionsList;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CommandPalette)
 };
-
-

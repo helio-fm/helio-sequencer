@@ -22,6 +22,7 @@
 #include "PatternEditorNode.h"
 
 CommandPaletteProjectsList::CommandPaletteProjectsList(Workspace &workspace) :
+    CommandPaletteActionsProvider(TRANS(I18n::CommandPalette::projects), '/', -1.f),
     workspace(workspace)
 {
     this->reloadProjects();

@@ -26,13 +26,8 @@ class CommandPaletteTimelineEvents final :
 {
 public:
 
-    CommandPaletteTimelineEvents(ProjectNode &project);
+    explicit CommandPaletteTimelineEvents(ProjectNode &project);
     ~CommandPaletteTimelineEvents() override;
-
-    bool usesPrefix(const Prefix prefix) const noexcept override
-    {
-        return prefix == '@';
-    }
 
     //===------------------------------------------------------------------===//
     // ProjectListener

@@ -1520,10 +1520,11 @@ private:
 #define CHORD_COMPILER_NOTE_VELOCITY    (0.35f)
 
 CommandPaletteChordConstructor::CommandPaletteChordConstructor(PianoRoll &roll) :
+    CommandPaletteActionsProvider(TRANS(I18n::CommandPalette::chordBuilder), '!', -3.f),
     chordCompiler(make<ChordCompiler>()),
     roll(roll) {}
 
-CommandPaletteChordConstructor::~CommandPaletteChordConstructor() {}
+CommandPaletteChordConstructor::~CommandPaletteChordConstructor() = default;
 
 void CommandPaletteChordConstructor::updateFilter(const String &pattern, bool skipPrefix)
 {

@@ -94,7 +94,7 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
     this->noteNameGuides->setVisible(noteNameGuidesEnabled);
 }
 
-PianoRoll::~PianoRoll() {}
+PianoRoll::~PianoRoll() = default;
 
 void PianoRoll::reloadRollContent()
 {

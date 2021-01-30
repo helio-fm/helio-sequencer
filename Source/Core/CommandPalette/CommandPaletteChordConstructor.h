@@ -26,13 +26,8 @@ class CommandPaletteChordConstructor final : public CommandPaletteActionsProvide
 {
 public:
 
-    CommandPaletteChordConstructor(PianoRoll &roll);
+    explicit CommandPaletteChordConstructor(PianoRoll &roll);
     ~CommandPaletteChordConstructor() override;
-
-    bool usesPrefix(const Prefix prefix) const noexcept override
-    {
-        return prefix == '!';
-    }
 
     void updateFilter(const String &pattern, bool skipPrefix) override;
     void clearFilter() override;

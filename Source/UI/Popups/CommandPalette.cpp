@@ -15,13 +15,9 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "CommandPalette.h"
 
-//[MiscUserDefs]
 #include "CommandIDs.h"
 #include "SerializationKeys.h"
 #include "Config.h"
@@ -31,29 +27,29 @@
 #include "ProjectNode.h"
 #include "PianoRoll.h"
 
-static constexpr juce_wchar kTildaKey = '`';
+#include "ShadowDownwards.h"
+#include "PanelBackgroundC.h"
+#include "ShadowLeftwards.h"
+#include "ShadowRightwards.h"
 
-//[/MiscUserDefs]
+static constexpr juce_wchar kTildaKey = '`';
 
 CommandPalette::CommandPalette(ProjectNode *project, HybridRoll *roll)
 {
-    this->shadowDn.reset(new ShadowDownwards(ShadowType::Normal));
-    this->addAndMakeVisible(shadowDn.get());
-    this->bg.reset(new PanelBackgroundC());
-    this->addAndMakeVisible(bg.get());
-    this->shadowL.reset(new ShadowLeftwards(ShadowType::Normal));
-    this->addAndMakeVisible(shadowL.get());
-    this->shadowR.reset(new ShadowRightwards(ShadowType::Normal));
-    this->addAndMakeVisible(shadowR.get());
-    this->textEditor.reset(new CommandPaletteTextEditor());
-    this->addAndMakeVisible(textEditor.get());
+    this->shadowDn = make<ShadowDownwards>(ShadowType::Normal);
+    this->addAndMakeVisible(this->shadowDn.get());
+    this->bg = make<PanelBackgroundC>();
+    this->addAndMakeVisible(this->bg.get());
+    this->shadowL = make<ShadowLeftwards>(ShadowType::Normal);
+    this->addAndMakeVisible(this->shadowL.get());
+    this->shadowR = make<ShadowRightwards>(ShadowType::Normal);
+    this->addAndMakeVisible(this->shadowR.get());
+    this->textEditor = make<CommandPaletteTextEditor>();
+    this->addAndMakeVisible(this->textEditor.get());
 
-    this->actionsList.reset(new ListBox());
-    this->addAndMakeVisible(actionsList.get());
-
-
-    //[UserPreSize]
-
+    this->actionsList = make<ListBox>();
+    this->addAndMakeVisible(this->actionsList.get());
+    
     // some help and hotkey commands list (depending on the current page):
     this->actionsProviders.addArray(App::Layout().getCommandPaletteActionProviders());
 
@@ -77,8 +73,25 @@ CommandPalette::CommandPalette(ProjectNode *project, HybridRoll *roll)
 
     jassert(!this->actionsProviders.isEmpty());
 
-    this->defaultActionsProvider = this->actionsProviders.getFirst();
-    this->currentActionsProvider = this->defaultActionsProvider;
+    this->rootActionsProvider = this->actionsProviders.getFirst();
+
+    // the root list to include some help on available prefixed lists:
+    CommandPaletteActionsProvider::Actions prefixedActionsHelp;
+    for (auto provider : this->actionsProviders)
+    {
+        if (!provider->hasPrefix())
+        {
+            continue;
+        }
+
+        const auto prefix = String::charToString(provider->getPrefix());
+        prefixedActionsHelp.add(CommandPaletteAction::action(
+            provider->getName(), prefix, provider->getPriority())->
+            withCallback([prefix](TextEditor &ed) { ed.setText(prefix); return false; }));
+    }
+
+    this->rootActionsProvider->setAdditionalActions(prefixedActionsHelp);
+    this->currentActionsProvider = this->rootActionsProvider;
 
     this->actionsList->setRowHeight(CommandPalette::rowHeight);
     //this->actionsList->setMouseMoveSelectsRows(true); // fucks up keyboard select :(
@@ -94,82 +107,68 @@ CommandPalette::CommandPalette(ProjectNode *project, HybridRoll *roll)
     this->textEditor->setFont(21.f);
 
     this->textEditor->addListener(this);
-
-    //[/UserPreSize]
-
-    this->setSize(620, 100);
-
-    //[Constructor]
-
+    
     const auto lastText = App::Config().getProperty(Serialization::Config::lastSearch);
     this->textEditor->setText(lastText, false);
 
-    // a hack to explicitly, and synchronously, update the list on start, even if the text is empty:
+    this->setSize(620, 100);
+
+    // a hack to update the list on start synchronously, even if the text is empty:
     this->textEditorTextChanged(*this->textEditor);
-    //[/Constructor]
 }
 
 CommandPalette::~CommandPalette()
 {
-    //[Destructor_pre]
     this->textEditor->removeListener(this);
-    //[/Destructor_pre]
-
-    shadowDn = nullptr;
-    bg = nullptr;
-    shadowL = nullptr;
-    shadowR = nullptr;
-    textEditor = nullptr;
-    actionsList = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void CommandPalette::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
 void CommandPalette::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    constexpr auto marginX = 12;
+    constexpr auto marginBottom = 8; // top margin is 0
 
-    shadowDn->setBounds(12 + 0, 0 + (getHeight() - 8), (getWidth() - 24) - 0, 8);
-    bg->setBounds(12, 0, getWidth() - 24, getHeight() - 8);
-    shadowL->setBounds(0, 0, 12, ((getHeight() - 8) - 48) - -44);
-    shadowR->setBounds(getWidth() - 12, 0, 12, ((getHeight() - 8) - 48) - -44);
-    textEditor->setBounds(18, 6, getWidth() - 36, 32);
-    actionsList->setBounds(18 + 0, 6 + 32 - -4, (getWidth() - 36) - 0, (getHeight() - 8) - 48);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->bg->setBounds(marginX, 0,
+        this->getWidth() - marginX * 2,
+        this->getHeight() - marginBottom);
+
+    this->shadowDn->setBounds(marginX,
+        this->getHeight() - marginBottom,
+        this->getWidth() - marginX * 2,
+        marginBottom);
+
+    this->shadowL->setBounds(0, 0, marginX,
+        this->getHeight() - marginBottom);
+
+    this->shadowR->setBounds(this->getWidth() - marginX,
+        0, marginX, this->getHeight() - marginBottom);
+
+    constexpr auto editorHeight = 32;
+    constexpr auto contentMargin = 4;
+    this->textEditor->setBounds(marginX + contentMargin, contentMargin,
+        this->getWidth() - (marginX + contentMargin) * 2, editorHeight);
+
+    this->actionsList->setBounds(marginX + contentMargin,
+        contentMargin + editorHeight + 2,
+        this->getWidth() - (marginX + contentMargin) * 2,
+        this->getHeight() - (contentMargin * 2) -
+            editorHeight - marginBottom - 2);
 }
 
 void CommandPalette::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->updatePosition();
-    //[/UserCode_parentHierarchyChanged]
 }
 
 void CommandPalette::handleCommandMessage (int commandId)
 {
-    //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
         this->dismiss();
     }
-    //[/UserCode_handleCommandMessage]
 }
 
 bool CommandPalette::keyPressed (const KeyPress& key)
 {
-    //[UserCode_keyPressed] -- Add your code here...
     if (key.isKeyCode(KeyPress::escapeKey))
     {
         // on escape keypress first try to erase the text, if any:
@@ -210,18 +209,12 @@ bool CommandPalette::keyPressed (const KeyPress& key)
     }
 
     return false;
-    //[/UserCode_keyPressed]
 }
 
 void CommandPalette::inputAttemptWhenModal()
 {
-    //[UserCode_inputAttemptWhenModal] -- Add your code here...
     this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
-    //[/UserCode_inputAttemptWhenModal]
 }
-
-
-//[MiscUserCode]
 
 //===----------------------------------------------------------------------===//
 // ListBoxModel
@@ -245,7 +238,7 @@ void CommandPalette::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, 
         g.fillAll(Colours::black.withAlpha(0.05f));
     }
 
-    if (rowNumber >= this->currentActionsProvider->getFilteredActions().size())
+    if (rowNumber >= this->getNumRows())
     {
         return;
     }
@@ -307,7 +300,7 @@ void CommandPalette::textEditorTextChanged(TextEditor &ed)
         const auto firstChar = ed.getText()[0];
         for (auto provider : this->actionsProviders)
         {
-            if (provider->usesPrefix(firstChar))
+            if (provider->getPrefix() == firstChar)
             {
                 foundValidPrefix = true;
                 this->currentActionsProvider = provider;
@@ -326,7 +319,7 @@ void CommandPalette::textEditorTextChanged(TextEditor &ed)
     }
     else
     {
-        this->currentActionsProvider = this->defaultActionsProvider;
+        this->currentActionsProvider = this->rootActionsProvider;
         this->currentActionsProvider->clearFilter();
     }
 
@@ -372,7 +365,8 @@ void CommandPalette::fadeOut()
     auto &animator = Desktop::getInstance().getAnimator();
     if (App::isOpenGLRendererEnabled())
     {
-        animator.animateComponent(this, this->getBounds().reduced(20).translated(0, -20),
+        animator.animateComponent(this,
+            this->getBounds().reduced(10).translated(0, -10),
             0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
     }
     else
@@ -384,7 +378,9 @@ void CommandPalette::fadeOut()
 
 void CommandPalette::updatePosition()
 {
-    const auto top = App::isUsingNativeTitleBar() ? Globals::UI::headlineHeight : Globals::UI::headlineHeight + 1;
+    const auto top = App::isUsingNativeTitleBar() ?
+        Globals::UI::headlineHeight : Globals::UI::headlineHeight + 1;
+
     this->setTopLeftPosition(this->getParentWidth() / 2 - this->getWidth() / 2, top);
 }
 
@@ -407,7 +403,7 @@ bool CommandPaletteTextEditor::keyPressed(const KeyPress &key)
 void CommandPalette::applySelectedCommand()
 {
     const auto rowNumber = this->actionsList->getSelectedRow(0);
-    if (rowNumber < 0 || rowNumber >= this->currentActionsProvider->getFilteredActions().size())
+    if (rowNumber < 0 || rowNumber >= this->getNumRows())
     {
         return;
     }
@@ -432,62 +428,15 @@ void CommandPalette::applySelectedCommand()
     }
 }
 
-int CommandPalette::getHeightToFitActions() const
+int CommandPalette::getHeightToFitActions()
 {
-    const auto numRows = this->currentActionsProvider->getFilteredActions().size();
+    constexpr auto minRows = 4;
     const auto margin = this->getHeight() - this->actionsList->getHeight();
     const auto maxRows = (App::Layout().getHeight() / 3) / CommandPalette::rowHeight;
-    return jlimit(4, maxRows, numRows) * CommandPalette::rowHeight + margin;
+    return jlimit(minRows, maxRows, this->getNumRows()) * CommandPalette::rowHeight + margin;
 }
 
 int CommandPalette::getNumVisibleRows() const noexcept
 {
     return this->actionsList->getHeight() / CommandPalette::rowHeight;
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="CommandPalette" template="../../Template"
-                 componentName="" parentClasses="public Component, public TextEditor::Listener, public ListBoxModel"
-                 constructorParams="ProjectNode *project, HybridRoll *roll" variableInitialisers=""
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="620" initialHeight="100">
-  <METHODS>
-    <METHOD name="parentHierarchyChanged()"/>
-    <METHOD name="inputAttemptWhenModal()"/>
-    <METHOD name="keyPressed (const KeyPress&amp; key)"/>
-    <METHOD name="handleCommandMessage (int commandId)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="ffffff"/>
-  <JUCERCOMP name="" id="5d11a023e4905d74" memberName="shadowDn" virtualName=""
-             explicitFocusOrder="0" pos="0 0R 0M 8" posRelativeX="80e2df40dfc6307e"
-             posRelativeY="80e2df40dfc6307e" posRelativeW="80e2df40dfc6307e"
-             sourceFile="../Themes/ShadowDownwards.cpp" constructorParams="ShadowType::Normal"/>
-  <JUCERCOMP name="" id="80e2df40dfc6307e" memberName="bg" virtualName=""
-             explicitFocusOrder="0" pos="12 0 24M 8M" sourceFile="../Themes/PanelBackgroundC.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="72514a37e5bc1299" memberName="shadowL" virtualName=""
-             explicitFocusOrder="0" pos="0 0 12 -44M" posRelativeH="2362db9f8826e90f"
-             sourceFile="../Themes/ShadowLeftwards.cpp" constructorParams="ShadowType::Normal"/>
-  <JUCERCOMP name="" id="3cd9e82f6261eff1" memberName="shadowR" virtualName=""
-             explicitFocusOrder="0" pos="0Rr 0 12 -44M" posRelativeH="2362db9f8826e90f"
-             sourceFile="../Themes/ShadowRightwards.cpp" constructorParams="ShadowType::Normal"/>
-  <GENERICCOMPONENT name="" id="3abf9d1982e1c63b" memberName="textEditor" virtualName=""
-                    explicitFocusOrder="0" pos="18 6 36M 32" class="CommandPaletteTextEditor"
-                    params=""/>
-  <GENERICCOMPONENT name="" id="2362db9f8826e90f" memberName="actionsList" virtualName=""
-                    explicitFocusOrder="0" pos="0 -4R 0M 48M" posRelativeX="3abf9d1982e1c63b"
-                    posRelativeY="3abf9d1982e1c63b" posRelativeW="3abf9d1982e1c63b"
-                    posRelativeH="80e2df40dfc6307e" class="ListBox" params=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

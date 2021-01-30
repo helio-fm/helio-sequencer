@@ -71,11 +71,20 @@ class CommandPaletteActionsProvider
 {
 public:
 
+    using Prefix = juce_wchar;
+
     CommandPaletteActionsProvider() = default;
+    CommandPaletteActionsProvider(const String &name,
+        Prefix prefix, float priority) :
+        name(name), prefix(prefix), priority(priority) {}
+
     virtual ~CommandPaletteActionsProvider() = default;
 
-    using Prefix = juce_wchar;
-    virtual bool usesPrefix(const Prefix prefix) const = 0;
+    Prefix getPrefix() const noexcept { return this->prefix; }
+    bool hasPrefix() const noexcept { return this->prefix != 0; }
+
+    const String &getName() const noexcept { return this->name; }
+    float getPriority() const noexcept { return this->priority; }
 
     using Actions = ReferenceCountedArray<CommandPaletteAction>;
     const Actions &getFilteredActions() const
@@ -86,12 +95,26 @@ public:
     virtual void updateFilter(const String &pattern, bool skipPrefix);
     virtual void clearFilter();
 
+    void setAdditionalActions(Actions &actions)
+    {
+        this->additionalActions.swapWith(actions);
+    }
+
 protected:
 
+    // each provider sets up its own actions:
     virtual const Actions &getActions() const = 0;
+
+    // but some actions can be added externally:
+    Actions additionalActions;
 
 private:
 
+    const String name;
+    const Prefix prefix = 0;
+    const float priority = 0.f;
+
+    // all actions after applying a fuzzy search:
     Actions filteredActions;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(CommandPaletteActionsProvider)
