@@ -1516,9 +1516,6 @@ private:
 // CommandPaletteChordConstructor
 //===----------------------------------------------------------------------===//
 
-#define CHORD_COMPILER_NOTE_LENGTH      (4)
-#define CHORD_COMPILER_NOTE_VELOCITY    (0.35f)
-
 CommandPaletteChordConstructor::CommandPaletteChordConstructor(PianoRoll &roll) :
     CommandPaletteActionsProvider(TRANS(I18n::CommandPalette::chordBuilder), '!', -3.f),
     chordCompiler(make<ChordCompiler>()),
@@ -1612,25 +1609,31 @@ void CommandPaletteChordConstructor::previewIfNeeded()
                 maxKey = jmax(maxKey, key);
 
                 const Note note(pianoSequence, key, targetBeat,
-                    CHORD_COMPILER_NOTE_LENGTH, CHORD_COMPILER_NOTE_VELOCITY);
+                    CommandPaletteChordConstructor::noteLength,
+                    CommandPaletteChordConstructor::noteVelocity);
 
                 pianoSequence->insert(note, true);
                 this->hasMadeChanges = true;
 
                 atLeastOneNoteShowsInViewport = atLeastOneNoteShowsInViewport ||
-                    this->roll.isNoteVisible(clipKey + key, clipBeat + targetBeat, CHORD_COMPILER_NOTE_LENGTH);
+                    this->roll.isNoteVisible(clipKey + key, clipBeat + targetBeat,
+                        CommandPaletteChordConstructor::noteLength);
 
-                this->roll.getTransport().previewKey(pianoSequence->getTrackId(), key + clipKey,
-                    CHORD_COMPILER_NOTE_VELOCITY, CHORD_COMPILER_NOTE_LENGTH);
+                this->roll.getTransport().previewKey(pianoSequence->getTrackId(),
+                    key + clipKey,
+                    CommandPaletteChordConstructor::noteVelocity,
+                    CommandPaletteChordConstructor::noteLength);
             }
 
             if (!atLeastOneNoteShowsInViewport)
             {
-                static const int keyMarginTop = 8; // leave some space for the command palette
-                static const int keyMarginBottom = 2;
-                static const float beatMargin = 2.f;
-                this->roll.zoomToArea(clipKey + minKey - keyMarginBottom, clipKey + maxKey + keyMarginTop,
-                    clipBeat + targetBeat - beatMargin, clipBeat + targetBeat + CHORD_COMPILER_NOTE_LENGTH + beatMargin);
+                constexpr auto keyMarginTop = 8; // leave some space for the command palette
+                constexpr auto keyMarginBottom = 2;
+                constexpr auto beatMargin = 2.f;
+                this->roll.zoomToArea(clipKey + minKey - keyMarginBottom,
+                    clipKey + maxKey + keyMarginTop,
+                    clipBeat + targetBeat - beatMargin,
+                    clipBeat + targetBeat + CommandPaletteChordConstructor::noteLength + beatMargin);
             }
         }
     }
@@ -1742,7 +1745,8 @@ public:
         testRenderedChord(cc, "C mM7 /G", { -5, 0, 3, 11 });
     }
 
-    void testRenderedChord(ChordCompiler &compiler, const String &chord, const Array<int> &expect)
+    void testRenderedChord(ChordCompiler &compiler, const String &chord,
+        const Array<int> &expect)
     {
         Array<int> render;
         compiler.parse(chord);

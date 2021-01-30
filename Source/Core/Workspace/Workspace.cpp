@@ -146,7 +146,7 @@ UserProfile &Workspace::getUserProfile() noexcept
 // Project management
 //===----------------------------------------------------------------------===//
 
-void Workspace::createEmptyProject(const String &templateName)
+void Workspace::createEmptyProject()
 {
     const String newProjectName = TRANS(I18n::Defaults::newProjectName);
 
@@ -155,21 +155,36 @@ void Workspace::createEmptyProject(const String &templateName)
     // this file chooser will remain available only on desktop;
     // on mobile we will always create projects in the docs directory
     const String fileName = newProjectName + ".helio";
-    FileChooser fc(TRANS(I18n::Dialog::workspaceCreateProjectCaption),
+    this->newProjectFileChooser = make<FileChooser>(
+        TRANS(I18n::Dialog::workspaceCreateProjectCaption),
         DocumentHelpers::getDocumentSlot(fileName), "*.helio", true);
-    
-    if (fc.browseForFileToSave(true))
+
+    this->newProjectFileChooser->launchAsync(Globals::UI::FileChooser::forFileToSave,
+        [this](const FileChooser &fc)
     {
-        if (auto *p = this->treeRoot->addEmptyProject(fc.getResult(), templateName))
+        auto results = fc.getURLResults();
+        if (results.isEmpty())
+        {
+            return;
+        }
+
+        auto &url = results.getReference(0);
+        if (!url.isLocalFile())
+        {
+            return;
+        }
+
+        const auto file = url.getLocalFile();
+        if (auto *p = this->treeRoot->addEmptyProject(file, {}))
         {
             this->userProfile.onProjectLocalInfoUpdated(p->getId(),
                 p->getName(), p->getDocument()->getFullPath());
         }
-    }
+    });
 
 #else
 
-    if (auto *p = this->treeRoot->addEmptyProject(newProjectName, templateName))
+    if (auto *p = this->treeRoot->addEmptyProject(newProjectName, {}))
     {
         this->userProfile.onProjectLocalInfoUpdated(p->getId(),
             p->getName(), p->getDocument()->getFullPath());

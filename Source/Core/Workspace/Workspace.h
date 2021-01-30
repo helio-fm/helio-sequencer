@@ -57,7 +57,7 @@ public:
     // Project management
     //===------------------------------------------------------------------===//
 
-    void createEmptyProject(const String &templateName = "");
+    void createEmptyProject();
     bool loadRecentProject(RecentProjectInfo::Ptr file);
     Array<ProjectNode *> getLoadedProjects() const;
     bool hasLoadedProject(const RecentProjectInfo::Ptr file) const;
@@ -99,6 +99,7 @@ private:
 
     UniquePointer<CommandPaletteProjectsList> consoleProjectsList;
 
+    UniquePointer<FileChooser> newProjectFileChooser;
     UniquePointer<FileChooser> importFileChooser;
 
     void failedDeserializationFallback();

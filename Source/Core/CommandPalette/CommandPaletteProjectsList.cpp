@@ -48,7 +48,24 @@ void CommandPaletteProjectsList::reloadProjects()
 {
     this->projects.clearQuick();
 
-    // todo first items == create new, open, import midi
+    const auto defaultColor = findDefaultColour(Label::textColourId);
+
+    this->projects.add(CommandPaletteAction::action(
+        TRANS(I18n::Menu::workspaceProjectCreate), {}, 1.f)->
+        withColour(defaultColor)->
+        withCallback([](TextEditor &) {
+            App::Workspace().createEmptyProject();
+            return true;
+        }));
+
+    this->projects.add(CommandPaletteAction::action(
+        TRANS(I18n::Menu::workspaceProjectOpen), {}, 1.f)->
+        withColour(defaultColor)->
+        withCallback([](TextEditor &) {
+            App::Workspace().importProject("*.helio;*.mid;*.midi");
+            return true;
+        }));
+
     for (auto *projectInfo : this->workspace.getUserProfile().getProjects())
     {
         const bool isLoaded = this->workspace.hasLoadedProject(projectInfo);
@@ -78,10 +95,11 @@ void CommandPaletteProjectsList::reloadProjects()
             return true;
         };
 
-        const auto defaultColor = findDefaultColour(Label::textColourId);
+        constexpr auto orderOffset = 10.f; // after 'create' and 'open' actions
         const auto sinceLastOpened = Time::getCurrentTime() - projectInfo->getUpdatedAt();
         this->projects.add(CommandPaletteAction::action(projectInfo->getTitle(),
-            App::getHumanReadableDate(projectInfo->getUpdatedAt()), float(sinceLastOpened.inSeconds()))->
+            App::getHumanReadableDate(projectInfo->getUpdatedAt()),
+            orderOffset + float(sinceLastOpened.inSeconds()))->
             withColour(isLoaded ? defaultColor : defaultColor.contrasting())->
             withCallback(action));
     }

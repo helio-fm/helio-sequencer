@@ -39,6 +39,9 @@ protected:
 
 private:
 
+    static constexpr auto noteLength = 4.f;
+    static constexpr auto noteVelocity = 0.35f;
+
     const UniquePointer<ChordCompiler> chordCompiler;
 
     PianoRoll &roll;
