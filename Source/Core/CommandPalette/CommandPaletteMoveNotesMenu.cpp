@@ -59,9 +59,14 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteMoveNotesMenu::getAc
 
     for (auto *targetTrack : this->project.findChildrenOfType<PianoTrackNode>())
     {
-        const auto name = this->getName() + ": " + targetTrack->getTrackName();
+        if (targetTrack == this->roll.getActiveTrack())
+        {
+            continue;
+        }
+
         static const float orderOffset = 10.f; // after the 'extract as new track' action
-        this->actionsCache.add(CommandPaletteAction::action(name, {}, orderOffset)->
+        this->actionsCache.add(CommandPaletteAction::action(targetTrack->getTrackName(),
+            this->getName(), orderOffset)->
             withColour(targetTrack->getTrackColour())->
             withCallback([this, targetTrack](TextEditor &)
         {

@@ -121,7 +121,7 @@ MenuItem::Ptr MenuItem::toggled(bool shouldBeToggled)
 MenuItem::Ptr MenuItem::colouredWith(const Colour &colour)
 {
     MenuItem::Ptr description(this);
-    description->colour = colour.interpolatedWith(findDefaultColour(Label::textColourId), 0.4f);
+    description->colour = colour.interpolatedWith(findDefaultColour(Label::textColourId), 0.5f);
     return description;
 }
 

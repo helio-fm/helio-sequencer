@@ -100,7 +100,7 @@ void CommandPaletteProjectsList::reloadProjects()
         this->projects.add(CommandPaletteAction::action(projectInfo->getTitle(),
             App::getHumanReadableDate(projectInfo->getUpdatedAt()),
             orderOffset + float(sinceLastOpened.inSeconds()))->
-            withColour(isLoaded ? defaultColor : defaultColor.contrasting())->
+            withColour(isLoaded ? defaultColor : defaultColor.withMultipliedAlpha(0.4f))->
             withCallback(action));
     }
 }

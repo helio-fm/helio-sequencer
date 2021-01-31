@@ -21,6 +21,7 @@
 
 enum class ShadowType : int8
 {
+    Hard,
     Normal,
     Light
 };
@@ -38,6 +39,10 @@ public:
 
         switch (type)
         {
+        case ShadowType::Hard:
+            this->shadowColour = Colours::black.withAlpha(0.15f);
+            this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.75f);
+            break;
         case ShadowType::Normal:
             this->shadowColour = Colours::black.withAlpha(0.1f);
             this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f);

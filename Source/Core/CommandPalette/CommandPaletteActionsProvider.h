@@ -47,7 +47,7 @@ private:
 
     String name;
     String hint;
-    Colour colour = Colours::grey;
+    Colour colour = findDefaultColour(Label::textColourId);
     Callback callback;
 
     int commandId = 0;

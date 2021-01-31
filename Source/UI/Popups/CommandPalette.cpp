@@ -36,7 +36,7 @@ static constexpr juce_wchar kTildaKey = '`';
 
 CommandPalette::CommandPalette(ProjectNode *project, HybridRoll *roll)
 {
-    this->shadowDn = make<ShadowDownwards>(ShadowType::Normal);
+    this->shadowDn = make<ShadowDownwards>(ShadowType::Hard);
     this->addAndMakeVisible(this->shadowDn.get());
     this->bg = make<PanelBackgroundC>();
     this->addAndMakeVisible(this->bg.get());
@@ -124,16 +124,16 @@ CommandPalette::~CommandPalette()
 
 void CommandPalette::resized()
 {
-    constexpr auto marginX = 12;
-    constexpr auto marginBottom = 8; // top margin is 0
+    constexpr auto marginX = 8;
+    constexpr auto marginBottom = 10; // top margin is 0
 
     this->bg->setBounds(marginX, 0,
         this->getWidth() - marginX * 2,
         this->getHeight() - marginBottom);
 
-    this->shadowDn->setBounds(marginX,
+    this->shadowDn->setBounds(marginX - 1,
         this->getHeight() - marginBottom,
-        this->getWidth() - marginX * 2,
+        this->getWidth() - marginX * 2 + 2,
         marginBottom);
 
     this->shadowL->setBounds(0, 0, marginX,
@@ -148,10 +148,10 @@ void CommandPalette::resized()
         this->getWidth() - (marginX + contentMargin) * 2, editorHeight);
 
     this->actionsList->setBounds(marginX + contentMargin,
-        contentMargin + editorHeight + 2,
+        contentMargin + editorHeight + 3,
         this->getWidth() - (marginX + contentMargin) * 2,
         this->getHeight() - (contentMargin * 2) -
-            editorHeight - marginBottom - 2);
+            editorHeight - marginBottom - 3);
 }
 
 void CommandPalette::parentHierarchyChanged()
@@ -159,7 +159,7 @@ void CommandPalette::parentHierarchyChanged()
     this->updatePosition();
 }
 
-void CommandPalette::handleCommandMessage (int commandId)
+void CommandPalette::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
@@ -167,7 +167,7 @@ void CommandPalette::handleCommandMessage (int commandId)
     }
 }
 
-bool CommandPalette::keyPressed (const KeyPress& key)
+bool CommandPalette::keyPressed(const KeyPress &key)
 {
     if (key.isKeyCode(KeyPress::escapeKey))
     {
@@ -229,13 +229,15 @@ void CommandPalette::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, 
 {
     jassert(this->currentActionsProvider != nullptr);
 
+    const auto textColour = findDefaultColour(ListBox::textColourId);
+
     if (rowIsSelected)
     {
-        g.fillAll(Colours::white.withAlpha(0.05f));
+        g.fillAll(textColour.withAlpha(0.1f));
     }
     else if (rowNumber % 2)
     {
-        g.fillAll(Colours::black.withAlpha(0.05f));
+        g.fillAll(textColour.withAlpha(0.015f));
     }
 
     if (rowNumber >= this->getNumRows())
@@ -243,13 +245,14 @@ void CommandPalette::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, 
         return;
     }
 
-    const auto action = this->currentActionsProvider->getFilteredActions().getUnchecked(rowNumber);
+    const auto action = this->currentActionsProvider->
+        getFilteredActions().getUnchecked(rowNumber);
 
     g.setFont(21);
     const float margin = float(h / 12.f);
 
-    const auto colour = findDefaultColour(ListBox::textColourId)
-        .interpolatedWith(action->getColor(), 0.35f);
+    const auto colour = action->getColor()
+        .interpolatedWith(textColour, 0.5f);
 
     // main text
     g.setColour(colour);
@@ -262,7 +265,8 @@ void CommandPalette::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, 
     glyphs.draw(g);
 
     // hint text
-    g.setColour(colour.withMultipliedAlpha(0.75f));
+    g.setColour(colour.withMultipliedAlpha(0.7f)
+        .withMultipliedSaturation(0.6f));
 
     g.drawFittedText(action->getHint(),
         0, 0, w - int(margin * 2), h,
