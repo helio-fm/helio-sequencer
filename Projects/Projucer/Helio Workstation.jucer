@@ -1499,8 +1499,8 @@
       </MODULEPATHS>
     </VS2015>
     <VS2019 targetFolder="../../Projects/VisualStudio2019" extraCompilerFlags="/FC /Gy /bigobj"
-            extraLinkerFlags="/OPT:REF /OPT:ICF=5" unityBuild="1" windowsTargetPlatformVersion="10.0.26624"
-            bigIcon="DQTpOG" smallIcon="DQTpOG">
+            extraLinkerFlags="/OPT:REF /OPT:ICF=5" unityBuild="1" bigIcon="DQTpOG"
+            smallIcon="DQTpOG">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="0" name="Release32" targetName="Helio" linkTimeOptimisation="0"
                        winArchitecture="Win32" enablePluginBinaryCopyStep="0" optimisation="3"
