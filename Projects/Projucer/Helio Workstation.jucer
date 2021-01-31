@@ -279,6 +279,10 @@
                 resource="0" file="../../Source/Core/CommandPalette/CommandPaletteChordConstructor.cpp"/>
           <FILE id="Ne02DZ" name="CommandPaletteChordConstructor.h" compile="0"
                 resource="0" file="../../Source/Core/CommandPalette/CommandPaletteChordConstructor.h"/>
+          <FILE id="O5GBiM" name="CommandPaletteMoveNotesMenu.cpp" compile="1"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteMoveNotesMenu.cpp"/>
+          <FILE id="AdUiB4" name="CommandPaletteMoveNotesMenu.h" compile="0"
+                resource="0" file="../../Source/Core/CommandPalette/CommandPaletteMoveNotesMenu.h"/>
           <FILE id="bccgCH" name="CommandPaletteProjectsList.cpp" compile="1"
                 resource="0" file="../../Source/Core/CommandPalette/CommandPaletteProjectsList.cpp"/>
           <FILE id="eaRAsU" name="CommandPaletteProjectsList.h" compile="0" resource="0"

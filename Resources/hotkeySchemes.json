@@ -24,10 +24,11 @@
       { "command": "CommandPalette", "key": "Control + G" },
       { "command": "CommandPalette", "key": "Command + G" },
 
-      // Quick access to command palette modes (/, !, @):
+      // Quick access to command palette modes (/, !, @, ^):
       { "command": "CommandPaletteWithMode", "key": "/" },
       { "command": "CommandPaletteWithMode", "key": "Shift + 1" },
       { "command": "CommandPaletteWithMode", "key": "Shift + 2" },
+      { "command": "CommandPaletteWithMode", "key": "Shift + 6" },
 
       { "command": "ShowPreviousPage", "key": "Command + Cursor Left" },
       { "command": "ShowPreviousPage", "key": "Control + Cursor Left" },

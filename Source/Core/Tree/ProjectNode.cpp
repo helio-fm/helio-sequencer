@@ -274,6 +274,9 @@ void ProjectNode::setMidiRecordingTarget(MidiTrack *const track, const Clip *cli
 void ProjectNode::setEditableScope(MidiTrack *const activeTrack,
     const Clip &activeClip, bool shouldFocusToArea)
 {
+    // fixme: remove activeTrack from parameters, this is ridiculous
+    jassert(activeClip.getPattern()->getTrack() == activeTrack);
+
     if (auto *item = dynamic_cast<PianoTrackNode *>(activeTrack))
     {
         // make sure the item is selected, if it's not yet;

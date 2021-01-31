@@ -47,6 +47,7 @@
 #include "SerializationKeys.h"
 #include "Arpeggiator.h"
 #include "CommandPaletteChordConstructor.h"
+#include "CommandPaletteMoveNotesMenu.h"
 #include "LassoListeners.h"
 #include "UndoStack.h"
 #include "Workspace.h"
@@ -83,6 +84,7 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
     this->draggingHelper = make<HelperRectangleHorizontal>();
     this->addChildComponent(this->draggingHelper.get());
 
+    this->consoleMoveNotesMenu = make<CommandPaletteMoveNotesMenu>(*this, this->project);
     this->consoleChordConstructor = make<CommandPaletteChordConstructor>(*this);
 
     const auto *uiFlags = App::Config().getUiFlags();
@@ -1597,13 +1599,20 @@ void PianoRoll::updateChildrenPositions()
 
 Array<CommandPaletteActionsProvider *> PianoRoll::getCommandPaletteActionProviders() const
 {
+    Array<CommandPaletteActionsProvider *> result;
+
     if (this->getPeriodSize() == Globals::twelveTonePeriodSize)
     {
-        // the chord constructor will only work for 12-EDO:
-        return { this->consoleChordConstructor.get() };
+        result.add(this->consoleChordConstructor.get());
     }
 
-    return {};
+    if (this->selection.getNumSelected() > 0)
+    {
+        // todo rescale menu, if anything is selected (#)?
+        result.add(this->consoleMoveNotesMenu.get());
+    }
+
+    return result;
 }
 
 //===----------------------------------------------------------------------===//

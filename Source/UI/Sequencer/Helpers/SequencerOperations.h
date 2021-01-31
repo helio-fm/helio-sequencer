@@ -45,6 +45,7 @@ struct SequencerOperations final
 
     static PianoSequence *getPianoSequence(const Lasso &selection);
     static PianoSequence *getPianoSequence(const SelectionProxyArray::Ptr selection);
+    static PianoSequence *getPianoSequence(const Clip &targetClip);
 
     static bool arpeggiate(Lasso &selection,
         const Temperament::Ptr temperament,
@@ -64,13 +65,16 @@ struct SequencerOperations final
     static void changeVolumeMultiplied(Lasso &selection, float volumeFactor);
     static void changeVolumeSine(Lasso &selection, float volumeFactor);
     static void endTuning(Lasso &selection);
-    
+
     static void copyToClipboard(Clipboard &clipboard, const Lasso &selection);
     static void pasteFromClipboard(Clipboard &clipboard, ProjectNode &project,
         WeakReference<MidiTrack> selectedTrack, float targetBeatPosition, bool shouldCheckpoint = true);
 
     static void deleteSelection(const Lasso &selection, bool shouldCheckpoint = true);
     static void duplicateSelection(const Lasso &selection, bool shouldCheckpoint = true);
+
+    static Clip *findClosestClip(Lasso &selection, WeakReference<MidiTrack> track);
+    static void moveSelection(Lasso &selection, Clip &targetClip, bool shouldCheckpoint = true);
 
     static void shiftKeyRelative(Lasso &selection, int deltaKey,
         bool shouldCheckpoint = true, Transport *transport = nullptr);

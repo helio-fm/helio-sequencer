@@ -272,6 +272,11 @@ PianoSequence *SequencerOperations::getPianoSequence(const Lasso &selection)
     return static_cast<PianoSequence *>(selection.getFirstAs<NoteComponent>()->getNote().getSequence());
 }
 
+PianoSequence *SequencerOperations::getPianoSequence(const Clip &targetClip)
+{
+    return static_cast<PianoSequence *>(targetClip.getPattern()->getTrack()->getSequence());
+}
+
 float SequencerOperations::findStartBeat(const Lasso &selection)
 {
     if (selection.getNumSelected() == 0)
@@ -2043,6 +2048,7 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
         return;
     }
 
+    // fixme: cleanup this; the selection will always contain notes for 1 track
     OwnedArray<PianoChangeGroup> selectionsByTrack;
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
@@ -2084,6 +2090,70 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
 
         sequence->insertGroup(*selectionsByTrack.getUnchecked(i), true);
     }
+}
+
+Clip *SequencerOperations::findClosestClip(Lasso &selection, WeakReference<MidiTrack> track)
+{
+    float selectionFirstBeat = FLT_MAX;
+    float selectionLastBeat = -FLT_MAX;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto &note = selection.getItemAs<NoteComponent>(i)->getNote();
+        selectionFirstBeat = jmin(note.getBeat(), selectionFirstBeat);
+        selectionLastBeat = jmax(note.getBeat(), selectionLastBeat);
+    }
+
+    const auto &sourceClip = selection.getFirstAs<NoteComponent>()->getClip();
+    const auto selectionStart = selectionFirstBeat + sourceClip.getBeat();
+    const auto selectionEnd = selectionLastBeat + sourceClip.getBeat() + 1.f;
+
+    auto *result = track->getPattern()->getClips().getFirst();
+    auto *targetSequence = static_cast<PianoSequence *>(track->getSequence());
+
+    float minDistance = FLT_MAX;
+    for (auto *clip : track->getPattern()->getClips())
+    {
+        const auto targetStart = targetSequence->getFirstBeat() + clip->getBeat();
+        const auto targetEnd = targetSequence->getLastBeat() + clip->getBeat();
+        const float distance = fabs(targetStart - selectionStart + targetEnd - selectionEnd);
+
+        if (minDistance > distance)
+        {
+            minDistance = distance;
+            result = clip;
+        }
+    }
+
+    return result;
+}
+
+void SequencerOperations::moveSelection(Lasso &selection,
+    Clip &targetClip, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() == 0) { return; }
+
+    auto *targetSequence = getPianoSequence(targetClip);
+    auto *sourceSequence = getPianoSequence(selection);
+
+    // here we need to calculate offsets so that the content 'stays in place':
+    const auto &sourceClip = selection.getFirstAs<NoteComponent>()->getClip();
+    const float deltaBeat = sourceClip.getBeat() - targetClip.getBeat();
+
+    Array<Note> toRemove, toInsert;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto &note = selection.getItemAs<NoteComponent>(i)->getNote();
+        toRemove.add(note);
+        toInsert.add(note.withDeltaBeat(deltaBeat));
+    }
+
+    if (shouldCheckpoint)
+    {
+        sourceSequence->checkpoint();
+    }
+
+    sourceSequence->removeGroup(toRemove, true);
+    targetSequence->insertGroup(toInsert, true);
 }
 
 Array<Note> SequencerOperations::cutEvents(const Array<Note> &notes,

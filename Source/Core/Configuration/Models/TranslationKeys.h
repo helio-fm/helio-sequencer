@@ -161,6 +161,7 @@ namespace I18n
             static const Identifier notesArpeggiate = "menu::selection::notes::arpeggiate";
             static const Identifier notesDivisions = "menu::selection::notes::divisions";
             static const Identifier notesQuantizeTo = "menu::selection::notes::quantize";
+            static const Identifier notesMoveTo = "menu::selection::notes::move";
             static const Identifier notesRefactor = "menu::selection::notes::refactor";
             static const Identifier notesRescale = "menu::selection::notes::rescale";
             static const Identifier notesToTrack = "menu::selection::notes::totrack";
@@ -313,6 +314,7 @@ namespace I18n
         static const Identifier projects = "console::projects";
         static const Identifier timeline = "console::timeline";
         static const Identifier chordBuilder = "console::chordbuilder";
+        static const Identifier moveNotes = "console::movenotes";
 
         static const Identifier chordSuggestion = "chord::suggestion";
         static const Identifier chordGenerate = "chord::compile";

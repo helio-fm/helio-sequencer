@@ -66,9 +66,9 @@ MidiTrack *Pattern::getTrack() const noexcept
 
 int Pattern::indexOfSorted(const Clip *target) const
 {
-    jassert(this->clips.size() > 0);
-    const auto *first = this->clips.getFirst();
-    return this->clips.indexOfSorted(*first, target);
+    static Clip comparator;
+    jassert(target->getPattern() == this);
+    return this->clips.indexOfSorted(comparator, target);
 }
 
 float Pattern::getFirstBeat() const noexcept
