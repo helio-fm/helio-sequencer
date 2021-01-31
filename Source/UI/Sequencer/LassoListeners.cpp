@@ -76,7 +76,7 @@ class PianoRollMenuSource final : public HeadlineItemDataSource
 {
 public:
 
-    PianoRollMenuSource(WeakReference<Lasso> lasso, const ProjectNode &project) :
+    PianoRollMenuSource(WeakReference<Lasso> lasso, ProjectNode &project) :
         lasso(lasso), project(project) {}
 
     bool hasMenu() const noexcept override { return true; }
@@ -101,7 +101,7 @@ public:
 
 private:
 
-    const ProjectNode &project;
+    ProjectNode &project;
     WeakReference<Lasso> lasso;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollMenuSource);
@@ -109,7 +109,7 @@ private:
 
 // Piano roll needs at least 2 events to be selected to show selection menu
 // I just don't want it to appear too frequently
-PianoRollSelectionMenuManager::PianoRollSelectionMenuManager(WeakReference<Lasso> lasso, const ProjectNode &project) :
+PianoRollSelectionMenuManager::PianoRollSelectionMenuManager(WeakReference<Lasso> lasso, ProjectNode &project) :
     SelectionMenuManager(lasso, 2)
 {
     this->menu = make<PianoRollMenuSource>(lasso, project);

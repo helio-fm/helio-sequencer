@@ -65,9 +65,9 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteMoveNotesMenu::getAc
             withColour(targetTrack->getTrackColour())->
             withCallback([this, targetTrack](TextEditor &)
         {
-            auto *closestClip = SequencerOperations::findClosestClip(this->roll.getLassoSelection(), targetTrack);
-            SequencerOperations::moveSelection(this->roll.getLassoSelection(), *closestClip, true);
-            this->project.setEditableScope(targetTrack, *closestClip, false);
+            auto &closestClip = SequencerOperations::findClosestClip(this->roll.getLassoSelection(), targetTrack);
+            SequencerOperations::moveSelection(this->roll.getLassoSelection(), closestClip, true);
+            this->project.setEditableScope(targetTrack, closestClip, false);
             return true;
         }));
     }

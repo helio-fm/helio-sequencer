@@ -2092,7 +2092,7 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
     }
 }
 
-Clip *SequencerOperations::findClosestClip(Lasso &selection, WeakReference<MidiTrack> track)
+Clip &SequencerOperations::findClosestClip(Lasso &selection, WeakReference<MidiTrack> track)
 {
     float selectionFirstBeat = FLT_MAX;
     float selectionLastBeat = -FLT_MAX;
@@ -2124,7 +2124,7 @@ Clip *SequencerOperations::findClosestClip(Lasso &selection, WeakReference<MidiT
         }
     }
 
-    return result;
+    return *result;
 }
 
 void SequencerOperations::moveSelection(Lasso &selection,

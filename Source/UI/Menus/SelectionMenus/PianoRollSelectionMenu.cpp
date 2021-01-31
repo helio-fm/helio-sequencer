@@ -20,16 +20,14 @@
 
 #include "Lasso.h"
 #include "SequencerOperations.h"
-
 #include "NoteComponent.h"
 
 #include "ProjectNode.h"
 #include "ProjectMetadata.h"
-
+#include "PianoTrackNode.h"
 #include "ProjectTimeline.h"
 
 #include "CommandIDs.h"
-
 #include "MainLayout.h"
 #include "Config.h"
 
@@ -49,6 +47,14 @@ MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
     menu.add(MenuItem::item(Icons::reprise,
         CommandIDs::ToggleLoopOverSelection,
         TRANS(I18n::CommandPalette::toggleLoopOverSelection))->closesMenu());
+
+    menu.add(MenuItem::item(Icons::cut,
+        TRANS(I18n::Menu::Selection::notesMoveTo))->
+        withSubmenu()->
+        withAction([this]()
+    {
+        this->updateContent(this->createMoveToTrackPanel(), MenuPanel::SlideLeft);
+    }));
 
     menu.add(MenuItem::item(Icons::refactor,
         TRANS(I18n::Menu::Selection::notesRefactor))->
@@ -88,6 +94,45 @@ MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
     return menu;
 }
 
+MenuPanel::Menu PianoRollSelectionMenu::createMoveToTrackPanel()
+{
+    MenuPanel::Menu menu;
+
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
+    {
+        this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
+    }));
+
+    menu.add(MenuItem::item(Icons::cut, CommandIDs::NewTrackFromSelection,
+        TRANS(I18n::Menu::Selection::notesToTrack))->closesMenu());
+
+    jassert(this->lasso->getNumSelected() > 0);
+
+    const auto *sourceTrack =
+        this->lasso->getFirstAs<NoteComponent>()->getNote().getSequence()->getTrack();
+
+    for (auto *targetTrack : this->project.findChildrenOfType<PianoTrackNode>())
+    {
+        if (targetTrack == sourceTrack)
+        {
+            continue;
+        }
+
+        menu.add(MenuItem::item(Icons::pianoTrack, targetTrack->getTrackName())->
+            colouredWith(targetTrack->getTrackColour())->
+            closesMenu()->
+            withAction([this, targetTrack]()
+        {
+            auto &selection = *this->lasso.get();
+            auto &closestClip = SequencerOperations::findClosestClip(selection, targetTrack);
+            SequencerOperations::moveSelection(selection, closestClip, true);
+            this->project.setEditableScope(targetTrack, closestClip, false);
+        }));
+    }
+
+    return menu;
+}
+
 MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
 {
     MenuPanel::Menu menu;
@@ -97,9 +142,6 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
     
-    menu.add(MenuItem::item(Icons::cut, CommandIDs::NewTrackFromSelection,
-        TRANS(I18n::Menu::Selection::notesToTrack))->closesMenu());
-
     const bool canRefactor = this->lasso->getNumSelected() > 1;
 
     menu.add(MenuItem::item(Icons::inverseUp, CommandIDs::InvertChordUp,
@@ -256,7 +298,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
     return menu;
 }
 
-PianoRollSelectionMenu::PianoRollSelectionMenu(const ProjectNode &project, WeakReference<Lasso> lasso) :
+PianoRollSelectionMenu::PianoRollSelectionMenu(ProjectNode &project, WeakReference<Lasso> lasso) :
     project(project),
     lasso(lasso)
 {

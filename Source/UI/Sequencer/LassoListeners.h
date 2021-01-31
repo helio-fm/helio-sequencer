@@ -49,7 +49,7 @@ private:
 class PianoRollSelectionMenuManager final : public SelectionMenuManager
 {
 public:
-    PianoRollSelectionMenuManager(WeakReference<Lasso> lasso, const ProjectNode &project);
+    PianoRollSelectionMenuManager(WeakReference<Lasso> lasso, ProjectNode &project);
 };
 
 class PatternRollSelectionMenuManager final : public SelectionMenuManager

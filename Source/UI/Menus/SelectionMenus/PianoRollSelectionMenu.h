@@ -29,11 +29,11 @@ class PianoRollSelectionMenu final : public MenuPanel
 {
 public:
     
-    PianoRollSelectionMenu(const ProjectNode &project, WeakReference<Lasso> lasso);
+    PianoRollSelectionMenu(ProjectNode &project, WeakReference<Lasso> lasso);
 
 private:
 
-    const ProjectNode &project;
+    ProjectNode &project;
     WeakReference<Lasso> lasso;
 
     Note::Key harmonicContextKey = -1;
@@ -42,6 +42,7 @@ private:
     MenuPanel::Menu createDefaultPanel();
     MenuPanel::Menu createQuantizationPanel();
     MenuPanel::Menu createRefactoringPanel();
+    MenuPanel::Menu createMoveToTrackPanel();
     MenuPanel::Menu createTupletsPanel();
     MenuPanel::Menu createScalesPanel();
     MenuPanel::Menu createArpsPanel();
