@@ -1402,7 +1402,7 @@
                        targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
                        enablePluginBinaryCopyStep="1" codeSigningIdentity="Developer ID Application"
                        customXcodeFlags="CODE_SIGN_STYLE = &quot;Manual&quot;"/>
-        <CONFIGURATION name="Release" osxCompatibility="10.7 SDK" isDebug="0" optimisation="2"
+        <CONFIGURATION name="Release" osxCompatibility="10.7 SDK" isDebug="0" optimisation="3"
                        targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
                        stripLocalSymbols="1" enablePluginBinaryCopyStep="1" linkTimeOptimisation="1"
                        codeSigningIdentity="Developer ID Application" customXcodeFlags="CODE_SIGN_STYLE = &quot;Manual&quot;"/>
@@ -1438,7 +1438,7 @@
         <CONFIGURATION name="Debug" iosCompatibility="9.0" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
                        enablePluginBinaryCopyStep="1"/>
-        <CONFIGURATION name="Release" iosCompatibility="9.0" isDebug="0" optimisation="2"
+        <CONFIGURATION name="Release" iosCompatibility="9.0" isDebug="0" optimisation="3"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
                        customXcodeFlags="PROVISIONING_PROFILE=&quot;Helio AppStore New&quot;, CODE_SIGN_STYLE = &quot;Manual&quot;"
                        enablePluginBinaryCopyStep="1" linkTimeOptimisation="0" stripLocalSymbols="1"
@@ -1472,11 +1472,11 @@
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
                        warningsAreErrors="1" defines="JUCE_UNIT_TESTS=1"/>
         <CONFIGURATION name="Release32" winWarningLevel="4" generateManifest="1" winArchitecture="Win32"
-                       isDebug="0" optimisation="4" targetName="Helio" useRuntimeLibDLL="0"
+                       isDebug="0" optimisation="3" targetName="Helio" useRuntimeLibDLL="0"
                        enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="0"/>
         <CONFIGURATION name="Release64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="4" targetName="Helio" useRuntimeLibDLL="0"
+                       isDebug="0" optimisation="3" targetName="Helio" useRuntimeLibDLL="0"
                        enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
                        enablePluginBinaryCopyStep="0" warningsAreErrors="1" linkTimeOptimisation="0"/>
       </CONFIGURATIONS>
@@ -1496,14 +1496,14 @@
     </VS2015>
     <VS2019 targetFolder="../../Projects/VisualStudio2019" extraCompilerFlags="/FC /Gy /bigobj"
             extraLinkerFlags="/OPT:REF /OPT:ICF=5" unityBuild="1" windowsTargetPlatformVersion="10.0.26624"
-            toolset="v141_xp" bigIcon="DQTpOG" smallIcon="DQTpOG">
+            bigIcon="DQTpOG" smallIcon="DQTpOG">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="0" name="Release32" targetName="Helio" linkTimeOptimisation="0"
-                       winArchitecture="Win32" enablePluginBinaryCopyStep="0" optimisation="2"
+                       winArchitecture="Win32" enablePluginBinaryCopyStep="0" optimisation="3"
                        warningsAreErrors="1" useRuntimeLibDLL="0" winWarningLevel="4"
                        enableIncrementalLinking="0"/>
         <CONFIGURATION isDebug="0" name="Release64" targetName="Helio" linkTimeOptimisation="0"
-                       winArchitecture="x64" optimisation="2" warningsAreErrors="1"
+                       winArchitecture="x64" optimisation="3" warningsAreErrors="1"
                        useRuntimeLibDLL="0" winWarningLevel="4" enableIncrementalLinking="0"
                        enablePluginBinaryCopyStep="0"/>
       </CONFIGURATIONS>
@@ -1531,9 +1531,9 @@
                        targetName="Helio"/>
         <CONFIGURATION name="Tests" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="Helio" defines="JUCE_UNIT_TESTS=1"/>
-        <CONFIGURATION name="Release32" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="2"
+        <CONFIGURATION name="Release32" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
                        targetName="Helio" linuxArchitecture="-m32" linkTimeOptimisation="0"/>
-        <CONFIGURATION name="Release64" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="2"
+        <CONFIGURATION name="Release64" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
                        targetName="Helio" linuxArchitecture="-m64" linkTimeOptimisation="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -1568,7 +1568,7 @@
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Helio"
                        androidArchitectures="armeabi-v7a x86"/>
         <CONFIGURATION name="Release" androidArchitectures="armeabi-v7a x86" isDebug="0"
-                       optimisation="2" targetName="Helio" linkTimeOptimisation="0"/>
+                       optimisation="3" targetName="Helio" linkTimeOptimisation="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
