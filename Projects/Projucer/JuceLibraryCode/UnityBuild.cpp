@@ -43,6 +43,7 @@
 #include "../../Source/Core/CommandPalette/CommandPaletteActionsProvider.cpp"
 #include "../../Source/Core/CommandPalette/CommandPaletteCommonActions.cpp"
 #include "../../Source/Core/CommandPalette/CommandPaletteChordConstructor.cpp"
+#include "../../Source/Core/CommandPalette/CommandPaletteMoveNotesMenu.cpp"
 #include "../../Source/Core/CommandPalette/CommandPaletteProjectsList.cpp"
 #include "../../Source/Core/CommandPalette/CommandPaletteTimelineEvents.cpp"
 #include "../../Source/Core/Midi/Patterns/Clip.cpp"

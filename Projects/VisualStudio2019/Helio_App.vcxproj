@@ -251,6 +251,9 @@
     <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteChordConstructor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteMoveNotesMenu.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteProjectsList.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2913,6 +2916,7 @@
     <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteActionsProvider.h"/>
     <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteCommonActions.h"/>
     <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteChordConstructor.h"/>
+    <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteMoveNotesMenu.h"/>
     <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteProjectsList.h"/>
     <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteTimelineEvents.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\Patterns\Clip.h"/>

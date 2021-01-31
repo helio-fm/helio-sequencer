@@ -721,6 +721,9 @@
     <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteChordConstructor.cpp">
       <Filter>Helio\Source\Core\CommandPalette</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteMoveNotesMenu.cpp">
+      <Filter>Helio\Source\Core\CommandPalette</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteProjectsList.cpp">
       <Filter>Helio\Source\Core\CommandPalette</Filter>
     </ClCompile>
@@ -3592,6 +3595,9 @@
       <Filter>Helio\Source\Core\CommandPalette</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteChordConstructor.h">
+      <Filter>Helio\Source\Core\CommandPalette</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteMoveNotesMenu.h">
       <Filter>Helio\Source\Core\CommandPalette</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteProjectsList.h">

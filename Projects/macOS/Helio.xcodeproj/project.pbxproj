@@ -4713,6 +4713,13 @@
 			path = "../Projucer/JuceLibraryCode/include_juce_audio_processors.mm";
 			sourceTree = "SOURCE_ROOT";
 		};
+		CFFC3C1B9DEB1CC76A985513 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.cpp.cpp;
+			name = CommandPaletteMoveNotesMenu.cpp;
+			path = ../../Source/Core/CommandPalette/CommandPaletteMoveNotesMenu.cpp;
+			sourceTree = "SOURCE_ROOT";
+		};
 		D01EC542ECDDCF62D3E615A3 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
@@ -5679,6 +5686,13 @@
 			path = ../../Source/Core/Undo/Actions/KeySignatureEventActions.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		FEF8584232E07B492F67C828 = {
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = CommandPaletteMoveNotesMenu.h;
+			path = ../../Source/Core/CommandPalette/CommandPaletteMoveNotesMenu.h;
+			sourceTree = "SOURCE_ROOT";
+		};
 		FF2F34B06DF8F782AF4FCEC1 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.cpp;
@@ -5967,6 +5981,8 @@
 				E6E052F0B1323369628EC2FB,
 				72FE6333BB3CC616E34D0D29,
 				DBC6F9AC5940C0C92D3A3DA5,
+				CFFC3C1B9DEB1CC76A985513,
+				FEF8584232E07B492F67C828,
 				82CDD136587B74E7384A2691,
 				94F48656E66BE393F6C3C4AA,
 				6E23BD2DC51159088DAA72DE,

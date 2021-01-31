@@ -306,6 +306,7 @@
     <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteActionsProvider.cpp"/>
     <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteCommonActions.cpp"/>
     <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteChordConstructor.cpp"/>
+    <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteMoveNotesMenu.cpp"/>
     <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteProjectsList.cpp"/>
     <ClCompile Include="..\..\Source\Core\CommandPalette\CommandPaletteTimelineEvents.cpp"/>
     <ClCompile Include="..\..\Source\Core\Midi\Patterns\Clip.cpp"/>
@@ -2494,6 +2495,7 @@
     <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteActionsProvider.h"/>
     <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteCommonActions.h"/>
     <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteChordConstructor.h"/>
+    <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteMoveNotesMenu.h"/>
     <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteProjectsList.h"/>
     <ClInclude Include="..\..\Source\Core\CommandPalette\CommandPaletteTimelineEvents.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\Patterns\Clip.h"/>
