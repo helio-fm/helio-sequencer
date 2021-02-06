@@ -282,7 +282,7 @@ namespace BinaryData
     const int            noise_pngSize = 149;
 
     extern const char*   emptyProject_json;
-    const int            emptyProject_jsonSize = 1201;
+    const int            emptyProject_jsonSize = 885;
 
     extern const char*   exampleProject_json;
     const int            exampleProject_jsonSize = 3287;
