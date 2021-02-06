@@ -150,9 +150,12 @@ void PianoRoll::updateActiveRangeIndicator() const
 {
     if (this->activeTrack != nullptr)
     {
-        const float firstBeat = this->activeTrack->getSequence()->getFirstBeat();
-        const float lastBeat = this->activeTrack->getSequence()->getLastBeat();
-        const float clipBeat = this->activeClip.getBeat();
+        const auto clipBeat = this->activeClip.getBeat();
+        const auto *sequence = this->activeTrack->getSequence();
+        const auto firstBeat = sequence->getFirstBeat();
+        const auto lastBeat = sequence->isEmpty() ?
+            firstBeat + Globals::Defaults::emptyClipLength :
+            sequence->getLastBeat();
 
         this->header->updateSubrangeIndicator(this->activeTrack->getTrackColour(),
             firstBeat + clipBeat, lastBeat + clipBeat);
@@ -512,7 +515,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
     else if (event.isTypeOf(MidiEvent::Type::KeySignature))
     {
         // Repainting background caches on the fly may be costly
-        const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(event);
+        const auto &key = static_cast<const KeySignatureEvent &>(event);
         this->updateBackgroundCacheFor(key);
         this->repaint();
     }
@@ -647,6 +650,14 @@ void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
 
         this->updateActiveRangeIndicator(); // colour might have changed
         this->repaint();
+    }
+}
+
+void PianoRoll::onChangeTrackBeatRange(MidiTrack *const track)
+{
+    if (track == this->activeTrack)
+    {
+        this->updateActiveRangeIndicator();
     }
 }
 

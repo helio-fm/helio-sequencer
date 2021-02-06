@@ -264,16 +264,14 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
     const auto trackGroupKey = track->getTrackGroupKey(grouping);
     const int trackIndex = this->rows.indexOfSorted(kStringSort, trackGroupKey);
 
-    const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
-
     // In case there are no events, display an empty clip of some default length,
     // if there are some really short events (e.g. the first moments in recording mode),
     // set the minimal limit for the clip bounds:
-    const float sequenceLength = (sequence->size() == 0) ? Globals::Defaults::emptyClipLength :
+    const float sequenceLength = sequence->isEmpty() ? Globals::Defaults::emptyClipLength :
         jmax(sequence->getLengthInBeats(), Globals::minClipLength);
 
     const float w = this->beatWidth * sequenceLength;
-    const float x = this->beatWidth * (sequenceOffset + clipBeat - this->firstBeat);
+    const float x = this->beatWidth * (sequence->getFirstBeat() + clipBeat - this->firstBeat);
     const float y = float(trackIndex * PatternRoll::rowHeight);
 
     return Rectangle<float>(x,
@@ -285,15 +283,13 @@ float PatternRoll::getBeatForClipByXPosition(const Clip &clip, float x) const
 {
     // One trick here is that displayed clip position depends on a sequence's first beat as well:
     const auto *sequence = clip.getPattern()->getTrack()->getSequence();
-    const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
-    return this->getRoundBeatSnapByXPosition(int(x)) - sequenceOffset;
+    return this->getRoundBeatSnapByXPosition(int(x)) - sequence->getFirstBeat();
 }
 
 float PatternRoll::getBeatByMousePosition(const Pattern *pattern, int x) const
 {
     const auto *sequence = pattern->getTrack()->getSequence();
-    const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
-    return this->getFloorBeatSnapByXPosition(x) - sequenceOffset;
+    return this->getFloorBeatSnapByXPosition(x) - sequence->getFirstBeat();
 }
 
 //===----------------------------------------------------------------------===//

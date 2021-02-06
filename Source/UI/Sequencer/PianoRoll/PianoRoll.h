@@ -116,6 +116,7 @@ public:
     void onAddTrack(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;
+    void onChangeTrackBeatRange(MidiTrack *const track) override;
 
     void onChangeProjectInfo(const ProjectMetadata *info) override;
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,

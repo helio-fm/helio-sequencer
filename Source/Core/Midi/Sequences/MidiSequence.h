@@ -39,7 +39,7 @@ public:
     //===------------------------------------------------------------------===//
 
     UndoActionId getLastUndoActionId() const;
-    void checkpoint(UndoActionId id = 0) noexcept;
+    void checkpoint(UndoActionId id = UndoActionIDs::None) noexcept;
     void undo();
     void undoCurrentTransactionOnly();
     void redo();
@@ -112,6 +112,12 @@ public:
     //===------------------------------------------------------------------===//
 
     void sort();
+
+    inline bool isEmpty() const noexcept
+    { return this->midiEvents.isEmpty(); }
+
+    inline bool isNotEmpty() const noexcept
+    { return !this->midiEvents.isEmpty(); }
 
     inline int size() const noexcept
     { return this->midiEvents.size(); }

@@ -136,22 +136,14 @@ float MidiSequence::midiTicksToBeats(double ticks, int timeFormat) noexcept
 
 float MidiSequence::findFirstBeat() const noexcept
 {
-    if (this->midiEvents.size() == 0)
-    {
-        return FLT_MAX;
-    }
-    
-    return this->midiEvents.getFirst()->getBeat();
+    return this->isEmpty() ? 0.f :
+        this->midiEvents.getFirst()->getBeat();
 }
 
 float MidiSequence::findLastBeat() const noexcept
 {
-    if (this->midiEvents.size() == 0)
-    {
-        return -FLT_MAX;
-    }
-    
-    return this->midiEvents.getLast()->getBeat();
+    return this->isEmpty() ? 0.f :
+        this->midiEvents.getLast()->getBeat();
 }
 
 float MidiSequence::getLengthInBeats() const noexcept
