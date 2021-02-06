@@ -69,7 +69,7 @@ void CommandPaletteProjectsList::reloadProjects()
     for (auto *projectInfo : this->workspace.getUserProfile().getProjects())
     {
         const bool isLoaded = this->workspace.hasLoadedProject(projectInfo);
-        const CommandPaletteAction::Callback action = [this, projectInfo](TextEditor &ed)
+        const auto action = [this, projectInfo](TextEditor &)
         {
             for (auto *loadedProject : this->workspace.getLoadedProjects())
             {

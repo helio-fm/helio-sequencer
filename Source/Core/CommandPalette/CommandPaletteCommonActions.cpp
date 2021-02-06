@@ -28,13 +28,14 @@ static CommandPaletteActionsProvider::Actions buildCommandsListFor(const Compone
     FlatHashSet<Identifier, IdentifierHash> duplicateLookup;
 
     const auto hotkeys = App::Config().getHotkeySchemes()->getCurrent();
+    const auto actionColor = findDefaultColour(Label::textColourId).withMultipliedAlpha(0.8f);
 
     for (const auto &keyPress : hotkeys->getKeyPresses())
     {
         const auto i18nKey = CommandIDs::getTranslationKeyFor(keyPress.commandId);
         if (i18nKey.isValid() && keyPress.componentId == target->getComponentID())
         {
-            const CommandPaletteAction::Callback action = [keyPress](TextEditor &ed)
+            const auto action = [keyPress](TextEditor &ed)
             {
                 App::Layout().broadcastCommandMessage(keyPress.commandId);
                 return true;
@@ -45,7 +46,8 @@ static CommandPaletteActionsProvider::Actions buildCommandsListFor(const Compone
             {
                 duplicateLookup.insert(i18nKey);
                 actions.add(CommandPaletteAction::action(TRANS(i18nKey),
-                    keyPress.keyPress.getTextDescription(), 0.f)->withCallback(action));
+                    keyPress.keyPress.getTextDescription(), 0.f)->
+                    withColour(actionColor)->withCallback(action));
             }
         }
     }

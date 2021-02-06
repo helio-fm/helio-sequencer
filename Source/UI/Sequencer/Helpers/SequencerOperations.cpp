@@ -2137,14 +2137,15 @@ void SequencerOperations::moveSelection(Lasso &selection,
 
     // here we need to calculate offsets so that the content 'stays in place':
     const auto &sourceClip = selection.getFirstAs<NoteComponent>()->getClip();
-    const float deltaBeat = sourceClip.getBeat() - targetClip.getBeat();
+    const auto deltaBeat = sourceClip.getBeat() - targetClip.getBeat();
+    const auto deltaKey = sourceClip.getKey() - targetClip.getKey();
 
     Array<Note> toRemove, toInsert;
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const auto &note = selection.getItemAs<NoteComponent>(i)->getNote();
         toRemove.add(note);
-        toInsert.add(note.withDeltaBeat(deltaBeat));
+        toInsert.add(note.withDeltaBeat(deltaBeat).withDeltaKey(deltaKey));
     }
 
     if (shouldCheckpoint)

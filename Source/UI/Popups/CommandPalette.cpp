@@ -229,33 +229,36 @@ void CommandPalette::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, 
 {
     jassert(this->currentActionsProvider != nullptr);
 
-    const auto textColour = findDefaultColour(ListBox::textColourId);
-
-    if (rowIsSelected)
-    {
-        g.fillAll(textColour.withAlpha(0.1f));
-    }
-    else if (rowNumber % 2)
-    {
-        g.fillAll(textColour.withAlpha(0.015f));
-    }
-
     if (rowNumber >= this->getNumRows())
     {
         return;
     }
 
+    const auto labelColour = findDefaultColour(ListBox::textColourId);
+
     const auto action = this->currentActionsProvider->
         getFilteredActions().getUnchecked(rowNumber);
 
-    g.setFont(21);
+    const auto mainTextColour = action->getColor()
+        .interpolatedWith(labelColour, 0.5f);
+
+    const auto highlightingColour = action->getColor()
+        .interpolatedWith(labelColour, 0.75f);
+
+    if (rowIsSelected)
+    {
+        g.fillAll(highlightingColour.withAlpha(0.1f));
+    }
+    else if (rowNumber % 2)
+    {
+        g.fillAll(highlightingColour.withAlpha(0.015f));
+    }
+
+    g.setFont({ 21 });
     const float margin = float(h / 12.f);
 
-    const auto colour = action->getColor()
-        .interpolatedWith(textColour, 0.5f);
-
     // main text
-    g.setColour(colour);
+    g.setColour(mainTextColour);
 
     auto glyphs = action->getGlyphArrangement();
     glyphs.justifyGlyphs(0, glyphs.getNumGlyphs(),
@@ -265,7 +268,7 @@ void CommandPalette::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, 
     glyphs.draw(g);
 
     // hint text
-    g.setColour(colour.withMultipliedAlpha(0.7f)
+    g.setColour(mainTextColour.withMultipliedAlpha(0.7f)
         .withMultipliedSaturation(0.6f));
 
     g.drawFittedText(action->getHint(),
@@ -298,9 +301,11 @@ void CommandPalette::moveRowSelectionBy(int offset)
 
 void CommandPalette::textEditorTextChanged(TextEditor &ed)
 {
+    bool foundValidPrefix = false;
+    this->currentActionsProvider = this->rootActionsProvider;
+
     if (ed.getText().isNotEmpty())
     {
-        bool foundValidPrefix = false;
         const auto firstChar = ed.getText()[0];
         for (auto provider : this->actionsProviders)
         {
@@ -311,20 +316,16 @@ void CommandPalette::textEditorTextChanged(TextEditor &ed)
                 break;
             }
         }
+    }
 
-        if (foundValidPrefix && ed.getText().length() == 1)
-        {
-            this->currentActionsProvider->clearFilter();
-        }
-        else
-        {
-            this->currentActionsProvider->updateFilter(ed.getText(), foundValidPrefix);
-        }
+    if ((foundValidPrefix && ed.getText().length() == 1) ||
+        (!foundValidPrefix && ed.getText().isEmpty()))
+    {
+        this->currentActionsProvider->clearFilter();
     }
     else
     {
-        this->currentActionsProvider = this->rootActionsProvider;
-        this->currentActionsProvider->clearFilter();
+        this->currentActionsProvider->updateFilter(ed.getText(), foundValidPrefix);
     }
 
     this->actionsList->updateContent();
