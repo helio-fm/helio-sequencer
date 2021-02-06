@@ -232,7 +232,7 @@ void ProjectNode::recreatePage()
         this->broadcastReloadProjectContent();
 
         const auto range = this->broadcastChangeProjectBeatRange();
-        this->broadcastChangeViewBeatRange(range.getX(), range.getY());
+        this->broadcastChangeViewBeatRange(range.getStart(), range.getEnd());
     }
 
     this->sequencerLayout->deserialize(layoutState);
@@ -423,7 +423,7 @@ void ProjectNode::collectTracks(Array<MidiTrack *> &resultArray, bool onlySelect
     }
 }
 
-Point<float> ProjectNode::getProjectRangeInBeats() const
+Range<float> ProjectNode::getProjectRangeInBeats() const
 {
     float lastBeat = -FLT_MAX;
     float firstBeat = FLT_MAX;
@@ -584,8 +584,8 @@ void ProjectNode::load(const SerializedData &tree)
     // then to round beats to nearest bars
     // because rolls' view ranges are rounded to bars
     const float r = float(Globals::beatsPerBar);
-    const float viewStartWithMargin = range.getX() - r;
-    const float viewEndWithMargin = range.getY() + r;
+    const float viewStartWithMargin = range.getStart() - r;
+    const float viewEndWithMargin = range.getEnd() + r;
     const float viewFirstBeat = floorf(viewStartWithMargin / r) * r;
     const float viewLastBeat = ceilf(viewEndWithMargin / r) * r;
     this->broadcastChangeViewBeatRange(viewFirstBeat, viewLastBeat);
@@ -688,8 +688,8 @@ void ProjectNode::importMidi(InputStream &stream)
     this->isTracksCacheOutdated = true;
     this->broadcastReloadProjectContent();
     const auto range = this->broadcastChangeProjectBeatRange();
-    this->broadcastChangeViewBeatRange(range.x - Globals::beatsPerBar,
-        range.y + Globals::beatsPerBar); // adding some margin
+    this->broadcastChangeViewBeatRange(range.getStart() - Globals::beatsPerBar,
+        range.getEnd() + Globals::beatsPerBar); // adding some margin
 
     this->getDocument()->save();
 }
@@ -819,15 +819,15 @@ void ProjectNode::broadcastChangeProjectInfo(const ProjectMetadata *info)
     this->sendChangeMessage();
 }
 
-Point<float> ProjectNode::broadcastChangeProjectBeatRange()
+Range<float> ProjectNode::broadcastChangeProjectBeatRange()
 {
     const auto beatRange = this->getProjectRangeInBeats();
     
-    if (this->firstBeatCache != beatRange.getX() ||
-        this->lastBeatCache != beatRange.getY())
+    if (this->firstBeatCache != beatRange.getStart() ||
+        this->lastBeatCache != beatRange.getEnd())
     {
-        this->firstBeatCache = beatRange.getX();
-        this->lastBeatCache = beatRange.getY();
+        this->firstBeatCache = beatRange.getStart();
+        this->lastBeatCache = beatRange.getEnd();
 
         // changeListeners.call iterates listeners list in REVERSE order
         // so that transport updates playhead position later then others,
@@ -1086,8 +1086,8 @@ void ProjectNode::onResetState()
 {
     this->broadcastReloadProjectContent();
     const auto range = this->broadcastChangeProjectBeatRange();
-    this->broadcastChangeViewBeatRange(range.x - Globals::beatsPerBar,
-        range.y + Globals::beatsPerBar); // adding some margin
+    this->broadcastChangeViewBeatRange(range.getStart() - Globals::beatsPerBar,
+        range.getEnd() + Globals::beatsPerBar); // adding some margin
 
     // during vcs operations, notifications are not sent, including tree selection changes,
     // which happen, when something is deleted, so we need to do it afterwards:

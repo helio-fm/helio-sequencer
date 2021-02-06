@@ -161,7 +161,7 @@ static ProjectNode *createProjectContentFromTemplate(ProjectNode *project, const
 
     project->broadcastReloadProjectContent();
     const auto range = project->broadcastChangeProjectBeatRange();
-    project->broadcastChangeViewBeatRange(range.getX(), range.getY());
+    project->broadcastChangeViewBeatRange(range.getStart(), range.getEnd());
     project->getDocument()->save();
 
     return project;

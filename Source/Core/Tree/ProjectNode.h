@@ -113,7 +113,7 @@ public:
     //===------------------------------------------------------------------===//
 
     Array<MidiTrack *> getTracks() const;
-    Point<float> getProjectRangeInBeats() const;
+    Range<float> getProjectRangeInBeats() const;
     StringArray getAllTrackNames() const;
     MidiTrack::Grouping getTrackGroupingMode() const noexcept;
     void setTrackGroupingMode(MidiTrack::Grouping mode);
@@ -155,7 +155,7 @@ public:
 
     void broadcastChangeProjectInfo(const ProjectMetadata *info);
     void broadcastChangeViewBeatRange(float firstBeat, float lastBeat);
-    Point<float> broadcastChangeProjectBeatRange();
+    Range<float> broadcastChangeProjectBeatRange();
 
     void broadcastBeforeReloadProjectContent();
     void broadcastReloadProjectContent();

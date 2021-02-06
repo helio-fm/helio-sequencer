@@ -2357,7 +2357,8 @@ bool SequencerOperations::setOneTempoForProject(ProjectNode &project,
 
     // finally:
     const auto range = project.getProjectRangeInBeats();
-    return setOneTempoForTrack(tempoTrackOne, range.x, range.y, bpmValue, !didCheckpoint);
+    return setOneTempoForTrack(tempoTrackOne,
+        range.getStart(), range.getEnd(), bpmValue, !didCheckpoint);
 }
 
 //===----------------------------------------------------------------------===//
@@ -2526,10 +2527,9 @@ SerializedData SequencerOperations::createPianoTrackTemplate(ProjectNode &projec
     newNode->setTrackInstrumentId(instrumentId, false);
 
     // insert a single note just so there is a visual anchor in the piano roll:
-    const float firstBeat = project.getProjectRangeInBeats().getX();
     const int middleC = project.getProjectInfo()->getTemperament()->getMiddleC();
     auto *pianoSequence = static_cast<PianoSequence *>(newNode->getSequence());
-    pianoSequence->insert(Note(pianoSequence, middleC, firstBeat,
+    pianoSequence->insert(Note(pianoSequence, middleC, 0.f,
         float(Globals::beatsPerBar), 0.5f), false);
 
     outTrackId = newNode->getTrackId();
@@ -2555,13 +2555,10 @@ SerializedData SequencerOperations::createAutoTrackTemplate(ProjectNode &project
     const float cv1 = newNode->isOnOffAutomationTrack() ? 1.f : 0.5f;
     const float cv2 = newNode->isOnOffAutomationTrack() ? 0.f : 0.5f;
 
-    const auto beatRange = project.getProjectRangeInBeats();
-    const float firstBeat = beatRange.getX();
-    const float lastBeat = beatRange.getY();
-
-    autoSequence->insert(AutomationEvent(autoSequence, firstBeat, cv1), false);
     // second event is placed at the end of the track for convenience:
-    autoSequence->insert(AutomationEvent(autoSequence, lastBeat, cv2), false);
+    const auto beatRange = project.getProjectRangeInBeats();
+    autoSequence->insert(AutomationEvent(autoSequence, beatRange.getStart(), cv1), false);
+    autoSequence->insert(AutomationEvent(autoSequence, beatRange.getEnd(), cv2), false);
 
     outTrackId = newNode->getTrackId();
     return newNode->serialize();

@@ -1127,8 +1127,7 @@ void PatternRoll::showNewTrackDialog(const String &instrumentId, float beatToIns
     const auto trackTemplate =
         SequencerOperations::createPianoTrackTemplate(project,
             TRANS(I18n::Defaults::midiTrackName),
-            beatToInsertAt - this->projectFirstBeat,
-            instrumentId, outTrackId);
+            beatToInsertAt, instrumentId, outTrackId);
 
     this->addTrackInteractively(trackTemplate, outTrackId,
         UndoActionIDs::AddNewTrack, false, TRANS(I18n::Defaults::midiTrackName),
