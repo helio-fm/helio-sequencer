@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="3.3" bundleIdentifier="fm.helio"
+<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="3.4" bundleIdentifier="fm.helio"
               includeBinaryInAppConfig="1" companyWebsite="https://helio.fm"
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark"
