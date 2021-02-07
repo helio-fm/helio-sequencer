@@ -45,6 +45,7 @@ void SelectionComponent::beginLasso(const Point<float> &position,
         this->toFront(false);
         this->startPosition = position.toDouble() / this->getParentSize();
         this->endPosition = this->startPosition;
+        this->fadeIn();
     }
 }
 
@@ -55,7 +56,6 @@ void SelectionComponent::dragLasso(const MouseEvent &e)
         this->endPosition = e.position.toDouble() / this->getParentSize();
 
         this->updateBounds();
-        this->fadeIn();
 
         this->itemsInLasso.clearQuick();
         this->source->findLassoItemsInArea(this->itemsInLasso, getBounds());
@@ -140,11 +140,8 @@ const Point<double> SelectionComponent::getParentSize() const
 
 void SelectionComponent::timerCallback()
 {
-    const auto newOutline = this->currentOutline.interpolatedWith(this->targetOutline, 0.4f);
-    const auto newFill = this->currentFill.interpolatedWith(this->targetFill, 0.2f);
-
-    //DBG(newOutline.toDisplayString(true));
-    //DBG(newFill.toDisplayString(true));
+    const auto newOutline = this->currentOutline.interpolatedWith(this->targetOutline, 0.5f);
+    const auto newFill = this->currentFill.interpolatedWith(this->targetFill, 0.3f);
 
     if (this->currentOutline == newOutline && this->currentFill == newFill)
     {
