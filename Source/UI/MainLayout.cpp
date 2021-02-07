@@ -266,9 +266,9 @@ void MainLayout::showPage(Component *page, TreeNode *source)
     this->currentContent->toFront(false);
 
     // fill up console commands for visible command targets
-    this->visibleCommandReceiversCache.clearQuick();
-    findVisibleCommandReceivers(this->currentContent.getComponent(), this->visibleCommandReceiversCache);
-    this->consoleCommonActions->setActiveCommandReceivers(this->visibleCommandReceiversCache);
+    this->visibleCommandReceivers.clearQuick();
+    findVisibleCommandReceivers(this->currentContent.getComponent(), this->visibleCommandReceivers);
+    this->consoleCommonActions->setActiveCommandReceivers(this->visibleCommandReceivers);
 }
 
 //===----------------------------------------------------------------------===//
@@ -316,7 +316,6 @@ void MainLayout::hideTooltipIfAny()
     this->tooltipContainer->showWithComponent(nullptr);
 }
 
-// a hack!
 Rectangle<int> MainLayout::getBoundsForPopups() const
 {
     Rectangle<int> r(this->getLocalBounds());
@@ -328,9 +327,6 @@ Rectangle<int> MainLayout::getBoundsForPopups() const
     {
         r.removeFromTop(Globals::UI::headlineHeight);
     }
-
-    // todo free some more space from the top:
-    //r.removeFromTop(HybridRoll::headerHeight);
 
     return r;
 }
@@ -425,11 +421,6 @@ bool MainLayout::keyStateChanged(bool isKeyDown)
         this, this->currentContent.getComponent());
 }
 
-void MainLayout::modifierKeysChanged(const ModifierKeys &modifiers)
-{
-    // TODO do I need to handle this?
-}
-
 static ProjectNode *findParentProjectOfSelectedNode()
 {
     if (auto *active = App::Workspace().getTreeRoot()->findActiveNode())
@@ -519,33 +510,14 @@ void MainLayout::handleCommandMessage(int commandId)
     }
 }
 
-static inline void broadcastMessage(Component *root, int commandId)
-{
-    if (root == nullptr)
-    {
-        return;
-    }
-
-    if (root->isEnabled() && root->isShowing() &&
-        root->getComponentID().isNotEmpty())
-    {
-        root->postCommandMessage(commandId);
-    }
-
-    for (const auto child : root->getChildren())
-    {
-        broadcastMessage(child, commandId);
-    }
-}
-
 void MainLayout::broadcastCommandMessage(int commandId)
 {
     this->postCommandMessage(commandId);
 
-    this->visibleCommandReceiversCache.clearQuick();
-    findVisibleCommandReceivers(this->currentContent.getComponent(), this->visibleCommandReceiversCache);
+    this->visibleCommandReceivers.clearQuick();
+    findVisibleCommandReceivers(this->currentContent.getComponent(), this->visibleCommandReceivers);
 
-    for (auto *receiver : this->visibleCommandReceiversCache)
+    for (auto *receiver : this->visibleCommandReceivers)
     {
         receiver->postCommandMessage(commandId);
     }

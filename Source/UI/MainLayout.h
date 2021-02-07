@@ -79,7 +79,6 @@ public:
     void lookAndFeelChanged() override;
     bool keyPressed(const KeyPress &key) override;
     bool keyStateChanged(bool isKeyDown) override;
-    void modifierKeysChanged(const ModifierKeys &modifiers) override;
     void handleCommandMessage(int commandId) override;
 
     //===------------------------------------------------------------------===//
@@ -101,7 +100,7 @@ private:
     WeakReference<TreeNode> currentProject;
 
     HotkeyScheme::Ptr hotkeyScheme;
-    Array<Component *> visibleCommandReceiversCache;
+    Array<Component *> visibleCommandReceivers;
 
     UniquePointer<CommandPaletteCommonActions> consoleCommonActions;
 

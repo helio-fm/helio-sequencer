@@ -1350,10 +1350,11 @@ static const unsigned char temp_binary_data_97[] =
 "      \n"
 "      { \"command\": \"VersionControlSelectAll\", \"key\": \"Control + A\" },\n"
 "      { \"command\": \"VersionControlSelectNone\", \"key\": \"Escape\" },\n"
-"      { \"command\": \"VersionControlCommitSelected\", \"key\": \"Control + S\" },\n"
+"      { \"command\": \"VersionControlCommitSelected\", \"key\": \"Return\" },\n"
 "      { \"command\": \"VersionControlResetSelected\", \"key\": \"Backspace\" },\n"
 "      { \"command\": \"VersionControlResetSelected\", \"key\": \"Delete\" },\n"
-"      { \"command\": \"VersionControlCommitAll\", \"key\": \"Control + Shift + S\" },\n"
+"      { \"command\": \"VersionControlCommitAll\", \"key\": \"Shift + Return\" },\n"
+"      { \"command\": \"VersionControlCommitAll\", \"key\": \"Shift + Return\" },\n"
 "      { \"command\": \"VersionControlResetAll\", \"key\": \"Shift + Backspace\" },\n"
 "      { \"command\": \"VersionControlResetAll\", \"key\": \"Shift + Delete\" },\n"
 "\n"
@@ -1431,7 +1432,9 @@ static const unsigned char temp_binary_data_97[] =
 "      { \"command\": \"PasteEvents\", \"key\": \"Shift + Insert\" },\n"
 "\n"
 "      // Playback/record control\n"
+"      { \"command\": \"TransportStop\", \"key\": \"Stop\" },\n"
 "      { \"command\": \"TransportStop\", \"key\": \"Escape\" },\n"
+"      { \"command\": \"TransportPlaybackStart\", \"key\": \"Play\" },\n"
 "      { \"command\": \"TransportPlaybackStart\", \"key\": \"Return\" },\n"
 "      { \"command\": \"TransportRecordingStart\", \"key\": \"Shift + Return\" },\n"
 "      { \"command\": \"TransportRecordingAwait\", \"key\": \"Control + Return\" },\n"
@@ -1553,7 +1556,9 @@ static const unsigned char temp_binary_data_97[] =
 "      { \"command\": \"DeleteClips\", \"key\": \"Backspace\" },\n"
 "\n"
 "      // Playback control\n"
+"      { \"command\": \"TransportStop\", \"key\": \"Stop\" },\n"
 "      { \"command\": \"TransportStop\", \"key\": \"Escape\" },\n"
+"      { \"command\": \"TransportPlaybackStart\", \"key\": \"Play\" },\n"
 "      { \"command\": \"TransportPlaybackStart\", \"key\": \"Return\" },\n"
 "      { \"command\": \"TransportRecordingStart\", \"key\": \"Shift + Return\" },\n"
 "      { \"command\": \"TransportRecordingAwait\", \"key\": \"Control + Return\" },\n"
@@ -3874,7 +3879,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 15000; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 15293; return hotkeySchemes_json;
         case 0x048f5efe:  numBytes = 8357; return scales_json;
         case 0x77719112:  numBytes = 839; return temperaments_json;
         case 0xf8655f25:  numBytes = 136595; return translations_json;

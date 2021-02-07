@@ -64,10 +64,11 @@
       
       { "command": "VersionControlSelectAll", "key": "Control + A" },
       { "command": "VersionControlSelectNone", "key": "Escape" },
-      { "command": "VersionControlCommitSelected", "key": "Control + S" },
+      { "command": "VersionControlCommitSelected", "key": "Return" },
       { "command": "VersionControlResetSelected", "key": "Backspace" },
       { "command": "VersionControlResetSelected", "key": "Delete" },
-      { "command": "VersionControlCommitAll", "key": "Control + Shift + S" },
+      { "command": "VersionControlCommitAll", "key": "Shift + Return" },
+      { "command": "VersionControlCommitAll", "key": "Shift + Return" },
       { "command": "VersionControlResetAll", "key": "Shift + Backspace" },
       { "command": "VersionControlResetAll", "key": "Shift + Delete" },
 
@@ -145,7 +146,9 @@
       { "command": "PasteEvents", "key": "Shift + Insert" },
 
       // Playback/record control
+      { "command": "TransportStop", "key": "Stop" },
       { "command": "TransportStop", "key": "Escape" },
+      { "command": "TransportPlaybackStart", "key": "Play" },
       { "command": "TransportPlaybackStart", "key": "Return" },
       { "command": "TransportRecordingStart", "key": "Shift + Return" },
       { "command": "TransportRecordingAwait", "key": "Control + Return" },
@@ -267,7 +270,9 @@
       { "command": "DeleteClips", "key": "Backspace" },
 
       // Playback control
+      { "command": "TransportStop", "key": "Stop" },
       { "command": "TransportStop", "key": "Escape" },
+      { "command": "TransportPlaybackStart", "key": "Play" },
       { "command": "TransportPlaybackStart", "key": "Return" },
       { "command": "TransportRecordingStart", "key": "Shift + Return" },
       { "command": "TransportRecordingAwait", "key": "Control + Return" },

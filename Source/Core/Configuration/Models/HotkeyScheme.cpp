@@ -100,7 +100,7 @@ static Component *findMessageReceiver(Component *root, const String &id)
 
     for (auto *child : root->getChildren())
     {
-        if (Component *found = findMessageReceiver(child, id))
+        if (auto *found = findMessageReceiver(child, id))
         {
             return found;
         }
