@@ -121,11 +121,15 @@ In my workflow, I'm often adding new tracks with a knife tool: even though there
 
 ### Clips and track grouping
 
-Note that in the example above, two split tracks remain on the same row, just because they are grouped by name, and the knife tool keeps the track name the same. Pattern roll can group tracks by color, or by instrument, or by track id — yet grouping by name works better for me.
+In the example above, two split tracks remain on the same row because the tracks are grouped by name, and the knife tool keeps the track name the same. Pattern roll can also group tracks by color, or by instrument, or by track id — yet grouping by name works better for me.
 
-So, what you see in one row might be either different tracks, or there might be also several instances of the same track. Instances (or clips, as I call them in a code) always share the same name and same notes, but they can be slightly modified: have different position, key shift or volume multiplier, which is mainly meant for prototyping:
+So, the segments on one row might be either different tracks, or they also might be several instances (or "clips") of the same track. Instances always share the same notes, and have the same name and color, but they can be slightly modified: have different position, key shift or volume multiplier, which is mainly meant for prototyping:
 
 ![patterns-clips]
+
+Note that when you select an item in the pattern roll, all its instances are highlighted with a dashed header: this helps to tell where are the "instances", and where are other tracks of the same name or color on the same row.
+
+Track grouping also affects MIDI export: all segments on one row will be exported as one track in the resulting MIDI file.
 
 #### See also: [pattern roll hotkeys](hotkeys.md#pattern-roll)
 

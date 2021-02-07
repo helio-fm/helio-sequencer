@@ -277,6 +277,8 @@ However, the pattern roll is helpful for rearranging experiments:
 
 Pattern roll also allows to tweak some track parameters, like key offset of velocity multiplier. In future, it may shift towards more parametric sequencer features.
 
+#### See also: [track grouping](tips-and-tricks.md#clips-and-track-grouping)
+
 ### Global tempo
 
 Pattern roll is also the place to edit various MIDI controller automation tracks - most notable, the tempo track(s):
