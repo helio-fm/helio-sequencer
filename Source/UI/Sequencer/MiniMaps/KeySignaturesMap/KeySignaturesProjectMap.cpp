@@ -261,6 +261,11 @@ void KeySignaturesProjectMap::onChangeViewBeatRange(float firstBeat, float lastB
     }
 }
 
+void KeySignaturesProjectMap::onBeforeReloadProjectContent()
+{
+    this->keySignatureComponents.clear();
+}
+
 void KeySignaturesProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     const ProjectMetadata *meta)
 {
