@@ -26,7 +26,7 @@
 #include "MainLayout.h"
 
 CommandPaletteMoveNotesMenu::CommandPaletteMoveNotesMenu(PianoRoll &roll, ProjectNode &project) :
-    CommandPaletteActionsProvider(TRANS(I18n::CommandPalette::moveNotes), '^', -2.f),
+    CommandPaletteActionsProvider(TRANS(I18n::CommandPalette::moveNotes), ':', -2.f),
     roll(roll),
     project(project)
 {

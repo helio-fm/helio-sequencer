@@ -1310,11 +1310,11 @@ static const unsigned char temp_binary_data_97[] =
 "      { \"command\": \"CommandPalette\", \"key\": \"Control + G\" },\n"
 "      { \"command\": \"CommandPalette\", \"key\": \"Command + G\" },\n"
 "\n"
-"      // Quick access to command palette modes (/, !, @, ^):\n"
+"      // Quick access to command palette modes - /, :, !, @\n"
 "      { \"command\": \"CommandPaletteWithMode\", \"key\": \"/\" },\n"
 "      { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + 1\" },\n"
 "      { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + 2\" },\n"
-"      { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + 6\" },\n"
+"      { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + ;\" },\n"
 "\n"
 "      { \"command\": \"ShowPreviousPage\", \"key\": \"Command + Cursor Left\" },\n"
 "      { \"command\": \"ShowPreviousPage\", \"key\": \"Control + Cursor Left\" },\n"
@@ -3879,7 +3879,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 15293; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 15292; return hotkeySchemes_json;
         case 0x048f5efe:  numBytes = 8357; return scales_json;
         case 0x77719112:  numBytes = 839; return temperaments_json;
         case 0xf8655f25:  numBytes = 136595; return translations_json;
