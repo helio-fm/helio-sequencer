@@ -1407,10 +1407,11 @@ void HybridRoll::onClippingWarning()
     
     const float clippingBeat = this->lastTransportBeat.get();
     
-    if (this->clippingIndicators.size() > 0)
+    if (!this->clippingIndicators.isEmpty())
     {
         const float lastMarkerEndBeat = this->clippingIndicators.getLast()->getEndBeat();
-        const bool justNeedToUpdateLastMarker = ((clippingBeat - lastMarkerEndBeat) < CLIPPING_MARKER_MAX_GAP_IN_BEATS);
+        const bool justNeedToUpdateLastMarker =
+            (clippingBeat - lastMarkerEndBeat) < TimelineWarningMarker::minGapInBeats;
         
         if (justNeedToUpdateLastMarker)
         {
@@ -1419,9 +1420,9 @@ void HybridRoll::onClippingWarning()
         }
     }
     
-    auto *newMarker = new TimelineWarningMarker(TimelineWarningMarker::Red, *this, clippingBeat);
-    this->clippingIndicators.add(newMarker);
-    this->addAndMakeVisible(newMarker);
+    auto newMarker = make<TimelineWarningMarker>(TimelineWarningMarker::WarningLevel::Red, *this, clippingBeat);
+    this->addAndMakeVisible(newMarker.get());
+    this->clippingIndicators.add(newMarker.release());
 }
 
 void HybridRoll::resetAllClippingIndicators()
@@ -1438,10 +1439,11 @@ void HybridRoll::onOversaturationWarning()
     
     const float warningBeat = this->lastTransportBeat.get();
 
-    if (this->oversaturationIndicators.size() > 0)
+    if (!this->oversaturationIndicators.isEmpty())
     {
         const float lastMarkerEndBeat = this->oversaturationIndicators.getLast()->getEndBeat();
-        const bool justNeedToUpdateLastMarker = ((warningBeat - lastMarkerEndBeat) < CLIPPING_MARKER_MAX_GAP_IN_BEATS);
+        const bool justNeedToUpdateLastMarker =
+            (warningBeat - lastMarkerEndBeat) < TimelineWarningMarker::minGapInBeats;
         
         if (justNeedToUpdateLastMarker)
         {
@@ -1450,9 +1452,9 @@ void HybridRoll::onOversaturationWarning()
         }
     }
     
-    auto *newMarker = new TimelineWarningMarker(TimelineWarningMarker::Yellow, *this, warningBeat);
-    this->oversaturationIndicators.add(newMarker);
-    this->addAndMakeVisible(newMarker);
+    auto newMarker = make<TimelineWarningMarker>(TimelineWarningMarker::WarningLevel::Yellow, *this, warningBeat);
+    this->addAndMakeVisible(newMarker.get());
+    this->oversaturationIndicators.add(newMarker.release());
 }
 
 void HybridRoll::resetAllOversaturationIndicators()

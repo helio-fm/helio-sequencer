@@ -30,12 +30,9 @@
 #include "MenuPanel.h"
 #include "ColourIDs.h"
 
-#define NEWCHORD_POPUP_MENU_SIZE            (500)
-#define NEWCHORD_POPUP_LABEL_SIZE           (32)
-
 static Label *createLabel(const String &text)
 {
-    const int size = NEWCHORD_POPUP_LABEL_SIZE;
+    static constexpr auto size = 32;
     auto *newLabel = new Label(text, text);
     newLabel->setJustificationType(Justification::centred);
     newLabel->setBounds(0, 0, size * 2, size);
@@ -166,7 +163,8 @@ ScalePreviewTool::ScalePreviewTool(PianoRoll *caller, MidiSequence *layer)
 
     //[Constructor]
 
-    this->setSize(NEWCHORD_POPUP_MENU_SIZE, NEWCHORD_POPUP_MENU_SIZE);
+    static constexpr auto toolSize = 500;
+    this->setSize(toolSize, toolSize);
 
     this->setFocusContainer(true);
 

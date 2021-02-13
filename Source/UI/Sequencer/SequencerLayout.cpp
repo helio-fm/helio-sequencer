@@ -44,12 +44,6 @@
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 
-#define MINIMUM_ROLLS_HEIGHT 250
-#define VERTICAL_ROLLS_LAYOUT 1
-#define ROLLS_ANIMATION_START_SPEED 0.4f
-#define MAPS_ANIMATION_START_SPEED 0.35f
-#define SCROLLER_SHADOW_SIZE 16
-
 //===----------------------------------------------------------------------===//
 // Rolls container responsible for switching between piano and pattern roll
 //===----------------------------------------------------------------------===//
@@ -95,9 +89,9 @@ public:
     {
         switch (timer)
         {
-        case RollsSwitchingProxy::rolls:
+        case Timers::rolls:
             return this->rollsAnimation.canRestart();
-        case RollsSwitchingProxy::maps:
+        case Timers::maps:
             return this->mapsAnimation.canRestart();
         }
         return false;
@@ -105,17 +99,17 @@ public:
 
     inline bool isPatternMode() const noexcept
     {
-        return (this->rollsAnimation.getDirection() > 0.f);
+        return this->rollsAnimation.getDirection() > 0.f;
     }
 
     inline bool isLevelsMapMode() const
     {
-        return (this->mapsAnimation.getDirection() > 0.f);
+        return this->mapsAnimation.getDirection() > 0.f;
     }
     
     void startRollSwitchAnimation()
     {
-        this->rollsAnimation.start(ROLLS_ANIMATION_START_SPEED);
+        this->rollsAnimation.start(RollsSwitchingProxy::rollsAnimationStartSpeed);
         const bool patternMode = this->isPatternMode();
         this->pianoScroller->switchToRoll(patternMode ? this->patternRoll : this->pianoRoll);
         // Disabling inactive prevents it from receiving keyboard events:
@@ -131,7 +125,7 @@ public:
 
     void startMapSwitchAnimation()
     {
-        this->mapsAnimation.start(MAPS_ANIMATION_START_SPEED);
+        this->mapsAnimation.start(RollsSwitchingProxy::mapsAnimationStartSpeed);
         const bool levelsMode = this->isLevelsMapMode();
         // Disabling inactive prevents it from receiving keyboard events:
         this->levelsScroller->setEnabled(levelsMode);
@@ -166,44 +160,24 @@ private:
 
     void updateAnimatedRollsBounds()
     {
-        const Rectangle<int> r(this->getLocalBounds());
-        const int scrollerHeight = Globals::UI::projectMapHeight;
-
-#if VERTICAL_ROLLS_LAYOUT
+        const auto r = this->getLocalBounds();
+        constexpr auto scrollerHeight = Globals::UI::projectMapHeight;
         const float rollViewportHeight = float(r.getHeight() - scrollerHeight + 1);
         const Rectangle<int> rollSize(r.withBottom(r.getBottom() - scrollerHeight));
         const int viewport1Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight);
         const int viewport2Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight + rollViewportHeight);
         this->pianoViewport->setBounds(rollSize.withY(viewport1Pos));
         this->patternViewport->setBounds(rollSize.withY(viewport2Pos));
-#else
-        const float rollViewportWidth = float(r.getWidth());
-        const Rectangle<int> rollSize(r.withBottom(r.getBottom() - scrollerHeight));
-        const int viewport1Pos = int(this->rollsAnimation.getPosition() * rollViewportWidth);
-        const int viewport2Pos = int(this->rollsAnimation.getPosition() * rollViewportWidth + rollViewportWidth);
-        this->pianoViewport->setBounds(rollSize.withX(viewport1Pos));
-        this->patternViewport->setBounds(rollSize.withX(viewport2Pos));
-#endif
     }
 
     void updateAnimatedRollsPositions()
     {
-        const Rectangle<int> r(this->getLocalBounds());
-        const int scrollerHeight = Globals::UI::projectMapHeight;
-
-#if VERTICAL_ROLLS_LAYOUT
-        const float rollViewportHeight = float(r.getHeight() - scrollerHeight + 1);
+        constexpr auto scrollerHeight = Globals::UI::projectMapHeight;
+        const float rollViewportHeight = float(this->getHeight() - scrollerHeight + 1);
         const int viewport1Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight);
         const int viewport2Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight + rollViewportHeight);
         this->pianoViewport->setTopLeftPosition(0, viewport1Pos);
         this->patternViewport->setTopLeftPosition(0, viewport2Pos);
-#else
-        const float rollViewportWidth = float(r.getWidth());
-        const int viewport1Pos = int(this->rollsAnimation.getPosition() * rollViewportWidth);
-        const int viewport2Pos = int(this->rollsAnimation.getPosition() * rollViewportWidth + rollViewportWidth);
-        this->pianoViewport->setTopLeftPosition(viewport1Pos, 0);
-        this->patternViewport->setTopLeftPosition(viewport2Pos, 0);
-#endif
     }
 
     void updateAnimatedMapsBounds()
@@ -218,8 +192,9 @@ private:
         this->pianoScroller->setBounds(pianoRect.translated(0, pianoMapPos));
         this->levelsScroller->setBounds(levelsRect.translated(0, levelsFullOffset - levelsMapPos));
 
-        this->scrollerShadow->setBounds(0, this->levelsScroller->getY() - SCROLLER_SHADOW_SIZE,
-            this->getWidth(), SCROLLER_SHADOW_SIZE);
+        this->scrollerShadow->setBounds(0,
+            this->levelsScroller->getY() - RollsSwitchingProxy::scrollerShadowSize,
+            this->getWidth(), RollsSwitchingProxy::scrollerShadowSize);
     }
 
     void updateAnimatedMapsPositions()
@@ -233,7 +208,8 @@ private:
         this->pianoScroller->setTopLeftPosition(0, pianoMapY + pianoMapPos);
         this->levelsScroller->setTopLeftPosition(0, pianoMapY - levelsMapPos);
 
-        this->scrollerShadow->setTopLeftPosition(0, pianoMapY - levelsMapPos - SCROLLER_SHADOW_SIZE);
+        this->scrollerShadow->setTopLeftPosition(0,
+            pianoMapY - levelsMapPos - RollsSwitchingProxy::scrollerShadowSize);
     }
 
     void timerCallback(int timerId) override
@@ -299,6 +275,10 @@ private:
     SafePointer<ProjectMapScroller> pianoScroller;
     SafePointer<LevelsMapScroller> levelsScroller;
     SafePointer<Component> scrollerShadow;
+
+    static constexpr auto scrollerShadowSize = 16;
+    static constexpr auto rollsAnimationStartSpeed = 0.4f;
+    static constexpr auto mapsAnimationStartSpeed = 0.35f;
 
     class ToggleAnimation final
     {
@@ -586,7 +566,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
         this->proceedToRenderDialog(RenderFormat::WAV);
         return;
     case CommandIDs::SwitchBetweenRolls:
-        if (!this->rollContainer->canAnimate(RollsSwitchingProxy::rolls))
+        if (!this->rollContainer->canAnimate(RollsSwitchingProxy::Timers::rolls))
         {
             break;
         }

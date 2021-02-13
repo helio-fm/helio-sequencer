@@ -21,8 +21,6 @@
 #include "CutPointMark.h"
 #include "HybridRoll.h"
 
-#define KNIFE_TOOL_PADDING 2
-
 KnifeToolHelper::KnifeToolHelper(HybridRoll &roll) :
     roll(roll)
 {
@@ -53,27 +51,27 @@ void KnifeToolHelper::paint(Graphics &g)
 
 void KnifeToolHelper::updateBounds()
 {
-    const Point<double> parentSize(this->getParentSize());
+    static constexpr auto padding = 2;
+
+    const auto parentSize = this->getParentSize();
     const auto start = (this->startPosition * parentSize).toFloat();
     const auto end = (this->endPosition * parentSize).toFloat();
     const auto x1 = jmin(start.getX(), end.getX());
     const auto x2 = jmax(start.getX(), end.getX());
     const auto y1 = jmin(start.getY(), end.getY());
     const auto y2 = jmax(start.getY(), end.getY());
-    const Point<float> startOffset(x1 - KNIFE_TOOL_PADDING, y1 - KNIFE_TOOL_PADDING);
+    const Point<float> startOffset(x1 - padding, y1 - padding);
     this->line = { start, end };
 
     this->path.clear();
-    //path.startNewSubPath(start - startOffset);
-    //path.lineTo(end - startOffset);
     path.startNewSubPath(end - startOffset);
     path.lineTo(start - startOffset);
     static Array<float> dashes(8.f, 4.f);
     PathStrokeType(3.f).createDashedStroke(this->path, this->path,
         dashes.getRawDataPointer(), dashes.size());
 
-    this->setBounds(int(x1) - KNIFE_TOOL_PADDING, int(y1) - KNIFE_TOOL_PADDING,
-        int(x2 - x1) + KNIFE_TOOL_PADDING * 2, int(y2 - y1) + KNIFE_TOOL_PADDING * 2);
+    this->setBounds(int(x1) - padding, int(y1) - padding,
+        int(x2 - x1) + padding * 2, int(y2 - y1) + padding * 2);
 }
 
 void KnifeToolHelper::updateCutMarks()

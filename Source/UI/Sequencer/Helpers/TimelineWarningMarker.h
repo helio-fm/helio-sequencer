@@ -18,24 +18,21 @@
 #pragma once
 
 #include "ComponentFader.h"
+
 class HybridRoll;
 
-#define CLIPPING_MARKER_MIN_SIZE_IN_BEATS 0.25f
-#define CLIPPING_MARKER_MAX_GAP_IN_BEATS 0.25f
-
-class TimelineWarningMarker : public Component
+class TimelineWarningMarker final : public Component
 {
 public:
 
-    enum WarningLevel
+    enum class WarningLevel : int8
     {
         Red = 0,
         Yellow = 1,
     };
     
     TimelineWarningMarker(WarningLevel warningLevel,
-                          HybridRoll &parentRoll,
-                          float initialBeatPosition);
+        HybridRoll &parentRoll, float initialBeatPosition);
 
     float getStartBeat() const noexcept;
     void setStartBeat(float startBeat);
@@ -43,21 +40,23 @@ public:
     float getEndBeat() const noexcept;
     void setEndBeat(float endBeat);
 
-    void paint (Graphics &g) override;
+    void paint(Graphics &g) override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
+
+    static constexpr auto minSizeInBeats = 1.f / Globals::ticksPerBeat * 2.f;
+    static constexpr auto minGapInBeats = 0.5f;
 
 private:
 
     HybridRoll &roll;
 
-    ComponentFader fader;
-    Colour colour;
-    float startBeat;
-    float endBeat;
+    const Colour colour;
 
-    void updatePosition();
+    float startBeat = 0.f;
+    float endBeat = minSizeInBeats;
+
+    void updateBounds();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimelineWarningMarker)
-
 };

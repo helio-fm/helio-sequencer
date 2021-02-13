@@ -29,8 +29,6 @@
 #include "NoteComponent.h"
 #include "FineTuningValueIndicator.h"
 
-#define VELOCITY_MAP_LINE_EXTENT (1000)
-
 #define VELOCITY_MAP_BULK_REPAINT_START \
     if (this->isEnabled()) { this->setVisible(false); }
 
@@ -247,8 +245,10 @@ public:
             return;
         }
 
-        this->lineExtended = { this->line.getPointAlongLine(-VELOCITY_MAP_LINE_EXTENT),
-            this->line.getPointAlongLine(this->line.getLength() + VELOCITY_MAP_LINE_EXTENT) };
+
+        static constexpr auto lineExtent = 1000;
+        this->lineExtended = { this->line.getPointAlongLine(-lineExtent),
+            this->line.getPointAlongLine(this->line.getLength() + lineExtent) };
 
         const Point<float> startOffset(x1 - margin, y1 - margin);
 
@@ -393,20 +393,19 @@ void VelocityProjectMap::mouseUp(const MouseEvent &e)
         this->volumeBlendingIndicator->setVisible(false);
         this->dragHelper = nullptr;
         this->dragIntersections.clear();
-        this->dragChangedNotes.clear();
-        this->dragChanges.clear();
+        this->dragChangedNotes.clearQuick();
+        this->dragChanges.clearQuick();
         this->dragHasChanges = false;
     }
 }
-
-#define VOLUME_BLENDING_WHEEL_SENSIVITY 5.f
 
 void VelocityProjectMap::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
 {
     if (this->dragHelper != nullptr)
     {
+        static constexpr auto wheelSensivity = 5.f;
         const float delta = wheel.deltaY * (wheel.isReversed ? -1.f : 1.f);
-        const float newBlendingAmount = this->volumeBlendingAmount + delta / VOLUME_BLENDING_WHEEL_SENSIVITY;
+        const float newBlendingAmount = this->volumeBlendingAmount + delta / wheelSensivity;
         this->volumeBlendingAmount = jlimit(0.f, 1.f, newBlendingAmount);
         this->updateVolumeBlendingIndicator(e.getPosition());
         this->applyVolumeChanges();
@@ -728,10 +727,10 @@ void VelocityProjectMap::applyVolumeChanges()
     // to update notes velocities on the fly, we use undo/redo actions (as always),
     // but we don't want to have lots of those actions in undo transaction in the end,
     // there should only be one action, which holds original notes and final new parameters;
-    // undo action and undo stack are smart enough to turn a -> b, b -> c into a -> c,
+    // the undo action is smart enough to turn a -> b, b -> c into a -> c,
     // but it only works within exactly the same group of notes,
     // which may - and will - change as the user drags the helper around,
-    // so we are to track moments when a group changes and undo current transaction
+    // so we are to track moments when the group changes and undo the current transaction
 
     bool shouldUndo = false;
     Point<float> intersectionA;
@@ -752,7 +751,7 @@ void VelocityProjectMap::applyVolumeChanges()
 
         const bool ia = dragLine.intersects(i.second->getStartLine(), intersectionA);
         const bool ib = dragLine.intersects(i.second->getEndLine(), intersectionB);
-        const bool hasIntersection = ia || ib; // (ascending && ia) || (!ascending && ib);
+        const bool hasIntersection = ia || ib;
 
         float intersectionVelocity = 0.f;
         if (ascending)

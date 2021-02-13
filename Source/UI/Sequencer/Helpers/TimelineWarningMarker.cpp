@@ -19,19 +19,19 @@
 #include "TimelineWarningMarker.h"
 #include "HybridRoll.h"
 
-TimelineWarningMarker::TimelineWarningMarker(WarningLevel warningLevel, HybridRoll &parentRoll, float initialBeatPosition)
-    : roll(parentRoll),
-      colour((warningLevel == Red) ? Colour(0x33ff0000) : Colour(0x27ffff00)),
-      startBeat(initialBeatPosition),
-      endBeat(initialBeatPosition + CLIPPING_MARKER_MIN_SIZE_IN_BEATS)
+TimelineWarningMarker::TimelineWarningMarker(WarningLevel warningLevel,
+    HybridRoll &parentRoll, float initialBeatPosition) :
+    roll(parentRoll),
+    colour((warningLevel == WarningLevel::Red) ? Colour(0x33ff0000) : Colour(0x27ffff00)),
+    startBeat(initialBeatPosition),
+    endBeat(initialBeatPosition + TimelineWarningMarker::minSizeInBeats)
 {
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
-    this->setAlpha(0.f);
 }
 
-void TimelineWarningMarker::paint (Graphics& g)
+void TimelineWarningMarker::paint(Graphics &g)
 {
     g.setColour(this->colour);
     g.fillRect(this->getLocalBounds());
@@ -39,22 +39,20 @@ void TimelineWarningMarker::paint (Graphics& g)
 
 void TimelineWarningMarker::parentHierarchyChanged()
 {
-    this->fader.fadeIn(this, Globals::UI::fadeInLong);
-    this->updatePosition();
+    this->updateBounds();
     this->toBack();
 }
 
 void TimelineWarningMarker::parentSizeChanged()
 {
-    this->updatePosition();
+    this->updateBounds();
 }
 
-void TimelineWarningMarker::updatePosition()
+void TimelineWarningMarker::updateBounds()
 {
     const int startX = this->roll.getXPositionByBeat(this->startBeat);
     const int endX = this->roll.getXPositionByBeat(this->endBeat);
-    const int newWidth = endX - startX;
-    this->setBounds(startX, 0, newWidth, this->getParentHeight());
+    this->setBounds(startX, 0, endX - startX, this->getParentHeight());
 }
 
 float TimelineWarningMarker::getStartBeat() const noexcept
@@ -65,7 +63,7 @@ float TimelineWarningMarker::getStartBeat() const noexcept
 void TimelineWarningMarker::setStartBeat(float beat)
 {
     this->startBeat = beat;
-    this->updatePosition();
+    this->updateBounds();
 }
 
 float TimelineWarningMarker::getEndBeat() const noexcept
@@ -75,7 +73,6 @@ float TimelineWarningMarker::getEndBeat() const noexcept
 
 void TimelineWarningMarker::setEndBeat(float beat)
 {
-    this->endBeat = beat;
-    this->updatePosition();
+    this->endBeat = jmax(beat,  this->startBeat + TimelineWarningMarker::minSizeInBeats);
+    this->updateBounds();
 }
-
