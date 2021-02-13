@@ -1,5 +1,7 @@
-$asioSdkSource = "http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip"
-$asioSdkDestination = "asiosdk2.3.zip"
+$asioSdkSource = "https://www.steinberg.net/sdk_downloads/asiosdk2.3.zip"
+$asioSdkDestination = ".\asiosdk2.3.zip"
+
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest $asioSdkSource -OutFile $asioSdkDestination
 
 Expand-Archive $asioSdkDestination
