@@ -373,9 +373,9 @@ SerializedData SerializedData::readFromXml(const XmlElement &xml)
         SerializedData v(xml.getTagName());
         v.data->properties.setFromXmlAttributes(xml);
 
-        forEachXmlChildElement(xml, e)
+        for (auto *child : xml.getChildIterator())
         {
-            v.appendChild(readFromXml(*e));
+            v.appendChild(readFromXml(*child));
         }
 
         return v;
