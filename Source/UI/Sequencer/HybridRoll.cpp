@@ -1110,9 +1110,9 @@ void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails
 
             // let's try to make the panning speed feel consistent, regardless
             // of the zoom level - slower when zoomed out, faster when zoomed in;
-            // but also not too fast, with the screen width as the upper speed limit:
+            // but also not too fast, with the half screen width as the upper speed limit:
             const auto viewWidth = float(this->viewport.getViewWidth());
-            const float panSpeed = jmin(viewWidth,
+            const float panSpeed = jmin(viewWidth / 2.f,
                 this->smoothPanController->getInitialSpeed() * float(this->getWidth()) / viewWidth);
             const float panWheel = wheel.deltaY * (wheel.isReversed ? panSpeed : -panSpeed);
             this->smoothPanController->panByOffset({ panWheel, 0.f });
@@ -1192,40 +1192,54 @@ void HybridRoll::handleCommandMessage(int commandId)
         this->zoomOutImpulse(0.75f);
         break;
     case CommandIDs::TimelineJumpNext:
-        if (!this->getTransport().isPlaying())
+        if (this->getTransport().isPlaying())
+        {
+            this->getTransport().stopPlaybackAndRecording();
+            this->getTransport().stopSound();
+        }
         {
             this->stopFollowingPlayhead();
-            const auto newSeek = this->findNextAnchorBeat(this->getTransport().getSeekBeat());
-            const auto newSeekSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, newSeek);
-            this->getTransport().seekToBeat(newSeekSafe);
+            const auto nextJumpSeek = this->findNextAnchorBeat(this->getTransport().getSeekBeat());
+            const auto nextJumpSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, nextJumpSeek);
+            this->getTransport().seekToBeat(nextJumpSafe);
             this->scrollToSeekPosition();
         }
         break;
     case CommandIDs::TimelineJumpPrevious:
-        if (!this->getTransport().isPlaying())
+        if (this->getTransport().isPlaying())
+        {
+            this->getTransport().stopPlaybackAndRecording();
+            this->getTransport().stopSound();
+        }
         {
             this->stopFollowingPlayhead();
-            const auto newSeek = this->findPreviousAnchorBeat(this->getTransport().getSeekBeat());
-            const auto newSeekSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, newSeek);
-            this->getTransport().seekToBeat(newSeekSafe);
+            const auto prevJumpSeek = this->findPreviousAnchorBeat(this->getTransport().getSeekBeat());
+            const auto prevJumpSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, prevJumpSeek);
+            this->getTransport().seekToBeat(prevJumpSafe);
             this->scrollToSeekPosition();
         }
         break;
     case CommandIDs::TimelineJumpHome:
-        if (!this->getTransport().isPlaying())
+        if (this->getTransport().isPlaying())
         {
-            this->stopFollowingPlayhead();
-            this->getTransport().seekToBeat(this->projectFirstBeat);
-            this->scrollToSeekPosition();
+            this->getTransport().stopPlaybackAndRecording();
+            this->getTransport().stopSound();
         }
+
+        this->stopFollowingPlayhead();
+        this->getTransport().seekToBeat(this->projectFirstBeat);
+        this->scrollToSeekPosition();
         break;
     case CommandIDs::TimelineJumpEnd:
-        if (!this->getTransport().isPlaying())
+        if (this->getTransport().isPlaying())
         {
-            this->stopFollowingPlayhead();
-            this->getTransport().seekToBeat(this->projectLastBeat);
-            this->scrollToSeekPosition();
+            this->getTransport().stopPlaybackAndRecording();
+            this->getTransport().stopSound();
         }
+
+        this->stopFollowingPlayhead();
+        this->getTransport().seekToBeat(this->projectLastBeat);
+        this->scrollToSeekPosition();
         break;
     case CommandIDs::StartDragViewport:
         this->header->setSoundProbeMode(true);
@@ -1548,8 +1562,7 @@ void HybridRoll::handleAsyncUpdate()
             // There are still many cases when a scheduled component is deleted at this time:
             if (FloatBoundsComponent *component = this->batchRepaintList.getUnchecked(i))
             {
-                const Rectangle<float> nb(this->getEventBounds(component));
-                component->setFloatBounds(nb);
+                component->setFloatBounds(this->getEventBounds(component));
                 component->repaint();
             }
         }
@@ -1563,7 +1576,7 @@ void HybridRoll::handleAsyncUpdate()
     if (this->isTimerRunning())
     {
         const int playheadX = this->getPlayheadPositionByBeat(this->lastTransportBeat.get(), double(this->getWidth()));
-        const int newX = playheadX - int(this->playheadOffset.get() * 0.95) -
+        const int newX = playheadX - int(this->playheadOffset.get() * 0.9) -
             (this->viewport.getViewWidth() / 2);
 
         this->viewport.setViewPosition(newX, this->viewport.getViewPositionY());

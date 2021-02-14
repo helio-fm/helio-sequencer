@@ -55,8 +55,8 @@ public:
 private:
 
     static constexpr auto stopDistance = 5;
-    static constexpr auto slowdownFactor = 0.3f;
-    static constexpr auto initialPanSpeed = 150.f;
+    static constexpr auto slowdownFactor = 0.5f;
+    static constexpr auto initialPanSpeed = 155.f;
 
     void timerCallback() override
     {
