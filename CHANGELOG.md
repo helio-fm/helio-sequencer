@@ -4,6 +4,15 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.4
+ - Added horizontal scrolling using shift + mouse wheel
+ - When exporting MIDI, the track segments are grouped in the same way as you see them grouped in the pattern roll
+ - All instances of selected clips in the pattern roll are now highlighted with the dashed header
+ - Added '+' button on the tools sidebar, which shows the new track dialog, or the menu to choose the instrument first; using the quill tool on any empty row will invoke the same menu or dialog
+ - Fixed minor UI glitches on MIDI import and checkout, fixed the track range indicator not always updated properly, tweaked hotkeys a bit
+ - Added a menu to move selected notes to another track, also available in the command palette with ':' shortcut
+ - Better support for file choosers on mobile platforms to allow exporting MIDI file to a custom location, e.g. iCloud container
+
 ## Version 3.3
  - Added initial support for custom temperaments, the default list includes 22-EDO and 31-EDO; added commands to switch temperament or convert a piece into any other temperament
  - Added keyboard mapping page for instruments, allowing to overcome the limits of MIDI 1.0 for microtonal music, or just to re-map any key for whatever purposes
