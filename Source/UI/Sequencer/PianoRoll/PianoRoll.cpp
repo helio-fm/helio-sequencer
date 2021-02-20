@@ -44,6 +44,7 @@
 #include "ArpPreviewTool.h"
 #include "SequencerOperations.h"
 #include "PatternOperations.h"
+#include "InteractiveActions.h"
 #include "SerializationKeys.h"
 #include "Arpeggiator.h"
 #include "CommandPaletteChordConstructor.h"
@@ -1029,11 +1030,9 @@ void PianoRoll::handleCommandMessage(int commandId)
         {
             this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
             const auto trackPreset = SequencerOperations::createPianoTrack(this->getLassoSelection());
-            
-            // false == we already have the correct checkpoint
+            // false == we already have the correct checkpoint:
             SequencerOperations::deleteSelection(this->getLassoSelection(), false);
-
-            this->addTrackInteractively(trackPreset.get(),
+            InteractiveActions::addNewTrack(this->project, trackPreset.get(),
                 UndoActionIDs::AddNewTrack, true, this->activeTrack->getTrackName(),
                 TRANS(I18n::Menu::Selection::notesToTrack), TRANS(I18n::Dialog::add));
         }
@@ -1043,7 +1042,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
         const auto *cloneSource = static_cast<PianoSequence *>(this->activeTrack->getSequence());
         const auto trackPreset = SequencerOperations::createPianoTrack(cloneSource, this->activeClip);
-        this->addTrackInteractively(trackPreset.get(),
+        InteractiveActions::addNewTrack(this->project, trackPreset.get(),
             UndoActionIDs::AddNewTrack, true, this->activeTrack->getTrackName(),
             TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::add));
     }

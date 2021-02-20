@@ -3192,6 +3192,7 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\TimelineWarningMarker.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\PatternOperations.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\SequencerOperations.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\InteractiveActions.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip\AutomationCurveClipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip\AutomationCurveHelper.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip\AutomationCurveEventComponent.h"/>

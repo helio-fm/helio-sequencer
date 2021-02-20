@@ -25,6 +25,7 @@ class MidiTrack;
 class Pattern;
 class Clipboard;
 class PianoSequence;
+class AutomationSequence;
 class KeySignaturesSequence;
 
 #include "Note.h"
@@ -127,12 +128,14 @@ struct SequencerOperations final
     static SerializedData createAutoTrackTemplate(ProjectNode &project,
         const String &name, int controllerNumber, const String &instrumentId, String &outTrackId);
 
-    // Creates new tracks from events of existing tracks
+    // Creates new (duplicated) tracks from events of existing tracks
     static UniquePointer<MidiTrackNode> createPianoTrack(const Lasso &selection);
     static UniquePointer<MidiTrackNode> createPianoTrack(const PianoSequence *source, const Clip &clip);
     static UniquePointer<MidiTrackNode> createPianoTrack(const Array<Note> &events, const Pattern *pattern);
     static UniquePointer<MidiTrackNode> createPianoTrack(const Array<Note> &events, const Array<Clip> &clips);
+    static UniquePointer<MidiTrackNode> createAutomationTrack(const AutomationSequence *source, const Clip &clip);
     static UniquePointer<MidiTrackNode> createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *pattern);
+    static UniquePointer<MidiTrackNode> createAutomationTrack(const Array<AutomationEvent> &events, const Array<Clip> &clips);
 
     static String generateNextNameForNewTrack(const String &name, const StringArray &allNames);
 

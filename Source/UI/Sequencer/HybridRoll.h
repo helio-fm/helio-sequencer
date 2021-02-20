@@ -327,14 +327,6 @@ protected:
     virtual float findNextAnchorBeat(float beat) const;
     virtual float findPreviousAnchorBeat(float beat) const;
 
-    void addTrackInteractively(MidiTrackNode *preset,
-        UndoActionId whereToRollback, bool refocus, const String &defaultTrackName,
-        const String &dialogTitle, const String &dialogOk);
-
-    void addTrackInteractively(const SerializedData &preset, const String &trackId,
-        UndoActionId whereToRollback, bool refocus, const String &defaultTrackName,
-        const String &dialogTitle, const String &dialogOk);
-
     float getFloorBeatSnapByXPosition(int x) const noexcept;
     inline float getBeatByXPosition(float x) const noexcept
     {

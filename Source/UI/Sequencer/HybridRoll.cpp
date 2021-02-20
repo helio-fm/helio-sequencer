@@ -27,7 +27,6 @@
 #include "UndoStack.h"
 #include "UndoActionIDs.h"
 #include "NoteActions.h"
-#include "PianoTrackActions.h"
 
 #include "ShadowDownwards.h"
 #include "TimelineWarningMarker.h"
@@ -55,7 +54,6 @@
 #include "AnnotationDialog.h"
 #include "TimeSignatureDialog.h"
 #include "KeySignatureDialog.h"
-#include "TrackPropertiesDialog.h"
 #include "TempoDialog.h"
 
 #include "MainLayout.h"
@@ -1863,63 +1861,6 @@ float HybridRoll::findNextAnchorBeat(float beat) const
 float HybridRoll::findPreviousAnchorBeat(float beat) const
 {
     return this->project.getTimeline()->findPreviousAnchorBeat(beat);
-}
-
-void HybridRoll::addTrackInteractively(MidiTrackNode *trackPreset,
-    UndoActionId checkpoint, bool switchToNewTrack, const String &defaultTrackName,
-    const String &dialogTitle, const String &dialogConfirmation)
-{
-    if (trackPreset == nullptr ||
-        trackPreset->getSequence() == nullptr ||
-        trackPreset->getPattern() == nullptr ||
-        trackPreset->getPattern()->getClips().isEmpty())
-    {
-        jassertfalse;
-        return;
-    }
-
-    const auto trackId = trackPreset->getTrackId();
-    const auto trackTemplate = trackPreset->serialize();
-    this->addTrackInteractively(trackTemplate, trackId, checkpoint,
-        switchToNewTrack, defaultTrackName, dialogTitle, dialogConfirmation);
-}
-
-void HybridRoll::addTrackInteractively(const SerializedData &trackTemplate,
-    const String &trackId, UndoActionId checkpoint, bool switchToNewTrack,
-    const String &defaultTrackName, const String &dialogTitle, const String &dialogConfirmation)
-{
-    const auto newName = SequencerOperations::generateNextNameForNewTrack(defaultTrackName,
-        this->project.getAllTrackNames());
-
-    this->project.getUndoStack()->perform(new PianoTrackInsertAction(this->project,
-        &this->project, trackTemplate, newName));
-
-    auto *newlyAddedTrack = this->project.findTrackById<MidiTrackNode>(trackId);
-
-    if (switchToNewTrack)
-    {
-        auto *tracksSingleClip = newlyAddedTrack->getPattern()->getUnchecked(0);
-        this->project.setEditableScope(newlyAddedTrack, *tracksSingleClip, false);
-    }
-
-    auto dialog = make<TrackPropertiesDialog>(this->project,
-        newlyAddedTrack, dialogTitle, dialogConfirmation);
-
-    dialog->onCancel = [this]()
-    {
-        // make it rather undoUpTo(checkpoint) ?
-        this->project.getUndoStack()->undo();
-    };
-
-    dialog->onOk = [this, checkpoint]()
-    {
-        if (checkpoint != UndoActionIDs::None)
-        {
-            this->project.getUndoStack()->mergeTransactionsUpTo(checkpoint);
-        }
-    };
-
-    App::showModalComponent(move(dialog));
 }
 
 //===----------------------------------------------------------------------===//

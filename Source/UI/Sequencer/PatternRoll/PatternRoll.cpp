@@ -26,6 +26,7 @@
 
 #include "Pattern.h"
 #include "PianoTrackNode.h"
+#include "AutomationTrackNode.h"
 #include "LassoListeners.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
@@ -36,6 +37,7 @@
 #include "UndoStack.h"
 #include "PatternOperations.h"
 #include "SequencerOperations.h"
+#include "InteractiveActions.h"
 
 #include "TrackPropertiesDialog.h"
 #include "ProjectTimeline.h"
@@ -643,19 +645,35 @@ void PatternRoll::handleCommandMessage(int commandId)
         if (this->getLassoSelection().getNumSelected() == 1)
         {
             const auto clip = this->selection.getFirstAs<ClipComponent>()->getClip();
-            // it could be either an automation track or a piano track:
-            if (auto *clonedTrack = this->project.findTrackById<PianoTrackNode>(clip.getTrackId()))
+            auto *clonedTrack = this->project.findTrackById<MidiTrackNode>(clip.getTrackId());
+            if (clonedTrack == nullptr)
             {
-                this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
-
-                const auto *cloneSource = static_cast<PianoSequence *>(clonedTrack->getSequence());
-                const auto trackPreset = SequencerOperations::createPianoTrack(cloneSource, clip);
-
-                this->addTrackInteractively(trackPreset.get(),
-                    UndoActionIDs::AddNewTrack, false, clonedTrack->getTrackName(),
-                    TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::add));
+                jassertfalse;
+                break;
             }
-            // TODO cloning automations here
+
+            UniquePointer<MidiTrackNode> trackPreset = nullptr;
+            if (dynamic_cast<PianoTrackNode *>(clonedTrack))
+            {
+                const auto *cloneSource = static_cast<PianoSequence *>(clonedTrack->getSequence());
+                trackPreset = SequencerOperations::createPianoTrack(cloneSource, clip);
+            }
+            else if (dynamic_cast<AutomationTrackNode *>(clonedTrack))
+            {
+                const auto *cloneSource = static_cast<AutomationSequence *>(clonedTrack->getSequence());
+                trackPreset = SequencerOperations::createAutomationTrack(cloneSource, clip);
+            }
+
+            if (trackPreset == nullptr)
+            {
+                jassertfalse; // it should be either an automation track or a piano track
+                break;
+            }
+
+            this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
+            InteractiveActions::addNewTrack(this->project, trackPreset.get(),
+                UndoActionIDs::AddNewTrack, false, clonedTrack->getTrackName(),
+                TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::add));
         }
         break;
     case CommandIDs::EditCurrentInstrument:
@@ -1129,7 +1147,8 @@ void PatternRoll::showNewTrackDialog(const String &instrumentId, float beatToIns
             TRANS(I18n::Defaults::midiTrackName),
             beatToInsertAt, instrumentId, outTrackId);
 
-    this->addTrackInteractively(trackTemplate, outTrackId,
+    InteractiveActions::addNewTrack<PianoTrackInsertAction>(this->project,
+        trackTemplate, outTrackId,
         UndoActionIDs::AddNewTrack, false, TRANS(I18n::Defaults::midiTrackName),
         TRANS(I18n::Dialog::addTrackCaption), TRANS(I18n::Dialog::add));
 }

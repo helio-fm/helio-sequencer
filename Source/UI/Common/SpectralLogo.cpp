@@ -107,7 +107,7 @@ void SpectralLogo::paint(Graphics &g)
 
         for (int i = 0; i < SpectralLogo::bandCount; ++i)
         {
-            const float waveOffset = - MathConstants<float>::halfPi;
+            const float waveOffset = -MathConstants<float>::halfPi;
             const float wavePosition = float(i) * (MathConstants<float>::twoPi * numWaves / float(SpectralLogo::bandCount));
             const float multiplier = 0.5f + sinf(waveOffset + wavePosition) / 2.f;
 

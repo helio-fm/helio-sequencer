@@ -301,6 +301,7 @@
 		4ACF099154865E0DC5BA2C21 /* ../../Resources/Icons/close.svg */ /* close.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = close.svg; path = ../../Resources/Icons/close.svg; sourceTree = SOURCE_ROOT; };
 		4B864802EC8BA7E8C3035B42 /* ../../Source/UI/Sequencer/Helpers/CutPointMark.h */ /* CutPointMark.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CutPointMark.h; path = ../../Source/UI/Sequencer/Helpers/CutPointMark.h; sourceTree = SOURCE_ROOT; };
 		4C02F76A73325377363BB96B /* ../../Source/UI/Pages/Instruments/Editor/KeyboardMappingPage.h */ /* KeyboardMappingPage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyboardMappingPage.h; path = ../../Source/UI/Pages/Instruments/Editor/KeyboardMappingPage.h; sourceTree = SOURCE_ROOT; };
+		4C63F89B4CB2B531C8ABB59A /* ../../Source/UI/Sequencer/Helpers/InteractiveActions.h */ /* InteractiveActions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InteractiveActions.h; path = ../../Source/UI/Sequencer/Helpers/InteractiveActions.h; sourceTree = SOURCE_ROOT; };
 		4C9D91B54D2117EF95AF9F9B /* ../../Source/Core/Configuration/UserInterfaceFlags.cpp */ /* UserInterfaceFlags.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = UserInterfaceFlags.cpp; path = ../../Source/Core/Configuration/UserInterfaceFlags.cpp; sourceTree = SOURCE_ROOT; };
 		4D0B55864C40A59306FD9A2B /* ../../ThirdParty/JUCE/modules/juce_audio_basics */ /* juce_audio_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_basics; path = ../../ThirdParty/JUCE/modules/juce_audio_basics; sourceTree = SOURCE_ROOT; };
 		4D45F8939EE05E39568CCE82 /* ../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.h */ /* OpenProjectButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OpenProjectButton.h; path = ../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.h; sourceTree = SOURCE_ROOT; };
@@ -1600,6 +1601,7 @@
 				25AD1104F09E7075386867EE,
 				7CB2DDF150AC9566F16E2150,
 				0EE7A07CF034A2D8D75F3244,
+				4C63F89B4CB2B531C8ABB59A,
 			);
 			name = Helpers;
 			sourceTree = "<group>";

@@ -2440,10 +2440,34 @@ UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<N
     return newNode;
 }
 
-
-UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *clips)
+UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const AutomationSequence *source, const Clip &clip)
 {
-    if (events.size() == 0) { return{}; }
+    Array<AutomationEvent> events;
+    for (int i = 0; i < source->size(); ++i)
+    {
+        const auto *event = static_cast<AutomationEvent *>(source->getUnchecked(i));
+        events.add(*event);
+    }
+
+    return createAutomationTrack(events, { clip });
+}
+
+UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Array<AutomationEvent> &events, const Pattern *pattern)
+{
+    if (events.size() == 0) { return {}; }
+
+    Array<Clip> clips;
+    for (const auto *clip : pattern->getClips())
+    {
+        clips.add(*clip);
+    }
+
+    return createAutomationTrack(events, clips);
+}
+
+UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Array<AutomationEvent> &events, const Array<Clip> &clips)
+{
+    if (events.size() == 0) { return {}; }
 
     const auto *track = events.getReference(0).getSequence()->getTrack();
     const auto &instrumentId = track->getTrackInstrumentId();
@@ -2466,9 +2490,9 @@ UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
 
     Array<Clip> copiedClips;
     auto *pattern = newItem->getPattern();
-    for (const auto *clip : clips->getClips())
+    for (const auto &clip : clips)
     {
-        copiedClips.add(clip->copyWithNewId(pattern));
+        copiedClips.add(clip.copyWithNewId(pattern));
     }
     pattern->reset();
     pattern->insertGroup(copiedClips, false);

@@ -4389,6 +4389,9 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\SequencerOperations.h">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\InteractiveActions.h">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip\AutomationCurveClipComponent.h">
       <Filter>Helio\Source\UI\Sequencer\PatternRoll\ClipComponents\AutomationCurveClip</Filter>
     </ClInclude>

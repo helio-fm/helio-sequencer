@@ -1136,6 +1136,8 @@
                   file="../../Source/UI/Sequencer/Helpers/SequencerOperations.cpp"/>
             <FILE id="Ef8Csi" name="SequencerOperations.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/SequencerOperations.h"/>
+            <FILE id="vDv4E2" name="InteractiveActions.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/InteractiveActions.h"/>
           </GROUP>
           <GROUP id="{B0892F63-3E45-E55C-AC0C-2854CEBBAA2E}" name="PatternRoll">
             <GROUP id="{B0907F47-84ED-36AB-6C8C-C52ABB97E9A8}" name="ClipComponents">
