@@ -33,7 +33,6 @@ struct MenuItem final : public ReferenceCountedObject
     using Callback = Function<void()>;
     using Ptr = ReferenceCountedObjectPtr<MenuItem>;
 
-    Image image;
     String commandText;
     String hotkeyText;
     Colour colour;
@@ -44,7 +43,7 @@ struct MenuItem final : public ReferenceCountedObject
     Alignment alignment = Alignment::Left;
     Callback callback = nullptr;
 
-    struct MenuItemFlags
+    struct MenuItemFlags final
     {
         bool isToggled : 1;
         bool isDisabled : 1;
@@ -78,7 +77,6 @@ struct MenuItem final : public ReferenceCountedObject
     static MenuItem::Ptr empty();
     static MenuItem::Ptr item(Icons::Id iconId, const String &text);
     static MenuItem::Ptr item(Icons::Id iconId, int commandId, const String &text = {});
-    static MenuItem::Ptr item(Image image, int commandId, const String &text = {});
 };
 
 class MenuItemComponent final : public DraggingListBoxComponent
@@ -86,7 +84,7 @@ class MenuItemComponent final : public DraggingListBoxComponent
 public:
 
     MenuItemComponent(Component *parentCommandReceiver,
-                      Viewport *parentViewport, const MenuItem::Ptr desc);
+        Viewport *parentViewport, const MenuItem::Ptr desc);
 
     ~MenuItemComponent();
 
@@ -107,11 +105,9 @@ public:
 
 private:
 
-#if PLATFORM_DESKTOP
-    static constexpr auto iconMargin = 8;
-#elif PLATFORM_MOBILE
-    static constexpr auto iconMargin = 4;
-#endif
+    static constexpr auto iconMargin = 6;
+    static constexpr auto iconSize = 20;
+    static constexpr auto fontSize = 18.f;
 
     Image icon;
     MenuItem::Ptr description;

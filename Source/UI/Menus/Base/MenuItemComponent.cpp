@@ -67,21 +67,6 @@ MenuItem::Ptr MenuItem::item(Icons::Id iconId, int commandId, const String &text
     return description;
 }
 
-MenuItem::Ptr MenuItem::item(Image image, int commandId, const String &text /*= ""*/)
-{
-    MenuItem::Ptr description(new MenuItem());
-    description->image = move(image);
-    description->commandText = text;
-    description->commandId = commandId;
-    description->hotkeyText = findHotkeyText(commandId);
-    description->flags.isToggled = false;
-    description->flags.isDisabled = false;
-    description->flags.shouldCloseMenu = false;
-    description->flags.hasSubmenu = false;
-    description->colour = findDefaultColour(Label::textColourId);
-    return description;
-}
-
 MenuItem::Ptr MenuItem::item(Icons::Id iconId, const String &text)
 {
     return MenuItem::item(iconId, -1, text);
@@ -197,14 +182,14 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver,
 {
     this->subLabel = make<Label>();
     this->addAndMakeVisible(this->subLabel.get());
-    this->subLabel->setFont({ 21.f });
+    this->subLabel->setFont({ MenuItemComponent::fontSize });
     this->subLabel->setJustificationType(Justification::centredRight);
     this->subLabel->setInterceptsMouseClicks(false, false);
     this->subLabel->setColour(Label::textColourId, desc->colour.withMultipliedAlpha(0.5f));
 
     this->textLabel = make<Label>();
     this->addAndMakeVisible(this->textLabel.get());
-    this->textLabel->setFont({ 21.f });
+    this->textLabel->setFont({ MenuItemComponent::fontSize });
     this->textLabel->setJustificationType(Justification::centredLeft);
     this->textLabel->setInterceptsMouseClicks(false, false);
 
@@ -215,7 +200,7 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver,
     this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
 
-    this->setSize(64, COMMAND_PANEL_BUTTON_HEIGHT);
+    this->setSize(64, Globals::UI::menuPanelRowHeight);
     this->update(desc);
 }
 
@@ -228,14 +213,15 @@ void MenuItemComponent::paint(Graphics &g)
         g.setColour(Colour(0x06ffffff));
         g.fillRect(0, 0, this->getWidth(), 1);
 
-        g.setColour (Colour(0x0f000000));
-        g.fillRect (0, this->getHeight() - 1, this->getWidth(), 1);
+        g.setColour(Colour(0x0f000000));
+        g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
     }
 
     g.setOpacity(1.f);
 
     const int iconX = this->hasText() ?
-        (this->icon.getWidth() / 2) + MenuItemComponent::iconMargin : (this->getWidth() / 2);
+        MenuItemComponent::iconSize / 2 + MenuItemComponent::iconMargin :
+        this->getWidth() / 2;
 
     jassert(this->icon.isValid());
 
@@ -244,15 +230,12 @@ void MenuItemComponent::paint(Graphics &g)
 
 void MenuItemComponent::resized()
 {
-    constexpr auto iconSize = 20;
-    constexpr auto textLabelX = 48;
-    constexpr auto subLabelWidth = 128;
     constexpr auto rightMargin = 4;
-
+    constexpr auto subLabelWidth = 128;
     this->subLabel->setBounds(this->getWidth() - subLabelWidth - rightMargin, 0, subLabelWidth, this->getHeight());
-    this->textLabel->setBounds(textLabelX, 0, this->getWidth() - textLabelX - rightMargin, this->getHeight());
-    this->submenuMarker->setBounds(this->getWidth() - iconSize - rightMargin,
-                                   (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
+    this->submenuMarker->setBounds(this->getWidth() - MenuItemComponent::iconSize - rightMargin,
+        (this->getHeight() / 2) - (MenuItemComponent::iconSize / 2),
+        MenuItemComponent::iconSize, MenuItemComponent::iconSize);
 
     if (this->checkMarker != nullptr)
     {
@@ -267,24 +250,16 @@ void MenuItemComponent::resized()
         this->checkMarker->setBounds(this->getLocalBounds());
     }
 
-    if (!this->icon.isValid() && this->description->image.isValid())
-    {
-        this->icon = this->description->image;
-    }
-    else
-    {
-        this->icon = Icons::findByName(this->description->iconId, iconSize);
-    }
+    this->icon = Icons::findByName(this->description->iconId, MenuItemComponent::iconSize);
 
-    const int xMargin = MenuItemComponent::iconMargin + 2;
-    this->textLabel->setBounds(int(this->icon.getWidth() + xMargin),
-        (this->getHeight() / 2) - (this->getHeight() / 2),
-        int(this->getWidth() - this->icon.getWidth() - xMargin),
-        this->getHeight());
+    this->textLabel->setBounds(MenuItemComponent::iconSize + MenuItemComponent::iconMargin, 0,
+        this->getWidth() - MenuItemComponent::iconSize - MenuItemComponent::iconMargin, this->getHeight());
 
-    const float fontSize = 18.f ;//jmin(MAX_MENU_FONT_SIZE, float(this->getHeight() / 2) + 1.f);
-    this->subLabel->setFont(Font(Font::getDefaultSansSerifFontName(), fontSize, Font::plain));
-    this->textLabel->setFont(Font(Font::getDefaultSansSerifFontName(), fontSize, Font::plain));
+    this->subLabel->setFont(Font(Font::getDefaultSansSerifFontName(),
+        MenuItemComponent::fontSize, Font::plain));
+
+    this->textLabel->setFont(Font(Font::getDefaultSansSerifFontName(),
+        MenuItemComponent::fontSize, Font::plain));
 }
 
 void MenuItemComponent::mouseDown(const MouseEvent &e)
@@ -450,7 +425,6 @@ Component *MenuItemComponent::createHighlighterComponent()
     if (!this->description->flags.isDisabled)
     {
         MenuItem::Ptr desc2 = MenuItem::empty();
-        desc2->image = this->description->image;
         desc2->iconId = this->description->iconId;
         desc2->commandText = this->description->commandText;
         //desc2->hotkeyText = this->description->hotkeyText;

@@ -19,12 +19,6 @@
 
 #include "MenuItemComponent.h"
 
-#if PLATFORM_DESKTOP
-#   define COMMAND_PANEL_BUTTON_HEIGHT (32)
-#elif PLATFORM_MOBILE
-#   define COMMAND_PANEL_BUTTON_HEIGHT (40)
-#endif
-
 class MenuPanelUtils final
 {
 public:

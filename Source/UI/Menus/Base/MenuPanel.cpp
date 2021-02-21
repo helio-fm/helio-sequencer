@@ -97,7 +97,7 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
         this->listBox = make<ListBox>();
         this->listBox->setModel(this);
         this->listBox->setMultipleSelectionEnabled(false);
-        this->listBox->setRowHeight(COMMAND_PANEL_BUTTON_HEIGHT);
+        this->listBox->setRowHeight(Globals::UI::menuPanelRowHeight);
         this->listBox->updateContent();
         this->addAndMakeVisible(this->listBox.get());
     }
@@ -188,11 +188,8 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
 
     if (this->shouldResizeToFitContent && receivedNewCommands)
     {
-        UniquePointer<MenuItemComponent> tempItem(new MenuItemComponent(nullptr, nullptr, MenuItem::empty()));
-        Font stringFont(tempItem->getFont());
-
-        const int menuHeight = jmax(this->getHeight(), commands.size() * COMMAND_PANEL_BUTTON_HEIGHT);
-        const int maxMenuHeight = COMMAND_PANEL_BUTTON_HEIGHT * 12; // Hard-coded for now:
+        const auto tempItem = make<MenuItemComponent>(nullptr, nullptr, MenuItem::empty());
+        Font stringFont(tempItem->getFont()); // a nasty hack(
 
         int estimatedWidth = 0;
         for (const auto &command : commands)
@@ -206,8 +203,14 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
             }
         }
 
-        const int newWidth = jmax(estimatedWidth + int(COMMAND_PANEL_BUTTON_HEIGHT * 2.1f), this->getWidth());
+        constexpr auto widthMargin = 68;
+        const int newWidth = jmax(estimatedWidth + widthMargin, this->getWidth());
+
+        const int menuHeight = jmax(this->getHeight(),
+            commands.size() * Globals::UI::menuPanelRowHeight);
+        const int maxMenuHeight = Globals::UI::menuPanelRowHeight * 12; // hard-coded for now
         const int newHeight = jmin(menuHeight, maxMenuHeight) + this->getFooterHeight();
+
         this->setSize(newWidth, newHeight);
     }
 }
