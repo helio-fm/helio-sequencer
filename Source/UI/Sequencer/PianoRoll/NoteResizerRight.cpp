@@ -15,129 +15,92 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "NoteResizerRight.h"
 
-//[MiscUserDefs]
 #include "HybridRoll.h"
 #include "PianoRoll.h"
 #include "PianoSequence.h"
 #include "SequencerOperations.h"
 #include "NoteComponent.h"
-//[/MiscUserDefs]
 
-NoteResizerRight::NoteResizerRight(HybridRoll &parentRoll)
-    : roll(parentRoll)
+NoteResizerRight::NoteResizerRight(HybridRoll &parentRoll) : roll(parentRoll)
 {
-    this->resizeIcon.reset(new IconComponent(Icons::stretchRight));
-    this->addAndMakeVisible(resizeIcon.get());
+    this->resizeIcon = make<IconComponent>(Icons::stretchRight);
+    this->resizeIcon->setIconAlphaMultiplier(NoteResizerRight::lineAlpha);
+    this->addAndMakeVisible(this->resizeIcon.get());
 
-    resizeIcon->setBounds(8, 8, 24, 24);
-
-
-    //[UserPreSize]
     this->setAlpha(0.f);
-    this->resizeIcon->setIconAlphaMultiplier(0.5f);
     this->setMouseCursor(MouseCursor::LeftRightResizeCursor);
     this->setInterceptsMouseClicks(false, false);
-    //[/UserPreSize]
 
-    this->setSize(64, 256);
+    this->setSize(NoteResizerRight::draggerSize, NoteResizerRight::draggerSize);
 
-    //[Constructor]
-    //[/Constructor]
+    constexpr auto iconOffset = 8;
+    constexpr auto iconSize = NoteResizerRight::draggerSize / 2;
+    this->resizeIcon->setBounds(iconOffset, iconOffset, iconSize, iconSize);
+
+    this->draggerShape.clear();
+    this->draggerShape.startNewSubPath(0.25f, 0.f);
+    this->draggerShape.lineTo(float(this->getWidth()), 0.f);
+    this->draggerShape.lineTo(float(this->getWidth()) * 0.75f, float(this->getHeight()) * 0.75f);
+    this->draggerShape.lineTo(0.25f, float(this->getHeight()));
+    this->draggerShape.closeSubPath();
 }
 
 NoteResizerRight::~NoteResizerRight()
 {
-    //[Destructor_pre]
     Desktop::getInstance().getAnimator().animateComponent(this,
         this->getBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
-    //[/Destructor_pre]
-
-    resizeIcon = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
 }
 
-void NoteResizerRight::paint (Graphics& g)
+void NoteResizerRight::paint(Graphics &g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
+    g.setColour(this->fillColour);
+    g.fillPath(this->draggerShape);
 
+    g.setColour(Colours::black.withAlpha(NoteResizerRight::lineAlpha));
+    g.strokePath(this->draggerShape, PathStrokeType(2.f));
+
+    g.setColour(this->lineColour);
+    g.strokePath(this->draggerShape, PathStrokeType(1.f));
+
+    static constexpr int dashLength = 8;
+    for (int i = NoteResizerRight::draggerSize;
+        i < this->getHeight() - 1; i += (dashLength * 2))
     {
-        int x = 0, y = 0, width = 2, height = getHeight() - 0;
-        Colour fillColour = Colour (0x1affffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
+        g.fillRect(0, i, 1, dashLength);
     }
-
-    {
-        float x = static_cast<float> (0 - (96 / 2)), y = static_cast<float> (0 - (96 / 2)), width = 96.0f, height = 96.0f;
-        Colour fillColour = Colour (0x20ffffff);
-        Colour strokeColour = Colour (0x30ffffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillEllipse (x, y, width, height);
-        g.setColour (strokeColour);
-        g.drawEllipse (x, y, width, height, 1.000f);
-    }
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
-void NoteResizerRight::resized()
+bool NoteResizerRight::hitTest(int x, int y)
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    constexpr auto r = NoteResizerRight::draggerSize;
+    return (x * x + y * y) < (r * r);
 }
 
-bool NoteResizerRight::hitTest (int x, int y)
+void NoteResizerRight::mouseEnter(const MouseEvent &e)
 {
-    //[UserCode_hitTest] -- Add your code here...
-    const int r = 96 / 2;
-    return (x * x) + (y * y) < (r * r);
-    //[/UserCode_hitTest]
-}
-
-void NoteResizerRight::mouseEnter (const MouseEvent& e)
-{
-    //[UserCode_mouseEnter] -- Add your code here...
     this->resizeIcon->setIconAlphaMultiplier(1.f);
-    //[/UserCode_mouseEnter]
 }
 
-void NoteResizerRight::mouseExit (const MouseEvent& e)
+void NoteResizerRight::mouseExit(const MouseEvent &e)
 {
-    //[UserCode_mouseExit] -- Add your code here...
-    this->resizeIcon->setIconAlphaMultiplier(0.5f);
-    //[/UserCode_mouseExit]
+    this->resizeIcon->setIconAlphaMultiplier(NoteResizerRight::lineAlpha);
 }
 
-void NoteResizerRight::mouseDown (const MouseEvent& e)
+void NoteResizerRight::mouseDown(const MouseEvent &e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
     this->dragger.startDraggingComponent(this, e);
 
-    const Lasso &selection = this->roll.getLassoSelection();
+    const auto &selection = this->roll.getLassoSelection();
     const float groupStartBeat = SequencerOperations::findStartBeat(selection);
 
-    this->noteComponent = this->findRightMostEvent(selection);
+    this->groupResizerNote = this->findRightMostEvent(selection);
 
     for (int i = 0; i < selection.getNumSelected(); i++)
     {
-        if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
+        if (auto *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
         {
             if (selection.shouldDisplayGhostNotes())
             { note->getRoll().showGhostNoteFor(note); }
@@ -145,59 +108,51 @@ void NoteResizerRight::mouseDown (const MouseEvent& e)
             note->startGroupScalingRight(groupStartBeat);
         }
     }
-    //[/UserCode_mouseDown]
 }
 
-void NoteResizerRight::mouseDrag (const MouseEvent& e)
+void NoteResizerRight::mouseDrag(const MouseEvent &e)
 {
-    //[UserCode_mouseDrag] -- Add your code here...
     this->dragger.dragComponent(this, e, nullptr);
 
-    Lasso &selection = this->roll.getLassoSelection();
+    const auto &selection = this->roll.getLassoSelection();
 
     float groupScaleFactor = 1.f;
     const bool scaleFactorChanged =
-        this->noteComponent->getGroupScaleRightFactor(
+        this->groupResizerNote->getGroupScaleRightFactor(
             e.withNewPosition(Point<int>(0, 0))
-            .getEventRelativeTo(this->noteComponent), groupScaleFactor);
+            .getEventRelativeTo(this->groupResizerNote), groupScaleFactor);
 
     if (scaleFactorChanged)
     {
-        this->noteComponent->checkpointIfNeeded();
-        Array<Note> groupDragBefore, groupDragAfter;
+        this->groupResizerNote->checkpointIfNeeded();
 
+        Array<Note> groupDragBefore, groupDragAfter;
         for (int i = 0; i < selection.getNumSelected(); ++i)
         {
-            NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
             groupDragBefore.add(nc->getNote());
             groupDragAfter.add(nc->continueGroupScalingRight(groupScaleFactor));
         }
 
         const auto &event = selection.getFirstAs<NoteComponent>()->getNote();
-        PianoSequence *pianoLayer = static_cast<PianoSequence *>(event.getSequence());
-        pianoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
+        auto *sequence = static_cast<PianoSequence *>(event.getSequence());
+        sequence->changeGroup(groupDragBefore, groupDragAfter, true);
     }
 
-    this->updateBounds(this->noteComponent);
-    //[/UserCode_mouseDrag]
+    this->updateBounds();
 }
 
-void NoteResizerRight::mouseUp (const MouseEvent& e)
+void NoteResizerRight::mouseUp(const MouseEvent &e)
 {
-    //[UserCode_mouseUp] -- Add your code here...
-    const Lasso &selection = this->roll.getLassoSelection();
+    const auto &selection = this->roll.getLassoSelection();
 
     for (int i = 0; i < selection.getNumSelected(); i++)
     {
-        NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+        auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
         nc->getRoll().hideAllGhostNotes();
         nc->endGroupScalingLeft();
     }
-    //[/UserCode_mouseUp]
 }
-
-
-//[MiscUserCode]
 
 NoteComponent *NoteResizerRight::findRightMostEvent(const Lasso &selection)
 {
@@ -206,7 +161,7 @@ NoteComponent *NoteResizerRight::findRightMostEvent(const Lasso &selection)
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        NoteComponent *currentEvent = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+        auto *currentEvent = static_cast<NoteComponent *>(selection.getSelectedItem(i));
         const float beatPlusLength = currentEvent->getBeat() + currentEvent->getLength();
 
         if (rightMostBeat < beatPlusLength)
@@ -219,14 +174,13 @@ NoteComponent *NoteResizerRight::findRightMostEvent(const Lasso &selection)
     return mc;
 }
 
-void NoteResizerRight::updateBounds(NoteComponent *anchorComponent)
+void NoteResizerRight::updateBounds()
 {
-    const Lasso &selection = this->roll.getLassoSelection();
-    const float groupEndBeat = (anchorComponent != nullptr) ?
-                                (anchorComponent->getBeat() + anchorComponent->getLength()) :
-                                SequencerOperations::findEndBeat(selection);
+    const auto &selection = this->roll.getLassoSelection();
+    const float groupEndBeat = SequencerOperations::findEndBeat(selection);
+    const float clipBeat = selection.getFirstAs<NoteComponent>()->getClip().getBeat();
 
-    const int xAnchor = this->roll.getXPositionByBeat(groupEndBeat);
+    const int xAnchor = this->roll.getXPositionByBeat(groupEndBeat + clipBeat);
     const int yAnchor = this->roll.getViewport().getViewPositionY() + Globals::UI::rollHeaderHeight;
     const int h = this->roll.getViewport().getViewHeight();
     this->setBounds(xAnchor, yAnchor, this->getWidth(), h);
@@ -242,36 +196,3 @@ void NoteResizerRight::updateTopPosition()
     const int yAnchor = this->roll.getViewport().getViewPositionY() + Globals::UI::rollHeaderHeight;
     this->setTopLeftPosition(this->getX(), yAnchor);
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="NoteResizerRight" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="HybridRoll &amp;parentRoll"
-                 variableInitialisers="roll(parentRoll)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="64"
-                 initialHeight="256">
-  <METHODS>
-    <METHOD name="mouseEnter (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseExit (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
-    <METHOD name="hitTest (int x, int y)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <RECT pos="0 0 2 0M" fill="solid: 1affffff" hasStroke="0"/>
-    <ELLIPSE pos="0c 0c 96 96" fill="solid: 20ffffff" hasStroke="1" stroke="1, mitered, butt"
-             strokeColour="solid: 30ffffff"/>
-  </BACKGROUND>
-  <GENERICCOMPONENT name="" id="79f90a69d0b95011" memberName="resizeIcon" virtualName=""
-                    explicitFocusOrder="0" pos="8 8 24 24" class="IconComponent"
-                    params="Icons::stretchRight"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

@@ -1515,14 +1515,14 @@ void PianoRoll::handleAsyncUpdate()
     if (this->selection.getNumSelected() > 0 &&
         this->noteResizerLeft == nullptr)
     {
-        this->noteResizerLeft.reset(new NoteResizerLeft(*this));
+        this->noteResizerLeft = make<NoteResizerLeft>(*this);
         this->addAndMakeVisible(this->noteResizerLeft.get());
     }
 
     if (this->selection.getNumSelected() > 0 &&
         this->noteResizerRight == nullptr)
     {
-        this->noteResizerRight.reset(new NoteResizerRight(*this));
+        this->noteResizerRight = make<NoteResizerRight>(*this);
         this->addAndMakeVisible(this->noteResizerRight.get());
     }
 

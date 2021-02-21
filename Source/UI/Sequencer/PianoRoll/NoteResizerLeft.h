@@ -17,52 +17,55 @@
 
 #pragma once
 
-//[Headers]
 class HybridRoll;
 class NoteComponent;
 class Lasso;
 
 #include "IconComponent.h"
 #include "ComponentFader.h"
-//[/Headers]
-
+#include "ColourIDs.h"
 
 class NoteResizerLeft final : public Component
 {
 public:
 
-    NoteResizerLeft(HybridRoll &parentRoll);
+    explicit NoteResizerLeft(HybridRoll &parentRoll);
     ~NoteResizerLeft();
 
-    //[UserMethods]
-    void updateBounds(NoteComponent *anchorComponent = nullptr);
+    void updateBounds();
     void updateTopPosition();
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
-    void resized() override;
-    bool hitTest (int x, int y) override;
-    void mouseEnter (const MouseEvent& e) override;
-    void mouseExit (const MouseEvent& e) override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
-
+    void paint(Graphics &g) override;
+    bool hitTest(int x, int y) override;
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseExit(const MouseEvent &e) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
 private:
 
-    //[UserVariables]
-
     NoteComponent *findLeftMostEvent(const Lasso &selection);
+
+    HybridRoll &roll;
+    SafePointer<NoteComponent> groupResizerNote;
 
     ComponentFader fader;
     ComponentDragger dragger;
-    HybridRoll &roll;
-    SafePointer<NoteComponent> noteComponent;
-
-    //[/UserVariables]
 
     UniquePointer<IconComponent> resizeIcon;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoteResizerLeft)
+    Path draggerShape;
+    static constexpr auto draggerSize = 44;
+
+    static constexpr auto lineAlpha = 0.85f;
+
+    const Colour lineColour =
+        findDefaultColour(ColourIDs::SelectionComponent::outline)
+        .withMultipliedAlpha(lineAlpha);
+
+    const Colour fillColour =
+        findDefaultColour(ColourIDs::BackgroundA::fill);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteResizerLeft)
 };
