@@ -125,7 +125,7 @@ int ProjectMetadata::getPeriodSize() const noexcept
 
 String ProjectMetadata::getVCSName() const
 {
-    return I18n::VCS::projectMetadata.toString();
+    return TRANS(I18n::VCS::projectMetadata);
 }
 
 int ProjectMetadata::getNumDeltas() const

@@ -47,13 +47,13 @@ private:
 
     String id;
     String name;
-    String author;
     String pluralEquation;
 
-    using TranslationMap = FlatHashMap<String, String, StringHash>;
-    using PluralsMap = FlatHashMap<String, UniquePointer<TranslationMap>, StringHash>;
+    using SingularsMap = FlatHashMap<I18n::Key, String>;
+    SingularsMap singulars;
 
-    TranslationMap singulars;
+    using Plurals = FlatHashMap<String, String, StringHash>;
+    using PluralsMap = FlatHashMap<I18n::Key, UniquePointer<Plurals>>;
     PluralsMap plurals;
 
     friend class TranslationsManager;

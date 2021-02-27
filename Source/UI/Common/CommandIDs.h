@@ -214,6 +214,6 @@ namespace CommandIDs
     };
 
     CommandIDs::Id getIdForName(const String &command);
-    Identifier getTranslationKeyFor(CommandIDs::Id id);
+    I18n::Key getTranslationKeyFor(CommandIDs::Id id);
 
 } // namespace CommandIDs

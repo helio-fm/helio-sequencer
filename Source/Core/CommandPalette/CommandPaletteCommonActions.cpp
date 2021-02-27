@@ -25,7 +25,7 @@ static CommandPaletteActionsProvider::Actions buildCommandsListFor(const Compone
 {
     //DBG("Building command palette actions for " + target->getComponentID());
     CommandPaletteActionsProvider::Actions actions;
-    FlatHashSet<Identifier, IdentifierHash> duplicateLookup;
+    FlatHashSet<I18n::Key> duplicateLookup;
 
     const auto hotkeys = App::Config().getHotkeySchemes()->getCurrent();
     const auto actionColor = findDefaultColour(Label::textColourId).withMultipliedAlpha(0.8f);
@@ -33,7 +33,7 @@ static CommandPaletteActionsProvider::Actions buildCommandsListFor(const Compone
     for (const auto &keyPress : hotkeys->getKeyPresses())
     {
         const auto i18nKey = CommandIDs::getTranslationKeyFor(keyPress.commandId);
-        if (i18nKey.isValid() && keyPress.componentId == target->getComponentID())
+        if (i18nKey != 0 && keyPress.componentId == target->getComponentID())
         {
             const auto action = [keyPress](TextEditor &ed)
             {

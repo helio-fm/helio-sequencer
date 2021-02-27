@@ -307,7 +307,7 @@ String App::getDeviceId()
         }
         else
         {
-            const String systemStats =
+            const auto systemStats =
                 SystemStats::getLogonName() +
                 SystemStats::getComputerName() +
                 SystemStats::getOperatingSystemName() +
@@ -320,10 +320,10 @@ String App::getDeviceId()
     return kDeviceId;
 }
 
-String App::translate(const Identifier &singular)
+String App::translate(I18n::Key singular)
 {
     return static_cast<App *>(getInstance())->config->
-        getTranslations()->translate(singular.toString());
+        getTranslations()->translate(singular);
 }
 
 String App::translate(const String &singular)
@@ -332,7 +332,7 @@ String App::translate(const String &singular)
         getTranslations()->translate(singular);
 }
 
-String App::translate(const char* singular)
+String App::translate(const char *singular)
 {
     return static_cast<App *>(getInstance())->config->
         getTranslations()->translate(singular);

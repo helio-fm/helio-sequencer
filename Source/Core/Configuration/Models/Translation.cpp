@@ -52,24 +52,37 @@ void Translation::deserialize(const SerializedData &data)
 
     if (!root.isValid()) { return; }
 
-    this->id = root.getProperty(Translations::id).toString().toLowerCase();
+    this->id = root.getProperty(Translations::localeId).toString().toLowerCase();
+    this->name = root.getProperty(Translations::localeName);
 
-    this->name = root.getProperty(Translations::name);
-    this->author = root.getProperty(Translations::author);
     this->pluralEquation = Translations::wrapperClassName + "." +
         Translations::wrapperMethodName + "(" +
         root.getProperty(Translations::pluralEquation, "1").toString() + ")";
 
     forEachChildWithType(root, pluralLiteral, Translations::pluralLiteral)
     {
-        const String baseLiteral = pluralLiteral.getProperty(Translations::name);
-
-        auto *formsAndTranslations = new TranslationMap();
-        this->plurals[baseLiteral] = UniquePointer<TranslationMap>(formsAndTranslations);
-        
-        forEachChildWithType(pluralLiteral, pluralTranslation, Translations::translation)
+        I18n::Key literalKey = I18n::Key(int64(pluralLiteral.getProperty(Translations::translationId)));
+        if (literalKey == 0)
         {
-            const String translatedLiteral = pluralTranslation.getProperty(Translations::name);
+            // deprecated format support
+            const String literalName = pluralLiteral.getProperty(Translations::translationIdOld);
+            literalKey = constexprHash(literalName.getCharPointer());
+        }
+
+        auto *formsAndTranslations = new Plurals();
+        this->plurals[literalKey] = UniquePointer<Plurals>(formsAndTranslations);
+
+        forEachChildWithType(pluralLiteral, pluralTranslation, Translations::translationValue)
+        {
+            const String translatedLiteral = pluralTranslation.getProperty(Translations::translationId);
+            const String pluralForm = pluralTranslation.getProperty(Translations::pluralForm);
+            (*formsAndTranslations)[pluralForm] = translatedLiteral;
+        }
+
+        // deprecated format support
+        forEachChildWithType(pluralLiteral, pluralTranslation, Translations::translationValueOld)
+        {
+            const String translatedLiteral = pluralTranslation.getProperty(Translations::translationIdOld);
             const String pluralForm = pluralTranslation.getProperty(Translations::pluralForm);
             (*formsAndTranslations)[pluralForm] = translatedLiteral;
         }
@@ -77,10 +90,54 @@ void Translation::deserialize(const SerializedData &data)
 
     forEachChildWithType(root, literal, Translations::literal)
     {
-        const String literalName = literal.getProperty(Translations::name);
-        const String translatedLiteral = literal.getProperty(Translations::translation);
-        this->singulars[literalName] = translatedLiteral;
+        I18n::Key literalKey = I18n::Key(int64(literal.getProperty(Translations::translationId)));
+        if (literalKey == 0)
+        {
+            // deprecated format support
+            const String literalName = literal.getProperty(Translations::translationIdOld);
+            literalKey = constexprHash(literalName.getCharPointer());
+        }
+
+        const String translatedLiteral = literal.getProperty(Translations::translationValueOld);
+        this->singulars[literalKey] = translatedLiteral;
     }
+
+    // and let's make sure we have no hash collisions in translation keys
+#if DEBUG
+
+    FlatHashSet<I18n::Key> usedKeys;
+
+    // if any assertion is hit, consider renaming the newly added key
+    forEachChildWithType(root, literal, Translations::literal)
+    {
+        I18n::Key literalKey = I18n::Key(int64(literal.getProperty(Translations::translationId)));
+        if (literalKey == 0)
+        {
+            // deprecated format support
+            const String literalName = literal.getProperty(Translations::translationIdOld);
+            literalKey = constexprHash(literalName.getCharPointer());
+        }
+
+        jassert(literalKey != 0);
+        jassert(!usedKeys.contains(literalKey));
+        usedKeys.insert(literalKey);
+    }
+
+    forEachChildWithType(root, pluralLiteral, Translations::pluralLiteral)
+    {
+        I18n::Key literalKey = I18n::Key(int64(pluralLiteral.getProperty(Translations::translationId)));
+        if (literalKey == 0)
+        {
+            // deprecated format support
+            const String literalName = pluralLiteral.getProperty(Translations::translationIdOld);
+            literalKey = constexprHash(literalName.getCharPointer());
+        }
+
+        jassert(literalKey != 0);
+        jassert(!usedKeys.contains(literalKey));
+        usedKeys.insert(literalKey);
+    }
+#endif
 }
 
 void Translation::reset()

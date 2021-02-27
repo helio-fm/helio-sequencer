@@ -296,13 +296,18 @@ namespace Serialization
         static const Identifier wrapperClassName = "pluralForm";
         static const Identifier wrapperMethodName = "detect";
 
-        static const Identifier translation = "translation";
-        static const Identifier locale = "locale";
-        static const Identifier literal = "literal";
-        static const Identifier author = "author";
-        static const Identifier name = "name";
-        static const Identifier id = "id";
+        // old keys
+        static const Identifier translationIdOld = "name";
+        static const Identifier translationValueOld = "translation";
+        // new keys
+        static const Identifier translationId = "id";
+        static const Identifier translationValue = "tr";
 
+        static const Identifier locale = "locale";
+        static const Identifier localeId = "id";
+        static const Identifier localeName = "name";
+
+        static const Identifier literal = "literal";
         static const Identifier pluralEquation = "pluralEquation";
         static const Identifier pluralLiteral = "pluralLiteral";
         static const Identifier pluralForm = "pluralForm";

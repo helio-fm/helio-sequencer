@@ -189,11 +189,11 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
 
 #define TRANS_NONE(x) \
     case x: \
-    return {}; \
+    return 0; \
 
 // this is only used for command palette:
 // only the commands with translations are displayed
-Identifier CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
+I18n::Key CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
 {
     using namespace I18n;
 

@@ -52,7 +52,7 @@ namespace VCS
         String getVCSName() const noexcept override;
         DiffLogic *getDiffLogic() const noexcept override;
         void resetStateTo(const TrackedItem &newState) noexcept override {} // never reset
-    
+
         //===--------------------------------------------------------------===//
         // Serializable
         //===--------------------------------------------------------------===//

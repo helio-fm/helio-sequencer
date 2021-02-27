@@ -170,22 +170,19 @@ NotesTuningPanel::NotesTuningPanel(ProjectNode &parentProject, PianoRoll &target
     sineSlider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
     sineSlider->addListener (this);
 
-    this->linearLabel.reset(new Label(String(),
-                                       TRANS("+")));
+    this->linearLabel.reset(new Label(String(), "+"));
     this->addAndMakeVisible(linearLabel.get());
     this->linearLabel->setFont(Font (21.00f, Font::plain));
     linearLabel->setJustificationType(Justification::centred);
     linearLabel->setEditable(false, false, false);
 
-    this->multiLabel.reset(new Label(String(),
-                                      TRANS("*")));
+    this->multiLabel.reset(new Label(String(), "*"));
     this->addAndMakeVisible(multiLabel.get());
     this->multiLabel->setFont(Font (21.00f, Font::plain));
     multiLabel->setJustificationType(Justification::centred);
     multiLabel->setEditable(false, false, false);
 
-    this->sineLabel.reset(new Label(String(),
-                                     TRANS("~")));
+    this->sineLabel.reset(new Label(String(), "~"));
     this->addAndMakeVisible(sineLabel.get());
     this->sineLabel->setFont(Font (21.00f, Font::plain));
     sineLabel->setJustificationType(Justification::centred);

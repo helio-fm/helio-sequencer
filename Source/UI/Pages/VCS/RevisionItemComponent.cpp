@@ -170,8 +170,8 @@ void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemIn
     this->separator->setVisible(! isLastRow);
 
     const auto itemType = this->revisionItem->getType();
-    const String itemTypeStr = this->revisionItem->getTypeAsString();
-    const String itemDescription = TRANS(this->revisionItem->getVCSName());
+    const auto itemTypeStr = this->revisionItem->getTypeAsString();
+    const auto itemDescription = this->revisionItem->getVCSName();
 
     String itemDeltas;
     bool needsComma = false;

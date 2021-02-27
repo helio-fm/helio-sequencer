@@ -96,20 +96,21 @@ void TranslationsManager::loadLocaleWithId(const String &localeId)
 
 String TranslationsManager::translate(const String &text)
 {
-    if (text.isEmpty())
-    {
-        return {};
-    }
+    const auto translation = translate(constexprHash(text.getCharPointer()));
+    return translation.isNotEmpty() ? translation : text;
+}
 
+String TranslationsManager::translate(I18n::Key key)
+{
     const SpinLock::ScopedLockType sl(this->currentTranslationLock);
 
-    const auto foundCurrentSingular = this->currentTranslation->singulars.find(text);
+    const auto foundCurrentSingular = this->currentTranslation->singulars.find(key);
     if (foundCurrentSingular != this->currentTranslation->singulars.end())
     {
         return foundCurrentSingular->second;
     }
 
-    const auto foundCurrentPlural = this->currentTranslation->plurals.find(text);
+    const auto foundCurrentPlural = this->currentTranslation->plurals.find(key);
     if (foundCurrentPlural != this->currentTranslation->plurals.end())
     {
         const auto *plurals = foundCurrentPlural->second.get();
@@ -119,13 +120,14 @@ String TranslationsManager::translate(const String &text)
         }
     }
 
-    const auto foundFallbackSingular = this->fallbackTranslation->singulars.find(text);
+    const auto foundFallbackSingular = this->fallbackTranslation->singulars.find(key);
     if (foundFallbackSingular != this->fallbackTranslation->singulars.end())
     {
         return foundFallbackSingular->second;
     }
 
-    return text;
+    //jassertfalse;
+    return {};
 }
 
 String TranslationsManager::translate(const String &baseLiteral, int64 targetNumber)
@@ -138,7 +140,8 @@ String TranslationsManager::translate(const String &baseLiteral, int64 targetNum
     using namespace Serialization;
     const SpinLock::ScopedLockType sl(this->currentTranslationLock);
 
-    const auto foundPlural = this->currentTranslation->plurals.find(baseLiteral);
+    const auto literalKey = constexprHash(baseLiteral.getCharPointer());
+    const auto foundPlural = this->currentTranslation->plurals.find(literalKey);
     if (foundPlural == this->currentTranslation->plurals.end())
     {
         return baseLiteral.replace(Translations::metaSymbol, String(targetNumber));
@@ -181,7 +184,7 @@ void TranslationsManager::deserializeResources(const SerializedData &tree, Resou
     {
         // if the existing translation for locale id is found,
         // just extend it, otherwise some new keys may be missing:
-        const auto translationId = translationRoot.getProperty(Serialization::Translations::id).toString().toLowerCase();
+        const auto translationId = translationRoot.getProperty(Serialization::Translations::localeId).toString().toLowerCase();
         const auto existingTranslation = outResources.find(translationId);
 
         Translation::Ptr translation(existingTranslation != outResources.end() ?

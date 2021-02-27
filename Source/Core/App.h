@@ -25,6 +25,7 @@ class MainLayout;
 
 #include "Serializable.h"
 #include "UserInterfaceFlags.h"
+#include "TranslationKeys.h"
 
 class Clipboard final
 {
@@ -68,9 +69,9 @@ public:
     static String getAppReadableVersion();
     static String getHumanReadableDate(const Time &date);
 
-    static String translate(const Identifier &singular);
+    static String translate(I18n::Key singular);
     static String translate(const String &singular);
-    static String translate(const char* singular);
+    static String translate(const char *singular);
     static String translate(const String &plural, int64 number);
 
     static void recreateLayout();

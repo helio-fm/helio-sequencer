@@ -176,7 +176,7 @@ float ProjectTimeline::findPreviousAnchorBeat(float beat) const
 
 String ProjectTimeline::getVCSName() const
 {
-    return I18n::VCS::projectTimeline.toString();
+    return TRANS(I18n::VCS::projectTimeline);
 }
 
 int ProjectTimeline::getNumDeltas() const
