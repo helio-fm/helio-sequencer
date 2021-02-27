@@ -17,45 +17,34 @@
 
 #pragma once
 
-//[Headers]
 class HybridRoll;
+
 #include "IconComponent.h"
-//[/Headers]
 
-
-class HybridRollExpandMark final : public Component,
-                                   private Timer
+class HybridRollExpandMark final : public Component, private Timer
 {
 public:
 
     HybridRollExpandMark(HybridRoll &parentRoll, float targetBeat, int numBeatsToTake);
     ~HybridRollExpandMark();
 
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
 
-
 private:
-
-    //[UserVariables]
 
     void timerCallback() override;
     void updatePosition();
 
     HybridRoll &roll;
 
-    float beat;
-    float alpha;
-    int numBeats;
-
-    //[/UserVariables]
+    float beat = 0.f;
+    float alpha = 1.f;
+    int numBeats = 0;
 
     UniquePointer<IconComponent> plusImage;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HybridRollExpandMark)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HybridRollExpandMark)
 };

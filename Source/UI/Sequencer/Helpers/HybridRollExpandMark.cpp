@@ -15,86 +15,48 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "HybridRollExpandMark.h"
-
-//[MiscUserDefs]
 #include "HybridRoll.h"
-//[/MiscUserDefs]
 
-HybridRollExpandMark::HybridRollExpandMark(HybridRoll &parentRoll, float targetBeat, int numBeatsToTake)
-    : roll(parentRoll),
-      beat(targetBeat),
-      numBeats(numBeatsToTake),
-      alpha(1.f)
+HybridRollExpandMark::HybridRollExpandMark(HybridRoll &parentRoll, float targetBeat, int numBeatsToTake) :
+    roll(parentRoll),
+    beat(targetBeat),
+    numBeats(numBeatsToTake)
 {
-    this->plusImage.reset(new IconComponent(Icons::expand));
-    this->addAndMakeVisible(plusImage.get());
+    this->plusImage = make<IconComponent>(Icons::expand);
+    this->addAndMakeVisible(this->plusImage.get());
 
-
-    //[UserPreSize]
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
-    //[/UserPreSize]
-
-    this->setSize(256, 48);
-
-    //[Constructor]
     this->startTimerHz(60);
-    //[/Constructor]
 }
 
-HybridRollExpandMark::~HybridRollExpandMark()
+HybridRollExpandMark::~HybridRollExpandMark() = default;
+
+void HybridRollExpandMark::paint(Graphics &g)
 {
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    plusImage = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void HybridRollExpandMark::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
     g.setColour(findDefaultColour(Label::textColourId).withAlpha(0.15f * this->alpha));
     g.fillRect(this->getLocalBounds());
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
 void HybridRollExpandMark::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    plusImage->setBounds((getWidth() / 2) - (16 / 2), (getHeight() / 2) - (16 / 2), 16, 16);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    constexpr auto iconSize = 16;
+    this->plusImage->setBounds((this->getWidth() / 2) - (iconSize / 2),
+        (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
 }
 
 void HybridRollExpandMark::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->updatePosition();
-    //[/UserCode_parentHierarchyChanged]
 }
 
 void HybridRollExpandMark::parentSizeChanged()
 {
-    //[UserCode_parentSizeChanged] -- Add your code here...
     this->updatePosition();
-    //[/UserCode_parentSizeChanged]
 }
 
-
-//[MiscUserCode]
 void HybridRollExpandMark::updatePosition()
 {
     const float beatOffset = this->beat - this->roll.getFirstBeat();
@@ -116,31 +78,3 @@ void HybridRollExpandMark::timerCallback()
         this->setAlpha(this->alpha);
     }
 }
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="HybridRollExpandMark" template="../../../Template"
-                 componentName="" parentClasses="public Component, private Timer"
-                 constructorParams="HybridRoll &amp;parentRoll, float targetBeat, int numBeatsToTake"
-                 variableInitialisers="roll(parentRoll),&#10;beat(targetBeat),&#10;numBeats(numBeatsToTake),&#10;alpha(1.f)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="256" initialHeight="48">
-  <METHODS>
-    <METHOD name="parentSizeChanged()"/>
-    <METHOD name="parentHierarchyChanged()"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT name="" id="79f90a69d0b95011" memberName="plusImage" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 0Cc 16 16" class="IconComponent"
-                    params="Icons::expand"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

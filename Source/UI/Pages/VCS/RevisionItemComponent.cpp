@@ -171,7 +171,7 @@ void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemIn
 
     const auto itemType = this->revisionItem->getType();
     const auto itemTypeStr = this->revisionItem->getTypeAsString();
-    const auto itemDescription = this->revisionItem->getVCSName();
+    const auto itemDescription = TRANS(this->revisionItem->getVCSName());
 
     String itemDeltas;
     bool needsComma = false;

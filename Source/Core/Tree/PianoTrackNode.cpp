@@ -27,13 +27,10 @@
 PianoTrackNode::PianoTrackNode(const String &name) :
     MidiTrackNode(name, Serialization::Core::pianoTrack)
 {
-    this->sequence.reset(new PianoSequence(*this, *this));
-    this->pattern.reset(new Pattern(*this, *this));
+    this->sequence = make<PianoSequence>(*this, *this);
+    this->pattern = make<Pattern>(*this, *this);
 
-    // this will be set by transport
-    //this->layer->setInstrumentId(this->workspace.getDefaultInstrument()->getInstrumentID());
-
-    this->vcsDiffLogic.reset(new VCS::PianoTrackDiffLogic(*this));
+    this->vcsDiffLogic = make<VCS::PianoTrackDiffLogic>(*this);
 
     using namespace Serialization::VCS;
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackPath));

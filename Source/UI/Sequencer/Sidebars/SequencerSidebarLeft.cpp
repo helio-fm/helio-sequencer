@@ -267,14 +267,14 @@ void SequencerSidebarLeft::recreateMenu()
 
     if (this->menuMode == MenuMode::PianoRollTools)
     {
-        this->menu.add(MenuItem::item(Icons::volume,
-            CommandIDs::ShowVolumePanel)->toggled(this->velocityMapVisible));
-
         this->menu.add(MenuItem::item(Icons::paint,
             CommandIDs::ToggleScalesHighlighting)->toggled(this->scalesHighlightingEnabled));
 
         this->menu.add(MenuItem::item(Icons::tag,
             CommandIDs::ToggleNoteNameGuides)->toggled(this->noteNameGuidesEnabled));
+
+        this->menu.add(MenuItem::item(Icons::volume,
+            CommandIDs::ShowVolumePanel)->toggled(this->velocityMapVisible));
     }
 }
 

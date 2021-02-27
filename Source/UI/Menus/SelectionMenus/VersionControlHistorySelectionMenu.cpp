@@ -48,8 +48,9 @@ VersionControlHistorySelectionMenu::VersionControlHistorySelectionMenu(VCS::Revi
     UniquePointer<Component> content;
     if (!revision->isShallowCopy())
     {
-        content.reset(new RevisionTooltipComponent(revision));
+        content = make<RevisionTooltipComponent>(revision);
     }
 
-    this->updateContent(createDefaultPanel(revision, vcs), MenuPanel::SlideRight, true, content.release());
+    this->updateContent(createDefaultPanel(revision, vcs),
+        MenuPanel::SlideRight, true, content.release());
 }

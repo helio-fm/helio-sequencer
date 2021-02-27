@@ -25,10 +25,10 @@
 AutomationTrackNode::AutomationTrackNode(const String &name) :
     MidiTrackNode(name, Serialization::Core::automationTrack)
 {
-    this->sequence.reset(new AutomationSequence(*this, *this));
-    this->pattern.reset(new Pattern(*this, *this));
+    this->sequence = make<AutomationSequence>(*this, *this);
+    this->pattern = make<Pattern>(*this, *this);
 
-    this->vcsDiffLogic.reset(new VCS::AutomationTrackDiffLogic(*this));
+    this->vcsDiffLogic = make<VCS::AutomationTrackDiffLogic>(*this);
 
     using namespace Serialization::VCS;
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackPath));
