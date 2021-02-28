@@ -15,60 +15,56 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "Headline.h"
 
-//[MiscUserDefs]
 #include "HeadlineItem.h"
 #include "HelioTheme.h"
-#include "ColourIDs.h"
 #include "MainLayout.h"
-
-//[/MiscUserDefs]
+#include "ColourIDs.h"
+#include "Config.h"
 
 Headline::Headline()
 {
-    this->navPanel.reset(new HeadlineNavigationPanel());
+    this->navPanel = make<HeadlineNavigationPanel>();
     this->addAndMakeVisible(navPanel.get());
-    this->consoleButton.reset(new IconButton(Icons::findByName(Icons::console, 20), CommandIDs::CommandPalette));
+    this->consoleButton = make<IconButton>(Icons::findByName(Icons::console, 20), CommandIDs::CommandPalette);
     this->addAndMakeVisible(consoleButton.get());
 
-
-    //[UserPreSize]
-    this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
+    this->setInterceptsMouseClicks(false, true);
     this->setOpaque(App::isUsingNativeTitleBar());
     this->consoleButton->setVisible(App::isUsingNativeTitleBar());
-    //[/UserPreSize]
 
-    this->setSize(600, 34);
+    auto *uiFlags = App::Config().getUiFlags();
+    this->onRollAnimationsFlagChanged(uiFlags->areRollAnimationsEnabled());
+    uiFlags->addListener(this);
 
-    //[Constructor]
-    //[/Constructor]
+    this->setSize(100, Globals::UI::headlineHeight);
 }
 
 Headline::~Headline()
 {
-    //[Destructor_pre]
+    App::Config().getUiFlags()->removeListener(this);
     this->chain.clearQuick(true);
-    //[/Destructor_pre]
-
-    navPanel = nullptr;
-    consoleButton = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
 }
 
-void Headline::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
+//===----------------------------------------------------------------------===//
+// UserInterfaceFlags::Listener
+//===----------------------------------------------------------------------===//
 
-    //[UserPaint] Add your own custom painting code here..
+void Headline::onRollAnimationsFlagChanged(bool animationsEnabled)
+{
+    this->fadeInTimeMs = animationsEnabled ? Globals::UI::fadeInLong : 20;
+    this->fadeOutTimeMs = animationsEnabled ? Globals::UI::fadeOutShort : 1;
+}
+
+//===----------------------------------------------------------------------===//
+// Component
+//===----------------------------------------------------------------------===//
+
+void Headline::paint(Graphics &g)
+{
     if (App::isUsingNativeTitleBar())
     {
         const auto &theme = HelioTheme::getCurrentTheme();
@@ -80,29 +76,22 @@ void Headline::paint (Graphics& g)
         g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
         g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
     }
-    //[/UserPaint]
 }
 
 void Headline::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    constexpr auto navPanelSize = 60;
+    constexpr auto consoleButtonSize = 45;
 
-    navPanel->setBounds(0, 0, 60, getHeight() - 0);
-    consoleButton->setBounds(getWidth() - 45, (getHeight() / 2) - ((getHeight() - 2) / 2), 45, getHeight() - 2);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->navPanel->setBounds(0, 0, navPanelSize, this->getHeight());
+    this->consoleButton->setBounds(this->getWidth() - consoleButtonSize, 1,
+        consoleButtonSize, this->getHeight() - 2);
 }
 
-void Headline::handleCommandMessage (int commandId)
+void Headline::handleCommandMessage(int commandId)
 {
-    //[UserCode_handleCommandMessage] -- Add your code here...
     App::Layout().broadcastCommandMessage(commandId);
-    //[/UserCode_handleCommandMessage]
 }
-
-
-//[MiscUserCode]
 
 void Headline::handleAsyncUpdate()
 {
@@ -146,7 +135,7 @@ void Headline::handleAsyncUpdate()
         if (boundsBefore != boundsAfter)
         {
             child->setBounds(boundsBefore);
-            this->animator.animateComponent(child, boundsAfter, 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
+            this->animator.animateComponent(child, boundsAfter, 1.f, this->fadeInTimeMs, false, 1.0, 0.0);
         }
 
         posX += boundsAfter.getWidth() - Headline::itemsOverlapOffset;
@@ -156,11 +145,15 @@ void Headline::handleAsyncUpdate()
     {
         const auto finalPos = this->selectionItem->getBounds().withX(posX - Headline::itemsOverlapOffset);
         this->animator.cancelAnimation(this->selectionItem.get(), false);
-        this->animator.animateComponent(this->selectionItem.get(), finalPos, 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
+        this->animator.animateComponent(this->selectionItem.get(), finalPos, 1.f, this->fadeInTimeMs, false, 1.0, 0.0);
         this->selectionItem->toBack();
         this->navPanel->toFront(false);
     }
 }
+
+//===----------------------------------------------------------------------===//
+// Private
+//===----------------------------------------------------------------------===//
 
 Array<TreeNode *> createSortedBranchArray(WeakReference<TreeNode> leaf)
 {
@@ -215,7 +208,7 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
         const auto child = this->chain[i];
         const auto finalPos = child->getBounds().withX(fadePositionX - child->getWidth());
         this->animator.cancelAnimation(child, false);
-        this->animator.animateComponent(child, finalPos, startingAlpha, Globals::UI::fadeOutShort, true, 0.0, 1.0);
+        this->animator.animateComponent(child, finalPos, startingAlpha, this->fadeOutTimeMs, true, 0.0, 1.0);
         this->chain.remove(i, true);
     }
 
@@ -232,7 +225,7 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
         child->toBack();
         const auto finalPos = child->getBounds().withX(lastPosX - Headline::itemsOverlapOffset);
         lastPosX += child->getWidth() - Headline::itemsOverlapOffset;
-        this->animator.animateComponent(child, finalPos, 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
+        this->animator.animateComponent(child, finalPos, 1.f, this->fadeInTimeMs, false, 1.0, 0.0);
     }
 
     this->navPanel->toFront(false);
@@ -267,7 +260,7 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
     this->selectionItem->toBack();
     const auto finalPos = this->selectionItem->getBounds().withX(x);
     this->animator.animateComponent(this->selectionItem.get(), finalPos,
-        1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
+        1.f, this->fadeInTimeMs, false, 1.0, 0.0);
 
     this->navPanel->toFront(false);
 }
@@ -281,7 +274,7 @@ void Headline::hideSelectionMenu()
         const auto finalPos = this->selectionItem->getBounds().withX(Headline::rootNodeOffset);
         this->animator.cancelAnimation(this->selectionItem.get(), false);
         this->animator.animateComponent(this->selectionItem.get(), finalPos,
-            this->getAlphaForAnimation(), Globals::UI::fadeOutShort, true, 0.0, 1.0);
+            this->getAlphaForAnimation(), this->fadeOutTimeMs, true, 0.0, 1.0);
         this->selectionItem = nullptr;
     }
 }
@@ -306,33 +299,3 @@ HeadlineItem *Headline::getTailItem() const noexcept
     return (this->selectionItem != nullptr) ?
         this->selectionItem.get() : this->chain.getLast();
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="Headline" template="../../Template"
-                 componentName="" parentClasses="public Component, public AsyncUpdater"
-                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
-                 initialHeight="34">
-  <METHODS>
-    <METHOD name="handleCommandMessage (int commandId)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="666c39451424e53c" memberName="navPanel" virtualName=""
-             explicitFocusOrder="0" pos="0 0 60 0M" sourceFile="HeadlineNavigationPanel.cpp"
-             constructorParams=""/>
-  <GENERICCOMPONENT name="" id="292b9635259e430" memberName="consoleButton" virtualName=""
-                    explicitFocusOrder="0" pos="0Rr 0Cc 45 2M" class="IconButton"
-                    params="Icons::findByName(Icons::console, 20), CommandIDs::CommandPalette"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

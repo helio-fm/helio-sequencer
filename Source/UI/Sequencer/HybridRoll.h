@@ -284,6 +284,12 @@ protected:
     OwnedArray<TimelineWarningMarker> oversaturationIndicators;
 
     //===------------------------------------------------------------------===//
+    // UserInterfaceFlags::Listener
+    //===------------------------------------------------------------------===//
+
+    void onRollAnimationsFlagChanged(bool enabled) override;
+
+    //===------------------------------------------------------------------===//
     // TransportListener
     //===------------------------------------------------------------------===//
     

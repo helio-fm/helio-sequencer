@@ -62,6 +62,10 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->addAndMakeVisible(nativeTitleBarButton.get());
     nativeTitleBarButton->addListener(this);
 
+    this->noAnimationsButton.reset(new ToggleButton(String()));
+    this->addAndMakeVisible(noAnimationsButton.get());
+    noAnimationsButton->addListener(this);
+
 
     //[UserPreSize]
     this->setOpaque(true);
@@ -84,7 +88,7 @@ UserInterfaceSettings::UserInterfaceSettings()
 #endif
     //[/UserPreSize]
 
-    this->setSize(600, 200);
+    this->setSize(600, 232);
 
     //[Constructor]
 
@@ -129,6 +133,7 @@ UserInterfaceSettings::~UserInterfaceSettings()
     fontEditor = nullptr;
     separator2 = nullptr;
     nativeTitleBarButton = nullptr;
+    noAnimationsButton = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -155,11 +160,12 @@ void UserInterfaceSettings::resized()
     fontEditor->setBounds(16, 16, getWidth() - 33, 32);
     separator2->setBounds(16, 16 + 32 - -100, getWidth() - 32, 4);
     nativeTitleBarButton->setBounds(16, (16 + 32 - -100) + 6, getWidth() - 32, 32);
+    noAnimationsButton->setBounds(16, ((16 + 32 - -100) + 6) + 32, getWidth() - 32, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-void UserInterfaceSettings::buttonClicked(Button* buttonThatWasClicked)
+void UserInterfaceSettings::buttonClicked(Button *buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
@@ -201,6 +207,13 @@ void UserInterfaceSettings::buttonClicked(Button* buttonThatWasClicked)
         // Will reload the layout:
         App::Config().getUiFlags()->setNativeTitleBarEnabled(this->nativeTitleBarButton->getToggleState());
         //[/UserButtonCode_nativeTitleBarButton]
+    }
+    else if (buttonThatWasClicked == noAnimationsButton.get())
+    {
+        //[UserButtonCode_noAnimationsButton] -- add your button handler code here..
+        App::Config().getUiFlags()->setRollAnimationsEnabled(this->noAnimationsButton->getToggleState());
+        this->updateButtons();
+        //[/UserButtonCode_noAnimationsButton]
     }
 
     //[UserbuttonClicked_Post]
@@ -244,6 +257,9 @@ void UserInterfaceSettings::updateButtons()
     const bool openGLEnabled = App::isOpenGLRendererEnabled();
     this->defaultRendererButton->setToggleState(!openGLEnabled, dontSendNotification);
     this->openGLRendererButton->setToggleState(openGLEnabled, dontSendNotification);
+
+    const bool hasRollAnimations = App::Config().getUiFlags()->areRollAnimationsEnabled();
+    this->noAnimationsButton->setToggleState(hasRollAnimations, dontSendNotification);
 }
 //[/MiscUserCode]
 
@@ -254,7 +270,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="UserInterfaceSettings" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="200">
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="232">
   <METHODS>
     <METHOD name="visibilityChanged()"/>
     <METHOD name="handleCommandMessage (int commandId)"/>
@@ -282,6 +298,10 @@ BEGIN_JUCER_METADATA
              sourceFile="../../Themes/SeparatorHorizontal.cpp" constructorParams=""/>
   <TOGGLEBUTTON name="" id="de9d85da72f61a3d" memberName="nativeTitleBarButton"
                 virtualName="" explicitFocusOrder="0" pos="16 6 32M 32" posRelativeY="677f8d2bd5f611b7"
+                buttonText="" connectedEdges="0" needsCallback="1" radioGroupId="0"
+                state="0"/>
+  <TOGGLEBUTTON name="" id="3aa24012644ec2fc" memberName="noAnimationsButton"
+                virtualName="" explicitFocusOrder="0" pos="16 32 32M 32" posRelativeY="de9d85da72f61a3d"
                 buttonText="" connectedEdges="0" needsCallback="1" radioGroupId="0"
                 state="0"/>
 </JUCER_COMPONENT>

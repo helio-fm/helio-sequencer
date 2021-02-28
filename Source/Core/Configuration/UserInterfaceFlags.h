@@ -37,6 +37,7 @@ public:
         virtual void onOpenGlRendererFlagChanged(bool enabled) {}
         virtual void onNativeTitleBarFlagChanged(bool enabled) {}
         virtual void onVelocityMapVisibilityFlagChanged(bool visible) {}
+        virtual void onRollAnimationsFlagChanged(bool visible) {}
     };
 
     //===------------------------------------------------------------------===//
@@ -68,6 +69,9 @@ public:
     void toggleVelocityMapVisibility();
 
     bool areExperimentalFeaturesEnabled() const noexcept;
+
+    bool areRollAnimationsEnabled() const noexcept;
+    void setRollAnimationsEnabled(bool enabled);
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -107,6 +111,7 @@ private:
 #endif
 
     bool experimentalFeaturesOn = false;
+    bool rollAnimationsEnabled = true;
 
 private:
 

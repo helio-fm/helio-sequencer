@@ -57,6 +57,11 @@ public:
         return nullptr;
     }
 
+    void setAnimationsEnabled(bool enabled)
+    {
+        this->animationTimerFrequencyHz = enabled ? 60 : 500;
+    }
+
     //===------------------------------------------------------------------===//
     // TrackScroller
     //===------------------------------------------------------------------===//
@@ -135,5 +140,7 @@ private:
     const Colour borderLineLight;
 
     bool mapShouldBeStretched = true;
-    
+
+    int animationTimerFrequencyHz = 60;
+
 };

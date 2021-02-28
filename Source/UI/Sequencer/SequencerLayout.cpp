@@ -106,7 +106,13 @@ public:
     {
         return this->mapsAnimation.getDirection() > 0.f;
     }
-    
+
+    void setAnimationsEnabled(bool animationsEnabled)
+    {
+        this->animationsTimerInterval = animationsEnabled ? 1000 / 60 : 1;
+        this->pianoScroller->setAnimationsEnabled(animationsEnabled);
+    }
+
     void startRollSwitchAnimation()
     {
         this->rollsAnimation.start(RollsSwitchingProxy::rollsAnimationStartSpeed);
@@ -120,7 +126,7 @@ public:
         this->patternViewport->setVisible(true);
         this->pianoViewport->setVisible(true);
         this->resized();
-        this->startTimer(Timers::rolls, 1000 / 60);
+        this->startTimer(Timers::rolls, this->animationsTimerInterval);
     }
 
     void startMapSwitchAnimation()
@@ -133,7 +139,7 @@ public:
         this->levelsScroller->setVisible(true);
         this->pianoScroller->setVisible(true);
         this->resized();
-        this->startTimer(Timers::maps, 1000 / 60);
+        this->startTimer(Timers::maps, this->animationsTimerInterval);
     }
 
     void resized() override
@@ -157,6 +163,8 @@ public:
     }
 
 private:
+
+    int animationsTimerInterval = 1000 / 60;
 
     void updateAnimatedRollsBounds()
     {
@@ -348,7 +356,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     const WeakReference<AudioMonitor> clippingDetector =
         App::Workspace().getAudioCore().getMonitor();
     
-    this->pianoViewport = make<Viewport>("Viewport One");
+    this->pianoViewport = make<Viewport>();
     this->pianoViewport->setScrollOnDragEnabled(false);
     this->pianoViewport->setInterceptsMouseClicks(false, true);
     this->pianoViewport->setScrollBarsShown(false, false);
@@ -359,7 +367,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->pianoRoll = make<PianoRoll>(this->project,
         *this->pianoViewport, clippingDetector);
 
-    this->patternViewport = make<Viewport>("Viewport Two");
+    this->patternViewport = make<Viewport>();
     this->patternViewport->setScrollOnDragEnabled(false);
     this->patternViewport->setInterceptsMouseClicks(false, true);
     this->patternViewport->setScrollBarsShown(false, false);
@@ -401,6 +409,9 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
         this->mapScroller.get(), this->levelsScroller.get(),
         this->scrollerShadow.get());
     
+    const auto hasAnimations = App::Config().getUiFlags()->areRollAnimationsEnabled();
+    this->rollContainer->setAnimationsEnabled(hasAnimations);
+
     // add sidebars
     this->rollToolsSidebar = make<SequencerSidebarRight>(this->project);
     this->rollToolsSidebar->setSize(Globals::UI::sidebarWidth, this->getParentHeight());
@@ -598,12 +609,6 @@ void SequencerLayout::handleCommandMessage(int commandId)
 
 void SequencerLayout::onVelocityMapVisibilityFlagChanged(bool shoudShow)
 {
-    // no way to prevent glitches on fast switching?
-    //if (!this->rollContainer->canAnimate(RollsSwitchingProxy::maps))
-    //{
-    //    return;
-    //}
-
     const bool alreadyShowing = this->rollContainer->isLevelsMapMode();
     if ((alreadyShowing && shoudShow) || (!alreadyShowing && !shoudShow))
     {
@@ -611,6 +616,11 @@ void SequencerLayout::onVelocityMapVisibilityFlagChanged(bool shoudShow)
     }
 
     this->rollContainer->startMapSwitchAnimation();
+}
+
+void SequencerLayout::onRollAnimationsFlagChanged(bool enabled)
+{
+    this->rollContainer->setAnimationsEnabled(enabled);
 }
 
 //===----------------------------------------------------------------------===//

@@ -119,6 +119,23 @@ bool UserInterfaceFlags::areExperimentalFeaturesEnabled() const noexcept
     return this->experimentalFeaturesOn;
 }
 
+bool UserInterfaceFlags::areRollAnimationsEnabled() const noexcept
+{
+    return this->rollAnimationsEnabled;
+}
+
+void UserInterfaceFlags::setRollAnimationsEnabled(bool enabled)
+{
+    if (this->rollAnimationsEnabled == enabled)
+    {
+        return;
+    }
+
+    this->rollAnimationsEnabled = enabled;
+    this->listeners.call(&Listener::onRollAnimationsFlagChanged, this->rollAnimationsEnabled);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -133,6 +150,7 @@ SerializedData UserInterfaceFlags::serialize() const
     tree.setProperty(UI::Flags::scalesHighlighting, this->scalesHighlighting);
     tree.setProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     tree.setProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
+    tree.setProperty(UI::Flags::animations, this->rollAnimationsEnabled);
     // skips experimentalFeaturesOn, it's read only
 
     return tree;
@@ -154,6 +172,7 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->scalesHighlighting = root.getProperty(UI::Flags::scalesHighlighting, this->scalesHighlighting);
     this->useOpenGLRenderer = root.getProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     this->useNativeTitleBar = root.getProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
+    this->rollAnimationsEnabled = root.getProperty(UI::Flags::animations, this->rollAnimationsEnabled);
     this->velocityMapVisible = false; // not serializing that
 
     this->experimentalFeaturesOn = root.getProperty(UI::Flags::experimentalFeaturesOn, this->experimentalFeaturesOn);

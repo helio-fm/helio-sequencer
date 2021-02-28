@@ -37,7 +37,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button* buttonThatWasClicked) override;
+    void buttonClicked(Button *buttonThatWasClicked) override;
     void visibilityChanged() override;
     void handleCommandMessage (int commandId) override;
 
@@ -56,6 +56,7 @@ private:
     UniquePointer<TextEditor> fontEditor;
     UniquePointer<SeparatorHorizontal> separator2;
     UniquePointer<ToggleButton> nativeTitleBarButton;
+    UniquePointer<ToggleButton> noAnimationsButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserInterfaceSettings)
 };

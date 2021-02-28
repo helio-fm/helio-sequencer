@@ -161,7 +161,9 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
         this->clippingDetector->addClippingListener(this);
     }
 
-    App::Config().getUiFlags()->addListener(this);
+    auto *uiFlags = App::Config().getUiFlags();
+    this->onRollAnimationsFlagChanged(uiFlags->areRollAnimationsEnabled());
+    uiFlags->addListener(this);
 }
 
 HybridRoll::~HybridRoll()
@@ -1472,6 +1474,16 @@ void HybridRoll::onOversaturationWarning()
 void HybridRoll::resetAllOversaturationIndicators()
 {
     this->oversaturationIndicators.clear();
+}
+
+//===----------------------------------------------------------------------===//
+// UserInterfaceFlags::Listener
+//===----------------------------------------------------------------------===//
+
+void HybridRoll::onRollAnimationsFlagChanged(bool enabled)
+{
+    this->smoothPanController->setAnimationsEnabled(enabled);
+    this->smoothZoomController->setAnimationsEnabled(enabled);
 }
 
 //===----------------------------------------------------------------------===//

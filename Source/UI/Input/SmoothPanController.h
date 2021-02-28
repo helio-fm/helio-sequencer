@@ -31,6 +31,11 @@ public:
         return SmoothPanController::initialPanSpeed;
     }
 
+    void setAnimationsEnabled(bool enabled)
+    {
+        this->animationsEnabled = enabled;
+    }
+
     void cancelPan()
     {
         this->stopTimer();
@@ -40,6 +45,14 @@ public:
     {
         this->origin = this->listener.getPanOffset().toFloat();
         this->target = this->origin + offset.toFloat();
+
+        if (!this->animationsEnabled)
+        {
+            this->listener.panByOffset(int(this->target.getX()),
+                int(this->target.getY()));
+
+            return;
+        }
 
         if (!this->isTimerRunning())
         {
@@ -53,6 +66,8 @@ public:
     }
 
 private:
+
+    bool animationsEnabled = true;
 
     static constexpr auto stopDistance = 5;
     static constexpr auto slowdownFactor = 0.5f;

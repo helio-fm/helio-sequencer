@@ -17,27 +17,24 @@
 
 #pragma once
 
-//[Headers]
 #include "TreeNode.h"
 #include "NavigationHistory.h"
+#include "HeadlineNavigationPanel.h"
+#include "UserInterfaceFlags.h"
 
 class IconButton;
 class HeadlineItem;
 class HeadlineItemDataSource;
 
-//[/Headers]
-
-#include "HeadlineNavigationPanel.h"
-
 class Headline final : public Component,
-                       public AsyncUpdater
+    public AsyncUpdater,
+    public UserInterfaceFlags::Listener
 {
 public:
 
     Headline();
     ~Headline();
 
-    //[UserMethods]
     static constexpr auto itemsOverlapOffset = 16;
 
     void syncWithTree(NavigationHistory &history, WeakReference<TreeNode> leaf);
@@ -46,16 +43,22 @@ public:
     void hideSelectionMenu();
 
     HeadlineItem *getTailItem() const noexcept;
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
+    void paint(Graphics &g) override;
     void resized() override;
-    void handleCommandMessage (int commandId) override;
+    void handleCommandMessage(int commandId) override;
 
+    //===------------------------------------------------------------------===//
+    // UserInterfaceFlags::Listener
+    //===------------------------------------------------------------------===//
+
+    void onRollAnimationsFlagChanged(bool enabled) override;
 
 private:
-
-    //[UserVariables]
 
     // A way to receive a single coalesced update from multiple signaling sub-items:
     void handleAsyncUpdate() override;
@@ -63,6 +66,8 @@ private:
     int getChainWidth() const noexcept;
 
     ComponentAnimator animator;
+    int fadeInTimeMs = Globals::UI::fadeInLong;
+    int fadeOutTimeMs = Globals::UI::fadeOutShort;
 
     // A number of items associated with tree hierarchy
     OwnedArray<HeadlineItem> chain;
@@ -74,13 +79,9 @@ private:
     float getAlphaForAnimation() const noexcept;
 
     static constexpr auto rootNodeOffset = Globals::UI::sidebarWidth;
-    
-    //[/UserVariables]
 
     UniquePointer<HeadlineNavigationPanel> navPanel;
     UniquePointer<IconButton> consoleButton;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Headline)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Headline)
 };
-
-

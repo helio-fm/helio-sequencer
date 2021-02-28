@@ -42,7 +42,7 @@ public:
 
     static inline float getInitialSpeed() noexcept
     {
-        return SmoothZoomController::initialZoomSpeed;
+        return Defaults::initialZoomSpeed;
     }
 
     inline bool isZooming() const noexcept
@@ -56,10 +56,19 @@ public:
         this->factorY = 0.f;
     }
 
+    void setAnimationsEnabled(bool enabled)
+    {
+        this->animationDelay = enabled ?
+            Defaults::timerDelay : Defaults::timerDelayNoAnim;
+
+        this->zoomDecay = enabled ?
+            Defaults::zoomDecayFactor : Defaults::zoomDecayFactorNoAnim;
+    }
+
     void zoomRelative(const Point<float> &from, const Point<float> &zoom) noexcept
     {
-        this->factorX = (this->factorX.get() + zoom.getX()) * SmoothZoomController::zoomSmoothFactor;
-        this->factorY = (this->factorY.get() + zoom.getY()) * SmoothZoomController::zoomSmoothFactor;
+        this->factorX = (this->factorX.get() + zoom.getX()) * Defaults::zoomSmoothFactor;
+        this->factorY = (this->factorY.get() + zoom.getY()) * Defaults::zoomSmoothFactor;
         this->originX = from.getX();
         this->originY = from.getY();
 
@@ -70,7 +79,7 @@ private:
 
     inline bool stillNeedsZoom() const noexcept
     {
-        return juce_hypot(this->factorX.get(), this->factorY.get()) >= SmoothZoomController::zoomStopFactor;
+        return juce_hypot(this->factorX.get(), this->factorY.get()) >= Defaults::zoomStopFactor;
     }
 
     void run() override
@@ -84,11 +93,12 @@ private:
                     return;
                 }
 
-                this->factorX = this->factorX.get() * SmoothZoomController::zoomDecayFactor;
-                this->factorY = this->factorY.get() * SmoothZoomController::zoomDecayFactor;
+                this->factorX = this->factorX.get() * this->zoomDecay.get();
+                this->factorY = this->factorY.get() * this->zoomDecay.get();
 
                 this->triggerAsyncUpdate();
-                Thread::sleep(SmoothZoomController::timerDelay);
+
+                Thread::sleep(this->animationDelay.get());
             }
 
             this->cancelZoom();
@@ -111,18 +121,27 @@ private:
 
     SmoothZoomListener &listener;
 
+private:
+
+    struct Defaults
+    {
+        static constexpr auto timerDelay = 7;
+        static constexpr auto timerDelayNoAnim = 1;
+        static constexpr auto zoomDecayFactor = 0.725f;
+        static constexpr auto zoomDecayFactorNoAnim = 0.8f;
+
+        static constexpr auto zoomStopFactor = 0.0005f;
+        static constexpr auto zoomSmoothFactor = 0.9f;
+        static constexpr auto initialZoomSpeed = 0.35f;
+    };
+    
     Atomic<float> factorX = 0.f;
     Atomic<float> factorY = 0.f;
     Atomic<float> originX = 0.f;
     Atomic<float> originY = 0.f;
 
-private:
-
-    static constexpr auto timerDelay = 7;
-    static constexpr auto zoomStopFactor = 0.0005f;
-    static constexpr auto zoomDecayFactor = 0.725f;
-    static constexpr auto zoomSmoothFactor = 0.9f;
-    static constexpr auto initialZoomSpeed = 0.35f;
+    Atomic<int> animationDelay = Defaults::timerDelay;
+    Atomic<float> zoomDecay = Defaults::zoomDecayFactor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SmoothZoomController)
 };

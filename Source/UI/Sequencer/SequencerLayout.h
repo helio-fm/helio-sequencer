@@ -53,6 +53,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void onVelocityMapVisibilityFlagChanged(bool visible) override;
+    void onRollAnimationsFlagChanged(bool enabled) override;
 
     //===------------------------------------------------------------------===//
     // Component

@@ -241,7 +241,7 @@ void ProjectMapScroller::switchToRoll(SafePointer<HybridRoll> roll)
     this->oldAreaBounds = this->getIndicatorBounds();
     this->oldMapBounds = this->getMapBounds().toFloat();
     this->roll = roll;
-    this->startTimerHz(60);
+    this->startTimerHz(this->animationTimerFrequencyHz);
 }
 
 //===----------------------------------------------------------------------===//
