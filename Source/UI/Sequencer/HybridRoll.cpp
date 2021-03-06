@@ -1099,32 +1099,58 @@ void HybridRoll::mouseUp(const MouseEvent &e)
 void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
     // TODO check if any operation is in progress (lasso drag, knife tool drag, etc)
-    const float zoomSpeed = this->smoothZoomController->getInitialSpeed();
-    const float zoomWheel = wheel.deltaY * (wheel.isReversed ? -zoomSpeed : zoomSpeed);
-    const auto mouseOffset = (event.position - this->viewport.getViewPosition().toFloat());
-    if (event.mods.isAnyModifierKeyDown())
-    {
-        if (event.mods.isShiftDown())
-        {
-            this->smoothZoomController->cancelZoom();
 
-            // let's try to make the panning speed feel consistent, regardless
-            // of the zoom level - slower when zoomed out, faster when zoomed in;
-            // but also not too fast, with the half screen width as the upper speed limit:
-            const auto viewWidth = float(this->viewport.getViewWidth());
-            const float panSpeed = jmin(viewWidth / 2.f,
-                this->smoothPanController->getInitialSpeed() * float(this->getWidth()) / viewWidth);
-            const float panWheel = wheel.deltaY * (wheel.isReversed ? panSpeed : -panSpeed);
-            this->smoothPanController->panByOffset({ panWheel, 0.f });
+    // holding control/command/alt means using vertical direction instead of horizontal
+    // (or horizontal instead of vertical, depending on ui settings/defaults)
+    const bool alternativeDirection =
+        event.mods.isCtrlDown() || event.mods.isCommandDown() || event.mods.isAltDown();
+
+    // holding shift means using panning instead of zooming
+    // (or zooming instead of panning, depending on ui settings/defaults)
+    const bool alternativeMode = event.mods.isShiftDown();
+
+    if (alternativeMode)
+    {
+        this->smoothZoomController->cancelZoom();
+        const auto initialSpeed = this->smoothPanController->getInitialSpeed();
+
+        // let's try to make the panning speed feel consistent, regardless
+        // of the zoom level - slower when zoomed out, faster when zoomed in;
+
+        if (alternativeDirection)
+        {
+            const auto viewHeight = float(this->viewport.getViewHeight());
+            const float panSpeed = jmin(initialSpeed * 2.5f,
+                initialSpeed * float(this->getHeight()) / viewHeight);
+            const float panDelta = wheel.deltaY * (wheel.isReversed ? panSpeed : -panSpeed);
+            this->smoothPanController->panByOffset({ 0.f, panDelta });
         }
         else
         {
-            this->startSmoothZoom(mouseOffset, { 0.f, zoomWheel });
+            // but also not too fast, with the half screen width as the upper speed limit:
+            const auto viewWidth = float(this->viewport.getViewWidth());
+            const float panSpeed = jmin(viewWidth / 2.f,
+                initialSpeed * float(this->getWidth()) / viewWidth);
+            const float panDelta = wheel.deltaY * (wheel.isReversed ? panSpeed : -panSpeed);
+            this->smoothPanController->panByOffset({ panDelta, 0.f });
         }
     }
     else
     {
-        this->startSmoothZoom(mouseOffset, { zoomWheel, 0.f });
+        this->smoothPanController->cancelPan();
+
+        const float zoomSpeed = this->smoothZoomController->getInitialSpeed();
+        const float zoomDelta = wheel.deltaY * (wheel.isReversed ? -zoomSpeed : zoomSpeed);
+        const auto mouseOffset = (event.position - this->viewport.getViewPosition().toFloat());
+
+        if (alternativeDirection)
+        {
+            this->startSmoothZoom(mouseOffset, { 0.f, zoomDelta });
+        }
+        else
+        {
+            this->startSmoothZoom(mouseOffset, { zoomDelta, 0.f });
+        }
     }
 }
 
