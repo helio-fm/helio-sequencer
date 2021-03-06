@@ -56,12 +56,6 @@ public:
     void setDefaultNoteLength(float length) noexcept;
 
     //===------------------------------------------------------------------===//
-    // HybridRoll
-    //===------------------------------------------------------------------===//
-
-    void selectAll() override;
-
-    //===------------------------------------------------------------------===//
     // Ghost notes
     //===------------------------------------------------------------------===//
     
@@ -179,6 +173,16 @@ public:
     void deserialize(const SerializedData &data) override;
     void reset() override;
     
+protected:
+
+    //===------------------------------------------------------------------===//
+    // HybridRoll
+    //===------------------------------------------------------------------===//
+
+    void selectAll() override;
+    float findNextAnchorBeat(float beat) const override;
+    float findPreviousAnchorBeat(float beat) const override;
+
 private:
 
     WeakReference<MidiTrack> activeTrack = nullptr;

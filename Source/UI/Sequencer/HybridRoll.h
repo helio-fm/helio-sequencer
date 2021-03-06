@@ -330,8 +330,8 @@ protected:
 
     virtual void setChildrenInteraction(bool interceptMouse, MouseCursor c) = 0;
 
-    virtual float findNextAnchorBeat(float beat) const;
-    virtual float findPreviousAnchorBeat(float beat) const;
+    virtual float findNextAnchorBeat(float beat) const = 0;
+    virtual float findPreviousAnchorBeat(float beat) const = 0;
 
     float getFloorBeatSnapByXPosition(int x) const noexcept;
     inline float getBeatByXPosition(float x) const noexcept

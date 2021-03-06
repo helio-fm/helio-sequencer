@@ -216,6 +216,38 @@ void PianoRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor cursor)
     }
 }
 
+float PianoRoll::findNextAnchorBeat(float beat) const
+{
+    const auto nearestTimelineAnchor =
+        this->project.getTimeline()->findNextAnchorBeat(beat);
+
+    const auto activeTrackStart = this->activeClip.getBeat() +
+        this->activeTrack->getSequence()->getFirstBeat();
+
+    if (activeTrackStart > beat)
+    {
+        return jmin(nearestTimelineAnchor, activeTrackStart);
+    }
+
+    return nearestTimelineAnchor;
+}
+
+float PianoRoll::findPreviousAnchorBeat(float beat) const
+{
+    const auto nearestTimelineAnchor =
+        this->project.getTimeline()->findPreviousAnchorBeat(beat);
+
+    const auto activeTrackStart = this->activeClip.getBeat() +
+        this->activeTrack->getSequence()->getFirstBeat();
+
+    if (activeTrackStart < beat)
+    {
+        return jmax(nearestTimelineAnchor, activeTrackStart);
+    }
+
+    return nearestTimelineAnchor;
+}
+
 //===----------------------------------------------------------------------===//
 // Ghost notes
 //===----------------------------------------------------------------------===//

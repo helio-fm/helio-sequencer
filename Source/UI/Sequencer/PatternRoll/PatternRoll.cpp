@@ -831,27 +831,16 @@ void PatternRoll::parentSizeChanged()
 
 float PatternRoll::findNextAnchorBeat(float beat) const
 {
-    float minDistance = FLT_MAX;
     float result = this->getLastBeat();
-
     for (const auto *track : this->tracks)
     {
-        const float sequenceOffset = track->getSequence()->size() > 0 ?
-            track->getSequence()->getFirstBeat() : 0.f;
-
+        const float sequenceStart = track->getSequence()->getFirstBeat();
         for (const auto *clip : track->getPattern()->getClips())
         {
-            const auto clipStart = clip->getBeat() + sequenceOffset;
-            if (clipStart <= beat)
+            const auto clipStart = clip->getBeat() + sequenceStart;
+            if (clipStart > beat)
             {
-                continue;
-            }
-
-            const auto beatDistance = clipStart - beat;
-            if (beatDistance < minDistance)
-            {
-                minDistance = beatDistance;
-                result = clipStart;
+                result = jmin(clipStart, result);
             }
         }
     }
@@ -861,27 +850,16 @@ float PatternRoll::findNextAnchorBeat(float beat) const
 
 float PatternRoll::findPreviousAnchorBeat(float beat) const
 {
-    float minDistance = FLT_MAX;
     float result = this->getFirstBeat();
-
     for (const auto *track : this->tracks)
     {
-        const float sequenceOffset = track->getSequence()->size() > 0 ?
-            track->getSequence()->getFirstBeat() : 0.f;
-
+        const float sequenceStart = track->getSequence()->getFirstBeat();
         for (const auto *clip : track->getPattern()->getClips())
         {
-            const auto clipStart = clip->getBeat() + sequenceOffset;
-            if (clipStart >= beat)
+            const auto clipStart = clip->getBeat() + sequenceStart;
+            if (clipStart < beat)
             {
-                continue;
-            }
-
-            const auto beatDistance = beat - clipStart;
-            if (beatDistance < minDistance)
-            {
-                minDistance = beatDistance;
-                result = clipStart;
+                result = jmax(clipStart, result);
             }
         }
     }

@@ -1864,17 +1864,6 @@ void HybridRoll::updateChildrenPositions()
     HYBRID_ROLL_BULK_REPAINT_END
 }
 
-float HybridRoll::findNextAnchorBeat(float beat) const
-{
-    // to be overridden in subclasses
-    return this->project.getTimeline()->findNextAnchorBeat(beat);
-}
-
-float HybridRoll::findPreviousAnchorBeat(float beat) const
-{
-    return this->project.getTimeline()->findPreviousAnchorBeat(beat);
-}
-
 //===----------------------------------------------------------------------===//
 // ChangeListener: edit mode changed
 //===----------------------------------------------------------------------===//
