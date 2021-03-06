@@ -37,7 +37,7 @@ Headline::Headline()
     this->consoleButton->setVisible(App::isUsingNativeTitleBar());
 
     auto *uiFlags = App::Config().getUiFlags();
-    this->onRollAnimationsFlagChanged(uiFlags->areRollAnimationsEnabled());
+    this->onUiAnimationsFlagChanged(uiFlags->areRollAnimationsEnabled());
     uiFlags->addListener(this);
 
     this->setSize(100, Globals::UI::headlineHeight);
@@ -53,7 +53,7 @@ Headline::~Headline()
 // UserInterfaceFlags::Listener
 //===----------------------------------------------------------------------===//
 
-void Headline::onRollAnimationsFlagChanged(bool animationsEnabled)
+void Headline::onUiAnimationsFlagChanged(bool animationsEnabled)
 {
     this->fadeInTimeMs = animationsEnabled ? Globals::UI::fadeInLong : 20;
     this->fadeOutTimeMs = animationsEnabled ? Globals::UI::fadeOutShort : 1;

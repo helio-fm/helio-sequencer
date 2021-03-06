@@ -37,7 +37,7 @@ public:
         virtual void onOpenGlRendererFlagChanged(bool enabled) {}
         virtual void onNativeTitleBarFlagChanged(bool enabled) {}
         virtual void onVelocityMapVisibilityFlagChanged(bool visible) {}
-        virtual void onRollAnimationsFlagChanged(bool visible) {}
+        virtual void onUiAnimationsFlagChanged(bool enabled) {}
     };
 
     //===------------------------------------------------------------------===//

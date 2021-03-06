@@ -132,7 +132,7 @@ void UserInterfaceFlags::setRollAnimationsEnabled(bool enabled)
     }
 
     this->rollAnimationsEnabled = enabled;
-    this->listeners.call(&Listener::onRollAnimationsFlagChanged, this->rollAnimationsEnabled);
+    this->listeners.call(&Listener::onUiAnimationsFlagChanged, this->rollAnimationsEnabled);
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 

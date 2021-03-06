@@ -618,7 +618,7 @@ void SequencerLayout::onVelocityMapVisibilityFlagChanged(bool shoudShow)
     this->rollContainer->startMapSwitchAnimation();
 }
 
-void SequencerLayout::onRollAnimationsFlagChanged(bool enabled)
+void SequencerLayout::onUiAnimationsFlagChanged(bool enabled)
 {
     this->rollContainer->setAnimationsEnabled(enabled);
 }

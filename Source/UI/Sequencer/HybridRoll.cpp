@@ -162,7 +162,7 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     }
 
     auto *uiFlags = App::Config().getUiFlags();
-    this->onRollAnimationsFlagChanged(uiFlags->areRollAnimationsEnabled());
+    this->onUiAnimationsFlagChanged(uiFlags->areRollAnimationsEnabled());
     uiFlags->addListener(this);
 }
 
@@ -1202,7 +1202,7 @@ void HybridRoll::handleCommandMessage(int commandId)
             const auto nextJumpSeek = this->findNextAnchorBeat(this->getTransport().getSeekBeat());
             const auto nextJumpSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, nextJumpSeek);
             this->getTransport().seekToBeat(nextJumpSafe);
-            this->scrollToSeekPosition();
+            this->scrollToPlayheadPosition();
         }
         break;
     case CommandIDs::TimelineJumpPrevious:
@@ -1216,7 +1216,7 @@ void HybridRoll::handleCommandMessage(int commandId)
             const auto prevJumpSeek = this->findPreviousAnchorBeat(this->getTransport().getSeekBeat());
             const auto prevJumpSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, prevJumpSeek);
             this->getTransport().seekToBeat(prevJumpSafe);
-            this->scrollToSeekPosition();
+            this->scrollToPlayheadPosition();
         }
         break;
     case CommandIDs::TimelineJumpHome:
@@ -1228,7 +1228,7 @@ void HybridRoll::handleCommandMessage(int commandId)
 
         this->stopFollowingPlayhead();
         this->getTransport().seekToBeat(this->projectFirstBeat);
-        this->scrollToSeekPosition();
+        this->scrollToPlayheadPosition();
         break;
     case CommandIDs::TimelineJumpEnd:
         if (this->getTransport().isPlaying())
@@ -1239,7 +1239,7 @@ void HybridRoll::handleCommandMessage(int commandId)
 
         this->stopFollowingPlayhead();
         this->getTransport().seekToBeat(this->projectLastBeat);
-        this->scrollToSeekPosition();
+        this->scrollToPlayheadPosition();
         break;
     case CommandIDs::StartDragViewport:
         this->header->setSoundProbeMode(true);
@@ -1480,10 +1480,11 @@ void HybridRoll::resetAllOversaturationIndicators()
 // UserInterfaceFlags::Listener
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::onRollAnimationsFlagChanged(bool enabled)
+void HybridRoll::onUiAnimationsFlagChanged(bool enabled)
 {
     this->smoothPanController->setAnimationsEnabled(enabled);
     this->smoothZoomController->setAnimationsEnabled(enabled);
+    this->scrollToPlayheadTimerMs = enabled ? 7 : 1;
 }
 
 //===----------------------------------------------------------------------===//
@@ -1542,11 +1543,11 @@ void HybridRoll::stopFollowingPlayhead()
 #endif
 }
 
-void HybridRoll::scrollToSeekPosition()
+void HybridRoll::scrollToPlayheadPosition()
 {
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
     this->startFollowingPlayhead();
-    this->startTimer(7);
+    this->startTimer(this->scrollToPlayheadTimerMs);
 #else
     const int playheadX = this->getXPositionByBeat(this->lastTransportBeat.get());
     this->viewport.setViewPosition(playheadX -
@@ -1586,12 +1587,20 @@ void HybridRoll::handleAsyncUpdate()
     if (this->isTimerRunning())
     {
         const int playheadX = this->getPlayheadPositionByBeat(this->lastTransportBeat.get(), double(this->getWidth()));
-        const int newX = playheadX - int(this->playheadOffset.get() * 0.9) -
-            (this->viewport.getViewWidth() / 2);
+        const int newX = playheadX - int(this->playheadOffset.get() * 0.9) - (this->viewport.getViewWidth() / 2);
+        const bool stuckFollowingPlayhead = newX == this->viewport.getViewPositionX() ||
+            newX < 0 || newX > (this->getWidth() - this->viewport.getViewWidth());
 
-        this->viewport.setViewPosition(newX, this->viewport.getViewPositionY());
-        this->playheadOffset = this->findPlayheadOffsetFromViewCentre();
-        this->updateChildrenPositions();
+        if (stuckFollowingPlayhead)
+        {
+            this->stopTimer();
+        }
+        else
+        {
+            this->viewport.setViewPosition(newX, this->viewport.getViewPositionY());
+            this->playheadOffset = this->findPlayheadOffsetFromViewCentre();
+            this->updateChildrenPositions();
+        }
     }
 #endif
 }
