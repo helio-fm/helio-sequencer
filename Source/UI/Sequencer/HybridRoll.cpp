@@ -832,35 +832,6 @@ bool HybridRoll::isUsingSpaceDraggingMode() const
     return this->spaceDragMode;
 }
 
-void HybridRoll::setAltDrawingMode(bool drawMode)
-{
-    if (this->altDrawMode == drawMode)
-    {
-        return;
-    }
-
-    this->altDrawMode = drawMode;
-
-    if (drawMode)
-    {
-        this->project.getEditMode().setMode(HybridRollEditMode::drawMode, true);
-    }
-    else
-    {
-        this->project.getEditMode().unsetLastMode();
-    }
-}
-
-bool HybridRoll::isUsingAltDrawingMode() const
-{
-    return this->altDrawMode;
-}
-
-bool HybridRoll::isUsingAnyAltMode() const
-{
-    return this->isUsingAltDrawingMode() || this->isUsingSpaceDraggingMode();
-}
-
 //===----------------------------------------------------------------------===//
 // LassoSource
 //===----------------------------------------------------------------------===//
@@ -1919,12 +1890,6 @@ void HybridRoll::applyEditModeUpdates()
         !(this->project.getEditMode().isMode(HybridRollEditMode::dragMode)))
     {
         this->setSpaceDraggingMode(false);
-    }
-
-    if (this->isUsingAltDrawingMode() &&
-        !(this->project.getEditMode().isMode(HybridRollEditMode::drawMode)))
-    {
-        this->setAltDrawingMode(false);
     }
 
     const MouseCursor cursor(this->project.getEditMode().getCursor());

@@ -204,11 +204,8 @@ public:
     inline const Array<float> &getVisibleBeats() const noexcept { return this->visibleBeats; }
     inline const Array<float> &getVisibleSnaps() const noexcept { return this->visibleSnaps; }
     
-    bool isUsingAnyAltMode() const;
     void setSpaceDraggingMode(bool dragMode);
     bool isUsingSpaceDraggingMode() const;
-    void setAltDrawingMode(bool drawMode);
-    bool isUsingAltDrawingMode() const;
     
     void triggerBatchRepaintFor(FloatBoundsComponent *target);
 
@@ -382,7 +379,6 @@ protected:
 
     float beatWidth = 0.f;
     
-    bool altDrawMode = false;
     bool spaceDragMode = false;
     int draggedDistance = 0;
     Time timeEnteredDragMode;
