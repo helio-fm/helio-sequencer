@@ -285,6 +285,7 @@ protected:
     //===------------------------------------------------------------------===//
 
     void onUiAnimationsFlagChanged(bool enabled) override;
+    void onMouseWheelFlagsChanged(UserInterfaceFlags::MouseWheelFlags flags) override;
 
     //===------------------------------------------------------------------===//
     // TransportListener
@@ -382,6 +383,8 @@ protected:
     bool spaceDragMode = false;
     int draggedDistance = 0;
     Time timeEnteredDragMode;
+
+    UserInterfaceFlags::MouseWheelFlags mouseWheelFlags;
 
     ComponentFader fader;
 

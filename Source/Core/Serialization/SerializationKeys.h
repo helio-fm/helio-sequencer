@@ -243,6 +243,8 @@ namespace Serialization
             static const Identifier scalesHighlighting = "scalesHighlighting";
             static const Identifier experimentalFeaturesOn = "experimentalFeatures";
             static const Identifier animations = "animations";
+            static const Identifier mouseWheelPanningByDefault = "wheelAltMode";
+            static const Identifier mouseWheelVerticalByDefault = "wheelAltDirection";
         }
 
         namespace Hotkeys

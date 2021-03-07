@@ -27,10 +27,16 @@ public:
 
     UserInterfaceFlags() = default;
 
+    struct MouseWheelFlags final
+    {
+        bool usePanningByDefault = false;
+        bool useVerticalDirectionByDefault = false;
+    };
+
     class Listener
     {
     public:
-        Listener() {}
+        Listener() = default;
         virtual ~Listener() = default;
         virtual void onScalesHighlightingFlagChanged(bool enabled) {}
         virtual void onNoteNameGuidesFlagChanged(bool enabled) {}
@@ -38,6 +44,7 @@ public:
         virtual void onNativeTitleBarFlagChanged(bool enabled) {}
         virtual void onVelocityMapVisibilityFlagChanged(bool visible) {}
         virtual void onUiAnimationsFlagChanged(bool enabled) {}
+        virtual void onMouseWheelFlagsChanged(MouseWheelFlags flags) {}
     };
 
     //===------------------------------------------------------------------===//
@@ -72,6 +79,10 @@ public:
 
     bool areRollAnimationsEnabled() const noexcept;
     void setRollAnimationsEnabled(bool enabled);
+
+    void setMouseWheelUsePanningByDefault(bool usePanning);
+    void setMouseWheelUseVerticalDirectionByDefault(bool useVerticalDirection);
+    MouseWheelFlags getMouseWheelFlags() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -112,6 +123,8 @@ private:
 
     bool experimentalFeaturesOn = false;
     bool rollAnimationsEnabled = true;
+
+    MouseWheelFlags mouseWheelFlags;
 
 private:
 

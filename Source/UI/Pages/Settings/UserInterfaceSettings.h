@@ -57,6 +57,9 @@ private:
     UniquePointer<SeparatorHorizontal> separator2;
     UniquePointer<ToggleButton> nativeTitleBarButton;
     UniquePointer<ToggleButton> noAnimationsButton;
+    UniquePointer<SeparatorHorizontal> separator3;
+    UniquePointer<ToggleButton> wheelAltModeButton;
+    UniquePointer<ToggleButton> wheelAltDirectionButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserInterfaceSettings)
 };

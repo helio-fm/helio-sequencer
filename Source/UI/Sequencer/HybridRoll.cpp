@@ -163,6 +163,7 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
 
     auto *uiFlags = App::Config().getUiFlags();
     this->onUiAnimationsFlagChanged(uiFlags->areRollAnimationsEnabled());
+    this->onMouseWheelFlagsChanged(uiFlags->getMouseWheelFlags());
     uiFlags->addListener(this);
 }
 
@@ -1071,25 +1072,28 @@ void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails
 {
     // TODO check if any operation is in progress (lasso drag, knife tool drag, etc)
 
-    // holding control/command/alt means using vertical direction instead of horizontal
+    // holding shift means using vertical direction instead of horizontal
     // (or horizontal instead of vertical, depending on ui settings/defaults)
     const bool alternativeDirection =
-        event.mods.isCtrlDown() || event.mods.isCommandDown() || event.mods.isAltDown();
+        this->mouseWheelFlags.useVerticalDirectionByDefault != event.mods.isShiftDown();
 
-    // holding shift means using panning instead of zooming
+    // holding control/command/alt means using panning instead of zooming
     // (or zooming instead of panning, depending on ui settings/defaults)
-    const bool alternativeMode = event.mods.isShiftDown();
+    const bool alternativeMode = this->mouseWheelFlags.usePanningByDefault !=
+        (event.mods.isCtrlDown() || event.mods.isCommandDown() || event.mods.isAltDown());
 
     if (alternativeMode)
     {
         this->smoothZoomController->cancelZoom();
         const auto initialSpeed = this->smoothPanController->getInitialSpeed();
 
-        // let's try to make the panning speed feel consistent, regardless
-        // of the zoom level - slower when zoomed out, faster when zoomed in;
-
-        if (alternativeDirection)
+        // the pattern roll almost always doesn't have that much rows to be able
+        // to pan vertically, so for convenience we'll fallback to horizontal panning:
+        const bool canPanVertically = this->getHeight() > this->viewport.getViewHeight();
+        if (alternativeDirection && canPanVertically)
         {
+            // let's try to make the panning speed feel consistent, regardless
+            // of the zoom level - slower when zoomed out, faster when zoomed in;
             const auto viewHeight = float(this->viewport.getViewHeight());
             const float panSpeed = jmin(initialSpeed * 2.5f,
                 initialSpeed * float(this->getHeight()) / viewHeight);
@@ -1482,6 +1486,11 @@ void HybridRoll::onUiAnimationsFlagChanged(bool enabled)
     this->smoothPanController->setAnimationsEnabled(enabled);
     this->smoothZoomController->setAnimationsEnabled(enabled);
     this->scrollToPlayheadTimerMs = enabled ? 7 : 1;
+}
+
+void HybridRoll::onMouseWheelFlagsChanged(UserInterfaceFlags::MouseWheelFlags flags)
+{
+    this->mouseWheelFlags = flags;
 }
 
 //===----------------------------------------------------------------------===//

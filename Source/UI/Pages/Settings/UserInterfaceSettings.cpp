@@ -66,6 +66,16 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->addAndMakeVisible(noAnimationsButton.get());
     noAnimationsButton->addListener(this);
 
+    this->separator3.reset(new SeparatorHorizontal());
+    this->addAndMakeVisible(separator3.get());
+    this->wheelAltModeButton.reset(new ToggleButton(String()));
+    this->addAndMakeVisible(wheelAltModeButton.get());
+    wheelAltModeButton->addListener(this);
+
+    this->wheelAltDirectionButton.reset(new ToggleButton(String()));
+    this->addAndMakeVisible(wheelAltDirectionButton.get());
+    wheelAltDirectionButton->addListener(this);
+
 
     //[UserPreSize]
     this->setOpaque(true);
@@ -78,6 +88,9 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->openGLRendererButton->setButtonText(TRANS(I18n::Settings::rendererOpengl));
     this->defaultRendererButton->setButtonText(TRANS(I18n::Settings::rendererDefault));
 
+    this->wheelAltModeButton->setButtonText(TRANS(I18n::Settings::mouseWheelPanningByDefault));
+    this->wheelAltDirectionButton->setButtonText(TRANS(I18n::Settings::mouseWheelVerticalByDefault));
+
 #if JUCE_MAC
     this->nativeTitleBarButton->setEnabled(false);
     this->defaultRendererButton->setButtonText(TRANS(I18n::Settings::rendererCoreGraphics));
@@ -88,14 +101,21 @@ UserInterfaceSettings::UserInterfaceSettings()
 #endif
     //[/UserPreSize]
 
-    this->setSize(600, 232);
+    this->setSize(600, 320);
 
     //[Constructor]
 
-    // fixme defer this menu initialization
+#if PLATFORM_DESKTOP
+    this->setSize(600, 320);
+#else if PLATFORM_MOBILE
+    this->setSize(600, 232);
+    this->wheelAltModeButton->setVisible(false);
+    this->wheelAltDirectionButton->setVisible(false);
+#endif
 
     const auto lastUsedFontName = App::Config().getProperty(Serialization::Config::lastUsedFont);
 
+    // deferred menu initialization:
     const auto fontsMenuProvider = [this, lastUsedFontName]()
     {
         MenuPanel::Menu fontsMenu;
@@ -134,6 +154,9 @@ UserInterfaceSettings::~UserInterfaceSettings()
     separator2 = nullptr;
     nativeTitleBarButton = nullptr;
     noAnimationsButton = nullptr;
+    separator3 = nullptr;
+    wheelAltModeButton = nullptr;
+    wheelAltDirectionButton = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -161,6 +184,9 @@ void UserInterfaceSettings::resized()
     separator2->setBounds(16, 16 + 32 - -100, getWidth() - 32, 4);
     nativeTitleBarButton->setBounds(16, (16 + 32 - -100) + 6, getWidth() - 32, 32);
     noAnimationsButton->setBounds(16, ((16 + 32 - -100) + 6) + 32, getWidth() - 32, 32);
+    separator3->setBounds(16, 16 + 32 - -180, getWidth() - 32, 4);
+    wheelAltModeButton->setBounds(16, (16 + 32 - -180) + 6, getWidth() - 32, 32);
+    wheelAltDirectionButton->setBounds(16, ((16 + 32 - -180) + 6) + 32, getWidth() - 32, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -215,6 +241,20 @@ void UserInterfaceSettings::buttonClicked(Button *buttonThatWasClicked)
         this->updateButtons();
         //[/UserButtonCode_noAnimationsButton]
     }
+    else if (buttonThatWasClicked == wheelAltModeButton.get())
+    {
+        //[UserButtonCode_wheelAltModeButton] -- add your button handler code here..
+        App::Config().getUiFlags()->setMouseWheelUsePanningByDefault(this->wheelAltModeButton->getToggleState());
+        this->updateButtons();
+        //[/UserButtonCode_wheelAltModeButton]
+    }
+    else if (buttonThatWasClicked == wheelAltDirectionButton.get())
+    {
+        //[UserButtonCode_wheelAltDirectionButton] -- add your button handler code here..
+        App::Config().getUiFlags()->setMouseWheelUseVerticalDirectionByDefault(this->wheelAltDirectionButton->getToggleState());
+        this->updateButtons();
+        //[/UserButtonCode_wheelAltDirectionButton]
+    }
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
@@ -252,14 +292,21 @@ void UserInterfaceSettings::handleCommandMessage (int commandId)
 
 
 //[MiscUserCode]
+// fixme: isn't it better to make this class UserInterfaceFlags::Listener?
 void UserInterfaceSettings::updateButtons()
 {
     const bool openGLEnabled = App::isOpenGLRendererEnabled();
     this->defaultRendererButton->setToggleState(!openGLEnabled, dontSendNotification);
     this->openGLRendererButton->setToggleState(openGLEnabled, dontSendNotification);
 
-    const bool hasRollAnimations = App::Config().getUiFlags()->areRollAnimationsEnabled();
+    const auto *uiFlags = App::Config().getUiFlags();
+
+    const bool hasRollAnimations = uiFlags->areRollAnimationsEnabled();
     this->noAnimationsButton->setToggleState(hasRollAnimations, dontSendNotification);
+
+    const auto wheelFlags = uiFlags->getMouseWheelFlags();
+    this->wheelAltModeButton->setToggleState(wheelFlags.usePanningByDefault, dontSendNotification);
+    this->wheelAltDirectionButton->setToggleState(wheelFlags.useVerticalDirectionByDefault, dontSendNotification);
 }
 //[/MiscUserCode]
 
@@ -270,7 +317,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="UserInterfaceSettings" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="232">
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="320">
   <METHODS>
     <METHOD name="visibilityChanged()"/>
     <METHOD name="handleCommandMessage (int commandId)"/>
@@ -302,6 +349,17 @@ BEGIN_JUCER_METADATA
                 state="0"/>
   <TOGGLEBUTTON name="" id="3aa24012644ec2fc" memberName="noAnimationsButton"
                 virtualName="" explicitFocusOrder="0" pos="16 32 32M 32" posRelativeY="de9d85da72f61a3d"
+                buttonText="" connectedEdges="0" needsCallback="1" radioGroupId="0"
+                state="0"/>
+  <JUCERCOMP name="" id="2eb1de245295d28d" memberName="separator3" virtualName=""
+             explicitFocusOrder="0" pos="16 -180R 32M 4" posRelativeY="4fd07309a20b15b6"
+             sourceFile="../../Themes/SeparatorHorizontal.cpp" constructorParams=""/>
+  <TOGGLEBUTTON name="" id="5ebb8429a7d65b4f" memberName="wheelAltModeButton"
+                virtualName="" explicitFocusOrder="0" pos="16 6 32M 32" posRelativeY="2eb1de245295d28d"
+                buttonText="" connectedEdges="0" needsCallback="1" radioGroupId="0"
+                state="0"/>
+  <TOGGLEBUTTON name="" id="960c4c8f9cfc7abf" memberName="wheelAltDirectionButton"
+                virtualName="" explicitFocusOrder="0" pos="16 32 32M 32" posRelativeY="5ebb8429a7d65b4f"
                 buttonText="" connectedEdges="0" needsCallback="1" radioGroupId="0"
                 state="0"/>
 </JUCER_COMPONENT>

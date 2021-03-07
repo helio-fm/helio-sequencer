@@ -136,6 +136,35 @@ void UserInterfaceFlags::setRollAnimationsEnabled(bool enabled)
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
+void UserInterfaceFlags::setMouseWheelUsePanningByDefault(bool usePanning)
+{
+    if (this->mouseWheelFlags.usePanningByDefault == usePanning)
+    {
+        return;
+    }
+
+    this->mouseWheelFlags.usePanningByDefault = usePanning;
+    this->listeners.call(&Listener::onMouseWheelFlagsChanged, this->mouseWheelFlags);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
+void UserInterfaceFlags::setMouseWheelUseVerticalDirectionByDefault(bool useVerticalDirection)
+{
+    if (this->mouseWheelFlags.useVerticalDirectionByDefault == useVerticalDirection)
+    {
+        return;
+    }
+
+    this->mouseWheelFlags.useVerticalDirectionByDefault = useVerticalDirection;
+    this->listeners.call(&Listener::onMouseWheelFlagsChanged, this->mouseWheelFlags);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
+UserInterfaceFlags::MouseWheelFlags UserInterfaceFlags::getMouseWheelFlags() const noexcept
+{
+    return this->mouseWheelFlags;
+}
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -151,6 +180,8 @@ SerializedData UserInterfaceFlags::serialize() const
     tree.setProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     tree.setProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     tree.setProperty(UI::Flags::animations, this->rollAnimationsEnabled);
+    tree.setProperty(UI::Flags::mouseWheelPanningByDefault, this->mouseWheelFlags.usePanningByDefault);
+    tree.setProperty(UI::Flags::mouseWheelVerticalByDefault, this->mouseWheelFlags.useVerticalDirectionByDefault);
     // skips experimentalFeaturesOn, it's read only
 
     return tree;
@@ -173,6 +204,12 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->useOpenGLRenderer = root.getProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     this->useNativeTitleBar = root.getProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     this->rollAnimationsEnabled = root.getProperty(UI::Flags::animations, this->rollAnimationsEnabled);
+
+    this->mouseWheelFlags.usePanningByDefault =
+        root.getProperty(UI::Flags::mouseWheelPanningByDefault, this->mouseWheelFlags.usePanningByDefault);
+    this->mouseWheelFlags.useVerticalDirectionByDefault =
+        root.getProperty(UI::Flags::mouseWheelVerticalByDefault, this->mouseWheelFlags.useVerticalDirectionByDefault);
+    
     this->velocityMapVisible = false; // not serializing that
 
     this->experimentalFeaturesOn = root.getProperty(UI::Flags::experimentalFeaturesOn, this->experimentalFeaturesOn);
