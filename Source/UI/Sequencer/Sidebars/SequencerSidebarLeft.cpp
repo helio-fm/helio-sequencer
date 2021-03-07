@@ -252,7 +252,7 @@ void SequencerSidebarLeft::recreateMenu()
     this->menu.clearQuick();
     this->menu.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut));
     this->menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
-    this->menu.add(MenuItem::item(Icons::zoomTool, CommandIDs::ZoomEntireClip));
+    this->menu.add(MenuItem::item(Icons::zoomToFit, CommandIDs::ZoomEntireClip));
 
     // Jump to playhead position (or start following playhead when playing)
     //this->menu.add(MenuItem::item(Icons::playhead, CommandIDs::FollowFlayhead));
@@ -260,8 +260,8 @@ void SequencerSidebarLeft::recreateMenu()
     // Jump to the next/previous anchor,
     // i.e. any timeline event in piano roll mode,
     // and next/previous clip in pattern mode:
-    this->menu.add(MenuItem::item(Icons::mediaRewind, CommandIDs::TimelineJumpPrevious));
-    this->menu.add(MenuItem::item(Icons::mediaForward, CommandIDs::TimelineJumpNext));
+    this->menu.add(MenuItem::item(Icons::timelinePrevious, CommandIDs::TimelineJumpPrevious));
+    this->menu.add(MenuItem::item(Icons::timelineNext, CommandIDs::TimelineJumpNext));
 
     // TODO add some controls to switch focus between tracks?
 

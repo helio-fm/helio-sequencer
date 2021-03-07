@@ -62,7 +62,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::zoomTool, CommandIDs::ZoomEntireClip,
+    menu.add(MenuItem::item(Icons::zoomToFit, CommandIDs::ZoomEntireClip,
         TRANS(I18n::Menu::Selection::clipsEdit))->
         disabledIf(lasso->getNumSelected() == 0)->closesMenu());
 

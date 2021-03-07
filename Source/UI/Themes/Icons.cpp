@@ -85,9 +85,7 @@ void Icons::initBuiltInImages()
     setIconForKey(routing);
 
     setIconForKey(piano);
-    setIconForKey(microphone);
     setIconForKey(volume);
-    setIconForKey(script);
 
     setIconForKey(list);
     setIconForKey(ellipsis);
@@ -124,38 +122,29 @@ void Icons::initBuiltInImages()
     setIconForKey(cursorTool);
     setIconForKey(drawTool);
     setIconForKey(selectionTool);
-    setIconForKey(zoomTool);
+    setIconForKey(zoomToFit);
     setIconForKey(dragTool);
     setIconForKey(cropTool);
     setIconForKey(cutterTool);
-    setIconForKey(eraserTool);
-    setIconForKey(chordTool);
     setIconForKey(chordBuilder);
     setIconForKey(stretchLeft);
     setIconForKey(stretchRight);
     setIconForKey(inverseDown);
     setIconForKey(inverseUp);
     setIconForKey(expand);
+    setIconForKey(submenu);
 
     setIconForKey(up);
     setIconForKey(down);
     setIconForKey(back);
     setIconForKey(forward);
-    setIconForKey(mediaForward);
-    setIconForKey(mediaRewind);
     setIconForKey(reprise);
 
-    setIconForKey(pageUp);
-    setIconForKey(pageDown);
     setIconForKey(timelineNext);
     setIconForKey(timelinePrevious);
     setIconForKey(paint);
     setIconForKey(tag);
 
-    setIconForKey(menu);
-    setIconForKey(submenu);
-
-    setIconForKey(login);
     setIconForKey(remote);
     setIconForKey(local);
     setIconForKey(github);

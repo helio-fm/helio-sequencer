@@ -21,7 +21,6 @@
         <FILE id="Z7oHFa" name="browse.svg" compile="0" resource="1" file="../../Resources/Icons/browse.svg"/>
         <FILE id="X70Jbq" name="chordBuilder.svg" compile="0" resource="1"
               file="../../Resources/Icons/chordBuilder.svg"/>
-        <FILE id="htquXC" name="chordTool.svg" compile="0" resource="1" file="../../Resources/Icons/chordTool.svg"/>
         <FILE id="Id1ypQ" name="close.svg" compile="0" resource="1" file="../../Resources/Icons/close.svg"/>
         <FILE id="QzpxYC" name="colour.svg" compile="0" resource="1" file="../../Resources/Icons/colour.svg"/>
         <FILE id="ja4Raa" name="commit.svg" compile="0" resource="1" file="../../Resources/Icons/commit.svg"/>
@@ -36,7 +35,6 @@
         <FILE id="TZOeiP" name="dragTool.svg" compile="0" resource="1" file="../../Resources/Icons/dragTool.svg"/>
         <FILE id="S0dKhu" name="drawTool.svg" compile="0" resource="1" file="../../Resources/Icons/drawTool.svg"/>
         <FILE id="pt25MQ" name="ellipsis.svg" compile="0" resource="1" file="../../Resources/Icons/ellipsis.svg"/>
-        <FILE id="u0J7QC" name="eraserTool.svg" compile="0" resource="1" file="../../Resources/Icons/eraserTool.svg"/>
         <FILE id="PjELEM" name="expand.svg" compile="0" resource="1" file="../../Resources/Icons/expand.svg"/>
         <FILE id="XzECGs" name="fail.svg" compile="0" resource="1" file="../../Resources/Icons/fail.svg"/>
         <FILE id="mgkKBL" name="forward.svg" compile="0" resource="1" file="../../Resources/Icons/forward.svg"/>
@@ -49,17 +47,9 @@
         <FILE id="yctt0l" name="inverseUp.svg" compile="0" resource="1" file="../../Resources/Icons/inverseUp.svg"/>
         <FILE id="Tp3StV" name="list.svg" compile="0" resource="1" file="../../Resources/Icons/list.svg"/>
         <FILE id="vkA7la" name="local.svg" compile="0" resource="1" file="../../Resources/Icons/local.svg"/>
-        <FILE id="femQww" name="login.svg" compile="0" resource="1" file="../../Resources/Icons/login.svg"/>
-        <FILE id="W65FcT" name="mediaForward.svg" compile="0" resource="1"
-              file="../../Resources/Icons/mediaForward.svg"/>
-        <FILE id="Xm4528" name="mediaRewind.svg" compile="0" resource="1" file="../../Resources/Icons/mediaRewind.svg"/>
-        <FILE id="wJUWRt" name="menu.svg" compile="0" resource="1" file="../../Resources/Icons/menu.svg"/>
         <FILE id="GtzvG7" name="mute.svg" compile="0" resource="1" file="../../Resources/Icons/mute.svg"/>
-        <FILE id="oF6DEi" name="microphone.svg" compile="0" resource="1" file="../../Resources/Icons/microphone.svg"/>
         <FILE id="TWchuX" name="orchestraPit.svg" compile="0" resource="1"
               file="../../Resources/Icons/orchestraPit.svg"/>
-        <FILE id="kQgJ4h" name="pageDown.svg" compile="0" resource="1" file="../../Resources/Icons/pageDown.svg"/>
-        <FILE id="EfbAt9" name="pageUp.svg" compile="0" resource="1" file="../../Resources/Icons/pageUp.svg"/>
         <FILE id="GLwMk5" name="paint.svg" compile="0" resource="1" file="../../Resources/Icons/paint.svg"/>
         <FILE id="VDY34K" name="paste.svg" compile="0" resource="1" file="../../Resources/Icons/paste.svg"/>
         <FILE id="kykHC8" name="patterns.svg" compile="0" resource="1" file="../../Resources/Icons/patterns.svg"/>
@@ -82,7 +72,6 @@
         <FILE id="kAPtlo" name="reset.svg" compile="0" resource="1" file="../../Resources/Icons/reset.svg"/>
         <FILE id="FgLHwk" name="revision.svg" compile="0" resource="1" file="../../Resources/Icons/revision.svg"/>
         <FILE id="fref2V" name="routing.svg" compile="0" resource="1" file="../../Resources/Icons/routing.svg"/>
-        <FILE id="CcnXa4" name="script.svg" compile="0" resource="1" file="../../Resources/Icons/script.svg"/>
         <FILE id="b1fUSl" name="selectionTool.svg" compile="0" resource="1"
               file="../../Resources/Icons/selectionTool.svg"/>
         <FILE id="brZyaK" name="selection.svg" compile="0" resource="1" file="../../Resources/Icons/selection.svg"/>
@@ -111,7 +100,7 @@
         <FILE id="EcPJkd" name="volume.svg" compile="0" resource="1" file="../../Resources/Icons/volume.svg"/>
         <FILE id="jm0Ajr" name="zoomIn.svg" compile="0" resource="1" file="../../Resources/Icons/zoomIn.svg"/>
         <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>
-        <FILE id="KPqaBe" name="zoomTool.svg" compile="0" resource="1" file="../../Resources/Icons/zoomTool.svg"/>
+        <FILE id="KPqaBe" name="zoomToFit.svg" compile="0" resource="1" file="../../Resources/Icons/zoomToFit.svg"/>
         <FILE id="aMBPbX" name="noise.png" compile="0" resource="1" file="../../Resources/Icons/noise.png"/>
       </GROUP>
       <GROUP id="{03B368B6-E773-F1D4-0B96-AA2CC86335DB}" name="Templates">

@@ -6884,9 +6884,6 @@
     <None Include="..\..\Resources\Icons\chordBuilder.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\chordTool.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
     <None Include="..\..\Resources\Icons\close.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
@@ -6929,9 +6926,6 @@
     <None Include="..\..\Resources\Icons\ellipsis.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\eraserTool.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
     <None Include="..\..\Resources\Icons\expand.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
@@ -6965,31 +6959,10 @@
     <None Include="..\..\Resources\Icons\local.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\login.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\mediaForward.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\mediaRewind.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\menu.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
     <None Include="..\..\Resources\Icons\mute.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\microphone.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
     <None Include="..\..\Resources\Icons\orchestraPit.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\pageDown.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\pageUp.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
     <None Include="..\..\Resources\Icons\paint.svg">
@@ -7053,9 +7026,6 @@
       <Filter>Helio\Resources\Icons</Filter>
     </None>
     <None Include="..\..\Resources\Icons\routing.svg">
-      <Filter>Helio\Resources\Icons</Filter>
-    </None>
-    <None Include="..\..\Resources\Icons\script.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
     <None Include="..\..\Resources\Icons\selectionTool.svg">
@@ -7127,7 +7097,7 @@
     <None Include="..\..\Resources\Icons\zoomOut.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Icons\zoomTool.svg">
+    <None Include="..\..\Resources\Icons\zoomToFit.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
     <None Include="..\..\Resources\Icons\noise.png">

@@ -174,7 +174,6 @@
 		277D4DFF36B498E1B674A9D3 /* ../../Source/Core/VCS/DiffLogic/PianoTrackDiffLogic.h */ /* PianoTrackDiffLogic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PianoTrackDiffLogic.h; path = ../../Source/Core/VCS/DiffLogic/PianoTrackDiffLogic.h; sourceTree = SOURCE_ROOT; };
 		279C806F3EFFBE92A9ED05D1 /* ../../Source/UI/Dialogs/ModalDialogConfirmation.cpp */ /* ModalDialogConfirmation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ModalDialogConfirmation.cpp; path = ../../Source/UI/Dialogs/ModalDialogConfirmation.cpp; sourceTree = SOURCE_ROOT; };
 		28262B2984B2A6E1C85FE299 /* ../../Source/UI/Menus/SelectionMenus/InstrumentNodeSelectionMenu.cpp */ /* InstrumentNodeSelectionMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InstrumentNodeSelectionMenu.cpp; path = ../../Source/UI/Menus/SelectionMenus/InstrumentNodeSelectionMenu.cpp; sourceTree = SOURCE_ROOT; };
-		289EE484DE6984FA9BFDCFBA /* ../../Resources/Icons/menu.svg */ /* menu.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = menu.svg; path = ../../Resources/Icons/menu.svg; sourceTree = SOURCE_ROOT; };
 		28D58C2309395A0151BF8EBB /* ../../Resources/Icons/piano.svg */ /* piano.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = piano.svg; path = ../../Resources/Icons/piano.svg; sourceTree = SOURCE_ROOT; };
 		28F1C77296DC1646565D53EE /* ../../Resources/Icons/noise.png */ /* noise.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = noise.png; path = ../../Resources/Icons/noise.png; sourceTree = SOURCE_ROOT; };
 		2917D4D2A9BA78091CB5AFFB /* ../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.h */ /* HybridRollExpandMark.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HybridRollExpandMark.h; path = ../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.h; sourceTree = SOURCE_ROOT; };
@@ -244,7 +243,6 @@
 		3B6DECC09CB08320D885EDF1 /* ../../Source/UI/Themes/ViewportKineticSlider.h */ /* ViewportKineticSlider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ViewportKineticSlider.h; path = ../../Source/UI/Themes/ViewportKineticSlider.h; sourceTree = SOURCE_ROOT; };
 		3BAE85AB92B308E8899BF0D8 /* ../../Source/Core/Undo/Actions/PatternActions.cpp */ /* PatternActions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatternActions.cpp; path = ../../Source/Core/Undo/Actions/PatternActions.cpp; sourceTree = SOURCE_ROOT; };
 		3BF24EA416853F30AC4C2A45 /* ../../Resources/Icons/colour.svg */ /* colour.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = colour.svg; path = ../../Resources/Icons/colour.svg; sourceTree = SOURCE_ROOT; };
-		3CC7631E816D9B32F9530D72 /* ../../Resources/Icons/microphone.svg */ /* microphone.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = microphone.svg; path = ../../Resources/Icons/microphone.svg; sourceTree = SOURCE_ROOT; };
 		3CE3D3493705D7C7DAEFE0B5 /* ../../Source/Core/Tree/SettingsNode.h */ /* SettingsNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SettingsNode.h; path = ../../Source/Core/Tree/SettingsNode.h; sourceTree = SOURCE_ROOT; };
 		3D0030FE9BAAFF68121AAE78 /* ../../Source/Core/Midi/KeyboardMapping.h */ /* KeyboardMapping.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyboardMapping.h; path = ../../Source/Core/Midi/KeyboardMapping.h; sourceTree = SOURCE_ROOT; };
 		3D44010B9B71C7D67121D6C9 /* System/Library/Frameworks/QuartzCore.framework */ /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -252,7 +250,6 @@
 		3E0DD1DD3D9F1837F540917E /* ../../Source/UI/Common/DraggingListBoxComponent.cpp */ /* DraggingListBoxComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DraggingListBoxComponent.cpp; path = ../../Source/UI/Common/DraggingListBoxComponent.cpp; sourceTree = SOURCE_ROOT; };
 		3E0FCC9CB77958CE94B92F74 /* ../../Source/UI/Pages/Instruments/AudioPluginsListComponent.cpp */ /* AudioPluginsListComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AudioPluginsListComponent.cpp; path = ../../Source/UI/Pages/Instruments/AudioPluginsListComponent.cpp; sourceTree = SOURCE_ROOT; };
 		3E7191FFB38935DD0335D27E /* ../../Source/UI/Common/AudioMonitors/WaveformAudioMonitorComponent.cpp */ /* WaveformAudioMonitorComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = WaveformAudioMonitorComponent.cpp; path = ../../Source/UI/Common/AudioMonitors/WaveformAudioMonitorComponent.cpp; sourceTree = SOURCE_ROOT; };
-		3ED140E3353FE5029984332C /* ../../Resources/Icons/eraserTool.svg */ /* eraserTool.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = eraserTool.svg; path = ../../Resources/Icons/eraserTool.svg; sourceTree = SOURCE_ROOT; };
 		3EED1B957CBC87ECE83F2CA8 /* ../../Source/Core/Undo/Actions/UndoAction.h */ /* UndoAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UndoAction.h; path = ../../Source/Core/Undo/Actions/UndoAction.h; sourceTree = SOURCE_ROOT; };
 		3F1E62A9CF59246B3DC7D662 /* System/Library/Frameworks/CoreMIDI.framework */ /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		3F1F16872B9009E1CF1A2161 /* ../../Source/UI/Input/SmoothPanController.h */ /* SmoothPanController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SmoothPanController.h; path = ../../Source/UI/Input/SmoothPanController.h; sourceTree = SOURCE_ROOT; };
@@ -331,9 +328,7 @@
 		559CC3559188D4B532B1C96D /* ../../Source/Core/Undo/Actions/NoteActions.h */ /* NoteActions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NoteActions.h; path = ../../Source/Core/Undo/Actions/NoteActions.h; sourceTree = SOURCE_ROOT; };
 		56086572BDE61D11FAC5D224 /* ../../Source/Core/Network/Services/SessionService.h */ /* SessionService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SessionService.h; path = ../../Source/Core/Network/Services/SessionService.h; sourceTree = SOURCE_ROOT; };
 		56CAB74152E2BE994A19A71A /* ../../Source/UI/Common/Origami/OrigamiHorizontal.cpp */ /* OrigamiHorizontal.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OrigamiHorizontal.cpp; path = ../../Source/UI/Common/Origami/OrigamiHorizontal.cpp; sourceTree = SOURCE_ROOT; };
-		56D4C0520B9078184FB00354 /* ../../Resources/Icons/mediaForward.svg */ /* mediaForward.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = mediaForward.svg; path = ../../Resources/Icons/mediaForward.svg; sourceTree = SOURCE_ROOT; };
 		575817D8134E3052D14F04D4 /* ../../Source/UI/Sequencer/MiniMaps/LevelsMap/LevelsMapScroller.h */ /* LevelsMapScroller.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LevelsMapScroller.h; path = ../../Source/UI/Sequencer/MiniMaps/LevelsMap/LevelsMapScroller.h; sourceTree = SOURCE_ROOT; };
-		57D5D9DFD74CE88325112E4C /* ../../Resources/Icons/mediaRewind.svg */ /* mediaRewind.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = mediaRewind.svg; path = ../../Resources/Icons/mediaRewind.svg; sourceTree = SOURCE_ROOT; };
 		57E801D828E4C91DB0FBA3F2 /* ../../Source/Core/Undo/Actions/AutomationEventActions.h */ /* AutomationEventActions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutomationEventActions.h; path = ../../Source/Core/Undo/Actions/AutomationEventActions.h; sourceTree = SOURCE_ROOT; };
 		584E087D68C4D91663A6A699 /* ../../Source/Core/Tree/TreeNode.cpp */ /* TreeNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TreeNode.cpp; path = ../../Source/Core/Tree/TreeNode.cpp; sourceTree = SOURCE_ROOT; };
 		58FF6F9E1929247D2B951913 /* ../Projucer/JuceLibraryCode/include_juce_audio_basics.mm */ /* include_juce_audio_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_basics.mm; path = ../Projucer/JuceLibraryCode/include_juce_audio_basics.mm; sourceTree = SOURCE_ROOT; };
@@ -361,7 +356,6 @@
 		617761CA23B28352AD72BE99 /* ../../Source/Core/Undo/UndoActionIDs.h */ /* UndoActionIDs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UndoActionIDs.h; path = ../../Source/Core/Undo/UndoActionIDs.h; sourceTree = SOURCE_ROOT; };
 		61F0F5481B6FC0DDA7DAAD87 /* System/Library/Frameworks/CoreAudio.framework */ /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		621528B89A3DC885B69120D1 /* ../../Source/UI/Headline/HeadlineItemHighlighter.h */ /* HeadlineItemHighlighter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HeadlineItemHighlighter.h; path = ../../Source/UI/Headline/HeadlineItemHighlighter.h; sourceTree = SOURCE_ROOT; };
-		62277E00DBFC3DA80242B120 /* ../../Resources/Icons/login.svg */ /* login.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = login.svg; path = ../../Resources/Icons/login.svg; sourceTree = SOURCE_ROOT; };
 		62F4B3186CABA85BF9BA7C56 /* ../../Source/UI/Menus/SelectionMenus/InstrumentNodeSelectionMenu.h */ /* InstrumentNodeSelectionMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InstrumentNodeSelectionMenu.h; path = ../../Source/UI/Menus/SelectionMenus/InstrumentNodeSelectionMenu.h; sourceTree = SOURCE_ROOT; };
 		63D04F3AB88A091E6855B0D9 /* ../../Resources/Icons/pianoTrack.svg */ /* pianoTrack.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = pianoTrack.svg; path = ../../Resources/Icons/pianoTrack.svg; sourceTree = SOURCE_ROOT; };
 		63D63EC19DCE58AF124619A2 /* ../../Source/UI/Popups/ArpPreviewTool.h */ /* ArpPreviewTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ArpPreviewTool.h; path = ../../Source/UI/Popups/ArpPreviewTool.h; sourceTree = SOURCE_ROOT; };
@@ -381,7 +375,7 @@
 		685E51F3663A53DDF6DC75FE /* ../../Source/Core/VCS/Diff.h */ /* Diff.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Diff.h; path = ../../Source/Core/VCS/Diff.h; sourceTree = SOURCE_ROOT; };
 		68EF358F2AA914CA8096C19E /* ../../Source/UI/Popups/ProgressIndicator.h */ /* ProgressIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProgressIndicator.h; path = ../../Source/UI/Popups/ProgressIndicator.h; sourceTree = SOURCE_ROOT; };
 		6905230EFEBAC9CD41F85214 /* ../../Source/UI/Pages/Instruments/Editor/InstrumentEditorConnector.cpp */ /* InstrumentEditorConnector.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InstrumentEditorConnector.cpp; path = ../../Source/UI/Pages/Instruments/Editor/InstrumentEditorConnector.cpp; sourceTree = SOURCE_ROOT; };
-		695B33EB4E79C77A94699862 /* ../../Resources/Icons/script.svg */ /* script.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = script.svg; path = ../../Resources/Icons/script.svg; sourceTree = SOURCE_ROOT; };
+		698A56770E267538984CCC74 /* ../../Resources/Icons/zoomToFit.svg */ /* zoomToFit.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = zoomToFit.svg; path = ../../Resources/Icons/zoomToFit.svg; sourceTree = SOURCE_ROOT; };
 		69A8B7D5BF03BF8BD0F473EC /* ../../Resources/Icons/cursorTool.svg */ /* cursorTool.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = cursorTool.svg; path = ../../Resources/Icons/cursorTool.svg; sourceTree = SOURCE_ROOT; };
 		6A595361D0F8263DEACF8A56 /* ../../Source/UI/Dialogs/TempoDialog.h */ /* TempoDialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TempoDialog.h; path = ../../Source/UI/Dialogs/TempoDialog.h; sourceTree = SOURCE_ROOT; };
 		6B2627203925C88760E0EE40 /* ../../Source/Core/Configuration/Models/Arpeggiator.h */ /* Arpeggiator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Arpeggiator.h; path = ../../Source/Core/Configuration/Models/Arpeggiator.h; sourceTree = SOURCE_ROOT; };
@@ -531,7 +525,6 @@
 		94B84BF4F5DC214AAE259B39 /* ../../Source/Core/Undo/Actions/AutomationEventActions.cpp */ /* AutomationEventActions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AutomationEventActions.cpp; path = ../../Source/Core/Undo/Actions/AutomationEventActions.cpp; sourceTree = SOURCE_ROOT; };
 		94E8F208F0103510907E7976 /* ../../Source/UI/Themes/SeparatorHorizontal.h */ /* SeparatorHorizontal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SeparatorHorizontal.h; path = ../../Source/UI/Themes/SeparatorHorizontal.h; sourceTree = SOURCE_ROOT; };
 		94F48656E66BE393F6C3C4AA /* ../../Source/Core/CommandPalette/CommandPaletteProjectsList.h */ /* CommandPaletteProjectsList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandPaletteProjectsList.h; path = ../../Source/Core/CommandPalette/CommandPaletteProjectsList.h; sourceTree = SOURCE_ROOT; };
-		95409C31DDE8245FD494CD85 /* ../../Resources/Icons/pageDown.svg */ /* pageDown.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = pageDown.svg; path = ../../Resources/Icons/pageDown.svg; sourceTree = SOURCE_ROOT; };
 		954420DC3D679DBD10FF2E02 /* ../../Source/UI/Pages/Settings/ThemeSettingsItem.cpp */ /* ThemeSettingsItem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ThemeSettingsItem.cpp; path = ../../Source/UI/Pages/Settings/ThemeSettingsItem.cpp; sourceTree = SOURCE_ROOT; };
 		95814179DCC11388EA8DC62C /* ../../Source/Core/Tree/PianoTrackNode.h */ /* PianoTrackNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PianoTrackNode.h; path = ../../Source/Core/Tree/PianoTrackNode.h; sourceTree = SOURCE_ROOT; };
 		95B31CEFF3D85FB2C7052D31 /* ../../Source/UI/Common/Origami/OrigamiHorizontal.h */ /* OrigamiHorizontal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OrigamiHorizontal.h; path = ../../Source/UI/Common/Origami/OrigamiHorizontal.h; sourceTree = SOURCE_ROOT; };
@@ -607,7 +600,6 @@
 		AF30E0C21EDB351EA71A892C /* ../../Resources/Icons/patterns.svg */ /* patterns.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = patterns.svg; path = ../../Resources/Icons/patterns.svg; sourceTree = SOURCE_ROOT; };
 		AF475EC4FBFF72C3C51900D4 /* ../../Source/UI/Headline/HeadlineDropdown.cpp */ /* HeadlineDropdown.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HeadlineDropdown.cpp; path = ../../Source/UI/Headline/HeadlineDropdown.cpp; sourceTree = SOURCE_ROOT; };
 		AF4EC575A8540902A970BCE4 /* ../../Source/UI/Popups/NotesTuningPanel.cpp */ /* NotesTuningPanel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NotesTuningPanel.cpp; path = ../../Source/UI/Popups/NotesTuningPanel.cpp; sourceTree = SOURCE_ROOT; };
-		AF5B9D3AA339A5C55251E164 /* ../../Resources/Icons/pageUp.svg */ /* pageUp.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = pageUp.svg; path = ../../Resources/Icons/pageUp.svg; sourceTree = SOURCE_ROOT; };
 		AF75EE47FEFC2A343CFC147B /* ../../Source/UI/Sequencer/PianoRoll/NoteComponent.h */ /* NoteComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NoteComponent.h; path = ../../Source/UI/Sequencer/PianoRoll/NoteComponent.h; sourceTree = SOURCE_ROOT; };
 		B01481C8E39AD377E82E3F10 /* ../../Source/Core/VCS/Delta.h */ /* Delta.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Delta.h; path = ../../Source/Core/VCS/Delta.h; sourceTree = SOURCE_ROOT; };
 		B03D55A203855EADA068B640 /* ../../Source/Core/Network/Requests/ProjectCloneThread.h */ /* ProjectCloneThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProjectCloneThread.h; path = ../../Source/Core/Network/Requests/ProjectCloneThread.h; sourceTree = SOURCE_ROOT; };
@@ -638,7 +630,6 @@
 		BC6EE51833F6BC7BDCA64DFA /* ../../Source/Core/Configuration/Models/Chord.h */ /* Chord.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Chord.h; path = ../../Source/Core/Configuration/Models/Chord.h; sourceTree = SOURCE_ROOT; };
 		BC8039905D5BAF9F9F2685C1 /* ../../Source/UI/Common/FineTuningComponentDragger.cpp */ /* FineTuningComponentDragger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FineTuningComponentDragger.cpp; path = ../../Source/UI/Common/FineTuningComponentDragger.cpp; sourceTree = SOURCE_ROOT; };
 		BC8B2AE81DB7ACAEA0B34D32 /* ../../Source/UI/Pages/Settings/SettingsFrameWrapper.h */ /* SettingsFrameWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SettingsFrameWrapper.h; path = ../../Source/UI/Pages/Settings/SettingsFrameWrapper.h; sourceTree = SOURCE_ROOT; };
-		BC8D695AF62FA1C73069BE88 /* ../../Resources/Icons/zoomTool.svg */ /* zoomTool.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = zoomTool.svg; path = ../../Resources/Icons/zoomTool.svg; sourceTree = SOURCE_ROOT; };
 		BCB338063E4E753B72F1CB2B /* ../../Source/UI/Common/ViewportFitProxyComponent.cpp */ /* ViewportFitProxyComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ViewportFitProxyComponent.cpp; path = ../../Source/UI/Common/ViewportFitProxyComponent.cpp; sourceTree = SOURCE_ROOT; };
 		BCB766C95158A5460C8B0F5F /* ../../Source/UI/Menus/InstrumentMenu.h */ /* InstrumentMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InstrumentMenu.h; path = ../../Source/UI/Menus/InstrumentMenu.h; sourceTree = SOURCE_ROOT; };
 		BDBE5C034C80B5342B78B373 /* ../../Resources/colourSchemes.json */ /* colourSchemes.json */ = {isa = PBXFileReference; lastKnownFileType = file.json; name = colourSchemes.json; path = ../../Resources/colourSchemes.json; sourceTree = SOURCE_ROOT; };
@@ -706,7 +697,6 @@
 		D18259E69A62240C70800309 /* ../../Source/UI/Themes/SeparatorVerticalSkew.cpp */ /* SeparatorVerticalSkew.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SeparatorVerticalSkew.cpp; path = ../../Source/UI/Themes/SeparatorVerticalSkew.cpp; sourceTree = SOURCE_ROOT; };
 		D2152514B410447674A0EF70 /* ../../Source/Core/Audio/Instruments/OrchestraPit.cpp */ /* OrchestraPit.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OrchestraPit.cpp; path = ../../Source/Core/Audio/Instruments/OrchestraPit.cpp; sourceTree = SOURCE_ROOT; };
 		D24732F3D9FF03608C610192 /* ../../Source/UI/Sequencer/Header/Playhead.cpp */ /* Playhead.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Playhead.cpp; path = ../../Source/UI/Sequencer/Header/Playhead.cpp; sourceTree = SOURCE_ROOT; };
-		D3381B9241A83327DFE9B5C8 /* ../../Resources/Icons/chordTool.svg */ /* chordTool.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = chordTool.svg; path = ../../Resources/Icons/chordTool.svg; sourceTree = SOURCE_ROOT; };
 		D3589461931B68AE5FED80F0 /* ../../Source/UI/Pages/Settings/SyncSettings.h */ /* SyncSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SyncSettings.h; path = ../../Source/UI/Pages/Settings/SyncSettings.h; sourceTree = SOURCE_ROOT; };
 		D40C0CE45B78B2FB6B497FA4 /* ../../Resources/chords.json */ /* chords.json */ = {isa = PBXFileReference; lastKnownFileType = file.json; name = chords.json; path = ../../Resources/chords.json; sourceTree = SOURCE_ROOT; };
 		D4D63EBB3FF993792EA93DE1 /* ../../Resources/Icons/unmute.svg */ /* unmute.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = unmute.svg; path = ../../Resources/Icons/unmute.svg; sourceTree = SOURCE_ROOT; };
@@ -986,7 +976,6 @@
 				0078A4CF1B0498BB9D9F36D6,
 				1D1D9574714B1D5BF6E173DF,
 				E7994F69C1E98A7AFC41D20B,
-				D3381B9241A83327DFE9B5C8,
 				4ACF099154865E0DC5BA2C21,
 				3BF24EA416853F30AC4C2A45,
 				DA47AB54458AEC968E0F5011,
@@ -1001,7 +990,6 @@
 				514BDF21BA149C7546302E70,
 				1BA71E9EAA82A36FDABCA92A,
 				04B95C3CFF70E3037015E8C8,
-				3ED140E3353FE5029984332C,
 				679B8F72EE81CA7A12C183F5,
 				AE5EE4D6A413808422C3A819,
 				5E2CFD75AE8BDAC8AC7CD4E9,
@@ -1013,15 +1001,8 @@
 				2DA06104F65305C09877EA73,
 				35CE31907AAAF6A87836E985,
 				F8E8B5E89444D55A21A8E484,
-				62277E00DBFC3DA80242B120,
-				56D4C0520B9078184FB00354,
-				57D5D9DFD74CE88325112E4C,
-				289EE484DE6984FA9BFDCFBA,
 				38F77D254EEDB3C3C286D7B0,
-				3CC7631E816D9B32F9530D72,
 				7320F2DA76039762ED764BDA,
-				95409C31DDE8245FD494CD85,
-				AF5B9D3AA339A5C55251E164,
 				F91C8DFB4DC445BA20315BE3,
 				C3F0F6FA0ECF6EB4DAD589AF,
 				AF30E0C21EDB351EA71A892C,
@@ -1043,7 +1024,6 @@
 				9FC2E070E8CCBBA6EA2ADD48,
 				F192718DCDD97FAFA543C27B,
 				863B2AB2A472DFD4099F36F2,
-				695B33EB4E79C77A94699862,
 				B6FE326E0F7D0ED6D244D1C5,
 				1FB5D51453A4A4E639684CFB,
 				12E15D689DC7EBC44BBE1CA8,
@@ -1067,7 +1047,7 @@
 				54DFBC5F9A390D72598FB531,
 				8A0E341272CD3A83C9C22DE6,
 				B235731CCB550DF1E2BDDF28,
-				BC8D695AF62FA1C73069BE88,
+				698A56770E267538984CCC74,
 				28F1C77296DC1646565D53EE,
 			);
 			name = Icons;

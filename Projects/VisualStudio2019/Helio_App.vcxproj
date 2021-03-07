@@ -4025,7 +4025,6 @@
     <None Include="..\..\Resources\Icons\back.svg"/>
     <None Include="..\..\Resources\Icons\browse.svg"/>
     <None Include="..\..\Resources\Icons\chordBuilder.svg"/>
-    <None Include="..\..\Resources\Icons\chordTool.svg"/>
     <None Include="..\..\Resources\Icons\close.svg"/>
     <None Include="..\..\Resources\Icons\colour.svg"/>
     <None Include="..\..\Resources\Icons\commit.svg"/>
@@ -4040,7 +4039,6 @@
     <None Include="..\..\Resources\Icons\dragTool.svg"/>
     <None Include="..\..\Resources\Icons\drawTool.svg"/>
     <None Include="..\..\Resources\Icons\ellipsis.svg"/>
-    <None Include="..\..\Resources\Icons\eraserTool.svg"/>
     <None Include="..\..\Resources\Icons\expand.svg"/>
     <None Include="..\..\Resources\Icons\fail.svg"/>
     <None Include="..\..\Resources\Icons\forward.svg"/>
@@ -4052,15 +4050,8 @@
     <None Include="..\..\Resources\Icons\inverseUp.svg"/>
     <None Include="..\..\Resources\Icons\list.svg"/>
     <None Include="..\..\Resources\Icons\local.svg"/>
-    <None Include="..\..\Resources\Icons\login.svg"/>
-    <None Include="..\..\Resources\Icons\mediaForward.svg"/>
-    <None Include="..\..\Resources\Icons\mediaRewind.svg"/>
-    <None Include="..\..\Resources\Icons\menu.svg"/>
     <None Include="..\..\Resources\Icons\mute.svg"/>
-    <None Include="..\..\Resources\Icons\microphone.svg"/>
     <None Include="..\..\Resources\Icons\orchestraPit.svg"/>
-    <None Include="..\..\Resources\Icons\pageDown.svg"/>
-    <None Include="..\..\Resources\Icons\pageUp.svg"/>
     <None Include="..\..\Resources\Icons\paint.svg"/>
     <None Include="..\..\Resources\Icons\paste.svg"/>
     <None Include="..\..\Resources\Icons\patterns.svg"/>
@@ -4082,7 +4073,6 @@
     <None Include="..\..\Resources\Icons\reset.svg"/>
     <None Include="..\..\Resources\Icons\revision.svg"/>
     <None Include="..\..\Resources\Icons\routing.svg"/>
-    <None Include="..\..\Resources\Icons\script.svg"/>
     <None Include="..\..\Resources\Icons\selectionTool.svg"/>
     <None Include="..\..\Resources\Icons\selection.svg"/>
     <None Include="..\..\Resources\Icons\selectAll.svg"/>
@@ -4106,7 +4096,7 @@
     <None Include="..\..\Resources\Icons\volume.svg"/>
     <None Include="..\..\Resources\Icons\zoomIn.svg"/>
     <None Include="..\..\Resources\Icons\zoomOut.svg"/>
-    <None Include="..\..\Resources\Icons\zoomTool.svg"/>
+    <None Include="..\..\Resources\Icons\zoomToFit.svg"/>
     <None Include="..\..\Resources\Icons\noise.png"/>
     <None Include="..\..\Resources\Templates\emptyProject.json"/>
     <None Include="..\..\Resources\Templates\exampleProject.json"/>
