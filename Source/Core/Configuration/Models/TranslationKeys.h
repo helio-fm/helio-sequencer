@@ -276,10 +276,6 @@ namespace I18n
         static constexpr auto midiRecord = constexprHash("settings::midi::record");
         static constexpr auto midiNoInputDevices = constexprHash("settings::midi::nodevices");
         static constexpr auto languageHelp = constexprHash("settings::language::help");
-        static constexpr auto rendererCoreGraphics = constexprHash("settings::renderer::coregraphics");
-        static constexpr auto rendererDefault = constexprHash("settings::renderer::default");
-        static constexpr auto rendererDirect2d = constexprHash("settings::renderer::direct2d");
-        static constexpr auto rendererNative = constexprHash("settings::renderer::native");
         static constexpr auto rendererOpengl = constexprHash("settings::renderer::opengl");
         static constexpr auto sync = constexprHash("settings::sync");
         static constexpr auto restartRequired = constexprHash("settings::restart");

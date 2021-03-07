@@ -17,51 +17,33 @@
 
 #pragma once
 
-//[Headers]
 #include "MobileComboBox.h"
-//[/Headers]
+#include "SeparatorHorizontal.h"
 
-#include "../../Themes/SeparatorHorizontal.h"
-#include "../../Themes/SeparatorHorizontal.h"
-
-class UserInterfaceSettings final : public Component,
-                                    public Button::Listener
+class UserInterfaceSettings final : public Component
 {
 public:
 
     UserInterfaceSettings();
     ~UserInterfaceSettings();
 
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button *buttonThatWasClicked) override;
     void visibilityChanged() override;
-    void handleCommandMessage (int commandId) override;
-
+    void handleCommandMessage(int commandId) override;
 
 private:
 
-    //[UserVariables]
     void updateButtons();
     Array<Font> systemFonts;
-    //[/UserVariables]
 
     UniquePointer<MobileComboBox::Primer> fontComboPrimer;
     UniquePointer<ToggleButton> openGLRendererButton;
-    UniquePointer<ToggleButton> defaultRendererButton;
-    UniquePointer<SeparatorHorizontal> separator;
     UniquePointer<TextEditor> fontEditor;
-    UniquePointer<SeparatorHorizontal> separator2;
     UniquePointer<ToggleButton> nativeTitleBarButton;
     UniquePointer<ToggleButton> noAnimationsButton;
-    UniquePointer<SeparatorHorizontal> separator3;
+    UniquePointer<SeparatorHorizontal> separator;
     UniquePointer<ToggleButton> wheelAltModeButton;
     UniquePointer<ToggleButton> wheelAltDirectionButton;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserInterfaceSettings)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UserInterfaceSettings)
 };
-
-
