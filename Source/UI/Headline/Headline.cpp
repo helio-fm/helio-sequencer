@@ -37,7 +37,7 @@ Headline::Headline()
     this->consoleButton->setVisible(App::isUsingNativeTitleBar());
 
     auto *uiFlags = App::Config().getUiFlags();
-    this->onUiAnimationsFlagChanged(uiFlags->areRollAnimationsEnabled());
+    this->onUiAnimationsFlagChanged(uiFlags->areUiAnimationsEnabled());
     uiFlags->addListener(this);
 
     this->setSize(100, Globals::UI::headlineHeight);

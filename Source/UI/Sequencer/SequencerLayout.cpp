@@ -409,7 +409,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
         this->mapScroller.get(), this->levelsScroller.get(),
         this->scrollerShadow.get());
     
-    const auto hasAnimations = App::Config().getUiFlags()->areRollAnimationsEnabled();
+    const auto hasAnimations = App::Config().getUiFlags()->areUiAnimationsEnabled();
     this->rollContainer->setAnimationsEnabled(hasAnimations);
 
     // add sidebars

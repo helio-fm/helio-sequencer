@@ -40,7 +40,7 @@ private:
     UniquePointer<ToggleButton> openGLRendererButton;
     UniquePointer<TextEditor> fontEditor;
     UniquePointer<ToggleButton> nativeTitleBarButton;
-    UniquePointer<ToggleButton> noAnimationsButton;
+    UniquePointer<ToggleButton> animationsEnabledButton;
     UniquePointer<SeparatorHorizontal> separator;
     UniquePointer<ToggleButton> wheelAltModeButton;
     UniquePointer<ToggleButton> wheelAltDirectionButton;

@@ -162,7 +162,7 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     }
 
     auto *uiFlags = App::Config().getUiFlags();
-    this->onUiAnimationsFlagChanged(uiFlags->areRollAnimationsEnabled());
+    this->onUiAnimationsFlagChanged(uiFlags->areUiAnimationsEnabled());
     this->onMouseWheelFlagsChanged(uiFlags->getMouseWheelFlags());
     uiFlags->addListener(this);
 }

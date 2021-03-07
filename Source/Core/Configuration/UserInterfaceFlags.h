@@ -77,8 +77,8 @@ public:
 
     bool areExperimentalFeaturesEnabled() const noexcept;
 
-    bool areRollAnimationsEnabled() const noexcept;
-    void setRollAnimationsEnabled(bool enabled);
+    bool areUiAnimationsEnabled() const noexcept;
+    void setUiAnimationsEnabled(bool enabled);
 
     void setMouseWheelUsePanningByDefault(bool usePanning);
     void setMouseWheelUseVerticalDirectionByDefault(bool useVerticalDirection);

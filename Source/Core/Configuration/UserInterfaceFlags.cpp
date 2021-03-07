@@ -119,12 +119,12 @@ bool UserInterfaceFlags::areExperimentalFeaturesEnabled() const noexcept
     return this->experimentalFeaturesOn;
 }
 
-bool UserInterfaceFlags::areRollAnimationsEnabled() const noexcept
+bool UserInterfaceFlags::areUiAnimationsEnabled() const noexcept
 {
     return this->rollAnimationsEnabled;
 }
 
-void UserInterfaceFlags::setRollAnimationsEnabled(bool enabled)
+void UserInterfaceFlags::setUiAnimationsEnabled(bool enabled)
 {
     if (this->rollAnimationsEnabled == enabled)
     {

@@ -106,11 +106,11 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->nativeTitleBarButton->setEnabled(false);
 #endif
 
-    this->noAnimationsButton = make<ToggleButton>(TRANS(I18n::Settings::noAnimations));
-    this->addAndMakeVisible(this->noAnimationsButton.get());
-    this->noAnimationsButton->onClick = [this]()
+    this->animationsEnabledButton = make<ToggleButton>(TRANS(I18n::Settings::uiAnimations));
+    this->addAndMakeVisible(this->animationsEnabledButton.get());
+    this->animationsEnabledButton->onClick = [this]()
     {
-        App::Config().getUiFlags()->setRollAnimationsEnabled(this->noAnimationsButton->getToggleState());
+        App::Config().getUiFlags()->setUiAnimationsEnabled(this->animationsEnabledButton->getToggleState());
         this->updateButtons();
     };
 
@@ -156,11 +156,11 @@ void UserInterfaceSettings::resized()
     this->nativeTitleBarButton->setBounds(margin2,
         this->openGLRendererButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
-    this->noAnimationsButton->setBounds(margin2,
+    this->animationsEnabledButton->setBounds(margin2,
         this->nativeTitleBarButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->separator->setBounds(margin2,
-        this->noAnimationsButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 4);
+        this->animationsEnabledButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 4);
 
     this->wheelAltModeButton->setBounds(margin2,
         this->separator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
@@ -202,8 +202,8 @@ void UserInterfaceSettings::updateButtons()
 
     const auto *uiFlags = App::Config().getUiFlags();
 
-    const bool hasRollAnimations = uiFlags->areRollAnimationsEnabled();
-    this->noAnimationsButton->setToggleState(hasRollAnimations, dontSendNotification);
+    const bool hasRollAnimations = uiFlags->areUiAnimationsEnabled();
+    this->animationsEnabledButton->setToggleState(hasRollAnimations, dontSendNotification);
 
     const auto wheelFlags = uiFlags->getMouseWheelFlags();
     this->wheelAltModeButton->setToggleState(wheelFlags.usePanningByDefault, dontSendNotification);
