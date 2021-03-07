@@ -96,14 +96,14 @@ MenuItem::Ptr MenuItem::withSubmenuIf(bool condition)
     return this;
 }
 
-MenuItem::Ptr MenuItem::toggled(bool shouldBeToggled)
+MenuItem::Ptr MenuItem::toggledIf(bool shouldBeToggled)
 {
     MenuItem::Ptr description(this);
     description->flags.isToggled = shouldBeToggled;
     return description;
 }
 
-MenuItem::Ptr MenuItem::colouredWith(const Colour &colour)
+MenuItem::Ptr MenuItem::withColour(const Colour &colour)
 {
     MenuItem::Ptr description(this);
     description->colour = colour.interpolatedWith(findDefaultColour(Label::textColourId), 0.5f);

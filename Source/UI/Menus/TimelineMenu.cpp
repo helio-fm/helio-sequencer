@@ -101,7 +101,7 @@ TimelineMenu::TimelineMenu(ProjectNode &parentProject) :
                 menu.add(MenuItem::item(Icons::annotation,
                     annotation->getDescription())->
                     //withSubLabel(Transport::getTimeString(outTimeMs))->
-                    colouredWith(annotation->getColour())->
+                    withColour(annotation->getColour())->
                     closesMenu()->
                     withAction([this, i]()
                     {

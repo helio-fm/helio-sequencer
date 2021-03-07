@@ -135,19 +135,19 @@ void SequencerSidebarRight::recreateMenu()
     // Selection tool is useless on the desktop
 #if PLATFORM_MOBILE
     const bool selectionMode = this->project.getEditMode().isMode(HybridRollEditMode::selectionMode);
-    this->menu.add(MenuItem::item(Icons::selectionTool, CommandIDs::EditModeSelect)->toggled(selectionMode));
+    this->menu.add(MenuItem::item(Icons::selectionTool, CommandIDs::EditModeSelect)->toggledIf(selectionMode));
 #endif
 
-    this->menu.add(MenuItem::item(Icons::cursorTool, CommandIDs::EditModeDefault)->toggled(defaultMode));
-    this->menu.add(MenuItem::item(Icons::drawTool, CommandIDs::EditModeDraw)->toggled(drawMode));
+    this->menu.add(MenuItem::item(Icons::cursorTool, CommandIDs::EditModeDefault)->toggledIf(defaultMode));
+    this->menu.add(MenuItem::item(Icons::drawTool, CommandIDs::EditModeDraw)->toggledIf(drawMode));
 
     // Drag tool is useless on the mobile
 #if PLATFORM_DESKTOP
     const bool dragMode = this->project.getEditMode().isMode(HybridRollEditMode::dragMode);
-    this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::EditModePan)->toggled(dragMode));
+    this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::EditModePan)->toggledIf(dragMode));
 #endif
 
-    this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::EditModeKnife)->toggled(scissorsMode));
+    this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::EditModeKnife)->toggledIf(scissorsMode));
 
     if (this->menuMode == MenuMode::PianoRollTools)
     {

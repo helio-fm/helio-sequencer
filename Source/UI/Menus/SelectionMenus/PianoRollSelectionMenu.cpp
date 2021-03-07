@@ -119,7 +119,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createMoveToTrackPanel()
         }
 
         menu.add(MenuItem::item(Icons::pianoTrack, targetTrack->getTrackName())->
-            colouredWith(targetTrack->getTrackColour())->
+            withColour(targetTrack->getTrackColour())->
             closesMenu()->
             withAction([this, targetTrack]()
         {

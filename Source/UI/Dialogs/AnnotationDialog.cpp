@@ -140,7 +140,7 @@ AnnotationDialog::AnnotationDialog(Component &owner,
     {
         const auto cmd = MenuItem::item(Icons::annotation,
             CommandIDs::JumpToAnnotation + i, dynamics[i])->
-            colouredWith(colours[i]);
+            withColour(colours[i]);
         menu.add(cmd);
     }
 

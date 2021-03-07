@@ -103,7 +103,7 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Reversed")->toggled(this->lastOptions.reversed)->withAction([this, arp]()
+        "Reversed")->toggledIf(this->lastOptions.reversed)->withAction([this, arp]()
     {
         this->lastOptions.reversed = !this->lastOptions.reversed;
         this->previewArp(arp, this->lastOptions, true);
@@ -111,7 +111,7 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Limit to chord")->toggled(this->lastOptions.limitToChord)->withAction([this, arp]()
+        "Limit to chord")->toggledIf(this->lastOptions.limitToChord)->withAction([this, arp]()
     {
         this->lastOptions.limitToChord = !this->lastOptions.limitToChord;
         this->previewArp(arp, this->lastOptions, true);
@@ -119,7 +119,7 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Duration x0.5")->toggled(this->lastOptions.durationMultiplier == 0.5f)->withAction([this, arp]()
+        "Duration x0.5")->toggledIf(this->lastOptions.durationMultiplier == 0.5f)->withAction([this, arp]()
     {
         this->lastOptions.durationMultiplier = 0.5f;
         this->previewArp(arp, this->lastOptions, true);
@@ -127,7 +127,7 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Duration x0.75")->toggled(this->lastOptions.durationMultiplier == 0.75f)->withAction([this, arp]()
+        "Duration x0.75")->toggledIf(this->lastOptions.durationMultiplier == 0.75f)->withAction([this, arp]()
     {
         this->lastOptions.durationMultiplier = 0.75f;
         this->previewArp(arp, this->lastOptions, true);
@@ -135,7 +135,7 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Duration x1")->toggled(this->lastOptions.durationMultiplier == 1.f)->withAction([this, arp]()
+        "Duration x1")->toggledIf(this->lastOptions.durationMultiplier == 1.f)->withAction([this, arp]()
     {
         this->lastOptions.durationMultiplier = 1.f;
         this->previewArp(arp, this->lastOptions, true);
@@ -143,7 +143,7 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Duration x1.5")->toggled(this->lastOptions.durationMultiplier == 1.5f)->withAction([this, arp]()
+        "Duration x1.5")->toggledIf(this->lastOptions.durationMultiplier == 1.5f)->withAction([this, arp]()
     {
         this->lastOptions.durationMultiplier = 1.5f;
         this->previewArp(arp, this->lastOptions, true);
@@ -151,7 +151,7 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Duration x2")->toggled(this->lastOptions.durationMultiplier == 2.f)->withAction([this, arp]()
+        "Duration x2")->toggledIf(this->lastOptions.durationMultiplier == 2.f)->withAction([this, arp]()
     {
         this->lastOptions.durationMultiplier = 2.f;
         this->previewArp(arp, this->lastOptions, true);
@@ -159,7 +159,7 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Randomness x0")->toggled(this->lastOptions.randomness == 0.f)->withAction([this, arp]()
+        "Randomness x0")->toggledIf(this->lastOptions.randomness == 0.f)->withAction([this, arp]()
     {
         this->lastOptions.randomness = 0.f;
         this->previewArp(arp, this->lastOptions, true);
@@ -167,7 +167,7 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Randomness x0.5")->toggled(this->lastOptions.randomness == 0.5f)->withAction([this, arp]()
+        "Randomness x0.5")->toggledIf(this->lastOptions.randomness == 0.5f)->withAction([this, arp]()
     {
         this->lastOptions.randomness = 0.5f;
         this->previewArp(arp, this->lastOptions, true);
@@ -175,7 +175,7 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Randomness x0.75")->toggled(this->lastOptions.randomness == 0.75f)->withAction([this, arp]()
+        "Randomness x0.75")->toggledIf(this->lastOptions.randomness == 0.75f)->withAction([this, arp]()
     {
         this->lastOptions.randomness = 0.75f;
         this->previewArp(arp, this->lastOptions, true);
