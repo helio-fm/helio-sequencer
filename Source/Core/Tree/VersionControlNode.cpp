@@ -30,8 +30,7 @@
 #include "ProjectSyncService.h"
 
 VersionControlNode::VersionControlNode() :
-    TreeNode("Versions", Serialization::Core::versionControl),
-    vcs(nullptr)
+    TreeNode("Versions", Serialization::Core::versionControl)
 {
     this->initVCS();
     this->initEditor();
@@ -98,19 +97,21 @@ static void countStatsFor(const VCS::Revision::Ptr rootRevision, int &numRevisio
 
 String VersionControlNode::getStatsString() const
 {
-    if (this->vcs)
+    if (this->vcs == nullptr)
     {
-        const auto root(this->vcs->getRoot());
-
-        int numRevisions = 1;
-        int numDeltas = 0;
-        countStatsFor(root, numRevisions, numDeltas);
-
-        return String(TRANS_PLURAL("{x} revisions", numRevisions) + " " +
-            TRANS(I18n::Common::conjunction) + " " + TRANS_PLURAL("{x} deltas", numDeltas));
+        jassertfalse;
+        return {};
     }
 
-    return{};
+    const auto root(this->vcs->getRoot());
+
+    int numRevisions = 1;
+    int numDeltas = 0;
+    countStatsFor(root, numRevisions, numDeltas);
+
+    return String(TRANS_PLURAL("{x} revisions", numRevisions) + " " +
+        TRANS(I18n::Common::conjunction) + " " +
+        TRANS_PLURAL("{x} deltas", numDeltas));
 }
 
 //===----------------------------------------------------------------------===//
@@ -129,8 +130,11 @@ void VersionControlNode::commitProjectInfo()
 
 void VersionControlNode::toggleQuickStash()
 {
-    if (! this->vcs)
-    { return; }
+    if (this->vcs == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
 
     this->vcs->getHead().rebuildDiffSynchronously();
     
@@ -138,23 +142,23 @@ void VersionControlNode::toggleQuickStash()
     {
         if (this->vcs->getHead().hasAnythingOnTheStage())
         {
-            App::Layout().showTooltip("Cannot revert, stage is not empty!", MainLayout::TooltipType::Failure);
+            App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotRevert),
+                MainLayout::TooltipType::Failure);
             return;
         }
         
-        this->vcs->applyQuickStash();
-        App::Layout().showTooltip("Toggle changes: latest state");
+        this->vcs->restoreQuickStash();
+        App::Layout().showTooltip(TRANS(I18n::VCS::allChangesRestored));
     }
     else
     {
         if (! this->vcs->getHead().hasAnythingOnTheStage())
         {
-            App::Layout().showTooltip("Cannot reset, stage is empty!", MainLayout::TooltipType::Failure);
-            return;
+            return; // nothing to do
         }
         
         this->vcs->quickStashAll();
-        App::Layout().showTooltip("Toggle changes: original state");
+        App::Layout().showTooltip(TRANS(I18n::VCS::allChangesStashed));
     }
 }
 
@@ -189,12 +193,14 @@ bool VersionControlNode::hasMenu() const noexcept
 
 UniquePointer<Component> VersionControlNode::createMenu()
 {
-    if (this->vcs != nullptr)
+    if (this->vcs == nullptr)
     {
-        return make<VersionControlMenu>(*this->vcs);
+        jassertfalse;
+        return nullptr;
     }
-    
-    return nullptr;
+
+
+    return make<VersionControlMenu>(*this->vcs);
 }
 
 //===----------------------------------------------------------------------===//

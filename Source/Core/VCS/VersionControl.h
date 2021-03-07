@@ -76,7 +76,7 @@ public:
     
     bool hasQuickStash() const;
     bool quickStashAll();
-    bool applyQuickStash();
+    bool restoreQuickStash();
 
     //===------------------------------------------------------------------===//
     // Network

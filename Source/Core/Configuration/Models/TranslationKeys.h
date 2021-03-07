@@ -306,9 +306,14 @@ namespace I18n
         static constexpr auto stageCaption = constexprHash("vcs::stage::caption");
         static constexpr auto syncDone = constexprHash("vcs::sync::done");
         static constexpr auto syncUptodate = constexprHash("vcs::sync::uptodate");
+
         static constexpr auto warningCannotCommit = constexprHash("vcs::warning::cannotcommit");
         static constexpr auto warningCannotReset = constexprHash("vcs::warning::cannotreset");
         static constexpr auto warningCannotRevert = constexprHash("vcs::warning::cannotrevert");
+
+        static constexpr auto allChangesStashed = constexprHash("vcs::stage::stashed");
+        static constexpr auto allChangesRestored = constexprHash("vcs::stage::unstashed");
+
         static constexpr auto projectMetadata = constexprHash("vcs::items::projectinfo");
         static constexpr auto projectTimeline = constexprHash("vcs::items::timeline");
     }

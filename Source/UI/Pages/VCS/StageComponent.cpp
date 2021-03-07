@@ -336,12 +336,13 @@ void StageComponent::toggleQuickStash()
     }
     else if (case2)
     {
-        this->vcs.applyQuickStash();
+        this->vcs.restoreQuickStash();
         //this->vcs.getHead().rebuildDiffSynchronously();
     }
     else if (case4)
     {
-        App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotRevert), MainLayout::TooltipType::Failure);
+        App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotRevert),
+            MainLayout::TooltipType::Failure);
     }
 }
 

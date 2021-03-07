@@ -263,7 +263,7 @@ bool VersionControl::quickStashAll()
     return true;
 }
 
-bool VersionControl::applyQuickStash()
+bool VersionControl::restoreQuickStash()
 {
     if (! this->hasQuickStash())
     { return false; }
