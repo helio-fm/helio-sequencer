@@ -59,11 +59,15 @@ SequencerSidebarLeft::SequencerSidebarLeft()
     this->addAndMakeVisible(this->modeIndicator.get());
 
     this->switchPatternModeButton = make<MenuItemComponent>(this, nullptr,
-        MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls));
+        MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls)->
+            withTooltip(TRANS(I18n::Tooltips::switchRolls)));
+
     this->addAndMakeVisible(this->switchPatternModeButton.get());
 
     this->switchLinearModeButton = make<MenuItemComponent>(this, nullptr,
-        MenuItem::item(Icons::piano, CommandIDs::SwitchBetweenRolls));
+        MenuItem::item(Icons::piano, CommandIDs::SwitchBetweenRolls)->
+            withTooltip(TRANS(I18n::Tooltips::switchRolls)));
+
     this->addAndMakeVisible(switchLinearModeButton.get());
 
     this->listBox = make<ListBox>();
@@ -250,31 +254,42 @@ void SequencerSidebarLeft::onNoteNameGuidesFlagChanged(bool enabled)
 void SequencerSidebarLeft::recreateMenu()
 {
     this->menu.clearQuick();
-    this->menu.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut));
-    this->menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
-    this->menu.add(MenuItem::item(Icons::zoomToFit, CommandIDs::ZoomEntireClip));
+    this->menu.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut)->
+        withTooltip(TRANS(I18n::Tooltips::zoomOut)));
+
+    this->menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn)->
+        withTooltip(TRANS(I18n::Tooltips::zoomIn)));
+
+    this->menu.add(MenuItem::item(Icons::zoomToFit, CommandIDs::ZoomEntireClip)->
+        withTooltip(TRANS(I18n::Tooltips::zoomToFit)));
 
     // Jump to playhead position (or start following playhead when playing)
     //this->menu.add(MenuItem::item(Icons::playhead, CommandIDs::FollowFlayhead));
 
     // Jump to the next/previous anchor,
-    // i.e. any timeline event in piano roll mode,
-    // and next/previous clip in pattern mode:
-    this->menu.add(MenuItem::item(Icons::timelinePrevious, CommandIDs::TimelineJumpPrevious));
-    this->menu.add(MenuItem::item(Icons::timelineNext, CommandIDs::TimelineJumpNext));
+    // i.e. any timeline event or active track's start in the piano roll mode,
+    // and next/previous clip in the pattern roll mode:
+    this->menu.add(MenuItem::item(Icons::timelinePrevious, CommandIDs::TimelineJumpPrevious)->
+        withTooltip(TRANS(I18n::Tooltips::jumpToPrevAnchor)));
+
+    this->menu.add(MenuItem::item(Icons::timelineNext, CommandIDs::TimelineJumpNext)->
+        withTooltip(TRANS(I18n::Tooltips::jumpToNextAnchor)));
 
     // TODO add some controls to switch focus between tracks?
 
     if (this->menuMode == MenuMode::PianoRollTools)
     {
-        this->menu.add(MenuItem::item(Icons::paint,
-            CommandIDs::ToggleScalesHighlighting)->toggledIf(this->scalesHighlightingEnabled));
+        this->menu.add(MenuItem::item(Icons::paint, CommandIDs::ToggleScalesHighlighting)->
+            toggledIf(this->scalesHighlightingEnabled)->
+            withTooltip(TRANS(I18n::Tooltips::toggleScalesHighlighting)));
 
-        this->menu.add(MenuItem::item(Icons::tag,
-            CommandIDs::ToggleNoteNameGuides)->toggledIf(this->noteNameGuidesEnabled));
+        this->menu.add(MenuItem::item(Icons::tag, CommandIDs::ToggleNoteNameGuides)->
+            toggledIf(this->noteNameGuidesEnabled)->
+            withTooltip(TRANS(I18n::Tooltips::toggleNoteGuides)));
 
-        this->menu.add(MenuItem::item(Icons::volume,
-            CommandIDs::ShowVolumePanel)->toggledIf(this->velocityMapVisible));
+        this->menu.add(MenuItem::item(Icons::volume, CommandIDs::ShowVolumePanel)->
+            toggledIf(this->velocityMapVisible)->
+            withTooltip(TRANS(I18n::Tooltips::toggleVolumePanel)));
     }
 }
 

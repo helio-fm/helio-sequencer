@@ -61,7 +61,9 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) : project(pare
     this->addAndMakeVisible(this->headShadow.get());
 
     this->annotationsButton = make<MenuItemComponent>(this,
-        nullptr, MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection));
+        nullptr, MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection)->
+        withTooltip(TRANS(I18n::Tooltips::togglePlaybackLoop)));
+
     this->addAndMakeVisible(this->annotationsButton.get());
 
     this->transportControl = make<TransportControlComponent>(nullptr);
@@ -138,32 +140,43 @@ void SequencerSidebarRight::recreateMenu()
     this->menu.add(MenuItem::item(Icons::selectionTool, CommandIDs::EditModeSelect)->toggledIf(selectionMode));
 #endif
 
-    this->menu.add(MenuItem::item(Icons::cursorTool, CommandIDs::EditModeDefault)->toggledIf(defaultMode));
-    this->menu.add(MenuItem::item(Icons::drawTool, CommandIDs::EditModeDraw)->toggledIf(drawMode));
+    this->menu.add(MenuItem::item(Icons::cursorTool, CommandIDs::EditModeDefault)->
+        toggledIf(defaultMode)->withTooltip(TRANS(I18n::Tooltips::editModeCursor)));
+
+    this->menu.add(MenuItem::item(Icons::drawTool, CommandIDs::EditModeDraw)->
+        toggledIf(drawMode)->withTooltip(TRANS(I18n::Tooltips::editModePen)));
 
     // Drag tool is useless on the mobile
 #if PLATFORM_DESKTOP
     const bool dragMode = this->project.getEditMode().isMode(HybridRollEditMode::dragMode);
-    this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::EditModePan)->toggledIf(dragMode));
+    this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::EditModePan)->
+        toggledIf(dragMode)->withTooltip(TRANS(I18n::Tooltips::editModeDrag)));
 #endif
 
-    this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::EditModeKnife)->toggledIf(scissorsMode));
+    this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::EditModeKnife)->
+        toggledIf(scissorsMode)->withTooltip(TRANS(I18n::Tooltips::editModeKnife)));
 
     if (this->menuMode == MenuMode::PianoRollTools)
     {
-        this->menu.add(MenuItem::item(Icons::chordBuilder, CommandIDs::ShowChordPanel));
+        this->menu.add(MenuItem::item(Icons::chordBuilder, CommandIDs::ShowChordPanel)->
+            withTooltip(TRANS(I18n::Tooltips::chordTool)));
 
         if (!App::Config().getArpeggiators()->isEmpty())
         {
-            this->menu.add(MenuItem::item(Icons::arpeggiate, CommandIDs::ShowArpeggiatorsPanel));
+            this->menu.add(MenuItem::item(Icons::arpeggiate, CommandIDs::ShowArpeggiatorsPanel)->
+                withTooltip(TRANS(I18n::Tooltips::arpeggiators)));
         }
 
+#if PLATFORM_MOBILE
         this->menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents));
+
         this->menu.add(MenuItem::item(Icons::paste, CommandIDs::PasteEvents));
+#endif
     }
     else if (this->menuMode == MenuMode::PatternRollTools)
     {
-        this->menu.add(MenuItem::item(Icons::expand, CommandIDs::ShowNewTrackPanel));
+        this->menu.add(MenuItem::item(Icons::expand, CommandIDs::ShowNewTrackPanel)->
+            withTooltip(TRANS(I18n::Tooltips::addTrack)));
     }
 
 #if PLATFORM_MOBILE

@@ -35,6 +35,7 @@ struct MenuItem final : public ReferenceCountedObject
 
     String commandText;
     String hotkeyText;
+    String tooltipText;
     Colour colour;
 
     int commandId = 0;
@@ -62,6 +63,7 @@ struct MenuItem final : public ReferenceCountedObject
     MenuItem::Ptr withSubmenu();
     MenuItem::Ptr withSubmenuIf(bool condition);
     MenuItem::Ptr withColour(const Colour &colour);
+    MenuItem::Ptr withTooltip(String tooltip);
     MenuItem::Ptr toggledIf(bool shouldBeToggled);
     MenuItem::Ptr disabledIf(bool condition);
     MenuItem::Ptr closesMenu();
@@ -75,8 +77,8 @@ struct MenuItem final : public ReferenceCountedObject
     MenuItem::Ptr withAction(const Callback &lambda);
 
     static MenuItem::Ptr empty();
-    static MenuItem::Ptr item(Icons::Id iconId, const String &text);
-    static MenuItem::Ptr item(Icons::Id iconId, int commandId, const String &text = {});
+    static MenuItem::Ptr item(Icons::Id iconId, String text);
+    static MenuItem::Ptr item(Icons::Id iconId, int commandId, String text = {});
 };
 
 class MenuItemComponent final : public DraggingListBoxComponent
@@ -100,8 +102,12 @@ public:
 
     void paint(Graphics &g) override;
     void resized() override;
+
     void mouseDown(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
+
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseExit(const MouseEvent &e) override;
 
 private:
 

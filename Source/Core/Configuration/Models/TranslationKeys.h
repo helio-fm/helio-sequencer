@@ -335,4 +335,33 @@ namespace I18n
         static constexpr auto toggleNoteNameGuides = constexprHash("toggle::noteguides");
         static constexpr auto toggleLoopOverSelection = constexprHash("toggle::loopselection");
     }
+
+    namespace Tooltips
+    {
+        static constexpr auto hotkey = constexprHash("tooltip::hotkey");
+
+        static constexpr auto switchRolls = constexprHash("tooltip::switchrolls");
+
+        static constexpr auto zoomIn = constexprHash("tooltip::zoomin");
+        static constexpr auto zoomOut = constexprHash("tooltip::zoomout");
+        static constexpr auto zoomToFit = constexprHash("tooltip::zoomtofit");
+        static constexpr auto jumpToNextAnchor = constexprHash("tooltip::jumpnext");
+        static constexpr auto jumpToPrevAnchor = constexprHash("tooltip::jumpprev");
+        static constexpr auto toggleScalesHighlighting = constexprHash("tooltip::scaleshl");
+        static constexpr auto toggleNoteGuides = constexprHash("tooltip::noteguides");
+        static constexpr auto toggleVolumePanel = constexprHash("tooltip::volumepanel");
+
+        static constexpr auto togglePlaybackLoop = constexprHash("tooltip::toggleloop");
+
+        static constexpr auto editModeCursor = constexprHash("tooltip::edit::cursor");
+        static constexpr auto editModePen = constexprHash("tooltip::edit::pen");
+        static constexpr auto editModeDrag = constexprHash("tooltip::edit::drag");
+        static constexpr auto editModeKnife = constexprHash("tooltip::edit::cut");
+        static constexpr auto chordTool = constexprHash("tooltip::chordtool");
+        static constexpr auto arpeggiators = constexprHash("tooltip::arps");
+        static constexpr auto addTrack = constexprHash("tooltip::addtrack");
+
+        static constexpr auto recordingMode = constexprHash("tooltip::recording");
+        static constexpr auto playbackMode = constexprHash("tooltip::playback");
+    }
 } // namespace Translations

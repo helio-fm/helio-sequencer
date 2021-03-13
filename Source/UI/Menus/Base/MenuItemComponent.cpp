@@ -52,11 +52,11 @@ inline static String findHotkeyText(int commandId)
 #endif
 }
 
-MenuItem::Ptr MenuItem::item(Icons::Id iconId, int commandId, const String &text /*= ""*/)
+MenuItem::Ptr MenuItem::item(Icons::Id iconId, int commandId, String text /*= ""*/)
 {
     MenuItem::Ptr description(new MenuItem());
     description->iconId = iconId;
-    description->commandText = text;
+    description->commandText = move(text);
     description->commandId = commandId;
     description->hotkeyText = findHotkeyText(commandId);
     description->flags.isToggled = false;
@@ -67,9 +67,9 @@ MenuItem::Ptr MenuItem::item(Icons::Id iconId, int commandId, const String &text
     return description;
 }
 
-MenuItem::Ptr MenuItem::item(Icons::Id iconId, const String &text)
+MenuItem::Ptr MenuItem::item(Icons::Id iconId, String text)
 {
-    return MenuItem::item(iconId, -1, text);
+    return MenuItem::item(iconId, -1, move(text));
 }
 
 MenuItem::Ptr MenuItem::withAlignment(Alignment alignment)
@@ -107,6 +107,21 @@ MenuItem::Ptr MenuItem::withColour(const Colour &colour)
 {
     MenuItem::Ptr description(this);
     description->colour = colour.interpolatedWith(findDefaultColour(Label::textColourId), 0.5f);
+    return description;
+}
+
+MenuItem::Ptr MenuItem::withTooltip(String tooltip)
+{
+    MenuItem::Ptr description(this);
+    description->tooltipText = move(tooltip);
+
+    if (this->hotkeyText.isNotEmpty())
+    {
+        this->tooltipText <<
+            '\n' << TRANS(I18n::Tooltips::hotkey) <<
+            " '" << this->hotkeyText << "'";
+    }
+
     return description;
 }
 
@@ -264,6 +279,13 @@ void MenuItemComponent::resized()
 
 void MenuItemComponent::mouseDown(const MouseEvent &e)
 {
+#if PLATFORM_DESKTOP
+
+    App::Layout().hideTooltipIfAny();
+
+#endif
+
+
     if (!this->hasText())
     {
         DraggingListBoxComponent::mouseDown(e);
@@ -332,6 +354,40 @@ void MenuItemComponent::mouseUp(const MouseEvent &e)
     }
 
     this->mouseDownWasTriggered = false;
+}
+
+void MenuItemComponent::mouseEnter(const MouseEvent &e)
+{
+    HighlightedComponent::mouseEnter(e);
+
+#if PLATFORM_DESKTOP
+
+    if (this->description->tooltipText.isEmpty())
+    {
+        return;
+    }
+
+    constexpr auto tooltipDelayMs = 600;
+    App::Layout().showTooltip(this->description->tooltipText,
+        MainLayout::TooltipIcon::None, tooltipDelayMs);
+
+#endif
+}
+
+void MenuItemComponent::mouseExit(const MouseEvent &e)
+{
+    HighlightedComponent::mouseExit(e);
+
+#if PLATFORM_DESKTOP
+
+    if (this->description->tooltipText.isEmpty())
+    {
+        return;
+    }
+
+    App::Layout().hideTooltipIfAny();
+
+#endif
 }
 
 void MenuItemComponent::setSelected(bool shouldBeSelected)
