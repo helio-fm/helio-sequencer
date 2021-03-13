@@ -184,7 +184,7 @@ void RenderDialog::startOrAbortRender()
     {
         transport.stopRender();
         this->stopTrackingProgress();
-        App::Layout().showTooltip({}, MainLayout::TooltipType::Failure);
+        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
     }
 }
 
@@ -215,7 +215,7 @@ void RenderDialog::timerCallback(int timerId)
     {
         this->stopTrackingProgress();
         transport.stopRender();
-        App::Layout().showTooltip({}, MainLayout::TooltipType::Success);
+        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Success);
     }
 }
 

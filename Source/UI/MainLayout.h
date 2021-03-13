@@ -29,7 +29,9 @@ class InitScreen;
 #include "HotkeyScheme.h"
 #include "TreeNode.h"
 
-class MainLayout final : public Component, public CommandPaletteModel
+class MainLayout final : public Component,
+    public CommandPaletteModel,
+    private Timer // shows tooltips after a timeout
 {
 public:
 
@@ -58,17 +60,17 @@ public:
     // Tooltip is non-modal and can only be shown one at time
     //===------------------------------------------------------------------===//
 
-    enum class TooltipType : int8
+    enum class TooltipIcon : int8
     {
-        Simple,
+        None,
         Success,
         Failure
     };
 
-    void hideTooltipIfAny();
+    void hideTooltipIfAny(); // and cancel pending, if any
     void showTooltip(const String &message,
-        TooltipType type = TooltipType::Simple,
-        int timeoutMs = 15000);
+        TooltipIcon icon = TooltipIcon::None,
+        int showDelayMs = 0);
 
     //===------------------------------------------------------------------===//
     // Component
@@ -85,9 +87,15 @@ public:
     // Command Palette
     //===------------------------------------------------------------------===//
 
-    Array<CommandPaletteActionsProvider *> getCommandPaletteActionProviders() const override;
+    Array<CommandPaletteActionsProvider *>
+        getCommandPaletteActionProviders() const override;
 
 private:
+
+    void timerCallback() override;
+    void showTooltipNow();
+    String tooltipMessage;
+    TooltipIcon tooltipIcon;
 
     void clearInitScreen();
     UniquePointer<InitScreen> initScreen;

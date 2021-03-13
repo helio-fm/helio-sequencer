@@ -168,7 +168,7 @@ AuthThread *SessionService::prepareAuthThread()
 
     thread->onAuthSessionFinished = [this](const AuthSessionDto session)
     {
-        App::Layout().showTooltip({}, MainLayout::TooltipType::Success);
+        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Success);
 
         this->userProfile.setApiToken(session.getToken());
         // don't call authCallback right now, instead request a user profile and callback when ready;
@@ -178,7 +178,7 @@ AuthThread *SessionService::prepareAuthThread()
 
     thread->onAuthSessionFailed = [this](const Array<String> &errors)
     {
-        App::Layout().showTooltip(errors.getFirst(), MainLayout::TooltipType::Failure);
+        App::Layout().showTooltip(errors.getFirst(), MainLayout::TooltipIcon::Failure);
         DBG("Login failed: " + errors.getFirst());
     };
 

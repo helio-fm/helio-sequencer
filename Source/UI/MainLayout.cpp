@@ -110,14 +110,14 @@ private:
 MainLayout::MainLayout()
 {
     this->setComponentID(ComponentIDs::mainLayoutId);
-    this->setPaintingIsUnclipped(true);
-    this->setVisible(false);
-    this->setOpaque(true);
 
+    this->setOpaque(true);
+    this->setVisible(false);
+    this->setFocusContainer(true);
+    this->setWantsKeyboardFocus(true);
+    this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(true);
-    this->setWantsKeyboardFocus(true);
-    this->setFocusContainer(true);
 
     this->tooltipContainer = make<TooltipContainer>();
     this->addChildComponent(this->tooltipContainer.get());
@@ -294,18 +294,34 @@ void MainLayout::hideSelectionMenu()
 // Tooltips
 //===----------------------------------------------------------------------===//
 
-void MainLayout::showTooltip(const String &message, TooltipType type, int timeoutMs)
+void MainLayout::showTooltip(const String &message, TooltipIcon icon, int showDelayMs)
 {
-    if (message.isNotEmpty())
+    this->tooltipIcon = icon;
+    this->tooltipMessage = message;
+
+    if (showDelayMs > 0)
     {
-        this->tooltipContainer->showWithComponent(make<GenericTooltip>(message), timeoutMs);
+        this->startTimer(showDelayMs);
+        return;
     }
 
-    if (type == TooltipType::Success)
+    this->showTooltipNow();
+}
+
+void MainLayout::showTooltipNow()
+{
+    if (this->tooltipMessage.isNotEmpty())
+    {
+        constexpr auto timeoutToHideMs = 15000;
+        this->tooltipContainer->showWithComponent(
+            make<GenericTooltip>(this->tooltipMessage), timeoutToHideMs);
+    }
+
+    if (this->tooltipIcon == TooltipIcon::Success)
     {
         App::showModalComponent(make<SuccessTooltip>());
     }
-    else if (type == TooltipType::Failure)
+    else if (this->tooltipIcon == TooltipIcon::Failure)
     {
         App::showModalComponent(make<FailTooltip>());
     }
@@ -313,6 +329,7 @@ void MainLayout::showTooltip(const String &message, TooltipType type, int timeou
 
 void MainLayout::hideTooltipIfAny()
 {
+    this->stopTimer();
     this->tooltipContainer->showWithComponent(nullptr);
 }
 
@@ -329,6 +346,12 @@ Rectangle<int> MainLayout::getBoundsForPopups() const
     }
 
     return r;
+}
+
+void MainLayout::timerCallback()
+{
+    this->stopTimer();
+    this->showTooltipNow();
 }
 
 //===----------------------------------------------------------------------===//
@@ -515,7 +538,9 @@ void MainLayout::broadcastCommandMessage(int commandId)
     this->postCommandMessage(commandId);
 
     this->visibleCommandReceivers.clearQuick();
-    findVisibleCommandReceivers(this->currentContent.getComponent(), this->visibleCommandReceivers);
+
+    findVisibleCommandReceivers(this->currentContent.getComponent(),
+        this->visibleCommandReceivers);
 
     for (auto *receiver : this->visibleCommandReceivers)
     {
@@ -527,7 +552,8 @@ void MainLayout::broadcastCommandMessage(int commandId)
 // Command Palette
 //===----------------------------------------------------------------------===//
 
-Array<CommandPaletteActionsProvider *> MainLayout::getCommandPaletteActionProviders() const
+Array<CommandPaletteActionsProvider *>
+MainLayout::getCommandPaletteActionProviders() const
 {
     return { this->consoleCommonActions.get() };
 }

@@ -116,7 +116,7 @@ void PatternOperations::deleteSelection(const Lasso &selection, ProjectNode &pro
 
     for (int i = 0; i < selections.size(); ++i)
     {
-        Pattern *pattern = (selections.getUnchecked(i)->getUnchecked(0).getPattern());
+        auto *pattern = selections.getUnchecked(i)->getUnchecked(0).getPattern();
 
         if (!didCheckpoint)
         {

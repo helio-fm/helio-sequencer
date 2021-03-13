@@ -15,102 +15,53 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "TooltipContainer.h"
 
-//[MiscUserDefs]
-#define TIMER_MILLISECONDS 100
-//[/MiscUserDefs]
-
 TooltipContainer::TooltipContainer()
-    : tooltipComponent(nullptr)
 {
-    this->tooltipComponent.reset(new Component());
-    this->addAndMakeVisible(tooltipComponent.get());
-
-
-    //[UserPreSize]
-    this->setInterceptsMouseClicks(false, true);
-    this->setPaintingIsUnclipped(true);
     this->setVisible(false);
+    this->setPaintingIsUnclipped(true);
+    this->setInterceptsMouseClicks(false, true);
+
+    this->tooltipComponent = make<Component>();
+    this->addAndMakeVisible(this->tooltipComponent.get());
 
 #if PLATFORM_MOBILE
-    //[/UserPreSize]
-
-    this->setSize(450, 80);
-
-    //[Constructor]
-#elif PLATFORM_DESKTOP
     this->setSize(450, 64);
+#elif PLATFORM_DESKTOP
+    this->setSize(450, 48);
 #endif
-
-    //[/Constructor]
 }
 
-TooltipContainer::~TooltipContainer()
+TooltipContainer::~TooltipContainer() = default;
+
+void TooltipContainer::paint(Graphics &g)
 {
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    tooltipComponent = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void TooltipContainer::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    {
-        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
-        Colour fillColour = Colour (0x90000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRoundedRectangle (x, y, width, height, 8.000f);
-    }
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
+    g.setColour(Colour(0xc0000000)); // fixme no hardcoded colours pls
+    g.fillRoundedRectangle(0.f, 0.f, float(this->getWidth()), float(this->getHeight()), 5.f);
 }
 
 void TooltipContainer::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    tooltipComponent->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->tooltipComponent->setBounds(this->getLocalBounds());
 }
 
 void TooltipContainer::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->updatePosition();
-    //[/UserCode_parentHierarchyChanged]
 }
 
 void TooltipContainer::parentSizeChanged()
 {
-    //[UserCode_parentSizeChanged] -- Add your code here...
     this->updatePosition();
-    //[/UserCode_parentSizeChanged]
 }
-
-
-//[MiscUserCode]
 
 void TooltipContainer::updatePosition()
 {
     this->setCentrePosition(this->getParentWidth() / 2,
         this->alignedToBottom ?
-        (this->getParentHeight() - int(this->getHeight() / 2) - 48) :
+        (this->getParentHeight() - int(this->getHeight() / 2) - 16) :
         ((this->getHeight() / 2) + 48));
 }
 
@@ -123,7 +74,7 @@ void TooltipContainer::timerCallback()
         this->hide();
     }
 
-    this->timeCounter += TIMER_MILLISECONDS;
+    this->timeCounter += TooltipContainer::timerMs;
 
     if (this->timeCounter > this->hideTimeout)
     {
@@ -155,8 +106,15 @@ void TooltipContainer::showWithComponent(UniquePointer<Component> newComponent,
     const Point<int> topLevelOrigin =
         this->getTopLevelComponent()->getScreenPosition();
 
+#if PLATFORM_MOBILE
+
+    // there's much visual less space on mobile platforms,
+    // so tooltip will try to detect a better position
+
     this->alignedToBottom =
         (callerOrigin - topLevelOrigin).getY() < (this->getTopLevelComponent()->getHeight() / 2);
+
+#endif
 
     this->clicksCountOnStart = Desktop::getInstance().getMouseButtonClickCounter();
     this->timeCounter = 0;
@@ -173,7 +131,7 @@ void TooltipContainer::showWithComponent(UniquePointer<Component> newComponent,
 
     this->updatePosition();
     this->hideTimeout = (timeOutMs > 0) ? timeOutMs : (1000 * 60 * 60);
-    this->startTimer(TIMER_MILLISECONDS);
+    this->startTimer(TooltipContainer::timerMs);
 
     this->tooltipComponent = move(newComponent);
     this->addAndMakeVisible(this->tooltipComponent.get());
@@ -191,30 +149,3 @@ void TooltipContainer::hide()
         this->setVisible(false);
     }
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="TooltipContainer" template="../../Template"
-                 componentName="" parentClasses="public Component, private Timer"
-                 constructorParams="" variableInitialisers="tooltipComponent(nullptr)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="450" initialHeight="80">
-  <METHODS>
-    <METHOD name="parentHierarchyChanged()"/>
-    <METHOD name="parentSizeChanged()"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="8.00000000000000000000" fill="solid: 90000000"
-               hasStroke="0"/>
-  </BACKGROUND>
-  <GENERICCOMPONENT name="" id="e34a5396d7dac4f8" memberName="tooltipComponent" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 0M 0M" class="Component" params=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

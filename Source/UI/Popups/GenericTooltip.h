@@ -31,21 +31,19 @@ public:
 
     void paint(Graphics &g) override
     {
-        const Rectangle<int> messageBounds(this->getLocalBounds().reduced(10, 10));
-        g.setColour(Colours::white.withAlpha(0.85f));
+        const auto messageBounds = this->getLocalBounds().reduced(5, 5);
+        g.setColour(Colours::white.withAlpha(0.9f));
+
 #if PLATFORM_DESKTOP
-        g.setFont(21.f);
+        g.setFont({ 21.f });
 #elif PLATFORM_MOBILE
-        g.setFont(28.f);
+        g.setFont({ 28.f });
 #endif
+
         g.drawFittedText(this->message,
-                         messageBounds.getX(),
-                         messageBounds.getY(),
-                         messageBounds.getWidth(),
-                         messageBounds.getHeight(),
-                         Justification::centred,
-                         3,
-                         1.f);
+            messageBounds.getX(), messageBounds.getY(),
+            messageBounds.getWidth(), messageBounds.getHeight(),
+            Justification::centred, 3, 1.f);
     }
     
 private:

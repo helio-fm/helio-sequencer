@@ -17,44 +17,31 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-
-class TooltipContainer final : public Component,
-                               private Timer
+class TooltipContainer final : public Component, private Timer
 {
 public:
 
     TooltipContainer();
     ~TooltipContainer();
 
-    //[UserMethods]
-
-    // set -1 timeout if it should not hide
-    void showWithComponent(UniquePointer<Component> newTargetComponent,
+    void showWithComponent(UniquePointer<Component> targetComponent,
         int timeOutMs = -1);
 
-    void showWithComponent(UniquePointer<Component> newTargetComponent,
+    void showWithComponent(UniquePointer<Component> targetComponent,
         Rectangle<int> callerScreenBounds, int timeOutMs = -1);
 
     void hide();
 
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
 
-
 private:
-
-    //[UserVariables]
 
     int hideTimeout = -1;
     int timeCounter = -1;
-    bool alignedToBottom = false;
+    bool alignedToBottom = true;
     int clicksCountOnStart = 0;
 
     ComponentAnimator animator;
@@ -62,9 +49,9 @@ private:
     void timerCallback() override;
     void updatePosition();
 
-    //[/UserVariables]
-
     UniquePointer<Component> tooltipComponent;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TooltipContainer)
+    static constexpr auto timerMs = 100;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TooltipContainer)
 };

@@ -789,7 +789,7 @@ void App::onNativeTitleBarFlagChanged(bool shouldUseNativeTitleBar)
     // "on some systems XOpenDisplay will occasionally fail". great.
 
     App::Layout().showTooltip(TRANS(I18n::Settings::restartRequired),
-        MainLayout::TooltipType::Simple, 5000);
+        MainLayout::TooltipIcon::None);
 
 #   endif
 

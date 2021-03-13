@@ -101,7 +101,7 @@ void PluginScanner::runInitialScan()
 {
     if (this->isWorking())
     {
-        App::Layout().showTooltip({}, MainLayout::TooltipType::Failure);
+        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
         DBG("PluginScanner scan thread is already running!");
         return;
     }
@@ -148,7 +148,7 @@ void PluginScanner::scanFolderAndAddResults(const File &dir)
 {
     if (this->isWorking())
     {
-        App::Layout().showTooltip({}, MainLayout::TooltipType::Failure);
+        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
         DBG("PluginScanner scan thread is already running!");
         return;
     }

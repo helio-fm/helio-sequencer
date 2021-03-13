@@ -342,7 +342,7 @@ void StageComponent::toggleQuickStash()
     else if (case4)
     {
         App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotRevert),
-            MainLayout::TooltipType::Failure);
+            MainLayout::TooltipIcon::Failure);
     }
 }
 

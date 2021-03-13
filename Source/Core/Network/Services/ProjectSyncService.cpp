@@ -104,12 +104,12 @@ RevisionsSyncThread *ProjectSyncService::prepareSyncRevisionsThread()
     thread->onSyncDone = [this](bool nothingToSync)
     {
         const String message = nothingToSync ? TRANS(I18n::VCS::syncUptodate) : TRANS(I18n::VCS::syncDone);
-        App::Layout().showTooltip(message, MainLayout::TooltipType::Success);
+        App::Layout().showTooltip(message, MainLayout::TooltipIcon::Success);
     };
 
     thread->onSyncFailed = [](const Array<String> &errors)
     {
-        App::Layout().showTooltip(errors.getFirst(), MainLayout::TooltipType::Failure);
+        App::Layout().showTooltip(errors.getFirst(), MainLayout::TooltipIcon::Failure);
     };
 
     return thread;
@@ -129,7 +129,7 @@ ProjectCloneThread *ProjectSyncService::prepareProjectCloneThread()
     
     thread->onCloneDone = []()
     {
-        App::Layout().showTooltip({}, MainLayout::TooltipType::Success);
+        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Success);
         // do nothing? VCS will sendChangeMessage
         // and views will update themselves on the message thread
     };
@@ -144,7 +144,7 @@ ProjectCloneThread *ProjectSyncService::prepareProjectCloneThread()
 
     thread->onCloneFailed = [](const Array<String> &errors, const String &projectId)
     {
-        App::Layout().showTooltip(errors.getFirst(), MainLayout::TooltipType::Failure);
+        App::Layout().showTooltip(errors.getFirst(), MainLayout::TooltipIcon::Failure);
         // now find project stub by id, unload and delete it locally
         App::Workspace().unloadProject(projectId, true, false);
     };
@@ -158,13 +158,13 @@ ProjectDeleteThread *ProjectSyncService::prepareProjectDeleteThread()
 
     thread->onDeleteDone = [](const String &projectId)
     {
-        App::Layout().showTooltip({}, MainLayout::TooltipType::Success);
+        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Success);
         App::Workspace().getUserProfile().onProjectRemoteInfoReset(projectId);
     };
 
     thread->onDeleteFailed = [](const Array<String> &errors, const String &projectId)
     {
-        App::Layout().showTooltip(errors.getFirst(), MainLayout::TooltipType::Failure);
+        App::Layout().showTooltip(errors.getFirst(), MainLayout::TooltipIcon::Failure);
     };
 
     return thread;
