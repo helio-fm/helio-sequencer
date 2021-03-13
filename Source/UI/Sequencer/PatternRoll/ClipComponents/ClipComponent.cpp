@@ -274,9 +274,11 @@ void ClipComponent::paint(Graphics &g)
 
     if (this->flags.isSelected)
     {
+        // top and bottom lines
         g.fillRect(1.f, 1.f, w - 2.f, 3.f);
         g.fillRect(1, this->getHeight() - 1, this->getWidth() - 2, 1);
 
+        // volume multiplier indicator
         const float fs = (w - 4.f) - ((w - 4.f) * v);
         g.fillRect(2.f + (fs / 2.f), 5.f, w - fs - 4.f, 2.f);
         g.drawText(this->clip.getPattern()->getTrack()->getTrackName(),
@@ -299,7 +301,7 @@ void ClipComponent::paint(Graphics &g)
         g.fillRect(i + 1.f, 1.f, right - i - 1.f, 1.f);
         g.fillRect(i, 2.f, right - i + 1.f, 1.f);
     }
-    
+
     if (this->clip.getKey() != 0)
     {
         g.drawText(this->clip.getKeyString(), textBounds, Justification::topLeft, false);
@@ -315,9 +317,21 @@ void ClipComponent::paint(Graphics &g)
         g.drawText("S", textBounds, Justification::topRight, false);
     }
 
+    // left and right lines
     g.setColour(this->headDarkColour);
     g.fillRect(0, 2, 1, this->getHeight() - 3);
     g.fillRect(this->getWidth() - 1, 2, 1, this->getHeight() - 3);
+
+    // and little corners for the [  ] look
+    constexpr auto cornerSize = 3;
+    constexpr auto cornerMargin = 1;
+    if (!this->flags.isInstanceOfSelected)
+    {
+        g.fillRect(0, cornerMargin, cornerSize, 1);
+        g.fillRect(this->getWidth() - cornerSize, cornerMargin, cornerSize, 1);
+    }
+    g.fillRect(0, this->getHeight() - cornerMargin, cornerSize, 1);
+    g.fillRect(this->getWidth() - cornerSize, this->getHeight() - cornerMargin, cornerSize, 1);
 
     // speedup: set colour to be used by all child components, so they don't have to 
     g.setColour(this->clip.isMuted() ? this->headDarkColour : this->eventColour);
