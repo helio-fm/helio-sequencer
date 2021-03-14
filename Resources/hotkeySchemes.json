@@ -334,6 +334,7 @@
 
       // Various
       { "command": "DuplicateTrack", "key": "F5" },
+      { "command": "InstanceToUniqueTrack", "key": "F6" },
       { "command": "EditCurrentInstrument", "key": "F4" }
     ],
     "keyDown": [

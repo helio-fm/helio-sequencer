@@ -49,8 +49,9 @@ namespace CommandIDs
         SelectAllClips                  = 0x1003,
         NewTrackFromSelection           = 0x1004,
         DuplicateTrack                  = 0x1005,
-        EditCurrentInstrument           = 0x1006,
-        SwitchToClipInViewport          = 0x1007,
+        InstanceToUniqueTrack           = 0x1006,
+        EditCurrentInstrument           = 0x1007,
+        SwitchToClipInViewport          = 0x1008,
 
         Tuplet1                         = 0x1500,
         Tuplet2                         = 0x1501,

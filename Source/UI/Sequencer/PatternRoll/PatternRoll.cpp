@@ -641,7 +641,8 @@ void PatternRoll::handleCommandMessage(int commandId)
             App::showModalComponent(make<TrackPropertiesDialog>(this->project, trackNode));
         }
         break;
-    case CommandIDs::DuplicateTrack:
+    case CommandIDs::DuplicateTrack: // the implementation for these two
+    case CommandIDs::InstanceToUniqueTrack: // is pretty much the same code
         if (this->getLassoSelection().getNumSelected() == 1)
         {
             const auto clip = this->selection.getFirstAs<ClipComponent>()->getClip();
@@ -670,9 +671,25 @@ void PatternRoll::handleCommandMessage(int commandId)
                 break;
             }
 
+            // the alternative mode to turn instance segment into a unique track,
+            // which is similar to "duplicate track", but deletes the selected
+            // instance segment and uses the same name for the new track;
+            // and it only makes sense when the pattern has more than 1 clip,
+            // if there's only 1 clip it'll do nothing useful, so fallback to duplicate:
+            const bool altMode = clonedTrack->getPattern()->size() > 1 &&
+                commandId == CommandIDs::InstanceToUniqueTrack;
+
             this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::DuplicateTrack);
+
+            if (altMode)
+            {
+                jassert(this->getLassoSelection().getNumSelected() == 1);
+                PatternOperations::deleteSelection(this->getLassoSelection(), this->project, false);
+            }
+
+            const bool generateNewName = !altMode;
             InteractiveActions::addNewTrack(this->project,
-                move(trackPreset), clonedTrack->getTrackName(), true,
+                move(trackPreset), clonedTrack->getTrackName(), generateNewName,
                 UndoActionIDs::DuplicateTrack, TRANS(I18n::Menu::trackDuplicate),
                 false);
         }
