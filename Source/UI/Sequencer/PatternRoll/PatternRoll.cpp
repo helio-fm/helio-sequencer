@@ -670,10 +670,11 @@ void PatternRoll::handleCommandMessage(int commandId)
                 break;
             }
 
-            this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
-            InteractiveActions::addNewTrack(this->project, trackPreset.get(),
-                UndoActionIDs::AddNewTrack, false, clonedTrack->getTrackName(),
-                TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::add));
+            this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::DuplicateTrack);
+            InteractiveActions::addNewTrack(this->project,
+                move(trackPreset), clonedTrack->getTrackName(), true,
+                UndoActionIDs::DuplicateTrack, TRANS(I18n::Menu::trackDuplicate),
+                false);
         }
         break;
     case CommandIDs::EditCurrentInstrument:
@@ -1126,7 +1127,7 @@ void PatternRoll::showNewTrackDialog(const String &instrumentId, float beatToIns
             beatToInsertAt, instrumentId, outTrackId);
 
     InteractiveActions::addNewTrack<PianoTrackInsertAction>(this->project,
-        trackTemplate, outTrackId,
-        UndoActionIDs::AddNewTrack, false, TRANS(I18n::Defaults::midiTrackName),
-        TRANS(I18n::Dialog::addTrackCaption), TRANS(I18n::Dialog::add));
+        trackTemplate, outTrackId, TRANS(I18n::Defaults::midiTrackName), true,
+        UndoActionIDs::AddNewTrack, TRANS(I18n::Dialog::addTrackCaption),
+        false);
 }

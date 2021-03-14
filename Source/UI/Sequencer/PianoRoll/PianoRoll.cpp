@@ -1061,35 +1061,41 @@ void PianoRoll::handleCommandMessage(int commandId)
         if (this->getLassoSelection().getNumSelected() > 0)
         {
             this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
-            const auto trackPreset = SequencerOperations::createPianoTrack(this->getLassoSelection());
+            auto trackPreset = SequencerOperations::createPianoTrack(this->getLassoSelection());
             // false == we already have the correct checkpoint:
             SequencerOperations::deleteSelection(this->getLassoSelection(), false);
-            InteractiveActions::addNewTrack(this->project, trackPreset.get(),
-                UndoActionIDs::AddNewTrack, true, this->activeTrack->getTrackName(),
-                TRANS(I18n::Menu::Selection::notesToTrack), TRANS(I18n::Dialog::add));
+            InteractiveActions::addNewTrack(this->project,
+                move(trackPreset), this->activeTrack->getTrackName(), true,
+                UndoActionIDs::AddNewTrack, TRANS(I18n::Menu::Selection::notesToTrack),
+                true);
         }
         break;
     case CommandIDs::DuplicateTrack:
     {
-        this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
+        this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::DuplicateTrack);
         const auto *cloneSource = static_cast<PianoSequence *>(this->activeTrack->getSequence());
-        const auto trackPreset = SequencerOperations::createPianoTrack(cloneSource, this->activeClip);
-        InteractiveActions::addNewTrack(this->project, trackPreset.get(),
-            UndoActionIDs::AddNewTrack, true, this->activeTrack->getTrackName(),
-            TRANS(I18n::Menu::trackDuplicate), TRANS(I18n::Dialog::add));
+        auto trackPreset = SequencerOperations::createPianoTrack(cloneSource, this->activeClip);
+        InteractiveActions::addNewTrack(this->project,
+            move(trackPreset), this->activeTrack->getTrackName(), true,
+            UndoActionIDs::DuplicateTrack, TRANS(I18n::Menu::trackDuplicate),
+            true);
     }
     break;
     case CommandIDs::BeatShiftLeft:
-        SequencerOperations::shiftBeatRelative(this->getLassoSelection(), -this->getMinVisibleBeatForCurrentZoomLevel());
+        SequencerOperations::shiftBeatRelative(this->getLassoSelection(),
+            -this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::BeatShiftRight:
-        SequencerOperations::shiftBeatRelative(this->getLassoSelection(), this->getMinVisibleBeatForCurrentZoomLevel());
+        SequencerOperations::shiftBeatRelative(this->getLassoSelection(),
+            this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::LengthIncrease:
-        SequencerOperations::shiftLengthRelative(this->getLassoSelection(), this->getMinVisibleBeatForCurrentZoomLevel());
+        SequencerOperations::shiftLengthRelative(this->getLassoSelection(),
+            this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::LengthDecrease:
-        SequencerOperations::shiftLengthRelative(this->getLassoSelection(), -this->getMinVisibleBeatForCurrentZoomLevel());
+        SequencerOperations::shiftLengthRelative(this->getLassoSelection(),
+            -this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::KeyShiftUp:
         SequencerOperations::shiftKeyRelative(this->getLassoSelection(), 1, true, &this->getTransport());
@@ -1098,10 +1104,12 @@ void PianoRoll::handleCommandMessage(int commandId)
         SequencerOperations::shiftKeyRelative(this->getLassoSelection(), -1, true, &this->getTransport());
         break;
     case CommandIDs::OctaveShiftUp:
-        SequencerOperations::shiftKeyRelative(this->getLassoSelection(), this->getPeriodSize(), true, &this->getTransport());
+        SequencerOperations::shiftKeyRelative(this->getLassoSelection(),
+            this->getPeriodSize(), true, &this->getTransport());
         break;
     case CommandIDs::OctaveShiftDown:
-        SequencerOperations::shiftKeyRelative(this->getLassoSelection(), -this->getPeriodSize(), true, &this->getTransport());
+        SequencerOperations::shiftKeyRelative(this->getLassoSelection(),
+            -this->getPeriodSize(), true, &this->getTransport());
         break;
     case CommandIDs::CleanupOverlaps:
         SequencerOperations::cleanupOverlaps(this->getLassoSelection());
@@ -1113,10 +1121,12 @@ void PianoRoll::handleCommandMessage(int commandId)
         SequencerOperations::retrograde(this->getLassoSelection());
         break;
     case CommandIDs::InvertChordUp:
-        SequencerOperations::invertChord(this->getLassoSelection(), this->getPeriodSize(), true, &this->getTransport());
+        SequencerOperations::invertChord(this->getLassoSelection(),
+            this->getPeriodSize(), true, &this->getTransport());
         break;
     case CommandIDs::InvertChordDown:
-        SequencerOperations::invertChord(this->getLassoSelection(), -this->getPeriodSize(), true, &this->getTransport());
+        SequencerOperations::invertChord(this->getLassoSelection(),
+            -this->getPeriodSize(), true, &this->getTransport());
         break;
     case CommandIDs::ToggleMuteClips:
         PatternOperations::toggleMuteClip(this->activeClip);

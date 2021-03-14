@@ -44,6 +44,7 @@ namespace UndoActionIDs
         NotesVolumeDown = 0x0015,
 
         AddNewTrack = 0x0020,
+        DuplicateTrack = 0x0021,
 
         // ...
 

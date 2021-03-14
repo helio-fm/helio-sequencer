@@ -32,10 +32,16 @@ struct InteractiveActions final
     // making any additional custom actions in the same transaction,
     // which will be undone if the "cancel" button is pressed
 
+    // the huge number of parameters sucks, but I use them all
+    // to handle various commands, like "add new track", "duplicate track",
+    // "new track from selection" and "convert clip to unique track"
     static void addNewTrack(ProjectNode &project,
-        MidiTrackNode *trackPreset, UndoActionId checkpointId,
-        bool shouldFocusOnNewTrack, const String &defaultTrackName,
-        const String &dialogTitle, const String &dialogOk)
+        UniquePointer<MidiTrackNode> trackPreset,
+        const String &trackName,
+        bool generateUniqueName,
+        UndoActionId checkpointId,
+        const String &dialogTitle,
+        bool shouldFocusOnNewTrack)
     {
         if (trackPreset == nullptr ||
             trackPreset->getSequence() == nullptr ||
@@ -49,19 +55,21 @@ struct InteractiveActions final
         const auto trackId = trackPreset->getTrackId();
         const auto trackTemplate = trackPreset->serialize();
 
-        if (dynamic_cast<PianoTrackNode *>(trackPreset))
+        if (dynamic_cast<PianoTrackNode *>(trackPreset.get()))
         {
             addNewTrack<PianoTrackInsertAction>(project,
-                trackTemplate, trackId, checkpointId,
-                shouldFocusOnNewTrack, defaultTrackName,
-                dialogTitle, dialogOk);
+                trackTemplate, trackId,
+                trackName, generateUniqueName,
+                checkpointId, dialogTitle,
+                shouldFocusOnNewTrack);
         }
-        else if (dynamic_cast<AutomationTrackNode *>(trackPreset))
+        else if (dynamic_cast<AutomationTrackNode *>(trackPreset.get()))
         {
             addNewTrack<AutomationTrackInsertAction>(project,
-                trackTemplate, trackId, checkpointId,
-                shouldFocusOnNewTrack, defaultTrackName,
-                dialogTitle, dialogOk);
+                trackTemplate, trackId,
+                trackName, generateUniqueName,
+                checkpointId, dialogTitle,
+                shouldFocusOnNewTrack);
         }
         else
         {
@@ -71,18 +79,21 @@ struct InteractiveActions final
 
     template<typename TAction>
     static void addNewTrack(ProjectNode &project,
-        const SerializedData &trackTemplate, const String &trackId,
-        UndoActionId checkpointId, bool shouldFocusOnNewTrack,
-        const String &defaultTrackName,
-        const String &dialogTitle, const String &dialogOk)
+        const SerializedData &trackTemplate,
+        const String &trackId,
+        const String &trackName,
+        bool generateUniqueName,
+        UndoActionId checkpointId,
+        const String &dialogTitle,
+        bool shouldFocusOnNewTrack)
     {
         static_assert(std::is_base_of<PianoTrackInsertAction, TAction>::value ||
             std::is_base_of<AutomationTrackInsertAction, TAction>::value,
             "Action must be either PianoTrackInsertAction or AutomationTrackInsertAction");
 
-        const auto newName =
-            SequencerOperations::generateNextNameForNewTrack(defaultTrackName,
-                project.getAllTrackNames());
+        auto newName = generateUniqueName ? 
+            SequencerOperations::generateNextNameForNewTrack(trackName,
+                project.getAllTrackNames()) : trackName;
 
         WeakReference<UndoStack> undoStack = project.getUndoStack();
 
@@ -96,8 +107,8 @@ struct InteractiveActions final
             project.setEditableScope(newlyAddedTrack, *tracksSingleClip, false);
         }
 
-        auto dialog = make<TrackPropertiesDialog>(project,
-            newlyAddedTrack, dialogTitle, dialogOk);
+        auto dialog = make<TrackPropertiesDialog>(project, newlyAddedTrack,
+            dialogTitle, TRANS(I18n::Dialog::add));
 
         dialog->onCancel = [undoStack]()
         {
