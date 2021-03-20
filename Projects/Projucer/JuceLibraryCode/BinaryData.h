@@ -32,9 +32,6 @@ namespace BinaryData
     extern const char*   chordBuilder_svg;
     const int            chordBuilder_svgSize = 829;
 
-    extern const char*   chordTool_svg;
-    const int            chordTool_svgSize = 485;
-
     extern const char*   close_svg;
     const int            close_svgSize = 400;
 
@@ -77,9 +74,6 @@ namespace BinaryData
     extern const char*   ellipsis_svg;
     const int            ellipsis_svgSize = 458;
 
-    extern const char*   eraserTool_svg;
-    const int            eraserTool_svgSize = 456;
-
     extern const char*   expand_svg;
     const int            expand_svgSize = 339;
 
@@ -113,32 +107,11 @@ namespace BinaryData
     extern const char*   local_svg;
     const int            local_svgSize = 495;
 
-    extern const char*   login_svg;
-    const int            login_svgSize = 759;
-
-    extern const char*   mediaForward_svg;
-    const int            mediaForward_svgSize = 322;
-
-    extern const char*   mediaRewind_svg;
-    const int            mediaRewind_svgSize = 260;
-
-    extern const char*   menu_svg;
-    const int            menu_svgSize = 279;
-
     extern const char*   mute_svg;
     const int            mute_svgSize = 707;
 
-    extern const char*   microphone_svg;
-    const int            microphone_svgSize = 317;
-
     extern const char*   orchestraPit_svg;
     const int            orchestraPit_svgSize = 1617;
-
-    extern const char*   pageDown_svg;
-    const int            pageDown_svgSize = 517;
-
-    extern const char*   pageUp_svg;
-    const int            pageUp_svgSize = 525;
 
     extern const char*   paint_svg;
     const int            paint_svgSize = 288;
@@ -203,9 +176,6 @@ namespace BinaryData
     extern const char*   routing_svg;
     const int            routing_svgSize = 601;
 
-    extern const char*   script_svg;
-    const int            script_svgSize = 353;
-
     extern const char*   selectionTool_svg;
     const int            selectionTool_svgSize = 1265;
 
@@ -240,10 +210,10 @@ namespace BinaryData
     const int            tag_svgSize = 407;
 
     extern const char*   timelineNext_svg;
-    const int            timelineNext_svgSize = 99;
+    const int            timelineNext_svgSize = 322;
 
     extern const char*   timelinePrevious_svg;
-    const int            timelinePrevious_svgSize = 94;
+    const int            timelinePrevious_svgSize = 260;
 
     extern const char*   toggleOff_svg;
     const int            toggleOff_svgSize = 600;
@@ -275,8 +245,8 @@ namespace BinaryData
     extern const char*   zoomOut_svg;
     const int            zoomOut_svgSize = 537;
 
-    extern const char*   zoomTool_svg;
-    const int            zoomTool_svgSize = 498;
+    extern const char*   zoomToFit_svg;
+    const int            zoomToFit_svgSize = 498;
 
     extern const char*   noise_png;
     const int            noise_pngSize = 149;
@@ -300,7 +270,7 @@ namespace BinaryData
     const int            colourSchemes_jsonSize = 3279;
 
     extern const char*   hotkeySchemes_json;
-    const int            hotkeySchemes_jsonSize = 15292;
+    const int            hotkeySchemes_jsonSize = 15351;
 
     extern const char*   scales_json;
     const int            scales_jsonSize = 8357;
@@ -309,10 +279,10 @@ namespace BinaryData
     const int            temperaments_jsonSize = 839;
 
     extern const char*   translations_json;
-    const int            translations_jsonSize = 136595;
+    const int            translations_jsonSize = 156654;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 101;
+    const int namedResourceListSize = 91;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
