@@ -117,12 +117,26 @@ MenuItem::Ptr MenuItem::withTooltip(String tooltip)
 
     if (this->hotkeyText.isNotEmpty())
     {
-        this->tooltipText <<
-            '\n' << TRANS(I18n::Tooltips::hotkey) <<
-            " '" << this->hotkeyText << "'";
+        this->tooltipText << '\n' << TRANS(I18n::Tooltips::hotkey) << " " << this->hotkeyText;
     }
 
     return description;
+}
+
+String MenuItem::createTooltip(String message, int commandId)
+{
+    auto result = move(message);
+    const auto hotkeyText = findHotkeyText(commandId);
+    if (hotkeyText.isNotEmpty())
+    {
+        result << '\n' << TRANS(I18n::Tooltips::hotkey) << " " << hotkeyText;
+    }
+    return result;
+}
+
+String MenuItem::createTooltip(String message, KeyPress keyPress)
+{
+    return move(message) + '\n' + TRANS(I18n::Tooltips::hotkey) + " " + keyPress.getTextDescription();
 }
 
 MenuItem::Ptr MenuItem::disabledIf(bool condition)
@@ -367,9 +381,8 @@ void MenuItemComponent::mouseEnter(const MouseEvent &e)
         return;
     }
 
-    constexpr auto tooltipDelayMs = 600;
     App::Layout().showTooltip(this->description->tooltipText,
-        MainLayout::TooltipIcon::None, tooltipDelayMs);
+        MainLayout::TooltipIcon::None, Globals::UI::tooltipDelayMs);
 
 #endif
 }

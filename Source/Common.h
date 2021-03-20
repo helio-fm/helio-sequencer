@@ -233,6 +233,8 @@ namespace Globals
         static constexpr auto fadeInLong = 150;
         static constexpr auto fadeOutLong = 175;
 
+        static constexpr auto tooltipDelayMs = 600;
+
         namespace FileChooser
         {
             static constexpr auto forFileToSave =

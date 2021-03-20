@@ -17,45 +17,36 @@
 
 #pragma once
 
-//[Headers]
 class TransportControlPlayBg;
 class TransportControlRecordBg;
 
 #include "IconComponent.h"
 #include "CommandIDs.h"
-//[/Headers]
-
 
 class TransportControlComponent final : public Component
 {
 public:
 
-    TransportControlComponent(WeakReference<Component> eventReceiver);
+    explicit TransportControlComponent(WeakReference<Component> eventReceiver);
     ~TransportControlComponent();
 
-    //[UserMethods]
     void showPlayingMode(bool isPlaying);
     void showRecordingMode(bool isRecording);
     void showRecordingError();
     void showRecordingMenu(const Array<MidiDeviceInfo> &devices);
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
     void resized() override;
-    void mouseDown (const MouseEvent& e) override;
-
 
 private:
-
-    //[UserVariables]
-
-    ComponentAnimator animator;
-    UniquePointer<Timer> recordButtonBlinkAnimator;
 
     WeakReference<Component> eventReceiver;
 
     Atomic<bool> isPlaying = false;
     Atomic<bool> isRecording = false;
+
+    static constexpr auto playButtonSize = 50;
+    static constexpr auto recordButtonSize = 35;
+    static constexpr auto buttonSkew = 7;
 
     friend class TransportControlRecordBg;
     friend class TransportControlPlayBg;
@@ -64,15 +55,14 @@ private:
     void recordButtonPressed();
     void broadcastCommandMessage(CommandIDs::Id command);
 
-    //[/UserVariables]
-
     UniquePointer<TransportControlRecordBg> recordBg;
     UniquePointer<TransportControlPlayBg> playBg;
     UniquePointer<IconComponent> playIcon;
     UniquePointer<IconComponent> stopIcon;
     UniquePointer<IconComponent> recordIcon;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TransportControlComponent)
+    ComponentAnimator animator;
+    UniquePointer<Timer> recordButtonBlinkAnimator;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TransportControlComponent)
 };
-
-

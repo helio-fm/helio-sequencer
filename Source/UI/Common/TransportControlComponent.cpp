@@ -15,18 +15,12 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "TransportControlComponent.h"
 
-//[MiscUserDefs]
 #include "Workspace.h"
 #include "AudioCore.h"
-
 #include "MainLayout.h"
-
 #include "MenuPanel.h"
 #include "HelioCallout.h"
 #include "ColourIDs.h"
@@ -59,6 +53,13 @@ public:
         {
             this->setHighlighted();
         }
+
+#if PLATFORM_DESKTOP
+
+        App::Layout().showTooltip(this->getTooltipText(),
+            MainLayout::TooltipIcon::None, Globals::UI::tooltipDelayMs);
+
+#endif
     }
 
     void mouseExit(const MouseEvent &e) override
@@ -67,6 +68,21 @@ public:
         {
             this->setInactive();
         }
+
+#if PLATFORM_DESKTOP
+
+        App::Layout().hideTooltipIfAny();
+
+#endif
+    }
+
+    void mouseDown(const MouseEvent &e) override
+    {
+#if PLATFORM_DESKTOP
+
+        App::Layout().hideTooltipIfAny();
+
+#endif
     }
 
     void setInactive()
@@ -101,6 +117,8 @@ protected:
     Colour currentColour;
 
     TransportControlComponent &owner;
+
+    virtual const String &getTooltipText() const = 0;
 
 private:
 
@@ -139,26 +157,35 @@ class TransportControlRecordBg final : public TransportControlButton
 {
 public:
 
-    TransportControlRecordBg(TransportControlComponent &owner) :
-        TransportControlButton(owner)
+    explicit TransportControlRecordBg(TransportControlComponent &owner) :
+        TransportControlButton(owner),
+        lineColour(findDefaultColour(ColourIDs::Common::borderLineDark)),
+        tooltipText(MenuItem::createTooltip(TRANS(I18n::Tooltips::recordingMode), CommandIDs::TransportRecordingAwait))
     {
         this->inactiveColour = findDefaultColour(ColourIDs::TransportControl::recordInactive);
         this->highlightColour = findDefaultColour(ColourIDs::TransportControl::recordHighlight);
         this->activeColour = findDefaultColour(ColourIDs::TransportControl::recordActive);
-        this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark);
         this->currentColour = this->inactiveColour;
     }
 
-    inline float getTiltStart() const noexcept { return 28.f; }
-    inline float getTiltEnd() const noexcept { return 35.f; }
+    static constexpr float getTiltStart()
+    {
+        return float(TransportControlComponent::recordButtonSize -
+            TransportControlComponent::buttonSkew);
+    }
+
+    static constexpr float getTiltEnd()
+    {
+        return float(TransportControlComponent::recordButtonSize);
+    }
 
     void resized() override
     {
         this->path.clear();
-        this->path.startNewSubPath(0.0f, 0.0f);
-        this->path.lineTo(float(this->getWidth()), 0.0f);
-        this->path.lineTo(float(this->getWidth()), this->getTiltStart());
-        this->path.lineTo(0.0f, this->getTiltEnd());
+        this->path.startNewSubPath(0.f, 0.f);
+        this->path.lineTo(float(this->getWidth()), 0.f);
+        this->path.lineTo(float(this->getWidth()), TransportControlRecordBg::getTiltStart());
+        this->path.lineTo(0.f, TransportControlRecordBg::getTiltEnd());
         this->path.closeSubPath();
     }
 
@@ -166,7 +193,10 @@ public:
     {
         TransportControlButton::paint(g);
         g.setColour(this->lineColour);
-        g.drawLine(0.f, this->getTiltEnd(), float(this->getWidth()), this->getTiltStart());
+        g.drawLine(0.f,
+            TransportControlRecordBg::getTiltEnd(),
+            float(this->getWidth()),
+            TransportControlRecordBg::getTiltStart());
     }
 
     void mouseDown(const MouseEvent &e) override
@@ -175,40 +205,48 @@ public:
         this->owner.recordButtonPressed();
     }
 
-    Colour lineColour;
+    const String &getTooltipText() const override
+    {
+        return this->tooltipText;
+    }
+
+    const Colour lineColour;
+    const String tooltipText;
 };
 
 class TransportControlPlayBg final : public TransportControlButton
 {
 public:
 
-    TransportControlPlayBg(TransportControlComponent &owner) :
-        TransportControlButton(owner)
+    explicit TransportControlPlayBg(TransportControlComponent &owner) :
+        TransportControlButton(owner),
+        lineColour(findDefaultColour(ColourIDs::Common::borderLineLight)),
+        tooltipText(MenuItem::createTooltip(TRANS(I18n::Tooltips::playbackMode), KeyPress(' ')))
     {
         this->inactiveColour = findDefaultColour(ColourIDs::TransportControl::playInactive);
         this->highlightColour = findDefaultColour(ColourIDs::TransportControl::playHighlight);
         this->activeColour = findDefaultColour(ColourIDs::TransportControl::playActive);
-        this->lineColour = findDefaultColour(ColourIDs::Common::borderLineLight);
         this->currentColour = this->inactiveColour;
     }
 
     inline float getTiltStart() const noexcept
     {
-        return float(this->getHeight() - 43);
+        constexpr auto dh = TransportControlComponent::playButtonSize - TransportControlComponent::buttonSkew;
+        return float(this->getHeight() - dh);
     }
 
     inline float getTiltEnd() const noexcept
     {
-        return float(this->getHeight() - 50);
+        return float(this->getHeight() - TransportControlComponent::playButtonSize);
     }
 
     void resized() override
     {
         this->path.clear();
-        this->path.startNewSubPath(0.0f, this->getTiltStart());
+        this->path.startNewSubPath(0.f, this->getTiltStart());
         this->path.lineTo(float(this->getWidth()), this->getTiltEnd());
         this->path.lineTo(float(this->getWidth()), float(this->getHeight()));
-        this->path.lineTo(0.0f, float(this->getHeight()));
+        this->path.lineTo(0.f, float(this->getHeight()));
         this->path.closeSubPath();
     }
 
@@ -225,7 +263,13 @@ public:
         this->owner.playButtonPressed();
     }
 
-    Colour lineColour;
+    const String &getTooltipText() const override
+    {
+        return this->tooltipText;
+    }
+
+    const Colour lineColour;
+    const String tooltipText;
 };
 
 class RecordButtonBlinkAnimator final : public Timer
@@ -266,93 +310,57 @@ private:
 
 };
 
-
-//[/MiscUserDefs]
-
-TransportControlComponent::TransportControlComponent(WeakReference<Component> eventReceiver)
-    : eventReceiver(eventReceiver)
+TransportControlComponent::TransportControlComponent(WeakReference<Component> eventReceiver) :
+    eventReceiver(eventReceiver)
 {
-    this->recordBg.reset(new TransportControlRecordBg(*this));
-    this->addAndMakeVisible(recordBg.get());
-
-    this->playBg.reset(new TransportControlPlayBg(*this));
-    this->addAndMakeVisible(playBg.get());
-
-    this->playIcon.reset(new IconComponent(Icons::play));
-    this->addAndMakeVisible(playIcon.get());
-
-    this->stopIcon.reset(new IconComponent(Icons::stop));
-    this->addAndMakeVisible(stopIcon.get());
-
-    this->recordIcon.reset(new IconComponent(Icons::record));
-    this->addAndMakeVisible(recordIcon.get());
-
-
-    //[UserPreSize]
-    this->playIcon->setVisible(true);
-    this->stopIcon->setVisible(false);
-    this->playIcon->setInterceptsMouseClicks(false, false);
-    this->stopIcon->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
-    this->setPaintingIsUnclipped(true);
-    this->setOpaque(false);
-    //[/UserPreSize]
 
-    this->setSize(44, 79);
+    this->recordBg = make<TransportControlRecordBg>(*this);
+    this->addAndMakeVisible(this->recordBg.get());
 
-    //[Constructor]
+    this->playBg = make<TransportControlPlayBg>(*this);
+    this->addAndMakeVisible(this->playBg.get());
+
+    this->playIcon = make<IconComponent>(Icons::play);
+    this->addAndMakeVisible(this->playIcon.get());
+
+    this->stopIcon = make<IconComponent>(Icons::stop);
+    this->addChildComponent(this->stopIcon.get());
+
+    this->recordIcon = make<IconComponent>(Icons::record);
+    this->addAndMakeVisible(this->recordIcon.get());
+
+    this->playIcon->setInterceptsMouseClicks(false, false);
+    this->stopIcon->setInterceptsMouseClicks(false, false);
+
     this->recordButtonBlinkAnimator = make<RecordButtonBlinkAnimator>(this->recordBg.get());
-    //[/Constructor]
 }
 
-TransportControlComponent::~TransportControlComponent()
-{
-    //[Destructor_pre]
-    this->recordButtonBlinkAnimator = nullptr;
-    //[/Destructor_pre]
-
-    recordBg = nullptr;
-    playBg = nullptr;
-    playIcon = nullptr;
-    stopIcon = nullptr;
-    recordIcon = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void TransportControlComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
-}
+TransportControlComponent::~TransportControlComponent() = default;
 
 void TransportControlComponent::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    this->recordBg->setBounds(0, 0, this->getWidth(), TransportControlComponent::recordButtonSize);
+    this->playBg->setBounds(0, this->getHeight() - TransportControlComponent::playButtonSize,
+        this->getWidth(), TransportControlComponent::playButtonSize);
 
-    recordBg->setBounds(0, 0, getWidth() - 0, 35);
-    playBg->setBounds(0, getHeight() - 50, getWidth() - 0, 50);
-    playIcon->setBounds((getWidth() / 2) + 2 - (24 / 2), (getHeight() / 2) + 15 - (24 / 2), 24, 24);
-    stopIcon->setBounds((getWidth() / 2) - (22 / 2), (getHeight() / 2) + 15 - (22 / 2), 22, 22);
-    recordIcon->setBounds((getWidth() / 2) - (18 / 2), 7, 18, 18);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    const auto cw = this->getWidth() / 2;
+    const auto ch = this->getHeight() / 2;
+
+    constexpr auto playIconSize = 24;
+    this->playIcon->setBounds(cw - (playIconSize / 2) + 2,
+        ch - (playIconSize / 2) + 15, playIconSize, playIconSize);
+
+    constexpr auto stopIconSize = 22;
+    this->stopIcon->setBounds(cw - (stopIconSize / 2),
+        ch - (stopIconSize / 2) + 15, stopIconSize, stopIconSize);
+
+    constexpr auto recordIconSize = 18;
+    this->recordIcon->setBounds(cw - (recordIconSize / 2),
+        7, recordIconSize, recordIconSize);
 }
-
-void TransportControlComponent::mouseDown (const MouseEvent& e)
-{
-    //[UserCode_mouseDown] -- Add your code here...
-    //[/UserCode_mouseDown]
-}
-
-
-//[MiscUserCode]
 
 void TransportControlComponent::showPlayingMode(bool isPlaying)
 {
@@ -360,13 +368,13 @@ void TransportControlComponent::showPlayingMode(bool isPlaying)
 
     if (this->isPlaying.get())
     {
-        MessageManagerLock lock;
+        const MessageManagerLock lock;
         this->animator.fadeIn(this->stopIcon.get(), Globals::UI::fadeInShort);
         this->animator.fadeOut(this->playIcon.get(), Globals::UI::fadeOutShort);
     }
     else
     {
-        MessageManagerLock lock;
+        const MessageManagerLock lock;
         this->animator.fadeIn(this->playIcon.get(), Globals::UI::fadeInLong);
         this->animator.fadeOut(this->stopIcon.get(), Globals::UI::fadeOutLong);
     }
@@ -400,7 +408,7 @@ void TransportControlComponent::showRecordingMode(bool isRecording)
     }
 }
 
-void TransportControlComponent::showRecordingError()
+void TransportControlComponent::showRecordingError() // just blinks red a few times
 {
     this->recordBg->setActive(); // the initial "blink"
     this->recordButtonBlinkAnimator->startTimer(100);
@@ -459,46 +467,3 @@ void TransportControlComponent::broadcastCommandMessage(CommandIDs::Id command)
         App::Layout().broadcastCommandMessage(command);
     }
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="TransportControlComponent"
-                 template="../../Template" componentName="" parentClasses="public Component"
-                 constructorParams="WeakReference&lt;Component&gt; eventReceiver"
-                 variableInitialisers="eventReceiver(eventReceiver)" snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
-                 initialWidth="44" initialHeight="79">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="0" nonZeroWinding="1">s 0 0 l 0R 0 l 0R 30 l 0 36 x</PATH>
-    <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="0" nonZeroWinding="1">s 0 42R l 0R 48R l 0R 0R l 0 0R x</PATH>
-  </BACKGROUND>
-  <GENERICCOMPONENT name="" id="49831a57350a131d" memberName="recordBg" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 0M 35" class="TransportControlRecordBg"
-                    params="*this"/>
-  <GENERICCOMPONENT name="" id="e71c47548b70a0b4" memberName="playBg" virtualName=""
-                    explicitFocusOrder="0" pos="0 0Rr 0M 50" class="TransportControlPlayBg"
-                    params="*this"/>
-  <GENERICCOMPONENT name="" id="1a8a31abbc0f3c4e" memberName="playIcon" virtualName=""
-                    explicitFocusOrder="0" pos="2Cc 15Cc 24 24" class="IconComponent"
-                    params="Icons::play"/>
-  <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="stopIcon" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 15Cc 22 22" class="IconComponent"
-                    params="Icons::stop"/>
-  <GENERICCOMPONENT name="" id="554d8489a0447eda" memberName="recordIcon" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 7 18 18" class="IconComponent"
-                    params="Icons::record"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

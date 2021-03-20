@@ -150,10 +150,10 @@
       { "command": "TransportStop", "key": "Escape" },
       { "command": "TransportPlaybackStart", "key": "Play" },
       { "command": "TransportPlaybackStart", "key": "Return" },
-      { "command": "TransportRecordingStart", "key": "Shift + Return" },
+      { "command": "TransportRecordingAwait", "key": "F12" },
       { "command": "TransportRecordingAwait", "key": "Control + Return" },
       { "command": "TransportRecordingAwait", "key": "Command + Return" },
-      { "command": "TransportRecordingAwait", "key": "F12" },
+      { "command": "TransportRecordingStart", "key": "Shift + Return" },
       { "command": "ToggleLoopOverSelection", "key": "F11" },
 
       // Navigation

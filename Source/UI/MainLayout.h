@@ -70,7 +70,7 @@ public:
     void hideTooltipIfAny(); // and cancel pending, if any
     void showTooltip(const String &message,
         TooltipIcon icon = TooltipIcon::None,
-        int showDelayMs = 0);
+        int tooltipDelayMs = 0);
 
     //===------------------------------------------------------------------===//
     // Component

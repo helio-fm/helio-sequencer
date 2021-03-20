@@ -79,6 +79,9 @@ struct MenuItem final : public ReferenceCountedObject
     static MenuItem::Ptr empty();
     static MenuItem::Ptr item(Icons::Id iconId, String text);
     static MenuItem::Ptr item(Icons::Id iconId, int commandId, String text = {});
+
+    static String createTooltip(String message, int command);
+    static String createTooltip(String message, KeyPress keyPress);
 };
 
 class MenuItemComponent final : public DraggingListBoxComponent

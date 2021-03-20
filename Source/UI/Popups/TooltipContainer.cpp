@@ -28,9 +28,9 @@ TooltipContainer::TooltipContainer()
     this->addAndMakeVisible(this->tooltipComponent.get());
 
 #if PLATFORM_MOBILE
-    this->setSize(450, 64);
+    this->setSize(500, 64);
 #elif PLATFORM_DESKTOP
-    this->setSize(450, 48);
+    this->setSize(500, 48);
 #endif
 }
 
