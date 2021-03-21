@@ -17,24 +17,18 @@
 
 #pragma once
 
-//[Headers]
 class VersionControl;
 class RevisionTreeComponent;
 
 #include "HeadlineItemDataSource.h"
-//[/Headers]
+#include "SeparatorHorizontalFadingReversed.h"
 
-#include "../../Themes/SeparatorHorizontalFadingReversed.h"
-
-class HistoryComponent final : public Component,
-                               public HeadlineItemDataSource
+class HistoryComponent final : public Component, public HeadlineItemDataSource
 {
 public:
 
     explicit HistoryComponent(VersionControl &owner);
     ~HistoryComponent();
-
-    //[UserMethods]
 
     void clearSelection();
     void rebuildRevisionTree();
@@ -50,23 +44,21 @@ public:
     String getName() const override;
     bool canBeSelectedAsMenuItem() const override;
 
-    //[/UserMethods]
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
 
-    void paint (Graphics& g) override;
     void resized() override;
-    void handleCommandMessage (int commandId) override;
-
+    void handleCommandMessage(int commandId) override;
 
 private:
 
-    //[UserVariables]
     VersionControl &vcs;
     SafePointer<RevisionTreeComponent> revisionTree;
-    //[/UserVariables]
 
     UniquePointer<Viewport> revisionViewport;
     UniquePointer<Label> revisionTreeLabel;
-    UniquePointer<SeparatorHorizontalFadingReversed> separator3;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HistoryComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HistoryComponent)
 };

@@ -17,7 +17,6 @@
 
 #pragma once
 
-//[Headers]
 class VersionControl;
 class ProgressIndicator;
 
@@ -25,21 +24,17 @@ class ProgressIndicator;
 #include "RevisionItem.h"
 #include "HeadlineItemDataSource.h"
 #include "ComponentFader.h"
-//[/Headers]
-
-#include "../../Themes/SeparatorHorizontalFadingReversed.h"
+#include "SeparatorHorizontalFadingReversed.h"
 
 class StageComponent final : public Component,
-                             public ListBoxModel,
-                             public ChangeListener,
-                             public HeadlineItemDataSource
+    public ListBoxModel,
+    public ChangeListener,
+    public HeadlineItemDataSource
 {
 public:
 
     explicit StageComponent(VersionControl &versionControl);
     ~StageComponent();
-
-    //[UserMethods]
 
     void selectAll(NotificationType notificationType);
     void clearSelection();
@@ -69,16 +64,14 @@ public:
     String getName() const override;
     bool canBeSelectedAsMenuItem() const override;
 
-    //[/UserMethods]
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
 
-    void paint (Graphics& g) override;
     void resized() override;
-    void handleCommandMessage (int commandId) override;
-
+    void handleCommandMessage(int commandId) override;
 
 private:
-
-    //[UserVariables]
 
     VersionControl &vcs;
 
@@ -98,13 +91,10 @@ private:
     void commitSelected();
     void resetSelected();
 
-    //[/UserVariables]
-
-    UniquePointer<Component> horizontalCenter;
     UniquePointer<Label> titleLabel;
-    UniquePointer<ProgressIndicator> indicator;
+    UniquePointer<ProgressIndicator> progressIndicator;
     UniquePointer<ListBox> changesList;
-    UniquePointer<SeparatorHorizontalFadingReversed> separator3;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StageComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StageComponent)
 };

@@ -17,48 +17,38 @@
 
 #pragma once
 
-//[Headers]
 class VersionControl;
-//[/Headers]
 
-#include "../../Themes/PanelBackgroundA.h"
-#include "../../Themes/SeparatorVerticalSkew.h"
-#include "../../Themes/PanelBackgroundB.h"
 #include "StageComponent.h"
 #include "HistoryComponent.h"
+#include "PanelBackgroundA.h"
+#include "PanelBackgroundB.h"
+#include "SeparatorVerticalSkew.h"
 
-class VersionControlEditor final : public Component,
-                                   public ChangeListener
+class VersionControlEditor final : public Component, public ChangeListener
 {
 public:
 
     explicit VersionControlEditor(VersionControl &versionControl);
     ~VersionControlEditor();
 
-    //[UserMethods]
     void updateState();
     void onStageSelectionChanged();
     void onHistorySelectionChanged();
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
     void resized() override;
     void broughtToFront() override;
 
-
 private:
 
-    //[UserVariables]
     VersionControl &vcs;
     void changeListenerCallback(ChangeBroadcaster *source) override;
-    //[/UserVariables]
 
     UniquePointer<PanelBackgroundA> backgroundA;
     UniquePointer<SeparatorVerticalSkew> skew;
     UniquePointer<PanelBackgroundB> backgroundB;
     UniquePointer<StageComponent> stageComponent;
     UniquePointer<HistoryComponent> historyComponent;
-    UniquePointer<Component> anchor;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VersionControlEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControlEditor)
 };

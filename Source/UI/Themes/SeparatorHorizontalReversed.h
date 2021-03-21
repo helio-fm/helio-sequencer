@@ -27,8 +27,6 @@ public:
         this->setInterceptsMouseClicks(false, false);
     }
 
-    ~SeparatorHorizontalReversed() override = default;
-
     void paint(Graphics &g) override
     {
         g.setColour(Colours::white.withAlpha(11.f / 255.f));

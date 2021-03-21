@@ -27,8 +27,6 @@ public:
         this->setInterceptsMouseClicks(false, false);
     }
 
-    ~SeparatorVertical() override = default;
-
     void paint(Graphics &g) override
     {
         g.setColour(Colour(0x09ffffff));

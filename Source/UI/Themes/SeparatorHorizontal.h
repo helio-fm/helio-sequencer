@@ -27,8 +27,6 @@ public:
         this->setInterceptsMouseClicks(false, false);
     }
 
-    ~SeparatorHorizontal() override = default;
-
     void setAlphaMultiplier(float a)
     {
         this->alphaFactor = a;

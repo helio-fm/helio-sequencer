@@ -15,13 +15,9 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "StageComponent.h"
 
-//[MiscUserDefs]
 #include "VersionControl.h"
 #include "VersionControlEditor.h"
 #include "ModalDialogConfirmation.h"
@@ -32,98 +28,67 @@
 #include "RevisionItemComponent.h"
 #include "ComponentIDs.h"
 
-#if PLATFORM_DESKTOP
-#    define VCS_STAGE_ROW_HEIGHT (65)
-#elif PLATFORM_MOBILE
-#    define VCS_STAGE_ROW_HEIGHT (90)
-#endif
-//[/MiscUserDefs]
-
-StageComponent::StageComponent(VersionControl &versionControl)
-    : vcs(versionControl)
+StageComponent::StageComponent(VersionControl &versionControl) : vcs(versionControl)
 {
-    this->horizontalCenter.reset(new Component());
-    this->addAndMakeVisible(horizontalCenter.get());
-
-    this->titleLabel.reset(new Label(String(),
-                                      TRANS(I18n::VCS::stageCaption)));
-    this->addAndMakeVisible(titleLabel.get());
-    this->titleLabel->setFont(Font (21.00f, Font::plain));
-    titleLabel->setJustificationType(Justification::centred);
-    titleLabel->setEditable(false, false, false);
-
-    this->indicator.reset(new ProgressIndicator());
-    this->addAndMakeVisible(indicator.get());
-
-    this->changesList.reset(new ListBox("", this));
-    this->addAndMakeVisible(changesList.get());
-
-    this->separator3.reset(new SeparatorHorizontalFadingReversed());
-    this->addAndMakeVisible(separator3.get());
-
-    //[UserPreSize]
+    this->setPaintingIsUnclipped(true);
     this->setComponentID(ComponentIDs::versionControlStage);
 
-    this->indicator->setVisible(false);
-    this->indicator->setAlpha(0.5f);
+    this->titleLabel = make<Label>(String(), TRANS(I18n::VCS::stageCaption));
+    this->addAndMakeVisible(this->titleLabel.get());
+    this->titleLabel->setJustificationType(Justification::centred);
+    this->titleLabel->setFont({ 21.f });
+
+    this->progressIndicator = make<ProgressIndicator>();
+    this->addAndMakeVisible(this->progressIndicator.get());
+
+    this->changesList = make<ListBox>(String(), this);
+    this->addAndMakeVisible(this->changesList.get());
+
+    this->separator = make<SeparatorHorizontalFadingReversed>();
+    this->addAndMakeVisible(this->separator.get());
+
+    this->progressIndicator->setVisible(false);
+    this->progressIndicator->setAlpha(0.5f);
 
     this->changesList->getViewport()->setScrollBarThickness(2);
     this->changesList->getViewport()->setScrollBarsShown(true, false);
     this->changesList->setMultipleSelectionEnabled(true);
-    this->changesList->setRowHeight(VCS_STAGE_ROW_HEIGHT);
-    //[/UserPreSize]
 
-    this->setSize(600, 400);
+#if PLATFORM_DESKTOP
+    constexpr auto rowHeight = 65;
+#elif PLATFORM_MOBILE
+    constexpr auto rowHeight = 90;
+#endif
+    this->changesList->setRowHeight(rowHeight);
 
-    //[Constructor]
     this->updateList();
 
     this->vcs.getHead().addChangeListener(this);
-    //[/Constructor]
 }
 
 StageComponent::~StageComponent()
 {
-    //[Destructor_pre]
     this->vcs.getHead().removeChangeListener(this);
-    //[/Destructor_pre]
-
-    horizontalCenter = nullptr;
-    titleLabel = nullptr;
-    indicator = nullptr;
-    changesList = nullptr;
-    separator3 = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void StageComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
 void StageComponent::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    constexpr auto labelHeight = 26;
+    this->titleLabel->setBounds(0, 0, this->getWidth(), labelHeight);
 
-    horizontalCenter->setBounds(0, 0, proportionOfWidth (0.5088f), 8);
-    titleLabel->setBounds(0, 0, getWidth() - 0, 26);
-    indicator->setBounds((getWidth() / 2) - (32 / 2), (getHeight() / 2) - (32 / 2), 32, 32);
-    changesList->setBounds(1, 42, getWidth() - 2, getHeight() - 43);
-    separator3->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 40, getWidth() - 0, 3);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    constexpr auto spinnerSize = 32;
+    this->progressIndicator->setBounds((this->getWidth() / 2) - (spinnerSize / 2),
+        (this->getHeight() / 2) - (spinnerSize / 2), spinnerSize, spinnerSize);
+
+    constexpr auto contentTopMargin = 42;
+    this->changesList->setBounds(1, contentTopMargin,
+        this->getWidth() - 2, this->getHeight() - contentTopMargin - 1);
+
+    this->separator->setBounds(0, contentTopMargin - 2, this->getWidth(), 3);
 }
 
-void StageComponent::handleCommandMessage (int commandId)
+void StageComponent::handleCommandMessage(int commandId)
 {
-    //[UserCode_handleCommandMessage] -- Add your code here...
     switch (commandId)
     {
     case CommandIDs::VersionControlSelectAll:
@@ -149,17 +114,15 @@ void StageComponent::handleCommandMessage (int commandId)
         this->selectAll(sendNotification);
         this->resetSelected();
         break;
+#if !NO_NETWORK
     case CommandIDs::VersionControlSyncAll:
         this->vcs.syncAllRevisions();
         break;
+#endif
     default:
         break;
     }
-    //[/UserCode_handleCommandMessage]
 }
-
-
-//[MiscUserCode]
 
 void StageComponent::selectAll(NotificationType notificationType)
 {
@@ -280,15 +243,15 @@ void StageComponent::clearList()
 void StageComponent::startProgressAnimation()
 {
     this->fader.cancelAllAnimations(false);
-    this->indicator->startAnimating();
-    this->fader.fadeIn(this->indicator.get(), Globals::UI::fadeInLong);
+    this->progressIndicator->startAnimating();
+    this->fader.fadeIn(this->progressIndicator.get(), Globals::UI::fadeInLong);
 }
 
 void StageComponent::stopProgressAnimation()
 {
     this->fader.cancelAllAnimations(false);
-    this->indicator->stopAnimating();
-    this->fader.fadeOut(this->indicator.get(), Globals::UI::fadeOutLong);
+    this->progressIndicator->stopAnimating();
+    this->fader.fadeOut(this->progressIndicator.get(), Globals::UI::fadeOutLong);
 }
 
 //===----------------------------------------------------------------------===//
@@ -387,40 +350,3 @@ void StageComponent::resetSelected()
 
     App::showModalComponent(move(dialog));
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="StageComponent" template="../../../Template"
-                 componentName="" parentClasses="public Component, public ListBoxModel, public ChangeListener, public HeadlineItemDataSource"
-                 constructorParams="VersionControl &amp;versionControl" variableInitialisers="vcs(versionControl)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="600" initialHeight="400">
-  <METHODS>
-    <METHOD name="handleCommandMessage (int commandId)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="ffffff"/>
-  <GENERICCOMPONENT name="" id="4ac6bf71d1e1d84f" memberName="horizontalCenter" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 50.847% 8" class="Component"
-                    params=""/>
-  <LABEL name="" id="660583b19bbfaa6b" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 0 0M 26" labelText="vcs::stage::caption"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="36"/>
-  <GENERICCOMPONENT name="" id="92641fd94a728225" memberName="indicator" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 0Cc 32 32" class="ProgressIndicator"
-                    params=""/>
-  <GENERICCOMPONENT name="" id="d017e5395434bb4f" memberName="changesList" virtualName=""
-                    explicitFocusOrder="0" pos="1 42 2M 43M" class="ListBox" params="&quot;&quot;, this"/>
-  <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator3" virtualName=""
-             explicitFocusOrder="0" pos="0.5Cc 40 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
-             constructorParams=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

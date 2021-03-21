@@ -27,8 +27,6 @@ public:
         this->setInterceptsMouseClicks(false, false);
     }
 
-    ~SeparatorHorizontalFading() override = default;
-
     void paint(Graphics &g) override
     {
         g.setGradientFill(ColourGradient(Colour(0x35000000),

@@ -31,8 +31,6 @@ public:
         this->setInterceptsMouseClicks(false, false);
     }
 
-    ~PanelBackgroundA() override = default;
-
     void paint(Graphics &g) override
     {
         const auto &theme = HelioTheme::getCurrentTheme();
