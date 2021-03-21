@@ -26,15 +26,19 @@
 
 Headline::Headline()
 {
-    this->navPanel = make<HeadlineNavigationPanel>();
-    this->addAndMakeVisible(navPanel.get());
-    this->consoleButton = make<IconButton>(Icons::findByName(Icons::console, 20), CommandIDs::CommandPalette);
-    this->addAndMakeVisible(consoleButton.get());
-
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
     this->setOpaque(App::isUsingNativeTitleBar());
+
+    this->navPanel = make<HeadlineNavigationPanel>();
+    this->addAndMakeVisible(this->navPanel.get());
+
+    this->consoleButton = make<IconButton>(Icons::findByName(Icons::console, 20), CommandIDs::CommandPalette);
+    this->addChildComponent(this->consoleButton.get()); // invisible by default, e.g. on mobile platforms
+
+#if PLATFORM_DESKTOP
     this->consoleButton->setVisible(App::isUsingNativeTitleBar());
+#endif
 
     auto *uiFlags = App::Config().getUiFlags();
     this->onUiAnimationsFlagChanged(uiFlags->areUiAnimationsEnabled());
@@ -65,17 +69,19 @@ void Headline::onUiAnimationsFlagChanged(bool animationsEnabled)
 
 void Headline::paint(Graphics &g)
 {
-    if (App::isUsingNativeTitleBar())
+    if (!App::isUsingNativeTitleBar())
     {
-        const auto &theme = HelioTheme::getCurrentTheme();
-        g.setFillType({ theme.getBgCacheA(), {} });
-        g.fillRect(this->getLocalBounds());
-
-        g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
-        g.fillRect(0, this->getHeight() - 2, this->getWidth(), 1);
-        g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
-        g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
+        return;
     }
+
+    const auto &theme = HelioTheme::getCurrentTheme();
+    g.setFillType({ theme.getBgCacheA(), {} });
+    g.fillRect(this->getLocalBounds());
+
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
+    g.fillRect(0, this->getHeight() - 2, this->getWidth(), 1);
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
+    g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
 }
 
 void Headline::resized()

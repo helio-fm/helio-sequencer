@@ -15,33 +15,26 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
+
+#if !NO_NETWORK
+
+#include "UpdatesInfoComponent.h"
 #include "Config.h"
 #include "MenuPanel.h"
 #include "AppInfoDto.h"
 #include "PanelBackgroundA.h"
-//[/Headers]
-
-#include "UpdatesInfoComponent.h"
-
-//[MiscUserDefs]
-//[/MiscUserDefs]
+#include "SerializationKeys.h"
 
 UpdatesInfoComponent::UpdatesInfoComponent()
 {
-    this->comboPrimer.reset(new MobileComboBox::Primer());
-    this->addAndMakeVisible(comboPrimer.get());
+    this->comboPrimer = make<MobileComboBox::Primer>();
+    this->addAndMakeVisible(this->comboPrimer.get());
 
-    this->label.reset(new Label(String(),
-                                 TRANS(I18n::Common::updateProceed)));
-    this->addAndMakeVisible(label.get());
-    this->label->setFont(Font (17.00f, Font::plain));
-    label->setJustificationType(Justification::centredBottom);
-    label->setEditable(false, false, false);
-
-
-    //[UserPreSize]
+    this->label = make<Label>(String(), TRANS(I18n::Common::updateProceed));
+    this->addAndMakeVisible(this->label.get());
+    this->label->setJustificationType(Justification::centredBottom);
+    this->label->setFont({ 16.f });
 
     // here we assume that backend response will only contain
     // the updates info for the current platform, so that
@@ -84,49 +77,19 @@ UpdatesInfoComponent::UpdatesInfoComponent()
         this->label->setVisible(false);
     }
 
-    //[/UserPreSize]
-
     this->setSize(256, 128);
-
-    //[Constructor]
-    //[/Constructor]
 }
 
-UpdatesInfoComponent::~UpdatesInfoComponent()
-{
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    comboPrimer = nullptr;
-    label = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void UpdatesInfoComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
-}
+UpdatesInfoComponent::~UpdatesInfoComponent() = default;
 
 void UpdatesInfoComponent::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    comboPrimer->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
-    label->setBounds((getWidth() / 2) - ((getWidth() - 56) / 2), 2, getWidth() - 56, 24);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->comboPrimer->setBounds(this->getLocalBounds());
+    this->label->setBounds((this->getWidth() / 2) - ((this->getWidth() - 56) / 2), 2, this->getWidth() - 56, 24);
 }
 
-void UpdatesInfoComponent::handleCommandMessage (int commandId)
+void UpdatesInfoComponent::handleCommandMessage(int commandId)
 {
-    //[UserCode_handleCommandMessage] -- Add your code here...
     const int idx = commandId - CommandIDs::SelectVersion;
     if (idx >= 0 && idx < this->versions.size())
     {
@@ -135,35 +98,6 @@ void UpdatesInfoComponent::handleCommandMessage (int commandId)
         jassert(version.getLink().isNotEmpty());
         URL(version.getLink()).launchInDefaultBrowser();
     }
-    //[/UserCode_handleCommandMessage]
 }
 
-
-//[MiscUserCode]
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="UpdatesInfoComponent" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="256" initialHeight="128">
-  <METHODS>
-    <METHOD name="handleCommandMessage (int commandId)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT name="" id="524df900a9089845" memberName="comboPrimer" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 0M 0M" class="MobileComboBox::Primer"
-                    params=""/>
-  <LABEL name="" id="94cfd29b32ea20f9" memberName="label" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 2 56M 24" labelText="update::proceed"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="17.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="20"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
 #endif

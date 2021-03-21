@@ -17,35 +17,33 @@
 
 #pragma once
 
-//[Headers]
 #include "AppVersionDto.h"
 #include "MobileComboBox.h"
-//[/Headers]
-
 
 class UpdatesInfoComponent final : public Component
 {
 public:
 
+#if NO_NETWORK
+
+    UpdatesInfoComponent() = default;
+
+#else
+
     UpdatesInfoComponent();
     ~UpdatesInfoComponent();
 
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
-    void handleCommandMessage (int commandId) override;
-
+    void handleCommandMessage(int commandId) override;
 
 private:
 
-    //[UserVariables]
     Array<AppVersionDto> versions;
-    //[/UserVariables]
 
     UniquePointer<MobileComboBox::Primer> comboPrimer;
     UniquePointer<Label> label;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UpdatesInfoComponent)
+#endif
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UpdatesInfoComponent)
 };

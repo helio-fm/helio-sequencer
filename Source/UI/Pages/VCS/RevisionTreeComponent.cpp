@@ -102,18 +102,6 @@ void RevisionTreeComponent::handleCommandMessage(int commandId)
     }
 }
 
-//void RevisionTreeComponent::showTooltipFor(RevisionComponent *revComponent, Point<int> clickPoint, const ValueTree revision)
-//{
-//    if (Component *editor = this->findParentEditor())
-//    {
-//        // todo create different tooltips for the head
-//        if (revComponent->isHead()) {}
-//
-//        RevisionTooltipComponent *tooltip = new RevisionTooltipComponent(this->vcs, revision);
-//        HelioCallout::emit(tooltip, revComponent);
-//    }
-//}
-
 VCS::Revision::Ptr RevisionTreeComponent::getSelectedRevision() const noexcept
 {
     return this->selectedRevision;
@@ -127,7 +115,11 @@ VCS::Revision::Ptr RevisionTreeComponent::getSelectedRevision() const noexcept
 RevisionComponent *RevisionTreeComponent::initComponents(int depth,
     const VCS::Revision::Ptr revision, RevisionComponent *parentRevisionComponent)
 {
+#if NO_NETWORK
+    const auto state = VCS::Revision::SyncState::NoSync;
+#else
     const auto state = this->vcs.getRevisionSyncState(revision);
+#endif
     const bool isHead = (this->vcs.getHead().getHeadingRevision() == revision);
 
     auto *revisionComponent = new RevisionComponent(this->vcs, revision, state, isHead);

@@ -17,11 +17,12 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "BaseResource.h"
 
 class SyncSettings final : public Component,
-                           public ListBoxModel,
-                           private ChangeListener
+    public ListBoxModel, private ChangeListener
 {
 public:
 
@@ -58,3 +59,5 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SyncSettings)
 };
+
+#endif

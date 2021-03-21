@@ -74,8 +74,10 @@ RecentProjectRow::RecentProjectRow(DashboardMenu &parent, ListBox &parentListBox
 
 
     //[UserPreSize]
-    //this->selectionComponent.reset(new RecentFileSelectionComponent());
-    //this->addChildComponent(this->selectionComponent);
+#if NO_NETWORK
+    this->localIndicatorImage->setVisible(false);
+    this->remoteIndicatorImage->setVisible(false);
+#endif
     //[/UserPreSize]
 
     this->setSize(350, 56);
@@ -115,10 +117,10 @@ void RecentProjectRow::resized()
     //[/UserPreResize]
 
     titleLabel->setBounds(0, 5, getWidth() - 46, 24);
-    dateLabel->setBounds(0, 27, getWidth() - 82, 16);
+    dateLabel->setBounds(0, 27, getWidth() - 46, 16);
     activenessImage->setBounds(getWidth() - 8 - 36, (getHeight() / 2) + -4 - (36 / 2), 36, 36);
-    remoteIndicatorImage->setBounds(getWidth() - 70 - 8, getHeight() - 16 - 8, 8, 8);
-    localIndicatorImage->setBounds(getWidth() - 54 - 8, getHeight() - 16 - 8, 8, 8);
+    remoteIndicatorImage->setBounds(getWidth() - 30 - 8, getHeight() - 8 - 8, 8, 8);
+    localIndicatorImage->setBounds(getWidth() - 15 - 8, getHeight() - 8 - 8, 8, 8);
     //[UserResized] Add your own custom resize handling here..
     //this->selectionComponent->setBounds(this->getLocalBounds());
     //[/UserResized]
@@ -193,24 +195,25 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="c261305e2de1ebf2" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="0 5 46M 24" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="34"/>
+         fontsize="18.0" kerning="0.0" bold="0" italic="0" justification="34"/>
   <LABEL name="" id="a7e8c6a3ddd9ea22" memberName="dateLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 27 82M 16" labelText="" editableSingleClick="0"
+         explicitFocusOrder="0" pos="0 27 46M 16" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="34"/>
+         fontsize="12.0" kerning="0.0" bold="0" italic="0" justification="34"/>
   <GENERICCOMPONENT name="" id="42f3ed34561654ef" memberName="activenessImage" virtualName=""
                     explicitFocusOrder="0" pos="8Rr -4Cc 36 36" class="IconComponent"
                     params="Icons::project"/>
   <GENERICCOMPONENT name="" id="785e248885091f6f" memberName="remoteIndicatorImage"
-                    virtualName="" explicitFocusOrder="0" pos="70Rr 16Rr 8 8" class="IconComponent"
+                    virtualName="" explicitFocusOrder="0" pos="30Rr 8Rr 8 8" class="IconComponent"
                     params="Icons::remote"/>
   <GENERICCOMPONENT name="" id="da3b844443a7cf14" memberName="localIndicatorImage"
-                    virtualName="" explicitFocusOrder="0" pos="54Rr 16Rr 8 8" class="IconComponent"
+                    virtualName="" explicitFocusOrder="0" pos="15Rr 8Rr 8 8" class="IconComponent"
                     params="Icons::local"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
 */
 #endif
+
+
+

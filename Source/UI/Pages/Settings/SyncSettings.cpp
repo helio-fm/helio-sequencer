@@ -16,6 +16,9 @@
 */
 
 #include "Common.h"
+
+#if !NO_NETWORK
+
 #include "SyncSettings.h"
 #include "Workspace.h"
 #include "SyncSettingsItem.h"
@@ -182,3 +185,5 @@ void SyncSettings::reloadSyncFlags()
                 this->resources.getUnchecked(i)->getResourceId()));
     }
 }
+
+#endif

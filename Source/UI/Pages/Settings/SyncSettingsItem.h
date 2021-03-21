@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "BaseResource.h"
 #include "DraggingListBoxComponent.h"
 #include "SeparatorHorizontal.h"
@@ -43,3 +45,5 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SyncSettingsItem)
 };
+
+#endif

@@ -16,6 +16,9 @@
 */
 
 #include "Common.h"
+
+#if !NO_NETWORK
+
 #include "SyncSettingsItem.h"
 #include "ResourceSyncService.h"
 #include "ColourIDs.h"
@@ -91,3 +94,5 @@ Component *SyncSettingsItem::createHighlighterComponent()
 {
     return new SyncSettingsItemHighlighter();
 }
+
+#endif

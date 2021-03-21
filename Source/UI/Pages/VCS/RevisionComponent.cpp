@@ -73,6 +73,13 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision:
     this->revisionDate->setInterceptsMouseClicks(false, false);
     this->revisionDescription->setInterceptsMouseClicks(false, false);
 
+#if NO_NETWORK
+
+    this->localIndicatorImage->setVisible(false);
+    this->remoteIndicatorImage->setVisible(false);
+
+#else
+
     switch (this->viewState)
     {
     case VCS::Revision::NoSync:
@@ -85,6 +92,8 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision:
     default:
         break;
     }
+
+#endif
     //[/UserPreSize]
 
     this->setSize(150, 50);

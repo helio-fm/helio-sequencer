@@ -26,8 +26,15 @@ class LoginButton final : public Component
 {
 public:
 
+#if NO_NETWORK
+
+    LoginButton() = default;
+
+#else
+
     LoginButton()
     {
+
         this->avatar = make<IconComponent>(Icons::github);
         this->addAndMakeVisible(this->avatar.get());
 
@@ -63,6 +70,8 @@ private:
     UniquePointer<IconComponent> avatar;
     UniquePointer<Label> ctaLabel;
     UniquePointer<OverlayButton> clickHandler;
+
+#endif
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LoginButton)
 };

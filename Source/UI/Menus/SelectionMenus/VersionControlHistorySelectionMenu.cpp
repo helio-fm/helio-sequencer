@@ -25,9 +25,16 @@ static MenuPanel::Menu createDefaultPanel(VCS::Revision::Ptr revision, VersionCo
 {
     MenuPanel::Menu menu;
 
+#if NO_NETWORK
+
+    menu.add(MenuItem::item(Icons::versionControl, CommandIDs::VersionControlCheckout,
+        TRANS(I18n::Menu::Selection::vcsCheckout))->closesMenu());
+
+#else
+
     const auto syncState = vcs.getRevisionSyncState(revision);
-    const bool needsPush = (syncState == VCS::Revision::NoSync);
-    const bool needsPull = (syncState == VCS::Revision::ShallowCopy);
+    const bool needsPush = syncState == VCS::Revision::NoSync;
+    const bool needsPull = syncState == VCS::Revision::ShallowCopy;
 
     menu.add(MenuItem::item(Icons::versionControl, CommandIDs::VersionControlCheckout,
         TRANS(I18n::Menu::Selection::vcsCheckout))->disabledIf(needsPull)->closesMenu());
@@ -37,6 +44,8 @@ static MenuPanel::Menu createDefaultPanel(VCS::Revision::Ptr revision, VersionCo
 
     menu.add(MenuItem::item(Icons::pull, CommandIDs::VersionControlPullSelected,
         TRANS(I18n::Menu::Selection::vcsPull))->disabledIf(!needsPull)->closesMenu());
+
+#endif
 
     return menu;
 }

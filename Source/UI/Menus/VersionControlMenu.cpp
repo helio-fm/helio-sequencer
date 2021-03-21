@@ -43,11 +43,15 @@ VersionControlMenu::VersionControlMenu(VersionControl &vcs)
         CommandIDs::VersionControlResetAll,
         TRANS(I18n::Menu::vcsResetAll))->closesMenu());
 
+#if !NO_NETWORK
+
     const bool loggedIn = App::Workspace().getUserProfile().isLoggedIn();
 
     menu.add(MenuItem::item(Icons::push,
         CommandIDs::VersionControlSyncAll,
         TRANS(I18n::Menu::vcsSyncAll))->disabledIf(!loggedIn)->closesMenu());
+
+#endif
 
     // TODO when stashes are ready
     //menu.add(MenuItem::item(Icons::stash, CommandIDs::VersionControlPopStash,
