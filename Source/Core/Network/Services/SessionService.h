@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "BackendService.h"
 #include "AuthThread.h"
 #include "TokenUpdateThread.h"
@@ -44,3 +46,5 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE(SessionService)
 };
+
+#endif

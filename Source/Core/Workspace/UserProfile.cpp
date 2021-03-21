@@ -21,9 +21,16 @@
 #include "ProjectSyncService.h"
 #include "ResourceSyncService.h"
 
-static UserSessionInfo kSessionsSort;
+#include "App.h"
+#include "Config.h"
+#include "SerializationKeys.h"
+
 static RecentProjectInfo kProjectsSort;
 static SyncedConfigurationInfo kResourcesSort;
+
+#if !NO_NETWORK
+
+static UserSessionInfo kSessionsSort;
 
 void UserProfile::updateProfile(const UserProfileDto &dto)
 {
@@ -107,6 +114,23 @@ void UserProfile::onConfigurationInfoUpdated(const UserResourceDto &dto)
     this->sendChangeMessage();
 }
 
+void UserProfile::onProjectRemoteInfoUpdated(const ProjectDto &info)
+{
+    if (auto *project = this->findProject(info.getId()))
+    {
+        project->updateRemoteInfo(info);
+        this->projects.sort(kProjectsSort);
+    }
+    else
+    {
+        this->projects.addSorted(kProjectsSort, new RecentProjectInfo(info));
+    }
+
+    this->sendChangeMessage();
+}
+
+#endif
+
 void UserProfile::onConfigurationInfoReset(const Identifier &type, const String &name)
 {
     for (int i = 0; i < this->resources.size(); ++i)
@@ -172,21 +196,6 @@ void UserProfile::onProjectLocalInfoUpdated(const String &id, const String &titl
     this->sendChangeMessage();
 }
 
-void UserProfile::onProjectRemoteInfoUpdated(const ProjectDto &info)
-{
-    if (auto *project = this->findProject(info.getId()))
-    {
-        project->updateRemoteInfo(info);
-        this->projects.sort(kProjectsSort);
-    }
-    else
-    {
-        this->projects.addSorted(kProjectsSort, new RecentProjectInfo(info));
-    }
-
-    this->sendChangeMessage();
-}
-
 void UserProfile::onProjectLocalInfoReset(const String &id)
 {
     if (auto *project = this->findProject(id))
@@ -236,6 +245,8 @@ void UserProfile::deleteProjectLocally(const String &id)
     }
 }
 
+#if !NO_NETWORK
+
 void UserProfile::deleteProjectRemotely(const String &id)
 {
     if (auto *project = this->findProject(id))
@@ -249,6 +260,8 @@ void UserProfile::deleteProjectRemotely(const String &id)
 
     this->sendChangeMessage();
 }
+
+#endif
 
 void UserProfile::clearProfileAndSession()
 {
@@ -298,11 +311,6 @@ bool UserProfile::isLoggedIn() const
     return this->getApiToken().isNotEmpty();
 }
 
-const UserProfile::SessionsList &UserProfile::getSessions() const noexcept
-{
-    return this->sessions;
-}
-
 const UserProfile::ProjectsList &UserProfile::getProjects() const noexcept
 {
     return this->projects;
@@ -328,6 +336,13 @@ RecentProjectInfo *UserProfile::findProject(const String &id) const
     return nullptr;
 }
 
+#if !NO_NETWORK
+
+const UserProfile::SessionsList &UserProfile::getSessions() const noexcept
+{
+    return this->sessions;
+}
+
 UserSessionInfo *UserProfile::findSession(const String &deviceId) const
 {
     for (auto *session : this->sessions)
@@ -340,6 +355,8 @@ UserSessionInfo *UserProfile::findSession(const String &deviceId) const
 
     return nullptr;
 }
+
+#endif
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -376,10 +393,12 @@ SerializedData UserProfile::serialize() const
         tree.appendChild(project->serialize());
     }
 
+#if !NO_NETWORK
     for (const auto *session : this->sessions)
     {
         tree.appendChild(session->serialize());
     }
+#endif
 
     for (const auto *resource : this->resources)
     {
@@ -424,6 +443,7 @@ void UserProfile::deserialize(const SerializedData &data)
         }
     }
     
+#if !NO_NETWORK
     forEachChildWithType(root, child, Sessions::session)
     {
         UserSessionInfo::Ptr s(new UserSessionInfo());
@@ -431,6 +451,7 @@ void UserProfile::deserialize(const SerializedData &data)
         // TODO store JWT as well? remove current session if stale?
         this->sessions.addSorted(kSessionsSort, s.get());
     }
+#endif
 
     forEachChildWithType(root, child, Configurations::resource)
     {
@@ -450,6 +471,8 @@ void UserProfile::deserialize(const SerializedData &data)
 void UserProfile::reset()
 {
     this->projects.clearQuick();
+#if !NO_NETWORK
     this->sessions.clearQuick();
+#endif
     this->sendChangeMessage();
 }

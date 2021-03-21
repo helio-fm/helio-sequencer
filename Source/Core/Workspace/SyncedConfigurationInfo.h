@@ -27,7 +27,10 @@ class SyncedConfigurationInfo final : public Serializable,
 public:
 
     SyncedConfigurationInfo() = default;
+
+#if !NO_NETWORK
     SyncedConfigurationInfo(const UserResourceDto &remote);
+#endif
 
     Identifier getType() const noexcept;
     String getName() const noexcept;

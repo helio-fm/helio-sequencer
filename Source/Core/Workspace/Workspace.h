@@ -28,9 +28,7 @@ class CommandPaletteProjectsList;
 #include "NavigationHistory.h"
 #include "CommandPaletteModel.h"
 
-class Workspace final :
-    public CommandPaletteModel,
-    private Serializable
+class Workspace final : public CommandPaletteModel, private Serializable
 {
 public:
     

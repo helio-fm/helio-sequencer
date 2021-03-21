@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "UpdatesCheckThread.h"
 #include "BaseConfigSyncThread.h"
 #include "UserConfigSyncThread.h"
@@ -44,3 +46,5 @@ private:
     BaseConfigSyncThread *prepareResourceRequestThread();
 
 };
+
+#endif

@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "ApiModel.h"
 
 class AppVersionDto final : public ApiModel
@@ -76,3 +78,5 @@ public:
 
     JUCE_LEAK_DETECTOR(AppVersionDto)
 };
+
+#endif

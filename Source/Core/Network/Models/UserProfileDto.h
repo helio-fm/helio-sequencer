@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "ApiModel.h"
 #include "ProjectDto.h"
 #include "UserResourceDto.h"
@@ -48,3 +50,5 @@ private:
 
     JUCE_LEAK_DETECTOR(UserProfileDto)
 };
+
+#endif

@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "ApiModel.h"
 #include "RevisionDto.h"
 
@@ -35,3 +37,5 @@ public:
 
     JUCE_LEAK_DETECTOR(ProjectDto)
 };
+
+#endif

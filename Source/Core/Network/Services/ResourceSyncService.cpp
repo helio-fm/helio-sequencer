@@ -19,6 +19,8 @@
 #include "ResourceSyncService.h"
 #include "Workspace.h"
 
+#if !NO_NETWORK
+
 // Try to update resources and versions info after:
 #if DEBUG
 #   define UPDATE_INFO_TIMEOUT_MS (1000 * 100)
@@ -167,3 +169,5 @@ UpdatesCheckThread *ResourceSyncService::prepareUpdatesCheckThread()
 
     return thread;
 }
+
+#endif

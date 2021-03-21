@@ -17,12 +17,17 @@
 
 #include "Common.h"
 #include "SyncedConfigurationInfo.h"
+#include "SerializationKeys.h"
+
+#if !NO_NETWORK
 
 SyncedConfigurationInfo::SyncedConfigurationInfo(const UserResourceDto &remote) :
     type(remote.getType()),
     name(remote.getName()),
     hash(remote.getHash()),
     updatedAt(remote.getUpdateTime()) {}
+
+#endif
 
 SerializedData SyncedConfigurationInfo::serialize() const
 {

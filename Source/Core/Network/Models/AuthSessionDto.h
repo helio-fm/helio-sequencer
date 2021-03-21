@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "ApiModel.h"
 
 class AuthSessionDto final : public ApiModel
@@ -31,3 +33,5 @@ public:
 
     JUCE_LEAK_DETECTOR(AuthSessionDto)
 };
+
+#endif

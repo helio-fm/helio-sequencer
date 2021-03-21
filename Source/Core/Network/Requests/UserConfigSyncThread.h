@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "BackendRequest.h"
 #include "SyncedConfigurationInfo.h"
 #include "BaseResource.h"
@@ -56,3 +58,5 @@ private:
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(UserConfigSyncThread)
 };
+
+#endif

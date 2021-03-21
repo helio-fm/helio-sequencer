@@ -26,10 +26,14 @@ Revision::Revision(const String &name /*= String::empty*/) :
     id(Uuid().toString()),
     timestamp(Time::getCurrentTime().toMilliseconds()) {}
 
+#if !NO_NETWORK
+
 Revision::Revision(const RevisionDto &dto) :
     message(dto.getMessage()),
     id(dto.getId()),
     timestamp(dto.getTimestamp()) {}
+
+#endif
 
 void Revision::copyDeltasFrom(Revision::Ptr other)
 {

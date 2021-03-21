@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "Serializable.h"
 #include "Revision.h"
 #include "RevisionDto.h"
@@ -53,3 +55,5 @@ namespace VCS
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RemoteCache)
     };
 } // namespace VCS
+
+#endif

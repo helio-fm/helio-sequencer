@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "Revision.h"
 #include "RevisionDto.h"
 
@@ -36,3 +38,5 @@ struct RevisionsSyncHelpers final
     // only used when cloning projects, assuming all revisions will fit in one subtree
     static VCS::Revision::Ptr constructRemoteTree(const Array<RevisionDto> &list);
 };
+
+#endif

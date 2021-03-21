@@ -16,6 +16,9 @@
 */
 
 #include "Common.h"
+
+#if !NO_NETWORK
+
 #include "UserSessionInfo.h"
 
 UserSessionInfo::UserSessionInfo(const UserSessionDto &dto) :
@@ -85,3 +88,5 @@ void UserSessionInfo::deserialize(const SerializedData &data)
 }
 
 void UserSessionInfo::reset() {}
+
+#endif

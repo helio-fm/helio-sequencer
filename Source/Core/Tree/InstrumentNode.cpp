@@ -29,6 +29,7 @@
 #include "AudioPluginEditorPage.h"
 #include "PluginWindow.h"
 
+#include "SerializationKeys.h"
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "AudioCore.h"

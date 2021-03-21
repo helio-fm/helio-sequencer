@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "BackendRequest.h"
 #include "Network.h"
 
@@ -80,3 +82,5 @@ private:
     
     friend class BackendService;
 };
+
+#endif

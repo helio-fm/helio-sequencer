@@ -19,6 +19,8 @@
 #include "UserConfigSyncThread.h"
 #include "Network.h"
 
+#if !NO_NETWORK
+
 namespace ApiKeys = Serialization::Api::V1;
 namespace ApiRoutes = Routes::Api;
 
@@ -154,3 +156,5 @@ bool UserConfigSyncThread::areQueuesEmpty() const
         && this->resourcesToPut.isEmpty()
         && this->resourcesToDelete.isEmpty();
 }
+
+#endif

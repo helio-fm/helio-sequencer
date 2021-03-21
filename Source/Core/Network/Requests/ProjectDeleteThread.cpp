@@ -19,6 +19,8 @@
 #include "ProjectDeleteThread.h"
 #include "Network.h"
 
+#if !NO_NETWORK
+
 namespace ApiKeys = Serialization::Api::V1;
 namespace ApiRoutes = Routes::Api;
 
@@ -59,3 +61,5 @@ void ProjectDeleteThread::run()
     DBG("Failed to delete project from remote: " + this->response.getErrors().getFirst());
     callbackOnMessageThread(ProjectDeleteThread, onDeleteFailed, self->response.getErrors(), self->projectId);
 }
+
+#endif

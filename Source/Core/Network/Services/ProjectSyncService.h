@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "BackendService.h"
 #include "RevisionsSyncThread.h"
 #include "ProjectCloneThread.h"
@@ -55,3 +57,5 @@ private:
     RevisionsSyncThread *prepareSyncRevisionsThread();
     RevisionsSyncThread *prepareFetchRevisionsThread();
 };
+
+#endif

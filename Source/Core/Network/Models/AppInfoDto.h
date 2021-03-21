@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "ApiModel.h"
 #include "AppResourceDto.h"
 #include "AppVersionDto.h"
@@ -54,3 +56,5 @@ public:
 
     JUCE_LEAK_DETECTOR(AppInfoDto)
 };
+
+#endif

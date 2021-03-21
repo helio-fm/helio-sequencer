@@ -287,6 +287,8 @@ void VersionControl::changeListenerCallback(ChangeBroadcaster* source)
     this->getHead().setDiffOutdated(true);
 }
 
+#if !NO_NETWORK
+
 //===----------------------------------------------------------------------===//
 // Network
 //===----------------------------------------------------------------------===//
@@ -370,6 +372,8 @@ VCS::Revision::SyncState VersionControl::getRevisionSyncState(const VCS::Revisio
     return VCS::Revision::NoSync;
 }
 
+#endif
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -383,7 +387,10 @@ SerializedData VersionControl::serialize() const
     tree.appendChild(this->rootRevision->serialize());
     tree.appendChild(this->stashes->serialize());
     tree.appendChild(this->head.serialize());
+
+#if !NO_NETWORK
     tree.appendChild(this->remoteCache.serialize());
+#endif
 
     return tree;
 }
@@ -402,7 +409,10 @@ void VersionControl::deserialize(const SerializedData &data)
     
     this->rootRevision->deserialize(root);
     this->stashes->deserialize(root);
+
+#if !NO_NETWORK
     this->remoteCache.deserialize(root);
+#endif
 
     {
 #if DEBUG
@@ -422,8 +432,10 @@ void VersionControl::reset()
 {
     this->rootRevision->reset();
     this->head.reset();
-    this->remoteCache.reset();
     this->stashes->reset();
+#if !NO_NETWORK
+    this->remoteCache.reset();
+#endif
 }
 
 //===----------------------------------------------------------------------===//

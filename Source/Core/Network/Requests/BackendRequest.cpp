@@ -20,6 +20,8 @@
 #include "Workspace.h"
 #include "Network.h"
 
+#if !NO_NETWORK
+
 // Let OS set the default timeout:
 #define CONNECTION_TIMEOUT_MS (0)
 #define NUM_CONNECT_ATTEMPTS (3)
@@ -222,3 +224,5 @@ BackendRequest::Response BackendRequest::doRequest(const SerializedData &payload
     processResponse(response, stream.get());
     return response;
 }
+
+#endif

@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "Serializable.h"
 #include "UserSessionDto.h"
 
@@ -53,3 +55,5 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UserSessionInfo)
 };
+
+#endif

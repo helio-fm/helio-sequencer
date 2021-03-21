@@ -21,6 +21,8 @@
 #include "MainLayout.h"
 #include "ProgressTooltip.h"
 
+#if !NO_NETWORK
+
 // Try to update our sliding session after 5 seconds
 #define UPDATE_SESSION_TIMEOUT_MS (1000 * 5)
 
@@ -220,3 +222,5 @@ RequestUserProfileThread *SessionService::prepareProfileRequestThread()
 
     return thread;
 }
+
+#endif

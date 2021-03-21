@@ -22,6 +22,8 @@
 #include "Workspace.h"
 #include "Network.h"
 
+#if !NO_NETWORK
+
 namespace ApiKeys = Serialization::Api::V1;
 namespace ApiRoutes = Routes::Api;
 
@@ -267,3 +269,5 @@ void RevisionsSyncThread::pushSubtreeRecursively(VCS::Revision::Ptr root)
         this->pushSubtreeRecursively(child);
     }
 }
+
+#endif

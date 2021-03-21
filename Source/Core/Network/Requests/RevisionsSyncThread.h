@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "BackendRequest.h"
 #include "VersionControl.h"
 #include "Revision.h"
@@ -59,3 +61,5 @@ private:
 
     friend class BackendService;
 };
+
+#endif

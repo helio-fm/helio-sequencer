@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "Serializable.h"
 #include "SerializationKeys.h"
 
@@ -65,3 +67,5 @@ protected:
 #define DTO_PROPERTY(x) this->data.getProperty(Serialization::Api::V1::x)
 #define DTO_CHILDREN(c, x) this->getChildren<c>(Serialization::Api::V1::x);
 #define DTO_CHILD(x) this->data.getChildWithName(Serialization::Api::V1::x);
+
+#endif

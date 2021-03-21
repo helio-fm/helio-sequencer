@@ -91,9 +91,11 @@ void SettingsNode::recreatePage()
     this->audioSettingsWrapper = make<SettingsFrameWrapper>(this->audioSettings.get(), TRANS(I18n::Settings::audio));
     this->settingsList->addAndMakeVisible(this->audioSettingsWrapper.get());
 
+#if !NO_NETWORK
     this->syncSettings = make<SyncSettings>();
     this->syncSettingsWrapper = make<SettingsFrameWrapper>(this->syncSettings.get(), TRANS(I18n::Settings::sync));
     this->settingsList->addAndMakeVisible(this->syncSettingsWrapper.get());
+#endif
 
     this->settingsPage = make<SettingsPage>(this->settingsList.get());
 }

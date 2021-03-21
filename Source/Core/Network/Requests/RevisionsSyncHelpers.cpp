@@ -18,6 +18,8 @@
 #include "Common.h"
 #include "RevisionsSyncHelpers.h"
 
+#if !NO_NETWORK
+
 void RevisionsSyncHelpers::buildLocalRevisionsIndex(RevisionsMap &map, VCS::Revision::Ptr root)
 {
     map[root->getUuid()] = root;
@@ -131,3 +133,5 @@ VCS::Revision::Ptr RevisionsSyncHelpers::constructRemoteTree(const Array<Revisio
     jassert(root != nullptr);
     return root;
 }
+
+#endif

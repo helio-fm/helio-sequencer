@@ -31,6 +31,8 @@ namespace Routes
         static const String translationsURL = "/translations";
     }
 
+#if !NO_NETWORK
+
     namespace Api
     {
         static const String baseURL = "https://api.helio.fm";
@@ -47,11 +49,20 @@ namespace Routes
         static const String project = "/my/projects/:projectId";
         static const String projectRevision = "/my/projects/:projectId/revisions/:revisionId";
     }
+
+#endif
+
 }
 
 class Network final
 {
 public:
+
+#if NO_NETWORK
+
+    Network(Workspace &) {};
+
+#else
 
     explicit Network(Workspace &workspace);
     ~Network();
@@ -65,6 +76,8 @@ private:
     UniquePointer<SessionService> sessionService;
     UniquePointer<ProjectSyncService> projectSyncService;
     UniquePointer<ResourceSyncService> resourceSyncService;
+
+#endif
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Network)
 };

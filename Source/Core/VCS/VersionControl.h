@@ -78,6 +78,8 @@ public:
     bool quickStashAll();
     bool restoreQuickStash();
 
+#if !NO_NETWORK
+
     //===------------------------------------------------------------------===//
     // Network
     //===------------------------------------------------------------------===//
@@ -90,6 +92,8 @@ public:
     void updateLocalSyncCache(const VCS::Revision::Ptr revision);
     void updateRemoteSyncCache(const Array<RevisionDto> &revisions);
     VCS::Revision::SyncState getRevisionSyncState(const VCS::Revision::Ptr revision) const;
+
+#endif
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -110,9 +114,11 @@ protected:
     VCS::Revision::Ptr getRevisionById(const VCS::Revision::Ptr startFrom, const String &id) const;
 
     VCS::Head head;
-    VCS::RemoteCache remoteCache;
     VCS::StashesRepository::Ptr stashes;
     VCS::Revision::Ptr rootRevision; // the history tree itself
+#if !NO_NETWORK
+    VCS::RemoteCache remoteCache;
+#endif
 
 private:
 

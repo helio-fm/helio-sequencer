@@ -22,6 +22,8 @@
 #include "ProjectSyncService.h"
 #include "ResourceSyncService.h"
 
+#if !NO_NETWORK
+
 Network::Network(Workspace &workspace)
 {
     // Prepare back-end APIs communication services
@@ -51,3 +53,5 @@ ResourceSyncService *Network::getResourceSyncService() const noexcept
 {
     return this->resourceSyncService.get();
 }
+
+#endif

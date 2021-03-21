@@ -31,24 +31,31 @@ public:
 
     UserProfile() = default;
 
-    void updateProfile(const UserProfileDto &dto);
-
+    void onProjectUnloaded(const String &id);
     void onProjectLocalInfoUpdated(const String &id, const String &title, const String &path);
     void onProjectLocalInfoReset(const String &id);
 
-    void onProjectRemoteInfoUpdated(const ProjectDto &info);
     void onProjectRemoteInfoReset(const String &id);
-
-    void onProjectUnloaded(const String &id);
+    void onConfigurationInfoReset(const Identifier &type, const String &name);
 
     void deleteProjectLocally(const String &id);
-    void deleteProjectRemotely(const String &id);
 
     void clearProfileAndSession();
 
-    void onConfigurationInfoUpdated(const UserResourceDto &resource);
-    void onConfigurationInfoReset(const Identifier &type, const String &name);
+#if !NO_NETWORK
 
+    //===------------------------------------------------------------------===//
+    // Network
+    //===------------------------------------------------------------------===//
+
+    void updateProfile(const UserProfileDto &dto);
+
+    void onProjectRemoteInfoUpdated(const ProjectDto &info);
+    void onConfigurationInfoUpdated(const UserResourceDto &resource);
+
+    void deleteProjectRemotely(const String &id);
+
+#endif
 
     //===------------------------------------------------------------------===//
     // Accessors
@@ -65,12 +72,15 @@ public:
 
     bool hasSyncedConfiguration(const Identifier &type, const String &name) const;
 
-    using ProjectsList = ReferenceCountedArray<RecentProjectInfo, CriticalSection>;
+#if !NO_NETWORK
     using SessionsList = ReferenceCountedArray<UserSessionInfo, CriticalSection>;
-    using ResourcesList = ReferenceCountedArray<SyncedConfigurationInfo, CriticalSection>;
-
     const SessionsList &getSessions() const noexcept;
+#endif
+
+    using ProjectsList = ReferenceCountedArray<RecentProjectInfo, CriticalSection>;
     const ProjectsList &getProjects() const noexcept;
+
+    using ResourcesList = ReferenceCountedArray<SyncedConfigurationInfo, CriticalSection>;
     const ResourcesList &getResources() const noexcept;
 
     //===------------------------------------------------------------------===//
@@ -84,7 +94,10 @@ public:
 private:
 
     RecentProjectInfo *findProject(const String &id) const;
+
+#if !NO_NETWORK
     UserSessionInfo *findSession(const String &deviceId) const;
+#endif
 
     Image avatar;
     String avatarThumbnail;
@@ -94,7 +107,9 @@ private:
     String login;
     String profileUrl;
 
+#if !NO_NETWORK
     SessionsList sessions;
+#endif
     ProjectsList projects;
     ResourcesList resources;
 

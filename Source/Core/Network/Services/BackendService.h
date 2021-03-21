@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 class BackendService
 {
 protected:
@@ -68,3 +70,5 @@ protected:
         return nullptr;
     }
 };
+
+#endif

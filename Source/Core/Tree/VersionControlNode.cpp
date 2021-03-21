@@ -203,6 +203,8 @@ UniquePointer<Component> VersionControlNode::createMenu()
     return make<VersionControlMenu>(*this->vcs);
 }
 
+#if !NO_NETWORK
+
 //===----------------------------------------------------------------------===//
 // Network
 //===----------------------------------------------------------------------===//
@@ -216,6 +218,8 @@ void VersionControlNode::cloneProject()
             cloneProject(this->vcs.get(), parentProject->getId());
     }
 }
+
+#endif
 
 //===----------------------------------------------------------------------===//
 // Serializable

@@ -108,6 +108,8 @@ ProjectNode *RootNode::openProject(const File &file)
     return nullptr;
 }
 
+#if !NO_NETWORK
+
 ProjectNode *RootNode::checkoutProject(const String &id, const String &name)
 {
     DBG("Cloning project: " + name);
@@ -127,6 +129,8 @@ ProjectNode *RootNode::checkoutProject(const String &id, const String &name)
 
     return nullptr;
 }
+
+#endif
 
 static ProjectNode *createProjectContentFromTemplate(ProjectNode *project, const String &templateName)
 {

@@ -25,9 +25,10 @@
 #include "SettingsNode.h"
 #include "OrchestraPitNode.h"
 #include "ProjectNode.h"
+#include "SerializationKeys.h"
 #include "CommandPaletteProjectsList.h"
 
-Workspace::Workspace() {}
+Workspace::Workspace() = default;
 
 Workspace::~Workspace()
 {
@@ -200,6 +201,7 @@ bool Workspace::loadRecentProject(RecentProjectInfo::Ptr info)
     {
         return this->treeRoot->openProject(file) != nullptr;
     }
+#if !NO_NETWORK
     else if (info->hasRemoteCopy()) // and not present locally
     {
         if (this->userProfile.isLoggedIn())
@@ -220,6 +222,7 @@ bool Workspace::loadRecentProject(RecentProjectInfo::Ptr info)
             return true;
         }
     }
+#endif
 
     return false;
 }
@@ -274,10 +277,12 @@ void Workspace::unloadProject(const String &projectId, bool deleteLocally, bool 
             this->userProfile.deleteProjectLocally(projectId);
         }
 
+#if !NO_NETWORK
         if (deleteRemotely)
         {
             this->userProfile.deleteProjectRemotely(projectId);
         }
+#endif
     }
     
     if (shouldSwitchToOtherPage)

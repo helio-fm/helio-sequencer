@@ -37,7 +37,10 @@ namespace VCS
         using Ptr = ReferenceCountedObjectPtr<Revision>;
 
         Revision(const String &name = {});
+
+#if !NO_NETWORK
         Revision(const RevisionDto &remoteDescription); // creates shallow copy
+#endif
 
         const ReferenceCountedArray<RevisionItem> &getItems() const noexcept;
         const ReferenceCountedArray<Revision> &getChildren() const noexcept;

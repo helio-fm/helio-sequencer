@@ -26,9 +26,13 @@ class RecentProjectInfo final : public Serializable,
 public:
 
     RecentProjectInfo() = default;
-    RecentProjectInfo(const ProjectDto &remoteInfo);
     RecentProjectInfo(const String &localId,
         const String &localTitle, const String &localPath);
+
+#if !NO_NETWORK
+    RecentProjectInfo(const ProjectDto &remoteInfo);
+    void updateRemoteInfo(const ProjectDto &remoteInfo);
+#endif
 
     Time getUpdatedAt() const noexcept;
     String getProjectId() const noexcept;
@@ -39,7 +43,6 @@ public:
     bool hasRemoteCopy() const noexcept;
     bool isValid() const;
 
-    void updateRemoteInfo(const ProjectDto &remoteInfo);
     void updateLocalInfo(const String &localId, const String &localTitle, const String &localPath);
     void updateLocalTimestampAsNow();
 

@@ -18,6 +18,9 @@
 #include "Common.h"
 #include "RecentProjectInfo.h"
 #include "DocumentHelpers.h"
+#include "SerializationKeys.h"
+
+#if !NO_NETWORK
 
 RecentProjectInfo::RecentProjectInfo(const ProjectDto &remoteInfo) :
     projectId(remoteInfo.getId()),
@@ -27,14 +30,6 @@ RecentProjectInfo::RecentProjectInfo(const ProjectDto &remoteInfo) :
     this->updateRemoteInfo(remoteInfo);
 }
 
-RecentProjectInfo::RecentProjectInfo(const String &localId,
-    const String &localTitle, const String &localPath) :
-    projectId(localId),
-    local(new LocalInfo()),
-    remote(nullptr)
-{
-    this->updateLocalInfo(localId, localTitle, localPath);
-}
 
 void RecentProjectInfo::updateRemoteInfo(const ProjectDto &remoteInfo)
 {
@@ -47,6 +42,17 @@ void RecentProjectInfo::updateRemoteInfo(const ProjectDto &remoteInfo)
     this->remote->title = remoteInfo.getTitle();
     this->remote->alias = remoteInfo.getAlias();
     this->remote->lastModifiedMs = remoteInfo.getUpdateTime();
+}
+
+#endif
+
+RecentProjectInfo::RecentProjectInfo(const String &localId,
+    const String &localTitle, const String &localPath) :
+    projectId(localId),
+    local(new LocalInfo()),
+    remote(nullptr)
+{
+    this->updateLocalInfo(localId, localTitle, localPath);
 }
 
 void RecentProjectInfo::updateLocalInfo(const String &localId,

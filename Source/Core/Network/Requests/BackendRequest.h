@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "JsonSerializer.h"
 
 class BackendRequest final
@@ -72,3 +74,5 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BackendRequest)
 };
+
+#endif

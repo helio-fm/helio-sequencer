@@ -22,6 +22,8 @@
 #include "MainLayout.h"
 #include "ProgressTooltip.h"
 
+#if !NO_NETWORK
+
 void ProjectSyncService::fetchRevisionsInfo(WeakReference<VersionControl> vcs,
     const String &projectId, const String &projectName)
 {
@@ -169,3 +171,5 @@ ProjectDeleteThread *ProjectSyncService::prepareProjectDeleteThread()
 
     return thread;
 }
+
+#endif

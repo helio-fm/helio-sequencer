@@ -16,6 +16,9 @@
 */
 
 #include "Common.h"
+
+#if !NO_NETWORK
+
 #include "RemoteCache.h"
 
 namespace VCS
@@ -26,6 +29,8 @@ bool RemoteCache::hasRevisionTracked(const Revision::Ptr revision) const
     ScopedReadLock lock(this->cacheLock);
     return this->fetchCache.contains(revision->getUuid());
 }
+
+#if !NO_NETWORK
 
 void RemoteCache::updateForRemoteRevisions(const Array<RevisionDto> &revisions)
 {
@@ -39,6 +44,8 @@ void RemoteCache::updateForRemoteRevisions(const Array<RevisionDto> &revisions)
 
     this->lastSyncTime = Time::getCurrentTime();
 }
+
+#endif
 
 void RemoteCache::updateForLocalRevision(const Revision::Ptr revision)
 {
@@ -102,3 +109,5 @@ void RemoteCache::reset()
 }
 
 }
+
+#endif

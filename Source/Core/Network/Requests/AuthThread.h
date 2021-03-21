@@ -17,6 +17,8 @@
 
 #pragma once
 
+#if !NO_NETWORK
+
 #include "BackendRequest.h"
 #include "SerializationKeys.h"
 #include "AuthSessionDto.h"
@@ -127,3 +129,5 @@ private:
 
     friend class BackendService;
 };
+
+#endif
