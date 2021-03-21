@@ -898,9 +898,9 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->bgCacheB = {};
     this->bgCacheC = {};
 
-    PanelBackgroundA::updateRender(*this);
-    PanelBackgroundB::updateRender(*this);
-    PanelBackgroundC::updateRender(*this);
+    PanelBackgroundA::redrawBgCache(*this);
+    PanelBackgroundB::redrawBgCache(*this);
+    PanelBackgroundC::redrawBgCache(*this);
 
     Icons::clearPrerenderedCache();
 }

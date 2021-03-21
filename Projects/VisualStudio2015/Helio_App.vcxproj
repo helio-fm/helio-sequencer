@@ -546,15 +546,6 @@
     <ClCompile Include="..\..\Source\UI\Themes\HelioTheme.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\Icons.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\FramePanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\PanelBackgroundA.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\PanelBackgroundB.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\PanelBackgroundC.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\SeparatorHorizontal.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\SeparatorHorizontalReversed.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\SeparatorHorizontalFading.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\SeparatorHorizontalFadingReversed.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\SeparatorVertical.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Themes\SeparatorVerticalSkew.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\ViewportKineticSlider.cpp"/>
     <ClCompile Include="..\..\Source\UI\MainLayout.cpp"/>
     <ClCompile Include="..\..\Source\Common.cpp">

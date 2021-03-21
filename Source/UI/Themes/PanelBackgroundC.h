@@ -17,33 +17,47 @@
 
 #pragma once
 
-//[Headers]
-class HelioTheme;
-//[/Headers]
-
+#include "HelioTheme.h"
+#include "ColourIDs.h"
 
 class PanelBackgroundC final : public Component
 {
 public:
 
-    PanelBackgroundC();
-    ~PanelBackgroundC();
+    PanelBackgroundC()
+    {
+        this->setOpaque(true);
+        this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+    }
 
-    //[UserMethods]
-    static void updateRender(HelioTheme &theme);
-    //[/UserMethods]
+    ~PanelBackgroundC() override = default;
 
-    void paint (Graphics& g) override;
-    void resized() override;
+    void paint(Graphics &g) override
+    {
+        const auto &theme = HelioTheme::getCurrentTheme();
+        g.setTiledImageFill(theme.getBgCacheC(), 0, 0, 1.f);
+        g.fillRect(this->getLocalBounds());
+    }
 
+    static void redrawBgCache(HelioTheme &theme)
+    {
+        if (theme.getBgCacheC().isValid())
+        {
+            return;
+        }
+
+        constexpr int w = 128;
+        constexpr int h = 128;
+        Image render(Image::ARGB, w, h, true);
+        Graphics g(render);
+        g.setColour(theme.findColour(ColourIDs::BackgroundC::fill));
+        g.fillAll();
+        HelioTheme::drawNoise(theme, g);
+        theme.getBgCacheC() = render;
+    }
 
 private:
 
-    //[UserVariables]
-    FillType fillType;
-    Image bgCache;
-    //[/UserVariables]
-
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PanelBackgroundC)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PanelBackgroundC)
 };

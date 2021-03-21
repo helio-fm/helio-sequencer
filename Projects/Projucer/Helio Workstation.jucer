@@ -1329,40 +1329,22 @@
           <FILE id="cuElFX" name="Icons.h" compile="0" resource="0" file="../../Source/UI/Themes/Icons.h"/>
           <FILE id="assiuD" name="FramePanel.cpp" compile="1" resource="0" file="../../Source/UI/Themes/FramePanel.cpp"/>
           <FILE id="jNvXXq" name="FramePanel.h" compile="0" resource="0" file="../../Source/UI/Themes/FramePanel.h"/>
-          <FILE id="pX96CH" name="PanelBackgroundA.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/PanelBackgroundA.cpp"/>
           <FILE id="oQQzCv" name="PanelBackgroundA.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/PanelBackgroundA.h"/>
-          <FILE id="fk6Fcu" name="PanelBackgroundB.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/PanelBackgroundB.cpp"/>
           <FILE id="wvlbF9" name="PanelBackgroundB.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/PanelBackgroundB.h"/>
-          <FILE id="Gcj7RL" name="PanelBackgroundC.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/PanelBackgroundC.cpp"/>
           <FILE id="IxtKep" name="PanelBackgroundC.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/PanelBackgroundC.h"/>
-          <FILE id="Xbp07z" name="SeparatorHorizontal.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/SeparatorHorizontal.cpp"/>
           <FILE id="kpXD8z" name="SeparatorHorizontal.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/SeparatorHorizontal.h"/>
-          <FILE id="cGTkk3" name="SeparatorHorizontalReversed.cpp" compile="1"
-                resource="0" file="../../Source/UI/Themes/SeparatorHorizontalReversed.cpp"/>
           <FILE id="mbySv0" name="SeparatorHorizontalReversed.h" compile="0"
                 resource="0" file="../../Source/UI/Themes/SeparatorHorizontalReversed.h"/>
-          <FILE id="pgoutb" name="SeparatorHorizontalFading.cpp" compile="1"
-                resource="0" file="../../Source/UI/Themes/SeparatorHorizontalFading.cpp"/>
           <FILE id="Cpbh1D" name="SeparatorHorizontalFading.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/SeparatorHorizontalFading.h"/>
-          <FILE id="HDkZZ0" name="SeparatorHorizontalFadingReversed.cpp" compile="1"
-                resource="0" file="../../Source/UI/Themes/SeparatorHorizontalFadingReversed.cpp"/>
           <FILE id="QqvspI" name="SeparatorHorizontalFadingReversed.h" compile="0"
                 resource="0" file="../../Source/UI/Themes/SeparatorHorizontalFadingReversed.h"/>
-          <FILE id="cUC5pT" name="SeparatorVertical.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/SeparatorVertical.cpp"/>
           <FILE id="seMoCv" name="SeparatorVertical.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/SeparatorVertical.h"/>
-          <FILE id="aeIWOM" name="SeparatorVerticalSkew.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/SeparatorVerticalSkew.cpp"/>
           <FILE id="BQbE3d" name="SeparatorVerticalSkew.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/SeparatorVerticalSkew.h"/>
           <FILE id="IwZtBU" name="ShadowComponent.h" compile="0" resource="0"

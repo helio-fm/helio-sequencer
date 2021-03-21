@@ -17,33 +17,73 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
+#include "HelioTheme.h"
 
 class SeparatorVerticalSkew final : public Component
 {
 public:
 
-    SeparatorVerticalSkew();
-    ~SeparatorVerticalSkew();
+    SeparatorVerticalSkew()
+    {
+        this->setInterceptsMouseClicks(false, false);
+    }
 
-    //[UserMethods]
-    //[/UserMethods]
+    ~SeparatorVerticalSkew() override = default;
 
-    void paint (Graphics& g) override;
-    void resized() override;
+    void paint(Graphics &g) override
+    {
+        const auto &theme = HelioTheme::getCurrentTheme();
 
+        if (theme.getBgCacheA().isValid())
+        {
+            g.setTiledImageFill(theme.getBgCacheA(), 0, 0, 1.f);
+            g.fillPath(this->shape2, {});
+        }
+
+        if (theme.getBgCacheB().isValid())
+        {
+            g.setTiledImageFill(theme.getBgCacheB(), 0, 0, 1.f);
+            g.fillPath(this->shape1, {});
+        }
+
+        g.setColour(Colours::black.withAlpha(45.f / 255.f));
+        g.fillPath(this->line1, {});
+
+        g.setColour(Colours::white.withAlpha(15.f / 255.f));
+        g.fillPath(this->line2, {});
+    }
+
+    void resized() override
+    {
+        const float h = float(this->getHeight());
+        const float w = float(this->getWidth());
+
+        this->line1.clear();
+        this->line1.addLineSegment({ w, 0.f, 1.f, h }, 0.5f);
+
+        this->line2.clear();
+        this->line2.addLineSegment({ w - 1.f, 0.f, 0.f, h }, 0.75f);
+
+        this->shape1.clear();
+        this->shape1.startNewSubPath(float(this->getWidth()), 0.f);
+        this->shape1.lineTo(float(this->getWidth()), float(this->getHeight()));
+        this->shape1.lineTo(-1.f, float(this->getHeight()));
+        this->shape1.closeSubPath();
+
+        this->shape2.clear();
+        this->shape2.startNewSubPath(float(this->getWidth() + 1), 0.f);
+        this->shape2.lineTo(0.f, 0.f);
+        this->shape2.lineTo(0.f, float(this->getHeight()));
+        this->shape2.closeSubPath();
+    }
 
 private:
 
-    //[UserVariables]
     Path line1;
     Path line2;
-    //[/UserVariables]
 
-    Path internalPath1;
-    Path internalPath2;
+    Path shape1;
+    Path shape2;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SeparatorVerticalSkew)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SeparatorVerticalSkew)
 };

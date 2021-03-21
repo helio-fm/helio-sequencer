@@ -17,29 +17,28 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-
 class SeparatorVertical final : public Component
 {
 public:
 
-    SeparatorVertical();
-    ~SeparatorVertical();
+    SeparatorVertical()
+    {
+        this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+    }
 
-    //[UserMethods]
-    //[/UserMethods]
+    ~SeparatorVertical() override = default;
 
-    void paint (Graphics& g) override;
-    void resized() override;
+    void paint(Graphics &g) override
+    {
+        g.setColour(Colour(0x09ffffff));
+        g.fillRect(0, 0, 1, this->getHeight());
 
+        g.setColour(Colour(0x0b000000));
+        g.fillRect(1, 0, 1, this->getHeight());
+    }
 
 private:
 
-    //[UserVariables]
-    //[/UserVariables]
-
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SeparatorVertical)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SeparatorVertical)
 };

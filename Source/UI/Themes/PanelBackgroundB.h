@@ -17,31 +17,55 @@
 
 #pragma once
 
-//[Headers]
-class HelioTheme;
-//[/Headers]
-
+#include "HelioTheme.h"
+#include "ColourIDs.h"
 
 class PanelBackgroundB final : public Component
 {
 public:
 
-    PanelBackgroundB();
-    ~PanelBackgroundB();
+    PanelBackgroundB()
+    {
+        this->setOpaque(true);
+        this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+    }
 
-    //[UserMethods]
-    static void updateRender(HelioTheme &theme);
-    //[/UserMethods]
+    ~PanelBackgroundB() override = default;
 
-    void paint (Graphics& g) override;
-    void resized() override;
+    void paint(Graphics &g) override
+    {
+        const auto &theme = HelioTheme::getCurrentTheme();
+        //if (theme.getBgCacheB().isValid())
+        //{
+        g.setTiledImageFill(theme.getBgCacheB(), 0, 0, 1.f);
+        g.fillRect(this->getLocalBounds());
+        //}
+        //else
+        //{
+        //    g.setColour(findDefaultColour(ColourIDs::BackgroundB::fill));
+        //    g.fillRect(this->getLocalBounds());
+        //}
+    }
 
+    static void redrawBgCache(HelioTheme &theme)
+    {
+        if (theme.getBgCacheB().isValid())
+        {
+            return;
+        }
+
+        constexpr int w = 128;
+        constexpr int h = 128;
+        Image render(Image::ARGB, w, h, true);
+        Graphics g(render);
+        g.setColour(theme.findColour(ColourIDs::BackgroundB::fill));
+        g.fillAll();
+        HelioTheme::drawNoise(theme, g, 0.5f);
+        theme.getBgCacheB() = render;
+    }
 
 private:
 
-    //[UserVariables]
-    //[/UserVariables]
-
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PanelBackgroundB)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PanelBackgroundB)
 };

@@ -1444,33 +1444,6 @@
     <ClCompile Include="..\..\Source\UI\Themes\FramePanel.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\PanelBackgroundA.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\PanelBackgroundB.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\PanelBackgroundC.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\SeparatorHorizontal.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\SeparatorHorizontalReversed.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\SeparatorHorizontalFading.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\SeparatorHorizontalFadingReversed.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\SeparatorVertical.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\SeparatorVerticalSkew.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\ViewportKineticSlider.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>

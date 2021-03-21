@@ -17,31 +17,36 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-
 class SeparatorHorizontal final : public Component
 {
 public:
 
-    SeparatorHorizontal();
-    ~SeparatorHorizontal();
+    SeparatorHorizontal()
+    {
+        this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+    }
 
-    //[UserMethods]
-    void setAlphaMultiplier(float a);
-    //[/UserMethods]
+    ~SeparatorHorizontal() override = default;
 
-    void paint (Graphics& g) override;
-    void resized() override;
+    void setAlphaMultiplier(float a)
+    {
+        this->alphaFactor = a;
+        this->repaint();
+    }
 
+    void paint(Graphics &g) override
+    {
+        g.setColour(Colours::black.withAlpha(11.f / 255.f * this->alphaFactor));
+        g.fillRect(0, 0, this->getWidth(), 1);
 
+        g.setColour(Colours::white.withAlpha(9.f / 255.f * this->alphaFactor));
+        g.fillRect(0, 1, this->getWidth(), 1);
+    }
+    
 private:
 
-    //[UserVariables]
-    float alphaFactor;
-    //[/UserVariables]
+    float alphaFactor = 1.f;
 
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SeparatorHorizontal)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SeparatorHorizontal)
 };

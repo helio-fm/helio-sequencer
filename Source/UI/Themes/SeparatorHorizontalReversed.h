@@ -17,29 +17,28 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-
 class SeparatorHorizontalReversed final : public Component
 {
 public:
 
-    SeparatorHorizontalReversed();
-    ~SeparatorHorizontalReversed();
+    SeparatorHorizontalReversed()
+    {
+        this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+    }
 
-    //[UserMethods]
-    //[/UserMethods]
+    ~SeparatorHorizontalReversed() override = default;
 
-    void paint (Graphics& g) override;
-    void resized() override;
+    void paint(Graphics &g) override
+    {
+        g.setColour(Colours::white.withAlpha(11.f / 255.f));
+        g.fillRect(0, 0, this->getWidth(), 1);
 
+        g.setColour(Colours::black.withAlpha(45.f / 255.f));
+        g.fillRect(0, 1, this->getWidth(), 1);
+    }
 
 private:
 
-    //[UserVariables]
-    //[/UserVariables]
-
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SeparatorHorizontalReversed)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SeparatorHorizontalReversed)
 };
