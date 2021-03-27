@@ -40,9 +40,13 @@ public:
         virtual ~Listener() = default;
         virtual void onScalesHighlightingFlagChanged(bool enabled) {}
         virtual void onNoteNameGuidesFlagChanged(bool enabled) {}
+
         virtual void onOpenGlRendererFlagChanged(bool enabled) {}
         virtual void onNativeTitleBarFlagChanged(bool enabled) {}
+
         virtual void onVelocityMapVisibilityFlagChanged(bool visible) {}
+        virtual void onProjectMapVisibilityFlagChanged(bool showFullMap) {}
+
         virtual void onUiAnimationsFlagChanged(bool enabled) {}
         virtual void onMouseWheelFlagsChanged(MouseWheelFlags flags) {}
     };
@@ -75,6 +79,10 @@ public:
     void setVelocityMapVisible(bool visible);
     void toggleVelocityMapVisibility();
 
+    bool isFullProjectMapVisible() const noexcept;
+    void setFullProjectMapVisible(bool visible);
+    void toggleFullProjectMapVisibility();
+
     bool areExperimentalFeaturesEnabled() const noexcept;
 
     bool areUiAnimationsEnabled() const noexcept;
@@ -96,7 +104,9 @@ private:
 
     bool noteNameGuides = false;
     bool scalesHighlighting = true;
+
     bool velocityMapVisible = false;
+    bool fullProjectMapVisible = true;
 
 #if JUCE_ANDROID
     // OpenGL seems to be the only sensible option on Android:

@@ -114,6 +114,28 @@ void UserInterfaceFlags::toggleVelocityMapVisibility()
     this->setVelocityMapVisible(!this->velocityMapVisible);
 }
 
+bool UserInterfaceFlags::isFullProjectMapVisible() const noexcept
+{
+    return this->fullProjectMapVisible;
+}
+
+void UserInterfaceFlags::setFullProjectMapVisible(bool visible)
+{
+    if (this->fullProjectMapVisible == visible)
+    {
+        return;
+    }
+
+    this->fullProjectMapVisible = visible;
+    this->listeners.call(&Listener::onProjectMapVisibilityFlagChanged, this->fullProjectMapVisible);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
+void UserInterfaceFlags::toggleFullProjectMapVisibility()
+{
+    this->setFullProjectMapVisible(!this->fullProjectMapVisible);
+}
+
 bool UserInterfaceFlags::areExperimentalFeaturesEnabled() const noexcept
 {
     return this->experimentalFeaturesOn;
@@ -180,6 +202,8 @@ SerializedData UserInterfaceFlags::serialize() const
     tree.setProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     tree.setProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     tree.setProperty(UI::Flags::animations, this->rollAnimationsEnabled);
+    tree.setProperty(UI::Flags::showFullProjectMap, this->fullProjectMapVisible);
+
     tree.setProperty(UI::Flags::mouseWheelPanningByDefault, this->mouseWheelFlags.usePanningByDefault);
     tree.setProperty(UI::Flags::mouseWheelVerticalByDefault, this->mouseWheelFlags.useVerticalDirectionByDefault);
     // skips experimentalFeaturesOn, it's read only
@@ -204,6 +228,7 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->useOpenGLRenderer = root.getProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     this->useNativeTitleBar = root.getProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     this->rollAnimationsEnabled = root.getProperty(UI::Flags::animations, this->rollAnimationsEnabled);
+    this->fullProjectMapVisible = root.getProperty(UI::Flags::showFullProjectMap, this->fullProjectMapVisible);
 
     this->mouseWheelFlags.usePanningByDefault =
         root.getProperty(UI::Flags::mouseWheelPanningByDefault, this->mouseWheelFlags.usePanningByDefault);

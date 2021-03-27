@@ -1207,7 +1207,7 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::ShowChordPanel:
         this->showChordTool(ToolType::ChordPreview, this->getDefaultPositionForPopup());
         break;
-    case CommandIDs::ShowVolumePanel:
+    case CommandIDs::ToggleVolumePanel:
         if (Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown())
         {
             // alternative mode:

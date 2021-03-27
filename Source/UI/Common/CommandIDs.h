@@ -177,11 +177,12 @@ namespace CommandIDs
         NotesVolumeDown                 = 0x4038,
 
         ShowArpeggiatorsPanel           = 0x4040,
-        ShowVolumePanel                 = 0x4041,
-        ShowRescalePanel                = 0x4042,
-        ShowScalePanel                  = 0x4043,
-        ShowChordPanel                  = 0x4044,
-        ShowNewTrackPanel               = 0x4045,
+        ShowRescalePanel                = 0x4041,
+        ShowScalePanel                  = 0x4042,
+        ShowChordPanel                  = 0x4043,
+        ShowNewTrackPanel               = 0x4044,
+        ToggleVolumePanel               = 0x4045,
+        ToggleBottomMiniMap             = 0x4046,
 
         // Version control
         VersionControlToggleQuickStash  = 0x4060,

@@ -1259,6 +1259,9 @@ void HybridRoll::handleCommandMessage(int commandId)
             this->setSpaceDraggingMode(false);
         }
         break;
+    case CommandIDs::ToggleBottomMiniMap:
+        App::Config().getUiFlags()->toggleFullProjectMapVisibility();
+        break;
     case CommandIDs::TransportRecordingAwait:
         if (this->getTransport().isRecording())
         {

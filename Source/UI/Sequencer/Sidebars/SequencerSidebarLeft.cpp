@@ -287,7 +287,7 @@ void SequencerSidebarLeft::recreateMenu()
             toggledIf(this->noteNameGuidesEnabled)->
             withTooltip(TRANS(I18n::Tooltips::toggleNoteGuides)));
 
-        this->menu.add(MenuItem::item(Icons::volume, CommandIDs::ShowVolumePanel)->
+        this->menu.add(MenuItem::item(Icons::volume, CommandIDs::ToggleVolumePanel)->
             toggledIf(this->velocityMapVisible)->
             withTooltip(TRANS(I18n::Tooltips::toggleVolumePanel)));
     }

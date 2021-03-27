@@ -229,7 +229,6 @@
       { "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
 
       // Panels
-      { "command": "ShowVolumePanel", "key": "V" },
       { "command": "ShowArpeggiatorsPanel", "key": "A" },
       { "command": "CreateArpeggiatorFromSelection", "key": "Shift + A" },
       { "command": "ShowRescalePanel", "key": "R" },
@@ -239,6 +238,8 @@
       // Other toggles
       { "command": "ToggleScalesHighlighting", "key": "H" },
       { "command": "ToggleNoteNameGuides", "key": "G" },
+      { "command": "ToggleBottomMiniMap", "key": "B" },
+      { "command": "ToggleVolumePanel", "key": "V" },
 
       // Various
       { "command": "DuplicateTrack", "key": "F5" },
@@ -333,6 +334,7 @@
       { "command": "BeatShiftRight", "key": "Cursor Right" },
 
       // Various
+      { "command": "ToggleBottomMiniMap", "key": "B" },
       { "command": "DuplicateTrack", "key": "F5" },
       { "command": "InstanceToUniqueTrack", "key": "F6" },
       { "command": "EditCurrentInstrument", "key": "F4" }
