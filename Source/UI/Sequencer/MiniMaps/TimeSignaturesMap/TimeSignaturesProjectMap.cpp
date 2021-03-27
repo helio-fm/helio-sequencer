@@ -70,8 +70,6 @@ void TimeSignaturesProjectMap::updateTrackRangeIndicatorsAnchors()
 
 void TimeSignaturesProjectMap::resized()
 {
-    this->setVisible(false);
-
     TimeSignatureComponent *previous = nullptr;
 
     for (int i = 0; i < this->timeSignatureComponents.size(); ++i)
@@ -92,8 +90,6 @@ void TimeSignaturesProjectMap::resized()
     }
     
     this->updateTrackRangeIndicatorsAnchors();
-    
-    this->setVisible(true);
 }
 
 
@@ -359,8 +355,6 @@ void TimeSignaturesProjectMap::reloadTrackMap()
     this->timeSignatureComponents.clear();
     this->timeSignaturesHash.clear();
 
-    this->setVisible(false);
-
     MidiSequence *sequence = this->project.getTimeline()->getTimeSignatures()->getSequence();
 
     for (int j = 0; j < sequence->size(); ++j)
@@ -379,7 +373,6 @@ void TimeSignaturesProjectMap::reloadTrackMap()
     }
 
     this->resized();
-    this->setVisible(true);
 }
 
 void TimeSignaturesProjectMap::applyTimeSignatureBounds(TimeSignatureComponent *nc, TimeSignatureComponent *nextOne)

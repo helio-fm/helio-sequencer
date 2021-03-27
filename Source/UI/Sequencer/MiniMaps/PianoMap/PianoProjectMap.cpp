@@ -45,6 +45,12 @@ PianoProjectMap::~PianoProjectMap()
     this->project.removeListener(this);
 }
 
+void PianoProjectMap::setAlphaMultiplier(float alpha)
+{
+    this->alphaMultiplier = alpha;
+    this->repaint();
+}
+
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -69,7 +75,8 @@ void PianoProjectMap::paint(Graphics &g)
 
         g.setColour(c.first.getTrackColour().
             interpolatedWith(this->baseColour, .4f).
-            withAlpha(isActiveClip ? .9f : .6f));
+            withAlpha(isActiveClip ?
+                this->alphaMultiplier * .9f : this->alphaMultiplier * .65f));
 
         for (const auto &n : *sequenceMap)
         {

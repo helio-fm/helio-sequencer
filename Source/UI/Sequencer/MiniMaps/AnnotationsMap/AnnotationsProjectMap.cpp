@@ -50,8 +50,6 @@ AnnotationsProjectMap::~AnnotationsProjectMap()
 
 void AnnotationsProjectMap::resized()
 {
-    this->setVisible(false);
-
     AnnotationComponent *previous = nullptr;
 
     for (int i = 0; i < this->annotationComponents.size(); ++i)
@@ -70,8 +68,6 @@ void AnnotationsProjectMap::resized()
 
         previous = current;
     }
-
-    this->setVisible(true);
 }
 
 
@@ -336,8 +332,6 @@ void AnnotationsProjectMap::reloadTrackMap()
     this->annotationComponents.clear();
     this->annotationsHash.clear();
 
-    this->setVisible(false);
-
     auto *sequence = this->project.getTimeline()->getAnnotations()->getSequence();
 
     for (int j = 0; j < sequence->size(); ++j)
@@ -356,7 +350,6 @@ void AnnotationsProjectMap::reloadTrackMap()
     }
 
     this->resized();
-    this->setVisible(true);
 }
 
 void AnnotationsProjectMap::applyAnnotationBounds(AnnotationComponent *ac, AnnotationComponent *nextOne)

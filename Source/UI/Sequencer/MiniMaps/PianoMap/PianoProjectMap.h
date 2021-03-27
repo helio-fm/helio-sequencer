@@ -35,6 +35,8 @@ public:
     PianoProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll);
     ~PianoProjectMap() override;
 
+    void setAlphaMultiplier(float alpha);
+
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
@@ -78,6 +80,8 @@ private:
     float rollLastBeat = Globals::Defaults::projectLength;
 
     float componentHeight = 1.f;
+
+    float alphaMultiplier = 1.f;
 
     int keyboardSize = Globals::twelveToneKeyboardSize;
 

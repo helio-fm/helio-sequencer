@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "ProjectMapScroller.h"
 #include "ProjectMapScrollerScreen.h"
+#include "PianoProjectMap.h"
 #include "Playhead.h"
 #include "Transport.h"
 #include "HybridRoll.h"
@@ -157,7 +158,7 @@ void ProjectMapScroller::xMoveByUser()
 
 void ProjectMapScroller::toggleStretchingMapAlaSublime()
 {
-    this->mapShouldBeStretched = !this->mapShouldBeStretched;
+    this->stretchedMapsFlag = !this->stretchedMapsFlag;
     this->resized();
 }
 
@@ -172,9 +173,9 @@ void ProjectMapScroller::resized()
     this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(p);
     
-    for (int i = 0; i < this->trackMaps.size(); ++i)
+    for (auto *map : this->trackMaps)
     {
-        this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
+        map->setBounds(this->getMapBounds());
     }
 }
 
@@ -193,7 +194,7 @@ void ProjectMapScroller::paint(Graphics &g)
 
 void ProjectMapScroller::mouseDrag(const MouseEvent &event)
 {
-    if (! this->mapShouldBeStretched)
+    if (! this->stretchedMode())
     {
         this->screenRange->setRealBounds(this->screenRange->getRealBounds().withCentre(event.position));
         this->xyMoveByUser();
@@ -312,24 +313,27 @@ void ProjectMapScroller::timerCallback()
 
 void ProjectMapScroller::handleAsyncUpdate()
 {
+    this->updateAllBounds();
+}
+
+void ProjectMapScroller::updateAllBounds()
+{
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
     this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(p);
-    
-    for (int i = 0; i < this->trackMaps.size(); ++i)
+
+    for (auto *map : this->trackMaps)
     {
-        this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
+        map->setBounds(this->getMapBounds());
     }
-    
+
     this->playhead->parentSizeChanged(); // a hack: also update playhead position
 }
 
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
-
-#define INDICATOR_FIXED_WIDTH (150)
 
 Rectangle<float> ProjectMapScroller::getIndicatorBounds() const noexcept
 {
@@ -340,8 +344,8 @@ Rectangle<float> ProjectMapScroller::getIndicatorBounds() const noexcept
     const float rollWidth = float(this->roll->getWidth());
     const float rollInvisibleArea = rollWidth - viewWidth;
     const float trackWidth = float(this->getWidth());
-    const float trackInvisibleArea = float(this->getWidth() - INDICATOR_FIXED_WIDTH);
-    const float mapWidth = ((INDICATOR_FIXED_WIDTH * rollWidth) / viewWidth);
+    const float trackInvisibleArea = float(this->getWidth() - ProjectMapScroller::screenRangeWidth);
+    const float mapWidth = (ProjectMapScroller::screenRangeWidth * rollWidth) / viewWidth;
 
     const float zoomFactorY = this->roll->getZoomFactorY();
     const float rollHeaderHeight = float(Globals::UI::rollHeaderHeight);
@@ -353,15 +357,15 @@ Rectangle<float> ProjectMapScroller::getIndicatorBounds() const noexcept
     const float rY = roundf(trackHeight * (viewY / rollHeight)) - trackHeaderHeight;
     const float rH = (trackHeight * zoomFactorY);
 
-    if (mapWidth <= trackWidth || !this->mapShouldBeStretched)
+    if (mapWidth <= trackWidth || !this->stretchedMode())
     {
         const float rX = ((trackWidth * viewX) / rollWidth);
         const float rW = (trackWidth * this->roll->getZoomFactorX());
         return { rX, rY, rW, rH };
     }
 
-    const float rX = ((trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth));
-    const float rW = INDICATOR_FIXED_WIDTH;
+    const float rX = (trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth);
+    const float rW = ProjectMapScroller::screenRangeWidth;
     return { rX, rY, rW, rH };
 }
 
@@ -374,17 +378,50 @@ Rectangle<int> ProjectMapScroller::getMapBounds() const noexcept
     const float rollWidth = float(this->roll->getWidth());
     const float rollInvisibleArea = rollWidth - viewWidth;
     const float trackWidth = float(this->getWidth());
-    const float trackInvisibleArea = float(this->getWidth() - INDICATOR_FIXED_WIDTH);
-    const float mapWidth = ((INDICATOR_FIXED_WIDTH * rollWidth) / viewWidth);
+    const float trackInvisibleArea = float(this->getWidth() - ProjectMapScroller::screenRangeWidth);
+    const float mapWidth = (ProjectMapScroller::screenRangeWidth * rollWidth) / viewWidth;
 
-    if (mapWidth <= trackWidth || !this->mapShouldBeStretched)
+    if (mapWidth <= trackWidth || !this->stretchedMode())
     {
         return { 0, 0, int(trackWidth), this->getHeight() };
     }
 
-    const float rX = ((trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth));
+    const float rX = (trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth);
     const float dX = (viewX * mapWidth) / rollWidth;
     return { int(rX - dX), 0, int(mapWidth), this->getHeight() };
+}
+
+void ProjectMapScroller::setScrollerMode(ScrollerMode mode)
+{
+    if (this->scrollerMode == mode)
+    {
+        return;
+    }
+
+    this->scrollerMode = mode;
+    const auto isFullMap = mode == ScrollerMode::Map;
+
+    for (auto *map : this->trackMaps)
+    {
+        if (auto *pianoMap = dynamic_cast<PianoProjectMap *>(map))
+        {
+            pianoMap->setAlphaMultiplier(isFullMap ? 1.f : 0.5f);
+        }
+        else
+        {
+            map->setVisible(isFullMap);
+        }
+    }
+
+    this->screenRange->setVisible(isFullMap);
+    this->helperRectangle->setAlphaMultiplier(isFullMap ? 0.3f : 1.f);
+
+    this->updateAllBounds();
+}
+
+ProjectMapScroller::ScrollerMode ProjectMapScroller::getScrollerMode() const noexcept
+{
+    return this->scrollerMode;
 }
 
 //===----------------------------------------------------------------------===//
@@ -410,7 +447,6 @@ private:
 };
 
 ProjectMapScroller::HorizontalDragHelper::HorizontalDragHelper(ProjectMapScroller &scrollerRef) :
-    colour(findDefaultColour(ColourIDs::TrackScroller::scrollerFill)),
     scroller(scrollerRef)
 {
     this->setPaintingIsUnclipped(true);
@@ -418,9 +454,17 @@ ProjectMapScroller::HorizontalDragHelper::HorizontalDragHelper(ProjectMapScrolle
     this->setMouseClickGrabsKeyboardFocus(false);
     this->toBack();
 
+    this->setAlphaMultiplier(0.3f);
+
     this->moveConstrainer = make<HorizontalDragHelperConstrainer>(this->scroller);
     this->moveConstrainer->setMinimumSize(4, 4);
     this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
+}
+
+void ProjectMapScroller::HorizontalDragHelper::setAlphaMultiplier(float alpha)
+{
+    this->colour = findDefaultColour(ColourIDs::TrackScroller::scrollerFill).withMultipliedAlpha(alpha);
+    this->repaint();
 }
 
 void ProjectMapScroller::HorizontalDragHelper::mouseDown(const MouseEvent &e)

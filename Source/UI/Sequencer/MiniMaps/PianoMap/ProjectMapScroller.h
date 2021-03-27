@@ -99,7 +99,8 @@ public:
         void mouseDown(const MouseEvent &e) override;
         void mouseDrag(const MouseEvent &e) override;
         void paint(Graphics &g) override;
-        
+        void setAlphaMultiplier(float alpha);
+
     private:
         
         Colour colour;
@@ -107,8 +108,30 @@ public:
         ComponentDragger dragger;
         UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
     };
-    
-protected:
+
+public:
+
+    enum class ScrollerMode : int
+    {
+        Map,
+        Scroller
+    };
+
+    void setScrollerMode(ScrollerMode mode);
+    ScrollerMode getScrollerMode() const noexcept;
+
+private:
+
+    ScrollerMode scrollerMode = ScrollerMode::Map;
+
+    bool stretchedMapsFlag = true;
+    bool stretchedMode() const noexcept
+    {
+        // no stretching in the scroller mode
+        return this->scrollerMode == ScrollerMode::Map && this->stretchedMapsFlag;
+    }
+
+private:
 
     void horizontalDragByUser(Component *component, const Rectangle<int> &bounds);
     friend class HorizontalDragHelperConstrainer;
@@ -117,6 +140,7 @@ private:
     
     void handleAsyncUpdate() override;
     void timerCallback() override;
+    void updateAllBounds();
     
     Transport &transport;
     SafePointer<HybridRoll> roll;
@@ -124,9 +148,11 @@ private:
     Rectangle<float> oldAreaBounds;
     Rectangle<float> oldMapBounds;
 
+    static constexpr auto screenRangeWidth = 150.f;
     UniquePointer<ProjectMapScrollerScreen> screenRange;
+
     UniquePointer<Playhead> playhead;
-    
+   
     OwnedArray<Component> trackMaps;
 
     void disconnectPlayhead();
@@ -134,12 +160,10 @@ private:
     Rectangle<int> getMapBounds() const noexcept;
     
     ComponentDragger helperDragger;
-    UniquePointer<HelperRectangle> helperRectangle;
+    UniquePointer<HorizontalDragHelper> helperRectangle;
 
     const Colour borderLineDark;
     const Colour borderLineLight;
-
-    bool mapShouldBeStretched = true;
 
     int animationTimerFrequencyHz = 60;
 

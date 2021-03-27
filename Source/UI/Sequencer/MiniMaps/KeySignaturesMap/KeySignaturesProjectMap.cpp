@@ -54,8 +54,6 @@ KeySignaturesProjectMap::~KeySignaturesProjectMap()
 
 void KeySignaturesProjectMap::resized()
 {
-    this->setVisible(false);
-
     KeySignatureComponent *previous = nullptr;
 
     for (int i = 0; i < this->keySignatureComponents.size(); ++i)
@@ -74,8 +72,6 @@ void KeySignaturesProjectMap::resized()
 
         previous = current;
     }
-    
-    this->setVisible(true);
 }
 
 //===----------------------------------------------------------------------===//
@@ -368,8 +364,6 @@ void KeySignaturesProjectMap::reloadTrackMap()
     this->keySignatureComponents.clear();
     this->keySignaturesMap.clear();
 
-    this->setVisible(false);
-
     MidiSequence *sequence = this->project.getTimeline()->getKeySignatures()->getSequence();
     const auto &keyNames = this->getProjectKeyNames();
 
@@ -387,7 +381,6 @@ void KeySignaturesProjectMap::reloadTrackMap()
     }
 
     this->resized();
-    this->setVisible(true);
 }
 
 void KeySignaturesProjectMap::applyKeySignatureBounds(KeySignatureComponent *nc, KeySignatureComponent *nextOne)

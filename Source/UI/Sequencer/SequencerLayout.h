@@ -53,6 +53,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void onVelocityMapVisibilityFlagChanged(bool visible) override;
+    void onProjectMapVisibilityFlagChanged(bool showFullMap) override;
     void onUiAnimationsFlagChanged(bool enabled) override;
 
     //===------------------------------------------------------------------===//

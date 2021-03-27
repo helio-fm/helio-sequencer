@@ -226,9 +226,9 @@ namespace Globals
         static constexpr auto sidebarWidth = 44;
         static constexpr auto sidebarRowHeight = 38;
 
-        static constexpr auto projectMapHeight = 80;
         static constexpr auto levelsMapHeight = 128;
-
+        static constexpr auto projectMapHeight = 80;
+        static constexpr auto rollScrollerHeight = 25;
         static constexpr auto rollHeaderHeight = 40;
         static constexpr auto rollHeaderShadowSize = 16;
 

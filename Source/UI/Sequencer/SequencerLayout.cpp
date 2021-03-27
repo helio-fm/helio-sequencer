@@ -55,7 +55,8 @@ public:
     enum Timers
     {
         rolls = 0,
-        maps = 1
+        maps = 1,
+        scrollerMode = 2
     };
 
     RollsSwitchingProxy(HybridRoll *targetRoll1,
@@ -73,8 +74,8 @@ public:
         levelsScroller(targetLevelsScroller),
         scrollerShadow(scrollerShadow)
     {
-        this->setInterceptsMouseClicks(false, true);
         this->setPaintingIsUnclipped(false);
+        this->setInterceptsMouseClicks(false, true);
 
         this->addAndMakeVisible(this->pianoViewport);
         this->addChildComponent(this->patternViewport); // invisible by default
@@ -83,6 +84,18 @@ public:
         this->addAndMakeVisible(this->scrollerShadow);
 
         this->patternRoll->setEnabled(false);
+
+        // the volume map's visiblilty is not persistent,
+        // but the mini-map's state is, let's fix it right here
+        const auto fullMiniMap = App::Config().getUiFlags()->isFullProjectMapVisible();
+        this->pianoScroller->setScrollerMode(fullMiniMap ?
+            ProjectMapScroller::ScrollerMode::Map : ProjectMapScroller::ScrollerMode::Scroller);
+        // the way I'm working with animations here is kinda frustrating,
+        // but I'm out of ideas and time, todo refactor that someday
+        if (!fullMiniMap)
+        {
+            this->scrollerModeAnimation.resetToEnd();
+        }
     }
 
     inline bool canAnimate(Timers timer) const noexcept
@@ -93,18 +106,28 @@ public:
             return this->rollsAnimation.canRestart();
         case Timers::maps:
             return this->mapsAnimation.canRestart();
+        case Timers::scrollerMode:
+            return this->scrollerModeAnimation.canRestart();
         }
         return false;
     }
 
+    // it's not very cool that these two methods rely on
+    // animations state to tell what's going on in the UI:
     inline bool isPatternMode() const noexcept
     {
         return this->rollsAnimation.getDirection() > 0.f;
     }
 
-    inline bool isLevelsMapMode() const
+    inline bool isVolumeMapMode() const
     {
         return this->mapsAnimation.getDirection() > 0.f;
+    }
+
+    inline bool isFullProjectMapMode() const
+    {
+        return this->pianoScroller->getScrollerMode() ==
+            ProjectMapScroller::ScrollerMode::Map;
     }
 
     void setAnimationsEnabled(bool animationsEnabled)
@@ -118,7 +141,7 @@ public:
         this->rollsAnimation.start(RollsSwitchingProxy::rollsAnimationStartSpeed);
         const bool patternMode = this->isPatternMode();
         this->pianoScroller->switchToRoll(patternMode ? this->patternRoll : this->pianoRoll);
-        // Disabling inactive prevents it from receiving keyboard events:
+        // Disabling the inactive controls prevents them from receiving keyboard events:
         this->patternRoll->setEnabled(patternMode);
         this->pianoRoll->setEnabled(!patternMode);
         this->patternRoll->setVisible(true);
@@ -132,14 +155,29 @@ public:
     void startMapSwitchAnimation()
     {
         this->mapsAnimation.start(RollsSwitchingProxy::mapsAnimationStartSpeed);
-        const bool levelsMode = this->isLevelsMapMode();
-        // Disabling inactive prevents it from receiving keyboard events:
+        const bool levelsMode = this->isVolumeMapMode();
+        // Disabling the inactive controls prevents them from receiving keyboard events:
         this->levelsScroller->setEnabled(levelsMode);
         this->pianoScroller->setEnabled(!levelsMode);
         this->levelsScroller->setVisible(true);
         this->pianoScroller->setVisible(true);
         this->resized();
         this->startTimer(Timers::maps, this->animationsTimerInterval);
+    }
+
+    void startScrollerModeSwitchAnimation()
+    {
+        this->scrollerModeAnimation.start(RollsSwitchingProxy::scrollerModeAnimationStartSpeed);
+        if (this->isFullProjectMapMode())
+        {
+            this->pianoScroller->setScrollerMode(ProjectMapScroller::ScrollerMode::Scroller);
+        }
+        else
+        {
+            this->pianoScroller->setScrollerMode(ProjectMapScroller::ScrollerMode::Map);
+        }
+
+        this->startTimer(Timers::scrollerMode, this->animationsTimerInterval);
     }
 
     void resized() override
@@ -168,8 +206,11 @@ private:
 
     void updateAnimatedRollsBounds()
     {
+        const auto scrollerHeight = Globals::UI::projectMapHeight -
+            int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
+                this->scrollerModeAnimation.getPosition());
+
         const auto r = this->getLocalBounds();
-        constexpr auto scrollerHeight = Globals::UI::projectMapHeight;
         const float rollViewportHeight = float(r.getHeight() - scrollerHeight + 1);
         const Rectangle<int> rollSize(r.withBottom(r.getBottom() - scrollerHeight));
         const int viewport1Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight);
@@ -180,7 +221,10 @@ private:
 
     void updateAnimatedRollsPositions()
     {
-        constexpr auto scrollerHeight = Globals::UI::projectMapHeight;
+        const auto scrollerHeight = Globals::UI::projectMapHeight -
+            int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
+                this->scrollerModeAnimation.getPosition());
+
         const float rollViewportHeight = float(this->getHeight() - scrollerHeight + 1);
         const int viewport1Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight);
         const int viewport2Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight + rollViewportHeight);
@@ -190,11 +234,15 @@ private:
 
     void updateAnimatedMapsBounds()
     {
-        const auto pianoRect = this->getLocalBounds().removeFromBottom(Globals::UI::projectMapHeight);
-        const auto levelsRect = this->getLocalBounds().removeFromBottom(Globals::UI::levelsMapHeight);
-        const auto levelsFullOffset = Globals::UI::levelsMapHeight - Globals::UI::projectMapHeight;
+        const auto projectMapHeight = Globals::UI::projectMapHeight -
+            int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
+                this->scrollerModeAnimation.getPosition());
 
-        const int pianoMapPos = int(this->mapsAnimation.getPosition() * Globals::UI::projectMapHeight);
+        const auto pianoRect = this->getLocalBounds().removeFromBottom(projectMapHeight);
+        const auto levelsRect = this->getLocalBounds().removeFromBottom(Globals::UI::levelsMapHeight);
+        const auto levelsFullOffset = Globals::UI::levelsMapHeight - projectMapHeight;
+
+        const int pianoMapPos = int(this->mapsAnimation.getPosition() * projectMapHeight);
         const int levelsMapPos = int(this->mapsAnimation.getPosition() * levelsFullOffset);
 
         this->pianoScroller->setBounds(pianoRect.translated(0, pianoMapPos));
@@ -207,10 +255,14 @@ private:
 
     void updateAnimatedMapsPositions()
     {
-        const auto pianoMapY = this->getHeight() - Globals::UI::projectMapHeight;
-        const auto levelsFullOffset = Globals::UI::levelsMapHeight - Globals::UI::projectMapHeight;
+        const auto projectMapHeight = Globals::UI::projectMapHeight -
+            int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
+                this->scrollerModeAnimation.getPosition());
 
-        const int pianoMapPos = int(this->mapsAnimation.getPosition() * Globals::UI::projectMapHeight);
+        const auto pianoMapY = this->getHeight() - projectMapHeight;
+        const auto levelsFullOffset = Globals::UI::levelsMapHeight - projectMapHeight;
+
+        const int pianoMapPos = int(this->mapsAnimation.getPosition() * projectMapHeight);
         const int levelsMapPos = int(this->mapsAnimation.getPosition() * levelsFullOffset);
 
         this->pianoScroller->setTopLeftPosition(0, pianoMapY + pianoMapPos);
@@ -225,6 +277,9 @@ private:
         switch (timerId)
         {
         case Timers::rolls:
+
+            this->updateAnimatedRollsPositions();
+ 
             if (this->rollsAnimation.tickAndCheckIfDone())
             {
                 this->stopTimer(Timers::rolls);
@@ -243,17 +298,18 @@ private:
                 this->rollsAnimation.finish();
                 this->resized();
             }
-            else
-            {
-                this->updateAnimatedRollsPositions();
-            }
+
             break;
+
         case Timers::maps:
+
+            this->updateAnimatedMapsPositions();
+
             if (this->mapsAnimation.tickAndCheckIfDone())
             {
                 this->stopTimer(Timers::maps);
 
-                if (this->isLevelsMapMode())
+                if (this->isVolumeMapMode())
                 {
                     this->pianoScroller->setVisible(false);
                 }
@@ -264,11 +320,22 @@ private:
 
                 this->mapsAnimation.finish();
             }
-            else
-            {
-                this->updateAnimatedMapsPositions();
-            }
+
             break;
+
+        case Timers::scrollerMode:
+
+            this->updateAnimatedMapsBounds();
+            this->updateAnimatedRollsBounds();
+
+            if (this->scrollerModeAnimation.tickAndCheckIfDone())
+            {
+                this->stopTimer(Timers::scrollerMode);
+                this->scrollerModeAnimation.finish();
+            }
+
+            break;
+
         default:
             break;
         }
@@ -287,6 +354,7 @@ private:
     static constexpr auto scrollerShadowSize = 16;
     static constexpr auto rollsAnimationStartSpeed = 0.4f;
     static constexpr auto mapsAnimationStartSpeed = 0.35f;
+    static constexpr auto scrollerModeAnimationStartSpeed = 0.45f;
 
     class ToggleAnimation final
     {
@@ -322,8 +390,20 @@ private:
                 (this->direction < 0.f && this->position < 0.15f);
         }
 
-        float getPosition() const noexcept { return position; }
         float getDirection() const noexcept { return direction; }
+        float getPosition() const noexcept { return position; }
+
+        void resetToStart() noexcept
+        {
+            this->position = 0.f;
+            this->direction = -1.f;
+        }
+
+        void resetToEnd() noexcept
+        {
+            this->position = 1.f;
+            this->direction = 1.f;
+        }
 
     private:
 
@@ -336,6 +416,7 @@ private:
 
     ToggleAnimation rollsAnimation;
     ToggleAnimation mapsAnimation;
+    ToggleAnimation scrollerModeAnimation;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RollsSwitchingProxy)
 };
@@ -609,13 +690,24 @@ void SequencerLayout::handleCommandMessage(int commandId)
 
 void SequencerLayout::onVelocityMapVisibilityFlagChanged(bool shoudShow)
 {
-    const bool alreadyShowing = this->rollContainer->isLevelsMapMode();
+    const bool alreadyShowing = this->rollContainer->isVolumeMapMode();
     if ((alreadyShowing && shoudShow) || (!alreadyShowing && !shoudShow))
     {
         return;
     }
 
     this->rollContainer->startMapSwitchAnimation();
+}
+
+void SequencerLayout::onProjectMapVisibilityFlagChanged(bool showFullMap)
+{
+    const bool alreadyShowing = this->rollContainer->isFullProjectMapMode();
+    if ((alreadyShowing && showFullMap) || (!alreadyShowing && !showFullMap))
+    {
+        return;
+    }
+
+    this->rollContainer->startScrollerModeSwitchAnimation();
 }
 
 void SequencerLayout::onUiAnimationsFlagChanged(bool enabled)
