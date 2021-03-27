@@ -18,8 +18,8 @@
 #pragma once
 
 class HybridRoll;
-class CutPointMark;
 class NoteComponent;
+class NoteCutPointMark;
 
 #include "Note.h"
 
@@ -55,10 +55,10 @@ private:
     Line<float> line;
     Path path;
 
-    UniquePointer<CutPointMark> createCutPointMark(NoteComponent *nc, float beat);
+    UniquePointer<NoteCutPointMark> createCutPointMark(NoteComponent *nc, float beat);
     const Point<double> getParentSize() const;
 
-    FlatHashMap<Note, UniquePointer<CutPointMark>, MidiEventHash> cutMarkers;
+    FlatHashMap<Note, UniquePointer<NoteCutPointMark>, MidiEventHash> noteCutMarks;
     FlatHashMap<Note, float, MidiEventHash> cutPoints;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KnifeToolHelper)

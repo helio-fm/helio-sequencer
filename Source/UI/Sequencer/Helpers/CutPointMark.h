@@ -19,28 +19,48 @@
 
 #include "NoteComponent.h"
 
-class CutPointMark final : public Component
+class CutPointMark : public Component
 {
 public:
 
     CutPointMark(SafePointer<Component> targetComponent, float absPosX);
     ~CutPointMark();
 
-    void paint(Graphics &) override;
-
-    void updatePosition(float pos);
-    void updatePositionFromMouseEvent(int mouseX, int mouseY);
-    void updateBounds(bool forceNoAnimation = false);
     void fadeIn();
+    void updatePosition(float pos);
+    void updateBounds(bool forceNoAnimation = false);
 
     Component *getComponent() const noexcept;
     float getCutPosition() const noexcept;
 
-private:
+protected:
 
     SafePointer<Component> targetComponent;
-    float absPosX;
-    bool initialized;
+
+    bool initialized = false;
+    float absPosX = 0.f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CutPointMark)
+};
+
+class NoteCutPointMark final : public CutPointMark
+{
+public:
+
+    NoteCutPointMark(SafePointer<Component> targetComponent, float absPosX);
+
+    void paint(Graphics &g) override;
+
+};
+
+class ClipCutPointMark final : public CutPointMark
+{
+public:
+
+    explicit ClipCutPointMark(SafePointer<Component> targetComponent);
+
+    void paint(Graphics &g) override;
+
+    void updatePositionFromMouseEvent(int mouseX, int mouseY);
+
 };

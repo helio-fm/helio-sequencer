@@ -940,13 +940,13 @@ void PatternRoll::startCuttingClips(const MouseEvent &e)
 
     if (this->knifeToolHelper == nullptr && targetClip != nullptr)
     {
-        this->knifeToolHelper.reset(new CutPointMark(targetClip, 0.5f));
+        this->knifeToolHelper = make<ClipCutPointMark>(targetClip);
         this->addAndMakeVisible(this->knifeToolHelper.get());
 
         const float cutBeat = this->getRoundBeatSnapByXPosition(e.getPosition().x);
         const int beatX = this->getXPositionByBeat(cutBeat);
-        this->knifeToolHelper->toFront(false);
         this->knifeToolHelper->updatePositionFromMouseEvent(beatX, e.getPosition().y);
+        this->knifeToolHelper->toFront(false);
         this->knifeToolHelper->fadeIn();
     }
 }

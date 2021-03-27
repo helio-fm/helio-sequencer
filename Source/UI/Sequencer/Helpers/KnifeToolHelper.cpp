@@ -21,8 +21,7 @@
 #include "CutPointMark.h"
 #include "HybridRoll.h"
 
-KnifeToolHelper::KnifeToolHelper(HybridRoll &roll) :
-    roll(roll)
+KnifeToolHelper::KnifeToolHelper(HybridRoll &roll) : roll(roll)
 {
     this->setAlpha(0.f);
     this->setWantsKeyboardFocus(false);
@@ -45,7 +44,7 @@ void KnifeToolHelper::paint(Graphics &g)
     g.setColour(Colours::black);
     g.strokePath(this->path, PathStrokeType(.5f));
 
-    g.setColour(Colours::white.withAlpha(0.55f));
+    g.setColour(Colours::white.withAlpha(0.65f));
     g.fillPath(this->path);
 }
 
@@ -56,18 +55,19 @@ void KnifeToolHelper::updateBounds()
     const auto parentSize = this->getParentSize();
     const auto start = (this->startPosition * parentSize).toFloat();
     const auto end = (this->endPosition * parentSize).toFloat();
+    this->line = { start, end };
+
     const auto x1 = jmin(start.getX(), end.getX());
     const auto x2 = jmax(start.getX(), end.getX());
     const auto y1 = jmin(start.getY(), end.getY());
     const auto y2 = jmax(start.getY(), end.getY());
     const Point<float> startOffset(x1 - padding, y1 - padding);
-    this->line = { start, end };
 
     this->path.clear();
-    path.startNewSubPath(end - startOffset);
-    path.lineTo(start - startOffset);
-    static Array<float> dashes(8.f, 4.f);
-    PathStrokeType(3.f).createDashedStroke(this->path, this->path,
+    this->path.startNewSubPath(end - startOffset);
+    this->path.lineTo(start - startOffset);
+    static Array<float> dashes(6.f, 8.f);
+    PathStrokeType(2.f).createDashedStroke(this->path, this->path,
         dashes.getRawDataPointer(), dashes.size());
 
     this->setBounds(int(x1) - padding, int(y1) - padding,
@@ -76,7 +76,7 @@ void KnifeToolHelper::updateBounds()
 
 void KnifeToolHelper::updateCutMarks()
 {
-    for (auto &m : this->cutMarkers)
+    for (auto &m : this->noteCutMarks)
     {
         m.second.get()->updateBounds(true);
     }
@@ -102,13 +102,13 @@ void KnifeToolHelper::addOrUpdateCutPoint(NoteComponent *nc, float beat)
 {
     jassert(this->getParentComponent() != nullptr);
 
-    if (!this->cutMarkers.contains(nc->getNote()))
+    if (!this->noteCutMarks.contains(nc->getNote()))
     {
-        this->cutMarkers[nc->getNote()] = this->createCutPointMark(nc, beat / nc->getLength());
+        this->noteCutMarks[nc->getNote()] = this->createCutPointMark(nc, beat / nc->getLength());
     }
     else
     {
-        this->cutMarkers[nc->getNote()].get()->updatePosition(beat / nc->getLength());
+        this->noteCutMarks[nc->getNote()].get()->updatePosition(beat / nc->getLength());
     }
 
     this->cutPoints[nc->getNote()] = beat;
@@ -116,9 +116,9 @@ void KnifeToolHelper::addOrUpdateCutPoint(NoteComponent *nc, float beat)
 
 void KnifeToolHelper::removeCutPointIfExists(const Note &note)
 {
-    if (this->cutMarkers.contains(note))
+    if (this->noteCutMarks.contains(note))
     {
-        this->cutMarkers.erase(note);
+        this->noteCutMarks.erase(note);
     }
 
     if (this->cutPoints.contains(note))
@@ -127,16 +127,14 @@ void KnifeToolHelper::removeCutPointIfExists(const Note &note)
     }
 }
 
-UniquePointer<CutPointMark> KnifeToolHelper::createCutPointMark(NoteComponent *nc, float pos)
+UniquePointer<NoteCutPointMark> KnifeToolHelper::createCutPointMark(NoteComponent *nc, float pos)
 {
     jassert(this->getParentComponent() != nullptr);
-
-    UniquePointer<CutPointMark> p;
-    p.reset(new CutPointMark(nc, pos));
-    this->getParentComponent()->addAndMakeVisible(p.get());
-    p.get()->updateBounds();
-    p.get()->fadeIn();
-    return p;
+    auto mark = make<NoteCutPointMark>(nc, pos);
+    this->getParentComponent()->addAndMakeVisible(mark.get());
+    mark->updateBounds();
+    mark->fadeIn();
+    return mark;
 }
 
 const Point<double> KnifeToolHelper::getParentSize() const

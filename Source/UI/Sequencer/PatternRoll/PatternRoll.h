@@ -17,8 +17,8 @@
 
 #pragma once
 
-class CutPointMark;
 class ClipComponent;
+class ClipCutPointMark;
 
 #include "HelioTheme.h"
 #include "HybridRoll.h"
@@ -143,7 +143,7 @@ private:
     bool addNewClipMode = false;
     SafePointer<ClipComponent> newClipDragging = nullptr;
 
-    UniquePointer<CutPointMark> knifeToolHelper;
+    UniquePointer<ClipCutPointMark> knifeToolHelper;
     void startCuttingClips(const MouseEvent &e);
     void continueCuttingClips(const MouseEvent &e);
     void endCuttingClipsIfNeeded(const MouseEvent &e);
