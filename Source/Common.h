@@ -154,8 +154,6 @@ namespace juce
 // Disable all network-related features on mobile platforms to keep it simple:
 #if PLATFORM_MOBILE
 #   define NO_NETWORK 1
-#elif PLATFORM_DESKTOP
-#   define NO_NETWORK 0
 #endif
 
 //===----------------------------------------------------------------------===//
