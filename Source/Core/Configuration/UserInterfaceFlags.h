@@ -106,7 +106,12 @@ private:
     bool scalesHighlighting = true;
 
     bool velocityMapVisible = false;
+
+#if PLATFORM_MOBILE
+    bool fullProjectMapVisible = false;
+#elif PLATFORM_DESKTOP
     bool fullProjectMapVisible = true;
+#endif
 
 #if JUCE_ANDROID
     // OpenGL seems to be the only sensible option on Android:

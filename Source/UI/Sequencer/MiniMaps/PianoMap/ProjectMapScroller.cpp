@@ -405,7 +405,7 @@ void ProjectMapScroller::setScrollerMode(ScrollerMode mode)
     {
         if (auto *pianoMap = dynamic_cast<PianoProjectMap *>(map))
         {
-            pianoMap->setAlphaMultiplier(isFullMap ? 1.f : 0.5f);
+            pianoMap->setAlphaMultiplier(isFullMap ? 1.f : 0.35f);
         }
         else
         {

@@ -35,14 +35,14 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMa
     this->addAndMakeVisible(this->numeratorLabel.get());
     this->numeratorLabel->setFont({ 18.f });
     this->numeratorLabel->setJustificationType(Justification::centredLeft);
-    this->numeratorLabel->setBounds(-2, 4, 32, 14);
+    this->numeratorLabel->setBounds(-3, 3, 32, 14);
     this->numeratorLabel->setInterceptsMouseClicks(false, false);
 
     this->denominatorLabel = make<Label>();
     this->addAndMakeVisible(this->denominatorLabel.get());
     this->denominatorLabel->setFont({ 18.f });
     this->denominatorLabel->setJustificationType(Justification::centredLeft);
-    this->denominatorLabel->setBounds(-2, 17, 32, 14);
+    this->denominatorLabel->setBounds(-3, 15, 32, 14);
     this->denominatorLabel->setInterceptsMouseClicks(false, false);
 
     this->setMouseCursor(MouseCursor::PointingHandCursor);

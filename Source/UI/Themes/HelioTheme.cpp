@@ -822,10 +822,10 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Panel::fill, s->getPanelFillColour());
     this->setColour(ColourIDs::Panel::border, s->getPanelBorderColour().withAlpha(0.225f));
 
-    this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPrimaryGradientColourA().darker(0.35f));
-    this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.025f));
+    this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPrimaryGradientColourA().darker(0.4f));
+    this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.04f));
     this->setColour(ColourIDs::TrackScroller::screenRangeFill, s->getIconBaseColour().withMultipliedAlpha(0.55f));
-    this->setColour(ColourIDs::TrackScroller::scrollerFill, s->getIconBaseColour().withMultipliedAlpha(0.6f));
+    this->setColour(ColourIDs::TrackScroller::scrollerFill, s->getIconBaseColour().withMultipliedAlpha(0.7f));
 
     // InstrumentEditor
     this->setColour(ColourIDs::Instrument::midiIn, Colours::white.withAlpha(0.1f));
@@ -838,7 +838,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Instrument::shadowConnector, Colours::black.withAlpha(0.2f));
 
     // Borders
-    this->setColour(ColourIDs::Common::borderLineLight, Colours::white.withAlpha(0.07f));
+    this->setColour(ColourIDs::Common::borderLineLight, Colours::white.withAlpha(0.065f));
     this->setColour(ColourIDs::Common::borderLineDark, Colours::black.withAlpha(0.3f));
     this->setColour(ColourIDs::ColourButton::outline, s->getTextColour());
 

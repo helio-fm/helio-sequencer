@@ -47,7 +47,7 @@ private:
     Point<float> zoomDiff;
     Point<float> dragDiff;
 
-    bool finger1On;
-    bool finger2On;
+    bool finger1On = false;
+    bool finger2On = false;
 
 };

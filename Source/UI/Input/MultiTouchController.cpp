@@ -42,9 +42,7 @@ MultiTouchController::MultiTouchController(MultiTouchListener &parent) :
     finger1Position(0, 0),
     finger2Position(0, 0),
     center1(0, 0),
-    center2(0, 0),
-    finger1On(false),
-    finger2On(false) {}
+    center2(0, 0) {}
 
 void MultiTouchController::mouseDown(const MouseEvent &event)
 {
