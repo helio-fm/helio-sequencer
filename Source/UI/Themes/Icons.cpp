@@ -83,9 +83,11 @@ void Icons::initBuiltInImages()
     setIconForKey(colour);
     setIconForKey(revision);
     setIconForKey(routing);
-
     setIconForKey(piano);
+
     setIconForKey(volume);
+    setIconForKey(volumePanel);
+    setIconForKey(bottomBar);
 
     setIconForKey(list);
     setIconForKey(ellipsis);

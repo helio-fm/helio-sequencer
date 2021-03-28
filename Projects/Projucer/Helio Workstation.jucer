@@ -18,6 +18,7 @@
         <FILE id="YwkMou" name="automationTrack.svg" compile="0" resource="1"
               file="../../Resources/Icons/automationTrack.svg"/>
         <FILE id="pQYljb" name="back.svg" compile="0" resource="1" file="../../Resources/Icons/back.svg"/>
+        <FILE id="hxV5R3" name="bottomBar.svg" compile="0" resource="1" file="../../Resources/Icons/bottomBar.svg"/>
         <FILE id="Z7oHFa" name="browse.svg" compile="0" resource="1" file="../../Resources/Icons/browse.svg"/>
         <FILE id="X70Jbq" name="chordBuilder.svg" compile="0" resource="1"
               file="../../Resources/Icons/chordBuilder.svg"/>
@@ -98,6 +99,7 @@
         <FILE id="gFGVNu" name="versionControl.svg" compile="0" resource="1"
               file="../../Resources/Icons/versionControl.svg"/>
         <FILE id="EcPJkd" name="volume.svg" compile="0" resource="1" file="../../Resources/Icons/volume.svg"/>
+        <FILE id="dIbx50" name="volumePanel.svg" compile="0" resource="1" file="../../Resources/Icons/volumePanel.svg"/>
         <FILE id="jm0Ajr" name="zoomIn.svg" compile="0" resource="1" file="../../Resources/Icons/zoomIn.svg"/>
         <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>
         <FILE id="KPqaBe" name="zoomToFit.svg" compile="0" resource="1" file="../../Resources/Icons/zoomToFit.svg"/>

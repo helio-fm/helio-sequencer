@@ -350,6 +350,7 @@ namespace I18n
         static constexpr auto toggleScalesHighlighting = constexprHash("tooltip::scaleshl");
         static constexpr auto toggleNoteGuides = constexprHash("tooltip::noteguides");
         static constexpr auto toggleVolumePanel = constexprHash("tooltip::volumepanel");
+        static constexpr auto toggleMiniMap = constexprHash("tooltip::minimap");
 
         static constexpr auto togglePlaybackLoop = constexprHash("tooltip::toggleloop");
 

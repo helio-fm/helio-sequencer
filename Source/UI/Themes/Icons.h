@@ -55,7 +55,10 @@ public:
         revision,
         routing,
         piano,
+
         volume,
+        volumePanel,
+        bottomBar,
 
         list,
         ellipsis,

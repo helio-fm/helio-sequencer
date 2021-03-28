@@ -74,6 +74,7 @@ SequencerSidebarLeft::SequencerSidebarLeft()
     this->addAndMakeVisible(this->listBox.get());
 
     const auto *uiFlags = App::Config().getUiFlags();
+    this->miniMapVisible = uiFlags->isFullProjectMapVisible();
     this->velocityMapVisible = uiFlags->isVelocityMapVisible();
     this->noteNameGuidesEnabled = uiFlags->isNoteNameGuidesEnabled();
     this->scalesHighlightingEnabled = uiFlags->isScalesHighlightingEnabled();
@@ -226,6 +227,13 @@ void SequencerSidebarLeft::setPatternMode()
 // UserInterfaceFlags::Listener
 //===----------------------------------------------------------------------===//
 
+void SequencerSidebarLeft::onProjectMapVisibilityFlagChanged(bool showFullMap)
+{
+    this->miniMapVisible = showFullMap;
+    this->recreateMenu();
+    this->listBox->updateContent();
+}
+
 void SequencerSidebarLeft::onVelocityMapVisibilityFlagChanged(bool visible)
 {
     this->velocityMapVisible = visible;
@@ -286,8 +294,15 @@ void SequencerSidebarLeft::recreateMenu()
         this->menu.add(MenuItem::item(Icons::tag, CommandIDs::ToggleNoteNameGuides)->
             toggledIf(this->noteNameGuidesEnabled)->
             withTooltip(TRANS(I18n::Tooltips::toggleNoteGuides)));
+    }
 
-        this->menu.add(MenuItem::item(Icons::volume, CommandIDs::ToggleVolumePanel)->
+    this->menu.add(MenuItem::item(Icons::bottomBar, CommandIDs::ToggleBottomMiniMap)->
+        toggledIf(this->miniMapVisible)->
+        withTooltip(TRANS(I18n::Tooltips::toggleMiniMap)));
+
+    if (this->menuMode == MenuMode::PianoRollTools)
+    {
+        this->menu.add(MenuItem::item(Icons::volumePanel, CommandIDs::ToggleVolumePanel)->
             toggledIf(this->velocityMapVisible)->
             withTooltip(TRANS(I18n::Tooltips::toggleVolumePanel)));
     }
