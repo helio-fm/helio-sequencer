@@ -6851,6 +6851,9 @@
     <None Include="..\..\Resources\Icons\back.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
+    <None Include="..\..\Resources\Icons\bottomBar.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
     <None Include="..\..\Resources\Icons\browse.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
@@ -7062,6 +7065,9 @@
       <Filter>Helio\Resources\Icons</Filter>
     </None>
     <None Include="..\..\Resources\Icons\volume.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\volumePanel.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
     <None Include="..\..\Resources\Icons\zoomIn.svg">

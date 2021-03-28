@@ -52,6 +52,7 @@
 		036D4E54E4F9D7AD19B41927 /* ../../Source/UI/Themes/ViewportKineticSlider.cpp */ /* ViewportKineticSlider.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ViewportKineticSlider.cpp; path = ../../Source/UI/Themes/ViewportKineticSlider.cpp; sourceTree = SOURCE_ROOT; };
 		03A9BA8C4B5BE7895A80A0F0 /* ../../Source/UI/Themes/PanelBackgroundA.h */ /* PanelBackgroundA.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PanelBackgroundA.h; path = ../../Source/UI/Themes/PanelBackgroundA.h; sourceTree = SOURCE_ROOT; };
 		049110EFE86677978F8FA611 /* ../Projucer/JuceLibraryCode/BinaryData.cpp */ /* BinaryData.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BinaryData.cpp; path = ../Projucer/JuceLibraryCode/BinaryData.cpp; sourceTree = SOURCE_ROOT; };
+		04A19E453D42AC69C568A66C /* ../../Resources/Icons/volumePanel.svg */ /* volumePanel.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = volumePanel.svg; path = ../../Resources/Icons/volumePanel.svg; sourceTree = SOURCE_ROOT; };
 		04B95C3CFF70E3037015E8C8 /* ../../Resources/Icons/ellipsis.svg */ /* ellipsis.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = ellipsis.svg; path = ../../Resources/Icons/ellipsis.svg; sourceTree = SOURCE_ROOT; };
 		058846F81FAAAB9F76A32CE7 /* ../../Source/Core/Workspace/RecentProjectInfo.cpp */ /* RecentProjectInfo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RecentProjectInfo.cpp; path = ../../Source/Core/Workspace/RecentProjectInfo.cpp; sourceTree = SOURCE_ROOT; };
 		05893E09D724205647BBB7E6 /* ../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.h */ /* RecentProjectRow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RecentProjectRow.h; path = ../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.h; sourceTree = SOURCE_ROOT; };
@@ -753,6 +754,7 @@
 		E718A85B50D9B343F7621098 /* ../../Source/UI/Sequencer/Header/HybridRollHeader.cpp */ /* HybridRollHeader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HybridRollHeader.cpp; path = ../../Source/UI/Sequencer/Header/HybridRollHeader.cpp; sourceTree = SOURCE_ROOT; };
 		E7198041504784409868B07B /* ../../Source/Core/Configuration/Models/Translation.cpp */ /* Translation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Translation.cpp; path = ../../Source/Core/Configuration/Models/Translation.cpp; sourceTree = SOURCE_ROOT; };
 		E7994F69C1E98A7AFC41D20B /* ../../Resources/Icons/chordBuilder.svg */ /* chordBuilder.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = chordBuilder.svg; path = ../../Resources/Icons/chordBuilder.svg; sourceTree = SOURCE_ROOT; };
+		E87D050150AECE26828A193F /* ../../Resources/Icons/bottomBar.svg */ /* bottomBar.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = bottomBar.svg; path = ../../Resources/Icons/bottomBar.svg; sourceTree = SOURCE_ROOT; };
 		E8E105E7D520AD37CCCFFBBE /* ../../Source/UI/Popups/PopupCustomButton.h */ /* PopupCustomButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PopupCustomButton.h; path = ../../Source/UI/Popups/PopupCustomButton.h; sourceTree = SOURCE_ROOT; };
 		E980EFE9741D31B4897DFC2D /* ../../Source/UI/Common/ScaleEditor.h */ /* ScaleEditor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ScaleEditor.h; path = ../../Source/UI/Common/ScaleEditor.h; sourceTree = SOURCE_ROOT; };
 		E9DEF85724C85BF1B0740EC8 /* ../../Resources/Icons/record.svg */ /* record.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = record.svg; path = ../../Resources/Icons/record.svg; sourceTree = SOURCE_ROOT; };
@@ -965,6 +967,7 @@
 				D05F251E5ECFE8E747DDDFAD,
 				ECB3C5E32881D13E11E21F8A,
 				0078A4CF1B0498BB9D9F36D6,
+				E87D050150AECE26828A193F,
 				1D1D9574714B1D5BF6E173DF,
 				E7994F69C1E98A7AFC41D20B,
 				4ACF099154865E0DC5BA2C21,
@@ -1036,6 +1039,7 @@
 				8FC072442021BF4B5512CA1E,
 				1EF41096D5EF3E5A0E1954E4,
 				54DFBC5F9A390D72598FB531,
+				04A19E453D42AC69C568A66C,
 				8A0E341272CD3A83C9C22DE6,
 				B235731CCB550DF1E2BDDF28,
 				698A56770E267538984CCC74,

@@ -3996,6 +3996,7 @@
     <None Include="..\..\Resources\Icons\audioPlugin.svg"/>
     <None Include="..\..\Resources\Icons\automationTrack.svg"/>
     <None Include="..\..\Resources\Icons\back.svg"/>
+    <None Include="..\..\Resources\Icons\bottomBar.svg"/>
     <None Include="..\..\Resources\Icons\browse.svg"/>
     <None Include="..\..\Resources\Icons\chordBuilder.svg"/>
     <None Include="..\..\Resources\Icons\close.svg"/>
@@ -4067,6 +4068,7 @@
     <None Include="..\..\Resources\Icons\up.svg"/>
     <None Include="..\..\Resources\Icons\versionControl.svg"/>
     <None Include="..\..\Resources\Icons\volume.svg"/>
+    <None Include="..\..\Resources\Icons\volumePanel.svg"/>
     <None Include="..\..\Resources\Icons\zoomIn.svg"/>
     <None Include="..\..\Resources\Icons\zoomOut.svg"/>
     <None Include="..\..\Resources\Icons\zoomToFit.svg"/>
