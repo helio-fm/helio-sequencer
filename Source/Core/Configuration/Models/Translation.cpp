@@ -90,7 +90,7 @@ void Translation::deserialize(const SerializedData &data)
 
     forEachChildWithType(root, literal, Translations::literal)
     {
-        I18n::Key literalKey = I18n::Key(int64(literal.getProperty(Translations::translationId)));
+        auto literalKey = I18n::Key(int64(literal.getProperty(Translations::translationId)));
         if (literalKey == 0)
         {
             // deprecated format support
@@ -98,7 +98,14 @@ void Translation::deserialize(const SerializedData &data)
             literalKey = constexprHash(literalName.getCharPointer());
         }
 
-        const String translatedLiteral = literal.getProperty(Translations::translationValueOld);
+        String translatedLiteral = literal.getProperty(Translations::translationValue);
+        if (translatedLiteral.isEmpty())
+        {
+            // deprecated format support
+            translatedLiteral = literal.getProperty(Translations::translationValueOld);
+        }
+
+        jassert(translatedLiteral.isNotEmpty());
         this->singulars[literalKey] = translatedLiteral;
     }
 
