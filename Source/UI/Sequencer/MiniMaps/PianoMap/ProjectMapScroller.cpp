@@ -123,12 +123,13 @@ void ProjectMapScroller::xyMoveByUser()
 
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
-    this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
+    this->helperRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(p);
 
-    for (int i = 0; i < this->trackMaps.size(); ++i)
+    const auto mapBounds = this->getMapBounds();
+    for (auto *map : this->trackMaps)
     {
-        this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
+        map->setBounds(mapBounds);
     }
 }
 
@@ -147,12 +148,13 @@ void ProjectMapScroller::xMoveByUser()
 
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
-    this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
+    this->helperRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(p);
 
-    for (int i = 0; i < this->trackMaps.size(); ++i)
+    const auto mapBounds = this->getMapBounds();
+    for (auto *map : this->trackMaps)
     {
-        this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
+        map->setBounds(mapBounds);
     }
 }
 
@@ -170,12 +172,13 @@ void ProjectMapScroller::resized()
 {
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
-    this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
+    this->helperRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(p);
     
+    const auto mapBounds = this->getMapBounds();
     for (auto *map : this->trackMaps)
     {
-        map->setBounds(this->getMapBounds());
+        map->setBounds(mapBounds);
     }
 }
 
@@ -293,7 +296,7 @@ void ProjectMapScroller::timerCallback()
     this->oldMapBounds = targetMapBounds;
 
     const auto helperBounds = targetAreaBounds.toType<int>();
-    this->helperRectangle->setBounds(helperBounds.withTop(0).withBottom(this->getHeight()));
+    this->helperRectangle->setBounds(helperBounds.withTop(1).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(targetAreaBounds);
 
     for (int i = 0; i < this->trackMaps.size(); ++i)
@@ -320,12 +323,13 @@ void ProjectMapScroller::updateAllBounds()
 {
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
-    this->helperRectangle->setBounds(hp.withTop(0).withBottom(this->getHeight()));
+    this->helperRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
     this->screenRange->setRealBounds(p);
 
+    const auto mapBounds = this->getMapBounds();
     for (auto *map : this->trackMaps)
     {
-        map->setBounds(this->getMapBounds());
+        map->setBounds(mapBounds);
     }
 
     this->playhead->parentSizeChanged(); // a hack: also update playhead position
@@ -354,7 +358,7 @@ Rectangle<float> ProjectMapScroller::getIndicatorBounds() const noexcept
     const float trackHeight = float(this->getHeight());
     const float trackHeaderHeight = float(rollHeaderHeight * trackHeight / rollHeight);
 
-    const float rY = roundf(trackHeight * (viewY / rollHeight)) - trackHeaderHeight;
+    const float rY = ceilf(trackHeight * (viewY / rollHeight)) - trackHeaderHeight + 1.f;
     const float rH = (trackHeight * zoomFactorY);
 
     if (mapWidth <= trackWidth || !this->stretchedMode())
@@ -405,7 +409,7 @@ void ProjectMapScroller::setScrollerMode(ScrollerMode mode)
     {
         if (auto *pianoMap = dynamic_cast<PianoProjectMap *>(map))
         {
-            pianoMap->setAlphaMultiplier(isFullMap ? 1.f : 0.35f);
+            pianoMap->setBrightness(isFullMap ? 1.f : 0.75f);
         }
         else
         {
@@ -414,7 +418,10 @@ void ProjectMapScroller::setScrollerMode(ScrollerMode mode)
     }
 
     this->screenRange->setVisible(isFullMap);
-    this->helperRectangle->setAlphaMultiplier(isFullMap ? 0.3f : 1.f);
+    this->screenRange->setEnabled(isFullMap); // to disable mouse interaction
+
+    this->helperRectangle->setBrightness(isFullMap ?
+        HorizontalDragHelper::defaultBrightness : 1.f);
 
     this->updateAllBounds();
 }
@@ -454,16 +461,16 @@ ProjectMapScroller::HorizontalDragHelper::HorizontalDragHelper(ProjectMapScrolle
     this->setMouseClickGrabsKeyboardFocus(false);
     this->toBack();
 
-    this->setAlphaMultiplier(0.3f);
+    this->setBrightness(HorizontalDragHelper::defaultBrightness);
 
     this->moveConstrainer = make<HorizontalDragHelperConstrainer>(this->scroller);
     this->moveConstrainer->setMinimumSize(4, 4);
     this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
 }
 
-void ProjectMapScroller::HorizontalDragHelper::setAlphaMultiplier(float alpha)
+void ProjectMapScroller::HorizontalDragHelper::setBrightness(float brightness)
 {
-    this->colour = findDefaultColour(ColourIDs::TrackScroller::scrollerFill).withMultipliedAlpha(alpha);
+    this->colour = findDefaultColour(ColourIDs::TrackScroller::scrollerFill).withMultipliedAlpha(brightness);
     this->repaint();
 }
 
@@ -481,4 +488,6 @@ void ProjectMapScroller::HorizontalDragHelper::paint(Graphics &g)
 {
     g.setColour(this->colour);
     g.fillRect(this->getLocalBounds());
+    g.fillRect(0.f, 0.f, 1.f, float(this->getHeight()));
+    g.fillRect(float(this->getWidth() - 1.f), 0.f, 1.f, float(this->getHeight()));
 }

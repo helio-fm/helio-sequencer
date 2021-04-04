@@ -43,6 +43,8 @@ public:
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
 
+    static constexpr auto annotationHeight = 32;
+
 private:
 
     static constexpr auto borderResizingArea = 10;

@@ -33,6 +33,7 @@ AnnotationSmallComponent::AnnotationSmallComponent(AnnotationsProjectMap &parent
     this->setInterceptsMouseClicks(false, false);
     this->annotationLabel->setInterceptsMouseClicks(false, false);
 
+    this->annotationLabel->setSize(160, 16);
     this->annotationLabel->setBufferedToImage(true);
     this->annotationLabel->setCachedComponentImage(new CachedLabelImage(*this->annotationLabel));
 }
@@ -48,7 +49,7 @@ void AnnotationSmallComponent::paint(Graphics &g)
 
 void AnnotationSmallComponent::resized()
 {
-    this->annotationLabel->setBounds(-2, this->getHeight() - 2 - 16, 160, 16);
+    this->annotationLabel->setTopLeftPosition(-2, this->getHeight() - 18);
 }
 
 void AnnotationSmallComponent::parentHierarchyChanged()

@@ -35,7 +35,7 @@ public:
     PianoProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll);
     ~PianoProjectMap() override;
 
-    void setAlphaMultiplier(float alpha);
+    void setBrightness(float brighness);
 
     //===------------------------------------------------------------------===//
     // Component
@@ -81,7 +81,7 @@ private:
 
     float componentHeight = 1.f;
 
-    float alphaMultiplier = 1.f;
+    float brightnessFactor = 1.f;
 
     int keyboardSize = Globals::twelveToneKeyboardSize;
 

@@ -277,9 +277,6 @@ private:
         switch (timerId)
         {
         case Timers::rolls:
-
-            this->updateAnimatedRollsPositions();
- 
             if (this->rollsAnimation.tickAndCheckIfDone())
             {
                 this->stopTimer(Timers::rolls);
@@ -299,11 +296,10 @@ private:
                 this->resized();
             }
 
+            this->updateAnimatedRollsPositions();
             break;
 
         case Timers::maps:
-
-            this->updateAnimatedMapsPositions();
 
             if (this->mapsAnimation.tickAndCheckIfDone())
             {
@@ -321,19 +317,18 @@ private:
                 this->mapsAnimation.finish();
             }
 
+            this->updateAnimatedMapsPositions();
             break;
 
         case Timers::scrollerMode:
-
-            this->updateAnimatedMapsBounds();
-            this->updateAnimatedRollsBounds();
-
             if (this->scrollerModeAnimation.tickAndCheckIfDone())
             {
                 this->stopTimer(Timers::scrollerMode);
                 this->scrollerModeAnimation.finish();
             }
 
+            this->updateAnimatedMapsBounds();
+            this->updateAnimatedRollsBounds();
             break;
 
         default:
@@ -354,7 +349,7 @@ private:
     static constexpr auto scrollerShadowSize = 16;
     static constexpr auto rollsAnimationStartSpeed = 0.4f;
     static constexpr auto mapsAnimationStartSpeed = 0.35f;
-    static constexpr auto scrollerModeAnimationStartSpeed = 0.45f;
+    static constexpr auto scrollerModeAnimationStartSpeed = 0.5f;
 
     class ToggleAnimation final
     {

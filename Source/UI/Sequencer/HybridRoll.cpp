@@ -23,6 +23,7 @@
 #include "MidiEvent.h"
 #include "MidiEventComponent.h"
 #include "SelectionComponent.h"
+#include "AnnotationLargeComponent.h"
 
 #include "UndoStack.h"
 #include "UndoActionIDs.h"
@@ -1810,7 +1811,7 @@ void HybridRoll::updateChildrenBounds()
     if (this->annotationsMap != nullptr)
     {
         this->annotationsMap->setBounds(0, viewY + Globals::UI::rollHeaderHeight,
-            this->getWidth(), Globals::UI::rollHeaderHeight);
+            this->getWidth(), AnnotationLargeComponent::annotationHeight);
     }
 
     if (this->keySignaturesMap != nullptr)

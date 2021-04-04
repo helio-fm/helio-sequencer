@@ -29,8 +29,6 @@ AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsProjectMap &parent
     this->setMouseClickGrabsKeyboardFocus(false);
 
     this->font = Font(16.f, Font::plain);
-
-    this->setSize(32, 32);
 }
 
 AnnotationLargeComponent::~AnnotationLargeComponent() {}

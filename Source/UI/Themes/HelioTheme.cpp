@@ -823,9 +823,9 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Panel::border, s->getPanelBorderColour().withAlpha(0.225f));
 
     this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPrimaryGradientColourA().darker(0.4f));
-    this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.04f));
+    this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.06f));
     this->setColour(ColourIDs::TrackScroller::screenRangeFill, s->getIconBaseColour().withMultipliedAlpha(0.55f));
-    this->setColour(ColourIDs::TrackScroller::scrollerFill, s->getIconBaseColour().withMultipliedAlpha(0.7f));
+    this->setColour(ColourIDs::TrackScroller::scrollerFill, s->getIconBaseColour().withMultipliedAlpha(0.55f));
 
     // InstrumentEditor
     this->setColour(ColourIDs::Instrument::midiIn, Colours::white.withAlpha(0.1f));

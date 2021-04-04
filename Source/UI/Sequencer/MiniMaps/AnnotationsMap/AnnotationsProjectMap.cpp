@@ -375,7 +375,7 @@ void AnnotationsProjectMap::applyAnnotationBounds(AnnotationComponent *ac, Annot
     const float maxWidth = nextX - x;
     const float w = jmax(minWidth, jmin((maxWidth - componentsPadding), length));
 
-    ac->setRealBounds({ x, 0.f, w, float(ac->getHeight()) });
+    ac->setRealBounds({ x, 0.f, w, float(this->getHeight()) });
 }
 
 AnnotationComponent *AnnotationsProjectMap::getPreviousEventComponent(int indexOfSorted) const
@@ -391,9 +391,7 @@ AnnotationComponent *AnnotationsProjectMap::getPreviousEventComponent(int indexO
 AnnotationComponent *AnnotationsProjectMap::getNextEventComponent(int indexOfSorted) const
 {
     const int indexOfNext = indexOfSorted + 1;
-
-    return
-        isPositiveAndBelow(indexOfNext, this->annotationComponents.size()) ?
+    return isPositiveAndBelow(indexOfNext, this->annotationComponents.size()) ?
         this->annotationComponents.getUnchecked(indexOfNext) :
         nullptr;
 }

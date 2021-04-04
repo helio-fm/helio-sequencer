@@ -222,7 +222,7 @@ namespace Globals
         static constexpr auto headlineHeight = 34;
         static constexpr auto menuPanelRowHeight = 32;
         static constexpr auto sidebarWidth = 40;
-        static constexpr auto rollScrollerHeight = 25;
+        static constexpr auto rollScrollerHeight = 30;
         #endif
 
         static constexpr auto rollHeaderHeight = 40;

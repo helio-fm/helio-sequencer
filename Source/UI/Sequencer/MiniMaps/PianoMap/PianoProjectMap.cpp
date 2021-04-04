@@ -45,9 +45,9 @@ PianoProjectMap::~PianoProjectMap()
     this->project.removeListener(this);
 }
 
-void PianoProjectMap::setAlphaMultiplier(float alpha)
+void PianoProjectMap::setBrightness(float brighness)
 {
-    this->alphaMultiplier = alpha;
+    this->brightnessFactor = brighness;
     this->repaint();
 }
 
@@ -73,10 +73,10 @@ void PianoProjectMap::paint(Graphics &g)
         const auto sequenceMap = c.second.get();
         const bool isActiveClip = this->activeClip == c.first;
 
-        g.setColour(c.first.getTrackColour().
-            interpolatedWith(this->baseColour, .4f).
-            withAlpha(isActiveClip ?
-                this->alphaMultiplier * .9f : this->alphaMultiplier * .65f));
+        g.setColour(c.first.getTrackColour()
+            .interpolatedWith(this->baseColour, .4f)
+            .withAlpha(isActiveClip ? this->brightnessFactor * .9f : this->brightnessFactor * .65f)
+            .withMultipliedBrightness(this->brightnessFactor));
 
         for (const auto &n : *sequenceMap)
         {
