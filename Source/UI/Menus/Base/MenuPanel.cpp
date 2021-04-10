@@ -213,6 +213,8 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
 
         this->setSize(newWidth, newHeight);
     }
+
+    MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
 }
 
 void MenuPanel::applyFilter(const String &text)

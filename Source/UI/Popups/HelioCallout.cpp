@@ -25,16 +25,20 @@ static int kClickCounterOnPopupStart = 0;
 
 HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
     MainLayout *parentWorkspace, bool shouldAlignToMouse) :
-    arrowSize(10.0f),
     contentComponent(c),
     targetComponent(pointAtComponent),
     alignsToMouse(shouldAlignToMouse)
 {
     jassert(parentWorkspace);
-    const Rectangle<int> &area(this->targetComponent->getScreenBounds());
-    
+
+    this->setFocusContainer(false);
+    this->setWantsKeyboardFocus(false);
+    this->setInterceptsMouseClicks(false, true);
+    this->setPaintingIsUnclipped(true);
+
     kClickCounterOnPopupStart = Desktop::getInstance().getMouseButtonClickCounter();
         
+    const auto area = this->targetComponent->getScreenBounds();
     this->addAndMakeVisible(this->contentComponent);
     
     if (parentWorkspace != nullptr)
@@ -67,7 +71,6 @@ HelioCallout::~HelioCallout()
     kClickCounterOnPopupClose = Desktop::getInstance().getMouseButtonClickCounter();
 }
 
-
 class HelioCallOutCallback final : public ModalComponentManager::Callback
 {
 public:
@@ -85,7 +88,7 @@ public:
     UniquePointer<Component> content;
     HelioCallout callout;
     
-    JUCE_DECLARE_NON_COPYABLE (HelioCallOutCallback)
+    JUCE_DECLARE_NON_COPYABLE(HelioCallOutCallback)
 };
 
 
@@ -101,15 +104,6 @@ int HelioCallout::getBorderSize() const noexcept
     //return jmax(20, int(this->arrowSize));
 }
 
-void HelioCallout::drawBackground(Graphics &g, const Path &path, Image &cachedImage)
-{
-    g.setColour(findDefaultColour(ColourIDs::Callout::fill));
-    g.fillPath(path);
-
-    g.setColour(findDefaultColour(ColourIDs::Callout::frame));
-    g.strokePath(path, PathStrokeType(1.0f));
-}
-
 void HelioCallout::fadeIn()
 {
     Desktop::getInstance().getAnimator().animateComponent(this,
@@ -119,8 +113,8 @@ void HelioCallout::fadeIn()
 void HelioCallout::fadeOut()
 {
     const int reduceBy = 20;
-    const Point<float> offset(this->targetPoint - this->getBounds().getCentre().toFloat());
-    const Point<int> offsetNormalized = (offset / offset.getDistanceFromOrigin() * reduceBy).toInt();
+    const auto offset = this->targetPoint - this->getBounds().getCentre().toFloat();
+    const auto offsetNormalized = (offset / offset.getDistanceFromOrigin() * reduceBy).toInt();
     
     Desktop::getInstance().getAnimator().animateComponent(this,
         this->getBounds().reduced(reduceBy).translated(offsetNormalized.getX(), offsetNormalized.getY()),
@@ -167,7 +161,11 @@ int HelioCallout::numClicksSinceLastClosedPopup()
 
 void HelioCallout::paint(Graphics& g)
 {
-    this->drawBackground(g, this->outline, this->background);
+    g.setColour(findDefaultColour(ColourIDs::Callout::fill));
+    g.fillPath(this->outline);
+
+    g.setColour(findDefaultColour(ColourIDs::Callout::frame));
+    g.strokePath(this->outline, PathStrokeType(1.f));
 }
 
 void HelioCallout::resized()
@@ -318,7 +316,7 @@ void HelioCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo,
         
         if (! centrePointArea.intersects(lines[i]))
         {
-            distanceFromCentre += 1000.0f;
+            distanceFromCentre += 1000.f;
         }
         
         if (distanceFromCentre < nearest)
@@ -337,18 +335,17 @@ void HelioCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo,
 void HelioCallout::updateShape()
 {
     this->repaint();
-    this->background = {};
     this->outline.clear();
     
     const float innerBorderPadding = 3.f;
-    const Rectangle<float> bodyArea = this->contentComponent.getBounds().toFloat().expanded(innerBorderPadding, innerBorderPadding);
-    const Rectangle<float> maximumArea = this->getLocalBounds().toFloat();
-    const Point<float> arrowTip = this->targetPoint - this->getPosition().toFloat();
+    const auto bodyArea = this->contentComponent.getBounds()
+        .toFloat().expanded(innerBorderPadding, innerBorderPadding);
+
+    const auto maximumArea = this->getLocalBounds().toFloat();
+    const auto arrowTip = this->targetPoint - this->getPosition().toFloat();
     //arrowTip.setX(jmin(jmax(arrowTip.getX(), maximumArea.getX()), maximumArea.getRight()));
     //arrowTip.setY(jmin(jmax(arrowTip.getY(), maximumArea.getY()), maximumArea.getBottom()));
     
     this->outline.addBubble(bodyArea,
-                            maximumArea,
-                            arrowTip,
-                            2.0f, this->arrowSize * 0.75f);
+        maximumArea, arrowTip, 1.f, this->arrowSize * 0.75f);
 }

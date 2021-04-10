@@ -66,13 +66,12 @@ private:
     void pointToAndFit(const Rectangle<int>& newAreaToPointTo,
                        const Rectangle<int>& newAreaToFitIn);
 
-    
-    float arrowSize;
+    float arrowSize = 10.f;
+
     Component &contentComponent;
     Path outline;
     Point<float> targetPoint;
     Rectangle<int> lastGoodAvailableArea, lastGoodTargetArea;
-    Image background;
 
     SafePointer<Component> targetComponent;
     Point<float> clickPointAbs;
@@ -82,7 +81,6 @@ private:
     void fadeOut();
     void dismissAsync();
     void updateShape();
-    void drawBackground(Graphics &g, const Path &path, Image &cachedImage);
     
     friend class HelioCallOutCallback;
     

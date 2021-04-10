@@ -25,12 +25,11 @@ public:
 
     static void disableKeyboardFocusForAllChildren(Component *panel)
     {
-        for (int i = 0; i < panel->getNumChildComponents(); ++i)
+        for (auto *child : panel->getChildren())
         {
-            Component *c = panel->getChildComponent(i);
-            c->setFocusContainer(false);
-            c->setWantsKeyboardFocus(false);
-            c->setMouseClickGrabsKeyboardFocus(false);
+            child->setFocusContainer(false);
+            child->setWantsKeyboardFocus(false);
+            child->setMouseClickGrabsKeyboardFocus(false);
         }
     }
 };
