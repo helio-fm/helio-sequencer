@@ -27,6 +27,8 @@ public:
     explicit AutomationSequence(MidiTrack &track,
         ProjectEventDispatcher &dispatcher) noexcept;
 
+    float getAverageControllerValue() const;
+
     //===------------------------------------------------------------------===//
     // Undoable track editing
     //===------------------------------------------------------------------===//

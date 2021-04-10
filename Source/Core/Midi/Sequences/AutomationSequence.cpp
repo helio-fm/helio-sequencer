@@ -27,6 +27,19 @@ AutomationSequence::AutomationSequence(MidiTrack &track,
     ProjectEventDispatcher &dispatcher) noexcept :
     MidiSequence(track, dispatcher) {}
 
+float AutomationSequence::getAverageControllerValue() const
+{
+    float result = 0.f;
+
+    for (const auto *event : this->midiEvents)
+    {
+        const auto *cc = static_cast<const AutomationEvent *>(event);
+        result += cc->getControllerValue();
+    }
+
+    return result / float(this->midiEvents.size());
+}
+
 //===----------------------------------------------------------------------===//
 // Import/export
 //===----------------------------------------------------------------------===//

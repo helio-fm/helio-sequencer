@@ -64,12 +64,12 @@ void MidiTrack::deserializeTrackProperties(const SerializedData &tree)
 
 bool MidiTrack::isTempoTrack() const noexcept
 {
-    return (this->getTrackControllerNumber() == MidiTrack::tempoController);
+    return this->getTrackControllerNumber() == MidiTrack::tempoController;
 }
 
 bool MidiTrack::isOnOffAutomationTrack() const noexcept
 {
     // hardcoded for now
-    return (this->getTrackControllerNumber() >= 64 &&
-        this->getTrackControllerNumber() <= 69);
+    return this->getTrackControllerNumber() >= 64 &&
+        this->getTrackControllerNumber() <= 69;
 }

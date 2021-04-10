@@ -30,6 +30,7 @@
 #include "UndoStack.h"
 #include "MidiTrackNode.h"
 #include "MidiTrackActions.h"
+#include "AutomationSequence.h"
 
 #include "TempoDialog.h"
 #include "Workspace.h"
@@ -69,17 +70,21 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
     if (this->lasso->getNumSelected() == 1)
     {
         auto *track = this->lasso->getFirstAs<ClipComponent>()->getClip().getPattern()->getTrack();
-        if (track->isTempoTrack())
+        if (auto *sequence = dynamic_cast<AutomationSequence *>(track->getSequence()))
         {
             // sets one tempo for the selected track, not for the entire project
-            const auto firstBeat = track->getSequence()->getFirstBeat();
-            const auto lastBeat = jmax(track->getSequence()->getLastBeat(),
+            const auto firstBeat = sequence->getFirstBeat();
+            const auto lastBeat = jmax(sequence->getLastBeat(),
                 firstBeat + Globals::Defaults::emptyClipLength);
 
+            const auto avgValue = sequence->getAverageControllerValue();
+            const auto avgMsPerQuarterNote = Transport::getTempoByControllerValue(avgValue) / 1000;
+            const auto avgBpm = 60000 / jmax(1, avgMsPerQuarterNote);
+
             menu.add(MenuItem::item(Icons::automationTrack, TRANS(I18n::Menu::setOneTempo))->
-                closesMenu()->withAction([firstBeat, lastBeat, track]()
+                closesMenu()->withAction([avgBpm, firstBeat, lastBeat, track]()
             {
-                auto dialog = make<TempoDialog>(Globals::Defaults::tempoBpm);
+                auto dialog = make<TempoDialog>(avgBpm);
                 dialog->onOk = [firstBeat, lastBeat, track](int newBpmValue)
                 {
                     SequencerOperations::setOneTempoForTrack(track, firstBeat, lastBeat, newBpmValue);
