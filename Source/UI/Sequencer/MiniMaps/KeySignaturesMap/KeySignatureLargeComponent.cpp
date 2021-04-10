@@ -43,7 +43,7 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &
     this->setSize(24, 24);
 }
 
-KeySignatureLargeComponent::~KeySignatureLargeComponent() {}
+KeySignatureLargeComponent::~KeySignatureLargeComponent() = default;
 
 void KeySignatureLargeComponent::paint(Graphics &g)
 {

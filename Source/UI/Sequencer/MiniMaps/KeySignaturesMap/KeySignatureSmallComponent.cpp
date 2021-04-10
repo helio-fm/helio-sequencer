@@ -33,7 +33,7 @@ KeySignatureSmallComponent::KeySignatureSmallComponent(KeySignaturesProjectMap &
     this->signatureLabel->setInterceptsMouseClicks(false, false);
 }
 
-KeySignatureSmallComponent::~KeySignatureSmallComponent() {}
+KeySignatureSmallComponent::~KeySignatureSmallComponent() = default;
 
 void KeySignatureSmallComponent::parentHierarchyChanged()
 {

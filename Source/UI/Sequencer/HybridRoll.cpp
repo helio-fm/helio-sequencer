@@ -24,6 +24,7 @@
 #include "MidiEventComponent.h"
 #include "SelectionComponent.h"
 #include "AnnotationLargeComponent.h"
+#include "TimeSignatureLargeComponent.h"
 
 #include "UndoStack.h"
 #include "UndoActionIDs.h"
@@ -1822,8 +1823,8 @@ void HybridRoll::updateChildrenBounds()
 
     if (this->timeSignaturesMap != nullptr)
     {
-        this->timeSignaturesMap->setBounds(0,
-            viewY, this->getWidth(), Globals::UI::rollHeaderHeight - 1);
+        this->timeSignaturesMap->setBounds(0, viewY,
+            this->getWidth(), TimeSignatureLargeComponent::timeSignatureHeight);
     }
 
     for (int i = 0; i < this->trackMaps.size(); ++i)

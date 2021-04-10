@@ -38,6 +38,8 @@ public:
         return this->event.getBeat();
     }
 
+    virtual float getTextWidth() const noexcept = 0;
+
     virtual void updateContent() = 0;
     virtual void setRealBounds(const Rectangle<float> bounds) = 0;
 

@@ -30,11 +30,18 @@ public:
 
     void updateContent() override;
     void setRealBounds(const Rectangle<float> bounds) override;
+    float getTextWidth() const noexcept override;
 
     void paint(Graphics &g) override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
+
+#if PLATFORM_DESKTOP
+    static constexpr auto timeSignatureHeight = 23;
+#elif PLATFORM_MOBILE
+    static constexpr auto timeSignatureHeight = Globals::UI::rollHeaderHeight;
+#endif
 
 private:
 
@@ -54,8 +61,8 @@ private:
     // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает
     bool mouseDownWasTriggered = false;
 
-    UniquePointer<Label> numeratorLabel;
-    UniquePointer<Label> denominatorLabel;
+    UniquePointer<Label> signatureLabel;
+    float textWidth = 0.f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeSignatureLargeComponent)
 };

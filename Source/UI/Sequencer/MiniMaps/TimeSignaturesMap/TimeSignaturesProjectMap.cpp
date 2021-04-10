@@ -375,12 +375,16 @@ void TimeSignaturesProjectMap::reloadTrackMap()
     this->resized();
 }
 
-void TimeSignaturesProjectMap::applyTimeSignatureBounds(TimeSignatureComponent *nc, TimeSignatureComponent *nextOne)
+void TimeSignaturesProjectMap::applyTimeSignatureBounds(TimeSignatureComponent *c, TimeSignatureComponent *nextOne)
 {
+    constexpr auto minWidth = 10.f;
+    constexpr auto widthMargin = 12.f;
+    constexpr auto componentsPadding = 10.f;
+
     const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
     const float projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
 
-    const float beat = (nc->getBeat() - this->rollFirstBeat);
+    const float beat = (c->getBeat() - this->rollFirstBeat);
     const float mapWidth = float(this->getWidth()) * (projectLengthInBeats / rollLengthInBeats);
 
     const float x = (mapWidth * (beat / projectLengthInBeats));
@@ -388,13 +392,11 @@ void TimeSignaturesProjectMap::applyTimeSignatureBounds(TimeSignatureComponent *
     const float nextBeat = ((nextOne ? nextOne->getBeat() : this->rollLastBeat) - this->rollFirstBeat);
     const float nextX = mapWidth * (nextBeat / projectLengthInBeats);
 
-    const float minWidth = 10.f;
-    const float widthMargin = 26.f;
-    const float componentsPadding = 10.f;
     const float maxWidth = nextX - x;
-    const float w = jmax(minWidth, jmin((maxWidth - componentsPadding), widthMargin));
+    const float componentWidth = c->getTextWidth() + widthMargin;
+    const float w = jmax(minWidth, jmin((maxWidth - componentsPadding), componentWidth));
 
-    nc->setRealBounds(Rectangle<float>(x, 0.f, w, float(this->getHeight())));
+    c->setRealBounds(Rectangle<float>(x, 0.f, w, float(this->getHeight())));
 }
 
 TimeSignatureComponent *TimeSignaturesProjectMap::getPreviousEventComponent(int indexOfSorted) const

@@ -31,32 +31,21 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMa
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
 
-    this->numeratorLabel = make<Label>();
-    this->addAndMakeVisible(this->numeratorLabel.get());
-    this->numeratorLabel->setFont({ 18.f });
-    this->numeratorLabel->setJustificationType(Justification::centredLeft);
-    this->numeratorLabel->setBounds(-3, 3, 32, 14);
-    this->numeratorLabel->setInterceptsMouseClicks(false, false);
+    this->signatureLabel = make<Label>();
+    this->addAndMakeVisible(this->signatureLabel.get());
+    this->signatureLabel->setFont({ 18.f });
+    this->signatureLabel->setJustificationType(Justification::topLeft);
+    this->signatureLabel->setInterceptsMouseClicks(false, false);
+    this->signatureLabel->setBounds(-3, 1, 48,
+        TimeSignatureLargeComponent::timeSignatureHeight - 1);
 
-    this->denominatorLabel = make<Label>();
-    this->addAndMakeVisible(this->denominatorLabel.get());
-    this->denominatorLabel->setFont({ 18.f });
-    this->denominatorLabel->setJustificationType(Justification::centredLeft);
-    this->denominatorLabel->setBounds(-3, 15, 32, 14);
-    this->denominatorLabel->setInterceptsMouseClicks(false, false);
+    this->signatureLabel->setBufferedToImage(true);
+    this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
 
     this->setMouseCursor(MouseCursor::PointingHandCursor);
-
-    this->numeratorLabel->setBufferedToImage(true);
-    this->numeratorLabel->setCachedComponentImage(new CachedLabelImage(*this->numeratorLabel));
-
-    this->denominatorLabel->setBufferedToImage(true);
-    this->denominatorLabel->setCachedComponentImage(new CachedLabelImage(*this->denominatorLabel));
-
-    this->setSize(32, 32);
 }
 
-TimeSignatureLargeComponent::~TimeSignatureLargeComponent() {}
+TimeSignatureLargeComponent::~TimeSignatureLargeComponent() = default;
 
 void TimeSignatureLargeComponent::paint(Graphics &g)
 {
@@ -158,13 +147,18 @@ void TimeSignatureLargeComponent::mouseUp(const MouseEvent &e)
 void TimeSignatureLargeComponent::setRealBounds(const Rectangle<float> bounds)
 {
     const auto intBounds = bounds.toType<int>();
-
-    this->boundsOffset = { bounds.getX() - float(intBounds.getX()),
+    this->boundsOffset = {
+        bounds.getX() - float(intBounds.getX()),
         bounds.getY(),
         bounds.getWidth() - float(intBounds.getWidth()),
         bounds.getHeight() };
 
     this->setBounds(intBounds);
+}
+
+float TimeSignatureLargeComponent::getTextWidth() const noexcept
+{
+    return this->textWidth;
 }
 
 void TimeSignatureLargeComponent::updateContent()
@@ -174,8 +168,9 @@ void TimeSignatureLargeComponent::updateContent()
     {
         this->numerator = this->event.getNumerator();
         this->denominator = this->event.getDenominator();
-        this->numeratorLabel->setText(String(this->numerator), dontSendNotification);
-        this->denominatorLabel->setText(String(this->denominator), dontSendNotification);
+
+        this->signatureLabel->setText(this->event.toString(), dontSendNotification);
+        this->textWidth = float(this->signatureLabel->getFont()
+            .getStringWidth(this->signatureLabel->getText()));
     }
 }
-

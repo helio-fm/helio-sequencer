@@ -38,7 +38,7 @@ AnnotationSmallComponent::AnnotationSmallComponent(AnnotationsProjectMap &parent
     this->annotationLabel->setCachedComponentImage(new CachedLabelImage(*this->annotationLabel));
 }
 
-AnnotationSmallComponent::~AnnotationSmallComponent() {}
+AnnotationSmallComponent::~AnnotationSmallComponent() = default;
 
 void AnnotationSmallComponent::paint(Graphics &g)
 {

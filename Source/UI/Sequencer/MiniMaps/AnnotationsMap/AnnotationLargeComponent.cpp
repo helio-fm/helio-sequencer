@@ -31,7 +31,7 @@ AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsProjectMap &parent
     this->font = Font(16.f, Font::plain);
 }
 
-AnnotationLargeComponent::~AnnotationLargeComponent() {}
+AnnotationLargeComponent::~AnnotationLargeComponent() = default;
 
 void AnnotationLargeComponent::paint(Graphics &g)
 {

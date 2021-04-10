@@ -35,6 +35,12 @@ public:
     void resized() override;
     void parentHierarchyChanged() override;
 
+    float getTextWidth() const noexcept override
+    {
+        // fixed size (it doesn't matter much on the mini-map):
+        return 16;
+    };
+
 private:
 
     Rectangle<float> boundsOffset;

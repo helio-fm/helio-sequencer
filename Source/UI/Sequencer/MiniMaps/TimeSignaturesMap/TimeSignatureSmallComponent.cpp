@@ -25,6 +25,9 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMa
     const TimeSignatureEvent &targetEvent) :
     TimeSignatureComponent(parent, targetEvent)
 {
+    this->setInterceptsMouseClicks(false, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
+
     this->signatureLabel = make<Label>();
     this->addAndMakeVisible(this->signatureLabel.get());
     this->signatureLabel->setFont({ 14.f });
@@ -34,14 +37,13 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMa
     this->separator = make<SeparatorVertical>();
     this->addAndMakeVisible(this->separator.get());
 
-    this->setInterceptsMouseClicks(false, false);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
 
     this->signatureLabel->setBufferedToImage(true);
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
 }
 
-TimeSignatureSmallComponent::~TimeSignatureSmallComponent() {}
+TimeSignatureSmallComponent::~TimeSignatureSmallComponent() = default;
 
 void TimeSignatureSmallComponent::resized()
 {
@@ -56,7 +58,8 @@ void TimeSignatureSmallComponent::parentHierarchyChanged()
 void TimeSignatureSmallComponent::setRealBounds(const Rectangle<float> bounds)
 {
     const auto intBounds = bounds.toType<int>();
-    this->boundsOffset = { bounds.getX() - float(intBounds.getX()),
+    this->boundsOffset = {
+        bounds.getX() - float(intBounds.getX()),
         bounds.getY(),
         bounds.getWidth() - float(intBounds.getWidth()),
         bounds.getHeight() };

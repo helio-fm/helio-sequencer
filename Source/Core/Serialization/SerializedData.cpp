@@ -199,7 +199,7 @@ SerializedData &SerializedData::operator= (const SerializedData &other)
     return *this;
 }
 
-SerializedData::~SerializedData() {}
+SerializedData::~SerializedData() = default;
 
 bool SerializedData::operator== (const SerializedData &other) const noexcept
 {
