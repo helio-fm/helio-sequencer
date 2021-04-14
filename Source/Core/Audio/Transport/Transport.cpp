@@ -834,7 +834,8 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float beat) con
     context->sampleRate = this->playbackCache.getSampleRate();
     context->numOutputChannels = this->playbackCache.getNumOutputChannels();
     
-    const auto targetRelativeBeat = context->startBeat - context->projectFirstBeat;
+    const auto relativeTargetBeat = context->startBeat - context->projectFirstBeat;
+    const auto relativeEndBeat = context->projectLastBeat - context->projectFirstBeat;
 
     double prevTimestamp = 0.0;
     bool startBeatPassed = false;
@@ -845,10 +846,10 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float beat) con
         const auto nextTimestamp = cached.message.getTimeStamp();
         const auto nextEventTimeDelta = tempo * (nextTimestamp - prevTimestamp);
 
-        if (nextTimestamp > targetRelativeBeat)
+        if (nextTimestamp > relativeTargetBeat)
         {
             // the time from the last event to the given beat:
-            context->startBeatTimeMs += (tempo * (targetRelativeBeat - prevTimestamp));
+            context->startBeatTimeMs += (tempo * (relativeTargetBeat - prevTimestamp));
             startBeatPassed = true;
         }
 
@@ -878,8 +879,9 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float beat) con
         }
     }
 
-    context->totalTimeMs +=
-        (tempo * (context->projectLastBeat - prevTimestamp));
+    // the remainder
+    context->totalTimeMs += (tempo * (relativeEndBeat - prevTimestamp));
+    //jassert(context->totalTimeMs == this->findTimeAt(this->projectLastBeat.get()));
 
     return context;
 }
