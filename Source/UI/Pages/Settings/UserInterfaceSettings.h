@@ -34,7 +34,7 @@ public:
 private:
 
     void updateButtons();
-    Array<Font> systemFonts;
+    StringArray systemFonts;
 
     UniquePointer<MobileComboBox::Primer> fontComboPrimer;
     UniquePointer<ToggleButton> openGLRendererButton;

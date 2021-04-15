@@ -36,12 +36,10 @@ UserInterfaceSettings::UserInterfaceSettings()
     {
         MenuPanel::Menu fontsMenu;
 
-        this->systemFonts.clearQuick();
-        Font::findFonts(this->systemFonts);
-
+        this->systemFonts = Font::findAllTypefaceNames();
         for (int i = 0; i < this->systemFonts.size(); ++i)
         {
-            const auto &typefaceName = this->systemFonts.getReference(i).getTypefaceName();
+            const auto &typefaceName = this->systemFonts.getReference(i);
             const bool isSelected = typefaceName == lastUsedFontName;
             fontsMenu.add(MenuItem::item(isSelected ? Icons::apply : Icons::empty,
                 CommandIDs::SelectFont + i, typefaceName));
@@ -184,7 +182,7 @@ void UserInterfaceSettings::handleCommandMessage(int commandId)
     {
         const int fontIndex = commandId - CommandIDs::SelectFont;
         auto &theme = static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
-        theme.updateFont(this->systemFonts[fontIndex]);
+        theme.updateFont({ this->systemFonts[fontIndex], 0, 0 });
         SafePointer<Component> window = this->getTopLevelComponent();
         App::recreateLayout();
         if (window != nullptr)

@@ -652,23 +652,6 @@ void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
     }
 }
 
-// This is just a way to set a timeout for scanning fonts:
-struct FontScanningThread final : Thread
-{
-    FontScanningThread() : Thread("FontScanner") {}
-
-    void run() override
-    {
-#if DEBUG
-        const auto startTime = Time::getMillisecondCounter();
-#endif
-        Font::findFonts(this->systemFonts);
-        DBG("Found " + String(this->systemFonts.size()) + " fonts in " + String(Time::getMillisecondCounter() - startTime) + " ms");
-    }
-
-    Array<Font> systemFonts;
-};
-
 void HelioTheme::initResources()
 {
     Icons::initBuiltInImages();
@@ -678,23 +661,20 @@ void HelioTheme::initResources()
     if (App::Config().containsProperty(Serialization::Config::lastUsedFont))
     {
         const String lastUsedFontName = App::Config().getProperty(Serialization::Config::lastUsedFont);
-        Font lastUsedFont(lastUsedFontName, 10, Font::plain);
-        this->textTypefaceCache = Typeface::createSystemTypefaceFor(lastUsedFont);
+        this->textTypefaceCache = Typeface::createSystemTypefaceFor({ lastUsedFontName, 0, 0 });
         return;
     }
 
-    const auto waitScanUntil = Time::getMillisecondCounter() + 10000;
-    const auto scanner = make<FontScanningThread>();
-    scanner->startThread(10);
+#if DEBUG
+    const auto scanStartTime = Time::getMillisecondCounter();
+#endif
 
-    // todo flash logo on the first start? it's gonna take a while..
-    do Thread::sleep(50); while
-        (scanner->isThreadRunning() && Time::getMillisecondCounter() < waitScanUntil);
+    // using Font::findAllTypefaceNames instead of the slower
+    // Font::findFonts which seems to cause freezes on some systems
+    const auto systemFonts = Font::findAllTypefaceNames();
 
-    scanner->stopThread(1000);
-
-    const Font *preferredFont = nullptr;
-    const Font *perfectlyFineFont = nullptr;
+    DBG("Found " + String(systemFonts.size()) + " fonts in " +
+        String(Time::getMillisecondCounter() - scanStartTime) + " ms");
 
     const auto userLanguage = SystemStats::getUserLanguage().toLowerCase().substring(0, 2);
     StringArray preferredFontNames = { "Noto Sans", "Noto Sans UI", "Source Han Sans" };
@@ -707,27 +687,24 @@ void HelioTheme::initResources()
         preferredFontNames.addArray({ "YeHei", "Hei", "Heiti SC" });
     }
 
+    String pickedFontName;
     const String perfectlyFineFontName = "Noto Sans CJK";
-
-    for (const auto &systemFont : scanner->systemFonts)
+    for (const auto &fontName : systemFonts)
     {
-        if (preferredFontNames.contains(systemFont.getTypefaceName()))
+        if (preferredFontNames.contains(fontName))
         {
-            preferredFont = &systemFont;
+            pickedFontName = fontName;
         }
-        else if (systemFont.getTypefaceName().startsWithIgnoreCase(perfectlyFineFontName))
+        else if (fontName.startsWithIgnoreCase(perfectlyFineFontName))
         {
-            perfectlyFineFont = &systemFont;
+            pickedFontName = fontName;
+            break;
         }
     }
 
-    if (perfectlyFineFont != nullptr)
+    if (pickedFontName.isNotEmpty())
     {
-        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*perfectlyFineFont);
-    }
-    else if (preferredFont != nullptr)
-    {
-        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*preferredFont);
+        this->textTypefaceCache = Typeface::createSystemTypefaceFor({ pickedFontName, 0, 0 });
     }
     else
     {
