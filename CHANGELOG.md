@@ -4,6 +4,17 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.5
+ - Disabled all network-related features on mobile platforms
+ - Added two UI flags for better control over mouse wheel behavior, notably for using mouse wheel for panning instead of zooming by default
+ - Added UI option to disable most of the editor animations
+ - Added UI flag to change the bottom mini-map appearance (toggled by B hotkey)
+ - Added tooltips to sidebar buttons
+ - UI improvements: fixed the pattern roll not updating with time signature changes, prettied up the cut point marks for the knife tool and note resizers on mobile platforms
+ - Implemented duplicating automation tracks in the pattern roll
+ - Fixed the project length being calculated incorrectly for rendering
+ - Fixed font scanning so the app shouldn't freeze on the very first run
+
 ## Version 3.4
  - Added horizontal scrolling using shift + mouse wheel
  - When exporting MIDI, the track segments are grouped in the same way as you see them grouped in the pattern roll
