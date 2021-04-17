@@ -178,15 +178,16 @@ bool Document::load(const File &file)
         return false;
     }
 
-    if (this->owner.onDocumentLoad(file))
+    this->workingFile = file;
+    this->hasChanges = false;
+
+    if (!this->owner.onDocumentLoad(file))
     {
-        this->workingFile = file;
-        this->hasChanges = false;
-        return true;
+        DBG("Document load failed: " + this->workingFile.getFullPathName());
+        return false;
     }
 
-    DBG("Document load failed: " + this->workingFile.getFullPathName());
-    return false;
+    return true;
 }
 
 void Document::import(const String &filePattern)

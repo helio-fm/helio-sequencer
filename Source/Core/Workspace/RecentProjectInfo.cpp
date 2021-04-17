@@ -64,6 +64,7 @@ void RecentProjectInfo::updateLocalInfo(const String &localId,
         this->local = make<LocalInfo>();
     }
 
+    jassert(localPath.isNotEmpty());
     this->local->title = localTitle;
     this->local->path = localPath;
     this->local->lastModifiedMs = Time::currentTimeMillis();
