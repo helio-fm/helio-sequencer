@@ -55,6 +55,13 @@ public:
         return first->event.getId() - second->event.getId();
     }
 
+
+#if PLATFORM_DESKTOP
+    static constexpr auto timeSignatureHeight = 23;
+#elif PLATFORM_MOBILE
+    static constexpr auto timeSignatureHeight = Globals::UI::rollHeaderHeight;
+#endif
+
 protected:
 
     const TimeSignatureEvent &event;

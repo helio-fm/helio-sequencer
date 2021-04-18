@@ -24,7 +24,6 @@
 #include "MidiEventComponent.h"
 #include "SelectionComponent.h"
 #include "AnnotationLargeComponent.h"
-#include "TimeSignatureLargeComponent.h"
 
 #include "UndoStack.h"
 #include "UndoActionIDs.h"
@@ -1059,12 +1058,12 @@ void HybridRoll::mouseUp(const MouseEvent &e)
     }
 
 #if PLATFORM_DESKTOP
-#   define MIN_PAN_DISTANCE 10
+    constexpr auto minPanDistance = 10;
 #elif PLATFORM_MOBILE
-#   define MIN_PAN_DISTANCE 20
+    constexpr auto minPanDistance = 20;
 #endif
 
-    if (e.mods.isLeftButtonDown() && (e.getDistanceFromDragStart() < MIN_PAN_DISTANCE))
+    if (e.mods.isLeftButtonDown() && (e.getDistanceFromDragStart() < minPanDistance))
     {
         this->deselectAll();
     }
@@ -1253,7 +1252,8 @@ void HybridRoll::handleCommandMessage(int commandId)
         if (this->isUsingSpaceDraggingMode())
         {
             const bool noDraggingWasDone = (this->draggedDistance < 3);
-            const bool notTooMuchTimeSpent = (Time::getCurrentTime() - this->timeEnteredDragMode).inMilliseconds() < 300;
+            const bool notTooMuchTimeSpent =
+                (Time::getCurrentTime() - this->timeEnteredDragMode).inMilliseconds() < 300;
             if (noDraggingWasDone && notTooMuchTimeSpent)
             {
                 this->getTransport().toggleStartStopPlayback();
@@ -1728,17 +1728,12 @@ void HybridRoll::continueZooming(const MouseEvent &e)
 {
     Desktop::getInstance().getMainMouseSource().setScreenPosition(e.getMouseDownScreenPosition().toFloat());
 
-    const Point<float> clickOffset = e.position - this->viewport.getViewPosition().toFloat();
+    const auto clickOffset = e.position - this->viewport.getViewPosition().toFloat();
     const float dragOffsetX = float(e.getPosition().getX() - e.getMouseDownPosition().getX());
     const float dragOffsetY = -float(e.getPosition().getY() - e.getMouseDownPosition().getY());
-    const Point<float> zoomOffset = (Point<float>(dragOffsetX, dragOffsetY) - this->zoomAnchor).toFloat() * 0.005f;
+    const auto zoomOffset = (Point<float>(dragOffsetX, dragOffsetY) - this->zoomAnchor).toFloat() * 0.005f;
 
     this->smoothZoomController->zoomRelative(clickOffset, zoomOffset);
-    //    this->zoomAnchor.setXY(dragOffsetX, dragOffsetY);
-
-    //    const Point<int> markerCentre(this->zoomMarker->getBounds().getCentre());
-    //    this->zoomMarker->setSize(jmax<int>(32, abs(dragOffsetX * 2)), jmax<int>(32, abs(dragOffsetY * 2)));
-    //    this->zoomMarker->setCentrePosition(markerCentre.getX(), markerCentre.getY());
 }
 
 void HybridRoll::endZooming()
@@ -1824,14 +1819,15 @@ void HybridRoll::updateChildrenBounds()
     if (this->timeSignaturesMap != nullptr)
     {
         this->timeSignaturesMap->setBounds(0, viewY,
-            this->getWidth(), TimeSignatureLargeComponent::timeSignatureHeight);
+            this->getWidth(), Globals::UI::rollHeaderHeight);
     }
 
-    for (int i = 0; i < this->trackMaps.size(); ++i)
+    for (auto *trackMap : this->trackMaps)
     {
-        Component *const trackMap = this->trackMaps.getUnchecked(i);
-        trackMap->setBounds(0, viewY + viewHeight - trackMap->getHeight(),
-                            this->getWidth(), trackMap->getHeight());
+        trackMap->setBounds(0,
+            viewY + viewHeight - trackMap->getHeight(),
+            this->getWidth(),
+            trackMap->getHeight());
     }
 
     if (this->lassoComponent->isDragging())
@@ -1873,9 +1869,8 @@ void HybridRoll::updateChildrenPositions()
         this->timeSignaturesMap->setTopLeftPosition(0, viewY);
     }
 
-    for (int i = 0; i < this->trackMaps.size(); ++i)
+    for (auto *trackMap : this->trackMaps)
     {
-        Component *const trackMap = this->trackMaps.getUnchecked(i);
         trackMap->setTopLeftPosition(0, viewY + viewHeight - trackMap->getHeight());
     }
 

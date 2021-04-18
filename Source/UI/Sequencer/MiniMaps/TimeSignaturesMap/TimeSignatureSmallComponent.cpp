@@ -25,6 +25,7 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMa
     const TimeSignatureEvent &targetEvent) :
     TimeSignatureComponent(parent, targetEvent)
 {
+    this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, false);
     this->setMouseClickGrabsKeyboardFocus(false);
 
@@ -32,10 +33,7 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMa
     this->addAndMakeVisible(this->signatureLabel.get());
     this->signatureLabel->setFont({ 14.f });
     this->signatureLabel->setJustificationType(Justification::centredLeft);
-    this->signatureLabel->setBounds(0, 4, 48, 16);
-
-    this->separator = make<SeparatorVertical>();
-    this->addAndMakeVisible(this->separator.get());
+    this->signatureLabel->setBounds(0, 2, 48, 16);
 
     this->signatureLabel->setInterceptsMouseClicks(false, false);
 
@@ -45,9 +43,15 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMa
 
 TimeSignatureSmallComponent::~TimeSignatureSmallComponent() = default;
 
-void TimeSignatureSmallComponent::resized()
+void TimeSignatureSmallComponent::paint(Graphics &g)
 {
-    this->separator->setBounds(0, 0, 2, this->getHeight());
+    g.setColour(this->colour);
+
+    Path p;
+    constexpr auto topPadding = 2.f;
+    constexpr auto triangleSize = 5.f;
+    p.addTriangle(0.f, topPadding, triangleSize, topPadding, 0.f, triangleSize + topPadding);
+    g.fillPath(p);
 }
 
 void TimeSignatureSmallComponent::parentHierarchyChanged()

@@ -17,8 +17,8 @@
 
 #pragma once
 
+#include "ColourIDs.h"
 #include "TimeSignatureComponent.h"
-#include "SeparatorVertical.h"
 
 class TimeSignatureSmallComponent final : public TimeSignatureComponent
 {
@@ -32,7 +32,7 @@ public:
     void updateContent() override;
     void setRealBounds(const Rectangle<float> bounds) override;
 
-    void resized() override;
+    void paint(Graphics &g) override;
     void parentHierarchyChanged() override;
 
     float getTextWidth() const noexcept override
@@ -43,10 +43,11 @@ public:
 
 private:
 
+    UniquePointer<Label> signatureLabel;
+
     Rectangle<float> boundsOffset;
 
-    UniquePointer<Label> signatureLabel;
-    UniquePointer<SeparatorVertical> separator;
+    const Colour colour = findDefaultColour(ColourIDs::TrackScroller::scrollerFill);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeSignatureSmallComponent)
 };

@@ -37,12 +37,6 @@ public:
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
 
-#if PLATFORM_DESKTOP
-    static constexpr auto timeSignatureHeight = 23;
-#elif PLATFORM_MOBILE
-    static constexpr auto timeSignatureHeight = Globals::UI::rollHeaderHeight;
-#endif
-
 private:
 
     ComponentDragger dragger;

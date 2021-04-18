@@ -396,7 +396,7 @@ void TimeSignaturesProjectMap::applyTimeSignatureBounds(TimeSignatureComponent *
     const float componentWidth = c->getTextWidth() + widthMargin;
     const float w = jmax(minWidth, jmin((maxWidth - componentsPadding), componentWidth));
 
-    c->setRealBounds(Rectangle<float>(x, 0.f, w, float(this->getHeight())));
+    c->setRealBounds(Rectangle<float>(x, 0.f, w, float(TimeSignatureComponent::timeSignatureHeight)));
 }
 
 TimeSignatureComponent *TimeSignaturesProjectMap::getPreviousEventComponent(int indexOfSorted) const
