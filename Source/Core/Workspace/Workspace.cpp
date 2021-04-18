@@ -346,8 +346,7 @@ bool Workspace::autoload()
         return true;
     }
 
-    jassertfalse;
-    return false;
+    return false; // the very first run
 }
 
 void Workspace::failedDeserializationFallback()

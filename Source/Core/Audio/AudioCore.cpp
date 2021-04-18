@@ -226,7 +226,7 @@ Instrument *AudioCore::findInstrumentById(const String &id) const
 
 Instrument *AudioCore::getDefaultInstrument() const noexcept
 {
-    jassert(this->defaultInstrument != nullptr); // shouldn't happen
+    jassert(this->defaultInstrument != nullptr || !this->instruments.isEmpty());
     return this->defaultInstrument != nullptr ?
         this->defaultInstrument.get() : this->instruments.getFirst();
 }
