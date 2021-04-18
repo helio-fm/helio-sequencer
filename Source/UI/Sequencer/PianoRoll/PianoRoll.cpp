@@ -1470,7 +1470,7 @@ void PianoRoll::startCuttingEvents(const MouseEvent &e)
     if (this->knifeToolHelper == nullptr)
     {
         this->deselectAll();
-        this->knifeToolHelper.reset(new KnifeToolHelper(*this));
+        this->knifeToolHelper = make<KnifeToolHelper>(*this);
         this->addAndMakeVisible(this->knifeToolHelper.get());
         this->knifeToolHelper->toBack();
         this->knifeToolHelper->fadeIn();

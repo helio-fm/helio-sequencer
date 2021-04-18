@@ -247,19 +247,17 @@ void InstrumentNode::removeFromOrchestraAndDelete()
 
 
 //===----------------------------------------------------------------------===//
-// Audio plugin UI editor node
+// Audio plugin UI editor node (mobile only)
 //===----------------------------------------------------------------------===//
 
 class HelioAudioProcessorEditor final : public GenericAudioProcessorEditor
 {
 public:
 
-    explicit HelioAudioProcessorEditor(AudioProcessor &p) :
-        GenericAudioProcessorEditor(p)
+    explicit HelioAudioProcessorEditor(AudioProcessor &p) : GenericAudioProcessorEditor(p)
     {
         this->setFocusContainer(true);
 
-        // установим ему масимальную высоту
         for (int i = 0; i < this->getNumChildComponents(); ++i)
         {
             if (auto *panel = dynamic_cast<PropertyPanel *>(this->getChildComponent(i)))

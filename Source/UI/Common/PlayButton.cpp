@@ -15,13 +15,9 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "PlayButton.h"
 
-//[MiscUserDefs]
 #include "MainLayout.h"
 #include "HelioTheme.h"
 #include "ColourIDs.h"
@@ -38,82 +34,56 @@ public:
 
     void paint(Graphics &g) override
     {
-        const Colour colour1(findDefaultColour(ColourIDs::Icons::fill).withAlpha(0.1f));
+        const auto colour = findDefaultColour(ColourIDs::Icons::fill).withAlpha(0.1f);
         const int h = this->getHeight();
-        const Rectangle<float> r(this->getLocalBounds()
-                                 .withSizeKeepingCentre(h, h)
-                                 .reduced(3)
-                                 .toFloat());
+        const auto r = this->getLocalBounds()
+            .withSizeKeepingCentre(h, h)
+            .reduced(3).toFloat();
 
-        HelioTheme::drawDashedRectangle(g, r, colour1, 5.5f, 1.0f, 0.5f, float(h / 2));
+        HelioTheme::drawDashedRectangle(g, r, colour, 5.5f, 1.0f, 0.5f, float(h / 2));
     }
 };
-//[/MiscUserDefs]
 
-PlayButton::PlayButton(WeakReference<Component> eventReceiver)
-    : HighlightedComponent(),
-      eventReceiver(eventReceiver),
-      playing(false)
+
+PlayButton::PlayButton(WeakReference<Component> eventReceiver) :
+    HighlightedComponent(),
+    eventReceiver(eventReceiver)
 {
-    this->playIcon.reset(new IconComponent(Icons::play));
-    this->addAndMakeVisible(playIcon.get());
-
-    this->pauseIcon.reset(new IconComponent(Icons::pause));
-    this->addAndMakeVisible(pauseIcon.get());
-
-
-    //[UserPreSize]
-    this->playIcon->setVisible(true);
-    this->pauseIcon->setVisible(false);
-    this->playIcon->setInterceptsMouseClicks(false, false);
-    this->pauseIcon->setInterceptsMouseClicks(false, false);
+    this->setOpaque(false);
+    this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
-    this->setPaintingIsUnclipped(true);
-    this->setOpaque(false);
-    //[/UserPreSize]
+
+    this->playIcon = make<IconComponent>(Icons::play);
+    this->addAndMakeVisible(this->playIcon.get());
+    this->playIcon->setInterceptsMouseClicks(false, false);
+
+    this->pauseIcon = make<IconComponent>(Icons::pause);
+    this->addChildComponent(this->pauseIcon.get()); // not visible
+    this->pauseIcon->setInterceptsMouseClicks(false, false);
 
     this->setSize(64, 64);
-
-    //[Constructor]
-    //[/Constructor]
 }
 
-PlayButton::~PlayButton()
-{
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    playIcon = nullptr;
-    pauseIcon = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void PlayButton::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
-}
+PlayButton::~PlayButton() = default;
 
 void PlayButton::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    const auto w_2 = this->getWidth() / 2;
+    const auto h_2 = this->getHeight() / 2;
+    const auto buttonSize = this->getWidth() - 24;
 
-    playIcon->setBounds((getWidth() / 2) + 1 - ((getWidth() - 24) / 2), (getHeight() / 2) - ((getHeight() - 24) / 2), getWidth() - 24, getHeight() - 24);
-    pauseIcon->setBounds((getWidth() / 2) + -1 - ((getWidth() - 24) / 2), (getHeight() / 2) - ((getHeight() - 24) / 2), getWidth() - 24, getHeight() - 24);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->playIcon->setBounds(w_2 - (buttonSize / 2) + 1,
+        h_2 - ((this->getHeight() - buttonSize) / 2),
+        buttonSize, buttonSize);
+
+    this->pauseIcon->setBounds(w_2 - (buttonSize / 2) - 1,
+        h_2 - ((this->getHeight() - buttonSize) / 2),
+        buttonSize, buttonSize);
 }
 
-void PlayButton::mouseDown (const MouseEvent& e)
+void PlayButton::mouseDown(const MouseEvent &e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
     const auto command = this->playing ?
         CommandIDs::TransportStop :
         CommandIDs::TransportPlaybackStart;
@@ -126,11 +96,7 @@ void PlayButton::mouseDown (const MouseEvent& e)
     {
         App::Layout().broadcastCommandMessage(command);
     }
-    //[/UserCode_mouseDown]
 }
-
-
-//[MiscUserCode]
 
 void PlayButton::setPlaying(bool isPlaying)
 {
@@ -154,31 +120,3 @@ Component *PlayButton::createHighlighterComponent()
 {
     return new PlayButtonHighlighter();
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="PlayButton" template="../../Template"
-                 componentName="" parentClasses="public HighlightedComponent"
-                 constructorParams="WeakReference&lt;Component&gt; eventReceiver"
-                 variableInitialisers="HighlightedComponent(),&#10;eventReceiver(eventReceiver),&#10;playing(false)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="64" initialHeight="64">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT id="1a8a31abbc0f3c4e" memberName="playIcon" virtualName=""
-                    explicitFocusOrder="0" pos="1Cc 0Cc 24M 24M" class="IconComponent"
-                    params="Icons::play"/>
-  <GENERICCOMPONENT id="f10feab7d241bacb" memberName="pauseIcon"
-                    virtualName="" explicitFocusOrder="0" pos="-1Cc 0Cc 24M 24M"
-                    class="IconComponent" params="Icons::pause"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

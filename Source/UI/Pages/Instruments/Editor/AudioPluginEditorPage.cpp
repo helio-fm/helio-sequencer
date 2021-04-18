@@ -22,13 +22,13 @@
 
 AudioPluginEditorPage::AudioPluginEditorPage(Component *contentOwned)
 {
-    this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
+    this->setWantsKeyboardFocus(false);
 
-    this->background.reset(new PanelBackgroundB());
+    this->background = make<PanelBackgroundB>();
     this->addAndMakeVisible(this->background.get());
 
-    this->panel.reset(new FramePanel());
+    this->panel = make<FramePanel>();
     this->addAndMakeVisible(this->panel.get());
 
     if (auto *w = dynamic_cast<DocumentWindow *>(contentOwned))
@@ -39,22 +39,14 @@ AudioPluginEditorPage::AudioPluginEditorPage(Component *contentOwned)
     }
     else
     {
-        this->viewport.reset(new Viewport("AudioPluginEditor Viewport"));
+        this->viewport = make<Viewport>("AudioPluginEditor Viewport");
         this->viewport->setAlwaysOnTop(true);
         this->viewport->setViewedComponent(contentOwned, true);
         this->addAndMakeVisible(this->viewport.get());
     }
-
-    this->setSize(600, 400);
 }
 
-AudioPluginEditorPage::~AudioPluginEditorPage()
-{
-    this->background = nullptr;
-    this->panel = nullptr;
-    this->viewport = nullptr;
-    this->ownedWindow = nullptr;
-}
+AudioPluginEditorPage::~AudioPluginEditorPage() = default;
 
 void AudioPluginEditorPage::resized()
 {

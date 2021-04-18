@@ -15,94 +15,82 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "OrchestraPitPage.h"
 
-//[MiscUserDefs]
 #include "PluginScanner.h"
 #include "OrchestraPitNode.h"
 #include "MainLayout.h"
 #include "ProgressTooltip.h"
 #include "Workspace.h"
 #include "ComponentIDs.h"
-//[/MiscUserDefs]
 
-OrchestraPitPage::OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot)
-    : pluginScanner(pluginScanner),
-      instrumentsRoot(instrumentsRoot)
+OrchestraPitPage::OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot) :
+    pluginScanner(pluginScanner),
+    instrumentsRoot(instrumentsRoot)
 {
-    this->skew.reset(new SeparatorVerticalSkew());
-    this->addAndMakeVisible(skew.get());
-    this->backgroundA.reset(new PanelBackgroundA());
-    this->addAndMakeVisible(backgroundA.get());
-    this->backgroundB.reset(new PanelBackgroundB());
-    this->addAndMakeVisible(backgroundB.get());
-    this->pluginsList.reset(new AudioPluginsListComponent(pluginScanner, instrumentsRoot));
-    this->addAndMakeVisible(pluginsList.get());
-    this->instrumentsList.reset(new InstrumentsListComponent(pluginScanner, instrumentsRoot));
-    this->addAndMakeVisible(instrumentsList.get());
-
-    //[UserPreSize]
     this->setComponentID(ComponentIDs::orchestraPit);
-    //[/UserPreSize]
 
-    this->setSize(600, 400);
+    this->setFocusContainer(false);
+    this->setWantsKeyboardFocus(false);
+    this->setInterceptsMouseClicks(false, true);
+    this->setPaintingIsUnclipped(true);
 
-    //[Constructor]
+    this->skew = make<SeparatorVerticalSkew>();
+    this->addAndMakeVisible(this->skew.get());
+
+    this->backgroundA = make<PanelBackgroundA>();
+    this->addAndMakeVisible(this->backgroundA.get());
+
+    this->backgroundB = make<PanelBackgroundB>();
+    this->addAndMakeVisible(this->backgroundB.get());
+
+    this->pluginsList = make<AudioPluginsListComponent>(pluginScanner, instrumentsRoot);
+    this->addAndMakeVisible(this->pluginsList.get());
+
+    this->instrumentsList = make<InstrumentsListComponent>(pluginScanner, instrumentsRoot);
+    this->addAndMakeVisible(this->instrumentsList.get());
+
     this->pluginScanner.addChangeListener(this);
     this->instrumentsRoot.addChangeListener(this);
-    //[/Constructor]
 }
 
 OrchestraPitPage::~OrchestraPitPage()
 {
-    //[Destructor_pre]
     this->instrumentsRoot.removeChangeListener(this);
     this->pluginScanner.removeChangeListener(this);
-    //[/Destructor_pre]
-
-    skew = nullptr;
-    backgroundA = nullptr;
-    backgroundB = nullptr;
-    pluginsList = nullptr;
-    instrumentsList = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void OrchestraPitPage::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
 void OrchestraPitPage::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    constexpr auto skewWidth = 64;
+    const auto rightSideWidth = int(this->getWidth() / 2.5f); // a bit smaller: a simple list of instruments
+    const auto leftSideWidth = this->getWidth() - rightSideWidth - skewWidth;
 
-    skew->setBounds(0 + (getWidth() - 510), 0, 64, getHeight() - 0);
-    backgroundA->setBounds(0, 0, getWidth() - 510, getHeight() - 0);
-    backgroundB->setBounds(getWidth() - 446, 0, 446, getHeight() - 0);
-    pluginsList->setBounds(14, 10, (getWidth() - 510) - 16, getHeight() - 20);
-    instrumentsList->setBounds((getWidth() - 446) + 14, 10, 446 - 28, getHeight() - 20);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->skew->setBounds(leftSideWidth, 0, skewWidth, this->getHeight());
+
+    this->backgroundA->setBounds(0, 0, leftSideWidth, this->getHeight());
+    this->backgroundB->setBounds(this->getWidth() - rightSideWidth, 0, rightSideWidth, this->getHeight());
+
+    constexpr auto paddingH = 14;
+    constexpr auto paddingV = 10;
+
+    this->pluginsList->setBounds(paddingH, paddingV,
+        leftSideWidth - paddingH - 2,
+        this->getHeight() - paddingV * 2);
+
+    this->instrumentsList->setBounds((this->getWidth() - rightSideWidth) + paddingH,
+        paddingV,
+        rightSideWidth - paddingH * 2,
+        this->getHeight() - paddingV * 2);
 }
 
-void OrchestraPitPage::handleCommandMessage (int commandId)
+void OrchestraPitPage::handleCommandMessage(int commandId)
 {
-    //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::ScanAllPlugins)
     {
-        App::showModalComponent(ProgressTooltip::cancellable([this]() {
+        App::showModalComponent(ProgressTooltip::cancellable([this]()
+        {
             this->pluginScanner.cancelRunningScan();
         }));
 
@@ -118,7 +106,8 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
 
         if (fc.browseForDirectory())
         {
-            App::showModalComponent(ProgressTooltip::cancellable([this]() {
+            App::showModalComponent(ProgressTooltip::cancellable([this]()
+            {
                 this->pluginScanner.cancelRunningScan();
             }));
 
@@ -127,8 +116,6 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
     }
 
 #endif
-
-    //[/UserCode_handleCommandMessage]
 }
 
 //===----------------------------------------------------------------------===//
@@ -160,41 +147,3 @@ void OrchestraPitPage::onPluginsSelectionChanged()
 {
     this->instrumentsList->clearSelection();
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="OrchestraPitPage" template="../../../Template"
-                 componentName="" parentClasses="public Component, public ChangeListener"
-                 constructorParams="PluginScanner &amp;pluginScanner, OrchestraPitNode &amp;instrumentsRoot"
-                 variableInitialisers="pluginScanner(pluginScanner),&#10;instrumentsRoot(instrumentsRoot)"
-                 snapPixels="4" snapActive="1" snapShown="0" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="600" initialHeight="400">
-  <METHODS>
-    <METHOD name="handleCommandMessage (int commandId)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="9bde1b4dd587d5fb" memberName="skew" virtualName=""
-             explicitFocusOrder="0" pos="0R 0 64 0M" posRelativeX="981ceff5817d7b34"
-             sourceFile="../../Themes/SeparatorVerticalSkew.cpp" constructorParams=""/>
-  <JUCERCOMP name="" id="981ceff5817d7b34" memberName="backgroundA" virtualName=""
-             explicitFocusOrder="0" pos="0 0 510M 0M" sourceFile="../../Themes/PanelBackgroundA.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="9e61167b79cef28c" memberName="backgroundB" virtualName=""
-             explicitFocusOrder="0" pos="0Rr 0 446 0M" posRelativeW="4ac6bf71d1e1d84f"
-             sourceFile="../../Themes/PanelBackgroundB.cpp" constructorParams=""/>
-  <JUCERCOMP name="" id="d37f5d299f347b6c" memberName="pluginsList" virtualName=""
-             explicitFocusOrder="0" pos="14 10 16M 20M" posRelativeW="981ceff5817d7b34"
-             sourceFile="AudioPluginsListComponent.cpp" constructorParams="pluginScanner, instrumentsRoot"/>
-  <JUCERCOMP name="" id="23f9d3ba9d40a668" memberName="instrumentsList" virtualName=""
-             explicitFocusOrder="0" pos="14 10 28M 20M" posRelativeX="9e61167b79cef28c"
-             posRelativeW="9e61167b79cef28c" sourceFile="InstrumentsListComponent.cpp"
-             constructorParams="pluginScanner, instrumentsRoot"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

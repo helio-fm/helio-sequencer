@@ -36,7 +36,7 @@ InstrumentEditor::InstrumentEditor(WeakReference<Instrument> instrument,
     instrument(instrument),
     audioCore(audioCoreRef)
 {
-    this->background.reset(new PanelBackgroundC());
+    this->background = make<PanelBackgroundC>();
     this->addAndMakeVisible(this->background.get());
 
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
@@ -242,7 +242,7 @@ void InstrumentEditor::beginConnectorDrag(
     this->draggingConnector.reset(dynamic_cast<InstrumentEditorConnector *>(e.originalComponent));
     if (this->draggingConnector == nullptr)
     {
-        this->draggingConnector.reset(new InstrumentEditorConnector(instrument));
+        this->draggingConnector = make<InstrumentEditorConnector>(instrument);
     }
     
     AudioProcessorGraph::NodeAndChannel source;

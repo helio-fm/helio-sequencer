@@ -17,22 +17,13 @@
 
 #pragma once
 
-//[Headers]
 class PluginScanner;
 class OrchestraPitNode;
 class HeadlineContextMenuController;
 
 #include "HeadlineItemDataSource.h"
 #include "InstrumentNode.h"
-
-#if PLATFORM_DESKTOP
-#   define INSTRUMENTSLIST_ROW_HEIGHT (48)
-#elif PLATFORM_MOBILE
-#   define INSTRUMENTSLIST_ROW_HEIGHT (72)
-#endif
-//[/Headers]
-
-#include "../../Themes/SeparatorHorizontalFadingReversed.h"
+#include "SeparatorHorizontalFadingReversed.h"
 
 class InstrumentsListComponent final : public Component,
                                        public ListBoxModel,
@@ -42,8 +33,6 @@ public:
 
     InstrumentsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot);
     ~InstrumentsListComponent();
-
-    //[UserMethods]
 
     void clearSelection();
     void updateListContent();
@@ -68,16 +57,15 @@ public:
     String getName() const override;
     bool canBeSelectedAsMenuItem() const override;
 
-    //[/UserMethods]
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
 
-    void paint (Graphics& g) override;
     void resized() override;
     void parentHierarchyChanged() override;
 
-
 private:
 
-    //[UserVariables]
     PluginScanner &pluginScanner;
     OrchestraPitNode &instrumentsRoot;
 
@@ -85,11 +73,16 @@ private:
 
     Array<WeakReference<InstrumentNode>> instruments;
     Image instrumentIcon;
-    //[/UserVariables]
+
+#if PLATFORM_DESKTOP
+    static constexpr auto rowHeight = 48;
+#elif PLATFORM_MOBILE
+    static constexpr auto rowHeight = 72;
+#endif
 
     UniquePointer<ListBox> instrumentsList;
     UniquePointer<Label> titleLabel;
-    UniquePointer<SeparatorHorizontalFadingReversed> separator1;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InstrumentsListComponent)
 };

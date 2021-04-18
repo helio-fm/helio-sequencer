@@ -17,47 +17,34 @@
 
 #pragma once
 
-//[Headers]
-
 class PluginScanner;
 class OrchestraPitNode;
-class MenuItemComponent;
 
-#include "HeadlineItemDataSource.h"
-//[/Headers]
-
-#include "../../Themes/SeparatorVerticalSkew.h"
-#include "../../Themes/PanelBackgroundA.h"
-#include "../../Themes/PanelBackgroundB.h"
 #include "AudioPluginsListComponent.h"
 #include "InstrumentsListComponent.h"
+#include "SeparatorVerticalSkew.h"
+#include "PanelBackgroundA.h"
+#include "PanelBackgroundB.h"
 
-class OrchestraPitPage final : public Component,
-                               public ChangeListener
+class OrchestraPitPage final : public Component,  public ChangeListener
 {
 public:
 
     OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot);
     ~OrchestraPitPage();
 
-    //[UserMethods]
     void onStageSelectionChanged();
     void onPluginsSelectionChanged();
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
     void resized() override;
-    void handleCommandMessage (int commandId) override;
-
+    void handleCommandMessage(int commandId) override;
 
 private:
 
-    //[UserVariables]
     PluginScanner &pluginScanner;
     OrchestraPitNode &instrumentsRoot;
-    //[/UserVariables]
 
     UniquePointer<SeparatorVerticalSkew> skew;
     UniquePointer<PanelBackgroundA> backgroundA;
@@ -65,5 +52,5 @@ private:
     UniquePointer<AudioPluginsListComponent> pluginsList;
     UniquePointer<InstrumentsListComponent> instrumentsList;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OrchestraPitPage)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OrchestraPitPage)
 };

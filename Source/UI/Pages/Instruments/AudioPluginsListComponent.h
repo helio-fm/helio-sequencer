@@ -17,26 +17,15 @@
 
 #pragma once
 
-//[Headers]
 class PluginScanner;
 class OrchestraPitNode;
 class MenuItemComponent;
 class HeadlineContextMenuController;
 
 #include "HeadlineItemDataSource.h"
-
-#if PLATFORM_DESKTOP
-#   define PLUGINSLIST_ROW_HEIGHT (64)
-#   define PLUGINSLIST_HEADER_HEIGHT (34)
-#elif PLATFORM_MOBILE
-#   define PLUGINSLIST_ROW_HEIGHT (90)
-#   define PLUGINSLIST_HEADER_HEIGHT (40)
-#endif
-//[/Headers]
-
-#include "../../Themes/SeparatorHorizontalFading.h"
-#include "../../Themes/SeparatorHorizontalFading.h"
-#include "../../Themes/SeparatorHorizontalFadingReversed.h"
+#include "SeparatorHorizontalFading.h"
+#include "SeparatorHorizontalFading.h"
+#include "SeparatorHorizontalFadingReversed.h"
 
 class AudioPluginsListComponent final : public Component,
                                         public TableListBoxModel,
@@ -46,8 +35,6 @@ public:
 
     AudioPluginsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot);
     ~AudioPluginsListComponent();
-
-    //[UserMethods]
 
     void clearSelection();
     void updateListContent();
@@ -77,27 +64,38 @@ public:
     String getName() const override;
     bool canBeSelectedAsMenuItem() const override;
 
-    //[/UserMethods]
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
 
-    void paint (Graphics& g) override;
     void resized() override;
     void parentHierarchyChanged() override;
 
-
 private:
 
-    //[UserVariables]
     PluginScanner &pluginScanner;
     OrchestraPitNode &instrumentsRoot;
     UniquePointer<HeadlineContextMenuController> contextMenuController;
-    //[/UserVariables]
+
+#if PLATFORM_DESKTOP
+    static constexpr auto rowHeight = 64;
+    static constexpr auto tableHeaderHeight = 34;
+#elif PLATFORM_MOBILE
+    static constexpr auto rowHeight = 90;
+    static constexpr auto tableHeaderHeight = 40;
+#endif
+
+    enum ColumnIds
+    {
+        vendorAndName = 1, // TableListBox needs any number apart from 0
+        category = 2,
+        format = 3
+    };
 
     UniquePointer<TableListBox> pluginsList;
     UniquePointer<MenuItemComponent> initialScanButton;
-    UniquePointer<SeparatorHorizontalFading> separator1;
-    UniquePointer<SeparatorHorizontalFading> separator2;
     UniquePointer<Label> titleLabel;
-    UniquePointer<SeparatorHorizontalFadingReversed> separator3;
+    UniquePointer<SeparatorHorizontalFadingReversed> titleSeparator;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginsListComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginsListComponent)
 };

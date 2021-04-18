@@ -15,96 +15,60 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "InstrumentsListComponent.h"
 
-//[MiscUserDefs]
 #include "OrchestraPitNode.h"
 #include "InstrumentMenu.h"
 #include "HeadlineContextMenuController.h"
 #include "Instrument.h"
 #include "MainLayout.h"
-//[/MiscUserDefs]
 
-InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot)
-    : pluginScanner(pluginScanner),
-      instrumentsRoot(instrumentsRoot)
+InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot) :
+    pluginScanner(pluginScanner),
+    instrumentsRoot(instrumentsRoot)
 {
-    this->instrumentsList.reset(new ListBox("Instruments", this));
-    this->addAndMakeVisible(instrumentsList.get());
+    this->setFocusContainer(false);
+    this->setWantsKeyboardFocus(false);
+    this->setInterceptsMouseClicks(false, true);
+    this->setPaintingIsUnclipped(true);
 
-    this->titleLabel.reset(new Label(String(),
-                                      TRANS(I18n::Page::orchestraInstruments)));
-    this->addAndMakeVisible(titleLabel.get());
-    this->titleLabel->setFont(Font (21.00f, Font::plain));
-    titleLabel->setJustificationType(Justification::centred);
-    titleLabel->setEditable(false, false, false);
+    this->instrumentsList = make<ListBox>(String(), this);
+    this->addAndMakeVisible(this->instrumentsList.get());
 
-    this->separator1.reset(new SeparatorHorizontalFadingReversed());
-    this->addAndMakeVisible(separator1.get());
+    this->titleLabel = make<Label>(String(),TRANS(I18n::Page::orchestraInstruments));
+    this->addAndMakeVisible(this->titleLabel.get());
+    this->titleLabel->setJustificationType(Justification::centred);
+    this->titleLabel->setFont({ 21.f });
 
-    //[UserPreSize]
+    this->separator = make<SeparatorHorizontalFadingReversed>();
+    this->addAndMakeVisible(this->separator.get());
+
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
     this->instrumentsList->setMultipleSelectionEnabled(false);
-    this->instrumentsList->setRowHeight(INSTRUMENTSLIST_ROW_HEIGHT);
-    //[/UserPreSize]
-
-    this->setSize(600, 400);
-
-    //[Constructor]
-    //[/Constructor]
+    this->instrumentsList->setRowHeight(InstrumentsListComponent::rowHeight);
 }
 
-InstrumentsListComponent::~InstrumentsListComponent()
-{
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    instrumentsList = nullptr;
-    titleLabel = nullptr;
-    separator1 = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void InstrumentsListComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
-}
+InstrumentsListComponent::~InstrumentsListComponent() = default;
 
 void InstrumentsListComponent::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    constexpr auto titleHeight = 26;
+    constexpr auto listPadding = 40;
 
-    instrumentsList->setBounds(1, 42, getWidth() - 2, getHeight() - 43);
-    titleLabel->setBounds(0, 0, getWidth() - 0, 26);
-    separator1->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 40, getWidth() - 0, 3);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->instrumentsList->setBounds(this->getLocalBounds().withTrimmedTop(listPadding).reduced(2));
+    this->titleLabel->setBounds(0, 0, this->getWidth(), titleHeight);
+    this->separator->setBounds(0, listPadding, this->getWidth(), 3);
 }
 
 void InstrumentsListComponent::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     if (this->getParentComponent() != nullptr)
     {
         this->updateListContent();
     }
-    //[/UserCode_parentHierarchyChanged]
 }
-
-
-//[MiscUserCode]
 
 void InstrumentsListComponent::clearSelection()
 {
@@ -113,7 +77,9 @@ void InstrumentsListComponent::clearSelection()
 
 void InstrumentsListComponent::updateListContent()
 {
-    this->instrumentIcon = Icons::findByName(Icons::instrument, int(INSTRUMENTSLIST_ROW_HEIGHT * 0.75f));
+    this->instrumentIcon = Icons::findByName(Icons::instrument,
+        int(InstrumentsListComponent::rowHeight * 0.75f));
+
     this->instruments = this->instrumentsRoot.findChildrenRefsOfType<InstrumentNode>();
     this->instrumentsList->updateContent();
     this->clearSelection();

@@ -15,13 +15,8 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "AudioPluginsListComponent.h"
-
-//[MiscUserDefs]
 
 #include "MenuItemComponent.h"
 #include "OrchestraPit.h"
@@ -32,69 +27,51 @@
 #include "PluginScanner.h"
 #include "MainLayout.h"
 
-#define CATEGORY_COLUMN_WIDTH (100)
-#define FORMAT_COLUMN_WIDTH (75)
-
-enum ColumnIds
+AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot) :
+    pluginScanner(pluginScanner),
+    instrumentsRoot(instrumentsRoot)
 {
-    vendorAndName = 1, // TableListBox needs any number apart from 0
-    category = 2,
-    format = 3
-};
+    this->setFocusContainer(false);
+    this->setWantsKeyboardFocus(false);
+    this->setInterceptsMouseClicks(false, true);
+    this->setPaintingIsUnclipped(true);
 
-//[/MiscUserDefs]
+    this->pluginsList = make<TableListBox>(String(), this);
+    this->addAndMakeVisible(this->pluginsList.get());
 
-AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot)
-    : pluginScanner(pluginScanner),
-      instrumentsRoot(instrumentsRoot)
-{
-    this->pluginsList.reset(new TableListBox("Instruments", this));
-    this->addAndMakeVisible(pluginsList.get());
+    this->titleLabel = make<Label>(String(), TRANS(I18n::Page::orchestraPlugins));
+    this->addAndMakeVisible(this->titleLabel.get());
+    this->titleLabel->setJustificationType(Justification::centred);
+    this->titleLabel->setFont({ 21.f });
 
-    this->initialScanButton.reset(new MenuItemComponent(this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanPluginsFolder, TRANS(I18n::Menu::instrumentsScanFolder))));
-    this->addAndMakeVisible(initialScanButton.get());
+    this->titleSeparator = make<SeparatorHorizontalFadingReversed>();
+    this->addAndMakeVisible(this->titleSeparator.get());
 
-    this->separator1.reset(new SeparatorHorizontalFading());
-    this->addAndMakeVisible(separator1.get());
-    this->separator2.reset(new SeparatorHorizontalFading());
-    this->addAndMakeVisible(separator2.get());
-    this->titleLabel.reset(new Label(String(),
-                                      String()));
-    this->addAndMakeVisible(titleLabel.get());
-    this->titleLabel->setFont(Font (21.00f, Font::plain));
-    titleLabel->setJustificationType(Justification::centred);
-    titleLabel->setEditable(false, false, false);
-
-    this->separator3.reset(new SeparatorHorizontalFadingReversed());
-    this->addAndMakeVisible(separator3.get());
-
-    //[UserPreSize]
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
+#if PLATFORM_DESKTOP
+
+    this->initialScanButton = make<MenuItemComponent>(this,
+        nullptr, MenuItem::item(Icons::empty,
+            CommandIDs::ScanPluginsFolder, TRANS(I18n::Menu::instrumentsScanFolder)));
+    this->addAndMakeVisible(this->initialScanButton.get());
     this->initialScanButton->setMouseCursor(MouseCursor::PointingHandCursor);
     this->showScanButtonIf(this->pluginScanner.getNumPlugins() == 0);
-    //[/UserPreSize]
 
-    this->setSize(600, 400);
-
-    //[Constructor]
-#if PLATFORM_MOBILE
+#elif PLATFORM_MOBILE
 
     // on mobile, there's no such thing as `scan folder`:
-
-    this->initialScanButton.reset(new MenuItemComponent(this, nullptr,
+    this->initialScanButton = make<MenuItemComponent>(this, nullptr,
         MenuItem::item(Icons::instrument,
             CommandIDs::ScanAllPlugins,
-            TRANS(I18n::Menu::instrumentsReload))));
+            TRANS(I18n::Menu::instrumentsReload)));
 
-    this->addAndMakeVisible(initialScanButton.get());
+    this->addAndMakeVisible(this->initialScanButton.get());
 
 #endif
 
-    this->titleLabel->setText(TRANS(I18n::Page::orchestraPlugins), dontSendNotification);
-
-    this->pluginsList->setRowHeight(PLUGINSLIST_ROW_HEIGHT);
-    this->pluginsList->setHeaderHeight(PLUGINSLIST_HEADER_HEIGHT);
+    this->pluginsList->setRowHeight(AudioPluginsListComponent::rowHeight);
+    this->pluginsList->setHeaderHeight(AudioPluginsListComponent::tableHeaderHeight);
     this->pluginsList->getViewport()->setScrollBarsShown(true, false);
 
     const auto columnFlags =
@@ -103,82 +80,50 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
         TableHeaderComponent::sortable;
 
     this->pluginsList->getHeader().addColumn(TRANS(I18n::Page::orchestraCategory),
-        category, 50, 50, -1, columnFlags);
+        ColumnIds::category, 50, 50, -1, columnFlags);
 
     this->pluginsList->getHeader().addColumn(TRANS(I18n::Page::orchestraVendorandname),
-        vendorAndName, 50, 50, -1, columnFlags);
+        ColumnIds::vendorAndName, 50, 50, -1, columnFlags);
 
     this->pluginsList->getHeader().addColumn(TRANS(I18n::Page::orchestraFormat),
-        format, 50, 50, -1, columnFlags);
+        ColumnIds::format, 50, 50, -1, columnFlags);
 
-    this->pluginsList->getHeader().setSortColumnId(vendorAndName, true);
+    this->pluginsList->getHeader().setSortColumnId(ColumnIds::vendorAndName, true);
     this->pluginsList->setMultipleSelectionEnabled(false);
-
-    this->setWantsKeyboardFocus(true);
-    this->setFocusContainer(true);
-    //[/Constructor]
 }
 
-AudioPluginsListComponent::~AudioPluginsListComponent()
-{
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    pluginsList = nullptr;
-    initialScanButton = nullptr;
-    separator1 = nullptr;
-    separator2 = nullptr;
-    titleLabel = nullptr;
-    separator3 = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void AudioPluginsListComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
-}
+AudioPluginsListComponent::~AudioPluginsListComponent() = default;
 
 void AudioPluginsListComponent::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    constexpr auto titleHeight = 26;
+    constexpr auto listPadding = 40;
 
-    pluginsList->setBounds(1, 42, getWidth() - 2, getHeight() - 43);
-    initialScanButton->setBounds((getWidth() / 2) - (172 / 2), (getHeight() / 2) - (64 / 2), 172, 64);
-    separator1->setBounds(((getWidth() / 2) - (172 / 2)) + 172 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + -18, 300, 3);
-    separator2->setBounds(((getWidth() / 2) - (172 / 2)) + 172 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + 64 - -14, 300, 3);
-    titleLabel->setBounds(0, 0, getWidth() - 0, 26);
-    separator3->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), 40, getWidth() - 0, 3);
-    //[UserResized] Add your own custom resize handling here..
+    this->pluginsList->setBounds(this->getLocalBounds().withTrimmedTop(listPadding).reduced(2));
+    this->titleLabel->setBounds(0, 0, this->getWidth(), titleHeight);
+    this->titleSeparator->setBounds(0, listPadding, this->getWidth(), 3);
+
+    constexpr auto scanButtonWidth = 150;
+    constexpr auto scanButtonHeight = 96;
+
+    const auto scanButtonBounds = this->getLocalBounds().withSizeKeepingCentre(scanButtonWidth, scanButtonHeight);
+    this->initialScanButton->setBounds(scanButtonBounds);
+
     this->pluginsList->autoSizeAllColumns();
-    //[/UserResized]
 }
 
 void AudioPluginsListComponent::parentHierarchyChanged()
 {
-    //[UserCode_parentHierarchyChanged] -- Add your code here...
     if (this->getParentComponent() != nullptr)
     {
         this->updateListContent();
     }
-    //[/UserCode_parentHierarchyChanged]
 }
-
-
-//[MiscUserCode]
 
 void AudioPluginsListComponent::showScanButtonIf(bool hasNoPlugins)
 {
     this->pluginsList->setVisible(!hasNoPlugins);
     this->initialScanButton->setVisible(hasNoPlugins);
-    this->separator1->setVisible(hasNoPlugins);
-    this->separator2->setVisible(hasNoPlugins);
 }
 
 void AudioPluginsListComponent::clearSelection()
@@ -289,14 +234,17 @@ int AudioPluginsListComponent::getNumRows()
 
 int AudioPluginsListComponent::getColumnAutoSizeWidth(int columnId)
 {
+    constexpr auto formatColumnWidth = 75;
+    constexpr auto categoryColumnWidth = 100;
+
     switch (columnId)
     {
     case ColumnIds::vendorAndName:
-        return this->pluginsList->getVisibleContentWidth() - CATEGORY_COLUMN_WIDTH - FORMAT_COLUMN_WIDTH;
+        return this->pluginsList->getVisibleContentWidth() - categoryColumnWidth - formatColumnWidth;
     case ColumnIds::category:
-        return CATEGORY_COLUMN_WIDTH;
+        return categoryColumnWidth;
     case ColumnIds::format:
-        return FORMAT_COLUMN_WIDTH;
+        return formatColumnWidth;
     default:
         return 0;
     }
@@ -360,46 +308,3 @@ void AudioPluginsListComponent::cellClicked(int rowNumber, int columnId, const M
         this->contextMenuController->showMenu(e);
     }
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="AudioPluginsListComponent"
-                 template="../../../Template" componentName="" parentClasses="public Component, public TableListBoxModel, public HeadlineItemDataSource"
-                 constructorParams="PluginScanner &amp;pluginScanner, OrchestraPitNode &amp;instrumentsRoot"
-                 variableInitialisers="pluginScanner(pluginScanner),&#10;instrumentsRoot(instrumentsRoot)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="600" initialHeight="400">
-  <METHODS>
-    <METHOD name="parentHierarchyChanged()"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT name="" id="1b089ba42e39d447" memberName="pluginsList" virtualName=""
-                    explicitFocusOrder="0" pos="1 42 2M 43M" class="TableListBox"
-                    params="&quot;Instruments&quot;, this"/>
-  <GENERICCOMPONENT name="" id="62a5bd7c1a3ec2" memberName="initialScanButton" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 0Cc 172 64" class="MenuItemComponent"
-                    params="this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanPluginsFolder, TRANS(I18n::Menu::instrumentsScanFolder))"/>
-  <JUCERCOMP name="" id="8817b1b124163b2f" memberName="separator1" virtualName=""
-             explicitFocusOrder="0" pos="0Cc -18 300 3" posRelativeX="62a5bd7c1a3ec2"
-             posRelativeY="62a5bd7c1a3ec2" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="af3fdc94cce3ad8c" memberName="separator2" virtualName=""
-             explicitFocusOrder="0" pos="0Cc -14R 300 3" posRelativeX="62a5bd7c1a3ec2"
-             posRelativeY="62a5bd7c1a3ec2" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
-             constructorParams=""/>
-  <LABEL name="" id="660583b19bbfaa6b" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 0 0M 26" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="21.0" kerning="0.0" bold="0" italic="0" justification="36"/>
-  <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator3" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 40 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
-             constructorParams=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

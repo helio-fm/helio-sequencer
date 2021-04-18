@@ -17,11 +17,8 @@
 
 #pragma once
 
-//[Headers]
 #include "IconComponent.h"
 #include "HighlightedComponent.h"
-//[/Headers]
-
 
 class PlayButton final : public HighlightedComponent
 {
@@ -30,30 +27,21 @@ public:
     PlayButton(WeakReference<Component> eventReceiver);
     ~PlayButton();
 
-    //[UserMethods]
     void setPlaying(bool isPlaying);
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
     void resized() override;
-    void mouseDown (const MouseEvent& e) override;
-
+    void mouseDown(const MouseEvent &e) override;
 
 private:
-
-    //[UserVariables]
 
     Component *createHighlighterComponent() override;
 
     ComponentAnimator animator;
-
     WeakReference<Component> eventReceiver;
-    bool playing;
-
-    //[/UserVariables]
+    bool playing = false;
 
     UniquePointer<IconComponent> playIcon;
     UniquePointer<IconComponent> pauseIcon;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PlayButton)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayButton)
 };
