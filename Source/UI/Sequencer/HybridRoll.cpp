@@ -654,11 +654,11 @@ float HybridRoll::getMinVisibleBeatForCurrentZoomLevel() const
     return minBeat;
 }
 
-#define MIN_BAR_WIDTH 14
-#define MIN_BEAT_WIDTH 8
-
 void HybridRoll::computeVisibleBeatLines()
 {
+    static constexpr auto minBarWidth = 14;
+    static constexpr auto minBeatWidth = 8;
+
     this->visibleBars.clearQuick();
     this->visibleBeats.clearQuick();
     this->visibleSnaps.clearQuick();
@@ -738,7 +738,7 @@ void HybridRoll::computeVisibleBeatLines()
         const float stepWidth = barWidth * barStep;
 
         barWidthSum += stepWidth;
-        canDrawBarLine = barWidthSum > MIN_BAR_WIDTH;
+        canDrawBarLine = barWidthSum > minBarWidth;
         barWidthSum = canDrawBarLine ? 0.f : barWidthSum;
 
         // When in the drawing area:
@@ -772,7 +772,7 @@ void HybridRoll::computeVisibleBeatLines()
                         barStep = (tsBar - barIterator); // i.e. incomplete bar
                         nextBeatStartX = barStartX + barWidth * barStep;
                         nextTsIdx++;
-                        barWidthSum = MIN_BAR_WIDTH; // forces to draw the next bar line
+                        barWidthSum = minBarWidth; // forces to draw the next bar line
                         lastFrame = true;
                     }
                 }
@@ -791,7 +791,7 @@ void HybridRoll::computeVisibleBeatLines()
 
                 if (beatStartX >= viewPosX &&
                     j >= beatStep && // don't draw the first one as it is a bar line
-                    (nextBeatStartX - beatStartX) > MIN_BEAT_WIDTH)
+                    (nextBeatStartX - beatStartX) > minBeatWidth)
                 {
                     this->visibleBeats.add(beatStartX);
                     this->allSnaps.add(beatStartX);

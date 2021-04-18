@@ -43,13 +43,14 @@ class PopupButton : public Component, private Timer
 {
 public:
 
-    enum ShapeType
+    enum class Shape : int8
     {
         Circle,
         Hex
     };
 
-    PopupButton(bool shouldShowConfirmImage, ShapeType shapeType = Circle,
+    PopupButton(bool shouldShowConfirmImage,
+        Shape shapeType = Shape::Circle,
         Colour colour = Colours::black.withAlpha(0.5f));
 
     float getRadiusDelta() const noexcept;
@@ -69,14 +70,14 @@ public:
 
 private:
 
-    void updateChildren();
     void timerCallback() override;
 
-    float alpha;
-    float raduisDelta;
+    float raduisAnimation = 0.f;
+    static constexpr auto radiusAnimationEnd = 1.f;
+    static constexpr auto radiusAnimationStep = 0.075f;
 
-    bool firstClickDone;
-    bool showConfirmImage;
+    bool firstClickDone = false;
+    const bool showConfirmImage = false;
 
     const Colour colour;
     String userData;
@@ -93,7 +94,7 @@ private:
     UniquePointer<PopupButtonHighlighter> mouseDownHighlighter;
     UniquePointer<PopupButtonConfirmation> confirmationMark;
 
-    ShapeType shapeType;
+    Shape shapeType;
     Path shape;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PopupButton)

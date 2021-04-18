@@ -59,9 +59,11 @@ private:
     void thirdWalk(RevisionComponent *v, float n);
     void postWalk(RevisionComponent *v);
 
-    float treeDepth;
+    float treeDepth = 0.f;
 
 private:
+
+    static constexpr auto connectorHeight = 20;
 
     HistoryComponent *findParentEditor() const;
 

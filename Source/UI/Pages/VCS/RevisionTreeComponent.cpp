@@ -23,11 +23,8 @@
 #include "RevisionComponent.h"
 #include "RevisionConnectorComponent.h"
 
-#define CONNECTOR_HEIGHT 20
-
 RevisionTreeComponent::RevisionTreeComponent(VersionControl &owner) :
-    vcs(owner),
-    treeDepth(0.f)
+    vcs(owner)
 {
     this->setInterceptsMouseClicks(false, true);
     this->setSize(1, 1);
@@ -69,7 +66,8 @@ void RevisionTreeComponent::deselectAll(bool sendNotification)
     }
 }
 
-void RevisionTreeComponent::selectComponent(RevisionComponent *revComponent, bool deselectOthers, bool sendNotification)
+void RevisionTreeComponent::selectComponent(RevisionComponent *revComponent,
+    bool deselectOthers, bool sendNotification)
 {
     // If already selected, deselect (may remove that later):
     if (this->selectedRevision == revComponent->revision)
@@ -106,7 +104,6 @@ VCS::Revision::Ptr RevisionTreeComponent::getSelectedRevision() const noexcept
 {
     return this->selectedRevision;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Buchheim tree layout functions
@@ -315,7 +312,7 @@ void RevisionTreeComponent::thirdWalk(RevisionComponent *v, float n)
 void RevisionTreeComponent::postWalk(RevisionComponent *v)
 {
     const int vx = int(v->x * (v->getWidth() + 10));
-    const int vy = int((this->treeDepth - v->y) * (v->getHeight() + CONNECTOR_HEIGHT));
+    const int vy = int((this->treeDepth - v->y) * (v->getHeight() + RevisionTreeComponent::connectorHeight));
 
     const int newWidth = jmax(this->getWidth(), vx + v->getWidth());
     const int newHeight = jmax(this->getHeight(), vy + v->getHeight());

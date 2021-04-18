@@ -17,10 +17,6 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-
 class FineTuningValueIndicator final : public Component
 {
 public:
@@ -28,27 +24,22 @@ public:
     FineTuningValueIndicator(float initialValue, String suffix);
     ~FineTuningValueIndicator();
 
-    //[UserMethods]
     void setValue(float newValue);
     void setValue(float newValue, int valueView);
     void setValue(float newValue, float valueView);
     void repositionToTargetAt(Component *component, Point<int> offset);
     void setDisplayValue(bool shouldDisplay);
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-
 
 private:
 
-    //[UserVariables]
     float value = 0.f;
     const String suffix;
     Slider dummySlider;
-    //[/UserVariables]
 
     UniquePointer<Label> valueLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FineTuningValueIndicator)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FineTuningValueIndicator)
 };

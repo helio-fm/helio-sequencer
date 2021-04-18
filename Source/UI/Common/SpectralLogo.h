@@ -17,13 +17,13 @@
 
 #pragma once
 
-class SpectralLogo final : public Component,
-    private Thread, private AsyncUpdater
+#include "ColourIDs.h"
+
+class SpectralLogo final : public Component, private Thread, private AsyncUpdater
 {
 public:
 
     SpectralLogo();
-
     ~SpectralLogo() override;
     
     void paint(Graphics &g) override;
@@ -58,7 +58,7 @@ private:
         float peakDecayColour = 1.f;
         uint32 peakDecayStart = 0;
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Band);
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Band)
     };
     
 private:
@@ -66,7 +66,8 @@ private:
     void run() override;
     void handleAsyncUpdate() override;
     
-    Colour colour;
+    const Colour colour = findDefaultColour(ColourIDs::Logo::fill);
+
     OwnedArray<SpectralLogo::Band> bands;
     Path wave;
     
@@ -80,5 +81,5 @@ private:
     float lineStepSize = 0;
     float lineWidth = 0;
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectralLogo);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectralLogo)
 };

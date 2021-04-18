@@ -17,7 +17,7 @@
 
 #pragma once
 
-class ViewportKineticSlider : private Timer
+class ViewportKineticSlider final : private Timer
 {
 public:
     
@@ -28,16 +28,14 @@ public:
     }
     
     void stopAnimationForViewport(Viewport *targetViewport);
-    
     void calculateDragSpeedForViewport(Viewport *targetViewport, Point<float> absDragOffset);
-
     void startAnimationForViewport(Viewport *targetViewport, Point<float> force);
     
 private:
     
     void timerCallback() override;
     
-    struct Animator : ReferenceCountedObject
+    struct Animator final : ReferenceCountedObject
     {
         using Ptr = ReferenceCountedObjectPtr<Animator>;
         
@@ -47,9 +45,9 @@ private:
         Point<int> anchor;
     };
     
-    struct DragSpeedHolder : ReferenceCountedObject
+    struct DragState final : ReferenceCountedObject
     {
-        using Ptr = ReferenceCountedObjectPtr<DragSpeedHolder>;
+        using Ptr = ReferenceCountedObjectPtr<DragState>;
         
         Component::SafePointer<Viewport> viewport;
         Point<float> force;
@@ -57,11 +55,10 @@ private:
         Point<float> currentOffset;
         Point<float> offsetAnchor;
 
-        double lastCheckTime;
+        double lastCheckTime = 0.0;
     };
     
     ReferenceCountedArray<Animator> animators;
-
-    ReferenceCountedArray<DragSpeedHolder> dragSpeedHolders;
+    ReferenceCountedArray<DragState> dragStates;
 
 };

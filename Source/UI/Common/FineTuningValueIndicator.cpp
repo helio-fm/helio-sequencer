@@ -15,75 +15,38 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "FineTuningValueIndicator.h"
 
-//[MiscUserDefs]
-//[/MiscUserDefs]
-
-FineTuningValueIndicator::FineTuningValueIndicator(float initialValue, String suffix)
-    : value(initialValue),
-      suffix(suffix)
+FineTuningValueIndicator::FineTuningValueIndicator(float initialValue, String suffix) :
+    value(initialValue),
+    suffix(suffix)
 {
-    this->valueLabel.reset(new Label(String(),
-                                      String()));
-    this->addAndMakeVisible(valueLabel.get());
-    this->valueLabel->setFont(Font (14.00f, Font::plain));
-    valueLabel->setJustificationType(Justification::centred);
-    valueLabel->setEditable(false, false, false);
-
-
-    //[UserPreSize]
-    //[/UserPreSize]
+    this->valueLabel = make<Label>();
+    this->addAndMakeVisible(this->valueLabel.get());
+    this->valueLabel->setFont({ 14.f });
+    this->valueLabel->setJustificationType(Justification::centred);
 
     this->setSize(64, 64);
-
-    //[Constructor]
-    //[/Constructor]
 }
 
-FineTuningValueIndicator::~FineTuningValueIndicator()
+FineTuningValueIndicator::~FineTuningValueIndicator() = default;
+
+void FineTuningValueIndicator::paint(Graphics &g)
 {
-    //[Destructor_pre]
-    //[/Destructor_pre]
+    constexpr auto startAngleRadians = MathConstants<float>::pi * 1.5f;
+    constexpr auto endAngleRadians = MathConstants<float>::pi * 2.5f;
 
-    valueLabel = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void FineTuningValueIndicator::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    const float startAngleRadians = MathConstants<float>::pi * 1.5f;
-    const float endAngleRadians = MathConstants<float>::pi * 2.5f;
     LookAndFeel::getDefaultLookAndFeel().drawRotarySlider(g, 0, 0,
         this->getWidth(), this->getHeight(), this->value,
         startAngleRadians, endAngleRadians, this->dummySlider);
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
 void FineTuningValueIndicator::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    valueLabel->setBounds((getWidth() / 2) - ((getWidth() - 0) / 2), getHeight() - 2 - 24, getWidth() - 0, 24);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    static constexpr auto labelHeight = 24;
+    this->valueLabel->setBounds(0, this->getHeight() - labelHeight - 2, this->getWidth(), labelHeight);
 }
-
-
-//[MiscUserCode]
-
-#define NUM_DECIMAL_PLACES (3)
 
 void FineTuningValueIndicator::setValue(float newValue)
 {
@@ -92,22 +55,30 @@ void FineTuningValueIndicator::setValue(float newValue)
 
 void FineTuningValueIndicator::setValue(float newValue, float valueView)
 {
-    if (this->value != newValue)
+    if (this->value == newValue)
     {
-        this->value = newValue;
-        this->valueLabel->setText(String(valueView, NUM_DECIMAL_PLACES) + this->suffix, dontSendNotification);
-        this->repaint();
+        return;
     }
+
+    this->value = newValue;
+
+    static constexpr auto numDecimalPlaces = 3;
+    this->valueLabel->setText(String(valueView, numDecimalPlaces) + this->suffix, dontSendNotification);
+
+    this->repaint();
 }
 
 void FineTuningValueIndicator::setValue(float newValue, int valueView)
 {
-    if (this->value != newValue)
+    if (this->value == newValue)
     {
-        this->value = newValue;
-        this->valueLabel->setText(String(valueView) + this->suffix, dontSendNotification);
-        this->repaint();
+        return;
     }
+
+    this->value = newValue;
+    this->valueLabel->setText(String(valueView) + this->suffix, dontSendNotification);
+
+    this->repaint();
 }
 
 void FineTuningValueIndicator::repositionToTargetAt(Component *component, Point<int> offset)
@@ -119,26 +90,3 @@ void FineTuningValueIndicator::setDisplayValue(bool shouldDisplay)
 {
     this->valueLabel->setVisible(shouldDisplay);
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="FineTuningValueIndicator"
-                 template="../../Template" componentName="" parentClasses="public Component"
-                 constructorParams="float initialValue, String suffix" variableInitialisers="value(initialValue)&#10;suffix(suffix)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="64" initialHeight="64">
-  <BACKGROUND backgroundColour="0"/>
-  <LABEL name="" id="546fff7dc132314d" memberName="valueLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 2Rr 0M 24" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="36"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

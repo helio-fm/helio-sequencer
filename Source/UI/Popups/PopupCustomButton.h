@@ -24,7 +24,7 @@ class PopupCustomButton final : public PopupButton
 public:
 
     PopupCustomButton(Component *newOwnedComponent,
-        ShapeType shapeType = Circle,
+        PopupButton::Shape shapeType = PopupButton::Shape::Circle,
         Colour colour = Colours::black.withAlpha(0.45f));
 
     void resized() override;
@@ -33,5 +33,5 @@ private:
 
     UniquePointer<Component> ownedComponent;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PopupCustomButton)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PopupCustomButton)
 };

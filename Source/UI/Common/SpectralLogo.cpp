@@ -21,14 +21,11 @@
 #include "ColourIDs.h"
 
 #define PEAK_MAX_ALPHA (0.75f)
-#define UPDATE_TIMER (50)
 #define BAND_FADE_MS (2000.f)
 #define PEAK_FADE_MS (7000.f)
 #define PULSE_SPEED  (40.f)
 
-SpectralLogo::SpectralLogo()
-    : Thread("Logo Animation"),
-      colour(findDefaultColour(ColourIDs::Logo::fill))
+SpectralLogo::SpectralLogo() : Thread("Logo Animation")
 {
     for (int i = 0; i < SpectralLogo::bandCount; ++i)
     {
@@ -47,7 +44,8 @@ void SpectralLogo::run()
 {
     while (! this->threadShouldExit())
     {
-        Thread::sleep(jlimit(10, 100, UPDATE_TIMER - this->skewTime));
+        static constexpr auto timerDelayMs = 50;
+        Thread::sleep(jlimit(10, 100, timerDelayMs - this->skewTime));
         const double b = Time::getMillisecondCounterHiRes();
         this->triggerAsyncUpdate();
         const double a = Time::getMillisecondCounterHiRes();

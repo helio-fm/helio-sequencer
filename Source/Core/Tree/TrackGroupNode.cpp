@@ -21,8 +21,6 @@
 #include "PianoTrackNode.h"
 #include "Icons.h"
 
-#define GROUP_COMPACT_SEPARATOR 5
-
 TrackGroupNode::TrackGroupNode(const String &name) :
     TreeNode(name, Serialization::Core::trackGroup) {}
 

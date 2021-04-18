@@ -19,9 +19,6 @@
 #include "ViewportFitProxyComponent.h"
 #include "CommandIDs.h"
 
-#define DRAG_SPEED 1
-#define PADDING 30
-
 ViewportFitProxyComponent::ViewportFitProxyComponent(Viewport &parentViewport,
         Component *child, bool deleteChildOnRelease /*= true*/) :
     viewport(parentViewport),
@@ -52,6 +49,8 @@ ViewportFitProxyComponent::~ViewportFitProxyComponent()
 
 void ViewportFitProxyComponent::centerTargetToViewport()
 {
+    static constexpr auto padding = 30;
+
     // не хочу разбираться, почему одной итерации мало
     // пусть остается костыль.
     for (int i = 0; i < 2; ++i)
@@ -66,8 +65,8 @@ void ViewportFitProxyComponent::centerTargetToViewport()
         }
         else
         {
-            this->setSize(this->getWidth(), tH + PADDING);
-            this->target->setTopLeftPosition(this->target->getX(), PADDING / 2);
+            this->setSize(this->getWidth(), tH + padding);
+            this->target->setTopLeftPosition(this->target->getX(), padding / 2);
         }
 
         const int tW = this->target->getWidth();
@@ -80,8 +79,8 @@ void ViewportFitProxyComponent::centerTargetToViewport()
         }
         else
         {
-            this->setSize(tW + PADDING, this->getHeight());
-            this->target->setTopLeftPosition(PADDING / 2, this->target->getY());
+            this->setSize(tW + padding, this->getHeight());
+            this->target->setTopLeftPosition(padding / 2, this->target->getY());
         }
     }
 }
@@ -92,7 +91,7 @@ void ViewportFitProxyComponent::centerTargetToViewport()
 
 void ViewportFitProxyComponent::mouseMove(const MouseEvent &e)
 {
-    if (meFitsViewport())
+    if (this->fitsViewport())
     {
         this->setMouseCursor(MouseCursor::NormalCursor);
     }
@@ -110,11 +109,12 @@ void ViewportFitProxyComponent::mouseDown(const MouseEvent &event)
 
 void ViewportFitProxyComponent::mouseDrag(const MouseEvent &event)
 {
-    if (meFitsViewport()) { return; }
+    if (this->fitsViewport())
+    {
+        return;
+    }
 
-    const Point<int> dragDelta(event.getDistanceFromDragStartX() * DRAG_SPEED,
-                               event.getDistanceFromDragStartY() * DRAG_SPEED);
-
+    const Point<int> dragDelta(event.getDistanceFromDragStartX(), event.getDistanceFromDragStartY());
     this->viewport.setViewPosition(this->viewportDragStart - dragDelta);
 }
 
@@ -132,8 +132,8 @@ void ViewportFitProxyComponent::parentSizeChanged()
 // Private
 //===----------------------------------------------------------------------===//
 
-bool ViewportFitProxyComponent::meFitsViewport() const
+bool ViewportFitProxyComponent::fitsViewport() const
 {
-    return (this->getHeight() <= this->viewport.getMaximumVisibleHeight() &&
-            this->getWidth() <= this->viewport.getMaximumVisibleWidth());
+    return this->getHeight() <= this->viewport.getMaximumVisibleHeight() &&
+        this->getWidth() <= this->viewport.getMaximumVisibleWidth();
 }

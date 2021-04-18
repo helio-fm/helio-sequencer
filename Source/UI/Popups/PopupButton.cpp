@@ -19,17 +19,11 @@
 #include "PopupButton.h"
 #include "Icons.h"
 
-#define RADUIS_START   (0.f)
-#define RADUIS_END     (1.f)
-#define RADUIS_STEP    (0.075f)
-
 #if PLATFORM_MOBILE
-#define CONFIRMATION_MODE 1
+#   define CONFIRMATION_MODE 1
 #endif
 
-
-PopupButtonHighlighter::PopupButtonHighlighter(const PopupButton &parent) :
-    button(parent)
+PopupButtonHighlighter::PopupButtonHighlighter(const PopupButton &parent) : button(parent)
 {
     this->setInterceptsMouseClicks(false, false);
 }
@@ -43,11 +37,11 @@ void PopupButtonHighlighter::paint(Graphics &g)
 
     switch (this->button.shapeType)
     {
-    case PopupButton::Circle:
+    case PopupButton::Shape::Circle:
         g.fillEllipse(d + r, d + r,
             float(getWidth()) - (d * 2.f) - (r * 2.f),
             float(getHeight()) - (d * 2.f) - (r * 2.f));
-    case PopupButton::Hex:
+    case PopupButton::Shape::Hex:
         g.fillPath(this->button.shape);
     default:
         break;
@@ -72,11 +66,11 @@ void PopupButtonConfirmation::paint(Graphics &g)
 
     switch (this->button.shapeType)
     {
-    case PopupButton::Circle:
+    case PopupButton::Shape::Circle:
         g.fillEllipse(d + r, d + r,
             float(getWidth()) - (d * 2.f) - (r * 2.f),
             float(getHeight()) - (d * 2.f) - (r * 2.f));
-    case PopupButton::Hex:
+    case PopupButton::Shape::Hex:
         g.fillPath(this->button.shape);
     default:
         break;
@@ -94,38 +88,35 @@ void PopupButtonConfirmation::paint(Graphics &g)
         pathScaleTransform);
 }
 
-PopupButton::PopupButton(bool shouldShowConfirmImage, ShapeType shapeType, Colour colour) :
-    alpha(0.5f),
-    firstClickDone(false),
-    raduisDelta(RADUIS_START),
+PopupButton::PopupButton(bool shouldShowConfirmImage, Shape shapeType, Colour colour) :
     showConfirmImage(shouldShowConfirmImage),
     colour(colour),
     shapeType(shapeType)
 {
-    this->mouseOverHighlighter.reset(new PopupButtonHighlighter(*this));
-    this->addAndMakeVisible(mouseOverHighlighter.get());
-
-    this->mouseDownHighlighter.reset(new PopupButtonHighlighter(*this));
-    this->addAndMakeVisible(mouseDownHighlighter.get());
-
-    this->confirmationMark.reset(new PopupButtonConfirmation(*this));
-    this->addAndMakeVisible(confirmationMark.get());
-
-    this->mouseOverHighlighter->setAlpha(0.f);
-    this->mouseDownHighlighter->setAlpha(0.f);
-    this->confirmationMark->setAlpha(0.f);
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
 
+    this->mouseOverHighlighter = make<PopupButtonHighlighter>(*this);
+    this->addAndMakeVisible(this->mouseOverHighlighter.get());
+    this->mouseOverHighlighter->setAlpha(0.f);
+
+    this->mouseDownHighlighter = make<PopupButtonHighlighter>(*this);
+    this->addAndMakeVisible(this->mouseDownHighlighter.get());
+    this->mouseDownHighlighter->setAlpha(0.f);
+
+    this->confirmationMark = make<PopupButtonConfirmation>(*this);
+    this->addAndMakeVisible(this->confirmationMark.get());
+    this->confirmationMark->setAlpha(0.f);
+
     this->setSize(48, 48);
 
-    if (this->shapeType == Circle)
+    if (this->shapeType == Shape::Circle)
     {
         this->startTimerHz(60);
     }
 }
 
-void PopupButton::paint (Graphics& g)
+void PopupButton::paint(Graphics &g)
 {
     const float r = this->getRadiusDelta();
     static const float outline1 = 4.5f;
@@ -133,7 +124,7 @@ void PopupButton::paint (Graphics& g)
 
     switch (this->shapeType)
     {
-    case Circle:
+    case Shape::Circle:
         g.setColour(Colours::white.withAlpha(0.085f));
         g.drawEllipse(outline1 + r, outline1 + r,
             float(this->getWidth()) - (outline1 + r) * 2.f,
@@ -153,7 +144,7 @@ void PopupButton::paint (Graphics& g)
             float(this->getWidth()) - (outline1 + outline2 + r) * 2.f,
             float(this->getHeight()) - (outline1 + outline2 + r) * 2.f);
 
-    case Hex:
+    case Shape::Hex:
         g.setColour(Colours::black.withAlpha(0.9f));
         g.strokePath(this->shape, PathStrokeType(outline2));
 
@@ -174,7 +165,7 @@ void PopupButton::resized()
     this->mouseDownHighlighter->setBounds(this->getLocalBounds());
     this->confirmationMark->setBounds(this->getLocalBounds());
 
-    if (this->shapeType == Hex)
+    if (this->shapeType == Shape::Hex)
     {
         const auto q = float((h - 4) / 4);
         this->shape.clear();
@@ -196,7 +187,7 @@ bool PopupButton::hitTest(int x, int y)
     return (cX * cX + cY * cY) <= (r * r);
 }
 
-void PopupButton::mouseEnter(const MouseEvent& e)
+void PopupButton::mouseEnter(const MouseEvent &e)
 {
     this->fader.fadeIn(this->mouseOverHighlighter.get(), Globals::UI::fadeInShort);
 
@@ -215,12 +206,12 @@ void PopupButton::mouseEnter(const MouseEvent& e)
 #endif
 }
 
-void PopupButton::mouseExit(const MouseEvent& e)
+void PopupButton::mouseExit(const MouseEvent &e)
 {
     this->fader.fadeOut(this->mouseOverHighlighter.get(), Globals::UI::fadeOutShort);
 }
 
-void PopupButton::mouseDown(const MouseEvent& e)
+void PopupButton::mouseDown(const MouseEvent &e)
 {
     this->anchor = this->getPosition();
     this->dragger.startDraggingComponent(this, e);
@@ -228,15 +219,15 @@ void PopupButton::mouseDown(const MouseEvent& e)
     this->mouseDownHighlighter->repaint();
     this->fader.fadeIn(this->mouseDownHighlighter.get(), Globals::UI::fadeInShort);
 
-    if (PopupButtonOwner *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
+    if (auto *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
     {
         owner->onPopupButtonStartDragging(this);
     }
 }
 
-void PopupButton::mouseDrag (const MouseEvent& e)
+void PopupButton::mouseDrag(const MouseEvent &e)
 {
-    if (PopupButtonOwner *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
+    if (auto *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
     {
         this->dragger.dragComponent(this, e, nullptr);
 
@@ -247,9 +238,9 @@ void PopupButton::mouseDrag (const MouseEvent& e)
     }
 }
 
-void PopupButton::mouseUp (const MouseEvent& e)
+void PopupButton::mouseUp(const MouseEvent &e)
 {
-    if (PopupButtonOwner *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
+    if (auto *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
     {
         this->dragger.dragComponent(this, e, nullptr);
 
@@ -261,7 +252,7 @@ void PopupButton::mouseUp (const MouseEvent& e)
 
     if (this->hitTest(e.getPosition().getX(), e.getPosition().getY()))
     {
-        if (PopupButtonOwner *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
+        if (auto *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
         {
             owner->onPopupButtonEndDragging(this);
 
@@ -278,17 +269,16 @@ void PopupButton::mouseUp (const MouseEvent& e)
         }
     }
 
-    this->updateChildren();
     this->fader.fadeOut(this->mouseDownHighlighter.get(), Globals::UI::fadeOutShort);
 }
 
 void PopupButton::timerCallback()
 {
-    this->raduisDelta += RADUIS_STEP;
+    this->raduisAnimation += PopupButton::radiusAnimationStep;
 
-    if (this->raduisDelta >= RADUIS_END)
+    if (this->raduisAnimation >= PopupButton::radiusAnimationEnd)
     {
-        this->raduisDelta = RADUIS_END;
+        this->raduisAnimation = PopupButton::radiusAnimationEnd;
         this->stopTimer();
     }
 
@@ -328,8 +318,6 @@ void PopupButton::setState(bool clicked)
     }
 
 #endif
-
-    this->updateChildren();
 }
 
 void PopupButton::setUserData(const String &data)
@@ -344,12 +332,10 @@ const String &PopupButton::getUserData() const noexcept
 
 float PopupButton::getRadiusDelta() const noexcept
 {
-    return RADUIS_END - this->raduisDelta;
+    return PopupButton::radiusAnimationEnd - this->raduisAnimation;
 }
 
 Point<int> PopupButton::getDragDelta() const noexcept
 {
     return this->getPosition() - this->anchor;
 }
-
-void PopupButton::updateChildren() {}

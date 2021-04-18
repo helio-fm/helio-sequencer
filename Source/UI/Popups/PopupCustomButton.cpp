@@ -18,7 +18,8 @@
 #include "Common.h"
 #include "PopupCustomButton.h"
 
-PopupCustomButton::PopupCustomButton(Component *newOwnedComponent, ShapeType shapeType, Colour colour) :
+PopupCustomButton::PopupCustomButton(Component *newOwnedComponent,
+    PopupButton::Shape shapeType, Colour colour) :
     PopupButton(true, shapeType, colour),
     ownedComponent(newOwnedComponent)
 {

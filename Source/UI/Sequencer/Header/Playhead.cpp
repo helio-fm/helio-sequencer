@@ -22,15 +22,12 @@
 #include "ColourIDs.h"
 #include "PlayerThread.h"
 
-#define PLAYHEAD_PADDING 2
-
 Playhead::Playhead(HybridRoll &parentRoll,
     Transport &owner,
     Playhead::Listener *movementListener /*= nullptr*/,
     int width /*= 2*/) :
     roll(parentRoll),
     transport(owner),
-    playheadWidth(width + PLAYHEAD_PADDING),
     listener(movementListener),
     shadeColour(findDefaultColour(ColourIDs::Roll::playheadShade)),
     playbackColour(findDefaultColour(ColourIDs::Roll::playheadPlayback)),
@@ -41,7 +38,7 @@ Playhead::Playhead(HybridRoll &parentRoll,
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
     this->setAlwaysOnTop(true);
-    this->setSize(this->playheadWidth, 1);
+    this->setSize(width + 2, 1); // add some horizontal padding, trying to avoid glitches
 
     this->lastCorrectPosition = this->transport.getSeekBeat();
     this->timerStartPosition = this->lastCorrectPosition;
@@ -160,7 +157,7 @@ void Playhead::parentChanged()
 {
     if (this->getParentComponent() != nullptr)
     {
-        this->setSize(this->playheadWidth, this->getParentHeight());
+        this->setSize(this->getWidth(), this->getParentHeight());
         
         if (this->isTimerRunning())
         {

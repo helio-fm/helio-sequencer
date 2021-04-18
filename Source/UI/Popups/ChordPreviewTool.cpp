@@ -60,7 +60,7 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller,
         const int radius = 150 + jlimit(0, 8, numChordsToDisplay - 10) * 10;
         const auto centreOffset = Point<int>(0, -radius).transformedBy(AffineTransform::rotation(radians, 0, 0));
         const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.65f, 1.f, 0.45f);
-        auto *button = this->chordButtons.add(new PopupCustomButton(createPopupButtonLabel(chord->getName()), PopupButton::Hex, colour));
+        auto *button = this->chordButtons.add(new PopupCustomButton(createPopupButtonLabel(chord->getName()), PopupButton::Shape::Hex, colour));
         button->setSize(this->proportionOfWidth(0.135f), this->proportionOfHeight(0.135f));
         button->setUserData(chord->getResourceId());
         const auto buttonSizeOffset = button->getLocalBounds().getCentre();

@@ -22,10 +22,6 @@
 
 #if !NO_NETWORK
 
-// Let OS set the default timeout:
-#define CONNECTION_TIMEOUT_MS (0)
-#define NUM_CONNECT_ATTEMPTS (3)
-
 BackendRequest::Response::Response() {}
 
 bool BackendRequest::Response::hasValidBody() const noexcept
@@ -185,10 +181,10 @@ BackendRequest::Response BackendRequest::doRequest(const String &verb) const
         DBG(">> " << verb << " " << this->apiEndpoint);
         stream = url.createInputStream(false,
             nullptr, (void *)(this),
-            getHeaders(), CONNECTION_TIMEOUT_MS,
+            getHeaders(), BackendRequest::connectionTimeoutMs,
             &response.headers, &response.statusCode,
             5, verb);
-    } while (stream == nullptr && ++i < NUM_CONNECT_ATTEMPTS);
+    } while (stream == nullptr && ++i < BackendRequest::numConnectAttempts);
 
     processResponse(response, stream.get());
     return response;
@@ -216,10 +212,10 @@ BackendRequest::Response BackendRequest::doRequest(const SerializedData &payload
 
         stream = url.createInputStream(true,
             nullptr, (void *)(this),
-            getHeaders(), CONNECTION_TIMEOUT_MS,
+            getHeaders(), BackendRequest::connectionTimeoutMs,
             &response.headers, &response.statusCode,
             5, verb);
-    } while (stream == nullptr && ++i < NUM_CONNECT_ATTEMPTS);
+    } while (stream == nullptr && ++i < BackendRequest::numConnectAttempts);
 
     processResponse(response, stream.get());
     return response;

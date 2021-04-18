@@ -228,17 +228,17 @@ float AutomationEvent::getCurvature() const noexcept
 // Pedal helpers
 //===----------------------------------------------------------------------===//
 
-static const float pedalUpCV = 0.f;
-static const float pedalDownCV = 1.f;
+static constexpr auto pedalUpCV = 0.f;
+static constexpr auto pedalDownCV = 1.f;
 
 bool AutomationEvent::isPedalDownEvent() const noexcept
 {
-    return (this->controllerValue > 0.5f);
+    return this->controllerValue > 0.5f;
 }
 
 bool AutomationEvent::isPedalUpEvent() const noexcept
 {
-    return (this->controllerValue <= 0.5f);
+    return this->controllerValue <= 0.5f;
 }
 
 AutomationEvent AutomationEvent::pedalUpEvent(MidiSequence *owner, float beatVal)

@@ -23,25 +23,18 @@ class ModeIndicatorBar final : public Component, private Timer
 {
 public:
 
-    ModeIndicatorBar() :
-        isHighlighted(false),
-        brightness(0.f),
-        animationDirection(1.f),
-        animationSpeed(0.f) {}
+    ModeIndicatorBar() = default;
 
-#define MODE_BAR_ANIMATION_SPEED 0.13f
-#define MODE_BAR_ANIMATION_ACCELERATION 0.875f
-
-    void setHighlighted(bool state)
+    void setHighlighted(bool shouldBeHighlighted)
     {
-        if (state == this->isHighlighted)
+        if (shouldBeHighlighted == this->isHighlighted)
         {
             return;
         }
 
-        this->animationDirection = state ? 1.f : -1.f;
-        this->animationSpeed = MODE_BAR_ANIMATION_SPEED;
-        this->isHighlighted = state;
+        this->animationDirection = shouldBeHighlighted ? 1.f : -1.f;
+        this->animationSpeed = ModeIndicatorBar::animationStartingSpeed;
+        this->isHighlighted = shouldBeHighlighted;
         this->startTimerHz(60);
     }
 
@@ -54,15 +47,18 @@ public:
 
 private:
 
-    bool isHighlighted;
-    float brightness;
-    float animationDirection;
-    float animationSpeed;
+    static constexpr auto animationStartingSpeed = 0.13f;
+    static constexpr auto animationAcceleration = 0.875f;
+
+    bool isHighlighted = false;
+    float brightness = 0.f;
+    float animationDirection = 1.f;
+    float animationSpeed = 0.f;
 
     void timerCallback() override
     {
         this->brightness += this->animationDirection * this->animationSpeed;
-        this->animationSpeed *= MODE_BAR_ANIMATION_ACCELERATION;
+        this->animationSpeed *= ModeIndicatorBar::animationAcceleration;
 
         if (this->brightness < 0.001f || this->brightness > 0.999f)
         {

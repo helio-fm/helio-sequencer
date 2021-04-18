@@ -70,8 +70,6 @@ protected:
     HybridRoll &roll;
     Transport &transport;
 
-    const int playheadWidth = 1;
-
 private:
 
     //===------------------------------------------------------------------===//

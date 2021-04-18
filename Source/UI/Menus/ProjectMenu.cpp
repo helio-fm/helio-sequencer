@@ -40,8 +40,6 @@
 #include "Workspace.h"
 #include "Config.h"
 
-#define NUM_CONTROLLERS_TO_SHOW 80
-
 ProjectMenu::ProjectMenu(ProjectNode &parentProject, AnimationType animationType) :
     project(parentProject)
 {
@@ -260,7 +258,9 @@ void ProjectMenu::showControllersMenuForInstrument(const WeakReference<Instrumen
             this->showNewAutomationMenu(MenuPanel::SlideRight);
         }));
 
-    for (int controllerNumber = 0; controllerNumber < NUM_CONTROLLERS_TO_SHOW; ++controllerNumber)
+
+    static constexpr auto numControllersToShow = 80;
+    for (int controllerNumber = 0; controllerNumber < numControllersToShow; ++controllerNumber)
     {
         const String controllerName = MidiMessage::getControllerName(controllerNumber);
         if (controllerName.isNotEmpty())

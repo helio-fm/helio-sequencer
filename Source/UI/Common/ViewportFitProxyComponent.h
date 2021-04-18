@@ -17,13 +17,12 @@
 
 #pragma once
 
-class ViewportFitProxyComponent : public Component
+class ViewportFitProxyComponent final : public Component
 {
 public:
 
     ViewportFitProxyComponent(Viewport &parentViewport,
-                              Component *child,
-                              bool deleteChildOnRelease = true);
+        Component *child, bool deleteChildOnRelease = true);
 
     ~ViewportFitProxyComponent() override;
 
@@ -42,14 +41,12 @@ public:
 
 private:
 
-    bool meFitsViewport() const;
-
-    const bool shouldDeleteChild;
-
-    Component *target;
+    bool fitsViewport() const;
 
     Viewport &viewport;
 
+    Component *target = nullptr;
+    const bool shouldDeleteChild = true;
     Point<int> viewportDragStart;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ViewportFitProxyComponent)

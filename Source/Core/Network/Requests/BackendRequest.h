@@ -65,6 +65,11 @@ public:
 
 private:
 
+    // Meaning the OS will set the default timeout:
+    static constexpr auto connectionTimeoutMs = 0;
+
+    static constexpr auto numConnectAttempts = 3;
+
     String apiEndpoint;
     JsonSerializer serializer;
 
