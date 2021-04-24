@@ -27,7 +27,7 @@ class OpenProjectButton final : public Component
 {
 public:
 
-    OpenProjectButton::OpenProjectButton()
+    OpenProjectButton()
     {
         this->openProjectIcon = make<IconComponent>(Icons::browse);
         this->addAndMakeVisible(this->openProjectIcon.get());

@@ -245,7 +245,6 @@ public:
             return;
         }
 
-
         static constexpr auto lineExtent = 1000;
         this->lineExtended = { this->line.getPointAlongLine(-lineExtent),
             this->line.getPointAlongLine(this->line.getLength() + lineExtent) };
@@ -299,7 +298,7 @@ private:
         return { 1.0, 1.0 };
     }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityLevelDraggingHelper);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityLevelDraggingHelper)
 };
 
 //===----------------------------------------------------------------------===//
@@ -460,11 +459,14 @@ void VelocityProjectMap::onAddMidiEvent(const MidiEvent &event)
             const int i = track->getPattern()->indexOfSorted(&c.first);
             jassert(i >= 0);
 
-            const Clip *clip = track->getPattern()->getUnchecked(i);
-            auto *component = new VelocityMapNoteComponent(note, *clip);
-            componentsMap[note] = UniquePointer<VelocityMapNoteComponent>(component);
-            this->addAndMakeVisible(component);
-            this->triggerBatchRepaintFor(component);
+            const auto *clip = track->getPattern()->getUnchecked(i);
+            const bool editable = this->activeClip == *clip;
+
+            auto *noteComponent = new VelocityMapNoteComponent(note, *clip);
+            noteComponent->setEditable(editable);
+            componentsMap[note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
+            this->addAndMakeVisible(noteComponent);
+            this->triggerBatchRepaintFor(noteComponent);
         }
 
         VELOCITY_MAP_BULK_REPAINT_END
@@ -521,7 +523,11 @@ void VelocityProjectMap::onAddClip(const Clip &clip)
     {
         // reference the same note as neighbor components:
         const auto &note = e.second.get()->note;
+        const bool editable = this->activeClip == clip;
+
         auto *noteComponent = new VelocityMapNoteComponent(note, clip);
+        noteComponent->setEditable(editable);
+
         (*sequenceMap)[note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
         this->addAndMakeVisible(noteComponent);
         this->applyNoteBounds(noteComponent);
@@ -868,12 +874,12 @@ void VelocityProjectMap::loadTrack(const MidiTrack *const track)
             const MidiEvent *event = track->getSequence()->getUnchecked(j);
             if (event->isTypeOf(MidiEvent::Type::Note))
             {
-                const Note *note = static_cast<const Note *>(event);
+                const auto *note = static_cast<const Note *>(event);
                 auto *noteComponent = new VelocityMapNoteComponent(*note, *clip);
+                noteComponent->setEditable(editable);
                 (*sequenceMap)[*note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
                 this->addAndMakeVisible(noteComponent);
                 this->applyNoteBounds(noteComponent);
-                noteComponent->setEditable(editable);
             }
         }
     }

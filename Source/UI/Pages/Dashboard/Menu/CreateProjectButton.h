@@ -26,7 +26,7 @@ class CreateProjectButton final : public Component
 {
 public:
 
-    CreateProjectButton::CreateProjectButton()
+    CreateProjectButton()
     {
         this->newProjectIcon = make<IconComponent>(Icons::create);
         this->addAndMakeVisible(this->newProjectIcon.get());
