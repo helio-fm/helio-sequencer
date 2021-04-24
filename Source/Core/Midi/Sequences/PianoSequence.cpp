@@ -319,13 +319,16 @@ void PianoSequence::deserialize(const SerializedData &data)
         return;
     }
 
+    // a hack to avoid generating a unique id each time we create `new Note(this)`:
+    // instead, deserialize parameters into this temporary unowned struct,
+    // and later create an owned note with known parameters
+    Note parameters;
+
     forEachChildWithType(root, e, Serialization::Midi::note)
     {
-        auto *note = new Note(this);
-        note->deserialize(e);
-
-        this->midiEvents.add(note); // sorted later
-        this->usedEventIds.insert(note->getId());
+        parameters.deserialize(e);
+        this->midiEvents.add(new Note(this, parameters));
+        this->usedEventIds.insert(parameters.getId());
     }
 
     this->sort();

@@ -406,7 +406,7 @@ inline static Identifier readIdentifier(InputStream &input)
 
         if (c == 0)
         {
-            return buffer.toUTF8();
+            return Identifier((const char *)buffer.getData());
         }
     }
 }
