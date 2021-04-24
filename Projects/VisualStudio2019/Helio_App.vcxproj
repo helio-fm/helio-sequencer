@@ -680,12 +680,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\RecentProjectRow.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\CreateProjectButton.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\OpenProjectButton.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Dashboard.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>

@@ -15,13 +15,8 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "TranslationSettingsItem.h"
-
-//[MiscUserDefs]
 #include "Config.h"
 #include "ColourIDs.h"
 #include "IconComponent.h"
@@ -42,12 +37,12 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
-        g.fillRoundedRectangle(40.f, 2.f, float(this->getWidth() - 45), float(this->getHeight() - 5), 2.0f);
+        g.fillRoundedRectangle(40.f, 2.f, float(this->getWidth() - 45), float(this->getHeight() - 5), 2.f);
     }
 
     void resized() override
     {
-        constexpr auto size = 28;
+        constexpr auto size = 24;
         this->iconComponent->setBounds(6, (this->getHeight() / 2) - (size / 2) - 1, size, size);
     }
 
@@ -78,77 +73,39 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationSettingsItemHighlighter)
 };
 
-//[/MiscUserDefs]
-
-TranslationSettingsItem::TranslationSettingsItem(ListBox &parentListBox)
-    : DraggingListBoxComponent(parentListBox.getViewport())
+TranslationSettingsItem::TranslationSettingsItem(ListBox &parentListBox) : DraggingListBoxComponent(parentListBox.getViewport())
 {
-    this->localeLabel.reset(new Label(String(),
-                                       String()));
-    this->addAndMakeVisible(localeLabel.get());
-    this->localeLabel->setFont(Font (21.00f, Font::plain));
-    localeLabel->setJustificationType(Justification::centredLeft);
-    localeLabel->setEditable(false, false, false);
+    this->localeLabel = make<Label>();
+    this->addAndMakeVisible(this->localeLabel.get());
+    this->localeLabel->setJustificationType(Justification::centredLeft);
+    this->localeLabel->setFont({ 21.f });
 
-    this->idLabel.reset(new Label(String(),
-                                   String()));
-    this->addAndMakeVisible(idLabel.get());
-    this->idLabel->setFont(Font (21.00f, Font::plain));
-    idLabel->setJustificationType(Justification::centredRight);
-    idLabel->setEditable(false, false, false);
+    this->idLabel = make<Label>();
+    this->addAndMakeVisible(this->idLabel.get());
+    this->idLabel->setJustificationType(Justification::centredRight);
+    this->idLabel->setFont({ 21.f });
 
-    this->separator.reset(new SeparatorHorizontal());
-    this->addAndMakeVisible(separator.get());
+    this->separator = make<SeparatorHorizontal>();
+    this->addAndMakeVisible(this->separator.get());
 
-    //[UserPreSize]
     this->selectionComponent = make<TranslationSettingsItemSelection>();
     this->addChildComponent(this->selectionComponent.get());
-    //[/UserPreSize]
-
-    this->setSize(350, 32);
-
-    //[Constructor]
-    //[/Constructor]
 }
 
-TranslationSettingsItem::~TranslationSettingsItem()
-{
-    //[Destructor_pre]
-    //this->selectionComponent = nullptr;
-    //[/Destructor_pre]
-
-    localeLabel = nullptr;
-    idLabel = nullptr;
-    separator = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void TranslationSettingsItem::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
-}
+TranslationSettingsItem::~TranslationSettingsItem() = default;
 
 void TranslationSettingsItem::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    constexpr auto leftMargin = 48;
+    constexpr auto rightMargin = 16;
+    constexpr auto idLabelSize = 100;
 
-    localeLabel->setBounds(48, 0, proportionOfWidth (0.3800f), getHeight() - 2);
-    idLabel->setBounds(getWidth() - 12 - proportionOfWidth (0.4771f), 0, proportionOfWidth (0.4771f), getHeight() - 2);
-    separator->setBounds(55, getHeight() - 2, getWidth() - 65, 2);
-    //[UserResized] Add your own custom resize handling here..
+    this->localeLabel->setBounds(leftMargin, 0, this->getWidth() - leftMargin, this->getHeight() - 2);
+    this->idLabel->setBounds(this->getWidth() - (idLabelSize + rightMargin), 0, idLabelSize, this->getHeight() - 2);
+    this->separator->setBounds(leftMargin + 8, this->getHeight() - 2, this->getWidth() - (leftMargin + 16), 2);
+
     this->selectionComponent->setBounds(this->getLocalBounds());
-    //[/UserResized]
 }
-
-
-//[MiscUserCode]
 
 void TranslationSettingsItem::setSelected(bool shouldBeSelected)
 {
@@ -159,8 +116,8 @@ void TranslationSettingsItem::setSelected(bool shouldBeSelected)
     }
 }
 
-void TranslationSettingsItem::updateDescription(bool isLastRowInList, bool isCurrentLocale,
-    const String &localeName, const String &localeId)
+void TranslationSettingsItem::updateDescription(bool isLastRowInList,
+    bool isCurrentLocale, const String &localeName, const String &localeId)
 {
     this->separator->setVisible(!isLastRowInList);
     this->localeLabel->setText(localeName, dontSendNotification);
@@ -180,34 +137,3 @@ Component *TranslationSettingsItem::createHighlighterComponent()
 {
     return new TranslationSettingsItemHighlighter();
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="TranslationSettingsItem"
-                 template="../../../Template" componentName="" parentClasses="public DraggingListBoxComponent"
-                 constructorParams="ListBox &amp;parentListBox" variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport())"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="350" initialHeight="32">
-  <BACKGROUND backgroundColour="0"/>
-  <LABEL name="" id="c261305e2de1ebf2" memberName="localeLabel" virtualName=""
-         explicitFocusOrder="0" pos="48 0 38% 2M" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
-  <LABEL name="" id="a7e8c6a3ddd9ea22" memberName="idLabel" virtualName=""
-         explicitFocusOrder="0" pos="12Rr 0 47.714% 2M" labelText=""
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="34"/>
-  <JUCERCOMP name="" id="6f5a73e394d91c2a" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="55 0Rr 65M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
-             constructorParams=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

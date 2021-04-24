@@ -262,7 +262,6 @@
 		404CD58330AA86F78CCC0E23 /* RenderDialog.cpp */ /* RenderDialog.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RenderDialog.cpp; path = ../../Source/UI/Dialogs/RenderDialog.cpp; sourceTree = SOURCE_ROOT; };
 		40BDB1CC458232D086EB2953 /* UserSessionInfo.h */ /* UserSessionInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UserSessionInfo.h; path = ../../Source/Core/Workspace/UserSessionInfo.h; sourceTree = SOURCE_ROOT; };
 		40C927D9BB65AC1A2F80D07B /* VersionControlStageSelectionMenu.h */ /* VersionControlStageSelectionMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VersionControlStageSelectionMenu.h; path = ../../Source/UI/Menus/SelectionMenus/VersionControlStageSelectionMenu.h; sourceTree = SOURCE_ROOT; };
-		41F2BB6B0C24E0F8D3707F25 /* CreateProjectButton.cpp */ /* CreateProjectButton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CreateProjectButton.cpp; path = ../../Source/UI/Pages/Dashboard/Menu/CreateProjectButton.cpp; sourceTree = SOURCE_ROOT; };
 		4295C2BECD4617281567BCBB /* juce_core */ /* juce_core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_core; path = ../../ThirdParty/JUCE/modules/juce_core; sourceTree = SOURCE_ROOT; };
 		42B352D47FEBB6F17A4BD3EA /* RevisionTreeComponent.h */ /* RevisionTreeComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RevisionTreeComponent.h; path = ../../Source/UI/Pages/VCS/RevisionTreeComponent.h; sourceTree = SOURCE_ROOT; };
 		430DF4C2AD4343DF660E998C /* RevisionItem.h */ /* RevisionItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RevisionItem.h; path = ../../Source/Core/VCS/RevisionItem.h; sourceTree = SOURCE_ROOT; };
@@ -717,7 +716,6 @@
 		DA47AB54458AEC968E0F5011 /* commit.svg */ /* commit.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = commit.svg; path = ../../Resources/Icons/commit.svg; sourceTree = SOURCE_ROOT; };
 		DA5B02B6610141E42B8A1C49 /* NavigationHistory.cpp */ /* NavigationHistory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NavigationHistory.cpp; path = ../../Source/Core/Workspace/NavigationHistory.cpp; sourceTree = SOURCE_ROOT; };
 		DA9E12DE05FA1FDA9F5EDB54 /* MidiEventComponent.cpp */ /* MidiEventComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MidiEventComponent.cpp; path = ../../Source/UI/Sequencer/MidiEventComponent.cpp; sourceTree = SOURCE_ROOT; };
-		DAAB6C2C2730D72A6EF84976 /* OpenProjectButton.cpp */ /* OpenProjectButton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OpenProjectButton.cpp; path = ../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.cpp; sourceTree = SOURCE_ROOT; };
 		DBC6F9AC5940C0C92D3A3DA5 /* CommandPaletteChordConstructor.h */ /* CommandPaletteChordConstructor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandPaletteChordConstructor.h; path = ../../Source/Core/CommandPalette/CommandPaletteChordConstructor.h; sourceTree = SOURCE_ROOT; };
 		DC652073B48E01E79421C4D2 /* RevisionsSyncThread.cpp */ /* RevisionsSyncThread.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RevisionsSyncThread.cpp; path = ../../Source/Core/Network/Requests/RevisionsSyncThread.cpp; sourceTree = SOURCE_ROOT; };
 		DCCDA89550EE7B83B7560DD1 /* ArpPreviewTool.cpp */ /* ArpPreviewTool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ArpPreviewTool.cpp; path = ../../Source/UI/Popups/ArpPreviewTool.cpp; sourceTree = SOURCE_ROOT; };
@@ -1412,9 +1410,7 @@
 				F1B9FBCE638637CFCD01B65A,
 				05893E09D724205647BBB7E6,
 				854C892A5FA83B5FE48AA92B,
-				41F2BB6B0C24E0F8D3707F25,
 				4FC1C50745D9F647F28D21C2,
-				DAAB6C2C2730D72A6EF84976,
 				4D45F8939EE05E39568CCE82,
 			);
 			name = Menu;

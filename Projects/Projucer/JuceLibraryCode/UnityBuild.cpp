@@ -186,8 +186,6 @@
 #include "../../Source/UI/Menus/WorkspaceMenu.cpp"
 #include "../../Source/UI/Pages/Dashboard/Menu/DashboardMenu.cpp"
 #include "../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.cpp"
-#include "../../Source/UI/Pages/Dashboard/Menu/CreateProjectButton.cpp"
-#include "../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.cpp"
 #include "../../Source/UI/Pages/Dashboard/Dashboard.cpp"
 #include "../../Source/UI/Pages/Dashboard/UpdatesInfoComponent.cpp"
 #include "../../Source/UI/Pages/Instruments/Editor/AudioPluginEditorPage.cpp"

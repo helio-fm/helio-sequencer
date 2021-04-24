@@ -17,38 +17,50 @@
 
 #pragma once
 
-//[Headers]
-class IconComponent;
 #include "CommandIDs.h"
-#include "DashboardMenu.h"
 #include "OverlayButton.h"
-//[/Headers]
-
-#include "../../../Themes/SeparatorVertical.h"
+#include "SeparatorVertical.h"
+#include "IconComponent.h"
+#include "Workspace.h"
 
 class OpenProjectButton final : public Component
 {
 public:
 
-    OpenProjectButton();
-    ~OpenProjectButton();
+    OpenProjectButton::OpenProjectButton()
+    {
+        this->openProjectIcon = make<IconComponent>(Icons::browse);
+        this->addAndMakeVisible(this->openProjectIcon.get());
 
-    //[UserMethods]
-    //[/UserMethods]
+        this->openProjectLabel = make<Label>(String(), TRANS(I18n::Menu::workspaceProjectOpen));
+        this->addAndMakeVisible(this->openProjectLabel.get());
+        this->openProjectLabel->setJustificationType(Justification::centredLeft);
+        this->openProjectLabel->setInterceptsMouseClicks(false, false);
+        this->openProjectLabel->setFont({ 18.f });
 
-    void paint (Graphics& g) override;
-    void resized() override;
+        this->clickHandler = make<OverlayButton>();
+        this->addAndMakeVisible(this->clickHandler.get());
+        this->clickHandler->onClick = []() {
+            App::Workspace().importProject("*.helio;*.hp;*.mid;*.midi");
+        };
 
+        this->setSize(256, 32);
+    }
+
+    void resized() override
+    {
+        constexpr auto iconSize = 20;
+        this->openProjectIcon->setBounds(8, (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
+        constexpr auto labelMargin = iconSize + 12;
+        this->openProjectLabel->setBounds(labelMargin, 0, this->getWidth() - labelMargin, this->getHeight());
+        this->clickHandler->setBounds(this->getLocalBounds());
+    }
 
 private:
 
-    //[UserVariables]
-    //[/UserVariables]
-
-    UniquePointer<IconComponent> newProjectImage;
+    UniquePointer<IconComponent> openProjectIcon;
     UniquePointer<Label> openProjectLabel;
-    UniquePointer<SeparatorVertical> separator;
     UniquePointer<OverlayButton> clickHandler;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpenProjectButton)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OpenProjectButton)
 };

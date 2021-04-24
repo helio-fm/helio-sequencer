@@ -26,6 +26,7 @@
 #include "SpectralLogo.h"
 #include "UserProfileComponent.h"
 #include "LoginButton.h"
+#include "DashboardMenu.h"
 //[/MiscUserDefs]
 
 Dashboard::Dashboard(MainLayout &workspaceRef)

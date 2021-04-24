@@ -1153,12 +1153,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\RecentProjectRow.cpp">
       <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\CreateProjectButton.cpp">
-      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\OpenProjectButton.cpp">
-      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Dashboard.cpp">
       <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClCompile>

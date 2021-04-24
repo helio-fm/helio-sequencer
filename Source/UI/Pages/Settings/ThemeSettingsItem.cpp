@@ -228,7 +228,7 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
     }
 
     this->colours = colours;
-    this->theme.reset(new HelioTheme());
+    this->theme = make<HelioTheme>();
     this->theme->initColours(colours);
 
     this->schemeNameLabel->setText("\"" + colours->getName() + "\"", dontSendNotification);

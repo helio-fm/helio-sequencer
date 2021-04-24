@@ -17,23 +17,14 @@
 
 #pragma once
 
-//[Headers]
 #include "Translation.h"
-//[/Headers]
 
-#include "../../Themes/SeparatorHorizontal.h"
-
-class TranslationSettings final : public Component,
-                                  public ListBoxModel,
-                                  private ChangeListener,
-                                  public Button::Listener
+class TranslationSettings final : public Component, public ListBoxModel, private ChangeListener
 {
 public:
 
     TranslationSettings();
     ~TranslationSettings();
-
-    //[UserMethods]
 
     //===------------------------------------------------------------------===//
     // ListBoxModel
@@ -43,16 +34,9 @@ public:
     Component *refreshComponentForRow(int, bool, Component *) override;
     void paintListBoxItem(int, Graphics &, int, int, bool) override {}
 
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked(Button* buttonThatWasClicked) override;
-
 
 private:
-
-    //[UserVariables]
 
     //===------------------------------------------------------------------===//
     // ChangeListener
@@ -64,11 +48,14 @@ private:
     Array<Translation::Ptr> availableTranslations;
     Translation::Ptr currentTranslation;
 
-    //[/UserVariables]
+#if PLATFORM_DESKTOP
+    static constexpr auto rowHeight = 32;
+#elif PLATFORM_MOBILE
+    static constexpr auto rowHeight = 48;
+#endif
 
     UniquePointer<ListBox> translationsList;
     UniquePointer<TextButton> helpButton;
-    UniquePointer<SeparatorHorizontal> shadow;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TranslationSettings)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationSettings)
 };

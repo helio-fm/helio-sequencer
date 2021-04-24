@@ -23,6 +23,7 @@ class MainLayout;
 class SpectralLogo;
 class UserProfileComponent;
 class LoginButton;
+class DashboardMenu;
 //[/Headers]
 
 #include "../../Themes/PanelBackgroundA.h"

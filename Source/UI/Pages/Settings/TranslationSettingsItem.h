@@ -17,11 +17,8 @@
 
 #pragma once
 
-//[Headers]
 #include "DraggingListBoxComponent.h"
-//[/Headers]
-
-#include "../../Themes/SeparatorHorizontal.h"
+#include "SeparatorHorizontal.h"
 
 class TranslationSettingsItem final : public DraggingListBoxComponent
 {
@@ -30,21 +27,13 @@ public:
     explicit TranslationSettingsItem(ListBox &parentListBox);
     ~TranslationSettingsItem();
 
-    //[UserMethods]
-
     void setSelected(bool shouldBeSelected) override;
     void updateDescription(bool isLastRowInList, bool isCurrentLocale,
         const String &localeName, const String &localeId);
 
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
 
-
 private:
-
-    //[UserVariables]
 
     ComponentAnimator selectionAnimator;
     UniquePointer<Component> selectionComponent;
@@ -53,11 +42,9 @@ private:
 
     friend class TranslationSettings;
 
-    //[/UserVariables]
-
     UniquePointer<Label> localeLabel;
     UniquePointer<Label> idLabel;
     UniquePointer<SeparatorHorizontal> separator;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TranslationSettingsItem)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationSettingsItem)
 };

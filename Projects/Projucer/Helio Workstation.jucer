@@ -885,12 +885,8 @@
               <FILE id="QX0oMp" name="RecentProjectRow.h" compile="0" resource="0"
                     file="../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.h"/>
               <FILE id="jHQguA" name="LoginButton.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Menu/LoginButton.h"/>
-              <FILE id="VvVVMm" name="CreateProjectButton.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Pages/Dashboard/Menu/CreateProjectButton.cpp"/>
               <FILE id="hc7Ie4" name="CreateProjectButton.h" compile="0" resource="0"
                     file="../../Source/UI/Pages/Dashboard/Menu/CreateProjectButton.h"/>
-              <FILE id="VX9Eba" name="OpenProjectButton.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.cpp"/>
               <FILE id="QhDDee" name="OpenProjectButton.h" compile="0" resource="0"
                     file="../../Source/UI/Pages/Dashboard/Menu/OpenProjectButton.h"/>
             </GROUP>
