@@ -137,10 +137,10 @@ void Playhead::handleAsyncUpdate()
 void Playhead::paint(Graphics &g)
 {
     g.setColour(this->currentColour);
-    g.fillRect(0, 0, 1, this->getHeight());
+    g.fillRect(0, 1, 1, this->getHeight() - 1);
 
     g.setColour(this->shadeColour);
-    g.fillRect(1, 0, 1, this->getHeight());
+    g.fillRect(1, 1, 1, this->getHeight() - 1);
 }
 
 void Playhead::parentSizeChanged()

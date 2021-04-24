@@ -155,13 +155,13 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
 {
     if (button == this->newChord.get())
     {
-        const Point<int> dragDelta = this->newChord->getDragDelta();
+        const auto dragDelta = this->newChord->getDragDelta();
         this->setTopLeftPosition(this->getPosition() + dragDelta);
         const bool hasChanges = this->detectKeyBeatAndContext();
         if (hasChanges)
         {
             this->buildNewNote(true);
-            const auto rootKey = MidiMessage::getMidiNoteName(this->targetKey + this->clip.getKey(), true, true, 3);
+            const auto rootKey = this->roll.getTemperament()->getMidiNoteName(this->targetKey + this->clip.getKey(), true);
             App::Layout().showTooltip(TRANS(I18n::Popup::chordRootKey) + ": " + rootKey);
         }
 
@@ -215,7 +215,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
         {
             static const auto fnNames = Chord::getLocalizedFunctionNames();
             const String tooltip =
-                temperament->getMidiNoteName(this->root, true) + " "
+                temperament->getMidiNoteName(periodOffset + this->root, true) + " "
                 + this->scale->getLocalizedName() + ", "
                 + fnNames[scaleFnOffset] + ", "
                 + temperament->getMidiNoteName(this->targetKey + this->clip.getKey(), true) + " "
