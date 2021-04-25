@@ -77,7 +77,7 @@ private:
 #if PLATFORM_DESKTOP
     static constexpr auto rowHeight = 48;
 #elif PLATFORM_MOBILE
-    static constexpr auto rowHeight = 72;
+    static constexpr auto rowHeight = 56;
 #endif
 
     UniquePointer<ListBox> instrumentsList;

@@ -26,8 +26,8 @@
 #elif JUCE_IOS
 #   define ZOOM_THRESHOLD 0.1f
 #   define DRAG_THRESHOLD 25
-#   define ZOOM_H_SPEED 0.0095f
-#   define ZOOM_V_SPEED 0.02f
+#   define ZOOM_H_SPEED 0.0035f
+#   define ZOOM_V_SPEED 0.01f
 #elif JUCE_ANDROID
 #   define ZOOM_THRESHOLD 0.15f
 #   define DRAG_THRESHOLD 25

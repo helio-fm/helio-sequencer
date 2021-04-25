@@ -267,12 +267,7 @@ Image Icons::findByName(Icons::Id id, int maxSize)
         return {};
     }
 
-#if JUCE_ANDROID
-    const int retinaFactor = 2;
-#else
     const int retinaFactor = int(display->scale);
-#endif
-
     const int fixedSize = int(floorf(float(maxSize) / float(kRoundFactor))) * kRoundFactor * retinaFactor;
     const uint32 iconKey = (id * 1000) + fixedSize;
     
@@ -298,12 +293,7 @@ Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
         return {};
     }
 
-#if JUCE_ANDROID
-    const int retinaFactor = 2;
-#else
     const int retinaFactor = int(display->scale);
-#endif
-
     const int fixedSize = int(floorf(float(maxSize) / float(kRoundFactor))) * kRoundFactor * retinaFactor;
     const Colour iconBaseColour(lf.findColour(ColourIDs::Icons::fill));
     const Colour iconShadeColour(lf.findColour(ColourIDs::Icons::shadow));
@@ -320,11 +310,7 @@ void Icons::drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy
         return;
     }
 
-#if JUCE_ANDROID
-    const int scale = 2;
-#else
     const int scale = int(display->scale);
-#endif
 
     const int w = image.getWidth();
     const int h = image.getHeight();

@@ -81,7 +81,7 @@ private:
     static constexpr auto rowHeight = 64;
     static constexpr auto tableHeaderHeight = 34;
 #elif PLATFORM_MOBILE
-    static constexpr auto rowHeight = 90;
+    static constexpr auto rowHeight = 72;
     static constexpr auto tableHeaderHeight = 40;
 #endif
 

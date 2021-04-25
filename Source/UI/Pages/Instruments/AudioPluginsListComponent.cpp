@@ -67,6 +67,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
             TRANS(I18n::Menu::instrumentsReload)));
 
     this->addAndMakeVisible(this->initialScanButton.get());
+    this->showScanButtonIf(this->pluginScanner.getNumPlugins() == 0);
 
 #endif
 
@@ -168,7 +169,7 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     int rowNumber, int columnId,
     int w, int h, bool rowIsSelected)
 {
-    g.setFont(h * 0.27f);
+    g.setFont({ 16.f });
     const auto pd = this->pluginScanner.getPlugins()[rowNumber];
 
     const int margin = h / 12;
@@ -234,8 +235,8 @@ int AudioPluginsListComponent::getNumRows()
 
 int AudioPluginsListComponent::getColumnAutoSizeWidth(int columnId)
 {
-    constexpr auto formatColumnWidth = 75;
-    constexpr auto categoryColumnWidth = 100;
+    constexpr auto formatColumnWidth = 96;
+    constexpr auto categoryColumnWidth = 112;
 
     switch (columnId)
     {

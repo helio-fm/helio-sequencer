@@ -1488,9 +1488,15 @@ void HybridRoll::resetAllOversaturationIndicators()
 
 void HybridRoll::onUiAnimationsFlagChanged(bool enabled)
 {
+#if PLATFORM_DESKTOP
     this->smoothPanController->setAnimationsEnabled(enabled);
     this->smoothZoomController->setAnimationsEnabled(enabled);
     this->scrollToPlayheadTimerMs = enabled ? 7 : 1;
+#elif PLATFORM_MOBILE
+    this->smoothPanController->setAnimationsEnabled(false);
+    this->smoothZoomController->setAnimationsEnabled(false);
+    this->scrollToPlayheadTimerMs = 1;
+#endif
 }
 
 void HybridRoll::onMouseWheelFlagsChanged(UserInterfaceFlags::MouseWheelFlags flags)

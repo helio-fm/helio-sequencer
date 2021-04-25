@@ -116,7 +116,7 @@ void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int 
         return;
     }
 
-    g.setFont(h * 0.4f);
+    g.setFont({ 16.f });
     const int margin = h / 12;
 
     // todo also display "(unavailable)", if not valid?
@@ -125,8 +125,7 @@ void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int 
     g.drawText(instrumentNode->getName(), (margin * 2) + this->instrumentIcon.getWidth(), margin,
         w, h - (margin * 2), Justification::centredLeft, false);
 
-    const auto placement = RectanglePlacement::yMid | RectanglePlacement::xLeft | RectanglePlacement::doNotResize;
-    g.drawImageWithin(this->instrumentIcon, margin, 0, w, h, placement);
+    Icons::drawImageRetinaAware(this->instrumentIcon, g, margin + h / 2, h / 2);
 }
 
 // Desktop:
