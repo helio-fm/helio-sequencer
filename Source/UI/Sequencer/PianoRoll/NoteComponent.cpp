@@ -160,12 +160,8 @@ void NoteComponent::mouseDown(const MouseEvent &e)
 
     if (e.mods.isLeftButtonDown())
     {
-#if PLATFORM_MOBILE
-        const bool shouldSendMidi = false;
-#elif PLATFORM_DESKTOP
         const bool shouldSendMidi =
-            selection.getNumSelected() < NoteComponent::maxDragPolyphony;
-#endif
+            selection.getNumSelected() <= NoteComponent::maxDragPolyphony;
         
         if (shouldSendMidi)
         {
@@ -284,12 +280,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         float deltaLength = 0.f;
         const bool eventChanged = this->getDraggingResizingDelta(e, deltaLength, deltaKey);
 
-#if PLATFORM_MOBILE
-        const bool shouldSendMidi = false;
-#elif PLATFORM_DESKTOP
         const bool shouldSendMidi = (lastDeltaKey != deltaKey) &&
-            (selection.getNumSelected() < NoteComponent::maxDragPolyphony);
-#endif
+            (selection.getNumSelected() <= NoteComponent::maxDragPolyphony);
+
         lastDeltaKey = deltaKey;
 
         if (eventChanged)
@@ -423,12 +416,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         float deltaBeat = 0.f;
         const bool eventChanged = this->getDraggingDelta(e, deltaBeat, deltaKey);
         
-#if PLATFORM_MOBILE
-        const bool shouldSendMidi = false;
-#elif PLATFORM_DESKTOP
         const bool shouldSendMidi = (lastDeltaKey != deltaKey) &&
-            (selection.getNumSelected() < NoteComponent::maxDragPolyphony);
-#endif
+            (selection.getNumSelected() <= NoteComponent::maxDragPolyphony);
+
         lastDeltaKey = deltaKey;
         
         this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
@@ -518,11 +508,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     
     this->getRoll().hideAllGhostNotes();
 
-#if PLATFORM_MOBILE
-    const bool shouldSendMidi = false;
-#elif PLATFORM_DESKTOP
     const bool shouldSendMidi = true;
-#endif
     
     const Lasso &selection = this->roll.getLassoSelection();
 

@@ -29,6 +29,7 @@ bool HybridRollEditMode::forbidsViewportDragging() const
     return
         this->isMode(HybridRollEditMode::selectionMode) ||
         this->isMode(HybridRollEditMode::zoomMode) ||
+        this->isMode(HybridRollEditMode::drawMode) ||
         this->isMode(HybridRollEditMode::knifeMode);
 #endif
 }

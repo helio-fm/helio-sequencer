@@ -166,8 +166,12 @@ private:
     Note continueGroupScalingLeft(float absScaleFactor) const noexcept;
     void endGroupScalingLeft();
     
-    static constexpr auto maxDragPolyphony = 8;
-
+#if PLATFORM_DESKTOP
+    static constexpr auto maxDragPolyphony = 6;
+#elif PLATFORM_MOBILE
+    static constexpr auto maxDragPolyphony = 1;
+#endif
+    
     static constexpr auto minResizableEdge = 4;
     static constexpr auto maxResizableEdge = 12;
 
