@@ -33,7 +33,7 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMa
 
     this->signatureLabel = make<Label>();
     this->addAndMakeVisible(this->signatureLabel.get());
-    this->signatureLabel->setFont({ 18.f });
+    this->signatureLabel->setFont({ Globals::UI::Fonts::M });
     this->signatureLabel->setJustificationType(Justification::topLeft);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
     this->signatureLabel->setBounds(-3, 1, 48,

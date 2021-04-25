@@ -50,8 +50,9 @@ private:
 
     WeakReference<Instrument> instrument;
 
-    Font font;
-    int pinSize = 0;
+    const Font font = Globals::UI::Fonts::L;
+    const int pinSize = 0;
+
     bool isSelected = false;
     Point<int> originalPos;
 

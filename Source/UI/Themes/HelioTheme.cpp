@@ -28,10 +28,8 @@
 
 #if PLATFORM_DESKTOP
 #   define SCROLLBAR_WIDTH (17)
-#   define TEXTBUTTON_FONT (21.f)
 #elif PLATFORM_MOBILE
 #   define SCROLLBAR_WIDTH (50)
-#   define TEXTBUTTON_FONT (23.f)
 #endif
 
 HelioTheme::HelioTheme() :
@@ -146,7 +144,7 @@ Font HelioTheme::getLabelFont(Label &label)
 #if PLATFORM_DESKTOP
     return label.getFont();
 #elif PLATFORM_MOBILE
-    // For whatever reason,fonts on the mobiles look way larger
+    // For whatever reason, fonts on the mobiles look way larger
     // than fonts of same height on the desktops:
     auto font = label.getFont();
     font.setHeight(font.getHeight() - 2);
@@ -242,7 +240,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 
 Font HelioTheme::getTextButtonFont(TextButton &button, int buttonHeight)
 {
-    return Font(Font::getDefaultSansSerifFontName(), jmin(float(TEXTBUTTON_FONT), float(buttonHeight * 0.75f)), Font::plain);
+    return Font(Font::getDefaultSansSerifFontName(), jmin(Globals::UI::Fonts::L, float(buttonHeight * 0.75f)), Font::plain);
 }
 
 void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
@@ -371,7 +369,7 @@ void HelioTheme::drawTableHeaderColumn(Graphics &g, TableHeaderComponent &header
         g.fillPath(sortArrow, sortArrow.getTransformToScaleToFit(area.removeFromRight(height / 2).reduced(2).toFloat(), true));
     }
 
-    g.setFont(Font(height * 0.5f, Font::bold));
+    g.setFont({ Globals::UI::Fonts::M });
     g.drawFittedText(columnName, area, Justification::centredLeft, 1);
 }
 
@@ -583,7 +581,7 @@ void HelioTheme::drawDocumentWindowTitleBar(DocumentWindow &window,
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(0.35f));
     g.fillRect(0, 0, w, 1);
 
-    static const Font font(16.f, Font::plain);
+    const Font font(Globals::UI::Fonts::S, Font::plain);
     g.setFont(font);
 
     static const String title = "helio " + App::getAppReadableVersion();

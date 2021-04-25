@@ -241,6 +241,16 @@ namespace Globals
 
         static constexpr auto tooltipDelayMs = 600;
 
+        namespace Fonts
+        {
+            static constexpr auto XS = 14.f;
+            static constexpr auto S = 16.f;
+            static constexpr auto M = 18.f;
+            static constexpr auto L = 21.f;
+            static constexpr auto XL = 28.f;
+            static constexpr auto XXL = 37.f;
+        }
+
         namespace FileChooser
         {
             static constexpr auto forFileToSave =

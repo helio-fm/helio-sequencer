@@ -35,8 +35,7 @@ InstrumentComponent::InstrumentComponent(WeakReference<Instrument> instrument,
     AudioProcessorGraph::NodeID nodeId) :
     instrument(instrument),
     nodeId(nodeId),
-    pinSize(PIN_SIZE),
-    font(21.f)
+    pinSize(PIN_SIZE)
 {
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);

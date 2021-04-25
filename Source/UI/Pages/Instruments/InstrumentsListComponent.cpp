@@ -39,7 +39,7 @@ InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner,
     this->titleLabel = make<Label>(String(),TRANS(I18n::Page::orchestraInstruments));
     this->addAndMakeVisible(this->titleLabel.get());
     this->titleLabel->setJustificationType(Justification::centred);
-    this->titleLabel->setFont({ 21.f });
+    this->titleLabel->setFont({ Globals::UI::Fonts::L });
 
     this->separator = make<SeparatorHorizontalFadingReversed>();
     this->addAndMakeVisible(this->separator.get());
@@ -78,7 +78,7 @@ void InstrumentsListComponent::clearSelection()
 void InstrumentsListComponent::updateListContent()
 {
     this->instrumentIcon = Icons::findByName(Icons::instrument,
-        int(InstrumentsListComponent::rowHeight * 0.75f));
+        int(InstrumentsListComponent::iconSize));
 
     this->instruments = this->instrumentsRoot.findChildrenRefsOfType<InstrumentNode>();
     this->instrumentsList->updateContent();
@@ -116,16 +116,18 @@ void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int 
         return;
     }
 
-    g.setFont({ 16.f });
-    const int margin = h / 12;
+    g.setFont({ Globals::UI::Fonts::M });
 
     // todo also display "(unavailable)", if not valid?
     const auto alpha = instrument->isValid() ? 1.f : 0.35f;
     g.setColour(findDefaultColour(ListBox::textColourId).withMultipliedAlpha(alpha));
-    g.drawText(instrumentNode->getName(), (margin * 2) + this->instrumentIcon.getWidth(), margin,
+
+    constexpr auto margin = 6;
+    g.drawText(instrumentNode->getName(),
+        (margin * 2) + int(InstrumentsListComponent::iconSize), margin,
         w, h - (margin * 2), Justification::centredLeft, false);
 
-    Icons::drawImageRetinaAware(this->instrumentIcon, g, margin + h / 2, h / 2);
+    Icons::drawImageRetinaAware(this->instrumentIcon, g, h / 2, h / 2);
 }
 
 // Desktop:
@@ -218,35 +220,3 @@ void InstrumentsListComponent::listBoxItemClicked(int row, const MouseEvent &e)
         }
     }
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="InstrumentsListComponent"
-                 template="../../../Template" componentName="" parentClasses="public Component, public ListBoxModel, public HeadlineItemDataSource"
-                 constructorParams="PluginScanner &amp;pluginScanner, OrchestraPitNode &amp;instrumentsRoot"
-                 variableInitialisers="pluginScanner(pluginScanner),&#10;instrumentsRoot(instrumentsRoot)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="0" initialWidth="600" initialHeight="400">
-  <METHODS>
-    <METHOD name="parentHierarchyChanged()"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT name="" id="1b089ba42e39d447" memberName="instrumentsList" virtualName=""
-                    explicitFocusOrder="0" pos="1 42 2M 43M" class="ListBox" params="&quot;Instruments&quot;, this"/>
-  <LABEL name="" id="660583b19bbfaa6b" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 0 0M 26" labelText="page::orchestra::instruments"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="36"/>
-  <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator1" virtualName=""
-             explicitFocusOrder="0" pos="0.5Cc 40 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
-             constructorParams=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

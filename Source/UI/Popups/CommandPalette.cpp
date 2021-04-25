@@ -104,7 +104,7 @@ CommandPalette::CommandPalette(ProjectNode *project, HybridRoll *roll)
     this->textEditor->setCaretVisible(true);
     this->textEditor->setMultiLine(false);
     this->textEditor->setReadOnly(false);
-    this->textEditor->setFont(21.f);
+    this->textEditor->setFont({ Globals::UI::Fonts::L });
 
     this->textEditor->addListener(this);
     
@@ -254,7 +254,7 @@ void CommandPalette::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, 
         g.fillAll(highlightingColour.withAlpha(0.015f));
     }
 
-    g.setFont({ 21 });
+    g.setFont({ Globals::UI::Fonts::L });
     const float margin = float(h / 12.f);
 
     // main text

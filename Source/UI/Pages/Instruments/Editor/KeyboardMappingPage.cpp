@@ -39,7 +39,7 @@ KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
     this->addAndMakeVisible(this->background.get());
 
     this->rangeLabel = make<Label>();
-    this->rangeLabel->setFont({ 28.f });
+    this->rangeLabel->setFont({ Globals::UI::Fonts::XL });
     this->rangeLabel->setJustificationType(Justification::centred);
     this->addAndMakeVisible(this->rangeLabel.get());
 
@@ -52,7 +52,7 @@ KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
     for (int i = 0; i < Globals::twelveToneKeyboardSize; ++i)
     {
         auto keyLabel = make<Label>();
-        keyLabel->setFont({ 18.f });
+        keyLabel->setFont({ Globals::UI::Fonts::M });
         keyLabel->setJustificationType(Justification::centredRight);
         keyLabel->setInterceptsMouseClicks(false, false);
         this->addAndMakeVisible(keyLabel.get());
@@ -74,7 +74,7 @@ KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
         this->keyButtons.add(keyButton.release());
 
         auto mappingLabel = make<Label>();
-        mappingLabel->setFont({ 18.f });
+        mappingLabel->setFont({ Globals::UI::Fonts::M });
         mappingLabel->setEditable(true);
         mappingLabel->setJustificationType(Justification::centredLeft);
         mappingLabel->onTextChange = [this, i]()

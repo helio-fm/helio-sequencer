@@ -38,7 +38,7 @@ public:
         this->label->setInterceptsMouseClicks(false, false);
         this->label->setJustificationType(Justification::centred);
         this->label->setText(TRANS(I18n::Dialog::setTempoTapLabel), dontSendNotification);
-        this->label->setFont({ 16.f });
+        this->label->setFont({ Globals::UI::Fonts::S });
     }
 
     Function<void(int newTempoBpm)> onTempoChanged;
@@ -145,7 +145,7 @@ TempoDialog::TempoDialog(int bpmValue)
 {
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
-    this->messageLabel->setFont({ 21.f });
+    this->messageLabel->setFont({ Globals::UI::Fonts::L });
     this->messageLabel->setJustificationType(Justification::centred);
 
     this->cancelButton = make<TextButton>();
@@ -178,7 +178,7 @@ TempoDialog::TempoDialog(int bpmValue)
     this->textEditor->setScrollbarsShown(true);
     this->textEditor->setCaretVisible(true);
     this->textEditor->setPopupMenuEnabled(true);
-    this->textEditor->setFont({ 21.f });
+    this->textEditor->setFont({ Globals::UI::Fonts::L });
 
     this->textEditor->onTextChange = [this]()
     {

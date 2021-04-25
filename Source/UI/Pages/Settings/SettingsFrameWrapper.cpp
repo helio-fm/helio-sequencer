@@ -27,7 +27,7 @@ SettingsFrameWrapper::SettingsFrameWrapper(Component *targetComponent, const Str
 
     this->titleLabel = make<Label>();
     this->addAndMakeVisible(this->titleLabel.get());
-    this->titleLabel->setFont({ 21.f });
+    this->titleLabel->setFont({ Globals::UI::Fonts::L });
     this->titleLabel->setJustificationType(Justification::centredLeft);
 
     this->setPaintingIsUnclipped(true);

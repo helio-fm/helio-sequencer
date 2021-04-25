@@ -30,7 +30,7 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
 {
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
-    this->messageLabel->setFont({ 21.f });
+    this->messageLabel->setFont({ Globals::UI::Fonts::L });
     this->messageLabel->setJustificationType(Justification::centred);
 
     this->cancelButton = make<TextButton>();
@@ -58,7 +58,7 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
     this->textEditor->setScrollbarsShown(true);
     this->textEditor->setCaretVisible(true);
     this->textEditor->setPopupMenuEnabled(true);
-    this->textEditor->setFont({ 21.f });
+    this->textEditor->setFont({ Globals::UI::Fonts::L });
     this->textEditor->addListener(this);
 
     this->originalName = this->track->getTrackName();

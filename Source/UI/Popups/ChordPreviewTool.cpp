@@ -30,7 +30,7 @@ static Label *createPopupButtonLabel(const String &text)
     newLabel->setJustificationType(Justification::centred);
     newLabel->setBounds(0, 0, size * 2, size);
     newLabel->setName(text + "_outline");
-    newLabel->setFont({ 16.f });
+    newLabel->setFont({ Globals::UI::Fonts::S });
     return newLabel;
 }
 

@@ -32,7 +32,7 @@ NoteNameGuide::NoteNameGuide(const String &noteName, int noteNumber) :
 
     this->noteNameLabel = make<Label>();
     this->addAndMakeVisible(this->noteNameLabel.get());
-    this->noteNameLabel->setFont({ 16.f });
+    this->noteNameLabel->setFont({ Globals::UI::Fonts::S });
     this->noteNameLabel->setJustificationType(Justification::centredLeft);
     
     this->noteNameLabel->setBufferedToImage(true);

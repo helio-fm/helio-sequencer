@@ -40,7 +40,7 @@ HistoryComponent::HistoryComponent(VersionControl &owner) : vcs(owner)
     this->revisionTreeLabel = make<Label>(String(), TRANS(I18n::VCS::historyCaption));
     this->addAndMakeVisible(this->revisionTreeLabel.get());
     this->revisionTreeLabel->setJustificationType(Justification::centred);
-    this->revisionTreeLabel->setFont({ 21.f });
+    this->revisionTreeLabel->setFont({ Globals::UI::Fonts::L });
 
     this->separator = make<SeparatorHorizontalFadingReversed>();
     this->addAndMakeVisible(this->separator.get());

@@ -36,7 +36,7 @@ StageComponent::StageComponent(VersionControl &versionControl) : vcs(versionCont
     this->titleLabel = make<Label>(String(), TRANS(I18n::VCS::stageCaption));
     this->addAndMakeVisible(this->titleLabel.get());
     this->titleLabel->setJustificationType(Justification::centred);
-    this->titleLabel->setFont({ 21.f });
+    this->titleLabel->setFont({ Globals::UI::Fonts::L });
 
     this->progressIndicator = make<ProgressIndicator>();
     this->addAndMakeVisible(this->progressIndicator.get());

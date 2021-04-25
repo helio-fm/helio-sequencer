@@ -32,7 +32,7 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &
 
     this->signatureLabel = make<Label>();
     this->addAndMakeVisible(this->signatureLabel.get());
-    this->signatureLabel->setFont({ 16.f });
+    this->signatureLabel->setFont({ Globals::UI::Fonts::S });
     this->signatureLabel->setJustificationType(Justification::centredLeft);
     this->signatureLabel->setBounds(-2, 1, 192, 24);
     this->signatureLabel->setInterceptsMouseClicks(false, false);

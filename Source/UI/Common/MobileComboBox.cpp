@@ -41,12 +41,12 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
 
     this->currentNameLabel = make<Label>();
     this->addAndMakeVisible(this->currentNameLabel.get());
-    this->currentNameLabel->setFont({ 21.f });
+    this->currentNameLabel->setFont({ Globals::UI::Fonts::L });
     this->currentNameLabel->setJustificationType(Justification::centredLeft);
 
     this->searchTextBox = make<TextEditor>();
     this->addAndMakeVisible(this->searchTextBox.get());
-    this->searchTextBox->setFont({ 21.f });
+    this->searchTextBox->setFont({ Globals::UI::Fonts::L });
     this->searchTextBox->setMultiLine(false);
     this->searchTextBox->setReturnKeyStartsNewLine(false);
     this->searchTextBox->setScrollbarsShown(true);

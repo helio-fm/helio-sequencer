@@ -40,7 +40,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
 
     this->filenameEditor = make<Label>();
     this->addAndMakeVisible(this->filenameEditor.get());
-    this->filenameEditor->setFont({ 28.f });
+    this->filenameEditor->setFont({ Globals::UI::Fonts::XL });
     this->filenameEditor->setJustificationType(Justification::topLeft);
 
 #if PLATFORM_DESKTOP
@@ -51,7 +51,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
 
     this->filenameLabel = make<Label>();
     this->addAndMakeVisible(this->filenameLabel.get());
-    this->filenameLabel->setFont({ 21.f });
+    this->filenameLabel->setFont({ Globals::UI::Fonts::L });
     this->filenameLabel->setJustificationType(Justification::centredLeft);
     this->filenameLabel->setText(TRANS(I18n::Dialog::renderCaption), dontSendNotification);
 
@@ -72,7 +72,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
 
     this->pathEditor = make<Label>();
     this->addAndMakeVisible(this->pathEditor.get());
-    this->pathEditor->setFont({ 16.f });
+    this->pathEditor->setFont({ Globals::UI::Fonts::S });
     this->pathEditor->setJustificationType(Justification::centredLeft);
 
     this->separator = make<SeparatorHorizontalFading>();

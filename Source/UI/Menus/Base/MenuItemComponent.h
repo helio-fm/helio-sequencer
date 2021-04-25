@@ -116,7 +116,7 @@ private:
 
     static constexpr auto iconMargin = 6;
     static constexpr auto iconSize = 20;
-    static constexpr auto fontSize = 18.f;
+    static constexpr auto fontSize = Globals::UI::Fonts::M;
 
     Image icon;
     MenuItem::Ptr description;

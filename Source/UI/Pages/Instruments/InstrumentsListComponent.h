@@ -80,6 +80,8 @@ private:
     static constexpr auto rowHeight = 56;
 #endif
 
+    static constexpr auto iconSize = rowHeight * 0.65f;
+
     UniquePointer<ListBox> instrumentsList;
     UniquePointer<Label> titleLabel;
     UniquePointer<SeparatorHorizontalFadingReversed> separator;

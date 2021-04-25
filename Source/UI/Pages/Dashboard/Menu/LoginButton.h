@@ -40,7 +40,7 @@ public:
 
         this->ctaLabel = make<Label>(String(), TRANS(I18n::Dialog::authGithub));
         this->addAndMakeVisible(this->ctaLabel.get());
-        this->ctaLabel->setFont({ 16.f });
+        this->ctaLabel->setFont({ Globals::UI::Fonts::S });
         this->ctaLabel->setJustificationType(Justification::centred);
         this->ctaLabel->setColour(Label::textColourId,
             findDefaultColour(Label::textColourId).withMultipliedAlpha(0.35f));

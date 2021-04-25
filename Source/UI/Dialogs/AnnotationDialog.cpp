@@ -60,7 +60,7 @@ AnnotationDialog::AnnotationDialog(Component &owner,
 
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
-    this->messageLabel->setFont(Font (21.00f, Font::plain));
+    this->messageLabel->setFont({ Globals::UI::Fonts::L });
     this->messageLabel->setJustificationType(Justification::centred);
 
     this->removeEventButton = make<TextButton>();
@@ -130,7 +130,7 @@ AnnotationDialog::AnnotationDialog(Component &owner,
     this->colourSwatches->setSelectedColour(this->originalEvent.getColour());
 
     this->textEditor->addListener(this);
-    this->textEditor->setFont(21.f);
+    this->textEditor->setFont({ Globals::UI::Fonts::L });
     this->textEditor->setText(this->originalEvent.getDescription(), dontSendNotification);
 
     this->messageLabel->setInterceptsMouseClicks(false, false);

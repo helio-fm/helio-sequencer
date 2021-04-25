@@ -27,7 +27,7 @@ AnnotationSmallComponent::AnnotationSmallComponent(AnnotationsProjectMap &parent
 {
     this->annotationLabel = make<Label>();
     this->addAndMakeVisible(this->annotationLabel.get());
-    this->annotationLabel->setFont({ 12.f });
+    this->annotationLabel->setFont({ Globals::UI::Fonts::XS });
     this->annotationLabel->setJustificationType(Justification::centredLeft);
 
     this->setInterceptsMouseClicks(false, false);

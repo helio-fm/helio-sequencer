@@ -24,7 +24,7 @@ FineTuningValueIndicator::FineTuningValueIndicator(float initialValue, String su
 {
     this->valueLabel = make<Label>();
     this->addAndMakeVisible(this->valueLabel.get());
-    this->valueLabel->setFont({ 14.f });
+    this->valueLabel->setFont({ Globals::UI::Fonts::XS });
     this->valueLabel->setJustificationType(Justification::centred);
 
     this->setSize(64, 64);

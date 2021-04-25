@@ -43,7 +43,7 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
     this->deviceTypeEditor->setCaretVisible(false);
     this->deviceTypeEditor->setPopupMenuEnabled(false);
     this->deviceTypeEditor->setInterceptsMouseClicks(false, true);
-    this->deviceTypeEditor->setFont({ 18.f });
+    this->deviceTypeEditor->setFont({ Globals::UI::Fonts::M });
 
     this->deviceEditor = make<TextEditor>();
     this->addAndMakeVisible(this->deviceEditor.get());
@@ -52,7 +52,7 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
     this->deviceEditor->setCaretVisible(false);
     this->deviceEditor->setPopupMenuEnabled(false);
     this->deviceEditor->setInterceptsMouseClicks(false, true);
-    this->deviceEditor->setFont({ 18.f });
+    this->deviceEditor->setFont({ Globals::UI::Fonts::M });
 
     this->sampleRateEditor = make<TextEditor>();
     this->addAndMakeVisible(this->sampleRateEditor.get());
@@ -61,7 +61,7 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
     this->sampleRateEditor->setCaretVisible(false);
     this->sampleRateEditor->setPopupMenuEnabled(false);
     this->sampleRateEditor->setInterceptsMouseClicks(false, true);
-    this->sampleRateEditor->setFont({ 18.f });
+    this->sampleRateEditor->setFont({ Globals::UI::Fonts::M });
 
     this->bufferSizeEditor = make<TextEditor>();
     this->addAndMakeVisible(this->bufferSizeEditor.get());
@@ -70,7 +70,7 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
     this->bufferSizeEditor->setCaretVisible(false);
     this->bufferSizeEditor->setPopupMenuEnabled(false);
     this->bufferSizeEditor->setInterceptsMouseClicks(false, true);
-    this->bufferSizeEditor->setFont({ 18.f });
+    this->bufferSizeEditor->setFont({ Globals::UI::Fonts::M });
 
     this->midiInputEditor = make<TextEditor>();
     this->addAndMakeVisible(this->midiInputEditor.get());
@@ -79,7 +79,7 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
     this->midiInputEditor->setCaretVisible(false);
     this->midiInputEditor->setPopupMenuEnabled(false);
     this->midiInputEditor->setInterceptsMouseClicks(false, true);
-    this->midiInputEditor->setFont({ 18.f });
+    this->midiInputEditor->setFont({ Globals::UI::Fonts::M });
 
     this->setSize(550, 244);
 

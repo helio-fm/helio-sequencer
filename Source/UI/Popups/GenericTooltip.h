@@ -35,9 +35,9 @@ public:
         g.setColour(Colours::white.withAlpha(0.9f));
 
 #if PLATFORM_DESKTOP
-        g.setFont({ 21.f });
+        g.setFont({ Globals::UI::Fonts::L });
 #elif PLATFORM_MOBILE
-        g.setFont({ 28.f });
+        g.setFont({ Globals::UI::Fonts::XL });
 #endif
 
         g.drawFittedText(this->message,

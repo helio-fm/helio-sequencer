@@ -34,7 +34,7 @@ UpdatesInfoComponent::UpdatesInfoComponent()
     this->label = make<Label>(String(), TRANS(I18n::Common::updateProceed));
     this->addAndMakeVisible(this->label.get());
     this->label->setJustificationType(Justification::centredBottom);
-    this->label->setFont({ 16.f });
+    this->label->setFont({ Globals::UI::Fonts::S });
 
     // here we assume that backend response will only contain
     // the updates info for the current platform, so that

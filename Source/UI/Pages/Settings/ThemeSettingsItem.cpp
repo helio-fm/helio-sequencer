@@ -79,7 +79,7 @@ ThemeSettingsItem::ThemeSettingsItem(ListBox &parentListBox) :
 
     this->schemeNameLabel = make<Label>();
     this->addAndMakeVisible(this->schemeNameLabel.get());
-    this->schemeNameLabel->setFont({ 18.f });
+    this->schemeNameLabel->setFont({ Globals::UI::Fonts::M });
     this->schemeNameLabel->setJustificationType(Justification::centredLeft);
 
     this->selectionComponent = make<ThemeSettingsItemSelection>();

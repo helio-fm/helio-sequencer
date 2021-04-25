@@ -57,13 +57,12 @@ RadioButton::RadioButton(const String &text, Colour c, RadioButton::Listener *li
     colour(c),
     owner(listener)
 {
-    this->label = make<Label>(String(), String());
-    this->addAndMakeVisible(label.get());
+    this->label = make<Label>();
+    this->addAndMakeVisible(this->label.get());
 
-    this->label->setFont(Font(18.00f, Font::plain));
-    this->label->setJustificationType(Justification::centred);
-    this->label->setEditable(false, false, false);
+    this->label->setFont({ Globals::UI::Fonts::M });
     this->label->setText(text, dontSendNotification);
+    this->label->setJustificationType(Justification::centred);
     this->label->setInterceptsMouseClicks(false, false);
 
     this->checkMark = make<RadioButtonFrame>(1.f);
