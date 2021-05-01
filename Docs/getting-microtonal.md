@@ -42,16 +42,21 @@ I think that Scala kbm format is obscure and unintuitive, so let me reinvent the
 
 Let's start with an example. The entire multi-channel mapping [for Pianoteq](https://forum.modartt.com/viewtopic.php?id=4307) 31-EDO could be written like this:
 
-`0:0/15,31+ 31:0/16,31+ 62:0/1,31+ 93:0/2,31+ 124:0/3,31+ 155:0/4,31+ 186:0/5,31+ 217:0/6,31+ 248:0/7,31+ 279:0/8,31+ 310:0/9,31+`
-
-Or, same, but one octave lower:
-
 `0:0/14,31+ 31:0/15,31+ 62:0/16,31+ 93:0/1,31+ 124:0/2,31+ 155:0/3,31+ 186:0/4,31+ 217:0/5,31+ 248:0/6,31+ 279:0/7,31+ 310:0/8,31+`
 
 Which reads:
  * starting from key `0` of the piano roll, map it to the key `0` of channel `14`, then map the next `31` keys in a sequential manner: for example, key `1` maps to `1/14`, key `2` maps to `2/14`, and so on,
  * starting from key `31`, map it to the key `0` of channel `15`, and, again, map the next `31` keys sequentially,
  * and so on.
+
+Similarly, the 22-EDO Pianoteq mapping would look like this:
+
+`0:0/14,22+ 22:0/15,22+ 44:0/16,22+ 66:0/1,22+ 88:0/2,22+ 110:0/3,22+ 132:0/4,22+ 154:0/5,22+ 176:0/6,22+ 198:0/7,22+ 220:0/8,22+`
+
+For 34-EDO mapping you might want to start one octave lower since the key range is wider:
+
+`0:0/13,34+ 34:0/14,34+ 68:0/15,34+ 102:0/16,34+ 136:0/1,34+ 170:0/2,34+ 204:0/3,34+ 238:0/4,34+ 272:0/5,34+ 306:0/6,34+ 340:0/7,34+`
+
 
 #### Format description
 
