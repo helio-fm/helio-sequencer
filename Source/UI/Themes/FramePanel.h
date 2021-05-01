@@ -17,29 +17,35 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
+#include "ColourIDs.h"
 
 class FramePanel final : public Component
 {
 public:
 
-    FramePanel();
-    ~FramePanel();
+    FramePanel()
+    {
+        this->setPaintingIsUnclipped(true);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+    }
 
-    //[UserMethods]
-    //[/UserMethods]
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->colour);
 
-    void paint (Graphics& g) override;
-    void resized() override;
+        const float w = float(this->getWidth());
+        const float h = float(this->getHeight());
 
+        g.drawVerticalLine(0, 1.f, h - 1.f);
+        g.drawVerticalLine(int(w) - 1, 1.f, h - 1.f);
+        g.drawHorizontalLine(0, 1.f, w - 1.f);
+        g.drawHorizontalLine(int(h) - 1, 1.f, w - 1.f);
+    }
 
 private:
 
-    //[UserVariables]
-    //[/UserVariables]
+    const Colour colour = findDefaultColour(ColourIDs::Panel::border);
 
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FramePanel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FramePanel)
 };

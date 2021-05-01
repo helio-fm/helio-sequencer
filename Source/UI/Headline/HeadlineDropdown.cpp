@@ -22,8 +22,8 @@
 #include "Headline.h"
 #include "ColourIDs.h"
 
-HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem, const Point<int> &position)
-    : item(targetItem)
+HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem, const Point<int> &position) :
+    item(targetItem)
 {
     this->header = make<HeadlineItemHighlighter>(targetItem);
     this->addAndMakeVisible(this->header.get());

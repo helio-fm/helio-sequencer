@@ -1099,9 +1099,6 @@
     <ClCompile Include="..\..\Source\UI\Menus\Base\MenuItemComponent.cpp">
       <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\Base\MenuItemComponentMarker.cpp">
-      <Filter>Helio\Source\UI\Menus\Base</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\Base\MenuPanel.cpp">
       <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClCompile>
@@ -1433,9 +1430,6 @@
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\Icons.cpp">
-      <Filter>Helio\Source\UI\Themes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\FramePanel.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\ViewportKineticSlider.cpp">
@@ -4105,9 +4099,6 @@
       <Filter>Helio\Source\UI\Input</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\Base\MenuItemComponent.h">
-      <Filter>Helio\Source\UI\Menus\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\Base\MenuItemComponentMarker.h">
       <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\Base\MenuPanel.h">

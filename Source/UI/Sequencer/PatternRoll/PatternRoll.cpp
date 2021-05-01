@@ -839,6 +839,7 @@ void PatternRoll::paint(Graphics &g)
 {
     g.setTiledImageFill(this->rowPattern, 0, Globals::UI::rollHeaderHeight, 1.f);
     g.fillRect(this->viewport.getViewArea());
+    g.setFont({ Globals::UI::Fonts::XS }); // so that clips don't have to do it
     HybridRoll::paint(g);
 }
 

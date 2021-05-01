@@ -626,9 +626,6 @@
     <ClCompile Include="..\..\Source\UI\Menus\Base\MenuItemComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\Base\MenuItemComponentMarker.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\Base\MenuPanel.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -960,9 +957,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\Icons.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Themes\FramePanel.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\ViewportKineticSlider.cpp">
@@ -3080,7 +3074,6 @@
     <ClInclude Include="..\..\Source\UI\Input\SmoothZoomController.h"/>
     <ClInclude Include="..\..\Source\UI\Input\SmoothZoomListener.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\Base\MenuItemComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\Base\MenuItemComponentMarker.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\Base\MenuPanel.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\AudioPluginSelectionMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\InstrumentNodeSelectionMenu.h"/>

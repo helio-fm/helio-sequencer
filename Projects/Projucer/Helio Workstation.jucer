@@ -814,10 +814,6 @@
                   file="../../Source/UI/Menus/Base/MenuItemComponent.cpp"/>
             <FILE id="wuEHGj" name="MenuItemComponent.h" compile="0" resource="0"
                   file="../../Source/UI/Menus/Base/MenuItemComponent.h"/>
-            <FILE id="ApvXfh" name="MenuItemComponentMarker.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Menus/Base/MenuItemComponentMarker.cpp"/>
-            <FILE id="XI6L1c" name="MenuItemComponentMarker.h" compile="0" resource="0"
-                  file="../../Source/UI/Menus/Base/MenuItemComponentMarker.h"/>
             <FILE id="i31e8A" name="MenuPanel.cpp" compile="1" resource="0" file="../../Source/UI/Menus/Base/MenuPanel.cpp"/>
             <FILE id="J8Wiet" name="MenuPanel.h" compile="0" resource="0" file="../../Source/UI/Menus/Base/MenuPanel.h"/>
           </GROUP>
@@ -1325,7 +1321,6 @@
           <FILE id="OSxFyU" name="HelioTheme.h" compile="0" resource="0" file="../../Source/UI/Themes/HelioTheme.h"/>
           <FILE id="e3IJC6" name="Icons.cpp" compile="1" resource="0" file="../../Source/UI/Themes/Icons.cpp"/>
           <FILE id="cuElFX" name="Icons.h" compile="0" resource="0" file="../../Source/UI/Themes/Icons.h"/>
-          <FILE id="assiuD" name="FramePanel.cpp" compile="1" resource="0" file="../../Source/UI/Themes/FramePanel.cpp"/>
           <FILE id="jNvXXq" name="FramePanel.h" compile="0" resource="0" file="../../Source/UI/Themes/FramePanel.h"/>
           <FILE id="oQQzCv" name="PanelBackgroundA.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/PanelBackgroundA.h"/>

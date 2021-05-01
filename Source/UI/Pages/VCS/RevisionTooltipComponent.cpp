@@ -15,36 +15,23 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "RevisionTooltipComponent.h"
-
-//[MiscUserDefs]
 #include "RevisionItemComponent.h"
 
-#if PLATFORM_DESKTOP
-#    define REVISION_TOOLTIP_ROWS_ONSCREEN (4.5)
-#    define REVISION_TOOLTIP_ROW_HEIGHT (65)
-#elif PLATFORM_MOBILE
-#    define REVISION_TOOLTIP_ROWS_ONSCREEN (3.5)
-#    define REVISION_TOOLTIP_ROW_HEIGHT (50)
-#endif
-
-//[/MiscUserDefs]
-
-RevisionTooltipComponent::RevisionTooltipComponent(const VCS::Revision::Ptr revision)
-    : revision(revision),
-      revisionItemsOnly()
+RevisionTooltipComponent::RevisionTooltipComponent(const VCS::Revision::Ptr revision) :
+    revision(revision),
+    revisionItemsOnly()
 {
-    this->changesList.reset(new ListBox("", this));
-    this->addAndMakeVisible(changesList.get());
+    this->setPaintingIsUnclipped(true);
+    this->setWantsKeyboardFocus(false);
+    this->setInterceptsMouseClicks(false, true);
 
-    this->separator.reset(new SeparatorHorizontal());
-    this->addAndMakeVisible(separator.get());
+    this->changesList = make<ListBox>(String(), this);
+    this->addAndMakeVisible(this->changesList.get());
 
-    //[UserPreSize]
+    this->separator = make<SeparatorHorizontal>();
+    this->addAndMakeVisible(this->separator.get());
 
     this->revisionItemsOnly.addArray(this->revision->getItems());
 
@@ -52,62 +39,27 @@ RevisionTooltipComponent::RevisionTooltipComponent(const VCS::Revision::Ptr revi
     this->changesList->setMultipleSelectionEnabled(false);
     this->changesList->setClickingTogglesRowSelection(false);
 
-    this->changesList->setRowHeight(REVISION_TOOLTIP_ROW_HEIGHT);
+    this->changesList->setRowHeight(RevisionTooltipComponent::rowHeight);
     this->changesList->getViewport()->setScrollBarsShown(true, false);
 
-    //[/UserPreSize]
-
-    this->setSize(320, 220);
-
-    //[Constructor]
-    const int maxHeight = int(REVISION_TOOLTIP_ROW_HEIGHT * REVISION_TOOLTIP_ROWS_ONSCREEN);
-    const int newHeight = jmin(maxHeight, this->getNumRows() * REVISION_TOOLTIP_ROW_HEIGHT);
+    const int maxHeight = int(RevisionTooltipComponent::rowHeight * RevisionTooltipComponent::numRowsOnScreen);
+    const int newHeight = jmin(maxHeight, this->getNumRows() * RevisionTooltipComponent::rowHeight);
     this->setSize(this->getWidth(), newHeight);
     this->changesList->updateContent();
-    //[/Constructor]
-}
 
-RevisionTooltipComponent::~RevisionTooltipComponent()
-{
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    changesList = nullptr;
-    separator = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void RevisionTooltipComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
+    this->setSize(320, 220);
 }
 
 void RevisionTooltipComponent::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    changesList->setBounds(0, 0, getWidth() - 0, getHeight() - 0);
-    separator->setBounds(0, 0 + (getHeight() - 0) - 1, getWidth() - 0, 4);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->changesList->setBounds(this->getLocalBounds());
+    separator->setBounds(0, this->getHeight() - 1, this->getWidth(), 4);
 }
 
 void RevisionTooltipComponent::inputAttemptWhenModal()
 {
-    //[UserCode_inputAttemptWhenModal] -- Add your code here...
     this->hide();
-    //[/UserCode_inputAttemptWhenModal]
 }
-
-
-//[MiscUserCode]
 
 void RevisionTooltipComponent::hide()
 {
@@ -150,29 +102,3 @@ int RevisionTooltipComponent::getNumRows()
 {
     return this->revisionItemsOnly.size();
 }
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="RevisionTooltipComponent"
-                 template="../../../Template" componentName="" parentClasses="public Component, public ListBoxModel"
-                 constructorParams="const VCS::Revision::Ptr revision" variableInitialisers="revision(revision),&#10;revisionItemsOnly()"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="320" initialHeight="220">
-  <METHODS>
-    <METHOD name="inputAttemptWhenModal()"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT name="" id="d017e5395434bb4f" memberName="changesList" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 0M 0M" class="ListBox" params="&quot;&quot;, this"/>
-  <JUCERCOMP name="" id="a5ee6384bbe01d79" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="0 1R 0M 4" posRelativeX="c5736d336280caba"
-             posRelativeY="d017e5395434bb4f" sourceFile="../../Themes/SeparatorHorizontal.cpp"
-             constructorParams=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

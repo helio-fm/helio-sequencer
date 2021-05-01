@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "MenuItemComponent.h"
-#include "MenuItemComponentMarker.h"
 #include "MenuPanel.h"
 #include "HelioTheme.h"
 #include "IconComponent.h"
@@ -30,6 +29,54 @@
 #if JUCE_MAC
 #   define HAS_OPENGL_BUG 1
 #endif
+
+//===----------------------------------------------------------------------===//
+// Check mark
+//===----------------------------------------------------------------------===//
+
+class MenuItemComponentCheckMark final : public Component
+{
+public:
+
+    MenuItemComponentCheckMark()
+    {
+        this->setPaintingIsUnclipped(true);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->colour);
+        g.fillRect(this->x, this->y - 1, this->w, 1);
+        g.fillRect(this->x, this->y + this->h, this->w, 1);
+        g.fillRect(this->x - 1, this->y, 1, this->h);
+        g.fillRect(this->x + this->w, this->y, 1, this->h);
+    }
+
+    void resized() override
+    {
+        const int minSize = jmin(this->getWidth(), this->getHeight());
+        const auto squareMarker = Rectangle<int>(0, 0, minSize, minSize)
+            .reduced(5).withCentre(this->getLocalBounds().getCentre());
+        this->x = squareMarker.getX();
+        this->y = squareMarker.getY();
+        this->w = squareMarker.getWidth();
+        this->h = squareMarker.getHeight();
+    }
+
+private:
+
+    const Colour colour = findDefaultColour(Label::textColourId).withAlpha(0.125f);
+
+    int x = 0;
+    int y = 0;
+    int w = 0;
+    int h = 0;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemComponentCheckMark)
+};
+
 
 //===----------------------------------------------------------------------===//
 // MenuItem
@@ -284,11 +331,8 @@ void MenuItemComponent::resized()
     this->textLabel->setBounds(MenuItemComponent::iconSize + MenuItemComponent::iconMargin, 0,
         this->getWidth() - MenuItemComponent::iconSize - MenuItemComponent::iconMargin, this->getHeight());
 
-    this->subLabel->setFont(Font(Font::getDefaultSansSerifFontName(),
-        MenuItemComponent::fontSize, Font::plain));
-
-    this->textLabel->setFont(Font(Font::getDefaultSansSerifFontName(),
-        MenuItemComponent::fontSize, Font::plain));
+    this->textLabel->setFont({ MenuItemComponent::fontSize });
+    this->subLabel->setFont({ MenuItemComponent::fontSize });
 }
 
 void MenuItemComponent::mouseDown(const MouseEvent &e)
@@ -549,7 +593,7 @@ void MenuItemComponent::doAction()
 
 void MenuItemComponent::showCheckMark()
 {
-    this->checkMarker = make<MenuItemComponentMarker>();
+    this->checkMarker = make<MenuItemComponentCheckMark>();
     this->checkMarker->setBounds(this->getLocalBounds());
 
 #if ! HAS_OPENGL_BUG

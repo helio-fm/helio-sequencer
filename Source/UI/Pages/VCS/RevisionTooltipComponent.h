@@ -17,22 +17,15 @@
 
 #pragma once
 
-//[Headers]
 #include "Revision.h"
 #include "RevisionItem.h"
-//[/Headers]
+#include "SeparatorHorizontal.h"
 
-#include "../../Themes/SeparatorHorizontal.h"
-
-class RevisionTooltipComponent final : public Component,
-                                       public ListBoxModel
+class RevisionTooltipComponent final : public Component, public ListBoxModel
 {
 public:
 
     explicit RevisionTooltipComponent(const VCS::Revision::Ptr revision);
-    ~RevisionTooltipComponent();
-
-    //[UserMethods]
 
     //===------------------------------------------------------------------===//
     // ListBoxModel
@@ -45,24 +38,26 @@ public:
     void listBoxItemDoubleClicked(int, const MouseEvent &) override {}
     void paintListBoxItem(int, Graphics &, int, int, bool) override {}
 
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
     void inputAttemptWhenModal() override;
 
-
 private:
 
-    //[UserVariables]
     void hide();
+
+#if PLATFORM_DESKTOP
+    static constexpr auto numRowsOnScreen = 5;
+    static constexpr auto rowHeight = 65;
+#elif PLATFORM_MOBILE
+    static constexpr auto numRowsOnScreen = 4;
+    static constexpr auto rowHeight = 50;
+#endif
 
     const VCS::Revision::Ptr revision;
     ReferenceCountedArray<VCS::RevisionItem> revisionItemsOnly;
-    //[/UserVariables]
 
     UniquePointer<ListBox> changesList;
     UniquePointer<SeparatorHorizontal> separator;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RevisionTooltipComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionTooltipComponent)
 };
