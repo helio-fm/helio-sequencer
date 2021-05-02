@@ -53,17 +53,18 @@ void MidiTrackMenu::initDefaultMenu()
         this->initInstrumentSelectionMenu();
     }));
 
-    const auto trackInstrument = this->trackNode.getTrackInstrumentId();
-    for (const auto *i : instruments)
+    const auto trackInstrumentId = this->trackNode.getTrackInstrumentId();
+    for (const auto *instrument : instruments)
     {
         // well, the track can have an instrument which has no window; but here,
-        // in the menu constructor, it's kinda too expensive to check if this is the case,
-        // so we'll only show this menu item, if the instrument has been assigned:
-        if (i->getIdAndHash() == trackInstrument)
+        // in the menu constructor, it's too expensive to check if this is the case,
+        // so we'll only enable this menu item, if the track has a valid instrument assigned:
+        if (instrument->getIdAndHash() == trackInstrumentId)
         {
-            const auto editInstrumentCaption = i->getName() + ": " + TRANS(I18n::Menu::instrumentShowWindow);
-            menu.add(MenuItem::item(Icons::instrument, CommandIDs::EditCurrentInstrument,
-                editInstrumentCaption)->disabledIf(trackInstrument.isEmpty())->closesMenu());
+            const auto editInstrumentCaption = instrument->getName() + ": " + TRANS(I18n::Menu::instrumentShowWindow);
+            menu.add(MenuItem::item(Icons::instrument, CommandIDs::EditCurrentInstrument, editInstrumentCaption)->
+                disabledIf(trackInstrumentId.isEmpty() || !instrument->isValid())->
+                closesMenu());
             break;
         }
     }
@@ -87,7 +88,9 @@ void MidiTrackMenu::initInstrumentSelectionMenu()
         const bool isTicked = (instrument == selectedInstrument);
         const String instrumentId = instrument->getIdAndHash();
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument,
-            instrument->getName())->withAction([this, instrumentId]()
+            instrument->getName())->
+            disabledIf(!instrument->isValid())->
+            withAction([this, instrumentId]()
         {
             // no need to check if not toggled, the callback will do
             // DBG(instrumentId);

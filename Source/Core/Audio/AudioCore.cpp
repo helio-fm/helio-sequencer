@@ -512,7 +512,7 @@ void AudioCore::deserialize(const SerializedData &data)
             this->addInstrumentToAudioDevice(instrument.get());
             instrument->deserialize(instrumentNode);
             // try to filter out the trash early:
-            if (instrument->getName().isEmpty())
+            if (instrument->getName().isEmpty() || instrument->getNumNodes() == 0)
             {
                 this->removeInstrumentFromAudioDevice(instrument.get());
             }

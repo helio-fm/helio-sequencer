@@ -234,14 +234,20 @@ void PluginScanner::run()
                 ChildProcess checkerProcess;
                 const String commandLine(myPath + " " + tempFileName.toString());
                 checkerProcess.start(commandLine);
-                    
-                // FIXME! (#60): skips some valid plugins sometimes
-                if (!checkerProcess.waitForProcessToFinish(5000))
+
+                if (!checkerProcess.waitForProcessToFinish(60000))
                 {
                     checkerProcess.kill();
                 }
                 else
                 {
+                    if (this->cancelled.get())
+                    {
+                        DBG("Plugin scanning canceled");
+                        tempFile.deleteFile();
+                        break;
+                    }
+
                     Thread::sleep(50);
 
                     if (tempFile.existsAsFile())
@@ -367,6 +373,7 @@ void PluginScanner::scanPossibleSubfolders(const StringArray &possibleSubfolders
 
         if (f.exists())
         {
+            DBG("Adding folder to scan: " + f.getFullPathName());
             foldersOut.add(f);
         }
     }

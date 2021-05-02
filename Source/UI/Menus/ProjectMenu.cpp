@@ -422,6 +422,7 @@ void ProjectMenu::showSetInstrumentMenu()
         const String instrumentId = instrument->getIdAndHash();
         menu.add(MenuItem::item(Icons::instrument,
             instrument->getName())->
+            disabledIf(!instrument->isValid())->
             closesMenu()->
             withAction([this, instrumentId]()
             {
