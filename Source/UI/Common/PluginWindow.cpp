@@ -36,14 +36,15 @@ PluginWindow::PluginWindow(Component *uiComponent,
     
     if (shouldMimicComponent)
     {
-        this->setVisible(false);
         this->setUsingNativeTitleBar(false);
         this->setTitleBarHeight(0);
+        this->setVisible(false);
     }
     else
     {
-        this->setVisible(true);
         this->setUsingNativeTitleBar(true);
+        this->setResizable(true, false);
+        this->setVisible(true);
     }
 
     activePluginWindows.add(this);
@@ -74,10 +75,18 @@ void PluginWindow::closeCurrentlyOpenWindowsFor(const AudioProcessorGraph::NodeI
 
 void PluginWindow::closeAllCurrentlyOpenWindows()
 {
-    for (int i = activePluginWindows.size(); --i >= 0;) {
+    for (int i = activePluginWindows.size(); --i >= 0;)
+    {
         delete activePluginWindows.getUnchecked(i);
     }
 }
+
+constexpr bool autoScaleOptionAvailable =
+#if JUCE_WINDOWS && JUCE_WIN_PER_MONITOR_DPI_AWARE
+    true;
+#else
+    false;
+#endif
 
 PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node, bool shouldMimicComponent)
 {
@@ -88,8 +97,25 @@ PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node, bo
             return window;
         }
     }
+
+    const auto makeDPIAwarenessDisabler = [](const PluginDescription &desc)
+    {
+        const bool isAutoScaleAvailable = autoScaleOptionAvailable && desc.pluginFormatName.containsIgnoreCase("VST");
+        return isAutoScaleAvailable ? make<ScopedDPIAwarenessDisabler>() : nullptr;
+    };
+
+    UniquePointer<ScopedDPIAwarenessDisabler> scopedDpiDisabler;
+    if (auto *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor()))
+    {
+        scopedDpiDisabler = makeDPIAwarenessDisabler(plugin->getPluginDescription());
+    }
     
-    auto *ui = node->getProcessor()->createEditorIfNeeded();
+    AudioProcessorEditor *ui = nullptr;
+
+    if (node->getProcessor()->hasEditor())
+    {
+        ui = node->getProcessor()->createEditorIfNeeded();
+    }
 
     if (ui == nullptr && !node->getProcessor()->getParameters().isEmpty())
     {

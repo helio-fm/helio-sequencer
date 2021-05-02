@@ -19,10 +19,8 @@
 
 #include "MenuItemComponent.h"
 
-class MenuPanelUtils final
+struct MenuPanelUtils final
 {
-public:
-
     static void disableKeyboardFocusForAllChildren(Component *panel)
     {
         for (auto *child : panel->getChildren())

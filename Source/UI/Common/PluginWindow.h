@@ -32,6 +32,8 @@ public:
 
 private:
 
+    float getDesktopScaleFactor() const override { return 1.f; }
+
     PluginWindow(Component *uiComp, AudioProcessorGraph::Node::Ptr owner, bool shouldMimicComponent);
     AudioProcessorGraph::Node::Ptr owner;
 

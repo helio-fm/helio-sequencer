@@ -85,10 +85,10 @@ void InstrumentComponent::mouseUp(const MouseEvent &e)
 
         this->getParentEditor()->deselectAllNodes();
 
-        if (const auto f = this->instrument->getNodeForId(this->nodeId))
+        if (const auto node = this->instrument->getNodeForId(this->nodeId))
         {
 #if AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW
-            if (auto *w = PluginWindow::getWindowFor(f, false))
+            if (auto *w = PluginWindow::getWindowFor(node, false))
             {
                 w->toFront(true);
             }

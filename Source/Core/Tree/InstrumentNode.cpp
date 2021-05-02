@@ -304,9 +304,9 @@ void AudioPluginNode::showPage()
         return;
     }
 
-    const AudioProcessorGraph::Node::Ptr f(instrument->getNodeForId(this->nodeId));
+    const auto node = instrument->getNodeForId(this->nodeId);
 
-    if (f == nullptr)
+    if (node == nullptr)
     {
         delete this;
         return;
@@ -314,23 +314,23 @@ void AudioPluginNode::showPage()
 
     if (!this->audioPluginEditor)
     {
-        if (f->getProcessor()->hasEditor())
+        if (node->getProcessor()->hasEditor())
         {
             // Some plugins (including Kontakt 3!) misbehavior messes up all the controls
             // Turns out they attach themselves to the parent window :(
             // So we cannot add them as a child component like that:
-            // ui = f->getProcessor()->createEditorIfNeeded();
+            // ui = node->getProcessor()->createEditorIfNeeded();
             // so we try to mimic that by creating a plugin window
             // while its size and position that is managed by audioPluginEditor
-            if (auto *window = PluginWindow::getWindowFor(f, true))
+            if (auto *window = PluginWindow::getWindowFor(node, true))
             {
                 this->audioPluginEditor = make<AudioPluginEditorPage>(window);
             }
         }
         else
         {
-            auto *ui = new HelioAudioProcessorEditor(*f->getProcessor());
-            auto *plugin = dynamic_cast<AudioPluginInstance *>(f->getProcessor());
+            auto *ui = new HelioAudioProcessorEditor(*node->getProcessor());
+            auto *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor());
 
             if (plugin != nullptr)
             {
