@@ -389,12 +389,14 @@ void AudioCore::deserializeDeviceManager(const SerializedData &tree)
     const auto &availableDeviceTypes = this->deviceManager.getAvailableDeviceTypes();
 
     AudioDeviceManager::AudioDeviceSetup setup;
-    setup.inputDeviceName = root.getProperty(Audio::audioInputDeviceName);
-    setup.outputDeviceName = root.getProperty(Audio::audioOutputDeviceName);
+    setup.inputDeviceName = root.getProperty(Audio::audioInputDeviceName, setup.inputDeviceName);
+    setup.outputDeviceName = root.getProperty(Audio::audioOutputDeviceName, setup.outputDeviceName);
+    setup.bufferSize = root.getProperty(Audio::audioDeviceBufferSize, setup.bufferSize);
+    setup.sampleRate = root.getProperty(Audio::audioDeviceRate, setup.sampleRate);
 
     String currentDeviceType = root.getProperty(Audio::audioDeviceType);
-    AudioIODeviceType *foundType = nullptr;
 
+    AudioIODeviceType *foundType = nullptr;
     for (const auto availableType : availableDeviceTypes)
     {
         if (availableType->getTypeName() == currentDeviceType)
@@ -403,16 +405,17 @@ void AudioCore::deserializeDeviceManager(const SerializedData &tree)
         }
     }
 
-    if (foundType == nullptr && !availableDeviceTypes.isEmpty())
+    const bool settingsSeemValid = foundType != nullptr &&
+        setup.outputDeviceName.isNotEmpty() && setup.sampleRate > 0;
+
+    if (!settingsSeemValid)
     {
-        // TODO search for device types with the same i/o device names?
-        currentDeviceType = availableDeviceTypes.getFirst()->getTypeName();
+        this->autodetectAudioDeviceSetup();
+        this->autodetectMidiDeviceSetup();
+        return;
     }
 
     this->deviceManager.setCurrentAudioDeviceType(currentDeviceType, true);
-
-    setup.bufferSize = root.getProperty(Audio::audioDeviceBufferSize, setup.bufferSize);
-    setup.sampleRate = root.getProperty(Audio::audioDeviceRate, setup.sampleRate);
 
     const static var defaultTwoChannels("11");
     const String inputChannels = root.getProperty(Audio::audioDeviceInputChannels, defaultTwoChannels);
@@ -424,6 +427,12 @@ void AudioCore::deserializeDeviceManager(const SerializedData &tree)
     setup.useDefaultOutputChannels = !root.hasProperty(Audio::audioDeviceOutputChannels);
 
     const auto initError = this->deviceManager.setAudioDeviceSetup(setup, true);
+    if (initError.isNotEmpty())
+    {
+        this->autodetectAudioDeviceSetup();
+        this->autodetectMidiDeviceSetup();
+        return;
+    }
 
     const auto midiInputId = root.getProperty(Audio::midiInputId).toString();
     const auto midiInputName = root.getProperty(Audio::midiInputName).toString();
@@ -449,12 +458,6 @@ void AudioCore::deserializeDeviceManager(const SerializedData &tree)
             const auto shouldEnable = midiIn.name == midiInputName;
             this->deviceManager.setMidiInputDeviceEnabled(midiIn.identifier, shouldEnable);
         }
-    }
-
-    if (initError.isNotEmpty())
-    {
-        // try use some default settings instead
-        this->deviceManager.initialise(0, 2, nullptr, false);
     }
 }
 
