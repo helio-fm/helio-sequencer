@@ -137,9 +137,9 @@ void AudioSettings::handleCommandMessage(int commandId)
         return;
     }
 
-    if (const auto currentType = deviceManager.getCurrentDeviceTypeObject())
+    if (const auto *currentType = deviceManager.getCurrentDeviceTypeObject())
     {
-        const StringArray &deviceNames = currentType->getDeviceNames();
+        const auto &deviceNames = currentType->getDeviceNames();
         const int deviceIndex = commandId - CommandIDs::SelectAudioDevice;
         if (deviceIndex >= 0 && deviceIndex < deviceNames.size())
         {
@@ -148,17 +148,17 @@ void AudioSettings::handleCommandMessage(int commandId)
         }
     }
 
-    if (const auto currentDevice = deviceManager.getCurrentAudioDevice())
+    if (auto *currentDevice = deviceManager.getCurrentAudioDevice())
     {
-        const Array<double> rates(currentDevice->getAvailableSampleRates());
-        const int rateIndex = commandId - CommandIDs::SelectSampleRate;
-        if (rateIndex >= 0 && rateIndex < rates.size())
+        const auto sampleRates = currentDevice->getAvailableSampleRates();
+        const int index = commandId - CommandIDs::SelectSampleRate;
+        if (index >= 0 && index < sampleRates.size())
         {
-            this->applySampleRate(deviceManager, rates[rateIndex]);
+            this->applySampleRate(deviceManager, sampleRates[index]);
             return;
         }
 
-        const Array<int> bufferSizes(currentDevice->getAvailableBufferSizes());
+        const auto bufferSizes = currentDevice->getAvailableBufferSizes();
         const int bufferIndex = commandId - CommandIDs::SelectBufferSize;
         if (bufferIndex >= 0 && bufferIndex < bufferSizes.size())
         {
@@ -179,13 +179,27 @@ void AudioSettings::handleCommandMessage(int commandId)
 void AudioSettings::applyDeviceType(AudioDeviceManager &deviceManager, const String &deviceTypeName)
 {
     deviceManager.setCurrentAudioDeviceType(deviceTypeName, true);
-    deviceManager.getCurrentDeviceTypeObject()->scanForDevices();
-
     this->syncDeviceTypesList(deviceManager);
-    this->syncDevicesList(deviceManager);
-    this->syncSampleRatesList(deviceManager);
-    this->syncBufferSizesList(deviceManager);
-    this->syncMidiInputsList(deviceManager);
+
+    auto *currentType = deviceManager.getCurrentDeviceTypeObject();
+    jassert(currentType != nullptr);
+    currentType->scanForDevices();
+    const auto &deviceNames = currentType->getDeviceNames();
+
+    const auto *currentDevice = deviceManager.getCurrentAudioDevice();
+    if (currentDevice == nullptr && !deviceNames.isEmpty())
+    {
+        // for whatever reason, at this point there are devices available,
+        // but nothing is set as the current device (happens with JACK)
+        this->applyDevice(deviceManager, deviceNames[0]);
+    }
+    else
+    {
+        this->syncDevicesList(deviceManager);
+        this->syncSampleRatesList(deviceManager);
+        this->syncBufferSizesList(deviceManager);
+        this->syncMidiInputsList(deviceManager);
+    }
 }
 
 void AudioSettings::applyDevice(AudioDeviceManager &deviceManager, const String &deviceName)
@@ -239,8 +253,10 @@ void AudioSettings::applyMidiInput(AudioDeviceManager &deviceManager, const Stri
 
 void AudioSettings::syncDeviceTypesList(AudioDeviceManager &deviceManager)
 {
-    const String &currentTypeName = deviceManager.getCurrentAudioDeviceType();
-    const OwnedArray<AudioIODeviceType> &types = deviceManager.getAvailableDeviceTypes();
+    this->deviceTypeEditor->setText({}, dontSendNotification);
+
+    const auto currentTypeName = deviceManager.getCurrentAudioDeviceType();
+    const auto &types = deviceManager.getAvailableDeviceTypes();
 
     MenuPanel::Menu menu;
     for (int i = 0; i < types.size(); ++i)
@@ -262,18 +278,23 @@ void AudioSettings::syncDeviceTypesList(AudioDeviceManager &deviceManager)
 
 void AudioSettings::syncDevicesList(AudioDeviceManager &deviceManager)
 {
-    const AudioIODevice *currentDevice = deviceManager.getCurrentAudioDevice();
-    const AudioIODeviceType *currentType = deviceManager.getCurrentDeviceTypeObject();
-
-    if (currentDevice == nullptr || currentType == nullptr) { return; }
-
     MenuPanel::Menu menu;
-    const StringArray &devices = currentType->getDeviceNames();
+    this->deviceEditor->setText({}, dontSendNotification);
+
+    const auto *currentType = deviceManager.getCurrentDeviceTypeObject();
+    if (currentType == nullptr)
+    {
+        this->deviceComboPrimer->updateMenu(menu);
+        return;
+    }
+
+    const auto &devices = currentType->getDeviceNames();
+    const auto *currentDevice = deviceManager.getCurrentAudioDevice();
 
     for (int i = 0; i < devices.size(); ++i)
     {
-        const String &deviceName = devices[i];
-        const bool isSelected = deviceName == currentDevice->getName();
+        const auto &deviceName = devices[i];
+        const bool isSelected = (currentDevice != nullptr) && (deviceName == currentDevice->getName());
         menu.add(MenuItem::item(isSelected ? Icons::apply : Icons::empty,
             CommandIDs::SelectAudioDevice + i, deviceName));
 
@@ -289,16 +310,21 @@ void AudioSettings::syncDevicesList(AudioDeviceManager &deviceManager)
 
 void AudioSettings::syncSampleRatesList(AudioDeviceManager &deviceManager)
 {
-    AudioIODevice *currentDevice = deviceManager.getCurrentAudioDevice();
-
-    if (currentDevice == nullptr) { return; }
-
     MenuPanel::Menu menu;
-    const Array<double> rates(currentDevice->getAvailableSampleRates());
+    this->sampleRateEditor->setText({}, dontSendNotification);
 
-    for (int i = 0; i < rates.size(); ++i)
+    auto *currentDevice = deviceManager.getCurrentAudioDevice();
+    if (currentDevice == nullptr)
     {
-        const double &sampleRate = rates[i];
+        this->sampleRateComboPrimer->updateMenu(menu);
+        return;
+    }
+
+    const auto sampleRates = currentDevice->getAvailableSampleRates();
+
+    for (int i = 0; i < sampleRates.size(); ++i)
+    {
+        const double sampleRate = sampleRates[i];
         const bool isSelected = sampleRate == currentDevice->getCurrentSampleRate();
         menu.add(MenuItem::item(isSelected ? Icons::apply : Icons::empty,
             CommandIDs::SelectSampleRate + i, String(sampleRate)));
@@ -315,12 +341,17 @@ void AudioSettings::syncSampleRatesList(AudioDeviceManager &deviceManager)
 
 void AudioSettings::syncBufferSizesList(AudioDeviceManager &deviceManager)
 {
-    AudioIODevice *currentDevice = deviceManager.getCurrentAudioDevice();
-
-    if (currentDevice == nullptr) { return; }
-
     MenuPanel::Menu menu;
-    const Array<int> bufferSizes(currentDevice->getAvailableBufferSizes());
+    this->bufferSizeEditor->setText({}, dontSendNotification);
+
+    auto *currentDevice = deviceManager.getCurrentAudioDevice();
+    if (currentDevice == nullptr)
+    {
+        this->bufferSizeComboPrimer->updateMenu(menu);
+        return;
+    }
+
+    const auto bufferSizes = currentDevice->getAvailableBufferSizes();
     const int currentBufferSize = currentDevice->getCurrentBufferSizeSamples();
 
     for (int i = 0; i < bufferSizes.size(); ++i)
