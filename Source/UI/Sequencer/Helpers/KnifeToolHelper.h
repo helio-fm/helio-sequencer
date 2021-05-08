@@ -17,7 +17,7 @@
 
 #pragma once
 
-class HybridRoll;
+class RollBase;
 class NoteComponent;
 class NoteCutPointMark;
 
@@ -27,7 +27,7 @@ class KnifeToolHelper final : public Component
 {
 public:
 
-    KnifeToolHelper(HybridRoll &roll);
+    KnifeToolHelper(RollBase &roll);
     ~KnifeToolHelper();
 
     Line<float> getLine() const noexcept;
@@ -47,7 +47,7 @@ public:
 
 private:
 
-    HybridRoll &roll;
+    RollBase &roll;
 
     Point<double> startPosition;
     Point<double> endPosition;

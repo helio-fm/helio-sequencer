@@ -19,7 +19,7 @@
 #include "TimelineMenu.h"
 #include "ProjectNode.h"
 #include "MainLayout.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "PianoTrackNode.h"
 #include "ProjectTimeline.h"
 

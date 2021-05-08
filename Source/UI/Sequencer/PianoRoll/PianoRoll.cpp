@@ -32,7 +32,7 @@
 #include "NoteNameGuidesBar.h"
 #include "NotesTuningPanel.h"
 #include "HelperRectangle.h"
-#include "HybridRollHeader.h"
+#include "RollHeader.h"
 #include "KnifeToolHelper.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
@@ -76,7 +76,7 @@
 #endif
 
 PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<AudioMonitor> clippingDetector) :
-    HybridRoll(project, viewport, clippingDetector)
+    RollBase(project, viewport, clippingDetector)
 {
     this->setComponentID(ComponentIDs::pianoRollId);
 
@@ -104,7 +104,7 @@ void PianoRoll::reloadRollContent()
     this->selection.deselectAll();
     this->patternMap.clear();
 
-    HYBRID_ROLL_BULK_REPAINT_START
+    ROLL_BATCH_REPAINT_START
 
     for (const auto *track : this->project.getTracks())
     {
@@ -113,7 +113,7 @@ void PianoRoll::reloadRollContent()
 
     this->updateBackgroundCachesAndRepaint();
 
-    HYBRID_ROLL_BULK_REPAINT_END
+    ROLL_BATCH_REPAINT_END
 }
 
 void PianoRoll::loadTrack(const MidiTrack *const track)
@@ -191,7 +191,7 @@ void PianoRoll::updateSize()
 }
 
 //===----------------------------------------------------------------------===//
-// HybridRoll
+// RollBase
 //===----------------------------------------------------------------------===//
 
 void PianoRoll::selectAll()
@@ -297,7 +297,7 @@ void PianoRoll::longTapEvent(const Point<float> &position,
     }
 
     // else - start dragging lasso, if needed:
-    HybridRoll::longTapEvent(position, target);
+    RollBase::longTapEvent(position, target);
 }
 
 void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
@@ -331,7 +331,7 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
         this->viewport.setViewPosition(int(oldViewPosition.getX()), int(newViewPositionY + 0.5f));
     }
 
-    HybridRoll::zoomRelative(origin, factor);
+    RollBase::zoomRelative(origin, factor);
 }
 
 float PianoRoll::getZoomFactorY() const noexcept
@@ -353,7 +353,7 @@ void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
     this->viewport.setViewPosition(this->viewport.getViewPositionY() -
         Globals::UI::rollHeaderHeight, maxKeyY);
 
-    HybridRoll::zoomToArea(minBeat, maxBeat);
+    RollBase::zoomToArea(minBeat, maxBeat);
 }
 
 //===----------------------------------------------------------------------===//
@@ -498,7 +498,7 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
         this->repaint();
     }
 
-    HybridRoll::onChangeMidiEvent(oldEvent, newEvent);
+    RollBase::onChangeMidiEvent(oldEvent, newEvent);
 }
 
 void PianoRoll::onAddMidiEvent(const MidiEvent &event)
@@ -553,7 +553,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
         this->repaint();
     }
 
-    HybridRoll::onAddMidiEvent(event);
+    RollBase::onAddMidiEvent(event);
 }
 
 void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
@@ -585,7 +585,7 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
         this->repaint();
     }
 
-    HybridRoll::onRemoveMidiEvent(event);
+    RollBase::onRemoveMidiEvent(event);
 }
 
 void PianoRoll::onAddClip(const Clip &clip)
@@ -661,14 +661,14 @@ void PianoRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 
 void PianoRoll::onRemoveClip(const Clip &clip)
 {
-    HYBRID_ROLL_BULK_REPAINT_START
+    ROLL_BATCH_REPAINT_START
 
     if (this->patternMap.contains(clip))
     {
         this->patternMap.erase(clip);
     }
 
-    HYBRID_ROLL_BULK_REPAINT_END
+    ROLL_BATCH_REPAINT_END
 }
 
 void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
@@ -696,7 +696,7 @@ void PianoRoll::onChangeTrackBeatRange(MidiTrack *const track)
 
 void PianoRoll::onAddTrack(MidiTrack *const track)
 {
-    HYBRID_ROLL_BULK_REPAINT_START
+    ROLL_BATCH_REPAINT_START
 
     this->loadTrack(track);
 
@@ -713,7 +713,7 @@ void PianoRoll::onAddTrack(MidiTrack *const track)
     // In case key signatures added:
     this->repaint(this->viewport.getViewArea());
 
-    HYBRID_ROLL_BULK_REPAINT_END
+    ROLL_BATCH_REPAINT_END
 }
 
 void PianoRoll::onRemoveTrack(MidiTrack *const track)
@@ -747,7 +747,7 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
 
 void PianoRoll::onChangeProjectInfo(const ProjectMetadata *info)
 {
-    // note: not calling HybridRoll::onChangeProjectInfo here,
+    // note: not calling RollBase::onChangeProjectInfo here,
     // because it only updates temperament, and we have a very own logic here
     if (this->temperament != info->getTemperament())
     {
@@ -761,7 +761,7 @@ void PianoRoll::onChangeProjectInfo(const ProjectMetadata *info)
 
 void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks, const ProjectMetadata *meta)
 {
-    HybridRoll::onReloadProjectContent(tracks, meta); // updates temperament
+    RollBase::onReloadProjectContent(tracks, meta); // updates temperament
     this->noteNameGuides->syncWithTemperament(this->temperament);
     this->reloadRollContent(); // will updateBackgroundCachesAndRepaint
     this->updateSize(); // might have changed by due to different temperament
@@ -778,7 +778,7 @@ void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks, const P
 void PianoRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->updateActiveRangeIndicator();
-    HybridRoll::onChangeProjectBeatRange(firstBeat, lastBeat);
+    RollBase::onChangeProjectBeatRange(firstBeat, lastBeat);
 }
 
 void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
@@ -934,7 +934,7 @@ void PianoRoll::mouseDown(const MouseEvent &e)
         }
     }
 
-    HybridRoll::mouseDown(e);
+    RollBase::mouseDown(e);
 }
 
 void PianoRoll::mouseDoubleClick(const MouseEvent &e)
@@ -973,7 +973,7 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
         this->continueCuttingEvents(e);
     }
 
-    HybridRoll::mouseDrag(e);
+    RollBase::mouseDrag(e);
 }
 
 void PianoRoll::mouseUp(const MouseEvent &e)
@@ -998,7 +998,7 @@ void PianoRoll::mouseUp(const MouseEvent &e)
         this->setInterceptsMouseClicks(true, true);
 
         // process lasso selection logic
-        HybridRoll::mouseUp(e);
+        RollBase::mouseUp(e);
     }
 }
 
@@ -1220,24 +1220,24 @@ void PianoRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::NotesVolumeRandom:
-        HYBRID_ROLL_BULK_REPAINT_START
+        ROLL_BATCH_REPAINT_START
         SequencerOperations::randomizeVolume(this->getLassoSelection(), 0.1f);
-        HYBRID_ROLL_BULK_REPAINT_END
+        ROLL_BATCH_REPAINT_END
         break;
     case CommandIDs::NotesVolumeFadeOut:
-        HYBRID_ROLL_BULK_REPAINT_START
+        ROLL_BATCH_REPAINT_START
         SequencerOperations::fadeOutVolume(this->getLassoSelection(), 0.35f);
-        HYBRID_ROLL_BULK_REPAINT_END
+        ROLL_BATCH_REPAINT_END
         break;
     case CommandIDs::NotesVolumeUp:
-        HYBRID_ROLL_BULK_REPAINT_START
+        ROLL_BATCH_REPAINT_START
         SequencerOperations::tuneVolume(this->getLassoSelection(), 1.f / 32.f);
-        HYBRID_ROLL_BULK_REPAINT_END
+        ROLL_BATCH_REPAINT_END
         break;
     case CommandIDs::NotesVolumeDown:
-        HYBRID_ROLL_BULK_REPAINT_START
+        ROLL_BATCH_REPAINT_START
         SequencerOperations::tuneVolume(this->getLassoSelection(), -1.f / 32.f);
-        HYBRID_ROLL_BULK_REPAINT_END
+        ROLL_BATCH_REPAINT_END
         break;
     case CommandIDs::Tuplet1:
         SequencerOperations::applyTuplets(this->getLassoSelection(), 1);
@@ -1294,7 +1294,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     }
 
-    HybridRoll::handleCommandMessage(commandId);
+    RollBase::handleCommandMessage(commandId);
 }
 
 void PianoRoll::resized()
@@ -1304,7 +1304,7 @@ void PianoRoll::resized()
         return;
     }
 
-    HYBRID_ROLL_BULK_REPAINT_START
+    ROLL_BATCH_REPAINT_START
 
     forEachEventComponent(this->patternMap, e)
     {
@@ -1323,9 +1323,9 @@ void PianoRoll::resized()
         this->knifeToolHelper->updateCutMarks();
     }
 
-    HybridRoll::resized();
+    RollBase::resized();
 
-    HYBRID_ROLL_BULK_REPAINT_END
+    ROLL_BATCH_REPAINT_END
 }
 
 void PianoRoll::paint(Graphics &g)
@@ -1383,7 +1383,7 @@ void PianoRoll::paint(Graphics &g)
 
         if (beatX >= paintEndX)
         {
-            HybridRoll::paint(g);
+            RollBase::paint(g);
             return;
         }
 
@@ -1403,7 +1403,7 @@ void PianoRoll::paint(Graphics &g)
             g.fillRect(prevBeatX, i, paintEndX - prevBeatX, periodHeight);
         }
 
-        HybridRoll::paint(g);
+        RollBase::paint(g);
     }
 }
 
@@ -1547,7 +1547,7 @@ void PianoRoll::endCuttingEventsIfNeeded()
 }
 
 //===----------------------------------------------------------------------===//
-// HybridRoll's legacy
+// RollBase's legacy
 //===----------------------------------------------------------------------===//
 
 void PianoRoll::handleAsyncUpdate()
@@ -1576,7 +1576,7 @@ void PianoRoll::handleAsyncUpdate()
 
     if (this->batchRepaintList.size() > 0)
     {
-        HYBRID_ROLL_BULK_REPAINT_START
+        ROLL_BATCH_REPAINT_START
 
         if (this->noteResizerLeft != nullptr)
         {
@@ -1588,17 +1588,17 @@ void PianoRoll::handleAsyncUpdate()
             this->noteResizerRight->updateBounds();
         }
 
-        HYBRID_ROLL_BULK_REPAINT_END
+        ROLL_BATCH_REPAINT_END
     }
 #endif
 
-    HybridRoll::handleAsyncUpdate();
+    RollBase::handleAsyncUpdate();
 }
 
 void PianoRoll::changeListenerCallback(ChangeBroadcaster *source)
 {
     this->endCuttingEventsIfNeeded();
-    HybridRoll::changeListenerCallback(source);
+    RollBase::changeListenerCallback(source);
 }
 
 void PianoRoll::updateChildrenBounds()
@@ -1620,7 +1620,7 @@ void PianoRoll::updateChildrenBounds()
         this->noteNameGuides->updateBounds();
     }
 
-    HybridRoll::updateChildrenBounds();
+    RollBase::updateChildrenBounds();
 }
 
 void PianoRoll::updateChildrenPositions()
@@ -1642,7 +1642,7 @@ void PianoRoll::updateChildrenPositions()
         this->noteNameGuides->updatePosition();
     }
 
-    HybridRoll::updateChildrenPositions();
+    RollBase::updateChildrenPositions();
 }
 
 //===----------------------------------------------------------------------===//
@@ -1727,7 +1727,7 @@ void PianoRoll::reset() {}
 
 void PianoRoll::updateBackgroundCachesAndRepaint()
 {
-    HYBRID_ROLL_BULK_REPAINT_START
+    ROLL_BATCH_REPAINT_START
 
     const auto highlightingScale = App::Config().getTemperaments()->findHighlightingFor(this->temperament);
     this->defaultHighlighting = make<HighlightingScheme>(0, highlightingScale);
@@ -1751,7 +1751,7 @@ void PianoRoll::updateBackgroundCachesAndRepaint()
 
     this->repaint(this->viewport.getViewArea());
 
-    HYBRID_ROLL_BULK_REPAINT_END
+    ROLL_BATCH_REPAINT_END
 }
 
 void PianoRoll::updateBackgroundCacheFor(const KeySignatureEvent &key)

@@ -21,7 +21,7 @@ class Autosaver;
 class Document;
 class ProjectListener;
 class SequencerLayout;
-class HybridRoll;
+class RollBase;
 class MidiEvent;
 class ProjectPage;
 class Origami;
@@ -37,7 +37,7 @@ class Clip;
 #include "DocumentOwner.h"
 #include "Transport.h"
 #include "TrackedItemsSource.h"
-#include "HybridRollEditMode.h"
+#include "RollEditMode.h"
 #include "MidiSequence.h"
 #include "CommandPaletteModel.h"
 #include "MidiTrack.h"
@@ -64,8 +64,8 @@ public:
     Transport &getTransport() const noexcept;
     ProjectMetadata *getProjectInfo() const noexcept;
     ProjectTimeline *getTimeline() const noexcept;
-    HybridRollEditMode &getEditMode() noexcept;
-    HybridRoll *getLastFocusedRoll() const;
+    RollEditMode &getEditMode() noexcept;
+    RollBase *getLastFocusedRoll() const;
     
     void importMidi(InputStream &stream);
     void exportMidi(OutputStream &stream) const;
@@ -217,7 +217,7 @@ private:
     UniquePointer<MidiRecorder> midiRecorder;
 
     UniquePointer<SequencerLayout> sequencerLayout;
-    HybridRollEditMode rollEditMode;
+    RollEditMode rollEditMode;
 
     ListenerList<ProjectListener> changeListeners;
     UniquePointer<ProjectPage> projectPage;

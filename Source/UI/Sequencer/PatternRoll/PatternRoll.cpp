@@ -31,7 +31,7 @@
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
 #include "SelectionComponent.h"
-#include "HybridRollHeader.h"
+#include "RollHeader.h"
 #include "CutPointMark.h"
 
 #include "UndoStack.h"
@@ -80,7 +80,7 @@ static void updateTrackRowPosition(Array<String> &rows,
 PatternRoll::PatternRoll(ProjectNode &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
-    HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true)
+    RollBase(parentProject, viewportRef, clippingDetector, false, false, true)
 {
     this->selectionListeners.add(new PatternRollSelectionMenuManager(&this->selection));
     this->selectionListeners.add(new PatternRollRecordingTargetController(&this->selection, parentProject));
@@ -101,7 +101,7 @@ void PatternRoll::selectAll()
 }
 
 static ClipComponent *createClipComponentFor(MidiTrack *track,
-    const Clip &clip, ProjectNode &project, HybridRoll &roll)
+    const Clip &clip, ProjectNode &project, RollBase &roll)
 {
     auto *sequence = track->getSequence();
     jassert(sequence != nullptr);
@@ -134,7 +134,7 @@ void PatternRoll::reloadRollContent()
 
     const auto grouping = this->project.getTrackGroupingMode();
 
-    HYBRID_ROLL_BULK_REPAINT_START
+    ROLL_BATCH_REPAINT_START
 
     for (auto *track : this->project.getTracks())
     {
@@ -158,7 +158,7 @@ void PatternRoll::reloadRollContent()
 
     this->repaint(this->viewport.getViewArea());
 
-    HYBRID_ROLL_BULK_REPAINT_END
+    ROLL_BATCH_REPAINT_END
 }
 
 int PatternRoll::getNumRows() const noexcept
@@ -199,7 +199,7 @@ void PatternRoll::onRecord()
         this->deselectAll();
     }
 
-    HybridRoll::onRecord();
+    RollBase::onRecord();
 }
 
 void PatternRoll::onStop()
@@ -213,11 +213,11 @@ void PatternRoll::onStop()
         }
     }
 
-    HybridRoll::onStop();
+    RollBase::onStop();
 }
 
 //===----------------------------------------------------------------------===//
-// HybridRoll
+// RollBase
 //===----------------------------------------------------------------------===//
 
 void PatternRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor cursor)
@@ -434,7 +434,7 @@ void PatternRoll::onPostRemoveClip(Pattern *const pattern) {}
 void PatternRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     const ProjectMetadata *meta)
 {
-    HybridRoll::onReloadProjectContent(tracks, meta); // updates temperament ref
+    RollBase::onReloadProjectContent(tracks, meta); // updates temperament ref
     this->reloadRollContent();
 }
 
@@ -554,7 +554,7 @@ void PatternRoll::mouseDown(const MouseEvent &e)
         }
     }
 
-    HybridRoll::mouseDown(e);
+    RollBase::mouseDown(e);
 }
 
 void PatternRoll::mouseDrag(const MouseEvent &e)
@@ -585,7 +585,7 @@ void PatternRoll::mouseDrag(const MouseEvent &e)
         this->continueCuttingClips(e);
     }
 
-    HybridRoll::mouseDrag(e);
+    RollBase::mouseDrag(e);
 }
 
 void PatternRoll::mouseUp(const MouseEvent &e)
@@ -610,7 +610,7 @@ void PatternRoll::mouseUp(const MouseEvent &e)
         this->setInterceptsMouseClicks(true, true);
 
         // process lasso selection logic
-        HybridRoll::mouseUp(e);
+        RollBase::mouseUp(e);
     }
 }
 
@@ -807,7 +807,7 @@ void PatternRoll::handleCommandMessage(int commandId)
         break;
     }
 
-    HybridRoll::handleCommandMessage(commandId);
+    RollBase::handleCommandMessage(commandId);
 }
 
 void PatternRoll::resized()
@@ -817,7 +817,7 @@ void PatternRoll::resized()
         return;
     }
 
-    HYBRID_ROLL_BULK_REPAINT_START
+    ROLL_BATCH_REPAINT_START
 
     for (const auto &e : this->clipComponents)
     {
@@ -830,9 +830,9 @@ void PatternRoll::resized()
         this->knifeToolHelper->updateBounds(true);
     }
 
-    HybridRoll::resized();
+    RollBase::resized();
 
-    HYBRID_ROLL_BULK_REPAINT_END
+    ROLL_BATCH_REPAINT_END
 }
 
 void PatternRoll::paint(Graphics &g)
@@ -840,7 +840,7 @@ void PatternRoll::paint(Graphics &g)
     g.setTiledImageFill(this->rowPattern, 0, Globals::UI::rollHeaderHeight, 1.f);
     g.fillRect(this->viewport.getViewArea());
     g.setFont({ Globals::UI::Fonts::XS }); // so that clips don't have to do it
-    HybridRoll::paint(g);
+    RollBase::paint(g);
 }
 
 void PatternRoll::parentSizeChanged()

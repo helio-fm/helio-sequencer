@@ -148,7 +148,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
     }
     
     if (e.mods.isRightButtonDown() &&
-        this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
+        this->roll.getEditMode().isMode(RollEditMode::defaultMode))
     {
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
         return;
@@ -265,7 +265,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     }
 
     if (e.mods.isRightButtonDown() &&
-        this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
+        this->roll.getEditMode().isMode(RollEditMode::defaultMode))
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
@@ -499,7 +499,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
+    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(RollEditMode::defaultMode))
     {
         this->setMouseCursor(MouseCursor::NormalCursor);
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));

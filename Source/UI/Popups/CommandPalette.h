@@ -17,7 +17,7 @@
 
 #pragma once
 
-class HybridRoll;
+class RollBase;
 class ProjectNode;
 
 #include "CommandPaletteActionsProvider.h"
@@ -35,7 +35,7 @@ class CommandPalette final : public Component,
 {
 public:
 
-    CommandPalette(ProjectNode *project, HybridRoll *roll);
+    CommandPalette(ProjectNode *project, RollBase *roll);
     ~CommandPalette();
 
     void resized() override;

@@ -16,10 +16,10 @@
 */
 
 #include "Common.h"
-#include "HybridRoll.h"
-#include "HybridRollHeader.h"
+#include "RollBase.h"
+#include "RollHeader.h"
 
-#include "HybridRollExpandMark.h"
+#include "RollExpandMark.h"
 #include "MidiEvent.h"
 #include "MidiEventComponent.h"
 #include "SelectionComponent.h"
@@ -47,7 +47,7 @@
 #include "KeySignaturesSequence.h"
 #include "TimeSignaturesSequence.h"
 #include "SequencerOperations.h"
-#include "HybridRollListener.h"
+#include "RollListener.h"
 #include "VersionControlNode.h"
 #include "MidiTrackNode.h"
 #include "Pattern.h"
@@ -70,7 +70,7 @@
 #   define ROLL_VIEW_FOLLOWS_PLAYHEAD 0
 #endif
 
-HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
+RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     WeakReference<AudioMonitor> audioMonitor,
     bool hasAnnotationsTrack,
     bool hasKeySignaturesTrack,
@@ -94,7 +94,7 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
 
     this->temperament = this->project.getProjectInfo()->getTemperament();
 
-    this->header = make<HybridRollHeader>(this->project.getTransport(), *this, this->viewport);
+    this->header = make<RollHeader>(this->project.getTransport(), *this, this->viewport);
     this->headerShadow = make<ShadowDownwards>(ShadowType::Normal);
 
     if (hasAnnotationsTrack)
@@ -140,7 +140,7 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
 
     this->addAndMakeVisible(this->lassoComponent.get());
 
-#if HYBRID_ROLL_LISTENS_LONG_TAP
+#if ROLL_LISTENS_LONG_TAP
     this->longTapController = make<LongTapController>(*this);
     this->addMouseListener(this->longTapController.get(), true); // true = listens child events as well
 #endif
@@ -168,7 +168,7 @@ HybridRoll::HybridRoll(ProjectNode &parentProject, Viewport &viewportRef,
     uiFlags->addListener(this);
 }
 
-HybridRoll::~HybridRoll()
+RollBase::~RollBase()
 {
     App::Config().getUiFlags()->removeListener(this);
 
@@ -185,22 +185,22 @@ HybridRoll::~HybridRoll()
 
     this->removeMouseListener(this->multiTouchController.get());
 
-#if HYBRID_ROLL_LISTENS_LONG_TAP
+#if ROLL_LISTENS_LONG_TAP
     this->removeMouseListener(this->longTapController.get());
 #endif
 }
 
-Viewport &HybridRoll::getViewport() const noexcept
+Viewport &RollBase::getViewport() const noexcept
 {
     return this->viewport;
 }
 
-Transport &HybridRoll::getTransport() const noexcept
+Transport &RollBase::getTransport() const noexcept
 {
     return this->project.getTransport();
 }
 
-ProjectNode &HybridRoll::getProject() const noexcept
+ProjectNode &RollBase::getProject() const noexcept
 {
     return this->project;
 }
@@ -209,7 +209,7 @@ ProjectNode &HybridRoll::getProject() const noexcept
 // Timeline events
 //===----------------------------------------------------------------------===//
 
-float HybridRoll::getPositionForNewTimelineEvent() const
+float RollBase::getPositionForNewTimelineEvent() const
 {
     const double playheadOffset = this->findPlayheadOffsetFromViewCentre();
     const bool playheadIsWithinScreen = fabs(playheadOffset) < (this->viewport.getViewWidth() / 2);
@@ -226,7 +226,7 @@ float HybridRoll::getPositionForNewTimelineEvent() const
     return this->getRoundBeatSnapByXPosition(viewCentre);
 }
 
-void HybridRoll::insertAnnotationWithinScreen(const String &annotation)
+void RollBase::insertAnnotationWithinScreen(const String &annotation)
 {
     if (AnnotationsSequence *annotationsLayer = dynamic_cast<AnnotationsSequence *>(this->project.getTimeline()->getAnnotations()))
     {
@@ -237,7 +237,7 @@ void HybridRoll::insertAnnotationWithinScreen(const String &annotation)
     }
 }
 
-void HybridRoll::insertTimeSignatureWithinScreen(int numerator, int denominator)
+void RollBase::insertTimeSignatureWithinScreen(int numerator, int denominator)
 {
     jassert(denominator == 2 || 
         denominator == 4 || denominator == 8 ||
@@ -258,7 +258,7 @@ void HybridRoll::insertTimeSignatureWithinScreen(int numerator, int denominator)
 // Custom maps
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::addOwnedMap(Component *newTrackMap)
+void RollBase::addOwnedMap(Component *newTrackMap)
 {
     this->trackMaps.add(newTrackMap);
     this->addAndMakeVisible(newTrackMap);
@@ -267,7 +267,7 @@ void HybridRoll::addOwnedMap(Component *newTrackMap)
     this->resized();
 }
 
-void HybridRoll::removeOwnedMap(Component *existingTrackMap)
+void RollBase::removeOwnedMap(Component *existingTrackMap)
 {
     if (this->trackMaps.contains(existingTrackMap))
     {
@@ -281,82 +281,82 @@ void HybridRoll::removeOwnedMap(Component *existingTrackMap)
 // Modes
 //===----------------------------------------------------------------------===//
 
-HybridRollEditMode &HybridRoll::getEditMode() noexcept
+RollEditMode &RollBase::getEditMode() noexcept
 {
     return this->project.getEditMode();
 }
 
-bool HybridRoll::isInSelectionMode() const
+bool RollBase::isInSelectionMode() const
 {
-    return (this->project.getEditMode().isMode(HybridRollEditMode::selectionMode));
+    return (this->project.getEditMode().isMode(RollEditMode::selectionMode));
 }
 
-bool HybridRoll::isInDragMode() const
+bool RollBase::isInDragMode() const
 {
-    return (this->project.getEditMode().isMode(HybridRollEditMode::dragMode));
+    return (this->project.getEditMode().isMode(RollEditMode::dragMode));
 }
 
 //===----------------------------------------------------------------------===//
 // Temperament info
 //===----------------------------------------------------------------------===//
 
-int HybridRoll::getNumKeys() const noexcept
+int RollBase::getNumKeys() const noexcept
 {
     return this->temperament->getNumKeys();
 }
 
-int HybridRoll::getPeriodSize() const noexcept
+int RollBase::getPeriodSize() const noexcept
 {
     return this->temperament->getPeriodSize();
 }
 
-Note::Key HybridRoll::getMiddleC() const noexcept
+Note::Key RollBase::getMiddleC() const noexcept
 {
     return this->temperament->getMiddleC();
 }
 
-Temperament::Ptr HybridRoll::getTemperament() const noexcept
+Temperament::Ptr RollBase::getTemperament() const noexcept
 {
     return this->temperament;
 }
 
 //===----------------------------------------------------------------------===//
-// HybridRoll listeners management
+// RollBase listeners management
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::addRollListener(HybridRollListener *listener)
+void RollBase::addRollListener(RollListener *listener)
 {
     jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
     this->listeners.add(listener);
 }
 
-void HybridRoll::removeRollListener(HybridRollListener *listener)
+void RollBase::removeRollListener(RollListener *listener)
 {
     jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
     this->listeners.remove(listener);
 }
 
-void HybridRoll::removeAllRollListeners()
+void RollBase::removeAllRollListeners()
 {
     jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
     this->listeners.clear();
 }
 
-void HybridRoll::broadcastRollMoved()
+void RollBase::broadcastRollMoved()
 {
-    this->listeners.call(&HybridRollListener::onMidiRollMoved, this);
+    this->listeners.call(&RollListener::onMidiRollMoved, this);
 }
 
-void HybridRoll::broadcastRollResized()
+void RollBase::broadcastRollResized()
 {
-    this->listeners.call(&HybridRollListener::onMidiRollResized, this);
+    this->listeners.call(&RollListener::onMidiRollResized, this);
 }
 
 //===----------------------------------------------------------------------===//
 // Input Listeners
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::longTapEvent(const Point<float> &position,
+void RollBase::longTapEvent(const Point<float> &position,
     const WeakReference<Component> &target)
 {
     if (this->multiTouchController->hasMultitouch())
@@ -378,32 +378,32 @@ void HybridRoll::longTapEvent(const Point<float> &position,
     }
 }
 
-void HybridRoll::multiTouchZoomEvent(const Point<float> &origin, const Point<float> &zoom)
+void RollBase::multiTouchZoomEvent(const Point<float> &origin, const Point<float> &zoom)
 {
     this->smoothPanController->cancelPan();
     this->smoothZoomController->zoomRelative(origin, zoom);
 }
 
-void HybridRoll::multiTouchPanEvent(const Point<float> &offset)
+void RollBase::multiTouchPanEvent(const Point<float> &offset)
 {
     //this->smoothZoomController->cancelZoom();
     const auto absOffset = this->viewport.getViewPosition() + offset.toInt();
     this->panByOffset(absOffset.x, absOffset.y);
 }
 
-void HybridRoll::multiTouchCancelZoom()
+void RollBase::multiTouchCancelZoom()
 {
     this->clickAnchor = Desktop::getInstance().getMainMouseSource().getScreenPosition();
     this->smoothZoomController->cancelZoom();
 }
 
-void HybridRoll::multiTouchCancelPan()
+void RollBase::multiTouchCancelPan()
 {
     this->clickAnchor = Desktop::getInstance().getMainMouseSource().getScreenPosition();
     this->smoothPanController->cancelPan();
 }
 
-Point<float> HybridRoll::getMultiTouchOrigin(const Point<float> &from)
+Point<float> RollBase::getMultiTouchOrigin(const Point<float> &from)
 {
     return (from - this->viewport.getViewPosition().toFloat());
 }
@@ -429,7 +429,7 @@ inline float getNumBeatsToExpand(float beatWidth)
     //DBG(numBeatsToExpand);
 }
 
-bool HybridRoll::panByOffset(int offsetX, int offsetY)
+bool RollBase::panByOffset(int offsetX, int offsetY)
 {
     this->stopFollowingPlayhead();
 
@@ -442,7 +442,7 @@ bool HybridRoll::panByOffset(int offsetX, int offsetY)
         this->project.broadcastChangeViewBeatRange(this->firstBeat, this->lastBeat + numBeatsToExpand);
         this->viewport.setViewPosition(offsetX, offsetY); // after setLastBeat
         const float beatCloseToTheRight = this->lastBeat - numBeatsToExpand;
-        this->header->addAndMakeVisible(new HybridRollExpandMark(*this, beatCloseToTheRight, int(numBeatsToExpand)));
+        this->header->addAndMakeVisible(new RollExpandMark(*this, beatCloseToTheRight, int(numBeatsToExpand)));
     }
     else if (stretchLeft)
     {
@@ -451,7 +451,7 @@ bool HybridRoll::panByOffset(int offsetX, int offsetY)
         this->clickAnchor.addXY(deltaW, 0); // an ugly hack
         this->project.broadcastChangeViewBeatRange(this->firstBeat - numBeatsToExpand, this->lastBeat);
         this->viewport.setViewPosition(offsetX + int(deltaW), offsetY); // after setFirstBeat
-        this->header->addAndMakeVisible(new HybridRollExpandMark(*this, this->firstBeat, int(numBeatsToExpand)));
+        this->header->addAndMakeVisible(new RollExpandMark(*this, this->firstBeat, int(numBeatsToExpand)));
     }
     else
     {
@@ -463,14 +463,14 @@ bool HybridRoll::panByOffset(int offsetX, int offsetY)
     return stretchRight || stretchLeft;
 }
 
-void HybridRoll::panProportionally(float absX, float absY)
+void RollBase::panProportionally(float absX, float absY)
 {
     this->stopFollowingPlayhead();
     this->viewport.setViewPositionProportionately(absX, absY);
     this->updateChildrenPositions();
 }
 
-Point<int> HybridRoll::getPanOffset() const
+Point<int> RollBase::getPanOffset() const
 {
     return this->viewport.getViewPosition();
 }
@@ -479,26 +479,26 @@ Point<int> HybridRoll::getPanOffset() const
 // SmoothZoomListener
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::startSmoothZoom(const Point<float> &origin, const Point<float> &factor)
+void RollBase::startSmoothZoom(const Point<float> &origin, const Point<float> &factor)
 {
     this->smoothZoomController->zoomRelative(origin, factor);
 }
 
-void HybridRoll::zoomInImpulse(float factor)
+void RollBase::zoomInImpulse(float factor)
 {
     const auto origin = this->viewport.getLocalBounds().getCentre();
     const Point<float> f(0.15f * factor, 0.15f * factor);
     this->startSmoothZoom(origin.toFloat(), f);
 }
 
-void HybridRoll::zoomOutImpulse(float factor)
+void RollBase::zoomOutImpulse(float factor)
 {
     const auto origin = this->viewport.getLocalBounds().getCentre();
     const Point<float> f(-0.15f * factor, -0.15f * factor);
     this->startSmoothZoom(origin.toFloat(), f);
 }
 
-void HybridRoll::zoomToArea(float minBeat, float maxBeat)
+void RollBase::zoomToArea(float minBeat, float maxBeat)
 {
     jassert(maxBeat > minBeat);
     jassert(minBeat >= this->getFirstBeat());
@@ -517,7 +517,7 @@ void HybridRoll::zoomToArea(float minBeat, float maxBeat)
     this->updateChildrenPositions();
 }
 
-void HybridRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
+void RollBase::zoomRelative(const Point<float> &origin, const Point<float> &factor)
 {
     this->stopFollowingPlayhead();
 
@@ -544,14 +544,14 @@ void HybridRoll::zoomRelative(const Point<float> &origin, const Point<float> &fa
     this->updateChildrenPositions();
 }
 
-float HybridRoll::getZoomFactorX() const noexcept
+float RollBase::getZoomFactorX() const noexcept
 {
     const float viewWidth = float(this->viewport.getViewWidth());
     const float beatsOnScreen = (viewWidth / this->beatWidth);
     return beatsOnScreen / this->getNumBeats();
 }
 
-float HybridRoll::getZoomFactorY() const noexcept
+float RollBase::getZoomFactorY() const noexcept
 {
     return 1.f;
 }
@@ -560,18 +560,18 @@ float HybridRoll::getZoomFactorY() const noexcept
 // Accessors
 //===----------------------------------------------------------------------===//
 
-int HybridRoll::getPlayheadPositionByBeat(double targetBeat, double parentWidth) const
+int RollBase::getPlayheadPositionByBeat(double targetBeat, double parentWidth) const
 {
     const double widthRatio = parentWidth / double(this->getWidth());
     return int((targetBeat - this->firstBeat) * this->beatWidth * widthRatio);
 }
 
-int HybridRoll::getXPositionByBeat(float targetBeat) const noexcept
+int RollBase::getXPositionByBeat(float targetBeat) const noexcept
 {
     return int((targetBeat - this->firstBeat) * this->beatWidth);
 }
 
-float HybridRoll::getFloorBeatSnapByXPosition(int x) const noexcept
+float RollBase::getFloorBeatSnapByXPosition(int x) const noexcept
 {
     float d = FLT_MAX;
     float targetX = float(x);
@@ -588,7 +588,7 @@ float HybridRoll::getFloorBeatSnapByXPosition(int x) const noexcept
     return this->getBeatByXPosition(targetX);
 }
 
-float HybridRoll::getRoundBeatSnapByXPosition(int x) const
+float RollBase::getRoundBeatSnapByXPosition(int x) const
 {
     float d = FLT_MAX;
     float targetX = float(x);
@@ -606,7 +606,7 @@ float HybridRoll::getRoundBeatSnapByXPosition(int x) const
     return this->getBeatByXPosition(targetX);
 }
 
-void HybridRoll::setBeatRange(float first, float last)
+void RollBase::setBeatRange(float first, float last)
 {
     if (this->lastBeat == last && this->firstBeat == first)
     {
@@ -618,7 +618,7 @@ void HybridRoll::setBeatRange(float first, float last)
     this->updateBounds();
 }
 
-void HybridRoll::setBeatWidth(float newBeatWidth)
+void RollBase::setBeatWidth(float newBeatWidth)
 {
     if (this->beatWidth == newBeatWidth ||
         newBeatWidth > 360 || newBeatWidth <= 0)
@@ -630,7 +630,7 @@ void HybridRoll::setBeatWidth(float newBeatWidth)
     this->updateBounds();
 }
 
-float HybridRoll::getMinVisibleBeatForCurrentZoomLevel() const
+float RollBase::getMinVisibleBeatForCurrentZoomLevel() const
 {
     // min visible beat should start from 1/16, which is the max roll resolution
     // pow-of-2     beat width   min note length
@@ -654,7 +654,7 @@ float HybridRoll::getMinVisibleBeatForCurrentZoomLevel() const
     return minBeat;
 }
 
-void HybridRoll::computeVisibleBeatLines()
+void RollBase::computeVisibleBeatLines()
 {
     static constexpr auto minBarWidth = 14;
     static constexpr auto minBeatWidth = 8;
@@ -807,7 +807,7 @@ void HybridRoll::computeVisibleBeatLines()
 // Alternative keydown modes (space for drag, etc.)
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::setSpaceDraggingMode(bool dragMode)
+void RollBase::setSpaceDraggingMode(bool dragMode)
 {
     if (this->spaceDragMode == dragMode)
     {
@@ -821,7 +821,7 @@ void HybridRoll::setSpaceDraggingMode(bool dragMode)
 
     if (dragMode)
     {
-        this->project.getEditMode().setMode(HybridRollEditMode::dragMode, true);
+        this->project.getEditMode().setMode(RollEditMode::dragMode, true);
     }
     else
     {
@@ -829,7 +829,7 @@ void HybridRoll::setSpaceDraggingMode(bool dragMode)
     }
 }
 
-bool HybridRoll::isUsingSpaceDraggingMode() const
+bool RollBase::isUsingSpaceDraggingMode() const
 {
     return this->spaceDragMode;
 }
@@ -838,12 +838,12 @@ bool HybridRoll::isUsingSpaceDraggingMode() const
 // LassoSource
 //===----------------------------------------------------------------------===//
 
-Lasso &HybridRoll::getLassoSelection()
+Lasso &RollBase::getLassoSelection()
 {
     return this->selection;
 }
 
-void HybridRoll::selectEvent(SelectableComponent *event, bool shouldClearAllOthers)
+void RollBase::selectEvent(SelectableComponent *event, bool shouldClearAllOthers)
 {
     if (shouldClearAllOthers)
     {
@@ -856,17 +856,17 @@ void HybridRoll::selectEvent(SelectableComponent *event, bool shouldClearAllOthe
     }
 }
 
-void HybridRoll::deselectEvent(SelectableComponent *event)
+void RollBase::deselectEvent(SelectableComponent *event)
 {
     this->selection.deselect(event);
 }
 
-void HybridRoll::deselectAll()
+void RollBase::deselectAll()
 {
     this->selection.deselectAll();
 }
 
-SelectionComponent *HybridRoll::getSelectionComponent() const noexcept
+SelectionComponent *RollBase::getSelectionComponent() const noexcept
 {
     return this->lassoComponent.get();
 }
@@ -875,7 +875,7 @@ SelectionComponent *HybridRoll::getSelectionComponent() const noexcept
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::onChangeMidiEvent(const MidiEvent &event, const MidiEvent &newEvent)
+void RollBase::onChangeMidiEvent(const MidiEvent &event, const MidiEvent &newEvent)
 {
     // Time signatures have changed, need to repaint
     if (event.isTypeOf(MidiEvent::Type::TimeSignature))
@@ -885,7 +885,7 @@ void HybridRoll::onChangeMidiEvent(const MidiEvent &event, const MidiEvent &newE
     }
 }
 
-void HybridRoll::onAddMidiEvent(const MidiEvent &event)
+void RollBase::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Type::TimeSignature))
     {
@@ -894,7 +894,7 @@ void HybridRoll::onAddMidiEvent(const MidiEvent &event)
     }
 }
 
-void HybridRoll::onRemoveMidiEvent(const MidiEvent &event)
+void RollBase::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Type::TimeSignature))
     {
@@ -903,7 +903,7 @@ void HybridRoll::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void HybridRoll::onChangeProjectBeatRange(float newFirstBeat, float newLastBeat)
+void RollBase::onChangeProjectBeatRange(float newFirstBeat, float newLastBeat)
 {
     jassert(this->projectFirstBeat != newFirstBeat || this->projectLastBeat != newLastBeat);
 
@@ -921,7 +921,7 @@ void HybridRoll::onChangeProjectBeatRange(float newFirstBeat, float newLastBeat)
     this->setBeatRange(rollFirstBeat, rollLastBeat);
 }
 
-void HybridRoll::onChangeViewBeatRange(float newFirstBeat, float newLastBeat)
+void RollBase::onChangeViewBeatRange(float newFirstBeat, float newLastBeat)
 {
     jassert(newFirstBeat < newLastBeat);
     const auto viewPos = this->viewport.getViewPosition();
@@ -951,7 +951,7 @@ void HybridRoll::onChangeViewBeatRange(float newFirstBeat, float newLastBeat)
     }
 }
 
-void HybridRoll::onChangeProjectInfo(const ProjectMetadata *info)
+void RollBase::onChangeProjectInfo(const ProjectMetadata *info)
 {
     if (this->temperament != info->getTemperament())
     {
@@ -959,7 +959,7 @@ void HybridRoll::onChangeProjectInfo(const ProjectMetadata *info)
     }
 }
 
-void HybridRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+void RollBase::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     const ProjectMetadata *meta)
 {
     this->firstBeat = 0.f;
@@ -967,7 +967,7 @@ void HybridRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     this->temperament = meta->getTemperament();
 }
 
-void HybridRoll::onBeforeReloadProjectContent()
+void RollBase::onBeforeReloadProjectContent()
 {
     this->selection.deselectAll();
 }
@@ -976,7 +976,7 @@ void HybridRoll::onBeforeReloadProjectContent()
 // Component
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::mouseDown(const MouseEvent &e)
+void RollBase::mouseDown(const MouseEvent &e)
 {
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
@@ -1004,7 +1004,7 @@ void HybridRoll::mouseDown(const MouseEvent &e)
     }
 }
 
-void HybridRoll::mouseDrag(const MouseEvent &e)
+void RollBase::mouseDrag(const MouseEvent &e)
 {
     this->contextMenuController->cancelIfPending();
 
@@ -1028,7 +1028,7 @@ void HybridRoll::mouseDrag(const MouseEvent &e)
     }
 }
 
-void HybridRoll::mouseUp(const MouseEvent &e)
+void RollBase::mouseUp(const MouseEvent &e)
 {
     // I quite disliked it:
     //if (this->contextMenuController->isPending() &&
@@ -1069,7 +1069,7 @@ void HybridRoll::mouseUp(const MouseEvent &e)
     }
 }
 
-void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
+void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
     // TODO check if any operation is in progress (lasso drag, knife tool drag, etc)
 
@@ -1130,27 +1130,27 @@ void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails
     }
 }
 
-void HybridRoll::handleCommandMessage(int commandId)
+void RollBase::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
     case CommandIDs::EditModeDefault:
-        this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
+        this->project.getEditMode().setMode(RollEditMode::defaultMode);
         break;
     case CommandIDs::EditModeDraw:
-        this->project.getEditMode().setMode(HybridRollEditMode::drawMode);
+        this->project.getEditMode().setMode(RollEditMode::drawMode);
         break;
     case CommandIDs::EditModePan:
-        this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
+        this->project.getEditMode().setMode(RollEditMode::dragMode);
         break;
     case CommandIDs::EditModeSelect:
-        this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
+        this->project.getEditMode().setMode(RollEditMode::selectionMode);
         break;
     case CommandIDs::EditModeKnife:
-        this->project.getEditMode().setMode(HybridRollEditMode::knifeMode);
+        this->project.getEditMode().setMode(RollEditMode::knifeMode);
         break;
     case CommandIDs::EditModeEraser:
-        this->project.getEditMode().setMode(HybridRollEditMode::eraserMode);
+        this->project.getEditMode().setMode(RollEditMode::eraserMode);
         break;
     case CommandIDs::Undo:
         if (this->project.getUndoStack()->canUndo())
@@ -1356,12 +1356,12 @@ void HybridRoll::handleCommandMessage(int commandId)
     }
 }
 
-void HybridRoll::resized()
+void RollBase::resized()
 {
     this->updateChildrenBounds();
 }
 
-void HybridRoll::paint(Graphics &g)
+void RollBase::paint(Graphics &g)
 {
     this->computeVisibleBeatLines();
 
@@ -1397,7 +1397,7 @@ void HybridRoll::paint(Graphics &g)
 // Playhead::Listener
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::onPlayheadMoved(int playheadX)
+void RollBase::onPlayheadMoved(int playheadX)
 {
     if (this->shouldFollowPlayhead)
     {
@@ -1418,7 +1418,7 @@ void HybridRoll::onPlayheadMoved(int playheadX)
 // VolumeCallback::ClippingListener
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::onClippingWarning()
+void RollBase::onClippingWarning()
 {
     if (! this->getTransport().isPlaying())
     {
@@ -1445,12 +1445,12 @@ void HybridRoll::onClippingWarning()
     this->clippingIndicators.add(newMarker.release());
 }
 
-void HybridRoll::resetAllClippingIndicators()
+void RollBase::resetAllClippingIndicators()
 {
     this->clippingIndicators.clear();
 }
 
-void HybridRoll::onOversaturationWarning()
+void RollBase::onOversaturationWarning()
 {
     if (! this->getTransport().isPlaying())
     {
@@ -1477,7 +1477,7 @@ void HybridRoll::onOversaturationWarning()
     this->oversaturationIndicators.add(newMarker.release());
 }
 
-void HybridRoll::resetAllOversaturationIndicators()
+void RollBase::resetAllOversaturationIndicators()
 {
     this->oversaturationIndicators.clear();
 }
@@ -1486,7 +1486,7 @@ void HybridRoll::resetAllOversaturationIndicators()
 // UserInterfaceFlags::Listener
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::onUiAnimationsFlagChanged(bool enabled)
+void RollBase::onUiAnimationsFlagChanged(bool enabled)
 {
 #if PLATFORM_DESKTOP
     this->smoothPanController->setAnimationsEnabled(enabled);
@@ -1499,7 +1499,7 @@ void HybridRoll::onUiAnimationsFlagChanged(bool enabled)
 #endif
 }
 
-void HybridRoll::onMouseWheelFlagsChanged(UserInterfaceFlags::MouseWheelFlags flags)
+void RollBase::onMouseWheelFlagsChanged(UserInterfaceFlags::MouseWheelFlags flags)
 {
     this->mouseWheelFlags = flags;
 }
@@ -1508,28 +1508,28 @@ void HybridRoll::onMouseWheelFlagsChanged(UserInterfaceFlags::MouseWheelFlags fl
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::onSeek(float beatPosition, double currentTimeMs, double totalTimeMs)
+void RollBase::onSeek(float beatPosition, double currentTimeMs, double totalTimeMs)
 {
     this->lastTransportBeat = beatPosition;
 }
 
-void HybridRoll::onLoopModeChanged(bool hasLoop, float start, float end)
+void RollBase::onLoopModeChanged(bool hasLoop, float start, float end)
 {
     this->header->showLoopMode(hasLoop, start, end);
 }
 
-void HybridRoll::onPlay()
+void RollBase::onPlay()
 {
     this->resetAllClippingIndicators();
     this->resetAllOversaturationIndicators();
 }
 
-void HybridRoll::onRecord()
+void RollBase::onRecord()
 {
     this->header->showRecordingMode(true);
 }
 
-void HybridRoll::onStop()
+void RollBase::onStop()
 {
     this->header->showRecordingMode(false);
 
@@ -1539,7 +1539,7 @@ void HybridRoll::onStop()
 #endif
 }
 
-void HybridRoll::startFollowingPlayhead()
+void RollBase::startFollowingPlayhead()
 {
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
     this->playheadOffset = this->findPlayheadOffsetFromViewCentre();
@@ -1547,7 +1547,7 @@ void HybridRoll::startFollowingPlayhead()
 #endif
 }
 
-void HybridRoll::stopFollowingPlayhead()
+void RollBase::stopFollowingPlayhead()
 {
     if (! this->shouldFollowPlayhead)
     {
@@ -1560,7 +1560,7 @@ void HybridRoll::stopFollowingPlayhead()
 #endif
 }
 
-void HybridRoll::scrollToPlayheadPosition()
+void RollBase::scrollToPlayheadPosition()
 {
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
     this->startFollowingPlayhead();
@@ -1578,12 +1578,12 @@ void HybridRoll::scrollToPlayheadPosition()
 // AsyncUpdater
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::handleAsyncUpdate()
+void RollBase::handleAsyncUpdate()
 {
     // batch repaint & resize stuff
     if (this->batchRepaintList.size() > 0)
     {
-        HYBRID_ROLL_BULK_REPAINT_START
+        ROLL_BATCH_REPAINT_START
 
         for (int i = 0; i < this->batchRepaintList.size(); ++i)
         {
@@ -1595,7 +1595,7 @@ void HybridRoll::handleAsyncUpdate()
             }
         }
 
-        HYBRID_ROLL_BULK_REPAINT_END
+        ROLL_BATCH_REPAINT_END
 
         this->batchRepaintList.clearQuick();
     }
@@ -1622,14 +1622,14 @@ void HybridRoll::handleAsyncUpdate()
 #endif
 }
 
-double HybridRoll::findPlayheadOffsetFromViewCentre() const
+double RollBase::findPlayheadOffsetFromViewCentre() const
 {
     const int playheadX = this->getPlayheadPositionByBeat(this->lastTransportBeat.get(), double(this->getWidth()));
     const int viewportCentreX = this->viewport.getViewPositionX() + this->viewport.getViewWidth() / 2;
     return double(playheadX) - double(viewportCentreX);
 }
 
-void HybridRoll::triggerBatchRepaintFor(FloatBoundsComponent *target)
+void RollBase::triggerBatchRepaintFor(FloatBoundsComponent *target)
 {
     this->batchRepaintList.add(target);
     this->triggerAsyncUpdate();
@@ -1639,7 +1639,7 @@ void HybridRoll::triggerBatchRepaintFor(FloatBoundsComponent *target)
 // Timer
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::hiResTimerCallback()
+void RollBase::hiResTimerCallback()
 {
     if (fabs(this->playheadOffset.get()) < 0.1)
     {
@@ -1653,14 +1653,14 @@ void HybridRoll::hiResTimerCallback()
 // Events check
 //===----------------------------------------------------------------------===//
 
-bool HybridRoll::isViewportZoomEvent(const MouseEvent &e) const
+bool RollBase::isViewportZoomEvent(const MouseEvent &e) const
 {
     if (this->project.getEditMode().forbidsViewportZooming())   { return false; }
     if (this->project.getEditMode().forcesViewportZooming())    { return true; }
     return false;
 }
 
-bool HybridRoll::isViewportDragEvent(const MouseEvent &e) const
+bool RollBase::isViewportDragEvent(const MouseEvent &e) const
 {
     if (this->project.getEditMode().forbidsViewportDragging())  { return false; }
     if (this->project.getEditMode().forcesViewportDragging())   { return true; }
@@ -1668,7 +1668,7 @@ bool HybridRoll::isViewportDragEvent(const MouseEvent &e) const
     return (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown());
 }
 
-bool HybridRoll::isAddEvent(const MouseEvent &e) const
+bool RollBase::isAddEvent(const MouseEvent &e) const
 {
     if (e.mods.isRightButtonDown())                         { return false; }
     if (this->project.getEditMode().forbidsAddingEvents())  { return false; }
@@ -1676,7 +1676,7 @@ bool HybridRoll::isAddEvent(const MouseEvent &e) const
     return false;
 }
 
-bool HybridRoll::isLassoEvent(const MouseEvent &e) const
+bool RollBase::isLassoEvent(const MouseEvent &e) const
 {
     if (this->project.getEditMode().forbidsSelectionMode()) { return false; }
     if (this->project.getEditMode().forcesSelectionMode())  { return true; }
@@ -1684,7 +1684,7 @@ bool HybridRoll::isLassoEvent(const MouseEvent &e) const
     return e.mods.isLeftButtonDown();
 }
 
-bool HybridRoll::isKnifeToolEvent(const MouseEvent &e) const
+bool RollBase::isKnifeToolEvent(const MouseEvent &e) const
 {
     if (e.mods.isRightButtonDown())                         { return false; }
     if (this->project.getEditMode().forbidsCuttingEvents()) { return false; }
@@ -1692,13 +1692,13 @@ bool HybridRoll::isKnifeToolEvent(const MouseEvent &e) const
     return false;
 }
 
-void HybridRoll::resetDraggingAnchors()
+void RollBase::resetDraggingAnchors()
 {
     this->viewportAnchor = this->viewport.getViewPosition();
     this->clickAnchor = Desktop::getInstance().getMainMouseSource().getScreenPosition();
 }
 
-void HybridRoll::continueDragging(const MouseEvent &e)
+void RollBase::continueDragging(const MouseEvent &e)
 {
     this->draggedDistance = e.getDistanceFromDragStart();
     this->smoothZoomController->cancelZoom();
@@ -1710,7 +1710,7 @@ void HybridRoll::continueDragging(const MouseEvent &e)
 // Zooming
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::startZooming()
+void RollBase::startZooming()
 {
     this->smoothPanController->cancelPan();
     this->clickAnchor = Desktop::getInstance().getMainMouseSource().getScreenPosition();
@@ -1730,7 +1730,7 @@ void HybridRoll::startZooming()
     Desktop::getInstance().getMainMouseSource().enableUnboundedMouseMovement(true, false);
 }
 
-void HybridRoll::continueZooming(const MouseEvent &e)
+void RollBase::continueZooming(const MouseEvent &e)
 {
     Desktop::getInstance().getMainMouseSource().setScreenPosition(e.getMouseDownScreenPosition().toFloat());
 
@@ -1742,7 +1742,7 @@ void HybridRoll::continueZooming(const MouseEvent &e)
     this->smoothZoomController->zoomRelative(clickOffset, zoomOffset);
 }
 
-void HybridRoll::endZooming()
+void RollBase::endZooming()
 {
     Desktop::getInstance().getMainMouseSource().enableUnboundedMouseMovement(false, false);
 
@@ -1750,7 +1750,7 @@ void HybridRoll::endZooming()
     this->zoomMarker = nullptr;
 }
 
-Point<float> HybridRoll::getMouseOffset(Point<float> mouseScreenPosition) const
+Point<float> RollBase::getMouseOffset(Point<float> mouseScreenPosition) const
 {
     const int w = this->getWidth() - this->viewport.getWidth();
 
@@ -1769,7 +1769,7 @@ Point<float> HybridRoll::getMouseOffset(Point<float> mouseScreenPosition) const
     return Point<float>(x, y);
 }
 
-Point<int> HybridRoll::getDefaultPositionForPopup() const
+Point<int> RollBase::getDefaultPositionForPopup() const
 {
     // a point where pop-ups will appear when keypress is hit or toolbar button is clicked
     // on desktop, if mouse position is within a roll, use it, instead, use main layout centre
@@ -1787,7 +1787,7 @@ Point<int> HybridRoll::getDefaultPositionForPopup() const
     return App::Layout().getBoundsForPopups().getCentre();
 }
 
-void HybridRoll::updateBounds()
+void RollBase::updateBounds()
 {
     const int newWidth = int(this->getNumBeats() * this->beatWidth);
 
@@ -1797,9 +1797,9 @@ void HybridRoll::updateBounds()
     }
 }
 
-void HybridRoll::updateChildrenBounds()
+void RollBase::updateChildrenBounds()
 {
-    HYBRID_ROLL_BULK_REPAINT_START
+    ROLL_BATCH_REPAINT_START
 
     const int &viewHeight = this->viewport.getViewHeight();
     const int &viewWidth = this->viewport.getViewWidth();
@@ -1843,12 +1843,12 @@ void HybridRoll::updateChildrenBounds()
 
     this->broadcastRollResized();
 
-    HYBRID_ROLL_BULK_REPAINT_END
+    ROLL_BATCH_REPAINT_END
 }
 
-void HybridRoll::updateChildrenPositions()
+void RollBase::updateChildrenPositions()
 {
-    HYBRID_ROLL_BULK_REPAINT_START
+    ROLL_BATCH_REPAINT_START
 
     const int &viewHeight = this->viewport.getViewHeight();
     const int &viewX = this->viewport.getViewPositionX();
@@ -1882,14 +1882,14 @@ void HybridRoll::updateChildrenPositions()
 
     this->broadcastRollMoved();
 
-    HYBRID_ROLL_BULK_REPAINT_END
+    ROLL_BATCH_REPAINT_END
 }
 
 //===----------------------------------------------------------------------===//
 // ChangeListener: edit mode changed
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::changeListenerCallback(ChangeBroadcaster *source)
+void RollBase::changeListenerCallback(ChangeBroadcaster *source)
 {
     if (this->lassoComponent->isDragging())
     {
@@ -1899,10 +1899,10 @@ void HybridRoll::changeListenerCallback(ChangeBroadcaster *source)
     this->applyEditModeUpdates();
 }
 
-void HybridRoll::applyEditModeUpdates()
+void RollBase::applyEditModeUpdates()
 {
     if (this->isUsingSpaceDraggingMode() &&
-        !(this->project.getEditMode().isMode(HybridRollEditMode::dragMode)))
+        !(this->project.getEditMode().isMode(RollEditMode::dragMode)))
     {
         this->setSpaceDraggingMode(false);
     }

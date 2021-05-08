@@ -16,10 +16,10 @@
 */
 
 #include "Common.h"
-#include "HybridRollExpandMark.h"
-#include "HybridRoll.h"
+#include "RollExpandMark.h"
+#include "RollBase.h"
 
-HybridRollExpandMark::HybridRollExpandMark(HybridRoll &parentRoll, float targetBeat, int numBeatsToTake) :
+RollExpandMark::RollExpandMark(RollBase &parentRoll, float targetBeat, int numBeatsToTake) :
     roll(parentRoll),
     beat(targetBeat),
     numBeats(numBeatsToTake)
@@ -32,32 +32,32 @@ HybridRollExpandMark::HybridRollExpandMark(HybridRoll &parentRoll, float targetB
     this->startTimerHz(60);
 }
 
-HybridRollExpandMark::~HybridRollExpandMark() = default;
+RollExpandMark::~RollExpandMark() = default;
 
-void HybridRollExpandMark::paint(Graphics &g)
+void RollExpandMark::paint(Graphics &g)
 {
     g.setColour(findDefaultColour(Label::textColourId).withAlpha(0.15f * this->alpha));
     g.fillRect(this->getLocalBounds());
 }
 
-void HybridRollExpandMark::resized()
+void RollExpandMark::resized()
 {
     constexpr auto iconSize = 16;
     this->plusImage->setBounds((this->getWidth() / 2) - (iconSize / 2),
         (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
 }
 
-void HybridRollExpandMark::parentHierarchyChanged()
+void RollExpandMark::parentHierarchyChanged()
 {
     this->updatePosition();
 }
 
-void HybridRollExpandMark::parentSizeChanged()
+void RollExpandMark::parentSizeChanged()
 {
     this->updatePosition();
 }
 
-void HybridRollExpandMark::updatePosition()
+void RollExpandMark::updatePosition()
 {
     const float beatOffset = this->beat - this->roll.getFirstBeat();
     const int xOffset = int(beatOffset * this->roll.getBeatWidth());
@@ -65,7 +65,7 @@ void HybridRollExpandMark::updatePosition()
     this->setBounds(xOffset, 0, newWidth, this->getParentHeight());
 }
 
-void HybridRollExpandMark::timerCallback()
+void RollExpandMark::timerCallback()
 {
     this->alpha *= 0.945f;
 

@@ -24,11 +24,11 @@
 #include "MidiSequence.h"
 #include "AutomationSequence.h"
 #include "PlayerThread.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "MidiTrack.h"
 
 AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectNode &project,
-    MidiSequence *sequence, HybridRoll &roll, const Clip &clip) :
+    MidiSequence *sequence, RollBase &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),
     sequence(sequence),

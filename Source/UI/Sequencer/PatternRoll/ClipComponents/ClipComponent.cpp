@@ -30,7 +30,7 @@ static Pattern *getSelectionPattern(SelectionProxyArray::Ptr selection)
     return firstEvent.getPattern();
 }
 
-ClipComponent::ClipComponent(HybridRoll &editor, const Clip &clip) :
+ClipComponent::ClipComponent(RollBase &editor, const Clip &clip) :
     MidiEventComponent(editor),
     clip(clip),
     anchor(clip)
@@ -112,7 +112,7 @@ void ClipComponent::mouseDoubleClick(const MouseEvent &e)
 void ClipComponent::mouseDown(const MouseEvent &e)
 {
     if (e.mods.isRightButtonDown() &&
-        this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
+        this->roll.getEditMode().isMode(RollEditMode::defaultMode))
     {
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
         //return;
@@ -149,7 +149,7 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
     }
 
     if (e.mods.isRightButtonDown() &&
-        this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
+        this->roll.getEditMode().isMode(RollEditMode::defaultMode))
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
@@ -228,7 +228,7 @@ void ClipComponent::mouseUp(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
+    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(RollEditMode::defaultMode))
     {
         this->setMouseCursor(MouseCursor::NormalCursor);
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));

@@ -17,7 +17,7 @@
 
 #pragma once
 
-class HybridRoll;
+class RollBase;
 class MidiSequence;
 class ProjectNode;
 class AutomationCurveEventComponent;
@@ -31,7 +31,7 @@ class AutomationCurveClipComponent final : public ClipComponent, public ProjectL
 public:
 
     AutomationCurveClipComponent(ProjectNode &project, MidiSequence *sequence,
-        HybridRoll &roll, const Clip &clip);
+        RollBase &roll, const Clip &clip);
 
     ~AutomationCurveClipComponent() override;
 

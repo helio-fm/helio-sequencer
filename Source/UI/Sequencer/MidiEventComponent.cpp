@@ -17,9 +17,9 @@
 
 #include "Common.h"
 #include "MidiEventComponent.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 
-MidiEventComponent::MidiEventComponent(HybridRoll &editor, bool isGhost) noexcept :
+MidiEventComponent::MidiEventComponent(RollBase &editor, bool isGhost) noexcept :
     roll(editor),
     dragger(),
     clickOffset(0, 0)    

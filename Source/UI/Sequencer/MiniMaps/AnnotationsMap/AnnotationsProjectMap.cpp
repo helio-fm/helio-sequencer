@@ -20,12 +20,12 @@
 #include "ProjectNode.h"
 #include "ProjectTimeline.h"
 #include "PlayerThread.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "AnnotationDialog.h"
 #include "AnnotationLargeComponent.h"
 #include "AnnotationSmallComponent.h"
 
-AnnotationsProjectMap::AnnotationsProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type) :
+AnnotationsProjectMap::AnnotationsProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type) :
     project(parentProject),
     roll(parentRoll),
     type(type)

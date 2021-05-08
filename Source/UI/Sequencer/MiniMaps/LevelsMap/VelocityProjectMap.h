@@ -22,7 +22,7 @@
 #include "ProjectListener.h"
 #include "ComponentFader.h"
 
-class HybridRoll;
+class RollBase;
 class ProjectNode;
 class VelocityMapNoteComponent;
 class VelocityLevelDraggingHelper;
@@ -36,7 +36,7 @@ class VelocityProjectMap final :
 {
 public:
 
-    VelocityProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll);
+    VelocityProjectMap(ProjectNode &parentProject, RollBase &parentRoll);
     ~VelocityProjectMap() override;
 
     //===------------------------------------------------------------------===//
@@ -85,7 +85,7 @@ private:
     float rollFirstBeat = 0.f;
     float rollLastBeat = Globals::Defaults::projectLength;
 
-    HybridRoll &roll;
+    RollBase &roll;
     ProjectNode &project;
 
     Clip activeClip;

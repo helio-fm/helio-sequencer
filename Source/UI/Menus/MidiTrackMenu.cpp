@@ -22,7 +22,7 @@
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "MidiSequence.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 
 #include "Workspace.h"
 

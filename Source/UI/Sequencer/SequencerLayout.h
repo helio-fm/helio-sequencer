@@ -19,7 +19,7 @@
 
 class PianoRoll;
 class PatternRoll;
-class HybridRoll;
+class RollBase;
 class RollsSwitchingProxy;
 class ProjectNode;
 class MidiTrack;
@@ -46,7 +46,7 @@ public:
     void showPatternEditor();
     void showLinearEditor(WeakReference<MidiTrack> activeTrack);
 
-    HybridRoll *getRoll() const noexcept;
+    RollBase *getRoll() const noexcept;
     
     //===------------------------------------------------------------------===//
     // UserInterfaceFlags::Listener

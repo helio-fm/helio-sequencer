@@ -22,7 +22,7 @@
 #include "ProjectListener.h"
 
 class MidiSequence;
-class HybridRoll;
+class RollBase;
 class ProjectNode;
 class AutomationStepEventComponent;
 class AutomationStepEventsConnector;
@@ -32,7 +32,7 @@ class AutomationStepsClipComponent final : public ClipComponent, public ProjectL
 public:
 
     AutomationStepsClipComponent(ProjectNode &project, MidiSequence *sequence,
-        HybridRoll &roll, const Clip &clip);
+        RollBase &roll, const Clip &clip);
 
     ~AutomationStepsClipComponent() override;
 

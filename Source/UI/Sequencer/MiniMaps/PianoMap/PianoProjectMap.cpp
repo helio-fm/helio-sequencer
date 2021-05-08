@@ -23,11 +23,11 @@
 #include "PianoSequence.h"
 #include "ProjectMetadata.h"
 #include "PlayerThread.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "AnnotationEvent.h"
 #include "ColourIDs.h"
 
-PianoProjectMap::PianoProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll) :
+PianoProjectMap::PianoProjectMap(ProjectNode &parentProject, RollBase &parentRoll) :
     project(parentProject),
     roll(parentRoll)
 {

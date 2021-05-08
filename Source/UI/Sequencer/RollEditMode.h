@@ -19,7 +19,7 @@
 
 // belongs to ProjectTreeItem
 
-class HybridRollEditMode final : public ChangeBroadcaster
+class RollEditMode final : public ChangeBroadcaster
 {
 public:
     
@@ -34,7 +34,7 @@ public:
         eraserMode                       = 0x07
     };
     
-    HybridRollEditMode() = default;
+    RollEditMode() = default;
 
     bool forbidsViewportDragging() const;
     bool forcesViewportDragging() const;
@@ -63,6 +63,6 @@ private:
     Mode mode = defaultMode;
     Mode previousMode = defaultMode;
 
-    JUCE_LEAK_DETECTOR(HybridRollEditMode)
+    JUCE_LEAK_DETECTOR(RollEditMode)
     
 };

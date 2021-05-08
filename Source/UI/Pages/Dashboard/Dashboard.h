@@ -66,7 +66,7 @@ private:
     UniquePointer<LoginButton> loginButton;
     UniquePointer<PanelBackgroundB> backgroundB;
     UniquePointer<OpenProjectButton> openProjectButton;
-    UniquePointer<MobileComboBox::Primer> createProjectComboSource;
+    UniquePointer<MobileComboBox::Container> createProjectComboSource;
     UniquePointer<SeparatorVerticalSkew> skew;
     UniquePointer<SpectralLogo> logo;
     UniquePointer<DashboardMenu> projectsList;

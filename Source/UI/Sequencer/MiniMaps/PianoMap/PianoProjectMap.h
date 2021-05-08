@@ -21,7 +21,7 @@
 #include "Note.h"
 #include "ProjectListener.h"
 
-class HybridRoll;
+class RollBase;
 class ProjectNode;
 class ProjectMapNoteComponent;
 
@@ -32,7 +32,7 @@ class PianoProjectMap final :
 {
 public:
 
-    PianoProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll);
+    PianoProjectMap(ProjectNode &parentProject, RollBase &parentRoll);
     ~PianoProjectMap() override;
 
     void setBrightness(float brighness);
@@ -85,7 +85,7 @@ private:
 
     int keyboardSize = Globals::twelveToneKeyboardSize;
 
-    HybridRoll &roll;
+    RollBase &roll;
     ProjectNode &project;
 
     Clip activeClip;

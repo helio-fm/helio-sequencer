@@ -57,7 +57,7 @@ private:
     Array<ColourScheme::Ptr> schemes;
     ColourScheme::Ptr currentScheme;
 
-    UniquePointer<MobileComboBox::Primer> fontComboPrimer;
+    UniquePointer<MobileComboBox::Container> fontCombo;
     UniquePointer<ListBox> themesList;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThemeSettings)

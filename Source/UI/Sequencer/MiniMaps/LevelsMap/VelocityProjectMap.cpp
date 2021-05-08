@@ -23,7 +23,7 @@
 #include "Pattern.h"
 #include "PianoSequence.h"
 #include "AnnotationEvent.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "Lasso.h"
 #include "ColourIDs.h"
 #include "NoteComponent.h"
@@ -305,7 +305,7 @@ private:
 // The map itself
 //===----------------------------------------------------------------------===//
 
-VelocityProjectMap::VelocityProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll) :
+VelocityProjectMap::VelocityProjectMap(ProjectNode &parentProject, RollBase &parentRoll) :
     project(parentProject),
     roll(parentRoll)
 {

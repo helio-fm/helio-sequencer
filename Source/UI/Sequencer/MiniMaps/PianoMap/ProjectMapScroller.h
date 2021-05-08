@@ -17,31 +17,31 @@
 
 #pragma once
 
-class HybridRoll;
+class RollBase;
 class TrackMap;
 class ProjectMapScrollerScreen;
 class Playhead;
 class Transport;
 
 #include "HelperRectangle.h"
-#include "HybridRollListener.h"
+#include "RollListener.h"
 #include "ComponentFader.h"
 
 class ProjectMapScroller final :
     public Component,
-    public HybridRollListener,
+    public RollListener,
     private AsyncUpdater,
     private Timer
 {
 public:
 
-    ProjectMapScroller(Transport &transport, SafePointer<HybridRoll> roll);
+    ProjectMapScroller(Transport &transport, SafePointer<RollBase> roll);
     ~ProjectMapScroller() override;
 
     void addOwnedMap(Component *newTrackMap, bool shouldBringToFront);
     void removeOwnedMap(Component *existingTrackMap);
 
-    void switchToRoll(SafePointer<HybridRoll> roll);
+    void switchToRoll(SafePointer<RollBase> roll);
 
     template<typename T>
     T *findOwnedMapOfType()
@@ -81,11 +81,11 @@ public:
     void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
     
     //===------------------------------------------------------------------===//
-    // HybridRollListener
+    // RollListener
     //===------------------------------------------------------------------===//
     
-    void onMidiRollMoved(HybridRoll *targetRoll) override;
-    void onMidiRollResized(HybridRoll *targetRoll) override;
+    void onMidiRollMoved(RollBase *targetRoll) override;
+    void onMidiRollResized(RollBase *targetRoll) override;
     
     //===------------------------------------------------------------------===//
     // Additional horizontal dragger
@@ -145,7 +145,7 @@ private:
     void updateAllBounds();
     
     Transport &transport;
-    SafePointer<HybridRoll> roll;
+    SafePointer<RollBase> roll;
     
     Rectangle<float> oldAreaBounds;
     Rectangle<float> oldMapBounds;

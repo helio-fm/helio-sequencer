@@ -17,7 +17,7 @@
 
 #pragma once
 
-class HybridRoll;
+class RollBase;
 class NoteComponent;
 class Lasso;
 
@@ -29,7 +29,7 @@ class NoteResizerRight final : public Component
 {
 public:
 
-    explicit NoteResizerRight(HybridRoll &parentRoll);
+    explicit NoteResizerRight(RollBase &parentRoll);
     ~NoteResizerRight();
 
     void updateBounds();
@@ -47,7 +47,7 @@ private:
 
     NoteComponent *findRightMostEvent(const Lasso &);
 
-    HybridRoll &roll;
+    RollBase &roll;
     SafePointer<NoteComponent> groupResizerNote;
 
     ComponentFader fader;

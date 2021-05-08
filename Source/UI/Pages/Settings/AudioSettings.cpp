@@ -21,20 +21,20 @@
 
 AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
 {
-    this->midiInputsComboPrimer = make<MobileComboBox::Primer>();
-    this->addAndMakeVisible(this->midiInputsComboPrimer.get());
+    this->midiInputsCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->midiInputsCombo.get());
 
-    this->sampleRateComboPrimer = make<MobileComboBox::Primer>();
-    this->addAndMakeVisible(this->sampleRateComboPrimer.get());
+    this->sampleRateCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->sampleRateCombo.get());
 
-    this->bufferSizeComboPrimer = make<MobileComboBox::Primer>();
-    this->addAndMakeVisible(this->bufferSizeComboPrimer.get());
+    this->bufferSizeCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->bufferSizeCombo.get());
 
-    this->deviceTypeComboPrimer = make<MobileComboBox::Primer>();
-    this->addAndMakeVisible(this->deviceTypeComboPrimer.get());
+    this->deviceTypeCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->deviceTypeCombo.get());
 
-    this->deviceComboPrimer = make<MobileComboBox::Primer>();
-    this->addAndMakeVisible(this->deviceComboPrimer.get());
+    this->deviceCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->deviceCombo.get());
 
     this->deviceTypeEditor = make<TextEditor>();
     this->addAndMakeVisible(this->deviceTypeEditor.get());
@@ -84,11 +84,11 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
     this->setSize(550, 244);
 
     MenuPanel::Menu emptyMenu;
-    this->deviceTypeComboPrimer->initWith(this->deviceTypeEditor.get(), emptyMenu);
-    this->deviceComboPrimer->initWith(this->deviceEditor.get(), emptyMenu);
-    this->sampleRateComboPrimer->initWith(this->sampleRateEditor.get(), emptyMenu);
-    this->bufferSizeComboPrimer->initWith(this->bufferSizeEditor.get(), emptyMenu);
-    this->midiInputsComboPrimer->initWith(this->midiInputEditor.get(), emptyMenu);
+    this->deviceTypeCombo->initWith(this->deviceTypeEditor.get(), emptyMenu);
+    this->deviceCombo->initWith(this->deviceEditor.get(), emptyMenu);
+    this->sampleRateCombo->initWith(this->sampleRateEditor.get(), emptyMenu);
+    this->bufferSizeCombo->initWith(this->bufferSizeEditor.get(), emptyMenu);
+    this->midiInputsCombo->initWith(this->midiInputEditor.get(), emptyMenu);
 }
 
 AudioSettings::~AudioSettings() = default;
@@ -97,11 +97,11 @@ void AudioSettings::resized()
 {
     const Rectangle<int> comboBounds(4, 4, this->getWidth() - 8, this->getHeight() - 8);
 
-    this->midiInputsComboPrimer->setBounds(comboBounds);
-    this->sampleRateComboPrimer->setBounds(comboBounds);
-    this->bufferSizeComboPrimer->setBounds(comboBounds);
-    this->deviceTypeComboPrimer->setBounds(comboBounds);
-    this->deviceComboPrimer->setBounds(comboBounds);
+    this->midiInputsCombo->setBounds(comboBounds);
+    this->sampleRateCombo->setBounds(comboBounds);
+    this->bufferSizeCombo->setBounds(comboBounds);
+    this->deviceTypeCombo->setBounds(comboBounds);
+    this->deviceCombo->setBounds(comboBounds);
 
     const Rectangle<int> editorBounds(16, 0, this->getWidth() - 32, 32);
 
@@ -273,7 +273,7 @@ void AudioSettings::syncDeviceTypesList(AudioDeviceManager &deviceManager)
         }
     }
 
-    this->deviceTypeComboPrimer->updateMenu(menu);
+    this->deviceTypeCombo->updateMenu(menu);
 }
 
 void AudioSettings::syncDevicesList(AudioDeviceManager &deviceManager)
@@ -284,7 +284,7 @@ void AudioSettings::syncDevicesList(AudioDeviceManager &deviceManager)
     const auto *currentType = deviceManager.getCurrentDeviceTypeObject();
     if (currentType == nullptr)
     {
-        this->deviceComboPrimer->updateMenu(menu);
+        this->deviceCombo->updateMenu(menu);
         return;
     }
 
@@ -305,7 +305,7 @@ void AudioSettings::syncDevicesList(AudioDeviceManager &deviceManager)
         }
     }
 
-    this->deviceComboPrimer->updateMenu(menu);
+    this->deviceCombo->updateMenu(menu);
 }
 
 void AudioSettings::syncSampleRatesList(AudioDeviceManager &deviceManager)
@@ -316,7 +316,7 @@ void AudioSettings::syncSampleRatesList(AudioDeviceManager &deviceManager)
     auto *currentDevice = deviceManager.getCurrentAudioDevice();
     if (currentDevice == nullptr)
     {
-        this->sampleRateComboPrimer->updateMenu(menu);
+        this->sampleRateCombo->updateMenu(menu);
         return;
     }
 
@@ -336,7 +336,7 @@ void AudioSettings::syncSampleRatesList(AudioDeviceManager &deviceManager)
         }
     }
 
-    this->sampleRateComboPrimer->updateMenu(menu);
+    this->sampleRateCombo->updateMenu(menu);
 }
 
 void AudioSettings::syncBufferSizesList(AudioDeviceManager &deviceManager)
@@ -347,7 +347,7 @@ void AudioSettings::syncBufferSizesList(AudioDeviceManager &deviceManager)
     auto *currentDevice = deviceManager.getCurrentAudioDevice();
     if (currentDevice == nullptr)
     {
-        this->bufferSizeComboPrimer->updateMenu(menu);
+        this->bufferSizeCombo->updateMenu(menu);
         return;
     }
 
@@ -368,7 +368,7 @@ void AudioSettings::syncBufferSizesList(AudioDeviceManager &deviceManager)
         }
     }
 
-    this->bufferSizeComboPrimer->updateMenu(menu);
+    this->bufferSizeCombo->updateMenu(menu);
 }
 
 static bool areNoMidiInputsSelected(AudioDeviceManager &deviceManager,
@@ -419,5 +419,5 @@ void AudioSettings::syncMidiInputsList(AudioDeviceManager &deviceManager)
     this->midiInputEditor->setText(TRANS(I18n::Settings::midiRecord) +
         ": " + selectedDeviceName, dontSendNotification);
 
-    this->midiInputsComboPrimer->updateMenu(menu);
+    this->midiInputsCombo->updateMenu(menu);
 }

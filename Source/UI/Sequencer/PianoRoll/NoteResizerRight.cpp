@@ -18,13 +18,13 @@
 #include "Common.h"
 #include "NoteResizerRight.h"
 
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "PianoRoll.h"
 #include "PianoSequence.h"
 #include "SequencerOperations.h"
 #include "NoteComponent.h"
 
-NoteResizerRight::NoteResizerRight(HybridRoll &parentRoll) : roll(parentRoll)
+NoteResizerRight::NoteResizerRight(RollBase &parentRoll) : roll(parentRoll)
 {
     this->resizeIcon = make<IconComponent>(Icons::stretchRight);
     this->resizeIcon->setIconAlphaMultiplier(NoteResizerRight::lineAlpha);

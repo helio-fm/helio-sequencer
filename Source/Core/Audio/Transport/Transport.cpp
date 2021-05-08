@@ -26,7 +26,7 @@
 #include "Pattern.h"
 #include "Workspace.h"
 #include "AudioCore.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "KeyboardMapping.h"
 #include "ProjectMetadata.h"
 #include "BuiltInSynthAudioPlugin.h"

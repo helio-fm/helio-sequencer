@@ -1080,10 +1080,8 @@
                   file="../../Source/UI/Sequencer/Header/HeaderSelectionIndicator.cpp"/>
             <FILE id="vFfeN2" name="HeaderSelectionIndicator.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Header/HeaderSelectionIndicator.h"/>
-            <FILE id="zW2Hty" name="HybridRollHeader.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Header/HybridRollHeader.cpp"/>
-            <FILE id="Z44WkV" name="HybridRollHeader.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Header/HybridRollHeader.h"/>
+            <FILE id="zW2Hty" name="RollHeader.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/Header/RollHeader.cpp"/>
+            <FILE id="Z44WkV" name="RollHeader.h" compile="0" resource="0" file="../../Source/UI/Sequencer/Header/RollHeader.h"/>
             <FILE id="Lh8JqJ" name="Playhead.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/Header/Playhead.cpp"/>
             <FILE id="HTYKGw" name="Playhead.h" compile="0" resource="0" file="../../Source/UI/Sequencer/Header/Playhead.h"/>
             <FILE id="fSWSdO" name="SoundProbeIndicator.h" compile="0" resource="0"
@@ -1099,10 +1097,10 @@
             <FILE id="qsshHN" name="CutPointMark.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/CutPointMark.cpp"/>
             <FILE id="OBROeR" name="CutPointMark.h" compile="0" resource="0" file="../../Source/UI/Sequencer/Helpers/CutPointMark.h"/>
-            <FILE id="ZJCh08" name="HybridRollExpandMark.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.cpp"/>
-            <FILE id="iM3cEX" name="HybridRollExpandMark.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.h"/>
+            <FILE id="ZJCh08" name="RollExpandMark.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/RollExpandMark.cpp"/>
+            <FILE id="iM3cEX" name="RollExpandMark.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/RollExpandMark.h"/>
             <FILE id="A5NXhb" name="KnifeToolHelper.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/KnifeToolHelper.cpp"/>
             <FILE id="SQ41Eb" name="KnifeToolHelper.h" compile="0" resource="0"
@@ -1283,14 +1281,12 @@
                     file="../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignaturesProjectMap.h"/>
             </GROUP>
           </GROUP>
-          <FILE id="TipeMn" name="HybridRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/HybridRoll.cpp"/>
-          <FILE id="XYOlrH" name="HybridRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/HybridRoll.h"/>
-          <FILE id="hnA87d" name="HybridRollEditMode.cpp" compile="1" resource="0"
-                file="../../Source/UI/Sequencer/HybridRollEditMode.cpp"/>
-          <FILE id="MWqxz4" name="HybridRollEditMode.h" compile="0" resource="0"
-                file="../../Source/UI/Sequencer/HybridRollEditMode.h"/>
-          <FILE id="kc1423" name="HybridRollListener.h" compile="0" resource="0"
-                file="../../Source/UI/Sequencer/HybridRollListener.h"/>
+          <FILE id="TipeMn" name="RollBase.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/RollBase.cpp"/>
+          <FILE id="XYOlrH" name="RollBase.h" compile="0" resource="0" file="../../Source/UI/Sequencer/RollBase.h"/>
+          <FILE id="hnA87d" name="RollEditMode.cpp" compile="1" resource="0"
+                file="../../Source/UI/Sequencer/RollEditMode.cpp"/>
+          <FILE id="MWqxz4" name="RollEditMode.h" compile="0" resource="0" file="../../Source/UI/Sequencer/RollEditMode.h"/>
+          <FILE id="kc1423" name="RollListener.h" compile="0" resource="0" file="../../Source/UI/Sequencer/RollListener.h"/>
           <FILE id="kF2JhL" name="Lasso.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/Lasso.cpp"/>
           <FILE id="OL6lfl" name="Lasso.h" compile="0" resource="0" file="../../Source/UI/Sequencer/Lasso.h"/>
           <FILE id="RRwpoK" name="LassoListeners.cpp" compile="1" resource="0"

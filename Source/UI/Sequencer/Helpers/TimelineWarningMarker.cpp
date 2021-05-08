@@ -17,10 +17,10 @@
 
 #include "Common.h"
 #include "TimelineWarningMarker.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 
 TimelineWarningMarker::TimelineWarningMarker(WarningLevel warningLevel,
-    HybridRoll &parentRoll, float initialBeatPosition) :
+    RollBase &parentRoll, float initialBeatPosition) :
     roll(parentRoll),
     colour((warningLevel == WarningLevel::Red) ? Colour(0x33ff0000) : Colour(0x27ffff00)),
     startBeat(initialBeatPosition),

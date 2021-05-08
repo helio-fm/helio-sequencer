@@ -806,7 +806,7 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\Header\HeaderSelectionIndicator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Header\HybridRollHeader.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\Header\RollHeader.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Header\Playhead.cpp">
@@ -815,7 +815,7 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\CutPointMark.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\HybridRollExpandMark.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\RollExpandMark.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\KnifeToolHelper.cpp">
@@ -932,10 +932,10 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignaturesProjectMap.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\HybridRoll.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\RollBase.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\HybridRollEditMode.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\RollEditMode.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Lasso.cpp">
@@ -3146,14 +3146,14 @@
     <ClInclude Include="..\..\Source\UI\Popups\TooltipContainer.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\ClipRangeIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\HeaderSelectionIndicator.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\Header\HybridRollHeader.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Header\RollHeader.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\Playhead.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\SoundProbeIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\TimeDistanceIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\TrackEndIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\TrackStartIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\CutPointMark.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\HybridRollExpandMark.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\RollExpandMark.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\KnifeToolHelper.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\TimelineWarningMarker.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\PatternOperations.h"/>
@@ -3196,9 +3196,9 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignatureLargeComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignatureSmallComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignaturesProjectMap.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\HybridRoll.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\HybridRollEditMode.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\HybridRollListener.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\RollBase.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\RollEditMode.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\RollListener.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Lasso.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\LassoListeners.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\MidiEventComponent.h"/>

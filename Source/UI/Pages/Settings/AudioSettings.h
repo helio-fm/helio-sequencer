@@ -48,11 +48,11 @@ private:
 
     AudioCore &audioCore;
 
-    UniquePointer<MobileComboBox::Primer> midiInputsComboPrimer;
-    UniquePointer<MobileComboBox::Primer> sampleRateComboPrimer;
-    UniquePointer<MobileComboBox::Primer> bufferSizeComboPrimer;
-    UniquePointer<MobileComboBox::Primer> deviceTypeComboPrimer;
-    UniquePointer<MobileComboBox::Primer> deviceComboPrimer;
+    UniquePointer<MobileComboBox::Container> midiInputsCombo;
+    UniquePointer<MobileComboBox::Container> sampleRateCombo;
+    UniquePointer<MobileComboBox::Container> bufferSizeCombo;
+    UniquePointer<MobileComboBox::Container> deviceTypeCombo;
+    UniquePointer<MobileComboBox::Container> deviceCombo;
     UniquePointer<TextEditor> deviceTypeEditor;
     UniquePointer<TextEditor> deviceEditor;
     UniquePointer<TextEditor> sampleRateEditor;

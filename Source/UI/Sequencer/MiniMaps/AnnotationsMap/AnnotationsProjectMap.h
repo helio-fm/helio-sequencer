@@ -20,7 +20,7 @@
 #include "AnnotationEvent.h"
 #include "ProjectListener.h"
 
-class HybridRoll;
+class RollBase;
 class ProjectNode;
 class AnnotationComponent;
 
@@ -32,7 +32,7 @@ public:
 
     enum class Type : int8 { Large, Small };
 
-    AnnotationsProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type);
+    AnnotationsProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type);
     ~AnnotationsProjectMap() override;
 
     void alignAnnotationComponent(AnnotationComponent *nc);
@@ -93,7 +93,7 @@ private:
     float rollFirstBeat = 0.f;
     float rollLastBeat = Globals::Defaults::projectLength;
     
-    HybridRoll &roll;
+    RollBase &roll;
     ProjectNode &project;
     
     ComponentAnimator animator;

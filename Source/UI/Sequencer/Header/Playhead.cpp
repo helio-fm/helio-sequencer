@@ -18,11 +18,11 @@
 #include "Common.h"
 #include "Playhead.h"
 #include "Transport.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "ColourIDs.h"
 #include "PlayerThread.h"
 
-Playhead::Playhead(HybridRoll &parentRoll,
+Playhead::Playhead(RollBase &parentRoll,
     Transport &owner,
     Playhead::Listener *movementListener /*= nullptr*/,
     int width /*= 2*/) :

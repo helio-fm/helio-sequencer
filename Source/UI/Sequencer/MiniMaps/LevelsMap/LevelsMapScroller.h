@@ -17,23 +17,23 @@
 
 #pragma once
 
-class HybridRoll;
+class RollBase;
 class TrackMap;
 class LevelsMapScrollerScreen;
 class Playhead;
 class Transport;
 
 #include "HelperRectangle.h"
-#include "HybridRollListener.h"
+#include "RollListener.h"
 
 class LevelsMapScroller final :
     public Component,
-    public HybridRollListener,
+    public RollListener,
     private AsyncUpdater
 {
 public:
 
-    explicit LevelsMapScroller(SafePointer<HybridRoll> roll);
+    explicit LevelsMapScroller(SafePointer<RollBase> roll);
     
     void addOwnedMap(Component *newTrackMap);
     void removeOwnedMap(Component *existingTrackMap);
@@ -47,18 +47,18 @@ public:
     void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
     
     //===------------------------------------------------------------------===//
-    // HybridRollListener
+    // RollListener
     //===------------------------------------------------------------------===//
     
-    void onMidiRollMoved(HybridRoll *targetRoll) override;
-    void onMidiRollResized(HybridRoll *targetRoll) override;
+    void onMidiRollMoved(RollBase *targetRoll) override;
+    void onMidiRollResized(RollBase *targetRoll) override;
     
 private:
     
     void handleAsyncUpdate() override;
     Rectangle<int> getMapBounds() const noexcept;
 
-    SafePointer<HybridRoll> roll;
+    SafePointer<RollBase> roll;
     OwnedArray<Component> trackMaps;
     
 };

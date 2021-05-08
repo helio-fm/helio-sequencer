@@ -17,19 +17,19 @@
 
 #pragma once
 
-class HybridRoll;
+class RollBase;
 class Transport;
 class SoundProbeIndicator;
 class TimeDistanceIndicator;
 class HeaderSelectionIndicator;
 class ClipRangeIndicator;
 
-class HybridRollHeader final : public Component
+class RollHeader final : public Component
 {
 public:
 
-    HybridRollHeader(Transport &transport, HybridRoll &roll, Viewport &viewport);
-    ~HybridRollHeader() override;
+    RollHeader(Transport &transport, RollBase &roll, Viewport &viewport);
+    ~RollHeader() override;
     
     void setSoundProbeMode(bool shouldProbeOnClick);
 
@@ -54,7 +54,7 @@ public:
 protected:
     
     Transport &transport;
-    HybridRoll &roll;
+    RollBase &roll;
     Viewport &viewport;
 
     Atomic<bool> soundProbeMode = false;

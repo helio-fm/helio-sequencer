@@ -83,6 +83,7 @@
 		0B38C83FD3A4EC8B16B38961 /* trackGroup.svg */ /* trackGroup.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = trackGroup.svg; path = ../../Resources/Icons/trackGroup.svg; sourceTree = SOURCE_ROOT; };
 		0BE63981714AB23DFA6EE9A2 /* DiffLogic.h */ /* DiffLogic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DiffLogic.h; path = ../../Source/Core/VCS/DiffLogic/DiffLogic.h; sourceTree = SOURCE_ROOT; };
 		0BF9BF67158674EE3A450914 /* ProjectMenu.cpp */ /* ProjectMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProjectMenu.cpp; path = ../../Source/UI/Menus/ProjectMenu.cpp; sourceTree = SOURCE_ROOT; };
+		0C1B415A13E9814A8D7CEB55 /* RollHeader.cpp */ /* RollHeader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RollHeader.cpp; path = ../../Source/UI/Sequencer/Header/RollHeader.cpp; sourceTree = SOURCE_ROOT; };
 		0C28DF0E304C1786A07A8C33 /* annotation.svg */ /* annotation.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = annotation.svg; path = ../../Resources/Icons/annotation.svg; sourceTree = SOURCE_ROOT; };
 		0C90AF88AC2D9A8F29F83CA5 /* RenderFormat.h */ /* RenderFormat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderFormat.h; path = ../../Source/Core/Audio/Transport/RenderFormat.h; sourceTree = SOURCE_ROOT; };
 		0CECC8645E5BF399F3547CFC /* SpectrumAnalyzer.h */ /* SpectrumAnalyzer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SpectrumAnalyzer.h; path = ../../Source/Core/Audio/Monitoring/SpectrumAnalyzer.h; sourceTree = SOURCE_ROOT; };
@@ -179,10 +180,10 @@
 		28262B2984B2A6E1C85FE299 /* InstrumentNodeSelectionMenu.cpp */ /* InstrumentNodeSelectionMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InstrumentNodeSelectionMenu.cpp; path = ../../Source/UI/Menus/SelectionMenus/InstrumentNodeSelectionMenu.cpp; sourceTree = SOURCE_ROOT; };
 		28D58C2309395A0151BF8EBB /* piano.svg */ /* piano.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = piano.svg; path = ../../Resources/Icons/piano.svg; sourceTree = SOURCE_ROOT; };
 		28F1C77296DC1646565D53EE /* noise.png */ /* noise.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = noise.png; path = ../../Resources/Icons/noise.png; sourceTree = SOURCE_ROOT; };
-		2917D4D2A9BA78091CB5AFFB /* HybridRollExpandMark.h */ /* HybridRollExpandMark.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HybridRollExpandMark.h; path = ../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.h; sourceTree = SOURCE_ROOT; };
 		293A5E74B9C16A2E88ABB0AF /* ProgressTooltip.cpp */ /* ProgressTooltip.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProgressTooltip.cpp; path = ../../Source/UI/Popups/ProgressTooltip.cpp; sourceTree = SOURCE_ROOT; };
 		29A3339CC715D3A778B63D8B /* PianoRoll.cpp */ /* PianoRoll.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PianoRoll.cpp; path = ../../Source/UI/Sequencer/PianoRoll/PianoRoll.cpp; sourceTree = SOURCE_ROOT; };
 		2A034F224EBF4BA9B3352E86 /* inverseDown.svg */ /* inverseDown.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = inverseDown.svg; path = ../../Resources/Icons/inverseDown.svg; sourceTree = SOURCE_ROOT; };
+		2A0A398135AA7397DCD6AF3F /* RollEditMode.h */ /* RollEditMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RollEditMode.h; path = ../../Source/UI/Sequencer/RollEditMode.h; sourceTree = SOURCE_ROOT; };
 		2AFCFD00C9479DA75E8F07CA /* BuiltInSynthFormat.cpp */ /* BuiltInSynthFormat.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BuiltInSynthFormat.cpp; path = ../../Source/Core/Audio/BuiltIn/BuiltInSynthFormat.cpp; sourceTree = SOURCE_ROOT; };
 		2B41BD5579B3D0369DC437E3 /* TransportPlaybackCache.h */ /* TransportPlaybackCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TransportPlaybackCache.h; path = ../../Source/Core/Audio/Transport/TransportPlaybackCache.h; sourceTree = SOURCE_ROOT; };
 		2B86368C4AE8A20C62629C5A /* KeySignatureSmallComponent.h */ /* KeySignatureSmallComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeySignatureSmallComponent.h; path = ../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureSmallComponent.h; sourceTree = SOURCE_ROOT; };
@@ -306,6 +307,7 @@
 		4DFBEF4276738F57132C22C0 /* AudioPluginSelectionMenu.cpp */ /* AudioPluginSelectionMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AudioPluginSelectionMenu.cpp; path = ../../Source/UI/Menus/SelectionMenus/AudioPluginSelectionMenu.cpp; sourceTree = SOURCE_ROOT; };
 		4EBAFF4E7626268AA0DF5EE1 /* VersionControlEditor.cpp */ /* VersionControlEditor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VersionControlEditor.cpp; path = ../../Source/UI/Pages/VCS/VersionControlEditor.cpp; sourceTree = SOURCE_ROOT; };
 		4F1BAFE9B6EAED9010CA96EB /* TrackGroupNode.cpp */ /* TrackGroupNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TrackGroupNode.cpp; path = ../../Source/Core/Tree/TrackGroupNode.cpp; sourceTree = SOURCE_ROOT; };
+		4F23748AE77B932C5CFF6329 /* RollListener.h */ /* RollListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RollListener.h; path = ../../Source/UI/Sequencer/RollListener.h; sourceTree = SOURCE_ROOT; };
 		4F8410ED22E588B3FEDB431C /* StashesRepository.h */ /* StashesRepository.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = StashesRepository.h; path = ../../Source/Core/VCS/StashesRepository.h; sourceTree = SOURCE_ROOT; };
 		4F8D095C671ADCD90BFD8D76 /* ArpeggiatorsManager.h */ /* ArpeggiatorsManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ArpeggiatorsManager.h; path = ../../Source/Core/Configuration/ResourceManagers/ArpeggiatorsManager.h; sourceTree = SOURCE_ROOT; };
 		4F9D9EF89684F600000B351C /* TrackedItemsSource.h */ /* TrackedItemsSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TrackedItemsSource.h; path = ../../Source/Core/VCS/TrackedItemsSource.h; sourceTree = SOURCE_ROOT; };
@@ -342,11 +344,10 @@
 		5DA936661ADD55ED86C5B150 /* UserConfigSyncThread.cpp */ /* UserConfigSyncThread.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = UserConfigSyncThread.cpp; path = ../../Source/Core/Network/Requests/UserConfigSyncThread.cpp; sourceTree = SOURCE_ROOT; };
 		5DAEF7BADBD658806E515056 /* ColourButton.cpp */ /* ColourButton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ColourButton.cpp; path = ../../Source/UI/Common/ColourButton.cpp; sourceTree = SOURCE_ROOT; };
 		5DD8150F11BD610045A26615 /* timelinePrevious.svg */ /* timelinePrevious.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = timelinePrevious.svg; path = ../../Resources/Icons/timelinePrevious.svg; sourceTree = SOURCE_ROOT; };
-		5E148E6B6165DD8BDD43DACB /* HybridRollListener.h */ /* HybridRollListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HybridRollListener.h; path = ../../Source/UI/Sequencer/HybridRollListener.h; sourceTree = SOURCE_ROOT; };
 		5E2CFD75AE8BDAC8AC7CD4E9 /* forward.svg */ /* forward.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = forward.svg; path = ../../Resources/Icons/forward.svg; sourceTree = SOURCE_ROOT; };
 		5EB5635BB486EC54A70C7913 /* HelioCallout.h */ /* HelioCallout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HelioCallout.h; path = ../../Source/UI/Popups/HelioCallout.h; sourceTree = SOURCE_ROOT; };
 		5EB631A033A543A343A0A138 /* ProjectTimeline.cpp */ /* ProjectTimeline.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProjectTimeline.cpp; path = ../../Source/Core/Tree/ProjectTimeline.cpp; sourceTree = SOURCE_ROOT; };
-		5EDD32118CFC7EDE959D3652 /* HybridRollHeader.h */ /* HybridRollHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HybridRollHeader.h; path = ../../Source/UI/Sequencer/Header/HybridRollHeader.h; sourceTree = SOURCE_ROOT; };
+		5F021C5479877AD68BF1F7B1 /* RollExpandMark.cpp */ /* RollExpandMark.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RollExpandMark.cpp; path = ../../Source/UI/Sequencer/Helpers/RollExpandMark.cpp; sourceTree = SOURCE_ROOT; };
 		5F58550F8C045EC23CDEE415 /* MenuItemComponent.cpp */ /* MenuItemComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MenuItemComponent.cpp; path = ../../Source/UI/Menus/Base/MenuItemComponent.cpp; sourceTree = SOURCE_ROOT; };
 		5FE7C66273E6B419C5EE4FD4 /* AutomationStepsClipComponent.h */ /* AutomationStepsClipComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutomationStepsClipComponent.h; path = ../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepsClipComponent.h; sourceTree = SOURCE_ROOT; };
 		60F9682086FC3D0E1AFA8860 /* AudioCore.cpp */ /* AudioCore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AudioCore.cpp; path = ../../Source/Core/Audio/AudioCore.cpp; sourceTree = SOURCE_ROOT; };
@@ -384,6 +385,7 @@
 		6C14C72E2614A24862D83D69 /* AuthThread.h */ /* AuthThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AuthThread.h; path = ../../Source/Core/Network/Requests/AuthThread.h; sourceTree = SOURCE_ROOT; };
 		6C51BA22EB1EAE191BE7E5A2 /* AnnotationsProjectMap.cpp */ /* AnnotationsProjectMap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AnnotationsProjectMap.cpp; path = ../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationsProjectMap.cpp; sourceTree = SOURCE_ROOT; };
 		6CED8CC5A00AD4504CA9CADD /* HelperRectangle.h */ /* HelperRectangle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HelperRectangle.h; path = ../../Source/UI/Common/HelperRectangle.h; sourceTree = SOURCE_ROOT; };
+		6CF0F046B3CA00AFC7FCDB97 /* RollBase.cpp */ /* RollBase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RollBase.cpp; path = ../../Source/UI/Sequencer/RollBase.cpp; sourceTree = SOURCE_ROOT; };
 		6D0C126E036B5FB125EDC563 /* PanelBackgroundB.h */ /* PanelBackgroundB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PanelBackgroundB.h; path = ../../Source/UI/Themes/PanelBackgroundB.h; sourceTree = SOURCE_ROOT; };
 		6D5E7476410C820FA27BF977 /* RevisionItem.cpp */ /* RevisionItem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RevisionItem.cpp; path = ../../Source/Core/VCS/RevisionItem.cpp; sourceTree = SOURCE_ROOT; };
 		6D75154631D62502F5E2C30D /* HighlightingScheme.cpp */ /* HighlightingScheme.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HighlightingScheme.cpp; path = ../../Source/UI/Sequencer/PianoRoll/HighlightingScheme.cpp; sourceTree = SOURCE_ROOT; };
@@ -481,7 +483,9 @@
 		8A4B64DCE3FDA798D0632391 /* ProjectMetadata.h */ /* ProjectMetadata.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProjectMetadata.h; path = ../../Source/Core/Tree/ProjectMetadata.h; sourceTree = SOURCE_ROOT; };
 		8ACC97861C00C49EF341371C /* ShadowLeftwards.h */ /* ShadowLeftwards.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShadowLeftwards.h; path = ../../Source/UI/Themes/ShadowLeftwards.h; sourceTree = SOURCE_ROOT; };
 		8AF08C7187165CE244D367F9 /* LassoListeners.cpp */ /* LassoListeners.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LassoListeners.cpp; path = ../../Source/UI/Sequencer/LassoListeners.cpp; sourceTree = SOURCE_ROOT; };
+		8B836143BEB3DAF74104842D /* RollEditMode.cpp */ /* RollEditMode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RollEditMode.cpp; path = ../../Source/UI/Sequencer/RollEditMode.cpp; sourceTree = SOURCE_ROOT; };
 		8C02F18E5B3C188138F2F9E8 /* SpectrogramAudioMonitorComponent.h */ /* SpectrogramAudioMonitorComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SpectrogramAudioMonitorComponent.h; path = ../../Source/UI/Common/AudioMonitors/SpectrogramAudioMonitorComponent.h; sourceTree = SOURCE_ROOT; };
+		8C17AC1033669FBCD9147309 /* RollExpandMark.h */ /* RollExpandMark.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RollExpandMark.h; path = ../../Source/UI/Sequencer/Helpers/RollExpandMark.h; sourceTree = SOURCE_ROOT; };
 		8C7D1515483F4788ADB6D0F0 /* pull.svg */ /* pull.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = pull.svg; path = ../../Resources/Icons/pull.svg; sourceTree = SOURCE_ROOT; };
 		8CD7A5104E4395EEF49A4267 /* cutterTool.svg */ /* cutterTool.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = cutterTool.svg; path = ../../Resources/Icons/cutterTool.svg; sourceTree = SOURCE_ROOT; };
 		8D489A2D2C212906DCBC731A /* AnnotationsProjectMap.h */ /* AnnotationsProjectMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnnotationsProjectMap.h; path = ../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationsProjectMap.h; sourceTree = SOURCE_ROOT; };
@@ -600,6 +604,7 @@
 		B0B9C58F1AF7FA5D0CF7461A /* StageComponent.cpp */ /* StageComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = StageComponent.cpp; path = ../../Source/UI/Pages/VCS/StageComponent.cpp; sourceTree = SOURCE_ROOT; };
 		B100F54C0C27DFB6AD446E0D /* PatternRoll.h */ /* PatternRoll.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatternRoll.h; path = ../../Source/UI/Sequencer/PatternRoll/PatternRoll.h; sourceTree = SOURCE_ROOT; };
 		B1C46B964C63F1F2E4E311F7 /* TimeSignatureEvent.h */ /* TimeSignatureEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimeSignatureEvent.h; path = ../../Source/Core/Midi/Sequences/Events/TimeSignatureEvent.h; sourceTree = SOURCE_ROOT; };
+		B212F6D65B904139E412FEC3 /* RollBase.h */ /* RollBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RollBase.h; path = ../../Source/UI/Sequencer/RollBase.h; sourceTree = SOURCE_ROOT; };
 		B235731CCB550DF1E2BDDF28 /* zoomOut.svg */ /* zoomOut.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = zoomOut.svg; path = ../../Resources/Icons/zoomOut.svg; sourceTree = SOURCE_ROOT; };
 		B276883FDBCBF795DB2A3FBA /* TimeDistanceIndicator.h */ /* TimeDistanceIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimeDistanceIndicator.h; path = ../../Source/UI/Sequencer/Header/TimeDistanceIndicator.h; sourceTree = SOURCE_ROOT; };
 		B27E1695E139652172101A3C /* PopupButtonOwner.h */ /* PopupButtonOwner.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PopupButtonOwner.h; path = ../../Source/UI/Popups/PopupButtonOwner.h; sourceTree = SOURCE_ROOT; };
@@ -607,6 +612,7 @@
 		B32C0791B72474F594B71180 /* RevisionComponent.cpp */ /* RevisionComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RevisionComponent.cpp; path = ../../Source/UI/Pages/VCS/RevisionComponent.cpp; sourceTree = SOURCE_ROOT; };
 		B34DA88FE252A729890F37AB /* ProjectMenu.h */ /* ProjectMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProjectMenu.h; path = ../../Source/UI/Menus/ProjectMenu.h; sourceTree = SOURCE_ROOT; };
 		B3553781160796346696EDB2 /* SerializablePluginDescription.cpp */ /* SerializablePluginDescription.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SerializablePluginDescription.cpp; path = ../../Source/Core/Audio/Instruments/SerializablePluginDescription.cpp; sourceTree = SOURCE_ROOT; };
+		B3CFDE316B01ED2B292A00FD /* RollHeader.h */ /* RollHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RollHeader.h; path = ../../Source/UI/Sequencer/Header/RollHeader.h; sourceTree = SOURCE_ROOT; };
 		B40E1479C7D0C84F1489C408 /* TranslationSettingsItem.h */ /* TranslationSettingsItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TranslationSettingsItem.h; path = ../../Source/UI/Pages/Settings/TranslationSettingsItem.h; sourceTree = SOURCE_ROOT; };
 		B43751BD8D411C11613C2DE6 /* InstrumentNode.cpp */ /* InstrumentNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InstrumentNode.cpp; path = ../../Source/Core/Tree/InstrumentNode.cpp; sourceTree = SOURCE_ROOT; };
 		B46C94F17FEA6AC172EE9CC8 /* AnnotationEventActions.cpp */ /* AnnotationEventActions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AnnotationEventActions.cpp; path = ../../Source/Core/Undo/Actions/AnnotationEventActions.cpp; sourceTree = SOURCE_ROOT; };
@@ -634,7 +640,6 @@
 		BFDE666F5C9D8E1629BA4E59 /* BaseConfigSyncThread.h */ /* BaseConfigSyncThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BaseConfigSyncThread.h; path = ../../Source/Core/Network/Requests/BaseConfigSyncThread.h; sourceTree = SOURCE_ROOT; };
 		C019A3A0F79C20C6AFF6A94B /* PluginWindow.h */ /* PluginWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PluginWindow.h; path = ../../Source/UI/Common/PluginWindow.h; sourceTree = SOURCE_ROOT; };
 		C094744784E7CDF8505C70C6 /* MidiRecorder.h */ /* MidiRecorder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MidiRecorder.h; path = ../../Source/Core/Audio/Transport/MidiRecorder.h; sourceTree = SOURCE_ROOT; };
-		C0D6F8DDC59BDE69FF1FEF33 /* HybridRollEditMode.cpp */ /* HybridRollEditMode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HybridRollEditMode.cpp; path = ../../Source/UI/Sequencer/HybridRollEditMode.cpp; sourceTree = SOURCE_ROOT; };
 		C0F31CBDDFD070E47C6C05EB /* ProjectMetadata.cpp */ /* ProjectMetadata.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProjectMetadata.cpp; path = ../../Source/Core/Tree/ProjectMetadata.cpp; sourceTree = SOURCE_ROOT; };
 		C12CE47F3888AFF2D684E4B7 /* InstrumentEditorPin.h */ /* InstrumentEditorPin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InstrumentEditorPin.h; path = ../../Source/UI/Pages/Instruments/Editor/InstrumentEditorPin.h; sourceTree = SOURCE_ROOT; };
 		C157AEEB5675221B9310B4A0 /* AutomationTrackNode.h */ /* AutomationTrackNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutomationTrackNode.h; path = ../../Source/Core/Tree/AutomationTrackNode.h; sourceTree = SOURCE_ROOT; };
@@ -709,7 +714,6 @@
 		D8CDF77A64E07F574B61D7A0 /* ShadowComponent.h */ /* ShadowComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShadowComponent.h; path = ../../Source/UI/Themes/ShadowComponent.h; sourceTree = SOURCE_ROOT; };
 		D9661D9258E7CE5801256B6E /* HeadlineItemHighlighter.cpp */ /* HeadlineItemHighlighter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HeadlineItemHighlighter.cpp; path = ../../Source/UI/Headline/HeadlineItemHighlighter.cpp; sourceTree = SOURCE_ROOT; };
 		D996ABA0431B8B058D6CEF2E /* ApiModel.h */ /* ApiModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ApiModel.h; path = ../../Source/Core/Network/Models/ApiModel.h; sourceTree = SOURCE_ROOT; };
-		D9CA15C6FBBE41D9F7E867BF /* HybridRoll.cpp */ /* HybridRoll.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HybridRoll.cpp; path = ../../Source/UI/Sequencer/HybridRoll.cpp; sourceTree = SOURCE_ROOT; };
 		DA47AB54458AEC968E0F5011 /* commit.svg */ /* commit.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = commit.svg; path = ../../Resources/Icons/commit.svg; sourceTree = SOURCE_ROOT; };
 		DA5B02B6610141E42B8A1C49 /* NavigationHistory.cpp */ /* NavigationHistory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NavigationHistory.cpp; path = ../../Source/Core/Workspace/NavigationHistory.cpp; sourceTree = SOURCE_ROOT; };
 		DA9E12DE05FA1FDA9F5EDB54 /* MidiEventComponent.cpp */ /* MidiEventComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MidiEventComponent.cpp; path = ../../Source/UI/Sequencer/MidiEventComponent.cpp; sourceTree = SOURCE_ROOT; };
@@ -730,13 +734,11 @@
 		DFD0F1EB6663D2AF496EB382 /* github.svg */ /* github.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = github.svg; path = ../../Resources/Icons/github.svg; sourceTree = SOURCE_ROOT; };
 		DFF1741E434F98A023CEF061 /* JsonSerializer.h */ /* JsonSerializer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JsonSerializer.h; path = ../../Source/Core/Serialization/JsonSerializer.h; sourceTree = SOURCE_ROOT; };
 		E060F26127649098C35B36E8 /* juce_audio_formats */ /* juce_audio_formats */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_formats; path = ../../ThirdParty/JUCE/modules/juce_audio_formats; sourceTree = SOURCE_ROOT; };
-		E0880123253829DB5043F896 /* HybridRoll.h */ /* HybridRoll.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HybridRoll.h; path = ../../Source/UI/Sequencer/HybridRoll.h; sourceTree = SOURCE_ROOT; };
 		E08CADFA567C32BB862B0FD1 /* SessionService.cpp */ /* SessionService.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SessionService.cpp; path = ../../Source/Core/Network/Services/SessionService.cpp; sourceTree = SOURCE_ROOT; };
 		E09C11D4F4D9254228CCCA95 /* TimelineMenu.h */ /* TimelineMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimelineMenu.h; path = ../../Source/UI/Menus/TimelineMenu.h; sourceTree = SOURCE_ROOT; };
 		E126076F062300172614B713 /* ComponentsList.h */ /* ComponentsList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ComponentsList.h; path = ../../Source/UI/Pages/Settings/ComponentsList.h; sourceTree = SOURCE_ROOT; };
 		E1714B7BE059F5B254FFB8DE /* ProjectTimelineDiffLogic.cpp */ /* ProjectTimelineDiffLogic.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProjectTimelineDiffLogic.cpp; path = ../../Source/Core/VCS/DiffLogic/ProjectTimelineDiffLogic.cpp; sourceTree = SOURCE_ROOT; };
 		E1B39FA834A6F0BE327B3541 /* copy.svg */ /* copy.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = copy.svg; path = ../../Resources/Icons/copy.svg; sourceTree = SOURCE_ROOT; };
-		E229A3DFF6244261A9055FF3 /* HybridRollExpandMark.cpp */ /* HybridRollExpandMark.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HybridRollExpandMark.cpp; path = ../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.cpp; sourceTree = SOURCE_ROOT; };
 		E233FC91B8D6046DE1BBBBB9 /* VersionControlNode.h */ /* VersionControlNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VersionControlNode.h; path = ../../Source/Core/Tree/VersionControlNode.h; sourceTree = SOURCE_ROOT; };
 		E244E684AD2AAE8431E42FA6 /* HighlightedComponent.h */ /* HighlightedComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HighlightedComponent.h; path = ../../Source/UI/Common/HighlightedComponent.h; sourceTree = SOURCE_ROOT; };
 		E28D7AD894F4C48DAE00FB24 /* juce_audio_processors */ /* juce_audio_processors */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_processors; path = ../../ThirdParty/JUCE/modules/juce_audio_processors; sourceTree = SOURCE_ROOT; };
@@ -751,7 +753,6 @@
 		E6821B4011BDCA9B46E32554 /* redo.svg */ /* redo.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = redo.svg; path = ../../Resources/Icons/redo.svg; sourceTree = SOURCE_ROOT; };
 		E6866B8F6A24B97D0EA35CE1 /* Clip.cpp */ /* Clip.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Clip.cpp; path = ../../Source/Core/Midi/Patterns/Clip.cpp; sourceTree = SOURCE_ROOT; };
 		E6E052F0B1323369628EC2FB /* CommandPaletteCommonActions.h */ /* CommandPaletteCommonActions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandPaletteCommonActions.h; path = ../../Source/Core/CommandPalette/CommandPaletteCommonActions.h; sourceTree = SOURCE_ROOT; };
-		E718A85B50D9B343F7621098 /* HybridRollHeader.cpp */ /* HybridRollHeader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HybridRollHeader.cpp; path = ../../Source/UI/Sequencer/Header/HybridRollHeader.cpp; sourceTree = SOURCE_ROOT; };
 		E7198041504784409868B07B /* Translation.cpp */ /* Translation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Translation.cpp; path = ../../Source/Core/Configuration/Models/Translation.cpp; sourceTree = SOURCE_ROOT; };
 		E7994F69C1E98A7AFC41D20B /* chordBuilder.svg */ /* chordBuilder.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = chordBuilder.svg; path = ../../Resources/Icons/chordBuilder.svg; sourceTree = SOURCE_ROOT; };
 		E87D050150AECE26828A193F /* bottomBar.svg */ /* bottomBar.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = bottomBar.svg; path = ../../Resources/Icons/bottomBar.svg; sourceTree = SOURCE_ROOT; };
@@ -792,7 +793,6 @@
 		F4610814BF7C06CEE3B3A22A /* AutomationSequence.cpp */ /* AutomationSequence.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AutomationSequence.cpp; path = ../../Source/Core/Midi/Sequences/AutomationSequence.cpp; sourceTree = SOURCE_ROOT; };
 		F4DB0F7FDE088076C0BA89AF /* CommandPaletteActionsProvider.h */ /* CommandPaletteActionsProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandPaletteActionsProvider.h; path = ../../Source/Core/CommandPalette/CommandPaletteActionsProvider.h; sourceTree = SOURCE_ROOT; };
 		F518C6C068D3598777DBA99D /* Common.cpp */ /* Common.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Common.cpp; path = ../../Source/Common.cpp; sourceTree = SOURCE_ROOT; };
-		F52EB85CE6E688044B25FFB7 /* HybridRollEditMode.h */ /* HybridRollEditMode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HybridRollEditMode.h; path = ../../Source/UI/Sequencer/HybridRollEditMode.h; sourceTree = SOURCE_ROOT; };
 		F58E7088E21EEE373267FE8A /* SettingsFrameWrapper.cpp */ /* SettingsFrameWrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SettingsFrameWrapper.cpp; path = ../../Source/UI/Pages/Settings/SettingsFrameWrapper.cpp; sourceTree = SOURCE_ROOT; };
 		F5CD02A25BB21968413316D4 /* PopupButton.h */ /* PopupButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PopupButton.h; path = ../../Source/UI/Popups/PopupButton.h; sourceTree = SOURCE_ROOT; };
 		F675E5A69BA0218D4A42C8DB /* toggleOn.svg */ /* toggleOn.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = toggleOn.svg; path = ../../Resources/Icons/toggleOn.svg; sourceTree = SOURCE_ROOT; };
@@ -1490,11 +1490,11 @@
 				E57BE8161F1C737A466118B2,
 				5B33D601653928AB1F350CC2,
 				F9302D5ECD0C609B17D39EFC,
-				D9CA15C6FBBE41D9F7E867BF,
-				E0880123253829DB5043F896,
-				C0D6F8DDC59BDE69FF1FEF33,
-				F52EB85CE6E688044B25FFB7,
-				5E148E6B6165DD8BDD43DACB,
+				6CF0F046B3CA00AFC7FCDB97,
+				B212F6D65B904139E412FEC3,
+				8B836143BEB3DAF74104842D,
+				2A0A398135AA7397DCD6AF3F,
+				4F23748AE77B932C5CFF6329,
 				DEB40151DDBE748A385531B3,
 				02AD7D2FAD320C27B5B0001A,
 				8AF08C7187165CE244D367F9,
@@ -1557,8 +1557,8 @@
 			children = (
 				73BDC50FF6F7B6A7A692D3BB,
 				4B864802EC8BA7E8C3035B42,
-				E229A3DFF6244261A9055FF3,
-				2917D4D2A9BA78091CB5AFFB,
+				5F021C5479877AD68BF1F7B1,
+				8C17AC1033669FBCD9147309,
 				E4B24792BDAE9CD886C3F4A9,
 				2F37CBB04EEACF88C13CCED9,
 				DD197AF95DF6B3EA88228E3F,
@@ -1959,8 +1959,8 @@
 				D5D2B8F4E85E7C859302DE77,
 				9F65A663DB8DC048C3E86D56,
 				A8612FAB37A5435382F46179,
-				E718A85B50D9B343F7621098,
-				5EDD32118CFC7EDE959D3652,
+				0C1B415A13E9814A8D7CEB55,
+				B3CFDE316B01ED2B292A00FD,
 				D24732F3D9FF03608C610192,
 				499F37C4491EFD4B89BCED25,
 				45790ACE69EE84A286D89A4C,

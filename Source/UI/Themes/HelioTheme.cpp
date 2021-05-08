@@ -821,7 +821,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Callout::fill, s->getPrimaryGradientColourB().darker(0.025f));
     this->setColour(ColourIDs::Callout::frame, s->getPrimaryGradientColourB().darker(0.25f));
 
-    // HybridRoll
+    // Rolls
     this->setColour(ColourIDs::Roll::blackKey, s->getBlackKeyColour().withMultipliedBrightness(0.95f));
     this->setColour(ColourIDs::Roll::blackKeyAlt, s->getBlackKeyColour());
     this->setColour(ColourIDs::Roll::whiteKey, s->getWhiteKeyColour());

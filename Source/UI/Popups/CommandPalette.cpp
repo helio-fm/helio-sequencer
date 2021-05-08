@@ -34,7 +34,7 @@
 
 static constexpr juce_wchar kTildaKey = '`';
 
-CommandPalette::CommandPalette(ProjectNode *project, HybridRoll *roll)
+CommandPalette::CommandPalette(ProjectNode *project, RollBase *roll)
 {
     this->shadowDn = make<ShadowDownwards>(ShadowType::Hard);
     this->addAndMakeVisible(this->shadowDn.get());

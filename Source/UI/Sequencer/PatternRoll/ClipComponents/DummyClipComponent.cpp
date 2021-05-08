@@ -17,10 +17,10 @@
 
 #include "Common.h"
 #include "DummyClipComponent.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "Pattern.h"
 
-DummyClipComponent::DummyClipComponent(HybridRoll &editor, const Clip &clip) :
+DummyClipComponent::DummyClipComponent(RollBase &editor, const Clip &clip) :
     ClipComponent(editor, clip) {}
 
 void DummyClipComponent::paint(Graphics &g)

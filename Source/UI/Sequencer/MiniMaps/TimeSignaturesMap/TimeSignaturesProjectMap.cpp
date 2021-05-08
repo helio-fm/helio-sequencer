@@ -21,14 +21,14 @@
 #include "MidiSequence.h"
 #include "ProjectTimeline.h"
 #include "PlayerThread.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "TrackStartIndicator.h"
 #include "TrackEndIndicator.h"
 #include "TimeSignatureDialog.h"
 #include "TimeSignatureLargeComponent.h"
 #include "TimeSignatureSmallComponent.h"
 
-TimeSignaturesProjectMap::TimeSignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type) :
+TimeSignaturesProjectMap::TimeSignaturesProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type) :
     project(parentProject),
     roll(parentRoll),
     type(type)

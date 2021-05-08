@@ -53,7 +53,7 @@ Dashboard::Dashboard(MainLayout &workspaceRef)
     this->addAndMakeVisible(openProjectButton.get());
     openProjectButton->setBounds(400, 16, 271, 32);
 
-    this->createProjectComboSource.reset(new MobileComboBox::Primer());
+    this->createProjectComboSource.reset(new MobileComboBox::Container());
     this->addAndMakeVisible(createProjectComboSource.get());
 
     createProjectComboSource->setBounds(400, 52, 271, 140);
@@ -213,7 +213,7 @@ BEGIN_JUCER_METADATA
              virtualName="" explicitFocusOrder="0" pos="400 16 271 32" sourceFile="Menu/OpenProjectButton.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="524df900a9089845" memberName="createProjectComboSource"
-                    virtualName="" explicitFocusOrder="0" pos="400 52 271 140" class="MobileComboBox::Primer"
+                    virtualName="" explicitFocusOrder="0" pos="400 52 271 140" class="MobileComboBox::Container"
                     params=""/>
   <JUCERCOMP name="" id="9bde1b4dd587d5fb" memberName="skew" virtualName=""
              explicitFocusOrder="0" pos="0R 0 64 0M" posRelativeX="981ceff5817d7b34"

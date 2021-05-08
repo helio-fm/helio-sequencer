@@ -21,11 +21,11 @@
 #include "PianoProjectMap.h"
 #include "Playhead.h"
 #include "Transport.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "ColourIDs.h"
 #include "HelioTheme.h"
 
-ProjectMapScroller::ProjectMapScroller(Transport &transportRef, SafePointer<HybridRoll> roll) :
+ProjectMapScroller::ProjectMapScroller(Transport &transportRef, SafePointer<RollBase> roll) :
     transport(transportRef),
     roll(roll),
     borderLineDark(findDefaultColour(ColourIDs::TrackScroller::borderLineDark)),
@@ -223,7 +223,7 @@ void ProjectMapScroller::mouseWheelMove(const MouseEvent &event, const MouseWhee
 // MidiRollListener
 //===----------------------------------------------------------------------===//
 
-void ProjectMapScroller::onMidiRollMoved(HybridRoll *targetRoll)
+void ProjectMapScroller::onMidiRollMoved(RollBase *targetRoll)
 {
     if (this->isVisible() && this->roll == targetRoll && !this->isTimerRunning())
     {
@@ -231,7 +231,7 @@ void ProjectMapScroller::onMidiRollMoved(HybridRoll *targetRoll)
     }
 }
 
-void ProjectMapScroller::onMidiRollResized(HybridRoll *targetRoll)
+void ProjectMapScroller::onMidiRollResized(RollBase *targetRoll)
 {
     if (this->isVisible() && this->roll == targetRoll && !this->isTimerRunning())
     {
@@ -240,7 +240,7 @@ void ProjectMapScroller::onMidiRollResized(HybridRoll *targetRoll)
 }
 
 // Starts quick and dirty animation from one bounds to another
-void ProjectMapScroller::switchToRoll(SafePointer<HybridRoll> roll)
+void ProjectMapScroller::switchToRoll(SafePointer<RollBase> roll)
 {
     this->oldAreaBounds = this->getIndicatorBounds();
     this->oldMapBounds = this->getMapBounds().toFloat();

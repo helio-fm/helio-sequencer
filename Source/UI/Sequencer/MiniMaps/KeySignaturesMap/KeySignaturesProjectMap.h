@@ -21,7 +21,7 @@
 #include "KeySignatureEvent.h"
 #include "ProjectListener.h"
 
-class HybridRoll;
+class RollBase;
 class ProjectNode;
 
 class KeySignaturesProjectMap final : public Component, public ProjectListener
@@ -30,7 +30,7 @@ public:
     
     enum class Type : int8 { Large, Small };
 
-    KeySignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type);
+    KeySignaturesProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type);
     ~KeySignaturesProjectMap() override;
 
     void alignKeySignatureComponent(KeySignatureComponent *nc);
@@ -96,7 +96,7 @@ private:
     
     int keyboardSize = Globals::twelveToneKeyboardSize;
 
-    HybridRoll &roll;
+    RollBase &roll;
     ProjectNode &project;
         
     ComponentAnimator animator;

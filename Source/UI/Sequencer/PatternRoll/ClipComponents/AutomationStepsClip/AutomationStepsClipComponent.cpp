@@ -21,13 +21,13 @@
 #include "MidiSequence.h"
 #include "AutomationSequence.h"
 #include "PlayerThread.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "AutomationStepEventComponent.h"
 #include "AutomationStepEventsConnector.h"
 #include "MidiTrack.h"
 
 AutomationStepsClipComponent::AutomationStepsClipComponent(ProjectNode &project,
-    MidiSequence *sequence, HybridRoll &roll, const Clip &clip) :
+    MidiSequence *sequence, RollBase &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),
     sequence(sequence)

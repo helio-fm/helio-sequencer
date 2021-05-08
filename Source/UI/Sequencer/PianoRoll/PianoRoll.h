@@ -29,7 +29,7 @@ class Scale;
 
 #include "Note.h"
 #include "Clip.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "HelioTheme.h"
 #include "NoteResizerLeft.h"
 #include "NoteResizerRight.h"
@@ -37,9 +37,7 @@ class Scale;
 #include "CommandPaletteModel.h"
 #include "MidiTrack.h"
 
-class PianoRoll final :
-    public HybridRoll,
-    public CommandPaletteModel
+class PianoRoll final : public RollBase, public CommandPaletteModel
 {
 public:
 
@@ -153,7 +151,7 @@ public:
     void paint(Graphics &g) override;
     
     //===------------------------------------------------------------------===//
-    // HybridRoll's legacy
+    // RollBase's legacy
     //===------------------------------------------------------------------===//
     
     void handleAsyncUpdate() override;
@@ -176,7 +174,7 @@ public:
 protected:
 
     //===------------------------------------------------------------------===//
-    // HybridRoll
+    // RollBase
     //===------------------------------------------------------------------===//
 
     void selectAll() override;

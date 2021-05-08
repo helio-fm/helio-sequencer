@@ -19,9 +19,9 @@
 #include "MobileComboBox.h"
 #include "PanelBackgroundC.h"
 
-MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Component> primer) :
+MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Component> container) :
     editor(editor),
-    primer(primer)
+    container(container)
 {
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
@@ -87,8 +87,8 @@ void MobileComboBox::resized()
     // a hack to prevent sending `resized` message to menu
     // and thus to prevent it from starting its animation,
     // until my own animation is complete:
-    if (this->primer == nullptr ||
-        this->getLocalBounds() != this->primer->getLocalBounds())
+    if (this->container == nullptr ||
+        this->getLocalBounds() != this->container->getLocalBounds())
     {
         this->menu->setBounds(0, 0, 0, 0);
     }
@@ -96,17 +96,17 @@ void MobileComboBox::resized()
 
 void MobileComboBox::parentHierarchyChanged()
 {
-    if (this->primer != nullptr)
+    if (this->container != nullptr)
     {
-        this->setBounds(this->primer->getBounds());
+        this->setBounds(this->container->getBounds());
     }
 }
 
 void MobileComboBox::parentSizeChanged()
 {
-    if (this->primer != nullptr)
+    if (this->container != nullptr)
     {
-        this->setBounds(this->primer->getBounds());
+        this->setBounds(this->container->getBounds());
     }
 }
 
@@ -178,17 +178,17 @@ void MobileComboBox::initBackground(Component *newCustomBackground)
     this->background->toBack();
 }
 
-MobileComboBox::Primer::Primer()
+MobileComboBox::Container::Container()
 {
     this->setInterceptsMouseClicks(false, false);
 }
 
-MobileComboBox::Primer::~Primer()
+MobileComboBox::Container::~Container()
 {
     this->cleanup();
 }
 
-void MobileComboBox::Primer::initWith(WeakReference<Component> editor,
+void MobileComboBox::Container::initWith(WeakReference<Component> editor,
     MenuPanel::Menu menu, Component *newCustomBackground)
 {
     this->toFront(false);
@@ -204,7 +204,7 @@ void MobileComboBox::Primer::initWith(WeakReference<Component> editor,
     }
 }
 
-void MobileComboBox::Primer::initWith(WeakReference<Component> textEditor,
+void MobileComboBox::Container::initWith(WeakReference<Component> textEditor,
     Function<MenuPanel::Menu(void)> menuInitializer,
     Component *newCustomBackground /*= nullptr*/)
 {
@@ -212,17 +212,17 @@ void MobileComboBox::Primer::initWith(WeakReference<Component> textEditor,
     this->initWith(textEditor, MenuPanel::Menu(), newCustomBackground);
 }
 
-void MobileComboBox::Primer::updateMenu(MenuPanel::Menu menu)
+void MobileComboBox::Container::updateMenu(MenuPanel::Menu menu)
 {
     this->combo->initMenu(menu);
 }
 
-void MobileComboBox::Primer::cleanup()
+void MobileComboBox::Container::cleanup()
 {
     this->comboTrigger = nullptr;
 }
 
-void MobileComboBox::Primer::handleCommandMessage(int commandId)
+void MobileComboBox::Container::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::ToggleShowHideCombo &&
         this->getParentComponent() != nullptr &&

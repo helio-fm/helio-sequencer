@@ -20,7 +20,7 @@
 #include "TimeSignatureEvent.h"
 #include "ProjectListener.h"
 
-class HybridRoll;
+class RollBase;
 class ProjectNode;
 class TrackStartIndicator;
 class TrackEndIndicator;
@@ -34,7 +34,7 @@ public:
 
     enum class Type : int8 { Large, Small };
 
-    TimeSignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type);
+    TimeSignaturesProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type);
     ~TimeSignaturesProjectMap() override;
 
     void alignTimeSignatureComponent(TimeSignatureComponent *nc);
@@ -96,7 +96,7 @@ private:
     float rollFirstBeat = 0.f;
     float rollLastBeat = Globals::Defaults::projectLength;
     
-    HybridRoll &roll;
+    RollBase &roll;
     ProjectNode &project;
     
     UniquePointer<TrackStartIndicator> trackStartIndicator;

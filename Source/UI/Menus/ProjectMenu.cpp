@@ -29,7 +29,7 @@
 #include "KeySignaturesSequence.h"
 #include "AudioCore.h"
 #include "PianoSequence.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "SequencerOperations.h"
 #include "MidiTrackActions.h"
 #include "PianoTrackActions.h"

@@ -17,16 +17,16 @@
 
 #pragma once
 
-class HybridRoll;
+class RollBase;
 
 #include "IconComponent.h"
 
-class HybridRollExpandMark final : public Component, private Timer
+class RollExpandMark final : public Component, private Timer
 {
 public:
 
-    HybridRollExpandMark(HybridRoll &parentRoll, float targetBeat, int numBeatsToTake);
-    ~HybridRollExpandMark();
+    RollExpandMark(RollBase &parentRoll, float targetBeat, int numBeatsToTake);
+    ~RollExpandMark();
 
     void paint(Graphics &g) override;
     void resized() override;
@@ -38,7 +38,7 @@ private:
     void timerCallback() override;
     void updatePosition();
 
-    HybridRoll &roll;
+    RollBase &roll;
 
     float beat = 0.f;
     float alpha = 1.f;
@@ -46,5 +46,5 @@ private:
 
     UniquePointer<IconComponent> plusImage;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HybridRollExpandMark)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RollExpandMark)
 };

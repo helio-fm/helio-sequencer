@@ -35,7 +35,7 @@
 
 #include "AudioCore.h"
 #include "Pattern.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "UndoStack.h"
 #include "MidiRecorder.h"
 #include "KeyboardMapping.h"
@@ -166,12 +166,12 @@ ProjectTimeline *ProjectNode::getTimeline() const noexcept
     return this->timeline.get();
 }
 
-HybridRollEditMode &ProjectNode::getEditMode() noexcept
+RollEditMode &ProjectNode::getEditMode() noexcept
 {
     return this->rollEditMode;
 }
 
-HybridRoll *ProjectNode::getLastFocusedRoll() const
+RollBase *ProjectNode::getLastFocusedRoll() const
 {
     return this->sequencerLayout->getRoll();
 }

@@ -22,13 +22,13 @@
 #include "MidiSequence.h"
 #include "PianoSequence.h"
 #include "PlayerThread.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "AnnotationEvent.h"
 #include "MidiTrack.h"
 #include "PatternRoll.h"
 
 PianoClipComponent::PianoClipComponent(ProjectNode &project, MidiSequence *sequence,
-    HybridRoll &roll, const Clip &clip) :
+    RollBase &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),
     sequence(sequence)

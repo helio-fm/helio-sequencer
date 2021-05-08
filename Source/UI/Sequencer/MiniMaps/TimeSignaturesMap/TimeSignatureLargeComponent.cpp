@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "TimeSignaturesSequence.h"
 #include "TimeSignaturesProjectMap.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "ColourIDs.h"
 #include "CachedLabelImage.h"
 #include "TimeSignatureLargeComponent.h"

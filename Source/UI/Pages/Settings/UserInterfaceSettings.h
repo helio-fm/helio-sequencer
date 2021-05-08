@@ -36,7 +36,7 @@ private:
     void updateButtons();
     StringArray systemFonts;
 
-    UniquePointer<MobileComboBox::Primer> fontComboPrimer;
+    UniquePointer<MobileComboBox::Container> fontsCombo;
     UniquePointer<ToggleButton> openGLRendererButton;
     UniquePointer<TextEditor> fontEditor;
     UniquePointer<ToggleButton> nativeTitleBarButton;

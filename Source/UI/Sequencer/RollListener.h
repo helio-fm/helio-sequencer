@@ -17,15 +17,15 @@
 
 #pragma once
 
-class HybridRoll;
+class RollBase;
 
-class HybridRollListener
+class RollListener
 {
 public:
     
-    virtual ~HybridRollListener() = default;
+    virtual ~RollListener() = default;
     
-    virtual void onMidiRollMoved(HybridRoll *targetRoll) = 0;
-    virtual void onMidiRollResized(HybridRoll *targetRoll) = 0;
+    virtual void onMidiRollMoved(RollBase *targetRoll) = 0;
+    virtual void onMidiRollResized(RollBase *targetRoll) = 0;
     
 };

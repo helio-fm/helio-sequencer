@@ -26,10 +26,10 @@ class SmoothPanController;
 class SmoothZoomController;
 class MultiTouchController;
 class OverlayShadow;
-class HybridRollHeader;
+class RollHeader;
 class AutomationStepsSequenceMap;
 class Transport;
-class HybridRollListener;
+class RollListener;
 class TimelineWarningMarker;
 
 #include "ComponentFader.h"
@@ -46,23 +46,23 @@ class TimelineWarningMarker;
 #include "ProjectNode.h"
 #include "ProjectListener.h"
 #include "Lasso.h"
-#include "HybridRollEditMode.h"
+#include "RollEditMode.h"
 #include "UserInterfaceFlags.h"
 #include "AudioMonitor.h"
 #include "HeadlineContextMenuController.h"
 #include "Temperament.h"
 
 #if PLATFORM_MOBILE
-#   define HYBRID_ROLL_LISTENS_LONG_TAP 1
+#   define ROLL_LISTENS_LONG_TAP 1
 #endif
 
-#define HYBRID_ROLL_BULK_REPAINT_START \
+#define ROLL_BATCH_REPAINT_START \
     if (this->isEnabled()) { this->setVisible(false); }
 
-#define HYBRID_ROLL_BULK_REPAINT_END \
+#define ROLL_BATCH_REPAINT_END \
     if (this->isEnabled()) { this->setVisible(true); }
 
-class HybridRoll :
+class RollBase :
     public Component,
     public Serializable,
     public LongTapListener,
@@ -73,7 +73,7 @@ class HybridRoll :
     public LassoSource<SelectableComponent *>,
     public Playhead::Listener, // for smooth scrolling to seek position
     protected UserInterfaceFlags::Listener, // global UI options
-    protected ChangeListener, // listens to HybridRollEditMode,
+    protected ChangeListener, // listens to RollEditMode,
     protected TransportListener, // for positioning the playhead component and auto-scrolling
     protected AsyncUpdater, // coalesce multiple transport events ^^ into a single async view change
     protected HighResolutionTimer, // for smooth scrolling to seek position
@@ -81,18 +81,18 @@ class HybridRoll :
 {
 public:
     
-    HybridRoll(ProjectNode &project, Viewport &viewport,
+    RollBase(ProjectNode &project, Viewport &viewport,
         WeakReference<AudioMonitor> audioMonitor,
         bool hasAnnotationsTrack = true,
         bool hasKeySignaturesTrack = true,
         bool hasTimeSignaturesTrack = true);
 
-    ~HybridRoll() override;
+    ~RollBase() override;
 
     Viewport &getViewport() const noexcept;
     Transport &getTransport() const noexcept;
     ProjectNode &getProject() const noexcept;
-    HybridRollEditMode &getEditMode() noexcept;
+    RollEditMode &getEditMode() noexcept;
 
     virtual void selectAll() = 0;
     virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
@@ -139,11 +139,11 @@ public:
     Temperament::Ptr getTemperament() const noexcept;
 
     //===------------------------------------------------------------------===//
-    // HybridRoll listeners management
+    // RollListeners management
     //===------------------------------------------------------------------===//
     
-    void addRollListener(HybridRollListener *listener);
-    void removeRollListener(HybridRollListener *listener);
+    void addRollListener(RollListener *listener);
+    void removeRollListener(RollListener *listener);
     void removeAllRollListeners();
     
     //===------------------------------------------------------------------===//
@@ -255,7 +255,7 @@ public:
 
 protected:
     
-    ListenerList<HybridRollListener> listeners;
+    ListenerList<RollListener> listeners;
     
     void broadcastRollMoved();
     void broadcastRollResized();
@@ -313,7 +313,7 @@ protected:
     void handleAsyncUpdate() override;
 
     double findPlayheadOffsetFromViewCentre() const;
-    friend class HybridRollHeader;
+    friend class RollHeader;
     
     //===------------------------------------------------------------------===//
     // Timer
@@ -388,7 +388,7 @@ protected:
 
     ComponentFader fader;
 
-    UniquePointer<HybridRollHeader> header;
+    UniquePointer<RollHeader> header;
     UniquePointer<Component> headerShadow;
     UniquePointer<Playhead> playhead;
     

@@ -19,7 +19,7 @@
 
 #include "ComponentFader.h"
 
-class HybridRoll;
+class RollBase;
 
 class TimelineWarningMarker final : public Component
 {
@@ -32,7 +32,7 @@ public:
     };
     
     TimelineWarningMarker(WarningLevel warningLevel,
-        HybridRoll &parentRoll, float initialBeatPosition);
+        RollBase &parentRoll, float initialBeatPosition);
 
     float getStartBeat() const noexcept;
     void setStartBeat(float startBeat);
@@ -49,7 +49,7 @@ public:
 
 private:
 
-    HybridRoll &roll;
+    RollBase &roll;
 
     const Colour colour;
 

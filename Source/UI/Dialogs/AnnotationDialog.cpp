@@ -55,8 +55,8 @@ AnnotationDialog::AnnotationDialog(Component &owner,
     ownerComponent(owner),
     addsNewEvent(shouldAddNewEvent)
 {
-    this->comboPrimer = make<MobileComboBox::Primer>();
-    this->addAndMakeVisible(this->comboPrimer.get());
+    this->presetsCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->presetsCombo.get());
 
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
@@ -144,7 +144,7 @@ AnnotationDialog::AnnotationDialog(Component &owner,
         menu.add(cmd);
     }
 
-    this->comboPrimer->initWith(this->textEditor.get(), menu);
+    this->presetsCombo->initWith(this->textEditor.get(), menu);
 
     static constexpr auto colourButtonSize = 30;
     this->setSize(this->getPaddingAndMarginTotal() +
@@ -162,7 +162,7 @@ AnnotationDialog::~AnnotationDialog()
 
 void AnnotationDialog::resized()
 {
-    this->comboPrimer->setBounds(this->getContentBounds(0.5f));
+    this->presetsCombo->setBounds(this->getContentBounds(0.5f));
     this->messageLabel->setBounds(this->getCaptionBounds());
 
     const auto buttonsBounds(this->getButtonsBounds());

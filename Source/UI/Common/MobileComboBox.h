@@ -44,12 +44,12 @@ public:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Trigger)
     };
 
-    class Primer final : public Component
+    class Container final : public Component
     {
     public:
 
-        Primer();
-        ~Primer() override;
+        Container();
+        ~Container() override;
 
         void handleCommandMessage(int commandId) override;
 
@@ -74,7 +74,7 @@ public:
         WeakReference<Component> textEditor;
         Function<MenuPanel::Menu(void)> menuInitializer;
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Primer)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Container)
     };
 
     void resized() override;
@@ -96,7 +96,7 @@ private:
             !this->currentNameLabel->isVisible();
     }
 
-    WeakReference<Component> primer;
+    WeakReference<Component> container;
     WeakReference<Component> editor;
     ComponentAnimator animator;
 

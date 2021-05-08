@@ -73,7 +73,7 @@ private:
     void sendEventChange(const AnnotationEvent &newEvent);
     void removeEvent();
 
-    UniquePointer<MobileComboBox::Primer> comboPrimer;
+    UniquePointer<MobileComboBox::Container> presetsCombo;
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> removeEventButton;
     UniquePointer<TextButton> okButton;

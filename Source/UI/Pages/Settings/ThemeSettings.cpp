@@ -26,8 +26,8 @@ ThemeSettings::ThemeSettings()
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
 
-    this->fontComboPrimer = make<MobileComboBox::Primer>();
-    this->addAndMakeVisible(this->fontComboPrimer.get());
+    this->fontCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->fontCombo.get());
 
     this->themesList = make<ListBox>();
     this->addAndMakeVisible(this->themesList.get());
@@ -52,7 +52,7 @@ ThemeSettings::~ThemeSettings()
 
 void ThemeSettings::resized()
 {
-    this->fontComboPrimer->setBounds(4, 4, this->getWidth() - 8, this->getHeight() - 8);
+    this->fontCombo->setBounds(4, 4, this->getWidth() - 8, this->getHeight() - 8);
     this->themesList->setBounds(8, 8, this->getWidth() - 24, this->getHeight() - 16);
 }
 

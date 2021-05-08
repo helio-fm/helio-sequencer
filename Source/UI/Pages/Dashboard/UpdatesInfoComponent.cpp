@@ -28,8 +28,8 @@
 
 UpdatesInfoComponent::UpdatesInfoComponent()
 {
-    this->comboPrimer = make<MobileComboBox::Primer>();
-    this->addAndMakeVisible(this->comboPrimer.get());
+    this->updatesCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->updatesCombo.get());
 
     this->label = make<Label>(String(), TRANS(I18n::Common::updateProceed));
     this->addAndMakeVisible(this->label.get());
@@ -70,7 +70,7 @@ UpdatesInfoComponent::UpdatesInfoComponent()
                 version.getHumanReadableDescription()));
         }
 
-        this->comboPrimer->initWith(this->label.get(), menu, new PanelBackgroundA());
+        this->updatesCombo->initWith(this->label.get(), menu, new PanelBackgroundA());
     }
     else
     {
@@ -84,7 +84,7 @@ UpdatesInfoComponent::~UpdatesInfoComponent() = default;
 
 void UpdatesInfoComponent::resized()
 {
-    this->comboPrimer->setBounds(this->getLocalBounds());
+    this->updatesCombo->setBounds(this->getLocalBounds());
     this->label->setBounds((this->getWidth() / 2) - ((this->getWidth() - 56) / 2), 2, this->getWidth() - 56, 24);
 }
 

@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "CommandPaletteTimelineEvents.h"
 #include "Transport.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "PianoTrackNode.h"
 #include "ProjectMetadata.h"
 #include "ProjectTimeline.h"

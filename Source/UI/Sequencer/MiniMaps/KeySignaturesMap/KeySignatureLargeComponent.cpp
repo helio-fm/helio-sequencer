@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "KeySignaturesSequence.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "ColourIDs.h"
 #include "CachedLabelImage.h"
 #include "KeySignatureLargeComponent.h"

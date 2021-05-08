@@ -16,8 +16,8 @@
 */
 
 #include "Common.h"
-#include "HybridRollHeader.h"
-#include "HybridRoll.h"
+#include "RollHeader.h"
+#include "RollBase.h"
 #include "Transport.h"
 #include "SelectionComponent.h"
 #include "SoundProbeIndicator.h"
@@ -28,7 +28,7 @@
 #include "TimelineMenu.h"
 #include "ColourIDs.h"
 
-HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef, Viewport &viewportRef) :
+RollHeader::RollHeader(Transport &transportRef, RollBase &rollRef, Viewport &viewportRef) :
     transport(transportRef),
     roll(rollRef),
     viewport(viewportRef)
@@ -49,9 +49,9 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
     this->selectionIndicator->setTopLeftPosition(0, this->getHeight() - this->selectionIndicator->getHeight());
 }
 
-HybridRollHeader::~HybridRollHeader() = default;
+RollHeader::~RollHeader() = default;
 
-void HybridRollHeader::updateColours()
+void RollHeader::updateColours()
 {
     // Painting is the very bottleneck of this app,
     // so make sure we have no lookups inside paint method
@@ -68,14 +68,14 @@ void HybridRollHeader::updateColours()
         .withMultipliedAlpha(0.5f);
 }
 
-void HybridRollHeader::showRecordingMode(bool showRecordingMarker)
+void RollHeader::showRecordingMode(bool showRecordingMarker)
 {
     this->recordingMode = showRecordingMarker;
     this->updateColours();
     this->repaint();
 }
 
-void HybridRollHeader::showLoopMode(bool hasLoop, float startBeat, float endBeat)
+void RollHeader::showLoopMode(bool hasLoop, float startBeat, float endBeat)
 {
     this->loopMode = hasLoop;
     this->loopStartBeat = startBeat;
@@ -83,7 +83,7 @@ void HybridRollHeader::showLoopMode(bool hasLoop, float startBeat, float endBeat
     this->repaint();
 }
 
-void HybridRollHeader::setSoundProbeMode(bool shouldPreviewOnClick)
+void RollHeader::setSoundProbeMode(bool shouldPreviewOnClick)
 {
     if (this->soundProbeMode.get() == shouldPreviewOnClick)
     {
@@ -104,7 +104,7 @@ void HybridRollHeader::setSoundProbeMode(bool shouldPreviewOnClick)
     }
 }
 
-void HybridRollHeader::updateSubrangeIndicator(const Colour &colour, float firstBeat, float lastBeat)
+void RollHeader::updateSubrangeIndicator(const Colour &colour, float firstBeat, float lastBeat)
 {
     if (this->clipRangeIndicator == nullptr)
     {
@@ -118,7 +118,7 @@ void HybridRollHeader::updateSubrangeIndicator(const Colour &colour, float first
     }
 }
 
-void HybridRollHeader::updateIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e)
+void RollHeader::updateIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e)
 {
     const auto parentEvent = e.getEventRelativeTo(&this->roll);
     const float roundBeat = this->roll.getBeatByXPosition(float(parentEvent.x));
@@ -127,14 +127,14 @@ void HybridRollHeader::updateIndicatorPosition(SoundProbeIndicator *indicator, c
     indicator->setAnchoredAt(anchor);
 }
 
-double HybridRollHeader::getUnalignedAnchorForEvent(const MouseEvent &e) const
+double RollHeader::getUnalignedAnchorForEvent(const MouseEvent &e) const
 {
     const auto parentEvent = e.getEventRelativeTo(&this->roll);
     const double absX = double(parentEvent.getPosition().getX()) / double(this->roll.getWidth());
     return absX;
 }
 
-void HybridRollHeader::updateTimeDistanceIndicator()
+void RollHeader::updateTimeDistanceIndicator()
 {
     if (this->pointingIndicator == nullptr ||
         this->probeIndicator == nullptr ||
@@ -159,7 +159,7 @@ void HybridRollHeader::updateTimeDistanceIndicator()
     this->timeDistanceIndicator->getTimeLabel()->setText(timeDeltaText, dontSendNotification);
 }
 
-void HybridRollHeader::updateClipRangeIndicator()
+void RollHeader::updateClipRangeIndicator()
 {
     jassert(this->clipRangeIndicator != nullptr);
     const int x1 = this->roll.getXPositionByBeat(this->clipRangeIndicator->getFirstBeat());
@@ -171,7 +171,7 @@ void HybridRollHeader::updateClipRangeIndicator()
 // Component
 //===----------------------------------------------------------------------===//
 
-void HybridRollHeader::mouseDown(const MouseEvent &e)
+void RollHeader::mouseDown(const MouseEvent &e)
 {
     if (this->soundProbeMode.get())
     {
@@ -227,7 +227,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
     }
 }
 
-void HybridRollHeader::mouseDrag(const MouseEvent &e)
+void RollHeader::mouseDrag(const MouseEvent &e)
 {
     if (this->soundProbeMode.get())
     {
@@ -241,7 +241,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
 
                 if (this->timeDistanceIndicator == nullptr)
                 {
-                    if (distance > HybridRollHeader::minTimeDistanceIndicatorSize)
+                    if (distance > RollHeader::minTimeDistanceIndicatorSize)
                     {
                         this->transport.stopPlaybackAndRecording();
                         this->transport.allNotesControllersAndSoundOff();
@@ -255,7 +255,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
                 }
                 else
                 {
-                    if (distance <= HybridRollHeader::minTimeDistanceIndicatorSize)
+                    if (distance <= RollHeader::minTimeDistanceIndicatorSize)
                     {
                         this->timeDistanceIndicator = nullptr;
                     }
@@ -289,7 +289,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
     }
 }
 
-void HybridRollHeader::mouseUp(const MouseEvent &e)
+void RollHeader::mouseUp(const MouseEvent &e)
 {
     this->probeIndicator = nullptr;
     this->timeDistanceIndicator = nullptr;
@@ -328,7 +328,7 @@ void HybridRollHeader::mouseUp(const MouseEvent &e)
     }
 }
 
-void HybridRollHeader::mouseMove(const MouseEvent &e)
+void RollHeader::mouseMove(const MouseEvent &e)
 {
     if (this->pointingIndicator != nullptr)
     {
@@ -342,7 +342,7 @@ void HybridRollHeader::mouseMove(const MouseEvent &e)
     }
 }
 
-void HybridRollHeader::mouseExit(const MouseEvent &e)
+void RollHeader::mouseExit(const MouseEvent &e)
 {
     if (this->pointingIndicator != nullptr)
     {
@@ -355,7 +355,7 @@ void HybridRollHeader::mouseExit(const MouseEvent &e)
     }
 }
 
-void HybridRollHeader::mouseDoubleClick(const MouseEvent &e)
+void RollHeader::mouseDoubleClick(const MouseEvent &e)
 {
 #if PLATFORM_DESKTOP
     if (this->soundProbeMode.get())
@@ -370,7 +370,7 @@ void HybridRollHeader::mouseDoubleClick(const MouseEvent &e)
 #endif
 }
 
-void HybridRollHeader::paint(Graphics &g)
+void RollHeader::paint(Graphics &g)
 {
     const int paintStartX = this->viewport.getViewPositionX();
     const int paintEndX = this->viewport.getViewPositionX() + this->viewport.getViewWidth();
@@ -455,7 +455,7 @@ void HybridRollHeader::paint(Graphics &g)
     }
 }
 
-void HybridRollHeader::resized()
+void RollHeader::resized()
 {
     if (this->clipRangeIndicator != nullptr)
     {
@@ -463,7 +463,7 @@ void HybridRollHeader::resized()
     }
 }
 
-void HybridRollHeader::showPopupMenu()
+void RollHeader::showPopupMenu()
 {
     HelioCallout::emit(new TimelineMenu(this->roll.getProject()), this, true);
 }

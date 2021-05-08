@@ -40,7 +40,7 @@ private:
 
     Array<AppVersionDto> versions;
 
-    UniquePointer<MobileComboBox::Primer> comboPrimer;
+    UniquePointer<MobileComboBox::Container> updatesCombo;
     UniquePointer<Label> label;
 
 #endif

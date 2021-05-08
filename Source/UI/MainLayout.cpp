@@ -467,7 +467,7 @@ static void emitCommandPalette()
     {
         project->getTransport().stopPlaybackAndRecording();
 
-        HybridRoll *activeRoll = nullptr;
+        RollBase *activeRoll = nullptr;
         auto *activeNode = App::Workspace().getTreeRoot()->findActiveNode();
         if (nullptr != dynamic_cast<PianoTrackNode *>(activeNode))
         {

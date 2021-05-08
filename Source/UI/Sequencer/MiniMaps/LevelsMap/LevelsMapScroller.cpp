@@ -17,11 +17,11 @@
 
 #include "Common.h"
 #include "LevelsMapScroller.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "ColourIDs.h"
 #include "HelioTheme.h"
 
-LevelsMapScroller::LevelsMapScroller(SafePointer<HybridRoll> roll) : roll(roll)
+LevelsMapScroller::LevelsMapScroller(SafePointer<RollBase> roll) : roll(roll)
 {
     this->setPaintingIsUnclipped(false); // cut dragger may and will go out of bounds
     this->setInterceptsMouseClicks(true, true);
@@ -82,7 +82,7 @@ void LevelsMapScroller::mouseWheelMove(const MouseEvent &event, const MouseWheel
 // MidiRollListener
 //===----------------------------------------------------------------------===//
 
-void LevelsMapScroller::onMidiRollMoved(HybridRoll *targetRoll)
+void LevelsMapScroller::onMidiRollMoved(RollBase *targetRoll)
 {
     if (this->isVisible() && this->roll == targetRoll)
     {
@@ -90,7 +90,7 @@ void LevelsMapScroller::onMidiRollMoved(HybridRoll *targetRoll)
     }
 }
 
-void LevelsMapScroller::onMidiRollResized(HybridRoll *targetRoll)
+void LevelsMapScroller::onMidiRollResized(RollBase *targetRoll)
 {
     if (this->isVisible() && this->roll == targetRoll)
     {

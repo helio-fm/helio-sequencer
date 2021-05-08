@@ -18,7 +18,7 @@
 #pragma once
 
 class MidiSequence;
-class HybridRoll;
+class RollBase;
 
 #include "MidiEvent.h"
 #include "FloatBoundsComponent.h"
@@ -30,7 +30,7 @@ class MidiEventComponent :
 {
 public:
 
-    MidiEventComponent(HybridRoll &editor, bool ghostMode = false) noexcept;
+    MidiEventComponent(RollBase &editor, bool ghostMode = false) noexcept;
 
     bool isActive() const noexcept;
     void setActive(bool val, bool force = false);
@@ -56,7 +56,7 @@ public:
 
 protected:
 
-    HybridRoll &roll;
+    RollBase &roll;
     ComponentDragger dragger;
 
     struct MidiEventComponentFlags final

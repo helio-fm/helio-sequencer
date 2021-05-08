@@ -58,9 +58,9 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->fontEditor->setInterceptsMouseClicks(false, true);
     this->fontEditor->setText(TRANS(I18n::Settings::uiFont) + ": " + lastUsedFontName);
 
-    this->fontComboPrimer = make<MobileComboBox::Primer>();
-    this->addAndMakeVisible(this->fontComboPrimer.get());
-    this->fontComboPrimer->initWith(this->fontEditor.get(), fontsMenuProvider);
+    this->fontsCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->fontsCombo.get());
+    this->fontsCombo->initWith(this->fontEditor.get(), fontsMenuProvider);
     
     this->openGLRendererButton = make<ToggleButton>(TRANS(I18n::Settings::rendererOpengl));
     this->addAndMakeVisible(this->openGLRendererButton.get());
@@ -139,7 +139,7 @@ UserInterfaceSettings::~UserInterfaceSettings() = default;
 void UserInterfaceSettings::resized()
 {
     constexpr auto margin1 = 4;
-    this->fontComboPrimer->setBounds(margin1, margin1,
+    this->fontsCombo->setBounds(margin1, margin1,
         this->getWidth() - margin1 * 2, this->getHeight() - margin1 * 2);
 
     constexpr auto margin2 = margin1 + 12;

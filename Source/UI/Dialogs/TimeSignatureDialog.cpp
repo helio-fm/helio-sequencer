@@ -46,8 +46,8 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     defaultMeters(getDefaultMeters()),
     addsNewEvent(shouldAddNewEvent)
 {
-    this->comboPrimer = make<MobileComboBox::Primer>();
-    this->addAndMakeVisible(this->comboPrimer.get());
+    this->presetsCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->presetsCombo.get());
 
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
@@ -129,7 +129,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
         const auto &s = meterNames[i];
         menu.add(MenuItem::item(Icons::empty, CommandIDs::SelectTimeSignature + i, s));
     }
-    this->comboPrimer->initWith(this->textEditor.get(), menu);
+    this->presetsCombo->initWith(this->textEditor.get(), menu);
 
     this->setSize(370, 185);
     this->updatePosition();
@@ -143,7 +143,7 @@ TimeSignatureDialog::~TimeSignatureDialog()
 
 void TimeSignatureDialog::resized()
 {
-    this->comboPrimer->setBounds(this->getContentBounds(0.5f));
+    this->presetsCombo->setBounds(this->getContentBounds(0.5f));
     this->messageLabel->setBounds(this->getCaptionBounds());
 
     const auto buttonsBounds(this->getButtonsBounds());

@@ -59,8 +59,8 @@ public:
         scrollerMode = 2
     };
 
-    RollsSwitchingProxy(HybridRoll *targetRoll1,
-        HybridRoll *targetRoll2,
+    RollsSwitchingProxy(RollBase *targetRoll1,
+        RollBase *targetRoll2,
         Viewport *targetViewport1,
         Viewport *targetViewport2,
         ProjectMapScroller *targetMapScroller,
@@ -336,10 +336,10 @@ private:
         }
     }
 
-    SafePointer<HybridRoll> pianoRoll;
+    SafePointer<RollBase> pianoRoll;
     SafePointer<Viewport> pianoViewport;
 
-    SafePointer<HybridRoll> patternRoll;
+    SafePointer<RollBase> patternRoll;
     SafePointer<Viewport> patternViewport;
 
     SafePointer<ProjectMapScroller> pianoScroller;
@@ -581,7 +581,7 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
         useActiveClip ? activeClip : *trackFirstClip, false);
 }
 
-HybridRoll *SequencerLayout::getRoll() const noexcept
+RollBase *SequencerLayout::getRoll() const noexcept
 {
     if (this->rollContainer->isPatternMode())
     {

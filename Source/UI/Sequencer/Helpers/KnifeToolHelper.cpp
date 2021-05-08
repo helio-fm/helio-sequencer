@@ -19,9 +19,9 @@
 #include "KnifeToolHelper.h"
 #include "NoteComponent.h"
 #include "CutPointMark.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 
-KnifeToolHelper::KnifeToolHelper(HybridRoll &roll) : roll(roll)
+KnifeToolHelper::KnifeToolHelper(RollBase &roll) : roll(roll)
 {
     this->setAlpha(0.f);
     this->setWantsKeyboardFocus(false);

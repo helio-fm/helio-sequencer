@@ -22,14 +22,14 @@
 #include "ProjectTimeline.h"
 #include "ProjectMetadata.h"
 #include "PlayerThread.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "KeySignatureDialog.h"
 #include "KeySignatureLargeComponent.h"
 #include "KeySignatureSmallComponent.h"
 #include "RescalePreviewTool.h"
 #include "HelioCallout.h"
 
-KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &parentProject, HybridRoll &parentRoll, Type type) :
+KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type) :
     project(parentProject),
     roll(parentRoll),
     type(type)

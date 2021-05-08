@@ -21,7 +21,7 @@
 #include "ClipComponent.h"
 #include "ProjectListener.h"
 
-class HybridRoll;
+class RollBase;
 class MidiSequence;
 class ProjectNode;
 
@@ -30,7 +30,7 @@ class PianoClipComponent final : public ClipComponent, public ProjectListener
 public:
 
     PianoClipComponent(ProjectNode &project, MidiSequence *sequence,
-        HybridRoll &roll, const Clip &clip);
+        RollBase &roll, const Clip &clip);
 
     ~PianoClipComponent() override;
 

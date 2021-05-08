@@ -21,12 +21,12 @@ class ClipComponent;
 class ClipCutPointMark;
 
 #include "HelioTheme.h"
-#include "HybridRoll.h"
+#include "RollBase.h"
 #include "MidiTrack.h"
 #include "Pattern.h"
 #include "Clip.h"
 
-class PatternRoll final : public HybridRoll
+class PatternRoll final : public RollBase
 {
 public:
 
@@ -111,7 +111,7 @@ protected:
     void onStop() override;
 
     //===------------------------------------------------------------------===//
-    // HybridRoll
+    // RollBase
     //===------------------------------------------------------------------===//
 
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;

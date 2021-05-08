@@ -16,78 +16,78 @@
 */
 
 #include "Common.h"
-#include "HybridRollEditMode.h"
+#include "RollEditMode.h"
 #include "Icons.h"
 
-bool HybridRollEditMode::forbidsViewportDragging() const
+bool RollEditMode::forbidsViewportDragging() const
 {
 #if PLATFORM_DESKTOP
     return
-        this->isMode(HybridRollEditMode::selectionMode) ||
-        this->isMode(HybridRollEditMode::zoomMode);
+        this->isMode(RollEditMode::selectionMode) ||
+        this->isMode(RollEditMode::zoomMode);
 #elif PLATFORM_MOBILE
     return
-        this->isMode(HybridRollEditMode::selectionMode) ||
-        this->isMode(HybridRollEditMode::zoomMode) ||
-        this->isMode(HybridRollEditMode::drawMode) ||
-        this->isMode(HybridRollEditMode::knifeMode);
+        this->isMode(RollEditMode::selectionMode) ||
+        this->isMode(RollEditMode::zoomMode) ||
+        this->isMode(RollEditMode::drawMode) ||
+        this->isMode(RollEditMode::knifeMode);
 #endif
 }
 
-bool HybridRollEditMode::forcesViewportDragging() const
+bool RollEditMode::forcesViewportDragging() const
 {
-    return this->isMode(HybridRollEditMode::dragMode);
+    return this->isMode(RollEditMode::dragMode);
 }
 
-bool HybridRollEditMode::forbidsViewportZooming() const
+bool RollEditMode::forbidsViewportZooming() const
 {
-    return !this->isMode(HybridRollEditMode::zoomMode);
+    return !this->isMode(RollEditMode::zoomMode);
 }
 
-bool HybridRollEditMode::forcesViewportZooming() const
+bool RollEditMode::forcesViewportZooming() const
 {
-    return this->isMode(HybridRollEditMode::zoomMode);
+    return this->isMode(RollEditMode::zoomMode);
 }
 
-bool HybridRollEditMode::forbidsSelectionMode() const
-{
-    return
-        this->isMode(HybridRollEditMode::drawMode) ||
-        this->isMode(HybridRollEditMode::zoomMode) ||
-        this->isMode(HybridRollEditMode::dragMode) ||
-        this->isMode(HybridRollEditMode::knifeMode);
-}
-
-bool HybridRollEditMode::forcesSelectionMode() const
-{
-    return this->isMode(HybridRollEditMode::selectionMode);
-}
-
-bool HybridRollEditMode::forbidsAddingEvents() const
+bool RollEditMode::forbidsSelectionMode() const
 {
     return
-        this->isMode(HybridRollEditMode::selectionMode) ||
-        this->isMode(HybridRollEditMode::zoomMode) ||
-        this->isMode(HybridRollEditMode::dragMode) ||
-        this->isMode(HybridRollEditMode::knifeMode);
+        this->isMode(RollEditMode::drawMode) ||
+        this->isMode(RollEditMode::zoomMode) ||
+        this->isMode(RollEditMode::dragMode) ||
+        this->isMode(RollEditMode::knifeMode);
 }
 
-bool HybridRollEditMode::forcesAddingEvents() const
+bool RollEditMode::forcesSelectionMode() const
 {
-    return this->isMode(HybridRollEditMode::drawMode);
+    return this->isMode(RollEditMode::selectionMode);
 }
 
-bool HybridRollEditMode::forbidsCuttingEvents() const
+bool RollEditMode::forbidsAddingEvents() const
 {
-    return !this->isMode(HybridRollEditMode::knifeMode);
+    return
+        this->isMode(RollEditMode::selectionMode) ||
+        this->isMode(RollEditMode::zoomMode) ||
+        this->isMode(RollEditMode::dragMode) ||
+        this->isMode(RollEditMode::knifeMode);
 }
 
-bool HybridRollEditMode::forcesCuttingEvents() const
+bool RollEditMode::forcesAddingEvents() const
 {
-    return this->isMode(HybridRollEditMode::knifeMode);
+    return this->isMode(RollEditMode::drawMode);
 }
 
-bool HybridRollEditMode::shouldInteractWithChildren() const
+bool RollEditMode::forbidsCuttingEvents() const
+{
+    return !this->isMode(RollEditMode::knifeMode);
+}
+
+bool RollEditMode::forcesCuttingEvents() const
+{
+    return this->isMode(RollEditMode::knifeMode);
+}
+
+bool RollEditMode::shouldInteractWithChildren() const
 {
     switch (this->mode)
     {
@@ -108,7 +108,7 @@ bool HybridRollEditMode::shouldInteractWithChildren() const
     return true;
 }
 
-MouseCursor HybridRollEditMode::getCursor() const
+MouseCursor RollEditMode::getCursor() const
 {
     switch (this->mode)
     {
@@ -144,7 +144,7 @@ MouseCursor HybridRollEditMode::getCursor() const
     return MouseCursor::NormalCursor;
 }
 
-void HybridRollEditMode::unsetLastMode()
+void RollEditMode::unsetLastMode()
 {
     Mode temp = this->mode;
     this->mode = this->previousMode;
@@ -152,7 +152,7 @@ void HybridRollEditMode::unsetLastMode()
     this->sendChangeMessage();
 }
 
-void HybridRollEditMode::setMode(Mode newMode, bool force)
+void RollEditMode::setMode(Mode newMode, bool force)
 {
     if ((this->mode == newMode) && !force)
     {
@@ -164,7 +164,7 @@ void HybridRollEditMode::setMode(Mode newMode, bool force)
     this->sendChangeMessage();
 }
 
-bool HybridRollEditMode::isMode(Mode targetMode) const
+bool RollEditMode::isMode(Mode targetMode) const
 {
     return (this->mode == targetMode);
 }

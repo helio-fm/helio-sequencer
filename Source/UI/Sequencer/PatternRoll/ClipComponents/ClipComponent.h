@@ -18,7 +18,7 @@
 #pragma once
 
 class MidiSequence;
-class HybridRoll;
+class RollBase;
 class PatternRoll;
 
 #include "Clip.h"
@@ -28,7 +28,7 @@ class ClipComponent : public MidiEventComponent
 {
 public:
 
-    ClipComponent(HybridRoll &editor, const Clip &clip);
+    ClipComponent(RollBase &editor, const Clip &clip);
 
     enum class State : uint8
     {

@@ -87,7 +87,7 @@ private:
 
     UniquePointer<Thread> scalePreviewThread;
 
-    UniquePointer<MobileComboBox::Primer> comboPrimer;
+    UniquePointer<MobileComboBox::Container> presetsCombo;
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> removeEventButton;
     UniquePointer<TextButton> okButton;

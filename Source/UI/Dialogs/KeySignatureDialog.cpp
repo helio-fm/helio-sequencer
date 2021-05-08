@@ -91,8 +91,8 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     project(project),
     addsNewEvent(shouldAddNewEvent)
 {
-    this->comboPrimer = make<MobileComboBox::Primer>();
-    this->addAndMakeVisible(this->comboPrimer.get());
+    this->presetsCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->presetsCombo.get());
 
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
@@ -205,7 +205,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
         const auto &s = this->scales.getUnchecked(i);
         menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::SelectScale + i, s->getLocalizedName()));
     }
-    this->comboPrimer->initWith(this->scaleNameEditor.get(), menu);
+    this->presetsCombo->initWith(this->scaleNameEditor.get(), menu);
 }
 
 KeySignatureDialog::~KeySignatureDialog()
@@ -215,14 +215,14 @@ KeySignatureDialog::~KeySignatureDialog()
         this->scalePreviewThread->stopThread(500);
     }
 
-    this->comboPrimer->cleanup();
+    this->presetsCombo->cleanup();
     this->transport.stopPlayback();
     this->scaleNameEditor->removeListener(this);
 }
 
 void KeySignatureDialog::resized()
 {
-    this->comboPrimer->setBounds(this->getContentBounds(0.5f));
+    this->presetsCombo->setBounds(this->getContentBounds(0.5f));
     this->messageLabel->setBounds(this->getCaptionBounds());
 
     const auto buttonsBounds(this->getButtonsBounds());

@@ -1279,7 +1279,7 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\Header\HeaderSelectionIndicator.cpp">
       <Filter>Helio\Source\UI\Sequencer\Header</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Header\HybridRollHeader.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\Header\RollHeader.cpp">
       <Filter>Helio\Source\UI\Sequencer\Header</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Header\Playhead.cpp">
@@ -1288,7 +1288,7 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\CutPointMark.cpp">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\HybridRollExpandMark.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\RollExpandMark.cpp">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\KnifeToolHelper.cpp">
@@ -1405,10 +1405,10 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignaturesProjectMap.cpp">
       <Filter>Helio\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\HybridRoll.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\RollBase.cpp">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\HybridRollEditMode.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\RollEditMode.cpp">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Lasso.cpp">
@@ -4317,7 +4317,7 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\HeaderSelectionIndicator.h">
       <Filter>Helio\Source\UI\Sequencer\Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\Header\HybridRollHeader.h">
+    <ClInclude Include="..\..\Source\UI\Sequencer\Header\RollHeader.h">
       <Filter>Helio\Source\UI\Sequencer\Header</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\Playhead.h">
@@ -4338,7 +4338,7 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\CutPointMark.h">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\HybridRollExpandMark.h">
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\RollExpandMark.h">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\KnifeToolHelper.h">
@@ -4467,13 +4467,13 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap\TimeSignaturesProjectMap.h">
       <Filter>Helio\Source\UI\Sequencer\MiniMaps\TimeSignaturesMap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\HybridRoll.h">
+    <ClInclude Include="..\..\Source\UI\Sequencer\RollBase.h">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\HybridRollEditMode.h">
+    <ClInclude Include="..\..\Source\UI\Sequencer\RollEditMode.h">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\HybridRollListener.h">
+    <ClInclude Include="..\..\Source\UI\Sequencer\RollListener.h">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\Lasso.h">

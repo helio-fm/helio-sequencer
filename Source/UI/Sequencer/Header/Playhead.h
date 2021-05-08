@@ -18,7 +18,7 @@
 #pragma once
 
 class Transport;
-class HybridRoll;
+class RollBase;
 
 #include "TransportListener.h"
 
@@ -37,7 +37,7 @@ public:
         virtual void onPlayheadMoved(int playheadX) = 0;
     };
 
-    Playhead(HybridRoll &parentRoll,
+    Playhead(RollBase &parentRoll,
         Transport &owner,
         Playhead::Listener *movementListener = nullptr,
         int width = 1);
@@ -67,7 +67,7 @@ public:
 
 protected:
 
-    HybridRoll &roll;
+    RollBase &roll;
     Transport &transport;
 
 private:
