@@ -53,6 +53,8 @@ public:
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,
         const ProjectMetadata *meta) override;
+    void onChangeViewEditableScope(MidiTrack *const track,
+        const Clip &clip, bool shouldFocus) override;
 
 protected:
 

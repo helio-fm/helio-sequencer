@@ -124,7 +124,8 @@ MenuPanel::Menu PianoRollSelectionMenu::createMoveToTrackPanel()
             withAction([this, targetTrack]()
         {
             auto &selection = *this->lasso.get();
-            auto &closestClip = SequencerOperations::findClosestClip(selection, targetTrack);
+            float outDistance = 0.f;
+            auto &closestClip = SequencerOperations::findClosestClip(selection, targetTrack, outDistance);
             SequencerOperations::moveSelection(selection, closestClip, true);
             this->project.setEditableScope(targetTrack, closestClip, false);
         }));

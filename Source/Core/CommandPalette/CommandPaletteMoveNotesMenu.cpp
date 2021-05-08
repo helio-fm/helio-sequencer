@@ -64,13 +64,20 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteMoveNotesMenu::getAc
             continue;
         }
 
+        // this will sort tracks by "distance" from the selection to the closest clip
+        // of the target track, so that "closest" targets will be listed first,
+        // and it's more convenient to move notes - pressing ':' and 'down' one or two times 
+
+        float closestClipDistance = 0.f;
+        auto &closestClip = SequencerOperations::findClosestClip(this->roll.getLassoSelection(),
+            targetTrack, closestClipDistance);
+
         static const float orderOffset = 10.f; // after the 'extract as new track' action
         this->actionsCache.add(CommandPaletteAction::action(targetTrack->getTrackName(),
-            this->getName(), orderOffset)->
+            this->getName(), orderOffset + closestClipDistance)->
             withColour(targetTrack->getTrackColour())->
-            withCallback([this, targetTrack](TextEditor &)
+            withCallback([this, targetTrack, &closestClip](TextEditor &)
         {
-            auto &closestClip = SequencerOperations::findClosestClip(this->roll.getLassoSelection(), targetTrack);
             SequencerOperations::moveSelection(this->roll.getLassoSelection(), closestClip, true);
             this->project.setEditableScope(targetTrack, closestClip, false);
             return true;
@@ -123,6 +130,11 @@ void CommandPaletteMoveNotesMenu::onReloadProjectContent(const Array<MidiTrack *
 }
 
 void CommandPaletteMoveNotesMenu::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+{
+    this->actionsCacheOutdated = true;
+}
+
+void CommandPaletteMoveNotesMenu::onChangeViewEditableScope(MidiTrack *const track, const Clip &clip, bool shouldFocus)
 {
     this->actionsCacheOutdated = true;
 }

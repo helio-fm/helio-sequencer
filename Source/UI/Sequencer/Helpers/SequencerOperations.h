@@ -74,7 +74,7 @@ struct SequencerOperations final
     static void deleteSelection(const Lasso &selection, bool shouldCheckpoint = true);
     static void duplicateSelection(const Lasso &selection, bool shouldCheckpoint = true);
 
-    static Clip &findClosestClip(Lasso &selection, WeakReference<MidiTrack> track);
+    static Clip &findClosestClip(Lasso &selection, WeakReference<MidiTrack> track, float &outDistance);
     static void moveSelection(Lasso &selection, Clip &targetClip, bool shouldCheckpoint = true);
 
     static void shiftKeyRelative(Lasso &selection, int deltaKey,

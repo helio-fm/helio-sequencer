@@ -2094,7 +2094,7 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
     }
 }
 
-Clip &SequencerOperations::findClosestClip(Lasso &selection, WeakReference<MidiTrack> track)
+Clip &SequencerOperations::findClosestClip(Lasso &selection, WeakReference<MidiTrack> track, float &outMinDistance)
 {
     float selectionFirstBeat = FLT_MAX;
     float selectionLastBeat = -FLT_MAX;
@@ -2112,16 +2112,16 @@ Clip &SequencerOperations::findClosestClip(Lasso &selection, WeakReference<MidiT
     auto *result = track->getPattern()->getClips().getFirst();
     auto *targetSequence = static_cast<PianoSequence *>(track->getSequence());
 
-    float minDistance = FLT_MAX;
+    outMinDistance = FLT_MAX;
     for (auto *clip : track->getPattern()->getClips())
     {
         const auto targetStart = targetSequence->getFirstBeat() + clip->getBeat();
         const auto targetEnd = targetSequence->getLastBeat() + clip->getBeat();
         const float distance = fabs(targetStart - selectionStart + targetEnd - selectionEnd);
 
-        if (minDistance > distance)
+        if (outMinDistance > distance)
         {
-            minDistance = distance;
+            outMinDistance = distance;
             result = clip;
         }
     }
