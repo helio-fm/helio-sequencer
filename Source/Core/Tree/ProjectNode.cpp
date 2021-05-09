@@ -433,6 +433,12 @@ Range<float> ProjectNode::getProjectRangeInBeats() const
     for (const auto &i : this->tracksRefsCache)
     {
         const auto *track = i.second.get();
+        if (track->getSequence()->isEmpty())
+        {
+            // ignore empty tracks as they affect the project range in a misleading way
+            continue;
+        }
+
         const float sequenceFirstBeat = track->getSequence()->getFirstBeat();
         const float sequenceLastBeat = track->getSequence()->getLastBeat();
         const float patternFirstBeat = track->getPattern() ? track->getPattern()->getFirstBeat() : 0.f;
