@@ -65,11 +65,11 @@ private:
 
     UniquePointer<TextButton> renderButton;
     UniquePointer<Label> filenameEditor;
-    UniquePointer<Label> filenameLabel;
+    UniquePointer<Label> captionLabel;
     UniquePointer<Slider> slider;
     UniquePointer<ProgressIndicator> indicator;
     UniquePointer<MenuItemComponent> browseButton;
-    UniquePointer<Label> pathEditor;
+    UniquePointer<Label> pathLabel;
     UniquePointer<SeparatorHorizontalFading> separator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RenderDialog)

@@ -735,7 +735,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(Slider::rotarySliderOutlineColourId, s->getTextColour().contrasting(0.9f).withMultipliedAlpha(0.5f));
     this->setColour(Slider::rotarySliderFillColourId, s->getTextColour());
     this->setColour(Slider::thumbColourId, s->getTextColour());
-    this->setColour(Slider::trackColourId, s->getTextColour().contrasting(0.8f));
+    this->setColour(Slider::trackColourId, s->getTextColour().withMultipliedAlpha(0.5f));
 
     // Labels
     this->setColour(Label::textColourId, s->getTextColour());

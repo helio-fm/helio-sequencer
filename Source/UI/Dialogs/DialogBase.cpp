@@ -149,10 +149,10 @@ Rectangle<int> DialogBase::getButtonsBounds() const noexcept
     return actualBounds.withHeight(DialogBase::buttonsHeight).withBottomY(actualBounds.getBottom());
 }
 
-Rectangle<int> DialogBase::getRowBounds(float yInPercent, int height, int xPadding) const noexcept
+Rectangle<int> DialogBase::getRowBounds(float proportionOfHeight, int height, int xPadding) const noexcept
 {
     const auto area = this->getContentBounds().withTrimmedTop(DialogBase::captionHeight).reduced(xPadding, 0);
-    const auto y = area.proportionOfHeight(yInPercent);
+    const auto y = area.proportionOfHeight(proportionOfHeight);
     return area.withHeight(height).translated(0, y - height / 2);
 }
 

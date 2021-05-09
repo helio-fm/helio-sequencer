@@ -21,6 +21,8 @@
 #include "ProjectNode.h"
 #include "ProgressIndicator.h"
 #include "MenuItemComponent.h"
+#include "SerializationKeys.h"
+#include "Config.h"
 
 RenderDialog::RenderDialog(ProjectNode &parentProject,
     const URL &target, RenderFormat format) :
@@ -49,11 +51,12 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     this->filenameEditor->setEditable(false);
 #endif
 
-    this->filenameLabel = make<Label>();
-    this->addAndMakeVisible(this->filenameLabel.get());
-    this->filenameLabel->setFont({ Globals::UI::Fonts::L });
-    this->filenameLabel->setJustificationType(Justification::centredLeft);
-    this->filenameLabel->setText(TRANS(I18n::Dialog::renderCaption), dontSendNotification);
+    this->captionLabel = make<Label>();
+    this->addAndMakeVisible(this->captionLabel.get());
+    this->captionLabel->setFont({ Globals::UI::Fonts::L });
+    this->captionLabel->setJustificationType(Justification::centredLeft);
+    this->captionLabel->setInterceptsMouseClicks(false, false);
+    this->captionLabel->setText(TRANS(I18n::Dialog::renderCaption), dontSendNotification);
 
     this->slider = make<Slider>();
     this->addAndMakeVisible(this->slider.get());
@@ -70,14 +73,14 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     this->addAndMakeVisible(this->browseButton.get());
     this->browseButton->setMouseCursor(MouseCursor::PointingHandCursor);
 
-    this->pathEditor = make<Label>();
-    this->addAndMakeVisible(this->pathEditor.get());
-    this->pathEditor->setFont({ Globals::UI::Fonts::S });
-    this->pathEditor->setJustificationType(Justification::centredLeft);
+    this->pathLabel = make<Label>();
+    this->addAndMakeVisible(this->pathLabel.get());
+    this->pathLabel->setFont({ Globals::UI::Fonts::S });
+    this->pathLabel->setJustificationType(Justification::centredLeft);
+    this->pathLabel->setInterceptsMouseClicks(false, false);
 
     this->separator = make<SeparatorHorizontalFading>();
     this->addAndMakeVisible(this->separator.get());
-    this->separator->setBounds(32, 121, 456, 8);
 
     // just in case..
     this->project.getTransport().stopPlaybackAndRecording();
@@ -91,13 +94,17 @@ RenderDialog::~RenderDialog() = default;
 
 void RenderDialog::resized()
 {
-    // todo: refactor this abomination:
-    filenameEditor->setBounds((getWidth() / 2) + 25 - (406 / 2), 71, 406, 32);
-    filenameLabel->setBounds((getWidth() / 2) + 29 - (414 / 2), 16, 414, 22);
-    slider->setBounds((getWidth() / 2) + 24 - (392 / 2), 139, 392, 12);
-    indicator->setBounds((getWidth() / 2) + -212 - (32 / 2), 139 + 12 / 2 + -2 - (32 / 2), 32, 32);
-    browseButton->setBounds(getWidth() - 448 - 48, 59, 48, 48);
-    pathEditor->setBounds((getWidth() / 2) + 25 - (406 / 2), 48, 406, 24);
+    constexpr auto browseButtonWidth = 56;
+
+    this->captionLabel->setBounds(this->getCaptionBounds().withTrimmedLeft(browseButtonWidth));
+
+    this->pathLabel->setBounds(this->getRowBounds(0.1f, 24).withTrimmedLeft(browseButtonWidth));
+    this->filenameEditor->setBounds(this->getRowBounds(0.35f, 32).withTrimmedLeft(browseButtonWidth));
+    this->browseButton->setBounds(this->getRowBounds(0.35f, 48).withWidth(browseButtonWidth));
+
+    this->separator->setBounds(this->getRowBounds(0.65f, 8));
+    this->slider->setBounds(this->getRowBounds(0.85f, 12).withTrimmedLeft(browseButtonWidth).reduced(6, 0));
+    this->indicator->setBounds(this->getRowBounds(0.84f, 24).withWidth(browseButtonWidth));
 
     this->renderButton->setBounds(this->getButtonsBounds());
 }
@@ -158,7 +165,7 @@ void RenderDialog::updateRenderTargetLabels()
 {
     jassert(this->renderTarget.isLocalFile());
     const auto file = this->renderTarget.getLocalFile();
-    this->pathEditor->setText(file.getParentDirectory().getFullPathName(), dontSendNotification);
+    this->pathLabel->setText(file.getParentDirectory().getFullPathName(), dontSendNotification);
     this->filenameEditor->setText(file.getFileName(), dontSendNotification);
 }
 
@@ -177,6 +184,11 @@ void RenderDialog::startOrAbortRender()
     auto &transport = this->project.getTransport();
     if (! transport.isRendering())
     {
+#if PLATFORM_DESKTOP
+        App::Config().setProperty(Serialization::UI::lastRenderPath,
+            this->renderTarget.getParentURL().getLocalFile().getFullPathName());
+#endif
+
         transport.startRender(this->renderTarget, this->format);
         this->startTrackingProgress();
     }
@@ -234,8 +246,7 @@ void RenderDialog::stopTrackingProgress()
     auto &transport = this->project.getTransport();
     const auto percentsDone = transport.getRenderingPercentsComplete();
     this->slider->setValue(percentsDone, dontSendNotification);
-
-    this->animator.fadeOut(this->indicator.get(), Globals::UI::fadeOutLong);
     this->indicator->stopAnimating();
+    this->animator.fadeOut(this->indicator.get(), Globals::UI::fadeOutShort);
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderProceed));
 }

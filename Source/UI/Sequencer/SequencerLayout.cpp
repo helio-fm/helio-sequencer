@@ -611,11 +611,15 @@ void SequencerLayout::proceedToRenderDialog(RenderFormat format)
     // and the reason is that I want to simplify the workflow from user's perspective,
     // so the dialog is shown only after selecting a target file (if any)
     const auto extension = getExtensionForRenderFormat(format);
-    const auto defaultPath = File::getSpecialLocation(File::userMusicDirectory);
+
     const auto defaultFileName = File::createLegalFileName(this->project.getName() + "." + extension);
+    auto defaultPath = File::getSpecialLocation(File::userMusicDirectory).getFullPathName();
+#if PLATFORM_DESKTOP
+    defaultPath = App::Config().getProperty(Serialization::UI::lastRenderPath, defaultPath);
+#endif
 
     this->renderTargetFileChooser = make<FileChooser>(TRANS(I18n::Dialog::renderCaption),
-        File(defaultPath.getChildFile(defaultFileName)),
+        File(defaultPath).getChildFile(defaultFileName),
         "*." + extension, true);
 
     this->renderTargetFileChooser->launchAsync(Globals::UI::FileChooser::forFileToSave,

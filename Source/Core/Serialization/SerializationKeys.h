@@ -234,6 +234,8 @@ namespace Serialization
         static const Identifier positionX = "positionX";
         static const Identifier positionY = "positionY";
 
+        static const Identifier lastRenderPath = "lastRenderPath";
+
         namespace Flags
         {
             static const Identifier uiFlags = "uiFlags";

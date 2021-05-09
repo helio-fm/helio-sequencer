@@ -40,7 +40,7 @@ protected:
     Rectangle<int> getContentBounds(float paddingAmount = 1.f) const noexcept;
     Rectangle<int> getCaptionBounds() const noexcept;
     Rectangle<int> getButtonsBounds() const noexcept;
-    Rectangle<int> getRowBounds(float yInPercent, int height, int xPadding = 0) const noexcept;
+    Rectangle<int> getRowBounds(float proportionOfHeight, int height, int xPadding = 0) const noexcept;
     int getPaddingAndMarginTotal() const noexcept;
 
     static constexpr auto buttonsHeight = 48;
