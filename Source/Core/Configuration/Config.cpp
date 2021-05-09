@@ -99,8 +99,6 @@ void Config::initResources()
 
 void Config::save(const Serializable *serializable, const Identifier &key)
 {
-    this->usedKeys.emplace(key);
-
     SerializedData root(key);
     root.appendChild(serializable->serialize());
 
@@ -110,8 +108,6 @@ void Config::save(const Serializable *serializable, const Identifier &key)
 
 void Config::load(Serializable *serializable, const Identifier &key)
 {
-    this->usedKeys.emplace(key);
-
     const auto found = this->children.find(key);
     if (found == this->children.end())
     {
@@ -127,7 +123,6 @@ void Config::load(Serializable *serializable, const Identifier &key)
 
 void Config::setProperty(const Identifier &key, const var &value, bool delayedSave)
 {
-    this->usedKeys.emplace(key);
     this->properties[key] = value;
     if (delayedSave)
     {
@@ -137,7 +132,6 @@ void Config::setProperty(const Identifier &key, const var &value, bool delayedSa
 
 String Config::getProperty(const Identifier &key, const String &fallback) const noexcept
 {
-    this->usedKeys.emplace(key.toString());
     const auto found = this->properties.find(key);
     return (found == this->properties.end()) ? fallback : found->second.toString();
 }
@@ -166,25 +160,18 @@ bool Config::saveIfNeeded()
         return false;
     }
 
-    // make sure only the used properties are saved
-    SerializedData cleanedUpConfig(Serialization::Core::globalConfig);
+    SerializedData configNode(Serialization::Core::globalConfig);
     for (const auto &i : this->properties)
     {
-        if (this->usedKeys.contains(i.first))
-        {
-            cleanedUpConfig.setProperty(i.first, i.second);
-        }
+        configNode.setProperty(i.first, i.second);
     }
 
     for (const auto &i : this->children)
     {
-        if (this->usedKeys.contains(i.first))
-        {
-            cleanedUpConfig.appendChild(i.second);
-        }
+        configNode.appendChild(i.second);
     }
 
-    if (DocumentHelpers::save<XmlSerializer>(this->propertiesFile, cleanedUpConfig))
+    if (DocumentHelpers::save<XmlSerializer>(this->propertiesFile, configNode))
     {
         this->needsSaving = false;
         DBG("Config saved: " + this->propertiesFile.getFullPathName());

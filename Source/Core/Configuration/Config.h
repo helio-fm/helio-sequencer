@@ -69,11 +69,6 @@ private:
     FlatHashMap<Identifier, var, IdentifierHash> properties;
     FlatHashMap<Identifier, SerializedData, IdentifierHash> children;
 
-    // As the app development moves forward, some properties
-    // become deprecated, but they will still present in config file,
-    // so we need to track the unused ones and never save them:
-    mutable FlatHashSet<Identifier, IdentifierHash> usedKeys;
-
     UniquePointer<TranslationsManager> translationsManager;
     UniquePointer<ArpeggiatorsManager> arpeggiatorsManager;
     UniquePointer<ColourSchemesManager> colourSchemesManager;
