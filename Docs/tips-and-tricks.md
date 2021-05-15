@@ -80,11 +80,13 @@ Another one highlights the in-scale keys of the key signatures that are added at
 
 ### More UI flags
 
-The audio monitor view and the project mini-map view will toggle different modes on click or tap.
+The audio monitor view can be toggled between two modes on click or tap, switching between the simple spectrogram mode and the waveform mode:
 
-The audio monitor switches between the simple spectrogram mode and the waveform mode. The mini map is stretched either to fit all project, or to fit some fixed duration into the display area box.
+![monitors]
 
-![monitor-and-map]
+The mini map can be toggled with `B` hotkey; in the small mode, it is stretched to fit all project:
+
+![toggle-minimap]
 
 ### Chord tool
 
@@ -166,7 +168,8 @@ Just hit `!` and start typing a chord description, or pick some of the suggestio
 [pen-tool-alt]: images/pen-tool-alt.png "Adding notes with shift"
 [drag-and-copy]: images/drag-and-copy.png "Drag-and-copy"
 
-[monitor-and-map]: images/monitor-and-map.png "Audio monitor and minimap view modes"
+[monitors]: images/monitors.png "Audio monitor view modes"
+[toggle-minimap]: images/toggle-minimap.png "Mini-map view modes"
 [scales-highlighting]: images/scales-highlighting.png "Scales highlighting"
 [note-names]: images/note-names.png "Note name guides"
 
