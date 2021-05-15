@@ -4,6 +4,12 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.6
+ - Fixed VST3 plugins showing black screen and made minor improvements in instrument management
+ - Fixed loading the invalid audio settings (which caused issues when using JACK)
+ - Fixed the audio setting page not always updating correctly
+ - Many minor UI tweaks: made "move notes" menus more convenient so that closer clips are shown first, fixed tooltips in the chord tool, fixed updating with the editable scope in velocity map, fixed the pen tool behavior on mobile platforms
+
 ## Version 3.5
  - Disabled all network-related features on mobile platforms
  - Added two UI flags for better control over mouse wheel behavior, notably for using mouse wheel for panning instead of zooming by default
