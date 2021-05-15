@@ -296,9 +296,16 @@ void SequencerSidebarLeft::recreateMenu()
             withTooltip(TRANS(I18n::Tooltips::toggleNoteGuides)));
     }
 
+    // toggling the mini-map makes sense on mobile platforms, because of smaller screens,
+    // but on the desktop it's more like a one-off choice, so let's not clog up the ui
+    // (this action will still be available via hotkey, 'b' by default):
+#if PLATFORM_MOBILE
+
     this->menu.add(MenuItem::item(Icons::bottomBar, CommandIDs::ToggleBottomMiniMap)->
         toggledIf(this->miniMapVisible)->
         withTooltip(TRANS(I18n::Tooltips::toggleMiniMap)));
+
+#endif
 
     if (this->menuMode == MenuMode::PianoRollTools)
     {
