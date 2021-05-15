@@ -58,12 +58,23 @@ struct MenuItem final : public ReferenceCountedObject
         MenuItemFlags flags;
     };
 
+    float weight = 0.f;
+    struct SortByWeight final
+    {
+        int compareElements(const MenuItem::Ptr first, const MenuItem::Ptr second) const
+        {
+            const float diff = first->weight - second->weight;
+            return (diff > 0.f) - (diff < 0.f);
+        }
+    };
+
     MenuItem() = default;
     MenuItem::Ptr withAlignment(Alignment alignment);
     MenuItem::Ptr withSubmenu();
     MenuItem::Ptr withSubmenuIf(bool condition);
     MenuItem::Ptr withColour(const Colour &colour);
     MenuItem::Ptr withTooltip(String tooltip);
+    MenuItem::Ptr withWeight(float weight);
     MenuItem::Ptr toggledIf(bool shouldBeToggled);
     MenuItem::Ptr disabledIf(bool condition);
     MenuItem::Ptr closesMenu();

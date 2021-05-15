@@ -208,6 +208,13 @@ MenuItem::Ptr MenuItem::closesMenu()
     return description;
 }
 
+MenuItem::Ptr MenuItem::withWeight(float weight)
+{
+    MenuItem::Ptr description(this);
+    description->weight = weight;
+    return description;
+}
+
 //===----------------------------------------------------------------------===//
 // Highlighters
 //===----------------------------------------------------------------------===//

@@ -48,14 +48,12 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteMoveNotesMenu::getAc
     const auto defaultColor = findDefaultColour(Label::textColourId);
 
     this->actionsCache.clearQuick();
-    this->actionsCache.add(CommandPaletteAction::action(
-        TRANS(I18n::Menu::Selection::notesToTrack), {}, 0.f)->
-        withColour(defaultColor)->
-        withCallback([](TextEditor &)
+
+    if (this->roll.getLassoSelection().getNumSelected() == 0)
     {
-        App::Layout().broadcastCommandMessage(CommandIDs::NewTrackFromSelection);
-        return true;
-    }));
+        jassertfalse;
+        return this->actionsCache;
+    }
 
     for (auto *targetTrack : this->project.findChildrenOfType<PianoTrackNode>())
     {
