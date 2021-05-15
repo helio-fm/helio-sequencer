@@ -67,17 +67,17 @@ void AutomationStepsClipComponent::resized()
     this->setVisible(false);
     
     // вместо одного updateSustainPedalComponent(с) -
-    // во избежание глюков - скачала обновляем позиции
+    // во избежание глюков - сначала обновляем позиции
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
-        AutomationStepEventComponent *const c = this->eventComponents.getUnchecked(i);
+        auto *c = this->eventComponents.getUnchecked(i);
         c->setRealBounds(this->getEventBounds(c));
     }
     
     // затем - зависимые элементы
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
-        AutomationStepEventComponent *const c = this->eventComponents.getUnchecked(i);
+        auto *c = this->eventComponents.getUnchecked(i);
         c->updateConnector();
     }
     
@@ -101,9 +101,11 @@ Rectangle<float> AutomationStepsClipComponent::getEventBounds(float beat,
     float sequenceLength, bool isPedalDown) const
 {
     const float minWidth = 2.f;
-    const float w = jmax(minWidth, float(this->getWidth()) * (STEP_EVENT_MIN_LENGTH_IN_BEATS / sequenceLength));
+    const float w = jmax(minWidth, float(this->getWidth()) *
+        (AutomationStepEventComponent::minLengthInBeats / sequenceLength));
+
     const float x = (float(this->getWidth()) * (beat / sequenceLength));
-    return { x - w + STEP_EVENT_POINT_OFFSET, 0.f, w, float(this->getHeight()) };
+    return { x - w + AutomationStepEventComponent::pointOffset, 0.f, w, float(this->getHeight()) };
 }
 
 //===----------------------------------------------------------------------===//
@@ -113,7 +115,9 @@ Rectangle<float> AutomationStepsClipComponent::getEventBounds(float beat,
 void AutomationStepsClipComponent::insertNewEventAt(const MouseEvent &e, bool shouldAddTriggeredEvent)
 {
     const float sequenceLength = this->sequence->getLengthInBeats();
-    const float w = float(this->getWidth()) * (STEP_EVENT_MIN_LENGTH_IN_BEATS / sequenceLength);
+    const float w = float(this->getWidth()) *
+        (AutomationStepEventComponent::minLengthInBeats / sequenceLength);
+ 
     const float draggingBeat = this->getBeatByXPosition(int(e.x + w / 2));
     
     if (auto *autoSequence = dynamic_cast<AutomationSequence *>(this->sequence.get()))
@@ -147,8 +151,8 @@ void AutomationStepsClipComponent::insertNewEventAt(const MouseEvent &e, bool sh
         }
         
         const float invertedCV = (1.f - prevEventCV);
-        const float alignedBeat = jmin((nextBeat - STEP_EVENT_MIN_LENGTH_IN_BEATS),
-            jmax((prevBeat + STEP_EVENT_MIN_LENGTH_IN_BEATS), draggingBeat));
+        const float alignedBeat = jmin((nextBeat - AutomationStepEventComponent::minLengthInBeats),
+            jmax((prevBeat + AutomationStepEventComponent::minLengthInBeats), draggingBeat));
         
         autoSequence->checkpoint();
         AutomationEvent event(autoSequence, alignedBeat, invertedCV);

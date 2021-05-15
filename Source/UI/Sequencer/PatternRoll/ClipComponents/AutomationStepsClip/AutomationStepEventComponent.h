@@ -22,12 +22,6 @@
 class AutomationStepEventsConnector;
 class AutomationStepsClipComponent;
 
-#define STEP_EVENT_POINT_OFFSET (2.5f)
-#define STEP_EVENT_MIN_LENGTH_IN_BEATS (0.25f)
-#define STEP_EVENT_MARGIN_TOP (16.f)
-#define STEP_EVENT_MARGIN_BOTTOM (16.f)
-#define STEP_EVENT_THICK_LINES 0
-
 class AutomationStepEventComponent final : public Component
 {
 public:
@@ -75,6 +69,11 @@ public:
 
 private:
 
+    static constexpr auto pointOffset = 2.5f;
+    static constexpr auto minLengthInBeats = 0.25f;
+    static constexpr auto marginTop = 20.f;
+    static constexpr auto marginBottom = 18.f;
+
     void drag(float targetBeat);
     void dragByDelta(float deltaBeat);
 
@@ -84,8 +83,8 @@ private:
     Rectangle<float> realBounds;
 
     ComponentDragger dragger;
-    bool isDragging;
-    bool isHighlighted;
+    bool isDragging = false;
+    bool isHighlighted = false;
 
     void recreateConnector();
 
@@ -93,6 +92,7 @@ private:
     SafePointer<AutomationStepEventComponent> nextEventHolder;
     SafePointer<AutomationStepEventComponent> prevEventHolder;
 
+    friend class AutomationStepsClipComponent;
     friend class AutomationStepEventsConnector;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationStepEventComponent)

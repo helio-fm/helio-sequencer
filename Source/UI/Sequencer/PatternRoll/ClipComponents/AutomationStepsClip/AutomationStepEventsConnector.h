@@ -57,13 +57,14 @@ private:
     void applyCursorForEvent(const MouseEvent &e);
 
     ComponentDragger dragger;
-    float anchorBeat;
-    float anchorBeatChild1;
-    float anchorBeatChild2;
 
-    bool isDragging;
-    bool isEventTriggered;
-    bool isHighlighted;
+    float anchorBeat = 0.f;
+    float anchorBeatChild1 = 0.f;
+    float anchorBeatChild2 = 0.f;
+
+    bool isDragging = false;
+    bool isEventTriggered = false;
+    bool isHighlighted = false;
 
     Rectangle<float> realBounds;
     

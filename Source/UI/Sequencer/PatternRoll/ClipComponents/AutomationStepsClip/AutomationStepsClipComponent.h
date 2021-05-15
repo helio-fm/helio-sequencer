@@ -31,10 +31,15 @@ class AutomationStepsClipComponent final : public ClipComponent, public ProjectL
 {
 public:
 
-    AutomationStepsClipComponent(ProjectNode &project, MidiSequence *sequence,
-        RollBase &roll, const Clip &clip);
+    AutomationStepsClipComponent(ProjectNode &project,
+        MidiSequence *sequence, RollBase &roll, const Clip &clip);
 
     ~AutomationStepsClipComponent() override;
+
+    inline const Colour getLineColour() const noexcept
+    {
+        return this->eventColour.withMultipliedAlpha(0.8f);
+    }
 
     //===------------------------------------------------------------------===//
     // Component

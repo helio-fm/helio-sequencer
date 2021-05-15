@@ -24,12 +24,7 @@ AutomationStepEventsConnector::AutomationStepEventsConnector(AutomationStepEvent
     AutomationStepEventComponent *c2, bool isEventTriggered) :
     component1(c1),
     component2(c2),
-    anchorBeat(0.f),
-    anchorBeatChild1(0.f),
-    anchorBeatChild2(0.f),
-    isDragging(false),
-    isEventTriggered(isEventTriggered),
-    isHighlighted(false)
+    isEventTriggered(isEventTriggered)
 {
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, false);
@@ -70,13 +65,13 @@ void AutomationStepEventsConnector::resizeToFit(bool isEventTriggered)
     const bool shouldRepaint = (this->isEventTriggered != isEventTriggered);
     this->isEventTriggered = isEventTriggered;
 
-    const float r = STEP_EVENT_POINT_OFFSET;
+    constexpr auto r = AutomationStepEventComponent::pointOffset;
     float x1 = 0.f, x2 = 0.f, y1 = 0.f, y2 = 0.f;
     this->getPoints(x1, x2, y1, y2);
 
     const bool compact = this->anyAliveChild()->hasCompactMode();
-    const float top = r + STEP_EVENT_MARGIN_TOP;
-    const float bottom = y2 - r - STEP_EVENT_MARGIN_BOTTOM;
+    constexpr auto top = r + AutomationStepEventComponent::marginTop;
+    const float bottom = y2 - r - AutomationStepEventComponent::marginBottom;
     this->realBounds = { jmin(x1, x2) + (compact ? (r + 1.f) : (r - 1.f)),
         this->isEventTriggered ? bottom : top,
         fabsf(x1 - x2) - (compact ? r * 2.f : 1.f),
@@ -96,18 +91,15 @@ void AutomationStepEventsConnector::resizeToFit(bool isEventTriggered)
 
 void AutomationStepEventsConnector::paint(Graphics &g)
 {
-    if (this->realBounds.getWidth() > STEP_EVENT_POINT_OFFSET)
+    if (this->realBounds.getWidth() > AutomationStepEventComponent::pointOffset)
     {
-        g.setColour(this->anyAliveChild()->getEditor()->getEventColour());
+        g.setColour(this->anyAliveChild()->getEditor()->getLineColour());
         const float left = this->realBounds.getX() - float(this->getX());
         g.drawHorizontalLine(0, left, this->realBounds.getWidth());
-#if STEP_EVENT_THICK_LINES
-        g.drawHorizontalLine(1, left, this->realBounds.getWidth() - 1.f);
-#endif
 
         if (this->isHighlighted)
         {
-            g.fillRect(this->getLocalBounds().withTop(this->getHeight() - 4));
+            g.fillRect(0, this->getHeight() - 8, this->getWidth(), 4);
         }
     }
 }
