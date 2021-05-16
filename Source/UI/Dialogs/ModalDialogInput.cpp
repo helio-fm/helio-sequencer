@@ -25,7 +25,7 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message,
 {
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
-    this->messageLabel->setFont({ Globals::UI::Fonts::L });
+    this->messageLabel->setFont(Globals::UI::Fonts::L);
     this->messageLabel->setJustificationType(Justification::centred);
     this->messageLabel->setText(message, dontSendNotification);
     this->messageLabel->setInterceptsMouseClicks(false, false);
@@ -55,9 +55,9 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message,
 
     this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
 #if PLATFORM_DESKTOP
-    this->textEditor->setFont({ Globals::UI::Fonts::L });
+    this->textEditor->setFont(Globals::UI::Fonts::L);
 #elif PLATFORM_MOBILE
-    this->textEditor->setFont({ Globals::UI::Fonts::XL });
+    this->textEditor->setFont(Globals::UI::Fonts::XL);
 #endif
     this->textEditor->setText(this->input, dontSendNotification);
     this->textEditor->addListener(this);

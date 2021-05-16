@@ -180,25 +180,25 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
 
     for (auto *metadataCaption : this->metadataCaptions)
     {
-        metadataCaption->setFont({ Globals::UI::Fonts::XL });
+        metadataCaption->setFont(Globals::UI::Fonts::XL);
         metadataCaption->setJustificationType(Justification::centredRight);
     }
 
     for (auto *metadataEditor : this->metadataEditors)
     {
-        metadataEditor->setFont({ Globals::UI::Fonts::XXL });
+        metadataEditor->setFont(Globals::UI::Fonts::XXL);
         metadataEditor->setJustificationType(Justification::centredLeft);
     }
 
     for (auto *statisticsCaption : this->statisticsCaptions)
     {
-        statisticsCaption->setFont({ Globals::UI::Fonts::S });
+        statisticsCaption->setFont(Globals::UI::Fonts::S);
         statisticsCaption->setJustificationType(Justification::centredRight);
     }
 
     for (auto *statisticsLabel : this->statisticsLabels)
     {
-        statisticsLabel->setFont({ Globals::UI::Fonts::S });
+        statisticsLabel->setFont(Globals::UI::Fonts::S);
         statisticsLabel->setJustificationType(Justification::centredLeft);
     }
 

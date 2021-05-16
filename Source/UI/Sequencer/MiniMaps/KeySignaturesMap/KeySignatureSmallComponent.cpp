@@ -25,7 +25,7 @@ KeySignatureSmallComponent::KeySignatureSmallComponent(KeySignaturesProjectMap &
 {
     this->signatureLabel = make<Label>();
     this->addAndMakeVisible(this->signatureLabel.get());
-    this->signatureLabel->setFont({ Globals::UI::Fonts::XS });
+    this->signatureLabel->setFont(Globals::UI::Fonts::XS);
     this->signatureLabel->setJustificationType(Justification::centredLeft);
     this->signatureLabel->setBounds(0, 2, 132, 16);
 

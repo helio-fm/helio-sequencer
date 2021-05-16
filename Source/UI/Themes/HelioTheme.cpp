@@ -369,7 +369,7 @@ void HelioTheme::drawTableHeaderColumn(Graphics &g, TableHeaderComponent &header
         g.fillPath(sortArrow, sortArrow.getTransformToScaleToFit(area.removeFromRight(height / 2).reduced(2).toFloat(), true));
     }
 
-    g.setFont({ Globals::UI::Fonts::M });
+    g.setFont(Globals::UI::Fonts::M);
     g.drawFittedText(columnName, area, Justification::centredLeft, 1);
 }
 

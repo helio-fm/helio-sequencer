@@ -51,7 +51,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
 
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
-    this->messageLabel->setFont({ Globals::UI::Fonts::L });
+    this->messageLabel->setFont(Globals::UI::Fonts::L);
     this->messageLabel->setJustificationType(Justification::centred);
 
     this->removeEventButton = make<TextButton>();
@@ -118,7 +118,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     }
 
     this->textEditor->addListener(this);
-    this->textEditor->setFont({ Globals::UI::Fonts::L });
+    this->textEditor->setFont(Globals::UI::Fonts::L);
     this->textEditor->setText(this->originalEvent.toString(), dontSendNotification);
 
     this->messageLabel->setInterceptsMouseClicks(false, false);

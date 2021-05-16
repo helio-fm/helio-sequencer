@@ -42,7 +42,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
 
     this->filenameEditor = make<Label>();
     this->addAndMakeVisible(this->filenameEditor.get());
-    this->filenameEditor->setFont({ Globals::UI::Fonts::XL });
+    this->filenameEditor->setFont(Globals::UI::Fonts::XL);
     this->filenameEditor->setJustificationType(Justification::topLeft);
 
 #if PLATFORM_DESKTOP
@@ -53,7 +53,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
 
     this->captionLabel = make<Label>();
     this->addAndMakeVisible(this->captionLabel.get());
-    this->captionLabel->setFont({ Globals::UI::Fonts::L });
+    this->captionLabel->setFont(Globals::UI::Fonts::L);
     this->captionLabel->setJustificationType(Justification::centredLeft);
     this->captionLabel->setInterceptsMouseClicks(false, false);
     this->captionLabel->setText(TRANS(I18n::Dialog::renderCaption), dontSendNotification);
@@ -75,7 +75,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
 
     this->pathLabel = make<Label>();
     this->addAndMakeVisible(this->pathLabel.get());
-    this->pathLabel->setFont({ Globals::UI::Fonts::S });
+    this->pathLabel->setFont(Globals::UI::Fonts::S);
     this->pathLabel->setJustificationType(Justification::centredLeft);
     this->pathLabel->setInterceptsMouseClicks(false, false);
 

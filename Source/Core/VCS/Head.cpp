@@ -22,8 +22,6 @@
 namespace VCS
 {
 
-#define DIFF_BUILD_THREAD_STOP_TIMEOUT 5000
-
 Head::Head(const Head &other) :
     Thread("Diff Thread"),
     targetVcsItemsSource(other.targetVcsItemsSource),
@@ -134,7 +132,7 @@ bool Head::moveTo(const Revision::Ptr revision)
 {
     if (this->isThreadRunning())
     {
-        this->stopThread(DIFF_BUILD_THREAD_STOP_TIMEOUT);
+        this->stopThread(Head::diffRebuildThreadStopTimeoutMs);
     }
 
     // first, reset the snapshot state
@@ -430,7 +428,7 @@ void Head::rebuildDiffNow()
     {
         // Better to wait for a couple of seconds here than kill a thread by force
         // and have leaked Diff and/or race due to hanging read-write locks
-        this->stopThread(DIFF_BUILD_THREAD_STOP_TIMEOUT);
+        this->stopThread(Head::diffRebuildThreadStopTimeoutMs);
     }
 
     this->startThread(9);

@@ -29,7 +29,7 @@ public:
     {
         this->nameLabel = make<Label>();
         this->addAndMakeVisible(this->nameLabel.get());
-        this->nameLabel->setFont({ Globals::UI::Fonts::S });
+        this->nameLabel->setFont(Globals::UI::Fonts::S);
         this->nameLabel->setJustificationType(Justification::centred);
         this->nameLabel->setColour(Label::textColourId,
             findDefaultColour(Label::textColourId).withMultipliedAlpha(0.35f));

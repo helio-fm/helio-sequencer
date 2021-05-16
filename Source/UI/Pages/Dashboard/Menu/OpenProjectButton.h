@@ -36,7 +36,7 @@ public:
         this->addAndMakeVisible(this->openProjectLabel.get());
         this->openProjectLabel->setJustificationType(Justification::centredLeft);
         this->openProjectLabel->setInterceptsMouseClicks(false, false);
-        this->openProjectLabel->setFont({ Globals::UI::Fonts::M });
+        this->openProjectLabel->setFont(Globals::UI::Fonts::M);
 
         this->clickHandler = make<OverlayButton>();
         this->addAndMakeVisible(this->clickHandler.get());

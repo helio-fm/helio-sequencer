@@ -50,7 +50,7 @@ UserInterfaceSettings::UserInterfaceSettings()
 
     this->fontEditor = make<TextEditor>(String());
     this->addAndMakeVisible(this->fontEditor.get());
-    this->fontEditor->setFont({ Globals::UI::Fonts::M });
+    this->fontEditor->setFont(Globals::UI::Fonts::M);
     this->fontEditor->setReadOnly(true);
     this->fontEditor->setScrollbarsShown(false);
     this->fontEditor->setCaretVisible(false);

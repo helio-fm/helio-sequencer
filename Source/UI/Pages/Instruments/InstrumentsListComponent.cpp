@@ -39,7 +39,7 @@ InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner,
     this->titleLabel = make<Label>(String(),TRANS(I18n::Page::orchestraInstruments));
     this->addAndMakeVisible(this->titleLabel.get());
     this->titleLabel->setJustificationType(Justification::centred);
-    this->titleLabel->setFont({ Globals::UI::Fonts::L });
+    this->titleLabel->setFont(Globals::UI::Fonts::L);
 
     this->separator = make<SeparatorHorizontalFadingReversed>();
     this->addAndMakeVisible(this->separator.get());
@@ -116,7 +116,7 @@ void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int 
         return;
     }
 
-    g.setFont({ Globals::UI::Fonts::M });
+    g.setFont(Globals::UI::Fonts::M);
 
     // todo also display "(unavailable)", if not valid?
     const auto alpha = instrument->isValid() ? 1.f : 0.35f;

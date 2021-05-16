@@ -20,11 +20,6 @@
 #include "ComponentFader.h"
 #include "ColourIDs.h"
 
-#define PEAK_MAX_ALPHA (0.75f)
-#define BAND_FADE_MS (2000.f)
-#define PEAK_FADE_MS (7000.f)
-#define PULSE_SPEED  (40.f)
-
 SpectralLogo::SpectralLogo() : Thread("Logo Animation")
 {
     for (int i = 0; i < SpectralLogo::bandCount; ++i)
@@ -55,8 +50,9 @@ void SpectralLogo::run()
 
 void SpectralLogo::handleAsyncUpdate()
 {
+    static constexpr auto pulseSpeed = 40.f;
     this->pulse = fmodf(this->pulse +
-        MathConstants<float>::pi / PULSE_SPEED,
+        MathConstants<float>::pi / pulseSpeed,
         MathConstants<float>::twoPi);
 
     this->repaint();
@@ -95,7 +91,7 @@ void SpectralLogo::paint(Graphics &g)
         //Image img(Image::ARGB, this->getWidth(), this->getHeight(), true);
         //Graphics g1(img);
 
-        const uint32 timeNow = Time::getMillisecondCounter();
+        const auto timeNow = Time::getMillisecondCounter();
 
         Random r;
         g.setColour(this->colour);
@@ -144,7 +140,7 @@ void SpectralLogo::Band::reset()
     this->valueDecay = 1.f;
     this->peak = 0.f;
     this->peakDecay = 1.f;
-    this->peakDecayColour = PEAK_MAX_ALPHA;
+    this->peakDecayColour = Band::peakMaxAlpha;
 }
 
 inline Path SpectralLogo::Band::buildPath(float valueInY,
@@ -160,7 +156,7 @@ inline Path SpectralLogo::Band::buildPath(float valueInY,
     else
     {
         const auto msElapsed = int(timeNow - this->valueDecayStart);
-        float newProgress = msElapsed / BAND_FADE_MS;
+        float newProgress = msElapsed / Band::bandFadeTimeMs;
         if (newProgress >= 0.f && newProgress < 1.f)
         {
             newProgress = ComponentFader::timeToDistance(newProgress);
@@ -184,19 +180,19 @@ inline Path SpectralLogo::Band::buildPath(float valueInY,
     else
     {
         const auto msElapsed = int(timeNow - this->peakDecayStart);
-        float newProgress = msElapsed / PEAK_FADE_MS;
+        float newProgress = msElapsed / Band::peakFadeTimeMs;
         if (newProgress >= 0.f && newProgress < 1.f)
         {
             newProgress = ComponentFader::timeToDistance(newProgress);
             jassert(newProgress >= this->peakDecay);
             const float delta = (newProgress - this->peakDecay) / (1.f - this->peakDecay);
-            this->peakDecayColour = (newProgress * newProgress * newProgress) * PEAK_MAX_ALPHA;
+            this->peakDecayColour = (newProgress * newProgress * newProgress) * Band::peakMaxAlpha;
             this->peakDecay = newProgress;
             this->peak -= (this->peak * delta);
         }
         else
         {
-            this->peakDecayColour = PEAK_MAX_ALPHA;
+            this->peakDecayColour = Band::peakMaxAlpha;
             this->peak = 0.f;
         }
     }

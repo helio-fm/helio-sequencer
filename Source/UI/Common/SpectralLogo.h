@@ -58,6 +58,10 @@ private:
         float peakDecayColour = 1.f;
         uint32 peakDecayStart = 0;
 
+        static constexpr auto peakMaxAlpha = 0.75f;
+        static constexpr auto bandFadeTimeMs = 2000.f;
+        static constexpr auto peakFadeTimeMs = 7000.f;
+
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Band)
     };
     
@@ -71,8 +75,8 @@ private:
     OwnedArray<SpectralLogo::Band> bands;
     Path wave;
     
-    static constexpr int bandCount = 70;
-    
+    static constexpr auto bandCount = 70;
+
     int skewTime = 0;
     float pulse = 0.f;
     

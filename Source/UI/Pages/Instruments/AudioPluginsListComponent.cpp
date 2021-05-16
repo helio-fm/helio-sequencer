@@ -42,7 +42,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->titleLabel = make<Label>(String(), TRANS(I18n::Page::orchestraPlugins));
     this->addAndMakeVisible(this->titleLabel.get());
     this->titleLabel->setJustificationType(Justification::centred);
-    this->titleLabel->setFont({ Globals::UI::Fonts::L });
+    this->titleLabel->setFont(Globals::UI::Fonts::L);
 
     this->titleSeparator = make<SeparatorHorizontalFadingReversed>();
     this->addAndMakeVisible(this->titleSeparator.get());
@@ -181,11 +181,11 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
         const String inputChannelsString = TRANS_PLURAL("{x} input channels", pd.numInputChannels);
         const String outputChannelsString = TRANS_PLURAL("{x} output channels", pd.numOutputChannels);
 
-        g.setFont({ Globals::UI::Fonts::M });
+        g.setFont(Globals::UI::Fonts::M);
         g.setColour(colour);
         g.drawText(pd.descriptiveName, margin, margin, w, h, Justification::topLeft, false);
 
-        g.setFont({ Globals::UI::Fonts::S });
+        g.setFont(Globals::UI::Fonts::S);
         g.setColour(colour.withAlpha(0.7f));
         g.drawText(pd.manufacturerName, margin, 0, w, h, Justification::centredLeft, false);
 
@@ -208,14 +208,14 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     }
     case ColumnIds::category:
     {
-        g.setFont({ Globals::UI::Fonts::S });
+        g.setFont(Globals::UI::Fonts::S);
         g.setColour(colour.withAlpha(0.5f));
         g.drawText(pd.category, 0, margin, w - int(margin * 1.5f), h, Justification::topRight, false);
         break;
     }
     case ColumnIds::format:
     {
-        g.setFont({ Globals::UI::Fonts::S });
+        g.setFont(Globals::UI::Fonts::S);
         g.setColour(colour.withAlpha(0.7f));
         g.drawText(pd.pluginFormatName, margin, margin, w, h, Justification::topLeft, false);
         break;

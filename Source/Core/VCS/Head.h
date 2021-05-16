@@ -85,6 +85,8 @@ namespace VCS
         void checkoutItem(RevisionItem::Ptr stateItem);
         bool resetChangedItemToState(const RevisionItem::Ptr diffItem);
 
+        static constexpr auto diffRebuildThreadStopTimeoutMs = 5000;
+
         ReadWriteLock outdatedMarkerLock;
         bool diffOutdated;
 

@@ -78,12 +78,12 @@ TranslationSettingsItem::TranslationSettingsItem(ListBox &parentListBox) : Dragg
     this->localeLabel = make<Label>();
     this->addAndMakeVisible(this->localeLabel.get());
     this->localeLabel->setJustificationType(Justification::centredLeft);
-    this->localeLabel->setFont({ Globals::UI::Fonts::L });
+    this->localeLabel->setFont(Globals::UI::Fonts::L);
 
     this->idLabel = make<Label>();
     this->addAndMakeVisible(this->idLabel.get());
     this->idLabel->setJustificationType(Justification::centredRight);
-    this->idLabel->setFont({ Globals::UI::Fonts::L });
+    this->idLabel->setFont(Globals::UI::Fonts::L);
 
     this->separator = make<SeparatorHorizontal>();
     this->addAndMakeVisible(this->separator.get());

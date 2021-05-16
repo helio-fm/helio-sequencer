@@ -265,14 +265,14 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver,
 {
     this->subLabel = make<Label>();
     this->addAndMakeVisible(this->subLabel.get());
-    this->subLabel->setFont({ MenuItemComponent::fontSize });
+    this->subLabel->setFont(MenuItemComponent::fontSize);
     this->subLabel->setJustificationType(Justification::centredRight);
     this->subLabel->setInterceptsMouseClicks(false, false);
     this->subLabel->setColour(Label::textColourId, desc->colour.withMultipliedAlpha(0.5f));
 
     this->textLabel = make<Label>();
     this->addAndMakeVisible(this->textLabel.get());
-    this->textLabel->setFont({ MenuItemComponent::fontSize });
+    this->textLabel->setFont(MenuItemComponent::fontSize);
     this->textLabel->setJustificationType(Justification::centredLeft);
     this->textLabel->setInterceptsMouseClicks(false, false);
 
@@ -338,8 +338,8 @@ void MenuItemComponent::resized()
     this->textLabel->setBounds(MenuItemComponent::iconSize + MenuItemComponent::iconMargin, 0,
         this->getWidth() - MenuItemComponent::iconSize - MenuItemComponent::iconMargin, this->getHeight());
 
-    this->textLabel->setFont({ MenuItemComponent::fontSize });
-    this->subLabel->setFont({ MenuItemComponent::fontSize });
+    this->textLabel->setFont(MenuItemComponent::fontSize);
+    this->subLabel->setFont(MenuItemComponent::fontSize);
 }
 
 void MenuItemComponent::mouseDown(const MouseEvent &e)

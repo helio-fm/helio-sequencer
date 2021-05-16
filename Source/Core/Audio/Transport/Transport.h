@@ -216,6 +216,7 @@ private:
     
     OrchestraPit &orchestra;
     SleepTimer &sleepTimer;
+    static constexpr auto soundSleepDelayMs = 60000;
 
     UniquePointer<PlayerThreadPool> player;
     UniquePointer<RendererThread> renderer;

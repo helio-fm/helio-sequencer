@@ -32,7 +32,6 @@
 #include "BuiltInSynthAudioPlugin.h"
 
 #define TIME_NOW (Time::getMillisecondCounterHiRes() * 0.001)
-#define SOUND_SLEEP_DELAY_MS (60000)
 
 Transport::Transport(OrchestraPit &orchestraPit, SleepTimer &sleepTimer) :
     orchestra(orchestraPit),
@@ -162,7 +161,7 @@ void Transport::probeSoundAtBeat(float beatPosition, const MidiSequence *limitTo
         }
     }
 
-    this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
+    this->sleepTimer.setCanSleepAfter(Transport::soundSleepDelayMs);
 }
 
 //===----------------------------------------------------------------------===//
@@ -217,7 +216,7 @@ void Transport::stopPlayback()
         this->player->stopPlayback(); // after broadcastStop so that MM can be locked
         this->allNotesControllersAndSoundOff();
         this->seekToBeat(this->getSeekBeat());
-        this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
+        this->sleepTimer.setCanSleepAfter(Transport::soundSleepDelayMs);
     }
 }
 
@@ -494,7 +493,7 @@ void Transport::previewKey(const String &trackId, int key,
     const auto noteOffTimeoutMs = int16(Globals::Defaults::msPerBeat * lengthInBeats);
     this->notePreviewTimer.previewNote(instrument, key, volume, noteOffTimeoutMs);
 
-    this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS + noteOffTimeoutMs * 2);
+    this->sleepTimer.setCanSleepAfter(Transport::soundSleepDelayMs + noteOffTimeoutMs * 2);
 }
 
 static void stopSoundForInstrument(Instrument *instrument)
@@ -529,7 +528,7 @@ void Transport::stopSound(const String &trackId) const
         }
     }
 
-    this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
+    this->sleepTimer.setCanSleepAfter(Transport::soundSleepDelayMs);
 }
 
 void Transport::allNotesControllersAndSoundOff() const
@@ -560,7 +559,7 @@ void Transport::allNotesControllersAndSoundOff() const
         }
     }
 
-    this->sleepTimer.setCanSleepAfter(SOUND_SLEEP_DELAY_MS);
+    this->sleepTimer.setCanSleepAfter(Transport::soundSleepDelayMs);
 }
 
 

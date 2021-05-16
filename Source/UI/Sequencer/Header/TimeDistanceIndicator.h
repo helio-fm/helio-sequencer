@@ -28,7 +28,7 @@ public:
     {
         this->timeLabel = make<Label>();
         this->addAndMakeVisible(this->timeLabel.get());
-        this->timeLabel->setFont({ Globals::UI::Fonts::L });
+        this->timeLabel->setFont(Globals::UI::Fonts::L);
         this->timeLabel->setJustificationType(Justification::centred);
 
         this->setPaintingIsUnclipped(true);

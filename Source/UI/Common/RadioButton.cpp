@@ -60,7 +60,7 @@ RadioButton::RadioButton(const String &text, Colour c, RadioButton::Listener *li
     this->label = make<Label>();
     this->addAndMakeVisible(this->label.get());
 
-    this->label->setFont({ Globals::UI::Fonts::M });
+    this->label->setFont(Globals::UI::Fonts::M);
     this->label->setText(text, dontSendNotification);
     this->label->setJustificationType(Justification::centred);
     this->label->setInterceptsMouseClicks(false, false);

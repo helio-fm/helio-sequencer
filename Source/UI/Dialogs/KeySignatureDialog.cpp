@@ -96,7 +96,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
 
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
-    this->messageLabel->setFont({ Globals::UI::Fonts::L });
+    this->messageLabel->setFont(Globals::UI::Fonts::L);
     this->messageLabel->setJustificationType(Justification::centred);
 
     this->removeEventButton = make<TextButton>();
@@ -143,7 +143,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     this->scaleNameEditor->setPopupMenuEnabled(true);
 
     this->scaleNameEditor->addListener(this);
-    this->scaleNameEditor->setFont({ Globals::UI::Fonts::L });
+    this->scaleNameEditor->setFont(Globals::UI::Fonts::L);
 
     const auto periodSize = getPeriod(project).size();
     const auto allScales = App::Config().getScales()->getAll();
