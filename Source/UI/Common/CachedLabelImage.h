@@ -61,8 +61,17 @@ struct CachedLabelImage final : public CachedComponentImage
                 compBounds.getHeight() / (float)imageBounds.getHeight()), false);
     }
 
+    // will be called on setBounds(), but we don't need to invalidate:
     bool invalidateAll() override { return false; }
     bool invalidate(const Rectangle<int> &area) override { return false; }
+
+    // this class does not track color or font changes,
+    // because they should be rare, pls do it manually:
+    bool forceInvalidate()
+    {
+        this->text = String();
+        return false;
+    }
 
     // Do nothing, this is called on every setVisible
     // (image will be released anyway in a destructor)

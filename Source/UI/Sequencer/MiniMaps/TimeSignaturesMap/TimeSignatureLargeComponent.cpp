@@ -39,7 +39,6 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMa
     this->signatureLabel->setBounds(-3, 1, 48,
         TimeSignatureLargeComponent::timeSignatureHeight - 1);
 
-    this->signatureLabel->setBufferedToImage(true);
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
 
     this->setMouseCursor(MouseCursor::PointingHandCursor);

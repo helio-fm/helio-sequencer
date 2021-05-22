@@ -36,7 +36,6 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &
     this->signatureLabel->setJustificationType(Justification::centredLeft);
     this->signatureLabel->setBounds(-2, 1, 192, 24);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
-    this->signatureLabel->setBufferedToImage(true);
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
 
     this->setMouseCursor(MouseCursor::PointingHandCursor);

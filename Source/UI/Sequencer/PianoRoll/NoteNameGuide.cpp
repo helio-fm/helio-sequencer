@@ -35,7 +35,6 @@ NoteNameGuide::NoteNameGuide(const String &noteName, int noteNumber) :
     this->noteNameLabel->setFont(Globals::UI::Fonts::S);
     this->noteNameLabel->setJustificationType(Justification::centredLeft);
     
-    this->noteNameLabel->setBufferedToImage(true);
     this->noteNameLabel->setCachedComponentImage(new CachedLabelImage(*this->noteNameLabel));
     this->noteNameLabel->setText(noteName, dontSendNotification);
 }

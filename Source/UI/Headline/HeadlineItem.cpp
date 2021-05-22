@@ -96,7 +96,6 @@ HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, Async
     this->setPaintingIsUnclipped(true);
     this->setOpaque(false);
 
-    this->titleLabel->setBufferedToImage(true);
     this->titleLabel->setCachedComponentImage(new CachedLabelImage(*this->titleLabel));
 
     this->bgColour = findDefaultColour(ColourIDs::BackgroundA::fill);

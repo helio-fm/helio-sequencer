@@ -34,7 +34,6 @@ AnnotationSmallComponent::AnnotationSmallComponent(AnnotationsProjectMap &parent
     this->annotationLabel->setInterceptsMouseClicks(false, false);
 
     this->annotationLabel->setSize(160, 16);
-    this->annotationLabel->setBufferedToImage(true);
     this->annotationLabel->setCachedComponentImage(new CachedLabelImage(*this->annotationLabel));
 }
 
@@ -71,13 +70,20 @@ void AnnotationSmallComponent::setRealBounds(const Rectangle<float> bounds)
 
 void AnnotationSmallComponent::updateContent()
 {
-    if (this->annotationLabel->getText() != this->event.getDescription() ||
-        this->lastColour != this->event.getColour())
+
+    if (this->lastColour != this->event.getColour())
     {
         this->lastColour = this->event.getColour();
-        this->annotationLabel->setText(this->event.getDescription(), dontSendNotification);
         const auto fgColour = findDefaultColour(Label::textColourId);
         this->annotationLabel->setColour(Label::textColourId, this->lastColour.interpolatedWith(fgColour, 0.55f));
+        auto *cachedImage = static_cast<CachedLabelImage *>(this->annotationLabel->getCachedComponentImage());
+        jassert(cachedImage != nullptr);
+        cachedImage->forceInvalidate();
+    }
+
+    if (this->annotationLabel->getText() != this->event.getDescription())
+    {
+        this->annotationLabel->setText(this->event.getDescription(), dontSendNotification);
         this->textWidth = float(this->annotationLabel->getFont().getStringWidth(this->event.getDescription()));
     }
 

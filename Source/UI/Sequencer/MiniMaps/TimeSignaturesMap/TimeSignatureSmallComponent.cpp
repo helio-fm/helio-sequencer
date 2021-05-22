@@ -37,7 +37,6 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMa
 
     this->signatureLabel->setInterceptsMouseClicks(false, false);
 
-    this->signatureLabel->setBufferedToImage(true);
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
 }
 
