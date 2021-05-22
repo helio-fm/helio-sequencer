@@ -539,24 +539,8 @@ void App::initialise(const String &commandLine)
 
         this->workspace = make<class Workspace>();
         
-        bool shouldEnableOpenGL = this->config->getUiFlags()->isOpenGlRendererEnabled();
-        bool shouldUseNativeTitleBar = this->config->getUiFlags()->isNativeTitleBarEnabled();
-
-        // TODO: get rid of these config->getProperty in future versions,
-        // for now just check if new flags settings are present and if not, load legacy keys:
-        if (!this->config->containsProperty(Serialization::Config::activeUiFlags))
-        {
-            const auto enabledState = Serialization::Config::enabledState.toString();
-            const auto legacyOpenGlStateFlag = this->config->getProperty(Serialization::Config::openGLState);
-            const auto legacyTitleBarStateFlag = this->config->getProperty(Serialization::Config::nativeTitleBar);
-
-            shouldEnableOpenGL = legacyOpenGlStateFlag.isNotEmpty() ? legacyOpenGlStateFlag == enabledState : shouldEnableOpenGL;
-            shouldUseNativeTitleBar = legacyTitleBarStateFlag.isNotEmpty() ? legacyTitleBarStateFlag == enabledState : shouldUseNativeTitleBar;
-
-            // make sure to save the fetched flags
-            this->config->getUiFlags()->setOpenGlRendererEnabled(shouldEnableOpenGL);
-            this->config->getUiFlags()->setNativeTitleBarEnabled(shouldUseNativeTitleBar);
-        }
+        const auto shouldEnableOpenGL = this->config->getUiFlags()->isOpenGlRendererEnabled();
+        const auto shouldUseNativeTitleBar = this->config->getUiFlags()->isNativeTitleBarEnabled();
 
         this->window = make<MainWindow>();
         this->window->init(shouldEnableOpenGL, shouldUseNativeTitleBar);

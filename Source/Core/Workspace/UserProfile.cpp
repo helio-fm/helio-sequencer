@@ -295,8 +295,7 @@ String UserProfile::getProfileUrl() const noexcept
 
 String UserProfile::getApiToken() const
 {
-    // Kinda legacy, it should have been stored in profile
-    // but let's keep it as is for now
+    // todo in future - move this to profile object?
     return App::Config().getProperty(Serialization::Api::sessionToken, {});
 }
 

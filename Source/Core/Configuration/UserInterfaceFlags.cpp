@@ -196,7 +196,6 @@ SerializedData UserInterfaceFlags::serialize() const
     using namespace Serialization;
     SerializedData tree(UI::Flags::uiFlags);
     
-    // todo only save if not default?
     tree.setProperty(UI::Flags::noteNameGuides, this->noteNameGuides);
     tree.setProperty(UI::Flags::scalesHighlighting, this->scalesHighlighting);
     tree.setProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);

@@ -238,7 +238,6 @@ void ColourScheme::reset()
     this->name.clear();
     this->colours.clear();
 
-    // todo set reasonable defaults?
     this->colours[UI::Colours::primaryGradientA] = Colours::black;
     this->colours[UI::Colours::primaryGradientB] = Colours::black;
     this->colours[UI::Colours::secondaryGradientA] = Colours::black;

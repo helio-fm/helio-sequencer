@@ -36,7 +36,7 @@ String Translation::getId() const noexcept
 SerializedData Translation::serialize() const
 {
     SerializedData emptyXml(Serialization::Translations::locale);
-    // TODO
+    jassertfalse; // translations are meant to be read-only
     return emptyXml;
 }
 

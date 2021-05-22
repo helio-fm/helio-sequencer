@@ -195,12 +195,6 @@ namespace Serialization
         static const Identifier lastUpdatesInfo = "lastUpdatesInfo";
         static const Identifier lastUsedFont = "lastUsedFont";
         static const Identifier lastSearch = "lastSearch";
-
-        // obsolete, to be removed in future versions (moved to global ui flags):
-        static const Identifier nativeTitleBar = "nativeTitleBar";
-        static const Identifier openGLState = "openGL";
-        static const Identifier enabledState = "enabled";
-        static const Identifier disabledState = "disabled";
     } // namespace Config
 
     // Available types of dynamically fetched resources/configs

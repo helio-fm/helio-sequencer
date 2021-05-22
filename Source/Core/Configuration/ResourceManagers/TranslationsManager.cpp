@@ -110,26 +110,13 @@ String TranslationsManager::translate(I18n::Key key)
         return foundCurrentSingular->second;
     }
 
-    // why have I even put this here? todo test how it works without this block
-    /*
-    const auto foundCurrentPlural = this->currentTranslation->plurals.find(key);
-    if (foundCurrentPlural != this->currentTranslation->plurals.end())
-    {
-        const auto *plurals = foundCurrentPlural->second.get();
-        if (plurals->size() > 0)
-        {
-            return plurals->begin()->second;
-        }
-    }
-    */
-
     const auto foundFallbackSingular = this->fallbackTranslation->singulars.find(key);
     if (foundFallbackSingular != this->fallbackTranslation->singulars.end())
     {
         return foundFallbackSingular->second;
     }
 
-    //jassertfalse;
+    jassertfalse;
     return {};
 }
 
