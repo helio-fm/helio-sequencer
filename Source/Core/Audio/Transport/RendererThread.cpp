@@ -34,7 +34,7 @@ float RendererThread::getPercentsComplete() const noexcept
     return this->percentsDone.get();
 }
 
-void RendererThread::startRendering(const URL &target, RenderFormat format,
+bool RendererThread::startRendering(const URL &target, RenderFormat format,
     Transport::PlaybackContext::Ptr playbackContext)
 {
     this->stop();
@@ -49,7 +49,11 @@ void RendererThread::startRendering(const URL &target, RenderFormat format,
     if (this->renderTarget.isLocalFile() &&
         this->renderTarget.getLocalFile().exists())
     {
-        this->renderTarget.getLocalFile().deleteFile();
+        const auto deleted = this->renderTarget.getLocalFile().deleteFile();
+        if (!deleted) {
+            // so the file exists but is probably inaccessible:
+            return false;
+        }
     }
 
     if (auto outStream = this->renderTarget.createOutputStream())
@@ -80,7 +84,11 @@ void RendererThread::startRendering(const URL &target, RenderFormat format,
             DBG(this->renderTarget.getLocalFile().getFullPathName());
             this->startThread(9);
         }
+
+        return true;
     }
+
+    return false;
 }
 
 void RendererThread::stop()

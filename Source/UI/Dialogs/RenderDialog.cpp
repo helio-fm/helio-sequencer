@@ -189,8 +189,14 @@ void RenderDialog::startOrAbortRender()
             this->renderTarget.getParentURL().getLocalFile().getFullPathName());
 #endif
 
-        transport.startRender(this->renderTarget, this->format);
-        this->startTrackingProgress();
+        if (transport.startRender(this->renderTarget, this->format))
+        {
+            this->startTrackingProgress();
+        }
+        else
+        {
+            App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
+        }
     }
     else
     {

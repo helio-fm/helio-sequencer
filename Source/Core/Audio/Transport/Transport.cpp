@@ -323,15 +323,15 @@ void Transport::disableLoopPlayback()
 // Rendering
 //===----------------------------------------------------------------------===//
 
-void Transport::startRender(const URL &renderTarget, RenderFormat format)
+bool Transport::startRender(const URL &renderTarget, RenderFormat format)
 {
     if (this->renderer->isRendering())
     {
-        return;
+        return false;
     }
     
     this->sleepTimer.setCanSleepAfter(0);
-    this->renderer->startRendering(renderTarget, format,
+    return this->renderer->startRendering(renderTarget, format,
         this->fillPlaybackContextAt(this->getProjectFirstBeat()));
 }
 

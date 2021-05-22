@@ -71,7 +71,7 @@ public:
 
     void stopPlaybackAndRecording();
 
-    void startRender(const URL &renderTarget, RenderFormat format);
+    bool startRender(const URL &renderTarget, RenderFormat format);
     bool isRendering() const;
     void stopRender();
     

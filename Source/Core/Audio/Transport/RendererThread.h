@@ -29,7 +29,7 @@ public:
     
     float getPercentsComplete() const noexcept;
 
-    void startRendering(const URL &target, RenderFormat format,
+    bool startRendering(const URL &target, RenderFormat format,
         Transport::PlaybackContext::Ptr context);
 
     void stop();
