@@ -1402,10 +1402,10 @@
                   microphonePermissionNeeded="0" UISupportsDocumentBrowser="1"
                   UIRequiresFullScreen="1">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" iosCompatibility="9.0" isDebug="1" optimisation="1"
+        <CONFIGURATION name="Debug" iosCompatibility="11.0" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
                        enablePluginBinaryCopyStep="1"/>
-        <CONFIGURATION name="Release" iosCompatibility="9.0" isDebug="0" optimisation="3"
+        <CONFIGURATION name="Release" iosCompatibility="11.0" isDebug="0" optimisation="3"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
                        customXcodeFlags="PROVISIONING_PROFILE_SPECIFIER=&quot;Helio AppStore New&quot;, CODE_SIGN_STYLE=&quot;Manual&quot;"
                        enablePluginBinaryCopyStep="1" linkTimeOptimisation="0" stripLocalSymbols="1"

@@ -116,7 +116,6 @@ String TranslationsManager::translate(I18n::Key key)
         return foundFallbackSingular->second;
     }
 
-    jassertfalse;
     return {};
 }
 
