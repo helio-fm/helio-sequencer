@@ -9,6 +9,13 @@
         "chromaticMap": "1 1 1 1 1 1 1 1 1 1 1 1"
       },
       {
+        "id": "19edo",
+        "name": "19 equal temperament",
+        "period": "D D# Eb E E# F F# Fx G G# Ab A A# Bb B B# C C# Cx",
+        "highlighting": "2 2 1 2 1 2 1 2 2 1 2 1",
+        "chromaticMap": "2 2 1 2 1 2 1 2 2 1 2 1"
+      },
+      {
         "id": "22edo",
         "name": "22 equal temperament",
         "period": "C ^C vC# C# D Eb ^Eb vE E F Gb ^Gb vG G Ab ^Ab vA A Bb ^Bb vB B",

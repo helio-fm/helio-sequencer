@@ -1625,9 +1625,24 @@ static const unsigned char temp_binary_data_90[] =
 "      { \"period\": 12, \"name\": \"Blues Leading Tone\", \"intervals\": \"3 2 1 1 3 1 1\" },\n"
 "      { \"period\": 12, \"name\": \"Rock'n'Roll\", \"intervals\": \"3 1 1 2 2 1 2\" },\n"
 "\n"
+"      // 19 edo scales; source: https://en.xen.wiki/w/19edo_modes\n"
+"      { \"period\": 19, \"name\": \"Melodic Minor\", \"intervals\": \"2 3 2 3 3 3 3\" },\n"
+"      { \"period\": 19, \"name\": \"Harmonic Minor\", \"intervals\": \"2 3 2 3 3 2 4\" },\n"
+"      { \"period\": 19, \"name\": \"Harmonic Major\", \"intervals\": \"2 3 2 4 2 3 3\" },\n"
+"      { \"period\": 19, \"name\": \"Deutone\", \"intervals\": \"1 3 3 3 3 3 3\" },\n"
+"      { \"period\": 19, \"name\": \"Meantone\", \"intervals\": \"2 3 3 2 3 3 3\" },\n"
+"      { \"period\": 19, \"name\": \"Ionian\", \"intervals\": \"3 3 2 3 3 3 2\" },\n"
+"      { \"period\": 19, \"name\": \"Aeolian\", \"intervals\": \"3 2 3 3 2 3 3\" },\n"
+"      { \"period\": 19, \"name\": \"Dorian\", \"intervals\": \"3 2 3 3 3 2 3\" },\n"
+"      { \"period\": 19, \"name\": \"Lydian\", \"intervals\": \"3 3 3 2 3 3 2\" },\n"
+"      { \"period\": 19, \"name\": \"Mixolydian\", \"intervals\": \"3 3 2 3 3 2 3\" },\n"
+"      { \"period\": 19, \"name\": \"Locrian\", \"intervals\": \"2 3 3 2 3 3 3\" },\n"
+"      { \"period\": 19, \"name\": \"Major Locrian\", \"intervals\": \"2 2 3 3 3 3 3\" },\n"
+"      { \"period\": 19, \"name\": \"Phrygian\", \"intervals\": \"2 3 3 3 2 3 3 \"},\n"
+"\n"
 "      // 22 edo scales; source: https://en.xen.wiki/w/22edo\n"
 "      { \"period\": 22, \"name\": \"Harmonic Minor\", \"intervals\": \"4 2 3 4 2 5 2\" },\n"
-"      { \"period\": 22, \"name\": \"Superpyth, diatonic \", \"intervals\": \"4 1 4 4 4 1 4\" },\n"
+"      { \"period\": 22, \"name\": \"Superpyth, diatonic\", \"intervals\": \"4 1 4 4 4 1 4\" },\n"
 "      { \"period\": 22, \"name\": \"Just major\", \"intervals\": \"4 3 2 4 3 4 2\" },\n"
 "      { \"period\": 22, \"name\": \"Natural minor\", \"intervals\": \"4 2 3 4 2 4 3\" },\n"
 "      { \"period\": 22, \"name\": \"Tetrachordal major\", \"intervals\": \"4 3 2 4 4 3 2\" },\n"
@@ -1701,6 +1716,13 @@ static const unsigned char temp_binary_data_91[] =
 "        \"period\": \"C C# D D# E F F# G G# A A# B\",\n"
 "        \"highlighting\": \"2 2 1 2 2 2 1\",\n"
 "        \"chromaticMap\": \"1 1 1 1 1 1 1 1 1 1 1 1\"\n"
+"      },\n"
+"      {\n"
+"        \"id\": \"19edo\",\n"
+"        \"name\": \"19 equal temperament\",\n"
+"        \"period\": \"D D# Eb E E# F F# Fx G G# Ab A A# Bb B B# C C# Cx\",\n"
+"        \"highlighting\": \"2 2 1 2 1 2 1 2 2 1 2 1\",\n"
+"        \"chromaticMap\": \"2 2 1 2 1 2 1 2 2 1 2 1\"\n"
 "      },\n"
 "      {\n"
 "        \"id\": \"22edo\",\n"
@@ -4111,8 +4133,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
         case 0x25669f2b:  numBytes = 15465; return hotkeySchemes_json;
-        case 0x048f5efe:  numBytes = 8357; return scales_json;
-        case 0x77719112:  numBytes = 839; return temperaments_json;
+        case 0x048f5efe:  numBytes = 9400; return scales_json;
+        case 0x77719112:  numBytes = 1091; return temperaments_json;
         case 0xf8655f25:  numBytes = 164349; return translations_json;
         default: break;
     }

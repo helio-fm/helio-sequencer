@@ -44,9 +44,24 @@
       { "period": 12, "name": "Blues Leading Tone", "intervals": "3 2 1 1 3 1 1" },
       { "period": 12, "name": "Rock'n'Roll", "intervals": "3 1 1 2 2 1 2" },
 
+      // 19 edo scales; source: https://en.xen.wiki/w/19edo_modes
+      { "period": 19, "name": "Melodic Minor", "intervals": "2 3 2 3 3 3 3" },
+      { "period": 19, "name": "Harmonic Minor", "intervals": "2 3 2 3 3 2 4" },
+      { "period": 19, "name": "Harmonic Major", "intervals": "2 3 2 4 2 3 3" },
+      { "period": 19, "name": "Deutone", "intervals": "1 3 3 3 3 3 3" },
+      { "period": 19, "name": "Meantone", "intervals": "2 3 3 2 3 3 3" },
+      { "period": 19, "name": "Ionian", "intervals": "3 3 2 3 3 3 2" },
+      { "period": 19, "name": "Aeolian", "intervals": "3 2 3 3 2 3 3" },
+      { "period": 19, "name": "Dorian", "intervals": "3 2 3 3 3 2 3" },
+      { "period": 19, "name": "Lydian", "intervals": "3 3 3 2 3 3 2" },
+      { "period": 19, "name": "Mixolydian", "intervals": "3 3 2 3 3 2 3" },
+      { "period": 19, "name": "Locrian", "intervals": "2 3 3 2 3 3 3" },
+      { "period": 19, "name": "Major Locrian", "intervals": "2 2 3 3 3 3 3" },
+      { "period": 19, "name": "Phrygian", "intervals": "2 3 3 3 2 3 3 "},
+
       // 22 edo scales; source: https://en.xen.wiki/w/22edo
       { "period": 22, "name": "Harmonic Minor", "intervals": "4 2 3 4 2 5 2" },
-      { "period": 22, "name": "Superpyth, diatonic ", "intervals": "4 1 4 4 4 1 4" },
+      { "period": 22, "name": "Superpyth, diatonic", "intervals": "4 1 4 4 4 1 4" },
       { "period": 22, "name": "Just major", "intervals": "4 3 2 4 3 4 2" },
       { "period": 22, "name": "Natural minor", "intervals": "4 2 3 4 2 4 3" },
       { "period": 22, "name": "Tetrachordal major", "intervals": "4 3 2 4 4 3 2" },
