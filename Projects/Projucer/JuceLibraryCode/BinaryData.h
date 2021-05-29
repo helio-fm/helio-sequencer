@@ -285,7 +285,7 @@ namespace BinaryData
     const int            temperaments_jsonSize = 839;
 
     extern const char*   translations_json;
-    const int            translations_jsonSize = 159258;
+    const int            translations_jsonSize = 164349;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 93;

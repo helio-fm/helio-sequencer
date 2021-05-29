@@ -59,7 +59,7 @@ All documentation, translations and logotypes are distributed under [CC-BY](http
 ### Translation and proofreading credits
 
 Afrikaans - Jacques Viviers  
-Chinese - Bowen Sun  
+Chinese - Bowen Sun, Yingchun Soul  
 Italian - Claudio Stano, Riccardo Cariboni  
 Japanese - Kotone Itaya  
 Korean - YoungGwang Jeon, DaYeon Lee, HyoHee Jeon  
