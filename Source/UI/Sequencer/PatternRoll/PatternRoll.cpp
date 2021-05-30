@@ -717,10 +717,20 @@ void PatternRoll::handleCommandMessage(int commandId)
         PatternOperations::transposeClips(this->getLassoSelection(), -1);
         break;
     case CommandIDs::ClipTransposeOctaveUp:
-        PatternOperations::transposeClips(this->getLassoSelection(), this->getPeriodSize());
+        PatternOperations::transposeClips(this->getLassoSelection(),
+            this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave));
         break;
     case CommandIDs::ClipTransposeOctaveDown:
-        PatternOperations::transposeClips(this->getLassoSelection(), -this->getPeriodSize());
+        PatternOperations::transposeClips(this->getLassoSelection(),
+            -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave));
+        break;
+    case CommandIDs::ClipTransposeFifthUp:
+        PatternOperations::transposeClips(this->getLassoSelection(),
+            this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth));
+        break;
+    case CommandIDs::ClipTransposeFifthDown:
+        PatternOperations::transposeClips(this->getLassoSelection(),
+            -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth));
         break;
     case CommandIDs::ClipVolumeUp:
         PatternOperations::tuneClips(this->getLassoSelection(), 1.f / 32.f);

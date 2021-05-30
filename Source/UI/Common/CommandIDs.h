@@ -84,8 +84,10 @@ namespace CommandIDs
         ClipTransposeDown               = 0x1621,
         ClipTransposeOctaveUp           = 0x1622,
         ClipTransposeOctaveDown         = 0x1623,
-        ClipVolumeUp                    = 0x1624,
-        ClipVolumeDown                  = 0x1625,
+        ClipTransposeFifthUp            = 0x1624,
+        ClipTransposeFifthDown          = 0x1625,
+        ClipVolumeUp                    = 0x1626,
+        ClipVolumeDown                  = 0x1627,
 
         ToggleMuteClips                 = 0x1630,
         ToggleSoloClips                 = 0x1631,
@@ -165,6 +167,8 @@ namespace CommandIDs
         TransposeDown                   = 0x4025,
         TransposeOctaveUp               = 0x4026,
         TransposeOctaveDown             = 0x4027,
+        TransposeFifthUp                = 0x4028,
+        TransposeFifthDown              = 0x4029,
 
         CleanupOverlaps                 = 0x4030,
         InvertChordUp                   = 0x4031,

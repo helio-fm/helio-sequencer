@@ -49,6 +49,11 @@ String Temperament::getMidiNoteName(Note::Key note, bool includePeriod) const no
     return {};
 }
 
+Note::Key Temperament::getEquivalentOfTwelveToneInterval(Semitones interval) const noexcept
+{
+    return this->chromaticMap->getChromaticKey(int(interval), 0, false);
+}
+
 //===----------------------------------------------------------------------===//
 // BaseResource
 //===----------------------------------------------------------------------===//

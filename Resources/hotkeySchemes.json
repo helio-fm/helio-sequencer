@@ -183,6 +183,8 @@
       { "command": "TransposeDown", "key": "Cursor Down" },
       { "command": "TransposeOctaveUp", "key": "Shift + Cursor Up" },
       { "command": "TransposeOctaveDown", "key": "Shift + Cursor Down" },
+      { "command": "TransposeFifthUp", "key": "Shift + Alt + Cursor Up" },
+      { "command": "TransposeFifthDown", "key": "Shift + Alt + Cursor Down" },
 
       // Refactor selection
       { "command": "Retrograde", "key": "Alt + R" },
@@ -330,6 +332,8 @@
       { "command": "ClipTransposeDown", "key": "Cursor Down" },
       { "command": "ClipTransposeOctaveUp", "key": "Shift + Cursor Up" },
       { "command": "ClipTransposeOctaveDown", "key": "Shift + Cursor Down" },
+      { "command": "ClipTransposeFifthUp", "key": "Shift + Alt + Cursor Up" },
+      { "command": "ClipTransposeFifthDown", "key": "Shift + Alt + Cursor Down" },
       { "command": "BeatShiftLeft", "key": "Cursor Left" },
       { "command": "BeatShiftRight", "key": "Cursor Right" },
 

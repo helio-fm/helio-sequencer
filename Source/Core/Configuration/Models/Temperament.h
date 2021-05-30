@@ -21,6 +21,24 @@
 #include "Scale.h"
 #include "Note.h"
 
+// just 12-tone intervals, named to avoid using magic numbers:
+enum class Semitones : int8
+{
+    PerfectUnison = 0,
+    MinorSecond = 1,
+    MajorSecond = 2,
+    MinorThird = 3,
+    MajorThird = 4,
+    PerfectFourth = 5,
+    Tritone = 6,
+    PerfectFifth = 7,
+    MinorSixth = 8,
+    MajorSixth = 9,
+    MinorSeventh = 10,
+    MajorSeventh = 11,
+    PerfectOctave = 12
+};
+
 class Temperament final : public BaseResource
 {
 public:
@@ -45,6 +63,7 @@ public:
 
     const Scale::Ptr getHighlighting() const noexcept { return this->highlighting; }
     const Scale::Ptr getChromaticMap() const noexcept { return this->chromaticMap; }
+    Note::Key getEquivalentOfTwelveToneInterval(Semitones interval) const noexcept;
 
     String getMidiNoteName(Note::Key note, bool includePeriod) const noexcept;
 

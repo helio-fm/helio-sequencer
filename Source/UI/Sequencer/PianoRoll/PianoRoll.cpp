@@ -1105,11 +1105,23 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::TransposeOctaveUp:
         SequencerOperations::shiftKeyRelative(this->getLassoSelection(),
-            this->getPeriodSize(), true, &this->getTransport());
+            this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave),
+            true, &this->getTransport());
         break;
     case CommandIDs::TransposeOctaveDown:
         SequencerOperations::shiftKeyRelative(this->getLassoSelection(),
-            -this->getPeriodSize(), true, &this->getTransport());
+            -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave),
+            true, &this->getTransport());
+        break;
+    case CommandIDs::TransposeFifthUp:
+        SequencerOperations::shiftKeyRelative(this->getLassoSelection(),
+            this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth),
+            true, &this->getTransport());
+        break;
+    case CommandIDs::TransposeFifthDown:
+        SequencerOperations::shiftKeyRelative(this->getLassoSelection(),
+            -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth),
+            true, &this->getTransport());
         break;
     case CommandIDs::CleanupOverlaps:
         SequencerOperations::cleanupOverlaps(this->getLassoSelection());

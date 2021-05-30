@@ -1406,10 +1406,12 @@ static const unsigned char temp_binary_data_89[] =
 "      { \"command\": \"BeatShiftRight\", \"key\": \"Cursor Right\" },\n"
 "      { \"command\": \"LengthDecrease\", \"key\": \"Shift + Cursor Left\" },\n"
 "      { \"command\": \"LengthIncrease\", \"key\": \"Shift + Cursor Right\" },\n"
-"      { \"command\": \"KeyShiftUp\", \"key\": \"Cursor Up\" },\n"
-"      { \"command\": \"KeyShiftDown\", \"key\": \"Cursor Down\" },\n"
-"      { \"command\": \"OctaveShiftUp\", \"key\": \"Shift + Cursor Up\" },\n"
-"      { \"command\": \"OctaveShiftDown\", \"key\": \"Shift + Cursor Down\" },\n"
+"      { \"command\": \"TransposeUp\", \"key\": \"Cursor Up\" },\n"
+"      { \"command\": \"TransposeDown\", \"key\": \"Cursor Down\" },\n"
+"      { \"command\": \"TransposeOctaveUp\", \"key\": \"Shift + Cursor Up\" },\n"
+"      { \"command\": \"TransposeOctaveDown\", \"key\": \"Shift + Cursor Down\" },\n"
+"      { \"command\": \"TransposeFifthUp\", \"key\": \"Shift + Alt + Cursor Up\" },\n"
+"      { \"command\": \"TransposeFifthDown\", \"key\": \"Shift + Alt + Cursor Down\" },\n"
 "\n"
 "      // Refactor selection\n"
 "      { \"command\": \"Retrograde\", \"key\": \"Alt + R\" },\n"
@@ -1557,6 +1559,8 @@ static const unsigned char temp_binary_data_89[] =
 "      { \"command\": \"ClipTransposeDown\", \"key\": \"Cursor Down\" },\n"
 "      { \"command\": \"ClipTransposeOctaveUp\", \"key\": \"Shift + Cursor Up\" },\n"
 "      { \"command\": \"ClipTransposeOctaveDown\", \"key\": \"Shift + Cursor Down\" },\n"
+"      { \"command\": \"ClipTransposeFifthUp\", \"key\": \"Shift + Alt + Cursor Up\" },\n"
+"      { \"command\": \"ClipTransposeFifthDown\", \"key\": \"Shift + Alt + Cursor Down\" },\n"
 "      { \"command\": \"BeatShiftLeft\", \"key\": \"Cursor Left\" },\n"
 "      { \"command\": \"BeatShiftRight\", \"key\": \"Cursor Right\" },\n"
 "\n"
@@ -4132,7 +4136,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 3279; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 15465; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 15791; return hotkeySchemes_json;
         case 0x048f5efe:  numBytes = 9400; return scales_json;
         case 0x77719112:  numBytes = 1091; return temperaments_json;
         case 0xf8655f25:  numBytes = 164349; return translations_json;
