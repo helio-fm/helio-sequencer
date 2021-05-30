@@ -85,34 +85,34 @@ public:
 
     FunctionsCommandPanel()
     {
-        const auto &funName = Chord::getLocalizedFunctionNames();
+        const auto &funName = Chord::getLocalizedDegreeNames();
         MenuPanel::Menu cmds;
         cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction + 6, "VII - " + funName[6]));
+            CommandIDs::SelectScaleDegree + 6, "VII - " + funName[6]));
         cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction + 5, "VI - " + funName[5]));
+            CommandIDs::SelectScaleDegree + 5, "VI - " + funName[5]));
         cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction + 4, "V - " + funName[4]));
+            CommandIDs::SelectScaleDegree + 4, "V - " + funName[4]));
         cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction + 3, "IV - " + funName[3]));
+            CommandIDs::SelectScaleDegree + 3, "IV - " + funName[3]));
         cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction + 2, "III - " + funName[2]));
+            CommandIDs::SelectScaleDegree + 2, "III - " + funName[2]));
         cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction + 1, "II - " + funName[1]));
+            CommandIDs::SelectScaleDegree + 1, "II - " + funName[1]));
         cmds.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectFunction, "I - " + funName[0]));
+            CommandIDs::SelectScaleDegree, "I - " + funName[0]));
         this->updateContent(cmds, MenuPanel::SlideRight, false);
     }
 
     void handleCommandMessage(int commandId) override
     {
-        if (commandId >= CommandIDs::SelectFunction &&
-            commandId <= (CommandIDs::SelectFunction + 6))
+        if (commandId >= CommandIDs::SelectScaleDegree &&
+            commandId <= (CommandIDs::SelectScaleDegree + 6))
         {
-            const int functionIndex = commandId - CommandIDs::SelectFunction;
+            const int degreeIndex = commandId - CommandIDs::SelectScaleDegree;
             if (auto *builder = dynamic_cast<ScalePreviewTool *>(this->getParentComponent()))
             {
-                builder->applyFunction((Scale::Function)functionIndex);
+                builder->applyScaleDegree((Scale::Degree)degreeIndex);
             }
         }
     }
@@ -133,7 +133,7 @@ ScalePreviewTool::ScalePreviewTool(PianoRoll *caller, MidiSequence *layer)
       draggingStartPosition(0, 0),
       draggingEndPosition(0, 0),
       scale(defaultScales[0]),
-      function(Scale::Tonic)
+      degree(Scale::Degree::Tonic)
 {
     this->scalesList.reset(new ScalesCommandPanel(this->defaultScales));
     this->addAndMakeVisible(scalesList.get());
@@ -367,38 +367,38 @@ void ScalePreviewTool::onPopupButtonEndDragging(PopupButton *button)
 
 void ScalePreviewTool::applyScale(const Scale::Ptr scale)
 {
-    const auto &funName = Chord::getLocalizedFunctionNames();
+    const auto &degreeNames = Chord::getLocalizedDegreeNames();
     const String rootKey = keyName(this->targetKey);
     if (this->scale != scale)
     {
         this->scale = scale;
         App::Config().save(this->scale.get(), Serialization::Config::lastUsedScale);
-        this->buildChord(this->scale->getChord(Chord::getTriad(), this->function, true));
-        SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
+        this->buildChord(this->scale->getChord(Chord::getTriad(), this->degree, true));
+        SHOW_CHORD_TOOLTIP(rootKey, degreeNames[int(this->degree)]);
     }
     else
     {
         // Alternate mode on second click
-        this->buildChord(this->scale->getChord(Chord::getSeventhChord(), this->function, false));
-        SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
+        this->buildChord(this->scale->getChord(Chord::getSeventhChord(), this->degree, false));
+        SHOW_CHORD_TOOLTIP(rootKey, degreeNames[int(this->degree)]);
     }
 }
 
-void ScalePreviewTool::applyFunction(Scale::Function function)
+void ScalePreviewTool::applyScaleDegree(Scale::Degree otherDegree)
 {
-    const auto &funName = Chord::getLocalizedFunctionNames();
+    const auto &degreeNames = Chord::getLocalizedDegreeNames();
     const String rootKey = keyName(this->targetKey);
-    if (this->function != function)
+    if (this->degree != otherDegree)
     {
-        this->function = function;
-        this->buildChord(this->scale->getChord(Chord::getTriad(), this->function, true));
-        SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
+        this->degree = otherDegree;
+        this->buildChord(this->scale->getChord(Chord::getTriad(), this->degree, true));
+        SHOW_CHORD_TOOLTIP(rootKey, degreeNames[int(this->degree)]);
     }
     else
     {
         // Alternate mode on second click
-        this->buildChord(this->scale->getChord(Chord::getSeventhChord(), this->function, false));
-        SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
+        this->buildChord(this->scale->getChord(Chord::getSeventhChord(), this->degree, false));
+        SHOW_CHORD_TOOLTIP(rootKey, degreeNames[int(this->degree)]);
     }
 }
 
@@ -503,7 +503,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ScalePreviewTool" template="../../Template"
                  componentName="" parentClasses="public PopupMenuComponent, public PopupButtonOwner"
-                 constructorParams="PianoRoll *caller, MidiSequence *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;sequence(layer),&#10;defaultScales(App::Config().getScales()->getAll()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0),&#10;scale(defaultScales[0]),&#10;function(Scale::Tonic)"
+                 constructorParams="PianoRoll *caller, MidiSequence *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;sequence(layer),&#10;defaultScales(App::Config().getScales()->getAll()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0),&#10;scale(defaultScales[0]),&#10;degree(Scale::Degree::Tonic)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="500" initialHeight="500">
   <METHODS>

@@ -125,7 +125,7 @@ namespace CommandIDs
         ProjectTransposeDown            = 0x2071,
         ProjectSetOneTempo              = 0x2072,
 
-        SelectFunction                  = 0x2120, // more ids reserved for sub-items
+        SelectScaleDegree               = 0x2120, // more ids reserved for sub-items
         SelectScale                     = 0x2200, // more ids reserved for sub-items
         SelectTimeSignature             = 0x2300, // more ids reserved for sub-items
         SelectVersion                   = 0x2400, // more ids reserved for sub-items
@@ -161,10 +161,10 @@ namespace CommandIDs
         BeatShiftRight                  = 0x4021,
         LengthIncrease                  = 0x4022,
         LengthDecrease                  = 0x4023,
-        KeyShiftUp                      = 0x4024,
-        KeyShiftDown                    = 0x4025,
-        OctaveShiftUp                   = 0x4026,
-        OctaveShiftDown                 = 0x4027,
+        TransposeUp                     = 0x4024,
+        TransposeDown                   = 0x4025,
+        TransposeOctaveUp               = 0x4026,
+        TransposeOctaveDown             = 0x4027,
 
         CleanupOverlaps                 = 0x4030,
         InvertChordUp                   = 0x4031,

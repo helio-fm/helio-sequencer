@@ -50,7 +50,7 @@ public:
     void onPopupButtonEndDragging(PopupButton *button) override;
 
     void applyScale(const Scale::Ptr scale);
-    void applyFunction(Scale::Function function);
+    void applyScaleDegree(Scale::Degree degree);
 
     //[/UserMethods]
 
@@ -79,7 +79,7 @@ private:
     bool detectKeyAndBeat(); // returns true if key changes
 
     Scale::Ptr scale;
-    Scale::Function function;
+    Scale::Degree degree;
 
     bool hasMadeChanges;
     void buildChord(Array<int> keys);

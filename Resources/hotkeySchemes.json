@@ -179,10 +179,10 @@
       { "command": "BeatShiftRight", "key": "Cursor Right" },
       { "command": "LengthDecrease", "key": "Shift + Cursor Left" },
       { "command": "LengthIncrease", "key": "Shift + Cursor Right" },
-      { "command": "KeyShiftUp", "key": "Cursor Up" },
-      { "command": "KeyShiftDown", "key": "Cursor Down" },
-      { "command": "OctaveShiftUp", "key": "Shift + Cursor Up" },
-      { "command": "OctaveShiftDown", "key": "Shift + Cursor Down" },
+      { "command": "TransposeUp", "key": "Cursor Up" },
+      { "command": "TransposeDown", "key": "Cursor Down" },
+      { "command": "TransposeOctaveUp", "key": "Shift + Cursor Up" },
+      { "command": "TransposeOctaveDown", "key": "Shift + Cursor Down" },
 
       // Refactor selection
       { "command": "Retrograde", "key": "Alt + R" },

@@ -196,10 +196,10 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
     const auto period = (this->targetKey - this->root) / this->scale->getBasePeriod();
     const auto periodOffset = period * this->scale->getBasePeriod();
     const auto targetKeyOffset = (this->targetKey + this->clip.getKey()) % this->scale->getBasePeriod();
-    const auto chromaticFnOffset = (targetKeyOffset - this->root);
-    const auto scaleFnOffset = this->scale->getScaleKey(chromaticFnOffset);
+    const auto chromaticOffset = (targetKeyOffset - this->root);
+    const auto scaleDegree = this->scale->getScaleKey(chromaticOffset);
 
-    if (scaleFnOffset >= 0) // todo just use nearest neighbor key in scale?
+    if (scaleDegree >= 0) // todo just use nearest neighbor key in scale?
     {
         this->undoChangesIfAny();
         this->stopSound();
@@ -213,11 +213,11 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 
         if (!App::isRunningOnPhone())
         {
-            static const auto fnNames = Chord::getLocalizedFunctionNames();
+            static const auto degreeNames = Chord::getLocalizedDegreeNames();
             const String tooltip =
                 temperament->getMidiNoteName(periodOffset + this->root, true) + " "
                 + this->scale->getLocalizedName() + ", "
-                + fnNames[scaleFnOffset] + ", "
+                + degreeNames[scaleDegree] + ", "
                 + temperament->getMidiNoteName(this->targetKey + this->clip.getKey(), true) + " "
                 + chord->getName();
 
@@ -226,7 +226,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 
         for (const auto &chordKey : chord->getScaleKeys())
         {
-            const auto inScaleKey = scaleFnOffset + chordKey.getInScaleKey();
+            const auto inScaleKey = scaleDegree + chordKey.getInScaleKey();
             const auto finalRootOffset = periodOffset + this->root;
             const int key = jlimit(0, temperament->getNumKeys(), finalRootOffset +
                 this->scale->getChromaticKey(inScaleKey, chordKey.getChromaticOffset(), false));

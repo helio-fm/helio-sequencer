@@ -136,7 +136,7 @@ void Chord::reset()
     this->name = {};
 }
 
-Array<String> Chord::getLocalizedFunctionNames()
+Array<String> Chord::getLocalizedDegreeNames()
 {
     static Array<String> names = {
         TRANS(I18n::Popup::chordFunction1),

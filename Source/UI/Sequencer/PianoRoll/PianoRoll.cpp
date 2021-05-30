@@ -1097,17 +1097,17 @@ void PianoRoll::handleCommandMessage(int commandId)
         SequencerOperations::shiftLengthRelative(this->getLassoSelection(),
             -this->getMinVisibleBeatForCurrentZoomLevel());
         break;
-    case CommandIDs::KeyShiftUp:
+    case CommandIDs::TransposeUp:
         SequencerOperations::shiftKeyRelative(this->getLassoSelection(), 1, true, &this->getTransport());
         break;
-    case CommandIDs::KeyShiftDown:
+    case CommandIDs::TransposeDown:
         SequencerOperations::shiftKeyRelative(this->getLassoSelection(), -1, true, &this->getTransport());
         break;
-    case CommandIDs::OctaveShiftUp:
+    case CommandIDs::TransposeOctaveUp:
         SequencerOperations::shiftKeyRelative(this->getLassoSelection(),
             this->getPeriodSize(), true, &this->getTransport());
         break;
-    case CommandIDs::OctaveShiftDown:
+    case CommandIDs::TransposeOctaveDown:
         SequencerOperations::shiftKeyRelative(this->getLassoSelection(),
             -this->getPeriodSize(), true, &this->getTransport());
         break;

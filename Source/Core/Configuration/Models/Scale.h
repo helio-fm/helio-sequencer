@@ -36,7 +36,7 @@ public:
     Scale::Ptr withKeys(const Array<int> &keys) const noexcept;
 
     // These names only make sense in diatonic scales:
-    enum Function
+    enum class Degree : int8
     {
         Tonic = 0,
         Supertonic = 1,
@@ -58,7 +58,7 @@ public:
     const Array<int> &getKeys() const noexcept;
 
     // Render target chord into chromatic scale (tonic = 0)
-    Array<int> getChord(const Chord::Ptr chord, Function fun, bool oneOctave) const;
+    Array<int> getChord(const Chord::Ptr chord, Degree degree, bool oneOctave) const;
 
     Array<int> getUpScale() const;
     Array<int> getDownScale() const;
@@ -78,7 +78,7 @@ public:
     // Returns index of the closest in-scale key
     int getNearestScaleKey(int chromaticKey) const;
 
-    // Key (input and returned) starts from 0
+    // Keys start from 0, both in parameters and result
     int getChromaticKey(int inScaleKey, int extraChromaticOffset,
         bool restrictToOneOctave) const noexcept;
 

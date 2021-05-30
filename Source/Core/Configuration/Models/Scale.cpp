@@ -111,12 +111,12 @@ const Array<int> &Scale::getKeys() const noexcept
     return this->keys;
 }
 
-Array<int> Scale::getChord(Chord::Ptr chord, Function fun, bool oneOctave) const
+Array<int> Scale::getChord(Chord::Ptr chord, Degree degree, bool oneOctave) const
 {
     Array<int> result;
     for (const auto &chordKey : chord->getScaleKeys())
     {
-        result.add(this->getChromaticKey(chordKey.getInScaleKey() + fun,
+        result.add(this->getChromaticKey(chordKey.getInScaleKey() + int(degree),
             chordKey.getChromaticOffset(), oneOctave));
     }
     return result;
@@ -134,7 +134,9 @@ Array<int> Scale::getDownScale() const
     Array<int> res;
     res.add(this->getBasePeriod());
     for (int i = this->keys.size(); i --> 0; )
-    { res.add(this->keys[i]); }
+    {
+        res.add(this->keys[i]);
+    }
     return res;
 }
 
