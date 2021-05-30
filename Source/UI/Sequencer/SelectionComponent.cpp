@@ -35,7 +35,7 @@ void SelectionComponent::beginLasso(const Point<float> &position,
     LassoSource<SelectableComponent *> *lassoSource)
 {
     jassert(lassoSource != nullptr);
-    jassert(getParentComponent() != nullptr);
+    jassert(this->getParentComponent() != nullptr);
 
     if (lassoSource != nullptr)
     {
@@ -67,11 +67,8 @@ void SelectionComponent::dragLasso(const MouseEvent &e)
         }
         else if (e.mods.isAltDown())
         {
-            Array<SelectableComponent *> originalMinusNew(this->originalSelection);
-            originalMinusNew.removeValuesIn(this->itemsInLasso);
-
-            this->itemsInLasso.removeValuesIn(this->originalSelection);
-            this->itemsInLasso.addArray(originalMinusNew);
+            this->originalSelection.removeValuesIn(this->itemsInLasso);
+            this->itemsInLasso = this->originalSelection;
         }
 
         this->source->getLassoSelection() = Lasso(this->itemsInLasso);

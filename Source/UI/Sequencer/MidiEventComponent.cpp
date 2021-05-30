@@ -71,9 +71,12 @@ void MidiEventComponent::mouseDown(const MouseEvent &e)
     this->clickOffset.setXY(e.x, e.y);
 
     // shift-alt-logic
-    Lasso &selection = this->roll.getLassoSelection();
-
-    if (!selection.isSelected(this))
+    auto &selection = this->roll.getLassoSelection();
+    if (e.mods.isAltDown())
+    {
+        this->roll.deselectEvent(this);
+    }
+    else if (!selection.isSelected(this))
     {
         if (e.mods.isShiftDown())
         {
@@ -83,11 +86,6 @@ void MidiEventComponent::mouseDown(const MouseEvent &e)
         {
             this->roll.selectEvent(this, true);
         }
-    }
-    else if (selection.isSelected(this) && e.mods.isAltDown())
-    {
-        this->roll.deselectEvent(this);
-        return;
     }
 }
 

@@ -1063,7 +1063,9 @@ void RollBase::mouseUp(const MouseEvent &e)
     constexpr auto minPanDistance = 20;
 #endif
 
-    if (e.mods.isLeftButtonDown() && (e.getDistanceFromDragStart() < minPanDistance))
+    if (e.mods.isLeftButtonDown() &&
+        (e.getDistanceFromDragStart() < minPanDistance) &&
+        !e.mods.isAltDown())
     {
         this->deselectAll();
     }

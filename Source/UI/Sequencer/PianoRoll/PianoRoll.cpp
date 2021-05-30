@@ -879,20 +879,8 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
     forEachEventComponent(this->patternMap, e)
     {
         auto *component = e.second.get();
-        component->setSelected(false);
-    }
-
-    for (auto *component : this->selection)
-    {
-        component->setSelected(true);
-    }
-    
-    forEachEventComponent(this->patternMap, e)
-    {
-        auto *component = e.second.get();
         if (rectangle.intersects(component->getBounds()) && component->isActive())
         {
-            component->setSelected(true);
             jassert(!itemsFound.contains(component));
             itemsFound.add(component);
         }

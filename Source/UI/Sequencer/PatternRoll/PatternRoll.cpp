@@ -466,12 +466,6 @@ void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
     for (const auto &e : this->clipComponents)
     {
         const auto component = e.second.get();
-        component->setSelected(this->selection.isSelected(component));
-    }
-
-    for (const auto &e : this->clipComponents)
-    {
-        const auto component = e.second.get();
         if (rectangle.intersects(component->getBounds()) && component->isActive())
         {
             jassert(!itemsFound.contains(component));
