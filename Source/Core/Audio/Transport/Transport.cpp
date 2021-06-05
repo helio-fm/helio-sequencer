@@ -373,20 +373,34 @@ float Transport::getRenderingPercentsComplete() const
 
 Transport::NotePreviewTimer::~NotePreviewTimer()
 {
-    this->cancelAllPendingPreviews();
+    this->cancelAllPendingPreviews(false);
 }
 
-void Transport::NotePreviewTimer::cancelAllPendingPreviews()
+void Transport::NotePreviewTimer::cancelAllPendingPreviews(bool sendRemainingNoteOffs)
 {
     if (this->isTimerRunning())
     {
         this->stopTimer();
         for (int key = 0; key < NotePreviewTimer::numPreviewedKeys; ++key)
         {
-            this->previews[key].instrument = nullptr;
-            this->previews[key].noteOnTimeoutMs = 0;
-            this->previews[key].noteOffTimeoutMs = 0;
-            this->previews[key].volume = 0;
+            auto &preview = this->previews[key];
+
+            if (sendRemainingNoteOffs &&
+                preview.noteOffTimeoutMs > 0 &&
+                preview.instrument != nullptr)
+            {
+                //DBG("noteOff " + String(key));
+                const auto mapped = preview.instrument->getKeyboardMapping()->map(key);
+                MidiMessage message(MidiMessage::noteOff(mapped.channel, mapped.key));
+                message.setTimeStamp(TIME_NOW);
+                preview.instrument->getProcessorPlayer()
+                    .getMidiMessageCollector().addMessageToQueue(message);
+            }
+
+            preview.instrument = nullptr;
+            preview.noteOnTimeoutMs = 0;
+            preview.noteOffTimeoutMs = 0;
+            preview.volume = 0;
         }
     }
 }
@@ -511,7 +525,7 @@ static void stopSoundForInstrument(Instrument *instrument)
 void Transport::stopSound(const String &trackId) const
 {
     this->sleepTimer.setAwake();
-    this->notePreviewTimer.cancelAllPendingPreviews();
+    this->notePreviewTimer.cancelAllPendingPreviews(true);
 
     if (Instrument *instrument = this->linksCache[trackId])
     {
@@ -534,7 +548,7 @@ void Transport::stopSound(const String &trackId) const
 void Transport::allNotesControllersAndSoundOff() const
 {
     this->sleepTimer.setAwake();
-    this->notePreviewTimer.cancelAllPendingPreviews();
+    this->notePreviewTimer.cancelAllPendingPreviews(true);
 
     for (int i = 1; i < Globals::numChannels; ++i)
     {

@@ -55,7 +55,7 @@ public:
     void seekToBeat(float beatPosition);
     
     void probeSoundAtBeat(float beatPosition,
-        const MidiSequence *limitToLayer = nullptr);
+        const MidiSequence *limitedTo = nullptr);
 
     void startPlayback();
     void startPlayback(float startBeatOverride);
@@ -246,7 +246,7 @@ private:
         NotePreviewTimer() = default;
         ~NotePreviewTimer();
 
-        void cancelAllPendingPreviews();
+        void cancelAllPendingPreviews(bool sendRemainingNoteOffs);
         void previewNote(WeakReference<Instrument> instrument,
             int key, float volume, int16 noteOffTimeoutMs);
 
