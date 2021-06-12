@@ -24,6 +24,7 @@ class Serializable;
 #include "ColourSchemesManager.h"
 #include "HotkeySchemesManager.h"
 #include "TemperamentsManager.h"
+#include "KeyboardMappingsManager.h"
 #include "ScalesManager.h"
 #include "ChordsManager.h"
 #include "UserInterfaceFlags.h"
@@ -51,6 +52,7 @@ public:
     ArpeggiatorsManager *getArpeggiators() const noexcept;
     ColourSchemesManager *getColourSchemes() const noexcept;
     HotkeySchemesManager *getHotkeySchemes() const noexcept;
+    KeyboardMappingsManager *getKeyboardMappings() const noexcept;
 
     ResourceManagerLookup &getAllResources() noexcept;
 
@@ -74,6 +76,7 @@ private:
     UniquePointer<ColourSchemesManager> colourSchemesManager;
     UniquePointer<HotkeySchemesManager> hotkeySchemesManager;
     UniquePointer<TemperamentsManager> temperamentsManager;
+    UniquePointer<KeyboardMappingsManager> keyboardMappingsManager;
     UniquePointer<ScalesManager> scalesManager;
     UniquePointer<ChordsManager> chordsManager;
 

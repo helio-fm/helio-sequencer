@@ -18,10 +18,11 @@
 #pragma once
 
 #include "Serializable.h"
+#include "BaseResource.h"
 #include "Note.h"
 
 class KeyboardMapping final :
-    public Serializable,
+    public BaseResource,
     public ChangeBroadcaster // notifies KeyboardMappingPage
 {
 public:
@@ -30,6 +31,8 @@ public:
 
     static constexpr auto numMappedKeys = 
         Globals::numChannels * Globals::twelveToneKeyboardSize;
+
+    using Ptr = ReferenceCountedObjectPtr<KeyboardMapping>;
 
     struct KeyChannel final
     {
@@ -80,17 +83,34 @@ public:
     void loadScalaKbmFile(InputStream &fileContentStream,
         const String &fileNameWithoutExtension);
 
+    // returns e.g. "0:0/14,30+,0/15,30+,0/16,30+,0/1,30+"
     String toString() const;
-    void loadFromString(const String &str);
+    void loadMapFromString(const String &str);
+    void loadMapFromPreset(KeyboardMapping *preset);
+
+    const String &getName() const noexcept;
+    void setName(const String &name);
+
+    //===------------------------------------------------------------------===//
+    // Serializable
+    //===------------------------------------------------------------------===//
 
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
 
+    //===------------------------------------------------------------------===//
+    // BaseResource
+    //===------------------------------------------------------------------===//
+
+    String getResourceId() const noexcept override;
+    Identifier getResourceType() const noexcept override;
+
 private:
 
     static KeyChannel getDefaultMappingFor(int key) noexcept;
 
+    String name;
     KeyChannel index[numMappedKeys];
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(KeyboardMapping)

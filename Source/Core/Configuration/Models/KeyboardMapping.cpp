@@ -26,27 +26,47 @@ KeyboardMapping::KeyboardMapping()
 
 SerializedData KeyboardMapping::serialize() const
 {
-    using namespace Serialization;
-    SerializedData data(Midi::keyboardMapping);
-
-    // someday tracks might be able to have any custom channel
-    data.setProperty(Midi::channel1, this->toString());
+    using namespace Serialization::Midi;
+    SerializedData data(KeyboardMappings::keyboardMapping);
+    data.setProperty(KeyboardMappings::map, this->toString());
+    data.setProperty(KeyboardMappings::name, this->name);
     return data;
 }
 
 void KeyboardMapping::deserialize(const SerializedData &data)
 {
-    using namespace Serialization;
+    using namespace Serialization::Midi;
 
-    const auto root = data.hasType(Midi::keyboardMapping) ?
-        data : data.getChildWithName(Midi::keyboardMapping);
+    const auto root = data.hasType(KeyboardMappings::keyboardMapping) ?
+        data : data.getChildWithName(KeyboardMappings::keyboardMapping);
 
     if (!root.isValid())
     {
         return;
     }
 
-    this->loadFromString(root.getProperty(Midi::channel1));
+    this->name = root.getProperty(KeyboardMappings::name, this->name);
+
+    // someday tracks might be able to be assigned any custom channel (now they all have channel 1)
+    // so keyboard mapping will have 16 times more data - a map for each channel;
+    // so deserialization logic will first try to map all channels using "map" key, if present,
+    // and, if "channel1"/"channelWhatever" keys are also present, deserialize channels one by one;
+    // for now we'll just take either of "map"/"channel1" key:
+    const String entireMap = root.getProperty(KeyboardMappings::map);
+    const String channel1 = root.getProperty(KeyboardMappings::channel1);
+    this->loadMapFromString(entireMap.isNotEmpty() ? entireMap : channel1);
+
+}
+
+const String &KeyboardMapping::getName() const noexcept
+{
+    return this->name;
+}
+
+void KeyboardMapping::setName(const String &newName)
+{
+    this->name = newName;
+    this->sendChangeMessage();
 }
 
 String KeyboardMapping::toString() const
@@ -112,7 +132,7 @@ String KeyboardMapping::toString() const
     return result;
 }
 
-void KeyboardMapping::loadFromString(const String &str)
+void KeyboardMapping::loadMapFromString(const String &str)
 {
     if (str.isEmpty())
     {
@@ -192,6 +212,18 @@ void KeyboardMapping::loadFromString(const String &str)
             break;
         }
     } while (c != 0);
+
+    this->sendChangeMessage();
+}
+
+void KeyboardMapping::loadMapFromPreset(KeyboardMapping *preset)
+{
+    jassert(preset != nullptr);
+
+    for (int i = 0; i < KeyboardMapping::numMappedKeys; ++i)
+    {
+        this->index[i] = preset->index[i];
+    }
 
     this->sendChangeMessage();
 }
@@ -368,6 +400,20 @@ void KeyboardMapping::updateKey(int key, int8 targetKey, int8 targetChannel)
 }
 
 //===----------------------------------------------------------------------===//
+// BaseResource
+//===----------------------------------------------------------------------===//
+
+String KeyboardMapping::getResourceId() const noexcept
+{
+    return this->name; // assumed to be unique
+}
+
+Identifier KeyboardMapping::getResourceType() const noexcept
+{
+    return Serialization::Resources::keyboardMappings;
+}
+
+//===----------------------------------------------------------------------===//
 // KeyboardMapping::KeyChannel
 //===----------------------------------------------------------------------===//
 
@@ -444,41 +490,41 @@ public:
     {
         beginTest("Keyboard mapping serialization and import from Scala");
 
-        using namespace Serialization;
+        using namespace Serialization::Midi;
 
-        const auto channel1 = [](const SerializedData &data)
+        const auto getMap = [](const SerializedData &data)
         {
-            return data.getProperty(Midi::channel1).toString();
+            return data.getProperty(KeyboardMappings::map).toString();
         };
 
         KeyboardMapping map;
-        expectEquals(channel1(map.serialize()), String());
+        expectEquals(getMap(map.serialize()), String());
 
         // test the simple setter
         map.updateKey(500, 64, 5);
         map.updateKey(600, { 64, 6 });
-        expectEquals(channel1(map.serialize()), String("500:64/5 600:64/6"));
+        expectEquals(getMap(map.serialize()), String("500:64/5 600:64/6"));
 
         // test RLE
-        SerializedData rleTest(Midi::keyboardMapping);
-        rleTest.setProperty(Midi::channel1,
+        SerializedData rleTest(KeyboardMappings::keyboardMapping);
+        rleTest.setProperty(KeyboardMappings::map,
             "0:0/1,1/1,120+  128:16/2,32/2,33/2,34/2,40/4 300:127/4,0/5,1/5,2/5 512:1/5 640:0/6 ");
 
         map.deserialize(rleTest);
-        expectEquals(channel1(map.serialize()),
+        expectEquals(getMap(map.serialize()),
             String("128:16/2,32/2,2+,40/4 300:127/4,3+ 512:1/5"));
 
         // from string / to string
         const String long31("0:0/15,30+ 31:0/16,30+ 62:0/1,30+ 93:0/2,30+ 124:0/3,30+ 155:0/4,30+ 186:0/5,30+ 217:0/6,30+ 248:0/7,30+ 279:0/8,30+ 310:0/9,30+");
         const String short31("0:0/15,30+,0/16,30+,0/1,30+,0/2,30+,0/3,30+,0/4,30+,0/5,30+,0/6,30+,0/7,30+,0/8,30+,0/9,30+");
-        map.loadFromString(long31);
+        map.loadMapFromString(long31);
         expectEquals(map.toString(), short31);
-        map.loadFromString(short31);
+        map.loadMapFromString(short31);
         expectEquals(map.toString(), short31);
 
         // test resetting
         map.reset();
-        expectEquals(channel1(map.serialize()), String());
+        expectEquals(getMap(map.serialize()), String());
 
         // check that loading the mapping for the default channel works as expected
         String kbm1 = "! Size of map. \n\
@@ -510,7 +556,7 @@ public:
         MemoryInputStream in1(kbm1.toRawUTF8(), kbm1.getNumBytesAsUTF8(), false);
         map.loadScalaKbmFile(in1, "file");
         const auto serialized1 = map.serialize();
-        expectEquals(channel1(serialized1),
+        expectEquals(getMap(serialized1),
             String("60:72/1,4+ 67:79/1,2+ 72:84/1,4+ 79:91/1,2+"));
 
         // check that loading the mapping for another explicitly specified channel works
@@ -526,13 +572,13 @@ public:
         MemoryInputStream in2(kbm2.toRawUTF8(), kbm2.getNumBytesAsUTF8(), false);
         map.loadScalaKbmFile(in2, "file_5");
         const auto serialized2 = map.serialize();
-        expectEquals(channel1(serialized2),
+        expectEquals(getMap(serialized2),
             String("60:72/1,4+ 67:79/1,2+ 72:84/1,4+ 79:91/1,2+ 128:31/5,62+"));
 
         // check that serialization/deserialization is consistent
         map.deserialize(serialized2);
         const auto serialized3 = map.serialize();
-        expectEquals(channel1(serialized2), channel1(serialized3));
+        expectEquals(getMap(serialized2), getMap(serialized3));
     }
 };
 

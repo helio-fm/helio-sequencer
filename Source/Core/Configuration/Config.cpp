@@ -31,6 +31,7 @@ Config::Config(int timeoutToSaveMs) :
     this->colourSchemesManager = make<ColourSchemesManager>();
     this->hotkeySchemesManager = make<HotkeySchemesManager>();
     this->temperamentsManager = make<TemperamentsManager>();
+    this->keyboardMappingsManager = make<KeyboardMappingsManager>();
     this->scalesManager = make<ScalesManager>();
     this->chordsManager = make<ChordsManager>();
 
@@ -40,6 +41,7 @@ Config::Config(int timeoutToSaveMs) :
     this->resources[colourSchemes] = this->colourSchemesManager.get();
     this->resources[hotkeySchemes] = this->hotkeySchemesManager.get();
     this->resources[temperaments] = this->temperamentsManager.get();
+    this->resources[keyboardMappings] = this->keyboardMappingsManager.get();
     this->resources[scales] = this->scalesManager.get();
     this->resources[chords] = this->chordsManager.get();
 
@@ -49,16 +51,6 @@ Config::Config(int timeoutToSaveMs) :
 Config::~Config()
 {
     this->saveIfNeeded();
-
-    this->chordsManager = nullptr;
-    this->scalesManager = nullptr;
-    this->temperamentsManager = nullptr;
-    this->hotkeySchemesManager = nullptr;
-    this->colourSchemesManager = nullptr;
-    this->arpeggiatorsManager = nullptr;
-    this->translationsManager = nullptr;
-
-    this->resources.clear();
 }
 
 void Config::initResources()
@@ -236,9 +228,14 @@ HotkeySchemesManager *Config::getHotkeySchemes() const noexcept
     return this->hotkeySchemesManager.get();
 }
 
-TemperamentsManager * Config::getTemperaments() const noexcept
+TemperamentsManager *Config::getTemperaments() const noexcept
 {
     return this->temperamentsManager.get();
+}
+
+KeyboardMappingsManager *Config::getKeyboardMappings() const noexcept
+{
+    return this->keyboardMappingsManager.get();
 }
 
 UserInterfaceFlags *Config::getUiFlags() const noexcept

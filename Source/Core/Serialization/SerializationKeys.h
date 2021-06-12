@@ -126,9 +126,14 @@ namespace Serialization
         static const Identifier numerator = "numerator";
         static const Identifier denominator = "denominator";
 
-        static const Identifier keyboardMapping = "keyMap";
-        static const Identifier channel1 = "channel1";
-    } // namespace Events
+        namespace KeyboardMappings
+        {
+            static const Identifier keyboardMapping = "keyboardMapping";
+            static const Identifier name = "name";
+            static const Identifier map = "map";
+            static const Identifier channel1 = "channel1";
+        }
+    } // namespace Midi
 
     namespace Audio
     {
@@ -207,6 +212,7 @@ namespace Serialization
         static const Identifier translations = "translations";
         static const Identifier colourSchemes = "colourSchemes";
         static const Identifier hotkeySchemes = "hotkeySchemes";
+        static const Identifier keyboardMappings = "keyboardMappings";
     }
 
     namespace UI
