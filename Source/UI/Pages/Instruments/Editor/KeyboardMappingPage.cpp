@@ -21,8 +21,10 @@
 #include "HeadlineContextMenuController.h"
 #include "OverlayButton.h"
 #include "PanelBackgroundB.h"
+#include "ModalDialogInput.h"
 #include "IconButton.h"
 #include "ComponentIDs.h"
+#include "Config.h"
 
 KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
     instrument(instrument)
@@ -180,30 +182,62 @@ void KeyboardMappingPage::handleCommandMessage(int commandId)
         {
             this->syncWithRange(this->currentPageBase - Globals::twelveToneKeyboardSize);
         }
-        break;
+        return;
     case CommandIDs::KeyMapNextPage:
         if (this->canShowNextPage())
         {
             this->syncWithRange(this->currentPageBase + Globals::twelveToneKeyboardSize);
         }
-        break;
+        return;
     case CommandIDs::KeyMapLoadScala:
         this->loadScalaMappings();
-        break;
+        return;
     case CommandIDs::KeyMapReset:
         this->instrument->getKeyboardMapping()->reset();
-        break;
+        return;
     case CommandIDs::KeyMapCopyToClipboard:
         SystemClipboard::copyTextToClipboard(
             this->instrument->getKeyboardMapping()->toString());
-        break;
+        return;
     case CommandIDs::KeyMapPasteFromClipboard:
         this->instrument->getKeyboardMapping()->
-            loadFromString(SystemClipboard::getTextFromClipboard());
-        break;
+            loadMapFromString(SystemClipboard::getTextFromClipboard());
+        return;
+    case CommandIDs::SavePreset:
+        this->savePreset();
+        return;
     default:
         break;
     }
+
+    const auto allMappings = App::Config().getKeyboardMappings()->getAll();
+    if (commandId >= CommandIDs::SelectPreset &&
+        commandId <= (CommandIDs::SelectPreset + allMappings.size()))
+    {
+        const auto presetIndex = commandId - CommandIDs::SelectPreset;
+        const auto mapping = allMappings.getUnchecked(presetIndex);
+        this->instrument->getKeyboardMapping()->loadMapFromPreset(mapping.get());
+    }
+}
+
+void KeyboardMappingPage::savePreset() const
+{
+    auto dialog = ModalDialogInput::Presets::savePreset();
+    dialog->onOk = [this](const String &mapName)
+    {
+        if (mapName.isEmpty())
+        {
+            return;
+        }
+
+        KeyboardMapping::Ptr map(new KeyboardMapping());
+        map->loadMapFromPreset(this->instrument->getKeyboardMapping());
+        map->setName(mapName);
+
+        App::Config().getKeyboardMappings()->updateUserResource(map);
+    };
+
+    App::showModalComponent(move(dialog));
 }
 
 void KeyboardMappingPage::visibilityChanged()

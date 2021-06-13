@@ -47,6 +47,7 @@ namespace I18n
         static constexpr auto apply = constexprHash("dialog::common::apply");
         static constexpr auto delete_ = constexprHash("dialog::common::delete");
         static constexpr auto add = constexprHash("dialog::common::add");
+        static constexpr auto save = constexprHash("dialog::common::save");
 
         static constexpr auto addArpCaption = constexprHash("dialog::addarp::caption");
         static constexpr auto addArpProceed = constexprHash("dialog::addarp::proceed");
@@ -98,6 +99,9 @@ namespace I18n
         static constexpr auto cut = constexprHash("menu::cut");
         static constexpr auto delete_ = constexprHash("menu::delete");
         static constexpr auto paste = constexprHash("menu::paste");
+
+        static constexpr auto presets = constexprHash("menu::presets");
+        static constexpr auto savePreset = constexprHash("menu::savepreset");
 
         static constexpr auto annotationAdd = constexprHash("menu::annotation::add");
         static constexpr auto annotationDelete = constexprHash("menu::annotation::delete");

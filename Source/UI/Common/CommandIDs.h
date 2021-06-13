@@ -216,7 +216,10 @@ namespace CommandIDs
         KeyMapCopyToClipboard           = 0x4214,
         KeyMapPasteFromClipboard        = 0x4215,
 
-        YourNextCommandId               = 0x4300
+        SavePreset                      = 0x4300,
+        SelectPreset                    = 0x4301, // more ids reserved for sub-items
+
+        YourNextCommandId               = 0x4500
     };
 
     CommandIDs::Id getIdForName(const String &command);

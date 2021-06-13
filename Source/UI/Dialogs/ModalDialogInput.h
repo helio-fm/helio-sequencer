@@ -43,6 +43,7 @@ public:
         static UniquePointer<ModalDialogInput> newArpeggiator();
         static UniquePointer<ModalDialogInput> deleteProjectConfirmation();
         static UniquePointer<ModalDialogInput> commit(const String &name);
+        static UniquePointer<ModalDialogInput> savePreset();
     };
 
     void resized() override;

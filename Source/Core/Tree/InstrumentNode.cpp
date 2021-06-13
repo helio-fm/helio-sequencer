@@ -25,6 +25,7 @@
 #include "OrchestraPit.h"
 #include "OrchestraPitNode.h"
 
+#include "KeyboardMapping.h"
 #include "KeyboardMappingPage.h"
 #include "AudioPluginEditorPage.h"
 #include "PluginWindow.h"
@@ -33,6 +34,7 @@
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "AudioCore.h"
+#include "Config.h"
 
 InstrumentNode::InstrumentNode(Instrument *targetInstrument) :
     TreeNode({}, Serialization::Core::instrumentRoot),
@@ -361,6 +363,11 @@ public:
 
     KeyboardMappingMenu()
     {
+        this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+    }
+
+    MenuPanel::Menu createDefaultMenu()
+    {
         MenuPanel::Menu menu;
 
         menu.add(MenuItem::item(Icons::browse, CommandIDs::KeyMapLoadScala,
@@ -375,12 +382,39 @@ public:
         menu.add(MenuItem::item(Icons::paste, CommandIDs::KeyMapPasteFromClipboard,
             TRANS(I18n::Menu::paste))->closesMenu());
 
-        this->updateContent(menu, MenuPanel::SlideRight);
+        menu.add(MenuItem::item(Icons::list, TRANS(I18n::Menu::presets))->withSubmenu()->withAction([this]()
+        {
+            this->updateContent(this->createPresetsMenu(), MenuPanel::SlideLeft);
+        }));
+
+        return menu;
+    }
+
+    MenuPanel::Menu createPresetsMenu()
+    {
+        MenuPanel::Menu menu;
+
+        menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
+        {
+            this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+        }));
+
+        menu.add(MenuItem::item(Icons::commit, CommandIDs::SavePreset,
+            TRANS(I18n::Menu::savePreset))->closesMenu());
+
+        const auto allMappings = App::Config().getKeyboardMappings()->getAll();
+        for (int i = 0; i < allMappings.size(); ++i)
+        {
+            menu.add(MenuItem::item(Icons::piano, CommandIDs::SelectPreset + i,
+                allMappings.getUnchecked(i)->getName())->closesMenu());
+        }
+
+        return menu;
     }
 };
 
 KeyboardMappingNode::KeyboardMappingNode(WeakReference<Instrument> instrument) :
-    TreeNode({}, Serialization::Midi::keyboardMapping),
+    TreeNode({}, Serialization::Midi::KeyboardMappings::keyboardMapping),
     instrument(instrument) {}
 
 String KeyboardMappingNode::getName() const noexcept

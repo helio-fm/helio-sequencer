@@ -261,3 +261,11 @@ UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newArpeggiator()
         TRANS(I18n::Dialog::addArpProceed),
         TRANS(I18n::Dialog::cancel));
 }
+
+UniquePointer<ModalDialogInput> ModalDialogInput::Presets::savePreset()
+{
+    return make<ModalDialogInput>(String(),
+        TRANS(I18n::Menu::savePreset),
+        TRANS(I18n::Dialog::save),
+        TRANS(I18n::Dialog::cancel));
+}

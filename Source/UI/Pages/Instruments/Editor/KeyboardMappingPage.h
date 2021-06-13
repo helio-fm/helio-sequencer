@@ -62,6 +62,8 @@ private:
     bool canShowPreviousPage() const noexcept;
     bool canShowNextPage() const noexcept;
 
+    void savePreset() const;
+
     void loadScalaMappings();
     UniquePointer<FileChooser> importFileChooser;
 
