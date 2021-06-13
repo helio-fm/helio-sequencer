@@ -676,6 +676,9 @@
     <ClCompile Include="..\..\Source\Core\Configuration\Models\HotkeyScheme.cpp">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\Models\KeyboardMapping.cpp">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Scale.cpp">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClCompile>
@@ -698,6 +701,9 @@
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\HotkeySchemesManager.cpp">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\KeyboardMappingsManager.cpp">
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ScalesManager.cpp">
@@ -774,9 +780,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.cpp">
       <Filter>Helio\Source\Core\Midi\Sequences</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Midi\KeyboardMapping.cpp">
-      <Filter>Helio\Source\Core\Midi</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp">
       <Filter>Helio\Source\Core\Midi</Filter>
@@ -3537,6 +3540,9 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Models\HotkeyScheme.h">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\KeyboardMapping.h">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Scale.h">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClInclude>
@@ -3562,6 +3568,9 @@
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\HotkeySchemesManager.h">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\KeyboardMappingsManager.h">
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ScalesManager.h">
@@ -3641,9 +3650,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.h">
       <Filter>Helio\Source\Core\Midi\Sequences</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Midi\KeyboardMapping.h">
-      <Filter>Helio\Source\Core\Midi</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Midi\MidiTrack.h">
       <Filter>Helio\Source\Core\Midi</Filter>
@@ -7104,6 +7110,9 @@
       <Filter>Helio\Resources</Filter>
     </None>
     <None Include="..\..\Resources\hotkeySchemes.json">
+      <Filter>Helio\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\keyboardMappings.json">
       <Filter>Helio\Resources</Filter>
     </None>
     <None Include="..\..\Resources\scales.json">

@@ -290,6 +290,7 @@
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Chord.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\ColourScheme.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\HotkeyScheme.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Configuration\Models\KeyboardMapping.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Scale.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Temperament.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Translation.cpp"/>
@@ -298,6 +299,7 @@
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ChordsManager.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ColourSchemesManager.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\HotkeySchemesManager.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\KeyboardMappingsManager.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ScalesManager.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\TemperamentsManager.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.cpp"/>
@@ -323,7 +325,6 @@
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\MidiSequence.cpp"/>
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\PianoSequence.cpp"/>
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Midi\KeyboardMapping.cpp"/>
     <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\BackendRequest.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\UserConfigSyncThread.cpp"/>
@@ -2491,6 +2492,7 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Chord.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\ColourScheme.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\HotkeyScheme.h"/>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\KeyboardMapping.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Scale.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Temperament.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Translation.h"/>
@@ -2500,6 +2502,7 @@
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ChordsManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ColourSchemesManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\HotkeySchemesManager.h"/>
+    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\KeyboardMappingsManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ScalesManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\TemperamentsManager.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.h"/>
@@ -2526,7 +2529,6 @@
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\MidiSequence.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\PianoSequence.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.h"/>
-    <ClInclude Include="..\..\Source\Core\Midi\KeyboardMapping.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\MidiTrack.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Models\ApiModel.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Models\AppInfoDto.h"/>
@@ -3681,6 +3683,7 @@
     <None Include="..\..\Resources\chords.json"/>
     <None Include="..\..\Resources\colourSchemes.json"/>
     <None Include="..\..\Resources\hotkeySchemes.json"/>
+    <None Include="..\..\Resources\keyboardMappings.json"/>
     <None Include="..\..\Resources\scales.json"/>
     <None Include="..\..\Resources\temperaments.json"/>
     <None Include="..\..\Resources\translations.json"/>
