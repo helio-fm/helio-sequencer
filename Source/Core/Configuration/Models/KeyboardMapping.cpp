@@ -37,6 +37,17 @@ void KeyboardMapping::deserialize(const SerializedData &data)
 {
     using namespace Serialization::Midi;
 
+    // legacy id's which I don't like:
+    static const Identifier keyMap = "keyMap";
+    static const Identifier channel1 = "channel1";
+    const auto rootLegacy = data.hasType(keyMap) ? data : data.getChildWithName(keyMap);
+    if (rootLegacy.isValid())
+    {
+        this->loadMapFromString(rootLegacy.getProperty(channel1));
+        return;
+    }
+    // todo remove this ^ block someday
+
     const auto root = data.hasType(KeyboardMappings::keyboardMapping) ?
         data : data.getChildWithName(KeyboardMappings::keyboardMapping);
 
@@ -46,16 +57,7 @@ void KeyboardMapping::deserialize(const SerializedData &data)
     }
 
     this->name = root.getProperty(KeyboardMappings::name, this->name);
-
-    // someday tracks might be able to be assigned any custom channel (now they all have channel 1)
-    // so keyboard mapping will have 16 times more data - a map for each channel;
-    // so deserialization logic will first try to map all channels using "map" key, if present,
-    // and, if "channel1"/"channelWhatever" keys are also present, deserialize channels one by one;
-    // for now we'll just take either of "map"/"channel1" key:
-    const String entireMap = root.getProperty(KeyboardMappings::map);
-    const String channel1 = root.getProperty(KeyboardMappings::channel1);
-    this->loadMapFromString(entireMap.isNotEmpty() ? entireMap : channel1);
-
+    this->loadMapFromString(root.getProperty(KeyboardMappings::map));
 }
 
 const String &KeyboardMapping::getName() const noexcept

@@ -131,7 +131,6 @@ namespace Serialization
             static const Identifier keyboardMapping = "keyboardMapping";
             static const Identifier name = "name";
             static const Identifier map = "map";
-            static const Identifier channel1 = "channel1";
         }
     } // namespace Midi
 
