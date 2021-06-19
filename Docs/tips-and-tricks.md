@@ -62,9 +62,15 @@ Hold `Shift` to drag-and-copy notes in the piano roll, clips in the pattern roll
 
 ### Pen tool
 
-Also hold `Shift` or any modifier key to change the behaviour of the pen tool when adding notes. By default, the newly added note is edited in the transpose-and-resize mode. Alternatively, it's the drag mode, more familiar:
+Also hold `Shift` or any modifier key to change the behavior of the pen tool when adding notes. By default, the newly added note is edited in the transpose-and-resize mode. Alternatively, it's the drag mode, more familiar:
 
 ![pen-tool-alt]
+
+### Transposition and inversion
+
+`Shift + Up` and `Shift + Down` hotkeys transpose selected notes one octave up or down. `Alt + Shift + Up` and `Alt + Shift + Down` are used for the less common transposition to the next or previous key in the circle of fifths (simply put, it's a transposition by +5 or -5, or by the closest equivalent of a perfect fifth in other temperaments, e.g. +18 or -18 for 31-edo, etc).
+
+Use `Control + Up` and `Control + Down` for chord inversion (don't confuse it with melodic inversion, which is triggered by `Alt + I` hotkey). Chord inversion treats selected notes as chord(s); the lowest note in each chord moves one octave up (or the highest note moves one octave down), all others stay in place.
 
 ### UI flags
 
