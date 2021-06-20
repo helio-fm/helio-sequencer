@@ -24,7 +24,7 @@ class DashboardMenu final : public Component, public ListBoxModel
 {
 public:
 
-    explicit DashboardMenu(Workspace *parentWorkspace);
+    explicit DashboardMenu(Workspace &parentWorkspace);
 
     void updateListContent();
     void loadFile(RecentProjectInfo::Ptr fileDescription);
@@ -43,7 +43,7 @@ public:
 
 private:
 
-    Workspace *workspace;
+    Workspace &workspace;
     FlatHashSet<String, StringHash> loadedProjectIds;
 
     UniquePointer<ListBox> listBox;

@@ -22,7 +22,7 @@
 #include "ProjectNode.h"
 #include "Workspace.h"
 
-DashboardMenu::DashboardMenu(Workspace *parentWorkspace) :
+DashboardMenu::DashboardMenu(Workspace &parentWorkspace) :
     workspace(parentWorkspace)
 {
     this->setFocusContainer(false);
@@ -43,10 +43,10 @@ void DashboardMenu::resized()
 
 void DashboardMenu::loadFile(RecentProjectInfo::Ptr project)
 {
-    if (!this->workspace->loadRecentProject(project))
+    if (!this->workspace.loadRecentProject(project))
     {
         // TODO test if it would be better to just remove the project from the list
-        this->workspace->getUserProfile().deleteProjectLocally(project->getProjectId());
+        this->workspace.getUserProfile().deleteProjectLocally(project->getProjectId());
     }
 
     this->updateListContent();
@@ -54,7 +54,7 @@ void DashboardMenu::loadFile(RecentProjectInfo::Ptr project)
 
 void DashboardMenu::unloadFile(RecentProjectInfo::Ptr project)
 {
-    this->workspace->unloadProject(project->getProjectId(), false, false);
+    this->workspace.unloadProject(project->getProjectId(), false, false);
     this->updateListContent();
 }
 
@@ -65,7 +65,7 @@ void DashboardMenu::unloadFile(RecentProjectInfo::Ptr project)
 Component *DashboardMenu::refreshComponentForRow(int rowNumber, bool isRowSelected,
     Component *existingComponentToUpdate)
 {
-    const auto &list = this->workspace->getUserProfile().getProjects();
+    const auto &list = this->workspace.getUserProfile().getProjects();
     const bool isLastRow = (rowNumber == (list.size() - 1));
     if (rowNumber >= list.size()) { return existingComponentToUpdate; }
 
@@ -103,13 +103,13 @@ Component *DashboardMenu::refreshComponentForRow(int rowNumber, bool isRowSelect
 }
 int DashboardMenu::getNumRows()
 {
-    return this->workspace->getUserProfile().getProjects().size();
+    return this->workspace.getUserProfile().getProjects().size();
 }
 
 void DashboardMenu::updateListContent()
 {
     this->loadedProjectIds.clear();
-    for (const auto *project : this->workspace->getLoadedProjects())
+    for (const auto *project : this->workspace.getLoadedProjects())
     {
         this->loadedProjectIds.emplace(project->getId());
     }

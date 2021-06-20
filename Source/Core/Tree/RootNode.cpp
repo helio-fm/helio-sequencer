@@ -59,7 +59,7 @@ void RootNode::showPage()
 
 void RootNode::recreatePage()
 {
-    this->dashboard = make<Dashboard>(App::Layout());
+    this->dashboard = make<Dashboard>(App::Workspace());
 }
 
 //===----------------------------------------------------------------------===//

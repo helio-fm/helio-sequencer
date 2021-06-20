@@ -17,48 +17,38 @@
 
 #pragma once
 
-//[Headers]
-class IconComponent;
-class MainLayout;
+class Workspace;
 class SpectralLogo;
-class UserProfileComponent;
 class LoginButton;
+class OverlayButton;
 class DashboardMenu;
-//[/Headers]
+class PanelBackgroundA;
+class PanelBackgroundB;
+class OpenProjectButton;
+class CreateProjectButton;
+class UpdatesInfoComponent;
+class UserProfileComponent;
+class SeparatorVerticalSkew;
+class SeparatorHorizontalFadingReversed;
 
-#include "../../Themes/PanelBackgroundA.h"
-#include "../../Themes/PanelBackgroundB.h"
-#include "Menu/OpenProjectButton.h"
-#include "../../Themes/SeparatorVerticalSkew.h"
-#include "Menu/CreateProjectButton.h"
-#include "../../Themes/SeparatorHorizontalFadingReversed.h"
-#include "UpdatesInfoComponent.h"
+#include "MobileComboBox.h"
 
 class Dashboard final : public Component,
                         public ChangeListener
 {
 public:
 
-    explicit Dashboard(MainLayout &workspaceRef);
+    explicit Dashboard(Workspace &workspace);
     ~Dashboard();
 
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
-
 
 private:
 
-    //[UserVariables]
-
-    MainLayout &workspace;
+    Workspace &workspace;
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
     void updateProfileViews();
-
-    //[/UserVariables]
 
     UniquePointer<PanelBackgroundA> backgroundA;
     UniquePointer<Label> patreonLabel;
@@ -66,16 +56,14 @@ private:
     UniquePointer<LoginButton> loginButton;
     UniquePointer<PanelBackgroundB> backgroundB;
     UniquePointer<OpenProjectButton> openProjectButton;
-    UniquePointer<MobileComboBox::Container> createProjectComboSource;
+    UniquePointer<MobileComboBox::Container> createProjectCombo;
     UniquePointer<SeparatorVerticalSkew> skew;
     UniquePointer<SpectralLogo> logo;
     UniquePointer<DashboardMenu> projectsList;
     UniquePointer<CreateProjectButton> createProjectButton;
-    UniquePointer<SeparatorHorizontalFadingReversed> separator2;
+    UniquePointer<SeparatorHorizontalFadingReversed> separator;
     UniquePointer<UpdatesInfoComponent> updatesInfo;
     UniquePointer<OverlayButton> patreonButton;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Dashboard)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dashboard)
 };
-
-
