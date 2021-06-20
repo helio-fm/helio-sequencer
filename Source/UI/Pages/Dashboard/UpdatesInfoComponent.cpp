@@ -17,7 +17,7 @@
 
 #include "Common.h"
 
-#if !NO_NETWORK
+#if !NO_NETWORK && !JUCE_LINUX
 
 #include "UpdatesInfoComponent.h"
 #include "Config.h"

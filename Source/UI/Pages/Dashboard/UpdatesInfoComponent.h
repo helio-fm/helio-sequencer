@@ -24,7 +24,9 @@ class UpdatesInfoComponent final : public Component
 {
 public:
 
-#if NO_NETWORK
+// disable updates component on Linux,
+// let's rely on package managers instead
+#if NO_NETWORK || JUCE_LINUX
 
     UpdatesInfoComponent() = default;
 
