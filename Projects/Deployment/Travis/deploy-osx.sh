@@ -37,12 +37,12 @@ bash ./macOS/create-dmg.sh \
     /tmp/exported.app/Helio.app
 
 # Sign (and check)
-codesign --force --sign "Developer ID Application: Peter Rudenko (EQL633LLC8)" /tmp/${RELEASE_FILENAME}.dmg
+codesign --force --sign "Developer ID Application: Peter Rudenko (${OSX_ITC_PROVIDER_ID})" /tmp/${RELEASE_FILENAME}.dmg --asc-provider "${OSX_ITC_PROVIDER_ID}"
 spctl -a -t open --context context:primary-signature -v /tmp/${RELEASE_FILENAME}.dmg
 
 # Pain-in-the-ass notarization workflow
 # "The notary service generates a ticket for the top-level file ... as well as each nested file", so let's pass the disk image
-NOTARIZATION_RESPONSE=$(xcrun altool --notarize-app -t osx -f /tmp/${RELEASE_FILENAME}.dmg --primary-bundle-id "fm.helio" -u ${OSX_ITC_USERNAME} -p ${OSX_ITC_APP_PASSWORD} --output-format xml)
+NOTARIZATION_RESPONSE=$(xcrun altool --notarize-app -t osx -f /tmp/${RELEASE_FILENAME}.dmg --primary-bundle-id "fm.helio" -u ${OSX_ITC_USERNAME} -p ${OSX_ITC_APP_PASSWORD} --asc-provider "${OSX_ITC_PROVIDER_ID}" --output-format xml)
 REQUEST_UUID=$(xmllint --xpath "/plist/dict[key='notarization-upload']/dict/key[.='RequestUUID']/following-sibling::string[1]/text()" - <<<"$NOTARIZATION_RESPONSE")
 echo "Notarization started with request uuid: ${REQUEST_UUID}"
 sleep 10s
