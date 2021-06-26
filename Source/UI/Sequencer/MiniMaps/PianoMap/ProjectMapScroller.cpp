@@ -24,6 +24,7 @@
 #include "RollBase.h"
 #include "ColourIDs.h"
 #include "HelioTheme.h"
+#include "MainLayout.h"
 
 ProjectMapScroller::ProjectMapScroller(Transport &transportRef, SafePointer<RollBase> roll) :
     transport(transportRef),
@@ -158,12 +159,6 @@ void ProjectMapScroller::xMoveByUser()
     }
 }
 
-void ProjectMapScroller::toggleStretchingMapAlaSublime()
-{
-    this->stretchedMapsFlag = !this->stretchedMapsFlag;
-    this->resized();
-}
-
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -200,15 +195,15 @@ void ProjectMapScroller::mouseDrag(const MouseEvent &event)
     if (! this->stretchedMode())
     {
         this->screenRange->setRealBounds(this->screenRange->getRealBounds().withCentre(event.position));
-        this->xyMoveByUser();
+        this->xMoveByUser();
     }
 }
 
 void ProjectMapScroller::mouseUp(const MouseEvent &event)
 {
-    if (event.getDistanceFromDragStart() < 5)
+    if (event.getOffsetFromDragStart().isOrigin())
     {
-        this->toggleStretchingMapAlaSublime();
+        App::Layout().broadcastCommandMessage(CommandIDs::ToggleBottomMiniMap);
     }
 }
 

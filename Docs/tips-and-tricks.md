@@ -90,7 +90,9 @@ The audio monitor view can be toggled between two modes on click or tap, switchi
 
 ![monitors]
 
-The mini map can be toggled with `B` hotkey; in the small mode, it is stretched to fit all project:
+The mini map mode can be toggled with `B` hotkey, or by clicking at any area except the screen range rectangle.
+
+In the small mode, it is stretched to fit all project:
 
 ![toggle-minimap]
 

@@ -68,7 +68,6 @@ public:
     
     void xyMoveByUser();
     void xMoveByUser();
-    void toggleStretchingMapAlaSublime();
     
     //===------------------------------------------------------------------===//
     // Component
@@ -126,11 +125,10 @@ private:
 
     ScrollerMode scrollerMode = ScrollerMode::Map;
 
-    bool stretchedMapsFlag = true;
     bool stretchedMode() const noexcept
     {
         // no stretching in the scroller mode
-        return this->scrollerMode == ScrollerMode::Map && this->stretchedMapsFlag;
+        return this->scrollerMode == ScrollerMode::Map;
     }
 
 private:
