@@ -85,8 +85,8 @@ public:
     {
         const Colour baseColour(findDefaultColour(ColourIDs::Roll::noteFill));
         this->colour = this->note.getTrackColour().
-            interpolatedWith(baseColour, this->editable ? .4f : .55f).
-            withAlpha(this->editable ? 0.7f : .1f);
+            interpolatedWith(baseColour, this->editable ? 0.35f : 0.5f).
+            withAlpha(this->editable ? 0.75f : 0.065f);
     }
 
     void setRealBounds(float x, int y, float w, int h) noexcept
@@ -133,8 +133,8 @@ public:
 
     bool hitTest(int, int y) noexcept override
     {
-        // can be dragged individually by header line
-        return this->editable && y <= 4;
+        constexpr auto dragAreaSize = 5;
+        return this->editable && y <= dragAreaSize;
     }
 
     void mouseDown(const MouseEvent &e) override
