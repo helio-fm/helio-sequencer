@@ -8,7 +8,7 @@ Most of the DAW interfaces often seem [overcomplicated](http://mashable.com/2015
 
 Helio is an attempt to rethink a music sequencer to create a tool that **feels right**.
 
-It aims to be a modern music creation software, featuring linear-based/pattern-based sequencer with clean UI, integrated version control for synchronizing project between devices, microtonal temperaments support, small portable builds and more; mainly targeted at hobbyist composers, game developers and indie artists. Check out this [Youtube channel](https://www.youtube.com/channel/UCO3K8iCd1k2FTqSocoE-WXw/) for some video demos.
+It aims to be a modern music creation software, featuring linear-based/pattern-based sequencer with clean UI, integrated version control for synchronizing project between devices, microtonal temperaments support, small portable builds and more; mainly targeted at hobbyist composers, game developers and indie artists. Check out this [YouTube channel](https://www.youtube.com/channel/UCO3K8iCd1k2FTqSocoE-WXw/) for some video demos.
 
 
 ## Building

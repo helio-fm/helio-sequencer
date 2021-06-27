@@ -316,9 +316,6 @@ The left side lists all changes in the project, compared to the current revision
 
 The right side shows the tree of all revisions that you have saved. Note a couple of icons under each revision: they indicate whether the revision is available locally, or remotely, or both.
 
-### Synchronizing projects across devices
-
-// TODO
 
 [helio-ui]: images/screen-v3.png "UI overview"
 [orchestra-pit]: images/orchestra-pit.png "The instruments management page"

@@ -88,7 +88,7 @@ All scale-related tools will only show those scales with octave size matched wit
 
 ### Limitations
 
-The default built-in temperaments [list](configs.md#temperaments) includes the most popular ones, 12edo, 22edo and 31edo.
+The default built-in temperaments [list](configs.md#temperaments) includes 12-edo, 19-edo, 22-edo and 31-edo.
 
 And the built-in scales [list](configs.md#scales) only includes 7-tone scales for each of those temperaments, because there are several pieces of the app which still assume working with diatonic scales, e.g. the chord tool or the arpeggiator tool, - so given that limitation, using these tools with any built-in temperament or scale would make at least some kind of sense.
 

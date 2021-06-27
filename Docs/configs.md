@@ -133,7 +133,3 @@ You might want to add some scales for it, for example:
 ### Custom arpeggiators
 
 Arpeggiators are created in the app, you will find them saved in `arpeggiators.json`. You can edit this file by hand, but you probably won't need to.
-
-### Synchronizing across devices
-
-// TODO
