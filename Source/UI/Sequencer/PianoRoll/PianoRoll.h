@@ -83,6 +83,7 @@ public:
 
     // Note that beat is returned relative to active clip's beat offset:
     void getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const;
+    void getBiasedRowsColsByMousePosition(int x, int y, int& noteNumber, float& beatNumber, float roundBias) const; //added roundBias variable to allow rounding bias to be set
     void getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const;
 
     //===------------------------------------------------------------------===//

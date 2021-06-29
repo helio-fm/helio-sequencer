@@ -588,6 +588,57 @@ float RollBase::getFloorBeatSnapByXPosition(int x) const noexcept
     return this->getBeatByXPosition(targetX);
 }
 
+float RollBase::getCeilingBeatSnapByXPosition(int x) const noexcept //added for use in getBiasedRowsColsByMousePosition() - gets ceiling beat number - RPM
+{
+    float d = FLT_MAX;
+    float targetX = float(x);
+    for (const float& snapX : this->allSnaps)
+    {
+        const float distance = fabs(x - snapX);
+        if (distance < d && snapX > x) //only choose snapX points that are greater than mousePosX
+        {
+            d = distance;
+            targetX = snapX;
+        }
+    }
+
+    return this->getBeatByXPosition(targetX);
+}
+
+float RollBase::getFloorSnapXByXPosition(int x) const noexcept //gets floor snap x value (not beat value) - RPM
+{
+    float d = FLT_MAX;
+    float targetX = float(x);
+    for (const float& snapX : this->allSnaps)
+    {
+        const float distance = fabs(x - snapX);
+        if (distance < d && snapX < x) //only choose snapX points that are less than mousePosX
+        {
+            d = distance;
+            targetX = snapX;
+        }
+    }
+
+    return targetX;
+}
+
+float RollBase::getCeilingSnapXByXPosition(int x) const noexcept //gets ceiling snap x value (not beat value) - RPM
+{
+    float d = FLT_MAX;
+    float targetX = float(x);
+    for (const float& snapX : this->allSnaps)
+    {
+        const float distance = fabs(x - snapX);
+        if (distance < d && snapX > x) //only choose snapX points that are greater than mousePosX
+        {
+            d = distance;
+            targetX = snapX;
+        }
+    }
+
+    return targetX;
+}
+
 float RollBase::getRoundBeatSnapByXPosition(int x) const
 {
     float d = FLT_MAX;
@@ -597,13 +648,39 @@ float RollBase::getRoundBeatSnapByXPosition(int x) const
         const float distance = fabs(x - snapX);
         if (distance < d)
         {
-            d = distance;
-            // get lowest beat possible for target x position:
+            d = distance; // get lowest beat possible for target x position:
             targetX = snapX;
         }
     }
 
     return this->getBeatByXPosition(targetX);
+}
+
+// a bias of 1 always rounds to the ceiling. a bias of zero always rounds to floor. a bias of 0.5 rounds to the middle. and so on... - RPM
+// sorry for the massive function. I'm not a very elegant coder. I suppose it can be cleaned up quite easily, but i'm too lazy to do it right now. at least it's something that runs once and then it's done.
+// there's also a butload of comments because 4:00 AM me is stupid and couldn't figure out why an obvious bug was happening.
+// this function would occationally place notes a full snap point before the mousecursor, but it doesen't seem to do that anymore. I think I changed something, but I can't remember.
+// you can delete all these comments when including in the git. they're mostly just for me.
+
+float RollBase::getBiasedRoundBeatSnapByXPosition(int x, float roundBias) const
+{
+    float mousePos = float(x); //initialize mouse position as the x position
+    float leftmostSnapPoint = getFloorSnapXByXPosition(x);
+    float rightmostSnapPoint = getCeilingSnapXByXPosition(x);
+    float distanceBetweenSnapPoints = rightmostSnapPoint - leftmostSnapPoint;
+    float biasThreshhold = leftmostSnapPoint + (distanceBetweenSnapPoints * roundBias);
+    float finalSnapPoint = leftmostSnapPoint; //initialize as targetX for now in order to prevent weird exceptions
+    
+    if (mousePos <= biasThreshhold)
+    {
+        finalSnapPoint = leftmostSnapPoint;
+    }
+    else
+    {
+        finalSnapPoint = rightmostSnapPoint;
+    }
+
+    return this->getBeatByXPosition(finalSnapPoint);
 }
 
 void RollBase::setBeatRange(float first, float last)
@@ -1075,17 +1152,11 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
 {
     // TODO check if any operation is in progress (lasso drag, knife tool drag, etc)
 
-    // holding shift means using vertical direction instead of horizontal
-    // (or horizontal instead of vertical, depending on ui settings/defaults)
-    const bool alternativeDirection =
-        this->mouseWheelFlags.useVerticalDirectionByDefault != event.mods.isShiftDown();
+    const bool alternativeDirection = this->mouseWheelFlags.useVerticalDirectionByDefault; //removed shift logic for this as shift key will be used for zoom. drag pan makes scroll pan almost useless in piano roll
 
-    // holding control/command/alt means using panning instead of zooming
-    // (or zooming instead of panning, depending on ui settings/defaults)
-    const bool alternativeMode = this->mouseWheelFlags.usePanningByDefault !=
-        (event.mods.isCtrlDown() || event.mods.isCommandDown() || event.mods.isAltDown());
+    //removed alternative mode
 
-    if (alternativeMode)
+    if (event.mods.isAnyModifierKeyDown() == false) //only pan if there is no modifer key down.
     {
         this->smoothZoomController->cancelZoom();
         const auto initialSpeed = this->smoothPanController->getInitialSpeed();
@@ -1121,13 +1192,17 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
         const float zoomDelta = wheel.deltaY * (wheel.isReversed ? -zoomSpeed : zoomSpeed);
         const auto mouseOffset = (event.position - this->viewport.getViewPosition().toFloat());
 
-        if (alternativeDirection)
+        if (event.mods.isCtrlDown()) //ctrl now always zooms horizontally, using alternative direction would make no sense for zooming
+        {
+            this->startSmoothZoom(mouseOffset, { zoomDelta, 0.f });
+        }
+        if (event.mods.isShiftDown()) //shift now always zooms vertically. the reasoning for this is that shift is ABOVE ctrl, so this setup feels very natural.
         {
             this->startSmoothZoom(mouseOffset, { 0.f, zoomDelta });
         }
-        else
+        if (event.mods.isAltDown() && (event.mods.isCtrlDown() || event.mods.isCtrlDown()) == false) //Alt now globally zooms, but only in the absence of ctrl and shift
         {
-            this->startSmoothZoom(mouseOffset, { zoomDelta, 0.f });
+            this->startSmoothZoom(mouseOffset, { zoomDelta, zoomDelta });
         }
     }
 }
@@ -1667,12 +1742,13 @@ bool RollBase::isViewportDragEvent(const MouseEvent &e) const
     if (this->project.getEditMode().forbidsViewportDragging())  { return false; }
     if (this->project.getEditMode().forcesViewportDragging())   { return true; }
     if (e.source.isTouch())                                     { return e.mods.isLeftButtonDown(); }
-    return (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown());
+    //return (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown()); // temporarly removed right button as drag option
+    return (e.mods.isMiddleButtonDown()); // temporarly removed right button as drag option
 }
 
 bool RollBase::isAddEvent(const MouseEvent &e) const
 {
-    if (e.mods.isRightButtonDown())                         { return false; }
+    if (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown() || e.mods.isCtrlDown())  { return false; } //changed to prevent middle button from placing notes when dragging in draw mode. also changed so ctrl can lasso
     if (this->project.getEditMode().forbidsAddingEvents())  { return false; }
     if (this->project.getEditMode().forcesAddingEvents())   { return true; }
     return false;
@@ -1683,7 +1759,7 @@ bool RollBase::isLassoEvent(const MouseEvent &e) const
     if (this->project.getEditMode().forbidsSelectionMode()) { return false; }
     if (this->project.getEditMode().forcesSelectionMode())  { return true; }
     if (e.source.isTouch())                                 { return false; }
-    return e.mods.isLeftButtonDown();
+    return (e.mods.isLeftButtonDown() && e.mods.isCtrlDown()); //only begin lasso if LB and Ctrl are pressed
 }
 
 bool RollBase::isKnifeToolEvent(const MouseEvent &e) const
