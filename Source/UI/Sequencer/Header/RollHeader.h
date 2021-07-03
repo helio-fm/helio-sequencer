@@ -23,6 +23,7 @@ class SoundProbeIndicator;
 class TimeDistanceIndicator;
 class HeaderSelectionIndicator;
 class ClipRangeIndicator;
+class PlaybackLoopMarker;
 
 class RollHeader final : public Component
 {
@@ -60,10 +61,6 @@ protected:
     Atomic<bool> soundProbeMode = false;
     Atomic<bool> recordingMode = false;
 
-    Atomic<bool> loopMode = false;
-    Atomic<float> loopStartBeat = 0.f;
-    Atomic<float> loopEndBeat = Globals::Defaults::projectLength;
-
     Colour backColour;
     Colour barColour;
     Colour barShadeColour;
@@ -80,6 +77,9 @@ protected:
     UniquePointer<SoundProbeIndicator> pointingIndicator;
     UniquePointer<TimeDistanceIndicator> timeDistanceIndicator;
     UniquePointer<HeaderSelectionIndicator> selectionIndicator;
+
+    UniquePointer<PlaybackLoopMarker> loopMarkerStart;
+    UniquePointer<PlaybackLoopMarker> loopMarkerEnd;
 
     static constexpr auto minTimeDistanceIndicatorSize = 40;
 

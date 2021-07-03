@@ -28,25 +28,171 @@
 #include "TimelineMenu.h"
 #include "ColourIDs.h"
 
-RollHeader::RollHeader(Transport &transportRef, RollBase &rollRef, Viewport &viewportRef) :
-    transport(transportRef),
-    roll(rollRef),
-    viewport(viewportRef)
+class PlaybackLoopMarker final : public Component
+{
+public:
+
+    enum class Type { LoopStart, LoopEnd };
+
+    PlaybackLoopMarker(Transport &transport, RollBase &roll, Type type) :
+        transport(transport),
+        roll(roll),
+        type(type)
+    {
+        //this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(true, false);
+        this->setMouseCursor(MouseCursor::PointingHandCursor);
+        this->setSize(16, 16);
+    }
+
+    void setBeat(float targetBeat)
+    {
+        this->beat = targetBeat;
+        this->updatePosition();
+    }
+
+    void updatePosition()
+    {
+        const auto x = this->roll.getXPositionByBeat(this->beat);
+        const auto w = this->getWidth();
+        switch (this->type)
+        {
+        case Type::LoopStart:
+            this->setBounds(x, 0, w, this->getParentHeight());
+            break;
+        case Type::LoopEnd:
+            this->setBounds(x - w + 1, 0, w, this->getParentHeight());
+            break;
+        }
+    }
+
+    void paint(Graphics &g) override
+    {
+        // todo draw ellipses instead?
+        const auto p1 = roundf(float(this->getHeight()) * 0.33f + 1.f);
+        const auto p2 = roundf(float(this->getHeight()) * 0.66f - 3.f);
+
+        // painting context here reuses the color set by parent (red or regular)
+
+        switch (this->type)
+        {
+        case Type::LoopStart:
+            
+            g.fillRect(0, 1, 3, this->getHeight() - 2);
+            g.fillRect(5, 1, 1, this->getHeight() - 2);
+
+            g.fillRect(float(8), p1, 3.f, 3.f);
+            g.fillRect(float(8), p2, 3.f, 3.f);
+
+            // some fancy shadows
+            g.setColour(this->shadowColour);
+
+            g.fillRect(3, 1, 1, this->getHeight() - 2);
+            g.fillRect(6, 1, 1, this->getHeight() - 2);
+
+            g.fillRect(float(11), p1, 1.f, 3.f);
+            g.fillRect(float(11), p2, 1.f, 3.f);
+
+            break;
+        case Type::LoopEnd:
+
+            const int x = this->getWidth();
+
+            g.fillRect(x - 3, 1, 3, this->getHeight() - 2);
+            g.fillRect(x - 6, 1, 1, this->getHeight() - 2);
+
+            g.fillRect(float(x - 11), p1, 3.f, 3.f);
+            g.fillRect(float(x - 11), p2, 3.f, 3.f);
+
+            // some fancy shadows
+            g.setColour(this->shadowColour);
+
+            g.fillRect(x, 1, 1, this->getHeight() - 2);
+            g.fillRect(x - 5, 1, 1, this->getHeight() - 2);
+
+            g.fillRect(float(x - 8), p1, 1.f, 3.f);
+            g.fillRect(float(x - 8), p2, 1.f, 3.f);
+
+            break;
+        }
+    }
+
+    void mouseUp(const MouseEvent &e) override
+    {
+        this->setMouseCursor(MouseCursor::PointingHandCursor);
+
+        if (e.getOffsetFromDragStart().isOrigin())
+        {
+            if (!this->transport.isRecording())
+            {
+                this->transport.stopPlayback();
+            }
+
+            this->transport.seekToBeat(this->beat);
+        }
+    }
+
+    void mouseDrag(const MouseEvent &e) override
+    {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
+
+        const auto dragAtHeader = e.getEventRelativeTo(this->getParentComponent());
+        const auto beat = this->roll.getRoundBeatSnapByXPosition(dragAtHeader.x);
+
+        switch (this->type)
+        {
+        case Type::LoopStart:
+            this->transport.setPlaybackLoop(beat, this->transport.getPlaybackLoopEnd());
+            break;
+        case Type::LoopEnd:
+            this->transport.setPlaybackLoop(this->transport.getPlaybackLoopStart(), beat);
+            break;
+        }
+    }
+    
+private:
+
+    const Type type;
+
+    Transport &transport;
+    RollBase &roll;
+
+    float beat = 0.f;
+
+    const Colour shadowColour = findDefaultColour(ColourIDs::Common::borderLineDark);
+
+};
+
+RollHeader::RollHeader(Transport &transport, RollBase &roll, Viewport &viewport) :
+    transport(transport),
+    roll(roll),
+    viewport(viewport)
 {
     this->setOpaque(true);
     this->setAlwaysOnTop(true);
-    this->setPaintingIsUnclipped(true);
-
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
+    this->setPaintingIsUnclipped(true);
     this->setMouseClickGrabsKeyboardFocus(false);
 
     this->updateColours();
-    this->setSize(this->getParentWidth(), Globals::UI::rollHeaderHeight);
+
+    // these two are added first, so when they repaint, they can use a color
+    // set by the parent(this header), which is red when rendering or just regular
+    this->loopMarkerStart = make<PlaybackLoopMarker>(transport,
+        roll, PlaybackLoopMarker::Type::LoopStart);
+    this->addChildComponent(this->loopMarkerStart.get());
+
+    this->loopMarkerEnd = make<PlaybackLoopMarker>(transport,
+        roll, PlaybackLoopMarker::Type::LoopEnd);
+    this->addChildComponent(this->loopMarkerEnd.get());
 
     this->selectionIndicator = make<HeaderSelectionIndicator>();
     this->addChildComponent(this->selectionIndicator.get());
-    this->selectionIndicator->setTopLeftPosition(0, this->getHeight() - this->selectionIndicator->getHeight());
+    this->selectionIndicator->setTopLeftPosition(0,
+        this->getHeight() - this->selectionIndicator->getHeight());
+
+    this->setSize(this->getParentWidth(), Globals::UI::rollHeaderHeight);
 }
 
 RollHeader::~RollHeader() = default;
@@ -77,10 +223,13 @@ void RollHeader::showRecordingMode(bool showRecordingMarker)
 
 void RollHeader::showLoopMode(bool hasLoop, float startBeat, float endBeat)
 {
-    this->loopMode = hasLoop;
-    this->loopStartBeat = startBeat;
-    this->loopEndBeat = endBeat;
-    this->repaint();
+    this->loopMarkerStart->setBeat(startBeat);
+    this->loopMarkerEnd->setBeat(endBeat);
+
+    this->loopMarkerStart->setVisible(hasLoop);
+    this->loopMarkerEnd->setVisible(hasLoop);
+
+    this->resized(); // updates their positions
 }
 
 void RollHeader::setSoundProbeMode(bool shouldPreviewOnClick)
@@ -417,42 +566,6 @@ void RollHeader::paint(Graphics &g)
     {
         g.setColour(this->barColour);
     }
-
-    if (this->loopMode.get())
-    {
-        const int startX = this->roll.getXPositionByBeat(this->loopStartBeat.get());
-        const int endX = this->roll.getXPositionByBeat(this->loopEndBeat.get());
-
-        g.fillRect(startX, 1, 3, this->getHeight() - 2);
-        g.fillRect(startX + 5, 1, 1, this->getHeight() - 2);
-
-        g.fillRect(endX - 2, 1, 3, this->getHeight() - 2);
-        g.fillRect(endX - 5, 1, 1, this->getHeight() - 2);
-
-        // todo draw ellipses instead?
-        const auto p1 = roundf(float(this->getHeight()) * 0.33f + 1.f);
-        const auto p2 = roundf(float(this->getHeight()) * 0.66f - 3.f);
-
-        g.fillRect(float(startX + 8), p1, 3.f, 3.f);
-        g.fillRect(float(startX + 8), p2, 3.f, 3.f);
-
-        g.fillRect(float(endX - 10), p1, 3.f, 3.f);
-        g.fillRect(float(endX - 10), p2, 3.f, 3.f);
-
-        // some fancy shadows
-        g.setColour(this->bevelDarkColour);
-
-        g.fillRect(startX + 3, 1, 1, this->getHeight() - 2);
-        g.fillRect(startX + 6, 1, 1, this->getHeight() - 2);
-
-        g.fillRect(endX + 1, 1, 1, this->getHeight() - 2);
-        g.fillRect(endX - 4, 1, 1, this->getHeight() - 2);
-
-        g.fillRect(float(startX + 11), p1, 1.f, 3.f);
-        g.fillRect(float(startX + 11), p2, 1.f, 3.f);
-        g.fillRect(float(endX - 7), p1, 1.f, 3.f);
-        g.fillRect(float(endX - 7), p2, 1.f, 3.f);
-    }
 }
 
 void RollHeader::resized()
@@ -461,6 +574,9 @@ void RollHeader::resized()
     {
         this->updateClipRangeIndicator();
     }
+
+    this->loopMarkerStart->updatePosition();
+    this->loopMarkerEnd->updatePosition();
 }
 
 void RollHeader::showPopupMenu()
