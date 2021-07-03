@@ -68,9 +68,8 @@ public:
 
     void paint(Graphics &g) override
     {
-        // todo draw ellipses instead?
-        const auto p1 = roundf(float(this->getHeight()) * 0.33f + 1.f);
-        const auto p2 = roundf(float(this->getHeight()) * 0.66f - 3.f);
+        const auto p1 = roundf(float(this->getHeight()) * 0.33f - 1.f);
+        const auto p2 = roundf(float(this->getHeight()) * 0.66f - 4.f);
 
         // painting context here reuses the color set by parent (red or regular)
 
@@ -81,18 +80,17 @@ public:
             g.fillRect(0, 1, 3, this->getHeight() - 2);
             g.fillRect(5, 1, 1, this->getHeight() - 2);
 
-            g.fillRect(float(8), p1, 3.f, 3.f);
-            g.fillRect(float(8), p2, 3.f, 3.f);
+            g.fillRect(float(9), p1, 2.f, 4.f);
+            g.fillRect(float(8), p1 + 1, 4.f, 2.f);
+
+            g.fillRect(float(9), p2, 2.f, 4.f);
+            g.fillRect(float(8), p2 + 1, 4.f, 2.f);
 
             // some fancy shadows
             g.setColour(this->shadowColour);
 
             g.fillRect(3, 1, 1, this->getHeight() - 2);
             g.fillRect(6, 1, 1, this->getHeight() - 2);
-
-            g.fillRect(float(11), p1, 1.f, 3.f);
-            g.fillRect(float(11), p2, 1.f, 3.f);
-
             break;
         case Type::LoopEnd:
 
@@ -101,18 +99,17 @@ public:
             g.fillRect(x - 3, 1, 3, this->getHeight() - 2);
             g.fillRect(x - 6, 1, 1, this->getHeight() - 2);
 
-            g.fillRect(float(x - 11), p1, 3.f, 3.f);
-            g.fillRect(float(x - 11), p2, 3.f, 3.f);
+            g.fillRect(float(x - 11), p1, 2.f, 4.f);
+            g.fillRect(float(x - 12), p1 + 1, 4.f, 2.f);
+
+            g.fillRect(float(x - 11), p2, 2.f, 4.f);
+            g.fillRect(float(x - 12), p2 + 1, 4.f, 2.f);
 
             // some fancy shadows
             g.setColour(this->shadowColour);
 
             g.fillRect(x, 1, 1, this->getHeight() - 2);
             g.fillRect(x - 5, 1, 1, this->getHeight() - 2);
-
-            g.fillRect(float(x - 8), p1, 1.f, 3.f);
-            g.fillRect(float(x - 8), p2, 1.f, 3.f);
-
             break;
         }
     }
