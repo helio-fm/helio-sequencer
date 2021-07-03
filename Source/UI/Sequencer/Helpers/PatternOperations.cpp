@@ -70,10 +70,11 @@ float PatternOperations::findEndBeat(const Lasso &selection)
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const auto *cc = selection.getItemAs<ClipComponent>(i);
+        const auto *sequence = cc->getClip().getPattern()->getTrack()->getSequence();
+        const auto sequenceStart = sequence->getFirstBeat();
+        const auto sequenceLength = sequence->isEmpty() ?
+            Globals::Defaults::emptyClipLength : sequence->getLengthInBeats();
 
-        const auto *track = cc->getClip().getPattern()->getTrack();
-        const auto sequenceStart = track->getSequence()->getFirstBeat();
-        const auto sequenceLength = track->getSequence()->getLengthInBeats();
         const float beatPlusLength = sequenceStart + cc->getBeat() + sequenceLength;
         endBeat = jmax(endBeat, beatPlusLength);
     }

@@ -1302,7 +1302,7 @@ void RollBase::handleCommandMessage(int commandId)
 
             if (!this->getTransport().isRecording())
             {
-                this->getTransport().disableLoopPlayback();
+                this->getTransport().disablePlaybackLoop();
             }
         }
 

@@ -75,8 +75,11 @@ public:
     bool isRendering() const;
     void stopRender();
     
-    void toggleLoopPlayback(float startBeat, float endBeat);
-    void disableLoopPlayback();
+    void togglePlaybackLoop(float startBeat, float endBeat);
+    void setPlaybackLoop(float startBeat, float endBeat);
+    void disablePlaybackLoop();
+    float getPlaybackLoopStart() const noexcept;
+    float getPlaybackLoopEnd() const noexcept;
 
     float getRenderingPercentsComplete() const;
     

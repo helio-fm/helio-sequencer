@@ -749,11 +749,11 @@ void PatternRoll::handleCommandMessage(int commandId)
         {
             const auto startBeat = PatternOperations::findStartBeat(this->selection);
             const auto endBeat = PatternOperations::findEndBeat(this->selection);
-            this->getTransport().toggleLoopPlayback(startBeat, endBeat);
+            this->getTransport().togglePlaybackLoop(startBeat, endBeat);
         }
         else // no selection, nothing else to do but to turn the loop off:
         {
-            this->getTransport().disableLoopPlayback();
+            this->getTransport().disablePlaybackLoop();
         }
         break;
     case CommandIDs::ShowNewTrackPanel:

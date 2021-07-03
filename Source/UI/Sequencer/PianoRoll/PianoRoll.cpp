@@ -1148,15 +1148,19 @@ void PianoRoll::handleCommandMessage(int commandId)
             const auto clipOffset = this->activeClip.getBeat();
             const auto startBeat = SequencerOperations::findStartBeat(this->selection);
             const auto endBeat = SequencerOperations::findEndBeat(this->selection);
-            this->getTransport().toggleLoopPlayback(clipOffset + startBeat, clipOffset + endBeat);
+            this->getTransport().togglePlaybackLoop(clipOffset + startBeat, clipOffset + endBeat);
         }
         else
         {
             jassert(this->activeTrack != nullptr);
             const auto clipOffset = this->activeClip.getBeat();
-            const auto startBeat = this->activeTrack->getSequence()->getFirstBeat();
-            const auto endBeat = this->activeTrack->getSequence()->getLastBeat();
-            this->getTransport().toggleLoopPlayback(clipOffset + startBeat, clipOffset + endBeat);
+            const auto *sequence = this->activeTrack->getSequence();
+            const auto startBeat = sequence->getFirstBeat();
+            const auto endBeat = sequence->isEmpty() ?
+                startBeat + Globals::Defaults::emptyClipLength :
+                sequence->getLastBeat();
+
+            this->getTransport().togglePlaybackLoop(clipOffset + startBeat, clipOffset + endBeat);
         }
         break;
     case CommandIDs::CreateArpeggiatorFromSelection:

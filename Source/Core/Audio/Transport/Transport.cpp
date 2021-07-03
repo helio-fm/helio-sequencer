@@ -287,36 +287,59 @@ void Transport::stopPlaybackAndRecording()
 // Playback loop, mostly used together with MIDI recording
 //===----------------------------------------------------------------------===//
 
-void Transport::toggleLoopPlayback(float startBeat, float endBeat)
+void Transport::togglePlaybackLoop(float startBeat, float endBeat)
+{
+    if (this->loopMode.get() &&
+        this->loopStartBeat.get() == startBeat &&
+        this->loopEndBeat.get() == endBeat)
+    {
+        this->disablePlaybackLoop();
+        return;
+    }
+
+    this->setPlaybackLoop(startBeat, endBeat);
+}
+
+void Transport::setPlaybackLoop(float startBeat, float endBeat)
 {
     if (this->isPlaying())
     {
         this->stopPlaybackAndRecording();
     }
 
-    if (this->loopMode.get() &&
-        this->loopStartBeat.get() == startBeat &&
-        this->loopEndBeat.get() == endBeat)
-    {
-        this->disableLoopPlayback();
-        return;
-    }
-
     this->loopMode = true;
     this->loopStartBeat = startBeat;
-    this->loopEndBeat = endBeat;
+    // length is at least one bar:
+    this->loopEndBeat = jmax(endBeat, startBeat + Globals::beatsPerBar);
 
     this->broadcastLoopModeChanged(this->loopMode.get(),
         this->loopStartBeat.get(), this->loopEndBeat.get());
 }
 
-void Transport::disableLoopPlayback()
+void Transport::disablePlaybackLoop()
 {
-    if (this->loopMode.get())
+    if (!this->loopMode.get())
     {
-        this->loopMode = false;
-        this->broadcastLoopModeChanged(false, 0.f, 0.f);
+        return;
     }
+
+    if (this->isPlaying())
+    {
+        this->stopPlaybackAndRecording();
+    }
+
+    this->loopMode = false;
+    this->broadcastLoopModeChanged(false, 0.f, 0.f);
+}
+
+float Transport::getPlaybackLoopStart() const noexcept
+{
+    return this->loopStartBeat.get();
+}
+
+float Transport::getPlaybackLoopEnd() const noexcept
+{
+    return this->loopEndBeat.get();
 }
 
 //===----------------------------------------------------------------------===//
