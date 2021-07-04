@@ -289,9 +289,7 @@ void Transport::stopPlaybackAndRecording()
 
 void Transport::togglePlaybackLoop(float startBeat, float endBeat)
 {
-    if (this->loopMode.get() &&
-        this->loopStartBeat.get() == startBeat &&
-        this->loopEndBeat.get() == endBeat)
+    if (this->loopMode.get())
     {
         this->disablePlaybackLoop();
         return;
