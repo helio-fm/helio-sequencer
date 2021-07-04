@@ -230,6 +230,11 @@ bool Transport::isPlaying() const
     return this->player->isPlaying();
 }
 
+bool Transport::isPlayingAndRecording() const
+{
+    return this->isPlaying() && this->isRecording();
+}
+
 //===----------------------------------------------------------------------===//
 // Recording MIDI
 //===----------------------------------------------------------------------===//

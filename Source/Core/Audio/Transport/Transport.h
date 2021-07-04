@@ -69,6 +69,7 @@ public:
     bool isRecording() const;
     void stopRecording();
 
+    bool isPlayingAndRecording() const;
     void stopPlaybackAndRecording();
 
     bool startRender(const URL &renderTarget, RenderFormat format);

@@ -120,12 +120,11 @@ public:
 
         if (e.getOffsetFromDragStart().isOrigin())
         {
-            if (!this->transport.isRecording())
+            if (!this->transport.isPlayingAndRecording())
             {
                 this->transport.stopPlayback();
+                this->transport.seekToBeat(this->beat);
             }
-
-            this->transport.seekToBeat(this->beat);
         }
     }
 
@@ -346,13 +345,9 @@ void RollHeader::mouseDown(const MouseEvent &e)
             this->selectionIndicator->fadeIn();
             this->selectionIndicator->setStartAnchor(this->getUnalignedAnchorForEvent(e));
         }
-        else
+        else if (!this->transport.isPlayingAndRecording())
         {
-            if (!this->transport.isRecording())
-            {
-                this->transport.stopPlayback();
-            }
-
+            this->transport.stopPlayback();
             this->roll.cancelPendingUpdate(); // why is it here?
 
             // two presses on mobile will emit the timeline menu,
@@ -422,15 +417,12 @@ void RollHeader::mouseDrag(const MouseEvent &e)
             this->roll.getSelectionComponent()->dragLasso(parentGlobalSelection);
             this->selectionIndicator->setEndAnchor(this->getUnalignedAnchorForEvent(e));
         }
-        else
+        else if (!this->transport.isPlayingAndRecording())
         {
-            //if (! this->transport.isPlaying())
-            {
-                const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
-                this->transport.stopPlaybackAndRecording();
-                this->roll.cancelPendingUpdate();
-                this->transport.seekToBeat(roundBeat);
-            }
+            const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
+            this->transport.stopPlayback();
+            this->roll.cancelPendingUpdate();
+            this->transport.seekToBeat(roundBeat);
         }
     }
 }
@@ -452,15 +444,10 @@ void RollHeader::mouseUp(const MouseEvent &e)
     {
         this->roll.getSelectionComponent()->endLasso();
     }
-    else
+    else if (!this->transport.isPlayingAndRecording())
     {
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
-        
-        if (!this->transport.isRecording())
-        {
-            this->transport.stopPlayback();
-        }
-
+        this->transport.stopPlayback();
         this->transport.seekToBeat(roundBeat);
         
         if (e.mods.isRightButtonDown())
