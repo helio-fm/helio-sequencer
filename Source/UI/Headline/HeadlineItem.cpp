@@ -15,13 +15,9 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "HeadlineItem.h"
 
-//[MiscUserDefs]
 #include "IconComponent.h"
 #include "Headline.h"
 #include "HeadlineDropdown.h"
@@ -29,13 +25,13 @@
 #include "ColourIDs.h"
 #include "MainLayout.h"
 
+// A dashed bottom stroke to indicate that
+// a context menu has been opened for this item
 class HeadlineContextMenuMarker final : public Component
 {
 public:
 
-    HeadlineContextMenuMarker() :
-        dark(findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f)),
-        light(findDefaultColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(2.f))
+    HeadlineContextMenuMarker()
     {
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
@@ -63,118 +59,87 @@ public:
         }
     }
 
-    const Colour dark;
-    const Colour light;
+    const Colour dark = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f);
+    const Colour light = findDefaultColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(2.f);
 };
 
-//[/MiscUserDefs]
-
-HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, AsyncUpdater &parent)
-    : item(treeItem),
-      parentHeadline(parent)
+HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, AsyncUpdater &parent) :
+    item(treeItem),
+    parentHeadline(parent)
 {
-    this->titleLabel.reset(new Label(String(),
-                                            String()));
-    this->addAndMakeVisible(titleLabel.get());
-    this->titleLabel->setFont(Font (18.00f, Font::plain));
-    titleLabel->setJustificationType(Justification::centredLeft);
-    titleLabel->setEditable(false, false, false);
-
-    this->icon.reset(new IconComponent(Icons::helio));
-    this->addAndMakeVisible(icon.get());
-
-    this->arrow.reset(new HeadlineItemArrow());
-    this->addAndMakeVisible(arrow.get());
-
-    //[UserPreSize]
-    this->menuMarker = make<HeadlineContextMenuMarker>();
-    this->addChildComponent(this->menuMarker.get());
-
-    this->titleLabel->setInterceptsMouseClicks(false, false);
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
     this->setOpaque(false);
 
+    this->titleLabel = make<Label>();
+    this->addAndMakeVisible(this->titleLabel.get());
+    this->titleLabel->setFont(Globals::UI::Fonts::M);
+    this->titleLabel->setJustificationType(Justification::centredLeft);
+    this->titleLabel->setInterceptsMouseClicks(false, false);
     this->titleLabel->setCachedComponentImage(new CachedLabelImage(*this->titleLabel));
 
-    this->bgColour = findDefaultColour(ColourIDs::BackgroundA::fill);
-    //[/UserPreSize]
+    this->icon = make<IconComponent>(Icons::helio);
+    this->addAndMakeVisible(this->icon.get());
 
-    this->setSize(256, 32);
+    this->arrow = make<HeadlineItemArrow>();
+    this->addAndMakeVisible(this->arrow.get());
 
-    //[Constructor]
+    this->menuMarker = make<HeadlineContextMenuMarker>();
+    this->addChildComponent(this->menuMarker.get());
+
+    this->setSize(256, Globals::UI::headlineHeight);
+
     if (this->item != nullptr)
     {
         this->item->addChangeListener(this);
     }
-    //[/Constructor]
 }
 
 HeadlineItem::~HeadlineItem()
 {
-    //[Destructor_pre]
     this->stopTimer();
 
     if (this->item != nullptr)
     {
         this->item->removeChangeListener(this);
     }
-    //[/Destructor_pre]
-
-    titleLabel = nullptr;
-    icon = nullptr;
-    arrow = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
 }
 
-void HeadlineItem::paint (Graphics& g)
+void HeadlineItem::paint(Graphics &g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    {
-        Colour fillColour = this->bgColour;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //fillColour = this->bgColour;
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillPath (internalPath1);
-    }
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
+    g.setColour(this->bgColour);
+    g.fillPath(this->internalPath1);
 }
 
 void HeadlineItem::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
     this->menuMarker->setBounds(Headline::itemsOverlapOffset,
         this->getHeight() - this->menuMarker->getHeight(),
         this->getWidth() - Headline::itemsOverlapOffset,
         this->menuMarker->getHeight());
-    //[/UserPreResize]
 
-    titleLabel->setBounds(33, (getHeight() / 2) - (30 / 2), 256, 30);
-    icon->setBounds(12, (getHeight() / 2) - (26 / 2), 26, 26);
-    arrow->setBounds(getWidth() - 16, 0, 16, getHeight() - 0);
-    internalPath1.clear();
-    internalPath1.startNewSubPath (2.0f, 1.0f);
-    internalPath1.lineTo (static_cast<float> (getWidth() - 16), 1.0f);
-    internalPath1.lineTo (static_cast<float> (getWidth() - 2), static_cast<float> (getHeight() - 2));
-    internalPath1.lineTo (1.0f, static_cast<float> (getHeight() - 1));
-    internalPath1.lineTo (2.0f, static_cast<float> (getHeight() - 2));
-    internalPath1.closeSubPath();
+    constexpr auto iconX = 12;
+    constexpr auto iconSize = 26;
+    constexpr auto titleX = 33;
+    constexpr auto titleHeight = 30;
 
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->titleLabel->setBounds(titleX, (this->getHeight() / 2) - (titleHeight / 2), this->getWidth() - titleX, titleHeight);
+    this->icon->setBounds(iconX, (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
+    this->arrow->setBounds(this->getWidth() - HeadlineItemArrow::arrowWidth,
+        0, HeadlineItemArrow::arrowWidth, this->getHeight());
+
+    this->internalPath1.clear();
+    this->internalPath1.startNewSubPath(2.0f, 1.0f);
+    this->internalPath1.lineTo(float(this->getWidth() - HeadlineItemArrow::arrowWidth), 1.0f);
+    this->internalPath1.lineTo(float(this->getWidth() - 2), float(this->getHeight() - 2));
+    this->internalPath1.lineTo(1.0f, float(this->getHeight() - 1));
+    this->internalPath1.lineTo(2.0f, float(this->getHeight() - 2));
+    this->internalPath1.closeSubPath();
 }
 
 void HeadlineItem::mouseEnter (const MouseEvent& e)
 {
-    //[UserCode_mouseEnter] -- Add your code here...
 #if PLATFORM_DESKTOP
     // A hacky way to prevent re-opening the menu again after the new page is shown.
     // Somehow comparing current mouse screen position to e.getMouseDownScreenPosition()
@@ -186,19 +151,15 @@ void HeadlineItem::mouseEnter (const MouseEvent& e)
         this->startTimer(100);
     }
 #endif
-    //[/UserCode_mouseEnter]
 }
 
-void HeadlineItem::mouseExit (const MouseEvent& e)
+void HeadlineItem::mouseExit(const MouseEvent &e)
 {
-    //[UserCode_mouseExit] -- Add your code here...
     this->stopTimer();
-    //[/UserCode_mouseExit]
 }
 
-void HeadlineItem::mouseDown (const MouseEvent& e)
+void HeadlineItem::mouseDown(const MouseEvent &e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
     if (this->item != nullptr)
     {
         this->stopTimer();
@@ -218,18 +179,12 @@ void HeadlineItem::mouseDown (const MouseEvent& e)
         this->showMenuIfAny();
 #endif
     }
-    //[/UserCode_mouseDown]
 }
 
-void HeadlineItem::mouseUp (const MouseEvent& e)
+void HeadlineItem::mouseUp (const MouseEvent &e)
 {
-    //[UserCode_mouseUp] -- Add your code here...
     this->stopTimer();
-    //[/UserCode_mouseUp]
 }
-
-
-//[MiscUserCode]
 
 WeakReference<HeadlineItemDataSource> HeadlineItem::getDataSource() const noexcept
 {
@@ -278,42 +233,3 @@ void HeadlineItem::hideContextMenuMarker()
     this->animator.fadeOut(this->menuMarker.get(), Globals::UI::fadeOutLong);
     //this->menuMarker->setVisible(false);
 }
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="HeadlineItem" template="../../Template"
-                 componentName="" parentClasses="public Component, private Timer, private ChangeListener"
-                 constructorParams="WeakReference&lt;HeadlineItemDataSource&gt; treeItem, AsyncUpdater &amp;parent"
-                 variableInitialisers="item(treeItem),&#10;parentHeadline(parent)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="256" initialHeight="32">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseEnter (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseExit (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <PATH pos="0 0 100 100" fill="solid: 15ffffff" hasStroke="0" nonZeroWinding="1">s 2 1 l 16R 1 l 2R 2R l 1 1R l 2 2R x</PATH>
-  </BACKGROUND>
-  <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="33 0Cc 256 30" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="18.0" kerning="0.0" bold="0" italic="0" justification="33"/>
-  <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="icon" virtualName=""
-                    explicitFocusOrder="0" pos="12 0Cc 26 26" class="IconComponent"
-                    params="Icons::helio"/>
-  <JUCERCOMP name="" id="6845054f3705e31" memberName="arrow" virtualName=""
-             explicitFocusOrder="0" pos="0Rr 0 16 0M" sourceFile="HeadlineItemArrow.cpp"
-             constructorParams=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
-
-
-

@@ -611,15 +611,6 @@
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineItem.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Headline\HeadlineItemArrow.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Headline\HeadlineItemHighlighter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineContextMenuController.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3067,7 +3058,6 @@
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineDropdown.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItem.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemArrow.h"/>
-    <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemHighlighter.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemDataSource.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineContextMenuController.h"/>

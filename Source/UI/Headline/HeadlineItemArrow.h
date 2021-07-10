@@ -17,33 +17,60 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-
 class HeadlineItemArrow final : public Component
 {
 public:
 
-    HeadlineItemArrow();
-    ~HeadlineItemArrow();
+    HeadlineItemArrow()
+    {
+        this->setOpaque(false);
+        this->setBufferedToImage(true);
+        this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
+        this->setSize(HeadlineItemArrow::arrowWidth, Globals::UI::headlineHeight);
+    }
 
-    //[UserMethods]
-    //[/UserMethods]
+    void paint(Graphics &g) override
+    {
+        g.setGradientFill(ColourGradient(this->shadowColour1,
+            float(this->getWidth() - 2), float(this->getHeight() - 2),
+            this->shadowColour2,
+            float(this->getWidth() - HeadlineItemArrow::arrowWidth), 2.0f,
+            true));
 
-    void paint (Graphics& g) override;
-    void resized() override;
+        g.strokePath(this->shadowPath, PathStrokeType(1.0f));
 
+        g.setGradientFill(ColourGradient(this->arrowColour1,
+            float(this->getWidth() - 3), float(this->getHeight() - 2),
+            this->arrowColour2,
+            float(this->getWidth() - HeadlineItemArrow::arrowWidth), 0.0f,
+            true));
+
+        g.strokePath(this->arrowPath, PathStrokeType(0.5f));
+    }
+
+    void resized() override
+    {
+        this->arrowPath.clear();
+        this->arrowPath.startNewSubPath(float(this->getWidth() - HeadlineItemArrow::arrowWidth - 1), 0.0f);
+        this->arrowPath.lineTo(float(this->getWidth() - 2), float(this->getHeight()));
+
+        this->shadowPath.clear();
+        this->shadowPath.startNewSubPath(float(this->getWidth() - HeadlineItemArrow::arrowWidth), 0.0f);
+        this->shadowPath.lineTo(float(this->getWidth() - 1), float(this->getHeight()));
+    }
+
+    static constexpr auto arrowWidth = 16;
 
 private:
 
-    //[UserVariables]
-    //[/UserVariables]
+    Path arrowPath;
+    Path shadowPath;
 
-    Path internalPath1;
-    Path internalPath2;
+    const Colour arrowColour1 = Colour(0x33ffffff);
+    const Colour arrowColour2 = Colour(0x0bffffff);
+    const Colour shadowColour1 = Colour(0x77000000);
+    const Colour shadowColour2 = Colour(0x11000000);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineItemArrow)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineItemArrow)
 };
-
-

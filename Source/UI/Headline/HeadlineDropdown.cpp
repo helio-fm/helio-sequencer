@@ -18,9 +18,68 @@
 #include "Common.h"
 #include "HeadlineDropdown.h"
 
-#include "HeadlineItemDataSource.h"
 #include "Headline.h"
+#include "HeadlineItemArrow.h"
+#include "HeadlineItemDataSource.h"
+#include "IconComponent.h"
 #include "ColourIDs.h"
+
+class HeadlineItemHighlighter final : public Component
+{
+public:
+
+    explicit HeadlineItemHighlighter(WeakReference<HeadlineItemDataSource> targetItem) :
+        item(targetItem)
+    {
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+
+        this->titleLabel = make<Label>();
+        this->addAndMakeVisible(this->titleLabel.get());
+        this->titleLabel->setFont(Globals::UI::Fonts::M);
+        this->titleLabel->setJustificationType(Justification::centredLeft);
+        this->titleLabel->setInterceptsMouseClicks(false, false);
+
+        this->icon = make<IconComponent>(Icons::helio);
+        this->addAndMakeVisible(this->icon.get());
+
+        this->arrow = make<HeadlineItemArrow>();
+        this->addAndMakeVisible(this->arrow.get());
+
+        if (this->item != nullptr)
+        {
+            this->icon->setIconImage(this->item->getIcon());
+            this->titleLabel->setText(this->item->getName(), dontSendNotification);
+            const int textWidth = this->titleLabel->getFont().getStringWidth(this->titleLabel->getText());
+            this->setSize(textWidth + 64, Globals::UI::headlineHeight);
+        }
+    }
+
+    void resized() override
+    {
+        constexpr auto iconX = 12;
+        constexpr auto iconSize = 26;
+        constexpr auto titleX = 33;
+        constexpr auto titleHeight = 30;
+
+        this->titleLabel->setBounds(titleX,
+            (this->getHeight() / 2) - (titleHeight / 2), this->getWidth() - titleX, titleHeight);
+        this->icon->setBounds(iconX, (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
+        this->arrow->setBounds(this->getWidth() - HeadlineItemArrow::arrowWidth,
+            0, HeadlineItemArrow::arrowWidth, this->getHeight());
+    }
+
+private:
+
+    WeakReference<HeadlineItemDataSource> item;
+
+    UniquePointer<Label> titleLabel;
+    UniquePointer<IconComponent> icon;
+    UniquePointer<HeadlineItemArrow> arrow;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineItemHighlighter)
+};
+
 
 HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem, const Point<int> &position) :
     item(targetItem)
@@ -43,7 +102,7 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
         }
     }
 
-    this->startTimer(150);
+    this->startTimer(100);
 }
 
 HeadlineDropdown::~HeadlineDropdown()
@@ -130,18 +189,15 @@ void HeadlineDropdown::childBoundsChanged(Component *child)
 
 void HeadlineDropdown::timerCallback()
 {
-    Component *componentUnderMouse =
-        Desktop::getInstance().getMainMouseSource().getComponentUnderMouse();
-
-    HeadlineDropdown *root =
-        findParent<HeadlineDropdown>(componentUnderMouse);
-
-    if (componentUnderMouse != nullptr && root != this)
+    auto *componentUnderMouse = Desktop::getInstance().getMainMouseSource().getComponentUnderMouse();
+    if (this != findParent<HeadlineDropdown>(componentUnderMouse))
     {
         this->stopTimer();
         this->exitModalState(0);
+
         Desktop::getInstance().getAnimator().cancelAllAnimations(false);
         Desktop::getInstance().getAnimator().animateComponent(this, this->getBounds(), 0.f, 100, true, 0.f, 1.f);
+
         delete this;
     }
 }

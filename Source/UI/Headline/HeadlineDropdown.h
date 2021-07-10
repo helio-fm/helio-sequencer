@@ -19,8 +19,8 @@
 
 #include "TreeNode.h"
 #include "HighlightedComponent.h"
-#include "HeadlineItemHighlighter.h"
 
+class HeadlineItemHighlighter;
 class HeadlineItemDataSource;
 
 class HeadlineDropdown final : public Component, private Timer

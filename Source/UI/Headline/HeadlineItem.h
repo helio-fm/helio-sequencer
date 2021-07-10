@@ -17,17 +17,13 @@
 
 #pragma once
 
-//[Headers]
+#include "HeadlineItemArrow.h"
 #include "HeadlineItemDataSource.h"
-#include "HighlightedComponent.h"
 #include "ComponentFader.h"
-#include "TreeNode.h"
+#include "ColourIDs.h"
 
 class HeadlineContextMenuMarker;
 class IconComponent;
-//[/Headers]
-
-#include "HeadlineItemArrow.h"
 
 class HeadlineItem final : public Component,
                            private Timer,
@@ -38,25 +34,20 @@ public:
     HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, AsyncUpdater &parent);
     ~HeadlineItem();
 
-    //[UserMethods]
     WeakReference<HeadlineItemDataSource> getDataSource() const noexcept;
     void updateContent();
 
     void showContextMenuMarker();
     void hideContextMenuMarker();
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-    void mouseEnter (const MouseEvent& e) override;
-    void mouseExit (const MouseEvent& e) override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
-
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseExit(const MouseEvent &e) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
 private:
-
-    //[UserVariables]
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
     void timerCallback() override;
@@ -68,16 +59,12 @@ private:
     WeakReference<HeadlineItemDataSource> item;
     AsyncUpdater &parentHeadline;
 
-    Colour bgColour;
-
-    //[/UserVariables]
+    const Colour bgColour = findDefaultColour(ColourIDs::BackgroundA::fill);
 
     UniquePointer<Label> titleLabel;
     UniquePointer<IconComponent> icon;
     UniquePointer<HeadlineItemArrow> arrow;
     Path internalPath1;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineItem)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineItem)
 };
-
-

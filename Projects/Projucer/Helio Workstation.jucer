@@ -775,18 +775,10 @@
           <FILE id="SlpzLE" name="HeadlineItem.cpp" compile="1" resource="0"
                 file="../../Source/UI/Headline/HeadlineItem.cpp"/>
           <FILE id="Akkf81" name="HeadlineItem.h" compile="0" resource="0" file="../../Source/UI/Headline/HeadlineItem.h"/>
-          <FILE id="oCM2hS" name="HeadlineItemArrow.cpp" compile="1" resource="0"
-                file="../../Source/UI/Headline/HeadlineItemArrow.cpp"/>
           <FILE id="hlQBNa" name="HeadlineItemArrow.h" compile="0" resource="0"
                 file="../../Source/UI/Headline/HeadlineItemArrow.h"/>
-          <FILE id="V6GDFu" name="HeadlineItemHighlighter.cpp" compile="1" resource="0"
-                file="../../Source/UI/Headline/HeadlineItemHighlighter.cpp"/>
-          <FILE id="NAfI2h" name="HeadlineItemHighlighter.h" compile="0" resource="0"
-                file="../../Source/UI/Headline/HeadlineItemHighlighter.h"/>
           <FILE id="dlWU43" name="HeadlineItemDataSource.h" compile="0" resource="0"
                 file="../../Source/UI/Headline/HeadlineItemDataSource.h"/>
-          <FILE id="xK8ze8" name="HeadlineNavigationPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/Headline/HeadlineNavigationPanel.cpp"/>
           <FILE id="PQRWr0" name="HeadlineNavigationPanel.h" compile="0" resource="0"
                 file="../../Source/UI/Headline/HeadlineNavigationPanel.h"/>
           <FILE id="LnoNrh" name="HeadlineContextMenuController.cpp" compile="1"
