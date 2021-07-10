@@ -1,0 +1,8 @@
+BasedOnStyle: Microsoft
+AccessModifierOffset: -4
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortFunctionsOnASingleLine: true
+IndentCaseLabels: true
+SortIncludes: false
+BraceWrapping:
+  SplitEmptyFunction: false
