@@ -529,7 +529,11 @@ void App::initialise(const String &commandLine)
         this->quit();
 
         // a hack to allow messages get cleaned up to avoid leaks:
-        MessageManager::getInstance()->runDispatchLoopUntil(50);
+        const auto endTime = Time::currentTimeMillis() + 50;
+        while (Time::currentTimeMillis() < endTime)
+        {
+            Thread::sleep(1);
+        }
 
         DBG("===");
 

@@ -185,10 +185,10 @@ RollHeader::RollHeader(Transport &transport, RollBase &roll, Viewport &viewport)
 
     this->selectionIndicator = make<HeaderSelectionIndicator>();
     this->addChildComponent(this->selectionIndicator.get());
-    this->selectionIndicator->setTopLeftPosition(0,
-        this->getHeight() - this->selectionIndicator->getHeight());
 
     this->setSize(this->getParentWidth(), Globals::UI::rollHeaderHeight);
+    this->selectionIndicator->setTopLeftPosition(0,
+        this->getHeight() - this->selectionIndicator->getHeight());
 }
 
 RollHeader::~RollHeader() = default;
