@@ -191,7 +191,7 @@ NotesTuningPanel::NotesTuningPanel(ProjectNode &parentProject, PianoRoll &target
 
     //[UserPreSize]
     this->syncSliders();
-    this->setFocusContainer(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
     this->setMouseClickGrabsKeyboardFocus(false);
 

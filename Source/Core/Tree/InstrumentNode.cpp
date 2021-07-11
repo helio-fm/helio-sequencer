@@ -258,7 +258,7 @@ public:
 
     explicit HelioAudioProcessorEditor(AudioProcessor &p) : GenericAudioProcessorEditor(p)
     {
-        this->setFocusContainer(true);
+        this->setFocusContainerType(Component::FocusContainerType::keyboardFocusContainer);
 
         for (int i = 0; i < this->getNumChildComponents(); ++i)
         {

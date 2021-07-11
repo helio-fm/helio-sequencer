@@ -28,7 +28,7 @@ InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner,
     pluginScanner(pluginScanner),
     instrumentsRoot(instrumentsRoot)
 {
-    this->setFocusContainer(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);

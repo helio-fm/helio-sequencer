@@ -23,7 +23,7 @@ public:
 
     explicit GenericTooltip(const String &tooltip) : message(tooltip)
     {
-        this->setFocusContainer(false);
+        this->setFocusContainerType(Component::FocusContainerType::none);
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
         this->setPaintingIsUnclipped(true);

@@ -166,7 +166,7 @@ ScalePreviewTool::ScalePreviewTool(PianoRoll *caller, MidiSequence *layer)
     static constexpr auto toolSize = 500;
     this->setSize(toolSize, toolSize);
 
-    this->setFocusContainer(true);
+    this->setFocusContainerType(Component::FocusContainerType::focusContainer);
 
     this->setInterceptsMouseClicks(false, true);
     this->enterModalState(false, nullptr, true);

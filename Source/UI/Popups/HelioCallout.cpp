@@ -31,7 +31,7 @@ HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
 {
     jassert(parentWorkspace);
 
-    this->setFocusContainer(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);

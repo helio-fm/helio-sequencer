@@ -69,7 +69,7 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller,
         this->addAndMakeVisible(button);
     }
 
-    this->setFocusContainer(true);
+    this->setFocusContainerType(Component::FocusContainerType::focusContainer);
     this->setInterceptsMouseClicks(false, true);
     this->enterModalState(false, nullptr, true); // deleted when dismissed
 

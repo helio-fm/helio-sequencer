@@ -31,7 +31,7 @@ OrchestraPitPage::OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitNod
 {
     this->setComponentID(ComponentIDs::orchestraPit);
 
-    this->setFocusContainer(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
@@ -101,18 +101,31 @@ void OrchestraPitPage::handleCommandMessage(int commandId)
 
     else if (commandId == CommandIDs::ScanPluginsFolder)
     {
-        FileChooser fc(TRANS(I18n::Dialog::scanFolderCaption),
+        this->scanFolderFileChooser = make<FileChooser>(TRANS(I18n::Dialog::scanFolderCaption),
             File::getCurrentWorkingDirectory(), ("*.*"), true);
 
-        if (fc.browseForDirectory())
+        this->scanFolderFileChooser->launchAsync(Globals::UI::FileChooser::forDirectory,
+            [this](const FileChooser &fc)
         {
+            auto results = fc.getURLResults();
+            if (results.isEmpty())
+            {
+                return;
+            }
+
+            auto &url = results.getReference(0);
+            if (!url.isLocalFile())
+            {
+                return;
+            }
+
             App::showModalComponent(ProgressTooltip::cancellable([this]()
             {
                 this->pluginScanner.cancelRunningScan();
             }));
 
             this->pluginScanner.scanFolderAndAddResults(fc.getResult());
-        }
+        });
     }
 
 #endif

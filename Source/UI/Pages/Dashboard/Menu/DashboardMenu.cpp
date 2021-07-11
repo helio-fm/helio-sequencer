@@ -25,7 +25,7 @@
 DashboardMenu::DashboardMenu(Workspace &parentWorkspace) :
     workspace(parentWorkspace)
 {
-    this->setFocusContainer(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
 
     this->listBox = make<ListBox>();
     this->addAndMakeVisible(this->listBox.get());

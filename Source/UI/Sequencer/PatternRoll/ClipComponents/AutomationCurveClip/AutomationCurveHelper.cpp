@@ -27,7 +27,7 @@ AutomationCurveHelper::AutomationCurveHelper(const AutomationEvent &event,
     component1(target1),
     component2(target2)
 {
-    this->setFocusContainer(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
     this->setMouseCursor(MouseCursor::UpDownResizeCursor);
 

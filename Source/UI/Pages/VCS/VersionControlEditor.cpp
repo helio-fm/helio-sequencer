@@ -23,7 +23,7 @@
 
 VersionControlEditor::VersionControlEditor(VersionControl &versionControl) : vcs(versionControl)
 {
-    this->setFocusContainer(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
 

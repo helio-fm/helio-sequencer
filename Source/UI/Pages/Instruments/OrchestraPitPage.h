@@ -52,5 +52,7 @@ private:
     UniquePointer<AudioPluginsListComponent> pluginsList;
     UniquePointer<InstrumentsListComponent> instrumentsList;
 
+    UniquePointer<FileChooser> scanFolderFileChooser;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OrchestraPitPage)
 };

@@ -22,7 +22,7 @@
 
 AudioPluginEditorPage::AudioPluginEditorPage(Component *contentOwned)
 {
-    this->setFocusContainer(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
 
     this->background = make<PanelBackgroundB>();
