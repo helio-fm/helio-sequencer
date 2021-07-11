@@ -71,11 +71,11 @@ The projects files are created in the `Helio` subfolder of the user's default do
 
 ## Building from source
 
-Building the app from source will require a C++11 compiler, e.g. GCC 4.8 on Linux, Visual Studio 2015 on Windows, or Xcode 7.3.1 on macOS.
+Building the app from source will require a C++14 compiler, e.g. GCC 5.0 or Clang 3.4 on Linux, Visual Studio 2015 on Windows, or Xcode 9.2 on macOS.
 
 Minimum deployment targets are:
 
-* Windows: Windows 7
+* Windows: Windows Vista
 * macOS: macOS 10.7
 * Linux: mainstream distributions
 
