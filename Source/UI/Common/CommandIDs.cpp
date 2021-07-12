@@ -65,6 +65,8 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
         CASE_FOR(QuantizeTo1_8)
         CASE_FOR(QuantizeTo1_16)
         CASE_FOR(QuantizeTo1_32)
+        CASE_FOR(MakeLegato) //added by RPM
+        CASE_FOR(MakeLegatoOverlapping) //added by RPM
         CASE_FOR(DeleteEvents)
         CASE_FOR(CopyEvents)
         CASE_FOR(CutEvents)
@@ -245,6 +247,8 @@ I18n::Key CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         TRANS_KEY(QuantizeTo1_8, Menu::quantizeTo1_8)
         TRANS_KEY(QuantizeTo1_16, Menu::quantizeTo1_16)
         TRANS_KEY(QuantizeTo1_32, Menu::quantizeTo1_32)
+        TRANS_KEY(MakeLegato, Menu::makeLegato) //added by rpm
+        TRANS_KEY(MakeLegatoOverlapping, Menu::makeLegato) //added by rpm
         TRANS_KEY(DeleteEvents, Menu::delete_)
         TRANS_KEY(CopyEvents, Menu::copy)
         TRANS_KEY(CutEvents, Menu::cut)

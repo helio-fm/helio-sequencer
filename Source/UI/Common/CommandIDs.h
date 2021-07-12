@@ -70,6 +70,9 @@ namespace CommandIDs
         QuantizeTo1_16                  = 0x1514,
         QuantizeTo1_32                  = 0x1515,
 
+        MakeLegato             = 0x4301, //added by RPM
+        MakeLegatoOverlapping  = 0x4302, //added by RPM
+
         DeleteEvents                    = 0x1601,
         CopyEvents                      = 0x1602,
         CutEvents                       = 0x1603,

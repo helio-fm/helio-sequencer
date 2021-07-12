@@ -73,6 +73,8 @@ public:
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const Rectangle<int> &rectangle) override;
 
+    void selectLassoItemsInArea(const Rectangle<int>& rectangle, const MouseEvent& mouseEvent);
+
     void updateHighlightedInstances();
 
     //===------------------------------------------------------------------===//

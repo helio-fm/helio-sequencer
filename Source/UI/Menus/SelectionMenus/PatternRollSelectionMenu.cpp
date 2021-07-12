@@ -180,6 +180,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createQuantizationMenu()
     menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_8));
     menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_16));
     menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_32));
+    menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::MakeLegato));
 
 #undef CLIP_QUANTIZE_ITEM
 

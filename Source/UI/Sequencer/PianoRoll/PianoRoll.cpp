@@ -79,6 +79,7 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
     RollBase(project, viewport, clippingDetector)
 {
     this->setComponentID(ComponentIDs::pianoRollId);
+    this->setName("PianoRoll"); //sets piano roll name as PianoRoll
 
     this->selectedNotesMenuManager = make<PianoRollSelectionMenuManager>(&this->selection, this->project);
 
@@ -173,8 +174,7 @@ void PianoRoll::setDefaultNoteVolume(float volume) noexcept
 
 void PianoRoll::setDefaultNoteLength(float length) noexcept
 {
-    // no less than 0.25f, as it can become pretty much unusable:
-    this->newNoteLength = jmax(0.25f, length);
+    this->newNoteLength = jmax(0.05f, length); //reduced to 0.05 from 0.25 for grace notes and trills.
 }
 
 void PianoRoll::setRowHeight(int newRowHeight)
@@ -393,9 +393,16 @@ bool PianoRoll::isNoteVisible(int key, float beat, float length) const
             (beat + length > firstViewportBeat && beat + length < lastViewportBeat));
 }
 
-void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const
+void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const //the & is a pointer
 {
     beatNumber = this->getRoundBeatSnapByXPosition(int(x)) - this->activeClip.getBeat();
+    noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
+    noteNumber = jlimit(0, this->getNumKeys(), noteNumber);
+}
+
+void PianoRoll::getFineRowsColsByComponentPosition(float x, float y, int& noteNumber, float& beatNumber) const //as opposed to int cols
+{
+    beatNumber = this->getBeatByXPosition(x) - this->activeClip.getBeat(); //uses absolute beat instead of rounded beat
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
     noteNumber = jlimit(0, this->getNumKeys(), noteNumber);
 }
@@ -518,7 +525,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
         const Note &note = static_cast<const Note &>(event);
         const auto* track = note.getSequence()->getTrack();
 
-        this->getTransport().previewKey(note.getSequence()->getTrack()->getTrackId(), note.getKey(), note.getVelocity(), 1); //automatically play notes upon placing them. major improvement! - RPM
+        this->getTransport().previewKey(note.getSequence()->getTrack()->getTrackId(), note.getKey(), note.getVelocity(), note.getLength()); //automatically play notes upon placing them. major improvement! - RPM
 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
@@ -765,6 +772,7 @@ void PianoRoll::onChangeProjectInfo(const ProjectMetadata *info)
     {
         this->temperament = info->getTemperament();
         this->noteNameGuides->syncWithTemperament(this->temperament);
+        this->noteNameGuides->syncWithCustomGuides(this->temperament);
         this->updateBackgroundCachesAndRepaint();
         this->updateSize(); // might have changed by due to different temperament
         this->updateChildrenPositions();
@@ -899,6 +907,24 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
     }
 }
 
+void PianoRoll::selectLassoItemsInArea(const Rectangle<int>& rectangle, const MouseEvent& mouseEvent)
+{
+    forEachEventComponent(this->patternMap, e)
+    {
+        //DBG("selectingEvent 1"); //dbg - RPM
+        auto* component = e.second.get();
+        if (rectangle.intersects(component->getBounds())) //now select regardless of if it's active
+        {
+            if (component->isActive()) { DBG("selectingEvent (acive)"); } //dbg - RPM
+            if (!component->isActive()) { DBG("selectingEvent (not active)"); /*component->setActive(true, true);*/ } //set active if not active
+            
+            RollBase::selectEvent(component, false);
+
+            DBG("selected item.");
+        }
+    }
+}
+
 float PianoRoll::getLassoStartBeat() const
 {
     return this->activeClip.getBeat() + SequencerOperations::findStartBeat(this->selection);
@@ -915,14 +941,15 @@ float PianoRoll::getLassoEndBeat() const
 
 void PianoRoll::mouseDown(const MouseEvent &e)
 {
+    //DBG(this->getName() + " mouseDown!");
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
         return;
     }
-    
-    if (! this->isUsingSpaceDraggingMode())
+
+    if (!this->isUsingSpaceDraggingMode())
     {
-        this->setInterceptsMouseClicks(true, false);
+        this->setInterceptsMouseClicks(true, true);
 
         if (this->isAddEvent(e))
         {
@@ -935,6 +962,28 @@ void PianoRoll::mouseDown(const MouseEvent &e)
     }
 
     RollBase::mouseDown(e);
+}
+
+void PianoRoll::leftButtonDown(const MouseEvent& e) //added leftButtonDown to handle left button clcks independantly from general mouseDown
+{
+    //DBG(this->getName() + " leftButtonDown!");
+    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
+    {
+        return;
+    }
+
+    RollBase::leftButtonDown(e);
+}
+
+void PianoRoll::rightButtonDown(const MouseEvent& e) //added leftButtonDown to handle left button clcks independantly from general mouseDown
+{
+    //DBG(this->getName() + " rightButtonDown!");
+    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
+    {
+        return;
+    }
+
+    RollBase::rightButtonDown(e);
 }
 
 void PianoRoll::mouseDoubleClick(const MouseEvent &e)
@@ -955,7 +1004,8 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (this->newNoteDragging != nullptr && e.mods.isCtrlDown() == false)
+
+    if (this->newNoteDragging != nullptr && e.mods.isCtrlDown() == false) //added ctrlDown == false condition to prevent notes from being added when ctrl+dragging in draw mode
     {
         if (this->newNoteDragging->isInEditMode())
         {
@@ -1302,6 +1352,15 @@ void PianoRoll::handleCommandMessage(int commandId)
         if (this->selection.getNumSelected() == 0) { this->selectAll(); }
         SequencerOperations::quantize(this->getLassoSelection(), 32.f);
         break;
+    case CommandIDs::MakeLegato:
+        DBG("doing makeLegato!");
+        if (this->selection.getNumSelected() == 0) { DBG("no selection on make legato!");  break; }
+        SequencerOperations::makeLegato(this->getLassoSelection(),0.0f);
+        break;
+    case CommandIDs::MakeLegatoOverlapping:
+        if (this->selection.getNumSelected() == 0) { DBG("no selection on make legato overlapping!");  break; }
+        SequencerOperations::makeLegato(this->getLassoSelection(), 1.0f);
+        break;
     default:
         break;
     }
@@ -1340,7 +1399,7 @@ void PianoRoll::resized()
     ROLL_BATCH_REPAINT_END
 }
 
-void PianoRoll::paint(Graphics &g)
+void PianoRoll::paint(Graphics &g) //pay attention to this (painting the piano roll)
 {
     jassert(this->defaultHighlighting != nullptr); // trying to paint before the content is ready
 
@@ -1424,7 +1483,6 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
     int draggingRow = 0;
     float draggingColumn = 0.f;
     this->getBiasedRowsColsByMousePosition(e.x, e.y, draggingRow, draggingColumn, 0.8f); //changed to getBiasedRowsColsByMousePosition() to give a bias when rounding note placement. see function for details.
-
     auto *activeSequence = static_cast<PianoSequence *>(this->activeTrack->getSequence());
     activeSequence->checkpoint();
 
@@ -1435,6 +1493,7 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
     this->addNewNoteMode = true;
     activeSequence->insert(Note(activeSequence, draggingRow, draggingColumn,
         this->newNoteLength, this->newNoteVolume), true);
+    DBG("Placed Note At: " + std::to_string(draggingRow));
 }
 
 void PianoRoll::switchToClipInViewport() const

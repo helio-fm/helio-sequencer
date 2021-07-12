@@ -1,0 +1,22 @@
+Changes in ASIO 2.3.3 since 2.3.2
+- again, updated license text and ASIO logo usage guideline
+
+Changes in ASIO 2.3.2 since 2.3.1
+- updated license text and ASIO logo usage guideline
+
+Changes in ASIO 2.3.1 since ASIO 2.3
+- amendment of the licensing agreement
+- added support for Windows 10
+
+Changes in ASIO 2.3 since ASIO 2.2
+- added host queries to detect the driver's buffering and drop-out detection capabilities
+- some additional documentation on MMCSS; see page 46 of 'ASIO SDK 2.3.pdf'
+- dropped support for Mac OS 8 and 9
+
+Changes in ASIO 2.2 since ASIO 2.1
+- added support for Windows 64 bit
+
+Changes in ASIO 2.1 since ASIO 2.0
+- Sony DSD support added
+- fixed Windows registry sample to HKEY_LOCAL_MACHINE
+- fixed a definition problem for input monitoring

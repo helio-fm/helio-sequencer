@@ -697,7 +697,7 @@ void VelocityProjectMap::changeListenerCallback(ChangeBroadcaster *source)
         {
             // assuming we've subscribed only on a piano roll's lasso changes
             const auto *nc = static_cast<const NoteComponent *>(e);
-            activeMap->at(nc->getNote())->setEditable(true);
+            if (nc->isActive()) { activeMap->at(nc->getNote())->setEditable(true); } //DBG MARKER - RPM (trying to set inacgive notes as velocity editable?)
         }
     }
 

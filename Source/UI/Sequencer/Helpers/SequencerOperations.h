@@ -97,6 +97,8 @@ struct SequencerOperations final
     static bool quantize(const Lasso &selection, float bar, bool shouldCheckpoint = true);
     static bool quantize(WeakReference<MidiTrack> track, float bar, bool shouldCheckpoint = true);
 
+    static bool makeLegato(const Lasso& selection, float overlap, bool shouldCheckpoint = true);
+
     static int findAbsoluteRootKey(const Temperament::Ptr temperament,
         Note::Key relativeRoot, Note::Key keyToFindPeriodFor);
 

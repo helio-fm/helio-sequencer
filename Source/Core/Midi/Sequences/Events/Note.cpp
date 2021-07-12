@@ -242,7 +242,7 @@ void Note::deserialize(const SerializedData &data)
 
 void Note::reset() noexcept {}
 
-void Note::applyChanges(const Note &other) noexcept
+void Note::applyChanges(const Note &other) noexcept //might have something to do with the beat rounding?
 {
     jassert(this->id == other.id);
     this->beat = roundBeat(other.beat);

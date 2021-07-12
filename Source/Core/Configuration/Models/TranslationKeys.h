@@ -166,6 +166,7 @@ namespace I18n
             static constexpr auto notesArpeggiate = constexprHash("menu::selection::notes::arpeggiate");
             static constexpr auto notesDivisions = constexprHash("menu::selection::notes::divisions");
             static constexpr auto notesQuantizeTo = constexprHash("menu::selection::notes::quantize");
+            static constexpr auto notesMakeLegato = constexprHash("menu::selection::notes::legato");
             static constexpr auto notesMoveTo = constexprHash("menu::selection::notes::move");
             static constexpr auto notesRefactor = constexprHash("menu::selection::notes::refactor");
             static constexpr auto notesRescale = constexprHash("menu::selection::notes::rescale");
@@ -213,6 +214,7 @@ namespace I18n
         static constexpr auto quantizeTo1_8 = constexprHash("menu::quantize::8");
         static constexpr auto quantizeTo1_16 = constexprHash("menu::quantize::16");
         static constexpr auto quantizeTo1_32 = constexprHash("menu::quantize::32");
+        static constexpr auto makeLegato = constexprHash("menu::legato::regular");
         static constexpr auto mute = constexprHash("menu::mute");
         static constexpr auto solo = constexprHash("menu::solo");
         static constexpr auto unmute = constexprHash("menu::unmute");

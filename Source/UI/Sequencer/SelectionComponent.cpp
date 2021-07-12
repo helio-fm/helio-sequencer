@@ -53,25 +53,44 @@ void SelectionComponent::dragLasso(const MouseEvent &e)
 {
     if (this->source != nullptr)
     {
-        this->endPosition = e.position.toDouble() / this->getParentSize();
 
-        this->updateBounds();
 
-        this->itemsInLasso.clearQuick();
-        this->source->findLassoItemsInArea(this->itemsInLasso, getBounds());
-
-        if (e.mods.isShiftDown())
+        if (e.mods.isCtrlDown() && e.mods.isShiftDown() && e.mods.isAltDown())
         {
-            this->itemsInLasso.removeValuesIn(this->originalSelection);
-            this->itemsInLasso.addArray(this->originalSelection);
-        }
-        else if (e.mods.isAltDown())
-        {
-            this->originalSelection.removeValuesIn(this->itemsInLasso);
-            this->itemsInLasso = this->originalSelection;
-        }
+            this->endPosition = e.position.toDouble() / this->getParentSize();
 
-        this->source->getLassoSelection() = Lasso(this->itemsInLasso);
+            this->updateBounds();
+
+            //this->itemsInLasso.clearQuick();
+            DBG("Selecting lasso items... (ctrl+alt+shift)");
+            this->source->selectLassoItemsInArea(getBounds(), e);
+            DBG("done lasso items! (ctrl+alt+shift)");
+            return;
+        }
+        else
+        {
+            this->endPosition = e.position.toDouble() / this->getParentSize();
+
+            this->updateBounds();
+
+            this->itemsInLasso.clearQuick();
+            DBG("Finding lasso items...");
+            this->source->findLassoItemsInArea(this->itemsInLasso, getBounds());
+            DBG("found lasso items");
+
+            if (e.mods.isShiftDown())
+            {
+                this->itemsInLasso.removeValuesIn(this->originalSelection);
+                this->itemsInLasso.addArray(this->originalSelection);
+            }
+            else if (e.mods.isAltDown())
+            {
+                this->originalSelection.removeValuesIn(this->itemsInLasso);
+                this->itemsInLasso = this->originalSelection;
+            }
+            DBG("getting lasso selection as i (back to piano roll)");
+            this->source->getLassoSelection() = Lasso(this->itemsInLasso);
+        }
     }
 }
 

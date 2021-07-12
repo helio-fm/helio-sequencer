@@ -97,6 +97,8 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     this->header = make<RollHeader>(this->project.getTransport(), *this, this->viewport);
     this->headerShadow = make<ShadowDownwards>(ShadowType::Normal);
 
+    this->setName("RollBase"); //sets rollbase name as RollBase
+
     if (hasAnnotationsTrack)
     {
         this->annotationsMap = make<AnnotationsProjectMap>(this->project, *this, AnnotationsProjectMap::Type::Large);
@@ -656,6 +658,8 @@ float RollBase::getRoundBeatSnapByXPosition(int x) const
     return this->getBeatByXPosition(targetX);
 }
 
+
+
 // a bias of 1 always rounds to the ceiling. a bias of zero always rounds to floor. a bias of 0.5 rounds to the middle. and so on... - RPM
 // sorry for the massive function. I'm not a very elegant coder. I suppose it can be cleaned up quite easily, but i'm too lazy to do it right now. at least it's something that runs once and then it's done.
 // there's also a butload of comments because 4:00 AM me is stupid and couldn't figure out why an obvious bug was happening.
@@ -731,7 +735,7 @@ float RollBase::getMinVisibleBeatForCurrentZoomLevel() const
     return minBeat;
 }
 
-void RollBase::computeVisibleBeatLines()
+void RollBase::computeVisibleBeatLines() //Pay attention to this
 {
     static constexpr auto minBarWidth = 14;
     static constexpr auto minBeatWidth = 8;
@@ -927,7 +931,7 @@ void RollBase::selectEvent(SelectableComponent *event, bool shouldClearAllOthers
         this->selection.deselectAll();
     }
 
-    if (event != nullptr)
+    if (event != nullptr && !event->isSelected()) //if it's not a null pointer and it's not already selected - RPM
     {
         this->selection.addToSelection(event);
     }
@@ -1055,21 +1059,14 @@ void RollBase::onBeforeReloadProjectContent()
 
 void RollBase::mouseDown(const MouseEvent &e)
 {
+
+    //DBG(this->getName() + " mouseDown!");
+
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
         this->contextMenuController->cancelIfPending();
         this->lassoComponent->endLasso();
         return;
-    }
-
-    if (e.mods.isRightButtonDown())
-    {
-        this->contextMenuController->showMenu(e, 350);
-    }
-
-    if (this->isLassoEvent(e))
-    {
-        this->lassoComponent->beginLasso(e.position, this);
     }
     else if (this->isViewportDragEvent(e))
     {
@@ -1081,12 +1078,46 @@ void RollBase::mouseDown(const MouseEvent &e)
     }
 }
 
+void RollBase::leftButtonDown(const MouseEvent& e)
+{
+
+    //DBG(this->getName() + " leftButtonDown!");
+
+    if (this->isLassoEvent(e))
+    {
+        this->lassoComponent->beginLasso(e.position, this);
+    }
+}
+
+void RollBase::rightButtonDown(const MouseEvent& e)
+{
+    if (e.mods.isRightButtonDown())
+    {
+        this->contextMenuController->showMenu(e, 350);
+    }
+}
+
 void RollBase::mouseDrag(const MouseEvent &e)
 {
     this->contextMenuController->cancelIfPending();
 
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
+        return;
+    }
+
+    
+    if (e.mods.isRightButtonDown()) //TO DO: fix this function - RPM
+    {
+        //DBG("RollBase Debug 1" + this->getComponentAt(e.getPosition())->getName()); //this successfully finds the notecomponent
+        //NoteComponent note = this->getComponentAt(e.getPosition());
+        //RollBase::getComponentAt(e.getPosition())->setSele;
+
+        //this->selectEvent(note, true); //selects moused over note
+        //SequencerOperations::deleteSelection(this->getLassoSelection()); //deletes the note
+
+        //const auto* nc = selection.getItemAs<NoteComponent>(i); //use for later -RPM
+
         return;
     }
 
@@ -1151,7 +1182,7 @@ void RollBase::mouseUp(const MouseEvent &e)
 void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
     // TODO check if any operation is in progress (lasso drag, knife tool drag, etc)
-
+    DBG("mouseWheelMove on RollBase!");
     const bool alternativeDirection = this->mouseWheelFlags.useVerticalDirectionByDefault; //removed shift logic for this as shift key will be used for zoom. drag pan makes scroll pan almost useless in piano roll
 
     //removed alternative mode
@@ -1743,7 +1774,7 @@ bool RollBase::isViewportDragEvent(const MouseEvent &e) const
     if (this->project.getEditMode().forcesViewportDragging())   { return true; }
     if (e.source.isTouch())                                     { return e.mods.isLeftButtonDown(); }
     //return (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown()); // temporarly removed right button as drag option
-    return (e.mods.isMiddleButtonDown()); // temporarly removed right button as drag option
+    return (e.mods.isMiddleButtonDown()); //middle click is now the only pan button except when space is held
 }
 
 bool RollBase::isAddEvent(const MouseEvent &e) const

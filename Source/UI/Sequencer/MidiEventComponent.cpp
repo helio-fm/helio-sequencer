@@ -35,7 +35,14 @@ MidiEventComponent::MidiEventComponent(RollBase &editor, bool isGhost) noexcept 
 
 bool MidiEventComponent::isActive() const noexcept
 {
+    //DBG("is active: " + std::to_string(this->flags.isActive));
     return this->flags.isActive;
+}
+
+bool MidiEventComponent::isGhost() const noexcept //added isGhost - RPM
+{
+    //DBG("is ghost: " + std::to_string(this->flags.isGhost));
+    return this->flags.isGhost;
 }
 
 void MidiEventComponent::setActive(bool val, bool force)

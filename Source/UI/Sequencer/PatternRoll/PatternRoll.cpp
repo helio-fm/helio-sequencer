@@ -474,6 +474,19 @@ void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
     }
 }
 
+void PatternRoll::selectLassoItemsInArea(const Rectangle<int>& rectangle, const MouseEvent& mouseEvent)
+{
+    for (const auto& e : this->clipComponents)
+    {
+        auto* component = e.second.get();
+        if (rectangle.intersects(component->getBounds()) && component->isActive())
+        {
+            DBG("selectingEvent (patternroll)"); //dbg - RPM
+            this->selectEvent(component, false);
+        }
+    }
+}
+
 void PatternRoll::updateHighlightedInstances()
 {
     for (const auto *track : this->tracks)

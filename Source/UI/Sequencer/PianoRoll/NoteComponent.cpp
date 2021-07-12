@@ -5,7 +5,7 @@
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+    continueResizingRight
     Helio is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
@@ -42,6 +42,10 @@ NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &c
     this->setWantsKeyboardFocus(false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setFloatBounds(this->getRoll().getEventBounds(this));
+
+    //this->setInterceptsMouseClicks(true, true); //notes now intercept mouse clicks
+
+    this->setName("NoteComponent");
 }
 
 PianoRoll &NoteComponent::getRoll() const noexcept
@@ -80,6 +84,13 @@ bool NoteComponent::shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) 
     return (modifiers.isAltDown() || modifiers.isRightButtonDown()) && !this->isActive();
 }
 
+void NoteComponent::deleteSelf()
+{
+    this->roll.selectEvent(this, true); //selects moused over note
+    SequencerOperations::deleteSelection(this->roll.getLassoSelection()); //deletes the note
+
+    return;
+}
 //===----------------------------------------------------------------------===//
 // MidiEventComponent
 //===----------------------------------------------------------------------===//
@@ -105,6 +116,7 @@ void NoteComponent::modifierKeysChanged(const ModifierKeys &modifiers)
 
 void NoteComponent::mouseMove(const MouseEvent &e)
 {
+    //DBG("mousemove NoteComponent!");
     if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
         return;
@@ -117,6 +129,7 @@ void NoteComponent::mouseMove(const MouseEvent &e)
     }
 
     const auto resizeEdge = this->getResizableEdge();
+
     if (this->isResizingOrScaling() ||
         (this->canResize() && (e.x >= (this->getWidth() - resizeEdge) || e.x <= resizeEdge)))
     {
@@ -126,6 +139,22 @@ void NoteComponent::mouseMove(const MouseEvent &e)
     {
         this->setMouseCursor(MouseCursor::UpDownLeftRightResizeCursor); //added omnidirectional dragging cursor to make it easier to know when you are hovering over a note
     }
+
+}
+
+void NoteComponent::mouseEnter(const MouseEvent& e) //added mouseenter for rightclickdrag (mouseMove led to too many accidental deletions)
+{
+    DBG("mouseEnter NoteComponent!");
+
+    if ( e.mods.isRightButtonDown() && ( this->isActive() || ( ! this->isActive() && e.mods.isCtrlDown() ) ) )
+    {
+        this->roll.deselectAll(); //deselect everything first (maybe we can manage to delete without having to create a new selection later)
+        this->roll.selectEvent(this, false); //selects moused over note
+        SequencerOperations::deleteSelection(this->roll.getLassoSelection()); //deletes the note
+
+        return;
+    }
+
 }
 
 #define forEachSelectedNote(lasso, child) \
@@ -134,6 +163,23 @@ void NoteComponent::mouseMove(const MouseEvent &e)
 
 void NoteComponent::mouseDown(const MouseEvent &e)
 {
+    if (e.mods.isRightButtonDown() && (this->isActive() ||  (!this->isActive() && e.mods.isCtrlDown())  ) )//added condition for deleting notes by right clicking on them - RPM
+    {
+        //e.getPosition()
+        this->roll.deselectAll();
+        this->roll.selectEvent(this, true); //selects moused over note
+        SequencerOperations::deleteSelection(this->roll.getLassoSelection()); //deletes the note
+
+        return;
+    }
+
+    if (e.mods.isMiddleButtonDown() && !e.mods.isAnyModifierKeyDown()) //middle click drag even on notes (allows user to blindly drag without minding their manners)
+    {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
+        roll.mouseDown(e.getEventRelativeTo(&this->roll));
+        return;
+    }
+
     if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
@@ -146,25 +192,19 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
         return;
     }
-    
-    if (e.mods.isRightButtonDown() &&
-        this->roll.getEditMode().isMode(RollEditMode::defaultMode))
-    {
-        this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
-        return;
-    }
-
-    if (e.mods.isRightButtonDown() && //added condition for deleting notes by right clicking on them - RPM
-        this->roll.getEditMode().isMode(RollEditMode::drawMode))
-    {
-        this->roll.selectEvent(this, true); //selects moused over note
-        SequencerOperations::deleteSelection(this->roll.getLassoSelection()); //deletes the note
-        return;
-    }
 
     MidiEventComponent::mouseDown(e);
 
     const Lasso &selection = this->roll.getLassoSelection();
+
+    if (e.mods.isMiddleButtonDown() && e.mods.isCtrlDown())
+    {
+        this->setMouseCursor(MouseCursor::UpDownResizeCursor);
+        forEachSelectedNote(selection, selectedNote)
+        {
+            selectedNote->startTuning();
+        }
+    }
 
     if (e.mods.isLeftButtonDown())
     {
@@ -177,9 +217,9 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         }
 
         const auto resizeEdge = this->getResizableEdge();
-        if (this->canResize() && e.x >= (this->getWidth() - resizeEdge))
+        if (this->canResize() && e.x >= (this->getWidth() - resizeEdge)) //governs where the resize area is
         {
-            if (e.mods.isShiftDown())
+            if (e.mods.isShiftDown()) //group resize if shift is down
             {
                 const float groupStartBeat = SequencerOperations::findStartBeat(selection);
                 forEachSelectedNote(selection, selectedNote)
@@ -192,7 +232,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
                     selectedNote->startGroupScalingRight(groupStartBeat);
                 }
             }
-            else
+            else //otherwise resize the individual note
             {
                 forEachSelectedNote(selection, selectedNote)
                 {
@@ -201,7 +241,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
                         selectedNote->getRoll().showGhostNoteFor(selectedNote);
                     }
 
-                    selectedNote->startResizingRight(shouldSendMidi);
+                    selectedNote->startResizingRight(shouldSendMidi); //begin resizing each indivual note to the right
                 }
             }
         }
@@ -247,20 +287,23 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             }
         }
     }
-    else if (e.mods.isMiddleButtonDown())
-    {
-        this->setMouseCursor(MouseCursor::UpDownResizeCursor);
-        forEachSelectedNote(selection, selectedNote)
-        {
-            selectedNote->startTuning();
-        }
-    }
+    
 }
+
+
 
 static int lastDeltaKey = 0;
 
 void NoteComponent::mouseDrag(const MouseEvent &e)
 {
+
+    if (e.mods.isMiddleButtonDown() && !e.mods.isAnyModifierKeyDown()) //middle click drag even on notes (allows user to blindly drag without minding their manners)
+    {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
+        roll.mouseDrag(e.getEventRelativeTo(&this->roll));
+        return;
+    }
+
     if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
         return;
@@ -305,7 +348,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             Array<Note> groupBefore, groupAfter;
             for (int i = 0; i < selection.getNumSelected(); ++i)
             {
-                const auto *nc = selection.getItemAs<NoteComponent>(i);
+                const auto *nc = selection.getItemAs<NoteComponent>(i); //pay attention to this (for delete drag in rollbase)
                 groupBefore.add(nc->getNote());
                 groupAfter.add(nc->continueDraggingResizing(deltaLength, deltaKey, shouldSendMidi));
                 this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
@@ -318,9 +361,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         }
     }
-    else if (this->state == State::ResizingRight)
+    else if (this->state == State::ResizingRight) //on mousedrag, if the state is resizing right then do the following:
     {
-        float deltaLength = 0.f;
+        float deltaLength = 0.0f;
         const bool lengthChanged = this->getResizingRightDelta(e, deltaLength);
 
         if (lengthChanged)
@@ -332,10 +375,10 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             {
                 const auto *nc = selection.getItemAs<NoteComponent>(i);
                 groupBefore.add(nc->getNote());
-                groupAfter.add(nc->continueResizingRight(deltaLength));
+                groupAfter.add(nc->continueResizingRight(deltaLength, e));
                 this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
-                
+
             getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
@@ -357,7 +400,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             {
                 const auto *nc = selection.getItemAs<NoteComponent>(i);
                 groupBefore.add(nc->getNote());
-                groupAfter.add(nc->continueResizingLeft(deltaLength));
+                groupAfter.add(nc->continueResizingLeft(deltaLength, e));
                 this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
 
@@ -368,7 +411,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         }
     }
-    else if (this->state == State::GroupScalingRight)
+    else if (this->state == State::GroupScalingRight) //scales whole group to the right
     {
         float groupScaleFactor = 1.f;
         const bool scaleFactorChanged = this->getGroupScaleRightFactor(e, groupScaleFactor);
@@ -416,8 +459,13 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         }
     }
-    else if (this->state == State::Dragging)
+    else if (this->state == State::Dragging) //dragging individual note (or note group)
     {
+
+
+        //my observations so far: - RPM
+        //it seems that both drag and drag/copy operations only operate on the TOPMOST notes (no matter the channel)
+
         this->getRoll().showDragHelpers();
 
         int deltaKey = 0;
@@ -431,14 +479,16 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         
         this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         
-        if (eventChanged)
+        if (eventChanged) //if something changed (eventChanged is a bool)
         {
+
             const bool firstChangeIsToCome = !this->firstChangeDone;
 
             this->checkpointIfNeeded();
             
             // Drag-and-copy logic:
-            if (firstChangeIsToCome && e.mods.isAnyModifierKeyDown())
+            if (firstChangeIsToCome && e.mods.isShiftDown() && !(e.mods.isCtrlDown() || e.mods.isAltDown()))
+                //changed to if only shift is down. ctrl+drag will be for precise dragging
             {
                 // We duplicate the notes only at the very moment when they are about to be moved into the new position,
                 // to make sure that simple shift-clicks on a selection won't confuse a user with lots of silently created notes.
@@ -453,9 +503,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 this->getRoll().hideAllGhostNotes();
 
                 // Finally, bring selection back to front
-                forEachSelectedNote(selection, noteComponent)
+               forEachSelectedNote(selection, noteComponent)
                 {
-                    noteComponent->toFront(false);
+                    noteComponent->toFront(false); //invetigate this -RPM
                 }
             }
 
@@ -467,7 +517,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             }
             
             Array<Note> groupBefore, groupAfter;
-            for (int i = 0; i < selection.getNumSelected(); ++i)
+            for (int i = 0; i < selection.getNumSelected(); ++i) //for each note in the selection (we're dragging the whole thing)
             {
                 const auto *nc = selection.getItemAs<NoteComponent>(i);
                 groupBefore.add(nc->getNote());
@@ -581,8 +631,61 @@ void NoteComponent::mouseUp(const MouseEvent &e)
 
         this->setMouseCursor(MouseCursor::NormalCursor);
     }
+
+    this->getRoll().setDefaultNoteVolume(this->note.getVelocity()); //when mousing up, set default veloity as the note in question
+    this->getRoll().setDefaultNoteLength(this->note.getLength()); //when mousing up, set default length\k as the note in question
 }
 
+void NoteComponent::mouseWheelMove(const MouseEvent& event, const MouseWheelDetails& wheel)
+{
+
+    //cannot be just ctrl+scroll because zoom events too often inadvertantly edit note velocities
+    if (event.mods.isCtrlDown() && event.mods.isShiftDown()) //this portion allows the user to ctrl+shift+scroll over a note or selection and change their velocities by scrolling
+    {
+        const Lasso& selection = this->roll.getLassoSelection(); //get the selection
+        
+
+        float delta = wheel.deltaY; //get the wheel delta y (were only converned with whether it's positive or negative)
+        const float defaultdelta = 0.05f; //0.1 by default.
+
+        if (delta > 0)
+        {
+            delta = defaultdelta;
+        }
+        else
+        {
+            delta = -1 * defaultdelta;
+        }
+
+        //DBG("wheel delta y = " + std::to_string(delta) + " & numSelected = " + std::to_string(selection.getNumSelected()));
+
+        if (selection.getNumSelected() > 0 && this->isSelected()) //if there are multible notes selected (and we're hovering over one of them)
+        {
+            this->checkpointIfNeeded(); //add an undo checkpoint
+            Array<Note> groupBefore, groupAfter; //establish before and after arrays
+
+            for (int i = 0; i < selection.getNumSelected(); ++i) //for each note in the selection
+            {
+                const auto* nc = selection.getItemAs<NoteComponent>(i); //nc is the new note
+                const auto newVelocity = nc->getVelocity() + delta; //newVelocity is the old velocity +- delta
+                groupBefore.add(nc->getNote()); //add current note to the "old group"
+                groupAfter.add(nc->note.withVelocity(newVelocity)); //add a new note to the "new group" with new velocity
+            }
+
+            getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true); //swap old group with new group in the piano roll sequence
+        }
+        else //if we dont have a selection at all (we are only dealing with one note)
+        {
+            const auto newVelocity = this->note.getVelocity() + delta; //newVelocity is the old velocity +- delta
+            static_cast<PianoSequence*>(this->note.getSequence())->change(this->note, this->note.withVelocity(newVelocity), true); //swap the old note with a note note with newVelocity
+        }
+
+        this->getRoll().setDefaultNoteVolume(this->note.getVelocity()); //when scrolling, set default veloity as the note in question
+        this->getRoll().setDefaultNoteLength(this->note.getLength()); //when scrolling, set default lengthtk as the note in question
+
+
+    }
+}
 //===----------------------------------------------------------------------===//
 // Notes painting
 //===----------------------------------------------------------------------===//
@@ -671,7 +774,7 @@ void NoteComponent::switchActiveSegmentToSelected(bool zoomToScope) const
 // Dragging
 //===----------------------------------------------------------------------===//
 
-void NoteComponent::startDragging(const bool sendMidiMessage)
+void NoteComponent::startDragging(const bool sendMidiMessage) //initializes the drag
 {
     this->firstChangeDone = false;
     this->state = State::Dragging;
@@ -683,16 +786,36 @@ void NoteComponent::startDragging(const bool sendMidiMessage)
     }
 }
 
-bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int &deltaKey)
+bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int &deltaKey) //gets the dragging delta. LOL unneccecary comment
 {
     this->dragger.dragComponent(this, e, nullptr);
 
     int newKey = -1;
     float newBeat = -1;
+    //-v this line seems to establish the new key by getRowsCols (instead of get XY)
     this->getRoll().getRowsColsByComponentPosition(
         this->getX() + this->floatLocalBounds.getX() + 1 /*+ this->clickOffset.getX()*/,
         this->getY() + this->floatLocalBounds.getY() + this->clickOffset.getY(),
         newKey, newBeat);
+
+    if (e.mods.isCtrlDown()) //if ctrl is down use fine adjustment mode
+    {
+        this->getRoll().getFineRowsColsByComponentPosition(
+            this->getX() + this->floatLocalBounds.getX() + 1 /*+ this->clickOffset.getX()*/,
+            this->getY() + this->floatLocalBounds.getY() + this->clickOffset.getY(),
+            newKey, newBeat);
+
+
+    }
+    else //all other cases
+    {
+        this->getRoll().getRowsColsByComponentPosition(
+            this->getX() + this->floatLocalBounds.getX() + 1 /*+ this->clickOffset.getX()*/,
+            this->getY() + this->floatLocalBounds.getY() + this->clickOffset.getY(),
+            newKey, newBeat);
+    }
+
+
 
     deltaKey = (newKey - this->anchor.getKey());
     deltaBeat = (newBeat - this->anchor.getBeat());
@@ -703,7 +826,7 @@ bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int 
     return (keyChanged || beatChanged);
 }
 
-Note NoteComponent::continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage) const noexcept
+Note NoteComponent::continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage) const noexcept //continues the drag
 {
     const int newKey = this->anchor.getKey() + deltaKey;
     const float newBeat = this->anchor.getBeat() + deltaBeat;
@@ -834,7 +957,7 @@ void NoteComponent::endDraggingResizing()
 // Resizing Right
 //===----------------------------------------------------------------------===//
 
-void NoteComponent::startResizingRight(bool sendMidiMessage)
+void NoteComponent::startResizingRight(bool sendMidiMessage) //this function only initializes the resizing by setting the anchor and such
 {
     this->firstChangeDone = false;
     this->state = State::ResizingRight;
@@ -846,15 +969,27 @@ void NoteComponent::startResizingRight(bool sendMidiMessage)
     }
 }
 
-bool NoteComponent::getResizingRightDelta(const MouseEvent &e, float &deltaLength) const
+bool NoteComponent::getResizingRightDelta(const MouseEvent &e, float &deltaLength) const // gets the "delta" and is called on a mousedrag when resizing right
 {
-    int newNote = -1;
-    float newBeat = -1;
+    int newNote = -1; //init
+    float newBeat = -1; //init
 
-    this->getRoll().getRowsColsByComponentPosition(
-        this->getX() + this->floatLocalBounds.getX() + e.x,
-        this->getY() + this->floatLocalBounds.getY() + e.y,
-        newNote, newBeat);
+    if (e.mods.isCtrlDown()) //if ctrl is down
+    {
+        this->getRoll().getFineRowsColsByComponentPosition(
+            this->getX() + this->floatLocalBounds.getX() + e.x,
+            this->getY() + this->floatLocalBounds.getY() + e.y,
+            newNote, newBeat);
+
+
+    }
+    else //all other cases
+    {
+        this->getRoll().getRowsColsByComponentPosition(
+            this->getX() + this->floatLocalBounds.getX() + e.x,
+            this->getY() + this->floatLocalBounds.getY() + e.y,
+            newNote, newBeat);
+    }
 
     const float newLength = newBeat - this->getBeat();
     deltaLength = newLength - this->anchor.getLength();
@@ -863,10 +998,17 @@ bool NoteComponent::getResizingRightDelta(const MouseEvent &e, float &deltaLengt
     return lengthChanged;
 }
 
-Note NoteComponent::continueResizingRight(float deltaLength) const noexcept
+Note NoteComponent::continueResizingRight(float deltaLength, const MouseEvent& e) const noexcept //this function actually establishes the new length of the note
 {
     // the minimal length should depend on the current zoom level:
-    const float minLength = this->roll.getMinVisibleBeatForCurrentZoomLevel();
+
+    float minLength = this->roll.getMinVisibleBeatForCurrentZoomLevel(); // initialize minlength to the current minimum visible beat. also changed minlength to be modifiable
+    if (e.mods.isCtrlDown())
+    {
+        minLength = 0.1f; //if ctrl is down set minlength to 1 (for fine adjustment) - RPM
+    }
+
+
     const float newLength = jmax(this->anchor.getLength() + deltaLength, minLength);
     return this->getNote().withLength(newLength);
 }
@@ -898,20 +1040,37 @@ bool NoteComponent::getResizingLeftDelta(const MouseEvent &e, float &deltaLength
     int newNote = -1;
     float newBeat = -1;
     
-    this->getRoll().getRowsColsByComponentPosition(
-        this->getX() + this->floatLocalBounds.getX() + e.x,
-        this->getY() + this->floatLocalBounds.getY() + e.y,
-        newNote, newBeat);
+    if (e.mods.isCtrlDown()) //if ctrl is down
+    {
+        this->getRoll().getFineRowsColsByComponentPosition(
+            this->getX() + this->floatLocalBounds.getX() + e.x,
+            this->getY() + this->floatLocalBounds.getY() + e.y,
+            newNote, newBeat);
+
+
+    }
+    else //all other cases
+    {
+        this->getRoll().getRowsColsByComponentPosition(
+            this->getX() + this->floatLocalBounds.getX() + e.x,
+            this->getY() + this->floatLocalBounds.getY() + e.y,
+            newNote, newBeat);
+    }
     
     deltaLength = this->anchor.getBeat() - newBeat;
     const bool lengthChanged = (this->getBeat() != newBeat);
     return lengthChanged;
 }
 
-Note NoteComponent::continueResizingLeft(float deltaLength) const noexcept
+Note NoteComponent::continueResizingLeft(float deltaLength, const MouseEvent& e) const noexcept
 {
     // the minimal length should depend on the current zoom level:
-    const float minLength = this->roll.getMinVisibleBeatForCurrentZoomLevel();
+    float minLength = this->roll.getMinVisibleBeatForCurrentZoomLevel();  //changed from const to regular - RPM
+    if (e.mods.isCtrlDown())
+    {
+        minLength = 0.1f; //if ctrl is down set minlength to 0.1 (for fine adjustment) - RPM
+    }
+
     const float newLength = jmax(this->anchor.getLength() + deltaLength, minLength);
     const float newBeat = this->anchor.getBeat() + this->anchor.getLength() - newLength;
     return this->getNote().withBeat(newBeat).withLength(newLength);
@@ -940,11 +1099,23 @@ bool NoteComponent::getGroupScaleRightFactor(const MouseEvent &e, float &absScal
 {
     int newNote = -1;
     float newBeat = -1;
-    
-    this->getRoll().getRowsColsByComponentPosition(
-        this->getX() + this->floatLocalBounds.getX() + e.x,
-        this->getY() + this->floatLocalBounds.getY() + e.y,
-        newNote, newBeat);
+
+    if (e.mods.isCtrlDown()) //if ctrl is down
+    {
+        this->getRoll().getFineRowsColsByComponentPosition(
+            this->getX() + this->floatLocalBounds.getX() + e.x,
+            this->getY() + this->floatLocalBounds.getY() + e.y,
+            newNote, newBeat);
+
+
+    }
+    else //all other cases
+    {
+        this->getRoll().getRowsColsByComponentPosition(
+            this->getX() + this->floatLocalBounds.getX() + e.x,
+            this->getY() + this->floatLocalBounds.getY() + e.y,
+            newNote, newBeat);
+    }
     
     const float minGroupLength = 1.f;
     const float myEndBeat = this->getBeat() + this->getLength();

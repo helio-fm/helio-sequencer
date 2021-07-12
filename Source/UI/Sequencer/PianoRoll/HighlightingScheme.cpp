@@ -83,13 +83,15 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
     //g.setColour(whiteKeyOddColour);
     //g.fillRect(patternImage.getBounds());
 
-    const Colour blackKeyEvenColour(theme.findColour(ColourIDs::Roll::blackKey));
+    const Colour blackKeyEvenColour(theme.findColour(ColourIDs::Roll::blackKey)); //Pay attention to this (colours for root keys and such)
     const Colour blackKeyOddColour(theme.findColour(ColourIDs::Roll::blackKeyAlt));
     const Colour whiteKeyEvenColour(theme.findColour(ColourIDs::Roll::whiteKey));
     const Colour whiteKeyOddColour(theme.findColour(ColourIDs::Roll::whiteKeyAlt));
     const Colour rootKeyEvenColour(whiteKeyEvenColour.brighter(0.1f));
     const Colour rootKeyOddColour(whiteKeyOddColour.brighter(0.1f));
     const Colour rowLineColour(theme.findColour(ColourIDs::Roll::rowLine));
+
+  
 
     // draw rows
     for (int i = lastPeriodRemainder;
@@ -110,6 +112,7 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
             g.setColour(c.brighter(0.025f));
             g.drawHorizontalLine(int(posY + 1), 0.f, float(patternImage.getWidth()));
         }
+
         else if (scale->hasKey(noteNumber))
         {
             const auto c = periodIsOdd ? whiteKeyOddColour : whiteKeyEvenColour;
@@ -118,6 +121,7 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
             g.setColour(c.brighter(0.025f));
             g.drawHorizontalLine(int(posY + 1), 0.f, float(patternImage.getWidth()));
         }
+
         else
         {
             g.setColour(periodIsOdd ? blackKeyOddColour : blackKeyEvenColour);
@@ -132,7 +136,7 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
         posY -= currentHeight;
     }
 
-    HelioTheme::drawNoise(theme, g, 2.f);
+    //HelioTheme::drawNoise(theme, g, 2.f); //removed drawNoise for now.
 
     return patternImage;
 }

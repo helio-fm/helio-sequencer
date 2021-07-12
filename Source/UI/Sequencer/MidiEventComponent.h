@@ -33,6 +33,7 @@ public:
     MidiEventComponent(RollBase &editor, bool ghostMode = false) noexcept;
 
     bool isActive() const noexcept;
+    bool isGhost() const noexcept; //added isGhost() - RPM
     void setActive(bool val, bool force = false);
     void setGhostMode();
 

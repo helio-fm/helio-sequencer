@@ -92,11 +92,57 @@ void NoteNameGuidesBar::syncWithSelection(const Lasso *selection)
     this->setVisible(wasVisible);
 }
 
+const Array<int> customRootNotes = { 36, 48, 55, 62, 69, 76 }; //dont know where to put this initialized array - RPM
+
+void NoteNameGuidesBar::syncWithCustomGuides(Temperament::Ptr temperament)
+{
+
+    this->removeAllChildren();
+    this->guides.clearQuick(true);
+    const auto periodSize = temperament->getPeriodSize();
+
+
+    if (periodSize > Globals::twelveTonePeriodSize)
+    {
+        // add more width for longer note names:
+        this->setSize(NoteNameGuidesBar::extendedWidth, this->getHeight());
+    }
+    else
+    {
+        this->setSize(NoteNameGuidesBar::defaultWidth, this->getHeight());
+    }
+
+    for (int i = 0; i < roll.getNumKeys(); ++i)
+    {
+        int matchesCustomRootNotes = false;
+
+        for (int j = 0; j < customRootNotes.size(); j++)
+        {
+            if (i == customRootNotes[j]) { matchesCustomRootNotes = true; }
+        }
+
+        if (matchesCustomRootNotes)
+        {
+            const auto noteName = MidiMessage::getMidiNoteName(i, true, true, false);
+            auto* guide = this->guides.add(new NoteNameGuide(noteName, i));
+            this->addChildComponent(guide);
+            guide->setVisible(guide->isRootKey(periodSize));
+        }
+        else
+        {
+            continue;
+        }
+    }
+
+    this->updateBounds();
+}
+
 void NoteNameGuidesBar::syncWithTemperament(Temperament::Ptr temperament)
 {
     this->removeAllChildren();
     this->guides.clearQuick(true);
     const auto periodSize = temperament->getPeriodSize();
+
 
     if (periodSize > Globals::twelveTonePeriodSize)
     {

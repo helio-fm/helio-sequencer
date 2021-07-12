@@ -244,6 +244,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createQuantizationPanel()
     menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_8));
     menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_16));
     menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_32));
+    menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::MakeLegato));
 
 #undef EVENTS_QUANTIZE_ITEM
 

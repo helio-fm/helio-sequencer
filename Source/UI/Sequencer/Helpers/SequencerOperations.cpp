@@ -1238,7 +1238,7 @@ void SequencerOperations::deleteSelection(const Lasso &selection, bool shouldChe
     }
 }
 
-void SequencerOperations::shiftKeyRelative(Lasso &selection,
+void SequencerOperations::shiftKeyRelative(Lasso &selection, //pay attention to this in the future for moving left and right
     int deltaKey, bool shouldCheckpoint, Transport *transport)
 {
     if (selection.getNumSelected() == 0 || deltaKey == 0) { return; }
@@ -1659,6 +1659,177 @@ bool SequencerOperations::quantize(WeakReference<MidiTrack> track,
     {
         sequence->removeGroup(removals, true);
     }
+
+    return true;
+}
+
+//makeLegato takes teach note and extends it's right end to the bottommost note that is to the right of it.
+//as of now, it does not support block or strummed chords, but it seems to to well on solo passages and some multivoiced passages.
+//this is a crucial feature, so although it is missing some functionality i would nonetheless reccomend it for inclusion in the next release,
+//as users trying to use it past its ability will naturally discover it's limitations and not be otherwise harmed.
+
+bool SequencerOperations::makeLegato(const Lasso& selection, float overlap, bool shouldCheckpoint /*= true*/)
+{
+    DBG("Doing makeLegato");
+    if (selection.getNumSelected() == 0) //ditch if there's no selection
+    {
+        return false;
+    }
+
+    auto* sequence = getPianoSequence(selection); //"sequcence" = the current selection
+    jassert(sequence);
+
+    //the sequence isn't neccecarily serial (organized from left to right)
+    //therefore, we will need to continuously re-target the next note as the note that is beat-closest (greater than) and key-closest (greater than) to our current note (while not being identical)
+    //perhaps some minimum value in the future? this will allow us to make legato strummed chords
+    //additionally, we can no longer simply progress through the selection array. we now need to continously search to find the closest target note.
+
+    PianoChangeGroup removals; //establish group "removals"
+    PianoChangeGroup groupBefore, groupAfter; //establish groups "groupBefore" and "groupAfter"
+
+    int selectionSize = selection.getNumSelected(); //for use in various for loops
+
+    auto* subject = selection.getFirstAs<NoteComponent>(); //subject = the note we are currently extending
+    auto* candidate = selection.getItemAs<NoteComponent>(selectionSize-1); //candidate = the current note being considered to replace the current best candidate
+    auto* target = selection.getItemAs<NoteComponent>(selectionSize-1); //the note we are extending our subject to
+    auto* bestCandidate = selection.getItemAs<NoteComponent>(selectionSize - 1); //the current best candidate (note that fits our selection criteria)
+
+    //initializing various things
+    float subjectBeat = -1*FLT_MAX;
+    int subjectKey = -1 * INT_MAX;
+    float candidateBeat = FLT_MAX;
+    int candidateKey = INT_MAX;
+    float bestCandidateBeat = FLT_MAX;
+    int bestCandidateKey = INT_MAX;
+    float targetBeat = FLT_MAX;
+    int targetKey = INT_MAX;
+
+    for (int i = 0; i < selection.getNumSelected(); ++i) //iterate through the selection to get the first subject (leftmost, bottommost note)
+    {
+        //re-initialize candidate variables
+        candidate = selection.getItemAs<NoteComponent>(i);
+        candidateBeat = candidate->getBeat();
+        candidateKey = candidate->getKey();
+
+        //if the candidate is to the left of the last best note, OR if it is equal but lower in key
+        if ( (candidateBeat < bestCandidateBeat) || (candidateBeat == bestCandidateBeat && candidateKey < bestCandidateKey) )
+        {
+            bestCandidate = candidate;
+            bestCandidateBeat = candidate->getBeat();
+            bestCandidateKey = candidate->getKey();
+        }
+    }
+
+    //subject is now the leftmost bottommost note in the selection
+    //we're setting all this afterward just to make the code more readable later
+    subject = bestCandidate;
+    subjectBeat = bestCandidate->getBeat();
+    subjectKey = bestCandidate->getKey();
+
+    for (int notes = 0; notes < selection.getNumSelected(); ++notes) //since we have set our first subject (before beginning our proper loop), now we commence through the "real" legato loop.
+    {
+        //re-init best candidate variables
+        bestCandidateBeat = FLT_MAX;
+        bestCandidateKey = INT_MAX;
+
+        for (int i = 0; i < selection.getNumSelected(); ++i) //iterate through the selection to get the target note(leftmost, bottommost note that is to the right of the subject)
+        {
+            //re-initialize candidate variables
+            candidate = selection.getItemAs<NoteComponent>(i);
+            candidateBeat = candidate->getBeat();
+            candidateKey = candidate->getKey();
+
+            //if the candidate is to the left of the last best note, OR if it is equal but lower in key, AND it is to the right of the subject
+            if (candidateBeat < bestCandidateBeat && candidateBeat > subjectBeat)
+            {
+                bestCandidate = candidate;
+                bestCandidateBeat = candidate->getBeat();
+                bestCandidateKey = candidate->getKey();
+            }
+            if (candidateBeat == bestCandidateBeat && candidateKey < bestCandidateKey && candidateBeat > subjectBeat)
+            {
+                bestCandidate = candidate;
+                bestCandidateBeat = candidate->getBeat();
+                bestCandidateKey = candidate->getKey();
+            }
+        }
+
+        //the target is now the leftmost note that is 1) to the right of the subject AND 2) among multilbe targets of the same beat, the lowest one
+        target = bestCandidate;
+        targetBeat = bestCandidate->getBeat();
+        targetKey = bestCandidate->getKey();
+
+        float newLength = subject->getLength(); //initialize as subject length (just in case)
+
+        if (targetBeat != subjectBeat && targetKey != subjectKey) //only change length if target is not of the same beat (dirty hack)
+        {
+            newLength = targetBeat - subjectBeat;
+        }
+        if (targetBeat != subjectBeat && targetKey == subjectKey) //add slight buffer if they're the same key (so note on/off signals dont occur on the same beat (screws with some vsts)
+        {
+            newLength = targetBeat - subjectBeat - 0.0625f; //16'th note
+        }
+
+        groupBefore.add(subject->getNote());
+        groupAfter.add(subject->getNote().withBeat(subjectBeat).withLength(newLength));
+
+        //re-init best candidate variables
+        bestCandidateBeat = FLT_MAX;
+        bestCandidateKey = INT_MAX;
+
+        for (int i = 0; i < selection.getNumSelected(); ++i) //set the next subject in the same way as before, but is must be at least above our last subject, or to the right.
+        {
+            candidate = selection.getItemAs<NoteComponent>(i); //re-initialize candidate variables
+            candidateBeat = candidate->getBeat();
+            candidateKey = candidate->getKey();
+
+            if (candidateBeat < bestCandidateBeat && candidateBeat > subjectBeat)   //if its to the left of the prior while being greater than the subject
+            {
+                bestCandidate = candidate;
+                bestCandidateBeat = candidate->getBeat();
+                bestCandidateKey = candidate->getKey();
+            }
+            if (candidateBeat == bestCandidateBeat && candidateKey < bestCandidateKey && candidateKey > subjectKey) //if it's the same as the prior 
+            {
+                bestCandidate = candidate;
+                bestCandidateBeat = candidate->getBeat();
+                bestCandidateKey = candidate->getKey();
+            }
+            if (candidateBeat == subjectBeat && candidateKey < bestCandidateKey && candidateKey > subjectKey)   //if it's the same beat as the prior 
+            {
+                bestCandidate = candidate;
+                bestCandidateBeat = candidate->getBeat();
+                bestCandidateKey = candidate->getKey();
+            }
+        }
+
+        subject = bestCandidate; //our subject is now the bottommost leftmost note that is to the right of the subject or at least above it in key
+        subjectBeat = bestCandidate->getBeat();
+        subjectKey = bestCandidate->getKey();
+    }
+
+
+    if (groupBefore.isEmpty() && removals.isEmpty()) //ditch if either of the groups are empty
+    {
+        return false;
+    }
+
+    if (shouldCheckpoint) //undo checkpoint
+    {
+        sequence->checkpoint();
+    }
+
+    if (!groupBefore.isEmpty()) //dont know what this is supposed to do
+    {
+        sequence->changeGroup(groupBefore, groupAfter, true);
+    }
+
+    if (!removals.isEmpty()) //reomve the empty group
+    {
+        sequence->removeGroup(removals, true);
+    }
+
+    sequence->changeGroup(groupBefore, groupAfter, true); //swap the before and afters
 
     return true;
 }

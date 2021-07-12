@@ -34,6 +34,7 @@ public:
     void updateBounds();
 
     void syncWithSelection(const Lasso *selection);
+    void syncWithCustomGuides(Temperament::Ptr temperament);
     void syncWithTemperament(Temperament::Ptr temperament);
 
 private:
@@ -43,6 +44,7 @@ private:
 
     static constexpr auto defaultWidth = 36;
     static constexpr auto extendedWidth = 48;
+    static constexpr auto stringsWidth = 7; //Made stringsWidth to mark open strings for quartets and such
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
 

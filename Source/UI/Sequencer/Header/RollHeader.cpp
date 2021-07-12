@@ -379,15 +379,18 @@ void RollHeader::paint(Graphics &g)
     g.fillRect(paintStartX, 0, paintEndX - paintStartX, Globals::UI::rollHeaderHeight);
 
     g.setColour(this->barColour);
+    g.setFont(Globals::UI::Fonts::XS); //set font to extra small
     for (const auto f : this->roll.getVisibleBars())
     {
-        g.fillRect(floorf(f), float(this->getHeight() - 13), 1.f, 12.f);
+        g.fillRect(floorf(f), float(this->getHeight() - 13), 2.f, 12.f);    //made 1px thicker - RPM
+        g.drawText(std::to_string(f), int(f), this->getHeight() - 13, 10, 10, Justification::centred, true);
+        //roll.getBeatByXPosition(f)/4;
     }
 
     g.setColour(this->barShadeColour);
     for (const auto f : this->roll.getVisibleBars())
     {
-        g.fillRect(floorf(f + 1), float(this->getHeight() - 12), 1.f, 11.f);
+        g.fillRect(floorf(f -1), float(this->getHeight() - 12), 1.f, 11.f); //draws beat bar tick shade
     }
 
     g.setColour(this->beatColour);

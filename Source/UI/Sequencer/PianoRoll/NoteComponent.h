@@ -73,10 +73,15 @@ public:
     bool keyStateChanged(bool isKeyDown) override;
     void modifierKeysChanged(const ModifierKeys &modifiers) override;
     void mouseMove(const MouseEvent &e) override;
+    void mouseEnter(const MouseEvent& e) override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
+    void mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel) override;
+
     void paint(Graphics &g) noexcept override;
+
+    void deleteSelf();
 
 private:
 
@@ -141,12 +146,12 @@ private:
 
     void startResizingRight(bool sendMidiMessage);
     bool getResizingRightDelta(const MouseEvent &e, float &deltaLength) const;
-    Note continueResizingRight(float deltaLength) const noexcept;
+    Note continueResizingRight(float deltaLength, const MouseEvent& e) const noexcept; //added mouseevent - RPM
     void endResizingRight();
     
     void startResizingLeft(bool sendMidiMessage);
     bool getResizingLeftDelta(const MouseEvent &e, float &deltaLength) const;
-    Note continueResizingLeft(float deltaLength) const noexcept;
+    Note continueResizingLeft(float deltaLength, const MouseEvent& e) const noexcept; //added mouseevent - RPM
     void endResizingLeft();
     
     void startTuning();
@@ -182,6 +187,7 @@ private:
 
     inline bool canResize() const noexcept
     {
+       //DBG(std::to_string(this->getWidth()));
         return this->getWidth() >=
             (NoteComponent::maxResizableEdge + NoteComponent::maxResizableEdge);
     }

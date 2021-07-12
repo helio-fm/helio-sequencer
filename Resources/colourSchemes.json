@@ -103,48 +103,6 @@
           "panelBorder": "afffffff",
           "iconBase": "3f000000",
           "iconShadow": "1dffffff"
-        },
-        {
-          "name": "Placid Dark",
-          "colourMap": {
-            "text": "ffffffff",
-            "primaryGradientA": "ff25252e",
-            "primaryGradientB": "ff25252e",
-            "secondaryGradientA": "ff27262f",
-            "secondaryGradientB": "ff27262f",
-            "lassoFill": "17000000",
-            "lassoBorder": "ffad7fff",
-            "whiteKey": "ff25252e",
-            "blackKey": "ff25252e",
-            "beat": "bf1b1923",
-            "bar": "271b1923",
-            "row": "ff1b1923",
-            "panelFill": "18ffffff",
-            "panelBorder": "afffffff",
-            "iconBase": "29ffffff",
-            "iconShadow": "ff000000"
-          }
-        },
-        {
-          "name": "VS Basic Grey",
-          "colourMap": {
-            "text": "ffF0F0F0",
-            "primaryGradientA": "ff2D2D30",
-            "primaryGradientB": "ff333333",
-            "secondaryGradientA": "ff333333",
-            "secondaryGradientB": "ff27262f",
-            "lassoFill": "17000000",
-            "lassoBorder": "ffD4D4D4",
-            "whiteKey": "ff262626",
-            "blackKey": "ff212121",
-            "beat": "bf1b1923",
-            "bar": "271b1923",
-            "row": "ff1b1923",
-            "panelFill": "ff535353",
-            "panelBorder": "ff383838",
-            "iconBase": "29ffffff",
-            "iconShadow": "ff000000"
-          }
         }
       }
     ]

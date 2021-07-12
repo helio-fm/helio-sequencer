@@ -244,7 +244,8 @@ bool PianoSequence::changeGroup(Array<Note> &groupBefore,
             // and then editing the selection, which leads to applying the same
             // transformation to one set of notes twice, which is kinda nonsense,
             // so make sure the selection is always limited to active track and clip:
-            jassert(index >= 0);
+            // 
+            //jassert(index >= 0); //temporarily removed jassert - RPM
             if (index >= 0)
             {
                 auto *changedNote = static_cast<Note *>(this->midiEvents.getUnchecked(index));

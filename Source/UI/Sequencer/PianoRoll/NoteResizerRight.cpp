@@ -122,7 +122,7 @@ void NoteResizerRight::mouseDrag(const MouseEvent &e)
             e.withNewPosition(Point<int>(0, 0))
             .getEventRelativeTo(this->groupResizerNote), groupScaleFactor);
 
-    if (scaleFactorChanged)
+    if (scaleFactorChanged) //resize the notes if the scalefactor has changed
     {
         this->groupResizerNote->checkpointIfNeeded();
 

@@ -1,0 +1,23 @@
+Asiosample
+
+This sample driver illustrates the implementation of an ASIO driver.
+
+
+
+Windows notes:
+
+For Windows a COM implementation is provided. The final driver can be
+installed in the system by dragging the asiosample.dll onto the
+regsvr32.exe in the windows\system directory.
+
+It is normal that the LNK4104 warning is issued for the following 4
+exported symbols:
+
+DllGetClassObject
+DllCanUnloadNow
+DllRegisterServer
+DllUnregisterServer
+
+
+Macintosh notes:
+The supplied project is created with CodeWarrior Pro 5.
