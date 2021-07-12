@@ -124,7 +124,7 @@ void NoteComponent::mouseMove(const MouseEvent &e)
     }
     else
     {
-        this->setMouseCursor(MouseCursor::NormalCursor);
+        this->setMouseCursor(MouseCursor::UpDownLeftRightResizeCursor); //added omnidirectional dragging cursor to make it easier to know when you are hovering over a note
     }
 }
 
@@ -151,6 +151,14 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         this->roll.getEditMode().isMode(RollEditMode::defaultMode))
     {
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
+        return;
+    }
+
+    if (e.mods.isRightButtonDown() && //added condition for deleting notes by right clicking on them - RPM
+        this->roll.getEditMode().isMode(RollEditMode::drawMode))
+    {
+        this->roll.selectEvent(this, true); //selects moused over note
+        SequencerOperations::deleteSelection(this->roll.getLassoSelection()); //deletes the note
         return;
     }
 

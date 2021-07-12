@@ -188,6 +188,7 @@ public:
     int getXPositionByBeat(float targetBeat) const noexcept;
     int getPlayheadPositionByBeat(double targetBeat, double parentWidth) const;
     float getRoundBeatSnapByXPosition(int x) const;
+    float getBiasedRoundBeatSnapByXPosition(int x, float roundBias) const; //added by RPM. see getBiasedRowsColsByMousePosition() in PianoRoll.cpp for more info
 
     inline float getLastBeat() const noexcept { return this->lastBeat; }
     inline float getFirstBeat() const noexcept { return this->firstBeat; }
@@ -333,6 +334,9 @@ protected:
     virtual float findPreviousAnchorBeat(float beat) const = 0;
 
     float getFloorBeatSnapByXPosition(int x) const noexcept;
+    float getCeilingBeatSnapByXPosition(int x) const noexcept; //added for use in getBiasedRowsColsByMousePosition() - RPM
+    float getFloorSnapXByXPosition(int x) const noexcept;
+    float getCeilingSnapXByXPosition(int x) const noexcept;
     inline float getBeatByXPosition(float x) const noexcept
     {
         const float beatNumber = roundBeat(x / this->beatWidth + this->firstBeat);

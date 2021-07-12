@@ -406,6 +406,16 @@ void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float 
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
     noteNumber = jlimit(0, this->getNumKeys(), noteNumber);
 }
+// Biased snap for placing notes
+// round bias is a float between 0 and 1 that determines how far to the right the cursor must be in order to snap right vs snapping left.
+// if round bias is 0.80, the cursor needs to be in the right 20% of the snap region to snap right.
+// this lets the user click directly on a beatline without placing a note a micro-beat early half the time. also avoids the janky bahavior of a regular round-to-snap.
+void PianoRoll::getBiasedRowsColsByMousePosition(int x, int y, int& noteNumber, float& beatNumber, float roundBias) const
+{
+    beatNumber = this->getBiasedRoundBeatSnapByXPosition(x, roundBias) - this->activeClip.getBeat();
+    noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
+    noteNumber = jlimit(0, this->getNumKeys(), noteNumber);
+}
 
 int PianoRoll::getYPositionByKey(int targetKey) const
 {
@@ -506,7 +516,9 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
     if (event.isTypeOf(MidiEvent::Type::Note))
     {
         const Note &note = static_cast<const Note &>(event);
-        const auto *track = note.getSequence()->getTrack();
+        const auto* track = note.getSequence()->getTrack();
+
+        this->getTransport().previewKey(note.getSequence()->getTrack()->getTrackId(), note.getKey(), note.getVelocity(), 1); //automatically play notes upon placing them. major improvement! - RPM
 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
@@ -945,7 +957,7 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (this->newNoteDragging != nullptr)
+    if (this->newNoteDragging != nullptr && e.mods.isCtrlDown() == false)
     {
         if (this->newNoteDragging->isInEditMode())
         {
@@ -1413,7 +1425,7 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
 {
     int draggingRow = 0;
     float draggingColumn = 0.f;
-    this->getRowsColsByMousePosition(e.x, e.y, draggingRow, draggingColumn);
+    this->getBiasedRowsColsByMousePosition(e.x, e.y, draggingRow, draggingColumn, 0.8f); //changed to getBiasedRowsColsByMousePosition() to give a bias when rounding note placement. see function for details.
 
     auto *activeSequence = static_cast<PianoSequence *>(this->activeTrack->getSequence());
     activeSequence->checkpoint();

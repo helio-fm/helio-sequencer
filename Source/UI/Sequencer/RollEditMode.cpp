@@ -52,7 +52,7 @@ bool RollEditMode::forcesViewportZooming() const
 bool RollEditMode::forbidsSelectionMode() const
 {
     return
-        this->isMode(RollEditMode::drawMode) ||
+        //this->isMode(RollEditMode::drawMode) || // removed drawMode as exclusion. this adds ability to ctrl+leftdrag even in draw mode. this is absolutely neccecary for quick editing.
         this->isMode(RollEditMode::zoomMode) ||
         this->isMode(RollEditMode::dragMode) ||
         this->isMode(RollEditMode::knifeMode);
