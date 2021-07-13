@@ -43,7 +43,7 @@ class VelocityMapNoteComponent final : public Component
 {
 public:
 
-    VelocityMapNoteComponent(const Note &note, const Clip &clip) :
+    VelocityMapNoteComponent(const Note& note, const Clip& clip) : //PATT - RPM
         note(note),
         clip(clip)
     {
@@ -124,11 +124,28 @@ public:
     // Component
     //===------------------------------------------------------------------===//
 
-    void paint(Graphics &g) noexcept override
+    void paint(Graphics& g) noexcept override
     {
         g.setColour(this->colour);
-        g.fillRect(this->dx, 0.f, float(this->getWidth()) + this->dw, float(this->getHeight()));
-        g.fillRect(this->dx, 0.f, float(this->getWidth()) + this->dw, 2.f);
+
+        //g.fillRect(
+        //    this->dx, 0.f, //start XY
+        //    float(this->getWidth()) + this->dw, float(this->getHeight())); //width/height
+
+        g.fillRect( //the vertical bar
+            this->dx, 0.f, //start XY
+            float(defaultWidth), float(this->getHeight())); //width/height
+
+        g.drawEllipse( //the circle
+            float(this->dx - circleRadius) + 1.0f, float(0.f - circleRadius) + 1.0f,
+            2 * circleRadius, 2 * circleRadius,
+            defaultWidth);
+
+        g.setColour(this->colour.withOpacity(0.25f)); //make horizontal line darker
+        g.fillRect( //the horizontal bar
+            this->dx, 0.f, //start XY
+            float(this->getWidth()) + this->dw,
+            defaultWidth);   //width/height
     }
 
     bool hitTest(int, int y) noexcept override
@@ -137,41 +154,47 @@ public:
         return this->editable && y <= 4;
     }
 
-    void mouseDown(const MouseEvent &e) override
+    void mouseDown(const MouseEvent& e) override    //PATT - RPM
     {
-        if (e.mods.isLeftButtonDown())
+        if (e.mods.isLeftButtonDown()) //made velocity helper secondary tool, indend to make sweep-velocity primary tool
         {
             this->note.getSequence()->checkpoint();
             this->velocityAnchor = this->getVelocity();
         }
     }
 
-    void mouseDrag(const MouseEvent &e) override
+    void mouseDrag(const MouseEvent& e) override    //PATT - RPM
     {
-        const auto newVelocity = jlimit(0.f, 1.f, this->velocityAnchor -
-            float(e.getDistanceFromDragStartY()) / float(Globals::UI::levelsMapHeight));
+        if (e.mods.isLeftButtonDown()) //made velocity helper secondary tool, indend to make sweep-velocity primary tool
+        {
+            const auto newVelocity = jlimit(0.f, 1.f, this->velocityAnchor -
+                float(e.getDistanceFromDragStartY()) / float(Globals::UI::levelsMapHeight));
 
-        static_cast<PianoSequence *>(this->note.getSequence())->
-            change(this->note, this->note.withVelocity(newVelocity), true);
+            static_cast<PianoSequence*>(this->note.getSequence())->
+                change(this->note, this->note.withVelocity(newVelocity), true);
+        }
     }
 
 private:
 
     friend class VelocityProjectMap;
 
-    VelocityProjectMap *getParentMap() const
+    VelocityProjectMap* getParentMap() const
     {
         jassert(this->getParentComponent());
-        return static_cast<VelocityProjectMap *>(this->getParentComponent());
+        return static_cast<VelocityProjectMap*>(this->getParentComponent());
     }
 
-    const Note &note;
-    const Clip &clip;
+    const Note& note;
+    const Clip& clip;
 
     Colour colour;
 
     float dx = 0.f;
     float dw = 0.f;
+
+    float defaultWidth = 2.0f;
+    float circleRadius = 2.5f;
 
     float velocityAnchor = 0.f;
     bool editable = true;
@@ -187,23 +210,23 @@ class VelocityLevelDraggingHelper final : public Component
 {
 public:
 
-    VelocityLevelDraggingHelper(VelocityProjectMap &map) : map(map)
+    VelocityLevelDraggingHelper(VelocityProjectMap& map) : map(map)
     {
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
     }
 
-    const Line<float> &getLine() const noexcept
+    const Line<float>& getLine() const noexcept
     {
         return this->line;
     }
 
-    const Line<float> &getExtendedLine() const noexcept
+    const Line<float>& getExtendedLine() const noexcept
     {
         return this->lineExtended;
     }
 
-    void paint(Graphics &g) override
+    void paint(Graphics& g) override
     {
         g.setColour(findDefaultColour(Label::textColourId));
         g.fillPath(this->linePath);
@@ -214,12 +237,12 @@ public:
         g.fillPath(this->dashPath2);
     }
 
-    void setStartPosition(const Point<float> &mousePos)
+    void setStartPosition(const Point<float>& mousePos)
     {
         this->startPosition = mousePos.toDouble() / this->getParentSize();
     }
 
-    void setEndPosition(const Point<float> &mousePos)
+    void setEndPosition(const Point<float>& mousePos)
     {
         this->endPosition = mousePos.toDouble() / this->getParentSize();
     }
@@ -276,7 +299,7 @@ public:
 
 private:
 
-    VelocityProjectMap &map;
+    VelocityProjectMap& map;
 
     Point<double> startPosition;
     Point<double> endPosition;
@@ -290,7 +313,7 @@ private:
 
     const Point<double> getParentSize() const
     {
-        if (const auto *p = this->getParentComponent())
+        if (const auto* p = this->getParentComponent())
         {
             return { double(p->getWidth()), double(p->getHeight()) };
         }
@@ -305,7 +328,7 @@ private:
 // The map itself
 //===----------------------------------------------------------------------===//
 
-VelocityProjectMap::VelocityProjectMap(ProjectNode &parentProject, RollBase &parentRoll) :
+VelocityProjectMap::VelocityProjectMap(ProjectNode& parentProject, RollBase& parentRoll) :
     project(parentProject),
     roll(parentRoll)
 {
@@ -337,15 +360,15 @@ void VelocityProjectMap::resized()
 {
     VELOCITY_MAP_BULK_REPAINT_START
 
-    for (const auto &c : this->patternMap)
-    {
-        const auto sequenceMap = c.second.get();
-        for (const auto &e : *sequenceMap)
+        for (const auto& c : this->patternMap)
         {
-            jassert(e.second.get());
-            this->applyNoteBounds(e.second.get());
+            const auto sequenceMap = c.second.get();
+            for (const auto& e : *sequenceMap)
+            {
+                jassert(e.second.get());
+                this->applyNoteBounds(e.second.get());
+            }
         }
-    }
 
     if (this->dragHelper != nullptr)
     {
@@ -355,9 +378,9 @@ void VelocityProjectMap::resized()
     VELOCITY_MAP_BULK_REPAINT_END
 }
 
-void VelocityProjectMap::mouseDown(const MouseEvent &e)
+void VelocityProjectMap::mouseDown(const MouseEvent& e) //PATT - RPM
 {
-    if (e.mods.isLeftButtonDown())
+    if (e.mods.isRightButtonDown())
     {
         this->volumeBlendingIndicator->toFront(false);
         this->updateVolumeBlendingIndicator(e.getPosition());
@@ -369,23 +392,27 @@ void VelocityProjectMap::mouseDown(const MouseEvent &e)
     }
 }
 
-constexpr float getVelocityByIntersection(const Point<float> &intersection)
+constexpr float getVelocityByIntersection(const Point<float>& intersection)
 {
     return 1.f - (intersection.y / float(Globals::UI::levelsMapHeight));
 }
 
-void VelocityProjectMap::mouseDrag(const MouseEvent &e)
+void VelocityProjectMap::mouseDrag(const MouseEvent& e) //PATT - RPM
 {
-    if (this->dragHelper != nullptr)
+    if (e.mods.isRightButtonDown() && this->dragHelper != nullptr)
     {
         this->updateVolumeBlendingIndicator(e.getPosition());
         this->dragHelper->setEndPosition(e.position);
         this->dragHelper->updateBounds();
         this->applyVolumeChanges();
     }
+    if (e.mods.isLeftButtonDown() && this->dragHelper != nullptr)
+    {
+        this->sweepEdit(e);
+    }
 }
 
-void VelocityProjectMap::mouseUp(const MouseEvent &e)
+void VelocityProjectMap::mouseUp(const MouseEvent& e)
 {
     if (this->dragHelper != nullptr)
     {
@@ -398,7 +425,7 @@ void VelocityProjectMap::mouseUp(const MouseEvent &e)
     }
 }
 
-void VelocityProjectMap::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
+void VelocityProjectMap::mouseWheelMove(const MouseEvent& e, const MouseWheelDetails& wheel)
 {
     if (this->dragHelper != nullptr)
     {
@@ -423,18 +450,18 @@ void VelocityProjectMap::mouseWheelMove(const MouseEvent &e, const MouseWheelDet
     for (const auto &child : map) \
         if (child.first.getPattern()->getTrack() == track)
 
-void VelocityProjectMap::onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2)
+void VelocityProjectMap::onChangeMidiEvent(const MidiEvent& e1, const MidiEvent& e2)
 {
     if (e1.isTypeOf(MidiEvent::Type::Note))
     {
-        const Note &note = static_cast<const Note &>(e1);
-        const Note &newNote = static_cast<const Note &>(e2);
-        const auto *track = newNote.getSequence()->getTrack();
+        const Note& note = static_cast<const Note&>(e1);
+        const Note& newNote = static_cast<const Note&>(e2);
+        const auto* track = newNote.getSequence()->getTrack();
 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
-            auto &sequenceMap = *c.second.get();
-            if (auto *component = sequenceMap[note].release())
+            auto& sequenceMap = *c.second.get();
+            if (auto* component = sequenceMap[note].release())
             {
                 sequenceMap.erase(note);
                 sequenceMap[newNote] = UniquePointer<VelocityMapNoteComponent>(component);
@@ -444,25 +471,25 @@ void VelocityProjectMap::onChangeMidiEvent(const MidiEvent &e1, const MidiEvent 
     }
 }
 
-void VelocityProjectMap::onAddMidiEvent(const MidiEvent &event)
+void VelocityProjectMap::onAddMidiEvent(const MidiEvent& event)
 {
     if (event.isTypeOf(MidiEvent::Type::Note))
     {
-        const Note &note = static_cast<const Note &>(event);
-        const auto *track = note.getSequence()->getTrack();
+        const Note& note = static_cast<const Note&>(event);
+        const auto* track = note.getSequence()->getTrack();
 
         VELOCITY_MAP_BULK_REPAINT_START
 
-        forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
+            forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
-            auto &componentsMap = *c.second.get();
+            auto& componentsMap = *c.second.get();
             const int i = track->getPattern()->indexOfSorted(&c.first);
             jassert(i >= 0);
 
-            const auto *clip = track->getPattern()->getUnchecked(i);
+            const auto* clip = track->getPattern()->getUnchecked(i);
             const bool editable = this->activeClip == *clip;
 
-            auto *noteComponent = new VelocityMapNoteComponent(note, *clip);
+            auto* noteComponent = new VelocityMapNoteComponent(note, *clip);
             noteComponent->setEditable(editable);
             componentsMap[note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
             this->addAndMakeVisible(noteComponent);
@@ -473,18 +500,18 @@ void VelocityProjectMap::onAddMidiEvent(const MidiEvent &event)
     }
 }
 
-void VelocityProjectMap::onRemoveMidiEvent(const MidiEvent &event)
+void VelocityProjectMap::onRemoveMidiEvent(const MidiEvent& event)
 {
     if (event.isTypeOf(MidiEvent::Type::Note))
     {
-        const Note &note = static_cast<const Note &>(event);
-        const auto *track = note.getSequence()->getTrack();
+        const Note& note = static_cast<const Note&>(event);
+        const auto* track = note.getSequence()->getTrack();
 
         VELOCITY_MAP_BULK_REPAINT_START
 
-        forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
+            forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
-            auto &sequenceMap = *c.second.get();
+            auto& sequenceMap = *c.second.get();
             if (sequenceMap.contains(note))
             {
                 sequenceMap.erase(note);
@@ -495,11 +522,11 @@ void VelocityProjectMap::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void VelocityProjectMap::onAddClip(const Clip &clip)
+void VelocityProjectMap::onAddClip(const Clip& clip)
 {
-    const SequenceMap *referenceMap = nullptr;
-    const auto *track = clip.getPattern()->getTrack();
-    if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
+    const SequenceMap* referenceMap = nullptr;
+    const auto* track = clip.getPattern()->getTrack();
+    if (!dynamic_cast<const PianoSequence*>(track->getSequence())) { return; }
 
     forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
     {
@@ -514,39 +541,39 @@ void VelocityProjectMap::onAddClip(const Clip &clip)
         return;
     }
 
-    auto *sequenceMap = new SequenceMap();
+    auto* sequenceMap = new SequenceMap();
     this->patternMap[clip] = UniquePointer<SequenceMap>(sequenceMap);
 
     VELOCITY_MAP_BULK_REPAINT_START
 
-    for (const auto &e : *referenceMap)
-    {
-        // reference the same note as neighbor components:
-        const auto &note = e.second.get()->note;
-        const bool editable = this->activeClip == clip;
+        for (const auto& e : *referenceMap)
+        {
+            // reference the same note as neighbor components:
+            const auto& note = e.second.get()->note;
+            const bool editable = this->activeClip == clip;
 
-        auto *noteComponent = new VelocityMapNoteComponent(note, clip);
-        noteComponent->setEditable(editable);
+            auto* noteComponent = new VelocityMapNoteComponent(note, clip);
+            noteComponent->setEditable(editable);
 
-        (*sequenceMap)[note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
-        this->addAndMakeVisible(noteComponent);
-        this->applyNoteBounds(noteComponent);
-    }
+            (*sequenceMap)[note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
+            this->addAndMakeVisible(noteComponent);
+            this->applyNoteBounds(noteComponent);
+        }
 
     VELOCITY_MAP_BULK_REPAINT_END
 }
 
-void VelocityProjectMap::onChangeClip(const Clip &clip, const Clip &newClip)
+void VelocityProjectMap::onChangeClip(const Clip& clip, const Clip& newClip)
 {
     if (this->patternMap.contains(clip))
     {
         // Set new key for existing sequence map
-        auto *sequenceMap = this->patternMap[clip].release();
+        auto* sequenceMap = this->patternMap[clip].release();
         this->patternMap.erase(clip);
         this->patternMap[newClip] = UniquePointer<SequenceMap>(sequenceMap);
 
         // And update all components within it, as their beats should change
-        for (const auto &e : *sequenceMap)
+        for (const auto& e : *sequenceMap)
         {
             this->batchRepaintList.add(e.second.get());
         }
@@ -555,60 +582,60 @@ void VelocityProjectMap::onChangeClip(const Clip &clip, const Clip &newClip)
     }
 }
 
-void VelocityProjectMap::onRemoveClip(const Clip &clip)
+void VelocityProjectMap::onRemoveClip(const Clip& clip)
 {
     VELOCITY_MAP_BULK_REPAINT_START
 
-    if (this->patternMap.contains(clip))
-    {
-        this->patternMap.erase(clip);
-    }
-
-    VELOCITY_MAP_BULK_REPAINT_END
-}
-
-void VelocityProjectMap::onChangeTrackProperties(MidiTrack *const track)
-{
-    if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
-
-    VELOCITY_MAP_BULK_REPAINT_START
-
-    for (const auto &c : this->patternMap)
-    {
-        const auto &componentsMap = *c.second.get();
-        for (const auto &e : componentsMap)
+        if (this->patternMap.contains(clip))
         {
-            e.second->updateColour();
+            this->patternMap.erase(clip);
         }
-    }
+
+    VELOCITY_MAP_BULK_REPAINT_END
+}
+
+void VelocityProjectMap::onChangeTrackProperties(MidiTrack* const track)
+{
+    if (!dynamic_cast<const PianoSequence*>(track->getSequence())) { return; }
+
+    VELOCITY_MAP_BULK_REPAINT_START
+
+        for (const auto& c : this->patternMap)
+        {
+            const auto& componentsMap = *c.second.get();
+            for (const auto& e : componentsMap)
+            {
+                e.second->updateColour();
+            }
+        }
 
     VELOCITY_MAP_BULK_REPAINT_END
 
-    this->repaint();
+        this->repaint();
 }
 
-void VelocityProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks,
-    const ProjectMetadata *meta)
+void VelocityProjectMap::onReloadProjectContent(const Array<MidiTrack*>& tracks,
+    const ProjectMetadata* meta)
 {
     this->reloadTrackMap();
 }
 
-void VelocityProjectMap::onAddTrack(MidiTrack *const track)
+void VelocityProjectMap::onAddTrack(MidiTrack* const track)
 {
-    if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
+    if (!dynamic_cast<const PianoSequence*>(track->getSequence())) { return; }
 
     VELOCITY_MAP_BULK_REPAINT_START
-    this->loadTrack(track);
+        this->loadTrack(track);
     VELOCITY_MAP_BULK_REPAINT_END
 }
 
-void VelocityProjectMap::onRemoveTrack(MidiTrack *const track)
+void VelocityProjectMap::onRemoveTrack(MidiTrack* const track)
 {
-    if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
+    if (!dynamic_cast<const PianoSequence*>(track->getSequence())) { return; }
 
     for (int i = 0; i < track->getPattern()->size(); ++i)
     {
-        const auto &clip = *track->getPattern()->getUnchecked(i);
+        const auto& clip = *track->getPattern()->getUnchecked(i);
         if (this->patternMap.contains(clip))
         {
             this->patternMap.erase(clip);
@@ -637,7 +664,7 @@ void VelocityProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
     }
 }
 
-void VelocityProjectMap::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
+void VelocityProjectMap::onChangeViewEditableScope(MidiTrack* const, const Clip& clip, bool)
 {
     if (this->activeClip == clip)
     {
@@ -648,25 +675,25 @@ void VelocityProjectMap::onChangeViewEditableScope(MidiTrack *const, const Clip 
 
     VELOCITY_MAP_BULK_REPAINT_START
 
-    for (const auto &c : this->patternMap)
-    {
-        const bool editable = this->activeClip == c.first;
-        const auto &componentsMap = *c.second.get();
-        for (const auto &e : componentsMap)
+        for (const auto& c : this->patternMap)
         {
-            e.second->setEditable(editable);
+            const bool editable = this->activeClip == c.first;
+            const auto& componentsMap = *c.second.get();
+            for (const auto& e : componentsMap)
+            {
+                e.second->setEditable(editable);
+            }
         }
-    }
 
     VELOCITY_MAP_BULK_REPAINT_END
 }
 
-void VelocityProjectMap::changeListenerCallback(ChangeBroadcaster *source)
+void VelocityProjectMap::changeListenerCallback(ChangeBroadcaster* source)
 {
     // for convenience, let's set selected items as editable
 
-    jassert(dynamic_cast<Lasso *>(source));
-    const auto *selection = static_cast<Lasso *>(source);
+    jassert(dynamic_cast<Lasso*>(source));
+    const auto* selection = static_cast<Lasso*>(source);
 
     const auto activeMapIt = this->patternMap.find(this->activeClip);
     if (activeMapIt == this->patternMap.end())
@@ -675,31 +702,31 @@ void VelocityProjectMap::changeListenerCallback(ChangeBroadcaster *source)
         return;
     }
 
-    const auto *activeMap = activeMapIt->second.get();
+    const auto* activeMap = activeMapIt->second.get();
 
     VELOCITY_MAP_BULK_REPAINT_START
 
-    if (selection->getNumSelected() == 0)
-    {
-        for (const auto &e : *activeMap)
+        if (selection->getNumSelected() == 0)
         {
-            e.second->setEditable(true);
+            for (const auto& e : *activeMap)
+            {
+                e.second->setEditable(true);
+            }
         }
-    }
-    else
-    {
-        for (const auto &e : *activeMap)
+        else
         {
-            e.second->setEditable(false);
-        }
+            for (const auto& e : *activeMap)
+            {
+                e.second->setEditable(false);
+            }
 
-        for (const auto *e : *selection)
-        {
-            // assuming we've subscribed only on a piano roll's lasso changes
-            const auto *nc = static_cast<const NoteComponent *>(e);
-            if (nc->isActive()) { activeMap->at(nc->getNote())->setEditable(true); } //DBG MARKER - RPM (trying to set inacgive notes as velocity editable?)
+            for (const auto* e : *selection)
+            {
+                // assuming we've subscribed only on a piano roll's lasso changes
+                const auto* nc = static_cast<const NoteComponent*>(e);
+                if (nc->isActive()) { activeMap->at(nc->getNote())->setEditable(true); } //DBG MARKER - RPM (trying to set inacgive notes as velocity editable?)
+            }
         }
-    }
 
     VELOCITY_MAP_BULK_REPAINT_END
 }
@@ -708,7 +735,7 @@ void VelocityProjectMap::changeListenerCallback(ChangeBroadcaster *source)
 // Private
 //===----------------------------------------------------------------------===//
 
-void VelocityProjectMap::updateVolumeBlendingIndicator(const Point<int> &pos)
+void VelocityProjectMap::updateVolumeBlendingIndicator(const Point<int>& pos)
 {
     if (this->volumeBlendingAmount == 1.f && this->volumeBlendingIndicator->isVisible())
     {
@@ -726,7 +753,7 @@ void VelocityProjectMap::updateVolumeBlendingIndicator(const Point<int> &pos)
 
 void VelocityProjectMap::applyVolumeChanges()
 {
-    const auto *activeMap = this->patternMap.at(this->activeClip).get();
+    const auto* activeMap = this->patternMap.at(this->activeClip).get();
     jassert(activeMap);
 
     // this is where things start looking a bit dirty:
@@ -743,12 +770,12 @@ void VelocityProjectMap::applyVolumeChanges()
     Point<float> intersectionB;
 
     jassert(this->dragHelper);
-    const auto &dragLine = this->dragHelper->getLine();
-    const auto &dragLineExt = this->dragHelper->getExtendedLine();
+    const auto& dragLine = this->dragHelper->getLine();
+    const auto& dragLineExt = this->dragHelper->getExtendedLine();
     const bool ascending = (dragLine.getStartX() <= dragLine.getEndX() && dragLine.getStartY() >= dragLine.getEndY())
         || (dragLine.getStartX() > dragLine.getEndX() && dragLine.getStartY() < dragLine.getEndY());
 
-    for (const auto &i : *activeMap)
+    for (const auto& i : *activeMap)
     {
         if (!i.second->isEditable())
         {
@@ -808,7 +835,7 @@ void VelocityProjectMap::applyVolumeChanges()
     this->dragChangedNotes.clearQuick();
     this->dragChanges.clearQuick();
 
-    for (const auto &i : this->dragIntersections)
+    for (const auto& i : this->dragIntersections)
     {
         const auto newVelocity = (i.second * this->volumeBlendingAmount) +
             (i.first.getVelocity() * (1.f - this->volumeBlendingAmount));
@@ -817,7 +844,7 @@ void VelocityProjectMap::applyVolumeChanges()
         this->dragChanges.add(i.first.withVelocity(newVelocity));
     }
 
-    auto *sequence = static_cast<PianoSequence *>(this->activeClip.getPattern()->getTrack()->getSequence());
+    auto* sequence = static_cast<PianoSequence*>(this->activeClip.getPattern()->getTrack()->getSequence());
 
     if (shouldUndo && this->dragHasChanges)
     {
@@ -836,16 +863,61 @@ void VelocityProjectMap::applyVolumeChanges()
     }
 }
 
+void VelocityProjectMap::sweepEdit(const MouseEvent& e)
+{
+    DBG("sweep edit");
+    int sweepTargetWidth = 5;
+
+    const auto* activeMap = this->patternMap.at(this->activeClip).get();
+    jassert(activeMap);
+
+    bool shouldUndo = false;
+
+    for (const auto& i : *activeMap)
+    {
+        if (!i.second->isEditable())
+        {
+            continue;
+        }
+
+        if (e.x > i.second->getX() - sweepTargetWidth / 2 && e.x < i.second->getX() + sweepTargetWidth / 2) //if the mouse is between the target areas
+        {
+            float newVelocity = float(e.x / this->getHeight()); //new velocity is the float value (between 0 and 1), it is the height of the mouse (by percent of the height of the roller)
+
+            this->sweepChangedNotes.add(i.first);
+            this->sweepChanges.add(i.first.withVelocity(newVelocity));
+        }
+
+    }
+
+    auto* sequence = static_cast<PianoSequence*>(this->activeClip.getPattern()->getTrack()->getSequence());
+
+    if (shouldUndo && this->dragHasChanges)
+    {
+        sequence->undoCurrentTransactionOnly();
+    }
+
+    if (!this->sweepChangedNotes.isEmpty())
+    {
+        if (!this->sweepHasChanges)
+        {
+            this->sweepHasChanges = true;
+            sequence->checkpoint();
+        }
+        sequence->changeGroup(this->sweepChangedNotes, this->sweepChanges, true);
+    }
+}
+
 void VelocityProjectMap::reloadTrackMap()
 {
     this->patternMap.clear();
 
     VELOCITY_MAP_BULK_REPAINT_START
 
-    const auto &tracks = this->project.getTracks();
-    for (const auto *track : tracks)
+        const auto& tracks = this->project.getTracks();
+    for (const auto* track : tracks)
     {
-        if (dynamic_cast<const PianoSequence *>(track->getSequence()))
+        if (dynamic_cast<const PianoSequence*>(track->getSequence()))
         {
             this->loadTrack(track);
         }
@@ -854,7 +926,7 @@ void VelocityProjectMap::reloadTrackMap()
     VELOCITY_MAP_BULK_REPAINT_END
 }
 
-void VelocityProjectMap::loadTrack(const MidiTrack *const track)
+void VelocityProjectMap::loadTrack(const MidiTrack* const track)
 {
     if (track->getPattern() == nullptr)
     {
@@ -863,19 +935,19 @@ void VelocityProjectMap::loadTrack(const MidiTrack *const track)
 
     for (int i = 0; i < track->getPattern()->size(); ++i)
     {
-        const Clip *clip = track->getPattern()->getUnchecked(i);
+        const Clip* clip = track->getPattern()->getUnchecked(i);
         const bool editable = this->activeClip == *clip;
 
-        auto *sequenceMap = new SequenceMap();
+        auto* sequenceMap = new SequenceMap();
         this->patternMap[*clip] = UniquePointer<SequenceMap>(sequenceMap);
 
         for (int j = 0; j < track->getSequence()->size(); ++j)
         {
-            const MidiEvent *event = track->getSequence()->getUnchecked(j);
+            const MidiEvent* event = track->getSequence()->getUnchecked(j);
             if (event->isTypeOf(MidiEvent::Type::Note))
             {
-                const auto *note = static_cast<const Note *>(event);
-                auto *noteComponent = new VelocityMapNoteComponent(*note, *clip);
+                const auto* note = static_cast<const Note*>(event);
+                auto* noteComponent = new VelocityMapNoteComponent(*note, *clip);
                 noteComponent->setEditable(editable);
                 (*sequenceMap)[*note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
                 this->addAndMakeVisible(noteComponent);
@@ -885,7 +957,7 @@ void VelocityProjectMap::loadTrack(const MidiTrack *const track)
     }
 }
 
-void VelocityProjectMap::applyNoteBounds(VelocityMapNoteComponent *nc)
+void VelocityProjectMap::applyNoteBounds(VelocityMapNoteComponent* nc)
 {
     const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
     const float projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
@@ -901,7 +973,7 @@ void VelocityProjectMap::applyNoteBounds(VelocityMapNoteComponent *nc)
     nc->setRealBounds(x, this->getHeight() - h, jmax(1.f, w), h);
 }
 
-void VelocityProjectMap::triggerBatchRepaintFor(VelocityMapNoteComponent *target)
+void VelocityProjectMap::triggerBatchRepaintFor(VelocityMapNoteComponent* target)
 {
     this->batchRepaintList.add(target);
     this->triggerAsyncUpdate();
@@ -914,17 +986,17 @@ void VelocityProjectMap::handleAsyncUpdate()
     {
         VELOCITY_MAP_BULK_REPAINT_START
 
-        for (int i = 0; i < this->batchRepaintList.size(); ++i)
-        {
-            // There are still many cases when a scheduled component is deleted at this time:
-            if (Component *component = this->batchRepaintList.getUnchecked(i))
+            for (int i = 0; i < this->batchRepaintList.size(); ++i)
             {
-                this->applyNoteBounds(static_cast<VelocityMapNoteComponent *>(component));
+                // There are still many cases when a scheduled component is deleted at this time:
+                if (Component* component = this->batchRepaintList.getUnchecked(i))
+                {
+                    this->applyNoteBounds(static_cast<VelocityMapNoteComponent*>(component));
+                }
             }
-        }
 
         VELOCITY_MAP_BULK_REPAINT_END
 
-        this->batchRepaintList.clearQuick();
+            this->batchRepaintList.clearQuick();
     }
 }

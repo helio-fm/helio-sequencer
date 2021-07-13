@@ -806,7 +806,7 @@ void RollBase::computeVisibleBeatLines() //Pay attention to this
     float barWidthSum = 0.f;
     bool canDrawBarLine = false;
 
-    while (barIterator <= paintEndBar)
+    while (barIterator <= paintEndBar) //pay attention to this - RPM (seems to draw bar lengths and such)
     {
         // We don't do anything else unless we have reached the left side of visible area
         // Since we have already found the nearest time signature,
@@ -828,6 +828,7 @@ void RollBase::computeVisibleBeatLines() //Pay attention to this
             if (canDrawBarLine)
             {
                 this->visibleBars.add(barStartX);
+                //this->visibleBarNums.add(barIterator);  //keeps track of bar numbers for labeling - RPM
                 this->allSnaps.add(barStartX);
             }
 

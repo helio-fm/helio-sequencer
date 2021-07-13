@@ -17,9 +17,9 @@ BEGIN
     BEGIN
       VALUE "CompanyName",  "Peter Rudenko\0"
       VALUE "LegalCopyright",  "Peter Rudenko\0"
-      VALUE "FileDescription",  "Helio\0"
+      VALUE "FileDescription",  "Helio (Original)\0"
       VALUE "FileVersion",  "3.6\0"
-      VALUE "ProductName",  "Helio\0"
+      VALUE "ProductName",  "Helio (Original)\0"
       VALUE "ProductVersion",  "3.6\0"
     END
   END

@@ -99,12 +99,16 @@ private:
     Array<Note> dragChangedNotes, dragChanges;
     bool dragHasChanges = false;
 
+    Array<Note> sweepChangedNotes, sweepChanges;
+    bool sweepHasChanges = false;
+
     float volumeBlendingAmount = 1.f;
     UniquePointer<FineTuningValueIndicator> volumeBlendingIndicator;
     void updateVolumeBlendingIndicator(const Point<int> &pos);
     ComponentFader fader;
 
     void applyVolumeChanges();
+    void sweepEdit(const MouseEvent& e);
 
     void triggerBatchRepaintFor(VelocityMapNoteComponent *target);
     void handleAsyncUpdate() override;

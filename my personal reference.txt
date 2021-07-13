@@ -1,0 +1,54 @@
+e.mods.isRightButtonDown()   <- is the right button down?
+
+
+
+- make right click and drag delete notes instead of drag
+
+- make middle click drag even in pen mode
+	done so far:
+		- got it to drag (while placing a note)
+		- added isLeftButtonDown() to prevent notes from being entered on anything but a left click
+
+- make crtl+left click drag select even in pen mode
+	done so far:
+		- changed [bool RollBase::isLassoEvent(const MouseEvent &e) const] to only consider ctrl and left mouse. notes now place as well as lasso start
+		- disabled the line of code that places a note no matter what (???) on left click
+
+to delete notes
+- select note at e
+- delete it!
+
+
+
+============ reference so far ==========
+
+isLeftButtonDown()
+isMiddleButtonDown()
+isRightButtonDown()
+
+
+isCtrlDown()
+isShiftDown()
+isAltDown()
+isAnyModifierKeyDown()
+
+all found in juce__ModifierKeys.h
+
+
+this->project.getEditMode().setMode(RollEditMode::eraserMode)   -> sets to eraser mode
+this->project.getEditMode().setMode(RollEditMode::drawMode)     -> sets to draw mode
+this->project.getEditMode().setMode(RollEditMode::dragMode)	-> sets to drag mode
+
+
+
+this->insertNewNoteAt(e);	-> inserts new note at mouse event
+
+
+============== to search =============
+
+mouseDown
+
+
+
+- removing MidiEventComponent::mouseDown(e);  to PianoRoll.cpp    -->     fucks with placing notes
+- adding  if (e.mods.isLeftButtonDown() && e.mods.isCtrlDown())  to PianoRoll.cpp   -> does nothing

@@ -61,13 +61,24 @@ void LevelsMapScroller::paint(Graphics &g)
 {
     const auto &theme = HelioTheme::getCurrentTheme();
     g.setFillType({ theme.getBgCacheC(), {} });
-    g.fillRect(this->getLocalBounds());
+
+    g.fillRect(this->getLocalBounds()); //draw the background
 
     g.setColour(findDefaultColour(ColourIDs::TrackScroller::borderLineDark));
     g.fillRect(0, 0, this->getWidth(), 1);
 
     g.setColour(findDefaultColour(ColourIDs::TrackScroller::borderLineLight));
     g.fillRect(0, 1, this->getWidth(), 1);
+
+    g.setColour(Colours::white.withOpacity(0.04f)); //replace with properly contrasting color someday
+    g.fillRect(0, int(this->getHeight()*0.25), this->getWidth(), 1);    //draw 75% line
+    g.fillRect(0, int(this->getHeight() * 0.50), this->getWidth(), 1);  //draw 50% line
+    g.fillRect(0, int(this->getHeight() * 0.75), this->getWidth(), 1);  //draw 25% line
+
+    g.setColour(Colours::black.withOpacity(0.04f)); //replace with properly contrasting color someday
+    g.fillRect(0, int(this->getHeight() * 0.25 + 2), this->getWidth(), 1);    //draw 75% shadow
+    g.fillRect(0, int(this->getHeight() * 0.50 + 2), this->getWidth(), 1);  //draw 50% shadow
+    g.fillRect(0, int(this->getHeight() * 0.75 + 2), this->getWidth(), 1);  //draw 25% shadow
 }
 
 void LevelsMapScroller::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)

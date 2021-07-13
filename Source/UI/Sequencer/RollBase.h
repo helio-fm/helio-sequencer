@@ -202,6 +202,7 @@ public:
     float getMinVisibleBeatForCurrentZoomLevel() const;
 
     inline const Array<float> &getVisibleBars() const noexcept  { return this->visibleBars; }
+    inline const Array<float> &getVisibleBarNums() const noexcept { return this->visibleBarNums; }
     inline const Array<float> &getVisibleBeats() const noexcept { return this->visibleBeats; }
     inline const Array<float> &getVisibleSnaps() const noexcept { return this->visibleSnaps; }
     
@@ -407,6 +408,7 @@ protected:
 protected:
     
     Array<float> visibleBars;
+    Array<float> visibleBarNums;    //added visibleBarNums - RPM
     Array<float> visibleBeats;
     Array<float> visibleSnaps;
     // contains all three above so that it' easier to iterate them

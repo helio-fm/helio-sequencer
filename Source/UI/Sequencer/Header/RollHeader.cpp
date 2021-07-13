@@ -380,11 +380,16 @@ void RollHeader::paint(Graphics &g)
 
     g.setColour(this->barColour);
     g.setFont(Globals::UI::Fonts::XS); //set font to extra small
+
+    //Array<float> visibleBarNums = this->roll.getVisibleBarNums(); //get all visible bar numbers
+
+    //int i = 0;
     for (const auto f : this->roll.getVisibleBars())
     {
         g.fillRect(floorf(f), float(this->getHeight() - 13), 2.f, 12.f);    //made 1px thicker - RPM
-        g.drawText(std::to_string(f), int(f), this->getHeight() - 13, 10, 10, Justification::centred, true);
-        //roll.getBeatByXPosition(f)/4;
+        //g.drawText(std::to_string(visibleBarNums[i]),int(f), this->getHeight() - 13, 10, 10, Justification::centred, true);
+
+        //i++;
     }
 
     g.setColour(this->barShadeColour);

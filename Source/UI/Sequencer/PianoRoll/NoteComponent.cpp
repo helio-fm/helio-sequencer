@@ -638,9 +638,19 @@ void NoteComponent::mouseUp(const MouseEvent &e)
 
 void NoteComponent::mouseWheelMove(const MouseEvent& event, const MouseWheelDetails& wheel)
 {
+    if (!this->isSelected()) //pass to roll if the note isn't selected - RPM
+    {
+        this->roll.mouseWheelMove(event.getEventRelativeTo(&this->roll), wheel);
+        return;
+    }
+    if (!event.mods.isAnyModifierKeyDown()) //pass to roll if alt is down (we're zooming) - RPM
+    {
+        this->roll.mouseWheelMove(event.getEventRelativeTo(&this->roll), wheel);
+        return;
+    }
 
     //cannot be just ctrl+scroll because zoom events too often inadvertantly edit note velocities
-    if (event.mods.isCtrlDown() && event.mods.isShiftDown()) //this portion allows the user to ctrl+shift+scroll over a note or selection and change their velocities by scrolling
+    if (event.mods.isCtrlDown() && this->isSelected()) //this portion allows the user to ctrl+shift+scroll over a note or selection and change their velocities by scrolling
     {
         const Lasso& selection = this->roll.getLassoSelection(); //get the selection
         
