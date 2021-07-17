@@ -22,32 +22,32 @@ Lasso::Lasso() :
     SelectedItemSet(),
     random(Time::currentTimeMillis())
 {
-    this->invalidateCacheAndResetId();
+    this->resetSelectionId();
 }
 
 Lasso::Lasso(const ItemArray &items) :
     SelectedItemSet(items),
     random(Time::currentTimeMillis())
 {
-    this->invalidateCacheAndResetId();
+    this->resetSelectionId();
 }
 
 Lasso::Lasso(const SelectedItemSet &other) :
     SelectedItemSet(other),
     random(Time::currentTimeMillis())
 {
-    this->invalidateCacheAndResetId();
+    this->resetSelectionId();
 }
 
 void Lasso::itemSelected(SelectableComponent *item)
 {
-    this->invalidateCacheAndResetId();
+    this->resetSelectionId();
     item->setSelected(true);
 }
 
 void Lasso::itemDeselected(SelectableComponent *item)
 {
-    this->invalidateCacheAndResetId();
+    this->resetSelectionId();
     item->setSelected(false);
 }
 
@@ -66,20 +66,9 @@ Rectangle<int> Lasso::getSelectionBounds() const noexcept
     return this->bounds;
 }
 
-void Lasso::invalidateCacheAndResetId()
+void Lasso::resetSelectionId()
 {
     this->id = this->random.nextInt64();
-    this->selectionsCache.clear();
-}
-
-const Lasso::GroupedSelections &Lasso::getGroupedSelections() const
-{
-    if (this->selectionsCache.size() == 0)
-    {
-        this->rebuildCache();
-    }
-
-    return this->selectionsCache;
 }
 
 bool Lasso::shouldDisplayGhostNotes() const noexcept
@@ -90,27 +79,4 @@ bool Lasso::shouldDisplayGhostNotes() const noexcept
 int64 Lasso::getId() const noexcept
 {
     return this->id;
-}
-
-void Lasso::rebuildCache() const
-{
-    for (int i = 0; i < this->getNumSelected(); ++i)
-    {
-        SelectableComponent *item = this->getSelectedItem(i);
-        const String &groupId(item->getSelectionGroupId());
-
-        SelectionProxyArray::Ptr targetArray;
-
-        if (this->selectionsCache.contains(groupId))
-        {
-            targetArray = this->selectionsCache[groupId];
-        }
-        else
-        {
-            targetArray = new SelectionProxyArray();
-        }
-
-        targetArray->add(item);
-        this->selectionsCache[groupId] = targetArray;
-    }
 }

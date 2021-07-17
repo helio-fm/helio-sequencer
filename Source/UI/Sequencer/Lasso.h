@@ -21,31 +21,6 @@
 #include "MidiSequence.h"
 #include "UndoActionIDs.h"
 
-class SelectionProxyArray final :
-    public Array<SelectableComponent *>,
-    public ReferenceCountedObject
-{
-public:
-
-    SelectionProxyArray() = default;
-
-    using Ptr = ReferenceCountedObjectPtr<SelectionProxyArray>;
-
-    template<typename T>
-    T *getFirstAs() const
-    {
-        return static_cast<T *>(this->getFirst());
-    }
-
-    template<typename T>
-    T *getItemAs(const int index) const
-    {
-        return static_cast<T *>(this->getUnchecked(index));
-    }
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SelectionProxyArray)
-};
-
 class Lasso final : public SelectedItemSet<SelectableComponent *>
 {
 public:
@@ -77,11 +52,6 @@ public:
         return (actionId * UndoActionIDs::MaxUndoActionId) + this->getId();
     }
     
-    // Grouped selections are selected events, split by track,
-    // so that is easier to perform undo/redo actions:
-    using GroupedSelections = FlatHashMap<String, SelectionProxyArray::Ptr, StringHash>;
-    const GroupedSelections &getGroupedSelections() const;
-
     template<typename T>
     T *getFirstAs() const
     {
@@ -103,10 +73,7 @@ private:
     // see SequencerOperations class for usage example)
     mutable int64 id;
     mutable Random random;
-
-    mutable GroupedSelections selectionsCache;
-    void invalidateCacheAndResetId();
-    void rebuildCache() const;
+    void resetSelectionId();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Lasso)
     JUCE_DECLARE_WEAK_REFERENCEABLE(Lasso)

@@ -27,12 +27,6 @@
 #include "SequencerOperations.h"
 #include "ColourIDs.h"
 
-static PianoSequence *getPianoSequence(const Lasso &selection)
-{
-    const auto &firstEvent = selection.getFirstAs<NoteComponent>()->getNote();
-    return static_cast<PianoSequence *>(firstEvent.getSequence());
-}
-
 NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &clip, bool ghostMode) noexcept :
     MidiEventComponent(editor, ghostMode),
     note(event),
@@ -128,9 +122,10 @@ void NoteComponent::mouseMove(const MouseEvent &e)
     }
 }
 
+// "if ... static_cast" is here only so the macro can use the if's scope
 #define forEachSelectedNote(lasso, child) \
     for (int _i = 0; _i < lasso.getNumSelected(); _i++) \
-        if (auto *child = dynamic_cast<NoteComponent *>(lasso.getSelectedItem(_i)))
+        if (auto *child = static_cast<NoteComponent *>(lasso.getSelectedItem(_i)))
 
 void NoteComponent::mouseDown(const MouseEvent &e)
 {
@@ -295,15 +290,14 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             }
 
             Array<Note> groupBefore, groupAfter;
-            for (int i = 0; i < selection.getNumSelected(); ++i)
+            forEachSelectedNote(selection, noteComponent)
             {
-                const auto *nc = selection.getItemAs<NoteComponent>(i);
-                groupBefore.add(nc->getNote());
-                groupAfter.add(nc->continueDraggingResizing(deltaLength, deltaKey, shouldSendMidi));
+                groupBefore.add(noteComponent->getNote());
+                groupAfter.add(noteComponent->continueDraggingResizing(deltaLength, deltaKey, shouldSendMidi));
                 this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
 
-            getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
+            SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
         {
@@ -320,15 +314,14 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->checkpointIfNeeded();
             Array<Note> groupBefore, groupAfter;
 
-            for (int i = 0; i < selection.getNumSelected(); ++i)
+            forEachSelectedNote(selection, noteComponent)
             {
-                const auto *nc = selection.getItemAs<NoteComponent>(i);
-                groupBefore.add(nc->getNote());
-                groupAfter.add(nc->continueResizingRight(deltaLength));
+                groupBefore.add(noteComponent->getNote());
+                groupAfter.add(noteComponent->continueResizingRight(deltaLength));
                 this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
                 
-            getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
+            SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
         {
@@ -345,15 +338,14 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->checkpointIfNeeded();
             Array<Note> groupBefore, groupAfter;
                 
-            for (int i = 0; i < selection.getNumSelected(); ++i)
+            forEachSelectedNote(selection, noteComponent)
             {
-                const auto *nc = selection.getItemAs<NoteComponent>(i);
-                groupBefore.add(nc->getNote());
-                groupAfter.add(nc->continueResizingLeft(deltaLength));
+                groupBefore.add(noteComponent->getNote());
+                groupAfter.add(noteComponent->continueResizingLeft(deltaLength));
                 this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
 
-            getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
+            SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
         {
@@ -370,14 +362,13 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->checkpointIfNeeded();
             Array<Note> groupBefore, groupAfter;
                 
-            for (int i = 0; i < selection.getNumSelected(); ++i)
+            forEachSelectedNote(selection, noteComponent)
             {
-                const auto *nc = selection.getItemAs<NoteComponent>(i);
-                groupBefore.add(nc->getNote());
-                groupAfter.add(nc->continueGroupScalingRight(groupScaleFactor));
+                groupBefore.add(noteComponent->getNote());
+                groupAfter.add(noteComponent->continueGroupScalingRight(groupScaleFactor));
             }
                 
-            getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
+            SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
         {
@@ -394,14 +385,13 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->checkpointIfNeeded();
             Array<Note> groupBefore, groupAfter;
                 
-            for (int i = 0; i < selection.getNumSelected(); ++i)
+            forEachSelectedNote(selection, noteComponent)
             {
-                const auto *nc = selection.getItemAs<NoteComponent>(i);
-                groupBefore.add(nc->getNote());
-                groupAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
+                groupBefore.add(noteComponent->getNote());
+                groupAfter.add(noteComponent->continueGroupScalingLeft(groupScaleFactor));
             }
                 
-            getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
+            SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
         {
@@ -459,14 +449,13 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             }
             
             Array<Note> groupBefore, groupAfter;
-            for (int i = 0; i < selection.getNumSelected(); ++i)
+            forEachSelectedNote(selection, noteComponent)
             {
-                const auto *nc = selection.getItemAs<NoteComponent>(i);
-                groupBefore.add(nc->getNote());
-                groupAfter.add(nc->continueDragging(deltaBeat, deltaKey, shouldSendMidi));
+                groupBefore.add(noteComponent->getNote());
+                groupAfter.add(noteComponent->continueDragging(deltaBeat, deltaKey, shouldSendMidi));
             }
                 
-            getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
+            SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
     }
     else if (this->state == State::Tuning)
@@ -474,15 +463,14 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         this->checkpointIfNeeded();
         
         Array<Note> groupBefore, groupAfter;
-        for (int i = 0; i < selection.getNumSelected(); ++i)
+        forEachSelectedNote(selection, noteComponent)
         {
-            const auto *nc = selection.getItemAs<NoteComponent>(i);
-            groupBefore.add(nc->getNote());
-            groupAfter.add(nc->continueTuning(e));
+            groupBefore.add(noteComponent->getNote());
+            groupAfter.add(noteComponent->continueTuning(e));
             this->getRoll().setDefaultNoteVolume(groupAfter.getLast().getVelocity());
         }
 
-        getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
+        SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
     }
 }
 
@@ -514,42 +502,37 @@ void NoteComponent::mouseUp(const MouseEvent &e)
 
     if (this->state == State::DraggingResizing)
     {
-        for (int i = 0; i < selection.getNumSelected(); i++)
+        forEachSelectedNote(selection, noteComponent)
         {
-            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-            nc->endDraggingResizing();
+            noteComponent->endDraggingResizing();
         }
     }
     else if (this->state == State::ResizingRight)
     {
-        for (int i = 0; i < selection.getNumSelected(); i++)
+        forEachSelectedNote(selection, noteComponent)
         {
-            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-            nc->endResizingRight();
+            noteComponent->endResizingRight();
         }
     }
     else if (this->state == State::ResizingLeft)
     {
-        for (int i = 0; i < selection.getNumSelected(); i++)
+        forEachSelectedNote(selection, noteComponent)
         {
-            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-            nc->endResizingLeft();
+            noteComponent->endResizingLeft();
         }
     }
     else if (this->state == State::GroupScalingRight)
     {
-        for (int i = 0; i < selection.getNumSelected(); i++)
+        forEachSelectedNote(selection, noteComponent)
         {
-            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-            nc->endGroupScalingRight();
+            noteComponent->endGroupScalingRight();
         }
     }
     else if (this->state == State::GroupScalingLeft)
     {
-        for (int i = 0; i < selection.getNumSelected(); i++)
+        forEachSelectedNote(selection, noteComponent)
         {
-            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-            nc->endGroupScalingLeft();
+            noteComponent->endGroupScalingLeft();
         }
     }
     else if (this->state == State::Dragging)
@@ -557,18 +540,16 @@ void NoteComponent::mouseUp(const MouseEvent &e)
         this->getRoll().hideDragHelpers();
         this->setFloatBounds(this->getRoll().getEventBounds(this));
         
-        for (int i = 0; i < selection.getNumSelected(); i++)
+        forEachSelectedNote(selection, noteComponent)
         {
-            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-            nc->endDragging(shouldSendMidi);
+            noteComponent->endDragging(shouldSendMidi);
         }
     }
     else if (this->state == State::Tuning)
     {
-        for (int i = 0; i < selection.getNumSelected(); i++)
+        forEachSelectedNote(selection, noteComponent)
         {
-            auto *note = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-            note->endTuning();
+            noteComponent->endTuning();
         }
 
         this->setMouseCursor(MouseCursor::NormalCursor);

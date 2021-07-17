@@ -45,7 +45,6 @@ struct SequencerOperations final
     static float findEndBeat(const Array<Note> &selection);
 
     static PianoSequence *getPianoSequence(const Lasso &selection);
-    static PianoSequence *getPianoSequence(const SelectionProxyArray::Ptr selection);
     static PianoSequence *getPianoSequence(const Clip &targetClip);
 
     static bool arpeggiate(Lasso &selection,

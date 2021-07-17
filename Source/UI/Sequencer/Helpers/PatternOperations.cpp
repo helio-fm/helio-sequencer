@@ -32,10 +32,10 @@
 #include "Lasso.h"
 #include "UndoActionIDs.h"
 
-static Pattern *getPattern(SelectionProxyArray::Ptr selection)
+Pattern *PatternOperations::getPattern(const Lasso &selection)
 {
-    const auto &firstClip = selection->getFirstAs<ClipComponent>()->getClip();
-    return firstClip.getPattern();
+    const auto *firstComponent = selection.getFirstAs<ClipComponent>();
+    return firstComponent->getClip().getPattern();
 }
 
 float PatternOperations::findStartBeat(const Lasso &selection)
@@ -205,33 +205,26 @@ void PatternOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, boo
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
 
-    for (const auto &s : selection.getGroupedSelections())
+    Array<Clip> groupBefore, groupAfter;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        const auto trackSelection(s.second);
-        Pattern *pattern = getPattern(trackSelection);
-        jassert(pattern);
-
-        const int numSelected = trackSelection->size();
-        Array<Clip> groupBefore, groupAfter;
-
-        for (int i = 0; i < numSelected; ++i)
-        {
-            auto *cc = static_cast<ClipComponent *>(trackSelection->getUnchecked(i));
-            groupBefore.add(cc->getClip());
-            groupAfter.add(cc->getClip().withDeltaBeat(deltaBeat));
-        }
-
-        if (groupBefore.size() > 0)
-        {
-            if (!didCheckpoint)
-            {
-                pattern->checkpoint(transactionId);
-                didCheckpoint = true;
-            }
-        }
-
-        pattern->changeGroup(groupBefore, groupAfter, true);
+        auto *cc = selection.getItemAs<ClipComponent>(i);
+        groupBefore.add(cc->getClip());
+        groupAfter.add(cc->getClip().withDeltaBeat(deltaBeat));
     }
+
+    auto *pattern = getPattern(selection);
+
+    if (groupBefore.size() > 0)
+    {
+        if (!didCheckpoint)
+        {
+            pattern->checkpoint(transactionId);
+            didCheckpoint = true;
+        }
+    }
+
+    pattern->changeGroup(groupBefore, groupAfter, true);
 }
 
 void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,

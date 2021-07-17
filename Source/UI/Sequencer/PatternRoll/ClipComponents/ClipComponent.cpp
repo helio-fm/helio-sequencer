@@ -24,12 +24,6 @@
 #include "CommandIDs.h"
 #include "ColourIDs.h"
 
-static Pattern *getSelectionPattern(SelectionProxyArray::Ptr selection)
-{
-    const auto &firstEvent = selection->getFirstAs<ClipComponent>()->getClip();
-    return firstEvent.getPattern();
-}
-
 ClipComponent::ClipComponent(RollBase &editor, const Clip &clip) :
     MidiEventComponent(editor),
     clip(clip),
@@ -99,9 +93,10 @@ const MidiEvent::Id ClipComponent::getId() const noexcept
 // Component
 //===----------------------------------------------------------------------===//
 
+// "if ... static_cast" is here only so the macro can use the if's scope
 #define forEachSelectedClip(lasso, child) \
     for (int _i = 0; _i < lasso.getNumSelected(); _i++) \
-        if (auto *child = dynamic_cast<ClipComponent *>(lasso.getSelectedItem(_i)))
+        if (auto *child = static_cast<ClipComponent *>(lasso.getSelectedItem(_i)))
 
 void ClipComponent::mouseDoubleClick(const MouseEvent &e)
 {
@@ -125,17 +120,17 @@ void ClipComponent::mouseDown(const MouseEvent &e)
     {
         this->dragger.startDraggingComponent(this, e);
 
-        forEachSelectedClip(selection, selectedClip)
+        forEachSelectedClip(selection, clipComponent)
         {
-            selectedClip->startDragging();
+            clipComponent->startDragging();
         }
     }
     else if (e.mods.isMiddleButtonDown())
     {
         this->setMouseCursor(MouseCursor::UpDownResizeCursor);
-        forEachSelectedClip(selection, selectedClip)
+        forEachSelectedClip(selection, clipComponent)
         {
-            selectedClip->startTuning();
+            clipComponent->startTuning();
         }
     }
 }
@@ -183,40 +178,26 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
                 this->getRoll().updateHighlightedInstances();
             }
 
-            for (const auto &s : selection.getGroupedSelections())
+            Array<Clip> groupDragBefore, groupDragAfter;
+            forEachSelectedClip(selection, clipComponent)
             {
-                const auto patternSelection(s.second);
-                Array<Clip> groupDragBefore, groupDragAfter;
-
-                for (int i = 0; i < patternSelection->size(); ++i)
-                {
-                    auto cc = static_cast<ClipComponent *>(patternSelection->getUnchecked(i));
-                    groupDragBefore.add(cc->getClip());
-                    groupDragAfter.add(cc->continueDragging(deltaBeat));
-                }
-
-                getSelectionPattern(patternSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                groupDragBefore.add(clipComponent->getClip());
+                groupDragAfter.add(clipComponent->continueDragging(deltaBeat));
             }
+            PatternOperations::getPattern(selection)->changeGroup(groupDragBefore, groupDragAfter, true);
         }
     }
     else if (this->state == State::Tuning)
     {
         this->checkpointIfNeeded();
 
-        for (const auto &s : selection.getGroupedSelections())
+        Array<Clip> groupBefore, groupAfter;
+        forEachSelectedClip(selection, clipComponent)
         {
-            const auto trackSelection(s.second);
-            Array<Clip> groupBefore, groupAfter;
-
-            for (int i = 0; i < trackSelection->size(); ++i)
-            {
-                const auto *nc = static_cast<ClipComponent *>(trackSelection->getUnchecked(i));
-                groupBefore.add(nc->getClip());
-                groupAfter.add(nc->continueTuning(e));
-            }
-
-            getSelectionPattern(trackSelection)->changeGroup(groupBefore, groupAfter, true);
+                groupBefore.add(clipComponent->getClip());
+                groupAfter.add(clipComponent->continueTuning(e));
         }
+        PatternOperations::getPattern(selection)->changeGroup(groupBefore, groupAfter, true);
     }
 }
 
@@ -241,18 +222,16 @@ void ClipComponent::mouseUp(const MouseEvent &e)
     {
         this->setFloatBounds(this->getRoll().getEventBounds(this));
 
-        for (int i = 0; i < selection.getNumSelected(); i++)
+        forEachSelectedClip(selection, clipComponent)
         {
-            auto *cc = static_cast<ClipComponent *>(selection.getSelectedItem(i));
-            cc->endDragging();
+            clipComponent->endDragging();
         }
     }
     else if (this->state == State::Tuning)
     {
-        for (int i = 0; i < selection.getNumSelected(); i++)
+        forEachSelectedClip(selection, clipComponent)
         {
-            auto *cc = static_cast<ClipComponent *>(selection.getSelectedItem(i));
-            cc->endTuning();
+            clipComponent->endTuning();
         }
 
         this->setMouseCursor(MouseCursor::NormalCursor);
