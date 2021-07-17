@@ -15,8 +15,9 @@ branches:
     - /^\d+\.?\d+\.?\d*$/
 
 stages:
-  - Test
-  - Deploy
+  - name: Test
+  - name: Deploy
+    if: type = push && fork = false
 
 addons_shortcuts:
   addons_gcc5: &gcc5
@@ -102,13 +103,13 @@ script:
   - if [[ "${BUILD_TYPE}" == "android" ]]; then
       cd Projects/Android && chmod +x gradlew && ./gradlew clean assembleRelease;
     fi
-  - if [[ "${BUILD_TYPE}" == "osx" && "${TRAVIS_PULL_REQUEST}" == "false" ]]; then
+  - if [[ "${BUILD_TYPE}" == "osx" ]]; then
       xcodebuild -project Projects/macOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
     fi
-  - if [[ "${BUILD_TYPE}" == "ios" && "${TRAVIS_PULL_REQUEST}" == "false" ]]; then
+  - if [[ "${BUILD_TYPE}" == "ios" ]]; then
       xcodebuild -project Projects/iOS/Helio.xcodeproj -configuration Release -scheme 'Helio - App' -archivePath /tmp/archive archive;
     fi
-  - if [[ "${BUILD_TYPE}" == "docs" && "${TRAVIS_PULL_REQUEST}" == "false" ]]; then
+  - if [[ "${BUILD_TYPE}" == "docs" ]]; then
       mdbook build Docs && mdbook test Docs;
     fi
 
