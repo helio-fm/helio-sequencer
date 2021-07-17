@@ -249,7 +249,7 @@ void RollHeader::setSoundProbeMode(bool shouldPreviewOnClick)
     }
 }
 
-void RollHeader::updateSubrangeIndicator(const Colour &colour, float firstBeat, float lastBeat)
+void RollHeader::updateClipRangeIndicator(const Colour &colour, float firstBeat, float lastBeat)
 {
     if (this->clipRangeIndicator == nullptr)
     {
@@ -259,11 +259,25 @@ void RollHeader::updateSubrangeIndicator(const Colour &colour, float firstBeat, 
 
     if (this->clipRangeIndicator->updateWith(colour, firstBeat, lastBeat))
     {
-        this->updateClipRangeIndicator();
+        this->updateClipRangeIndicatorPosition();
     }
 }
 
-void RollHeader::updateIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e)
+void RollHeader::updateSelectionRangeIndicator(const Colour &colour, float firstBeat, float lastBeat)
+{
+    if (this->selectionRangeIndicator == nullptr)
+    {
+        this->selectionRangeIndicator = make<DashedClipRangeIndicator>();
+        this->addAndMakeVisible(this->selectionRangeIndicator.get());
+    }
+
+    if (this->selectionRangeIndicator->updateWith(colour, firstBeat, lastBeat))
+    {
+        this->updateSelectionRangeIndicatorPosition();
+    }
+}
+
+void RollHeader::updateSoundProbeIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e)
 {
     const auto parentEvent = e.getEventRelativeTo(&this->roll);
     const float roundBeat = this->roll.getBeatByXPosition(float(parentEvent.x));
@@ -304,12 +318,21 @@ void RollHeader::updateTimeDistanceIndicator()
     this->timeDistanceIndicator->getTimeLabel()->setText(timeDeltaText, dontSendNotification);
 }
 
-void RollHeader::updateClipRangeIndicator()
+void RollHeader::updateClipRangeIndicatorPosition()
 {
     jassert(this->clipRangeIndicator != nullptr);
     const int x1 = this->roll.getXPositionByBeat(this->clipRangeIndicator->getFirstBeat());
     const int x2 = this->roll.getXPositionByBeat(this->clipRangeIndicator->getLastBeat());
     this->clipRangeIndicator->setBounds(x1, 0, x2 - x1 + 1, 1);
+}
+
+void RollHeader::updateSelectionRangeIndicatorPosition()
+{
+    jassert(this->selectionRangeIndicator != nullptr);
+    const bool clipRangeIsVisible = this->clipRangeIndicator->getWidth() > 0;
+    const int x1 = this->roll.getXPositionByBeat(this->selectionRangeIndicator->getFirstBeat());
+    const int x2 = this->roll.getXPositionByBeat(this->selectionRangeIndicator->getLastBeat());
+    this->selectionRangeIndicator->setBounds(x1, clipRangeIsVisible ? 2 : 0, x2 - x1 + 1, 1);
 }
 
 //===----------------------------------------------------------------------===//
@@ -325,7 +348,7 @@ void RollHeader::mouseDown(const MouseEvent &e)
         
         this->probeIndicator = make<SoundProbeIndicator>();
         this->roll.addAndMakeVisible(this->probeIndicator.get());
-        this->updateIndicatorPosition(this->probeIndicator.get(), e);
+        this->updateSoundProbeIndicatorPosition(this->probeIndicator.get(), e);
     }
     else
     {
@@ -374,7 +397,7 @@ void RollHeader::mouseDrag(const MouseEvent &e)
     {
         if (this->pointingIndicator != nullptr)
         {
-            this->updateIndicatorPosition(this->pointingIndicator.get(), e);
+            this->updateSoundProbeIndicatorPosition(this->pointingIndicator.get(), e);
 
             if (this->probeIndicator != nullptr)
             {
@@ -465,13 +488,13 @@ void RollHeader::mouseMove(const MouseEvent &e)
 {
     if (this->pointingIndicator != nullptr)
     {
-        this->updateIndicatorPosition(this->pointingIndicator.get(), e);
+        this->updateSoundProbeIndicatorPosition(this->pointingIndicator.get(), e);
     }
     else if (this->soundProbeMode.get())
     {
         this->pointingIndicator = make<SoundProbeIndicator>();
         this->roll.addAndMakeVisible(this->pointingIndicator.get());
-        this->updateIndicatorPosition(this->pointingIndicator.get(), e);
+        this->updateSoundProbeIndicatorPosition(this->pointingIndicator.get(), e);
     }
 }
 
@@ -556,7 +579,12 @@ void RollHeader::resized()
 {
     if (this->clipRangeIndicator != nullptr)
     {
-        this->updateClipRangeIndicator();
+        this->updateClipRangeIndicatorPosition();
+    }
+
+    if (this->selectionRangeIndicator != nullptr)
+    {
+        this->updateSelectionRangeIndicatorPosition();
     }
 
     this->loopMarkerStart->updatePosition();

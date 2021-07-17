@@ -80,7 +80,10 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
 {
     this->setComponentID(ComponentIDs::pianoRollId);
 
-    this->selectedNotesMenuManager = make<PianoRollSelectionMenuManager>(&this->selection, this->project);
+    this->selectedNotesMenuManager =
+        make<PianoRollSelectionMenuManager>(&this->selection, this->project);
+    this->selectionRangeIndicatorController =
+        make<PianoRollSelectionRangeIndicatorController>(&this->selection, *this);
 
     this->draggingHelper = make<HelperRectangleHorizontal>();
     this->addChildComponent(this->draggingHelper.get());
@@ -147,7 +150,7 @@ void PianoRoll::loadTrack(const MidiTrack *const track)
     }
 }
 
-void PianoRoll::updateActiveRangeIndicator() const
+void PianoRoll::updateClipRangeIndicator() const
 {
     if (this->activeTrack != nullptr)
     {
@@ -158,7 +161,7 @@ void PianoRoll::updateActiveRangeIndicator() const
             firstBeat + Globals::Defaults::emptyClipLength :
             sequence->getLastBeat();
 
-        this->header->updateSubrangeIndicator(this->activeTrack->getTrackColour(),
+        this->header->updateClipRangeIndicator(this->activeTrack->getTrackColour(),
             firstBeat + clipBeat, lastBeat + clipBeat);
     }
 }
@@ -484,6 +487,7 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
         // BUT I'm too lazy, and this is also way less code and should work a bit faster,
         // so here we go. Yet this particular line is a piece of shit:
         this->noteNameGuides->syncWithSelection(&this->selection);
+        this->selectionRangeIndicatorController->syncWithSelection();
     }
     else if (oldEvent.isTypeOf(MidiEvent::Type::KeySignature))
     {
@@ -651,7 +655,7 @@ void PianoRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 
         if (newClip == this->activeClip)
         {
-            this->updateActiveRangeIndicator();
+            this->updateClipRangeIndicator();
         }
 
         // Schedule batch repaint
@@ -681,7 +685,7 @@ void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
             component->updateColours();
         }
 
-        this->updateActiveRangeIndicator(); // colour might have changed
+        this->updateClipRangeIndicator(); // colour might have changed
         this->repaint();
     }
 }
@@ -690,7 +694,7 @@ void PianoRoll::onChangeTrackBeatRange(MidiTrack *const track)
 {
     if (track == this->activeTrack)
     {
-        this->updateActiveRangeIndicator();
+        this->updateClipRangeIndicator();
     }
 }
 
@@ -777,7 +781,7 @@ void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks, const P
 
 void PianoRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
-    this->updateActiveRangeIndicator();
+    this->updateClipRangeIndicator();
     RollBase::onChangeProjectBeatRange(firstBeat, lastBeat);
 }
 
@@ -826,7 +830,7 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
         }
     }
 
-    this->updateActiveRangeIndicator();
+    this->updateClipRangeIndicator();
 
     if (shouldFocus)
     {

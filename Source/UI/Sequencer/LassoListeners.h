@@ -21,9 +21,12 @@ class Lasso;
 class PianoRollMenuSource;
 class PatternRollMenuSource;
 class ProjectNode;
+class PianoRoll;
 
 #include "Icons.h"
 #include "HeadlineItemDataSource.h"
+
+// Menus
 
 class SelectionMenuManager : public ChangeListener
 {
@@ -32,9 +35,9 @@ public:
     SelectionMenuManager(WeakReference<Lasso> lasso, int minSelection);
     ~SelectionMenuManager() override;
 
-    void changeListenerCallback(ChangeBroadcaster *source) override;
-
 protected:
+
+    void changeListenerCallback(ChangeBroadcaster *source) override;
 
     UniquePointer<HeadlineItemDataSource> menu;
 
@@ -58,6 +61,27 @@ public:
     explicit PatternRollSelectionMenuManager(WeakReference<Lasso> lasso);
 };
 
+// Else helpers
+
+class PianoRollSelectionRangeIndicatorController final : public ChangeListener
+{
+public:
+
+    PianoRollSelectionRangeIndicatorController(WeakReference<Lasso> lasso, PianoRoll &roll);
+    ~PianoRollSelectionRangeIndicatorController() override;
+
+    void syncWithSelection();
+
+private:
+
+    void changeListenerCallback(ChangeBroadcaster *source) override;
+
+    WeakReference<Lasso> lasso;
+    PianoRoll &roll;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollSelectionRangeIndicatorController);
+};
+
 class PatternRollRecordingTargetController final : public ChangeListener
 {
 public:
@@ -65,9 +89,9 @@ public:
     PatternRollRecordingTargetController(WeakReference<Lasso> lasso, ProjectNode &project);
     ~PatternRollRecordingTargetController() override;
 
-    void changeListenerCallback(ChangeBroadcaster *source) override;
-
 private:
+
+    void changeListenerCallback(ChangeBroadcaster *source) override;
 
     WeakReference<Lasso> lasso;
     ProjectNode &project;

@@ -25,8 +25,11 @@
 #include "ProjectNode.h"
 #include "ProjectTimeline.h"
 #include "PianoClipComponent.h"
+#include "NoteComponent.h"
 #include "Pattern.h"
 #include "PatternRoll.h"
+#include "PianoRoll.h"
+#include "RollHeader.h"
 
 //===----------------------------------------------------------------------===//
 // Base class
@@ -56,9 +59,7 @@ SelectionMenuManager::~SelectionMenuManager()
 
 void SelectionMenuManager::changeListenerCallback(ChangeBroadcaster *source)
 {
-    Lasso *lasso = static_cast<Lasso *>(source);
-
-    if (lasso->getNumSelected() >= this->minNumberOfSelectedEvents)
+    if (this->lasso->getNumSelected() >= this->minNumberOfSelectedEvents)
     {
         App::Layout().showSelectionMenu(this->menu.get());
     }
@@ -159,6 +160,57 @@ PatternRollSelectionMenuManager::PatternRollSelectionMenuManager(WeakReference<L
 }
 
 //===----------------------------------------------------------------------===//
+// PianoRoll selection range dashed indicator
+//===----------------------------------------------------------------------===//
+
+// unlike the clip range indicator, this one is much simpler to manage separately
+PianoRollSelectionRangeIndicatorController::PianoRollSelectionRangeIndicatorController(
+    WeakReference<Lasso> lasso, PianoRoll &roll) :
+    lasso(lasso),
+    roll(roll)
+{
+    jassert(this->lasso != nullptr);
+
+    if (this->lasso != nullptr)
+    {
+        this->lasso->addChangeListener(this);
+    }
+}
+
+PianoRollSelectionRangeIndicatorController::~PianoRollSelectionRangeIndicatorController()
+{
+    jassert(this->lasso != nullptr);
+
+    if (this->lasso != nullptr)
+    {
+        this->lasso->removeChangeListener(this);
+    }
+}
+
+void PianoRollSelectionRangeIndicatorController::changeListenerCallback(ChangeBroadcaster *source)
+{
+    this->syncWithSelection();
+}
+
+void PianoRollSelectionRangeIndicatorController::syncWithSelection()
+{
+    const auto clipBeat = this->roll.getActiveClip().getBeat();
+    const auto numSelected = this->lasso->getNumSelected();
+
+    auto lastBeat = 0.f;
+    auto firstBeat = numSelected > 0 ? std::numeric_limits<float>::max() : 0.f;
+    for (int i = 0; i < numSelected; ++i)
+    {
+        auto *nc = this->lasso->getItemAs<NoteComponent>(i);
+        firstBeat = jmin(firstBeat, nc->getBeat() + clipBeat);
+        lastBeat = jmax(lastBeat, nc->getBeat() + nc->getLength() + clipBeat);
+    }
+
+    const auto colour = this->roll.getActiveClip().getTrackColour();
+    this->roll.getHeaderComponent()->updateSelectionRangeIndicator(colour, firstBeat, lastBeat);
+}
+
+//===----------------------------------------------------------------------===//
 // PatternRoll recording target logic
 //===----------------------------------------------------------------------===//
 
@@ -187,11 +239,8 @@ PatternRollRecordingTargetController::~PatternRollRecordingTargetController()
 
 void PatternRollRecordingTargetController::changeListenerCallback(ChangeBroadcaster *source)
 {
-    //jassert(dynamic_cast<Lasso *>(source));
-    const auto *selection = static_cast<Lasso *>(source);
-
     // bail out as early as possible
-    if (selection->getNumSelected() != 1)
+    if (this->lasso->getNumSelected() != 1)
     {
         this->project.setMidiRecordingTarget(nullptr, nullptr);
         return;
@@ -199,7 +248,7 @@ void PatternRollRecordingTargetController::changeListenerCallback(ChangeBroadcas
 
     // if the single piano clip is selected,
     // set it as the recording target, and mark it with red color
-    auto *cc = selection->getFirstAs<ClipComponent>();
+    auto *cc = this->lasso->getFirstAs<ClipComponent>();
     if (auto *pc = dynamic_cast<PianoClipComponent *>(cc))
     {
         if (this->project.getTransport().isRecording())

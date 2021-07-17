@@ -52,6 +52,8 @@ public:
         return (actionId * UndoActionIDs::MaxUndoActionId) + this->getId();
     }
     
+    // unchecked access and unchecked casts, not cool not cool
+    // todo pls pretty this up somehow someday
     template<typename T>
     T *getFirstAs() const
     {
@@ -59,7 +61,7 @@ public:
     }
 
     template<typename T>
-    T *getItemAs(const int index) const
+    T *getItemAs(int index) const
     {
         return static_cast<T *>(this->getSelectedItem(index));
     }

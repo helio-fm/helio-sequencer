@@ -17,7 +17,7 @@
 
 #pragma once
 
-class ClipRangeIndicator final : public Component
+class ClipRangeIndicator : public Component
 {
 public:
 
@@ -63,7 +63,7 @@ public:
         g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
     }
 
-private:
+protected:
 
     Colour paintColour;
     Colour trackColour;
@@ -71,4 +71,23 @@ private:
     float lastBeat = 0.f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ClipRangeIndicator)
+};
+
+class DashedClipRangeIndicator final : public ClipRangeIndicator
+{
+public:
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->paintColour);
+
+        float i = 1.f;
+        constexpr float dashLength = 4.f;
+        for (; i < this->getWidth() - dashLength; i += dashLength * 2.f)
+        {
+            g.fillRect(i, 0.f, dashLength, 1.f);
+        }
+
+        g.fillRect(i, 0.f, this->getWidth() - i + 1.f, 1.f);
+    }
 };

@@ -19,9 +19,9 @@
 
 class MidiSequence;
 class NoteComponent;
-class PianoRollSelectionMenuManager;
 class CommandPaletteChordConstructor;
 class CommandPaletteMoveNotesMenu;
+class PianoRollSelectionRangeIndicatorController;
 class HelperRectangle;
 class KnifeToolHelper;
 class NoteNameGuidesBar;
@@ -186,7 +186,7 @@ private:
     WeakReference<MidiTrack> activeTrack = nullptr;
     Clip activeClip;
 
-    void updateActiveRangeIndicator() const;
+    void updateClipRangeIndicator() const;
 
 private:
 
@@ -255,8 +255,10 @@ private:
     UniquePointer<NoteResizerLeft> noteResizerLeft;
     UniquePointer<NoteResizerRight> noteResizerRight;
 
-    UniquePointer<PianoRollSelectionMenuManager> selectedNotesMenuManager;
-    
+    // lasso listeners
+    UniquePointer<ChangeListener> selectedNotesMenuManager;
+    UniquePointer<PianoRollSelectionRangeIndicatorController> selectionRangeIndicatorController;
+
     UniquePointer<CommandPaletteMoveNotesMenu> consoleMoveNotesMenu;
     UniquePointer<CommandPaletteChordConstructor> consoleChordConstructor;
 

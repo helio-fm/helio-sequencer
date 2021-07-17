@@ -37,7 +37,9 @@ public:
     void showPopupMenu();
     void showRecordingMode(bool showRecordingMarker);
     void showLoopMode(bool hasLoop, float startBeat, float endBeat);
-    void updateSubrangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
+
+    void updateClipRangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
+    void updateSelectionRangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
 
     //===------------------------------------------------------------------===//
     // Component
@@ -73,6 +75,8 @@ protected:
     void updateColours();
 
     UniquePointer<ClipRangeIndicator> clipRangeIndicator;
+    UniquePointer<ClipRangeIndicator> selectionRangeIndicator;
+
     UniquePointer<SoundProbeIndicator> probeIndicator;
     UniquePointer<SoundProbeIndicator> pointingIndicator;
     UniquePointer<TimeDistanceIndicator> timeDistanceIndicator;
@@ -83,9 +87,10 @@ protected:
 
     static constexpr auto minTimeDistanceIndicatorSize = 40;
 
-    void updateIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e);
+    void updateSoundProbeIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e);
     double getUnalignedAnchorForEvent(const MouseEvent &e) const;
     void updateTimeDistanceIndicator();
-    void updateClipRangeIndicator();
+    void updateClipRangeIndicatorPosition();
+    void updateSelectionRangeIndicatorPosition();
 
 };

@@ -871,6 +871,11 @@ SelectionComponent *RollBase::getSelectionComponent() const noexcept
     return this->lassoComponent.get();
 }
 
+RollHeader * RollBase::getHeaderComponent() const noexcept
+{
+    return this->header.get();
+}
+
 //===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//

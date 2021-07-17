@@ -225,7 +225,8 @@ public:
     void deselectAll();
     
     SelectionComponent *getSelectionComponent() const noexcept;
-    
+    RollHeader *getHeaderComponent() const noexcept;
+
     //===------------------------------------------------------------------===//
     // ProjectListener
     //===------------------------------------------------------------------===//

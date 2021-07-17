@@ -267,7 +267,6 @@ void ClipComponent::paint(Graphics &g)
     {
         constexpr float dash = 4.f;
         constexpr float dash2 = dash * 2.f;
-        constexpr float halfDash = dash / 2.f;
         const auto right = w - 2.f;
         
         float i = 1.f;
