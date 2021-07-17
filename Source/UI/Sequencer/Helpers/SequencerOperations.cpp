@@ -249,9 +249,6 @@ bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint)
 bool applyPianoInsertions(const PianoChangeGroup &group, bool &didCheckpoint)
 { return applyInsertions<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, didCheckpoint); }
 
-bool applyAnnotationInsertions(const AnnotationChangeGroup &group, bool &didCheckpoint)
-{ return applyInsertions<AnnotationEvent, AnnotationsSequence, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(group, didCheckpoint); }
-
 bool applyAutoInsertions(const AutoChangeGroup &group, bool &didCheckpoint)
 { return applyInsertions<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint); }
 

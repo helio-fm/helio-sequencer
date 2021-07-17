@@ -32,12 +32,6 @@
 #include "Lasso.h"
 #include "UndoActionIDs.h"
 
-Pattern *PatternOperations::getPattern(const Lasso &selection)
-{
-    const auto *firstComponent = selection.getFirstAs<ClipComponent>();
-    return firstComponent->getClip().getPattern();
-}
-
 float PatternOperations::findStartBeat(const Lasso &selection)
 {
     if (selection.getNumSelected() == 0)
@@ -205,26 +199,19 @@ void PatternOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, boo
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
 
-    Array<Clip> groupBefore, groupAfter;
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         auto *cc = selection.getItemAs<ClipComponent>(i);
-        groupBefore.add(cc->getClip());
-        groupAfter.add(cc->getClip().withDeltaBeat(deltaBeat));
-    }
 
-    auto *pattern = getPattern(selection);
-
-    if (groupBefore.size() > 0)
-    {
+        auto *pattern = cc->getClip().getPattern();
         if (!didCheckpoint)
         {
             pattern->checkpoint(transactionId);
             didCheckpoint = true;
         }
-    }
 
-    pattern->changeGroup(groupBefore, groupAfter, true);
+        pattern->change(cc->getClip(), cc->getClip().withDeltaBeat(deltaBeat), true);
+    }
 }
 
 void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,

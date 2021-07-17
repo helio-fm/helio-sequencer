@@ -24,8 +24,6 @@ class Pattern;
 
 struct PatternOperations final
 {
-    static Pattern *getPattern(const Lasso &selection);
-
     static float findStartBeat(const Lasso &selection);
     static float findEndBeat(const Lasso &selection);
 

@@ -76,7 +76,6 @@ public:
         switch (this->type)
         {
         case Type::LoopStart:
-            
             g.fillRect(0, 1, 3, this->getHeight() - 2);
             g.fillRect(5, 1, 1, this->getHeight() - 2);
 
@@ -93,7 +92,6 @@ public:
             g.fillRect(6, 1, 1, this->getHeight() - 2);
             break;
         case Type::LoopEnd:
-
             const int x = this->getWidth();
 
             g.fillRect(x - 3, 1, 3, this->getHeight() - 2);

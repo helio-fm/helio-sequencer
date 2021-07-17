@@ -70,7 +70,7 @@ protected:
     float firstBeat = 0.f;
     float lastBeat = 0.f;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ClipRangeIndicator)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClipRangeIndicator)
 };
 
 class DashedClipRangeIndicator final : public ClipRangeIndicator

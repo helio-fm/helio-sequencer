@@ -21,7 +21,6 @@ class MidiSequence;
 class NoteComponent;
 class CommandPaletteChordConstructor;
 class CommandPaletteMoveNotesMenu;
-class PianoRollSelectionRangeIndicatorController;
 class HelperRectangle;
 class KnifeToolHelper;
 class NoteNameGuidesBar;
@@ -255,9 +254,7 @@ private:
     UniquePointer<NoteResizerLeft> noteResizerLeft;
     UniquePointer<NoteResizerRight> noteResizerRight;
 
-    // lasso listeners
-    UniquePointer<ChangeListener> selectedNotesMenuManager;
-    UniquePointer<PianoRollSelectionRangeIndicatorController> selectionRangeIndicatorController;
+    OwnedArray<ChangeListener> selectionListeners;
 
     UniquePointer<CommandPaletteMoveNotesMenu> consoleMoveNotesMenu;
     UniquePointer<CommandPaletteChordConstructor> consoleChordConstructor;

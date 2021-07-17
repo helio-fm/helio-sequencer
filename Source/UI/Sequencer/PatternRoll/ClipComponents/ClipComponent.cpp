@@ -178,26 +178,22 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
                 this->getRoll().updateHighlightedInstances();
             }
 
-            Array<Clip> groupDragBefore, groupDragAfter;
             forEachSelectedClip(selection, clipComponent)
             {
-                groupDragBefore.add(clipComponent->getClip());
-                groupDragAfter.add(clipComponent->continueDragging(deltaBeat));
+                clipComponent->getClip().getPattern()->change(clipComponent->getClip(),
+                    clipComponent->continueDragging(deltaBeat), true);
             }
-            PatternOperations::getPattern(selection)->changeGroup(groupDragBefore, groupDragAfter, true);
         }
     }
     else if (this->state == State::Tuning)
     {
         this->checkpointIfNeeded();
 
-        Array<Clip> groupBefore, groupAfter;
         forEachSelectedClip(selection, clipComponent)
         {
-                groupBefore.add(clipComponent->getClip());
-                groupAfter.add(clipComponent->continueTuning(e));
+            clipComponent->getClip().getPattern()->change(clipComponent->getClip(),
+                clipComponent->continueTuning(e), true);
         }
-        PatternOperations::getPattern(selection)->changeGroup(groupBefore, groupAfter, true);
     }
 }
 

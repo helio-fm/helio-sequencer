@@ -70,8 +70,6 @@ public:
     PianoRollSelectionRangeIndicatorController(WeakReference<Lasso> lasso, PianoRoll &roll);
     ~PianoRollSelectionRangeIndicatorController() override;
 
-    void syncWithSelection();
-
 private:
 
     void changeListenerCallback(ChangeBroadcaster *source) override;

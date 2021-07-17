@@ -80,10 +80,8 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
 {
     this->setComponentID(ComponentIDs::pianoRollId);
 
-    this->selectedNotesMenuManager =
-        make<PianoRollSelectionMenuManager>(&this->selection, this->project);
-    this->selectionRangeIndicatorController =
-        make<PianoRollSelectionRangeIndicatorController>(&this->selection, *this);
+    this->selectionListeners.add(new PianoRollSelectionMenuManager(&this->selection, this->project));
+    this->selectionListeners.add(new PianoRollSelectionRangeIndicatorController(&this->selection, *this));
 
     this->draggingHelper = make<HelperRectangleHorizontal>();
     this->addChildComponent(this->draggingHelper.get());
@@ -481,13 +479,9 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
             }
         }
 
-        // FIXME someday please: this is a kind of a really nasty hack,
-        // and instead the guides bar should subscribe on project changes on its own,
-        // and keep track of selected notes and change visible note guides positions,
-        // BUT I'm too lazy, and this is also way less code and should work a bit faster,
-        // so here we go. Yet this particular line is a piece of shit:
-        this->noteNameGuides->syncWithSelection(&this->selection);
-        this->selectionRangeIndicatorController->syncWithSelection();
+        // Send fake "selection changed" event: I want selection listeners
+        // to observe changes in position of the selected events:
+        this->selection.sendChangeMessage();
     }
     else if (oldEvent.isTypeOf(MidiEvent::Type::KeySignature))
     {

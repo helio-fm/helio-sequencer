@@ -189,11 +189,6 @@ PianoRollSelectionRangeIndicatorController::~PianoRollSelectionRangeIndicatorCon
 
 void PianoRollSelectionRangeIndicatorController::changeListenerCallback(ChangeBroadcaster *source)
 {
-    this->syncWithSelection();
-}
-
-void PianoRollSelectionRangeIndicatorController::syncWithSelection()
-{
     const auto clipBeat = this->roll.getActiveClip().getBeat();
     const auto numSelected = this->lasso->getNumSelected();
 

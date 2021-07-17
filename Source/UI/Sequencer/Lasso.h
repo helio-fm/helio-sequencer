@@ -38,7 +38,7 @@ public:
     Rectangle<int> getSelectionBounds() const noexcept;
 
     // Transaction identifier, and why is it needed:
-    // Some actions, like dragging notes around, are performed in a single undo transaction,
+    // some actions, like dragging notes around, are performed in a single undo transaction,
     // but, unlike mouse dragging (where it's clear when to start and when to end a transaction),
     // hotkey-handled actions will always do a checkpoint at every keypress, so that
     // pressing `cursor down` 5 times and `cursor up` 3 times will result in 8 undo actions,

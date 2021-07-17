@@ -148,11 +148,6 @@ float MidiSequence::findLastBeat() const noexcept
 
 float MidiSequence::getLengthInBeats() const noexcept
 {
-    if (this->midiEvents.size() == 0)
-    {
-        return 0;
-    }
-
     return this->getLastBeat() - this->getFirstBeat();
 }
 
