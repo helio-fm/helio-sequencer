@@ -1424,7 +1424,7 @@
       </MODULEPATHS>
     </XCODE_IPHONE>
     <VS2015 targetFolder="../../Projects/VisualStudio2015" smallIcon="DQTpOG"
-            bigIcon="DQTpOG" toolset="v140_xp" IPPLibrary="" usePrecompiledHeaders="1"
+            bigIcon="DQTpOG" toolset="v140" IPPLibrary="" usePrecompiledHeaders="1"
             precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
             windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC /Gy /bigobj /Zm123">
       <CONFIGURATIONS>
