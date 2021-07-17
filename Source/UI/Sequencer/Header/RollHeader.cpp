@@ -327,10 +327,10 @@ void RollHeader::updateClipRangeIndicatorPosition()
 void RollHeader::updateSelectionRangeIndicatorPosition()
 {
     jassert(this->selectionRangeIndicator != nullptr);
-    const bool clipRangeIsVisible = this->clipRangeIndicator->getWidth() > 0;
+    const bool hasClipRangeDisplayed = this->clipRangeIndicator != nullptr;
     const int x1 = this->roll.getXPositionByBeat(this->selectionRangeIndicator->getFirstBeat());
     const int x2 = this->roll.getXPositionByBeat(this->selectionRangeIndicator->getLastBeat());
-    this->selectionRangeIndicator->setBounds(x1, clipRangeIsVisible ? 2 : 0, x2 - x1 + 1, 1);
+    this->selectionRangeIndicator->setBounds(x1, hasClipRangeDisplayed ? 2 : 0, x2 - x1 + 1, 1);
 }
 
 //===----------------------------------------------------------------------===//

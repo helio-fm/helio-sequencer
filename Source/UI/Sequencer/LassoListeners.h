@@ -22,6 +22,7 @@ class PianoRollMenuSource;
 class PatternRollMenuSource;
 class ProjectNode;
 class PianoRoll;
+class PatternRoll;
 
 #include "Icons.h"
 #include "HeadlineItemDataSource.h"
@@ -78,6 +79,23 @@ private:
     PianoRoll &roll;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollSelectionRangeIndicatorController);
+};
+
+class PatternRollSelectionRangeIndicatorController final : public ChangeListener
+{
+public:
+
+    PatternRollSelectionRangeIndicatorController(WeakReference<Lasso> lasso, PatternRoll &roll);
+    ~PatternRollSelectionRangeIndicatorController() override;
+
+private:
+
+    void changeListenerCallback(ChangeBroadcaster *source) override;
+
+    WeakReference<Lasso> lasso;
+    PatternRoll &roll;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollSelectionRangeIndicatorController);
 };
 
 class PatternRollRecordingTargetController final : public ChangeListener

@@ -82,10 +82,11 @@ PatternRoll::PatternRoll(ProjectNode &parentProject,
     WeakReference<AudioMonitor> clippingDetector) :
     RollBase(parentProject, viewportRef, clippingDetector, false, false, true)
 {
+    this->setComponentID(ComponentIDs::patternRollId);
+
     this->selectionListeners.add(new PatternRollSelectionMenuManager(&this->selection));
     this->selectionListeners.add(new PatternRollRecordingTargetController(&this->selection, parentProject));
-
-    this->setComponentID(ComponentIDs::patternRollId);
+    this->selectionListeners.add(new PatternRollSelectionRangeIndicatorController(&this->selection, *this));
 
     this->repaintBackgroundsCache();
     this->reloadRollContent();
@@ -416,6 +417,10 @@ void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 
         this->batchRepaintList.add(component);
         this->triggerAsyncUpdate();
+
+        // Send fake "selection changed" event: I want selection listeners
+        // to observe changes in position of the selected clips:
+        this->selection.sendChangeMessage();
     }
 }
 

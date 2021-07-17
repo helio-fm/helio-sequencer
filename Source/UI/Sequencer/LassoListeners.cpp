@@ -160,7 +160,7 @@ PatternRollSelectionMenuManager::PatternRollSelectionMenuManager(WeakReference<L
 }
 
 //===----------------------------------------------------------------------===//
-// PianoRoll selection range dashed indicator
+// Roll selection range dashed indicators
 //===----------------------------------------------------------------------===//
 
 // unlike the clip range indicator, this one is much simpler to manage separately
@@ -202,6 +202,49 @@ void PianoRollSelectionRangeIndicatorController::changeListenerCallback(ChangeBr
     }
 
     const auto colour = this->roll.getActiveClip().getTrackColour();
+    this->roll.getHeaderComponent()->updateSelectionRangeIndicator(colour, firstBeat, lastBeat);
+}
+
+PatternRollSelectionRangeIndicatorController::PatternRollSelectionRangeIndicatorController(
+    WeakReference<Lasso> lasso, PatternRoll &roll) :
+    lasso(lasso),
+    roll(roll)
+{
+    jassert(this->lasso != nullptr);
+
+    if (this->lasso != nullptr)
+    {
+        this->lasso->addChangeListener(this);
+    }
+}
+
+PatternRollSelectionRangeIndicatorController::~PatternRollSelectionRangeIndicatorController()
+{
+    jassert(this->lasso != nullptr);
+
+    if (this->lasso != nullptr)
+    {
+        this->lasso->removeChangeListener(this);
+    }
+}
+
+void PatternRollSelectionRangeIndicatorController::changeListenerCallback(ChangeBroadcaster *source)
+{
+    const auto numSelected = this->lasso->getNumSelected();
+
+    auto lastBeat = 0.f;
+    auto firstBeat = numSelected > 0 ? std::numeric_limits<float>::max() : 0.f;
+
+    Colour colour;
+    for (int i = 0; i < numSelected; ++i)
+    {
+        const auto *cc = this->lasso->getItemAs<ClipComponent>(i);
+        const auto *sequence = cc->getClip().getPattern()->getTrack()->getSequence();
+        firstBeat = jmin(firstBeat, cc->getBeat() + sequence->getFirstBeat());
+        lastBeat = jmax(lastBeat, cc->getBeat() + sequence->getLengthInBeats() + sequence->getFirstBeat());
+        colour = colour.interpolatedWith(cc->getClip().getTrackColour(), 1.f / float(i + 1));
+    }
+
     this->roll.getHeaderComponent()->updateSelectionRangeIndicator(colour, firstBeat, lastBeat);
 }
 
