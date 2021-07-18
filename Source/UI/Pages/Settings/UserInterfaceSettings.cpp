@@ -123,15 +123,23 @@ UserInterfaceSettings::UserInterfaceSettings()
         this->updateButtons();
     };
 
-    this->wheelAltDirectionButton = make<ToggleButton>(TRANS(I18n::Settings::mouseWheelVerticalByDefault));
-    this->addAndMakeVisible(this->wheelAltDirectionButton.get());
-    this->wheelAltDirectionButton->onClick = [this]()
+    this->wheelVerticalPanningButton = make<ToggleButton>(TRANS(I18n::Settings::mouseWheelVerticalPanningByDefault));
+    this->addAndMakeVisible(this->wheelVerticalPanningButton.get());
+    this->wheelVerticalPanningButton->onClick = [this]()
     {
-        App::Config().getUiFlags()->setMouseWheelUseVerticalDirectionByDefault(this->wheelAltDirectionButton->getToggleState());
+        App::Config().getUiFlags()->setMouseWheelUseVerticalPanningByDefault(this->wheelVerticalPanningButton->getToggleState());
+        this->updateButtons();
+    };
+    
+    this->wheelVerticalZoomingButton = make<ToggleButton>(TRANS(I18n::Settings::mouseWheelVerticalZoomingByDefault));
+    this->addAndMakeVisible(this->wheelVerticalZoomingButton.get());
+    this->wheelVerticalZoomingButton->onClick = [this]()
+    {
+        App::Config().getUiFlags()->setMouseWheelUseVerticalZoomingByDefault(this->wheelVerticalZoomingButton->getToggleState());
         this->updateButtons();
     };
 
-    this->setSize(100, 260);
+    this->setSize(100, 296);
 }
 
 UserInterfaceSettings::~UserInterfaceSettings() = default;
@@ -163,8 +171,11 @@ void UserInterfaceSettings::resized()
     this->wheelAltModeButton->setBounds(margin2,
         this->separator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
-    this->wheelAltDirectionButton->setBounds(margin2,
+    this->wheelVerticalPanningButton->setBounds(margin2,
         this->wheelAltModeButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+
+    this->wheelVerticalZoomingButton->setBounds(margin2,
+        this->wheelVerticalPanningButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 }
 
 void UserInterfaceSettings::visibilityChanged()
@@ -205,5 +216,6 @@ void UserInterfaceSettings::updateButtons()
 
     const auto wheelFlags = uiFlags->getMouseWheelFlags();
     this->wheelAltModeButton->setToggleState(wheelFlags.usePanningByDefault, dontSendNotification);
-    this->wheelAltDirectionButton->setToggleState(wheelFlags.useVerticalDirectionByDefault, dontSendNotification);
+    this->wheelVerticalPanningButton->setToggleState(wheelFlags.useVerticalPanningByDefault, dontSendNotification);
+    this->wheelVerticalZoomingButton->setToggleState(wheelFlags.useVerticalZoomingByDefault, dontSendNotification);
 }

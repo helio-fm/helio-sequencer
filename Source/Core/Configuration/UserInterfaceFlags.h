@@ -29,8 +29,10 @@ public:
 
     struct MouseWheelFlags final
     {
+        // todo other defaults?
         bool usePanningByDefault = false;
-        bool useVerticalDirectionByDefault = false;
+        bool useVerticalPanningByDefault = false;
+        bool useVerticalZoomingByDefault = false;
     };
 
     class Listener
@@ -89,7 +91,8 @@ public:
     void setUiAnimationsEnabled(bool enabled);
 
     void setMouseWheelUsePanningByDefault(bool usePanning);
-    void setMouseWheelUseVerticalDirectionByDefault(bool useVerticalDirection);
+    void setMouseWheelUseVerticalPanningByDefault(bool useVerticalPanning);
+    void setMouseWheelUseVerticalZoomingByDefault(bool useVerticalZooming);
     MouseWheelFlags getMouseWheelFlags() const noexcept;
 
     //===------------------------------------------------------------------===//

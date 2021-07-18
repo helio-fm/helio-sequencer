@@ -170,14 +170,26 @@ void UserInterfaceFlags::setMouseWheelUsePanningByDefault(bool usePanning)
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
-void UserInterfaceFlags::setMouseWheelUseVerticalDirectionByDefault(bool useVerticalDirection)
+void UserInterfaceFlags::setMouseWheelUseVerticalPanningByDefault(bool useVerticalPanning)
 {
-    if (this->mouseWheelFlags.useVerticalDirectionByDefault == useVerticalDirection)
+    if (this->mouseWheelFlags.useVerticalPanningByDefault == useVerticalPanning)
     {
         return;
     }
 
-    this->mouseWheelFlags.useVerticalDirectionByDefault = useVerticalDirection;
+    this->mouseWheelFlags.useVerticalPanningByDefault = useVerticalPanning;
+    this->listeners.call(&Listener::onMouseWheelFlagsChanged, this->mouseWheelFlags);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
+void UserInterfaceFlags::setMouseWheelUseVerticalZoomingByDefault(bool useVerticalZooming)
+{
+    if (this->mouseWheelFlags.useVerticalZoomingByDefault == useVerticalZooming)
+    {
+        return;
+    }
+
+    this->mouseWheelFlags.useVerticalZoomingByDefault = useVerticalZooming;
     this->listeners.call(&Listener::onMouseWheelFlagsChanged, this->mouseWheelFlags);
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
@@ -203,8 +215,9 @@ SerializedData UserInterfaceFlags::serialize() const
     tree.setProperty(UI::Flags::animations, this->rollAnimationsEnabled);
     tree.setProperty(UI::Flags::showFullProjectMap, this->fullProjectMapVisible);
 
-    tree.setProperty(UI::Flags::mouseWheelPanningByDefault, this->mouseWheelFlags.usePanningByDefault);
-    tree.setProperty(UI::Flags::mouseWheelVerticalByDefault, this->mouseWheelFlags.useVerticalDirectionByDefault);
+    tree.setProperty(UI::Flags::mouseWheelAltMode, this->mouseWheelFlags.usePanningByDefault);
+    tree.setProperty(UI::Flags::mouseWheelVerticalPanningByDefault, this->mouseWheelFlags.useVerticalPanningByDefault);
+    tree.setProperty(UI::Flags::mouseWheelVerticalZoomingByDefault, this->mouseWheelFlags.useVerticalZoomingByDefault);
     // skips experimentalFeaturesOn, it's read only
 
     return tree;
@@ -230,10 +243,15 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->fullProjectMapVisible = root.getProperty(UI::Flags::showFullProjectMap, this->fullProjectMapVisible);
 
     this->mouseWheelFlags.usePanningByDefault =
-        root.getProperty(UI::Flags::mouseWheelPanningByDefault, this->mouseWheelFlags.usePanningByDefault);
-    this->mouseWheelFlags.useVerticalDirectionByDefault =
-        root.getProperty(UI::Flags::mouseWheelVerticalByDefault, this->mouseWheelFlags.useVerticalDirectionByDefault);
-    
+        root.getProperty(UI::Flags::mouseWheelAltMode, this->mouseWheelFlags.usePanningByDefault);
+
+    // todo remove this key in future versions
+    const auto legacyAltDirection = root.getProperty(UI::Flags::mouseWheelAltDirection, false);
+    this->mouseWheelFlags.useVerticalPanningByDefault =
+        root.getProperty(UI::Flags::mouseWheelVerticalPanningByDefault, legacyAltDirection);
+    this->mouseWheelFlags.useVerticalZoomingByDefault =
+        root.getProperty(UI::Flags::mouseWheelVerticalZoomingByDefault, legacyAltDirection);
+
     this->velocityMapVisible = false; // not serializing that
 
     this->experimentalFeaturesOn = root.getProperty(UI::Flags::experimentalFeaturesOn, this->experimentalFeaturesOn);

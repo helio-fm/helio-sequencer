@@ -288,7 +288,8 @@ namespace I18n
         static constexpr auto nativeTitleBar = constexprHash("settings::ui::nativebar");
         static constexpr auto uiAnimations = constexprHash("settings::ui::animations");
         static constexpr auto mouseWheelPanningByDefault = constexprHash("settings::ui::wheel::panning");
-        static constexpr auto mouseWheelVerticalByDefault = constexprHash("settings::ui::wheel::vertical");
+        static constexpr auto mouseWheelVerticalPanningByDefault = constexprHash("settings::ui::wheel::verticalpan");
+        static constexpr auto mouseWheelVerticalZoomingByDefault = constexprHash("settings::ui::wheel::verticalzoom");
     }
 
     namespace Tree

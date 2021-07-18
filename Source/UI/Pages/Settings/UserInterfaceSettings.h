@@ -43,7 +43,8 @@ private:
     UniquePointer<ToggleButton> animationsEnabledButton;
     UniquePointer<SeparatorHorizontal> separator;
     UniquePointer<ToggleButton> wheelAltModeButton;
-    UniquePointer<ToggleButton> wheelAltDirectionButton;
+    UniquePointer<ToggleButton> wheelVerticalPanningButton;
+    UniquePointer<ToggleButton> wheelVerticalZoomingButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UserInterfaceSettings)
 };

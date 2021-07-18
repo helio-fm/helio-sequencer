@@ -1080,25 +1080,26 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
 {
     // TODO check if any operation is in progress (lasso drag, knife tool drag, etc)
 
-    // holding shift means using vertical direction instead of horizontal
-    // (or horizontal instead of vertical, depending on ui settings/defaults)
-    const bool alternativeDirection =
-        this->mouseWheelFlags.useVerticalDirectionByDefault != event.mods.isShiftDown();
-
     // holding control/command/alt means using panning instead of zooming
     // (or zooming instead of panning, depending on ui settings/defaults)
-    const bool alternativeMode = this->mouseWheelFlags.usePanningByDefault !=
+    const bool panningMode = this->mouseWheelFlags.usePanningByDefault !=
         (event.mods.isCtrlDown() || event.mods.isCommandDown() || event.mods.isAltDown());
 
-    if (alternativeMode)
+    if (panningMode)
     {
         this->smoothZoomController->cancelZoom();
+        
+        // holding shift means using vertical direction instead of horizontal
+        // (or horizontal instead of vertical, depending on ui settings/defaults)
+        const bool verticalPanning =
+            this->mouseWheelFlags.useVerticalPanningByDefault != event.mods.isShiftDown();
+
         const auto initialSpeed = this->smoothPanController->getInitialSpeed();
 
         // the pattern roll almost always doesn't have that much rows to be able
         // to pan vertically, so for convenience we'll fallback to horizontal panning:
         const bool canPanVertically = this->getHeight() > this->viewport.getViewHeight();
-        if (alternativeDirection && canPanVertically)
+        if (verticalPanning && canPanVertically)
         {
             // let's try to make the panning speed feel consistent, regardless
             // of the zoom level - slower when zoomed out, faster when zoomed in;
@@ -1122,11 +1123,16 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
     {
         this->smoothPanController->cancelPan();
 
+        // holding shift means using vertical direction instead of horizontal
+        // (or horizontal instead of vertical, depending on ui settings/defaults)
+        const bool verticalZooming =
+            this->mouseWheelFlags.useVerticalZoomingByDefault != event.mods.isShiftDown();
+
         const float zoomSpeed = this->smoothZoomController->getInitialSpeed();
         const float zoomDelta = wheel.deltaY * (wheel.isReversed ? -zoomSpeed : zoomSpeed);
         const auto mouseOffset = (event.position - this->viewport.getViewPosition().toFloat());
 
-        if (alternativeDirection)
+        if (verticalZooming)
         {
             this->startSmoothZoom(mouseOffset, { 0.f, zoomDelta });
         }
