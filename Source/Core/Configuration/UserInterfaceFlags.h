@@ -29,9 +29,8 @@ public:
 
     struct MouseWheelFlags final
     {
-        // todo other defaults?
-        bool usePanningByDefault = false;
-        bool useVerticalPanningByDefault = false;
+        bool usePanningByDefault = true;
+        bool useVerticalPanningByDefault = true;
         bool useVerticalZoomingByDefault = false;
     };
 

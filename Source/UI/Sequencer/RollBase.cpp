@@ -1136,7 +1136,7 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
         const float zoomSpeed = this->smoothZoomController->getInitialSpeed();
         const float zoomDeltaY = wheel.deltaY * (wheel.isReversed ? -zoomSpeed : zoomSpeed);
         const float zoomDeltaX = wheel.deltaX * (wheel.isReversed ? -zoomSpeed : zoomSpeed);
-        const auto mouseOffset = (event.position - this->viewport.getViewPosition().toFloat());
+        const auto mouseOffset = event.position - this->viewport.getViewPosition().toFloat();
 
         if (globalZooming)
         {
