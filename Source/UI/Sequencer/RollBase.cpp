@@ -1096,27 +1096,31 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
 
         const auto initialSpeed = this->smoothPanController->getInitialSpeed();
 
+        // let's try to make the panning speed feel consistent, regardless
+        // of the zoom level - slower when zoomed out, faster when zoomed in;
+        const auto viewHeight = float(this->viewport.getViewHeight());
+        const float panSpeedVertical = jmin(initialSpeed * 2.5f,
+            initialSpeed * float(this->getHeight()) / viewHeight);
+        // but also not too fast, with the half screen width as the upper speed limit:
+        const auto viewWidth = float(this->viewport.getViewWidth());
+        const float panSpeedHorizontal = jmin(viewWidth / 2.f,
+            initialSpeed * float(this->getWidth()) / viewWidth);
+        
         // the pattern roll almost always doesn't have that much rows to be able
         // to pan vertically, so for convenience we'll fallback to horizontal panning:
         const bool canPanVertically = this->getHeight() > this->viewport.getViewHeight();
+
         if (verticalPanning && canPanVertically)
         {
-            // let's try to make the panning speed feel consistent, regardless
-            // of the zoom level - slower when zoomed out, faster when zoomed in;
-            const auto viewHeight = float(this->viewport.getViewHeight());
-            const float panSpeed = jmin(initialSpeed * 2.5f,
-                initialSpeed * float(this->getHeight()) / viewHeight);
-            const float panDelta = wheel.deltaY * (wheel.isReversed ? panSpeed : -panSpeed);
-            this->smoothPanController->panByOffset({ 0.f, panDelta });
+            const float panDeltaY = wheel.deltaY * (wheel.isReversed ? panSpeedVertical : -panSpeedVertical);
+            const float panDeltaX = wheel.deltaX * (wheel.isReversed ? panSpeedHorizontal : -panSpeedHorizontal);
+            this->smoothPanController->panByOffset({ panDeltaX, panDeltaY });
         }
         else
         {
-            // but also not too fast, with the half screen width as the upper speed limit:
-            const auto viewWidth = float(this->viewport.getViewWidth());
-            const float panSpeed = jmin(viewWidth / 2.f,
-                initialSpeed * float(this->getWidth()) / viewWidth);
-            const float panDelta = wheel.deltaY * (wheel.isReversed ? panSpeed : -panSpeed);
-            this->smoothPanController->panByOffset({ panDelta, 0.f });
+            const float panDeltaY = wheel.deltaY * (wheel.isReversed ? panSpeedHorizontal : -panSpeedHorizontal);
+            const float panDeltaX = wheel.deltaX * (wheel.isReversed ? panSpeedVertical : -panSpeedVertical);
+            this->smoothPanController->panByOffset({ panDeltaY, panDeltaX });
         }
     }
     else
@@ -1129,16 +1133,17 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
             this->mouseWheelFlags.useVerticalZoomingByDefault != event.mods.isShiftDown();
 
         const float zoomSpeed = this->smoothZoomController->getInitialSpeed();
-        const float zoomDelta = wheel.deltaY * (wheel.isReversed ? -zoomSpeed : zoomSpeed);
+        const float zoomDeltaY = wheel.deltaY * (wheel.isReversed ? -zoomSpeed : zoomSpeed);
+        const float zoomDeltaX = wheel.deltaX * (wheel.isReversed ? -zoomSpeed : zoomSpeed);
         const auto mouseOffset = (event.position - this->viewport.getViewPosition().toFloat());
 
         if (verticalZooming)
         {
-            this->startSmoothZoom(mouseOffset, { 0.f, zoomDelta });
+            this->startSmoothZoom(mouseOffset, { zoomDeltaX, zoomDeltaY });
         }
         else
         {
-            this->startSmoothZoom(mouseOffset, { zoomDelta, 0.f });
+            this->startSmoothZoom(mouseOffset, { zoomDeltaY, zoomDeltaX });
         }
     }
 }
