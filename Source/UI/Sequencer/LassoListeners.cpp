@@ -192,7 +192,7 @@ void PianoRollSelectionRangeIndicatorController::changeListenerCallback(ChangeBr
     const auto clipBeat = this->roll.getActiveClip().getBeat();
     const auto numSelected = this->lasso->getNumSelected();
 
-    auto lastBeat = 0.f;
+    auto lastBeat = numSelected > 0 ? std::numeric_limits<float>::lowest() : 0.f;
     auto firstBeat = numSelected > 0 ? std::numeric_limits<float>::max() : 0.f;
     for (int i = 0; i < numSelected; ++i)
     {
@@ -232,7 +232,7 @@ void PatternRollSelectionRangeIndicatorController::changeListenerCallback(Change
 {
     const auto numSelected = this->lasso->getNumSelected();
 
-    auto lastBeat = 0.f;
+    auto lastBeat = numSelected > 0 ? std::numeric_limits<float>::lowest() : 0.f;
     auto firstBeat = numSelected > 0 ? std::numeric_limits<float>::max() : 0.f;
 
     Colour colour;

@@ -27,6 +27,12 @@ class PatternRoll;
 #include "Icons.h"
 #include "HeadlineItemDataSource.h"
 
+// Lasso listeners will receive callbacks not only when the selection changes,
+// i.e. when events are added to or removed from the selection,
+// but also when the selected events have (possibly) changed, e.g. notes changed positions;
+// those changes will be coalesced into fewer callbacks, as usual in ChangeListener.
+// This lasso listener's contract extension surely smells like hack, but it's quite useful.
+
 // Menus
 
 class SelectionMenuManager : public ChangeListener

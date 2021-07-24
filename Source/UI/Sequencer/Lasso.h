@@ -66,6 +66,18 @@ public:
         return static_cast<T *>(this->getSelectedItem(index));
     }
 
+    // I want selection listeners to observe changes in position
+    // of the selected events, hence this hack. For speed we don't
+    // even check if the changed item is in selection or not
+    // (see also the comment in LassoListeners.h)
+    void onSelectableItemChanged()
+    {
+        if (this->getNumSelected() > 0)
+        {
+            this->sendChangeMessage();
+        }
+    }
+
 private:
 
     Rectangle<int> bounds;

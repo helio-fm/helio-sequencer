@@ -888,6 +888,8 @@ void RollBase::onChangeMidiEvent(const MidiEvent &event, const MidiEvent &newEve
         this->updateChildrenBounds();
         this->repaint();
     }
+
+    this->selection.onSelectableItemChanged(); // sends fake "selection changed" message
 }
 
 void RollBase::onAddMidiEvent(const MidiEvent &event)
@@ -906,6 +908,11 @@ void RollBase::onRemoveMidiEvent(const MidiEvent &event)
         this->updateChildrenBounds();
         this->repaint();
     }
+}
+
+void RollBase::onChangeClip(const Clip &clip, const Clip &newClip)
+{
+    this->selection.onSelectableItemChanged(); // sends fake "selection changed" message
 }
 
 void RollBase::onChangeProjectBeatRange(float newFirstBeat, float newLastBeat)

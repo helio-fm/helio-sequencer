@@ -478,10 +478,6 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
                 this->triggerBatchRepaintFor(component);
             }
         }
-
-        // Send fake "selection changed" event: I want selection listeners
-        // to observe changes in position of the selected events:
-        this->selection.sendChangeMessage();
     }
     else if (oldEvent.isTypeOf(MidiEvent::Type::KeySignature))
     {
@@ -655,6 +651,8 @@ void PianoRoll::onChangeClip(const Clip &clip, const Clip &newClip)
         // Schedule batch repaint
         this->triggerAsyncUpdate();
     }
+
+    RollBase::onChangeClip(clip, newClip);
 }
 
 void PianoRoll::onRemoveClip(const Clip &clip)

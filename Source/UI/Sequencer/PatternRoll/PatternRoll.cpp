@@ -417,11 +417,9 @@ void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 
         this->batchRepaintList.add(component);
         this->triggerAsyncUpdate();
-
-        // Send fake "selection changed" event: I want selection listeners
-        // to observe changes in position of the selected clips:
-        this->selection.sendChangeMessage();
     }
+
+    RollBase::onChangeClip(clip, newClip);
 }
 
 void PatternRoll::onRemoveClip(const Clip &clip)

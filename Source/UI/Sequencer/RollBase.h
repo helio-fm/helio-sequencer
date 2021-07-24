@@ -234,6 +234,7 @@ public:
     void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
+    void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
     void onChangeProjectInfo(const ProjectMetadata *info) override;
