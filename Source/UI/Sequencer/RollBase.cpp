@@ -1080,8 +1080,9 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
 {
     // TODO check if any operation is in progress (lasso drag, knife tool drag, etc)
 
-    // holding control/command/alt means using panning instead of zooming
-    // (or zooming instead of panning, depending on ui settings/defaults)
+    // holding control/command means using panning instead of zooming
+    // (or zooming instead of panning, depending on ui settings/defaults);
+    // alt is reserved for the global zoom:
     const bool panningMode = !event.mods.isAltDown() &&
         (this->mouseWheelFlags.usePanningByDefault != (event.mods.isCtrlDown() || event.mods.isCommandDown()));
 

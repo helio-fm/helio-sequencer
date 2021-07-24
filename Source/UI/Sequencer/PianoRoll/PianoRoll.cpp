@@ -1413,9 +1413,9 @@ void PianoRoll::paint(Graphics &g)
 
 void PianoRoll::insertNewNoteAt(const MouseEvent &e)
 {
-    int draggingRow = 0;
-    float draggingColumn = 0.f;
-    this->getRowsColsByMousePosition(e.x, e.y, draggingRow, draggingColumn);
+    int key = 0;
+    float beat = 0.f;
+    this->getRowsColsByMousePosition(e.x, e.y, key, beat);
 
     auto *activeSequence = static_cast<PianoSequence *>(this->activeTrack->getSequence());
     activeSequence->checkpoint();
@@ -1425,8 +1425,11 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
     // and in onAddMidiEvent/1 callback we store that pointer,
     // so that the new note can be dragged, or resized, or whatever
     this->addNewNoteMode = true;
-    activeSequence->insert(Note(activeSequence, draggingRow, draggingColumn,
+    activeSequence->insert(Note(activeSequence, key, beat,
         this->newNoteLength, this->newNoteVolume), true);
+
+    this->getTransport().previewKey(activeSequence->getTrackId(),
+        key, this->newNoteVolume, this->newNoteLength);
 }
 
 void PianoRoll::switchToClipInViewport() const

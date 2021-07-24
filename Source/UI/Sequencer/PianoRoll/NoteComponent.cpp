@@ -707,8 +707,8 @@ MouseCursor NoteComponent::startEditingNewNote(const MouseEvent &e)
 {
     jassert (!this->isInEditMode());
 
-    // always send midi in this mode:
-    constexpr bool sendMidi = true;
+    // don't send midi in this mode, it was already sent when this event was added:
+    constexpr bool sendMidi = false;
 
     // the default mode is editing key+length, which I think is more convenient,
     // yet some folks might have muscle memory for a more widespread behavior,
