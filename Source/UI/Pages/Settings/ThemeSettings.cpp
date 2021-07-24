@@ -79,23 +79,21 @@ Component *ThemeSettings::refreshComponentForRow(int rowNumber, bool isRowSelect
         return existingComponentToUpdate;
     }
 
-    const bool isCurrentScheme =
-        (this->currentScheme->getResourceId() ==
-            this->schemes[rowNumber]->getResourceId());
-
-    const bool isLastRow = (rowNumber == this->schemes.size() - 1);
+    const auto colourScheme = this->schemes[rowNumber];
+    const bool isLastRow = rowNumber == this->schemes.size() - 1;
+    const bool isSelected = this->currentScheme->isEquivalentTo(colourScheme);
 
     if (existingComponentToUpdate != nullptr)
     {
         if (auto *row = dynamic_cast<ThemeSettingsItem *>(existingComponentToUpdate))
         {
-            row->updateDescription(isLastRow, isCurrentScheme, this->schemes[rowNumber]);
+            row->updateDescription(isLastRow, isSelected, colourScheme);
         }
     }
     else
     {
         auto *row = new ThemeSettingsItem(*this->themesList);
-        row->updateDescription(isLastRow, isCurrentScheme, this->schemes[rowNumber]);
+        row->updateDescription(isLastRow, isSelected, colourScheme);
         return row;
     }
 

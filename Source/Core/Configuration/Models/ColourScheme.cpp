@@ -190,6 +190,12 @@ void ColourScheme::syncWithLiveConstantEditor()
     this->colours[UI::Colours::iconShadow] = this->getIconShadowColour();
 }
 
+bool ColourScheme::isEquivalentTo(const ColourScheme::Ptr other) const
+{
+    jassert(other != nullptr);
+    return this->colours == other->colours;
+}
+
 SerializedData ColourScheme::serialize() const
 {
     using namespace Serialization;

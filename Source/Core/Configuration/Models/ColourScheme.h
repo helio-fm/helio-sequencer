@@ -67,6 +67,8 @@ public:
 
     void syncWithLiveConstantEditor();
 
+    bool isEquivalentTo(const ColourScheme::Ptr other) const;
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
