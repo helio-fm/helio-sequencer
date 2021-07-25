@@ -1,6 +1,6 @@
 # Introduction
 
-Welcome to the documentation for the Helio project, a free lightweight music sequencer, which runs on the all major desktop and mobile operating systems.
+Welcome to the documentation for the Helio project, a free lightweight music sequencer, which runs on all major desktop and mobile operating systems.
 
 Helio was designed to save me the time of struggling with the MIDI editor, so I could focus more on musical ideas. In this documentation, I'll also try to save some time and write it down as short and simple as I can.
 
@@ -20,13 +20,13 @@ If you've already tinkered with Helio for a while, you'll probably only need the
 ## Installation
 
 Helio is released as a single portable executable file, where possible, but installers are also available for some systems.
-In both flavours it has small disk footprint (less than 10 Mb) and should run on most available hardware and platform versions.
+In both flavors it has a small disk footprint (less than 10 Mb) and should run on most available hardware and platform versions.
 
 ### Portable vs installer
 
 Installers are provided for Windows and Debian-based Linux distributions. The installer version is only needed, if you want to have the desktop shortcut and the uninstall tool.
 
-With portable version, just download the compressed archive and unzip it to a folder of your choice.
+With the portable version, just download the compressed archive and unzip it to a folder of your choice.
 
 ### 32 or 64 bits
 

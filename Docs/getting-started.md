@@ -20,13 +20,13 @@ They will be described below, but, before you dive in,
 
 This project was started out of the need for an advanced MIDI editor, something like Sublime Text for music.
 
-I was also sick and tired of visual over-stimulation, which most of the music tools out there tend to have more and more (just google some pictures for "digital audio workstation"). As one of the main goals, I wanted a tool that feels right: something with an uncluttered and non-distractive UI.
+I was also sick and tired of visual overstimulation, which most of the music tools out there tend to have more and more (just google some pictures for "digital audio workstation"). As one of the main goals, I wanted a tool that feels right: something with an uncluttered and non-distractive UI.
 
 So generally, I'm always trying to avoid adding UI controls if there's a way to do without them. As it turned out, though, there are a couple of challenges with that approach (for which I don't see simple solutions, UX design is hard):
  * one challenge is to keep the UI both simple or even minimalistic and not disorienting at the same time,
  * another challenge is to keep the UI look and behave consistent across all platforms, especially desktop and mobile.
 
-If something feels misleading to you — apologizes, feel free to [report](https://github.com/helio-fm/helio-workstation/issues/new) that to help identifying the main friction points.
+If something feels misleading to you — apologizes, feel free to [report](https://github.com/helio-fm/helio-workstation/issues/new) that to help identify the main friction points.
 
 ### Workspace navigation
 
@@ -72,7 +72,7 @@ After starting Helio the first time you should have a simple example project alr
  * switch to the pattern roll be pressing `Tab` or `Page Down`, or by clicking the uppermost button in the left sidebar, to play with arrangement,
  * double-click any clip to return to the piano roll with that clip in focus; at this point you should get an idea how things work in the sequencer layout.
 
-To start a new project from scratch, navigate to the dashboard by pressing `Home` key, or clicking the `Studio` node in the breadcrumbs. There you'll see the list of recent projects, and a couple of buttons:
+To start a new project from scratch, navigate to the dashboard by pressing the `Home` key, or clicking the `Studio` node in the breadcrumbs. There you'll see the list of recent projects, and a couple of buttons:
 
  * create an empty project,
  * open a project (this also imports MIDI files).
@@ -189,7 +189,7 @@ If you have enabled the playback loop over the selected scope, timeline will dis
 
 This sidebar is responsible for track navigation and UI control.
 
-Most buttons on the sidebars have keyboard shortcuts, which makes then kinda redundant, but they are displayed anyway for the sake of having a consistent UI on mobiles or touch-screen laptops, where you don't have hotkeys.
+Most buttons on the sidebars have keyboard shortcuts, which makes them kinda redundant, but they are displayed anyway for the sake of having a consistent UI on mobiles or touch-screen laptops, where you don't have hotkeys.
 
  * ![sidebar-left-1] — switch the editor view between the piano roll and the pattern roll (`Tab`),
  * ![sidebar-left-2] — zoom out (`Shift + Z`), zoom in (`Z`), and zoom selection (`Control + Tab`),
@@ -275,7 +275,7 @@ However, the pattern roll is helpful for rearranging experiments:
 
 ![patterns]
 
-Pattern roll also allows to tweak some track parameters, like key offset of velocity multiplier. In future, it may shift towards more parametric sequencer features.
+Pattern roll also allows you to tweak some track parameters, like key offset of velocity multiplier. In future, it may shift towards more parametric sequencer features.
 
 #### See also: [track grouping](tips-and-tricks.md#clips-and-track-grouping)
 

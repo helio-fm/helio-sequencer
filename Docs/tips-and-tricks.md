@@ -22,7 +22,7 @@ One quick way to switch between the current editing mode and the canvas panning 
 
 ![space-drag]
 
-Dragging with the right mouse button does similar thing, but it will also switch to another track, if clicked on any semi-transparent note.
+Dragging with the right mouse button does a similar thing, but it will also switch to another track, if clicked on any semi-transparent note.
 
 ### Time measure tool
 
@@ -68,7 +68,7 @@ Also hold `Shift` or any modifier key to change the behavior of the pen tool whe
 
 ### Transposition and inversion
 
-`Shift + Up` and `Shift + Down` hotkeys transpose selected notes one octave up or down. `Alt + Shift + Up` and `Alt + Shift + Down` are used for the less common transposition to the next or previous key in the circle of fifths (simply put, it's a transposition by +5 or -5, or by the closest equivalent of a perfect fifth in other temperaments, e.g. +18 or -18 for 31-edo, etc).
+`Shift + Up` and `Shift + Down` hotkeys transpose selected notes one octave up or down. `Alt + Shift + Up` and `Alt + Shift + Down` are used for the less common transposition to the next or previous key in the circle of fifths (simply put, it's a transposition by +7 or -7 semitones in the 12-tone temperament, or by the closest equivalent of a perfect fifth in other temperaments, e.g. +18 or -18 for 31-edo, etc).
 
 Use `Control + Up` and `Control + Down` for chord inversion (don't confuse it with melodic inversion, which is triggered by `Alt + I` hotkey). Chord inversion treats selected notes as chord(s); the lowest note in each chord moves one octave up (or the highest note moves one octave down), all others stay in place.
 
@@ -80,7 +80,7 @@ The first one is for displaying the note name guides:
 
 ![note-names]
 
-Another one highlights the in-scale keys of the key signatures that are added at the timeline. If you prefer C Major coloring in the piano roll, just turn it off:
+Another one highlights the in-scale keys of the key signatures that are added to the timeline. If you prefer C Major coloring in the piano roll, just turn it off:
 
 ![scales-highlighting]
 
@@ -102,7 +102,7 @@ By double-clicking on a row in the piano roll, you invoke the chord tool:
 
 ![chord-tool]
 
-It pick the current key signature from the timeline to know what scale and root key to use to generate chords. Hence the main limitation of this tool: it can only generate chords that are easy to define with in-scale keys.
+It picks the current key signature from the timeline to determine what scale and root key to use to generate chords. Hence the main limitation of this tool: it can only generate chords that are easy to define with in-scale keys.
 
 It can be dragged around by the center node — kinda helpful if you clicked the wrong row or position.
 
@@ -160,7 +160,7 @@ Besides just commands, it supports several modes, which are triggered by typing 
 
 ### Chord compiler
 
-One of the modes of that command palette allows to generate chords based on the the chord name [decoding rules](https://en.wikipedia.org/wiki/Chord_letters). This tool is not aware of any of the key signatures present at the timeline, all the chord's notes are inferred from the given description.
+One of the modes of that command palette allows to generate chords based on the chord name [decoding rules](https://en.wikipedia.org/wiki/Chord_letters). This tool is not aware of any of the key signatures present at the timeline, all the chord's notes are inferred from the given description.
 
 Just hit `!` and start typing a chord description, or pick some of the suggestions it provides:
 

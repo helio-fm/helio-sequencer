@@ -52,7 +52,7 @@ See the [hotkeys page](hotkeys.md).
 
 ### Translations
 
-The translations file is too big to be included here; if you want to help proofreading and improving the translation for your native language, please follow this [link](https://helio.fm/translations).
+The translations file is too big to be included here; if you want to help proofread and improve the translation for your native language, please follow this [link](https://helio.fm/translations).
 
 The translations are updated in the runtime, if there are any changes: the latest translations are saved in the `translations.helio` file in the app's [config directory](index.md#the-configuration-directory).
 

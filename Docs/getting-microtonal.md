@@ -8,13 +8,13 @@ Before you get started with microtonal music, you will need two things:
 
 You can [skip](#switching-temperaments) the instrument setup steps, if you only want to get familiar with microtonal scales. The default instrument in Helio is silly, but it works out of the box with all temperaments with no setup required, and should give you some idea of how things work.
 
-Otherwise, once you've [added an instrument](getting-started.md#instruments) to the stage, just pick *"Edit keyboard mapping"* menu item. The "keyboard mapping" here means mapping MIDI events routed from Midi In node to the plugin node(s).
+Otherwise, once you've [added an instrument](getting-started.md#instruments) to the stage, just pick *"Edit keyboard mapping"* menu item. The "keyboard mapping" here means mapping MIDI events routed from the `Midi In` node to the plugin node(s).
 
 ### Keyboard mapping page
 
 *Note: this describes the key mapping on the host side, but you'll need to set it up on the plugin's side as well. Unfortunately, can't help you with that, as it depends on the plugin, but here's an [example](https://soundbytesmag.net/microtonality-in-falcon/).*
 
-The page allows to adjust key mappings manually and preview the mapped keys by clicking on them. The upper limit is set to 2048 keys - this is the maximum number of keys that can fit into 16 MIDI channels. Which would be enough to handle temperaments of size up to 192-EDO:
+The page allows you to adjust key mappings manually and preview the mapped keys by clicking on them. The upper limit is set to 2048 keys - this is the maximum number of keys that can fit into 16 MIDI channels. Which would be enough to handle temperaments of size up to 192-EDO:
 
 ![keyboard-mapping]
 
@@ -67,8 +67,8 @@ First, the format assumes the default modulo-based mapping:
 Everything that differs from the default values is serialized. The serialized mapping is just a string divided by whitespaces into chunks.
 
 Chunks follow this pattern: `base:key/channel,key2/channel2,key3/channel3`. Which means:
- * for `base` key in the sequencer, the specified `key/channel` will be sent to the instrument,
- * then, for `base + 1` key in the sequencer, the next key and channel will be sent, and so on.
+ * for the `base` key in the sequencer, the specified `key/channel` will be sent to the instrument,
+ * then, for the `base + 1` key in the sequencer, the next key and channel will be sent, and so on.
 
 If each next key just incrementally moves by 1, the chunk could be shortened like this: `base:key/channel,count+`.
 
