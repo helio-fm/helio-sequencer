@@ -4,6 +4,16 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.7
+ - Made the playback loop markers draggable
+ - Added 19-edo to built-in temperaments
+ - Added keyboard mapping presets menu (with some built-in multi-channel mappings for Pianoteq), allowing to save your own presets
+ - Lasso improvements: added a cool selection range dashed indicator in the roll headers and fixed selection behavior when deselecting items with Alt
+ - Mouse wheel control improvements: added support for mice with dual-axis wheels and added a separate "vertical zooming by default" UI option
+ - Fixed missing note-offs when editing, which broke some VST3 plugins
+ - Facelifted the default color schemes 
+ - Minor convenience tweaks: global zooming with Alt modifier key, toggling mini-map mode with a click at scroller's free area, transposing by perfect fifth or equivalent with Control + Shift + Up/Down hotkeys
+
 ## Version 3.6
  - Fixed VST3 plugins showing black screen and made minor improvements in instrument management
  - Fixed loading the invalid audio settings (which caused issues when using JACK)
