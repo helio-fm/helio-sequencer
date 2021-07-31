@@ -878,7 +878,6 @@
                     file="../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.cpp"/>
               <FILE id="QX0oMp" name="RecentProjectRow.h" compile="0" resource="0"
                     file="../../Source/UI/Pages/Dashboard/Menu/RecentProjectRow.h"/>
-              <FILE id="jHQguA" name="LoginButton.h" compile="0" resource="0" file="../../Source/UI/Pages/Dashboard/Menu/LoginButton.h"/>
               <FILE id="hc7Ie4" name="CreateProjectButton.h" compile="0" resource="0"
                     file="../../Source/UI/Pages/Dashboard/Menu/CreateProjectButton.h"/>
               <FILE id="QhDDee" name="OpenProjectButton.h" compile="0" resource="0"
@@ -890,8 +889,6 @@
                   file="../../Source/UI/Pages/Dashboard/UpdatesInfoComponent.cpp"/>
             <FILE id="qpT5aF" name="UpdatesInfoComponent.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Dashboard/UpdatesInfoComponent.h"/>
-            <FILE id="LAXjb0" name="UserProfileComponent.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Dashboard/UserProfileComponent.h"/>
           </GROUP>
           <GROUP id="{244063AE-D7BB-2E7F-F88C-F6B87D3750F0}" name="Instruments">
             <GROUP id="{8403AA58-8E12-1E01-83A5-94D36241D728}" name="Editor">

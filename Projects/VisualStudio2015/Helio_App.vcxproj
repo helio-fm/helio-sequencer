@@ -2712,12 +2712,10 @@
     <ClInclude Include="..\..\Source\UI\Menus\WorkspaceMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\DashboardMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\RecentProjectRow.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\LoginButton.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\CreateProjectButton.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\OpenProjectButton.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Dashboard.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\UserProfileComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditor.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorConnector.h"/>

@@ -18,8 +18,6 @@
 #include "Common.h"
 #include "Dashboard.h"
 #include "SpectralLogo.h"
-#include "UserProfileComponent.h"
-#include "LoginButton.h"
 #include "OverlayButton.h"
 #include "DashboardMenu.h"
 #include "PanelBackgroundA.h"
@@ -45,12 +43,6 @@ Dashboard::Dashboard(Workspace &workspace) : workspace(workspace)
     this->patreonLabel->setFont(Globals::UI::Fonts::S);
     this->patreonLabel->setJustificationType(Justification::centred);
 
-    this->userProfile = make<UserProfileComponent>();
-    this->addAndMakeVisible(this->userProfile.get());
-
-    this->loginButton = make<LoginButton>();
-    this->addAndMakeVisible(this->loginButton.get());
-
     this->backgroundB = make<PanelBackgroundB>();
     this->addAndMakeVisible(this->backgroundB.get());
 
@@ -71,9 +63,6 @@ Dashboard::Dashboard(Workspace &workspace) : workspace(workspace)
     this->projectsList = make<DashboardMenu>(this->workspace);
     this->addAndMakeVisible(this->projectsList.get());
 
-    this->separator = make<SeparatorHorizontalFadingReversed>();
-    this->addAndMakeVisible(this->separator.get());
-
     this->updatesInfo = make<UpdatesInfoComponent>();
     this->addAndMakeVisible(this->updatesInfo.get());
 
@@ -89,8 +78,9 @@ Dashboard::Dashboard(Workspace &workspace) : workspace(workspace)
         url.launchInDefaultBrowser();
     };
 
-    this->updateProfileViews();
+    this->projectsList->updateListContent();
 
+    // to sync projects when logged in:
     this->workspace.getUserProfile().addChangeListener(this);
 }
 
@@ -120,11 +110,8 @@ void Dashboard::resized()
     constexpr auto buttonHeight = 32;
 
     constexpr auto helperX = leftSectionWidth / 2 - buttonWidth / 2;
-    this->updatesInfo->setBounds(helperX, 352, buttonWidth, 172);
-    this->userProfile->setBounds(helperX, getHeight() - 110, buttonWidth, 56);
-    this->loginButton->setBounds(helperX, getHeight() - 110, buttonWidth, 56);
+    this->updatesInfo->setBounds(helperX, 352, buttonWidth, 256);
 
-    this->separator->setBounds(helperX, getHeight() - 50, buttonWidth, 3);
     this->patreonLabel->setBounds(helperX, getHeight() - 44, buttonWidth, buttonHeight);
     this->patreonButton->setBounds(helperX, getHeight() - 44, buttonWidth, buttonHeight);
 
@@ -141,18 +128,5 @@ void Dashboard::resized()
 
 void Dashboard::changeListenerCallback(ChangeBroadcaster *source)
 {
-    // Listens to user profile changes:
-    this->updateProfileViews();
-}
-
-void Dashboard::updateProfileViews()
-{
-    const bool loggedIn = this->workspace.getUserProfile().isLoggedIn();
-    this->loginButton->setVisible(!loggedIn);
-    this->userProfile->setVisible(loggedIn);
-    if (loggedIn)
-    {
-        this->userProfile->updateProfileInfo();
-    }
     this->projectsList->updateListContent();
 }

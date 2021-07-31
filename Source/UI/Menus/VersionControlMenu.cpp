@@ -20,6 +20,8 @@
 
 #include "VersionControl.h"
 #include "Workspace.h"
+#include "Network.h"
+#include "SessionService.h"
 #include "CommandIDs.h"
 
 VersionControlMenu::VersionControlMenu(VersionControl &vcs)
@@ -47,9 +49,24 @@ VersionControlMenu::VersionControlMenu(VersionControl &vcs)
 
     const bool loggedIn = App::Workspace().getUserProfile().isLoggedIn();
 
+    // show username & pic somewhere?
+    // userProfile.getAvatar()
+    // "/" + userProfile.getLogin()
+    // URL(userProfile.getProfileUrl()).launchInDefaultBrowser();
+
     menu.add(MenuItem::item(Icons::push,
         CommandIDs::VersionControlSyncAll,
         TRANS(I18n::Menu::vcsSyncAll))->disabledIf(!loggedIn)->closesMenu());
+
+    if (!loggedIn)
+    {
+        menu.add(MenuItem::item(Icons::github,
+            TRANS(I18n::Dialog::authGithub))->
+            disabledIf(loggedIn)->closesMenu()->withAction([]()
+        {
+            App::Network().getSessionService()->signIn("Github");
+        }));
+    }
 
 #endif
 

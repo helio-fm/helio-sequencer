@@ -4179,9 +4179,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\RecentProjectRow.h">
       <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\LoginButton.h">
-      <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\Menu\CreateProjectButton.h">
       <Filter>Helio\Source\UI\Pages\Dashboard\Menu</Filter>
     </ClInclude>
@@ -4192,9 +4189,6 @@
       <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Dashboard\UpdatesInfoComponent.h">
-      <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Dashboard\UserProfileComponent.h">
       <Filter>Helio\Source\UI\Pages\Dashboard</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.h">

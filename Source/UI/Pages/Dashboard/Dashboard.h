@@ -19,7 +19,6 @@
 
 class Workspace;
 class SpectralLogo;
-class LoginButton;
 class OverlayButton;
 class DashboardMenu;
 class PanelBackgroundA;
@@ -27,9 +26,7 @@ class PanelBackgroundB;
 class OpenProjectButton;
 class CreateProjectButton;
 class UpdatesInfoComponent;
-class UserProfileComponent;
 class SeparatorVerticalSkew;
-class SeparatorHorizontalFadingReversed;
 
 #include "MobileComboBox.h"
 
@@ -48,12 +45,9 @@ private:
     Workspace &workspace;
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
-    void updateProfileViews();
 
     UniquePointer<PanelBackgroundA> backgroundA;
     UniquePointer<Label> patreonLabel;
-    UniquePointer<UserProfileComponent> userProfile;
-    UniquePointer<LoginButton> loginButton;
     UniquePointer<PanelBackgroundB> backgroundB;
     UniquePointer<OpenProjectButton> openProjectButton;
     UniquePointer<MobileComboBox::Container> createProjectCombo;
@@ -61,7 +55,6 @@ private:
     UniquePointer<SpectralLogo> logo;
     UniquePointer<DashboardMenu> projectsList;
     UniquePointer<CreateProjectButton> createProjectButton;
-    UniquePointer<SeparatorHorizontalFadingReversed> separator;
     UniquePointer<UpdatesInfoComponent> updatesInfo;
     UniquePointer<OverlayButton> patreonButton;
 
