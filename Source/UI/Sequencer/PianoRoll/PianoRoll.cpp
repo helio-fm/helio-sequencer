@@ -1427,7 +1427,9 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
         this->newNoteLength, this->newNoteVolume), true);
 
     this->getTransport().previewKey(activeSequence->getTrackId(),
-        key, this->newNoteVolume, this->newNoteLength);
+        key + this->activeClip.getKey(),
+        this->newNoteVolume * this->activeClip.getVelocity(),
+        this->newNoteLength);
 }
 
 void PianoRoll::switchToClipInViewport() const
