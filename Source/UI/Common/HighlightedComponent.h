@@ -41,7 +41,10 @@ public:
 
     void mouseEnter(const MouseEvent &) override
     {
-        this->setHighlighted(true);
+        if (this->isEnabled())
+        {
+            this->setHighlighted(true);
+        }
     }
     
     void mouseExit(const MouseEvent &) override

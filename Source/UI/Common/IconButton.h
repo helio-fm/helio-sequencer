@@ -49,17 +49,24 @@ public:
 
     void mouseDown(const MouseEvent &e) override
     {
-        if (this->listener != nullptr)
+        if (this->isEnabled())
         {
-            this->listener->postCommandMessage(this->commandId);
-        }
-        else if (this->getParentComponent() != nullptr)
-        {
-            this->getParentComponent()->postCommandMessage(this->commandId);
+            if (this->listener != nullptr)
+            {
+                this->listener->postCommandMessage(this->commandId);
+            }
+            else if (this->getParentComponent() != nullptr)
+            {
+                this->getParentComponent()->postCommandMessage(this->commandId);
+            }
         }
 
-        // workaround for a weird mouseExit bug in JUCE:
         HighlightedComponent::mouseExit(e);
+    }
+
+    void enablementChanged() override
+    {
+        this->setAlpha(this->isEnabled() ? 1.0f : 0.5f);
     }
 
     // Silence the useless VC C4250 warnings:

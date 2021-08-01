@@ -202,9 +202,7 @@ UniquePointer<Component> TimeSignatureDialog::addingDialog(Component &owner, Tim
 
 void TimeSignatureDialog::updateOkButtonState()
 {
-    const bool textIsEmpty = this->textEditor->getText().isEmpty();
-    this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
-    this->okButton->setEnabled(!textIsEmpty);
+    this->okButton->setEnabled(this->textEditor->getText().isNotEmpty());
 }
 
 void TimeSignatureDialog::sendEventChange(const TimeSignatureEvent &newEvent)

@@ -89,9 +89,7 @@ const char* colour_svg = (const char*) temp_binary_data_10;
 
 //================== commit.svg ==================
 static const unsigned char temp_binary_data_11[] =
-"<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M270.173 564.99c-8.345-3.789-7.816 2.582-7.816-94.056 0-110.602-13.055-95.949 85.512-95.978l73.51-.022 16.264 16.286 16.264 16.286-.275 74.464c-.31 84.155.165 79.272-8.091 83.02-6.507 2.955-168.86 2"
-".955-175.368 0zm145.68-40.806c-.005-44.997 6.04-40.75-57.996-40.75-64.035 0-57.99-4.247-57.996 40.75l-.004 30.75h116l-.004-30.75zm-11.447-75.25c5.141-4.746 5.451-6.761 5.451-35.468v-26.532h-104v26.435c0 30.439.9 34.422 8.5 37.627 5.671 2.391 87.248.5"
-"23 90.05-2.062zm-33.549-29v-25h25v50h-25v-25z\"/></svg>";
+"<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M15.173 2h-11.173c-1.101 0-2 0.9-2 2v12c0 1.1 0.899 2 2 2h12c1.101 0 2-0.9 2-2v-10.873l-2.827-3.127zM14 8c0 0.549-0.45 1-1 1h-6c-0.55 0-1-0.451-1-1v-5h8v5zM13 4h-2v4h2v-4z\"></path></svg>";
 
 const char* commit_svg = (const char*) temp_binary_data_11;
 
@@ -4086,7 +4084,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xebc721c4:  numBytes = 829; return chordBuilder_svg;
         case 0xe3430f9d:  numBytes = 400; return close_svg;
         case 0x52ffe571:  numBytes = 480; return colour_svg;
-        case 0x3cb6a35c:  numBytes = 551; return commit_svg;
+        case 0x3cb6a35c:  numBytes = 235; return commit_svg;
         case 0x8db34f7c:  numBytes = 441; return console_svg;
         case 0xe1dcda9a:  numBytes = 1250; return copy_svg;
         case 0x51a1b0a1:  numBytes = 339; return create_svg;

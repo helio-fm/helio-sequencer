@@ -32,6 +32,11 @@ public:
     void resized() override;
     void mouseDown(const MouseEvent &e) override;
 
+    void enablementChanged() override
+    {
+        this->setAlpha(this->isEnabled() ? 1.0f : 0.5f);
+    }
+
 private:
 
     Component *createHighlighterComponent() override;

@@ -42,7 +42,7 @@ namespace BinaryData
     const int            colour_svgSize = 480;
 
     extern const char*   commit_svg;
-    const int            commit_svgSize = 551;
+    const int            commit_svgSize = 235;
 
     extern const char*   console_svg;
     const int            console_svgSize = 441;

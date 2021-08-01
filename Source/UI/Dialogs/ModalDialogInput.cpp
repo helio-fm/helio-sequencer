@@ -189,9 +189,7 @@ void ModalDialogInput::okay()
 
 void ModalDialogInput::updateOkButtonState()
 {
-    const bool textIsEmpty = this->input.isEmpty();
-    this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
-    this->okButton->setEnabled(!textIsEmpty);
+    this->okButton->setEnabled(this->input.isNotEmpty());
 }
 
 //===----------------------------------------------------------------------===//

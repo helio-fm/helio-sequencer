@@ -249,8 +249,8 @@ void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
     Font font(getTextButtonFont(button, button.getHeight()));
     g.setFont(font);
     g.setColour(findDefaultColour(TextButton::buttonColourId).contrasting()
-        .withMultipliedAlpha(button.isEnabled() ? 0.85f : 0.5f));
-
+        .withMultipliedAlpha(button.isEnabled() ? 0.9f : 0.4f));
+    
     const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
     const int yHeight = (button.getHeight() - (yIndent * 2));
     const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
@@ -275,13 +275,8 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
 {
     Colour baseColour(backgroundColour.withMultipliedAlpha(button.isEnabled() ? 0.75f : 0.3f));
 
-    //const bool flatOnLeft   = button.isConnectedOnLeft();
-    //const bool flatOnRight  = button.isConnectedOnRight();
-    //const bool flatOnTop    = button.isConnectedOnTop();
-    //const bool flatOnBottom = button.isConnectedOnBottom();
-
-    const float width  = float(button.getWidth());
-    const float height = float(button.getHeight());
+    const auto width = float(button.getWidth());
+    const auto height = float(button.getHeight());
 
     if (width > 0 && height > 0)
     {
@@ -291,16 +286,11 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
         outline.addRoundedRectangle(0.f, -cornerSize,
             width, height + cornerSize, cornerSize, cornerSize,
             true, true, true, true);
-            //!(flatOnLeft || flatOnTop),
-            //!(flatOnRight || flatOnTop),
-            //!(flatOnLeft || flatOnBottom),
-            //!(flatOnRight || flatOnBottom));
 
-        const float mainAlpha = baseColour.getFloatAlpha();
+        const auto mainAlpha = baseColour.getFloatAlpha();
 
         g.setGradientFill(ColourGradient(baseColour.darker(0.1f), 0.0f, height / 2 - 2,
                                          baseColour.darker(0.2f), 0.0f, height / 2 + 2, false));
-        //g.setColour(baseColour.darker(0.2f));
         g.fillPath(outline);
 
         if (isButtonDown || isMouseOverButton)

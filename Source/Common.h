@@ -241,6 +241,8 @@ namespace Globals
 
         static constexpr auto tooltipDelayMs = 600;
 
+        static constexpr auto iconSizeStep = 8;
+
         namespace Fonts
         {
             static constexpr auto XS = 14.f;

@@ -71,15 +71,13 @@ void PlayButton::resized()
 {
     const auto w_2 = this->getWidth() / 2;
     const auto h_2 = this->getHeight() / 2;
-    const auto buttonSize = this->getWidth() - 24;
+    const auto buttonSize = h_2;
 
-    this->playIcon->setBounds(w_2 - (buttonSize / 2) + 1,
-        h_2 - ((this->getHeight() - buttonSize) / 2),
-        buttonSize, buttonSize);
+    this->playIcon->setBounds(w_2 - (buttonSize / 2),
+        h_2 - buttonSize / 2, buttonSize, buttonSize);
 
-    this->pauseIcon->setBounds(w_2 - (buttonSize / 2) - 1,
-        h_2 - ((this->getHeight() - buttonSize) / 2),
-        buttonSize, buttonSize);
+    this->pauseIcon->setBounds(w_2 - (buttonSize / 2),
+        h_2 - buttonSize / 2, buttonSize, buttonSize);
 }
 
 void PlayButton::mouseDown(const MouseEvent &e)

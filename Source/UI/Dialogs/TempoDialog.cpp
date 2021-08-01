@@ -259,7 +259,6 @@ void TempoDialog::updateOkButtonState()
 {
     const bool textIsEmpty = this->textEditor->getText().isEmpty();
     const auto newTempoBpm = this->textEditor->getText().getIntValue();
-    this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
     this->okButton->setEnabled(!textIsEmpty && newTempoBpm != 0);
 
     if (!textIsEmpty && (newTempoBpm > 300 || newTempoBpm <= 0))

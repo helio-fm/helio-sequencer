@@ -256,8 +256,6 @@ void Icons::clearPrerenderedCache()
     prerenderedVectors.clear();
 }
 
-const int kRoundFactor = 8;
-
 Image Icons::findByName(Icons::Id id, int maxSize)
 {
     const auto *display = Desktop::getInstance().getDisplays().getPrimaryDisplay();
@@ -268,9 +266,10 @@ Image Icons::findByName(Icons::Id id, int maxSize)
     }
 
     const int retinaFactor = int(display->scale);
-    const int fixedSize = int(floorf(float(maxSize) / float(kRoundFactor))) * kRoundFactor * retinaFactor;
+    const int fixedSize = int(floorf(float(maxSize) / Globals::UI::iconSizeStep)) *
+        Globals::UI::iconSizeStep * retinaFactor;
+
     const uint32 iconKey = (id * 1000) + fixedSize;
-    
     if (prerenderedVectors.contains(iconKey))
     {
         return prerenderedVectors[iconKey];
@@ -294,7 +293,9 @@ Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
     }
 
     const int retinaFactor = int(display->scale);
-    const int fixedSize = int(floorf(float(maxSize) / float(kRoundFactor))) * kRoundFactor * retinaFactor;
+    const int fixedSize = int(floorf(float(maxSize) / Globals::UI::iconSizeStep)) *
+        Globals::UI::iconSizeStep * retinaFactor;
+
     const Colour iconBaseColour(lf.findColour(ColourIDs::Icons::fill));
     const Colour iconShadeColour(lf.findColour(ColourIDs::Icons::shadow));
     const Image prerenderedImage(renderVector(id, fixedSize, iconBaseColour, iconShadeColour));
