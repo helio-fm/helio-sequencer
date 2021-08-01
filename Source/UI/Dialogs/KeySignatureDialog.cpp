@@ -19,8 +19,10 @@
 #include "KeySignatureDialog.h"
 
 #include "KeySignaturesSequence.h"
+#include "SeparatorHorizontalFading.h"
 #include "ProjectNode.h"
 #include "ProjectMetadata.h"
+#include "PlayButton.h"
 #include "Temperament.h"
 #include "Transport.h"
 #include "CommandIDs.h"
@@ -127,8 +129,14 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     this->keySelector = make<KeySelector>(getPeriod(project));
     this->addAndMakeVisible(this->keySelector.get());
 
+    this->separator = make<SeparatorHorizontalFading>();
+    this->addAndMakeVisible(this->separator.get());
+
     this->scaleEditor = make<ScaleEditor>();
     this->addAndMakeVisible(this->scaleEditor.get());
+
+    this->savePresetButton = make<IconButton>(Icons::commit, CommandIDs::SavePreset, this);
+    this->addAndMakeVisible(this->savePresetButton.get());
 
     this->playButton = make<PlayButton>(this);
     this->addAndMakeVisible(this->playButton.get());
@@ -145,15 +153,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     this->scaleNameEditor->addListener(this);
     this->scaleNameEditor->setFont(Globals::UI::Fonts::L);
 
-    const auto periodSize = getPeriod(project).size();
-    const auto allScales = App::Config().getScales()->getAll();
-    for (const auto &scale : allScales)
-    {
-        if (scale->getBasePeriod() == periodSize)
-        {
-            this->scales.add(scale);
-        }
-    }
+    this->reloadScalesList();
 
     this->transport.stopPlaybackAndRecording();
 
@@ -194,18 +194,11 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     this->messageLabel->setInterceptsMouseClicks(false, false);
 
     static constexpr auto keyButtonSize = 34;
-    this->setSize(keyButtonSize * periodSize + this->getPaddingAndMarginTotal(), 260);
+    const auto periodSize = getPeriod(project).size();
+    this->setSize(keyButtonSize * periodSize + this->getPaddingAndMarginTotal(), 270);
 
     this->updatePosition();
-    this->updateOkButtonState();
-
-    MenuPanel::Menu menu;
-    for (int i = 0; i < this->scales.size(); ++i)
-    {
-        const auto &s = this->scales.getUnchecked(i);
-        menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::SelectScale + i, s->getLocalizedName()));
-    }
-    this->presetsCombo->initWith(this->scaleNameEditor.get(), menu);
+    this->updateButtonsState();
 }
 
 KeySignatureDialog::~KeySignatureDialog()
@@ -231,14 +224,19 @@ void KeySignatureDialog::resized()
     this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
     this->removeEventButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
 
-    this->keySelector->setBounds(this->getRowBounds(0.2f, DialogBase::textEditorHeight));
-    this->scaleEditor->setBounds(this->getRowBounds(0.5f, DialogBase::textEditorHeight));
+    this->keySelector->setBounds(this->getRowBounds(0.15f, DialogBase::textEditorHeight));
+    this->separator->setBounds(this->getRowBounds(0.35f, 4));
 
+    this->scaleEditor->setBounds(this->getRowBounds(0.55f, DialogBase::textEditorHeight));
+
+    static constexpr auto scaleHelperButtonWidth = 36;
     static constexpr auto scaleEditorMargin = 4;
-    static constexpr auto playButtonSize = 40;
-    const auto scaleEditorRow = this->getRowBounds(0.8f, DialogBase::textEditorHeight, scaleEditorMargin);
-    this->scaleNameEditor->setBounds(scaleEditorRow.withTrimmedRight(playButtonSize));
-    this->playButton->setBounds(scaleEditorRow.withTrimmedLeft(this->scaleNameEditor->getWidth()));
+    const auto scaleEditorRow = this->getRowBounds(0.825f, DialogBase::textEditorHeight, scaleEditorMargin);
+    this->scaleNameEditor->setBounds(scaleEditorRow.withTrimmedRight((scaleHelperButtonWidth + scaleEditorMargin) * 2));
+
+    auto buttonsArea = scaleEditorRow.withTrimmedLeft(this->scaleNameEditor->getWidth());
+    this->playButton->setBounds(buttonsArea.removeFromRight(scaleHelperButtonWidth));
+    this->savePresetButton->setBounds(buttonsArea.removeFromRight(scaleHelperButtonWidth).withSizeKeepingCentre(20, 20));
 }
 
 void KeySignatureDialog::parentHierarchyChanged()
@@ -256,6 +254,10 @@ void KeySignatureDialog::handleCommandMessage(int commandId)
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
         this->cancelAndDisappear();
+    }
+    else if (commandId == CommandIDs::SavePreset)
+    {
+        this->savePreset();
     }
     else if (commandId == CommandIDs::TransportPlaybackStart)
     {
@@ -305,8 +307,67 @@ void KeySignatureDialog::handleCommandMessage(int commandId)
                 .withRootKey(this->rootKey).withScale(this->scale);
 
             this->sendEventChange(newEvent);
+            this->updateButtonsState();
         }
     }
+}
+
+void KeySignatureDialog::savePreset()
+{
+    const auto scaleName = this->scaleNameEditor->getText();
+    if (scaleName.isEmpty() || !this->scale->isValid())
+    {
+        jassertfalse;
+        return;
+    }
+
+    Scale::Ptr scale(new Scale(scaleName,
+        this->scale->getKeys(), this->scale->getBasePeriod()));
+
+    App::Config().getScales()->updateUserResource(scale);
+
+    this->reloadScalesList();
+    this->updateButtonsState();
+}
+
+void KeySignatureDialog::reloadScalesList()
+{
+    this->scales.clearQuick();
+    const auto periodSize = getPeriod(project).size();
+    for (const auto &scale : App::Config().getScales()->getAll())
+    {
+        if (scale->getBasePeriod() == periodSize)
+        {
+            this->scales.add(scale);
+        }
+    }
+
+    MenuPanel::Menu menu;
+    for (int i = 0; i < this->scales.size(); ++i)
+    {
+        const auto &s = this->scales.getUnchecked(i);
+        menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::SelectScale + i, s->getLocalizedName()));
+    }
+
+    this->presetsCombo->initWith(this->scaleNameEditor.get(), menu);
+}
+
+void KeySignatureDialog::updateButtonsState()
+{
+    const bool scaleIsValid = this->scale->isValid();
+    const bool nameIsNotEmpty = this->scaleNameEditor->getText().isNotEmpty();
+    const bool buttonsEnabled = scaleIsValid && nameIsNotEmpty;
+    this->okButton->setEnabled(buttonsEnabled);
+
+    bool hasSameScaleInList = false;
+    for (const auto &s : this->scales)
+    {
+        hasSameScaleInList |=
+            (s->getUnlocalizedName() == this->scale->getUnlocalizedName() &&
+             s->getKeys() == this->scale->getKeys());
+    }
+
+    this->savePresetButton->setEnabled(buttonsEnabled && !hasSameScaleInList);
 }
 
 void KeySignatureDialog::inputAttemptWhenModal()
@@ -326,13 +387,6 @@ UniquePointer<Component> KeySignatureDialog::addingDialog(ProjectNode &project,
 {
     return make<KeySignatureDialog>(project,
         annotationsLayer, KeySignatureEvent(), true, targetBeat);
-}
-
-void KeySignatureDialog::updateOkButtonState()
-{
-    const bool textIsEmpty = this->scaleNameEditor->getText().isEmpty();
-    this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
-    this->okButton->setEnabled(!textIsEmpty);
 }
 
 void KeySignatureDialog::sendEventChange(const KeySignatureEvent &newEvent)
@@ -451,9 +505,7 @@ void KeySignatureDialog::onScaleChanged(const Scale::Ptr scale)
             .withRootKey(this->rootKey).withScale(this->scale);
 
         this->sendEventChange(newEvent);
-
-        // Don't erase user's text, but let user know the scale is unknown - how?
-        //this->scaleNameEditor->setText({}, dontSendNotification);
+        this->updateButtonsState();
     }
 }
 
@@ -468,13 +520,13 @@ void KeySignatureDialog::onScaleNotePreview(int key)
 
 void KeySignatureDialog::textEditorTextChanged(TextEditor &ed)
 {
-    this->updateOkButtonState();
     this->scale = this->scale->withName(this->scaleNameEditor->getText());
     this->scaleEditor->setScale(this->scale);
     const auto newEvent = this->originalEvent
         .withRootKey(this->rootKey).withScale(scale);
 
     this->sendEventChange(newEvent);
+    this->updateButtonsState();
 }
 
 void KeySignatureDialog::textEditorReturnKeyPressed(TextEditor &ed)
@@ -489,7 +541,7 @@ void KeySignatureDialog::textEditorEscapeKeyPressed(TextEditor &)
 
 void KeySignatureDialog::textEditorFocusLost(TextEditor &)
 {
-    this->updateOkButtonState();
+    this->updateButtonsState();
 
     auto *focusedComponent = Component::getCurrentlyFocusedComponent();
 

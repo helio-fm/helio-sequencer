@@ -22,11 +22,12 @@
 #include "ScaleEditor.h"
 #include "KeySelector.h"
 #include "MobileComboBox.h"
-#include "PlayButton.h"
 
 class Transport;
 class ProjectNode;
 class KeySignaturesSequence;
+class SeparatorHorizontalFading;
+class PlayButton;
 
 class KeySignatureDialog final : public DialogBase,
     public TextEditor::Listener,
@@ -72,8 +73,10 @@ private:
 
     Array<Scale::Ptr> scales;
 
+    void reloadScalesList();
+
     inline void cancelAndDisappear();
-    inline void updateOkButtonState();
+    inline void updateButtonsState();
 
     bool addsNewEvent = false;
     bool hasMadeChanges = false;
@@ -85,16 +88,23 @@ private:
     int rootKey = 0;
     Scale::Ptr scale;
 
+    void savePreset();
+
     UniquePointer<Thread> scalePreviewThread;
 
     UniquePointer<MobileComboBox::Container> presetsCombo;
     UniquePointer<Label> messageLabel;
-    UniquePointer<TextButton> removeEventButton;
-    UniquePointer<TextButton> okButton;
+
     UniquePointer<KeySelector> keySelector;
+    UniquePointer<SeparatorHorizontalFading> separator;
+
     UniquePointer<ScaleEditor> scaleEditor;
-    UniquePointer<PlayButton> playButton;
     UniquePointer<TextEditor> scaleNameEditor;
+    UniquePointer<IconButton> savePresetButton;
+    UniquePointer<PlayButton> playButton;
+
+    UniquePointer<TextButton> okButton;
+    UniquePointer<TextButton> removeEventButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureDialog)
 };
