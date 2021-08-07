@@ -1203,19 +1203,18 @@ void SequencerOperations::deleteSelection(const Lasso &selection, bool shouldChe
 }
 
 void SequencerOperations::shiftKeyRelative(Lasso &selection,
-    int deltaKey, bool shouldCheckpoint, Transport *transport)
+    int deltaKey, Transport *transport, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0 || deltaKey == 0) { return; }
 
-    auto *sequence = selection.getFirstAs<NoteComponent>()->getNote().getSequence();
-    const auto operationId = deltaKey > 0 ? UndoActionIDs::KeyShiftUp : UndoActionIDs::KeyShiftDown;
-    const auto transactionId = selection.generateLassoTransactionId(operationId);
-    const bool repeatsLastAction = sequence->getLastUndoActionId() == transactionId;
-
-    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
-    
     auto *pianoSequence = getPianoSequence(selection);
     jassert(pianoSequence);
+
+    const auto operationId = deltaKey > 0 ? UndoActionIDs::KeyShiftUp : UndoActionIDs::KeyShiftDown;
+    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const bool repeatsLastAction = pianoSequence->getLastUndoActionId() == transactionId;
+
+    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
 
     PianoChangeGroup groupBefore, groupAfter;
         
@@ -1248,19 +1247,96 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
     pianoSequence->changeGroup(groupBefore, groupAfter, true);
 }
 
+void SequencerOperations::shiftInScaleKeyRelative(const Lasso &selection,
+    WeakReference<MidiTrack> keySignatures, int deltaKey,
+    Transport *transport, bool shouldCheckpoint)
+{
+    if (selection.getNumSelected() == 0 || deltaKey == 0) { return; }
+
+    auto *pianoSequence = getPianoSequence(selection);
+    jassert(pianoSequence);
+
+    const auto operationId = deltaKey > 0 ? UndoActionIDs::ScaleKeyShiftUp : UndoActionIDs::ScaleKeyShiftDown;
+    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const bool repeatsLastAction = pianoSequence->getLastUndoActionId() == transactionId;
+
+    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
+
+    Note::Key rootKey = 0;
+    Scale::Ptr scale = nullptr; // todo some default?
+
+    Array<Note> groupBefore, groupAfter;
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        auto *nc = selection.getItemAs<NoteComponent>(i);
+        groupBefore.add(nc->getNote());
+
+        const auto absKey = nc->getNote().getKey() + nc->getClip().getKey();
+        const auto absBeat = nc->getNote().getBeat() + nc->getClip().getBeat();
+
+        if (!findHarmonicContext(absBeat, absBeat, keySignatures, scale, rootKey))
+        {
+            jassertfalse; // if there are no signatures, should we assume the default one?
+            continue;
+        }
+
+        // scale key calculations are always painful and hardly readable,
+        // (this code kinda duplicates the code in ChordPreviewTool::buildChord),
+        // please refactor this someday:
+        const auto period = (absKey - rootKey) / scale->getBasePeriod();
+        const auto periodOffset = period * scale->getBasePeriod();
+        const auto targetKeyOffset = absKey % scale->getBasePeriod();
+        const auto chromaticOffset = targetKeyOffset - rootKey;
+        
+        const auto inScaleKey = scale->getNearestScaleKey(chromaticOffset,
+            deltaKey < 0 ? Scale::ScaleKeyAlignment::Floor : Scale::ScaleKeyAlignment::Ceil);
+
+        const auto absAlignedInScale = scale->getChromaticKey(inScaleKey, periodOffset + rootKey, false);
+        const auto absNewKey = scale->getChromaticKey(inScaleKey + deltaKey, periodOffset + rootKey, false);
+
+        // если нота стоит в ладу, то поднимаем или опускаем на ступень лада,
+        // если не в ладу, то поднимаем или опускаем до ближайшей ступени лада:
+        const auto d = (absAlignedInScale == absKey) ?
+            (absNewKey - absKey) : (absAlignedInScale - absKey);
+
+        Note newNote(nc->getNote().withDeltaKey(d));
+        groupAfter.add(newNote);
+
+        // lots of duplicate code again, fixme someday:
+        if (transport != nullptr && selection.getNumSelected() < 8)
+        {
+            transport->previewKey(pianoSequence->getTrackId(),
+                newNote.getKey() + nc->getClip().getKey(),
+                newNote.getVelocity() * nc->getClip().getVelocity(),
+                newNote.getLength());
+        }
+    }
+
+    if (groupBefore.size() > 0)
+    {
+        if (!didCheckpoint)
+        {
+            pianoSequence->checkpoint(transactionId);
+            didCheckpoint = true;
+        }
+    }
+
+    pianoSequence->changeGroup(groupBefore, groupAfter, true);
+}
+
 void SequencerOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0 || deltaBeat == 0) { return; }
 
-    auto *sequence = selection.getFirstAs<NoteComponent>()->getNote().getSequence();
-    const auto operationId = deltaBeat > 0 ? UndoActionIDs::BeatShiftRight : UndoActionIDs::BeatShiftLeft;
-    const auto transactionId = selection.generateLassoTransactionId(operationId);
-    const bool repeatsLastAction = sequence->getLastUndoActionId() == transactionId;
-
-    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
-
     auto *pianoSequence = getPianoSequence(selection);
     jassert(pianoSequence);
+
+    const auto operationId = deltaBeat > 0 ? UndoActionIDs::BeatShiftRight : UndoActionIDs::BeatShiftLeft;
+    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const bool repeatsLastAction = pianoSequence->getLastUndoActionId() == transactionId;
+
+    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
 
     PianoChangeGroup groupBefore, groupAfter;
         
@@ -1286,15 +1362,14 @@ void SequencerOperations::shiftLengthRelative(Lasso &selection, float deltaLengt
 {
     if (selection.getNumSelected() == 0 || deltaLength == 0.f) { return; }
 
-    auto *sequence = selection.getFirstAs<NoteComponent>()->getNote().getSequence();
-    const auto operationId = deltaLength > 0 ? UndoActionIDs::LengthIncrease : UndoActionIDs::LengthDecrease;
-    const auto transactionId = selection.generateLassoTransactionId(operationId);
-    const bool repeatsLastAction = sequence->getLastUndoActionId() == transactionId;
-
-    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
-
     auto *pianoSequence = getPianoSequence(selection);
     jassert(pianoSequence);
+
+    const auto operationId = deltaLength > 0 ? UndoActionIDs::LengthIncrease : UndoActionIDs::LengthDecrease;
+    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const bool repeatsLastAction = pianoSequence->getLastUndoActionId() == transactionId;
+
+    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
 
     PianoChangeGroup groupBefore, groupAfter;
 
@@ -1938,12 +2013,9 @@ bool SequencerOperations::remapKeySignaturesToTemperament(KeySignaturesSequence 
 
 // Tries to detect if there's one key signature that affects the whole sequence.
 // If there's none, of if there's more than one, returns false.
-bool SequencerOperations::findHarmonicContext(const Lasso &selection, const Clip &clip,
+bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
     WeakReference<MidiTrack> keysTrack, Scale::Ptr &outScale, Note::Key &outRootKey)
 {
-    const auto startBeat = SequencerOperations::findStartBeat(selection) + clip.getBeat();
-    const auto endBeat = SequencerOperations::findEndBeat(selection) + clip.getBeat();
-
     if (const auto *keySignatures = dynamic_cast<KeySignaturesSequence *>(keysTrack->getSequence()))
     {
         if (keySignatures->size() == 0)
@@ -1984,6 +2056,14 @@ bool SequencerOperations::findHarmonicContext(const Lasso &selection, const Clip
     }
 
     return false;
+}
+
+bool SequencerOperations::findHarmonicContext(const Lasso &selection, const Clip &clip,
+    WeakReference<MidiTrack> keysTrack, Scale::Ptr &outScale, Note::Key &outRootKey)
+{
+    const auto startBeat = SequencerOperations::findStartBeat(selection) + clip.getBeat();
+    const auto endBeat = SequencerOperations::findEndBeat(selection) + clip.getBeat();
+    return SequencerOperations::findHarmonicContext(startBeat, endBeat, keysTrack, outScale, outRootKey);
 }
 
 void SequencerOperations::duplicateSelection(const Lasso &selection, bool shouldCheckpoint)

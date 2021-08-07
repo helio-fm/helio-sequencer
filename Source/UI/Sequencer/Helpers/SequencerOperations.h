@@ -77,7 +77,11 @@ struct SequencerOperations final
     static void moveSelection(Lasso &selection, Clip &targetClip, bool shouldCheckpoint = true);
 
     static void shiftKeyRelative(Lasso &selection, int deltaKey,
-        bool shouldCheckpoint = true, Transport *transport = nullptr);
+        Transport *transport = nullptr, bool shouldCheckpoint = true);
+
+    static void shiftInScaleKeyRelative(const Lasso &selection,
+        WeakReference<MidiTrack> keySignatures, int deltaKey,
+        Transport *transport = nullptr, bool shouldCheckpoint = true);
 
     static void shiftBeatRelative(Lasso &selection, float deltaBeat,
         bool shouldCheckpoint = true);
@@ -113,6 +117,9 @@ struct SequencerOperations final
         const Array<Scale::Ptr> &availableScales, bool shouldCheckpoint = true);
 
     static bool findHarmonicContext(const Lasso &selection, const Clip &clip,
+        WeakReference<MidiTrack> keySignatures, Scale::Ptr &outScale, Note::Key &outRootKey);
+
+    static bool findHarmonicContext(float startBeat, float endBeat,
         WeakReference<MidiTrack> keySignatures, Scale::Ptr &outScale, Note::Key &outRootKey);
 
     static Array<Note> cutEvents(const Array<Note> &notes,

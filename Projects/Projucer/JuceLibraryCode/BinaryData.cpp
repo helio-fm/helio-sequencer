@@ -1408,6 +1408,8 @@ static const unsigned char temp_binary_data_89[] =
 "      { \"command\": \"LengthIncrease\", \"key\": \"Shift + Cursor Right\" },\n"
 "      { \"command\": \"TransposeUp\", \"key\": \"Cursor Up\" },\n"
 "      { \"command\": \"TransposeDown\", \"key\": \"Cursor Down\" },\n"
+"      { \"command\": \"TransposeScaleKeyUp\", \"key\": \"Alt + Cursor Up\" },\n"
+"      { \"command\": \"TransposeScaleKeyDown\", \"key\": \"Alt + Cursor Down\" },\n"
 "      { \"command\": \"TransposeOctaveUp\", \"key\": \"Shift + Cursor Up\" },\n"
 "      { \"command\": \"TransposeOctaveDown\", \"key\": \"Shift + Cursor Down\" },\n"
 "      { \"command\": \"TransposeFifthUp\", \"key\": \"Shift + Alt + Cursor Up\" },\n"
@@ -4162,7 +4164,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 3297; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 15791; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 15935; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 588; return keyboardMappings_json;
         case 0x048f5efe:  numBytes = 9400; return scales_json;
         case 0x77719112:  numBytes = 1091; return temperaments_json;

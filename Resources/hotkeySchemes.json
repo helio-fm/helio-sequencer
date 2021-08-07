@@ -181,6 +181,8 @@
       { "command": "LengthIncrease", "key": "Shift + Cursor Right" },
       { "command": "TransposeUp", "key": "Cursor Up" },
       { "command": "TransposeDown", "key": "Cursor Down" },
+      { "command": "TransposeScaleKeyUp", "key": "Alt + Cursor Up" },
+      { "command": "TransposeScaleKeyDown", "key": "Alt + Cursor Down" },
       { "command": "TransposeOctaveUp", "key": "Shift + Cursor Up" },
       { "command": "TransposeOctaveDown", "key": "Shift + Cursor Down" },
       { "command": "TransposeFifthUp", "key": "Shift + Alt + Cursor Up" },

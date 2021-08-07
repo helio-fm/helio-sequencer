@@ -145,7 +145,7 @@ bool Scale::seemsMinor() const noexcept
     return this->getChromaticKey(int(Chord::Key::InScale::III), 0, false) == 3;
 }
 
-// Wraps a chromatic key (may be negative)
+// Wraps a key (may be negative)
 static int wrapKey(int key, int const lowerKey, int const upperKey)
 {
     const int keyRange = upperKey - lowerKey;
@@ -169,19 +169,36 @@ int Scale::getScaleKey(int chromaticKey) const
     return this->keys.indexOf(wrappedKey);
 }
 
-int Scale::getNearestScaleKey(int chromaticKey) const
+int Scale::getNearestScaleKey(int chromaticKey, ScaleKeyAlignment alignment) const
 {
-    const auto wrappedKey = wrapKey(chromaticKey, 0, this->getBasePeriod());
+    const auto wrappedTargetKey = wrapKey(chromaticKey, 0, this->getBasePeriod());
     auto minDelta = this->getBasePeriod();
-    auto result = wrappedKey;
+    auto result = wrappedTargetKey;
 
-    for (const auto &scaleKey : this->keys)
+    for (int key = 0; key < this->keys.size(); ++key)
     {
-        const auto delta = abs(scaleKey - wrappedKey);
+        const auto chromaticScaleKey = this->keys.getUnchecked(key);
+        const auto delta = abs(chromaticScaleKey - wrappedTargetKey);
+
         if (minDelta > delta)
         {
             minDelta = delta;
-            result = this->keys.indexOf(scaleKey);
+
+            const bool nearestIsBelow = chromaticScaleKey < wrappedTargetKey;
+            const bool nearestIsAbove = chromaticScaleKey > wrappedTargetKey;
+
+            if (alignment == ScaleKeyAlignment::Floor && nearestIsAbove)
+            {
+                result = key - 1;
+            }
+            else if (alignment == ScaleKeyAlignment::Ceil && nearestIsBelow)
+            {
+                result = key + 1;
+            }
+            else
+            {
+                result = key;
+            }
         }
     }
     
@@ -191,13 +208,13 @@ int Scale::getNearestScaleKey(int chromaticKey) const
 int Scale::getChromaticKey(int inScaleKey, int extraChromaticOffset,
     bool shouldRestrictToOneOctave) const noexcept
 {
-    jassert(inScaleKey >= 0);
-    const int idx = this->keys[inScaleKey % this->getSize()];
-    const auto scaleToChromatic = shouldRestrictToOneOctave ? idx :
-        idx + (this->getBasePeriod() * (inScaleKey / this->getSize()));
+    const auto wrappedKey = wrapKey(inScaleKey, 0, this->getSize());
+    const int index = this->keys[wrappedKey];
+    const auto periodsToOffset = inScaleKey / this->getSize();
+    const auto scaleToChromatic = shouldRestrictToOneOctave ? index :
+        index + (this->getBasePeriod() * (inScaleKey < 0 ? periodsToOffset - 1 : periodsToOffset));
     return scaleToChromatic + extraChromaticOffset;
 }
-
 
 int Scale::getBasePeriod() const noexcept
 {

@@ -74,11 +74,19 @@ public:
     // Returns -1 if chromatic key is not found within the scale
     int getScaleKey(int chormaticKey) const;
 
-    // Chromatic key will be wrapped from 0 to scale's period size
-    // Returns index of the closest in-scale key
-    int getNearestScaleKey(int chromaticKey) const;
+    enum class ScaleKeyAlignment { Round, Ceil, Floor };
 
-    // Keys start from 0, both in parameters and result
+    // Chromatic key will be wrapped from 0 to scale's period size
+    // Returns the closest in-scale key, which can be out of range
+    // [0, this->keys.size()), if Ceil or Floor rounding is used;
+    // this method is supposed to be used in pair with getChromaticKey,
+    // which will adjust the period accordingly, if the passed
+    // in-scale key is out of range and restrictToOneOctave is true
+    int getNearestScaleKey(int chromaticKey,
+        ScaleKeyAlignment alignment = ScaleKeyAlignment::Round) const;
+
+    // Keys start from 0, both in the parameters and the result;
+    // the inScaleKey parameter can be out of the scale range
     int getChromaticKey(int inScaleKey, int extraChromaticOffset,
         bool restrictToOneOctave) const noexcept;
 

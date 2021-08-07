@@ -28,23 +28,26 @@ namespace UndoActionIDs
         KeyShiftUp = 0x0001,
         KeyShiftDown = 0x0002,
 
-        BeatShiftRight = 0x0003,
-        BeatShiftLeft = 0x0004,
+        ScaleKeyShiftUp = 0x0010,
+        ScaleKeyShiftDown = 0x0011,
 
-        LengthIncrease = 0x0005,
-        LengthDecrease = 0x0006,
+        BeatShiftRight = 0x0020,
+        BeatShiftLeft = 0x0021,
 
-        ClipTransposeUp = 0x0010,
-        ClipTransposeDown = 0x0011,
+        LengthIncrease = 0x0030,
+        LengthDecrease = 0x0031,
 
-        ClipVolumeUp = 0x0012,
-        ClipVolumeDown = 0x0013,
+        ClipTransposeUp = 0x0040,
+        ClipTransposeDown = 0x0041,
 
-        NotesVolumeUp = 0x0014,
-        NotesVolumeDown = 0x0015,
+        ClipVolumeUp = 0x0050,
+        ClipVolumeDown = 0x0051,
 
-        AddNewTrack = 0x0020,
-        DuplicateTrack = 0x0021,
+        NotesVolumeUp = 0x0060,
+        NotesVolumeDown = 0x0061,
+
+        AddNewTrack = 0x0070,
+        DuplicateTrack = 0x0071,
 
         // ...
 

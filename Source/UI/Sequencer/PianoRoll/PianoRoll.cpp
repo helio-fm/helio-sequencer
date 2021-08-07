@@ -1020,11 +1020,11 @@ void PianoRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::CopyEvents:
-        SequencerOperations::copyToClipboard(App::Clipboard(), this->getLassoSelection());
+        SequencerOperations::copyToClipboard(App::Clipboard(), this->selection);
         break;
     case CommandIDs::CutEvents:
-        SequencerOperations::copyToClipboard(App::Clipboard(), this->getLassoSelection());
-        SequencerOperations::deleteSelection(this->getLassoSelection());
+        SequencerOperations::copyToClipboard(App::Clipboard(), this->selection);
+        SequencerOperations::deleteSelection(this->selection);
         break;
     case CommandIDs::PasteEvents:
     {
@@ -1035,7 +1035,7 @@ void PianoRoll::handleCommandMessage(int commandId)
     }
         break;
     case CommandIDs::DeleteEvents:
-        SequencerOperations::deleteSelection(this->getLassoSelection());
+        SequencerOperations::deleteSelection(this->selection);
         break;
     case CommandIDs::DeleteTrack:
     {
@@ -1044,12 +1044,12 @@ void PianoRoll::handleCommandMessage(int commandId)
         return;
     }
     case CommandIDs::NewTrackFromSelection:
-        if (this->getLassoSelection().getNumSelected() > 0)
+        if (this->selection.getNumSelected() > 0)
         {
             this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
-            auto trackPreset = SequencerOperations::createPianoTrack(this->getLassoSelection());
+            auto trackPreset = SequencerOperations::createPianoTrack(this->selection);
             // false == we already have the correct checkpoint:
-            SequencerOperations::deleteSelection(this->getLassoSelection(), false);
+            SequencerOperations::deleteSelection(this->selection, false);
             InteractiveActions::addNewTrack(this->project,
                 move(trackPreset), this->activeTrack->getTrackName(), true,
                 UndoActionIDs::AddNewTrack, TRANS(I18n::Menu::Selection::notesToTrack),
@@ -1068,62 +1068,70 @@ void PianoRoll::handleCommandMessage(int commandId)
     }
     break;
     case CommandIDs::BeatShiftLeft:
-        SequencerOperations::shiftBeatRelative(this->getLassoSelection(),
+        SequencerOperations::shiftBeatRelative(this->selection,
             -this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::BeatShiftRight:
-        SequencerOperations::shiftBeatRelative(this->getLassoSelection(),
+        SequencerOperations::shiftBeatRelative(this->selection,
             this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::LengthIncrease:
-        SequencerOperations::shiftLengthRelative(this->getLassoSelection(),
+        SequencerOperations::shiftLengthRelative(this->selection,
             this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::LengthDecrease:
-        SequencerOperations::shiftLengthRelative(this->getLassoSelection(),
+        SequencerOperations::shiftLengthRelative(this->selection,
             -this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::TransposeUp:
-        SequencerOperations::shiftKeyRelative(this->getLassoSelection(), 1, true, &this->getTransport());
+        SequencerOperations::shiftKeyRelative(this->selection, 1, &this->getTransport(), true);
         break;
     case CommandIDs::TransposeDown:
-        SequencerOperations::shiftKeyRelative(this->getLassoSelection(), -1, true, &this->getTransport());
+        SequencerOperations::shiftKeyRelative(this->selection, -1, &this->getTransport(), true);
+        break;
+    case CommandIDs::TransposeScaleKeyUp:
+        SequencerOperations::shiftInScaleKeyRelative(this->selection,
+            this->project.getTimeline()->getKeySignatures(), 1, &this->getTransport(), true);
+        break;
+    case CommandIDs::TransposeScaleKeyDown:
+        SequencerOperations::shiftInScaleKeyRelative(this->selection,
+            this->project.getTimeline()->getKeySignatures(), -1, &this->getTransport(), true);
         break;
     case CommandIDs::TransposeOctaveUp:
-        SequencerOperations::shiftKeyRelative(this->getLassoSelection(),
+        SequencerOperations::shiftKeyRelative(this->selection,
             this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave),
-            true, &this->getTransport());
+            &this->getTransport(), true);
         break;
     case CommandIDs::TransposeOctaveDown:
-        SequencerOperations::shiftKeyRelative(this->getLassoSelection(),
+        SequencerOperations::shiftKeyRelative(this->selection,
             -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave),
-            true, &this->getTransport());
+            &this->getTransport(), true);
         break;
     case CommandIDs::TransposeFifthUp:
-        SequencerOperations::shiftKeyRelative(this->getLassoSelection(),
+        SequencerOperations::shiftKeyRelative(this->selection,
             this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth),
-            true, &this->getTransport());
+            &this->getTransport(), true);
         break;
     case CommandIDs::TransposeFifthDown:
-        SequencerOperations::shiftKeyRelative(this->getLassoSelection(),
+        SequencerOperations::shiftKeyRelative(this->selection,
             -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth),
-            true, &this->getTransport());
+            &this->getTransport(), true);
         break;
     case CommandIDs::CleanupOverlaps:
-        SequencerOperations::cleanupOverlaps(this->getLassoSelection());
+        SequencerOperations::cleanupOverlaps(this->selection);
         break;
     case CommandIDs::MelodicInversion:
-        SequencerOperations::melodicInversion(this->getLassoSelection());
+        SequencerOperations::melodicInversion(this->selection);
         break;
     case CommandIDs::Retrograde:
-        SequencerOperations::retrograde(this->getLassoSelection());
+        SequencerOperations::retrograde(this->selection);
         break;
     case CommandIDs::InvertChordUp:
-        SequencerOperations::invertChord(this->getLassoSelection(),
+        SequencerOperations::invertChord(this->selection,
             this->getPeriodSize(), true, &this->getTransport());
         break;
     case CommandIDs::InvertChordDown:
-        SequencerOperations::invertChord(this->getLassoSelection(),
+        SequencerOperations::invertChord(this->selection,
             -this->getPeriodSize(), true, &this->getTransport());
         break;
     case CommandIDs::ToggleMuteClips:
@@ -1223,74 +1231,74 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::NotesVolumeRandom:
         ROLL_BATCH_REPAINT_START
-        SequencerOperations::randomizeVolume(this->getLassoSelection(), 0.1f);
+        SequencerOperations::randomizeVolume(this->selection, 0.1f);
         ROLL_BATCH_REPAINT_END
         break;
     case CommandIDs::NotesVolumeFadeOut:
         ROLL_BATCH_REPAINT_START
-        SequencerOperations::fadeOutVolume(this->getLassoSelection(), 0.35f);
+        SequencerOperations::fadeOutVolume(this->selection, 0.35f);
         ROLL_BATCH_REPAINT_END
         break;
     case CommandIDs::NotesVolumeUp:
         ROLL_BATCH_REPAINT_START
-        SequencerOperations::tuneVolume(this->getLassoSelection(), 1.f / 32.f);
+        SequencerOperations::tuneVolume(this->selection, 1.f / 32.f);
         ROLL_BATCH_REPAINT_END
         break;
     case CommandIDs::NotesVolumeDown:
         ROLL_BATCH_REPAINT_START
-        SequencerOperations::tuneVolume(this->getLassoSelection(), -1.f / 32.f);
+        SequencerOperations::tuneVolume(this->selection, -1.f / 32.f);
         ROLL_BATCH_REPAINT_END
         break;
     case CommandIDs::Tuplet1:
-        SequencerOperations::applyTuplets(this->getLassoSelection(), 1);
+        SequencerOperations::applyTuplets(this->selection, 1);
         break;
     case CommandIDs::Tuplet2:
-        SequencerOperations::applyTuplets(this->getLassoSelection(), 2);
+        SequencerOperations::applyTuplets(this->selection, 2);
         break;
     case CommandIDs::Tuplet3:
-        SequencerOperations::applyTuplets(this->getLassoSelection(), 3);
+        SequencerOperations::applyTuplets(this->selection, 3);
         break;
     case CommandIDs::Tuplet4:
-        SequencerOperations::applyTuplets(this->getLassoSelection(), 4);
+        SequencerOperations::applyTuplets(this->selection, 4);
         break;
     case CommandIDs::Tuplet5:
-        SequencerOperations::applyTuplets(this->getLassoSelection(), 5);
+        SequencerOperations::applyTuplets(this->selection, 5);
         break;
     case CommandIDs::Tuplet6:
-        SequencerOperations::applyTuplets(this->getLassoSelection(), 6);
+        SequencerOperations::applyTuplets(this->selection, 6);
         break;
     case CommandIDs::Tuplet7:
-        SequencerOperations::applyTuplets(this->getLassoSelection(), 7);
+        SequencerOperations::applyTuplets(this->selection, 7);
         break;
     case CommandIDs::Tuplet8:
-        SequencerOperations::applyTuplets(this->getLassoSelection(), 8);
+        SequencerOperations::applyTuplets(this->selection, 8);
         break;
     case CommandIDs::Tuplet9:
-        SequencerOperations::applyTuplets(this->getLassoSelection(), 9);
+        SequencerOperations::applyTuplets(this->selection, 9);
         break;
     case CommandIDs::QuantizeTo1_1:
         if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-        SequencerOperations::quantize(this->getLassoSelection(), 1.f);
+        SequencerOperations::quantize(this->selection, 1.f);
         break;
     case CommandIDs::QuantizeTo1_2:
         if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-        SequencerOperations::quantize(this->getLassoSelection(), 2.f);
+        SequencerOperations::quantize(this->selection, 2.f);
         break;
     case CommandIDs::QuantizeTo1_4:
         if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-        SequencerOperations::quantize(this->getLassoSelection(), 4.f);
+        SequencerOperations::quantize(this->selection, 4.f);
         break;
     case CommandIDs::QuantizeTo1_8:
         if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-        SequencerOperations::quantize(this->getLassoSelection(), 8.f);
+        SequencerOperations::quantize(this->selection, 8.f);
         break;
     case CommandIDs::QuantizeTo1_16:
         if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-        SequencerOperations::quantize(this->getLassoSelection(), 16.f);
+        SequencerOperations::quantize(this->selection, 16.f);
         break;
     case CommandIDs::QuantizeTo1_32:
         if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-        SequencerOperations::quantize(this->getLassoSelection(), 32.f);
+        SequencerOperations::quantize(this->selection, 32.f);
         break;
     default:
         break;
@@ -1694,9 +1702,6 @@ SerializedData PianoRoll::serialize() const
             this->getViewport().getViewWidth())));
 
     tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY());
-
-    // m?
-    //tree.setProperty(UI::selection, this->getLassoSelection().serialize());
 
     return tree;
 }
