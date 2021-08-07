@@ -68,9 +68,17 @@ Also hold `Shift` or any modifier key to change the behavior of the pen tool whe
 
 ### Transposition and inversion
 
-`Shift + Up` and `Shift + Down` hotkeys transpose selected notes one octave up or down. `Alt + Shift + Up` and `Alt + Shift + Down` are used for the less common transposition to the next or previous key in the circle of fifths (simply put, it's a transposition by +7 or -7 semitones in the 12-tone temperament, or by the closest equivalent of a perfect fifth in other temperaments, e.g. +18 or -18 for 31-edo, etc).
+`Shift + Up` and `Shift + Down` hotkeys transpose the selected notes one octave up or down. `Alt + Shift + Up` and `Alt + Shift + Down` are used for the less common transposition to the next or previous key in the circle of fifths (simply put, it's a transposition by +7 or -7 semitones in the 12-tone temperament, or by the closest equivalent of a perfect fifth in other temperaments, e.g. +18 or -18 for 31-edo, etc).
 
 Use `Control + Up` and `Control + Down` for chord inversion (don't confuse it with melodic inversion, which is triggered by `Alt + I` hotkey). Chord inversion treats selected notes as chord(s); the lowest note in each chord moves one octave up (or the highest note moves one octave down), all others stay in place.
+
+#### In-scale transposition
+
+Use `Alt + Up` and `Alt + Down` hotkeys to transpose the selected notes using in-scale keys only:
+
+![inscale-transposition]
+
+The notes which are out of scale will be aligned up or down to the nearest in-scale keys.
 
 ### UI flags
 
@@ -175,6 +183,7 @@ Just hit `!` and start typing a chord description, or pick some of the suggestio
 [group-resizing]: images/group-resizing.png "Resizing notes with shift"
 [pen-tool-alt]: images/pen-tool-alt.png "Adding notes with shift"
 [drag-and-copy]: images/drag-and-copy.png "Drag-and-copy"
+[inscale-transposition]: images/inscale-transposition.png "In-scale transposition"
 
 [monitors]: images/monitors.png "Audio monitor view modes"
 [toggle-minimap]: images/toggle-minimap.png "Mini-map view modes"
