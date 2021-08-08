@@ -19,7 +19,7 @@
 #include "RollEditMode.h"
 #include "Icons.h"
 
-bool RollEditMode::forbidsViewportDragging() const
+bool RollEditMode::forbidsViewportDragging(const ModifierKeys &mods) const
 {
 #if PLATFORM_DESKTOP
     return
@@ -34,36 +34,36 @@ bool RollEditMode::forbidsViewportDragging() const
 #endif
 }
 
-bool RollEditMode::forcesViewportDragging() const
+bool RollEditMode::forcesViewportDragging(const ModifierKeys &mods) const
 {
     return this->isMode(RollEditMode::dragMode);
 }
 
-bool RollEditMode::forbidsViewportZooming() const
+bool RollEditMode::forbidsViewportZooming(const ModifierKeys &mods) const
 {
     return !this->isMode(RollEditMode::zoomMode);
 }
 
-bool RollEditMode::forcesViewportZooming() const
+bool RollEditMode::forcesViewportZooming(const ModifierKeys &mods) const
 {
     return this->isMode(RollEditMode::zoomMode);
 }
 
-bool RollEditMode::forbidsSelectionMode() const
+bool RollEditMode::forbidsSelectionMode(const ModifierKeys &mods) const
 {
     return
-        this->isMode(RollEditMode::drawMode) ||
         this->isMode(RollEditMode::zoomMode) ||
         this->isMode(RollEditMode::dragMode) ||
-        this->isMode(RollEditMode::knifeMode);
+        this->isMode(RollEditMode::knifeMode) ||
+        (this->isMode(RollEditMode::drawMode) && !mods.isCtrlDown());
 }
 
-bool RollEditMode::forcesSelectionMode() const
+bool RollEditMode::forcesSelectionMode(const ModifierKeys &mods) const
 {
     return this->isMode(RollEditMode::selectionMode);
 }
 
-bool RollEditMode::forbidsAddingEvents() const
+bool RollEditMode::forbidsAddingEvents(const ModifierKeys &mods) const
 {
     return
         this->isMode(RollEditMode::selectionMode) ||
@@ -72,17 +72,17 @@ bool RollEditMode::forbidsAddingEvents() const
         this->isMode(RollEditMode::knifeMode);
 }
 
-bool RollEditMode::forcesAddingEvents() const
+bool RollEditMode::forcesAddingEvents(const ModifierKeys &mods) const
 {
-    return this->isMode(RollEditMode::drawMode);
+    return this->isMode(RollEditMode::drawMode) && !mods.isCtrlDown();
 }
 
-bool RollEditMode::forbidsCuttingEvents() const
+bool RollEditMode::forbidsCuttingEvents(const ModifierKeys &mods) const
 {
     return !this->isMode(RollEditMode::knifeMode);
 }
 
-bool RollEditMode::forcesCuttingEvents() const
+bool RollEditMode::forcesCuttingEvents(const ModifierKeys &mods) const
 {
     return this->isMode(RollEditMode::knifeMode);
 }

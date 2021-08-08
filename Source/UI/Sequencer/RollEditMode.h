@@ -36,20 +36,20 @@ public:
     
     RollEditMode() = default;
 
-    bool forbidsViewportDragging() const;
-    bool forcesViewportDragging() const;
+    bool forbidsViewportDragging(const ModifierKeys &mods) const;
+    bool forcesViewportDragging(const ModifierKeys &mods) const;
     
-    bool forbidsViewportZooming() const;
-    bool forcesViewportZooming() const;
+    bool forbidsViewportZooming(const ModifierKeys &mods) const;
+    bool forcesViewportZooming(const ModifierKeys &mods) const;
     
-    bool forbidsSelectionMode() const;
-    bool forcesSelectionMode() const;
+    bool forbidsSelectionMode(const ModifierKeys &mods) const;
+    bool forcesSelectionMode(const ModifierKeys &mods) const;
     
-    bool forbidsAddingEvents() const;
-    bool forcesAddingEvents() const;
+    bool forbidsAddingEvents(const ModifierKeys &mods) const;
+    bool forcesAddingEvents(const ModifierKeys &mods) const;
 
-    bool forbidsCuttingEvents() const;
-    bool forcesCuttingEvents() const;
+    bool forbidsCuttingEvents(const ModifierKeys &mods) const;
+    bool forcesCuttingEvents(const ModifierKeys &mods) const;
 
     bool shouldInteractWithChildren() const;
     MouseCursor getCursor() const;

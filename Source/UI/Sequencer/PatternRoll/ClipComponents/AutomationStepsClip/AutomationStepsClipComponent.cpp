@@ -52,7 +52,7 @@ AutomationStepsClipComponent::~AutomationStepsClipComponent()
 
 void AutomationStepsClipComponent::mouseDown(const MouseEvent &e)
 {
-    if (!this->project.getEditMode().forcesAddingEvents())
+    if (!this->project.getEditMode().forcesAddingEvents(e.mods))
     {
         ClipComponent::mouseDown(e);
         return;

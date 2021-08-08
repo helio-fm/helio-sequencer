@@ -54,7 +54,7 @@ AutomationCurveClipComponent::~AutomationCurveClipComponent()
 
 void AutomationCurveClipComponent::mouseDown(const MouseEvent &e)
 {
-    if (!this->project.getEditMode().forcesAddingEvents())
+    if (!this->project.getEditMode().forcesAddingEvents(e.mods))
     {
         ClipComponent::mouseDown(e);
         return;
@@ -68,7 +68,7 @@ void AutomationCurveClipComponent::mouseDown(const MouseEvent &e)
 
 void AutomationCurveClipComponent::mouseDrag(const MouseEvent &e)
 {
-    if (!this->project.getEditMode().forcesAddingEvents())
+    if (!this->project.getEditMode().forcesAddingEvents(e.mods))
     {
         ClipComponent::mouseDrag(e);
         return;
@@ -90,7 +90,7 @@ void AutomationCurveClipComponent::mouseDrag(const MouseEvent &e)
 
 void AutomationCurveClipComponent::mouseUp(const MouseEvent &e)
 {
-    if (!this->project.getEditMode().forcesAddingEvents())
+    if (!this->project.getEditMode().forcesAddingEvents(e.mods))
     {
         ClipComponent::mouseUp(e);
         return;

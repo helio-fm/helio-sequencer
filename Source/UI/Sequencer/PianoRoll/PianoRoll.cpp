@@ -286,7 +286,7 @@ void PianoRoll::longTapEvent(const Point<float> &position,
 {
     // try to switch to selected note's track:
     if (!this->multiTouchController->hasMultitouch() &&
-        !this->getEditMode().forbidsSelectionMode())
+        !this->getEditMode().forbidsSelectionMode({}))
     {
         const auto *nc = dynamic_cast<NoteComponent *>(target.get());
         if (nc != nullptr && !nc->isActive())

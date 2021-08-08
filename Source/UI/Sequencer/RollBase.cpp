@@ -369,7 +369,7 @@ void RollBase::longTapEvent(const Point<float> &position,
     }
 
     if (target == this &&
-        !this->project.getEditMode().forbidsSelectionMode())
+        !this->project.getEditMode().forbidsSelectionMode({}))
     {
         this->lassoComponent->beginLasso(position, this);
         return;
@@ -1684,40 +1684,40 @@ void RollBase::hiResTimerCallback()
 
 bool RollBase::isViewportZoomEvent(const MouseEvent &e) const
 {
-    if (this->project.getEditMode().forbidsViewportZooming())   { return false; }
-    if (this->project.getEditMode().forcesViewportZooming())    { return true; }
+    if (this->project.getEditMode().forbidsViewportZooming(e.mods)) { return false; }
+    if (this->project.getEditMode().forcesViewportZooming(e.mods)) { return true; }
     return false;
 }
 
 bool RollBase::isViewportDragEvent(const MouseEvent &e) const
 {
-    if (this->project.getEditMode().forbidsViewportDragging())  { return false; }
-    if (this->project.getEditMode().forcesViewportDragging())   { return true; }
-    if (e.source.isTouch())                                     { return e.mods.isLeftButtonDown(); }
+    if (this->project.getEditMode().forbidsViewportDragging(e.mods)) { return false; }
+    if (this->project.getEditMode().forcesViewportDragging(e.mods)) { return true; }
+    if (e.source.isTouch()) { return e.mods.isLeftButtonDown(); }
     return (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown());
 }
 
 bool RollBase::isAddEvent(const MouseEvent &e) const
 {
-    if (e.mods.isRightButtonDown())                         { return false; }
-    if (this->project.getEditMode().forbidsAddingEvents())  { return false; }
-    if (this->project.getEditMode().forcesAddingEvents())   { return true; }
+    if (e.mods.isRightButtonDown()) { return false; }
+    if (this->project.getEditMode().forbidsAddingEvents(e.mods)) { return false; }
+    if (this->project.getEditMode().forcesAddingEvents(e.mods)) { return true; }
     return false;
 }
 
 bool RollBase::isLassoEvent(const MouseEvent &e) const
 {
-    if (this->project.getEditMode().forbidsSelectionMode()) { return false; }
-    if (this->project.getEditMode().forcesSelectionMode())  { return true; }
-    if (e.source.isTouch())                                 { return false; }
+    if (this->project.getEditMode().forbidsSelectionMode(e.mods)) { return false; }
+    if (this->project.getEditMode().forcesSelectionMode(e.mods)) { return true; }
+    if (e.source.isTouch()) { return false; }
     return e.mods.isLeftButtonDown();
 }
 
 bool RollBase::isKnifeToolEvent(const MouseEvent &e) const
 {
-    if (e.mods.isRightButtonDown())                         { return false; }
-    if (this->project.getEditMode().forbidsCuttingEvents()) { return false; }
-    if (this->project.getEditMode().forcesCuttingEvents())  { return true; }
+    if (e.mods.isRightButtonDown()) { return false; }
+    if (this->project.getEditMode().forbidsCuttingEvents(e.mods)) { return false; }
+    if (this->project.getEditMode().forcesCuttingEvents(e.mods)) { return true; }
     return false;
 }
 
