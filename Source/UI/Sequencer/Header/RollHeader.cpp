@@ -352,17 +352,10 @@ void RollHeader::mouseDown(const MouseEvent &e)
     {
         const auto parentEvent = e.getEventRelativeTo(&this->roll);
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
-       
-        const bool shouldStartSelection = (e.mods.isAltDown() ||
-                                           e.mods.isCommandDown() ||
-                                           e.mods.isCtrlDown() ||
-                                           e.mods.isShiftDown() ||
-                                           this->roll.isInSelectionMode());
-        
-        if (shouldStartSelection)
+
+        if (e.mods.isAnyModifierKeyDown() || this->roll.isInSelectionMode())
         {
-            const float newX = parentEvent.position.x;
-            this->roll.getSelectionComponent()->beginLasso({ newX, 0.f }, &this->roll);
+            this->roll.getSelectionComponent()->beginLasso({ parentEvent.position.x, 0.f }, &this->roll);
             this->selectionIndicator->fadeIn();
             this->selectionIndicator->setStartAnchor(this->getUnalignedAnchorForEvent(e));
         }

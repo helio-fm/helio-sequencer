@@ -259,6 +259,7 @@ bool applyAutoInsertions(const AutoChangeGroup &group, bool &didCheckpoint)
 PianoSequence *SequencerOperations::getPianoSequence(const Lasso &selection)
 {
     // assumes all selection only contains notes of a single sequence
+    jassert(selection.getNumSelected() > 0);
     return static_cast<PianoSequence *>(selection.getFirstAs<NoteComponent>()->getNote().getSequence());
 }
 
@@ -1270,8 +1271,6 @@ void SequencerOperations::shiftInScaleKeyRelative(const Lasso &selection,
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         auto *nc = selection.getItemAs<NoteComponent>(i);
-        groupBefore.add(nc->getNote());
-
         const auto absKey = nc->getNote().getKey() + nc->getClip().getKey();
         const auto absBeat = nc->getNote().getBeat() + nc->getClip().getBeat();
 
@@ -1301,6 +1300,8 @@ void SequencerOperations::shiftInScaleKeyRelative(const Lasso &selection,
             (absNewKey - absKey) : (absAlignedInScale - absKey);
 
         Note newNote(nc->getNote().withDeltaKey(d));
+
+        groupBefore.add(nc->getNote());
         groupAfter.add(newNote);
 
         // lots of duplicate code again, fixme someday:

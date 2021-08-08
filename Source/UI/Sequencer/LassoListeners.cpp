@@ -189,11 +189,14 @@ PianoRollSelectionRangeIndicatorController::~PianoRollSelectionRangeIndicatorCon
 
 void PianoRollSelectionRangeIndicatorController::changeListenerCallback(ChangeBroadcaster *source)
 {
-    const auto clipBeat = this->roll.getActiveClip().getBeat();
     const auto numSelected = this->lasso->getNumSelected();
+    const auto hasSelection = numSelected > 0;
 
-    auto lastBeat = numSelected > 0 ? std::numeric_limits<float>::lowest() : 0.f;
-    auto firstBeat = numSelected > 0 ? std::numeric_limits<float>::max() : 0.f;
+    jassert(!hasSelection || this->roll.getActiveClip().isValid());
+
+    auto lastBeat = hasSelection ? std::numeric_limits<float>::lowest() : 0.f;
+    auto firstBeat = hasSelection ? std::numeric_limits<float>::max() : 0.f;
+    const auto clipBeat = hasSelection ? this->roll.getActiveClip().getBeat() : 0.f;
     for (int i = 0; i < numSelected; ++i)
     {
         auto *nc = this->lasso->getItemAs<NoteComponent>(i);
@@ -201,7 +204,9 @@ void PianoRollSelectionRangeIndicatorController::changeListenerCallback(ChangeBr
         lastBeat = jmax(lastBeat, nc->getBeat() + nc->getLength() + clipBeat);
     }
 
-    const auto colour = this->roll.getActiveClip().getTrackColour();
+    const auto colour = hasSelection ?
+        this->roll.getActiveClip().getTrackColour() : Colours::transparentBlack;
+
     this->roll.getHeaderComponent()->updateSelectionRangeIndicator(colour, firstBeat, lastBeat);
 }
 

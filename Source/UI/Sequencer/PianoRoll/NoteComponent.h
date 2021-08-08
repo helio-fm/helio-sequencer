@@ -31,7 +31,6 @@ public:
     NoteComponent(PianoRoll &gridRef, const Note &note,
         const Clip &clip, bool ghostMode = false) noexcept;
 
-    // todo need clearer names for these mode and corresponding methods:
     enum class State : uint8
     {
         None,
@@ -182,8 +181,7 @@ private:
 
     inline bool canResize() const noexcept
     {
-        return this->getWidth() >=
-            (NoteComponent::maxResizableEdge + NoteComponent::maxResizableEdge);
+        return this->getWidth() >= (NoteComponent::maxResizableEdge * 2);
     }
 
     inline bool isResizingOrScaling() const noexcept

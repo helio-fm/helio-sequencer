@@ -925,9 +925,9 @@ void PianoRoll::mouseDown(const MouseEvent &e)
 
 void PianoRoll::mouseDoubleClick(const MouseEvent &e)
 {
-    if (! this->project.getEditMode().forbidsAddingEvents())
+    if (!this->project.getEditMode().forbidsAddingEvents({}))
     {
-        const MouseEvent &e2(e.getEventRelativeTo(&App::Layout()));
+        const auto e2 = e.getEventRelativeTo(&App::Layout());
         this->showChordTool(e.mods.isAnyModifierKeyDown() ?
             ToolType::ScalePreview : ToolType::ChordPreview, e2.getPosition());
     }

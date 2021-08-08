@@ -239,13 +239,11 @@ void RollBase::insertAnnotationWithinScreen(const String &annotation)
 
 void RollBase::insertTimeSignatureWithinScreen(int numerator, int denominator)
 {
-    jassert(denominator == 2 || 
-        denominator == 4 || denominator == 8 ||
-        denominator == 16 || denominator == 32);
+    jassert(denominator == 2 || denominator == 4 ||
+        denominator == 8 || denominator == 16 || denominator == 32);
 
-    if (TimeSignaturesSequence *tsSequence = 
-        dynamic_cast<TimeSignaturesSequence *>(this->project.
-            getTimeline()->getTimeSignatures()->getSequence()))
+    if (auto *tsSequence = dynamic_cast<TimeSignaturesSequence *>(
+        this->project.getTimeline()->getTimeSignatures()->getSequence()))
     {
         tsSequence->checkpoint();
         const float targetBeat = this->getPositionForNewTimelineEvent();
@@ -1751,11 +1749,10 @@ void RollBase::startZooming()
     this->zoomMarker = make<IconComponent>(Icons::zoomIn);
     this->zoomMarker->setAlwaysOnTop(true);
 
-    const Point<int> vScreenPosition(this->viewport.getScreenPosition());
-    const Point<int> sMouseDownPosition(this->clickAnchor.toInt());
-    const Point<int> vMouseDownPosition(sMouseDownPosition - vScreenPosition);
+    const auto mouseDownPosition = this->clickAnchor.toInt() - this->viewport.getScreenPosition();
+
     this->zoomMarker->setSize(24, 24);
-    this->zoomMarker->setCentrePosition(vMouseDownPosition.getX(), vMouseDownPosition.getY());
+    this->zoomMarker->setCentrePosition(mouseDownPosition.getX(), mouseDownPosition.getY());
     this->viewport.addAndMakeVisible(this->zoomMarker.get());
 
     Desktop::getInstance().getMainMouseSource().enableUnboundedMouseMovement(true, false);
@@ -1785,7 +1782,7 @@ Point<float> RollBase::getMouseOffset(Point<float> mouseScreenPosition) const
 {
     const int w = this->getWidth() - this->viewport.getWidth();
 
-    const Point<float> distanceFromDragStart = mouseScreenPosition - this->clickAnchor;
+    const auto distanceFromDragStart = mouseScreenPosition - this->clickAnchor;
     float x = this->viewportAnchor.getX() - distanceFromDragStart.getX();
 
     x = (x < 0) ? 0 : x;
