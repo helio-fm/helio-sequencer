@@ -107,10 +107,11 @@ void ClipComponent::mouseDoubleClick(const MouseEvent &e)
 void ClipComponent::mouseDown(const MouseEvent &e)
 {
     if (e.mods.isRightButtonDown() &&
-        this->roll.getEditMode().isMode(RollEditMode::defaultMode))
+        (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
+         this->roll.getEditMode().isMode(RollEditMode::drawMode)))
     {
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
-        //return;
+        return;
     }
 
     MidiEventComponent::mouseDown(e);
@@ -144,9 +145,9 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
     }
 
     if (e.mods.isRightButtonDown() &&
-        this->roll.getEditMode().isMode(RollEditMode::defaultMode))
+        (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
+         this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
     {
-        this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
     }
@@ -205,9 +206,12 @@ void ClipComponent::mouseUp(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(RollEditMode::defaultMode))
+    if (e.mods.isRightButtonDown() &&
+        (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
+         this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
     {
-        this->setMouseCursor(MouseCursor::NormalCursor);
+        // see the comment above PianoRoll::startErasingEvents for
+        // the explanation of how erasing events works and why:
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));
         return;
     }

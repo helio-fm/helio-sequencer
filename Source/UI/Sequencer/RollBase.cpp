@@ -228,7 +228,7 @@ float RollBase::getPositionForNewTimelineEvent() const
 
 void RollBase::insertAnnotationWithinScreen(const String &annotation)
 {
-    if (AnnotationsSequence *annotationsLayer = dynamic_cast<AnnotationsSequence *>(this->project.getTimeline()->getAnnotations()))
+    if (auto *annotationsLayer = dynamic_cast<AnnotationsSequence *>(this->project.getTimeline()->getAnnotations()))
     {
         annotationsLayer->checkpoint();
         const float targetBeat = this->getPositionForNewTimelineEvent();
@@ -997,10 +997,21 @@ void RollBase::mouseDown(const MouseEvent &e)
 
     if (e.mods.isRightButtonDown())
     {
-        this->contextMenuController->showMenu(e, 350);
+        if (this->getEditMode().isMode(RollEditMode::drawMode))
+        {
+            this->getEditMode().setMode(RollEditMode::eraseMode);
+        }
+        else
+        {
+            this->contextMenuController->showMenu(e, 350);
+        }
     }
 
-    if (this->isLassoEvent(e))
+    if (this->isErasingEvent(e))
+    {
+        this->startErasingEvents(e);
+    }
+    else if (this->isLassoEvent(e))
     {
         this->lassoComponent->beginLasso(e.position, this);
     }
@@ -1023,7 +1034,11 @@ void RollBase::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (this->lassoComponent->isDragging())
+    if (this->isErasingEvent(e))
+    {
+        this->continueErasingEvents(e);
+    }
+    else if (this->lassoComponent->isDragging())
     {
         this->lassoComponent->dragLasso(e); // if any. will do the check itself
     }
@@ -1055,7 +1070,14 @@ void RollBase::mouseUp(const MouseEvent &e)
         return;
     }
 
-    this->setMouseCursor(this->project.getEditMode().getCursor());
+    if (this->isErasingEvent(e))
+    {
+        this->endErasingEvents();
+        // the only way we can switch to erasing mode is by holding
+        // the right mouse button, and upon the mouse up we're switching back:
+        jassert(this->project.getEditMode().isMode(RollEditMode::eraseMode));
+        this->project.getEditMode().setMode(RollEditMode::drawMode);
+    }
 
     if (this->isViewportZoomEvent(e))
     {
@@ -1079,6 +1101,8 @@ void RollBase::mouseUp(const MouseEvent &e)
     {
         this->deselectAll();
     }
+
+    this->setMouseCursor(this->project.getEditMode().getCursor());
 }
 
 void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
@@ -1178,21 +1202,16 @@ void RollBase::handleCommandMessage(int commandId)
     case CommandIDs::EditModeKnife:
         this->project.getEditMode().setMode(RollEditMode::knifeMode);
         break;
-    case CommandIDs::EditModeEraser:
-        this->project.getEditMode().setMode(RollEditMode::eraserMode);
-        break;
     case CommandIDs::Undo:
         if (this->project.getUndoStack()->canUndo())
         {
             // when new notes are added, they will be automatically added to selection,
-            // so if we're about to undo note removal, or redo note addition (both result in added notes),
+            // so if we're about to undo note removal, or redo note addition (notes are added in both cases),
             // we need to drop the selection first:
             const bool shouldDropSelection =
                 this->project.getUndoStack()->undoHas<NoteRemoveAction>() ||
                 this->project.getUndoStack()->undoHas<NotesGroupRemoveAction>();
 
-            // when there are only note changes or note removals,
-            // it's more convenient to leave the selection as it is:
             if (shouldDropSelection)
             {
                 this->deselectAll();
@@ -1721,6 +1740,12 @@ bool RollBase::isKnifeToolEvent(const MouseEvent &e) const
     return false;
 }
 
+bool RollBase::isErasingEvent(const MouseEvent &e) const
+{
+    if (this->project.getEditMode().forbidsErasingEvents(e.mods)) { return false; }
+    return this->project.getEditMode().forcesErasingEvents(e.mods);
+}
+
 void RollBase::resetDraggingAnchors()
 {
     this->viewportAnchor = this->viewport.getViewPosition();
@@ -1777,6 +1802,10 @@ void RollBase::endZooming()
     this->zoomAnchor.setXY(0, 0);
     this->zoomMarker = nullptr;
 }
+
+//===----------------------------------------------------------------------===//
+// Misc
+//===----------------------------------------------------------------------===//
 
 Point<float> RollBase::getMouseOffset(Point<float> mouseScreenPosition) const
 {

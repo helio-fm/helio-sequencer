@@ -30,6 +30,7 @@ bool RollEditMode::forbidsViewportDragging(const ModifierKeys &mods) const
         this->isMode(RollEditMode::selectionMode) ||
         this->isMode(RollEditMode::zoomMode) ||
         this->isMode(RollEditMode::drawMode) ||
+        this->isMode(RollEditMode::eraseMode) ||
         this->isMode(RollEditMode::knifeMode);
 #endif
 }
@@ -55,6 +56,7 @@ bool RollEditMode::forbidsSelectionMode(const ModifierKeys &mods) const
         this->isMode(RollEditMode::zoomMode) ||
         this->isMode(RollEditMode::dragMode) ||
         this->isMode(RollEditMode::knifeMode) ||
+        this->isMode(RollEditMode::eraseMode) ||
         (this->isMode(RollEditMode::drawMode) && !mods.isCtrlDown());
 }
 
@@ -69,7 +71,8 @@ bool RollEditMode::forbidsAddingEvents(const ModifierKeys &mods) const
         this->isMode(RollEditMode::selectionMode) ||
         this->isMode(RollEditMode::zoomMode) ||
         this->isMode(RollEditMode::dragMode) ||
-        this->isMode(RollEditMode::knifeMode);
+        this->isMode(RollEditMode::knifeMode) ||
+        this->isMode(RollEditMode::eraseMode);
 }
 
 bool RollEditMode::forcesAddingEvents(const ModifierKeys &mods) const
@@ -87,6 +90,21 @@ bool RollEditMode::forcesCuttingEvents(const ModifierKeys &mods) const
     return this->isMode(RollEditMode::knifeMode);
 }
 
+bool RollEditMode::forbidsErasingEvents(const ModifierKeys &mods) const
+{
+    return
+        this->isMode(RollEditMode::selectionMode) ||
+        this->isMode(RollEditMode::zoomMode) ||
+        this->isMode(RollEditMode::dragMode) ||
+        this->isMode(RollEditMode::knifeMode) ||
+        this->isMode(RollEditMode::drawMode);
+}
+
+bool RollEditMode::forcesErasingEvents(const ModifierKeys &mods) const
+{
+    return this->isMode(RollEditMode::eraseMode);
+}
+
 bool RollEditMode::shouldInteractWithChildren() const
 {
     switch (this->mode)
@@ -100,7 +118,7 @@ bool RollEditMode::shouldInteractWithChildren() const
         case zoomMode:
         case dragMode:
         case knifeMode:
-        case eraserMode:
+        case eraseMode:
             return false;
             break;
     }
@@ -136,7 +154,7 @@ MouseCursor RollEditMode::getCursor() const
             return MouseCursor::CrosshairCursor;
             break;
 
-        case eraserMode:
+        case eraseMode:
             return MouseCursor::CrosshairCursor;
             break;
     }

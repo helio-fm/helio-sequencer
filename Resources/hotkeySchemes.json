@@ -227,7 +227,6 @@
       { "command": "EditModeDraw", "key": "2" },
       { "command": "EditModePan", "key": "3" },
       { "command": "EditModeKnife", "key": "4" },
-      { "command": "EditModeEraser", "key": "5" },
 
       // Version control
       { "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
@@ -313,7 +312,6 @@
       { "command": "EditModeDraw", "key": "2" },
       { "command": "EditModePan", "key": "3" },
       { "command": "EditModeKnife", "key": "4" },
-      { "command": "EditModeEraser", "key": "5" },
 
       // Grouping
       { "command": "PatternsGroupByName", "key": "Q" },

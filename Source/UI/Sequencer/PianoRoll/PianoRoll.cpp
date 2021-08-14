@@ -1480,6 +1480,72 @@ void PianoRoll::switchToClipInViewport() const
     }
 }
 
+//===----------------------------------------------------------------------===//
+// Erasing mode
+//===----------------------------------------------------------------------===//
+
+// so what's happening in these three methods and why is it so ugly:
+
+// we want to be able to delete multiple events with rclick-&-drag,
+// when the first mouseDown can happen either at the canvas of the roll,
+// or at any note component, in which case we cannot just start deleting
+// the components, because once the component which has been clicked at is deleted,
+// the corresponding mouseDrag and mouseUp events will not be sent to anyone,
+// which makes sense, but breaks our click-&-drag event erasing scheme;
+// to workaround we this, "fake" deletions, i.e. just hide the notes/clips
+// to delete them all at once on mouse up; in case th first mouseDown came at
+// note/clip component, it will "pass" mouseDrag and mouseUp events to the roll
+
+void PianoRoll::startErasingEvents(const MouseEvent &e)
+{
+    // just in case:
+    this->notesToEraseOnMouseUp.clearQuick();
+    // if we are already pointing at a note:
+    this->continueErasingEvents(e);
+}
+
+void PianoRoll::continueErasingEvents(const MouseEvent &e)
+{
+    forEachEventComponent(this->patternMap, it)
+    {
+        auto *nc = it.second.get();
+        if (!nc->isActive() || !nc->isVisible())
+        {
+            continue;
+        }
+
+        if (!nc->getBounds().contains(e.getPosition()))
+        {
+            continue;
+        }
+
+        // duplicates the behavior in onRemoveMidiEvent
+        this->fader.fadeOut(nc, Globals::UI::fadeOutLong);
+        this->selection.deselect(nc);
+        // but sets invisible instead of removing
+        nc->setVisible(false);
+
+        this->notesToEraseOnMouseUp.add(nc->getNote());
+    }
+}
+
+void PianoRoll::endErasingEvents()
+{
+    if (this->notesToEraseOnMouseUp.isEmpty())
+    {
+        return;
+    }
+
+    this->project.checkpoint();
+    auto *sequence = static_cast<PianoSequence *>(this->notesToEraseOnMouseUp.getFirst().getSequence());
+    sequence->removeGroup(this->notesToEraseOnMouseUp, true);
+    this->notesToEraseOnMouseUp.clearQuick();
+}
+
+//===----------------------------------------------------------------------===//
+// Knife mode
+//===----------------------------------------------------------------------===//
+
 void PianoRoll::startCuttingEvents(const MouseEvent &e)
 {
     if (this->knifeToolHelper == nullptr)
@@ -1508,28 +1574,30 @@ void PianoRoll::continueCuttingEvents(const MouseEvent &event)
         {
             addsPoint = false;
             auto *nc = e.second.get();
-            if (nc->isActive())
+            if (!nc->isActive())
             {
-                const int h2 = nc->getHeight() / 2;
-                const Line<float> noteLine(nc->getPosition().translated(0, h2).toFloat(),
-                    nc->getPosition().translated(nc->getWidth(), h2).toFloat());
+                continue;
+            }
 
-                if (this->knifeToolHelper->getLine().intersects(noteLine, intersection))
-                {
-                    const float relativeCutBeat = this->getRoundBeatSnapByXPosition(int(intersection.getX()))
-                        - this->activeClip.getBeat() - nc->getBeat();
+            const int h2 = nc->getHeight() / 2;
+            const Line<float> noteLine(nc->getPosition().translated(0, h2).toFloat(),
+                nc->getPosition().translated(nc->getWidth(), h2).toFloat());
+
+            if (this->knifeToolHelper->getLine().intersects(noteLine, intersection))
+            {
+                const float relativeCutBeat = this->getRoundBeatSnapByXPosition(int(intersection.getX()))
+                    - this->activeClip.getBeat() - nc->getBeat();
  
-                    if (relativeCutBeat > 0.f && relativeCutBeat < nc->getLength())
-                    {
-                        addsPoint = true;
-                        this->knifeToolHelper->addOrUpdateCutPoint(nc, relativeCutBeat);
-                    }
-                }
-
-                if (!addsPoint)
+                if (relativeCutBeat > 0.f && relativeCutBeat < nc->getLength())
                 {
-                    this->knifeToolHelper->removeCutPointIfExists(nc->getNote());
+                    addsPoint = true;
+                    this->knifeToolHelper->addOrUpdateCutPoint(nc, relativeCutBeat);
                 }
+            }
+
+            if (!addsPoint)
+            {
+                this->knifeToolHelper->removeCutPointIfExists(nc->getNote());
             }
         }
     }
@@ -1562,7 +1630,7 @@ void PianoRoll::endCuttingEventsIfNeeded()
 }
 
 //===----------------------------------------------------------------------===//
-// RollBase's legacy
+// RollBase
 //===----------------------------------------------------------------------===//
 
 void PianoRoll::handleAsyncUpdate()

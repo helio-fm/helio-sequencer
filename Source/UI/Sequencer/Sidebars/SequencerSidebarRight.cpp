@@ -130,13 +130,15 @@ void SequencerSidebarRight::recreateMenu()
 {
     this->menu.clear();
 
-    const bool defaultMode = this->project.getEditMode().isMode(RollEditMode::defaultMode);
-    const bool drawMode = this->project.getEditMode().isMode(RollEditMode::drawMode);
-    const bool scissorsMode = this->project.getEditMode().isMode(RollEditMode::knifeMode);
+    const auto &editMode = this->project.getEditMode();
+
+    const bool defaultMode = editMode.isMode(RollEditMode::defaultMode);
+    const bool drawMode = editMode.isMode(RollEditMode::drawMode) || editMode.isMode(RollEditMode::eraseMode);
+    const bool scissorsMode = editMode.isMode(RollEditMode::knifeMode);
 
     // Selection tool is useless on the desktop
 #if PLATFORM_MOBILE
-    const bool selectionMode = this->project.getEditMode().isMode(RollEditMode::selectionMode);
+    const bool selectionMode = editMode.isMode(RollEditMode::selectionMode);
     this->menu.add(MenuItem::item(Icons::selectionTool, CommandIDs::EditModeSelect)->toggledIf(selectionMode));
 #endif
 
@@ -148,7 +150,7 @@ void SequencerSidebarRight::recreateMenu()
 
     // Drag tool is useless on the mobile
 #if PLATFORM_DESKTOP
-    const bool dragMode = this->project.getEditMode().isMode(RollEditMode::dragMode);
+    const bool dragMode = editMode.isMode(RollEditMode::dragMode);
     this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::EditModePan)->
         toggledIf(dragMode)->withTooltip(TRANS(I18n::Tooltips::editModeDrag)));
 #endif

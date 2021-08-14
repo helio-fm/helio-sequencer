@@ -115,11 +115,10 @@ void NoteComponent::mouseMove(const MouseEvent &e)
         (this->canResize() && (e.x >= (this->getWidth() - resizeEdge) || e.x <= resizeEdge)))
     {
         this->setMouseCursor(MouseCursor::LeftRightResizeCursor);
+        return;
     }
-    else
-    {
-        this->setMouseCursor(MouseCursor::NormalCursor);
-    }
+
+    this->setMouseCursor(MouseCursor::NormalCursor);
 }
 
 // "if ... static_cast" is here only so the macro can use the if's scope
@@ -142,9 +141,15 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         return;
     }
     
+    // rclick and drag in the default mode means dragging the canvas;
+    // rclick and drag in the pen mode means switching to note deletion mode;
+    // both are implemented in the roll, so we'll pass the event:
     if (e.mods.isRightButtonDown() &&
-        this->roll.getEditMode().isMode(RollEditMode::defaultMode))
+        (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
+         this->roll.getEditMode().isMode(RollEditMode::drawMode)))
     {
+        // see the comment above PianoRoll::startErasingEvents for
+        // the explanation of how erasing events works and why:
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
         return;
     }
@@ -260,9 +265,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     }
 
     if (e.mods.isRightButtonDown() &&
-        this->roll.getEditMode().isMode(RollEditMode::defaultMode))
+        (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
+         this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
     {
-        this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
     }
@@ -487,9 +492,10 @@ void NoteComponent::mouseUp(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(RollEditMode::defaultMode))
+    if (e.mods.isRightButtonDown() &&
+        (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
+         this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
     {
-        this->setMouseCursor(MouseCursor::NormalCursor);
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));
         return;
     }

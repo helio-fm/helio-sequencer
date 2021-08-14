@@ -936,6 +936,65 @@ void PatternRoll::insertNewClipAt(const MouseEvent &e)
     }
 }
 
+//===----------------------------------------------------------------------===//
+// Erasing mode
+//===----------------------------------------------------------------------===//
+
+// see the comment above PianoRoll::startErasingEvents for
+// the explanation of what's happening in these three methods and why:
+
+void PatternRoll::startErasingEvents(const MouseEvent &e)
+{
+    this->clipsToEraseOnMouseUp.clearQuick();
+    // if we are already pointing at a clip:
+    this->continueErasingEvents(e);
+}
+
+void PatternRoll::continueErasingEvents(const MouseEvent &e)
+{
+    for (const auto &it : this->clipComponents)
+    {
+        auto *cc = it.second.get();
+        if (!cc->isActive() || !cc->isVisible())
+        {
+            continue;
+        }
+
+        if (!cc->getBounds().contains(e.getPosition()))
+        {
+            continue;
+        }
+
+        // duplicates the behavior in onRemoveClip
+        this->fader.fadeOut(cc, Globals::UI::fadeOutLong);
+        this->selection.deselect(cc);
+
+        // but sets invisible instead of removing
+        cc->setVisible(false);
+        this->clipsToEraseOnMouseUp.add(cc->getClip());
+    }
+}
+
+void PatternRoll::endErasingEvents()
+{
+    if (this->clipsToEraseOnMouseUp.isEmpty())
+    {
+        return;
+    }
+
+    this->project.checkpoint();
+    for (const auto &clip : this->clipsToEraseOnMouseUp)
+    {
+        clip.getPattern()->remove(clip, true);
+    }
+
+    this->clipsToEraseOnMouseUp.clearQuick();
+}
+
+//===----------------------------------------------------------------------===//
+// Knife mode
+//===----------------------------------------------------------------------===//
+
 void PatternRoll::startCuttingClips(const MouseEvent &e)
 {
     ClipComponent *targetClip = nullptr;

@@ -25,13 +25,13 @@ public:
     
     enum Mode
     {
-        defaultMode                      = 0x01,
-        drawMode                         = 0x02,
-        selectionMode                    = 0x03,
-        zoomMode                         = 0x04,
-        dragMode                         = 0x05,
-        knifeMode                        = 0x06,
-        eraserMode                       = 0x07
+        defaultMode,
+        drawMode,
+        eraseMode,
+        selectionMode,
+        zoomMode,
+        dragMode,
+        knifeMode
     };
     
     RollEditMode() = default;
@@ -50,6 +50,9 @@ public:
 
     bool forbidsCuttingEvents(const ModifierKeys &mods) const;
     bool forcesCuttingEvents(const ModifierKeys &mods) const;
+
+    bool forbidsErasingEvents(const ModifierKeys &mods) const;
+    bool forcesErasingEvents(const ModifierKeys &mods) const;
 
     bool shouldInteractWithChildren() const;
     MouseCursor getCursor() const;

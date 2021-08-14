@@ -86,8 +86,8 @@ public:
     //===------------------------------------------------------------------===//
 
     void mouseDown(const MouseEvent &e) override;
-    void mouseUp(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
     void handleCommandMessage(int commandId) override;
     void resized() override;
     void paint(Graphics &g) override;
@@ -147,6 +147,11 @@ private:
     void startCuttingClips(const MouseEvent &e);
     void continueCuttingClips(const MouseEvent &e);
     void endCuttingClipsIfNeeded(const MouseEvent &e);
+
+    void startErasingEvents(const MouseEvent &e) override;
+    void continueErasingEvents(const MouseEvent &e) override;
+    void endErasingEvents() override;
+    Array<Clip> clipsToEraseOnMouseUp;
 
 private:
     

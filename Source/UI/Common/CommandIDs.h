@@ -156,8 +156,6 @@ namespace CommandIDs
         EditModePan                     = 0x4002,
         EditModeSelect                  = 0x4003,
         EditModeKnife                   = 0x4004,
-        EditModeEraser                  = 0x4005,
-        EditModeChordBuilder            = 0x4006,
 
         BeatShiftLeft                   = 0x4010,
         BeatShiftRight                  = 0x4011,
