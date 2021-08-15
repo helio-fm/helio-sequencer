@@ -190,9 +190,30 @@ void ProjectMapScroller::paint(Graphics &g)
     g.fillRect(0, 1, this->getWidth(), 1);
 }
 
+void ProjectMapScroller::mouseDown(const MouseEvent &event)
+{
+    this->screenRangeAtDragStart = this->screenRange->getRealBounds();
+}
+
 void ProjectMapScroller::mouseDrag(const MouseEvent &event)
 {
-    if (! this->stretchedMode())
+    if (this->stretchedMode())
+    {
+        if (event.mods.isRightButtonDown())
+        {
+            const auto mapBounds = this->getMapBounds();
+            if (mapBounds.getWidth() <= this->getWidth())
+            {
+                return; // nowhere to move
+            }
+
+            this->screenRange->setRealBounds(this->screenRangeAtDragStart.
+                translated(float(-event.getDistanceFromDragStartX()), 0.f));
+
+            this->xMoveByUser();
+        }
+    }
+    else
     {
         this->screenRange->setRealBounds(this->screenRange->getRealBounds().withCentre(event.position));
         this->xMoveByUser();
@@ -212,7 +233,6 @@ void ProjectMapScroller::mouseWheelMove(const MouseEvent &event, const MouseWhee
     jassert(this->roll != nullptr);
     this->roll->mouseWheelMove(event.getEventRelativeTo(this->roll), wheel);
 }
-
 
 //===----------------------------------------------------------------------===//
 // MidiRollListener
@@ -354,12 +374,12 @@ Rectangle<float> ProjectMapScroller::getIndicatorBounds() const noexcept
     const float trackHeaderHeight = float(rollHeaderHeight * trackHeight / rollHeight);
 
     const float rY = ceilf(trackHeight * (viewY / rollHeight)) - trackHeaderHeight + 1.f;
-    const float rH = (trackHeight * zoomFactorY);
+    const float rH = trackHeight * zoomFactorY;
 
     if (mapWidth <= trackWidth || !this->stretchedMode())
     {
-        const float rX = ((trackWidth * viewX) / rollWidth);
-        const float rW = (trackWidth * this->roll->getZoomFactorX());
+        const float rX = (trackWidth * viewX) / rollWidth;
+        const float rW = trackWidth * this->roll->getZoomFactorX();
         return { rX, rY, rW, rH };
     }
 
@@ -376,13 +396,12 @@ Rectangle<int> ProjectMapScroller::getMapBounds() const noexcept
     const float viewWidth = float(this->roll->getViewport().getViewWidth());
     const float rollWidth = float(this->roll->getWidth());
     const float rollInvisibleArea = rollWidth - viewWidth;
-    const float trackWidth = float(this->getWidth());
     const float trackInvisibleArea = float(this->getWidth() - ProjectMapScroller::screenRangeWidth);
     const float mapWidth = (ProjectMapScroller::screenRangeWidth * rollWidth) / viewWidth;
 
-    if (mapWidth <= trackWidth || !this->stretchedMode())
+    if (mapWidth <= this->getWidth() || !this->stretchedMode())
     {
-        return { 0, 0, int(trackWidth), this->getHeight() };
+        return { 0, 0, this->getWidth(), this->getHeight() };
     }
 
     const float rX = (trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth);

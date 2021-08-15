@@ -75,6 +75,7 @@ public:
     
     void resized() override;
     void paint(Graphics &g) override;
+    void mouseDown(const MouseEvent &event) override;
     void mouseDrag(const MouseEvent &event) override;
     void mouseUp(const MouseEvent &event) override;
     void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
@@ -150,6 +151,7 @@ private:
 
     static constexpr auto screenRangeWidth = 150.f;
     UniquePointer<ProjectMapScrollerScreen> screenRange;
+    Rectangle<float> screenRangeAtDragStart;
 
     UniquePointer<Playhead> playhead;
    

@@ -42,9 +42,9 @@ void ProjectMapScrollerScreen::mouseDown(const MouseEvent &e)
 
 void ProjectMapScrollerScreen::mouseDrag(const MouseEvent &e)
 {
-    Point<float> lastPosition = this->getPosition().toFloat();
+    const auto lastPosition = this->getPosition().toFloat();
     this->dragger.dragComponent(this, e, this->moveConstrainer.get());
-    const Point<float> moveDelta = this->getPosition().toFloat() - lastPosition;
+    const auto moveDelta = this->getPosition().toFloat() - lastPosition;
     this->realBounds.translate(moveDelta.getX(), moveDelta.getY());
     this->scroller.xyMoveByUser();
 }
