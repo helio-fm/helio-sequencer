@@ -188,18 +188,47 @@ void ProjectMapScroller::paint(Graphics &g)
 
     g.setColour(this->borderLineLight);
     g.fillRect(0, 1, this->getWidth(), 1);
+
+    if (this->drawingNewScreenRange.getWidth() > 0)
+    {
+        const auto rect = this->getMapBounds().toFloat().
+            getProportion(this->drawingNewScreenRange);
+
+        g.fillRect(rect);
+        g.drawRect(rect);
+        g.drawRect(rect);
+    }
 }
 
 void ProjectMapScroller::mouseDown(const MouseEvent &event)
 {
     this->screenRangeAtDragStart = this->screenRange->getRealBounds();
+
+    if (event.mods.isLeftButtonDown())
+    {
+        const auto mapBounds = this->getMapBounds();
+        this->drawingNewScreenRange = {
+            (event.position.x - mapBounds.getX()) / float(mapBounds.getWidth()),
+            (event.position.y - mapBounds.getY()) / float(mapBounds.getHeight()), 0, 0 };
+
+        this->repaint();
+    }
 }
 
 void ProjectMapScroller::mouseDrag(const MouseEvent &event)
 {
     if (this->stretchedMode())
     {
-        if (event.mods.isRightButtonDown())
+        if (event.mods.isLeftButtonDown())
+        {
+            const auto mapBounds = this->getMapBounds();
+            const auto r = (event.position.x - mapBounds.getX()) / float(mapBounds.getWidth());
+            const auto b = (event.position.y - mapBounds.getY()) / float(mapBounds.getHeight());
+            this->drawingNewScreenRange.setRight(r);
+            this->drawingNewScreenRange.setBottom(b);
+            this->repaint();
+        }
+        else if (event.mods.isRightButtonDown())
         {
             const auto mapBounds = this->getMapBounds();
             if (mapBounds.getWidth() <= this->getWidth())
@@ -225,6 +254,21 @@ void ProjectMapScroller::mouseUp(const MouseEvent &event)
     if (event.getOffsetFromDragStart().isOrigin())
     {
         App::Layout().broadcastCommandMessage(CommandIDs::ToggleBottomMiniMap);
+    }
+    else if (!this->drawingNewScreenRange.isEmpty())
+    {
+        this->oldAreaBounds = this->getIndicatorBounds();
+        this->oldMapBounds = this->getMapBounds().toFloat();
+        
+        this->roll->zoomAbsolute(this->drawingNewScreenRange);
+
+        // todo switch to piano roll if in the pattern roll mode now?
+
+        this->drawingNewScreenRange = {};
+        this->updateAllBounds();
+        this->repaint();
+
+        this->startTimerHz(this->animationTimerFrequencyHz);
     }
 }
 

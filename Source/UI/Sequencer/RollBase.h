@@ -175,10 +175,11 @@ public:
     float getZoomFactorY() const noexcept override;
     void zoomRelative(const Point<float> &origin,
         const Point<float> &factor) override;
+    void zoomAbsolute(const Rectangle<float> &proportion);
 
     void zoomInImpulse(float factor = 1.f);
     void zoomOutImpulse(float factor = 1.f);
-    void zoomToArea(float minBeat, float maxBeat);
+    void zoomToArea(float minBeat, float maxBeat, float margin = Globals::beatsPerBar * 2);
     void startSmoothZoom(const Point<float> &origin, const Point<float> &factor);
 
     //===------------------------------------------------------------------===//

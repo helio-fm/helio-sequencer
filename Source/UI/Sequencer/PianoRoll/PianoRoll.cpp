@@ -335,6 +335,24 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
     RollBase::zoomRelative(origin, factor);
 }
 
+void PianoRoll::zoomAbsolute(const Rectangle<float> &proportion)
+{
+    jassert(!proportion.isEmpty());
+    jassert(proportion.isFinite());
+
+    const auto keysTotal = this->getNumKeys();
+    const float heightToFit = float(this->viewport.getViewHeight());
+    const auto numKeysToFit = jmax(1.f, float(keysTotal) * proportion.getHeight());
+    this->setRowHeight(int(heightToFit / numKeysToFit));
+
+    const auto firstKey = int(float(keysTotal) * proportion.getY());
+    const int firstKeyY = this->getRowHeight() * firstKey;
+    this->viewport.setViewPosition(this->viewport.getViewPositionY() -
+        Globals::UI::rollHeaderHeight, firstKeyY);
+
+    RollBase::zoomAbsolute(proportion);
+}
+
 float PianoRoll::getZoomFactorY() const noexcept
 {
     return float(this->viewport.getViewHeight()) / float(this->getHeight());
@@ -1492,7 +1510,7 @@ void PianoRoll::switchToClipInViewport() const
 // the components, because once the component which has been clicked at is deleted,
 // the corresponding mouseDrag and mouseUp events will not be sent to anyone,
 // which makes sense, but breaks our click-&-drag event erasing scheme;
-// to workaround we this, "fake" deletions, i.e. just hide the notes/clips
+// to workaround this, we "fake" deletions, i.e. just hide the notes/clips
 // to delete them all at once on mouse up; in case th first mouseDown came at
 // note/clip component, it will "pass" mouseDrag and mouseUp events to the roll
 

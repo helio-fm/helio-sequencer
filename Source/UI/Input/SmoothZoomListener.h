@@ -23,6 +23,7 @@ public:
 
     virtual ~SmoothZoomListener() = default;
 
+    virtual void zoomAbsolute(const Rectangle<float> &proportion) = 0;
     virtual void zoomRelative(const Point<float> &origin,
         const Point<float> &factor) = 0;
 

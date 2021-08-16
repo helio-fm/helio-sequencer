@@ -54,8 +54,6 @@ void HighlightingScheme::renderBackgroundCache(Temperament::Ptr temperament)
     this->rows.swapWith(result);
 }
 
-
-
 Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
     const Temperament::Ptr temperament,
     const Scale::Ptr scale, Note::Key root, int height)
@@ -66,11 +64,9 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
     }
 
     const auto periodSize = temperament->getPeriodSize();
-    //jassert(scale->getBasePeriod() == periodSize);
-
     const auto numRowsToRender = periodSize * 2;
 
-    Image patternImage(Image::RGB, 16, height * numRowsToRender, false);
+    Image patternImage(Image::RGB, 8, height * numRowsToRender, false);
     Graphics g(patternImage);
 
     float currentHeight = float(height);

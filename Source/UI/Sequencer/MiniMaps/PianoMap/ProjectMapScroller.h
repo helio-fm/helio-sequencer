@@ -153,6 +153,8 @@ private:
     UniquePointer<ProjectMapScrollerScreen> screenRange;
     Rectangle<float> screenRangeAtDragStart;
 
+    Rectangle<float> drawingNewScreenRange;
+
     UniquePointer<Playhead> playhead;
    
     OwnedArray<Component> trackMaps;

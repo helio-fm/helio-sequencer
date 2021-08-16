@@ -496,7 +496,7 @@ void RollBase::zoomOutImpulse(float factor)
     this->startSmoothZoom(origin.toFloat(), f);
 }
 
-void RollBase::zoomToArea(float minBeat, float maxBeat)
+void RollBase::zoomToArea(float minBeat, float maxBeat, float marginBeats)
 {
     jassert(maxBeat > minBeat);
     jassert(minBeat >= this->getFirstBeat());
@@ -504,12 +504,11 @@ void RollBase::zoomToArea(float minBeat, float maxBeat)
 
     this->stopFollowingPlayhead();
 
-    constexpr auto margin = Globals::beatsPerBar * 2;
     const float widthToFit = float(this->viewport.getViewWidth());
-    const float numBeatsToFit = maxBeat - minBeat + (margin * 2.f);
+    const float numBeatsToFit = maxBeat - minBeat + (marginBeats * 2.f);
     this->setBeatWidth(widthToFit / numBeatsToFit);
 
-    const int minBeatX = this->getXPositionByBeat(minBeat - margin);
+    const int minBeatX = this->getXPositionByBeat(minBeat - marginBeats);
     this->viewport.setViewPosition(minBeatX, this->viewport.getViewPositionY());
 
     this->updateChildrenPositions();
@@ -539,6 +538,23 @@ void RollBase::zoomRelative(const Point<float> &origin, const Point<float> &fact
     this->viewport.setViewPosition(int(newViewPositionX + 0.5f), int(oldViewPosition.getY()));
 
     this->resetDraggingAnchors();
+    this->updateChildrenPositions();
+}
+
+void RollBase::zoomAbsolute(const Rectangle<float> &proportion)
+{
+    jassert(!proportion.isEmpty());
+    jassert(proportion.isFinite());
+
+    const float widthToFit = float(this->viewport.getViewWidth());
+    const auto rollLengthInBeats = this->getLastBeat() - this->getFirstBeat();
+    const float numBeatsToFit = jmax(1.f, rollLengthInBeats * proportion.getWidth());
+    this->setBeatWidth(widthToFit / numBeatsToFit);
+
+    const auto minBeat = this->getFirstBeat() + rollLengthInBeats * proportion.getX();
+    const int minBeatX = this->getXPositionByBeat(minBeat);
+    this->viewport.setViewPosition(minBeatX, this->viewport.getViewPositionY());
+
     this->updateChildrenPositions();
 }
 
@@ -618,13 +634,12 @@ void RollBase::setBeatRange(float first, float last)
 
 void RollBase::setBeatWidth(float newBeatWidth)
 {
-    if (this->beatWidth == newBeatWidth ||
-        newBeatWidth > 360 || newBeatWidth <= 0)
+    if (this->beatWidth == newBeatWidth)
     {
         return;
     }
 
-    this->beatWidth = newBeatWidth;
+    this->beatWidth = jlimit(1.f, 360.f, newBeatWidth);
     this->updateBounds();
 }
 

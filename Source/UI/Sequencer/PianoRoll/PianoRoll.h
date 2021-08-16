@@ -69,6 +69,7 @@ public:
     float getZoomFactorY() const noexcept override;
     void zoomRelative(const Point<float> &origin,
         const Point<float> &factor) override;
+    void zoomAbsolute(const Rectangle<float> &proportion);
 
     void zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat);
 
@@ -271,9 +272,9 @@ private:
 private:
 
 #if PLATFORM_DESKTOP
-    static constexpr auto minRowHeight = 7;
+    static constexpr auto minRowHeight = 6;
     static constexpr auto defaultRowHeight = 12;
-    static constexpr auto maxRowHeight = 26;
+    static constexpr auto maxRowHeight = 28;
 #elif PLATFORM_MOBILE
     static constexpr auto minRowHeight = 10;
     static constexpr auto defaultRowHeight = 15;
