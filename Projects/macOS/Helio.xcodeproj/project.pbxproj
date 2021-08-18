@@ -416,6 +416,7 @@
 		772394AB29A0423B2AF0F3CC /* ChordPreviewTool.h */ /* ChordPreviewTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ChordPreviewTool.h; path = ../../Source/UI/Popups/ChordPreviewTool.h; sourceTree = SOURCE_ROOT; };
 		783C2C91DFA591A0042BB61C /* ModeIndicatorComponent.cpp */ /* ModeIndicatorComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ModeIndicatorComponent.cpp; path = ../../Source/UI/Common/ModeIndicatorComponent.cpp; sourceTree = SOURCE_ROOT; };
 		788D7A704E42A107D0C85F62 /* play.svg */ /* play.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = play.svg; path = ../../Resources/Icons/play.svg; sourceTree = SOURCE_ROOT; };
+		78CEF9C0F6D9CAB020FDC238 /* erasingCursor.gif */ /* erasingCursor.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = erasingCursor.gif; path = ../../Resources/Icons/erasingCursor.gif; sourceTree = SOURCE_ROOT; };
 		794BD85600A90DE865E6703D /* LongTapController.h */ /* LongTapController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LongTapController.h; path = ../../Source/UI/Input/LongTapController.h; sourceTree = SOURCE_ROOT; };
 		7A4FDD0E25BBD85997D7F349 /* VelocityProjectMap.cpp */ /* VelocityProjectMap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VelocityProjectMap.cpp; path = ../../Source/UI/Sequencer/MiniMaps/LevelsMap/VelocityProjectMap.cpp; sourceTree = SOURCE_ROOT; };
 		7A69A8F5C600901F1772BC33 /* PatternDiffHelpers.h */ /* PatternDiffHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatternDiffHelpers.h; path = ../../Source/Core/VCS/DiffLogic/PatternDiffHelpers.h; sourceTree = SOURCE_ROOT; };
@@ -739,6 +740,7 @@
 		E3E7AEE0AE3A65EE281E1BE6 /* OrchestraPitMenu.cpp */ /* OrchestraPitMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OrchestraPitMenu.cpp; path = ../../Source/UI/Menus/OrchestraPitMenu.cpp; sourceTree = SOURCE_ROOT; };
 		E4012B6231645F2E4B492CD2 /* ScalesManager.cpp */ /* ScalesManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ScalesManager.cpp; path = ../../Source/Core/Configuration/ResourceManagers/ScalesManager.cpp; sourceTree = SOURCE_ROOT; };
 		E4B24792BDAE9CD886C3F4A9 /* KnifeToolHelper.cpp */ /* KnifeToolHelper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = KnifeToolHelper.cpp; path = ../../Source/UI/Sequencer/Helpers/KnifeToolHelper.cpp; sourceTree = SOURCE_ROOT; };
+		E5077C0A869E48EA27DBE103 /* copyingCursor.gif */ /* copyingCursor.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = copyingCursor.gif; path = ../../Resources/Icons/copyingCursor.gif; sourceTree = SOURCE_ROOT; };
 		E5158079626B6095FDE7DE12 /* Document.h */ /* Document.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Document.h; path = ../../Source/Core/Serialization/Document.h; sourceTree = SOURCE_ROOT; };
 		E517F1B4CFB89B6F82E8A53B /* Dashboard.cpp */ /* Dashboard.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Dashboard.cpp; path = ../../Source/UI/Pages/Dashboard/Dashboard.cpp; sourceTree = SOURCE_ROOT; };
 		E5185424CFC6141210A0F5EB /* ProjectListener.h */ /* ProjectListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProjectListener.h; path = ../../Source/Core/Tree/ProjectListener.h; sourceTree = SOURCE_ROOT; };
@@ -1035,6 +1037,8 @@
 				B235731CCB550DF1E2BDDF28,
 				698A56770E267538984CCC74,
 				28F1C77296DC1646565D53EE,
+				E5077C0A869E48EA27DBE103,
+				78CEF9C0F6D9CAB020FDC238,
 			);
 			name = Icons;
 			sourceTree = "<group>";

@@ -265,13 +265,20 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     }
 
     if (e.mods.isRightButtonDown() &&
-        (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
-         this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
+        this->roll.getEditMode().isMode(RollEditMode::defaultMode))
+    {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
+        this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
+        return;
+    }
+
+    if (e.mods.isRightButtonDown() &&
+        this->roll.getEditMode().isMode(RollEditMode::eraseMode))
     {
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
     }
-    
+
     const auto &selection = this->roll.getLassoSelection();
 
     if (this->state == State::DraggingResizing)
@@ -496,6 +503,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
         (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
          this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
     {
+        this->setMouseCursor(MouseCursor::NormalCursor);
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));
         return;
     }

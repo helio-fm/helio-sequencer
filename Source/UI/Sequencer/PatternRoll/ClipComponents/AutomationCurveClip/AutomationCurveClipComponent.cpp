@@ -26,6 +26,7 @@
 #include "PlayerThread.h"
 #include "RollBase.h"
 #include "MidiTrack.h"
+#include "Icons.h"
 
 AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectNode &project,
     MidiSequence *sequence, RollBase &roll, const Clip &clip) :
@@ -99,7 +100,7 @@ void AutomationCurveClipComponent::mouseUp(const MouseEvent &e)
     if (this->draggingEvent != nullptr)
     {
         this->draggingEvent->mouseUp(e.getEventRelativeTo(this->draggingEvent));
-        this->setMouseCursor(MouseCursor::CopyingCursor);
+        this->setMouseCursor(Icons::getCopyingCursor());
         this->draggingEvent = nullptr;
     }
 }

@@ -34,6 +34,9 @@ public:
     static Path getPathByName(Icons::Id id);
     static UniquePointer<Drawable> getDrawableByName(Icons::Id id);
 
+    static MouseCursor getCopyingCursor();
+    static MouseCursor getErasingCursor();
+
     enum Ids
     {
         empty,

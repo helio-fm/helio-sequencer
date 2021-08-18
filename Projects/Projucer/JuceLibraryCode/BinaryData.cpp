@@ -674,18 +674,32 @@ static const unsigned char temp_binary_data_82[] =
 
 const char* noise_png = (const char*) temp_binary_data_82;
 
-//================== emptyProject.json ==================
+//================== copyingCursor.gif ==================
 static const unsigned char temp_binary_data_83[] =
+{ 71,73,70,56,57,97,21,0,21,0,161,0,0,0,0,0,255,255,255,0,0,0,0,0,0,33,249,4,1,10,0,2,0,44,0,0,0,0,21,0,21,0,0,2,72,4,132,169,171,16,199,98,11,79,90,71,161,93,56,111,78,133,218,215,137,31,82,154,100,200,86,91,202,142,12,108,212,87,235,174,15,54,214,126,
+237,226,37,96,59,141,16,37,18,201,142,157,230,204,35,112,252,114,147,74,83,5,50,68,147,208,217,16,71,149,252,124,5,0,59,0,0 };
+
+const char* copyingCursor_gif = (const char*) temp_binary_data_83;
+
+//================== erasingCursor.gif ==================
+static const unsigned char temp_binary_data_84[] =
+{ 71,73,70,56,57,97,21,0,21,0,161,0,0,0,0,0,255,255,255,0,0,0,0,0,0,33,249,4,1,10,0,2,0,44,0,0,0,0,21,0,21,0,0,2,69,4,132,169,171,16,199,98,11,79,90,71,161,93,56,111,78,133,218,215,137,31,82,154,100,200,86,91,202,142,12,108,212,87,235,174,15,54,214,126,
+237,226,37,96,59,141,16,133,219,129,130,73,153,224,232,248,229,38,21,162,243,169,180,74,140,205,211,207,87,0,0,59,0,0 };
+
+const char* erasingCursor_gif = (const char*) temp_binary_data_84;
+
+//================== emptyProject.json ==================
+static const unsigned char temp_binary_data_85[] =
 "{\"project\":{\"name\":\"Empty\",\"projectTimeline\":{\"annotations\":{},\"timeSignatures\":{\"timeSignature\":{\"id\":\"00\",\"numerator\":4,\"denominator\":4,\"ts\":0}},\"keySignatures\":{\"keySignature\":{\"id\":\"00\",\"key\":0,\"ts\":0,\"scale\""
 ":{\"name\":\"Ionian\",\"period\":12,\"intervals\":\"2 2 1 2 2 2 1\"}}}},\"node\":[{\"type\":\"pianoTrack\",\"name\":\"Track 1\",\"colour\":\"ff0049ff\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"v"
 "ol\":1024,\"id\":\"00\"}},\"track\":{}},{\"type\":\"automationTrack\",\"name\":\"Tempo\",\"colour\":\"fffffaf0\",\"channel\":1,\"instrumentId\":\"\",\"controller\":81,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"00\"}},\"automation"
 "\":{\"event\":[{\"id\":\"00\",\"value\":0.5,\"curve\":0.5,\"ts\":0},{\"id\":\"01\",\"value\":0.5,\"curve\":0.5,\"ts\":512}]}},{\"type\":\"patternSet\",\"name\":\"Patterns\"}],\"projectInfo\":{\"projectTimeStamp\":\"1591603725382\",\"license\":\"Publi"
 "c Domain\",\"author\":\"Helio\",\"description\":\"\"}}}";
 
-const char* emptyProject_json = (const char*) temp_binary_data_83;
+const char* emptyProject_json = (const char*) temp_binary_data_85;
 
 //================== exampleProject.json ==================
-static const unsigned char temp_binary_data_84[] =
+static const unsigned char temp_binary_data_86[] =
 "{\"project\":{\"name\":\"Example Project\",\"projectInfo\":{\"description\":\"The Lick Reigns Supreme\",\"license\":\"Public Domain\",\"author\":\"Helio Example\",\"projectTimeStamp\":\"1591432978939\"},\"projectTimeline\":{\"annotations\":{},\"timeS"
 "ignatures\":{\"timeSignature\":{\"id\":\"uZ\",\"numerator\":4,\"denominator\":4,\"ts\":0}},\"keySignatures\":{\"keySignature\":[{\"id\":\"Uw\",\"key\":2,\"ts\":0,\"scale\":{\"name\":\"Dorian\",\"period\":12,\"intervals\":\"2 1 2 2 2 1 2\"}},{\"id\":\""
 "x3\",\"key\":2,\"ts\":128,\"scale\":{\"name\":\"Ionian\",\"period\":12,\"intervals\":\"2 2 1 2 2 2 1\"}}]}},\"node\":[{\"type\":\"pianoTrack\",\"name\":\"Alt\",\"colour\":\"ff00ff49\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{"
@@ -704,10 +718,10 @@ static const unsigned char temp_binary_data_84[] =
 "ts\":0},{\"id\":\"Yf\",\"value\":0.244512,\"curve\":1.000000,\"ts\":64},{\"id\":\"Qe\",\"value\":0.424625,\"curve\":0.000000,\"ts\":128},{\"id\":\"Sk\",\"value\":0.244914,\"curve\":0.500000,\"ts\":256}]}},{\"type\":\"patternSet\",\"name\":\"Patterns\""
 "}]}}";
 
-const char* exampleProject_json = (const char*) temp_binary_data_84;
+const char* exampleProject_json = (const char*) temp_binary_data_86;
 
 //================== logo-v2.png ==================
-static const unsigned char temp_binary_data_85[] =
+static const unsigned char temp_binary_data_87[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,0,0,0,2,0,8,3,0,0,0,195,166,36,200,0,0,3,0,80,76,84,69,0,0,0,202,42,42,211,43,27,207,43,27,213,53,39,203,23,6,210,46,33,211,48,30,212,49,35,205,33,16,223,87,76,192,16,1,218,64,49,201,23,8,219,66,51,
 217,59,44,222,84,73,200,23,7,218,66,51,201,21,5,221,77,64,209,29,15,194,17,3,215,53,40,221,75,61,215,51,35,220,71,58,193,18,2,218,63,50,199,20,5,203,25,8,223,88,77,222,82,70,192,16,1,200,21,5,193,17,1,200,22,7,221,75,63,221,79,68,220,74,61,210,36,21,
 215,53,39,220,73,59,209,38,24,217,60,46,216,52,36,217,60,46,199,21,6,222,82,70,191,16,2,223,85,73,213,51,36,220,74,61,217,61,47,191,17,1,222,83,71,221,80,68,220,73,59,218,62,48,207,25,9,207,24,8,211,34,19,216,55,39,221,76,64,214,47,33,208,28,12,216,54,
@@ -1064,10 +1078,10 @@ static const unsigned char temp_binary_data_85[] =
 23,0,224,11,64,213,143,85,57,139,166,180,170,31,83,0,224,6,160,14,4,202,8,230,159,74,202,195,249,21,0,140,1,184,39,112,246,153,69,214,255,143,128,82,0,224,5,64,21,209,204,63,53,47,20,0,120,2,136,105,254,169,180,2,128,113,0,91,165,84,92,243,79,37,165,
 82,106,11,0,110,0,219,248,230,255,248,35,176,5,128,17,0,49,206,63,53,47,0,192,13,160,74,89,212,165,21,0,184,58,77,88,228,37,167,12,33,132,16,66,8,33,132,16,122,173,254,1,159,34,174,167,160,212,112,218,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* logov2_png = (const char*) temp_binary_data_85;
+const char* logov2_png = (const char*) temp_binary_data_87;
 
 //================== arpeggiators.json ==================
-static const unsigned char temp_binary_data_86[] =
+static const unsigned char temp_binary_data_88[] =
 "{\n"
 "  // TODO\n"
 "  \"arpeggiators\": {\n"
@@ -1076,10 +1090,10 @@ static const unsigned char temp_binary_data_86[] =
 "  }\n"
 "}";
 
-const char* arpeggiators_json = (const char*) temp_binary_data_86;
+const char* arpeggiators_json = (const char*) temp_binary_data_88;
 
 //================== chords.json ==================
-static const unsigned char temp_binary_data_87[] =
+static const unsigned char temp_binary_data_89[] =
 "{\n"
 "  /*\n"
 "    A number of chords that are easy to define with in-scale keys.\n"
@@ -1104,10 +1118,10 @@ static const unsigned char temp_binary_data_87[] =
 "  }\n"
 "}";
 
-const char* chords_json = (const char*) temp_binary_data_87;
+const char* chords_json = (const char*) temp_binary_data_89;
 
 //================== colourSchemes.json ==================
-static const unsigned char temp_binary_data_88[] =
+static const unsigned char temp_binary_data_90[] =
 "{\n"
 "  \"colourSchemes\": {\n"
 "    \"colourScheme\": [\n"
@@ -1221,10 +1235,10 @@ static const unsigned char temp_binary_data_88[] =
 "  }\n"
 "}";
 
-const char* colourSchemes_json = (const char*) temp_binary_data_88;
+const char* colourSchemes_json = (const char*) temp_binary_data_90;
 
 //================== hotkeySchemes.json ==================
-static const unsigned char temp_binary_data_89[] =
+static const unsigned char temp_binary_data_91[] =
 "{\n"
 "  \"hotkeySchemes\": { \"hotkeyScheme\": { \"name\": \"Default\", \"group\": [\n"
 "\n"
@@ -1579,10 +1593,10 @@ static const unsigned char temp_binary_data_89[] =
 "  } // ANCHOR_END: PatternRoll\n"
 "]}}}";
 
-const char* hotkeySchemes_json = (const char*) temp_binary_data_89;
+const char* hotkeySchemes_json = (const char*) temp_binary_data_91;
 
 //================== keyboardMappings.json ==================
-static const unsigned char temp_binary_data_90[] =
+static const unsigned char temp_binary_data_92[] =
 "{\n"
 "  \"keyboardMappings\": {\n"
 "    \"keyboardMapping\": [\n"
@@ -1602,10 +1616,10 @@ static const unsigned char temp_binary_data_90[] =
 "  }\n"
 "}";
 
-const char* keyboardMappings_json = (const char*) temp_binary_data_90;
+const char* keyboardMappings_json = (const char*) temp_binary_data_92;
 
 //================== scales.json ==================
-static const unsigned char temp_binary_data_91[] =
+static const unsigned char temp_binary_data_93[] =
 "{\n"
 "  \"scales\": {\n"
 "    \"scale\": [\n"
@@ -1730,10 +1744,10 @@ static const unsigned char temp_binary_data_91[] =
 "  }\n"
 "}";
 
-const char* scales_json = (const char*) temp_binary_data_91;
+const char* scales_json = (const char*) temp_binary_data_93;
 
 //================== temperaments.json ==================
-static const unsigned char temp_binary_data_92[] =
+static const unsigned char temp_binary_data_94[] =
 "{\n"
 "  \"temperaments\": {\n"
 "    \"temperament\": [\n"
@@ -1769,10 +1783,10 @@ static const unsigned char temp_binary_data_92[] =
 "  }\n"
 "}\n";
 
-const char* temperaments_json = (const char*) temp_binary_data_92;
+const char* temperaments_json = (const char*) temp_binary_data_94;
 
 //================== translations.json ==================
-static const unsigned char temp_binary_data_93[] =
+static const unsigned char temp_binary_data_95[] =
 { 123,34,116,114,97,110,115,108,97,116,105,111,110,115,34,58,123,34,108,111,99,97,108,101,34,58,91,10,123,34,105,100,34,58,34,101,110,34,44,34,110,97,109,101,34,58,34,69,110,103,108,105,115,104,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,
 110,34,58,34,40,123,120,125,61,61,49,32,63,32,49,32,58,32,50,41,34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,80,114,111,106,101,99,116,32,115,116,97,114,116,101,100,34,125,44,123,
 34,105,100,34,58,50,52,50,51,53,52,57,49,53,44,34,116,114,34,58,34,78,101,119,32,112,114,111,106,101,99,116,34,125,44,123,34,105,100,34,58,57,55,51,51,55,48,50,53,55,44,34,116,114,34,58,34,78,101,119,32,116,114,97,99,107,34,125,44,123,34,105,100,34,58,
@@ -4060,7 +4074,7 @@ static const unsigned char temp_binary_data_93[] =
 49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,115,101,103,117,110,100,111,115,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,
 109,101,34,58,34,109,111,118,105,100,111,32,100,101,32,123,120,125,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,10,93,125,125,0,0 };
 
-const char* translations_json = (const char*) temp_binary_data_93;
+const char* translations_json = (const char*) temp_binary_data_95;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
@@ -4156,6 +4170,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x86a456a0:  numBytes = 537; return zoomOut_svg;
         case 0x74adfba8:  numBytes = 498; return zoomToFit_svg;
         case 0x3c71eb84:  numBytes = 149; return noise_png;
+        case 0x97e88f88:  numBytes = 119; return copyingCursor_gif;
+        case 0x4ee3f19e:  numBytes = 116; return erasingCursor_gif;
         case 0x8453b03b:  numBytes = 885; return emptyProject_json;
         case 0xd91bf8d8:  numBytes = 3287; return exampleProject_json;
         case 0xe05deb51:  numBytes = 25962; return logov2_png;
@@ -4259,6 +4275,8 @@ const char* namedResourceList[] =
     "zoomOut_svg",
     "zoomToFit_svg",
     "noise_png",
+    "copyingCursor_gif",
+    "erasingCursor_gif",
     "emptyProject_json",
     "exampleProject_json",
     "logov2_png",
@@ -4357,6 +4375,8 @@ const char* originalFilenames[] =
     "zoomOut.svg",
     "zoomToFit.svg",
     "noise.png",
+    "copyingCursor.gif",
+    "erasingCursor.gif",
     "emptyProject.json",
     "exampleProject.json",
     "logo-v2.png",

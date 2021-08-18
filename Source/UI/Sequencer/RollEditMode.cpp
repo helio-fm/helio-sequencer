@@ -134,10 +134,6 @@ MouseCursor RollEditMode::getCursor() const
             return MouseCursor::NormalCursor;
             break;
             
-        case drawMode:
-            return MouseCursor::CopyingCursor;
-            break;
-            
         case selectionMode:
             return MouseCursor::CrosshairCursor;
             break;
@@ -154,8 +150,12 @@ MouseCursor RollEditMode::getCursor() const
             return MouseCursor::CrosshairCursor;
             break;
 
+        case drawMode:
+            return Icons::getCopyingCursor();
+            break;
+
         case eraseMode:
-            return MouseCursor::CrosshairCursor;
+            return Icons::getErasingCursor();
             break;
     }
     

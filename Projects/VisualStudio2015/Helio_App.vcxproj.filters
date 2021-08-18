@@ -7211,6 +7211,12 @@
     <None Include="..\..\Resources\Icons\noise.png">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
+    <None Include="..\..\Resources\Icons\copyingCursor.gif">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\erasingCursor.gif">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
     <None Include="..\..\Resources\Templates\emptyProject.json">
       <Filter>Helio\Resources\Templates</Filter>
     </None>

@@ -225,7 +225,6 @@ static Image renderVector(Icons::Id id, int maxSize,
     return resultImage;
 }
 
-
 UniquePointer<Drawable> Icons::getDrawableByName(Icons::Id id)
 {
     const auto foundImage = builtInImages.find(id);
@@ -249,11 +248,11 @@ Path Icons::getPathByName(Icons::Id id)
     return Path(extractPathFromDrawable(drawableSVG.get()));
 }
 
-static FlatHashMap<uint32, Image> prerenderedVectors;
+static FlatHashMap<uint32, Image> prerenderedSVGs;
 
 void Icons::clearPrerenderedCache()
 {
-    prerenderedVectors.clear();
+    prerenderedSVGs.clear();
 }
 
 Image Icons::findByName(Icons::Id id, int maxSize)
@@ -270,15 +269,15 @@ Image Icons::findByName(Icons::Id id, int maxSize)
         Globals::UI::iconSizeStep * retinaFactor;
 
     const uint32 iconKey = (id * 1000) + fixedSize;
-    if (prerenderedVectors.contains(iconKey))
+    if (prerenderedSVGs.contains(iconKey))
     {
-        return prerenderedVectors[iconKey];
+        return prerenderedSVGs[iconKey];
     }
     
     const Colour iconBaseColour(findDefaultColour(ColourIDs::Icons::fill));
     const Colour iconShadeColour(findDefaultColour(ColourIDs::Icons::shadow));
     const Image prerenderedImage(renderVector(id, fixedSize, iconBaseColour, iconShadeColour));
-    prerenderedVectors[iconKey] = prerenderedImage;
+    prerenderedSVGs[iconKey] = prerenderedImage;
 
     return prerenderedImage;
 }
@@ -333,4 +332,18 @@ void Icons::drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy
     {
         g.drawImageAt(image, cx - int(w / 2), cy - int(h / 2));
     }
+}
+
+MouseCursor Icons::getCopyingCursor()
+{
+    static auto image = ImageFileFormat::loadFrom(BinaryData::copyingCursor_gif, BinaryData::copyingCursor_gifSize);
+    static MouseCursor cursor(image, 1, 0);
+    return cursor;
+}
+
+MouseCursor Icons::getErasingCursor()
+{
+    static auto image = ImageFileFormat::loadFrom(BinaryData::erasingCursor_gif, BinaryData::erasingCursor_gifSize);
+    static MouseCursor cursor(image, 1, 0);
+    return cursor;
 }

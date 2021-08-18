@@ -3723,6 +3723,8 @@
     <None Include="..\..\Resources\Icons\zoomOut.svg"/>
     <None Include="..\..\Resources\Icons\zoomToFit.svg"/>
     <None Include="..\..\Resources\Icons\noise.png"/>
+    <None Include="..\..\Resources\Icons\copyingCursor.gif"/>
+    <None Include="..\..\Resources\Icons\erasingCursor.gif"/>
     <None Include="..\..\Resources\Templates\emptyProject.json"/>
     <None Include="..\..\Resources\Templates\exampleProject.json"/>
     <None Include="..\..\Resources\logo-v2.png"/>

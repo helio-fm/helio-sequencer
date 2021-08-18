@@ -104,6 +104,10 @@
         <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>
         <FILE id="KPqaBe" name="zoomToFit.svg" compile="0" resource="1" file="../../Resources/Icons/zoomToFit.svg"/>
         <FILE id="aMBPbX" name="noise.png" compile="0" resource="1" file="../../Resources/Icons/noise.png"/>
+        <FILE id="oCmMjk" name="copyingCursor.gif" compile="0" resource="1"
+              file="../../Resources/Icons/copyingCursor.gif"/>
+        <FILE id="KemsRO" name="erasingCursor.gif" compile="0" resource="1"
+              file="../../Resources/Icons/erasingCursor.gif"/>
       </GROUP>
       <GROUP id="{03B368B6-E773-F1D4-0B96-AA2CC86335DB}" name="Templates">
         <FILE id="CFbwRz" name="emptyProject.json" compile="0" resource="1"
