@@ -1733,7 +1733,7 @@ bool RollBase::isViewportDragEvent(const MouseEvent &e) const
 
 bool RollBase::isAddEvent(const MouseEvent &e) const
 {
-    if (e.mods.isRightButtonDown()) { return false; }
+    if (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown()) { return false; }
     if (this->project.getEditMode().forbidsAddingEvents(e.mods)) { return false; }
     if (this->project.getEditMode().forcesAddingEvents(e.mods)) { return true; }
     return false;
