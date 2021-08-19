@@ -312,8 +312,8 @@ void Transport::setPlaybackLoop(float startBeat, float endBeat)
 
     this->loopMode = true;
     this->loopStartBeat = startBeat;
-    // length is at least one bar:
-    this->loopEndBeat = jmax(endBeat, startBeat + Globals::beatsPerBar);
+    // length is at least one beat:
+    this->loopEndBeat = jmax(endBeat, startBeat + 1);
 
     this->broadcastLoopModeChanged(this->loopMode.get(),
         this->loopStartBeat.get(), this->loopEndBeat.get());
