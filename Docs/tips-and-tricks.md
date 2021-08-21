@@ -98,11 +98,15 @@ The audio monitor view can be toggled between two modes on click or tap, switchi
 
 ![monitors]
 
-The mini map mode can be toggled with `B` hotkey, or by clicking at any area except the screen range rectangle.
+The mini-map mode can be toggled with `B` hotkey, or by clicking at any area except the screen range rectangle.
 
-In the small mode, it is stretched to fit all project:
+When in compact mode, it is stretched to fit all project:
 
 ![toggle-minimap]
+
+Tip: when in full mode, the mini-map allows to draw a region to zoom at:
+
+![zoom-to-region]
 
 ### Chord tool
 
@@ -187,6 +191,7 @@ Just hit `!` and start typing a chord description, or pick some of the suggestio
 
 [monitors]: images/monitors.png "Audio monitor view modes"
 [toggle-minimap]: images/toggle-minimap.png "Mini-map view modes"
+[zoom-to-region]: images/zoom-to-region.png "Mini-map zoom-to-region"
 [scales-highlighting]: images/scales-highlighting.png "Scales highlighting"
 [note-names]: images/note-names.png "Note name guides"
 
