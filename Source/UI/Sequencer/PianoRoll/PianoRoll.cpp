@@ -1258,14 +1258,22 @@ void PianoRoll::handleCommandMessage(int commandId)
         ROLL_BATCH_REPAINT_END
         break;
     case CommandIDs::NotesVolumeUp:
-        ROLL_BATCH_REPAINT_START
-        SequencerOperations::tuneVolume(this->selection, 1.f / 32.f);
-        ROLL_BATCH_REPAINT_END
+        if (this->selection.getNumSelected() > 0)
+        {
+            ROLL_BATCH_REPAINT_START
+            SequencerOperations::tuneVolume(this->selection, 1.f / 32.f);
+            this->setDefaultNoteVolume(this->selection.getFirstAs<NoteComponent>()->getVelocity());
+            ROLL_BATCH_REPAINT_END
+        }
         break;
     case CommandIDs::NotesVolumeDown:
-        ROLL_BATCH_REPAINT_START
-        SequencerOperations::tuneVolume(this->selection, -1.f / 32.f);
-        ROLL_BATCH_REPAINT_END
+        if (this->selection.getNumSelected() > 0)
+        {
+            ROLL_BATCH_REPAINT_START
+            SequencerOperations::tuneVolume(this->selection, -1.f / 32.f);
+            this->setDefaultNoteVolume(this->selection.getFirstAs<NoteComponent>()->getVelocity());
+            ROLL_BATCH_REPAINT_END
+        }
         break;
     case CommandIDs::Tuplet1:
         SequencerOperations::applyTuplets(this->selection, 1);
