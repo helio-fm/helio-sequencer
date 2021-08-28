@@ -163,8 +163,11 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
     menu.add(MenuItem::item(Icons::cut, CommandIDs::NewTrackFromSelection,
         TRANS(I18n::Menu::Selection::notesToTrack))->closesMenu());
 
+    const bool nowhereToMove = this->project.findChildrenOfType<PianoTrackNode>().size() < 2;
+
     menu.add(MenuItem::item(Icons::cut,
         TRANS(I18n::Menu::Selection::notesMoveTo))->
+        disabledIf(nowhereToMove)->
         withSubmenu()->
         withAction([this]()
     {

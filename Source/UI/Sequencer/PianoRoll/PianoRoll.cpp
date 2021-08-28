@@ -1767,9 +1767,9 @@ Array<CommandPaletteActionsProvider *> PianoRoll::getCommandPaletteActionProvide
         result.add(this->consoleChordConstructor.get());
     }
 
-    if (this->selection.getNumSelected() > 0)
+    if (this->selection.getNumSelected() > 0 &&
+        this->project.findChildrenOfType<PianoTrackNode>().size() > 1)
     {
-        // todo rescale menu, if anything is selected (#)?
         result.add(this->consoleMoveNotesMenu.get());
     }
 
