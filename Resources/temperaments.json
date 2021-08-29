@@ -11,7 +11,7 @@
       {
         "id": "19edo",
         "name": "19 equal temperament",
-        "period": "D D# Eb E E# F F# Fx G G# Ab A A# Bb B B# C C# Cx",
+        "period": "C C# Cx D D# Eb E E# F F# Fx G G# Ab A A# Bb B B#",
         "highlighting": "2 2 1 2 1 2 1 2 2 1 2 1",
         "chromaticMap": "2 2 1 2 1 2 1 2 2 1 2 1"
       },
