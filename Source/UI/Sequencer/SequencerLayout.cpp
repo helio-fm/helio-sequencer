@@ -132,8 +132,13 @@ public:
 
     void setAnimationsEnabled(bool animationsEnabled)
     {
-        this->animationsTimerInterval = animationsEnabled ? 1000 / 60 : 1;
+        this->animationsTimerInterval = animationsEnabled ? 1000 / 60 : 0;
         this->pianoScroller->setAnimationsEnabled(animationsEnabled);
+    }
+
+    bool areAnimationsEnabled() const noexcept
+    {
+        return this->animationsTimerInterval > 0;
     }
 
     void startRollSwitchAnimation()
@@ -148,8 +153,18 @@ public:
         this->pianoRoll->setVisible(true);
         this->patternViewport->setVisible(true);
         this->pianoViewport->setVisible(true);
-        this->resized();
-        this->startTimer(Timers::rolls, this->animationsTimerInterval);
+        if (this->areAnimationsEnabled())
+        {
+            this->resized();
+            this->startTimer(Timers::rolls, this->animationsTimerInterval);
+        }
+        else
+        {
+            // here we want to switch the rolls immediately, if animations are disabled,
+            // because it's the slowest and the most resource-hungry animation in the app
+            this->rollsAnimation.finish();
+            this->timerCallback(Timers::rolls);
+        }
     }
 
     void startMapSwitchAnimation()
