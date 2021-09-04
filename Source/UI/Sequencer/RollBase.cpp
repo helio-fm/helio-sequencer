@@ -1155,17 +1155,19 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
         // to pan vertically, so for convenience we'll fallback to horizontal panning:
         const bool canPanVertically = this->getHeight() > this->viewport.getViewHeight();
 
+        // note: unlike with zooming, we're not checking the wheel.isReversed flag here
+        // and not compensating it; we want to respect the user preference of scrolling behavior
         if (verticalPanning && canPanVertically)
         {
-            const float panDeltaY = wheel.deltaY * (wheel.isReversed ? panSpeedVertical : -panSpeedVertical);
-            const float panDeltaX = wheel.deltaX * (wheel.isReversed ? panSpeedHorizontal : -panSpeedHorizontal);
-            this->smoothPanController->panByOffset({ panDeltaX, panDeltaY });
+            const float panDeltaY = wheel.deltaY * panSpeedVertical;
+            const float panDeltaX = wheel.deltaX * panSpeedHorizontal;
+            this->smoothPanController->panByOffset({ -panDeltaX, -panDeltaY });
         }
         else
         {
-            const float panDeltaY = wheel.deltaY * (wheel.isReversed ? panSpeedHorizontal : -panSpeedHorizontal);
-            const float panDeltaX = wheel.deltaX * (wheel.isReversed ? panSpeedVertical : -panSpeedVertical);
-            this->smoothPanController->panByOffset({ panDeltaY, panDeltaX });
+            const float panDeltaY = wheel.deltaY * panSpeedHorizontal;
+            const float panDeltaX = wheel.deltaX * panSpeedVertical;
+            this->smoothPanController->panByOffset({ -panDeltaY, -panDeltaX });
         }
     }
     else
