@@ -592,8 +592,7 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
     const bool useActiveClip = (activeClip.getPattern() &&
         activeClip.getPattern()->getTrack() == track);
 
-    this->project.setEditableScope(track,
-        useActiveClip ? activeClip : *trackFirstClip, false);
+    this->project.setEditableScope(useActiveClip ? activeClip : *trackFirstClip, false);
 }
 
 RollBase *SequencerLayout::getRoll() const noexcept

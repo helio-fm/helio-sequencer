@@ -291,8 +291,7 @@ void PianoRoll::longTapEvent(const Point<float> &position,
         const auto *nc = dynamic_cast<NoteComponent *>(target.get());
         if (nc != nullptr && !nc->isActive())
         {
-            auto *track = nc->getNote().getSequence()->getTrack();
-            this->project.setEditableScope(track, nc->getClip(), false);
+            this->project.setEditableScope(nc->getClip(), false);
             return;
         }
     }
@@ -1019,7 +1018,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->selectAll();
         break;
     case CommandIDs::ZoomEntireClip:
-        this->project.setEditableScope(this->activeTrack, this->activeClip, true);
+        this->project.setEditableScope(this->activeClip, true);
         this->zoomOutImpulse(0.35f);
         break;
     case CommandIDs::SwitchToClipInViewport:
@@ -1502,7 +1501,7 @@ void PianoRoll::switchToClipInViewport() const
     if (clipToFocus.isValid())
     {
         //DBG("Switching to " + String(clipToFocus.getId()));
-        this->project.setEditableScope(clipToFocus.getPattern()->getTrack(), clipToFocus, false);
+        this->project.setEditableScope(clipToFocus, false);
     }
 }
 

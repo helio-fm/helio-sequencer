@@ -80,9 +80,8 @@ public:
 
     void safeRename(const String &newName, bool sendNotifications) override;
 
-    void setMidiRecordingTarget(MidiTrack *const track, const Clip *clip);
-    void setEditableScope(MidiTrack *const activeTrack,
-        const Clip &activeClip, bool shouldFocusToArea = false);
+    void setMidiRecordingTarget(const Clip *clip);
+    void setEditableScope(const Clip &activeClip, bool shouldFocusToArea = false);
 
     //===------------------------------------------------------------------===//
     // Menu

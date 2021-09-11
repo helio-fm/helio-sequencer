@@ -704,7 +704,7 @@ void PatternRoll::handleCommandMessage(int commandId)
         if (this->selection.getNumSelected() > 0)
         {
             const auto &clip = this->selection.getFirstAs<ClipComponent>()->getClip();
-            this->project.setEditableScope(clip.getPattern()->getTrack(), clip, true);
+            this->project.setEditableScope(clip, true);
         }
         break;
     case CommandIDs::ClipTransposeUp:

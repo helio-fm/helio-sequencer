@@ -482,14 +482,13 @@ void App::setTitleBarComponent(WeakReference<Component> component)
 
 void App::initialise(const String &commandLine)
 {
-    this->runMode = App::NORMAL;
     if (commandLine.isNotEmpty() &&
         DocumentHelpers::getTempSlot(commandLine).existsAsFile())
     {
-        this->runMode = App::PLUGIN_CHECK;
+        this->runMode = RunMode::PluginCheck;
     }
 
-    if (this->runMode == App::NORMAL)
+    if (this->runMode == RunMode::Normal)
     {
         DBG("Helio v" + App::getAppReadableVersion());
 
@@ -563,7 +562,7 @@ void App::initialise(const String &commandLine)
 
 #endif
     }
-    else if (this->runMode == App::PLUGIN_CHECK)
+    else if (this->runMode == RunMode::PluginCheck)
     {
         this->checkPlugin(commandLine);
         this->quit();
@@ -572,7 +571,7 @@ void App::initialise(const String &commandLine)
 
 void App::shutdown()
 {
-    if (this->runMode == App::NORMAL)
+    if (this->runMode == RunMode::Normal)
     {
         this->config->getUiFlags()->removeListener(this);
 
@@ -606,7 +605,7 @@ void App::shutdown()
 
 const String App::getApplicationName()
 {
-    if (this->runMode == App::PLUGIN_CHECK)
+    if (this->runMode == RunMode::PluginCheck)
     {
         return "Helio Plugin Check";
     }

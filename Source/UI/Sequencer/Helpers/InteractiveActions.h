@@ -104,7 +104,7 @@ struct InteractiveActions final
         if (shouldFocusOnNewTrack)
         {
             auto *tracksSingleClip = newlyAddedTrack->getPattern()->getUnchecked(0);
-            project.setEditableScope(newlyAddedTrack, *tracksSingleClip, false);
+            project.setEditableScope(*tracksSingleClip, false);
         }
 
         auto dialog = make<TrackPropertiesDialog>(project, newlyAddedTrack,

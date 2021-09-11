@@ -175,7 +175,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
 
                 const auto action = [this, pianoTrackNode, clip](TextEditor &ed)
                 {
-                    this->project.setEditableScope(pianoTrackNode, *clip, true);
+                    this->project.setEditableScope(*clip, true);
                     return true;
                 };
 
