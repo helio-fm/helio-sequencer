@@ -1655,6 +1655,25 @@ void PianoRoll::endCuttingEventsIfNeeded()
 }
 
 //===----------------------------------------------------------------------===//
+// Merge notes mode
+//===----------------------------------------------------------------------===//
+
+void PianoRoll::startMergingEvents(const MouseEvent &e)
+{
+    // todo
+}
+
+void PianoRoll::continueMergingEvents(const MouseEvent &e)
+{
+    // todo
+}
+
+void PianoRoll::endMergingEvents(const MouseEvent &e)
+{
+    // todo
+}
+
+//===----------------------------------------------------------------------===//
 // RollBase
 //===----------------------------------------------------------------------===//
 

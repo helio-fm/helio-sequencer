@@ -1016,6 +1016,10 @@ void RollBase::mouseDown(const MouseEvent &e)
         {
             this->getEditMode().setMode(RollEditMode::eraseMode);
         }
+        else if (this->getEditMode().isMode(RollEditMode::knifeMode))
+        {
+            this->getEditMode().setMode(RollEditMode::mergeMode);
+        }
         else
         {
             this->contextMenuController->showMenu(e, 350);
@@ -1037,6 +1041,10 @@ void RollBase::mouseDown(const MouseEvent &e)
     else if (this->isViewportZoomEvent(e))
     {
         this->startZooming();
+    }
+    else if (this->isMergeToolEvent(e))
+    {
+        this->startMergingEvents(e);
     }
 }
 
@@ -1066,6 +1074,10 @@ void RollBase::mouseDrag(const MouseEvent &e)
     {
         this->continueZooming(e);
     }
+    else if (this->isMergeToolEvent(e))
+    {
+        this->continueMergingEvents(e);
+    }
 }
 
 void RollBase::mouseUp(const MouseEvent &e)
@@ -1088,10 +1100,19 @@ void RollBase::mouseUp(const MouseEvent &e)
     if (this->isErasingEvent(e))
     {
         this->endErasingEvents();
-        // the only way we can switch to erasing mode is by holding
-        // the right mouse button, and upon the mouse up we're switching back:
+        // the only way we can switch to erasing mode is by holding the rmb
+        // in the draw mode, and on mouse up we're switching back:
         jassert(this->project.getEditMode().isMode(RollEditMode::eraseMode));
         this->project.getEditMode().setMode(RollEditMode::drawMode);
+    }
+
+    if (this->isMergeToolEvent(e))
+    {
+        this->endMergingEvents(e);
+        // the only way we can switch to merging mode is by holding the rmb
+        // in the knife mode, and on mouse up we're switching back:
+        jassert(this->project.getEditMode().isMode(RollEditMode::mergeMode));
+        this->project.getEditMode().setMode(RollEditMode::knifeMode);
     }
 
     if (this->isViewportZoomEvent(e))
@@ -1751,10 +1772,15 @@ bool RollBase::isLassoEvent(const MouseEvent &e) const
 
 bool RollBase::isKnifeToolEvent(const MouseEvent &e) const
 {
-    if (e.mods.isRightButtonDown()) { return false; }
     if (this->project.getEditMode().forbidsCuttingEvents(e.mods)) { return false; }
     if (this->project.getEditMode().forcesCuttingEvents(e.mods)) { return true; }
     return false;
+}
+
+bool RollBase::isMergeToolEvent(const MouseEvent &e) const
+{
+    if (this->project.getEditMode().forbidsMergingEvents(e.mods)) { return false; }
+    return this->project.getEditMode().forcesMergingEvents(e.mods);
 }
 
 bool RollBase::isErasingEvent(const MouseEvent &e) const
@@ -1981,7 +2007,7 @@ void RollBase::applyEditModeUpdates()
         this->setSpaceDraggingMode(false);
     }
 
-    const MouseCursor cursor(this->project.getEditMode().getCursor());
+    const auto cursor = this->project.getEditMode().getCursor();
     this->setMouseCursor(cursor);
 
     const bool interactsWithChildren = this->project.getEditMode().shouldInteractWithChildren();

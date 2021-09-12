@@ -148,6 +148,11 @@ private:
     void continueCuttingClips(const MouseEvent &e);
     void endCuttingClipsIfNeeded(const MouseEvent &e);
 
+    //UniquePointer<MergingClipsConnector> mergeToolHelper;
+    void startMergingEvents(const MouseEvent &e) override;
+    void continueMergingEvents(const MouseEvent &e) override;
+    void endMergingEvents(const MouseEvent &e) override;
+
     void startErasingEvents(const MouseEvent &e) override;
     void continueErasingEvents(const MouseEvent &e) override;
     void endErasingEvents() override;

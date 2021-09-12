@@ -50,7 +50,6 @@ public:
     NoteCutPointMark(SafePointer<Component> targetComponent, float absPosX);
 
     void paint(Graphics &g) override;
-
 };
 
 class ClipCutPointMark final : public CutPointMark
@@ -62,5 +61,4 @@ public:
     void paint(Graphics &g) override;
 
     void updatePositionFromMouseEvent(int mouseX, int mouseY);
-
 };

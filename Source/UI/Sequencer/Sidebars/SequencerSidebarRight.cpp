@@ -134,7 +134,7 @@ void SequencerSidebarRight::recreateMenu()
 
     const bool defaultMode = editMode.isMode(RollEditMode::defaultMode);
     const bool drawMode = editMode.isMode(RollEditMode::drawMode) || editMode.isMode(RollEditMode::eraseMode);
-    const bool scissorsMode = editMode.isMode(RollEditMode::knifeMode);
+    const bool scissorsMode = editMode.isMode(RollEditMode::knifeMode) || editMode.isMode(RollEditMode::mergeMode);
 
     // Selection tool is useless on the desktop
 #if PLATFORM_MOBILE

@@ -109,7 +109,8 @@ void ClipComponent::mouseDown(const MouseEvent &e)
 {
     if (e.mods.isRightButtonDown() &&
         (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
-         this->roll.getEditMode().isMode(RollEditMode::drawMode)))
+         this->roll.getEditMode().isMode(RollEditMode::drawMode) ||
+         this->roll.getEditMode().isMode(RollEditMode::knifeMode)))
     {
         // see the comment above PianoRoll::startErasingEvents for
         // the explanation of how erasing events works and why:
@@ -119,7 +120,7 @@ void ClipComponent::mouseDown(const MouseEvent &e)
 
     MidiEventComponent::mouseDown(e);
 
-    const Lasso &selection = this->roll.getLassoSelection();
+    const auto &selection = this->roll.getLassoSelection();
     if (e.mods.isLeftButtonDown())
     {
         this->dragger.startDraggingComponent(this, e);

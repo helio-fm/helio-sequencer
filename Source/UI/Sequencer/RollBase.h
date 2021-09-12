@@ -373,11 +373,16 @@ protected:
     virtual void continueErasingEvents(const MouseEvent &e) = 0;
     virtual void endErasingEvents() = 0;
 
+    virtual void startMergingEvents(const MouseEvent &e) = 0;
+    virtual void continueMergingEvents(const MouseEvent &e) = 0;
+    virtual void endMergingEvents(const MouseEvent &e) = 0;
+
     bool isViewportZoomEvent(const MouseEvent &e) const;
     bool isViewportDragEvent(const MouseEvent &e) const;
     bool isAddEvent(const MouseEvent &e) const;
     bool isLassoEvent(const MouseEvent &e) const;
     bool isKnifeToolEvent(const MouseEvent &e) const;
+    bool isMergeToolEvent(const MouseEvent &e) const;
     bool isErasingEvent(const MouseEvent &e) const;
 
     float firstBeat = 0.f;

@@ -207,10 +207,15 @@ private:
     void continueCuttingEvents(const MouseEvent &e);
     void endCuttingEventsIfNeeded();
 
+    //UniquePointer<MergingNotesConnector> mergeToolHelper;
+    void startMergingEvents(const MouseEvent &e) override;
+    void continueMergingEvents(const MouseEvent &e) override;
+    void endMergingEvents(const MouseEvent &e) override;
+
+    Array<Note> notesToEraseOnMouseUp;
     void startErasingEvents(const MouseEvent &e) override;
     void continueErasingEvents(const MouseEvent &e) override;
     void endErasingEvents() override;
-    Array<Note> notesToEraseOnMouseUp;
 
     NoteComponent *newNoteDragging = nullptr;
     bool addNewNoteMode = false;

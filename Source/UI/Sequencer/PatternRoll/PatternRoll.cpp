@@ -1049,6 +1049,25 @@ void PatternRoll::endCuttingClipsIfNeeded(const MouseEvent &e)
 }
 
 //===----------------------------------------------------------------------===//
+// Merge clips mode
+//===----------------------------------------------------------------------===//
+
+void PatternRoll::startMergingEvents(const MouseEvent &e)
+{
+    // todo
+}
+
+void PatternRoll::continueMergingEvents(const MouseEvent &e)
+{
+    // todo
+}
+
+void PatternRoll::endMergingEvents(const MouseEvent &e)
+{
+    // todo
+}
+
+//===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
