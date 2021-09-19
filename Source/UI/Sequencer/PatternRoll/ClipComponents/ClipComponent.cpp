@@ -109,8 +109,7 @@ void ClipComponent::mouseDown(const MouseEvent &e)
 {
     if (e.mods.isRightButtonDown() &&
         (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
-         this->roll.getEditMode().isMode(RollEditMode::drawMode) ||
-         this->roll.getEditMode().isMode(RollEditMode::knifeMode)))
+         this->roll.getEditMode().isMode(RollEditMode::drawMode)))
     {
         // see the comment above PianoRoll::startErasingEvents for
         // the explanation of how erasing events works and why:
@@ -261,7 +260,7 @@ void ClipComponent::paint(Graphics &g)
 
     g.setColour(this->headBrightColour);
 
-    if (this->flags.isSelected)
+    if (this->flags.isSelected || this->flags.isMergeTarget)
     {
         // top and bottom lines
         g.fillRect(1.f, 1.f, w - 2.f, 3.f);
@@ -352,6 +351,15 @@ void ClipComponent::setHighlightedAsInstance(bool isHighlighted)
     {
         this->flags.isInstanceOfSelected = isInstanceOfSelected;
         this->updateColours();
+        this->roll.triggerBatchRepaintFor(this);
+    }
+}
+
+void ClipComponent::setHighlightedAsMergeTarget(bool isHighlighted)
+{
+    if (this->flags.isMergeTarget != isHighlighted)
+    {
+        this->flags.isMergeTarget = isHighlighted;
         this->roll.triggerBatchRepaintFor(this);
     }
 }

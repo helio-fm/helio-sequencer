@@ -67,12 +67,12 @@ public:
     void paint(Graphics &g) override;
 
     //===------------------------------------------------------------------===//
-    // SelectableComponent
+    // Painting flags
     //===------------------------------------------------------------------===//
 
     void setSelected(bool selected) override;
-
     void setHighlightedAsInstance(bool isHighlighted);
+    void setHighlightedAsMergeTarget(bool isHighlighted);
 
     static int compareElements(ClipComponent *first, ClipComponent *second);
 

@@ -33,6 +33,7 @@
 #include "SelectionComponent.h"
 #include "RollHeader.h"
 #include "CutPointMark.h"
+#include "MergingEventsConnector.h"
 
 #include "UndoStack.h"
 #include "PatternOperations.h"
@@ -1022,30 +1023,35 @@ void PatternRoll::startCuttingClips(const MouseEvent &e)
 
 void PatternRoll::continueCuttingClips(const MouseEvent &e)
 {
-    if (this->knifeToolHelper != nullptr)
+    if (this->knifeToolHelper == nullptr)
     {
-        const float cutBeat = this->getRoundBeatSnapByXPosition(e.getPosition().x);
-        const int beatX = this->getXPositionByBeat(cutBeat);
-        this->knifeToolHelper->updatePositionFromMouseEvent(beatX, e.getPosition().y);
+        jassertfalse;
+        return;
     }
+
+    const float cutBeat = this->getRoundBeatSnapByXPosition(e.getPosition().x);
+    const int beatX = this->getXPositionByBeat(cutBeat);
+    this->knifeToolHelper->updatePositionFromMouseEvent(beatX, e.getPosition().y);
 }
 
 void PatternRoll::endCuttingClipsIfNeeded(const MouseEvent &e)
 {
-    if (this->knifeToolHelper != nullptr)
+    if (this->knifeToolHelper == nullptr)
     {
-        const bool shouldRenameNewTracks = e.mods.isAnyModifierKeyDown();
-        const float cutPos = this->knifeToolHelper->getCutPosition();
-        const auto *cc = dynamic_cast<ClipComponent *>(this->knifeToolHelper->getComponent());
-        if (cc != nullptr && cutPos > 0.f && cutPos < 1.f)
-        {
-            const float cutBeat = this->getRoundBeatSnapByXPosition(cc->getX() + int(cc->getWidth() * cutPos));
-            PatternOperations::cutClip(this->project, cc->getClip(), cutBeat, shouldRenameNewTracks);
-        }
-        this->applyEditModeUpdates(); // update behaviour of newly created clip components
-        this->knifeToolHelper->updatePosition(-1.f);
-        this->knifeToolHelper = nullptr;
+        return;
     }
+
+    const bool shouldRenameNewTracks = e.mods.isAnyModifierKeyDown();
+    const float cutPos = this->knifeToolHelper->getCutPosition();
+    const auto *cc = dynamic_cast<ClipComponent *>(this->knifeToolHelper->getComponent());
+    if (cc != nullptr && cutPos > 0.f && cutPos < 1.f)
+    {
+        const float cutBeat = this->getRoundBeatSnapByXPosition(cc->getX() + int(cc->getWidth() * cutPos));
+        PatternOperations::cutClip(this->project, cc->getClip(), cutBeat, shouldRenameNewTracks);
+    }
+    this->applyEditModeUpdates(); // update behaviour of newly created clip components
+    this->knifeToolHelper->updatePosition(-1.f);
+    this->knifeToolHelper = nullptr;
 }
 
 //===----------------------------------------------------------------------===//
@@ -1054,16 +1060,79 @@ void PatternRoll::endCuttingClipsIfNeeded(const MouseEvent &e)
 
 void PatternRoll::startMergingEvents(const MouseEvent &e)
 {
-    // todo
+    this->deselectAll();
+
+    ClipComponent *targetClip = nullptr;
+    for (const auto &it : this->clipComponents)
+    {
+        auto *cc = it.second.get();
+        cc->setHighlightedAsMergeTarget(false);
+        if (cc->getBounds().contains(mousePosition.toInt()))
+        {
+            targetClip = cc;
+        }
+    }
+
+    if (this->mergeToolHelper == nullptr && targetClip != nullptr)
+    {
+        targetClip->setHighlightedAsMergeTarget(true);
+        const auto position = mousePosition / this->getLocalBounds().getBottomRight().toFloat();
+        // DBG("x: " + String(position.x) + ", y:" + String(position.y));
+        this->mergeToolHelper = make<MergingClipsConnector>(targetClip, position);
+        this->addAndMakeVisible(this->mergeToolHelper.get());
+    }
 }
 
 void PatternRoll::continueMergingEvents(const MouseEvent &e)
 {
-    // todo
+    if (this->mergeToolHelper == nullptr)
+    {
+        return;
+    }
+
+    ClipComponent *targetClip = nullptr;
+    for (const auto &it : this->clipComponents)
+    {
+        auto *cc = it.second.get();
+        cc->setHighlightedAsMergeTarget(false);
+        // todo this->mergeToolHelper->canMergeInto(cc)
+        // which checks piano vs auto clips,
+        // and checks for the same cc id for auto clips
+        if (cc->getBounds().contains(mousePosition.toInt()))
+        {
+            targetClip = cc;
+        }
+    }
+
+    if (targetClip != nullptr)
+    {
+        targetClip->setHighlightedAsMergeTarget(true);
+    }
+
+    if (auto *sourceClip = dynamic_cast<ClipComponent *>(this->mergeToolHelper->getSourceComponent()))
+    {
+        sourceClip->setHighlightedAsMergeTarget(true);
+    }
+
+    const auto position = mousePosition / this->getLocalBounds().getBottomRight().toFloat();
+    // DBG("  x: " + String(position.x) + ", y:" + String(position.y));
+    this->mergeToolHelper->setTargetComponent(targetClip);
+    this->mergeToolHelper->setEndPosition(position);
 }
 
 void PatternRoll::endMergingEvents(const MouseEvent &e)
 {
+    if (this->mergeToolHelper == nullptr)
+    {
+        return;
+    }
+
+    for (const auto &it : this->clipComponents)
+    {
+        it.second.get()->setHighlightedAsMergeTarget(false);
+    }
+
+    this->mergeToolHelper = nullptr;
     // todo
 }
 

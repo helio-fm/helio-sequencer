@@ -1300,6 +1300,9 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\KnifeToolHelper.cpp">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\MergingEventsConnector.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\TimelineWarningMarker.cpp">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClCompile>
@@ -4363,6 +4366,9 @@
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\KnifeToolHelper.h">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\MergingEventsConnector.h">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\TimelineWarningMarker.h">

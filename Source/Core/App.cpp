@@ -598,8 +598,6 @@ void App::shutdown()
         // Clear cache to avoid leak check to fire.
         Icons::clearPrerenderedCache();
         Icons::clearBuiltInImages();
-                
-        Logger::setCurrentLogger(nullptr);
     }
 }
 

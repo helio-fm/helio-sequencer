@@ -170,6 +170,7 @@
 		24C8D03FB11796FEF000E4BF /* UpdatesInfoComponent.h */ /* UpdatesInfoComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UpdatesInfoComponent.h; path = ../../Source/UI/Pages/Dashboard/UpdatesInfoComponent.h; sourceTree = SOURCE_ROOT; };
 		258F0FE85168E73170A9D0EA /* arpeggiate.svg */ /* arpeggiate.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = arpeggiate.svg; path = ../../Resources/Icons/arpeggiate.svg; sourceTree = SOURCE_ROOT; };
 		25AD1104F09E7075386867EE /* PatternOperations.h */ /* PatternOperations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatternOperations.h; path = ../../Source/UI/Sequencer/Helpers/PatternOperations.h; sourceTree = SOURCE_ROOT; };
+		26F6F88B9FDFEC669C225BF7 /* MergingEventsConnector.h */ /* MergingEventsConnector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MergingEventsConnector.h; path = ../../Source/UI/Sequencer/Helpers/MergingEventsConnector.h; sourceTree = SOURCE_ROOT; };
 		26FFB9A25EACA4CB018270AB /* ColourSchemesManager.cpp */ /* ColourSchemesManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ColourSchemesManager.cpp; path = ../../Source/Core/Configuration/ResourceManagers/ColourSchemesManager.cpp; sourceTree = SOURCE_ROOT; };
 		275FB11DBC87363AAFA8FFF8 /* AppResourceDto.h */ /* AppResourceDto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppResourceDto.h; path = ../../Source/Core/Network/Models/AppResourceDto.h; sourceTree = SOURCE_ROOT; };
 		277D4DFF36B498E1B674A9D3 /* PianoTrackDiffLogic.h */ /* PianoTrackDiffLogic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PianoTrackDiffLogic.h; path = ../../Source/Core/VCS/DiffLogic/PianoTrackDiffLogic.h; sourceTree = SOURCE_ROOT; };
@@ -205,6 +206,7 @@
 		30E3CDC0BDC2B55721BB2A20 /* SelectionComponent.cpp */ /* SelectionComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SelectionComponent.cpp; path = ../../Source/UI/Sequencer/SelectionComponent.cpp; sourceTree = SOURCE_ROOT; };
 		310B427849EA3D5FD0BB3F82 /* ProjectCloneThread.cpp */ /* ProjectCloneThread.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProjectCloneThread.cpp; path = ../../Source/Core/Network/Requests/ProjectCloneThread.cpp; sourceTree = SOURCE_ROOT; };
 		3170E8B098D41A3BA6B9D381 /* remove.svg */ /* remove.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = remove.svg; path = ../../Resources/Icons/remove.svg; sourceTree = SOURCE_ROOT; };
+		31717BE5E5691D75DC42718B /* MergingEventsConnector.cpp */ /* MergingEventsConnector.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MergingEventsConnector.cpp; path = ../../Source/UI/Sequencer/Helpers/MergingEventsConnector.cpp; sourceTree = SOURCE_ROOT; };
 		3181F18682473EFEF1710F98 /* AutomationTrackActions.h */ /* AutomationTrackActions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutomationTrackActions.h; path = ../../Source/Core/Undo/Actions/AutomationTrackActions.h; sourceTree = SOURCE_ROOT; };
 		31CDE18959CAA93CE75A6152 /* keyboardMappings.json */ /* keyboardMappings.json */ = {isa = PBXFileReference; lastKnownFileType = file.json; name = keyboardMappings.json; path = ../../Resources/keyboardMappings.json; sourceTree = SOURCE_ROOT; };
 		31CDF7A724C0E4A918CC179E /* AutomationStepEventsConnector.h */ /* AutomationStepEventsConnector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutomationStepEventsConnector.h; path = ../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepEventsConnector.h; sourceTree = SOURCE_ROOT; };
@@ -1559,6 +1561,8 @@
 				8C17AC1033669FBCD9147309,
 				E4B24792BDAE9CD886C3F4A9,
 				2F37CBB04EEACF88C13CCED9,
+				31717BE5E5691D75DC42718B,
+				26F6F88B9FDFEC669C225BF7,
 				DD197AF95DF6B3EA88228E3F,
 				9410AE5E508649C9C3AC49BF,
 				90C5D4A679AA323BE958B9E6,

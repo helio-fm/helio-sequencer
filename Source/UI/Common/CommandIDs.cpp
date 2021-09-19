@@ -276,7 +276,7 @@ I18n::Key CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         TRANS_NONE(TimelineJumpHome)
         TRANS_NONE(TimelineJumpEnd)
         TRANS_NONE(ResetPreviewChanges)
-        TRANS_NONE(TransportRecordingAwait) // todo translations for recording cmds?
+        TRANS_NONE(TransportRecordingAwait)
         TRANS_NONE(TransportRecordingStart)
         TRANS_NONE(TransportPlaybackStart)
         TRANS_NONE(TransportStop)

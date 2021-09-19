@@ -19,6 +19,7 @@
 
 class ClipComponent;
 class ClipCutPointMark;
+class MergingClipsConnector;
 
 #include "HelioTheme.h"
 #include "RollBase.h"
@@ -148,7 +149,7 @@ private:
     void continueCuttingClips(const MouseEvent &e);
     void endCuttingClipsIfNeeded(const MouseEvent &e);
 
-    //UniquePointer<MergingClipsConnector> mergeToolHelper;
+    UniquePointer<MergingClipsConnector> mergeToolHelper;
     void startMergingEvents(const MouseEvent &e) override;
     void continueMergingEvents(const MouseEvent &e) override;
     void endMergingEvents(const MouseEvent &e) override;

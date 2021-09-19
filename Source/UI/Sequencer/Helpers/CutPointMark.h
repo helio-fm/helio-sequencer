@@ -17,8 +17,6 @@
 
 #pragma once
 
-#include "NoteComponent.h"
-
 class CutPointMark : public Component
 {
 public:

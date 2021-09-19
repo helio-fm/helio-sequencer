@@ -1030,6 +1030,10 @@ void RollBase::mouseDown(const MouseEvent &e)
     {
         this->startErasingEvents(e);
     }
+    else if (this->isMergeToolEvent(e))
+    {
+        this->startMergingEvents(e);
+    }
     else if (this->isLassoEvent(e))
     {
         this->lassoComponent->beginLasso(e.position, this);
@@ -1041,10 +1045,6 @@ void RollBase::mouseDown(const MouseEvent &e)
     else if (this->isViewportZoomEvent(e))
     {
         this->startZooming();
-    }
-    else if (this->isMergeToolEvent(e))
-    {
-        this->startMergingEvents(e);
     }
 }
 
@@ -1061,6 +1061,10 @@ void RollBase::mouseDrag(const MouseEvent &e)
     {
         this->continueErasingEvents(e);
     }
+    else if (this->isMergeToolEvent(e))
+    {
+        this->continueMergingEvents(e);
+    }
     else if (this->lassoComponent->isDragging())
     {
         this->lassoComponent->dragLasso(e); // if any. will do the check itself
@@ -1073,10 +1077,6 @@ void RollBase::mouseDrag(const MouseEvent &e)
     else if (this->isViewportZoomEvent(e))
     {
         this->continueZooming(e);
-    }
-    else if (this->isMergeToolEvent(e))
-    {
-        this->continueMergingEvents(e);
     }
 }
 
