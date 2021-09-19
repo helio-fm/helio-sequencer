@@ -203,18 +203,18 @@ private:
     int getYPositionByKey(int targetKey) const;
 
     UniquePointer<KnifeToolHelper> knifeToolHelper;
-    void startCuttingEvents(const MouseEvent &e);
-    void continueCuttingEvents(const MouseEvent &e);
+    void startCuttingEvents(const Point<float> &mousePosition);
+    void continueCuttingEvents(const Point<float> &mousePosition);
     void endCuttingEventsIfNeeded();
 
     //UniquePointer<MergingNotesConnector> mergeToolHelper;
-    void startMergingEvents(const MouseEvent &e) override;
-    void continueMergingEvents(const MouseEvent &e) override;
-    void endMergingEvents(const MouseEvent &e) override;
+    void startMergingEvents(const Point<float> &mousePosition) override;
+    void continueMergingEvents(const Point<float> &mousePosition) override;
+    void endMergingEvents() override;
 
     Array<Note> notesToEraseOnMouseUp;
-    void startErasingEvents(const MouseEvent &e) override;
-    void continueErasingEvents(const MouseEvent &e) override;
+    void startErasingEvents(const Point<float> &mousePosition) override;
+    void continueErasingEvents(const Point<float> &mousePosition) override;
     void endErasingEvents() override;
 
     NoteComponent *newNoteDragging = nullptr;

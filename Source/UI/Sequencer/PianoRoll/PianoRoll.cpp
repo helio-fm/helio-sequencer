@@ -933,7 +933,7 @@ void PianoRoll::mouseDown(const MouseEvent &e)
         }
         else if (this->isKnifeToolEvent(e))
         {
-            this->startCuttingEvents(e);
+            this->startCuttingEvents(e.position);
         }
     }
 
@@ -973,7 +973,7 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
     }
     else if (this->isKnifeToolEvent(e))
     {
-        this->continueCuttingEvents(e);
+        this->continueCuttingEvents(e.position);
     }
 
     RollBase::mouseDrag(e);
@@ -1521,15 +1521,15 @@ void PianoRoll::switchToClipInViewport() const
 // to delete them all at once on mouse up; in case th first mouseDown came at
 // note/clip component, it will "pass" mouseDrag and mouseUp events to the roll
 
-void PianoRoll::startErasingEvents(const MouseEvent &e)
+void PianoRoll::startErasingEvents(const Point<float> &mousePosition)
 {
     // just in case:
     this->notesToEraseOnMouseUp.clearQuick();
     // if we are already pointing at a note:
-    this->continueErasingEvents(e);
+    this->continueErasingEvents(mousePosition);
 }
 
-void PianoRoll::continueErasingEvents(const MouseEvent &e)
+void PianoRoll::continueErasingEvents(const Point<float> &mousePosition)
 {
     forEachEventComponent(this->patternMap, it)
     {
@@ -1539,7 +1539,7 @@ void PianoRoll::continueErasingEvents(const MouseEvent &e)
             continue;
         }
 
-        if (!nc->getBounds().contains(e.getPosition()))
+        if (!nc->getBounds().contains(mousePosition.toInt()))
         {
             continue;
         }
@@ -1571,7 +1571,7 @@ void PianoRoll::endErasingEvents()
 // Knife mode
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::startCuttingEvents(const MouseEvent &e)
+void PianoRoll::startCuttingEvents(const Point<float> &mousePosition)
 {
     if (this->knifeToolHelper == nullptr)
     {
@@ -1582,15 +1582,15 @@ void PianoRoll::startCuttingEvents(const MouseEvent &e)
         this->knifeToolHelper->fadeIn();
     }
 
-    this->knifeToolHelper->setStartPosition(e.position);
-    this->knifeToolHelper->setEndPosition(e.position);
+    this->knifeToolHelper->setStartPosition(mousePosition);
+    this->knifeToolHelper->setEndPosition(mousePosition);
 }
 
-void PianoRoll::continueCuttingEvents(const MouseEvent &event)
+void PianoRoll::continueCuttingEvents(const Point<float> &mousePosition)
 {
     if (this->knifeToolHelper != nullptr)
     {
-        this->knifeToolHelper->setEndPosition(event.position);
+        this->knifeToolHelper->setEndPosition(mousePosition);
         this->knifeToolHelper->updateBounds();
 
         bool addsPoint;
@@ -1658,17 +1658,17 @@ void PianoRoll::endCuttingEventsIfNeeded()
 // Merge notes mode
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::startMergingEvents(const MouseEvent &e)
+void PianoRoll::startMergingEvents(const Point<float> &mousePosition)
 {
     // todo
 }
 
-void PianoRoll::continueMergingEvents(const MouseEvent &e)
+void PianoRoll::continueMergingEvents(const Point<float> &mousePosition)
 {
     // todo
 }
 
-void PianoRoll::endMergingEvents(const MouseEvent &e)
+void PianoRoll::endMergingEvents()
 {
     // todo
 }

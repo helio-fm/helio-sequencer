@@ -152,11 +152,11 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     this->smoothZoomController = make<SmoothZoomController>(*this);
 
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
-    
+
     this->project.addListener(this);
     this->project.getEditMode().addChangeListener(this);
     this->project.getTransport().addTransportListener(this);
-    
+
     if (this->clippingDetector != nullptr)
     {
         this->clippingDetector->addClippingListener(this);
@@ -176,7 +176,7 @@ RollBase::~RollBase()
     {
         this->clippingDetector->removeClippingListener(this);
     }
-    
+
     this->removeAllRollListeners();
 
     this->project.getTransport().removeTransportListener(this);
@@ -368,11 +368,13 @@ void RollBase::longTapEvent(const Point<float> &position,
         return;
     }
 
-    if (target == this &&
-        !this->project.getEditMode().forbidsSelectionMode({}))
+    if (target == this)
     {
-        this->lassoComponent->beginLasso(position, this);
-        return;
+        if (!this->project.getEditMode().forbidsSelectionMode({}))
+        {
+            this->lassoComponent->beginLasso(position, this);
+            return;
+        }
     }
 }
 
@@ -679,12 +681,12 @@ void RollBase::computeVisibleBeatLines()
 
     const auto *tsSequence =
         this->project.getTimeline()->getTimeSignatures()->getSequence();
-    
+
     const float zeroCanvasOffset = this->firstBeat * this->beatWidth; // usually a negative value
     const float viewPosX = float(this->viewport.getViewPositionX());
     const float paintStartX = viewPosX + zeroCanvasOffset;
     const float paintEndX = float(viewPosX + this->viewport.getViewWidth()) + zeroCanvasOffset;
-    
+
     const float barWidth = float(this->beatWidth * Globals::beatsPerBar);
     const float firstBar = this->firstBeat / float(Globals::beatsPerBar);
 
@@ -884,7 +886,7 @@ SelectionComponent *RollBase::getSelectionComponent() const noexcept
     return this->lassoComponent.get();
 }
 
-RollHeader * RollBase::getHeaderComponent() const noexcept
+RollHeader *RollBase::getHeaderComponent() const noexcept
 {
     return this->header.get();
 }
@@ -1028,11 +1030,11 @@ void RollBase::mouseDown(const MouseEvent &e)
 
     if (this->isErasingEvent(e))
     {
-        this->startErasingEvents(e);
+        this->startErasingEvents(e.position);
     }
     else if (this->isMergeToolEvent(e))
     {
-        this->startMergingEvents(e);
+        this->startMergingEvents(e.position);
     }
     else if (this->isLassoEvent(e))
     {
@@ -1059,11 +1061,11 @@ void RollBase::mouseDrag(const MouseEvent &e)
 
     if (this->isErasingEvent(e))
     {
-        this->continueErasingEvents(e);
+        this->continueErasingEvents(e.position);
     }
     else if (this->isMergeToolEvent(e))
     {
-        this->continueMergingEvents(e);
+        this->continueMergingEvents(e.position);
     }
     else if (this->lassoComponent->isDragging())
     {
@@ -1108,7 +1110,7 @@ void RollBase::mouseUp(const MouseEvent &e)
 
     if (this->isMergeToolEvent(e))
     {
-        this->endMergingEvents(e);
+        this->endMergingEvents();
         // the only way we can switch to merging mode is by holding the rmb
         // in the knife mode, and on mouse up we're switching back:
         jassert(this->project.getEditMode().isMode(RollEditMode::mergeMode));
@@ -1171,7 +1173,7 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
         const auto viewWidth = float(this->viewport.getViewWidth());
         const float panSpeedHorizontal = jmin(viewWidth / 2.f,
             initialSpeed * float(this->getWidth()) / viewWidth);
-        
+
         // the pattern roll almost always doesn't have that much rows to be able
         // to pan vertically, so for convenience we'll fallback to horizontal panning:
         const bool canPanVertically = this->getHeight() > this->viewport.getViewHeight();
@@ -1208,7 +1210,7 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
 
         if (globalZooming)
         {
-             this->startSmoothZoom(mouseOffset, { zoomDeltaY, zoomDeltaY });
+            this->startSmoothZoom(mouseOffset, { zoomDeltaY, zoomDeltaY });
         }
         else if (verticalZooming)
         {
@@ -1471,7 +1473,7 @@ void RollBase::paint(Graphics &g)
     {
         g.fillRect(floorf(f), y, 1.f, h);
     }
-    
+
     g.setColour(this->snapLineColour);
     for (const auto &f : this->visibleSnaps)
     {
@@ -1506,26 +1508,26 @@ void RollBase::onPlayheadMoved(int playheadX)
 
 void RollBase::onClippingWarning()
 {
-    if (! this->getTransport().isPlaying())
+    if (!this->getTransport().isPlaying())
     {
         return;
     }
-    
+
     const float clippingBeat = this->lastTransportBeat.get();
-    
+
     if (!this->clippingIndicators.isEmpty())
     {
         const float lastMarkerEndBeat = this->clippingIndicators.getLast()->getEndBeat();
         const bool justNeedToUpdateLastMarker =
             (clippingBeat - lastMarkerEndBeat) < TimelineWarningMarker::minGapInBeats;
-        
+
         if (justNeedToUpdateLastMarker)
         {
             this->clippingIndicators.getLast()->setEndBeat(clippingBeat);
             return;
         }
     }
-    
+
     auto newMarker = make<TimelineWarningMarker>(TimelineWarningMarker::WarningLevel::Red, *this, clippingBeat);
     this->addAndMakeVisible(newMarker.get());
     this->clippingIndicators.add(newMarker.release());
@@ -1538,11 +1540,11 @@ void RollBase::resetAllClippingIndicators()
 
 void RollBase::onOversaturationWarning()
 {
-    if (! this->getTransport().isPlaying())
+    if (!this->getTransport().isPlaying())
     {
         return;
     }
-    
+
     const float warningBeat = this->lastTransportBeat.get();
 
     if (!this->oversaturationIndicators.isEmpty())
@@ -1550,14 +1552,14 @@ void RollBase::onOversaturationWarning()
         const float lastMarkerEndBeat = this->oversaturationIndicators.getLast()->getEndBeat();
         const bool justNeedToUpdateLastMarker =
             (warningBeat - lastMarkerEndBeat) < TimelineWarningMarker::minGapInBeats;
-        
+
         if (justNeedToUpdateLastMarker)
         {
             this->oversaturationIndicators.getLast()->setEndBeat(warningBeat);
             return;
         }
     }
-    
+
     auto newMarker = make<TimelineWarningMarker>(TimelineWarningMarker::WarningLevel::Yellow, *this, warningBeat);
     this->addAndMakeVisible(newMarker.get());
     this->oversaturationIndicators.add(newMarker.release());
@@ -1635,7 +1637,7 @@ void RollBase::startFollowingPlayhead()
 
 void RollBase::stopFollowingPlayhead()
 {
-    if (! this->shouldFollowPlayhead)
+    if (!this->shouldFollowPlayhead)
     {
         return;
     }

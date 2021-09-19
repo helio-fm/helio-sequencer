@@ -83,6 +83,13 @@ public:
     float getZoomFactorY() const noexcept override;
 
     //===------------------------------------------------------------------===//
+    // LongTapListener
+    //===------------------------------------------------------------------===//
+
+    void longTapEvent(const Point<float> &position,
+        const WeakReference<Component> &target) override;
+
+    //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
@@ -145,17 +152,17 @@ private:
     SafePointer<ClipComponent> newClipDragging = nullptr;
 
     UniquePointer<ClipCutPointMark> knifeToolHelper;
-    void startCuttingClips(const MouseEvent &e);
-    void continueCuttingClips(const MouseEvent &e);
-    void endCuttingClipsIfNeeded(const MouseEvent &e);
+    void startCuttingClips(const Point<float> &mousePosition);
+    void continueCuttingClips(const Point<float> &mousePosition);
+    void endCuttingClipsIfNeeded(bool shouldCut, bool shouldRenameNewTracks);
 
     UniquePointer<MergingClipsConnector> mergeToolHelper;
-    void startMergingEvents(const MouseEvent &e) override;
-    void continueMergingEvents(const MouseEvent &e) override;
-    void endMergingEvents(const MouseEvent &e) override;
+    void startMergingEvents(const Point<float> &mousePosition) override;
+    void continueMergingEvents(const Point<float> &mousePosition) override;
+    void endMergingEvents() override;
 
-    void startErasingEvents(const MouseEvent &e) override;
-    void continueErasingEvents(const MouseEvent &e) override;
+    void startErasingEvents(const Point<float> &mousePosition) override;
+    void continueErasingEvents(const Point<float> &mousePosition) override;
     void endErasingEvents() override;
     Array<Clip> clipsToEraseOnMouseUp;
 
