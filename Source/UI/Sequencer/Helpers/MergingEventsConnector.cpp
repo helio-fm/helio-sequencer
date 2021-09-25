@@ -101,6 +101,11 @@ void MergingNotesConnector::paint(Graphics &g)
 
 bool MergingNotesConnector::canMergeInto(SafePointer<Component> component)
 {
+    if (component == this->sourceComponent)
+    {
+        return false; // can't merge a note into itself
+    }
+
     // todo
     return true;
 }
@@ -131,7 +136,12 @@ void MergingClipsConnector::setTargetComponent(SafePointer<Component> component)
 
 bool MergingClipsConnector::canMergeInto(SafePointer<Component> component)
 {
-    // piano clips can only merge with piano clips
+    if (component == this->sourceComponent)
+    {
+        return false; // can't merge a clip into itself
+    }
+
+    // piano clips can only be merged with piano clips
     if (auto *pianoCC = dynamic_cast<PianoClipComponent *>(this->sourceComponent.getComponent()))
     {
         return dynamic_cast<PianoClipComponent *>(component.getComponent());
@@ -157,16 +167,14 @@ void MergingClipsConnector::paint(Graphics &g)
     const auto start = this->getStartPosition() - topLeft;
     const auto end = this->getEndPosition() - topLeft;
 
-    // todo pretty up:
     const auto distanceSqr = end.getDistanceSquaredFrom(start);
-    const auto crossSize = jmin(distanceSqr / 100.f, 9.f);
+    const auto brushSize = jmin(distanceSqr / 100.f, 7.f);
 
     g.setGradientFill(ColourGradient(this->startColour, start, this->endColour, end, false));
-    g.drawArrow(Line<float>(start, end), 1.f, crossSize * 0.8f, crossSize * 2.2f);
-    // g.drawLine(start.x, start.y, end.x, end.y, 1);
+    g.drawArrow(Line<float>(start, end), 1.f, brushSize, brushSize * 2.5f);
 
-    g.fillRect(start.x - crossSize, start.y, crossSize * 2.f, 1.f);
-    g.fillRect(start.x, start.y - crossSize, 1.f, crossSize * 2.f);
+    g.fillRect(start.x - brushSize, start.y, brushSize * 2.f, 1.f);
+    g.fillRect(start.x, start.y - brushSize, 1.f, brushSize * 2.f);
 
     //#if DEBUG
     //    g.setColour(Colours::blanchedalmond.withAlpha(0.1f));

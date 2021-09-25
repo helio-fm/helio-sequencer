@@ -56,15 +56,15 @@ void ClipComponent::updateColours()
 
     this->fillColour = this->flags.isRecordingTarget ?
         Colours::black.interpolatedWith(findDefaultColour(ColourIDs::Roll::headerRecording), 0.5f) :
-        Colours::black.withAlpha(0.25f);
+        Colours::black.withAlpha(0.35f);
 
     this->headBrightColour = Colours::white
         .interpolatedWith(this->getClip().getTrackColour(), 0.55f)
-        .withAlpha(this->flags.isGhost ? 0.2f : 0.7f)
+        .withAlpha(this->flags.isGhost ? 0.2f : 0.75f)
         .brighter(this->flags.isSelected ? 0.25f : 0.f)
         .darker(this->flags.isInstanceOfSelected ? 0.25f : 0.f);
 
-    this->headDarkColour = this->headBrightColour.withAlpha(0.25f);
+    this->headDarkColour = this->headBrightColour.withAlpha(0.35f);
 
     this->eventColour = this->getClip().getTrackColour()
         .interpolatedWith(Colours::white, 0.35f)
@@ -260,7 +260,7 @@ void ClipComponent::paint(Graphics &g)
 
     g.setColour(this->headBrightColour);
 
-    if (this->flags.isSelected || this->flags.isMergeTarget)
+    if (this->flags.isSelected)
     {
         // top and bottom lines
         g.fillRect(1.f, 1.f, w - 2.f, 3.f);
@@ -277,7 +277,7 @@ void ClipComponent::paint(Graphics &g)
         constexpr float dash = 4.f;
         constexpr float dash2 = dash * 2.f;
         const auto right = w - 2.f;
-        
+
         float i = 1.f;
         for (; i < right - dash; i += dash2)
         {
@@ -304,10 +304,23 @@ void ClipComponent::paint(Graphics &g)
         g.drawText("S", textBounds, Justification::topRight, false);
     }
 
-    // left and right lines
-    g.setColour(this->headDarkColour);
-    g.fillRect(0, 2, 1, this->getHeight() - 3);
-    g.fillRect(this->getWidth() - 1, 2, 1, this->getHeight() - 3);
+    if (this->flags.isMergeTarget)
+    {
+        constexpr float dash = 3.f;
+        constexpr float dash2 = dash * 2.f;
+        for (float i = 2.f; i < this->getHeight() - 2.f; i += dash2)
+        {
+            g.fillRect(0.f, i, 1.f, dash);
+            g.fillRect(float(this->getWidth() - 1), i, 1.f, dash);
+        }
+    }
+    else
+    {
+        // left and right lines
+        g.setColour(this->headDarkColour);
+        g.fillRect(0, 2, 1, this->getHeight() - 3);
+        g.fillRect(this->getWidth() - 1, 2, 1, this->getHeight() - 3);
+    }
 
     // and little corners for the [  ] look
     constexpr auto cornerSize = 3;
@@ -320,7 +333,7 @@ void ClipComponent::paint(Graphics &g)
     g.fillRect(0, this->getHeight() - cornerMargin, cornerSize, 1);
     g.fillRect(this->getWidth() - cornerSize, this->getHeight() - cornerMargin, cornerSize, 1);
 
-    // speedup: set colour to be used by all child components, so they don't have to 
+    // speedup: set colour to be used by all child components, so they don't have to
     g.setColour(this->clip.isMuted() ? this->headDarkColour : this->eventColour);
 }
 
@@ -370,7 +383,10 @@ void ClipComponent::setHighlightedAsMergeTarget(bool isHighlighted)
 
 int ClipComponent::compareElements(ClipComponent *first, ClipComponent *second)
 {
-    if (first == second) { return 0; }
+    if (first == second)
+    {
+        return 0;
+    }
     const float diff = first->getBeat() - second->getBeat();
     const int diffResult = (diff > 0.f) - (diff < 0.f);
     return (diffResult != 0) ? diffResult : (first->clip.getId() - second->clip.getId());
