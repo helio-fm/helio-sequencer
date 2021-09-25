@@ -56,7 +56,7 @@ void MidiRecorder::setTargetScope(const Clip *clip, const String &instrumentId)
         this->lastValidInstrumentId = instrumentId;
     }
 
-    auto *track = clip->getPattern()->getTrack();
+    auto *track = clip == nullptr ? nullptr : clip->getPattern()->getTrack();
 
     if (this->activeTrack != track || this->activeClip != clip)
     {
