@@ -122,12 +122,24 @@ public:
     inline int size() const noexcept
     { return this->midiEvents.size(); }
 
+    inline MidiEvent **begin() noexcept
+    { return this->midiEvents.begin(); }
+
     inline MidiEvent *const *begin() const noexcept
     { return this->midiEvents.begin(); }
     
+    inline MidiEvent **end() noexcept
+    { return this->midiEvents.end(); }
+
     inline MidiEvent *const *end() const noexcept
     { return this->midiEvents.end(); }
-    
+
+    inline MidiEvent **data() noexcept
+    { return this->begin(); }
+
+    inline MidiEvent *const *data() const noexcept
+    { return this->begin(); }
+
     inline MidiEvent *getUnchecked(const int index) const noexcept
     { return this->midiEvents.getUnchecked(index); }
 

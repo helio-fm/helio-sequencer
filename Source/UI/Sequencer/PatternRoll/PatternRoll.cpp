@@ -331,6 +331,7 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
     // (this may be doing the same job twice,
     // in case if updateRollSize have called resized as well)
     this->resized();
+    this->applyEditModeUpdates();
 }
 
 //void debugTracksOrder(Array<MidiTrack *> tracks)
@@ -399,6 +400,7 @@ void PatternRoll::onAddClip(const Clip &clip)
 
         this->batchRepaintList.add(clipComponent);
         this->triggerAsyncUpdate();
+        this->applyEditModeUpdates();
 
         if (this->addNewClipMode)
         {
@@ -1100,7 +1102,6 @@ void PatternRoll::startMergingEvents(const Point<float> &mousePosition)
     {
         targetClip->setHighlightedAsMergeTarget(true);
         const auto position = mousePosition / this->getLocalBounds().getBottomRight().toFloat();
-        // DBG("x: " + String(position.x) + ", y:" + String(position.y));
         this->mergeToolHelper = make<MergingClipsConnector>(targetClip, position);
         this->addAndMakeVisible(this->mergeToolHelper.get());
     }
@@ -1118,10 +1119,8 @@ void PatternRoll::continueMergingEvents(const Point<float> &mousePosition)
     {
         auto *cc = it.second.get();
         cc->setHighlightedAsMergeTarget(false);
-        // todo this->mergeToolHelper->canMergeInto(cc)
-        // which checks piano vs auto clips,
-        // and checks for the same cc id for auto clips
-        if (cc->getBounds().contains(mousePosition.toInt()))
+        if (cc->getBounds().contains(mousePosition.toInt()) &&
+            this->mergeToolHelper->canMergeInto(cc))
         {
             targetClip = cc;
         }
@@ -1138,7 +1137,6 @@ void PatternRoll::continueMergingEvents(const Point<float> &mousePosition)
     }
 
     const auto position = mousePosition / this->getLocalBounds().getBottomRight().toFloat();
-    // DBG("  x: " + String(position.x) + ", y:" + String(position.y));
     this->mergeToolHelper->setTargetComponent(targetClip);
     this->mergeToolHelper->setEndPosition(position);
 }
@@ -1155,8 +1153,17 @@ void PatternRoll::endMergingEvents()
         it.second.get()->setHighlightedAsMergeTarget(false);
     }
 
+    const auto *sourceCC = dynamic_cast<ClipComponent *>(this->mergeToolHelper->getSourceComponent());
+    const auto *targetCC = dynamic_cast<ClipComponent *>(this->mergeToolHelper->getTargetComponent());
     this->mergeToolHelper = nullptr;
-    // todo
+
+    if (sourceCC == nullptr || targetCC == nullptr)
+    {
+        return;
+    }
+
+    PatternOperations::mergeClips(this->project, targetCC->getClip(), { sourceCC->getClip() }, true);
+    this->applyEditModeUpdates(); // update behaviour of newly created clip components
 }
 
 //===----------------------------------------------------------------------===//

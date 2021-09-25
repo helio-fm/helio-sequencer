@@ -48,6 +48,9 @@ struct PatternOperations final
 
     static void quantize(const Lasso &selection, float bar, bool shouldCheckpoint = true);
 
+    static void mergeClips(ProjectNode &project, const Clip &targetClip,
+        const Array<Clip> &sourceClips, bool shouldCheckpoint = true);
+
     // if all selected clips are "assigned" to the same instrument,
     // this returns that instrument id, otherwise returns an empty string:
     static String getSelectedInstrumentId(const Lasso &selection);

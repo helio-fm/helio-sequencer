@@ -28,17 +28,11 @@ public:
 
     void setEndPosition(Point<float> position);
 
-    inline Component *getSourceComponent() const noexcept
-    {
-        return this->sourceComponent;
-    }
-
+    Component *getSourceComponent() const noexcept;
+    Component *getTargetComponent() const noexcept;
     virtual void setTargetComponent(SafePointer<Component> component) noexcept;
 
-    inline Component *getTargetComponent() const noexcept
-    {
-        return this->targetComponent;
-    }
+    virtual bool canMergeInto(SafePointer<Component> component) = 0;
 
     Point<float> getStartPosition() const noexcept;
     Point<float> getEndPosition() const noexcept;
@@ -66,6 +60,8 @@ public:
         Point<float> startPosition);
 
     void paint(Graphics &g) override;
+
+    bool canMergeInto(SafePointer<Component> component) override;
 };
 
 class MergingClipsConnector final : public MergingEventsConnector
@@ -78,6 +74,7 @@ public:
     void paint(Graphics &g) override;
 
     void setTargetComponent(SafePointer<Component> component) noexcept override;
+    bool canMergeInto(SafePointer<Component> component) override;
 
 private:
 

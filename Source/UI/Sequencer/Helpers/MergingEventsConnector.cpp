@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "MergingEventsConnector.h"
+#include "PianoClipComponent.h"
 
 MergingEventsConnector::MergingEventsConnector(SafePointer<Component> sourceComponent, Point<float> startPosition) :
     sourceComponent(sourceComponent),
@@ -32,10 +33,20 @@ void MergingEventsConnector::setEndPosition(Point<float> position)
     this->repaint();
 }
 
+Component *MergingEventsConnector::getSourceComponent() const noexcept
+{
+    return this->sourceComponent;
+}
+
 void MergingEventsConnector::setTargetComponent(SafePointer<Component> component) noexcept
 {
     this->targetComponent = component;
     this->repaint();
+}
+
+Component *MergingEventsConnector::getTargetComponent() const noexcept
+{
+    return this->targetComponent;
 }
 
 Point<float> MergingEventsConnector::getStartPosition() const noexcept
@@ -88,6 +99,12 @@ void MergingNotesConnector::paint(Graphics &g)
     //#endif
 }
 
+bool MergingNotesConnector::canMergeInto(SafePointer<Component> component)
+{
+    // todo
+    return true;
+}
+
 MergingClipsConnector::MergingClipsConnector(SafePointer<Component> sourceComponent, Point<float> startPosition) :
     MergingEventsConnector(sourceComponent, startPosition)
 {
@@ -110,6 +127,28 @@ void MergingClipsConnector::setTargetComponent(SafePointer<Component> component)
     }
 
     MergingEventsConnector::setTargetComponent(component);
+}
+
+bool MergingClipsConnector::canMergeInto(SafePointer<Component> component)
+{
+    // piano clips can only merge with piano clips
+    if (auto *pianoCC = dynamic_cast<PianoClipComponent *>(this->sourceComponent.getComponent()))
+    {
+        return dynamic_cast<PianoClipComponent *>(component.getComponent());
+    }
+
+    // assuming the source is automation clip here,
+    // let's simply check if controller numbers are the same
+    auto *sourceCC = dynamic_cast<ClipComponent *>(this->sourceComponent.getComponent());
+    auto *targetCC = dynamic_cast<ClipComponent *>(component.getComponent());
+    if (sourceCC == nullptr || targetCC == nullptr)
+    {
+        jassertfalse;
+        return false;
+    }
+
+    return sourceCC->getClip().getTrackControllerNumber() ==
+           targetCC->getClip().getTrackControllerNumber();
 }
 
 void MergingClipsConnector::paint(Graphics &g)
