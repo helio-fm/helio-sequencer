@@ -196,12 +196,10 @@
       { "command": "NotesVolumeDown", "key": "-" },
       { "command": "NotesVolumeRandom", "key": "Alt + +" },
       { "command": "NotesVolumeFadeOut", "key": "Alt + -" },
-      { "command": "InvertChordUp", "key": "Alt + Cursor Up" },
-      { "command": "InvertChordUp", "key": "Command + Cursor Up" },
       { "command": "InvertChordUp", "key": "Control + Cursor Up" },
-      { "command": "InvertChordDown", "key": "Alt + Cursor Down" },
-      { "command": "InvertChordDown", "key": "Command + Cursor Down" },
+      { "command": "InvertChordUp", "key": "Command + Cursor Up" },
       { "command": "InvertChordDown", "key": "Control + Cursor Down" },
+      { "command": "InvertChordDown", "key": "Command + Cursor Down" },
 
       // Multiplets
       { "command": "Tuplet1", "key": "Alt + 1" },
