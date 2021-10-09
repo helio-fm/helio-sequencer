@@ -21,6 +21,7 @@ class AudioMonitor;
 
 #include "Instrument.h"
 #include "OrchestraPit.h"
+#include "Scale.h"
 
 class SleepTimer : private Timer
 {
@@ -89,7 +90,9 @@ public:
     void addInstrument(const PluginDescription &pluginDescription,
         const String &name, Instrument::InitializationCallback callback);
 
-    void setActiveMidiPlayer(const String &instrumentId, bool forceReconnect);
+    void resetActiveMidiPlayer();
+    void setActiveMidiPlayer(const String &instrumentId,
+        int periodSize, Scale::Ptr chromaticMapping, bool forceReconnect);
 
     //===------------------------------------------------------------------===//
     // OrchestraPit
@@ -110,6 +113,14 @@ public:
     AudioDeviceManager &getDevice() noexcept;
     AudioPluginFormatManager &getFormatManager() noexcept;
     AudioMonitor *getMonitor() const noexcept;
+
+    //===------------------------------------------------------------------===//
+    // MIDI input filtering
+    //===------------------------------------------------------------------===//
+
+    void addFilteredMidiInputCallback(MidiInputCallback *callback,
+        int periodSize, Scale::Ptr chromaticMapping);
+    void removeFilteredMidiInputCallback(MidiInputCallback *callback);
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -170,9 +181,11 @@ private:
     void disconnectAllAudioCallbacks();
     void reconnectAllAudioCallbacks();
 
-    void addInstrumentToMidiDevice(Instrument *instrument);
-    void addInstrumentToAudioDevice(Instrument *instrument);
+    void addInstrumentToMidiDevice(Instrument *instrument,
+        int periodSize, Scale::Ptr chromaticMapping);
     void removeInstrumentFromMidiDevice(Instrument *instrument);
+
+    void addInstrumentToAudioDevice(Instrument *instrument);
     void removeInstrumentFromAudioDevice(Instrument *instrument);
 
     SerializedData serializeDeviceManager() const;
@@ -183,12 +196,94 @@ private:
 
     UniquePointer<AudioMonitor> audioMonitor;
 
-    String lastActiveMidiPlayerId;
-
     AudioPluginFormatManager formatManager;
     AudioDeviceManager deviceManager;
 
     Atomic<bool> isMuted = false;
+
+private:
+
+    // We want to make it possible to play/improvise with a standard 12-tone
+    // physical keyboard and record MIDI regardless of the temperament used.
+    // This filter uses current temperament's 'chromatic mapping' to readjust
+    // the incoming MIDI data so that notes sound like their closest 12-tone equivalents.
+    struct MidiRecordingKeyMapper final : public MidiInputCallback
+    {
+        MidiRecordingKeyMapper() = delete;
+        MidiRecordingKeyMapper(AudioCore &parent,
+            MidiInputCallback *targetCallback,
+            int periodSize, Scale::Ptr chromaticMapping) :
+            audioCore(parent),
+            targetInstrumentCallback(targetCallback),
+            periodSize(periodSize),
+            chromaticMapping(chromaticMapping) {}
+
+        void update(int newPeriodSize, Scale::Ptr newChromaticMapping)
+        {
+            this->periodSize = newPeriodSize;
+            this->chromaticMapping = newChromaticMapping;
+        }
+
+        int getMappedKey(int key) const noexcept
+        {
+            if (!this->audioCore.isReadjustingInputMidi.get())
+            {
+                return key;
+            }
+
+            jassert(this->chromaticMapping->isValid());
+            const auto periodNumber = key / Globals::twelveTonePeriodSize;
+            const auto keyInPeriod = key % Globals::twelveTonePeriodSize;
+            return this->chromaticMapping->getChromaticKey(keyInPeriod,
+                this->periodSize * periodNumber, false);
+        }
+
+        void handleIncomingMidiMessage(MidiInput *source, const MidiMessage &message) override
+        {
+            MidiMessage mappedMessage(message);
+
+            if (message.isNoteOn())
+            {
+                mappedMessage = MidiMessage::noteOn(message.getChannel(),
+                    this->getMappedKey(message.getNoteNumber()), message.getVelocity());
+            }
+            else if (message.isNoteOff())
+            {
+                mappedMessage = MidiMessage::noteOff(message.getChannel(),
+                    this->getMappedKey(message.getNoteNumber()), message.getVelocity());
+            }
+
+            this->targetInstrumentCallback->handleIncomingMidiMessage(source, mappedMessage);
+            jassert(this->targetInstrumentCallback != nullptr);
+        }
+
+    private:
+
+        AudioCore &audioCore;
+        MidiInputCallback *targetInstrumentCallback = nullptr;
+        int periodSize = Globals::twelveTonePeriodSize;
+        Scale::Ptr chromaticMapping;
+    };
+
+    struct FilteredMidiCallback final
+    {
+        UniquePointer<MidiRecordingKeyMapper> filter;
+        MidiInputCallback *targetCallback;
+    };
+
+    Array<FilteredMidiCallback> filteredMidiCallbacks;
+    Atomic<bool> isReadjustingInputMidi = true;
+
+    struct MidiPlayerInfo final
+    {
+        String instrumentId;
+        int periodSize = Globals::twelveTonePeriodSize;
+        Scale::Ptr chromaticMapping;
+    };
+
+    MidiPlayerInfo lastActiveMidiPlayer;
+
+private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioCore)
     JUCE_DECLARE_WEAK_REFERENCEABLE(AudioCore)

@@ -19,6 +19,7 @@
 #include "MidiRecorder.h"
 
 #include "ProjectNode.h"
+#include "ProjectMetadata.h"
 #include "Pattern.h"
 #include "MidiTrack.h"
 #include "PianoTrackNode.h"
@@ -102,8 +103,10 @@ void MidiRecorder::onRecord()
         this->isRecording = true;
         this->shouldCheckpoint = true;
 
-        auto &device = App::Workspace().getAudioCore().getDevice();
-        device.addMidiInputDeviceCallback({}, this);
+        auto temperament = this->project.getProjectInfo()->getTemperament();
+        auto &audioCore = App::Workspace().getAudioCore();
+        audioCore.addFilteredMidiInputCallback(this,
+            temperament->getPeriodSize(), temperament->getChromaticMap());
 
         if (this->isPlaying.get())
         {
@@ -132,8 +135,8 @@ void MidiRecorder::onStop()
     {
         this->stopTimer();
 
-        auto &device = App::Workspace().getAudioCore().getDevice();
-        device.removeMidiInputDeviceCallback({}, this);
+        auto &audioCore = App::Workspace().getAudioCore();
+        audioCore.removeFilteredMidiInputCallback(this);
 
         this->isRecording = false;
 

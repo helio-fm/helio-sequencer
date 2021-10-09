@@ -139,9 +139,56 @@ void AudioCore::removeInstrument(Instrument *instrument)
     this->broadcastInstrumentRemovedPostAction();
 }
 
-void AudioCore::addInstrumentToMidiDevice(Instrument *instrument)
+//===----------------------------------------------------------------------===//
+// Audio & MIDI callbacks and MIDI filtering
+//===----------------------------------------------------------------------===//
+
+void AudioCore::addFilteredMidiInputCallback(MidiInputCallback *callbackToAdd,
+    int periodSize, Scale::Ptr chromaticMapping)
 {
-    this->deviceManager.addMidiInputDeviceCallback({},
+    this->removeFilteredMidiInputCallback(callbackToAdd);
+
+    // update the existing filter
+    for (const auto &mc : this->filteredMidiCallbacks)
+    {
+        if (mc.targetCallback == callbackToAdd)
+        {
+            mc.filter->update(periodSize, chromaticMapping);
+            this->deviceManager.addMidiInputDeviceCallback({}, mc.filter.get());
+            return;
+        }
+    }
+
+    // or add a new one
+    auto filter = make<MidiRecordingKeyMapper>(*this,
+        callbackToAdd, periodSize, chromaticMapping);
+
+    this->deviceManager.addMidiInputDeviceCallback({}, filter.get());
+    this->filteredMidiCallbacks.add({ move(filter), callbackToAdd });
+}
+
+void AudioCore::removeFilteredMidiInputCallback(MidiInputCallback *callbackToRemove)
+{
+    for (const auto &mc : this->filteredMidiCallbacks)
+    {
+        if (mc.targetCallback == callbackToRemove)
+        {
+            this->deviceManager.removeMidiInputDeviceCallback({}, mc.filter.get());
+        }
+    }
+}
+
+void AudioCore::addInstrumentToMidiDevice(Instrument *instrument,
+    int periodSize, Scale::Ptr chromaticMapping)
+{
+    this->addFilteredMidiInputCallback(
+        &instrument->getProcessorPlayer().getMidiMessageCollector(),
+        periodSize, chromaticMapping);
+}
+
+void AudioCore::removeInstrumentFromMidiDevice(Instrument *instrument)
+{
+    this->removeFilteredMidiInputCallback(
         &instrument->getProcessorPlayer().getMidiMessageCollector());
 }
 
@@ -150,20 +197,28 @@ void AudioCore::addInstrumentToAudioDevice(Instrument *instrument)
     this->deviceManager.addAudioCallback(&instrument->getProcessorPlayer());
 }
 
-void AudioCore::removeInstrumentFromMidiDevice(Instrument *instrument)
-{
-    this->deviceManager.removeMidiInputDeviceCallback({},
-        &instrument->getProcessorPlayer().getMidiMessageCollector());
-}
-
 void AudioCore::removeInstrumentFromAudioDevice(Instrument *instrument)
 {
     this->deviceManager.removeAudioCallback(&instrument->getProcessorPlayer());
 }
 
-void AudioCore::setActiveMidiPlayer(const String &instrumentId, bool forceReconnect)
+void AudioCore::resetActiveMidiPlayer()
 {
-    if (!forceReconnect && this->lastActiveMidiPlayerId == instrumentId)
+    this->lastActiveMidiPlayer = {};
+
+    for (auto *instrument : this->instruments)
+    {
+        this->removeInstrumentFromMidiDevice(instrument);
+    }
+}
+
+void AudioCore::setActiveMidiPlayer(const String &instrumentId,
+    int periodSize, Scale::Ptr chromaticMapping, bool forceReconnect)
+{
+    if (!forceReconnect &&
+        this->lastActiveMidiPlayer.instrumentId == instrumentId &&
+        this->lastActiveMidiPlayer.periodSize == periodSize &&
+        this->lastActiveMidiPlayer.chromaticMapping == chromaticMapping)
     {
         //DBG("Skip setActiveMidiPlayer for " + instrumentId);
         return;
@@ -174,7 +229,7 @@ void AudioCore::setActiveMidiPlayer(const String &instrumentId, bool forceReconn
         if (instrumentId.startsWith(instrument->getInstrumentId()))
         {
             //DBG("addInstrumentToMidiDevice for " + instrumentId);
-            this->addInstrumentToMidiDevice(instrument);
+            this->addInstrumentToMidiDevice(instrument, periodSize, chromaticMapping);
         }
         else
         {
@@ -183,7 +238,9 @@ void AudioCore::setActiveMidiPlayer(const String &instrumentId, bool forceReconn
         }
     }
 
-    this->lastActiveMidiPlayerId = instrumentId;
+    this->lastActiveMidiPlayer.instrumentId = instrumentId;
+    this->lastActiveMidiPlayer.periodSize = periodSize;
+    this->lastActiveMidiPlayer.chromaticMapping = chromaticMapping;
 }
 
 //===----------------------------------------------------------------------===//
@@ -303,7 +360,10 @@ bool AudioCore::autodetectMidiDeviceSetup()
     if (numEnabledDevices == 1)
     {
         // force reconnect to instrument
-        this->setActiveMidiPlayer(this->lastActiveMidiPlayerId, true);
+        this->setActiveMidiPlayer(this->lastActiveMidiPlayer.instrumentId,
+            this->lastActiveMidiPlayer.periodSize,
+            this->lastActiveMidiPlayer.chromaticMapping,
+            true);
         return true;
     }
 
@@ -312,7 +372,10 @@ bool AudioCore::autodetectMidiDeviceSetup()
     {
         DBG("Found the single available MIDI input, enabling");
         this->deviceManager.setMidiInputDeviceEnabled(allDevices.getFirst().identifier, true);
-        this->setActiveMidiPlayer(this->lastActiveMidiPlayerId, true);
+        this->setActiveMidiPlayer(this->lastActiveMidiPlayer.instrumentId,
+            this->lastActiveMidiPlayer.periodSize,
+            this->lastActiveMidiPlayer.chromaticMapping,
+            true);
         return true;
     }
 
@@ -546,4 +609,6 @@ void AudioCore::reset()
     {
         this->removeInstrument(this->instruments[0]);
     }
+
+    this->filteredMidiCallbacks.clear();
 }

@@ -265,7 +265,9 @@ void ProjectNode::setMidiRecordingTarget(MidiTrack *const track, const Clip *cli
             instrumentId = audioCore.getDefaultInstrument()->getIdAndHash();
         }
 
-        audioCore.setActiveMidiPlayer(instrumentId, false);
+        const auto temperament = this->getProjectInfo()->getTemperament();
+        audioCore.setActiveMidiPlayer(instrumentId,
+            temperament->getPeriodSize(), temperament->getChromaticMap(), false);
     }
 
     this->midiRecorder->setTargetScope(track, clip, instrumentId);

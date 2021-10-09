@@ -240,7 +240,7 @@ void AudioSettings::applyBufferSize(AudioDeviceManager &deviceManager, int buffe
 
 void AudioSettings::applyMidiInput(AudioDeviceManager &deviceManager, const String &deviceId)
 {
-    this->audioCore.setActiveMidiPlayer({}, false);
+    this->audioCore.resetActiveMidiPlayer();
 
     for (const auto &device : MidiInput::getAvailableDevices())
     {
