@@ -133,7 +133,7 @@ Array<int> Scale::getDownScale() const
 {
     Array<int> res;
     res.add(this->getBasePeriod());
-    for (int i = this->keys.size(); i --> 0; )
+    for (int i = this->keys.size(); i --> 0 ;)
     {
         res.add(this->keys[i]);
     }

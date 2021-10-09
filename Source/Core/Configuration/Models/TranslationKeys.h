@@ -134,6 +134,8 @@ namespace I18n
         static constexpr auto refactoringMelodicInversion = constexprHash("menu::refactoring::inversion");
         static constexpr auto refactoringRetrograde = constexprHash("menu::refactoring::retrograde");
         static constexpr auto refactoringCleanup = constexprHash("menu::refactoring::cleanup");
+        static constexpr auto refactoringInScaleTransposeUp = constexprHash("menu::refactoring::inscalekeyup");
+        static constexpr auto refactoringInScaleTransposeDown = constexprHash("menu::refactoring::inscalekeydown");
 
         namespace Project
         {
@@ -279,6 +281,7 @@ namespace I18n
         static constexpr auto audioSampleRate = constexprHash("settings::audio::samplerate");
         static constexpr auto midiRecord = constexprHash("settings::midi::record");
         static constexpr auto midiNoInputDevices = constexprHash("settings::midi::nodevices");
+        static constexpr auto midiRemap12ToneKeyboard = constexprHash("settings::midi::remap12tone");
         static constexpr auto languageHelp = constexprHash("settings::language::help");
         static constexpr auto rendererOpengl = constexprHash("settings::renderer::opengl");
         static constexpr auto sync = constexprHash("settings::sync");

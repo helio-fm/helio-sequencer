@@ -150,6 +150,12 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
     menu.add(MenuItem::item(Icons::inverseDown, CommandIDs::InvertChordDown,
         TRANS(I18n::Menu::refactoringInverseDown))->disabledIf(!canRefactor)->closesMenu());
 
+    menu.add(MenuItem::item(Icons::up, CommandIDs::TransposeScaleKeyUp,
+        TRANS(I18n::Menu::refactoringInScaleTransposeUp))->disabledIf(!canRefactor)->closesMenu());
+
+    menu.add(MenuItem::item(Icons::down, CommandIDs::TransposeScaleKeyDown,
+        TRANS(I18n::Menu::refactoringInScaleTransposeDown))->disabledIf(!canRefactor)->closesMenu());
+
     // todo icons for refactoring commands:
     menu.add(MenuItem::item(Icons::refactor, CommandIDs::MelodicInversion,
         TRANS(I18n::Menu::refactoringMelodicInversion))->disabledIf(!canRefactor)->closesMenu());

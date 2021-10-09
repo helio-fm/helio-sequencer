@@ -173,7 +173,7 @@ Array<TreeNode *> createSortedBranchArray(WeakReference<TreeNode> leaf)
     }
 
     Array<TreeNode *> result;
-    for (int i = items.size(); i --> 0; )
+    for (int i = items.size(); i --> 0 ;)
     {
         result.add(items[i]);
     }
