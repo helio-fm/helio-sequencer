@@ -12,9 +12,11 @@ environment:
   encrypted_deploy_key:
     secure: ++30FOn93CZGPrm6JMlLQe2A5CDBmwsL4nDAlUlbgLGhDhMCfSe8oz5uvLFdsW2M8+plXilRBWvo/bdfITBHvxOtbHN7kNKRNuUY2z2z4lLy+1mYK5YG33DDkrgMokq3n5keLCh4Z9oTEBQkz+S4GQ==
   encrypted_codesign_key:
-    secure: NDyE8YO3Btbxfw7IPI5B9CHCT+NxWKCeI1CoQNBp+BZ64wXV7JAJ7abRAvXhcj0zIQwfVoqCs4/BDhOrcHV/PC6cyi+rMtOo98LyHOpaud8CopzCdeYT+C43zpY6bGK2AyCdbTC44x5ustp3dMWHFA==
+    secure: 77tBtg8dyB0aqqBKL14BwqAJaSWPtYJ0Hlg9q3RNX/QLILUFQ4cI9OyTFA/p4tlMgSCyiZG91PdO6W4YikD1bCTmwaMTqxsFC4B/L0xC8rn0ABXfN7oBWafjj8MJ+D+7rT+23pdCrUCQhkTbN8ByNA==
+  encrypted_codesign_salt:
+    secure: iZixDvrXo9Wd2pTqdG/KzynApP/eO43Fho2BoneSiyXP9un9WRbOQr/2f9GHmpbVWM9309rDMC2duQLiNHfcNA==
   encrypted_codesign_pwd:
-    secure: IIXk6ss1lD+C6AFr8w4nZsuiEr3JrUJvGiDFCwnQbRiFP/9B59ivjV6PKY9xzmSU
+    secure: U83t1HaX1yG2mlCB8WyVY2vqgm6K3N7xrh29Ed/SVQY=
   artifact_32_bit: Projects\VisualStudio2019\Win32\Release32\App\Helio.exe
   artifact_64_bit: Projects\VisualStudio2019\x64\Release64\App\Helio.exe
   artifact_installer: Projects\Deployment\Windows\installer.exe
@@ -29,9 +31,9 @@ install:
     & ".\get_asio_sdk.ps1"
 
     Pop-Location
-- nuget install secure-file -ExcludeVersion
-- secure-file\tools\secure-file -decrypt Projects\Deployment\AppVeyor\deploy-rsa.enc -secret %encrypted_deploy_key% -out deploy-rsa
-- secure-file\tools\secure-file -decrypt Projects\Deployment\AppVeyor\code-sign.enc -secret %encrypted_codesign_key% -out sign.p12
+- ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
+- cmd: appveyor-tools\secure-file -decrypt Projects\Deployment\AppVeyor\deploy-rsa.enc -secret %encrypted_deploy_key% -out deploy-rsa
+- cmd: appveyor-tools\secure-file -decrypt Projects\Deployment\AppVeyor\code-sign.enc -secret %encrypted_codesign_key% -salt %encrypted_codesign_salt% -out sign.pfx
 cache: ThirdParty\ASIO
 # A hack
 build: off
@@ -40,20 +42,20 @@ test_script:
 - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86 && ECHO "x32 building..." && msbuild Projects\VisualStudio2019\Helio.sln /t:Build /p:Configuration=Release32;Platform=Win32
 - if /I "%APPVEYOR_REPO_TAG%" == "false" set APPVEYOR_REPO_TAG_NAME=dev
 deploy_script:
-# Sign and deploy 64-bit portable version
-- ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /t http://timestamp.comodoca.com /v "$env:artifact_64_bit"
-- ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /as /fd sha256 /tr http://timestamp.comodoca.com/?td=sha256 /td sha256 /v "$env:artifact_64_bit"
+# Sign and deploy the 64-bit portable version
+- ps: signtool sign /f sign.pfx /p $env:encrypted_codesign_pwd /t http://timestamp.comodoca.com /v "$env:artifact_64_bit"
+- ps: signtool sign /f sign.pfx /p $env:encrypted_codesign_pwd /as /fd sha256 /tr http://timestamp.comodoca.com/?td=sha256 /td sha256 /v "$env:artifact_64_bit"
 - 7z a portable-x64.zip "%APPVEYOR_BUILD_FOLDER%\%artifact_64_bit%"
 - C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-workstation/deploy-rsa -C /c/projects/helio-workstation/portable-x64.zip %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%-x64.zip"
-# Sign and deploy 32-bit portable version
-- ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /t http://timestamp.comodoca.com /v "$env:artifact_32_bit"
-- ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /as /fd sha256 /tr http://timestamp.comodoca.com/?td=sha256 /td sha256 /v "$env:artifact_32_bit"
+# Sign and deploy the 32-bit portable version
+- ps: signtool sign /f sign.pfx /p $env:encrypted_codesign_pwd /t http://timestamp.comodoca.com /v "$env:artifact_32_bit"
+- ps: signtool sign /f sign.pfx /p $env:encrypted_codesign_pwd /as /fd sha256 /tr http://timestamp.comodoca.com/?td=sha256 /td sha256 /v "$env:artifact_32_bit"
 - 7z a portable-x32.zip "%APPVEYOR_BUILD_FOLDER%\%artifact_32_bit%"
 - C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-workstation/deploy-rsa -C /c/projects/helio-workstation/portable-x32.zip %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%-x32.zip"
-# Create installer containing both signed versions, sign installer and deploy
+# Create the installer containing both signed versions, then sign the installer and deploy
 - set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 6"
 - iscc "%APPVEYOR_BUILD_FOLDER%\Projects\Deployment\Windows\setup.iss"
-- ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /t http://timestamp.comodoca.com /v "$env:artifact_installer"
-- ps: signtool sign /f sign.p12 /p $env:encrypted_codesign_pwd /as /fd sha256 /tr http://timestamp.comodoca.com/?td=sha256 /td sha256 /v "$env:artifact_installer"
+- ps: signtool sign /f sign.pfx /p $env:encrypted_codesign_pwd /t http://timestamp.comodoca.com /v "$env:artifact_installer"
+- ps: signtool sign /f sign.pfx /p $env:encrypted_codesign_pwd /as /fd sha256 /tr http://timestamp.comodoca.com/?td=sha256 /td sha256 /v "$env:artifact_installer"
 - copy %artifact_installer% .\installer.exe
 - C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-workstation/deploy-rsa -C /c/projects/helio-workstation/installer.exe %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%.exe"
