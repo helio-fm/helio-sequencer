@@ -57,7 +57,6 @@ For 34-EDO mapping you might want to start one octave lower since the key range 
 
 `0:0/13,34+ 34:0/14,34+ 68:0/15,34+ 102:0/16,34+ 136:0/1,34+ 170:0/2,34+ 204:0/3,34+ 238:0/4,34+ 272:0/5,34+ 306:0/6,34+ 340:0/7,34+`
 
-
 #### Format description
 
 First, the format assumes the default modulo-based mapping:
@@ -96,5 +95,22 @@ And the built-in scales [list](configs.md#scales) only includes 7-tone scales fo
 
 To add custom temperaments and their scales, follow the guide in the [сonfigs](configs.md#user-configs) page. Use the built-in [temperaments](configs.md#temperaments) and [scales](configs.md#scales) configuration files as a reference.
 
+## Recording MIDI from 12-tone keyboard
+
+The app makes it possible to play and improvise on a standard 12-tone physical keyboard and record MIDI regardless of what temperament is used. For that, it uses the 'chromatic mapping' scale of the current temperament to readjust the incoming MIDI data so that all notes sound like their closest 12-tone equivalents.
+
+Here's an example of every key of chromatic scale played on a 12-tone MIDI keyboard and recorded in a 19-edo project:
+
+![readjust-midi-input-recording]
+
+This feature is on by default, but it can be turned off in the audio settings section just below the MIDI device box:
+
+![readjust-midi-input-checkbox]
+
+If you're using the microtonal physical keyboard, make sure to uncheck this checkbox, so the app doesn't mess with MIDI input.
+
+
 [keyboard-mapping]: images/keyboard-mapping.png "Keyboard mapping page layout and menu"
 [change-temperament]: images/change-temperament.png "Switching and converting temperaments"
+[readjust-midi-input-recording]: images/readjust-midi-input-recording.png "Every key of one octave played on a 12-tone keyboard, recorded in 19-edo"
+[readjust-midi-input-checkbox]: images/readjust-midi-input-checkbox.png "Enable/disable recording microtonal notes from 12-tone keyboard"
