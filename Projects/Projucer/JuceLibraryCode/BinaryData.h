@@ -282,7 +282,7 @@ namespace BinaryData
     const int            colourSchemes_jsonSize = 3297;
 
     extern const char*   hotkeySchemes_json;
-    const int            hotkeySchemes_jsonSize = 15833;
+    const int            hotkeySchemes_jsonSize = 15701;
 
     extern const char*   keyboardMappings_json;
     const int            keyboardMappings_jsonSize = 588;
@@ -294,7 +294,7 @@ namespace BinaryData
     const int            temperaments_jsonSize = 1091;
 
     extern const char*   translations_json;
-    const int            translations_jsonSize = 164586;
+    const int            translations_jsonSize = 165097;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
     const int namedResourceListSize = 96;
