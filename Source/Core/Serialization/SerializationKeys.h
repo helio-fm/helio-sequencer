@@ -171,6 +171,7 @@ namespace Serialization
 
         static const Identifier midiInputName = "midiInputName";
         static const Identifier midiInputId = "midiInputId";
+        static const Identifier midiInputReadjusting = "midiInputReadjusting";
 
         static const Identifier pluginsList = "plugins";
         static const Identifier audioCore = "audioCore";

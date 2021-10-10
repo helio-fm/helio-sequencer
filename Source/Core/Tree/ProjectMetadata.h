@@ -103,6 +103,7 @@ private:
     int64 initTimestamp;
 
     Temperament::Ptr temperament;
+    void deserializeTemperament(const SerializedData &state);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectMetadata);
 };

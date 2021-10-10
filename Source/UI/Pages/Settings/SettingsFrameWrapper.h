@@ -38,7 +38,7 @@ private:
 
     static constexpr auto titleMargin = 8;
     static constexpr auto titleHeight = 24;
-    static constexpr auto panelMargin = 6;
+    static constexpr auto panelMargin = 12;
 
     static constexpr auto contentMarginX = 4;
     static constexpr auto contentMarginY = 6;

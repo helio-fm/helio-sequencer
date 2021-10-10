@@ -178,6 +178,16 @@ void AudioCore::removeFilteredMidiInputCallback(MidiInputCallback *callbackToRem
     }
 }
 
+bool AudioCore::isFilteringMidiInput() const noexcept
+{
+    return this->isReadjustingMidiInput.get();
+}
+
+void AudioCore::setFilteringMidiInput(bool isOn) noexcept
+{
+    this->isReadjustingMidiInput = isOn;
+}
+
 void AudioCore::addInstrumentToMidiDevice(Instrument *instrument,
     int periodSize, Scale::Ptr chromaticMapping)
 {
@@ -430,7 +440,10 @@ SerializedData AudioCore::serializeDeviceManager() const
             break;
         }
     }
-    
+
+    tree.setProperty(Audio::midiInputReadjusting,
+        this->isReadjustingMidiInput.get());
+
     return tree;
 }
 
@@ -499,6 +512,9 @@ void AudioCore::deserializeDeviceManager(const SerializedData &tree)
 
     const auto midiInputId = root.getProperty(Audio::midiInputId).toString();
     const auto midiInputName = root.getProperty(Audio::midiInputName).toString();
+
+    this->isReadjustingMidiInput = root.getProperty(Audio::midiInputReadjusting,
+        this->isReadjustingMidiInput.get());
 
     // first, try to match by device id; if failed, search by name
     bool hasFoundMidiInById = false;

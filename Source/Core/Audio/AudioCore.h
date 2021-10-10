@@ -121,6 +121,8 @@ public:
     void addFilteredMidiInputCallback(MidiInputCallback *callback,
         int periodSize, Scale::Ptr chromaticMapping);
     void removeFilteredMidiInputCallback(MidiInputCallback *callback);
+    bool isFilteringMidiInput() const noexcept;
+    void setFilteringMidiInput(bool isOn) noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -226,7 +228,7 @@ private:
 
         int getMappedKey(int key) const noexcept
         {
-            if (!this->audioCore.isReadjustingInputMidi.get())
+            if (!this->audioCore.isReadjustingMidiInput.get())
             {
                 return key;
             }
@@ -272,7 +274,7 @@ private:
     };
 
     Array<FilteredMidiCallback> filteredMidiCallbacks;
-    Atomic<bool> isReadjustingInputMidi = true;
+    Atomic<bool> isReadjustingMidiInput = true;
 
     struct MidiPlayerInfo final
     {

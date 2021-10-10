@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "AudioSettings.h"
 #include "AudioCore.h"
+#include "Workspace.h"
 
 AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
 {
@@ -81,7 +82,17 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
     this->midiInputEditor->setInterceptsMouseClicks(false, true);
     this->midiInputEditor->setFont(Globals::UI::Fonts::M);
 
-    this->setSize(550, 244);
+    // "record microtonal notes from 12-tone keyboard" checkbox
+    this->midiInputRemappingCheckbox = make<ToggleButton>(TRANS(I18n::Settings::midiRemap12ToneKeyboard));
+    this->addAndMakeVisible(this->midiInputRemappingCheckbox.get());
+    const auto isFilteringMidi = App::Workspace().getAudioCore().isFilteringMidiInput();
+    this->midiInputRemappingCheckbox->setToggleState(isFilteringMidi, dontSendNotification);
+    this->midiInputRemappingCheckbox->onClick = [this](){
+        const auto shouldFilterMidi = this->midiInputRemappingCheckbox->getToggleState();
+        App::Workspace().getAudioCore().setFilteringMidiInput(shouldFilterMidi);
+    };
+
+    this->setSize(550, 276);
 
     MenuPanel::Menu emptyMenu;
     this->deviceTypeCombo->initWith(this->deviceTypeEditor.get(), emptyMenu);
@@ -110,6 +121,8 @@ void AudioSettings::resized()
     this->sampleRateEditor->setBounds(editorBounds.withY(108));
     this->bufferSizeEditor->setBounds(editorBounds.withY(156));
     this->midiInputEditor->setBounds(editorBounds.withY(200));
+
+    this->midiInputRemappingCheckbox->setBounds(editorBounds.withY(240));
 }
 
 void AudioSettings::parentHierarchyChanged()

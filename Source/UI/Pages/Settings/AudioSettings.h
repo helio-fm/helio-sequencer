@@ -58,6 +58,7 @@ private:
     UniquePointer<TextEditor> sampleRateEditor;
     UniquePointer<TextEditor> bufferSizeEditor;
     UniquePointer<TextEditor> midiInputEditor;
+    UniquePointer<ToggleButton> midiInputRemappingCheckbox;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioSettings)
 };

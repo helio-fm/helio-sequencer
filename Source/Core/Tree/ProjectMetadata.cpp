@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "ProjectMetadata.h"
 #include "ProjectNode.h"
+#include "Config.h"
 
 ProjectMetadata::ProjectMetadata(ProjectNode &parent) : project(parent)
 {
@@ -262,7 +263,7 @@ void ProjectMetadata::deserialize(const SerializedData &data)
     if (root.getNumChildren() > 0)
     {
         jassert(this->temperament != nullptr);
-        this->temperament->deserialize(root);
+        this->deserializeTemperament(root);
     }
     else
     {
@@ -366,6 +367,23 @@ void ProjectMetadata::resetTemperamentDelta(const SerializedData &state)
     if (state.getNumChildren() > 0)
     {
         jassert(this->temperament != nullptr);
-        this->temperament->deserialize(state.getChild(0));
+        this->deserializeTemperament(state.getChild(0));
+    }
+}
+
+void ProjectMetadata::deserializeTemperament(const SerializedData &state)
+{
+    // we'll be using the serialized temperament description as a fallback,
+    // if such temperament doesn't exist anymore in the global config,
+    // but if it does, we'll take the one from the config:
+    this->temperament->deserialize(state);
+    const auto temperamentId = this->temperament->getResourceId();
+    for (const auto it : App::Config().getTemperaments()->getAll())
+    {
+        if (it->getResourceId() == temperamentId)
+        {
+            this->temperament = it;
+            break;
+        }
     }
 }
