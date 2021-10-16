@@ -17,25 +17,21 @@
 
 #pragma once
 
-//[Headers]
 class VersionControl;
 class HeadlineContextMenuController;
 
 #include "Revision.h"
 #include "IconComponent.h"
-//[/Headers]
-
-#include "../../Themes/SeparatorHorizontalFadingReversed.h"
-#include "../../Themes/SeparatorHorizontalFading.h"
+#include "SeparatorHorizontalFadingReversed.h"
+#include "SeparatorHorizontalFading.h"
 
 class RevisionComponent final : public Component
 {
 public:
 
-    RevisionComponent(VersionControl &owner, const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead);
+    RevisionComponent(VersionControl &owner,
+        const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead);
     ~RevisionComponent();
-
-    //[UserMethods]
 
     // Helpers for tree traverse:
 
@@ -61,22 +57,15 @@ public:
 
     mutable RevisionComponent *leftmostSibling = nullptr;
 
-    // View details
-
     void setSelected(bool selected);
 
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
-    void mouseMove (const MouseEvent& e) override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
-
+    void mouseMove(const MouseEvent &e) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
 private:
-
-    //[UserVariables]
 
     VersionControl &vcs;
 
@@ -88,8 +77,6 @@ private:
 
 private:
 
-    //[/UserVariables]
-
     UniquePointer<Label> revisionDescription;
     UniquePointer<Label> revisionDate;
     UniquePointer<SeparatorHorizontalFadingReversed> line2;
@@ -97,5 +84,5 @@ private:
     UniquePointer<IconComponent> remoteIndicatorImage;
     UniquePointer<IconComponent> localIndicatorImage;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RevisionComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionComponent)
 };

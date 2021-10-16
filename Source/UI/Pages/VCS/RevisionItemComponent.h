@@ -17,14 +17,11 @@
 
 #pragma once
 
-//[Headers]
-#include "DraggingListBoxComponent.h"
-#include "RevisionItem.h"
-
 class HeadlineContextMenuController;
-//[/Headers]
 
-#include "../../Themes/SeparatorHorizontalFading.h"
+#include "RevisionItem.h"
+#include "DraggingListBoxComponent.h"
+#include "SeparatorHorizontalFading.h"
 
 class RevisionItemComponent final : public DraggingListBoxComponent
 {
@@ -32,8 +29,6 @@ public:
 
     explicit RevisionItemComponent(ListBox &parentListBox);
     ~RevisionItemComponent();
-
-    //[UserMethods]
 
     void updateItemInfo(VCS::RevisionItem::Ptr revisionItem,
         int rowNumber, bool isLastRow, bool isSelectable);
@@ -46,15 +41,9 @@ public:
     void setSelected(bool shouldBeSelected) override;
 
     void mouseUp(const MouseEvent &event) override;
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
     void resized() override;
 
-
 private:
-
-    //[UserVariables]
 
     mutable ComponentAnimator selectionAnimator;
 
@@ -62,17 +51,15 @@ private:
     bool isSelected() const;
 
     ListBox &list;
-    int row;
+    int row = 0;
 
     UniquePointer<HeadlineContextMenuController> contextMenuController;
     UniquePointer<Component> selectionComponent;
     VCS::RevisionItem::Ptr revisionItem;
 
-    //[/UserVariables]
-
     UniquePointer<Label> itemLabel;
     UniquePointer<Label> deltasLabel;
     UniquePointer<SeparatorHorizontalFading> separator;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RevisionItemComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionItemComponent)
 };

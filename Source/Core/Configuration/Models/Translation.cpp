@@ -74,7 +74,7 @@ void Translation::deserialize(const SerializedData &data)
 
         forEachChildWithType(pluralLiteral, pluralTranslation, Translations::translationValue)
         {
-            const String translatedLiteral = pluralTranslation.getProperty(Translations::translationId);
+            const String translatedLiteral = pluralTranslation.getProperty(Translations::pluralName);
             const String pluralForm = pluralTranslation.getProperty(Translations::pluralForm);
             (*formsAndTranslations)[pluralForm] = translatedLiteral;
         }

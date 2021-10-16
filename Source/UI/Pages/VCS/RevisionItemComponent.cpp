@@ -15,13 +15,8 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "RevisionItemComponent.h"
-
-//[MiscUserDefs]
 
 #include "Icons.h"
 #include "ColourIDs.h"
@@ -60,7 +55,7 @@ public:
         const auto colour1(Colours::black.withAlpha(0.07f));
         const auto colour2(Colours::black.withAlpha(0.1f));
         g.setGradientFill(ColourGradient(colour1, 0.f, 0.f, colour2, 0.f, float(this->getHeight()), false));
-        g.fillRoundedRectangle (5.0f, 2.0f, float(this->getWidth() - 10), float(this->getHeight() - 8), 2.f);
+        g.fillRoundedRectangle(5.0f, 2.0f, float(this->getWidth() - 10), float(this->getHeight() - 8), 2.f);
 
         g.setOpacity(0.35f);
         const int rightTextBorder = this->getWidth() - this->getHeight() / 2 - 5;
@@ -68,82 +63,42 @@ public:
     }
 };
 
-//[/MiscUserDefs]
-
-RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox)
-    : DraggingListBoxComponent(parentListBox.getViewport()),
-      list(parentListBox),
-      row(0)
+RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox) :
+    DraggingListBoxComponent(parentListBox.getViewport()),
+    list(parentListBox)
 {
-    this->itemLabel.reset(new Label(String(),
-                                     String()));
-    this->addAndMakeVisible(itemLabel.get());
-    this->itemLabel->setFont(Font (18.00f, Font::plain));
-    itemLabel->setJustificationType(Justification::centredLeft);
-    itemLabel->setEditable(false, false, false);
+    this->itemLabel= make<Label>();
+    this->addAndMakeVisible(this->itemLabel.get());
+    this->itemLabel->setFont(Globals::UI::Fonts::M);
+    this->itemLabel->setJustificationType(Justification::centredLeft);
+    this->itemLabel->setInterceptsMouseClicks(false, false);
 
-    this->deltasLabel.reset(new Label(String(),
-                                       String()));
-    this->addAndMakeVisible(deltasLabel.get());
-    this->deltasLabel->setFont(Font (16.00f, Font::plain));
-    deltasLabel->setJustificationType(Justification::topLeft);
-    deltasLabel->setEditable(false, false, false);
+    this->deltasLabel= make<Label>();
+    this->addAndMakeVisible(this->deltasLabel.get());
+    this->deltasLabel->setFont(Globals::UI::Fonts::S);
+    this->deltasLabel->setJustificationType(Justification::topLeft);
+    this->deltasLabel->setInterceptsMouseClicks(false, false);
+    this->deltasLabel->setColour(Label::textColourId,
+        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.75f));
 
-    this->separator.reset(new SeparatorHorizontalFading());
-    this->addAndMakeVisible(separator.get());
+    this->separator= make<SeparatorHorizontalFading>();
+    this->addAndMakeVisible(this->separator.get());
 
-    //[UserPreSize]
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
     this->selectionComponent = make<RevisionItemSelectionComponent>();
     this->addChildComponent(this->selectionComponent.get());
 
-    // Gray out details a bit:
-    this->deltasLabel->setColour(Label::textColourId,
-        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.75f));
-    //[/UserPreSize]
-
     this->setSize(500, 70);
-
-    //[Constructor]
-    this->itemLabel->setInterceptsMouseClicks(false, false);
-    this->deltasLabel->setInterceptsMouseClicks(false, false);
-    //[/Constructor]
 }
 
-RevisionItemComponent::~RevisionItemComponent()
-{
-    //[Destructor_pre]
-    this->selectionComponent = nullptr;
-    //[/Destructor_pre]
-
-    itemLabel = nullptr;
-    deltasLabel = nullptr;
-    separator = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void RevisionItemComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    DraggingListBoxComponent::paint(g);
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
-}
+RevisionItemComponent::~RevisionItemComponent() = default;
 
 void RevisionItemComponent::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    itemLabel->setBounds(5, 3, getWidth() - 10, 24);
-    deltasLabel->setBounds(10, 24, getWidth() - 90, 38);
-    separator->setBounds(10, getHeight() - 1 - 2, getWidth() - 20, 2);
-    //[UserResized] Add your own custom resize handling here..
+    this->itemLabel->setBounds(5, 3, this->getWidth() - 10, 24);
+    this->deltasLabel->setBounds(5, 24, this->getWidth() - 90, 38);
+    this->separator->setBounds(10, this->getHeight() - 3, this->getWidth() - 20, 2);
 
     if (this->isEnabled())
     {
@@ -151,14 +106,9 @@ void RevisionItemComponent::resized()
     }
     else
     {
-        deltasLabel->setBounds(10, 25, getWidth() - 30, getHeight() - 32);
+        this->deltasLabel->setBounds(5, 25, this->getWidth() - 30, this->getHeight() - 32);
     }
-
-    //[/UserResized]
 }
-
-
-//[MiscUserCode]
 
 void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemInfo,
     int rowNumber, bool isLastRow, bool isSelectable)
@@ -187,6 +137,8 @@ void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemIn
             needsComma = true;
         }
     }
+
+    DBG(itemDeltas);
 
     if (itemType == VCS::RevisionItem::Type::Added ||
         itemType == VCS::RevisionItem::Type::Removed)
@@ -261,33 +213,3 @@ void RevisionItemComponent::mouseUp(const MouseEvent &event)
         this->contextMenuController->showMenu(event);
     }
 }
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="RevisionItemComponent" template="../../../Template"
-                 componentName="" parentClasses="public DraggingListBoxComponent"
-                 constructorParams="ListBox &amp;parentListBox" variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport()),&#10;list(parentListBox),&#10;row(0)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="500" initialHeight="70">
-  <BACKGROUND backgroundColour="0"/>
-  <LABEL name="" id="c261305e2de1ebf2" memberName="itemLabel" virtualName=""
-         explicitFocusOrder="0" pos="5 3 10M 24" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="33"/>
-  <LABEL name="" id="12427a53408d61ee" memberName="deltasLabel" virtualName=""
-         explicitFocusOrder="0" pos="10 24 90M 38" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="9"/>
-  <JUCERCOMP name="" id="2e5e217f3d476ef8" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="10 1Rr 20M 2" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
-             constructorParams=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

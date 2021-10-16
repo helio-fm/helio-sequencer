@@ -15,51 +15,45 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "RevisionComponent.h"
 
-//[MiscUserDefs]
 #include "VersionControl.h"
 #include "RevisionTreeComponent.h"
 #include "HeadlineContextMenuController.h"
 #include "ColourIDs.h"
-//[/MiscUserDefs]
 
-RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead)
-    : vcs(owner),
-      revision(revision),
-      isHeadRevision(isHead),
-      viewState(viewState)
+RevisionComponent::RevisionComponent(VersionControl &owner,
+    const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead) :
+    vcs(owner),
+    revision(revision),
+    isHeadRevision(isHead),
+    viewState(viewState)
 {
-    this->revisionDescription.reset(new Label(String(),
-                                               String()));
-    this->addAndMakeVisible(revisionDescription.get());
-    this->revisionDescription->setFont(Font (18.00f, Font::plain));
-    revisionDescription->setJustificationType(Justification::centred);
-    revisionDescription->setEditable(false, false, false);
+    this->revisionDescription= make<Label>();
+    this->addAndMakeVisible(this->revisionDescription.get());
+    this->revisionDescription->setFont(Globals::UI::Fonts::M);
+    this->revisionDescription->setJustificationType(Justification::centred);
 
-    this->revisionDate.reset(new Label(String(),
-                                        String()));
-    this->addAndMakeVisible(revisionDate.get());
-    this->revisionDate->setFont(Font (12.00f, Font::plain));
-    revisionDate->setJustificationType(Justification::centred);
-    revisionDate->setEditable(false, false, false);
+    this->revisionDate= make<Label>();
+    this->addAndMakeVisible(this->revisionDate.get());
+    this->revisionDate->setFont(Globals::UI::Fonts::XS);
+    this->revisionDate->setJustificationType(Justification::centred);
+    this->revisionDate->setColour(Label::textColourId,
+        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.5f));
 
-    this->line2.reset(new SeparatorHorizontalFadingReversed());
-    this->addAndMakeVisible(line2.get());
-    this->line3.reset(new SeparatorHorizontalFading());
-    this->addAndMakeVisible(line3.get());
-    this->remoteIndicatorImage.reset(new IconComponent(Icons::remote));
-    this->addAndMakeVisible(remoteIndicatorImage.get());
+    this->line2= make<SeparatorHorizontalFadingReversed>();
+    this->addAndMakeVisible(this->line2.get());
 
-    this->localIndicatorImage.reset(new IconComponent(Icons::local));
-    this->addAndMakeVisible(localIndicatorImage.get());
+    this->line3= make<SeparatorHorizontalFading>();
+    this->addAndMakeVisible(this->line3.get());
 
+    this->remoteIndicatorImage= make<IconComponent>(Icons::remote);
+    this->addAndMakeVisible(this->remoteIndicatorImage.get());
 
-    //[UserPreSize]
+    this->localIndicatorImage= make<IconComponent>(Icons::local);
+    this->addAndMakeVisible(this->localIndicatorImage.get());
+
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
     const auto &message = this->revision->getMessage();
@@ -94,36 +88,14 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const VCS::Revision:
     }
 
 #endif
-    //[/UserPreSize]
 
     this->setSize(150, 50);
-
-    //[Constructor]
-    //[/Constructor]
 }
 
-RevisionComponent::~RevisionComponent()
+RevisionComponent::~RevisionComponent() = default;
+
+void RevisionComponent::paint(Graphics &g)
 {
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    revisionDescription = nullptr;
-    revisionDate = nullptr;
-    line2 = nullptr;
-    line3 = nullptr;
-    remoteIndicatorImage = nullptr;
-    localIndicatorImage = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void RevisionComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
     g.setColour(findDefaultColour(ColourIDs::VersionControl::outline));
 
     if (this->isHeadRevision)
@@ -135,34 +107,25 @@ void RevisionComponent::paint (Graphics& g)
     {
         g.fillRoundedRectangle(1.0f, 1.0f, float(this->getWidth() - 2), float(this->getHeight() - 2), 7.000f);
     }
-    //[/UserPaint]
 }
 
 void RevisionComponent::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    revisionDescription->setBounds((getWidth() / 2) - ((getWidth() - 8) / 2), 1, getWidth() - 8, 20);
-    revisionDate->setBounds((getWidth() / 2) - ((getWidth() - 32) / 2), 20, getWidth() - 32, 14);
-    line2->setBounds((getWidth() / 2) - ((getWidth() - 16) / 2), 0, getWidth() - 16, 2);
-    line3->setBounds((getWidth() / 2) - ((getWidth() - 16) / 2), getHeight() - 2, getWidth() - 16, 2);
-    remoteIndicatorImage->setBounds((getWidth() / 2) + -8 - (8 / 2), 37, 8, 8);
-    localIndicatorImage->setBounds((getWidth() / 2) + 8 - (8 / 2), 37, 8, 8);
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
+    this->revisionDescription->setBounds(4, 1, this->getWidth() - 8, 20);
+    this->revisionDate->setBounds(16, 20, this->getWidth() - 32, 14);
+    this->line2->setBounds(8, 0, this->getWidth() - 16, 2);
+    this->line3->setBounds(8, this->getHeight() - 2, this->getWidth() - 16, 2);
+    this->remoteIndicatorImage->setBounds(this->getWidth() / 2 - 12, 37, 8, 8);
+    this->localIndicatorImage->setBounds(this->getWidth() / 2 + 4, 37, 8, 8);
 }
 
-void RevisionComponent::mouseMove (const MouseEvent& e)
+void RevisionComponent::mouseMove(const MouseEvent &e)
 {
-    //[UserCode_mouseMove] -- Add your code here...
     this->setMouseCursor(MouseCursor::NormalCursor);
-    //[/UserCode_mouseMove]
 }
 
-void RevisionComponent::mouseDown (const MouseEvent& e)
+void RevisionComponent::mouseDown(const MouseEvent &e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
     if (e.mods.isRightButtonDown() && this->isSelected)
     {
         return;
@@ -172,23 +135,17 @@ void RevisionComponent::mouseDown (const MouseEvent& e)
     {
         revTree->selectComponent(this, true);
     }
-    //[/UserCode_mouseDown]
 }
 
-void RevisionComponent::mouseUp(const MouseEvent& e)
+void RevisionComponent::mouseUp(const MouseEvent &e)
 {
-    //[UserCode_mouseUp] -- Add your code here...
     if (e.mods.isRightButtonDown() &&
         e.getOffsetFromDragStart().isOrigin() &&
         this->isSelected)
     {
         this->contextMenuController->showMenu(e);
     }
-    //[/UserCode_mouseUp]
 }
-
-
-//[MiscUserCode]
 
 void RevisionComponent::setSelected(bool selected)
 {
@@ -236,48 +193,3 @@ RevisionComponent *RevisionComponent::left() const
     if (this->children.size() > 0) { return this->children.getFirst(); }
     return this->wired;
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="RevisionComponent" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="VersionControl &amp;owner, const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead"
-                 variableInitialisers="vcs(owner)&#10;revision(revision),&#10;isSelected(false),&#10;isHeadRevision(isHead),&#10;viewState(viewState),&#10;x(0.f),&#10;y(0.f),&#10;mod(0.f),&#10;shift(0.f),&#10;change(0.f),&#10;number(0),&#10;parent(nullptr),&#10;wired(nullptr),&#10;leftmostSibling(nullptr)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="150" initialHeight="50">
-  <METHODS>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseMove (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
-    </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <LABEL name="" id="45b178bfb039403" memberName="revisionDescription"
-         virtualName="" explicitFocusOrder="0" pos="0Cc 1 8M 20" labelText=""
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="36"/>
-  <LABEL name="" id="30ac314958873bc0" memberName="revisionDate" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 20 32M 14" labelText="" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
-         bold="0" italic="0" justification="36"/>
-  <JUCERCOMP name="" id="b33ea1fc25edc01e" memberName="line2" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 0 16M 2" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="d06175cead2055bc" memberName="line3" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 0Rr 16M 2" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
-             constructorParams=""/>
-  <GENERICCOMPONENT name="" id="785e248885091f6f" memberName="remoteIndicatorImage"
-                    virtualName="" explicitFocusOrder="0" pos="-8Cc 37 8 8" class="IconComponent"
-                    params="Icons::remote"/>
-  <GENERICCOMPONENT name="" id="da3b844443a7cf14" memberName="localIndicatorImage"
-                    virtualName="" explicitFocusOrder="0" pos="8Cc 37 8 8" class="IconComponent"
-                    params="Icons::local"/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif
