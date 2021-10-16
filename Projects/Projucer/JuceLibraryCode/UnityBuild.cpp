@@ -231,6 +231,7 @@
 #include "../../Source/UI/Sequencer/Helpers/CutPointMark.cpp"
 #include "../../Source/UI/Sequencer/Helpers/RollExpandMark.cpp"
 #include "../../Source/UI/Sequencer/Helpers/KnifeToolHelper.cpp"
+#include "../../Source/UI/Sequencer/Helpers/MergingEventsConnector.cpp"
 #include "../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.cpp"
 #include "../../Source/UI/Sequencer/Helpers/PatternOperations.cpp"
 #include "../../Source/UI/Sequencer/Helpers/SequencerOperations.cpp"

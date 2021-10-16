@@ -58,7 +58,7 @@ void SelectionComponent::dragLasso(const MouseEvent &e)
         this->updateBounds();
 
         this->itemsInLasso.clearQuick();
-        this->source->findLassoItemsInArea(this->itemsInLasso, getBounds());
+        this->source->findLassoItemsInArea(this->itemsInLasso, this->getBounds());
 
         if (e.mods.isShiftDown())
         {

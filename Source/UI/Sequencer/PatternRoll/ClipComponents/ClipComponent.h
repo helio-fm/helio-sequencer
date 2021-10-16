@@ -64,15 +64,15 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
-    void paint(Graphics& g) override;
+    void paint(Graphics &g) override;
 
     //===------------------------------------------------------------------===//
-    // SelectableComponent
+    // Painting flags
     //===------------------------------------------------------------------===//
 
     void setSelected(bool selected) override;
-
     void setHighlightedAsInstance(bool isHighlighted);
+    void setHighlightedAsMergeTarget(bool isHighlighted);
 
     static int compareElements(ClipComponent *first, ClipComponent *second);
 

@@ -369,15 +369,20 @@ protected:
     
     Lasso selection;
 
-    virtual void startErasingEvents(const MouseEvent &e) = 0;
-    virtual void continueErasingEvents(const MouseEvent &e) = 0;
+    virtual void startErasingEvents(const Point<float> &mousePosition) = 0;
+    virtual void continueErasingEvents(const Point<float> &mousePosition) = 0;
     virtual void endErasingEvents() = 0;
+
+    virtual void startMergingEvents(const Point<float> &mousePosition) = 0;
+    virtual void continueMergingEvents(const Point<float> &mousePosition) = 0;
+    virtual void endMergingEvents() = 0;
 
     bool isViewportZoomEvent(const MouseEvent &e) const;
     bool isViewportDragEvent(const MouseEvent &e) const;
     bool isAddEvent(const MouseEvent &e) const;
     bool isLassoEvent(const MouseEvent &e) const;
     bool isKnifeToolEvent(const MouseEvent &e) const;
+    bool isMergeToolEvent(const MouseEvent &e) const;
     bool isErasingEvent(const MouseEvent &e) const;
 
     float firstBeat = 0.f;

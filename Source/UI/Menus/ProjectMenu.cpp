@@ -465,10 +465,10 @@ void ProjectMenu::showNewTrackDialog(ProjectNode &project,
         if (!dynamic_cast<PatternEditorNode *>(project.findActiveNode()))
         {
             // when in piano roll, select and auto-zoom the new track for convenience:
-            if (auto *midiTrack = project.findTrackById<PianoTrackNode>(outTrackId))
+            if (auto *pianoTrack = project.findTrackById<PianoTrackNode>(outTrackId))
             {
-                const auto *clip = midiTrack->getPattern()->getClips().getFirst();
-                project.setEditableScope(midiTrack, *clip, true);
+                const auto *clip = pianoTrack->getPattern()->getClips().getFirst();
+                project.setEditableScope(*clip, true);
             }
         }
     };

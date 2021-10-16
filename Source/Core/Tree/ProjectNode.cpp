@@ -245,11 +245,12 @@ void ProjectNode::showPatternEditor(WeakReference<TreeNode> source)
     App::Layout().showPage(this->sequencerLayout.get(), source);
 }
 
-void ProjectNode::setMidiRecordingTarget(MidiTrack *const track, const Clip *clip)
+void ProjectNode::setMidiRecordingTarget(const Clip *clip)
 {
     String instrumentId;
-    if (track != nullptr && clip != nullptr)
+    if (clip != nullptr)
     {
+        auto *track = clip->getPattern()->getTrack();
         auto &audioCore = App::Workspace().getAudioCore();
 
         instrumentId = track->getTrackInstrumentId();
@@ -270,14 +271,12 @@ void ProjectNode::setMidiRecordingTarget(MidiTrack *const track, const Clip *cli
             temperament->getPeriodSize(), temperament->getChromaticMap(), false);
     }
 
-    this->midiRecorder->setTargetScope(track, clip, instrumentId);
+    this->midiRecorder->setTargetScope(clip, instrumentId);
 }
 
-void ProjectNode::setEditableScope(MidiTrack *const activeTrack,
-    const Clip &activeClip, bool shouldFocusToArea)
+void ProjectNode::setEditableScope(const Clip &activeClip, bool shouldFocusToArea)
 {
-    // fixme: remove activeTrack from parameters, this is ridiculous
-    jassert(activeClip.getPattern()->getTrack() == activeTrack);
+    auto *activeTrack = activeClip.getPattern()->getTrack();
 
     if (auto *item = dynamic_cast<PianoTrackNode *>(activeTrack))
     {
@@ -291,7 +290,7 @@ void ProjectNode::setEditableScope(MidiTrack *const activeTrack,
         this->changeListeners.call(&ProjectListener::onChangeViewEditableScope,
             activeTrack, activeClip, shouldFocusToArea);
 
-        this->setMidiRecordingTarget(activeTrack, &activeClip);
+        this->setMidiRecordingTarget(&activeClip);
     }
 }
 

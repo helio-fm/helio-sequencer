@@ -28,6 +28,7 @@ MidiEventComponent::MidiEventComponent(RollBase &editor, bool isGhost) noexcept 
     this->flags.isSelected = false;
     this->flags.isInstanceOfSelected = false;
     this->flags.isRecordingTarget = false;
+    this->flags.isMergeTarget = false;
     this->flags.isGhost = isGhost;
 
     this->setWantsKeyboardFocus(false);

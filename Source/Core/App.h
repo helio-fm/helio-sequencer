@@ -44,10 +44,9 @@ private:
     JUCE_PREVENT_HEAP_ALLOCATION
 };
 
-class App final :
-    public JUCEApplication,
-    private UserInterfaceFlags::Listener,
-    private AsyncUpdater
+class App final : public JUCEApplication,
+                  private UserInterfaceFlags::Listener,
+                  private AsyncUpdater
 {
 public:
 
@@ -64,7 +63,7 @@ public:
     static bool isRunningOnPhone();
     static bool isRunningOnTablet();
     static bool isRunningOnDesktop();
-    
+
     static String getDeviceId();
     static String getAppReadableVersion();
     static String getHumanReadableDate(const Time &date);
@@ -123,13 +122,13 @@ private:
 
     void checkPlugin(const String &markerFile);
 
-    enum RunMode
+    enum class RunMode
     {
-        NORMAL,
-        PLUGIN_CHECK
+        Normal,
+        PluginCheck
     };
 
-    App::RunMode runMode;
-    
+    RunMode runMode = RunMode::Normal;
+
     void handleAsyncUpdate() override;
 };

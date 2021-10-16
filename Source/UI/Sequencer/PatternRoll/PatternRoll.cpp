@@ -33,6 +33,7 @@
 #include "SelectionComponent.h"
 #include "RollHeader.h"
 #include "CutPointMark.h"
+#include "MergingEventsConnector.h"
 
 #include "UndoStack.h"
 #include "PatternOperations.h"
@@ -330,6 +331,7 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
     // (this may be doing the same job twice,
     // in case if updateRollSize have called resized as well)
     this->resized();
+    this->applyEditModeUpdates();
 }
 
 //void debugTracksOrder(Array<MidiTrack *> tracks)
@@ -398,6 +400,7 @@ void PatternRoll::onAddClip(const Clip &clip)
 
         this->batchRepaintList.add(clipComponent);
         this->triggerAsyncUpdate();
+        this->applyEditModeUpdates();
 
         if (this->addNewClipMode)
         {
@@ -526,6 +529,26 @@ float PatternRoll::getZoomFactorY() const noexcept
     return viewHeight / float(this->getHeight());
 }
 
+void PatternRoll::longTapEvent(const Point<float> &position, const WeakReference<Component> &target)
+{
+    if (this->multiTouchController->hasMultitouch())
+    {
+        return;
+    }
+
+    if (target == this)
+    {
+        if (this->getEditMode().isMode(RollEditMode::knifeMode))
+        {
+            this->endCuttingClipsIfNeeded(false, false);
+            this->getEditMode().setMode(RollEditMode::mergeMode);
+            this->startMergingEvents(position);
+        }
+    }
+
+    RollBase::longTapEvent(position, target);
+}
+
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -536,8 +559,8 @@ void PatternRoll::mouseDown(const MouseEvent &e)
     {
         return;
     }
-    
-    if (! this->isUsingSpaceDraggingMode())
+
+    if (!this->isUsingSpaceDraggingMode())
     {
         this->setInterceptsMouseClicks(true, false);
 
@@ -547,7 +570,7 @@ void PatternRoll::mouseDown(const MouseEvent &e)
         }
         else if (this->isKnifeToolEvent(e))
         {
-            this->startCuttingClips(e);
+            this->startCuttingClips(e.position);
         }
     }
 
@@ -579,7 +602,7 @@ void PatternRoll::mouseDrag(const MouseEvent &e)
     }
     else if (this->isKnifeToolEvent(e))
     {
-        this->continueCuttingClips(e);
+        this->continueCuttingClips(e.position);
     }
 
     RollBase::mouseDrag(e);
@@ -591,7 +614,7 @@ void PatternRoll::mouseUp(const MouseEvent &e)
     {
         return;
     }
-    
+
     // Dismiss newClipDragging, if needed
     if (this->newClipDragging != nullptr)
     {
@@ -600,9 +623,9 @@ void PatternRoll::mouseUp(const MouseEvent &e)
         this->newClipDragging = nullptr;
     }
 
-    this->endCuttingClipsIfNeeded(e);
+    this->endCuttingClipsIfNeeded(true, e.mods.isAnyModifierKeyDown());
 
-    if (! this->isUsingSpaceDraggingMode())
+    if (!this->isUsingSpaceDraggingMode())
     {
         this->setInterceptsMouseClicks(true, true);
 
@@ -704,7 +727,7 @@ void PatternRoll::handleCommandMessage(int commandId)
         if (this->selection.getNumSelected() > 0)
         {
             const auto &clip = this->selection.getFirstAs<ClipComponent>()->getClip();
-            this->project.setEditableScope(clip.getPattern()->getTrack(), clip, true);
+            this->project.setEditableScope(clip, true);
         }
         break;
     case CommandIDs::ClipTransposeUp:
@@ -943,14 +966,14 @@ void PatternRoll::insertNewClipAt(const MouseEvent &e)
 // see the comment above PianoRoll::startErasingEvents for
 // the explanation of what's happening in these three methods and why:
 
-void PatternRoll::startErasingEvents(const MouseEvent &e)
+void PatternRoll::startErasingEvents(const Point<float> &mousePosition)
 {
     this->clipsToEraseOnMouseUp.clearQuick();
     // if we are already pointing at a clip:
-    this->continueErasingEvents(e);
+    this->continueErasingEvents(mousePosition);
 }
 
-void PatternRoll::continueErasingEvents(const MouseEvent &e)
+void PatternRoll::continueErasingEvents(const Point<float> &mousePosition)
 {
     for (const auto &it : this->clipComponents)
     {
@@ -960,7 +983,7 @@ void PatternRoll::continueErasingEvents(const MouseEvent &e)
             continue;
         }
 
-        if (!cc->getBounds().contains(e.getPosition()))
+        if (!cc->getBounds().contains(mousePosition.toInt()))
         {
             continue;
         }
@@ -995,12 +1018,12 @@ void PatternRoll::endErasingEvents()
 // Knife mode
 //===----------------------------------------------------------------------===//
 
-void PatternRoll::startCuttingClips(const MouseEvent &e)
+void PatternRoll::startCuttingClips(const Point<float> &mousePosition)
 {
     ClipComponent *targetClip = nullptr;
     for (const auto &cc : this->clipComponents)
     {
-        if (cc.second.get()->getBounds().contains(e.position.toInt()))
+        if (cc.second.get()->getBounds().contains(mousePosition.toInt()))
         {
             targetClip = cc.second.get();
             break;
@@ -1012,29 +1035,36 @@ void PatternRoll::startCuttingClips(const MouseEvent &e)
         this->knifeToolHelper = make<ClipCutPointMark>(targetClip);
         this->addAndMakeVisible(this->knifeToolHelper.get());
 
-        const float cutBeat = this->getRoundBeatSnapByXPosition(e.getPosition().x);
+        const float cutBeat = this->getRoundBeatSnapByXPosition(int(mousePosition.x));
         const int beatX = this->getXPositionByBeat(cutBeat);
-        this->knifeToolHelper->updatePositionFromMouseEvent(beatX, e.getPosition().y);
+        this->knifeToolHelper->updatePositionFromMouseEvent(beatX, int(mousePosition.y));
         this->knifeToolHelper->toFront(false);
         this->knifeToolHelper->fadeIn();
     }
 }
 
-void PatternRoll::continueCuttingClips(const MouseEvent &e)
+void PatternRoll::continueCuttingClips(const Point<float> &mousePosition)
 {
-    if (this->knifeToolHelper != nullptr)
+    if (this->knifeToolHelper == nullptr)
     {
-        const float cutBeat = this->getRoundBeatSnapByXPosition(e.getPosition().x);
-        const int beatX = this->getXPositionByBeat(cutBeat);
-        this->knifeToolHelper->updatePositionFromMouseEvent(beatX, e.getPosition().y);
+        jassertfalse;
+        return;
     }
+
+    const float cutBeat = this->getRoundBeatSnapByXPosition(int(mousePosition.x));
+    const int beatX = this->getXPositionByBeat(cutBeat);
+    this->knifeToolHelper->updatePositionFromMouseEvent(beatX, int(mousePosition.y));
 }
 
-void PatternRoll::endCuttingClipsIfNeeded(const MouseEvent &e)
+void PatternRoll::endCuttingClipsIfNeeded(bool shouldCut, bool shouldRenameNewTracks)
 {
-    if (this->knifeToolHelper != nullptr)
+    if (this->knifeToolHelper == nullptr)
     {
-        const bool shouldRenameNewTracks = e.mods.isAnyModifierKeyDown();
+        return;
+    }
+
+    if (shouldCut)
+    {
         const float cutPos = this->knifeToolHelper->getCutPosition();
         const auto *cc = dynamic_cast<ClipComponent *>(this->knifeToolHelper->getComponent());
         if (cc != nullptr && cutPos > 0.f && cutPos < 1.f)
@@ -1043,9 +1073,97 @@ void PatternRoll::endCuttingClipsIfNeeded(const MouseEvent &e)
             PatternOperations::cutClip(this->project, cc->getClip(), cutBeat, shouldRenameNewTracks);
         }
         this->applyEditModeUpdates(); // update behaviour of newly created clip components
-        this->knifeToolHelper->updatePosition(-1.f);
-        this->knifeToolHelper = nullptr;
     }
+
+    this->knifeToolHelper->updatePosition(-1.f);
+    this->knifeToolHelper = nullptr;
+}
+
+//===----------------------------------------------------------------------===//
+// Merge clips mode
+//===----------------------------------------------------------------------===//
+
+void PatternRoll::startMergingEvents(const Point<float> &mousePosition)
+{
+    this->deselectAll();
+
+    ClipComponent *targetClip = nullptr;
+    for (const auto &it : this->clipComponents)
+    {
+        auto *cc = it.second.get();
+        cc->setHighlightedAsMergeTarget(false);
+        if (cc->getBounds().contains(mousePosition.toInt()))
+        {
+            targetClip = cc;
+        }
+    }
+
+    if (this->mergeToolHelper == nullptr && targetClip != nullptr)
+    {
+        targetClip->setHighlightedAsMergeTarget(true);
+        const auto position = mousePosition / this->getLocalBounds().getBottomRight().toFloat();
+        this->mergeToolHelper = make<MergingClipsConnector>(targetClip, position);
+        this->addAndMakeVisible(this->mergeToolHelper.get());
+    }
+}
+
+void PatternRoll::continueMergingEvents(const Point<float> &mousePosition)
+{
+    if (this->mergeToolHelper == nullptr)
+    {
+        return;
+    }
+
+    ClipComponent *targetClip = nullptr;
+    for (const auto &it : this->clipComponents)
+    {
+        auto *cc = it.second.get();
+        cc->setHighlightedAsMergeTarget(false);
+        if (cc->getBounds().contains(mousePosition.toInt()) &&
+            this->mergeToolHelper->canMergeInto(cc))
+        {
+            targetClip = cc;
+        }
+    }
+
+    if (targetClip != nullptr)
+    {
+        targetClip->setHighlightedAsMergeTarget(true);
+    }
+
+    if (auto *sourceClip = dynamic_cast<ClipComponent *>(this->mergeToolHelper->getSourceComponent()))
+    {
+        sourceClip->setHighlightedAsMergeTarget(true);
+    }
+
+    const auto position = mousePosition / this->getLocalBounds().getBottomRight().toFloat();
+    this->mergeToolHelper->setTargetComponent(targetClip);
+    this->mergeToolHelper->setEndPosition(position);
+}
+
+void PatternRoll::endMergingEvents()
+{
+    if (this->mergeToolHelper == nullptr)
+    {
+        return;
+    }
+
+    for (const auto &it : this->clipComponents)
+    {
+        it.second.get()->setHighlightedAsMergeTarget(false);
+    }
+
+    const auto *sourceCC = dynamic_cast<ClipComponent *>(this->mergeToolHelper->getSourceComponent());
+    const auto *targetCC = dynamic_cast<ClipComponent *>(this->mergeToolHelper->getTargetComponent());
+    this->mergeToolHelper = nullptr;
+
+    if (sourceCC == nullptr || targetCC == nullptr)
+    {
+        return;
+    }
+
+    PatternOperations::mergeClips(this->project, targetCC->getClip(), { sourceCC->getClip() }, true);
+    this->applyEditModeUpdates(); // update behaviour of newly created clip components
 }
 
 //===----------------------------------------------------------------------===//

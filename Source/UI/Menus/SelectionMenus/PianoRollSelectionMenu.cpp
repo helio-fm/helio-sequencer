@@ -120,11 +120,11 @@ MenuPanel::Menu PianoRollSelectionMenu::createMoveToTrackPanel()
             withColour(targetTrack->getTrackColour())->
             withWeight(outDistance)->
             closesMenu()->
-            withAction([this, targetTrack, &closestClip]()
+            withAction([this, &closestClip]()
         {
             auto &selection = *this->lasso.get();
             SequencerOperations::moveSelection(selection, closestClip, true);
-            this->project.setEditableScope(targetTrack, closestClip, false);
+            this->project.setEditableScope(closestClip, false);
         }));
     }
 

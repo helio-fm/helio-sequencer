@@ -50,13 +50,14 @@ MidiRecorder::~MidiRecorder()
     this->getTransport().removeTransportListener(this);
 }
 
-void MidiRecorder::setTargetScope(WeakReference<MidiTrack> track,
-    const Clip *clip, const String &instrumentId)
+void MidiRecorder::setTargetScope(const Clip *clip, const String &instrumentId)
 {
     if (instrumentId.isNotEmpty())
     {
         this->lastValidInstrumentId = instrumentId;
     }
+
+    auto *track = clip == nullptr ? nullptr : clip->getPattern()->getTrack();
 
     if (this->activeTrack != track || this->activeClip != clip)
     {

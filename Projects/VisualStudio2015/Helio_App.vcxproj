@@ -494,6 +494,7 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\CutPointMark.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\RollExpandMark.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\KnifeToolHelper.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\MergingEventsConnector.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\TimelineWarningMarker.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\PatternOperations.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\SequencerOperations.cpp"/>
@@ -2774,6 +2775,7 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\CutPointMark.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\RollExpandMark.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\KnifeToolHelper.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\MergingEventsConnector.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\TimelineWarningMarker.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\PatternOperations.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\SequencerOperations.h"/>

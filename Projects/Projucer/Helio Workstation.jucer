@@ -1104,6 +1104,10 @@
                   file="../../Source/UI/Sequencer/Helpers/KnifeToolHelper.cpp"/>
             <FILE id="SQ41Eb" name="KnifeToolHelper.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/KnifeToolHelper.h"/>
+            <FILE id="SgA657" name="MergingEventsConnector.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/MergingEventsConnector.cpp"/>
+            <FILE id="Zo6i64" name="MergingEventsConnector.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Helpers/MergingEventsConnector.h"/>
             <FILE id="NOqCjM" name="TimelineWarningMarker.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.cpp"/>
             <FILE id="amNgBo" name="TimelineWarningMarker.h" compile="0" resource="0"

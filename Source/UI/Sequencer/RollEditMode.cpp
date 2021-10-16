@@ -31,7 +31,8 @@ bool RollEditMode::forbidsViewportDragging(const ModifierKeys &mods) const
         this->isMode(RollEditMode::zoomMode) ||
         this->isMode(RollEditMode::drawMode) ||
         this->isMode(RollEditMode::eraseMode) ||
-        this->isMode(RollEditMode::knifeMode);
+        this->isMode(RollEditMode::knifeMode) ||
+        this->isMode(RollEditMode::mergeMode);
 #endif
 }
 
@@ -56,6 +57,7 @@ bool RollEditMode::forbidsSelectionMode(const ModifierKeys &mods) const
         this->isMode(RollEditMode::zoomMode) ||
         this->isMode(RollEditMode::dragMode) ||
         this->isMode(RollEditMode::knifeMode) ||
+        this->isMode(RollEditMode::mergeMode) ||
         this->isMode(RollEditMode::eraseMode) ||
         (this->isMode(RollEditMode::drawMode) && !mods.isCtrlDown());
 }
@@ -68,11 +70,8 @@ bool RollEditMode::forcesSelectionMode(const ModifierKeys &mods) const
 bool RollEditMode::forbidsAddingEvents(const ModifierKeys &mods) const
 {
     return
-        this->isMode(RollEditMode::selectionMode) ||
-        this->isMode(RollEditMode::zoomMode) ||
-        this->isMode(RollEditMode::dragMode) ||
-        this->isMode(RollEditMode::knifeMode) ||
-        this->isMode(RollEditMode::eraseMode);
+        !this->isMode(RollEditMode::defaultMode) &&
+        !this->isMode(RollEditMode::drawMode);
 }
 
 bool RollEditMode::forcesAddingEvents(const ModifierKeys &mods) const
@@ -82,7 +81,7 @@ bool RollEditMode::forcesAddingEvents(const ModifierKeys &mods) const
 
 bool RollEditMode::forbidsCuttingEvents(const ModifierKeys &mods) const
 {
-    return !this->isMode(RollEditMode::knifeMode);
+    return !this->isMode(RollEditMode::knifeMode) || mods.isRightButtonDown();
 }
 
 bool RollEditMode::forcesCuttingEvents(const ModifierKeys &mods) const
@@ -90,14 +89,19 @@ bool RollEditMode::forcesCuttingEvents(const ModifierKeys &mods) const
     return this->isMode(RollEditMode::knifeMode);
 }
 
+bool RollEditMode::forbidsMergingEvents(const ModifierKeys &mods) const
+{
+    return !this->isMode(RollEditMode::mergeMode);
+}
+
+bool RollEditMode::forcesMergingEvents(const ModifierKeys &mods) const
+{
+    return this->isMode(RollEditMode::mergeMode);
+}
+
 bool RollEditMode::forbidsErasingEvents(const ModifierKeys &mods) const
 {
-    return
-        this->isMode(RollEditMode::selectionMode) ||
-        this->isMode(RollEditMode::zoomMode) ||
-        this->isMode(RollEditMode::dragMode) ||
-        this->isMode(RollEditMode::knifeMode) ||
-        this->isMode(RollEditMode::drawMode);
+    return !this->isMode(RollEditMode::eraseMode);
 }
 
 bool RollEditMode::forcesErasingEvents(const ModifierKeys &mods) const
@@ -113,16 +117,17 @@ bool RollEditMode::shouldInteractWithChildren() const
         case drawMode:
             return true;
             break;
-            
+
         case selectionMode:
         case zoomMode:
         case dragMode:
-        case knifeMode:
         case eraseMode:
+        case knifeMode:
+        case mergeMode:
             return false;
             break;
     }
-    
+
     return true;
 }
 
@@ -133,20 +138,18 @@ MouseCursor RollEditMode::getCursor() const
         case defaultMode:
             return MouseCursor::NormalCursor;
             break;
-            
-        case selectionMode:
-            return MouseCursor::CrosshairCursor;
-            break;
-            
+
         case zoomMode:
             return MouseCursor(Icons::findByName(Icons::zoomIn, 24), 12, 12);
             break;
-            
+
         case dragMode:
             return MouseCursor::DraggingHandCursor;
             break;
-            
+
+        case selectionMode:
         case knifeMode:
+        case mergeMode:
             return MouseCursor::CrosshairCursor;
             break;
 
@@ -158,7 +161,7 @@ MouseCursor RollEditMode::getCursor() const
             return Icons::getErasingCursor();
             break;
     }
-    
+
     return MouseCursor::NormalCursor;
 }
 
@@ -176,7 +179,7 @@ void RollEditMode::setMode(Mode newMode, bool force)
     {
         return;
     }
-    
+
     this->previousMode = this->mode;
     this->mode = newMode;
     this->sendChangeMessage();
@@ -184,5 +187,5 @@ void RollEditMode::setMode(Mode newMode, bool force)
 
 bool RollEditMode::isMode(Mode targetMode) const
 {
-    return (this->mode == targetMode);
+    return this->mode == targetMode;
 }

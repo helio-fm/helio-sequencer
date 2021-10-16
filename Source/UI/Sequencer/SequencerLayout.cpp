@@ -36,6 +36,7 @@
 #include "ClipComponent.h"
 #include "KnifeToolHelper.h"
 #include "CutPointMark.h"
+#include "MergingEventsConnector.h"
 #include "RenderDialog.h"
 #include "Workspace.h"
 #include "AudioCore.h"
@@ -592,8 +593,7 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
     const bool useActiveClip = (activeClip.getPattern() &&
         activeClip.getPattern()->getTrack() == track);
 
-    this->project.setEditableScope(track,
-        useActiveClip ? activeClip : *trackFirstClip, false);
+    this->project.setEditableScope(useActiveClip ? activeClip : *trackFirstClip, false);
 }
 
 RollBase *SequencerLayout::getRoll() const noexcept

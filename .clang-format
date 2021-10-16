@@ -1,8 +1,14 @@
+# Requires clang-format of version 13 at least
 BasedOnStyle: Microsoft
 AccessModifierOffset: -4
+AlignAfterOpenBracket: DontAlign
 AllowShortCaseLabelsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: true
-IndentCaseLabels: true
-SortIncludes: false
 BraceWrapping:
   SplitEmptyFunction: false
+BreakConstructorInitializers: AfterColon
+ColumnLimit: 0
+EmptyLineAfterAccessModifier: Always
+EmptyLineBeforeAccessModifier: Leave
+IndentCaseLabels: true
+SortIncludes: false

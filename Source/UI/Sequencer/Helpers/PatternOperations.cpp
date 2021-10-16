@@ -78,7 +78,10 @@ float PatternOperations::findEndBeat(const Lasso &selection)
 
 void PatternOperations::deleteSelection(const Lasso &selection, ProjectNode &project, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0) { return; }
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
 
     OwnedArray<Array<Clip>> selections;
     for (int i = 0; i < selection.getNumSelected(); ++i)
@@ -141,7 +144,10 @@ void PatternOperations::deleteSelection(const Lasso &selection, ProjectNode &pro
 
 void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0 || deltaKey == 0) { return; }
+    if (selection.getNumSelected() == 0 || deltaKey == 0)
+    {
+        return;
+    }
 
     auto *pattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
     const auto operationId = deltaKey > 0 ? UndoActionIDs::ClipTransposeUp : UndoActionIDs::ClipTransposeDown;
@@ -162,7 +168,10 @@ void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, boo
 
 void PatternOperations::tuneClips(const Lasso &selection, float deltaVelocity, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0 || deltaVelocity == 0.f) { return; }
+    if (selection.getNumSelected() == 0 || deltaVelocity == 0.f)
+    {
+        return;
+    }
 
     auto *pattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
     const auto operationId = deltaVelocity > 0 ? UndoActionIDs::ClipVolumeUp : UndoActionIDs::ClipVolumeDown;
@@ -190,7 +199,10 @@ void PatternOperations::tuneClips(const Lasso &selection, float deltaVelocity, b
 
 void PatternOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0 || deltaBeat == 0) { return; }
+    if (selection.getNumSelected() == 0 || deltaBeat == 0)
+    {
+        return;
+    }
 
     auto *firstPattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
     const auto operationId = deltaBeat > 0 ? UndoActionIDs::BeatShiftRight : UndoActionIDs::BeatShiftLeft;
@@ -484,6 +496,170 @@ void PatternOperations::quantize(const Lasso &selection,
     }
 }
 
+void PatternOperations::mergeClips(ProjectNode &project, const Clip &targetClip,
+    const Array<Clip> &sourceClips, bool shouldCheckpoint /*= true*/)
+{
+    if (sourceClips.isEmpty())
+    {
+        return;
+    }
+
+    bool didCheckpoint = !shouldCheckpoint;
+
+    auto *targetPattern = targetClip.getPattern();
+    auto *targetSequence = targetPattern->getTrack()->getSequence();
+
+    // if the target clip has no instances, just merge all sources into it,
+    // but if it has instances, duplicate and delete it first,
+    // so that instances are not messed up, and merge into the newly created clip
+    const auto *clipToMergeInto = &targetClip;
+    const auto shouldMoveTheTargetClip = targetPattern->size() > 1;
+
+    if (shouldMoveTheTargetClip)
+    {
+        if (!didCheckpoint)
+        {
+            didCheckpoint = true;
+            project.checkpoint();
+        }
+
+        const auto *targetTrack = targetPattern->getTrack();
+        const auto targetTrackName = targetTrack->getTrackName();
+
+        // duplicate and delete the original
+        UniquePointer<MidiTrackNode> trackPreset = nullptr;
+        if (const auto *pianoCloneSource = dynamic_cast<PianoSequence *>(targetSequence))
+        {
+            trackPreset = SequencerOperations::createPianoTrack(pianoCloneSource, targetClip);
+        }
+        else if (const auto *autoCloneSource = dynamic_cast<AutomationSequence *>(targetSequence))
+        {
+            trackPreset = SequencerOperations::createAutomationTrack(autoCloneSource, targetClip);
+        }
+
+        if (trackPreset == nullptr)
+        {
+            jassertfalse;
+            return;
+        }
+
+        const auto newTrackId = trackPreset->getTrackId();
+        const auto newTrackTemplate = trackPreset->serialize();
+
+        // don't remove the entire track here because we've already checked that there are more clip instances
+        targetPattern->remove(targetClip, true);
+
+        if (dynamic_cast<PianoSequence *>(targetSequence))
+        {
+            project.getUndoStack()->perform(new
+                PianoTrackInsertAction(project, &project, newTrackTemplate, targetTrackName));
+        }
+        else if (dynamic_cast<AutomationSequence *>(targetSequence))
+        {
+            project.getUndoStack()->perform(new
+                AutomationTrackInsertAction(project, &project, newTrackTemplate, targetTrackName));
+        }
+
+        auto *newlyAddedTrack = project.findTrackById<MidiTrackNode>(newTrackId);
+        jassert(newlyAddedTrack != nullptr);
+
+        // important:
+        targetSequence = newlyAddedTrack->getSequence();
+        clipToMergeInto = newlyAddedTrack->getPattern()->getClips().getFirst();
+    }
+
+    // actual merging
+    if (auto *pianoTargetSequence = dynamic_cast<PianoSequence *>(targetSequence))
+    {
+        for (const auto &clip : sourceClips)
+        {
+            auto *sourceSequence = clip.getPattern()->getTrack()->getSequence();
+            if (auto *pianoSourceSequence = dynamic_cast<PianoSequence *>(sourceSequence))
+            {
+                if (!didCheckpoint)
+                {
+                    didCheckpoint = true;
+                    project.checkpoint();
+                }
+
+                // copy notes to target sequence with corrected beats, keys and velocities
+                Array<Note> notesToInsert;
+                for (auto *event : *sourceSequence)
+                {
+                    auto *note = static_cast<Note *>(event);
+                    const auto deltaKey = clip.getKey() - clipToMergeInto->getKey();
+                    const auto deltaBeat = clip.getBeat() - clipToMergeInto->getBeat();
+                    const auto newVelocity = note->getVelocity() * (clip.getVelocity() / clipToMergeInto->getVelocity());
+                    notesToInsert.add(note->withDeltaBeat(deltaBeat).withDeltaKey(deltaKey).withVelocity(newVelocity));
+                }
+
+                pianoTargetSequence->insertGroup(notesToInsert, true);
+
+                // delete the entire track if the clip has only one instance:
+                if (clip.getPattern()->size() == 1)
+                {
+                    project.removeTrack(*clip.getPattern()->getTrack());
+                }
+                else
+                {
+                    clip.getPattern()->remove(clip, true);
+                }
+            }
+            else
+            {
+                jassertfalse; // please don't pass the clips that can't be merged
+            }
+        }
+    }
+    else if (auto *autoTargetSequence = dynamic_cast<AutomationSequence *>(targetSequence))
+    {
+        for (const auto &clip : sourceClips)
+        {
+            auto *sourceSequence = clip.getPattern()->getTrack()->getSequence();
+            if (auto *autoSourceSequence = dynamic_cast<AutomationSequence *>(sourceSequence))
+            {
+                if (autoTargetSequence->getTrack()->getTrackControllerNumber() !=
+                    autoSourceSequence->getTrack()->getTrackControllerNumber())
+                {
+                    jassertfalse; // please don't pass the clips that can't be merged
+                    continue;
+                }
+
+                if (!didCheckpoint)
+                {
+                    didCheckpoint = true;
+                    project.checkpoint();
+                }
+
+                // copy events to target sequence with corrected beats
+                Array<AutomationEvent> eventsToInsert;
+                for (auto *event : *sourceSequence)
+                {
+                    auto *ae = static_cast<AutomationEvent *>(event);
+                    const auto deltaBeat = clip.getBeat() - clipToMergeInto->getBeat();
+                    eventsToInsert.add(ae->withDeltaBeat(deltaBeat));
+                }
+
+                autoTargetSequence->insertGroup(eventsToInsert, true);
+
+                // delete the entire track if the clip has only one instance:
+                if (clip.getPattern()->size() == 1)
+                {
+                    project.removeTrack(*clip.getPattern()->getTrack());
+                }
+                else
+                {
+                    clip.getPattern()->remove(clip, true);
+                }
+            }
+            else
+            {
+                jassertfalse; // please don't pass the clips that can't be merged
+            }
+        }
+    }
+}
+
 String PatternOperations::getSelectedInstrumentId(const Lasso &selection)
 {
     String id;
@@ -495,7 +671,7 @@ String PatternOperations::getSelectedInstrumentId(const Lasso &selection)
 
         if (id.isNotEmpty() && id != instrumentId)
         {
-            return{};
+            return {};
         }
 
         id = instrumentId;

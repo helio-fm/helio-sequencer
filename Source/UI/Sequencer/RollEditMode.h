@@ -22,50 +22,53 @@
 class RollEditMode final : public ChangeBroadcaster
 {
 public:
-    
+
     enum Mode
     {
         defaultMode,
-        drawMode,
-        eraseMode,
+        drawMode,  // these two
+        eraseMode, // are displayed as one
         selectionMode,
         zoomMode,
         dragMode,
-        knifeMode
+        knifeMode, // these two
+        mergeMode  // are displayed as one
     };
-    
+
     RollEditMode() = default;
 
     bool forbidsViewportDragging(const ModifierKeys &mods) const;
     bool forcesViewportDragging(const ModifierKeys &mods) const;
-    
+
     bool forbidsViewportZooming(const ModifierKeys &mods) const;
     bool forcesViewportZooming(const ModifierKeys &mods) const;
-    
+
     bool forbidsSelectionMode(const ModifierKeys &mods) const;
     bool forcesSelectionMode(const ModifierKeys &mods) const;
-    
+
     bool forbidsAddingEvents(const ModifierKeys &mods) const;
     bool forcesAddingEvents(const ModifierKeys &mods) const;
 
     bool forbidsCuttingEvents(const ModifierKeys &mods) const;
     bool forcesCuttingEvents(const ModifierKeys &mods) const;
 
+    bool forbidsMergingEvents(const ModifierKeys &mods) const;
+    bool forcesMergingEvents(const ModifierKeys &mods) const;
+
     bool forbidsErasingEvents(const ModifierKeys &mods) const;
     bool forcesErasingEvents(const ModifierKeys &mods) const;
 
     bool shouldInteractWithChildren() const;
     MouseCursor getCursor() const;
-    
+
     void unsetLastMode();
     void setMode(Mode newMode, bool force = false);
     bool isMode(Mode targetMode) const;
-    
+
 private:
-    
+
     Mode mode = defaultMode;
     Mode previousMode = defaultMode;
 
     JUCE_LEAK_DETECTOR(RollEditMode)
-    
 };

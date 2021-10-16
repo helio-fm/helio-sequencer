@@ -77,7 +77,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteMoveNotesMenu::getAc
             withCallback([this, targetTrack, &closestClip](TextEditor &)
         {
             SequencerOperations::moveSelection(this->roll.getLassoSelection(), closestClip, true);
-            this->project.setEditableScope(targetTrack, closestClip, false);
+            this->project.setEditableScope(closestClip, false);
             return true;
         }));
     }
