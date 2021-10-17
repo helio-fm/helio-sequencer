@@ -64,11 +64,15 @@ void KnifeToolHelper::updateBounds()
     const Point<float> startOffset(x1 - padding, y1 - padding);
 
     this->path.clear();
-    this->path.startNewSubPath(end - startOffset);
-    this->path.lineTo(start - startOffset);
+    const auto pathStart = start - startOffset;
+    const auto pathEnd = end - startOffset;
+    this->path.startNewSubPath(pathEnd);
+    this->path.lineTo(pathStart);
     static Array<float> dashes(6.f, 8.f);
     PathStrokeType(2.f).createDashedStroke(this->path, this->path,
         dashes.getRawDataPointer(), dashes.size());
+
+    this->path.addEllipse(pathStart.x - 1.f, pathStart.y - 1.f, 2.f, 2.f);
 
     this->setBounds(int(x1) - padding, int(y1) - padding,
         int(x2 - x1) + padding * 2, int(y2 - y1) + padding * 2);

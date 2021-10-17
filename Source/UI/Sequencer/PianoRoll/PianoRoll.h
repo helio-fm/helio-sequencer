@@ -23,8 +23,8 @@ class CommandPaletteChordConstructor;
 class CommandPaletteMoveNotesMenu;
 class HelperRectangle;
 class KnifeToolHelper;
+class MergingNotesConnector;
 class NoteNameGuidesBar;
-class Scale;
 
 #include "Note.h"
 #include "Clip.h"
@@ -207,7 +207,7 @@ private:
     void continueCuttingEvents(const Point<float> &mousePosition);
     void endCuttingEventsIfNeeded();
 
-    //UniquePointer<MergingNotesConnector> mergeToolHelper;
+    UniquePointer<MergingNotesConnector> mergeToolHelper;
     void startMergingEvents(const Point<float> &mousePosition) override;
     void continueMergingEvents(const Point<float> &mousePosition) override;
     void endMergingEvents() override;

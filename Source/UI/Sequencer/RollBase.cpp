@@ -1671,13 +1671,21 @@ void RollBase::handleAsyncUpdate()
     // batch repaint & resize stuff
     if (this->batchRepaintList.size() > 0)
     {
+        const auto &editMode = this->project.getEditMode();
+        const bool childrenInteractionEnabled = editMode.shouldInteractWithChildren();
+        const auto childCursor = childrenInteractionEnabled ?
+            MouseCursor::NormalCursor : editMode.getCursor();
+
         ROLL_BATCH_REPAINT_START
 
         for (int i = 0; i < this->batchRepaintList.size(); ++i)
         {
-            // There are still many cases when a scheduled component is deleted at this time:
+            // There are still many cases when a component
+            // scheduled for update is deleted at this time:
             if (FloatBoundsComponent *component = this->batchRepaintList.getUnchecked(i))
             {
+                component->setInterceptsMouseClicks(childrenInteractionEnabled, childrenInteractionEnabled);
+                component->setMouseCursor(childCursor);
                 component->setFloatBounds(this->getEventBounds(component));
                 component->repaint();
             }
@@ -2003,16 +2011,17 @@ void RollBase::changeListenerCallback(ChangeBroadcaster *source)
 
 void RollBase::applyEditModeUpdates()
 {
+    const auto &editMode = this->project.getEditMode();
     if (this->isUsingSpaceDraggingMode() &&
-        !(this->project.getEditMode().isMode(RollEditMode::dragMode)))
+        !(editMode.isMode(RollEditMode::dragMode)))
     {
         this->setSpaceDraggingMode(false);
     }
 
-    const auto cursor = this->project.getEditMode().getCursor();
+    const auto cursor = editMode.getCursor();
     this->setMouseCursor(cursor);
 
-    const bool interactsWithChildren = this->project.getEditMode().shouldInteractWithChildren();
-    this->setChildrenInteraction(interactsWithChildren,
-        interactsWithChildren ? MouseCursor::NormalCursor : cursor);
+    const bool interactsWithChildren = editMode.shouldInteractWithChildren();
+    const auto childCursor = interactsWithChildren ? MouseCursor::NormalCursor : cursor;
+    this->setChildrenInteraction(interactsWithChildren, childCursor);
 }

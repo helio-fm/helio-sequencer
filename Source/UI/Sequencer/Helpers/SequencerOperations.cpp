@@ -43,7 +43,6 @@
 
 #include "ColourIDs.h"
 
-
 // a big FIXME:
 // most of this code assumes every track has its own undo stack;
 // sounds weird, which it is, but that's how it was implemented back in 2014;
@@ -60,6 +59,7 @@ template <typename T>
 class ChangeGroupProxy final : public T, public ReferenceCountedObject
 {
 public:
+
     ChangeGroupProxy() {}
     using Ptr = ReferenceCountedObjectPtr<ChangeGroupProxy>;
 };
@@ -785,7 +785,7 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
     auto *pianoSequence = getPianoSequence(selection);
     jassert(pianoSequence);
 
-    if (! didCheckpoint)
+    if (!didCheckpoint)
     {
         pianoSequence->checkpoint();
         didCheckpoint = true;
@@ -793,7 +793,7 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
 
     pianoSequence->removeGroup(sortedRemovals, true);
     pianoSequence->insertGroup(insertions, true);
- 
+
     return true;
 }
 
@@ -1935,7 +1935,6 @@ bool SequencerOperations::remapNotesToTemperament(const ProjectNode &project,
     return hasMadeChanges;
 }
 
-
 bool SequencerOperations::remapKeySignaturesToTemperament(KeySignaturesSequence *keySignatures,
     Temperament::Ptr currentTemperament, Temperament::Ptr otherTemperament,
     const Array<Scale::Ptr> &availableScales, bool shouldCheckpoint /*= true*/)
@@ -2186,10 +2185,13 @@ void SequencerOperations::moveSelection(Lasso &selection,
     targetSequence->insertGroup(toInsert, true);
 }
 
-Array<Note> SequencerOperations::cutEvents(const Array<Note> &notes,
+Array<Note> SequencerOperations::cutNotes(const Array<Note> &notes,
     const Array<float> &relativeCutBeats, bool shouldCheckpoint)
 {
-    if (notes.isEmpty()) { return {}; }
+    if (notes.isEmpty())
+    {
+        return {};
+    }
 
     bool didCheckpoint = !shouldCheckpoint;
 
@@ -2209,6 +2211,33 @@ Array<Note> SequencerOperations::cutEvents(const Array<Note> &notes,
     applyPianoChanges(notes, shortenedNotes, didCheckpoint);
     applyPianoInsertions(newEventsToTheRight, didCheckpoint);
     return newEventsToTheRight;
+}
+
+bool SequencerOperations::mergeNotes(const Note &note1, const Note &note2, bool shouldCheckpoint /*= true*/)
+{
+    if (note1.getKey() != note2.getKey() ||
+        note1.getSequence() != note2.getSequence())
+    {
+        return false;
+    }
+
+    auto *sequence = static_cast<PianoSequence *>(note1.getSequence());
+    if (shouldCheckpoint)
+    {
+        sequence->checkpoint();
+    }
+
+    // should we take the target note's velocity instead?
+    const auto velocity = (note1.getVelocity() + note2.getVelocity()) / 2.f;
+    const auto startBeat = jmin(note1.getBeat(), note2.getBeat());
+    const auto endBeat = jmax(note1.getBeat() + note1.getLength(), note2.getBeat() + note2.getLength());
+    Note mergedNote(sequence, note1.getKey(), startBeat, endBeat - startBeat, velocity);
+
+    sequence->remove(note1, true);
+    sequence->remove(note2, true);
+    sequence->insert(mergedNote, true);
+
+    return true;
 }
 
 //===----------------------------------------------------------------------===//
@@ -2282,7 +2311,6 @@ bool SequencerOperations::setOneTempoForTrack(WeakReference<MidiTrack> track,
 
         sequence->change(*event2, event2->withBeat(endBeat).withTempoBpm(bpmValue), true);
     }
-
 
     return didCheckpoint;
 }

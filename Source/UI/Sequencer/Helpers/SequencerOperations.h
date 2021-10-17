@@ -122,8 +122,9 @@ struct SequencerOperations final
     static bool findHarmonicContext(float startBeat, float endBeat,
         WeakReference<MidiTrack> keySignatures, Scale::Ptr &outScale, Note::Key &outRootKey);
 
-    static Array<Note> cutEvents(const Array<Note> &notes,
+    static Array<Note> cutNotes(const Array<Note> &notes,
         const Array<float> &relativeCutBeats, bool shouldCheckpoint = true);
+    static bool mergeNotes(const Note &note1, const Note &note2, bool shouldCheckpoint = true);
 
     static bool setOneTempoForProject(ProjectNode &project, int bpmValue, bool shouldCheckpoint = true);
     static bool setOneTempoForTrack(WeakReference<MidiTrack> track,

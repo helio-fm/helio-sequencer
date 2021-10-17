@@ -397,10 +397,7 @@ void PatternRoll::onAddClip(const Clip &clip)
         clipComponent->toFront(false);
 
         this->fader.fadeIn(clipComponent, Globals::UI::fadeInLong);
-
-        this->batchRepaintList.add(clipComponent);
-        this->triggerAsyncUpdate();
-        this->applyEditModeUpdates();
+        this->triggerBatchRepaintFor(clipComponent);
 
         if (this->addNewClipMode)
         {
@@ -417,9 +414,7 @@ void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)
     {
         this->clipComponents.erase(clip);
         this->clipComponents[newClip] = UniquePointer<ClipComponent>(component);
-
-        this->batchRepaintList.add(component);
-        this->triggerAsyncUpdate();
+        this->triggerBatchRepaintFor(component);
     }
 
     RollBase::onChangeClip(clip, newClip);
@@ -1072,7 +1067,6 @@ void PatternRoll::endCuttingClipsIfNeeded(bool shouldCut, bool shouldRenameNewTr
             const float cutBeat = this->getRoundBeatSnapByXPosition(cc->getX() + int(cc->getWidth() * cutPos));
             PatternOperations::cutClip(this->project, cc->getClip(), cutBeat, shouldRenameNewTracks);
         }
-        this->applyEditModeUpdates(); // update behaviour of newly created clip components
     }
 
     this->knifeToolHelper->updatePosition(-1.f);
@@ -1163,7 +1157,6 @@ void PatternRoll::endMergingEvents()
     }
 
     PatternOperations::mergeClips(this->project, targetCC->getClip(), { sourceCC->getClip() }, true);
-    this->applyEditModeUpdates(); // update behaviour of newly created clip components
 }
 
 //===----------------------------------------------------------------------===//

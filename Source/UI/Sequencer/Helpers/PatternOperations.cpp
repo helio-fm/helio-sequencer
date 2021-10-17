@@ -262,7 +262,7 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
             sequence->checkpoint();
         }
 
-        SequencerOperations::cutEvents(intersectedEvents, intersectionPoints, false);
+        SequencerOperations::cutNotes(intersectedEvents, intersectionPoints, false);
 
         Array<Note> eventsToBeMoved;
         for (int i = 0; i < sequence->size(); ++i)

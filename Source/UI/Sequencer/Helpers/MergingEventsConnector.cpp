@@ -19,6 +19,10 @@
 #include "MergingEventsConnector.h"
 #include "PianoClipComponent.h"
 
+//===----------------------------------------------------------------------===//
+// Base
+//===----------------------------------------------------------------------===//
+
 MergingEventsConnector::MergingEventsConnector(SafePointer<Component> sourceComponent, Point<float> startPosition) :
     sourceComponent(sourceComponent),
     startPositionAbs(startPosition),
@@ -77,26 +81,20 @@ void MergingEventsConnector::updateBounds()
     const Rectangle<int> bounds(this->getStartPosition().toInt(), this->getEndPosition().toInt());
     // DBG("  x: " + String(bounds.getX()) + ", y:" + String(bounds.getY()));
     // DBG("  w: " + String(bounds.getWidth()) + ", h:" + String(bounds.getHeight()));
-    this->setBounds(bounds.expanded(10));
+    this->setBounds(bounds.expanded(20));
 }
 
+//===----------------------------------------------------------------------===//
+// MergingNotesConnector
+//===----------------------------------------------------------------------===//
+
 MergingNotesConnector::MergingNotesConnector(SafePointer<Component> sourceComponent, Point<float> startPosition) :
-    MergingEventsConnector(sourceComponent, startPosition) {}
-
-void MergingNotesConnector::paint(Graphics &g)
+    MergingEventsConnector(sourceComponent, startPosition)
 {
-    const auto topLeft = this->getBounds().getTopLeft().toFloat();
-    const auto start = this->getStartPosition() - topLeft;
-    const auto end = this->getEndPosition() - topLeft;
-
-    // todo pretty up:
-    g.setColour(Colours::aliceblue);
-    g.drawLine(start.x, start.y, end.x, end.y, 1);
-
-    //#if DEBUG
-    //    g.setColour(Colours::blanchedalmond.withAlpha(0.1f));
-    //    g.fillAll();
-    //#endif
+    if (auto *nc = dynamic_cast<NoteComponent *>(sourceComponent.getComponent()))
+    {
+        this->colour = nc->getNote().getTrackColour().brighter(0.1f);
+    }
 }
 
 bool MergingNotesConnector::canMergeInto(SafePointer<Component> component)
@@ -106,9 +104,92 @@ bool MergingNotesConnector::canMergeInto(SafePointer<Component> component)
         return false; // can't merge a note into itself
     }
 
-    // todo
-    return true;
+    auto *sourceNC = dynamic_cast<NoteComponent *>(this->sourceComponent.getComponent());
+    auto *targetNC = dynamic_cast<NoteComponent *>(component.getComponent());
+    if (sourceNC == nullptr || targetNC == nullptr)
+    {
+        return false;
+    }
+
+    return sourceNC->getClip().getId() == targetNC->getClip().getId() &&
+        sourceNC->getClip().getPattern() == targetNC->getClip().getPattern() &&
+        sourceNC->getNote().getKey() == targetNC->getNote().getKey();
 }
+
+void MergingNotesConnector::paint(Graphics &g)
+{
+    const auto topLeft = this->getBounds().getTopLeft().toFloat();
+    const auto dragStart = this->getStartPosition() - topLeft;
+    const auto dragEnd = this->getEndPosition() - topLeft;
+
+    // assuming we have the same parent with target components
+    jassert(this->getParentComponent() == this->sourceComponent->getParentComponent());
+
+    const auto sourceNoteBounds = this->sourceComponent->getBounds().toFloat() - topLeft;
+    const auto noteTopLeft = sourceNoteBounds.getTopLeft();
+    const bool backwardDirection = dragStart.x > dragEnd.x;
+    const auto sourceX = backwardDirection ?
+        sourceNoteBounds.getX() : sourceNoteBounds.getRight();
+
+    if ((backwardDirection && sourceX < dragEnd.x) ||
+        (!backwardDirection && sourceX > dragEnd.x))
+    {
+        return;
+    }
+
+    const bool readyToMerge = this->targetComponent != nullptr;
+    const auto targetNoteBounds = readyToMerge ?
+        this->targetComponent->getBounds().toFloat() - topLeft : Rectangle<float>();
+
+    const auto targetX = readyToMerge ?
+        (backwardDirection ? targetNoteBounds.getRight() : targetNoteBounds.getX()) :
+        dragEnd.x;
+
+    const auto noteHeight = sourceNoteBounds.getHeight();
+    const auto drawHeight = jmax(6.f, noteHeight - 6.f);
+    const auto drawCentreY = sourceNoteBounds.getCentreY();
+    const auto drawY = drawCentreY - drawHeight / 2;
+
+    if (readyToMerge)
+    {
+        g.setColour(this->colour);
+        const auto drawStartX = jmin(sourceX, targetX);
+        const auto drawEndX = jmax(sourceX, targetX) - 1.f;
+        if (drawStartX < drawEndX)
+        {
+            g.fillRect(drawStartX, drawY, drawEndX - drawStartX, drawHeight);
+
+            g.fillRect(drawStartX, drawY - 1.f, 1.f, drawHeight + 2.f);
+            g.fillRect(drawEndX, drawY - 1.f, 1.f, drawHeight + 2.f);
+
+            g.setColour(Colours::black.withAlpha(0.5f));
+            g.fillRect(drawStartX - 1.f, drawY - 1.f, 1.f, drawHeight + 2.f);
+            g.fillRect(drawEndX + 1.f, drawY - 1.f, 1.f, drawHeight + 2.f);
+        }
+        else
+        {
+            g.fillRect(drawStartX - 2.f, drawCentreY - noteHeight / 2.f,
+                drawEndX - drawStartX + 5.f, noteHeight);
+        }
+    }
+    else
+    {
+        g.setColour(Colours::black.withAlpha(0.5f));
+        g.drawArrow(Line<float>(sourceX, drawCentreY, targetX, drawCentreY), drawHeight + 1.f, noteHeight + 1.f, 6);
+
+        g.setColour(this->colour);
+        g.drawArrow(Line<float>(sourceX, drawCentreY, targetX, drawCentreY), drawHeight - 1.f, noteHeight, 6);
+    }
+
+    //#if DEBUG
+    //    g.setColour(Colours::blanchedalmond.withAlpha(0.1f));
+    //    g.fillAll();
+    //#endif
+}
+
+//===----------------------------------------------------------------------===//
+// MergingClipsConnector
+//===----------------------------------------------------------------------===//
 
 MergingClipsConnector::MergingClipsConnector(SafePointer<Component> sourceComponent, Point<float> startPosition) :
     MergingEventsConnector(sourceComponent, startPosition)

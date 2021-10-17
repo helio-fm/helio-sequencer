@@ -26,8 +26,6 @@ public:
 
     ~MergingEventsConnector();
 
-    void setEndPosition(Point<float> position);
-
     Component *getSourceComponent() const noexcept;
     Component *getTargetComponent() const noexcept;
     virtual void setTargetComponent(SafePointer<Component> component) noexcept;
@@ -36,6 +34,7 @@ public:
 
     Point<float> getStartPosition() const noexcept;
     Point<float> getEndPosition() const noexcept;
+    virtual void setEndPosition(Point<float> position);
 
     void parentSizeChanged() override;
 
@@ -62,6 +61,11 @@ public:
     void paint(Graphics &g) override;
 
     bool canMergeInto(SafePointer<Component> component) override;
+
+private:
+
+    Colour colour = Colours::white;
+
 };
 
 class MergingClipsConnector final : public MergingEventsConnector

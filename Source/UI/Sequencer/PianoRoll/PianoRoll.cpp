@@ -113,6 +113,7 @@ void PianoRoll::reloadRollContent()
     }
 
     this->updateBackgroundCachesAndRepaint();
+    this->applyEditModeUpdates();
 
     ROLL_BATCH_REPAINT_END
 }
@@ -712,6 +713,7 @@ void PianoRoll::onAddTrack(MidiTrack *const track)
     ROLL_BATCH_REPAINT_START
 
     this->loadTrack(track);
+    this->applyEditModeUpdates();
 
     for (int j = 0; j < track->getSequence()->size(); ++j)
     {
@@ -1635,7 +1637,7 @@ void PianoRoll::endCuttingEventsIfNeeded()
         Array<Note> notes;
         Array<float> beats;
         this->knifeToolHelper->getCutPoints(notes, beats);
-        Array<Note> cutEventsToTheRight = SequencerOperations::cutEvents(notes, beats);
+        Array<Note> cutEventsToTheRight = SequencerOperations::cutNotes(notes, beats);
         // Now select all the new notes:
         forEachSequenceMapOfGivenTrack(this->patternMap, c, this->activeTrack)
         {
@@ -1649,7 +1651,6 @@ void PianoRoll::endCuttingEventsIfNeeded()
             }
         }
 
-        this->applyEditModeUpdates(); // update behaviour of newly created note components
         this->knifeToolHelper = nullptr;
     }
 }
@@ -1660,17 +1661,69 @@ void PianoRoll::endCuttingEventsIfNeeded()
 
 void PianoRoll::startMergingEvents(const Point<float> &mousePosition)
 {
-    // todo
+    this->deselectAll();
+
+    NoteComponent *targetNote = nullptr;
+    forEachEventComponent(this->patternMap, e)
+    {
+        auto *nc = e.second.get();
+        if (nc->isActive() &&
+            nc->getBounds().contains(mousePosition.toInt()))
+        {
+            targetNote = nc;
+        }
+    }
+
+    if (this->mergeToolHelper == nullptr && targetNote != nullptr)
+    {
+        const auto position = mousePosition / this->getLocalBounds().getBottomRight().toFloat();
+        this->mergeToolHelper = make<MergingNotesConnector>(targetNote, position);
+        this->addAndMakeVisible(this->mergeToolHelper.get());
+    }
 }
 
 void PianoRoll::continueMergingEvents(const Point<float> &mousePosition)
 {
-    // todo
+    if (this->mergeToolHelper == nullptr)
+    {
+        return;
+    }
+
+    NoteComponent *targetNote = nullptr;
+    forEachEventComponent(this->patternMap, e)
+    {
+        auto *nc = e.second.get();
+        if (nc->isActive() &&
+            nc->getBounds().contains(mousePosition.toInt()) &&
+            this->mergeToolHelper->canMergeInto(nc))
+        {
+            targetNote = nc;
+        }
+    }
+
+    const auto position = mousePosition / this->getLocalBounds().getBottomRight().toFloat();
+    this->mergeToolHelper->setTargetComponent(targetNote);
+    this->mergeToolHelper->setEndPosition(position);
 }
 
 void PianoRoll::endMergingEvents()
 {
-    // todo
+    if (this->mergeToolHelper == nullptr)
+    {
+        return;
+    }
+
+    const auto *sourceNC = dynamic_cast<NoteComponent *>(this->mergeToolHelper->getSourceComponent());
+    const auto *targetNC = dynamic_cast<NoteComponent *>(this->mergeToolHelper->getTargetComponent());
+    this->mergeToolHelper = nullptr;
+
+    if (sourceNC == nullptr || targetNC == nullptr)
+    {
+        return;
+    }
+
+    SequencerOperations::mergeNotes(targetNC->getNote(), sourceNC->getNote(), true);
+    this->deselectAll();
 }
 
 //===----------------------------------------------------------------------===//
