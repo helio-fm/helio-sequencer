@@ -1068,7 +1068,10 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
             Array<AnnotationEvent> pastedAnnotations;
             forEachChildWithType(layerElement, annotationElement, Serialization::Midi::annotation)
             {
-                const auto &ae = AnnotationEvent(annotationsSequence).withParameters(annotationElement).copyWithNewId();
+                const auto &ae = AnnotationEvent(annotationsSequence)
+                    .withParameters(annotationElement)
+                    .withNewId();
+
                 pastedAnnotations.add(ae.withDeltaBeat(deltaBeat));
             }
 
@@ -1088,7 +1091,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
             Array<AutomationEvent> pastedEvents;
             forEachChildWithType(layerElement, autoElement, Serialization::Midi::automationEvent)
             {
-                const auto &ae = AutomationEvent(automationSequence).withParameters(autoElement).copyWithNewId();
+                const auto &ae = AutomationEvent(automationSequence).withParameters(autoElement).withNewId();
                 pastedEvents.add(ae.withDeltaBeat(deltaBeat));
             }
 
@@ -1108,7 +1111,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
             Array<Note> pastedNotes;
             forEachChildWithType(layerElement, noteElement, Serialization::Midi::note)
             {
-                const auto &n = Note(pianoSequence).withParameters(noteElement).copyWithNewId();
+                const auto &n = Note(pianoSequence).withParameters(noteElement).withNewId();
                 pastedNotes.add(n.withDeltaBeat(deltaBeat));
             }
 
@@ -1131,7 +1134,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
             {
                 forEachChildWithType(patternElement, clipElement, Serialization::Midi::clip)
                 {
-                    auto &&c = Clip(targetPattern).withParameters(clipElement).copyWithNewId();
+                    auto &&c = Clip(targetPattern).withParameters(clipElement).withNewId();
                     pastedClips.add(c.withDeltaBeat(deltaBeat));
                 }
         
@@ -2099,7 +2102,7 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
             selectionsByTrack.add(arrayToAddTo);
         }
 
-        arrayToAddTo->add(note.copyWithNewId());
+        arrayToAddTo->add(note.withNewId());
     }
 
     bool didCheckpoint = !shouldCheckpoint;
@@ -2199,7 +2202,7 @@ Array<Note> SequencerOperations::cutEvents(const Array<Note> &notes,
         if (cutBeat > 0.f && cutBeat < n.getLength())
         {
             shortenedNotes.add(n.withLength(cutBeat));
-            newEventsToTheRight.add(n.withDeltaBeat(cutBeat).withDeltaLength(-cutBeat).copyWithNewId());
+            newEventsToTheRight.add(n.withDeltaBeat(cutBeat).withDeltaLength(-cutBeat).withNewId());
         }
     }
 
@@ -2449,7 +2452,7 @@ UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<N
     PianoChangeGroup copiedContent;
     for (const auto &note : events)
     {
-        copiedContent.add(note.copyWithNewId(sequence));
+        copiedContent.add(note.withNewId(sequence));
     }
     sequence->reset();
     sequence->insertGroup(copiedContent, false);
@@ -2457,7 +2460,7 @@ UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<N
     Array<Clip> copiedClips;
     for (const auto &clip : clips)
     {
-        copiedClips.add(clip.copyWithNewId(pattern));
+        copiedClips.add(clip.withNewId(pattern));
     }
 
     pattern->reset();
@@ -2509,7 +2512,7 @@ UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
     auto *sequence = static_cast<AutomationSequence *>(newItem->getSequence());
     for (const auto &event : events)
     {
-        copiedContent.add(event.copyWithNewId(sequence));
+        copiedContent.add(event.withNewId(sequence));
     }
     sequence->reset();
     sequence->insertGroup(copiedContent, false);
@@ -2518,7 +2521,7 @@ UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
     auto *pattern = newItem->getPattern();
     for (const auto &clip : clips)
     {
-        copiedClips.add(clip.copyWithNewId(pattern));
+        copiedClips.add(clip.withNewId(pattern));
     }
     pattern->reset();
     pattern->insertGroup(copiedClips, false);

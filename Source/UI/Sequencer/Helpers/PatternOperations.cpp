@@ -337,7 +337,7 @@ void PatternOperations::duplicateSelection(const Lasso &selection, bool shouldCh
             changesByPattern.add(arrayToAddTo);
         }
 
-        arrayToAddTo->add(clip.copyWithNewId());
+        arrayToAddTo->add(clip.withNewId());
     }
 
     bool didCheckpoint = !shouldCheckpoint;
@@ -590,7 +590,10 @@ void PatternOperations::mergeClips(ProjectNode &project, const Clip &targetClip,
                     const auto deltaKey = clip.getKey() - clipToMergeInto->getKey();
                     const auto deltaBeat = clip.getBeat() - clipToMergeInto->getBeat();
                     const auto newVelocity = note->getVelocity() * (clip.getVelocity() / clipToMergeInto->getVelocity());
-                    notesToInsert.add(note->withDeltaBeat(deltaBeat).withDeltaKey(deltaKey).withVelocity(newVelocity));
+                    notesToInsert.add(note->withDeltaBeat(deltaBeat)
+                        .withDeltaKey(deltaKey)
+                        .withVelocity(newVelocity)
+                        .withNewId(pianoTargetSequence));
                 }
 
                 pianoTargetSequence->insertGroup(notesToInsert, true);
@@ -637,7 +640,8 @@ void PatternOperations::mergeClips(ProjectNode &project, const Clip &targetClip,
                 {
                     auto *ae = static_cast<AutomationEvent *>(event);
                     const auto deltaBeat = clip.getBeat() - clipToMergeInto->getBeat();
-                    eventsToInsert.add(ae->withDeltaBeat(deltaBeat));
+                    eventsToInsert.add(ae->withDeltaBeat(deltaBeat)
+                        .withNewId(autoTargetSequence));
                 }
 
                 autoTargetSequence->insertGroup(eventsToInsert, true);

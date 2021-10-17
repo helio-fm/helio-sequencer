@@ -134,7 +134,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
     }
 }
 
-AutomationEvent AutomationEvent::copyWithNewId(WeakReference<MidiSequence> owner) const noexcept
+AutomationEvent AutomationEvent::withNewId(WeakReference<MidiSequence> owner) const noexcept
 {
     AutomationEvent ae(*this);
     if (owner != nullptr)

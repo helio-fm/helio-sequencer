@@ -42,7 +42,7 @@ public:
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept override;
     
-    Note copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
+    // use these methods to perform undo/redo actions
     Note withKey(Key newKey) const noexcept;
     Note withBeat(float newBeat) const noexcept;
     Note withKeyBeat(Key newKey, float newBeat) const noexcept;
@@ -55,6 +55,9 @@ public:
     Note withDeltaVelocity(float deltaVelocity) const noexcept;
     Note withTuplet(Tuplet tuplet) const noexcept;
     Note withParameters(const SerializedData &parameters) const noexcept;
+
+    // use this method to insert a (modified) note into another sequence
+    Note withNewId(WeakReference<MidiSequence> newOwner = nullptr) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors

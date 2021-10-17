@@ -105,7 +105,7 @@ TimeSignatureEvent TimeSignatureEvent::withParameters(const SerializedData &para
     return e;
 }
 
-TimeSignatureEvent TimeSignatureEvent::copyWithNewId() const noexcept
+TimeSignatureEvent TimeSignatureEvent::withNewId() const noexcept
 {
     TimeSignatureEvent e(*this);
     e.id = e.createId();

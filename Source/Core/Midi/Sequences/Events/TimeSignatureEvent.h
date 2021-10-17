@@ -37,12 +37,13 @@ public:
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept override;
 
-    TimeSignatureEvent copyWithNewId() const noexcept;
     TimeSignatureEvent withDeltaBeat(float beatOffset) const noexcept;
     TimeSignatureEvent withBeat(float newBeat) const noexcept;
     TimeSignatureEvent withNumerator(const int newNumerator) const noexcept;
     TimeSignatureEvent withDenominator(const int newDenominator) const noexcept;
     TimeSignatureEvent withParameters(const SerializedData &parameters) const noexcept;
+
+    TimeSignatureEvent withNewId() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors

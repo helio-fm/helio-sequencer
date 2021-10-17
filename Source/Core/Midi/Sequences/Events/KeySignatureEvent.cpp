@@ -111,7 +111,7 @@ KeySignatureEvent KeySignatureEvent::withParameters(const SerializedData &parame
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::copyWithNewId() const noexcept
+KeySignatureEvent KeySignatureEvent::withNewId() const noexcept
 {
     KeySignatureEvent e(*this);
     e.id = e.createId();

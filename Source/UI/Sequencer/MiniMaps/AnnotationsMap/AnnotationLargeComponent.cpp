@@ -146,7 +146,7 @@ void AnnotationLargeComponent::mouseDrag(const MouseEvent &e)
                 // Drag-and-copy logic:
                 if (firstChangeIsToCome && e.mods.isAnyModifierKeyDown())
                 {
-                    sequence->insert(this->event.copyWithNewId(), true);
+                    sequence->insert(this->event.withNewId(), true);
                 }
 
                 sequence->change(this->event, this->event.withBeat(newBeat), true);

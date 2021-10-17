@@ -116,7 +116,7 @@ int Clip::getTrackControllerNumber() const noexcept
 // Builder
 //===----------------------------------------------------------------------===//
 
-Clip Clip::copyWithNewId(Pattern *newOwner) const
+Clip Clip::withNewId(Pattern *newOwner) const
 {
     Clip c(*this);
 

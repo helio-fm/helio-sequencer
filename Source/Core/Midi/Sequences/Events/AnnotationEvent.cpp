@@ -94,7 +94,7 @@ AnnotationEvent AnnotationEvent::withParameters(const SerializedData &parameters
     return ae;
 }
 
-AnnotationEvent AnnotationEvent::copyWithNewId() const noexcept
+AnnotationEvent AnnotationEvent::withNewId() const noexcept
 {
     AnnotationEvent ae(*this);
     ae.id = ae.createId();

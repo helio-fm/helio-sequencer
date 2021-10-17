@@ -80,7 +80,7 @@ void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
     }
 }
 
-Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const noexcept
+Note Note::withNewId(WeakReference<MidiSequence> owner) const noexcept
 {
     Note n(*this);
     if (owner != nullptr)

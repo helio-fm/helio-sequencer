@@ -34,14 +34,15 @@ public:
     
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept override;
-    
-    AnnotationEvent copyWithNewId() const noexcept;
+
     AnnotationEvent withDeltaBeat(float beatOffset) const noexcept;
     AnnotationEvent withBeat(float newBeat) const noexcept;
     AnnotationEvent withLength(float newLength) const noexcept;
     AnnotationEvent withDescription(const String &newDescription) const noexcept;
     AnnotationEvent withColour(const Colour &newColour) const noexcept;
     AnnotationEvent withParameters(const SerializedData &parameters) const noexcept;
+
+    AnnotationEvent withNewId() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors

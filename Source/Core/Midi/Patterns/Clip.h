@@ -55,7 +55,6 @@ public:
     Colour getTrackColour() const noexcept;
     int getTrackControllerNumber() const noexcept;
 
-    Clip copyWithNewId(Pattern *newOwner = nullptr) const;
     Clip withParameters(const SerializedData &tree) const;
     Clip withBeat(float absPosition) const;
     Clip withDeltaBeat(float deltaPosition) const;
@@ -65,6 +64,8 @@ public:
     Clip withDeltaVelocity(float deltaVelocity) const;
     Clip withMute(bool mute) const;
     Clip withSolo(bool solo) const;
+
+    Clip withNewId(Pattern *newOwner = nullptr) const;
 
     //===------------------------------------------------------------------===//
     // Serializable

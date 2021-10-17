@@ -46,7 +46,6 @@ public:
     static constexpr auto curveInterpolationStepBeat = 0.25f;
     static constexpr auto curveInterpolationThreshold = 0.0025f;
 
-    AutomationEvent copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
     AutomationEvent withBeat(float newBeat) const noexcept;
     AutomationEvent withDeltaBeat(float deltaBeat) const noexcept;
     AutomationEvent withControllerValue(float cv) const noexcept;
@@ -56,6 +55,8 @@ public:
     AutomationEvent withParameters(const SerializedData &parameters) const noexcept;
     // and a special helper for the tempo track events:
     AutomationEvent withTempoBpm(int bpm) const noexcept;
+
+    AutomationEvent withNewId(WeakReference<MidiSequence> newOwner = nullptr) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors

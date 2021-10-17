@@ -330,7 +330,7 @@ Note Arpeggiator::mapArpKeyIntoChordSpace(const Temperament::Ptr temperament,
         .withKeyBeat(newNoteKey, startBeat + (arpKey.beat * durationMultiplier))
         .withLength(arpKey.length * durationMultiplier)
         .withVelocity(newNoteVelocity)
-        .copyWithNewId();
+        .withNewId();
 }
 
 //===----------------------------------------------------------------------===//

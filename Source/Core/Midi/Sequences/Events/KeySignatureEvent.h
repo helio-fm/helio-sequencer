@@ -40,12 +40,13 @@ public:
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept override;
     
-    KeySignatureEvent copyWithNewId() const noexcept;
     KeySignatureEvent withDeltaBeat(float beatOffset) const noexcept;
     KeySignatureEvent withBeat(float newBeat) const noexcept;
     KeySignatureEvent withRootKey(Note::Key key) const noexcept;
     KeySignatureEvent withScale(Scale::Ptr scale) const noexcept;
     KeySignatureEvent withParameters(const SerializedData &parameters) const noexcept;
+
+    KeySignatureEvent withNewId() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors
