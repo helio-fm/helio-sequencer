@@ -320,16 +320,10 @@ void KeyboardMappingPage::loadScalaMappings()
     this->importFileChooser = make<FileChooser>(TRANS(I18n::Dialog::workspaceCreateProjectCaption),
         File::getSpecialLocation(File::userDocumentsDirectory), "*.kbm", true);
     
-    this->importFileChooser->launchAsync(Globals::UI::FileChooser::forFileToOpen,
-        [this](const FileChooser &fc)
+    DocumentHelpers::showFileChooser(this->importFileChooser,
+        Globals::UI::FileChooser::forFileToOpen,
+        [this](URL &url)
     {
-        auto results = fc.getURLResults();
-        if (results.isEmpty())
-        {
-            return;
-        }
-
-        auto &url = results.getReference(0);
         if (!url.isLocalFile())
         {
             return;

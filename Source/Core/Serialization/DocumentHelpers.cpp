@@ -22,6 +22,47 @@
 #include "XmlSerializer.h"
 #include "BinarySerializer.h"
 
+void DocumentHelpers::showFileChooser(UniquePointer<FileChooser> &chooser,
+    int flags, Function<void(URL &url)> successCallback)
+{
+    const bool isSaveMode = (flags & FileBrowserComponent::saveMode) != 0;
+    const bool isOpenMode = (flags & FileBrowserComponent::openMode) != 0;
+    if (!isSaveMode && !isOpenMode)
+    {
+        jassertfalse;
+        return;
+    }
+
+    const auto permissionId = isSaveMode ?
+        RuntimePermissions::writeExternalStorage :
+        RuntimePermissions::readExternalStorage;
+
+    RuntimePermissions::request(permissionId,
+        [fileChooser = chooser.get(), flags, successCallback](bool wasGranted) {
+            if (!wasGranted)
+            {
+                App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
+                return;
+            }
+
+            jassert(fileChooser != nullptr);
+            fileChooser->launchAsync(flags,
+                [successCallback](const FileChooser &fc) {
+                    auto results = fc.getURLResults();
+                    if (results.isEmpty())
+                    {
+                        return;
+                    }
+
+                    // todo check the extension?
+                    // https://forum.juce.com/t/native-ios-android-file-choosers/25206/64
+
+                    auto &url = results.getReference(0);
+                    successCallback(url);
+                });
+        });
+}
+
 String DocumentHelpers::getTemporaryFolder()
 {
     const File tempFolder(File::getSpecialLocation(File::tempDirectory).
@@ -63,7 +104,10 @@ static File getFirstSlot(String location1, String location2, const String &fileN
         // 2й вариант: не существует ни одного из файлов:
         // выбираем первый доступный для записи слот
         // если подпапок еще нет, пробуем создать
-        if (! file1.isDirectory()) { file1.createDirectory(); }
+        if (!file1.isDirectory())
+        {
+            file1.createDirectory();
+        }
         const File slot1(file1.getChildFile(fileName));
         if (slot1.create())
         {
@@ -72,7 +116,10 @@ static File getFirstSlot(String location1, String location2, const String &fileN
         }
         else
         {
-            if (! file2.isDirectory()) { file2.createDirectory(); }
+            if (!file2.isDirectory())
+            {
+                file2.createDirectory();
+            }
             const File slot2(file2.getChildFile(fileName));
             if (slot2.create())
             {
@@ -241,7 +288,7 @@ SerializedData DocumentHelpers::load(const String &string)
     return DocumentHelpers::load<XmlSerializer>(string);
 }
 
-static File createTempFileForSaving(const File &parentDirectory, String name, const String& suffix)
+static File createTempFileForSaving(const File &parentDirectory, String name, const String &suffix)
 {
     return parentDirectory.getNonexistentChildFile(name, suffix, false);
 }

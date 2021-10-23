@@ -637,16 +637,10 @@ void SequencerLayout::proceedToRenderDialog(RenderFormat format)
         File(defaultPath).getChildFile(defaultFileName),
         "*." + extension, true);
 
-    this->renderTargetFileChooser->launchAsync(Globals::UI::FileChooser::forFileToSave,
-        [this, format](const FileChooser &fc)
+    DocumentHelpers::showFileChooser(this->renderTargetFileChooser,
+        Globals::UI::FileChooser::forFileToSave,
+        [this, format](URL &url)
     {
-        const auto results = fc.getURLResults();
-        if (results.isEmpty())
-        {
-            return;
-        }
-
-        const auto &url = results.getReference(0);
         // todo someday: render to any stream, not only local files
         if (url.isLocalFile())
         {

@@ -136,20 +136,10 @@ void Document::exportAs(const String &exportExtension,
         DocumentHelpers::getDocumentSlot(File::createLegalFileName(defaultFilenameWithExtension)),
         exportExtension, true);
 
-    // todo on android also
-    // RuntimePermissions::request(RuntimePermissions::readExternalStorage, myCallback)
-    // https://forum.juce.com/t/native-ios-android-file-choosers/25206/64
-
-    this->exportFileChooser->launchAsync(Globals::UI::FileChooser::forFileToSave, [this](const FileChooser &fc)
+    DocumentHelpers::showFileChooser(this->exportFileChooser,
+        Globals::UI::FileChooser::forFileToSave,
+        [this](URL &url)
     {
-        auto results = fc.getURLResults();
-        if (results.isEmpty())
-        {
-            return;
-        }
-
-        auto &url = results.getReference(0);
-
         if (url.isLocalFile() && url.getLocalFile().exists())
         {
             url.getLocalFile().deleteFile();
@@ -195,18 +185,12 @@ void Document::import(const String &filePattern)
     this->importFileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentImport),
         File::getSpecialLocation(File::userDocumentsDirectory), filePattern, true);
 
-    this->importFileChooser->launchAsync(Globals::UI::FileChooser::forFileToOpen, [this](const FileChooser &fc)
+    DocumentHelpers::showFileChooser(this->importFileChooser,
+        Globals::UI::FileChooser::forFileToOpen,
+        [this](URL &url)
     {
-        auto results = fc.getURLResults();
-        if (results.isEmpty())
-        {
-            return;
-        }
-
-        auto &url = results.getReference(0);
-
-        // fixme:
-        // Note that on some platforms (Android, for example) it's not permitted to do any network
+        // todo someday:
+        // on some platforms (Android, for example) it's not permitted to do any network
         // action from the message thread, so you must only call it from a background thread.
 
         if (auto inStream = url.createInputStream(false))

@@ -142,16 +142,10 @@ void RenderDialog::launchFileChooser()
     this->renderFileChooser = make<FileChooser>(TRANS(I18n::Dialog::renderCaption),
         this->renderTarget.getLocalFile(), "*." + extension, true);
 
-    this->renderFileChooser->launchAsync(Globals::UI::FileChooser::forFileToSave, [this](const FileChooser &fc)
+    DocumentHelpers::showFileChooser(this->renderFileChooser,
+        Globals::UI::FileChooser::forFileToSave,
+        [this](URL &url)
     {
-        const auto results = fc.getURLResults();
-        if (results.isEmpty())
-        {
-            return;
-        }
-
-        const auto &url = results.getReference(0);
-
         // todo someday: test rendering to any stream, not only local files
         if (url.isLocalFile())
         {

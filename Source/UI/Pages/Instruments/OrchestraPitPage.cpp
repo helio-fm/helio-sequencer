@@ -104,16 +104,10 @@ void OrchestraPitPage::handleCommandMessage(int commandId)
         this->scanFolderFileChooser = make<FileChooser>(TRANS(I18n::Dialog::scanFolderCaption),
             File::getCurrentWorkingDirectory(), ("*.*"), true);
 
-        this->scanFolderFileChooser->launchAsync(Globals::UI::FileChooser::forDirectory,
-            [this](const FileChooser &fc)
+        DocumentHelpers::showFileChooser(this->scanFolderFileChooser,
+            Globals::UI::FileChooser::forDirectory,
+            [this](URL &url)
         {
-            auto results = fc.getURLResults();
-            if (results.isEmpty())
-            {
-                return;
-            }
-
-            auto &url = results.getReference(0);
             if (!url.isLocalFile())
             {
                 return;
@@ -124,7 +118,7 @@ void OrchestraPitPage::handleCommandMessage(int commandId)
                 this->pluginScanner.cancelRunningScan();
             }));
 
-            this->pluginScanner.scanFolderAndAddResults(fc.getResult());
+            this->pluginScanner.scanFolderAndAddResults(url.getLocalFile());
         });
     }
 

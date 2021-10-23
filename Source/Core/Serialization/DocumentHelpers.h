@@ -26,7 +26,13 @@ public:
     static File getConfigSlot(const String &fileName);
     static File getTempSlot(const String &fileName);
 
-    template<typename T>
+    // asks required permissions, if needed,
+    // then displays the async file chooser,
+    // then filters out the invalid results:
+    static void showFileChooser(UniquePointer<FileChooser> &chooser,
+        int flags, Function<void(URL &url)> successCallback);
+
+    template <typename T>
     static SerializedData read(const String &data)
     {
         static T serializer;
@@ -38,21 +44,21 @@ public:
     static SerializedData load(const File &file);
     static SerializedData load(const String &string);
 
-    template<typename T>
+    template <typename T>
     static SerializedData load(const File &file)
     {
         static T serializer;
         return serializer.loadFromFile(file);
     }
 
-    template<typename T>
+    template <typename T>
     static SerializedData load(InputStream &stream)
     {
         static T serializer;
         return serializer.loadFromStream(stream);
     }
 
-    template<typename T>
+    template <typename T>
     static bool save(const File &file, const SerializedData &tree)
     {
         static T serializer;
@@ -65,7 +71,7 @@ public:
         return false;
     }
 
-    template<typename T>
+    template <typename T>
     static bool save(const File &file, const Serializable &serializable)
     {
         static T serializer;

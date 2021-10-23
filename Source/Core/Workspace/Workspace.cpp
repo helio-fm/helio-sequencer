@@ -160,23 +160,17 @@ void Workspace::createEmptyProject()
         TRANS(I18n::Dialog::workspaceCreateProjectCaption),
         DocumentHelpers::getDocumentSlot(fileName), "*.helio", true);
 
-    this->newProjectFileChooser->launchAsync(Globals::UI::FileChooser::forFileToSave,
-        [this](const FileChooser &fc)
+    DocumentHelpers::showFileChooser(this->newProjectFileChooser,
+        Globals::UI::FileChooser::forFileToSave,
+        [this](URL &url)
     {
-        auto results = fc.getURLResults();
-        if (results.isEmpty())
-        {
-            return;
-        }
-
-        auto &url = results.getReference(0);
         if (!url.isLocalFile())
         {
+            App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
             return;
         }
 
-        const auto file = url.getLocalFile();
-        if (auto *p = this->treeRoot->addEmptyProject(file, {}))
+        if (auto *p = this->treeRoot->addEmptyProject(url.getLocalFile(), {}))
         {
             this->userProfile.onProjectLocalInfoUpdated(p->getId(),
                 p->getName(), p->getDocument()->getFullPath());
@@ -376,16 +370,10 @@ void Workspace::importProject(const String &filePattern)
     this->importFileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentImport),
         File::getCurrentWorkingDirectory(), filePattern, true);
 
-    this->importFileChooser->launchAsync(Globals::UI::FileChooser::forFileToOpen,
-        [this](const FileChooser &fc)
+    DocumentHelpers::showFileChooser(this->importFileChooser,
+        Globals::UI::FileChooser::forFileToOpen,
+        [this](URL &url)
     {
-        auto results = fc.getURLResults();
-        if (results.isEmpty())
-        {
-            return;
-        }
-
-        auto &url = results.getReference(0);
         if (!url.isLocalFile())
         {
             return;
