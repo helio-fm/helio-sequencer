@@ -1536,8 +1536,8 @@
                    gradleWrapperVersion="4.0.0">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Helio"
-                       androidArchitectures="armeabi-v7a x86"/>
-        <CONFIGURATION name="Release" androidArchitectures="armeabi-v7a x86" isDebug="0"
+                       androidArchitectures="armeabi-v7a arm64-v8a"/>
+        <CONFIGURATION name="Release" androidArchitectures="armeabi-v7a arm64-v8a" isDebug="0"
                        optimisation="3" targetName="Helio" linkTimeOptimisation="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
