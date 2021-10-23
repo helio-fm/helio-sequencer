@@ -150,12 +150,8 @@ UserProfile &Workspace::getUserProfile() noexcept
 void Workspace::createEmptyProject()
 {
     const String newProjectName = TRANS(I18n::Defaults::newProjectName);
-
-#if PLATFORM_DESKTOP
-
-    // this file chooser will remain available only on desktop;
-    // on mobile we will always create projects in the docs directory
     const String fileName = newProjectName + ".helio";
+
     this->newProjectFileChooser = make<FileChooser>(
         TRANS(I18n::Dialog::workspaceCreateProjectCaption),
         DocumentHelpers::getDocumentSlot(fileName), "*.helio", true);
@@ -176,16 +172,6 @@ void Workspace::createEmptyProject()
                 p->getName(), p->getDocument()->getFullPath());
         }
     });
-
-#else
-
-    if (auto *p = this->treeRoot->addEmptyProject(newProjectName, {}))
-    {
-        this->userProfile.onProjectLocalInfoUpdated(p->getId(),
-            p->getName(), p->getDocument()->getFullPath());
-    }
-
-#endif
 }
 
 bool Workspace::loadRecentProject(RecentProjectInfo::Ptr info)
