@@ -148,15 +148,15 @@ void SequencerSidebarRight::recreateMenu()
     this->menu.add(MenuItem::item(Icons::drawTool, CommandIDs::EditModeDraw)->
         toggledIf(drawMode)->withTooltip(TRANS(I18n::Tooltips::editModePen)));
 
-    // Drag tool is useless on the mobile
+    this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::EditModeKnife)->
+        toggledIf(scissorsMode)->withTooltip(TRANS(I18n::Tooltips::editModeKnife)));
+
+    // Drag tool is useless on mobile platforms
 #if PLATFORM_DESKTOP
     const bool dragMode = editMode.isMode(RollEditMode::dragMode);
     this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::EditModePan)->
         toggledIf(dragMode)->withTooltip(TRANS(I18n::Tooltips::editModeDrag)));
 #endif
-
-    this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::EditModeKnife)->
-        toggledIf(scissorsMode)->withTooltip(TRANS(I18n::Tooltips::editModeKnife)));
 
     if (this->menuMode == MenuMode::PianoRollTools)
     {
