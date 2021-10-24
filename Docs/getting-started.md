@@ -95,7 +95,7 @@ Each project only holds the instrument "references" (basically, the hashcodes of
 
 Instruments are also created and set up in a separate page, called Orchestra Pit.
 
-The reason for implementing it this way was ~~separation of concerns, yo~~ that in my workflow, I tend to use all the same instruments for all the projects. The app was designed primarily as a sketching and prototyping tool, and I usually have lots of sketches, so all the operations that involve switching between projects, opening and closing them, or checking out in the version control, were ought to be as fast as possible, and not eat up all the memory.
+The reason for implementing it this way was that in my workflow, I tend to use all the same instruments for all the projects. The app was designed primarily as a sketching and prototyping tool, and I usually have lots of sketches, so all the operations that involve switching between projects, opening and closing them, or checking out in the version control, were ought to be as fast as possible, and not eat up all the memory.
 
 If your setup implies always having different instruments or instrument settings for each project, or if you want the project file to contain the instrument details, Helio will make you suffer.
 
@@ -217,15 +217,17 @@ The piano roll always limits the editable scope to a single track. You will see 
 
 ![piano-roll]
 
-Interacting with piano roll also depends on the current edit mode, but the most commonly used modes are the first two:
+Interacting with piano roll also depends on the current edit mode:
 
 ### Edit modes
 
- * **normal mode** to manage selection and edit notes: probably, most useful mode,
- * **pen mode** to add and edit notes: a bit similar to the previous one,
- * **drag-only mode**: self-explanatory, hold `Space` to [toggle](tips-and-tricks.md#spacebar-panning) this mode,
- * **knife mode**: also self-explanatory, cuts notes in the piano roll and tracks in the pattern roll,
- * **selection mode**: only displayed on the mobile.
+ * **normal mode** to manage selection and edit notes,
+ * **pen mode** to add and edit notes,
+   * alternatively, use it to delete notes or clips with right mouse button,
+ * **knife mode**: cuts notes in the piano roll, [cuts tracks](tips-and-tricks.md#knife-tool) in the pattern roll,
+   * alternatively, use it to [merge tracks](tips-and-tricks.md#merging-tracks) or notes with right mouse button,
+ * **drag-only mode**: a kind of auxiliary mode, hold `Space` to [toggle](tips-and-tricks.md#spacebar-panning) it temporarily,
+ * **selection mode** is only displayed on mobile platforms.
 
 All notes, when edited, are aligned to the grid, which depends on the zoom level and supports the resolution of up to 1/64 notes.
 
@@ -237,7 +239,7 @@ The editor relies heavily on [hotkeys](hotkeys.md#piano-roll); feel free to expl
 
 ### Adding new tracks
 
-Add new tracks by duplicating the existing ones (`F5`), or via project menu, or by cutting tracks with the knife tool in the pattern roll.
+Add new tracks by duplicating the existing ones (`F5`), or via project menu, or by [cutting](tips-and-tricks.md#knife-tool) tracks with the knife tool in the pattern roll.
 
 ### Velocity map
 

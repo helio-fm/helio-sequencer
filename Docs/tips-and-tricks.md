@@ -122,7 +122,7 @@ Since it depends on the harmonic context, it will do nothing when placed on the 
 
 ### Quick rescale tool
 
-Another tool for experiments and prototyping is the quick rescale menu: once you right-click on any key signature at the timeline, you can choose another scale, into which all the tracks will be translated. This affects all notes of all tracks up to the next key signature (or the very end of the project).
+Another tool for experiments and prototyping is the quick rescale menu: once you right-click on any key signature at the timeline, you can choose another scale, into which all the tracks will be translated. This affects all notes of all tracks up to the next key signature (or the very end of the project), and will update the key signature.
 
 This example shows rescaling, along with some undo/redo to see the difference:
 
@@ -141,6 +141,12 @@ In my workflow, I'm often adding new tracks with a knife tool: even though there
 
 ![patterns-knife-tool]
 
+#### Merging tracks
+
+Knife tool has an alternative mode: use right-click-&-drag (or long-tap-&-drag on mobile platforms) to merge one clip with another:
+
+![patterns-merge-tool]
+
 ### Clips and track grouping
 
 In the example above, two split tracks remain on the same row because the tracks are grouped by name, and the knife tool keeps the track name the same. Pattern roll can also group tracks by color, or by instrument, or by track id — yet grouping by name works better for me.
@@ -149,7 +155,7 @@ So, the segments on one row might be either different tracks, or they also might
 
 ![patterns-clips]
 
-Note that when you select an item in the pattern roll, all its instances are highlighted with a dashed header: this helps to tell where are the "instances", and where are other tracks of the same name or color on the same row.
+Note that when you select an item in the pattern roll, all its instances are highlighted with a dashed header: this helps to tell where are the "instances", and where are other tracks of the same name or color on the same row. A quick way to convert an instance to a unique track is `F6` hotkey.
 
 Track grouping also affects MIDI export: all segments on one row will be exported as one track in the resulting MIDI file.
 
@@ -164,9 +170,10 @@ Toggled by `~` or `Control + P` hotkeys by default:
 
 ![command-palette]
 
-Besides just commands, it supports several modes, which are triggered by typing a certain symbol. This symbol also acts as a hotkey to show the command palette in that mode:
+Besides just commands, it supports special modes, triggered by typing a certain symbol. This symbol also acts as a hotkey to show the command palette in that mode:
 
 * `/` is for the project list,
+* `:` is for moving selected notes into another track (target tracks are ordered "closest first"),
 * `@` is for the timeline events list + tracks list,
 * `!` is for the chord compiler, which deserves a separate description:
 
@@ -204,4 +211,5 @@ Just hit `!` and start typing a chord description, or pick some of the suggestio
 [velocity-map-fine-tuning]: images/velocity-map-fine-tuning.png "Velocity map fine-tuning"
 
 [patterns-knife-tool]: images/patterns-knife-tool.png "Using knife tool in pattern mode"
+[patterns-merge-tool]: images/patterns-merge-tool.png "Merging tracks in pattern mode"
 [patterns-clips]: images/patterns-track-clips.png "Track instances (clips) and their modifications"

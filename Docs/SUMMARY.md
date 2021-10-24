@@ -6,6 +6,6 @@
 - [Tips And Tricks](tips-and-tricks.md)
 ---
 - [Configs](configs.md)
-- [Hotkeys](hotkeys.md)
+  - [Hotkeys](hotkeys.md)
 ---
 - [Release Notes](changelog.md)
