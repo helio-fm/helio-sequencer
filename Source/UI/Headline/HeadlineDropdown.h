@@ -46,7 +46,7 @@ private:
     void timerCallback() override;
     void syncWidthWithContent();
 
-    Path internalPath1;
+    Path backgroundShape;
 
     UniquePointer<Component> content;
     UniquePointer<HeadlineItemHighlighter> header;

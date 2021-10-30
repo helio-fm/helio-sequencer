@@ -102,19 +102,23 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
         }
     }
 
+#if PLATFORM_DESKTOP
     this->startTimer(100);
+#endif
 }
 
 HeadlineDropdown::~HeadlineDropdown()
 {
+#if PLATFORM_DESKTOP
     this->stopTimer();
+#endif
 }
 
 void HeadlineDropdown::paint(Graphics &g)
 {
     g.setColour(findDefaultColour(ColourIDs::BackgroundA::fill).brighter(0.035f));
     g.fillRect(1, Globals::UI::headlineHeight - 3, this->getWidth() - 3, this->getHeight() - Globals::UI::headlineHeight + 2);
-    g.fillPath(this->internalPath1);
+    g.fillPath(this->backgroundShape);
 
     // Draw a nice border around the menu:
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.75f));
@@ -140,12 +144,12 @@ void HeadlineDropdown::resized()
 
     this->header->setBounds(0, 0, this->getWidth() - 0, Globals::UI::headlineHeight);
 
-    this->internalPath1.clear();
-    this->internalPath1.startNewSubPath(1.f, 1.f);
-    this->internalPath1.lineTo(float(this->getWidth() - Headline::itemsOverlapOffset), 1.f);
-    this->internalPath1.lineTo(float(this->getWidth() - 2), float(Globals::UI::headlineHeight - 2));
-    this->internalPath1.lineTo(1.f, float(Globals::UI::headlineHeight - 1));
-    this->internalPath1.closeSubPath();
+    this->backgroundShape.clear();
+    this->backgroundShape.startNewSubPath(1.f, 1.f);
+    this->backgroundShape.lineTo(float(this->getWidth() - Headline::itemsOverlapOffset), 1.f);
+    this->backgroundShape.lineTo(float(this->getWidth() - 2), float(Globals::UI::headlineHeight - 2));
+    this->backgroundShape.lineTo(1.f, float(Globals::UI::headlineHeight - 1));
+    this->backgroundShape.closeSubPath();
 }
 
 void HeadlineDropdown::mouseDown(const MouseEvent &e)
@@ -189,6 +193,7 @@ void HeadlineDropdown::childBoundsChanged(Component *child)
 
 void HeadlineDropdown::timerCallback()
 {
+#if PLATFORM_DESKTOP
     auto *componentUnderMouse = Desktop::getInstance().getMainMouseSource().getComponentUnderMouse();
     if (this != findParent<HeadlineDropdown>(componentUnderMouse))
     {
@@ -200,6 +205,7 @@ void HeadlineDropdown::timerCallback()
 
         delete this;
     }
+#endif
 }
 
 void HeadlineDropdown::syncWidthWithContent()

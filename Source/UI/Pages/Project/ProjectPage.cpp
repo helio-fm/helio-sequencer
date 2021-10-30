@@ -194,12 +194,21 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
     {
         statisticsCaption->setFont(Globals::UI::Fonts::S);
         statisticsCaption->setJustificationType(Justification::centredRight);
+        if (App::isRunningOnPhone())
+        {
+            // на мобильниках для всего этого часто нет места на экране
+            statisticsCaption->setVisible(false);
+        }
     }
 
     for (auto *statisticsLabel : this->statisticsLabels)
     {
         statisticsLabel->setFont(Globals::UI::Fonts::S);
         statisticsLabel->setJustificationType(Justification::centredLeft);
+        if (App::isRunningOnPhone())
+        {
+            statisticsLabel->setVisible(false);
+        }
     }
 
     this->project.addChangeListener(this);

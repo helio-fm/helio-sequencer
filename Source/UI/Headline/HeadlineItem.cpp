@@ -109,7 +109,7 @@ HeadlineItem::~HeadlineItem()
 void HeadlineItem::paint(Graphics &g)
 {
     g.setColour(this->bgColour);
-    g.fillPath(this->internalPath1);
+    g.fillPath(this->backgroundShape);
 }
 
 void HeadlineItem::resized()
@@ -129,16 +129,16 @@ void HeadlineItem::resized()
     this->arrow->setBounds(this->getWidth() - HeadlineItemArrow::arrowWidth,
         0, HeadlineItemArrow::arrowWidth, this->getHeight());
 
-    this->internalPath1.clear();
-    this->internalPath1.startNewSubPath(2.0f, 1.0f);
-    this->internalPath1.lineTo(float(this->getWidth() - HeadlineItemArrow::arrowWidth), 1.0f);
-    this->internalPath1.lineTo(float(this->getWidth() - 2), float(this->getHeight() - 2));
-    this->internalPath1.lineTo(1.0f, float(this->getHeight() - 1));
-    this->internalPath1.lineTo(2.0f, float(this->getHeight() - 2));
-    this->internalPath1.closeSubPath();
+    this->backgroundShape.clear();
+    this->backgroundShape.startNewSubPath(2.0f, 1.0f);
+    this->backgroundShape.lineTo(float(this->getWidth() - HeadlineItemArrow::arrowWidth), 1.0f);
+    this->backgroundShape.lineTo(float(this->getWidth() - 2), float(this->getHeight() - 2));
+    this->backgroundShape.lineTo(1.0f, float(this->getHeight() - 1));
+    this->backgroundShape.lineTo(2.0f, float(this->getHeight() - 2));
+    this->backgroundShape.closeSubPath();
 }
 
-void HeadlineItem::mouseEnter (const MouseEvent& e)
+void HeadlineItem::mouseEnter(const MouseEvent& e)
 {
 #if PLATFORM_DESKTOP
     // A hacky way to prevent re-opening the menu again after the new page is shown.
@@ -155,7 +155,9 @@ void HeadlineItem::mouseEnter (const MouseEvent& e)
 
 void HeadlineItem::mouseExit(const MouseEvent &e)
 {
+#if PLATFORM_DESKTOP
     this->stopTimer();
+#endif
 }
 
 void HeadlineItem::mouseDown(const MouseEvent &e)
@@ -181,9 +183,11 @@ void HeadlineItem::mouseDown(const MouseEvent &e)
     }
 }
 
-void HeadlineItem::mouseUp (const MouseEvent &e)
+void HeadlineItem::mouseUp(const MouseEvent &e)
 {
+#if PLATFORM_DESKTOP
     this->stopTimer();
+#endif
 }
 
 WeakReference<HeadlineItemDataSource> HeadlineItem::getDataSource() const noexcept
