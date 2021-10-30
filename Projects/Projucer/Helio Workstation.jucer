@@ -1523,7 +1523,7 @@
     <ANDROIDSTUDIO targetFolder="../../Projects/Android" androidSDKPath="~/Android/Sdk/"
                    androidNDKPath="~/Android/Ndk/" androidActivityClass="fm.helio.workstation"
                    androidInternetNeeded="0" androidOtherPermissions="android.permission.MODIFY_AUDIO_SETTINGS"
-                   cppLanguageStandard="-std=c++14" androidTheme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+                   cppLanguageStandard="-std=c++14" androidTheme="@android:style/Theme.Material.NoActionBar.Fullscreen"
                    smallIcon="DQTpOG" bigIcon="DQTpOG" androidScreenOrientation="landscape"
                    androidVersionCode="38" gradleToolchain="clang" cameraPermissionNeeded="0"
                    microphonePermissionNeeded="0" androidBluetoothNeeded="1" androidInAppBilling="0"
