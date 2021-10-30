@@ -22,6 +22,7 @@
 #include "OrchestraPitNode.h"
 #include "MainLayout.h"
 #include "ProgressTooltip.h"
+#include "DocumentHelpers.h"
 #include "Workspace.h"
 #include "ComponentIDs.h"
 

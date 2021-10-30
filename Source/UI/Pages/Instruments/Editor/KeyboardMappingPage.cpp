@@ -22,6 +22,7 @@
 #include "OverlayButton.h"
 #include "PanelBackgroundB.h"
 #include "ModalDialogInput.h"
+#include "DocumentHelpers.h"
 #include "IconButton.h"
 #include "ComponentIDs.h"
 #include "Config.h"
@@ -317,8 +318,14 @@ bool KeyboardMappingPage::canShowNextPage() const noexcept
 
 void KeyboardMappingPage::loadScalaMappings()
 {
+#if JUCE_ANDROID
+    const auto filter = "*/*";
+#else
+    const auto filter = "*.kbm";
+#endif
+
     this->importFileChooser = make<FileChooser>(TRANS(I18n::Dialog::workspaceCreateProjectCaption),
-        File::getSpecialLocation(File::userDocumentsDirectory), "*.kbm", true);
+        File::getSpecialLocation(File::userDocumentsDirectory), filter, true);
     
     DocumentHelpers::showFileChooser(this->importFileChooser,
         Globals::UI::FileChooser::forFileToOpen,

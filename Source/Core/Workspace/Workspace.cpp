@@ -27,6 +27,7 @@
 #include "ProjectNode.h"
 #include "SerializationKeys.h"
 #include "CommandPaletteProjectsList.h"
+#include "MainLayout.h"
 
 Workspace::Workspace() = default;
 
@@ -353,8 +354,14 @@ void Workspace::failedDeserializationFallback()
 
 void Workspace::importProject(const String &filePattern)
 {
+#if JUCE_ANDROID
+    const auto filter = "*/*";
+#else
+    const auto filter = filePattern;
+#endif
+
     this->importFileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentImport),
-        File::getCurrentWorkingDirectory(), filePattern, true);
+        File::getCurrentWorkingDirectory(), filter, true);
 
     DocumentHelpers::showFileChooser(this->importFileChooser,
         Globals::UI::FileChooser::forFileToOpen,

@@ -22,6 +22,7 @@
 #include "ProgressIndicator.h"
 #include "MenuItemComponent.h"
 #include "SerializationKeys.h"
+#include "DocumentHelpers.h"
 #include "Config.h"
 
 RenderDialog::RenderDialog(ProjectNode &parentProject,

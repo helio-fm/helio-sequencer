@@ -21,6 +21,7 @@
 #include "JsonSerializer.h"
 #include "XmlSerializer.h"
 #include "BinarySerializer.h"
+#include "MainLayout.h"
 
 void DocumentHelpers::showFileChooser(UniquePointer<FileChooser> &chooser,
     int flags, Function<void(URL &url)> successCallback)
@@ -37,10 +38,13 @@ void DocumentHelpers::showFileChooser(UniquePointer<FileChooser> &chooser,
         RuntimePermissions::writeExternalStorage :
         RuntimePermissions::readExternalStorage;
 
+    App::Layout().setEnabled(false);
+
     RuntimePermissions::request(permissionId,
         [fileChooser = chooser.get(), flags, successCallback](bool wasGranted) {
             if (!wasGranted)
             {
+                App::Layout().setEnabled(true);
                 App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
                 return;
             }
@@ -48,6 +52,8 @@ void DocumentHelpers::showFileChooser(UniquePointer<FileChooser> &chooser,
             jassert(fileChooser != nullptr);
             fileChooser->launchAsync(flags,
                 [successCallback](const FileChooser &fc) {
+                    App::Layout().setEnabled(true);
+                
                     auto results = fc.getURLResults();
                     if (results.isEmpty())
                     {

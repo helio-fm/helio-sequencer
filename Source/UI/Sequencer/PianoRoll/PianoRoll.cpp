@@ -34,6 +34,7 @@
 #include "HelperRectangle.h"
 #include "RollHeader.h"
 #include "KnifeToolHelper.h"
+#include "MergingEventsConnector.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
 #include "SelectionComponent.h"

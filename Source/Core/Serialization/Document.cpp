@@ -182,8 +182,14 @@ bool Document::load(const File &file)
 
 void Document::import(const String &filePattern)
 {
+#if JUCE_ANDROID
+    const auto filter = "*/*";
+#else
+    const auto filter = filePattern;
+#endif
+
     this->importFileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentImport),
-        File::getSpecialLocation(File::userDocumentsDirectory), filePattern, true);
+        File::getSpecialLocation(File::userDocumentsDirectory), filter, true);
 
     DocumentHelpers::showFileChooser(this->importFileChooser,
         Globals::UI::FileChooser::forFileToOpen,

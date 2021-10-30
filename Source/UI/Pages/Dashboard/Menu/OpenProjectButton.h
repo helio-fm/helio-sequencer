@@ -41,7 +41,7 @@ public:
         this->clickHandler = make<OverlayButton>();
         this->addAndMakeVisible(this->clickHandler.get());
         this->clickHandler->onClick = []() {
-            App::Workspace().importProject("*.helio;*.hp;*.mid;*.midi");
+            App::Workspace().importProject("*.helio;*.mid;*.midi");
         };
 
         this->setSize(256, 32);

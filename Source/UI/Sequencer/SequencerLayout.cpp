@@ -38,6 +38,7 @@
 #include "CutPointMark.h"
 #include "MergingEventsConnector.h"
 #include "RenderDialog.h"
+#include "DocumentHelpers.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "AudioMonitor.h"

@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "MergingEventsConnector.h"
 #include "PianoClipComponent.h"
+#include "NoteComponent.h"
 
 //===----------------------------------------------------------------------===//
 // Base
