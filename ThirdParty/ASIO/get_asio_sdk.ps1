@@ -1,4 +1,4 @@
-$asioSdkSource = "https://www.steinberg.net/sdk_downloads/asiosdk2.3.zip"
+$asioSdkSource = "https://download.steinberg.net/sdk_downloads/asiosdk2.3.zip"
 $asioSdkDestination = ".\asiosdk2.3.zip"
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
