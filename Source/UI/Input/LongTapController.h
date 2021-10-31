@@ -71,7 +71,7 @@ public:
 
 private:
 
-    static constexpr auto delayMs = 350;
+    static constexpr auto delayMs = 500;
     static constexpr auto sqrThreshold = 16;
 
     inline void reset()
