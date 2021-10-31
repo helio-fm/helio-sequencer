@@ -4,6 +4,15 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.8
+ - Added in-scale transposition commands, hotkeys Alt + Up and Alt + Down
+ - Implemented recording MIDI from a 12-tone keyboard in any temperament
+ - Improved the pen tool: delete notes and clips with right mouse button
+ - Improved the knife tool: merge two clips into one or join notes with right mouse button (long tap on mobile platforms)
+ - Added "save preset" button in the key signature editor
+ - Mini-map improvements: draw a zoom region with left mouse button and pan the stretched mini-map with right mouse button
+ - Minor tweaks: allowed "natural" scrolling in the rolls on macOS, improved file choosers for mobile platforms, updated 19-edo settings, re-ordered the edit modes a bit
+
 ## Version 3.7
  - Made the playback loop markers draggable
  - Added 19-edo to built-in temperaments
