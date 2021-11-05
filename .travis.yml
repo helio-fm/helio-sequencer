@@ -97,7 +97,7 @@ script:
   - if [[ "${BUILD_TYPE}" == "linux" ]]; then
       cd Projects/LinuxMakefile && make all strip;
       if [[ "${TRAVIS_BUILD_STAGE_NAME}" == "Test" ]]; then
-        build/Helio;
+        build/helio;
       fi
     fi
   - if [[ "${BUILD_TYPE}" == "android" ]]; then

@@ -1498,13 +1498,13 @@
                 unityBuild="1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
-                       targetName="Helio"/>
+                       targetName="helio"/>
         <CONFIGURATION name="Tests" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
-                       targetName="Helio" defines="JUCE_UNIT_TESTS=1"/>
+                       targetName="helio" defines="JUCE_UNIT_TESTS=1"/>
         <CONFIGURATION name="Release32" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
-                       targetName="Helio" linuxArchitecture="-m32" linkTimeOptimisation="0"/>
+                       targetName="helio" linuxArchitecture="-m32" linkTimeOptimisation="0"/>
         <CONFIGURATION name="Release64" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
-                       targetName="Helio" linuxArchitecture="-m64" linkTimeOptimisation="0"/>
+                       targetName="helio" linuxArchitecture="-m64" linkTimeOptimisation="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
@@ -1535,10 +1535,10 @@
                    unityBuild="1" androidPushNotifications="0" androidCustomAppBuildGradleContent="ndkVersion &quot;21.3.6528147&quot;"
                    gradleWrapperVersion="4.0.0">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Helio"
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="helio"
                        androidArchitectures="armeabi-v7a arm64-v8a"/>
         <CONFIGURATION name="Release" androidArchitectures="armeabi-v7a arm64-v8a" isDebug="0"
-                       optimisation="3" targetName="Helio" linkTimeOptimisation="0"/>
+                       optimisation="3" targetName="helio" linkTimeOptimisation="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>

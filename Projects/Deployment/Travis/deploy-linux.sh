@@ -25,7 +25,7 @@ fi
 # Create tarball
 
 cd ${TRAVIS_BUILD_DIR}/Projects/LinuxMakefile/build
-tar --transform 's/.*/\L&/' -czf ${RELEASE_FILENAME}.tar.gz ./Helio
+tar --transform 's/.*/\L&/' -czf ${RELEASE_FILENAME}.tar.gz ./helio
 scp -C ${RELEASE_FILENAME}.tar.gz ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENAME}.tar.gz
 
 #####################################
@@ -33,7 +33,7 @@ scp -C ${RELEASE_FILENAME}.tar.gz ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENA
 
 cd ${TRAVIS_BUILD_DIR}/Projects
 mkdir -p ./Deployment/Linux/Debian/${ARCH}/usr/bin
-cp ./LinuxMakefile/build/Helio ./Deployment/Linux/Debian/${ARCH}/usr/bin/helio
+cp ./LinuxMakefile/build/helio ./Deployment/Linux/Debian/${ARCH}/usr/bin/helio
 chmod +x ./Deployment/Linux/Debian/${ARCH}/usr/bin/helio
 
 dpkg-deb --build ./Deployment/Linux/Debian/${ARCH}
@@ -44,7 +44,7 @@ scp -C ./Deployment/Linux/Debian/${ARCH}.deb ${DEPLOY_HOST}:${DEPLOY_PATH}/${REL
 
 cd ${TRAVIS_BUILD_DIR}/Projects
 mkdir -p ./Deployment/Linux/AppImage/${ARCH}/usr/bin
-cp ./LinuxMakefile/build/Helio ./Deployment/Linux/AppImage/${ARCH}/usr/bin/helio
+cp ./LinuxMakefile/build/helio ./Deployment/Linux/AppImage/${ARCH}/usr/bin/helio
 chmod +x ./Deployment/Linux/AppImage/${ARCH}/usr/bin/helio
 
 unset QTDIR; unset QT_PLUGIN_PATH; unset LD_LIBRARY_PATH
