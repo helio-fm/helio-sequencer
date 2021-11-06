@@ -258,22 +258,17 @@ class Clipboard &App::Clipboard() noexcept
 static Point<double> getScreenInCm()
 {
     const auto *mainDisplay = Desktop::getInstance().getDisplays().getPrimaryDisplay();
-    if (mainDisplay == nullptr)
-    {
-        jassertfalse;
-        return {};
-    }
-
+    jassert(mainDisplay != nullptr);
     const auto screenArea = mainDisplay->userArea;
-    const double cmWidth = (screenArea.getWidth() / mainDisplay->dpi) * mainDisplay->scale * 2.54;
-    const double cmHeight = (screenArea.getHeight() / mainDisplay->dpi) * mainDisplay->scale * 2.54;
-    return Point<double>(cmWidth, cmHeight);
+    const auto cmWidth = (screenArea.getWidth() / mainDisplay->dpi) * mainDisplay->scale * 2.54;
+    const auto cmHeight = (screenArea.getHeight() / mainDisplay->dpi) * mainDisplay->scale * 2.54;
+    return { cmWidth, cmHeight };
 }
 
 bool App::isRunningOnPhone()
 {
-    const auto cmSize = getScreenInCm();
-    return (cmSize.x < 15.0 || cmSize.y < 8.0);
+    static const auto cmScreenSize = getScreenInCm();
+    return cmScreenSize.x < 16.0 || cmScreenSize.y < 8.0;
 }
 
 bool App::isRunningOnTablet()
@@ -406,6 +401,12 @@ String App::getHumanReadableDate(const Time &date)
     timeString << (day < 10 ? "0" : "") << day;
 
     return timeString.trimEnd();
+}
+
+Rectangle<int> App::getWindowBounds()
+{
+    auto *window = static_cast<App *>(getInstance())->window.get();
+    return window->getBounds();
 }
 
 void App::recreateLayout()

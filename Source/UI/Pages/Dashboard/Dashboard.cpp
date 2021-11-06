@@ -61,7 +61,10 @@ Dashboard::Dashboard(Workspace &workspace) : workspace(workspace)
     this->addAndMakeVisible(this->logo.get());
 
     this->projectsList = make<DashboardMenu>(this->workspace);
-    this->addAndMakeVisible(this->projectsList.get());
+    if (!App::isRunningOnPhone()) // no screen space for that on the phones
+    {
+        this->addAndMakeVisible(this->projectsList.get());
+    }
 
     this->updatesInfo = make<UpdatesInfoComponent>();
     this->addAndMakeVisible(this->updatesInfo.get());
@@ -92,9 +95,10 @@ Dashboard::~Dashboard()
 void Dashboard::resized()
 {
     // background stuff:
-    constexpr auto skewWidth = 64;
-    constexpr auto leftSectionWidth = 320;
-    constexpr auto rightSectionX = leftSectionWidth + skewWidth;
+    const auto smallScreenMode = App::isRunningOnPhone();
+    const auto skewWidth = smallScreenMode ? 32 : 64;
+    const auto leftSectionWidth = smallScreenMode ? 220 : 320;
+    const auto rightSectionX = leftSectionWidth + skewWidth;
     const auto rightSectionWidth = this->getWidth() - rightSectionX;
 
     this->backgroundA->setBounds(0, 0, leftSectionWidth, this->getHeight());
@@ -102,14 +106,14 @@ void Dashboard::resized()
     this->backgroundB->setBounds(rightSectionX, 0, rightSectionWidth, this->getHeight());
 
     // left section content:
-    constexpr auto logoSize = 280;
-    constexpr auto logoX = leftSectionWidth / 2 - logoSize / 2;
+    const auto logoSize = leftSectionWidth - 40;
+    const auto logoX = leftSectionWidth / 2 - logoSize / 2;
     this->logo->setBounds(logoX, 32, logoSize, logoSize);
 
-    constexpr auto buttonWidth = 264;
     constexpr auto buttonHeight = 32;
+    const auto buttonWidth = leftSectionWidth - 50;
 
-    constexpr auto helperX = leftSectionWidth / 2 - buttonWidth / 2;
+    const auto helperX = leftSectionWidth / 2 - buttonWidth / 2;
     this->updatesInfo->setBounds(helperX, 352, buttonWidth, 256);
 
     this->patreonLabel->setBounds(helperX, getHeight() - 44, buttonWidth, buttonHeight);
@@ -117,7 +121,7 @@ void Dashboard::resized()
 
     // right section content:
     constexpr auto projectsListWidth = 400;
-    constexpr auto buttonsX = rightSectionX + 16;
+    const auto buttonsX = rightSectionX + 16;
     this->openProjectButton->setBounds(buttonsX, 16, buttonWidth, buttonHeight);
     this->createProjectButton->setBounds(buttonsX, 52, buttonWidth, buttonHeight);
     this->createProjectCombo->setBounds(buttonsX, 52, buttonWidth, 140);

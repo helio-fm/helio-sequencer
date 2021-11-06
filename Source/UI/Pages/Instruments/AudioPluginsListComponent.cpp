@@ -174,6 +174,12 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     const int margin = h / 12;
     const Colour colour(findDefaultColour(Label::textColourId));
 
+#if PLATFORM_MOBILE
+    constexpr auto useSmallFonts = true;
+#elif PLATFORM_DESKTOP
+    constexpr auto useSmallFonts = false;
+#endif
+
     switch (columnId)
     {
     case ColumnIds::vendorAndName:
@@ -181,7 +187,7 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
         const String inputChannelsString = TRANS_PLURAL("{x} input channels", pd.numInputChannels);
         const String outputChannelsString = TRANS_PLURAL("{x} output channels", pd.numOutputChannels);
 
-        g.setFont(Globals::UI::Fonts::M);
+        g.setFont(useSmallFonts ? Globals::UI::Fonts::S : Globals::UI::Fonts::M);
         g.setColour(colour);
         g.drawText(pd.descriptiveName, margin, margin, w, h, Justification::topLeft, false);
 
@@ -208,14 +214,14 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     }
     case ColumnIds::category:
     {
-        g.setFont(Globals::UI::Fonts::S);
+        g.setFont(useSmallFonts ? Globals::UI::Fonts::XS : Globals::UI::Fonts::S);
         g.setColour(colour.withAlpha(0.5f));
         g.drawText(pd.category, 0, margin, w - int(margin * 1.5f), h, Justification::topRight, false);
         break;
     }
     case ColumnIds::format:
     {
-        g.setFont(Globals::UI::Fonts::S);
+        g.setFont(useSmallFonts ? Globals::UI::Fonts::XS : Globals::UI::Fonts::S);
         g.setColour(colour.withAlpha(0.7f));
         g.drawText(pd.pluginFormatName, margin, margin, w, h, Justification::topLeft, false);
         break;
@@ -249,8 +255,9 @@ int AudioPluginsListComponent::getNumRows()
 
 int AudioPluginsListComponent::getColumnAutoSizeWidth(int columnId)
 {
-    constexpr auto formatColumnWidth = 96;
-    constexpr auto categoryColumnWidth = 112;
+    const auto smallScreenMode = App::isRunningOnPhone();
+    const auto formatColumnWidth = smallScreenMode ? 48 : 96;
+    const auto categoryColumnWidth = smallScreenMode ? 64 : 112;
 
     switch (columnId)
     {

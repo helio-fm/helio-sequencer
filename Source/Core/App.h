@@ -67,6 +67,7 @@ public:
     static String getDeviceId();
     static String getAppReadableVersion();
     static String getHumanReadableDate(const Time &date);
+    static Rectangle<int> getWindowBounds();
 
     static String translate(I18n::Key singular);
     static String translate(const String &singular);

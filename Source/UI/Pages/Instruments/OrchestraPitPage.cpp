@@ -64,7 +64,9 @@ OrchestraPitPage::~OrchestraPitPage()
 
 void OrchestraPitPage::resized()
 {
-    constexpr auto skewWidth = 64;
+    const auto smallScreenMode = App::isRunningOnPhone();
+    const auto skewWidth = smallScreenMode ? 32 : 64;
+
     const auto rightSideWidth = int(this->getWidth() / 2.5f); // a bit smaller: a simple list of instruments
     const auto leftSideWidth = this->getWidth() - rightSideWidth - skewWidth;
 

@@ -50,7 +50,8 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
             }));
     }
 
-    if (!this->instrumentNode.hasSelectedChildOfType<KeyboardMappingNode>())
+    if (!App::isRunningOnPhone() && // no idea how to make this page usable on phones yet(
+        !this->instrumentNode.hasSelectedChildOfType<KeyboardMappingNode>())
     {
         menu.add(MenuItem::item(Icons::piano,
             TRANS(I18n::Menu::keyboardMappingEdit))->

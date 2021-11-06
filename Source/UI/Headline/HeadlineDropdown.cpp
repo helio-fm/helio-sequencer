@@ -215,6 +215,7 @@ void HeadlineDropdown::syncWidthWithContent()
         this->getHeight() != this->content->getHeight() + Globals::UI::headlineHeight)
     {
         const int w = jmax(this->header->getWidth(), this->content->getWidth() + HeadlineDropdown::padding);
-        this->setSize(w, this->content->getHeight() + Globals::UI::headlineHeight);
+        const int h = this->content->getHeight() + Globals::UI::headlineHeight;
+        this->setSize(w, jmin(h, App::getWindowBounds().getHeight()));
     }
 }

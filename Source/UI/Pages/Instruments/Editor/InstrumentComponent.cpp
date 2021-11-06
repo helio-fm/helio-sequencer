@@ -24,18 +24,18 @@
 #if PLATFORM_DESKTOP
 #   define AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW 1
 #   define CHANNELS_NUMBER_LIMIT 12
-#   define PIN_SIZE (18)
+#   define DEFAULT_PIN_SIZE (18)
 #elif PLATFORM_MOBILE
 #   define AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW 0
 #   define CHANNELS_NUMBER_LIMIT 6
-#   define PIN_SIZE (25)
+#   define DEFAULT_PIN_SIZE (25)
 #endif
 
 InstrumentComponent::InstrumentComponent(WeakReference<Instrument> instrument,
     AudioProcessorGraph::NodeID nodeId) :
     instrument(instrument),
     nodeId(nodeId),
-    pinSize(PIN_SIZE)
+    pinSize(DEFAULT_PIN_SIZE)
 {
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
@@ -208,38 +208,36 @@ void InstrumentComponent::setSelected(bool selected)
 
 void InstrumentComponent::update()
 {
-    const AudioProcessorGraph::Node::Ptr f(this->instrument->getNodeForId(nodeId));
-
-    if (f == nullptr)
+    const auto node = this->instrument->getNodeForId(nodeId);
+    if (node == nullptr)
     {
         delete this;
         return;
     }
 
     const int newNumInputs =
-        jmin(f->getProcessor()->getTotalNumInputChannels(), CHANNELS_NUMBER_LIMIT) +
-        (f->getProcessor()->acceptsMidi() ? 1 : 0);
+        jmin(node->getProcessor()->getTotalNumInputChannels(), CHANNELS_NUMBER_LIMIT) +
+        (node->getProcessor()->acceptsMidi() ? 1 : 0);
 
     const int newNumOutputs =
-        jmin(f->getProcessor()->getTotalNumOutputChannels(), CHANNELS_NUMBER_LIMIT) +
-        (f->getProcessor()->producesMidi() ? 1 : 0);
-
-    int w = 190;
-    //int h = jmax(80, (jmax(this->numInputs, this->numOutputs) + 1) * 20);
+        jmin(node->getProcessor()->getTotalNumOutputChannels(), CHANNELS_NUMBER_LIMIT) +
+        (node->getProcessor()->producesMidi() ? 1 : 0);
 
     // a hack needed for "Audio Input", "Audio Output" etc nodes:
-    const String translatedName = TRANS(f->getProcessor()->getName());
-
-    const int textWidth = this->font.getStringWidth(translatedName);
-    w = jmax(w, 16 + jmin(textWidth, 300));
-
-    this->setSize(w, w);
+    const String translatedName = TRANS(node->getProcessor()->getName());
     this->setName(translatedName);
 
+    const int textWidth = this->font.getStringWidth(translatedName);
+    const auto smallScreenMode = App::isRunningOnPhone();
+    const auto minSize = smallScreenMode ? 120 : 180;
+    const auto maxSize = smallScreenMode ? 150 : 300;
+    const auto size = jlimit(minSize, maxSize, textWidth);
+    this->setSize(size, size);
+
     {
-        double x, y;
+        double x = 0.0, y = 0.0;
         this->instrument->getNodePosition(nodeId, x, y);
-        this->setCentreRelative(static_cast<float>( x), static_cast<float>( y));
+        this->setCentreRelative(float(x), float(y));
     }
 
     if (this->numInputs != newNumInputs || this->numOutputs != newNumOutputs)
@@ -252,16 +250,24 @@ void InstrumentComponent::update()
         int i;
 
         for (i = 0; i < this->numInputs; ++i)
-        { this->addAndMakeVisible(new InstrumentEditorPin(nodeId, i, true)); }
+        {
+            this->addAndMakeVisible(new InstrumentEditorPin(nodeId, i, true));
+        }
 
-        if (f->getProcessor()->acceptsMidi())
-        { this->addAndMakeVisible(new InstrumentEditorPin(nodeId, Instrument::midiChannelNumber, true)); }
+        if (node->getProcessor()->acceptsMidi())
+        {
+            this->addAndMakeVisible(new InstrumentEditorPin(nodeId, Instrument::midiChannelNumber, true));
+        }
 
         for (i = 0; i < this->numOutputs; ++i)
-        { this->addAndMakeVisible(new InstrumentEditorPin(nodeId, i, false)); }
+        {
+            this->addAndMakeVisible(new InstrumentEditorPin(nodeId, i, false));
+        }
 
-        if (f->getProcessor()->producesMidi())
-        { this->addAndMakeVisible(new InstrumentEditorPin(nodeId, Instrument::midiChannelNumber, false)); }
+        if (node->getProcessor()->producesMidi())
+        {
+            this->addAndMakeVisible(new InstrumentEditorPin(nodeId, Instrument::midiChannelNumber, false));
+        }
 
         this->resized();
     }

@@ -178,15 +178,17 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
         this->temperamentText.get(), this->vcsStatsText.get(),
         this->contentStatsText.get(), this->locationText.get());
 
+    const auto smallScreenMode = App::isRunningOnPhone();
+
     for (auto *metadataCaption : this->metadataCaptions)
     {
-        metadataCaption->setFont(Globals::UI::Fonts::XL);
+        metadataCaption->setFont(smallScreenMode ? Globals::UI::Fonts::L : Globals::UI::Fonts::XL);
         metadataCaption->setJustificationType(Justification::centredRight);
     }
 
     for (auto *metadataEditor : this->metadataEditors)
     {
-        metadataEditor->setFont(Globals::UI::Fonts::XXL);
+        metadataEditor->setFont(smallScreenMode ? Globals::UI::Fonts::XL : Globals::UI::Fonts::XXL);
         metadataEditor->setJustificationType(Justification::centredLeft);
     }
 
@@ -194,9 +196,8 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
     {
         statisticsCaption->setFont(Globals::UI::Fonts::S);
         statisticsCaption->setJustificationType(Justification::centredRight);
-        if (App::isRunningOnPhone())
+        if (smallScreenMode) // no screen space for all that on the phones
         {
-            // на мобильниках для всего этого часто нет места на экране
             statisticsCaption->setVisible(false);
         }
     }
@@ -229,8 +230,9 @@ ProjectPage::~ProjectPage()
 
 void ProjectPage::resized()
 {
-    static constexpr auto skewWidth = 64;
-    static constexpr auto labelsSectionWidth = 320;
+    const auto smallScreenMode = App::isRunningOnPhone();
+    const auto skewWidth = smallScreenMode ? 32 : 64;
+    const auto labelsSectionWidth = smallScreenMode ? 240 : 320;
 
     this->skew->setBounds(labelsSectionWidth, 0, skewWidth, this->getHeight());
     this->backgroundA->setBounds(0, 0, labelsSectionWidth, this->getHeight());
@@ -241,15 +243,15 @@ void ProjectPage::resized()
     const auto statisticsY = this->proportionOfHeight(0.6f);
 
     static constexpr auto padding = 12;
-    static constexpr auto metadataLineHeight = 64;
+    const auto metadataLineHeight = smallScreenMode ? 48 : 64;
     static constexpr auto statsLineHeight = 34;
 
-    const auto getSkewX = [this](int y)
+    const auto getSkewX = [this, skewWidth](int y)
     {
         return int((1.f - float(y) / float(this->getHeight())) * skewWidth);
     };
 
-    const auto layoutLeftSide = [this, &getSkewX]
+    const auto layoutLeftSide = [this, &getSkewX, labelsSectionWidth]
     (Array<Label *> &target, int yOffset, int lineHeight)
     {
         for (int i = 0; i < target.size(); ++i)
@@ -261,7 +263,7 @@ void ProjectPage::resized()
         }
     };
 
-    const auto layoutRightSide = [this, &getSkewX]
+    const auto layoutRightSide = [this, &getSkewX, labelsSectionWidth]
     (Array<Label *> &target, int yOffset, int lineHeight)
     {
         for (int i = 0; i < target.size(); ++i)
