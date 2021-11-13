@@ -23,6 +23,7 @@ class ProjectNode;
 #include "MidiTrack.h"
 #include "ProjectTimelineDiffLogic.h"
 #include "ProjectEventDispatcher.h"
+#include "TimeSignaturesAggregator.h"
 
 class ProjectTimeline final :
     public ProjectEventDispatcher,
@@ -35,8 +36,11 @@ public:
     ~ProjectTimeline() override;
 
     MidiTrack *getAnnotations() const noexcept;
-    MidiTrack *getTimeSignatures() const noexcept;
     MidiTrack *getKeySignatures() const noexcept;
+
+    // instead of just MidiTrack:
+    TimeSignaturesAggregator *getTimeSignaturesAggregator() const noexcept;
+    // fixme: still need to expose the ts track
 
     //===------------------------------------------------------------------===//
     // Navigation helpers
@@ -75,7 +79,7 @@ public:
     void dispatchChangeProjectBeatRange() override;
 
     ProjectNode *getProject() const noexcept override;
-        
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//

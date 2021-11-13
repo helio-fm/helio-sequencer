@@ -510,8 +510,10 @@
 		91320EC2741DC17A8D2DC3EA /* TreeNodeSerializer.cpp */ /* TreeNodeSerializer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TreeNodeSerializer.cpp; path = ../../Source/Core/Tree/TreeNodeSerializer.cpp; sourceTree = SOURCE_ROOT; };
 		913AB6384D10A2CB26A1F0BC /* RemoteCache.cpp */ /* RemoteCache.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RemoteCache.cpp; path = ../../Source/Core/VCS/RemoteCache.cpp; sourceTree = SOURCE_ROOT; };
 		9191B3672D45F496945F1E94 /* Dashboard.h */ /* Dashboard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Dashboard.h; path = ../../Source/UI/Pages/Dashboard/Dashboard.h; sourceTree = SOURCE_ROOT; };
+		919D26B5B7A20BC0FE432466 /* TimeSignaturesAggregator.cpp */ /* TimeSignaturesAggregator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TimeSignaturesAggregator.cpp; path = ../../Source/Core/Midi/Sequences/TimeSignaturesAggregator.cpp; sourceTree = SOURCE_ROOT; };
 		91BF0ECCD30B4E1903980A7F /* juce_events */ /* juce_events */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_events; path = ../../ThirdParty/JUCE/modules/juce_events; sourceTree = SOURCE_ROOT; };
 		9211843DC3B83E07FB5FBB6F /* PatternDiffHelpers.cpp */ /* PatternDiffHelpers.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatternDiffHelpers.cpp; path = ../../Source/Core/VCS/DiffLogic/PatternDiffHelpers.cpp; sourceTree = SOURCE_ROOT; };
+		924410395463F4047D61E37A /* TimeSignaturesAggregator.h */ /* TimeSignaturesAggregator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimeSignaturesAggregator.h; path = ../../Source/Core/Midi/Sequences/TimeSignaturesAggregator.h; sourceTree = SOURCE_ROOT; };
 		9266063D65E9F31326FDAD10 /* ShadowUpwards.h */ /* ShadowUpwards.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShadowUpwards.h; path = ../../Source/UI/Themes/ShadowUpwards.h; sourceTree = SOURCE_ROOT; };
 		931C9A10356EBEF33EC9B8B2 /* ModalDialogInput.h */ /* ModalDialogInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ModalDialogInput.h; path = ../../Source/UI/Dialogs/ModalDialogInput.h; sourceTree = SOURCE_ROOT; };
 		9328AFA927EAB066125542C1 /* instrument.svg */ /* instrument.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = instrument.svg; path = ../../Resources/Icons/instrument.svg; sourceTree = SOURCE_ROOT; };
@@ -1133,6 +1135,8 @@
 				1D37308D52CA94F2B3FBE7B2,
 				8595F5B6143C4355B21C1149,
 				1A98241610EB2A40F191FC7F,
+				919D26B5B7A20BC0FE432466,
+				924410395463F4047D61E37A,
 			);
 			name = Sequences;
 			sourceTree = "<group>";

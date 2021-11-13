@@ -45,7 +45,6 @@
 #include "ProjectTimeline.h"
 #include "AnnotationsSequence.h"
 #include "KeySignaturesSequence.h"
-#include "TimeSignaturesSequence.h"
 #include "SequencerOperations.h"
 #include "RollListener.h"
 #include "VersionControlNode.h"
@@ -156,6 +155,7 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     this->project.addListener(this);
     this->project.getEditMode().addChangeListener(this);
     this->project.getTransport().addTransportListener(this);
+    this->project.getTimeline()->getTimeSignaturesAggregator()->addListener(this);
 
     if (this->clippingDetector != nullptr)
     {
@@ -179,6 +179,7 @@ RollBase::~RollBase()
 
     this->removeAllRollListeners();
 
+    this->project.getTimeline()->getTimeSignaturesAggregator()->removeListener(this);
     this->project.getTransport().removeTransportListener(this);
     this->project.getEditMode().removeChangeListener(this);
     this->project.removeListener(this);
@@ -573,6 +574,15 @@ float RollBase::getZoomFactorY() const noexcept
 }
 
 //===----------------------------------------------------------------------===//
+// TimeSignaturesAggregator::Listener
+//===----------------------------------------------------------------------===//
+
+void RollBase::onTimeSignaturesUpdated()
+{
+    this->repaint();
+}
+
+//===----------------------------------------------------------------------===//
 // Accessors
 //===----------------------------------------------------------------------===//
 
@@ -679,8 +689,8 @@ void RollBase::computeVisibleBeatLines()
     this->visibleSnaps.clearQuick();
     this->allSnaps.clearQuick();
 
-    const auto *tsSequence =
-        this->project.getTimeline()->getTimeSignatures()->getSequence();
+    const auto &orderedTimeSignatures =
+        this->project.getTimeline()->getTimeSignaturesAggregator()->getAllOrdered();
 
     const float zeroCanvasOffset = this->firstBeat * this->beatWidth; // usually a negative value
     const float viewPosX = float(this->viewport.getViewPositionX());
@@ -707,9 +717,11 @@ void RollBase::computeVisibleBeatLines()
 
     // Find a time signature to start from (or use default values):
     // find a first time signature after a paint start and take a previous one, if any
-    for (; nextTsIdx < tsSequence->size(); ++nextTsIdx)
+    for (; nextTsIdx < orderedTimeSignatures.size(); ++nextTsIdx)
     {
-        const auto *signature = static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextTsIdx));
+        const auto *signature = static_cast<TimeSignatureEvent *>
+            (orderedTimeSignatures.getUnchecked(nextTsIdx));
+
         const float signatureBar = (signature->getBeat() / Globals::beatsPerBar);
 
         // The very first event defines what's before it (both time signature and offset)
@@ -766,8 +778,8 @@ void RollBase::computeVisibleBeatLines()
             }
 
             // Check if we have more time signatures to come
-            const auto *nextSignature = (nextTsIdx >= tsSequence->size()) ? nullptr :
-                static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextTsIdx));
+            const auto *nextSignature = (nextTsIdx >= orderedTimeSignatures.size()) ? nullptr :
+                static_cast<TimeSignatureEvent *>(orderedTimeSignatures.getUnchecked(nextTsIdx));
 
             // Now for the beat lines
             bool lastFrame = false;

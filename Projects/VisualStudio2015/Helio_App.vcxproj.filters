@@ -793,6 +793,9 @@
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.cpp">
       <Filter>Helio\Source\Core\Midi\Sequences</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesAggregator.cpp">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp">
       <Filter>Helio\Source\Core\Midi</Filter>
     </ClCompile>
@@ -3676,6 +3679,9 @@
       <Filter>Helio\Source\Core\Midi\Sequences</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.h">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesAggregator.h">
       <Filter>Helio\Source\Core\Midi\Sequences</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Midi\MidiTrack.h">

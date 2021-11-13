@@ -349,6 +349,10 @@
                   file="../../Source/Core/Midi/Sequences/TimeSignaturesSequence.cpp"/>
             <FILE id="czxRrv" name="TimeSignaturesSequence.h" compile="0" resource="0"
                   file="../../Source/Core/Midi/Sequences/TimeSignaturesSequence.h"/>
+            <FILE id="AgDdB2" name="TimeSignaturesAggregator.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Midi/Sequences/TimeSignaturesAggregator.cpp"/>
+            <FILE id="d9urcg" name="TimeSignaturesAggregator.h" compile="0" resource="0"
+                  file="../../Source/Core/Midi/Sequences/TimeSignaturesAggregator.h"/>
           </GROUP>
           <FILE id="MrLUNm" name="MidiTrack.cpp" compile="1" resource="0" file="../../Source/Core/Midi/MidiTrack.cpp"/>
           <FILE id="BA8BhP" name="MidiTrack.h" compile="0" resource="0" file="../../Source/Core/Midi/MidiTrack.h"/>

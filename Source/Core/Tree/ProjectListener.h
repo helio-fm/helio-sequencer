@@ -56,8 +56,7 @@ public:
     // I've removed the ability to edit multiple tracks at once, because, first,
     // it's unclear for the breadcrumbs what to display as a current track when multiple tracks are active,
     // and, second, some editing operations make no sense when having selected notes of different clips.
-    // I've never implemented the ability to edit multiple clips at once (where it can be possible);
-    // so far, all the code that works with the selection, assumes that selected notes are unique,
+    // All the code that works with the selection, assumes that selected notes are unique,
     // and there are no multiple instances of the same note within different clips selected.
     virtual void onChangeViewEditableScope(MidiTrack *const track,
         const Clip &clip, bool shouldFocus) {}

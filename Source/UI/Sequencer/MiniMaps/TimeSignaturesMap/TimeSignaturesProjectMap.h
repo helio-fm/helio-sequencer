@@ -17,18 +17,17 @@
 
 #pragma once
 
-#include "TimeSignatureEvent.h"
-#include "ProjectListener.h"
-
 class RollBase;
 class ProjectNode;
 class TrackStartIndicator;
 class TrackEndIndicator;
 class TimeSignatureComponent;
 
-class TimeSignaturesProjectMap final :
-    public Component,
-    public ProjectListener
+#include "TimeSignatureEvent.h"
+#include "TimeSignaturesAggregator.h"
+
+class TimeSignaturesProjectMap final : public Component,
+    public TimeSignaturesAggregator::Listener
 {
 public:
 
@@ -40,33 +39,17 @@ public:
     void alignTimeSignatureComponent(TimeSignatureComponent *nc);
 
     //===------------------------------------------------------------------===//
-    // Component
+    // TimeSignaturesAggregator::Listener
     //===------------------------------------------------------------------===//
 
-    void resized() override;
+    void onTimeSignaturesUpdated() override;
 
-    //===------------------------------------------------------------------===//
-    // ProjectListener
-    //===------------------------------------------------------------------===//
-
-    void onChangeMidiEvent(const MidiEvent &oldEvent,
-        const MidiEvent &newEvent) override;
-    void onAddMidiEvent(const MidiEvent &event) override;
-    void onRemoveMidiEvent(const MidiEvent &event) override;
-
-    // Assuming the timeline has no patterns/clips:
-    void onAddClip(const Clip &clip) override {}
-    void onChangeClip(const Clip &oldClip, const Clip &newClip) override {}
-    void onRemoveClip(const Clip &clip) override {}
-
-    void onAddTrack(MidiTrack *const track) override;
-    void onRemoveTrack(MidiTrack *const track) override;
-    void onChangeTrackProperties(MidiTrack *const track) override;
-
-    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
-    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
-    void onReloadProjectContent(const Array<MidiTrack *> &tracks,
-        const ProjectMetadata *meta) override;
+    // fixme: track-based time signatures can be "inactive" and they are not movable
+    // how to keep track of that here?
+    void onAddTimeSignature(const TimeSignatureEvent &event) override;
+    void onRemoveTimeSignature(const TimeSignatureEvent &event) override;
+    void onChangeTimeSignature(const TimeSignatureEvent &oldEvent,
+        const TimeSignatureEvent &newEvent) override;
 
     //===------------------------------------------------------------------===//
     // Stuff for children
@@ -77,7 +60,13 @@ public:
     void showContextMenuFor(TimeSignatureComponent *nc);
     void alternateActionFor(TimeSignatureComponent *nc);
     float getBeatByXPosition(int x) const;
-    
+
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
+    void resized() override;
+
 private:
     
     void reloadTrackMap();
@@ -108,7 +97,6 @@ private:
     TimeSignatureComponent *createComponent(const TimeSignatureEvent &event);
 
     OwnedArray<TimeSignatureComponent> timeSignatureComponents;
-    FlatHashMap<TimeSignatureEvent, TimeSignatureComponent *, MidiEventHash> timeSignaturesHash;
+    FlatHashMap<TimeSignatureEvent, TimeSignatureComponent *, MidiEventHash> timeSignaturesMap;
     
 };
-

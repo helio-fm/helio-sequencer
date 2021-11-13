@@ -50,6 +50,7 @@ class TimelineWarningMarker;
 #include "UserInterfaceFlags.h"
 #include "AudioMonitor.h"
 #include "HeadlineContextMenuController.h"
+#include "TimeSignaturesAggregator.h"
 #include "Temperament.h"
 
 #if PLATFORM_MOBILE
@@ -76,7 +77,8 @@ class RollBase :
     protected ChangeListener, // listens to RollEditMode,
     protected TransportListener, // for positioning the playhead component and auto-scrolling
     protected AsyncUpdater, // coalesce multiple transport events ^^ into a single async view change
-    protected HighResolutionTimer, // for smooth scrolling to seek position
+    protected HighResolutionTimer, // for smooth scrolling to seek position,
+    protected TimeSignaturesAggregator::Listener, // when the editable scope changes, active time signatures may change
     protected AudioMonitor::ClippingListener // for displaying clipping indicator components
 {
 public:
@@ -181,6 +183,12 @@ public:
     void zoomOutImpulse(float factor = 1.f);
     void zoomToArea(float minBeat, float maxBeat, float margin = Globals::beatsPerBar * 2);
     void startSmoothZoom(const Point<float> &origin, const Point<float> &factor);
+
+    //===------------------------------------------------------------------===//
+    // TimeSignaturesAggregator::Listener
+    //===------------------------------------------------------------------===//
+
+    void onTimeSignaturesUpdated() override;
 
     //===------------------------------------------------------------------===//
     // Misc
