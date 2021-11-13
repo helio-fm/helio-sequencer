@@ -407,8 +407,6 @@
                   file="../../Source/Core/Network/Requests/RevisionsSyncThread.h"/>
             <FILE id="VT4WH4" name="RequestUserProfileThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/RequestUserProfileThread.h"/>
-            <FILE id="TQIxzu" name="TokenCheckThread.h" compile="0" resource="0"
-                  file="../../Source/Core/Network/Requests/TokenCheckThread.h"/>
             <FILE id="BbTLUC" name="TokenUpdateThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/TokenUpdateThread.h"/>
             <FILE id="tjW6qo" name="UpdatesCheckThread.h" compile="0" resource="0"

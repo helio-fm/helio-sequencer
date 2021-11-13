@@ -189,7 +189,6 @@
 		2BFA98FEA3648E16A044DFB6 /* remote.svg */ /* remote.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = remote.svg; path = ../../Resources/Icons/remote.svg; sourceTree = SOURCE_ROOT; };
 		2DA06104F65305C09877EA73 /* inverseUp.svg */ /* inverseUp.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = inverseUp.svg; path = ../../Resources/Icons/inverseUp.svg; sourceTree = SOURCE_ROOT; };
 		2DA41F75DE495706D7C15624 /* SyncedConfigurationInfo.h */ /* SyncedConfigurationInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SyncedConfigurationInfo.h; path = ../../Source/Core/Workspace/SyncedConfigurationInfo.h; sourceTree = SOURCE_ROOT; };
-		2DC95E2D7BAE4063A2BB7594 /* TokenCheckThread.h */ /* TokenCheckThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TokenCheckThread.h; path = ../../Source/Core/Network/Requests/TokenCheckThread.h; sourceTree = SOURCE_ROOT; };
 		2E50627E8358CCDBE796DEA6 /* SpectrumAnalyzer.cpp */ /* SpectrumAnalyzer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SpectrumAnalyzer.cpp; path = ../../Source/Core/Audio/Monitoring/SpectrumAnalyzer.cpp; sourceTree = SOURCE_ROOT; };
 		2E5D06F67D3237BFAD20E536 /* TrackGroupNode.h */ /* TrackGroupNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TrackGroupNode.h; path = ../../Source/Core/Tree/TrackGroupNode.h; sourceTree = SOURCE_ROOT; };
 		2E6FF240C84C8A6BD97C4578 /* KeySignatureSmallComponent.cpp */ /* KeySignatureSmallComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = KeySignatureSmallComponent.cpp; path = ../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureSmallComponent.cpp; sourceTree = SOURCE_ROOT; };
@@ -1444,7 +1443,6 @@
 				DC652073B48E01E79421C4D2,
 				6B6229A72E90E6A22A40FF07,
 				388334BF1C5751DEACCC2A33,
-				2DC95E2D7BAE4063A2BB7594,
 				1EF4CFF7A76A3133DF401252,
 				6F58F3C4A61D4BCFB05246E6,
 			);

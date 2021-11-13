@@ -3747,9 +3747,6 @@
     <ClInclude Include="..\..\Source\Core\Network\Requests\RequestUserProfileThread.h">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\TokenCheckThread.h">
-      <Filter>Helio\Source\Core\Network\Requests</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Network\Requests\TokenUpdateThread.h">
       <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
