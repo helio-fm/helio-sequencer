@@ -269,6 +269,7 @@ void PianoProjectMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
         this->rollFirstBeat = jmin(firstBeat, this->rollFirstBeat);
         this->rollLastBeat = jmax(lastBeat, this->rollLastBeat);
         this->resized();
+        this->repaint();
     }
 }
 
@@ -279,6 +280,7 @@ void PianoProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
         this->rollFirstBeat = firstBeat;
         this->rollLastBeat = lastBeat;
         this->resized();
+        this->repaint();
     }
 }
 

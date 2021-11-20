@@ -19,13 +19,14 @@
 #include "RollExpandMark.h"
 #include "RollBase.h"
 
-RollExpandMark::RollExpandMark(RollBase &parentRoll, float targetBeat, int numBeatsToTake) :
+RollExpandMark::RollExpandMark(RollBase &parentRoll, float targetBeat, int numBeatsToTake, bool showPlusIcon) :
     roll(parentRoll),
     beat(targetBeat),
     numBeats(numBeatsToTake)
 {
     this->plusImage = make<IconComponent>(Icons::expand);
-    this->addAndMakeVisible(this->plusImage.get());
+    this->addChildComponent(this->plusImage.get());
+    this->plusImage->setVisible(showPlusIcon);
 
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);

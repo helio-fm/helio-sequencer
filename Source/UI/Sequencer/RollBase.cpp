@@ -516,7 +516,8 @@ void RollBase::zoomToArea(float minBeat, float maxBeat, float marginBeats)
     this->updateChildrenPositions();
 }
 
-void RollBase::zoomRelative(const Point<float> &origin, const Point<float> &factor)
+void RollBase::zoomRelative(const Point<float> &origin,
+    const Point<float> &factor, bool isInertialZoom)
 {
     this->stopFollowingPlayhead();
 
@@ -527,10 +528,12 @@ void RollBase::zoomRelative(const Point<float> &origin, const Point<float> &fact
     float newBeatWidth = this->beatWidth + (factor.getX() * this->beatWidth);
     const float estimatedNewWidth = newBeatWidth * this->getNumBeats();
 
-    if (estimatedNewWidth < float(this->viewport.getViewWidth()))
+    const auto hitsMinZoomThreshold = estimatedNewWidth < float(this->viewport.getViewWidth());
+    const auto shouldAutoFitViewRange = hitsMinZoomThreshold && !isInertialZoom;
+    if (hitsMinZoomThreshold)
     {
-        newBeatWidth = (float(this->viewport.getWidth() + 1) / this->getNumBeats());
-    } // a hack
+        newBeatWidth = float(this->viewport.getWidth() + 1) / this->getNumBeats();
+    }
 
     this->setBeatWidth(newBeatWidth); // will updateBounds() -> setSize() -> resized() -> updateChildrenBounds()
 
@@ -541,6 +544,16 @@ void RollBase::zoomRelative(const Point<float> &origin, const Point<float> &fact
 
     this->resetDraggingAnchors();
     this->updateChildrenPositions();
+
+    if (shouldAutoFitViewRange)
+    {
+        const auto projectRange = this->project.getProjectRangeInBeats();
+        const auto newFirstBeat = projectRange.getStart() - Globals::beatsPerBar;
+        const auto newLastBeat = projectRange.getEnd() + Globals::beatsPerBar;
+        this->project.broadcastChangeViewBeatRange(newFirstBeat, newLastBeat);
+        this->viewport.addAndMakeVisible(new RollExpandMark(*this, newFirstBeat, 1, false));
+        this->viewport.addAndMakeVisible(new RollExpandMark(*this, newLastBeat - 1, 1, false));
+    }
 }
 
 void RollBase::zoomAbsolute(const Rectangle<float> &proportion)

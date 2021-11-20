@@ -25,7 +25,8 @@ class RollExpandMark final : public Component, private Timer
 {
 public:
 
-    RollExpandMark(RollBase &parentRoll, float targetBeat, int numBeatsToTake);
+    RollExpandMark(RollBase &parentRoll,
+        float targetBeat, int numBeatsToTake, bool showPlusIcon = true);
     ~RollExpandMark();
 
     void paint(Graphics &g) override;
@@ -38,11 +39,12 @@ private:
     void timerCallback() override;
     void updatePosition();
 
-    RollBase &roll;
+    const RollBase &roll;
 
-    float beat = 0.f;
+    const float beat = 0.f;
+    const int numBeats = 0;
+
     float alpha = 1.f;
-    int numBeats = 0;
 
     UniquePointer<IconComponent> plusImage;
 

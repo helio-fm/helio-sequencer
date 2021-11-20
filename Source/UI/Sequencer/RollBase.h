@@ -174,7 +174,7 @@ public:
     float getZoomFactorX() const noexcept override;
     float getZoomFactorY() const noexcept override;
     void zoomRelative(const Point<float> &origin,
-        const Point<float> &factor) override;
+        const Point<float> &factor, bool isInertial) override;
     void zoomAbsolute(const Rectangle<float> &proportion);
 
     void zoomInImpulse(float factor = 1.f);

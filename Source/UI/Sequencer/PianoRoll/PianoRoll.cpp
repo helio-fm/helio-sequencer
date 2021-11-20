@@ -302,7 +302,8 @@ void PianoRoll::longTapEvent(const Point<float> &position,
     RollBase::longTapEvent(position, target);
 }
 
-void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
+void PianoRoll::zoomRelative(const Point<float> &origin,
+    const Point<float> &factor, bool isInertial)
 {
     static const float yZoomThreshold = 0.035f;
 
@@ -333,7 +334,7 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
         this->viewport.setViewPosition(int(oldViewPosition.getX()), int(newViewPositionY + 0.5f));
     }
 
-    RollBase::zoomRelative(origin, factor);
+    RollBase::zoomRelative(origin, factor, isInertial);
 }
 
 void PianoRoll::zoomAbsolute(const Rectangle<float> &proportion)

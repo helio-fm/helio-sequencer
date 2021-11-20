@@ -67,6 +67,8 @@ public:
 
     void zoomRelative(const Point<float> &from, const Point<float> &zoom) noexcept
     {
+        this->inertialZoom = this->isZooming();
+
         this->factorX = (this->factorX.get() + zoom.getX()) * Defaults::zoomSmoothFactor;
         this->factorY = (this->factorY.get() + zoom.getY()) * Defaults::zoomSmoothFactor;
         this->originX = from.getX();
@@ -116,7 +118,10 @@ private:
     {
         this->listener.zoomRelative(
             { this->originX.get(), this->originY.get() },
-            { this->factorX.get(), this->factorY.get() });
+            { this->factorX.get(), this->factorY.get() },
+            this->inertialZoom.get());
+
+        this->inertialZoom = true;
     }
 
     SmoothZoomListener &listener;
@@ -139,6 +144,7 @@ private:
     Atomic<float> factorY = 0.f;
     Atomic<float> originX = 0.f;
     Atomic<float> originY = 0.f;
+    Atomic<bool> inertialZoom = false;
 
     Atomic<int> animationDelay = Defaults::timerDelay;
     Atomic<float> zoomDecay = Defaults::zoomDecayFactor;
