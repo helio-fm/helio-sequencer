@@ -21,11 +21,13 @@ class ProjectNode;
 class TimeSignatureEvent;
 class TimeSignaturesSequence;
 
+#include "MidiTrack.h"
 #include "ProjectListener.h"
 
 // A class responsible for maintaining an ordered list of
 // all currently used time signatures: the ones that are coming
-// from the timeline are overridden by the ones of selected clips.
+// from the timeline are replaced by the ones of the selected track,
+// if a single track is selected and if it has a time signature.
 
 // It is used by RollBase to determine where to draw the grid lines,
 // and by TimeSignaturesProjectMap for displaying the time signatures.
@@ -40,27 +42,19 @@ public:
     ~TimeSignaturesAggregator() override;
 
     // Called by the rolls:
-    void setActiveClips(const Array<Clip> &selectedClips);
+    void setActiveScope(WeakReference<MidiTrack> selectedTrack);
 
-    const Array<TimeSignatureEvent *> &getAllOrdered() const noexcept;
+    const Array<TimeSignatureEvent> &getAllOrdered() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Listeners management
     //===------------------------------------------------------------------===//
 
-    class Listener
+    struct Listener
     {
-    public:
-
         Listener() = default;
         virtual ~Listener() = default;
-
         virtual void onTimeSignaturesUpdated() {}
-
-        virtual void onAddTimeSignature(const TimeSignatureEvent &event) {}
-        virtual void onRemoveTimeSignature(const TimeSignatureEvent &event) {}
-        virtual void onChangeTimeSignature(const TimeSignatureEvent &oldEvent,
-            const TimeSignatureEvent &newEvent) {}
     };
 
     void addListener(Listener *listener);
@@ -80,9 +74,10 @@ public:
     void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
     void onRemoveClip(const Clip &clip) override;
 
-    void onAddTrack(MidiTrack *const track) override;
+    void onAddTrack(MidiTrack *const track) override {}
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;
+    void onChangeTrackBeatRange(MidiTrack *const track) override;
 
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
@@ -92,13 +87,15 @@ public:
 private:
 
     ProjectNode &project;
-
     TimeSignaturesSequence &timelineSignatures;
 
     // todo how to store all events?
 
+    WeakReference<MidiTrack> selectedTrack = nullptr;
 
-    Array<TimeSignatureEvent *> orderedEvents;
+    void rebuildAll();
+
+    Array<TimeSignatureEvent> orderedEvents;
 
     ListenerList<Listener> listeners;
 

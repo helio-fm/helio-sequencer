@@ -321,29 +321,14 @@ void KeySignaturesProjectMap::keySignatureTapAction(KeySignatureComponent *ksc, 
         return;
     }
 
-    const KeySignatureEvent *keySignatureUnderSeekCursor = nullptr;
-    const ProjectTimeline *timeline = this->project.getTimeline();
-    const auto keySignatures = timeline->getKeySignatures()->getSequence();
     const auto seekBeat = this->project.getTransport().getSeekBeat();
-
-    for (int i = 0; i < keySignatures->size(); ++i)
-    {
-        auto *keySignature = static_cast<KeySignatureEvent *>(keySignatures->getUnchecked(i));
-
-        if (fabs(keySignature->getBeat() - seekBeat) < 0.001f)
-        {
-            keySignatureUnderSeekCursor = keySignature;
-            break;
-        }
-    }
-
     const auto newSeekBeat = ksc->getBeat();
     const bool wasPlaying = this->project.getTransport().isPlaying();
 
     this->project.getTransport().stopPlaybackAndRecording();
     this->project.getTransport().seekToBeat(newSeekBeat);
 
-    if (keySignatureUnderSeekCursor == &ksc->getEvent() && !wasPlaying)
+    if (fabs(ksc->getBeat() - seekBeat) < 0.001f && !wasPlaying)
     {
         App::showModalComponent(KeySignatureDialog::editingDialog(this->project, ksc->getEvent()));
     }

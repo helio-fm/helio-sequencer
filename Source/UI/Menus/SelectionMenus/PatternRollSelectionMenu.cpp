@@ -31,6 +31,7 @@
 #include "MidiTrackNode.h"
 #include "MidiTrackActions.h"
 #include "AutomationSequence.h"
+#include "PianoSequence.h"
 
 #include "TempoDialog.h"
 #include "Workspace.h"
@@ -64,34 +65,36 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::zoomToFit, CommandIDs::ZoomEntireClip,
-        TRANS(I18n::Menu::Selection::clipsEdit))->
-        disabledIf(lasso->getNumSelected() == 0)->closesMenu());
+        TRANS(I18n::Menu::Selection::clipsEdit))
+                 ->disabledIf(lasso->getNumSelected() == 0)
+                 ->closesMenu());
 
     if (this->lasso->getNumSelected() == 1)
     {
         auto *track = this->lasso->getFirstAs<ClipComponent>()->getClip().getPattern()->getTrack();
-        if (auto *sequence = dynamic_cast<AutomationSequence *>(track->getSequence()))
+        if (auto *autoSequence = dynamic_cast<AutomationSequence *>(track->getSequence()))
         {
             // sets one tempo for the selected track, not for the entire project
-            const auto firstBeat = sequence->getFirstBeat();
-            const auto lastBeat = jmax(sequence->getLastBeat(),
+            const auto firstBeat = autoSequence->getFirstBeat();
+            const auto lastBeat = jmax(autoSequence->getLastBeat(),
                 firstBeat + Globals::Defaults::emptyClipLength);
 
-            const auto avgValue = sequence->getAverageControllerValue();
+            const auto avgValue = autoSequence->getAverageControllerValue();
             const auto avgMsPerQuarterNote = Transport::getTempoByControllerValue(avgValue) / 1000;
             const auto avgBpm = 60000 / jmax(1, avgMsPerQuarterNote);
 
-            menu.add(MenuItem::item(Icons::automationTrack, TRANS(I18n::Menu::setOneTempo))->
-                closesMenu()->withAction([avgBpm, firstBeat, lastBeat, track]()
-            {
+            menu.add(MenuItem::item(Icons::automationTrack, TRANS(I18n::Menu::setOneTempo))->closesMenu()->withAction([avgBpm, firstBeat, lastBeat, track]() {
                 auto dialog = make<TempoDialog>(avgBpm);
-                dialog->onOk = [firstBeat, lastBeat, track](int newBpmValue)
-                {
+                dialog->onOk = [firstBeat, lastBeat, track](int newBpmValue) {
                     SequencerOperations::setOneTempoForTrack(track, firstBeat, lastBeat, newBpmValue);
                 };
 
                 App::showModalComponent(move(dialog));
             }));
+        }
+        else if (auto *pianoSequence = dynamic_cast<PianoSequence *>(track->getSequence()))
+        {
+        
         }
     }
     else

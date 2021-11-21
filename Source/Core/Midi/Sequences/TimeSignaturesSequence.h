@@ -43,12 +43,6 @@ public:
         const TimeSignatureEvent &newSignature,
         bool undoable);
 
-    bool insertGroup(Array<TimeSignatureEvent> &signatures, bool undoable);
-    bool removeGroup(Array<TimeSignatureEvent> &signatures, bool undoable);
-    bool changeGroup(Array<TimeSignatureEvent> &signaturesBefore,
-        Array<TimeSignatureEvent> &signaturesAfter,
-        bool undoable);
-
     //===------------------------------------------------------------------===//
     // Callbacks
     //===------------------------------------------------------------------===//

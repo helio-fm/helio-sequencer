@@ -17,28 +17,31 @@
 
 #include "Common.h"
 #include "TimeSignatureEvent.h"
+#include "MidiTrack.h"
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 
-TimeSignatureEvent::TimeSignatureEvent() noexcept : MidiEvent(nullptr, Type::TimeSignature, 0.f)
-{
-    //jassertfalse;
-}
+// makes an invalid time signature
+TimeSignatureEvent::TimeSignatureEvent() noexcept :
+    MidiEvent(nullptr, Type::TimeSignature, 0.f) {}
 
 TimeSignatureEvent::TimeSignatureEvent(const TimeSignatureEvent &other) noexcept :
     MidiEvent(other),
+    track(other.track),
     numerator(other.numerator),
     denominator(other.denominator) {}
 
 TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     float newBeat, int newNumerator, int newDenominator) noexcept :
     MidiEvent(owner, Type::TimeSignature, newBeat),
+    track(nullptr),
     numerator(newNumerator),
     denominator(newDenominator) {}
 
 TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     const TimeSignatureEvent &parametersToCopy) noexcept :
     MidiEvent(owner, parametersToCopy),
+    track(parametersToCopy.track),
     numerator(parametersToCopy.numerator),
     denominator(parametersToCopy.denominator) {}
 
@@ -112,7 +115,6 @@ TimeSignatureEvent TimeSignatureEvent::withNewId() const noexcept
     return e;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Accessors
 //===----------------------------------------------------------------------===//
@@ -127,11 +129,31 @@ int TimeSignatureEvent::getDenominator() const noexcept
     return this->denominator;
 }
 
+bool TimeSignatureEvent::isValid() const noexcept
+{
+    return this->numerator > 0 && this->denominator > 0;
+}
+
+float TimeSignatureEvent::getBarLengthInBeats() const noexcept
+{
+    jassert(this->isValid());
+    return float(this->numerator) / float(this->denominator) * float(Globals::beatsPerBar);
+}
+
+Colour TimeSignatureEvent::getColour() const
+{
+    if (this->track == nullptr)
+    {
+        return findDefaultColour(Label::textColourId);
+    }
+
+    return this->track->getTrackColour();
+}
+
 String TimeSignatureEvent::toString() const noexcept
 {
     return String(this->numerator) + "/" + String(this->denominator);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -160,10 +182,48 @@ void TimeSignatureEvent::deserialize(const SerializedData &data)
 
 void TimeSignatureEvent::reset() noexcept {}
 
+//===----------------------------------------------------------------------===//
+// Helpers
+//===----------------------------------------------------------------------===//
+
+// a time signature that belongs to a track will have no id,
+// and if it belongs to the timeline sequence, it will have a unique id
+// within that sequence; note that both the comparator and the hash methods
+// assume a track can only have one time signature, and the timeline can have many.
+
 void TimeSignatureEvent::applyChanges(const TimeSignatureEvent &parameters) noexcept
 {
     jassert(this->id == parameters.id);
+    jassert(this->track == parameters.track);
+
     this->beat = parameters.beat;
     this->numerator = parameters.numerator;
     this->denominator = parameters.denominator;
+}
+
+int TimeSignatureEvent::compareElements(const TimeSignatureEvent *const first, const TimeSignatureEvent *const second) noexcept
+{
+    if (first == second)
+    {
+        return 0;
+    }
+
+    const float beatDiff = first->getBeat() - second->getBeat();
+    const int beatResult = (beatDiff > 0.f) - (beatDiff < 0.f);
+    if (beatResult != 0)
+    {
+        return beatResult;
+    }
+
+    return first->getId() - second->getId();
+}
+
+HashCode TimeSignatureEvent::getHash() const
+{
+    if (this->track != nullptr)
+    {
+        return this->track->getTrackId().hashCode();
+    }
+
+    return static_cast<HashCode>(this->id);
 }

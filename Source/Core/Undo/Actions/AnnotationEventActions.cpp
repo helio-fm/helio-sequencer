@@ -33,8 +33,7 @@ AnnotationEventInsertAction::AnnotationEventInsertAction(MidiTrackSource &source
 
 bool AnnotationEventInsertAction::perform()
 {
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
@@ -44,8 +43,7 @@ bool AnnotationEventInsertAction::perform()
 
 bool AnnotationEventInsertAction::undo()
 {
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
     }
@@ -90,8 +88,7 @@ AnnotationEventRemoveAction::AnnotationEventRemoveAction(MidiTrackSource &source
 
 bool AnnotationEventRemoveAction::perform()
 {
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
     }
@@ -101,8 +98,7 @@ bool AnnotationEventRemoveAction::perform()
 
 bool AnnotationEventRemoveAction::undo()
 {
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
@@ -149,8 +145,7 @@ AnnotationEventChangeAction::AnnotationEventChangeAction(MidiTrackSource &source
 
 bool AnnotationEventChangeAction::perform()
 {
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->change(this->eventBefore, this->eventAfter, false);
     }
@@ -160,8 +155,7 @@ bool AnnotationEventChangeAction::perform()
 
 bool AnnotationEventChangeAction::undo()
 {
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->change(this->eventAfter, this->eventBefore, false);
     }
@@ -224,272 +218,5 @@ void AnnotationEventChangeAction::reset()
 {
     this->eventBefore.reset();
     this->eventAfter.reset();
-    this->trackId.clear();
-}
-
-//===----------------------------------------------------------------------===//
-// Insert Group
-//===----------------------------------------------------------------------===//
-
-AnnotationEventsGroupInsertAction::AnnotationEventsGroupInsertAction(MidiTrackSource &source,
-    const String &trackId, Array<AnnotationEvent> &target) noexcept :
-    UndoAction(source),
-    trackId(trackId)
-{
-    this->annotations.swapWith(target);
-}
-
-bool AnnotationEventsGroupInsertAction::perform()
-{
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
-    {
-        return sequence->insertGroup(this->annotations, false);
-    }
-    
-    return false;
-}
-
-bool AnnotationEventsGroupInsertAction::undo()
-{
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
-    {
-        return sequence->removeGroup(this->annotations, false);
-    }
-    
-    return false;
-}
-
-int AnnotationEventsGroupInsertAction::getSizeInUnits()
-{
-    return (sizeof(AnnotationEvent) * this->annotations.size());
-}
-
-SerializedData AnnotationEventsGroupInsertAction::serialize() const
-{
-    SerializedData tree(Serialization::Undo::annotationEventsGroupInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
-    for (int i = 0; i < this->annotations.size(); ++i)
-    {
-        tree.appendChild(this->annotations.getUnchecked(i).serialize());
-    }
-    
-    return tree;
-}
-
-void AnnotationEventsGroupInsertAction::deserialize(const SerializedData &data)
-{
-    this->reset();
-    this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
-    for (const auto &params : data)
-    {
-        AnnotationEvent ae;
-        ae.deserialize(params);
-        this->annotations.add(ae);
-    }
-}
-
-void AnnotationEventsGroupInsertAction::reset()
-{
-    this->annotations.clear();
-    this->trackId.clear();
-}
-
-//===----------------------------------------------------------------------===//
-// Remove Group
-//===----------------------------------------------------------------------===//
-
-AnnotationEventsGroupRemoveAction::AnnotationEventsGroupRemoveAction(MidiTrackSource &source,
-    const String &trackId, Array<AnnotationEvent> &target) noexcept :
-    UndoAction(source),
-    trackId(trackId)
-{
-    this->annotations.swapWith(target);
-}
-
-bool AnnotationEventsGroupRemoveAction::perform()
-{
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
-    {
-        return sequence->removeGroup(this->annotations, false);
-    }
-    
-    return false;
-}
-
-bool AnnotationEventsGroupRemoveAction::undo()
-{
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
-    {
-        return sequence->insertGroup(this->annotations, false);
-    }
-    
-    return false;
-}
-
-int AnnotationEventsGroupRemoveAction::getSizeInUnits()
-{
-    return (sizeof(AnnotationEvent) * this->annotations.size());
-}
-
-SerializedData AnnotationEventsGroupRemoveAction::serialize() const
-{
-    SerializedData tree(Serialization::Undo::annotationEventsGroupRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
-    for (int i = 0; i < this->annotations.size(); ++i)
-    {
-        tree.appendChild(this->annotations.getUnchecked(i).serialize());
-    }
-    
-    return tree;
-}
-
-void AnnotationEventsGroupRemoveAction::deserialize(const SerializedData &data)
-{
-    this->reset();
-    this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
-    for (const auto &params : data)
-    {
-        AnnotationEvent ae;
-        ae.deserialize(params);
-        this->annotations.add(ae);
-    }
-}
-
-void AnnotationEventsGroupRemoveAction::reset()
-{
-    this->annotations.clear();
-    this->trackId.clear();
-}
-
-//===----------------------------------------------------------------------===//
-// Change Group
-//===----------------------------------------------------------------------===//
-
-AnnotationEventsGroupChangeAction::AnnotationEventsGroupChangeAction(MidiTrackSource &source,
-    const String &trackId, const Array<AnnotationEvent> state1,
-    const Array<AnnotationEvent> state2) noexcept :
-    UndoAction(source),
-    trackId(trackId)
-{
-    this->eventsBefore.addArray(state1);
-    this->eventsAfter.addArray(state2);
-}
-
-bool AnnotationEventsGroupChangeAction::perform()
-{
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
-    {
-        return sequence->changeGroup(this->eventsBefore, this->eventsAfter, false);
-    }
-    
-    return false;
-}
-
-bool AnnotationEventsGroupChangeAction::undo()
-{
-    if (AnnotationsSequence *sequence =
-        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
-    {
-        return sequence->changeGroup(this->eventsAfter, this->eventsBefore, false);
-    }
-    
-    return false;
-}
-
-int AnnotationEventsGroupChangeAction::getSizeInUnits()
-{
-    return (sizeof(AnnotationEvent) * this->eventsBefore.size()) +
-        (sizeof(AnnotationEvent) * this->eventsAfter.size());
-}
-
-UndoAction *AnnotationEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
-{
-    if (auto *nextChanger = dynamic_cast<AnnotationEventsGroupChangeAction *>(nextAction))
-    {
-        if (nextChanger->trackId != this->trackId)
-        {
-            return nullptr;
-        }
-
-        // simple checking the first and the last ones should be enough here
-        bool arraysContainSameEvents =
-            (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
-            (this->eventsBefore[0].getId() == nextChanger->eventsAfter[0].getId());
-
-        if (arraysContainSameEvents)
-        {
-            return new AnnotationEventsGroupChangeAction(this->source,
-                this->trackId, this->eventsBefore, nextChanger->eventsAfter);
-        }
-    }
-
-    (void) nextAction;
-    return nullptr;
-}
-
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-SerializedData AnnotationEventsGroupChangeAction::serialize() const
-{
-    SerializedData tree(Serialization::Undo::annotationEventsGroupChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
-    SerializedData groupBeforeChild(Serialization::Undo::groupBefore);
-    SerializedData groupAfterChild(Serialization::Undo::groupAfter);
-    
-    for (int i = 0; i < this->eventsBefore.size(); ++i)
-    {
-        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize());
-    }
-    
-    for (int i = 0; i < this->eventsAfter.size(); ++i)
-    {
-        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize());
-    }
-    
-    tree.appendChild(groupBeforeChild);
-    tree.appendChild(groupAfterChild);
-    
-    return tree;
-}
-
-void AnnotationEventsGroupChangeAction::deserialize(const SerializedData &data)
-{
-    this->reset();
-    this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
-    const auto groupBeforeChild = data.getChildWithName(Serialization::Undo::groupBefore);
-    const auto groupAfterChild = data.getChildWithName(Serialization::Undo::groupAfter);
-    
-    for (const auto &params : groupBeforeChild)
-    {
-        AnnotationEvent ae;
-        ae.deserialize(params);
-        this->eventsBefore.add(ae);
-    }
-    
-    for (const auto &params : groupAfterChild)
-    {
-        AnnotationEvent ae;
-        ae.deserialize(params);
-        this->eventsAfter.add(ae);
-    }
-}
-
-void AnnotationEventsGroupChangeAction::reset()
-{
-    this->eventsBefore.clear();
-    this->eventsAfter.clear();
     this->trackId.clear();
 }

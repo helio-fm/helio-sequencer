@@ -168,6 +168,7 @@ void TimeSignatureLargeComponent::updateContent()
         this->numerator = this->event.getNumerator();
         this->denominator = this->event.getDenominator();
 
+        // fixme colour
         this->signatureLabel->setText(this->event.toString(), dontSendNotification);
         this->textWidth = float(this->signatureLabel->getFont()
             .getStringWidth(this->signatureLabel->getText()));

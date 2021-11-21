@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include "PianoTrackDiffLogic.h"
 #include "MidiTrackNode.h"
+#include "PianoTrackDiffLogic.h"
 
 class PianoTrackNode final : public MidiTrackNode
 {
@@ -60,6 +60,8 @@ public:
     void resetEventsDelta(const SerializedData &state);
 
 private:
+
+    //TimeSignatureEvent timeSignatureOverride;
 
     UniquePointer<VCS::PianoTrackDiffLogic> vcsDiffLogic;
     OwnedArray<VCS::Delta> deltas;

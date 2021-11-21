@@ -656,7 +656,10 @@ void PatternRoll::handleCommandMessage(int commandId)
             App::showModalComponent(make<TrackPropertiesDialog>(this->project, trackNode));
         }
         break;
-    case CommandIDs::DuplicateTrack: // the implementation for these two
+    case CommandIDs::SetTrackTimeSignature:
+        // todo
+        break;
+    case CommandIDs::DuplicateTrack:        // the implementation for these two
     case CommandIDs::InstanceToUniqueTrack: // is pretty much the same code
         if (this->getLassoSelection().getNumSelected() == 1)
         {

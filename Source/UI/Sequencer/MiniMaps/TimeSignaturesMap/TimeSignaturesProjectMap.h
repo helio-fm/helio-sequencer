@@ -23,11 +23,13 @@ class TrackStartIndicator;
 class TrackEndIndicator;
 class TimeSignatureComponent;
 
+#include "ProjectListener.h"
 #include "TimeSignatureEvent.h"
 #include "TimeSignaturesAggregator.h"
 
 class TimeSignaturesProjectMap final : public Component,
-    public TimeSignaturesAggregator::Listener
+    public TimeSignaturesAggregator::Listener,
+    public ProjectListener
 {
 public:
 
@@ -36,7 +38,22 @@ public:
     TimeSignaturesProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type);
     ~TimeSignaturesProjectMap() override;
 
-    void alignTimeSignatureComponent(TimeSignatureComponent *nc);
+    //===------------------------------------------------------------------===//
+    // ProjectListener
+    //===------------------------------------------------------------------===//
+
+    void onChangeMidiEvent(const MidiEvent &, const MidiEvent &) override {}
+    void onAddMidiEvent(const MidiEvent &) override {}
+    void onRemoveMidiEvent(const MidiEvent &) override {}
+    void onAddClip(const Clip &) override {}
+    void onChangeClip(const Clip &, const Clip &) override {}
+    void onRemoveClip(const Clip &) override {}
+    void onAddTrack(MidiTrack *const) override {}
+    void onRemoveTrack(MidiTrack *const) override {}
+    void onChangeTrackProperties(MidiTrack *const) override {}
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
+    void onReloadProjectContent(const Array<MidiTrack *> &, const ProjectMetadata *) override {}
 
     //===------------------------------------------------------------------===//
     // TimeSignaturesAggregator::Listener
@@ -44,20 +61,13 @@ public:
 
     void onTimeSignaturesUpdated() override;
 
-    // fixme: track-based time signatures can be "inactive" and they are not movable
-    // how to keep track of that here?
-    void onAddTimeSignature(const TimeSignatureEvent &event) override;
-    void onRemoveTimeSignature(const TimeSignatureEvent &event) override;
-    void onChangeTimeSignature(const TimeSignatureEvent &oldEvent,
-        const TimeSignatureEvent &newEvent) override;
-
     //===------------------------------------------------------------------===//
     // Stuff for children
     //===------------------------------------------------------------------===//
 
     void onTimeSignatureMoved(TimeSignatureComponent *nc);
     void onTimeSignatureTapped(TimeSignatureComponent *nc);
-    void showContextMenuFor(TimeSignatureComponent *nc);
+    void showDialogFor(TimeSignatureComponent *nc);
     void alternateActionFor(TimeSignatureComponent *nc);
     float getBeatByXPosition(int x) const;
 
@@ -70,10 +80,8 @@ public:
 private:
     
     void reloadTrackMap();
-    void applyTimeSignatureBounds(TimeSignatureComponent *nc, TimeSignatureComponent *nextOne = nullptr);
-    
-    TimeSignatureComponent *getPreviousEventComponent(int indexOfSorted) const;
-    TimeSignatureComponent *getNextEventComponent(int indexOfSorted) const;
+    void applyTimeSignatureBounds(TimeSignatureComponent *c,
+        TimeSignatureComponent *nextOne = nullptr);
     
     void updateTrackRangeIndicatorsAnchors();
     
@@ -97,6 +105,6 @@ private:
     TimeSignatureComponent *createComponent(const TimeSignatureEvent &event);
 
     OwnedArray<TimeSignatureComponent> timeSignatureComponents;
-    FlatHashMap<TimeSignatureEvent, TimeSignatureComponent *, MidiEventHash> timeSignaturesMap;
-    
+    FlatHashMap<TimeSignatureEvent, TimeSignatureComponent *,
+        TimeSignatureEventHash> timeSignaturesMap;
 };

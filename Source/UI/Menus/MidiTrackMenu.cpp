@@ -35,16 +35,30 @@ MidiTrackMenu::MidiTrackMenu(MidiTrackNode &node) :
 void MidiTrackMenu::initDefaultMenu()
 {
     MenuPanel::Menu menu;
-    menu.add(MenuItem::item(Icons::selectAll, CommandIDs::SelectAllEvents, TRANS(I18n::Menu::trackSelectall))->closesMenu());
-    
+
+#if PLATFORM_MOBILE
+    menu.add(MenuItem::item(Icons::selectAll, CommandIDs::SelectAllEvents,
+        TRANS(I18n::Menu::trackSelectall))->closesMenu());
+#endif
+
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
         TRANS(I18n::Menu::trackRename))->closesMenu());
+
+    // todo: a check if this is a piano track?
+    // (this menu shouldn't be available to automation tracks though)
+
+    // fixme: add/change/delete?
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::SetTrackTimeSignature,
+        TRANS(I18n::Menu::timeSignatureChange))->closesMenu());
+
 
     menu.add(MenuItem::item(Icons::copy, CommandIDs::DuplicateTrack,
         TRANS(I18n::Menu::trackDuplicate))->closesMenu());
 
+#if PLATFORM_MOBILE
     menu.add(MenuItem::item(Icons::remove,
         CommandIDs::DeleteTrack, TRANS(I18n::Menu::trackDelete)));
+#endif
 
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->

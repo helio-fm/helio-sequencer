@@ -19,6 +19,11 @@
 
 #include "MidiEvent.h"
 
+// Time signatures are a bit different from other MidiEvents
+// in a way that not only they can belong to a Sequence at the timeline,
+// but they also can belong to a MidiTrack to override the timeline's
+// time signatures when this track is selected.
+
 class TimeSignatureEvent final : public MidiEvent
 {
 public:
@@ -49,8 +54,14 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
+    bool isValid() const noexcept;
+
     int getNumerator() const noexcept;
     int getDenominator() const noexcept;
+
+    float getBarLengthInBeats() const noexcept;
+    Colour getColour() const;
+
     String toString() const noexcept;
 
     //===------------------------------------------------------------------===//
@@ -67,13 +78,32 @@ public:
 
     void applyChanges(const TimeSignatureEvent &parameters) noexcept;
 
+    static inline int compareElements(const TimeSignatureEvent &first, const TimeSignatureEvent &second) noexcept
+    {
+        return TimeSignatureEvent::compareElements(&first, &second);
+    }
+
+    static int compareElements(const TimeSignatureEvent *const first, const TimeSignatureEvent *const second) noexcept;
+
+    HashCode getHash() const;
+
 protected:
 
-    int numerator;
-    int denominator;
+    WeakReference<MidiTrack> track = nullptr;
+
+    int numerator = 0;
+    int denominator = 0;
 
 private:
 
     JUCE_LEAK_DETECTOR(TimeSignatureEvent);
 
+};
+
+struct TimeSignatureEventHash
+{
+    inline HashCode operator()(const TimeSignatureEvent &key) const noexcept
+    {
+        return key.getHash();
+    }
 };

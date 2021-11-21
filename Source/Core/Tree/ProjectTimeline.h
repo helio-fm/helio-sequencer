@@ -38,9 +38,8 @@ public:
     MidiTrack *getAnnotations() const noexcept;
     MidiTrack *getKeySignatures() const noexcept;
 
-    // instead of just MidiTrack:
+    MidiTrack *getTimeSignatures() const noexcept;
     TimeSignaturesAggregator *getTimeSignaturesAggregator() const noexcept;
-    // fixme: still need to expose the ts track
 
     //===------------------------------------------------------------------===//
     // Navigation helpers
@@ -114,12 +113,14 @@ private:
     String keySignaturesTrackId;
 
     UniquePointer<MidiTrack> annotationsTrack;
-    UniquePointer<MidiTrack> timeSignaturesTrack;
     UniquePointer<MidiTrack> keySignaturesTrack;
+    UniquePointer<MidiTrack> timeSignaturesTrack;
 
     UniquePointer<MidiSequence> annotationsSequence;
-    UniquePointer<MidiSequence> timeSignaturesSequence;
     UniquePointer<MidiSequence> keySignaturesSequence;
+    UniquePointer<MidiSequence> timeSignaturesSequence;
+
+    UniquePointer<TimeSignaturesAggregator> timeSignaturesAggregator;
 
     friend class AnnotationsTrack;
     friend class TimeSignaturesTrack;

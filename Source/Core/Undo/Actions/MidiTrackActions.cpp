@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "MidiTrackActions.h"
 #include "MidiTrackSource.h"
+#include "TimeSignatureEvent.h"
 #include "SerializationKeys.h"
 #include "MidiTrack.h"
 
@@ -33,26 +34,24 @@ MidiTrackRenameAction::MidiTrackRenameAction(MidiTrackSource &source,
 
 bool MidiTrackRenameAction::perform()
 {
-    if (MidiTrack *track =
-        this->source.findTrackById<MidiTrack>(this->trackId))
+    if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->xPathBefore = track->getTrackName();
         track->setTrackName(this->xPathAfter, true);
         return true;
     }
-    
+
     return false;
 }
 
 bool MidiTrackRenameAction::undo()
 {
-    if (MidiTrack *track =
-        this->source.findTrackById<MidiTrack>(this->trackId))
+    if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
         track->setTrackName(this->xPathBefore, true);
         return true;
     }
-    
+
     return false;
 }
 
@@ -96,8 +95,7 @@ MidiTrackChangeColourAction::MidiTrackChangeColourAction(MidiTrackSource &source
 
 bool MidiTrackChangeColourAction::perform()
 {
-    if (MidiTrack *track =
-        this->source.findTrackById<MidiTrack>(this->trackId))
+    if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->colourBefore = track->getTrackColour();
         track->setTrackColour(this->colourAfter, true);
@@ -109,8 +107,7 @@ bool MidiTrackChangeColourAction::perform()
 
 bool MidiTrackChangeColourAction::undo()
 {
-    if (MidiTrack *track =
-        this->source.findTrackById<MidiTrack>(this->trackId))
+    if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
         track->setTrackColour(this->colourBefore, true);
         return true;
@@ -157,8 +154,7 @@ MidiTrackChangeInstrumentAction::MidiTrackChangeInstrumentAction(MidiTrackSource
 
 bool MidiTrackChangeInstrumentAction::perform()
 {
-    if (MidiTrack *track =
-        this->source.findTrackById<MidiTrack>(this->trackId))
+    if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->instrumentIdBefore = track->getTrackInstrumentId();
         track->setTrackInstrumentId(this->instrumentIdAfter, true);
@@ -170,8 +166,7 @@ bool MidiTrackChangeInstrumentAction::perform()
 
 bool MidiTrackChangeInstrumentAction::undo()
 {
-    if (MidiTrack *track =
-        this->source.findTrackById<MidiTrack>(this->trackId))
+    if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
         track->setTrackInstrumentId(this->instrumentIdBefore, true);
         return true;
@@ -202,6 +197,70 @@ void MidiTrackChangeInstrumentAction::deserialize(const SerializedData &data)
 }
 
 void MidiTrackChangeInstrumentAction::reset()
+{
+    this->trackId.clear();
+}
+
+//===----------------------------------------------------------------------===//
+// Change Time Signature
+//===----------------------------------------------------------------------===//
+
+MidiTrackChangeTimeSignatureAction::MidiTrackChangeTimeSignatureAction(MidiTrackSource &source,
+    const String &trackId, const TimeSignatureEvent &timeSignature) noexcept :
+    UndoAction(source),
+    trackId(trackId),
+    timeSignatureAfter(timeSignature) {}
+
+bool MidiTrackChangeTimeSignatureAction::perform()
+{
+    if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId)) // fixme PianoTrackNode?
+    {
+        this->timeSignatureBefore = track->getTimeSignatureOverride();
+        track->setTimeSignatureOverride(this->timeSignatureAfter, true);
+        return true;
+    }
+
+    return false;
+}
+
+bool MidiTrackChangeTimeSignatureAction::undo()
+{
+    if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId)) // fixme PianoTrackNode?
+    {
+        track->setTimeSignatureOverride(this->timeSignatureBefore, true);
+        return true;
+    }
+
+    return false;
+}
+
+int MidiTrackChangeTimeSignatureAction::getSizeInUnits()
+{
+    return sizeof(TimeSignatureEvent) * 2;
+}
+
+SerializedData MidiTrackChangeTimeSignatureAction::serialize() const
+{
+    SerializedData data(Serialization::Undo::midiTrackChangeTimeSignatureAction);
+    data.appendChild(this->timeSignatureBefore.serialize());
+    data.appendChild(this->timeSignatureAfter.serialize());
+    data.setProperty(Serialization::Undo::trackId, this->trackId);
+    return data;
+}
+
+void MidiTrackChangeTimeSignatureAction::deserialize(const SerializedData &data)
+{
+    jassert(data.getNumChildren() == 2);
+    if (data.getNumChildren() == 2)
+    {
+        this->timeSignatureBefore.deserialize(data.getChild(0));
+        this->timeSignatureAfter.deserialize(data.getChild(1)); // order matters
+    }
+
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
+}
+
+void MidiTrackChangeTimeSignatureAction::reset()
 {
     this->trackId.clear();
 }

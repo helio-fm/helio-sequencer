@@ -88,6 +88,8 @@ ProjectTimeline::ProjectTimeline(ProjectNode &parentProject, String trackName) :
     this->keySignaturesTrack = make<KeySignaturesTrack>(*this);
     this->keySignaturesSequence = make<KeySignaturesSequence>(*this->keySignaturesTrack, *this);
 
+    this->timeSignaturesAggregator = make<TimeSignaturesAggregator>(this->project, *this->timeSignaturesSequence);
+
     using namespace Serialization::VCS;
     this->vcsDiffLogic = make<VCS::ProjectTimelineDiffLogic>(*this);
     this->deltas.add(new VCS::Delta({}, ProjectTimelineDeltas::annotationsAdded));
@@ -111,14 +113,19 @@ MidiTrack *ProjectTimeline::getAnnotations() const noexcept
     return this->annotationsTrack.get();
 }
 
+MidiTrack *ProjectTimeline::getKeySignatures() const noexcept
+{
+    return this->keySignaturesTrack.get();
+}
+
 MidiTrack *ProjectTimeline::getTimeSignatures() const noexcept
 {
     return this->timeSignaturesTrack.get();
 }
 
-MidiTrack *ProjectTimeline::getKeySignatures() const noexcept
+TimeSignaturesAggregator *ProjectTimeline::getTimeSignaturesAggregator() const noexcept
 {
-    return this->keySignaturesTrack.get();
+    return this->timeSignaturesAggregator.get();
 }
 
 //===----------------------------------------------------------------------===//

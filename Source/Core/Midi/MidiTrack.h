@@ -17,8 +17,9 @@
 
 #pragma once
 
-class MidiSequence;
 class Pattern;
+class MidiSequence;
+class TimeSignatureEvent;
 
 // A track is a meta-object that has
 // - all the properties
@@ -62,6 +63,10 @@ public:
 
     // This one can return nullptr. E.g. timeline-based tracks still don't have patterns:
     virtual Pattern *getPattern() const noexcept = 0;
+
+    // Whether a track has its own time signature which should be used instead of timeline's:
+    virtual bool hasTimeSignatureOverride() const noexcept = 0;
+    virtual TimeSignatureEvent &getTimeSignatureOverride() const noexcept = 0;
 
     //===------------------------------------------------------------------===//
     // Grouping

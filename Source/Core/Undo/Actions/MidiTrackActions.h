@@ -18,6 +18,7 @@
 #pragma once
 
 class MidiTrackSource;
+class TimeSignatureEvent;
 
 #include "UndoAction.h"
 
@@ -115,4 +116,36 @@ private:
     String instrumentIdAfter;
 
     JUCE_DECLARE_NON_COPYABLE(MidiTrackChangeInstrumentAction)
+};
+
+//===----------------------------------------------------------------------===//
+// Change Time Signature
+//===----------------------------------------------------------------------===//
+
+class MidiTrackChangeTimeSignatureAction final : public UndoAction
+{
+public:
+
+    explicit MidiTrackChangeTimeSignatureAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
+
+    MidiTrackChangeTimeSignatureAction(MidiTrackSource &source,
+        const String &trackId, const TimeSignatureEvent &timeSignature) noexcept;
+
+    bool perform() override;
+    bool undo() override;
+    int getSizeInUnits() override;
+
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
+    void reset() override;
+
+private:
+
+    String trackId;
+
+    TimeSignatureEvent timeSignatureBefore;
+    TimeSignatureEvent timeSignatureAfter;
+
+    JUCE_DECLARE_NON_COPYABLE(MidiTrackChangeTimeSignatureAction)
 };

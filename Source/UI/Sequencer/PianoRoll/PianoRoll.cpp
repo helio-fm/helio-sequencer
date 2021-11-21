@@ -1033,6 +1033,9 @@ void PianoRoll::handleCommandMessage(int commandId)
             App::showModalComponent(make<TrackPropertiesDialog>(this->project, trackNode));
         }
         break;
+    case CommandIDs::SetTrackTimeSignature:
+        // todo
+        break;
     case CommandIDs::EditCurrentInstrument:
         if (auto *window = PluginWindow::getWindowFor(this->activeTrack->getTrackInstrumentId()))
         {

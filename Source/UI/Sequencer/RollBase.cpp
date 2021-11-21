@@ -45,6 +45,7 @@
 #include "ProjectTimeline.h"
 #include "AnnotationsSequence.h"
 #include "KeySignaturesSequence.h"
+#include "TimeSignaturesSequence.h"
 #include "SequencerOperations.h"
 #include "RollListener.h"
 #include "VersionControlNode.h"
@@ -712,23 +713,21 @@ void RollBase::computeVisibleBeatLines()
     int numerator = Globals::Defaults::timeSignatureNumerator;
     int denominator = Globals::Defaults::timeSignatureDenominator;
     float barIterator = firstBar;
-    int nextTsIdx = 0;
+    int nextTsIndex = 0;
     bool firstEvent = true;
 
     // Find a time signature to start from (or use default values):
     // find a first time signature after a paint start and take a previous one, if any
-    for (; nextTsIdx < orderedTimeSignatures.size(); ++nextTsIdx)
+    for (; nextTsIndex < orderedTimeSignatures.size(); ++nextTsIndex)
     {
-        const auto *signature = static_cast<TimeSignatureEvent *>
-            (orderedTimeSignatures.getUnchecked(nextTsIdx));
-
-        const float signatureBar = (signature->getBeat() / Globals::beatsPerBar);
+        const auto &signature = orderedTimeSignatures.getUnchecked(nextTsIndex);
+        const float signatureBar = (signature.getBeat() / Globals::beatsPerBar);
 
         // The very first event defines what's before it (both time signature and offset)
         if (firstEvent)
         {
-            numerator = signature->getNumerator();
-            denominator = signature->getDenominator();
+            numerator = signature.getNumerator();
+            denominator = signature.getDenominator();
             const float beatStep = 1.f / float(denominator);
             const float barStep = beatStep * float(numerator);
             barIterator += (fmodf(signatureBar - firstBar, barStep) - barStep);
@@ -740,8 +739,8 @@ void RollBase::computeVisibleBeatLines()
             break;
         }
 
-        numerator = signature->getNumerator();
-        denominator = signature->getDenominator();
+        numerator = signature.getNumerator();
+        denominator = signature.getDenominator();
         barIterator = signatureBar;
     }
 
@@ -777,10 +776,6 @@ void RollBase::computeVisibleBeatLines()
                 this->allSnaps.add(barStartX);
             }
 
-            // Check if we have more time signatures to come
-            const auto *nextSignature = (nextTsIdx >= orderedTimeSignatures.size()) ? nullptr :
-                static_cast<TimeSignatureEvent *>(orderedTimeSignatures.getUnchecked(nextTsIdx));
-
             // Now for the beat lines
             bool lastFrame = false;
             for (float j = 0.f; j < barStep && !lastFrame; j += beatStep)
@@ -788,17 +783,18 @@ void RollBase::computeVisibleBeatLines()
                 const float beatStartX = barStartX + barWidth * j;
                 float nextBeatStartX = barStartX + barWidth * (j + beatStep);
 
-                // Check for time signature change at this point
-                if (nextSignature != nullptr)
+                // Check if we have more time signatures to come
+                if (nextTsIndex < orderedTimeSignatures.size())
                 {
-                    const float tsBar = nextSignature->getBeat() / Globals::beatsPerBar;
+                    const auto &nextSignature = orderedTimeSignatures.getUnchecked(nextTsIndex);
+                    const float tsBar = nextSignature.getBeat() / Globals::beatsPerBar;
                     if (tsBar <= (barIterator + j + beatStep))
                     {
-                        numerator = nextSignature->getNumerator();
-                        denominator = nextSignature->getDenominator();
+                        numerator = nextSignature.getNumerator();
+                        denominator = nextSignature.getDenominator();
                         barStep = (tsBar - barIterator); // i.e. incomplete bar
                         nextBeatStartX = barStartX + barWidth * barStep;
-                        nextTsIdx++;
+                        nextTsIndex++;
                         barWidthSum = minBarWidth; // forces to draw the next bar line
                         lastFrame = true;
                     }
