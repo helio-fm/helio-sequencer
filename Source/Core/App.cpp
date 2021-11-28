@@ -789,3 +789,102 @@ void App::onNativeTitleBarFlagChanged(bool shouldUseNativeTitleBar)
 //===----------------------------------------------------------------------===//
 
 START_JUCE_APPLICATION(App)
+
+//===----------------------------------------------------------------------===//
+// Tests
+//===----------------------------------------------------------------------===//
+
+#if JUCE_UNIT_TESTS
+
+// A quick and dirty way to check if all the build systems, as well as
+// all the scripts/configs/resources contain the same build version.
+// Some places aren't updated automatically, and I tend to overlook that.
+
+class VersionConsistencyTests final : public UnitTest
+{
+public:
+
+    VersionConsistencyTests() :
+        UnitTest("Build systems consistency tests", UnitTestCategories::helio) {}
+
+    void runTest() override
+    {
+        const auto versionString = String(ProjectInfo::versionString);
+
+        beginTest("Versions consistency");
+
+        auto dir = File::getCurrentWorkingDirectory();
+        while (!dir.isRoot())
+        {
+            const auto projectsChild = dir.getChildFile("Projects");
+            if (projectsChild.isDirectory())
+            {
+                this->projectsDirectory = projectsChild;
+                break;
+            }
+
+            dir = dir.getParentDirectory();
+        }
+
+        expect(this->projectsDirectory.isDirectory(), "Projects directory not found");
+
+        /*
+            todo: in future, Android's versionCode should probably be like
+            3.8     3080
+            3.8.1   3081
+            3.9     3090
+            3.10    3100
+            3.10.1  3101
+        */
+
+        this->checkBuildSystem("Android manifest",
+            "Android/app/src/main/AndroidManifest.xml",
+            "versionCode=\"" + versionString.removeCharacters(".") + "\"");
+
+        this->checkBuildSystem(".deb package control file",
+            "Deployment/Linux/Debian/x64/DEBIAN/control",
+            "Version: " + versionString);
+
+        this->checkBuildSystem("Inno Setup script",
+            "Deployment/Windows/setup.iss",
+            "\"" + versionString + "\"");
+
+        this->checkBuildSystem("iOS project plist",
+            "iOS/Info-App.plist",
+            "<string>" + versionString + "</string>");
+
+        this->checkBuildSystem("macOS project plist",
+            "macOS/Info-App.plist",
+            "<string>" + versionString + "</string>");
+
+        this->checkBuildSystem("VS2015 project resource file",
+            "VisualStudio2015/resources.rc",
+            versionString);
+
+        this->checkBuildSystem("VS2019 project resource file",
+            "VisualStudio2019/resources.rc",
+            versionString);
+    }
+
+    void checkBuildSystem(const String &buildSystemName,
+        const String &relativeTargetFilePath, const String &stringToFind)
+    {
+        const auto target = this->projectsDirectory.getChildFile(relativeTargetFilePath);
+        expect(target.existsAsFile(), buildSystemName + " not found");
+
+        if (target.existsAsFile())
+        {
+            const auto content = target.loadFileAsString();
+            expect(content.contains(stringToFind),
+                buildSystemName + " is expected to contain " + stringToFind);
+        }
+    }
+
+private:
+
+    File projectsDirectory;
+};
+
+static VersionConsistencyTests versionConsistencyTests;
+
+#endif
