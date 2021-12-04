@@ -255,10 +255,10 @@ Rectangle<float> PatternRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
     jassert(dynamic_cast<ClipComponent *>(mc));
     const auto *cc = static_cast<ClipComponent *>(mc);
-    return this->getEventBounds(cc->getClip(), cc->getBeat());
+    return this->getEventBounds(cc->getClip());
 }
 
-Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) const
+Rectangle<float> PatternRoll::getEventBounds(const Clip &clip) const
 {
     const auto *track = clip.getPattern()->getTrack();
     const auto *sequence = track->getSequence();
@@ -275,7 +275,7 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
         jmax(sequence->getLengthInBeats(), Globals::minClipLength);
 
     const float w = this->beatWidth * sequenceLength;
-    const float x = this->beatWidth * (sequence->getFirstBeat() + clipBeat - this->firstBeat);
+    const float x = this->beatWidth * (sequence->getFirstBeat() + clip.getBeat() - this->firstBeat);
     const float y = float(trackIndex * PatternRoll::rowHeight);
 
     return Rectangle<float>(x,
@@ -911,6 +911,31 @@ float PatternRoll::findPreviousAnchorBeat(float beat) const
     }
 
     return result;
+}
+
+void PatternRoll::computeAllSnapLines()
+{
+    // PianoRoll is happy with the base implementation of computeAllSnapLines,
+    // but PatternRoll wants to append those snaps with clips' right edges:
+    // most of the time it will have no visible effect, but may come in handy
+    // e.g. when doing some complex rhythms and dragging the clips around:
+
+    RollBase::computeAllSnapLines();
+
+    const auto paintStartX = this->viewport.getViewPositionX();
+    const auto paintEndX = paintStartX + this->viewport.getViewWidth();
+
+    for (const auto &it : this->clipComponents)
+    {
+        const auto &clip = it.first;
+        const auto clipEndX = it.second->getRight();
+
+        if (clipEndX > paintStartX && clipEndX < paintEndX)
+        {
+            // for less rounding errors:
+            this->allSnaps.add(this->getEventBounds(clip).getRight());
+        }
+    }
 }
 
 void PatternRoll::insertNewClipAt(const MouseEvent &e)

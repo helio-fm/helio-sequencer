@@ -19,7 +19,7 @@
 #include "RollExpandMark.h"
 #include "RollBase.h"
 
-RollExpandMark::RollExpandMark(RollBase &parentRoll, float targetBeat, int numBeatsToTake, bool showPlusIcon) :
+RollExpandMark::RollExpandMark(RollBase &parentRoll, float targetBeat, float numBeatsToTake, bool showPlusIcon) :
     roll(parentRoll),
     beat(targetBeat),
     numBeats(numBeatsToTake)
@@ -76,6 +76,8 @@ void RollExpandMark::timerCallback()
     }
     else
     {
-        this->setAlpha(this->alpha);
+        // we're avoiding setAlpha at all costs
+        this->plusImage->setIconAlphaMultiplier(this->alpha);
+        this->repaint();
     }
 }

@@ -26,7 +26,7 @@ class RollExpandMark final : public Component, private Timer
 public:
 
     RollExpandMark(RollBase &parentRoll,
-        float targetBeat, int numBeatsToTake, bool showPlusIcon = true);
+        float targetBeat, float numBeatsToTake, bool showPlusIcon = true);
     ~RollExpandMark();
 
     void paint(Graphics &g) override;
@@ -42,7 +42,7 @@ private:
     const RollBase &roll;
 
     const float beat = 0.f;
-    const int numBeats = 0;
+    const float numBeats = 0.f;
 
     float alpha = 1.f;
 

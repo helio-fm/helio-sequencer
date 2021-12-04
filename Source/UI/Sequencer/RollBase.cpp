@@ -442,7 +442,7 @@ bool RollBase::panByOffset(int offsetX, int offsetY)
         this->project.broadcastChangeViewBeatRange(this->firstBeat, this->lastBeat + numBeatsToExpand);
         this->viewport.setViewPosition(offsetX, offsetY); // after setLastBeat
         const float beatCloseToTheRight = this->lastBeat - numBeatsToExpand;
-        this->header->addAndMakeVisible(new RollExpandMark(*this, beatCloseToTheRight, int(numBeatsToExpand)));
+        this->header->addAndMakeVisible(new RollExpandMark(*this, beatCloseToTheRight, numBeatsToExpand));
     }
     else if (stretchLeft)
     {
@@ -451,7 +451,7 @@ bool RollBase::panByOffset(int offsetX, int offsetY)
         this->clickAnchor.addXY(deltaW, 0); // an ugly hack
         this->project.broadcastChangeViewBeatRange(this->firstBeat - numBeatsToExpand, this->lastBeat);
         this->viewport.setViewPosition(offsetX + int(deltaW), offsetY); // after setFirstBeat
-        this->header->addAndMakeVisible(new RollExpandMark(*this, this->firstBeat, int(numBeatsToExpand)));
+        this->header->addAndMakeVisible(new RollExpandMark(*this, this->firstBeat, numBeatsToExpand));
     }
     else
     {
@@ -551,8 +551,9 @@ void RollBase::zoomRelative(const Point<float> &origin,
         const auto newFirstBeat = projectRange.getStart() - Globals::beatsPerBar;
         const auto newLastBeat = projectRange.getEnd() + Globals::beatsPerBar;
         this->project.broadcastChangeViewBeatRange(newFirstBeat, newLastBeat);
-        this->viewport.addAndMakeVisible(new RollExpandMark(*this, newFirstBeat, 1, false));
-        this->viewport.addAndMakeVisible(new RollExpandMark(*this, newLastBeat - 1, 1, false));
+        constexpr auto markWidthInBeats = 0.5f;
+        this->viewport.addAndMakeVisible(new RollExpandMark(*this, newFirstBeat, markWidthInBeats, false));
+        this->viewport.addAndMakeVisible(new RollExpandMark(*this, newLastBeat - markWidthInBeats, markWidthInBeats, false));
     }
 }
 
@@ -682,7 +683,7 @@ float RollBase::getMinVisibleBeatForCurrentZoomLevel() const
     return minBeat;
 }
 
-void RollBase::computeVisibleBeatLines()
+void RollBase::computeAllSnapLines()
 {
     static constexpr auto minBarWidth = 14;
     static constexpr auto minBeatWidth = 8;
@@ -695,16 +696,14 @@ void RollBase::computeVisibleBeatLines()
     const auto *tsSequence =
         this->project.getTimeline()->getTimeSignatures()->getSequence();
 
-    const float zeroCanvasOffset = this->firstBeat * this->beatWidth; // usually a negative value
-    const float viewPosX = float(this->viewport.getViewPositionX());
-    const float paintStartX = viewPosX + zeroCanvasOffset;
-    const float paintEndX = float(viewPosX + this->viewport.getViewWidth()) + zeroCanvasOffset;
+    const float paintStartX = float(this->viewport.getViewPositionX());
+    const float paintEndX = float(paintStartX + this->viewport.getViewWidth());
 
     const float barWidth = float(this->beatWidth * Globals::beatsPerBar);
     const float firstBar = this->firstBeat / float(Globals::beatsPerBar);
 
-    const float paintStartBar = floorf(paintStartX / barWidth);
-    const float paintEndBar = ceilf(paintEndX / barWidth);
+    const float paintStartBar = floorf(paintStartX / barWidth + firstBar);
+    const float paintEndBar = ceilf(paintEndX / barWidth + firstBar);
 
     // Get the number of snaps depending on a bar width,
     // 2 for 64, 4 for 128, 8 for 256, etc:
@@ -762,7 +761,7 @@ void RollBase::computeVisibleBeatLines()
 
         float beatStep = 1.f / float(denominator);
         float barStep = beatStep * float(numerator);
-        const float barStartX = barWidth * barIterator - zeroCanvasOffset;
+        const float barStartX = barWidth * (barIterator - firstBar);
         const float stepWidth = barWidth * barStep;
 
         barWidthSum += stepWidth;
@@ -810,14 +809,14 @@ void RollBase::computeVisibleBeatLines()
                     k < (nextBeatStartX - 1);
                     k += snapWidth)
                 {
-                    if (k >= viewPosX)
+                    if (k >= paintStartX)
                     {
                         this->visibleSnaps.add(k);
                         this->allSnaps.add(k);
                     }
                 }
 
-                if (beatStartX >= viewPosX &&
+                if (beatStartX >= paintStartX &&
                     j >= beatStep && // don't draw the first one as it is a bar line
                     (nextBeatStartX - beatStartX) > minBeatWidth)
                 {
@@ -1464,7 +1463,7 @@ void RollBase::resized()
 
 void RollBase::paint(Graphics &g)
 {
-    this->computeVisibleBeatLines();
+    this->computeAllSnapLines();
 
     const float y = float(this->viewport.getViewPositionY());
     const float h = float(this->viewport.getViewHeight());

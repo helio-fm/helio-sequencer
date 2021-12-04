@@ -424,7 +424,7 @@ protected:
     const Colour beatLineColour;
     const Colour snapLineColour;
 
-    void computeVisibleBeatLines();
+    virtual void computeAllSnapLines();
 
 protected:
 

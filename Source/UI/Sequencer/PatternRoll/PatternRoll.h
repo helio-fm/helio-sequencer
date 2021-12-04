@@ -45,7 +45,7 @@ public:
 
     void addClip(Pattern *pattern, float beat);
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
-    Rectangle<float> getEventBounds(const Clip &clip, float beat) const;
+    Rectangle<float> getEventBounds(const Clip &clip) const;
     float getBeatForClipByXPosition(const Clip &clip, float x) const;
     float getBeatByMousePosition(const Pattern *pattern, int x) const;
 
@@ -127,6 +127,8 @@ protected:
 
     float findNextAnchorBeat(float beat) const override;
     float findPreviousAnchorBeat(float beat) const override;
+
+    void computeAllSnapLines() override;
 
 private:
 
