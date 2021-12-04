@@ -52,13 +52,13 @@ jobs:
       xcode_sdk: macosx10.14
       addons: *deploy
       env: BUILD_TYPE=osx
-    - name: "xcode 11.6 ios, release build"
-      stage: Deploy
-      os: osx
-      osx_image: xcode11.6
-      xcode_sdk: iphoneos
-      addons: *deploy
-      env: BUILD_TYPE=ios
+    # - name: "xcode 11.6 ios, release build"
+    #   stage: Deploy
+    #   os: osx
+    #   osx_image: xcode11.6
+    #   xcode_sdk: iphoneos
+    #   addons: *deploy
+    #   env: BUILD_TYPE=ios
     - name: "android 21, release build"
       stage: Deploy
       os: linux
