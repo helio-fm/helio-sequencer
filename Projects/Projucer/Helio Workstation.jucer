@@ -1411,7 +1411,7 @@
         <CONFIGURATION name="Release" iosCompatibility="11.0" isDebug="0" optimisation="3"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
                        customXcodeFlags="PROVISIONING_PROFILE_SPECIFIER=&quot;Helio AppStore New&quot;, CODE_SIGN_STYLE=&quot;Manual&quot;"
-                       enablePluginBinaryCopyStep="1" linkTimeOptimisation="0" stripLocalSymbols="1"
+                       enablePluginBinaryCopyStep="1" linkTimeOptimisation="1" stripLocalSymbols="1"
                        codeSigningIdentity="iPhone Distribution"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -1468,11 +1468,11 @@
             extraLinkerFlags="/OPT:REF /OPT:ICF=5" unityBuild="1" bigIcon="DQTpOG"
             smallIcon="DQTpOG">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="0" name="Release32" targetName="Helio" linkTimeOptimisation="0"
+        <CONFIGURATION isDebug="0" name="Release32" targetName="Helio" linkTimeOptimisation="1"
                        winArchitecture="Win32" enablePluginBinaryCopyStep="0" optimisation="3"
                        warningsAreErrors="1" useRuntimeLibDLL="0" winWarningLevel="4"
                        enableIncrementalLinking="0"/>
-        <CONFIGURATION isDebug="0" name="Release64" targetName="Helio" linkTimeOptimisation="0"
+        <CONFIGURATION isDebug="0" name="Release64" targetName="Helio" linkTimeOptimisation="1"
                        winArchitecture="x64" optimisation="3" warningsAreErrors="1"
                        useRuntimeLibDLL="0" winWarningLevel="4" enableIncrementalLinking="0"
                        enablePluginBinaryCopyStep="0"/>
@@ -1502,9 +1502,9 @@
         <CONFIGURATION name="Tests" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="helio" defines="JUCE_UNIT_TESTS=1"/>
         <CONFIGURATION name="Release32" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
-                       targetName="helio" linuxArchitecture="-m32" linkTimeOptimisation="0"/>
+                       targetName="helio" linuxArchitecture="-m32" linkTimeOptimisation="1"/>
         <CONFIGURATION name="Release64" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
-                       targetName="helio" linuxArchitecture="-m64" linkTimeOptimisation="0"/>
+                       targetName="helio" linuxArchitecture="-m64" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
@@ -1538,7 +1538,7 @@
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="helio"
                        androidArchitectures="armeabi-v7a arm64-v8a"/>
         <CONFIGURATION name="Release" androidArchitectures="armeabi-v7a arm64-v8a" isDebug="0"
-                       optimisation="3" targetName="helio" linkTimeOptimisation="0"/>
+                       optimisation="3" targetName="helio" linkTimeOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>

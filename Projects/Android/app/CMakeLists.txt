@@ -157,6 +157,11 @@ elseif(JUCE_BUILD_CONFIGURATION MATCHES "RELEASE")
         "../../../Source/UI/Themes"
     )
 
+    if(NOT (ANDROID_ABI STREQUAL "mips" OR ANDROID_ABI STREQUAL "mips64"))
+        set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -flto")
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto")
+        set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -flto")
+    endif()
 else()
     message( FATAL_ERROR "No matching build-configuration found." )
 endif()
