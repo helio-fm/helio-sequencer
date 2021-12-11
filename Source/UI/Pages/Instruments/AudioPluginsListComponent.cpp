@@ -31,7 +31,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     pluginScanner(pluginScanner),
     instrumentsRoot(instrumentsRoot)
 {
-    this->setFocusContainerType(Component::FocusContainerType::none);
+    this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);

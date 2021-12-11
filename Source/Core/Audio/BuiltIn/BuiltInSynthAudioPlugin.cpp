@@ -33,7 +33,7 @@ void BuiltInSynthAudioPlugin::fillInPluginDescription(PluginDescription &descrip
 {
     description.name = this->getName();
     description.descriptiveName = description.name;
-    description.uniqueId = description.name.hashCode();
+    description.uid = description.name.hashCode();
     description.category = "Synth";
     description.pluginFormatName = BuiltInSynthFormat::formatName;
     description.fileOrIdentifier = BuiltInSynthFormat::formatIdentifier;

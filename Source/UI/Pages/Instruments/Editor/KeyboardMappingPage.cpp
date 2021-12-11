@@ -30,7 +30,7 @@
 KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
     instrument(instrument)
 {
-    this->setFocusContainerType(Component::FocusContainerType::none);
+    this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
 

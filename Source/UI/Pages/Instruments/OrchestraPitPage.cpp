@@ -32,7 +32,7 @@ OrchestraPitPage::OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitNod
 {
     this->setComponentID(ComponentIDs::orchestraPit);
 
-    this->setFocusContainerType(Component::FocusContainerType::none);
+    this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);

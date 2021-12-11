@@ -113,7 +113,7 @@ MainLayout::MainLayout()
 
     this->setOpaque(true);
     this->setVisible(false);
-    this->setFocusContainerType(Component::FocusContainerType::keyboardFocusContainer);
+    this->setFocusContainer(true);
     this->setWantsKeyboardFocus(true);
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);

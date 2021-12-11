@@ -90,7 +90,7 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
 
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setWantsKeyboardFocus(false);
-    this->setFocusContainerType(Component::FocusContainerType::none);
+    this->setFocusContainer(false);
 
     this->temperament = this->project.getProjectInfo()->getTemperament();
 
@@ -116,7 +116,7 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
 
     this->lassoComponent = make<SelectionComponent>();
     this->lassoComponent->setWantsKeyboardFocus(false);
-    this->lassoComponent->setFocusContainerType(Component::FocusContainerType::none);
+    this->lassoComponent->setFocusContainer(false);
 
     this->addAndMakeVisible(this->header.get());
     this->addAndMakeVisible(this->headerShadow.get());

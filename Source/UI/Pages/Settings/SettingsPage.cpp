@@ -35,7 +35,7 @@ SettingsPage::SettingsPage(Component *settingsList)
 
     this->viewport->setViewedComponent(settingsList, false);
 
-    this->setFocusContainerType(Component::FocusContainerType::keyboardFocusContainer);
+    this->setFocusContainer(true);
     this->setWantsKeyboardFocus(true);
     this->setPaintingIsUnclipped(true);
 

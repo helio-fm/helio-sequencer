@@ -43,7 +43,7 @@ static String getTimeString(const RelativeTime &time)
 ProjectPage::ProjectPage(ProjectNode &parentProject) :
     project(parentProject)
 {
-    this->setFocusContainerType(Component::FocusContainerType::keyboardFocusContainer);
+    this->setFocusContainer(true);
     this->setWantsKeyboardFocus(true);
     this->setPaintingIsUnclipped(true);
 

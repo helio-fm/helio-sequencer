@@ -34,7 +34,7 @@ AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationCurveClip
     editor(parent),
     controllerNumber(event.getTrackControllerNumber())
 {
-    this->setFocusContainerType(Component::FocusContainerType::none);
+    this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 

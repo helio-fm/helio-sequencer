@@ -25,7 +25,7 @@ struct MenuPanelUtils final
     {
         for (auto *child : panel->getChildren())
         {
-            child->setFocusContainerType(Component::FocusContainerType::none);
+            child->setFocusContainer(false);
             child->setWantsKeyboardFocus(false);
             child->setMouseClickGrabsKeyboardFocus(false);
         }

@@ -164,7 +164,7 @@ RollHeader::RollHeader(Transport &transport, RollBase &roll, Viewport &viewport)
 {
     this->setOpaque(true);
     this->setAlwaysOnTop(true);
-    this->setFocusContainerType(Component::FocusContainerType::none);
+    this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
     this->setMouseClickGrabsKeyboardFocus(false);

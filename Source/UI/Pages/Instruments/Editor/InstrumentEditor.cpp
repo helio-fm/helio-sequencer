@@ -47,7 +47,7 @@ InstrumentEditor::InstrumentEditor(WeakReference<Instrument> instrument,
     this->setOpaque(true);
     
     this->setWantsKeyboardFocus(false);
-    this->setFocusContainerType(Component::FocusContainerType::none);
+    this->setFocusContainer(false);
 }
 
 InstrumentEditor::~InstrumentEditor()
