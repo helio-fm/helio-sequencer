@@ -203,6 +203,7 @@ void ProjectMapScroller::paint(Graphics &g)
 void ProjectMapScroller::mouseDown(const MouseEvent &event)
 {
     this->screenRangeAtDragStart = this->screenRange->getRealBounds();
+    this->rollViewportPositionAtDragStart = this->roll->getViewport().getViewPosition();
 
     if (event.mods.isLeftButtonDown())
     {
@@ -230,20 +231,30 @@ void ProjectMapScroller::mouseDrag(const MouseEvent &event)
         }
         else if (event.mods.isRightButtonDown())
         {
-            const auto mapBounds = this->getMapBounds();
-            if (mapBounds.getWidth() <= this->getWidth())
+            this->setMouseCursor(MouseCursor::DraggingHandCursor);
+
+            const auto mapWidth = this->getMapBounds().getWidth();
+            if (mapWidth <= this->getWidth())
             {
                 return; // nowhere to move
             }
+            
+            const auto viewWidth = this->roll->getViewport().getViewWidth();
+            const auto dragDistance = float(event.getDistanceFromDragStartX());
 
-            this->screenRange->setRealBounds(this->screenRangeAtDragStart.
-                translated(float(-event.getDistanceFromDragStartX()), 0.f));
+            const auto rollWidthProportion =
+                float(this->roll->getWidth() - viewWidth) / float(mapWidth - this->getWidth());
+            const auto xOffset = jlimit(1, this->roll->getWidth() - viewWidth - 1,
+                this->rollViewportPositionAtDragStart.x + int(-dragDistance * rollWidthProportion));
 
-            this->xMoveByUser();
+            this->roll->panByOffset(xOffset, this->rollViewportPositionAtDragStart.y);
+
+            this->triggerAsyncUpdate();
         }
     }
     else
     {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->screenRange->setRealBounds(this->screenRange->getRealBounds().withCentre(event.position));
         this->xMoveByUser();
     }
@@ -251,6 +262,8 @@ void ProjectMapScroller::mouseDrag(const MouseEvent &event)
 
 void ProjectMapScroller::mouseUp(const MouseEvent &event)
 {
+    this->setMouseCursor(MouseCursor::NormalCursor);
+
     if (event.getOffsetFromDragStart().isOrigin())
     {
         App::Layout().broadcastCommandMessage(CommandIDs::ToggleBottomMiniMap);
@@ -539,7 +552,13 @@ void ProjectMapScroller::HorizontalDragHelper::mouseDown(const MouseEvent &e)
 
 void ProjectMapScroller::HorizontalDragHelper::mouseDrag(const MouseEvent &e)
 {
+    this->setMouseCursor(MouseCursor::DraggingHandCursor);
     this->dragger.dragComponent(this, e, this->moveConstrainer.get());
+}
+
+void ProjectMapScroller::HorizontalDragHelper::mouseUp(const MouseEvent &e)
+{
+    this->setMouseCursor(MouseCursor::NormalCursor);
 }
 
 void ProjectMapScroller::HorizontalDragHelper::paint(Graphics &g)

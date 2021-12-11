@@ -90,7 +90,7 @@ public:
 
         if (this->getWidth() > dashLength)
         {
-            g.fillRect(i, 0.f, this->getWidth() - i, 1.f);
+            g.fillRect(i, 0.f, jmax(0.f, this->getWidth() - i), 1.f);
         }
     }
 };

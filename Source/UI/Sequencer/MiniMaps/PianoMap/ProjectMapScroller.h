@@ -98,6 +98,8 @@ public:
         explicit HorizontalDragHelper(ProjectMapScroller &scrollerRef);
         void mouseDown(const MouseEvent &e) override;
         void mouseDrag(const MouseEvent &e) override;
+        void mouseUp(const MouseEvent &e) override;
+
         void paint(Graphics &g) override;
 
         void setBrightness(float brightness);
@@ -145,6 +147,7 @@ private:
     
     Transport &transport;
     SafePointer<RollBase> roll;
+    Point<int> rollViewportPositionAtDragStart;
     
     Rectangle<float> oldAreaBounds;
     Rectangle<float> oldMapBounds;

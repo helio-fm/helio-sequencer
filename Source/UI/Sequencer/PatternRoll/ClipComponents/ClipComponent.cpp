@@ -285,8 +285,8 @@ void ClipComponent::paint(Graphics &g)
             g.fillRect(i, 2.f, dash, 1.f);
         }
 
-        g.fillRect(i + 1.f, 1.f, right - i - 1.f, 1.f);
-        g.fillRect(i, 2.f, right - i + 1.f, 1.f);
+        g.fillRect(i + 1.f, 1.f, jmax(0.f, right - i - 1.f), 1.f);
+        g.fillRect(i, 2.f, jmax(0.f, right - i + 1.f), 1.f);
     }
 
     if (this->clip.getKey() != 0)
