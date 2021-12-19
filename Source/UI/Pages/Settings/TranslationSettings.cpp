@@ -23,7 +23,7 @@
 
 TranslationSettings::TranslationSettings()
 {
-    this->setFocusContainer(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
 

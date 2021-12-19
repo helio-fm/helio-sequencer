@@ -179,11 +179,14 @@ BackendRequest::Response BackendRequest::doRequest(const String &verb) const
     do
     {
         DBG(">> " << verb << " " << this->apiEndpoint);
-        stream = url.createInputStream(false,
-            nullptr, (void *)(this),
-            getHeaders(), BackendRequest::connectionTimeoutMs,
-            &response.headers, &response.statusCode,
-            5, verb);
+        stream = url.createInputStream(
+            URL::InputStreamOptions(URL::ParameterHandling::inAddress)
+                .withHttpRequestCmd(verb)
+                .withExtraHeaders(getHeaders())
+                .withConnectionTimeoutMs(BackendRequest::connectionTimeoutMs)
+                .withNumRedirectsToFollow(5)
+                .withResponseHeaders(&response.headers)
+                .withStatusCode(&response.statusCode));
     } while (stream == nullptr && ++i < BackendRequest::numConnectAttempts);
 
     processResponse(response, stream.get());
@@ -210,11 +213,14 @@ BackendRequest::Response BackendRequest::doRequest(const SerializedData &payload
         DBG(">> " << verb << " " << this->apiEndpoint << " " 
             << jsonPayload.substring(0, 128) + (jsonPayload.length() > 128 ? ".." : ""));
 
-        stream = url.createInputStream(true,
-            nullptr, (void *)(this),
-            getHeaders(), BackendRequest::connectionTimeoutMs,
-            &response.headers, &response.statusCode,
-            5, verb);
+        stream = url.createInputStream(
+            URL::InputStreamOptions(URL::ParameterHandling::inPostData)
+                .withHttpRequestCmd(verb)
+                .withExtraHeaders(getHeaders())
+                .withConnectionTimeoutMs(BackendRequest::connectionTimeoutMs)
+                .withNumRedirectsToFollow(5)
+                .withResponseHeaders(&response.headers)
+                .withStatusCode(&response.statusCode));
     } while (stream == nullptr && ++i < BackendRequest::numConnectAttempts);
 
     processResponse(response, stream.get());

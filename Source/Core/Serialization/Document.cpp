@@ -199,7 +199,7 @@ void Document::import(const String &filePattern)
         // on some platforms (Android, for example) it's not permitted to do any network
         // action from the message thread, so you must only call it from a background thread.
 
-        if (auto inStream = url.createInputStream(false))
+        if (auto inStream = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress)))
         {
             this->owner.onDocumentImport(*inStream.get());
         }

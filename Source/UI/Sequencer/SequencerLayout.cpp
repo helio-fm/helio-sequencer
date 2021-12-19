@@ -454,7 +454,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->pianoViewport->setInterceptsMouseClicks(false, true);
     this->pianoViewport->setScrollBarsShown(false, false);
     this->pianoViewport->setWantsKeyboardFocus(false);
-    this->pianoViewport->setFocusContainer(false);
+    this->pianoViewport->setFocusContainerType(Component::FocusContainerType::none);
     this->pianoViewport->setPaintingIsUnclipped(true);
     
     this->pianoRoll = make<PianoRoll>(this->project,
@@ -465,7 +465,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->patternViewport->setInterceptsMouseClicks(false, true);
     this->patternViewport->setScrollBarsShown(false, false);
     this->patternViewport->setWantsKeyboardFocus(false);
-    this->patternViewport->setFocusContainer(false);
+    this->patternViewport->setFocusContainerType(Component::FocusContainerType::none);
     this->patternViewport->setPaintingIsUnclipped(true);
 
     this->patternRoll = make<PatternRoll>(this->project,

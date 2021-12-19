@@ -42,7 +42,7 @@ SerializedData SerializablePluginDescription::serialize() const
     tree.setProperty(Audio::pluginVersion, this->version);
     tree.setProperty(Audio::pluginFile, this->fileOrIdentifier);
     tree.setProperty(Audio::pluginFileModTime, String::toHexString(this->lastFileModTime.toMilliseconds()));
-    tree.setProperty(Audio::pluginId, String::toHexString(this->uid));
+    tree.setProperty(Audio::pluginId, String::toHexString(this->uniqueId));
     tree.setProperty(Audio::pluginIsInstrument, this->isInstrument);
     tree.setProperty(Audio::pluginNumInputs, this->numInputChannels);
     tree.setProperty(Audio::pluginNumOutputs, this->numOutputChannels);
@@ -69,7 +69,7 @@ void SerializablePluginDescription::deserialize(const SerializedData &data)
         this->version = root.getProperty(Audio::pluginVersion);
         this->fileOrIdentifier = root.getProperty(Audio::pluginFile);
         this->lastFileModTime = Time(root.getProperty(Audio::pluginFileModTime).toString().getHexValue64());
-        this->uid = root.getProperty(Audio::pluginId).toString().getHexValue32();
+        this->uniqueId = root.getProperty(Audio::pluginId).toString().getHexValue32();
         this->isInstrument = root.getProperty(Audio::pluginIsInstrument, false);
         this->numInputChannels = root.getProperty(Audio::pluginNumInputs);
         this->numOutputChannels = root.getProperty(Audio::pluginNumOutputs);
@@ -87,7 +87,7 @@ void SerializablePluginDescription::deserialize(const SerializedData &data)
 void SerializablePluginDescription::reset()
 {
     this->name = {};
-    this->uid = {};
+    this->uniqueId = {};
 }
 
 bool SerializablePluginDescription::isValid() const

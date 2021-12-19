@@ -20,7 +20,7 @@
 
 MenuPanel::MenuPanel()
 {
-    this->setFocusContainer(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(false);
 
