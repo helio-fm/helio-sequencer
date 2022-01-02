@@ -45,6 +45,9 @@ TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     numerator(parametersToCopy.numerator),
     denominator(parametersToCopy.denominator) {}
 
+TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiTrack> owner) noexcept :
+    MidiEvent(nullptr, Type::TimeSignature, 0.f) {}
+
 void TimeSignatureEvent::parseString(const String &data, int &numerator, int &denominator)
 {
     numerator = Globals::Defaults::timeSignatureNumerator;
@@ -57,11 +60,16 @@ void TimeSignatureEvent::parseString(const String &data, int &numerator, int &de
     {
         const int n = sa[0].getIntValue();
         int d = sa[1].getIntValue();
+
         // Round to the power of two:
         d = int(pow(2, ceil(log(d) / log(2))));
+
         // Apply some reasonable constraints:
-        denominator = jlimit(2, 32, d);
-        numerator = jlimit(2, 64, n);
+        denominator = jlimit(TimeSignatureEvent::minDenominator,
+            TimeSignatureEvent::maxDenominator, d);
+
+        numerator = jlimit(TimeSignatureEvent::minNumerator,
+            TimeSignatureEvent::maxNumerator, n);
     }
 }
 
@@ -90,14 +98,16 @@ TimeSignatureEvent TimeSignatureEvent::withBeat(float newBeat) const noexcept
 TimeSignatureEvent TimeSignatureEvent::withNumerator(const int newNumerator) const noexcept
 {
     TimeSignatureEvent e(*this);
-    e.numerator = newNumerator;
+    e.numerator = jlimit(TimeSignatureEvent::minNumerator,
+        TimeSignatureEvent::maxNumerator, newNumerator);
     return e;
 }
 
 TimeSignatureEvent TimeSignatureEvent::withDenominator(const int newDenominator) const noexcept
 {
     TimeSignatureEvent e(*this);
-    e.denominator = newDenominator;
+    e.denominator = jlimit(TimeSignatureEvent::minDenominator,
+        TimeSignatureEvent::maxDenominator, newDenominator);
     return e;
 }
 
@@ -131,7 +141,10 @@ int TimeSignatureEvent::getDenominator() const noexcept
 
 bool TimeSignatureEvent::isValid() const noexcept
 {
-    return this->numerator > 0 && this->denominator > 0;
+    return this->numerator >= TimeSignatureEvent::minNumerator &&
+        this->numerator <= TimeSignatureEvent::maxNumerator &&
+        this->denominator >= TimeSignatureEvent::minDenominator &&
+        this->denominator <= TimeSignatureEvent::maxDenominator;
 }
 
 float TimeSignatureEvent::getBarLengthInBeats() const noexcept
@@ -180,7 +193,13 @@ void TimeSignatureEvent::deserialize(const SerializedData &data)
     this->id = unpackId(data.getProperty(Midi::id));
 }
 
-void TimeSignatureEvent::reset() noexcept {}
+// resets to invalid state
+void TimeSignatureEvent::reset() noexcept
+{
+    this->beat = 0.f;
+    this->numerator = 0;
+    this->denominator = 0;
+}
 
 //===----------------------------------------------------------------------===//
 // Helpers

@@ -73,6 +73,9 @@ public:
     MidiSequence *getSequence() const noexcept override;
     Pattern *getPattern() const noexcept override;
 
+    bool hasTimeSignatureOverride() const noexcept override { return false; }
+    const TimeSignatureEvent *getTimeSignatureOverride() const noexcept override { return nullptr;  }
+
     //===------------------------------------------------------------------===//
     // ProjectEventDispatcher
     //===------------------------------------------------------------------===//

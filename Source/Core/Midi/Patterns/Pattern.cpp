@@ -71,6 +71,26 @@ int Pattern::indexOfSorted(const Clip *target) const
     return this->clips.indexOfSorted(comparator, target);
 }
 
+float Pattern::getFirstBeat() const noexcept
+{
+    if (this->clips.size() == 0)
+    {
+        return FLT_MAX;
+    }
+
+    return this->clips.getFirst()->getBeat();
+}
+
+float Pattern::getLastBeat() const noexcept
+{
+    if (this->clips.size() == 0)
+    {
+        return -FLT_MAX;
+    }
+
+    return this->clips.getLast()->getBeat();
+}
+
 void Pattern::sort()
 {
     if (this->clips.size() > 0)

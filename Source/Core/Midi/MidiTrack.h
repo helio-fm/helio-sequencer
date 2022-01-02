@@ -66,7 +66,7 @@ public:
 
     // Whether a track has its own time signature which should be used instead of timeline's:
     virtual bool hasTimeSignatureOverride() const noexcept = 0;
-    virtual TimeSignatureEvent &getTimeSignatureOverride() const noexcept = 0;
+    virtual const TimeSignatureEvent *getTimeSignatureOverride() const noexcept = 0;
 
     //===------------------------------------------------------------------===//
     // Grouping

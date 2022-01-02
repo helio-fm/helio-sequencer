@@ -35,6 +35,8 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
+    float getFirstBeat() const noexcept;
+    float getLastBeat() const noexcept;
     MidiTrack *getTrack() const noexcept;
     int indexOfSorted(const Clip *target) const;
 
@@ -118,6 +120,8 @@ public:
 
 protected:
 
+    // keeps track of beat range to avoid
+    // sending unnecessary "beat range changed" events:
     float lastEndBeat = 0.f;
     float lastStartBeat = 0.f;
 

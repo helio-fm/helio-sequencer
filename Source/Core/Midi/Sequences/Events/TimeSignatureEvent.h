@@ -18,11 +18,12 @@
 #pragma once
 
 #include "MidiEvent.h"
+#include "MidiTrack.h"
 
 // Time signatures are a bit different from other MidiEvents
-// in a way that not only they can belong to a Sequence at the timeline,
-// but they also can belong to a MidiTrack to override the timeline's
-// time signatures when this track is selected.
+// in a way that not only they can belong to a TimeSignaturesSequence
+// at the timeline, but they also can belong to a MidiTrack to override
+// the timeline's time signatures when this track is selected.
 
 class TimeSignatureEvent final : public MidiEvent
 {
@@ -32,10 +33,13 @@ public:
     TimeSignatureEvent(const TimeSignatureEvent &other) noexcept;
     TimeSignatureEvent(WeakReference<MidiSequence> owner,
         const TimeSignatureEvent &parametersToCopy) noexcept;
+
     explicit TimeSignatureEvent(WeakReference<MidiSequence> owner,
         float newBeat = 0.f,
         int newNumerator = Globals::Defaults::timeSignatureNumerator,
         int newDenominator = Globals::Defaults::timeSignatureDenominator) noexcept;
+
+    explicit TimeSignatureEvent(WeakReference<MidiTrack> owner) noexcept;
 
     static void parseString(const String &data, int &numerator, int &denominator);
     
@@ -78,6 +82,11 @@ public:
 
     void applyChanges(const TimeSignatureEvent &parameters) noexcept;
 
+    static inline int compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept
+    {
+        return MidiEvent::compareElements(first, second);
+    }
+
     static inline int compareElements(const TimeSignatureEvent &first, const TimeSignatureEvent &second) noexcept
     {
         return TimeSignatureEvent::compareElements(&first, &second);
@@ -87,14 +96,18 @@ public:
 
     HashCode getHash() const;
 
-protected:
+private:
 
-    WeakReference<MidiTrack> track = nullptr;
+    const WeakReference<MidiTrack> track = nullptr;
 
     int numerator = 0;
     int denominator = 0;
 
-private:
+    static constexpr auto minNumerator = 2;
+    static constexpr auto maxNumerator = 64;
+
+    static constexpr auto minDenominator = 2;
+    static constexpr auto maxDenominator = 32;
 
     JUCE_LEAK_DETECTOR(TimeSignatureEvent);
 

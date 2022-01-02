@@ -92,9 +92,9 @@ ProjectTimeline::ProjectTimeline(ProjectNode &parentProject, String trackName) :
 
     using namespace Serialization::VCS;
     this->vcsDiffLogic = make<VCS::ProjectTimelineDiffLogic>(*this);
-    this->deltas.add(new VCS::Delta({}, ProjectTimelineDeltas::annotationsAdded));
-    this->deltas.add(new VCS::Delta({}, ProjectTimelineDeltas::keySignaturesAdded));
-    this->deltas.add(new VCS::Delta({}, ProjectTimelineDeltas::timeSignaturesAdded));
+    this->deltas.add(new VCS::Delta({}, AnnotationDeltas::annotationsAdded));
+    this->deltas.add(new VCS::Delta({}, KeySignatureDeltas::keySignaturesAdded));
+    this->deltas.add(new VCS::Delta({}, TimeSignatureDeltas::timeSignaturesAdded));
 
     this->project.broadcastAddTrack(this->annotationsTrack.get());
     this->project.broadcastAddTrack(this->keySignaturesTrack.get());
@@ -194,17 +194,17 @@ int ProjectTimeline::getNumDeltas() const
 VCS::Delta *ProjectTimeline::getDelta(int index) const
 {
     using namespace Serialization::VCS;
-    if (this->deltas[index]->hasType(ProjectTimelineDeltas::annotationsAdded))
+    if (this->deltas[index]->hasType(AnnotationDeltas::annotationsAdded))
     {
         const int numEvents = this->annotationsSequence->size();
         this->deltas[index]->setDescription(VCS::DeltaDescription("{x} annotations", numEvents));
     }
-    else if (this->deltas[index]->hasType(ProjectTimelineDeltas::timeSignaturesAdded))
+    else if (this->deltas[index]->hasType(TimeSignatureDeltas::timeSignaturesAdded))
     {
         const int numEvents = this->timeSignaturesSequence->size();
         this->deltas[index]->setDescription(VCS::DeltaDescription("{x} time signatures", numEvents));
     }
-    else if (this->deltas[index]->hasType(ProjectTimelineDeltas::keySignaturesAdded))
+    else if (this->deltas[index]->hasType(KeySignatureDeltas::keySignaturesAdded))
     {
         const int numEvents = this->keySignaturesSequence->size();
         this->deltas[index]->setDescription(VCS::DeltaDescription("{x} key signatures", numEvents));
@@ -216,15 +216,15 @@ VCS::Delta *ProjectTimeline::getDelta(int index) const
 SerializedData ProjectTimeline::getDeltaData(int deltaIndex) const
 {
     using namespace Serialization::VCS;
-    if (this->deltas[deltaIndex]->hasType(ProjectTimelineDeltas::annotationsAdded))
+    if (this->deltas[deltaIndex]->hasType(AnnotationDeltas::annotationsAdded))
     {
         return this->serializeAnnotationsDelta();
     }
-    else if (this->deltas[deltaIndex]->hasType(ProjectTimelineDeltas::timeSignaturesAdded))
+    else if (this->deltas[deltaIndex]->hasType(TimeSignatureDeltas::timeSignaturesAdded))
     {
         return this->serializeTimeSignaturesDelta();
     }
-    else if (this->deltas[deltaIndex]->hasType(ProjectTimelineDeltas::keySignaturesAdded))
+    else if (this->deltas[deltaIndex]->hasType(KeySignatureDeltas::keySignaturesAdded))
     {
         return this->serializeKeySignaturesDelta();
     }
@@ -247,15 +247,15 @@ void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
         const VCS::Delta *newDelta = newState.getDelta(i);
         const auto newDeltaData(newState.getDeltaData(i));
         
-        if (newDelta->hasType(ProjectTimelineDeltas::annotationsAdded))
+        if (newDelta->hasType(AnnotationDeltas::annotationsAdded))
         {
             this->resetAnnotationsDelta(newDeltaData);
         }
-        else if (newDelta->hasType(ProjectTimelineDeltas::timeSignaturesAdded))
+        else if (newDelta->hasType(TimeSignatureDeltas::timeSignaturesAdded))
         {
             this->resetTimeSignaturesDelta(newDeltaData);
         }
-        else if (newDelta->hasType(ProjectTimelineDeltas::keySignaturesAdded))
+        else if (newDelta->hasType(KeySignatureDeltas::keySignaturesAdded))
         {
             this->resetKeySignaturesDelta(newDeltaData);
         }
@@ -401,7 +401,7 @@ void ProjectTimeline::deserialize(const SerializedData &data)
 
 SerializedData ProjectTimeline::serializeAnnotationsDelta() const
 {
-    SerializedData tree(Serialization::VCS::ProjectTimelineDeltas::annotationsAdded);
+    SerializedData tree(Serialization::VCS::AnnotationDeltas::annotationsAdded);
 
     for (int i = 0; i < this->annotationsSequence->size(); ++i)
     {
@@ -414,7 +414,7 @@ SerializedData ProjectTimeline::serializeAnnotationsDelta() const
 
 void ProjectTimeline::resetAnnotationsDelta(const SerializedData &state)
 {
-    jassert(state.hasType(Serialization::VCS::ProjectTimelineDeltas::annotationsAdded));
+    jassert(state.hasType(Serialization::VCS::AnnotationDeltas::annotationsAdded));
     this->annotationsSequence->reset();
 
     forEachChildWithType(state, e, Serialization::Midi::annotation)
@@ -427,7 +427,7 @@ void ProjectTimeline::resetAnnotationsDelta(const SerializedData &state)
 
 SerializedData ProjectTimeline::serializeTimeSignaturesDelta() const
 {
-    SerializedData tree(Serialization::VCS::ProjectTimelineDeltas::timeSignaturesAdded);
+    SerializedData tree(Serialization::VCS::TimeSignatureDeltas::timeSignaturesAdded);
 
     for (int i = 0; i < this->timeSignaturesSequence->size(); ++i)
     {
@@ -440,7 +440,7 @@ SerializedData ProjectTimeline::serializeTimeSignaturesDelta() const
 
 void ProjectTimeline::resetTimeSignaturesDelta(const SerializedData &state)
 {
-    jassert(state.hasType(Serialization::VCS::ProjectTimelineDeltas::timeSignaturesAdded));
+    jassert(state.hasType(Serialization::VCS::TimeSignatureDeltas::timeSignaturesAdded));
     this->timeSignaturesSequence->reset();
     
     forEachChildWithType(state, e, Serialization::Midi::timeSignature)
@@ -453,7 +453,7 @@ void ProjectTimeline::resetTimeSignaturesDelta(const SerializedData &state)
 
 SerializedData ProjectTimeline::serializeKeySignaturesDelta() const
 {
-    SerializedData tree(Serialization::VCS::ProjectTimelineDeltas::keySignaturesAdded);
+    SerializedData tree(Serialization::VCS::KeySignatureDeltas::keySignaturesAdded);
 
     for (int i = 0; i < this->keySignaturesSequence->size(); ++i)
     {
@@ -466,7 +466,7 @@ SerializedData ProjectTimeline::serializeKeySignaturesDelta() const
 
 void ProjectTimeline::resetKeySignaturesDelta(const SerializedData &state)
 {
-    jassert(state.hasType(Serialization::VCS::ProjectTimelineDeltas::keySignaturesAdded));
+    jassert(state.hasType(Serialization::VCS::KeySignatureDeltas::keySignaturesAdded));
     this->keySignaturesSequence->reset();
 
     forEachChildWithType(state, e, Serialization::Midi::keySignature)

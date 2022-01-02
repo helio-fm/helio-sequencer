@@ -181,7 +181,6 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
         stateHasTemperaments = stateHasTemperaments || stateDelta->hasType(ProjectInfoDeltas::projectTemperament);
     }
 
-    for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         auto temperamentsDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),

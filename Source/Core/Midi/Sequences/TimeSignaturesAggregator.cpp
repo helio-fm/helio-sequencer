@@ -205,7 +205,7 @@ void TimeSignaturesAggregator::rebuildAll()
     }
 
     const auto sequenceFirstBeat = this->selectedTrack->getSequence()->getFirstBeat();
-    const auto &tsOverride = this->selectedTrack->getTimeSignatureOverride();
+    const auto *tsOverride = this->selectedTrack->getTimeSignatureOverride();
 
     // todo: multiple time signatures per track? now there can be only one
 
@@ -215,17 +215,17 @@ void TimeSignaturesAggregator::rebuildAll()
     const Clip *chunkStartClip = nullptr;
     for (const auto *clip : this->selectedTrack->getPattern()->getClips())
     {
-        const auto startBeat = tsOverride.getBeat() + sequenceFirstBeat + clip->getBeat();
+        const auto startBeat = tsOverride->getBeat() + sequenceFirstBeat + clip->getBeat();
 
         if (chunkStartClip == nullptr)
         {
             chunkStartClip = clip;
-            this->orderedEvents.add(tsOverride.withBeat(startBeat));
+            this->orderedEvents.add(tsOverride->withBeat(startBeat));
             continue;
         }
 
-        const auto chunkStartBeat = tsOverride.getBeat() + sequenceFirstBeat + chunkStartClip->getBeat();
-        if (fmodf(startBeat - chunkStartBeat, tsOverride.getBarLengthInBeats()) == 0.f)
+        const auto chunkStartBeat = tsOverride->getBeat() + sequenceFirstBeat + chunkStartClip->getBeat();
+        if (fmodf(startBeat - chunkStartBeat, tsOverride->getBarLengthInBeats()) == 0.f)
         {
             // this time signature is the "continuation" of the previous one, skip it:
             continue;
@@ -233,7 +233,7 @@ void TimeSignaturesAggregator::rebuildAll()
 
         // new chunk starts here, add time signature
         chunkStartClip = clip;
-        this->orderedEvents.add(tsOverride.withBeat(startBeat));
+        this->orderedEvents.add(tsOverride->withBeat(startBeat));
     }
 
     this->listeners.call(&Listener::onTimeSignaturesUpdated);

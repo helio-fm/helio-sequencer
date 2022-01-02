@@ -473,16 +473,22 @@ namespace Serialization
             static const Identifier notesChanged = "notesChanged";
         }
 
-        namespace ProjectTimelineDeltas
+        namespace AnnotationDeltas
         {
             static const Identifier annotationsAdded = "annotationsAdded";
             static const Identifier annotationsRemoved = "annotationsRemoved";
             static const Identifier annotationsChanged = "annotationsChanged";
+        }
 
+        namespace TimeSignatureDeltas
+        {
             static const Identifier timeSignaturesAdded = "timeSignaturesAdded";
             static const Identifier timeSignaturesRemoved = "timeSignaturesRemoved";
             static const Identifier timeSignaturesChanged = "timeSignaturesChanged";
+        }
 
+        namespace KeySignatureDeltas
+        {
             static const Identifier keySignaturesAdded = "keySignaturesAdded";
             static const Identifier keySignaturesRemoved = "keySignaturesRemoved";
             static const Identifier keySignaturesChanged = "keySignaturesChanged";

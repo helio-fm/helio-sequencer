@@ -19,13 +19,15 @@
 #include "PianoTrackNode.h"
 #include "PianoSequence.h"
 #include "ProjectNode.h"
-#include "TreeNodeSerializer.h"
-#include "Icons.h"
+#include "TimeSignatureEvent.h"
 #include "Pattern.h"
+#include "TreeNodeSerializer.h"
 #include "MainLayout.h"
+#include "Icons.h"
 
 PianoTrackNode::PianoTrackNode(const String &name) :
-    MidiTrackNode(name, Serialization::Core::pianoTrack)
+    MidiTrackNode(name, Serialization::Core::pianoTrack),
+    timeSignatureOverride(this)
 {
     this->sequence = make<PianoSequence>(*this, *this);
     this->pattern = make<Pattern>(*this, *this);
@@ -38,6 +40,7 @@ PianoTrackNode::PianoTrackNode(const String &name) :
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackInstrument));
     this->deltas.add(new VCS::Delta({}, PianoSequenceDeltas::notesAdded));
     this->deltas.add(new VCS::Delta({}, PatternDeltas::clipsAdded));
+    this->deltas.add(new VCS::Delta({}, TimeSignatureDeltas::timeSignaturesChanged));
 }
 
 Image PianoTrackNode::getIcon() const noexcept
@@ -48,6 +51,31 @@ Image PianoTrackNode::getIcon() const noexcept
 int PianoTrackNode::getNumDeltas() const
 {
     return this->deltas.size();
+}
+
+//===----------------------------------------------------------------------===//
+// Time signature override
+//===----------------------------------------------------------------------===//
+
+bool PianoTrackNode::hasTimeSignatureOverride() const noexcept
+{
+    return this->timeSignatureOverride.isValid();
+}
+
+const TimeSignatureEvent *PianoTrackNode::getTimeSignatureOverride() const noexcept
+{
+    return &this->timeSignatureOverride;
+}
+
+void PianoTrackNode::setTimeSignatureOverride(const TimeSignatureEvent &ts, bool sendNotifications)
+{
+    this->timeSignatureOverride.applyChanges(ts);
+
+    // fixme what events to send?
+    //if (this->lastFoundParent != nullptr)
+    //{
+    //    this->lastFoundParent->broadcastChangeEvent(oldEvent, newEvent);
+    //}
 }
 
 //===----------------------------------------------------------------------===//
@@ -102,6 +130,10 @@ SerializedData PianoTrackNode::getDeltaData(int deltaIndex) const
     {
         return this->serializeInstrumentDelta();
     }
+    else if (this->deltas[deltaIndex]->hasType(TimeSignatureDeltas::timeSignaturesChanged))
+    {
+        return this->serializeTimeSignatureDelta();
+    }
     else if (this->deltas[deltaIndex]->hasType(PianoSequenceDeltas::notesAdded))
     {
         return this->serializeEventsDelta();
@@ -140,7 +172,11 @@ void PianoTrackNode::resetStateTo(const VCS::TrackedItem &newState)
         {
             this->resetInstrumentDelta(newDeltaData);
         }
-        // the current layer state is supposed to have
+        else if (newDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged))
+        {
+            this->resetTimeSignatureDelta(newDeltaData);
+        }
+        // the current sequence state is supposed to have
         // a single note delta of type PianoSequenceDeltas::notesAdded
         else if (newDelta->hasType(PianoSequenceDeltas::notesAdded))
         {
@@ -153,7 +189,6 @@ void PianoTrackNode::resetStateTo(const VCS::TrackedItem &newState)
         }
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -172,6 +207,11 @@ SerializedData PianoTrackNode::serialize() const
 
     tree.appendChild(this->sequence->serialize());
     tree.appendChild(this->pattern->serialize());
+
+    if (this->hasTimeSignatureOverride())
+    {
+        tree.appendChild(this->timeSignatureOverride.serialize());
+    }
 
     TreeNodeSerializer::serializeChildren(*this, tree);
 
@@ -195,10 +235,14 @@ void PianoTrackNode::deserialize(const SerializedData &data)
         this->pattern->deserialize(e);
     }
 
+    forEachChildWithType(data, e, Serialization::Midi::timeSignature)
+    {
+        this->timeSignatureOverride.deserialize(e);
+    }
+
     // Proceed with basic properties and children
     TreeNode::deserialize(data);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Deltas
@@ -225,6 +269,17 @@ SerializedData PianoTrackNode::serializeInstrumentDelta() const
     using namespace Serialization::VCS;
     SerializedData tree(MidiTrackDeltas::trackInstrument);
     tree.setProperty(delta, this->getTrackInstrumentId());
+    return tree;
+}
+
+SerializedData PianoTrackNode::serializeTimeSignatureDelta() const
+{
+    using namespace Serialization::VCS;
+    SerializedData tree(TimeSignatureDeltas::timeSignaturesChanged);
+    if (this->hasTimeSignatureOverride())
+    {
+        tree.appendChild(this->timeSignatureOverride.serialize());
+    }
     return tree;
 }
 
@@ -264,6 +319,17 @@ void PianoTrackNode::resetInstrumentDelta(const SerializedData &state)
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackInstrument));
     const String &instrumentId(state.getProperty(Serialization::VCS::delta));
     this->setTrackInstrumentId(instrumentId, false);
+}
+
+void PianoTrackNode::resetTimeSignatureDelta(const SerializedData &state)
+{
+    jassert(state.hasType(Serialization::VCS::TimeSignatureDeltas::timeSignaturesChanged));
+
+    this->timeSignatureOverride.reset();
+    forEachChildWithType(state, e, Serialization::Midi::timeSignature)
+    {
+        this->timeSignatureOverride.deserialize(e);
+    }
 }
 
 void PianoTrackNode::resetEventsDelta(const SerializedData &state)
