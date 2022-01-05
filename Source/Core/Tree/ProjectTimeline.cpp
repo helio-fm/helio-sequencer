@@ -38,6 +38,9 @@ public:
     MidiSequence *getSequence() const noexcept override
     { return this->timeline.annotationsSequence.get(); }
 
+    Colour getTrackColour() const noexcept override
+    { return findDefaultColour(Label::textColourId); }
+
     ProjectTimeline &timeline;
 };
 
@@ -54,6 +57,9 @@ public:
     MidiSequence *getSequence() const noexcept override
     { return this->timeline.timeSignaturesSequence.get(); }
 
+    Colour getTrackColour() const noexcept override
+    { return findDefaultColour(Label::textColourId); }
+
     ProjectTimeline &timeline;
 };
 
@@ -69,6 +75,9 @@ public:
 
     MidiSequence *getSequence() const noexcept override
     { return this->timeline.keySignaturesSequence.get(); }
+
+    Colour getTrackColour() const noexcept override
+    { return findDefaultColour(Label::textColourId); }
 
     ProjectTimeline &timeline;
 };

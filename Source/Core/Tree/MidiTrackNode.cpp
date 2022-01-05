@@ -170,8 +170,6 @@ void MidiTrackNode::setTrackInstrumentId(const String &val, bool sendNotificatio
     if (sendNotifications)
     {
         this->dispatchChangeTrackProperties();
-        // instrument id is not displayed anywhere, fix this is it does someday
-        //this->dispatchChangeTreeNodeViews();
     }
 }
 
@@ -192,8 +190,6 @@ void MidiTrackNode::setTrackControllerNumber(int val, bool sendNotifications)
     if (sendNotifications)
     {
         this->dispatchChangeTrackProperties();
-        // controller value is not displayed anywhere, fix this is it does someday
-        //this->dispatchChangeTreeNodeViews();
     }
 }
 

@@ -53,7 +53,7 @@ private:
     WeakReference<Lasso> lasso;
     int minNumberOfSelectedEvents;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SelectionMenuManager);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SelectionMenuManager)
 };
 
 class PianoRollSelectionMenuManager final : public SelectionMenuManager
@@ -84,7 +84,7 @@ private:
     WeakReference<Lasso> lasso;
     PianoRoll &roll;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollSelectionRangeIndicatorController);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollSelectionRangeIndicatorController)
 };
 
 class PatternRollSelectionRangeIndicatorController final : public ChangeListener
@@ -101,7 +101,7 @@ private:
     WeakReference<Lasso> lasso;
     PatternRoll &roll;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollSelectionRangeIndicatorController);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollSelectionRangeIndicatorController)
 };
 
 class PatternRollRecordingTargetController final : public ChangeListener
@@ -118,5 +118,22 @@ private:
     WeakReference<Lasso> lasso;
     ProjectNode &project;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollRecordingTargetController);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollRecordingTargetController)
+};
+
+class PatternRollTimeSignaturePicker final : public ChangeListener
+{
+public:
+
+    PatternRollTimeSignaturePicker(WeakReference<Lasso> lasso, ProjectNode &project);
+    ~PatternRollTimeSignaturePicker() override;
+
+private:
+
+    void changeListenerCallback(ChangeBroadcaster *source) override;
+
+    WeakReference<Lasso> lasso;
+    ProjectNode &project;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollTimeSignaturePicker)
 };

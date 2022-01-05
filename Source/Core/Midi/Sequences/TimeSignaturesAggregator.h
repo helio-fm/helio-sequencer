@@ -18,8 +18,8 @@
 #pragma once
 
 class ProjectNode;
+class MidiSequence;
 class TimeSignatureEvent;
-class TimeSignaturesSequence;
 
 #include "MidiTrack.h"
 #include "ProjectListener.h"
@@ -37,7 +37,7 @@ class TimeSignaturesAggregator final : public ProjectListener
 public:
 
     TimeSignaturesAggregator(ProjectNode &parentProject,
-        TimeSignaturesSequence &timelineSignatures);
+        MidiSequence &timelineSignatures);
 
     ~TimeSignaturesAggregator() override;
 
@@ -54,6 +54,9 @@ public:
     {
         Listener() = default;
         virtual ~Listener() = default;
+        // "reset your views, they're likely not relevant anymore":
+        virtual void onTimeSignaturesProviderWillChange() {}
+        // "something changed, please sync":
         virtual void onTimeSignaturesUpdated() {}
     };
 
@@ -87,13 +90,12 @@ public:
 private:
 
     ProjectNode &project;
-    TimeSignaturesSequence &timelineSignatures;
-
-    // todo how to store all events?
+    MidiSequence &timelineSignatures;
 
     WeakReference<MidiTrack> selectedTrack = nullptr;
 
     void rebuildAll();
+    bool isAggregatingTimeSignatureOverrides() const noexcept;
 
     Array<TimeSignatureEvent> orderedEvents;
 

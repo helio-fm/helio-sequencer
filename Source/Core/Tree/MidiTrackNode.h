@@ -70,11 +70,12 @@ public:
     int getTrackControllerNumber() const noexcept override;
     void setTrackControllerNumber(int val, bool sendNotifications) override;
 
+    bool hasTimeSignatureOverride() const noexcept override { return false; }
+    const TimeSignatureEvent *getTimeSignatureOverride() const noexcept override { return nullptr; }
+    void setTimeSignatureOverride(const TimeSignatureEvent &ts, bool sendNotifications) override {}
+
     MidiSequence *getSequence() const noexcept override;
     Pattern *getPattern() const noexcept override;
-
-    bool hasTimeSignatureOverride() const noexcept override { return false; }
-    const TimeSignatureEvent *getTimeSignatureOverride() const noexcept override { return nullptr;  }
 
     //===------------------------------------------------------------------===//
     // ProjectEventDispatcher

@@ -59,17 +59,20 @@ public:
     // TimeSignaturesAggregator::Listener
     //===------------------------------------------------------------------===//
 
+    void onTimeSignaturesProviderWillChange() override;
     void onTimeSignaturesUpdated() override;
 
     //===------------------------------------------------------------------===//
     // Stuff for children
     //===------------------------------------------------------------------===//
 
-    void onTimeSignatureMoved(TimeSignatureComponent *nc);
     void onTimeSignatureTapped(TimeSignatureComponent *nc);
     void showDialogFor(TimeSignatureComponent *nc);
     void alternateActionFor(TimeSignatureComponent *nc);
+
     float getBeatByXPosition(int x) const;
+    void applyTimeSignatureBounds(TimeSignatureComponent *c,
+        TimeSignatureComponent *nextOne = nullptr);
 
     //===------------------------------------------------------------------===//
     // Component
@@ -80,9 +83,6 @@ public:
 private:
     
     void reloadTrackMap();
-    void applyTimeSignatureBounds(TimeSignatureComponent *c,
-        TimeSignatureComponent *nextOne = nullptr);
-    
     void updateTrackRangeIndicatorsAnchors();
     
 private:
@@ -102,9 +102,8 @@ private:
     ComponentAnimator animator;
 
     const Type type;
-    TimeSignatureComponent *createComponent(const TimeSignatureEvent &event);
+    TimeSignatureComponent *createComponent();
 
     OwnedArray<TimeSignatureComponent> timeSignatureComponents;
-    FlatHashMap<TimeSignatureEvent, TimeSignatureComponent *,
-        TimeSignatureEventHash> timeSignaturesMap;
+    FlatHashMap<TimeSignatureEvent, TimeSignatureComponent *, MidiEventHash> timeSignaturesMap;
 };

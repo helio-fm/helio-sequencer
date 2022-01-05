@@ -67,6 +67,7 @@ public:
     // Whether a track has its own time signature which should be used instead of timeline's:
     virtual bool hasTimeSignatureOverride() const noexcept = 0;
     virtual const TimeSignatureEvent *getTimeSignatureOverride() const noexcept = 0;
+    virtual void setTimeSignatureOverride(const TimeSignatureEvent &ts, bool sendNotifications) = 0;
 
     //===------------------------------------------------------------------===//
     // Grouping
@@ -160,6 +161,10 @@ public:
 
     int getTrackControllerNumber() const noexcept override { return 0; }
     void setTrackControllerNumber(int val, bool sendNotifications) override {};
+
+    bool hasTimeSignatureOverride() const noexcept override { return false; }
+    const TimeSignatureEvent *getTimeSignatureOverride() const noexcept override { return nullptr; }
+    void setTimeSignatureOverride(const TimeSignatureEvent &ts, bool sendNotifications) override {}
 
     MidiSequence *getSequence() const noexcept override { return nullptr; }
     Pattern *getPattern() const noexcept override { return nullptr; }

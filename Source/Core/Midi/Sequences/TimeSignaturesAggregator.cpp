@@ -24,7 +24,7 @@
 #include "Pattern.h"
 
 TimeSignaturesAggregator::TimeSignaturesAggregator(ProjectNode &parentProject,
-    TimeSignaturesSequence &timelineSignatures) :
+    MidiSequence &timelineSignatures) :
     project(parentProject),
     timelineSignatures(timelineSignatures)
 {
@@ -42,6 +42,11 @@ static inline bool trackHasTimeSignature(MidiTrack *track) noexcept
     return track != nullptr && track->hasTimeSignatureOverride();
 }
 
+bool TimeSignaturesAggregator::isAggregatingTimeSignatureOverrides() const noexcept
+{
+    return trackHasTimeSignature(this->selectedTrack);
+}
+
 void TimeSignaturesAggregator::setActiveScope(WeakReference<MidiTrack> newTrack)
 {
     if (this->selectedTrack == newTrack)
@@ -56,8 +61,14 @@ void TimeSignaturesAggregator::setActiveScope(WeakReference<MidiTrack> newTrack)
 
     if (shouldRebuildAll)
     {
+        this->listeners.call(&Listener::onTimeSignaturesProviderWillChange);
         this->rebuildAll();
     }
+}
+
+const Array<TimeSignatureEvent> &TimeSignaturesAggregator::getAllOrdered() const noexcept
+{
+    return this->orderedEvents;
 }
 
 //===----------------------------------------------------------------------===//
@@ -86,43 +97,71 @@ void TimeSignaturesAggregator::removeAllListeners()
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void TimeSignaturesAggregator::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void TimeSignaturesAggregator::onAddMidiEvent(const MidiEvent &event)
 {
-    if (newEvent.isTypeOf(MidiEvent::Type::TimeSignature) &&
-        !trackHasTimeSignature(this->selectedTrack)) // fixme that's ugly
+    if (event.isTypeOf(MidiEvent::Type::TimeSignature) &&
+        !this->isAggregatingTimeSignatureOverrides())
     {
-        const auto &timeSignature = static_cast<const TimeSignatureEvent &>(oldEvent);
-        const auto &newTimeSignature = static_cast<const TimeSignatureEvent &>(newEvent);
-        // todo what?
-        // find, update, sort the list
+        const auto &timeSignature = static_cast<const TimeSignatureEvent &>(event);
+        jassert(timeSignature.getSequence() ==
+            this->project.getTimeline()->getTimeSignatures()->getSequence());
+
+        this->orderedEvents.addSorted(timeSignature, timeSignature);
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
     }
 }
 
-void TimeSignaturesAggregator::onAddMidiEvent(const MidiEvent &event)
+void TimeSignaturesAggregator::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (event.isTypeOf(MidiEvent::Type::TimeSignature) &&
-        !trackHasTimeSignature(this->selectedTrack)) // fixme that's ugly
+    if (newEvent.isTypeOf(MidiEvent::Type::TimeSignature) &&
+        !this->isAggregatingTimeSignatureOverrides())
     {
-        const auto &timeSignature = static_cast<const TimeSignatureEvent &>(event);
-        // todo add sorted,
+        const auto &timeSignature = static_cast<const TimeSignatureEvent &>(oldEvent);
+        jassert(timeSignature.getSequence() ==
+            this->project.getTimeline()->getTimeSignatures()->getSequence());
+
+        const auto &newTimeSignature = static_cast<const TimeSignatureEvent &>(newEvent);
+        jassert(newTimeSignature.getSequence() ==
+            this->project.getTimeline()->getTimeSignatures()->getSequence());
+
+        const auto index = this->orderedEvents.indexOfSorted(timeSignature, timeSignature);
+        if (index < 0)
+        {
+            jassertfalse; // how is that?
+            return;
+        }
+
+        jassert(timeSignature.getId() == newTimeSignature.getId());
+        this->orderedEvents.getReference(index) = newTimeSignature;
+        this->orderedEvents.sort(newTimeSignature);
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
     }
 }
 
 void TimeSignaturesAggregator::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.isTypeOf(MidiEvent::Type::TimeSignature))
+    if (event.isTypeOf(MidiEvent::Type::TimeSignature) &&
+        !this->isAggregatingTimeSignatureOverrides())
     {
         const auto &timeSignature = static_cast<const TimeSignatureEvent &>(event);
-        // todo find, remove, if found, and
+        jassert(timeSignature.getSequence() ==
+            this->project.getTimeline()->getTimeSignatures()->getSequence());
+
+        const auto index = this->orderedEvents.indexOfSorted(timeSignature, timeSignature);
+        if (index < 0)
+        {
+            jassertfalse; // how is that?
+            return;
+        }
+
+        this->orderedEvents.remove(index);
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
     }
 }
 
 void TimeSignaturesAggregator::onAddClip(const Clip &clip)
 {
-    if (trackHasTimeSignature(this->selectedTrack))
+    if (this->isAggregatingTimeSignatureOverrides())
     {
         this->rebuildAll();
     }
@@ -130,7 +169,7 @@ void TimeSignaturesAggregator::onAddClip(const Clip &clip)
 
 void TimeSignaturesAggregator::onChangeClip(const Clip &oldClip, const Clip &newClip)
 {
-    if (trackHasTimeSignature(this->selectedTrack) &&
+    if (this->isAggregatingTimeSignatureOverrides() &&
         oldClip.getBeat() != newClip.getBeat())
     {
         this->rebuildAll();
@@ -139,7 +178,7 @@ void TimeSignaturesAggregator::onChangeClip(const Clip &oldClip, const Clip &new
 
 void TimeSignaturesAggregator::onRemoveClip(const Clip &clip)
 {
-    if (trackHasTimeSignature(this->selectedTrack))
+    if (this->isAggregatingTimeSignatureOverrides())
     {
         this->rebuildAll();
     }
@@ -147,17 +186,19 @@ void TimeSignaturesAggregator::onRemoveClip(const Clip &clip)
 
 void TimeSignaturesAggregator::onChangeTrackProperties(MidiTrack *const track)
 {
-    if (track == this->selectedTrack && trackHasTimeSignature(track))
+    if (track == this->selectedTrack)
     {
-        // track color or time signature might have changed
-        // fixme: not rebuilding, just updating the ts?
+        // track color might have changed, or its time signature override
+        // might have been added, changed or removed:
+        this->listeners.call(&Listener::onTimeSignaturesProviderWillChange);
         this->rebuildAll();
     }
 }
 
 void TimeSignaturesAggregator::onChangeTrackBeatRange(MidiTrack *const track)
 {
-    if (track == this->selectedTrack && trackHasTimeSignature(track))
+    if (this->isAggregatingTimeSignatureOverrides() &&
+        track == this->selectedTrack)
     {
         this->rebuildAll();
     }
@@ -173,13 +214,15 @@ void TimeSignaturesAggregator::onRemoveTrack(MidiTrack *const track)
 {
     jassert(this->project.getTimeline() != nullptr);
 
-    // what to do when the selected track is removed?
-    //if (track == this->selectedTrack)
-    //{
-    //}
+    if (track == this->selectedTrack)
+    {
+        this->selectedTrack = nullptr;
+        this->rebuildAll();
+        return;
+    }
 
     // what to do when the timeline's ts track is removed?
-    // if (track == this->project.getTimeline()->getTimeSignatures())
+    //if (track == this->project.getTimeline()->getTimeSignatures())
     //{
     //}
 }
@@ -191,8 +234,7 @@ void TimeSignaturesAggregator::rebuildAll()
 {
     this->orderedEvents.clearQuick();
 
-    if (this->selectedTrack == nullptr ||
-        !this->selectedTrack->hasTimeSignatureOverride())
+    if (!this->isAggregatingTimeSignatureOverrides())
     {
         for (const auto *event : this->timelineSignatures)
         {
@@ -211,20 +253,27 @@ void TimeSignaturesAggregator::rebuildAll()
 
     // we're adding time signatures in such a way that continuous chunks of clips
     // will only have a time signature at the start of each chunk, instead of
-    // time signatures at the start of each clip, which would be a visual noise
+    // time signatures at the start of each clip, which would be a visual noise:
     const Clip *chunkStartClip = nullptr;
+    // we'll also make sure all those time signatures have unique ids:
+    MidiEvent::Id generatedTimeSignatureId = 0;
     for (const auto *clip : this->selectedTrack->getPattern()->getClips())
     {
-        const auto startBeat = tsOverride->getBeat() + sequenceFirstBeat + clip->getBeat();
+        const auto startBeat = clip->getBeat() +
+            tsOverride->getBeat() + sequenceFirstBeat;
 
         if (chunkStartClip == nullptr)
         {
             chunkStartClip = clip;
-            this->orderedEvents.add(tsOverride->withBeat(startBeat));
+            this->orderedEvents.add(tsOverride->
+                withId(generatedTimeSignatureId).withBeat(startBeat));
+            generatedTimeSignatureId++;
             continue;
         }
 
-        const auto chunkStartBeat = tsOverride->getBeat() + sequenceFirstBeat + chunkStartClip->getBeat();
+        const auto chunkStartBeat = chunkStartClip->getBeat() +
+            tsOverride->getBeat() + sequenceFirstBeat;
+
         if (fmodf(startBeat - chunkStartBeat, tsOverride->getBarLengthInBeats()) == 0.f)
         {
             // this time signature is the "continuation" of the previous one, skip it:
@@ -233,7 +282,9 @@ void TimeSignaturesAggregator::rebuildAll()
 
         // new chunk starts here, add time signature
         chunkStartClip = clip;
-        this->orderedEvents.add(tsOverride->withBeat(startBeat));
+        this->orderedEvents.add(tsOverride->
+            withId(generatedTimeSignatureId).withBeat(startBeat));
+        generatedTimeSignatureId++;
     }
 
     this->listeners.call(&Listener::onTimeSignaturesUpdated);

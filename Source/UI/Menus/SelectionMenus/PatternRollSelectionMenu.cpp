@@ -94,7 +94,12 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         }
         else if (auto *pianoSequence = dynamic_cast<PianoSequence *>(track->getSequence()))
         {
-        
+            const auto tsActionlabel = track->hasTimeSignatureOverride() ?
+                TRANS(I18n::Menu::timeSignatureChange) :
+                TRANS(I18n::Menu::timeSignatureAdd);
+
+            menu.add(MenuItem::item(Icons::ellipsis, // fixme icon
+                CommandIDs::SetTrackTimeSignature, tsActionlabel)->closesMenu());
         }
     }
     else

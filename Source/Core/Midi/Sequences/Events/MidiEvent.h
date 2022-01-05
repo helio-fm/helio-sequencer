@@ -60,13 +60,13 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    bool isValid() const noexcept;
+    virtual bool isValid() const noexcept;
+
+    virtual int getTrackControllerNumber() const noexcept;
+    virtual int getTrackChannel() const noexcept;
+    virtual Colour getTrackColour() const noexcept;
 
     MidiSequence *getSequence() const noexcept;
-
-    int getTrackControllerNumber() const noexcept;
-    int getTrackChannel() const noexcept;
-    Colour getTrackColour() const noexcept;
 
     const Id getId() const noexcept;
     float getBeat() const noexcept;
@@ -83,6 +83,11 @@ public:
     }
 
     static int compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept;
+
+    static inline int compareElements(const MidiEvent &first, const MidiEvent &second) noexcept
+    {
+        return MidiEvent::compareElements(&first, &second);
+    }
 
 protected:
 

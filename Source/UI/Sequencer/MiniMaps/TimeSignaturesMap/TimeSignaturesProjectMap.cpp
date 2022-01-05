@@ -98,6 +98,12 @@ void TimeSignaturesProjectMap::resized()
 // TimeSignaturesAggregator::Listener
 //===----------------------------------------------------------------------===//
 
+void TimeSignaturesProjectMap::onTimeSignaturesProviderWillChange()
+{
+    this->timeSignaturesMap.clear();
+    this->timeSignatureComponents.clear();
+}
+
 void TimeSignaturesProjectMap::onTimeSignaturesUpdated()
 {
     const auto &timeSignatures =
@@ -107,15 +113,17 @@ void TimeSignaturesProjectMap::onTimeSignaturesUpdated()
     {
         if (auto *existingComponent = this->timeSignaturesMap[ts])
         {
-            DBG("Updating existing time signature")
-            existingComponent->updateContent(); // fixme will it work with track-based ts?
+            DBG("Updating the component for " + ts.toString());
+            existingComponent->updateContent(ts);
+            this->applyTimeSignatureBounds(existingComponent, nullptr);
         }
         else
         {
-            DBG("Adding new time signature")
-            auto *newComponent = this->createComponent(ts);
+            DBG("Adding new component for " + ts.toString());
+            auto *newComponent = this->createComponent();
             this->addAndMakeVisible(newComponent);
-            newComponent->updateContent();
+            newComponent->updateContent(ts);
+            this->applyTimeSignatureBounds(newComponent, nullptr);
 
             this->timeSignatureComponents.addSorted(*newComponent, newComponent);
             this->timeSignaturesMap[ts] = newComponent;
@@ -167,8 +175,6 @@ void TimeSignaturesProjectMap::onChangeViewBeatRange(float firstBeat, float last
 // Private
 //===----------------------------------------------------------------------===//
 
-void TimeSignaturesProjectMap::onTimeSignatureMoved(TimeSignatureComponent *c) {}
-
 void TimeSignaturesProjectMap::onTimeSignatureTapped(TimeSignatureComponent *c)
 {
     const auto seekBeat = this->project.getTransport().getSeekBeat();
@@ -188,7 +194,8 @@ void TimeSignaturesProjectMap::showDialogFor(TimeSignatureComponent *c)
 {
     if (!this->project.getTransport().isPlaying())
     {
-        App::showModalComponent(TimeSignatureDialog::editingDialog(*this, c->getEvent()));
+        App::showModalComponent(TimeSignatureDialog::editingDialog(*this,
+            this->project.getUndoStack(), c->getEvent()));
     }
 }
 
@@ -222,9 +229,9 @@ void TimeSignaturesProjectMap::reloadTrackMap()
 
     for (const auto &ts : timeSignatures)
     {
-        auto *component = this->createComponent(ts);
+        auto *component = this->createComponent();
         this->addAndMakeVisible(component);
-        component->updateContent();
+        component->updateContent(ts);
 
         this->timeSignatureComponents.addSorted(*component, component);
         this->timeSignaturesMap[ts] = component;
@@ -249,7 +256,7 @@ void TimeSignaturesProjectMap::applyTimeSignatureBounds(TimeSignatureComponent *
     const float nextBeat = (nextOne ? nextOne->getBeat() : this->rollLastBeat) - this->rollFirstBeat;
     const float nextX = mapWidth * (nextBeat / projectLengthInBeats);
 
-    const float maxWidth = nextX - x;
+    const float maxWidth = jmax(nextX - x, minWidth);
     const float componentWidth = c->getTextWidth() + widthMargin;
     const float w = jlimit(minWidth, maxWidth, componentWidth);
 
@@ -257,14 +264,14 @@ void TimeSignaturesProjectMap::applyTimeSignatureBounds(TimeSignatureComponent *
         float(TimeSignatureComponent::timeSignatureHeight)));
 }
 
-TimeSignatureComponent *TimeSignaturesProjectMap::createComponent(const TimeSignatureEvent &event)
+TimeSignatureComponent *TimeSignaturesProjectMap::createComponent()
 {
     switch (this->type)
     {
         case Type::Large:
-            return new TimeSignatureLargeComponent(*this, event);
+            return new TimeSignatureLargeComponent(*this);
         case Type::Small:
-            return new TimeSignatureSmallComponent(*this, event);
+            return new TimeSignatureSmallComponent(*this);
         default:
             return nullptr;
     }

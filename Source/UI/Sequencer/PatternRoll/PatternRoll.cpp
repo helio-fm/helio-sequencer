@@ -41,6 +41,7 @@
 #include "InteractiveActions.h"
 
 #include "TrackPropertiesDialog.h"
+#include "TimeSignatureDialog.h"
 #include "ProjectTimeline.h"
 #include "PianoSequence.h"
 #include "AutomationSequence.h"
@@ -86,6 +87,7 @@ PatternRoll::PatternRoll(ProjectNode &parentProject,
     this->setComponentID(ComponentIDs::patternRollId);
 
     this->selectionListeners.add(new PatternRollSelectionMenuManager(&this->selection));
+    this->selectionListeners.add(new PatternRollTimeSignaturePicker(&this->selection, parentProject));
     this->selectionListeners.add(new PatternRollRecordingTargetController(&this->selection, parentProject));
     this->selectionListeners.add(new PatternRollSelectionRangeIndicatorController(&this->selection, *this));
 
@@ -657,7 +659,15 @@ void PatternRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::SetTrackTimeSignature:
-        // todo
+        if (this->getLassoSelection().getNumSelected() == 1)
+        {
+            const auto clip = this->selection.getFirstAs<ClipComponent>()->getClip();
+            if (auto *pianoTrack = this->project.findTrackById<PianoTrackNode>(clip.getTrackId()))
+            {
+                App::showModalComponent(TimeSignatureDialog::editingDialog(*this,
+                    this->project.getUndoStack(), *pianoTrack->getTimeSignatureOverride()));
+            }
+        }
         break;
     case CommandIDs::DuplicateTrack:        // the implementation for these two
     case CommandIDs::InstanceToUniqueTrack: // is pretty much the same code

@@ -71,11 +71,10 @@ void PianoTrackNode::setTimeSignatureOverride(const TimeSignatureEvent &ts, bool
 {
     this->timeSignatureOverride.applyChanges(ts);
 
-    // fixme what events to send?
-    //if (this->lastFoundParent != nullptr)
-    //{
-    //    this->lastFoundParent->broadcastChangeEvent(oldEvent, newEvent);
-    //}
+    if (sendNotifications && this->lastFoundParent != nullptr)
+    {
+        this->lastFoundParent->broadcastChangeTrackProperties(this);
+    }
 }
 
 //===----------------------------------------------------------------------===//

@@ -45,7 +45,7 @@ public:
 
     bool hasTimeSignatureOverride() const noexcept override;
     const TimeSignatureEvent *getTimeSignatureOverride() const noexcept override;
-    void setTimeSignatureOverride(const TimeSignatureEvent &ts, bool sendNotifications = true);
+    void setTimeSignatureOverride(const TimeSignatureEvent &ts, bool sendNotifications) override;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -78,5 +78,4 @@ private:
 
     UniquePointer<VCS::PianoTrackDiffLogic> vcsDiffLogic;
     OwnedArray<VCS::Delta> deltas;
-
 };

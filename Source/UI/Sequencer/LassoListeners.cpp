@@ -105,7 +105,7 @@ private:
     ProjectNode &project;
     WeakReference<Lasso> lasso;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollMenuSource);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollMenuSource)
 };
 
 // Piano roll needs at least 2 events to be selected to show selection menu
@@ -150,7 +150,7 @@ private:
 
     WeakReference<Lasso> lasso;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollMenuSource);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollMenuSource)
 };
 
 PatternRollSelectionMenuManager::PatternRollSelectionMenuManager(WeakReference<Lasso> lasso) :
@@ -300,5 +300,51 @@ void PatternRollRecordingTargetController::changeListenerCallback(ChangeBroadcas
         }
 
         this->project.setMidiRecordingTarget(&cc->getClip());
+    }
+}
+
+//===----------------------------------------------------------------------===//
+// Time signature picker
+//===----------------------------------------------------------------------===//
+
+PatternRollTimeSignaturePicker::PatternRollTimeSignaturePicker(WeakReference<Lasso> lasso,
+    ProjectNode &project) :
+    lasso(lasso),
+    project(project)
+{
+    jassert(this->lasso != nullptr);
+
+    if (this->lasso != nullptr)
+    {
+        this->lasso->addChangeListener(this);
+    }
+}
+
+PatternRollTimeSignaturePicker::~PatternRollTimeSignaturePicker()
+{
+    jassert(this->lasso != nullptr);
+
+    if (this->lasso != nullptr)
+    {
+        this->lasso->removeChangeListener(this);
+    }
+}
+
+void PatternRollTimeSignaturePicker::changeListenerCallback(ChangeBroadcaster *source)
+{
+    if (this->lasso->getNumSelected() != 1)
+    {
+        this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(nullptr);
+        return;
+    }
+
+    // if the single piano clip is selected, use its time signature overrides
+    // fixme: same logic if all selected clips are of the same track
+
+    auto *cc = this->lasso->getFirstAs<ClipComponent>();
+    if (auto *pc = dynamic_cast<PianoClipComponent *>(cc))
+    {
+        auto *targetTrack = pc->getClip().getPattern()->getTrack();
+        this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(targetTrack);
     }
 }

@@ -21,9 +21,8 @@
 #include "CachedLabelImage.h"
 #include "TimeSignatureSmallComponent.h"
 
-TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent,
-    const TimeSignatureEvent &targetEvent) :
-    TimeSignatureComponent(parent, targetEvent)
+TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent) :
+    TimeSignatureComponent(parent)
 {
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, false);
@@ -34,9 +33,7 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMa
     this->signatureLabel->setFont(Globals::UI::Fonts::XS);
     this->signatureLabel->setJustificationType(Justification::centredLeft);
     this->signatureLabel->setBounds(0, 2, 48, 16);
-
     this->signatureLabel->setInterceptsMouseClicks(false, false);
-
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
 }
 
@@ -70,7 +67,8 @@ void TimeSignatureSmallComponent::setRealBounds(const Rectangle<float> bounds)
     this->setBounds(intBounds);
 }
 
-void TimeSignatureSmallComponent::updateContent()
+void TimeSignatureSmallComponent::updateContent(const TimeSignatureEvent &newEvent)
 {
+    this->event = newEvent;
     this->signatureLabel->setText(this->event.toString(), dontSendNotification);
 }

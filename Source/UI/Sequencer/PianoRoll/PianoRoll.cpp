@@ -25,6 +25,7 @@
 #include "PianoTrackNode.h"
 #include "ModalDialogInput.h"
 #include "TrackPropertiesDialog.h"
+#include "TimeSignatureDialog.h"
 #include "ProjectTimeline.h"
 #include "ProjectMetadata.h"
 #include "Note.h"
@@ -809,6 +810,8 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
         return;
     }
 
+    this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(newActiveTrack);
+
     if (this->lassoComponent->isDragging())
     {
         this->lassoComponent->endLasso();
@@ -1028,13 +1031,13 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->switchToClipInViewport();
         break;
     case CommandIDs::RenameTrack:
-        if (auto *trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveNode()))
-        {
-            App::showModalComponent(make<TrackPropertiesDialog>(this->project, trackNode));
-        }
+        jassert(this->activeTrack != nullptr);
+        App::showModalComponent(make<TrackPropertiesDialog>(this->project, this->activeTrack));
         break;
     case CommandIDs::SetTrackTimeSignature:
-        // todo
+        jassert(dynamic_cast<PianoTrackNode *>(this->activeTrack.get()));
+        App::showModalComponent(TimeSignatureDialog::editingDialog(*this,
+            this->project.getUndoStack(), *this->activeTrack->getTimeSignatureOverride()));
         break;
     case CommandIDs::EditCurrentInstrument:
         if (auto *window = PluginWindow::getWindowFor(this->activeTrack->getTrackInstrumentId()))

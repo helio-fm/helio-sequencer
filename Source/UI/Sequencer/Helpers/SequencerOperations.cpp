@@ -65,11 +65,9 @@ public:
 };
 
 using PianoChangeGroupProxy = ChangeGroupProxy<PianoChangeGroup>;
-using AnnotationChangeGroupProxy = ChangeGroupProxy<AnnotationChangeGroup>;
 using AutoChangeGroupProxy = ChangeGroupProxy<AutoChangeGroup>;
 
 using PianoChangeGroupsPerLayer = FlatHashMap<String, PianoChangeGroupProxy::Ptr, StringHash>;
-using AnnotationChangeGroupsPerLayer = FlatHashMap<String, AnnotationChangeGroupProxy::Ptr, StringHash>;
 using AutoChangeGroupsPerLayer = FlatHashMap<String, AutoChangeGroupProxy::Ptr, StringHash>;
 
 template<typename TEvent, typename TGroup, typename TGroups>
@@ -198,18 +196,12 @@ bool applyInsertions(const TGroup &groupToInsert,
 bool applyPianoChanges(const PianoChangeGroup &groupBefore, const PianoChangeGroup &groupAfter, bool &didCheckpoint)
 { return applyChanges<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint); }
 
-bool applyAnnotationChanges(const AnnotationChangeGroup &groupBefore, const AnnotationChangeGroup &groupAfter, bool &didCheckpoint)
-{ return applyChanges<AnnotationEvent, AnnotationsSequence, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint); }
-
 bool applyAutoChanges(const AutoChangeGroup &groupBefore, const AutoChangeGroup &groupAfter, bool &didCheckpoint)
 { return applyChanges<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint); }
 
 
 bool applyPianoRemovals(const PianoChangeGroup &group, bool &didCheckpoint)
 { return applyRemovals<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, didCheckpoint); }
-
-bool applyAnnotationRemovals(const AnnotationChangeGroup &group, bool &didCheckpoint)
-{ return applyRemovals<AnnotationEvent, AnnotationsSequence, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(group, didCheckpoint); }
 
 // особенный случай - я хочу, чтоб хотя бы одно авто-событие на слое оставалось
 bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint)
@@ -1065,26 +1057,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
         // TODO the same for key signatures and time signatures?
         if (auto *annotationsSequence = dynamic_cast<AnnotationsSequence *>(selectedTrack->getSequence()))
         {
-            Array<AnnotationEvent> pastedAnnotations;
-            forEachChildWithType(layerElement, annotationElement, Serialization::Midi::annotation)
-            {
-                const auto &ae = AnnotationEvent(annotationsSequence)
-                    .withParameters(annotationElement)
-                    .withNewId();
-
-                pastedAnnotations.add(ae.withDeltaBeat(deltaBeat));
-            }
-
-            if (pastedAnnotations.size() > 0)
-            {
-                if (!didCheckpoint)
-                {
-                    annotationsSequence->checkpoint();
-                    didCheckpoint = true;
-                }
-
-                annotationsSequence->insertGroup(pastedAnnotations, true);
-            }
+            jassertfalse;
         }
         else if (auto *automationSequence = dynamic_cast<AutomationSequence *>(selectedTrack->getSequence()))
         {
@@ -1942,7 +1915,6 @@ bool SequencerOperations::remapKeySignaturesToTemperament(KeySignaturesSequence 
     bool hasMadeChanges = false;
     bool didCheckpoint = !shouldCheckpoint;
 
-    Array<KeySignatureEvent> groupBefore, groupAfter;
     for (int i = 0; i < keySignatures->size(); ++i)
     {
         // this will map the root key using temperaments' chromatic maps,
@@ -1993,25 +1965,19 @@ bool SequencerOperations::remapKeySignaturesToTemperament(KeySignaturesSequence 
         const auto newRootKey = otherTemperament->getChromaticMap()->
             getChromaticKey(rootIndexInChromaticMap, 0, true);
 
-        groupBefore.add(*signature);
-        groupAfter.add(signature->withRootKey(newRootKey)
-            .withScale(similarScale != nullptr ? similarScale : convertedScale));
+        if (!didCheckpoint)
+        {
+            keySignatures->checkpoint();
+            didCheckpoint = true;
+        }
+
+        keySignatures->change(*signature, signature->withRootKey(newRootKey)
+            .withScale(similarScale != nullptr ? similarScale : convertedScale), true);
+
+        hasMadeChanges = true;
     }
 
-    if (groupBefore.isEmpty())
-    {
-        return false;
-    }
-
-    if (!didCheckpoint)
-    {
-        keySignatures->checkpoint();
-        didCheckpoint = true;
-    }
-
-    hasMadeChanges = true;
-    keySignatures->changeGroup(groupBefore, groupAfter, true);
-    return true;
+    return hasMadeChanges;
 }
 
 // Tries to detect if there's one key signature that affects the whole sequence.

@@ -41,7 +41,7 @@ bool MidiEvent::isValid() const noexcept
 
 MidiSequence *MidiEvent::getSequence() const noexcept
 {
-    jassert(this->sequence);
+    // jassert(this->sequence);
     return this->sequence;
 }
 

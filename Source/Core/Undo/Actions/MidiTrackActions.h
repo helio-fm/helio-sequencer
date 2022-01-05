@@ -18,9 +18,9 @@
 #pragma once
 
 class MidiTrackSource;
-class TimeSignatureEvent;
 
 #include "UndoAction.h"
+#include "TimeSignatureEvent.h"
 
 //===----------------------------------------------------------------------===//
 // Rename/Move

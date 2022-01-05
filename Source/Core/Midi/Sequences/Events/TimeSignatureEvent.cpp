@@ -21,15 +21,12 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 
-// makes an invalid time signature
 TimeSignatureEvent::TimeSignatureEvent() noexcept :
     MidiEvent(nullptr, Type::TimeSignature, 0.f) {}
 
-TimeSignatureEvent::TimeSignatureEvent(const TimeSignatureEvent &other) noexcept :
-    MidiEvent(other),
-    track(other.track),
-    numerator(other.numerator),
-    denominator(other.denominator) {}
+TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiTrack> owner) noexcept :
+    MidiEvent(nullptr, Type::TimeSignature, 0.f),
+    track(owner) {}
 
 TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     float newBeat, int newNumerator, int newDenominator) noexcept :
@@ -44,9 +41,6 @@ TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     track(parametersToCopy.track),
     numerator(parametersToCopy.numerator),
     denominator(parametersToCopy.denominator) {}
-
-TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiTrack> owner) noexcept :
-    MidiEvent(nullptr, Type::TimeSignature, 0.f) {}
 
 void TimeSignatureEvent::parseString(const String &data, int &numerator, int &denominator)
 {
@@ -125,6 +119,13 @@ TimeSignatureEvent TimeSignatureEvent::withNewId() const noexcept
     return e;
 }
 
+TimeSignatureEvent TimeSignatureEvent::withId(MidiEvent::Id id) const noexcept
+{
+    TimeSignatureEvent e(*this);
+    e.id = id;
+    return e;
+}
+
 //===----------------------------------------------------------------------===//
 // Accessors
 //===----------------------------------------------------------------------===//
@@ -141,10 +142,11 @@ int TimeSignatureEvent::getDenominator() const noexcept
 
 bool TimeSignatureEvent::isValid() const noexcept
 {
-    return this->numerator >= TimeSignatureEvent::minNumerator &&
+    return (this->track != nullptr || this->sequence != nullptr) &&
+        (this->numerator >= TimeSignatureEvent::minNumerator &&
         this->numerator <= TimeSignatureEvent::maxNumerator &&
         this->denominator >= TimeSignatureEvent::minDenominator &&
-        this->denominator <= TimeSignatureEvent::maxDenominator;
+        this->denominator <= TimeSignatureEvent::maxDenominator);
 }
 
 float TimeSignatureEvent::getBarLengthInBeats() const noexcept
@@ -153,14 +155,39 @@ float TimeSignatureEvent::getBarLengthInBeats() const noexcept
     return float(this->numerator) / float(this->denominator) * float(Globals::beatsPerBar);
 }
 
-Colour TimeSignatureEvent::getColour() const
+int TimeSignatureEvent::getTrackControllerNumber() const noexcept
 {
-    if (this->track == nullptr)
+    if (this->track != nullptr)
     {
-        return findDefaultColour(Label::textColourId);
+        return this->track->getTrackControllerNumber();
     }
 
-    return this->track->getTrackColour();
+    return MidiEvent::getTrackControllerNumber();
+}
+
+int TimeSignatureEvent::getTrackChannel() const noexcept
+{
+    if (this->track != nullptr)
+    {
+        return this->track->getTrackChannel();
+    }
+
+    return MidiEvent::getTrackChannel();
+}
+
+Colour TimeSignatureEvent::getTrackColour() const noexcept
+{
+    if (this->track != nullptr)
+    {
+        return this->track->getTrackColour();
+    }
+
+    return MidiEvent::getTrackColour();
+}
+
+WeakReference<MidiTrack> TimeSignatureEvent::getTrack() const noexcept
+{
+    return this->track;
 }
 
 String TimeSignatureEvent::toString() const noexcept
@@ -205,44 +232,9 @@ void TimeSignatureEvent::reset() noexcept
 // Helpers
 //===----------------------------------------------------------------------===//
 
-// a time signature that belongs to a track will have no id,
-// and if it belongs to the timeline sequence, it will have a unique id
-// within that sequence; note that both the comparator and the hash methods
-// assume a track can only have one time signature, and the timeline can have many.
-
 void TimeSignatureEvent::applyChanges(const TimeSignatureEvent &parameters) noexcept
 {
-    jassert(this->id == parameters.id);
-    jassert(this->track == parameters.track);
-
     this->beat = parameters.beat;
     this->numerator = parameters.numerator;
     this->denominator = parameters.denominator;
-}
-
-int TimeSignatureEvent::compareElements(const TimeSignatureEvent *const first, const TimeSignatureEvent *const second) noexcept
-{
-    if (first == second)
-    {
-        return 0;
-    }
-
-    const float beatDiff = first->getBeat() - second->getBeat();
-    const int beatResult = (beatDiff > 0.f) - (beatDiff < 0.f);
-    if (beatResult != 0)
-    {
-        return beatResult;
-    }
-
-    return first->getId() - second->getId();
-}
-
-HashCode TimeSignatureEvent::getHash() const
-{
-    if (this->track != nullptr)
-    {
-        return this->track->getTrackId().hashCode();
-    }
-
-    return static_cast<HashCode>(this->id);
 }

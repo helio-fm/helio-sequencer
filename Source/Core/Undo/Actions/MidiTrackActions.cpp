@@ -21,7 +21,6 @@
 #include "TimeSignatureEvent.h"
 #include "SerializationKeys.h"
 #include "MidiTrack.h"
-#include "PianoTrackNode.h"
 
 //===----------------------------------------------------------------------===//
 // Rename/Move
@@ -214,9 +213,9 @@ MidiTrackChangeTimeSignatureAction::MidiTrackChangeTimeSignatureAction(MidiTrack
 
 bool MidiTrackChangeTimeSignatureAction::perform()
 {
-    if (auto *track = this->source.findTrackById<PianoTrackNode>(this->trackId))
+    if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
-        this->timeSignatureBefore = track->getTimeSignatureOverride();
+        this->timeSignatureBefore = *track->getTimeSignatureOverride();
         track->setTimeSignatureOverride(this->timeSignatureAfter, true);
         return true;
     }
@@ -226,7 +225,7 @@ bool MidiTrackChangeTimeSignatureAction::perform()
 
 bool MidiTrackChangeTimeSignatureAction::undo()
 {
-    if (auto *track = this->source.findTrackById<PianoTrackNode>(this->trackId))
+    if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
         track->setTimeSignatureOverride(this->timeSignatureBefore, true);
         return true;

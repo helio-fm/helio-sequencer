@@ -24,12 +24,10 @@ class TimeSignatureSmallComponent final : public TimeSignatureComponent
 {
 public:
 
-    TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent,
-        const TimeSignatureEvent &targetEvent);
-
+    explicit TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent);
     ~TimeSignatureSmallComponent();
 
-    void updateContent() override;
+    void updateContent(const TimeSignatureEvent &newEvent) override;
     void setRealBounds(const Rectangle<float> bounds) override;
 
     void paint(Graphics &g) override;

@@ -58,6 +58,6 @@ namespace VCS
         // root node for quick-toggled changes
         Revision::Ptr quickStash;
         
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StashesRepository);
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StashesRepository)
     };
 } // namespace VCS

@@ -20,21 +20,30 @@
 #include "DialogBase.h"
 #include "TimeSignatureEvent.h"
 #include "MobileComboBox.h"
+#include "UndoStack.h"
+#include "TimeSignaturesSequence.h"
+#include "MidiTrack.h"
 
-class TimeSignaturesSequence;
-
-class TimeSignatureDialog final : public DialogBase, public TextEditor::Listener
+class TimeSignatureDialog final : public DialogBase
 {
 public:
 
     TimeSignatureDialog(Component &owner,
-        TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &editedEvent,
-        bool shouldAddNewEvent, float targetBeat);
+        WeakReference<UndoStack> undoStack,
+        WeakReference<MidiTrack> targetTrack,
+        WeakReference<TimeSignaturesSequence> targetSequence,
+        const TimeSignatureEvent &editedEvent,
+        bool shouldAddNewEvent);
 
     ~TimeSignatureDialog();
 
-    static UniquePointer<Component> editingDialog(Component &owner, const TimeSignatureEvent &event);
-    static UniquePointer<Component> addingDialog(Component &owner, TimeSignaturesSequence *annotationsLayer, float targetBeat);
+    static UniquePointer<Component> editingDialog(Component &owner,
+        WeakReference<UndoStack> undoStack,
+        const TimeSignatureEvent &event);
+
+    static UniquePointer<Component> addingDialog(Component &owner,
+        WeakReference<UndoStack> undoStack,
+        WeakReference<TimeSignaturesSequence> tsSequence, float targetBeat);
 
     void resized() override;
     void parentHierarchyChanged() override;
@@ -44,25 +53,33 @@ public:
 
 private:
 
+    const WeakReference<UndoStack> undoStack;
+
+    // either of them will be nullptr:
+    const WeakReference<MidiTrack> targetTrack;
+    const WeakReference<TimeSignaturesSequence> targetSequence;
+
     TimeSignatureEvent originalEvent;
-    TimeSignaturesSequence *const originalSequence;
     Component &ownerComponent;
 
     const StringPairArray defaultMeters;
 
-    void textEditorTextChanged(TextEditor&) override;
-    void textEditorReturnKeyPressed(TextEditor&) override;
-    void textEditorEscapeKeyPressed(TextEditor&) override;
-    void textEditorFocusLost(TextEditor&) override;
-
-    inline void cancelAndDisappear();
+    inline void undoAndDismiss();
     inline void updateOkButtonState();
 
-    const bool addsNewEvent = false;
+    enum class Mode
+    {
+        EditTrackTimeSignature,
+        EditTimelineTimeSignature,
+        AddTimelineTimeSignature
+    };
+
+    const Mode mode;
+
     bool hasMadeChanges = false;
 
     void sendEventChange(const TimeSignatureEvent &newEvent);
-    void removeEvent();
+    void removeTimeSignature();
 
     UniquePointer<MobileComboBox::Container> presetsCombo;
     UniquePointer<Label> messageLabel;
