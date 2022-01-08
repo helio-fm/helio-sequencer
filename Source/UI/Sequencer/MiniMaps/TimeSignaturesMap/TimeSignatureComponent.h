@@ -57,7 +57,7 @@ public:
 
 
 #if PLATFORM_DESKTOP
-    static constexpr auto timeSignatureHeight = 23;
+    static constexpr auto timeSignatureHeight = 20;
 #elif PLATFORM_MOBILE
     static constexpr auto timeSignatureHeight = Globals::UI::rollHeaderHeight;
 #endif

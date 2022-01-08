@@ -68,8 +68,9 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
     for (int i = 0; i < this->target.getNumDeltas(); ++i)
     {
         const Delta *myDelta = this->target.getDelta(i);
-
         const auto myDeltaData(this->target.getDeltaData(i));
+        const bool deltaHasDefaultData = this->target.deltaHasDefaultData(i);
+
         SerializedData stateDeltaData;
 
         bool deltaFoundInState = false;
@@ -88,7 +89,7 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
             }
         }
 
-        if (!deltaFoundInState || dataHasChanged)
+        if ((!deltaFoundInState && !deltaHasDefaultData) || dataHasChanged)
         {
             if (myDelta->hasType(MidiTrackDeltas::trackPath))
             {

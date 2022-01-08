@@ -98,24 +98,18 @@ void TimeSignaturesProjectMap::resized()
 // TimeSignaturesAggregator::Listener
 //===----------------------------------------------------------------------===//
 
-void TimeSignaturesProjectMap::onTimeSignaturesProviderWillChange()
-{
-    this->timeSignaturesMap.clear();
-    this->timeSignatureComponents.clear();
-}
-
 void TimeSignaturesProjectMap::onTimeSignaturesUpdated()
 {
-    const auto &timeSignatures =
+    const auto &signaturesToSyncWith =
         this->project.getTimeline()->getTimeSignaturesAggregator()->getAllOrdered();
 
-    for (const auto &ts : timeSignatures)
+    for (const auto &ts : signaturesToSyncWith)
     {
-        if (auto *existingComponent = this->timeSignaturesMap[ts])
+        if (auto *myComponent = this->timeSignaturesMap[ts])
         {
             DBG("Updating the component for " + ts.toString());
-            existingComponent->updateContent(ts);
-            this->applyTimeSignatureBounds(existingComponent, nullptr);
+            myComponent->updateContent(ts);
+            this->applyTimeSignatureBounds(myComponent, nullptr);
         }
         else
         {
@@ -130,12 +124,37 @@ void TimeSignaturesProjectMap::onTimeSignaturesUpdated()
         }
     }
 
-    for (const auto *component : this->timeSignatureComponents)
+    jassert(this->timeSignatureComponents.size() == this->timeSignaturesMap.size());
+    jassert(this->timeSignatureComponents.size() >= signaturesToSyncWith.size());
+
+    if (this->timeSignatureComponents.size() > signaturesToSyncWith.size())
     {
-        const auto &event = component->getEvent();
-        if (timeSignatures.indexOfSorted(event, event) < 0)
+        // so yes, nested loops here suck, but we're only going to get
+        // in this branch when something is deleted (not really often),
+        // and we expect to have not that many time signatures, maybe tens at max
+        for (int i = 0; i < this->timeSignatureComponents.size();)
         {
-            this->timeSignatureComponents.removeObject(component);
+            bool shouldDelete = true;
+            const auto &myTs = this->timeSignatureComponents.getUnchecked(i)->getEvent();
+            for (const auto &theirTs : signaturesToSyncWith)
+            {
+                if (theirTs == myTs)
+                {
+                    shouldDelete = false;
+                    break;
+                }
+            }
+
+            if (shouldDelete)
+            {
+                DBG("Deleting component for " + myTs.toString());
+                this->timeSignaturesMap.erase(myTs);
+                this->timeSignatureComponents.remove(i);
+            }
+            else
+            {
+                i++;
+            }
         }
     }
 }

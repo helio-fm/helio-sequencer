@@ -35,6 +35,12 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMa
     this->signatureLabel->setBounds(0, 2, 48, 16);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
+
+    constexpr auto topPadding = 2.f;
+    constexpr auto triangleSize = 5.f;
+    this->triangleShape.addTriangle(0.f, topPadding,
+        triangleSize * 1.5f, topPadding,
+        0.f, triangleSize + topPadding);
 }
 
 TimeSignatureSmallComponent::~TimeSignatureSmallComponent() = default;
@@ -42,12 +48,7 @@ TimeSignatureSmallComponent::~TimeSignatureSmallComponent() = default;
 void TimeSignatureSmallComponent::paint(Graphics &g)
 {
     g.setColour(this->colour);
-
-    Path p;
-    constexpr auto topPadding = 2.f;
-    constexpr auto triangleSize = 5.f;
-    p.addTriangle(0.f, topPadding, triangleSize, topPadding, 0.f, triangleSize + topPadding);
-    g.fillPath(p);
+    g.fillPath(this->triangleShape);
 }
 
 void TimeSignatureSmallComponent::parentHierarchyChanged()
@@ -70,5 +71,10 @@ void TimeSignatureSmallComponent::setRealBounds(const Rectangle<float> bounds)
 void TimeSignatureSmallComponent::updateContent(const TimeSignatureEvent &newEvent)
 {
     this->event = newEvent;
+    this->colour = this->event.getTrackColour()
+        .interpolatedWith(findDefaultColour(ColourIDs::TrackScroller::scrollerFill), 0.97f);
+    const auto textColour = this->event.getTrackColour()
+        .interpolatedWith(findDefaultColour(Label::textColourId), 0.5f);
     this->signatureLabel->setText(this->event.toString(), dontSendNotification);
+    this->signatureLabel->setColour(Label::textColourId, textColour);
 }

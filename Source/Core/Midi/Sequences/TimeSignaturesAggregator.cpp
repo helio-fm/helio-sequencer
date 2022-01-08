@@ -44,24 +44,23 @@ static inline bool trackHasTimeSignature(MidiTrack *track) noexcept
 
 bool TimeSignaturesAggregator::isAggregatingTimeSignatureOverrides() const noexcept
 {
-    return trackHasTimeSignature(this->selectedTrack);
+    return trackHasTimeSignature(this->selectedTrack); // or the timeline is empty?
 }
 
-void TimeSignaturesAggregator::setActiveScope(WeakReference<MidiTrack> newTrack)
+void TimeSignaturesAggregator::setActiveScope(WeakReference<MidiTrack> newTrack, bool forceRebuildAll)
 {
-    if (this->selectedTrack == newTrack)
+    if (this->selectedTrack == newTrack && !forceRebuildAll)
     {
         return;
     }
 
-    const auto shouldRebuildAll =
+    const auto shouldRebuildAll = forceRebuildAll ||
         trackHasTimeSignature(this->selectedTrack) || trackHasTimeSignature(newTrack);
 
     this->selectedTrack = move(newTrack);
 
     if (shouldRebuildAll)
     {
-        this->listeners.call(&Listener::onTimeSignaturesProviderWillChange);
         this->rebuildAll();
     }
 }
@@ -190,7 +189,6 @@ void TimeSignaturesAggregator::onChangeTrackProperties(MidiTrack *const track)
     {
         // track color might have changed, or its time signature override
         // might have been added, changed or removed:
-        this->listeners.call(&Listener::onTimeSignaturesProviderWillChange);
         this->rebuildAll();
     }
 }
@@ -207,24 +205,18 @@ void TimeSignaturesAggregator::onChangeTrackBeatRange(MidiTrack *const track)
 void TimeSignaturesAggregator::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     const ProjectMetadata *meta)
 {
-    this->rebuildAll();
+    this->setActiveScope(nullptr, true);
 }
 
 void TimeSignaturesAggregator::onRemoveTrack(MidiTrack *const track)
 {
     jassert(this->project.getTimeline() != nullptr);
+    jassert(track != this->project.getTimeline()->getTimeSignatures());
 
     if (track == this->selectedTrack)
     {
-        this->selectedTrack = nullptr;
-        this->rebuildAll();
-        return;
+        this->setActiveScope(nullptr, true);
     }
-
-    // what to do when the timeline's ts track is removed?
-    //if (track == this->project.getTimeline()->getTimeSignatures())
-    //{
-    //}
 }
 
 void TimeSignaturesAggregator::onChangeProjectBeatRange(float firstBeat, float lastBeat) {}
@@ -245,6 +237,8 @@ void TimeSignaturesAggregator::rebuildAll()
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
         return;
     }
+
+    jassert(this->selectedTrack != nullptr);
 
     const auto sequenceFirstBeat = this->selectedTrack->getSequence()->getFirstBeat();
     const auto *tsOverride = this->selectedTrack->getTimeSignatureOverride();

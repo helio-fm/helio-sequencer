@@ -34,10 +34,15 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMa
     this->signatureLabel->setFont(Globals::UI::Fonts::M);
     this->signatureLabel->setJustificationType(Justification::topLeft);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
-    this->signatureLabel->setBounds(-3, 1, 48,
-        TimeSignatureLargeComponent::timeSignatureHeight - 1);
+    this->signatureLabel->setBounds(-2, 0, 48, TimeSignatureComponent::timeSignatureHeight);
 
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
+
+    constexpr auto topPadding = 0.f;
+    constexpr auto triangleSize = 5.f;
+    this->triangleShape.addTriangle(0.f, topPadding,
+        triangleSize * 1.5f, topPadding,
+        0.f, triangleSize + topPadding);
 
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 }
@@ -46,18 +51,8 @@ TimeSignatureLargeComponent::~TimeSignatureLargeComponent() = default;
 
 void TimeSignatureLargeComponent::paint(Graphics &g)
 {
-    g.setColour(findDefaultColour(ColourIDs::Roll::headerSnaps));
-    g.fillRect(0.f, 0.f, float(this->getWidth() - 1), 3.f);
-
-    constexpr float dashLength = 8.f;
-
-    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
-    for (float i = (dashLength / 2.f); i < this->getWidth(); i += (dashLength * 2.f))
-    {
-        g.fillRect(i + 2.f, 0.f, dashLength, 1.f);
-        g.fillRect(i + 1.f, 1.f, dashLength, 1.f);
-        g.fillRect(i, 2.f, dashLength, 1.f);
-    }
+    g.setColour(this->colour);
+    g.fillPath(this->triangleShape);
 }
 
 void TimeSignatureLargeComponent::mouseDown(const MouseEvent &e)
@@ -79,13 +74,13 @@ void TimeSignatureLargeComponent::mouseDown(const MouseEvent &e)
     else
     {
         this->editor.alternateActionFor(this);
-        //this->editor.showContextMenuFor(this);
+        // this->editor.showContextMenuFor(this);
     }
 }
 
 void TimeSignatureLargeComponent::mouseDrag(const MouseEvent &e)
 {
-    if (this->draggingState && 
+    if (this->draggingState &&
         e.mods.isLeftButtonDown() && e.getDistanceFromDragStart() > 4)
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
@@ -99,7 +94,7 @@ void TimeSignatureLargeComponent::mouseDrag(const MouseEvent &e)
             auto *sequence = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
             jassert(sequence != nullptr);
 
-            if (! this->draggingHadCheckpoint)
+            if (!this->draggingHadCheckpoint)
             {
                 sequence->checkpoint();
                 this->draggingHadCheckpoint = true;
@@ -148,8 +143,7 @@ void TimeSignatureLargeComponent::setRealBounds(const Rectangle<float> bounds)
         bounds.getX() - float(intBounds.getX()),
         bounds.getY(),
         bounds.getWidth() - float(intBounds.getWidth()),
-        bounds.getHeight()
-    };
+        bounds.getHeight()};
 
     this->setBounds(intBounds);
 }
@@ -162,8 +156,12 @@ float TimeSignatureLargeComponent::getTextWidth() const noexcept
 void TimeSignatureLargeComponent::updateContent(const TimeSignatureEvent &newEvent)
 {
     this->event = newEvent;
+    this->colour = this->event.getTrackColour()
+        .interpolatedWith(findDefaultColour(ColourIDs::Roll::headerSnaps), 0.75f);
+    const auto textColour = this->event.getTrackColour()
+        .interpolatedWith(findDefaultColour(Label::textColourId), 0.5f);
     this->signatureLabel->setText(this->event.toString(), dontSendNotification);
-    this->signatureLabel->setColour(Label::textColourId, this->event.getTrackColour());
+    this->signatureLabel->setColour(Label::textColourId, textColour);
     this->textWidth = float(this->signatureLabel->getFont()
         .getStringWidth(this->signatureLabel->getText()));
 }

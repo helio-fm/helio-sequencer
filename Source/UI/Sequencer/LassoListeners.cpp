@@ -124,7 +124,8 @@ class PatternRollMenuSource final : public HeadlineItemDataSource
 {
 public:
 
-    PatternRollMenuSource(WeakReference<Lasso> lasso) : lasso(lasso) {}
+    PatternRollMenuSource(WeakReference<Lasso> lasso) :
+        lasso(lasso) {}
 
     bool hasMenu() const noexcept override { return true; }
 
@@ -332,19 +333,32 @@ PatternRollTimeSignaturePicker::~PatternRollTimeSignaturePicker()
 
 void PatternRollTimeSignaturePicker::changeListenerCallback(ChangeBroadcaster *source)
 {
-    if (this->lasso->getNumSelected() != 1)
+    // if all selected piano clips which have time signature
+    // are of the same track, use this time signature override
+
+    WeakReference<MidiTrack> targetTrack = nullptr;
+
+    for (int i = 0; i < this->lasso->getNumSelected(); ++i)
     {
-        this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(nullptr);
-        return;
+        auto *cc = this->lasso->getItemAs<ClipComponent>(i);
+        auto *clipTrack = cc->getClip().getPattern()->getTrack();
+
+        if (!clipTrack->hasTimeSignatureOverride() ||
+            dynamic_cast<PianoClipComponent *>(cc) == nullptr)
+        {
+            continue;
+        }
+
+        if (targetTrack == nullptr)
+        {
+            targetTrack = clipTrack;
+        }
+        else if (targetTrack != clipTrack)
+        {
+            this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(nullptr);
+            return;
+        }
     }
 
-    // if the single piano clip is selected, use its time signature overrides
-    // fixme: same logic if all selected clips are of the same track
-
-    auto *cc = this->lasso->getFirstAs<ClipComponent>();
-    if (auto *pc = dynamic_cast<PianoClipComponent *>(cc))
-    {
-        auto *targetTrack = pc->getClip().getPattern()->getTrack();
-        this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(targetTrack);
-    }
+    this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(targetTrack);
 }

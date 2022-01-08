@@ -41,8 +41,9 @@ public:
 
     ~TimeSignaturesAggregator() override;
 
-    // Called by the rolls:
-    void setActiveScope(WeakReference<MidiTrack> selectedTrack);
+    // should be called by the rolls:
+    void setActiveScope(WeakReference<MidiTrack> selectedTrack,
+        bool forceRebuildAll = false);
 
     const Array<TimeSignatureEvent> &getAllOrdered() const noexcept;
 
@@ -54,9 +55,6 @@ public:
     {
         Listener() = default;
         virtual ~Listener() = default;
-        // "reset your views, they're likely not relevant anymore":
-        virtual void onTimeSignaturesProviderWillChange() {}
-        // "something changed, please sync":
         virtual void onTimeSignaturesUpdated() {}
     };
 

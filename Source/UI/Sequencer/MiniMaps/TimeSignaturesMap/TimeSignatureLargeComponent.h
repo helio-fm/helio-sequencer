@@ -46,6 +46,9 @@ private:
     bool draggingState = false;
     bool draggingHadCheckpoint = false;
 
+    Colour colour;
+    Path triangleShape;
+
     // workaround странного поведения juce
     // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает
     bool mouseDownWasTriggered = false;

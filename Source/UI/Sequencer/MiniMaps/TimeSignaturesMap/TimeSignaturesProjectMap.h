@@ -59,7 +59,6 @@ public:
     // TimeSignaturesAggregator::Listener
     //===------------------------------------------------------------------===//
 
-    void onTimeSignaturesProviderWillChange() override;
     void onTimeSignaturesUpdated() override;
 
     //===------------------------------------------------------------------===//

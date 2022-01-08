@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "TimeSignatureDialog.h"
+#include "MidiTrackActions.h"
 #include "CommandIDs.h"
 
 // fixme: create a separate resource config
@@ -51,7 +52,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     mode(shouldAddNewEvent ? Mode::AddTimelineTimeSignature :
         (targetSequence != nullptr ? Mode::EditTimelineTimeSignature : Mode::EditTrackTimeSignature))
 {
-    jassert(this->originalEvent.isValid());
+    jassert(this->originalEvent.isValid() || this->targetTrack != nullptr);
     jassert(this->targetSequence != nullptr || this->targetTrack != nullptr);
     jassert(this->targetTrack != nullptr || this->originalEvent.getSequence() != nullptr);
 
@@ -157,10 +158,18 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     this->addAndMakeVisible(this->presetsCombo.get());
     this->presetsCombo->initWith(this->textEditor.get(), menu);
 
+    if (this->mode == Mode::EditTrackTimeSignature && !this->originalEvent.isValid())
+    {
+        jassert(this->targetTrack != nullptr);
+        this->sendEventChange(this->originalEvent
+            .withNumerator(Globals::Defaults::timeSignatureNumerator)
+            .withDenominator(Globals::Defaults::timeSignatureDenominator));
+    }
+
     if (this->mode == Mode::AddTimelineTimeSignature)
     {
         jassert(this->targetSequence != nullptr);
-        this->targetSequence->checkpoint();
+        this->undoStack->beginNewTransaction();
         this->targetSequence->insert(this->originalEvent, true);
 
         this->messageLabel->setText(TRANS(I18n::Dialog::timeSignatureAddCaption), dontSendNotification);
@@ -250,6 +259,7 @@ void TimeSignatureDialog::sendEventChange(const TimeSignatureEvent &newEvent)
 
         this->undoStack->beginNewTransaction();
         this->targetTrack->setTimeSignatureOverride(newEvent, true, sendNotification);
+        this->originalEvent = newEvent;
         this->hasMadeChanges = true;
         break;
     case Mode::EditTimelineTimeSignature:

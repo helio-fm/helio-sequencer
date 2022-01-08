@@ -156,6 +156,17 @@ SerializedData PianoTrackNode::getDeltaData(int deltaIndex) const
     return {};
 }
 
+bool PianoTrackNode::deltaHasDefaultData(int deltaIndex) const
+{
+    using namespace Serialization::VCS;
+    if (this->deltas[deltaIndex]->hasType(TimeSignatureDeltas::timeSignaturesChanged))
+    {
+        return !this->hasTimeSignatureOverride();
+    }
+
+    return false;
+}
+
 VCS::DiffLogic *PianoTrackNode::getDiffLogic() const
 {
     return this->vcsDiffLogic.get();

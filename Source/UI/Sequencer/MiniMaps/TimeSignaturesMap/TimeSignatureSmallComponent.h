@@ -45,7 +45,9 @@ private:
 
     Rectangle<float> boundsOffset;
 
-    const Colour colour = findDefaultColour(ColourIDs::TrackScroller::scrollerFill);
+    Colour colour = findDefaultColour(ColourIDs::TrackScroller::scrollerFill);
+
+    Path triangleShape;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeSignatureSmallComponent)
 };
