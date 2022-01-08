@@ -97,6 +97,7 @@ Or, if you want to add a temperament, create `temperaments.json`; for example, l
         "id": "24edo",
         "name": "24 equal temperament",
         "period": "C ^C C# vD D ^D Eb vE E ^E F ^F F# vG G ^G Ab vA A ^A Bb vB B ^B",
+		"periodRange": 2.0,
         "highlighting": "3 4 3 4 3 4 3",
         "chromaticMap": "2 2 2 2 2 2 2 2 2 2 2 2"
       }
@@ -109,6 +110,7 @@ What it means:
  * `id` - if the built-in list contained a temperament with such id, it would be replaced,
  * `name` - this is displayed in the menus,
  * `period` - key names separated by whitespace; the number of keys defines the octave size,
+ * `periodRange` - the pitch range that makes up a period, defaults 2.0 representing one octave; for nonoctave tunings use 3.0 for the duodecime used in the Bohlen-Pierce tuning or 1.5 for the pure fifth, used in the Carlos Alpha, Beta and Gamma tunings; for backward compatibility, if this parameter isn't given, Helio assumes one octave; this parameter only affects the built-in instrument at the moment,
  * `highlighting` - the default highlighting scheme in the piano roll, i.e. which rows are highlighted as "white keys" by default,
  * `chromaticMap` - this is used to [convert](getting-microtonal.md#switching-temperaments) temperaments; here, since 24-EDO just divides the 12-tone semitone in two, the chromatic map just jumps over quarter-tones.
 ...
