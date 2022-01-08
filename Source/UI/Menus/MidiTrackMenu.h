@@ -17,21 +17,21 @@
 
 #pragma once
 
-class MidiTrackNode;
-
 #include "MenuPanel.h"
+#include "MidiTrack.h"
+#include "UndoStack.h"
 
 class MidiTrackMenu final : public MenuPanel
 {
 public:
     
-    explicit MidiTrackMenu(MidiTrackNode &node);
+    MidiTrackMenu(WeakReference<MidiTrack> track, WeakReference<UndoStack> undoStack);
     
 private:
     
     void initDefaultMenu();
     void initInstrumentSelectionMenu();
 
-    MidiTrackNode &trackNode;
-    
+    WeakReference<MidiTrack> track;
+    WeakReference<UndoStack> undoStack;
 };

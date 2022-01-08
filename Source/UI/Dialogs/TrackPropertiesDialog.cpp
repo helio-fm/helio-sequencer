@@ -21,7 +21,6 @@
 #include "CommandIDs.h"
 #include "UndoStack.h"
 #include "ProjectNode.h"
-#include "MidiTrackActions.h"
 
 TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
     WeakReference<MidiTrack> track, const String &title, const String &confirmation) :
@@ -154,8 +153,6 @@ void TrackPropertiesDialog::cancelChangesIfAny()
 
 void TrackPropertiesDialog::applyChangesIfAny()
 {
-    const auto &trackId = this->track->getTrackId();
-
     if (this->hasMadeChanges)
     {
         this->project.getUndoStack()->undoCurrentTransactionOnly();
@@ -165,12 +162,12 @@ void TrackPropertiesDialog::applyChangesIfAny()
 
     if (this->newName != this->originalName)
     {
-        this->project.getUndoStack()->perform(new MidiTrackRenameAction(this->project, trackId, this->newName));
+        this->track->setTrackName(this->newName, true, sendNotification);
     }
 
     if (this->newColour != this->originalColour)
     {
-        this->project.getUndoStack()->perform(new MidiTrackChangeColourAction(this->project, trackId, this->newColour));
+        this->track->setTrackColour(this->newColour, true, sendNotification);
     }
 
     this->hasMadeChanges = true;

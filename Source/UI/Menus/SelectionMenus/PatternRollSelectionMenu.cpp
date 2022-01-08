@@ -29,7 +29,6 @@
 #include "ProjectNode.h"
 #include "UndoStack.h"
 #include "MidiTrackNode.h"
-#include "MidiTrackActions.h"
 #include "AutomationSequence.h"
 #include "PianoSequence.h"
 
@@ -249,9 +248,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createInstrumentSelectionMenu()
                         haveCheckpoint = true;
                     }
 
-                    project->getUndoStack()->
-                        perform(new MidiTrackChangeInstrumentAction(*project,
-                            track->getTrackId(), instrumentId));
+                    track->setTrackInstrumentId(instrumentId, true, sendNotification);
                 }
             }
 

@@ -49,12 +49,12 @@ void MidiTrackNode::showPage()
 void MidiTrackNode::safeRename(const String &newName, bool sendNotifications)
 {
     String fixedName = newName.replace("\\", "/");
-    
+
     while (fixedName.contains("//"))
     {
         fixedName = fixedName.replace("//", "/");
     }
-    
+
     this->setXPath(fixedName, sendNotifications);
 }
 
@@ -120,14 +120,27 @@ int MidiTrackNode::getTrackChannel() const noexcept
     return this->channel;
 }
 
-void MidiTrackNode::setTrackName(const String &val, bool sendNotifications)
+void MidiTrackNode::setTrackName(const String &newName, bool undoable, NotificationType notificationType)
 {
-    this->safeRename(val, sendNotifications);
-
-    if (sendNotifications)
+    if (this->getTrackName() == newName)
     {
-        this->dispatchChangeTrackProperties();
-        this->dispatchChangeTreeNodeViews();
+        return;
+    }
+
+    if (undoable)
+    {
+        this->getProject()->getUndoStack()->
+            perform(new MidiTrackRenameAction(*this->getProject(), this->getTrackId(), newName));
+    }
+    else
+    {
+        const auto sendNotifications = notificationType != dontSendNotification;
+        this->safeRename(newName, sendNotifications);
+        if (sendNotifications)
+        {
+            this->dispatchChangeTrackProperties();
+            this->dispatchChangeTreeNodeViews();
+        }
     }
 }
 
@@ -136,19 +149,27 @@ Colour MidiTrackNode::getTrackColour() const noexcept
     return this->colour;
 }
 
-void MidiTrackNode::setTrackColour(const Colour &val, bool sendNotifications)
+void MidiTrackNode::setTrackColour(const Colour &val, bool undoable, NotificationType notificationType)
 {
     if (this->colour == val)
     {
         return;
     }
 
-    this->colour = val;
-
-    if (sendNotifications)
+    if (undoable)
     {
-        this->dispatchChangeTrackProperties();
-        this->dispatchChangeTreeNodeViews();
+        this->getProject()->getUndoStack()->
+            perform(new MidiTrackChangeColourAction(*this->getProject(), this->getTrackId(), val));
+    }
+    else
+    {
+        this->colour = val;
+
+        if (notificationType != dontSendNotification)
+        {
+            this->dispatchChangeTrackProperties();
+            this->dispatchChangeTreeNodeViews();
+        }
     }
 }
 
@@ -158,18 +179,26 @@ String MidiTrackNode::getTrackInstrumentId() const noexcept
     return this->instrumentId;
 }
 
-void MidiTrackNode::setTrackInstrumentId(const String &val, bool sendNotifications)
+void MidiTrackNode::setTrackInstrumentId(const String &val, bool undoable, NotificationType notificationType)
 {
     if (this->instrumentId == val)
     {
         return;
     }
 
-    this->instrumentId = val;
-
-    if (sendNotifications)
+    if (undoable)
     {
-        this->dispatchChangeTrackProperties();
+        this->getProject()->getUndoStack()->
+            perform(new MidiTrackChangeInstrumentAction(*this->getProject(), this->getTrackId(), val));
+    }
+    else
+    {
+        this->instrumentId = val;
+
+        if (notificationType != dontSendNotification)
+        {
+            this->dispatchChangeTrackProperties();
+        }
     }
 }
 
@@ -178,7 +207,7 @@ int MidiTrackNode::getTrackControllerNumber() const noexcept
     return this->controllerNumber;
 }
 
-void MidiTrackNode::setTrackControllerNumber(int val, bool sendNotifications)
+void MidiTrackNode::setTrackControllerNumber(int val, NotificationType notificationType)
 {
     if (this->controllerNumber == val)
     {
@@ -187,7 +216,7 @@ void MidiTrackNode::setTrackControllerNumber(int val, bool sendNotifications)
 
     this->controllerNumber = val;
 
-    if (sendNotifications)
+    if (notificationType != dontSendNotification)
     {
         this->dispatchChangeTrackProperties();
     }
@@ -236,7 +265,7 @@ void MidiTrackNode::setXPath(const String &path, bool sendNotifications)
     {
         return;
     }
-    
+
     // Split path and move the item into a target place in a tree
     // If no matching groups found, create them
 
@@ -264,7 +293,7 @@ void MidiTrackNode::setXPath(const String &path, bool sendNotifications)
             }
         }
 
-        if (! foundSubGroup)
+        if (!foundSubGroup)
         {
             auto group = new TrackGroupNode(parts[i]);
             rootItem->addChildNode(group);
@@ -286,11 +315,11 @@ void MidiTrackNode::setXPath(const String &path, bool sendNotifications)
     {
         String currentChildName;
 
-        if (TrackGroupNode *layerGroupItem = dynamic_cast<TrackGroupNode *>(rootItem->getChild(i)))
+        if (auto *layerGroupItem = dynamic_cast<TrackGroupNode *>(rootItem->getChild(i)))
         {
             currentChildName = layerGroupItem->getName();
         }
-        else if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(rootItem->getChild(i)))
+        else if (auto *layerItem = dynamic_cast<MidiTrackNode *>(rootItem->getChild(i)))
         {
             currentChildName = layerItem->getName();
         }
@@ -311,13 +340,16 @@ void MidiTrackNode::setXPath(const String &path, bool sendNotifications)
         previousChildName = currentChildName;
     }
 
-    if (!foundRightPlace) { ++insertIndex; }
+    if (!foundRightPlace)
+    {
+        ++insertIndex;
+    }
 
     // This will also send changed-parent notifications
     rootItem->addChildNode(this, insertIndex, sendNotifications);
-    
+
     // Cleanup all empty groups
-    if (ProjectNode *parentProject = this->findParentOfType<ProjectNode>())
+    if (auto *parentProject = this->findParentOfType<ProjectNode>())
     {
         TrackGroupNode::removeAllEmptyGroupsInProject(parentProject);
     }
@@ -467,36 +499,5 @@ bool MidiTrackNode::hasMenu() const noexcept
 
 UniquePointer<Component> MidiTrackNode::createMenu()
 {
-    return make<MidiTrackMenu>(*this);
-}
-
-//===----------------------------------------------------------------------===//
-// Callbacks
-//===----------------------------------------------------------------------===//
-
-Function<void(const String &text)> MidiTrackNode::getRenameCallback()
-{
-    return [this](const String &text)
-    {
-        if (text != this->getXPath())
-        {
-            auto project = this->getProject();
-            const auto &trackId = this->getTrackId();
-            project->getUndoStack()->beginNewTransaction();
-            project->getUndoStack()->perform(new MidiTrackRenameAction(*project, trackId, text));
-        }
-    };
-}
-
-Function<void(const String &instrumentId)> MidiTrackNode::getChangeInstrumentCallback()
-{
-    return [this](const String &instrumentId)
-    {
-        if (instrumentId != this->getTrackInstrumentId())
-        {
-            auto project = this->getProject();
-            project->getUndoStack()->beginNewTransaction();
-            project->getUndoStack()->perform(new MidiTrackChangeInstrumentAction(*project, this->getTrackId(), instrumentId));
-        }
-    };
+    return make<MidiTrackMenu>(this, this->getProject()->getUndoStack());
 }

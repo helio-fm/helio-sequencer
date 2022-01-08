@@ -2437,8 +2437,8 @@ UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<N
     const auto &colour = track->getTrackColour();
 
     UniquePointer<MidiTrackNode> newNode(new PianoTrackNode({}));
-    newNode->setTrackColour(colour, false);
-    newNode->setTrackInstrumentId(instrumentId, false);
+    newNode->setTrackColour(colour, false, dontSendNotification);
+    newNode->setTrackInstrumentId(instrumentId, false, dontSendNotification);
 
     auto *pattern = newNode->getPattern();
     auto *sequence = static_cast<PianoSequence *>(newNode->getSequence());
@@ -2498,9 +2498,9 @@ UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
     const auto &colour = track->getTrackColour();
 
     UniquePointer<MidiTrackNode> newItem(new AutomationTrackNode({}));
-    newItem->setTrackColour(colour, false);
-    newItem->setTrackControllerNumber(cc, false);
-    newItem->setTrackInstrumentId(instrumentId, false);
+    newItem->setTrackColour(colour, false, dontSendNotification);
+    newItem->setTrackInstrumentId(instrumentId, false, dontSendNotification);
+    newItem->setTrackControllerNumber(cc, dontSendNotification);
 
     AutoChangeGroup copiedContent;
     auto *sequence = static_cast<AutomationSequence *>(newItem->getSequence());
@@ -2570,8 +2570,8 @@ SerializedData SequencerOperations::createPianoTrackTemplate(ProjectNode &projec
 
     Random r;
     const auto colours = ColourIDs::getColoursList();
-    newNode->setTrackColour(colours[r.nextInt(colours.size())], dontSendNotification);
-    newNode->setTrackInstrumentId(instrumentId, false);
+    newNode->setTrackColour(colours[r.nextInt(colours.size())], false, dontSendNotification);
+    newNode->setTrackInstrumentId(instrumentId, false, dontSendNotification);
 
     // insert a single note just so there is a visual anchor in the piano roll:
     const int middleC = project.getProjectInfo()->getTemperament()->getMiddleC();
@@ -2594,9 +2594,9 @@ SerializedData SequencerOperations::createAutoTrackTemplate(ProjectNode &project
 
     auto *autoSequence = static_cast<AutomationSequence *>(newNode->getSequence());
 
-    newNode->setTrackControllerNumber(controllerNumber, false);
-    newNode->setTrackInstrumentId(instrumentId, false);
-    newNode->setTrackColour(Colours::royalblue, false);
+    newNode->setTrackInstrumentId(instrumentId, false, dontSendNotification);
+    newNode->setTrackColour(Colours::royalblue, false, dontSendNotification);
+    newNode->setTrackControllerNumber(controllerNumber, dontSendNotification);
 
     // init with a couple of events
     const float cv1 = newNode->isOnOffAutomationTrack() ? 1.f : 0.5f;

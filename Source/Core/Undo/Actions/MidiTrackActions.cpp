@@ -27,17 +27,17 @@
 //===----------------------------------------------------------------------===//
 
 MidiTrackRenameAction::MidiTrackRenameAction(MidiTrackSource &source,
-    const String &trackId, const String &xPath) noexcept :
+    const String &trackId, const String &path) noexcept :
     UndoAction(source),
     trackId(trackId),
-    xPathAfter(xPath) {}
+    pathAfter(path) {}
 
 bool MidiTrackRenameAction::perform()
 {
     if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
-        this->xPathBefore = track->getTrackName();
-        track->setTrackName(this->xPathAfter, true);
+        this->pathBefore = track->getTrackName();
+        track->setTrackName(this->pathAfter, false, sendNotification);
         return true;
     }
 
@@ -48,7 +48,7 @@ bool MidiTrackRenameAction::undo()
 {
     if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
-        track->setTrackName(this->xPathBefore, true);
+        track->setTrackName(this->pathBefore, false, sendNotification);
         return true;
     }
 
@@ -57,29 +57,29 @@ bool MidiTrackRenameAction::undo()
 
 int MidiTrackRenameAction::getSizeInUnits()
 {
-    return this->xPathBefore.length() + this->xPathAfter.length();
+    return this->pathBefore.length() + this->pathAfter.length();
 }
 
 SerializedData MidiTrackRenameAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::midiTrackRenameAction);
-    tree.setProperty(Serialization::Undo::xPathBefore, this->xPathBefore);
-    tree.setProperty(Serialization::Undo::xPathAfter, this->xPathAfter);
+    tree.setProperty(Serialization::Undo::xPathBefore, this->pathBefore);
+    tree.setProperty(Serialization::Undo::xPathAfter, this->pathAfter);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
     return tree;
 }
 
 void MidiTrackRenameAction::deserialize(const SerializedData &data)
 {
-    this->xPathBefore = data.getProperty(Serialization::Undo::xPathBefore);
-    this->xPathAfter = data.getProperty(Serialization::Undo::xPathAfter);
+    this->pathBefore = data.getProperty(Serialization::Undo::xPathBefore);
+    this->pathAfter = data.getProperty(Serialization::Undo::xPathAfter);
     this->trackId = data.getProperty(Serialization::Undo::trackId);
 }
 
 void MidiTrackRenameAction::reset()
 {
-    this->xPathBefore.clear();
-    this->xPathAfter.clear();
+    this->pathBefore.clear();
+    this->pathAfter.clear();
     this->trackId.clear();
 }
 
@@ -98,7 +98,7 @@ bool MidiTrackChangeColourAction::perform()
     if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->colourBefore = track->getTrackColour();
-        track->setTrackColour(this->colourAfter, true);
+        track->setTrackColour(this->colourAfter, false, sendNotification);
         return true;
     }
 
@@ -109,7 +109,7 @@ bool MidiTrackChangeColourAction::undo()
 {
     if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
-        track->setTrackColour(this->colourBefore, true);
+        track->setTrackColour(this->colourBefore, false, sendNotification);
         return true;
     }
 
@@ -157,7 +157,7 @@ bool MidiTrackChangeInstrumentAction::perform()
     if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->instrumentIdBefore = track->getTrackInstrumentId();
-        track->setTrackInstrumentId(this->instrumentIdAfter, true);
+        track->setTrackInstrumentId(this->instrumentIdAfter, false, sendNotification);
         return true;
     }
 
@@ -168,7 +168,7 @@ bool MidiTrackChangeInstrumentAction::undo()
 {
     if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
-        track->setTrackInstrumentId(this->instrumentIdBefore, true);
+        track->setTrackInstrumentId(this->instrumentIdBefore, false, sendNotification);
         return true;
     }
 
@@ -216,7 +216,7 @@ bool MidiTrackChangeTimeSignatureAction::perform()
     if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->timeSignatureBefore = *track->getTimeSignatureOverride();
-        track->setTimeSignatureOverride(this->timeSignatureAfter, true);
+        track->setTimeSignatureOverride(this->timeSignatureAfter, false, sendNotification);
         return true;
     }
 
@@ -227,7 +227,7 @@ bool MidiTrackChangeTimeSignatureAction::undo()
 {
     if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
     {
-        track->setTimeSignatureOverride(this->timeSignatureBefore, true);
+        track->setTimeSignatureOverride(this->timeSignatureBefore, false, sendNotification);
         return true;
     }
 

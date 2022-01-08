@@ -667,7 +667,7 @@ void ProjectNode::importMidi(InputStream &stream)
             this->addChildNode(trackNode, -1, false);
 
             trackNode->setTrackControllerNumber(trackControllerNumber, dontSendNotification);
-            trackNode->setTrackColour(colour, dontSendNotification);
+            trackNode->setTrackColour(colour, false, dontSendNotification);
             trackNode->getSequence()->importMidi(*importedTrack, timeFormat);
         }
 
@@ -680,7 +680,7 @@ void ProjectNode::importMidi(InputStream &stream)
 
             this->addChildNode(trackNode, -1, false);
 
-            trackNode->setTrackColour(colour, dontSendNotification);
+            trackNode->setTrackColour(colour, false, dontSendNotification);
             trackNode->getSequence()->importMidi(*importedTrack, timeFormat);
         }
 

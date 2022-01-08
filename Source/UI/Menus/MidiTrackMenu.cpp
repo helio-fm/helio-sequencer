@@ -26,8 +26,9 @@
 
 #include "Workspace.h"
 
-MidiTrackMenu::MidiTrackMenu(MidiTrackNode &node) :
-    trackNode(node)
+MidiTrackMenu::MidiTrackMenu(WeakReference<MidiTrack> track, WeakReference<UndoStack> undoStack) :
+    track(track),
+    undoStack(undoStack)
 {
     this->initDefaultMenu();
 }
@@ -51,7 +52,7 @@ void MidiTrackMenu::initDefaultMenu()
 
     // todo: add/change/delete?
     // fixme icon
-    const auto hasTs = this->trackNode.hasTimeSignatureOverride();
+    const auto hasTs = this->track->hasTimeSignatureOverride();
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::SetTrackTimeSignature,
         hasTs ? TRANS(I18n::Menu::timeSignatureChange) : TRANS(I18n::Menu::timeSignatureAdd))->
         closesMenu());
@@ -72,7 +73,7 @@ void MidiTrackMenu::initDefaultMenu()
         this->initInstrumentSelectionMenu();
     }));
 
-    const auto trackInstrumentId = this->trackNode.getTrackInstrumentId();
+    const auto trackInstrumentId = this->track->getTrackInstrumentId();
     for (const auto *instrument : instruments)
     {
         // well, the track can have an instrument which has no window; but here,
@@ -100,20 +101,18 @@ void MidiTrackMenu::initInstrumentSelectionMenu()
     }));
     
     const auto &audioCore = App::Workspace().getAudioCore();
-    const auto *selectedInstrument = audioCore.findInstrumentById(this->trackNode.getTrackInstrumentId());
+    const auto *selectedInstrument = audioCore.findInstrumentById(this->track->getTrackInstrumentId());
 
     for (const auto *instrument : audioCore.getInstruments())
     {
         const bool isTicked = (instrument == selectedInstrument);
         const String instrumentId = instrument->getIdAndHash();
-        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument,
-            instrument->getName())->
-            disabledIf(!instrument->isValid())->
+        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, instrument->getName())->
+            disabledIf(!instrument->isValid() || isTicked)->
             withAction([this, instrumentId]()
         {
-            // no need to check if not toggled, the callback will do
-            // DBG(instrumentId);
-            this->trackNode.getChangeInstrumentCallback()(instrumentId);
+            this->undoStack->beginNewTransaction();
+            this->track->setTrackInstrumentId(instrumentId, true, sendNotification);
             this->initDefaultMenu();
         }));
     }

@@ -19,6 +19,8 @@
 #include "PianoTrackNode.h"
 #include "PianoSequence.h"
 #include "ProjectNode.h"
+#include "UndoStack.h"
+#include "MidiTrackActions.h"
 #include "TimeSignatureEvent.h"
 #include "Pattern.h"
 #include "TreeNodeSerializer.h"
@@ -67,13 +69,21 @@ const TimeSignatureEvent *PianoTrackNode::getTimeSignatureOverride() const noexc
     return &this->timeSignatureOverride;
 }
 
-void PianoTrackNode::setTimeSignatureOverride(const TimeSignatureEvent &ts, bool sendNotifications)
+void PianoTrackNode::setTimeSignatureOverride(const TimeSignatureEvent &ts, bool undoable, NotificationType notificationType)
 {
-    this->timeSignatureOverride.applyChanges(ts);
-
-    if (sendNotifications && this->lastFoundParent != nullptr)
+    if (undoable)
     {
-        this->lastFoundParent->broadcastChangeTrackProperties(this);
+        this->getProject()->getUndoStack()->
+            perform(new MidiTrackChangeTimeSignatureAction(*this->getProject(), this->getTrackId(), ts));
+    }
+    else
+    {
+        this->timeSignatureOverride.applyChanges(ts);
+
+        if (notificationType != dontSendNotification)
+        {
+            this->getProject()->broadcastChangeTrackProperties(this);
+        }
     }
 }
 
@@ -158,7 +168,7 @@ void PianoTrackNode::resetStateTo(const VCS::TrackedItem &newState)
     {
         const VCS::Delta *newDelta = newState.getDelta(i);
         const auto newDeltaData(newState.getDeltaData(i));
-        
+
         if (newDelta->hasType(MidiTrackDeltas::trackPath))
         {
             this->resetPathDelta(newDeltaData);
@@ -297,27 +307,23 @@ SerializedData PianoTrackNode::serializeEventsDelta() const
 void PianoTrackNode::resetPathDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackPath));
-    const String &path(state.getProperty(Serialization::VCS::delta));
-    this->setXPath(path, false);
+    const String newName = state.getProperty(Serialization::VCS::delta);
+    this->setTrackName(newName, false, dontSendNotification);
 }
 
 void PianoTrackNode::resetColourDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackColour));
-    const String &colourString(state.getProperty(Serialization::VCS::delta));
-    const Colour &colour(Colour::fromString(colourString));
-
-    if (colour != this->getTrackColour())
-    {
-        this->setTrackColour(colour, false);
-    }
+    const String colourString = state.getProperty(Serialization::VCS::delta);
+    const auto colour = Colour::fromString(colourString);
+    this->setTrackColour(colour, false, dontSendNotification);
 }
 
 void PianoTrackNode::resetInstrumentDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackInstrument));
-    const String &instrumentId(state.getProperty(Serialization::VCS::delta));
-    this->setTrackInstrumentId(instrumentId, false);
+    const String instrumentId = state.getProperty(Serialization::VCS::delta);
+    this->setTrackInstrumentId(instrumentId, false, dontSendNotification);
 }
 
 void PianoTrackNode::resetTimeSignatureDelta(const SerializedData &state)

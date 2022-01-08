@@ -165,8 +165,8 @@ static SerializedData createPianoTrackTemplate(const String &name,
     Random r;
     const auto colours = ColourIDs::getColoursList();
     const int ci = r.nextInt(colours.size());
-    newNode->setTrackColour(colours[ci], dontSendNotification);
-    newNode->setTrackInstrumentId(instrumentId, false);
+    newNode->setTrackColour(colours[ci], false, dontSendNotification);
+    newNode->setTrackInstrumentId(instrumentId, false, dontSendNotification);
 
     outTrackId = newNode->getTrackId();
     return newNode->serialize();

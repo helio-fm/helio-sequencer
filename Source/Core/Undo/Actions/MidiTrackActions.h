@@ -34,7 +34,7 @@ public:
         UndoAction(source) {}
     
     MidiTrackRenameAction(MidiTrackSource &source,
-        const String &trackId, const String &xPath) noexcept;
+        const String &trackId, const String &path) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -48,8 +48,8 @@ private:
 
     String trackId;
     
-    String xPathBefore;
-    String xPathAfter;
+    String pathBefore;
+    String pathAfter;
 
     JUCE_DECLARE_NON_COPYABLE(MidiTrackRenameAction)
 };

@@ -45,7 +45,8 @@ public:
 
     bool hasTimeSignatureOverride() const noexcept override;
     const TimeSignatureEvent *getTimeSignatureOverride() const noexcept override;
-    void setTimeSignatureOverride(const TimeSignatureEvent &ts, bool sendNotifications) override;
+    void setTimeSignatureOverride(const TimeSignatureEvent &ts, bool undoable,
+        NotificationType notificationType) override;
 
     //===------------------------------------------------------------------===//
     // Serializable

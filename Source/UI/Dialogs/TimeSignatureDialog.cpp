@@ -249,7 +249,7 @@ void TimeSignatureDialog::sendEventChange(const TimeSignatureEvent &newEvent)
         }
 
         this->undoStack->beginNewTransaction();
-        this->targetTrack->setTimeSignatureOverride(newEvent, true);
+        this->targetTrack->setTimeSignatureOverride(newEvent, true, sendNotification);
         this->hasMadeChanges = true;
         break;
     case Mode::EditTimelineTimeSignature:
@@ -284,7 +284,7 @@ void TimeSignatureDialog::removeTimeSignature()
         }
 
         this->undoStack->beginNewTransaction();
-        this->targetTrack->setTimeSignatureOverride({}, true);
+        this->targetTrack->setTimeSignatureOverride({}, true, sendNotification);
         this->hasMadeChanges = true;
         break;
     case Mode::EditTimelineTimeSignature:

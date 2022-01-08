@@ -31,7 +31,6 @@
 #include "PianoSequence.h"
 #include "RollBase.h"
 #include "SequencerOperations.h"
-#include "MidiTrackActions.h"
 #include "PianoTrackActions.h"
 #include "AutomationTrackActions.h"
 #include "Pattern.h"
@@ -436,9 +435,7 @@ void ProjectMenu::showSetInstrumentMenu()
 
                     for (auto *track : tracks)
                     {
-                        this->project.getUndoStack()->
-                            perform(new MidiTrackChangeInstrumentAction(this->project,
-                                track->getTrackId(), instrumentId));
+                        track->setTrackInstrumentId(instrumentId, true, sendNotification);
                     }
                 }
             }));
