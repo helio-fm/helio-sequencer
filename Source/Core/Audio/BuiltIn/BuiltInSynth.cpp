@@ -48,7 +48,7 @@ public:
         this->reverb.setParameters(rp);
     }
 
-    bool canPlaySound(SynthesiserSound *) override
+    bool canPlaySound(SynthesiserSound*) override
     {
         return true; // just assume correct usage
     }
@@ -126,13 +126,19 @@ public:
         this->middleC = Temperament::periodNumForMiddleC * periodSize;
     }
 
+    void setPeriodRange(double periodRange) noexcept
+    {    
+        this->periodRange = periodRange;
+    }
+
 private:
 
     double currentAngle = 0.0;
     double angleDelta = 0.0;
     double level = 0.0;
-
+    
     int periodSize = Globals::twelveTonePeriodSize;
+    double periodRange = 2.0;
     int middleC = Temperament::periodNumForMiddleC * Globals::twelveTonePeriodSize;
 
     ADSR adsr;
@@ -140,7 +146,7 @@ private:
 
     double getNoteInHertz(int noteNumber, double frequencyOfA = 440.0) noexcept
     {
-        return frequencyOfA * std::pow(2.0,
+        return frequencyOfA * std::pow(periodRange,
             (noteNumber - this->middleC) / double(this->periodSize));
     }
 
@@ -170,7 +176,7 @@ BuiltInSynth::BuiltInSynth()
     this->addSound(new BuiltInSynthSound());
 }
 
-void BuiltInSynth::setPeriodSize(int periodSize)
+void BuiltInSynth::setPeriodSizeAndRange(int periodSize, double periodRange)
 {
     //DBG("Setting octave size for the default synth: " + String(periodSize));
     for (int i = 0; i < this->getNumVoices(); ++i)
@@ -179,6 +185,7 @@ void BuiltInSynth::setPeriodSize(int periodSize)
         {
             voice->stopNote(1.f, false);
             voice->setPeriodSize(periodSize);
+            voice->setPeriodRange(periodRange);
         }
     }
 }
