@@ -7,37 +7,309 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0065C74143BD58FF70DC652A /* InstrumentsListComponent.cpp */ = {isa = PBXBuildFile; fileRef = 45055A8D4622DA85BFAD47D0; };
+		0116044142DC614E3C962CB2 /* AutomationTrackActions.cpp */ = {isa = PBXBuildFile; fileRef = 001A42BDD594070AB1A4BFC6; };
+		0154AD835ACD2D021B70A6B6 /* AnnotationEventActions.cpp */ = {isa = PBXBuildFile; fileRef = B46C94F17FEA6AC172EE9CC8; };
+		015919D132D5A6ADC86DF905 /* ProjectMapScroller.cpp */ = {isa = PBXBuildFile; fileRef = 903955FFA5AFBE0E7B421E57; };
+		022520E9B8B5356698B07B08 /* VersionControlMenu.cpp */ = {isa = PBXBuildFile; fileRef = 66AA9EB580A65E3211273BFC; };
+		02E0B96446ED6D07695796A9 /* ProjectMetadata.cpp */ = {isa = PBXBuildFile; fileRef = C0F31CBDDFD070E47C6C05EB; };
+		02E167803BE78542AEE855FC /* Pattern.cpp */ = {isa = PBXBuildFile; fileRef = 98FD63098128A07D39717066; };
+		032B433867C9D6EA854C8570 /* StashesRepository.cpp */ = {isa = PBXBuildFile; fileRef = 342B3620AFFAA4338E90D04E; };
+		04F39011739E859E1C586524 /* MidiTrack.cpp */ = {isa = PBXBuildFile; fileRef = F2FCCDE78737C5ADD5E74958; };
+		05BB2AD6E36DD255DBA3FF5E /* ResourceManager.cpp */ = {isa = PBXBuildFile; fileRef = 4741622D381B19C200E56FD4; };
+		06478F81026C701E3996B62E /* InstrumentEditorConnector.cpp */ = {isa = PBXBuildFile; fileRef = 6905230EFEBAC9CD41F85214; };
+		06765B775BCEEAB2B23B278F /* Network.cpp */ = {isa = PBXBuildFile; fileRef = 4670394CFE390403650D5283; };
+		06D424161356D836AC0112B1 /* UserProfile.cpp */ = {isa = PBXBuildFile; fileRef = FB9A16743FF593FE9C99CFA2; };
+		06ED57F07C6531F64BD98A4C /* OrigamiHorizontal.cpp */ = {isa = PBXBuildFile; fileRef = 56CAB74152E2BE994A19A71A; };
+		075DD218AD85684704AD9B12 /* VelocityProjectMap.cpp */ = {isa = PBXBuildFile; fileRef = 7A4FDD0E25BBD85997D7F349; };
+		07F3A3532E2C4452ED2ACED1 /* RevisionsSyncThread.cpp */ = {isa = PBXBuildFile; fileRef = DC652073B48E01E79421C4D2; };
+		087A90FB4A27E23E5162ABE1 /* Chord.cpp */ = {isa = PBXBuildFile; fileRef = A8190AECBC2453AC780F24B8; };
+		088F3D09E21D5CB34212B87C /* KeySignatureEvent.cpp */ = {isa = PBXBuildFile; fileRef = 86C8C4F996193E2503B070A4; };
+		099295728A7BE65818C48DA5 /* TemperamentsManager.cpp */ = {isa = PBXBuildFile; fileRef = 3D53BBC55853A41AFFBA08E0; };
+		09A16EC2D87EE4835D47DF1F /* AutomationEventActions.cpp */ = {isa = PBXBuildFile; fileRef = 94B84BF4F5DC214AAE259B39; };
+		09B80668359D55D7B63A051C /* ScalesManager.cpp */ = {isa = PBXBuildFile; fileRef = E4012B6231645F2E4B492CD2; };
+		0B6B2ACF09ED402436CBE935 /* VersionControlStageSelectionMenu.cpp */ = {isa = PBXBuildFile; fileRef = 7130855384EDF5C174FC7C57; };
+		0C84EBB5A3A105CB21A9D4E1 /* ProjectDeleteThread.cpp */ = {isa = PBXBuildFile; fileRef = 3AC04802D52DDD60C55C7FCB; };
 		0CCFAEF7FC986B49B6573C91 /* CoreAudioKit.framework */ = {isa = PBXBuildFile; fileRef = 07C15EE793015A2B38B61F9E; };
+		0E014D2F8F074A46FFF6EC8A /* RescalePreviewTool.cpp */ = {isa = PBXBuildFile; fileRef = CD8B9DD32A46072508301668; };
+		0E760BBAA4791E7D58D28A30 /* TimeSignatureDialog.cpp */ = {isa = PBXBuildFile; fileRef = 705E5C79C9A9AE72248B71E9; };
+		0F56692AADF04953605D41E3 /* SequencerSidebarLeft.cpp */ = {isa = PBXBuildFile; fileRef = FBA559F509E559DC98902FF3; };
+		1013E058DFD715AA0404FA9C /* SettingsNode.cpp */ = {isa = PBXBuildFile; fileRef = 185089028DE3780F97B7EBF9; };
+		1237941BBFE42BCDADD6C895 /* MultiTouchController.cpp */ = {isa = PBXBuildFile; fileRef = A096DE246A4074630A7CCD25; };
+		124C446D9BAFD750EBB4053E /* RevisionComponent.cpp */ = {isa = PBXBuildFile; fileRef = B32C0791B72474F594B71180; };
+		1263A3C7729A5634C4DDF82A /* Head.cpp */ = {isa = PBXBuildFile; fileRef = C7C56B8CFBEBF8377232A836; };
+		12AA7D5DDC7445412572D34F /* AnnotationsSequence.cpp */ = {isa = PBXBuildFile; fileRef = 0EDE8058641C611F74DF3058; };
+		13BF3F1A00C6B59706FB6ECE /* UserConfigSyncThread.cpp */ = {isa = PBXBuildFile; fileRef = 5DA936661ADD55ED86C5B150; };
+		14CDA51A2C4105F281DCB3ED /* Autosaver.cpp */ = {isa = PBXBuildFile; fileRef = C82D4D9E856FA31D46D35BE9; };
+		1536DEF84B2FED31A3F82C64 /* MidiRecorder.cpp */ = {isa = PBXBuildFile; fileRef = 03463515D37151ECF8740635; };
+		1717E2801370E60752EBE238 /* AnnotationLargeComponent.cpp */ = {isa = PBXBuildFile; fileRef = CF13F5D5D9FCFC2C72DEA400; };
+		1823ADDCC8354303E6AF9A35 /* Instrument.cpp */ = {isa = PBXBuildFile; fileRef = 0D4E24EF4591FE2E339C248A; };
+		198309652B095B3F0513995B /* Headline.cpp */ = {isa = PBXBuildFile; fileRef = 465E436A68930BC78871B426; };
+		19D4C4291B68A9F262F148B0 /* UndoStack.cpp */ = {isa = PBXBuildFile; fileRef = F7B5FD13BD39A67CFC20FDA4; };
 		1B7AF8550F97782DB5695373 /* Images.xcassets */ = {isa = PBXBuildFile; fileRef = 128A8F88680A6FA1C6D80434; };
+		1BAA07823FA882F937A8E37F /* Temperament.cpp */ = {isa = PBXBuildFile; fileRef = EAC405D2F3DC43BAAE5AE15E; };
+		1D548DAC5854FC2F4AEBE134 /* AudioMonitor.cpp */ = {isa = PBXBuildFile; fileRef = 7CCC851CAF0B9D31414408EF; };
 		1D78B3E4A876C8793F3BBD4A /* include_juce_audio_processors.mm */ = {isa = PBXBuildFile; fileRef = CFBB0BDC31CA8F0E5D42C538; };
+		1DA6DF9F65CC951344B0D001 /* AnnotationsProjectMap.cpp */ = {isa = PBXBuildFile; fileRef = 6C51BA22EB1EAE191BE7E5A2; };
+		1F06261581B26AACF3561F16 /* ChordsManager.cpp */ = {isa = PBXBuildFile; fileRef = CE454DBAF59F2EC1CB9C5ACE; };
+		1F0FF94D9A96B7C1A75A48A5 /* KeySignatureEventActions.cpp */ = {isa = PBXBuildFile; fileRef = F090D4B2FEC26DBF67C75FFA; };
+		1F2A67197D10C6F4682821C2 /* OrchestraPit.cpp */ = {isa = PBXBuildFile; fileRef = D2152514B410447674A0EF70; };
+		1F8D90CA2074F75B1EE0D6FC /* SettingsFrameWrapper.cpp */ = {isa = PBXBuildFile; fileRef = F58E7088E21EEE373267FE8A; };
 		1FFBD3CFBC762D971AD72168 /* App */ = {isa = PBXBuildFile; fileRef = E2C1A2859123A25065D73061; };
+		20A05D3EDD25736DD0B27C1C /* Origami.cpp */ = {isa = PBXBuildFile; fileRef = 8F5790E1F21C6C90CE3C0AE0; };
+		20C380C52B066D6BAA98F898 /* BuiltInSynthAudioPlugin.cpp */ = {isa = PBXBuildFile; fileRef = 16F42662E2DD2A42E1A5830B; };
+		21099E28D3B4F66D08F4D189 /* JsonSerializer.cpp */ = {isa = PBXBuildFile; fileRef = 180EFE876C7BC15C97223FA5; };
+		21EADA22108358648EF1612F /* TimeSignaturesSequence.cpp */ = {isa = PBXBuildFile; fileRef = 8595F5B6143C4355B21C1149; };
+		23060F2BE6ACE7C2F226437F /* RevisionItem.cpp */ = {isa = PBXBuildFile; fileRef = 6D5E7476410C820FA27BF977; };
+		231FD914ACEF793BC3556422 /* OrchestraPitNode.cpp */ = {isa = PBXBuildFile; fileRef = 401C68E0ECC69716CBF9263A; };
+		23E681958D1A43720E6C45AE /* CutPointMark.cpp */ = {isa = PBXBuildFile; fileRef = 73BDC50FF6F7B6A7A692D3BB; };
+		251037FDF68BD8C4CC7F4D91 /* ColourScheme.cpp */ = {isa = PBXBuildFile; fileRef = 76410DEFAFA68D547EED9AE9; };
 		281EE99BDE13C79D9838ACDA /* include_juce_events.mm */ = {isa = PBXBuildFile; fileRef = D0BA5E6B83B1AE9472C2A396; };
+		28C208A3E63F5EB121E1E281 /* OverlayButton.cpp */ = {isa = PBXBuildFile; fileRef = A1D2EEF9005AFDDE32074E22; };
+		28D13E85FCF25E51A03F0080 /* RootNode.cpp */ = {isa = PBXBuildFile; fileRef = 865141DDA0A3D465DD0BF96D; };
+		2D49270BF702405FAC9C3A2A /* PianoRollSelectionMenu.cpp */ = {isa = PBXBuildFile; fileRef = 3040E84031AADEDFCED4F915; };
+		2DD00D2DCEA50B0CD6C8FB76 /* PianoProjectMap.cpp */ = {isa = PBXBuildFile; fileRef = 0174999DDF119F454ECC55E5; };
 		2E49499F5D28572A229B8B9E /* CoreServices.framework */ = {isa = PBXBuildFile; fileRef = 172C18C45C86E3766D6FEAB8; };
+		2EE49BB594FBB62EBCF9BC7F /* ArpPreviewTool.cpp */ = {isa = PBXBuildFile; fileRef = DCCDA89550EE7B83B7560DD1; };
+		2F298E44CA30A476E2B7FE3B /* NavigationHistory.cpp */ = {isa = PBXBuildFile; fileRef = DA5B02B6610141E42B8A1C49; };
+		3137F12D083BB0B37C6B4D4D /* VersionControlNode.cpp */ = {isa = PBXBuildFile; fileRef = 8D9D6EF0537A519368A14AB2; };
+		315328A0F67059EA642C63C9 /* OrchestraPitPage.cpp */ = {isa = PBXBuildFile; fileRef = 90F6ECDD266286772569A50C; };
+		3243F85B15405E2783A1BABE /* BinarySerializer.cpp */ = {isa = PBXBuildFile; fileRef = 7FC71588D0DA6B4405896608; };
+		3425F3E2B318AC88B5B61B89 /* Note.cpp */ = {isa = PBXBuildFile; fileRef = FBA6AC7165116C01D37C410C; };
+		35810FBEF0565376577210A5 /* SequencerOperations.cpp */ = {isa = PBXBuildFile; fileRef = 7CB2DDF150AC9566F16E2150; };
+		360549218CE37A66A134D39C /* MidiTrackNode.cpp */ = {isa = PBXBuildFile; fileRef = 031B48AB6507DDDBFC01EAD7; };
+		363AC612B210E7DFC07B43E8 /* TreeNode.cpp */ = {isa = PBXBuildFile; fileRef = 584E087D68C4D91663A6A699; };
 		37CED04FE209B73A2694DDF7 /* include_juce_gui_extra.mm */ = {isa = PBXBuildFile; fileRef = 4DC24E231ED4FF0DD1223930; };
+		385708A2433A656B70FA5B36 /* MidiSequence.cpp */ = {isa = PBXBuildFile; fileRef = C30E13DED16437C9E8336C73; };
+		3A136348B695CAF8000A35B5 /* RevisionTreeComponent.cpp */ = {isa = PBXBuildFile; fileRef = 50DF65F2CD0A78ACCAF37E93; };
+		3B17FD8835DE52C4A218BBEB /* DashboardMenu.cpp */ = {isa = PBXBuildFile; fileRef = FDAB8148BC574F77D1B6DF8B; };
+		3B7647E50D8BA706B7A00271 /* AnnotationSmallComponent.cpp */ = {isa = PBXBuildFile; fileRef = 1ABF737F5E152538C6BE6699; };
+		3D3D325382FEA6C3E3BD9145 /* RevisionTooltipComponent.cpp */ = {isa = PBXBuildFile; fileRef = 185680114721666D3D136EB7; };
+		3E7512AEC2142D40C4EF82F7 /* AutomationCurveClipComponent.cpp */ = {isa = PBXBuildFile; fileRef = 9480E6EDDF5246F5A0239075; };
+		405E30625C85EADFD170CB79 /* RecentProjectInfo.cpp */ = {isa = PBXBuildFile; fileRef = 058846F81FAAAB9F76A32CE7; };
+		405ECAB12786386E738511CA /* ModeIndicatorComponent.cpp */ = {isa = PBXBuildFile; fileRef = 783C2C91DFA591A0042BB61C; };
+		40917927939B410FEDF2D5C0 /* PopupCustomButton.cpp */ = {isa = PBXBuildFile; fileRef = 380201DBAFB1D48132B30C37; };
+		4331A0732C8C8160745E6729 /* HotkeySchemesManager.cpp */ = {isa = PBXBuildFile; fileRef = 43E6BC15D5A5453E576A18C4; };
+		44EF4C0CA4407F814E0A2962 /* InstrumentComponent.cpp */ = {isa = PBXBuildFile; fileRef = BB07C9BA310794F4A81142D3; };
+		45A0D2F9E52E81236173B1D5 /* Common.cpp */ = {isa = PBXBuildFile; fileRef = F518C6C068D3598777DBA99D; };
+		45F746A836CCDF78EB4F8309 /* TranslationSettings.cpp */ = {isa = PBXBuildFile; fileRef = FF72D70B40057E109A7AF1F3; };
 		461C4208C242ED4626DFC76D /* include_juce_audio_devices.mm */ = {isa = PBXBuildFile; fileRef = 46D4C80D6AE8FCB681197BC7; };
+		46400DD41AC8CFE95532FEAD /* InstrumentMenu.cpp */ = {isa = PBXBuildFile; fileRef = 9CDD5C3C63894F392DB77C72; };
+		47103F979199251D8CE97370 /* Playhead.cpp */ = {isa = PBXBuildFile; fileRef = D24732F3D9FF03608C610192; };
+		47D5F2EE2D902B729A9F8D48 /* ModalDialogConfirmation.cpp */ = {isa = PBXBuildFile; fileRef = 279C806F3EFFBE92A9ED05D1; };
+		4969D4452CDFDE37CA77C0A9 /* NoteActions.cpp */ = {isa = PBXBuildFile; fileRef = 4929B6CEECF84AC5328BB653; };
+		4976FB953DBB1543C0CF6B56 /* KnifeToolHelper.cpp */ = {isa = PBXBuildFile; fileRef = E4B24792BDAE9CD886C3F4A9; };
+		49B1F43A902805547AB454EB /* HighlightingScheme.cpp */ = {isa = PBXBuildFile; fileRef = 6D75154631D62502F5E2C30D; };
+		49C15EC2AF023A0D1FCF8881 /* AutomationCurveHelper.cpp */ = {isa = PBXBuildFile; fileRef = F34DEABB68CFD948185EBED8; };
+		4A3A0C6258F1D51D8A9EC4EF /* RollHeader.cpp */ = {isa = PBXBuildFile; fileRef = 0C1B415A13E9814A8D7CEB55; };
+		4A3A62C2AA0218A613B81A0A /* ProjectSyncService.cpp */ = {isa = PBXBuildFile; fileRef = EBE35675A8B46A4D14D39ACC; };
+		4AB2F54DD9797B4DCD4994F0 /* MergingEventsConnector.cpp */ = {isa = PBXBuildFile; fileRef = 31717BE5E5691D75DC42718B; };
 		4AF9DFBEC745072A73D91A73 /* include_juce_graphics.mm */ = {isa = PBXBuildFile; fileRef = CEADDB533C0F27D500255182; };
+		4B16FA73DE77126020ED5573 /* Config.cpp */ = {isa = PBXBuildFile; fileRef = 7E4D8D88F04CA7CC8312361B; };
+		4D0E4720C7A6100D426BB6B8 /* AutomationTrackDiffLogic.cpp */ = {isa = PBXBuildFile; fileRef = 36B8B8036F2B7FB1B20A725F; };
+		4D4FB4E674B7713DD83D5326 /* KeySignaturesProjectMap.cpp */ = {isa = PBXBuildFile; fileRef = 51ADB93592F2A46C09DE0BCF; };
+		4E71BFD9BBD9E1CA96296713 /* HeaderSelectionIndicator.cpp */ = {isa = PBXBuildFile; fileRef = 9F65A663DB8DC048C3E86D56; };
+		4FE9DDE37B87CBC99A80F749 /* XmlSerializer.cpp */ = {isa = PBXBuildFile; fileRef = 525B003B869BA778F9B069DA; };
+		52C0C45CE3BA9FCECC4ABB23 /* HeadlineDropdown.cpp */ = {isa = PBXBuildFile; fileRef = AF475EC4FBFF72C3C51900D4; };
+		5328F199E3AB2FD2A825D6BF /* LassoListeners.cpp */ = {isa = PBXBuildFile; fileRef = 8AF08C7187165CE244D367F9; };
+		54884733A16403DFD4E496C9 /* OrchestraPitMenu.cpp */ = {isa = PBXBuildFile; fileRef = E3E7AEE0AE3A65EE281E1BE6; };
 		55384FA95ADB938FA2C8F207 /* AVFoundation.framework */ = {isa = PBXBuildFile; fileRef = 6E8441AF487334B3FB7B080F; };
+		557006A060687F9D7051DF20 /* AudioPluginSelectionMenu.cpp */ = {isa = PBXBuildFile; fileRef = 4DFBEF4276738F57132C22C0; };
+		57B4CB29CB979CC664C9F8C1 /* KeyboardMappingPage.cpp */ = {isa = PBXBuildFile; fileRef = 838290D5373D0512F75F212E; };
+		58CB3EF5EFB3AB76C24BCE91 /* KeySignatureSmallComponent.cpp */ = {isa = PBXBuildFile; fileRef = 2E6FF240C84C8A6BD97C4578; };
+		5A07004988A92092D19B50E8 /* Arpeggiator.cpp */ = {isa = PBXBuildFile; fileRef = D63AD12DEA14186015061D96; };
+		5C2924584F7DDD6CF2333DE6 /* OrigamiVertical.cpp */ = {isa = PBXBuildFile; fileRef = BA00F5CDEE9460D9E8CB976F; };
+		5D9FF4B9F5F9F4834D5CF3AC /* NoteComponent.cpp */ = {isa = PBXBuildFile; fileRef = 220F852BD955D68095E99674; };
+		5DAA8F17D334FFD9968AE077 /* RevisionsSyncHelpers.cpp */ = {isa = PBXBuildFile; fileRef = ACCF3484DDFCA65FCB435017; };
+		605A2BEA231A43BB134B79E3 /* AutomationCurveEventComponent.cpp */ = {isa = PBXBuildFile; fileRef = 36F5E7A2FC732CDA57B7848A; };
+		62055DF370877A713A9925EE /* PatternRollSelectionMenu.cpp */ = {isa = PBXBuildFile; fileRef = BB8CB0CF7DE1E246D3B2C64A; };
+		624A5B082143BAA419897D63 /* PluginWindow.cpp */ = {isa = PBXBuildFile; fileRef = A60CCAC6696362BF85CE208C; };
+		632AD4B80C008393EE7FF75B /* PatternRoll.cpp */ = {isa = PBXBuildFile; fileRef = 11361C4E63D5B6E6FE82E917; };
+		633D75CE58C67FEE17CC24FB /* KeySelector.cpp */ = {isa = PBXBuildFile; fileRef = 124064B0C1702745C600DB6B; };
+		644399B45B98E5D59C420676 /* StageComponent.cpp */ = {isa = PBXBuildFile; fileRef = B0B9C58F1AF7FA5D0CF7461A; };
+		65164D0447F6901979222731 /* PatternOperations.cpp */ = {isa = PBXBuildFile; fileRef = 90C5D4A679AA323BE958B9E6; };
+		65F3FC4D4F187CA7C0354EE7 /* DialogBase.cpp */ = {isa = PBXBuildFile; fileRef = 108BC62D0CC3CAFBDFE53887; };
+		662E51705EED09C0863FD9FE /* Icons.cpp */ = {isa = PBXBuildFile; fileRef = 45E80859B5ABE9C83D48BF3E; };
+		66E87EAA41FC9435D0C0DA7D /* CommandPaletteCommonActions.cpp */ = {isa = PBXBuildFile; fileRef = 3B1B5C657AE6C1CEC368D8CD; };
+		67864CE7B3CC883248823BAD /* SelectionComponent.cpp */ = {isa = PBXBuildFile; fileRef = 30E3CDC0BDC2B55721BB2A20; };
 		6896459C435EA33C854C25E6 /* CoreMIDI.framework */ = {isa = PBXBuildFile; fileRef = 3F1E62A9CF59246B3DC7D662; };
+		6A74439A400601F7C3FC3349 /* ScalePreviewTool.cpp */ = {isa = PBXBuildFile; fileRef = A324AF987EB035B7BA45D86C; };
+		6B3ED840F3042630345312B4 /* AutomationStepsClipComponent.cpp */ = {isa = PBXBuildFile; fileRef = 3837C209C596A8461B68EE35; };
+		6CEFDE6A1AC1C3435B5F70A0 /* Revision.cpp */ = {isa = PBXBuildFile; fileRef = 6EB8FD14F5A4D02130721552; };
+		6E51757F991F7222F899B225 /* ThemeSettings.cpp */ = {isa = PBXBuildFile; fileRef = 0866AE8BE3C998058F8C2B11; };
+		6F4CE4CDDDE3B08B270E71A6 /* InstrumentNode.cpp */ = {isa = PBXBuildFile; fileRef = B43751BD8D411C11613C2DE6; };
 		6FA24B24D71972AB3A2ACE0C /* CoreText.framework */ = {isa = PBXBuildFile; fileRef = AD444D3F0B05DCE69E45CD2A; };
+		72DA7FD3950430B206BB07DA /* HelioCallout.cpp */ = {isa = PBXBuildFile; fileRef = 0F1438B348AD454707DC3608; };
+		734A0323DD2FA9A03170A20D /* ComponentsList.cpp */ = {isa = PBXBuildFile; fileRef = 8D5E4B7612CD7AA5C3880C31; };
+		758CB58FB8C97D6E19D37708 /* ColourSwatches.cpp */ = {isa = PBXBuildFile; fileRef = 1A62EB78C15BFAC3DC07E689; };
 		75A30DBEF0059770B4565AE5 /* OpenGLES.framework */ = {isa = PBXBuildFile; fileRef = 1BEFBF01B2FC602C107F0317; };
+		75E6D741ECB4D6A50B0CE36A /* SyncSettingsItem.cpp */ = {isa = PBXBuildFile; fileRef = 3807C86C37D48ABE69AAB6FD; };
+		76466D2B5F8C2A13F60DEFBB /* SyncedConfigurationInfo.cpp */ = {isa = PBXBuildFile; fileRef = 0B355629D81BE7E5C76F24F9; };
+		764C33F4EA9A75CA8064AE23 /* CommandPalette.cpp */ = {isa = PBXBuildFile; fileRef = 81B7A84085F384406DA80623; };
 		76AF88FD3892992E33BF21B4 /* include_juce_gui_basics.mm */ = {isa = PBXBuildFile; fileRef = 30D41B20180846154487F41C; };
+		76CA66C2FAC07D02524893B0 /* UserInterfaceSettings.cpp */ = {isa = PBXBuildFile; fileRef = 559B95E248FAA5BCFCCDA1FD; };
+		771119E6EA662527CC2E0728 /* PatternEditorNode.cpp */ = {isa = PBXBuildFile; fileRef = 7BC54900CCDF1CA46B8F75C0; };
 		773CB76B77533A3777FAE04F /* Accelerate.framework */ = {isa = PBXBuildFile; fileRef = DEB83F8018B1D3CDE2EFCA44; };
+		7747D069615BC1BB82D71F15 /* ColourIDs.cpp */ = {isa = PBXBuildFile; fileRef = 33482DE2553470C562A42040; };
+		78C8968BFF2D87004938430F /* ProjectMapScrollerScreen.cpp */ = {isa = PBXBuildFile; fileRef = CA7FD4F76BE1CC6661CA3477; };
+		79E97766CE38CFF5BC60E8EE /* TrackGroupNode.cpp */ = {isa = PBXBuildFile; fileRef = 4F1BAFE9B6EAED9010CA96EB; };
+		7D1D6F455D4845C66D488688 /* ModalDialogInput.cpp */ = {isa = PBXBuildFile; fileRef = 878C75774237198B9BC6AA16; };
+		7D8B2BDCD18E20C3D37227DE /* SerializablePluginDescription.cpp */ = {isa = PBXBuildFile; fileRef = B3553781160796346696EDB2; };
 		7ECCDACF6651F48C9F6935F9 /* QuartzCore.framework */ = {isa = PBXBuildFile; fileRef = 3D44010B9B71C7D67121D6C9; };
 		7EE39683D2EDF150459153CB /* include_juce_audio_formats.mm */ = {isa = PBXBuildFile; fileRef = B4FAC894B2C8A223A7006BD9; };
+		8003E2CAB508C3BA13E7558D /* HelioTheme.cpp */ = {isa = PBXBuildFile; fileRef = 2308032CB837C17B8FC90E20; };
+		81439E5CA840B4F6749D3369 /* TranslationsManager.cpp */ = {isa = PBXBuildFile; fileRef = A533B6E5A65824292786111C; };
 		8214F97DF5C7AAEF3A5D89BE /* include_juce_audio_basics.mm */ = {isa = PBXBuildFile; fileRef = 58FF6F9E1929247D2B951913; };
+		821E9EEBAF5C36FFBDC4013D /* PianoClipComponent.cpp */ = {isa = PBXBuildFile; fileRef = 1E02CC0349F431E8A1BD1D7B; };
+		833EBEE4CE515B94186FAA2F /* RollBase.cpp */ = {isa = PBXBuildFile; fileRef = 6CF0F046B3CA00AFC7FCDB97; };
+		83A243DEB1977DF8BA1C3ED9 /* ScaleEditor.cpp */ = {isa = PBXBuildFile; fileRef = 2232FA7E284ABDCE49EF2D6F; };
+		84A5ECA9787C39538D6209D7 /* RenderDialog.cpp */ = {isa = PBXBuildFile; fileRef = 404CD58330AA86F78CCC0E23; };
+		8509B27264D0A5692B8E5097 /* RevisionItemComponent.cpp */ = {isa = PBXBuildFile; fileRef = 06234D22DA5BC6AF5CE65D63; };
+		8850DBA363B048EE31D84A9B /* PlayButton.cpp */ = {isa = PBXBuildFile; fileRef = 6F0B65CA46441E566FE11D1F; };
+		89541158BD2DB3ADFE783DD6 /* ProjectMenu.cpp */ = {isa = PBXBuildFile; fileRef = 0BF9BF67158674EE3A450914; };
+		89C2EA838B8944F9CE256D76 /* ProgressTooltip.cpp */ = {isa = PBXBuildFile; fileRef = 293A5E74B9C16A2E88ABB0AF; };
 		8A4CE3041AEEA59B6D1A0BF8 /* Foundation.framework */ = {isa = PBXBuildFile; fileRef = 157AC67C9E595A004217F3C2; };
+		8A5BFD785ABB4FAE476B6DBD /* PianoRoll.cpp */ = {isa = PBXBuildFile; fileRef = 29A3339CC715D3A778B63D8B; };
+		8B4D51A3852AB60855FCA0A1 /* PatternActions.cpp */ = {isa = PBXBuildFile; fileRef = 3BAE85AB92B308E8899BF0D8; };
+		8BFEC6B25AFA69C34A5A630D /* InstrumentEditor.cpp */ = {isa = PBXBuildFile; fileRef = F0F43B71226011F4679447AA; };
+		8D0AB4A9892DCF7E9A22E7B6 /* RollExpandMark.cpp */ = {isa = PBXBuildFile; fileRef = 5F021C5479877AD68BF1F7B1; };
+		8D5DB6093B520E7FD1CC1EB8 /* ClipComponent.cpp */ = {isa = PBXBuildFile; fileRef = 890BA99864946C6747F1A41D; };
+		91A66AE229A904C6E634C7BC /* ArpeggiatorsManager.cpp */ = {isa = PBXBuildFile; fileRef = 96D5BB26362E5BEAC0409776; };
+		91B6B4DC689C7DFE3AF29495 /* HistoryComponent.cpp */ = {isa = PBXBuildFile; fileRef = 05B01D1D2B94F1CC170AA273; };
+		91C1A5FC87B7966745F4C3BD /* PianoTrackNode.cpp */ = {isa = PBXBuildFile; fileRef = C30363796553E324FD3F7541; };
+		927011B842A7817194CC318B /* ProjectTimelineDiffLogic.cpp */ = {isa = PBXBuildFile; fileRef = E1714B7BE059F5B254FFB8DE; };
+		927E568EED4D6E900BF76164 /* BuiltInSynth.cpp */ = {isa = PBXBuildFile; fileRef = 14EA49BA18F30E1B5162E813; };
+		92E3675E97F3A84FD05857CF /* Translation.cpp */ = {isa = PBXBuildFile; fileRef = E7198041504784409868B07B; };
 		94B0BD55D6053A2446BF94C1 /* CoreImage.framework */ = {isa = PBXBuildFile; fileRef = BB6BF7B68B7FEEFC673EF166; };
+		9514383C3B610E27284DF8B5 /* AutomationTrackNode.cpp */ = {isa = PBXBuildFile; fileRef = 4DD951F564C4D351C9E114C7; };
+		95A3E05176CCCE52D4D3B65B /* ChordPreviewTool.cpp */ = {isa = PBXBuildFile; fileRef = 81519B242B7CEB7E58A78C18; };
+		97DC085A16755B3CD21FFCC3 /* SpectrogramAudioMonitorComponent.cpp */ = {isa = PBXBuildFile; fileRef = A21D2F5AD27A47B7121EAB1A; };
+		989ADCBEE711EB44372844C3 /* Lasso.cpp */ = {isa = PBXBuildFile; fileRef = DEB40151DDBE748A385531B3; };
+		9A43D4241A0B4239BC932037 /* InstrumentEditorPin.cpp */ = {isa = PBXBuildFile; fileRef = 20F688409E591413D72D8F6B; };
+		9A8474FC2C7F98EA12418A9E /* TimeSignatureLargeComponent.cpp */ = {isa = PBXBuildFile; fileRef = 709311AF49BA88E766F5A925; };
+		9C4FFD9283E65E47A4BB70C4 /* ViewportFitProxyComponent.cpp */ = {isa = PBXBuildFile; fileRef = BCB338063E4E753B72F1CB2B; };
+		9C534F9C8727CFC4F0F5D7B1 /* DraggingListBoxComponent.cpp */ = {isa = PBXBuildFile; fileRef = 3E0DD1DD3D9F1837F540917E; };
+		9DC96E8658645657A026B2BC /* ResourceSyncService.cpp */ = {isa = PBXBuildFile; fileRef = 12E7FE27F54734F791B11FFB; };
+		9DDBF3C68C69F1BD35CBFB21 /* AnnotationEvent.cpp */ = {isa = PBXBuildFile; fileRef = 7FDDDAF558F62CD81FABCBFF; };
+		9E1A71490AAA1985D5A6D634 /* Diff.cpp */ = {isa = PBXBuildFile; fileRef = 6DDDC8C72B5B23D5E5AC4896; };
+		9E30C1DA53714930369D16DC /* PianoSequence.cpp */ = {isa = PBXBuildFile; fileRef = 09F4F8112891FEBDF8CA6229; };
+		9E5432B677BC16D26DACDA10 /* AutomationSequence.cpp */ = {isa = PBXBuildFile; fileRef = F4610814BF7C06CEE3B3A22A; };
+		9EBBA31174B7119E54EC1434 /* CommandPaletteProjectsList.cpp */ = {isa = PBXBuildFile; fileRef = 82CDD136587B74E7384A2691; };
+		9F0AC62549A2B8AE091E30A2 /* NotesTuningPanel.cpp */ = {isa = PBXBuildFile; fileRef = AF4EC575A8540902A970BCE4; };
+		9FAA5076D10E126812E13299 /* PluginScanner.cpp */ = {isa = PBXBuildFile; fileRef = 54462B8C665250C02D2C9EB4; };
+		A030E1124F739BBFE9D30465 /* SerializedData.cpp */ = {isa = PBXBuildFile; fileRef = 37B8948AEF397A704A256C54; };
 		A236C4B36AB5D27B60E71572 /* CoreAudio.framework */ = {isa = PBXBuildFile; fileRef = 61F0F5481B6FC0DDA7DAAD87; };
-		A2BB9CF65D9EBD9FFDC06786 /* UnityBuild.cpp */ = {isa = PBXBuildFile; fileRef = 5935215BFC47DB5094F50454; };
+		A2411E745ECCC91664ADEB10 /* KeyboardMappingsManager.cpp */ = {isa = PBXBuildFile; fileRef = 420BC45E767F1FD29A4F8D0D; };
+		A2DF92CC25AECDB26825019B /* AutomationEvent.cpp */ = {isa = PBXBuildFile; fileRef = F1ADC5CF4F81520D2447C1F2; };
 		A305C31E8E9FAB7120002087 /* include_juce_core.mm */ = {isa = PBXBuildFile; fileRef = 860977B5FFAFE20BC609AC63; };
+		A41FC2C5007DFDBA13383EDB /* TrackPropertiesDialog.cpp */ = {isa = PBXBuildFile; fileRef = 2BBC7BF4112C3BFF7F841C3D; };
+		A47C904EC2EB92A35C2C65F5 /* VersionControl.cpp */ = {isa = PBXBuildFile; fileRef = 331D37ED351498380F1458AE; };
+		A5E3E3483C9719742677564A /* MidiTrackMenu.cpp */ = {isa = PBXBuildFile; fileRef = 7E8F02BA7A0D8759B7741681; };
+		A7362A6F40EF4A9BC8FD42D9 /* SequencerLayout.cpp */ = {isa = PBXBuildFile; fileRef = 7B24B01534341891CA4FED95; };
+		A7781ACD316C1BABCF053EFA /* WaveformAudioMonitorComponent.cpp */ = {isa = PBXBuildFile; fileRef = 3E7191FFB38935DD0335D27E; };
+		A7D69BC78F2D2F0D35C5A845 /* HeadlineItem.cpp */ = {isa = PBXBuildFile; fileRef = B7171AE42E525D650B7F50C0; };
+		AC556B884EB9DDE93749D2F1 /* ProjectNode.cpp */ = {isa = PBXBuildFile; fileRef = DE35FB8A1253B81E42E8CA73; };
+		AE596E341970F0EF37C6D5EF /* RevisionConnectorComponent.cpp */ = {isa = PBXBuildFile; fileRef = 095E2BB1EDF50F2C65DDD96E; };
+		B12FD080703109AD94BD3E95 /* BackendRequest.cpp */ = {isa = PBXBuildFile; fileRef = 7C717E154B357B1F04730416; };
+		B1D1834414F943751F733D87 /* LevelsMapScroller.cpp */ = {isa = PBXBuildFile; fileRef = F350CA503BE1F50F3CC773BA; };
 		B2F87FE87391EB37BB7133A4 /* UIKit.framework */ = {isa = PBXBuildFile; fileRef = A786517ECDC3A3DD0DCF6F95; };
+		B313A3634FD261EC1ED4AA73 /* BuiltInSynthFormat.cpp */ = {isa = PBXBuildFile; fileRef = 2AFCFD00C9479DA75E8F07CA; };
+		B3E960E03FDD271C5CD601A5 /* AutomationStepEventComponent.cpp */ = {isa = PBXBuildFile; fileRef = 7C802E23EA11E9485FEE4463; };
+		B41DE0F8379DEC65892C0DCB /* ColourButton.cpp */ = {isa = PBXBuildFile; fileRef = 5DAEF7BADBD658806E515056; };
+		B4A628BF732EC3FC0E6E88F6 /* MidiEvent.cpp */ = {isa = PBXBuildFile; fileRef = 18B7366142FB0A0415C7BF33; };
+		B5924BE5D2A06A1F834582DC /* AnnotationDialog.cpp */ = {isa = PBXBuildFile; fileRef = 439E24625B8D17EAD0859856; };
+		B6A13D31E283E8A210B80AF7 /* PianoTrackActions.cpp */ = {isa = PBXBuildFile; fileRef = A2368718BC726B7235100BB5; };
+		B801EF0D4A73833DDD539031 /* TimeSignatureSmallComponent.cpp */ = {isa = PBXBuildFile; fileRef = 3801A0A74563FA342C7CC07F; };
+		B81092FFCD6FF6F0F1D9D59F /* KeySignatureDialog.cpp */ = {isa = PBXBuildFile; fileRef = AB447ADC5314487A258215AE; };
+		B84E331F3F9AEC4CA3FDCF31 /* HotkeyScheme.cpp */ = {isa = PBXBuildFile; fileRef = 87A8A0799DABD78ECE0FC252; };
+		B8988794734CB04E082CDD33 /* ProjectMetadataActions.cpp */ = {isa = PBXBuildFile; fileRef = 5274316B77D9C9EE6444323D; };
+		B8B6F9B8497B4073C5C14F22 /* UserSessionInfo.cpp */ = {isa = PBXBuildFile; fileRef = 9A8970BE5844282FCC4FBF5F; };
+		B8DBB284D59E1E9651C57F83 /* NoteResizerLeft.cpp */ = {isa = PBXBuildFile; fileRef = F308BBBCEBFCA75701C6766A; };
+		BA39914AED7E80B841D8BC73 /* MidiEventComponent.cpp */ = {isa = PBXBuildFile; fileRef = DA9E12DE05FA1FDA9F5EDB54; };
+		C039B48DFEF290975E4B82CF /* RecentProjectRow.cpp */ = {isa = PBXBuildFile; fileRef = F1B9FBCE638637CFCD01B65A; };
 		C3131DD94FCAE95171168F1E /* include_juce_data_structures.mm */ = {isa = PBXBuildFile; fileRef = FC84392248E5BBB797AA7654; };
+		C43DDAE2F03842202BD85450 /* PianoTrackDiffLogic.cpp */ = {isa = PBXBuildFile; fileRef = 74BB7217B62957723AB0F2CE; };
+		C6075E921CE8992F44C01B67 /* SpectrumAnalyzer.cpp */ = {isa = PBXBuildFile; fileRef = 2E50627E8358CCDBE796DEA6; };
+		C70C7DE7A4ABDA313707492B /* NoteResizerRight.cpp */ = {isa = PBXBuildFile; fileRef = C3E0B73861D00982E28C63D0; };
+		C76C2457A851DCD6E110D90A /* ThemeSettingsItem.cpp */ = {isa = PBXBuildFile; fileRef = 954420DC3D679DBD10FF2E02; };
+		C7E3C5496D139AE6A367DB64 /* FineTuningValueIndicator.cpp */ = {isa = PBXBuildFile; fileRef = 6F56C859352E67E9986708E1; };
+		C91EC5768BD3E16C02973351 /* RollEditMode.cpp */ = {isa = PBXBuildFile; fileRef = 8B836143BEB3DAF74104842D; };
+		C92620AE68B910E450901CE3 /* SyncSettings.cpp */ = {isa = PBXBuildFile; fileRef = 6F0AA28913D0FB1EBA8573D9; };
 		CA577550FEB18735D934056B /* include_juce_opengl.mm */ = {isa = PBXBuildFile; fileRef = 3590821780CD003952E75600; };
+		CA9439D3EC219A2961F1C81A /* Document.cpp */ = {isa = PBXBuildFile; fileRef = 4D8447B71FC530A333AE973F; };
+		CB2BFA0D374E520885C3182D /* RemoteCache.cpp */ = {isa = PBXBuildFile; fileRef = 913AB6384D10A2CB26A1F0BC; };
 		CB960CCA38C16AC998A1A267 /* CoreGraphics.framework */ = {isa = PBXBuildFile; fileRef = A1BD73B89A3FA29D88EE93A9; };
+		CC2A63892AB86C148EDFEBCA /* NoteNameGuide.cpp */ = {isa = PBXBuildFile; fileRef = A99324E45072F2524CF0CCAC; };
+		CD20F9848C8C15B6431FFDFC /* TimelineWarningMarker.cpp */ = {isa = PBXBuildFile; fileRef = DD197AF95DF6B3EA88228E3F; };
+		CD6829BCD60D942684A1F9C2 /* KeyboardMapping.cpp */ = {isa = PBXBuildFile; fileRef = 58A082ECFB0A9CA4B1BE34D8; };
+		D11176B5B3BC2AF52AEDCCEC /* InstrumentNodeSelectionMenu.cpp */ = {isa = PBXBuildFile; fileRef = 28262B2984B2A6E1C85FE299; };
+		D16384C901DB895A8B680AA0 /* Clip.cpp */ = {isa = PBXBuildFile; fileRef = E6866B8F6A24B97D0EA35CE1; };
+		D1E3DFA67BAA62C93399746D /* KeySignaturesSequence.cpp */ = {isa = PBXBuildFile; fileRef = DFB795DCBF60462D320AC552; };
+		D37FD99B58452D631198CAC7 /* ProjectInfoDiffLogic.cpp */ = {isa = PBXBuildFile; fileRef = A2F0B1B11EB847FBBC92F5B0; };
+		D52AE94DEEB0EC2CB7EF2DD2 /* NoteNameGuidesBar.cpp */ = {isa = PBXBuildFile; fileRef = 7C784F14A816C5D73546FF5C; };
+		D542D865D3534A03AE7D4F37 /* Dashboard.cpp */ = {isa = PBXBuildFile; fileRef = E517F1B4CFB89B6F82E8A53B; };
+		D6555279D0110752713E4741 /* HeadlineContextMenuController.cpp */ = {isa = PBXBuildFile; fileRef = CC2F40BBB5649A3ECD6876EB; };
+		D693A6FE7984D9266E5804D1 /* RadioButton.cpp */ = {isa = PBXBuildFile; fileRef = FF2F34B06DF8F782AF4FCEC1; };
+		D6AFFA318C8FF33B44509E82 /* Scale.cpp */ = {isa = PBXBuildFile; fileRef = 8F5227E2FA0469B5E8181E51; };
+		D728EFB16E54715865262A5D /* TranslationSettingsItem.cpp */ = {isa = PBXBuildFile; fileRef = 76392B4D42D1DA78C9C550C6; };
+		D84F26A5D1AC28C71F601C26 /* MobileComboBox.cpp */ = {isa = PBXBuildFile; fileRef = A3941862B59534C9DE56E424; };
+		D87F30E8133EC1EE6743C2CE /* MenuPanel.cpp */ = {isa = PBXBuildFile; fileRef = 0DC165EC5DC37331433ED1F1; };
+		D88DFE9ADCECB7A02B06D4E8 /* CommandPaletteTimelineEvents.cpp */ = {isa = PBXBuildFile; fileRef = 6E23BD2DC51159088DAA72DE; };
+		D94C7EAA8D5AEC00F1364E5E /* CommandPaletteMoveNotesMenu.cpp */ = {isa = PBXBuildFile; fileRef = CFFC3C1B9DEB1CC76A985513; };
+		D9739A73D697599ED67FD4A9 /* KeySignatureLargeComponent.cpp */ = {isa = PBXBuildFile; fileRef = DE118884DE291459F2828CB0; };
+		DA717B4FF1EECC70157F9B9B /* WorkspaceMenu.cpp */ = {isa = PBXBuildFile; fileRef = 20F19044BF3C8806C851A36F; };
+		DABA22D2A891D4D2676D9813 /* SessionService.cpp */ = {isa = PBXBuildFile; fileRef = E08CADFA567C32BB862B0FD1; };
+		DB6082CF126E441260DCEEE8 /* Transport.cpp */ = {isa = PBXBuildFile; fileRef = 09DBE08B6238D7BA25B222C7; };
+		DC4F6BC4E71938C9CEFB64B3 /* ColourSchemesManager.cpp */ = {isa = PBXBuildFile; fileRef = 26FFB9A25EACA4CB018270AB; };
+		DC695079242898D1592DF202 /* InternalPluginFormat.cpp */ = {isa = PBXBuildFile; fileRef = 8F1526AF3D4EF5535F21DC29; };
+		DC89892206A022AF8A3AEAF1 /* SequencerSidebarRight.cpp */ = {isa = PBXBuildFile; fileRef = 725BFDECFDEBB76548EB44F0; };
+		DCB2A639E73DC60B7CF7838D /* DummyClipComponent.cpp */ = {isa = PBXBuildFile; fileRef = 2F67451116E0418BF97D8EBD; };
+		DD2DDEA750DEF44FC04678C1 /* UserInterfaceFlags.cpp */ = {isa = PBXBuildFile; fileRef = 4C9D91B54D2117EF95AF9F9B; };
+		DD4735017CE80317D171F225 /* DocumentHelpers.cpp */ = {isa = PBXBuildFile; fileRef = D686D53A144CB643496CFEC7; };
+		DD4B4799F0823166F5CDF42E /* TempoDialog.cpp */ = {isa = PBXBuildFile; fileRef = F19461CD7E5FB4A3D42B67E1; };
+		E0FD76C27FE53D49C7C0C8F9 /* CommandIDs.cpp */ = {isa = PBXBuildFile; fileRef = BECF0A82747907D2ABEF46F0; };
+		E11D3BAACE36AF23394EDBAA /* UpdatesInfoComponent.cpp */ = {isa = PBXBuildFile; fileRef = F825FBB8667FE30F1276F2E0; };
+		E1A9051F64D0320F9CCA73C4 /* PatternDiffHelpers.cpp */ = {isa = PBXBuildFile; fileRef = 9211843DC3B83E07FB5FBB6F; };
+		E1F53DCF36B7CCC9DAD29853 /* App.cpp */ = {isa = PBXBuildFile; fileRef = 68088989851C535E6F481896; };
+		E3F6D437AE223A403CD495A9 /* AutomationStepEventsConnector.cpp */ = {isa = PBXBuildFile; fileRef = 7EFED58D93932FEBFE623D6F; };
+		E4038A672EC8A7271CBDAA38 /* AudioPluginEditorPage.cpp */ = {isa = PBXBuildFile; fileRef = C54C9429C2A7C150DBCCF3A4; };
+		E56C8899B71F7F0F6ED2224E /* PlayerThread.cpp */ = {isa = PBXBuildFile; fileRef = ED46F90AE51E82C2F458956E; };
 		E6B221F9D2A7E49E5BEB05E3 /* BinaryData.cpp */ = {isa = PBXBuildFile; fileRef = 049110EFE86677978F8FA611; };
+		E79249936D55DA03D5EE1025 /* AudioCore.cpp */ = {isa = PBXBuildFile; fileRef = 60F9682086FC3D0E1AFA8860; };
+		EA46DA970A5C52F807186B72 /* CommandPaletteChordConstructor.cpp */ = {isa = PBXBuildFile; fileRef = 72FE6333BB3CC616E34D0D29; };
+		EA8227C498A59AA01DFAD4A3 /* PopupButton.cpp */ = {isa = PBXBuildFile; fileRef = 1478052BE0DD3ECD0740B29A; };
+		EC0C90AE36DB3CB5046FCC8B /* TreeNodeSerializer.cpp */ = {isa = PBXBuildFile; fileRef = 91320EC2741DC17A8D2DC3EA; };
+		ECEF99323B6DCE708EB27957 /* TransportControlComponent.cpp */ = {isa = PBXBuildFile; fileRef = 9C1D7DFE877C0B1FEA022F7E; };
+		EE0BC562948A79CD84AE37F8 /* MidiTrackActions.cpp */ = {isa = PBXBuildFile; fileRef = CC1ECDDFEB2EFEA312401877; };
 		EE12B91E0011CA927629E90F /* WebKit.framework */ = {isa = PBXBuildFile; fileRef = 97420F0C3474283958D59DC6; };
+		EEBDB45654055C6A5154FE76 /* PatternsMenu.cpp */ = {isa = PBXBuildFile; fileRef = 6B780D0DDAAC84F796DA49C9; };
+		EFCA27E4AC9AA92EE1707990 /* AutomationCurveEventsConnector.cpp */ = {isa = PBXBuildFile; fileRef = 9E2D8260F447A210D112128A; };
+		F358D67E075793A3A30D4FC4 /* TimeSignaturesProjectMap.cpp */ = {isa = PBXBuildFile; fileRef = 3597E325A2751270634CC10D; };
+		F3BA6ACAFA6563BEFA508338 /* VersionControlEditor.cpp */ = {isa = PBXBuildFile; fileRef = 4EBAFF4E7626268AA0DF5EE1; };
+		F3BFD026A04D105859D75F21 /* CommandPaletteActionsProvider.cpp */ = {isa = PBXBuildFile; fileRef = 4382EAF4F2D870AF82E94951; };
+		F4A185D450FF860702C53510 /* MenuItemComponent.cpp */ = {isa = PBXBuildFile; fileRef = 5F58550F8C045EC23CDEE415; };
+		F695EA639A6AA683B68CF69B /* DiffLogic.cpp */ = {isa = PBXBuildFile; fileRef = 17D21EBED716A8F85830B119; };
+		F69CD627F443502187F69C0D /* ProjectPage.cpp */ = {isa = PBXBuildFile; fileRef = 7AC80C74B1767AF67EFD82FD; };
+		F8DE320977064995512DE0D5 /* VersionControlHistorySelectionMenu.cpp */ = {isa = PBXBuildFile; fileRef = 8E97CF697D185668CDB66304; };
+		F91ED8588789B961F975452B /* TooltipContainer.cpp */ = {isa = PBXBuildFile; fileRef = 3B4394424BA31D6732F531AC; };
+		F98BAECBB4C131890AB141A6 /* TimeSignatureEventActions.cpp */ = {isa = PBXBuildFile; fileRef = 7205D55A474E172A43DD7F6D; };
+		F9B99C59A3F7083F6FAD4FE7 /* ProjectTimeline.cpp */ = {isa = PBXBuildFile; fileRef = 5EB631A033A543A343A0A138; };
+		FA0F5082AAF8D37C320617CD /* TimeSignatureEvent.cpp */ = {isa = PBXBuildFile; fileRef = 7F7718F047E4AE1173864E5F; };
+		FA2AF6B477823884254819A4 /* MainLayout.cpp */ = {isa = PBXBuildFile; fileRef = 676C596C02F33BEF8232F9FA; };
+		FAAEA99DD393B2E0A3CD1B33 /* AudioSettings.cpp */ = {isa = PBXBuildFile; fileRef = 8036860876900AF36E06FF02; };
+		FB109C327F7C7268D6823D23 /* AudioPluginsListComponent.cpp */ = {isa = PBXBuildFile; fileRef = 3E0FCC9CB77958CE94B92F74; };
+		FB3950CEB5300A25E6A5F404 /* Workspace.cpp */ = {isa = PBXBuildFile; fileRef = 39C0791FE8A0F15901967A25; };
+		FC3248807155986F5BB46CCF /* SpectralLogo.cpp */ = {isa = PBXBuildFile; fileRef = 139B98CFAA0F1E9F10D2F31E; };
+		FC6839723628253E29EF8FC8 /* ProjectCloneThread.cpp */ = {isa = PBXBuildFile; fileRef = 310B427849EA3D5FD0BB3F82; };
 		FD478BAA3C88F81D16AA5E67 /* Icon.icns */ = {isa = PBXBuildFile; fileRef = AB43B7209B4383E4833E3C27; };
+		FDCD30082CA9E19ABB5D6767 /* SettingsPage.cpp */ = {isa = PBXBuildFile; fileRef = 52DEDEC4C6568D176EA4F388; };
+		FDD0CA16C8E2B682FA5748E6 /* FineTuningComponentDragger.cpp */ = {isa = PBXBuildFile; fileRef = BC8039905D5BAF9F9F2685C1; };
 		FE1498208A23EE4115106D27 /* AudioToolbox.framework */ = {isa = PBXBuildFile; fileRef = 646F8C2256B4A823DAAB603E; };
+		FE23CC9FEB3EE38323530DC9 /* Delta.cpp */ = {isa = PBXBuildFile; fileRef = C3199CBBAB304C1FD9884034; };
+		FECCA9C59EA359ACE46601A3 /* TimelineMenu.cpp */ = {isa = PBXBuildFile; fileRef = 7AF3E836714A6E3DAA2BB480; };
+		FF290324420F3D0543922D6A /* ViewportKineticSlider.cpp */ = {isa = PBXBuildFile; fileRef = 036D4E54E4F9D7AD19B41927; };
+		FF74144D321EEEAC9CECD6E9 /* Snapshot.cpp */ = {isa = PBXBuildFile; fileRef = C18C6583A2F47A008D566592; };
+		FF8694D3705B7001EC3C6DEB /* RendererThread.cpp */ = {isa = PBXBuildFile; fileRef = 71BA638BD9EBFA2DEB108AB5; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -334,7 +606,6 @@
 		584E087D68C4D91663A6A699 /* TreeNode.cpp */ /* TreeNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TreeNode.cpp; path = ../../Source/Core/Tree/TreeNode.cpp; sourceTree = SOURCE_ROOT; };
 		58A082ECFB0A9CA4B1BE34D8 /* KeyboardMapping.cpp */ /* KeyboardMapping.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = KeyboardMapping.cpp; path = ../../Source/Core/Configuration/Models/KeyboardMapping.cpp; sourceTree = SOURCE_ROOT; };
 		58FF6F9E1929247D2B951913 /* include_juce_audio_basics.mm */ /* include_juce_audio_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_basics.mm; path = ../Projucer/JuceLibraryCode/include_juce_audio_basics.mm; sourceTree = SOURCE_ROOT; };
-		5935215BFC47DB5094F50454 /* UnityBuild.cpp */ /* UnityBuild.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = UnityBuild.cpp; path = ../Projucer/JuceLibraryCode/UnityBuild.cpp; sourceTree = SOURCE_ROOT; };
 		599C4137F2C6F278E1FDECCC /* HeadlineItem.h */ /* HeadlineItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HeadlineItem.h; path = ../../Source/UI/Headline/HeadlineItem.h; sourceTree = SOURCE_ROOT; };
 		5A14829FB5AB05981948C794 /* HotkeyScheme.h */ /* HotkeyScheme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HotkeyScheme.h; path = ../../Source/Core/Configuration/Models/HotkeyScheme.h; sourceTree = SOURCE_ROOT; };
 		5A55F806525C1774E684E6EE /* Head.h */ /* Head.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Head.h; path = ../../Source/Core/VCS/Head.h; sourceTree = SOURCE_ROOT; };
@@ -2084,7 +2355,6 @@
 				4DC24E231ED4FF0DD1223930,
 				3590821780CD003952E75600,
 				87F0954F4480A8A9C45B00F6,
-				5935215BFC47DB5094F50454,
 			);
 			name = "JUCE Library Code";
 			sourceTree = "<group>";
@@ -2231,7 +2501,7 @@
 		08DB4A16C7B3991E0F547761 = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1300;
 				ORGANIZATIONNAME = "Peter Rudenko";
 				TargetAttributes = {
 					C52491ADC1C672FFBF6CD85B = {
@@ -2296,6 +2566,279 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20C380C52B066D6BAA98F898,
+				B313A3634FD261EC1ED4AA73,
+				927E568EED4D6E900BF76164,
+				DC695079242898D1592DF202,
+				1823ADDCC8354303E6AF9A35,
+				1F2A67197D10C6F4682821C2,
+				9FAA5076D10E126812E13299,
+				7D8B2BDCD18E20C3D37227DE,
+				1D548DAC5854FC2F4AEBE134,
+				C6075E921CE8992F44C01B67,
+				1536DEF84B2FED31A3F82C64,
+				E56C8899B71F7F0F6ED2224E,
+				FF8694D3705B7001EC3C6DEB,
+				DB6082CF126E441260DCEEE8,
+				E79249936D55DA03D5EE1025,
+				5A07004988A92092D19B50E8,
+				087A90FB4A27E23E5162ABE1,
+				251037FDF68BD8C4CC7F4D91,
+				B84E331F3F9AEC4CA3FDCF31,
+				CD6829BCD60D942684A1F9C2,
+				D6AFFA318C8FF33B44509E82,
+				1BAA07823FA882F937A8E37F,
+				92E3675E97F3A84FD05857CF,
+				05BB2AD6E36DD255DBA3FF5E,
+				91A66AE229A904C6E634C7BC,
+				1F06261581B26AACF3561F16,
+				DC4F6BC4E71938C9CEFB64B3,
+				4331A0732C8C8160745E6729,
+				A2411E745ECCC91664ADEB10,
+				09B80668359D55D7B63A051C,
+				099295728A7BE65818C48DA5,
+				81439E5CA840B4F6749D3369,
+				4B16FA73DE77126020ED5573,
+				DD2DDEA750DEF44FC04678C1,
+				F3BFD026A04D105859D75F21,
+				66E87EAA41FC9435D0C0DA7D,
+				EA46DA970A5C52F807186B72,
+				D94C7EAA8D5AEC00F1364E5E,
+				9EBBA31174B7119E54EC1434,
+				D88DFE9ADCECB7A02B06D4E8,
+				D16384C901DB895A8B680AA0,
+				02E167803BE78542AEE855FC,
+				9DDBF3C68C69F1BD35CBFB21,
+				A2DF92CC25AECDB26825019B,
+				088F3D09E21D5CB34212B87C,
+				B4A628BF732EC3FC0E6E88F6,
+				3425F3E2B318AC88B5B61B89,
+				FA0F5082AAF8D37C320617CD,
+				12AA7D5DDC7445412572D34F,
+				9E5432B677BC16D26DACDA10,
+				D1E3DFA67BAA62C93399746D,
+				385708A2433A656B70FA5B36,
+				9E30C1DA53714930369D16DC,
+				21EADA22108358648EF1612F,
+				04F39011739E859E1C586524,
+				B12FD080703109AD94BD3E95,
+				13BF3F1A00C6B59706FB6ECE,
+				FC6839723628253E29EF8FC8,
+				0C84EBB5A3A105CB21A9D4E1,
+				5DAA8F17D334FFD9968AE077,
+				07F3A3532E2C4452ED2ACED1,
+				4A3A62C2AA0218A613B81A0A,
+				9DC96E8658645657A026B2BC,
+				DABA22D2A891D4D2676D9813,
+				06765B775BCEEAB2B23B278F,
+				14CDA51A2C4105F281DCB3ED,
+				CA9439D3EC219A2961F1C81A,
+				DD4735017CE80317D171F225,
+				A030E1124F739BBFE9D30465,
+				3243F85B15405E2783A1BABE,
+				21099E28D3B4F66D08F4D189,
+				4FE9DDE37B87CBC99A80F749,
+				9514383C3B610E27284DF8B5,
+				6F4CE4CDDDE3B08B270E71A6,
+				360549218CE37A66A134D39C,
+				231FD914ACEF793BC3556422,
+				771119E6EA662527CC2E0728,
+				91C1A5FC87B7966745F4C3BD,
+				02E0B96446ED6D07695796A9,
+				F9B99C59A3F7083F6FAD4FE7,
+				AC556B884EB9DDE93749D2F1,
+				28D13E85FCF25E51A03F0080,
+				1013E058DFD715AA0404FA9C,
+				79E97766CE38CFF5BC60E8EE,
+				363AC612B210E7DFC07B43E8,
+				EC0C90AE36DB3CB5046FCC8B,
+				3137F12D083BB0B37C6B4D4D,
+				0154AD835ACD2D021B70A6B6,
+				0116044142DC614E3C962CB2,
+				09A16EC2D87EE4835D47DF1F,
+				1F0FF94D9A96B7C1A75A48A5,
+				EE0BC562948A79CD84AE37F8,
+				4969D4452CDFDE37CA77C0A9,
+				8B4D51A3852AB60855FCA0A1,
+				B6A13D31E283E8A210B80AF7,
+				B8988794734CB04E082CDD33,
+				F98BAECBB4C131890AB141A6,
+				19D4C4291B68A9F262F148B0,
+				4D0E4720C7A6100D426BB6B8,
+				F695EA639A6AA683B68CF69B,
+				E1A9051F64D0320F9CCA73C4,
+				C43DDAE2F03842202BD85450,
+				D37FD99B58452D631198CAC7,
+				927011B842A7817194CC318B,
+				FE23CC9FEB3EE38323530DC9,
+				9E1A71490AAA1985D5A6D634,
+				1263A3C7729A5634C4DDF82A,
+				CB2BFA0D374E520885C3182D,
+				6CEFDE6A1AC1C3435B5F70A0,
+				23060F2BE6ACE7C2F226437F,
+				FF74144D321EEEAC9CECD6E9,
+				032B433867C9D6EA854C8570,
+				A47C904EC2EB92A35C2C65F5,
+				2F298E44CA30A476E2B7FE3B,
+				405E30625C85EADFD170CB79,
+				76466D2B5F8C2A13F60DEFBB,
+				B8B6F9B8497B4073C5C14F22,
+				06D424161356D836AC0112B1,
+				FB3950CEB5300A25E6A5F404,
+				E1F53DCF36B7CCC9DAD29853,
+				97DC085A16755B3CD21FFCC3,
+				A7781ACD316C1BABCF053EFA,
+				20A05D3EDD25736DD0B27C1C,
+				06ED57F07C6531F64BD98A4C,
+				5C2924584F7DDD6CF2333DE6,
+				B41DE0F8379DEC65892C0DCB,
+				758CB58FB8C97D6E19D37708,
+				E0FD76C27FE53D49C7C0C8F9,
+				7747D069615BC1BB82D71F15,
+				9C534F9C8727CFC4F0F5D7B1,
+				FDD0CA16C8E2B682FA5748E6,
+				C7E3C5496D139AE6A367DB64,
+				633D75CE58C67FEE17CC24FB,
+				D84F26A5D1AC28C71F601C26,
+				405ECAB12786386E738511CA,
+				28C208A3E63F5EB121E1E281,
+				8850DBA363B048EE31D84A9B,
+				624A5B082143BAA419897D63,
+				D693A6FE7984D9266E5804D1,
+				83A243DEB1977DF8BA1C3ED9,
+				FC3248807155986F5BB46CCF,
+				ECEF99323B6DCE708EB27957,
+				9C4FFD9283E65E47A4BB70C4,
+				65F3FC4D4F187CA7C0354EE7,
+				B5924BE5D2A06A1F834582DC,
+				B81092FFCD6FF6F0F1D9D59F,
+				47D5F2EE2D902B729A9F8D48,
+				7D1D6F455D4845C66D488688,
+				84A5ECA9787C39538D6209D7,
+				DD4B4799F0823166F5CDF42E,
+				0E760BBAA4791E7D58D28A30,
+				A41FC2C5007DFDBA13383EDB,
+				198309652B095B3F0513995B,
+				52C0C45CE3BA9FCECC4ABB23,
+				A7D69BC78F2D2F0D35C5A845,
+				D6555279D0110752713E4741,
+				1237941BBFE42BCDADD6C895,
+				F4A185D450FF860702C53510,
+				D87F30E8133EC1EE6743C2CE,
+				557006A060687F9D7051DF20,
+				D11176B5B3BC2AF52AEDCCEC,
+				62055DF370877A713A9925EE,
+				2D49270BF702405FAC9C3A2A,
+				F8DE320977064995512DE0D5,
+				0B6B2ACF09ED402436CBE935,
+				46400DD41AC8CFE95532FEAD,
+				A5E3E3483C9719742677564A,
+				54884733A16403DFD4E496C9,
+				EEBDB45654055C6A5154FE76,
+				89541158BD2DB3ADFE783DD6,
+				FECCA9C59EA359ACE46601A3,
+				022520E9B8B5356698B07B08,
+				DA717B4FF1EECC70157F9B9B,
+				3B17FD8835DE52C4A218BBEB,
+				C039B48DFEF290975E4B82CF,
+				D542D865D3534A03AE7D4F37,
+				E11D3BAACE36AF23394EDBAA,
+				E4038A672EC8A7271CBDAA38,
+				8BFEC6B25AFA69C34A5A630D,
+				06478F81026C701E3996B62E,
+				44EF4C0CA4407F814E0A2962,
+				9A43D4241A0B4239BC932037,
+				57B4CB29CB979CC664C9F8C1,
+				FB109C327F7C7268D6823D23,
+				0065C74143BD58FF70DC652A,
+				315328A0F67059EA642C63C9,
+				F69CD627F443502187F69C0D,
+				FAAEA99DD393B2E0A3CD1B33,
+				734A0323DD2FA9A03170A20D,
+				1F8D90CA2074F75B1EE0D6FC,
+				FDCD30082CA9E19ABB5D6767,
+				C92620AE68B910E450901CE3,
+				75E6D741ECB4D6A50B0CE36A,
+				6E51757F991F7222F899B225,
+				C76C2457A851DCD6E110D90A,
+				45F746A836CCDF78EB4F8309,
+				D728EFB16E54715865262A5D,
+				76CA66C2FAC07D02524893B0,
+				91B6B4DC689C7DFE3AF29495,
+				124C446D9BAFD750EBB4053E,
+				AE596E341970F0EF37C6D5EF,
+				8509B27264D0A5692B8E5097,
+				3D3D325382FEA6C3E3BD9145,
+				3A136348B695CAF8000A35B5,
+				644399B45B98E5D59C420676,
+				F3BA6ACAFA6563BEFA508338,
+				764C33F4EA9A75CA8064AE23,
+				9F0AC62549A2B8AE091E30A2,
+				2EE49BB594FBB62EBCF9BC7F,
+				95A3E05176CCCE52D4D3B65B,
+				0E014D2F8F074A46FFF6EC8A,
+				6A74439A400601F7C3FC3349,
+				72DA7FD3950430B206BB07DA,
+				EA8227C498A59AA01DFAD4A3,
+				40917927939B410FEDF2D5C0,
+				89C2EA838B8944F9CE256D76,
+				F91ED8588789B961F975452B,
+				4E71BFD9BBD9E1CA96296713,
+				4A3A0C6258F1D51D8A9EC4EF,
+				47103F979199251D8CE97370,
+				23E681958D1A43720E6C45AE,
+				8D0AB4A9892DCF7E9A22E7B6,
+				4976FB953DBB1543C0CF6B56,
+				4AB2F54DD9797B4DCD4994F0,
+				CD20F9848C8C15B6431FFDFC,
+				65164D0447F6901979222731,
+				35810FBEF0565376577210A5,
+				3E7512AEC2142D40C4EF82F7,
+				49C15EC2AF023A0D1FCF8881,
+				605A2BEA231A43BB134B79E3,
+				EFCA27E4AC9AA92EE1707990,
+				6B3ED840F3042630345312B4,
+				B3E960E03FDD271C5CD601A5,
+				E3F6D437AE223A403CD495A9,
+				821E9EEBAF5C36FFBDC4013D,
+				8D5DB6093B520E7FD1CC1EB8,
+				DCB2A639E73DC60B7CF7838D,
+				632AD4B80C008393EE7FF75B,
+				49B1F43A902805547AB454EB,
+				5D9FF4B9F5F9F4834D5CF3AC,
+				CC2A63892AB86C148EDFEBCA,
+				D52AE94DEEB0EC2CB7EF2DD2,
+				B8DBB284D59E1E9651C57F83,
+				C70C7DE7A4ABDA313707492B,
+				8A5BFD785ABB4FAE476B6DBD,
+				0F56692AADF04953605D41E3,
+				DC89892206A022AF8A3AEAF1,
+				1717E2801370E60752EBE238,
+				3B7647E50D8BA706B7A00271,
+				1DA6DF9F65CC951344B0D001,
+				D9739A73D697599ED67FD4A9,
+				58CB3EF5EFB3AB76C24BCE91,
+				4D4FB4E674B7713DD83D5326,
+				B1D1834414F943751F733D87,
+				075DD218AD85684704AD9B12,
+				2DD00D2DCEA50B0CD6C8FB76,
+				015919D132D5A6ADC86DF905,
+				78C8968BFF2D87004938430F,
+				9A8474FC2C7F98EA12418A9E,
+				B801EF0D4A73833DDD539031,
+				F358D67E075793A3A30D4FC4,
+				833EBEE4CE515B94186FAA2F,
+				C91EC5768BD3E16C02973351,
+				989ADCBEE711EB44372844C3,
+				5328F199E3AB2FD2A825D6BF,
+				BA39914AED7E80B841D8BC73,
+				67864CE7B3CC883248823BAD,
+				A7362A6F40EF4A9BC8FD42D9,
+				8003E2CAB508C3BA13E7558D,
+				662E51705EED09C0863FD9FE,
+				FF290324420F3D0543922D6A,
+				FA2AF6B477823884254819A4,
+				45A0D2F9E52E81236173B1D5,
 				E6B221F9D2A7E49E5BEB05E3,
 				8214F97DF5C7AAEF3A5D89BE,
 				461C4208C242ED4626DFC76D,
@@ -2308,7 +2851,6 @@
 				76AF88FD3892992E33BF21B4,
 				37CED04FE209B73A2694DDF7,
 				CA577550FEB18735D934056B,
-				A2BB9CF65D9EBD9FFDC06786,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

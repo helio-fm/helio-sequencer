@@ -4082,6 +4082,7 @@ static const unsigned char temp_binary_data_95[] =
 const char* translations_json = (const char*) temp_binary_data_95;
 
 
+const char* getNamedResource (const char* resourceNameUTF8, int& numBytes);
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 {
     unsigned int hash = 0;
@@ -4395,6 +4396,7 @@ const char* originalFilenames[] =
     "translations.json"
 };
 
+const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8);
 const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8)
 {
     for (unsigned int i = 0; i < (sizeof (namedResourceList) / sizeof (namedResourceList[0])); ++i)

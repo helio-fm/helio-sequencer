@@ -239,7 +239,7 @@ private:
     void removeLinkForTrack(const MidiTrack *track);
     
     // a nasty hack, see the description in BuiltInSynth.h:
-    void updateTemperamentInfoForBuiltInSynth(int periodSize) const;
+    void updateTemperamentInfoForBuiltInSynth(int periodSize, double periodRange) const;
 
 private:
 

@@ -3517,9 +3517,6 @@
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_opengl.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\UnityBuild.cpp">
-      <Filter>JUCE Library Code</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthAudioPlugin.h">
