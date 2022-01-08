@@ -33,7 +33,7 @@ public:
     // perspective, and we will only support EDOs, because all built-in
     // temperaments and EDO's; hopefully someday I'll come up with
     // a better approach, or just get rid of this hack;
-    void setPeriodSizeAndRange(int periodSize, double periodRange);
+    void setPeriodSize(int periodSize);
 
 protected:
 

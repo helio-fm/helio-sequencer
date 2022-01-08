@@ -50,7 +50,6 @@ public:
     void setTemperament(const Temperament &temperament);
     int getKeyboardSize() const noexcept;
     int getPeriodSize() const noexcept;
-    double getPeriodRange() const noexcept;
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem

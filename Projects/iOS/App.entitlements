@@ -14,5 +14,7 @@
 	<array>
         <string>iCloud.$(CFBundleIdentifier)</string>
     </array>
+    <key>inter-app-audio</key>
+    <true/>
 </dict>
 </plist>

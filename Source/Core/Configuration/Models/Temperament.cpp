@@ -107,7 +107,7 @@ SerializedData Temperament::serialize() const
     data.setProperty(Midi::temperamentId, this->id);
     data.setProperty(Midi::temperamentName, this->name);
     data.setProperty(Midi::temperamentPeriod, this->period.joinIntoString(" "));
-    data.setProperty(Midi::temperamentPeriodRange, this->periodRange);
+
     data.setProperty(Midi::temperamentHighlighting, this->highlighting->getIntervals());
     data.setProperty(Midi::temperamentChromaticMap, this->chromaticMap->getIntervals());
 
@@ -130,12 +130,6 @@ void Temperament::deserialize(const SerializedData &data)
 
     const String periodString = root.getProperty(Midi::temperamentPeriod);
     this->period.addTokens(periodString, true);
-
-    this->periodRange = root.getProperty(Midi::temperamentPeriodRange);
-    if (!this->periodRange)
-    {
-        this->periodRange = 2.0;
-    }
 
     // other parameters are computed quite straightforward, but let's do it here:
     this->middleC = Temperament::periodNumForMiddleC * this->getPeriodSize();

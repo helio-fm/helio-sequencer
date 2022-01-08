@@ -29,9 +29,9 @@ public:
     static const String instrumentName;
     static const String instrumentNameOld;
 
-    void setPeriodSizeAndRange(int periodSize, double periodRange)
+    void setPeriodSize(int periodSize)
     {
-        this->synth.setPeriodSizeAndRange(periodSize, periodRange);
+        this->synth.setPeriodSize(periodSize);
     }
 
     //===------------------------------------------------------------------===//

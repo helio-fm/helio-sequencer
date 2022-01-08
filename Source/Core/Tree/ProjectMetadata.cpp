@@ -120,11 +120,6 @@ int ProjectMetadata::getPeriodSize() const noexcept
     return this->temperament->getPeriodSize();
 }
 
-double ProjectMetadata::getPeriodRange() const noexcept
-{
-    return this->temperament->getPeriodRange();
-}
-
 //===----------------------------------------------------------------------===//
 // VCS::TrackedItem
 //===----------------------------------------------------------------------===//

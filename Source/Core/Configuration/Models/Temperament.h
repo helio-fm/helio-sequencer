@@ -56,7 +56,6 @@ public:
     inline const String &getName() const noexcept { return this->name; }
     inline const Period &getPeriod() const noexcept { return this->period; }
     inline int getPeriodSize() const noexcept { return this->period.size(); }
-    inline double getPeriodRange() const noexcept{ return this->periodRange; }
     inline int getNumKeys() const noexcept { return this->keysTotal; }
     inline Note::Key getMiddleC() const noexcept { return this->middleC; }
 
@@ -100,7 +99,6 @@ private:
     String id;
     String name;
     Period period;
-    double periodRange = 2.0;
 
     Note::Key middleC = 0;
     int keysTotal = 0;
