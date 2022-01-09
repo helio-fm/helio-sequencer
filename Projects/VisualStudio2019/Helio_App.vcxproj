@@ -2940,6 +2940,7 @@
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\MidiSequence.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\PianoSequence.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.h"/>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesAggregator.h"/>
     <ClInclude Include="..\..\Source\Core\Midi\MidiTrack.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Models\ApiModel.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Models\AppInfoDto.h"/>
@@ -2961,7 +2962,6 @@
     <ClInclude Include="..\..\Source\Core\Network\Requests\RevisionsSyncHelpers.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\RevisionsSyncThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\RequestUserProfileThread.h"/>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\TokenCheckThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\TokenUpdateThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\UpdatesCheckThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Services\BackendService.h"/>
@@ -4072,6 +4072,7 @@
     <None Include="..\..\Resources\Icons\inverseUp.svg"/>
     <None Include="..\..\Resources\Icons\list.svg"/>
     <None Include="..\..\Resources\Icons\local.svg"/>
+    <None Include="..\..\Resources\Icons\meter.svg"/>
     <None Include="..\..\Resources\Icons\mute.svg"/>
     <None Include="..\..\Resources\Icons\orchestraPit.svg"/>
     <None Include="..\..\Resources\Icons\paint.svg"/>

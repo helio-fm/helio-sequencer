@@ -278,6 +278,7 @@
 		46D4C80D6AE8FCB681197BC7 /* include_juce_audio_devices.mm */ /* include_juce_audio_devices.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_devices.mm; path = ../Projucer/JuceLibraryCode/include_juce_audio_devices.mm; sourceTree = SOURCE_ROOT; };
 		46FA2D7F3C473C6DFC2E24AE /* ProjectsListDto.h */ /* ProjectsListDto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProjectsListDto.h; path = ../../Source/Core/Network/Models/ProjectsListDto.h; sourceTree = SOURCE_ROOT; };
 		4741622D381B19C200E56FD4 /* ResourceManager.cpp */ /* ResourceManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ResourceManager.cpp; path = ../../Source/Core/Configuration/ResourceManagers/ResourceManager.cpp; sourceTree = SOURCE_ROOT; };
+		4786B401E6EB60046940A571 /* meter.svg */ /* meter.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = meter.svg; path = ../../Resources/Icons/meter.svg; sourceTree = SOURCE_ROOT; };
 		47DAD536548FFDF59FFA3E54 /* ProjectDto.h */ /* ProjectDto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProjectDto.h; path = ../../Source/Core/Network/Models/ProjectDto.h; sourceTree = SOURCE_ROOT; };
 		489BC68A21B18F18860B27A1 /* ProjectInfoDiffLogic.h */ /* ProjectInfoDiffLogic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProjectInfoDiffLogic.h; path = ../../Source/Core/VCS/DiffLogic/ProjectInfoDiffLogic.h; sourceTree = SOURCE_ROOT; };
 		4904543A8478B7797EBCCA3D /* NoteResizerLeft.h */ /* NoteResizerLeft.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NoteResizerLeft.h; path = ../../Source/UI/Sequencer/PianoRoll/NoteResizerLeft.h; sourceTree = SOURCE_ROOT; };
@@ -991,6 +992,7 @@
 				2DA06104F65305C09877EA73,
 				35CE31907AAAF6A87836E985,
 				F8E8B5E89444D55A21A8E484,
+				4786B401E6EB60046940A571,
 				38F77D254EEDB3C3C286D7B0,
 				7320F2DA76039762ED764BDA,
 				F91C8DFB4DC445BA20315BE3,

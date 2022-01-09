@@ -45,18 +45,10 @@ void MidiTrackMenu::initDefaultMenu()
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
         TRANS(I18n::Menu::trackRename))->closesMenu());
 
-
-
-    // todo: a check if this is a piano track?
-    // (this menu shouldn't be available to automation tracks though)
-
-    // todo: add/change/delete?
-    // fixme icon
     const auto hasTs = this->track->hasTimeSignatureOverride();
-    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::SetTrackTimeSignature,
+    menu.add(MenuItem::item(Icons::meter, CommandIDs::SetTrackTimeSignature,
         hasTs ? TRANS(I18n::Menu::timeSignatureChange) : TRANS(I18n::Menu::timeSignatureAdd))->
         closesMenu());
-
 
     menu.add(MenuItem::item(Icons::copy, CommandIDs::DuplicateTrack,
         TRANS(I18n::Menu::trackDuplicate))->closesMenu());

@@ -333,6 +333,17 @@ PatternRollTimeSignaturePicker::~PatternRollTimeSignaturePicker()
 
 void PatternRollTimeSignaturePicker::changeListenerCallback(ChangeBroadcaster *source)
 {
+    if (this->lasso->getNumSelected() == 1)
+    {
+        auto *cc = this->lasso->getFirstAs<ClipComponent>();
+        if (dynamic_cast<PianoClipComponent *>(cc) != nullptr)
+        {
+            auto *clipTrack = cc->getClip().getPattern()->getTrack();
+            this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(clipTrack);
+            return;
+        }
+    }
+
     // if all selected piano clips which have time signature
     // are of the same track, use this time signature override
 

@@ -7073,6 +7073,9 @@
     <None Include="..\..\Resources\Icons\local.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
+    <None Include="..\..\Resources\Icons\meter.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
     <None Include="..\..\Resources\Icons\mute.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>

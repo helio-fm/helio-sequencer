@@ -64,9 +64,14 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::zoomToFit, CommandIDs::ZoomEntireClip,
-        TRANS(I18n::Menu::Selection::clipsEdit))
-                 ->disabledIf(lasso->getNumSelected() == 0)
-                 ->closesMenu());
+        TRANS(I18n::Menu::Selection::clipsEdit))->
+        disabledIf(lasso->getNumSelected() == 0)->
+        closesMenu());
+    
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
+        TRANS(I18n::Menu::trackRename))->
+        disabledIf(!canRenamePatternSelection(this->lasso))->
+        closesMenu());
 
     if (this->lasso->getNumSelected() == 1)
     {
@@ -97,7 +102,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
                 TRANS(I18n::Menu::timeSignatureChange) :
                 TRANS(I18n::Menu::timeSignatureAdd);
 
-            menu.add(MenuItem::item(Icons::ellipsis, // fixme icon
+            menu.add(MenuItem::item(Icons::meter,
                 CommandIDs::SetTrackTimeSignature, tsActionlabel)->closesMenu());
         }
     }
@@ -110,10 +115,6 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         menu.add(MenuItem::item(Icons::down, CommandIDs::ClipTransposeDown,
             TRANS(I18n::Menu::Selection::clipsTransposeDown)));
     }
-
-    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
-        TRANS(I18n::Menu::trackRename))->
-        disabledIf(!canRenamePatternSelection(this->lasso))->closesMenu());
 
     const auto muteAction = PatternOperations::lassoContainsMutedClip(*this->lasso.get()) ?
         TRANS(I18n::Menu::unmute) : TRANS(I18n::Menu::mute);
