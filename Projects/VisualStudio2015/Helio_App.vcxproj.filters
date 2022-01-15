@@ -26,11 +26,11 @@
     <Filter Include="Helio\Source\Core\Audio">
       <UniqueIdentifier>{1B53250D-BAEB-EBCF-9F96-574619987D42}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\Core\Configuration\Models">
-      <UniqueIdentifier>{D684245E-ABFD-6D34-BB32-4F4ED0A06A0F}</UniqueIdentifier>
+    <Filter Include="Helio\Source\Core\Configuration\Resources\Models">
+      <UniqueIdentifier>{BBE444A7-C971-4872-0107-DA514A2522F9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\Core\Configuration\ResourceManagers">
-      <UniqueIdentifier>{5DC6C3D5-AEDB-9823-0E89-AE69BCE74636}</UniqueIdentifier>
+    <Filter Include="Helio\Source\Core\Configuration\Resources">
+      <UniqueIdentifier>{268319A7-A41A-A5FD-22D5-1DAF08EB28F4}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\Core\Configuration">
       <UniqueIdentifier>{F530793D-2149-3E27-AAAD-D8A31335FC1C}</UniqueIdentifier>
@@ -676,56 +676,56 @@
     <ClCompile Include="..\..\Source\Core\Audio\AudioCore.cpp">
       <Filter>Helio\Source\Core\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\Models\Arpeggiator.cpp">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\Arpeggiator.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\Models\Chord.cpp">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\Chord.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\Models\ColourScheme.cpp">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\ColourScheme.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\Models\HotkeyScheme.cpp">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\HotkeyScheme.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\Models\KeyboardMapping.cpp">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\KeyboardMapping.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\Models\Scale.cpp">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\Scale.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\Models\Temperament.cpp">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\Temperament.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\Models\Translation.cpp">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\Translation.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ResourceManager.cpp">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\ConfigurationResourceCollection.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ArpeggiatorsManager.cpp">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\ArpeggiatorsCollection.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ChordsManager.cpp">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\ChordsCollection.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ColourSchemesManager.cpp">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\ColourSchemesCollection.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\HotkeySchemesManager.cpp">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\HotkeySchemesCollection.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\KeyboardMappingsManager.cpp">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\KeyboardMappingsCollection.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ScalesManager.cpp">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\ScalesCollection.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\TemperamentsManager.cpp">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\TemperamentsCollection.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.cpp">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\TranslationsCollection.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\Config.cpp">
       <Filter>Helio\Source\Core\Configuration</Filter>
@@ -3555,62 +3555,62 @@
     <ClInclude Include="..\..\Source\Core\Audio\AudioCore.h">
       <Filter>Helio\Source\Core\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\Models\BaseResource.h">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\ConfigurationResource.h">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\Models\Arpeggiator.h">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Arpeggiator.h">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\Models\Chord.h">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Chord.h">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\Models\ColourScheme.h">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\ColourScheme.h">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\Models\HotkeyScheme.h">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\HotkeyScheme.h">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\Models\KeyboardMapping.h">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\KeyboardMapping.h">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\Models\Scale.h">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Scale.h">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\Models\Temperament.h">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Temperament.h">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\Models\Translation.h">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Translation.h">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\Models\TranslationKeys.h">
-      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\TranslationKeys.h">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ResourceManager.h">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\ConfigurationResourceCollection.h">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ArpeggiatorsManager.h">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\ArpeggiatorsCollection.h">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ChordsManager.h">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\ChordsCollection.h">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ColourSchemesManager.h">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\ColourSchemesCollection.h">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\HotkeySchemesManager.h">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\HotkeySchemesCollection.h">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\KeyboardMappingsManager.h">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\KeyboardMappingsCollection.h">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ScalesManager.h">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\ScalesCollection.h">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\TemperamentsManager.h">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\TemperamentsCollection.h">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.h">
-      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\TranslationsCollection.h">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\Config.h">
       <Filter>Helio\Source\Core\Configuration</Filter>

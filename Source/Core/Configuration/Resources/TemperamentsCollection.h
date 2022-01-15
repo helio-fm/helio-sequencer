@@ -15,24 +15,33 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Common.h"
-#include "ArpeggiatorsManager.h"
-#include "SerializationKeys.h"
+#pragma once
 
-ArpeggiatorsManager::ArpeggiatorsManager() :
-    ResourceManager(Serialization::Resources::arpeggiators) {}
+#include "ConfigurationResourceCollection.h"
+#include "Temperament.h"
+#include "Scale.h"
 
-void ArpeggiatorsManager::deserializeResources(const SerializedData &tree, Resources &outResources)
+class TemperamentsCollection final : public ConfigurationResourceCollection
 {
-    const auto root = tree.hasType(Serialization::Resources::arpeggiators) ?
-        tree : tree.getChildWithName(Serialization::Resources::arpeggiators);
+public:
 
-    if (!root.isValid()) { return; }
+    TemperamentsCollection();
 
-    forEachChildWithType(root, arpNode, Serialization::Arps::arpeggiator)
+    ConfigurationResource::Ptr createResource() const override
     {
-        Arpeggiator::Ptr arp(new Arpeggiator());
-        arp->deserialize(arpNode);
-        outResources[arp->getResourceId()] = arp;
+        return { new Temperament() };
     }
-}
+
+    inline const Array<Temperament::Ptr> getAll() const
+    {
+        return this->getAllResources<Temperament>();
+    }
+
+    const Scale::Ptr findHighlightingFor(Temperament::Ptr temperament) const;
+
+private:
+
+    void deserializeResources(const SerializedData &tree, Resources &outResources) override;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TemperamentsCollection)
+};

@@ -17,11 +17,11 @@
 
 #pragma once
 
-#include "BaseResource.h"
+#include "ConfigurationResource.h"
 
 // A simple wrapper around colour map hashmap
 // Used for serialization and JUCE_LIVE_CONSTANTs macros
-class ColourScheme : public BaseResource
+class ColourScheme : public ConfigurationResource
 {
 public:
 

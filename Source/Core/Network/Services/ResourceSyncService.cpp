@@ -39,7 +39,7 @@ ResourceSyncService::ResourceSyncService() :
     // and put them to download queue
 }
 
-void ResourceSyncService::queueSync(const BaseResource::Ptr resource)
+void ResourceSyncService::queueSync(const ConfigurationResource::Ptr resource)
 {
     jassert(this->synchronizer != nullptr);
     this->synchronizer->queuePutConfiguration(resource);
@@ -47,7 +47,7 @@ void ResourceSyncService::queueSync(const BaseResource::Ptr resource)
         resource->getResourceType() + "/" + resource->getResourceId());
 }
 
-void ResourceSyncService::queueDelete(const BaseResource::Ptr resource)
+void ResourceSyncService::queueDelete(const ConfigurationResource::Ptr resource)
 {
     jassert(this->synchronizer != nullptr);
     this->synchronizer->queueDeleteConfiguration(resource);
@@ -87,7 +87,7 @@ UserConfigSyncThread *ResourceSyncService::prepareSyncThread()
         {
             auto config = configs.at(dto.getType());
             // create a specific object based on resource->getType()
-            BaseResource::Ptr resource(config->createResource());
+            ConfigurationResource::Ptr resource(config->createResource());
             // then deserialize using this->response.getBody()
             resource->deserialize(dto.getData());
             config->updateUserResource(resource);

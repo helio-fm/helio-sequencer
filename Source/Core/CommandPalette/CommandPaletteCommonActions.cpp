@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "CommandPaletteCommonActions.h"
-#include "HotkeySchemesManager.h"
+#include "HotkeySchemesCollection.h"
 #include "MainLayout.h"
 #include "Config.h"
 

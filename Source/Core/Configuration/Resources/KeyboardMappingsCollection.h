@@ -17,36 +17,29 @@
 
 #pragma once
 
-#include "HotkeyScheme.h"
-#include "ResourceManager.h"
+#include "KeyboardMapping.h"
+#include "ConfigurationResourceCollection.h"
 
-class HotkeySchemesManager final : public ResourceManager
+class KeyboardMappingsCollection final : public ConfigurationResourceCollection
 {
 public:
 
-    HotkeySchemesManager();
+    KeyboardMappingsCollection();
 
-    BaseResource::Ptr createResource() const override
+    ConfigurationResource::Ptr createResource() const override
     {
-        return { new HotkeyScheme() };
+        return { new KeyboardMapping() };
     }
 
-    inline const Array<HotkeyScheme::Ptr> getAll() const noexcept
+    inline const Array<KeyboardMapping::Ptr> getAll() const
     {
-        return this->getAllResources<HotkeyScheme>();
+        return this->getAllResources<KeyboardMapping>();
     }
-
-    const HotkeyScheme::Ptr getCurrent() const noexcept;
-    void setCurrent(const HotkeyScheme::Ptr scheme);
 
 private:
 
     void deserializeResources(const SerializedData &tree, Resources &outResources) override;
-    void reset() override;
 
-    HotkeyScheme::Ptr activeScheme;
-    HotkeyScheme::Ptr findActiveScheme() const;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HotkeySchemesManager)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyboardMappingsCollection)
 
 };

@@ -16,27 +16,23 @@
 */
 
 #include "Common.h"
-#include "KeyboardMappingsManager.h"
+#include "ArpeggiatorsCollection.h"
 #include "SerializationKeys.h"
-#include "Config.h"
 
-KeyboardMappingsManager::KeyboardMappingsManager() :
-    ResourceManager(Serialization::Resources::keyboardMappings) {}
+ArpeggiatorsCollection::ArpeggiatorsCollection() :
+    ConfigurationResourceCollection(Serialization::Resources::arpeggiators) {}
 
-void KeyboardMappingsManager::deserializeResources(const SerializedData &tree, Resources &outResources)
+void ArpeggiatorsCollection::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
-    const auto root = tree.hasType(Serialization::Resources::keyboardMappings) ?
-        tree : tree.getChildWithName(Serialization::Resources::keyboardMappings);
+    const auto root = tree.hasType(Serialization::Resources::arpeggiators) ?
+        tree : tree.getChildWithName(Serialization::Resources::arpeggiators);
 
-    if (!root.isValid())
-    {
-        return;
-    }
+    if (!root.isValid()) { return; }
 
-    forEachChildWithType(root, node, Serialization::Midi::KeyboardMappings::keyboardMapping)
+    forEachChildWithType(root, arpNode, Serialization::Arps::arpeggiator)
     {
-        KeyboardMapping::Ptr km(new KeyboardMapping());
-        km->deserialize(node);
-        outResources[km->getResourceId()] = km;
+        Arpeggiator::Ptr arp(new Arpeggiator());
+        arp->deserialize(arpNode);
+        outResources[arp->getResourceId()] = arp;
     }
 }

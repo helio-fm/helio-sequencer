@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include "BaseResource.h"
+#include "ConfigurationResource.h"
 
-class Chord final : public BaseResource
+class Chord final : public ConfigurationResource
 {
 public:
 

@@ -16,13 +16,13 @@
 */
 
 #include "Common.h"
-#include "TranslationsManager.h"
+#include "TranslationsCollection.h"
 #include "SerializationKeys.h"
 #include "Config.h"
 
 struct PluralEquationWrapper final : public DynamicObject
 {
-    explicit PluralEquationWrapper(TranslationsManager &owner) : translator(owner)
+    explicit PluralEquationWrapper(TranslationsCollection &owner) : translator(owner)
     {
         this->setMethod(Serialization::Translations::wrapperMethodName, PluralEquationWrapper::detect);
     }
@@ -45,13 +45,13 @@ struct PluralEquationWrapper final : public DynamicObject
         return var::undefined();
     }
     
-    TranslationsManager &translator;
+    TranslationsCollection &translator;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluralEquationWrapper)
 };
 
-TranslationsManager::TranslationsManager() :
-    ResourceManager(Serialization::Resources::translations)
+TranslationsCollection::TranslationsCollection() :
+    ConfigurationResourceCollection(Serialization::Resources::translations)
 {
     this->engine = make<JavascriptEngine>();
     this->engine->maximumExecutionTime = RelativeTime::milliseconds(200);
@@ -60,7 +60,7 @@ TranslationsManager::TranslationsManager() :
     this->engine->registerNativeObject(Serialization::Translations::wrapperClassName, pluralEquationWrapper.get());
 }
 
-TranslationsManager::~TranslationsManager()
+TranslationsCollection::~TranslationsCollection()
 {
     this->engine = nullptr;
 }
@@ -69,12 +69,12 @@ TranslationsManager::~TranslationsManager()
 // Translations
 //===----------------------------------------------------------------------===//
 
-const Translation::Ptr TranslationsManager::getCurrent() const noexcept
+const Translation::Ptr TranslationsCollection::getCurrent() const noexcept
 {
     return this->currentTranslation;
 }
 
-void TranslationsManager::loadLocaleWithId(const String &localeId)
+void TranslationsCollection::loadLocaleWithId(const String &localeId)
 {
     if (this->currentTranslation->id == localeId)
     {
@@ -94,13 +94,13 @@ void TranslationsManager::loadLocaleWithId(const String &localeId)
 // Helpers
 //===----------------------------------------------------------------------===//
 
-String TranslationsManager::translate(const String &text)
+String TranslationsCollection::translate(const String &text)
 {
     const auto translation = translate(constexprHash(text.getCharPointer()));
     return translation.isNotEmpty() ? translation : text;
 }
 
-String TranslationsManager::translate(I18n::Key key)
+String TranslationsCollection::translate(I18n::Key key)
 {
     const SpinLock::ScopedLockType sl(this->currentTranslationLock);
 
@@ -119,7 +119,7 @@ String TranslationsManager::translate(I18n::Key key)
     return {};
 }
 
-String TranslationsManager::translate(const String &baseLiteral, int64 targetNumber)
+String TranslationsCollection::translate(const String &baseLiteral, int64 targetNumber)
 {
     if (baseLiteral.isEmpty())
     {
@@ -160,7 +160,7 @@ String TranslationsManager::translate(const String &baseLiteral, int64 targetNum
 
 const static String fallbackTranslationId = "en";
 
-void TranslationsManager::deserializeResources(const SerializedData &tree, Resources &outResources)
+void TranslationsCollection::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::translations) ?
         tree : tree.getChildWithName(Serialization::Resources::translations);
@@ -204,9 +204,9 @@ void TranslationsManager::deserializeResources(const SerializedData &tree, Resou
     jassert(this->fallbackTranslation != nullptr);
 }
 
-void TranslationsManager::reset()
+void TranslationsCollection::reset()
 {
-    ResourceManager::reset();
+    ConfigurationResourceCollection::reset();
     this->currentTranslation = nullptr;
     this->fallbackTranslation = nullptr;
     this->equationResult.clear();
@@ -216,7 +216,7 @@ void TranslationsManager::reset()
 // Private
 //===----------------------------------------------------------------------===//
 
-String TranslationsManager::getSelectedLocaleId() const
+String TranslationsCollection::getSelectedLocaleId() const
 {
     if (App::Config().containsProperty(Serialization::Config::currentLocale))
     {

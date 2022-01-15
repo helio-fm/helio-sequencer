@@ -17,23 +17,23 @@
 
 #pragma once
 
-#include "Chord.h"
-#include "ResourceManager.h"
+#include "Scale.h"
+#include "ConfigurationResourceCollection.h"
 
-class ChordsManager final : public ResourceManager
+class ScalesCollection final : public ConfigurationResourceCollection
 {
 public:
-
-    ChordsManager();
-
-    BaseResource::Ptr createResource() const override
+  
+    ScalesCollection();
+    
+    ConfigurationResource::Ptr createResource() const override
     {
-        return { new Chord() };
+        return { new Scale() };
     }
 
-    inline const Array<Chord::Ptr> getAll() const
+    inline const Array<Scale::Ptr> getAll() const
     {
-        return this->getAllResources<Chord>();
+        return this->getAllResources<Scale>();
     }
 
 private:
@@ -41,17 +41,17 @@ private:
     void deserializeResources(const SerializedData &tree, Resources &outResources) override;
     void reset() override;
 
-    struct ChordsComparator final : public DummyBaseResource
+    struct ScalesComparator final : public DummyBaseResource
     {
-        ChordsComparator(const StringArray &order);
-        int compareElements(const BaseResource::Ptr first,
-            const BaseResource::Ptr second) const override;
+        ScalesComparator(const StringArray &order);
+        int compareElements(const ConfigurationResource::Ptr first,
+            const ConfigurationResource::Ptr second) const override;
         const StringArray &order;
     };
 
-    ChordsComparator chordsComparator;
-    const BaseResource &getResourceComparator() const override;
+    ScalesComparator scalesComparator;
+    const ConfigurationResource &getResourceComparator() const override;
     StringArray order;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChordsManager)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScalesCollection)
 };

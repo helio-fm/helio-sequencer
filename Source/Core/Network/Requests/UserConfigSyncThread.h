@@ -21,7 +21,7 @@
 
 #include "BackendRequest.h"
 #include "SyncedConfigurationInfo.h"
-#include "BaseResource.h"
+#include "ConfigurationResource.h"
 
 class UserConfigSyncThread final : public Thread, public WaitableEvent
 {
@@ -37,16 +37,16 @@ public:
     Function<void(const Identifier &type, const String &name)> onResourceDeleted;
 
     void queueGetConfiguration(const SyncedConfigurationInfo::Ptr resource);
-    void queuePutConfiguration(const BaseResource::Ptr resource);
-    void queueDeleteConfiguration(const BaseResource::Ptr resource);
+    void queuePutConfiguration(const ConfigurationResource::Ptr resource);
+    void queueDeleteConfiguration(const ConfigurationResource::Ptr resource);
 
 private:
 
     void run() override;
 
     ReferenceCountedArray<SyncedConfigurationInfo, CriticalSection> resourcesToGet;
-    ReferenceCountedArray<BaseResource, CriticalSection> resourcesToPut;
-    ReferenceCountedArray<BaseResource, CriticalSection> resourcesToDelete;
+    ReferenceCountedArray<ConfigurationResource, CriticalSection> resourcesToPut;
+    ReferenceCountedArray<ConfigurationResource, CriticalSection> resourcesToDelete;
 
     bool areQueuesEmpty() const;
 

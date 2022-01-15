@@ -17,31 +17,36 @@
 
 #pragma once
 
-#include "ResourceManager.h"
-#include "Temperament.h"
-#include "Scale.h"
+#include "HotkeyScheme.h"
+#include "ConfigurationResourceCollection.h"
 
-class TemperamentsManager final : public ResourceManager
+class HotkeySchemesCollection final : public ConfigurationResourceCollection
 {
 public:
 
-    TemperamentsManager();
+    HotkeySchemesCollection();
 
-    BaseResource::Ptr createResource() const override
+    ConfigurationResource::Ptr createResource() const override
     {
-        return { new Temperament() };
+        return { new HotkeyScheme() };
     }
 
-    inline const Array<Temperament::Ptr> getAll() const
+    inline const Array<HotkeyScheme::Ptr> getAll() const noexcept
     {
-        return this->getAllResources<Temperament>();
+        return this->getAllResources<HotkeyScheme>();
     }
 
-    const Scale::Ptr findHighlightingFor(Temperament::Ptr temperament) const;
+    const HotkeyScheme::Ptr getCurrent() const noexcept;
+    void setCurrent(const HotkeyScheme::Ptr scheme);
 
 private:
 
     void deserializeResources(const SerializedData &tree, Resources &outResources) override;
+    void reset() override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TemperamentsManager)
+    HotkeyScheme::Ptr activeScheme;
+    HotkeyScheme::Ptr findActiveScheme() const;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HotkeySchemesCollection)
+
 };

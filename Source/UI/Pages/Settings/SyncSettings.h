@@ -19,7 +19,7 @@
 
 #if !NO_NETWORK
 
-#include "BaseResource.h"
+#include "ConfigurationResource.h"
 
 class SyncSettings final : public Component,
     public ListBoxModel, private ChangeListener
@@ -50,7 +50,7 @@ private:
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
     Array<bool> syncFlags;
-    ReferenceCountedArray<BaseResource> resources;
+    ReferenceCountedArray<ConfigurationResource> resources;
 
     void reloadConfigsList();
     void reloadSyncFlags();

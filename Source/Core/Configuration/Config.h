@@ -19,14 +19,14 @@
 
 class Serializable;
 
-#include "TranslationsManager.h"
-#include "ArpeggiatorsManager.h"
-#include "ColourSchemesManager.h"
-#include "HotkeySchemesManager.h"
-#include "TemperamentsManager.h"
-#include "KeyboardMappingsManager.h"
-#include "ScalesManager.h"
-#include "ChordsManager.h"
+#include "TranslationsCollection.h"
+#include "ArpeggiatorsCollection.h"
+#include "ColourSchemesCollection.h"
+#include "HotkeySchemesCollection.h"
+#include "TemperamentsCollection.h"
+#include "KeyboardMappingsCollection.h"
+#include "ScalesCollection.h"
+#include "ChordsCollection.h"
 #include "UserInterfaceFlags.h"
 
 class Config final : private Timer
@@ -45,16 +45,16 @@ public:
     String getProperty(const Identifier &key, const String &fallback = {}) const noexcept;
     bool containsProperty(const Identifier &key) const noexcept;
 
-    ChordsManager *getChords() const noexcept;
-    ScalesManager *getScales() const noexcept;
-    TemperamentsManager *getTemperaments() const noexcept;
-    TranslationsManager *getTranslations() const noexcept;
-    ArpeggiatorsManager *getArpeggiators() const noexcept;
-    ColourSchemesManager *getColourSchemes() const noexcept;
-    HotkeySchemesManager *getHotkeySchemes() const noexcept;
-    KeyboardMappingsManager *getKeyboardMappings() const noexcept;
+    ChordsCollection *getChords() const noexcept;
+    ScalesCollection *getScales() const noexcept;
+    TemperamentsCollection *getTemperaments() const noexcept;
+    TranslationsCollection *getTranslations() const noexcept;
+    ArpeggiatorsCollection *getArpeggiators() const noexcept;
+    ColourSchemesCollection *getColourSchemes() const noexcept;
+    HotkeySchemesCollection *getHotkeySchemes() const noexcept;
+    KeyboardMappingsCollection *getKeyboardMappings() const noexcept;
 
-    ResourceManagerLookup &getAllResources() noexcept;
+    ResourceCollectionsLookup &getAllResources() noexcept;
 
     UserInterfaceFlags *getUiFlags() const noexcept;
 
@@ -71,16 +71,16 @@ private:
     FlatHashMap<Identifier, var, IdentifierHash> properties;
     FlatHashMap<Identifier, SerializedData, IdentifierHash> children;
 
-    UniquePointer<TranslationsManager> translationsManager;
-    UniquePointer<ArpeggiatorsManager> arpeggiatorsManager;
-    UniquePointer<ColourSchemesManager> colourSchemesManager;
-    UniquePointer<HotkeySchemesManager> hotkeySchemesManager;
-    UniquePointer<TemperamentsManager> temperamentsManager;
-    UniquePointer<KeyboardMappingsManager> keyboardMappingsManager;
-    UniquePointer<ScalesManager> scalesManager;
-    UniquePointer<ChordsManager> chordsManager;
+    UniquePointer<TranslationsCollection> translationsCollection;
+    UniquePointer<ArpeggiatorsCollection> arpeggiatorsCollection;
+    UniquePointer<ColourSchemesCollection> colourSchemesCollection;
+    UniquePointer<HotkeySchemesCollection> hotkeySchemesCollection;
+    UniquePointer<TemperamentsCollection> temperamentsCollection;
+    UniquePointer<KeyboardMappingsCollection> keyboardMappingsCollection;
+    UniquePointer<ScalesCollection> scalesCollection;
+    UniquePointer<ChordsCollection> chordsCollection;
 
-    ResourceManagerLookup resources;
+    ResourceCollectionsLookup resources;
 
     UniquePointer<UserInterfaceFlags> uiFlags;
 

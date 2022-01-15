@@ -20,7 +20,7 @@
 #include "Note.h"
 #include "Scale.h"
 #include "Temperament.h"
-#include "BaseResource.h"
+#include "ConfigurationResource.h"
 
 // Arpeggiators are created by user simply as a sequences within a scale.
 // Depending on arp type, it has a mapping from that sequence's space into target chord space,
@@ -35,7 +35,7 @@
 // like using an arpeggiated chord as a new arpeggiator, and so on.
 // See DiatonicArpMapper implementation for the most common mapping example.
 
-class Arpeggiator final : public BaseResource
+class Arpeggiator final : public ConfigurationResource
 {
 public:
 

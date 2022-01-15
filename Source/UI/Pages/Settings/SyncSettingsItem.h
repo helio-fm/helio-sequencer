@@ -19,7 +19,7 @@
 
 #if !NO_NETWORK
 
-#include "BaseResource.h"
+#include "ConfigurationResource.h"
 #include "DraggingListBoxComponent.h"
 #include "SeparatorHorizontal.h"
 
@@ -31,14 +31,14 @@ public:
     ~SyncSettingsItem();
 
     void setSelected(bool shouldBeSelected) override;
-    void updateDescription(bool isLastRowInList, bool isSynced, const BaseResource::Ptr resource);
+    void updateDescription(bool isLastRowInList, bool isSynced, const ConfigurationResource::Ptr resource);
 
     void resized() override;
 
 private:
 
     Component *createHighlighterComponent() override;
-    BaseResource::Ptr resource;
+    ConfigurationResource::Ptr resource;
 
     UniquePointer<SeparatorHorizontal> separator;
     UniquePointer<ToggleButton> toggleButton;

@@ -16,19 +16,19 @@
 */
 
 #include "Common.h"
-#include "ScalesManager.h"
+#include "ScalesCollection.h"
 #include "SerializationKeys.h"
 
-ScalesManager::ScalesManager() :
-    ResourceManager(Serialization::Resources::scales),
+ScalesCollection::ScalesCollection() :
+    ConfigurationResourceCollection(Serialization::Resources::scales),
     scalesComparator(this->order) {}
 
-ScalesManager::ScalesComparator::ScalesComparator(const StringArray &order) :
+ScalesCollection::ScalesComparator::ScalesComparator(const StringArray &order) :
     order(order) {}
 
 // Any other scales, including user's, are displayed below and sorted alphabetically:
-int ScalesManager::ScalesComparator::compareElements(const BaseResource::Ptr first,
-    const BaseResource::Ptr second) const
+int ScalesCollection::ScalesComparator::compareElements(const ConfigurationResource::Ptr first,
+    const ConfigurationResource::Ptr second) const
 {
     const int i1 = this->order.indexOf(first->getResourceId());
     const int i2 = this->order.indexOf(second->getResourceId());
@@ -42,7 +42,7 @@ int ScalesManager::ScalesComparator::compareElements(const BaseResource::Ptr fir
     return first->getResourceId().compare(second->getResourceId());
 }
 
-const BaseResource &ScalesManager::getResourceComparator() const
+const ConfigurationResource &ScalesCollection::getResourceComparator() const
 {
     return this->scalesComparator;
 }
@@ -56,7 +56,7 @@ const BaseResource &ScalesManager::getResourceComparator() const
 // should be displayed at the top of the list with the following order.
 #define NUM_ORDERED_SCALES 17
 
-void ScalesManager::deserializeResources(const SerializedData &tree, Resources &outResources)
+void ScalesCollection::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::scales) ?
         tree : tree.getChildWithName(Serialization::Resources::scales);
@@ -76,8 +76,8 @@ void ScalesManager::deserializeResources(const SerializedData &tree, Resources &
     }
 }
 
-void ScalesManager::reset()
+void ScalesCollection::reset()
 {
     this->order.clearQuick();
-    ResourceManager::reset();
+    ConfigurationResourceCollection::reset();
 }

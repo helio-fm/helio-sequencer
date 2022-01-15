@@ -40,14 +40,14 @@ void UserConfigSyncThread::queueGetConfiguration(const SyncedConfigurationInfo::
     this->signal();
 }
 
-void UserConfigSyncThread::queuePutConfiguration(const BaseResource::Ptr resource)
+void UserConfigSyncThread::queuePutConfiguration(const ConfigurationResource::Ptr resource)
 {
     this->resourcesToDelete.removeObject(resource);
     this->resourcesToPut.addIfNotAlreadyThere(resource);
     this->signal();
 }
 
-void UserConfigSyncThread::queueDeleteConfiguration(const BaseResource::Ptr resource)
+void UserConfigSyncThread::queueDeleteConfiguration(const ConfigurationResource::Ptr resource)
 {
     this->resourcesToPut.removeObject(resource);
     this->resourcesToDelete.addIfNotAlreadyThere(resource);

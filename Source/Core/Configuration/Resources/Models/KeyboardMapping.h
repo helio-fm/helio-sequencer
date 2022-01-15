@@ -18,11 +18,11 @@
 #pragma once
 
 #include "Serializable.h"
-#include "BaseResource.h"
+#include "ConfigurationResource.h"
 #include "Note.h"
 
 class KeyboardMapping final :
-    public BaseResource,
+    public ConfigurationResource,
     public ChangeBroadcaster // notifies KeyboardMappingPage
 {
 public:

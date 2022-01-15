@@ -17,29 +17,28 @@
 
 #pragma once
 
-#include "KeyboardMapping.h"
-#include "ResourceManager.h"
+#include "Arpeggiator.h"
+#include "ConfigurationResourceCollection.h"
 
-class KeyboardMappingsManager final : public ResourceManager
+class ArpeggiatorsCollection final : public ConfigurationResourceCollection
 {
 public:
 
-    KeyboardMappingsManager();
+    ArpeggiatorsCollection();
 
-    BaseResource::Ptr createResource() const override
+    ConfigurationResource::Ptr createResource() const override
     {
-        return { new KeyboardMapping() };
+        return { new Arpeggiator() };
     }
 
-    inline const Array<KeyboardMapping::Ptr> getAll() const
+    inline Array<Arpeggiator::Ptr> getAll() const
     {
-        return this->getAllResources<KeyboardMapping>();
+        return this->getAllResources<Arpeggiator>();
     }
 
 private:
-
+    
     void deserializeResources(const SerializedData &tree, Resources &outResources) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyboardMappingsManager)
-
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpeggiatorsCollection)
 };

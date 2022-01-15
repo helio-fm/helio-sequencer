@@ -16,18 +16,18 @@
 */
 
 #include "Common.h"
-#include "ChordsManager.h"
+#include "ChordsCollection.h"
 #include "SerializationKeys.h"
 
-ChordsManager::ChordsManager() :
-    ResourceManager(Serialization::Resources::chords),
+ChordsCollection::ChordsCollection() :
+    ConfigurationResourceCollection(Serialization::Resources::chords),
     chordsComparator(this->order) {}
 
-ChordsManager::ChordsComparator::ChordsComparator(const StringArray &order) :
+ChordsCollection::ChordsComparator::ChordsComparator(const StringArray &order) :
     order(order) {}
 
-int ChordsManager::ChordsComparator::compareElements(const BaseResource::Ptr first,
-    const BaseResource::Ptr second) const
+int ChordsCollection::ChordsComparator::compareElements(const ConfigurationResource::Ptr first,
+    const ConfigurationResource::Ptr second) const
 {
     const int i1 = this->order.indexOf(first->getResourceId());
     const int i2 = this->order.indexOf(second->getResourceId());
@@ -41,12 +41,12 @@ int ChordsManager::ChordsComparator::compareElements(const BaseResource::Ptr fir
     return first->getResourceId().compare(second->getResourceId());
 }
 
-const BaseResource &ChordsManager::getResourceComparator() const
+const ConfigurationResource &ChordsCollection::getResourceComparator() const
 {
     return this->chordsComparator;
 }
 
-void ChordsManager::deserializeResources(const SerializedData &tree, Resources &outResources)
+void ChordsCollection::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::chords) ?
         tree : tree.getChildWithName(Serialization::Resources::chords);
@@ -62,8 +62,8 @@ void ChordsManager::deserializeResources(const SerializedData &tree, Resources &
     }
 }
 
-void ChordsManager::reset()
+void ChordsCollection::reset()
 {
     this->order.clearQuick();
-    ResourceManager::reset();
+    ConfigurationResourceCollection::reset();
 }

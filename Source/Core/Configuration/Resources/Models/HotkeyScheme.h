@@ -17,10 +17,10 @@
 
 #pragma once
 
-#include "BaseResource.h"
+#include "ConfigurationResource.h"
 #include "CommandIDs.h"
 
-class HotkeyScheme final : public BaseResource
+class HotkeyScheme final : public ConfigurationResource
 {
 public:
 

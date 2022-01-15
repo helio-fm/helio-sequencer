@@ -17,14 +17,14 @@
 
 #pragma once
 
-#include "BaseResource.h"
+#include "ConfigurationResource.h"
 
-class ResourceManager : public ChangeBroadcaster
+class ConfigurationResourceCollection : public ChangeBroadcaster
 {
 public:
 
-    explicit ResourceManager(const Identifier &resourceType);
-    ~ResourceManager() override;
+    explicit ConfigurationResourceCollection(const Identifier &resourceType);
+    ~ConfigurationResourceCollection() override;
 
     void reloadResources();
 
@@ -33,7 +33,7 @@ public:
         return this->baseResources.size() == 0 && this->userResources.size() == 0;
     }
 
-    template<typename T = BaseResource>
+    template<typename T = ConfigurationResource>
     const Array<typename T::Ptr> getAllResources() const
     {
         Array<typename T::Ptr> result;
@@ -56,7 +56,7 @@ public:
         return result;
     }
 
-    template<typename T = BaseResource>
+    template<typename T = ConfigurationResource>
     const Array<typename T::Ptr> getUserResources() const
     {
         Array<typename T::Ptr> result;
@@ -70,7 +70,7 @@ public:
         return result;
     }
 
-    template<typename T = BaseResource>
+    template<typename T = ConfigurationResource>
     const typename T::Ptr getResourceById(const String &resourceId) const
     {
         const auto foundUserResource = this->userResources.find(resourceId);
@@ -88,7 +88,7 @@ public:
         return nullptr;
     }
 
-    template<typename T = BaseResource>
+    template<typename T = ConfigurationResource>
     const typename T::Ptr getUserResourceById(const String &resourceId) const
     {
         const auto foundUserResource = this->userResources.find(resourceId);
@@ -100,26 +100,26 @@ public:
         return nullptr;
     }
 
-    template<typename T = BaseResource>
+    template<typename T = ConfigurationResource>
     const bool containsUserResourceWithId(const String &resourceId) const
     {
         const auto foundUserResource = this->userResources.find(resourceId);
         return foundUserResource != this->userResources.end();
     }
 
-    virtual BaseResource::Ptr createResource() const = 0;
+    virtual ConfigurationResource::Ptr createResource() const = 0;
 
     void updateBaseResource(const SerializedData &resource);
-    void updateUserResource(const BaseResource::Ptr resource);
+    void updateUserResource(const ConfigurationResource::Ptr resource);
 
 protected:
 
     virtual File getDownloadedResourceFile() const;
     virtual File getUsersResourceFile() const;
     virtual String getBuiltInResourceString() const;
-    virtual const BaseResource &getResourceComparator() const;
+    virtual const ConfigurationResource &getResourceComparator() const;
 
-    using Resources = FlatHashMap<String, BaseResource::Ptr, StringHash>;
+    using Resources = FlatHashMap<String, ConfigurationResource::Ptr, StringHash>;
     Resources baseResources;
     Resources userResources;
 
@@ -133,7 +133,7 @@ private:
     const Identifier resourceType;
     const DummyBaseResource comparator;
 
-    JUCE_DECLARE_WEAK_REFERENCEABLE(ResourceManager)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(ConfigurationResourceCollection)
 };
 
-using ResourceManagerLookup = FlatHashMap<Identifier, WeakReference<ResourceManager>, IdentifierHash>;
+using ResourceCollectionsLookup = FlatHashMap<Identifier, WeakReference<ConfigurationResourceCollection>, IdentifierHash>;

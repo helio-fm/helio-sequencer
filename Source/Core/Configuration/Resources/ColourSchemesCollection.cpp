@@ -16,14 +16,14 @@
 */
 
 #include "Common.h"
-#include "ColourSchemesManager.h"
+#include "ColourSchemesCollection.h"
 #include "SerializationKeys.h"
 #include "Config.h"
 
-ColourSchemesManager::ColourSchemesManager() :
-    ResourceManager(Serialization::Resources::colourSchemes) {}
+ColourSchemesCollection::ColourSchemesCollection() :
+    ConfigurationResourceCollection(Serialization::Resources::colourSchemes) {}
 
-ColourScheme::Ptr ColourSchemesManager::getCurrent() const
+ColourScheme::Ptr ColourSchemesCollection::getCurrent() const
 {
     if (App::Config().containsProperty(Serialization::Config::activeColourScheme))
     {
@@ -41,12 +41,12 @@ ColourScheme::Ptr ColourSchemesManager::getCurrent() const
     return { new ColourScheme() };
 }
 
-void ColourSchemesManager::setCurrent(const ColourScheme::Ptr scheme)
+void ColourSchemesCollection::setCurrent(const ColourScheme::Ptr scheme)
 {
     App::Config().save(scheme.get(), Serialization::Config::activeColourScheme);
 }
 
-void ColourSchemesManager::deserializeResources(const SerializedData &tree, Resources &outResources)
+void ColourSchemesCollection::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::colourSchemes) ?
         tree : tree.getChildWithName(Serialization::Resources::colourSchemes);

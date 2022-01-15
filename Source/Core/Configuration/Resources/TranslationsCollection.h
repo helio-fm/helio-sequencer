@@ -18,16 +18,16 @@
 #pragma once
 
 #include "Translation.h"
-#include "ResourceManager.h"
+#include "ConfigurationResourceCollection.h"
 
-class TranslationsManager final : public ResourceManager
+class TranslationsCollection final : public ConfigurationResourceCollection
 {
 public:
 
-    TranslationsManager();
-    ~TranslationsManager() override;
+    TranslationsCollection();
+    ~TranslationsCollection() override;
 
-    BaseResource::Ptr createResource() const override
+    ConfigurationResource::Ptr createResource() const override
     {
         return { new Translation() };
     }
@@ -64,5 +64,5 @@ private:
     String getSelectedLocaleId() const;
     friend struct PluralEquationWrapper;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationsManager)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationsCollection)
 };

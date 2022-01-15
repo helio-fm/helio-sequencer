@@ -17,28 +17,31 @@
 
 #pragma once
 
-#include "Arpeggiator.h"
-#include "ResourceManager.h"
+#include "ColourScheme.h"
+#include "ConfigurationResourceCollection.h"
 
-class ArpeggiatorsManager final : public ResourceManager
+class ColourSchemesCollection final : public ConfigurationResourceCollection
 {
 public:
 
-    ArpeggiatorsManager();
+    ColourSchemesCollection();
 
-    BaseResource::Ptr createResource() const override
+    ConfigurationResource::Ptr createResource() const override
     {
-        return { new Arpeggiator() };
+        return { new ColourScheme() };
     }
 
-    inline Array<Arpeggiator::Ptr> getAll() const
+    inline const Array<ColourScheme::Ptr> getAll() const
     {
-        return this->getAllResources<Arpeggiator>();
+        return this->getAllResources<ColourScheme>();
     }
+
+    ColourScheme::Ptr getCurrent() const;
+    void setCurrent(const ColourScheme::Ptr scheme);
 
 private:
-    
-    void deserializeResources(const SerializedData &tree, Resources &outResources) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpeggiatorsManager)
+    void deserializeResources(const SerializedData &tree, Resources &outResources) override;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourSchemesCollection)
+
 };

@@ -17,9 +17,9 @@
 
 #pragma once
 
-#include "BaseResource.h"
+#include "ConfigurationResource.h"
 
-class Translation final : public BaseResource
+class Translation final : public ConfigurationResource
 {
 public:
 
@@ -56,7 +56,7 @@ private:
     using PluralsMap = FlatHashMap<I18n::Key, UniquePointer<Plurals>>;
     PluralsMap plurals;
 
-    friend class TranslationsManager;
+    friend class TranslationsCollection;
 
     JUCE_LEAK_DETECTOR(Translation)
 };

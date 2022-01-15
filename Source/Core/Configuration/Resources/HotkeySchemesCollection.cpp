@@ -16,14 +16,14 @@
 */
 
 #include "Common.h"
-#include "HotkeySchemesManager.h"
+#include "HotkeySchemesCollection.h"
 #include "SerializationKeys.h"
 #include "Config.h"
 
-HotkeySchemesManager::HotkeySchemesManager() :
-    ResourceManager(Serialization::Resources::hotkeySchemes) {}
+HotkeySchemesCollection::HotkeySchemesCollection() :
+    ConfigurationResourceCollection(Serialization::Resources::hotkeySchemes) {}
 
-HotkeyScheme::Ptr HotkeySchemesManager::findActiveScheme() const
+HotkeyScheme::Ptr HotkeySchemesCollection::findActiveScheme() const
 {
     if (App::Config().containsProperty(Serialization::Config::activeHotkeyScheme))
     {
@@ -41,20 +41,20 @@ HotkeyScheme::Ptr HotkeySchemesManager::findActiveScheme() const
     return { new HotkeyScheme() };
 }
 
-const HotkeyScheme::Ptr HotkeySchemesManager::getCurrent() const noexcept
+const HotkeyScheme::Ptr HotkeySchemesCollection::getCurrent() const noexcept
 {
     jassert(this->activeScheme != nullptr);
     return this->activeScheme;
 }
 
-void HotkeySchemesManager::setCurrent(const HotkeyScheme::Ptr scheme)
+void HotkeySchemesCollection::setCurrent(const HotkeyScheme::Ptr scheme)
 {
     jassert(scheme != nullptr);
     this->activeScheme = scheme;
     App::Config().save(this->activeScheme.get(), Serialization::Config::activeHotkeyScheme);
 }
 
-void HotkeySchemesManager::deserializeResources(const SerializedData &tree, Resources &outResources)
+void HotkeySchemesCollection::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::hotkeySchemes) ?
         tree : tree.getChildWithName(Serialization::Resources::hotkeySchemes);
@@ -72,8 +72,8 @@ void HotkeySchemesManager::deserializeResources(const SerializedData &tree, Reso
     jassert(this->activeScheme != nullptr);
 }
 
-void HotkeySchemesManager::reset()
+void HotkeySchemesCollection::reset()
 {
-    ResourceManager::reset();
+    ConfigurationResourceCollection::reset();
     this->activeScheme = nullptr;
 }

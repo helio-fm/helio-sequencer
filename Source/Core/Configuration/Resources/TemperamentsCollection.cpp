@@ -17,12 +17,12 @@
 
 #include "Common.h"
 #include "SerializationKeys.h"
-#include "TemperamentsManager.h"
+#include "TemperamentsCollection.h"
 
-TemperamentsManager::TemperamentsManager() :
-    ResourceManager(Serialization::Resources::temperaments) {}
+TemperamentsCollection::TemperamentsCollection() :
+    ConfigurationResourceCollection(Serialization::Resources::temperaments) {}
 
-void TemperamentsManager::deserializeResources(const SerializedData &tree, Resources &outResources)
+void TemperamentsCollection::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::temperaments) ?
         tree : tree.getChildWithName(Serialization::Resources::temperaments);
@@ -37,7 +37,7 @@ void TemperamentsManager::deserializeResources(const SerializedData &tree, Resou
     }
 }
 
-const Scale::Ptr TemperamentsManager::findHighlightingFor(Temperament::Ptr temperament) const
+const Scale::Ptr TemperamentsCollection::findHighlightingFor(Temperament::Ptr temperament) const
 {
     const auto ownHighlighting = temperament->getHighlighting();
 

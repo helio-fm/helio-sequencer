@@ -6,7 +6,7 @@
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark"
               cppLanguageStandard="14" usePrecompiledHeaders="0" precompiledHeaderFileName=""
               precompiledHeaderExcludedWildcard="include_juce_*" companyCopyright="Peter Rudenko"
-              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Models&#10;../../Source/Core/Configuration/ResourceManagers&#10;../../Source/Core/CommandPalette&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/Workspace&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Dashboard&#10;../../Source/UI/Pages/Dashboard/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/LevelsMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes"
+              headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Resources&#10;../../Source/Core/Configuration/Resources/Models&#10;../../Source/Core/CommandPalette&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/Workspace&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Common/AudioMonitors&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Dashboard&#10;../../Source/UI/Pages/Dashboard/Menu&#10;../../Source/UI/Popups&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/LevelsMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip&#10;../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes"
               projectLineFeed="&#10;" jucerFormatVersion="1">
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
@@ -202,66 +202,69 @@
           <FILE id="vlOPNw" name="AudioCore.h" compile="0" resource="0" file="../../Source/Core/Audio/AudioCore.h"/>
         </GROUP>
         <GROUP id="{1946EFF7-7A51-1F1A-DC7A-0335933B794B}" name="Configuration">
-          <GROUP id="{0B276517-219A-0DAC-BA17-9F8ADBADD834}" name="Models">
-            <FILE id="RINluc" name="BaseResource.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/BaseResource.h"/>
-            <FILE id="PPLAJz" name="Arpeggiator.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Arpeggiator.cpp"/>
-            <FILE id="Q2i1s3" name="Arpeggiator.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Arpeggiator.h"/>
-            <FILE id="QZ6Tgo" name="Chord.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Chord.cpp"/>
-            <FILE id="t0TaVM" name="Chord.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Chord.h"/>
-            <FILE id="d87zUP" name="ColourScheme.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Configuration/Models/ColourScheme.cpp"/>
-            <FILE id="GqYFIc" name="ColourScheme.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/ColourScheme.h"/>
-            <FILE id="XgJTbI" name="HotkeyScheme.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Configuration/Models/HotkeyScheme.cpp"/>
-            <FILE id="ij3kI0" name="HotkeyScheme.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/HotkeyScheme.h"/>
-            <FILE id="peXSV9" name="KeyboardMapping.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Configuration/Models/KeyboardMapping.cpp"/>
-            <FILE id="HzvdgX" name="KeyboardMapping.h" compile="0" resource="0"
-                  file="../../Source/Core/Configuration/Models/KeyboardMapping.h"/>
-            <FILE id="suUv9c" name="Scale.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Scale.cpp"/>
-            <FILE id="ybmkDB" name="Scale.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Scale.h"/>
-            <FILE id="baGGFk" name="Temperament.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Temperament.cpp"/>
-            <FILE id="tcJjIn" name="Temperament.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Temperament.h"/>
-            <FILE id="IYGH5g" name="Translation.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Translation.cpp"/>
-            <FILE id="UNzZAk" name="Translation.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Translation.h"/>
-            <FILE id="mbynio" name="TranslationKeys.h" compile="0" resource="0"
-                  file="../../Source/Core/Configuration/Models/TranslationKeys.h"/>
-          </GROUP>
-          <GROUP id="{EE94B8AA-34C3-554B-1F98-C48B06FE046C}" name="ResourceManagers">
-            <FILE id="vWQoHw" name="ResourceManager.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/ResourceManager.cpp"/>
-            <FILE id="Vf1qj3" name="ResourceManager.h" compile="0" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/ResourceManager.h"/>
-            <FILE id="LpyGk0" name="ArpeggiatorsManager.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/ArpeggiatorsManager.cpp"/>
-            <FILE id="U5rt0x" name="ArpeggiatorsManager.h" compile="0" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/ArpeggiatorsManager.h"/>
-            <FILE id="kG1xgX" name="ChordsManager.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/ChordsManager.cpp"/>
-            <FILE id="n1G07p" name="ChordsManager.h" compile="0" resource="0" file="../../Source/Core/Configuration/ResourceManagers/ChordsManager.h"/>
-            <FILE id="fRRy3T" name="ColourSchemesManager.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/ColourSchemesManager.cpp"/>
-            <FILE id="tOWmMH" name="ColourSchemesManager.h" compile="0" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/ColourSchemesManager.h"/>
-            <FILE id="H58dNF" name="HotkeySchemesManager.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/HotkeySchemesManager.cpp"/>
-            <FILE id="dlHVd6" name="HotkeySchemesManager.h" compile="0" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/HotkeySchemesManager.h"/>
-            <FILE id="xcdINX" name="KeyboardMappingsManager.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/KeyboardMappingsManager.cpp"/>
-            <FILE id="wwWOHp" name="KeyboardMappingsManager.h" compile="0" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/KeyboardMappingsManager.h"/>
-            <FILE id="caFUMa" name="ScalesManager.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/ScalesManager.cpp"/>
-            <FILE id="tksWZT" name="ScalesManager.h" compile="0" resource="0" file="../../Source/Core/Configuration/ResourceManagers/ScalesManager.h"/>
-            <FILE id="qu4A8V" name="TemperamentsManager.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/TemperamentsManager.cpp"/>
-            <FILE id="D5KjUb" name="TemperamentsManager.h" compile="0" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/TemperamentsManager.h"/>
-            <FILE id="j3ykPD" name="TranslationsManager.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/TranslationsManager.cpp"/>
-            <FILE id="zrz77y" name="TranslationsManager.h" compile="0" resource="0"
-                  file="../../Source/Core/Configuration/ResourceManagers/TranslationsManager.h"/>
+          <GROUP id="{EE94B8AA-34C3-554B-1F98-C48B06FE046C}" name="Resources">
+            <GROUP id="{0B276517-219A-0DAC-BA17-9F8ADBADD834}" name="Models">
+              <FILE id="RINluc" name="ConfigurationResource.h" compile="0" resource="0"
+                    file="../../Source/Core/Configuration/Resources/Models/ConfigurationResource.h"/>
+              <FILE id="PPLAJz" name="Arpeggiator.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Resources/Models/Arpeggiator.cpp"/>
+              <FILE id="Q2i1s3" name="Arpeggiator.h" compile="0" resource="0" file="../../Source/Core/Configuration/Resources/Models/Arpeggiator.h"/>
+              <FILE id="QZ6Tgo" name="Chord.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Resources/Models/Chord.cpp"/>
+              <FILE id="t0TaVM" name="Chord.h" compile="0" resource="0" file="../../Source/Core/Configuration/Resources/Models/Chord.h"/>
+              <FILE id="d87zUP" name="ColourScheme.cpp" compile="1" resource="0"
+                    file="../../Source/Core/Configuration/Resources/Models/ColourScheme.cpp"/>
+              <FILE id="GqYFIc" name="ColourScheme.h" compile="0" resource="0" file="../../Source/Core/Configuration/Resources/Models/ColourScheme.h"/>
+              <FILE id="XgJTbI" name="HotkeyScheme.cpp" compile="1" resource="0"
+                    file="../../Source/Core/Configuration/Resources/Models/HotkeyScheme.cpp"/>
+              <FILE id="ij3kI0" name="HotkeyScheme.h" compile="0" resource="0" file="../../Source/Core/Configuration/Resources/Models/HotkeyScheme.h"/>
+              <FILE id="peXSV9" name="KeyboardMapping.cpp" compile="1" resource="0"
+                    file="../../Source/Core/Configuration/Resources/Models/KeyboardMapping.cpp"/>
+              <FILE id="HzvdgX" name="KeyboardMapping.h" compile="0" resource="0"
+                    file="../../Source/Core/Configuration/Resources/Models/KeyboardMapping.h"/>
+              <FILE id="suUv9c" name="Scale.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Resources/Models/Scale.cpp"/>
+              <FILE id="ybmkDB" name="Scale.h" compile="0" resource="0" file="../../Source/Core/Configuration/Resources/Models/Scale.h"/>
+              <FILE id="baGGFk" name="Temperament.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Resources/Models/Temperament.cpp"/>
+              <FILE id="tcJjIn" name="Temperament.h" compile="0" resource="0" file="../../Source/Core/Configuration/Resources/Models/Temperament.h"/>
+              <FILE id="IYGH5g" name="Translation.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Resources/Models/Translation.cpp"/>
+              <FILE id="UNzZAk" name="Translation.h" compile="0" resource="0" file="../../Source/Core/Configuration/Resources/Models/Translation.h"/>
+              <FILE id="mbynio" name="TranslationKeys.h" compile="0" resource="0"
+                    file="../../Source/Core/Configuration/Resources/Models/TranslationKeys.h"/>
+            </GROUP>
+            <FILE id="vWQoHw" name="ConfigurationResourceCollection.cpp" compile="1"
+                  resource="0" file="../../Source/Core/Configuration/Resources/ConfigurationResourceCollection.cpp"/>
+            <FILE id="Vf1qj3" name="ConfigurationResourceCollection.h" compile="0"
+                  resource="0" file="../../Source/Core/Configuration/Resources/ConfigurationResourceCollection.h"/>
+            <FILE id="LpyGk0" name="ArpeggiatorsCollection.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Configuration/Resources/ArpeggiatorsCollection.cpp"/>
+            <FILE id="U5rt0x" name="ArpeggiatorsCollection.h" compile="0" resource="0"
+                  file="../../Source/Core/Configuration/Resources/ArpeggiatorsCollection.h"/>
+            <FILE id="kG1xgX" name="ChordsCollection.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Configuration/Resources/ChordsCollection.cpp"/>
+            <FILE id="n1G07p" name="ChordsCollection.h" compile="0" resource="0"
+                  file="../../Source/Core/Configuration/Resources/ChordsCollection.h"/>
+            <FILE id="fRRy3T" name="ColourSchemesCollection.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Configuration/Resources/ColourSchemesCollection.cpp"/>
+            <FILE id="tOWmMH" name="ColourSchemesCollection.h" compile="0" resource="0"
+                  file="../../Source/Core/Configuration/Resources/ColourSchemesCollection.h"/>
+            <FILE id="H58dNF" name="HotkeySchemesCollection.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Configuration/Resources/HotkeySchemesCollection.cpp"/>
+            <FILE id="dlHVd6" name="HotkeySchemesCollection.h" compile="0" resource="0"
+                  file="../../Source/Core/Configuration/Resources/HotkeySchemesCollection.h"/>
+            <FILE id="xcdINX" name="KeyboardMappingsCollection.cpp" compile="1"
+                  resource="0" file="../../Source/Core/Configuration/Resources/KeyboardMappingsCollection.cpp"/>
+            <FILE id="wwWOHp" name="KeyboardMappingsCollection.h" compile="0" resource="0"
+                  file="../../Source/Core/Configuration/Resources/KeyboardMappingsCollection.h"/>
+            <FILE id="caFUMa" name="ScalesCollection.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Configuration/Resources/ScalesCollection.cpp"/>
+            <FILE id="tksWZT" name="ScalesCollection.h" compile="0" resource="0"
+                  file="../../Source/Core/Configuration/Resources/ScalesCollection.h"/>
+            <FILE id="qu4A8V" name="TemperamentsCollection.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Configuration/Resources/TemperamentsCollection.cpp"/>
+            <FILE id="D5KjUb" name="TemperamentsCollection.h" compile="0" resource="0"
+                  file="../../Source/Core/Configuration/Resources/TemperamentsCollection.h"/>
+            <FILE id="j3ykPD" name="TranslationsCollection.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Configuration/Resources/TranslationsCollection.cpp"/>
+            <FILE id="zrz77y" name="TranslationsCollection.h" compile="0" resource="0"
+                  file="../../Source/Core/Configuration/Resources/TranslationsCollection.h"/>
           </GROUP>
           <FILE id="Cw6lgG" name="Config.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Config.cpp"/>
           <FILE id="Qp21xL" name="Config.h" compile="0" resource="0" file="../../Source/Core/Configuration/Config.h"/>

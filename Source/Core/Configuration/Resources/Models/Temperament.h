@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "BaseResource.h"
+#include "ConfigurationResource.h"
 #include "Scale.h"
 #include "Note.h"
 
@@ -39,7 +39,7 @@ enum class Semitones : int8
     PerfectOctave = 12
 };
 
-class Temperament final : public BaseResource
+class Temperament final : public ConfigurationResource
 {
 public:
 

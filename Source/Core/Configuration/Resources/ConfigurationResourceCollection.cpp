@@ -16,22 +16,22 @@
 */
 
 #include "Common.h"
-#include "ResourceManager.h"
+#include "ConfigurationResourceCollection.h"
 #include "JsonSerializer.h"
 #include "BinarySerializer.h"
 #include "DocumentHelpers.h"
 
 // TODO: monitor user's file changes?
 
-ResourceManager::ResourceManager(const Identifier &resourceType) :
+ConfigurationResourceCollection::ConfigurationResourceCollection(const Identifier &resourceType) :
     resourceType(resourceType) {}
 
-ResourceManager::~ResourceManager()
+ConfigurationResourceCollection::~ConfigurationResourceCollection()
 {
     this->reset();
 }
 
-void ResourceManager::updateBaseResource(const SerializedData &resource)
+void ConfigurationResourceCollection::updateBaseResource(const SerializedData &resource)
 {
     DBG("Updating downloaded resource file for " + this->resourceType.toString());
 
@@ -48,7 +48,7 @@ void ResourceManager::updateBaseResource(const SerializedData &resource)
     //this->reloadResources();
 }
 
-void ResourceManager::updateUserResource(const BaseResource::Ptr resource)
+void ConfigurationResourceCollection::updateUserResource(const ConfigurationResource::Ptr resource)
 {
     this->userResources[resource->getResourceId()] = resource;
 
@@ -63,19 +63,19 @@ void ResourceManager::updateUserResource(const BaseResource::Ptr resource)
     this->sendChangeMessage();
 }
 
-File ResourceManager::getDownloadedResourceFile() const
+File ConfigurationResourceCollection::getDownloadedResourceFile() const
 {
     const String assumedFileName = this->resourceType + ".helio";
     return DocumentHelpers::getConfigSlot(assumedFileName);
 }
 
-File ResourceManager::getUsersResourceFile() const
+File ConfigurationResourceCollection::getUsersResourceFile() const
 {
     const String assumedFileName = this->resourceType + ".json";
     return DocumentHelpers::getDocumentSlot(assumedFileName);
 }
 
-String ResourceManager::getBuiltInResourceString() const
+String ConfigurationResourceCollection::getBuiltInResourceString() const
 {
     int dataSize;
     const String assumedResourceName = this->resourceType.toString() + "_json";
@@ -87,13 +87,13 @@ String ResourceManager::getBuiltInResourceString() const
     return {};
 }
 
-const BaseResource &ResourceManager::getResourceComparator() const
+const ConfigurationResource &ConfigurationResourceCollection::getResourceComparator() const
 {
     return this->comparator;
 }
 
 
-SerializedData ResourceManager::serializeResources(const Resources &resources)
+SerializedData ConfigurationResourceCollection::serializeResources(const Resources &resources)
 {
     SerializedData tree(this->resourceType);
 
@@ -105,13 +105,13 @@ SerializedData ResourceManager::serializeResources(const Resources &resources)
     return tree;
 }
 
-void ResourceManager::reset()
+void ConfigurationResourceCollection::reset()
 {
     this->baseResources.clear();
     this->userResources.clear();
 }
 
-void ResourceManager::reloadResources()
+void ConfigurationResourceCollection::reloadResources()
 {
     bool shouldBroadcastChange = false;
 

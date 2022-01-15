@@ -17,7 +17,7 @@
 
 #pragma once
 
-class BaseResource : public Serializable, public ReferenceCountedObject
+class ConfigurationResource : public Serializable, public ReferenceCountedObject
 {
 public:
 
@@ -25,16 +25,16 @@ public:
 
     virtual Identifier getResourceType() const = 0;
 
-    using Ptr = ReferenceCountedObjectPtr<BaseResource>;
+    using Ptr = ReferenceCountedObjectPtr<ConfigurationResource>;
 
-    virtual int compareElements(const BaseResource::Ptr first,
-        const BaseResource::Ptr second) const
+    virtual int compareElements(const ConfigurationResource::Ptr first,
+        const ConfigurationResource::Ptr second) const
     {
         return first->getResourceId().compare(second->getResourceId());
     }
 };
 
-class DummyBaseResource : public BaseResource
+class DummyBaseResource : public ConfigurationResource
 {
 public:
     String getResourceId() const override { return {}; }
