@@ -47,8 +47,6 @@ public:
         float newBeat = 0.f,
         int newNumerator = Globals::Defaults::timeSignatureNumerator,
         int newDenominator = Globals::Defaults::timeSignatureDenominator) noexcept;
-
-    static void parseString(const String &data, int &numerator, int &denominator);
     
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept override;
@@ -103,12 +101,6 @@ private:
 
     int numerator = 0;
     int denominator = 0;
-
-    static constexpr auto minNumerator = 2;
-    static constexpr auto maxNumerator = 64;
-
-    static constexpr auto minDenominator = 2;
-    static constexpr auto maxDenominator = 32;
 
     JUCE_LEAK_DETECTOR(TimeSignatureEvent)
 };

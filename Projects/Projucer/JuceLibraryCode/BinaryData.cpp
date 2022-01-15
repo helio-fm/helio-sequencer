@@ -1624,8 +1624,59 @@ static const unsigned char temp_binary_data_93[] =
 
 const char* keyboardMappings_json = (const char*) temp_binary_data_93;
 
-//================== scales.json ==================
+//================== meters.json ==================
 static const unsigned char temp_binary_data_94[] =
+"{\n"
+"  \"meters\": {\n"
+"    \"meter\": [\n"
+"      {\n"
+"        \"name\": \"Common time\",\n"
+"        \"time\": \"4/4\"\n"
+"      },\n"
+"      {\n"
+"        \"name\": \"Alla breve\",\n"
+"        \"time\": \"2/4\"\n"
+"      },\n"
+"      {\n"
+"        \"name\": \"Waltz time\",\n"
+"        \"time\": \"3/4\"\n"
+"      },\n"
+"      {\n"
+"        \"name\": \"5/4\",\n"
+"        \"time\": \"5/4\"\n"
+"      },\n"
+"      {\n"
+"        \"name\": \"6/4\",\n"
+"        \"time\": \"6/4\"\n"
+"      },\n"
+"      {\n"
+"        \"name\": \"7/8\",\n"
+"        \"time\": \"7/8\"\n"
+"      },\n"
+"      {\n"
+"        \"name\": \"9/8\",\n"
+"        \"time\": \"9/8\"\n"
+"      },\n"
+"      {\n"
+"        \"name\": \"10/8\",\n"
+"        \"time\": \"10/8\"\n"
+"      },\n"
+"      {\n"
+"        \"name\": \"11/8\",\n"
+"        \"time\": \"11/8\"\n"
+"      },\n"
+"      {\n"
+"        \"name\": \"13/8\",\n"
+"        \"time\": \"13/8\"\n"
+"      }\n"
+"    ]\n"
+"  }\n"
+"}";
+
+const char* meters_json = (const char*) temp_binary_data_94;
+
+//================== scales.json ==================
+static const unsigned char temp_binary_data_95[] =
 "{\n"
 "  \"scales\": {\n"
 "    \"scale\": [\n"
@@ -1750,10 +1801,10 @@ static const unsigned char temp_binary_data_94[] =
 "  }\n"
 "}";
 
-const char* scales_json = (const char*) temp_binary_data_94;
+const char* scales_json = (const char*) temp_binary_data_95;
 
 //================== temperaments.json ==================
-static const unsigned char temp_binary_data_95[] =
+static const unsigned char temp_binary_data_96[] =
 "{\n"
 "  \"temperaments\": {\n"
 "    \"temperament\": [\n"
@@ -1789,10 +1840,10 @@ static const unsigned char temp_binary_data_95[] =
 "  }\n"
 "}\n";
 
-const char* temperaments_json = (const char*) temp_binary_data_95;
+const char* temperaments_json = (const char*) temp_binary_data_96;
 
 //================== translations.json ==================
-static const unsigned char temp_binary_data_96[] =
+static const unsigned char temp_binary_data_97[] =
 { 123,34,116,114,97,110,115,108,97,116,105,111,110,115,34,58,123,34,108,111,99,97,108,101,34,58,91,10,123,34,105,100,34,58,34,101,110,34,44,34,110,97,109,101,34,58,34,69,110,103,108,105,115,104,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,
 110,34,58,34,40,123,120,125,61,61,49,32,63,32,49,32,58,32,50,41,34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,80,114,111,106,101,99,116,32,115,116,97,114,116,101,100,34,125,44,123,
 34,105,100,34,58,50,52,50,51,53,52,57,49,53,44,34,116,114,34,58,34,78,101,119,32,112,114,111,106,101,99,116,34,125,44,123,34,105,100,34,58,57,55,51,51,55,48,50,53,55,44,34,116,114,34,58,34,78,101,119,32,116,114,97,99,107,34,125,44,123,34,105,100,34,58,
@@ -4087,7 +4138,7 @@ static const unsigned char temp_binary_data_96[] =
 49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,115,101,103,117,110,100,111,115,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,
 109,101,34,58,34,109,111,118,105,100,111,32,100,101,32,123,120,125,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,10,93,125,125,0,0 };
 
-const char* translations_json = (const char*) temp_binary_data_96;
+const char* translations_json = (const char*) temp_binary_data_97;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
@@ -4194,6 +4245,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x41b35b05:  numBytes = 3297; return colourSchemes_json;
         case 0x25669f2b:  numBytes = 15831; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 588; return keyboardMappings_json;
+        case 0x496315fd:  numBytes = 689; return meters_json;
         case 0x048f5efe:  numBytes = 9400; return scales_json;
         case 0x77719112:  numBytes = 1091; return temperaments_json;
         case 0xf8655f25:  numBytes = 165097; return translations_json;
@@ -4300,6 +4352,7 @@ const char* namedResourceList[] =
     "colourSchemes_json",
     "hotkeySchemes_json",
     "keyboardMappings_json",
+    "meters_json",
     "scales_json",
     "temperaments_json",
     "translations_json"
@@ -4401,6 +4454,7 @@ const char* originalFilenames[] =
     "colourSchemes.json",
     "hotkeySchemes.json",
     "keyboardMappings.json",
+    "meters.json",
     "scales.json",
     "temperaments.json",
     "translations.json"

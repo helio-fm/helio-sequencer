@@ -2904,6 +2904,7 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\ColourScheme.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\HotkeyScheme.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\KeyboardMapping.h"/>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Meter.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Scale.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Temperament.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Translation.h"/>
@@ -2914,6 +2915,7 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\ColourSchemesCollection.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\HotkeySchemesCollection.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\KeyboardMappingsCollection.h"/>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\MetersCollection.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\ScalesCollection.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\TemperamentsCollection.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\TranslationsCollection.h"/>
@@ -4132,6 +4134,7 @@
     <None Include="..\..\Resources\colourSchemes.json"/>
     <None Include="..\..\Resources\hotkeySchemes.json"/>
     <None Include="..\..\Resources\keyboardMappings.json"/>
+    <None Include="..\..\Resources\meters.json"/>
     <None Include="..\..\Resources\scales.json"/>
     <None Include="..\..\Resources\temperaments.json"/>
     <None Include="..\..\Resources\translations.json"/>

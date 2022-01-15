@@ -19,6 +19,7 @@
 #include "TimeSignatureEvent.h"
 #include "MidiTrack.h"
 #include "MidiSequence.h"
+#include "Meter.h"
 #include "SerializationKeys.h"
 
 TimeSignatureEvent::TimeSignatureEvent() noexcept :
@@ -41,31 +42,6 @@ TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     track(parametersToCopy.track),
     numerator(parametersToCopy.numerator),
     denominator(parametersToCopy.denominator) {}
-
-void TimeSignatureEvent::parseString(const String &data, int &numerator, int &denominator)
-{
-    numerator = Globals::Defaults::timeSignatureNumerator;
-    denominator = Globals::Defaults::timeSignatureDenominator;
-
-    StringArray sa;
-    sa.addTokens(data, "/\\|-", "' \"");
-
-    if (sa.size() == 2)
-    {
-        const int n = sa[0].getIntValue();
-        int d = sa[1].getIntValue();
-
-        // Round to the power of two:
-        d = int(pow(2, ceil(log(d) / log(2))));
-
-        // Apply some reasonable constraints:
-        denominator = jlimit(TimeSignatureEvent::minDenominator,
-            TimeSignatureEvent::maxDenominator, d);
-
-        numerator = jlimit(TimeSignatureEvent::minNumerator,
-            TimeSignatureEvent::maxNumerator, n);
-    }
-}
 
 void TimeSignatureEvent::exportMessages(MidiMessageSequence &outSequence,
     const Clip &clip, const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept
@@ -92,16 +68,14 @@ TimeSignatureEvent TimeSignatureEvent::withBeat(float newBeat) const noexcept
 TimeSignatureEvent TimeSignatureEvent::withNumerator(const int newNumerator) const noexcept
 {
     TimeSignatureEvent e(*this);
-    e.numerator = jlimit(TimeSignatureEvent::minNumerator,
-        TimeSignatureEvent::maxNumerator, newNumerator);
+    e.numerator = jlimit(Meter::minNumerator, Meter::maxNumerator, newNumerator);
     return e;
 }
 
 TimeSignatureEvent TimeSignatureEvent::withDenominator(const int newDenominator) const noexcept
 {
     TimeSignatureEvent e(*this);
-    e.denominator = jlimit(TimeSignatureEvent::minDenominator,
-        TimeSignatureEvent::maxDenominator, newDenominator);
+    e.denominator = jlimit(Meter::minDenominator, Meter::maxDenominator, newDenominator);
     return e;
 }
 
@@ -143,10 +117,10 @@ int TimeSignatureEvent::getDenominator() const noexcept
 bool TimeSignatureEvent::isValid() const noexcept
 {
     return (this->track != nullptr || this->sequence != nullptr) &&
-        (this->numerator >= TimeSignatureEvent::minNumerator &&
-        this->numerator <= TimeSignatureEvent::maxNumerator &&
-        this->denominator >= TimeSignatureEvent::minDenominator &&
-        this->denominator <= TimeSignatureEvent::maxDenominator);
+           (this->numerator >= Meter::minNumerator &&
+               this->numerator <= Meter::maxNumerator &&
+               this->denominator >= Meter::minDenominator &&
+               this->denominator <= Meter::maxDenominator);
 }
 
 float TimeSignatureEvent::getBarLengthInBeats() const noexcept

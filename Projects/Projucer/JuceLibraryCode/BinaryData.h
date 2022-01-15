@@ -290,6 +290,9 @@ namespace BinaryData
     extern const char*   keyboardMappings_json;
     const int            keyboardMappings_jsonSize = 588;
 
+    extern const char*   meters_json;
+    const int            meters_jsonSize = 689;
+
     extern const char*   scales_json;
     const int            scales_jsonSize = 9400;
 
@@ -300,7 +303,7 @@ namespace BinaryData
     const int            translations_jsonSize = 165097;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 97;
+    const int namedResourceListSize = 98;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

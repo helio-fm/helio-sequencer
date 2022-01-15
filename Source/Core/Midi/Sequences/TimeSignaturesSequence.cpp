@@ -21,6 +21,7 @@
 #include "SerializationKeys.h"
 #include "ProjectNode.h"
 #include "UndoStack.h"
+#include "Meter.h"
 
 TimeSignaturesSequence::TimeSignaturesSequence(MidiTrack &track,
     ProjectEventDispatcher &dispatcher) noexcept :
@@ -142,7 +143,7 @@ Function<void(const String &text)> TimeSignaturesSequence::getEventChangeCallbac
     {
         int numerator;
         int denominator;
-        TimeSignatureEvent::parseString(text, numerator, denominator);
+        Meter::parseString(text, numerator, denominator);
         this->checkpoint();
         this->change(event, event.withNumerator(numerator).withDenominator(denominator), true);
 

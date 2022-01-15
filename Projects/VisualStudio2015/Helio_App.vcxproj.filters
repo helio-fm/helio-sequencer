@@ -691,6 +691,9 @@
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\KeyboardMapping.cpp">
       <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\Meter.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\Scale.cpp">
       <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClCompile>
@@ -716,6 +719,9 @@
       <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\KeyboardMappingsCollection.cpp">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\MetersCollection.cpp">
       <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\ScalesCollection.cpp">
@@ -3573,6 +3579,9 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\KeyboardMapping.h">
       <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Meter.h">
+      <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Scale.h">
       <Filter>Helio\Source\Core\Configuration\Resources\Models</Filter>
     </ClInclude>
@@ -3601,6 +3610,9 @@
       <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\KeyboardMappingsCollection.h">
+      <Filter>Helio\Source\Core\Configuration\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\MetersCollection.h">
       <Filter>Helio\Source\Core\Configuration\Resources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\ScalesCollection.h">
@@ -7251,6 +7263,9 @@
       <Filter>Helio\Resources</Filter>
     </None>
     <None Include="..\..\Resources\keyboardMappings.json">
+      <Filter>Helio\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\meters.json">
       <Filter>Helio\Resources</Filter>
     </None>
     <None Include="..\..\Resources\scales.json">

@@ -18,6 +18,7 @@
 #pragma once
 
 #include "DialogBase.h"
+#include "Meter.h"
 #include "TimeSignatureEvent.h"
 #include "MobileComboBox.h"
 #include "UndoStack.h"
@@ -62,7 +63,7 @@ private:
     TimeSignatureEvent originalEvent;
     Component &ownerComponent;
 
-    const StringPairArray defaultMeters;
+    const Array<Meter::Ptr> defaultMeters;
 
     inline void undoAndDismiss();
     inline void updateOkButtonState();

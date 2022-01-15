@@ -291,6 +291,7 @@
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\ColourScheme.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\HotkeyScheme.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\KeyboardMapping.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\Meter.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\Scale.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\Temperament.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\Translation.cpp"/>
@@ -300,6 +301,7 @@
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\ColourSchemesCollection.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\HotkeySchemesCollection.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\KeyboardMappingsCollection.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Configuration\Resources\MetersCollection.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\ScalesCollection.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\TemperamentsCollection.cpp"/>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\TranslationsCollection.cpp"/>
@@ -2510,6 +2512,7 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\ColourScheme.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\HotkeyScheme.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\KeyboardMapping.h"/>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Meter.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Scale.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Temperament.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Translation.h"/>
@@ -2520,6 +2523,7 @@
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\ColourSchemesCollection.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\HotkeySchemesCollection.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\KeyboardMappingsCollection.h"/>
+    <ClInclude Include="..\..\Source\Core\Configuration\Resources\MetersCollection.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\ScalesCollection.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\TemperamentsCollection.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\TranslationsCollection.h"/>
@@ -3146,6 +3150,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vsteditcontroller.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstparameters.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\vstpresetfile.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\vestige\vestige.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_AU_Shared.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_AudioUnitPluginFormat.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_LADSPAPluginFormat.h"/>
@@ -3737,6 +3742,7 @@
     <None Include="..\..\Resources\colourSchemes.json"/>
     <None Include="..\..\Resources\hotkeySchemes.json"/>
     <None Include="..\..\Resources\keyboardMappings.json"/>
+    <None Include="..\..\Resources\meters.json"/>
     <None Include="..\..\Resources\scales.json"/>
     <None Include="..\..\Resources\temperaments.json"/>
     <None Include="..\..\Resources\translations.json"/>

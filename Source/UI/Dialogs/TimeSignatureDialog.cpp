@@ -18,25 +18,8 @@
 #include "Common.h"
 #include "TimeSignatureDialog.h"
 #include "MidiTrackActions.h"
+#include "Config.h"
 #include "CommandIDs.h"
-
-// fixme: create a separate resource config
-static StringPairArray getDefaultMeters()
-{
-    StringPairArray c;
-    c.set("Common time", "4/4");
-    c.set("Alla breve", "2/4");
-    c.set("Waltz time", "3/4");
-    c.set("5/4", "5/4");
-    c.set("6/4", "6/4");
-    c.set("7/4", "7/4");
-    c.set("5/8", "5/8");
-    c.set("6/8", "6/8");
-    c.set("7/8", "7/8");
-    c.set("9/8", "9/8");
-    c.set("12/8", "12/8");
-    return c;
-}
 
 TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     WeakReference<UndoStack> undoStack,
@@ -48,7 +31,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     targetSequence(targetSequence),
     originalEvent(editedEvent),
     ownerComponent(owner),
-    defaultMeters(getDefaultMeters()),
+    defaultMeters(App::Config().getMeters()->getAll()),
     mode(shouldAddNewEvent ? Mode::AddTimelineTimeSignature :
         (targetSequence != nullptr ? Mode::EditTimelineTimeSignature : Mode::EditTrackTimeSignature))
 {
@@ -132,7 +115,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
         
         int numerator;
         int denominator;
-        TimeSignatureEvent::parseString(meterString, numerator, denominator);
+        Meter::parseString(meterString, numerator, denominator);
 
         const auto newEvent = this->originalEvent
             .withNumerator(numerator)
@@ -146,12 +129,12 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
         this->undoAndDismiss();
     };
 
-    const auto &meterNames = this->defaultMeters.getAllKeys();
     MenuPanel::Menu menu;
     for (int i = 0; i < this->defaultMeters.size(); ++i)
     {
-        const auto &s = meterNames[i];
-        menu.add(MenuItem::item(Icons::empty, CommandIDs::SelectTimeSignature + i, s));
+        const auto meter = this->defaultMeters[i];
+        menu.add(MenuItem::item(Icons::empty,
+            CommandIDs::SelectTimeSignature + i, meter->getLocalizedName()));
     }
 
     this->presetsCombo = make<MobileComboBox::Container>();
@@ -227,11 +210,9 @@ void TimeSignatureDialog::handleCommandMessage(int commandId)
         const int targetIndex = commandId - CommandIDs::SelectTimeSignature;
         if (targetIndex >= 0 && targetIndex < this->defaultMeters.size())
         {
-            const auto title = this->defaultMeters.getAllKeys()[targetIndex];
-            const auto time = this->defaultMeters[title];
-
+            const auto &meter = this->defaultMeters[targetIndex];
             this->textEditor->grabKeyboardFocus();
-            this->textEditor->setText(time, true);
+            this->textEditor->setText(meter->getTimeAsString(), true);
         }
     }
 }

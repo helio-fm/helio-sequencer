@@ -131,7 +131,7 @@ protected:
 private: 
 
     const Identifier resourceType;
-    const DummyBaseResource comparator;
+    const DummyConfigurationResource comparator;
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(ConfigurationResourceCollection)
 };

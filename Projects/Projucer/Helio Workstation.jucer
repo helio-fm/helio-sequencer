@@ -126,6 +126,7 @@
             file="../../Resources/hotkeySchemes.json"/>
       <FILE id="PjHtrN" name="keyboardMappings.json" compile="0" resource="1"
             file="../../Resources/keyboardMappings.json"/>
+      <FILE id="DPMXk7" name="meters.json" compile="0" resource="1" file="../../Resources/meters.json"/>
       <FILE id="YgjNxN" name="scales.json" compile="0" resource="1" file="../../Resources/scales.json"/>
       <FILE id="xadHuy" name="temperaments.json" compile="0" resource="1"
             file="../../Resources/temperaments.json"/>
@@ -220,6 +221,8 @@
                     file="../../Source/Core/Configuration/Resources/Models/KeyboardMapping.cpp"/>
               <FILE id="HzvdgX" name="KeyboardMapping.h" compile="0" resource="0"
                     file="../../Source/Core/Configuration/Resources/Models/KeyboardMapping.h"/>
+              <FILE id="ZW1lSN" name="Meter.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Resources/Models/Meter.cpp"/>
+              <FILE id="N5oAVP" name="Meter.h" compile="0" resource="0" file="../../Source/Core/Configuration/Resources/Models/Meter.h"/>
               <FILE id="suUv9c" name="Scale.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Resources/Models/Scale.cpp"/>
               <FILE id="ybmkDB" name="Scale.h" compile="0" resource="0" file="../../Source/Core/Configuration/Resources/Models/Scale.h"/>
               <FILE id="baGGFk" name="Temperament.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Resources/Models/Temperament.cpp"/>
@@ -253,6 +256,10 @@
                   resource="0" file="../../Source/Core/Configuration/Resources/KeyboardMappingsCollection.cpp"/>
             <FILE id="wwWOHp" name="KeyboardMappingsCollection.h" compile="0" resource="0"
                   file="../../Source/Core/Configuration/Resources/KeyboardMappingsCollection.h"/>
+            <FILE id="igK4Sp" name="MetersCollection.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Configuration/Resources/MetersCollection.cpp"/>
+            <FILE id="hRRjIu" name="MetersCollection.h" compile="0" resource="0"
+                  file="../../Source/Core/Configuration/Resources/MetersCollection.h"/>
             <FILE id="caFUMa" name="ScalesCollection.cpp" compile="1" resource="0"
                   file="../../Source/Core/Configuration/Resources/ScalesCollection.cpp"/>
             <FILE id="tksWZT" name="ScalesCollection.h" compile="0" resource="0"

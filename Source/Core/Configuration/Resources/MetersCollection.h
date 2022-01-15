@@ -17,41 +17,37 @@
 
 #pragma once
 
-#include "Chord.h"
+#include "Meter.h"
 #include "ConfigurationResourceCollection.h"
 
-class ChordsCollection final : public ConfigurationResourceCollection
+class MetersCollection final : public ConfigurationResourceCollection
 {
 public:
-
-    ChordsCollection();
-
+  
+    MetersCollection();
+    
     ConfigurationResource::Ptr createResource() const override
     {
-        return { new Chord() };
+        return { new Meter() };
     }
 
-    inline const Array<Chord::Ptr> getAll() const
+    inline const Array<Meter::Ptr> getAll() const
     {
-        return this->getAllResources<Chord>();
+        return this->getAllResources<Meter>();
     }
 
 private:
 
     void deserializeResources(const SerializedData &tree, Resources &outResources) override;
-    void reset() override;
 
-    struct ChordsComparator final : public DummyConfigurationResource
+    struct MetersComparator final : public DummyConfigurationResource
     {
-        ChordsComparator(const StringArray &order);
         int compareElements(const ConfigurationResource::Ptr first,
             const ConfigurationResource::Ptr second) const override;
-        const StringArray &order;
     };
 
-    ChordsComparator chordsComparator;
+    MetersComparator metersComparator;
     const ConfigurationResource &getResourceComparator() const override;
-    StringArray order;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChordsCollection)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetersCollection)
 };

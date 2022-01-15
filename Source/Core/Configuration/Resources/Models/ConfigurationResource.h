@@ -34,7 +34,7 @@ public:
     }
 };
 
-class DummyBaseResource : public ConfigurationResource
+class DummyConfigurationResource : public ConfigurationResource
 {
 public:
     String getResourceId() const override { return {}; }

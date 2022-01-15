@@ -85,6 +85,11 @@ namespace Serialization
         static const Identifier chordName = "name";
         static const Identifier chordScaleKeys = "keys";
 
+        // Meters
+        static const Identifier meter = "meter";
+        static const Identifier meterName = "name";
+        static const Identifier meterTime = "time";
+
         // Sequences
         static const Identifier track = "track";
         static const Identifier automation = "automation";
@@ -207,6 +212,7 @@ namespace Serialization
     {
         static const Identifier scales = "scales";
         static const Identifier chords = "chords";
+        static const Identifier meters = "meters";
         static const Identifier temperaments = "temperaments";
         static const Identifier arpeggiators = "arpeggiators";
         static const Identifier translations = "translations";

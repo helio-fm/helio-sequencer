@@ -34,6 +34,7 @@ Config::Config(int timeoutToSaveMs) :
     this->keyboardMappingsCollection = make<KeyboardMappingsCollection>();
     this->scalesCollection = make<ScalesCollection>();
     this->chordsCollection = make<ChordsCollection>();
+    this->metersCollection = make<MetersCollection>();
 
     using namespace Serialization::Resources;
     this->resources[translations] = this->translationsCollection.get();
@@ -44,6 +45,7 @@ Config::Config(int timeoutToSaveMs) :
     this->resources[keyboardMappings] = this->keyboardMappingsCollection.get();
     this->resources[scales] = this->scalesCollection.get();
     this->resources[chords] = this->chordsCollection.get();
+    this->resources[meters] = this->metersCollection.get();
 
     this->uiFlags = make<UserInterfaceFlags>();
 }
@@ -206,6 +208,11 @@ ChordsCollection *Config::getChords() const noexcept
 ScalesCollection *Config::getScales() const noexcept
 {
     return this->scalesCollection.get();
+}
+
+MetersCollection *Config::getMeters() const noexcept
+{
+    return this->metersCollection.get();
 }
 
 TranslationsCollection *Config::getTranslations() const noexcept

@@ -27,6 +27,7 @@ class Serializable;
 #include "KeyboardMappingsCollection.h"
 #include "ScalesCollection.h"
 #include "ChordsCollection.h"
+#include "MetersCollection.h"
 #include "UserInterfaceFlags.h"
 
 class Config final : private Timer
@@ -47,6 +48,7 @@ public:
 
     ChordsCollection *getChords() const noexcept;
     ScalesCollection *getScales() const noexcept;
+    MetersCollection *getMeters() const noexcept;
     TemperamentsCollection *getTemperaments() const noexcept;
     TranslationsCollection *getTranslations() const noexcept;
     ArpeggiatorsCollection *getArpeggiators() const noexcept;
@@ -79,6 +81,7 @@ private:
     UniquePointer<KeyboardMappingsCollection> keyboardMappingsCollection;
     UniquePointer<ScalesCollection> scalesCollection;
     UniquePointer<ChordsCollection> chordsCollection;
+    UniquePointer<MetersCollection> metersCollection;
 
     ResourceCollectionsLookup resources;
 
