@@ -136,4 +136,5 @@ private:
     JUCE_DECLARE_WEAK_REFERENCEABLE(ConfigurationResourceCollection)
 };
 
-using ResourceCollectionsLookup = FlatHashMap<Identifier, WeakReference<ConfigurationResourceCollection>, IdentifierHash>;
+using ResourceCollectionsLookup = FlatHashMap<Identifier,
+    WeakReference<ConfigurationResourceCollection>, IdentifierHash>;

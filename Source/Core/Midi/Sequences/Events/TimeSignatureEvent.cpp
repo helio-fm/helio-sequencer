@@ -30,23 +30,21 @@ TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiTrack> owner) noexcept 
     track(owner) {}
 
 TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
-    float newBeat, int newNumerator, int newDenominator) noexcept :
+    float newBeat, int numerator, int denominator) noexcept :
     MidiEvent(owner, Type::TimeSignature, newBeat),
     track(nullptr),
-    numerator(newNumerator),
-    denominator(newDenominator) {}
+    meter({}, numerator, denominator) {}
 
 TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     const TimeSignatureEvent &parametersToCopy) noexcept :
     MidiEvent(owner, parametersToCopy),
     track(parametersToCopy.track),
-    numerator(parametersToCopy.numerator),
-    denominator(parametersToCopy.denominator) {}
+    meter(parametersToCopy.meter) {}
 
 void TimeSignatureEvent::exportMessages(MidiMessageSequence &outSequence,
     const Clip &clip, const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept
 {
-    MidiMessage event(MidiMessage::timeSignatureMetaEvent(this->numerator, this->denominator));
+    MidiMessage event(MidiMessage::timeSignatureMetaEvent(this->meter.getNumerator(), this->meter.getDenominator()));
     event.setTimeStamp((this->beat + clip.getBeat()) * timeFactor);
     outSequence.addEvent(event, timeOffset);
 }
@@ -65,17 +63,17 @@ TimeSignatureEvent TimeSignatureEvent::withBeat(float newBeat) const noexcept
     return e;
 }
 
-TimeSignatureEvent TimeSignatureEvent::withNumerator(const int newNumerator) const noexcept
+TimeSignatureEvent TimeSignatureEvent::withNumerator(const int numerator) const noexcept
 {
     TimeSignatureEvent e(*this);
-    e.numerator = jlimit(Meter::minNumerator, Meter::maxNumerator, newNumerator);
+    e.meter = e.meter.withNumerator(numerator);
     return e;
 }
 
-TimeSignatureEvent TimeSignatureEvent::withDenominator(const int newDenominator) const noexcept
+TimeSignatureEvent TimeSignatureEvent::withDenominator(const int denominator) const noexcept
 {
     TimeSignatureEvent e(*this);
-    e.denominator = jlimit(Meter::minDenominator, Meter::maxDenominator, newDenominator);
+    e.meter = e.meter.withDenominator(denominator);
     return e;
 }
 
@@ -106,27 +104,23 @@ TimeSignatureEvent TimeSignatureEvent::withId(MidiEvent::Id id) const noexcept
 
 int TimeSignatureEvent::getNumerator() const noexcept
 {
-    return this->numerator;
+    return this->meter.getNumerator();
 }
 
 int TimeSignatureEvent::getDenominator() const noexcept
 {
-    return this->denominator;
+    return this->meter.getDenominator();
 }
 
 bool TimeSignatureEvent::isValid() const noexcept
 {
-    return (this->track != nullptr || this->sequence != nullptr) &&
-           (this->numerator >= Meter::minNumerator &&
-               this->numerator <= Meter::maxNumerator &&
-               this->denominator >= Meter::minDenominator &&
-               this->denominator <= Meter::maxDenominator);
+    return (this->track != nullptr || this->sequence != nullptr) && this->meter.isValid();
 }
 
 float TimeSignatureEvent::getBarLengthInBeats() const noexcept
 {
     jassert(this->isValid());
-    return float(this->numerator) / float(this->denominator) * float(Globals::beatsPerBar);
+    return this->meter.getBarLengthInBeats();
 }
 
 int TimeSignatureEvent::getTrackControllerNumber() const noexcept
@@ -166,7 +160,7 @@ WeakReference<MidiTrack> TimeSignatureEvent::getTrack() const noexcept
 
 String TimeSignatureEvent::toString() const noexcept
 {
-    return String(this->numerator) + "/" + String(this->denominator);
+    return this->meter.getTimeAsString();
 }
 
 //===----------------------------------------------------------------------===//
@@ -178,8 +172,8 @@ SerializedData TimeSignatureEvent::serialize() const
     using namespace Serialization;
     SerializedData tree(Midi::timeSignature);
     tree.setProperty(Midi::id, packId(this->id));
-    tree.setProperty(Midi::numerator, this->numerator);
-    tree.setProperty(Midi::denominator, this->denominator);
+    tree.setProperty(Midi::numerator, this->meter.getNumerator());
+    tree.setProperty(Midi::denominator, this->meter.getDenominator());
     tree.setProperty(Midi::timestamp, int(this->beat * Globals::ticksPerBeat));
     return tree;
 }
@@ -188,8 +182,11 @@ void TimeSignatureEvent::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
-    this->numerator = data.getProperty(Midi::numerator, Globals::Defaults::timeSignatureNumerator);
-    this->denominator = data.getProperty(Midi::denominator, Globals::Defaults::timeSignatureDenominator);
+ 
+    const auto numerator = data.getProperty(Midi::numerator, Globals::Defaults::timeSignatureNumerator);
+    const auto denominator = data.getProperty(Midi::denominator, Globals::Defaults::timeSignatureDenominator);
+    this->meter = Meter({}, numerator, denominator);
+    
     this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
     this->id = unpackId(data.getProperty(Midi::id));
 }
@@ -198,8 +195,7 @@ void TimeSignatureEvent::deserialize(const SerializedData &data)
 void TimeSignatureEvent::reset() noexcept
 {
     this->beat = 0.f;
-    this->numerator = 0;
-    this->denominator = 0;
+    this->meter = {};
 }
 
 //===----------------------------------------------------------------------===//
@@ -209,6 +205,5 @@ void TimeSignatureEvent::reset() noexcept
 void TimeSignatureEvent::applyChanges(const TimeSignatureEvent &parameters) noexcept
 {
     this->beat = parameters.beat;
-    this->numerator = parameters.numerator;
-    this->denominator = parameters.denominator;
+    this->meter = parameters.meter;
 }

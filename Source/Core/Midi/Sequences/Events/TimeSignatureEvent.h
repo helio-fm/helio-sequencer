@@ -19,6 +19,7 @@
 
 #include "MidiEvent.h"
 #include "MidiTrack.h"
+#include "Meter.h"
 
 // Time signatures are a bit different from other MidiEvents
 // in a way that not only they can belong to a TimeSignaturesSequence
@@ -99,8 +100,7 @@ private:
 
     WeakReference<MidiTrack> track = nullptr;
 
-    int numerator = 0;
-    int denominator = 0;
+    Meter meter;
 
     JUCE_LEAK_DETECTOR(TimeSignatureEvent)
 };

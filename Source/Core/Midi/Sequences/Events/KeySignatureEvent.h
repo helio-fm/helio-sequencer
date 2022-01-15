@@ -69,13 +69,10 @@ public:
 
     void applyChanges(const KeySignatureEvent &parameters) noexcept;
 
-protected:
+private:
 
     Note::Key rootKey = 0;
     Scale::Ptr scale;
 
-private:
-
-    JUCE_LEAK_DETECTOR(KeySignatureEvent);
-
+    JUCE_LEAK_DETECTOR(KeySignatureEvent)
 };

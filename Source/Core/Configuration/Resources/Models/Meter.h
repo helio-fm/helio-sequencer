@@ -32,6 +32,9 @@ public:
     Identifier getResourceType() const noexcept override;
     using Ptr = ReferenceCountedObjectPtr<Meter>;
 
+    Meter withNumerator(const int newNumerator) const noexcept;
+    Meter withDenominator(const int newDenominator) const noexcept;
+
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
@@ -64,22 +67,18 @@ public:
     friend bool operator==(const Meter &l, const Meter &r);
     friend bool operator!=(const Meter &l, const Meter &r);
 
-    //===------------------------------------------------------------------===//
-    // Constants
-    //===------------------------------------------------------------------===//
-
-    static constexpr auto minNumerator = 2;
-    static constexpr auto maxNumerator = 64;
-
-    static constexpr auto minDenominator = 2;
-    static constexpr auto maxDenominator = 32;
-
 private:
 
     String name;
 
     int numerator = 0;
     int denominator = 0;
+
+    static constexpr auto minNumerator = 2;
+    static constexpr auto maxNumerator = 64;
+
+    static constexpr auto minDenominator = 2;
+    static constexpr auto maxDenominator = 32;
 
     JUCE_LEAK_DETECTOR(Meter)
 };

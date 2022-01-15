@@ -2435,10 +2435,15 @@ UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<N
     const auto *track = events.getReference(0).getSequence()->getTrack();
     const auto &instrumentId = track->getTrackInstrumentId();
     const auto &colour = track->getTrackColour();
+    const auto *timeSignature = track->getTimeSignatureOverride();
 
     UniquePointer<MidiTrackNode> newNode(new PianoTrackNode({}));
     newNode->setTrackColour(colour, false, dontSendNotification);
     newNode->setTrackInstrumentId(instrumentId, false, dontSendNotification);
+    if (timeSignature != nullptr)
+    {
+        newNode->setTimeSignatureOverride(*timeSignature, false, dontSendNotification);
+    }
 
     auto *pattern = newNode->getPattern();
     auto *sequence = static_cast<PianoSequence *>(newNode->getSequence());

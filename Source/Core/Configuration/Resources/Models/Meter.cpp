@@ -25,6 +25,20 @@ Meter::Meter(const Meter &other) noexcept :
 Meter::Meter(const String &name, int numerator, int denominator) noexcept :
     name(name), numerator(numerator), denominator(denominator) {}
 
+Meter Meter::withNumerator(const int newNumerator) const noexcept
+{
+    Meter m(*this);
+    m.numerator = jlimit(Meter::minNumerator, Meter::maxNumerator, newNumerator);
+    return m;
+}
+
+Meter Meter::withDenominator(const int newDenominator) const noexcept
+{
+    Meter m(*this);
+    m.denominator = jlimit(Meter::minDenominator, Meter::maxDenominator, newDenominator);
+    return m;
+}
+
 //===----------------------------------------------------------------------===//
 // Helpers
 //===----------------------------------------------------------------------===//
