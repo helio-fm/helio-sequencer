@@ -144,9 +144,23 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     if (this->mode == Mode::EditTrackTimeSignature && !this->originalEvent.isValid())
     {
         jassert(this->targetTrack != nullptr);
+
+        // this is the case when we're adding a time signature to a track,
+        // so let's try to suggest the one that seems to fit by bar length:
+        auto newMeter = this->defaultMeters.getFirst();
+        for (int i = this->defaultMeters.size(); i --> 0 ;)
+        {
+            if (fmodf(this->targetTrack->getSequence()->getLengthInBeats(),
+                this->defaultMeters[i]->getBarLengthInBeats()) == 0.f)
+            {
+                newMeter = this->defaultMeters[i];
+                break;
+            }
+        }
+
         this->sendEventChange(this->originalEvent
-            .withNumerator(Globals::Defaults::timeSignatureNumerator)
-            .withDenominator(Globals::Defaults::timeSignatureDenominator));
+            .withNumerator(newMeter->getNumerator())
+            .withDenominator(newMeter->getDenominator()));
     }
 
     if (this->mode == Mode::AddTimelineTimeSignature)

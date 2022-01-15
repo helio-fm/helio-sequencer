@@ -44,6 +44,8 @@ public:
     int getDenominator() const noexcept;
     String getTimeAsString() const noexcept;
 
+    float getBarLengthInBeats() const noexcept;
+
     static void parseString(const String &data, int &numerator, int &denominator);
 
     //===------------------------------------------------------------------===//

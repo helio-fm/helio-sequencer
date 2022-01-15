@@ -69,6 +69,12 @@ String Meter::getTimeAsString() const noexcept
     return String(this->numerator) + "/" + String(this->denominator);
 }
 
+float Meter::getBarLengthInBeats() const noexcept
+{
+    if (!this->isValid()) { return 0.f; }
+    return float(this->numerator) / float(this->denominator) * float(Globals::beatsPerBar);
+}
+
 bool Meter::isCommonTime() const noexcept
 {
     return this->numerator == 4 && this->denominator == 4;
