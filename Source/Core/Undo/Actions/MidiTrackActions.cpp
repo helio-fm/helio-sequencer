@@ -206,10 +206,18 @@ void MidiTrackChangeInstrumentAction::reset()
 //===----------------------------------------------------------------------===//
 
 MidiTrackChangeTimeSignatureAction::MidiTrackChangeTimeSignatureAction(MidiTrackSource &source,
-    const String &trackId, const TimeSignatureEvent &timeSignature) noexcept :
+    const String &trackId, const TimeSignatureEvent &newParameters) noexcept :
     UndoAction(source),
     trackId(trackId),
-    timeSignatureAfter(timeSignature) {}
+    timeSignatureAfter(newParameters) {}
+
+MidiTrackChangeTimeSignatureAction::MidiTrackChangeTimeSignatureAction(MidiTrackSource &source,
+    const String &trackId, const TimeSignatureEvent &oldParameters,
+    const TimeSignatureEvent &newParameters) noexcept :
+    UndoAction(source),
+    trackId(trackId),
+    timeSignatureBefore(oldParameters),
+    timeSignatureAfter(newParameters) {}
 
 bool MidiTrackChangeTimeSignatureAction::perform()
 {
@@ -237,6 +245,21 @@ bool MidiTrackChangeTimeSignatureAction::undo()
 int MidiTrackChangeTimeSignatureAction::getSizeInUnits()
 {
     return sizeof(TimeSignatureEvent) * 2;
+}
+
+UndoAction *MidiTrackChangeTimeSignatureAction::createCoalescedAction(UndoAction *nextAction)
+{
+    if (auto *nextChanger = dynamic_cast<MidiTrackChangeTimeSignatureAction *>(nextAction))
+    {
+        if (this->trackId == nextChanger->trackId)
+        {
+            return new MidiTrackChangeTimeSignatureAction(this->source,
+                this->trackId, this->timeSignatureBefore, nextChanger->timeSignatureAfter);
+        }
+    }
+
+    (void)nextAction;
+    return nullptr;
 }
 
 SerializedData MidiTrackChangeTimeSignatureAction::serialize() const

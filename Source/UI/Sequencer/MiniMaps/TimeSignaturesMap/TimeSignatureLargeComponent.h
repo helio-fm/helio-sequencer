@@ -38,13 +38,13 @@ public:
 private:
 
     ComponentDragger dragger;
-    TimeSignatureEvent anchor;
     
     Rectangle<float> boundsOffset;
     Point<int> clickOffset;
 
     bool draggingState = false;
     bool draggingHadCheckpoint = false;
+    float draggingAnchorBeat = 0.f;
 
     Colour colour;
     Path triangleShape;

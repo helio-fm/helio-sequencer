@@ -107,13 +107,11 @@ void TimeSignaturesProjectMap::onTimeSignaturesUpdated()
     {
         if (auto *myComponent = this->timeSignaturesMap[ts])
         {
-            DBG("Updating the component for " + ts.toString());
             myComponent->updateContent(ts);
             this->applyTimeSignatureBounds(myComponent, nullptr);
         }
         else
         {
-            DBG("Adding new component for " + ts.toString());
             auto *newComponent = this->createComponent();
             this->addAndMakeVisible(newComponent);
             newComponent->updateContent(ts);
@@ -147,7 +145,6 @@ void TimeSignaturesProjectMap::onTimeSignaturesUpdated()
 
             if (shouldDelete)
             {
-                DBG("Deleting component for " + myTs.toString());
                 this->timeSignaturesMap.erase(myTs);
                 this->timeSignatureComponents.remove(i);
             }

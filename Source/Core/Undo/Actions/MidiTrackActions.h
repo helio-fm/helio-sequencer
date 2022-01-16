@@ -130,11 +130,16 @@ public:
         UndoAction(source) {}
 
     MidiTrackChangeTimeSignatureAction(MidiTrackSource &source,
-        const String &trackId, const TimeSignatureEvent &timeSignature) noexcept;
+        const String &trackId, const TimeSignatureEvent &newParameters) noexcept;
+
+    MidiTrackChangeTimeSignatureAction(MidiTrackSource &source, const String &trackId,
+        const TimeSignatureEvent &oldParameters, const TimeSignatureEvent &newParameters) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
+
+    UndoAction *createCoalescedAction(UndoAction *nextAction) override;
 
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;

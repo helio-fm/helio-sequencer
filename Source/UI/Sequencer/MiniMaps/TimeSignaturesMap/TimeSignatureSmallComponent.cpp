@@ -71,10 +71,16 @@ void TimeSignatureSmallComponent::setRealBounds(const Rectangle<float> bounds)
 void TimeSignatureSmallComponent::updateContent(const TimeSignatureEvent &newEvent)
 {
     this->event = newEvent;
+
     this->colour = this->event.getTrackColour()
         .interpolatedWith(findDefaultColour(ColourIDs::TrackScroller::scrollerFill), 0.97f);
     const auto textColour = this->event.getTrackColour()
         .interpolatedWith(findDefaultColour(Label::textColourId), 0.5f);
-    this->signatureLabel->setText(this->event.toString(), dontSendNotification);
     this->signatureLabel->setColour(Label::textColourId, textColour);
+
+    auto *cachedImage = static_cast<CachedLabelImage *>(this->signatureLabel->getCachedComponentImage());
+    jassert(cachedImage != nullptr);
+    cachedImage->forceInvalidate();
+
+    this->signatureLabel->setText(this->event.toString(), dontSendNotification);
 }

@@ -78,7 +78,14 @@ void PianoTrackNode::setTimeSignatureOverride(const TimeSignatureEvent &ts, bool
     }
     else
     {
-        this->timeSignatureOverride.applyChanges(ts);
+        // a time signature can only be dragged within the sequence range minus 1 bar,
+        // that might be useful, e.g. if the track starts with off-beat notes:
+        const auto maxBeat = this->getSequence()->getLengthInBeats() - ts.getBarLengthInBeats();
+        // it shouldn't be possible to pass the out-of-range time signature here,
+        jassert(ts.getBeat() >= 0.f && ts.getBeat() <= maxBeat);
+        // but let's constrain it anyway just to be safe:
+        const auto constrainedBeat = jlimit(0.f, maxBeat, ts.getBeat());
+        this->timeSignatureOverride.applyChanges(ts.withBeat(constrainedBeat));
 
         if (notificationType != dontSendNotification)
         {

@@ -119,7 +119,6 @@ bool TimeSignatureEvent::isValid() const noexcept
 
 float TimeSignatureEvent::getBarLengthInBeats() const noexcept
 {
-    jassert(this->isValid());
     return this->meter.getBarLengthInBeats();
 }
 

@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "TimeSignaturesSequence.h"
 #include "TimeSignaturesProjectMap.h"
+#include "PianoTrackNode.h"
 #include "RollBase.h"
 #include "ColourIDs.h"
 #include "CachedLabelImage.h"
@@ -61,20 +62,14 @@ void TimeSignatureLargeComponent::mouseDown(const MouseEvent &e)
 
     if (e.mods.isLeftButtonDown())
     {
-        // don't allow dragging track-based time signatures at the moment
-        // (todo someday: allow dragging them within the track range)
-        if (this->event.getSequence() != nullptr)
-        {
-            this->dragger.startDraggingComponent(this, e);
-            this->draggingHadCheckpoint = false;
-            this->draggingState = true;
-            this->anchor = this->event;
-        }
+        this->dragger.startDraggingComponent(this, e);
+        this->draggingHadCheckpoint = false;
+        this->draggingState = true;
+        this->draggingAnchorBeat = this->editor.getBeatByXPosition(this->getX());
     }
     else
     {
         this->editor.alternateActionFor(this);
-        // this->editor.showContextMenuFor(this);
     }
 }
 
@@ -85,14 +80,54 @@ void TimeSignatureLargeComponent::mouseDrag(const MouseEvent &e)
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->dragger.dragComponent(this, e, nullptr);
-        const float newBeat = this->editor.getBeatByXPosition(this->getX());
-        const bool beatHasChanged = (this->event.getBeat() != newBeat);
+        const bool firstChangeIsToCome = !this->draggingHadCheckpoint;
 
-        if (beatHasChanged)
+        const float newBeat = this->editor.getBeatByXPosition(this->getX());
+        if (this->draggingAnchorBeat == newBeat)
         {
-            const bool firstChangeIsToCome = !this->draggingHadCheckpoint;
-            auto *sequence = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
-            jassert(sequence != nullptr);
+            this->editor.applyTimeSignatureBounds(this, nullptr);
+            return;
+        }
+
+        // dragging the track's time signatures:
+        if (auto *track = dynamic_cast<PianoTrackNode *>(this->event.getTrack().get()))
+        {
+            jassert(this->event.getSequence() == nullptr);
+
+            // we can only rely on delta beat here, because track's ts template
+            // cannot be set to some absolute beat, it's beat range is from 0 to (sequence range - 1 bar)
+            const auto deltaBeat = newBeat - this->draggingAnchorBeat;
+
+            // take the track's time signature template's beat, not this->event's,
+            // because this->event is auto-generated and has absolute beat
+            const auto oldTemplateBeat = track->getTimeSignatureOverride()->getBeat();
+
+            // check if the new event would go out of allowed range
+            // (tech debt warning: setTimeSignatureOverride the same check)
+            const auto barLength = track->getTimeSignatureOverride()->getBarLengthInBeats();
+            const auto newTemplateBeat = jlimit(0.f,
+                track->getSequence()->getLengthInBeats() - barLength,
+                oldTemplateBeat + deltaBeat);
+
+            if (newTemplateBeat == oldTemplateBeat)
+            {
+                this->editor.applyTimeSignatureBounds(this, nullptr);
+                return;
+            }
+
+            if (!this->draggingHadCheckpoint)
+            {
+                track->getProject()->checkpoint();
+                this->draggingHadCheckpoint = true;
+            }
+
+            track->setTimeSignatureOverride(this->event.withBeat(newTemplateBeat), true, sendNotification);
+            this->draggingAnchorBeat = newBeat;
+        }
+        // dragging the timeline time signatures:
+        else if (auto *sequence = dynamic_cast<TimeSignaturesSequence *>(this->event.getSequence()))
+        {
+            jassert(this->event.getTrack() == nullptr);
 
             if (!this->draggingHadCheckpoint)
             {
@@ -100,17 +135,14 @@ void TimeSignatureLargeComponent::mouseDrag(const MouseEvent &e)
                 this->draggingHadCheckpoint = true;
             }
 
-            // Drag-and-copy logic:
+            // drag-and-copy logic:
             if (firstChangeIsToCome && e.mods.isAnyModifierKeyDown())
             {
                 sequence->insert(this->event.withNewId(), true);
             }
 
             sequence->change(this->event, this->event.withBeat(newBeat), true);
-        }
-        else
-        {
-            this->editor.applyTimeSignatureBounds(this, nullptr);
+            this->draggingAnchorBeat = newBeat;
         }
     }
 }
@@ -156,12 +188,18 @@ float TimeSignatureLargeComponent::getTextWidth() const noexcept
 void TimeSignatureLargeComponent::updateContent(const TimeSignatureEvent &newEvent)
 {
     this->event = newEvent;
+
     this->colour = this->event.getTrackColour()
         .interpolatedWith(findDefaultColour(ColourIDs::Roll::headerSnaps), 0.75f);
     const auto textColour = this->event.getTrackColour()
         .interpolatedWith(findDefaultColour(Label::textColourId), 0.5f);
-    this->signatureLabel->setText(this->event.toString(), dontSendNotification);
     this->signatureLabel->setColour(Label::textColourId, textColour);
+
+    auto *cachedImage = static_cast<CachedLabelImage *>(this->signatureLabel->getCachedComponentImage());
+    jassert(cachedImage != nullptr);
+    cachedImage->forceInvalidate();
+
+    this->signatureLabel->setText(this->event.toString(), dontSendNotification);
     this->textWidth = float(this->signatureLabel->getFont()
         .getStringWidth(this->signatureLabel->getText()));
 }
