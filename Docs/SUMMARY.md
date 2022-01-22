@@ -1,11 +1,12 @@
 # Summary
 - [Intro](./readme.md)
+  - [Release Notes](changelog.md)
 ---
 - [Getting Started](./getting-started.md)
   - [Getting Microtonal](./getting-microtonal.md)
 - [Tips And Tricks](tips-and-tricks.md)
+  - [Refactoring](refactoring.md)
+  - [Command Palette](command-palette.md)
 ---
 - [Configs](configs.md)
   - [Hotkeys](hotkeys.md)
----
-- [Release Notes](changelog.md)

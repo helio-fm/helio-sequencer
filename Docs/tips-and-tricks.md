@@ -10,7 +10,7 @@ While playback, Helio may sometimes draw red or yellow vertical warning lines:
 
 ![warnings]
 
-These are the clipping and oversaturation warning markers:
+These are the clipping and over-saturation warning markers:
 
  - red lines indicate problematic regions with [clipping sound](https://en.wikipedia.org/wiki/Clipping_(audio)),
 
@@ -66,20 +66,6 @@ Also hold `Shift` or any modifier key to change the behavior of the pen tool whe
 
 ![pen-tool-alt]
 
-### Transposition and inversion
-
-`Shift + Up` and `Shift + Down` hotkeys transpose the selected notes one octave up or down. `Alt + Shift + Up` and `Alt + Shift + Down` are used for the less common transposition to the next or previous key in the circle of fifths (simply put, it's a transposition by +7 or -7 semitones in the 12-tone temperament, or by the closest equivalent of a perfect fifth in other temperaments, e.g. +18 or -18 for 31-edo, etc).
-
-Use `Control + Up` and `Control + Down` for chord inversion (don't confuse it with melodic inversion, which is triggered by `Alt + I` hotkey). Chord inversion treats selected notes as chord(s); the lowest note in each chord moves one octave up (or the highest note moves one octave down), all others stay in place.
-
-#### In-scale transposition
-
-Use `Alt + Up` and `Alt + Down` hotkeys to transpose the selected notes using in-scale keys only:
-
-![inscale-transposition]
-
-The notes which are out of scale will be aligned up or down to the nearest in-scale keys.
-
 ### UI flags
 
 A couple of display options are available to provide a visual cue. They are toggled either in the navigation panel, or via hotkeys (`G` and `H` by default).
@@ -120,17 +106,7 @@ It can be dragged around by the center node — kinda helpful if you clicked the
 
 Since it depends on the harmonic context, it will do nothing when placed on the out-of-scale note (the grey row). It might be a good idea to make sure the [scales highlighting](#ui-flags) is enabled to avoid confusion.
 
-### Quick rescale tool
-
-Another tool for experiments and prototyping is the quick rescale menu: once you right-click on any key signature at the timeline, you can choose another scale, into which all the tracks will be translated. This affects all notes of all tracks up to the next key signature (or the very end of the project), and will update the key signature.
-
-This example shows rescaling, along with some undo/redo to see the difference:
-
-![quick-rescale]
-
-As well as the chord tool, this tool assumes that the harmonic context is specified correctly. In this example, the first section is marked as D Dorian, and all the notes in that section are in the key. Any out-of-scale notes will be left in their places.
-
-#### See also: [piano roll hotkeys](hotkeys.md#piano-roll)
+#### See also: [piano roll hotkeys](hotkeys.md#piano-roll), [refactoring options](refactoring.md)
 
 
 ## Pattern roll
@@ -162,30 +138,6 @@ Track grouping also affects MIDI export: all segments on one row will be exporte
 #### See also: [pattern roll hotkeys](hotkeys.md#pattern-roll)
 
 
-## Command palette
-
-This command palette control is inspired by 'Goto Anywhere' in Sublime Text or 'Locator' in QT Creator, and is meant for quick access to the commands available for the current context, and things like projects and timeline events.
-
-Toggled by `~` or `Control + P` hotkeys by default:
-
-![command-palette]
-
-Besides just commands, it supports special modes, triggered by typing a certain symbol. This symbol also acts as a hotkey to show the command palette in that mode:
-
-* `/` is for the project list,
-* `:` is for moving selected notes into another track (target tracks are ordered "closest first"),
-* `@` is for the timeline events list + tracks list,
-* `!` is for the chord compiler, which deserves a separate description:
-
-### Chord compiler
-
-One of the modes of that command palette allows to generate chords based on the chord name [decoding rules](https://en.wikipedia.org/wiki/Chord_letters). This tool is not aware of any of the key signatures present at the timeline, all the chord's notes are inferred from the given description.
-
-Just hit `!` and start typing a chord description, or pick some of the suggestions it provides:
-
-![chord-compiler]
-
-
 [space-drag]: images/space-drag.png "Dragging the canvas"
 [time-measure-tool]: images/time-measure.png "Time measure tool"
 [sound-probe]: images/sound-probe.png "Sound probe tool"
@@ -194,7 +146,6 @@ Just hit `!` and start typing a chord description, or pick some of the suggestio
 [group-resizing]: images/group-resizing.png "Resizing notes with shift"
 [pen-tool-alt]: images/pen-tool-alt.png "Adding notes with shift"
 [drag-and-copy]: images/drag-and-copy.png "Drag-and-copy"
-[inscale-transposition]: images/inscale-transposition.png "In-scale transposition"
 
 [monitors]: images/monitors.png "Audio monitor view modes"
 [toggle-minimap]: images/toggle-minimap.png "Mini-map view modes"
@@ -203,9 +154,6 @@ Just hit `!` and start typing a chord description, or pick some of the suggestio
 [note-names]: images/note-names.png "Note name guides"
 
 [chord-tool]: images/chord-tool.png "The chord tool"
-[chord-compiler]: images/chord-compiler.png "The chord compiler"
-[quick-rescale]: images/quick-rescale.png "The quick rescale tool"
-[command-palette]: images/command-palette.png "The command palette"
 
 [warnings]: images/warnings.png "Clipping and oversaturation warning markers"
 [velocity-map-fine-tuning]: images/velocity-map-fine-tuning.png "Velocity map fine-tuning"

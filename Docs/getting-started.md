@@ -80,7 +80,7 @@ To start a new project from scratch, navigate to the dashboard by pressing the `
 ### Switching between projects
 
 There are several ways:
- * use the `/` hotkey to show the projects list in the [command palette](tips-and-tricks.md#command-palette),
+ * use the `/` hotkey to show the projects list in the [command palette](command-palette.md),
  * or hover the `Studio` item in the breadcrumb control, which shows the menu with all open projects (the most inconvenient way so far),
  * back and forward buttons also can be useful sometimes, the related hotkeys are `Alt + Cursor Left` and `Alt + Cursor Right`.
 
@@ -235,7 +235,7 @@ All edits are undoable; note that the last 10 undo actions are saved in the proj
 
 All changes are saved automatically: on exit, and on a timeout after the last change.
 
-The editor relies heavily on [hotkeys](hotkeys.md#piano-roll); feel free to explore available actions by browsing breadcrumb control menus or [command palette](tips-and-tricks.md#command-palette).
+The editor relies heavily on [hotkeys](hotkeys.md#piano-roll); feel free to explore available actions by browsing breadcrumb control menus or [command palette](command-palette.md).
 
 ### Adding new tracks
 
