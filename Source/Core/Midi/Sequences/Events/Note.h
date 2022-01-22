@@ -32,7 +32,7 @@ public:
     Note &operator= (const Note &other) = default;
 
     Note(Note &&other) noexcept = default;
-    Note &operator= (Note &&other) noexcept = default;
+    Note &operator= (Note &&other) = default;
 
     Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noexcept;
     explicit Note(WeakReference<MidiSequence> owner,

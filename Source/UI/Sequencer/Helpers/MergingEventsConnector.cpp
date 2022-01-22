@@ -127,7 +127,7 @@ void MergingNotesConnector::paint(Graphics &g)
     jassert(this->getParentComponent() == this->sourceComponent->getParentComponent());
 
     const auto sourceNoteBounds = this->sourceComponent->getBounds().toFloat() - topLeft;
-    const auto noteTopLeft = sourceNoteBounds.getTopLeft();
+
     const bool backwardDirection = dragStart.x > dragEnd.x;
     const auto sourceX = backwardDirection ?
         sourceNoteBounds.getX() : sourceNoteBounds.getRight();

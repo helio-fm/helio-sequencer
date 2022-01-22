@@ -175,7 +175,7 @@ void InstrumentComponent::resized()
                 270.f - ((180.f / (total + 1.f)) * (1 + index)) :
                 ((180.f / (total + 1.f)) * (1 + index)) - 90.f;
 
-            const float rAngle = (dAngle / 180.f) * float_Pi;
+            const float rAngle = (dAngle / 180.f) * MathConstants<float>::pi;
             const float dx = cosf(rAngle) * r;
             const float dy = sinf(rAngle) * r;
 

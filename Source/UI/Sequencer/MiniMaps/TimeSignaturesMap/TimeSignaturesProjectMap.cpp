@@ -260,7 +260,6 @@ void TimeSignaturesProjectMap::applyTimeSignatureBounds(TimeSignatureComponent *
 {
     constexpr auto minWidth = 10.f;
     constexpr auto widthMargin = 12.f;
-    constexpr auto componentsPadding = 10.f;
 
     const float rollLengthInBeats = this->rollLastBeat - this->rollFirstBeat;
     const float projectLengthInBeats = this->projectLastBeat - this->projectFirstBeat;

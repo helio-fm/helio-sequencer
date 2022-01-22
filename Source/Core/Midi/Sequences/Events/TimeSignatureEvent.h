@@ -37,7 +37,7 @@ public:
     TimeSignatureEvent &operator= (const TimeSignatureEvent &other) = default;
 
     TimeSignatureEvent(TimeSignatureEvent &&other) noexcept = default;
-    TimeSignatureEvent &operator= (TimeSignatureEvent &&other) noexcept = default;
+    TimeSignatureEvent &operator= (TimeSignatureEvent &&other) = default;
 
     explicit TimeSignatureEvent(WeakReference<MidiTrack> owner) noexcept;
 

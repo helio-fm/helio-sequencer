@@ -101,12 +101,12 @@ void TooltipContainer::showWithComponent(UniquePointer<Component> newComponent,
         return;
     }
 
+#if PLATFORM_MOBILE
+
     const Point<int> callerOrigin = callerScreenBounds.getCentre();
 
     const Point<int> topLevelOrigin =
         this->getTopLevelComponent()->getScreenPosition();
-
-#if PLATFORM_MOBILE
 
     // there's much visual less space on mobile platforms,
     // so tooltip will try to detect a better position

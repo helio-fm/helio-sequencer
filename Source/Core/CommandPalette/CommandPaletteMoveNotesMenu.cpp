@@ -45,8 +45,6 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteMoveNotesMenu::getAc
         return this->actionsCache;
     }
 
-    const auto defaultColor = findDefaultColour(Label::textColourId);
-
     this->actionsCache.clearQuick();
 
     if (this->roll.getLassoSelection().getNumSelected() == 0)
