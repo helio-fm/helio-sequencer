@@ -32,36 +32,36 @@ public:
     explicit UndoStack(ProjectNode &parentProject,
         int maxNumberOfUnitsToKeep = 30000,
         int minimumTransactionsToKeep = 30);
-    
+
     void clearUndoHistory();
 
     bool perform(UndoAction *action);
     bool perform(UndoAction *action, UndoActionId transactionId);
-    
+
     void beginNewTransaction() noexcept;
     void beginNewTransaction(UndoActionId transactionId) noexcept;
-    
+
     bool canUndo() const noexcept;
     UndoActionId getUndoActionId() const;
-    
+
     bool undo();
     bool undoCurrentTransactionOnly();
-    
+
     bool canRedo() const noexcept;
     UndoActionId getRedoActionId() const;
     bool redo();
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
-    template<typename T>
+
+    template <typename T>
     bool undoHas() const
     {
         return UndoStack::transactionHas<T>(this->getCurrentSet());
     }
 
-    template<typename T>
+    template <typename T>
     bool redoHas() const
     {
         return UndoStack::transactionHas<T>(this->getNextSet());
@@ -71,12 +71,12 @@ public:
     bool mergeTransactionsUpTo(UndoActionId transactionId);
 
 private:
-    
+
     void getActionsInCurrentTransaction(Array<const UndoAction *> &actionsFound) const;
     int getNumActionsInCurrentTransaction() const;
 
     ProjectNode &project;
-    
+
     struct Transaction final : public Serializable
     {
         explicit Transaction(ProjectNode &project,
@@ -101,22 +101,22 @@ private:
     };
 
     static constexpr auto maxTransactionsToSerialize = 10;
-    
+
     void setCurrentUndoActionId(UndoActionId transactionId) noexcept;
     OwnedArray<Transaction> transactions;
     UndoActionId newUndoActionId;
-    
+
     int totalUnitsStored = 0;
     int maxNumUnitsToKeep = 0;
     int minimumTransactionsToKeep = 0;
     int nextIndex = 0;
     bool hasNewEmptyTransaction = true;
     bool reentrancyCheck = false;
-    
+
     Transaction *getCurrentSet() const noexcept;
     Transaction *getNextSet() const noexcept;
 
-    template<typename T>
+    template <typename T>
     inline static bool transactionHas(Transaction *s)
     {
         if (s != nullptr) // might be an empty set
@@ -134,7 +134,7 @@ private:
     }
 
     void clearFutureTransactions();
-    
+
     JUCE_DECLARE_WEAK_REFERENCEABLE(UndoStack)
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UndoStack)
 };

@@ -86,6 +86,11 @@ namespace Serialization
         static const Identifier chordName = "name";
         static const Identifier chordScaleKeys = "keys";
 
+        // Meters
+        static const Identifier meter = "meter";
+        static const Identifier meterName = "name";
+        static const Identifier meterTime = "time";
+
         // Sequences
         static const Identifier track = "track";
         static const Identifier automation = "automation";
@@ -208,6 +213,7 @@ namespace Serialization
     {
         static const Identifier scales = "scales";
         static const Identifier chords = "chords";
+        static const Identifier meters = "meters";
         static const Identifier temperaments = "temperaments";
         static const Identifier arpeggiators = "arpeggiators";
         static const Identifier translations = "translations";
@@ -474,16 +480,22 @@ namespace Serialization
             static const Identifier notesChanged = "notesChanged";
         }
 
-        namespace ProjectTimelineDeltas
+        namespace AnnotationDeltas
         {
             static const Identifier annotationsAdded = "annotationsAdded";
             static const Identifier annotationsRemoved = "annotationsRemoved";
             static const Identifier annotationsChanged = "annotationsChanged";
+        }
 
+        namespace TimeSignatureDeltas
+        {
             static const Identifier timeSignaturesAdded = "timeSignaturesAdded";
             static const Identifier timeSignaturesRemoved = "timeSignaturesRemoved";
             static const Identifier timeSignaturesChanged = "timeSignaturesChanged";
+        }
 
+        namespace KeySignatureDeltas
+        {
             static const Identifier keySignaturesAdded = "keySignaturesAdded";
             static const Identifier keySignaturesRemoved = "keySignaturesRemoved";
             static const Identifier keySignaturesChanged = "keySignaturesChanged";
@@ -637,6 +649,7 @@ namespace Serialization
         
         static const Identifier midiTrackChangeColourAction = "midiTrackChangeColour";
         static const Identifier midiTrackChangeInstrumentAction = "midiTrackChangeInstrument";
+        static const Identifier midiTrackChangeTimeSignatureAction = "midiTrackChangeTimeSignature";
         
         static const Identifier clipInsertAction = "patternClipInsert";
         static const Identifier clipRemoveAction = "patternClipRemove";
@@ -651,27 +664,6 @@ namespace Serialization
         static const Identifier notesGroupInsertAction = "notesInsert";
         static const Identifier notesGroupRemoveAction = "notesRemove";
         static const Identifier notesGroupChangeAction = "notesChange";
-        
-        static const Identifier annotationEventInsertAction = "annotationInsert";
-        static const Identifier annotationEventRemoveAction = "annotationRemove";
-        static const Identifier annotationEventChangeAction = "annotationChange";
-        static const Identifier annotationEventsGroupInsertAction = "annotationsInsert";
-        static const Identifier annotationEventsGroupRemoveAction = "annotationsRemove";
-        static const Identifier annotationEventsGroupChangeAction = "annotationsChange";
-
-        static const Identifier timeSignatureEventInsertAction = "timeSignatureInsert";
-        static const Identifier timeSignatureEventRemoveAction = "timeSignatureRemove";
-        static const Identifier timeSignatureEventChangeAction = "timeSignatureChange";
-        static const Identifier timeSignatureEventsGroupInsertAction = "timeSignaturesInsert";
-        static const Identifier timeSignatureEventsGroupRemoveAction = "timeSignaturesRemove";
-        static const Identifier timeSignatureEventsGroupChangeAction = "timeSignaturesChange";
-
-        static const Identifier keySignatureEventInsertAction = "keySignatureInsert";
-        static const Identifier keySignatureEventRemoveAction = "keySignatureRemove";
-        static const Identifier keySignatureEventChangeAction = "keySignatureChange";
-        static const Identifier keySignatureEventsGroupInsertAction = "keySignaturesInsert";
-        static const Identifier keySignatureEventsGroupRemoveAction = "keySignaturesRemove";
-        static const Identifier keySignatureEventsGroupChangeAction = "keySignaturesChange";
 
         static const Identifier automationEventInsertAction = "automationEventInsert";
         static const Identifier automationEventRemoveAction = "automationEventRemove";
@@ -679,6 +671,18 @@ namespace Serialization
         static const Identifier automationEventsGroupInsertAction = "automationEventsInsert";
         static const Identifier automationEventsGroupRemoveAction = "automationEventsRemove";
         static const Identifier automationEventsGroupChangeAction = "automationEventsChange";
+        
+        static const Identifier annotationEventInsertAction = "annotationInsert";
+        static const Identifier annotationEventRemoveAction = "annotationRemove";
+        static const Identifier annotationEventChangeAction = "annotationChange";
+
+        static const Identifier timeSignatureEventInsertAction = "timeSignatureInsert";
+        static const Identifier timeSignatureEventRemoveAction = "timeSignatureRemove";
+        static const Identifier timeSignatureEventChangeAction = "timeSignatureChange";
+
+        static const Identifier keySignatureEventInsertAction = "keySignatureInsert";
+        static const Identifier keySignatureEventRemoveAction = "keySignatureRemove";
+        static const Identifier keySignatureEventChangeAction = "keySignatureChange";
 
         static const Identifier projectTemperamentChangeAction = "temperamentChange";
     } // namespace Undo

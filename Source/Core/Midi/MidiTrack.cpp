@@ -56,10 +56,10 @@ void MidiTrack::deserializeTrackProperties(const SerializedData &tree)
     // Do not send notifications:
     // track is not supposed to update listeners meanwhile loading,
     // its up to caller to make sure the views are updated after
-    this->setTrackColour(Colour::fromString(colour), false);
-    this->setTrackInstrumentId(instrumentId, false);
-    this->setTrackControllerNumber(controllerNumber, false);
-    this->setTrackInstrumentId(instrumentId, false);
+    this->setTrackColour(Colour::fromString(colour), false, dontSendNotification);
+    this->setTrackInstrumentId(instrumentId, false, dontSendNotification);
+    this->setTrackInstrumentId(instrumentId, false, dontSendNotification);
+    this->setTrackControllerNumber(controllerNumber, dontSendNotification);
 }
 
 bool MidiTrack::isTempoTrack() const noexcept

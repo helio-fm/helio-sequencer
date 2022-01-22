@@ -26,8 +26,9 @@
 
 #include "Workspace.h"
 
-MidiTrackMenu::MidiTrackMenu(MidiTrackNode &node) :
-    trackNode(node)
+MidiTrackMenu::MidiTrackMenu(WeakReference<MidiTrack> track, WeakReference<UndoStack> undoStack) :
+    track(track),
+    undoStack(undoStack)
 {
     this->initDefaultMenu();
 }
@@ -35,16 +36,27 @@ MidiTrackMenu::MidiTrackMenu(MidiTrackNode &node) :
 void MidiTrackMenu::initDefaultMenu()
 {
     MenuPanel::Menu menu;
-    menu.add(MenuItem::item(Icons::selectAll, CommandIDs::SelectAllEvents, TRANS(I18n::Menu::trackSelectall))->closesMenu());
-    
+
+#if PLATFORM_MOBILE
+    menu.add(MenuItem::item(Icons::selectAll, CommandIDs::SelectAllEvents,
+        TRANS(I18n::Menu::trackSelectall))->closesMenu());
+#endif
+
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
         TRANS(I18n::Menu::trackRename))->closesMenu());
+
+    const auto hasTs = this->track->hasTimeSignatureOverride();
+    menu.add(MenuItem::item(Icons::meter, CommandIDs::SetTrackTimeSignature,
+        hasTs ? TRANS(I18n::Menu::timeSignatureChange) : TRANS(I18n::Menu::timeSignatureAdd))->
+        closesMenu());
 
     menu.add(MenuItem::item(Icons::copy, CommandIDs::DuplicateTrack,
         TRANS(I18n::Menu::trackDuplicate))->closesMenu());
 
+#if PLATFORM_MOBILE
     menu.add(MenuItem::item(Icons::remove,
         CommandIDs::DeleteTrack, TRANS(I18n::Menu::trackDelete)));
+#endif
 
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->
@@ -53,7 +65,7 @@ void MidiTrackMenu::initDefaultMenu()
         this->initInstrumentSelectionMenu();
     }));
 
-    const auto trackInstrumentId = this->trackNode.getTrackInstrumentId();
+    const auto trackInstrumentId = this->track->getTrackInstrumentId();
     for (const auto *instrument : instruments)
     {
         // well, the track can have an instrument which has no window; but here,
@@ -81,20 +93,18 @@ void MidiTrackMenu::initInstrumentSelectionMenu()
     }));
     
     const auto &audioCore = App::Workspace().getAudioCore();
-    const auto *selectedInstrument = audioCore.findInstrumentById(this->trackNode.getTrackInstrumentId());
+    const auto *selectedInstrument = audioCore.findInstrumentById(this->track->getTrackInstrumentId());
 
     for (const auto *instrument : audioCore.getInstruments())
     {
         const bool isTicked = (instrument == selectedInstrument);
         const String instrumentId = instrument->getIdAndHash();
-        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument,
-            instrument->getName())->
-            disabledIf(!instrument->isValid())->
+        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, instrument->getName())->
+            disabledIf(!instrument->isValid() || isTicked)->
             withAction([this, instrumentId]()
         {
-            // no need to check if not toggled, the callback will do
-            // DBG(instrumentId);
-            this->trackNode.getChangeInstrumentCallback()(instrumentId);
+            this->undoStack->beginNewTransaction();
+            this->track->setTrackInstrumentId(instrumentId, true, sendNotification);
             this->initDefaultMenu();
         }));
     }

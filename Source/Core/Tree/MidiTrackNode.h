@@ -59,16 +59,24 @@ public:
     int getTrackChannel() const noexcept override;
 
     String getTrackName() const noexcept override;
-    void setTrackName(const String &val, bool sendNotifications) override;
+    void setTrackName(const String &val, bool undoable,
+        NotificationType notificationType) override;
 
     Colour getTrackColour() const noexcept override;
-    void setTrackColour(const Colour &val, bool sendNotifications) override;
+    void setTrackColour(const Colour &val, bool undoable,
+        NotificationType notificationType) override;
 
     String getTrackInstrumentId() const noexcept override;
-    void setTrackInstrumentId(const String &val, bool sendNotifications) override;
+    void setTrackInstrumentId(const String &val, bool undoable,
+        NotificationType notificationType) override;
 
     int getTrackControllerNumber() const noexcept override;
-    void setTrackControllerNumber(int val, bool sendNotifications) override;
+    void setTrackControllerNumber(int val, NotificationType notificationType) override;
+
+    bool hasTimeSignatureOverride() const noexcept override { return false; }
+    const TimeSignatureEvent *getTimeSignatureOverride() const noexcept override { return nullptr; }
+    void setTimeSignatureOverride(const TimeSignatureEvent &ts, bool undoable,
+        NotificationType notificationType) override {}
 
     MidiSequence *getSequence() const noexcept override;
     Pattern *getPattern() const noexcept override;
@@ -106,13 +114,6 @@ public:
 
     bool hasMenu() const noexcept override;
     UniquePointer<Component> createMenu() override;
-
-    //===------------------------------------------------------------------===//
-    // Callbacks
-    //===------------------------------------------------------------------===//
-
-    Function<void(const String &text)> getRenameCallback();
-    Function<void(const String &instrumentId)> getChangeInstrumentCallback();
 
 protected:
 

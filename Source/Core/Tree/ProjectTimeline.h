@@ -23,6 +23,7 @@ class ProjectNode;
 #include "MidiTrack.h"
 #include "ProjectTimelineDiffLogic.h"
 #include "ProjectEventDispatcher.h"
+#include "TimeSignaturesAggregator.h"
 
 class ProjectTimeline final :
     public ProjectEventDispatcher,
@@ -35,8 +36,10 @@ public:
     ~ProjectTimeline() override;
 
     MidiTrack *getAnnotations() const noexcept;
-    MidiTrack *getTimeSignatures() const noexcept;
     MidiTrack *getKeySignatures() const noexcept;
+
+    MidiTrack *getTimeSignatures() const noexcept;
+    TimeSignaturesAggregator *getTimeSignaturesAggregator() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Navigation helpers
@@ -75,7 +78,7 @@ public:
     void dispatchChangeProjectBeatRange() override;
 
     ProjectNode *getProject() const noexcept override;
-        
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
@@ -110,12 +113,14 @@ private:
     String keySignaturesTrackId;
 
     UniquePointer<MidiTrack> annotationsTrack;
-    UniquePointer<MidiTrack> timeSignaturesTrack;
     UniquePointer<MidiTrack> keySignaturesTrack;
+    UniquePointer<MidiTrack> timeSignaturesTrack;
 
     UniquePointer<MidiSequence> annotationsSequence;
-    UniquePointer<MidiSequence> timeSignaturesSequence;
     UniquePointer<MidiSequence> keySignaturesSequence;
+    UniquePointer<MidiSequence> timeSignaturesSequence;
+
+    UniquePointer<TimeSignaturesAggregator> timeSignaturesAggregator;
 
     friend class AnnotationsTrack;
     friend class TimeSignaturesTrack;

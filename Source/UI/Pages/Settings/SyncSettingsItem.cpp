@@ -82,7 +82,7 @@ void SyncSettingsItem::setSelected(bool shouldBeSelected)
     }
 }
 
-void SyncSettingsItem::updateDescription(bool isLastRowInList, bool isSynced, const BaseResource::Ptr resource)
+void SyncSettingsItem::updateDescription(bool isLastRowInList, bool isSynced, const ConfigurationResource::Ptr resource)
 {
     this->resource = resource;
     this->separator->setVisible(!isLastRowInList);

@@ -272,7 +272,6 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
         stateHasClips = stateHasClips || PatternDiffHelpers::checkIfDeltaIsPatternType(stateDelta);
     }
 
-    for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         SerializedData clipsDeltaData;
         auto clipsDelta = make<Delta>(

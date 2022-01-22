@@ -38,7 +38,7 @@
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 #include "ColourIDs.h"
-#include "ColourSchemesManager.h"
+#include "ColourSchemesCollection.h"
 #include "CommandPaletteCommonActions.h"
 
 class InitScreen final : public Component, private Timer

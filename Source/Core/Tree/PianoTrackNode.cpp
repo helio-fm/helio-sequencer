@@ -19,13 +19,17 @@
 #include "PianoTrackNode.h"
 #include "PianoSequence.h"
 #include "ProjectNode.h"
-#include "TreeNodeSerializer.h"
-#include "Icons.h"
+#include "UndoStack.h"
+#include "MidiTrackActions.h"
+#include "TimeSignatureEvent.h"
 #include "Pattern.h"
+#include "TreeNodeSerializer.h"
 #include "MainLayout.h"
+#include "Icons.h"
 
 PianoTrackNode::PianoTrackNode(const String &name) :
-    MidiTrackNode(name, Serialization::Core::pianoTrack)
+    MidiTrackNode(name, Serialization::Core::pianoTrack),
+    timeSignatureOverride(this)
 {
     this->sequence = make<PianoSequence>(*this, *this);
     this->pattern = make<Pattern>(*this, *this);
@@ -38,6 +42,7 @@ PianoTrackNode::PianoTrackNode(const String &name) :
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackInstrument));
     this->deltas.add(new VCS::Delta({}, PianoSequenceDeltas::notesAdded));
     this->deltas.add(new VCS::Delta({}, PatternDeltas::clipsAdded));
+    this->deltas.add(new VCS::Delta({}, TimeSignatureDeltas::timeSignaturesChanged));
 }
 
 Image PianoTrackNode::getIcon() const noexcept
@@ -48,6 +53,45 @@ Image PianoTrackNode::getIcon() const noexcept
 int PianoTrackNode::getNumDeltas() const
 {
     return this->deltas.size();
+}
+
+//===----------------------------------------------------------------------===//
+// Time signature override
+//===----------------------------------------------------------------------===//
+
+bool PianoTrackNode::hasTimeSignatureOverride() const noexcept
+{
+    return this->timeSignatureOverride.isValid();
+}
+
+const TimeSignatureEvent *PianoTrackNode::getTimeSignatureOverride() const noexcept
+{
+    return &this->timeSignatureOverride;
+}
+
+void PianoTrackNode::setTimeSignatureOverride(const TimeSignatureEvent &ts, bool undoable, NotificationType notificationType)
+{
+    if (undoable)
+    {
+        this->getProject()->getUndoStack()->
+            perform(new MidiTrackChangeTimeSignatureAction(*this->getProject(), this->getTrackId(), ts));
+    }
+    else
+    {
+        // a time signature can only be dragged within the sequence range minus 1 bar,
+        // that might be useful, e.g. if the track starts with off-beat notes:
+        const auto maxBeat = this->getSequence()->getLengthInBeats() - ts.getBarLengthInBeats();
+        // it shouldn't be possible to pass the out-of-range time signature here,
+        jassert(ts.getBeat() >= 0.f && ts.getBeat() <= maxBeat);
+        // but let's constrain it anyway just to be safe:
+        const auto constrainedBeat = jlimit(0.f, maxBeat, ts.getBeat());
+        this->timeSignatureOverride.applyChanges(ts.withBeat(constrainedBeat));
+
+        if (notificationType != dontSendNotification)
+        {
+            this->getProject()->broadcastChangeTrackProperties(this);
+        }
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -102,6 +146,10 @@ SerializedData PianoTrackNode::getDeltaData(int deltaIndex) const
     {
         return this->serializeInstrumentDelta();
     }
+    else if (this->deltas[deltaIndex]->hasType(TimeSignatureDeltas::timeSignaturesChanged))
+    {
+        return this->serializeTimeSignatureDelta();
+    }
     else if (this->deltas[deltaIndex]->hasType(PianoSequenceDeltas::notesAdded))
     {
         return this->serializeEventsDelta();
@@ -113,6 +161,17 @@ SerializedData PianoTrackNode::getDeltaData(int deltaIndex) const
 
     jassertfalse;
     return {};
+}
+
+bool PianoTrackNode::deltaHasDefaultData(int deltaIndex) const
+{
+    using namespace Serialization::VCS;
+    if (this->deltas[deltaIndex]->hasType(TimeSignatureDeltas::timeSignaturesChanged))
+    {
+        return !this->hasTimeSignatureOverride();
+    }
+
+    return false;
 }
 
 VCS::DiffLogic *PianoTrackNode::getDiffLogic() const
@@ -127,7 +186,7 @@ void PianoTrackNode::resetStateTo(const VCS::TrackedItem &newState)
     {
         const VCS::Delta *newDelta = newState.getDelta(i);
         const auto newDeltaData(newState.getDeltaData(i));
-        
+
         if (newDelta->hasType(MidiTrackDeltas::trackPath))
         {
             this->resetPathDelta(newDeltaData);
@@ -140,7 +199,11 @@ void PianoTrackNode::resetStateTo(const VCS::TrackedItem &newState)
         {
             this->resetInstrumentDelta(newDeltaData);
         }
-        // the current layer state is supposed to have
+        else if (newDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged))
+        {
+            this->resetTimeSignatureDelta(newDeltaData);
+        }
+        // the current sequence state is supposed to have
         // a single note delta of type PianoSequenceDeltas::notesAdded
         else if (newDelta->hasType(PianoSequenceDeltas::notesAdded))
         {
@@ -153,7 +216,6 @@ void PianoTrackNode::resetStateTo(const VCS::TrackedItem &newState)
         }
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -172,6 +234,11 @@ SerializedData PianoTrackNode::serialize() const
 
     tree.appendChild(this->sequence->serialize());
     tree.appendChild(this->pattern->serialize());
+
+    if (this->hasTimeSignatureOverride())
+    {
+        tree.appendChild(this->timeSignatureOverride.serialize());
+    }
 
     TreeNodeSerializer::serializeChildren(*this, tree);
 
@@ -195,10 +262,14 @@ void PianoTrackNode::deserialize(const SerializedData &data)
         this->pattern->deserialize(e);
     }
 
+    forEachChildWithType(data, e, Serialization::Midi::timeSignature)
+    {
+        this->timeSignatureOverride.deserialize(e);
+    }
+
     // Proceed with basic properties and children
     TreeNode::deserialize(data);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Deltas
@@ -228,6 +299,17 @@ SerializedData PianoTrackNode::serializeInstrumentDelta() const
     return tree;
 }
 
+SerializedData PianoTrackNode::serializeTimeSignatureDelta() const
+{
+    using namespace Serialization::VCS;
+    SerializedData tree(TimeSignatureDeltas::timeSignaturesChanged);
+    if (this->hasTimeSignatureOverride())
+    {
+        tree.appendChild(this->timeSignatureOverride.serialize());
+    }
+    return tree;
+}
+
 SerializedData PianoTrackNode::serializeEventsDelta() const
 {
     SerializedData tree(Serialization::VCS::PianoSequenceDeltas::notesAdded);
@@ -243,27 +325,34 @@ SerializedData PianoTrackNode::serializeEventsDelta() const
 void PianoTrackNode::resetPathDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackPath));
-    const String &path(state.getProperty(Serialization::VCS::delta));
-    this->setXPath(path, false);
+    const String newName = state.getProperty(Serialization::VCS::delta);
+    this->setTrackName(newName, false, dontSendNotification);
 }
 
 void PianoTrackNode::resetColourDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackColour));
-    const String &colourString(state.getProperty(Serialization::VCS::delta));
-    const Colour &colour(Colour::fromString(colourString));
-
-    if (colour != this->getTrackColour())
-    {
-        this->setTrackColour(colour, false);
-    }
+    const String colourString = state.getProperty(Serialization::VCS::delta);
+    const auto colour = Colour::fromString(colourString);
+    this->setTrackColour(colour, false, dontSendNotification);
 }
 
 void PianoTrackNode::resetInstrumentDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackInstrument));
-    const String &instrumentId(state.getProperty(Serialization::VCS::delta));
-    this->setTrackInstrumentId(instrumentId, false);
+    const String instrumentId = state.getProperty(Serialization::VCS::delta);
+    this->setTrackInstrumentId(instrumentId, false, dontSendNotification);
+}
+
+void PianoTrackNode::resetTimeSignatureDelta(const SerializedData &state)
+{
+    jassert(state.hasType(Serialization::VCS::TimeSignatureDeltas::timeSignaturesChanged));
+
+    this->timeSignatureOverride.reset();
+    forEachChildWithType(state, e, Serialization::Midi::timeSignature)
+    {
+        this->timeSignatureOverride.deserialize(e);
+    }
 }
 
 void PianoTrackNode::resetEventsDelta(const SerializedData &state)

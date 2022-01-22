@@ -18,7 +18,7 @@
 #pragma once
 
 #include "Serializable.h"
-#include "BaseResource.h"
+#include "ConfigurationResource.h"
 #include "UserResourceDto.h"
 
 class SyncedConfigurationInfo final : public Serializable,
@@ -35,7 +35,7 @@ public:
     Identifier getType() const noexcept;
     String getName() const noexcept;
 
-    bool equals(const BaseResource::Ptr resource) const noexcept;
+    bool equals(const ConfigurationResource::Ptr resource) const noexcept;
 
     using Ptr = ReferenceCountedObjectPtr<SyncedConfigurationInfo>;
 

@@ -105,7 +105,7 @@ private:
     ProjectNode &project;
     WeakReference<Lasso> lasso;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollMenuSource);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollMenuSource)
 };
 
 // Piano roll needs at least 2 events to be selected to show selection menu
@@ -124,7 +124,8 @@ class PatternRollMenuSource final : public HeadlineItemDataSource
 {
 public:
 
-    PatternRollMenuSource(WeakReference<Lasso> lasso) : lasso(lasso) {}
+    PatternRollMenuSource(WeakReference<Lasso> lasso) :
+        lasso(lasso) {}
 
     bool hasMenu() const noexcept override { return true; }
 
@@ -150,7 +151,7 @@ private:
 
     WeakReference<Lasso> lasso;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollMenuSource);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollMenuSource)
 };
 
 PatternRollSelectionMenuManager::PatternRollSelectionMenuManager(WeakReference<Lasso> lasso) :
@@ -301,4 +302,74 @@ void PatternRollRecordingTargetController::changeListenerCallback(ChangeBroadcas
 
         this->project.setMidiRecordingTarget(&cc->getClip());
     }
+}
+
+//===----------------------------------------------------------------------===//
+// Time signature picker
+//===----------------------------------------------------------------------===//
+
+PatternRollTimeSignaturePicker::PatternRollTimeSignaturePicker(WeakReference<Lasso> lasso,
+    ProjectNode &project) :
+    lasso(lasso),
+    project(project)
+{
+    jassert(this->lasso != nullptr);
+
+    if (this->lasso != nullptr)
+    {
+        this->lasso->addChangeListener(this);
+    }
+}
+
+PatternRollTimeSignaturePicker::~PatternRollTimeSignaturePicker()
+{
+    jassert(this->lasso != nullptr);
+
+    if (this->lasso != nullptr)
+    {
+        this->lasso->removeChangeListener(this);
+    }
+}
+
+void PatternRollTimeSignaturePicker::changeListenerCallback(ChangeBroadcaster *source)
+{
+    if (this->lasso->getNumSelected() == 1)
+    {
+        auto *cc = this->lasso->getFirstAs<ClipComponent>();
+        if (dynamic_cast<PianoClipComponent *>(cc) != nullptr)
+        {
+            auto *clipTrack = cc->getClip().getPattern()->getTrack();
+            this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(clipTrack);
+            return;
+        }
+    }
+
+    // if all selected piano clips which have time signature
+    // are of the same track, use this time signature override
+
+    WeakReference<MidiTrack> targetTrack = nullptr;
+
+    for (int i = 0; i < this->lasso->getNumSelected(); ++i)
+    {
+        auto *cc = this->lasso->getItemAs<ClipComponent>(i);
+        auto *clipTrack = cc->getClip().getPattern()->getTrack();
+
+        if (!clipTrack->hasTimeSignatureOverride() ||
+            dynamic_cast<PianoClipComponent *>(cc) == nullptr)
+        {
+            continue;
+        }
+
+        if (targetTrack == nullptr)
+        {
+            targetTrack = clipTrack;
+        }
+        else if (targetTrack != clipTrack)
+        {
+            this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(nullptr);
+            return;
+        }
+    }
+
+    this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(targetTrack);
 }

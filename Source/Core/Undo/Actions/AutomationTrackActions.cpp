@@ -31,11 +31,11 @@ AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source
 AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source,
     WeakReference<TreeNode> parentTreeItem,
     SerializedData targetSerializedState,
-    const String &xPath) noexcept :
+    const String &trackName) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
     trackState(targetSerializedState),
-    trackName(xPath) {}
+    trackName(trackName) {}
 
 bool AutomationTrackInsertAction::perform()
 {
@@ -44,7 +44,7 @@ bool AutomationTrackInsertAction::perform()
     this->parentTreeItem->addChildNode(track);
 
     this->trackId = track->getTrackId();
-    track->setTrackName(this->trackName, true);
+    track->setTrackName(this->trackName, false, sendNotification);
     
     return true;
 }
@@ -125,7 +125,7 @@ bool AutomationTrackRemoveAction::undo()
         MidiTrackNode *track = new AutomationTrackNode("empty");
         track->deserialize(this->serializedTreeItem);
         this->parentTreeItem->addChildNode(track);
-        track->setTrackName(this->trackName, true);
+        track->setTrackName(this->trackName, false, sendNotification);
         return true;
     }
     

@@ -56,7 +56,7 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
     {
         const Delta *myDelta = this->target.getDelta(i);
         const auto myDeltaData(this->target.getDeltaData(i));
-        const bool deltaIsDefault = this->target.deltaHasDefaultData(i);
+        const bool deltaHasDefaultData = this->target.deltaHasDefaultData(i);
 
         SerializedData stateDeltaData;
 
@@ -76,7 +76,7 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
             }
         }
 
-        if ((!deltaFoundInState && !deltaIsDefault) || (deltaFoundInState && dataHasChanged))
+        if ((!deltaFoundInState && !deltaHasDefaultData) || (deltaFoundInState && dataHasChanged))
         {
             if (myDelta->hasType(ProjectInfoDeltas::projectLicense))
             {
@@ -181,7 +181,6 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
         stateHasTemperaments = stateHasTemperaments || stateDelta->hasType(ProjectInfoDeltas::projectTemperament);
     }
 
-    for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         auto temperamentsDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),

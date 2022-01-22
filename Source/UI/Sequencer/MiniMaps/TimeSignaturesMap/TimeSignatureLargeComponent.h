@@ -23,12 +23,10 @@ class TimeSignatureLargeComponent final : public TimeSignatureComponent
 {
 public:
 
-    TimeSignatureLargeComponent(TimeSignaturesProjectMap &parent,
-        const TimeSignatureEvent &targetEvent);
-
+    explicit TimeSignatureLargeComponent(TimeSignaturesProjectMap &parent);
     ~TimeSignatureLargeComponent();
 
-    void updateContent() override;
+    void updateContent(const TimeSignatureEvent &newEvent) override;
     void setRealBounds(const Rectangle<float> bounds) override;
     float getTextWidth() const noexcept override;
 
@@ -40,16 +38,16 @@ public:
 private:
 
     ComponentDragger dragger;
-    TimeSignatureEvent anchor;
-
-    int numerator = 0;
-    int denominator = 0;
-
+    
     Rectangle<float> boundsOffset;
     Point<int> clickOffset;
 
     bool draggingState = false;
     bool draggingHadCheckpoint = false;
+    float draggingAnchorBeat = 0.f;
+
+    Colour colour;
+    Path triangleShape;
 
     // workaround странного поведения juce
     // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает

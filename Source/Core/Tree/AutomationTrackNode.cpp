@@ -255,38 +255,33 @@ SerializedData AutomationTrackNode::serializeEventsDelta() const
     return tree;
 }
 
-
 void AutomationTrackNode::resetPathDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackPath));
-    const String &path(state.getProperty(Serialization::VCS::delta));
-    this->setXPath(path, false);
+    const String newName = state.getProperty(Serialization::VCS::delta);
+    this->setTrackName(newName, false, dontSendNotification);
 }
 
 void AutomationTrackNode::resetColourDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackColour));
-    const String &colourString(state.getProperty(Serialization::VCS::delta));
-    const Colour &colour(Colour::fromString(colourString));
-
-    if (colour != this->getTrackColour())
-    {
-        this->setTrackColour(colour, false);
-    }
+    const String colourString = state.getProperty(Serialization::VCS::delta);
+    const auto colour = Colour::fromString(colourString);
+    this->setTrackColour(colour, false, dontSendNotification);
 }
 
 void AutomationTrackNode::resetInstrumentDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackInstrument));
-    const String &instrumentId(state.getProperty(Serialization::VCS::delta));
-    this->setTrackInstrumentId(instrumentId, false);
+    const String instrumentId = state.getProperty(Serialization::VCS::delta);
+    this->setTrackInstrumentId(instrumentId, false, dontSendNotification);
 }
 
 void AutomationTrackNode::resetControllerDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackController));
-    const int ccNumber(state.getProperty(Serialization::VCS::delta));
-    this->setTrackControllerNumber(ccNumber, false);
+    const int ccNumber = state.getProperty(Serialization::VCS::delta);
+    this->setTrackControllerNumber(ccNumber, dontSendNotification);
 }
 
 void AutomationTrackNode::resetEventsDelta(const SerializedData &state)

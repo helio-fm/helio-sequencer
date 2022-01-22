@@ -93,15 +93,15 @@ Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) cons
 
         if (!deltaFoundInState || dataHasChanged)
         {
-            if (myDelta->hasType(ProjectTimelineDeltas::annotationsAdded))
+            if (myDelta->hasType(AnnotationDeltas::annotationsAdded))
             {
                 diff->applyDeltas(createAnnotationsDiffs(stateDeltaData, myDeltaData));
             }
-            else if (myDelta->hasType(ProjectTimelineDeltas::timeSignaturesAdded))
+            else if (myDelta->hasType(TimeSignatureDeltas::timeSignaturesAdded))
             {
                 diff->applyDeltas(createTimeSignaturesDiffs(stateDeltaData, myDeltaData));
             }
-            else if (myDelta->hasType(ProjectTimelineDeltas::keySignaturesAdded))
+            else if (myDelta->hasType(KeySignatureDeltas::keySignaturesAdded))
             {
                 diff->applyDeltas(createKeySignaturesDiffs(stateDeltaData, myDeltaData));
             }
@@ -128,15 +128,15 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
         // a delta of type eventsAdded with all events merged in there
         auto annotationsDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
-            ProjectTimelineDeltas::annotationsAdded);
+            AnnotationDeltas::annotationsAdded);
 
         auto timeSignaturesDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
-            ProjectTimelineDeltas::timeSignaturesAdded);
+            TimeSignatureDeltas::timeSignaturesAdded);
 
         auto keySignaturesDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
-            ProjectTimelineDeltas::keySignaturesAdded);
+            KeySignatureDeltas::keySignaturesAdded);
 
         SerializedData annotationsDeltaData;
         SerializedData timeSignaturesDeltaData;
@@ -163,17 +163,17 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
                 deltaFoundInChanges = true;
                 const bool incrementalMerge = annotationsDeltaData.isValid();
 
-                if (targetDelta->hasType(ProjectTimelineDeltas::annotationsAdded))
+                if (targetDelta->hasType(AnnotationDeltas::annotationsAdded))
                 {
                     annotationsDeltaData = mergeAnnotationsAdded(
                         incrementalMerge ? annotationsDeltaData : stateDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->hasType(ProjectTimelineDeltas::annotationsRemoved))
+                else if (targetDelta->hasType(AnnotationDeltas::annotationsRemoved))
                 {
                     annotationsDeltaData = mergeAnnotationsRemoved(
                         incrementalMerge ? annotationsDeltaData : stateDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->hasType(ProjectTimelineDeltas::annotationsChanged))
+                else if (targetDelta->hasType(AnnotationDeltas::annotationsChanged))
                 {
                     annotationsDeltaData = mergeAnnotationsChanged(
                         incrementalMerge ? annotationsDeltaData : stateDeltaData, targetDeltaData);
@@ -184,17 +184,17 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
                 deltaFoundInChanges = true;
                 const bool incrementalMerge = timeSignaturesDeltaData.isValid();
                 
-                if (targetDelta->hasType(ProjectTimelineDeltas::timeSignaturesAdded))
+                if (targetDelta->hasType(TimeSignatureDeltas::timeSignaturesAdded))
                 {
                     timeSignaturesDeltaData = mergeTimeSignaturesAdded(
                         incrementalMerge ? timeSignaturesDeltaData : stateDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->hasType(ProjectTimelineDeltas::timeSignaturesRemoved))
+                else if (targetDelta->hasType(TimeSignatureDeltas::timeSignaturesRemoved))
                 {
                     timeSignaturesDeltaData = mergeTimeSignaturesRemoved(
                         incrementalMerge ? timeSignaturesDeltaData : stateDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->hasType(ProjectTimelineDeltas::timeSignaturesChanged))
+                else if (targetDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged))
                 {
                     timeSignaturesDeltaData = mergeTimeSignaturesChanged(
                         incrementalMerge ? timeSignaturesDeltaData : stateDeltaData, targetDeltaData);
@@ -205,17 +205,17 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
                 deltaFoundInChanges = true;
                 const bool incrementalMerge = keySignaturesDeltaData.isValid();
 
-                if (targetDelta->hasType(ProjectTimelineDeltas::keySignaturesAdded))
+                if (targetDelta->hasType(KeySignatureDeltas::keySignaturesAdded))
                 {
                     keySignaturesDeltaData = mergeKeySignaturesAdded(
                         incrementalMerge ? keySignaturesDeltaData : stateDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->hasType(ProjectTimelineDeltas::keySignaturesRemoved))
+                else if (targetDelta->hasType(KeySignatureDeltas::keySignaturesRemoved))
                 {
                     keySignaturesDeltaData = mergeKeySignaturesRemoved(
                         incrementalMerge ? keySignaturesDeltaData : stateDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->hasType(ProjectTimelineDeltas::keySignaturesChanged))
+                else if (targetDelta->hasType(KeySignatureDeltas::keySignaturesChanged))
                 {
                     keySignaturesDeltaData = mergeKeySignaturesChanged(
                         incrementalMerge ? keySignaturesDeltaData : stateDeltaData, targetDeltaData);
@@ -262,19 +262,18 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
         stateHasKeySignatures = stateHasKeySignatures || checkIfDeltaIsKeySignatureType(stateDelta);
     }
 
-    for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         auto annotationsDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
-            ProjectTimelineDeltas::annotationsAdded);
+            AnnotationDeltas::annotationsAdded);
 
         auto keySignaturesDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
-            ProjectTimelineDeltas::keySignaturesAdded);
+            KeySignatureDeltas::keySignaturesAdded);
 
         auto timeSignaturesDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
-            ProjectTimelineDeltas::timeSignaturesAdded);
+            TimeSignatureDeltas::timeSignaturesAdded);
 
         SerializedData annotationsDeltaData;
         SerializedData keySignaturesDeltaData;
@@ -292,19 +291,19 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             if (foundMissingKeySignature)
             {
                 const bool incrementalMerge = keySignaturesDeltaData.isValid();
-                SerializedData emptyKeySignaturesDeltaData(serializeTimelineSequence({}, ProjectTimelineDeltas::keySignaturesAdded));
+                SerializedData emptyKeySignaturesDeltaData(serializeTimelineSequence({}, KeySignatureDeltas::keySignaturesAdded));
 
-                if (targetDelta->hasType(ProjectTimelineDeltas::keySignaturesAdded))
+                if (targetDelta->hasType(KeySignatureDeltas::keySignaturesAdded))
                 {
                     keySignaturesDeltaData = mergeKeySignaturesAdded(
                         incrementalMerge ? keySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->hasType(ProjectTimelineDeltas::keySignaturesRemoved))
+                else if (targetDelta->hasType(KeySignatureDeltas::keySignaturesRemoved))
                 {
                     keySignaturesDeltaData = mergeKeySignaturesRemoved(
                         incrementalMerge ? keySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->hasType(ProjectTimelineDeltas::keySignaturesChanged))
+                else if (targetDelta->hasType(KeySignatureDeltas::keySignaturesChanged))
                 {
                     keySignaturesDeltaData = mergeKeySignaturesChanged(
                         incrementalMerge ? keySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
@@ -313,19 +312,19 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             else if (foundMissingTimeSignature)
             {
                 const bool incrementalMerge = timeSignaturesDeltaData.isValid();
-                SerializedData emptyTimeSignaturesDeltaData(serializeTimelineSequence({}, ProjectTimelineDeltas::timeSignaturesAdded));
+                SerializedData emptyTimeSignaturesDeltaData(serializeTimelineSequence({}, TimeSignatureDeltas::timeSignaturesAdded));
 
-                if (targetDelta->hasType(ProjectTimelineDeltas::timeSignaturesAdded))
+                if (targetDelta->hasType(TimeSignatureDeltas::timeSignaturesAdded))
                 {
                     timeSignaturesDeltaData = mergeTimeSignaturesAdded(
                         incrementalMerge ? timeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->hasType(ProjectTimelineDeltas::timeSignaturesRemoved))
+                else if (targetDelta->hasType(TimeSignatureDeltas::timeSignaturesRemoved))
                 {
                     timeSignaturesDeltaData = mergeTimeSignaturesRemoved(
                         incrementalMerge ? timeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->hasType(ProjectTimelineDeltas::timeSignaturesChanged))
+                else if (targetDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged))
                 {
                     timeSignaturesDeltaData = mergeTimeSignaturesChanged(
                         incrementalMerge ? timeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
@@ -334,19 +333,19 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             else if (foundMissingAnnotation)
             {
                 const bool incrementalMerge = annotationsDeltaData.isValid();
-                SerializedData emptyAnnotationDeltaData(serializeTimelineSequence({}, ProjectTimelineDeltas::annotationsAdded));
+                SerializedData emptyAnnotationDeltaData(serializeTimelineSequence({}, AnnotationDeltas::annotationsAdded));
 
-                if (targetDelta->hasType(ProjectTimelineDeltas::annotationsAdded))
+                if (targetDelta->hasType(AnnotationDeltas::annotationsAdded))
                 {
                     annotationsDeltaData = mergeAnnotationsAdded(
                         incrementalMerge ? annotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->hasType(ProjectTimelineDeltas::annotationsRemoved))
+                else if (targetDelta->hasType(AnnotationDeltas::annotationsRemoved))
                 {
                     annotationsDeltaData = mergeAnnotationsRemoved(
                         incrementalMerge ? annotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->hasType(ProjectTimelineDeltas::annotationsChanged))
+                else if (targetDelta->hasType(AnnotationDeltas::annotationsChanged))
                 {
                     annotationsDeltaData = mergeAnnotationsChanged(
                         incrementalMerge ? annotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
@@ -414,7 +413,7 @@ SerializedData mergeAnnotationsAdded(const SerializedData &state, const Serializ
         }
     }
 
-    return serializeTimelineSequence(result, ProjectTimelineDeltas::annotationsAdded);
+    return serializeTimelineSequence(result, AnnotationDeltas::annotationsAdded);
 }
 
 SerializedData mergeAnnotationsRemoved(const SerializedData &state, const SerializedData &changes)
@@ -451,7 +450,7 @@ SerializedData mergeAnnotationsRemoved(const SerializedData &state, const Serial
         }
     }
 
-    return serializeTimelineSequence(result, ProjectTimelineDeltas::annotationsAdded);
+    return serializeTimelineSequence(result, AnnotationDeltas::annotationsAdded);
 }
 
 SerializedData mergeAnnotationsChanged(const SerializedData &state, const SerializedData &changes)
@@ -490,7 +489,7 @@ SerializedData mergeAnnotationsChanged(const SerializedData &state, const Serial
         //jassert(foundEventInChanges);
     }
 
-    return serializeTimelineSequence(result, ProjectTimelineDeltas::annotationsAdded);
+    return serializeTimelineSequence(result, AnnotationDeltas::annotationsAdded);
 }
 
 //===----------------------------------------------------------------------===//
@@ -534,7 +533,7 @@ SerializedData mergeTimeSignaturesAdded(const SerializedData &state, const Seria
         }
     }
     
-    return serializeTimelineSequence(result, ProjectTimelineDeltas::timeSignaturesAdded);
+    return serializeTimelineSequence(result, TimeSignatureDeltas::timeSignaturesAdded);
 }
 
 SerializedData mergeTimeSignaturesRemoved(const SerializedData &state, const SerializedData &changes)
@@ -572,7 +571,7 @@ SerializedData mergeTimeSignaturesRemoved(const SerializedData &state, const Ser
         }
     }
     
-    return serializeTimelineSequence(result, ProjectTimelineDeltas::timeSignaturesAdded);
+    return serializeTimelineSequence(result, TimeSignatureDeltas::timeSignaturesAdded);
 }
 
 SerializedData mergeTimeSignaturesChanged(const SerializedData &state, const SerializedData &changes)
@@ -610,7 +609,7 @@ SerializedData mergeTimeSignaturesChanged(const SerializedData &state, const Ser
         //jassert(foundEventInChanges);
     }
     
-    return serializeTimelineSequence(result, ProjectTimelineDeltas::timeSignaturesAdded);
+    return serializeTimelineSequence(result, TimeSignatureDeltas::timeSignaturesAdded);
 }
 
 //===----------------------------------------------------------------------===//
@@ -654,7 +653,7 @@ SerializedData mergeKeySignaturesAdded(const SerializedData &state, const Serial
         }
     }
 
-    return serializeTimelineSequence(result, ProjectTimelineDeltas::keySignaturesAdded);
+    return serializeTimelineSequence(result, KeySignatureDeltas::keySignaturesAdded);
 }
 
 SerializedData mergeKeySignaturesRemoved(const SerializedData &state, const SerializedData &changes)
@@ -692,7 +691,7 @@ SerializedData mergeKeySignaturesRemoved(const SerializedData &state, const Seri
         }
     }
 
-    return serializeTimelineSequence(result, ProjectTimelineDeltas::keySignaturesAdded);
+    return serializeTimelineSequence(result, KeySignatureDeltas::keySignaturesAdded);
 }
 
 SerializedData mergeKeySignaturesChanged(const SerializedData &state, const SerializedData &changes)
@@ -730,7 +729,7 @@ SerializedData mergeKeySignaturesChanged(const SerializedData &state, const Seri
         //jassert(foundEventInChanges);
     }
 
-    return serializeTimelineSequence(result, ProjectTimelineDeltas::keySignaturesAdded);
+    return serializeTimelineSequence(result, KeySignatureDeltas::keySignaturesAdded);
 }
 
 
@@ -820,7 +819,7 @@ Array<DeltaDiff> createAnnotationsDiffs(const SerializedData &state, const Seria
         res.add(serializeTimelineChanges(addedEvents,
             "added {x} annotations",
             addedEvents.size(),
-            ProjectTimelineDeltas::annotationsAdded));
+            AnnotationDeltas::annotationsAdded));
     }
 
     if (removedEvents.size() > 0)
@@ -828,7 +827,7 @@ Array<DeltaDiff> createAnnotationsDiffs(const SerializedData &state, const Seria
         res.add(serializeTimelineChanges(removedEvents,
             "removed {x} annotations",
             removedEvents.size(),
-            ProjectTimelineDeltas::annotationsRemoved));
+            AnnotationDeltas::annotationsRemoved));
     }
 
     if (changedEvents.size() > 0)
@@ -836,7 +835,7 @@ Array<DeltaDiff> createAnnotationsDiffs(const SerializedData &state, const Seria
         res.add(serializeTimelineChanges(changedEvents,
             "changed {x} annotations",
             changedEvents.size(),
-            ProjectTimelineDeltas::annotationsChanged));
+            AnnotationDeltas::annotationsChanged));
     }
 
     return res;
@@ -924,7 +923,7 @@ Array<DeltaDiff> createTimeSignaturesDiffs(const SerializedData &state, const Se
         res.add(serializeTimelineChanges(addedEvents,
             "added {x} time signatures",
             addedEvents.size(),
-            ProjectTimelineDeltas::timeSignaturesAdded));
+            TimeSignatureDeltas::timeSignaturesAdded));
     }
     
     if (removedEvents.size() > 0)
@@ -932,7 +931,7 @@ Array<DeltaDiff> createTimeSignaturesDiffs(const SerializedData &state, const Se
         res.add(serializeTimelineChanges(removedEvents,
             "removed {x} time signatures",
             removedEvents.size(),
-            ProjectTimelineDeltas::timeSignaturesRemoved));
+            TimeSignatureDeltas::timeSignaturesRemoved));
     }
     
     if (changedEvents.size() > 0)
@@ -940,7 +939,7 @@ Array<DeltaDiff> createTimeSignaturesDiffs(const SerializedData &state, const Se
         res.add(serializeTimelineChanges(changedEvents,
             "changed {x} time signatures",
             changedEvents.size(),
-            ProjectTimelineDeltas::timeSignaturesChanged));
+            TimeSignatureDeltas::timeSignaturesChanged));
     }
     
     return res;
@@ -1027,7 +1026,7 @@ Array<DeltaDiff> createKeySignaturesDiffs(const SerializedData &state, const Ser
         res.add(serializeTimelineChanges(addedEvents,
             "added {x} key signatures",
             addedEvents.size(),
-            ProjectTimelineDeltas::keySignaturesAdded));
+            KeySignatureDeltas::keySignaturesAdded));
     }
 
     if (removedEvents.size() > 0)
@@ -1035,7 +1034,7 @@ Array<DeltaDiff> createKeySignaturesDiffs(const SerializedData &state, const Ser
         res.add(serializeTimelineChanges(removedEvents,
             "removed {x} key signatures",
             removedEvents.size(),
-            ProjectTimelineDeltas::keySignaturesRemoved));
+            KeySignatureDeltas::keySignaturesRemoved));
     }
 
     if (changedEvents.size() > 0)
@@ -1043,7 +1042,7 @@ Array<DeltaDiff> createKeySignaturesDiffs(const SerializedData &state, const Ser
         res.add(serializeTimelineChanges(changedEvents,
             "changed {x} key signatures",
             changedEvents.size(),
-            ProjectTimelineDeltas::keySignaturesChanged));
+            KeySignatureDeltas::keySignaturesChanged));
     }
 
     return res;
@@ -1133,25 +1132,25 @@ SerializedData serializeTimelineSequence(Array<const MidiEvent *> changes, const
 bool checkIfDeltaIsAnnotationType(const Delta *d)
 {
     using namespace Serialization::VCS;
-    return (d->hasType(ProjectTimelineDeltas::annotationsAdded) ||
-        d->hasType(ProjectTimelineDeltas::annotationsChanged) ||
-        d->hasType(ProjectTimelineDeltas::annotationsRemoved));
+    return (d->hasType(AnnotationDeltas::annotationsAdded) ||
+        d->hasType(AnnotationDeltas::annotationsChanged) ||
+        d->hasType(AnnotationDeltas::annotationsRemoved));
 }
 
 bool checkIfDeltaIsTimeSignatureType(const Delta *d)
 {
     using namespace Serialization::VCS;
-    return (d->hasType(ProjectTimelineDeltas::timeSignaturesAdded) ||
-        d->hasType(ProjectTimelineDeltas::timeSignaturesChanged) ||
-        d->hasType(ProjectTimelineDeltas::timeSignaturesRemoved));
+    return (d->hasType(TimeSignatureDeltas::timeSignaturesAdded) ||
+        d->hasType(TimeSignatureDeltas::timeSignaturesChanged) ||
+        d->hasType(TimeSignatureDeltas::timeSignaturesRemoved));
 }
 
 bool checkIfDeltaIsKeySignatureType(const Delta *d)
 {
     using namespace Serialization::VCS;
-    return (d->hasType(ProjectTimelineDeltas::keySignaturesAdded) ||
-        d->hasType(ProjectTimelineDeltas::keySignaturesRemoved) ||
-        d->hasType(ProjectTimelineDeltas::keySignaturesChanged));
+    return (d->hasType(KeySignatureDeltas::keySignaturesAdded) ||
+        d->hasType(KeySignatureDeltas::keySignaturesRemoved) ||
+        d->hasType(KeySignatureDeltas::keySignaturesChanged));
 }
 
 }

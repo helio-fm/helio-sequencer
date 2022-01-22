@@ -25,8 +25,8 @@ class TimeSignatureComponent : public Component
 {
 public:
 
-    TimeSignatureComponent(TimeSignaturesProjectMap &parent, const TimeSignatureEvent &event) :
-        editor(parent), event(event) {}
+    explicit TimeSignatureComponent(TimeSignaturesProjectMap &parent) :
+        editor(parent) {}
 
     const TimeSignatureEvent &getEvent() const noexcept
     {
@@ -40,7 +40,7 @@ public:
 
     virtual float getTextWidth() const noexcept = 0;
 
-    virtual void updateContent() = 0;
+    virtual void updateContent(const TimeSignatureEvent &newEvent) = 0;
     virtual void setRealBounds(const Rectangle<float> bounds) = 0;
 
     static int compareElements(const TimeSignatureComponent *first,
@@ -57,14 +57,15 @@ public:
 
 
 #if PLATFORM_DESKTOP
-    static constexpr auto timeSignatureHeight = 23;
+    static constexpr auto timeSignatureHeight = 20;
 #elif PLATFORM_MOBILE
     static constexpr auto timeSignatureHeight = Globals::UI::rollHeaderHeight;
 #endif
 
 protected:
 
-    const TimeSignatureEvent &event;
+    TimeSignatureEvent event;
+
     TimeSignaturesProjectMap &editor;
 
 };

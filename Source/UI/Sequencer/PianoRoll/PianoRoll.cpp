@@ -25,6 +25,7 @@
 #include "PianoTrackNode.h"
 #include "ModalDialogInput.h"
 #include "TrackPropertiesDialog.h"
+#include "TimeSignatureDialog.h"
 #include "ProjectTimeline.h"
 #include "ProjectMetadata.h"
 #include "Note.h"
@@ -644,10 +645,6 @@ void PianoRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 {
     if (this->activeClip == clip)
     {
-        // the parameters of the clip have changed;
-        // keeping track of the active clip changes this way is very ugly,
-        // but refactoring to keep a weak reference instead is too bloody;
-        // please fixme someday (maybe just keep a raw pointer?)
         this->activeClip = newClip;
     }
 
@@ -802,6 +799,8 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
     const Clip &newActiveClip, bool shouldFocus)
 {
     this->contextMenuController->cancelIfPending();
+
+    this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(newActiveTrack);
 
     if (!shouldFocus &&
         this->activeClip == newActiveClip &&
@@ -1029,10 +1028,13 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->switchToClipInViewport();
         break;
     case CommandIDs::RenameTrack:
-        if (auto *trackNode = dynamic_cast<MidiTrackNode *>(this->project.findActiveNode()))
-        {
-            App::showModalComponent(make<TrackPropertiesDialog>(this->project, trackNode));
-        }
+        jassert(this->activeTrack != nullptr);
+        App::showModalComponent(make<TrackPropertiesDialog>(this->project, this->activeTrack));
+        break;
+    case CommandIDs::SetTrackTimeSignature:
+        jassert(dynamic_cast<PianoTrackNode *>(this->activeTrack.get()));
+        App::showModalComponent(TimeSignatureDialog::editingDialog(*this,
+            this->project.getUndoStack(), *this->activeTrack->getTimeSignatureOverride()));
         break;
     case CommandIDs::EditCurrentInstrument:
         if (auto *window = PluginWindow::getWindowFor(this->activeTrack->getTrackInstrumentId()))

@@ -25,7 +25,7 @@
 
 #include "BackendService.h"
 #include "SyncedConfigurationInfo.h"
-#include "BaseResource.h"
+#include "ConfigurationResource.h"
 
 class ResourceSyncService final : private BackendService
 {
@@ -33,8 +33,8 @@ public:
 
     ResourceSyncService();
 
-    void queueSync(const BaseResource::Ptr resource);
-    void queueDelete(const BaseResource::Ptr resource);
+    void queueSync(const ConfigurationResource::Ptr resource);
+    void queueDelete(const ConfigurationResource::Ptr resource);
     void queueFetch(const SyncedConfigurationInfo::Ptr resource);
 
 private:

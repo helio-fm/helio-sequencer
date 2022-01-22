@@ -248,42 +248,21 @@ void AnnotationsProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tra
 // Private
 //===----------------------------------------------------------------------===//
 
-void AnnotationsProjectMap::onAnnotationMoved(AnnotationComponent *nc) {}
+void AnnotationsProjectMap::onAnnotationMoved(AnnotationComponent *c) {}
 
-void AnnotationsProjectMap::onAnnotationTapped(AnnotationComponent *nc)
+void AnnotationsProjectMap::onAnnotationTapped(AnnotationComponent *c)
 {
-    const AnnotationEvent *annotationUnderSeekCursor = nullptr;
-    const auto *timeline = this->project.getTimeline();
-    const auto annotations = timeline->getAnnotations()->getSequence();
     const auto seekBeat = this->project.getTransport().getSeekBeat();
-
-    for (int i = 0; i < annotations->size(); ++i)
-    {
-        if (auto *annotation = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i)))
-        {
-            if (fabs(annotation->getBeat() - seekBeat) < 0.001f)
-            {
-                annotationUnderSeekCursor = annotation;
-                break;
-            }
-        }
-    }
-
-    const auto newSeekBeat = nc->getBeat();
+    const auto newSeekBeat = c->getBeat();
     const bool wasPlaying = this->project.getTransport().isPlaying();
 
     this->project.getTransport().stopPlaybackAndRecording();
     this->project.getTransport().seekToBeat(newSeekBeat);
 
-    //if (wasPlaying)
-    //{
-    //    this->project.getTransport().startPlayback();
-    //}
-
     // если аннотация уже выбрана - покажем ее меню
-    if (annotationUnderSeekCursor == &nc->getEvent() && !wasPlaying)
+    if (fabs(c->getBeat() - seekBeat) < 0.001f && !wasPlaying)
     {
-        this->showContextMenuFor(nc);
+        this->showContextMenuFor(c);
     }
 }
 

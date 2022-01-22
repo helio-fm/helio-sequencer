@@ -26,24 +26,26 @@ Config::Config(int timeoutToSaveMs) :
     saveTimeout(timeoutToSaveMs),
     propertiesFile(DocumentHelpers::getConfigSlot("settings.helio"))
 {
-    this->translationsManager = make<TranslationsManager>();
-    this->arpeggiatorsManager = make<ArpeggiatorsManager>();
-    this->colourSchemesManager = make<ColourSchemesManager>();
-    this->hotkeySchemesManager = make<HotkeySchemesManager>();
-    this->temperamentsManager = make<TemperamentsManager>();
-    this->keyboardMappingsManager = make<KeyboardMappingsManager>();
-    this->scalesManager = make<ScalesManager>();
-    this->chordsManager = make<ChordsManager>();
+    this->translationsCollection = make<TranslationsCollection>();
+    this->arpeggiatorsCollection = make<ArpeggiatorsCollection>();
+    this->colourSchemesCollection = make<ColourSchemesCollection>();
+    this->hotkeySchemesCollection = make<HotkeySchemesCollection>();
+    this->temperamentsCollection = make<TemperamentsCollection>();
+    this->keyboardMappingsCollection = make<KeyboardMappingsCollection>();
+    this->scalesCollection = make<ScalesCollection>();
+    this->chordsCollection = make<ChordsCollection>();
+    this->metersCollection = make<MetersCollection>();
 
     using namespace Serialization::Resources;
-    this->resources[translations] = this->translationsManager.get();
-    this->resources[arpeggiators] = this->arpeggiatorsManager.get();
-    this->resources[colourSchemes] = this->colourSchemesManager.get();
-    this->resources[hotkeySchemes] = this->hotkeySchemesManager.get();
-    this->resources[temperaments] = this->temperamentsManager.get();
-    this->resources[keyboardMappings] = this->keyboardMappingsManager.get();
-    this->resources[scales] = this->scalesManager.get();
-    this->resources[chords] = this->chordsManager.get();
+    this->resources[translations] = this->translationsCollection.get();
+    this->resources[arpeggiators] = this->arpeggiatorsCollection.get();
+    this->resources[colourSchemes] = this->colourSchemesCollection.get();
+    this->resources[hotkeySchemes] = this->hotkeySchemesCollection.get();
+    this->resources[temperaments] = this->temperamentsCollection.get();
+    this->resources[keyboardMappings] = this->keyboardMappingsCollection.get();
+    this->resources[scales] = this->scalesCollection.get();
+    this->resources[chords] = this->chordsCollection.get();
+    this->resources[meters] = this->metersCollection.get();
 
     this->uiFlags = make<UserInterfaceFlags>();
 }
@@ -193,49 +195,54 @@ void Config::onConfigChanged()
     }
 }
 
-ResourceManagerLookup &Config::getAllResources() noexcept
+ResourceCollectionsLookup &Config::getAllResources() noexcept
 {
     return this->resources;
 }
 
-ChordsManager *Config::getChords() const noexcept
+ChordsCollection *Config::getChords() const noexcept
 {
-    return this->chordsManager.get();
+    return this->chordsCollection.get();
 }
 
-ScalesManager *Config::getScales() const noexcept
+ScalesCollection *Config::getScales() const noexcept
 {
-    return this->scalesManager.get();
+    return this->scalesCollection.get();
 }
 
-TranslationsManager *Config::getTranslations() const noexcept
+MetersCollection *Config::getMeters() const noexcept
 {
-    return this->translationsManager.get();
+    return this->metersCollection.get();
 }
 
-ArpeggiatorsManager *Config::getArpeggiators() const noexcept
+TranslationsCollection *Config::getTranslations() const noexcept
 {
-    return this->arpeggiatorsManager.get();
+    return this->translationsCollection.get();
 }
 
-ColourSchemesManager *Config::getColourSchemes() const noexcept
+ArpeggiatorsCollection *Config::getArpeggiators() const noexcept
 {
-    return this->colourSchemesManager.get();
+    return this->arpeggiatorsCollection.get();
 }
 
-HotkeySchemesManager *Config::getHotkeySchemes() const noexcept
+ColourSchemesCollection *Config::getColourSchemes() const noexcept
 {
-    return this->hotkeySchemesManager.get();
+    return this->colourSchemesCollection.get();
 }
 
-TemperamentsManager *Config::getTemperaments() const noexcept
+HotkeySchemesCollection *Config::getHotkeySchemes() const noexcept
 {
-    return this->temperamentsManager.get();
+    return this->hotkeySchemesCollection.get();
 }
 
-KeyboardMappingsManager *Config::getKeyboardMappings() const noexcept
+TemperamentsCollection *Config::getTemperaments() const noexcept
 {
-    return this->keyboardMappingsManager.get();
+    return this->temperamentsCollection.get();
+}
+
+KeyboardMappingsCollection *Config::getKeyboardMappings() const noexcept
+{
+    return this->keyboardMappingsCollection.get();
 }
 
 UserInterfaceFlags *Config::getUiFlags() const noexcept

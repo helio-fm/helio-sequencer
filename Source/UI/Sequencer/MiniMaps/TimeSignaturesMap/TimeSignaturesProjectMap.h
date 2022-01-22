@@ -17,17 +17,18 @@
 
 #pragma once
 
-#include "TimeSignatureEvent.h"
-#include "ProjectListener.h"
-
 class RollBase;
 class ProjectNode;
 class TrackStartIndicator;
 class TrackEndIndicator;
 class TimeSignatureComponent;
 
-class TimeSignaturesProjectMap final :
-    public Component,
+#include "ProjectListener.h"
+#include "TimeSignatureEvent.h"
+#include "TimeSignaturesAggregator.h"
+
+class TimeSignaturesProjectMap final : public Component,
+    public TimeSignaturesAggregator::Listener,
     public ProjectListener
 {
 public:
@@ -37,7 +38,40 @@ public:
     TimeSignaturesProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type);
     ~TimeSignaturesProjectMap() override;
 
-    void alignTimeSignatureComponent(TimeSignatureComponent *nc);
+    //===------------------------------------------------------------------===//
+    // ProjectListener
+    //===------------------------------------------------------------------===//
+
+    void onChangeMidiEvent(const MidiEvent &, const MidiEvent &) override {}
+    void onAddMidiEvent(const MidiEvent &) override {}
+    void onRemoveMidiEvent(const MidiEvent &) override {}
+    void onAddClip(const Clip &) override {}
+    void onChangeClip(const Clip &, const Clip &) override {}
+    void onRemoveClip(const Clip &) override {}
+    void onAddTrack(MidiTrack *const) override {}
+    void onRemoveTrack(MidiTrack *const) override {}
+    void onChangeTrackProperties(MidiTrack *const) override {}
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
+    void onReloadProjectContent(const Array<MidiTrack *> &, const ProjectMetadata *) override {}
+
+    //===------------------------------------------------------------------===//
+    // TimeSignaturesAggregator::Listener
+    //===------------------------------------------------------------------===//
+
+    void onTimeSignaturesUpdated() override;
+
+    //===------------------------------------------------------------------===//
+    // Stuff for children
+    //===------------------------------------------------------------------===//
+
+    void onTimeSignatureTapped(TimeSignatureComponent *nc);
+    void showDialogFor(TimeSignatureComponent *nc);
+    void alternateActionFor(TimeSignatureComponent *nc);
+
+    float getBeatByXPosition(int x) const;
+    void applyTimeSignatureBounds(TimeSignatureComponent *c,
+        TimeSignatureComponent *nextOne = nullptr);
 
     //===------------------------------------------------------------------===//
     // Component
@@ -45,47 +79,9 @@ public:
 
     void resized() override;
 
-    //===------------------------------------------------------------------===//
-    // ProjectListener
-    //===------------------------------------------------------------------===//
-
-    void onChangeMidiEvent(const MidiEvent &oldEvent,
-        const MidiEvent &newEvent) override;
-    void onAddMidiEvent(const MidiEvent &event) override;
-    void onRemoveMidiEvent(const MidiEvent &event) override;
-
-    // Assuming the timeline has no patterns/clips:
-    void onAddClip(const Clip &clip) override {}
-    void onChangeClip(const Clip &oldClip, const Clip &newClip) override {}
-    void onRemoveClip(const Clip &clip) override {}
-
-    void onAddTrack(MidiTrack *const track) override;
-    void onRemoveTrack(MidiTrack *const track) override;
-    void onChangeTrackProperties(MidiTrack *const track) override;
-
-    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
-    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
-    void onReloadProjectContent(const Array<MidiTrack *> &tracks,
-        const ProjectMetadata *meta) override;
-
-    //===------------------------------------------------------------------===//
-    // Stuff for children
-    //===------------------------------------------------------------------===//
-
-    void onTimeSignatureMoved(TimeSignatureComponent *nc);
-    void onTimeSignatureTapped(TimeSignatureComponent *nc);
-    void showContextMenuFor(TimeSignatureComponent *nc);
-    void alternateActionFor(TimeSignatureComponent *nc);
-    float getBeatByXPosition(int x) const;
-    
 private:
     
     void reloadTrackMap();
-    void applyTimeSignatureBounds(TimeSignatureComponent *nc, TimeSignatureComponent *nextOne = nullptr);
-    
-    TimeSignatureComponent *getPreviousEventComponent(int indexOfSorted) const;
-    TimeSignatureComponent *getNextEventComponent(int indexOfSorted) const;
-    
     void updateTrackRangeIndicatorsAnchors();
     
 private:
@@ -105,10 +101,8 @@ private:
     ComponentAnimator animator;
 
     const Type type;
-    TimeSignatureComponent *createComponent(const TimeSignatureEvent &event);
+    TimeSignatureComponent *createComponent();
 
     OwnedArray<TimeSignatureComponent> timeSignatureComponents;
-    FlatHashMap<TimeSignatureEvent, TimeSignatureComponent *, MidiEventHash> timeSignaturesHash;
-    
+    FlatHashMap<TimeSignatureEvent, TimeSignatureComponent *, MidiEventHash> timeSignaturesMap;
 };
-

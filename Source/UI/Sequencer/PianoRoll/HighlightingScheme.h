@@ -58,5 +58,5 @@ private:
     Note::Key rootKey;
     Array<Image> rows;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighlightingScheme);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighlightingScheme)
 };

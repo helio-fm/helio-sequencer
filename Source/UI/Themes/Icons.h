@@ -58,6 +58,7 @@ public:
         revision,
         routing,
         piano,
+        meter,
 
         volume,
         volumePanel,

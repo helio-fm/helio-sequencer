@@ -52,5 +52,5 @@ private:
     inline unsigned int reverse(unsigned int val, int bits) const noexcept;
     inline void process(int bits);
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumFFT);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumFFT)
 };

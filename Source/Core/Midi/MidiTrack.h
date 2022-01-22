@@ -17,8 +17,9 @@
 
 #pragma once
 
-class MidiSequence;
 class Pattern;
+class MidiSequence;
+class TimeSignatureEvent;
 
 // A track is a meta-object that has
 // - all the properties
@@ -43,19 +44,29 @@ public:
     // sendNotifications argument here is only meant to be true,
     // when changing properties from user actions (see undo/redo action classes);
     // deserialization and resetting VCS state should always call
-    // setX(123, false) to prevent notification hell
+    // setX(123, false, dontSendNotification) to prevent notification hell
 
     virtual String getTrackName() const noexcept = 0;
-    virtual void setTrackName(const String &val, bool sendNotifications) = 0;
+    virtual void setTrackName(const String &val, bool undoable,
+        NotificationType notificationType) = 0;
 
     virtual Colour getTrackColour() const noexcept = 0;
-    virtual void setTrackColour(const Colour &val, bool sendNotifications) = 0;
+    virtual void setTrackColour(const Colour &val, bool undoable,
+        NotificationType notificationType) = 0;
 
     virtual String getTrackInstrumentId() const noexcept = 0;
-    virtual void setTrackInstrumentId(const String &val, bool sendNotifications) = 0;
-        
+    virtual void setTrackInstrumentId(const String &val, bool undoable,
+        NotificationType notificationType) = 0;
+
     virtual int getTrackControllerNumber() const noexcept = 0;
-    virtual void setTrackControllerNumber(int val, bool sendNotifications) = 0;
+    virtual void setTrackControllerNumber(int val,
+        NotificationType notificationType) = 0;
+
+    // Whether a track has its own time signature which should be used instead of timeline's:
+    virtual bool hasTimeSignatureOverride() const noexcept = 0;
+    virtual const TimeSignatureEvent *getTimeSignatureOverride() const noexcept = 0;
+    virtual void setTimeSignatureOverride(const TimeSignatureEvent &ts, bool undoable,
+        NotificationType notificationType) = 0;
 
     // This one always returns valid object (a track without midi events is nonsense):
     virtual MidiSequence *getSequence() const noexcept = 0;
@@ -145,16 +156,24 @@ public:
     int getTrackChannel() const noexcept override { return 0; }
 
     String getTrackName() const noexcept override { return {}; }
-    void setTrackName(const String &val, bool sendNotifications) override {}
+    void setTrackName(const String &val, bool undoable,
+        NotificationType notificationType) override {}
 
     Colour getTrackColour() const noexcept override { return Colours::white; }
-    void setTrackColour(const Colour &val, bool sendNotifications) override {};
+    void setTrackColour(const Colour &val, bool undoable,
+        NotificationType notificationType) override{};
 
     String getTrackInstrumentId() const noexcept override { return {}; }
-    void setTrackInstrumentId(const String &val, bool sendNotifications) override {};
+    void setTrackInstrumentId(const String &val, bool undoable,
+        NotificationType notificationType) override {};
 
     int getTrackControllerNumber() const noexcept override { return 0; }
-    void setTrackControllerNumber(int val, bool sendNotifications) override {};
+    void setTrackControllerNumber(int val, NotificationType notificationType) override {};
+
+    bool hasTimeSignatureOverride() const noexcept override { return false; }
+    const TimeSignatureEvent *getTimeSignatureOverride() const noexcept override { return nullptr; }
+    void setTimeSignatureOverride(const TimeSignatureEvent &ts, bool undoable,
+        NotificationType notificationType) override {}
 
     MidiSequence *getSequence() const noexcept override { return nullptr; }
     Pattern *getPattern() const noexcept override { return nullptr; }

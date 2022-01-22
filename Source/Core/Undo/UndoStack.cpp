@@ -114,6 +114,7 @@ UndoAction *UndoStack::Transaction::createUndoActionByTag(const Identifier &tagN
     else if (tagName == Undo::midiTrackRenameAction)                 { return new MidiTrackRenameAction(this->project); }
     else if (tagName == Undo::midiTrackChangeColourAction)           { return new MidiTrackChangeColourAction(this->project); }
     else if (tagName == Undo::midiTrackChangeInstrumentAction)       { return new MidiTrackChangeInstrumentAction(this->project); }
+    else if (tagName == Undo::midiTrackChangeTimeSignatureAction)    { return new MidiTrackChangeTimeSignatureAction(this->project); }
     else if (tagName == Undo::clipInsertAction)                      { return new ClipInsertAction(this->project); }
     else if (tagName == Undo::clipRemoveAction)                      { return new ClipRemoveAction(this->project); }
     else if (tagName == Undo::clipChangeAction)                      { return new ClipChangeAction(this->project); }
@@ -129,21 +130,12 @@ UndoAction *UndoStack::Transaction::createUndoActionByTag(const Identifier &tagN
     else if (tagName == Undo::annotationEventInsertAction)           { return new AnnotationEventInsertAction(this->project); }
     else if (tagName == Undo::annotationEventRemoveAction)           { return new AnnotationEventRemoveAction(this->project); }
     else if (tagName == Undo::annotationEventChangeAction)           { return new AnnotationEventChangeAction(this->project); }
-    else if (tagName == Undo::annotationEventsGroupInsertAction)     { return new AnnotationEventsGroupInsertAction(this->project); }
-    else if (tagName == Undo::annotationEventsGroupRemoveAction)     { return new AnnotationEventsGroupRemoveAction(this->project); }
-    else if (tagName == Undo::annotationEventsGroupChangeAction)     { return new AnnotationEventsGroupChangeAction(this->project); }
     else if (tagName == Undo::timeSignatureEventInsertAction)        { return new TimeSignatureEventInsertAction(this->project); }
     else if (tagName == Undo::timeSignatureEventRemoveAction)        { return new TimeSignatureEventRemoveAction(this->project); }
     else if (tagName == Undo::timeSignatureEventChangeAction)        { return new TimeSignatureEventChangeAction(this->project); }
-    else if (tagName == Undo::timeSignatureEventsGroupInsertAction)  { return new TimeSignatureEventsGroupInsertAction(this->project); }
-    else if (tagName == Undo::timeSignatureEventsGroupRemoveAction)  { return new TimeSignatureEventsGroupRemoveAction(this->project); }
-    else if (tagName == Undo::timeSignatureEventsGroupChangeAction)  { return new TimeSignatureEventsGroupChangeAction(this->project); }
     else if (tagName == Undo::keySignatureEventInsertAction)         { return new KeySignatureEventInsertAction(this->project); }
     else if (tagName == Undo::keySignatureEventRemoveAction)         { return new KeySignatureEventRemoveAction(this->project); }
     else if (tagName == Undo::keySignatureEventChangeAction)         { return new KeySignatureEventChangeAction(this->project); }
-    else if (tagName == Undo::keySignatureEventsGroupInsertAction)   { return new KeySignatureEventsGroupInsertAction(this->project); }
-    else if (tagName == Undo::keySignatureEventsGroupRemoveAction)   { return new KeySignatureEventsGroupRemoveAction(this->project); }
-    else if (tagName == Undo::keySignatureEventsGroupChangeAction)   { return new KeySignatureEventsGroupChangeAction(this->project); }
     else if (tagName == Undo::automationEventInsertAction)           { return new AutomationEventInsertAction(this->project); }
     else if (tagName == Undo::automationEventRemoveAction)           { return new AutomationEventRemoveAction(this->project); }
     else if (tagName == Undo::automationEventChangeAction)           { return new AutomationEventChangeAction(this->project); }

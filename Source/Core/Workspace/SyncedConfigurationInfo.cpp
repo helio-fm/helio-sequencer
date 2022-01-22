@@ -89,7 +89,7 @@ int SyncedConfigurationInfo::compareElements(const Identifier &type, const Strin
     return typeCompare == 0 ? id.compare(obj->name) : typeCompare;
 }
 
-bool SyncedConfigurationInfo::equals(const BaseResource::Ptr resource) const noexcept
+bool SyncedConfigurationInfo::equals(const ConfigurationResource::Ptr resource) const noexcept
 {
     return this->type == resource->getResourceType() &&
         this->name == resource->getResourceId();

@@ -33,8 +33,7 @@ TimeSignatureEventInsertAction::TimeSignatureEventInsertAction(MidiTrackSource &
 
 bool TimeSignatureEventInsertAction::perform()
 {
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
@@ -44,8 +43,7 @@ bool TimeSignatureEventInsertAction::perform()
 
 bool TimeSignatureEventInsertAction::undo()
 {
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
     }
@@ -90,8 +88,7 @@ TimeSignatureEventRemoveAction::TimeSignatureEventRemoveAction(MidiTrackSource &
 
 bool TimeSignatureEventRemoveAction::perform()
 {
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
     }
@@ -101,8 +98,7 @@ bool TimeSignatureEventRemoveAction::perform()
 
 bool TimeSignatureEventRemoveAction::undo()
 {
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
@@ -149,8 +145,7 @@ TimeSignatureEventChangeAction::TimeSignatureEventChangeAction(MidiTrackSource &
 
 bool TimeSignatureEventChangeAction::perform()
 {
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->change(this->eventBefore, this->eventAfter, false);
     }
@@ -160,8 +155,7 @@ bool TimeSignatureEventChangeAction::perform()
 
 bool TimeSignatureEventChangeAction::undo()
 {
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->change(this->eventAfter, this->eventBefore, false);
     }
@@ -224,271 +218,5 @@ void TimeSignatureEventChangeAction::reset()
 {
     this->eventBefore.reset();
     this->eventAfter.reset();
-    this->trackId.clear();
-}
-
-//===----------------------------------------------------------------------===//
-// Insert Group
-//===----------------------------------------------------------------------===//
-
-TimeSignatureEventsGroupInsertAction::TimeSignatureEventsGroupInsertAction(MidiTrackSource &source,
-    const String &trackId, Array<TimeSignatureEvent> &target) noexcept :
-    UndoAction(source),
-    trackId(trackId)
-{
-    this->signatures.swapWith(target);
-}
-
-bool TimeSignatureEventsGroupInsertAction::perform()
-{
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
-    {
-        return sequence->insertGroup(this->signatures, false);
-    }
-    
-    return false;
-}
-
-bool TimeSignatureEventsGroupInsertAction::undo()
-{
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
-    {
-        return sequence->removeGroup(this->signatures, false);
-    }
-    
-    return false;
-}
-
-int TimeSignatureEventsGroupInsertAction::getSizeInUnits()
-{
-    return (sizeof(TimeSignatureEvent) * this->signatures.size());
-}
-
-SerializedData TimeSignatureEventsGroupInsertAction::serialize() const
-{
-    SerializedData tree(Serialization::Undo::timeSignatureEventsGroupInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
-    for (int i = 0; i < this->signatures.size(); ++i)
-    {
-        tree.appendChild(this->signatures.getUnchecked(i).serialize());
-    }
-    
-    return tree;
-}
-
-void TimeSignatureEventsGroupInsertAction::deserialize(const SerializedData &data)
-{
-    this->reset();
-    this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
-    for (const auto &params : data)
-    {
-        TimeSignatureEvent ae;
-        ae.deserialize(params);
-        this->signatures.add(ae);
-    }
-}
-
-void TimeSignatureEventsGroupInsertAction::reset()
-{
-    this->signatures.clear();
-    this->trackId.clear();
-}
-
-//===----------------------------------------------------------------------===//
-// Remove Group
-//===----------------------------------------------------------------------===//
-
-TimeSignatureEventsGroupRemoveAction::TimeSignatureEventsGroupRemoveAction(MidiTrackSource &source,
-    const String &trackId, Array<TimeSignatureEvent> &target) noexcept :
-    UndoAction(source),
-    trackId(trackId)
-{
-    this->signatures.swapWith(target);
-}
-
-bool TimeSignatureEventsGroupRemoveAction::perform()
-{
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
-    {
-        return sequence->removeGroup(this->signatures, false);
-    }
-    
-    return false;
-}
-
-bool TimeSignatureEventsGroupRemoveAction::undo()
-{
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
-    {
-        return sequence->insertGroup(this->signatures, false);
-    }
-    
-    return false;
-}
-
-int TimeSignatureEventsGroupRemoveAction::getSizeInUnits()
-{
-    return (sizeof(TimeSignatureEvent) * this->signatures.size());
-}
-
-SerializedData TimeSignatureEventsGroupRemoveAction::serialize() const
-{
-    SerializedData tree(Serialization::Undo::timeSignatureEventsGroupRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
-    for (int i = 0; i < this->signatures.size(); ++i)
-    {
-        tree.appendChild(this->signatures.getUnchecked(i).serialize());
-    }
-    
-    return tree;
-}
-
-void TimeSignatureEventsGroupRemoveAction::deserialize(const SerializedData &data)
-{
-    this->reset();
-    this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
-    for (const auto &params : data)
-    {
-        TimeSignatureEvent ae;
-        ae.deserialize(params);
-        this->signatures.add(ae);
-    }
-}
-
-void TimeSignatureEventsGroupRemoveAction::reset()
-{
-    this->signatures.clear();
-    this->trackId.clear();
-}
-
-//===----------------------------------------------------------------------===//
-// Change Group
-//===----------------------------------------------------------------------===//
-
-TimeSignatureEventsGroupChangeAction::TimeSignatureEventsGroupChangeAction(MidiTrackSource &source,
-    const String &trackId, const Array<TimeSignatureEvent> state1,
-    const Array<TimeSignatureEvent> state2) noexcept :
-    UndoAction(source),
-    trackId(trackId)
-{
-    this->eventsBefore.addArray(state1);
-    this->eventsAfter.addArray(state2);
-}
-
-bool TimeSignatureEventsGroupChangeAction::perform()
-{
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
-    {
-        return sequence->changeGroup(this->eventsBefore, this->eventsAfter, false);
-    }
-    
-    return false;
-}
-
-bool TimeSignatureEventsGroupChangeAction::undo()
-{
-    if (TimeSignaturesSequence *sequence =
-        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
-    {
-        return sequence->changeGroup(this->eventsAfter, this->eventsBefore, false);
-    }
-    
-    return false;
-}
-
-int TimeSignatureEventsGroupChangeAction::getSizeInUnits()
-{
-    return (sizeof(TimeSignatureEvent) * this->eventsBefore.size()) +
-           (sizeof(TimeSignatureEvent) * this->eventsAfter.size());
-}
-
-UndoAction *TimeSignatureEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
-{
-    if (auto *nextChanger = dynamic_cast<TimeSignatureEventsGroupChangeAction *>(nextAction))
-    {
-        if (nextChanger->trackId != this->trackId)
-        {
-            return nullptr;
-        }
-
-        bool arraysContainSameEvents =
-            (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
-            (this->eventsBefore[0].getId() == nextChanger->eventsAfter[0].getId());
-
-        if (arraysContainSameEvents)
-        {
-            return new TimeSignatureEventsGroupChangeAction(this->source,
-                this->trackId, this->eventsBefore, nextChanger->eventsAfter);
-        }
-    }
-
-    (void) nextAction;
-    return nullptr;
-}
-
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-SerializedData TimeSignatureEventsGroupChangeAction::serialize() const
-{
-    SerializedData tree(Serialization::Undo::timeSignatureEventsGroupChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
-    SerializedData groupBeforeChild(Serialization::Undo::groupBefore);
-    SerializedData groupAfterChild(Serialization::Undo::groupAfter);
-    
-    for (int i = 0; i < this->eventsBefore.size(); ++i)
-    {
-        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize());
-    }
-    
-    for (int i = 0; i < this->eventsAfter.size(); ++i)
-    {
-        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize());
-    }
-    
-    tree.appendChild(groupBeforeChild);
-    tree.appendChild(groupAfterChild);
-    
-    return tree;
-}
-
-void TimeSignatureEventsGroupChangeAction::deserialize(const SerializedData &data)
-{
-    this->reset();
-    this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
-    const auto groupBeforeChild = data.getChildWithName(Serialization::Undo::groupBefore);
-    const auto groupAfterChild = data.getChildWithName(Serialization::Undo::groupAfter);
-    
-    for (const auto &params : groupBeforeChild)
-    {
-        TimeSignatureEvent ae;
-        ae.deserialize(params);
-        this->eventsBefore.add(ae);
-    }
-    
-    for (const auto &params : groupAfterChild)
-    {
-        TimeSignatureEvent ae;
-        ae.deserialize(params);
-        this->eventsAfter.add(ae);
-    }
-}
-
-void TimeSignatureEventsGroupChangeAction::reset()
-{
-    this->eventsBefore.clear();
-    this->eventsAfter.clear();
     this->trackId.clear();
 }

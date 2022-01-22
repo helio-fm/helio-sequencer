@@ -29,8 +29,8 @@
 #include "ProjectNode.h"
 #include "UndoStack.h"
 #include "MidiTrackNode.h"
-#include "MidiTrackActions.h"
 #include "AutomationSequence.h"
+#include "PianoSequence.h"
 
 #include "TempoDialog.h"
 #include "Workspace.h"
@@ -65,33 +65,45 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
 
     menu.add(MenuItem::item(Icons::zoomToFit, CommandIDs::ZoomEntireClip,
         TRANS(I18n::Menu::Selection::clipsEdit))->
-        disabledIf(lasso->getNumSelected() == 0)->closesMenu());
+        disabledIf(lasso->getNumSelected() == 0)->
+        closesMenu());
+    
+    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
+        TRANS(I18n::Menu::trackRename))->
+        disabledIf(!canRenamePatternSelection(this->lasso))->
+        closesMenu());
 
     if (this->lasso->getNumSelected() == 1)
     {
         auto *track = this->lasso->getFirstAs<ClipComponent>()->getClip().getPattern()->getTrack();
-        if (auto *sequence = dynamic_cast<AutomationSequence *>(track->getSequence()))
+        if (auto *autoSequence = dynamic_cast<AutomationSequence *>(track->getSequence()))
         {
             // sets one tempo for the selected track, not for the entire project
-            const auto firstBeat = sequence->getFirstBeat();
-            const auto lastBeat = jmax(sequence->getLastBeat(),
+            const auto firstBeat = autoSequence->getFirstBeat();
+            const auto lastBeat = jmax(autoSequence->getLastBeat(),
                 firstBeat + Globals::Defaults::emptyClipLength);
 
-            const auto avgValue = sequence->getAverageControllerValue();
+            const auto avgValue = autoSequence->getAverageControllerValue();
             const auto avgMsPerQuarterNote = Transport::getTempoByControllerValue(avgValue) / 1000;
             const auto avgBpm = 60000 / jmax(1, avgMsPerQuarterNote);
 
-            menu.add(MenuItem::item(Icons::automationTrack, TRANS(I18n::Menu::setOneTempo))->
-                closesMenu()->withAction([avgBpm, firstBeat, lastBeat, track]()
-            {
+            menu.add(MenuItem::item(Icons::automationTrack, TRANS(I18n::Menu::setOneTempo))->closesMenu()->withAction([avgBpm, firstBeat, lastBeat, track]() {
                 auto dialog = make<TempoDialog>(avgBpm);
-                dialog->onOk = [firstBeat, lastBeat, track](int newBpmValue)
-                {
+                dialog->onOk = [firstBeat, lastBeat, track](int newBpmValue) {
                     SequencerOperations::setOneTempoForTrack(track, firstBeat, lastBeat, newBpmValue);
                 };
 
                 App::showModalComponent(move(dialog));
             }));
+        }
+        else if (auto *pianoSequence = dynamic_cast<PianoSequence *>(track->getSequence()))
+        {
+            const auto tsActionlabel = track->hasTimeSignatureOverride() ?
+                TRANS(I18n::Menu::timeSignatureChange) :
+                TRANS(I18n::Menu::timeSignatureAdd);
+
+            menu.add(MenuItem::item(Icons::meter,
+                CommandIDs::SetTrackTimeSignature, tsActionlabel)->closesMenu());
         }
     }
     else
@@ -103,10 +115,6 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         menu.add(MenuItem::item(Icons::down, CommandIDs::ClipTransposeDown,
             TRANS(I18n::Menu::Selection::clipsTransposeDown)));
     }
-
-    menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
-        TRANS(I18n::Menu::trackRename))->
-        disabledIf(!canRenamePatternSelection(this->lasso))->closesMenu());
 
     const auto muteAction = PatternOperations::lassoContainsMutedClip(*this->lasso.get()) ?
         TRANS(I18n::Menu::unmute) : TRANS(I18n::Menu::mute);
@@ -241,9 +249,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createInstrumentSelectionMenu()
                         haveCheckpoint = true;
                     }
 
-                    project->getUndoStack()->
-                        perform(new MidiTrackChangeInstrumentAction(*project,
-                            track->getTrackId(), instrumentId));
+                    track->setTrackInstrumentId(instrumentId, true, sendNotification);
                 }
             }
 

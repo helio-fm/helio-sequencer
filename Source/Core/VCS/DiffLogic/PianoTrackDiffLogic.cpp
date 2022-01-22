@@ -28,6 +28,7 @@ namespace VCS
 static SerializedData mergePath(const SerializedData &state, const SerializedData &changes);
 static SerializedData mergeColour(const SerializedData &state, const SerializedData &changes);
 static SerializedData mergeInstrument(const SerializedData &state, const SerializedData &changes);
+static SerializedData mergeTimeSignature(const SerializedData &state, const SerializedData &changes);
 
 static SerializedData mergeNotesAdded(const SerializedData &state, const SerializedData &changes);
 static SerializedData mergeNotesRemoved(const SerializedData &state, const SerializedData &changes);
@@ -36,6 +37,7 @@ static SerializedData mergeNotesChanged(const SerializedData &state, const Seria
 static DeltaDiff createPathDiff(const SerializedData &state, const SerializedData &changes);
 static DeltaDiff createColourDiff(const SerializedData &state, const SerializedData &changes);
 static DeltaDiff createInstrumentDiff(const SerializedData &state, const SerializedData &changes);
+static DeltaDiff createTimeSignatureDiff(const SerializedData &state, const SerializedData &changes);
 
 static Array<DeltaDiff> createEventsDiffs(const SerializedData &state, const SerializedData &changes);
 
@@ -66,8 +68,9 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
     for (int i = 0; i < this->target.getNumDeltas(); ++i)
     {
         const Delta *myDelta = this->target.getDelta(i);
-
         const auto myDeltaData(this->target.getDeltaData(i));
+        const bool deltaHasDefaultData = this->target.deltaHasDefaultData(i);
+
         SerializedData stateDeltaData;
 
         bool deltaFoundInState = false;
@@ -86,7 +89,7 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
             }
         }
 
-        if (!deltaFoundInState || dataHasChanged)
+        if ((!deltaFoundInState && !deltaHasDefaultData) || dataHasChanged)
         {
             if (myDelta->hasType(MidiTrackDeltas::trackPath))
             {
@@ -99,6 +102,10 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
             else if (myDelta->hasType(MidiTrackDeltas::trackInstrument))
             {
                 diff->applyDelta(createInstrumentDiff(stateDeltaData, myDeltaData));
+            }
+            else if (myDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged))
+            {
+                diff->applyDelta(createTimeSignatureDiff(stateDeltaData, myDeltaData));
             }
             // дифф рассчитывает, что у состояния будет одна нотная дельта типа notesAdded
             // остальные тут не имеют смысла //else if (this->checkIfDeltaIsNotesType(myDelta))
@@ -174,6 +181,12 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
                     auto diffDeltaData = mergeInstrument(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
+                else if (targetDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged))
+                {
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
+                    auto diffDeltaData = mergeTimeSignature(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
+                }
             }
 
             const bool bothDeltasAreNotesType =
@@ -243,33 +256,46 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
     }
 
     // step 2:
-    // resolve new delta types that may be missing in project history state,
-    // e.g., a project that was created with earlier versions of the app,
-    // which has a history tree with tracks initialised without patterns/clips
-    // which was introduced later. As the app evolves, new types of deltas are
-    // to be resolved here (for example, I'll need a `solo` track flag in future)
+    // resolve new delta types that may be missing in project history state
 
     bool stateHasClips = false;
-    // TODO: bool stateHasSoloFlags = false;
+    bool stateHasTrackTimeSignature = false;
 
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         const Delta *stateDelta = initialState.getDelta(i);
         stateHasClips = stateHasClips || PatternDiffHelpers::checkIfDeltaIsPatternType(stateDelta);
+        stateHasTrackTimeSignature = stateHasTrackTimeSignature || stateDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged);
     }
 
-    for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         SerializedData clipsDeltaData;
         auto clipsDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
             PatternDeltas::clipsAdded);
 
+        SerializedData timeSignatureDeltaData;
+        auto timeSignatureDelta = make<Delta>(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            TimeSignatureDeltas::timeSignaturesChanged);
+
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
             const Delta *targetDelta = this->target.getDelta(j);
             const auto targetDeltaData(this->target.getDeltaData(j));
-            const bool foundMissingClip = !stateHasClips && PatternDiffHelpers::checkIfDeltaIsPatternType(targetDelta);
+
+            const bool foundMissingTimeSignature = !stateHasTrackTimeSignature &&
+                targetDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged);
+
+            if (foundMissingTimeSignature)
+            {
+                SerializedData emptyTimeSignatureDeltaData(TimeSignatureDeltas::timeSignaturesChanged);
+                timeSignatureDeltaData = mergeTimeSignature(emptyTimeSignatureDeltaData, targetDeltaData);
+            }
+
+            const bool foundMissingClip = !stateHasClips &&
+                PatternDiffHelpers::checkIfDeltaIsPatternType(targetDelta);
+
             if (foundMissingClip)
             {
                 SerializedData emptyClipDeltaData(serializePianoSequence({}, PatternDeltas::clipsAdded));
@@ -293,6 +319,11 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
             }
         }
         
+        if (timeSignatureDeltaData.isValid())
+        {
+            diff->applyDelta(timeSignatureDelta.release(), timeSignatureDeltaData);
+        }
+
         if (clipsDeltaData.isValid())
         {
             diff->applyDelta(clipsDelta.release(), clipsDeltaData);
@@ -317,6 +348,11 @@ SerializedData mergeColour(const SerializedData &state, const SerializedData &ch
 }
 
 SerializedData mergeInstrument(const SerializedData &state, const SerializedData &changes)
+{
+    return changes.createCopy();
+}
+
+SerializedData mergeTimeSignature(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
@@ -455,6 +491,17 @@ DeltaDiff createInstrumentDiff(const SerializedData &state, const SerializedData
     using namespace Serialization::VCS;
     res.delta = make<Delta>(DeltaDescription("instrument changed"),
         MidiTrackDeltas::trackInstrument);
+    res.deltaData = changes.createCopy();
+    return res;
+}
+
+VCS::DeltaDiff createTimeSignatureDiff(const SerializedData &state, const SerializedData &changes)
+{
+    DeltaDiff res;
+    using namespace Serialization::VCS;
+    // just reuse the text from timeline diff
+    res.delta = make<Delta>(DeltaDescription("changed {x} time signatures", 1),
+        TimeSignatureDeltas::timeSignaturesChanged);
     res.deltaData = changes.createCopy();
     return res;
 }

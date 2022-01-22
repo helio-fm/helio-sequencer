@@ -1,0 +1,46 @@
+{
+  "meters": {
+    "meter": [
+      {
+        "name": "Common time",
+        "time": "4/4"
+      },
+      {
+        "name": "Alla breve",
+        "time": "2/4"
+      },
+      {
+        "name": "Waltz time",
+        "time": "3/4"
+      },
+      {
+        "name": "5/4",
+        "time": "5/4"
+      },
+      {
+        "name": "6/4",
+        "time": "6/4"
+      },
+      {
+        "name": "7/8",
+        "time": "7/8"
+      },
+      {
+        "name": "9/8",
+        "time": "9/8"
+      },
+      {
+        "name": "10/8",
+        "time": "10/8"
+      },
+      {
+        "name": "11/8",
+        "time": "11/8"
+      },
+      {
+        "name": "13/8",
+        "time": "13/8"
+      }
+    ]
+  }
+}

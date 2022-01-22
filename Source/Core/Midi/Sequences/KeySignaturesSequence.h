@@ -43,12 +43,6 @@ public:
         const KeySignatureEvent &newSignature,
         bool undoable);
 
-    bool insertGroup(Array<KeySignatureEvent> &signatures, bool undoable);
-    bool removeGroup(Array<KeySignatureEvent> &signatures, bool undoable);
-    bool changeGroup(Array<KeySignatureEvent> &signaturesBefore,
-        Array<KeySignatureEvent> &signaturesAfter,
-        bool undoable);
-
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//

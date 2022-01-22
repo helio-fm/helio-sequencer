@@ -40,14 +40,7 @@ public:
     MidiEvent *insert(const AnnotationEvent &annotationToCopy, bool undoable);
     bool remove(const AnnotationEvent &annotation, bool undoable);
     bool change(const AnnotationEvent &annotation,
-        const AnnotationEvent &newAnnotation,
-        bool undoable);
-
-    bool insertGroup(Array<AnnotationEvent> &annotations, bool undoable);
-    bool removeGroup(Array<AnnotationEvent> &annotations, bool undoable);
-    bool changeGroup(Array<AnnotationEvent> &annotationsBefore,
-        Array<AnnotationEvent> &annotationsAfter,
-        bool undoable);
+        const AnnotationEvent &newAnnotation, bool undoable);
 
     //===------------------------------------------------------------------===//
     // Callbacks
