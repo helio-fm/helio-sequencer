@@ -2488,10 +2488,10 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueTree.cpp">
       <Filter>JUCE Modules\juce_data_structures\values</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.cpp">
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueTreePropertyWithDefault_test.cpp">
       <Filter>JUCE Modules\juce_data_structures\values</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueWithDefault.cpp">
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.cpp">
       <Filter>JUCE Modules\juce_data_structures\values</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\juce_data_structures.cpp">
@@ -6084,10 +6084,10 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueTree.h">
       <Filter>JUCE Modules\juce_data_structures\values</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.h">
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueTreePropertyWithDefault.h">
       <Filter>JUCE Modules\juce_data_structures\values</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueWithDefault.h">
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.h">
       <Filter>JUCE Modules\juce_data_structures\values</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\juce_data_structures.h">
