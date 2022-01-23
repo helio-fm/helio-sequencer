@@ -549,10 +549,12 @@ void RollBase::zoomRelative(const Point<float> &origin,
 
     if (shouldAutoFitViewRange)
     {
+        constexpr auto margin = Globals::beatsPerBar * 2;
         const auto projectRange = this->project.getProjectRangeInBeats();
-        const auto newFirstBeat = projectRange.getStart() - Globals::beatsPerBar;
-        const auto newLastBeat = projectRange.getEnd() + Globals::beatsPerBar;
+        const auto newFirstBeat = projectRange.getStart() - margin;
+        const auto newLastBeat = projectRange.getEnd() + margin;
         this->project.broadcastChangeViewBeatRange(newFirstBeat, newLastBeat);
+
         const auto markWidthInBeats = 4.f / this->beatWidth;
         this->viewport.addAndMakeVisible(new RollExpandMark(*this, newFirstBeat, markWidthInBeats, false));
         this->viewport.addAndMakeVisible(new RollExpandMark(*this, newLastBeat - markWidthInBeats, markWidthInBeats, false));
