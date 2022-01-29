@@ -67,6 +67,10 @@ public:
     friend bool operator==(const Meter &l, const Meter &r);
     friend bool operator!=(const Meter &l, const Meter &r);
 
+    // Simply checks if numerator and denominator are the same
+    // (in future, might also check the metronome scheme)
+    bool isEquivalentTo(const Meter &other) const;
+
 private:
 
     String name;

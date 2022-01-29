@@ -333,43 +333,50 @@ PatternRollTimeSignaturePicker::~PatternRollTimeSignaturePicker()
 
 void PatternRollTimeSignaturePicker::changeListenerCallback(ChangeBroadcaster *source)
 {
-    if (this->lasso->getNumSelected() == 1)
+    auto *timeSignaturesAggregator =
+        this->project.getTimeline()->getTimeSignaturesAggregator();
+
+    // bail out as soon as we can
+    if (this->lasso->getNumSelected() == 0)
     {
-        auto *cc = this->lasso->getFirstAs<ClipComponent>();
-        if (dynamic_cast<PianoClipComponent *>(cc) != nullptr)
-        {
-            auto *clipTrack = cc->getClip().getPattern()->getTrack();
-            this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(clipTrack);
-            return;
-        }
+        timeSignaturesAggregator->setActiveScope({});
+        return;
     }
 
-    // if all selected piano clips which have time signature
-    // are of the same track, use this time signature override
+    // if all selected clips belong to the same row,
+    // use time signatures of that entire row, should there be any
 
-    WeakReference<MidiTrack> targetTrack = nullptr;
+    const auto grouping = this->project.getTrackGroupingMode();
+
+    String targetGroupKey;
 
     for (int i = 0; i < this->lasso->getNumSelected(); ++i)
     {
         auto *cc = this->lasso->getItemAs<ClipComponent>(i);
         auto *clipTrack = cc->getClip().getPattern()->getTrack();
 
-        if (!clipTrack->hasTimeSignatureOverride() ||
-            dynamic_cast<PianoClipComponent *>(cc) == nullptr)
-        {
-            continue;
-        }
+        const auto clipTrackGroupKey = clipTrack->getTrackGroupKey(grouping);
 
-        if (targetTrack == nullptr)
+        if (targetGroupKey.isEmpty())
         {
-            targetTrack = clipTrack;
+            targetGroupKey = clipTrackGroupKey;
         }
-        else if (targetTrack != clipTrack)
+        else if (targetGroupKey != clipTrackGroupKey)
         {
-            this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(nullptr);
+            timeSignaturesAggregator->setActiveScope({});
             return;
         }
     }
 
-    this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(targetTrack);
+    Array<WeakReference<MidiTrack>> tracks;
+
+    for (auto *track : this->project.getTracks())
+    {
+        if (track->getTrackGroupKey(grouping) == targetGroupKey)
+        {
+            tracks.add(track);
+        }
+    }
+
+    timeSignaturesAggregator->setActiveScope(tracks);
 }

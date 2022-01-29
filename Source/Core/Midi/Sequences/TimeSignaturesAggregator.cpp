@@ -44,25 +44,26 @@ static inline bool trackHasTimeSignature(MidiTrack *track) noexcept
 
 bool TimeSignaturesAggregator::isAggregatingTimeSignatureOverrides() const noexcept
 {
-    return trackHasTimeSignature(this->selectedTrack); // or the timeline is empty?
+    for (const auto &selectedTrack : this->selectedTracks)
+    {
+        if (trackHasTimeSignature(selectedTrack))
+        {
+            return true;
+        }
+    }
+
+    return false; // or the timeline is empty?
 }
 
-void TimeSignaturesAggregator::setActiveScope(WeakReference<MidiTrack> newTrack, bool forceRebuildAll)
+void TimeSignaturesAggregator::setActiveScope(Array<WeakReference<MidiTrack>> tracks, bool forceRebuild)
 {
-    if (this->selectedTrack == newTrack && !forceRebuildAll)
+    if (this->selectedTracks == tracks && !forceRebuild)
     {
         return;
     }
 
-    const auto shouldRebuildAll = forceRebuildAll ||
-        trackHasTimeSignature(this->selectedTrack) || trackHasTimeSignature(newTrack);
-
-    this->selectedTrack = move(newTrack);
-
-    if (shouldRebuildAll)
-    {
-        this->rebuildAll();
-    }
+    this->selectedTracks = move(tracks);
+    this->rebuildAll();
 }
 
 const Array<TimeSignatureEvent> &TimeSignaturesAggregator::getAllOrdered() const noexcept
@@ -185,7 +186,7 @@ void TimeSignaturesAggregator::onRemoveClip(const Clip &clip)
 
 void TimeSignaturesAggregator::onChangeTrackProperties(MidiTrack *const track)
 {
-    if (track == this->selectedTrack)
+    if (this->selectedTracks.contains(track))
     {
         // track color might have changed, or its time signature override
         // might have been added, changed or removed:
@@ -196,7 +197,7 @@ void TimeSignaturesAggregator::onChangeTrackProperties(MidiTrack *const track)
 void TimeSignaturesAggregator::onChangeTrackBeatRange(MidiTrack *const track)
 {
     if (this->isAggregatingTimeSignatureOverrides() &&
-        track == this->selectedTrack)
+        this->selectedTracks.contains(track))
     {
         this->rebuildAll();
     }
@@ -205,7 +206,7 @@ void TimeSignaturesAggregator::onChangeTrackBeatRange(MidiTrack *const track)
 void TimeSignaturesAggregator::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     const ProjectMetadata *meta)
 {
-    this->setActiveScope(nullptr, true);
+    this->setActiveScope({}, true);
 }
 
 void TimeSignaturesAggregator::onRemoveTrack(MidiTrack *const track)
@@ -213,14 +214,38 @@ void TimeSignaturesAggregator::onRemoveTrack(MidiTrack *const track)
     jassert(this->project.getTimeline() != nullptr);
     jassert(track != this->project.getTimeline()->getTimeSignatures());
 
-    if (track == this->selectedTrack)
+    if (this->selectedTracks.contains(track))
     {
-        this->setActiveScope(nullptr, true);
+        this->selectedTracks.removeAllInstancesOf(track);
+        this->rebuildAll();
     }
 }
 
 void TimeSignaturesAggregator::onChangeProjectBeatRange(float firstBeat, float lastBeat) {}
 void TimeSignaturesAggregator::onChangeViewBeatRange(float firstBeat, float lastBeat) {}
+
+struct SortByTimeSignatureAbsolutePosition final
+{
+    static int compareElements(const Clip *const first, const Clip *const second)
+    {
+        const auto *firstTrack = first->getPattern()->getTrack();
+        jassert(firstTrack->hasTimeSignatureOverride());
+
+        const auto firstBeat = first->getBeat() +
+            firstTrack->getTimeSignatureOverride()->getBeat() +
+            firstTrack->getSequence()->getFirstBeat();
+
+        const auto *secondTrack = second->getPattern()->getTrack();
+        jassert(secondTrack->hasTimeSignatureOverride());
+
+        const auto secondBeat = second->getBeat() +
+            secondTrack->getTimeSignatureOverride()->getBeat() +
+            secondTrack->getSequence()->getFirstBeat();
+
+        const float diff = firstBeat - secondBeat;
+        return (diff > 0.f) - (diff < 0.f);
+    }
+};
 
 void TimeSignaturesAggregator::rebuildAll()
 {
@@ -238,46 +263,60 @@ void TimeSignaturesAggregator::rebuildAll()
         return;
     }
 
-    jassert(this->selectedTrack != nullptr);
-
-    const auto sequenceFirstBeat = this->selectedTrack->getSequence()->getFirstBeat();
-    const auto *tsOverride = this->selectedTrack->getTimeSignatureOverride();
-
     // todo: multiple time signatures per track? now there can be only one
+
+    Array<Clip *> allOrdererClips; // duplicate positions won't be a problem
+    for (const auto selectedTrack : this->selectedTracks)
+    {
+        if (selectedTrack->hasTimeSignatureOverride())
+        {
+            allOrdererClips.addArray(selectedTrack->getPattern()->getClips());
+        }
+    }
+    jassert(!allOrdererClips.isEmpty());
+    static SortByTimeSignatureAbsolutePosition kSort;
+    allOrdererClips.sort(kSort);
 
     // we're adding time signatures in such a way that continuous chunks of clips
     // will only have a time signature at the start of each chunk, instead of
     // time signatures at the start of each clip, which would be a visual noise:
-    const Clip *chunkStartClip = nullptr;
+    Meter chunkStartMeter;
+    float chunkStartBeat = 0.f;
     // we'll also make sure all those time signatures have unique ids:
     MidiEvent::Id generatedTimeSignatureId = 0;
-    for (const auto *clip : this->selectedTrack->getPattern()->getClips())
-    {
-        const auto startBeat = clip->getBeat() +
-            tsOverride->getBeat() + sequenceFirstBeat;
 
-        if (chunkStartClip == nullptr)
+    for (const auto *clip : allOrdererClips)
+    {
+        const auto *track = clip->getPattern()->getTrack();
+        jassert(track->hasTimeSignatureOverride());
+
+        const auto *timeSignatureOverride = track->getTimeSignatureOverride();
+        const auto sequenceFirstBeat = track->getSequence()->getFirstBeat();
+
+        const auto startBeat = clip->getBeat() +
+            timeSignatureOverride->getBeat() + sequenceFirstBeat;
+
+        // the very first chunk
+        if (!chunkStartMeter.isValid())
         {
-            chunkStartClip = clip;
-            this->orderedEvents.add(tsOverride->
-                withId(generatedTimeSignatureId).withBeat(startBeat));
+            chunkStartBeat = startBeat;
+            chunkStartMeter = timeSignatureOverride->getMeter();
+            this->orderedEvents.add(timeSignatureOverride->withId(generatedTimeSignatureId).withBeat(startBeat));
             generatedTimeSignatureId++;
             continue;
         }
 
-        const auto chunkStartBeat = chunkStartClip->getBeat() +
-            tsOverride->getBeat() + sequenceFirstBeat;
-
-        if (fmodf(startBeat - chunkStartBeat, tsOverride->getBarLengthInBeats()) == 0.f)
+        if (chunkStartMeter.isEquivalentTo(timeSignatureOverride->getMeter()) &&
+            fmodf(startBeat - chunkStartBeat, timeSignatureOverride->getBarLengthInBeats()) == 0.f)
         {
             // this time signature is the "continuation" of the previous one, skip it:
             continue;
         }
 
         // new chunk starts here, add time signature
-        chunkStartClip = clip;
-        this->orderedEvents.add(tsOverride->
-            withId(generatedTimeSignatureId).withBeat(startBeat));
+        chunkStartBeat = startBeat;
+        chunkStartMeter = timeSignatureOverride->getMeter();
+        this->orderedEvents.add(timeSignatureOverride->withId(generatedTimeSignatureId).withBeat(startBeat));
         generatedTimeSignatureId++;
     }
 

@@ -122,6 +122,11 @@ float TimeSignatureEvent::getBarLengthInBeats() const noexcept
     return this->meter.getBarLengthInBeats();
 }
 
+const Meter &TimeSignatureEvent::getMeter() const noexcept
+{
+    return this->meter;
+}
+
 int TimeSignatureEvent::getTrackControllerNumber() const noexcept
 {
     if (this->track != nullptr)

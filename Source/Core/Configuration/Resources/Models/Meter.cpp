@@ -123,6 +123,12 @@ bool operator!=(const Meter &l, const Meter &r)
     return !operator== (l, r);
 }
 
+bool Meter::isEquivalentTo(const Meter &other) const
+{
+    return this->numerator == other.numerator &&
+        this->denominator == other.denominator;
+}
+
 //===----------------------------------------------------------------------===//
 // BaseResource
 //===----------------------------------------------------------------------===//

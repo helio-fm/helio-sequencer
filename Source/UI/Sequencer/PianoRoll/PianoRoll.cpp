@@ -800,7 +800,7 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
 {
     this->contextMenuController->cancelIfPending();
 
-    this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope(newActiveTrack);
+    this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope({newActiveTrack});
 
     if (!shouldFocus &&
         this->activeClip == newActiveClip &&

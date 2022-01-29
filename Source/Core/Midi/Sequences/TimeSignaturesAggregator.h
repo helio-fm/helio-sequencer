@@ -42,7 +42,7 @@ public:
     ~TimeSignaturesAggregator() override;
 
     // should be called by the rolls:
-    void setActiveScope(WeakReference<MidiTrack> selectedTrack,
+    void setActiveScope(Array<WeakReference<MidiTrack>> selectedTracks,
         bool forceRebuildAll = false);
 
     const Array<TimeSignatureEvent> &getAllOrdered() const noexcept;
@@ -90,7 +90,7 @@ private:
     ProjectNode &project;
     MidiSequence &timelineSignatures;
 
-    WeakReference<MidiTrack> selectedTrack = nullptr;
+    Array<WeakReference<MidiTrack>> selectedTracks;
 
     void rebuildAll();
     bool isAggregatingTimeSignatureOverrides() const noexcept;
