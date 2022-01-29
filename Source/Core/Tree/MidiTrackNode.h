@@ -20,6 +20,7 @@
 #include "TreeNode.h"
 #include "ProjectEventDispatcher.h"
 #include "MidiTrack.h"
+#include "TimeSignatureEvent.h"
 #include "TrackedItem.h"
 #include "Delta.h"
 
@@ -73,10 +74,10 @@ public:
     int getTrackControllerNumber() const noexcept override;
     void setTrackControllerNumber(int val, NotificationType notificationType) override;
 
-    bool hasTimeSignatureOverride() const noexcept override { return false; }
-    const TimeSignatureEvent *getTimeSignatureOverride() const noexcept override { return nullptr; }
+    bool hasTimeSignatureOverride() const noexcept override;
+    const TimeSignatureEvent *getTimeSignatureOverride() const noexcept override;
     void setTimeSignatureOverride(const TimeSignatureEvent &ts, bool undoable,
-        NotificationType notificationType) override {}
+        NotificationType notificationType) override;
 
     MidiSequence *getSequence() const noexcept override;
     Pattern *getPattern() const noexcept override;
@@ -117,6 +118,19 @@ public:
 
 protected:
 
+    // VCS helpers used by subclasses:
+    SerializedData serializePathDelta() const;
+    SerializedData serializeColourDelta() const;
+    SerializedData serializeInstrumentDelta() const;
+    SerializedData serializeTimeSignatureDelta() const;
+
+    void resetPathDelta(const SerializedData &state);
+    void resetColourDelta(const SerializedData &state);
+    void resetInstrumentDelta(const SerializedData &state);
+    void resetTimeSignatureDelta(const SerializedData &state);
+
+protected:
+
     ProjectNode *lastFoundParent;
 
     UniquePointer<MidiSequence> sequence;
@@ -132,5 +146,8 @@ protected:
 
     String instrumentId;
     int controllerNumber = 0;
-    
+
+    // used as a template by TimeSignaturesAggregator:
+    TimeSignatureEvent timeSignatureOverride;
+
 };

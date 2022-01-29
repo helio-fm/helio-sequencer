@@ -662,10 +662,10 @@ void PatternRoll::handleCommandMessage(int commandId)
         if (this->getLassoSelection().getNumSelected() == 1)
         {
             const auto clip = this->selection.getFirstAs<ClipComponent>()->getClip();
-            if (auto *pianoTrack = this->project.findTrackById<PianoTrackNode>(clip.getTrackId()))
+            if (auto *track = this->project.findTrackById<MidiTrackNode>(clip.getTrackId()))
             {
                 App::showModalComponent(TimeSignatureDialog::editingDialog(*this,
-                    this->project.getUndoStack(), *pianoTrack->getTimeSignatureOverride()));
+                    this->project.getUndoStack(), *track->getTimeSignatureOverride()));
             }
         }
         break;

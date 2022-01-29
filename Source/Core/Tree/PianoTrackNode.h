@@ -19,7 +19,6 @@
 
 #include "MidiTrackNode.h"
 #include "PianoTrackDiffLogic.h"
-#include "TimeSignatureEvent.h"
 
 class PianoTrackNode final : public MidiTrackNode
 {
@@ -41,15 +40,6 @@ public:
     void resetStateTo(const VCS::TrackedItem &newState) override;
 
     //===------------------------------------------------------------------===//
-    // Time signature override
-    //===------------------------------------------------------------------===//
-
-    bool hasTimeSignatureOverride() const noexcept override;
-    const TimeSignatureEvent *getTimeSignatureOverride() const noexcept override;
-    void setTimeSignatureOverride(const TimeSignatureEvent &ts, bool undoable,
-        NotificationType notificationType) override;
-
-    //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
@@ -60,23 +50,10 @@ public:
     // Deltas
     //===------------------------------------------------------------------===//
 
-    SerializedData serializePathDelta() const;
-    SerializedData serializeColourDelta() const;
-    SerializedData serializeInstrumentDelta() const;
-    SerializedData serializeTimeSignatureDelta() const;
     SerializedData serializeEventsDelta() const;
-
-    void resetPathDelta(const SerializedData &state);
-    void resetColourDelta(const SerializedData &state);
-    void resetInstrumentDelta(const SerializedData &state);
-    void resetTimeSignatureDelta(const SerializedData &state);
     void resetEventsDelta(const SerializedData &state);
 
 private:
-
-    // at the moment, a time signature override
-    // can only belong to a piano track
-    TimeSignatureEvent timeSignatureOverride;
 
     UniquePointer<VCS::PianoTrackDiffLogic> vcsDiffLogic;
     OwnedArray<VCS::Delta> deltas;

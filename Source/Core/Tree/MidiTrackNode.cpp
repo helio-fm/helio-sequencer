@@ -31,7 +31,8 @@
 
 MidiTrackNode::MidiTrackNode(const String &name, const Identifier &type) :
     TreeNode(name, type),
-    id(Uuid().toString())
+    id(Uuid().toString()),
+    timeSignatureOverride(this)
 {
     this->lastFoundParent = this->findParentOfType<ProjectNode>();
     // do not dispatch new track events here,
@@ -230,6 +231,42 @@ MidiSequence *MidiTrackNode::getSequence() const noexcept
 Pattern *MidiTrackNode::getPattern() const noexcept
 {
     return this->pattern.get();
+}
+
+// Time signature override
+
+bool MidiTrackNode::hasTimeSignatureOverride() const noexcept
+{
+    return this->timeSignatureOverride.isValid();
+}
+
+const TimeSignatureEvent *MidiTrackNode::getTimeSignatureOverride() const noexcept
+{
+    return &this->timeSignatureOverride;
+}
+
+void MidiTrackNode::setTimeSignatureOverride(const TimeSignatureEvent &ts, bool undoable, NotificationType notificationType)
+{
+    if (undoable)
+    {
+        this->getProject()->getUndoStack()->perform(new MidiTrackChangeTimeSignatureAction(*this->getProject(), this->getTrackId(), ts));
+    }
+    else
+    {
+        // a time signature can only be dragged within the sequence range minus 1 bar,
+        // that might be useful, e.g. if the track starts with off-beat notes:
+        const auto maxBeat = jmax(0.f, this->getSequence()->getLengthInBeats() - ts.getBarLengthInBeats());
+        // it shouldn't be possible to pass the out-of-range time signature here,
+        jassert(ts.getBeat() >= 0.f && ts.getBeat() <= maxBeat);
+        // but let's constrain it anyway just to be safe:
+        const auto constrainedBeat = jlimit(0.f, maxBeat, ts.getBeat());
+        this->timeSignatureOverride.applyChanges(ts.withBeat(constrainedBeat));
+
+        if (notificationType != dontSendNotification)
+        {
+            this->getProject()->broadcastChangeTrackProperties(this);
+        }
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -500,4 +537,76 @@ bool MidiTrackNode::hasMenu() const noexcept
 UniquePointer<Component> MidiTrackNode::createMenu()
 {
     return make<MidiTrackMenu>(this, this->getProject()->getUndoStack());
+}
+
+//===----------------------------------------------------------------------===//
+// VCS helpers
+//===----------------------------------------------------------------------===//
+
+SerializedData MidiTrackNode::serializePathDelta() const
+{
+    using namespace Serialization::VCS;
+    SerializedData tree(MidiTrackDeltas::trackPath);
+    tree.setProperty(delta, this->getTrackName());
+    return tree;
+}
+
+SerializedData MidiTrackNode::serializeColourDelta() const
+{
+    using namespace Serialization::VCS;
+    SerializedData tree(MidiTrackDeltas::trackColour);
+    tree.setProperty(delta, this->getTrackColour().toString());
+    return tree;
+}
+
+SerializedData MidiTrackNode::serializeInstrumentDelta() const
+{
+    using namespace Serialization::VCS;
+    SerializedData tree(MidiTrackDeltas::trackInstrument);
+    tree.setProperty(delta, this->getTrackInstrumentId());
+    return tree;
+}
+
+SerializedData MidiTrackNode::serializeTimeSignatureDelta() const
+{
+    using namespace Serialization::VCS;
+    SerializedData tree(TimeSignatureDeltas::timeSignaturesChanged);
+    if (this->hasTimeSignatureOverride())
+    {
+        tree.appendChild(this->timeSignatureOverride.serialize());
+    }
+    return tree;
+}
+
+void MidiTrackNode::resetPathDelta(const SerializedData &state)
+{
+    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackPath));
+    const String newName = state.getProperty(Serialization::VCS::delta);
+    this->setTrackName(newName, false, dontSendNotification);
+}
+
+void MidiTrackNode::resetColourDelta(const SerializedData &state)
+{
+    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackColour));
+    const String colourString = state.getProperty(Serialization::VCS::delta);
+    const auto colour = Colour::fromString(colourString);
+    this->setTrackColour(colour, false, dontSendNotification);
+}
+
+void MidiTrackNode::resetInstrumentDelta(const SerializedData &state)
+{
+    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackInstrument));
+    const String instrumentId = state.getProperty(Serialization::VCS::delta);
+    this->setTrackInstrumentId(instrumentId, false, dontSendNotification);
+}
+
+void MidiTrackNode::resetTimeSignatureDelta(const SerializedData &state)
+{
+    jassert(state.hasType(Serialization::VCS::TimeSignatureDeltas::timeSignaturesChanged));
+
+    this->timeSignatureOverride.reset();
+    forEachChildWithType(state, e, Serialization::Midi::timeSignature)
+    {
+        this->timeSignatureOverride.deserialize(e);
+    }
 }

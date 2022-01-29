@@ -90,7 +90,7 @@ void TimeSignatureLargeComponent::mouseDrag(const MouseEvent &e)
         }
 
         // dragging the track's time signatures:
-        if (auto *track = dynamic_cast<PianoTrackNode *>(this->event.getTrack().get()))
+        if (auto *track = dynamic_cast<MidiTrackNode *>(this->event.getTrack().get()))
         {
             jassert(this->event.getSequence() == nullptr);
 

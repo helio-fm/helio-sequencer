@@ -76,6 +76,14 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
     if (this->lasso->getNumSelected() == 1)
     {
         auto *track = this->lasso->getFirstAs<ClipComponent>()->getClip().getPattern()->getTrack();
+
+        const auto tsActionlabel = track->hasTimeSignatureOverride() ?
+            TRANS(I18n::Menu::timeSignatureChange) :
+            TRANS(I18n::Menu::timeSignatureAdd);
+
+        menu.add(MenuItem::item(Icons::meter,
+            CommandIDs::SetTrackTimeSignature, tsActionlabel)->closesMenu());
+
         if (auto *autoSequence = dynamic_cast<AutomationSequence *>(track->getSequence()))
         {
             // sets one tempo for the selected track, not for the entire project
@@ -95,15 +103,6 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
 
                 App::showModalComponent(move(dialog));
             }));
-        }
-        else if (auto *pianoSequence = dynamic_cast<PianoSequence *>(track->getSequence()))
-        {
-            const auto tsActionlabel = track->hasTimeSignatureOverride() ?
-                TRANS(I18n::Menu::timeSignatureChange) :
-                TRANS(I18n::Menu::timeSignatureAdd);
-
-            menu.add(MenuItem::item(Icons::meter,
-                CommandIDs::SetTrackTimeSignature, tsActionlabel)->closesMenu());
         }
     }
     else

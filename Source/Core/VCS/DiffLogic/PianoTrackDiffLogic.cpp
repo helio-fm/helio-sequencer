@@ -25,19 +25,19 @@
 namespace VCS
 {
 
-static SerializedData mergePath(const SerializedData &state, const SerializedData &changes);
-static SerializedData mergeColour(const SerializedData &state, const SerializedData &changes);
-static SerializedData mergeInstrument(const SerializedData &state, const SerializedData &changes);
-static SerializedData mergeTimeSignature(const SerializedData &state, const SerializedData &changes);
+SerializedData mergePath(const SerializedData &state, const SerializedData &changes);
+SerializedData mergeColour(const SerializedData &state, const SerializedData &changes);
+SerializedData mergeInstrument(const SerializedData &state, const SerializedData &changes);
+SerializedData mergeTimeSignature(const SerializedData &state, const SerializedData &changes);
 
 static SerializedData mergeNotesAdded(const SerializedData &state, const SerializedData &changes);
 static SerializedData mergeNotesRemoved(const SerializedData &state, const SerializedData &changes);
 static SerializedData mergeNotesChanged(const SerializedData &state, const SerializedData &changes);
 
-static DeltaDiff createPathDiff(const SerializedData &state, const SerializedData &changes);
-static DeltaDiff createColourDiff(const SerializedData &state, const SerializedData &changes);
-static DeltaDiff createInstrumentDiff(const SerializedData &state, const SerializedData &changes);
-static DeltaDiff createTimeSignatureDiff(const SerializedData &state, const SerializedData &changes);
+DeltaDiff createPathDiff(const SerializedData &state, const SerializedData &changes);
+DeltaDiff createColourDiff(const SerializedData &state, const SerializedData &changes);
+DeltaDiff createInstrumentDiff(const SerializedData &state, const SerializedData &changes);
+DeltaDiff createTimeSignatureDiff(const SerializedData &state, const SerializedData &changes);
 
 static Array<DeltaDiff> createEventsDiffs(const SerializedData &state, const SerializedData &changes);
 

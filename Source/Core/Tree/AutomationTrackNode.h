@@ -35,6 +35,7 @@ public:
     int getNumDeltas() const override;
     VCS::Delta *getDelta(int index) const override;
     SerializedData getDeltaData(int deltaIndex) const override;
+    bool deltaHasDefaultData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
     void resetStateTo(const VCS::TrackedItem &newState) override;
 
@@ -49,15 +50,9 @@ public:
     // Deltas
     //===------------------------------------------------------------------===//
 
-    SerializedData serializePathDelta() const;
-    SerializedData serializeColourDelta() const;
-    SerializedData serializeInstrumentDelta() const;
     SerializedData serializeControllerDelta() const;
     SerializedData serializeEventsDelta() const;
 
-    void resetPathDelta(const SerializedData &state);
-    void resetColourDelta(const SerializedData &state);
-    void resetInstrumentDelta(const SerializedData &state);
     void resetControllerDelta(const SerializedData &state);
     void resetEventsDelta(const SerializedData &state);
 

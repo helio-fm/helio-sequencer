@@ -37,6 +37,7 @@ AutomationTrackNode::AutomationTrackNode(const String &name) :
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackController));
     this->deltas.add(new VCS::Delta({}, AutoSequenceDeltas::eventsAdded));
     this->deltas.add(new VCS::Delta({}, PatternDeltas::clipsAdded));
+    this->deltas.add(new VCS::Delta({}, TimeSignatureDeltas::timeSignaturesChanged));
 }
 
 Image AutomationTrackNode::getIcon() const noexcept
@@ -105,6 +106,10 @@ SerializedData AutomationTrackNode::getDeltaData(int deltaIndex) const
     {
         return this->serializeControllerDelta();
     }
+    else if (this->deltas[deltaIndex]->hasType(TimeSignatureDeltas::timeSignaturesChanged))
+    {
+        return this->serializeTimeSignatureDelta();
+    }
     else if (this->deltas[deltaIndex]->hasType(AutoSequenceDeltas::eventsAdded))
     {
         return this->serializeEventsDelta();
@@ -116,6 +121,17 @@ SerializedData AutomationTrackNode::getDeltaData(int deltaIndex) const
 
     jassertfalse;
     return {};
+}
+
+bool AutomationTrackNode::deltaHasDefaultData(int deltaIndex) const
+{
+    using namespace Serialization::VCS;
+    if (this->deltas[deltaIndex]->hasType(TimeSignatureDeltas::timeSignaturesChanged))
+    {
+        return !this->hasTimeSignatureOverride();
+    }
+
+    return false;
 }
 
 VCS::DiffLogic *AutomationTrackNode::getDiffLogic() const
@@ -147,6 +163,10 @@ void AutomationTrackNode::resetStateTo(const VCS::TrackedItem &newState)
         {
             this->resetControllerDelta(newDeltaData);
         }
+        else if (newDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged))
+        {
+            this->resetTimeSignatureDelta(newDeltaData);
+        }
         else if (newDelta->hasType(AutoSequenceDeltas::eventsAdded))
         {
             this->resetEventsDelta(newDeltaData);
@@ -157,7 +177,6 @@ void AutomationTrackNode::resetStateTo(const VCS::TrackedItem &newState)
         }
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -176,6 +195,11 @@ SerializedData AutomationTrackNode::serialize() const
 
     tree.appendChild(this->sequence->serialize());
     tree.appendChild(this->pattern->serialize());
+
+    if (this->hasTimeSignatureOverride())
+    {
+        tree.appendChild(this->timeSignatureOverride.serialize());
+    }
 
     TreeNodeSerializer::serializeChildren(*this, tree);
 
@@ -199,40 +223,18 @@ void AutomationTrackNode::deserialize(const SerializedData &data)
         this->pattern->deserialize(e);
     }
 
-    // Proceed with basic properties and children
-    TreeNode::deserialize(data);
-}
+    forEachChildWithType(data, e, Serialization::Midi::timeSignature)
+    {
+        this->timeSignatureOverride.deserialize(e);
+    }
 
+    // Proceed with basic properties and children
+    MidiTrackNode::deserialize(data);
+}
 
 //===----------------------------------------------------------------------===//
 // Deltas
 //===----------------------------------------------------------------------===//
-
-// TODO move this in MidiTrackNode
-
-SerializedData AutomationTrackNode::serializePathDelta() const
-{
-    using namespace Serialization::VCS;
-    SerializedData tree(MidiTrackDeltas::trackPath);
-    tree.setProperty(delta, this->getTrackName());
-    return tree;
-}
-
-SerializedData AutomationTrackNode::serializeColourDelta() const
-{
-    using namespace Serialization::VCS;
-    SerializedData tree(MidiTrackDeltas::trackColour);
-    tree.setProperty(delta, this->getTrackColour().toString());
-    return tree;
-}
-
-SerializedData AutomationTrackNode::serializeInstrumentDelta() const
-{
-    using namespace Serialization::VCS;
-    SerializedData tree(MidiTrackDeltas::trackInstrument);
-    tree.setProperty(delta, this->getTrackInstrumentId());
-    return tree;
-}
 
 SerializedData AutomationTrackNode::serializeControllerDelta() const
 {
@@ -253,28 +255,6 @@ SerializedData AutomationTrackNode::serializeEventsDelta() const
     }
 
     return tree;
-}
-
-void AutomationTrackNode::resetPathDelta(const SerializedData &state)
-{
-    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackPath));
-    const String newName = state.getProperty(Serialization::VCS::delta);
-    this->setTrackName(newName, false, dontSendNotification);
-}
-
-void AutomationTrackNode::resetColourDelta(const SerializedData &state)
-{
-    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackColour));
-    const String colourString = state.getProperty(Serialization::VCS::delta);
-    const auto colour = Colour::fromString(colourString);
-    this->setTrackColour(colour, false, dontSendNotification);
-}
-
-void AutomationTrackNode::resetInstrumentDelta(const SerializedData &state)
-{
-    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackInstrument));
-    const String instrumentId = state.getProperty(Serialization::VCS::delta);
-    this->setTrackInstrumentId(instrumentId, false, dontSendNotification);
 }
 
 void AutomationTrackNode::resetControllerDelta(const SerializedData &state)

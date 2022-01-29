@@ -2501,14 +2501,13 @@ UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
     const auto &instrumentId = track->getTrackInstrumentId();
     const auto &cc = track->getTrackControllerNumber();
     const auto &colour = track->getTrackColour();
+    const auto *timeSignature = track->getTimeSignatureOverride();
 
-    UniquePointer<MidiTrackNode> newItem(new AutomationTrackNode({}));
-    newItem->setTrackColour(colour, false, dontSendNotification);
-    newItem->setTrackInstrumentId(instrumentId, false, dontSendNotification);
-    newItem->setTrackControllerNumber(cc, dontSendNotification);
+    UniquePointer<MidiTrackNode> newTrack(new AutomationTrackNode({}));
+    auto *sequence = static_cast<AutomationSequence *>(newTrack->getSequence());
+    auto *pattern = newTrack->getPattern();
 
     AutoChangeGroup copiedContent;
-    auto *sequence = static_cast<AutomationSequence *>(newItem->getSequence());
     for (const auto &event : events)
     {
         copiedContent.add(event.withNewId(sequence));
@@ -2517,7 +2516,6 @@ UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
     sequence->insertGroup(copiedContent, false);
 
     Array<Clip> copiedClips;
-    auto *pattern = newItem->getPattern();
     for (const auto &clip : clips)
     {
         copiedClips.add(clip.withNewId(pattern));
@@ -2525,7 +2523,15 @@ UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
     pattern->reset();
     pattern->insertGroup(copiedClips, false);
 
-    return newItem;
+    newTrack->setTrackColour(colour, false, dontSendNotification);
+    newTrack->setTrackInstrumentId(instrumentId, false, dontSendNotification);
+    newTrack->setTrackControllerNumber(cc, dontSendNotification);
+    if (timeSignature != nullptr)
+    {
+        newTrack->setTimeSignatureOverride(*timeSignature, false, dontSendNotification);
+    }
+
+    return newTrack;
 }
 
 String SequencerOperations::generateNextNameForNewTrack(const String &name, const StringArray &allNames)

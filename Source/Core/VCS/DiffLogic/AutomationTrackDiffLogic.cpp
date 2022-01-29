@@ -25,19 +25,26 @@
 namespace VCS
 {
 
-static SerializedData mergeAuthTrackPath(const SerializedData &state, const SerializedData &changes);
-static SerializedData mergeAutoTrackColour(const SerializedData &state, const SerializedData &changes);
-static SerializedData mergeAutoTrackInstrument(const SerializedData &state, const SerializedData &changes);
-static SerializedData mergeAutoTrackController(const SerializedData &state, const SerializedData &changes);
+// these are reused from PianoTrackDiffLogic.cpp, common for all tracks:
+
+extern SerializedData mergePath(const SerializedData &state, const SerializedData &changes);
+extern SerializedData mergeColour(const SerializedData &state, const SerializedData &changes);
+extern SerializedData mergeInstrument(const SerializedData &state, const SerializedData &changes);
+extern SerializedData mergeTimeSignature(const SerializedData &state, const SerializedData &changes);
+
+extern DeltaDiff createPathDiff(const SerializedData &state, const SerializedData &changes);
+extern DeltaDiff createColourDiff(const SerializedData &state, const SerializedData &changes);
+extern DeltaDiff createInstrumentDiff(const SerializedData &state, const SerializedData &changes);
+extern DeltaDiff createTimeSignatureDiff(const SerializedData &state, const SerializedData &changes);
+
+// automation track-specific:
+
+static SerializedData mergeController(const SerializedData &state, const SerializedData &changes);
 static SerializedData mergeAutoEventsAdded(const SerializedData &state, const SerializedData &changes);
 static SerializedData mergeAutoEventsRemoved(const SerializedData &state, const SerializedData &changes);
 static SerializedData mergeAutoEventsChanged(const SerializedData &state, const SerializedData &changes);
 
-static DeltaDiff createAutoTrackPathDiff(const SerializedData &state, const SerializedData &changes);
-static DeltaDiff createAutoTrackColourDiff(const SerializedData &state, const SerializedData &changes);
-static DeltaDiff createAutoTrackInstrumentDiff(const SerializedData &state, const SerializedData &changes);
 static DeltaDiff createAutoTrackControllerDiff(const SerializedData &state, const SerializedData &changes);
-
 static Array<DeltaDiff> createAutoEventsDiffs(const SerializedData &state, const SerializedData &changes);
 
 static void deserializeAutoTrackChanges(const SerializedData &state, const SerializedData &changes,
@@ -63,20 +70,12 @@ Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) cons
 
     auto *diff = new Diff(this->target);
 
-    // на входе - два набора дельт и их данных
-    // на выходе один набор дельт, который потом станет RevisionItem'ом
-    // и который потом будет передаваться на мерж при перемещении хэда или мерже ревизий.
-
-    // политика такая - если дельта определенного типа (например, LayerPath) не найдена в источнике
-    // или найдена, но не равна источнику !XmlElement::isEquivalentTo:
-    // для простых свойств диффом будет замена старого новым,
-    // для слоев событий или списков аннотаций (которые я планирую сделать потом) - полноценный дифф
-
     for (int i = 0; i < this->target.getNumDeltas(); ++i)
     {
         const Delta *myDelta = this->target.getDelta(i);
-
         const auto myDeltaData(this->target.getDeltaData(i));
+        const bool deltaHasDefaultData = this->target.deltaHasDefaultData(i);
+
         SerializedData stateDeltaData;
 
         bool deltaFoundInState = false;
@@ -95,19 +94,23 @@ Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) cons
             }
         }
 
-        if (!deltaFoundInState || dataHasChanged)
+        if ((!deltaFoundInState && !deltaHasDefaultData) || dataHasChanged)
         {
             if (myDelta->hasType(MidiTrackDeltas::trackPath))
             {
-                diff->applyDelta(createAutoTrackPathDiff(stateDeltaData, myDeltaData));
+                diff->applyDelta(createPathDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(MidiTrackDeltas::trackColour))
             {
-                diff->applyDelta(createAutoTrackColourDiff(stateDeltaData, myDeltaData));
+                diff->applyDelta(createColourDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(MidiTrackDeltas::trackInstrument))
             {
-                diff->applyDelta(createAutoTrackInstrumentDiff(stateDeltaData, myDeltaData));
+                diff->applyDelta(createInstrumentDiff(stateDeltaData, myDeltaData));
+            }
+            else if (myDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged))
+            {
+                diff->applyDelta(createTimeSignatureDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(MidiTrackDeltas::trackController))
             {
@@ -173,25 +176,31 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
                 if (targetDelta->hasType(MidiTrackDeltas::trackPath))
                 {
                     auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
-                    SerializedData diffDeltaData = mergeAuthTrackPath(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergePath(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackColour))
                 {
                     auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
-                    SerializedData diffDeltaData = mergeAutoTrackColour(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergeColour(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackInstrument))
                 {
                     auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
-                    SerializedData diffDeltaData = mergeAutoTrackInstrument(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergeInstrument(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackController))
                 {
                     auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
-                    SerializedData diffDeltaData = mergeAutoTrackController(stateDeltaData, targetDeltaData);
+                    SerializedData diffDeltaData = mergeController(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
+                }
+                else if (targetDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged))
+                {
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
+                    auto diffDeltaData = mergeTimeSignature(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
             }
@@ -266,10 +275,13 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
     // which was introduced later.
 
     bool stateHasClips = false;
+    bool stateHasTrackTimeSignature = false;
+
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         const Delta *stateDelta = initialState.getDelta(i);
         stateHasClips = stateHasClips || PatternDiffHelpers::checkIfDeltaIsPatternType(stateDelta);
+        stateHasTrackTimeSignature = stateHasTrackTimeSignature || stateDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged);
     }
 
     {
@@ -278,11 +290,28 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
             DeltaDescription(Serialization::VCS::headStateDelta),
             PatternDeltas::clipsAdded);
 
+        SerializedData timeSignatureDeltaData;
+        auto timeSignatureDelta = make<Delta>(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            TimeSignatureDeltas::timeSignaturesChanged);
+
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
             const Delta *targetDelta = this->target.getDelta(j);
             const auto targetDeltaData(this->target.getDeltaData(j));
-            const bool foundMissingClip = !stateHasClips && PatternDiffHelpers::checkIfDeltaIsPatternType(targetDelta);
+
+            const bool foundMissingTimeSignature = !stateHasTrackTimeSignature &&
+                targetDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged);
+
+            if (foundMissingTimeSignature)
+            {
+                SerializedData emptyTimeSignatureDeltaData(TimeSignatureDeltas::timeSignaturesChanged);
+                timeSignatureDeltaData = mergeTimeSignature(emptyTimeSignatureDeltaData, targetDeltaData);
+            }
+
+            const bool foundMissingClip = !stateHasClips &&
+                PatternDiffHelpers::checkIfDeltaIsPatternType(targetDelta);
+
             if (foundMissingClip)
             {
                 SerializedData emptyClipDeltaData(serializeAutoSequence({}, PatternDeltas::clipsAdded));
@@ -317,22 +346,7 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
 // Merge
 //===----------------------------------------------------------------------===//
 
-SerializedData mergeAuthTrackPath(const SerializedData &state, const SerializedData &changes)
-{
-    return changes.createCopy();
-}
-
-SerializedData mergeAutoTrackColour(const SerializedData &state, const SerializedData &changes)
-{
-    return changes.createCopy();
-}
-
-SerializedData mergeAutoTrackInstrument(const SerializedData &state, const SerializedData &changes)
-{
-    return changes.createCopy();
-}
-
-SerializedData mergeAutoTrackController(const SerializedData &state, const SerializedData &changes)
+SerializedData mergeController(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
 }
@@ -352,11 +366,11 @@ SerializedData mergeAutoEventsAdded(const SerializedData &state, const Serialize
     for (int i = 0; i < changesNotes.size(); ++i)
     {
         bool foundNoteInState = false;
-        const AutomationEvent *changesNote = static_cast<AutomationEvent *>(changesNotes.getUnchecked(i));
+        const auto *changesNote = static_cast<AutomationEvent *>(changesNotes.getUnchecked(i));
 
         for (int j = 0; j < stateNotes.size(); ++j)
         {
-            const AutomationEvent *stateNote = static_cast<AutomationEvent *>(stateNotes.getUnchecked(j));
+            const auto *stateNote = static_cast<AutomationEvent *>(stateNotes.getUnchecked(j));
 
             if (stateNote->getId() == changesNote->getId())
             {
@@ -388,11 +402,11 @@ SerializedData mergeAutoEventsRemoved(const SerializedData &state, const Seriali
     for (int i = 0; i < stateNotes.size(); ++i)
     {
         bool foundNoteInChanges = false;
-        const AutomationEvent *stateNote = static_cast<AutomationEvent *>(stateNotes.getUnchecked(i));
+        const auto *stateNote = static_cast<AutomationEvent *>(stateNotes.getUnchecked(i));
 
         for (int j = 0; j < changesNotes.size(); ++j)
         {
-            const AutomationEvent *changesNote = static_cast<AutomationEvent *>(changesNotes.getUnchecked(j));
+            const auto *changesNote = static_cast<AutomationEvent *>(changesNotes.getUnchecked(j));
 
             if (stateNote->getId() == changesNote->getId())
             {
@@ -425,11 +439,11 @@ SerializedData mergeAutoEventsChanged(const SerializedData &state, const Seriali
     for (int i = 0; i < stateNotes.size(); ++i)
     {
         bool foundNoteInChanges = false;
-        const AutomationEvent *stateNote = static_cast<AutomationEvent *>(stateNotes.getUnchecked(i));
+        const auto *stateNote = static_cast<AutomationEvent *>(stateNotes.getUnchecked(i));
 
         for (int j = 0; j < changesNotes.size(); ++j)
         {
-            const AutomationEvent *changesNote = static_cast<AutomationEvent *>(changesNotes.getUnchecked(j));
+            const auto *changesNote = static_cast<AutomationEvent *>(changesNotes.getUnchecked(j));
 
             if (stateNote->getId() == changesNote->getId())
             {
@@ -451,35 +465,6 @@ SerializedData mergeAutoEventsChanged(const SerializedData &state, const Seriali
 //===----------------------------------------------------------------------===//
 // Diff
 //===----------------------------------------------------------------------===//
-
-DeltaDiff createAutoTrackPathDiff(const SerializedData &state, const SerializedData &changes)
-{
-    DeltaDiff res;
-    using namespace Serialization::VCS;
-    res.deltaData = changes.createCopy();
-    res.delta = make<Delta>(DeltaDescription("moved from {x}",
-        state.getProperty(Serialization::VCS::delta).toString()),
-        MidiTrackDeltas::trackPath);
-    return res;
-}
-
-DeltaDiff createAutoTrackColourDiff(const SerializedData &state, const SerializedData &changes)
-{
-    DeltaDiff res;
-    using namespace Serialization::VCS;
-    res.delta = make<Delta>(DeltaDescription("color changed"), MidiTrackDeltas::trackColour);
-    res.deltaData = changes.createCopy();
-    return res;
-}
-
-DeltaDiff createAutoTrackInstrumentDiff(const SerializedData &state, const SerializedData &changes)
-{
-    DeltaDiff res;
-    using namespace Serialization::VCS;
-    res.delta = make<Delta>(DeltaDescription("instrument changed"), MidiTrackDeltas::trackInstrument);
-    res.deltaData = changes.createCopy();
-    return res;
-}
 
 DeltaDiff createAutoTrackControllerDiff(const SerializedData &state, const SerializedData &changes)
 {
@@ -511,11 +496,11 @@ Array<DeltaDiff> createAutoEventsDiffs(const SerializedData &state, const Serial
     for (int i = 0; i < stateEvents.size(); ++i)
     {
         bool foundNoteInChanges = false;
-        const AutomationEvent *stateEvent = static_cast<AutomationEvent *>(stateEvents.getUnchecked(i));
+        const auto *stateEvent = static_cast<AutomationEvent *>(stateEvents.getUnchecked(i));
 
         for (int j = 0; j < changesEvents.size(); ++j)
         {
-            const AutomationEvent *changesEvent = static_cast<AutomationEvent *>(changesEvents.getUnchecked(j));
+            const auto *changesEvent = static_cast<AutomationEvent *>(changesEvents.getUnchecked(j));
 
             // нота из состояния - существует в изменениях. добавляем запись changed, если нужно.
             if (stateEvent->getId() == changesEvent->getId())
@@ -546,11 +531,11 @@ Array<DeltaDiff> createAutoEventsDiffs(const SerializedData &state, const Serial
     for (int i = 0; i < changesEvents.size(); ++i)
     {
         bool foundNoteInState = false;
-        const AutomationEvent *changesNote = static_cast<AutomationEvent *>(changesEvents.getUnchecked(i));
+        const auto *changesNote = static_cast<AutomationEvent *>(changesEvents.getUnchecked(i));
 
         for (int j = 0; j < stateEvents.size(); ++j)
         {
-            const AutomationEvent *stateNote = static_cast<AutomationEvent *>(stateEvents.getUnchecked(j));
+            const auto *stateNote = static_cast<AutomationEvent *>(stateEvents.getUnchecked(j));
 
             if (stateNote->getId() == changesNote->getId())
             {
