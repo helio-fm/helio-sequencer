@@ -51,6 +51,9 @@ struct PatternOperations final
     static void mergeClips(ProjectNode &project, const Clip &targetClip,
         const Array<Clip> &sourceClips, bool shouldCheckpoint = true);
 
+    // simply reverse the clips order for each row
+    static void retrograde(ProjectNode &project, Lasso &selection, bool shouldCheckpoint = true);
+
     // if all selected clips are "assigned" to the same instrument,
     // this returns that instrument id, otherwise returns an empty string:
     static String getSelectedInstrumentId(const Lasso &selection);

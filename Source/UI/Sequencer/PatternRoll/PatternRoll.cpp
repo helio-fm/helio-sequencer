@@ -660,7 +660,7 @@ void PatternRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::SetTrackTimeSignature:
-        if (this->getLassoSelection().getNumSelected() == 1)
+        if (this->selection.getNumSelected() == 1)
         {
             const auto clip = this->selection.getFirstAs<ClipComponent>()->getClip();
             if (auto *track = this->project.findTrackById<MidiTrackNode>(clip.getTrackId()))
@@ -672,7 +672,7 @@ void PatternRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::DuplicateTrack:        // the implementation for these two
     case CommandIDs::InstanceToUniqueTrack: // is pretty much the same code
-        if (this->getLassoSelection().getNumSelected() == 1)
+        if (this->selection.getNumSelected() == 1)
         {
             const auto clip = this->selection.getFirstAs<ClipComponent>()->getClip();
             auto *clonedTrack = this->project.findTrackById<MidiTrackNode>(clip.getTrackId());
@@ -712,8 +712,8 @@ void PatternRoll::handleCommandMessage(int commandId)
 
             if (altMode)
             {
-                jassert(this->getLassoSelection().getNumSelected() == 1);
-                PatternOperations::deleteSelection(this->getLassoSelection(), this->project, false);
+                jassert(this->selection.getNumSelected() == 1);
+                PatternOperations::deleteSelection(this->selection, this->project, false);
             }
 
             const bool generateNewName = !altMode;
@@ -730,7 +730,7 @@ void PatternRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::DeleteClips:
-        PatternOperations::deleteSelection(this->getLassoSelection(), this->project);
+        PatternOperations::deleteSelection(this->selection, this->project);
         break;
     case CommandIDs::ZoomEntireClip:
         if (this->selection.getNumSelected() > 0)
@@ -740,44 +740,47 @@ void PatternRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::ClipTransposeUp:
-        PatternOperations::transposeClips(this->getLassoSelection(), 1);
+        PatternOperations::transposeClips(this->selection, 1);
         break;
     case CommandIDs::ClipTransposeDown:
-        PatternOperations::transposeClips(this->getLassoSelection(), -1);
+        PatternOperations::transposeClips(this->selection, -1);
         break;
     case CommandIDs::ClipTransposeOctaveUp:
-        PatternOperations::transposeClips(this->getLassoSelection(),
+        PatternOperations::transposeClips(this->selection,
             this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave));
         break;
     case CommandIDs::ClipTransposeOctaveDown:
-        PatternOperations::transposeClips(this->getLassoSelection(),
+        PatternOperations::transposeClips(this->selection,
             -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave));
         break;
     case CommandIDs::ClipTransposeFifthUp:
-        PatternOperations::transposeClips(this->getLassoSelection(),
+        PatternOperations::transposeClips(this->selection,
             this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth));
         break;
     case CommandIDs::ClipTransposeFifthDown:
-        PatternOperations::transposeClips(this->getLassoSelection(),
+        PatternOperations::transposeClips(this->selection,
             -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth));
         break;
     case CommandIDs::ClipVolumeUp:
-        PatternOperations::tuneClips(this->getLassoSelection(), 1.f / 32.f);
+        PatternOperations::tuneClips(this->selection, 1.f / 32.f);
         break;
     case CommandIDs::ClipVolumeDown:
-        PatternOperations::tuneClips(this->getLassoSelection(), -1.f / 32.f);
+        PatternOperations::tuneClips(this->selection, -1.f / 32.f);
         break;
     case CommandIDs::BeatShiftLeft:
-        PatternOperations::shiftBeatRelative(this->getLassoSelection(), -this->getMinVisibleBeatForCurrentZoomLevel());
+        PatternOperations::shiftBeatRelative(this->selection, -this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::BeatShiftRight:
-        PatternOperations::shiftBeatRelative(this->getLassoSelection(), this->getMinVisibleBeatForCurrentZoomLevel());
+        PatternOperations::shiftBeatRelative(this->selection, this->getMinVisibleBeatForCurrentZoomLevel());
+        break;
+    case CommandIDs::Retrograde:
+        PatternOperations::retrograde(this->project, this->selection);
         break;
     case CommandIDs::ToggleMuteClips:
-        PatternOperations::toggleMuteClips(this->getLassoSelection());
+        PatternOperations::toggleMuteClips(this->selection);
         break;
     case CommandIDs::ToggleSoloClips:
-        PatternOperations::toggleSoloClips(this->getLassoSelection());
+        PatternOperations::toggleSoloClips(this->selection);
         break;
     case CommandIDs::ToggleLoopOverSelection:
         if (this->selection.getNumSelected() > 0)
@@ -827,22 +830,22 @@ void PatternRoll::handleCommandMessage(int commandId)
         this->resized();
         break;
     case CommandIDs::QuantizeTo1_1:
-        PatternOperations::quantize(this->getLassoSelection(), 1.f);
+        PatternOperations::quantize(this->selection, 1.f);
         break;
     case CommandIDs::QuantizeTo1_2:
-        PatternOperations::quantize(this->getLassoSelection(), 2.f);
+        PatternOperations::quantize(this->selection, 2.f);
         break;
     case CommandIDs::QuantizeTo1_4:
-        PatternOperations::quantize(this->getLassoSelection(), 4.f);
+        PatternOperations::quantize(this->selection, 4.f);
         break;
     case CommandIDs::QuantizeTo1_8:
-        PatternOperations::quantize(this->getLassoSelection(), 8.f);
+        PatternOperations::quantize(this->selection, 8.f);
         break;
     case CommandIDs::QuantizeTo1_16:
-        PatternOperations::quantize(this->getLassoSelection(), 16.f);
+        PatternOperations::quantize(this->selection, 16.f);
         break;
     case CommandIDs::QuantizeTo1_32:
-        PatternOperations::quantize(this->getLassoSelection(), 32.f);
+        PatternOperations::quantize(this->selection, 32.f);
         break;
     default:
         break;
@@ -1219,7 +1222,7 @@ SerializedData PatternRoll::serialize() const
     tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY());
 
     // m?
-    //tree.setProperty(UI::selection, this->getLassoSelection().serialize(), nullptr);
+    //tree.setProperty(UI::selection, this->selection.serialize(), nullptr);
 
     return tree;
 }

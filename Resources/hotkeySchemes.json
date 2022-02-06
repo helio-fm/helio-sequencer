@@ -336,6 +336,7 @@
       { "command": "ClipTransposeFifthDown", "key": "Shift + Alt + Cursor Down" },
       { "command": "BeatShiftLeft", "key": "Cursor Left" },
       { "command": "BeatShiftRight", "key": "Cursor Right" },
+      { "command": "Retrograde", "key": "Alt + R" },
 
       // Various
       { "command": "ToggleBottomMiniMap", "key": "B" },

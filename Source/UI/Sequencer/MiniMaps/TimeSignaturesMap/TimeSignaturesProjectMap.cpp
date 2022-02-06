@@ -258,9 +258,6 @@ void TimeSignaturesProjectMap::reloadTrackMap()
 
 void TimeSignaturesProjectMap::applyTimeSignatureBounds(TimeSignatureComponent *c, TimeSignatureComponent *nextOne)
 {
-    constexpr auto minWidth = 10.f;
-    constexpr auto widthMargin = 12.f;
-
     const float rollLengthInBeats = this->rollLastBeat - this->rollFirstBeat;
     const float projectLengthInBeats = this->projectLastBeat - this->projectFirstBeat;
 
@@ -271,9 +268,10 @@ void TimeSignaturesProjectMap::applyTimeSignatureBounds(TimeSignatureComponent *
     const float nextBeat = (nextOne ? nextOne->getBeat() : this->rollLastBeat) - this->rollFirstBeat;
     const float nextX = mapWidth * (nextBeat / projectLengthInBeats);
 
+    constexpr auto widthMargin = 8.f;
+    const float minWidth = c->getTextWidth();
     const float maxWidth = jmax(nextX - x, minWidth);
-    const float componentWidth = c->getTextWidth() + widthMargin;
-    const float w = jlimit(minWidth, maxWidth, componentWidth);
+    const float w = jlimit(minWidth, maxWidth, minWidth + widthMargin);
 
     c->setRealBounds(Rectangle<float>(x, 0.f, w,
         float(TimeSignatureComponent::timeSignatureHeight)));

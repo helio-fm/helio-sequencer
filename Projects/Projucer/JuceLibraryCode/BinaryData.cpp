@@ -1583,6 +1583,7 @@ static const unsigned char temp_binary_data_92[] =
 "      { \"command\": \"ClipTransposeFifthDown\", \"key\": \"Shift + Alt + Cursor Down\" },\n"
 "      { \"command\": \"BeatShiftLeft\", \"key\": \"Cursor Left\" },\n"
 "      { \"command\": \"BeatShiftRight\", \"key\": \"Cursor Right\" },\n"
+"      { \"command\": \"Retrograde\", \"key\": \"Alt + R\" },\n"
 "\n"
 "      // Various\n"
 "      { \"command\": \"ToggleBottomMiniMap\", \"key\": \"B\" },\n"
@@ -4243,7 +4244,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 3297; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 15831; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 15884; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 588; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 689; return meters_json;
         case 0x048f5efe:  numBytes = 9400; return scales_json;

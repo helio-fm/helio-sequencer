@@ -664,6 +664,95 @@ void PatternOperations::mergeClips(ProjectNode &project, const Clip &targetClip,
     }
 }
 
+struct SortClipsByAbsoluteBeatPosition final
+{
+    static int compareElements(const Clip &first, const Clip &second)
+    {
+        const auto *firstTrack = first.getPattern()->getTrack();
+        const auto firstBeat = first.getBeat() +
+            firstTrack->getSequence()->getFirstBeat();
+
+        const auto *secondTrack = second.getPattern()->getTrack();
+        const auto secondBeat = second.getBeat() +
+            secondTrack->getSequence()->getFirstBeat();
+
+        const float diff = firstBeat - secondBeat;
+        return (diff > 0.f) - (diff < 0.f);
+    }
+};
+
+void PatternOperations::retrograde(ProjectNode &project, Lasso &selection, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() < 2)
+    {
+        return;
+    }
+
+    if (shouldCheckpoint)
+    {
+        project.checkpoint();
+    }
+
+    const auto grouping = project.getTrackGroupingMode();
+
+    // group selection by rows and sort each group
+    FlatHashMap<String, Array<Clip>> groupedRows;
+    static SortClipsByAbsoluteBeatPosition kSort;
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto *cc = selection.getItemAs<ClipComponent>(i);
+        const auto groupKey = cc->getClip().getPattern()->getTrack()->getTrackGroupKey(grouping);
+
+        if (groupedRows.contains(groupKey))
+        {
+            groupedRows[groupKey].addSorted(kSort, cc->getClip());
+        }
+        else
+        {
+            groupedRows[groupKey] = { cc->getClip() };
+        }
+    }
+
+    for (const auto &rowGroup : groupedRows)
+    {
+        int start = 0;
+        int end = rowGroup.second.size() - 1;
+        float previousLengthDelta = 0.f;
+        do
+        {
+            const auto &c1 = rowGroup.second.getReference(start);
+            const auto &c2 = rowGroup.second.getReference(end);
+
+            // clips can belong to different tracks, because that depends on grouping
+            // so the actual beat position also depends on sequence start:
+
+            const auto *firstTrack = c1.getPattern()->getTrack();
+            const auto firstBeat = c1.getBeat() + firstTrack->getSequence()->getFirstBeat();
+            const auto firstSequenceLength = firstTrack->getSequence()->getLengthInBeats();
+
+            const auto *secondTrack = c2.getPattern()->getTrack();
+            const auto secondBeat = c2.getBeat() + secondTrack->getSequence()->getFirstBeat();
+            const auto secondSequenceLength = secondTrack->getSequence()->getLengthInBeats();
+
+            const auto beatDelta = secondBeat - firstBeat;
+            const auto lengthDelta = secondSequenceLength - firstSequenceLength;
+
+            c1.getPattern()->change(c1, c1.withDeltaBeat(beatDelta + previousLengthDelta + lengthDelta), true);
+
+            if (start < end) // when start == end, it's the single remaining odd clip
+            {
+                c2.getPattern()->change(c2, c2.withDeltaBeat(-beatDelta + previousLengthDelta), true);
+            }
+
+            previousLengthDelta += lengthDelta;
+
+            start++;
+            end--;
+        } while (start <= end);
+    }
+}
+
 String PatternOperations::getSelectedInstrumentId(const Lasso &selection)
 {
     String id;
