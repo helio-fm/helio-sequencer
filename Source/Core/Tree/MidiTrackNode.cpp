@@ -85,7 +85,6 @@ void MidiTrackNode::resetClipsDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::PatternDeltas::clipsAdded));
 
-    //this->reset();
     this->getPattern()->reset();
 
     Pattern *pattern = this->getPattern();

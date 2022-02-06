@@ -411,6 +411,7 @@ namespace Serialization
         static const Identifier userStashes = "userStashes";
         static const Identifier quickStash = "quickStash";
         static const Identifier quickStashId = "quickStashId";
+        static const Identifier diffFormatVersion = "diffFormatVersion";
 
         static const Identifier remoteCache = "remoteCache";
         static const Identifier remoteCacheSyncTime = "lastSync";

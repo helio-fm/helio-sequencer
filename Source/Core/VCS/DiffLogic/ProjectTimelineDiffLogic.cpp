@@ -263,25 +263,27 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
     }
 
     {
+        SerializedData mergedAnnotationsDeltaData;
+        SerializedData emptyAnnotationDeltaData(AnnotationDeltas::annotationsAdded);
         auto annotationsDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
             AnnotationDeltas::annotationsAdded);
 
+        SerializedData mergedKeySignaturesDeltaData;
+        SerializedData emptyKeySignaturesDeltaData(KeySignatureDeltas::keySignaturesAdded);
         auto keySignaturesDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
             KeySignatureDeltas::keySignaturesAdded);
 
+        SerializedData mergedTimeSignaturesDeltaData;
+        SerializedData emptyTimeSignaturesDeltaData(TimeSignatureDeltas::timeSignaturesAdded);
         auto timeSignaturesDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
             TimeSignatureDeltas::timeSignaturesAdded);
 
-        SerializedData annotationsDeltaData;
-        SerializedData keySignaturesDeltaData;
-        SerializedData timeSignaturesDeltaData;
-
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
-            const Delta *targetDelta = this->target.getDelta(j);
+            const auto *targetDelta = this->target.getDelta(j);
             const auto targetDeltaData(this->target.getDeltaData(j));
 
             const bool foundMissingKeySignature = !stateHasKeySignatures && checkIfDeltaIsKeySignatureType(targetDelta);
@@ -290,82 +292,79 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 
             if (foundMissingKeySignature)
             {
-                const bool incrementalMerge = keySignaturesDeltaData.isValid();
-                SerializedData emptyKeySignaturesDeltaData(serializeTimelineSequence({}, KeySignatureDeltas::keySignaturesAdded));
+                const bool incrementalMerge = mergedKeySignaturesDeltaData.isValid();
 
                 if (targetDelta->hasType(KeySignatureDeltas::keySignaturesAdded))
                 {
-                    keySignaturesDeltaData = mergeKeySignaturesAdded(
-                        incrementalMerge ? keySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
+                    mergedKeySignaturesDeltaData = mergeKeySignaturesAdded(incrementalMerge ?
+                        mergedKeySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->hasType(KeySignatureDeltas::keySignaturesRemoved))
                 {
-                    keySignaturesDeltaData = mergeKeySignaturesRemoved(
-                        incrementalMerge ? keySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
+                    mergedKeySignaturesDeltaData = mergeKeySignaturesRemoved(incrementalMerge ?
+                        mergedKeySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->hasType(KeySignatureDeltas::keySignaturesChanged))
                 {
-                    keySignaturesDeltaData = mergeKeySignaturesChanged(
-                        incrementalMerge ? keySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
+                    mergedKeySignaturesDeltaData = mergeKeySignaturesChanged(incrementalMerge ?
+                        mergedKeySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
                 }
             }
             else if (foundMissingTimeSignature)
             {
-                const bool incrementalMerge = timeSignaturesDeltaData.isValid();
-                SerializedData emptyTimeSignaturesDeltaData(serializeTimelineSequence({}, TimeSignatureDeltas::timeSignaturesAdded));
+                const bool incrementalMerge = mergedTimeSignaturesDeltaData.isValid();
 
                 if (targetDelta->hasType(TimeSignatureDeltas::timeSignaturesAdded))
                 {
-                    timeSignaturesDeltaData = mergeTimeSignaturesAdded(
-                        incrementalMerge ? timeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
+                    mergedTimeSignaturesDeltaData = mergeTimeSignaturesAdded(incrementalMerge ?
+                        mergedTimeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->hasType(TimeSignatureDeltas::timeSignaturesRemoved))
                 {
-                    timeSignaturesDeltaData = mergeTimeSignaturesRemoved(
-                        incrementalMerge ? timeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
+                    mergedTimeSignaturesDeltaData = mergeTimeSignaturesRemoved(incrementalMerge ?
+                        mergedTimeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged))
                 {
-                    timeSignaturesDeltaData = mergeTimeSignaturesChanged(
-                        incrementalMerge ? timeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
+                    mergedTimeSignaturesDeltaData = mergeTimeSignaturesChanged(incrementalMerge ?
+                        mergedTimeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
                 }
             }
             else if (foundMissingAnnotation)
             {
-                const bool incrementalMerge = annotationsDeltaData.isValid();
-                SerializedData emptyAnnotationDeltaData(serializeTimelineSequence({}, AnnotationDeltas::annotationsAdded));
+                const bool incrementalMerge = mergedAnnotationsDeltaData.isValid();
 
                 if (targetDelta->hasType(AnnotationDeltas::annotationsAdded))
                 {
-                    annotationsDeltaData = mergeAnnotationsAdded(
-                        incrementalMerge ? annotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
+                    mergedAnnotationsDeltaData = mergeAnnotationsAdded(incrementalMerge ?
+                        mergedAnnotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->hasType(AnnotationDeltas::annotationsRemoved))
                 {
-                    annotationsDeltaData = mergeAnnotationsRemoved(
-                        incrementalMerge ? annotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
+                    mergedAnnotationsDeltaData = mergeAnnotationsRemoved(incrementalMerge ?
+                        mergedAnnotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->hasType(AnnotationDeltas::annotationsChanged))
                 {
-                    annotationsDeltaData = mergeAnnotationsChanged(
-                        incrementalMerge ? annotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
+                    mergedAnnotationsDeltaData = mergeAnnotationsChanged(incrementalMerge ?
+                        mergedAnnotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
                 }
             }
         }
 
-        if (annotationsDeltaData.isValid())
+        if (mergedAnnotationsDeltaData.isValid())
         {
-            diff->applyDelta(annotationsDelta.release(), annotationsDeltaData);
+            diff->applyDelta(annotationsDelta.release(), mergedAnnotationsDeltaData);
         }
 
-        if (timeSignaturesDeltaData.isValid())
+        if (mergedTimeSignaturesDeltaData.isValid())
         {
-            diff->applyDelta(timeSignaturesDelta.release(), timeSignaturesDeltaData);
+            diff->applyDelta(timeSignaturesDelta.release(), mergedTimeSignaturesDeltaData);
         }
 
-        if (keySignaturesDeltaData.isValid())
+        if (mergedKeySignaturesDeltaData.isValid())
         {
-            diff->applyDelta(keySignaturesDelta.release(), keySignaturesDeltaData);
+            diff->applyDelta(keySignaturesDelta.release(), mergedKeySignaturesDeltaData);
         }
     }
 

@@ -374,6 +374,10 @@ void ProjectMetadata::resetTemperamentDelta(const SerializedData &state)
         jassert(this->temperament != nullptr);
         this->deserializeTemperament(state.getChild(0));
     }
+    else
+    {
+        this->temperament = Temperament::getTwelveToneEqualTemperament();
+    }
 }
 
 void ProjectMetadata::deserializeTemperament(const SerializedData &state)

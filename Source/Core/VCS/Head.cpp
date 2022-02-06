@@ -467,7 +467,7 @@ void Head::deserialize(const SerializedData &data)
         data : data.getChildWithName(Serialization::VCS::head);
 
     if (!root.isValid()) { return; }
-    
+
     const auto snapshotNode = root.getChildWithName(Serialization::VCS::snapshot);
     if (!snapshotNode.isValid()) { return; }
 
@@ -637,7 +637,7 @@ void Head::rebuildDiffSynchronously()
         
         for (int j = 0; j < this->targetVcsItemsSource.getNumTrackedItems(); ++j)
         {
-            TrackedItem *targetItem = this->targetVcsItemsSource.getTrackedItem(j); // i.e. LayerTreeItem
+            auto *targetItem = this->targetVcsItemsSource.getTrackedItem(j); // i.e. MidiTrckNode
             
             // state item exists in project, adding `changed` record, if needed
             if (stateItem->getUuid() == targetItem->getUuid())

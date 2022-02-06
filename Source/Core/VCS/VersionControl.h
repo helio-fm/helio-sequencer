@@ -120,6 +120,8 @@ protected:
     VCS::RemoteCache remoteCache;
 #endif
 
+    static constexpr int diffFormatVersion = 0x0309;
+
 private:
 
     VCS::TrackedItemsSource &parent;

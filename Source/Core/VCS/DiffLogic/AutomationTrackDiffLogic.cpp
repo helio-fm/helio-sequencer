@@ -281,60 +281,81 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
     {
         const Delta *stateDelta = initialState.getDelta(i);
         stateHasClips = stateHasClips || PatternDiffHelpers::checkIfDeltaIsPatternType(stateDelta);
-        stateHasTrackTimeSignature = stateHasTrackTimeSignature || stateDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged);
+        stateHasTrackTimeSignature = stateHasTrackTimeSignature ||
+            stateDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged);
     }
 
+    if (!stateHasTrackTimeSignature)
     {
-        SerializedData clipsDeltaData;
-        auto clipsDelta = make<Delta>(
-            DeltaDescription(Serialization::VCS::headStateDelta),
-            PatternDeltas::clipsAdded);
-
-        SerializedData timeSignatureDeltaData;
+        SerializedData mergedTimeSignatureDeltaData;
+        SerializedData emptyTimeSignatureDeltaData(TimeSignatureDeltas::timeSignaturesChanged);
         auto timeSignatureDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
             TimeSignatureDeltas::timeSignaturesChanged);
 
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
-            const Delta *targetDelta = this->target.getDelta(j);
+            const auto *targetDelta = this->target.getDelta(j);
             const auto targetDeltaData(this->target.getDeltaData(j));
 
-            const bool foundMissingTimeSignature = !stateHasTrackTimeSignature &&
-                targetDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged);
-
-            if (foundMissingTimeSignature)
+            if (targetDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged))
             {
-                SerializedData emptyTimeSignatureDeltaData(TimeSignatureDeltas::timeSignaturesChanged);
-                timeSignatureDeltaData = mergeTimeSignature(emptyTimeSignatureDeltaData, targetDeltaData);
+                mergedTimeSignatureDeltaData = mergeTimeSignature(emptyTimeSignatureDeltaData, targetDeltaData);
             }
+        }
 
-            const bool foundMissingClip = !stateHasClips &&
-                PatternDiffHelpers::checkIfDeltaIsPatternType(targetDelta);
+        if (mergedTimeSignatureDeltaData.isValid())
+        {
+            diff->applyDelta(timeSignatureDelta.release(), mergedTimeSignatureDeltaData);
+        }
+        else
+        {
+            diff->applyDelta(timeSignatureDelta.release(), emptyTimeSignatureDeltaData);
+        }
+    }
 
-            if (foundMissingClip)
+    if (!stateHasClips)
+    {
+        SerializedData mergedClipsDeltaData;
+        SerializedData emptyClipsDeltaData(PatternDeltas::clipsAdded);
+        auto clipsDelta = make<Delta>(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            PatternDeltas::clipsAdded);
+
+        for (int j = 0; j < this->target.getNumDeltas(); ++j)
+        {
+            const auto *targetDelta = this->target.getDelta(j);
+            const auto targetDeltaData(this->target.getDeltaData(j));
+
+            if (PatternDiffHelpers::checkIfDeltaIsPatternType(targetDelta))
             {
-                SerializedData emptyClipDeltaData(serializeAutoSequence({}, PatternDeltas::clipsAdded));
-                const bool incrementalMerge = clipsDeltaData.isValid();
+                const bool incrementalMerge = mergedClipsDeltaData.isValid();
 
                 if (targetDelta->hasType(PatternDeltas::clipsAdded))
                 {
-                    clipsDeltaData = PatternDiffHelpers::mergeClipsAdded(incrementalMerge ? clipsDeltaData : emptyClipDeltaData, targetDeltaData);
+                    mergedClipsDeltaData = PatternDiffHelpers::mergeClipsAdded(incrementalMerge ?
+                        mergedClipsDeltaData : emptyClipsDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->hasType(PatternDeltas::clipsRemoved))
                 {
-                    clipsDeltaData = PatternDiffHelpers::mergeClipsRemoved(incrementalMerge ? clipsDeltaData : emptyClipDeltaData, targetDeltaData);
+                    mergedClipsDeltaData = PatternDiffHelpers::mergeClipsRemoved(incrementalMerge ?
+                        mergedClipsDeltaData : emptyClipsDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->hasType(PatternDeltas::clipsChanged))
                 {
-                    clipsDeltaData = PatternDiffHelpers::mergeClipsChanged(incrementalMerge ? clipsDeltaData : emptyClipDeltaData, targetDeltaData);
+                    mergedClipsDeltaData = PatternDiffHelpers::mergeClipsChanged(incrementalMerge ?
+                        mergedClipsDeltaData : emptyClipsDeltaData, targetDeltaData);
                 }
             }
         }
 
-        if (clipsDeltaData.isValid())
+        if (mergedClipsDeltaData.isValid())
         {
-            diff->applyDelta(clipsDelta.release(), clipsDeltaData);
+            diff->applyDelta(clipsDelta.release(), mergedClipsDeltaData);
+        }
+        else
+        {
+            diff->applyDelta(clipsDelta.release(), emptyClipsDeltaData);
         }
     }
 

@@ -143,8 +143,7 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
         }
     }
 
-    this->head.resetChanges(changesToReset);
-    return true;
+    return this->head.resetChanges(changesToReset);
 }
 
 bool VersionControl::resetAllChanges()
@@ -383,7 +382,8 @@ SerializedData VersionControl::serialize() const
     SerializedData tree(Serialization::Core::versionControl);
 
     tree.setProperty(Serialization::VCS::headRevisionId, this->head.getHeadingRevision()->getUuid());
-    
+    tree.setProperty(Serialization::VCS::diffFormatVersion, VersionControl::diffFormatVersion);
+
     tree.appendChild(this->rootRevision->serialize());
     tree.appendChild(this->stashes->serialize());
     tree.appendChild(this->head.serialize());
@@ -405,8 +405,7 @@ void VersionControl::deserialize(const SerializedData &data)
     if (!root.isValid()) { return; }
 
     const String headId = root.getProperty(Serialization::VCS::headRevisionId);
-    DBG("Head ID is " + headId);
-    
+
     this->rootRevision->deserialize(root);
     this->stashes->deserialize(root);
 
@@ -424,7 +423,29 @@ void VersionControl::deserialize(const SerializedData &data)
     
     if (auto headRevision = this->getRevisionById(this->rootRevision, headId))
     {
-        this->head.pointTo(headRevision);
+        // head keeps a snapshot node, which is the result of applying all deltas
+        // from the start (moveTo() does this), in other words, the "project state" of
+        // current head position, and it will be used as a baseline when making a diff;
+        // we persist it for performance: rebuilding it from scratch is super slow;
+        // as the app development moves forward, the snapshot, being a kind of a cache,
+        // can get outdated, i.e. not containing all supported delta types, and needs
+        // to be rebuilt to make correct diffs.
+
+        const int snapshotDiffFormatVersion =
+            root.getProperty(Serialization::VCS::diffFormatVersion, 0);
+
+        const bool needToRebuildSnapshot =
+            snapshotDiffFormatVersion != VersionControl::diffFormatVersion;
+
+        if (needToRebuildSnapshot)
+        {
+            DBG("Found outdated diff format, rebuilding VCS snapshot");
+            this->head.moveTo(headRevision);
+        }
+        else
+        {
+            this->head.pointTo(headRevision);
+        }
     }
 }
 

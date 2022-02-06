@@ -177,35 +177,36 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
 
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
-        const Delta *stateDelta = initialState.getDelta(i);
+        const auto *stateDelta = initialState.getDelta(i);
         stateHasTemperaments = stateHasTemperaments || stateDelta->hasType(ProjectInfoDeltas::projectTemperament);
     }
 
+    if (!stateHasTemperaments)
     {
+        SerializedData mergedTemperamentsDeltaData;
+        SerializedData emptyTemperamentDeltaData(ProjectInfoDeltas::projectTemperament);
         auto temperamentsDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
             ProjectInfoDeltas::projectTemperament);
 
-        SerializedData temperamentsDeltaData;
-
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
-            const Delta *targetDelta = this->target.getDelta(j);
+            const auto *targetDelta = this->target.getDelta(j);
             const auto targetDeltaData(this->target.getDeltaData(j));
 
-            const bool foundMissingTemperament = !stateHasTemperaments &&
-				targetDelta->hasType(ProjectInfoDeltas::projectTemperament);
-
-            if (foundMissingTemperament)
+            if (targetDelta->hasType(ProjectInfoDeltas::projectTemperament))
             {
-                SerializedData emptyTemperamentDeltaData(ProjectInfoDeltas::projectTemperament);
-                temperamentsDeltaData = mergeTemperament(emptyTemperamentDeltaData, targetDeltaData);
+                mergedTemperamentsDeltaData = mergeTemperament(emptyTemperamentDeltaData, targetDeltaData);
             }
         }
 
-        if (temperamentsDeltaData.isValid())
+        if (mergedTemperamentsDeltaData.isValid())
         {
-            diff->applyDelta(temperamentsDelta.release(), temperamentsDeltaData);
+            diff->applyDelta(temperamentsDelta.release(), mergedTemperamentsDeltaData);
+        }
+        else
+        {
+            diff->applyDelta(temperamentsDelta.release(), emptyTemperamentDeltaData);
         }
     }
 

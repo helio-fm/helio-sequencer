@@ -62,7 +62,6 @@ bool Delta::hasType(const Identifier &id) const noexcept
 SerializedData Delta::serialize() const
 {
     SerializedData tree(Serialization::VCS::delta);
-    //tree.setProperty(Serialization::VCS::deltaTypeId, this->type.toString());
     
     if (this->description.stringToTranslate.isNotEmpty())
     {
