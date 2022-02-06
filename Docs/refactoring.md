@@ -46,6 +46,10 @@ Or to swap two notes like this:
 
 ![retrograde-swap-notes]
 
+Retrograde hotkey also works in the pattern roll, re-ordering all selected clips backwards for each row:
+
+![reverse-clips-order]
+
 ### Cleanup overlaps
 
 This option simply removes duplicate notes and corrects lengths in a way that notes do not overlap each other.
@@ -96,5 +100,6 @@ Arpeggiators is one of the unfinished parts of this app: there's still no conven
 [refactoring-menu]: images/refactoring-menu.png "Selection refactoring menu"
 [retrograde-swap-notes]: images/retrograde-swap-notes.png "Swap two neighbor notes with Alt + R hotkey"
 [retrograde-swap-chords]: images/retrograde-swap-chords.png "Swap two neighbor chords with Alt + R hotkey"
+[reverse-clips-order]: images/reverse-clips-order.png "Retrograde hotkey applied to pattern roll selection"
 [inscale-transposition]: images/inscale-transposition.png "In-scale transposition"
 [quick-rescale]: images/quick-rescale.png "The quick rescale tool"

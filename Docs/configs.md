@@ -38,14 +38,6 @@ Scales listed here are available to pick up in the key signature dialog, and in 
 {{#include ../Resources/scales.json}}
 ```
 
-### Arpeggiators
-
-// TODO add some nice default arps someday
-
-```json
-{{#include ../Resources/arpeggiators.json}}
-```
-
 ### Hotkeys
 
 See the [hotkeys page](hotkeys.md).
