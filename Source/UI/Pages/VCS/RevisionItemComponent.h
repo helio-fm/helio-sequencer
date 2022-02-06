@@ -21,13 +21,14 @@ class HeadlineContextMenuController;
 
 #include "RevisionItem.h"
 #include "DraggingListBoxComponent.h"
-#include "SeparatorHorizontalFading.h"
+#include "SeparatorHorizontal.h"
 
 class RevisionItemComponent final : public DraggingListBoxComponent
 {
 public:
 
     explicit RevisionItemComponent(ListBox &parentListBox);
+
     ~RevisionItemComponent();
 
     void updateItemInfo(VCS::RevisionItem::Ptr revisionItem,
@@ -59,7 +60,7 @@ private:
 
     UniquePointer<Label> itemLabel;
     UniquePointer<Label> deltasLabel;
-    UniquePointer<SeparatorHorizontalFading> separator;
+    UniquePointer<SeparatorHorizontal> separator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionItemComponent)
 };

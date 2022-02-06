@@ -63,7 +63,7 @@ private:
 
 private:
 
-    static constexpr auto connectorHeight = 20;
+    static constexpr auto connectorHeight = 18;
 
     HistoryComponent *findParentEditor() const;
 

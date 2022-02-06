@@ -17,7 +17,7 @@
 
 #pragma once
 
-class RevisionConnectorComponent :
+class RevisionConnectorComponent final :
     public Component,
     public SettableTooltipClient
 {
@@ -28,7 +28,6 @@ public:
     void resizeToFit();
 
     void paint(Graphics &g) override;
-
     void resized() override;
 
 private:
@@ -38,7 +37,6 @@ private:
     Path linePath;
 
     SafePointer<Component> component1;
-
     SafePointer<Component> component2;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionConnectorComponent)

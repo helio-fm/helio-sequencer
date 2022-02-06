@@ -96,6 +96,11 @@ void MidiTrackNode::resetClipsDelta(const SerializedData &state)
     }
 }
 
+Colour MidiTrackNode::getRevisionDisplayColour() const
+{
+    return this->getTrackColour();
+}
+
 //===----------------------------------------------------------------------===//
 // MidiTrack
 //===----------------------------------------------------------------------===//

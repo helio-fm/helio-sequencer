@@ -29,13 +29,16 @@ RevisionTreeComponent::RevisionTreeComponent(VersionControl &owner) :
     this->setInterceptsMouseClicks(false, true);
     this->setSize(1, 1);
 
-    RevisionComponent *root = this->initComponents(1, this->vcs.getRoot(), nullptr);
-    RevisionComponent *dt = this->firstWalk(root);
+    auto *root = this->initComponents(1, this->vcs.getRoot(), nullptr);
+    auto *dt = this->firstWalk(root);
     
     float min = -1;
     min = this->secondWalk(dt, min);
 
-    if (min < 0) { this->thirdWalk(dt, -min); }
+    if (min < 0)
+    {
+        this->thirdWalk(dt, -min);
+    }
 
     this->postWalk(root);
 }
@@ -47,10 +50,8 @@ RevisionTreeComponent::~RevisionTreeComponent()
 
 void RevisionTreeComponent::deselectAll(bool sendNotification)
 {
-    for (int i = 0; i < this->getNumChildComponents(); ++i)
+    for (auto *child : this->getChildren())
     {
-        Component *child = this->getChildComponent(i);
-
         if (auto *revChild = dynamic_cast<RevisionComponent *>(child))
         {
             revChild->setSelected(false);
@@ -163,7 +164,7 @@ RevisionComponent *RevisionTreeComponent::firstWalk(RevisionComponent *v, float 
 
         float midpoint = (v->children.getFirst()->x + v->children.getLast()->x) / 2.f;
 
-        RevisionComponent *w = v->getLeftBrother();
+        auto *w = v->getLeftBrother();
 
         if (w)
         {
@@ -179,7 +180,8 @@ RevisionComponent *RevisionTreeComponent::firstWalk(RevisionComponent *v, float 
     return v;
 }
 
-RevisionComponent *RevisionTreeComponent::apportion(RevisionComponent *v, RevisionComponent *default_ancestor, float distance)
+RevisionComponent *RevisionTreeComponent::apportion(RevisionComponent *v,
+    RevisionComponent *default_ancestor, float distance)
 {
     RevisionComponent *w = v->getLeftBrother();
 
@@ -246,9 +248,17 @@ RevisionComponent *RevisionTreeComponent::apportion(RevisionComponent *v, Revisi
 void RevisionTreeComponent::moveSubtree(RevisionComponent *wl, RevisionComponent *wr, float shift)
 {
     int subtrees = wr->number - wl->number;
-    if (subtrees != 0) { wr->change -= shift / subtrees; }
+    if (subtrees != 0)
+    {
+        wr->change -= shift / subtrees;
+    }
+
     wr->shift += shift;
-    if (subtrees != 0) { wl->change += shift / subtrees; }
+    if (subtrees != 0)
+    {
+        wl->change += shift / subtrees;
+    }
+
     wr->x += shift;
     wr->mod += shift;
 }
@@ -267,7 +277,8 @@ void RevisionTreeComponent::executeShifts(RevisionComponent *v)
     }
 }
 
-RevisionComponent *RevisionTreeComponent::ancestor(RevisionComponent *vil, RevisionComponent *v, RevisionComponent *default_ancestor)
+RevisionComponent *RevisionTreeComponent::ancestor(RevisionComponent *vil,
+    RevisionComponent *v, RevisionComponent *default_ancestor)
 {
     for (auto *child : v->children)
     {
@@ -291,9 +302,8 @@ float RevisionTreeComponent::secondWalk(RevisionComponent *v, float &min, float 
         min = v->x;
     }
 
-    for (int i = 0; i < v->children.size(); ++i)
+    for (auto *child : v->children)
     {
-        RevisionComponent *child = v->children[i];
         min = this->secondWalk(child, min, m + v->mod, depth + 1);
     }
 
@@ -303,6 +313,7 @@ float RevisionTreeComponent::secondWalk(RevisionComponent *v, float &min, float 
 void RevisionTreeComponent::thirdWalk(RevisionComponent *v, float n)
 {
     v->x += n;
+
     for (auto *w : v->children)
     {
         this->thirdWalk(w, n);
@@ -320,12 +331,10 @@ void RevisionTreeComponent::postWalk(RevisionComponent *v)
     this->setSize(newWidth, newHeight);
     v->setTopLeftPosition(vx, vy);
 
-    for (int i = 0; i < v->children.size(); ++i)
+    for (auto *child : v->children)
     {
-        RevisionComponent *w = v->children[i];
-        this->postWalk(w);
-
-        auto revisionConnector = make<RevisionConnectorComponent>(v, w);
+        this->postWalk(child);
+        auto revisionConnector = make<RevisionConnectorComponent>(v, child);
         revisionConnector->resizeToFit();
         this->addAndMakeVisible(revisionConnector.release());
     }

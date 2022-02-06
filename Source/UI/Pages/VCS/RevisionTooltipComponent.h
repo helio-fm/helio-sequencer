@@ -47,14 +47,14 @@ private:
 
 #if PLATFORM_DESKTOP
     static constexpr auto numRowsOnScreen = 5;
-    static constexpr auto rowHeight = 65;
 #elif PLATFORM_MOBILE
     static constexpr auto numRowsOnScreen = 4;
-    static constexpr auto rowHeight = 50;
 #endif
 
+    static constexpr auto rowHeight = 56;
+
     const VCS::Revision::Ptr revision;
-    ReferenceCountedArray<VCS::RevisionItem> revisionItemsOnly;
+    const ReferenceCountedArray<VCS::RevisionItem> revisionItemsOnly;
 
     UniquePointer<ListBox> changesList;
     UniquePointer<SeparatorHorizontal> separator;

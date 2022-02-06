@@ -54,11 +54,7 @@ StageComponent::StageComponent(VersionControl &versionControl) : vcs(versionCont
     this->changesList->getViewport()->setScrollBarsShown(true, false);
     this->changesList->setMultipleSelectionEnabled(true);
 
-#if PLATFORM_DESKTOP
-    constexpr auto rowHeight = 65;
-#elif PLATFORM_MOBILE
-    constexpr auto rowHeight = 90;
-#endif
+    constexpr auto rowHeight = 56;
     this->changesList->setRowHeight(rowHeight);
 
     this->updateList();

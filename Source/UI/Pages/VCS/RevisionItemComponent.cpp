@@ -22,44 +22,31 @@
 #include "ColourIDs.h"
 #include "HeadlineContextMenuController.h"
 
-class RevisionItemHighlighter final : public Component
-{
-public:
-
-    RevisionItemHighlighter()
-    {
-        this->setInterceptsMouseClicks(false, false);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(findDefaultColour(ColourIDs::VersionControl::highlight));
-        g.fillRoundedRectangle (5.0f, 2.0f, float(this->getWidth() - 10), float(this->getHeight() - 8), 2.f);
-    }
-};
-
 class RevisionItemSelectionComponent final : public Component
 {
 public:
 
     RevisionItemSelectionComponent()
     {
+        this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
     }
 
     void paint(Graphics &g) override
     {
         const float height = float(this->getHeight());
-        const auto imgOk(Icons::findByName(Icons::apply, int(height * 0.7f)));
+        const auto imgOk = Icons::findByName(Icons::apply, int(height * 0.5f));
 
-        const auto colour1(Colours::black.withAlpha(0.07f));
-        const auto colour2(Colours::black.withAlpha(0.1f));
-        g.setGradientFill(ColourGradient(colour1, 0.f, 0.f, colour2, 0.f, float(this->getHeight()), false));
-        g.fillRoundedRectangle(5.0f, 2.0f, float(this->getWidth() - 10), float(this->getHeight() - 8), 2.f);
+        g.setColour(Colours::black.withAlpha(0.15f));
+        g.fillRoundedRectangle(4.0f, 3.0f,
+            float(this->getWidth() - 10), float(this->getHeight() - 10), 2.f);
 
-        g.setOpacity(0.35f);
-        const int rightTextBorder = this->getWidth() - this->getHeight() / 2 - 5;
-        Icons::drawImageRetinaAware(imgOk, g, rightTextBorder, this->getHeight() / 2 - 2);
+        if (this->getWidth() > 100)
+        {
+            g.setOpacity(0.45f);
+            const int rightTextBorder = this->getWidth() - this->getHeight() / 2 - 5;
+            Icons::drawImageRetinaAware(imgOk, g, rightTextBorder, this->getHeight() / 2 - 2);
+        }
     }
 };
 
@@ -67,6 +54,8 @@ RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox) :
     DraggingListBoxComponent(parentListBox.getViewport()),
     list(parentListBox)
 {
+    this->setPaintingIsUnclipped(true);
+
     this->itemLabel= make<Label>();
     this->addAndMakeVisible(this->itemLabel.get());
     this->itemLabel->setFont(Globals::UI::Fonts::M);
@@ -78,27 +67,23 @@ RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox) :
     this->deltasLabel->setFont(Globals::UI::Fonts::S);
     this->deltasLabel->setJustificationType(Justification::topLeft);
     this->deltasLabel->setInterceptsMouseClicks(false, false);
-    this->deltasLabel->setColour(Label::textColourId,
-        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.75f));
 
-    this->separator= make<SeparatorHorizontalFading>();
+    this->separator= make<SeparatorHorizontal>();
     this->addAndMakeVisible(this->separator.get());
 
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
     this->selectionComponent = make<RevisionItemSelectionComponent>();
     this->addChildComponent(this->selectionComponent.get());
-
-    this->setSize(500, 70);
 }
 
 RevisionItemComponent::~RevisionItemComponent() = default;
 
 void RevisionItemComponent::resized()
 {
-    this->itemLabel->setBounds(5, 3, this->getWidth() - 10, 24);
-    this->deltasLabel->setBounds(5, 24, this->getWidth() - 90, 38);
-    this->separator->setBounds(10, this->getHeight() - 3, this->getWidth() - 20, 2);
+    this->itemLabel->setBounds(8, 3, this->getWidth() - 16, 24);
+    this->deltasLabel->setBounds(8, 24, this->getWidth() - 24, 24);
+    this->separator->setBounds(10, this->getHeight() - 3, this->getWidth() - 24, 2);
 
     if (this->isEnabled())
     {
@@ -117,7 +102,7 @@ void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemIn
     this->revisionItem = revisionItemInfo;
     this->setEnabled(isSelectable);
 
-    this->separator->setVisible(! isLastRow);
+    this->separator->setVisible(!isLastRow);
 
     const auto itemType = this->revisionItem->getType();
     const auto itemTypeStr = this->revisionItem->getTypeAsString();
@@ -127,7 +112,7 @@ void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemIn
     bool needsComma = false;
     for (int i = 0; i < this->revisionItem->getNumDeltas(); ++i)
     {
-        const VCS::Delta *delta = this->revisionItem->getDelta(i);
+        const auto *delta = this->revisionItem->getDelta(i);
         const String &description = delta->getHumanReadableText();
 
         if (description.isNotEmpty())
@@ -138,8 +123,6 @@ void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemIn
         }
     }
 
-    DBG(itemDeltas);
-
     if (itemType == VCS::RevisionItem::Type::Added ||
         itemType == VCS::RevisionItem::Type::Removed)
     {
@@ -148,8 +131,13 @@ void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemIn
     else
     {
         this->itemLabel->setText(itemDescription, dontSendNotification);
-
     }
+
+    const auto textColor = findDefaultColour(Label::textColourId);
+    const auto revisionColour = this->revisionItem->getDisplayColour();
+    this->itemLabel->setColour(Label::textColourId, revisionColour.interpolatedWith(textColor, 0.5f));
+    this->deltasLabel->setColour(Label::textColourId, revisionColour.
+        interpolatedWith(textColor, 0.5f).withMultipliedAlpha(0.75f));
 
     this->deltasLabel->setText(itemDeltas, dontSendNotification);
 

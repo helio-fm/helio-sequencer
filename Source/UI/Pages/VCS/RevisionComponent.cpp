@@ -89,7 +89,7 @@ RevisionComponent::RevisionComponent(VersionControl &owner,
 
 #endif
 
-    this->setSize(150, 50);
+    this->setSize(165, 50);
 }
 
 RevisionComponent::~RevisionComponent() = default;
@@ -115,8 +115,8 @@ void RevisionComponent::resized()
     this->revisionDate->setBounds(16, 20, this->getWidth() - 32, 14);
     this->line2->setBounds(8, 0, this->getWidth() - 16, 2);
     this->line3->setBounds(8, this->getHeight() - 2, this->getWidth() - 16, 2);
-    this->remoteIndicatorImage->setBounds(this->getWidth() / 2 - 12, 37, 8, 8);
-    this->localIndicatorImage->setBounds(this->getWidth() / 2 + 4, 37, 8, 8);
+    this->remoteIndicatorImage->setBounds(this->getWidth() / 2 - 12, 36, 8, 8);
+    this->localIndicatorImage->setBounds(this->getWidth() / 2 + 4, 36, 8, 8);
 }
 
 void RevisionComponent::mouseMove(const MouseEvent &e)

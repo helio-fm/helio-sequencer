@@ -28,6 +28,7 @@ RevisionItem::RevisionItem(Type type, TrackedItem *targetToCopy) :
     {
         this->description = targetToCopy->getVCSName();
         this->vcsUuid = targetToCopy->getUuid();
+        this->displayColour = targetToCopy->getRevisionDisplayColour();
 
         this->logic.reset(DiffLogic::createLogicCopy(*targetToCopy, *this));
 
@@ -64,6 +65,17 @@ String RevisionItem::getTypeAsString() const
     }
 
     return {};
+}
+
+Colour RevisionItem::getDisplayColour() const noexcept
+{
+    if (this->vcsItemType == Type::Removed)
+    {
+        return Colours::darkred;
+    }
+
+    return this->displayColour.isTransparent() ?
+        findDefaultColour(Label::textColourId) : this->displayColour;
 }
 
 //===----------------------------------------------------------------------===//
@@ -138,6 +150,7 @@ void RevisionItem::deserialize(const SerializedData &data)
 
     this->deserializeVCSUuid(root);
 
+    this->displayColour = {}; // simply reset
     this->description = root.getProperty(Serialization::VCS::revisionItemName);
 
     const int type = root.getProperty(Serialization::VCS::revisionItemType, int(Type::Undefined));

@@ -155,6 +155,7 @@ void PatternRoll::reloadRollContent()
                 {
                     this->clipComponents[clip] = UniquePointer<ClipComponent>(clipComponent);
                     this->addAndMakeVisible(clipComponent);
+                    this->triggerBatchRepaintFor(clipComponent);
                 }
             }
         }

@@ -122,7 +122,7 @@ void TimeSignaturesProjectMap::onTimeSignaturesUpdated()
         }
     }
 
-    jassert(this->timeSignatureComponents.size() == this->timeSignaturesMap.size());
+    jassert(this->timeSignatureComponents.size() == int(this->timeSignaturesMap.size()));
     jassert(this->timeSignatureComponents.size() >= signaturesToSyncWith.size());
 
     if (this->timeSignatureComponents.size() > signaturesToSyncWith.size())

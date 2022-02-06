@@ -21,19 +21,17 @@
 
 RevisionTooltipComponent::RevisionTooltipComponent(const VCS::Revision::Ptr revision) :
     revision(revision),
-    revisionItemsOnly()
+    revisionItemsOnly(revision->getItems())
 {
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
 
-    this->changesList = make<ListBox>(String(), this);
-    this->addAndMakeVisible(this->changesList.get());
-
     this->separator = make<SeparatorHorizontal>();
     this->addAndMakeVisible(this->separator.get());
 
-    this->revisionItemsOnly.addArray(this->revision->getItems());
+    this->changesList = make<ListBox>(String(), this);
+    this->addAndMakeVisible(this->changesList.get());
 
     this->changesList->setRowSelectedOnMouseDown(false);
     this->changesList->setMultipleSelectionEnabled(false);
@@ -44,16 +42,15 @@ RevisionTooltipComponent::RevisionTooltipComponent(const VCS::Revision::Ptr revi
 
     const int maxHeight = int(RevisionTooltipComponent::rowHeight * RevisionTooltipComponent::numRowsOnScreen);
     const int newHeight = jmin(maxHeight, this->getNumRows() * RevisionTooltipComponent::rowHeight);
-    this->setSize(this->getWidth(), newHeight);
     this->changesList->updateContent();
 
-    this->setSize(320, 220);
+    this->setSize(this->getWidth(), newHeight);
 }
 
 void RevisionTooltipComponent::resized()
 {
     this->changesList->setBounds(this->getLocalBounds());
-    separator->setBounds(0, this->getHeight() - 1, this->getWidth(), 4);
+    this->separator->setBounds(0, this->getHeight() - 1, this->getWidth(), 4);
 }
 
 void RevisionTooltipComponent::inputAttemptWhenModal()

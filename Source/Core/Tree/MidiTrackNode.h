@@ -51,6 +51,7 @@ public:
     String getVCSName() const override;
     SerializedData serializeClipsDelta() const;
     void resetClipsDelta(const SerializedData &state);
+    Colour getRevisionDisplayColour() const override;
 
     //===------------------------------------------------------------------===//
     // MidiTrack

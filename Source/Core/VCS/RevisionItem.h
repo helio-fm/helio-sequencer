@@ -40,6 +40,7 @@ namespace VCS
 
         RevisionItem::Type getType() const noexcept;
         String getTypeAsString() const;
+        Colour getDisplayColour() const noexcept;
 
         //===--------------------------------------------------------------===//
         // TrackedItem
@@ -71,6 +72,9 @@ namespace VCS
 
         Type vcsItemType;
         String description;
+
+        // optional, not serialized
+        Colour displayColour;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionItem);
     };

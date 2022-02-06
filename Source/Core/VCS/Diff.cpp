@@ -25,6 +25,7 @@ Diff::Diff(TrackedItem &diffTarget)
 {
     this->description = diffTarget.getVCSName();
     this->vcsUuid = diffTarget.getUuid();
+    this->displayColur = diffTarget.getRevisionDisplayColour();
     this->logic.reset(DiffLogic::createLogicCopy(diffTarget, *this));
 }
 
@@ -87,6 +88,11 @@ String Diff::getVCSName() const
 DiffLogic *Diff::getDiffLogic() const
 {
     return this->logic.get();
+}
+
+Colour Diff::getRevisionDisplayColour() const
+{
+    return this->displayColur;
 }
 
 }

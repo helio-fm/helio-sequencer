@@ -90,8 +90,9 @@ void RevisionConnectorComponent::resized()
         x2, y1 + dy * (1.f - curve),
         x2, y2);
 
-    PathStrokeType stroke(1.0f, PathStrokeType::beveled, PathStrokeType::butt);
-    stroke.createStrokedPath(linePath, linePath);
+    static Array<float> dashes(4.f, 3.f);
+    PathStrokeType stroke(1.f, PathStrokeType::beveled, PathStrokeType::butt);
+    stroke.createDashedStroke(linePath, linePath, dashes.getRawDataPointer(), dashes.size());
 
     this->linePath.setUsingNonZeroWinding(false);
 }

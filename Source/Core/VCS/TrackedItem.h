@@ -37,6 +37,9 @@ namespace VCS
         virtual Delta *getDelta(int index) const = 0;
         virtual SerializedData getDeltaData(int deltaIndex) const = 0;
         virtual bool deltaHasDefaultData(int deltaIndex) const { return false; }
+        
+        // optional, not persistent
+        virtual Colour getRevisionDisplayColour() const { return {}; }
 
         virtual String getVCSName() const = 0;
         virtual DiffLogic *getDiffLogic() const = 0;

@@ -230,7 +230,6 @@ void ProjectNode::recreatePage()
     if (!this->findChildrenOfType<MidiTrack>().isEmpty())
     {
         this->broadcastReloadProjectContent();
-
         const auto range = this->broadcastChangeProjectBeatRange();
         this->broadcastChangeViewBeatRange(range.getStart(), range.getEnd());
     }
@@ -857,6 +856,8 @@ void ProjectNode::broadcastBeforeReloadProjectContent()
 
 void ProjectNode::broadcastReloadProjectContent()
 {
+    this->isTracksCacheOutdated = true;
+
     this->changeListeners.call(&ProjectListener::onReloadProjectContent,
         this->getTracks(), this->metadata.get());
 
@@ -1092,9 +1093,9 @@ void ProjectNode::onBeforeResetState()
 void ProjectNode::onResetState()
 {
     this->broadcastReloadProjectContent();
+    constexpr auto margin = Globals::beatsPerBar * 2;
     const auto range = this->broadcastChangeProjectBeatRange();
-    this->broadcastChangeViewBeatRange(range.getStart() - Globals::beatsPerBar,
-        range.getEnd() + Globals::beatsPerBar); // adding some margin
+    this->broadcastChangeViewBeatRange(range.getStart() - margin, range.getEnd() + margin);
 
     // during vcs operations, notifications are not sent, including tree selection changes,
     // which happen, when something is deleted, so we need to do it afterwards:

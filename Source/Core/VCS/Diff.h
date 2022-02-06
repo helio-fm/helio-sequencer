@@ -48,12 +48,14 @@ namespace VCS
         String getVCSName() const override;
         DiffLogic *getDiffLogic() const override;
         void resetStateTo(const TrackedItem &newState) override {}
+        Colour getRevisionDisplayColour() const override;
 
     protected:
 
         OwnedArray<Delta> deltas;
         Array<SerializedData> deltasData;
         String description;
+        Colour displayColur;
 
     private:
 
