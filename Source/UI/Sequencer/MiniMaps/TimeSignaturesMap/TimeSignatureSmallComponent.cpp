@@ -83,4 +83,5 @@ void TimeSignatureSmallComponent::updateContent(const TimeSignatureEvent &newEve
     cachedImage->forceInvalidate();
 
     this->signatureLabel->setText(this->event.toString(), dontSendNotification);
+    this->repaint();
 }

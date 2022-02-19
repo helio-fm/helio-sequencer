@@ -56,22 +56,29 @@ RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox) :
 {
     this->setPaintingIsUnclipped(true);
 
-    this->itemLabel= make<Label>();
+    this->itemLabel = make<Label>();
     this->addAndMakeVisible(this->itemLabel.get());
     this->itemLabel->setFont(Globals::UI::Fonts::M);
     this->itemLabel->setJustificationType(Justification::centredLeft);
     this->itemLabel->setInterceptsMouseClicks(false, false);
 
-    this->deltasLabel= make<Label>();
+    this->deltasLabel = make<Label>();
     this->addAndMakeVisible(this->deltasLabel.get());
     this->deltasLabel->setFont(Globals::UI::Fonts::S);
     this->deltasLabel->setJustificationType(Justification::topLeft);
     this->deltasLabel->setInterceptsMouseClicks(false, false);
 
-    this->separator= make<SeparatorHorizontal>();
+    this->separator = make<SeparatorHorizontal>();
     this->addAndMakeVisible(this->separator.get());
 
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
+    this->contextMenuController->onWillShowMenu = [this]()
+    {
+        if (!this->list.isRowSelected(this->row))
+        {
+            this->list.selectRow(this->row, true, true);
+        }
+    };
 
     this->selectionComponent = make<RevisionItemSelectionComponent>();
     this->addChildComponent(this->selectionComponent.get());

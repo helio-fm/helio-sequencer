@@ -91,6 +91,20 @@ PatternRoll::PatternRoll(ProjectNode &parentProject,
     this->selectionListeners.add(new PatternRollRecordingTargetController(&this->selection, parentProject));
     this->selectionListeners.add(new PatternRollSelectionRangeIndicatorController(&this->selection, *this));
 
+    this->contextMenuController->onWillShowMenu = [this]()
+    {
+        auto *componentUnderMouse = Desktop::getInstance().getMainMouseSource().getComponentUnderMouse();
+        if (auto *clipComponent = dynamic_cast<ClipComponent *>(componentUnderMouse))
+        {
+            if (!clipComponent->isSelected())
+            {
+                this->selectEvent(clipComponent, true);
+                // listeners should react immediately, not asynchronously:
+                this->selection.dispatchPendingMessages();
+            }
+        }
+    };
+
     this->repaintBackgroundsCache();
     this->reloadRollContent();
     this->setBeatRange(0, Globals::Defaults::projectLength);

@@ -154,6 +154,12 @@ void HeadlineContextMenuController::timerCallback()
 {
     this->stopTimer();
 
+    if (this->onWillShowMenu != nullptr)
+    {
+        // give a chance to update selection, if needed
+        this->onWillShowMenu();
+    }
+
     // here we totally rely on breadcrumbs logic to get the context menu contents,
     // because at the point when user calls the context menu, the breadcrumbs item and
     // its menu data source all have been set up and ready to use, we just get

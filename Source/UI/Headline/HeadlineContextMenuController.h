@@ -30,6 +30,8 @@ public:
         return this->isTimerRunning();
     }
 
+    Function<void()> onWillShowMenu;
+
 private:
 
     void timerCallback() override;
