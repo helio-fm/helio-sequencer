@@ -66,9 +66,9 @@ You can think of it as introducing the in-place [modal interchange](https://en.w
 
 As well as the [chord tool](tips-and-tricks.md#chord-tool), re-scaling assumes that the harmonic context is specified correctly. In the example below, the first section is marked as D Dorian, and all the notes in that section are in the key. Any out-of-scale notes will be left in their places.
 
-Note that this function doesn't change the key signature itself. Consider using it for introducing brief or transitory variations to bring more harmonic color.
+Note that this function doesn't change the key signature. Consider using it for introducing brief or transitory variations to bring more harmonic color.
 
-If you want to re-scale entire section of your piece, use the next option:
+If you want to re-scale the entire section of your piece, use the next option:
 
 #### Quick rescale tool
 

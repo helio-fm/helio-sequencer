@@ -4,6 +4,7 @@
 ---
 - [Getting Started](./getting-started.md)
   - [Getting Microtonal](./getting-microtonal.md)
+  - [Getting Polymetric](./getting-polymetric.md)
 - [Tips And Tricks](tips-and-tricks.md)
   - [Refactoring](refactoring.md)
   - [Command Palette](command-palette.md)

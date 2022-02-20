@@ -107,8 +107,7 @@ This feature is on by default, but it can be turned off in the audio settings se
 
 ![readjust-midi-input-checkbox]
 
-If you're using the microtonal physical keyboard, make sure to uncheck this checkbox, so the app doesn't mess with MIDI input.
-
+If you're using a microtonal physical keyboard, make sure to uncheck this box so that the app doesn't mess up MIDI input.
 
 [keyboard-mapping]: images/keyboard-mapping.png "Keyboard mapping page layout and menu"
 [change-temperament]: images/change-temperament.png "Switching and converting temperaments"

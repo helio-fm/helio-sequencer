@@ -161,7 +161,7 @@ Annotations are just text markers with optionally adjustable length:
 
 ![timeline-annotations]
 
-The right-click on the annotation selects all notes of the active track up to the next annotation.
+Right-click on the annotation selects all notes of the active track up to the next annotation.
 
 #### Time signatures
 
@@ -169,15 +169,17 @@ Time signatures simply define the way the vertical grid lines are aligned in the
 
 ![timeline-time-signatures]
 
-The right-click on the time signature selects all notes of the active track up to the next time signature.
+Right-click on the time signature selects all notes of the active track up to the next time signature.
+
+If you need to manage complex rhythms, see [this page](getting-polymetric.md).
 
 #### Key signatures
 
-Key signatures change the way the rows are highlighted in the piano roll, but this effect can be [disabled](tips-and-tricks.md#ui-flags).
+Key signatures affect the way the rows are highlighted in the piano roll, but this can be [disabled](tips-and-tricks.md#ui-flags).
 
 ![timeline-key-signatures]
 
-Apart from that, arpeggiators and a [couple](tips-and-tricks.md#chord-tool) of [other tools](tips-and-tricks.md#quick-rescale-tool) rely on the key signatures to figure out the current harmonic context.
+Apart from that, arpeggiators and a [couple](tips-and-tricks.md#chord-tool) of [other tools](tips-and-tricks.md#quick-rescale-tool) rely on key signatures to figure out the current harmonic context.
 
 #### Reprise
 
