@@ -4,6 +4,13 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.9
+ - Added per-track time signatures: hotkey Alt + F2 to add a time signature anchored to track's position
+ - Made retrograde hotkey work in the pattern roll, re-ordering all selected clips backwards for each row
+ - Implemented auto-fitting the roll view range by zooming it out until it "clicks"
+ - Added support for nonoctave tunings (only affect the built-in instrument at the moment)
+ - Minor tweaks: more conventional right click menu behavior on multiple selection, improved aligning the dragged clips in the pattern roll, long-overdue UI fixes for smaller phone screens
+
 ## Version 3.8
  - Added in-scale transposition commands, hotkeys Alt + Up and Alt + Down
  - Implemented recording MIDI from a 12-tone keyboard in any temperament
