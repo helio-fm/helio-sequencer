@@ -17,17 +17,17 @@
 
 #include "Common.h"
 #include "AudioCore.h"
-#include "InternalPluginFormat.h"
-#include "BuiltInSynthFormat.h"
-#include "BuiltInSynthAudioPlugin.h"
+#include "InternalIODevicesPluginFormat.h"
+#include "BuiltInSynthsPluginFormat.h"
+#include "DefaultSynthAudioPlugin.h"
 #include "SerializationKeys.h"
 #include "AudioMonitor.h"
 
 void AudioCore::initAudioFormats(AudioPluginFormatManager &formatManager)
 {
     formatManager.addDefaultFormats();
-    formatManager.addFormat(new InternalPluginFormat());
-    formatManager.addFormat(new BuiltInSynthFormat());
+    formatManager.addFormat(new InternalIODevicesPluginFormat());
+    formatManager.addFormat(new BuiltInSynthsPluginFormat());
 }
 
 AudioCore::AudioCore()
@@ -302,11 +302,11 @@ void AudioCore::initDefaultInstrument()
 {
     OwnedArray<PluginDescription> descriptions;
 
-    BuiltInSynthFormat format;
-    format.findAllTypesForFile(descriptions, BuiltInSynthAudioPlugin::instrumentId);
+    BuiltInSynthsPluginFormat format;
+    format.findAllTypesForFile(descriptions, DefaultSynthAudioPlugin::instrumentId);
 
     PluginDescription desc(*descriptions[0]);
-    this->addInstrument(desc, BuiltInSynthAudioPlugin::instrumentName,
+    this->addInstrument(desc, DefaultSynthAudioPlugin::instrumentName,
         [this](Instrument *instrument)
         {
             this->defaultInstrument = instrument;

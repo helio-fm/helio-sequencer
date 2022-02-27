@@ -23,7 +23,7 @@
 #include "Config.h"
 #include "MainLayout.h"
 #include "SerializationKeys.h"
-#include "BuiltInSynthAudioPlugin.h"
+#include "DefaultSynthAudioPlugin.h"
 #include "SerializablePluginDescription.h"
 
 #if PLATFORM_DESKTOP
@@ -118,7 +118,7 @@ void PluginScanner::runInitialScan()
     this->searchPath = this->getTypicalFolders();
 
     // built-in synths to be add at the first place:
-    this->filesToScan.addIfNotAlreadyThere(BuiltInSynthAudioPlugin::instrumentId);
+    this->filesToScan.addIfNotAlreadyThere(DefaultSynthAudioPlugin::instrumentId);
 
     // known synths to be re-checked first as well:
     for (const auto &it : this->getPlugins())

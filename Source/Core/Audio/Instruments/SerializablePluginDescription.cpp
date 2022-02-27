@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "SerializablePluginDescription.h"
 #include "SerializationKeys.h"
-#include "BuiltInSynthAudioPlugin.h"
+#include "DefaultSynthAudioPlugin.h"
 
 SerializablePluginDescription::SerializablePluginDescription() {}
 SerializablePluginDescription::SerializablePluginDescription(const PluginDescription &other) :
@@ -76,10 +76,10 @@ void SerializablePluginDescription::deserialize(const SerializedData &data)
 
         // legacy naming workaround for the built-in instrument
         // todo remove in future versions - here and in Instrument.cpp
-        if (this->name == BuiltInSynthAudioPlugin::instrumentNameOld)
+        if (this->name == DefaultSynthAudioPlugin::instrumentNameOld)
         {
-            this->name = BuiltInSynthAudioPlugin::instrumentName;
-            this->descriptiveName = BuiltInSynthAudioPlugin::instrumentName;
+            this->name = DefaultSynthAudioPlugin::instrumentName;
+            this->descriptiveName = DefaultSynthAudioPlugin::instrumentName;
         }
     }
 }

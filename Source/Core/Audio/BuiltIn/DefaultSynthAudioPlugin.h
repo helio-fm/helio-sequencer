@@ -17,13 +17,13 @@
 
 #pragma once
 
-#include "BuiltInSynth.h"
+#include "DefaultSynth.h"
 
-class BuiltInSynthAudioPlugin : public AudioPluginInstance
+class DefaultSynthAudioPlugin final : public AudioPluginInstance
 {
 public:
 
-    BuiltInSynthAudioPlugin();
+    DefaultSynthAudioPlugin();
 
     static const String instrumentId;
     static const String instrumentName;
@@ -80,6 +80,6 @@ public:
     
 private:
 
-    BuiltInSynth synth;
+    DefaultSynth synth;
 
 };

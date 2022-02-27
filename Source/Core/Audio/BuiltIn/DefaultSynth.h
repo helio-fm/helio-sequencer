@@ -17,11 +17,11 @@
 
 #pragma once
 
-class BuiltInSynth final : public Synthesiser
+class DefaultSynth final : public Synthesiser
 {
 public:
 
-    BuiltInSynth();
+    DefaultSynth();
 
     // what we want here is to make all built-in temperaments
     // work out of the box with the built-in instrument, so that
@@ -37,10 +37,18 @@ public:
 
 protected:
 
+    struct Sound final : public SynthesiserSound
+    {
+        bool appliesToNote(int midiNoteNumber) override { return true; }
+        bool appliesToChannel(int midiChannel) override { return true; }
+    };
+
+    struct Voice;
+
     void handleSustainPedal(int midiChannel, bool isDown) override;
     void handleSostenutoPedal(int midiChannel, bool isDown) override;
 
     static constexpr auto numVoices = 16;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BuiltInSynth)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DefaultSynth)
 };

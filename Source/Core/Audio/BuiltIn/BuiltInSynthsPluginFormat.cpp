@@ -16,45 +16,42 @@
 */
 
 #include "Common.h"
-#include "BuiltInSynthFormat.h"
-#include "BuiltInSynthAudioPlugin.h"
+#include "BuiltInSynthsPluginFormat.h"
+#include "DefaultSynthAudioPlugin.h"
 
-const String BuiltInSynthFormat::formatName = "BuiltIn";
-const String BuiltInSynthFormat::formatIdentifier = "BuiltIn";
+const String BuiltInSynthsPluginFormat::formatName = "BuiltIn";
+const String BuiltInSynthsPluginFormat::formatIdentifier = "BuiltIn";
 
-BuiltInSynthFormat::BuiltInSynthFormat()
+BuiltInSynthsPluginFormat::BuiltInSynthsPluginFormat()
 {
-    BuiltInSynthAudioPlugin defaultOne;
+    DefaultSynthAudioPlugin defaultOne;
     defaultOne.fillInPluginDescription(this->defaultInstrument);
 }
 
-String BuiltInSynthFormat::getName() const
+String BuiltInSynthsPluginFormat::getName() const
 {
-    return BuiltInSynthFormat::formatName;
+    return BuiltInSynthsPluginFormat::formatName;
 }
 
-void BuiltInSynthFormat::findAllTypesForFile(OwnedArray <PluginDescription> &description, const String &id)
+void BuiltInSynthsPluginFormat::findAllTypesForFile(OwnedArray <PluginDescription> &description, const String &id)
 {
-    if (id == BuiltInSynthAudioPlugin::instrumentId)
+    if (id == DefaultSynthAudioPlugin::instrumentId)
     {
         description.add(new PluginDescription(this->defaultInstrument));
     }
 }
 
-bool BuiltInSynthFormat::fileMightContainThisPluginType(const String &fileOrIdentifier)
+bool BuiltInSynthsPluginFormat::fileMightContainThisPluginType(const String &fileOrIdentifier)
 {
-    const bool match = (fileOrIdentifier.isEmpty() ||
-        fileOrIdentifier == BuiltInSynthFormat::formatIdentifier);
-    
-    return match;
+    return fileOrIdentifier.isEmpty() || fileOrIdentifier == BuiltInSynthsPluginFormat::formatIdentifier;
 }
 
-void BuiltInSynthFormat::createPluginInstance(const PluginDescription &desc,
+void BuiltInSynthsPluginFormat::createPluginInstance(const PluginDescription &desc,
     double initialSampleRate, int initialBufferSize, PluginCreationCallback callback)
 {
     if (desc.name == this->defaultInstrument.name)
     {
-        callback(make<BuiltInSynthAudioPlugin>(), {});
+        callback(make<DefaultSynthAudioPlugin>(), {});
         return;
     }
     

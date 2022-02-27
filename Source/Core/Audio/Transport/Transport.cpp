@@ -29,7 +29,7 @@
 #include "RollBase.h"
 #include "KeyboardMapping.h"
 #include "ProjectMetadata.h"
-#include "BuiltInSynthAudioPlugin.h"
+#include "DefaultSynthAudioPlugin.h"
 
 #define TIME_NOW (Time::getMillisecondCounterHiRes() * 0.001)
 
@@ -728,7 +728,7 @@ void Transport::updateTemperamentInfoForBuiltInSynth(int periodSize, double peri
     const auto *defaultInstrument = this->orchestra.getDefaultInstrument();
     if (auto mainNode = defaultInstrument->findMainPluginNode())
     {
-        if (auto *synth = dynamic_cast<BuiltInSynthAudioPlugin *>(mainNode->getProcessor()))
+        if (auto *synth = dynamic_cast<DefaultSynthAudioPlugin *>(mainNode->getProcessor()))
         {
             synth->setPeriodSizeAndRange(periodSize, periodRange);
         }

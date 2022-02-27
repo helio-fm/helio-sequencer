@@ -8,10 +8,10 @@
 
 */
 
-#include "../../Source/Core/Audio/BuiltIn/BuiltInSynthAudioPlugin.cpp"
-#include "../../Source/Core/Audio/BuiltIn/BuiltInSynthFormat.cpp"
-#include "../../Source/Core/Audio/BuiltIn/BuiltInSynth.cpp"
-#include "../../Source/Core/Audio/BuiltIn/InternalPluginFormat.cpp"
+#include "../../Source/Core/Audio/BuiltIn/DefaultSynthAudioPlugin.cpp"
+#include "../../Source/Core/Audio/BuiltIn/BuiltInSynthsPluginFormat.cpp"
+#include "../../Source/Core/Audio/BuiltIn/DefaultSynth.cpp"
+#include "../../Source/Core/Audio/BuiltIn/InternalIODevicesPluginFormat.cpp"
 #include "../../Source/Core/Audio/Instruments/Instrument.cpp"
 #include "../../Source/Core/Audio/Instruments/OrchestraPit.cpp"
 #include "../../Source/Core/Audio/Instruments/PluginScanner.cpp"

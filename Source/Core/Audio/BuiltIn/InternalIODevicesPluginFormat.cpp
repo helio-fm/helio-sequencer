@@ -16,54 +16,54 @@
 */
 
 #include "Common.h"
-#include "InternalPluginFormat.h"
+#include "InternalIODevicesPluginFormat.h"
 
-const String InternalPluginFormat::formatName = "Internal";
-const String InternalPluginFormat::manufacturer = "Helio Workstation";
+const String InternalIODevicesPluginFormat::formatName = "Internal";
+const String InternalIODevicesPluginFormat::manufacturer = "Helio Workstation";
 
-String InternalPluginFormat::getName() const
+String InternalIODevicesPluginFormat::getName() const
 {
-    return InternalPluginFormat::formatName;
+    return InternalIODevicesPluginFormat::formatName;
 }
 
-InternalPluginFormat::InternalPluginFormat()
+InternalIODevicesPluginFormat::InternalIODevicesPluginFormat()
 {
     {
         AudioProcessorGraph::AudioGraphIOProcessor p(AudioProcessorGraph::AudioGraphIOProcessor::audioInputNode);
         p.fillInPluginDescription(this->audioInDesc);
-        this->audioInDesc.manufacturerName = InternalPluginFormat::manufacturer;
-        this->audioInDesc.fileOrIdentifier = InternalPluginFormat::formatName;
+        this->audioInDesc.manufacturerName = InternalIODevicesPluginFormat::manufacturer;
+        this->audioInDesc.fileOrIdentifier = InternalIODevicesPluginFormat::formatName;
     }
 
     {
         AudioProcessorGraph::AudioGraphIOProcessor p(AudioProcessorGraph::AudioGraphIOProcessor::audioOutputNode);
         p.fillInPluginDescription(this->audioOutDesc);
-        this->audioOutDesc.manufacturerName = InternalPluginFormat::manufacturer;
-        this->audioOutDesc.fileOrIdentifier = InternalPluginFormat::formatName;
+        this->audioOutDesc.manufacturerName = InternalIODevicesPluginFormat::manufacturer;
+        this->audioOutDesc.fileOrIdentifier = InternalIODevicesPluginFormat::formatName;
     }
 
     {
         AudioProcessorGraph::AudioGraphIOProcessor p(AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode);
         p.fillInPluginDescription(this->midiInDesc);
-        this->midiInDesc.manufacturerName = InternalPluginFormat::manufacturer;
-        this->midiInDesc.fileOrIdentifier = InternalPluginFormat::formatName;
+        this->midiInDesc.manufacturerName = InternalIODevicesPluginFormat::manufacturer;
+        this->midiInDesc.fileOrIdentifier = InternalIODevicesPluginFormat::formatName;
     }
 
     {
         AudioProcessorGraph::AudioGraphIOProcessor p(AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode);
         p.fillInPluginDescription(this->midiOutDesc);
-        this->midiOutDesc.manufacturerName = InternalPluginFormat::manufacturer;
-        this->midiOutDesc.fileOrIdentifier = InternalPluginFormat::formatName;
+        this->midiOutDesc.manufacturerName = InternalIODevicesPluginFormat::manufacturer;
+        this->midiOutDesc.fileOrIdentifier = InternalIODevicesPluginFormat::formatName;
     }
 }
 
-bool InternalPluginFormat::fileMightContainThisPluginType(const String &fileOrIdentifier)
+bool InternalIODevicesPluginFormat::fileMightContainThisPluginType(const String &fileOrIdentifier)
 {
     return (fileOrIdentifier.isEmpty() ||
-            fileOrIdentifier == InternalPluginFormat::formatName);
+            fileOrIdentifier == InternalIODevicesPluginFormat::formatName);
 }
 
-void InternalPluginFormat::createPluginInstance(const PluginDescription &desc,
+void InternalIODevicesPluginFormat::createPluginInstance(const PluginDescription &desc,
     double initialSampleRate, int initialBufferSize, PluginCreationCallback callback)
 {
     if (desc.uniqueId == this->audioOutDesc.uniqueId || desc.name.equalsIgnoreCase(this->audioOutDesc.name))
@@ -90,17 +90,17 @@ void InternalPluginFormat::createPluginInstance(const PluginDescription &desc,
     callback(nullptr, {});
 }
 
-const PluginDescription *InternalPluginFormat::getDescriptionFor(const InternalFilterType type)
+const PluginDescription *InternalIODevicesPluginFormat::getDescriptionFor(const Type type)
 {
     switch (type)
     {
-    case InternalFilterType::audioInputFilter:
+    case Type::audioInput:
         return &this->audioInDesc;
-    case InternalFilterType::audioOutputFilter:
+    case Type::audioOutput:
         return &this->audioOutDesc;
-    case InternalFilterType::midiInputFilter:
+    case Type::midiInput:
         return &this->midiInDesc;
-    case InternalFilterType::midiOutputFilter:
+    case Type::midiOutput:
         return &this->midiOutDesc;
     default:
         break;
@@ -109,10 +109,10 @@ const PluginDescription *InternalPluginFormat::getDescriptionFor(const InternalF
     return nullptr;
 }
 
-void InternalPluginFormat::getAllTypes(OwnedArray <PluginDescription> &results)
+void InternalIODevicesPluginFormat::getAllTypes(OwnedArray<PluginDescription> &results)
 {
-    for (int i = 0; i < static_cast<int>(InternalFilterType::endOfFilterTypes); ++i)
+    for (int i = 0; i < static_cast<int>(Type::endOfDeviceTypes); ++i)
     {
-        results.add(new PluginDescription(*getDescriptionFor(static_cast<InternalFilterType>( i))));
+        results.add(new PluginDescription(*this->getDescriptionFor(static_cast<Type>(i))));
     }
 }
