@@ -168,18 +168,6 @@ void TimeSignatureLargeComponent::mouseUp(const MouseEvent &e)
     this->mouseDownWasTriggered = false;
 }
 
-void TimeSignatureLargeComponent::setRealBounds(const Rectangle<float> bounds)
-{
-    const auto intBounds = bounds.toType<int>();
-    this->boundsOffset = {
-        bounds.getX() - float(intBounds.getX()),
-        bounds.getY(),
-        bounds.getWidth() - float(intBounds.getWidth()),
-        bounds.getHeight()};
-
-    this->setBounds(intBounds);
-}
-
 float TimeSignatureLargeComponent::getTextWidth() const noexcept
 {
     return this->textWidth;

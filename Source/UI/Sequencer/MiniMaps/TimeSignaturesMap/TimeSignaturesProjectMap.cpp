@@ -258,23 +258,37 @@ void TimeSignaturesProjectMap::reloadTrackMap()
 
 void TimeSignaturesProjectMap::applyTimeSignatureBounds(TimeSignatureComponent *c, TimeSignatureComponent *nextOne)
 {
-    const float rollLengthInBeats = this->rollLastBeat - this->rollFirstBeat;
-    const float projectLengthInBeats = this->projectLastBeat - this->projectFirstBeat;
+    constexpr auto widthMargin = 8;
+    const int defaultWidth = int(c->getTextWidth()) + widthMargin;
 
-    const float beat = c->getBeat() - this->rollFirstBeat;
-    const float mapWidth = float(this->getWidth()) * (projectLengthInBeats / rollLengthInBeats);
+    int x = 0;
+    int nextX = 0;
+    switch (this->type)
+    {
+        case Type::Large:
+            // for the timeline we can reuse the roll's methods which will
+            // provide more precise x position which aligns with the grid lines:
+            x = this->roll.getXPositionByBeat(c->getBeat());
+            nextX = nextOne ? this->roll.getXPositionByBeat(nextOne->getBeat()) : x + defaultWidth;
+            break;
+        case Type::Small:
+            // for the mini-map we have to compute the x position ourselves:
+            const float rollLengthInBeats = this->rollLastBeat - this->rollFirstBeat;
+            const float projectLengthInBeats = this->projectLastBeat - this->projectFirstBeat;
 
-    const float x = mapWidth * (beat / projectLengthInBeats);
-    const float nextBeat = (nextOne ? nextOne->getBeat() : this->rollLastBeat) - this->rollFirstBeat;
-    const float nextX = mapWidth * (nextBeat / projectLengthInBeats);
+            const float beat = c->getBeat() - this->rollFirstBeat;
+            const float mapWidth = float(this->getWidth()) * (projectLengthInBeats / rollLengthInBeats);
 
-    constexpr auto widthMargin = 8.f;
-    const float minWidth = c->getTextWidth();
-    const float maxWidth = jmax(nextX - x, minWidth);
-    const float w = jlimit(minWidth, maxWidth, minWidth + widthMargin);
+            x = int(mapWidth * (beat / projectLengthInBeats));
+            const float nextBeat = (nextOne ? nextOne->getBeat() : this->rollLastBeat) - this->rollFirstBeat;
+            nextX = int(mapWidth * (nextBeat / projectLengthInBeats));
+            break;
+    }
 
-    c->setRealBounds(Rectangle<float>(x, 0.f, w,
-        float(TimeSignatureComponent::timeSignatureHeight)));
+    const int maxWidth = nextX - x;
+    const int w = jmin(maxWidth, defaultWidth);
+
+    c->setBounds(x, 0, w, TimeSignatureComponent::timeSignatureHeight);
 }
 
 TimeSignatureComponent *TimeSignaturesProjectMap::createComponent()

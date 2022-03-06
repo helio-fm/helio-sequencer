@@ -56,18 +56,6 @@ void TimeSignatureSmallComponent::parentHierarchyChanged()
     this->setSize(this->getWidth(), this->getParentHeight());
 }
 
-void TimeSignatureSmallComponent::setRealBounds(const Rectangle<float> bounds)
-{
-    const auto intBounds = bounds.toType<int>();
-    this->boundsOffset = {
-        bounds.getX() - float(intBounds.getX()),
-        bounds.getY(),
-        bounds.getWidth() - float(intBounds.getWidth()),
-        bounds.getHeight() };
-
-    this->setBounds(intBounds);
-}
-
 void TimeSignatureSmallComponent::updateContent(const TimeSignatureEvent &newEvent)
 {
     this->event = newEvent;

@@ -41,7 +41,6 @@ public:
     virtual float getTextWidth() const noexcept = 0;
 
     virtual void updateContent(const TimeSignatureEvent &newEvent) = 0;
-    virtual void setRealBounds(const Rectangle<float> bounds) = 0;
 
     static int compareElements(const TimeSignatureComponent *first,
                                const TimeSignatureComponent *second)

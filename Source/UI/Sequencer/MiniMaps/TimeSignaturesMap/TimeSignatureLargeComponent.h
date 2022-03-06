@@ -27,7 +27,6 @@ public:
     ~TimeSignatureLargeComponent();
 
     void updateContent(const TimeSignatureEvent &newEvent) override;
-    void setRealBounds(const Rectangle<float> bounds) override;
     float getTextWidth() const noexcept override;
 
     void paint(Graphics &g) override;
@@ -39,7 +38,6 @@ private:
 
     ComponentDragger dragger;
     
-    Rectangle<float> boundsOffset;
     Point<int> clickOffset;
 
     bool draggingState = false;

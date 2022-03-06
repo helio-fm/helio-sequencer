@@ -28,7 +28,6 @@ public:
     ~TimeSignatureSmallComponent();
 
     void updateContent(const TimeSignatureEvent &newEvent) override;
-    void setRealBounds(const Rectangle<float> bounds) override;
 
     void paint(Graphics &g) override;
     void parentHierarchyChanged() override;
@@ -42,8 +41,6 @@ public:
 private:
 
     UniquePointer<Label> signatureLabel;
-
-    Rectangle<float> boundsOffset;
 
     Colour colour = findDefaultColour(ColourIDs::TrackScroller::scrollerFill);
 
