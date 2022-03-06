@@ -41,10 +41,14 @@ private:
     UniquePointer<TextEditor> fontEditor;
     UniquePointer<ToggleButton> nativeTitleBarButton;
     UniquePointer<ToggleButton> animationsEnabledButton;
-    UniquePointer<SeparatorHorizontal> separator;
+    UniquePointer<SeparatorHorizontal> wheelFlagsSeparator;
     UniquePointer<ToggleButton> wheelAltModeButton;
     UniquePointer<ToggleButton> wheelVerticalPanningButton;
     UniquePointer<ToggleButton> wheelVerticalZoomingButton;
+    UniquePointer<SeparatorHorizontal> uiScaleSeparator;
+    UniquePointer<ToggleButton> scaleUi1;
+    UniquePointer<ToggleButton> scaleUi15;
+    UniquePointer<ToggleButton> scaleUi2;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UserInterfaceSettings)
 };

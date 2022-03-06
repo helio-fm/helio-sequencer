@@ -253,6 +253,7 @@ namespace Serialization
             static const Identifier experimentalFeaturesOn = "experimentalFeatures";
             static const Identifier animations = "animations";
             static const Identifier showFullProjectMap = "miniMap";
+            static const Identifier uiScaleFactor = "uiScaleFactor";
             static const Identifier mouseWheelAltMode = "wheelAltMode";
             static const Identifier mouseWheelAltDirection = "wheelAltDirection"; // legacy
             static const Identifier mouseWheelVerticalPanningByDefault = "wheelVerticalPan";

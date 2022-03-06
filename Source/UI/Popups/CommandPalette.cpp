@@ -386,7 +386,10 @@ void CommandPalette::updatePosition()
     const auto top = App::isUsingNativeTitleBar() ?
         Globals::UI::headlineHeight : Globals::UI::headlineHeight + 1;
 
-    this->setTopLeftPosition(this->getParentWidth() / 2 - this->getWidth() / 2, top);
+    const auto centered = this->getBounds().withCentre(Point<int>(this->getParentWidth() / 2, 0)
+        .transformedBy(this->getTransform().inverted()));
+
+    this->setTopLeftPosition(centered.getX(), top);
 }
 
 bool CommandPaletteTextEditor::keyPressed(const KeyPress &key)

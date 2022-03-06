@@ -17,40 +17,43 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class ScaledComponentProxy final : public Component
 {
 public:
 
-    explicit ScaledComponentProxy(Component *target, int targetScale = 2) :
-        content(target),
-        scale(targetScale)
+    explicit ScaledComponentProxy(Component *target) :
+        content(target)
     {
-        const auto screenArea = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
-
-        const float realWidth = float(screenArea.getWidth()) / float(this->scale);
-        const float realHeight = float(screenArea.getHeight()) / float(this->scale);
-
-        const float realScaleWidth = float(screenArea.getWidth()) / realWidth;
-        const float realScaleheight = float(screenArea.getHeight()) / realHeight;
-
-        const auto scaled = this->content->getTransform().scaled(realScaleWidth, realScaleheight);
-        this->content->setTransform(scaled);
+        jassert(this->content != nullptr);
+        this->content->setTransform(App::Config().getUiFlags()->getScaledTransformFor(this->content));
 
         this->setWantsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
+
+        this->setSize(this->content->getWidth(), this->content->getHeight());
         this->addAndMakeVisible(this->content);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->backgroundColour);
+        g.fillRect(this->getLocalBounds());
     }
 
     void resized() override
     {
-        if (this->content != nullptr)
-        {
-            this->content->setBounds(this->getLocalBounds() / this->scale);
-        }
+        jassert(this->content != nullptr);
+        this->content->setBounds(this->getLocalBounds() / this->scale);
     }
 
 private:
 
     SafePointer<Component> content;
-    int scale;
+
+    const float scale = App::Config().getUiFlags()->getUiScaleFactor();
+    const Colour backgroundColour = findDefaultColour(ColourIDs::BackgroundA::fill);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScaledComponentProxy)
 };

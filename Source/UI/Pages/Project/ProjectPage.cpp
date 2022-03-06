@@ -22,6 +22,7 @@
 #include "PlayerThread.h"
 #include "ProjectNode.h"
 #include "ProjectMetadata.h"
+#include "Config.h"
 
 static String getTimeString(const RelativeTime &time)
 {
@@ -231,20 +232,22 @@ ProjectPage::~ProjectPage()
 void ProjectPage::resized()
 {
     const auto smallScreenMode = App::isRunningOnPhone();
-    const auto skewWidth = smallScreenMode ? 32 : 64;
-    const auto labelsSectionWidth = smallScreenMode ? 240 : 320;
+    const auto uiScaleFactor = App::Config().getUiFlags()->getUiScaleFactor();
+
+    const auto skewWidth = smallScreenMode ? int(32 / uiScaleFactor) : int(64 / uiScaleFactor);
+    const auto labelsSectionWidth = smallScreenMode ? int(240 / uiScaleFactor) : int(320 / uiScaleFactor);
 
     this->skew->setBounds(labelsSectionWidth, 0, skewWidth, this->getHeight());
     this->backgroundA->setBounds(0, 0, labelsSectionWidth, this->getHeight());
     this->backgroundB->setBounds(labelsSectionWidth + skewWidth, 0,
         this->getWidth() - labelsSectionWidth - skewWidth, this->getHeight());
 
-    const auto metadataY = this->proportionOfHeight(0.15f);
-    const auto statisticsY = this->proportionOfHeight(0.6f);
+    const auto metadataY = this->proportionOfHeight(0.125f);
+    const auto statisticsY = this->proportionOfHeight(0.55f);
 
     static constexpr auto padding = 12;
-    const auto metadataLineHeight = smallScreenMode ? 48 : 64;
-    static constexpr auto statsLineHeight = 34;
+    const auto metadataLineHeight = smallScreenMode ? int(48 / uiScaleFactor) : int(64 / uiScaleFactor);
+    const auto statsLineHeight = int(34 / uiScaleFactor);
 
     const auto getSkewX = [this, skewWidth](int y)
     {

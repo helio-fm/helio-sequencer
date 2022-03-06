@@ -112,8 +112,8 @@ UserInterfaceSettings::UserInterfaceSettings()
         this->updateButtons();
     };
 
-    this->separator = make<SeparatorHorizontal>();
-    this->addAndMakeVisible(this->separator.get());
+    this->wheelFlagsSeparator = make<SeparatorHorizontal>();
+    this->addAndMakeVisible(this->wheelFlagsSeparator.get());
 
     this->wheelAltModeButton = make<ToggleButton>(TRANS(I18n::Settings::mouseWheelPanningByDefault));
     this->addAndMakeVisible(this->wheelAltModeButton.get());
@@ -139,7 +139,33 @@ UserInterfaceSettings::UserInterfaceSettings()
         this->updateButtons();
     };
 
-    this->setSize(100, 296);
+    this->uiScaleSeparator = make<SeparatorHorizontal>();
+    this->addAndMakeVisible(this->uiScaleSeparator.get());
+
+    this->scaleUi1 = make<ToggleButton>("x1");
+    this->addAndMakeVisible(this->scaleUi1.get());
+    this->scaleUi1->onClick = [this]() {
+        App::Config().getUiFlags()->setUiScaleFactor(1.f);
+        this->updateButtons();
+    };
+
+    this->scaleUi15 = make<ToggleButton>("x1.5");
+    this->scaleUi15->setTransform(AffineTransform::scale(1.3f)); // 1.3 because 1.5 kinda doesn't look like 1.5
+    this->addAndMakeVisible(this->scaleUi15.get());
+    this->scaleUi15->onClick = [this]() {
+        App::Config().getUiFlags()->setUiScaleFactor(1.5f);
+        this->updateButtons();
+    };
+
+    this->scaleUi2 = make<ToggleButton>("x2");
+    this->scaleUi2->setTransform(AffineTransform::scale(2.f));
+    this->addAndMakeVisible(this->scaleUi2.get());
+    this->scaleUi2->onClick = [this]() {
+        App::Config().getUiFlags()->setUiScaleFactor(2.f);
+        this->updateButtons();
+    };
+
+    this->setSize(100, 410);
 }
 
 UserInterfaceSettings::~UserInterfaceSettings() = default;
@@ -165,17 +191,33 @@ void UserInterfaceSettings::resized()
     this->animationsEnabledButton->setBounds(margin2,
         this->nativeTitleBarButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
-    this->separator->setBounds(margin2,
+    this->wheelFlagsSeparator->setBounds(margin2,
         this->animationsEnabledButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 4);
 
     this->wheelAltModeButton->setBounds(margin2,
-        this->separator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+        this->wheelFlagsSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->wheelVerticalPanningButton->setBounds(margin2,
         this->wheelAltModeButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->wheelVerticalZoomingButton->setBounds(margin2,
         this->wheelVerticalPanningButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+
+    this->uiScaleSeparator->setBounds(margin2,
+        this->wheelVerticalZoomingButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 4);
+
+    this->scaleUi1->setBounds(margin2,
+        this->uiScaleSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+
+    this->scaleUi15->setBounds(margin2,
+        this->scaleUi1->getBottom(), this->getWidth() - margin2 * 2, rowSize);
+
+    this->scaleUi2->setBounds(margin2,
+        this->scaleUi15->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+
+    // compensate the transformations:
+    this->scaleUi15->setBounds(this->scaleUi15->getBounds().transformedBy(this->scaleUi15->getTransform().inverted()));
+    this->scaleUi2->setBounds(this->scaleUi2->getBounds().transformedBy(this->scaleUi2->getTransform().inverted()));
 }
 
 void UserInterfaceSettings::visibilityChanged()
@@ -218,4 +260,8 @@ void UserInterfaceSettings::updateButtons()
     this->wheelAltModeButton->setToggleState(wheelFlags.usePanningByDefault, dontSendNotification);
     this->wheelVerticalPanningButton->setToggleState(wheelFlags.useVerticalPanningByDefault, dontSendNotification);
     this->wheelVerticalZoomingButton->setToggleState(wheelFlags.useVerticalZoomingByDefault, dontSendNotification);
+
+    this->scaleUi1->setToggleState(uiFlags->getUiScaleFactor() == 1.f, dontSendNotification);
+    this->scaleUi15->setToggleState(uiFlags->getUiScaleFactor() == 1.5f, dontSendNotification);
+    this->scaleUi2->setToggleState(uiFlags->getUiScaleFactor() == 2.f, dontSendNotification);
 }

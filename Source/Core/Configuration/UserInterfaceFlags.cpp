@@ -199,6 +199,28 @@ UserInterfaceFlags::MouseWheelFlags UserInterfaceFlags::getMouseWheelFlags() con
     return this->mouseWheelFlags;
 }
 
+void UserInterfaceFlags::setUiScaleFactor(float scale)
+{
+    if (this->uiScaleFactor == scale)
+    {
+        return;
+    }
+
+    this->uiScaleFactor = jlimit(UserInterfaceFlags::minUiScaleFactor, UserInterfaceFlags::maxUiScaleFactor, scale);
+    this->listeners.call(&Listener::onUiScaleChanged, this->uiScaleFactor);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
+float UserInterfaceFlags::getUiScaleFactor() const noexcept
+{
+    return this->uiScaleFactor;
+}
+
+AffineTransform UserInterfaceFlags::getScaledTransformFor(Component *component) const
+{
+    return component->getTransform().scaled(this->uiScaleFactor, this->uiScaleFactor);
+}
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -214,6 +236,7 @@ SerializedData UserInterfaceFlags::serialize() const
     tree.setProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     tree.setProperty(UI::Flags::animations, this->rollAnimationsEnabled);
     tree.setProperty(UI::Flags::showFullProjectMap, this->fullProjectMapVisible);
+    tree.setProperty(UI::Flags::uiScaleFactor, this->uiScaleFactor);
 
     tree.setProperty(UI::Flags::mouseWheelAltMode, this->mouseWheelFlags.usePanningByDefault);
     tree.setProperty(UI::Flags::mouseWheelVerticalPanningByDefault, this->mouseWheelFlags.useVerticalPanningByDefault);
@@ -241,6 +264,9 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->useNativeTitleBar = root.getProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     this->rollAnimationsEnabled = root.getProperty(UI::Flags::animations, this->rollAnimationsEnabled);
     this->fullProjectMapVisible = root.getProperty(UI::Flags::showFullProjectMap, this->fullProjectMapVisible);
+
+    this->uiScaleFactor = root.getProperty(UI::Flags::uiScaleFactor, this->uiScaleFactor);
+    this->uiScaleFactor = jlimit(UserInterfaceFlags::minUiScaleFactor, UserInterfaceFlags::maxUiScaleFactor, this->uiScaleFactor);
 
     this->mouseWheelFlags.usePanningByDefault =
         root.getProperty(UI::Flags::mouseWheelAltMode, this->mouseWheelFlags.usePanningByDefault);

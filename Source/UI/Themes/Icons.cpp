@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "Icons.h"
 #include "ColourIDs.h"
+#include "Config.h"
 
 static String getIconFileName(const String &string)
 {
@@ -256,18 +257,17 @@ void Icons::clearPrerenderedCache()
     prerenderedSVGs.clear();
 }
 
+static float getScaleFactor()
+{
+    return App::Config().getUiFlags()->getUiScaleFactor()  *
+        float(Desktop::getInstance().getDisplays().getPrimaryDisplay()->scale);
+}
+
 Image Icons::findByName(Icons::Id id, int maxSize)
 {
-    const auto *display = Desktop::getInstance().getDisplays().getPrimaryDisplay();
-    if (display == nullptr)
-    {
-        jassertfalse;
-        return {};
-    }
-
-    const int retinaFactor = int(display->scale);
-    const int fixedSize = int(floorf(float(maxSize) / Globals::UI::iconSizeStep)) *
-        Globals::UI::iconSizeStep * retinaFactor;
+    const auto retinaFactor = getScaleFactor();
+    const int fixedSize = int(floorf(float(maxSize) / Globals::UI::iconSizeStep) *
+        Globals::UI::iconSizeStep * retinaFactor);
 
     const uint32 iconKey = (id * 1000) + fixedSize;
     if (prerenderedSVGs.contains(iconKey))
@@ -285,16 +285,9 @@ Image Icons::findByName(Icons::Id id, int maxSize)
 
 Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
 {
-    const auto *display = Desktop::getInstance().getDisplays().getPrimaryDisplay();
-    if (display == nullptr)
-    {
-        jassertfalse;
-        return {};
-    }
-
-    const int retinaFactor = int(display->scale);
-    const int fixedSize = int(floorf(float(maxSize) / Globals::UI::iconSizeStep)) *
-        Globals::UI::iconSizeStep * retinaFactor;
+    const auto retinaFactor = getScaleFactor();
+    const int fixedSize = int(floorf(float(maxSize) / Globals::UI::iconSizeStep) *
+        Globals::UI::iconSizeStep * retinaFactor);
 
     const Colour iconBaseColour(lf.findColour(ColourIDs::Icons::fill));
     const Colour iconShadeColour(lf.findColour(ColourIDs::Icons::shadow));
@@ -304,22 +297,15 @@ Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
 
 void Icons::drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy)
 {
-    const auto *display = Desktop::getInstance().getDisplays().getPrimaryDisplay();
-    if (display == nullptr)
-    {
-        jassertfalse;
-        return;
-    }
-
-    const int scale = int(display->scale);
+    const auto scale = getScaleFactor();
 
     const int w = image.getWidth();
     const int h = image.getHeight();
 
     if (scale > 1)
     {
-        const int w2 = w / scale;
-        const int h2 = h / scale;
+        const auto w2 = int(w / scale);
+        const auto h2 = int(h / scale);
         
         g.drawImage(image,
                     cx - int(w2 / 2),

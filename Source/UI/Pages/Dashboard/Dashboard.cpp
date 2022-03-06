@@ -120,7 +120,7 @@ void Dashboard::resized()
     this->patreonButton->setBounds(helperX, getHeight() - 44, buttonWidth, buttonHeight);
 
     // right section content:
-    constexpr auto projectsListWidth = 400;
+    constexpr auto projectsListWidth = 350;
     const auto buttonsX = rightSectionX + 16;
     this->openProjectButton->setBounds(buttonsX, 16, buttonWidth, buttonHeight);
     this->createProjectButton->setBounds(buttonsX, 52, buttonWidth, buttonHeight);

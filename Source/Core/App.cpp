@@ -28,6 +28,7 @@
 #include "SerializablePluginDescription.h"
 
 #include "MainLayout.h"
+#include "ScaledComponentProxy.h"
 #include "Workspace.h"
 #include "RootNode.h"
 
@@ -61,7 +62,7 @@ public:
             this->resizableCorner->setPaintingIsUnclipped(true);
             this->resizableCorner->setBufferedToImage(true);
         }
-        
+
         this->setBounds(int(0.1f * this->getParentWidth()),
             int(0.1f * this->getParentHeight()),
             jmin(1280, int(0.85f * this->getParentWidth())),
@@ -168,16 +169,31 @@ private:
     void createLayoutComponent()
     {
         this->layout = make<MainLayout>();
-        // optionally, in future:
-        // this->setContentOwned(new ScaledComponentProxy(this->layout), false);
-        this->setContentNonOwned(this->layout.get(), false);
+
+        if (App::Config().getUiFlags()->getUiScaleFactor() != 1.f)
+        {
+            // just using this->layout->setTransform(...) won't work here, have to use a proxy component instead:
+            this->setContentOwned(new ScaledComponentProxy(this->layout.get()), false);
+        }
+        else
+        {
+            this->setContentNonOwned(this->layout.get(), false);
+        }
+
         this->layout->restoreLastOpenedPage();
     }
 
     void setTitleComponent(WeakReference<Component> component)
     {
         this->header = component;
-        this->setTitleBarHeight(this->header->getHeight() + 1);
+
+        auto *uiFlags = App::Config().getUiFlags();
+        if (uiFlags->getUiScaleFactor() != 1.f)
+        {
+            this->header->setTransform(uiFlags->getScaledTransformFor(this->header.get()));
+        }
+
+        this->setTitleBarHeight(int(this->header->getHeight() * uiFlags->getUiScaleFactor()) + 1);
         Component::addAndMakeVisible(this->header, -1);
         this->resized();
     }
@@ -433,6 +449,13 @@ void App::showModalComponent(UniquePointer<Component> target)
     App::dismissAllModalComponents();
 
     auto *window = static_cast<App *>(getInstance())->window.get();
+
+    auto *uiFlags = App::Config().getUiFlags();
+    if (uiFlags->getUiScaleFactor() != 1.f)
+    {
+        target->setTransform(App::Config().getUiFlags()->getScaledTransformFor(target.get()));
+    }
+
     window->addChildComponent(target.get());
 
     target->setAlpha(0.f);
@@ -782,6 +805,24 @@ void App::onNativeTitleBarFlagChanged(bool shouldUseNativeTitleBar)
 #else
     jassertfalse; // should never hit that
 #endif
+}
+
+void App::onUiScaleChanged(float scale)
+{
+#if JUCE_LINUX
+
+    App::Layout().showTooltip(TRANS(I18n::Settings::restartRequired),
+        MainLayout::TooltipIcon::None);
+    return;
+
+#endif
+
+    const bool hasOpenGl = App::isOpenGLRendererEnabled();
+    const bool hasNativeTitleBar = App::isUsingNativeTitleBar();
+
+    auto *self = static_cast<App *>(getInstance());
+    self->window = make<MainWindow>();
+    self->window->init(hasOpenGl, hasNativeTitleBar);
 }
 
 //===----------------------------------------------------------------------===//

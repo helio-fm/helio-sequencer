@@ -118,6 +118,7 @@ private:
 
     void onOpenGlRendererFlagChanged(bool enabled) override;
     void onNativeTitleBarFlagChanged(bool enabled) override;
+    void onUiScaleChanged(float scale) override;
 
 private:
 

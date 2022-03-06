@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "Config.h"
+
 // A simple CachedComponentImage for labels.
 // This cache assumes that label's size is fixed,
 // so it doesn't have to re-cache it on every setBounds.
@@ -27,9 +29,9 @@ struct CachedLabelImage final : public CachedComponentImage
 
     void paint(Graphics &g) override
     {
-        this->scale = g.getInternalContext().getPhysicalPixelScaleFactor();
+        const auto scale = this->uiScaleFactor * g.getInternalContext().getPhysicalPixelScaleFactor();
         auto compBounds = this->owner.getLocalBounds();
-        auto imageBounds = compBounds * this->scale;
+        auto imageBounds = compBounds * scale;
 
         if (this->image.isNull())
         {
@@ -45,7 +47,7 @@ struct CachedLabelImage final : public CachedComponentImage
         {
             Graphics imG(this->image);
             auto &lg = imG.getInternalContext();
-            lg.addTransform(AffineTransform::scale(this->scale));
+            lg.addTransform(AffineTransform::scale(scale));
 
             lg.setFill(Colours::transparentBlack);
             lg.fillRect(compBounds, true);
@@ -83,7 +85,7 @@ private:
     String text;
     Label &owner;
 
-    float scale = 1.f;
+    const float uiScaleFactor = App::Config().getUiFlags()->getUiScaleFactor();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CachedLabelImage)
 };

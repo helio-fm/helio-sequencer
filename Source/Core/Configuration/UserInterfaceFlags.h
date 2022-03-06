@@ -50,6 +50,8 @@ public:
 
         virtual void onUiAnimationsFlagChanged(bool enabled) {}
         virtual void onMouseWheelFlagsChanged(MouseWheelFlags flags) {}
+
+        virtual void onUiScaleChanged(float scale) {}
     };
 
     //===------------------------------------------------------------------===//
@@ -93,6 +95,10 @@ public:
     void setMouseWheelUseVerticalPanningByDefault(bool useVerticalPanning);
     void setMouseWheelUseVerticalZoomingByDefault(bool useVerticalZooming);
     MouseWheelFlags getMouseWheelFlags() const noexcept;
+
+    void setUiScaleFactor(float scale);
+    float getUiScaleFactor() const noexcept;
+    AffineTransform getScaledTransformFor(Component *component) const;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -142,6 +148,10 @@ private:
     bool rollAnimationsEnabled = true;
 
     MouseWheelFlags mouseWheelFlags;
+
+    float uiScaleFactor = 1.f;
+    static constexpr auto minUiScaleFactor = 1.f;
+    static constexpr auto maxUiScaleFactor = 3.f;
 
 private:
 

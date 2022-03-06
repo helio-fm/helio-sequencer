@@ -499,15 +499,14 @@ class HelioWindowButton final : public Button
 {
 public:
 
-    HelioWindowButton(const String &name, const Path &normalShape, const Path &toggledShape) noexcept :
-        Button(name),
-        normalShape(normalShape),
-        toggledShape(toggledShape) {}
+    explicit HelioWindowButton(const Path &shape) noexcept :
+        Button({}),
+        shape(shape) {}
 
     void paintButton(Graphics &g, bool isMouseOverButton, bool isButtonDown) override
     {
         float alpha = isMouseOverButton ? (isButtonDown ? 1.0f : 0.8f) : 0.6f;
-        if (!isEnabled())
+        if (!this->isEnabled())
         {
             alpha *= 0.5f;
         }
@@ -537,18 +536,16 @@ public:
             g.fillAll();
         }
 
-        const auto &p = getToggleState() ? toggledShape : normalShape;
-
-        const AffineTransform t(p.getTransformToScaleToFit(x + diam * 0.3f,
+        const AffineTransform t(this->shape.getTransformToScaleToFit(x + diam * 0.3f,
             y + diam * 0.3f, diam * 0.4f, diam * 0.4f, true));
 
         g.setColour(colour);
-        g.fillPath(p, t);
+        g.fillPath(this->shape, t);
     }
 
 private:
 
-    Path normalShape, toggledShape;
+    const Path shape;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HelioWindowButton)
 };
@@ -571,13 +568,14 @@ void HelioTheme::drawDocumentWindowTitleBar(DocumentWindow &window,
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(0.35f));
     g.fillRect(0, 0, w, 1);
 
-    const Font font(Globals::UI::Fonts::S, Font::plain);
+    const auto uiScaleFactor = App::Config().getUiFlags()->getUiScaleFactor();
+    const Font font(Globals::UI::Fonts::S * uiScaleFactor, Font::plain);
     g.setFont(font);
 
     static const String title = "helio " + App::getAppReadableVersion();
-    static const int textW = font.getStringWidth(title);
-    g.setColour(findDefaultColour(Label::textColourId).withAlpha(0.25f));
-    g.drawText(title, w - titleSpaceX - textW - 90, 0, textW, h - 2, Justification::centredLeft, true);
+    const auto textWidth = font.getStringWidth(title);
+    g.setColour(findDefaultColour(Label::textColourId).withAlpha(0.2f));
+    g.drawText(title, titleSpaceX, 0, w - textWidth - 24, h - 3, Justification::centredRight, true);
 #endif
 }
 
@@ -589,13 +587,13 @@ Button *HelioTheme::createDocumentWindowButton(int buttonType)
     {
         shape.addLineSegment(Line<float>(0.0f, 0.0f, 1.0f, 1.0f), 0.05f);
         shape.addLineSegment(Line<float>(1.0f, 0.0f, 0.0f, 1.0f), 0.05f);
-        return new HelioWindowButton("close", shape, shape);
+        return new HelioWindowButton(shape);
     }
     if (buttonType == DocumentWindow::minimiseButton)
     {
-        shape.addLineSegment(Line<float>(0.0f, 0.0f, 0.0001f, 0.0f), 0.0001f);
-        shape.addLineSegment(Line<float>(0.0f, 0.5f, 1.0f, 0.5f), 0.05f);
-        return new HelioWindowButton("min", shape, shape);
+        shape.addLineSegment(Line<float>(0.0f, 0.0f, 0.00001f, 0.0f), 0.00001f);
+        shape.addLineSegment(Line<float>(0.0f, 0.55f, 1.0f, 0.55f), 0.05f);
+        return new HelioWindowButton(shape);
     }
     else if (buttonType == DocumentWindow::maximiseButton)
     {
@@ -603,7 +601,7 @@ Button *HelioTheme::createDocumentWindowButton(int buttonType)
         shape.addLineSegment(Line<float>(0.0f, 0.8f, 1.0f, 0.8f), 0.05f);
         shape.addLineSegment(Line<float>(1.0f, 0.8f, 1.0f, 0.0f), 0.05f);
         shape.addLineSegment(Line<float>(1.0f, 0.0f, 0.0f, 0.0f), 0.05f);
-        return new HelioWindowButton("max", shape, shape);
+        return new HelioWindowButton(shape);
     }
 
     jassertfalse;
@@ -618,7 +616,7 @@ void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
         Button *closeButton,
         bool positionTitleBarButtonsOnLeft)
 {
-    const int buttonSize = 23; // titleBarH - titleBarH / 8;
+    const int buttonSize = int(23 * App::Config().getUiFlags()->getUiScaleFactor());
     const int y = ((titleBarH - titleBarY) / 2) - (buttonSize / 2) - 1;
     int x = titleBarX + titleBarW - buttonSize - buttonSize / 4;
 
