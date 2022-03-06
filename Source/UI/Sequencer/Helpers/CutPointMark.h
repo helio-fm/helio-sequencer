@@ -50,13 +50,19 @@ public:
     void paint(Graphics &g) override;
 };
 
+class ClipComponent;
+
 class ClipCutPointMark final : public CutPointMark
 {
 public:
 
-    explicit ClipCutPointMark(SafePointer<Component> targetComponent);
+    explicit ClipCutPointMark(SafePointer<ClipComponent> targetComponent);
 
     void paint(Graphics &g) override;
 
     void updatePositionFromMouseEvent(int mouseX, int mouseY);
+
+private:
+
+    const Colour colour;
 };

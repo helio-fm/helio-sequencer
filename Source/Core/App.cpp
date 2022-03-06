@@ -453,7 +453,7 @@ void App::showModalComponent(UniquePointer<Component> target)
     auto *uiFlags = App::Config().getUiFlags();
     if (uiFlags->getUiScaleFactor() != 1.f)
     {
-        target->setTransform(App::Config().getUiFlags()->getScaledTransformFor(target.get()));
+        target->setTransform(uiFlags->getScaledTransformFor(target.get()));
     }
 
     window->addChildComponent(target.get());
@@ -816,6 +816,8 @@ void App::onUiScaleChanged(float scale)
     return;
 
 #endif
+
+    Icons::clearPrerenderedCache();
 
     const bool hasOpenGl = App::isOpenGLRendererEnabled();
     const bool hasNativeTitleBar = App::isUsingNativeTitleBar();

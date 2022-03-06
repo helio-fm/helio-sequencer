@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "CutPointMark.h"
+#include "ClipComponent.h"
 
 static inline ComponentAnimator &rootAnimator()
 {
@@ -131,18 +132,19 @@ void NoteCutPointMark::paint(Graphics &g)
 // For the pattern roll
 //===----------------------------------------------------------------------===//
 
-ClipCutPointMark::ClipCutPointMark(SafePointer<Component> targetComponent) :
-    CutPointMark(targetComponent, 0.f) {}
+ClipCutPointMark::ClipCutPointMark(SafePointer<ClipComponent> targetComponent) :
+    CutPointMark(static_cast<Component *>(targetComponent.getComponent()), 0.f),
+    colour(targetComponent->getClip().getTrackColour().interpolatedWith(Colours::white, 0.5f)) {}
 
 void ClipCutPointMark::paint(Graphics &g)
 {
     const auto w = this->getWidth();
     const auto h = this->getHeight();
 
-    g.setColour(Colours::black.withAlpha(0.25f));
+    g.setColour(Colours::black.withAlpha(0.3f));
     g.fillRect(w / 2 - 1, 2, 3, this->getHeight() - 3);
 
-    g.setColour(Colours::white.withAlpha(0.75f));
+    g.setColour(this->colour.withAlpha(0.75f));
     static constexpr int dashLength = 3;
     for (int i = 2; i < this->getHeight() - 2; i += (dashLength * 2))
     {

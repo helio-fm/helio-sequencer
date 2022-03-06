@@ -150,7 +150,6 @@ UserInterfaceSettings::UserInterfaceSettings()
     };
 
     this->scaleUi15 = make<ToggleButton>("x1.5");
-    this->scaleUi15->setTransform(AffineTransform::scale(1.3f)); // 1.3 because 1.5 kinda doesn't look like 1.5
     this->addAndMakeVisible(this->scaleUi15.get());
     this->scaleUi15->onClick = [this]() {
         App::Config().getUiFlags()->setUiScaleFactor(1.5f);
@@ -158,14 +157,13 @@ UserInterfaceSettings::UserInterfaceSettings()
     };
 
     this->scaleUi2 = make<ToggleButton>("x2");
-    this->scaleUi2->setTransform(AffineTransform::scale(2.f));
     this->addAndMakeVisible(this->scaleUi2.get());
     this->scaleUi2->onClick = [this]() {
         App::Config().getUiFlags()->setUiScaleFactor(2.f);
         this->updateButtons();
     };
 
-    this->setSize(100, 410);
+    this->setSize(100, 405);
 }
 
 UserInterfaceSettings::~UserInterfaceSettings() = default;
@@ -210,14 +208,10 @@ void UserInterfaceSettings::resized()
         this->uiScaleSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->scaleUi15->setBounds(margin2,
-        this->scaleUi1->getBottom(), this->getWidth() - margin2 * 2, rowSize);
+        this->scaleUi1->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->scaleUi2->setBounds(margin2,
         this->scaleUi15->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
-
-    // compensate the transformations:
-    this->scaleUi15->setBounds(this->scaleUi15->getBounds().transformedBy(this->scaleUi15->getTransform().inverted()));
-    this->scaleUi2->setBounds(this->scaleUi2->getBounds().transformedBy(this->scaleUi2->getTransform().inverted()));
 }
 
 void UserInterfaceSettings::visibilityChanged()
