@@ -78,5 +78,6 @@ public:
 private:
 
     PluginDescription defaultInstrument;
+    PluginDescription metronomeInstrument;
 
 };

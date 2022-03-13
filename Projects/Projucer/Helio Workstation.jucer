@@ -137,8 +137,12 @@
       <GROUP id="{F2A6D338-1D87-9C43-B3BB-5AFE01EEE084}" name="Core">
         <GROUP id="{C21ADAA4-EF22-DB83-6A0D-E8AC7E9B05DF}" name="Audio">
           <GROUP id="{735E5D69-BA85-2788-E3C0-566143134659}" name="BuiltIn">
-            <FILE id="u3XxWY" name="BuiltInSynthsPluginFormat.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Audio/BuiltIn/BuiltInSynthsPluginFormat.cpp"/>
+            <FILE id="PYyC8X" name="InternalIODevicesPluginFormat.cpp" compile="1"
+                  resource="0" file="../../Source/Core/Audio/BuiltIn/InternalIODevicesPluginFormat.cpp"/>
+            <FILE id="LuBc4N" name="InternalIODevicesPluginFormat.h" compile="0"
+                  resource="0" file="../../Source/Core/Audio/BuiltIn/InternalIODevicesPluginFormat.h"/>
+            <FILE id="u3XxWY" name="BuiltInSynthsPluginFormat.cpp" compile="1"
+                  resource="0" file="../../Source/Core/Audio/BuiltIn/BuiltInSynthsPluginFormat.cpp"/>
             <FILE id="QbQrqy" name="BuiltInSynthsPluginFormat.h" compile="0" resource="0"
                   file="../../Source/Core/Audio/BuiltIn/BuiltInSynthsPluginFormat.h"/>
             <FILE id="B3bOVQ" name="DefaultSynthAudioPlugin.cpp" compile="1" resource="0"
@@ -148,10 +152,14 @@
             <FILE id="KnatwX" name="DefaultSynth.cpp" compile="1" resource="0"
                   file="../../Source/Core/Audio/BuiltIn/DefaultSynth.cpp"/>
             <FILE id="ptazaW" name="DefaultSynth.h" compile="0" resource="0" file="../../Source/Core/Audio/BuiltIn/DefaultSynth.h"/>
-            <FILE id="PYyC8X" name="InternalIODevicesPluginFormat.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Audio/BuiltIn/InternalIODevicesPluginFormat.cpp"/>
-            <FILE id="LuBc4N" name="InternalIODevicesPluginFormat.h" compile="0" resource="0"
-                  file="../../Source/Core/Audio/BuiltIn/InternalIODevicesPluginFormat.h"/>
+            <FILE id="ooj1fI" name="MetronomeSynthAudioPlugin.cpp" compile="1"
+                  resource="0" file="../../Source/Core/Audio/BuiltIn/MetronomeSynthAudioPlugin.cpp"/>
+            <FILE id="VWS8Jz" name="MetronomeSynthAudioPlugin.h" compile="0" resource="0"
+                  file="../../Source/Core/Audio/BuiltIn/MetronomeSynthAudioPlugin.h"/>
+            <FILE id="TX5OT0" name="MetronomeSynth.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Audio/BuiltIn/MetronomeSynth.cpp"/>
+            <FILE id="BW6KlR" name="MetronomeSynth.h" compile="0" resource="0"
+                  file="../../Source/Core/Audio/BuiltIn/MetronomeSynth.h"/>
           </GROUP>
           <GROUP id="{0A903C8C-868E-C0D3-671A-8E37B2140BFE}" name="Instruments">
             <FILE id="MCDbWa" name="Instrument.cpp" compile="1" resource="0" file="../../Source/Core/Audio/Instruments/Instrument.cpp"/>

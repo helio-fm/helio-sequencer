@@ -20,6 +20,7 @@
 #include "InternalIODevicesPluginFormat.h"
 #include "BuiltInSynthsPluginFormat.h"
 #include "DefaultSynthAudioPlugin.h"
+#include "MetronomeSynthAudioPlugin.h"
 #include "SerializationKeys.h"
 #include "AudioMonitor.h"
 
@@ -298,18 +299,33 @@ Instrument *AudioCore::getDefaultInstrument() const noexcept
         this->defaultInstrument.get() : this->instruments.getFirst();
 }
 
-void AudioCore::initDefaultInstrument()
+Instrument *AudioCore::getMetronomeInstrument() const noexcept
 {
-    OwnedArray<PluginDescription> descriptions;
+    jassert(this->metronomeInstrument != nullptr);
+    return this->metronomeInstrument != nullptr ?
+        this->metronomeInstrument.get() : nullptr;
+}
 
-    BuiltInSynthsPluginFormat format;
-    format.findAllTypesForFile(descriptions, DefaultSynthAudioPlugin::instrumentId);
+void AudioCore::initBuiltInInstruments()
+{
+    PluginDescription defaultPluginDescription;
+    DefaultSynthAudioPlugin defaultAudioPlugin;
+    defaultAudioPlugin.fillInPluginDescription(defaultPluginDescription);
 
-    PluginDescription desc(*descriptions[0]);
-    this->addInstrument(desc, DefaultSynthAudioPlugin::instrumentName,
+    this->addInstrument(defaultPluginDescription, DefaultSynthAudioPlugin::instrumentName,
         [this](Instrument *instrument)
         {
             this->defaultInstrument = instrument;
+        });
+
+    PluginDescription metronomePluginDescription;
+    MetronomeSynthAudioPlugin metronomeAudioPlugin;
+    metronomeAudioPlugin.fillInPluginDescription(metronomePluginDescription);
+
+    this->addInstrument(metronomePluginDescription, MetronomeSynthAudioPlugin::instrumentName,
+        [this](Instrument *instrument)
+        {
+            this->metronomeInstrument = instrument;
         });
 }
 
@@ -613,7 +629,7 @@ void AudioCore::deserialize(const SerializedData &data)
 
     if (this->instruments.isEmpty())
     {
-        this->initDefaultInstrument();
+        this->initBuiltInInstruments();
     }
 }
 

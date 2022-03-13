@@ -209,7 +209,8 @@ const AudioProcessorGraph::Node::Ptr Instrument::findMainPluginNode() const
 
 void Instrument::addNodeAsync(const PluginDescription &desc, double x, double y, AddNodeCallback f)
 {
-    const auto callback = [this, desc, x, y, f](UniquePointer<AudioPluginInstance> instance, const String &error)
+    const auto callback = [this, desc, x, y, f]
+    (UniquePointer<AudioPluginInstance> instance, const String &error)
     {
         AudioProcessorGraph::Node::Ptr node = nullptr;
 

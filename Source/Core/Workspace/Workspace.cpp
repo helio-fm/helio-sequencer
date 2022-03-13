@@ -334,7 +334,7 @@ void Workspace::failedDeserializationFallback()
 {
     this->getAudioCore().autodetectAudioDeviceSetup();
     this->getAudioCore().autodetectMidiDeviceSetup();
-    this->getAudioCore().initDefaultInstrument();
+    this->getAudioCore().initBuiltInInstruments();
 
     TreeNode *settings = new SettingsNode();
     this->treeRoot->addChildNode(settings);

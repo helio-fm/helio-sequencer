@@ -18,14 +18,18 @@
 #include "Common.h"
 #include "BuiltInSynthsPluginFormat.h"
 #include "DefaultSynthAudioPlugin.h"
+#include "MetronomeSynthAudioPlugin.h"
 
 const String BuiltInSynthsPluginFormat::formatName = "BuiltIn";
 const String BuiltInSynthsPluginFormat::formatIdentifier = "BuiltIn";
 
 BuiltInSynthsPluginFormat::BuiltInSynthsPluginFormat()
 {
-    DefaultSynthAudioPlugin defaultOne;
-    defaultOne.fillInPluginDescription(this->defaultInstrument);
+    DefaultSynthAudioPlugin defaultAudioPlugin;
+    defaultAudioPlugin.fillInPluginDescription(this->defaultInstrument);
+
+    MetronomeSynthAudioPlugin metronomeAudioPlugin;
+    metronomeAudioPlugin.fillInPluginDescription(this->metronomeInstrument);
 }
 
 String BuiltInSynthsPluginFormat::getName() const
@@ -33,17 +37,22 @@ String BuiltInSynthsPluginFormat::getName() const
     return BuiltInSynthsPluginFormat::formatName;
 }
 
-void BuiltInSynthsPluginFormat::findAllTypesForFile(OwnedArray <PluginDescription> &description, const String &id)
+void BuiltInSynthsPluginFormat::findAllTypesForFile(OwnedArray<PluginDescription> &description, const String &id)
 {
     if (id == DefaultSynthAudioPlugin::instrumentId)
     {
         description.add(new PluginDescription(this->defaultInstrument));
     }
+    else if (id == MetronomeSynthAudioPlugin::instrumentId)
+    {
+        description.add(new PluginDescription(this->metronomeInstrument));
+    }
 }
 
 bool BuiltInSynthsPluginFormat::fileMightContainThisPluginType(const String &fileOrIdentifier)
 {
-    return fileOrIdentifier.isEmpty() || fileOrIdentifier == BuiltInSynthsPluginFormat::formatIdentifier;
+    return fileOrIdentifier.isEmpty() ||
+        fileOrIdentifier == BuiltInSynthsPluginFormat::formatIdentifier;
 }
 
 void BuiltInSynthsPluginFormat::createPluginInstance(const PluginDescription &desc,
@@ -54,6 +63,12 @@ void BuiltInSynthsPluginFormat::createPluginInstance(const PluginDescription &de
         callback(make<DefaultSynthAudioPlugin>(), {});
         return;
     }
-    
+
+    if (desc.name == this->metronomeInstrument.name)
+    {
+        callback(make<MetronomeSynthAudioPlugin>(), {});
+        return;
+    }
+
     callback(nullptr, {});
 }

@@ -101,7 +101,8 @@ public:
     Array<Instrument *> getInstruments() const override;
     Instrument *findInstrumentById(const String &id) const override;
     Instrument *getDefaultInstrument() const noexcept override;
-    void initDefaultInstrument();
+    Instrument *getMetronomeInstrument() const noexcept override;
+    void initBuiltInInstruments();
 
     //===------------------------------------------------------------------===//
     // Setup
@@ -194,7 +195,9 @@ private:
     void deserializeDeviceManager(const SerializedData &tree);
 
     OwnedArray<Instrument> instruments;
+
     WeakReference<Instrument> defaultInstrument;
+    WeakReference<Instrument> metronomeInstrument;
 
     UniquePointer<AudioMonitor> audioMonitor;
 
