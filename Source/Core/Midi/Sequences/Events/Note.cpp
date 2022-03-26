@@ -61,20 +61,20 @@ void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         eventNoteOn.setTimeStamp(startTime);
         outSequence.addEvent(eventNoteOn, timeOffset);
 
-        // here, when having odd tuplet, note-off event time might end up
+        // we want to subtract some little time offset from the the note-off
+        // timestamps to make sure end/start times of neighbor notes never overlap:
+        // one case is the odd tuplet, where note-off event time might end up
         // being slightly after next event's start time, due to rounding errors,
         // e.g. 17.333333969116211 -> 18.666667938232422
         //                            18.666666030883789 -> 20.000000000000000;
-        // just having some offset for every note-off will mess up midi export
-        // for events with accurately aligned timestamps, which sucks,
-        // (i.e. having 19.999990000000 instead of 20.000000000000000)
-        // but, since even tuplets will always have accurate timestamps,
-        // we can subtract some little time offset only for odd tuplets
-        // to make sure end/start times of neighbor notes never overlap:
-        const double oddTupletFix = double(i % 2) / 1000;
+        // another case is playing consecutive notes one right after another
+        // sometimes (rarely) results in second note silenced immediately;
+        // this is the easiest fix, although because of it note-off will not
+        // be aligned accurately, so someday we might come up with a better fix:
+        constexpr auto noteOffOffset = 1.0 / 1000.0;
 
         MidiMessage eventNoteOff(MidiMessage::noteOff(mapped.channel, mapped.key));
-        const double endTime = (tupletStart + tupletLength + clip.getBeat()) * timeFactor - oddTupletFix;
+        const double endTime = (tupletStart + tupletLength + clip.getBeat()) * timeFactor - noteOffOffset;
         eventNoteOff.setTimeStamp(endTime);
         outSequence.addEvent(eventNoteOff, timeOffset);
     }
