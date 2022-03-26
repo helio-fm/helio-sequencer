@@ -65,3 +65,4 @@ Japanese - Kotone Itaya
 Korean - YoungGwang Jeon, DaYeon Lee, HyoHee Jeon  
 Polish - Dawid Bugajski  
 Portuguese - Dario Silva, Daniel Leandro  
+Vietnamese - Dat T.The  
