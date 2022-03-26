@@ -77,6 +77,13 @@ TimeSignatureEvent TimeSignatureEvent::withDenominator(const int denominator) co
     return e;
 }
 
+TimeSignatureEvent TimeSignatureEvent::withMetronome(const MetronomeScheme &scheme) const noexcept
+{
+    TimeSignatureEvent e(*this);
+    e.meter = e.meter.withMetronome(scheme);
+    return e;
+}
+
 TimeSignatureEvent TimeSignatureEvent::withParameters(const SerializedData &parameters) const noexcept
 {
     TimeSignatureEvent e(*this);
@@ -186,11 +193,11 @@ void TimeSignatureEvent::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
- 
+
     const auto numerator = data.getProperty(Midi::numerator, Globals::Defaults::timeSignatureNumerator);
     const auto denominator = data.getProperty(Midi::denominator, Globals::Defaults::timeSignatureDenominator);
     this->meter = Meter({}, numerator, denominator);
-    
+
     this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
     this->id = unpackId(data.getProperty(Midi::id));
 }

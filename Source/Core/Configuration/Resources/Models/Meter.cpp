@@ -39,6 +39,13 @@ Meter Meter::withDenominator(const int newDenominator) const noexcept
     return m;
 }
 
+Meter Meter::withMetronome(const MetronomeScheme &scheme) const noexcept
+{
+    Meter m(*this);
+    m.metronome = scheme;
+    return m;
+}
+
 //===----------------------------------------------------------------------===//
 // Helpers
 //===----------------------------------------------------------------------===//
@@ -87,6 +94,11 @@ float Meter::getBarLengthInBeats() const noexcept
 {
     if (!this->isValid()) { return 0.f; }
     return float(this->numerator) / float(this->denominator) * float(Globals::beatsPerBar);
+}
+
+const Array<MetronomeScheme::Syllable> &Meter::getMetronomeScheme() const noexcept
+{
+    return this->metronome.syllables;
 }
 
 bool Meter::isCommonTime() const noexcept
@@ -153,7 +165,7 @@ SerializedData Meter::serialize() const
     SerializedData tree(Serialization::Midi::meter);
     tree.setProperty(Serialization::Midi::meterName, this->name);
     tree.setProperty(Serialization::Midi::meterTime, this->getTimeAsString());
-    // todo metronome
+    tree.setProperty(Serialization::Midi::metronomeScheme, this->metronome.toString());
     return tree;
 }
 
@@ -170,7 +182,9 @@ void Meter::deserialize(const SerializedData &data)
     this->name = root.getProperty(Midi::meterName, this->name);
     const String timeString = root.getProperty(Midi::meterTime);
     Meter::parseString(timeString, this->numerator, this->denominator);
-    // todo metronome
+
+    const String metronomeString = root.getProperty(Midi::metronomeScheme);
+    this->metronome.loadString(metronomeString);
 }
 
 void Meter::reset()
@@ -178,5 +192,89 @@ void Meter::reset()
     this->name = {};
     this->numerator = 0;
     this->denominator = 0;
-    // todo metronome
+    this->metronome.reset();
+}
+
+//===----------------------------------------------------------------------===//
+// Metronome scheme
+//===----------------------------------------------------------------------===//
+
+String MetronomeScheme::toString() const
+{
+    jassert(!this->syllables.isEmpty());
+
+    String result;
+
+    for (const auto &syllable : this->syllables)
+    {
+        switch (syllable)
+        {
+            case Syllable::Oo: result << " Oo"; break;
+            case Syllable::na: result << "na"; break;
+            case Syllable::Pa: result << " Pa"; break;
+            case Syllable::pa: result << "pa"; break;
+        }
+    }
+
+    return result.trim();
+}
+
+void MetronomeScheme::loadString(const String &str)
+{
+    if (str.isEmpty())
+    {
+        return;
+    }
+
+    this->syllables.clearQuick();
+
+    juce_wchar c;
+    auto ptr = str.getCharPointer();
+    do
+    {
+        c = ptr.getAndAdvance();
+        switch (c)
+        {
+            case 'O':
+            case 'o':
+                c = ptr.getAndAdvance();
+                if (c == 'o')
+                {
+                    this->syllables.add(Syllable::Oo);
+                }
+                break;
+            case 'n':
+                c = ptr.getAndAdvance();
+                if (c == 'a')
+                {
+                    jassert(!this->syllables.isEmpty());
+                    jassert(this->syllables.getLast() == Syllable::Oo || this->syllables.getLast() == Syllable::Pa);
+                    this->syllables.add(Syllable::na);
+                }
+                break;
+            case 'P':
+                c = ptr.getAndAdvance();
+                if (c == 'a')
+                {
+                    this->syllables.add(Syllable::Pa);
+                }
+                break;
+            case 'p':
+                c = ptr.getAndAdvance();
+                if (c == 'a')
+                {
+                    jassert(!this->syllables.isEmpty());
+                    jassert(this->syllables.getLast() == Syllable::Pa);
+                    this->syllables.add(Syllable::pa);
+                }
+                break;
+            default:
+                break;
+        }
+    } while (c != 0);
+}
+
+void MetronomeScheme::reset()
+{
+    this->syllables.clearQuick();
 }

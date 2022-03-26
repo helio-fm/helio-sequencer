@@ -20,6 +20,23 @@
 #include "Chord.h"
 #include "ConfigurationResource.h"
 
+struct MetronomeScheme final
+{
+    enum class Syllable : int
+    {
+        Oo = 0,
+        Pa,
+        na,
+        pa
+    };
+
+    String toString() const;
+    void loadString(const String &str);
+    void reset();
+
+    Array<Syllable> syllables;
+};
+
 class Meter final : public ConfigurationResource
 {
 public:
@@ -34,6 +51,7 @@ public:
 
     Meter withNumerator(const int newNumerator) const noexcept;
     Meter withDenominator(const int newDenominator) const noexcept;
+    Meter withMetronome(const MetronomeScheme &scheme) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Helpers
@@ -45,9 +63,11 @@ public:
     bool isCommonTime() const noexcept;
     int getNumerator() const noexcept;
     int getDenominator() const noexcept;
+    float getBarLengthInBeats() const noexcept;
+
     String getTimeAsString() const noexcept;
 
-    float getBarLengthInBeats() const noexcept;
+    const Array<MetronomeScheme::Syllable> &getMetronomeScheme() const noexcept;
 
     static void parseString(const String &data, int &numerator, int &denominator);
 
@@ -77,6 +97,8 @@ private:
 
     int numerator = 0;
     int denominator = 0;
+
+    MetronomeScheme metronome;
 
     static constexpr auto minNumerator = 2;
     static constexpr auto maxNumerator = 64;

@@ -3,43 +3,53 @@
     "meter": [
       {
         "name": "Common time",
-        "time": "4/4"
+        "time": "4/4",
+        "metronome": "Oona Pana"
       },
       {
         "name": "Alla breve",
-        "time": "2/4"
+        "time": "2/4",
+        "metronome": "Oona"
       },
       {
         "name": "Waltz time",
-        "time": "3/4"
+        "time": "3/4",
+        "metronome": "Oonapa"
       },
       {
         "name": "5/4",
-        "time": "5/4"
+        "time": "5/4",
+        "metronome": "Oonapa Pana"
       },
       {
         "name": "6/4",
-        "time": "6/4"
+        "time": "6/4",
+        "metronome": "Oonapa Panapa"
       },
       {
         "name": "7/8",
-        "time": "7/8"
+        "time": "7/8",
+        "metronome": "Oonapa Pana Papa"
       },
       {
         "name": "9/8",
-        "time": "9/8"
+        "time": "9/8",
+        "metronome": "Oonapa Panapa Panapa"
       },
       {
         "name": "10/8",
-        "time": "10/8"
+        "time": "10/8",
+        "metronome": "Oona Panapa Pana Panapa"
       },
       {
         "name": "11/8",
-        "time": "11/8"
+        "time": "11/8",
+        "metronome": "Oona Papa Oona Pana Panapa"
       },
       {
         "name": "13/8",
-        "time": "13/8"
+        "time": "13/8",
+        "metronome": "Oonapa Panapa Panapa Pana Papa"
       }
     ]
   }

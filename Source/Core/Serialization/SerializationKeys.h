@@ -90,6 +90,7 @@ namespace Serialization
         static const Identifier meter = "meter";
         static const Identifier meterName = "name";
         static const Identifier meterTime = "time";
+        static const Identifier metronomeScheme = "metronome";
 
         // Sequences
         static const Identifier track = "track";
