@@ -240,7 +240,8 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 
 Font HelioTheme::getTextButtonFont(TextButton &button, int buttonHeight)
 {
-    return Font(Font::getDefaultSansSerifFontName(), jmin(Globals::UI::Fonts::L, float(buttonHeight * 0.75f)), Font::plain);
+    return Font(Font::getDefaultSansSerifFontName(),
+        jmin(Globals::UI::Fonts::L, float(buttonHeight * 0.75f)), Font::plain);
 }
 
 void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
@@ -647,7 +648,7 @@ void HelioTheme::initResources()
     if (App::Config().containsProperty(Serialization::Config::lastUsedFont))
     {
         const String lastUsedFontName = App::Config().getProperty(Serialization::Config::lastUsedFont);
-        this->textTypefaceCache = Typeface::createSystemTypefaceFor({ lastUsedFontName, 0, 0 });
+        this->textTypefaceCache = Typeface::createSystemTypefaceFor(Font(lastUsedFontName, 0, Font::plain));
         return;
     }
 
@@ -663,7 +664,8 @@ void HelioTheme::initResources()
         String(Time::getMillisecondCounter() - scanStartTime) + " ms");
 
     const auto userLanguage = SystemStats::getUserLanguage().toLowerCase().substring(0, 2);
-    StringArray preferredFontNames = { "Noto Sans", "Noto Sans UI", "Source Han Sans" };
+    auto preferredFontNames = StringArray("Noto Sans", "Noto Sans UI", "Source Han Sans");
+
     if (userLanguage == "kr")
     {
         preferredFontNames.add("Dotum");
@@ -672,6 +674,11 @@ void HelioTheme::initResources()
     {
         preferredFontNames.addArray({ "YeHei", "Hei", "Heiti SC" });
     }
+
+#if JUCE_LINUX
+    preferredFontNames.add("Ubuntu");
+    preferredFontNames.add("Liberation Sans");
+#endif
 
     String pickedFontName;
     const String perfectlyFineFontName = "Noto Sans CJK";

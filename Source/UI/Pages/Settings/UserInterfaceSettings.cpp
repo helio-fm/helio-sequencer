@@ -229,7 +229,7 @@ void UserInterfaceSettings::handleCommandMessage(int commandId)
     {
         const int fontIndex = commandId - CommandIDs::SelectFont;
         auto &theme = static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
-        theme.updateFont({ this->systemFonts[fontIndex], 0, 0 });
+        theme.updateFont(Font(this->systemFonts[fontIndex], 0, Font::plain));
         SafePointer<Component> window = this->getTopLevelComponent();
         App::recreateLayout();
         if (window != nullptr)

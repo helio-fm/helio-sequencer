@@ -69,8 +69,8 @@ void CommandPaletteAction::setMatch(int score, const uint8 *matches)
     this->matchScore = score;
     this->highlightedMatch.clear();
 
-    static const Font fontNormal(21, Font::plain);
-    static const Font fontMatch(21, Font::underlined);
+    const Font fontNormal(Globals::UI::Fonts::L, Font::plain);
+    const Font fontMatch(Globals::UI::Fonts::L, Font::underlined);
 
     static Array<int> newGlyphs;
     static Array<float> xOffsets;
