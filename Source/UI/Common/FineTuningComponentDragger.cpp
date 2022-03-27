@@ -24,6 +24,7 @@ void FineTuningComponentDragger::startDraggingComponent(Component *const compone
 {
     jassert(component != nullptr);
     jassert(e.mods.isAnyMouseButtonDown()); // The event has to be a drag event!
+    jassert(lowerBound <= upperBound);
 
     if (component != nullptr)
     {

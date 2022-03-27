@@ -105,9 +105,8 @@ void TimeSignatureLargeComponent::mouseDrag(const MouseEvent &e)
             // check if the new event would go out of allowed range
             // (tech debt warning: setTimeSignatureOverride the same check)
             const auto barLength = track->getTimeSignatureOverride()->getBarLengthInBeats();
-            const auto newTemplateBeat = jlimit(0.f,
-                track->getSequence()->getLengthInBeats() - barLength,
-                oldTemplateBeat + deltaBeat);
+            const auto maxBeat = jmax(0.f, track->getSequence()->getLengthInBeats() - barLength);
+            const auto newTemplateBeat = jlimit(0.f, maxBeat, oldTemplateBeat + deltaBeat);
 
             if (newTemplateBeat == oldTemplateBeat)
             {

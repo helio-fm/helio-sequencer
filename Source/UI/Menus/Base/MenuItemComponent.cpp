@@ -388,6 +388,8 @@ void MenuItemComponent::mouseUp(const MouseEvent &e)
         return;
     }
 
+    BailOutChecker checker(this);
+
     if (!this->hasText())
     {
         DraggingListBoxComponent::mouseUp(e);
@@ -417,6 +419,8 @@ void MenuItemComponent::mouseUp(const MouseEvent &e)
             }
         }
     }
+
+    if (checker.shouldBailOut()) { return; }
 
     this->mouseDownWasTriggered = false;
 }

@@ -69,13 +69,19 @@ private:
 
     friend class MenuItemComponent;
 
-    virtual void dismiss() const
+    void dismiss()
     {
-        // assumes being owned by a modal component:
-        if (auto *parent = this->getParentComponent())
+        // there's a chance some component will be calling dismiss() on mouseDown,
+        // let's give them time to process mouse messages before dismissing:
+        MessageManager::callAsync([self = WeakReference<Component>(this)]()
         {
-            parent->exitModalState(0);
-        }
+            if (self == nullptr) { return; }
+            // assumes being owned by a modal component:
+            if (auto *parent = self->getParentComponent())
+            {
+                parent->exitModalState(0);
+            }
+        });
     }
 
 private:

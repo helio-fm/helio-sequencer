@@ -290,6 +290,7 @@ Identifier Scale::getResourceType() const noexcept
 
 Array<int> getKeysFromIntervals(const String &intervals, int periodSize)
 {
+    jassert(periodSize > 0);
     Array<int> keys;
     StringArray tokens;
     tokens.addTokens(intervals, true);
