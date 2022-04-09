@@ -668,7 +668,7 @@ void RollBase::setBeatWidth(float newBeatWidth)
         return;
     }
 
-    this->beatWidth = jlimit(1.f, 360.f, newBeatWidth);
+    this->beatWidth = jlimit(0.1f, 360.f, newBeatWidth);
     this->updateBounds();
 }
 
