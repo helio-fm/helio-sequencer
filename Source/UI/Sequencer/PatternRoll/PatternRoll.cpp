@@ -1279,7 +1279,7 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height)
     Image patternImage(Image::RGB, width, height, false);
     Graphics g(patternImage);
 
-    const Colour fillColour = theme.findColour(ColourIDs::Roll::blackKey).brighter(0.03f);
+    const Colour fillColour = theme.findColour(ColourIDs::Roll::blackKey).brighter(0.02f);
     g.setColour(fillColour);
     g.fillRect(patternImage.getBounds());
 

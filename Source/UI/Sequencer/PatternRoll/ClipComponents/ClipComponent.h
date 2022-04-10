@@ -101,10 +101,13 @@ protected:
 
     State state = State::None;
 
-    Colour headBrightColour;
-    Colour headDarkColour;
     Colour fillColour;
+    Colour frameColour;
+    Colour frameBorderColour;
+    Colour frameCornerColour;
+
     Colour eventColour;
+    Colour eventMutedColour;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClipComponent)
 };
