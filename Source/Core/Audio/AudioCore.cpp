@@ -444,6 +444,12 @@ SerializedData AudioCore::serializeDeviceManager() const
     tree.setProperty(Audio::midiInputReadjusting,
         this->isReadjustingMidiInput.get());
 
+    if (auto *midiOutput = this->deviceManager.getDefaultMidiOutput())
+    {
+        tree.setProperty(Audio::midiOutputName, midiOutput->getName());
+        tree.setProperty(Audio::midiOutputId, midiOutput->getIdentifier());
+    }
+
     return tree;
 }
 
@@ -515,10 +521,10 @@ void AudioCore::deserializeDeviceManager(const SerializedData &tree)
 
     this->isReadjustingMidiInput = root.getProperty(Audio::midiInputReadjusting,
         this->isReadjustingMidiInput.get());
-
+    
     // first, try to match by device id; if failed, search by name
     bool hasFoundMidiInById = false;
-    const auto &allMidiInputs = MidiInput::getAvailableDevices();
+    const auto allMidiInputs = MidiInput::getAvailableDevices();
 
     if (midiInputId.isNotEmpty())
     {
@@ -536,6 +542,38 @@ void AudioCore::deserializeDeviceManager(const SerializedData &tree)
         {
             const auto shouldEnable = midiIn.name == midiInputName;
             this->deviceManager.setMidiInputDeviceEnabled(midiIn.identifier, shouldEnable);
+        }
+    }
+
+    // also try to find the MIDI output by device id and then by name
+    const auto midiOutputId = root.getProperty(Audio::midiOutputId).toString();
+    const auto midiOutputName = root.getProperty(Audio::midiOutputName).toString();
+
+    bool hasFoundMidiOutById = false;
+    const auto allMidiOutputs = MidiOutput::getAvailableDevices();
+
+    if (midiOutputId.isNotEmpty())
+    {
+        for (const auto &midiOut : allMidiOutputs)
+        {
+            if (midiOut.identifier == midiOutputId)
+            {
+                this->deviceManager.setDefaultMidiOutputDevice(midiOut.identifier);
+                hasFoundMidiOutById = true;
+                break;
+            }
+        }
+    }
+
+    if (!hasFoundMidiOutById && midiOutputName.isNotEmpty())
+    {
+        for (const auto &midiOut : allMidiOutputs)
+        {
+            if (midiOut.name == midiOutputName)
+            {
+                this->deviceManager.setDefaultMidiOutputDevice(midiOut.identifier);
+                break;
+            }
         }
     }
 }

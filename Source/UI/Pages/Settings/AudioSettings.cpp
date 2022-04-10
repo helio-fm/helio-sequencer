@@ -25,6 +25,9 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
     this->midiInputsCombo = make<MobileComboBox::Container>();
     this->addAndMakeVisible(this->midiInputsCombo.get());
 
+    this->midiOutputsCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->midiOutputsCombo.get());
+
     this->sampleRateCombo = make<MobileComboBox::Container>();
     this->addAndMakeVisible(this->sampleRateCombo.get());
 
@@ -87,12 +90,22 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
     this->addAndMakeVisible(this->midiInputRemappingCheckbox.get());
     const auto isFilteringMidi = App::Workspace().getAudioCore().isFilteringMidiInput();
     this->midiInputRemappingCheckbox->setToggleState(isFilteringMidi, dontSendNotification);
-    this->midiInputRemappingCheckbox->onClick = [this](){
+    this->midiInputRemappingCheckbox->onClick = [this]
+    {
         const auto shouldFilterMidi = this->midiInputRemappingCheckbox->getToggleState();
         App::Workspace().getAudioCore().setFilteringMidiInput(shouldFilterMidi);
     };
 
-    this->setSize(550, 276);
+    this->midiOutputEditor = make<TextEditor>();
+    this->addAndMakeVisible(this->midiOutputEditor.get());
+    this->midiOutputEditor->setReadOnly(true);
+    this->midiOutputEditor->setScrollbarsShown(false);
+    this->midiOutputEditor->setCaretVisible(false);
+    this->midiOutputEditor->setPopupMenuEnabled(false);
+    this->midiOutputEditor->setInterceptsMouseClicks(false, true);
+    this->midiOutputEditor->setFont(Globals::UI::Fonts::M);
+
+    this->setSize(550, 320);
 
     MenuPanel::Menu emptyMenu;
     this->deviceTypeCombo->initWith(this->deviceTypeEditor.get(), emptyMenu);
@@ -100,6 +113,7 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
     this->sampleRateCombo->initWith(this->sampleRateEditor.get(), emptyMenu);
     this->bufferSizeCombo->initWith(this->bufferSizeEditor.get(), emptyMenu);
     this->midiInputsCombo->initWith(this->midiInputEditor.get(), emptyMenu);
+    this->midiOutputsCombo->initWith(this->midiOutputEditor.get(), emptyMenu);
 }
 
 AudioSettings::~AudioSettings() = default;
@@ -109,6 +123,7 @@ void AudioSettings::resized()
     const Rectangle<int> comboBounds(4, 4, this->getWidth() - 8, this->getHeight() - 8);
 
     this->midiInputsCombo->setBounds(comboBounds);
+    this->midiOutputsCombo->setBounds(comboBounds);
     this->sampleRateCombo->setBounds(comboBounds);
     this->bufferSizeCombo->setBounds(comboBounds);
     this->deviceTypeCombo->setBounds(comboBounds);
@@ -120,9 +135,11 @@ void AudioSettings::resized()
     this->deviceEditor->setBounds(editorBounds.withY(60));
     this->sampleRateEditor->setBounds(editorBounds.withY(108));
     this->bufferSizeEditor->setBounds(editorBounds.withY(156));
-    this->midiInputEditor->setBounds(editorBounds.withY(200));
 
-    this->midiInputRemappingCheckbox->setBounds(editorBounds.withY(240));
+    this->midiInputEditor->setBounds(editorBounds.withY(200));
+    this->midiInputRemappingCheckbox->setBounds(editorBounds.withY(238).translated(4, 0));
+
+    this->midiOutputEditor->setBounds(editorBounds.withY(280));
 }
 
 void AudioSettings::parentHierarchyChanged()
@@ -135,6 +152,7 @@ void AudioSettings::parentHierarchyChanged()
         this->syncSampleRatesList(deviceManager);
         this->syncBufferSizesList(deviceManager);
         this->syncMidiInputsList(deviceManager);
+        this->syncMidiOutputsList(deviceManager);
     }
 }
 
@@ -180,11 +198,25 @@ void AudioSettings::handleCommandMessage(int commandId)
         }
     }
 
-    const auto &midiDevices = MidiInput::getAvailableDevices();
+    const auto midiInputs = MidiInput::getAvailableDevices();
     const int miniInputDeviceIndex = commandId - CommandIDs::SelectMidiInputDevice;
-    if (miniInputDeviceIndex >= 0 && miniInputDeviceIndex < midiDevices.size())
+    if (miniInputDeviceIndex >= 0 && miniInputDeviceIndex < midiInputs.size())
     {
-        this->applyMidiInput(deviceManager, midiDevices[miniInputDeviceIndex].identifier);
+        this->applyMidiInput(deviceManager, midiInputs[miniInputDeviceIndex].identifier);
+        return;
+    }
+
+    if (commandId == CommandIDs::SelectMidiNoOutputDevice)
+    {
+        this->applyMidiOutput(deviceManager, {});
+        return;
+    }
+
+    const auto midiOutputs = MidiOutput::getAvailableDevices();
+    const int miniOutputDeviceIndex = commandId - CommandIDs::SelectMidiOutputDevice;
+    if (miniOutputDeviceIndex >= 0 && miniOutputDeviceIndex < midiOutputs.size())
+    {
+        this->applyMidiOutput(deviceManager, midiOutputs[miniOutputDeviceIndex].identifier);
         return;
     }
 }
@@ -212,6 +244,7 @@ void AudioSettings::applyDeviceType(AudioDeviceManager &deviceManager, const Str
         this->syncSampleRatesList(deviceManager);
         this->syncBufferSizesList(deviceManager);
         this->syncMidiInputsList(deviceManager);
+        this->syncMidiOutputsList(deviceManager);
     }
 }
 
@@ -227,6 +260,7 @@ void AudioSettings::applyDevice(AudioDeviceManager &deviceManager, const String 
     this->syncSampleRatesList(deviceManager);
     this->syncBufferSizesList(deviceManager);
     this->syncMidiInputsList(deviceManager);
+    this->syncMidiOutputsList(deviceManager);
 }
 
 void AudioSettings::applySampleRate(AudioDeviceManager &deviceManager, double sampleRate)
@@ -249,6 +283,12 @@ void AudioSettings::applyBufferSize(AudioDeviceManager &deviceManager, int buffe
     deviceSetup.bufferSize = bufferSize;
     deviceManager.setAudioDeviceSetup(deviceSetup, true);
     this->syncBufferSizesList(deviceManager);
+}
+
+void AudioSettings::applyMidiOutput(AudioDeviceManager &deviceManager, const String &deviceId)
+{
+    deviceManager.setDefaultMidiOutputDevice(deviceId);
+    this->syncMidiOutputsList(deviceManager);
 }
 
 void AudioSettings::applyMidiInput(AudioDeviceManager &deviceManager, const String &deviceId)
@@ -416,7 +456,7 @@ static String getFirstSelectedMidiInputDevice(AudioDeviceManager &deviceManager,
 void AudioSettings::syncMidiInputsList(AudioDeviceManager &deviceManager)
 {
     MenuPanel::Menu menu;
-    const auto &devices = MidiInput::getAvailableDevices();
+    const auto devices = MidiInput::getAvailableDevices();
 
     for (int i = 0; i < devices.size(); ++i)
     {
@@ -426,11 +466,43 @@ void AudioSettings::syncMidiInputsList(AudioDeviceManager &deviceManager)
     }
 
     const auto selectedDeviceName = areNoMidiInputsSelected(deviceManager, devices) ?
-        TRANS(I18n::Settings::midiNoInputDevices) :
+        TRANS(I18n::Settings::midiNoDevicesFound) :
         getFirstSelectedMidiInputDevice(deviceManager, devices);
 
     this->midiInputEditor->setText(TRANS(I18n::Settings::midiRecord) +
         ": " + selectedDeviceName, dontSendNotification);
 
     this->midiInputsCombo->updateMenu(menu);
+}
+
+void AudioSettings::syncMidiOutputsList(AudioDeviceManager &deviceManager)
+{
+    MenuPanel::Menu menu;
+    const auto devices = MidiOutput::getAvailableDevices();
+    const auto defaultOutputDeviceId = deviceManager.getDefaultMidiOutputIdentifier();
+
+    // "don't send midi" option
+    menu.add(MenuItem::item(defaultOutputDeviceId.isEmpty() ? Icons::apply : Icons::empty,
+        CommandIDs::SelectMidiNoOutputDevice, TRANS(I18n::Settings::midiOutputNone)));
+
+    auto defaultOutputDeviceName = MidiOutput::getDefaultDevice().name;
+
+    for (int i = 0; i < devices.size(); ++i)
+    {
+        const bool isSelected = defaultOutputDeviceId == devices[i].identifier;
+        if (isSelected)
+        {
+            defaultOutputDeviceName = devices[i].name;
+        }
+        menu.add(MenuItem::item(isSelected ? Icons::apply : Icons::empty,
+            CommandIDs::SelectMidiOutputDevice + i, devices[i].name));
+    }
+
+    const auto selectedDeviceName = defaultOutputDeviceId.isEmpty() ?
+        TRANS(I18n::Settings::midiOutputNone) : defaultOutputDeviceName;
+
+    this->midiOutputEditor->setText(TRANS(I18n::Settings::midiOutput) +
+        ": " + selectedDeviceName, dontSendNotification);
+
+    this->midiOutputsCombo->updateMenu(menu);
 }

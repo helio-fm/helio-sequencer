@@ -266,7 +266,7 @@ void SequencerSidebarRight::onRecordFailed(const Array<MidiDeviceInfo> &devices)
 
     if (devices.isEmpty())
     {
-        App::Layout().showTooltip(TRANS(I18n::Settings::midiNoInputDevices));
+        App::Layout().showTooltip(TRANS(I18n::Settings::midiNoDevicesFound));
         this->transportControl->showRecordingError();
     }
     else

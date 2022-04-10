@@ -280,7 +280,9 @@ namespace I18n
         static constexpr auto audioDriver = constexprHash("settings::audio::driver");
         static constexpr auto audioSampleRate = constexprHash("settings::audio::samplerate");
         static constexpr auto midiRecord = constexprHash("settings::midi::record");
-        static constexpr auto midiNoInputDevices = constexprHash("settings::midi::nodevices");
+        static constexpr auto midiOutput = constexprHash("settings::midi::output");
+        static constexpr auto midiOutputNone = constexprHash("settings::midi::output::none");
+        static constexpr auto midiNoDevicesFound = constexprHash("settings::midi::nodevices");
         static constexpr auto midiRemap12ToneKeyboard = constexprHash("settings::midi::remap12tone");
         static constexpr auto languageHelp = constexprHash("settings::language::help");
         static constexpr auto rendererOpengl = constexprHash("settings::renderer::opengl");
