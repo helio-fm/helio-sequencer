@@ -486,7 +486,7 @@
     <ClCompile Include="..\..\Source\UI\Popups\ChordPreviewTool.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\RescalePreviewTool.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\ScalePreviewTool.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Popups\HelioCallout.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Popups\ModalCallout.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\PopupButton.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\PopupCustomButton.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\ProgressTooltip.cpp"/>
@@ -2781,7 +2781,7 @@
     <ClInclude Include="..\..\Source\UI\Popups\ChordPreviewTool.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\RescalePreviewTool.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\ScalePreviewTool.h"/>
-    <ClInclude Include="..\..\Source\UI\Popups\HelioCallout.h"/>
+    <ClInclude Include="..\..\Source\UI\Popups\ModalCallout.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\PopupButton.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\PopupButtonOwner.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\PopupCustomButton.h"/>

@@ -39,7 +39,7 @@
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
 #include "SelectionComponent.h"
-#include "HelioCallout.h"
+#include "ModalCallout.h"
 #include "RescalePreviewTool.h"
 #include "ChordPreviewTool.h"
 #include "ScalePreviewTool.h"
@@ -1223,7 +1223,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         if (auto *panel = ArpPreviewTool::createWithinContext(*this,
             this->project.getTimeline()->getKeySignatures()))
         {
-            HelioCallout::emit(panel, this, true);
+            ModalCallout::emit(panel, this, true);
         }
         break;
     case CommandIDs::ShowRescalePanel:
@@ -1231,7 +1231,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         if (auto *panel = RescalePreviewTool::createWithinSelectionAndContext(this,
             this->project.getTimeline()->getKeySignatures()))
         {
-            HelioCallout::emit(panel, this, true);
+            ModalCallout::emit(panel, this, true);
         }
         break;
     case CommandIDs::ShowScalePanel:
@@ -1245,7 +1245,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         {
             // alternative mode:
             if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-            HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
+            ModalCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
         }
         else
         {

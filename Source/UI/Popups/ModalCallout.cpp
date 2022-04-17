@@ -16,21 +16,18 @@
 */
 
 #include "Common.h"
-#include "HelioCallout.h"
+#include "ModalCallout.h"
 #include "MainLayout.h"
 #include "ColourIDs.h"
 
 static int kClickCounterOnPopupClose = 0;
 static int kClickCounterOnPopupStart = 0;
 
-HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
-    MainLayout *parentWorkspace, bool shouldAlignToMouse) :
-    contentComponent(c),
+ModalCallout::ModalCallout(Component *newComponent, SafePointer<Component> pointAtComponent, bool shouldAlignToMouse) :
+    contentComponent(newComponent),
     targetComponent(pointAtComponent),
     alignsToMouse(shouldAlignToMouse)
 {
-    jassert(parentWorkspace);
-
     this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
@@ -38,79 +35,32 @@ HelioCallout::HelioCallout(Component &c, Component *pointAtComponent,
 
     kClickCounterOnPopupStart = Desktop::getInstance().getMouseButtonClickCounter();
         
-    const auto area = this->targetComponent->getScreenBounds();
-    this->addAndMakeVisible(this->contentComponent);
-    
-    if (parentWorkspace != nullptr)
-    {
-        const auto b = parentWorkspace->getScreenBounds();
-
-#if PLATFORM_DESKTOP
-        const auto p = Desktop::getInstance().getMainMouseSource().getScreenPosition() - b.getPosition().toFloat();
-#elif PLATFORM_MOBILE
-        const auto p = Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition() - b.getPosition().toFloat();
-#endif
-
-        this->clickPointAbs = Point<float>(p.getX() / float(b.getWidth()), p.getY() / float(b.getHeight()));
-
-        parentWorkspace->addChildComponent(this);
-        this->findTargetPointAndUpdateBounds();
-        this->setVisible(true);
-    }
-    else
-    {
-        const auto &displays = Desktop::getInstance().getDisplays();
-        this->setAlwaysOnTop(true);
-        this->pointToAndFit(area, displays.getDisplayForPoint(area.getCentre())->userArea);
-        this->addToDesktop(ComponentPeer::windowIsTemporary);
-    }
+    this->addAndMakeVisible(this->contentComponent.get());
 }
 
-HelioCallout::~HelioCallout()
+ModalCallout::~ModalCallout()
 {
     kClickCounterOnPopupClose = Desktop::getInstance().getMouseButtonClickCounter();
 }
 
-class HelioCallOutCallback final : public ModalComponentManager::Callback
-{
-public:
-    HelioCallOutCallback(Component *c, Component *pointAtComponent,
-                         MainLayout *parentWorkspace, bool shouldAlignToMouse) :
-        content(c),
-        callout(*c, pointAtComponent, parentWorkspace, shouldAlignToMouse)
-    {
-        this->callout.setVisible(true);
-        this->callout.enterModalState(true, this);
-    }
-    
-    void modalStateFinished(int) override {}
-
-    UniquePointer<Component> content;
-    HelioCallout callout;
-    
-    JUCE_DECLARE_NON_COPYABLE(HelioCallOutCallback)
-};
-
-
-void HelioCallout::setArrowSize(const float newSize)
+void ModalCallout::setArrowSize(const float newSize)
 {
     this->arrowSize = newSize;
     this->updateShape();
 }
 
-int HelioCallout::getBorderSize() const noexcept
+int ModalCallout::getBorderSize() const noexcept
 {
     return int(this->arrowSize + 1);
-    //return jmax(20, int(this->arrowSize));
 }
 
-void HelioCallout::fadeIn()
+void ModalCallout::fadeIn()
 {
     Desktop::getInstance().getAnimator().animateComponent(this,
         this->getBounds(), 1.f, Globals::UI::fadeInLong, false, 0.0, 0.0);
 }
 
-void HelioCallout::fadeOut()
+void ModalCallout::fadeOut()
 {
     const int reduceBy = 20;
     const auto offset = this->targetPoint - this->getBounds().getCentre().toFloat();
@@ -121,45 +71,30 @@ void HelioCallout::fadeOut()
         0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
 }
 
-
 //===----------------------------------------------------------------------===//
 // Static
 //===----------------------------------------------------------------------===//
 
-#define CALLOUT_FRAME_MARGIN (2)
-
-void HelioCallout::emit(Component *newComponent,
-                        Component *pointAtComponent,
-                        bool alignsToMousePosition)
+void ModalCallout::emit(Component *newComponent, Component *pointAtComponent, bool alignsToMousePosition)
 {
-    jassert(newComponent != nullptr);
-    
-    HelioCallout &cb =
-    (new HelioCallOutCallback(newComponent,
-                              pointAtComponent,
-                              &App::Layout(),
-                              alignsToMousePosition))->callout;
-    
-    cb.setAlpha(0.f);
-    cb.fadeIn();
+    App::showModalComponent(make<ModalCallout>(newComponent, pointAtComponent, alignsToMousePosition));
 }
 
-int HelioCallout::numClicksSinceLastStartedPopup()
+int ModalCallout::numClicksSinceLastStartedPopup()
 {
     return Desktop::getInstance().getMouseButtonClickCounter() - kClickCounterOnPopupStart;
 }
 
-int HelioCallout::numClicksSinceLastClosedPopup()
+int ModalCallout::numClicksSinceLastClosedPopup()
 {
     return Desktop::getInstance().getMouseButtonClickCounter() - kClickCounterOnPopupClose;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
 
-void HelioCallout::paint(Graphics& g)
+void ModalCallout::paint(Graphics& g)
 {
     g.setColour(findDefaultColour(ColourIDs::Callout::fill));
     g.fillPath(this->outline);
@@ -168,70 +103,77 @@ void HelioCallout::paint(Graphics& g)
     g.strokePath(this->outline, PathStrokeType(1.f));
 }
 
-void HelioCallout::resized()
+void ModalCallout::resized()
 {
     const int borderSpace = this->getBorderSize();
-    this->contentComponent.setTopLeftPosition(borderSpace, borderSpace);
+    this->contentComponent->setTopLeftPosition(borderSpace, borderSpace);
     this->updateShape();
 }
 
-void HelioCallout::moved()
+void ModalCallout::moved()
 {
     this->updateShape();
 }
 
-void HelioCallout::parentSizeChanged()
+void ModalCallout::parentHierarchyChanged()
+{
+    if (auto *parent = this->getParentComponent())
+    {
+        const auto b = parent->getScreenBounds().toFloat();
+
+#if PLATFORM_DESKTOP
+        const auto p = Desktop::getInstance().getMainMouseSource().getScreenPosition() - b.getPosition();
+#elif PLATFORM_MOBILE
+        const auto p = Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition() - b.getPosition();
+#endif
+
+        this->clickPointAbs = Point<float>(p.getX() / b.getWidth(), p.getY() / b.getHeight())
+            .transformedBy(this->getTransform().inverted());
+        
+        this->findTargetPointAndUpdateBounds();
+    }
+}
+
+void ModalCallout::parentSizeChanged()
 {
     this->findTargetPointAndUpdateBounds();
 }
 
-void HelioCallout::childBoundsChanged(Component *)
+void ModalCallout::childBoundsChanged(Component *)
 {
     this->pointToAndFit(this->lastGoodTargetArea, this->lastGoodAvailableArea);
 }
 
-bool HelioCallout::hitTest(int x, int y)
+bool ModalCallout::hitTest(int x, int y)
 {
     return this->outline.contains(float(x), float(y));
 }
 
-void HelioCallout::inputAttemptWhenModal()
-{
-    //const Point<int> mousePos(getMouseXYRelative() + getBounds().getPosition());
-    //const bool shouldBeDismissedAsyncronously = this->targetArea.contains(mousePos) || this->alignsToMouse;
-    const bool shouldBeDismissedAsyncronously = true;
-    if (shouldBeDismissedAsyncronously)
-    {
-        this->dismissAsync();
-    }
-    else
-    {
-        this->exitModalState(0);
-        this->fadeOut();
-    }
-}
-
-void HelioCallout::handleCommandMessage(int commandId)
-{
-    if (commandId == CommandIDs::HideCallout)
-    {
-        this->exitModalState(0);
-        this->fadeOut();
-        //this->setVisible(false);
-    }
-}
-
-void HelioCallout::dismissAsync()
+void ModalCallout::inputAttemptWhenModal()
 {
     this->postCommandMessage(CommandIDs::HideCallout);
 }
 
-bool HelioCallout::keyPressed(const KeyPress &key)
+void ModalCallout::handleCommandMessage(int commandId)
+{
+    if (commandId == CommandIDs::HideCallout)
+    {
+        this->dismiss();
+    }
+}
+
+void ModalCallout::dismiss()
+{
+    this->fadeOut();
+    delete this;
+}
+
+bool ModalCallout::keyPressed(const KeyPress &key)
 {
     if (key.isKeyCode(KeyPress::escapeKey))
     {
         // give a chance to hosted component to react to escape key:
-        this->contentComponent.postCommandMessage(CommandIDs::Cancel);
+        this->contentComponent->postCommandMessage(CommandIDs::Cancel);
         this->inputAttemptWhenModal();
         return true;
     }
@@ -239,36 +181,36 @@ bool HelioCallout::keyPressed(const KeyPress &key)
     return true;
 }
 
-void HelioCallout::findTargetPointAndUpdateBounds()
+void ModalCallout::findTargetPointAndUpdateBounds()
 {
+    constexpr auto frameMargin = 2;
+
     if (this->alignsToMouse)
     {
-        const Rectangle<int> b = App::Layout().getBounds();
-        Rectangle<int> clickBounds(0, 0, 0, 0);
-        clickBounds.setPosition(int(b.getWidth() * this->clickPointAbs.getX()),
-                                int(b.getHeight() * this->clickPointAbs.getY()));
-        
-        const Rectangle<int> pageBounds = App::Layout().getBoundsForPopups();
-        const Rectangle<int> pointBounds = clickBounds.expanded(CALLOUT_FRAME_MARGIN).constrainedWithin(pageBounds);
+        jassert(this->getParentComponent() != nullptr);
+        const auto b = this->getParentComponent()->getBounds();
+        Rectangle<int> clickBounds(int(b.getWidth() * this->clickPointAbs.getX()),
+            int(b.getHeight() * this->clickPointAbs.getY()), 0, 0);
+
+        const auto pageBounds = App::Layout().getBoundsForPopups();
+        const auto pointBounds = clickBounds.expanded(frameMargin).constrainedWithin(pageBounds);
         
         this->pointToAndFit(pointBounds, pageBounds);
     }
     else
     {
-        Point<int> positionInWorkspace = App::Layout().getLocalPoint(this->targetComponent, Point<int>(0, 0));
-        Rectangle<int> topLevelBounds(positionInWorkspace.x,
-                                      positionInWorkspace.y,
-                                      this->targetComponent->getWidth(),
-                                      this->targetComponent->getHeight());
+        auto positionInWorkspace = App::Layout().getLocalPoint(this->targetComponent, Point<int>(0, 0));
+        Rectangle<int> topLevelBounds(positionInWorkspace.x, positionInWorkspace.y,
+            this->targetComponent->getWidth(), this->targetComponent->getHeight());
         
-        const Rectangle<int> pageBounds = App::Layout().getBoundsForPopups();
-        const Rectangle<int> pointBounds = topLevelBounds.expanded(CALLOUT_FRAME_MARGIN);
+        const auto pageBounds = App::Layout().getBoundsForPopups();
+        const auto pointBounds = topLevelBounds.expanded(frameMargin);
         
         this->pointToAndFit(pointBounds, pageBounds);
     }
 }
 
-void HelioCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo,
+void ModalCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo,
                                  const Rectangle<int> &newAreaToFitIn)
 {
     this->lastGoodTargetArea = newAreaToPointTo;
@@ -276,8 +218,8 @@ void HelioCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo,
     
     const int borderSpace = this->getBorderSize();
 
-    Rectangle<int> newBounds(this->contentComponent.getWidth() + borderSpace * 2,
-                             this->contentComponent.getHeight() + borderSpace * 2);
+    Rectangle<int> newBounds(this->contentComponent->getWidth() + borderSpace * 2,
+        this->contentComponent->getHeight() + borderSpace * 2);
 
     const int hw = (newBounds.getWidth() / 2);
     const int hh = (newBounds.getHeight() / 2);
@@ -301,8 +243,8 @@ void HelioCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo,
         Line<float>(targets[3].translated(-hwReduced, -(hh - arrowIndent)), targets[3].translated(hwReduced, -(hh - arrowIndent)))
     };
     
-    const Rectangle<float> centrePointArea(newAreaToFitIn.reduced(hw, hh).toFloat());
-    const Point<float> targetCentre(newAreaToPointTo.getCentre().toFloat());
+    const auto centrePointArea = newAreaToFitIn.reduced(hw, hh).toFloat();
+    const auto targetCentre = newAreaToPointTo.getCentre().toFloat();
     
     float nearest = 1.0e9f;
     
@@ -311,8 +253,8 @@ void HelioCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo,
         Line<float> constrainedLine(centrePointArea.getConstrainedPoint(lines[i].getStart()),
                                     centrePointArea.getConstrainedPoint(lines[i].getEnd()));
         
-        const Point<float> centre(constrainedLine.findNearestPointTo(targetCentre));
-        float distanceFromCentre = centre.getDistanceFrom(targets[i]);
+        const auto centre =constrainedLine.findNearestPointTo(targetCentre);
+        auto distanceFromCentre = centre.getDistanceFrom(targets[i]);
         
         if (! centrePointArea.intersects(lines[i]))
         {
@@ -332,19 +274,17 @@ void HelioCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo,
     this->setBounds(newBounds);
 }
 
-void HelioCallout::updateShape()
+void ModalCallout::updateShape()
 {
     this->repaint();
     this->outline.clear();
     
-    const float innerBorderPadding = 3.f;
-    const auto bodyArea = this->contentComponent.getBounds()
+    constexpr auto innerBorderPadding = 3.f;
+    const auto bodyArea = this->contentComponent->getBounds()
         .toFloat().expanded(innerBorderPadding, innerBorderPadding);
 
     const auto maximumArea = this->getLocalBounds().toFloat();
     const auto arrowTip = this->targetPoint - this->getPosition().toFloat();
-    //arrowTip.setX(jmin(jmax(arrowTip.getX(), maximumArea.getX()), maximumArea.getRight()));
-    //arrowTip.setY(jmin(jmax(arrowTip.getY(), maximumArea.getY()), maximumArea.getBottom()));
     
     this->outline.addBubble(bodyArea,
         maximumArea, arrowTip, 1.f, this->arrowSize * 0.75f);

@@ -1053,9 +1053,9 @@
                 file="../../Source/UI/Popups/ScalePreviewTool.cpp"/>
           <FILE id="VghbFx" name="ScalePreviewTool.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/ScalePreviewTool.h"/>
-          <FILE id="CM2odV" name="HelioCallout.cpp" compile="1" resource="0"
-                file="../../Source/UI/Popups/HelioCallout.cpp"/>
-          <FILE id="IPhSkz" name="HelioCallout.h" compile="0" resource="0" file="../../Source/UI/Popups/HelioCallout.h"/>
+          <FILE id="CM2odV" name="ModalCallout.cpp" compile="1" resource="0"
+                file="../../Source/UI/Popups/ModalCallout.cpp"/>
+          <FILE id="IPhSkz" name="ModalCallout.h" compile="0" resource="0" file="../../Source/UI/Popups/ModalCallout.h"/>
           <FILE id="wYUdKs" name="PopupButton.cpp" compile="1" resource="0" file="../../Source/UI/Popups/PopupButton.cpp"/>
           <FILE id="cL1fC7" name="PopupButton.h" compile="0" resource="0" file="../../Source/UI/Popups/PopupButton.h"/>
           <FILE id="oCbbhn" name="PopupButtonOwner.h" compile="0" resource="0"

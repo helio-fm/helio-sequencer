@@ -1276,7 +1276,7 @@
     <ClCompile Include="..\..\Source\UI\Popups\ScalePreviewTool.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\HelioCallout.cpp">
+    <ClCompile Include="..\..\Source\UI\Popups\ModalCallout.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\PopupButton.cpp">
@@ -4344,7 +4344,7 @@
     <ClInclude Include="..\..\Source\UI\Popups\ScalePreviewTool.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\HelioCallout.h">
+    <ClInclude Include="..\..\Source\UI\Popups\ModalCallout.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\PopupButton.h">

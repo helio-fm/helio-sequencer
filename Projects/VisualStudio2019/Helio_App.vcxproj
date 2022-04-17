@@ -793,7 +793,7 @@
     <ClCompile Include="..\..\Source\UI\Popups\ScalePreviewTool.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\HelioCallout.cpp">
+    <ClCompile Include="..\..\Source\UI\Popups\ModalCallout.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\PopupButton.cpp">

@@ -223,7 +223,7 @@
 #include "../../Source/UI/Popups/ChordPreviewTool.cpp"
 #include "../../Source/UI/Popups/RescalePreviewTool.cpp"
 #include "../../Source/UI/Popups/ScalePreviewTool.cpp"
-#include "../../Source/UI/Popups/HelioCallout.cpp"
+#include "../../Source/UI/Popups/ModalCallout.cpp"
 #include "../../Source/UI/Popups/PopupButton.cpp"
 #include "../../Source/UI/Popups/PopupCustomButton.cpp"
 #include "../../Source/UI/Popups/ProgressTooltip.cpp"

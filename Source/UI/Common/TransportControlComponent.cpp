@@ -22,7 +22,7 @@
 #include "AudioCore.h"
 #include "MainLayout.h"
 #include "MenuPanel.h"
-#include "HelioCallout.h"
+#include "ModalCallout.h"
 #include "ColourIDs.h"
 
 class TransportControlButton : public Component, private Timer
@@ -437,7 +437,7 @@ void TransportControlComponent::showRecordingMenu(const Array<MidiDeviceInfo> &d
 
     panel->updateContent(menu, MenuPanel::SlideLeft, true);
 
-    HelioCallout::emit(panel.release(), this->recordBg.get());
+    ModalCallout::emit(panel.release(), this->recordBg.get());
 }
 
 // button callbacks:

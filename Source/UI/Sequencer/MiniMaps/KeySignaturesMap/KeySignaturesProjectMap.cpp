@@ -27,7 +27,7 @@
 #include "KeySignatureLargeComponent.h"
 #include "KeySignatureSmallComponent.h"
 #include "RescalePreviewTool.h"
-#include "HelioCallout.h"
+#include "ModalCallout.h"
 
 KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type) :
     project(parentProject),
@@ -317,7 +317,7 @@ void KeySignaturesProjectMap::keySignatureTapAction(KeySignatureComponent *ksc, 
         const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*ksc, ksc);
         const auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
         const float endBeat = (nextEventComponent != nullptr) ? nextEventComponent->getBeat() : FLT_MAX;
-        HelioCallout::emit(new QuickRescaleMenu(this->project, ksc->getEvent(), endBeat), this, true);
+        ModalCallout::emit(new QuickRescaleMenu(this->project, ksc->getEvent(), endBeat), this, true);
         return;
     }
 

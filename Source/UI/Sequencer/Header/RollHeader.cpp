@@ -24,7 +24,7 @@
 #include "TimeDistanceIndicator.h"
 #include "HeaderSelectionIndicator.h"
 #include "ClipRangeIndicator.h"
-#include "HelioCallout.h"
+#include "ModalCallout.h"
 #include "TimelineMenu.h"
 #include "ColourIDs.h"
 
@@ -584,5 +584,5 @@ void RollHeader::resized()
 
 void RollHeader::showPopupMenu()
 {
-    HelioCallout::emit(new TimelineMenu(this->roll.getProject()), this, true);
+    ModalCallout::emit(new TimelineMenu(this->roll.getProject()), this, true);
 }

@@ -29,7 +29,7 @@
 #include "PianoRoll.h"
 #include "MenuItemComponent.h"
 #include "ProjectTimeline.h"
-#include "HelioCallout.h"
+#include "ModalCallout.h"
 #include "SequencerOperations.h"
 #include "MenuPanel.h"
 #include "MainLayout.h"
@@ -302,7 +302,7 @@ void SequencerSidebarRight::updateModeButtons()
 
 void SequencerSidebarRight::emitAnnotationsCallout(Component *newAnnotationsMenu)
 {
-    HelioCallout::emit(newAnnotationsMenu, this->annotationsButton.get());
+    ModalCallout::emit(newAnnotationsMenu, this->annotationsButton.get());
 }
 
 void SequencerSidebarRight::setLinearMode()

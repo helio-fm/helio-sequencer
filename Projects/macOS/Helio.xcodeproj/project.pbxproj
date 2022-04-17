@@ -94,8 +94,8 @@
 		0EE7A07CF034A2D8D75F3244 /* SequencerOperations.h */ /* SequencerOperations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SequencerOperations.h; path = ../../Source/UI/Sequencer/Helpers/SequencerOperations.h; sourceTree = SOURCE_ROOT; };
 		0EF63640BB59127232A4200C /* InstrumentNode.h */ /* InstrumentNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InstrumentNode.h; path = ../../Source/Core/Tree/InstrumentNode.h; sourceTree = SOURCE_ROOT; };
 		0EFE9E07B689D8323E38DAAD /* InstrumentEditorConnector.h */ /* InstrumentEditorConnector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InstrumentEditorConnector.h; path = ../../Source/UI/Pages/Instruments/Editor/InstrumentEditorConnector.h; sourceTree = SOURCE_ROOT; };
-		0F1438B348AD454707DC3608 /* HelioCallout.cpp */ /* HelioCallout.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HelioCallout.cpp; path = ../../Source/UI/Popups/HelioCallout.cpp; sourceTree = SOURCE_ROOT; };
 		0F28562BF71A0B5DF8D40F04 /* instrumentNode.svg */ /* instrumentNode.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = instrumentNode.svg; path = ../../Resources/Icons/instrumentNode.svg; sourceTree = SOURCE_ROOT; };
+		1007906068A59A854240ABFA /* ModalCallout.h */ /* ModalCallout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ModalCallout.h; path = ../../Source/UI/Popups/ModalCallout.h; sourceTree = SOURCE_ROOT; };
 		100CCFB42B080570F7D3B705 /* RadioButton.h */ /* RadioButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RadioButton.h; path = ../../Source/UI/Common/RadioButton.h; sourceTree = SOURCE_ROOT; };
 		10877D9B3C4E8A8857207E99 /* AutomationStepEventComponent.h */ /* AutomationStepEventComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutomationStepEventComponent.h; path = ../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepEventComponent.h; sourceTree = SOURCE_ROOT; };
 		108BC62D0CC3CAFBDFE53887 /* DialogBase.cpp */ /* DialogBase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DialogBase.cpp; path = ../../Source/UI/Dialogs/DialogBase.cpp; sourceTree = SOURCE_ROOT; };
@@ -159,6 +159,7 @@
 		20D07A90A94AD621FF2A3DAC /* SmoothZoomController.h */ /* SmoothZoomController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SmoothZoomController.h; path = ../../Source/UI/Input/SmoothZoomController.h; sourceTree = SOURCE_ROOT; };
 		20F19044BF3C8806C851A36F /* WorkspaceMenu.cpp */ /* WorkspaceMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = WorkspaceMenu.cpp; path = ../../Source/UI/Menus/WorkspaceMenu.cpp; sourceTree = SOURCE_ROOT; };
 		20F688409E591413D72D8F6B /* InstrumentEditorPin.cpp */ /* InstrumentEditorPin.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InstrumentEditorPin.cpp; path = ../../Source/UI/Pages/Instruments/Editor/InstrumentEditorPin.cpp; sourceTree = SOURCE_ROOT; };
+		20FB4FC9311C16A1675C9DC3 /* ModalCallout.cpp */ /* ModalCallout.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ModalCallout.cpp; path = ../../Source/UI/Popups/ModalCallout.cpp; sourceTree = SOURCE_ROOT; };
 		21B36EDB6AA4E376742E3CEC /* Temperament.cpp */ /* Temperament.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Temperament.cpp; path = ../../Source/Core/Configuration/Resources/Models/Temperament.cpp; sourceTree = SOURCE_ROOT; };
 		220A24F76867F3482C18702E /* MidiTrackSource.h */ /* MidiTrackSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MidiTrackSource.h; path = ../../Source/Core/Tree/MidiTrackSource.h; sourceTree = SOURCE_ROOT; };
 		220F852BD955D68095E99674 /* NoteComponent.cpp */ /* NoteComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NoteComponent.cpp; path = ../../Source/UI/Sequencer/PianoRoll/NoteComponent.cpp; sourceTree = SOURCE_ROOT; };
@@ -347,7 +348,6 @@
 		5DAEF7BADBD658806E515056 /* ColourButton.cpp */ /* ColourButton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ColourButton.cpp; path = ../../Source/UI/Common/ColourButton.cpp; sourceTree = SOURCE_ROOT; };
 		5DD8150F11BD610045A26615 /* timelinePrevious.svg */ /* timelinePrevious.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = timelinePrevious.svg; path = ../../Resources/Icons/timelinePrevious.svg; sourceTree = SOURCE_ROOT; };
 		5E2CFD75AE8BDAC8AC7CD4E9 /* forward.svg */ /* forward.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = forward.svg; path = ../../Resources/Icons/forward.svg; sourceTree = SOURCE_ROOT; };
-		5EB5635BB486EC54A70C7913 /* HelioCallout.h */ /* HelioCallout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HelioCallout.h; path = ../../Source/UI/Popups/HelioCallout.h; sourceTree = SOURCE_ROOT; };
 		5EB631A033A543A343A0A138 /* ProjectTimeline.cpp */ /* ProjectTimeline.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProjectTimeline.cpp; path = ../../Source/Core/Tree/ProjectTimeline.cpp; sourceTree = SOURCE_ROOT; };
 		5F021C5479877AD68BF1F7B1 /* RollExpandMark.cpp */ /* RollExpandMark.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RollExpandMark.cpp; path = ../../Source/UI/Sequencer/Helpers/RollExpandMark.cpp; sourceTree = SOURCE_ROOT; };
 		5F58550F8C045EC23CDEE415 /* MenuItemComponent.cpp */ /* MenuItemComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MenuItemComponent.cpp; path = ../../Source/UI/Menus/Base/MenuItemComponent.cpp; sourceTree = SOURCE_ROOT; };
@@ -1096,8 +1096,8 @@
 				CE621422F15AE3C7615CED59,
 				A324AF987EB035B7BA45D86C,
 				C5BD0C9ADB78E3ACC04193AE,
-				0F1438B348AD454707DC3608,
-				5EB5635BB486EC54A70C7913,
+				20FB4FC9311C16A1675C9DC3,
+				1007906068A59A854240ABFA,
 				1478052BE0DD3ECD0740B29A,
 				F5CD02A25BB21968413316D4,
 				B27E1695E139652172101A3C,

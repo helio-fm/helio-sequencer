@@ -21,7 +21,7 @@
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "PluginWindow.h"
-#include "HelioCallout.h"
+#include "ModalCallout.h"
 #include "MenuPanel.h"
 
 #include "Pattern.h"
@@ -1362,7 +1362,7 @@ void PatternRoll::showNewTrackMenu(float beatToInsertAt)
 
         auto panel = make<MenuPanel>();
         panel->updateContent(menu, MenuPanel::AnimationType::Fading);
-        HelioCallout::emit(panel.release(), this, true);
+        ModalCallout::emit(panel.release(), this, true);
     }
     else
     {

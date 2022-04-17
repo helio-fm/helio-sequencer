@@ -19,18 +19,15 @@
 
 #include "ComponentFader.h"
 
-class MainLayout;
-
-class HelioCallout final : public Component
+class ModalCallout final : public Component
 {
 public:
 
-    HelioCallout(Component &contentComponent,
-                 Component *pointAtComponent,
-                 MainLayout *parent,
+    ModalCallout(Component *newComponent,
+                 SafePointer<Component> pointAtComponent,
                  bool shouldAlignToMouse);
     
-    ~HelioCallout() override;
+    ~ModalCallout() override;
     
     //===------------------------------------------------------------------===//
     // Static
@@ -52,6 +49,7 @@ public:
     void resized() override;
     void moved() override;
     void parentSizeChanged() override;
+    void parentHierarchyChanged() override;
     void childBoundsChanged(Component *) override;
     bool hitTest(int x, int y) override;
     void inputAttemptWhenModal() override;
@@ -68,21 +66,20 @@ private:
 
     float arrowSize = 10.f;
 
-    Component &contentComponent;
+    UniquePointer<Component> contentComponent;
+    SafePointer<Component> targetComponent;
+
     Path outline;
     Point<float> targetPoint;
     Rectangle<int> lastGoodAvailableArea, lastGoodTargetArea;
 
-    SafePointer<Component> targetComponent;
     Point<float> clickPointAbs;
-    bool alignsToMouse;
+    const bool alignsToMouse;
     
     void fadeIn();
     void fadeOut();
-    void dismissAsync();
+    void dismiss();
     void updateShape();
     
-    friend class HelioCallOutCallback;
-    
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HelioCallout)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModalCallout)
 };
