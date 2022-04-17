@@ -35,7 +35,7 @@ public:
     void paint(Graphics &g) override
     {
         const auto colour = findDefaultColour(ColourIDs::Icons::fill).withAlpha(0.1f);
-        const int h = this->getHeight();
+        const auto h = this->getHeight();
         const auto r = this->getLocalBounds()
             .withSizeKeepingCentre(h, h)
             .reduced(3).toFloat();
@@ -43,7 +43,6 @@ public:
         HelioTheme::drawDashedRectangle(g, r, colour, 5.5f, 1.0f, 0.5f, float(h / 2));
     }
 };
-
 
 PlayButton::PlayButton(WeakReference<Component> eventReceiver) :
     HighlightedComponent(),

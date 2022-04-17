@@ -41,7 +41,7 @@ HelioTheme &HelioTheme::getCurrentTheme() noexcept
     return static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
 }
 
-static constexpr auto noiseAlpha = 0.0135f;
+static constexpr auto noiseAlpha = 0.0125f;
 
 void HelioTheme::drawNoise(Component *target, Graphics &g, float alphaMultiply /*= 1.f*/)
 {

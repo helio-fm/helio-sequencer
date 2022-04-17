@@ -1388,7 +1388,7 @@ void PianoRoll::paint(Graphics &g)
     const auto numPeriodsToSkip = (y - paintOffsetY) / periodHeight;
     const auto paintStartY = paintOffsetY + numPeriodsToSkip * periodHeight;
 
-    //g.setImageResamplingQuality(Graphics::lowResamplingQuality);
+    g.setImageResamplingQuality(Graphics::lowResamplingQuality);
 
     for (int nextKeyIdx = 0; this->scalesHighlightingEnabled && nextKeyIdx < keysSequence->size(); ++nextKeyIdx)
     {

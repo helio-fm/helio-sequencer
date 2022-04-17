@@ -28,6 +28,7 @@ public:
 
     HeadlineNavigationPanel()
     {
+        this->setOpaque(false);
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, true);
 
@@ -53,18 +54,12 @@ public:
         this->navigateNext->setIconAlphaMultiplier(canGoNext ? 0.45f : 0.2f);
     }
 
-    void paint(Graphics &g) override
-    {
-        g.setColour(this->bgColour);
-        g.fillRect(0, 0, this->getWidth() - 2, this->getHeight() - 2);
-    }
-
     void resized() override
     {
         constexpr auto buttonWidth = 29;
         this->navigatePrevious->setBounds(0, 0, buttonWidth, this->getHeight() - 1);
         this->navigateNext->setBounds(20, 0, buttonWidth, this->getHeight() - 1);
-        this->arrow->setBounds(this->getWidth() - HeadlineItemArrow::arrowWidth - 1,
+        this->arrow->setBounds(this->getWidth() - HeadlineItemArrow::arrowWidth - 2,
             0, HeadlineItemArrow::arrowWidth, this->getHeight() - 1);
     }
 
@@ -84,8 +79,6 @@ public:
     }
 
 private:
-
-    const Colour bgColour = findDefaultColour(ColourIDs::BackgroundA::fill);
 
     UniquePointer<IconButton> navigatePrevious;
     UniquePointer<IconButton> navigateNext;

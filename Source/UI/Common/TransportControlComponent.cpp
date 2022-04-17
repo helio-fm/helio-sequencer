@@ -359,7 +359,7 @@ void TransportControlComponent::resized()
 
     constexpr auto recordIconSize = 18;
     this->recordIcon->setBounds(cw - (recordIconSize / 2),
-        7, recordIconSize, recordIconSize);
+        6, recordIconSize, recordIconSize);
 }
 
 void TransportControlComponent::showPlayingMode(bool isPlaying)

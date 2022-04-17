@@ -124,8 +124,13 @@ void HeadlineItem::resized()
     constexpr auto titleX = 33;
     constexpr auto titleHeight = 30;
 
-    this->titleLabel->setBounds(titleX, (this->getHeight() / 2) - (titleHeight / 2), this->getWidth() - titleX, titleHeight);
-    this->icon->setBounds(iconX, (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
+    this->titleLabel->setBounds(titleX,
+        (this->getHeight() / 2) - (titleHeight / 2),
+        this->getWidth() - titleX, titleHeight);
+
+    this->icon->setBounds(iconX,
+        (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
+
     this->arrow->setBounds(this->getWidth() - HeadlineItemArrow::arrowWidth,
         0, HeadlineItemArrow::arrowWidth, this->getHeight());
 

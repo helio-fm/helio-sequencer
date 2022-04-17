@@ -44,8 +44,8 @@ private:
     Atomic<bool> isPlaying = false;
     Atomic<bool> isRecording = false;
 
-    static constexpr auto playButtonSize = 50;
-    static constexpr auto recordButtonSize = 35;
+    static constexpr auto playButtonSize = 48;
+    static constexpr auto recordButtonSize = 33;
     static constexpr auto buttonSkew = 7;
 
     friend class TransportControlRecordBg;

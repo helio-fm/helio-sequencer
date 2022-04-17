@@ -147,6 +147,7 @@ private:
         this->openGLContext = make<OpenGLContext>();
         this->openGLContext->setPixelFormat(OpenGLPixelFormat(8, 8, 0, 0));
         this->openGLContext->setMultisamplingEnabled(false);
+        this->openGLContext->setTextureMagnificationFilter(OpenGLContext::nearest);
         this->openGLContext->attachTo(*this);
     }
 

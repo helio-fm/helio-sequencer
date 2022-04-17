@@ -214,24 +214,24 @@ namespace Globals
     namespace UI
     {
         #if PLATFORM_MOBILE
-        static constexpr auto headlineHeight = 42;
+        static constexpr auto headlineHeight = 40;
         static constexpr auto menuPanelRowHeight = 40;
         static constexpr auto sidebarWidth = 44;
         static constexpr auto rollScrollerHeight = 35;
         #elif PLATFORM_DESKTOP
-        static constexpr auto headlineHeight = 34;
+        static constexpr auto headlineHeight = 32;
         static constexpr auto menuPanelRowHeight = 32;
-        static constexpr auto sidebarWidth = 40;
+        static constexpr auto sidebarWidth = 38;
         static constexpr auto rollScrollerHeight = 30;
         #endif
 
-        static constexpr auto rollHeaderHeight = 38;
+        static constexpr auto rollHeaderHeight = 36;
         static constexpr auto rollHeaderShadowSize = 16;
         static constexpr auto headlineIconSize = 16;
-        static constexpr auto sidebarRowHeight = 38;
+        static constexpr auto sidebarRowHeight = 36;
 
         static constexpr auto levelsMapHeight = 128;
-        static constexpr auto projectMapHeight = 80;
+        static constexpr auto projectMapHeight = 76;
 
         static constexpr auto fadeInShort = 100;
         static constexpr auto fadeOutShort = 125;
