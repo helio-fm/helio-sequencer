@@ -71,6 +71,16 @@ const Array<TimeSignatureEvent> &TimeSignaturesAggregator::getAllOrdered() const
     return this->orderedEvents;
 }
 
+void TimeSignaturesAggregator::updateGridDefaultsIfNeeded(int &numerator, int &denominator, float &startBeat) const noexcept
+{
+    if (this->orderedEvents.isEmpty()) // no time signatures at the timeline, and no clips selected
+    {
+        numerator = this->defaultGridNumerator;
+        denominator = this->defaultGridDenominator;
+        startBeat = this->defaultGridStart;
+    }
+}
+
 //===----------------------------------------------------------------------===//
 // Listeners management
 //===----------------------------------------------------------------------===//
@@ -301,8 +311,10 @@ void TimeSignaturesAggregator::rebuildAll()
         {
             chunkStartBeat = startBeat;
             chunkStartMeter = timeSignatureOverride->getMeter();
+
             this->orderedEvents.add(timeSignatureOverride->withId(generatedTimeSignatureId).withBeat(startBeat));
             generatedTimeSignatureId++;
+
             continue;
         }
 
@@ -316,8 +328,19 @@ void TimeSignaturesAggregator::rebuildAll()
         // new chunk starts here, add time signature
         chunkStartBeat = startBeat;
         chunkStartMeter = timeSignatureOverride->getMeter();
+
         this->orderedEvents.add(timeSignatureOverride->withId(generatedTimeSignatureId).withBeat(startBeat));
         generatedTimeSignatureId++;
+    }
+
+    // for now, simple as that: remember the very first one
+    // of the aggregated time signatures, and use it as the grid default
+    if (!this->orderedEvents.isEmpty())
+    {
+        const auto &firstTimeSignature = this->orderedEvents.getReference(0);
+        this->defaultGridNumerator = firstTimeSignature.getNumerator();
+        this->defaultGridDenominator = firstTimeSignature.getDenominator();
+        this->defaultGridStart = firstTimeSignature.getBeat();
     }
 
     this->listeners.call(&Listener::onTimeSignaturesUpdated);

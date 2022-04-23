@@ -706,27 +706,33 @@ void RollBase::computeAllSnapLines()
     this->visibleSnaps.clearQuick();
     this->allSnaps.clearQuick();
 
-    const auto &orderedTimeSignatures =
-        this->project.getTimeline()->getTimeSignaturesAggregator()->getAllOrdered();
+    const auto *timeSignatureAggregator =
+        this->project.getTimeline()->getTimeSignaturesAggregator();
+
+    const auto &orderedTimeSignatures = timeSignatureAggregator->getAllOrdered();
 
     const float paintStartX = float(this->viewport.getViewPositionX());
     const float paintEndX = float(paintStartX + this->viewport.getViewWidth());
 
     const float barWidth = float(this->beatWidth * Globals::beatsPerBar);
     const float firstBar = this->firstBeat / float(Globals::beatsPerBar);
-
     const float paintStartBar = floorf(paintStartX / barWidth + firstBar);
     const float paintEndBar = ceilf(paintEndX / barWidth + firstBar);
 
-    // Get the number of snaps depending on a bar width,
-    // 2 for 64, 4 for 128, 8 for 256, etc:
+    // get the number of snaps to display for this bar width,
+    // e.g. 2 for 64, 4 for 128, 8 for 256, etc:
     const float nearestPowTwo = ceilf(log(barWidth) / log(2.f));
     const float numSnaps = powf(2, jlimit(1.f, 6.f, nearestPowTwo - 5.f)); // use -4.f for twice as dense grid
     const float snapWidth = barWidth / numSnaps;
 
+    // in the absence of time signatures we still need defaults for the grid:
     int numerator = Globals::Defaults::timeSignatureNumerator;
     int denominator = Globals::Defaults::timeSignatureDenominator;
-    float barIterator = firstBar;
+    float startBeat = this->firstBeat;
+    timeSignatureAggregator->updateGridDefaultsIfNeeded(numerator, denominator, startBeat);
+
+    float barIterator = startBeat / float(Globals::beatsPerBar);
+
     int nextTsIndex = 0;
     bool firstEvent = true;
 

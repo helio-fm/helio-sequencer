@@ -589,7 +589,7 @@ void NoteComponent::paint(Graphics &g) noexcept
     if (w >= 1.25f)
     {
         g.fillRect(x + w - 0.75f, y + h / 6.f, 0.5f, h / 1.5f);
-        g.fillRect(x + 0.75f, y + 1.f, w - 1.25f, h - 2.f);
+        g.fillRect(x + 0.75f, y + 0.75f, w - 1.25f, h - 1.5f);
     }
 
     if (w >= 2.25f)

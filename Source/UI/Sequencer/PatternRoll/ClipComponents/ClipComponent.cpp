@@ -64,7 +64,7 @@ void ClipComponent::updateColours()
         .brighter(this->flags.isSelected ? 0.25f : 0.f)
         .darker(this->flags.isInstanceOfSelected ? 0.25f : 0.f);
 
-    this->frameBorderColour = this->frameColour.withAlpha(0.3f);
+    this->frameBorderColour = this->frameColour.withAlpha(0.35f);
     this->frameCornerColour = this->frameColour.withAlpha(0.5f);
 
     this->eventColour = this->getClip().getTrackColour()

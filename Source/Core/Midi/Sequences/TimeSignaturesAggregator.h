@@ -26,8 +26,7 @@ class TimeSignatureEvent;
 
 // A class responsible for maintaining an ordered list of
 // all currently used time signatures: the ones that are coming
-// from the timeline are replaced by the ones of the selected track,
-// if a single track is selected and if it has a time signature.
+// from the timeline are replaced by the ones of the selected track(s).
 
 // It is used by RollBase to determine where to draw the grid lines,
 // and by TimeSignaturesProjectMap for displaying the time signatures.
@@ -46,6 +45,15 @@ public:
         bool forceRebuildAll = false);
 
     const Array<TimeSignatureEvent> &getAllOrdered() const noexcept;
+
+    // time signature aggregator may decide that the default grid
+    // should display something else than 4/4 at the project start
+    // (e.g. when the timeline has no time signatures and no clips selected,
+    // it may tell to use the time signature of the last selected clip,
+    // or one of the most frequently used signatures, or something like that);
+    // all passed params are expected to be initialized:
+    void updateGridDefaultsIfNeeded(int &numerator,
+        int &denominator, float &startBeat) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Listeners management
@@ -96,6 +104,10 @@ private:
     bool isAggregatingTimeSignatureOverrides() const noexcept;
 
     Array<TimeSignatureEvent> orderedEvents;
+
+    int defaultGridNumerator = Globals::Defaults::timeSignatureNumerator;
+    int defaultGridDenominator = Globals::Defaults::timeSignatureDenominator;
+    float defaultGridStart = 0.f;
 
     ListenerList<Listener> listeners;
 
