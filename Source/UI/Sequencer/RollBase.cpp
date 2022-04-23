@@ -701,6 +701,8 @@ void RollBase::computeAllSnapLines()
     static constexpr auto minBarWidth = 14;
     static constexpr auto minBeatWidth = 8;
 
+    constexpr auto beatsPerBar = float(Globals::beatsPerBar);
+
     this->visibleBars.clearQuick();
     this->visibleBeats.clearQuick();
     this->visibleSnaps.clearQuick();
@@ -714,8 +716,8 @@ void RollBase::computeAllSnapLines()
     const float paintStartX = float(this->viewport.getViewPositionX());
     const float paintEndX = float(paintStartX + this->viewport.getViewWidth());
 
-    const float barWidth = float(this->beatWidth * Globals::beatsPerBar);
-    const float firstBar = this->firstBeat / float(Globals::beatsPerBar);
+    const float barWidth = float(this->beatWidth * beatsPerBar);
+    const float firstBar = this->firstBeat / beatsPerBar;
     const float paintStartBar = floorf(paintStartX / barWidth + firstBar);
     const float paintEndBar = ceilf(paintEndX / barWidth + firstBar);
 
@@ -731,7 +733,11 @@ void RollBase::computeAllSnapLines()
     float startBeat = this->firstBeat;
     timeSignatureAggregator->updateGridDefaultsIfNeeded(numerator, denominator, startBeat);
 
-    float barIterator = startBeat / float(Globals::beatsPerBar);
+    const auto defaultMeterLength = float(numerator) / float(denominator) * beatsPerBar;
+    const auto firstBeatWithDefaultMeterOffset = this->firstBeat +
+        fmodf((startBeat - this->firstBeat), defaultMeterLength) - defaultMeterLength;
+
+    float barIterator = firstBeatWithDefaultMeterOffset / beatsPerBar;
 
     int nextTsIndex = 0;
     bool firstEvent = true;
@@ -741,7 +747,7 @@ void RollBase::computeAllSnapLines()
     for (; nextTsIndex < orderedTimeSignatures.size(); ++nextTsIndex)
     {
         const auto &signature = orderedTimeSignatures.getUnchecked(nextTsIndex);
-        const float signatureBar = (signature.getBeat() / Globals::beatsPerBar);
+        const float signatureBar = (signature.getBeat() / beatsPerBar);
 
         // The very first event defines what's before it (both time signature and offset)
         if (firstEvent)
@@ -750,7 +756,7 @@ void RollBase::computeAllSnapLines()
             denominator = signature.getDenominator();
             const float beatStep = 1.f / float(denominator);
             const float barStep = beatStep * float(numerator);
-            barIterator += (fmodf(signatureBar - firstBar, barStep) - barStep);
+            barIterator += (fmodf(signatureBar - barIterator, barStep) - barStep);
             firstEvent = false;
         }
 
@@ -807,7 +813,7 @@ void RollBase::computeAllSnapLines()
                 if (nextTsIndex < orderedTimeSignatures.size())
                 {
                     const auto &nextSignature = orderedTimeSignatures.getUnchecked(nextTsIndex);
-                    const float tsBar = nextSignature.getBeat() / Globals::beatsPerBar;
+                    const float tsBar = nextSignature.getBeat() / beatsPerBar;
                     if (tsBar <= (barIterator + j + beatStep))
                     {
                         numerator = nextSignature.getNumerator();
