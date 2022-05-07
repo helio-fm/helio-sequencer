@@ -30,11 +30,16 @@ struct MetronomeScheme final
         pa
     };
 
+    friend bool operator==(const MetronomeScheme &l, const MetronomeScheme &r);
+    friend bool operator!=(const MetronomeScheme &l, const MetronomeScheme &r);
+
     String toString() const;
     void loadString(const String &str);
     void reset();
 
-    Array<Syllable> syllables;
+    bool isValid() const noexcept;
+
+    Array<Syllable> syllables = { Syllable::Oo, Syllable::na, Syllable::Pa, Syllable::na };
 };
 
 class Meter final : public ConfigurationResource
@@ -43,7 +48,8 @@ public:
 
     Meter() = default;
     Meter(const Meter &other) noexcept;
-    Meter(const String &name, int numerator, int denominator) noexcept;
+    Meter(const String &name, const String &metronomeScheme,
+        int numerator, int denominator) noexcept;
 
     String getResourceId() const noexcept override;
     Identifier getResourceType() const noexcept override;
@@ -67,7 +73,7 @@ public:
 
     String getTimeAsString() const noexcept;
 
-    const Array<MetronomeScheme::Syllable> &getMetronomeScheme() const noexcept;
+    const MetronomeScheme &getMetronome() const noexcept;
 
     static void parseString(const String &data, int &numerator, int &denominator);
 
@@ -87,8 +93,7 @@ public:
     friend bool operator==(const Meter &l, const Meter &r);
     friend bool operator!=(const Meter &l, const Meter &r);
 
-    // Simply checks if numerator and denominator are the same
-    // (in future, might also check the metronome scheme)
+    // checks if numerator, denominator and metronome scheme are the same
     bool isEquivalentTo(const Meter &other) const;
 
 private:

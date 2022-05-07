@@ -27,12 +27,6 @@ public:
 
     static const String instrumentId;
     static const String instrumentName;
-    static const String instrumentNameOld;
-
-    void setPeriodSizeAndRange(int periodSize, double periodRange)
-    {
-        this->synth.setPeriodSizeAndRange(periodSize, periodRange);
-    }
 
     //===------------------------------------------------------------------===//
     // AudioPluginInstance

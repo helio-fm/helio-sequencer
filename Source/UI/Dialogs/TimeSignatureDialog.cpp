@@ -21,6 +21,99 @@
 #include "Config.h"
 #include "CommandIDs.h"
 
+class MetronomeEditor final : public Component
+{
+public:
+
+    MetronomeEditor() = default;
+
+    Function<void(int index)> onTap;
+
+    void setMetronome(const MetronomeScheme &metronome)
+    {
+        // todo how to compare and update?
+
+        // todo the metronome icon and the play button
+
+        this->buttons.clearQuick(true);
+
+        for (int i = 0; i < metronome.syllables.size(); ++i)
+        {
+            auto button = make<SyllabeButton>(metronome.syllables[i]);
+            button->onTap = [i, this]
+            {
+                if (this->onTap != nullptr)
+                {
+                    this->onTap(i);
+                }
+            };
+
+            this->addAndMakeVisible(button.get());
+            this->buttons.add(button.release());
+        }
+    }
+
+    void resized() override
+    {
+        int x = 0;
+        for (const auto &button : this->buttons)
+        {
+            const int w = this->getWidth() / this->buttons.size();
+            button->setBounds(x, 0, w, this->getHeight());
+            x += w;
+        }
+    }
+
+private:
+
+    class SyllabeButton final : public HighlightedComponent
+    {
+    public:
+
+        explicit SyllabeButton(MetronomeScheme::Syllable syllable) :
+            syllable(syllable) {}
+
+        Function<void()> onTap;
+
+        void updateSyllable(MetronomeScheme::Syllable newSyllable)
+        {
+            this->syllable = newSyllable;
+            this->repaint();
+        }
+
+        void paint(Graphics &g) override
+        {
+            for (int i = 0; i < int(this->syllable); ++i)
+            {
+                // todo
+            }
+        }
+
+        void mouseDown(const MouseEvent &e) override
+        {
+            if (this->onTap != nullptr)
+            {
+                this->onTap();
+            }
+        }
+
+    private:
+
+        Component *createHighlighterComponent() override
+        {
+            return nullptr; // todo
+        }
+
+        MetronomeScheme::Syllable syllable;
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SyllabeButton)
+    };
+
+    OwnedArray<SyllabeButton> buttons;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetronomeEditor)
+};
+
 TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     WeakReference<UndoStack> undoStack,
     WeakReference<MidiTrack> targetTrack,
@@ -140,6 +233,15 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     this->presetsCombo = make<MobileComboBox::Container>();
     this->addAndMakeVisible(this->presetsCombo.get());
     this->presetsCombo->initWith(this->textEditor.get(), menu);
+    
+    this->metronomeEditor = make<MetronomeEditor>();
+    this->addAndMakeVisible(this->metronomeEditor.get());
+    this->metronomeEditor->setMetronome(this->originalEvent.getMeter().getMetronome());
+    this->metronomeEditor->onTap = [this](int syllableIndex)
+    {
+        // fixme what?
+        // this->sendEventChange(this->originalEvent.withMetronome(what?));
+    };
 
     if (this->mode == Mode::EditTrackTimeSignature && !this->originalEvent.isValid())
     {
@@ -181,8 +283,8 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     }
 
     this->textEditor->setText(this->originalEvent.toString(), dontSendNotification);
-    
-    this->setSize(370, 185);
+
+    this->setSize(370, 250);
     this->updatePosition();
     this->updateOkButtonState();
 }
@@ -200,7 +302,10 @@ void TimeSignatureDialog::resized()
     this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
     this->removeEventButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
 
-    this->textEditor->setBounds(this->getRowBounds(0.5f, DialogBase::textEditorHeight));
+    this->textEditor->setBounds(this->getRowBounds(0.3f, DialogBase::textEditorHeight));
+
+    constexpr auto metronomeEditorHeight = 50; // todo test
+    this->metronomeEditor->setBounds(this->getRowBounds(0.6f, metronomeEditorHeight));
 }
 
 void TimeSignatureDialog::parentHierarchyChanged()
@@ -275,6 +380,8 @@ void TimeSignatureDialog::sendEventChange(const TimeSignatureEvent &newEvent)
         this->originalEvent = newEvent;
         break;
     }
+
+    this->metronomeEditor->setMetronome(newEvent.getMeter().getMetronome());
 }
 
 void TimeSignatureDialog::removeTimeSignature()

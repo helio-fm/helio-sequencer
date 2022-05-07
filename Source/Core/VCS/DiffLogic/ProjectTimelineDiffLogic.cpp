@@ -857,13 +857,11 @@ Array<DeltaDiff> createTimeSignaturesDiffs(const SerializedData &state, const Se
     for (int i = 0; i < stateEvents.size(); ++i)
     {
         bool foundEventInChanges = false;
-        const TimeSignatureEvent *stateEvent =
-            static_cast<TimeSignatureEvent *>(stateEvents.getUnchecked(i));
+        const auto *stateEvent = static_cast<TimeSignatureEvent *>(stateEvents.getUnchecked(i));
         
         for (int j = 0; j < changesEvents.size(); ++j)
         {
-            const TimeSignatureEvent *changesEvent =
-                static_cast<TimeSignatureEvent *>(changesEvents.getUnchecked(j));
+            const auto *changesEvent = static_cast<TimeSignatureEvent *>(changesEvents.getUnchecked(j));
             
             // state event was found in changes, add `changed` records
             if (stateEvent->getId() == changesEvent->getId())
@@ -871,9 +869,8 @@ Array<DeltaDiff> createTimeSignaturesDiffs(const SerializedData &state, const Se
                 foundEventInChanges = true;
                 
                 const bool eventHasChanged =
-                    (stateEvent->getBeat() != changesEvent->getBeat() ||
-                     stateEvent->getNumerator() != changesEvent->getNumerator() ||
-                     stateEvent->getDenominator() != changesEvent->getDenominator());
+                    stateEvent->getBeat() != changesEvent->getBeat() ||
+                    !stateEvent->getMeter().isEquivalentTo(changesEvent->getMeter());
                 
                 if (eventHasChanged)
                 {

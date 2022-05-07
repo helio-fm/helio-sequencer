@@ -43,7 +43,7 @@ protected:
         bool appliesToChannel(int midiChannel) override { return true; }
     };
 
-    struct Voice;
+    class Voice;
 
     void handleSustainPedal(int midiChannel, bool isDown) override;
     void handleSostenutoPedal(int midiChannel, bool isDown) override;

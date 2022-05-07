@@ -20,10 +20,18 @@
 #include "SerializationKeys.h"
 
 Meter::Meter(const Meter &other) noexcept :
-    name(other.name), numerator(other.numerator), denominator(other.denominator) {}
+    name(other.name), metronome(other.metronome),
+    numerator(other.numerator), denominator(other.denominator) {}
 
-Meter::Meter(const String &name, int numerator, int denominator) noexcept :
-    name(name), numerator(numerator), denominator(denominator) {}
+Meter::Meter(const String &name, const String &metronomeScheme,
+    int numerator, int denominator) noexcept :
+    name(name), numerator(numerator), denominator(denominator)
+{
+    if (metronomeScheme.isNotEmpty())
+    {
+        this->metronome.loadString(metronomeScheme);
+    }
+}
 
 Meter Meter::withNumerator(const int newNumerator) const noexcept
 {
@@ -96,9 +104,9 @@ float Meter::getBarLengthInBeats() const noexcept
     return float(this->numerator) / float(this->denominator) * float(Globals::beatsPerBar);
 }
 
-const Array<MetronomeScheme::Syllable> &Meter::getMetronomeScheme() const noexcept
+const MetronomeScheme &Meter::getMetronome() const noexcept
 {
-    return this->metronome.syllables;
+    return this->metronome;
 }
 
 bool Meter::isCommonTime() const noexcept
@@ -132,13 +140,14 @@ bool operator==(const Meter &l, const Meter &r)
 
 bool operator!=(const Meter &l, const Meter &r)
 {
-    return !operator== (l, r);
+    return !operator==(l, r);
 }
 
 bool Meter::isEquivalentTo(const Meter &other) const
 {
     return this->numerator == other.numerator &&
-        this->denominator == other.denominator;
+        this->denominator == other.denominator &&
+        this->metronome == other.metronome;
 }
 
 //===----------------------------------------------------------------------===//
@@ -179,9 +188,11 @@ void Meter::deserialize(const SerializedData &data)
 
     this->reset();
 
-    this->name = root.getProperty(Midi::meterName, this->name);
     const String timeString = root.getProperty(Midi::meterTime);
     Meter::parseString(timeString, this->numerator, this->denominator);
+
+    // if the name is not specified, use the time string (e.g. "5/4") as a name:
+    this->name = root.getProperty(Midi::meterName, timeString);
 
     const String metronomeString = root.getProperty(Midi::metronomeScheme);
     this->metronome.loadString(metronomeString);
@@ -199,6 +210,16 @@ void Meter::reset()
 // Metronome scheme
 //===----------------------------------------------------------------------===//
 
+bool operator==(const MetronomeScheme &l, const MetronomeScheme &r)
+{
+    return &l == &r || l.syllables == r.syllables;
+}
+
+bool operator!=(const MetronomeScheme &l, const MetronomeScheme &r)
+{
+    return !operator==(l, r);
+}
+
 String MetronomeScheme::toString() const
 {
     jassert(!this->syllables.isEmpty());
@@ -209,32 +230,36 @@ String MetronomeScheme::toString() const
     {
         switch (syllable)
         {
-            case Syllable::Oo: result << " Oo"; break;
+            case Syllable::Oo: result << " oo"; break;
             case Syllable::na: result << "na"; break;
-            case Syllable::Pa: result << " Pa"; break;
+            case Syllable::Pa: result << " pa"; break;
             case Syllable::pa: result << "pa"; break;
         }
     }
 
-    return result.trim();
+    return result.trimStart();
 }
 
 void MetronomeScheme::loadString(const String &str)
 {
+    this->syllables.clearQuick();
+
     if (str.isEmpty())
     {
         return;
     }
 
-    this->syllables.clearQuick();
-
     juce_wchar c;
+    bool isStressedSyllable = true;
     auto ptr = str.getCharPointer();
     do
     {
         c = ptr.getAndAdvance();
         switch (c)
         {
+            case ' ':
+                isStressedSyllable = true;
+                break;
             case 'O':
             case 'o':
                 c = ptr.getAndAdvance();
@@ -242,7 +267,9 @@ void MetronomeScheme::loadString(const String &str)
                 {
                     this->syllables.add(Syllable::Oo);
                 }
+                isStressedSyllable = false;
                 break;
+            case 'N':
             case 'n':
                 c = ptr.getAndAdvance();
                 if (c == 'a')
@@ -251,24 +278,28 @@ void MetronomeScheme::loadString(const String &str)
                     jassert(this->syllables.getLast() == Syllable::Oo || this->syllables.getLast() == Syllable::Pa);
                     this->syllables.add(Syllable::na);
                 }
+                isStressedSyllable = false;
                 break;
             case 'P':
-                c = ptr.getAndAdvance();
-                if (c == 'a')
-                {
-                    this->syllables.add(Syllable::Pa);
-                }
-                break;
             case 'p':
                 c = ptr.getAndAdvance();
                 if (c == 'a')
                 {
-                    jassert(!this->syllables.isEmpty());
-                    jassert(this->syllables.getLast() == Syllable::Pa);
-                    this->syllables.add(Syllable::pa);
+                    if (isStressedSyllable)
+                    {
+                        this->syllables.add(Syllable::Pa);
+                    }
+                    else
+                    {
+                        jassert(!this->syllables.isEmpty());
+                        jassert(this->syllables.getLast() == Syllable::Pa || this->syllables.getLast() == Syllable::na);
+                        this->syllables.add(Syllable::pa);
+                    }
                 }
+                isStressedSyllable = false;
                 break;
             default:
+                isStressedSyllable = false;
                 break;
         }
     } while (c != 0);
@@ -278,3 +309,81 @@ void MetronomeScheme::reset()
 {
     this->syllables.clearQuick();
 }
+
+bool MetronomeScheme::isValid() const noexcept
+{
+    return this->syllables.size() > 1;
+}
+
+//===----------------------------------------------------------------------===//
+// Tests
+//===----------------------------------------------------------------------===//
+
+#if JUCE_UNIT_TESTS
+
+String &operator<<(String &s1, const Array<MetronomeScheme::Syllable> &syllables)
+{
+    for (const auto &s : syllables)
+    {
+        s1 += int(s);
+    }
+
+    return s1;
+}
+
+class MetronomeSchemeTests final : public UnitTest
+{
+public:
+
+    MetronomeSchemeTests() :
+        UnitTest("Metronome scheme tests", UnitTestCategories::helio) {}
+
+    void runTest() override
+    {
+        beginTest("Metronome scheme serialization");
+
+        // shortcuts
+        const auto Oo = MetronomeScheme::Syllable::Oo;
+        const auto na = MetronomeScheme::Syllable::na;
+        const auto Pa = MetronomeScheme::Syllable::Pa;
+        const auto pa = MetronomeScheme::Syllable::pa;
+
+        MetronomeScheme m;
+
+        // the default
+        expectEquals(m.syllables, { Oo, na, Pa, na });
+        expectEquals(m.toString(), { "oona pana" });
+
+        // invalid string
+        m.loadString("12345");
+        expect(!m.isValid());
+
+        // valid string
+        m.loadString("Oonapa Panapa Panapa");
+        expect(m.isValid());
+        expectEquals(m.syllables,
+        {
+            Oo, na, pa,
+            Pa, na, pa,
+            Pa, na, pa
+        });
+
+        // test the lowercase form with some garbage
+        m.loadString("oonapa panapa skip skip skip 12345 panapa pana papa");
+        expect(m.isValid());
+        expectEquals(m.syllables,
+        {
+            Oo, na, pa,
+            Pa, na, pa,
+            Pa, na, pa,
+            Pa, na,
+            Pa, pa
+        });
+
+        expectEquals(m.toString(), { "oonapa panapa panapa pana papa" });
+    }
+};
+
+static MetronomeSchemeTests metronomeSchemeTests;
+
+#endif

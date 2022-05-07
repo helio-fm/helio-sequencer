@@ -20,7 +20,7 @@
 #include "BuiltInSynthsPluginFormat.h"
 
 const String MetronomeSynthAudioPlugin::instrumentId = "<metronome>";
-const String MetronomeSynthAudioPlugin::instrumentName = "Helio Metronome";
+const String MetronomeSynthAudioPlugin::instrumentName = "Metronome";
 
 MetronomeSynthAudioPlugin::MetronomeSynthAudioPlugin()
 {

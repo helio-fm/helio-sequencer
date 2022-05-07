@@ -734,7 +734,7 @@ void RollBase::computeAllSnapLines()
     // find a first time signature after a paint start and take a previous one, if any
     for (; nextTsIndex < orderedTimeSignatures.size(); ++nextTsIndex)
     {
-        const auto &signature = orderedTimeSignatures.getUnchecked(nextTsIndex);
+        const auto &signature = orderedTimeSignatures.getReference(nextTsIndex);
         const float signatureBar = (signature.getBeat() / Globals::beatsPerBar);
 
         // The very first event defines what's before it (both time signature and offset)
@@ -800,7 +800,7 @@ void RollBase::computeAllSnapLines()
                 // Check if we have more time signatures to come
                 if (nextTsIndex < orderedTimeSignatures.size())
                 {
-                    const auto &nextSignature = orderedTimeSignatures.getUnchecked(nextTsIndex);
+                    const auto &nextSignature = orderedTimeSignatures.getReference(nextTsIndex);
                     const float tsBar = nextSignature.getBeat() / Globals::beatsPerBar;
                     if (tsBar <= (barIterator + j + beatStep))
                     {

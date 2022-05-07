@@ -25,6 +25,8 @@
 #include "TimeSignaturesSequence.h"
 #include "MidiTrack.h"
 
+class MetronomeEditor;
+
 class TimeSignatureDialog final : public DialogBase
 {
 public:
@@ -87,6 +89,7 @@ private:
     UniquePointer<TextButton> removeEventButton;
     UniquePointer<TextButton> okButton;
     UniquePointer<TextEditor> textEditor;
+    UniquePointer<MetronomeEditor> metronomeEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureDialog)
 };
