@@ -210,8 +210,7 @@ void TimeSignaturesProjectMap::showDialogFor(TimeSignatureComponent *c)
 {
     if (!this->project.getTransport().isPlaying())
     {
-        App::showModalComponent(TimeSignatureDialog::editingDialog(*this,
-            this->project.getUndoStack(), c->getEvent()));
+        App::showModalComponent(TimeSignatureDialog::editingDialog(*this, this->project, c->getEvent()));
     }
 }
 

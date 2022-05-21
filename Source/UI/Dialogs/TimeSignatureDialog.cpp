@@ -20,106 +20,15 @@
 #include "MidiTrackActions.h"
 #include "Config.h"
 #include "CommandIDs.h"
-
-class MetronomeEditor final : public Component
-{
-public:
-
-    MetronomeEditor() = default;
-
-    Function<void(int index)> onTap;
-
-    void setMetronome(const MetronomeScheme &metronome)
-    {
-        // todo how to compare and update?
-
-        // todo the metronome icon and the play button
-
-        this->buttons.clearQuick(true);
-
-        for (int i = 0; i < metronome.syllables.size(); ++i)
-        {
-            auto button = make<SyllabeButton>(metronome.syllables[i]);
-            button->onTap = [i, this]
-            {
-                if (this->onTap != nullptr)
-                {
-                    this->onTap(i);
-                }
-            };
-
-            this->addAndMakeVisible(button.get());
-            this->buttons.add(button.release());
-        }
-    }
-
-    void resized() override
-    {
-        int x = 0;
-        for (const auto &button : this->buttons)
-        {
-            const int w = this->getWidth() / this->buttons.size();
-            button->setBounds(x, 0, w, this->getHeight());
-            x += w;
-        }
-    }
-
-private:
-
-    class SyllabeButton final : public HighlightedComponent
-    {
-    public:
-
-        explicit SyllabeButton(MetronomeScheme::Syllable syllable) :
-            syllable(syllable) {}
-
-        Function<void()> onTap;
-
-        void updateSyllable(MetronomeScheme::Syllable newSyllable)
-        {
-            this->syllable = newSyllable;
-            this->repaint();
-        }
-
-        void paint(Graphics &g) override
-        {
-            for (int i = 0; i < int(this->syllable); ++i)
-            {
-                // todo
-            }
-        }
-
-        void mouseDown(const MouseEvent &e) override
-        {
-            if (this->onTap != nullptr)
-            {
-                this->onTap();
-            }
-        }
-
-    private:
-
-        Component *createHighlighterComponent() override
-        {
-            return nullptr; // todo
-        }
-
-        MetronomeScheme::Syllable syllable;
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SyllabeButton)
-    };
-
-    OwnedArray<SyllabeButton> buttons;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetronomeEditor)
-};
+#include "MetronomeEditor.h"
+#include "ProjectNode.h"
 
 TimeSignatureDialog::TimeSignatureDialog(Component &owner,
-    WeakReference<UndoStack> undoStack,
+    ProjectNode &project,
     WeakReference<MidiTrack> targetTrack,
     WeakReference<TimeSignaturesSequence> targetSequence,
     const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent) :
-    undoStack(undoStack),
+    undoStack(project.getUndoStack()),
     targetTrack(targetTrack),
     targetSequence(targetSequence),
     originalEvent(editedEvent),
@@ -210,6 +119,8 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
         int denominator;
         Meter::parseString(meterString, numerator, denominator);
 
+        // fixme: if numerator != metronome scheme length, update the metronome
+
         const auto newEvent = this->originalEvent
             .withNumerator(numerator)
             .withDenominator(denominator);
@@ -233,14 +144,18 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     this->presetsCombo = make<MobileComboBox::Container>();
     this->addAndMakeVisible(this->presetsCombo.get());
     this->presetsCombo->initWith(this->textEditor.get(), menu);
-    
-    this->metronomeEditor = make<MetronomeEditor>();
+
+    this->metronomeEditor = make<MetronomeEditor>(project.getTransport());
     this->addAndMakeVisible(this->metronomeEditor.get());
     this->metronomeEditor->setMetronome(this->originalEvent.getMeter().getMetronome());
-    this->metronomeEditor->onTap = [this](int syllableIndex)
-    {
-        // fixme what?
-        // this->sendEventChange(this->originalEvent.withMetronome(what?));
+    this->metronomeEditor->onTap = [this](const MetronomeScheme &metronome, int tappedSyllableIndex) {
+        const auto tappedSyllable = metronome.syllables[tappedSyllableIndex];
+
+        MetronomeScheme newMetronome = metronome;
+        newMetronome.syllables.set(tappedSyllableIndex, MetronomeScheme::getNextSyllable(tappedSyllable));
+
+        // todo make it sound (preview)
+        this->sendEventChange(this->originalEvent.withMetronome(newMetronome));
     };
 
     if (this->mode == Mode::EditTrackTimeSignature && !this->originalEvent.isValid())
@@ -284,12 +199,19 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
 
     this->textEditor->setText(this->originalEvent.toString(), dontSendNotification);
 
-    this->setSize(370, 250);
-    this->updatePosition();
+    this->updateSize(this->originalEvent.getMeter());
     this->updateOkButtonState();
 }
 
 TimeSignatureDialog::~TimeSignatureDialog() = default;
+
+void TimeSignatureDialog::updateSize(const Meter &meter)
+{
+    constexpr auto defaultSizeNumButtons = 8;
+    const auto numButtons = jmax(meter.getMetronome().syllables.size(), defaultSizeNumButtons);
+    this->setSize(130 + numButtons * (MetronomeEditor::buttonWidth + MetronomeEditor::buttonMargin), 240);
+    this->updatePosition();
+}
 
 void TimeSignatureDialog::resized()
 {
@@ -304,8 +226,8 @@ void TimeSignatureDialog::resized()
 
     this->textEditor->setBounds(this->getRowBounds(0.3f, DialogBase::textEditorHeight));
 
-    constexpr auto metronomeEditorHeight = 50; // todo test
-    this->metronomeEditor->setBounds(this->getRowBounds(0.6f, metronomeEditorHeight));
+    constexpr auto metronomeEditorHeight = 40;
+    this->metronomeEditor->setBounds(this->getRowBounds(0.75f, metronomeEditorHeight));
 }
 
 void TimeSignatureDialog::parentHierarchyChanged()
@@ -329,9 +251,10 @@ void TimeSignatureDialog::handleCommandMessage(int commandId)
         const int targetIndex = commandId - CommandIDs::SelectTimeSignature;
         if (targetIndex >= 0 && targetIndex < this->defaultMeters.size())
         {
-            const auto &meter = this->defaultMeters[targetIndex];
+            const auto meter = this->defaultMeters[targetIndex];
             this->textEditor->grabKeyboardFocus();
-            this->textEditor->setText(meter->getTimeAsString(), true);
+            this->textEditor->setText(meter->getTimeAsString(), false);
+            this->sendEventChange(this->originalEvent.withMeter(*meter));
         }
     }
 }
@@ -382,6 +305,7 @@ void TimeSignatureDialog::sendEventChange(const TimeSignatureEvent &newEvent)
     }
 
     this->metronomeEditor->setMetronome(newEvent.getMeter().getMetronome());
+    this->updateSize(newEvent.getMeter());
 }
 
 void TimeSignatureDialog::removeTimeSignature()
@@ -438,25 +362,22 @@ void TimeSignatureDialog::undoAndDismiss()
 }
 
 UniquePointer<Component> TimeSignatureDialog::editingDialog(Component &owner,
-    WeakReference<UndoStack> undoStack, const TimeSignatureEvent &event)
+    ProjectNode &project, const TimeSignatureEvent &event)
 {
     if (auto *sequence = static_cast<TimeSignaturesSequence *>(event.getSequence()))
     {
-        return make<TimeSignatureDialog>(owner, undoStack,
-            nullptr, sequence, event, false);
+        return make<TimeSignatureDialog>(owner, project, nullptr, sequence, event, false);
     }
     else
     {
         jassert(event.getTrack() != nullptr);
-        return make<TimeSignatureDialog>(owner, undoStack,
-            event.getTrack(), nullptr, event, false);
+        return make<TimeSignatureDialog>(owner, project, event.getTrack(), nullptr, event, false);
     }
 }
 
 UniquePointer<Component> TimeSignatureDialog::addingDialog(Component &owner,
-    WeakReference<UndoStack> undoStack,
-    WeakReference<TimeSignaturesSequence> targetSequence, float targetBeat)
+    ProjectNode &project, WeakReference<TimeSignaturesSequence> targetSequence, float targetBeat)
 {
-    return make<TimeSignatureDialog>(owner, undoStack, nullptr,
+    return make<TimeSignatureDialog>(owner, project, nullptr,
         targetSequence, TimeSignatureEvent(targetSequence.get(), targetBeat), true);
 }

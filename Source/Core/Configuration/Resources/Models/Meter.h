@@ -22,14 +22,12 @@
 
 struct MetronomeScheme final
 {
-    enum class Syllable : int
+    enum class Syllable
     {
-        Oo = 0,
-        Pa,
-        na,
-        pa
+        Oo, na, Pa, pa
     };
 
+    MetronomeScheme &operator=(const MetronomeScheme &r) = default;
     friend bool operator==(const MetronomeScheme &l, const MetronomeScheme &r);
     friend bool operator!=(const MetronomeScheme &l, const MetronomeScheme &r);
 
@@ -38,6 +36,7 @@ struct MetronomeScheme final
     void reset();
 
     bool isValid() const noexcept;
+    static Syllable getNextSyllable(Syllable syllable) noexcept;
 
     Array<Syllable> syllables = { Syllable::Oo, Syllable::na, Syllable::Pa, Syllable::na };
 };

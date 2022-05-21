@@ -725,6 +725,8 @@
                 file="../../Source/UI/Common/HighlightedComponent.h"/>
           <FILE id="gh5EBT" name="IconButton.h" compile="0" resource="0" file="../../Source/UI/Common/IconButton.h"/>
           <FILE id="ZZe4ma" name="IconComponent.h" compile="0" resource="0" file="../../Source/UI/Common/IconComponent.h"/>
+          <FILE id="Wj1EJg" name="MetronomeEditor.h" compile="0" resource="0"
+                file="../../Source/UI/Common/MetronomeEditor.h"/>
           <FILE id="bkogLX" name="MobileComboBox.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/MobileComboBox.cpp"/>
           <FILE id="tumRST" name="MobileComboBox.h" compile="0" resource="0"

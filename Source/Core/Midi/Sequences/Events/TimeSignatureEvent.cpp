@@ -79,6 +79,13 @@ TimeSignatureEvent TimeSignatureEvent::withDenominator(const int denominator) co
     return e;
 }
 
+TimeSignatureEvent TimeSignatureEvent::withMeter(const Meter &meter) const noexcept
+{
+    TimeSignatureEvent e(*this);
+    e.meter = meter;
+    return e;
+}
+
 TimeSignatureEvent TimeSignatureEvent::withMetronome(const MetronomeScheme &scheme) const noexcept
 {
     TimeSignatureEvent e(*this);
@@ -208,11 +215,8 @@ void TimeSignatureEvent::deserialize(const SerializedData &data)
     const int numerator = data.getProperty(Midi::numerator, Globals::Defaults::timeSignatureNumerator);
     const int denominator = data.getProperty(Midi::denominator, Globals::Defaults::timeSignatureDenominator);
     const String metronomeString = data.getProperty(Midi::metronomeScheme);
-    if (metronomeString.isNotEmpty())
-    {
-        this->meter = Meter({}, metronomeString, numerator, denominator);
-    }
-    else
+    this->meter = Meter({}, metronomeString, numerator, denominator);
+    if (metronomeString.isEmpty())
     {
         // in the projects created with older versions of this app,
         // time signatures and their meters will miss metronome schemes,

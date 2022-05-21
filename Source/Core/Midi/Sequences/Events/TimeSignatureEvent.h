@@ -56,6 +56,7 @@ public:
     TimeSignatureEvent withBeat(float newBeat) const noexcept;
     TimeSignatureEvent withNumerator(const int newNumerator) const noexcept;
     TimeSignatureEvent withDenominator(const int newDenominator) const noexcept;
+    TimeSignatureEvent withMeter(const Meter &meter) const noexcept;
     TimeSignatureEvent withMetronome(const MetronomeScheme &scheme) const noexcept;
     TimeSignatureEvent withParameters(const SerializedData &parameters) const noexcept;
 

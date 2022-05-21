@@ -680,7 +680,7 @@ void PatternRoll::handleCommandMessage(int commandId)
             if (auto *track = this->project.findTrackById<MidiTrackNode>(clip.getTrackId()))
             {
                 App::showModalComponent(TimeSignatureDialog::editingDialog(*this,
-                    this->project.getUndoStack(), *track->getTimeSignatureOverride()));
+                    this->project, *track->getTimeSignatureOverride()));
             }
         }
         break;

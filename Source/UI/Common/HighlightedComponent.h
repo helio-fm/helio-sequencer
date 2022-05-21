@@ -90,6 +90,7 @@ protected:
                     return;
                 }
 
+                this->highlighter->setWantsKeyboardFocus(false);
                 this->highlighter->setInterceptsMouseClicks(false, false);
             }
 

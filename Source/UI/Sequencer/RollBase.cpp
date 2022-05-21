@@ -1444,8 +1444,7 @@ void RollBase::handleCommandMessage(int commandId)
             (this->project.getTimeline()->getTimeSignatures()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
-            App::showModalComponent(TimeSignatureDialog::addingDialog(*this,
-                this->project.getUndoStack(), sequence, targetBeat));
+            App::showModalComponent(TimeSignatureDialog::addingDialog(*this, this->project, sequence, targetBeat));
         }
         break;
     case CommandIDs::AddKeySignature:

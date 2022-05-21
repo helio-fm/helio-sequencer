@@ -129,13 +129,16 @@ Meter &Meter::operator=(const Meter &other)
     this->name = other.name;
     this->numerator = other.numerator;
     this->denominator = other.denominator;
+    this->metronome = other.metronome;
     return *this;
 }
 
 bool operator==(const Meter &l, const Meter &r)
 {
     return &l == &r || (l.name == r.name &&
-        l.numerator == r.numerator && l.denominator == r.denominator);
+        l.numerator == r.numerator &&
+        l.denominator == r.denominator &&
+        l.metronome == r.metronome);
 }
 
 bool operator!=(const Meter &l, const Meter &r)
@@ -313,6 +316,19 @@ void MetronomeScheme::reset()
 bool MetronomeScheme::isValid() const noexcept
 {
     return this->syllables.size() > 1;
+}
+
+MetronomeScheme::Syllable MetronomeScheme::getNextSyllable(Syllable syllable) noexcept
+{
+    switch (syllable)
+    {
+        case Syllable::Oo: return Syllable::pa;
+        case Syllable::pa: return Syllable::na;
+        case Syllable::na: return Syllable::Pa;
+        case Syllable::Pa: return Syllable::Oo;
+    }
+
+    return Syllable::Oo;
 }
 
 //===----------------------------------------------------------------------===//

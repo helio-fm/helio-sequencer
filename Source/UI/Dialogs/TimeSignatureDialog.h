@@ -25,14 +25,14 @@
 #include "TimeSignaturesSequence.h"
 #include "MidiTrack.h"
 
+class ProjectNode;
 class MetronomeEditor;
 
 class TimeSignatureDialog final : public DialogBase
 {
 public:
 
-    TimeSignatureDialog(Component &owner,
-        WeakReference<UndoStack> undoStack,
+    TimeSignatureDialog(Component &owner, ProjectNode &project,
         WeakReference<MidiTrack> targetTrack,
         WeakReference<TimeSignaturesSequence> targetSequence,
         const TimeSignatureEvent &editedEvent,
@@ -41,12 +41,10 @@ public:
     ~TimeSignatureDialog();
 
     static UniquePointer<Component> editingDialog(Component &owner,
-        WeakReference<UndoStack> undoStack,
-        const TimeSignatureEvent &event);
+        ProjectNode &project, const TimeSignatureEvent &event);
 
     static UniquePointer<Component> addingDialog(Component &owner,
-        WeakReference<UndoStack> undoStack,
-        WeakReference<TimeSignaturesSequence> tsSequence, float targetBeat);
+        ProjectNode &project, WeakReference<TimeSignaturesSequence> tsSequence, float targetBeat);
 
     void resized() override;
     void parentHierarchyChanged() override;
@@ -69,6 +67,7 @@ private:
 
     inline void undoAndDismiss();
     inline void updateOkButtonState();
+    void updateSize(const Meter &meter);
 
     enum class Mode
     {
