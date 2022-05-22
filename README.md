@@ -50,11 +50,11 @@ Helio is still a work in progress, and there are several ways you could help:
 
 ## License
 
-GNU GPL v3 © Peter Rudenko and [contributors](https://github.com/helio-fm/helio-workstation/graphs/contributors), see ``LICENSE`` for more information.
+GNU GPL v3 © Peter Rudenko and [contributors](https://github.com/helio-fm/helio-workstation/graphs/contributors), see ``LICENSE`` for details.
 
-Icons taken from various [free icon fonts](https://icomoon.io) are licensed under [SIL Open Font License](http://scripts.sil.org/cms/scripts/page.php?id=OFL) and [CC-BY](https://creativecommons.org/licenses/by/3.0/).
+App icon by Valery Davletbaev, distributed under [CC-BY](https://creativecommons.org/licenses/by/4.0/). Other icons from various [free icon fonts](https://icomoon.io) are licensed under [SIL Open Font License](http://scripts.sil.org/cms/scripts/page.php?id=OFL) and [CC-BY](https://creativecommons.org/licenses/by/4.0/).
 
-All documentation, translations and logotypes are distributed under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
+All documentation, translations and logotypes are distributed under [CC-BY](https://creativecommons.org/licenses/by/4.0/).
 
 ### Translation and proofreading credits
 

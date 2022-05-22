@@ -273,7 +273,7 @@ namespace BinaryData
     const int            exampleProject_jsonSize = 3287;
 
     extern const char*   logov2_png;
-    const int            logov2_pngSize = 25962;
+    const int            logov2_pngSize = 7326;
 
     extern const char*   arpeggiators_json;
     const int            arpeggiators_jsonSize = 64;
