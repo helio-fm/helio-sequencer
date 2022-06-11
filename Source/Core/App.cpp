@@ -872,15 +872,6 @@ public:
 
         expect(this->projectsDirectory.isDirectory(), "Projects directory not found");
 
-        /*
-            todo: in future, Android's versionCode should probably be like
-            3.8     3080
-            3.8.1   3081
-            3.9     3090
-            3.10    3100
-            3.10.1  3101
-        */
-
         this->checkBuildSystem("Android manifest",
             "Android/app/src/main/AndroidManifest.xml",
             "versionCode=\"" + versionString.removeCharacters(".") + "\"");
