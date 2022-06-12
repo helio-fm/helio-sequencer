@@ -170,7 +170,7 @@ void MainLayout::clearInitScreen()
 
 void MainLayout::restoreLastOpenedPage()
 {
-    const auto lastPageId = App::Config().getProperty(Serialization::Config::lastShownPageId);
+    const String lastPageId = App::Config().getProperty(Serialization::Config::lastShownPageId);
     App::Workspace().selectTreeNodeWithId(lastPageId);
 }
 

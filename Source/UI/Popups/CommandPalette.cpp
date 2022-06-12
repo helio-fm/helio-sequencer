@@ -108,7 +108,7 @@ CommandPalette::CommandPalette(ProjectNode *project, RollBase *roll)
 
     this->textEditor->addListener(this);
     
-    const auto lastText = App::Config().getProperty(Serialization::Config::lastSearch);
+    const String lastText = App::Config().getProperty(Serialization::Config::lastSearch);
     this->textEditor->setText(lastText, false);
 
     this->setSize(620, 100);

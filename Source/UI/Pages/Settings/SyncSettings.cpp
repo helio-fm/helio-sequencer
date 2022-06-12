@@ -186,4 +186,27 @@ void SyncSettings::reloadSyncFlags()
     }
 }
 
+// Common network settings
+// todo in future: set custom api url here?
+
+NetworkSettings::NetworkSettings()
+{
+    this->checkForUpdatesButton = make<ToggleButton>(TRANS(I18n::Settings::checkForUpdates));
+    this->addAndMakeVisible(this->checkForUpdatesButton.get());
+
+    this->checkForUpdatesButton->setToggleState(App::Config().isUpdatesCheckEnabled(), dontSendNotification);
+
+    this->checkForUpdatesButton->onStateChange = [this]
+    {
+        App::Config().setUpdatesCheckEnabled(this->checkForUpdatesButton->getToggleState());
+    };
+
+    this->setSize(40, 40);
+}
+
+void NetworkSettings::resized()
+{
+    this->checkForUpdatesButton->setBounds(this->getLocalBounds().reduced(12, 0));
+}
+
 #endif

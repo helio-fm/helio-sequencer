@@ -43,9 +43,14 @@ public:
     void load(Serializable *serializable, const Identifier &key);
 
     void setProperty(const Identifier &key, const var &value, bool delayedSave = true);
-    String getProperty(const Identifier &key, const String &fallback = {}) const noexcept;
+    var getProperty(const Identifier &key, const var &fallback = {}) const noexcept;
     bool containsProperty(const Identifier &key) const noexcept;
 
+    // some shortcuts for setProperty/getProperty
+    void setUpdatesCheckEnabled(bool value);
+    bool isUpdatesCheckEnabled() const noexcept;
+
+    // resource collections
     ChordsCollection *getChords() const noexcept;
     ScalesCollection *getScales() const noexcept;
     MetersCollection *getMeters() const noexcept;

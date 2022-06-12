@@ -41,6 +41,12 @@ public:
         
     void checkForUpdates(uint32 delayMs)
     {
+        if (!App::Config().isUpdatesCheckEnabled())
+        {
+            DBG("Updates check disabled, skipping");
+            return;
+        }
+
         if (this->isThreadRunning())
         {
             return;

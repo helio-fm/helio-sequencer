@@ -60,6 +60,8 @@ void SettingsNode::recreatePage()
     this->settingsPage = nullptr;
     this->syncSettingsWrapper = nullptr;
     this->syncSettings = nullptr;
+    this->networkSettings = nullptr;
+    this->networkSettingsWrapper = nullptr;
     this->translationSettingsWrapper = nullptr;
     this->translationSettings = nullptr;
     this->uiSettingsWrapper = nullptr;
@@ -92,6 +94,10 @@ void SettingsNode::recreatePage()
     this->settingsList->addAndMakeVisible(this->audioSettingsWrapper.get());
 
 #if !NO_NETWORK
+    this->networkSettings = make<NetworkSettings>();
+    this->networkSettingsWrapper = make<SettingsFrameWrapper>(this->networkSettings.get());
+    this->settingsList->addAndMakeVisible(this->networkSettingsWrapper.get());
+
     this->syncSettings = make<SyncSettings>();
     this->syncSettingsWrapper = make<SettingsFrameWrapper>(this->syncSettings.get(), TRANS(I18n::Settings::sync));
     this->settingsList->addAndMakeVisible(this->syncSettingsWrapper.get());

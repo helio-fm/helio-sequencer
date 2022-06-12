@@ -29,7 +29,7 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
 
-    const auto lastUsedFontName = App::Config().getProperty(Serialization::Config::lastUsedFont);
+    const String lastUsedFontName = App::Config().getProperty(Serialization::Config::lastUsedFont);
 
     // deferred menu initialization:
     const auto fontsMenuProvider = [this, lastUsedFontName]()

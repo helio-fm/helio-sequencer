@@ -60,4 +60,19 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SyncSettings)
 };
 
+class NetworkSettings final : public Component
+{
+public:
+
+    NetworkSettings();
+
+    void resized() override;
+
+private:
+
+    UniquePointer<ToggleButton> checkForUpdatesButton;
+
+};
+
+
 #endif

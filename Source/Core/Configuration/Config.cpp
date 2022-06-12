@@ -124,10 +124,10 @@ void Config::setProperty(const Identifier &key, const var &value, bool delayedSa
     }
 }
 
-String Config::getProperty(const Identifier &key, const String &fallback) const noexcept
+var Config::getProperty(const Identifier &key, const var &fallback) const noexcept
 {
     const auto found = this->properties.find(key);
-    return (found == this->properties.end()) ? fallback : found->second.toString();
+    return (found == this->properties.end()) ? fallback : found->second;
 }
 
 bool Config::containsProperty(const Identifier &key) const noexcept
@@ -194,6 +194,20 @@ void Config::onConfigChanged()
         this->saveIfNeeded();
     }
 }
+
+// properties shortcuts
+
+void Config::setUpdatesCheckEnabled(bool value)
+{
+    this->setProperty(Serialization::Config::checkForUpdates, value);
+}
+
+bool Config::isUpdatesCheckEnabled() const noexcept
+{
+    return this->getProperty(Serialization::Config::checkForUpdates, true);
+}
+
+// resource collections
 
 ResourceCollectionsLookup &Config::getAllResources() noexcept
 {
