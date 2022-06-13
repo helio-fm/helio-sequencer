@@ -570,6 +570,15 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     }
 }
 
+void NoteComponent::mouseDoubleClick(const MouseEvent &e)
+{
+    if (!this->isActive())
+    {
+        this->roll.mouseDoubleClick(e.getEventRelativeTo(&this->roll));
+        return;
+    }
+}
+
 //===----------------------------------------------------------------------===//
 // Notes painting
 //===----------------------------------------------------------------------===//

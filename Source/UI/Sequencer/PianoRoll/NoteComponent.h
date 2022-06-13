@@ -75,6 +75,7 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
+    void mouseDoubleClick(const MouseEvent &e) override;
     void paint(Graphics &g) noexcept override;
 
 private:
