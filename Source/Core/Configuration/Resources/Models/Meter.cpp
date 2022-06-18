@@ -223,6 +223,24 @@ bool operator!=(const MetronomeScheme &l, const MetronomeScheme &r)
     return !operator==(l, r);
 }
 
+Array<MetronomeScheme::Syllable> MetronomeScheme::getAllSyllables()
+{
+    return { Syllable::Oo, Syllable::na, Syllable::Pa, Syllable::na };
+}
+
+String MetronomeScheme::syllableToString(Syllable syllable)
+{
+    switch (syllable)
+    {
+        case Syllable::Oo: return "Oo";
+        case Syllable::na: return "na";
+        case Syllable::Pa: return "Pa";
+        case Syllable::pa: return "pa";
+    }
+
+    return {};
+}
+
 String MetronomeScheme::toString() const
 {
     jassert(!this->syllables.isEmpty());
@@ -231,13 +249,12 @@ String MetronomeScheme::toString() const
 
     for (const auto &syllable : this->syllables)
     {
-        switch (syllable)
+        if (syllable == Syllable::Oo || syllable == Syllable::Pa)
         {
-            case Syllable::Oo: result << " oo"; break;
-            case Syllable::na: result << "na"; break;
-            case Syllable::Pa: result << " pa"; break;
-            case Syllable::pa: result << "pa"; break;
+            result << " ";
         }
+
+        result << syllableToString(syllable);
     }
 
     return result.trimStart();
@@ -368,7 +385,7 @@ public:
 
         // the default
         expectEquals(m.syllables, { Oo, na, Pa, na });
-        expectEquals(m.toString(), { "oona pana" });
+        expectEquals(m.toString(), { "Oona Pana" });
 
         // invalid string
         m.loadString("12345");
@@ -396,7 +413,7 @@ public:
             Pa, pa
         });
 
-        expectEquals(m.toString(), { "oonapa panapa panapa pana papa" });
+        expectEquals(m.toString(), { "Oonapa Panapa Panapa Pana Papa" });
     }
 };
 

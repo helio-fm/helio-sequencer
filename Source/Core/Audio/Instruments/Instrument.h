@@ -34,7 +34,9 @@ public:
     // midi tracks use this to identify their instruments
     String getIdAndHash() const;
     bool isValid() const noexcept;
+
     bool isDefaultInstrument() const noexcept;
+    bool isMetronomeInstrument() const noexcept;
 
     using InitializationCallback = Function<void(Instrument *)>;
 

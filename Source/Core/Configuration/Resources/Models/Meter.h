@@ -36,9 +36,12 @@ struct MetronomeScheme final
     void reset();
 
     bool isValid() const noexcept;
-    static Syllable getNextSyllable(Syllable syllable) noexcept;
 
-    Array<Syllable> syllables = { Syllable::Oo, Syllable::na, Syllable::Pa, Syllable::na };
+    static Syllable getNextSyllable(Syllable syllable) noexcept;
+    static Array<Syllable> getAllSyllables();
+    static String syllableToString(Syllable syllable);
+
+    Array<Syllable> syllables = getAllSyllables();
 };
 
 class Meter final : public ConfigurationResource

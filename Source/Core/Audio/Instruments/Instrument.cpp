@@ -22,6 +22,7 @@
 #include "SerializablePluginDescription.h"
 #include "SerializationKeys.h"
 #include "DefaultSynthAudioPlugin.h"
+#include "MetronomeSynthAudioPlugin.h"
 #include "BuiltInSynthsPluginFormat.h"
 #include "KeyboardMapping.h"
 
@@ -88,6 +89,11 @@ bool Instrument::isValid() const noexcept
 bool Instrument::isDefaultInstrument() const noexcept
 {
     return this->instrumentName == DefaultSynthAudioPlugin::instrumentName;
+}
+
+bool Instrument::isMetronomeInstrument() const noexcept
+{
+    return this->instrumentName == MetronomeSynthAudioPlugin::instrumentName;
 }
 
 void Instrument::initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback)

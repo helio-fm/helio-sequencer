@@ -102,7 +102,7 @@ public:
     Instrument *findInstrumentById(const String &id) const override;
     Instrument *getDefaultInstrument() const noexcept override;
     Instrument *getMetronomeInstrument() const noexcept override;
-    void initBuiltInInstruments();
+    void initBuiltInInstrumentsIfNeeded();
 
     //===------------------------------------------------------------------===//
     // Setup
@@ -153,27 +153,17 @@ public:
         return fastLog2(val) / fastLog2(10.f);
     }
 
-    inline static float iecLevel(float dB)
+    inline static float iecLevel(float db)
     {
-        float fDef = 1.f;
-
-        if (dB < -70.f) {
-            fDef = 0.f;
-        } else if (dB < -60.f) {
-            fDef = (dB + 70.f) * 0.0025f;
-        } else if (dB < -50.f) {
-            fDef = (dB + 60.f) * 0.005f + 0.025f;
-        } else if (dB < -40.f) {
-            fDef = (dB + 50.f) * 0.0075f + 0.075f;
-        } else if (dB < -30.f) {
-            fDef = (dB + 40.f) * 0.015f + 0.15f;
-        } else if (dB < -20.f) {
-            fDef = (dB + 30.f) * 0.02f + 0.3f;
-        } else { // if (dB < 0.f)
-            fDef = (dB + 20.f) * 0.025f + 0.5f;
-        }
-
-        return fDef;
+        auto result = 1.f;
+        if (db < -70.f) { result = 0.f; }
+        else if (db < -60.f) { result = (db + 70.f) * 0.0025f; }
+        else if (db < -50.f) { result = (db + 60.f) * 0.005f + 0.025f; }
+        else if (db < -40.f) { result = (db + 50.f) * 0.0075f + 0.075f; }
+        else if (db < -30.f) { result = (db + 40.f) * 0.015f + 0.15f; }
+        else if (db < -20.f) { result = (db + 30.f) * 0.02f + 0.3f; }
+        else /* if (dB < 0.f) */ { result = (db + 20.f) * 0.025f + 0.5f; }
+        return result;
     }
     
 private:
@@ -215,10 +205,10 @@ private:
     struct MidiRecordingKeyMapper final : public MidiInputCallback
     {
         MidiRecordingKeyMapper() = delete;
-        MidiRecordingKeyMapper(AudioCore &parent,
+        MidiRecordingKeyMapper(const AudioCore &audioCore,
             MidiInputCallback *targetCallback,
             int periodSize, Scale::Ptr chromaticMapping) :
-            audioCore(parent),
+            audioCore(audioCore),
             targetInstrumentCallback(targetCallback),
             periodSize(periodSize),
             chromaticMapping(chromaticMapping) {}
@@ -264,7 +254,7 @@ private:
 
     private:
 
-        AudioCore &audioCore;
+        const AudioCore &audioCore;
         MidiInputCallback *targetInstrumentCallback = nullptr;
         int periodSize = Globals::twelveTonePeriodSize;
         Scale::Ptr chromaticMapping;

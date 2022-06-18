@@ -21,50 +21,55 @@
 #include "ColourIDs.h"
 #include "PlayButton.h"
 #include "Transport.h"
+#include "Instrument.h"
+#include "MetronomeSynth.h"
 
 class MetronomePreviewThread final : public Thread
 {
 public:
 
-    MetronomePreviewThread(const Transport &transport, const MetronomeScheme &metronome) :
+    MetronomePreviewThread(const Transport &transport,
+        const MetronomeScheme &metronome,
+        WeakReference<Instrument> instrument) :
         Thread("MetronomePreview"),
         transport(transport),
-        metronome(metronome) {}
+        metronome(metronome),
+        instrument(instrument) {}
 
     void run() override
     {
-        for (const auto syllable : this->metronome.syllables)
+        while (!this->threadShouldExit())
         {
-            if (this->threadShouldExit())
+            for (const auto syllable : this->metronome.syllables)
             {
-                this->transport.stopSound({});
-                return;
-            }
-
-            this->transport.stopSound({});
-
-            // fixme: tempo to depend on time signature's denominator
-            Thread::wait(25);
-
-            DBG("preview syllable: " + String(int(syllable)));
-
-            // todo: what key to use?
-            //this->transport.previewKey({}, key,
-            //    Globals::Defaults::previewNoteVelocity,
-            //    Globals::Defaults::previewNoteLength);
-
-            int c = 400;
-            while (c > 0)
-            {
-                const auto a = Time::getMillisecondCounter();
-                Thread::wait(25);
-                const auto b = Time::getMillisecondCounter();
-                c -= (b - a);
-
                 if (this->threadShouldExit())
                 {
-                    this->transport.stopSound({});
-                    return;
+                    break;
+                }
+
+                this->transport.stopSound({});
+
+                // fixme: tempo to depend on time signature's denominator
+                Thread::wait(25);
+
+                const auto key = MetronomeSynth::getKeyForSyllable(syllable);
+
+                this->transport.previewKey(this->instrument, key,
+                    Globals::Defaults::previewNoteVelocity,
+                    Globals::Defaults::previewNoteLength);
+
+                int c = 400;
+                while (c > 0)
+                {
+                    const auto a = Time::getMillisecondCounter();
+                    Thread::wait(25);
+                    const auto b = Time::getMillisecondCounter();
+                    c -= (b - a);
+
+                    if (this->threadShouldExit())
+                    {
+                        break;
+                    }
                 }
             }
         }
@@ -76,6 +81,7 @@ private:
 
     const Transport &transport;
     const MetronomeScheme metronome;
+    WeakReference<Instrument> instrument;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetronomePreviewThread)
 };
@@ -84,7 +90,9 @@ class MetronomeEditor final : public Component
 {
 public:
 
-    explicit MetronomeEditor(Transport &transport) : transport(transport)
+    MetronomeEditor(Transport &transport, WeakReference<Instrument> instrument) :
+        transport(transport),
+        metronomeInstrument(instrument)
     {
         this->playButton = make<PlayButton>(this);
         this->addAndMakeVisible(this->playButton.get());
@@ -185,6 +193,7 @@ public:
 private:
 
     Transport &transport;
+    WeakReference<Instrument> metronomeInstrument;
 
     MetronomeScheme metronome;
 

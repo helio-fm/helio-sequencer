@@ -94,12 +94,16 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
             this->updateContent(this->createEffectsMenu(), MenuPanel::SlideLeft);
         }));
 
-    const bool isDefaultInstrument =
-        this->instrumentNode.getInstrument() == this->pit.getDefaultInstrument();
+    // the pit should contain at least one default instrument,
+    // and at least one metronome; a user could add more instruments
+    // using built-in plugins though, those need to be deletable
+    const auto isRequiredInstrument =
+        (this->instrumentNode.getInstrument() == this->pit.getDefaultInstrument()) ||
+        (this->instrumentNode.getInstrument() == this->pit.getMetronomeInstrument());
 
     menu.add(MenuItem::item(Icons::remove,
         TRANS(I18n::Menu::instrumentDelete))->
-        disabledIf(isDefaultInstrument)->
+        disabledIf(isRequiredInstrument)->
         closesMenu()->
         withAction([this]()
         {

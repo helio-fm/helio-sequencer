@@ -23,6 +23,10 @@
 #include "MetronomeEditor.h"
 #include "ProjectNode.h"
 
+#include "App.h"
+#include "AudioCore.h"
+#include "Workspace.h"
+
 TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     ProjectNode &project,
     WeakReference<MidiTrack> targetTrack,
@@ -145,7 +149,8 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     this->addAndMakeVisible(this->presetsCombo.get());
     this->presetsCombo->initWith(this->textEditor.get(), menu);
 
-    this->metronomeEditor = make<MetronomeEditor>(project.getTransport());
+    this->metronomeEditor = make<MetronomeEditor>(project.getTransport(),
+        App::Workspace().getAudioCore().getMetronomeInstrument());
     this->addAndMakeVisible(this->metronomeEditor.get());
     this->metronomeEditor->setMetronome(this->originalEvent.getMeter().getMetronome());
     this->metronomeEditor->onTap = [this](const MetronomeScheme &metronome, int tappedSyllableIndex) {

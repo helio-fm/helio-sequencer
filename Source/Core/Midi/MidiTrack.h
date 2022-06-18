@@ -21,11 +21,8 @@ class Pattern;
 class MidiSequence;
 class TimeSignatureEvent;
 
-// A track is a meta-object that has
-// - all the properties
-// - sequence with events
-// - pattern with clips
-// MidiTrackTreeItem implements this
+// a track contains all the properties, a sequence with midi events and a pattern with clips;
+// this class is basically an interface (an example implementation is MidiTrackTreeItem)
 
 class MidiTrack
 {

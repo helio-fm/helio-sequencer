@@ -24,6 +24,7 @@
 #include "MainLayout.h"
 #include "SerializationKeys.h"
 #include "DefaultSynthAudioPlugin.h"
+#include "MetronomeSynthAudioPlugin.h"
 #include "SerializablePluginDescription.h"
 
 #if PLATFORM_DESKTOP
@@ -117,8 +118,9 @@ void PluginScanner::runInitialScan()
     this->filesToScan.clearQuick();
     this->searchPath = this->getTypicalFolders();
 
-    // built-in synths to be add at the first place:
+    // built-in synths to be added first:
     this->filesToScan.addIfNotAlreadyThere(DefaultSynthAudioPlugin::instrumentId);
+    this->filesToScan.addIfNotAlreadyThere(MetronomeSynthAudioPlugin::instrumentId);
 
     // known synths to be re-checked first as well:
     for (const auto &it : this->getPlugins())

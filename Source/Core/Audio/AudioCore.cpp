@@ -306,27 +306,33 @@ Instrument *AudioCore::getMetronomeInstrument() const noexcept
         this->metronomeInstrument.get() : nullptr;
 }
 
-void AudioCore::initBuiltInInstruments()
+void AudioCore::initBuiltInInstrumentsIfNeeded()
 {
-    PluginDescription defaultPluginDescription;
-    DefaultSynthAudioPlugin defaultAudioPlugin;
-    defaultAudioPlugin.fillInPluginDescription(defaultPluginDescription);
+    if (this->defaultInstrument == nullptr)
+    {
+        PluginDescription defaultPluginDescription;
+        DefaultSynthAudioPlugin defaultAudioPlugin;
+        defaultAudioPlugin.fillInPluginDescription(defaultPluginDescription);
 
-    this->addInstrument(defaultPluginDescription, DefaultSynthAudioPlugin::instrumentName,
-        [this](Instrument *instrument)
-        {
-            this->defaultInstrument = instrument;
-        });
+        this->addInstrument(defaultPluginDescription,
+            DefaultSynthAudioPlugin::instrumentName,
+            [this](Instrument *instrument) {
+                this->defaultInstrument = instrument;
+            });
+    }
 
-    PluginDescription metronomePluginDescription;
-    MetronomeSynthAudioPlugin metronomeAudioPlugin;
-    metronomeAudioPlugin.fillInPluginDescription(metronomePluginDescription);
+    if (this->metronomeInstrument == nullptr)
+    {
+        PluginDescription metronomePluginDescription;
+        MetronomeSynthAudioPlugin metronomeAudioPlugin;
+        metronomeAudioPlugin.fillInPluginDescription(metronomePluginDescription);
 
-    this->addInstrument(metronomePluginDescription, MetronomeSynthAudioPlugin::instrumentName,
-        [this](Instrument *instrument)
-        {
-            this->metronomeInstrument = instrument;
-        });
+        this->addInstrument(metronomePluginDescription,
+            MetronomeSynthAudioPlugin::instrumentName,
+            [this](Instrument *instrument) {
+                this->metronomeInstrument = instrument;
+            });
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -605,10 +611,12 @@ void AudioCore::deserialize(const SerializedData &data)
         for (const auto &instrumentNode : orchestra)
         {
             auto instrument = make<Instrument>(this->formatManager, "");
+
             // it's important to add audio processor to device
             // before actually creating nodes and connections:
             this->addInstrumentToAudioDevice(instrument.get());
             instrument->deserialize(instrumentNode);
+
             // try to filter out the trash early:
             if (instrument->getName().isEmpty() || instrument->getNumNodes() == 0)
             {
@@ -616,10 +624,14 @@ void AudioCore::deserialize(const SerializedData &data)
             }
             else
             {
+                // try to detect the built-in instruments
                 if (instrument->isDefaultInstrument())
                 {
-                    // try to detect the default instrument
                     this->defaultInstrument = instrument.get();
+                }
+                else if (instrument->isMetronomeInstrument())
+                {
+                    this->metronomeInstrument = instrument.get();
                 }
 
                 this->instruments.add(instrument.release());
@@ -627,10 +639,8 @@ void AudioCore::deserialize(const SerializedData &data)
         }
     }
 
-    if (this->instruments.isEmpty())
-    {
-        this->initBuiltInInstruments();
-    }
+    // will add built-in instruments if they haven't been found already
+    this->initBuiltInInstrumentsIfNeeded();
 }
 
 void AudioCore::reset()

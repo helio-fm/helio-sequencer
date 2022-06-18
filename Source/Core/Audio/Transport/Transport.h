@@ -141,8 +141,10 @@ public:
     // Sending messages in real-time
     //===------------------------------------------------------------------===//
     
-    void previewKey(const String &trackId, int key,
-        float volume, float lengthInBeats) const;
+    void previewKey(const String &trackId,
+        int key, float volume, float lengthInBeats) const;
+    void previewKey(WeakReference<Instrument> instrument,
+        int key, float volume, float lengthInBeats) const;
 
     void stopSound(const String &trackId = "") const;
     void allNotesControllersAndSoundOff() const;
@@ -233,10 +235,10 @@ private:
 
     // linksCache is <track id : instrument>
     mutable Array<const MidiTrack *> tracksCache;
-    mutable FlatHashMap<String, WeakReference<Instrument>, StringHash> linksCache;
+    mutable FlatHashMap<String, WeakReference<Instrument>, StringHash> instrumentLinks;
     
-    void updateLinkForTrack(const MidiTrack *track);
-    void removeLinkForTrack(const MidiTrack *track);
+    void updateInstrumentLinkForTrack(const MidiTrack *track);
+    void clearInstrumentLinkForTrack(const MidiTrack *track);
     
     // a nasty hack, see the description in BuiltInSynth.h:
     void updateTemperamentInfoForBuiltInSynth(int periodSize, double periodRange) const;
