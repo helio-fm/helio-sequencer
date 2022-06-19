@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "Instrument.h"
 #include "OrchestraListener.h"
 
 struct PluginDescriptionDragnDropWrapper final : ReferenceCountedObject
@@ -32,6 +33,10 @@ public:
     OrchestraPit() = default;
     virtual ~OrchestraPit();
 
+    virtual void removeInstrument(Instrument *instrument) = 0;
+    virtual void addInstrument(const PluginDescription &pluginDescription,
+        const String &name, Instrument::InitializationCallback callback) = 0;
+
     virtual Array<Instrument *> getInstruments() const = 0;
     virtual Instrument *findInstrumentById(const String &id) const = 0;
     virtual Instrument *getDefaultInstrument() const = 0;
@@ -45,9 +50,9 @@ public:
 
 protected:
 
-    void broadcastInstrumentRemoved(Instrument *instrument);
-    void broadcastInstrumentRemovedPostAction();
-    void broadcastInstrumentAdded(Instrument *instrument);
+    void broadcastRemoveInstrument(Instrument *instrument);
+    void broadcastPostRemoveInstrument();
+    void broadcastAddInstrument(Instrument *instrument);
 
 private:
 

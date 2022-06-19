@@ -519,13 +519,15 @@ void Workspace::deserialize(const SerializedData &data)
     // (i.e. malformed tree), make sure to add one:
     if (nullptr == this->treeRoot->findChildOfType<OrchestraPitNode>())
     {
-        this->treeRoot->addChildNode(new OrchestraPitNode(), 0);
+        auto orchestraPitNode = make<OrchestraPitNode>();
+        this->treeRoot->addChildNode(orchestraPitNode.release(), 0);
     }
     
     // The same hack for settings root:
     if (nullptr == this->treeRoot->findChildOfType<SettingsNode>())
     {
-        this->treeRoot->addChildNode(new SettingsNode(), 0);
+        auto settingsNode = make<SettingsNode>();
+        this->treeRoot->addChildNode(settingsNode.release(), 0);
     }
 
     if (! foundActiveNode)

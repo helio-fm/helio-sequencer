@@ -107,7 +107,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
         closesMenu()->
         withAction([this]()
         {
-            this->instrumentNode.removeFromOrchestraAndDelete();
+            this->pit.removeInstrument(this->instrumentNode.getInstrument());
         }));
 
     return menu;

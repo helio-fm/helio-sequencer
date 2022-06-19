@@ -25,8 +25,8 @@ public:
 
     virtual ~OrchestraListener() = default;
 
-    virtual void instrumentAdded(Instrument *instrument) = 0;
-    virtual void instrumentRemoved(Instrument *instrument) = 0;
-    virtual void instrumentRemovedPostAction() = 0;
+    virtual void onAddInstrument(Instrument *instrument) = 0;
+    virtual void onRemoveInstrument(Instrument *instrument) = 0;
+    virtual void onPostRemoveInstrument() = 0;
 
 };

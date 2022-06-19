@@ -25,11 +25,20 @@
 #include "OrchestraPitMenu.h"
 #include "SerializationKeys.h"
 #include "Workspace.h"
+#include "AudioCore.h"
 
 OrchestraPitNode::OrchestraPitNode() :
-    TreeNode("Instruments", Serialization::Core::instrumentsList)
+    TreeNode("Instruments", Serialization::Core::instrumentsList),
+    orchestra(App::Workspace().getAudioCore())
 {
+    this->syncAllInstruments();
     this->recreatePage();
+    this->orchestra.addOrchestraListener(this);
+}
+
+OrchestraPitNode::~OrchestraPitNode()
+{
+    this->orchestra.removeOrchestraListener(this);
 }
 
 Image OrchestraPitNode::getIcon() const noexcept
@@ -67,20 +76,71 @@ UniquePointer<Component> OrchestraPitNode::createMenu()
 }
 
 //===----------------------------------------------------------------------===//
-// Private
+// OrchestraListener
 //===----------------------------------------------------------------------===//
 
-InstrumentNode *OrchestraPitNode::addInstrumentNode(Instrument *instrument, int insertIndex)
+void OrchestraPitNode::onAddInstrument(Instrument *instrument)
 {
+    for (auto *instrumentNode : this->findChildrenOfType<InstrumentNode>())
+    {
+        if (instrumentNode->getInstrument() == instrument)
+        {
+            // this assertion shouldn't be hit normally,
+            // but it will, if some future version of this app
+            // adds more built-in instruments, like metronome:
+            jassertfalse;
+            return;
+        }
+    }
+
     jassert(MessageManager::getInstance()->isThisTheMessageThread());
     auto *newInstrument = new InstrumentNode(instrument);
-    this->addChildNode(newInstrument, insertIndex);
+    this->addChildNode(newInstrument);
     this->sendChangeMessage();
-    return newInstrument;
 }
 
-void OrchestraPitNode::removeInstrumentNode(InstrumentNode *node)
+void OrchestraPitNode::onRemoveInstrument(Instrument *instrument)
 {
-    TreeNode::deleteNode(node, true);
+    for (auto *instrumentNode : this->findChildrenOfType<InstrumentNode>())
+    {
+        if (instrumentNode->getInstrument() == instrument)
+        {
+            TreeNode::deleteNode(instrumentNode, true);
+            this->sendChangeMessage();
+            return;
+        }
+    }
+
+    jassertfalse;
+}
+
+//===----------------------------------------------------------------------===//
+// Serialization
+//===----------------------------------------------------------------------===//
+
+SerializedData OrchestraPitNode::serialize() const
+{
+    // in future we shouldn't serialize children here, but for now we will,
+    // just to maintain compatibility of the main config file with previous versions
+    return TreeNode::serialize();
+}
+
+// we override deserialization to do nothing:
+// all instrument nodes will be created on the fly,
+// since this is all the presentation of OrchestraPit model;
+// see the comment for InstrumentNode::serialize
+void OrchestraPitNode::deserialize(const SerializedData &data) {}
+
+void OrchestraPitNode::syncAllInstruments()
+{
+    this->deleteAllChildren();
+
+    for (auto *instrument : this->orchestra.getInstruments())
+    {
+        jassert(MessageManager::getInstance()->isThisTheMessageThread());
+        auto *newInstrument = new InstrumentNode(instrument);
+        this->addChildNode(newInstrument);
+    }
+
     this->sendChangeMessage();
 }

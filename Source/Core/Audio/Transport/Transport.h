@@ -153,9 +153,9 @@ public:
     // OrchestraListener
     //===------------------------------------------------------------------===//
 
-    void instrumentAdded(Instrument *instrument) override;
-    void instrumentRemoved(Instrument *instrument) override;
-    void instrumentRemovedPostAction() override;
+    void onAddInstrument(Instrument *instrument) override;
+    void onRemoveInstrument(Instrument *instrument) override;
+    void onPostRemoveInstrument() override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener

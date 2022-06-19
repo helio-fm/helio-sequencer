@@ -122,22 +122,25 @@ void AudioCore::addInstrument(const PluginDescription &pluginDescription,
         [this, callback](Instrument *instrument)
         {
             jassert(instrument);
-            this->broadcastInstrumentAdded(instrument);
-            callback(instrument);
+            this->broadcastAddInstrument(instrument);
+            if (callback != nullptr)
+            {
+                callback(instrument);
+            }
             DBG("Loaded " + instrument->getName());
         });
 }
 
 void AudioCore::removeInstrument(Instrument *instrument)
 {
-    this->broadcastInstrumentRemoved(instrument);
+    this->broadcastRemoveInstrument(instrument);
 
     this->removeInstrumentFromAudioDevice(instrument);
     this->removeInstrumentFromMidiDevice(instrument);
 
     this->instruments.removeObject(instrument, true);
 
-    this->broadcastInstrumentRemovedPostAction();
+    this->broadcastPostRemoveInstrument();
 }
 
 //===----------------------------------------------------------------------===//
@@ -625,27 +628,29 @@ void AudioCore::deserialize(const SerializedData &data)
             else
             {
                 // try to detect the built-in instruments
-                if (instrument->isDefaultInstrument())
+                if (this->defaultInstrument == nullptr && instrument->isDefaultInstrument())
                 {
                     this->defaultInstrument = instrument.get();
                 }
-                else if (instrument->isMetronomeInstrument())
+                else if (this->metronomeInstrument == nullptr && instrument->isMetronomeInstrument())
                 {
                     this->metronomeInstrument = instrument.get();
                 }
 
                 this->instruments.add(instrument.release());
+                this->broadcastAddInstrument(this->instruments.getLast());
             }
         }
     }
 
-    // will add built-in instruments if they haven't been found already
+    // add the required built-in instruments if they haven't been found already
     this->initBuiltInInstrumentsIfNeeded();
 }
 
 void AudioCore::reset()
 {
     this->defaultInstrument = nullptr;
+    this->metronomeInstrument = nullptr;
 
     while (!this->instruments.isEmpty())
     {

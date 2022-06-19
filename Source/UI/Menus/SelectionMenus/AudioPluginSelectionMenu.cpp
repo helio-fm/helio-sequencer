@@ -40,11 +40,7 @@ MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
         withAction([this]()
     {
         App::Workspace().getAudioCore().addInstrument(this->pluginDescription,
-            this->pluginDescription.descriptiveName,
-            [this](Instrument *instrument)
-        {
-            this->orchestraNode.addInstrumentNode(instrument);
-        });
+            this->pluginDescription.descriptiveName, {});
     }));
 
     const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentNode>();

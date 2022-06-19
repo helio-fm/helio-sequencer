@@ -618,7 +618,7 @@ void Transport::allNotesControllersAndSoundOff() const
 // OrchestraListener
 //===----------------------------------------------------------------------===//
 
-void Transport::instrumentAdded(Instrument *instrument)
+void Transport::onAddInstrument(Instrument *instrument)
 {
     this->stopPlaybackAndRecording();
 
@@ -631,14 +631,14 @@ void Transport::instrumentAdded(Instrument *instrument)
     }
 }
 
-void Transport::instrumentRemoved(Instrument *instrument)
+void Transport::onRemoveInstrument(Instrument *instrument)
 {
     // the instrument stack have still not changed here,
     // so just stop the playback before it's too late
     this->stopPlaybackAndRecording();
 }
 
-void Transport::instrumentRemovedPostAction()
+void Transport::onPostRemoveInstrument()
 {
     this->playbackCacheIsOutdated = true;
 

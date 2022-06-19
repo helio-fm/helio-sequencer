@@ -88,12 +88,24 @@ bool Instrument::isValid() const noexcept
 
 bool Instrument::isDefaultInstrument() const noexcept
 {
-    return this->instrumentName == DefaultSynthAudioPlugin::instrumentName;
+    const auto mainNode = this->findMainPluginNode();
+    if (mainNode == nullptr)
+    {
+        return false;
+    }
+
+    return dynamic_cast<DefaultSynthAudioPlugin *>(mainNode->getProcessor()) != nullptr;
 }
 
 bool Instrument::isMetronomeInstrument() const noexcept
 {
-    return this->instrumentName == MetronomeSynthAudioPlugin::instrumentName;
+    const auto mainNode = this->findMainPluginNode();
+    if (mainNode == nullptr)
+    {
+        return false;
+    }
+
+    return dynamic_cast<MetronomeSynthAudioPlugin *>(mainNode->getProcessor()) != nullptr;
 }
 
 void Instrument::initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback)

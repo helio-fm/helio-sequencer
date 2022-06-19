@@ -35,12 +35,11 @@ public:
     void recreateChildrenEditors();
     void notifyOrchestraChanged();
 
-    void removeFromOrchestraAndDelete();
-
     Image getIcon() const noexcept override;
 
     void showPage() override;
     void safeRename(const String &newName, bool sendNotifications) override;
+    String getName() const noexcept override;
 
     //===------------------------------------------------------------------===//
     // Instrument
@@ -68,7 +67,13 @@ public:
     // Callbacks
     //===------------------------------------------------------------------===//
 
-    Function<void(const String &text)> getRenameCallback();
+    Function<void(const String &text)> getRenameCallback()
+    {
+        return [this](const String &text)
+        {
+            this->safeRename(text, true);
+        };
+    }
 
 private:
 

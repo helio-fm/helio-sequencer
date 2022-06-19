@@ -17,9 +17,8 @@
 
 #pragma once
 
-class ComponentsList;
-
 #include "TreeNode.h"
+#include "ComponentsList.h"
 
 class SettingsNode final : public TreeNode
 {

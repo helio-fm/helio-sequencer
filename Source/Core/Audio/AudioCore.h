@@ -81,14 +81,6 @@ public:
 
     AudioCore();
     ~AudioCore() override;
-    
-    //===------------------------------------------------------------------===//
-    // Instruments
-    //===------------------------------------------------------------------===//
-
-    void removeInstrument(Instrument *instrument);
-    void addInstrument(const PluginDescription &pluginDescription,
-        const String &name, Instrument::InitializationCallback callback);
 
     void resetActiveMidiPlayer();
     void setActiveMidiPlayer(const String &instrumentId,
@@ -97,6 +89,10 @@ public:
     //===------------------------------------------------------------------===//
     // OrchestraPit
     //===------------------------------------------------------------------===//
+
+    void removeInstrument(Instrument *instrument) override;
+    void addInstrument(const PluginDescription &pluginDescription,
+        const String &name, Instrument::InitializationCallback callback) override;
 
     Array<Instrument *> getInstruments() const override;
     Instrument *findInstrumentById(const String &id) const override;
