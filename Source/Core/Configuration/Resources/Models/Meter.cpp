@@ -225,7 +225,7 @@ bool operator!=(const MetronomeScheme &l, const MetronomeScheme &r)
 
 Array<MetronomeScheme::Syllable> MetronomeScheme::getAllSyllables()
 {
-    return { Syllable::Oo, Syllable::na, Syllable::Pa, Syllable::na };
+    return { Syllable::Oo, Syllable::na, Syllable::Pa, Syllable::pa };
 }
 
 String MetronomeScheme::syllableToString(Syllable syllable)
@@ -239,6 +239,24 @@ String MetronomeScheme::syllableToString(Syllable syllable)
     }
 
     return {};
+}
+
+MetronomeScheme::Syllable MetronomeScheme::syllableFromString(const String &str)
+{
+    if (str.startsWithChar('O') || str.startsWithChar('o'))
+    {
+        return Syllable::Oo;
+    }
+    else if (str.startsWithChar('N') || str.startsWithChar('n'))
+    {
+        return Syllable::na;
+    }
+    else if (str.startsWithChar('P'))
+    {
+        return Syllable::Pa;
+    }
+
+    return Syllable::pa;
 }
 
 String MetronomeScheme::toString() const

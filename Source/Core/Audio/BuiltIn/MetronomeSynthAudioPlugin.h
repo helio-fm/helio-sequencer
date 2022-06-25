@@ -17,7 +17,9 @@
 
 #pragma once
 
+#include "Meter.h"
 #include "MetronomeSynth.h"
+#include "JsonSerializer.h"
 
 class MetronomeSynthAudioPlugin final : public AudioPluginInstance
 {
@@ -54,7 +56,7 @@ public:
 
     AudioProcessorEditor *createEditor() override;
     bool hasEditor() const override;
-    
+
     //===------------------------------------------------------------------===//
     // Programs
     //===------------------------------------------------------------------===//
@@ -71,9 +73,16 @@ public:
 
     void getStateInformation(MemoryBlock &destData) override;
     void setStateInformation(const void *data, int sizeInBytes) override;
-    
+    void applyCustomSample(MetronomeScheme::Syllable syllable, const String &samplePath);
+    const MetronomeSynth::SamplerParameters &getCustomSamples() const noexcept;
+
 private:
 
     MetronomeSynth synth;
+    MetronomeSynth::SamplerParameters synthParameters;
 
+    JsonSerializer serializer;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetronomeSynthAudioPlugin)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(MetronomeSynthAudioPlugin)
 };

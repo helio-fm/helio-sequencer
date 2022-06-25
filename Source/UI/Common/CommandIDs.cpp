@@ -20,7 +20,7 @@
 
 #define CASE_FOR(x) \
     case constexprHash(#x): \
-    return x; \
+    return x;
 
 CommandIDs::Id CommandIDs::getIdForName(const String &command)
 {
@@ -186,17 +186,21 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
         CASE_FOR(KeyMapPreviousPage)
         CASE_FOR(KeyMapCopyToClipboard)
         CASE_FOR(KeyMapPasteFromClipboard)
+        CASE_FOR(SavePreset)
+        CASE_FOR(SelectPreset)
+        CASE_FOR(OpenMetronomeSample)
+        CASE_FOR(ResetMetronomeSample)
         default: return None;
     }
 }
 
 #define TRANS_KEY(x, y) \
     case x: \
-    return y; \
+    return y;
 
 #define TRANS_NONE(x) \
     case x: \
-    return 0; \
+    return 0;
 
 // this is only used for command palette:
 // only the commands with translations are displayed
@@ -367,6 +371,10 @@ I18n::Key CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         TRANS_NONE(KeyMapPreviousPage)
         TRANS_KEY(KeyMapCopyToClipboard, Menu::copy)
         TRANS_KEY(KeyMapPasteFromClipboard, Menu::paste)
+        TRANS_NONE(SavePreset)
+        TRANS_NONE(SelectPreset)
+        TRANS_NONE(OpenMetronomeSample)
+        TRANS_NONE(ResetMetronomeSample)
         default: return {};
     }
 }

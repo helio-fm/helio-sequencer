@@ -192,6 +192,14 @@ namespace Serialization
         static const Identifier audioDeviceBufferSize = "bufferSize";
         static const Identifier audioDeviceInputChannels = "inputChannels";
         static const Identifier audioDeviceOutputChannels = "outputChannels";
+
+        namespace Metronome
+        {
+            static const Identifier metronomeConfig = "metronome";
+            static const Identifier customSample = "sample";
+            static const Identifier syllableName = "name";
+            static const Identifier filePath = "filePath";
+        } // namespace CustomMetronome
     } // namespace Audio
 
     namespace Config

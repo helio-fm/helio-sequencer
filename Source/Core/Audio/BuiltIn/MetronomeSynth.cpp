@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "MetronomeSynth.h"
+#include "SerializationKeys.h"
 #include "BinaryData.h"
 
 struct MetronomeSynth::TickSample final
@@ -26,61 +27,179 @@ struct MetronomeSynth::TickSample final
     static constexpr auto maxPlaybackTime = 4.5;
 
     MetronomeSynth::TickSample() = default;
-    MetronomeSynth::TickSample(const MetronomeSynth::TickSample &other) :
-        sourceData(other.sourceData),
-        sourceDataSize(other.sourceDataSize),
-        midiNoteForNormalPitch(other.midiNoteForNormalPitch),
-        midiNotes(other.midiNotes) {}
+    MetronomeSynth::TickSample(const MetronomeSynth::TickSample &other) = default;
 
-    MetronomeSynth::TickSample(int lowKey, int highKey, int rootKey,
+    MetronomeSynth::TickSample(int rootKey,
         const char *sourceData, int sourceDataSize) :
         sourceData(sourceData),
         sourceDataSize(sourceDataSize),
         midiNoteForNormalPitch(rootKey)
     {
-        for (int i = lowKey; i <= highKey; ++i)
-        {
-            this->midiNotes.setBit(i);
-        }
+        this->midiNotes.setBit(rootKey);
+    }
+
+    MetronomeSynth::TickSample(int rootKey,
+        const String &customSample) :
+        customSamplePath(customSample),
+        midiNoteForNormalPitch(rootKey)
+    {
+        this->midiNotes.setBit(rootKey);
     }
 
     AudioFormatReader *createReader()
     {
-        static FlacAudioFormat flac;
-        return flac.createReaderFor(new MemoryInputStream(sourceData, sourceDataSize, false), true);
+        jassert(this->customSamplePath.isNotEmpty() || this->sourceData != nullptr);
+
+        if (this->sourceData != nullptr)
+        {
+            static FlacAudioFormat flacReader;
+            return flacReader.createReaderFor(new MemoryInputStream(this->sourceData, this->sourceDataSize, false), true);
+        }
+
+        File sampleFile(this->customSamplePath);
+        if (!sampleFile.existsAsFile())
+        {
+            jassertfalse;
+            return nullptr;
+        }
+
+        if (this->customSamplePath.endsWithIgnoreCase(".wav"))
+        {
+            static WavAudioFormat wavFileReader;
+            return wavFileReader.createReaderFor(new FileInputStream(sampleFile), true);
+        }
+        else if (this->customSamplePath.endsWithIgnoreCase(".flac"))
+        {
+            static FlacAudioFormat flacFileReader;
+            return flacFileReader.createReaderFor(new FileInputStream(sampleFile), true);
+        }
+
+        jassertfalse;
+        return nullptr;
     }
 
-    const char *sourceData;
-    const int sourceDataSize;
+    const char *sourceData = nullptr;
+    const int sourceDataSize = 0;
+
+    const String customSamplePath;
+
     BigInteger midiNotes;
-    const int midiNoteForNormalPitch;
+    const int midiNoteForNormalPitch = 0;
 
     JUCE_LEAK_DETECTOR(MetronomeSynth::TickSample)
 };
 
 void MetronomeSynth::initVoices()
 {
+    if (this->getNumVoices() == MetronomeSynth::numVoices)
+    {
+        return;
+    }
+
+    this->clearVoices();
+
     for (int i = MetronomeSynth::numVoices; i --> 0 ;)
     {
         this->addVoice(new SamplerVoice());
     }
 }
 
-void MetronomeSynth::initSampler()
+Note::Key MetronomeSynth::getKeyForSyllable(MetronomeScheme::Syllable syllable)
+{
+    switch (syllable)
+    {
+        // any better options for keys?
+        case MetronomeScheme::Syllable::Oo: return 60;
+        case MetronomeScheme::Syllable::na: return 61;
+        case MetronomeScheme::Syllable::Pa: return 62;
+        case MetronomeScheme::Syllable::pa: return 63;
+    }
+
+    return {};
+}
+
+void MetronomeSynth::initSampler(const SamplerParameters &params)
 {
     this->clearSounds();
 
     Array<TickSample> samples;
-    //samples.add({ 26, 39, 36, BinaryData::todo_flac, BinaryData::todo_flacSize });
 
-    for (auto &s : samples)
+    for (auto &syllable : MetronomeScheme::getAllSyllables())
     {
-        UniquePointer<AudioFormatReader> reader(s.createReader());
-        this->addSound(new SamplerSound({}, *reader,
-            s.midiNotes, s.midiNoteForNormalPitch,
-            TickSample::attackTime, TickSample::releaseTime, TickSample::maxPlaybackTime));
+        const auto key = MetronomeSynth::getKeyForSyllable(syllable);
+        const auto customSample = params.customSamples.find(syllable);
+
+        if (customSample != params.customSamples.end())
+        {
+            samples.add({ key, customSample->second });
+        }
+        else
+        {
+            // using the built-in metronome
+            int sampleDataSize = 0;
+            // fixme: add the actual samples
+            const auto assumedFileName = "metronome_" + MetronomeScheme::syllableToString(syllable) + "_flac";
+            auto *sampleData = BinaryData::getNamedResource(assumedFileName.toRawUTF8(), sampleDataSize);
+            samples.add({ key, sampleData, sampleDataSize });
+        }
+    }
+
+    for (auto &sample : samples)
+    {
+        UniquePointer<AudioFormatReader> sampleSoundReader(sample.createReader());
+        if (sampleSoundReader != nullptr)
+        {
+            this->addSound(new SamplerSound({}, *sampleSoundReader,
+                sample.midiNotes, sample.midiNoteForNormalPitch,
+                TickSample::attackTime, TickSample::releaseTime,
+                TickSample::maxPlaybackTime));
+        }
     }
 }
 
 void MetronomeSynth::handleSustainPedal(int midiChannel, bool isDown) {}
 void MetronomeSynth::handleSostenutoPedal(int midiChannel, bool isDown) {}
+
+SerializedData MetronomeSynth::SamplerParameters::serialize() const
+{
+    using namespace Serialization::Audio;
+
+    SerializedData data(Metronome::metronomeConfig);
+
+    for (const auto &it : this->customSamples)
+    {
+        SerializedData sampleNode(Metronome::customSample);
+        sampleNode.setProperty(Metronome::syllableName, MetronomeScheme::syllableToString(it.first));
+        sampleNode.setProperty(Metronome::filePath, it.second);
+        data.appendChild(sampleNode);
+    }
+
+    return data;
+}
+
+void MetronomeSynth::SamplerParameters::deserialize(const SerializedData &data)
+{
+    this->reset();
+    using namespace Serialization::Audio;
+
+    const auto root = data.hasType(Metronome::metronomeConfig) ?
+        data : data.getChildWithName(Metronome::metronomeConfig);
+
+    if (!root.isValid())
+    {
+        return;
+    }
+
+    for (int i = 0 ; i < root.getNumChildren(); ++i)
+    {
+        const String syllableString = root.getChild(i).getProperty(Metronome::syllableName);
+        const String sampleFilePath = root.getChild(i).getProperty(Metronome::filePath);
+        const auto syllable = MetronomeScheme::syllableFromString(syllableString);
+        this->customSamples[syllable] = sampleFilePath;
+    }
+}
+
+void MetronomeSynth::SamplerParameters::reset()
+{
+    this->customSamples.clear();
+}

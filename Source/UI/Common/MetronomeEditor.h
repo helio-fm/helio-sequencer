@@ -171,9 +171,10 @@ public:
                 this->metronomePreviewThread->stopThread(500);
             }
 
-            this->metronomePreviewThread = make<MetronomePreviewThread>(this->transport, this->metronome);
-            this->metronomePreviewThread->startThread(5);
+            this->metronomePreviewThread = make<MetronomePreviewThread>(this->transport,
+                this->metronome, this->metronomeInstrument);
 
+            this->metronomePreviewThread->startThread(5);
             this->playButton->setPlaying(true);
         }
         else if (commandId == CommandIDs::TransportStop)

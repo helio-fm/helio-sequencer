@@ -17,14 +17,29 @@
 
 #pragma once
 
+#include "Note.h"
+#include "Meter.h"
+
 class MetronomeSynth final : public Synthesiser
 {
 public:
 
     MetronomeSynth() = default;
 
+    struct SamplerParameters final : Serializable
+    {
+        FlatHashMap<MetronomeScheme::Syllable,
+            String, MetronomeScheme::SyllableHash> customSamples;
+
+        SerializedData serialize() const override;
+        void deserialize(const SerializedData &data) override;
+        void reset() override;
+    };
+
     void initVoices();
-    void initSampler();
+    void initSampler(const SamplerParameters &params);
+
+    static Note::Key getKeyForSyllable(MetronomeScheme::Syllable syllable);
 
 protected:
 

@@ -22,9 +22,9 @@
 
 struct MetronomeScheme final
 {
-    enum class Syllable
+    enum class Syllable : int
     {
-        Oo, na, Pa, pa
+        Oo = 0, na, Pa, pa
     };
 
     MetronomeScheme &operator=(const MetronomeScheme &r) = default;
@@ -39,7 +39,17 @@ struct MetronomeScheme final
 
     static Syllable getNextSyllable(Syllable syllable) noexcept;
     static Array<Syllable> getAllSyllables();
+
     static String syllableToString(Syllable syllable);
+    static Syllable syllableFromString(const String &value);
+
+    struct SyllableHash
+    {
+        inline HashCode operator()(const Syllable &syllable) const noexcept
+        {
+            return static_cast<HashCode>(syllable);
+        }
+    };
 
     Array<Syllable> syllables = getAllSyllables();
 };

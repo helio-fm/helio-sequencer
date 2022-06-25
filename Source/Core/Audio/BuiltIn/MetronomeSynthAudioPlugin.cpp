@@ -18,9 +18,168 @@
 #include "Common.h"
 #include "MetronomeSynthAudioPlugin.h"
 #include "BuiltInSynthsPluginFormat.h"
+#include "DocumentHelpers.h"
+
+#include "SerializationKeys.h"
+#include "PlayButton.h"
+#include "IconButton.h"
+#include "ColourIDs.h"
 
 const String MetronomeSynthAudioPlugin::instrumentId = "<metronome>";
 const String MetronomeSynthAudioPlugin::instrumentName = "Metronome";
+
+//===----------------------------------------------------------------------===//
+// Metronome synth's UI allowing to pick custom samples
+//===----------------------------------------------------------------------===//
+
+class MetronomeSynthEditor final : public AudioProcessorEditor
+{
+public:
+
+    MetronomeSynthEditor(WeakReference<MetronomeSynthAudioPlugin> metronomePlugin) :
+        AudioProcessorEditor(metronomePlugin),
+        metronomePlugin(metronomePlugin)
+    {
+        const auto allSyllables = MetronomeScheme::getAllSyllables();
+        for (int i = 0; i < allSyllables.size(); ++i)
+        {
+            auto label = make<Label>(String(), MetronomeScheme::syllableToString(allSyllables[i]) + ":");
+            label->setFont(Globals::UI::Fonts::M);
+            label->setJustificationType(Justification::centredRight);
+            this->addAndMakeVisible(label.get());
+            this->sampleLabels.add(label.release());
+
+            auto samplePathEditor = make<TextEditor>();
+            samplePathEditor->setReadOnly(true);
+            samplePathEditor->setFont(Globals::UI::Fonts::M);
+            samplePathEditor->setJustification(Justification::centredLeft);
+            this->addAndMakeVisible(samplePathEditor.get());
+            this->samplePaths.add(samplePathEditor.release());
+
+            auto browseButton = make<IconButton>(Icons::browse, CommandIDs::OpenMetronomeSample + i);
+            this->addAndMakeVisible(browseButton.get());
+            this->sampleBrowseButtons.add(browseButton.release());
+
+            auto clearButton = make<IconButton>(Icons::close, CommandIDs::ResetMetronomeSample + i);
+            this->addAndMakeVisible(clearButton.get());
+            this->sampleClearButtons.add(clearButton.release());
+        }
+
+        this->syncDataWithAudioPlugin();
+        this->setSize(640, 240);
+    }
+
+    void syncDataWithAudioPlugin()
+    {
+        const auto synthParams = this->metronomePlugin->getCustomSamples();
+        const auto allSyllables = MetronomeScheme::getAllSyllables();
+        for (int i = 0; i < allSyllables.size(); ++i)
+        {
+            const auto customSample = synthParams.customSamples.find(allSyllables[i]);
+            if (customSample != synthParams.customSamples.end())
+            {
+                this->samplePaths[i]->setText(customSample->second);
+            }
+            else
+            {
+                this->samplePaths[i]->setText({}); // todo placeholder, "the built-in sample"?
+            }
+        }
+    }
+
+    void resized() override
+    {
+        const auto getRowArea = [this](float proportionOfHeight, int height, int padding = 8)
+        {
+            const auto area = this->getLocalBounds().reduced(padding);
+            const auto y = area.proportionOfHeight(proportionOfHeight);
+            return area.withHeight(height).translated(0, y - height / 2);
+        };
+
+        const auto numControls = this->sampleLabels.size();
+
+        for (int i = 0; i < numControls; ++i)
+        {
+            constexpr auto rowHeight = 32;
+            constexpr auto labelWidth = 48;
+            constexpr auto buttonSize = 20;
+            constexpr auto paddingX = 6;
+
+            auto rowArea = getRowArea(float(i + 1) / float(numControls + 1), rowHeight);
+
+            this->sampleLabels[i]->setBounds(rowArea.removeFromLeft(labelWidth).reduced(paddingX, 0));
+            this->sampleClearButtons[i]->setBounds(rowArea.removeFromRight(buttonSize * 2).withSizeKeepingCentre(buttonSize, buttonSize));
+            this->sampleBrowseButtons[i]->setBounds(rowArea.removeFromRight(buttonSize * 2).withSizeKeepingCentre(buttonSize, buttonSize));
+            this->samplePaths[i]->setBounds(rowArea.reduced(paddingX, 0));
+        }
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->fillColour);
+        g.fillRect(this->getLocalBounds());
+    }
+
+    void handleCommandMessage(int commandId)
+    {
+        const auto allSyllables = MetronomeScheme::getAllSyllables();
+
+        if (commandId >= CommandIDs::OpenMetronomeSample &&
+            commandId < CommandIDs::OpenMetronomeSample + allSyllables.size())
+        {
+            const auto rowNumber = commandId - CommandIDs::OpenMetronomeSample;
+            const auto syllable = allSyllables[rowNumber];
+
+            // todo remember the last used directory?
+            this->fileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentLoad),
+                File::getCurrentWorkingDirectory(), ("*.wav;*.flac"), true);
+
+            DocumentHelpers::showFileChooser(this->fileChooser,
+                Globals::UI::FileChooser::forFileToOpen,
+                [this, syllable, rowNumber](URL &url)
+                {
+                    if (!url.isLocalFile() || !url.getLocalFile().exists())
+                    {
+                        return; // or clear?
+                    }
+
+                    this->metronomePlugin->applyCustomSample(syllable, url.getLocalFile().getFullPathName());
+                    this->syncDataWithAudioPlugin();
+                });
+        }
+        else if (commandId >= CommandIDs::ResetMetronomeSample &&
+                 commandId < CommandIDs::ResetMetronomeSample + allSyllables.size())
+        {
+            const auto rowNumber = commandId - CommandIDs::ResetMetronomeSample;
+            const auto syllable = allSyllables[rowNumber];
+            this->metronomePlugin->applyCustomSample(syllable, {});
+            this->syncDataWithAudioPlugin();
+        }
+    }
+
+private:
+
+    WeakReference<MetronomeSynthAudioPlugin> metronomePlugin;
+
+    OwnedArray<Label> sampleLabels;
+    OwnedArray<TextEditor> samplePaths;
+    OwnedArray<IconButton> sampleBrowseButtons;
+    OwnedArray<IconButton> sampleClearButtons;
+
+    // want to preview the metronome right in the UI dialog,
+    // but have no access to Transport class here, what to do?
+    // UniquePointer<PlayButton> playButton;
+
+    UniquePointer<FileChooser> fileChooser;
+
+    const Colour fillColour = findDefaultColour(ColourIDs::BackgroundA::fill);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetronomeSynthEditor)
+};
+
+//===----------------------------------------------------------------------===//
+// MetronomeSynthAudioPlugin
+//===----------------------------------------------------------------------===//
 
 MetronomeSynthAudioPlugin::MetronomeSynthAudioPlugin()
 {
@@ -55,7 +214,7 @@ void MetronomeSynthAudioPlugin::processBlock(AudioSampleBuffer &buffer, MidiBuff
         // and consumes RAM, although user might never use the built-in metronome,
         // so let's do lazy initialization on the first use, here in processBlock:
         this->synth.initVoices();
-        this->synth.initSampler();
+        this->synth.initSampler(this->synthParameters);
     }
 
     buffer.clear(0, buffer.getNumSamples());
@@ -73,13 +232,16 @@ void MetronomeSynthAudioPlugin::reset()
 }
 
 void MetronomeSynthAudioPlugin::releaseResources() {}
-double MetronomeSynthAudioPlugin::getTailLengthSeconds() const { return 3.0; }
+double MetronomeSynthAudioPlugin::getTailLengthSeconds() const { return 1.0; }
 
 bool MetronomeSynthAudioPlugin::acceptsMidi() const { return true; }
 bool MetronomeSynthAudioPlugin::producesMidi() const { return false; }
 
-AudioProcessorEditor *MetronomeSynthAudioPlugin::createEditor() { return nullptr; }
-bool MetronomeSynthAudioPlugin::hasEditor() const { return false; }
+bool MetronomeSynthAudioPlugin::hasEditor() const { return true; }
+AudioProcessorEditor *MetronomeSynthAudioPlugin::createEditor()
+{
+    return new MetronomeSynthEditor(this);
+}
 
 int MetronomeSynthAudioPlugin::getNumPrograms() { return 0; }
 int MetronomeSynthAudioPlugin::getCurrentProgram() { return 0; }
@@ -87,5 +249,46 @@ void MetronomeSynthAudioPlugin::setCurrentProgram(int index) {}
 const String MetronomeSynthAudioPlugin::getProgramName(int index) { return ""; }
 void MetronomeSynthAudioPlugin::changeProgramName(int index, const String &newName) {}
 
-void MetronomeSynthAudioPlugin::getStateInformation(MemoryBlock &destData) {}
-void MetronomeSynthAudioPlugin::setStateInformation(const void *data, int sizeInBytes) {}
+//===----------------------------------------------------------------------===//
+// Parameters
+//===----------------------------------------------------------------------===//
+
+void MetronomeSynthAudioPlugin::getStateInformation(MemoryBlock &destData)
+{
+    const auto state = this->synthParameters.serialize();
+
+    String stateAsString;
+    if (this->serializer.saveToString(stateAsString, state).ok())
+    {
+        MemoryOutputStream outStream(destData, false);
+        outStream.writeString(stateAsString);
+    }
+}
+
+void MetronomeSynthAudioPlugin::setStateInformation(const void *data, int sizeInBytes)
+{
+    MemoryInputStream inStream(data, sizeInBytes, false);
+    const auto stateAsString = inStream.readString();
+    const auto state = this->serializer.loadFromString(stateAsString);
+    this->synthParameters.deserialize(state);
+}
+
+void MetronomeSynthAudioPlugin::applyCustomSample(MetronomeScheme::Syllable syllable, const String &samplePath)
+{
+    if (samplePath.isEmpty())
+    {
+        this->synthParameters.customSamples.erase(syllable);
+    }
+    else
+    {
+        this->synthParameters.customSamples[syllable] = samplePath;
+    }
+
+    this->synth.initVoices();
+    this->synth.initSampler(this->synthParameters);
+}
+
+const MetronomeSynth::SamplerParameters &MetronomeSynthAudioPlugin::getCustomSamples() const noexcept
+{
+    return this->synthParameters;
+}
