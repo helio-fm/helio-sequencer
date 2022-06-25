@@ -97,6 +97,11 @@ void MidiTrackMenu::initInstrumentSelectionMenu()
 
     for (const auto *instrument : audioCore.getInstruments())
     {
+        if (instrument->isMetronomeInstrument())
+        {
+            continue;
+        }
+
         const bool isTicked = (instrument == selectedInstrument);
         const String instrumentId = instrument->getIdAndHash();
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, instrument->getName())->

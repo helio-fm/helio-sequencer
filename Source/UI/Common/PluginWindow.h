@@ -21,9 +21,12 @@ class PluginWindow final : public DocumentWindow
 {
 public:
 
+    ~PluginWindow() override;
+
     static PluginWindow *getWindowFor(AudioProcessorGraph::Node::Ptr node, bool shouldMimicComponent);
     static PluginWindow *getWindowFor(const String &instrumentId);
-    ~PluginWindow() override;
+
+    static bool showWindowFor(const String &instrumentId);
 
     static void closeCurrentlyOpenWindowsFor(const AudioProcessorGraph::NodeID nodeId);
     static void closeAllCurrentlyOpenWindows();
@@ -35,6 +38,7 @@ private:
     float getDesktopScaleFactor() const override { return 1.f; }
 
     PluginWindow(Component *uiComp, AudioProcessorGraph::Node::Ptr owner, bool shouldMimicComponent);
-    AudioProcessorGraph::Node::Ptr owner;
+    
+    const AudioProcessorGraph::Node::Ptr owner;
 
 };

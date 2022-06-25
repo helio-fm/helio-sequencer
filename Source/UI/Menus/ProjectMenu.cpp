@@ -418,6 +418,11 @@ void ProjectMenu::showSetInstrumentMenu()
     const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     for (const auto *instrument : instruments)
     {
+        if (instrument->isMetronomeInstrument())
+        {
+            continue;
+        }
+
         const String instrumentId = instrument->getIdAndHash();
         menu.add(MenuItem::item(Icons::instrument,
             instrument->getName())->

@@ -149,3 +149,21 @@ PluginWindow *PluginWindow::getWindowFor(const String &instrumentId)
 
     return nullptr;
 }
+
+bool PluginWindow::showWindowFor(const String &instrumentId)
+{
+    if (auto *window = PluginWindow::getWindowFor(instrumentId))
+    {
+        // this callAsync trick is needed, because this may be called by a modal component,
+        // and after invoking this callback, it will dismiss, focusing the host window,
+        // and pushing the plugin window in the background, which looks silly;
+        MessageManager::callAsync([window]() {
+            // so we have to bring it to front asynchronously just in case:
+            window->toFront(true);
+        });
+
+        return true;
+    }
+
+    return false;
+}

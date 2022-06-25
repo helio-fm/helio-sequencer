@@ -1037,10 +1037,7 @@ void PianoRoll::handleCommandMessage(int commandId)
             this->project, *this->activeTrack->getTimeSignatureOverride()));
         break;
     case CommandIDs::EditCurrentInstrument:
-        if (auto *window = PluginWindow::getWindowFor(this->activeTrack->getTrackInstrumentId()))
-        {
-            window->toFront(true);
-        }
+        PluginWindow::showWindowFor(this->activeTrack->getTrackInstrumentId());
         break;
     case CommandIDs::CopyEvents:
         SequencerOperations::copyToClipboard(App::Clipboard(), this->selection);

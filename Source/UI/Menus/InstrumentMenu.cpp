@@ -22,6 +22,7 @@
 #include "ModalDialogInput.h"
 #include "PluginScanner.h"
 #include "OrchestraPit.h"
+#include "PluginWindow.h"
 
 InstrumentMenu::InstrumentMenu(InstrumentNode &instrumentNode,
     PluginScanner &scanner, OrchestraPit &pit) :
@@ -37,6 +38,19 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
     MenuPanel::Menu menu;
 
     const auto instrument = this->instrumentNode.getInstrument();
+
+    if (auto mainNode = instrument->findMainPluginNode())
+    {
+        const auto hasEditor = mainNode->getProcessor()->hasEditor();
+        menu.add(MenuItem::item(Icons::instrument,
+            TRANS(I18n::Menu::instrumentShowWindow))->
+            disabledIf(!hasEditor)->
+            closesMenu()->
+            withAction([instrument]()
+            {
+                PluginWindow::showWindowFor(instrument->getIdAndHash());
+            }));
+    }
 
     if (!this->instrumentNode.isSelected()) // isSelectedOrHasSelectedChild() ?
     {
