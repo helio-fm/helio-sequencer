@@ -266,7 +266,8 @@ namespace Serialization
             static const Identifier mouseWheelAltDirection = "wheelAltDirection"; // legacy
             static const Identifier mouseWheelVerticalPanningByDefault = "wheelVerticalPan";
             static const Identifier mouseWheelVerticalZoomingByDefault = "wheelVerticalZoom";
-        }
+            static const Identifier metronomeEnabled = "metronome";
+            } // namespace Flags
 
         namespace Hotkeys
         {

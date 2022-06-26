@@ -37,8 +37,10 @@ public:
     class Listener
     {
     public:
+
         Listener() = default;
         virtual ~Listener() = default;
+
         virtual void onScalesHighlightingFlagChanged(bool enabled) {}
         virtual void onNoteNameGuidesFlagChanged(bool enabled) {}
 
@@ -50,6 +52,8 @@ public:
 
         virtual void onUiAnimationsFlagChanged(bool enabled) {}
         virtual void onMouseWheelFlagsChanged(MouseWheelFlags flags) {}
+
+        virtual void onMetronomeFlagChanged(bool enabled) {}
     };
 
     //===------------------------------------------------------------------===//
@@ -93,6 +97,10 @@ public:
     void setMouseWheelUseVerticalPanningByDefault(bool useVerticalPanning);
     void setMouseWheelUseVerticalZoomingByDefault(bool useVerticalZooming);
     MouseWheelFlags getMouseWheelFlags() const noexcept;
+
+    // not a "UI flag", obviously, but it fits here well
+    bool isMetronomeEnabled() const noexcept;
+    void toggleMetronome();
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -142,6 +150,8 @@ private:
     bool rollAnimationsEnabled = true;
 
     MouseWheelFlags mouseWheelFlags;
+
+    bool metronomeEnabled = false;
 
 private:
 

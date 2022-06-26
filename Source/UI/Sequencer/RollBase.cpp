@@ -1380,6 +1380,9 @@ void RollBase::handleCommandMessage(int commandId)
     case CommandIDs::ToggleBottomMiniMap:
         App::Config().getUiFlags()->toggleFullProjectMapVisibility();
         break;
+    case CommandIDs::ToggleMetronome:
+        App::Config().getUiFlags()->toggleMetronome();
+        break;
     case CommandIDs::TransportRecordingAwait:
         if (this->getTransport().isRecording())
         {

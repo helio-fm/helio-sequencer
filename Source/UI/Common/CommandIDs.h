@@ -95,6 +95,7 @@ namespace CommandIDs
         ToggleScalesHighlighting        = 0x1632,
         ToggleNoteNameGuides            = 0x1633,
         ToggleLoopOverSelection         = 0x1634,
+        ToggleMetronome                 = 0x1635,
 
         ZoomIn                          = 0x1800,
         ZoomOut                         = 0x1801,

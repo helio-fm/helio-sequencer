@@ -242,6 +242,8 @@
       { "command": "ToggleNoteNameGuides", "key": "G" },
       { "command": "ToggleBottomMiniMap", "key": "B" },
       { "command": "ToggleVolumePanel", "key": "V" },
+      { "command": "ToggleMetronome", "key": "Control + M" },
+      { "command": "ToggleMetronome", "key": "Command + M" },
 
       // Various
       { "command": "DuplicateTrack", "key": "F5" },
@@ -340,6 +342,8 @@
 
       // Various
       { "command": "ToggleBottomMiniMap", "key": "B" },
+      { "command": "ToggleMetronome", "key": "Control + M" },
+      { "command": "ToggleMetronome", "key": "Command + M" },
       { "command": "DuplicateTrack", "key": "F5" },
       { "command": "InstanceToUniqueTrack", "key": "F6" },
       { "command": "EditCurrentInstrument", "key": "F4" }

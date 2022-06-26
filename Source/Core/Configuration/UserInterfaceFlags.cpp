@@ -199,6 +199,18 @@ UserInterfaceFlags::MouseWheelFlags UserInterfaceFlags::getMouseWheelFlags() con
     return this->mouseWheelFlags;
 }
 
+bool UserInterfaceFlags::isMetronomeEnabled() const noexcept
+{
+    return this->metronomeEnabled;
+}
+
+void UserInterfaceFlags::toggleMetronome()
+{
+    this->metronomeEnabled = !this->metronomeEnabled;
+    this->listeners.call(&Listener::onMetronomeFlagChanged, this->metronomeEnabled);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -218,6 +230,9 @@ SerializedData UserInterfaceFlags::serialize() const
     tree.setProperty(UI::Flags::mouseWheelAltMode, this->mouseWheelFlags.usePanningByDefault);
     tree.setProperty(UI::Flags::mouseWheelVerticalPanningByDefault, this->mouseWheelFlags.useVerticalPanningByDefault);
     tree.setProperty(UI::Flags::mouseWheelVerticalZoomingByDefault, this->mouseWheelFlags.useVerticalZoomingByDefault);
+
+    tree.setProperty(UI::Flags::metronomeEnabled, this->metronomeEnabled);
+
     // skips experimentalFeaturesOn, it's read only
 
     return tree;
@@ -251,6 +266,8 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
         root.getProperty(UI::Flags::mouseWheelVerticalPanningByDefault, legacyAltDirection);
     this->mouseWheelFlags.useVerticalZoomingByDefault =
         root.getProperty(UI::Flags::mouseWheelVerticalZoomingByDefault, legacyAltDirection);
+
+    this->metronomeEnabled = root.getProperty(UI::Flags::metronomeEnabled, this->metronomeEnabled);
 
     this->velocityMapVisible = false; // not serializing that
 
