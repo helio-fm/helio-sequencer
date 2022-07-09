@@ -36,14 +36,13 @@ class MetronomeSynthEditor final : public AudioProcessorEditor
 {
 public:
 
-    MetronomeSynthEditor(WeakReference<MetronomeSynthAudioPlugin> metronomePlugin) :
+    explicit MetronomeSynthEditor(WeakReference<MetronomeSynthAudioPlugin> metronomePlugin) :
         AudioProcessorEditor(metronomePlugin),
         metronomePlugin(metronomePlugin)
     {
-        const auto allSyllables = MetronomeScheme::getAllSyllables();
-        for (int i = 0; i < allSyllables.size(); ++i)
+        for (int i = 0; i < this->allSyllables.size(); ++i)
         {
-            auto label = make<Label>(String(), MetronomeScheme::syllableToString(allSyllables[i]) + ":");
+            auto label = make<Label>(String(), MetronomeScheme::syllableToString(this->allSyllables[i]) + ":");
             label->setFont(Globals::UI::Fonts::M);
             label->setJustificationType(Justification::centredRight);
             this->addAndMakeVisible(label.get());
@@ -72,10 +71,9 @@ public:
     void syncDataWithAudioPlugin()
     {
         const auto synthParams = this->metronomePlugin->getCustomSamples();
-        const auto allSyllables = MetronomeScheme::getAllSyllables();
-        for (int i = 0; i < allSyllables.size(); ++i)
+        for (int i = 0; i < this->allSyllables.size(); ++i)
         {
-            const auto customSample = synthParams.customSamples.find(allSyllables[i]);
+            const auto customSample = synthParams.customSamples.find(this->allSyllables[i]);
             if (customSample != synthParams.customSamples.end())
             {
                 this->samplePaths[i]->setText(customSample->second);
@@ -122,13 +120,11 @@ public:
 
     void handleCommandMessage(int commandId)
     {
-        const auto allSyllables = MetronomeScheme::getAllSyllables();
-
         if (commandId >= CommandIDs::OpenMetronomeSample &&
-            commandId < CommandIDs::OpenMetronomeSample + allSyllables.size())
+            commandId < CommandIDs::OpenMetronomeSample + this->allSyllables.size())
         {
             const auto rowNumber = commandId - CommandIDs::OpenMetronomeSample;
-            const auto syllable = allSyllables[rowNumber];
+            const auto syllable = this->allSyllables[rowNumber];
 
             // todo remember the last used directory?
             this->fileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentLoad),
@@ -148,16 +144,18 @@ public:
                 });
         }
         else if (commandId >= CommandIDs::ResetMetronomeSample &&
-                 commandId < CommandIDs::ResetMetronomeSample + allSyllables.size())
+                 commandId < CommandIDs::ResetMetronomeSample + this->allSyllables.size())
         {
             const auto rowNumber = commandId - CommandIDs::ResetMetronomeSample;
-            const auto syllable = allSyllables[rowNumber];
+            const auto syllable = this->allSyllables[rowNumber];
             this->metronomePlugin->applyCustomSample(syllable, {});
             this->syncDataWithAudioPlugin();
         }
     }
 
 private:
+
+    const Array<MetronomeScheme::Syllable> allSyllables = MetronomeScheme::getAllSyllables();
 
     WeakReference<MetronomeSynthAudioPlugin> metronomePlugin;
 

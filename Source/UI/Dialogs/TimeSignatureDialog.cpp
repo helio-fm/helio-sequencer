@@ -204,17 +204,15 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
 
     this->textEditor->setText(this->originalEvent.toString(), dontSendNotification);
 
-    this->updateSize(this->originalEvent.getMeter());
+    this->updateSize();
     this->updateOkButtonState();
 }
 
 TimeSignatureDialog::~TimeSignatureDialog() = default;
 
-void TimeSignatureDialog::updateSize(const Meter &meter)
+void TimeSignatureDialog::updateSize()
 {
-    constexpr auto defaultSizeNumButtons = 8;
-    const auto numButtons = jmax(meter.getMetronome().syllables.size(), defaultSizeNumButtons);
-    this->setSize(130 + numButtons * (MetronomeEditor::buttonWidth + MetronomeEditor::buttonMargin), 240);
+    this->setSize(64 + this->metronomeEditor->getAllButtonsArea().getWidth(), 240);
     this->updatePosition();
 }
 
@@ -229,10 +227,10 @@ void TimeSignatureDialog::resized()
     this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
     this->removeEventButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
 
-    this->textEditor->setBounds(this->getRowBounds(0.3f, DialogBase::textEditorHeight));
+    this->textEditor->setBounds(this->getRowBounds(0.25f, DialogBase::textEditorHeight));
 
-    constexpr auto metronomeEditorHeight = 40;
-    this->metronomeEditor->setBounds(this->getRowBounds(0.75f, metronomeEditorHeight));
+    constexpr auto metronomeEditorHeight = 55;
+    this->metronomeEditor->setBounds(this->getRowBounds(0.7f, metronomeEditorHeight));
 }
 
 void TimeSignatureDialog::parentHierarchyChanged()
@@ -310,7 +308,7 @@ void TimeSignatureDialog::sendEventChange(const TimeSignatureEvent &newEvent)
     }
 
     this->metronomeEditor->setMetronome(newEvent.getMeter().getMetronome());
-    this->updateSize(newEvent.getMeter());
+    this->updateSize();
 }
 
 void TimeSignatureDialog::removeTimeSignature()

@@ -23,6 +23,10 @@
 #include "Transport.h"
 #include "Instrument.h"
 #include "MetronomeSynth.h"
+#include "HelioTheme.h"
+#include "Workspace.h"
+#include "AudioCore.h"
+#include "PluginWindow.h"
 
 class MetronomePreviewThread final : public Thread
 {
@@ -50,6 +54,7 @@ public:
                 this->transport.stopSound({});
 
                 // fixme: tempo to depend on time signature's denominator
+                // @ 120 bpm
                 Thread::wait(25);
 
                 const auto key = MetronomeSynth::getKeyForSyllable(syllable);
@@ -97,6 +102,9 @@ public:
         this->playButton = make<PlayButton>(this);
         this->addAndMakeVisible(this->playButton.get());
 
+        this->metronomeUiButton = make<IconButton>(Icons::metronome, CommandIDs::ShowMetronomeSettings);
+        this->addAndMakeVisible(this->metronomeUiButton.get());
+
         this->metronome.reset(); // should be invalid by default
     }
 
@@ -142,24 +150,31 @@ public:
         this->resized();
     }
 
+    Rectangle<int> getSyllableButtonsArea() const noexcept
+    {
+        const auto syllablesWidth = this->buttons.size() * (buttonWidth + buttonMargin) - buttonMargin;
+        return this->getLocalBounds().withSizeKeepingCentre(syllablesWidth, this->getHeight() - buttonMargin * 2);
+    }
+
+    Rectangle<int> getAllButtonsArea() const noexcept
+    {
+        constexpr auto helpersMargin = 45;
+        return getSyllableButtonsArea().expanded(helpersMargin, 0);
+    }
+
     void resized() override
     {
-        const auto buttonsWidth =
-            this->buttons.size() * (buttonWidth + buttonMargin);
+        auto syllableButtonsArea = getSyllableButtonsArea();
+        auto helperButtonsArea = getAllButtonsArea();
 
-        const auto xOffset = (this->getWidth() - buttonsWidth) / 2 - (buttonWidth / 2);
+        this->playButton->setBounds(helperButtonsArea.removeFromRight(buttonWidth).expanded(5));
+        this->metronomeUiButton->setBounds(helperButtonsArea.removeFromLeft(buttonWidth));
 
-        int x = 0;
         for (const auto &button : this->buttons)
         {
-            const int w = buttonsWidth / this->buttons.size();
-            const auto margin = (w - buttonWidth) / 2;
-            button->setBounds(xOffset + x + margin, 0, w - margin * 2, this->getHeight());
-            x += w;
+            button->setBounds(syllableButtonsArea.removeFromLeft(buttonWidth));
+            syllableButtonsArea.removeFromLeft(buttonMargin);
         }
-
-        this->playButton->setBounds(xOffset + buttonsWidth + buttonMargin,
-            0, buttonWidth, this->getHeight());
     }
 
     void handleCommandMessage(int commandId)
@@ -186,10 +201,21 @@ public:
 
             this->playButton->setPlaying(false);
         }
+        else if (commandId == CommandIDs::ShowMetronomeSettings)
+        {
+            if (auto *parent = this->getParentComponent())
+            {
+                parent->postCommandMessage(CommandIDs::DismissModalDialogAsync);
+            }
+
+            PluginWindow::showWindowFor(App::Workspace().getAudioCore().getMetronomeInstrumentId());
+        }
     }
 
-    static constexpr auto buttonWidth = 24;
-    static constexpr auto buttonMargin = 16;
+    void paint(Graphics &g) override
+    {
+        HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.25f, 0.75f);
+    }
 
 private:
 
@@ -199,6 +225,9 @@ private:
     MetronomeScheme metronome;
 
     UniquePointer<Thread> metronomePreviewThread;
+
+    static constexpr auto buttonWidth = 18;
+    static constexpr auto buttonMargin = 12;
 
     class SyllabeButton final : public HighlightedComponent
     {
@@ -223,7 +252,7 @@ private:
             Path p;
             //  _____
             // /_____\ kind of shape to mimic the metronome look:
-            constexpr auto slope = 1.f / 15.f;
+            constexpr auto slope = 1.f / 20.f;
             p.addQuadrilateral(slope, 0.f, 1.f - slope, 0.f, 1.f, 1.f, 0.f, 1.f);
 
             const auto w = float(this->getWidth());
@@ -315,6 +344,7 @@ private:
 
     OwnedArray<SyllabeButton> buttons;
     UniquePointer<PlayButton> playButton;
+    UniquePointer<IconButton> metronomeUiButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetronomeEditor)
 };

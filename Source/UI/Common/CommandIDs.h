@@ -187,8 +187,9 @@ namespace CommandIDs
         ShowScalePanel                  = 0x4042,
         ShowChordPanel                  = 0x4043,
         ShowNewTrackPanel               = 0x4044,
-        ToggleVolumePanel               = 0x4045,
-        ToggleBottomMiniMap             = 0x4046,
+        ShowMetronomeSettings           = 0x4045,
+        ToggleVolumePanel               = 0x4046,
+        ToggleBottomMiniMap             = 0x4047,
 
         VersionControlToggleQuickStash  = 0x4060,
         VersionControlPushSelected      = 0x4061,

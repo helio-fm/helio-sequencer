@@ -34,16 +34,15 @@ public:
 
     void paint(Graphics &g) override
     {
-        const auto colour = findDefaultColour(ColourIDs::Icons::fill).withAlpha(0.1f);
-        const int h = this->getHeight();
-        const auto r = this->getLocalBounds()
-            .withSizeKeepingCentre(h, h)
+        const int size = jmin(this->getWidth(), this->getHeight());
+        const auto bounds = this->getLocalBounds()
+            .withSizeKeepingCentre(size, size)
             .reduced(3).toFloat();
 
-        HelioTheme::drawDashedRectangle(g, r, colour, 5.5f, 1.0f, 0.5f, float(h / 2));
+        g.setColour(findDefaultColour(ColourIDs::Icons::fill).withAlpha(0.2f));
+        g.drawEllipse(bounds, 1.f);
     }
 };
-
 
 PlayButton::PlayButton(WeakReference<Component> eventReceiver) :
     HighlightedComponent(),
@@ -69,15 +68,13 @@ PlayButton::~PlayButton() = default;
 
 void PlayButton::resized()
 {
-    const auto w_2 = this->getWidth() / 2;
-    const auto h_2 = this->getHeight() / 2;
-    const auto buttonSize = h_2;
+    const auto buttonSize = jmin(this->getWidth() / 2, this->getHeight() / 2);
 
-    this->playIcon->setBounds(w_2 - (buttonSize / 2),
-        h_2 - buttonSize / 2, buttonSize, buttonSize);
+    this->playIcon->setBounds(this->getLocalBounds()
+        .withSizeKeepingCentre(buttonSize, buttonSize).translated(1, 0));
 
-    this->pauseIcon->setBounds(w_2 - (buttonSize / 2),
-        h_2 - buttonSize / 2, buttonSize, buttonSize);
+    this->pauseIcon->setBounds(this->getLocalBounds()
+        .withSizeKeepingCentre(buttonSize, buttonSize));
 }
 
 void PlayButton::mouseDown(const MouseEvent &e)

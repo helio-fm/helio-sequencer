@@ -67,7 +67,7 @@ private:
 
     inline void undoAndDismiss();
     inline void updateOkButtonState();
-    void updateSize(const Meter &meter);
+    void updateSize();
 
     enum class Mode
     {

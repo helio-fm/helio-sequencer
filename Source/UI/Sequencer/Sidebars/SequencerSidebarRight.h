@@ -24,6 +24,7 @@ class SeparatorHorizontal;
 class SeparatorHorizontalReversed;
 class TransportControlComponent;
 
+#include "Config.h"
 #include "UserInterfaceFlags.h"
 #include "TransportListener.h"
 #include "MenuPanel.h"
@@ -87,7 +88,7 @@ private:
 
     void onMetronomeFlagChanged(bool enabled) override;
 
-    bool isMetronomeEnabled = false;
+    bool isMetronomeEnabled = App::Config().getUiFlags()->isMetronomeEnabled();
 
     //===------------------------------------------------------------------===//
     // TransportListener

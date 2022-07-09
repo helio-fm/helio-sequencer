@@ -309,6 +309,12 @@ Instrument *AudioCore::getMetronomeInstrument() const noexcept
         this->metronomeInstrument.get() : nullptr;
 }
 
+String AudioCore::getMetronomeInstrumentId() const noexcept
+{
+    const auto *metronome = this->getMetronomeInstrument();
+    return metronome != nullptr ? metronome->getInstrumentId() : String();
+}
+
 void AudioCore::initBuiltInInstrumentsIfNeeded()
 {
     if (this->defaultInstrument == nullptr)

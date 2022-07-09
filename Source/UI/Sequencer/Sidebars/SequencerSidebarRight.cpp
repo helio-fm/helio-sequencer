@@ -60,8 +60,8 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) : project(pare
     this->headShadow = make<ShadowDownwards>(ShadowType::Light);
     this->addAndMakeVisible(this->headShadow.get());
 
-    this->annotationsButton = make<MenuItemComponent>(this,
-        nullptr, MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection)->
+    this->annotationsButton = make<MenuItemComponent>(this, nullptr,
+        MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection)->
         withTooltip(TRANS(I18n::Tooltips::togglePlaybackLoop)));
 
     this->addAndMakeVisible(this->annotationsButton.get());
