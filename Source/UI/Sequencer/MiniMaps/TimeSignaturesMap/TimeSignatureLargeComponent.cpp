@@ -92,8 +92,6 @@ void TimeSignatureLargeComponent::mouseDrag(const MouseEvent &e)
         // dragging the track's time signatures:
         if (auto *track = dynamic_cast<MidiTrackNode *>(this->event.getTrack().get()))
         {
-            jassert(this->event.getSequence() == nullptr);
-
             // we can only rely on delta beat here, because track's ts template
             // cannot be set to some absolute beat, it's beat range is from 0 to (sequence range - 1 bar)
             const auto deltaBeat = newBeat - this->draggingAnchorBeat;
@@ -124,10 +122,10 @@ void TimeSignatureLargeComponent::mouseDrag(const MouseEvent &e)
             track->setTimeSignatureOverride(this->event.withBeat(newTemplateBeat), true, sendNotification);
             this->draggingAnchorBeat = newBeat;
         }
-        // dragging the timeline time signatures:
-        else if (auto *sequence = dynamic_cast<TimeSignaturesSequence *>(this->event.getSequence()))
+        else // dragging the timeline time signatures:
         {
             jassert(this->event.getTrack() == nullptr);
+            auto *sequence = dynamic_cast<TimeSignaturesSequence *>(this->event.getSequence());
 
             if (!this->draggingHadCheckpoint)
             {

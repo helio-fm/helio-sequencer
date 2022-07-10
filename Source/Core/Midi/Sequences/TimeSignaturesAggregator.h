@@ -20,6 +20,8 @@
 class ProjectNode;
 class MidiSequence;
 class TimeSignatureEvent;
+class TimeSignaturesSequence;
+class DummyProjectEventDispatcher;
 
 #include "MidiTrack.h"
 #include "ProjectListener.h"
@@ -32,7 +34,10 @@ class TimeSignatureEvent;
 // It is used by RollBase to determine where to draw the grid lines,
 // and by TimeSignaturesProjectMap for displaying the time signatures.
 
-class TimeSignaturesAggregator final : public ProjectListener
+// It is also a "virtual" MidiTrack, which allows us to use it
+// as a drop-in replacement for the timeline's time signatures track.
+
+class TimeSignaturesAggregator final : public VirtualMidiTrack, public ProjectListener
 {
 public:
 
@@ -44,8 +49,6 @@ public:
     // should be called by the rolls:
     void setActiveScope(Array<WeakReference<MidiTrack>> selectedTracks,
         bool forceRebuildAll = false);
-
-    const Array<TimeSignatureEvent> &getAllOrdered() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Listeners management
@@ -61,6 +64,13 @@ public:
     void addListener(Listener *listener);
     void removeListener(Listener *listener);
     void removeAllListeners();
+
+    //===------------------------------------------------------------------===//
+    // VirtualMidiTrack
+    //===------------------------------------------------------------------===//
+
+    String getTrackInstrumentId() const noexcept override;
+    MidiSequence *getSequence() const noexcept override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -95,7 +105,8 @@ private:
     void rebuildAll();
     bool isAggregatingTimeSignatureOverrides() const noexcept;
 
-    Array<TimeSignatureEvent> orderedEvents;
+    UniquePointer<DummyProjectEventDispatcher> dummyEventDispatcher;
+    UniquePointer<TimeSignaturesSequence> orderedEvents;
 
     ListenerList<Listener> listeners;
 

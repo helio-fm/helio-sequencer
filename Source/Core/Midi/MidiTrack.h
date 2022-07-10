@@ -142,11 +142,11 @@ struct MidiTrackHash
     }
 };
 
-class EmptyMidiTrack : public MidiTrack
+class VirtualMidiTrack : public MidiTrack
 {
 public:
 
-    EmptyMidiTrack() {}
+    VirtualMidiTrack() {}
 
     void setTrackId(const String &val) override {};
     const String &getTrackId() const noexcept override { return this->trackId; }
@@ -172,10 +172,11 @@ public:
     void setTimeSignatureOverride(const TimeSignatureEvent &ts, bool undoable,
         NotificationType notificationType) override {}
 
-    MidiSequence *getSequence() const noexcept override { return nullptr; }
     Pattern *getPattern() const noexcept override { return nullptr; }
 
-    String trackId;
+private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EmptyMidiTrack)
+    const String trackId = Uuid().toString();
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VirtualMidiTrack)
 };

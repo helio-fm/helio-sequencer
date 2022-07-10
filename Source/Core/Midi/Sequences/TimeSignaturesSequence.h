@@ -59,6 +59,15 @@ public:
 
 private:
 
+    // simply appends new event at the end of the list,
+    // assuming that the list will remain sorted after that;
+    // only use it for better performance, if you know what you're doing
+    MidiEvent *appendUnsafe(const TimeSignatureEvent &orderedEvent);
+
+    friend class TimeSignaturesAggregator;
+
+private:
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeSignaturesSequence)
     JUCE_DECLARE_WEAK_REFERENCEABLE(TimeSignaturesSequence)
 };

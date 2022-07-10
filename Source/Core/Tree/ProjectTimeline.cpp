@@ -22,10 +22,12 @@
 #include "KeySignaturesSequence.h"
 #include "ProjectNode.h"
 #include "Pattern.h"
+#include "Workspace.h"
+#include "AudioCore.h"
 
 // A simple wrappers around the sequences
 // We don't need any patterns here
-class AnnotationsTrack final : public EmptyMidiTrack
+class AnnotationsTrack final : public VirtualMidiTrack
 {
 public:
 
@@ -44,7 +46,7 @@ public:
     ProjectTimeline &timeline;
 };
 
-class TimeSignaturesTrack final : public EmptyMidiTrack
+class TimeSignaturesTrack final : public VirtualMidiTrack
 {
 public:
 
@@ -60,10 +62,16 @@ public:
     Colour getTrackColour() const noexcept override
     { return findDefaultColour(Label::textColourId); }
 
+    String getTrackInstrumentId() const noexcept
+    {
+        // time signatures may emit events for the metronome:
+        return App::Workspace().getAudioCore().getMetronomeInstrumentId();
+    }
+
     ProjectTimeline &timeline;
 };
 
-class KeySignaturesTrack final : public EmptyMidiTrack
+class KeySignaturesTrack final : public VirtualMidiTrack
 {
 public:
 
@@ -83,10 +91,7 @@ public:
 };
 
 ProjectTimeline::ProjectTimeline(ProjectNode &parentProject, String trackName) :
-    project(parentProject),
-    annotationsTrackId(Uuid().toString()),
-    timeSignaturesTrackId(Uuid().toString()),
-    keySignaturesTrackId(Uuid().toString())
+    project(parentProject)
 {
     this->annotationsTrack = make<AnnotationsTrack>(*this);
     this->annotationsSequence = make<AnnotationsSequence>(*this->annotationsTrack, *this);

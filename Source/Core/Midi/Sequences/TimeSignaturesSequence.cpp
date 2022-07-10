@@ -22,6 +22,7 @@
 #include "ProjectNode.h"
 #include "UndoStack.h"
 #include "Meter.h"
+#include "Config.h"
 
 TimeSignaturesSequence::TimeSignaturesSequence(MidiTrack &track,
     ProjectEventDispatcher &dispatcher) noexcept :
@@ -75,6 +76,15 @@ MidiEvent *TimeSignaturesSequence::insert(const TimeSignatureEvent &eventParams,
     }
 
     return nullptr;
+}
+
+MidiEvent *TimeSignaturesSequence::appendUnsafe(const TimeSignatureEvent &eventParams)
+{
+    auto *ownedEvent = new TimeSignatureEvent(this, eventParams);
+    this->midiEvents.add(ownedEvent);
+    this->eventDispatcher.dispatchAddEvent(*ownedEvent);
+    this->updateBeatRange(true);
+    return ownedEvent;
 }
 
 bool TimeSignaturesSequence::remove(const TimeSignatureEvent &signature, bool undoable)

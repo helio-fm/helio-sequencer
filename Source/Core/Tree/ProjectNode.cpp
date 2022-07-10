@@ -405,7 +405,7 @@ Array<MidiTrack *> ProjectNode::getTracks() const
     // and explicitly add the only non-tree-owned tracks
     tracks.add(this->timeline->getAnnotations());
     tracks.add(this->timeline->getKeySignatures());
-    tracks.add(this->timeline->getTimeSignatures());
+    tracks.add(this->timeline->getTimeSignaturesAggregator());
 
     return tracks;
 }

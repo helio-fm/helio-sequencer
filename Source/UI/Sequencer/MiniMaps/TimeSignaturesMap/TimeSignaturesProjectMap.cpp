@@ -100,11 +100,13 @@ void TimeSignaturesProjectMap::resized()
 
 void TimeSignaturesProjectMap::onTimeSignaturesUpdated()
 {
-    const auto &signaturesToSyncWith =
-        this->project.getTimeline()->getTimeSignaturesAggregator()->getAllOrdered();
+    const auto &sequenceToSyncWith =
+        *this->project.getTimeline()->getTimeSignaturesAggregator()->getSequence();
 
-    for (const auto &ts : signaturesToSyncWith)
+    for (const auto *event : sequenceToSyncWith)
     {
+        const auto &ts = static_cast<const TimeSignatureEvent &>(*event);
+
         if (auto *myComponent = this->timeSignaturesMap[ts])
         {
             myComponent->updateContent(ts);
@@ -123,9 +125,9 @@ void TimeSignaturesProjectMap::onTimeSignaturesUpdated()
     }
 
     jassert(this->timeSignatureComponents.size() == int(this->timeSignaturesMap.size()));
-    jassert(this->timeSignatureComponents.size() >= signaturesToSyncWith.size());
+    jassert(this->timeSignatureComponents.size() >= sequenceToSyncWith.size());
 
-    if (this->timeSignatureComponents.size() > signaturesToSyncWith.size())
+    if (this->timeSignatureComponents.size() > sequenceToSyncWith.size())
     {
         // so yes, nested loops here suck, but we're only going to get
         // in this branch when something is deleted (not really often),
@@ -134,8 +136,10 @@ void TimeSignaturesProjectMap::onTimeSignaturesUpdated()
         {
             bool shouldDelete = true;
             const auto &myTs = this->timeSignatureComponents.getUnchecked(i)->getEvent();
-            for (const auto &theirTs : signaturesToSyncWith)
+            for (const auto *theirEvent : sequenceToSyncWith)
             {
+                const auto &theirTs = static_cast<const TimeSignatureEvent &>(*theirEvent);
+
                 if (theirTs == myTs)
                 {
                     shouldDelete = false;
@@ -240,10 +244,12 @@ void TimeSignaturesProjectMap::reloadTrackMap()
     this->timeSignatureComponents.clear();
 
     const auto &timeSignatures =
-        this->project.getTimeline()->getTimeSignaturesAggregator()->getAllOrdered();
+        *this->project.getTimeline()->getTimeSignaturesAggregator()->getSequence();
 
-    for (const auto &ts : timeSignatures)
+    for (const auto *event : timeSignatures)
     {
+        const auto &ts = static_cast<const TimeSignatureEvent &>(*event);
+
         auto *component = this->createComponent();
         this->addAndMakeVisible(component);
         component->updateContent(ts);
