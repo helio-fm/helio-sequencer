@@ -24,7 +24,7 @@ struct MetronomeScheme final
 {
     enum class Syllable : int
     {
-        Oo = 0, na, Pa, pa
+        Oo, na, Pa, pa
     };
 
     MetronomeScheme &operator=(const MetronomeScheme &r) = default;
@@ -38,7 +38,11 @@ struct MetronomeScheme final
     bool isValid() const noexcept;
 
     static Syllable getNextSyllable(Syllable syllable) noexcept;
-    static Array<Syllable> getAllSyllables();
+    
+    // ordered by "loudness" descending:
+    static Array<Syllable> getAllOrdered();
+    // the simple default oona-pana scheme:
+    static Array<Syllable> getDefaultScheme();
 
     static String syllableToString(Syllable syllable);
     static Syllable syllableFromString(const String &value);
@@ -51,7 +55,7 @@ struct MetronomeScheme final
         }
     };
 
-    Array<Syllable> syllables = getAllSyllables();
+    Array<Syllable> syllables = getDefaultScheme();
 };
 
 class Meter final : public ConfigurationResource

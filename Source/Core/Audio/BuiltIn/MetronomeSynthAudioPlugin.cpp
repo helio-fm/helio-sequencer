@@ -19,6 +19,7 @@
 #include "MetronomeSynthAudioPlugin.h"
 #include "BuiltInSynthsPluginFormat.h"
 #include "DocumentHelpers.h"
+#include "MetronomeEditor.h"
 
 #include "SerializationKeys.h"
 #include "PlayButton.h"
@@ -42,11 +43,12 @@ public:
     {
         for (int i = 0; i < this->allSyllables.size(); ++i)
         {
-            auto label = make<Label>(String(), MetronomeScheme::syllableToString(this->allSyllables[i]) + ":");
-            label->setFont(Globals::UI::Fonts::M);
-            label->setJustificationType(Justification::centredRight);
-            this->addAndMakeVisible(label.get());
-            this->sampleLabels.add(label.release());
+            const auto syllable = this->allSyllables[i];
+
+            auto syllableIcon = make<MetronomeEditor::SyllabeButton>(syllable, syllable);
+            syllableIcon->setEnabled(false);
+            this->addAndMakeVisible(syllableIcon.get());
+            this->syllableIcons.add(syllableIcon.release());
 
             auto samplePathEditor = make<TextEditor>();
             samplePathEditor->setReadOnly(true);
@@ -87,28 +89,29 @@ public:
 
     void resized() override
     {
-        const auto getRowArea = [this](float proportionOfHeight, int height, int padding = 8)
+        const auto getRowArea = [this](float proportionOfHeight, int height, int padding = 10)
         {
             const auto area = this->getLocalBounds().reduced(padding);
             const auto y = area.proportionOfHeight(proportionOfHeight);
             return area.withHeight(height).translated(0, y - height / 2);
         };
 
-        const auto numControls = this->sampleLabels.size();
+        const auto numControls = this->allSyllables.size();
 
         for (int i = 0; i < numControls; ++i)
         {
             constexpr auto rowHeight = 32;
-            constexpr auto labelWidth = 48;
+            constexpr auto iconWidth = 30;
             constexpr auto buttonSize = 20;
+            constexpr auto iconMarginX = 8;
             constexpr auto paddingX = 6;
 
             auto rowArea = getRowArea(float(i + 1) / float(numControls + 1), rowHeight);
 
-            this->sampleLabels[i]->setBounds(rowArea.removeFromLeft(labelWidth).reduced(paddingX, 0));
+            this->syllableIcons[i]->setBounds(rowArea.removeFromLeft(iconWidth).reduced(paddingX, 2).translated(iconMarginX, 0));
             this->sampleClearButtons[i]->setBounds(rowArea.removeFromRight(buttonSize * 2).withSizeKeepingCentre(buttonSize, buttonSize));
             this->sampleBrowseButtons[i]->setBounds(rowArea.removeFromRight(buttonSize * 2).withSizeKeepingCentre(buttonSize, buttonSize));
-            this->samplePaths[i]->setBounds(rowArea.reduced(paddingX, 0));
+            this->samplePaths[i]->setBounds(rowArea.reduced(paddingX + iconMarginX, 0).translated(iconMarginX, 0));
         }
     }
 
@@ -155,11 +158,11 @@ public:
 
 private:
 
-    const Array<MetronomeScheme::Syllable> allSyllables = MetronomeScheme::getAllSyllables();
+    const Array<MetronomeScheme::Syllable> allSyllables = MetronomeScheme::getAllOrdered();
 
     WeakReference<MetronomeSynthAudioPlugin> metronomePlugin;
 
-    OwnedArray<Label> sampleLabels;
+    OwnedArray<MetronomeEditor::SyllabeButton> syllableIcons;
     OwnedArray<TextEditor> samplePaths;
     OwnedArray<IconButton> sampleBrowseButtons;
     OwnedArray<IconButton> sampleClearButtons;

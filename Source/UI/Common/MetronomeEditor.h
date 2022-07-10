@@ -20,6 +20,7 @@
 #include "Meter.h"
 #include "ColourIDs.h"
 #include "PlayButton.h"
+#include "IconButton.h"
 #include "Transport.h"
 #include "Instrument.h"
 #include "MetronomeSynth.h"
@@ -217,18 +218,6 @@ public:
         HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.25f, 0.75f);
     }
 
-private:
-
-    Transport &transport;
-    WeakReference<Instrument> metronomeInstrument;
-
-    MetronomeScheme metronome;
-
-    UniquePointer<Thread> metronomePreviewThread;
-
-    static constexpr auto buttonWidth = 18;
-    static constexpr auto buttonMargin = 12;
-
     class SyllabeButton final : public HighlightedComponent
     {
     public:
@@ -341,6 +330,18 @@ private:
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SyllabeButton)
     };
+
+private:
+
+    Transport &transport;
+    WeakReference<Instrument> metronomeInstrument;
+
+    MetronomeScheme metronome;
+
+    UniquePointer<Thread> metronomePreviewThread;
+
+    static constexpr auto buttonWidth = 18;
+    static constexpr auto buttonMargin = 12;
 
     OwnedArray<SyllabeButton> buttons;
     UniquePointer<PlayButton> playButton;

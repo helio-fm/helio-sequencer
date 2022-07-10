@@ -223,9 +223,14 @@ bool operator!=(const MetronomeScheme &l, const MetronomeScheme &r)
     return !operator==(l, r);
 }
 
-Array<MetronomeScheme::Syllable> MetronomeScheme::getAllSyllables()
+Array<MetronomeScheme::Syllable> MetronomeScheme::getAllOrdered()
 {
-    return { Syllable::Oo, Syllable::na, Syllable::Pa, Syllable::pa };
+    return { Syllable::Oo, Syllable::Pa, Syllable::na, Syllable::pa };
+}
+
+Array<MetronomeScheme::Syllable> MetronomeScheme::getDefaultScheme()
+{
+    return { Syllable::Oo, Syllable::na, Syllable::Pa, Syllable::na };
 }
 
 String MetronomeScheme::syllableToString(Syllable syllable)

@@ -124,7 +124,7 @@ void MetronomeSynth::initSampler(const SamplerParameters &params)
 
     Array<TickSample> samples;
 
-    for (auto &syllable : MetronomeScheme::getAllSyllables())
+    for (auto &syllable : MetronomeScheme::getAllOrdered())
     {
         const auto key = MetronomeSynth::getKeyForSyllable(syllable);
         const auto customSample = params.customSamples.find(syllable);
