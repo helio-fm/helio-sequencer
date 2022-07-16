@@ -79,7 +79,8 @@ public:
     void onChangeMidiEvent(const MidiEvent &oldEvent,
         const MidiEvent &newEvent) override;
     void onAddMidiEvent(const MidiEvent &event) override;
-    void onRemoveMidiEvent(const MidiEvent &event) override;
+    void onRemoveMidiEvent(const MidiEvent &event) override {}
+    void onPostRemoveMidiEvent(MidiSequence *const sequence) override;
 
     void onAddClip(const Clip &clip) override;
     void onChangeClip(const Clip &oldClip, const Clip &newClip) override;

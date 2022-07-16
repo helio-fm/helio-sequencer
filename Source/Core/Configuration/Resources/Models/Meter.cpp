@@ -318,7 +318,7 @@ void MetronomeScheme::loadString(const String &str)
                 if (c == 'a')
                 {
                     jassert(!this->syllables.isEmpty());
-                    jassert(this->syllables.getLast() == Syllable::Oo || this->syllables.getLast() == Syllable::Pa);
+                    //jassert(this->syllables.getLast() == Syllable::Oo || this->syllables.getLast() == Syllable::Pa);
                     this->syllables.add(Syllable::na);
                 }
                 isStressedSyllable = false;
@@ -335,7 +335,7 @@ void MetronomeScheme::loadString(const String &str)
                     else
                     {
                         jassert(!this->syllables.isEmpty());
-                        jassert(this->syllables.getLast() == Syllable::Pa || this->syllables.getLast() == Syllable::na);
+                        //jassert(this->syllables.getLast() == Syllable::Pa || this->syllables.getLast() == Syllable::na);
                         this->syllables.add(Syllable::pa);
                     }
                 }

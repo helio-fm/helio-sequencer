@@ -73,7 +73,6 @@ TimeSignaturesAggregator::TimeSignaturesAggregator(ProjectNode &parentProject,
     timelineSignatures(timelineSignatures)
 {
     this->dummyEventDispatcher = make<DummyProjectEventDispatcher>(this->project);
-    this->orderedEvents = make<TimeSignaturesSequence>(*this, *this->dummyEventDispatcher.get());
     this->project.addListener(this);
 }
 
@@ -146,7 +145,9 @@ String TimeSignaturesAggregator::getTrackInstrumentId() const noexcept
 
 MidiSequence *TimeSignaturesAggregator::getSequence() const noexcept
 {
-    return this->orderedEvents.get();
+    return this->orderedEvents != nullptr ?
+        this->orderedEvents.get() : // aggregation mode
+        &this->timelineSignatures;  // fallback to timeline time signatures
 }
 
 //===----------------------------------------------------------------------===//
@@ -158,11 +159,7 @@ void TimeSignaturesAggregator::onAddMidiEvent(const MidiEvent &event)
     if (event.isTypeOf(MidiEvent::Type::TimeSignature) &&
         !this->isAggregatingTimeSignatureOverrides())
     {
-        const auto &timeSignature = static_cast<const TimeSignatureEvent &>(event);
-        jassert(timeSignature.getSequence() ==
-            this->project.getTimeline()->getTimeSignatures()->getSequence());
-
-        this->orderedEvents->insert(timeSignature, false);
+        jassert(static_cast<const TimeSignatureEvent &>(event).getSequence() == this->getSequence());
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
     }
 }
@@ -172,40 +169,18 @@ void TimeSignaturesAggregator::onChangeMidiEvent(const MidiEvent &oldEvent, cons
     if (newEvent.isTypeOf(MidiEvent::Type::TimeSignature) &&
         !this->isAggregatingTimeSignatureOverrides())
     {
-        const auto &timeSignature = static_cast<const TimeSignatureEvent &>(oldEvent);
-        jassert(timeSignature.getSequence() ==
-            this->project.getTimeline()->getTimeSignatures()->getSequence());
-
-        const auto &newTimeSignature = static_cast<const TimeSignatureEvent &>(newEvent);
-        jassert(newTimeSignature.getSequence() ==
-            this->project.getTimeline()->getTimeSignatures()->getSequence());
-
-        jassert(timeSignature.getId() == newTimeSignature.getId());
-        if (this->orderedEvents->change(timeSignature, newTimeSignature, false))
-        {
-            this->listeners.call(&Listener::onTimeSignaturesUpdated);
-        }
-
-        jassertfalse;
+        jassert(static_cast<const TimeSignatureEvent &>(oldEvent).getSequence() == this->getSequence());
+        jassert(static_cast<const TimeSignatureEvent &>(newEvent).getSequence() == this->getSequence());
+        this->listeners.call(&Listener::onTimeSignaturesUpdated);
     }
 }
 
-void TimeSignaturesAggregator::onRemoveMidiEvent(const MidiEvent &event)
+void TimeSignaturesAggregator::onPostRemoveMidiEvent(MidiSequence *const sequence)
 {
-    if (event.isTypeOf(MidiEvent::Type::TimeSignature) &&
+    if (sequence == this->getSequence() &&
         !this->isAggregatingTimeSignatureOverrides())
     {
-        const auto &timeSignature = static_cast<const TimeSignatureEvent &>(event);
-        jassert(timeSignature.getSequence() ==
-            this->project.getTimeline()->getTimeSignatures()->getSequence());
-
-        if (this->orderedEvents->remove(timeSignature, false))
-        {
-            this->listeners.call(&Listener::onTimeSignaturesUpdated);
-            return;
-        }
-
-        jassertfalse;
+        this->listeners.call(&Listener::onTimeSignaturesUpdated);
     }
 }
 
@@ -299,20 +274,16 @@ struct SortByTimeSignatureAbsolutePosition final
 
 void TimeSignaturesAggregator::rebuildAll()
 {
-    // clear all
-    this->orderedEvents = make<TimeSignaturesSequence>(*this, *this->dummyEventDispatcher.get());
-
     if (!this->isAggregatingTimeSignatureOverrides())
     {
-        for (const auto *event : this->timelineSignatures)
-        {
-            const auto *ts = static_cast<const TimeSignatureEvent *>(event);
-            this->orderedEvents->appendUnsafe(*ts);
-        }
-
+        // now it will return timeline's sequence in getSequence():
+        this->orderedEvents = nullptr;
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
         return;
     }
+
+    // clear all
+    this->orderedEvents = make<TimeSignaturesSequence>(*this, *this->dummyEventDispatcher.get());
 
     // todo: multiple time signatures per track? now there can be only one
 

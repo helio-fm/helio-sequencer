@@ -39,7 +39,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     ownerComponent(owner),
     defaultMeters(App::Config().getMeters()->getAll()),
     mode(shouldAddNewEvent ? Mode::AddTimelineTimeSignature :
-        (targetSequence != nullptr ? Mode::EditTimelineTimeSignature : Mode::EditTrackTimeSignature))
+        (targetTrack != nullptr ? Mode::EditTrackTimeSignature : Mode::EditTimelineTimeSignature))
 {
     jassert(this->originalEvent.isValid() || this->targetTrack != nullptr);
     jassert(this->targetSequence != nullptr || this->targetTrack != nullptr);
@@ -367,14 +367,15 @@ void TimeSignatureDialog::undoAndDismiss()
 UniquePointer<Component> TimeSignatureDialog::editingDialog(Component &owner,
     ProjectNode &project, const TimeSignatureEvent &event)
 {
-    if (auto *sequence = static_cast<TimeSignaturesSequence *>(event.getSequence()))
+    if (event.getTrack() != nullptr)
     {
-        return make<TimeSignatureDialog>(owner, project, nullptr, sequence, event, false);
+        return make<TimeSignatureDialog>(owner, project, event.getTrack(), nullptr, event, false);
     }
     else
     {
-        jassert(event.getTrack() != nullptr);
-        return make<TimeSignatureDialog>(owner, project, event.getTrack(), nullptr, event, false);
+        auto *sequence = static_cast<TimeSignaturesSequence *>(event.getSequence());
+        jassert(sequence != nullptr);
+        return make<TimeSignatureDialog>(owner, project, nullptr, sequence, event, false);
     }
 }
 

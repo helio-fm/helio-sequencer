@@ -19,6 +19,7 @@
 #include "TimeSignaturesProjectMap.h"
 #include "ProjectNode.h"
 #include "MidiSequence.h"
+#include "MidiTrackNode.h"
 #include "ProjectTimeline.h"
 #include "PlayerThread.h"
 #include "RollBase.h"
@@ -212,7 +213,19 @@ void TimeSignaturesProjectMap::onTimeSignatureTapped(TimeSignatureComponent *c)
 
 void TimeSignaturesProjectMap::showDialogFor(TimeSignatureComponent *c)
 {
-    if (!this->project.getTransport().isPlaying())
+    if (this->project.getTransport().isPlaying())
+    {
+        return;
+    }
+
+    if (auto *track = dynamic_cast<MidiTrackNode *>(c->getEvent().getTrack().get()))
+    {
+        // can't use c->getEvent() here, because is's auto-generated and has absolute beat,
+        // so we take the track's time signature template instead
+        jassert(track->getTimeSignatureOverride() != nullptr);
+        App::showModalComponent(TimeSignatureDialog::editingDialog(*this, this->project, *track->getTimeSignatureOverride()));
+    }
+    else
     {
         App::showModalComponent(TimeSignatureDialog::editingDialog(*this, this->project, c->getEvent()));
     }
