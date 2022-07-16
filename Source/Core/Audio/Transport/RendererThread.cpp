@@ -123,7 +123,7 @@ struct RenderBuffer final
 void RendererThread::run()
 {
     // step 0. init.
-    this->transport.recacheIfNeeded();
+    this->transport.rebuildPlaybackCacheIfNeeded();
     auto sequences = this->transport.getPlaybackCache();
     constexpr auto bufferSize = 512;
 
@@ -156,7 +156,7 @@ void RendererThread::run()
     // step 2. release resources, prepare to play, etc.
     for (auto *subBuffer : subBuffers)
     {
-        AudioProcessorGraph *graph = subBuffer->instrument->getProcessorGraph();
+        auto *graph = subBuffer->instrument->getProcessorGraph();
         graph->setPlayConfigDetails(numInChannels, numOutChannels, sampleRate, bufferSize);
         graph->releaseResources();
         graph->setProcessingPrecision(AudioProcessor::singlePrecision);
@@ -168,7 +168,7 @@ void RendererThread::run()
     Thread::sleep(200);
 
     // step 3. render loop itself.
-    sequences.seekToTime(0.0);
+    sequences.seekToStart();
     
     CachedMidiMessage nextMessage;
     bool hasNextMessage = sequences.getNextMessage(nextMessage);

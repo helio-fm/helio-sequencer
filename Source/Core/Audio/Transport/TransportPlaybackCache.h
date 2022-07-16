@@ -148,7 +148,7 @@ public:
         }
     }
     
-    void seekToZeroIndexes()
+    void seekToStart()
     {
         for (auto *wrapper : this->sequences)
         {

@@ -44,11 +44,11 @@ TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     meter(parametersToCopy.meter) {}
 
 void TimeSignatureEvent::exportMessages(MidiMessageSequence &outSequence,
-    const Clip &clip, const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept
+    const Clip &clip, const KeyboardMapping &keyMap, double timeFactor) const noexcept
 {
     MidiMessage event(MidiMessage::timeSignatureMetaEvent(this->meter.getNumerator(), this->meter.getDenominator()));
     event.setTimeStamp((this->beat + clip.getBeat()) * timeFactor);
-    outSequence.addEvent(event, timeOffset);
+    outSequence.addEvent(event);
 }
 
 TimeSignatureEvent TimeSignatureEvent::withDeltaBeat(float beatOffset) const noexcept

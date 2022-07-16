@@ -51,7 +51,6 @@ public:
     //===------------------------------------------------------------------===//
     
     float getSeekBeat() const noexcept;
-    float getTotalTime() const noexcept;
     void seekToBeat(float beatPosition);
     
     void probeSoundAtBeat(float beatPosition,
@@ -202,7 +201,6 @@ public:
 
 private:
 
-    void setTotalTime(float val);
     void setSeekBeat(float beatPosition);
 
     void broadcastPlay();
@@ -231,7 +229,7 @@ private:
 
     mutable TransportPlaybackCache playbackCache;
     mutable Atomic<bool> playbackCacheIsOutdated = true;
-    void recacheIfNeeded() const;
+    void rebuildPlaybackCacheIfNeeded() const;
 
     // linksCache is <track id : instrument>
     mutable Array<const MidiTrack *> tracksCache;
@@ -282,8 +280,6 @@ private:
 private:
 
     Atomic<float> seekBeat = 0.0;
-    Atomic<float> totalTime = Globals::Defaults::projectLength;
-    
     Atomic<float> projectFirstBeat = 0.f;
     Atomic<float> projectLastBeat = Globals::Defaults::projectLength;
 

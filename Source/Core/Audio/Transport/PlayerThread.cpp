@@ -53,8 +53,7 @@ void PlayerThread::run()
 
     const bool isLooped = this->context->playbackLoopMode;
 
-    const auto seek = this->context->startBeat - this->context->projectFirstBeat;
-    this->sequences.seekToTime(seek);
+    this->sequences.seekToTime(this->context->startBeat);
 
     Atomic<float> previousEventBeat = this->context->startBeat;
     broadcastSeek(previousEventBeat);
@@ -173,7 +172,7 @@ void PlayerThread::run()
 
             if (isLooped)
             {
-                this->sequences.seekToTime(this->context->rewindBeat - this->context->projectFirstBeat);
+                this->sequences.seekToTime(this->context->rewindBeat);
                 previousEventBeat = this->context->rewindBeat;
                 broadcastSeek(previousEventBeat);
                 continue;
@@ -199,8 +198,7 @@ void PlayerThread::run()
             }
         }
 
-        const auto messageBeat =
-            wrapper.message.getTimeStamp() + this->context->projectFirstBeat;
+        const auto messageBeat = wrapper.message.getTimeStamp();
 
         const bool shouldRewind =
             (isLooped && (messageBeat > this->context->endBeat));
@@ -242,8 +240,7 @@ void PlayerThread::run()
         
         if (shouldRewind)
         {
-            this->sequences.seekToTime(this->context->rewindBeat - this->context->projectFirstBeat);
-
+            this->sequences.seekToTime(this->context->rewindBeat);
             previousEventBeat = this->context->rewindBeat;
             broadcastSeek(previousEventBeat);
         }

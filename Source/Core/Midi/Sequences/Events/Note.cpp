@@ -39,7 +39,7 @@ Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noex
     tuplet(parametersToCopy.tuplet) {}
 
 void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
-    const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept
+    const KeyboardMapping &keyMap, double timeFactor) const noexcept
 {
     const auto keyWithOffset = this->key + clip.getKey();
     const auto finalVolume = this->velocity * clip.getVelocity();
@@ -59,7 +59,7 @@ void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         MidiMessage eventNoteOn(MidiMessage::noteOn(mapped.channel, mapped.key, tupletVolume));
         const double startTime = (tupletStart + clip.getBeat()) * timeFactor;
         eventNoteOn.setTimeStamp(startTime);
-        outSequence.addEvent(eventNoteOn, timeOffset);
+        outSequence.addEvent(eventNoteOn);
 
         // here, when having odd tuplet, note-off event time might end up
         // being slightly after next event's start time, due to rounding errors,
@@ -76,7 +76,7 @@ void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         MidiMessage eventNoteOff(MidiMessage::noteOff(mapped.channel, mapped.key));
         const double endTime = (tupletStart + tupletLength + clip.getBeat()) * timeFactor - oddTupletFix;
         eventNoteOff.setTimeStamp(endTime);
-        outSequence.addEvent(eventNoteOff, timeOffset);
+        outSequence.addEvent(eventNoteOff);
     }
 }
 

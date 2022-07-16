@@ -45,11 +45,11 @@ AnnotationEvent::AnnotationEvent(WeakReference<MidiSequence> owner,
     length(parametersToCopy.length) {}
 
 void AnnotationEvent::exportMessages(MidiMessageSequence &outSequence,
-    const Clip &clip, const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept
+    const Clip &clip, const KeyboardMapping &keyMap, double timeFactor) const noexcept
 {
     MidiMessage event(MidiMessage::textMetaEvent(1, this->getDescription()));
     event.setTimeStamp((this->beat + clip.getBeat()) * timeFactor);
-    outSequence.addEvent(event, timeOffset);
+    outSequence.addEvent(event);
 }
 
 AnnotationEvent AnnotationEvent::withDeltaBeat(float beatOffset) const noexcept

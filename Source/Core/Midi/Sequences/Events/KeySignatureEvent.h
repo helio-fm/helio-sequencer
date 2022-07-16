@@ -38,7 +38,7 @@ public:
     String toString(const StringArray &keyNames) const;
 
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
-        const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept override;
+        const KeyboardMapping &keyMap, double timeFactor) const noexcept override;
     
     KeySignatureEvent withDeltaBeat(float beatOffset) const noexcept;
     KeySignatureEvent withBeat(float newBeat) const noexcept;

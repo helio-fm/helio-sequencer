@@ -40,7 +40,7 @@ public:
         float lengthVal = 1.f, float velocityVal = 1.f) noexcept;
 
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
-        const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept override;
+        const KeyboardMapping &keyMap, double timeFactor) const noexcept override;
     
     // use these methods to perform undo/redo actions
     Note withKey(Key newKey) const noexcept;

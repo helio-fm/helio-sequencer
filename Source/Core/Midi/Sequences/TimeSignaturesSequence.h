@@ -40,8 +40,7 @@ public:
     MidiEvent *insert(const TimeSignatureEvent &signatureToCopy, bool undoable);
     bool remove(const TimeSignatureEvent &signature, bool undoable);
     bool change(const TimeSignatureEvent &signature,
-        const TimeSignatureEvent &newSignature,
-        bool undoable);
+        const TimeSignatureEvent &newSignature, bool undoable);
 
     //===------------------------------------------------------------------===//
     // Callbacks

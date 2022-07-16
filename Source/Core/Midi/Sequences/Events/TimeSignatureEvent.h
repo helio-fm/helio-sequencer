@@ -50,7 +50,7 @@ public:
         int newDenominator = Globals::Defaults::timeSignatureDenominator) noexcept;
     
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
-        const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept override;
+        const KeyboardMapping &keyMap, double timeFactor) const noexcept override;
 
     TimeSignatureEvent withDeltaBeat(float beatOffset) const noexcept;
     TimeSignatureEvent withBeat(float newBeat) const noexcept;

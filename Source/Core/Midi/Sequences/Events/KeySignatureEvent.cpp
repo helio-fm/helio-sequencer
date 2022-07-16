@@ -50,7 +50,7 @@ String KeySignatureEvent::toString(const StringArray &keyNames) const
 }
 
 void KeySignatureEvent::exportMessages(MidiMessageSequence &outSequence,
-    const Clip &clip, const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept
+    const Clip &clip, const KeyboardMapping &keyMap, double timeFactor) const noexcept
 {
     // Basically, we can have any non-standard scale here:
     // from "symmetrical nonatonic" or "chromatic permutated diatonic dorian"
@@ -73,7 +73,7 @@ void KeySignatureEvent::exportMessages(MidiMessageSequence &outSequence,
 
     MidiMessage event(MidiMessage::keySignatureMetaEvent(flatsOrSharps, isMinor));
     event.setTimeStamp((this->beat + clip.getBeat()) * timeFactor);
-    outSequence.addEvent(event, timeOffset);
+    outSequence.addEvent(event);
 }
 
 KeySignatureEvent KeySignatureEvent::withDeltaBeat(float beatOffset) const noexcept

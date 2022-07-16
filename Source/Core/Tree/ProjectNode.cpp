@@ -937,8 +937,13 @@ void ProjectNode::exportMidi(OutputStream &stream) const
     // in MIDI export, as I believe they shouldn't:
     const bool soloFlag = false;
 
+    // Metronome track flag is only needed for playback:
+    const bool metronomeFlag = false;
+
     const auto grouping = this->getTrackGroupingMode();
     FlatHashMap<String, MidiMessageSequence, StringHash> sequences;
+
+    const auto projectRange = this->getProjectRangeInBeats();
 
     for (const auto *track : this->getTracks())
     {
@@ -956,13 +961,15 @@ void ProjectNode::exportMidi(OutputStream &stream) const
             for (const auto *clip : track->getPattern()->getClips())
             {
                 track->getSequence()->exportMidi(sequence, *clip,
-                    simpleMapping, soloFlag, 0.0, midiClock);
+                    simpleMapping, soloFlag, metronomeFlag,
+                    projectRange.getStart(), projectRange.getEnd(), midiClock);
             }
         }
         else
         {
             track->getSequence()->exportMidi(sequence, noTransform,
-                simpleMapping, soloFlag, 0.0, midiClock);
+                simpleMapping, soloFlag, metronomeFlag,
+                projectRange.getStart(), projectRange.getEnd(), midiClock);
         }
     }
 

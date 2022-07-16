@@ -33,7 +33,7 @@ public:
         const Colour &newColour = Colours::white) noexcept;
     
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
-        const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept override;
+        const KeyboardMapping &keyMap, double timeFactor) const noexcept override;
 
     AnnotationEvent withDeltaBeat(float beatOffset) const noexcept;
     AnnotationEvent withBeat(float newBeat) const noexcept;
