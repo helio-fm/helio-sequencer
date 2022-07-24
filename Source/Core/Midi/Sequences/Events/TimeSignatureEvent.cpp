@@ -138,6 +138,11 @@ float TimeSignatureEvent::getBarLengthInBeats() const noexcept
     return this->meter.getBarLengthInBeats();
 }
 
+float TimeSignatureEvent::getDenominatorInBeats() const noexcept
+{
+    return this->meter.getDenominatorInBeats();
+}
+
 const Meter &TimeSignatureEvent::getMeter() const noexcept
 {
     return this->meter;

@@ -550,7 +550,7 @@ void RollBase::zoomRelative(const Point<float> &origin,
     if (shouldAutoFitViewRange)
     {
         constexpr auto margin = Globals::beatsPerBar * 2;
-        const auto projectRange = this->project.getProjectRangeInBeats();
+        const auto projectRange = this->project.getProjectBeatRange();
         const auto newFirstBeat = projectRange.getStart() - margin;
         const auto newLastBeat = projectRange.getEnd() + margin;
         this->project.broadcastChangeViewBeatRange(newFirstBeat, newLastBeat);

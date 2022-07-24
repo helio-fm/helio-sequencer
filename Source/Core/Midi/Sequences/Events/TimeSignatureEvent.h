@@ -78,6 +78,7 @@ public:
     int getNumerator() const noexcept;
     int getDenominator() const noexcept;
     float getBarLengthInBeats() const noexcept;
+    float getDenominatorInBeats() const noexcept;
     const Meter &getMeter() const noexcept;
 
     WeakReference<MidiTrack> getTrack() const noexcept;

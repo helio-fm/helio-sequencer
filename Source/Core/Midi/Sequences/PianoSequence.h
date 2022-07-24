@@ -36,8 +36,8 @@ public:
     void exportMidi(MidiMessageSequence &outSequence,
         const Clip &clip, const KeyboardMapping &keyMap,
         bool soloPlaybackMode, bool exportMetronome,
-        double projectFirstBeat, double projectLastBeat,
-        double timeFactor) const override;
+        float projectFirstBeat, float projectLastBeat,
+        double timeFactor = 1.0) const override;
 
     //===------------------------------------------------------------------===//
     // Undoable track editing

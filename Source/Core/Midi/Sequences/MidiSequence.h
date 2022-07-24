@@ -54,7 +54,7 @@ public:
     virtual void exportMidi(MidiMessageSequence &outSequence,
         const Clip &clip, const KeyboardMapping &keyMap,
         bool soloPlaybackMode, bool exportMetronome,
-        double projectFirstBeat, double projectLastBeat,
+        float projectFirstBeat, float projectLastBeat,
         double timeFactor = 1.0) const;
 
     //===------------------------------------------------------------------===//

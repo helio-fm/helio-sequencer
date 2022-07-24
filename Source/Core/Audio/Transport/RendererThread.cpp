@@ -123,8 +123,7 @@ struct RenderBuffer final
 void RendererThread::run()
 {
     // step 0. init.
-    this->transport.rebuildPlaybackCacheIfNeeded();
-    auto sequences = this->transport.getPlaybackCache();
+    auto sequences = this->transport.buildPlaybackCache(false);
     constexpr auto bufferSize = 512;
 
     // assuming that number of channels and sample rate is equal for all instruments

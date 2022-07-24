@@ -45,7 +45,7 @@ public:
     {
         while (!this->threadShouldExit())
         {
-            for (const auto syllable : this->metronome.syllables)
+            for (int i = 0; i < metronome.getSize(); ++i)
             {
                 if (this->threadShouldExit())
                 {
@@ -58,6 +58,7 @@ public:
                 // @ 120 bpm
                 Thread::wait(25);
 
+                const auto syllable = metronome.getSyllableAt(i);
                 const auto key = MetronomeSynth::getKeyForSyllable(syllable);
 
                 this->transport.previewKey(this->instrument, key,
@@ -132,9 +133,9 @@ public:
 
         this->buttons.clearQuick(true);
 
-        for (int i = 0; i < metronome.syllables.size(); ++i)
+        for (int i = 0; i < metronome.getSize(); ++i)
         {
-            const auto syllable = metronome.syllables[i];
+            const auto syllable = metronome.getSyllableAt(i);
             auto button = make<SyllabeButton>(syllable, syllable);
             button->onTap = [i, this]
             {

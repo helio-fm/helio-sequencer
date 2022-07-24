@@ -20,8 +20,10 @@
 #include "Chord.h"
 #include "ConfigurationResource.h"
 
-struct MetronomeScheme final
+class MetronomeScheme final
 {
+public:
+
     enum class Syllable : int
     {
         Oo, na, Pa, pa
@@ -36,13 +38,14 @@ struct MetronomeScheme final
     void reset();
 
     bool isValid() const noexcept;
+    int getSize() const noexcept;
+    Syllable getSyllableAt(int index) const noexcept;
+    void setSyllableAt(int index, Syllable newValue);
 
     static Syllable getNextSyllable(Syllable syllable) noexcept;
     
     // ordered by "loudness" descending:
     static Array<Syllable> getAllOrdered();
-    // the simple default oona-pana scheme:
-    static Array<Syllable> getDefaultScheme();
 
     static String syllableToString(Syllable syllable);
     static Syllable syllableFromString(const String &value);
@@ -54,6 +57,11 @@ struct MetronomeScheme final
             return static_cast<HashCode>(syllable);
         }
     };
+
+private:
+
+    // the simple default oona-pana scheme:
+    static Array<Syllable> getDefaultScheme();
 
     Array<Syllable> syllables = getDefaultScheme();
 };
@@ -86,6 +94,7 @@ public:
     int getNumerator() const noexcept;
     int getDenominator() const noexcept;
     float getBarLengthInBeats() const noexcept;
+    float getDenominatorInBeats() const noexcept;
 
     String getTimeAsString() const noexcept;
 

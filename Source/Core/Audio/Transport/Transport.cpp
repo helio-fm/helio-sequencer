@@ -29,24 +29,37 @@
 #include "RollBase.h"
 #include "KeyboardMapping.h"
 #include "ProjectMetadata.h"
+#include "ProjectTimeline.h"
 #include "DefaultSynthAudioPlugin.h"
 
 #define TIME_NOW (Time::getMillisecondCounterHiRes() * 0.001)
 
-Transport::Transport(OrchestraPit &orchestraPit, SleepTimer &sleepTimer) :
+Transport::Transport(ProjectNode &project, OrchestraPit &orchestraPit, SleepTimer &sleepTimer) :
+    project(project),
     orchestra(orchestraPit),
     sleepTimer(sleepTimer)
 {
     this->player = make<PlayerThreadPool>(*this);
     this->renderer = make<RendererThread>(*this);
+
+    this->project.addListener(this);
+    this->project.getTimeline()->getTimeSignaturesAggregator()->addListener(this);
     this->orchestra.addOrchestraListener(this);
+
+    App::Config().getUiFlags()->addListener(this);
 }
 
 Transport::~Transport()
 {
+    App::Config().getUiFlags()->removeListener(this);
+
     this->orchestra.removeOrchestraListener(this);
+    this->project.getTimeline()->getTimeSignaturesAggregator()->removeListener(this);
+    this->project.removeListener(this);
+
     this->renderer = nullptr;
     this->player = nullptr;
+
     this->transportListeners.clear();
 }
 
@@ -583,19 +596,19 @@ void Transport::allNotesControllersAndSoundOff() const
         const MidiMessage soundOff(MidiMessage::allSoundOff(i).withTimeStamp(TIME_NOW));
         const MidiMessage controllersOff(MidiMessage::allControllersOff(i).withTimeStamp(TIME_NOW));
         
-        Array<const MidiMessageCollector *> duplicateCollectors;
+        Array<const MidiMessageCollector *> uniqueMessageCollectors;
         
         for (int l = 0; l < this->tracksCache.size(); ++l)
         {
             const auto &trackId = this->tracksCache.getUnchecked(l)->getTrackId();
             auto *collector = &this->instrumentLinks[trackId]->getProcessorPlayer().getMidiMessageCollector();
             
-            if (! duplicateCollectors.contains(collector))
+            if (! uniqueMessageCollectors.contains(collector))
             {
                 collector->addMessageToQueue(notesOff);
                 collector->addMessageToQueue(controllersOff);
                 collector->addMessageToQueue(soundOff);
-                duplicateCollectors.add(collector);
+                uniqueMessageCollectors.add(collector);
             }
         }
     }
@@ -603,6 +616,32 @@ void Transport::allNotesControllersAndSoundOff() const
     this->sleepTimer.setCanSleepAfter(Transport::soundSleepDelayMs);
 }
 
+//===----------------------------------------------------------------------===//
+// UserInterfaceFlags::Listener
+//===----------------------------------------------------------------------===//
+
+void Transport::onMetronomeFlagChanged(bool enabled)
+{
+    // metronome events are the part of playback cache,
+    // so we will have to rebuild it when the playback starts:
+    this->isMetronomeEnabled = enabled;
+    this->stopPlaybackAndRecording();
+    this->playbackCacheIsOutdated = true;
+}
+
+//===----------------------------------------------------------------------===//
+// TimeSignaturesAggregator::Listener
+//===----------------------------------------------------------------------===//
+
+void Transport::onTimeSignaturesUpdated()
+{
+    // almost same logic as in onMetronomeFlagChanged:
+    if (this->isMetronomeEnabled)
+    {
+        // this->stopPlaybackAndRecording(); // that's kinda too intrusive
+        this->playbackCacheIsOutdated = true;
+    }
+}
 
 //===----------------------------------------------------------------------===//
 // OrchestraListener
@@ -959,52 +998,60 @@ void Transport::rebuildPlaybackCacheIfNeeded() const
 {
     if (this->playbackCacheIsOutdated.get())
     {
-        //DBG("Transport::recache");
-        this->playbackCache.clear();
-
-        // Find solo clips, if any
-        bool hasSoloClips = false;
-        for (const auto *track : this->tracksCache)
-        {
-            if (track->getPattern() != nullptr &&
-                track->getPattern()->hasSoloClips())
-            {
-                hasSoloClips = true;
-                break;
-            }
-        }
-
-        for (const auto *track : this->tracksCache)
-        {
-            const auto instrument = this->instrumentLinks[track->getTrackId()];
-            const auto &keyMap = *instrument->getKeyboardMapping();
-
-            auto cached = CachedMidiSequence::createFrom(instrument, track->getSequence());
-
-            if (track->getPattern() != nullptr)
-            {
-                for (const auto *clip : track->getPattern()->getClips())
-                {
-                    cached->track->exportMidi(cached->midiMessages, *clip,
-                        keyMap, hasSoloClips, shouldExportMetronome,
-                        this->projectFirstBeat.get(), this->projectLastBeat.get());
-                }
-            }
-            else
-            {
-                static Clip noTransform;
-                cached->track->exportMidi(cached->midiMessages, noTransform,
-                    keyMap, hasSoloClips, shouldExportMetronome,
-                    this->projectFirstBeat.get(), this->projectLastBeat.get());
-            }
-
-            this->playbackCache.addWrapper(cached);
-        }
-        
+        this->playbackCache = this->buildPlaybackCache(this->isMetronomeEnabled);
         this->playbackCacheIsOutdated = false;
     }
 }
 
+TransportPlaybackCache Transport::buildPlaybackCache(bool withMetronome) const
+{
+    TransportPlaybackCache result;
+    
+    // Find solo clips, if any
+    bool hasSoloClips = false;
+    for (const auto *track : this->tracksCache)
+    {
+        if (track->getPattern() != nullptr &&
+            track->getPattern()->hasSoloClips())
+        {
+            hasSoloClips = true;
+            break;
+        }
+    }
+
+    for (const auto *track : this->tracksCache)
+    {
+        const auto instrument = this->instrumentLinks[track->getTrackId()];
+        const auto &keyMap = *instrument->getKeyboardMapping();
+
+        auto cached = CachedMidiSequence::createFrom(instrument, track->getSequence());
+
+        if (track->getPattern() != nullptr)
+        {
+            for (const auto *clip : track->getPattern()->getClips())
+            {
+                cached->track->exportMidi(cached->midiMessages, *clip,
+                    keyMap, hasSoloClips, withMetronome,
+                    this->projectFirstBeat.get(), this->projectLastBeat.get());
+            }
+        }
+        else
+        {
+            static Clip noTransform;
+            cached->track->exportMidi(cached->midiMessages, noTransform,
+                keyMap, hasSoloClips, withMetronome,
+                this->projectFirstBeat.get(), this->projectLastBeat.get());
+        }
+
+        result.addWrapper(cached);
+    }
+
+    return result;
+}
+
+// returning by value, because it will be used by (possibly many) player threads,
+// so we'd rather play safe and just let them deal with their own copy of it;
+// internally, the data is refcounted anyway and protected by critical sections
 TransportPlaybackCache Transport::getPlaybackCache()
 {
     return this->playbackCache;

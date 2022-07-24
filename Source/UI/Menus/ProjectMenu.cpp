@@ -201,7 +201,7 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
         menu.add(MenuItem::item(Icons::instrument,
             instrument->getName())->withAction([this, instrumentId]()
             {
-                const float firstBeat = this->project.getProjectRangeInBeats().getStart();
+                const float firstBeat = this->project.getProjectBeatRange().getStart();
                 ProjectMenu::showNewTrackDialog(this->project, instrumentId, firstBeat);
             }));
     }

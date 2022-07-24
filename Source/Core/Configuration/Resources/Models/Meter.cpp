@@ -104,6 +104,12 @@ float Meter::getBarLengthInBeats() const noexcept
     return float(this->numerator) / float(this->denominator) * float(Globals::beatsPerBar);
 }
 
+float Meter::getDenominatorInBeats() const noexcept
+{
+    if (!this->isValid()) { return 0.f; }
+    return 1.f / float(this->denominator) * float(Globals::beatsPerBar);
+}
+
 const MetronomeScheme &Meter::getMetronome() const noexcept
 {
     return this->metronome;
@@ -356,6 +362,23 @@ void MetronomeScheme::reset()
 bool MetronomeScheme::isValid() const noexcept
 {
     return this->syllables.size() > 1;
+}
+
+int MetronomeScheme::getSize() const noexcept
+{
+    return this->syllables.size();
+}
+
+MetronomeScheme::Syllable MetronomeScheme::getSyllableAt(int index) const noexcept
+{
+    jassert(index >= 0 && index < this->getSize());
+    return this->syllables[index];
+}
+
+void MetronomeScheme::setSyllableAt(int index, Syllable newValue)
+{
+    jassert(index >= 0 && index < this->getSize());
+    this->syllables.set(index, newValue);
 }
 
 MetronomeScheme::Syllable MetronomeScheme::getNextSyllable(Syllable syllable) noexcept

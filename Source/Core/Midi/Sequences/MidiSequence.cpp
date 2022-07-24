@@ -93,8 +93,8 @@ void MidiSequence::clearUndoHistory()
 void MidiSequence::exportMidi(MidiMessageSequence &outSequence,
     const Clip &clip, const KeyboardMapping &keyMap,
     bool soloPlaybackMode, bool exportMetronome,
-    double projectFirstBeat, double projectLastBeat,
-    double timeFactor) const
+    float projectFirstBeat, float projectLastBeat,
+    double timeFactor /*= 1.0*/) const
 {
     if (this->midiEvents.isEmpty() || clip.isMuted())
     {

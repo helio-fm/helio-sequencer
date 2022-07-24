@@ -154,10 +154,10 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     this->addAndMakeVisible(this->metronomeEditor.get());
     this->metronomeEditor->setMetronome(this->originalEvent.getMeter().getMetronome());
     this->metronomeEditor->onTap = [this](const MetronomeScheme &metronome, int tappedSyllableIndex) {
-        const auto tappedSyllable = metronome.syllables[tappedSyllableIndex];
+        const auto tappedSyllable = metronome.getSyllableAt(tappedSyllableIndex);
 
         MetronomeScheme newMetronome = metronome;
-        newMetronome.syllables.set(tappedSyllableIndex, MetronomeScheme::getNextSyllable(tappedSyllable));
+        newMetronome.setSyllableAt(tappedSyllableIndex, MetronomeScheme::getNextSyllable(tappedSyllable));
 
         // todo make it sound (preview)
         this->sendEventChange(this->originalEvent.withMetronome(newMetronome));
@@ -204,6 +204,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
 
     this->textEditor->setText(this->originalEvent.toString(), dontSendNotification);
 
+    this->updatePosition();
     this->updateSize();
     this->updateOkButtonState();
 }
@@ -212,8 +213,9 @@ TimeSignatureDialog::~TimeSignatureDialog() = default;
 
 void TimeSignatureDialog::updateSize()
 {
+    const auto oldWidth = this->getWidth();
     this->setSize(64 + this->metronomeEditor->getAllButtonsArea().getWidth(), 240);
-    this->updatePosition();
+    this->setTopLeftPosition(this->getPosition().translated((oldWidth - this->getWidth()) / 2, 0));
 }
 
 void TimeSignatureDialog::resized()

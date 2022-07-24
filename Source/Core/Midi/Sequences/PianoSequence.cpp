@@ -65,8 +65,8 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence, short timeFo
 void PianoSequence::exportMidi(MidiMessageSequence &outSequence,
     const Clip &clip, const KeyboardMapping &keyMap,
     bool soloPlaybackMode, bool exportMetronome,
-    double projectFirstBeat, double projectLastBeat,
-    double timeFactor) const
+    float projectFirstBeat, float projectLastBeat,
+    double timeFactor /*= 1.0*/) const
 {
     // This method pretty much duplicates base method, except for this check:
     if (this->midiEvents.isEmpty() || clip.isMuted() ||

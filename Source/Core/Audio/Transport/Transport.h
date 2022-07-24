@@ -17,6 +17,7 @@
 
 #pragma once
 
+class ProjectNode;
 class SleepTimer;
 class OrchestraPit;
 class PlayerThread;
@@ -25,18 +26,23 @@ class RendererThread;
 
 #include "TransportListener.h"
 #include "TransportPlaybackCache.h"
+#include "TimeSignaturesAggregator.h"
 #include "OrchestraListener.h"
 #include "ProjectListener.h"
 #include "RenderFormat.h"
 #include "Instrument.h"
+#include "UserInterfaceFlags.h"
+#include "Config.h"
 
 class Transport final : public Serializable,
-                        public ProjectListener,
-                        private OrchestraListener
+    public ProjectListener,
+    public OrchestraListener,
+    public TimeSignaturesAggregator::Listener,
+    public UserInterfaceFlags::Listener // needs the metronome on/off flag changes
 {
 public:
 
-    Transport(OrchestraPit &orchestraPit, SleepTimer &sleepTimer);
+    Transport(ProjectNode &project, OrchestraPit &orchestraPit, SleepTimer &sleepTimer);
     ~Transport() override;
     
     static String getTimeString(double timeMs, bool includeMilliseconds = false);
@@ -147,7 +153,19 @@ public:
 
     void stopSound(const String &trackId = "") const;
     void allNotesControllersAndSoundOff() const;
-    
+
+    //===------------------------------------------------------------------===//
+    // UserInterfaceFlags::Listener
+    //===------------------------------------------------------------------===//
+
+    void onMetronomeFlagChanged(bool enabled) override;
+
+    //===------------------------------------------------------------------===//
+    // TimeSignaturesAggregator::Listener
+    //===------------------------------------------------------------------===//
+
+    void onTimeSignaturesUpdated() override;
+
     //===------------------------------------------------------------------===//
     // OrchestraListener
     //===------------------------------------------------------------------===//
@@ -218,7 +236,9 @@ private:
 
 private:
     
+    ProjectNode &project;
     OrchestraPit &orchestra;
+
     SleepTimer &sleepTimer;
     static constexpr auto soundSleepDelayMs = 60000;
 
@@ -230,6 +250,7 @@ private:
     mutable TransportPlaybackCache playbackCache;
     mutable Atomic<bool> playbackCacheIsOutdated = true;
     void rebuildPlaybackCacheIfNeeded() const;
+    TransportPlaybackCache buildPlaybackCache(bool withMetronome) const;
 
     // linksCache is <track id : instrument>
     mutable Array<const MidiTrack *> tracksCache;
@@ -289,6 +310,8 @@ private:
     Atomic<bool> loopMode = false;
     Atomic<float> loopStartBeat = 0.f;
     Atomic<float> loopEndBeat = Globals::Defaults::projectLength;
+
+    bool isMetronomeEnabled = App::Config().getUiFlags()->isMetronomeEnabled();
 
     ListenerList<TransportListener> transportListeners;
 
