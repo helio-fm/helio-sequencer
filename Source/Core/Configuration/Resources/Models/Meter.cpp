@@ -375,10 +375,37 @@ MetronomeScheme::Syllable MetronomeScheme::getSyllableAt(int index) const noexce
     return this->syllables[index];
 }
 
-void MetronomeScheme::setSyllableAt(int index, Syllable newValue)
+MetronomeScheme MetronomeScheme::withSyllableAt(int index, Syllable newValue) const
 {
     jassert(index >= 0 && index < this->getSize());
-    this->syllables.set(index, newValue);
+
+    MetronomeScheme other(*this);
+    other.syllables.set(index, newValue);
+    return other;
+}
+
+MetronomeScheme MetronomeScheme::resized(int size) const
+{
+    MetronomeScheme other(*this);
+
+    // the following code basically copies this method:
+    // other.syllables.resize(size);
+    // with an exception of the default inserted value
+    // (I think it's better to insert the most quiet sound)
+
+    jassert(size >= 0);
+    const auto numToAdd = size - other.syllables.size();
+
+    if (numToAdd > 0)
+    {
+        other.syllables.insertMultiple(other.syllables.size(), Syllable::pa, numToAdd);
+    }
+    else if (numToAdd < 0)
+    {
+        other.syllables.removeRange(size, -numToAdd);
+    }
+
+    return other;
 }
 
 MetronomeScheme::Syllable MetronomeScheme::getNextSyllable(Syllable syllable) noexcept

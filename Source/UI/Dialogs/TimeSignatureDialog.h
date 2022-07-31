@@ -60,7 +60,11 @@ private:
     const WeakReference<MidiTrack> targetTrack;
     const WeakReference<TimeSignaturesSequence> targetSequence;
 
+    // keeping a copy of original event so we can send undo actions (from -> to):
     TimeSignatureEvent originalEvent;
+    // all current edits are here so callbacks can just modify them:
+    TimeSignatureEvent editedEvent;
+
     Component &ownerComponent;
 
     const Array<Meter::Ptr> defaultMeters;

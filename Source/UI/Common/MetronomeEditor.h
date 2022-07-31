@@ -54,16 +54,13 @@ public:
 
                 this->transport.stopSound({});
 
-                // fixme: tempo to depend on time signature's denominator
-                // @ 120 bpm
+                // todo someday: tempo to depend on time signature's denominator
                 Thread::wait(25);
 
                 const auto syllable = metronome.getSyllableAt(i);
                 const auto key = MetronomeSynth::getKeyForSyllable(syllable);
 
-                this->transport.previewKey(this->instrument, key,
-                    Globals::Defaults::previewNoteVelocity,
-                    Globals::Defaults::previewNoteLength);
+                this->transport.previewKey(this->instrument, key, 1.f, Globals::beatsPerBar);
 
                 int c = 400;
                 while (c > 0)

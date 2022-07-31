@@ -40,7 +40,9 @@ public:
     bool isValid() const noexcept;
     int getSize() const noexcept;
     Syllable getSyllableAt(int index) const noexcept;
-    void setSyllableAt(int index, Syllable newValue);
+
+    MetronomeScheme withSyllableAt(int index, Syllable newValue) const;
+    MetronomeScheme resized(int size) const;
 
     static Syllable getNextSyllable(Syllable syllable) noexcept;
     
