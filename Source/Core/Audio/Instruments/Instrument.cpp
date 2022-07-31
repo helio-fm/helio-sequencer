@@ -198,6 +198,19 @@ const AudioProcessorGraph::Node::Ptr Instrument::getNodeForId(AudioProcessorGrap
     return this->processorGraph->getNodeForId(uid);
 }
 
+bool Instrument::contains(AudioProcessorGraph::Node::Ptr node) const noexcept
+{
+    for (int i = 0; i < this->getNumNodes(); ++i)
+    {
+        if (this->getNode(i) == node)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 const AudioProcessorGraph::Node::Ptr Instrument::findMainPluginNode() const
 {
     AudioProcessorGraph::Node::Ptr pluginNode = nullptr;

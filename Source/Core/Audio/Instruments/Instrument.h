@@ -98,6 +98,7 @@ public:
     int getNumNodes() const noexcept;
     const AudioProcessorGraph::Node::Ptr getNode(int index) const noexcept;
     const AudioProcessorGraph::Node::Ptr getNodeForId(AudioProcessorGraph::NodeID uid) const noexcept;
+    bool contains(AudioProcessorGraph::Node::Ptr node) const noexcept;
 
     // this method will assume the instrument is simple and only contains
     // system I/O processor nodes and a single plugin node connected to them,

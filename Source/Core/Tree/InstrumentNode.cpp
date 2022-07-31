@@ -223,27 +223,8 @@ void InstrumentNode::notifyOrchestraChanged()
 // Audio plugin UI editor node (mobile only)
 //===----------------------------------------------------------------------===//
 
-class HelioAudioProcessorEditor final : public GenericAudioProcessorEditor
-{
-public:
-
-    explicit HelioAudioProcessorEditor(AudioProcessor &p) : GenericAudioProcessorEditor(p)
-    {
-        this->setFocusContainerType(Component::FocusContainerType::keyboardFocusContainer);
-
-        for (int i = 0; i < this->getNumChildComponents(); ++i)
-        {
-            if (auto *panel = dynamic_cast<PropertyPanel *>(this->getChildComponent(i)))
-            {
-                this->setSize(this->getWidth(), panel->getTotalContentHeight());
-            }
-        }
-    }
-};
-
 AudioPluginNode::AudioPluginNode(AudioProcessorGraph::NodeID pluginID, const String &name) :
     TreeNode(name, Serialization::Audio::audioPlugin),
-    audioPluginEditor(nullptr),
     nodeId(pluginID) {}
 
 bool AudioPluginNode::hasMenu() const noexcept
@@ -273,6 +254,7 @@ void AudioPluginNode::showPage()
 
     if (instrument == nullptr)
     {
+        jassertfalse;
         delete this;
         return;
     }
@@ -281,6 +263,7 @@ void AudioPluginNode::showPage()
 
     if (node == nullptr)
     {
+        jassertfalse;
         delete this;
         return;
     }
@@ -289,22 +272,21 @@ void AudioPluginNode::showPage()
     {
         if (node->getProcessor()->hasEditor())
         {
-            // Some plugins (including Kontakt 3!) misbehavior messes up all the controls
-            // Turns out they attach themselves to the parent window :(
-            // So we cannot add them as a child component like that:
-            // ui = node->getProcessor()->createEditorIfNeeded();
-            // so we try to mimic that by creating a plugin window
-            // while its size and position that is managed by audioPluginEditor
-            if (auto *window = PluginWindow::getWindowFor(node, true))
-            {
-                this->audioPluginEditor = make<AudioPluginEditorPage>(window);
-            }
+            this->audioPluginEditor.reset(node->getProcessor()->createEditorIfNeeded());
         }
         else
         {
-            auto *ui = new HelioAudioProcessorEditor(*node->getProcessor());
-            auto *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor());
+            auto *ui = new GenericAudioProcessorEditor(*node->getProcessor());
+            ui->setFocusContainerType(Component::FocusContainerType::keyboardFocusContainer);
+            for (int i = 0; i < ui->getNumChildComponents(); ++i)
+            {
+                if (auto *panel = dynamic_cast<PropertyPanel *>(ui->getChildComponent(i)))
+                {
+                    ui->setSize(ui->getWidth(), panel->getTotalContentHeight());
+                }
+            }
 
+            auto *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor());
             if (plugin != nullptr)
             {
                 ui->setName(plugin->getName());
@@ -313,9 +295,9 @@ void AudioPluginNode::showPage()
             this->audioPluginEditor = make<AudioPluginEditorPage>(ui);
         }
 
-        // Something went wrong
         if (!this->audioPluginEditor)
         {
+            jassertfalse;
             delete this;
             return;
         }

@@ -38,8 +38,6 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()
     const bool producesAudio = this->node->getProcessor()->getTotalNumOutputChannels() > 0;
     const bool hasConnections = this->instrument.hasConnectionsFor(this->node);
 
-#if PLATFORM_DESKTOP
-
     const auto hasEditor = this->node->getProcessor()->hasEditor();
 
     menu.add(MenuItem::item(Icons::instrument,
@@ -49,8 +47,6 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()
     {
         PluginWindow::showWindowFor(this->instrument.getIdAndHash());
     }));
-
-#endif
 
     menu.add(MenuItem::item(Icons::routing,
         TRANS(I18n::Menu::Selection::routeGetMidi))->
