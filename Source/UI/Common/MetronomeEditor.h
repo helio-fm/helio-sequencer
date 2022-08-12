@@ -62,7 +62,7 @@ public:
 
                 this->transport.previewKey(this->instrument, key, 1.f, Globals::beatsPerBar);
 
-                int c = 400;
+                int c = 300;
                 while (c > 0)
                 {
                     const auto a = Time::getMillisecondCounter();
@@ -133,9 +133,8 @@ public:
         for (int i = 0; i < metronome.getSize(); ++i)
         {
             const auto syllable = metronome.getSyllableAt(i);
-            auto button = make<SyllabeButton>(syllable, syllable);
-            button->onTap = [i, this]
-            {
+            auto button = make<SyllableButton>(syllable);
+            button->onTap = [i, this] {
                 if (this->onTap != nullptr)
                 {
                     this->onTap(this->metronome, i);
@@ -216,15 +215,17 @@ public:
         HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.25f, 0.75f);
     }
 
-    class SyllabeButton final : public HighlightedComponent
+    class SyllableButton final : public HighlightedComponent
     {
     public:
 
         using Syllable = MetronomeScheme::Syllable;
 
-        SyllabeButton() = delete;
-        SyllabeButton(Syllable syllable, Syllable nextSyllable) :
-            syllable(syllable), nextSyllable(nextSyllable) {}
+        SyllableButton() = delete;
+
+        explicit SyllableButton(Syllable syllable, bool previewsNextSyllable = true) :
+            previewsNextSyllable(previewsNextSyllable),
+            syllable(syllable), nextSyllable(syllable) {}
 
         Function<void()> onTap;
 
@@ -303,14 +304,25 @@ public:
 
     private:
 
+        const bool previewsNextSyllable = true;
+
+        // for highligher component only:
+        SyllableButton(Syllable syllable, Syllable nextSyllable) :
+            syllable(syllable), nextSyllable(nextSyllable) {}
+
         Component *createHighlighterComponent() override
         {
-            return new SyllabeButton(this->syllable,
-                MetronomeScheme::getNextSyllable(this->syllable));
+            if (this->previewsNextSyllable)
+            {
+                return new SyllableButton(this->syllable,
+                    MetronomeScheme::getNextSyllable(this->syllable));
+            }
+
+            return new SyllableButton(this->syllable);
         }
 
         Syllable syllable;
-        Syllable nextSyllable; // to display what changes when tapped
+        Syllable nextSyllable; // to display the upcoming change
 
         Path level1Shape;
         Path level2Shape;
@@ -326,7 +338,7 @@ public:
         const Colour contoursColour =
             findDefaultColour(Label::textColourId).withMultipliedAlpha(0.1f);
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SyllabeButton)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SyllableButton)
     };
 
 private:
@@ -341,7 +353,7 @@ private:
     static constexpr auto buttonWidth = 18;
     static constexpr auto buttonMargin = 12;
 
-    OwnedArray<SyllabeButton> buttons;
+    OwnedArray<SyllableButton> buttons;
     UniquePointer<PlayButton> playButton;
     UniquePointer<IconButton> metronomeUiButton;
 

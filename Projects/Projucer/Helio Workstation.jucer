@@ -111,6 +111,16 @@
         <FILE id="KemsRO" name="erasingCursor.gif" compile="0" resource="1"
               file="../../Resources/Icons/erasingCursor.gif"/>
       </GROUP>
+      <GROUP id="{574CAD49-3734-DC29-CB87-EB1231962CBE}" name="Samples">
+        <FILE id="LvndPa" name="builtInMetronome1.wav" compile="0" resource="1"
+              file="../../Resources/Samples/builtInMetronome1.wav"/>
+        <FILE id="qL16Dc" name="builtInMetronome2.wav" compile="0" resource="1"
+              file="../../Resources/Samples/builtInMetronome2.wav"/>
+        <FILE id="e16kw6" name="builtInMetronome3.wav" compile="0" resource="1"
+              file="../../Resources/Samples/builtInMetronome3.wav"/>
+        <FILE id="YFbqr6" name="builtInMetronome4.wav" compile="0" resource="1"
+              file="../../Resources/Samples/builtInMetronome4.wav"/>
+      </GROUP>
       <GROUP id="{03B368B6-E773-F1D4-0B96-AA2CC86335DB}" name="Templates">
         <FILE id="CFbwRz" name="emptyProject.json" compile="0" resource="1"
               file="../../Resources/Templates/emptyProject.json"/>

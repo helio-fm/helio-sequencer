@@ -8,7 +8,7 @@ Most of the DAW interfaces often seem [overcomplicated](http://mashable.com/2015
 
 Helio is an attempt to rethink a music sequencer to create a tool that **feels right**.
 
-It aims to be a modern music creation software, featuring linear-based/pattern-based sequencer with clean UI, integrated version control for synchronizing project between devices, microtonal temperaments support, small portable builds and more; mainly targeted at hobbyist composers, game developers and indie artists. Check out this [YouTube channel](https://www.youtube.com/channel/UCO3K8iCd1k2FTqSocoE-WXw/) for some video demos.
+It aims to be a modern music creation software, featuring linear-based/pattern-based sequencer with clean UI, integrated version control for synchronizing project between devices, microtonal temperaments support, small portable builds and more; mainly targeted at hobbyist composers, game developers and indie artists. Check out this [YouTube channel](https://www.youtube.com/channel/UCO3K8iCd1k2FTqSocoE-WXw/) for some showcases.
 
 
 ## Building
@@ -53,6 +53,8 @@ Helio is still a work in progress, and there are several ways you could help:
 GNU GPL v3 © Peter Rudenko and [contributors](https://github.com/helio-fm/helio-workstation/graphs/contributors), see ``LICENSE`` for more information.
 
 Icons taken from various [free icon fonts](https://icomoon.io) are licensed under [SIL Open Font License](http://scripts.sil.org/cms/scripts/page.php?id=OFL) and [CC-BY](https://creativecommons.org/licenses/by/3.0/).
+
+Built-in [metronome sounds](https://stash.reaper.fm/40824/Metronomes.zip) are recorded by Ludwig Peter Müller, [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
 
 All documentation, translations and logotypes are distributed under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
 

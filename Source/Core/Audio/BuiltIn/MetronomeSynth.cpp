@@ -52,8 +52,8 @@ struct MetronomeSynth::TickSample final
 
         if (this->sourceData != nullptr)
         {
-            static FlacAudioFormat flacReader;
-            return flacReader.createReaderFor(new MemoryInputStream(this->sourceData, this->sourceDataSize, false), true);
+            static WavAudioFormat wavReader;
+            return wavReader.createReaderFor(new MemoryInputStream(this->sourceData, this->sourceDataSize, false), true);
         }
 
         File sampleFile(this->customSamplePath);
@@ -108,7 +108,7 @@ Note::Key MetronomeSynth::getKeyForSyllable(MetronomeScheme::Syllable syllable)
 {
     switch (syllable)
     {
-        // any better options for keys?
+        // it doesn't matter which keys are used here, as long as they are different:
         case MetronomeScheme::Syllable::Oo: return 60;
         case MetronomeScheme::Syllable::na: return 61;
         case MetronomeScheme::Syllable::Pa: return 62;
@@ -123,9 +123,11 @@ void MetronomeSynth::initSampler(const SamplerParameters &params)
     this->clearSounds();
 
     Array<TickSample> samples;
+    const auto syllables = MetronomeScheme::getAllOrdered();
 
-    for (auto &syllable : MetronomeScheme::getAllOrdered())
+    for (int i = 0; i < syllables.size(); ++i)
     {
+        const auto syllable = syllables.getUnchecked(i);
         const auto key = MetronomeSynth::getKeyForSyllable(syllable);
         const auto customSample = params.customSamples.find(syllable);
 
@@ -135,12 +137,12 @@ void MetronomeSynth::initSampler(const SamplerParameters &params)
         }
         else
         {
-            // using the built-in metronome
             int sampleDataSize = 0;
-            // fixme: add the actual samples
-            const auto assumedFileName = "metronome_" + MetronomeScheme::syllableToString(syllable) + "_flac";
-            auto *sampleData = BinaryData::getNamedResource(assumedFileName.toRawUTF8(), sampleDataSize);
-            samples.add({ key, sampleData, sampleDataSize });
+            const auto assumedFileName = "builtInMetronome" + String(i + 1) + "_wav";
+            if (auto *sampleData = BinaryData::getNamedResource(assumedFileName.toRawUTF8(), sampleDataSize))
+            {
+                samples.add({key, sampleData, sampleDataSize});
+            }
         }
     }
 

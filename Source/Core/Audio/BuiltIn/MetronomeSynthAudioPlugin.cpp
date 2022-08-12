@@ -45,8 +45,7 @@ public:
         {
             const auto syllable = this->allSyllables[i];
 
-            auto syllableIcon = make<MetronomeEditor::SyllabeButton>(syllable, syllable);
-            syllableIcon->setEnabled(false);
+            auto syllableIcon = make<MetronomeEditor::SyllableButton>(syllable, false);
             this->addAndMakeVisible(syllableIcon.get());
             this->syllableIcons.add(syllableIcon.release());
 
@@ -162,7 +161,7 @@ private:
 
     WeakReference<MetronomeSynthAudioPlugin> metronomePlugin;
 
-    OwnedArray<MetronomeEditor::SyllabeButton> syllableIcons;
+    OwnedArray<MetronomeEditor::SyllableButton> syllableIcons;
     OwnedArray<TextEditor> samplePaths;
     OwnedArray<IconButton> sampleBrowseButtons;
     OwnedArray<IconButton> sampleClearButtons;
