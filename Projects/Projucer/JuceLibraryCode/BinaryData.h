@@ -113,6 +113,9 @@ namespace BinaryData
     extern const char*   meter_svg;
     const int            meter_svgSize = 221;
 
+    extern const char*   metronome_svg;
+    const int            metronome_svgSize = 556;
+
     extern const char*   mute_svg;
     const int            mute_svgSize = 707;
 
@@ -266,6 +269,18 @@ namespace BinaryData
     extern const char*   erasingCursor_gif;
     const int            erasingCursor_gifSize = 116;
 
+    extern const char*   builtInMetronome1_wav;
+    const int            builtInMetronome1_wavSize = 15472;
+
+    extern const char*   builtInMetronome2_wav;
+    const int            builtInMetronome2_wavSize = 15420;
+
+    extern const char*   builtInMetronome3_wav;
+    const int            builtInMetronome3_wavSize = 15420;
+
+    extern const char*   builtInMetronome4_wav;
+    const int            builtInMetronome4_wavSize = 15420;
+
     extern const char*   emptyProject_json;
     const int            emptyProject_jsonSize = 885;
 
@@ -285,13 +300,13 @@ namespace BinaryData
     const int            colourSchemes_jsonSize = 3297;
 
     extern const char*   hotkeySchemes_json;
-    const int            hotkeySchemes_jsonSize = 15884;
+    const int            hotkeySchemes_jsonSize = 16132;
 
     extern const char*   keyboardMappings_json;
     const int            keyboardMappings_jsonSize = 588;
 
     extern const char*   meters_json;
-    const int            meters_jsonSize = 689;
+    const int            meters_jsonSize = 933;
 
     extern const char*   scales_json;
     const int            scales_jsonSize = 9400;
@@ -300,10 +315,10 @@ namespace BinaryData
     const int            temperaments_jsonSize = 1091;
 
     extern const char*   translations_json;
-    const int            translations_jsonSize = 168050;
+    const int            translations_jsonSize = 177489;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 98;
+    const int namedResourceListSize = 103;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

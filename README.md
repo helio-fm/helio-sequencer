@@ -62,6 +62,7 @@ All documentation, translations and logotypes are distributed under [CC-BY](http
 
 Afrikaans - Jacques Viviers  
 Chinese - Bowen Sun, Yingchun Soul  
+German - Aninsi Sasberg  
 Italian - Claudio Stano, Riccardo Cariboni  
 Japanese - Kotone Itaya  
 Korean - YoungGwang Jeon, DaYeon Lee, HyoHee Jeon  
