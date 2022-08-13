@@ -20,74 +20,61 @@
 #include "SerializationKeys.h"
 #include "BinaryData.h"
 
-struct MetronomeSynth::TickSample final
+//===----------------------------------------------------------------------===//
+// TickSample
+//===----------------------------------------------------------------------===//
+
+MetronomeSynth::TickSample::TickSample(int rootKey, const char *sourceData, int sourceDataSize) :
+    sourceData(sourceData),
+    sourceDataSize(sourceDataSize),
+    midiNoteForNormalPitch(rootKey)
 {
-    static constexpr auto attackTime = 0.0;
-    static constexpr auto releaseTime = 0.5;
-    static constexpr auto maxPlaybackTime = 4.5;
+    this->midiNotes.setBit(rootKey);
+}
 
-    MetronomeSynth::TickSample() = default;
-    MetronomeSynth::TickSample(const MetronomeSynth::TickSample &other) = default;
+MetronomeSynth::TickSample::TickSample(int rootKey,
+    const String &customSample) :
+    customSamplePath(customSample),
+    midiNoteForNormalPitch(rootKey)
+{
+    this->midiNotes.setBit(rootKey);
+}
 
-    MetronomeSynth::TickSample(int rootKey,
-        const char *sourceData, int sourceDataSize) :
-        sourceData(sourceData),
-        sourceDataSize(sourceDataSize),
-        midiNoteForNormalPitch(rootKey)
+AudioFormatReader *MetronomeSynth::TickSample::createReader()
+{
+    jassert(this->customSamplePath.isNotEmpty() || this->sourceData != nullptr);
+
+    if (this->sourceData != nullptr)
     {
-        this->midiNotes.setBit(rootKey);
+        static WavAudioFormat wavReader;
+        return wavReader.createReaderFor(new MemoryInputStream(this->sourceData, this->sourceDataSize, false), true);
     }
 
-    MetronomeSynth::TickSample(int rootKey,
-        const String &customSample) :
-        customSamplePath(customSample),
-        midiNoteForNormalPitch(rootKey)
+    File sampleFile(this->customSamplePath);
+    if (!sampleFile.existsAsFile())
     {
-        this->midiNotes.setBit(rootKey);
-    }
-
-    AudioFormatReader *createReader()
-    {
-        jassert(this->customSamplePath.isNotEmpty() || this->sourceData != nullptr);
-
-        if (this->sourceData != nullptr)
-        {
-            static WavAudioFormat wavReader;
-            return wavReader.createReaderFor(new MemoryInputStream(this->sourceData, this->sourceDataSize, false), true);
-        }
-
-        File sampleFile(this->customSamplePath);
-        if (!sampleFile.existsAsFile())
-        {
-            jassertfalse;
-            return nullptr;
-        }
-
-        if (this->customSamplePath.endsWithIgnoreCase(".wav"))
-        {
-            static WavAudioFormat wavFileReader;
-            return wavFileReader.createReaderFor(new FileInputStream(sampleFile), true);
-        }
-        else if (this->customSamplePath.endsWithIgnoreCase(".flac"))
-        {
-            static FlacAudioFormat flacFileReader;
-            return flacFileReader.createReaderFor(new FileInputStream(sampleFile), true);
-        }
-
         jassertfalse;
         return nullptr;
     }
 
-    const char *sourceData = nullptr;
-    const int sourceDataSize = 0;
+    if (this->customSamplePath.endsWithIgnoreCase(".wav"))
+    {
+        static WavAudioFormat wavFileReader;
+        return wavFileReader.createReaderFor(new FileInputStream(sampleFile), true);
+    }
+    else if (this->customSamplePath.endsWithIgnoreCase(".flac"))
+    {
+        static FlacAudioFormat flacFileReader;
+        return flacFileReader.createReaderFor(new FileInputStream(sampleFile), true);
+    }
 
-    const String customSamplePath;
+    jassertfalse;
+    return nullptr;
+}
 
-    BigInteger midiNotes;
-    const int midiNoteForNormalPitch = 0;
-
-    JUCE_LEAK_DETECTOR(MetronomeSynth::TickSample)
-};
+//===----------------------------------------------------------------------===//
+// MetronomeSynth
+//===----------------------------------------------------------------------===//
 
 void MetronomeSynth::initVoices()
 {
@@ -133,7 +120,7 @@ void MetronomeSynth::initSampler(const SamplerParameters &params)
 
         if (customSample != params.customSamples.end())
         {
-            samples.add({ key, customSample->second });
+            samples.add(TickSample(key, customSample->second));
         }
         else
         {
@@ -141,7 +128,7 @@ void MetronomeSynth::initSampler(const SamplerParameters &params)
             const auto assumedFileName = "builtInMetronome" + String(i + 1) + "_wav";
             if (auto *sampleData = BinaryData::getNamedResource(assumedFileName.toRawUTF8(), sampleDataSize))
             {
-                samples.add({key, sampleData, sampleDataSize});
+                samples.add(TickSample(key, sampleData, sampleDataSize));
             }
         }
     }

@@ -43,12 +43,33 @@ public:
 
 protected:
 
-    struct TickSample;
-
     void handleSustainPedal(int midiChannel, bool isDown) override;
     void handleSostenutoPedal(int midiChannel, bool isDown) override;
 
     static constexpr auto numVoices = 16;
+
+    struct TickSample final
+    {
+        static constexpr auto attackTime = 0.0;
+        static constexpr auto releaseTime = 0.5;
+        static constexpr auto maxPlaybackTime = 4.5;
+
+        TickSample() = delete;
+        TickSample(int rootKey, const char *sourceData, int sourceDataSize);
+        TickSample(int rootKey, const String &customSample);
+
+        AudioFormatReader *createReader();
+
+        const char *sourceData = nullptr;
+        const int sourceDataSize = 0;
+
+        const String customSamplePath;
+
+        BigInteger midiNotes;
+        const int midiNoteForNormalPitch = 0;
+
+        JUCE_LEAK_DETECTOR(TickSample)
+    };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetronomeSynth)
 };

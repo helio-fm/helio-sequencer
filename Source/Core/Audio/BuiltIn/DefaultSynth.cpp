@@ -17,148 +17,132 @@
 
 #include "Common.h"
 #include "DefaultSynth.h"
-#include "Temperament.h"
 
-class DefaultSynth::Voice final : public SynthesiserVoice
+//===----------------------------------------------------------------------===//
+// Voice
+//===----------------------------------------------------------------------===//
+
+DefaultSynth::Voice::Voice()
 {
-public:
+    ADSR::Parameters ap;
+    ap.attack = 0.001f;
+    ap.decay = 1.0f;
+    ap.sustain = 0.2f;
+    ap.release = 0.5f;
+    this->adsr.setParameters(ap);
 
-    DefaultSynth::Voice()
+    Reverb::Parameters rp;
+    rp.roomSize = 0.0f;
+    rp.damping = 0.0f;
+    rp.wetLevel = 0.23f;
+    rp.dryLevel = 0.73f;
+    rp.width = 0.0f;
+    rp.freezeMode = 0.4f;
+    this->reverb.setParameters(rp);
+}
+
+bool DefaultSynth::Voice::canPlaySound(SynthesiserSound *)
+{
+    return true; // just assume correct usage
+}
+
+void DefaultSynth::Voice::setCurrentPlaybackSampleRate(double sampleRate)
+{
+    if (sampleRate > 0)
     {
-        ADSR::Parameters ap;
-        ap.attack = 0.001f;
-        ap.decay = 1.0f;
-        ap.sustain = 0.2f;
-        ap.release = 0.5f;
-        this->adsr.setParameters(ap);
-
-        Reverb::Parameters rp;
-        rp.roomSize = 0.0f;
-        rp.damping = 0.0f;
-        rp.wetLevel = 0.23f;
-        rp.dryLevel = 0.73f;
-        rp.width = 0.0f;
-        rp.freezeMode = 0.4f;
-        this->reverb.setParameters(rp);
+        this->adsr.setSampleRate(sampleRate);
+        this->reverb.setSampleRate(sampleRate);
+        SynthesiserVoice::setCurrentPlaybackSampleRate(sampleRate);
     }
+}
 
-    bool canPlaySound(SynthesiserSound *) override
+void DefaultSynth::Voice::startNote(int midiNoteNumber, float velocity, SynthesiserSound *, int)
+{
+    const auto channel = this->getCurrentChannel();
+    const int realNoteNumber = midiNoteNumber +
+        Globals::twelveToneKeyboardSize * (channel - 1);
+
+    this->currentAngle = 0.0;
+    this->level = velocity * 0.15;
+
+    const auto cyclesPerSecond = this->getNoteInHertz(realNoteNumber);
+    const auto cyclesPerSample = cyclesPerSecond / this->getSampleRate();
+
+    this->angleDelta = cyclesPerSample * MathConstants<double>::twoPi;
+
+    this->adsr.noteOn();
+}
+
+void DefaultSynth::Voice::stopNote(float, bool allowTailOff)
+{
+    if (allowTailOff)
     {
-        return true; // just assume correct usage
+        this->adsr.noteOff();
     }
-
-    void setCurrentPlaybackSampleRate(double sampleRate) override
+    else
     {
-        if (sampleRate > 0)
+        this->clearCurrentNote();
+        this->adsr.reset();
+        this->reverb.reset();
+    }
+}
+
+void DefaultSynth::Voice::renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, int numSamples)
+{
+    if (this->adsr.isActive())
+    {
+        while (--numSamples >= 0)
         {
-            this->adsr.setSampleRate(sampleRate);
-            this->reverb.setSampleRate(sampleRate);
-            SynthesiserVoice::setCurrentPlaybackSampleRate(sampleRate);
-        }
-    }
+            const auto amplitude = this->adsr.getNextSample();
+            auto currentSample = (float)(std::sin(currentAngle) * level * amplitude);
+            this->reverb.processMono(&currentSample, 1);
 
-    void startNote(int midiNoteNumber, float velocity, SynthesiserSound *, int) override
-    {
-        const auto channel = this->getCurrentChannel();
-        const int realNoteNumber = midiNoteNumber +
-            Globals::twelveToneKeyboardSize * (channel - 1);
-
-        this->currentAngle = 0.0;
-        this->level = velocity * 0.15;
-
-        const auto cyclesPerSecond = this->getNoteInHertz(realNoteNumber);
-        const auto cyclesPerSample = cyclesPerSecond / this->getSampleRate();
-
-        this->angleDelta = cyclesPerSample * MathConstants<double>::twoPi;
-
-        this->adsr.noteOn();
-    }
-
-    void stopNote(float, bool allowTailOff) override
-    {
-        if (allowTailOff)
-        {
-            this->adsr.noteOff();
-        }
-        else
-        {
-            this->clearCurrentNote();
-            this->adsr.reset();
-            this->reverb.reset();
-        }
-    }
-
-    void pitchWheelMoved(int) override {}
-    void controllerMoved(int, int) override {}
-
-    void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, int numSamples) override
-    {
-        if (this->adsr.isActive())
-        {
-            while (--numSamples >= 0)
+            for (auto i = outputBuffer.getNumChannels(); i --> 0 ;)
             {
-                const auto amplitude = this->adsr.getNextSample();
-                auto currentSample = (float)(std::sin(currentAngle) * level * amplitude);
-                this->reverb.processMono(&currentSample, 1);
-
-                for (auto i = outputBuffer.getNumChannels(); i --> 0 ;)
-                {
-                    outputBuffer.addSample(i, startSample, currentSample);
-                }
-
-                this->currentAngle += this->angleDelta;
-                ++startSample;
+                outputBuffer.addSample(i, startSample, currentSample);
             }
+
+            this->currentAngle += this->angleDelta;
+            ++startSample;
         }
     }
+}
 
-    using SynthesiserVoice::renderNextBlock;
+void DefaultSynth::Voice::setPeriodSize(int size) noexcept
+{
+    this->periodSize = size;
+    this->middleC = Temperament::periodNumForMiddleC * this->periodSize;
+}
 
-    void setPeriodSize(int size) noexcept
+void DefaultSynth::Voice::setPeriodRange(double periodRange) noexcept
+{
+    this->periodRange = periodRange;
+}
+
+double DefaultSynth::Voice::getNoteInHertz(int noteNumber, double frequencyOfA /*= 440.0*/) noexcept
+{
+    return frequencyOfA * std::pow(this->periodRange,
+        (noteNumber - this->middleC) / double(this->periodSize));
+}
+
+int DefaultSynth::Voice::getCurrentChannel() const noexcept
+{
+    // the only way to access channel info in SynthesizerVoice :(
+    for (int i = 1; i < Globals::numChannels; ++i)
     {
-        this->periodSize = size;
-        this->middleC = Temperament::periodNumForMiddleC * this->periodSize;
-    }
-
-    void setPeriodRange(double periodRange) noexcept
-    {    
-        this->periodRange = periodRange;
-    }
-
-private:
-
-    double currentAngle = 0.0;
-    double angleDelta = 0.0;
-    double level = 0.0;
-    
-    int periodSize = Globals::twelveTonePeriodSize;
-    double periodRange = 2.0;
-    int middleC = Temperament::periodNumForMiddleC * Globals::twelveTonePeriodSize;
-
-    ADSR adsr;
-    Reverb reverb;
-
-    double getNoteInHertz(int noteNumber, double frequencyOfA = 440.0) noexcept
-    {
-        return frequencyOfA * std::pow(this->periodRange,
-            (noteNumber - this->middleC) / double(this->periodSize));
-    }
-
-    int getCurrentChannel() const noexcept
-    {
-        // the only way to access channel info in SynthesizerVoice :(
-        for (int i = 1; i < Globals::numChannels; ++i)
+        if (this->isPlayingChannel(i))
         {
-            if (this->isPlayingChannel(i))
-            {
-                return i;
-            }
+            return i;
         }
-
-        jassertfalse;
-        return 1;
     }
-};
+
+    jassertfalse;
+    return 1;
+}
+
+//===----------------------------------------------------------------------===//
+// DefaultSynth
+//===----------------------------------------------------------------------===//
 
 DefaultSynth::DefaultSynth()
 {

@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "Temperament.h"
+
 class DefaultSynth final : public Synthesiser
 {
 public:
@@ -43,7 +45,41 @@ protected:
         bool appliesToChannel(int midiChannel) override { return true; }
     };
 
-    class Voice;
+    class Voice final : public SynthesiserVoice
+    {
+    public:
+
+        Voice();
+
+        bool canPlaySound(SynthesiserSound *) override;
+        void setCurrentPlaybackSampleRate(double sampleRate) override;
+        void startNote(int midiNoteNumber, float velocity, SynthesiserSound *, int) override;
+        void stopNote(float, bool allowTailOff) override;
+        void pitchWheelMoved(int) override {}
+        void controllerMoved(int, int) override {}
+        void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, int numSamples) override;
+
+        using SynthesiserVoice::renderNextBlock;
+
+        void setPeriodSize(int size) noexcept;
+        void setPeriodRange(double periodRange) noexcept;
+
+    private:
+
+        double currentAngle = 0.0;
+        double angleDelta = 0.0;
+        double level = 0.0;
+
+        int periodSize = Globals::twelveTonePeriodSize;
+        double periodRange = 2.0;
+        int middleC = Temperament::periodNumForMiddleC * Globals::twelveTonePeriodSize;
+
+        ADSR adsr;
+        Reverb reverb;
+
+        double getNoteInHertz(int noteNumber, double frequencyOfA = 440.0) noexcept;
+        int getCurrentChannel() const noexcept;
+    };
 
     void handleSustainPedal(int midiChannel, bool isDown) override;
     void handleSostenutoPedal(int midiChannel, bool isDown) override;

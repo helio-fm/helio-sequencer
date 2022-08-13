@@ -122,11 +122,11 @@ void AudioCore::addInstrument(const PluginDescription &pluginDescription,
         [this, callback](Instrument *instrument)
         {
             jassert(instrument);
-            this->broadcastAddInstrument(instrument);
             if (callback != nullptr)
             {
                 callback(instrument);
             }
+            this->broadcastAddInstrument(instrument);
             DBG("Loaded " + instrument->getName());
         });
 }
