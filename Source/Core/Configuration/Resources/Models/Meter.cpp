@@ -421,6 +421,11 @@ MetronomeScheme::Syllable MetronomeScheme::getNextSyllable(Syllable syllable) no
     return Syllable::Oo;
 }
 
+const Array<MetronomeScheme::Syllable> &MetronomeScheme::getSyllables() const noexcept
+{
+    return this->syllables;
+}
+
 //===----------------------------------------------------------------------===//
 // Tests
 //===----------------------------------------------------------------------===//
@@ -457,7 +462,7 @@ public:
         MetronomeScheme m;
 
         // the default
-        expectEquals(m.syllables, { Oo, na, Pa, na });
+        expectEquals(m.getSyllables(), { Oo, na, Pa, na });
         expectEquals(m.toString(), { "Oona Pana" });
 
         // invalid string
@@ -467,7 +472,7 @@ public:
         // valid string
         m.loadString("Oonapa Panapa Panapa");
         expect(m.isValid());
-        expectEquals(m.syllables,
+        expectEquals(m.getSyllables(),
         {
             Oo, na, pa,
             Pa, na, pa,
@@ -477,7 +482,7 @@ public:
         // test the lowercase form with some garbage
         m.loadString("oonapa panapa skip skip skip 12345 panapa pana papa");
         expect(m.isValid());
-        expectEquals(m.syllables,
+        expectEquals(m.getSyllables(),
         {
             Oo, na, pa,
             Pa, na, pa,

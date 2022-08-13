@@ -58,7 +58,7 @@ public:
                 // todo someday: tempo to depend on time signature's denominator
                 const auto endTime = Time::getMillisecondCounter() + 300;
 
-                this->transport.previewKey(this->instrument, key, 1.f, Globals::beatsPerBar);
+                this->transport.previewKey(this->instrument, key, 1.f, float(Globals::beatsPerBar));
 
                 while (Time::getMillisecondCounter() < endTime)
                 {

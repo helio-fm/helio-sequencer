@@ -179,7 +179,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
 
         const auto key = MetronomeSynth::getKeyForSyllable(nextSyllable);
         auto *metronomeInstrument = App::Workspace().getAudioCore().getMetronomeInstrument();
-        transport.previewKey(metronomeInstrument, key, 1.f, Globals::beatsPerBar);
+        transport.previewKey(metronomeInstrument, key, 1.f, float(Globals::beatsPerBar));
 
         this->sendEventChange(this->editedEvent.withMetronome(newMetronome));
     };
