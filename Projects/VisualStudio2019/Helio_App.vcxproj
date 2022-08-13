@@ -148,16 +148,22 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthAudioPlugin.cpp">
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\InternalIODevicesPluginFormat.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthFormat.cpp">
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthsPluginFormat.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynth.cpp">
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\DefaultSynthAudioPlugin.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\InternalPluginFormat.cpp">
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\DefaultSynth.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\MetronomeSynthAudioPlugin.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\MetronomeSynth.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Audio\Instruments\Instrument.cpp">
@@ -2913,10 +2919,12 @@
     <ClCompile Include="..\Projucer\JuceLibraryCode\UnityBuild.cpp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthAudioPlugin.h"/>
-    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthFormat.h"/>
-    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynth.h"/>
-    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\InternalPluginFormat.h"/>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\InternalIODevicesPluginFormat.h"/>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthsPluginFormat.h"/>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\DefaultSynthAudioPlugin.h"/>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\DefaultSynth.h"/>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\MetronomeSynthAudioPlugin.h"/>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\MetronomeSynth.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Instruments\Instrument.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Instruments\OrchestraListener.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Instruments\OrchestraPit.h"/>
@@ -3093,6 +3101,7 @@
     <ClInclude Include="..\..\Source\UI\Common\HighlightedComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\IconButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\IconComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Common\MetronomeEditor.h"/>
     <ClInclude Include="..\..\Source\UI\Common\MobileComboBox.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ModeIndicatorComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\OverlayButton.h"/>
@@ -4123,6 +4132,7 @@
     <None Include="..\..\Resources\Icons\list.svg"/>
     <None Include="..\..\Resources\Icons\local.svg"/>
     <None Include="..\..\Resources\Icons\meter.svg"/>
+    <None Include="..\..\Resources\Icons\metronome.svg"/>
     <None Include="..\..\Resources\Icons\mute.svg"/>
     <None Include="..\..\Resources\Icons\orchestraPit.svg"/>
     <None Include="..\..\Resources\Icons\paint.svg"/>
@@ -4174,6 +4184,10 @@
     <None Include="..\..\Resources\Icons\noise.png"/>
     <None Include="..\..\Resources\Icons\copyingCursor.gif"/>
     <None Include="..\..\Resources\Icons\erasingCursor.gif"/>
+    <None Include="..\..\Resources\Samples\builtInMetronome1.wav"/>
+    <None Include="..\..\Resources\Samples\builtInMetronome2.wav"/>
+    <None Include="..\..\Resources\Samples\builtInMetronome3.wav"/>
+    <None Include="..\..\Resources\Samples\builtInMetronome4.wav"/>
     <None Include="..\..\Resources\Templates\emptyProject.json"/>
     <None Include="..\..\Resources\Templates\exampleProject.json"/>
     <None Include="..\..\Resources\logo-v2.png"/>

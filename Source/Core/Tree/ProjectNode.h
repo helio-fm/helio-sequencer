@@ -112,7 +112,7 @@ public:
     //===------------------------------------------------------------------===//
 
     Array<MidiTrack *> getTracks() const;
-    Range<float> getProjectRangeInBeats() const;
+    Range<float> getProjectBeatRange() const;
     StringArray getAllTrackNames() const;
     MidiTrack::Grouping getTrackGroupingMode() const noexcept;
     void setTrackGroupingMode(MidiTrack::Grouping mode);
@@ -246,8 +246,8 @@ private:
 
     MidiTrack::Grouping trackGroupingMode = MidiTrack::Grouping::GroupByName;
 
-    mutable float firstBeatCache = 0.f;
-    mutable float lastBeatCache = Globals::Defaults::projectLength;
+    mutable Range<float> beatRange = { 0.f, Globals::Defaults::projectLength };
+    Range<float> calculateProjectBeatRange() const;
 
     mutable bool isTracksCacheOutdated = true;
     mutable FlatHashMap<String, WeakReference<MidiTrack>, StringHash> tracksRefsCache;

@@ -2379,7 +2379,7 @@ bool SequencerOperations::setOneTempoForProject(ProjectNode &project,
     }
 
     // finally:
-    const auto range = project.getProjectRangeInBeats();
+    const auto range = project.getProjectBeatRange();
     return setOneTempoForTrack(tempoTrackOne,
         range.getStart(), range.getEnd(), bpmValue, !didCheckpoint);
 }
@@ -2614,7 +2614,7 @@ SerializedData SequencerOperations::createAutoTrackTemplate(ProjectNode &project
     const float cv2 = newNode->isOnOffAutomationTrack() ? 0.f : 0.5f;
 
     // second event is placed at the end of the track for convenience:
-    const auto beatRange = project.getProjectRangeInBeats();
+    const auto beatRange = project.getProjectBeatRange();
     autoSequence->insert(AutomationEvent(autoSequence, beatRange.getStart(), cv1), false);
     autoSequence->insert(AutomationEvent(autoSequence, beatRange.getEnd(), cv2), false);
 

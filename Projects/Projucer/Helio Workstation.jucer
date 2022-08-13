@@ -49,6 +49,7 @@
         <FILE id="Tp3StV" name="list.svg" compile="0" resource="1" file="../../Resources/Icons/list.svg"/>
         <FILE id="vkA7la" name="local.svg" compile="0" resource="1" file="../../Resources/Icons/local.svg"/>
         <FILE id="CexsNu" name="meter.svg" compile="0" resource="1" file="../../Resources/Icons/meter.svg"/>
+        <FILE id="LBASSh" name="metronome.svg" compile="0" resource="1" file="../../Resources/Icons/metronome.svg"/>
         <FILE id="GtzvG7" name="mute.svg" compile="0" resource="1" file="../../Resources/Icons/mute.svg"/>
         <FILE id="TWchuX" name="orchestraPit.svg" compile="0" resource="1"
               file="../../Resources/Icons/orchestraPit.svg"/>
@@ -110,6 +111,16 @@
         <FILE id="KemsRO" name="erasingCursor.gif" compile="0" resource="1"
               file="../../Resources/Icons/erasingCursor.gif"/>
       </GROUP>
+      <GROUP id="{574CAD49-3734-DC29-CB87-EB1231962CBE}" name="Samples">
+        <FILE id="LvndPa" name="builtInMetronome1.wav" compile="0" resource="1"
+              file="../../Resources/Samples/builtInMetronome1.wav"/>
+        <FILE id="qL16Dc" name="builtInMetronome2.wav" compile="0" resource="1"
+              file="../../Resources/Samples/builtInMetronome2.wav"/>
+        <FILE id="e16kw6" name="builtInMetronome3.wav" compile="0" resource="1"
+              file="../../Resources/Samples/builtInMetronome3.wav"/>
+        <FILE id="YFbqr6" name="builtInMetronome4.wav" compile="0" resource="1"
+              file="../../Resources/Samples/builtInMetronome4.wav"/>
+      </GROUP>
       <GROUP id="{03B368B6-E773-F1D4-0B96-AA2CC86335DB}" name="Templates">
         <FILE id="CFbwRz" name="emptyProject.json" compile="0" resource="1"
               file="../../Resources/Templates/emptyProject.json"/>
@@ -137,21 +148,29 @@
       <GROUP id="{F2A6D338-1D87-9C43-B3BB-5AFE01EEE084}" name="Core">
         <GROUP id="{C21ADAA4-EF22-DB83-6A0D-E8AC7E9B05DF}" name="Audio">
           <GROUP id="{735E5D69-BA85-2788-E3C0-566143134659}" name="BuiltIn">
-            <FILE id="B3bOVQ" name="BuiltInSynthAudioPlugin.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Audio/BuiltIn/BuiltInSynthAudioPlugin.cpp"/>
-            <FILE id="qINmEE" name="BuiltInSynthAudioPlugin.h" compile="0" resource="0"
-                  file="../../Source/Core/Audio/BuiltIn/BuiltInSynthAudioPlugin.h"/>
-            <FILE id="u3XxWY" name="BuiltInSynthFormat.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Audio/BuiltIn/BuiltInSynthFormat.cpp"/>
-            <FILE id="QbQrqy" name="BuiltInSynthFormat.h" compile="0" resource="0"
-                  file="../../Source/Core/Audio/BuiltIn/BuiltInSynthFormat.h"/>
-            <FILE id="KnatwX" name="BuiltInSynth.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Audio/BuiltIn/BuiltInSynth.cpp"/>
-            <FILE id="ptazaW" name="BuiltInSynth.h" compile="0" resource="0" file="../../Source/Core/Audio/BuiltIn/BuiltInSynth.h"/>
-            <FILE id="PYyC8X" name="InternalPluginFormat.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Audio/BuiltIn/InternalPluginFormat.cpp"/>
-            <FILE id="LuBc4N" name="InternalPluginFormat.h" compile="0" resource="0"
-                  file="../../Source/Core/Audio/BuiltIn/InternalPluginFormat.h"/>
+            <FILE id="PYyC8X" name="InternalIODevicesPluginFormat.cpp" compile="1"
+                  resource="0" file="../../Source/Core/Audio/BuiltIn/InternalIODevicesPluginFormat.cpp"/>
+            <FILE id="LuBc4N" name="InternalIODevicesPluginFormat.h" compile="0"
+                  resource="0" file="../../Source/Core/Audio/BuiltIn/InternalIODevicesPluginFormat.h"/>
+            <FILE id="u3XxWY" name="BuiltInSynthsPluginFormat.cpp" compile="1"
+                  resource="0" file="../../Source/Core/Audio/BuiltIn/BuiltInSynthsPluginFormat.cpp"/>
+            <FILE id="QbQrqy" name="BuiltInSynthsPluginFormat.h" compile="0" resource="0"
+                  file="../../Source/Core/Audio/BuiltIn/BuiltInSynthsPluginFormat.h"/>
+            <FILE id="B3bOVQ" name="DefaultSynthAudioPlugin.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Audio/BuiltIn/DefaultSynthAudioPlugin.cpp"/>
+            <FILE id="qINmEE" name="DefaultSynthAudioPlugin.h" compile="0" resource="0"
+                  file="../../Source/Core/Audio/BuiltIn/DefaultSynthAudioPlugin.h"/>
+            <FILE id="KnatwX" name="DefaultSynth.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Audio/BuiltIn/DefaultSynth.cpp"/>
+            <FILE id="ptazaW" name="DefaultSynth.h" compile="0" resource="0" file="../../Source/Core/Audio/BuiltIn/DefaultSynth.h"/>
+            <FILE id="ooj1fI" name="MetronomeSynthAudioPlugin.cpp" compile="1"
+                  resource="0" file="../../Source/Core/Audio/BuiltIn/MetronomeSynthAudioPlugin.cpp"/>
+            <FILE id="VWS8Jz" name="MetronomeSynthAudioPlugin.h" compile="0" resource="0"
+                  file="../../Source/Core/Audio/BuiltIn/MetronomeSynthAudioPlugin.h"/>
+            <FILE id="TX5OT0" name="MetronomeSynth.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Audio/BuiltIn/MetronomeSynth.cpp"/>
+            <FILE id="BW6KlR" name="MetronomeSynth.h" compile="0" resource="0"
+                  file="../../Source/Core/Audio/BuiltIn/MetronomeSynth.h"/>
           </GROUP>
           <GROUP id="{0A903C8C-868E-C0D3-671A-8E37B2140BFE}" name="Instruments">
             <FILE id="MCDbWa" name="Instrument.cpp" compile="1" resource="0" file="../../Source/Core/Audio/Instruments/Instrument.cpp"/>
@@ -717,6 +736,8 @@
                 file="../../Source/UI/Common/HighlightedComponent.h"/>
           <FILE id="gh5EBT" name="IconButton.h" compile="0" resource="0" file="../../Source/UI/Common/IconButton.h"/>
           <FILE id="ZZe4ma" name="IconComponent.h" compile="0" resource="0" file="../../Source/UI/Common/IconComponent.h"/>
+          <FILE id="Wj1EJg" name="MetronomeEditor.h" compile="0" resource="0"
+                file="../../Source/UI/Common/MetronomeEditor.h"/>
           <FILE id="bkogLX" name="MobileComboBox.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/MobileComboBox.cpp"/>
           <FILE id="tumRST" name="MobileComboBox.h" compile="0" resource="0"

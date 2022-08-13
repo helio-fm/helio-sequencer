@@ -17,6 +17,7 @@
 
 #pragma once
 
+class ProjectNode;
 class SleepTimer;
 class OrchestraPit;
 class PlayerThread;
@@ -25,18 +26,23 @@ class RendererThread;
 
 #include "TransportListener.h"
 #include "TransportPlaybackCache.h"
+#include "TimeSignaturesAggregator.h"
 #include "OrchestraListener.h"
 #include "ProjectListener.h"
 #include "RenderFormat.h"
 #include "Instrument.h"
+#include "UserInterfaceFlags.h"
+#include "Config.h"
 
 class Transport final : public Serializable,
-                        public ProjectListener,
-                        private OrchestraListener
+    public ProjectListener,
+    public OrchestraListener,
+    public TimeSignaturesAggregator::Listener,
+    public UserInterfaceFlags::Listener // needs the metronome on/off flag changes
 {
 public:
 
-    Transport(OrchestraPit &orchestraPit, SleepTimer &sleepTimer);
+    Transport(ProjectNode &project, OrchestraPit &orchestraPit, SleepTimer &sleepTimer);
     ~Transport() override;
     
     static String getTimeString(double timeMs, bool includeMilliseconds = false);
@@ -51,7 +57,6 @@ public:
     //===------------------------------------------------------------------===//
     
     float getSeekBeat() const noexcept;
-    float getTotalTime() const noexcept;
     void seekToBeat(float beatPosition);
     
     void probeSoundAtBeat(float beatPosition,
@@ -141,19 +146,33 @@ public:
     // Sending messages in real-time
     //===------------------------------------------------------------------===//
     
-    void previewKey(const String &trackId, int key,
-        float volume, float lengthInBeats) const;
+    void previewKey(const String &trackId,
+        int key, float volume, float lengthInBeats) const;
+    void previewKey(WeakReference<Instrument> instrument,
+        int key, float volume, float lengthInBeats) const;
 
     void stopSound(const String &trackId = "") const;
     void allNotesControllersAndSoundOff() const;
-    
+
+    //===------------------------------------------------------------------===//
+    // UserInterfaceFlags::Listener
+    //===------------------------------------------------------------------===//
+
+    void onMetronomeFlagChanged(bool enabled) override;
+
+    //===------------------------------------------------------------------===//
+    // TimeSignaturesAggregator::Listener
+    //===------------------------------------------------------------------===//
+
+    void onTimeSignaturesUpdated() override;
+
     //===------------------------------------------------------------------===//
     // OrchestraListener
     //===------------------------------------------------------------------===//
 
-    void instrumentAdded(Instrument *instrument) override;
-    void instrumentRemoved(Instrument *instrument) override;
-    void instrumentRemovedPostAction() override;
+    void onAddInstrument(Instrument *instrument) override;
+    void onRemoveInstrument(Instrument *instrument) override;
+    void onPostRemoveInstrument() override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -200,7 +219,6 @@ public:
 
 private:
 
-    void setTotalTime(float val);
     void setSeekBeat(float beatPosition);
 
     void broadcastPlay();
@@ -218,7 +236,9 @@ private:
 
 private:
     
+    ProjectNode &project;
     OrchestraPit &orchestra;
+
     SleepTimer &sleepTimer;
     static constexpr auto soundSleepDelayMs = 60000;
 
@@ -229,14 +249,15 @@ private:
 
     mutable TransportPlaybackCache playbackCache;
     mutable Atomic<bool> playbackCacheIsOutdated = true;
-    void recacheIfNeeded() const;
+    void rebuildPlaybackCacheIfNeeded() const;
+    TransportPlaybackCache buildPlaybackCache(bool withMetronome) const;
 
     // linksCache is <track id : instrument>
     mutable Array<const MidiTrack *> tracksCache;
-    mutable FlatHashMap<String, WeakReference<Instrument>, StringHash> linksCache;
+    mutable FlatHashMap<String, WeakReference<Instrument>, StringHash> instrumentLinks;
     
-    void updateLinkForTrack(const MidiTrack *track);
-    void removeLinkForTrack(const MidiTrack *track);
+    void updateInstrumentLinkForTrack(const MidiTrack *track);
+    void clearInstrumentLinkForTrack(const MidiTrack *track);
     
     // a nasty hack, see the description in BuiltInSynth.h:
     void updateTemperamentInfoForBuiltInSynth(int periodSize, double periodRange) const;
@@ -280,8 +301,6 @@ private:
 private:
 
     Atomic<float> seekBeat = 0.0;
-    Atomic<float> totalTime = Globals::Defaults::projectLength;
-    
     Atomic<float> projectFirstBeat = 0.f;
     Atomic<float> projectLastBeat = Globals::Defaults::projectLength;
 
@@ -291,6 +310,8 @@ private:
     Atomic<bool> loopMode = false;
     Atomic<float> loopStartBeat = 0.f;
     Atomic<float> loopEndBeat = Globals::Defaults::projectLength;
+
+    bool isMetronomeEnabled = App::Config().getUiFlags()->isMetronomeEnabled();
 
     ListenerList<TransportListener> transportListeners;
 

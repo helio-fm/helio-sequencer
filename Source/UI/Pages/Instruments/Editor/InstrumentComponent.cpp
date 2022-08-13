@@ -22,11 +22,9 @@
 #include "PluginWindow.h"
 
 #if PLATFORM_DESKTOP
-#   define AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW 1
 #   define CHANNELS_NUMBER_LIMIT 12
 #   define DEFAULT_PIN_SIZE (18)
 #elif PLATFORM_MOBILE
-#   define AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW 0
 #   define CHANNELS_NUMBER_LIMIT 6
 #   define DEFAULT_PIN_SIZE (25)
 #endif
@@ -87,33 +85,10 @@ void InstrumentComponent::mouseUp(const MouseEvent &e)
 
         if (const auto node = this->instrument->getNodeForId(this->nodeId))
         {
-#if AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW
-            if (auto *w = PluginWindow::getWindowFor(node, false))
-            {
-                w->toFront(true);
-            }
-            else
+            if (!PluginWindow::showWindowFor(node))
             {
                 this->getParentEditor()->selectNode(this->nodeId, e);
             }
-#else
-            const auto instrumentTreeItems =
-                App::Workspace().getTreeRoot()->
-                findChildrenOfType<InstrumentNode>();
-
-            for (auto *instrumentTreeItem : instrumentTreeItems)
-            {
-                if (instrumentTreeItem->getInstrument() == this->instrument.get())
-                {
-                    instrumentTreeItem->recreateChildrenEditors();
-                    if (auto *audioPluginTreeItem = instrumentTreeItem->findAudioPluginEditorForNodeId(this->nodeId))
-                    {
-                        audioPluginTreeItem->setSelected();
-                        return;
-                    }
-                }
-            }
-#endif
         }
     }
     else

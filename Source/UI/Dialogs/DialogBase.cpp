@@ -75,7 +75,6 @@ void DialogBase::paint(Graphics &g)
         withMultipliedAlpha(lightAlpha));
 
     g.fillRect(2, 1, this->getWidth() - 4, 5);
-
 }
 
 void DialogBase::parentHierarchyChanged()
@@ -130,7 +129,7 @@ void DialogBase::updatePosition()
 
 Rectangle<int> DialogBase::getContentBounds(float paddingAmount) const noexcept
 {
-    const auto actualBounds = this->getBounds()
+    const auto actualBounds = this->getLocalBounds()
         .reduced(DialogBase::contentMargin)
         .withTrimmedBottom(DialogBase::buttonsHeight)
         .translated(0, 1); // 1 pixel y offset because we have a header line
@@ -145,7 +144,7 @@ Rectangle<int> DialogBase::getCaptionBounds() const noexcept
 
 Rectangle<int> DialogBase::getButtonsBounds() const noexcept
 {
-    const auto actualBounds = this->getBounds().reduced(DialogBase::contentMargin);
+    const auto actualBounds = this->getLocalBounds().reduced(DialogBase::contentMargin);
     return actualBounds.withHeight(DialogBase::buttonsHeight).withBottomY(actualBounds.getBottom());
 }
 

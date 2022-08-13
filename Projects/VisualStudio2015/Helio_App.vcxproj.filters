@@ -5,6 +5,9 @@
     <Filter Include="Helio\Resources\Icons">
       <UniqueIdentifier>{408F7FE0-B4E5-2CBD-2A2E-970F3A7C6943}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helio\Resources\Samples">
+      <UniqueIdentifier>{F44E5A42-5F63-EDB4-3295-9D3A72C1FEBA}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Helio\Resources\Templates">
       <UniqueIdentifier>{BFB6FB5F-20F9-E42F-5A1D-9E9754E2317D}</UniqueIdentifier>
     </Filter>
@@ -631,16 +634,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthAudioPlugin.cpp">
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\InternalIODevicesPluginFormat.cpp">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthFormat.cpp">
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthsPluginFormat.cpp">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynth.cpp">
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\DefaultSynthAudioPlugin.cpp">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\InternalPluginFormat.cpp">
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\DefaultSynth.cpp">
+      <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\MetronomeSynthAudioPlugin.cpp">
+      <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\MetronomeSynth.cpp">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Audio\Instruments\Instrument.cpp">
@@ -3531,16 +3540,22 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthAudioPlugin.h">
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\InternalIODevicesPluginFormat.h">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthFormat.h">
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthsPluginFormat.h">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynth.h">
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\DefaultSynthAudioPlugin.h">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\InternalPluginFormat.h">
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\DefaultSynth.h">
+      <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\MetronomeSynthAudioPlugin.h">
+      <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\MetronomeSynth.h">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Audio\Instruments\Instrument.h">
@@ -4069,6 +4084,9 @@
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\IconComponent.h">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Common\MetronomeEditor.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\MobileComboBox.h">
@@ -7157,6 +7175,9 @@
     <None Include="..\..\Resources\Icons\meter.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
+    <None Include="..\..\Resources\Icons\metronome.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
     <None Include="..\..\Resources\Icons\mute.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
@@ -7309,6 +7330,18 @@
     </None>
     <None Include="..\..\Resources\Icons\erasingCursor.gif">
       <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Samples\builtInMetronome1.wav">
+      <Filter>Helio\Resources\Samples</Filter>
+    </None>
+    <None Include="..\..\Resources\Samples\builtInMetronome2.wav">
+      <Filter>Helio\Resources\Samples</Filter>
+    </None>
+    <None Include="..\..\Resources\Samples\builtInMetronome3.wav">
+      <Filter>Helio\Resources\Samples</Filter>
+    </None>
+    <None Include="..\..\Resources\Samples\builtInMetronome4.wav">
+      <Filter>Helio\Resources\Samples</Filter>
     </None>
     <None Include="..\..\Resources\Templates\emptyProject.json">
       <Filter>Helio\Resources\Templates</Filter>

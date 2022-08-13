@@ -16,20 +16,14 @@
 */
 
 #include "Common.h"
-#include "BuiltInSynth.h"
+#include "DefaultSynth.h"
 #include "Temperament.h"
 
-struct BuiltInSynthSound final : public SynthesiserSound
-{
-    bool appliesToNote(int midiNoteNumber) override { return true; }
-    bool appliesToChannel(int midiChannel) override { return true; }
-};
-
-class BuiltInSynthVoice final : public SynthesiserVoice
+class DefaultSynth::Voice final : public SynthesiserVoice
 {
 public:
 
-    BuiltInSynthVoice()
+    DefaultSynth::Voice()
     {
         ADSR::Parameters ap;
         ap.attack = 0.001f;
@@ -48,7 +42,7 @@ public:
         this->reverb.setParameters(rp);
     }
 
-    bool canPlaySound(SynthesiserSound*) override
+    bool canPlaySound(SynthesiserSound *) override
     {
         return true; // just assume correct usage
     }
@@ -63,7 +57,7 @@ public:
         }
     }
 
-    void startNote(int midiNoteNumber, float velocity, SynthesiserSound*, int) override
+    void startNote(int midiNoteNumber, float velocity, SynthesiserSound *, int) override
     {
         const auto channel = this->getCurrentChannel();
         const int realNoteNumber = midiNoteNumber +
@@ -97,7 +91,7 @@ public:
     void pitchWheelMoved(int) override {}
     void controllerMoved(int, int) override {}
 
-    void renderNextBlock(AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override
+    void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, int numSamples) override
     {
         if (this->adsr.isActive())
         {
@@ -107,7 +101,7 @@ public:
                 auto currentSample = (float)(std::sin(currentAngle) * level * amplitude);
                 this->reverb.processMono(&currentSample, 1);
 
-                for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
+                for (auto i = outputBuffer.getNumChannels(); i --> 0 ;)
                 {
                     outputBuffer.addSample(i, startSample, currentSample);
                 }
@@ -123,7 +117,7 @@ public:
     void setPeriodSize(int size) noexcept
     {
         this->periodSize = size;
-        this->middleC = Temperament::periodNumForMiddleC * periodSize;
+        this->middleC = Temperament::periodNumForMiddleC * this->periodSize;
     }
 
     void setPeriodRange(double periodRange) noexcept
@@ -146,7 +140,7 @@ private:
 
     double getNoteInHertz(int noteNumber, double frequencyOfA = 440.0) noexcept
     {
-        return frequencyOfA * std::pow(periodRange,
+        return frequencyOfA * std::pow(this->periodRange,
             (noteNumber - this->middleC) / double(this->periodSize));
     }
 
@@ -166,22 +160,22 @@ private:
     }
 };
 
-BuiltInSynth::BuiltInSynth()
+DefaultSynth::DefaultSynth()
 {
-    for (int i = BuiltInSynth::numVoices; --i >= 0;)
+    for (int i = DefaultSynth::numVoices; i --> 0 ;)
     {
-        this->addVoice(new BuiltInSynthVoice());
+        this->addVoice(new DefaultSynth::Voice());
     }
 
-    this->addSound(new BuiltInSynthSound());
+    this->addSound(new DefaultSynth::Sound());
 }
 
-void BuiltInSynth::setPeriodSizeAndRange(int periodSize, double periodRange)
+void DefaultSynth::setPeriodSizeAndRange(int periodSize, double periodRange)
 {
     //DBG("Setting octave size for the default synth: " + String(periodSize));
     for (int i = 0; i < this->getNumVoices(); ++i)
     {
-        if (auto *voice = dynamic_cast<BuiltInSynthVoice *>(this->getVoice(i)))
+        if (auto *voice = dynamic_cast<DefaultSynth::Voice *>(this->getVoice(i)))
         {
             voice->stopNote(1.f, false);
             voice->setPeriodSize(periodSize);
@@ -192,7 +186,7 @@ void BuiltInSynth::setPeriodSizeAndRange(int periodSize, double periodRange)
 
 // the built-in synth doesn't have pedals.
 // the built-in synth doesn't need pedals!
-void BuiltInSynth::handleSustainPedal(int midiChannel, bool isDown) {}
+void DefaultSynth::handleSustainPedal(int midiChannel, bool isDown) {}
 // seriously, just want to make sure that once I send a note-off event,
 // the BuiltInSynthVoice shuts the fuck up regardless of controller states
-void BuiltInSynth::handleSostenutoPedal(int midiChannel, bool isDown) {}
+void DefaultSynth::handleSostenutoPedal(int midiChannel, bool isDown) {}

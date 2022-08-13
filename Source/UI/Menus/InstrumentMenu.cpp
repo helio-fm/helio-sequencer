@@ -22,6 +22,7 @@
 #include "ModalDialogInput.h"
 #include "PluginScanner.h"
 #include "OrchestraPit.h"
+#include "PluginWindow.h"
 
 InstrumentMenu::InstrumentMenu(InstrumentNode &instrumentNode,
     PluginScanner &scanner, OrchestraPit &pit) :
@@ -37,6 +38,19 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
     MenuPanel::Menu menu;
 
     const auto instrument = this->instrumentNode.getInstrument();
+
+    if (auto mainNode = instrument->findMainPluginNode())
+    {
+        const auto hasEditor = mainNode->getProcessor()->hasEditor();
+        menu.add(MenuItem::item(Icons::instrument,
+            TRANS(I18n::Menu::instrumentShowWindow))->
+            disabledIf(!hasEditor)->
+            closesMenu()->
+            withAction([instrument]()
+            {
+                PluginWindow::showWindowFor(instrument->getIdAndHash());
+            }));
+    }
 
     if (!this->instrumentNode.isSelected()) // isSelectedOrHasSelectedChild() ?
     {
@@ -94,16 +108,20 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
             this->updateContent(this->createEffectsMenu(), MenuPanel::SlideLeft);
         }));
 
-    const bool isDefaultInstrument =
-        this->instrumentNode.getInstrument() == this->pit.getDefaultInstrument();
+    // the pit should contain at least one default instrument,
+    // and at least one metronome; a user could add more instruments
+    // using built-in plugins though, those need to be deletable
+    const auto isRequiredInstrument =
+        (this->instrumentNode.getInstrument() == this->pit.getDefaultInstrument()) ||
+        (this->instrumentNode.getInstrument() == this->pit.getMetronomeInstrument());
 
     menu.add(MenuItem::item(Icons::remove,
         TRANS(I18n::Menu::instrumentDelete))->
-        disabledIf(isDefaultInstrument)->
+        disabledIf(isRequiredInstrument)->
         closesMenu()->
         withAction([this]()
         {
-            this->instrumentNode.removeFromOrchestraAndDelete();
+            this->pit.removeInstrument(this->instrumentNode.getInstrument());
         }));
 
     return menu;

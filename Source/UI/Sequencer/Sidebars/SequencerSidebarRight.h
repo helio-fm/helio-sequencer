@@ -24,13 +24,16 @@ class SeparatorHorizontal;
 class SeparatorHorizontalReversed;
 class TransportControlComponent;
 
+#include "Config.h"
+#include "UserInterfaceFlags.h"
 #include "TransportListener.h"
 #include "MenuPanel.h"
 
 class SequencerSidebarRight final : public Component,
                                     protected TransportListener,
                                     protected ListBoxModel,
-                                    protected ChangeListener
+                                    protected ChangeListener,
+                                    protected UserInterfaceFlags::Listener
 {
 public:
 
@@ -78,7 +81,15 @@ private:
     //===------------------------------------------------------------------===//
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
-    
+
+    //===------------------------------------------------------------------===//
+    // UserInterfaceFlags::Listener
+    //===------------------------------------------------------------------===//
+
+    void onMetronomeFlagChanged(bool enabled) override;
+
+    bool isMetronomeEnabled = App::Config().getUiFlags()->isMetronomeEnabled();
+
     //===------------------------------------------------------------------===//
     // TransportListener
     //===------------------------------------------------------------------===//

@@ -90,11 +90,13 @@ void MidiSequence::clearUndoHistory()
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void MidiSequence::exportMidi(MidiMessageSequence &outSequence, const Clip &clip,
-    const KeyboardMapping &keyMap, bool soloPlaybackMode,
-    double timeAdjustment, double timeFactor) const
+void MidiSequence::exportMidi(MidiMessageSequence &outSequence,
+    const Clip &clip, const KeyboardMapping &keyMap,
+    bool soloPlaybackMode, bool exportMetronome,
+    float projectFirstBeat, float projectLastBeat,
+    double timeFactor /*= 1.0*/) const
 {
-    if (clip.isMuted())
+    if (this->midiEvents.isEmpty() || clip.isMuted())
     {
         return;
     }
@@ -102,13 +104,16 @@ void MidiSequence::exportMidi(MidiMessageSequence &outSequence, const Clip &clip
     // this will ignore soloPlaybackMode flag,
     // (which means there's at least one solo clip somewhere),
     // since not all sequence types are supposed to be soloed,
-    // for example, automations should be exported all the time unless muted.
-    // Moreover, for now, only PianoSequence will override this method
-    // and make sure it skips a no-solo clip, when soloPlaybackMode is true.
+    // for example, automations should be exported all the time unless muted;
+
+    // for now, PianoSequence overrides this method
+    // to make sure it skips all no-solo clips, when soloPlaybackMode is true,
+    // and TimeSignatureSequence overrides this method
+    // to emit the "virtual" metronome track, if needed
 
     for (const auto *event : this->midiEvents)
     {
-        event->exportMessages(outSequence, clip, keyMap, timeAdjustment, timeFactor);
+        event->exportMessages(outSequence, clip, keyMap, timeFactor);
     }
 
     outSequence.updateMatchedPairs();

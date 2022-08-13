@@ -29,24 +29,37 @@
 #include "RollBase.h"
 #include "KeyboardMapping.h"
 #include "ProjectMetadata.h"
-#include "BuiltInSynthAudioPlugin.h"
+#include "ProjectTimeline.h"
+#include "DefaultSynthAudioPlugin.h"
 
 #define TIME_NOW (Time::getMillisecondCounterHiRes() * 0.001)
 
-Transport::Transport(OrchestraPit &orchestraPit, SleepTimer &sleepTimer) :
+Transport::Transport(ProjectNode &project, OrchestraPit &orchestraPit, SleepTimer &sleepTimer) :
+    project(project),
     orchestra(orchestraPit),
     sleepTimer(sleepTimer)
 {
     this->player = make<PlayerThreadPool>(*this);
     this->renderer = make<RendererThread>(*this);
+
+    this->project.addListener(this);
+    this->project.getTimeline()->getTimeSignaturesAggregator()->addListener(this);
     this->orchestra.addOrchestraListener(this);
+
+    App::Config().getUiFlags()->addListener(this);
 }
 
 Transport::~Transport()
 {
+    App::Config().getUiFlags()->removeListener(this);
+
     this->orchestra.removeOrchestraListener(this);
+    this->project.getTimeline()->getTimeSignaturesAggregator()->removeListener(this);
+    this->project.removeListener(this);
+
     this->renderer = nullptr;
     this->player = nullptr;
+
     this->transportListeners.clear();
 }
 
@@ -110,16 +123,6 @@ void Transport::setSeekBeat(float beatPosition)
     this->seekBeat = beatPosition;
 }
 
-float Transport::getTotalTime() const noexcept
-{
-    return this->totalTime.get();
-}
-
-void Transport::setTotalTime(float val)
-{
-    this->totalTime = val;
-}
-
 //===----------------------------------------------------------------------===//
 // Transport
 //===----------------------------------------------------------------------===//
@@ -135,7 +138,7 @@ void Transport::seekToBeat(float beatPosition)
 void Transport::probeSoundAtBeat(float beatPosition, const MidiSequence *limitToLayer)
 {
     this->sleepTimer.setAwake();
-    this->recacheIfNeeded();
+    this->rebuildPlaybackCacheIfNeeded();
     
     const auto targetRelBeat = beatPosition - this->projectFirstBeat.get();
     const auto sequencesToProbe(this->playbackCache.getAllFor(limitToLayer));
@@ -176,7 +179,7 @@ void Transport::startPlayback()
 void Transport::startPlayback(float start)
 {
     this->sleepTimer.setAwake();
-    this->recacheIfNeeded();
+    this->rebuildPlaybackCacheIfNeeded();
 
     this->stopPlayback();
 
@@ -200,7 +203,7 @@ void Transport::startPlayback(float start)
 void Transport::startPlaybackFragment(float startBeat, float endBeat, bool looped)
 {
     this->sleepTimer.setAwake();
-    this->recacheIfNeeded();
+    this->rebuildPlaybackCacheIfNeeded();
     
     this->stopPlayback();
 
@@ -244,7 +247,7 @@ void Transport::startRecording()
     if (!this->isPlaying())
     {
         this->sleepTimer.setAwake();
-        this->recacheIfNeeded();
+        this->rebuildPlaybackCacheIfNeeded();
     }
 
     // canRecord == we have exactly 1 device available and enabled
@@ -517,17 +520,28 @@ void Transport::previewKey(const String &trackId, int key,
 {
     this->sleepTimer.setAwake();
 
-    const auto foundLink = this->linksCache.find(trackId);
-    const bool useDefaultInstrument =
-        trackId.isEmpty() || foundLink == this->linksCache.end();
+    const auto foundLink = this->instrumentLinks.find(trackId);
+
+    // in some cases we need to preview notes which are not tied to any
+    // particular track/instrument, e.g. scale preview in the scale editor;
+    // in these cases we'll just pick the default instrument
+    // (might need to come up with a better solution in future though)
+    const bool useDefaultInstrument = trackId.isEmpty() ||
+        foundLink == this->instrumentLinks.end();
 
     auto *instrument = useDefaultInstrument ?
-        this->orchestra.getInstruments().getLast() :
+        this->orchestra.getDefaultInstrument() :
         foundLink.value().get();
 
+    this->previewKey(instrument, key, volume, lengthInBeats);
+}
+
+void Transport::previewKey(WeakReference<Instrument> instrument,
+    int key, float volume, float lengthInBeats) const
+{
     jassert(instrument != nullptr);
 
-    // to calculate the note-off timeout interval, lets just use
+    // to calculate the note-off timeout interval, let's just use
     // the default 120 BPM for simplicity - instead of finding the tempo
     // at the note position, which I think is a bit of an overkill:
     const auto noteOffTimeoutMs = int16(Globals::Defaults::msPerBeat * lengthInBeats);
@@ -553,13 +567,13 @@ void Transport::stopSound(const String &trackId) const
     this->sleepTimer.setAwake();
     this->notePreviewTimer.cancelAllPendingPreviews(true);
 
-    if (Instrument *instrument = this->linksCache[trackId])
+    if (Instrument *instrument = this->instrumentLinks[trackId])
     {
         stopSoundForInstrument(instrument);
     }
     else
     {
-        for (const auto &link : this->linksCache)
+        for (const auto &link : this->instrumentLinks)
         {
             if (nullptr != link.second)
             {
@@ -582,19 +596,19 @@ void Transport::allNotesControllersAndSoundOff() const
         const MidiMessage soundOff(MidiMessage::allSoundOff(i).withTimeStamp(TIME_NOW));
         const MidiMessage controllersOff(MidiMessage::allControllersOff(i).withTimeStamp(TIME_NOW));
         
-        Array<const MidiMessageCollector *> duplicateCollectors;
+        Array<const MidiMessageCollector *> uniqueMessageCollectors;
         
         for (int l = 0; l < this->tracksCache.size(); ++l)
         {
             const auto &trackId = this->tracksCache.getUnchecked(l)->getTrackId();
-            auto *collector = &this->linksCache[trackId]->getProcessorPlayer().getMidiMessageCollector();
+            auto *collector = &this->instrumentLinks[trackId]->getProcessorPlayer().getMidiMessageCollector();
             
-            if (! duplicateCollectors.contains(collector))
+            if (! uniqueMessageCollectors.contains(collector))
             {
                 collector->addMessageToQueue(notesOff);
                 collector->addMessageToQueue(controllersOff);
                 collector->addMessageToQueue(soundOff);
-                duplicateCollectors.add(collector);
+                uniqueMessageCollectors.add(collector);
             }
         }
     }
@@ -602,12 +616,38 @@ void Transport::allNotesControllersAndSoundOff() const
     this->sleepTimer.setCanSleepAfter(Transport::soundSleepDelayMs);
 }
 
+//===----------------------------------------------------------------------===//
+// UserInterfaceFlags::Listener
+//===----------------------------------------------------------------------===//
+
+void Transport::onMetronomeFlagChanged(bool enabled)
+{
+    // metronome events are the part of playback cache,
+    // so we will have to rebuild it when the playback starts:
+    this->isMetronomeEnabled = enabled;
+    this->stopPlaybackAndRecording();
+    this->playbackCacheIsOutdated = true;
+}
+
+//===----------------------------------------------------------------------===//
+// TimeSignaturesAggregator::Listener
+//===----------------------------------------------------------------------===//
+
+void Transport::onTimeSignaturesUpdated()
+{
+    // almost same logic as in onMetronomeFlagChanged:
+    if (this->isMetronomeEnabled)
+    {
+        // this->stopPlaybackAndRecording(); // that's kinda too intrusive
+        this->playbackCacheIsOutdated = true;
+    }
+}
 
 //===----------------------------------------------------------------------===//
 // OrchestraListener
 //===----------------------------------------------------------------------===//
 
-void Transport::instrumentAdded(Instrument *instrument)
+void Transport::onAddInstrument(Instrument *instrument)
 {
     this->stopPlaybackAndRecording();
 
@@ -616,24 +656,24 @@ void Transport::instrumentAdded(Instrument *instrument)
 
     for (int i = 0; i < this->tracksCache.size(); ++i)
     {
-        this->updateLinkForTrack(this->tracksCache.getUnchecked(i));
+        this->updateInstrumentLinkForTrack(this->tracksCache.getUnchecked(i));
     }
 }
 
-void Transport::instrumentRemoved(Instrument *instrument)
+void Transport::onRemoveInstrument(Instrument *instrument)
 {
     // the instrument stack have still not changed here,
     // so just stop the playback before it's too late
     this->stopPlaybackAndRecording();
 }
 
-void Transport::instrumentRemovedPostAction()
+void Transport::onPostRemoveInstrument()
 {
     this->playbackCacheIsOutdated = true;
 
     for (int i = 0; i < this->tracksCache.size(); ++i)
     {
-        this->updateLinkForTrack(this->tracksCache.getUnchecked(i));
+        this->updateInstrumentLinkForTrack(this->tracksCache.getUnchecked(i));
     }
 }
 
@@ -710,8 +750,8 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
 {
     // Stop playback only when instrument changes:
     const auto &trackId = track->getTrackId();
-    if (!linksCache.contains(trackId) ||
-        this->linksCache[trackId]->getInstrumentId() != track->getTrackInstrumentId())
+    if (!instrumentLinks.contains(trackId) ||
+        this->instrumentLinks[trackId]->getInstrumentId() != track->getTrackInstrumentId())
     {
         if (!this->isRecording())
         {
@@ -719,7 +759,7 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
         }
 
         this->playbackCacheIsOutdated = true;
-        this->updateLinkForTrack(track);
+        this->updateInstrumentLinkForTrack(track);
     }
 }
 
@@ -728,7 +768,7 @@ void Transport::updateTemperamentInfoForBuiltInSynth(int periodSize, double peri
     const auto *defaultInstrument = this->orchestra.getDefaultInstrument();
     if (auto mainNode = defaultInstrument->findMainPluginNode())
     {
-        if (auto *synth = dynamic_cast<BuiltInSynthAudioPlugin *>(mainNode->getProcessor()))
+        if (auto *synth = dynamic_cast<DefaultSynthAudioPlugin *>(mainNode->getProcessor()))
         {
             synth->setPeriodSizeAndRange(periodSize, periodRange);
         }
@@ -760,12 +800,12 @@ void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     this->playbackCacheIsOutdated = true;
 
     this->tracksCache.clearQuick();
-    this->linksCache.clear();
+    this->instrumentLinks.clear();
 
     this->tracksCache.addArray(tracks);
     for (const auto &track : tracks)
     {
-        this->updateLinkForTrack(track);
+        this->updateInstrumentLinkForTrack(track);
     }
 
     this->stopPlaybackAndRecording();
@@ -782,7 +822,7 @@ void Transport::onAddTrack(MidiTrack *const track)
 
     this->playbackCacheIsOutdated = true;
     this->tracksCache.addIfNotAlreadyThere(track);
-    this->updateLinkForTrack(track);
+    this->updateInstrumentLinkForTrack(track);
 }
 
 void Transport::onRemoveTrack(MidiTrack *const track)
@@ -791,7 +831,7 @@ void Transport::onRemoveTrack(MidiTrack *const track)
 
     this->playbackCacheIsOutdated = true;
     this->tracksCache.removeAllInstancesOf(track);
-    this->removeLinkForTrack(track);
+    this->clearInstrumentLinkForTrack(track);
 }
 
 void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
@@ -803,8 +843,6 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
-
-    this->setTotalTime(lastBeat - firstBeat);
     
     // real track total time changed
     const auto realLengthMs = this->findTimeAt(lastBeat);
@@ -819,15 +857,29 @@ double Transport::findTimeAt(float beat) const
 {
     double resultTimeMs = 0.0;
 
-    this->recacheIfNeeded();
-    this->playbackCache.seekToZeroIndexes();
+    this->rebuildPlaybackCacheIfNeeded();
+
+    CachedMidiMessage cached;
 
     const auto targetRelativeBeat = beat - this->projectFirstBeat.get();
 
+    // try to find the initial value for global tempo
+    // by picking the very first tempo automation event, if present
     double tempo = Globals::Defaults::msPerBeat;
+
+    this->playbackCache.seekToStart();
+    while (this->playbackCache.getNextMessage(cached))
+    {
+        if (cached.message.isTempoMetaEvent())
+        {
+            tempo = cached.message.getTempoSecondsPerQuarterNote() * 1000.f;
+            break;
+        }
+    }
+
     double prevTimestamp = 0.0;
 
-    CachedMidiMessage cached;
+    this->playbackCache.seekToStart();
     while (this->playbackCache.getNextMessage(cached))
     {
         const auto nextTimestamp = cached.message.getTimeStamp();
@@ -855,10 +907,23 @@ double Transport::findTimeAt(float beat) const
 
 Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float beat) const
 {
-    this->recacheIfNeeded();
-    this->playbackCache.seekToZeroIndexes();
+    this->rebuildPlaybackCacheIfNeeded();
 
+    CachedMidiMessage cached;
+
+    // try to find the initial value for global tempo
+    // by picking the very first tempo automation event, if present
     double tempo = Globals::Defaults::msPerBeat;
+
+    this->playbackCache.seekToStart();
+    while (this->playbackCache.getNextMessage(cached))
+    {
+        if (cached.message.isTempoMetaEvent())
+        {
+            tempo = cached.message.getTempoSecondsPerQuarterNote() * 1000.f;
+            break;
+        }
+    }
 
     Transport::PlaybackContext::Ptr context(new Transport::PlaybackContext());
     context->projectFirstBeat = this->projectFirstBeat.get();
@@ -879,7 +944,7 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float beat) con
     double prevTimestamp = 0.0;
     bool startBeatPassed = false;
 
-    CachedMidiMessage cached;
+    this->playbackCache.seekToStart();
     while (this->playbackCache.getNextMessage(cached))
     {
         const auto nextTimestamp = cached.message.getTimeStamp();
@@ -929,61 +994,70 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float beat) con
 // Playback cache management
 //===----------------------------------------------------------------------===//
 
-void Transport::recacheIfNeeded() const
+void Transport::rebuildPlaybackCacheIfNeeded() const
 {
     if (this->playbackCacheIsOutdated.get())
     {
-        //DBG("Transport::recache");
-        this->playbackCache.clear();
-        static Clip noTransform;
-        const double offset = -this->projectFirstBeat.get();
-
-        // Find solo clips, if any
-        bool hasSoloClips = false;
-        for (const auto *track : this->tracksCache)
-        {
-            if (track->getPattern() != nullptr &&
-                track->getPattern()->hasSoloClips())
-            {
-                hasSoloClips = true;
-                break;
-            }
-        }
-
-        for (const auto *track : this->tracksCache)
-        {
-            const auto instrument = this->linksCache[track->getTrackId()];
-            const auto &keyMap = *instrument->getKeyboardMapping();
-
-            auto cached = CachedMidiSequence::createFrom(instrument, track->getSequence());
-
-            if (track->getPattern() != nullptr)
-            {
-                for (const auto *clip : track->getPattern()->getClips())
-                {
-                    cached->track->exportMidi(cached->midiMessages, *clip,
-                        keyMap, hasSoloClips, offset, 1.0);
-                }
-            }
-            else
-            {
-                cached->track->exportMidi(cached->midiMessages, noTransform,
-                    keyMap, hasSoloClips, offset, 1.0);
-            }
-
-            this->playbackCache.addWrapper(cached);
-        }
-        
+        this->playbackCache = this->buildPlaybackCache(this->isMetronomeEnabled);
         this->playbackCacheIsOutdated = false;
     }
 }
 
+TransportPlaybackCache Transport::buildPlaybackCache(bool withMetronome) const
+{
+    TransportPlaybackCache result;
+    
+    // Find solo clips, if any
+    bool hasSoloClips = false;
+    for (const auto *track : this->tracksCache)
+    {
+        if (track->getPattern() != nullptr &&
+            track->getPattern()->hasSoloClips())
+        {
+            hasSoloClips = true;
+            break;
+        }
+    }
+
+    for (const auto *track : this->tracksCache)
+    {
+        const auto instrument = this->instrumentLinks[track->getTrackId()];
+        const auto &keyMap = *instrument->getKeyboardMapping();
+
+        auto cached = CachedMidiSequence::createFrom(instrument, track->getSequence());
+
+        if (track->getPattern() != nullptr)
+        {
+            for (const auto *clip : track->getPattern()->getClips())
+            {
+                cached->track->exportMidi(cached->midiMessages, *clip,
+                    keyMap, hasSoloClips, withMetronome,
+                    this->projectFirstBeat.get(), this->projectLastBeat.get());
+            }
+        }
+        else
+        {
+            static Clip noTransform;
+            cached->track->exportMidi(cached->midiMessages, noTransform,
+                keyMap, hasSoloClips, withMetronome,
+                this->projectFirstBeat.get(), this->projectLastBeat.get());
+        }
+
+        result.addWrapper(cached);
+    }
+
+    return result;
+}
+
+// returning by value, because it will be used by (possibly many) player threads,
+// so we'd rather play safe and just let them deal with their own copy of it;
+// internally, the data is refcounted anyway and protected by critical sections
 TransportPlaybackCache Transport::getPlaybackCache()
 {
     return this->playbackCache;
 }
 
-void Transport::updateLinkForTrack(const MidiTrack *track)
+void Transport::updateInstrumentLinkForTrack(const MidiTrack *track)
 {
     const auto instruments = this->orchestra.getInstruments();
     
@@ -994,7 +1068,7 @@ void Transport::updateLinkForTrack(const MidiTrack *track)
         if (track->getTrackInstrumentId().contains(instrument->getInstrumentId()))
         {
             // corresponding node already exists, lets add
-            this->linksCache[track->getTrackId()] = instrument;
+            this->instrumentLinks[track->getTrackId()] = instrument;
             return;
         }
     }
@@ -1005,18 +1079,18 @@ void Transport::updateLinkForTrack(const MidiTrack *track)
         auto *instrument = instruments.getUnchecked(i);
         if (track->getTrackInstrumentId().contains(instrument->getInstrumentHash()))
         {
-            this->linksCache[track->getTrackId()] = instrument;
+            this->instrumentLinks[track->getTrackId()] = instrument;
             return;
         }
     }
     
     // set default instrument, if none found
-    this->linksCache[track->getTrackId()] = this->orchestra.getDefaultInstrument();
+    this->instrumentLinks[track->getTrackId()] = this->orchestra.getDefaultInstrument();
 }
 
-void Transport::removeLinkForTrack(const MidiTrack *track)
+void Transport::clearInstrumentLinkForTrack(const MidiTrack *track)
 {
-    this->linksCache.erase(track->getTrackId());
+    this->instrumentLinks.erase(track->getTrackId());
 }
 
 //===----------------------------------------------------------------------===//

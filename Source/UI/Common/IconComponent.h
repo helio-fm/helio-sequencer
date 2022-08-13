@@ -66,7 +66,7 @@ public:
         g.setColour(findDefaultColour(Label::textColourId).withMultipliedAlpha(this->alpha));
         if (this->image.isNull())
         {
-            Image i(Icons::findByName(this->iconId, this->getHeight()));
+            Image i(Icons::findByName(this->iconId, jmin(this->getWidth(), this->getHeight())));
             Icons::drawImageRetinaAware(i, g, this->getWidth() / 2, this->getHeight() / 2);
         }
         else

@@ -144,7 +144,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         this->updateContent(this->createQuantizationMenu(), MenuPanel::SlideLeft);
     }));
 
-    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
+    const auto instruments = App::Workspace().getAudioCore().getInstrumentsExceptInternal();
     menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->
         disabledIf(instruments.isEmpty())->withSubmenu()->withAction([this]()
     {
@@ -206,7 +206,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createInstrumentSelectionMenu()
     // perform one undo action for them all
 
     const auto &audioCore = App::Workspace().getAudioCore();
-    const auto &instruments = audioCore.getInstruments();
+    const auto instruments = audioCore.getInstrumentsExceptInternal();
 
     Array<MidiTrack *> uniqueTracks;
     StringArray uniqueInstrumentIds;

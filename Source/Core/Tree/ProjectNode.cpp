@@ -80,24 +80,23 @@ void ProjectNode::initialize()
     this->undoStack = make<UndoStack>(*this);
     this->autosaver = make<Autosaver>(*this);
 
-    auto &orchestra = App::Workspace().getAudioCore();
-    auto &audioCoreSleepTimer = App::Workspace().getAudioCore(); // yup, the same
-    this->transport = make<Transport>(orchestra, audioCoreSleepTimer);
-    this->addListener(this->transport.get());
-
-    this->midiRecorder = make<MidiRecorder>(*this);
-
     this->metadata = make<ProjectMetadata>(*this);
     this->vcsItems.add(this->metadata.get());
 
     this->timeline = make<ProjectTimeline>(*this, "Project Timeline");
     this->vcsItems.add(this->timeline.get());
 
+    auto &orchestra = App::Workspace().getAudioCore();
+    auto &audioCoreSleepTimer = App::Workspace().getAudioCore(); // yup, the same
+
+    this->transport = make<Transport>(*this, orchestra, audioCoreSleepTimer);
+    this->midiRecorder = make<MidiRecorder>(*this);
+
     this->consoleTimelineEvents = make<CommandPaletteTimelineEvents>(*this);
 
     this->recreatePage();
 
-    this->transport->seekToBeat(this->firstBeatCache);
+    this->transport->seekToBeat(this->beatRange.getStart());
 }
 
 ProjectNode::~ProjectNode()
@@ -115,13 +114,13 @@ ProjectNode::~ProjectNode()
     this->removeAllListeners();
     this->sequencerLayout = nullptr;
 
-    this->timeline = nullptr;
-    this->metadata = nullptr;
+    this->consoleTimelineEvents = nullptr;
 
     this->midiRecorder = nullptr;
-
-    this->removeListener(this->transport.get());
     this->transport = nullptr;
+
+    this->timeline = nullptr;
+    this->metadata = nullptr;
 
     this->autosaver = nullptr;
     this->undoStack = nullptr;
@@ -223,8 +222,7 @@ void ProjectNode::recreatePage()
 
     // reset caches and let rolls update view ranges:
     // (fixme the below is quite a common piece of code)
-    this->firstBeatCache = 0;
-    this->lastBeatCache = Globals::Defaults::projectLength;
+    this->beatRange = { 0, Globals::Defaults::projectLength };
 
     // if there is anything to reload, reload:
     if (!this->findChildrenOfType<MidiTrack>().isEmpty())
@@ -405,7 +403,7 @@ Array<MidiTrack *> ProjectNode::getTracks() const
     // and explicitly add the only non-tree-owned tracks
     tracks.add(this->timeline->getAnnotations());
     tracks.add(this->timeline->getKeySignatures());
-    tracks.add(this->timeline->getTimeSignatures());
+    tracks.add(this->timeline->getTimeSignaturesAggregator());
 
     return tracks;
 }
@@ -423,7 +421,12 @@ void ProjectNode::collectTracks(Array<MidiTrack *> &resultArray, bool onlySelect
     }
 }
 
-Range<float> ProjectNode::getProjectRangeInBeats() const
+Range<float> ProjectNode::getProjectBeatRange() const
+{
+    return this->beatRange;
+}
+
+Range<float> ProjectNode::calculateProjectBeatRange() const
 {
     float lastBeat = -FLT_MAX;
     float firstBeat = FLT_MAX;
@@ -528,7 +531,7 @@ void ProjectNode::deserialize(const SerializedData &data)
 
 void ProjectNode::reset()
 {
-    this->transport->seekToBeat(this->firstBeatCache);
+    this->transport->seekToBeat(this->beatRange.getStart());
     this->vcsItems.clear();
     this->vcsItems.add(this->metadata.get());
     this->vcsItems.add(this->timeline.get());
@@ -827,26 +830,24 @@ void ProjectNode::broadcastChangeProjectInfo(const ProjectMetadata *info)
 
 Range<float> ProjectNode::broadcastChangeProjectBeatRange()
 {
-    const auto beatRange = this->getProjectRangeInBeats();
+    const auto newBeatRange = this->calculateProjectBeatRange();
     
-    if (this->firstBeatCache != beatRange.getStart() ||
-        this->lastBeatCache != beatRange.getEnd())
+    if (this->beatRange != newBeatRange)
     {
-        this->firstBeatCache = beatRange.getStart();
-        this->lastBeatCache = beatRange.getEnd();
+        this->beatRange = newBeatRange;
 
         // changeListeners.call iterates listeners list in REVERSE order
         // so that transport updates playhead position later then others,
         // so that resizing roll will make playhead glitch;
         // as a hack, just force transport to update its playhead position before all others
-        this->transport->onChangeProjectBeatRange(this->firstBeatCache, this->lastBeatCache);
+        this->transport->onChangeProjectBeatRange(this->beatRange.getStart(), this->beatRange.getEnd());
         this->changeListeners.callExcluding(this->transport.get(),
-            &ProjectListener::onChangeProjectBeatRange, this->firstBeatCache, this->lastBeatCache);
+            &ProjectListener::onChangeProjectBeatRange, this->beatRange.getStart(), this->beatRange.getEnd());
 
         this->sendChangeMessage();
     }
 
-    return beatRange;
+    return this->beatRange;
 }
 
 void ProjectNode::broadcastBeforeReloadProjectContent()
@@ -937,6 +938,9 @@ void ProjectNode::exportMidi(OutputStream &stream) const
     // in MIDI export, as I believe they shouldn't:
     const bool soloFlag = false;
 
+    // Metronome track flag is only needed for playback:
+    const bool metronomeFlag = false;
+
     const auto grouping = this->getTrackGroupingMode();
     FlatHashMap<String, MidiMessageSequence, StringHash> sequences;
 
@@ -956,13 +960,17 @@ void ProjectNode::exportMidi(OutputStream &stream) const
             for (const auto *clip : track->getPattern()->getClips())
             {
                 track->getSequence()->exportMidi(sequence, *clip,
-                    simpleMapping, soloFlag, 0.0, midiClock);
+                    simpleMapping, soloFlag, metronomeFlag,
+                    this->beatRange.getStart(), this->beatRange.getEnd(),
+                    midiClock);
             }
         }
         else
         {
             track->getSequence()->exportMidi(sequence, noTransform,
-                simpleMapping, soloFlag, 0.0, midiClock);
+                simpleMapping, soloFlag, metronomeFlag,
+                this->beatRange.getStart(), this->beatRange.getEnd(),
+                midiClock);
         }
     }
 

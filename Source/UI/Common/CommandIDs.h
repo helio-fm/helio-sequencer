@@ -95,6 +95,7 @@ namespace CommandIDs
         ToggleScalesHighlighting        = 0x1632,
         ToggleNoteNameGuides            = 0x1633,
         ToggleLoopOverSelection         = 0x1634,
+        ToggleMetronome                 = 0x1635,
 
         ZoomIn                          = 0x1800,
         ZoomOut                         = 0x1801,
@@ -188,10 +189,10 @@ namespace CommandIDs
         ShowScalePanel                  = 0x4042,
         ShowChordPanel                  = 0x4043,
         ShowNewTrackPanel               = 0x4044,
-        ToggleVolumePanel               = 0x4045,
-        ToggleBottomMiniMap             = 0x4046,
+        ShowMetronomeSettings           = 0x4045,
+        ToggleVolumePanel               = 0x4046,
+        ToggleBottomMiniMap             = 0x4047,
 
-        // Version control
         VersionControlToggleQuickStash  = 0x4060,
         VersionControlPushSelected      = 0x4061,
         VersionControlPullSelected      = 0x4062,
@@ -222,7 +223,10 @@ namespace CommandIDs
         SavePreset                      = 0x4300,
         SelectPreset                    = 0x4301, // more ids reserved for sub-items
 
-        YourNextCommandId               = 0x4500
+        OpenMetronomeSample             = 0x4500, // more ids reserved for sub-items
+        ResetMetronomeSample            = 0x4550, // more ids reserved for sub-items
+
+        YourNextCommandId = 0x4600
     };
 
     CommandIDs::Id getIdForName(const String &command);

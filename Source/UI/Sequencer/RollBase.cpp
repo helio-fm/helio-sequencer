@@ -550,7 +550,7 @@ void RollBase::zoomRelative(const Point<float> &origin,
     if (shouldAutoFitViewRange)
     {
         constexpr auto margin = Globals::beatsPerBar * 2;
-        const auto projectRange = this->project.getProjectRangeInBeats();
+        const auto projectRange = this->project.getProjectBeatRange();
         const auto newFirstBeat = projectRange.getStart() - margin;
         const auto newLastBeat = projectRange.getEnd() + margin;
         this->project.broadcastChangeViewBeatRange(newFirstBeat, newLastBeat);
@@ -708,10 +708,8 @@ void RollBase::computeAllSnapLines()
     this->visibleSnaps.clearQuick();
     this->allSnaps.clearQuick();
 
-    const auto *timeSignatureAggregator =
-        this->project.getTimeline()->getTimeSignaturesAggregator();
-
-    const auto &orderedTimeSignatures = timeSignatureAggregator->getAllOrdered();
+    auto *timeSignatureAggregator = this->project.getTimeline()->getTimeSignaturesAggregator();
+    const auto *orderedTimeSignatures = timeSignatureAggregator->getSequence();
 
     const float paintStartX = float(this->viewport.getViewPositionX());
     const float paintEndX = float(paintStartX + this->viewport.getViewWidth());
@@ -744,16 +742,16 @@ void RollBase::computeAllSnapLines()
 
     // Find a time signature to start from (or use default values):
     // find a first time signature after a paint start and take a previous one, if any
-    for (; nextTsIndex < orderedTimeSignatures.size(); ++nextTsIndex)
+    for (; nextTsIndex < orderedTimeSignatures->size(); ++nextTsIndex)
     {
-        const auto &signature = orderedTimeSignatures.getUnchecked(nextTsIndex);
-        const float signatureBar = (signature.getBeat() / beatsPerBar);
+        const auto *signature = static_cast<const TimeSignatureEvent *>(orderedTimeSignatures->getUnchecked(nextTsIndex));
+        const float signatureBar = (signature->getBeat() / Globals::beatsPerBar);
 
         // The very first event defines what's before it (both time signature and offset)
         if (firstEvent)
         {
-            numerator = signature.getNumerator();
-            denominator = signature.getDenominator();
+            numerator = signature->getNumerator();
+            denominator = signature->getDenominator();
             const float beatStep = 1.f / float(denominator);
             const float barStep = beatStep * float(numerator);
             barIterator += (fmodf(signatureBar - barIterator, barStep) - barStep);
@@ -765,8 +763,8 @@ void RollBase::computeAllSnapLines()
             break;
         }
 
-        numerator = signature.getNumerator();
-        denominator = signature.getDenominator();
+        numerator = signature->getNumerator();
+        denominator = signature->getDenominator();
         barIterator = signatureBar;
     }
 
@@ -810,14 +808,14 @@ void RollBase::computeAllSnapLines()
                 float nextBeatStartX = barStartX + barWidth * (j + beatStep);
 
                 // Check if we have more time signatures to come
-                if (nextTsIndex < orderedTimeSignatures.size())
+                if (nextTsIndex < orderedTimeSignatures->size())
                 {
-                    const auto &nextSignature = orderedTimeSignatures.getUnchecked(nextTsIndex);
-                    const float tsBar = nextSignature.getBeat() / beatsPerBar;
+                    const auto *nextSignature = static_cast<const TimeSignatureEvent *>(orderedTimeSignatures->getUnchecked(nextTsIndex));
+                    const float tsBar = nextSignature->getBeat() / Globals::beatsPerBar;
                     if (tsBar <= (barIterator + j + beatStep))
                     {
-                        numerator = nextSignature.getNumerator();
-                        denominator = nextSignature.getDenominator();
+                        numerator = nextSignature->getNumerator();
+                        denominator = nextSignature->getDenominator();
                         barStep = (tsBar - barIterator); // i.e. incomplete bar
                         nextBeatStartX = barStartX + barWidth * barStep;
                         nextTsIndex++;
@@ -1392,6 +1390,9 @@ void RollBase::handleCommandMessage(int commandId)
     case CommandIDs::ToggleBottomMiniMap:
         App::Config().getUiFlags()->toggleFullProjectMapVisibility();
         break;
+    case CommandIDs::ToggleMetronome:
+        App::Config().getUiFlags()->toggleMetronome();
+        break;
     case CommandIDs::TransportRecordingAwait:
         if (this->getTransport().isRecording())
         {
@@ -1456,8 +1457,7 @@ void RollBase::handleCommandMessage(int commandId)
             (this->project.getTimeline()->getTimeSignatures()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
-            App::showModalComponent(TimeSignatureDialog::addingDialog(*this,
-                this->project.getUndoStack(), sequence, targetBeat));
+            App::showModalComponent(TimeSignatureDialog::addingDialog(*this, this->project, sequence, targetBeat));
         }
         break;
     case CommandIDs::AddKeySignature:

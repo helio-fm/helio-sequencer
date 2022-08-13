@@ -680,7 +680,7 @@ void PatternRoll::handleCommandMessage(int commandId)
             if (auto *track = this->project.findTrackById<MidiTrackNode>(clip.getTrackId()))
             {
                 App::showModalComponent(TimeSignatureDialog::editingDialog(*this,
-                    this->project.getUndoStack(), *track->getTimeSignatureOverride()));
+                    this->project, *track->getTimeSignatureOverride()));
             }
         }
         break;
@@ -738,10 +738,7 @@ void PatternRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::EditCurrentInstrument:
-        if (auto *window = PluginWindow::getWindowFor(PatternOperations::getSelectedInstrumentId(this->selection)))
-        {
-            window->toFront(true);
-        }
+        PluginWindow::showWindowFor(PatternOperations::getSelectedInstrumentId(this->selection));
         break;
     case CommandIDs::DeleteClips:
         PatternOperations::deleteSelection(this->selection, this->project);
@@ -1340,7 +1337,7 @@ void PatternRoll::repaintBackgroundsCache()
 
 void PatternRoll::showNewTrackMenu(float beatToInsertAt)
 {
-    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
+    const auto instruments = App::Workspace().getAudioCore().getInstrumentsExceptInternal();
     if (instruments.size() > 1)
     {
         MenuPanel::Menu menu;

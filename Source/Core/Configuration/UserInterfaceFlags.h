@@ -37,8 +37,10 @@ public:
     class Listener
     {
     public:
+
         Listener() = default;
         virtual ~Listener() = default;
+
         virtual void onScalesHighlightingFlagChanged(bool enabled) {}
         virtual void onNoteNameGuidesFlagChanged(bool enabled) {}
 
@@ -52,6 +54,8 @@ public:
         virtual void onMouseWheelFlagsChanged(MouseWheelFlags flags) {}
 
         virtual void onUiScaleChanged(float scale) {}
+
+        virtual void onMetronomeFlagChanged(bool enabled) {}
     };
 
     //===------------------------------------------------------------------===//
@@ -99,6 +103,10 @@ public:
     void setUiScaleFactor(float scale);
     float getUiScaleFactor() const noexcept;
     AffineTransform getScaledTransformFor(Component *component) const;
+
+    // not a "UI flag", obviously, but it fits here well
+    bool isMetronomeEnabled() const noexcept;
+    void toggleMetronome();
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -152,6 +160,8 @@ private:
     float uiScaleFactor = 1.f;
     static constexpr auto minUiScaleFactor = 1.f;
     static constexpr auto maxUiScaleFactor = 3.f;
+
+    bool metronomeEnabled = false;
 
 private:
 

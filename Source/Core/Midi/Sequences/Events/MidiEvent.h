@@ -54,7 +54,7 @@ public:
     MidiEvent(WeakReference<MidiSequence> owner, const MidiEvent &parameters) noexcept;
 
     virtual void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
-        const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept = 0;
+        const KeyboardMapping &keyMap, double timeFactor) const noexcept = 0;
 
     //===------------------------------------------------------------------===//
     // Accessors

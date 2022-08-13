@@ -308,6 +308,13 @@ namespace I18n
         static constexpr auto keyboardMapping = constexprHash("tree::keyMap");
     }
 
+    namespace Instruments
+    {
+        static constexpr auto defultSynthTitle = constexprHash("instruments::defaultsynth::title");
+        static constexpr auto metronomeTitle = constexprHash("instruments::metronome::title");
+        static constexpr auto metronomeBuiltInSoundPlaceholder = constexprHash("instruments::metronome::builtin");
+    }
+
     namespace VCS
     {
         static constexpr auto deltaTypeAdded = constexprHash("vcs::delta::type::added");
@@ -372,6 +379,7 @@ namespace I18n
         static constexpr auto chordTool = constexprHash("tooltip::chordtool");
         static constexpr auto arpeggiators = constexprHash("tooltip::arps");
         static constexpr auto addTrack = constexprHash("tooltip::addtrack");
+        static constexpr auto metronome = constexprHash("tooltip::metronome");
 
         static constexpr auto recordingMode = constexprHash("tooltip::recording");
         static constexpr auto playbackMode = constexprHash("tooltip::playback");

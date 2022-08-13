@@ -108,9 +108,9 @@ private:
     
     ProjectNode &project;
     
-    String annotationsTrackId;
-    String timeSignaturesTrackId;
-    String keySignaturesTrackId;
+    String annotationsTrackId = Uuid().toString();
+    String timeSignaturesTrackId = Uuid().toString();
+    String keySignaturesTrackId = Uuid().toString();
 
     UniquePointer<MidiTrack> annotationsTrack;
     UniquePointer<MidiTrack> keySignaturesTrack;

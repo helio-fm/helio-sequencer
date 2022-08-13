@@ -42,17 +42,17 @@ void OrchestraPit::removeAllOrchestraListeners()
     this->orchestraListeners.clear();
 }
 
-void OrchestraPit::broadcastInstrumentRemoved(Instrument *instrument)
+void OrchestraPit::broadcastRemoveInstrument(Instrument *instrument)
 {
-    this->orchestraListeners.call(&OrchestraListener::instrumentRemoved, instrument);
+    this->orchestraListeners.call(&OrchestraListener::onRemoveInstrument, instrument);
 }
 
-void OrchestraPit::broadcastInstrumentRemovedPostAction()
+void OrchestraPit::broadcastPostRemoveInstrument()
 {
-    this->orchestraListeners.call(&OrchestraListener::instrumentRemovedPostAction);
+    this->orchestraListeners.call(&OrchestraListener::onPostRemoveInstrument);
 }
 
-void OrchestraPit::broadcastInstrumentAdded(Instrument *instrument)
+void OrchestraPit::broadcastAddInstrument(Instrument *instrument)
 {
-    this->orchestraListeners.call(&OrchestraListener::instrumentAdded, instrument);
+    this->orchestraListeners.call(&OrchestraListener::onAddInstrument, instrument);
 }

@@ -90,6 +90,7 @@ namespace Serialization
         static const Identifier meter = "meter";
         static const Identifier meterName = "name";
         static const Identifier meterTime = "time";
+        static const Identifier metronomeScheme = "metronome";
 
         // Sequences
         static const Identifier track = "track";
@@ -193,6 +194,14 @@ namespace Serialization
         static const Identifier audioDeviceBufferSize = "bufferSize";
         static const Identifier audioDeviceInputChannels = "inputChannels";
         static const Identifier audioDeviceOutputChannels = "outputChannels";
+
+        namespace Metronome
+        {
+            static const Identifier metronomeConfig = "metronome";
+            static const Identifier customSample = "sample";
+            static const Identifier syllableName = "name";
+            static const Identifier filePath = "filePath";
+        } // namespace CustomMetronome
     } // namespace Audio
 
     namespace Config
@@ -261,7 +270,8 @@ namespace Serialization
             static const Identifier mouseWheelAltDirection = "wheelAltDirection"; // legacy
             static const Identifier mouseWheelVerticalPanningByDefault = "wheelVerticalPan";
             static const Identifier mouseWheelVerticalZoomingByDefault = "wheelVerticalZoom";
-        }
+            static const Identifier metronomeEnabled = "metronome";
+            } // namespace Flags
 
         namespace Hotkeys
         {

@@ -17,11 +17,11 @@
 
 #pragma once
 
-class BuiltInSynthFormat final : public AudioPluginFormat
+class BuiltInSynthsPluginFormat final : public AudioPluginFormat
 {
 public:
 
-    BuiltInSynthFormat();
+    BuiltInSynthsPluginFormat();
 
     static const String formatName;
     static const String formatIdentifier;
@@ -78,5 +78,6 @@ public:
 private:
 
     PluginDescription defaultInstrument;
+    PluginDescription metronomeInstrument;
 
 };

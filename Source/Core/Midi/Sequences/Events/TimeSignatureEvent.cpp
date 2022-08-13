@@ -21,6 +21,8 @@
 #include "MidiSequence.h"
 #include "Meter.h"
 #include "SerializationKeys.h"
+#include "Config.h"
+#include "MetersCollection.h"
 
 TimeSignatureEvent::TimeSignatureEvent() noexcept :
     MidiEvent(nullptr, Type::TimeSignature, 0.f) {}
@@ -33,7 +35,7 @@ TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     float newBeat, int numerator, int denominator) noexcept :
     MidiEvent(owner, Type::TimeSignature, newBeat),
     track(nullptr),
-    meter({}, numerator, denominator) {}
+    meter({}, {}, numerator, denominator) {}
 
 TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     const TimeSignatureEvent &parametersToCopy) noexcept :
@@ -42,11 +44,11 @@ TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     meter(parametersToCopy.meter) {}
 
 void TimeSignatureEvent::exportMessages(MidiMessageSequence &outSequence,
-    const Clip &clip, const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept
+    const Clip &clip, const KeyboardMapping &keyMap, double timeFactor) const noexcept
 {
     MidiMessage event(MidiMessage::timeSignatureMetaEvent(this->meter.getNumerator(), this->meter.getDenominator()));
     event.setTimeStamp((this->beat + clip.getBeat()) * timeFactor);
-    outSequence.addEvent(event, timeOffset);
+    outSequence.addEvent(event);
 }
 
 TimeSignatureEvent TimeSignatureEvent::withDeltaBeat(float beatOffset) const noexcept
@@ -74,6 +76,20 @@ TimeSignatureEvent TimeSignatureEvent::withDenominator(const int denominator) co
 {
     TimeSignatureEvent e(*this);
     e.meter = e.meter.withDenominator(denominator);
+    return e;
+}
+
+TimeSignatureEvent TimeSignatureEvent::withMeter(const Meter &meter) const noexcept
+{
+    TimeSignatureEvent e(*this);
+    e.meter = meter;
+    return e;
+}
+
+TimeSignatureEvent TimeSignatureEvent::withMetronome(const MetronomeScheme &scheme) const noexcept
+{
+    TimeSignatureEvent e(*this);
+    e.meter = e.meter.withMetronome(scheme);
     return e;
 }
 
@@ -120,6 +136,11 @@ bool TimeSignatureEvent::isValid() const noexcept
 float TimeSignatureEvent::getBarLengthInBeats() const noexcept
 {
     return this->meter.getBarLengthInBeats();
+}
+
+float TimeSignatureEvent::getDenominatorInBeats() const noexcept
+{
+    return this->meter.getDenominatorInBeats();
 }
 
 const Meter &TimeSignatureEvent::getMeter() const noexcept
@@ -175,10 +196,16 @@ SerializedData TimeSignatureEvent::serialize() const
 {
     using namespace Serialization;
     SerializedData tree(Midi::timeSignature);
+
     tree.setProperty(Midi::id, packId(this->id));
+    tree.setProperty(Midi::timestamp, int(this->beat * Globals::ticksPerBeat));
+
+    // note: we're not serializing this->meter instead
+    // of adding all these 3 fields to support older versions:
     tree.setProperty(Midi::numerator, this->meter.getNumerator());
     tree.setProperty(Midi::denominator, this->meter.getDenominator());
-    tree.setProperty(Midi::timestamp, int(this->beat * Globals::ticksPerBeat));
+    tree.setProperty(Midi::metronomeScheme, this->meter.getMetronome().toString());
+
     return tree;
 }
 
@@ -186,13 +213,33 @@ void TimeSignatureEvent::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
- 
-    const auto numerator = data.getProperty(Midi::numerator, Globals::Defaults::timeSignatureNumerator);
-    const auto denominator = data.getProperty(Midi::denominator, Globals::Defaults::timeSignatureDenominator);
-    this->meter = Meter({}, numerator, denominator);
-    
-    this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
+
     this->id = unpackId(data.getProperty(Midi::id));
+    this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
+
+    const int numerator = data.getProperty(Midi::numerator, Globals::Defaults::timeSignatureNumerator);
+    const int denominator = data.getProperty(Midi::denominator, Globals::Defaults::timeSignatureDenominator);
+    const String metronomeString = data.getProperty(Midi::metronomeScheme);
+    this->meter = Meter({}, metronomeString, numerator, denominator);
+
+    if (metronomeString.isEmpty())
+    {
+        // in the projects created with older versions of this app,
+        // time signatures and their meters will miss metronome schemes,
+        // so if this is the case, try to find the default scheme;
+        // but first, assign a fallback value, which simply matches
+        // the meter size, in case we don't find the default scheme:
+        this->meter = this->meter.withMetronome(MetronomeScheme().resized(numerator));
+        for (const auto it : App::Config().getMeters()->getAll())
+        {
+            // denominator check is kinda redundant here:
+            if (it->getNumerator() == numerator)
+            {
+                this->meter = this->meter.withMetronome(it->getMetronome());
+                break;
+            }
+        }
+    }
 }
 
 // resets to invalid state

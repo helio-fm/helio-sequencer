@@ -25,12 +25,14 @@
 #include "TimeSignaturesSequence.h"
 #include "MidiTrack.h"
 
+class ProjectNode;
+class MetronomeEditor;
+
 class TimeSignatureDialog final : public DialogBase
 {
 public:
 
-    TimeSignatureDialog(Component &owner,
-        WeakReference<UndoStack> undoStack,
+    TimeSignatureDialog(Component &owner, ProjectNode &project,
         WeakReference<MidiTrack> targetTrack,
         WeakReference<TimeSignaturesSequence> targetSequence,
         const TimeSignatureEvent &editedEvent,
@@ -39,12 +41,10 @@ public:
     ~TimeSignatureDialog();
 
     static UniquePointer<Component> editingDialog(Component &owner,
-        WeakReference<UndoStack> undoStack,
-        const TimeSignatureEvent &event);
+        ProjectNode &project, const TimeSignatureEvent &event);
 
     static UniquePointer<Component> addingDialog(Component &owner,
-        WeakReference<UndoStack> undoStack,
-        WeakReference<TimeSignaturesSequence> tsSequence, float targetBeat);
+        ProjectNode &project, WeakReference<TimeSignaturesSequence> tsSequence, float targetBeat);
 
     void resized() override;
     void parentHierarchyChanged() override;
@@ -60,13 +60,18 @@ private:
     const WeakReference<MidiTrack> targetTrack;
     const WeakReference<TimeSignaturesSequence> targetSequence;
 
+    // keeping a copy of original event so we can send undo actions (from -> to):
     TimeSignatureEvent originalEvent;
+    // all current edits are here so callbacks can just modify them:
+    TimeSignatureEvent editedEvent;
+
     Component &ownerComponent;
 
     const Array<Meter::Ptr> defaultMeters;
 
     inline void undoAndDismiss();
     inline void updateOkButtonState();
+    void updateSize();
 
     enum class Mode
     {
@@ -87,6 +92,7 @@ private:
     UniquePointer<TextButton> removeEventButton;
     UniquePointer<TextButton> okButton;
     UniquePointer<TextEditor> textEditor;
+    UniquePointer<MetronomeEditor> metronomeEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureDialog)
 };

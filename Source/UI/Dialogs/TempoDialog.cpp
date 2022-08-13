@@ -52,7 +52,7 @@ public:
     {
         g.setColour(this->currentFillColour);
         g.fillRect(this->getLocalBounds());
-        HelioTheme::drawNoiseWithin(this->getLocalBounds().reduced(2), g, 7.5f);
+        HelioTheme::drawNoiseWithin(this->getLocalBounds().reduced(2), g);
         HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.25f, 0.75f);
     }
 

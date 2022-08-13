@@ -132,7 +132,8 @@ void SessionService::signIn(const String &provider)
         return;
     }
 
-    App::showModalComponent(ProgressTooltip::cancellable([this](){
+    App::showModalComponent(ProgressTooltip::cancellable([this]
+    {
         this->cancelSignInProcess();
     }));
 

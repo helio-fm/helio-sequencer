@@ -18,11 +18,12 @@
 #include "Common.h"
 #include "Instrument.h"
 #include "PluginWindow.h"
-#include "InternalPluginFormat.h"
+#include "InternalIODevicesPluginFormat.h"
 #include "SerializablePluginDescription.h"
 #include "SerializationKeys.h"
-#include "BuiltInSynthAudioPlugin.h"
-#include "BuiltInSynthFormat.h"
+#include "DefaultSynthAudioPlugin.h"
+#include "MetronomeSynthAudioPlugin.h"
+#include "BuiltInSynthsPluginFormat.h"
 #include "KeyboardMapping.h"
 
 Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &name) :
@@ -87,7 +88,24 @@ bool Instrument::isValid() const noexcept
 
 bool Instrument::isDefaultInstrument() const noexcept
 {
-    return this->instrumentName == BuiltInSynthAudioPlugin::instrumentName;
+    const auto mainNode = this->findMainPluginNode();
+    if (mainNode == nullptr)
+    {
+        return false;
+    }
+
+    return dynamic_cast<DefaultSynthAudioPlugin *>(mainNode->getProcessor()) != nullptr;
+}
+
+bool Instrument::isMetronomeInstrument() const noexcept
+{
+    const auto mainNode = this->findMainPluginNode();
+    if (mainNode == nullptr)
+    {
+        return false;
+    }
+
+    return dynamic_cast<MetronomeSynthAudioPlugin *>(mainNode->getProcessor()) != nullptr;
 }
 
 void Instrument::initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback)
@@ -99,18 +117,18 @@ void Instrument::initializeFrom(const PluginDescription &pluginDescription, Init
         {
             if (instrument == nullptr) { return; }
 
-            InternalPluginFormat f;
+            InternalIODevicesPluginFormat f;
             const auto audioIn = this->addNode(*f.getDescriptionFor(
-                InternalPluginFormat::InternalFilterType::audioInputFilter), 0.1f, 0.15f);
+                InternalIODevicesPluginFormat::Type::audioInput), 0.1f, 0.15f);
 
             const auto audioOut = this->addNode(*f.getDescriptionFor(
-                InternalPluginFormat::InternalFilterType::audioOutputFilter), 0.9f, 0.15f);
+                InternalIODevicesPluginFormat::Type::audioOutput), 0.9f, 0.15f);
 
             const auto midiIn = this->addNode(*f.getDescriptionFor(
-                InternalPluginFormat::InternalFilterType::midiInputFilter), 0.1f, 0.85f);
+                InternalIODevicesPluginFormat::Type::midiInput), 0.1f, 0.85f);
 
             const auto midiOut = this->addNode(*f.getDescriptionFor(
-                InternalPluginFormat::InternalFilterType::midiOutputFilter), 0.9f, 0.85f);
+                InternalIODevicesPluginFormat::Type::midiOutput), 0.9f, 0.85f);
 
             for (int i = 0; i < instrument->getProcessor()->getTotalNumInputChannels(); ++i)
             {
@@ -180,6 +198,19 @@ const AudioProcessorGraph::Node::Ptr Instrument::getNodeForId(AudioProcessorGrap
     return this->processorGraph->getNodeForId(uid);
 }
 
+bool Instrument::contains(AudioProcessorGraph::Node::Ptr node) const noexcept
+{
+    for (int i = 0; i < this->getNumNodes(); ++i)
+    {
+        if (this->getNode(i) == node)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 const AudioProcessorGraph::Node::Ptr Instrument::findMainPluginNode() const
 {
     AudioProcessorGraph::Node::Ptr pluginNode = nullptr;
@@ -209,7 +240,8 @@ const AudioProcessorGraph::Node::Ptr Instrument::findMainPluginNode() const
 
 void Instrument::addNodeAsync(const PluginDescription &desc, double x, double y, AddNodeCallback f)
 {
-    const auto callback = [this, desc, x, y, f](UniquePointer<AudioPluginInstance> instance, const String &error)
+    const auto callback = [this, desc, x, y, f]
+    (UniquePointer<AudioPluginInstance> instance, const String &error)
     {
         AudioProcessorGraph::Node::Ptr node = nullptr;
 
@@ -543,10 +575,10 @@ void Instrument::deserialize(const SerializedData &data)
 
     this->instrumentId = root.getProperty(Audio::instrumentId, this->instrumentId.toString());
     this->instrumentName = root.getProperty(Audio::instrumentName, this->instrumentName);
-    if (this->instrumentName == BuiltInSynthAudioPlugin::instrumentNameOld)
+    if (this->instrumentName == DefaultSynthAudioPlugin::instrumentNameOld)
     {
         // legacy naming workaround for the built-in instrument
-        this->instrumentName = BuiltInSynthAudioPlugin::instrumentName;
+        this->instrumentName = DefaultSynthAudioPlugin::instrumentName;
     }
 
     this->keyboardMapping->deserialize(root);
@@ -583,8 +615,8 @@ void Instrument::deserialize(const SerializedData &data)
         SerializablePluginDescription desc;
         desc.deserialize(nodeState.getChild(0)); // "node"/"plugin"
 
-        if (desc.pluginFormatName == BuiltInSynthFormat::formatName ||
-            desc.pluginFormatName == InternalPluginFormat::formatName)
+        if (desc.pluginFormatName == BuiltInSynthsPluginFormat::formatName ||
+            desc.pluginFormatName == InternalIODevicesPluginFormat::formatName)
         {
             String error;
             auto instance = this->formatManager.createPluginInstance(desc,

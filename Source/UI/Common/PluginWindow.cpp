@@ -19,13 +19,14 @@
 #include "PluginWindow.h"
 
 #include "Workspace.h"
+#include "RootNode.h"
+#include "InstrumentNode.h"
 #include "AudioCore.h"
 
 static OwnedArray<PluginWindow> activePluginWindows;
 
 PluginWindow::PluginWindow(Component *uiComponent,
-    AudioProcessorGraph::Node::Ptr owner,
-    bool shouldMimicComponent) : 
+    AudioProcessorGraph::Node::Ptr owner) : 
     DocumentWindow(uiComponent->getName(), Colours::darkgrey, DocumentWindow::closeButton),
     owner(owner)
 {
@@ -34,18 +35,9 @@ PluginWindow::PluginWindow(Component *uiComponent,
     this->setTopLeftPosition(100 + Random::getSystemRandom().nextInt(500),
                              100 + Random::getSystemRandom().nextInt(500));
     
-    if (shouldMimicComponent)
-    {
-        this->setUsingNativeTitleBar(false);
-        this->setTitleBarHeight(0);
-        this->setVisible(false);
-    }
-    else
-    {
-        this->setUsingNativeTitleBar(true);
-        this->setResizable(true, false);
-        this->setVisible(true);
-    }
+    this->setUsingNativeTitleBar(true);
+    this->setResizable(true, false);
+    this->setVisible(true);
 
     activePluginWindows.add(this);
 }
@@ -88,7 +80,7 @@ constexpr bool autoScaleOptionAvailable =
     false;
 #endif
 
-PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node, bool shouldMimicComponent)
+PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node)
 {
     for (auto *window : activePluginWindows)
     {
@@ -131,21 +123,65 @@ PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node, bo
             ui->setName(plugin->getName());
         }
         
-        return new PluginWindow(ui, node, shouldMimicComponent);
+        return new PluginWindow(ui, node);
     }
     
     return nullptr;
 }
 
-PluginWindow *PluginWindow::getWindowFor(const String &instrumentId)
+bool PluginWindow::showWindowFor(const String &instrumentId)
 {
     if (auto *instrument = App::Workspace().getAudioCore().findInstrumentById(instrumentId))
     {
         if (auto node = instrument->findMainPluginNode())
         {
-            return PluginWindow::getWindowFor(node, false);
+            return PluginWindow::showWindowFor(node);
         }
     }
 
-    return nullptr;
+    return false;
+}
+
+bool PluginWindow::showWindowFor(AudioProcessorGraph::Node::Ptr node)
+{
+#if PLATFORM_DESKTOP
+
+    if (auto *window = PluginWindow::getWindowFor(node))
+    {
+        // this callAsync trick is needed, because this may be called by a modal component,
+        // and after invoking this callback, it will dismiss, focusing the host window,
+        // and pushing the plugin window in the background, which looks silly;
+        MessageManager::callAsync([window]() {
+            // so we have to bring it to front asynchronously just in case:
+            window->toFront(true);
+        });
+
+        return true;
+    }
+
+#elif PLATFORM_MOBILE
+
+    // on mobile platofrms we're not showing a separate window,
+    // instead we create a temporary page in the workspace tree,
+    // and show the plugin UI there as a child component
+
+    const auto instrumentNodes =
+        App::Workspace().getTreeRoot()->findChildrenOfType<InstrumentNode>();
+
+    for (auto *instrumentNode : instrumentNodes)
+    {
+        if (instrumentNode->getInstrument()->contains(node))
+        {
+            instrumentNode->recreateChildrenEditors();
+            if (auto *audioPluginNode = instrumentNode->findAudioPluginEditorForNodeId(node->nodeID))
+            {
+                audioPluginNode->setSelected();
+                return true;
+            }
+        }
+    }
+
+#endif
+
+    return false;
 }

@@ -32,6 +32,11 @@ public:
     //===------------------------------------------------------------------===//
 
     void importMidi(const MidiMessageSequence &sequence, short timeFormat) override;
+    void exportMidi(MidiMessageSequence &outSequence,
+        const Clip &clip, const KeyboardMapping &keyMap,
+        bool soloPlaybackMode, bool exportMetronome,
+        float projectFirstBeat, float projectLastBeat,
+        double timeFactor = 1.0) const override;
 
     //===------------------------------------------------------------------===//
     // Undoable track editing
@@ -40,8 +45,7 @@ public:
     MidiEvent *insert(const TimeSignatureEvent &signatureToCopy, bool undoable);
     bool remove(const TimeSignatureEvent &signature, bool undoable);
     bool change(const TimeSignatureEvent &signature,
-        const TimeSignatureEvent &newSignature,
-        bool undoable);
+        const TimeSignatureEvent &newSignature, bool undoable);
 
     //===------------------------------------------------------------------===//
     // Callbacks
@@ -56,6 +60,15 @@ public:
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
+
+private:
+
+    // simply appends new event at the end of the list,
+    // assuming that the list will remain sorted after that;
+    // only use it for better performance, if you know what you're doing
+    MidiEvent *appendUnsafe(const TimeSignatureEvent &orderedEvent);
+
+    friend class TimeSignaturesAggregator;
 
 private:
 

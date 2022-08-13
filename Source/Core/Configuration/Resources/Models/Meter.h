@@ -20,13 +20,62 @@
 #include "Chord.h"
 #include "ConfigurationResource.h"
 
+class MetronomeScheme final
+{
+public:
+
+    enum class Syllable : int
+    {
+        Oo, na, Pa, pa
+    };
+
+    MetronomeScheme &operator=(const MetronomeScheme &r) = default;
+    friend bool operator==(const MetronomeScheme &l, const MetronomeScheme &r);
+    friend bool operator!=(const MetronomeScheme &l, const MetronomeScheme &r);
+
+    String toString() const;
+    void loadString(const String &str);
+    void reset();
+
+    bool isValid() const noexcept;
+    int getSize() const noexcept;
+    Syllable getSyllableAt(int index) const noexcept;
+
+    MetronomeScheme withSyllableAt(int index, Syllable newValue) const;
+    MetronomeScheme resized(int size) const;
+
+    static Syllable getNextSyllable(Syllable syllable) noexcept;
+    
+    // ordered by "loudness" descending:
+    static Array<Syllable> getAllOrdered();
+
+    static String syllableToString(Syllable syllable);
+    static Syllable syllableFromString(const String &value);
+
+    struct SyllableHash
+    {
+        inline HashCode operator()(const Syllable &syllable) const noexcept
+        {
+            return static_cast<HashCode>(syllable);
+        }
+    };
+
+private:
+
+    // the simple default oona-pana scheme:
+    static Array<Syllable> getDefaultScheme();
+
+    Array<Syllable> syllables = getDefaultScheme();
+};
+
 class Meter final : public ConfigurationResource
 {
 public:
 
     Meter() = default;
     Meter(const Meter &other) noexcept;
-    Meter(const String &name, int numerator, int denominator) noexcept;
+    Meter(const String &name, const String &metronomeScheme,
+        int numerator, int denominator) noexcept;
 
     String getResourceId() const noexcept override;
     Identifier getResourceType() const noexcept override;
@@ -34,6 +83,7 @@ public:
 
     Meter withNumerator(const int newNumerator) const noexcept;
     Meter withDenominator(const int newDenominator) const noexcept;
+    Meter withMetronome(const MetronomeScheme &scheme) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Helpers
@@ -45,9 +95,12 @@ public:
     bool isCommonTime() const noexcept;
     int getNumerator() const noexcept;
     int getDenominator() const noexcept;
+    float getBarLengthInBeats() const noexcept;
+    float getDenominatorInBeats() const noexcept;
+
     String getTimeAsString() const noexcept;
 
-    float getBarLengthInBeats() const noexcept;
+    const MetronomeScheme &getMetronome() const noexcept;
 
     static void parseString(const String &data, int &numerator, int &denominator);
 
@@ -67,8 +120,7 @@ public:
     friend bool operator==(const Meter &l, const Meter &r);
     friend bool operator!=(const Meter &l, const Meter &r);
 
-    // Simply checks if numerator and denominator are the same
-    // (in future, might also check the metronome scheme)
+    // checks if numerator, denominator and metronome scheme are the same
     bool isEquivalentTo(const Meter &other) const;
 
 private:
@@ -77,6 +129,8 @@ private:
 
     int numerator = 0;
     int denominator = 0;
+
+    MetronomeScheme metronome;
 
     static constexpr auto minNumerator = 2;
     static constexpr auto maxNumerator = 64;

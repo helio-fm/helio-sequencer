@@ -22,12 +22,57 @@
 #include "ProjectNode.h"
 #include "ProjectTimeline.h"
 #include "Pattern.h"
+#include "Workspace.h"
+#include "AudioCore.h"
+
+// TimeSignaturesAggregator acts like a virtual midi track
+// (so it can be used in the export and for building the playback midi data),
+// and for that it maintains a "virtual" midi sequence, which it rebuilds
+// on the fly, depending on user selection; and for that reason
+// it uses its own listener interface instead of ProjectListener;
+// so this class is here to help to avoid its virtual sequence sending
+// ProjectListener events (hopefully someday I'll come up with a cleaner approach,
+// but for now let's just send sequence's change events nowhere)
+class DummyProjectEventDispatcher final : public ProjectEventDispatcher
+{
+public:
+
+    explicit DummyProjectEventDispatcher(ProjectNode &project) :
+        project(project) {}
+
+    void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override {}
+    void dispatchAddEvent(const MidiEvent &event) override {}
+    void dispatchRemoveEvent(const MidiEvent &event) override {}
+    void dispatchPostRemoveEvent(MidiSequence *const layer) override {}
+
+    void dispatchAddClip(const Clip &clip) override {}
+    void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override {}
+    void dispatchRemoveClip(const Clip &clip) override {}
+    void dispatchPostRemoveClip(Pattern *const pattern) override {}
+
+    void dispatchChangeTrackProperties() override {}
+    void dispatchChangeTrackBeatRange() override {}
+    void dispatchChangeProjectBeatRange() override {}
+
+    ProjectNode *getProject() const noexcept override
+    {
+        return &this->project;
+    }
+
+private:
+
+    ProjectNode &project;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyProjectEventDispatcher)
+};
+
 
 TimeSignaturesAggregator::TimeSignaturesAggregator(ProjectNode &parentProject,
     MidiSequence &timelineSignatures) :
     project(parentProject),
     timelineSignatures(timelineSignatures)
 {
+    this->dummyEventDispatcher = make<DummyProjectEventDispatcher>(this->project);
     this->project.addListener(this);
 }
 
@@ -66,14 +111,9 @@ void TimeSignaturesAggregator::setActiveScope(Array<WeakReference<MidiTrack>> tr
     this->rebuildAll();
 }
 
-const Array<TimeSignatureEvent> &TimeSignaturesAggregator::getAllOrdered() const noexcept
-{
-    return this->orderedEvents;
-}
-
 void TimeSignaturesAggregator::updateGridDefaultsIfNeeded(int &numerator, int &denominator, float &startBeat) const noexcept
 {
-    if (this->orderedEvents.isEmpty()) // no time signatures at the timeline, and no clips selected
+    if (this->getSequence()->isEmpty()) // no time signatures at the timeline, and no clips selected
     {
         numerator = this->defaultGridNumerator;
         denominator = this->defaultGridDenominator;
@@ -104,6 +144,23 @@ void TimeSignaturesAggregator::removeAllListeners()
 }
 
 //===----------------------------------------------------------------------===//
+// VirtualMidiTrack
+//===----------------------------------------------------------------------===//
+
+String TimeSignaturesAggregator::getTrackInstrumentId() const noexcept
+{
+    // time signatures may emit events for the metronome:
+    return App::Workspace().getAudioCore().getMetronomeInstrumentId();
+}
+
+MidiSequence *TimeSignaturesAggregator::getSequence() const noexcept
+{
+    return this->orderedEvents != nullptr ?
+        this->orderedEvents.get() : // aggregation mode
+        &this->timelineSignatures;  // fallback to timeline time signatures
+}
+
+//===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
@@ -112,11 +169,7 @@ void TimeSignaturesAggregator::onAddMidiEvent(const MidiEvent &event)
     if (event.isTypeOf(MidiEvent::Type::TimeSignature) &&
         !this->isAggregatingTimeSignatureOverrides())
     {
-        const auto &timeSignature = static_cast<const TimeSignatureEvent &>(event);
-        jassert(timeSignature.getSequence() ==
-            this->project.getTimeline()->getTimeSignatures()->getSequence());
-
-        this->orderedEvents.addSorted(timeSignature, timeSignature);
+        jassert(static_cast<const TimeSignatureEvent &>(event).getSequence() == this->getSequence());
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
     }
 }
@@ -126,45 +179,17 @@ void TimeSignaturesAggregator::onChangeMidiEvent(const MidiEvent &oldEvent, cons
     if (newEvent.isTypeOf(MidiEvent::Type::TimeSignature) &&
         !this->isAggregatingTimeSignatureOverrides())
     {
-        const auto &timeSignature = static_cast<const TimeSignatureEvent &>(oldEvent);
-        jassert(timeSignature.getSequence() ==
-            this->project.getTimeline()->getTimeSignatures()->getSequence());
-
-        const auto &newTimeSignature = static_cast<const TimeSignatureEvent &>(newEvent);
-        jassert(newTimeSignature.getSequence() ==
-            this->project.getTimeline()->getTimeSignatures()->getSequence());
-
-        const auto index = this->orderedEvents.indexOfSorted(timeSignature, timeSignature);
-        if (index < 0)
-        {
-            jassertfalse; // how is that?
-            return;
-        }
-
-        jassert(timeSignature.getId() == newTimeSignature.getId());
-        this->orderedEvents.getReference(index) = newTimeSignature;
-        this->orderedEvents.sort(newTimeSignature);
+        jassert(static_cast<const TimeSignatureEvent &>(oldEvent).getSequence() == this->getSequence());
+        jassert(static_cast<const TimeSignatureEvent &>(newEvent).getSequence() == this->getSequence());
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
     }
 }
 
-void TimeSignaturesAggregator::onRemoveMidiEvent(const MidiEvent &event)
+void TimeSignaturesAggregator::onPostRemoveMidiEvent(MidiSequence *const sequence)
 {
-    if (event.isTypeOf(MidiEvent::Type::TimeSignature) &&
+    if (sequence == this->getSequence() &&
         !this->isAggregatingTimeSignatureOverrides())
     {
-        const auto &timeSignature = static_cast<const TimeSignatureEvent &>(event);
-        jassert(timeSignature.getSequence() ==
-            this->project.getTimeline()->getTimeSignatures()->getSequence());
-
-        const auto index = this->orderedEvents.indexOfSorted(timeSignature, timeSignature);
-        if (index < 0)
-        {
-            jassertfalse; // how is that?
-            return;
-        }
-
-        this->orderedEvents.remove(index);
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
     }
 }
@@ -259,19 +284,16 @@ struct SortByTimeSignatureAbsolutePosition final
 
 void TimeSignaturesAggregator::rebuildAll()
 {
-    this->orderedEvents.clearQuick();
-
     if (!this->isAggregatingTimeSignatureOverrides())
     {
-        for (const auto *event : this->timelineSignatures)
-        {
-            const auto *ts = static_cast<const TimeSignatureEvent *>(event);
-            this->orderedEvents.add(*ts);
-        }
-
+        // now it will return timeline's sequence in getSequence():
+        this->orderedEvents = nullptr;
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
         return;
     }
+
+    // clear all
+    this->orderedEvents = make<TimeSignaturesSequence>(*this, *this->dummyEventDispatcher.get());
 
     // todo: multiple time signatures per track? now there can be only one
 
@@ -311,8 +333,7 @@ void TimeSignaturesAggregator::rebuildAll()
         {
             chunkStartBeat = startBeat;
             chunkStartMeter = timeSignatureOverride->getMeter();
-
-            this->orderedEvents.add(timeSignatureOverride->withId(generatedTimeSignatureId).withBeat(startBeat));
+            this->orderedEvents->appendUnsafe(timeSignatureOverride->withId(generatedTimeSignatureId).withBeat(startBeat));
             generatedTimeSignatureId++;
 
             continue;
@@ -328,19 +349,18 @@ void TimeSignaturesAggregator::rebuildAll()
         // new chunk starts here, add time signature
         chunkStartBeat = startBeat;
         chunkStartMeter = timeSignatureOverride->getMeter();
-
-        this->orderedEvents.add(timeSignatureOverride->withId(generatedTimeSignatureId).withBeat(startBeat));
+        this->orderedEvents->appendUnsafe(timeSignatureOverride->withId(generatedTimeSignatureId).withBeat(startBeat));
         generatedTimeSignatureId++;
     }
 
     // for now, simple as that: remember the very first one
     // of the aggregated time signatures, and use it as the grid default
-    if (!this->orderedEvents.isEmpty())
+    if (!this->orderedEvents->isEmpty())
     {
-        const auto &firstTimeSignature = this->orderedEvents.getReference(0);
-        this->defaultGridNumerator = firstTimeSignature.getNumerator();
-        this->defaultGridDenominator = firstTimeSignature.getDenominator();
-        this->defaultGridStart = firstTimeSignature.getBeat();
+        const auto *firstTimeSignature = static_cast<const TimeSignatureEvent *>(this->orderedEvents->getUnchecked(0));
+        this->defaultGridNumerator = firstTimeSignature->getNumerator();
+        this->defaultGridDenominator = firstTimeSignature->getDenominator();
+        this->defaultGridStart = firstTimeSignature->getBeat();
     }
 
     this->listeners.call(&Listener::onTimeSignaturesUpdated);

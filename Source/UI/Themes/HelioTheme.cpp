@@ -558,6 +558,11 @@ void HelioTheme::drawDocumentWindowTitleBar(DocumentWindow &window,
     bool drawTitleTextOnLeft)
 {
 #if PLATFORM_DESKTOP
+    if (window.isUsingNativeTitleBar())
+    {
+        return;
+    }
+
     const auto &theme = HelioTheme::getCurrentTheme();
     g.setFillType({ theme.getBgCacheA(), {} });
     g.fillRect(0, 0, w, h);

@@ -22,6 +22,8 @@
 #include "ProjectNode.h"
 #include "UndoStack.h"
 #include "Meter.h"
+#include "MetronomeSynth.h"
+#include "Config.h"
 
 TimeSignaturesSequence::TimeSignaturesSequence(MidiTrack &track,
     ProjectEventDispatcher &dispatcher) noexcept :
@@ -38,7 +40,7 @@ void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence, sho
 
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {
-        const MidiMessage &message = sequence.getEventPointer(i)->message;
+        const auto &message = sequence.getEventPointer(i)->message;
         if (message.isTimeSignatureMetaEvent())
         {
             int numerator = 0;
@@ -51,6 +53,93 @@ void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence, sho
     }
 
     this->updateBeatRange(false);
+}
+
+void TimeSignaturesSequence::exportMidi(MidiMessageSequence &outSequence,
+    const Clip &clip, const KeyboardMapping &keyMap,
+    bool soloPlaybackMode, bool exportMetronome,
+    float projectFirstBeat, float projectLastBeat,
+    double timeFactor /*= 1.0*/) const
+{
+    // This method pretty much duplicates the base method, except for
+    // emitting the "virtual" metronome track, if it's needed
+    if (exportMetronome)
+    {
+        // I'm too lazy to take timeFactor into account here,
+        // but it is only used when exporting to midi file (i.e. sets midi clock),
+        // and we don't export the virtual metronome track to midi files:
+        jassert(timeFactor == 1.0);
+
+        const auto emitNextMetronomeEvent = [](MidiMessageSequence &outSequence,
+            float beat, const MetronomeScheme &scheme, int &syllableIndex)
+        {
+            const auto currentSyllable = scheme.getSyllableAt(syllableIndex);
+            const auto key = MetronomeSynth::getKeyForSyllable(currentSyllable);
+
+            syllableIndex = ++syllableIndex % scheme.getSize();
+
+            constexpr auto metronomeChannel = 1;    // doesn't matter which one
+            constexpr auto metronomeVelocity = 1.f; // also will be ignored
+
+            MidiMessage mentonomeNoteOn(MidiMessage::noteOn(metronomeChannel, key, metronomeVelocity));
+            mentonomeNoteOn.setTimeStamp(beat);
+            outSequence.addEvent(mentonomeNoteOn);
+
+            // for simplicity, not emitting note-offs for the built-in metronome,
+            // Synthesiser class automatically stops/starts the voices when the same note repeats
+        };
+
+        if (this->midiEvents.isEmpty())
+        {
+            int syllableIndex = 0;
+            const MetronomeScheme defaultScheme;
+            for (float beat = projectFirstBeat; beat <= projectLastBeat; beat += 1.f)
+            {
+                emitNextMetronomeEvent(outSequence, beat, defaultScheme, syllableIndex);
+            }
+        }
+        else
+        {
+            const auto *firstEvent = static_cast<const TimeSignatureEvent *>(this->midiEvents.getFirst());
+            jassert(firstEvent->getBeat() >= projectFirstBeat);
+
+            {
+                int syllableIndex = 0;
+                const auto metronomeScheme = firstEvent->getMeter().getMetronome();
+                jassert(metronomeScheme.isValid());
+
+                for (float beat = projectFirstBeat; beat < firstEvent->getBeat();
+                     beat += firstEvent->getDenominatorInBeats())
+                {
+                    emitNextMetronomeEvent(outSequence, beat, metronomeScheme, syllableIndex);
+                }
+            }
+
+            for (int i = 0; i < this->midiEvents.size(); ++i)
+            {
+                const auto *event = static_cast<const TimeSignatureEvent *>(this->midiEvents.getUnchecked(i));
+                const auto nextBeat = (i < this->midiEvents.size() - 1) ?
+                    this->midiEvents.getUnchecked(i + 1)->getBeat() : projectLastBeat;
+
+                int syllableIndex = 0;
+                const auto metronomeScheme = event->getMeter().getMetronome();
+                jassert(metronomeScheme.isValid());
+
+                for (float beat = event->getBeat(); beat < nextBeat;
+                     beat += event->getDenominatorInBeats())
+                {
+                    emitNextMetronomeEvent(outSequence, beat, metronomeScheme, syllableIndex);
+                }
+            }
+        }
+    }
+
+    for (const auto *event : this->midiEvents)
+    {
+        event->exportMessages(outSequence, clip, keyMap, timeFactor);
+    }
+
+    outSequence.updateMatchedPairs();
 }
 
 //===----------------------------------------------------------------------===//
@@ -75,6 +164,15 @@ MidiEvent *TimeSignaturesSequence::insert(const TimeSignatureEvent &eventParams,
     }
 
     return nullptr;
+}
+
+MidiEvent *TimeSignaturesSequence::appendUnsafe(const TimeSignatureEvent &eventParams)
+{
+    auto *ownedEvent = new TimeSignatureEvent(this, eventParams);
+    this->midiEvents.add(ownedEvent);
+    this->eventDispatcher.dispatchAddEvent(*ownedEvent);
+    this->updateBeatRange(true);
+    return ownedEvent;
 }
 
 bool TimeSignaturesSequence::remove(const TimeSignatureEvent &signature, bool undoable)

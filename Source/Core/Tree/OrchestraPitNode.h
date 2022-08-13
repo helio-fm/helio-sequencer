@@ -22,12 +22,14 @@ class InstrumentNode;
 
 #include "TreeNode.h"
 #include "OrchestraPitPage.h"
+#include "OrchestraPit.h"
 
-class OrchestraPitNode final : public TreeNode
+class OrchestraPitNode final : public TreeNode, private OrchestraListener
 {
 public:
 
     OrchestraPitNode();
+    ~OrchestraPitNode() override;
 
     String getName() const noexcept override;
     Image getIcon() const noexcept override;
@@ -42,16 +44,27 @@ public:
     bool hasMenu() const noexcept override;
     UniquePointer<Component> createMenu() override;
 
+    //===------------------------------------------------------------------===//
+    // OrchestraListener
+    //===------------------------------------------------------------------===//
+
+    void onAddInstrument(Instrument *instrument) override;
+    void onRemoveInstrument(Instrument *instrument) override;
+    void onPostRemoveInstrument() override {}
+
+    //===------------------------------------------------------------------===//
+    // Serializable
+    //===------------------------------------------------------------------===//
+
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
+
 private:
     
-    friend class OrchestraPitPage;
-    friend class OrchestraPitMenu;
-    friend class AudioPluginSelectionMenu;
-    friend class InstrumentNode;
-    
-    InstrumentNode *addInstrumentNode(Instrument *instrument, int insertIndex = -1);
-    void removeInstrumentNode(InstrumentNode *node);
+    OrchestraPit &orchestra;
 
     UniquePointer<OrchestraPitPage> instrumentsPage;
+
+    void syncAllInstruments();
 
 };

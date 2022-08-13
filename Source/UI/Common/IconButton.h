@@ -85,7 +85,7 @@ public:
 
 private:
 
-    int commandId;
+    const int commandId = 0;
     
     WeakReference<Component> listener;
 

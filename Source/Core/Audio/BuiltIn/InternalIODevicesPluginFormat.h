@@ -19,27 +19,26 @@
 
 #include "Instrument.h"
 
-class InternalPluginFormat final : public AudioPluginFormat
+class InternalIODevicesPluginFormat final : public AudioPluginFormat
 {
 public:
 
-    InternalPluginFormat();
+    InternalIODevicesPluginFormat();
 
     static const String formatName;
     static const String manufacturer;
 
-    enum class InternalFilterType : int
+    enum class Type : int
     {
-        audioInputFilter = 0,
-        audioOutputFilter,
-        midiInputFilter,
-        midiOutputFilter,
-
-        endOfFilterTypes
+        audioInput = 0,
+        audioOutput,
+        midiInput,
+        midiOutput,
+        endOfDeviceTypes
     };
 
     void getAllTypes(OwnedArray <PluginDescription> &results);
-    const PluginDescription *getDescriptionFor(const InternalFilterType type);
+    const PluginDescription *getDescriptionFor(const Type type);
 
     bool pluginNeedsRescanning(const PluginDescription &) override { return false; }
     String getName() const override;
@@ -64,5 +63,5 @@ private:
     PluginDescription midiInDesc;
     PluginDescription midiOutDesc;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InternalPluginFormat)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InternalIODevicesPluginFormat)
 };

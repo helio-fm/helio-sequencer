@@ -20,20 +20,26 @@
 #include "MidiTrackActions.h"
 #include "Config.h"
 #include "CommandIDs.h"
+#include "MetronomeEditor.h"
+#include "ProjectNode.h"
+
+#include "App.h"
+#include "AudioCore.h"
+#include "Workspace.h"
 
 TimeSignatureDialog::TimeSignatureDialog(Component &owner,
-    WeakReference<UndoStack> undoStack,
-    WeakReference<MidiTrack> targetTrack,
+    ProjectNode &project, WeakReference<MidiTrack> targetTrack,
     WeakReference<TimeSignaturesSequence> targetSequence,
-    const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent) :
-    undoStack(undoStack),
+    const TimeSignatureEvent &editedTimeSignature, bool shouldAddNewEvent) :
+    undoStack(project.getUndoStack()),
     targetTrack(targetTrack),
     targetSequence(targetSequence),
-    originalEvent(editedEvent),
+    originalEvent(editedTimeSignature),
+    editedEvent(editedTimeSignature),
     ownerComponent(owner),
     defaultMeters(App::Config().getMeters()->getAll()),
     mode(shouldAddNewEvent ? Mode::AddTimelineTimeSignature :
-        (targetSequence != nullptr ? Mode::EditTimelineTimeSignature : Mode::EditTrackTimeSignature))
+        (targetTrack != nullptr ? Mode::EditTrackTimeSignature : Mode::EditTimelineTimeSignature))
 {
     jassert(this->originalEvent.isValid() || this->targetTrack != nullptr);
     jassert(this->targetSequence != nullptr || this->targetTrack != nullptr);
@@ -71,6 +77,19 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
             this->dismiss();
         }
     };
+
+    if (!this->originalEvent.isValid() || this->mode == Mode::AddTimelineTimeSignature)
+    {
+        this->messageLabel->setText(TRANS(I18n::Dialog::timeSignatureAddCaption), dontSendNotification);
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::cancel));
+        this->okButton->setButtonText(TRANS(I18n::Dialog::add));
+    }
+    else
+    {
+        this->messageLabel->setText(TRANS(I18n::Dialog::timeSignatureEditCaption), dontSendNotification);
+        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::delete_));
+        this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
+    }
 
     this->textEditor = make<TextEditor>();
     this->addAndMakeVisible(this->textEditor.get());
@@ -117,9 +136,15 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
         int denominator;
         Meter::parseString(meterString, numerator, denominator);
 
-        const auto newEvent = this->originalEvent
+        auto newEvent = this->editedEvent
             .withNumerator(numerator)
             .withDenominator(denominator);
+
+        const auto metronome = this->editedEvent.getMeter().getMetronome();
+        if (numerator != metronome.getSize())
+        {
+            newEvent = newEvent.withMetronome(metronome.resized(numerator));
+        }
 
         this->sendEventChange(newEvent);
     };
@@ -141,6 +166,24 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     this->addAndMakeVisible(this->presetsCombo.get());
     this->presetsCombo->initWith(this->textEditor.get(), menu);
 
+    this->metronomeEditor = make<MetronomeEditor>(project.getTransport(),
+        App::Workspace().getAudioCore().getMetronomeInstrument());
+    this->addAndMakeVisible(this->metronomeEditor.get());
+    this->metronomeEditor->setMetronome(this->originalEvent.getMeter().getMetronome());
+    this->metronomeEditor->onTap = [this, &transport = project.getTransport()]
+        (const MetronomeScheme &metronome, int tappedSyllableIndex)
+    {
+        const auto tappedSyllable = metronome.getSyllableAt(tappedSyllableIndex);
+        const auto nextSyllable = MetronomeScheme::getNextSyllable(tappedSyllable);
+        const auto newMetronome = metronome.withSyllableAt(tappedSyllableIndex, nextSyllable);
+
+        const auto key = MetronomeSynth::getKeyForSyllable(nextSyllable);
+        auto *metronomeInstrument = App::Workspace().getAudioCore().getMetronomeInstrument();
+        transport.previewKey(metronomeInstrument, key, 1.f, Globals::beatsPerBar);
+
+        this->sendEventChange(this->editedEvent.withMetronome(newMetronome));
+    };
+
     if (this->mode == Mode::EditTrackTimeSignature && !this->originalEvent.isValid())
     {
         jassert(this->targetTrack != nullptr);
@@ -158,36 +201,30 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
             }
         }
 
-        this->sendEventChange(this->originalEvent
-            .withNumerator(newMeter->getNumerator())
-            .withDenominator(newMeter->getDenominator()));
+        this->sendEventChange(this->originalEvent.withMeter(*newMeter));
     }
-
-    if (this->mode == Mode::AddTimelineTimeSignature)
+    else if (this->mode == Mode::AddTimelineTimeSignature)
     {
         jassert(this->targetSequence != nullptr);
         this->undoStack->beginNewTransaction();
         this->targetSequence->insert(this->originalEvent, true);
-
-        this->messageLabel->setText(TRANS(I18n::Dialog::timeSignatureAddCaption), dontSendNotification);
-        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::cancel));
-        this->okButton->setButtonText(TRANS(I18n::Dialog::add));
-    }
-    else
-    {
-        this->messageLabel->setText(TRANS(I18n::Dialog::timeSignatureEditCaption), dontSendNotification);
-        this->removeEventButton->setButtonText(TRANS(I18n::Dialog::delete_));
-        this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
     }
 
-    this->textEditor->setText(this->originalEvent.toString(), dontSendNotification);
-    
-    this->setSize(370, 185);
+    this->textEditor->setText(this->editedEvent.toString(), dontSendNotification);
+
     this->updatePosition();
+    this->updateSize();
     this->updateOkButtonState();
 }
 
 TimeSignatureDialog::~TimeSignatureDialog() = default;
+
+void TimeSignatureDialog::updateSize()
+{
+    const auto oldWidth = this->getWidth();
+    this->setSize(64 + this->metronomeEditor->getAllButtonsArea().getWidth(), 240);
+    this->setTopLeftPosition(this->getPosition().translated((oldWidth - this->getWidth()) / 2, 0));
+}
 
 void TimeSignatureDialog::resized()
 {
@@ -200,7 +237,10 @@ void TimeSignatureDialog::resized()
     this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
     this->removeEventButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
 
-    this->textEditor->setBounds(this->getRowBounds(0.5f, DialogBase::textEditorHeight));
+    this->textEditor->setBounds(this->getRowBounds(0.25f, DialogBase::textEditorHeight));
+
+    constexpr auto metronomeEditorHeight = 55;
+    this->metronomeEditor->setBounds(this->getRowBounds(0.7f, metronomeEditorHeight));
 }
 
 void TimeSignatureDialog::parentHierarchyChanged()
@@ -215,6 +255,8 @@ void TimeSignatureDialog::parentSizeChanged()
 
 void TimeSignatureDialog::handleCommandMessage(int commandId)
 {
+    this->metronomeEditor->postCommandMessage(CommandIDs::TransportStop);
+
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
         this->undoAndDismiss();
@@ -224,9 +266,10 @@ void TimeSignatureDialog::handleCommandMessage(int commandId)
         const int targetIndex = commandId - CommandIDs::SelectTimeSignature;
         if (targetIndex >= 0 && targetIndex < this->defaultMeters.size())
         {
-            const auto &meter = this->defaultMeters[targetIndex];
+            const auto meter = this->defaultMeters[targetIndex];
             this->textEditor->grabKeyboardFocus();
-            this->textEditor->setText(meter->getTimeAsString(), true);
+            this->textEditor->setText(meter->getTimeAsString(), false);
+            this->sendEventChange(this->editedEvent.withMeter(*meter));
         }
     }
 }
@@ -243,6 +286,8 @@ void TimeSignatureDialog::updateOkButtonState()
 
 void TimeSignatureDialog::sendEventChange(const TimeSignatureEvent &newEvent)
 {
+    this->metronomeEditor->postCommandMessage(CommandIDs::TransportStop);
+
     switch (this->mode)
     {
     case Mode::EditTrackTimeSignature:
@@ -254,7 +299,6 @@ void TimeSignatureDialog::sendEventChange(const TimeSignatureEvent &newEvent)
 
         this->undoStack->beginNewTransaction();
         this->targetTrack->setTimeSignatureOverride(newEvent, true, sendNotification);
-        this->originalEvent = newEvent;
         this->hasMadeChanges = true;
         break;
     case Mode::EditTimelineTimeSignature:
@@ -272,9 +316,12 @@ void TimeSignatureDialog::sendEventChange(const TimeSignatureEvent &newEvent)
         jassert(this->targetSequence != nullptr);
         this->undoStack->undo();
         this->targetSequence->insert(newEvent, true);
-        this->originalEvent = newEvent;
         break;
     }
+
+    this->editedEvent = newEvent;
+    this->metronomeEditor->setMetronome(newEvent.getMeter().getMetronome());
+    this->updateSize();
 }
 
 void TimeSignatureDialog::removeTimeSignature()
@@ -331,25 +378,23 @@ void TimeSignatureDialog::undoAndDismiss()
 }
 
 UniquePointer<Component> TimeSignatureDialog::editingDialog(Component &owner,
-    WeakReference<UndoStack> undoStack, const TimeSignatureEvent &event)
+    ProjectNode &project, const TimeSignatureEvent &event)
 {
-    if (auto *sequence = static_cast<TimeSignaturesSequence *>(event.getSequence()))
+    if (event.getTrack() != nullptr)
     {
-        return make<TimeSignatureDialog>(owner, undoStack,
-            nullptr, sequence, event, false);
+        return make<TimeSignatureDialog>(owner, project, event.getTrack(), nullptr, event, false);
     }
     else
     {
-        jassert(event.getTrack() != nullptr);
-        return make<TimeSignatureDialog>(owner, undoStack,
-            event.getTrack(), nullptr, event, false);
+        auto *sequence = static_cast<TimeSignaturesSequence *>(event.getSequence());
+        jassert(sequence != nullptr);
+        return make<TimeSignatureDialog>(owner, project, nullptr, sequence, event, false);
     }
 }
 
 UniquePointer<Component> TimeSignatureDialog::addingDialog(Component &owner,
-    WeakReference<UndoStack> undoStack,
-    WeakReference<TimeSignaturesSequence> targetSequence, float targetBeat)
+    ProjectNode &project, WeakReference<TimeSignaturesSequence> targetSequence, float targetBeat)
 {
-    return make<TimeSignatureDialog>(owner, undoStack, nullptr,
+    return make<TimeSignatureDialog>(owner, project, nullptr,
         targetSequence, TimeSignatureEvent(targetSequence.get(), targetBeat), true);
 }

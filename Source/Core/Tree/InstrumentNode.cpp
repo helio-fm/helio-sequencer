@@ -38,8 +38,7 @@
 
 InstrumentNode::InstrumentNode(Instrument *targetInstrument) :
     TreeNode({}, Serialization::Core::instrumentRoot),
-    instrument(targetInstrument),
-    instrumentEditor(nullptr)
+    instrument(targetInstrument)
 {
     if (this->instrument != nullptr)
     {
@@ -53,11 +52,6 @@ InstrumentNode::~InstrumentNode()
     // cleanup UI before unplugging an instrument
     this->deleteAllChildren();
     this->removeInstrumentEditor();
-
-    if (!this->instrument.wasObjectDeleted())
-    {
-        App::Workspace().getAudioCore().removeInstrument(this->instrument);
-    }
 }
 
 Image InstrumentNode::getIcon() const noexcept
@@ -67,9 +61,9 @@ Image InstrumentNode::getIcon() const noexcept
 
 void InstrumentNode::showPage()
 {
-    if (this->instrument.wasObjectDeleted())
+    if (this->instrument == nullptr)
     {
-        this->removeFromOrchestraAndDelete();
+        jassertfalse;
         return;
     }
 
@@ -78,9 +72,14 @@ void InstrumentNode::showPage()
 
 void InstrumentNode::safeRename(const String &newName, bool sendNotifications)
 {
-    if (this->instrument.wasObjectDeleted())
+    if (this->instrument == nullptr)
     { 
-        this->removeFromOrchestraAndDelete();
+        jassertfalse;
+        return;
+    }
+
+    if (newName == this->getName())
+    {
         return;
     }
 
@@ -93,6 +92,16 @@ void InstrumentNode::safeRename(const String &newName, bool sendNotifications)
     }
 }
 
+String InstrumentNode::getName() const noexcept
+{
+    if (this->instrument == nullptr)
+    {
+        jassertfalse;
+        return {};
+    }
+
+    return this->instrument->getName();
+}
 
 //===----------------------------------------------------------------------===//
 // Instrument
@@ -159,59 +168,30 @@ void InstrumentNode::recreateChildrenEditors()
 }
 
 //===----------------------------------------------------------------------===//
-// Callbacks
-//===----------------------------------------------------------------------===//
-
-Function<void(const String &text)> InstrumentNode::getRenameCallback()
-{
-    return [this](const String &text)
-    {
-        if (text != this->getName())
-        {
-            this->safeRename(text, true);
-        }
-    };
-}
-
-//===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
+
+// InstrumentNode is supposed to be a temporary node, a presentation of
+// Instrument model in the workspace tree, but in earlier versions it was
+// serialized/deserialized independently (don't ask me why);
+// now each InstrumentNode is created on the fly by OrchestraPitNode
+// when it synchronizes itself with OrchestraPit, but we will leave
+// this serialize() method here, so that previous versions don't break
+// when loading the main config file modified by this version:
 
 SerializedData InstrumentNode::serialize() const
 {
     SerializedData tree(Serialization::Core::treeNode);
     tree.setProperty(Serialization::Core::treeNodeType, this->type);
-    tree.setProperty(Serialization::Core::treeNodeName, this->name);
+    tree.setProperty(Serialization::Core::treeNodeName, this->getName());
     tree.setProperty(Serialization::Audio::instrumentId, this->instrument->getIdAndHash());
     // not serializing the children editor nodes: they are all temporary
     return tree;
 }
 
-void InstrumentNode::deserialize(const SerializedData &data)
-{
-    this->reset();
-
-    const String id = data.getProperty(Serialization::Audio::instrumentId);
-
-    this->instrument = App::Workspace().getAudioCore().findInstrumentById(id);
-
-    if (this->instrument == nullptr)
-    {
-        this->removeFromOrchestraAndDelete();
-        return;
-    }
-
-    // Proceed with basic properties and children
-    TreeNode::deserialize(data);
-
-    if (this->instrument != nullptr)
-    {
-        this->name = this->instrument->getName();
-        this->initInstrumentEditor();
-    }
-
-    this->recreateChildrenEditors();
-}
+// doing nothing here, it's a temporary node
+// (in future versions serialize() will also be removed)
+void InstrumentNode::deserialize(const SerializedData &data) {}
 
 void InstrumentNode::initInstrumentEditor()
 {
@@ -239,40 +219,12 @@ void InstrumentNode::notifyOrchestraChanged()
     }
 }
 
-void InstrumentNode::removeFromOrchestraAndDelete()
-{
-    if (auto *parent = dynamic_cast<OrchestraPitNode *>(this->getParent()))
-    {
-        parent->removeInstrumentNode(this);
-    }
-}
-
-
 //===----------------------------------------------------------------------===//
 // Audio plugin UI editor node (mobile only)
 //===----------------------------------------------------------------------===//
 
-class HelioAudioProcessorEditor final : public GenericAudioProcessorEditor
-{
-public:
-
-    explicit HelioAudioProcessorEditor(AudioProcessor &p) : GenericAudioProcessorEditor(p)
-    {
-        this->setFocusContainerType(Component::FocusContainerType::keyboardFocusContainer);
-
-        for (int i = 0; i < this->getNumChildComponents(); ++i)
-        {
-            if (auto *panel = dynamic_cast<PropertyPanel *>(this->getChildComponent(i)))
-            {
-                this->setSize(this->getWidth(), panel->getTotalContentHeight());
-            }
-        }
-    }
-};
-
 AudioPluginNode::AudioPluginNode(AudioProcessorGraph::NodeID pluginID, const String &name) :
     TreeNode(name, Serialization::Audio::audioPlugin),
-    audioPluginEditor(nullptr),
     nodeId(pluginID) {}
 
 bool AudioPluginNode::hasMenu() const noexcept
@@ -302,6 +254,7 @@ void AudioPluginNode::showPage()
 
     if (instrument == nullptr)
     {
+        jassertfalse;
         delete this;
         return;
     }
@@ -310,6 +263,7 @@ void AudioPluginNode::showPage()
 
     if (node == nullptr)
     {
+        jassertfalse;
         delete this;
         return;
     }
@@ -318,22 +272,21 @@ void AudioPluginNode::showPage()
     {
         if (node->getProcessor()->hasEditor())
         {
-            // Some plugins (including Kontakt 3!) misbehavior messes up all the controls
-            // Turns out they attach themselves to the parent window :(
-            // So we cannot add them as a child component like that:
-            // ui = node->getProcessor()->createEditorIfNeeded();
-            // so we try to mimic that by creating a plugin window
-            // while its size and position that is managed by audioPluginEditor
-            if (auto *window = PluginWindow::getWindowFor(node, true))
-            {
-                this->audioPluginEditor = make<AudioPluginEditorPage>(window);
-            }
+            this->audioPluginEditor.reset(node->getProcessor()->createEditorIfNeeded());
         }
         else
         {
-            auto *ui = new HelioAudioProcessorEditor(*node->getProcessor());
-            auto *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor());
+            auto *ui = new GenericAudioProcessorEditor(*node->getProcessor());
+            ui->setFocusContainerType(Component::FocusContainerType::keyboardFocusContainer);
+            for (int i = 0; i < ui->getNumChildComponents(); ++i)
+            {
+                if (auto *panel = dynamic_cast<PropertyPanel *>(ui->getChildComponent(i)))
+                {
+                    ui->setSize(ui->getWidth(), panel->getTotalContentHeight());
+                }
+            }
 
+            auto *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor());
             if (plugin != nullptr)
             {
                 ui->setName(plugin->getName());
@@ -342,9 +295,9 @@ void AudioPluginNode::showPage()
             this->audioPluginEditor = make<AudioPluginEditorPage>(ui);
         }
 
-        // Something went wrong
         if (!this->audioPluginEditor)
         {
+            jassertfalse;
             delete this;
             return;
         }

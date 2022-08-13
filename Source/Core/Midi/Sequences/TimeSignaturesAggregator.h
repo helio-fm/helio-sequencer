@@ -20,6 +20,8 @@
 class ProjectNode;
 class MidiSequence;
 class TimeSignatureEvent;
+class TimeSignaturesSequence;
+class DummyProjectEventDispatcher;
 
 #include "MidiTrack.h"
 #include "ProjectListener.h"
@@ -31,7 +33,10 @@ class TimeSignatureEvent;
 // It is used by RollBase to determine where to draw the grid lines,
 // and by TimeSignaturesProjectMap for displaying the time signatures.
 
-class TimeSignaturesAggregator final : public ProjectListener
+// It is also a "virtual" MidiTrack, which allows us to use it
+// as a drop-in replacement for the timeline's time signatures track.
+
+class TimeSignaturesAggregator final : public VirtualMidiTrack, public ProjectListener
 {
 public:
 
@@ -43,8 +48,6 @@ public:
     // should be called by the rolls:
     void setActiveScope(Array<WeakReference<MidiTrack>> selectedTracks,
         bool forceRebuildAll = false);
-
-    const Array<TimeSignatureEvent> &getAllOrdered() const noexcept;
 
     // time signature aggregator may decide that the default grid
     // should display something else than 4/4 at the project start
@@ -71,13 +74,21 @@ public:
     void removeAllListeners();
 
     //===------------------------------------------------------------------===//
+    // VirtualMidiTrack
+    //===------------------------------------------------------------------===//
+
+    String getTrackInstrumentId() const noexcept override;
+    MidiSequence *getSequence() const noexcept override;
+
+    //===------------------------------------------------------------------===//
     // ProjectListener
     //===------------------------------------------------------------------===//
 
     void onChangeMidiEvent(const MidiEvent &oldEvent,
         const MidiEvent &newEvent) override;
     void onAddMidiEvent(const MidiEvent &event) override;
-    void onRemoveMidiEvent(const MidiEvent &event) override;
+    void onRemoveMidiEvent(const MidiEvent &event) override {}
+    void onPostRemoveMidiEvent(MidiSequence *const sequence) override;
 
     void onAddClip(const Clip &clip) override;
     void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
@@ -103,7 +114,8 @@ private:
     void rebuildAll();
     bool isAggregatingTimeSignatureOverrides() const noexcept;
 
-    Array<TimeSignatureEvent> orderedEvents;
+    UniquePointer<DummyProjectEventDispatcher> dummyEventDispatcher;
+    UniquePointer<TimeSignaturesSequence> orderedEvents;
 
     int defaultGridNumerator = Globals::Defaults::timeSignatureNumerator;
     int defaultGridDenominator = Globals::Defaults::timeSignatureDenominator;

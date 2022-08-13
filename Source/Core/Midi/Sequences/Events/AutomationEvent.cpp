@@ -46,33 +46,19 @@ float easeOutExpo(float delta, float factor)
     return delta * (-powf(2.f, -8.f * factor) + 1.f);
 };
 
-// easing == 0: ease out
-// easing == 1: ease in
 float AutomationEvent::interpolateEvents(float cv1, float cv2, float factor, float curvature)
 {
-    const float delta = cv2 - cv1;
+    // easing == 0: ease out
+    // easing == 1: ease in
     const float easing = (cv1 > cv2) ? curvature : (1.f - curvature);
-
-    //const float e = (easing * 2.f) - 1.f;
-
-    //if (e > 0)
-    //{
-    //    const float easeIn = easeInExpo(delta, factor) * e;
-    //    const float linear = linearTween(delta, factor) * (1.f - e);
-    //    return cv1 + (easeIn + linear);
-    //}
-
-    //const float easeOut = easeOutExpo(delta, factor) * -e;
-    //const float linear = linearTween(delta, factor) * (1.f + e);
-    //return cv1 + (easeOut + linear);
-
+    const float delta = cv2 - cv1;
     const float easeIn = easeInExpo(delta, factor) * easing;
     const float easeOut = easeOutExpo(delta, factor) * (1.f - easing);
     return cv1 + (easeIn + easeOut);
 }
 
 void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
-    const Clip &clip, const KeyboardMapping &keyMap, double timeOffset, double timeFactor) const noexcept
+    const Clip &clip, const KeyboardMapping &keyMap, double timeFactor) const noexcept
 {
     MidiMessage cc;
     const bool isTempoTrack = this->getSequence()->getTrack()->isTempoTrack();
@@ -89,7 +75,7 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
 
     const double startTime = (this->beat + clip.getBeat()) * timeFactor;
     cc.setTimeStamp(startTime);
-    outSequence.addEvent(cc, timeOffset);
+    outSequence.addEvent(cc);
 
     // add interpolated events, if needed
     const int indexOfThis = this->getSequence()->indexOfSorted(this);
@@ -116,14 +102,14 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
                 {
                     MidiMessage ci(MidiMessage::tempoMetaEvent(Transport::getTempoByControllerValue(interpolatedValue)));
                     ci.setTimeStamp(interpolatedTs);
-                    outSequence.addEvent(ci, timeOffset);
+                    outSequence.addEvent(ci);
                 }
                 else
                 {
                     MidiMessage ci(MidiMessage::controllerEvent(this->getTrackChannel(),
                         this->getTrackControllerNumber(), int(interpolatedValue * 127)));
                     ci.setTimeStamp(interpolatedTs);
-                    outSequence.addEvent(ci, timeOffset);
+                    outSequence.addEvent(ci);
                 }
 
                 lastAppliedValue = interpolatedValue;

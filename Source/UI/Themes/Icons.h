@@ -59,6 +59,7 @@ public:
         routing,
         piano,
         meter,
+        metronome,
 
         volume,
         volumePanel,

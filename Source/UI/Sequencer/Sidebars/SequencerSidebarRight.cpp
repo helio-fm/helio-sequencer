@@ -60,8 +60,8 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) : project(pare
     this->headShadow = make<ShadowDownwards>(ShadowType::Light);
     this->addAndMakeVisible(this->headShadow.get());
 
-    this->annotationsButton = make<MenuItemComponent>(this,
-        nullptr, MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection)->
+    this->annotationsButton = make<MenuItemComponent>(this, nullptr,
+        MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection)->
         withTooltip(TRANS(I18n::Tooltips::togglePlaybackLoop)));
 
     this->addAndMakeVisible(this->annotationsButton.get());
@@ -77,10 +77,12 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) : project(pare
 
     this->project.getTransport().addTransportListener(this);
     this->project.getEditMode().addChangeListener(this);
+    App::Config().getUiFlags()->addListener(this);
 }
 
 SequencerSidebarRight::~SequencerSidebarRight()
 {
+    App::Config().getUiFlags()->removeListener(this);
     this->project.getEditMode().removeChangeListener(this);
     this->project.getTransport().removeTransportListener(this);
 }
@@ -194,6 +196,10 @@ void SequencerSidebarRight::recreateMenu()
     this->menu.add(MenuItem::item(Icons::undo, CommandIDs::Undo));
     this->menu.add(MenuItem::item(Icons::redo, CommandIDs::Redo));
 #endif
+
+    this->menu.add(MenuItem::item(Icons::metronome, CommandIDs::ToggleMetronome)->
+        withTooltip(TRANS(I18n::Tooltips::metronome))->
+        toggledIf(this->isMetronomeEnabled));
 }
 
 //===----------------------------------------------------------------------===//
@@ -288,6 +294,17 @@ void SequencerSidebarRight::onStop()
 void SequencerSidebarRight::changeListenerCallback(ChangeBroadcaster *source)
 {
     this->updateModeButtons();
+}
+
+//===----------------------------------------------------------------------===//
+// UserInterfaceFlags::Listener
+//===----------------------------------------------------------------------===//
+
+void SequencerSidebarRight::onMetronomeFlagChanged(bool enabled)
+{
+    this->isMetronomeEnabled = enabled;
+    this->recreateMenu();
+    this->listBox->updateContent();
 }
 
 //===----------------------------------------------------------------------===//
