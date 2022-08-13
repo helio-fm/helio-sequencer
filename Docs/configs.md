@@ -32,10 +32,22 @@ Temperaments define how highlighting works in the piano roll, including octave s
 
 ### Scales
 
-Scales listed here are available to pick up in the key signature dialog, and in the rescale [tool](tips-and-tricks.md#quick-rescale-tool). Scales with octave size mismatching the current temperament's octave size are ignored.
+Scales listed here are available to choose from in the key signature dialog, and in the rescale [tool](tips-and-tricks.md#quick-rescale-tool). Scales with octave size mismatching the current temperament's octave size are ignored.
 
 ```json
 {{#include ../Resources/scales.json}}
+```
+
+### Meters
+
+Meters listed here are available to choose from in the time signature dialog.
+
+Each meter comes with a [metronome](getting-polymetric.md#metronome), which is described using ["Oona Pana"](https://medium.com/@theBobavich/introducing-a-new-way-to-count-music-59b69158001f) scheme, suggested by Rods Bobavich - a simplified, but handy way to describe musical rhythms, which is also easy to read and edit manually.
+
+Metronome schemes listed here are just the default ones, and they can be edited for each time signature separately in the time signature dialog.
+
+```json
+{{#include ../Resources/meters.json}}
 ```
 
 ### Hotkeys
@@ -55,6 +67,7 @@ To override or extend the built-in data, you can create a file with one of these
 
  * `chords.json`
  * `scales.json`
+ * `meters.json`
  * `temperaments.json`
  * etc.
 

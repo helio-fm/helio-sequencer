@@ -8,9 +8,9 @@ This page describes how to set up time signatures to avoid getting lost in bars 
 
 ## How time signatures work
 
-Time signatures only affect how the vertical grid lines are arranged across the canvas, which is to make aligning notes/clips more convenient and provide some visual cue.
+Time signatures affect how the vertical grid lines are arranged across the canvas, which is to make aligning notes/clips more convenient and provide some visual cue.
 
-`// TODO: metronome schemes`
+Each time signature also defines how the [metronome/click track](#metronome) will sound in the time signature's scope.
 
 There are two kinds of time signatures:
 
@@ -56,10 +56,19 @@ But you can't edit tuplet parts individually at the moment, which makes them onl
 
 ## Metronome
 
-```c++
-// TODO
-throw NotImplementedException("Work in progress");
-```
+The built-in metronome is toggled by `Control + M` hotkey.
+
+Each time signature has its own metronome scheme: basically a short sequence of different click sounds, which defines how metronome accents are aligned within one bar:
+
+![time-signature-dialog]
+
+Note that different time signatures with same meter can still have different metronome schemes.
+
+The internal metronome instrument comes with 4 click sounds representing different click accents. You can customize them and pick your own samples in the instrument's UI:
+ * either select "Show UI" from the metronome instrument's menu on the [Orchestra Pit](getting-started.md#orchestra-pit-page) page,
+ * or click on the metronome icon in the time signature dialog (a shortcut to the above).
+
+#### See also: the default [meters config](configs.md#meters)
 
 
 [track-time-signatures]: images/track-time-signatures.png "Track-based time signatures"
@@ -67,3 +76,4 @@ throw NotImplementedException("Work in progress");
 [switching-meters-piano-roll]: images/switching-meters-piano-roll.png "Piano roll: track-based time signatures vs timeline-based time signatures"
 [switching-meters-pattern-roll]: images/switching-meters-pattern-roll.png "Pattern roll: track-based time signatures vs timeline-based time signatures"
 [tuplets-6-to-9]: images/tuplets-6-to-9.png "6/9 polyrhythm made with tuplets"
+[time-signature-dialog]: images/time-signature-dialog.png "Time signature dialog, allowing to edit meter and metronome scheme"
