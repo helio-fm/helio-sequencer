@@ -268,6 +268,19 @@ Array<Instrument *> AudioCore::getInstruments() const
     return result;
 }
 
+Array<Instrument *> AudioCore::getInstrumentsExceptInternal() const
+{
+    Array<Instrument *> result;
+    for (auto *instrument : this->instruments)
+    {
+        if (!instrument->isMetronomeInstrument())
+        {
+            result.add(instrument);
+        }
+    }
+    return result;
+}
+
 Instrument *AudioCore::findInstrumentById(const String &id) const
 {
     // check by ids
@@ -324,7 +337,7 @@ void AudioCore::initBuiltInInstrumentsIfNeeded()
         defaultAudioPlugin.fillInPluginDescription(defaultPluginDescription);
 
         this->addInstrument(defaultPluginDescription,
-            DefaultSynthAudioPlugin::instrumentName,
+            TRANS(I18n::Instruments::defultSynthTitle),
             [this](Instrument *instrument) {
                 this->defaultInstrument = instrument;
             });
@@ -337,7 +350,7 @@ void AudioCore::initBuiltInInstrumentsIfNeeded()
         metronomeAudioPlugin.fillInPluginDescription(metronomePluginDescription);
 
         this->addInstrument(metronomePluginDescription,
-            MetronomeSynthAudioPlugin::instrumentName,
+            TRANS(I18n::Instruments::metronomeTitle),
             [this](Instrument *instrument) {
                 this->metronomeInstrument = instrument;
             });

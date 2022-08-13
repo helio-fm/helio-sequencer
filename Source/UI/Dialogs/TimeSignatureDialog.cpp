@@ -171,9 +171,9 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     this->addAndMakeVisible(this->metronomeEditor.get());
     this->metronomeEditor->setMetronome(this->originalEvent.getMeter().getMetronome());
     this->metronomeEditor->onTap = [this, &transport = project.getTransport()]
-        (const MetronomeScheme &metronome, int tappedSyllableIndex) {
+        (const MetronomeScheme &metronome, int tappedSyllableIndex)
+    {
         const auto tappedSyllable = metronome.getSyllableAt(tappedSyllableIndex);
-
         const auto nextSyllable = MetronomeScheme::getNextSyllable(tappedSyllable);
         const auto newMetronome = metronome.withSyllableAt(tappedSyllableIndex, nextSyllable);
 
@@ -255,6 +255,8 @@ void TimeSignatureDialog::parentSizeChanged()
 
 void TimeSignatureDialog::handleCommandMessage(int commandId)
 {
+    this->metronomeEditor->postCommandMessage(CommandIDs::TransportStop);
+
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
         this->undoAndDismiss();
@@ -284,6 +286,8 @@ void TimeSignatureDialog::updateOkButtonState()
 
 void TimeSignatureDialog::sendEventChange(const TimeSignatureEvent &newEvent)
 {
+    this->metronomeEditor->postCommandMessage(CommandIDs::TransportStop);
+
     switch (this->mode)
     {
     case Mode::EditTrackTimeSignature:

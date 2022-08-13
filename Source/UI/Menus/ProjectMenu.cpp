@@ -42,6 +42,7 @@
 ProjectMenu::ProjectMenu(ProjectNode &parentProject, AnimationType animationType) :
     project(parentProject)
 {
+    this->instruments = App::Workspace().getAudioCore().getInstrumentsExceptInternal();
     this->showMainMenu(animationType);
 }
 
@@ -194,10 +195,9 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
             this->showCreateItemsMenu(MenuPanel::SlideRight);
         }));
 
-    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
-    for (const auto *instrument : instruments)
+    for (const auto *instrument : this->instruments)
     {
-        const String instrumentId = instrument->getIdAndHash();
+        const auto instrumentId = instrument->getIdAndHash();
         menu.add(MenuItem::item(Icons::instrument,
             instrument->getName())->withAction([this, instrumentId]()
             {
@@ -224,7 +224,7 @@ void ProjectMenu::showNewAutomationMenu(AnimationType animationType)
         withAction([this]()
         {
             String outTrackId;
-            String instrumentId; // empty, it doesn't matter for master tempo track
+            String instrumentId; // empty, it doesn't matter for the master tempo track
             const auto autoTracks = this->project.findChildrenOfType<AutomationTrackNode>();
             const auto autoTrackParams =
                 SequencerOperations::createAutoTrackTemplate(this->project,
@@ -236,7 +236,7 @@ void ProjectMenu::showNewAutomationMenu(AnimationType animationType)
                 &this->project, autoTrackParams, TRANS(I18n::Defaults::tempoTrackName)));
         }));
 
-    for (auto instrument : App::Workspace().getAudioCore().getInstruments())
+    for (auto *instrument : this->instruments)
     {
         menu.add(MenuItem::item(Icons::instrument,
             instrument->getName())->withSubmenu()->withAction([this, instrument]()
@@ -330,9 +330,8 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
     menu.add(MenuItem::item(Icons::automationTrack, CommandIDs::ProjectSetOneTempo,
         TRANS(I18n::Menu::setOneTempo))->closesMenu());
 
-    const auto &tracks = this->project.findChildrenOfType<MidiTrackNode>();
-    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
-    if (instruments.size() > 1 && tracks.size() > 0)
+    const auto tracks = this->project.findChildrenOfType<MidiTrackNode>();
+    if (this->instruments.size() > 1 && tracks.size() > 0)
     {
         menu.add(MenuItem::item(Icons::instrument,
             TRANS(I18n::Menu::Project::changeInstrument))->withSubmenu()->withAction([this]()
@@ -415,15 +414,9 @@ void ProjectMenu::showSetInstrumentMenu()
         this->showBatchActionsMenu(MenuPanel::SlideRight);
     }));
 
-    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
-    for (const auto *instrument : instruments)
+    for (const auto *instrument : this->instruments)
     {
-        if (instrument->isMetronomeInstrument())
-        {
-            continue;
-        }
-
-        const String instrumentId = instrument->getIdAndHash();
+        const auto instrumentId = instrument->getIdAndHash();
         menu.add(MenuItem::item(Icons::instrument,
             instrument->getName())->
             disabledIf(!instrument->isValid())->

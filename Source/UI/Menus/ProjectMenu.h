@@ -36,6 +36,7 @@ public:
 private:
 
     ProjectNode &project;
+    Array<Instrument *> instruments;
 
     void showMainMenu(AnimationType animationType);
     void showBatchActionsMenu(AnimationType animationType);

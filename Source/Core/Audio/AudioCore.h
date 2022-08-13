@@ -95,6 +95,12 @@ public:
         const String &name, Instrument::InitializationCallback callback) override;
 
     Array<Instrument *> getInstruments() const override;
+
+    // returns all instruments which can be used in the project;
+    // at the moment the only exception is the internal metronome,
+    // which is visible in the orchestra pit, but not in the menus:
+    Array<Instrument *> getInstrumentsExceptInternal() const;
+
     Instrument *findInstrumentById(const String &id) const override;
     Instrument *getDefaultInstrument() const noexcept override;
     Instrument *getMetronomeInstrument() const noexcept override;

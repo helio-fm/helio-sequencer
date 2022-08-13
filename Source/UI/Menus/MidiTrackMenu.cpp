@@ -58,7 +58,7 @@ void MidiTrackMenu::initDefaultMenu()
         CommandIDs::DeleteTrack, TRANS(I18n::Menu::trackDelete)));
 #endif
 
-    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
+    const auto instruments = App::Workspace().getAudioCore().getInstrumentsExceptInternal();
     menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->
         disabledIf(instruments.isEmpty())->withSubmenu()->withAction([this]()
     {
@@ -95,13 +95,8 @@ void MidiTrackMenu::initInstrumentSelectionMenu()
     const auto &audioCore = App::Workspace().getAudioCore();
     const auto *selectedInstrument = audioCore.findInstrumentById(this->track->getTrackInstrumentId());
 
-    for (const auto *instrument : audioCore.getInstruments())
+    for (const auto *instrument : audioCore.getInstrumentsExceptInternal())
     {
-        if (instrument->isMetronomeInstrument())
-        {
-            continue;
-        }
-
         const bool isTicked = (instrument == selectedInstrument);
         const String instrumentId = instrument->getIdAndHash();
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, instrument->getName())->

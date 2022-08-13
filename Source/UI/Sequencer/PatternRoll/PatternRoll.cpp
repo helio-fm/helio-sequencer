@@ -1336,7 +1336,7 @@ void PatternRoll::repaintBackgroundsCache()
 
 void PatternRoll::showNewTrackMenu(float beatToInsertAt)
 {
-    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
+    const auto instruments = App::Workspace().getAudioCore().getInstrumentsExceptInternal();
     if (instruments.size() > 1)
     {
         MenuPanel::Menu menu;

@@ -52,28 +52,22 @@ public:
                     break;
                 }
 
-                this->transport.stopSound({});
-
-                // todo someday: tempo to depend on time signature's denominator
-                Thread::wait(25);
-
                 const auto syllable = metronome.getSyllableAt(i);
                 const auto key = MetronomeSynth::getKeyForSyllable(syllable);
 
+                // todo someday: tempo to depend on time signature's denominator
+                const auto endTime = Time::getMillisecondCounter() + 300;
+
                 this->transport.previewKey(this->instrument, key, 1.f, Globals::beatsPerBar);
 
-                int c = 300;
-                while (c > 0)
+                while (Time::getMillisecondCounter() < endTime)
                 {
-                    const auto a = Time::getMillisecondCounter();
-                    Thread::wait(25);
-                    const auto b = Time::getMillisecondCounter();
-                    c -= (b - a);
-
                     if (this->threadShouldExit())
                     {
                         break;
                     }
+
+                    Thread::wait(25);
                 }
             }
         }

@@ -46,6 +46,19 @@ public:
             const auto syllable = this->allSyllables[i];
 
             auto syllableIcon = make<MetronomeEditor::SyllableButton>(syllable, false);
+            syllableIcon->setMouseCursor(MouseCursor::PointingHandCursor);
+            syllableIcon->onTap = [syllable]()
+            {
+                // a hack to preview the sound:
+                // there's no access to Transport class from here,
+                // so let's just send a midi message to the metronome directly
+                auto *metronome = App::Workspace().getAudioCore().getMetronomeInstrument();
+
+                const auto key = MetronomeSynth::getKeyForSyllable(syllable);
+                MidiMessage noteOn(MidiMessage::noteOn(1, key, 1.f));
+                noteOn.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
+                metronome->getProcessorPlayer().getMidiMessageCollector().addMessageToQueue(noteOn);
+            };
             this->addAndMakeVisible(syllableIcon.get());
             this->syllableIcons.add(syllableIcon.release());
 
@@ -57,10 +70,12 @@ public:
             this->samplePaths.add(samplePathEditor.release());
 
             auto browseButton = make<IconButton>(Icons::browse, CommandIDs::OpenMetronomeSample + i);
+            browseButton->setMouseCursor(MouseCursor::PointingHandCursor);
             this->addAndMakeVisible(browseButton.get());
             this->sampleBrowseButtons.add(browseButton.release());
 
             auto clearButton = make<IconButton>(Icons::close, CommandIDs::ResetMetronomeSample + i);
+            clearButton->setMouseCursor(MouseCursor::PointingHandCursor);
             this->addAndMakeVisible(clearButton.get());
             this->sampleClearButtons.add(clearButton.release());
         }
@@ -77,11 +92,15 @@ public:
             const auto customSample = synthParams.customSamples.find(this->allSyllables[i]);
             if (customSample != synthParams.customSamples.end())
             {
+                this->samplePaths[i]->setAlpha(1.f);
+                this->samplePaths[i]->setInterceptsMouseClicks(true, true);
                 this->samplePaths[i]->setText(customSample->second);
             }
             else
             {
-                this->samplePaths[i]->setText({}); // todo placeholder, "the built-in sample"?
+                this->samplePaths[i]->setAlpha(0.75f);
+                this->samplePaths[i]->setInterceptsMouseClicks(false, false);
+                this->samplePaths[i]->setText(TRANS(I18n::Instruments::metronomeBuiltInSoundPlaceholder));
             }
         }
     }
@@ -128,9 +147,8 @@ public:
             const auto rowNumber = commandId - CommandIDs::OpenMetronomeSample;
             const auto syllable = this->allSyllables[rowNumber];
 
-            // todo remember the last used directory?
             this->fileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentLoad),
-                File::getCurrentWorkingDirectory(), ("*.wav;*.flac"), true);
+                this->lastUsedDirectory, ("*.wav;*.flac"), true);
 
             DocumentHelpers::showFileChooser(this->fileChooser,
                 Globals::UI::FileChooser::forFileToOpen,
@@ -141,7 +159,9 @@ public:
                         return; // or clear?
                     }
 
-                    this->metronomePlugin->applyCustomSample(syllable, url.getLocalFile().getFullPathName());
+                    const auto file = url.getLocalFile();
+                    this->lastUsedDirectory = file.getParentDirectory().getFullPathName();
+                    this->metronomePlugin->applyCustomSample(syllable, file.getFullPathName());
                     this->syncDataWithAudioPlugin();
                 });
         }
@@ -166,11 +186,8 @@ private:
     OwnedArray<IconButton> sampleBrowseButtons;
     OwnedArray<IconButton> sampleClearButtons;
 
-    // want to preview the metronome right in the UI dialog,
-    // but have no access to Transport class here, what to do?
-    // UniquePointer<PlayButton> playButton;
-
     UniquePointer<FileChooser> fileChooser;
+    String lastUsedDirectory = File::getCurrentWorkingDirectory().getFullPathName();
 
     const Colour fillColour = findDefaultColour(ColourIDs::BackgroundA::fill);
 

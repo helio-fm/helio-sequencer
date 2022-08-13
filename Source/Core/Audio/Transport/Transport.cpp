@@ -524,13 +524,13 @@ void Transport::previewKey(const String &trackId, int key,
 
     // in some cases we need to preview notes which are not tied to any
     // particular track/instrument, e.g. scale preview in the scale editor;
-    // in these cases we'll just pick the last instrument from the pit
+    // in these cases we'll just pick the default instrument
     // (might need to come up with a better solution in future though)
-    const bool useLastInstrument = trackId.isEmpty() ||
+    const bool useDefaultInstrument = trackId.isEmpty() ||
         foundLink == this->instrumentLinks.end();
 
-    auto *instrument = useLastInstrument ?
-        this->orchestra.getInstruments().getLast() :
+    auto *instrument = useDefaultInstrument ?
+        this->orchestra.getDefaultInstrument() :
         foundLink.value().get();
 
     this->previewKey(instrument, key, volume, lengthInBeats);

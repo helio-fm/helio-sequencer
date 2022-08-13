@@ -28,7 +28,6 @@ public:
     MetronomeSynthAudioPlugin();
 
     static const String instrumentId;
-    static const String instrumentName;
 
     //===------------------------------------------------------------------===//
     // AudioPluginInstance
@@ -77,6 +76,8 @@ public:
     const MetronomeSynth::SamplerParameters &getCustomSamples() const noexcept;
 
 private:
+
+    static const String instrumentName;
 
     MetronomeSynth synth;
     MetronomeSynth::SamplerParameters synthParameters;

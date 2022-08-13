@@ -198,6 +198,7 @@ void SequencerSidebarRight::recreateMenu()
 #endif
 
     this->menu.add(MenuItem::item(Icons::metronome, CommandIDs::ToggleMetronome)->
+        withTooltip(TRANS(I18n::Tooltips::metronome))->
         toggledIf(this->isMetronomeEnabled));
 }
 

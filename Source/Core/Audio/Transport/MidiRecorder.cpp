@@ -218,7 +218,7 @@ void MidiRecorder::handleAsyncUpdate()
         // lastValidInstrumentId may be empty at this point:
         if (this->lastValidInstrumentId.isEmpty())
         {
-            auto instruments = App::Workspace().getAudioCore().getInstruments();
+            const auto instruments = App::Workspace().getAudioCore().getInstrumentsExceptInternal();
             if (!instruments.isEmpty())
             {
                 this->lastValidInstrumentId = instruments.getFirst()->getIdAndHash();

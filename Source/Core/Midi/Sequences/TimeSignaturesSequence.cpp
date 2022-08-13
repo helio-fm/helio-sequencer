@@ -108,7 +108,7 @@ void TimeSignaturesSequence::exportMidi(MidiMessageSequence &outSequence,
                 const auto metronomeScheme = firstEvent->getMeter().getMetronome();
                 jassert(metronomeScheme.isValid());
 
-                for (float beat = projectFirstBeat; beat <= firstEvent->getBeat();
+                for (float beat = projectFirstBeat; beat < firstEvent->getBeat();
                      beat += firstEvent->getDenominatorInBeats())
                 {
                     emitNextMetronomeEvent(outSequence, beat, metronomeScheme, syllableIndex);
@@ -125,7 +125,7 @@ void TimeSignaturesSequence::exportMidi(MidiMessageSequence &outSequence,
                 const auto metronomeScheme = event->getMeter().getMetronome();
                 jassert(metronomeScheme.isValid());
 
-                for (float beat = event->getBeat(); beat <= nextBeat;
+                for (float beat = event->getBeat(); beat < nextBeat;
                      beat += event->getDenominatorInBeats())
                 {
                     emitNextMetronomeEvent(outSequence, beat, metronomeScheme, syllableIndex);

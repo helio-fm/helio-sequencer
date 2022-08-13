@@ -221,14 +221,19 @@ void TimeSignatureEvent::deserialize(const SerializedData &data)
     const int denominator = data.getProperty(Midi::denominator, Globals::Defaults::timeSignatureDenominator);
     const String metronomeString = data.getProperty(Midi::metronomeScheme);
     this->meter = Meter({}, metronomeString, numerator, denominator);
+
     if (metronomeString.isEmpty())
     {
         // in the projects created with older versions of this app,
         // time signatures and their meters will miss metronome schemes,
-        // so if this is the case, try to find the default scheme:
+        // so if this is the case, try to find the default scheme;
+        // but first, assign a fallback value, which simply matches
+        // the meter size, in case we don't find the default scheme:
+        this->meter = this->meter.withMetronome(MetronomeScheme().resized(numerator));
         for (const auto it : App::Config().getMeters()->getAll())
         {
-            if (it->getNumerator() == numerator && it->getDenominator() == denominator)
+            // denominator check is kinda redundant here:
+            if (it->getNumerator() == numerator)
             {
                 this->meter = this->meter.withMetronome(it->getMetronome());
                 break;
