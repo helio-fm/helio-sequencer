@@ -9,5 +9,5 @@ if [[ ${TRAVIS_PULL_REQUEST} != "false" ]]; then
 fi
 
 (test -x $HOME/.cargo/bin/cargo-install-update || cargo install cargo-update)
-(test -x $HOME/.cargo/bin/mdbook || cargo install --vers "^0.1" mdbook)
+(test -x $HOME/.cargo/bin/mdbook || cargo install mdbook)
 cargo install-update -a
