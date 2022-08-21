@@ -310,8 +310,8 @@ void PianoRoll::zoomRelative(const Point<float> &origin,
 
     if (fabs(factor.getY()) > yZoomThreshold)
     {
-        const Point<float> oldViewPosition = this->viewport.getViewPosition().toFloat();
-        const Point<float> absoluteOrigin = oldViewPosition + origin;
+        const auto oldViewPosition = this->viewport.getViewPosition().toFloat();
+        const auto absoluteOrigin = oldViewPosition + origin;
         const float oldHeight = float(this->getHeight());
 
         int newRowHeight = this->getRowHeight();
@@ -330,8 +330,7 @@ void PianoRoll::zoomRelative(const Point<float> &origin,
         this->setRowHeight(newRowHeight);
 
         const float newHeight = float(this->getHeight());
-        const float mouseOffsetY = float(absoluteOrigin.getY() - oldViewPosition.getY());
-        const float newViewPositionY = float((absoluteOrigin.getY() * newHeight) / oldHeight) - mouseOffsetY;
+        const float newViewPositionY = (absoluteOrigin.getY() * newHeight / oldHeight) - origin.getY();
         this->viewport.setViewPosition(int(oldViewPosition.getX()), int(newViewPositionY + 0.5f));
     }
 

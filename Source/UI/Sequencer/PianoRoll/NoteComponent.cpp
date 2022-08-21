@@ -610,15 +610,20 @@ void NoteComponent::paint(Graphics &g) noexcept
         g.fillRect(x + 1.25f, roundf(y + h - 1), w - 2.25f, 1.f);
     }
 
-    if (w >= 4.f)
+    if (w >= 6.f)
     {
         g.setColour(this->colourVolume);
         const float sx = x + 2.f;
-        const float sy = float(this->getHeight() - 4);
+        const float sh = jmin(h - 2.f, 4.f);
+        const float sy = h - sh - 1.f;
         const float sw1 = (w - 4.f) * this->note.getVelocity();
         const float sw2 = (w - 4.f) * this->note.getVelocity() * this->clip.getVelocity();
-        g.fillRect(sx, sy, sw1, 3.f);
-        g.fillRect(sx, sy, sw2, 3.f);
+
+        g.fillRect(sx, sy, sw1, sh);
+        g.fillRect(sx, sy, sw2, sh);
+
+        g.fillRect(sx + sw1, sy + 1.f, 1.f, sh - 1.f);
+        g.fillRect(sx + sw2, sy + 1.f, 1.f, sh - 1.f);
     }
 
     const auto tuplet = this->note.getTuplet();

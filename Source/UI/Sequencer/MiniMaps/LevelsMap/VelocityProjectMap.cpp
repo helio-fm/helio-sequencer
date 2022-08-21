@@ -84,9 +84,12 @@ public:
     inline void updateColour()
     {
         const Colour baseColour(findDefaultColour(ColourIDs::Roll::noteFill));
-        this->colour = this->note.getTrackColour().
-            interpolatedWith(baseColour, this->editable ? 0.35f : 0.5f).
-            withAlpha(this->editable ? 0.75f : 0.065f);
+        this->mainColour = this->note.getTrackColour()
+            .interpolatedWith(baseColour, this->editable ? 0.35f : 0.5f)
+            .withAlpha(this->editable ? 0.75f : 0.065f);
+        this->paleColour = this->mainColour
+            .brighter(0.1f)
+            .withMultipliedAlpha(0.1f);
     }
 
     void setRealBounds(float x, int y, float w, int h) noexcept
@@ -126,9 +129,13 @@ public:
 
     void paint(Graphics &g) noexcept override
     {
-        g.setColour(this->colour);
+        g.setColour(this->mainColour);
+        g.fillRect(this->dx, 1.f, 1.f, float(this->getHeight() - 1));
+        g.fillRect(this->dx + 1.f, 0.f, float(this->getWidth() - 2) + this->dw, 1.f);
+        g.fillRect(this->dx, 1.f, float(this->getWidth()) + this->dw, 2.f);
+
+        g.setColour(this->paleColour);
         g.fillRect(this->dx, 0.f, float(this->getWidth()) + this->dw, float(this->getHeight()));
-        g.fillRect(this->dx, 0.f, float(this->getWidth()) + this->dw, 2.f);
     }
 
     bool hitTest(int, int y) noexcept override
@@ -168,7 +175,8 @@ private:
     const Note &note;
     const Clip &clip;
 
-    Colour colour;
+    Colour mainColour;
+    Colour paleColour;
 
     float dx = 0.f;
     float dw = 0.f;

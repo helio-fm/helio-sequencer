@@ -540,8 +540,7 @@ void RollBase::zoomRelative(const Point<float> &origin,
     this->setBeatWidth(newBeatWidth); // will updateBounds() -> setSize() -> resized() -> updateChildrenBounds()
 
     const float newWidth = float(this->getWidth());
-    const float mouseOffsetX = float(absoluteOrigin.getX() - oldViewPosition.getX());
-    const float newViewPositionX = float((absoluteOrigin.getX() * newWidth) / oldWidth) - mouseOffsetX;
+    const float newViewPositionX = (absoluteOrigin.getX() * newWidth / oldWidth) - origin.getX();
     this->viewport.setViewPosition(int(newViewPositionX + 0.5f), int(oldViewPosition.getY()));
 
     this->resetDraggingAnchors();

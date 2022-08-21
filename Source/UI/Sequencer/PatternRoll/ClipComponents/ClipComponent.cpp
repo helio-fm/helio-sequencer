@@ -64,8 +64,8 @@ void ClipComponent::updateColours()
         .brighter(this->flags.isSelected ? 0.25f : 0.f)
         .darker(this->flags.isInstanceOfSelected ? 0.25f : 0.f);
 
-    this->frameBorderColour = this->frameColour.withAlpha(0.35f);
-    this->frameCornerColour = this->frameColour.withAlpha(0.5f);
+    this->frameBorderColour = this->frameColour.withAlpha(0.4f);
+    this->frameCornerColour = this->frameColour.withAlpha(0.55f);
 
     this->eventColour = this->getClip().getTrackColour()
         .interpolatedWith(Colours::white, 0.35f)
@@ -317,25 +317,28 @@ void ClipComponent::paint(Graphics &g)
             g.fillRect(float(this->getWidth() - 1), i, 1.f, dash);
         }
     }
-    else
+    else // left and right lines
     {
-        // left and right lines
         g.setColour(this->frameBorderColour);
         g.fillRect(0, 2, 1, this->getHeight() - 3);
         g.fillRect(this->getWidth() - 1, 2, 1, this->getHeight() - 3);
         g.setColour(this->frameCornerColour);
     }
-
-    // and little corners for the [  ] look
-    constexpr auto cornerSize = 3;
-    constexpr auto cornerMargin = 1;
-    if (!this->flags.isInstanceOfSelected)
+    
+    if (!this->flags.isSelected) // add little corners for the [  ] look
     {
-        g.fillRect(0, cornerMargin, cornerSize, 1);
-        g.fillRect(this->getWidth() - cornerSize, cornerMargin, cornerSize, 1);
+        constexpr auto cornerSize = 3;
+        constexpr auto cornerMargin = 1;
+
+        if (!this->flags.isInstanceOfSelected)
+        {
+            g.fillRect(0, cornerMargin, cornerSize, 1);
+            g.fillRect(this->getWidth() - cornerSize, cornerMargin, cornerSize, 1);
+        }
+
+        g.fillRect(0, this->getHeight() - cornerMargin, cornerSize, 1);
+        g.fillRect(this->getWidth() - cornerSize, this->getHeight() - cornerMargin, cornerSize, 1);
     }
-    g.fillRect(0, this->getHeight() - cornerMargin, cornerSize, 1);
-    g.fillRect(this->getWidth() - cornerSize, this->getHeight() - cornerMargin, cornerSize, 1);
 
     // speedup: set colour to be used by all child components, so they don't have to
     g.setColour(this->clip.isMuted() ? this->eventMutedColour : this->eventColour);
