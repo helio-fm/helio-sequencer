@@ -108,9 +108,6 @@ public:
         float rewindBeat = 0.f;
         float endBeat = 0.f;
 
-        float projectFirstBeat = 0.f;
-        float projectLastBeat = 0.f;
-
         double startBeatTempo = 0.0; // ms per beat (or per quarter-note)
         double startBeatTimeMs = 0.0;
         double totalTimeMs = 0.0;

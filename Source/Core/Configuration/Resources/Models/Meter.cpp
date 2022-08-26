@@ -272,8 +272,6 @@ MetronomeScheme::Syllable MetronomeScheme::syllableFromString(const String &str)
 
 String MetronomeScheme::toString() const
 {
-    jassert(!this->syllables.isEmpty());
-
     String result;
 
     for (const auto &syllable : this->syllables)

@@ -853,15 +853,13 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 // Track time calculations
 //===----------------------------------------------------------------------===//
 
-double Transport::findTimeAt(float beat) const
+double Transport::findTimeAt(float targetBeat) const
 {
     double resultTimeMs = 0.0;
 
     this->rebuildPlaybackCacheIfNeeded();
 
     CachedMidiMessage cached;
-
-    const auto targetRelativeBeat = beat - this->projectFirstBeat.get();
 
     // try to find the initial value for global tempo
     // by picking the very first tempo automation event, if present
@@ -884,7 +882,7 @@ double Transport::findTimeAt(float beat) const
     {
         const auto nextTimestamp = cached.message.getTimeStamp();
 
-        if (nextTimestamp > targetRelativeBeat)
+        if (nextTimestamp > targetBeat)
         {
             break;
         }
@@ -900,12 +898,12 @@ double Transport::findTimeAt(float beat) const
     }
 
     // add remainder, the time from the last event to the given beat:
-    resultTimeMs += (tempo * (targetRelativeBeat - prevTimestamp));
+    resultTimeMs += (tempo * (targetBeat - prevTimestamp));
 
     return resultTimeMs;
 }
 
-Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float beat) const
+Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float targetBeat) const
 {
     this->rebuildPlaybackCacheIfNeeded();
 
@@ -926,10 +924,7 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float beat) con
     }
 
     Transport::PlaybackContext::Ptr context(new Transport::PlaybackContext());
-    context->projectFirstBeat = this->projectFirstBeat.get();
-    context->projectLastBeat = this->projectLastBeat.get();
-
-    context->startBeat = beat;
+    context->startBeat = targetBeat;
 
     context->totalTimeMs = 0.0;
     context->startBeatTimeMs = 0.0;
@@ -937,9 +932,6 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float beat) con
 
     context->sampleRate = this->playbackCache.getSampleRate();
     context->numOutputChannels = this->playbackCache.getNumOutputChannels();
-    
-    const auto relativeTargetBeat = context->startBeat - context->projectFirstBeat;
-    const auto relativeEndBeat = context->projectLastBeat - context->projectFirstBeat;
 
     double prevTimestamp = 0.0;
     bool startBeatPassed = false;
@@ -950,10 +942,10 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float beat) con
         const auto nextTimestamp = cached.message.getTimeStamp();
         const auto nextEventTimeDelta = tempo * (nextTimestamp - prevTimestamp);
 
-        if (nextTimestamp > relativeTargetBeat)
+        if (nextTimestamp > context->startBeat)
         {
             // the time from the last event to the given beat:
-            context->startBeatTimeMs += (tempo * (relativeTargetBeat - prevTimestamp));
+            context->startBeatTimeMs += (tempo * (context->startBeat - prevTimestamp));
             startBeatPassed = true;
         }
 
@@ -984,7 +976,7 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float beat) con
     }
 
     // the remainder
-    context->totalTimeMs += (tempo * (relativeEndBeat - prevTimestamp));
+    context->totalTimeMs += (tempo * (this->projectLastBeat.get() - prevTimestamp));
     //jassert(context->totalTimeMs == this->findTimeAt(this->projectLastBeat.get()));
 
     return context;
@@ -1111,7 +1103,6 @@ void Transport::removeTransportListener(TransportListener *listener)
 
 void Transport::broadcastSeek(float beat, double currentTimeMs, double totalTimeMs)
 {
-    // relativeBeat is relative to the project's first beat
     this->transportListeners.call(&TransportListener::onSeek,
         beat, currentTimeMs, totalTimeMs);
 }
