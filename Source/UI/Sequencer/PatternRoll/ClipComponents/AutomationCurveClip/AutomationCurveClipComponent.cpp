@@ -53,6 +53,14 @@ AutomationCurveClipComponent::~AutomationCurveClipComponent()
 // Component
 //===----------------------------------------------------------------------===//
 
+void AutomationCurveClipComponent::mouseDoubleClick(const MouseEvent &e)
+{
+    if (this->sequence->getTrack()->isTempoTrack())
+    {
+        this->getRoll().postCommandMessage(CommandIDs::TrackSetOneTempo);
+    }
+}
+
 void AutomationCurveClipComponent::mouseDown(const MouseEvent &e)
 {
     if (!this->project.getEditMode().forcesAddingEvents(e.mods))

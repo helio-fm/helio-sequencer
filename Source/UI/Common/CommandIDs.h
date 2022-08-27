@@ -128,6 +128,7 @@ namespace CommandIDs
         ProjectTransposeUp              = 0x2070,
         ProjectTransposeDown            = 0x2071,
         ProjectSetOneTempo              = 0x2072,
+        TrackSetOneTempo                = 0x2073,
 
         SelectScaleDegree               = 0x2120, // more ids reserved for sub-items
         SelectScale                     = 0x2200, // more ids reserved for sub-items

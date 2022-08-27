@@ -111,6 +111,7 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
         CASE_FOR(ProjectTransposeUp)
         CASE_FOR(ProjectTransposeDown)
         CASE_FOR(ProjectSetOneTempo)
+        CASE_FOR(TrackSetOneTempo)
         CASE_FOR(SelectScaleDegree)
         CASE_FOR(SelectScale)
         CASE_FOR(SelectTimeSignature)
@@ -383,6 +384,6 @@ I18n::Key CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         TRANS_NONE(SelectPreset)
         TRANS_NONE(OpenMetronomeSample)
         TRANS_NONE(ResetMetronomeSample)
-        default: return {};
+        default: return 0;
     }
 }

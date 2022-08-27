@@ -84,25 +84,10 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         menu.add(MenuItem::item(Icons::meter,
             CommandIDs::SetTrackTimeSignature, tsActionlabel)->closesMenu());
 
-        if (auto *autoSequence = dynamic_cast<AutomationSequence *>(track->getSequence()))
+        if (track->isTempoTrack())
         {
-            // sets one tempo for the selected track, not for the entire project
-            const auto firstBeat = autoSequence->getFirstBeat();
-            const auto lastBeat = jmax(autoSequence->getLastBeat(),
-                firstBeat + Globals::Defaults::emptyClipLength);
-
-            const auto avgValue = autoSequence->getAverageControllerValue();
-            const auto avgMsPerQuarterNote = Transport::getTempoByControllerValue(avgValue) / 1000;
-            const auto avgBpm = 60000 / jmax(1, avgMsPerQuarterNote);
-
-            menu.add(MenuItem::item(Icons::automationTrack, TRANS(I18n::Menu::setOneTempo))->closesMenu()->withAction([avgBpm, firstBeat, lastBeat, track]() {
-                auto dialog = make<TempoDialog>(avgBpm);
-                dialog->onOk = [firstBeat, lastBeat, track](int newBpmValue) {
-                    SequencerOperations::setOneTempoForTrack(track, firstBeat, lastBeat, newBpmValue);
-                };
-
-                App::showModalComponent(move(dialog));
-            }));
+            menu.add(MenuItem::item(Icons::automationTrack,
+                CommandIDs::TrackSetOneTempo, TRANS(I18n::Menu::setOneTempo))->closesMenu());
         }
     }
     else

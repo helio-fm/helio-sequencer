@@ -737,6 +737,33 @@ void PatternRoll::handleCommandMessage(int commandId)
                 false);
         }
         break;
+    case CommandIDs::TrackSetOneTempo:
+        if (this->selection.getNumSelected() == 1)
+        {
+            const auto &clip = this->selection.getFirstAs<ClipComponent>()->getClip();
+            auto *track = clip.getPattern()->getTrack();
+            if (!track->isTempoTrack())
+            {
+                break;
+            }
+            if (auto *autoSequence = dynamic_cast<AutomationSequence *>(track->getSequence()))
+            {
+                const auto firstBeat = autoSequence->getFirstBeat();
+                const auto lastBeat = jmax(autoSequence->getLastBeat(), firstBeat + Globals::Defaults::emptyClipLength);
+                const auto avgValue = autoSequence->getAverageControllerValue();
+                const auto avgMsPerQuarterNote = Transport::getTempoByControllerValue(avgValue) / 1000;
+                const auto avgBpm = 60000 / jmax(1, avgMsPerQuarterNote);
+
+                auto dialog = make<TempoDialog>(avgBpm);
+                dialog->onOk = [firstBeat, lastBeat, track](int newBpmValue)
+                {
+                    SequencerOperations::setOneTempoForTrack(track, firstBeat, lastBeat, newBpmValue);
+                };
+
+                App::showModalComponent(move(dialog));
+            }
+        }
+        break;
     case CommandIDs::EditCurrentInstrument:
         PluginWindow::showWindowFor(PatternOperations::getSelectedInstrumentId(this->selection));
         break;
