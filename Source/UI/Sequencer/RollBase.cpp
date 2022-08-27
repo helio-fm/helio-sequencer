@@ -727,61 +727,91 @@ void RollBase::computeAllSnapLines()
     // in the absence of time signatures we still need defaults for the grid:
     int numerator = Globals::Defaults::timeSignatureNumerator;
     int denominator = Globals::Defaults::timeSignatureDenominator;
-    float startBeat = this->firstBeat;
-    timeSignatureAggregator->updateGridDefaultsIfNeeded(numerator, denominator, startBeat);
-
-    const auto defaultMeterLength = float(numerator) / float(denominator) * beatsPerBar;
-    const auto firstBeatWithDefaultMeterOffset = this->firstBeat +
-        fmodf((startBeat - this->firstBeat), defaultMeterLength) - defaultMeterLength;
-
-    float barIterator = firstBeatWithDefaultMeterOffset / beatsPerBar;
+    // in the absence of time signatures we still need defaults for the grid:
+    float defaultMeterStartBeat = this->projectFirstBeat;
+    timeSignatureAggregator->updateGridDefaultsIfNeeded(numerator, denominator, defaultMeterStartBeat);
 
     int nextTsIndex = 0;
-    bool firstEvent = true;
-
-    // Find a time signature to start from (or use default values):
-    // find a first time signature after a paint start and take a previous one, if any
+    // try to find the nearest time signature beyond the left side of visible area,
+    // or just pick the very first time signature, if available
     for (; nextTsIndex < orderedTimeSignatures->size(); ++nextTsIndex)
     {
-        const auto *signature = static_cast<const TimeSignatureEvent *>(orderedTimeSignatures->getUnchecked(nextTsIndex));
-        const float signatureBar = (signature->getBeat() / Globals::beatsPerBar);
-
-        // The very first event defines what's before it (both time signature and offset)
-        if (firstEvent)
-        {
-            numerator = signature->getNumerator();
-            denominator = signature->getDenominator();
-            const float beatStep = 1.f / float(denominator);
-            const float barStep = beatStep * float(numerator);
-            barIterator += (fmodf(signatureBar - barIterator, barStep) - barStep);
-            firstEvent = false;
-        }
-
-        if (signatureBar >= paintStartBar)
-        {
-            break;
-        }
+        const auto *signature = static_cast<const TimeSignatureEvent *>
+            (orderedTimeSignatures->getUnchecked(nextTsIndex));
 
         numerator = signature->getNumerator();
         denominator = signature->getDenominator();
-        barIterator = signatureBar;
+        defaultMeterStartBeat = signature->getBeat();
+
+        if ((signature->getBeat() / beatsPerBar) >= paintStartBar)
+        {
+            break;
+        }
     }
 
-    // At this point we have barIterator pointing at the anchor,
-    // that is nearest to the left side of visible screen area
-    // (it could be either TimeSignatureEvent, or just the very first bar)
+    const float defaultMeterStartBar = defaultMeterStartBeat / beatsPerBar;
 
+    // iterate backwards from the anchor, if needed, using the single default meter
     float barWidthSum = 0.f;
     bool canDrawBarLine = false;
+    auto barIterator = defaultMeterStartBar;
+
+    while (barIterator >= (paintStartBar - 1.f))
+    {
+        const float beatStep = 1.f / float(denominator);
+        const float barStep = beatStep * float(numerator);
+        const float barStartX = barWidth * (barIterator - firstBar);
+        const float stepWidth = barWidth * barStep;
+
+        // when in the drawing area:
+        if (barIterator <= (paintEndBar + barStep))
+        {
+            if (canDrawBarLine)
+            {
+                this->visibleBars.add(barStartX);
+                this->allSnaps.add(barStartX);
+            }
+
+            // the beat lines
+            for (float j = 0.f; j < barStep; j += beatStep)
+            {
+                const float beatStartX = barStartX + barWidth * j;
+                float nextBeatStartX = barStartX + barWidth * (j + beatStep);
+
+                // snap lines and beat lines
+                for (float k = beatStartX + snapWidth; k < (nextBeatStartX - 1); k += snapWidth)
+                {
+                    this->visibleSnaps.add(k);
+                    this->allSnaps.add(k);
+                }
+
+                if (j >= beatStep && // don't draw the first one as it is a bar line
+                    (nextBeatStartX - beatStartX) > minBeatWidth)
+                {
+                    this->visibleBeats.add(beatStartX);
+                    this->allSnaps.add(beatStartX);
+                }
+            }
+        }
+
+        barIterator -= barStep;
+
+        barWidthSum += stepWidth;
+        canDrawBarLine = barWidthSum > minBarWidth;
+        barWidthSum = canDrawBarLine ? 0.f : barWidthSum;
+    }
+
+    // now iterate forwards from the anchor,
+    // picking all the following time signatures
+
+    barWidthSum = minBarWidth;
+    barIterator = defaultMeterStartBar;
 
     while (barIterator <= paintEndBar)
     {
-        // We don't do anything else unless we have reached the left side of visible area
-        // Since we have already found the nearest time signature,
-        // we assume that time signature does not change in between,
-        // and we only need to count barWidthSum:
+        // don't do anything here until we reach the left side of visible area
 
-        float beatStep = 1.f / float(denominator);
+        const float beatStep = 1.f / float(denominator);
         float barStep = beatStep * float(numerator);
         const float barStartX = barWidth * (barIterator - firstBar);
         const float stepWidth = barWidth * barStep;
@@ -790,7 +820,7 @@ void RollBase::computeAllSnapLines()
         canDrawBarLine = barWidthSum > minBarWidth;
         barWidthSum = canDrawBarLine ? 0.f : barWidthSum;
 
-        // When in the drawing area:
+        // when in the drawing area:
         if (barIterator >= (paintStartBar - barStep))
         {
             if (canDrawBarLine)
@@ -799,18 +829,18 @@ void RollBase::computeAllSnapLines()
                 this->allSnaps.add(barStartX);
             }
 
-            // Now for the beat lines
+            // the beat lines
             bool lastFrame = false;
             for (float j = 0.f; j < barStep && !lastFrame; j += beatStep)
             {
                 const float beatStartX = barStartX + barWidth * j;
                 float nextBeatStartX = barStartX + barWidth * (j + beatStep);
 
-                // Check if we have more time signatures to come
+                // check if we have more time signatures to come
                 if (nextTsIndex < orderedTimeSignatures->size())
                 {
                     const auto *nextSignature = static_cast<const TimeSignatureEvent *>(orderedTimeSignatures->getUnchecked(nextTsIndex));
-                    const float tsBar = nextSignature->getBeat() / Globals::beatsPerBar;
+                    const float tsBar = nextSignature->getBeat() / beatsPerBar;
                     if (tsBar <= (barIterator + j + beatStep))
                     {
                         numerator = nextSignature->getNumerator();
@@ -823,20 +853,14 @@ void RollBase::computeAllSnapLines()
                     }
                 }
 
-                // Get snap lines and beat lines
-                for (float k = beatStartX + snapWidth;
-                    k < (nextBeatStartX - 1);
-                    k += snapWidth)
+                // snap lines and beat lines
+                for (float k = beatStartX + snapWidth; k < (nextBeatStartX - 1); k += snapWidth)
                 {
-                    if (k >= paintStartX)
-                    {
-                        this->visibleSnaps.add(k);
-                        this->allSnaps.add(k);
-                    }
+                    this->visibleSnaps.add(k);
+                    this->allSnaps.add(k);
                 }
 
-                if (beatStartX >= paintStartX &&
-                    j >= beatStep && // don't draw the first one as it is a bar line
+                if (j >= beatStep && // don't draw the first one as it is a bar line
                     (nextBeatStartX - beatStartX) > minBeatWidth)
                 {
                     this->visibleBeats.add(beatStartX);
@@ -850,7 +874,7 @@ void RollBase::computeAllSnapLines()
 }
 
 //===----------------------------------------------------------------------===//
-// Alternative keydown modes (space for drag, etc.)
+// Alternative key-down modes (space for drag, etc.)
 //===----------------------------------------------------------------------===//
 
 void RollBase::setSpaceDraggingMode(bool dragMode)
