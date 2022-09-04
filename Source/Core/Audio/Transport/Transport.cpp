@@ -135,13 +135,12 @@ void Transport::seekToBeat(float beatPosition)
     this->broadcastSeek(beatPosition, currentTimeMs, totalTimeMs);
 }
 
-void Transport::probeSoundAtBeat(float beatPosition, const MidiSequence *limitToLayer)
+void Transport::probeSoundAtBeat(float targetBeat, const MidiSequence *limitToSequence)
 {
     this->sleepTimer.setAwake();
     this->rebuildPlaybackCacheIfNeeded();
     
-    const auto targetRelBeat = beatPosition - this->projectFirstBeat.get();
-    const auto sequencesToProbe(this->playbackCache.getAllFor(limitToLayer));
+    const auto sequencesToProbe = this->playbackCache.getAllFor(limitToSequence);
     
     for (const auto &seq : sequencesToProbe)
     {
@@ -151,10 +150,10 @@ void Transport::probeSoundAtBeat(float beatPosition, const MidiSequence *limitTo
             
             if (auto *noteOffHolder = noteOnHolder->noteOffObject)
             {
-                const double noteOn(noteOnHolder->message.getTimeStamp());
-                const double noteOff(noteOffHolder->message.getTimeStamp());
+                const auto noteOnBeat = noteOnHolder->message.getTimeStamp();
+                const auto noteOffBeat = noteOffHolder->message.getTimeStamp();
                 
-                if (noteOn <= targetRelBeat && noteOff > targetRelBeat)
+                if (noteOnBeat <= targetBeat && noteOffBeat > targetBeat)
                 {
                     MidiMessage messageTimestampedAsNow(noteOnHolder->message);
                     messageTimestampedAsNow.setTimeStamp(TIME_NOW);

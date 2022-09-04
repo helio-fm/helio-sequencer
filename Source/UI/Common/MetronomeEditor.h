@@ -43,6 +43,9 @@ public:
 
     void run() override
     {
+        // this "warm-up" trick is here to avoid a bit broken rhythm of the first 1-2 ticks:
+        Thread::wait(100);
+
         while (!this->threadShouldExit())
         {
             for (int i = 0; i < metronome.getSize(); ++i)
