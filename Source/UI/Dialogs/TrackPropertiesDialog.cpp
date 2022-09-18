@@ -67,6 +67,9 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
 
     this->colourSwatches->setSelectedColour(this->originalColour);
     this->textEditor->setText(this->originalName, dontSendNotification);
+    // instead of selectAll(), which puts the caret at the start:
+    this->textEditor->setCaretPosition(0);
+    this->textEditor->moveCaretToEnd(true);
 
     this->messageLabel->setText(title.isNotEmpty() ? title : TRANS(I18n::Dialog::renameTrackCaption), dontSendNotification);
     this->okButton->setButtonText(confirmation.isNotEmpty() ? confirmation : TRANS(I18n::Dialog::renameTrackProceed));

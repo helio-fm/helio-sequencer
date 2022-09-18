@@ -211,6 +211,9 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     }
 
     this->textEditor->setText(this->editedEvent.toString(), dontSendNotification);
+    // instead of selectAll(), which puts the caret at the start:
+    this->textEditor->setCaretPosition(0);
+    this->textEditor->moveCaretToEnd(true);
 
     this->updatePosition();
     this->updateSize();

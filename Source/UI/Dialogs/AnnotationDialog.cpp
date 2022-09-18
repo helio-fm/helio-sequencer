@@ -132,6 +132,9 @@ AnnotationDialog::AnnotationDialog(Component &owner,
     this->textEditor->addListener(this);
     this->textEditor->setFont(Globals::UI::Fonts::L);
     this->textEditor->setText(this->originalEvent.getDescription(), dontSendNotification);
+    // instead of selectAll(), which puts the caret at the start:
+    this->textEditor->setCaretPosition(0);
+    this->textEditor->moveCaretToEnd(true);
 
     this->messageLabel->setInterceptsMouseClicks(false, false);
 

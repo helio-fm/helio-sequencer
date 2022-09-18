@@ -191,6 +191,10 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
         this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
     }
 
+    // instead of selectAll(), which puts the caret at the start:
+    this->scaleNameEditor->setCaretPosition(0);
+    this->scaleNameEditor->moveCaretToEnd(true);
+
     this->messageLabel->setInterceptsMouseClicks(false, false);
 
     static constexpr auto keyButtonSize = 34;

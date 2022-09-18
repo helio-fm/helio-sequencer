@@ -201,6 +201,9 @@ TempoDialog::TempoDialog(int bpmValue)
     };
 
     this->textEditor->setText(String(bpmValue), dontSendNotification);
+    // instead of selectAll(), which puts the caret at the start:
+    this->textEditor->setCaretPosition(0);
+    this->textEditor->moveCaretToEnd(true);
 
     this->messageLabel->setText(TRANS(I18n::Dialog::setTempoCaption), dontSendNotification);
     this->messageLabel->setInterceptsMouseClicks(false, false);
