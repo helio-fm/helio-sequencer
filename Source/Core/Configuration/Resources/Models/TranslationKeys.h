@@ -72,7 +72,6 @@ namespace I18n
         static constexpr auto openglCaption = constexprHash("dialog::opengl::caption");
         static constexpr auto openglProceed = constexprHash("dialog::opengl::proceed");
         static constexpr auto renameTrackCaption = constexprHash("dialog::renametrack::caption");
-        static constexpr auto renameTrackProceed = constexprHash("dialog::renametrack::proceed");
         static constexpr auto renderAbort = constexprHash("dialog::render::abort");
         static constexpr auto renderCaption = constexprHash("dialog::render::caption");
         static constexpr auto renderProceed = constexprHash("dialog::render::proceed");

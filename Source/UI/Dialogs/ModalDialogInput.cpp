@@ -224,7 +224,7 @@ UniquePointer<ModalDialogInput> ModalDialogInput::Presets::renameTrack(const Str
 {
     return make<ModalDialogInput>(name,
         TRANS(I18n::Dialog::renameTrackCaption),
-        TRANS(I18n::Dialog::renameTrackProceed),
+        TRANS(I18n::Dialog::apply),
         TRANS(I18n::Dialog::cancel));
 }
 

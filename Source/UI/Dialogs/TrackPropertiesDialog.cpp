@@ -21,11 +21,26 @@
 #include "CommandIDs.h"
 #include "UndoStack.h"
 #include "ProjectNode.h"
+#include "IconComponent.h"
 
 TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
-    WeakReference<MidiTrack> track, const String &title, const String &confirmation) :
+    WeakReference<MidiTrack> track,
+    const String &title, const String &confirmation) :
     project(project),
-    track(track)
+    tracks(track)
+{
+    this->init(title, confirmation);
+}
+
+TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
+    Array<WeakReference<MidiTrack>> tracks) :
+    project(project),
+    tracks(tracks)
+{
+    this->init();
+}
+
+void TrackPropertiesDialog::init(const String &title, const String &confirmation)
 {
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
@@ -58,10 +73,39 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
     this->textEditor->setCaretVisible(true);
     this->textEditor->setPopupMenuEnabled(true);
     this->textEditor->setFont(Globals::UI::Fonts::L);
-    this->textEditor->addListener(this);
 
-    this->originalName = this->track->getTrackName();
-    this->originalColour = this->track->getTrackColour();
+    this->textEditor->onEscapeKey = [this]()
+    {
+        this->doCancel();
+    };
+
+    this->textEditor->onReturnKey = [this]()
+    {
+        this->onFocusLost();
+    };
+
+    this->textEditor->onFocusLost = [this]()
+    {
+        this->onFocusLost();
+    };
+
+    this->textEditor->onTextChange = [this]()
+    {
+        this->newName = this->textEditor->getText();
+        this->updateControls();
+        this->applyChangesIfAny();
+    };
+
+    this->multipleNamesIcon = make<IconComponent>(Icons::ellipsis);
+    this->multipleNamesIcon->setIconAlphaMultiplier(0.5f);
+    this->addChildComponent(this->multipleNamesIcon.get());
+
+    if (this->tracks.size() == 1)
+    {
+        this->originalName = this->tracks.getFirst()->getTrackName();
+        this->originalColour = this->tracks.getFirst()->getTrackColour();
+    }
+
     this->newName = this->originalName;
     this->newColour = this->originalColour;
 
@@ -71,8 +115,11 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
     this->textEditor->setCaretPosition(0);
     this->textEditor->moveCaretToEnd(true);
 
-    this->messageLabel->setText(title.isNotEmpty() ? title : TRANS(I18n::Dialog::renameTrackCaption), dontSendNotification);
-    this->okButton->setButtonText(confirmation.isNotEmpty() ? confirmation : TRANS(I18n::Dialog::renameTrackProceed));
+    this->messageLabel->setText(title.isNotEmpty() ?
+        title : TRANS(I18n::Dialog::renameTrackCaption), dontSendNotification);
+    this->okButton->setButtonText(confirmation.isNotEmpty() ?
+        confirmation : TRANS(I18n::Dialog::apply));
+
     this->cancelButton->setButtonText(TRANS(I18n::Dialog::cancel));
 
     this->messageLabel->setInterceptsMouseClicks(false, false);
@@ -83,13 +130,10 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
         colourButtonSize * this->colourSwatches->getNumButtons(), 220);
 
     this->updatePosition();
-    this->updateOkButtonState();
+    this->updateControls();
 }
 
-TrackPropertiesDialog::~TrackPropertiesDialog()
-{
-    this->textEditor->removeListener(this);
-}
+TrackPropertiesDialog::~TrackPropertiesDialog() = default;
 
 void TrackPropertiesDialog::resized()
 {
@@ -104,6 +148,10 @@ void TrackPropertiesDialog::resized()
     this->textEditor->setBounds(this->getRowBounds(0.3f, DialogBase::textEditorHeight));
     this->colourSwatches->setBounds(this->getRowBounds(0.7f, DialogBase::textEditorHeight,
         TrackPropertiesDialog::colourSwatchesMargin));
+
+    constexpr auto iconSize = 16;
+    this->multipleNamesIcon->setBounds(this->textEditor->getBounds()
+        .withWidth(iconSize).translated(9, 6));
 }
 
 void TrackPropertiesDialog::parentHierarchyChanged()
@@ -129,14 +177,22 @@ void TrackPropertiesDialog::inputAttemptWhenModal()
     this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
 }
 
-void TrackPropertiesDialog::updateOkButtonState()
+void TrackPropertiesDialog::updateControls()
 {
-    this->okButton->setEnabled(this->textEditor->getText().trim().isNotEmpty());
+    const auto hasManyTracks = this->tracks.size() > 1;
+    this->multipleNamesIcon->setVisible(hasManyTracks && this->newName.isEmpty());
+
+    const auto colourIsOk = hasManyTracks ||
+        this->newColour != Colours::transparentBlack;
+    const auto textIsOk = hasManyTracks ||
+        this->newName.trim().isNotEmpty();
+    this->okButton->setEnabled(colourIsOk && textIsOk);
 }
 
 void TrackPropertiesDialog::onColourButtonClicked(ColourButton *clickedButton)
 {
     this->newColour = clickedButton->getColour();
+    this->updateControls();
     this->applyChangesIfAny();
 }
 
@@ -165,37 +221,26 @@ void TrackPropertiesDialog::applyChangesIfAny()
 
     if (this->newName != this->originalName)
     {
-        this->track->setTrackName(this->newName, true, sendNotification);
+        for (const auto &track : this->tracks)
+        {
+            track->setTrackName(this->newName, true, sendNotification);
+        }
     }
 
     if (this->newColour != this->originalColour)
     {
-        this->track->setTrackColour(this->newColour, true, sendNotification);
+        for (const auto &track : this->tracks)
+        {
+            track->setTrackColour(this->newColour, true, sendNotification);
+        }
     }
 
     this->hasMadeChanges = true;
 }
 
-void TrackPropertiesDialog::textEditorTextChanged(TextEditor&)
+void TrackPropertiesDialog::onFocusLost()
 {
-    this->updateOkButtonState();
-    this->newName = this->textEditor->getText();
-    this->applyChangesIfAny();
-}
-
-void TrackPropertiesDialog::textEditorReturnKeyPressed(TextEditor &ed)
-{
-    this->textEditorFocusLost(ed);
-}
-
-void TrackPropertiesDialog::textEditorEscapeKeyPressed(TextEditor&)
-{
-    this->doCancel();
-}
-
-void TrackPropertiesDialog::textEditorFocusLost(TextEditor&)
-{
-    this->updateOkButtonState();
+    this->updateControls();
 
     const auto *focusedComponent = Component::getCurrentlyFocusedComponent();
     if (this->textEditor->getText().isNotEmpty() &&
@@ -232,21 +277,18 @@ void TrackPropertiesDialog::doCancel()
 
 void TrackPropertiesDialog::doOk()
 {
-    if (textEditor->getText().isNotEmpty())
+    if (this->onOk != nullptr)
     {
-        if (this->onOk != nullptr)
+        BailOutChecker checker(this);
+
+        this->onOk();
+
+        if (checker.shouldBailOut())
         {
-            BailOutChecker checker(this);
-
-            this->onOk();
-
-            if (checker.shouldBailOut())
-            {
-                jassertfalse; // not expected
-                return;
-            }
+            jassertfalse; // not expected
+            return;
         }
-
-        this->dismiss();
     }
+
+    this->dismiss();
 }

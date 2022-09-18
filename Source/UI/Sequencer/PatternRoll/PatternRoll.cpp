@@ -660,17 +660,14 @@ void PatternRoll::handleCommandMessage(int commandId)
     case CommandIDs::RenameTrack:
         if (this->selection.getNumSelected() > 0)
         {
-            const String trackId = this->selection.getFirstAs<ClipComponent>()->getClip().getTrackId();
+            Array<WeakReference<MidiTrack>> tracks;
             for (int i = 0; i < this->selection.getNumSelected(); ++i)
             {
-                if (this->selection.getItemAs<ClipComponent>(i)->getClip().getTrackId() != trackId)
-                {
-                    return; // More then one track is selected
-                }
+                auto *track = this->selection.getItemAs<ClipComponent>(i)->getClip().getPattern()->getTrack();
+                tracks.addIfNotAlreadyThere(track);
             }
 
-            auto *trackNode = this->project.findTrackById<MidiTrackNode>(trackId);
-            App::showModalComponent(make<TrackPropertiesDialog>(this->project, trackNode));
+            App::showModalComponent(make<TrackPropertiesDialog>(this->project, tracks));
         }
         break;
     case CommandIDs::SetTrackTimeSignature:

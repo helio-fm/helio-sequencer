@@ -23,14 +23,18 @@
 #include "MidiTrack.h"
 
 class ProjectNode;
+class IconComponent;
 
 class TrackPropertiesDialog final : public DialogBase,
-    public TextEditor::Listener,
     public ColourButton::Listener
 {
 public:
 
-    TrackPropertiesDialog(ProjectNode &project, WeakReference<MidiTrack> track,
+    TrackPropertiesDialog(ProjectNode &project,
+        Array<WeakReference<MidiTrack>> tracks);
+
+    TrackPropertiesDialog(ProjectNode &project,
+        WeakReference<MidiTrack> track,
         const String &title = "", const String &confirmation = "");
 
     ~TrackPropertiesDialog();
@@ -48,8 +52,10 @@ public:
 
 private:
 
+    void init(const String &title = "", const String &confirmation = "");
+
     ProjectNode &project;
-    WeakReference<MidiTrack> track;
+    Array<WeakReference<MidiTrack>> tracks;
 
     String originalName;
     String newName;
@@ -61,12 +67,8 @@ private:
 
     static constexpr auto colourSwatchesMargin = 6;
 
-    void textEditorTextChanged(TextEditor&) override;
-    void textEditorReturnKeyPressed(TextEditor&) override;
-    void textEditorEscapeKeyPressed(TextEditor&) override;
-    void textEditorFocusLost(TextEditor&) override;
-
-    inline void updateOkButtonState();
+    void onFocusLost();
+    void updateControls();
 
     void applyChangesIfAny();
     void cancelChangesIfAny();
@@ -80,6 +82,7 @@ private:
     UniquePointer<TextButton> okButton;
     UniquePointer<ColourSwatches> colourSwatches;
     UniquePointer<TextEditor> textEditor;
+    UniquePointer<IconComponent> multipleNamesIcon;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackPropertiesDialog)
 };
