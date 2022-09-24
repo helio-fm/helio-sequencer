@@ -4,6 +4,15 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.10
+ - Added built-in metronome, toggled by Control + M hotkey, each time signature now has its own editable metronome scheme
+ - Added an option to select the MIDI output device
+ - Added an option to scale the UI x1.5 or x2
+ - Made the update checks optional
+ - Updated the app icon
+ - Fixed renaming or recoloring multiple tracks in the pattern roll
+ - Minor fixes: double click on a tempo track opens "set one tempo" dialog, fixed some grid arrangement glitches and inaccurate time signature alignment, fixed zooming out in large projects, fixed inactive notes blocking double-clicks on the roll
+
 ## Version 3.9
  - Added per-track time signatures: hotkey Alt + F2 to add a time signature anchored to track's position
  - Made retrograde hotkey work in the pattern roll, re-ordering all selected clips backwards for each row
