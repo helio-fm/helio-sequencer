@@ -69,7 +69,7 @@ After starting Helio the first time you should have a simple example project alr
  * to rename the project, click `Example Project` in the breadcrumb control, and you'll see the project info page with some details available for editing,
  * after renaming, go back by pressing `Alt + Left Arrow` or by pressing the back button on the top left, and you should get back in the piano roll page,
  * note that you can only edit one track at a time: use right-click to switch to another track (or long tap on mobile),
- * switch to the pattern roll be pressing `Tab` or `Page Down`, or by clicking the uppermost button in the left sidebar, to play with arrangement,
+ * switch to the pattern roll by pressing `Tab` or `Page Down`, or by clicking the uppermost button in the left sidebar, to play with arrangement,
  * double-click any clip to return to the piano roll with that clip in focus; at this point you should get an idea how things work in the sequencer layout.
 
 To start a new project from scratch, navigate to the dashboard by pressing the `Home` key, or clicking the `Studio` node in the breadcrumbs. There you'll see the list of recent projects, and a couple of buttons:
