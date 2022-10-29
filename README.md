@@ -56,6 +56,8 @@ App icon by Valery Davletbaev, distributed under [CC-BY](https://creativecommons
 
 Built-in [metronome sounds](https://stash.reaper.fm/40824/Metronomes.zip) are recorded by Ludwig Peter Müller, [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
 
+The built-in SoundFont player instument is based on [SFZero](https://github.com/stevefolta/SFZero), written by Steve Folta and [extended](https://github.com/cognitone/SFZeroMT) by Leo Olivers and Cognitone.
+
 All documentation, translations and logotypes are distributed under [CC-BY](https://creativecommons.org/licenses/by/4.0/).
 
 ### Translation and proofreading credits
