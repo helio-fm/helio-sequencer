@@ -14,6 +14,9 @@
     <Filter Include="Helio\Resources">
       <UniqueIdentifier>{362F8081-11C1-8EEC-992C-BAF083C649FB}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helio\Source\Core\Audio\BuiltIn\SoundFont">
+      <UniqueIdentifier>{82ACAEAD-01D6-9C08-DF4D-8184C4558706}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Helio\Source\Core\Audio\BuiltIn">
       <UniqueIdentifier>{0C77D3CE-9F7F-3FA4-2FB3-9E59CB3DA790}</UniqueIdentifier>
     </Filter>
@@ -634,6 +637,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\SoundFont\SoundFont2Sound.cpp">
+      <Filter>Helio\Source\Core\Audio\BuiltIn\SoundFont</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\SoundFont\SoundFontSound.cpp">
+      <Filter>Helio\Source\Core\Audio\BuiltIn\SoundFont</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\SoundFont\SoundFontSynth.cpp">
+      <Filter>Helio\Source\Core\Audio\BuiltIn\SoundFont</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\InternalIODevicesPluginFormat.cpp">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClCompile>
@@ -650,6 +662,9 @@
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\MetronomeSynth.cpp">
+      <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Audio\BuiltIn\SoundFontSynthAudioPlugin.cpp">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Audio\Instruments\Instrument.cpp">
@@ -3540,6 +3555,21 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\SoundFont\SoundFont2Sound.h">
+      <Filter>Helio\Source\Core\Audio\BuiltIn\SoundFont</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\SoundFont\SoundFontRegion.h">
+      <Filter>Helio\Source\Core\Audio\BuiltIn\SoundFont</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\SoundFont\SoundFontSample.h">
+      <Filter>Helio\Source\Core\Audio\BuiltIn\SoundFont</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\SoundFont\SoundFontSound.h">
+      <Filter>Helio\Source\Core\Audio\BuiltIn\SoundFont</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\SoundFont\SoundFontSynth.h">
+      <Filter>Helio\Source\Core\Audio\BuiltIn\SoundFont</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\InternalIODevicesPluginFormat.h">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClInclude>
@@ -3556,6 +3586,9 @@
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\MetronomeSynth.h">
+      <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\SoundFontSynthAudioPlugin.h">
       <Filter>Helio\Source\Core\Audio\BuiltIn</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Audio\Instruments\Instrument.h">

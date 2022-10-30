@@ -1252,7 +1252,8 @@ public:
                     quality->intervalQuality == ChordQualityExpression::Quality::Diminished ? KeyInfo::Flat : KeyInfo::Default);
             }
 
-            // handle other exceptions (pretty much fucked up tbh):
+            // handle other exceptions:
+            // (todo check if there are more weird exceptions)
             if (quality->chordQuality == ChordQualityExpression::Quality::Implied ||
                 quality->intervalQuality == ChordQualityExpression::Quality::Implied)
             {

@@ -1402,10 +1402,9 @@ void PianoRoll::paint(Graphics &g)
                 You might be thinking: why the do we need this ugly loop here?
                 Given a tiled texture, we can just fill it all at once with a single fillRect()?
 
-                Well yes, but actually no.
-                OpenGmotherfuckingL does suck real hard, and it can't seem to do
-                texture tiling correctly unless the stars are well aligned (they are not),
-                so there is always some weird offset, and it's getting weirder at each next tile.
+                Well yes, but actually no, OpenGL can't seem to do texture tiling correctly
+                unless the stars are well aligned (they are not), so there is always some weird offset,
+                and it's getting weirder at each next tile.
 
                 For horizontal tiling, we don't care, but for vertical tiling, this means that
                 sequencer rows are messed up, so we have to say explicitly where to fill each period.

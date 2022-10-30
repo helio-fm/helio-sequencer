@@ -94,7 +94,7 @@ CommandPalette::CommandPalette(ProjectNode *project, RollBase *roll)
     this->currentActionsProvider = this->rootActionsProvider;
 
     this->actionsList->setRowHeight(CommandPalette::rowHeight);
-    //this->actionsList->setMouseMoveSelectsRows(true); // fucks up keyboard select :(
+    //this->actionsList->setMouseMoveSelectsRows(true); // breaks keyboard select :(
     this->actionsList->getViewport()->setScrollBarThickness(2);
     this->actionsList->setModel(this);
 

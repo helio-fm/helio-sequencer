@@ -38,13 +38,13 @@ Result BinarySerializer::saveToFile(File file, const SerializedData &tree) const
 
 SerializedData BinarySerializer::loadFromFile(const File &file) const
 {
-    // here's the thing: reading from FileInputStream is slow asfuck (at least, on Windows);
+    // here's the thing: reading from FileInputStream is slow af (at least, on Windows);
     // adding BufferedInputStream bufferedStream(fileStream) - kinda helps, but:
     // ValueTree::readFromStream still calls getTotalLength() quite often, which
-    // ends up calling File::getSize(), which, in turn, consumes a lot time.
-
+    // ends up calling File::getSize(), which, in turn, consumes a lot of time,
     // so instead we'll just read the whole file into memory and deserialize from it;
     // somewhat ugly, but works, and saved files should never be really large anyway.
+
     MemoryBlock mb;
     if (file.loadFileAsData(mb))
     {

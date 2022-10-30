@@ -1032,7 +1032,7 @@ void RollBase::onChangeViewBeatRange(float newFirstBeat, float newLastBeat)
     else
     {
         // It's often the case that I expand visible range in a pattern editor,
-        // then switch back to piano roll and find the viewport focus fucked up;
+        // then switch back to piano roll and find the viewport focus messed up;
         // let's try to detect that and preserve offset, when the roll is inactive:
         const auto newViewX = this->getXPositionByBeat(viewStartBeat);
         this->viewport.setViewPosition(newViewX, viewPos.y);

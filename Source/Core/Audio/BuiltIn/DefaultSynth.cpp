@@ -172,5 +172,5 @@ void DefaultSynth::setPeriodSizeAndRange(int periodSize, double periodRange)
 // the built-in synth doesn't need pedals!
 void DefaultSynth::handleSustainPedal(int midiChannel, bool isDown) {}
 // seriously, just want to make sure that once I send a note-off event,
-// the BuiltInSynthVoice shuts the fuck up regardless of controller states
+// the BuiltInSynthVoice shuts up regardless of controller states
 void DefaultSynth::handleSostenutoPedal(int midiChannel, bool isDown) {}
