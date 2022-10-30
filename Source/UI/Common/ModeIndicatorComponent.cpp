@@ -72,22 +72,14 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModeIndicatorBar)
 };
 
-ModeIndicatorComponent::ModeIndicatorComponent(int numModes) : activeMode(0)
+ModeIndicatorComponent::ModeIndicatorComponent(int numModes)
 {
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
 
     this->setComponentID(ComponentIDs::modeIndicatorComponentId);
 
-    // The normal default state is invisible
-    this->setAlpha(0.f);
-
-    for (int i = 0; i < numModes; ++i)
-    {
-        this->bars.add(new ModeIndicatorBar());
-        this->bars.getLast()->setHighlighted(i == 0);
-        this->addAndMakeVisible(this->bars.getLast());
-    }
+    this->setNumModes(numModes);
 }
 
 ModeIndicatorComponent::~ModeIndicatorComponent()
@@ -95,16 +87,41 @@ ModeIndicatorComponent::~ModeIndicatorComponent()
     this->bars.clear(true);
 }
 
+void ModeIndicatorComponent::setNumModes(int numModes)
+{
+    this->bars.clear(true);
+
+    for (int i = 0; i < numModes; ++i)
+    {
+        this->bars.add(new ModeIndicatorBar());
+        this->bars.getLast()->setHighlighted(i == 0);
+        this->addAndMakeVisible(this->bars.getLast());
+    }
+
+    // also place the bars correctly, if needed
+    if (this->getParentComponent() != nullptr)
+    {
+        this->resized();
+    }
+}
+
+ModeIndicatorComponent::Mode ModeIndicatorComponent::setCurrentMode(Mode mode)
+{
+    if (!this->bars.isEmpty())
+    {
+        this->activeMode = mode % this->bars.size();
+        this->updateBarsHighlighting();
+    }
+
+    return this->activeMode;
+}
+
 ModeIndicatorComponent::Mode ModeIndicatorComponent::scrollToNextMode()
 {
     if (!this->bars.isEmpty())
     {
         this->activeMode = (this->activeMode + 1) % this->bars.size();
-        for (int i = 0; i < this->bars.size(); ++i)
-        {
-            this->bars[i]->setHighlighted(i == this->activeMode);
-        }
-
+        this->updateBarsHighlighting();
     }
 
     return this->activeMode;
@@ -112,17 +129,27 @@ ModeIndicatorComponent::Mode ModeIndicatorComponent::scrollToNextMode()
 
 void ModeIndicatorComponent::resized()
 {
-    const int spacing = 4;
+    constexpr auto barSize = 6;
+    constexpr auto barSpacing = 4;
+
     const int h = this->getHeight();
     const int w = this->getWidth();
     const int length = this->bars.size();
-    const int cw = (h + spacing) * length;
+    const int cw = (barSize + barSpacing) * length - barSpacing;
     const int cx = w / 2 - cw / 2;
 
     for (int i = 0; i < length; ++i)
     {
-        const int x = cx + (h + spacing) * i;
-        this->bars[i]->setBounds(x, 0, h, h);
+        const int x = cx + (barSize + barSpacing) * i;
+        this->bars[i]->setBounds(x, h / 2 - barSize / 2, barSize, barSize);
+    }
+}
+
+void ModeIndicatorComponent::updateBarsHighlighting()
+{
+    for (int i = 0; i < this->bars.size(); ++i)
+    {
+        this->bars.getUnchecked(i)->setHighlighted(i == this->activeMode);
     }
 }
 
@@ -149,10 +176,9 @@ ModeIndicatorTrigger::ModeIndicatorTrigger()
     this->setPaintingIsUnclipped(true);
 }
 
-void ModeIndicatorTrigger::mouseUp(const MouseEvent& event)
+void ModeIndicatorTrigger::mouseUp(const MouseEvent &event)
 {
-    if (ModeIndicatorOwnerComponent *owner =
-        dynamic_cast<ModeIndicatorOwnerComponent *>(this->getParentComponent()))
+    if (auto *owner = dynamic_cast<ModeIndicatorOwnerComponent *>(this->getParentComponent()))
     {
         owner->handleChangeMode();
     }
@@ -160,8 +186,7 @@ void ModeIndicatorTrigger::mouseUp(const MouseEvent& event)
 
 void ModeIndicatorTrigger::mouseEnter(const MouseEvent &event)
 {
-    if (ModeIndicatorOwnerComponent *owner =
-        dynamic_cast<ModeIndicatorOwnerComponent *>(this->getParentComponent()))
+    if (auto *owner = dynamic_cast<ModeIndicatorOwnerComponent *>(this->getParentComponent()))
     {
         owner->showModeIndicator();
     }
@@ -169,8 +194,7 @@ void ModeIndicatorTrigger::mouseEnter(const MouseEvent &event)
 
 void ModeIndicatorTrigger::mouseExit(const MouseEvent &event)
 {
-    if (ModeIndicatorOwnerComponent *owner =
-        dynamic_cast<ModeIndicatorOwnerComponent *>(this->getParentComponent()))
+    if (auto *owner = dynamic_cast<ModeIndicatorOwnerComponent *>(this->getParentComponent()))
     {
         owner->hideModeIndicator();
     }

@@ -79,5 +79,6 @@ private:
 
     PluginDescription defaultInstrument;
     PluginDescription metronomeInstrument;
+    PluginDescription soundFontPlayerInstrument;
 
 };

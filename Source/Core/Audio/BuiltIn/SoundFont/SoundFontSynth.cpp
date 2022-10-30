@@ -690,6 +690,49 @@ void SoundFontVoice::killNote()
 // SoundFontSynth
 //===----------------------------------------------------------------------===//
 
+void SoundFontSynth::initSynth(const Parameters &parameters)
+{
+    const File file(parameters.filePath);
+    if (!file.existsAsFile())
+    {
+        return;
+    }
+
+    ScopedLock locker(this->lock);
+
+    this->allNotesOff(0, false);
+
+    this->clearVoices();
+    for (int i = SoundFontSynth::numVoices; i --> 0 ;)
+    {
+        this->addVoice(new SoundFontVoice());
+    }
+
+    this->clearSounds();
+
+    AudioFormatManager audioFormatManager;
+    audioFormatManager.registerBasicFormats();
+
+    if (file.getFullPathName().endsWithIgnoreCase("sf2"))
+    {
+        auto sound = make<SoundFont2Sound>(file);
+        sound->loadRegions();
+        sound->loadSamples(audioFormatManager);
+        this->sounds.add(sound.release());
+    }
+    else if (file.getFullPathName().endsWithIgnoreCase("sbk"))
+    {
+        auto sound = make<SoundFontSound>(file);
+        sound->loadRegions();
+        sound->loadSamples(audioFormatManager);
+        this->sounds.add(sound.release());
+    }
+
+    // new file has been loaded so we need to set the program anyway
+    jassert(parameters.programIndex < this->getNumPrograms());
+    this->setCurrentProgram(parameters.programIndex);
+}
+
 void SoundFontSynth::noteOn(int midiChannel, int midiNoteNumber, float velocity)
 {
     int i;
@@ -836,4 +879,56 @@ const String SoundFontSynth::getProgramName(int index) const
 void SoundFontSynth::changeProgramName(int index, const String &newName)
 {
     jassertfalse;
+}
+
+//===----------------------------------------------------------------------===//
+// Synth parameters
+//===----------------------------------------------------------------------===//
+
+SoundFontSynth::Parameters SoundFontSynth::Parameters::withSoundFontFile(const String &newFilePath) const noexcept
+{
+    Parameters other(*this);
+    other.filePath = newFilePath;
+    return other;
+}
+
+SoundFontSynth::Parameters SoundFontSynth::Parameters::withProgramIndex(int newProgramIndex) const noexcept
+{
+    Parameters other(*this);
+    other.programIndex = newProgramIndex;
+    return other;
+}
+
+SerializedData SoundFontSynth::Parameters::serialize() const
+{
+    using namespace Serialization::Audio;
+
+    SerializedData data(SoundFont::soundFontConfig);
+    data.setProperty(SoundFont::filePath, this->filePath);
+    data.setProperty(SoundFont::programIndex, this->programIndex);
+
+    return data;
+}
+
+void SoundFontSynth::Parameters::deserialize(const SerializedData &data)
+{
+    this->reset();
+    using namespace Serialization::Audio;
+
+    const auto root = data.hasType(SoundFont::soundFontConfig) ?
+        data : data.getChildWithName(SoundFont::soundFontConfig);
+
+    if (!root.isValid())
+    {
+        return;
+    }
+
+    this->filePath = root.getProperty(SoundFont::filePath);
+    this->programIndex = root.getProperty(SoundFont::programIndex);
+}
+
+void SoundFontSynth::Parameters::reset()
+{
+    this->filePath.clear();
+    this->programIndex = 0;
 }

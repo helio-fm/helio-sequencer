@@ -57,6 +57,7 @@ SequencerSidebarLeft::SequencerSidebarLeft()
 
     this->modeIndicator = make<ModeIndicatorComponent>(2);
     this->addAndMakeVisible(this->modeIndicator.get());
+    this->modeIndicator->setAlpha(0.f);
 
     this->switchPatternModeButton = make<MenuItemComponent>(this, nullptr,
         MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls)->
@@ -149,7 +150,7 @@ void SequencerSidebarLeft::resized()
         this->getHeight() - audioMonitorHeight,
         this->getWidth(), audioMonitorHeight);
 
-    constexpr auto modeIndicatorSize = 5;
+    constexpr auto modeIndicatorSize = 6;
     this->modeIndicator->setBounds(0,
         this->getHeight() - modeIndicatorSize * 2,
         this->getWidth(), modeIndicatorSize);

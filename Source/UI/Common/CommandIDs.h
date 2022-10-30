@@ -222,12 +222,14 @@ namespace CommandIDs
         KeyMapPasteFromClipboard        = 0x4215,
 
         SavePreset                      = 0x4300,
-        SelectPreset                    = 0x4301, // more ids reserved for sub-items
+        SelectNextPreset                = 0x4301,
+        SelectPreviousPreset            = 0x4302,
+        SelectPreset                    = 0x4303, // more ids reserved for sub-items
 
         OpenMetronomeSample             = 0x4500, // more ids reserved for sub-items
         ResetMetronomeSample            = 0x4550, // more ids reserved for sub-items
 
-        YourNextCommandId = 0x4600
+        YourNextCommandId               = 0x4600
     };
 
     CommandIDs::Id getIdForName(const String &command);

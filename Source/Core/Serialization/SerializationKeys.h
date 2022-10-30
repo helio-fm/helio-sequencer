@@ -201,7 +201,14 @@ namespace Serialization
             static const Identifier customSample = "sample";
             static const Identifier syllableName = "name";
             static const Identifier filePath = "filePath";
-        } // namespace CustomMetronome
+        } // namespace Metronome
+
+        namespace SoundFont
+        {
+            static const Identifier soundFontConfig = "soundFontPlayer";
+            static const Identifier filePath = "filePath";
+            static const Identifier programIndex = "programIndex";
+        } // namespace SoundFont
     } // namespace Audio
 
     namespace Config

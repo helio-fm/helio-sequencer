@@ -74,7 +74,7 @@ private:
     FileSearchPath searchPath;
     StringArray filesToScan;
 
-    FileSearchPath getTypicalFolders();
+    FileSearchPath getCommonFolders();
     void scanPossibleSubfolders(const StringArray &possibleSubfolders,
         const File &currentSystemFolder, FileSearchPath &foldersOut);
 };

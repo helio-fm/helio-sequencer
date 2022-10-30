@@ -25,19 +25,24 @@ class ModeIndicatorComponent final : public Component
 {
 public:
     
-    explicit ModeIndicatorComponent(int numModes);
+    explicit ModeIndicatorComponent(int numModes = 0);
     ~ModeIndicatorComponent();
 
-    typedef int Mode;
+    void setNumModes(int numModes);
+
+    using Mode = int;
     Mode scrollToNextMode();
+    Mode setCurrentMode(Mode mode);
 
     void resized() override;
 
 private:
 
-    Mode activeMode;
+    Mode activeMode = 0;
     OwnedArray<ModeIndicatorBar> bars;
     ComponentFader fader;
+
+    void updateBarsHighlighting();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModeIndicatorComponent)
 };
@@ -56,7 +61,7 @@ private:
 
 };
 
-class ModeIndicatorTrigger : public Component
+class ModeIndicatorTrigger final : public Component
 {
 public:
 

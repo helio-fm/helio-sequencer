@@ -30,6 +30,24 @@ public:
     void noteOn(int midiChannel, int midiNoteNumber, float velocity) override;
     void noteOff(int midiChannel, int midiNoteNumber, float velocity, bool allowTailOff) override;
 
+    //===------------------------------------------------------------------===//
+    // Synth parameters
+    //===------------------------------------------------------------------===//
+
+    struct Parameters final : Serializable
+    {
+        String filePath;
+        int programIndex = 0;
+
+        Parameters withSoundFontFile(const String &newFilePath) const noexcept;
+        Parameters withProgramIndex(int newProgramIndex) const noexcept;
+
+        SerializedData serialize() const override;
+        void deserialize(const SerializedData &data) override;
+        void reset() override;
+    };
+
+    void initSynth(const Parameters &parameters);
 
     //===------------------------------------------------------------------===//
     // Presets
@@ -42,6 +60,8 @@ public:
     void changeProgramName(int index, const String &newName);
 
 private:
+
+    static constexpr auto numVoices = 16;
 
     int noteVelocities[128];
 
