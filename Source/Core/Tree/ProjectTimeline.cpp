@@ -62,7 +62,7 @@ public:
     Colour getTrackColour() const noexcept override
     { return findDefaultColour(Label::textColourId); }
 
-    String getTrackInstrumentId() const noexcept
+    String getTrackInstrumentId() const noexcept override
     {
         // time signatures may emit events for the metronome:
         return App::Workspace().getAudioCore().getMetronomeInstrumentId();

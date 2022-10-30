@@ -25,7 +25,6 @@
 #include "SoundFontRegion.h"
 #include "SoundFontSample.h"
 #include "SerializationKeys.h"
-//#include <math.h>
 
 class SoundFontEnvelope final
 {

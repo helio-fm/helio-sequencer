@@ -172,7 +172,7 @@ public:
         }
     }
 
-    void handleCommandMessage(int commandId)
+    void handleCommandMessage(int commandId) override
     {
         if (commandId == CommandIDs::TransportPlaybackStart)
         {

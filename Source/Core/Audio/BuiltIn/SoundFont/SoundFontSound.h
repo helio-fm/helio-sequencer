@@ -56,7 +56,6 @@ public:
 
     void addError(const String &message);
     void addUnsupportedOpcode(const String &opcode);
-    String dump();
 
     struct Preset final
     {
