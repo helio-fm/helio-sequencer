@@ -28,6 +28,8 @@ Use `Alt + Up` and `Alt + Down` hotkeys to transpose the selected notes using in
 
 The notes which are out of scale will be aligned up or down to the nearest in-scale keys.
 
+More generally, you can think of it as "transposition using highlighted rows only". For example, when the scales highlighting [flag](tips-and-tricks.md#ui-flags) is off, it can be useful in microtonal temperaments to transpose notes using only those keys which [approximate](configs.md#temperaments) the 12-tone scale.
+
 ### Melodic inversion
 
 `Alt + I` hotkey applies melodic inversion to selected notes. This contrapuntal derivation is better [described on Wikipedia](https://en.wikipedia.org/wiki/Inversion_(music)#Melodies); in short, it "flips" the melodic line upside down.

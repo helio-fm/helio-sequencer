@@ -1,7 +1,7 @@
 # Getting microtonal
 
 Before you get started with microtonal music, you will need two things:
- * Find a plugin (VST/whatever), which supports microtonal temperaments: here's a [list](https://github.com/suhr/awesome-microtonal#synths) with some examples.
+ * Find a plugin (VST/whatever), which supports microtonal temperaments: here's a [list](https://xen.wiki/w/List_of_microtonal_software_plugins) with some examples.
  * Set up keyboard mapping for that instrument: this needs to be done both in the plugin's settings and in the host (this app), to overcome the limits of MIDI 1.0. The piano roll works as a microtonal keyboard with a wide key range from 0 up to 2048, and it needs to map every key over 16 MIDI channels, of 128 keys each; then those MIDI messages are sent to the plugin, which needs to know how to interpret them, or how to map them back from multi-channel data.
 
 ## Setting up instruments
