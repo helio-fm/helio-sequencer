@@ -874,7 +874,7 @@ double Transport::findTimeAt(float targetBeat) const
         }
     }
 
-    double prevTimestamp = 0.0;
+    double prevTimestamp = this->projectFirstBeat.get();
 
     this->playbackCache.seekToStart();
     while (this->playbackCache.getNextMessage(cached))
@@ -932,7 +932,7 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float targetBea
     context->sampleRate = this->playbackCache.getSampleRate();
     context->numOutputChannels = this->playbackCache.getNumOutputChannels();
 
-    double prevTimestamp = 0.0;
+    double prevTimestamp = this->projectFirstBeat.get();
     bool startBeatPassed = false;
 
     this->playbackCache.seekToStart();
