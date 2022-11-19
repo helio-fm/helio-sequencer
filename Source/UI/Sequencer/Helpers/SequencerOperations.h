@@ -80,8 +80,8 @@ struct SequencerOperations final
         Transport *transport = nullptr, bool shouldCheckpoint = true);
 
     static void shiftInScaleKeyRelative(const Lasso &selection,
-        WeakReference<MidiTrack> keySignatures, int deltaKey,
-        Transport *transport = nullptr, bool shouldCheckpoint = true);
+        WeakReference<MidiTrack> keySignatures, Scale::Ptr defaultScale,
+        int deltaKey, Transport *transport = nullptr, bool shouldCheckpoint = true);
 
     static void shiftBeatRelative(Lasso &selection, float deltaBeat,
         bool shouldCheckpoint = true);

@@ -1109,12 +1109,19 @@ void PianoRoll::handleCommandMessage(int commandId)
         SequencerOperations::shiftKeyRelative(this->selection, -1, &this->getTransport(), true);
         break;
     case CommandIDs::TransposeScaleKeyUp:
+        // these two commands were supposed to mean in-scale transposition,
+        // i.e. using scale(s) from the timeline, but when the scales highlighting flag is off,
+        // they feel misleading, so let's make them work as "transposition using highlighted rows":
         SequencerOperations::shiftInScaleKeyRelative(this->selection,
-            this->project.getTimeline()->getKeySignatures(), 1, &this->getTransport(), true);
+            this->scalesHighlightingEnabled ? this->project.getTimeline()->getKeySignatures() : nullptr,
+            this->temperament->getHighlighting(),
+            1, &this->getTransport(), true);
         break;
     case CommandIDs::TransposeScaleKeyDown:
         SequencerOperations::shiftInScaleKeyRelative(this->selection,
-            this->project.getTimeline()->getKeySignatures(), -1, &this->getTransport(), true);
+            this->scalesHighlightingEnabled ? this->project.getTimeline()->getKeySignatures() : nullptr,
+            this->temperament->getHighlighting(),
+            -1, &this->getTransport(), true);
         break;
     case CommandIDs::TransposeOctaveUp:
         SequencerOperations::shiftKeyRelative(this->selection,

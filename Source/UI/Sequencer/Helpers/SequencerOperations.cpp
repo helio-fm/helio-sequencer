@@ -1225,7 +1225,7 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
 }
 
 void SequencerOperations::shiftInScaleKeyRelative(const Lasso &selection,
-    WeakReference<MidiTrack> keySignatures, int deltaKey,
+    WeakReference<MidiTrack> keySignatures, Scale::Ptr defaultScale, int deltaKey,
     Transport *transport, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0 || deltaKey == 0) { return; }
@@ -1240,7 +1240,7 @@ void SequencerOperations::shiftInScaleKeyRelative(const Lasso &selection,
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
 
     Note::Key rootKey = 0;
-    Scale::Ptr scale = nullptr; // todo some default?
+    Scale::Ptr scale = defaultScale;
 
     Array<Note> groupBefore, groupAfter;
 
@@ -1250,10 +1250,9 @@ void SequencerOperations::shiftInScaleKeyRelative(const Lasso &selection,
         const auto absKey = nc->getNote().getKey() + nc->getClip().getKey();
         const auto absBeat = nc->getNote().getBeat() + nc->getClip().getBeat();
 
-        if (!findHarmonicContext(absBeat, absBeat, keySignatures, scale, rootKey))
+        if (keySignatures != nullptr)
         {
-            jassertfalse; // if there are no signatures, should we assume the default one?
-            continue;
+            findHarmonicContext(absBeat, absBeat, keySignatures, scale, rootKey);
         }
 
         // scale key calculations are always painful and hardly readable,
@@ -1985,7 +1984,10 @@ bool SequencerOperations::remapKeySignaturesToTemperament(KeySignaturesSequence 
 bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
     WeakReference<MidiTrack> keysTrack, Scale::Ptr &outScale, Note::Key &outRootKey)
 {
-    if (const auto *keySignatures = dynamic_cast<KeySignaturesSequence *>(keysTrack->getSequence()))
+    jassert(keysTrack != nullptr);
+
+    if (const auto *keySignatures =
+        dynamic_cast<KeySignaturesSequence *>(keysTrack->getSequence()))
     {
         if (keySignatures->size() == 0)
         {

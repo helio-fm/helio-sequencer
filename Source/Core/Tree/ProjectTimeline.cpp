@@ -31,7 +31,7 @@ class AnnotationsTrack final : public VirtualMidiTrack
 {
 public:
 
-    AnnotationsTrack(ProjectTimeline &owner) :
+    explicit AnnotationsTrack(ProjectTimeline &owner) :
         timeline(owner) {}
 
     const String &getTrackId() const noexcept override
@@ -50,7 +50,7 @@ class TimeSignaturesTrack final : public VirtualMidiTrack
 {
 public:
 
-    TimeSignaturesTrack(ProjectTimeline &owner) :
+    explicit TimeSignaturesTrack(ProjectTimeline &owner) :
         timeline(owner) {}
 
     const String &getTrackId() const noexcept override
@@ -75,7 +75,7 @@ class KeySignaturesTrack final : public VirtualMidiTrack
 {
 public:
 
-    KeySignaturesTrack(ProjectTimeline &owner) :
+    explicit KeySignaturesTrack(ProjectTimeline &owner) :
         timeline(owner) {}
 
     const String &getTrackId() const noexcept override
