@@ -111,6 +111,7 @@ void NoteComponent::mouseMove(const MouseEvent &e)
     }
 
     const auto resizeEdge = this->getResizableEdge();
+
     if (this->isResizingOrScaling() ||
         (this->canResize() && (e.x >= (this->getWidth() - resizeEdge) || e.x <= resizeEdge)))
     {
@@ -118,7 +119,7 @@ void NoteComponent::mouseMove(const MouseEvent &e)
         return;
     }
 
-    this->setMouseCursor(MouseCursor::NormalCursor);
+    this->setMouseCursor(MouseCursor::UpDownLeftRightResizeCursor);   //upDownLeftRight cursor boosts click accuracy by a lot! - RPM
 }
 
 // "if ... static_cast" is here only so the macro can use the if's scope
