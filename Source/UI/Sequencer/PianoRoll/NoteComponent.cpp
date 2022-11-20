@@ -106,7 +106,7 @@ void NoteComponent::mouseEnter(const MouseEvent &e) //added mouse enter event - 
     {
         // see the comment above PianoRoll::startErasingEvents for
         // the explanation of how erasing events works and why:
-        this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
+        this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
     }
 }
@@ -254,7 +254,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             }
         }
     }
-    else if (e.mods.isMiddleButtonDown())
+    else if (e.mods.isMiddleButtonDown() && e.mods.isCtrlDown())    //only tune upon ctrl + middle click drag (helps with drag panning)
     {
         this->setMouseCursor(MouseCursor::UpDownResizeCursor);
         forEachSelectedNote(selection, selectedNote)
