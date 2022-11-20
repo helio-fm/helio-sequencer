@@ -1759,22 +1759,22 @@ static const unsigned char temp_binary_data_96[] =
 "        }\n"
 "      },\n"
 "      {\n"
-"        \"name\": \"Grayscale\",\n"
+"        \"name\": \"Grayscale\",  //edited my \"grayscale\" to be a bit \"slicker\" - RPM\n"
 "        \"colourMap\":\n"
 "        {\n"
 "          \"text\": \"fff0f0f0\",\n"
-"          \"primaryGradientA\": \"ff2d2d30\",\n"
-"          \"primaryGradientB\": \"ff333333\",\n"
-"          \"secondaryGradientA\": \"ff333333\",\n"
-"          \"secondaryGradientB\": \"ff27262f\",\n"
+"          \"primaryGradientA\": \"ff242424\",   //made this slightly darker - RPM\n"
+"          \"primaryGradientB\": \"ff242424\",   \n"
+"          \"secondaryGradientA\": \"ff242424\", \n"
+"          \"secondaryGradientB\": \"ff242424\",\n"
 "          \"lassoFill\": \"25000000\",\n"
 "          \"lassoBorder\": \"ffd4d4d4\",\n"
-"          \"whiteKey\": \"ff262626\",\n"
-"          \"blackKey\": \"ff212121\",\n"
-"          \"beat\": \"bf1b1923\",\n"
-"          \"bar\": \"271b1923\",\n"
-"          \"row\": \"ff1b1923\",\n"
-"          \"panelFill\": \"25535353\",\n"
+"          \"whiteKey\": \"ff1a1a1a\",   //made keys sligthly darker and with a slightly reduced contrast - RPM\n"
+"          \"blackKey\": \"ff141414\",\n"
+"          \"beat\": \"ff3d3d3d\",   //made beats and bar lines a little lighter than the piano roll. easier to see and not obtrusive - RPM\n"
+"          \"bar\": \"ff3d3d3d\",\n"
+"          \"row\": \"ff141414\",\n"
+"          \"panelFill\": \"ff252526\",\n"
 "          \"panelBorder\": \"ff585858\",\n"
 "          \"iconBase\": \"29ffffff\",\n"
 "          \"iconShadow\": \"ff000000\"\n"
@@ -4997,7 +4997,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xe05deb51:  numBytes = 7326; return logov2_png;
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
-        case 0x41b35b05:  numBytes = 3297; return colourSchemes_json;
+        case 0x41b35b05:  numBytes = 3568; return colourSchemes_json;
         case 0x25669f2b:  numBytes = 16132; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 588; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;

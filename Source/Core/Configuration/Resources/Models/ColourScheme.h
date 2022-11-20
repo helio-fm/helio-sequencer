@@ -25,13 +25,13 @@ class ColourScheme : public ConfigurationResource
 {
 public:
 
-    ColourScheme() noexcept {}
-    ColourScheme(const ColourScheme &other);
-
     using Ptr = ReferenceCountedObjectPtr<ColourScheme>;
     using ColourMap = FlatHashMap<Identifier, Colour, IdentifierHash>;
 
-    ColourScheme &operator=(const ColourScheme &other);
+    ColourScheme() = default;
+    ColourScheme(const ColourScheme &other) = default;
+
+    ColourScheme &operator=(const ColourScheme &other) = default;
     friend bool operator==(const ColourScheme &lhs, const ColourScheme &rhs);
 
     String getName() const noexcept;

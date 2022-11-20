@@ -19,25 +19,6 @@
 #include "ColourScheme.h"
 #include "SerializationKeys.h"
 
-ColourScheme::ColourScheme(const ColourScheme &other)
-{
-    // Not the best solution but good enough for the simple class like this;
-    operator=(other);
-}
-
-ColourScheme &ColourScheme::operator=(const ColourScheme &other)
-{
-    this->name = other.name;
-    this->colours.clear();
-
-    for (const auto &i : other.colours)
-    {
-        this->colours[i.first] = i.second;
-    }
-
-    return *this;
-}
-
 bool operator==(const ColourScheme &lhs, const ColourScheme &rhs)
 {
     for (const auto &i : lhs.colours)

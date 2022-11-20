@@ -288,8 +288,6 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
             width, height + cornerSize, cornerSize, cornerSize,
             true, true, true, true);
 
-        const auto mainAlpha = baseColour.getFloatAlpha();
-
         g.setGradientFill(ColourGradient(baseColour.darker(0.1f), 0.0f, height / 2 - 2,
                                          baseColour.darker(0.2f), 0.0f, height / 2 + 2, false));
         g.fillPath(outline);
@@ -300,10 +298,12 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
             g.fillPath(outline);
         }
 
-        g.setColour(Colours::white.withAlpha(mainAlpha));
+        constexpr auto outlineAlpha = 0.1f;
+
+        g.setColour(Colours::white.withAlpha(outlineAlpha));
         g.strokePath(outline, PathStrokeType(1.0f));
 
-        g.setColour(Colours::black.withAlpha(0.5f * mainAlpha));
+        g.setColour(Colours::black.withAlpha(0.5f * outlineAlpha));
         g.strokePath(outline, PathStrokeType(1.0f),
                      AffineTransform::translation(0.0f, 1.0f).scaled(1.0f, (height + 2.0f) / height));
     }

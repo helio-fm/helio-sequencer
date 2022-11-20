@@ -32,12 +32,22 @@ ColourScheme::Ptr ColourSchemesCollection::getCurrent() const
         return cs;
     }
 
+    // likely the config file is missing here, meaning the app runs for the first time:
+    for (const auto scheme : this->getAll())
+    {
+        if (scheme->getName().startsWith("Helio Theme v2"))
+        {
+            return scheme;
+        }
+    }
+
+    jassertfalse;
+
     if (const auto firstScheme = this->getAll().getFirst())
     {
         return firstScheme;
     }
 
-    jassertfalse;
     return { new ColourScheme() };
 }
 
