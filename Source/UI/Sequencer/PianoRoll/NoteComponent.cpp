@@ -262,6 +262,10 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             selectedNote->startTuning();
         }
     }
+    else if (e.mods.isMiddleButtonDown())    //only tune upon ctrl + middle click drag (helps with drag panning)
+    {
+        this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
+    }
 }
 
 static int lastDeltaKey = 0;
@@ -287,7 +291,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    //Bug Fifx. Moved deletion handling to NoteComponent::mouseEnter instead. 
+    //Bug Fix. Moved deletion handling to NoteComponent::mouseEnter instead.
 
     const auto &selection = this->roll.getLassoSelection();
 
@@ -493,6 +497,14 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         }
 
         SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
+    }
+
+    //if we're not doing any of the above then we should resort to dragging (but only if we're trying to)
+    if (e.mods.isMiddleButtonDown() && !e.mods.isAnyModifierKeyDown())
+    {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
+        this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
+        return;
     }
 }
 

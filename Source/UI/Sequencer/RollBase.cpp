@@ -1103,6 +1103,7 @@ void RollBase::mouseDown(const MouseEvent &e)
     }
     else if (this->isViewportDragEvent(e))
     {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);  //set drag cursor immediately upon mousing down - RPM
         this->resetDraggingAnchors();
     }
     else if (this->isViewportZoomEvent(e))
