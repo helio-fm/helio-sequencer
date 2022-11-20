@@ -97,6 +97,20 @@ void NoteComponent::modifierKeysChanged(const ModifierKeys &modifiers)
     this->roll.modifierKeysChanged(modifiers);
 }
 
+void NoteComponent::mouseEnter(const MouseEvent &e) //added mouse enter event - RPM
+{
+    //notes are now drag-deleted ONLY if they are entering the note for the first time. fixes bug causing occational accidental deletion.
+    if (e.mods.isRightButtonDown() &&
+        (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
+         this->roll.getEditMode().isMode(RollEditMode::drawMode)))
+    {
+        // see the comment above PianoRoll::startErasingEvents for
+        // the explanation of how erasing events works and why:
+        this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
+        return;
+    }
+}
+
 void NoteComponent::mouseMove(const MouseEvent &e)
 {
     if (this->shouldGoQuickSelectLayerMode(e.mods))
@@ -273,12 +287,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isRightButtonDown() &&
-        this->roll.getEditMode().isMode(RollEditMode::eraseMode))
-    {
-        this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
-        return;
-    }
+    //Bug Fifx. Moved deletion handling to NoteComponent::mouseEnter instead. 
 
     const auto &selection = this->roll.getLassoSelection();
 
