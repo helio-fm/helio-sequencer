@@ -72,7 +72,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
 
                 jassert(!this->project.getTransport().isPlaying());
                 this->project.getTransport().seekToBeat(annotation->getBeat());
-                roll->scrollToPlayheadPosition();
+                roll->scrollToPlayheadPositionIfNeeded();
                 return true;
             };
 
@@ -109,7 +109,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
 
                 jassert(!this->project.getTransport().isPlaying());
                 this->project.getTransport().seekToBeat(event->getBeat());
-                roll->scrollToPlayheadPosition();
+                roll->scrollToPlayheadPositionIfNeeded();
                 return true;
             };
 
@@ -145,7 +145,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
 
                 jassert(!this->project.getTransport().isPlaying());
                 this->project.getTransport().seekToBeat(event->getBeat());
-                roll->scrollToPlayheadPosition();
+                roll->scrollToPlayheadPositionIfNeeded();
                 return true;
             };
 

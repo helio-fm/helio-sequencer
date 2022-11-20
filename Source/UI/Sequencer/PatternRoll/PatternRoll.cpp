@@ -833,7 +833,7 @@ void PatternRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::ShowNewTrackPanel:
         // inserting at the playhead position:
-        this->showNewTrackMenu(this->lastTransportBeat.get());
+        this->showNewTrackMenu(this->lastPlayheadBeat.get());
         break;
     case CommandIDs::PatternsGroupByName:
         this->deselectAll();

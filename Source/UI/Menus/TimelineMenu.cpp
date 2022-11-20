@@ -111,7 +111,7 @@ TimelineMenu::TimelineMenu(ProjectNode &parentProject) :
                             if (auto *ae = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i)))
                             {
                                 this->project.getTransport().seekToBeat(ae->getBeat());
-                                roll->scrollToPlayheadPosition();
+                                roll->scrollToPlayheadPositionIfNeeded();
                             }
                         }
                     }));

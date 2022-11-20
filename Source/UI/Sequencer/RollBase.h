@@ -99,7 +99,6 @@ public:
     virtual void selectAll() = 0;
     virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
     
-    void scrollToPlayheadPosition();
     float getPositionForNewTimelineEvent() const;
     void insertAnnotationWithinScreen(const String &annotation);
     void insertTimeSignatureWithinScreen(int numerator, int denominator);
@@ -218,6 +217,7 @@ public:
     
     void triggerBatchRepaintFor(FloatBoundsComponent *target);
 
+    bool scrollToPlayheadPositionIfNeeded();
     void startFollowingPlayhead();
     void stopFollowingPlayhead();
     
@@ -311,11 +311,11 @@ protected:
     void onRecord() override;
     void onStop() override;
 
-    Atomic<float> lastTransportBeat = 0.f; // modified from the player thread
+    Atomic<float> lastPlayheadBeat = 0.f; // modified from the player thread
 
-    Atomic<double> playheadOffset = 0.0;
-    bool shouldFollowPlayhead = false;
-    int scrollToPlayheadTimerMs = 7;
+    enum class PlayheadFollowMode { None, Once, Always };
+    PlayheadFollowMode playheadFollowMode = PlayheadFollowMode::None;
+    int scrollToPlayheadTimerMs = 6;
 
     //===------------------------------------------------------------------===//
     // AsyncUpdater
