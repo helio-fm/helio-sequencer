@@ -64,22 +64,22 @@
         }
       },
       {
-        "name": "Grayscale",
+        "name": "Grayscale",  //edited my "grayscale" to be a bit "slicker" - RPM
         "colourMap":
         {
           "text": "fff0f0f0",
-          "primaryGradientA": "ff2d2d30",
-          "primaryGradientB": "ff333333",
-          "secondaryGradientA": "ff333333",
-          "secondaryGradientB": "ff27262f",
+          "primaryGradientA": "ff242424",   //made this slightly darker - RPM
+          "primaryGradientB": "ff242424",   
+          "secondaryGradientA": "ff242424", 
+          "secondaryGradientB": "ff242424",
           "lassoFill": "25000000",
           "lassoBorder": "ffd4d4d4",
-          "whiteKey": "ff262626",
-          "blackKey": "ff212121",
-          "beat": "bf1b1923",
-          "bar": "271b1923",
-          "row": "ff1b1923",
-          "panelFill": "25535353",
+          "whiteKey": "ff1a1a1a",   //made keys sligthly darker and with a slightly reduced contrast - RPM
+          "blackKey": "ff141414",
+          "beat": "ff3d3d3d",   //made beats and bar lines a little lighter than the piano roll. easier to see and not obtrusive - RPM
+          "bar": "ff3d3d3d",
+          "row": "ff141414",
+          "panelFill": "ff252526",
           "panelBorder": "ff585858",
           "iconBase": "29ffffff",
           "iconShadow": "ff000000"
