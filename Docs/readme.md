@@ -88,6 +88,6 @@ Minimum deployment targets are:
 * Pick the right project for your OS from the `Projects` directory and build.
 
 #### Troubleshooting
-* Be sure to clone the repository with recursive mode enabled so that the ThirdParty folder is pre-populated with the neccecary files. Alternatively, ass them yourself by going to their respecive repositories.
+* Be sure to clone the repository with recursive mode enabled so that the ThirdParty folder is pre-populated with the neccecary files. Alternatively, add them yourself by going to their respecive repositories.
 * If you experience build errors, make sure you have ALL required dependencies installed in your system.
 * If you experience the error: [‘exchange’ is not a member of ‘std’], add [#include <utility>] to JUCE/modules/juce_core/system/juce_StandardHeader.h in the appropriate place. This is an issue pending resolution with the JUCE library, and is probably not a problem with your compiler.
