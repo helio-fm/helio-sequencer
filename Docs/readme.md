@@ -86,3 +86,8 @@ Minimum deployment targets are:
   * On Windows, get ASIO SDK (which can't be redistributed in this project due to licensing restrictions, but you may use `ThirdParty/ASIO/get_asio_sdk.ps1` powershell script to download and extract the SDK source).
   * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev libc++-dev`; the makefile assumes you've set up either `export CONFIG=Debug`, `export CONFIG=Release32` or `export CONFIG=Release64` before you `make`.
 * Pick the right project for your OS from the `Projects` directory and build.
+
+#### Troubleshooting
+* Be sure to clone the repository with recursive mode enabled so that the ThirdParty folder is pre-populated with the neccecary files. Alternatively, ass them yourself by going to their respecive repositories.
+* If you experience build errors, make sure you have ALL required dependencies installed in your system.
+* If you experience the error: [‘exchange’ is not a member of ‘std’], add [#include <utility>] to JUCE/modules/juce_core/system/juce_StandardHeader.h in the appropriate place. This is an issue pending resolution with the JUCE library, and is probably not a problem with your compiler.
