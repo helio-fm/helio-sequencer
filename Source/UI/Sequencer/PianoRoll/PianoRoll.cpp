@@ -1454,7 +1454,8 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
 {
     int key = 0;
     float beat = 0.f;
-    this->getRowsColsByMousePosition(e.x, e.y, key, beat);
+    int xOffset = 5;
+    this->getRowsColsByMousePosition(e.x + xOffset, e.y, key, beat);    //Pretend the mouse is a little to the right of where it actually is. Boosts accuracy when placing notes - RPM
 
     auto *activeSequence = static_cast<PianoSequence *>(this->activeTrack->getSequence());
     activeSequence->checkpoint();
