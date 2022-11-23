@@ -1,0 +1,5 @@
+[Cppcheck]
+useSystemIncludes=true
+
+[Project]
+VersionControlSupport=kdevgit
