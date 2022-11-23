@@ -118,7 +118,7 @@ void NoteComponent::mouseMove(const MouseEvent &e)
         return;
     }
 
-    this->setMouseCursor(MouseCursor::NormalCursor);
+    this->setMouseCursor(MouseCursor::UpDownLeftRightResizeCursor); //improves click accuracy greatly
 }
 
 // "if ... static_cast" is here only so the macro can use the if's scope
@@ -128,6 +128,14 @@ void NoteComponent::mouseMove(const MouseEvent &e)
 
 void NoteComponent::mouseDown(const MouseEvent &e)
 {
+    //A naked middle click can only be a drag event. Immediately pass to RollBase.
+    //Doing this first prevents automatically switching tracks
+    if (e.mods.isMiddleButtonDown() && !e.mods.isAnyModifierKeyDown())
+    {
+        this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
+        return;
+    }
+
     if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
@@ -239,7 +247,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             }
         }
     }
-    else if (e.mods.isMiddleButtonDown())
+    else if (e.mods.isMiddleButtonDown() && e.mods.isCtrlDown())    //Tuning note now requires ctrl+middle click so as not to interfere with dragging
     {
         this->setMouseCursor(MouseCursor::UpDownResizeCursor);
         forEachSelectedNote(selection, selectedNote)
@@ -253,6 +261,14 @@ static int lastDeltaKey = 0;
 
 void NoteComponent::mouseDrag(const MouseEvent &e)
 {
+
+    //A naked middle click drag can only be a drag/pan event. Immediately pass to RollBase.
+    if (e.mods.isMiddleButtonDown() && !e.mods.isAnyModifierKeyDown())
+    {
+        this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
+        return;
+    }
+
     if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
         return;
@@ -568,6 +584,16 @@ void NoteComponent::mouseUp(const MouseEvent &e)
 
         this->setMouseCursor(MouseCursor::NormalCursor);
     }
+
+    //Set edit mode to draw upon mouseup. You would think this would
+    //best be handled from RollBase, but passing a mouseUp event to
+    //RollBase badly breaks things and causes a crash. This is because
+    //RollBase then re-triggers NoteComponent::mouseUp, which creates
+    //an infinite loop. This can be fixed by reworking the interactions
+    //between NoteComponent, PianoRoll, and RollBase, but this line
+    //sidesteps the issue.
+
+    this->roll.getEditMode().setMode(RollEditMode::drawMode);
 }
 
 void NoteComponent::mouseDoubleClick(const MouseEvent &e)
