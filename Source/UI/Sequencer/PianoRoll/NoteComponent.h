@@ -177,12 +177,12 @@ private:
 
     inline int getResizableEdge() const noexcept
     {
-        return jlimit(minResizableEdge, minResizableEdge, this->getWidth() / 8);    //changed to 'max' to 'min' because it makes more sense
+        return jlimit(minResizableEdge, maxResizableEdge, this->getWidth() / 8);
     }
 
     inline bool canResize() const noexcept
     {
-        return this->getWidth() >= (NoteComponent::maxResizableEdge * 2);
+        return this->getWidth() >= (NoteComponent::minResizableEdge * 2);   //changed to 'max' to 'min' because it makes more sense
     }
 
     inline bool isResizingOrScaling() const noexcept
