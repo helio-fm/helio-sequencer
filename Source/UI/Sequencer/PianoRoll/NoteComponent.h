@@ -172,12 +172,12 @@ private:
     static constexpr auto maxDragPolyphony = 1;
 #endif
     
-    static constexpr auto minResizableEdge = 4;
+    static constexpr auto minResizableEdge = 1;
     static constexpr auto maxResizableEdge = 12;
 
     inline int getResizableEdge() const noexcept
     {
-        return jlimit(minResizableEdge, maxResizableEdge, this->getWidth() / 8);
+        return jlimit(minResizableEdge, minResizableEdge, this->getWidth() / 8);    //changed to 'max' to 'min' because it makes more sense
     }
 
     inline bool canResize() const noexcept
