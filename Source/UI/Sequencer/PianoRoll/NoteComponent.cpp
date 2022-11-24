@@ -176,6 +176,12 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             this->stopSound();
         }
 
+        if (selection.getNumSelected() == 1)    //trying to do this with multiple notes selected would lead to confusing behavior - RPM
+        {
+            this->getRoll().setDefaultNoteLength(this->getLength());
+            this->getRoll().setDefaultNoteVolume(this->getVelocity());
+        }
+
         const auto resizeEdge = this->getResizableEdge();
         if (this->canResize() && e.x >= (this->getWidth() - resizeEdge))
         {
