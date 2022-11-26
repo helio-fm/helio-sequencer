@@ -172,7 +172,7 @@ private:
     static constexpr auto maxDragPolyphony = 1;
 #endif
     
-    static constexpr auto minResizableEdge = 4;
+    static constexpr auto minResizableEdge = 1;
     static constexpr auto maxResizableEdge = 12;
 
     inline int getResizableEdge() const noexcept
@@ -182,7 +182,7 @@ private:
 
     inline bool canResize() const noexcept
     {
-        return this->getWidth() >= (NoteComponent::maxResizableEdge * 2);
+        return this->getWidth() >= (NoteComponent::minResizableEdge * 2);   //changed to 'max' to 'min' because it makes more sense
     }
 
     inline bool isResizingOrScaling() const noexcept
