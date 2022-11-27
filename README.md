@@ -22,11 +22,10 @@ Check out the documentation to get started: [docs.helio.fm](https://docs.helio.f
 
 [Basic build instructions](Docs/readme.md#building-from-source)
 
-||Linux|Windows|macOS|Android|
-|---|---|---|---|---|
-|master|[![Linux Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/2?use_travis_com=true)](https://travis-ci.com/helio-fm/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=master)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/3?use_travis_com=true)](https://travis-ci.com/helio-fm/helio-workstation)|[![Android Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/master/4?use_travis_com=true)](https://travis-ci.com/helio-fm/helio-workstation)|
-|develop|[![Linux Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/2?use_travis_com=true)](https://travis-ci.com/helio-fm/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=develop)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![macOS Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/3?use_travis_com=true)](https://travis-ci.com/helio-fm/helio-workstation)|[![Android Build Status](https://travis-matrix-badges.herokuapp.com/repos/helio-fm/helio-workstation/branches/develop/4?use_travis_com=true)](https://travis-ci.com/helio-fm/helio-workstation)|
-
+||AppVeyor|Travis CI|
+|---|---|---|
+|master|[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=master)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![Travis CI Build Status](https://app.travis-ci.com/helio-fm/helio-workstation.svg?branch=master)](https://travis-ci.com/helio-fm/helio-workstation)|
+|develop|[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-workstation?svg=true&branch=develop)](https://ci.appveyor.com/project/helio-fm/helio-workstation)|[![Travis CI Build Status](https://app.travis-ci.com/helio-fm/helio-workstation.svg?branch=develop)](https://travis-ci.com/helio-fm/helio-workstation)|
 
 ### Packaging status
 
