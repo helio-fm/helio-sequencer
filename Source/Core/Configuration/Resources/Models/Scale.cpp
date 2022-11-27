@@ -275,8 +275,7 @@ int Scale::getDifferenceFrom(const Scale::Ptr other) const
 
 String Scale::getResourceId() const noexcept
 {
-    // Assumed to be unique:
-    return this->name;
+    return this->name + String(this->basePeriod);
 }
 
 Identifier Scale::getResourceType() const noexcept
