@@ -2185,6 +2185,10 @@ static const unsigned char temp_binary_data_98[] =
 "        \"map\": \"0:0/14,21+,0/15,21+,0/16,21+,0/1,21+,0/2,21+,0/3,21+,0/4,21+,0/5,21+,0/6,21+,0/7,21+,0/8,22+\"\n"
 "      },\n"
 "      {\n"
+"        \"name\": \"Pianoteq 26-edo multi-channel\",\n"
+"        \"map\": \"0:0/14,25+,0/15,25+,0/16,25+,0/1,25+,0/2,25+,0/3,25+,0/4,25+,0/5,25+,0/6,25+,0/7,25+,0/8,26+\"\n"
+"      },\n"
+"      {\n"
 "        \"name\": \"Pianoteq 31-edo multi-channel\",\n"
 "        \"map\": \"0:0/14,30+,0/15,30+,0/16,30+,0/1,30+,0/2,30+,0/3,30+,0/4,30+,0/5,30+,0/6,30+,0/7,30+,0/8,31+\"\n"
 "      }\n"
@@ -2329,6 +2333,23 @@ static const unsigned char temp_binary_data_100[] =
 "      { \"period\": 22, \"name\": \"Porcupine bright minor\", \"intervals\": \"4 2 4 3 3 3 3\" },\n"
 "      { \"period\": 22, \"name\": \"Porcupine dark minor\", \"intervals\": \"4 2 3 4 3 3 3\" },\n"
 "\n"
+"      // 26 edo scales; home-cooked approximations of 12-edo\n"
+"      { \"period\": 26, \"name\": \"Ionian\", \"intervals\": \"4 5 2 4 5 4 2\" },\n"
+"      { \"period\": 26, \"name\": \"Aeolian\", \"intervals\": \"4 3 4 4 2 5 4\" },\n"
+"      { \"period\": 26, \"name\": \"Lydian\", \"intervals\": \"4 5 4 2 5 4 2\" },\n"
+"      { \"period\": 26, \"name\": \"Mixolydian\", \"intervals\": \"4 5 2 4 5 2 4\" },\n"
+"      { \"period\": 26, \"name\": \"Dorian\", \"intervals\": \"4 3 4 4 5 2 4\" },\n"
+"      { \"period\": 26, \"name\": \"Phrygian\", \"intervals\": \"2 5 4 4 2 5 4\" },\n"
+"      { \"period\": 26, \"name\": \"Locrian\", \"intervals\": \"2 5 4 2 4 5 4\" },\n"
+"      { \"period\": 26, \"name\": \"Melodic Major\", \"intervals\": \"4 5 2 4 2 5 4\" },\n"
+"      { \"period\": 26, \"name\": \"Melodic Minor\", \"intervals\": \"4 3 4 4 5 4 2\" },\n"
+"      { \"period\": 26, \"name\": \"Harmonic Major\", \"intervals\": \"4 5 2 4 2 7 2\" },\n"
+"      { \"period\": 26, \"name\": \"Harmonic Minor\", \"intervals\": \"4 3 4 4 2 7 2\" },\n"
+"      { \"period\": 26, \"name\": \"Neapolitan Major\", \"intervals\": \"2 5 4 4 5 4 2\" },\n"
+"      { \"period\": 26, \"name\": \"Neapolitan Minor\", \"intervals\": \"2 5 4 4 2 7 2\" },\n"
+"      { \"period\": 26, \"name\": \"Romanian Major\", \"intervals\": \"2 7 4 2 5 2 4\" },\n"
+"      { \"period\": 26, \"name\": \"Romanian Minor\", \"intervals\": \"4 3 6 2 5 2 4\" },\n"
+"\n"
 "      // 31 edo scales; source: https://en.xen.wiki/w/31edo\n"
 "      { \"period\": 31, \"name\": \"Major\", \"intervals\": \"5 5 3 5 5 5 3\" },\n"
 "      { \"period\": 31, \"name\": \"Natural Minor\", \"intervals\": \"5 3 5 5 3 5 5\" },\n"
@@ -2401,6 +2422,13 @@ static const unsigned char temp_binary_data_101[] =
 "        \"period\": \"C ^C vC# C# D Eb ^Eb vE E F Gb ^Gb vG G Ab ^Ab vA A Bb ^Bb vB B\",\n"
 "        \"highlighting\": \"3 1 3 1 3 1 1 3 1 3 1 1\",\n"
 "        \"chromaticMap\": \"3 1 3 1 3 1 1 3 1 3 1 1\"\n"
+"      },\n"
+"      {\n"
+"        \"id\": \"26edo\",\n"
+"        \"name\": \"26 equal temperament\",\n"
+"        \"period\": \"D D# Ebb Eb E E# Fb F F# Fx Gb G G# Gx Ab A A# Bbb Bb B B# Cb C C# Cx Db\",\n"
+"        \"highlighting\": \"2 2 3 1 3 2 2 2 2 3 2 2\",\n"
+"        \"chromaticMap\": \"2 2 3 1 3 2 2 2 2 3 2 2\"\n"
 "      },\n"
 "      {\n"
 "        \"id\": \"31edo\",\n"
@@ -4999,10 +5027,10 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 3568; return colourSchemes_json;
         case 0x25669f2b:  numBytes = 16132; return hotkeySchemes_json;
-        case 0xfd7446db:  numBytes = 588; return keyboardMappings_json;
+        case 0xfd7446db:  numBytes = 764; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
-        case 0x048f5efe:  numBytes = 9400; return scales_json;
-        case 0x77719112:  numBytes = 1091; return temperaments_json;
+        case 0x048f5efe:  numBytes = 10616; return scales_json;
+        case 0x77719112:  numBytes = 1366; return temperaments_json;
         case 0xf8655f25:  numBytes = 177489; return translations_json;
         default: break;
     }

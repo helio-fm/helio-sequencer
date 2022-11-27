@@ -77,6 +77,23 @@
       { "period": 22, "name": "Porcupine bright minor", "intervals": "4 2 4 3 3 3 3" },
       { "period": 22, "name": "Porcupine dark minor", "intervals": "4 2 3 4 3 3 3" },
 
+      // 26 edo scales; home-cooked approximations of 12-edo
+      { "period": 26, "name": "Ionian", "intervals": "4 5 2 4 5 4 2" },
+      { "period": 26, "name": "Aeolian", "intervals": "4 3 4 4 2 5 4" },
+      { "period": 26, "name": "Lydian", "intervals": "4 5 4 2 5 4 2" },
+      { "period": 26, "name": "Mixolydian", "intervals": "4 5 2 4 5 2 4" },
+      { "period": 26, "name": "Dorian", "intervals": "4 3 4 4 5 2 4" },
+      { "period": 26, "name": "Phrygian", "intervals": "2 5 4 4 2 5 4" },
+      { "period": 26, "name": "Locrian", "intervals": "2 5 4 2 4 5 4" },
+      { "period": 26, "name": "Melodic Major", "intervals": "4 5 2 4 2 5 4" },
+      { "period": 26, "name": "Melodic Minor", "intervals": "4 3 4 4 5 4 2" },
+      { "period": 26, "name": "Harmonic Major", "intervals": "4 5 2 4 2 7 2" },
+      { "period": 26, "name": "Harmonic Minor", "intervals": "4 3 4 4 2 7 2" },
+      { "period": 26, "name": "Neapolitan Major", "intervals": "2 5 4 4 5 4 2" },
+      { "period": 26, "name": "Neapolitan Minor", "intervals": "2 5 4 4 2 7 2" },
+      { "period": 26, "name": "Romanian Major", "intervals": "2 7 4 2 5 2 4" },
+      { "period": 26, "name": "Romanian Minor", "intervals": "4 3 6 2 5 2 4" },
+
       // 31 edo scales; source: https://en.xen.wiki/w/31edo
       { "period": 31, "name": "Major", "intervals": "5 5 3 5 5 5 3" },
       { "period": 31, "name": "Natural Minor", "intervals": "5 3 5 5 3 5 5" },
