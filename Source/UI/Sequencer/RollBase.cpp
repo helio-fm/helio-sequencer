@@ -713,16 +713,16 @@ void RollBase::computeAllSnapLines()
     const float paintStartX = float(this->viewport.getViewPositionX());
     const float paintEndX = float(paintStartX + this->viewport.getViewWidth());
 
-    const float barWidth = float(this->beatWidth * beatsPerBar);
+    const float defaultBarWidth = float(this->beatWidth * beatsPerBar);
     const float firstBar = this->firstBeat / beatsPerBar;
-    const float paintStartBar = floorf(paintStartX / barWidth + firstBar);
-    const float paintEndBar = ceilf(paintEndX / barWidth + firstBar);
+    const float paintStartBar = floorf(paintStartX / defaultBarWidth + firstBar);
+    const float paintEndBar = ceilf(paintEndX / defaultBarWidth + firstBar);
 
-    // get the number of snaps to display for this bar width,
+    // get the number of snaps to display for default bar width,
     // e.g. 2 for 64, 4 for 128, 8 for 256, etc:
-    const float nearestPowTwo = ceilf(log(barWidth) / log(2.f));
+    const float nearestPowTwo = ceilf(log(defaultBarWidth) / log(2.f));
     const float numSnaps = powf(2, jlimit(1.f, 6.f, nearestPowTwo - 5.f)); // use -4.f for twice as dense grid
-    const float snapWidth = barWidth / numSnaps;
+    const float snapWidth = defaultBarWidth / numSnaps;
 
     // in the absence of time signatures we still need defaults for the grid:
     int numerator = Globals::Defaults::timeSignatureNumerator;
@@ -750,18 +750,19 @@ void RollBase::computeAllSnapLines()
     }
 
     const float defaultMeterStartBar = defaultMeterStartBeat / beatsPerBar;
+    const float defaultMeterBarLength = float(numerator) / float(denominator);
 
     // iterate backwards from the anchor, if needed, using the single default meter
     float barWidthSum = 0.f;
     bool canDrawBarLine = false;
     auto barIterator = defaultMeterStartBar;
 
-    while (barIterator >= (paintStartBar - 1.f))
+    while (barIterator >= (paintStartBar - defaultMeterBarLength))
     {
         const float beatStep = 1.f / float(denominator);
         const float barStep = beatStep * float(numerator);
-        const float barStartX = barWidth * (barIterator - firstBar);
-        const float stepWidth = barWidth * barStep;
+        const float barStartX = defaultBarWidth * (barIterator - firstBar);
+        const float barWidth = defaultBarWidth * barStep;
 
         // when in the drawing area:
         if (barIterator <= (paintEndBar + barStep))
@@ -775,8 +776,8 @@ void RollBase::computeAllSnapLines()
             // the beat lines
             for (float j = 0.f; j < barStep; j += beatStep)
             {
-                const float beatStartX = barStartX + barWidth * j;
-                float nextBeatStartX = barStartX + barWidth * (j + beatStep);
+                const float beatStartX = barStartX + defaultBarWidth * j;
+                float nextBeatStartX = barStartX + defaultBarWidth * (j + beatStep);
 
                 // snap lines and beat lines
                 for (float k = beatStartX + snapWidth; k < (nextBeatStartX - 1); k += snapWidth)
@@ -796,7 +797,7 @@ void RollBase::computeAllSnapLines()
 
         barIterator -= barStep;
 
-        barWidthSum += stepWidth;
+        barWidthSum += barWidth;
         canDrawBarLine = barWidthSum > minBarWidth;
         barWidthSum = canDrawBarLine ? 0.f : barWidthSum;
     }
@@ -813,10 +814,10 @@ void RollBase::computeAllSnapLines()
 
         const float beatStep = 1.f / float(denominator);
         float barStep = beatStep * float(numerator);
-        const float barStartX = barWidth * (barIterator - firstBar);
-        const float stepWidth = barWidth * barStep;
+        const float barStartX = defaultBarWidth * (barIterator - firstBar);
+        const float barWidth = defaultBarWidth * barStep;
 
-        barWidthSum += stepWidth;
+        barWidthSum += barWidth;
         canDrawBarLine = barWidthSum > minBarWidth;
         barWidthSum = canDrawBarLine ? 0.f : barWidthSum;
 
@@ -833,8 +834,8 @@ void RollBase::computeAllSnapLines()
             bool lastFrame = false;
             for (float j = 0.f; j < barStep && !lastFrame; j += beatStep)
             {
-                const float beatStartX = barStartX + barWidth * j;
-                float nextBeatStartX = barStartX + barWidth * (j + beatStep);
+                const float beatStartX = barStartX + defaultBarWidth * j;
+                float nextBeatStartX = barStartX + defaultBarWidth * (j + beatStep);
 
                 // check if we have more time signatures to come
                 if (nextTsIndex < orderedTimeSignatures->size())
@@ -846,7 +847,7 @@ void RollBase::computeAllSnapLines()
                         numerator = nextSignature->getNumerator();
                         denominator = nextSignature->getDenominator();
                         barStep = (tsBar - barIterator); // i.e. incomplete bar
-                        nextBeatStartX = barStartX + barWidth * barStep;
+                        nextBeatStartX = barStartX + defaultBarWidth * barStep;
                         nextTsIndex++;
                         barWidthSum = minBarWidth; // forces to draw the next bar line
                         lastFrame = true;
@@ -870,6 +871,14 @@ void RollBase::computeAllSnapLines()
         }
 
         barIterator += barStep;
+    }
+
+    // adding the project start beat to snaps helps a lot
+    // on higher zoom levels when the project starts off-beat
+    const auto projectStartBeatX = (this->projectFirstBeat - this->firstBeat) * this->beatWidth;
+    if (projectStartBeatX > paintStartX && projectStartBeatX < paintEndX)
+    {
+        this->allSnaps.add(projectStartBeatX);
     }
 }
 
