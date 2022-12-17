@@ -53,11 +53,11 @@ public:
     {
         this->arrowPath.clear();
         this->arrowPath.startNewSubPath(float(this->getWidth() - HeadlineItemArrow::arrowWidth - 1), 0.0f);
-        this->arrowPath.lineTo(float(this->getWidth() - 2), float(this->getHeight()));
+        this->arrowPath.lineTo(float(this->getWidth() - 2.5), float(this->getHeight()));
 
         this->shadowPath.clear();
         this->shadowPath.startNewSubPath(float(this->getWidth() - HeadlineItemArrow::arrowWidth), 0.0f);
-        this->shadowPath.lineTo(float(this->getWidth() - 1), float(this->getHeight()));
+        this->shadowPath.lineTo(float(this->getWidth() - 1.5), float(this->getHeight()));
     }
 
     static constexpr auto arrowWidth = 16;
@@ -67,8 +67,8 @@ private:
     Path arrowPath;
     Path shadowPath;
 
-    const Colour arrowColour1 = Colour(0x33ffffff);
-    const Colour arrowColour2 = Colour(0x0bffffff);
+    const Colour arrowColour1 = Colour(0x30ffffff);
+    const Colour arrowColour2 = Colour(0x0dffffff);
     const Colour shadowColour1 = Colour(0x77000000);
     const Colour shadowColour2 = Colour(0x11000000);
 

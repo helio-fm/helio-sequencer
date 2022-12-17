@@ -61,26 +61,6 @@ void HelioTheme::drawNoiseWithin(Rectangle<int> bounds, Graphics &g, float alpha
     g.fillRect(bounds);
 }
 
-void HelioTheme::drawDashedRectangle(Graphics &g, const Rectangle<float> &r, const Colour &colour,
-    float dashLength, float spaceLength, float dashThickness, float cornerRadius)
-{
-    g.setColour(colour);
-    
-    Path path;
-    path.addQuadrilateral(r.getBottomRight().getX(), r.getBottomRight().getY(),
-                          r.getTopRight().getX(), r.getTopRight().getY(),
-                          r.getTopLeft().getX(), r.getTopLeft().getY(),
-                          r.getBottomLeft().getX(), r.getBottomLeft().getY());
-    
-    path = path.createPathWithRoundedCorners(cornerRadius);
-
-    static Array<float> dashes(dashLength, spaceLength);
-    PathStrokeType(dashThickness, PathStrokeType::mitered, PathStrokeType::rounded)
-    .createDashedStroke(path, path, dashes.getRawDataPointer(), dashes.size());
-    
-    g.strokePath(path, PathStrokeType(dashThickness));
-}
-
 void HelioTheme::drawFrame(Graphics &g, int width, int height,
     float lightAlphaMultiplier, float darkAlphaMultiplier)
 {
@@ -100,8 +80,6 @@ void HelioTheme::drawFrame(Graphics &g, int width, int height,
     g.fillRect(1, 2, 1, height - 4);
     g.fillRect(width - 2, 2, 1, height - 4);
 }
-
-
 
 Typeface::Ptr HelioTheme::getTypefaceForFont(const Font &font)
 {

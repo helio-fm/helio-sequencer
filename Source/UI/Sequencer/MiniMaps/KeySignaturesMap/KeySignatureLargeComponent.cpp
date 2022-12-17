@@ -21,6 +21,7 @@
 #include "ColourIDs.h"
 #include "CachedLabelImage.h"
 #include "KeySignatureLargeComponent.h"
+#include "HelioTheme.h"
 
 KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &parent,
     const KeySignatureEvent &targetEvent) :
@@ -47,17 +48,10 @@ KeySignatureLargeComponent::~KeySignatureLargeComponent() = default;
 void KeySignatureLargeComponent::paint(Graphics &g)
 {
     g.setColour(findDefaultColour(ColourIDs::Roll::headerSnaps));
-    g.fillRect(1.f, 0.f, float(this->getWidth() - 1), 3.f);
-
-    constexpr float dashLength = 8.f;
+    g.fillRect(1.f, 0.f, float(this->getWidth() - 3), 3.f);
 
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
-    for (float i = (dashLength / 2.f); i < this->getWidth(); i += (dashLength * 2.f))
-    {
-        g.fillRect(i + 2.f, 0.f, dashLength, 1.f);
-        g.fillRect(i + 1.f, 1.f, dashLength, 1.f);
-        g.fillRect(i, 2.f, dashLength, 1.f);
-    }
+    HelioTheme::drawDashedHorizontalLine<3>(g, 1.f, 0.f, float(this->getWidth() - 1), 8.f);
 }
 
 void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)

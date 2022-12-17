@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "CutPointMark.h"
 #include "ClipComponent.h"
+#include "HelioTheme.h"
 
 static inline ComponentAnimator &rootAnimator()
 {
@@ -145,11 +146,10 @@ void ClipCutPointMark::paint(Graphics &g)
     g.fillRect(w / 2 - 1, 2, 3, this->getHeight() - 3);
 
     g.setColour(this->colour.withAlpha(0.75f));
-    static constexpr int dashLength = 3;
-    for (int i = 2; i < this->getHeight() - 2; i += (dashLength * 2))
-    {
-        g.fillRect(w / 2, i, 1, dashLength);
-    }
+    HelioTheme::drawDashedVerticalLine(g,
+        2.f, 1.f,
+        float(this->getHeight() - 2),
+        3.f);
 
     g.fillRect(w / 2 - 1, 1, 3, 1);
     g.fillRect(w / 2 - 1, this->getHeight() - 1, 3, 1);

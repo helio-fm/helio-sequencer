@@ -89,13 +89,7 @@ public:
         g.fillRect(1, 1, this->getWidth() - 2, 3);
 
         g.setColour(findDefaultColour(ColourIDs::BackgroundA::fill).darker(0.015f));
-        constexpr float dashLength = 8.f;
-        for (float i = dashLength - 2.f; i < this->getWidth(); i += (dashLength * 2.f))
-        {
-            g.fillRect(i + 2.f, 1.f, dashLength, 1.f);
-            g.fillRect(i + 1.f, 2.f, dashLength, 1.f);
-            g.fillRect(i, 3.f, dashLength, 1.f);
-        }
+        HelioTheme::drawDashedHorizontalLine<3>(g, 4.f, 1.f, float(this->getWidth() - 4), 8.f);
     }
 
 private:

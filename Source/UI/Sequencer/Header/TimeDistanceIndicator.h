@@ -18,13 +18,13 @@
 #pragma once
 
 #include "ColourIDs.h"
+#include "HelioTheme.h"
 
 class TimeDistanceIndicator final : public Component, private Timer
 {
 public:
 
-    TimeDistanceIndicator() :
-        colour(findDefaultColour(ColourIDs::RollHeader::timeDistance))
+    TimeDistanceIndicator()
     {
         this->timeLabel = make<Label>();
         this->addAndMakeVisible(this->timeLabel.get());
@@ -62,14 +62,7 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(this->colour);
-
-        constexpr auto dashLength = 8;
-        for (int i = dashLength; i < this->getWidth() - dashLength; i += dashLength * 2)
-        {
-            g.fillRect(i + 1, 0, dashLength, 1); // looks fancier)
-            g.fillRect(i, 1, dashLength, 2);
-            //g.fillRect(i, 0, dashLength, 3);
-        }
+        HelioTheme::drawDashedHorizontalLine<2>(g, 1.f, 0.f, float(this->getWidth() - 1), 8.f);
     }
 
     void resized() override
@@ -99,16 +92,16 @@ private:
         }
     }
 
-    const Colour colour;
+    const Colour colour = findDefaultColour(ColourIDs::RollHeader::timeDistance);
 
     double startAbsPosition = 0.0;
     double endAbsPosition = 0.0;
 
     void updateBounds()
     {
-        const int startX = int(double(this->getParentWidth()) * this->startAbsPosition);
-        const int endX = int(double(this->getParentWidth()) * this->endAbsPosition);
-        this->setBounds(startX, this->getY(), (endX - startX), this->getHeight());
+        const int startX = int(round(double(this->getParentWidth()) * this->startAbsPosition));
+        const int endX = int(round(double(this->getParentWidth()) * this->endAbsPosition));
+        this->setBounds(startX + 1, this->getY(), endX - startX, this->getHeight());
     }
 
     UniquePointer<Label> timeLabel;

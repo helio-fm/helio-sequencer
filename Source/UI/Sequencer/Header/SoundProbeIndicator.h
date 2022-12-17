@@ -57,12 +57,6 @@ public:
         g.fillRect(2, 1, 1, this->getHeight());
 
         g.setColour(this->colour);
-        //constexpr auto dashLength = 8;
-        //for (int i = dashLength - 2; i < this->getHeight(); i += dashLength * 2)
-        //{
-        //    g.fillRect(0, i, 2, dashLength);
-        //}
-
         g.fillRect(0, 1, 2, this->getHeight());
     }
 
@@ -85,8 +79,8 @@ private:
 
     void updateBounds()
     {
-        const int x = int(double(this->getParentWidth()) * this->absPosition -
-            double(this->getWidth()) / 2.0 + 1.5);
+        const int x = int(round(double(this->getParentWidth()) *
+            this->absPosition - double(this->getWidth()) / 2.0) + 1.f);
 
         this->setBounds(x, 0, this->getWidth(), this->getParentHeight());
     }

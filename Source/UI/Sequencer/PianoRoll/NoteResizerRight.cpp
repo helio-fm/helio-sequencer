@@ -23,6 +23,7 @@
 #include "PianoSequence.h"
 #include "SequencerOperations.h"
 #include "NoteComponent.h"
+#include "HelioTheme.h"
 
 NoteResizerRight::NoteResizerRight(RollBase &parentRoll) : roll(parentRoll)
 {
@@ -65,12 +66,11 @@ void NoteResizerRight::paint(Graphics &g)
     g.setColour(this->lineColour);
     g.strokePath(this->draggerShape, PathStrokeType(1.f));
 
-    static constexpr int dashLength = 8;
-    for (int i = NoteResizerRight::draggerSize;
-        i < this->getHeight() - 1; i += (dashLength * 2))
-    {
-        g.fillRect(0, i, 1, dashLength);
-    }
+    HelioTheme::drawDashedVerticalLine(g,
+        0.f,
+        NoteResizerRight::draggerSize + 1.f,
+        float(this->getHeight() - 1),
+        8.f);
 }
 
 bool NoteResizerRight::hitTest(int x, int y)

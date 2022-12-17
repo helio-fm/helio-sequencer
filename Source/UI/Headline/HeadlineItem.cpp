@@ -42,21 +42,14 @@ public:
 
     void paint(Graphics &g) override
     {
-        static constexpr auto dashLength = 8;
-        static constexpr auto s = dashLength - 2;
-        const auto width = this->getWidth() - s;
-        const auto w = width - (width % dashLength);
+        const auto w = float(this->getWidth() - 4);
 
         g.setColour(this->dark);
-        g.fillRect(s + 1, 1, w, 1);
-        g.fillRect(s, 2, w, 1);
+        g.fillRect(1.f, 1.f, w - 2.f, 1.f);
+        g.fillRect(0.f, 2.f, w, 1.f);
 
         g.setColour(this->light);
-        for (int i = s; i < w; i += (dashLength * 2))
-        {
-            g.fillRect(i + 1, 1, dashLength, 1);
-            g.fillRect(i, 2, dashLength, 1);
-        }
+        HelioTheme::drawDashedHorizontalLine<2>(g, 0.f, 1.f, w, 8.f);
     }
 
     const Colour dark = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f);

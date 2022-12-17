@@ -104,25 +104,7 @@ void SelectionComponent::paint(Graphics &g)
     g.fillRect(this->getLocalBounds());
 
     g.setColour(this->currentOutline);
-    static constexpr int dashLength = 4;
-
-    for (int i = 1; i < this->getWidth() - 1; i += (dashLength * 2))
-    {
-        g.fillRect(i, 0, dashLength, 1);
-        g.fillRect(i, this->getHeight() - 1, dashLength, 1);
-    }
-
-    for (int i = 1; i < this->getHeight() - 1; i += (dashLength * 2))
-    {
-        g.fillRect(0, i, 1, dashLength);
-        g.fillRect(this->getWidth() - 1, i, 1, dashLength);
-    }
-
-    //g.fillRect(1, 0, this->getWidth() - 2, 1);
-    //g.fillRect(1, this->getHeight() - 1, this->getWidth() - 2, 1);
-
-    //g.fillRect(0, 1, 1, this->getHeight() - 2);
-    //g.fillRect(this->getWidth() - 1, 1, 1, this->getHeight() - 2);
+    HelioTheme::drawDashedRectangle(g, this->getLocalBounds());
 }
 
 const Point<double> SelectionComponent::getParentSize() const

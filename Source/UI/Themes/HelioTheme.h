@@ -36,10 +36,90 @@ public:
     static void drawNoise(Component *target, Graphics &g, float alphaMultiply = 1.f);
     static void drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply = 1.f);
     static void drawNoiseWithin(Rectangle<int> bounds, Graphics &g, float alphaMultiply = 1.f);
-    static void drawDashedRectangle(Graphics &g,
-        const Rectangle<float> &rectangle, const Colour &colour,
-        float dashLength = 5.f, float spaceLength = 7.5,
-        float dashThickness = 1.f, float cornerRadius = 5.f);
+
+    inline static void drawDashedRectangle(Graphics &g, const Rectangle<int> &area, int dashLength = 4)
+    {
+        for (int i = area.getX() + 1; i < area.getWidth() - 1; i += (dashLength * 2))
+        {
+            g.fillRect(i, area.getY(), dashLength, 1);
+            g.fillRect(i, area.getHeight() - 1, dashLength, 1);
+        }
+
+        for (int i = area.getY() + 1; i < area.getHeight() - 1; i += (dashLength * 2))
+        {
+            g.fillRect(area.getX(), i, 1, dashLength);
+            g.fillRect(area.getWidth() - 1, i, 1, dashLength);
+        }
+    }
+
+    template <int thickness = 1>
+    inline static void drawDashedHorizontalLine(Graphics &g, float x, float y, float width, float dashLength = 4.f);
+
+    template <>
+    inline static void drawDashedHorizontalLine<1>(Graphics &g, float x, float y, float width, float dashLength)
+    {
+        for (; x < width - dashLength; x += dashLength * 2.f)
+        {
+            g.fillRect(x, y, dashLength, 1.f);
+        }
+
+        if (width > dashLength)
+        {
+            g.fillRect(x, y, jmax(0.f, 1.f + width - x), 1.f);
+        }
+    }
+
+    template <>
+    inline static void drawDashedHorizontalLine<2>(Graphics &g, float x, float y, float width, float dashLength)
+    {
+        for (; x < width - dashLength; x += dashLength * 2.f)
+        {
+            g.fillRect(x + 1.f, y, dashLength, 1.f);
+            g.fillRect(x, y + 1.f, dashLength, 1.f);
+        }
+
+        if (width > dashLength)
+        {
+            g.fillRect(x + 1.f, y, jmax(0.f, 1.f + width - x - 2.f), 1.f);
+            g.fillRect(x, y + 1.f, jmax(0.f, 1.f + width - x), 1.f);
+        }
+    }
+
+    template <>
+    inline static void drawDashedHorizontalLine<3>(Graphics &g, float x, float y, float width, float dashLength)
+    {
+        for (; x < width - dashLength; x += dashLength * 2.f)
+        {
+            g.fillRect(x + 2.f, y, dashLength, 1.f);
+            g.fillRect(x + 1.f, y + 1.f, dashLength, 1.f);
+            g.fillRect(x, y + 2.f, dashLength, 1.f);
+        }
+
+        if (width > dashLength)
+        {
+            g.fillRect(x + 2.f, y, jmax(0.f, 1.f + width - x - 4.f), 1.f);
+            g.fillRect(x + 1.f, y + 1.f, jmax(0.f, 1.f + width - x - 2.f), 1.f);
+            g.fillRect(x, y + 2.f, jmax(0.f, 1.f + width - x), 1.f);
+        }
+    }
+
+    template <int thickness = 1>
+    inline static void drawDashedVerticalLine(Graphics &g, float x, float y, float height, float dashLength = 4.f);
+
+    template <>
+    inline static void drawDashedVerticalLine<1>(Graphics &g, float x, float y, float height, float dashLength)
+    {
+        for (; y < height - dashLength; y += dashLength * 2.f)
+        {
+            g.fillRect(x, y, 1.f, dashLength);
+        }
+
+        if (height > dashLength)
+        {
+            g.fillRect(x, y, 1.f, jmax(0.f, 1.f + height - y));
+        }
+    }
+
     void drawStretchableLayoutResizerBar(Graphics &g,
             int /*w*/, int /*h*/, bool /*isVerticalBar*/,
             bool isMouseOver, bool isMouseDragging) override;

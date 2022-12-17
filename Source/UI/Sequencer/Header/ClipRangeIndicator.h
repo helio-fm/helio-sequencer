@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "HelioTheme.h"
+
 class ClipRangeIndicator : public Component
 {
 public:
@@ -80,17 +82,6 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(this->paintColour);
-
-        float i = 0.f;
-        constexpr float dashLength = 4.f;
-        for (; i < this->getWidth() - dashLength; i += dashLength * 2.f)
-        {
-            g.fillRect(i, 0.f, dashLength, 1.f);
-        }
-
-        if (this->getWidth() > dashLength)
-        {
-            g.fillRect(i, 0.f, jmax(0.f, this->getWidth() - i), 1.f);
-        }
+        HelioTheme::drawDashedHorizontalLine(g, 1.f, 0.f, float(this->getWidth() - 1));
     }
 };
