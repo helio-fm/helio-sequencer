@@ -20,9 +20,9 @@
 #include "Workspace.h"
 #include "AudioCore.h"
 
-RendererThread::RendererThread(Transport &parentTransport) :
+RendererThread::RendererThread(Transport &transport) :
     Thread("RendererThread"),
-    transport(parentTransport) {}
+    transport(transport) {}
 
 RendererThread::~RendererThread()
 {
@@ -122,7 +122,6 @@ struct RenderBuffer final
 
 void RendererThread::run()
 {
-    // step 0. init.
     auto sequences = this->transport.buildPlaybackCache(false);
     constexpr auto bufferSize = 512;
 
@@ -132,12 +131,10 @@ void RendererThread::run()
     const double sampleRate = sequences.getSampleRate();
     const double totalTimeMs = this->context->totalTimeMs;
     const double msPerQuarter = this->context->startBeatTempo;
+    const double totalFrames = totalTimeMs / 1000.0 * sampleRate;
     double secPerQuarter = msPerQuarter / 1000.0;
 
-    double currentFrame = 0.0;
-    const double lastFrame = totalTimeMs / 1000.0 * sampleRate;
-
-    // step 1. create a list of unique instruments with audio buffers for them.
+    // create a list of unique instruments with audio buffers for them
     OwnedArray<RenderBuffer> subBuffers;
     Array<Instrument *> uniqueInstruments;
     uniqueInstruments.addArray(sequences.getUniqueInstruments());
@@ -152,7 +149,7 @@ void RendererThread::run()
         //DBG("Adding instrument: " + String(instrument->getName()));
     }
 
-    // step 2. release resources, prepare to play, etc.
+    // release resources, prepare to play, etc
     for (auto *subBuffer : subBuffers)
     {
         auto *graph = subBuffer->instrument->getProcessorGraph();
@@ -166,27 +163,39 @@ void RendererThread::run()
     // let the processor graphs handle their async updates
     Thread::sleep(200);
 
-    // step 3. render loop itself.
+    // the render loop itself
     sequences.seekToStart();
     
     CachedMidiMessage nextMessage;
     bool hasNextMessage = sequences.getNextMessage(nextMessage);
-    jassert(hasNextMessage);
+    if (!hasNextMessage)
+    {
+        jassertfalse;
+        return;
+    }
     
     // TODO: add double precision rendering someday (for processor graphs who support it)
     AudioBuffer<float> mixingBuffer(numOutChannels, bufferSize);
     
-    double lastEventTick = 0.0;
-    double prevEventTimeStamp = 0.0;
-    double nextEventTickDelta = (nextMessage.message.getTimeStamp() - prevEventTimeStamp) * secPerQuarter;
-    double nextEventTick = lastEventTick + nextEventTickDelta;
+    const auto firstEventTimestamp = nextMessage.message.getTimeStamp();
 
-    int messageFrame = int((nextEventTick * sampleRate) - currentFrame);
+    double prevEventTimeStamp = firstEventTimestamp;
+    double prevEventTick = firstEventTimestamp * secPerQuarter;
+    double nextEventTick = prevEventTick;
+    double nextEventTickDelta = 0.0;
 
-    // And here we go: send MidiStart
+    const double firstFrame = prevEventTick * sampleRate;
+    const double lastFrame = firstFrame + totalFrames;
+
+    double currentFrame = firstFrame;
+    int messageFrame = 0;
+
+    // send MidiStart to everyone
+    auto midiStart = MidiMessage::midiStart();
+    midiStart.setTimeStamp(firstEventTimestamp);
     for (auto *subBuffer : subBuffers)
     {
-        subBuffer->midiBuffer.addEvent(MidiMessage::midiStart(), messageFrame);
+        subBuffer->midiBuffer.addEvent(midiStart, messageFrame);
     }
 
     while (currentFrame < lastFrame)
@@ -196,18 +205,19 @@ void RendererThread::run()
             break;
         }
         
-        // step 3a. fill up the midi buffers.
+        // fill up the midi buffers
         while (hasNextMessage &&
-               ( (nextEventTick * sampleRate) >= currentFrame &&
-                 (nextEventTick * sampleRate) < (currentFrame + bufferSize) ))
+            (nextEventTick * sampleRate) >= currentFrame &&
+            (nextEventTick * sampleRate) < (currentFrame + bufferSize))
         {
+            // basically a sample number, which needs to be in range [0 .. bufferSize)
             messageFrame = int((nextEventTick * sampleRate) - currentFrame);
 
             if (nextMessage.message.isTempoMetaEvent())
             {
                 secPerQuarter = nextMessage.message.getTempoSecondsPerQuarterNote();
 
-                // Sends this to everybody (need to do that for drum-machines) - TODO test
+                // send this to everybody (need to do that for drum-machines) - TODO test
                 for (auto *subBuffer : subBuffers)
                 {
                     subBuffer->midiBuffer.addEvent(nextMessage.message, messageFrame);
@@ -219,36 +229,33 @@ void RendererThread::run()
                 {
                     if (nextMessage.instrument == subBuffer->instrument)
                     {
-                        //DBG("Adding message with frame " + String(messageFrame));
                         subBuffer->midiBuffer.addEvent(nextMessage.message, messageFrame);
                     }
                 }
             }
 
-            lastEventTick += nextEventTickDelta;
+            prevEventTick += nextEventTickDelta;
             prevEventTimeStamp = nextMessage.message.getTimeStamp();
             
             hasNextMessage = sequences.getNextMessage(nextMessage);
             nextEventTickDelta = (nextMessage.message.getTimeStamp() - prevEventTimeStamp) * secPerQuarter;
-            nextEventTick = lastEventTick + nextEventTickDelta;
+            nextEventTick = prevEventTick + nextEventTickDelta;
         }
 
-        // step 3b. call processBlock for every instrument.
+        // call processBlock for every instrument
         for (auto *subBuffer : subBuffers)
         {
             auto *graph = subBuffer->instrument->getProcessorGraph();
             {
                 const ScopedLock lock(graph->getCallbackLock());
                 
-                //DBG("processBlock num midi events: " + String(subBuffer->midiBuffer.getNumEvents()));
                 graph->processBlock(subBuffer->sampleBuffer, subBuffer->midiBuffer);
                 subBuffer->midiBuffer.clear();
-
                 //Thread::yield();
             }
         }
 
-        // step 3c. mix them down to the render buffer.
+        // mix them down to the render buffer
         mixingBuffer.clear();
 
         for (auto *subBuffer : subBuffers)
@@ -258,11 +265,11 @@ void RendererThread::run()
                 mixingBuffer.addFrom(j, 0,
                     subBuffer->sampleBuffer, j, 0,
                     bufferSize,
-                    1.0f);
+                    1.f);
             }
         }
 
-        // step 3d. write resulting buffer to disk.
+        // write resulting buffer to disk
         {
             const ScopedLock lock(this->writerLock);
             bool writtenSuccessfully = false;
@@ -274,14 +281,15 @@ void RendererThread::run()
             }
         }
 
-        // step 3e. finally, update counters.
+        // finally, update counters
         currentFrame += bufferSize;
 
-        this->percentsDone = float(currentFrame / lastFrame);
-        //DBG("this->percentsDone : " + String(this->percentsDone));
+        this->percentsDone = float((currentFrame - firstFrame) / totalFrames);
+
+        // DBG("% done: " + String(this->percentsDone.get()));
     }
 
-    // step 4. setNonRealtime false.
+    // setNonRealtime false
     for (auto *subBuffer : subBuffers)
     {
         auto *graph = subBuffer->instrument->getProcessorGraph();
