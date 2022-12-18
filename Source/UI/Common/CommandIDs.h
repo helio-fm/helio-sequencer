@@ -229,7 +229,13 @@ namespace CommandIDs
         OpenMetronomeSample             = 0x4500, // more ids reserved for sub-items
         ResetMetronomeSample            = 0x4550, // more ids reserved for sub-items
 
-        YourNextCommandId               = 0x4600
+        Staccato                        = 0x4601, // make notes short
+        Staccatissimo                   = 0x4602, // make notes very short
+        Legato                          = 0x4603, // connect notes in time
+        LegatoOverlapping               = 0x4604, // connect notes together, but with a slight overlap for use in certain VSTs
+        Glue                            = 0x4605, // glue overlapping notes
+
+        YourNextCommandId               = 0x4700
     };
 
     CommandIDs::Id getIdForName(const String &command);

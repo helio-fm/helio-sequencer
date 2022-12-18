@@ -566,6 +566,12 @@ void SequencerOperations::cleanupOverlaps(Lasso &selection, bool shouldCheckpoin
     applyPianoRemovals(removalGroup, didCheckpoint);
 }
 
+//legato function
+void SequencerOperations::cleanupOverlaps(Lasso &selection, bool shouldCheckpoint)
+{
+    DBG("legato");
+}
+
 void SequencerOperations::retrograde(Lasso &selection, bool shouldCheckpoint /*= true*/)
 {
     if (selection.getNumSelected() < 2)
