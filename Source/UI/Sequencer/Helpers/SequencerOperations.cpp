@@ -1392,9 +1392,6 @@ void SequencerOperations::deleteSelection(const Lasso &selection, bool shouldChe
 void SequencerOperations::shiftKeyRelative(Lasso &selection,
     int deltaKey, Transport *transport, bool shouldCheckpoint)
 {
-
-    DBG("shifting key relative");
-
     if (selection.getNumSelected() == 0 || deltaKey == 0) { return; }
 
     auto *pianoSequence = getPianoSequence(selection);
