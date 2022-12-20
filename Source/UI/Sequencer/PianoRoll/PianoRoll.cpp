@@ -1143,6 +1143,22 @@ void PianoRoll::handleCommandMessage(int commandId)
             -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth),
             &this->getTransport(), true);
         break;
+    case CommandIDs::MakeStaccato:
+        DBG("making notes staccato");
+        SequencerOperations::makeStaccato(this->selection, 0.125f, true);
+        break;
+    case CommandIDs::MakeStaccatissimo:
+        DBG("making notes staccatissimo");
+        SequencerOperations::makeStaccato(this->selection, 0.0625f, true);
+        break;
+    case CommandIDs::MakeLegato:
+        DBG("making selection legato");
+        SequencerOperations::makeLegato(this->getLassoSelection(), 0.0f);
+        break;
+    case CommandIDs::MakeLegatoOverlapping:
+        DBG("making selection legato (with overlaps)");
+        SequencerOperations::makeLegato(this->getLassoSelection(), 0.0625f); //16'th note is the overlap amount.
+        break;
     case CommandIDs::CleanupOverlaps:
         SequencerOperations::cleanupOverlaps(this->selection);
         break;

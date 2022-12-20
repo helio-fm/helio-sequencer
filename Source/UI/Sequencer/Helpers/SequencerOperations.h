@@ -96,6 +96,9 @@ struct SequencerOperations final
     static void retrograde(Lasso &selection, bool shouldCheckpoint = true);
     static void melodicInversion(Lasso &selection, bool shouldCheckpoint = true);
 
+    static void makeStaccato(Lasso &selection, float newLength, bool shouldCheckpoint = true);
+    static bool makeLegato(const Lasso& selection, float overlap, bool shouldCheckpoint = true);
+
     static void applyTuplets(Lasso &selection, Note::Tuplet tuplet, bool shouldCheckpoint = true);
     static bool quantize(const Lasso &selection, float bar, bool shouldCheckpoint = true);
     static bool quantize(WeakReference<MidiTrack> track, float bar, bool shouldCheckpoint = true);
