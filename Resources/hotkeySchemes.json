@@ -188,10 +188,10 @@
       { "command": "TransposeOctaveDown", "key": "Shift + Cursor Down" },
       { "command": "TransposeFifthUp", "key": "Shift + Alt + Cursor Up" },
       { "command": "TransposeFifthDown", "key": "Shift + Alt + Cursor Down" },
-      { "command": "MakeStaccato", "key": "Shift + S" },
+      { "command": "MakeStaccato", "key": "Alt + S" },
       { "command": "MakeStaccatissimo", "key": "Shift + Alt + S" },
-      { "command": "MakeLegato", "key": "Control + L" },
-      { "command": "MakeLegato", "key": "Command + L" },
+      { "command": "MakeLegato", "key": "Alt + L" },
+      { "command": "MakeLegato", "key": "Alt + L" },
 
 
       // Refactor selection
