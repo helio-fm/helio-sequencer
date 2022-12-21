@@ -49,6 +49,11 @@ namespace UndoActionIDs
         AddNewTrack = 0x0070,
         DuplicateTrack = 0x0071,
 
+        MakeStaccato = 0x0080,
+        MakeStaccatissimo = 0x0081,
+        MakeLegato = 0x0082,
+        MakeLegatoOverlapping = 0x0083,
+
         // ...
 
         MaxUndoActionId = 0x0100
