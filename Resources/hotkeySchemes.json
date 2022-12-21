@@ -191,7 +191,6 @@
       { "command": "MakeStaccato", "key": "Alt + S" },
       { "command": "MakeStaccatissimo", "key": "Shift + Alt + S" },
       { "command": "MakeLegato", "key": "Alt + L" },
-      { "command": "MakeLegato", "key": "Alt + L" },
 
 
       // Refactor selection
