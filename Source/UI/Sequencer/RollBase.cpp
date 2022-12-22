@@ -1082,6 +1082,12 @@ void RollBase::mouseDown(const MouseEvent &e)
         return;
     }
 
+    //we want a naked middle click to always default to dragging via the rollbase
+    if (e.mods.isMiddleButtonDown() && !e.mods.isAnyModifierKeyDown())
+    {
+        this->getEditMode().setMode(RollEditMode::dragMode);
+    }
+
     if (e.mods.isRightButtonDown())
     {
         if (this->getEditMode().isMode(RollEditMode::drawMode))
@@ -1210,6 +1216,7 @@ void RollBase::mouseUp(const MouseEvent &e)
         this->deselectAll();
     }
 
+    this->getEditMode().setMode(RollEditMode::drawMode);    //rollbase defaults to drawmode upon mouseup - RPM
     this->setMouseCursor(this->project.getEditMode().getCursor());
 }
 
