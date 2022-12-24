@@ -61,6 +61,10 @@ void HelioTheme::drawNoiseWithin(Rectangle<int> bounds, Graphics &g, float alpha
     g.fillRect(bounds);
 }
 
+//===----------------------------------------------------------------------===//
+// Frames/lines helpers
+//===----------------------------------------------------------------------===//
+
 void HelioTheme::drawFrame(Graphics &g, int width, int height,
     float lightAlphaMultiplier, float darkAlphaMultiplier)
 {
@@ -79,6 +83,79 @@ void HelioTheme::drawFrame(Graphics &g, int width, int height,
     g.fillRect(2, height - 2, width - 4, 1);
     g.fillRect(1, 2, 1, height - 4);
     g.fillRect(width - 2, 2, 1, height - 4);
+}
+
+void HelioTheme::drawDashedFrame(Graphics &g, const Rectangle<int> &area, int dashLength /*= 4*/)
+{
+    for (int i = area.getX() + 1; i < area.getWidth() - 1; i += (dashLength * 2))
+    {
+        g.fillRect(i, area.getY(), dashLength, 1);
+        g.fillRect(i, area.getHeight() - 1, dashLength, 1);
+    }
+
+    for (int i = area.getY() + 1; i < area.getHeight() - 1; i += (dashLength * 2))
+    {
+        g.fillRect(area.getX(), i, 1, dashLength);
+        g.fillRect(area.getWidth() - 1, i, 1, dashLength);
+    }
+}
+
+void HelioTheme::drawDashedHorizontalLine(Graphics &g, float x, float y, float width, float dashLength)
+{
+    for (; x < width - dashLength; x += dashLength * 2.f)
+    {
+        g.fillRect(x, y, dashLength, 1.f);
+    }
+
+    if (width > dashLength)
+    {
+        g.fillRect(x, y, jmax(0.f, 1.f + width - x), 1.f);
+    }
+}
+
+void HelioTheme::drawDashedHorizontalLine2(Graphics &g, float x, float y, float width, float dashLength)
+{
+    for (; x < width - dashLength; x += dashLength * 2.f)
+    {
+        g.fillRect(x + 1.f, y, dashLength, 1.f);
+        g.fillRect(x, y + 1.f, dashLength, 1.f);
+    }
+
+    if (width > dashLength)
+    {
+        g.fillRect(x + 1.f, y, jmax(0.f, 1.f + width - x - 2.f), 1.f);
+        g.fillRect(x, y + 1.f, jmax(0.f, 1.f + width - x), 1.f);
+    }
+}
+
+void HelioTheme::drawDashedHorizontalLine3(Graphics &g, float x, float y, float width, float dashLength)
+{
+    for (; x < width - dashLength; x += dashLength * 2.f)
+    {
+        g.fillRect(x + 2.f, y, dashLength, 1.f);
+        g.fillRect(x + 1.f, y + 1.f, dashLength, 1.f);
+        g.fillRect(x, y + 2.f, dashLength, 1.f);
+    }
+
+    if (width > dashLength)
+    {
+        g.fillRect(x + 2.f, y, jmax(0.f, 1.f + width - x - 4.f), 1.f);
+        g.fillRect(x + 1.f, y + 1.f, jmax(0.f, 1.f + width - x - 2.f), 1.f);
+        g.fillRect(x, y + 2.f, jmax(0.f, 1.f + width - x), 1.f);
+    }
+}
+
+void HelioTheme::drawDashedVerticalLine(Graphics &g, float x, float y, float height, float dashLength)
+{
+    for (; y < height - dashLength; y += dashLength * 2.f)
+    {
+        g.fillRect(x, y, 1.f, dashLength);
+    }
+
+    if (height > dashLength)
+    {
+        g.fillRect(x, y, 1.f, jmax(0.f, 1.f + height - y));
+    }
 }
 
 Typeface::Ptr HelioTheme::getTypefaceForFont(const Font &font)

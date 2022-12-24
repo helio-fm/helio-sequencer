@@ -104,7 +104,7 @@ void SelectionComponent::paint(Graphics &g)
     g.fillRect(this->getLocalBounds());
 
     g.setColour(this->currentOutline);
-    HelioTheme::drawDashedRectangle(g, this->getLocalBounds());
+    HelioTheme::drawDashedFrame(g, this->getLocalBounds());
 }
 
 const Point<double> SelectionComponent::getParentSize() const

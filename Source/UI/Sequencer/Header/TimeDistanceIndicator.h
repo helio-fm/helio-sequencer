@@ -62,7 +62,7 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(this->colour);
-        HelioTheme::drawDashedHorizontalLine<2>(g, 1.f, 0.f, float(this->getWidth() - 1), 8.f);
+        HelioTheme::drawDashedHorizontalLine2(g, 1.f, 0.f, float(this->getWidth() - 1), 8.f);
     }
 
     void resized() override

@@ -40,7 +40,8 @@ void AnnotationLargeComponent::paint(Graphics &g)
     g.setColour(this->event.getColour()
         .interpolatedWith(baseColour, 0.5f).withAlpha(0.65f));
 
-    g.fillRect(1.f, 0.f, float(this->getWidth() - 1), 3.f);
+    g.fillRect(1.f, 0.f, float(this->getWidth() - 1), 2.f);
+    g.fillRect(1.5f, 2.f, float(this->getWidth() - 2), 1.f);
 
     if (this->event.getDescription().isNotEmpty())
     {

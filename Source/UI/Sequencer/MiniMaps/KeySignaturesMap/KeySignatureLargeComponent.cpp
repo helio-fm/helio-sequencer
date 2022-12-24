@@ -51,7 +51,7 @@ void KeySignatureLargeComponent::paint(Graphics &g)
     g.fillRect(1.f, 0.f, float(this->getWidth() - 3), 3.f);
 
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
-    HelioTheme::drawDashedHorizontalLine<3>(g, 1.f, 0.f, float(this->getWidth() - 1), 8.f);
+    HelioTheme::drawDashedHorizontalLine3(g, 1.f, 0.f, float(this->getWidth() - 1), 8.f);
 }
 
 void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)

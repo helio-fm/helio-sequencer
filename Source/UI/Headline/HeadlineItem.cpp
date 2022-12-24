@@ -49,7 +49,7 @@ public:
         g.fillRect(0.f, 2.f, w, 1.f);
 
         g.setColour(this->light);
-        HelioTheme::drawDashedHorizontalLine<2>(g, 0.f, 1.f, w, 8.f);
+        HelioTheme::drawDashedHorizontalLine2(g, 0.f, 1.f, w, 8.f);
     }
 
     const Colour dark = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f);
