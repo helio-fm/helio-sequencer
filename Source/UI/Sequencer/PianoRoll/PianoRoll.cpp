@@ -1144,20 +1144,16 @@ void PianoRoll::handleCommandMessage(int commandId)
             &this->getTransport(), true);
         break;
     case CommandIDs::MakeStaccato:
-        DBG("making notes staccato");
-        SequencerOperations::makeStaccato(this->selection, 0.125f, true);
+        SequencerOperations::makeStaccato(this->selection, Globals::minNoteLength * 2.f, true);
         break;
     case CommandIDs::MakeStaccatissimo:
-        DBG("making notes staccatissimo");
-        SequencerOperations::makeStaccato(this->selection, 0.0625f, true);
+        SequencerOperations::makeStaccato(this->selection, Globals::minNoteLength, true);
         break;
     case CommandIDs::MakeLegato:
-        DBG("making selection legato");
         SequencerOperations::makeLegato(this->getLassoSelection(), 0.0f);
         break;
     case CommandIDs::MakeLegatoOverlapping:
-        DBG("making selection legato (with overlaps)");
-        SequencerOperations::makeLegato(this->getLassoSelection(), 0.0625f); //16'th note is the overlap amount.
+        SequencerOperations::makeLegato(this->getLassoSelection(), Globals::minNoteLength);
         break;
     case CommandIDs::CleanupOverlaps:
         SequencerOperations::cleanupOverlaps(this->selection);

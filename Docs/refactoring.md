@@ -54,11 +54,17 @@ Retrograde hotkey also works in the pattern roll, re-ordering all selected clips
 
 ### Cleanup overlaps
 
-This option simply removes duplicate notes and corrects lengths in a way that notes do not overlap each other.
+`Alt + O` hotkey removes duplicate notes and corrects lengths in a way that notes do not overlap each other.
+
+### Staccato and legato
+
+`Alt + S` and `Alt + L` hotkeys apply staccato and legato commands to the selection. Staccato simply shortens all selected notes (`Alt + Shift + S` makes them as short as possible). Legato connects selected notes together in a way that each note lasts until another note starts:
+
+![staccato-legato]
 
 ### Move to track
 
-Pretty self-explanatory shorthand; note that this function is also available in the [command palette](command-palette.md): hit `:` and select another track to move the selected notes to ("closest" tracks will be listed first for convenience).
+Pretty self-explanatory shorthand; this function is also available in the [command palette](command-palette.md): press `:` and select another track to move the selected notes to. For convenience, the "closest" tracks will be listed first. 
 
 ## Rescaling
 
@@ -105,3 +111,4 @@ Arpeggiators is one of the unfinished parts of this app: there's still no conven
 [reverse-clips-order]: images/reverse-clips-order.png "Retrograde hotkey applied to pattern roll selection"
 [inscale-transposition]: images/inscale-transposition.png "In-scale transposition"
 [quick-rescale]: images/quick-rescale.png "The quick rescale tool"
+[staccato-legato]: images/staccato-legato.png "Staccato and legato shortcuts"

@@ -708,7 +708,7 @@ bool SequencerOperations::makeLegato(const Lasso& selection, float overlap, bool
         }
         if (targetBeat != subjectBeat && targetKey == subjectKey) //add slight buffer if they're the same key (so note on/off signals dont occur on the same beat (screws with some vsts)
         {
-            newLength = targetBeat - subjectBeat - 0.0625f; //16'th note
+            newLength = targetBeat - subjectBeat - Globals::minNoteLength; // 64'th note
         }
 
         groupBefore.add(subject->getNote());
