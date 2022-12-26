@@ -1220,13 +1220,12 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
     // holding control/command means using panning instead of zooming
     // (or zooming instead of panning, depending on ui settings/defaults);
     // alt is reserved for the global zoom:
-    const bool panningMode = !event.mods.isAltDown() &&
-        (this->mouseWheelFlags.usePanningByDefault != (event.mods.isCtrlDown() || event.mods.isCommandDown()));
+    const bool panningMode = !event.mods.isAnyModifierKeyDown();    //it is less confusing to have a naked scroll always pan
 
     if (panningMode)
     {
         this->smoothZoomController->cancelZoom();
-        
+
         // holding shift means using vertical direction instead of horizontal
         // (or horizontal instead of vertical, depending on ui settings/defaults)
         const bool verticalPanning =
@@ -1269,8 +1268,8 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
 
         // holding shift means using vertical direction instead of horizontal
         // (or horizontal instead of vertical, depending on ui settings/defaults)
-        const bool verticalZooming =
-            this->mouseWheelFlags.useVerticalZoomingByDefault != event.mods.isShiftDown();
+        const bool verticalZooming = event.mods.isShiftDown();
+        const bool horizontalZooming = event.mods.isCtrlDown();
         const bool globalZooming = event.mods.isAltDown();
 
         const float zoomSpeed = this->smoothZoomController->getInitialSpeed();
@@ -1286,7 +1285,7 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
         {
             this->startSmoothZoom(mouseOffset, { zoomDeltaX, zoomDeltaY });
         }
-        else
+        else if (horizontalZooming)
         {
             this->startSmoothZoom(mouseOffset, { zoomDeltaY, zoomDeltaX });
         }
