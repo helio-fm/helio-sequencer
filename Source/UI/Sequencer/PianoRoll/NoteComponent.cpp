@@ -162,7 +162,6 @@ void NoteComponent::mouseDown(const MouseEvent &e)
 
     if (e.mods.isLeftButtonDown())
     {
-
         const bool shouldSendMidi =
             selection.getNumSelected() <= NoteComponent::maxDragPolyphony;
         
@@ -256,7 +255,6 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             selectedNote->startTuning();
         }
     }
-
 }
 
 static int lastDeltaKey = 0;

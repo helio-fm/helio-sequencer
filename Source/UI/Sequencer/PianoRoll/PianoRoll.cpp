@@ -924,7 +924,6 @@ float PianoRoll::getLassoEndBeat() const
 
 void PianoRoll::mouseDown(const MouseEvent &e)
 {
-
     bool snap = !e.mods.isAltDown();    //holding alt disables snapping to barlines
 
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
