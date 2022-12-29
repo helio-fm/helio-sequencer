@@ -130,23 +130,23 @@ private:
     MouseCursor startEditingNewNote(const MouseEvent &e);
 
     void startDragging(bool sendMidiMessage);
-    bool getDraggingDelta(const MouseEvent &e, float &deltaBeat, int &deltaKey);
-    Note continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage) const noexcept;
+    bool getDraggingDelta(const MouseEvent &e, float &deltaBeat, int &deltaKey, bool snap = true);
+    Note continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage, bool snap = true) const noexcept;
     void endDragging(bool sendStopSoundMessage = true);
 
     void startDraggingResizing(bool sendMidiMessage);
-    bool getDraggingResizingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey) const;
-    Note continueDraggingResizing(float deltaLength, int deltaKey, bool sendMidi) const noexcept;
+    bool getDraggingResizingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey, bool snap = true) const;
+    Note continueDraggingResizing(float deltaLength, int deltaKey, bool sendMidi, bool snap = true) const noexcept;
     void endDraggingResizing();
 
     void startResizingRight(bool sendMidiMessage);
-    bool getResizingRightDelta(const MouseEvent &e, float &deltaLength) const;
-    Note continueResizingRight(float deltaLength) const noexcept;
+    bool getResizingRightDelta(const MouseEvent &e, float &deltaLength, bool snap = true) const;
+    Note continueResizingRight(float deltaLength, bool snap = true) const noexcept;
     void endResizingRight();
     
     void startResizingLeft(bool sendMidiMessage);
-    bool getResizingLeftDelta(const MouseEvent &e, float &deltaLength) const;
-    Note continueResizingLeft(float deltaLength) const noexcept;
+    bool getResizingLeftDelta(const MouseEvent &e, float &deltaLength, bool snap = true) const;
+    Note continueResizingLeft(float deltaLength, bool snap = true) const noexcept;
     void endResizingLeft();
     
     void startTuning();
@@ -157,13 +157,13 @@ private:
     void endTuning();
     
     void startGroupScalingRight(float groupStartBeat);
-    bool getGroupScaleRightFactor(const MouseEvent &e, float &absScaleFactor) const;
-    Note continueGroupScalingRight(float absScaleFactor) const noexcept;
+    bool getGroupScaleRightFactor(const MouseEvent &e, float &absScaleFactor, bool snap = true) const;
+    Note continueGroupScalingRight(float absScaleFactor, bool snap = true) const noexcept;
     void endGroupScalingRight();
     
     void startGroupScalingLeft(float groupEndBeat);
-    bool getGroupScaleLeftFactor(const MouseEvent &e, float &absScaleFactor) const;
-    Note continueGroupScalingLeft(float absScaleFactor) const noexcept;
+    bool getGroupScaleLeftFactor(const MouseEvent &e, float &absScaleFactor, bool snap = true) const;
+    Note continueGroupScalingLeft(float absScaleFactor, bool snap = true) const noexcept;
     void endGroupScalingLeft();
     
 #if PLATFORM_DESKTOP

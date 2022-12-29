@@ -82,8 +82,8 @@ public:
     bool isNoteVisible(int key, float beat, float length) const;
 
     // Note that beat is returned relative to active clip's beat offset:
-    void getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const;
-    void getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const;
+    void getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber, bool snap = true) const;
+    void getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber, bool snap = true) const;
 
     //===------------------------------------------------------------------===//
     // Drag helpers
@@ -199,7 +199,7 @@ private:
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     void switchToClipInViewport() const;
-    void insertNewNoteAt(const MouseEvent &e);
+    void insertNewNoteAt(const MouseEvent &e, bool snap = true);
     int getYPositionByKey(int targetKey) const;
 
     UniquePointer<KnifeToolHelper> knifeToolHelper;

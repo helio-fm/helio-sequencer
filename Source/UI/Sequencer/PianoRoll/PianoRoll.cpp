@@ -414,16 +414,20 @@ bool PianoRoll::isNoteVisible(int key, float beat, float length) const
             (beat + length > firstViewportBeat && beat + length < lastViewportBeat));
 }
 
-void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const
+void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber, bool snap) const
 {
-    beatNumber = this->getRoundBeatSnapByXPosition(int(x)) - this->activeClip.getBeat();
+    if (snap)   { beatNumber = this->getRoundBeatSnapByXPosition(int(x)) - this->activeClip.getBeat(); }
+    else        { beatNumber = this->getBeatByXPosition(x) - this->activeClip.getBeat(); }
+
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
     noteNumber = jlimit(0, this->getNumKeys(), noteNumber);
 }
 
-void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const
+void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber, bool snap) const
 {
-    beatNumber = this->getFloorBeatSnapByXPosition(x) - this->activeClip.getBeat();
+    if (snap)   { beatNumber = this->getFloorBeatSnapByXPosition(x) - this->activeClip.getBeat(); }
+    else        { beatNumber = this->getBeatByXPosition(x) - this->activeClip.getBeat(); }
+    
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
     noteNumber = jlimit(0, this->getNumKeys(), noteNumber);
 }
@@ -920,6 +924,9 @@ float PianoRoll::getLassoEndBeat() const
 
 void PianoRoll::mouseDown(const MouseEvent &e)
 {
+
+    bool snap = !e.mods.isAltDown();    //holding alt disables snapping to barlines
+
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
         return;
@@ -931,7 +938,7 @@ void PianoRoll::mouseDown(const MouseEvent &e)
 
         if (this->isAddEvent(e))
         {
-            this->insertNewNoteAt(e);
+            this->insertNewNoteAt(e, snap);
         }
         else if (this->isKnifeToolEvent(e))
         {
@@ -1462,12 +1469,12 @@ void PianoRoll::paint(Graphics &g)
     }
 }
 
-void PianoRoll::insertNewNoteAt(const MouseEvent &e)
+void PianoRoll::insertNewNoteAt(const MouseEvent &e, bool snap)
 {
     int key = 0;
     float beat = 0.f;
     int xOffset = 5;
-    this->getRowsColsByMousePosition(e.x + xOffset, e.y, key, beat);    //Pretend the mouse is a little to the right of where it actually is. Boosts accuracy when placing notes - RPM
+    this->getRowsColsByMousePosition(e.x + xOffset, e.y, key, beat, snap);    //Pretend the mouse is a little to the right of where it actually is. Boosts accuracy when placing notes - RPM
 
     auto *activeSequence = static_cast<PianoSequence *>(this->activeTrack->getSequence());
     activeSequence->checkpoint();
@@ -1476,8 +1483,9 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
     // since it is not created yet at this point; so we set a flag,
     // and in onAddMidiEvent/1 callback we store that pointer,
     // so that the new note can be dragged, or resized, or whatever
+
     this->addNewNoteMode = true;
-    activeSequence->insert(Note(activeSequence, key, beat,
+    activeSequence->insert(Note(activeSequence, key, beat,  //does not require fineMode - rpm
         this->newNoteLength, this->newNoteVolume), true);
 
     this->getTransport().previewKey(activeSequence->getTrackId(),
