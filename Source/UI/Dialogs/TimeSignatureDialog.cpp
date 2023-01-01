@@ -260,7 +260,7 @@ void TimeSignatureDialog::handleCommandMessage(int commandId)
 {
     this->metronomeEditor->postCommandMessage(CommandIDs::TransportStop);
 
-    if (commandId == CommandIDs::DismissModalDialogAsync)
+    if (commandId == CommandIDs::DismissDialog)
     {
         this->undoAndDismiss();
     }
@@ -279,7 +279,7 @@ void TimeSignatureDialog::handleCommandMessage(int commandId)
 
 void TimeSignatureDialog::inputAttemptWhenModal()
 {
-    this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
+    this->postCommandMessage(CommandIDs::DismissDialog);
 }
 
 void TimeSignatureDialog::updateOkButtonState()

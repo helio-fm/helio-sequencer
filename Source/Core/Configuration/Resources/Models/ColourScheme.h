@@ -21,7 +21,7 @@
 
 // A simple wrapper around colour map hashmap
 // Used for serialization and JUCE_LIVE_CONSTANTs macros
-class ColourScheme : public ConfigurationResource
+class ColourScheme final : public ConfigurationResource
 {
 public:
 
@@ -36,32 +36,25 @@ public:
 
     String getName() const noexcept;
 
-    // Primary background gradient
-    Colour getPrimaryGradientColourA() const;
-    Colour getPrimaryGradientColourB() const;
+    Colour getPageFillColour() const;
+    Colour getHeadlineFillColour() const;
+    Colour getSidebarFillColour() const;
+    Colour getDialogFillColour() const;
 
-    // Secondary background gradient
-    Colour getSecondaryGradientColourA() const;
-    Colour getSecondaryGradientColourB() const;
+    Colour getButtonFillColour() const;
+    Colour getFrameBorderColour() const;
 
-    // Panel and button fill
-    Colour getPanelFillColour() const;
-    Colour getPanelBorderColour() const;
-
-    // Lasso and indicator
     Colour getLassoFillColour() const;
     Colour getLassoBorderColour() const;
 
-    // Piano roll stuff
+    Colour getTimelineColour() const;
     Colour getBlackKeyColour() const;
     Colour getWhiteKeyColour() const;
     Colour getRowColour() const;
     Colour getBarColour() const;
 
-    // Labels and buttons text
     Colour getTextColour() const;
 
-    // Used in Icons.cpp
     Colour getIconBaseColour() const;
     Colour getIconShadowColour() const;
 

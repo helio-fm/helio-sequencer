@@ -17,11 +17,11 @@
 
 #include "Common.h"
 #include "SettingsPage.h"
-#include "PanelBackgroundB.h"
+#include "PageBackgroundB.h"
 
 SettingsPage::SettingsPage(Component *settingsList)
 {
-    this->background = make<PanelBackgroundB>();
+    this->background = make<PageBackgroundB>();
     this->addAndMakeVisible(this->background.get());
     this->viewport = make<Viewport>();
     this->addAndMakeVisible(this->viewport.get());

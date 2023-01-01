@@ -4632,13 +4632,13 @@
     <ClInclude Include="..\..\Source\UI\Themes\FramePanel.h">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Themes\PanelBackgroundA.h">
+    <ClInclude Include="..\..\Source\UI\Themes\PageBackgroundA.h">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Themes\PanelBackgroundB.h">
+    <ClInclude Include="..\..\Source\UI\Themes\PageBackgroundB.h">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Themes\PanelBackgroundC.h">
+    <ClInclude Include="..\..\Source\UI\Themes\PanelBackground.h">
       <Filter>Helio\Source\UI\Themes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Themes\SeparatorHorizontal.h">

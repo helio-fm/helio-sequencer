@@ -21,8 +21,8 @@ class VersionControl;
 
 #include "StageComponent.h"
 #include "HistoryComponent.h"
-#include "PanelBackgroundA.h"
-#include "PanelBackgroundB.h"
+#include "PageBackgroundA.h"
+#include "PageBackgroundB.h"
 #include "SeparatorVerticalSkew.h"
 
 class VersionControlEditor final : public Component, public ChangeListener
@@ -44,9 +44,9 @@ private:
     VersionControl &vcs;
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
-    UniquePointer<PanelBackgroundA> backgroundA;
+    UniquePointer<PageBackgroundA> backgroundA;
     UniquePointer<SeparatorVerticalSkew> skew;
-    UniquePointer<PanelBackgroundB> backgroundB;
+    UniquePointer<PageBackgroundB> backgroundB;
     UniquePointer<StageComponent> stageComponent;
     UniquePointer<HistoryComponent> historyComponent;
 

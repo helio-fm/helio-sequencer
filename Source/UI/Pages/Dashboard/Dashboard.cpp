@@ -20,8 +20,8 @@
 #include "SpectralLogo.h"
 #include "OverlayButton.h"
 #include "DashboardMenu.h"
-#include "PanelBackgroundA.h"
-#include "PanelBackgroundB.h"
+#include "PageBackgroundA.h"
+#include "PageBackgroundB.h"
 #include "OpenProjectButton.h"
 #include "CreateProjectButton.h"
 #include "UpdatesInfoComponent.h"
@@ -34,7 +34,7 @@ Dashboard::Dashboard(Workspace &workspace) : workspace(workspace)
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
 
-    this->backgroundA = make<PanelBackgroundA>();
+    this->backgroundA = make<PageBackgroundA>();
     this->addAndMakeVisible(this->backgroundA.get());
 
     this->patreonLabel = make<Label>();
@@ -43,7 +43,7 @@ Dashboard::Dashboard(Workspace &workspace) : workspace(workspace)
     this->patreonLabel->setFont(Globals::UI::Fonts::S);
     this->patreonLabel->setJustificationType(Justification::centred);
 
-    this->backgroundB = make<PanelBackgroundB>();
+    this->backgroundB = make<PageBackgroundB>();
     this->addAndMakeVisible(this->backgroundB.get());
 
     this->openProjectButton = make<OpenProjectButton>();

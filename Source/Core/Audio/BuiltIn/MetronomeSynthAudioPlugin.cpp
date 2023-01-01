@@ -24,7 +24,7 @@
 #include "SerializationKeys.h"
 #include "PlayButton.h"
 #include "IconButton.h"
-#include "ColourIDs.h"
+#include "HelioTheme.h"
 
 const String MetronomeSynthAudioPlugin::instrumentId = "<metronome>";
 const String MetronomeSynthAudioPlugin::instrumentName = "Metronome";
@@ -135,7 +135,8 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(this->fillColour);
+        const auto &theme = HelioTheme::getCurrentTheme();
+        g.setFillType({ theme.getPageBackgroundA(), {} });
         g.fillRect(this->getLocalBounds());
     }
 
@@ -188,8 +189,6 @@ private:
 
     UniquePointer<FileChooser> fileChooser;
     String lastUsedDirectory = File::getCurrentWorkingDirectory().getFullPathName();
-
-    const Colour fillColour = findDefaultColour(ColourIDs::BackgroundA::fill);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MetronomeSynthEditor)
 };

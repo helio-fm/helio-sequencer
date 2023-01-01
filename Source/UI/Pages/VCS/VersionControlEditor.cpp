@@ -27,13 +27,13 @@ VersionControlEditor::VersionControlEditor(VersionControl &versionControl) : vcs
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
 
-    this->backgroundA = make<PanelBackgroundA>();
+    this->backgroundA = make<PageBackgroundA>();
     this->addAndMakeVisible(this->backgroundA.get());
 
     this->skew = make<SeparatorVerticalSkew>();
     this->addAndMakeVisible(this->skew.get());
 
-    this->backgroundB = make<PanelBackgroundB>();
+    this->backgroundB = make<PageBackgroundB>();
     this->addAndMakeVisible(this->backgroundB.get());
 
     this->stageComponent = make<StageComponent>(versionControl);

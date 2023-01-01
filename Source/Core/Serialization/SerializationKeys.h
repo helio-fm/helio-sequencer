@@ -298,14 +298,21 @@ namespace Serialization
             static const Identifier scheme = "colourScheme";
             static const Identifier colourMap = "colourMap";
             static const Identifier name = "name";
-
+            
+            // legacy ids, to be removed in future versions:
             static const Identifier primaryGradientA = "primaryGradientA";
             static const Identifier primaryGradientB = "primaryGradientB";
             static const Identifier secondaryGradientA = "secondaryGradientA";
-            static const Identifier secondaryGradientB = "secondaryGradientB";
-
             static const Identifier panelFill = "panelFill";
             static const Identifier panelBorder = "panelBorder";
+            // new ones instead of ^^:
+            static const Identifier pageFill = "pageFill";
+            static const Identifier headlineFill = "headlineFill";
+            static const Identifier sidebarFill = "sidebarFill";
+            static const Identifier dialogFill = "dialogFill";
+            static const Identifier buttonFill = "buttonFill";
+            static const Identifier frameBorder = "frameBorder";
+            static const Identifier timeline = "timeline";
 
             static const Identifier lassoFill = "lassoFill";
             static const Identifier lassoBorder = "lassoBorder";

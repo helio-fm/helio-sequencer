@@ -22,6 +22,7 @@
 #include "Common.h"
 #include "SoundFontSynth.h"
 #include "SoundFontSound.h"
+#include "SoundFont2Sound.h"
 #include "SoundFontRegion.h"
 #include "SoundFontSample.h"
 #include "SerializationKeys.h"

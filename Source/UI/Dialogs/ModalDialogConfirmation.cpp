@@ -76,7 +76,7 @@ void ModalDialogConfirmation::parentSizeChanged()
 
 void ModalDialogConfirmation::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissModalDialogAsync)
+    if (commandId == CommandIDs::DismissDialog)
     {
         this->cancel();
     }
@@ -100,7 +100,7 @@ bool ModalDialogConfirmation::keyPressed(const KeyPress &key)
 
 void ModalDialogConfirmation::inputAttemptWhenModal()
 {
-    this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
+    this->postCommandMessage(CommandIDs::DismissDialog);
 }
 
 void ModalDialogConfirmation::cancel()

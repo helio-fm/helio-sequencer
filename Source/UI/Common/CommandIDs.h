@@ -27,9 +27,8 @@ namespace CommandIDs
         Cancel                          = 0x0002,
         Browse                          = 0x0003,
         IconButtonPressed               = 0x0004,
-        HideDialog                      = 0x0005,
-        HideCallout                     = 0x0006,
-        DismissModalDialogAsync         = 0x0007,
+        DismissCallout                  = 0x0005,
+        DismissDialog                   = 0x0006,
 
         AddAnnotation                   = 0x0101,
         AddTimeSignature                = 0x0103,

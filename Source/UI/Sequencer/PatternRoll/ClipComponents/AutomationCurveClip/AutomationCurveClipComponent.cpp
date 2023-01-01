@@ -24,7 +24,7 @@
 #include "MidiSequence.h"
 #include "AutomationSequence.h"
 #include "PlayerThread.h"
-#include "RollBase.h"
+#include "PatternRoll.h"
 #include "MidiTrack.h"
 #include "Icons.h"
 

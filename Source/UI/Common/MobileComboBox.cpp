@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "MobileComboBox.h"
-#include "PanelBackgroundC.h"
+#include "PanelBackground.h"
 
 MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Component> container) :
     editor(editor),
@@ -173,7 +173,7 @@ void MobileComboBox::initHeader(const String &text, bool hasSearch, bool hasCapt
 void MobileComboBox::initBackground(Component *newCustomBackground)
 {
     this->background.reset(newCustomBackground != nullptr ?
-        newCustomBackground : new PanelBackgroundC());
+        newCustomBackground : new PanelBackground());
     this->addAndMakeVisible(this->background.get());
     this->background->toBack();
 }

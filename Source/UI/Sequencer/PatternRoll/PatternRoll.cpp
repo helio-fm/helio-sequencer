@@ -40,6 +40,7 @@
 #include "SequencerOperations.h"
 #include "InteractiveActions.h"
 
+#include "TempoDialog.h"
 #include "TrackPropertiesDialog.h"
 #include "TimeSignatureDialog.h"
 #include "ProjectTimeline.h"

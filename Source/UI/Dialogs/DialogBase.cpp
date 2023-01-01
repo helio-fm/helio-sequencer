@@ -57,14 +57,14 @@ DialogBase::~DialogBase()
 
     if (this->background != nullptr)
     {
-        this->background->postCommandMessage(CommandIDs::HideDialog);
+        this->background->postCommandMessage(CommandIDs::DismissDialog);
     }
 }
 
 void DialogBase::paint(Graphics &g)
 {
     const auto &theme = HelioTheme::getCurrentTheme();
-    g.setFillType({ theme.getBgCacheC(), {} });
+    g.setFillType({ theme.getDialogBackground(), {} });
     g.fillRect(1, 2, this->getWidth() - 2, this->getHeight() - 4);
 
     static constexpr auto lightAlpha = 2.f;

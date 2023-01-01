@@ -40,10 +40,10 @@ OrchestraPitPage::OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitNod
     this->skew = make<SeparatorVerticalSkew>();
     this->addAndMakeVisible(this->skew.get());
 
-    this->backgroundA = make<PanelBackgroundA>();
+    this->backgroundA = make<PageBackgroundA>();
     this->addAndMakeVisible(this->backgroundA.get());
 
-    this->backgroundB = make<PanelBackgroundB>();
+    this->backgroundB = make<PageBackgroundB>();
     this->addAndMakeVisible(this->backgroundB.get());
 
     this->pluginsList = make<AudioPluginsListComponent>(pluginScanner, instrumentsRoot);

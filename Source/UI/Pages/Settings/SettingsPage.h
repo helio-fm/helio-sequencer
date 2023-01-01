@@ -17,7 +17,7 @@
 
 #pragma once
 
-class PanelBackgroundB;
+class PageBackgroundB;
 
 class SettingsPage final : public Component
 {
@@ -30,7 +30,7 @@ public:
 
 private:
 
-    UniquePointer<PanelBackgroundB> background;
+    UniquePointer<PageBackgroundB> background;
     UniquePointer<Viewport> viewport;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingsPage)

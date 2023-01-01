@@ -23,7 +23,7 @@
 #include "Config.h"
 #include "MenuPanel.h"
 #include "AppInfoDto.h"
-#include "PanelBackgroundA.h"
+#include "PageBackgroundA.h"
 #include "SerializationKeys.h"
 
 UpdatesInfoComponent::UpdatesInfoComponent()
@@ -70,7 +70,7 @@ UpdatesInfoComponent::UpdatesInfoComponent()
                 version.getHumanReadableDescription()));
         }
 
-        this->updatesCombo->initWith(this->label.get(), menu, new PanelBackgroundA());
+        this->updatesCombo->initWith(this->label.get(), menu, new PageBackgroundA());
     }
     else
     {

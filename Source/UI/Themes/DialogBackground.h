@@ -19,6 +19,9 @@
 
 #include "CommandIDs.h"
 
+// Used by modal dialogs, supposed to be unowned
+// and deletes itself after a fadeout animation
+
 class DialogBackground final : public Component, private Timer
 {
 public:
@@ -33,7 +36,7 @@ public:
     
     void handleCommandMessage(int commandId) override
     {
-        if (commandId == CommandIDs::HideDialog)
+        if (commandId == CommandIDs::DismissDialog)
         {
             this->appearMode = false;
             this->startTimerHz(60);

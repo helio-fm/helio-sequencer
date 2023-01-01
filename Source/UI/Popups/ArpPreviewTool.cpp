@@ -229,7 +229,7 @@ void ArpPreviewTool::dismissAsync()
 {
     if (auto *parent = this->getParentComponent())
     {
-        parent->postCommandMessage(CommandIDs::HideCallout);
+        parent->postCommandMessage(CommandIDs::DismissCallout);
     }
 }
 

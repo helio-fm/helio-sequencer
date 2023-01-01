@@ -23,8 +23,8 @@ class OrchestraPitNode;
 #include "AudioPluginsListComponent.h"
 #include "InstrumentsListComponent.h"
 #include "SeparatorVerticalSkew.h"
-#include "PanelBackgroundA.h"
-#include "PanelBackgroundB.h"
+#include "PageBackgroundA.h"
+#include "PageBackgroundB.h"
 
 class OrchestraPitPage final : public Component,  public ChangeListener
 {
@@ -47,8 +47,8 @@ private:
     OrchestraPitNode &instrumentsRoot;
 
     UniquePointer<SeparatorVerticalSkew> skew;
-    UniquePointer<PanelBackgroundA> backgroundA;
-    UniquePointer<PanelBackgroundB> backgroundB;
+    UniquePointer<PageBackgroundA> backgroundA;
+    UniquePointer<PageBackgroundB> backgroundB;
     UniquePointer<AudioPluginsListComponent> pluginsList;
     UniquePointer<InstrumentsListComponent> instrumentsList;
 

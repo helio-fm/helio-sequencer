@@ -20,7 +20,7 @@
 #include "KeyboardMapping.h"
 #include "HeadlineContextMenuController.h"
 #include "OverlayButton.h"
-#include "PanelBackgroundB.h"
+#include "PageBackgroundB.h"
 #include "ModalDialogInput.h"
 #include "DocumentHelpers.h"
 #include "IconButton.h"
@@ -38,7 +38,7 @@ KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
 
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
-    this->background = make<PanelBackgroundB>();
+    this->background = make<PageBackgroundB>();
     this->addAndMakeVisible(this->background.get());
 
     this->rangeLabel = make<Label>();

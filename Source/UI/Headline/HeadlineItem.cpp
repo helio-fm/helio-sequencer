@@ -24,6 +24,7 @@
 #include "CachedLabelImage.h"
 #include "ColourIDs.h"
 #include "MainLayout.h"
+#include "HelioTheme.h"
 
 // A dashed bottom stroke to indicate that
 // a context menu has been opened for this item

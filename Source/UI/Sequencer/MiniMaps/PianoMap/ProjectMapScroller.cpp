@@ -180,7 +180,7 @@ void ProjectMapScroller::resized()
 void ProjectMapScroller::paint(Graphics &g)
 {
     const auto &theme = HelioTheme::getCurrentTheme();
-    g.setFillType({ theme.getBgCacheC(), {} });
+    g.setFillType({ theme.getSidebarBackground(), {} });
     g.fillRect(this->getLocalBounds());
 
     g.setColour(this->borderLineDark);

@@ -191,7 +191,7 @@ void AnnotationDialog::parentSizeChanged()
 
 void AnnotationDialog::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissModalDialogAsync)
+    if (commandId == CommandIDs::DismissDialog)
     {
         this->cancelAndDisappear();
     }
@@ -213,7 +213,7 @@ void AnnotationDialog::handleCommandMessage(int commandId)
 
 void AnnotationDialog::inputAttemptWhenModal()
 {
-    this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
+    this->postCommandMessage(CommandIDs::DismissDialog);
 }
 
 UniquePointer<Component> AnnotationDialog::editingDialog(Component &owner,

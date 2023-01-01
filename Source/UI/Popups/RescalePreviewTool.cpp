@@ -123,7 +123,7 @@ void RescalePreviewTool::dismissCalloutAsync()
 {
     if (auto *parent = this->getParentComponent())
     {
-        parent->postCommandMessage(CommandIDs::HideCallout);
+        parent->postCommandMessage(CommandIDs::DismissCallout);
     }
 }
 
@@ -183,6 +183,6 @@ void QuickRescaleMenu::dismissCalloutAsync()
 {
     if (auto *parent = this->getParentComponent())
     {
-        parent->postCommandMessage(CommandIDs::HideCallout);
+        parent->postCommandMessage(CommandIDs::DismissCallout);
     }
 }

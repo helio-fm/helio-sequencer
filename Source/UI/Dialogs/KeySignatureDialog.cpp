@@ -255,7 +255,7 @@ void KeySignatureDialog::parentSizeChanged()
 
 void KeySignatureDialog::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissModalDialogAsync)
+    if (commandId == CommandIDs::DismissDialog)
     {
         this->cancelAndDisappear();
     }
@@ -376,7 +376,7 @@ void KeySignatureDialog::updateButtonsState()
 
 void KeySignatureDialog::inputAttemptWhenModal()
 {
-    this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
+    this->postCommandMessage(CommandIDs::DismissDialog);
 }
 
 UniquePointer<Component> KeySignatureDialog::editingDialog(ProjectNode &project,

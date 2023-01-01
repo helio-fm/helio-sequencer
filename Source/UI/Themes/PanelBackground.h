@@ -20,11 +20,11 @@
 #include "HelioTheme.h"
 #include "ColourIDs.h"
 
-class PanelBackgroundC final : public Component
+class PanelBackground final : public Component
 {
 public:
 
-    PanelBackgroundC()
+    PanelBackground()
     {
         this->setOpaque(true);
         this->setPaintingIsUnclipped(true);
@@ -34,28 +34,11 @@ public:
     void paint(Graphics &g) override
     {
         const auto &theme = HelioTheme::getCurrentTheme();
-        g.setTiledImageFill(theme.getBgCacheC(), 0, 0, 1.f);
+        g.setTiledImageFill(theme.getSidebarBackground(), 0, 0, 1.f);
         g.fillRect(this->getLocalBounds());
-    }
-
-    static void redrawBgCache(HelioTheme &theme)
-    {
-        if (theme.getBgCacheC().isValid())
-        {
-            return;
-        }
-
-        constexpr int w = 128;
-        constexpr int h = 128;
-        Image render(Image::ARGB, w, h, true);
-        Graphics g(render);
-        g.setColour(theme.findColour(ColourIDs::BackgroundC::fill));
-        g.fillAll();
-        HelioTheme::drawNoise(theme, g);
-        theme.getBgCacheC() = render;
     }
 
 private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PanelBackgroundC)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PanelBackground)
 };

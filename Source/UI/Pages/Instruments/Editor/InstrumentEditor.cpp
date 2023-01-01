@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "InstrumentEditor.h"
 
-#include "PanelBackgroundC.h"
+#include "PageBackgroundA.h"
 
 #include "InstrumentEditorPin.h"
 #include "InstrumentComponent.h"
@@ -32,11 +32,11 @@
 static const AudioProcessorGraph::NodeID idZero;
 
 InstrumentEditor::InstrumentEditor(WeakReference<Instrument> instrument,
-    WeakReference<AudioCore> audioCoreRef) :
+    WeakReference<AudioCore> audioCore) :
     instrument(instrument),
-    audioCore(audioCoreRef)
+    audioCore(audioCore)
 {
-    this->background = make<PanelBackgroundC>();
+    this->background = make<PageBackgroundA>();
     this->addAndMakeVisible(this->background.get());
 
     this->contextMenuController = make<HeadlineContextMenuController>(*this);

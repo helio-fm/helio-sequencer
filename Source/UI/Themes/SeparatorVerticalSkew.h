@@ -32,15 +32,15 @@ public:
     {
         const auto &theme = HelioTheme::getCurrentTheme();
 
-        if (theme.getBgCacheA().isValid())
+        if (theme.getPageBackgroundA().isValid())
         {
-            g.setTiledImageFill(theme.getBgCacheA(), 0, 0, 1.f);
+            g.setTiledImageFill(theme.getPageBackgroundA(), 0, 0, 1.f);
             g.fillPath(this->shape2, {});
         }
 
-        if (theme.getBgCacheB().isValid())
+        if (theme.getPageBackgroundB().isValid())
         {
-            g.setTiledImageFill(theme.getBgCacheB(), 0, 0, 1.f);
+            g.setTiledImageFill(theme.getPageBackgroundB(), 0, 0, 1.f);
             g.fillPath(this->shape1, {});
         }
 

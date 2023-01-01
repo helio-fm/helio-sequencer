@@ -23,7 +23,7 @@
 #include "PlayButton.h"
 #include "IconButton.h"
 #include "SerializationKeys.h"
-#include "ColourIDs.h"
+#include "HelioTheme.h"
 
 const String SoundFontSynthAudioPlugin::instrumentId = "<soundfont-player>";
 const String SoundFontSynthAudioPlugin::instrumentName = "SoundFont Player";
@@ -128,7 +128,8 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(this->fillColour);
+        const auto &theme = HelioTheme::getCurrentTheme();
+        g.setFillType({ theme.getPageBackgroundA(), {} });
         g.fillRect(this->getLocalBounds());
     }
 
@@ -192,8 +193,6 @@ private:
     UniquePointer<IconButton> rightArrow;
     UniquePointer<Label> programNameLabel;
     UniquePointer<ModeIndicatorComponent> programIndexIndicator;
-
-    const Colour fillColour = findDefaultColour(ColourIDs::BackgroundA::fill);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundFontSynthEditor)
 };

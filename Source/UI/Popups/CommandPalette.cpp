@@ -28,7 +28,7 @@
 #include "PianoRoll.h"
 
 #include "ShadowDownwards.h"
-#include "PanelBackgroundC.h"
+#include "PanelBackground.h"
 #include "ShadowLeftwards.h"
 #include "ShadowRightwards.h"
 
@@ -38,7 +38,7 @@ CommandPalette::CommandPalette(ProjectNode *project, RollBase *roll)
 {
     this->shadowDn = make<ShadowDownwards>(ShadowType::Hard);
     this->addAndMakeVisible(this->shadowDn.get());
-    this->bg = make<PanelBackgroundC>();
+    this->bg = make<PanelBackground>();
     this->addAndMakeVisible(this->bg.get());
     this->shadowL = make<ShadowLeftwards>(ShadowType::Normal);
     this->addAndMakeVisible(this->shadowL.get());
@@ -161,7 +161,7 @@ void CommandPalette::parentHierarchyChanged()
 
 void CommandPalette::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissModalDialogAsync)
+    if (commandId == CommandIDs::DismissDialog)
     {
         this->dismiss();
     }
@@ -213,7 +213,7 @@ bool CommandPalette::keyPressed(const KeyPress &key)
 
 void CommandPalette::inputAttemptWhenModal()
 {
-    this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
+    this->postCommandMessage(CommandIDs::DismissDialog);
 }
 
 //===----------------------------------------------------------------------===//

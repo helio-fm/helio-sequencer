@@ -22,9 +22,9 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 
-#include "PanelBackgroundA.h"
-#include "PanelBackgroundB.h"
-#include "PanelBackgroundC.h"
+#include "PageBackgroundA.h"
+#include "PageBackgroundB.h"
+#include "PanelBackground.h"
 
 #if PLATFORM_DESKTOP
 #   define SCROLLBAR_WIDTH (17)
@@ -49,10 +49,15 @@ void HelioTheme::drawNoise(Component *target, Graphics &g, float alphaMultiply /
     g.fillRect(0, 0, target->getWidth(), target->getHeight());
 }
 
+void HelioTheme::drawNoise(Graphics &g, float alphaMultiply /*= 1.f*/) const
+{
+    g.setTiledImageFill(this->backgroundNoise, 0, 0, noiseAlpha * alphaMultiply);
+    g.fillRect(0, 0, g.getClipBounds().getWidth(), g.getClipBounds().getHeight());
+}
+
 void HelioTheme::drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply /*= 1.f*/)
 {
-    g.setTiledImageFill(theme.backgroundNoise, 0, 0, noiseAlpha * alphaMultiply);
-    g.fillRect(0, 0, g.getClipBounds().getWidth(), g.getClipBounds().getHeight());
+    theme.drawNoise(g, alphaMultiply);
 }
 
 void HelioTheme::drawNoiseWithin(Rectangle<int> bounds, Graphics &g, float alphaMultiply /*= 1.f*/)
@@ -302,7 +307,7 @@ Font HelioTheme::getTextButtonFont(TextButton &button, int buttonHeight)
 void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
                                 bool isMouseOverButton, bool isButtonDown)
 {
-    Font font(getTextButtonFont(button, button.getHeight()));
+    const auto font = getTextButtonFont(button, button.getHeight());
     g.setFont(font);
     g.setColour(findDefaultColour(TextButton::buttonColourId).contrasting()
         .withMultipliedAlpha(button.isEnabled() ? 0.9f : 0.4f));
@@ -315,7 +320,8 @@ void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
     const int leftIndent = fontHeight;
     const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
 
-    g.setColour(findDefaultColour(TextButton::textColourOnId).withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
+    g.setColour(findDefaultColour(TextButton::textColourOnId)
+        .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
 
     g.drawFittedText(button.getButtonText(),
         leftIndent,
@@ -329,22 +335,25 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
                                       const Colour &backgroundColour,
                                       bool isMouseOverButton, bool isButtonDown)
 {
-    Colour baseColour(backgroundColour.withMultipliedAlpha(button.isEnabled() ? 0.75f : 0.3f));
+    const auto baseColour = backgroundColour
+        .withMultipliedAlpha(button.isEnabled() ? 0.75f : 0.3f);
 
     const auto width = float(button.getWidth());
     const auto height = float(button.getHeight());
 
     if (width > 0 && height > 0)
     {
-        const float cornerSize = 2.f;
+        const float cornerSize = 1.f;
 
         Path outline;
-        outline.addRoundedRectangle(0.f, -cornerSize,
-            width, height + cornerSize, cornerSize, cornerSize,
+        outline.addRoundedRectangle(0.f, 0.f,
+            width, height, cornerSize, cornerSize,
             true, true, true, true);
 
-        g.setGradientFill(ColourGradient(baseColour.darker(0.1f), 0.0f, height / 2 - 2,
-                                         baseColour.darker(0.2f), 0.0f, height / 2 + 2, false));
+        g.setGradientFill(ColourGradient(
+            baseColour.darker(0.1f), 0.f, height / 2 - 2,
+            baseColour.darker(0.2f), 0.f, height / 2 + 2, false));
+
         g.fillPath(outline);
 
         if (isButtonDown || isMouseOverButton)
@@ -353,14 +362,14 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
             g.fillPath(outline);
         }
 
-        constexpr auto outlineAlpha = 0.1f;
+        constexpr auto outlineAlpha = 0.05f;
 
         g.setColour(Colours::white.withAlpha(outlineAlpha));
-        g.strokePath(outline, PathStrokeType(1.0f));
+        g.strokePath(outline, PathStrokeType(1.f));
 
-        g.setColour(Colours::black.withAlpha(0.5f * outlineAlpha));
-        g.strokePath(outline, PathStrokeType(1.0f),
-                     AffineTransform::translation(0.0f, 1.0f).scaled(1.0f, (height + 2.0f) / height));
+        g.setColour(Colours::black.withAlpha(outlineAlpha));
+        g.strokePath(outline, PathStrokeType(1.f),
+            AffineTransform::translation(0.f, 1.f).scaled(1.f, (height + 2.f) / height));
     }
 }
 
@@ -619,7 +628,7 @@ void HelioTheme::drawDocumentWindowTitleBar(DocumentWindow &window,
     }
 
     const auto &theme = HelioTheme::getCurrentTheme();
-    g.setFillType({ theme.getBgCacheA(), {} });
+    g.setFillType({ theme.getPageBackgroundA(), {} });
     g.fillRect(0, 0, w, h);
 
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
@@ -784,51 +793,53 @@ void HelioTheme::updateFont(const Font &font)
 
 void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 {
+    const auto textColour = s->getTextColour();
+
     // JUCE component colour id's:
 
     // Sliders
-    this->setColour(Slider::rotarySliderOutlineColourId, s->getTextColour().contrasting(0.9f).withMultipliedAlpha(0.5f));
-    this->setColour(Slider::rotarySliderFillColourId, s->getTextColour());
-    this->setColour(Slider::thumbColourId, s->getTextColour());
-    this->setColour(Slider::trackColourId, s->getTextColour().withMultipliedAlpha(0.5f));
+    this->setColour(Slider::rotarySliderOutlineColourId, textColour.contrasting(0.9f).withMultipliedAlpha(0.5f));
+    this->setColour(Slider::rotarySliderFillColourId, textColour);
+    this->setColour(Slider::thumbColourId, textColour);
+    this->setColour(Slider::trackColourId, textColour.withMultipliedAlpha(0.5f));
 
     // Labels
-    this->setColour(Label::textColourId, s->getTextColour());
-    this->setColour(Label::outlineColourId, s->getTextColour().contrasting());
+    this->setColour(Label::textColourId, textColour);
+    this->setColour(Label::outlineColourId, textColour.contrasting());
 
     // MainWindow
-    this->setColour(ResizableWindow::backgroundColourId, s->getPrimaryGradientColourA().brighter(0.045f));
+    this->setColour(ResizableWindow::backgroundColourId, s->getPageFillColour().brighter(0.045f));
     this->setColour(ScrollBar::backgroundColourId, Colours::transparentBlack);
-    this->setColour(ScrollBar::thumbColourId, s->getPanelFillColour().withAlpha(1.f));
+    this->setColour(ScrollBar::thumbColourId, s->getButtonFillColour().withAlpha(1.f));
 
     // TextButton
-    this->setColour(TextButton::buttonColourId, s->getPanelFillColour());
-    this->setColour(TextButton::buttonOnColourId, s->getPanelBorderColour());
-    this->setColour(TextButton::textColourOnId, s->getTextColour().withMultipliedAlpha(0.75f));
-    this->setColour(TextButton::textColourOffId, s->getTextColour().withMultipliedAlpha(0.5f));
+    this->setColour(TextButton::buttonColourId, s->getButtonFillColour());
+    this->setColour(TextButton::buttonOnColourId, s->getFrameBorderColour());
+    this->setColour(TextButton::textColourOnId, textColour.withMultipliedAlpha(0.75f));
+    this->setColour(TextButton::textColourOffId, textColour.withMultipliedAlpha(0.5f));
 
     // TextEditor
-    this->setColour(TextEditor::textColourId, s->getTextColour());
-    this->setColour(TextEditor::backgroundColourId, s->getPrimaryGradientColourA().darker(0.055f));
-    this->setColour(TextEditor::outlineColourId, s->getPanelBorderColour().withAlpha(0.075f));
-    this->setColour(TextEditor::highlightedTextColourId, s->getTextColour());
-    this->setColour(TextEditor::focusedOutlineColourId, s->getTextColour().contrasting().withAlpha(0.2f));
-    this->setColour(TextEditor::shadowColourId, s->getPrimaryGradientColourA().darker(0.05f));
-    this->setColour(TextEditor::highlightColourId, s->getTextColour().contrasting().withAlpha(0.25f));
-    this->setColour(CaretComponent::caretColourId, s->getTextColour().withAlpha(0.35f));
+    this->setColour(TextEditor::textColourId, textColour);
+    this->setColour(TextEditor::backgroundColourId, s->getPageFillColour().darker(0.055f));
+    this->setColour(TextEditor::outlineColourId, s->getFrameBorderColour().withAlpha(0.075f));
+    this->setColour(TextEditor::highlightedTextColourId, textColour);
+    this->setColour(TextEditor::focusedOutlineColourId, textColour.contrasting().withAlpha(0.2f));
+    this->setColour(TextEditor::shadowColourId, s->getPageFillColour().darker(0.05f));
+    this->setColour(TextEditor::highlightColourId, textColour.contrasting().withAlpha(0.25f));
+    this->setColour(CaretComponent::caretColourId, textColour.withAlpha(0.35f));
 
     // TableListBox
-    this->setColour(ListBox::textColourId, s->getTextColour());
+    this->setColour(ListBox::textColourId, textColour);
     this->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->setColour(TableHeaderComponent::backgroundColourId, Colours::transparentBlack);
-    this->setColour(TableHeaderComponent::outlineColourId, s->getPanelBorderColour().withAlpha(0.05f));
-    this->setColour(TableHeaderComponent::highlightColourId, s->getPrimaryGradientColourA().brighter(0.04f));
-    this->setColour(TableHeaderComponent::textColourId, s->getTextColour().withMultipliedAlpha(0.75f));
+    this->setColour(TableHeaderComponent::outlineColourId, s->getFrameBorderColour().withAlpha(0.05f));
+    this->setColour(TableHeaderComponent::highlightColourId, s->getPageFillColour().brighter(0.04f));
+    this->setColour(TableHeaderComponent::textColourId, textColour.withMultipliedAlpha(0.75f));
 
     // Check boxes, radio buttons
-    this->setColour(ToggleButton::textColourId, s->getTextColour());
-    this->setColour(ToggleButton::tickColourId, s->getTextColour());
-    this->setColour(ToggleButton::tickDisabledColourId, s->getTextColour().withMultipliedAlpha(0.65f));
+    this->setColour(ToggleButton::textColourId, textColour);
+    this->setColour(ToggleButton::tickColourId, textColour);
+    this->setColour(ToggleButton::tickDisabledColourId, textColour.withMultipliedAlpha(0.65f));
 
     // Helio colours:
 
@@ -838,43 +849,44 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     // Similar things for the roll header tools
     this->setColour(ColourIDs::RollHeader::selection, s->getLassoBorderColour().withAlpha(0.8f));
     this->setColour(ColourIDs::RollHeader::soundProbe, s->getLassoBorderColour().withMultipliedBrightness(1.1f).withAlpha(0.75f));
-    this->setColour(ColourIDs::RollHeader::timeDistance, s->getTextColour().withAlpha(0.4f));
+    this->setColour(ColourIDs::RollHeader::timeDistance, textColour.withAlpha(0.4f));
 
     // A hack for icon base colors
     this->setColour(ColourIDs::Icons::fill, s->getIconBaseColour());
     this->setColour(ColourIDs::Icons::shadow, s->getIconShadowColour());
 
-    // Panels
-    this->setColour(ColourIDs::BackgroundA::fill, s->getPrimaryGradientColourA());
-    this->setColour(ColourIDs::BackgroundB::fill, s->getPrimaryGradientColourA().darker(0.025f));
-    this->setColour(ColourIDs::BackgroundC::fill, s->getSecondaryGradientColourA());
+    // Backgrounds
+    this->setColour(ColourIDs::Backgrounds::pageFillA, s->getPageFillColour());
+    this->setColour(ColourIDs::Backgrounds::pageFillB, s->getPageFillColour().darker(0.025f));
+    this->setColour(ColourIDs::Backgrounds::sidebarFill, s->getSidebarFillColour());
+    this->setColour(ColourIDs::Backgrounds::headlineFill, s->getHeadlineFillColour());
+    this->setColour(ColourIDs::Backgrounds::dialogFill, s->getDialogFillColour());
 
-    this->setColour(ColourIDs::Panel::fill, s->getPanelFillColour());
-    this->setColour(ColourIDs::Panel::border, s->getPanelBorderColour().withAlpha(0.225f));
+    this->setColour(ColourIDs::Panel::border, s->getFrameBorderColour().withAlpha(0.225f));
 
-    this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPrimaryGradientColourA().darker(0.4f));
+    this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPageFillColour().darker(0.4f));
     this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.055f));
     this->setColour(ColourIDs::TrackScroller::screenRangeFill, s->getIconBaseColour().withMultipliedAlpha(0.55f));
     this->setColour(ColourIDs::TrackScroller::scrollerFill, s->getIconBaseColour().withMultipliedAlpha(0.55f));
 
     // InstrumentEditor
-    this->setColour(ColourIDs::Instrument::midiIn, Colours::white.withAlpha(0.1f));
-    this->setColour(ColourIDs::Instrument::midiOut, Colours::white.withAlpha(0.1f));
-    this->setColour(ColourIDs::Instrument::audioIn, Colours::white.withAlpha(0.15f));
-    this->setColour(ColourIDs::Instrument::audioOut, Colours::white.withAlpha(0.15f));
-    this->setColour(ColourIDs::Instrument::midiConnector, Colours::black.withAlpha(0.35f));
-    this->setColour(ColourIDs::Instrument::audioConnector, Colours::white.withAlpha(0.25f));
-    this->setColour(ColourIDs::Instrument::shadowPin, Colours::black.withAlpha(0.1f));
-    this->setColour(ColourIDs::Instrument::shadowConnector, Colours::black.withAlpha(0.2f));
+    this->setColour(ColourIDs::Instrument::midiIn, textColour.contrasting().withAlpha(0.1f));
+    this->setColour(ColourIDs::Instrument::midiOut, textColour.contrasting().withAlpha(0.1f));
+    this->setColour(ColourIDs::Instrument::audioIn, textColour.contrasting().withAlpha(0.15f));
+    this->setColour(ColourIDs::Instrument::audioOut, textColour.contrasting().withAlpha(0.15f));
+    this->setColour(ColourIDs::Instrument::midiConnector, textColour.withAlpha(0.35f));
+    this->setColour(ColourIDs::Instrument::audioConnector, textColour.contrasting().withAlpha(0.25f));
+    this->setColour(ColourIDs::Instrument::shadowPin, textColour.withAlpha(0.1f));
+    this->setColour(ColourIDs::Instrument::shadowConnector, textColour.withAlpha(0.2f));
 
     // Borders
     this->setColour(ColourIDs::Common::borderLineLight, Colours::white.withAlpha(0.065f));
     this->setColour(ColourIDs::Common::borderLineDark, Colours::black.withAlpha(0.3f));
-    this->setColour(ColourIDs::ColourButton::outline, s->getTextColour());
+    this->setColour(ColourIDs::ColourButton::outline, textColour);
 
     // CallOutBox
-    this->setColour(ColourIDs::Callout::fill, s->getPrimaryGradientColourB().darker(0.025f));
-    this->setColour(ColourIDs::Callout::frame, s->getPrimaryGradientColourB().darker(0.25f));
+    this->setColour(ColourIDs::Callout::fill, s->getDialogFillColour().darker(0.025f));
+    this->setColour(ColourIDs::Callout::frame, s->getFrameBorderColour());
 
     // Rolls
     this->setColour(ColourIDs::Roll::blackKey, s->getBlackKeyColour().withMultipliedBrightness(0.95f));
@@ -887,7 +899,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::beatLine, s->getBarColour().withAlpha(0.4f));
     this->setColour(ColourIDs::Roll::snapLine, s->getBarColour().withAlpha(0.1f));
 
-    const auto headerFill = s->getPrimaryGradientColourB().darker(0.025f);
+    const auto headerFill = s->getTimelineColour().darker(0.025f);
     this->setColour(ColourIDs::Roll::headerFill, headerFill);
     this->setColour(ColourIDs::Roll::headerSnaps, headerFill.contrasting().interpolatedWith(headerFill, 0.63f));
     this->setColour(ColourIDs::Roll::headerRecording, headerFill.interpolatedWith(Colours::red, 0.55f));
@@ -898,14 +910,14 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::trackHeaderFill, s->getWhiteKeyColour());
     this->setColour(ColourIDs::Roll::trackHeaderBorder, Colours::white.withAlpha(0.08f));
 
-    this->setColour(ColourIDs::Roll::noteFill, s->getTextColour().interpolatedWith(Colours::white, 0.5f));
+    this->setColour(ColourIDs::Roll::noteFill, textColour.interpolatedWith(Colours::white, 0.5f));
     this->setColour(ColourIDs::Roll::noteNameFill, s->getBlackKeyColour().darker(0.4f).withAlpha(0.95f));
-    this->setColour(ColourIDs::Roll::noteNameBorder, s->getTextColour().withAlpha(0.4f));
-    this->setColour(ColourIDs::Roll::noteNameShadow, s->getTextColour().withAlpha(0.25f));
+    this->setColour(ColourIDs::Roll::noteNameBorder, textColour.withAlpha(0.4f));
+    this->setColour(ColourIDs::Roll::noteNameShadow, textColour.withAlpha(0.25f));
 
     this->setColour(ColourIDs::TransportControl::recordInactive, Colours::transparentBlack);
     this->setColour(ColourIDs::TransportControl::recordHighlight, Colours::red.withAlpha(0.35f));
-    this->setColour(ColourIDs::TransportControl::recordActive, s->getPrimaryGradientColourB().darker(0.05f).interpolatedWith(Colours::red, 0.5f));
+    this->setColour(ColourIDs::TransportControl::recordActive, s->getTimelineColour().darker(0.05f).interpolatedWith(Colours::red, 0.5f));
     this->setColour(ColourIDs::TransportControl::playInactive, Colours::white.withAlpha(0.035f));
     this->setColour(ColourIDs::TransportControl::playHighlight, Colours::white.withAlpha(0.075f));
     this->setColour(ColourIDs::TransportControl::playActive, Colours::white.withAlpha(0.1f));
@@ -913,24 +925,60 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::HelperRectangle::fill, s->getLassoFillColour().withAlpha(0.08f));
     this->setColour(ColourIDs::HelperRectangle::outline, s->getLassoBorderColour().withAlpha(0.3f));
 
-    this->setColour(ColourIDs::Logo::fill, s->getTextColour().withMultipliedAlpha(0.25f));
-    this->setColour(ColourIDs::AudioMonitor::foreground, s->getTextColour());
+    this->setColour(ColourIDs::Logo::fill, textColour.withMultipliedAlpha(0.25f));
+    this->setColour(ColourIDs::AudioMonitor::foreground, textColour);
 
-    this->setColour(ColourIDs::VersionControl::connector, s->getTextColour().withAlpha(0.2f));
-    this->setColour(ColourIDs::VersionControl::outline, s->getTextColour().withAlpha(0.3f));
-    this->setColour(ColourIDs::VersionControl::highlight, s->getTextColour().withAlpha(0.02f));
+    this->setColour(ColourIDs::VersionControl::connector, textColour.withAlpha(0.2f));
+    this->setColour(ColourIDs::VersionControl::outline, textColour.withAlpha(0.3f));
+    this->setColour(ColourIDs::VersionControl::highlight, textColour.withAlpha(0.02f));
+
 
     // bright text probably means dark theme:
-    this->isDarkTheme = s->getTextColour().getPerceivedBrightness() > 0.5f;
+    this->isDarkTheme = textColour.getPerceivedBrightness() > 0.5f;
 
     // Update pre-rendered caches:
-    this->bgCacheA = {};
-    this->bgCacheB = {};
-    this->bgCacheC = {};
+    constexpr int w = 128;
+    constexpr int h = 128;
 
-    PanelBackgroundA::redrawBgCache(*this);
-    PanelBackgroundB::redrawBgCache(*this);
-    PanelBackgroundC::redrawBgCache(*this);
+    {
+        this->pageBackgroundA = Image(Image::ARGB, w, h, true);
+        Graphics g(this->pageBackgroundA);
+        g.setColour(this->findColour(ColourIDs::Backgrounds::pageFillA));
+        g.fillAll();
+        this->drawNoise(g, 0.5f);
+    }
+
+    {
+        this->pageBackgroundB = Image(Image::ARGB, w, h, true);
+        Graphics g(this->pageBackgroundB);
+        g.setColour(this->findColour(ColourIDs::Backgrounds::pageFillB));
+        g.fillAll();
+        this->drawNoise(g, 0.5f);
+    }
+
+    {
+        this->sidebarBackground = Image(Image::ARGB, w, h, true);
+        Graphics g(this->sidebarBackground);
+        g.setColour(this->findColour(ColourIDs::Backgrounds::sidebarFill));
+        g.fillAll();
+        this->drawNoise(g);
+    }
+
+    {
+        this->headlineBackground = Image(Image::ARGB, w, h, true);
+        Graphics g(this->headlineBackground);
+        g.setColour(this->findColour(ColourIDs::Backgrounds::headlineFill));
+        g.fillAll();
+        this->drawNoise(g);
+    }
+
+    {
+        this->dialogBackground = Image(Image::ARGB, w, h, true);
+        Graphics g(this->dialogBackground);
+        g.setColour(this->findColour(ColourIDs::Backgrounds::dialogFill));
+        g.fillAll();
+        this->drawNoise(g, 0.5f);
+    }
 
     Icons::clearPrerenderedCache();
 }

@@ -151,12 +151,12 @@ bool ModalCallout::hitTest(int x, int y)
 
 void ModalCallout::inputAttemptWhenModal()
 {
-    this->postCommandMessage(CommandIDs::HideCallout);
+    this->postCommandMessage(CommandIDs::DismissCallout);
 }
 
 void ModalCallout::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::HideCallout)
+    if (commandId == CommandIDs::DismissCallout)
     {
         this->dismiss();
     }

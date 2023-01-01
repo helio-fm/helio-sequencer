@@ -130,7 +130,7 @@ NotesTuningPanel::NotesTuningPanel(ProjectNode &parentProject, PianoRoll &target
       project(parentProject),
       hasMadeChanges(false)
 {
-    this->bg.reset(new PanelBackgroundC());
+    this->bg.reset(new PanelBackground());
     this->addAndMakeVisible(bg.get());
     this->sliderLinearButton.reset(new PopupButton(false));
     this->addAndMakeVisible(sliderLinearButton.get());

@@ -3290,9 +3290,9 @@
     <ClInclude Include="..\..\Source\UI\Themes\HelioTheme.h"/>
     <ClInclude Include="..\..\Source\UI\Themes\Icons.h"/>
     <ClInclude Include="..\..\Source\UI\Themes\FramePanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Themes\PanelBackgroundA.h"/>
-    <ClInclude Include="..\..\Source\UI\Themes\PanelBackgroundB.h"/>
-    <ClInclude Include="..\..\Source\UI\Themes\PanelBackgroundC.h"/>
+    <ClInclude Include="..\..\Source\UI\Themes\PageBackgroundA.h"/>
+    <ClInclude Include="..\..\Source\UI\Themes\PageBackgroundB.h"/>
+    <ClInclude Include="..\..\Source\UI\Themes\PanelBackground.h"/>
     <ClInclude Include="..\..\Source\UI\Themes\SeparatorHorizontal.h"/>
     <ClInclude Include="..\..\Source\UI\Themes\SeparatorHorizontalReversed.h"/>
     <ClInclude Include="..\..\Source\UI\Themes\SeparatorHorizontalFading.h"/>

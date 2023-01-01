@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "AudioPluginEditorPage.h"
-#include "PanelBackgroundB.h"
+#include "PageBackgroundB.h"
 #include "FramePanel.h"
 
 AudioPluginEditorPage::AudioPluginEditorPage(Component *contentOwned)
@@ -25,7 +25,7 @@ AudioPluginEditorPage::AudioPluginEditorPage(Component *contentOwned)
     this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
 
-    this->background = make<PanelBackgroundB>();
+    this->background = make<PageBackgroundB>();
     this->addAndMakeVisible(this->background.get());
 
     this->panel = make<FramePanel>();

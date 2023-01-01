@@ -48,13 +48,13 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
     this->setWantsKeyboardFocus(true);
     this->setPaintingIsUnclipped(true);
 
-    this->backgroundB = make<PanelBackgroundB>();
+    this->backgroundB = make<PageBackgroundB>();
     this->addAndMakeVisible(this->backgroundB.get());
 
     this->skew = make<SeparatorVerticalSkew>();
     this->addAndMakeVisible(this->skew.get());
 
-    this->backgroundA = make<PanelBackgroundA>();
+    this->backgroundA = make<PageBackgroundA>();
     this->addAndMakeVisible(this->backgroundA.get());
 
     this->projectTitleEditor = make<Label>();

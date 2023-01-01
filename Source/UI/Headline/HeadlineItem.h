@@ -59,7 +59,7 @@ private:
     WeakReference<HeadlineItemDataSource> item;
     AsyncUpdater &parentHeadline;
 
-    const Colour bgColour = findDefaultColour(ColourIDs::BackgroundA::fill);
+    const Colour bgColour = findDefaultColour(ColourIDs::Backgrounds::headlineFill);
 
     UniquePointer<Label> titleLabel;
     UniquePointer<IconComponent> icon;

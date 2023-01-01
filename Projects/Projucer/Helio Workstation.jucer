@@ -1377,12 +1377,12 @@
           <FILE id="e3IJC6" name="Icons.cpp" compile="1" resource="0" file="../../Source/UI/Themes/Icons.cpp"/>
           <FILE id="cuElFX" name="Icons.h" compile="0" resource="0" file="../../Source/UI/Themes/Icons.h"/>
           <FILE id="jNvXXq" name="FramePanel.h" compile="0" resource="0" file="../../Source/UI/Themes/FramePanel.h"/>
-          <FILE id="oQQzCv" name="PanelBackgroundA.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/PanelBackgroundA.h"/>
-          <FILE id="wvlbF9" name="PanelBackgroundB.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/PanelBackgroundB.h"/>
-          <FILE id="IxtKep" name="PanelBackgroundC.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/PanelBackgroundC.h"/>
+          <FILE id="oQQzCv" name="PageBackgroundA.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/PageBackgroundA.h"/>
+          <FILE id="wvlbF9" name="PageBackgroundB.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/PageBackgroundB.h"/>
+          <FILE id="IxtKep" name="PanelBackground.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/PanelBackground.h"/>
           <FILE id="kpXD8z" name="SeparatorHorizontal.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/SeparatorHorizontal.h"/>
           <FILE id="mbySv0" name="SeparatorHorizontalReversed.h" compile="0"

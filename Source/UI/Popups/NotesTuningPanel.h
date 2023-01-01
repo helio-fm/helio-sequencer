@@ -27,7 +27,7 @@ class MenuItemComponent;
 class PopupButton;
 //[/Headers]
 
-#include "../Themes/PanelBackgroundC.h"
+#include "../Themes/PanelBackground.h"
 #include "../Common/PlayButton.h"
 
 class NotesTuningPanel final : public Component,
@@ -91,7 +91,7 @@ private:
 
     //[/UserVariables]
 
-    UniquePointer<PanelBackgroundC> bg;
+    UniquePointer<PanelBackground> bg;
     UniquePointer<PopupButton> sliderLinearButton;
     UniquePointer<PopupButton> sliderMultiplyButton;
     UniquePointer<Slider> volumeSliderMulti;

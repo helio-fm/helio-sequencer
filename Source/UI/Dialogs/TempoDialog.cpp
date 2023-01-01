@@ -247,7 +247,7 @@ void TempoDialog::parentSizeChanged()
 
 void TempoDialog::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissModalDialogAsync)
+    if (commandId == CommandIDs::DismissDialog)
     {
         this->doCancel();
     }
@@ -255,7 +255,7 @@ void TempoDialog::handleCommandMessage(int commandId)
 
 void TempoDialog::inputAttemptWhenModal()
 {
-    this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
+    this->postCommandMessage(CommandIDs::DismissDialog);
 }
 
 void TempoDialog::updateOkButtonState()

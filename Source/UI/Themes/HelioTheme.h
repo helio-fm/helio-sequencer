@@ -33,6 +33,7 @@ public:
     
     Typeface::Ptr getTypefaceForFont(const Font &) override;
 
+    void drawNoise(Graphics &g, float alphaMultiply = 1.f) const;
     static void drawNoise(Component *target, Graphics &g, float alphaMultiply = 1.f);
     static void drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply = 1.f);
     static void drawNoiseWithin(Rectangle<int> bounds, Graphics &g, float alphaMultiply = 1.f);
@@ -136,14 +137,11 @@ public:
             Button *closeButton,
             bool positionTitleBarButtonsOnLeft) override;
     
-    inline Image &getBgCacheA() noexcept { return this->bgCacheA; }
-    inline const Image &getBgCacheA() const noexcept { return this->bgCacheA; }
-
-    inline Image &getBgCacheB() noexcept { return this->bgCacheB; }
-    inline const Image &getBgCacheB() const noexcept { return this->bgCacheB; }
-
-    inline Image &getBgCacheC() noexcept { return this->bgCacheC; }
-    inline const Image &getBgCacheC() const noexcept { return this->bgCacheC; }
+    inline const Image &getPageBackgroundA() const noexcept { return this->pageBackgroundA; }
+    inline const Image &getPageBackgroundB() const noexcept { return this->pageBackgroundB; }
+    inline const Image &getSidebarBackground() const noexcept { return this->sidebarBackground; }
+    inline const Image &getHeadlineBackground() const noexcept { return this->headlineBackground; }
+    inline const Image &getDialogBackground() const noexcept { return this->dialogBackground; }
 
     inline bool isDark() const noexcept
     {
@@ -158,9 +156,11 @@ protected:
     
     Typeface::Ptr textTypefaceCache;
     
-    Image bgCacheA;
-    Image bgCacheB;
-    Image bgCacheC;
+    Image pageBackgroundA;
+    Image pageBackgroundB;
+    Image sidebarBackground;
+    Image headlineBackground;
+    Image dialogBackground;
 
     bool isDarkTheme = false;
 

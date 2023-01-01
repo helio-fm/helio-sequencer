@@ -20,11 +20,11 @@
 #include "HelioTheme.h"
 #include "ColourIDs.h"
 
-class PanelBackgroundA final : public Component
+class PageBackgroundA final : public Component
 {
 public:
 
-    PanelBackgroundA()
+    PageBackgroundA()
     {
         this->setOpaque(true);
         this->setPaintingIsUnclipped(true);
@@ -34,36 +34,19 @@ public:
     void paint(Graphics &g) override
     {
         const auto &theme = HelioTheme::getCurrentTheme();
-        if (theme.getBgCacheA().isValid())
+        if (theme.getPageBackgroundA().isValid())
         {
-            g.setTiledImageFill(theme.getBgCacheA(), 0, 0, 1.f);
+            g.setTiledImageFill(theme.getPageBackgroundA(), 0, 0, 1.f);
             g.fillRect(this->getLocalBounds());
         }
         else
         {
-            g.setColour(findDefaultColour(ColourIDs::BackgroundA::fill));
+            g.setColour(findDefaultColour(ColourIDs::Backgrounds::pageFillA));
             g.fillRect(this->getLocalBounds());
         }
     }
 
-    static void redrawBgCache(HelioTheme &theme)
-    {
-        if (theme.getBgCacheA().isValid())
-        {
-            return;
-        }
-
-        constexpr int w = 128;
-        constexpr int h = 128;
-        Image render(Image::ARGB, w, h, true);
-        Graphics g(render);
-        g.setColour(theme.findColour(ColourIDs::BackgroundA::fill));
-        g.fillAll();
-        HelioTheme::drawNoise(theme, g, 0.5f);
-        theme.getBgCacheA() = render;
-    }
-
 private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PanelBackgroundA)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PageBackgroundA)
 };

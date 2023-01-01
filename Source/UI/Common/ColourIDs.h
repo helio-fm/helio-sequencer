@@ -27,6 +27,9 @@ namespace ColourIDs
     // The colour are generated in HelioTheme::initColours,
     // based on current colour scheme containing a number of common colours.
 
+    // Tech debt warning: lots of colours out there in the app are hardcoded in components,
+    // hopefully in future they all will be set in HelioTheme and accessed via these ids.
+
     namespace Common
     {
         static const int borderLineLight        = 0x2000000;
@@ -113,23 +116,16 @@ namespace ColourIDs
 
     namespace Panel
     {
-        static const int fill                   = 0x2000700;
-        static const int border                 = 0x2000701;
+        static const int border                 = 0x2000700;
     }
 
-    namespace BackgroundA
+    namespace Backgrounds
     {
-        static const int fill                   = 0x2000800;
-    }
-
-    namespace BackgroundB
-    {
-        static const int fill                   = 0x2000900;
-    }
-
-    namespace BackgroundC
-    {
-        static const int fill                   = 0x2001000;
+        static const int pageFillA              = 0x2000800;
+        static const int pageFillB              = 0x2000801;
+        static const int sidebarFill            = 0x2000802;
+        static const int headlineFill           = 0x2000803;
+        static const int dialogFill             = 0x2000804;
     }
 
     namespace TrackScroller

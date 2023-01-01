@@ -38,45 +38,68 @@ String ColourScheme::getName() const noexcept
     return this->name;
 }
 
-Colour ColourScheme::getPrimaryGradientColourA() const
+// the next 7 methods check for legacy ids, if present:
+
+Colour ColourScheme::getPageFillColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::primaryGradientA);
+    const auto c = this->colours.contains(UI::Colours::primaryGradientA) ?
+        this->colours.at(UI::Colours::primaryGradientA) :
+        this->colours.at(UI::Colours::pageFill);
     return JUCE_LIVE_CONSTANT(c);
 }
 
-Colour ColourScheme::getPrimaryGradientColourB() const
+Colour ColourScheme::getTimelineColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::primaryGradientB);
+    const auto c = this->colours.contains(UI::Colours::primaryGradientB) ?
+        this->colours.at(UI::Colours::primaryGradientB) :
+        this->colours.at(UI::Colours::timeline);
     return JUCE_LIVE_CONSTANT(c);
 }
 
-Colour ColourScheme::getSecondaryGradientColourA() const
+Colour ColourScheme::getHeadlineFillColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::secondaryGradientA);
+    const auto c = this->colours.contains(UI::Colours::primaryGradientA) ?
+        this->colours.at(UI::Colours::primaryGradientA) :
+        this->colours.at(UI::Colours::headlineFill);
     return JUCE_LIVE_CONSTANT(c);
 }
 
-Colour ColourScheme::getSecondaryGradientColourB() const
+Colour ColourScheme::getSidebarFillColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::secondaryGradientB);
+    const auto c = this->colours.contains(UI::Colours::secondaryGradientA) ?
+        this->colours.at(UI::Colours::secondaryGradientA) :
+        this->colours.at(UI::Colours::sidebarFill);
     return JUCE_LIVE_CONSTANT(c);
 }
 
-Colour ColourScheme::getPanelFillColour() const
+Colour ColourScheme::getDialogFillColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::panelFill);
+    const auto c = this->colours.contains(UI::Colours::secondaryGradientA) ?
+        this->colours.at(UI::Colours::secondaryGradientA) :
+        this->colours.at(UI::Colours::dialogFill);
     return JUCE_LIVE_CONSTANT(c);
 }
 
-Colour ColourScheme::getPanelBorderColour() const
+Colour ColourScheme::getButtonFillColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::panelBorder);
+    const auto c = this->colours.contains(UI::Colours::panelFill) ?
+        this->colours.at(UI::Colours::panelFill) :
+        this->colours.at(UI::Colours::buttonFill);
+    return JUCE_LIVE_CONSTANT(c);
+}
+
+Colour ColourScheme::getFrameBorderColour() const
+{
+    using namespace Serialization;
+    const auto c = this->colours.contains(UI::Colours::panelBorder) ?
+        this->colours.at(UI::Colours::panelBorder) :
+        this->colours.at(UI::Colours::frameBorder);
     return JUCE_LIVE_CONSTANT(c);
 }
 
@@ -154,14 +177,15 @@ void ColourScheme::syncWithLiveConstantEditor()
 
     this->reset();
 
-    this->colours[UI::Colours::primaryGradientA] = this->getPrimaryGradientColourA();
-    this->colours[UI::Colours::primaryGradientB] = this->getPrimaryGradientColourB();
-    this->colours[UI::Colours::secondaryGradientA] = this->getSecondaryGradientColourA();
-    this->colours[UI::Colours::secondaryGradientB] = this->getSecondaryGradientColourB();
-    this->colours[UI::Colours::panelFill] = this->getPanelFillColour();
-    this->colours[UI::Colours::lassoBorder] = this->getLassoBorderColour();
-    this->colours[UI::Colours::panelBorder] = this->getPanelBorderColour();
+    this->colours[UI::Colours::pageFill] = this->getPageFillColour();
+    this->colours[UI::Colours::timeline] = this->getTimelineColour();
+    this->colours[UI::Colours::sidebarFill] = this->getSidebarFillColour();
+    this->colours[UI::Colours::headlineFill] = this->getHeadlineFillColour();
+    this->colours[UI::Colours::dialogFill] = this->getDialogFillColour();
+    this->colours[UI::Colours::buttonFill] = this->getButtonFillColour();
+    this->colours[UI::Colours::frameBorder] = this->getFrameBorderColour();
     this->colours[UI::Colours::lassoFill] = this->getLassoFillColour();
+    this->colours[UI::Colours::lassoBorder] = this->getLassoBorderColour();
     this->colours[UI::Colours::blackKey] = this->getBlackKeyColour();
     this->colours[UI::Colours::whiteKey] = this->getWhiteKeyColour();
     this->colours[UI::Colours::row] = this->getRowColour();
@@ -169,12 +193,6 @@ void ColourScheme::syncWithLiveConstantEditor()
     this->colours[UI::Colours::text] = this->getTextColour();
     this->colours[UI::Colours::iconBase] = this->getIconBaseColour();
     this->colours[UI::Colours::iconShadow] = this->getIconShadowColour();
-}
-
-bool ColourScheme::isEquivalentTo(const ColourScheme::Ptr other) const
-{
-    jassert(other != nullptr);
-    return this->colours == other->colours;
 }
 
 SerializedData ColourScheme::serialize() const
@@ -224,27 +242,17 @@ void ColourScheme::reset()
 
     this->name.clear();
     this->colours.clear();
-
-    this->colours[UI::Colours::primaryGradientA] = Colours::black;
-    this->colours[UI::Colours::primaryGradientB] = Colours::black;
-    this->colours[UI::Colours::secondaryGradientA] = Colours::black;
-    this->colours[UI::Colours::secondaryGradientB] = Colours::black;
-    this->colours[UI::Colours::panelFill] = Colours::black;
-    this->colours[UI::Colours::lassoBorder] = Colours::black;
-    this->colours[UI::Colours::panelBorder] = Colours::black;
-    this->colours[UI::Colours::lassoFill] = Colours::black;
-    this->colours[UI::Colours::blackKey] = Colours::black;
-    this->colours[UI::Colours::whiteKey] = Colours::black;
-    this->colours[UI::Colours::row] = Colours::black;
-    this->colours[UI::Colours::bar] = Colours::black;
-    this->colours[UI::Colours::text] = Colours::black;
-    this->colours[UI::Colours::iconBase] = Colours::black.withAlpha(0.25f);
-    this->colours[UI::Colours::iconShadow] = Colours::white.withAlpha(0.115f);
 }
 
 String ColourScheme::getResourceId() const noexcept
 {
     return this->name;
+}
+
+bool ColourScheme::isEquivalentTo(const ColourScheme::Ptr other) const
+{
+    jassert(other != nullptr);
+    return this->name == other->name;
 }
 
 Identifier ColourScheme::getResourceType() const noexcept

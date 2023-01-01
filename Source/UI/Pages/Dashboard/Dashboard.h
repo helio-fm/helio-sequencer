@@ -21,8 +21,8 @@ class Workspace;
 class SpectralLogo;
 class OverlayButton;
 class DashboardMenu;
-class PanelBackgroundA;
-class PanelBackgroundB;
+class PageBackgroundA;
+class PageBackgroundB;
 class OpenProjectButton;
 class CreateProjectButton;
 class UpdatesInfoComponent;
@@ -46,9 +46,9 @@ private:
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
-    UniquePointer<PanelBackgroundA> backgroundA;
+    UniquePointer<PageBackgroundA> backgroundA;
     UniquePointer<Label> patreonLabel;
-    UniquePointer<PanelBackgroundB> backgroundB;
+    UniquePointer<PageBackgroundB> backgroundB;
     UniquePointer<OpenProjectButton> openProjectButton;
     UniquePointer<MobileComboBox::Container> createProjectCombo;
     UniquePointer<SeparatorVerticalSkew> skew;

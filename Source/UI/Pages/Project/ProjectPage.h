@@ -20,8 +20,8 @@
 class ProjectNode;
 
 #include "TransportListener.h"
-#include "PanelBackgroundA.h"
-#include "PanelBackgroundB.h"
+#include "PageBackgroundA.h"
+#include "PageBackgroundB.h"
 #include "SeparatorVerticalSkew.h"
 
 class ProjectPage final : public Component,
@@ -75,9 +75,9 @@ private:
     // Children
     //===----------------------------------------------------------------------===//
 
-    UniquePointer<PanelBackgroundB> backgroundB;
+    UniquePointer<PageBackgroundB> backgroundB;
     UniquePointer<SeparatorVerticalSkew> skew;
-    UniquePointer<PanelBackgroundA> backgroundA;
+    UniquePointer<PageBackgroundA> backgroundA;
     UniquePointer<Label> projectTitleEditor;
     UniquePointer<Label> projectTitleLabel;
     UniquePointer<Label> authorEditor;

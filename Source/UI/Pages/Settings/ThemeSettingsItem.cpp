@@ -134,18 +134,18 @@ void ThemeSettingsItem::paint(Graphics &g)
         i++;
     }
 
-    g.setColour(this->colours->getPrimaryGradientColourA());
+    g.setColour(this->colours->getPageFillColour());
     g.fillRect(41.f, paintStartY, 207.f, paintEndY);
 
     // Outer glow
-    g.setColour (this->colours->getPrimaryGradientColourA().brighter(0.2f));
+    g.setColour (this->colours->getPageFillColour().brighter(0.2f));
     g.drawVerticalLine(41, lineStartY, lineEndY);
     g.drawVerticalLine(this->getWidth() - 1, lineStartY, lineEndY);
     g.drawHorizontalLine(int(lineStartY) - 1, 42.f, float(this->getWidth()) - 1.f);
     g.drawHorizontalLine(int(lineEndY), 42.f, float(this->getWidth()) - 1.f);
 
     // Inner shadow
-    g.setColour(this->colours->getPrimaryGradientColourA().darker(0.05f));
+    g.setColour(this->colours->getPageFillColour().darker(0.05f));
     g.drawVerticalLine(42, lineStartY, lineEndY);
     g.drawVerticalLine(this->getWidth() - 2, lineStartY, lineEndY);
     g.drawHorizontalLine(int(lineStartY), 42, float(this->getWidth()) - 1.f);

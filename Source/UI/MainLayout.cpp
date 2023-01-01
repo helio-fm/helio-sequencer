@@ -45,7 +45,7 @@ class InitScreen final : public Component, private Timer
 {
 public:
 
-    InitScreen() : fillColour(findDefaultColour(ColourIDs::BackgroundA::fill))
+    InitScreen()
     {
         this->setOpaque(false);
         this->setWantsKeyboardFocus(false);
@@ -102,7 +102,7 @@ private:
         this->startTimerHz(60);
     }
 
-    Colour fillColour;
+    Colour fillColour = findDefaultColour(ColourIDs::Backgrounds::pageFillA);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InitScreen)
 };
