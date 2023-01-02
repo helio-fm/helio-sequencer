@@ -35,12 +35,16 @@ float RendererThread::getPercentsComplete() const noexcept
 }
 
 bool RendererThread::startRendering(const URL &target, RenderFormat format,
-    Transport::PlaybackContext::Ptr playbackContext)
+    Transport::PlaybackContext::Ptr playbackContext,
+    int waveformThumbnailResolution)
 {
     this->stop();
 
     this->format = format;
     this->context = playbackContext;
+
+    this->waveformThumbnail.clearQuick();
+    this->waveformThumbnail.resize(waveformThumbnailResolution);
 
     // keep the url copy alive while rendering,
     // since on iOS it contains a security bookmark:
@@ -284,7 +288,16 @@ void RendererThread::run()
         // finally, update counters
         currentFrame += bufferSize;
 
+        const auto peakLevel = mixingBuffer.getMagnitude(0, mixingBuffer.getNumSamples());
+
         this->percentsDone = float((currentFrame - firstFrame) / totalFrames);
+
+        jassert(this->waveformThumbnail.size() > 0);
+        const auto waveformFrameIndex = int(float(this->waveformThumbnail.size() - 1) * this->percentsDone.get());
+        if (waveformFrameIndex >= 0 && waveformFrameIndex < this->waveformThumbnail.size())
+        {
+            this->waveformThumbnail.set(waveformFrameIndex, jmax(this->waveformThumbnail[waveformFrameIndex], peakLevel));
+        }
 
         // DBG("% done: " + String(this->percentsDone.get()));
     }
@@ -297,6 +310,11 @@ void RendererThread::run()
         graph->reset();
         graph->releaseResources();
     }
+
+    // some plugins tend to make a weird post-rendering "tail" sound,
+    // and here is an attepmt to fix that by giving them time to do
+    // whatever processing they need to do after resetting
+    Thread::sleep(200);
     
     {
         const ScopedLock sl(this->writerLock);
@@ -307,4 +325,9 @@ void RendererThread::run()
     this->renderTarget = {};
 
     App::Workspace().getAudioCore().setAwake();
+}
+
+const Array<float, CriticalSection> &RendererThread::getWaveformThumbnail() const
+{
+    return this->waveformThumbnail;
 }

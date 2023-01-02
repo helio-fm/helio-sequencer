@@ -351,7 +351,8 @@ float Transport::getPlaybackLoopEnd() const noexcept
 // Rendering
 //===----------------------------------------------------------------------===//
 
-bool Transport::startRender(const URL &renderTarget, RenderFormat format)
+bool Transport::startRender(const URL &renderTarget,
+    RenderFormat format, int thumbnailResolution)
 {
     if (this->renderer->isRendering())
     {
@@ -360,7 +361,8 @@ bool Transport::startRender(const URL &renderTarget, RenderFormat format)
     
     this->sleepTimer.setCanSleepAfter(0);
     return this->renderer->startRendering(renderTarget, format,
-        this->fillPlaybackContextAt(this->getProjectFirstBeat()));
+        this->fillPlaybackContextAt(this->getProjectFirstBeat()),
+        thumbnailResolution);
 }
 
 void Transport::stopRender()
@@ -383,6 +385,11 @@ bool Transport::isRendering() const
 float Transport::getRenderingPercentsComplete() const
 {
     return this->renderer->getPercentsComplete();
+}
+
+const Array<float, CriticalSection> &Transport::getRenderingWaveformThumbnail() const
+{
+    return this->renderer->getWaveformThumbnail();
 }
 
 //===----------------------------------------------------------------------===//

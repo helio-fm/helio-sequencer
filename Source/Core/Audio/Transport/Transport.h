@@ -77,7 +77,7 @@ public:
     bool isPlayingAndRecording() const;
     void stopPlaybackAndRecording();
 
-    bool startRender(const URL &renderTarget, RenderFormat format);
+    bool startRender(const URL &renderTarget, RenderFormat format, int thumbnailResolution);
     bool isRendering() const;
     void stopRender();
     
@@ -88,7 +88,8 @@ public:
     float getPlaybackLoopEnd() const noexcept;
 
     float getRenderingPercentsComplete() const;
-    
+    const Array<float, CriticalSection> &getRenderingWaveformThumbnail() const;
+
     //===------------------------------------------------------------------===//
     // Playback context and caches
     //===------------------------------------------------------------------===//

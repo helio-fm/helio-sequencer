@@ -19,11 +19,70 @@
 #include "RenderDialog.h"
 #include "MainLayout.h"
 #include "ProjectNode.h"
-#include "ProgressIndicator.h"
 #include "MenuItemComponent.h"
 #include "SerializationKeys.h"
 #include "DocumentHelpers.h"
+#include "HelioTheme.h"
 #include "Config.h"
+
+//===----------------------------------------------------------------------===//
+// Progress bar
+//===----------------------------------------------------------------------===//
+
+RenderDialog::SimpleWaveformProgressBar::SimpleWaveformProgressBar() :
+    fillColour(findDefaultColour(ColourIDs::RenderProgressBar::fill)),
+    outlineColour(findDefaultColour(ColourIDs::RenderProgressBar::outline)),
+    progressColour(findDefaultColour(ColourIDs::RenderProgressBar::progress)),
+    waveformColour(findDefaultColour(ColourIDs::RenderProgressBar::waveform)) {}
+
+void RenderDialog::SimpleWaveformProgressBar::paint(Graphics &g)
+{
+    g.setColour(this->fillColour);
+    g.fillRect(this->getLocalBounds().reduced(1, 1));
+
+    g.setColour(this->outlineColour);
+    HelioTheme::drawDashedFrame(g, this->getLocalBounds());
+
+    if (this->progress > 0.f)
+    {
+        g.setColour(this->progressColour);
+
+        const auto progressBarWidth = float(this->getThumbnailResolution());
+        g.fillRect(2.f, 2.f, progressBarWidth * this->progress, float(this->getHeight() - 4));
+
+        const auto waveformHeight = float(this->getHeight() - 2);
+        const auto lastFrameIndex = int(ceilf(this->waveformThumbnail.size() * this->progress));
+        for (int i = 0; i < lastFrameIndex; ++i)
+        {
+            g.setColour(this->waveformColour.withMultipliedAlpha((i % 2) == 0 ? 0.5f : 1.f));
+
+            // * 1.25f + 1.f just to make it slightly more visible:
+            const auto peak = jmin(waveformHeight,
+                this->waveformThumbnail[i] * waveformHeight * 1.25f + 1.f);
+
+            g.fillRect(float(i + 2), waveformHeight / 2.f - peak / 2.f + 1.f, 1.f, peak);
+        }
+    }
+}
+
+int RenderDialog::SimpleWaveformProgressBar::getThumbnailResolution() const noexcept
+{
+    return this->getWidth() - 4;
+}
+
+void RenderDialog::SimpleWaveformProgressBar::update(float newProgress,
+    const Array<float, CriticalSection> &newThumbnail)
+{
+    this->progress = newProgress;
+    this->waveformThumbnail.clearQuick();
+    this->waveformThumbnail.addArray(newThumbnail);
+    this->repaint();
+}
+
+
+//===----------------------------------------------------------------------===//
+// Render dialog
+//===----------------------------------------------------------------------===//
 
 RenderDialog::RenderDialog(ProjectNode &parentProject,
     const URL &target, RenderFormat format) :
@@ -36,21 +95,9 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     this->renderButton = make<TextButton>();
     this->addAndMakeVisible(this->renderButton.get());
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderProceed));
-    this->renderButton->onClick = [this]()
-    {
+    this->renderButton->onClick = [this]() {
         this->startOrAbortRender();
     };
-
-    this->filenameEditor = make<Label>();
-    this->addAndMakeVisible(this->filenameEditor.get());
-    this->filenameEditor->setFont(Globals::UI::Fonts::XL);
-    this->filenameEditor->setJustificationType(Justification::topLeft);
-
-#if PLATFORM_DESKTOP
-    this->filenameEditor->setEditable(true, true, false);
-#elif PLATFORM_MOBILE
-    this->filenameEditor->setEditable(false);
-#endif
 
     this->captionLabel = make<Label>();
     this->addAndMakeVisible(this->captionLabel.get());
@@ -59,34 +106,25 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     this->captionLabel->setInterceptsMouseClicks(false, false);
     this->captionLabel->setText(TRANS(I18n::Dialog::renderCaption), dontSendNotification);
 
-    this->slider = make<Slider>();
-    this->addAndMakeVisible(this->slider.get());
-    this->slider->setRange(0, 1000, 0);
-    this->slider->setSliderStyle(Slider::LinearBar);
-    this->slider->setTextBoxStyle(Slider::NoTextBox, true, 80, 20);
-    this->slider->setEnabled(false);
-    this->slider->setRange(0.0, 1.0, 0.01);
+    this->progressBar = make<SimpleWaveformProgressBar>();
+    this->addAndMakeVisible(this->progressBar.get());
 
-    this->indicator = make<ProgressIndicator>();
-    this->addChildComponent(this->indicator.get());
+    this->browseButton = make<MenuItemComponent>(this, nullptr,
+        MenuItem::item(Icons::browse, CommandIDs::Browse));
 
-    this->browseButton = make<MenuItemComponent>(this, nullptr, MenuItem::item(Icons::browse, CommandIDs::Browse));
     this->addAndMakeVisible(this->browseButton.get());
     this->browseButton->setMouseCursor(MouseCursor::PointingHandCursor);
 
     this->pathLabel = make<Label>();
     this->addAndMakeVisible(this->pathLabel.get());
-    this->pathLabel->setFont(Globals::UI::Fonts::S);
+    this->pathLabel->setFont(Globals::UI::Fonts::M);
     this->pathLabel->setJustificationType(Justification::centredLeft);
     this->pathLabel->setInterceptsMouseClicks(false, false);
-
-    this->separator = make<SeparatorHorizontalFading>();
-    this->addAndMakeVisible(this->separator.get());
 
     // just in case..
     this->project.getTransport().stopPlaybackAndRecording();
 
-    this->setSize(520, 224);
+    this->setSize(550, 200);
     this->updatePosition();
     this->updateRenderTargetLabels();
 }
@@ -95,17 +133,17 @@ RenderDialog::~RenderDialog() = default;
 
 void RenderDialog::resized()
 {
-    constexpr auto browseButtonWidth = 56;
+    constexpr auto browseButtonSize = 24;
 
-    this->captionLabel->setBounds(this->getCaptionBounds().withTrimmedLeft(browseButtonWidth));
+    this->captionLabel->setBounds(this->getCaptionBounds());
 
-    this->pathLabel->setBounds(this->getRowBounds(0.1f, 24).withTrimmedLeft(browseButtonWidth));
-    this->filenameEditor->setBounds(this->getRowBounds(0.35f, 32).withTrimmedLeft(browseButtonWidth));
-    this->browseButton->setBounds(this->getRowBounds(0.35f, 48).withWidth(browseButtonWidth));
+    this->browseButton->setBounds(this->getRowBounds(0.15f, browseButtonSize)
+        .withWidth(browseButtonSize).translated(2, 0));
 
-    this->separator->setBounds(this->getRowBounds(0.65f, 8));
-    this->slider->setBounds(this->getRowBounds(0.85f, 12).withTrimmedLeft(browseButtonWidth).reduced(6, 0));
-    this->indicator->setBounds(this->getRowBounds(0.84f, 24).withWidth(browseButtonWidth));
+    this->pathLabel->setBounds(this->getRowBounds(0.15f, browseButtonSize)
+        .withTrimmedLeft(browseButtonSize));
+
+    this->progressBar->setBounds(this->getRowBounds(0.7f, 38).reduced(5, 0));
 
     this->renderButton->setBounds(this->getButtonsBounds());
 }
@@ -122,10 +160,9 @@ void RenderDialog::parentSizeChanged()
 
 void RenderDialog::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::HideDialog)
+    if (commandId == CommandIDs::DismissDialog)
     {
-        Transport &transport = this->project.getTransport();
-        if (! transport.isRendering())
+        if (!this->project.getTransport().isRendering())
         {
             this->dismiss();
         }
@@ -145,46 +182,51 @@ void RenderDialog::launchFileChooser()
 
     DocumentHelpers::showFileChooser(this->renderFileChooser,
         Globals::UI::FileChooser::forFileToSave,
-        [this](URL &url)
-    {
-        // todo someday: test rendering to any stream, not only local files
-        if (url.isLocalFile())
-        {
-            this->renderTarget = url;
-            this->updateRenderTargetLabels();
-        }
-    });
+        [this](URL &url) {
+            // todo someday: test rendering to any stream, not only local files
+            if (url.isLocalFile())
+            {
+                this->renderTarget = url;
+                this->updateRenderTargetLabels();
+            }
+        });
 }
 
 void RenderDialog::updateRenderTargetLabels()
 {
     jassert(this->renderTarget.isLocalFile());
     const auto file = this->renderTarget.getLocalFile();
-    this->pathLabel->setText(file.getParentDirectory().getFullPathName(), dontSendNotification);
-    this->filenameEditor->setText(file.getFileName(), dontSendNotification);
+    this->pathLabel->setText(file.getFullPathName(), dontSendNotification);
 }
 
 bool RenderDialog::keyPressed(const KeyPress &key)
 {
+    if (key == KeyPress::escapeKey)
+    {
+        this->postCommandMessage(CommandIDs::DismissDialog);
+        return true;
+    }
+
     return false;
 }
 
 void RenderDialog::inputAttemptWhenModal()
 {
-    this->postCommandMessage(CommandIDs::HideDialog);
+    this->postCommandMessage(CommandIDs::DismissDialog);
 }
 
 void RenderDialog::startOrAbortRender()
 {
     auto &transport = this->project.getTransport();
-    if (! transport.isRendering())
+    if (!transport.isRendering())
     {
 #if PLATFORM_DESKTOP
         App::Config().setProperty(Serialization::UI::lastRenderPath,
             this->renderTarget.getParentURL().getLocalFile().getFullPathName());
 #endif
 
-        if (transport.startRender(this->renderTarget, this->format))
+        if (transport.startRender(this->renderTarget, this->format,
+                this->progressBar->getThumbnailResolution()))
         {
             this->startTrackingProgress();
         }
@@ -221,8 +263,8 @@ void RenderDialog::timerCallback(int timerId)
     auto &transport = this->project.getTransport();
     if (transport.isRendering())
     {
-        const float percentsDone = transport.getRenderingPercentsComplete();
-        this->slider->setValue(percentsDone, dontSendNotification);
+        this->progressBar->update(transport.getRenderingPercentsComplete(),
+            transport.getRenderingWaveformThumbnail());
     }
     else
     {
@@ -234,20 +276,22 @@ void RenderDialog::timerCallback(int timerId)
 
 void RenderDialog::startTrackingProgress()
 {
-    this->startTimer(RenderDialog::renderProgressTimer, 17);
-    this->indicator->startAnimating();
-    this->animator.fadeIn(this->indicator.get(), Globals::UI::fadeInLong);
+    this->startTimer(RenderDialog::renderProgressTimer, 250);
+
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderAbort));
+    this->browseButton->setMouseCursor(MouseCursor::NormalCursor);
+    this->browseButton->setEnabled(false);
 }
 
 void RenderDialog::stopTrackingProgress()
 {
     this->stopTimer(RenderDialog::renderProgressTimer);
 
-    auto &transport = this->project.getTransport();
-    const auto percentsDone = transport.getRenderingPercentsComplete();
-    this->slider->setValue(percentsDone, dontSendNotification);
-    this->indicator->stopAnimating();
-    this->animator.fadeOut(this->indicator.get(), Globals::UI::fadeOutShort);
+    const auto &transport = this->project.getTransport();
+    this->progressBar->update(transport.getRenderingPercentsComplete(),
+        transport.getRenderingWaveformThumbnail());
+
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderProceed));
+    this->browseButton->setMouseCursor(MouseCursor::PointingHandCursor);
+    this->browseButton->setEnabled(true);
 }

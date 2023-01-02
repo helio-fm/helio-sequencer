@@ -28,9 +28,11 @@ public:
     ~RendererThread() override;
     
     float getPercentsComplete() const noexcept;
+    const Array<float, CriticalSection> &getWaveformThumbnail() const;
 
     bool startRendering(const URL &target, RenderFormat format,
-        Transport::PlaybackContext::Ptr context);
+        Transport::PlaybackContext::Ptr context,
+        int waveformThumbnailResolution);
 
     void stop();
     bool isRendering() const;
@@ -56,6 +58,10 @@ private:
     UniquePointer<AudioFormatWriter> writer;
 
     Atomic<float> percentsDone = 0.f;
+
+    // the all-channels peaks-only low-resolution waveform preview,
+    // simplest to compute, but good enough for the progress bar:
+    Array<float, CriticalSection> waveformThumbnail;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RendererThread)
 };

@@ -18,12 +18,11 @@
 #pragma once
 
 #include "DialogBase.h"
-#include "SeparatorHorizontalFading.h"
 #include "RenderFormat.h"
+#include "ColourIDs.h"
 
 class DocumentOwner;
 class ProjectNode;
-class ProgressIndicator;
 class MenuItemComponent;
 
 class RenderDialog final : public DialogBase
@@ -49,7 +48,6 @@ private:
     void startTrackingProgress();
     void stopTrackingProgress();
 
-    ComponentAnimator animator;
     ProjectNode &project;
 
     const RenderFormat format;
@@ -63,14 +61,36 @@ private:
     void startOrAbortRender();
     void stopRender();
 
-    UniquePointer<TextButton> renderButton;
-    UniquePointer<Label> filenameEditor;
+private:
+
+    class SimpleWaveformProgressBar final : public Component
+    {
+    public:
+
+        SimpleWaveformProgressBar();
+        void paint(Graphics &g) override;
+        int getThumbnailResolution() const noexcept;
+        void update(float newProgress, const Array<float, CriticalSection> &newThumbnail);
+
+    private:
+
+        float progress = 0.f;
+        Array<float> waveformThumbnail;
+
+        const Colour fillColour;
+        const Colour outlineColour;
+        const Colour progressColour;
+        const Colour waveformColour;
+
+    };
+
+private:
+
     UniquePointer<Label> captionLabel;
-    UniquePointer<Slider> slider;
-    UniquePointer<ProgressIndicator> indicator;
-    UniquePointer<MenuItemComponent> browseButton;
     UniquePointer<Label> pathLabel;
-    UniquePointer<SeparatorHorizontalFading> separator;
+    UniquePointer<MenuItemComponent> browseButton;
+    UniquePointer<SimpleWaveformProgressBar> progressBar;
+    UniquePointer<TextButton> renderButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RenderDialog)
 };

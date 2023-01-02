@@ -163,4 +163,13 @@ namespace ColourIDs
     {
         static const int foreground             = 0x2001700;
     }
+
+    namespace RenderProgressBar
+    {
+        static const int fill                   = 0x2001800;
+        static const int outline                = 0x2001801;
+        static const int progress               = 0x2001802;
+        static const int waveform               = 0x2001803;
+    }
+
 } // namespace ColourIDs

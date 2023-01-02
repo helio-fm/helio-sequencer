@@ -344,6 +344,11 @@ void MenuItemComponent::resized()
 
 void MenuItemComponent::mouseDown(const MouseEvent &e)
 {
+    if (!this->isEnabled())
+    {
+        return;
+    }
+
 #if PLATFORM_DESKTOP
 
     App::Layout().hideTooltipIfAny();
