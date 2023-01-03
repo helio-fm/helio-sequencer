@@ -168,7 +168,8 @@ namespace Globals
     static constexpr auto beatsPerBar = 4;
 
     // Defines the maximum available resolution
-    static constexpr auto ticksPerBeat = 64;    //increased to 64 - rpm
+    static constexpr auto ticksPerBeat = 16;    //keep at 16 for now
+    //static constexpr auto ticksPerBeat = 64;    //find way to increase limit without breaking things - RPM
 
     static constexpr auto minClipLength = 1.f / static_cast<float>(ticksPerBeat);
     static constexpr auto minNoteLength = 1.f / static_cast<float>(ticksPerBeat);
