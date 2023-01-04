@@ -73,11 +73,10 @@ void MidiEventComponent::mouseDown(const MouseEvent &e)
 
     // shift-alt-logic
     auto &selection = this->roll.getLassoSelection();
-    if (e.mods.isAltDown())
-    {
-        this->roll.deselectEvent(this);
-    }
-    else if (!selection.isSelected(this))
+    
+    //should be handled with toggle clicking instead
+
+    if (!selection.isSelected(this))
     {
         if (e.mods.isShiftDown())
         {

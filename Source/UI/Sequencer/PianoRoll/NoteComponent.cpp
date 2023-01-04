@@ -71,7 +71,7 @@ void NoteComponent::updateColours()
 
 bool NoteComponent::shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const
 {
-    return (modifiers.isAltDown() || modifiers.isRightButtonDown()) && !this->isActive();
+    return (modifiers.isRightButtonDown()) && !this->isActive();    //removed alt as select to make room for snap/fine functionality
 }
 
 //===----------------------------------------------------------------------===//
@@ -128,6 +128,8 @@ void NoteComponent::mouseMove(const MouseEvent &e)
 
 void NoteComponent::mouseDown(const MouseEvent &e)
 {
+    bool snap = !e.mods.isAltDown();    //snap is disabled
+
     if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
@@ -259,11 +261,13 @@ static int lastDeltaKey = 0;
 
 void NoteComponent::mouseDrag(const MouseEvent &e)
 {
+    bool snap = !e.mods.isAltDown();    //snap is disabled
+
     if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
         return;
     }
-    
+
     if (!this->isActive())
     {
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
@@ -291,7 +295,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     {
         int deltaKey = 0;
         float deltaLength = 0.f;
-        const bool eventChanged = this->getDraggingResizingDelta(e, deltaLength, deltaKey);
+        const bool eventChanged = this->getDraggingResizingDelta(e, deltaLength, deltaKey, snap);
 
         const bool shouldSendMidi = (lastDeltaKey != deltaKey) &&
             (selection.getNumSelected() <= NoteComponent::maxDragPolyphony);
@@ -311,7 +315,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             forEachSelectedNote(selection, noteComponent)
             {
                 groupBefore.add(noteComponent->getNote());
-                groupAfter.add(noteComponent->continueDraggingResizing(deltaLength, deltaKey, shouldSendMidi));
+                groupAfter.add(noteComponent->continueDraggingResizing(deltaLength, deltaKey, shouldSendMidi, snap));
                 this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
 
@@ -325,7 +329,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     else if (this->state == State::ResizingRight)
     {
         float deltaLength = 0.f;
-        const bool lengthChanged = this->getResizingRightDelta(e, deltaLength);
+        const bool lengthChanged = this->getResizingRightDelta(e, deltaLength, snap);
 
         if (lengthChanged)
         {
@@ -335,7 +339,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             forEachSelectedNote(selection, noteComponent)
             {
                 groupBefore.add(noteComponent->getNote());
-                groupAfter.add(noteComponent->continueResizingRight(deltaLength));
+                groupAfter.add(noteComponent->continueResizingRight(deltaLength, snap));
                 this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
                 
@@ -349,7 +353,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     else if (this->state == State::ResizingLeft)
     {
         float deltaLength = 0.f;
-        const bool lengthChanged = this->getResizingLeftDelta(e, deltaLength);
+        const bool lengthChanged = this->getResizingLeftDelta(e, deltaLength, snap);
         
         if (lengthChanged)
         {
@@ -359,7 +363,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             forEachSelectedNote(selection, noteComponent)
             {
                 groupBefore.add(noteComponent->getNote());
-                groupAfter.add(noteComponent->continueResizingLeft(deltaLength));
+                groupAfter.add(noteComponent->continueResizingLeft(deltaLength, snap));
                 this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
 
@@ -373,7 +377,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     else if (this->state == State::GroupScalingRight)
     {
         float groupScaleFactor = 1.f;
-        const bool scaleFactorChanged = this->getGroupScaleRightFactor(e, groupScaleFactor);
+        const bool scaleFactorChanged = this->getGroupScaleRightFactor(e, groupScaleFactor, snap);
         
         if (scaleFactorChanged)
         {
@@ -396,7 +400,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     else if (this->state == State::GroupScalingLeft)
     {
         float groupScaleFactor = 1.f;
-        const bool scaleFactorChanged = this->getGroupScaleLeftFactor(e, groupScaleFactor);
+        const bool scaleFactorChanged = this->getGroupScaleLeftFactor(e, groupScaleFactor, snap);
         
         if (scaleFactorChanged)
         {
@@ -422,7 +426,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 
         int deltaKey = 0;
         float deltaBeat = 0.f;
-        const bool eventChanged = this->getDraggingDelta(e, deltaBeat, deltaKey);
+        const bool eventChanged = this->getDraggingDelta(e, deltaBeat, deltaKey, snap);
         
         const bool shouldSendMidi = (lastDeltaKey != deltaKey) &&
             (selection.getNumSelected() <= NoteComponent::maxDragPolyphony);
@@ -438,7 +442,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->checkpointIfNeeded();
             
             // Drag-and-copy logic:
-            if (firstChangeIsToCome && e.mods.isAnyModifierKeyDown())
+            if (firstChangeIsToCome && e.mods.isShiftDown())    //changed to shift (perhaps ctrl? though, ctrl may be a good candidate for fine control mode)
             {
                 // We duplicate the notes only at the very moment when they are about to be moved into the new position,
                 // to make sure that simple shift-clicks on a selection won't confuse a user with lots of silently created notes.
@@ -470,7 +474,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             forEachSelectedNote(selection, noteComponent)
             {
                 groupBefore.add(noteComponent->getNote());
-                groupAfter.add(noteComponent->continueDragging(deltaBeat, deltaKey, shouldSendMidi));
+                groupAfter.add(noteComponent->continueDragging(deltaBeat, deltaKey, shouldSendMidi, snap));
             }
                 
             SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
@@ -689,7 +693,7 @@ void NoteComponent::startDragging(const bool sendMidiMessage)
     }
 }
 
-bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int &deltaKey)
+bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int &deltaKey, bool snap)
 {
     this->dragger.dragComponent(this, e, nullptr);
 
@@ -698,7 +702,7 @@ bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int 
     this->getRoll().getRowsColsByComponentPosition(
         this->getX() + this->floatLocalBounds.getX() + 1 /*+ this->clickOffset.getX()*/,
         this->getY() + this->floatLocalBounds.getY() + this->clickOffset.getY(),
-        newKey, newBeat);
+        newKey, newBeat, snap);
 
     deltaKey = (newKey - this->anchor.getKey());
     deltaBeat = (newBeat - this->anchor.getBeat());
@@ -709,7 +713,7 @@ bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int 
     return (keyChanged || beatChanged);
 }
 
-Note NoteComponent::continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage) const noexcept
+Note NoteComponent::continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage, bool snap) const noexcept
 {
     const int newKey = this->anchor.getKey() + deltaKey;
     const float newBeat = this->anchor.getBeat() + deltaBeat;
@@ -793,7 +797,7 @@ void NoteComponent::startDraggingResizing(bool sendMidiMessage)
     }
 }
 
-bool NoteComponent::getDraggingResizingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey) const
+bool NoteComponent::getDraggingResizingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey, bool snap) const
 {
     int newKey = -1;
     float newBeat = -1;
@@ -801,7 +805,7 @@ bool NoteComponent::getDraggingResizingDelta(const MouseEvent &e, float &deltaLe
     this->getRoll().getRowsColsByComponentPosition(
         this->getX() + this->floatLocalBounds.getX() + e.x,
         this->getY() + this->floatLocalBounds.getY() + e.y,
-        newKey, newBeat);
+        newKey, newBeat, snap);
 
     const float newLength = newBeat - this->getBeat();
     deltaLength = newLength - this->anchor.getLength();
@@ -812,7 +816,7 @@ bool NoteComponent::getDraggingResizingDelta(const MouseEvent &e, float &deltaLe
     return (keyChanged || lengthChanged);
 }
 
-Note NoteComponent::continueDraggingResizing(float deltaLength, int deltaKey, bool sendMidi) const noexcept
+Note NoteComponent::continueDraggingResizing(float deltaLength, int deltaKey, bool sendMidi, bool snap) const noexcept
 {
     const int newKey = this->anchor.getKey() + deltaKey;
 
@@ -852,7 +856,7 @@ void NoteComponent::startResizingRight(bool sendMidiMessage)
     }
 }
 
-bool NoteComponent::getResizingRightDelta(const MouseEvent &e, float &deltaLength) const
+bool NoteComponent::getResizingRightDelta(const MouseEvent &e, float &deltaLength, bool snap) const
 {
     int newNote = -1;
     float newBeat = -1;
@@ -860,7 +864,7 @@ bool NoteComponent::getResizingRightDelta(const MouseEvent &e, float &deltaLengt
     this->getRoll().getRowsColsByComponentPosition(
         this->getX() + this->floatLocalBounds.getX() + e.x,
         this->getY() + this->floatLocalBounds.getY() + e.y,
-        newNote, newBeat);
+        newNote, newBeat, snap);
 
     const float newLength = newBeat - this->getBeat();
     deltaLength = newLength - this->anchor.getLength();
@@ -869,7 +873,7 @@ bool NoteComponent::getResizingRightDelta(const MouseEvent &e, float &deltaLengt
     return lengthChanged;
 }
 
-Note NoteComponent::continueResizingRight(float deltaLength) const noexcept
+Note NoteComponent::continueResizingRight(float deltaLength, bool snap) const noexcept
 {
     // the minimal length should depend on the current zoom level:
     const float minLength = this->roll.getMinVisibleBeatForCurrentZoomLevel();
@@ -899,7 +903,7 @@ void NoteComponent::startResizingLeft(bool sendMidiMessage)
     }
 }
 
-bool NoteComponent::getResizingLeftDelta(const MouseEvent &e, float &deltaLength) const
+bool NoteComponent::getResizingLeftDelta(const MouseEvent &e, float &deltaLength, bool snap) const
 {
     int newNote = -1;
     float newBeat = -1;
@@ -907,14 +911,14 @@ bool NoteComponent::getResizingLeftDelta(const MouseEvent &e, float &deltaLength
     this->getRoll().getRowsColsByComponentPosition(
         this->getX() + this->floatLocalBounds.getX() + e.x,
         this->getY() + this->floatLocalBounds.getY() + e.y,
-        newNote, newBeat);
+        newNote, newBeat, snap);
     
     deltaLength = this->anchor.getBeat() - newBeat;
     const bool lengthChanged = (this->getBeat() != newBeat);
     return lengthChanged;
 }
 
-Note NoteComponent::continueResizingLeft(float deltaLength) const noexcept
+Note NoteComponent::continueResizingLeft(float deltaLength, bool snap) const noexcept
 {
     // the minimal length should depend on the current zoom level:
     const float minLength = this->roll.getMinVisibleBeatForCurrentZoomLevel();
@@ -942,7 +946,7 @@ void NoteComponent::startGroupScalingRight(float groupStartBeat)
     this->groupScalingAnchor = { groupStartBeat, newLength };
 }
 
-bool NoteComponent::getGroupScaleRightFactor(const MouseEvent &e, float &absScaleFactor) const
+bool NoteComponent::getGroupScaleRightFactor(const MouseEvent &e, float &absScaleFactor, bool snap) const
 {
     int newNote = -1;
     float newBeat = -1;
@@ -950,7 +954,7 @@ bool NoteComponent::getGroupScaleRightFactor(const MouseEvent &e, float &absScal
     this->getRoll().getRowsColsByComponentPosition(
         this->getX() + this->floatLocalBounds.getX() + e.x,
         this->getY() + this->floatLocalBounds.getY() + e.y,
-        newNote, newBeat);
+        newNote, newBeat, snap);
     
     const float minGroupLength = 1.f;
     const float myEndBeat = this->getBeat() + this->getLength();
@@ -962,7 +966,7 @@ bool NoteComponent::getGroupScaleRightFactor(const MouseEvent &e, float &absScal
     return endBeatChanged;
 }
 
-Note NoteComponent::continueGroupScalingRight(float absScaleFactor) const noexcept
+Note NoteComponent::continueGroupScalingRight(float absScaleFactor, bool snap) const noexcept
 {
     const float anchorBeatDelta = this->anchor.getBeat() - this->groupScalingAnchor.getBeat();
     const float newLength = this->anchor.getLength() * absScaleFactor;
@@ -988,7 +992,7 @@ void NoteComponent::startGroupScalingLeft(float groupEndBeat)
     this->groupScalingAnchor = { this->getNote().getBeat(), newLength };
 }
 
-bool NoteComponent::getGroupScaleLeftFactor(const MouseEvent &e, float &absScaleFactor) const
+bool NoteComponent::getGroupScaleLeftFactor(const MouseEvent &e, float &absScaleFactor, bool snap) const
 {
     int newNote = -1;
     float newBeat = -1;
@@ -996,7 +1000,7 @@ bool NoteComponent::getGroupScaleLeftFactor(const MouseEvent &e, float &absScale
     this->getRoll().getRowsColsByComponentPosition(
         this->getX() + this->floatLocalBounds.getX() + e.x,
         this->getY() + this->floatLocalBounds.getY() + e.y,
-        newNote, newBeat);
+        newNote, newBeat, snap);
     
     const float minGroupLength = 1.f;
     const float groupAnchorEndBeat = this->groupScalingAnchor.getBeat() + this->groupScalingAnchor.getLength();
@@ -1008,7 +1012,7 @@ bool NoteComponent::getGroupScaleLeftFactor(const MouseEvent &e, float &absScale
     return endBeatChanged;
 }
 
-Note NoteComponent::continueGroupScalingLeft(float absScaleFactor) const noexcept
+Note NoteComponent::continueGroupScalingLeft(float absScaleFactor, bool snap) const noexcept
 {
     const float groupAnchorEndBeat = this->groupScalingAnchor.getBeat() + this->groupScalingAnchor.getLength();
     const float anchorBeatDelta = groupAnchorEndBeat - this->anchor.getBeat();
