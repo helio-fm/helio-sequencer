@@ -22,7 +22,7 @@
 MidiEventComponent::MidiEventComponent(RollBase &editor, bool isGhost) noexcept :
     roll(editor),
     dragger(),
-    clickOffset(0, 0)    
+    clickOffset(0, 0)
 {
     this->flags.isActive = true;
     this->flags.isSelected = false;
@@ -71,11 +71,13 @@ void MidiEventComponent::mouseDown(const MouseEvent &e)
 {
     this->clickOffset.setXY(e.x, e.y);
 
-    // shift-alt-logic
     auto &selection = this->roll.getLassoSelection();
-    
-    //should be handled with toggle clicking instead
 
+    // not using any modifiers to deselect the component here
+    // (unlike it's done in the Lasso, which uses Alt to deselect),
+    // because all editing logic operates on the selection and
+    // it often uses modifiers for different modes,
+    // so deselecting something here is error-prone
     if (!selection.isSelected(this))
     {
         if (e.mods.isShiftDown())

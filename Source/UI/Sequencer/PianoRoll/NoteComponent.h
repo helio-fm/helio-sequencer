@@ -125,7 +125,7 @@ private:
 private:
 
     bool belongsTo(const WeakReference<MidiTrack> &track, const Clip &clip) const noexcept;
-    void switchActiveSegmentToSelected(bool zoomToScope) const;
+    void switchActiveTrackToSelected(bool zoomToScope) const;
 
     MouseCursor startEditingNewNote(const MouseEvent &e);
 
@@ -212,7 +212,7 @@ private:
     bool firstChangeDone = false;
     void checkpointIfNeeded();
 
-    bool shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const;
+    bool shouldGoQuickSelectTrackMode(const ModifierKeys &modifiers) const;
 
     void stopSound();
     void sendNoteOn(int noteKey, float velocity) const;

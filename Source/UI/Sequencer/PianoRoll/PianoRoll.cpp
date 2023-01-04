@@ -416,8 +416,14 @@ bool PianoRoll::isNoteVisible(int key, float beat, float length) const
 
 void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber, bool snap) const
 {
-    if (snap)   { beatNumber = this->getRoundBeatSnapByXPosition(int(x)) - this->activeClip.getBeat(); }
-    else        { beatNumber = this->getBeatByXPosition(x) - this->activeClip.getBeat(); }
+    if (snap)
+    {
+        beatNumber = this->getRoundBeatSnapByXPosition(int(x)) - this->activeClip.getBeat();
+    }
+    else
+    {
+        beatNumber = this->getBeatByXPosition(x) - this->activeClip.getBeat();
+    }
 
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
     noteNumber = jlimit(0, this->getNumKeys(), noteNumber);
@@ -425,8 +431,14 @@ void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber
 
 void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber, bool snap) const
 {
-    if (snap)   { beatNumber = this->getFloorBeatSnapByXPosition(x) - this->activeClip.getBeat(); }
-    else        { beatNumber = this->getBeatByXPosition(x) - this->activeClip.getBeat(); }
+    if (snap)
+    {
+        beatNumber = this->getFloorBeatSnapByXPosition(x) - this->activeClip.getBeat();
+    }
+    else
+    {
+        beatNumber = this->getBeatByXPosition(float(x)) - this->activeClip.getBeat();
+    }
     
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
     noteNumber = jlimit(0, this->getNumKeys(), noteNumber);

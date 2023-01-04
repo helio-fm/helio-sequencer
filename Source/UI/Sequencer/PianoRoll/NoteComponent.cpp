@@ -69,9 +69,9 @@ void NoteComponent::updateColours()
     this->colourVolume = this->colour.darker(0.8f).withAlpha(ghost ? 0.f : 0.5f);
 }
 
-bool NoteComponent::shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const
+bool NoteComponent::shouldGoQuickSelectTrackMode(const ModifierKeys &modifiers) const
 {
-    return (modifiers.isRightButtonDown()) && !this->isActive();    //removed alt as select to make room for snap/fine functionality
+    return modifiers.isRightButtonDown() && !this->isActive();
 }
 
 //===----------------------------------------------------------------------===//
@@ -99,7 +99,7 @@ void NoteComponent::modifierKeysChanged(const ModifierKeys &modifiers)
 
 void NoteComponent::mouseMove(const MouseEvent &e)
 {
-    if (this->shouldGoQuickSelectLayerMode(e.mods))
+    if (this->shouldGoQuickSelectTrackMode(e.mods))
     {
         return;
     }
@@ -128,12 +128,10 @@ void NoteComponent::mouseMove(const MouseEvent &e)
 
 void NoteComponent::mouseDown(const MouseEvent &e)
 {
-    bool snap = !e.mods.isAltDown();    //snap is disabled
-
-    if (this->shouldGoQuickSelectLayerMode(e.mods))
+    if (this->shouldGoQuickSelectTrackMode(e.mods))
     {
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
-        this->switchActiveSegmentToSelected(e.mods.isAnyModifierKeyDown());
+        this->switchActiveTrackToSelected(e.mods.isAnyModifierKeyDown());
         return;
     }
     
@@ -158,7 +156,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
 
     MidiEventComponent::mouseDown(e);
 
-    const Lasso &selection = this->roll.getLassoSelection();
+    const auto &selection = this->roll.getLassoSelection();
 
     if (e.mods.isLeftButtonDown())
     {
@@ -263,7 +261,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 {
     bool snap = !e.mods.isAltDown();    //snap is disabled
 
-    if (this->shouldGoQuickSelectLayerMode(e.mods))
+    if (this->shouldGoQuickSelectTrackMode(e.mods))
     {
         return;
     }
@@ -498,7 +496,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 
 void NoteComponent::mouseUp(const MouseEvent &e)
 {
-    if (this->shouldGoQuickSelectLayerMode(e.mods))
+    if (this->shouldGoQuickSelectTrackMode(e.mods))
     {
         return;
     }
@@ -668,7 +666,7 @@ bool NoteComponent::belongsTo(const WeakReference<MidiTrack> &track, const Clip 
     return this->clip == clip && this->note.getSequence()->getTrack() == track;
 }
 
-void NoteComponent::switchActiveSegmentToSelected(bool zoomToScope) const
+void NoteComponent::switchActiveTrackToSelected(bool zoomToScope) const
 {
     this->roll.getProject().setEditableScope(this->getClip(), zoomToScope);
     if (zoomToScope)

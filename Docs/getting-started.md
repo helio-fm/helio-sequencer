@@ -231,7 +231,7 @@ Interacting with piano roll also depends on the current edit mode:
  * **drag-only mode**: a kind of auxiliary mode, hold `Space` to [toggle](tips-and-tricks.md#spacebar-panning) it temporarily,
  * **selection mode** is only displayed on mobile platforms.
 
-All notes, when edited, are aligned to the grid, which depends on the zoom level and supports the resolution of up to 1/64 notes.
+All notes, when edited, are aligned to the grid. The grid resolution (the density of barlines) depends on the zoom level and supports up to 1/64 notes. Tip: holding `Alt` while editing notes disables snapping to the grid.
 
 All edits are undoable; note that the last 10 undo actions are saved in the project and are still available after restarting the app.
 

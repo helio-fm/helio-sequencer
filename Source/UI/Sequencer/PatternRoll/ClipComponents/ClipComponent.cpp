@@ -180,7 +180,7 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
             this->checkpointIfNeeded();
 
             // Drag-and-copy logic, same as for notes (see the comment in NoteComponent):
-            if (firstChangeIsToCome && e.mods.isAnyModifierKeyDown())
+            if (firstChangeIsToCome && e.mods.isShiftDown())
             {
                 PatternOperations::duplicateSelection(this->getRoll().getLassoSelection(), false);
 
