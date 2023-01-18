@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>fm.helio.Workstation</id>
+  <metadata_license>CC0</metadata_license>
+  <project_license>GPL-3.0</project_license>
+  <name>Helio Workstation</name>
+  <summary>Helio Project libre music composition software</summary>
+  <description>
+    <p>
+      Helio is an attempt to rethink a music sequencer to create a
+      tool that feels right. It provides a lightweight UI to help you
+      get into the zone and focus on your ideas.
+    </p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://helio.fm/images/screencap1.png</image>
+      <caption>Helio main window</caption>
+    </screenshot>
+  </screenshots>
+  <content_rating type="oars-1.1" />
+  <url type="homepage">https://helio.fm/</url>
+  <releases>
+    <release date="2022-09-24" version="3.10" />
+  </releases>
+</component>

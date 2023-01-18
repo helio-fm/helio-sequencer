@@ -35,6 +35,7 @@ cd ${TRAVIS_BUILD_DIR}/Projects
 mkdir -p ./Deployment/Linux/Debian/${ARCH}/usr/bin
 cp ./LinuxMakefile/build/helio ./Deployment/Linux/Debian/${ARCH}/usr/bin/helio
 chmod +x ./Deployment/Linux/Debian/${ARCH}/usr/bin/helio
+install -Dm644 ./Deployment/Linux/fm.helio.Workstation.metainfo.xml -t ./Deployment/Linux/Debian/${ARCH}/usr/share/metainfo
 
 dpkg-deb --build ./Deployment/Linux/Debian/${ARCH}
 scp -C ./Deployment/Linux/Debian/${ARCH}.deb ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENAME}.deb
@@ -46,6 +47,7 @@ cd ${TRAVIS_BUILD_DIR}/Projects
 mkdir -p ./Deployment/Linux/AppImage/${ARCH}/usr/bin
 cp ./LinuxMakefile/build/helio ./Deployment/Linux/AppImage/${ARCH}/usr/bin/helio
 chmod +x ./Deployment/Linux/AppImage/${ARCH}/usr/bin/helio
+install -Dm644 ./Deployment/Linux/fm.helio.Workstation.metainfo.xml -t ./Deployment/Linux/AppImage/${ARCH}/usr/share/metainfo
 
 unset QTDIR; unset QT_PLUGIN_PATH; unset LD_LIBRARY_PATH
 
