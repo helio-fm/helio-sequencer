@@ -64,6 +64,7 @@ jobs:
       os: linux
       dist: trusty
       language: android
+      sudo: true
       jdk: oraclejdk8
       addons: *deploy
       env: BUILD_TYPE=android ANDROID_NDK_HOME=${ANDROID_HOME}/ndk-bundle
@@ -83,7 +84,7 @@ jobs:
     - name: "deploy docs"
       stage: Deploy
       os: linux
-      dist: trusty
+      dist: bionic
       language: rust
       rust: stable
       cache: cargo
@@ -114,10 +115,10 @@ script:
     fi
 
 before_deploy:
-  - openssl aes-256-cbc -K $encrypted_e6d7a52b0113_key -iv $encrypted_e6d7a52b0113_iv -in ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-rsa.enc -out /tmp/deploy_rsa -d
+  - openssl aes-256-cbc -K $encrypted_e6d7a52b0113_key -iv $encrypted_e6d7a52b0113_iv -in ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-rsa.enc -out ~/.ssh/deploy_rsa -d
   - eval "$(ssh-agent -s)"
-  - chmod 600 /tmp/deploy_rsa
-  - ssh-add /tmp/deploy_rsa
+  - chmod 600 ~/.ssh/deploy_rsa
+  - ssh-add ~/.ssh/deploy_rsa
 
 deploy:
   provider: script

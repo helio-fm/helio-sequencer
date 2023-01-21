@@ -19,7 +19,18 @@ else
 fi
 
 #####################################
+# Update OpenSSH
+#
+# Ubuntu Trusty seems to be the only option for Android builds on Travis at the moment,
+# but I need a more recent OpenSSH client to be able to connect to updload the build
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 762E3157
+sudo apt-add-repository 'deb http://old-releases.ubuntu.com/ubuntu yakkety main universe multiverse'
+sudo apt-get update
+sudo apt-get install openssh-server=1:7.3p1-1
+
+#####################################
 # Upload apk
 
 cd ${TRAVIS_BUILD_DIR}/Projects/Android/app/build/outputs/apk/
-scp -C ./release_/release/app-release_-release.apk ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENAME}.apk
+scp -o StrictHostKeyChecking=no -C ./release_/release/app-release_-release.apk ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENAME}.apk

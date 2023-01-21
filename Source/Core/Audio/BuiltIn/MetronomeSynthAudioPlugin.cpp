@@ -140,7 +140,7 @@ public:
         g.fillRect(this->getLocalBounds());
     }
 
-    void handleCommandMessage(int commandId)
+    void handleCommandMessage(int commandId) override
     {
         if (commandId >= CommandIDs::OpenMetronomeSample &&
             commandId < CommandIDs::OpenMetronomeSample + this->allSyllables.size())

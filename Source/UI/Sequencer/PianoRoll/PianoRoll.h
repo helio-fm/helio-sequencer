@@ -69,7 +69,7 @@ public:
     float getZoomFactorY() const noexcept override;
     void zoomRelative(const Point<float> &origin,
         const Point<float> &factor, bool isInertial) override;
-    void zoomAbsolute(const Rectangle<float> &proportion);
+    void zoomAbsolute(const Rectangle<float> &proportion) override;
 
     void zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat);
 

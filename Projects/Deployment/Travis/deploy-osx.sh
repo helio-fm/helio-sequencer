@@ -76,4 +76,4 @@ if [[ ${NOTARIZATION_STATUS} != "success" ]]; then
 fi
 
 # Finally, upload
-scp -C /tmp/${RELEASE_FILENAME}.dmg ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENAME}.dmg
+scp -o StrictHostKeyChecking=no -C /tmp/${RELEASE_FILENAME}.dmg ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENAME}.dmg

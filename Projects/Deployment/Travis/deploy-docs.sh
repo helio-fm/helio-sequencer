@@ -18,4 +18,4 @@ fi
 # Simply copy the book
 
 cd ${TRAVIS_BUILD_DIR}/Docs
-scp -rp ./book ${DEPLOY_HOST}:${DOCS_PATH}
+scp -o StrictHostKeyChecking=no -rp ./book/* ${DEPLOY_HOST}:${DOCS_PATH}

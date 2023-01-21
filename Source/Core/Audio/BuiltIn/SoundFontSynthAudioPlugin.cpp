@@ -133,7 +133,7 @@ public:
         g.fillRect(this->getLocalBounds());
     }
 
-    void handleCommandMessage(int commandId)
+    void handleCommandMessage(int commandId) override
     {
         const auto synthParams = this->audioPlugin->getSynthParameters();
 
