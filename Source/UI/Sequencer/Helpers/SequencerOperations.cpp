@@ -2351,7 +2351,7 @@ void SequencerOperations::moveSelection(Lasso &selection,
     {
         const auto &note = selection.getItemAs<NoteComponent>(i)->getNote();
         toRemove.add(note);
-        toInsert.add(note.withDeltaBeat(deltaBeat).withDeltaKey(deltaKey));
+        toInsert.add(note.withDeltaBeat(deltaBeat).withDeltaKey(deltaKey).withNewId(targetSequence));
     }
 
     if (shouldCheckpoint)
