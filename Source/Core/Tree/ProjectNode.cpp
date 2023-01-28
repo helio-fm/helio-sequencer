@@ -277,6 +277,8 @@ void ProjectNode::setEditableScope(const Clip &activeClip, bool shouldFocusToAre
 
     if (auto *item = dynamic_cast<PianoTrackNode *>(activeTrack))
     {
+        this->timeline->getTimeSignaturesAggregator()->setActiveScope({ activeTrack });
+
         // make sure the item is selected, if it's not yet;
         // this implies calling showPage() -> showLinearEditor(),
         // which may update the scope to its first clip,

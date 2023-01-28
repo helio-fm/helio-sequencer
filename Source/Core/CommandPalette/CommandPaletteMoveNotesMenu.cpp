@@ -73,11 +73,13 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteMoveNotesMenu::getAc
             this->getName(), orderOffset + closestClipDistance)->
             withColour(targetTrack->getTrackColour())->
             withCallback([this, targetTrack, &closestClip](TextEditor &)
-        {
-            SequencerOperations::moveSelection(this->roll.getLassoSelection(), closestClip, true);
-            this->project.setEditableScope(closestClip, false);
-            return true;
-        }));
+            {
+                auto &selection = this->roll.getLassoSelection();
+                const auto newNotes = SequencerOperations::moveSelection(selection, closestClip, true);
+                this->project.setEditableScope(closestClip, false);
+                this->roll.selectEvents(newNotes, true);
+                return true;
+            }));
     }
 
     this->actionsCacheOutdated = false;

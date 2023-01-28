@@ -886,7 +886,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     // CallOutBox
     this->setColour(ColourIDs::Callout::fill, s->getDialogFillColour().darker(0.025f));
-    this->setColour(ColourIDs::Callout::frame, s->getFrameBorderColour());
+    this->setColour(ColourIDs::Callout::frame, Colours::black.withAlpha(0.5f));
 
     // Rolls
     this->setColour(ColourIDs::Roll::blackKey, s->getBlackKeyColour().withMultipliedBrightness(0.95f));

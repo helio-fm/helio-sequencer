@@ -135,6 +135,7 @@ public:
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const Rectangle<int> &rectangle) override;
 
+    void selectEvents(const Array<Note> &notes, bool shouldDeselectAllOthers);
     float getLassoStartBeat() const;
     float getLassoEndBeat() const;
 

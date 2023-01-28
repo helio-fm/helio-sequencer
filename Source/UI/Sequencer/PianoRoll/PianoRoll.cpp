@@ -815,8 +815,6 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
 {
     this->contextMenuController->cancelIfPending();
 
-    this->project.getTimeline()->getTimeSignaturesAggregator()->setActiveScope({newActiveTrack});
-
     if (!shouldFocus &&
         this->activeClip == newActiveClip &&
         this->activeTrack == newActiveTrack)
@@ -916,6 +914,26 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
         {
             jassert(!itemsFound.contains(component));
             itemsFound.add(component);
+        }
+    }
+}
+
+void PianoRoll::selectEvents(const Array<Note> &notes, bool shouldDeselectAllOthers)
+{
+    if (shouldDeselectAllOthers)
+    {
+        this->deselectAll();
+    }
+
+    forEachSequenceMapOfGivenTrack(this->patternMap, c, this->activeTrack)
+    {
+        auto &sequenceMap = *c.second.get();
+        for (const auto &note : notes)
+        {
+            if (auto *component = sequenceMap[note].get())
+            {
+                this->selectEvent(component, false);
+            }
         }
     }
 }
@@ -1676,19 +1694,7 @@ void PianoRoll::endCuttingEventsIfNeeded()
         Array<float> beats;
         this->knifeToolHelper->getCutPoints(notes, beats);
         Array<Note> cutEventsToTheRight = SequencerOperations::cutNotes(notes, beats);
-        // Now select all the new notes:
-        forEachSequenceMapOfGivenTrack(this->patternMap, c, this->activeTrack)
-        {
-            auto &sequenceMap = *c.second.get();
-            for (const auto &note : cutEventsToTheRight)
-            {
-                if (auto *component = sequenceMap[note].get())
-                {
-                    this->selectEvent(component, false);
-                }
-            }
-        }
-
+        this->selectEvents(cutEventsToTheRight, false);
         this->knifeToolHelper = nullptr;
     }
 }

@@ -2333,10 +2333,10 @@ Clip &SequencerOperations::findClosestClip(Lasso &selection, WeakReference<MidiT
     return *result;
 }
 
-void SequencerOperations::moveSelection(Lasso &selection,
+Array<Note> SequencerOperations::moveSelection(Lasso &selection,
     Clip &targetClip, bool shouldCheckpoint /*= true*/)
 {
-    if (selection.getNumSelected() == 0) { return; }
+    if (selection.getNumSelected() == 0) { return {}; }
 
     auto *targetSequence = getPianoSequence(targetClip);
     auto *sourceSequence = getPianoSequence(selection);
@@ -2359,8 +2359,10 @@ void SequencerOperations::moveSelection(Lasso &selection,
         sourceSequence->checkpoint();
     }
 
+    const auto toReturn = toInsert; // have a copy, toInsert will be emptied
     sourceSequence->removeGroup(toRemove, true);
     targetSequence->insertGroup(toInsert, true);
+    return toReturn;
 }
 
 Array<Note> SequencerOperations::cutNotes(const Array<Note> &notes,
