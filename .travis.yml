@@ -17,7 +17,7 @@ branches:
 stages:
   - name: Test
   - name: Deploy
-    if: type = push && fork = false
+    if: (type = push || type = api) && fork = false
 
 addons_shortcuts:
   addons_gcc5: &gcc5
