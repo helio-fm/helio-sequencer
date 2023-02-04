@@ -46,10 +46,15 @@ DialogBase::DialogBase()
     this->moveConstrainer = make<DialogDragConstrainer>();
 
     this->startTimer(DialogBase::focusCheckTimer, 100);
+
+    this->backgroundWheelListener = make<BackgroundWheelListener>(this);
+    Desktop::getInstance().addGlobalMouseListener(this->backgroundWheelListener.get());
 }
 
 DialogBase::~DialogBase()
 {
+    Desktop::getInstance().removeGlobalMouseListener(this->backgroundWheelListener.get());
+
     if (this->isTimerRunning(DialogBase::focusCheckTimer))
     {
         this->stopTimer(DialogBase::focusCheckTimer);

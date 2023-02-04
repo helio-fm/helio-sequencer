@@ -295,7 +295,11 @@ To interact with it:
 * delete nodes with right click,
 * use the pen tool (hotkey `2`) to add nodes,
 * use the cursor tool (hotkey `1`) to drag nodes or to adjust the interpolation curve,
-* click on the node to invoke the tempo dialog to set the exact BPM value, or to set tempo by tapping.
+* click on the node to invoke the tempo dialog to set the exact BPM value, or to set tempo by tapping:
+
+![tempo-dialog]
+
+*Tip: use the mouse wheel to quickly ajdust the tempo in this dialog.*
 
 Often, you only need one tempo for the whole song - for that, pick *"Set one tempo"* menu item in the tempo track menu, or project refactoring menu.
 
@@ -333,6 +337,7 @@ The right side shows the tree of all revisions that you have saved. Note a coupl
 [patterns]: images/patterns-arrange.png "Pattern mode for arrangements"
 [patterns-clips]: images/patterns-track-clips.png "Track instances (clips) and their modifications"
 [tempo-automation]: images/tempo-automation.png "Changing global tempo in pattern mode"
+[tempo-dialog]: images/tempo-dialog.png "Not quite my tempo. It's all good, no worries."
 
 [velocity-map-toggle]: images/velocity-map-toggle.png "Velocity map overview"
 [velocity-map-ramps]: images/velocity-map-ramps.png "Velocity map linear ramps"

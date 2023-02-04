@@ -19,14 +19,13 @@
 #include "TempoDialog.h"
 #include "CommandIDs.h"
 #include "HelioTheme.h"
+#include "ColourIDs.h"
 
 class TapTempoComponent final : public Component, private Timer
 {
 public:
 
-    TapTempoComponent() :
-        targetColour(Colours::white.withAlpha(0.015f)),
-        highlightColour(Colours::white.withAlpha(0.05f))
+    TapTempoComponent()
     {
         this->setWantsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
@@ -53,7 +52,8 @@ public:
         g.setColour(this->currentFillColour);
         g.fillRect(this->getLocalBounds());
         HelioTheme::drawNoiseWithin(this->getLocalBounds().reduced(2), g);
-        HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.25f, 0.75f);
+        g.setColour(this->outlineColour);
+        HelioTheme::drawDashedFrame(g, this->getLocalBounds());
     }
 
     void mouseDown(const MouseEvent &e) override
@@ -130,8 +130,10 @@ private:
     }
 
     Colour currentFillColour;
-    const Colour targetColour;
-    const Colour highlightColour;
+
+    const Colour targetColour = findDefaultColour(ColourIDs::TapTempoControl::fill);
+    const Colour highlightColour = findDefaultColour(ColourIDs::TapTempoControl::fillHighlighted);
+    const Colour outlineColour = findDefaultColour(ColourIDs::TapTempoControl::outline);
 
     double lastTapMs = 0.0;
     Array<double> tapIntervalsMs;
@@ -211,7 +213,7 @@ TempoDialog::TempoDialog(int bpmValue)
     this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
     this->cancelButton->setButtonText(TRANS(I18n::Dialog::cancel));
 
-    this->setSize(450, 230);
+    this->setSize(460, 230);
     this->updatePosition();
     this->updateOkButtonState();
 }
@@ -219,6 +221,21 @@ TempoDialog::TempoDialog(int bpmValue)
 // still need to have this empty dtor here,
 // so that compiler can resolve the forward-declared TapTempo
 TempoDialog::~TempoDialog() = default;
+
+void TempoDialog::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
+{
+    if (wheel.deltaY == 0)
+    {
+        return;
+    }
+
+    const auto delta = wheel.deltaY > 0 ? 1 : -1;
+    const auto newTempoBpm =
+        this->textEditor->getText().getIntValue() + delta;
+    this->textEditor->setText(String(newTempoBpm));
+
+    this->updateOkButtonState();
+}
 
 void TempoDialog::resized()
 {

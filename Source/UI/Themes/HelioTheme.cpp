@@ -937,6 +937,10 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::RenderProgressBar::progress, s->getSidebarFillColour().darker(1.f));
     this->setColour(ColourIDs::RenderProgressBar::waveform, textColour);
 
+    this->setColour(ColourIDs::TapTempoControl::fill, textColour.withAlpha(0.015f));
+    this->setColour(ColourIDs::TapTempoControl::fillHighlighted, textColour.withAlpha(0.05f));
+    this->setColour(ColourIDs::TapTempoControl::outline, textColour.withAlpha(0.25f));
+
     // bright text probably means dark theme:
     this->isDarkTheme = textColour.getPerceivedBrightness() > 0.5f;
 

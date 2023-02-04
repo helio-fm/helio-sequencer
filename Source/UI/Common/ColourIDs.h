@@ -172,4 +172,10 @@ namespace ColourIDs
         static const int waveform               = 0x2001803;
     }
 
+    namespace TapTempoControl
+    {
+        static const int fill                   = 0x2001900;
+        static const int fillHighlighted        = 0x2001901;
+        static const int outline                = 0x2001902;
+    }
 } // namespace ColourIDs

@@ -30,7 +30,10 @@ public:
 
     Function<void(int newBpmValue)> onOk;
     Function<void()> onCancel;
-    
+
+    void mouseWheelMove(const MouseEvent &e,
+        const MouseWheelDetails &wheel) override;
+
     void resized() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
@@ -39,7 +42,7 @@ public:
 
 private:
 
-    static constexpr auto tapTempoHeight = 48;
+    static constexpr auto tapTempoHeight = 46;
     static constexpr auto tapTempoMargin = 8;
 
     void onTextFocusLost();
