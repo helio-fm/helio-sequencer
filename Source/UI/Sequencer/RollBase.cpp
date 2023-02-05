@@ -1215,23 +1215,139 @@ void RollBase::mouseUp(const MouseEvent &e)
 
 void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
-    // TODO check if any operation is in progress (lasso drag, knife tool drag, etc)
+    //  This is a rewritten section of code for managing zoom / pan behavior. As it rests
+    //  currently, there are two main ways of viewing this user interaction system:
+    //
+    //      1. For those that would prefer a naked scroll to zoom by default.
+    //          - scrolling zooms according to your selected default axis
+    //          - if alt is down, the zoom axis changes to the opposite of the default
+    //          - if ctrl is down, the viewport will pan horizontally
+    //          - if shift if down, the viewport will pan vertically
+    //
+    //      2. For those that would prefer a naked scroll to pan by default.
+    //          - scrolling pans according to your selected default axis
+    //          - if alt is down, the pan axis changes to the opposite of the default
+    //          - if ctrl is down, the viewport will zoom horizontally
+    //          - if shift if down, the viewport will zoom vertically
+    //
+    //  This is an implementation of that system. More lines than neccecary, but easy
+    //  to follow along with. This code is expressed very clearly so as to make potential
+    //  changes easier to implement before slimming down.
 
-    // holding control/command means using panning instead of zooming
-    // (or zooming instead of panning, depending on ui settings/defaults);
-    // alt is reserved for the global zoom:
-    const bool panningMode = !event.mods.isAltDown() &&
-        (this->mouseWheelFlags.usePanningByDefault != (event.mods.isCtrlDown() || event.mods.isCommandDown()));
+    bool panningModeDefault = this->mouseWheelFlags.usePanningByDefault;
+    bool zoomingModeDefualt = !panningModeDefault;
 
-    if (panningMode)
+    bool verticalPanByDefault = this->mouseWheelFlags.useVerticalPanningByDefault;
+    bool horizontalPanByDefault = !verticalPanByDefault;
+
+    bool verticalZoomByDefault = this->mouseWheelFlags.useVerticalZoomingByDefault;
+    bool horizontalZoomByDefault = !verticalZoomByDefault;
+
+    bool pan = false;
+    bool zoom = false;
+
+    bool panVertical = false;
+    bool panHorizontal = false;
+
+    bool zoomVertical = false;
+    bool zoomHorizontal = false;
+
+    if (panningModeDefault) //if we are in the "pan by default" paradigm
     {
-        this->smoothZoomController->cancelZoom();
-        
-        // holding shift means using vertical direction instead of horizontal
-        // (or horizontal instead of vertical, depending on ui settings/defaults)
-        const bool verticalPanning =
-            this->mouseWheelFlags.useVerticalPanningByDefault != event.mods.isShiftDown();
+        pan = true;
 
+        if (event.mods.isCtrlDown() || event.mods.isCommandDown() || event.mods.isShiftDown())
+        {
+            pan = false;
+            zoom = true;
+        }
+
+        if (pan)
+        {
+            panVertical = verticalPanByDefault;
+            panHorizontal = !panVertical;
+
+            if (event.mods.isAltDown()) //alt reverses everything
+            {
+                panVertical = !panVertical;
+                panHorizontal = !panHorizontal;
+            }
+        }
+        if (zoom)
+        {
+            zoomVertical = verticalZoomByDefault;
+            zoomHorizontal = !zoomVertical;
+
+            if (event.mods.isAltDown()) //alt reverses everything
+            {
+                zoomVertical = !zoomVertical;
+                zoomHorizontal = !zoomHorizontal;
+            }
+
+            if (event.mods.isCtrlDown() || event.mods.isCommandDown())
+            {
+                zoomHorizontal = true;
+                zoomVertical = false;
+            }
+            if (event.mods.isShiftDown())
+            {
+                zoomHorizontal = false;
+                zoomVertical = true;
+            }
+            if (event.mods.isShiftDown() && (event.mods.isCtrlDown() || event.mods.isCommandDown()))
+            {
+                zoomHorizontal = true;
+                zoomVertical = true;
+            }
+        }
+    }
+    if (zoomingModeDefualt) //if we are in the "zoom by default" paradigm
+    {
+        zoom = true;
+
+        if (event.mods.isCtrlDown() || event.mods.isCommandDown() || event.mods.isShiftDown())
+        {
+            pan = true;
+            zoom = false;
+        }
+
+        if (pan)
+        {
+            panVertical = verticalPanByDefault;
+            panHorizontal = !panVertical;
+
+            if (event.mods.isAltDown()) //alt reverses everything
+            {
+                panVertical = !panVertical;
+                panHorizontal = !panHorizontal;
+            }
+
+            if (event.mods.isCtrlDown() || event.mods.isCommandDown())
+            {
+                panHorizontal = true;
+                panVertical = false;
+            }
+            if (event.mods.isShiftDown())
+            {
+                panHorizontal = false;
+                panVertical = true;
+            }
+        }
+        if (zoom)
+        {
+            zoomVertical = verticalZoomByDefault;
+            zoomHorizontal = !zoomVertical;
+
+            if (event.mods.isAltDown()) //alt reverses everything
+            {
+                zoomVertical = !zoomVertical;
+                zoomHorizontal = !zoomHorizontal;
+            }
+        }
+    }
+
+    if (pan)
+    {
         const auto initialSpeed = this->smoothPanController->getInitialSpeed();
 
         // let's try to make the panning speed feel consistent, regardless
@@ -1248,45 +1364,42 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
         // to pan vertically, so for convenience we'll fallback to horizontal panning:
         const bool canPanVertically = this->getHeight() > this->viewport.getViewHeight();
 
-        // note: unlike with zooming, we're not checking the wheel.isReversed flag here
-        // and not compensating it; we want to respect the user preference of scrolling behavior
-        if (verticalPanning && canPanVertically)
+        if (panVertical)
         {
             const float panDeltaY = wheel.deltaY * panSpeedVertical;
             const float panDeltaX = wheel.deltaX * panSpeedHorizontal;
             this->smoothPanController->panByOffset({ -panDeltaX, -panDeltaY });
         }
-        else
+
+        if (panHorizontal)
         {
             const float panDeltaY = wheel.deltaY * panSpeedHorizontal;
             const float panDeltaX = wheel.deltaX * panSpeedVertical;
             this->smoothPanController->panByOffset({ -panDeltaY, -panDeltaX });
         }
     }
-    else
+    if (zoom)
     {
         this->smoothPanController->cancelPan();
 
-        // holding shift means using vertical direction instead of horizontal
-        // (or horizontal instead of vertical, depending on ui settings/defaults)
-        const bool verticalZooming =
-            this->mouseWheelFlags.useVerticalZoomingByDefault != event.mods.isShiftDown();
-        const bool globalZooming = event.mods.isAltDown();
+        //determines whether vertical zooming is enabled without needing to hold any modifier keys
+        bool verticalZooming = this->mouseWheelFlags.useVerticalZoomingByDefault;
+        bool horizontalZooming = !(this->mouseWheelFlags.useVerticalZoomingByDefault);
 
         const float zoomSpeed = this->smoothZoomController->getInitialSpeed();
         const float zoomDeltaY = wheel.deltaY * (wheel.isReversed ? -zoomSpeed : zoomSpeed);
         const float zoomDeltaX = wheel.deltaX * (wheel.isReversed ? -zoomSpeed : zoomSpeed);
         const auto mouseOffset = event.position - this->viewport.getViewPosition().toFloat();
 
-        if (globalZooming)
+        if (zoomVertical && zoomHorizontal) //zoom globally if both are enabled
         {
             this->startSmoothZoom(mouseOffset, { zoomDeltaY, zoomDeltaY });
         }
-        else if (verticalZooming)
+        else if (zoomVertical)
         {
             this->startSmoothZoom(mouseOffset, { zoomDeltaX, zoomDeltaY });
         }
-        else
+        else if (zoomHorizontal)
         {
             this->startSmoothZoom(mouseOffset, { zoomDeltaY, zoomDeltaX });
         }
