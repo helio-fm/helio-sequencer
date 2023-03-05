@@ -371,9 +371,9 @@ void AutomationStepsClipComponent::reloadTrack()
     
     for (int j = 0; j < this->sequence->size(); ++j)
     {
-        MidiEvent *event = this->sequence->getUnchecked(j);
+        auto *event = this->sequence->getUnchecked(j);
         
-        if (AutomationEvent *autoEvent = dynamic_cast<AutomationEvent *>(event))
+        if (auto *autoEvent = dynamic_cast<AutomationEvent *>(event))
         {
             auto *component = new AutomationStepEventComponent(*this, *autoEvent);
             this->addAndMakeVisible(component);

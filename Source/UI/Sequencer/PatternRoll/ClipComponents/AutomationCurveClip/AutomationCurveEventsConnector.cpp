@@ -21,8 +21,10 @@
 #include "AutomationCurveClipComponent.h"
 
 AutomationCurveEventsConnector::AutomationCurveEventsConnector(
+    AutomationCurveClipComponent &editor,
     AutomationCurveEventComponent *c1,
     AutomationCurveEventComponent *c2) :
+    editor(editor),
     component1(c1),
     component2(c2)
 {
@@ -75,6 +77,8 @@ Point<float> AutomationCurveEventsConnector::getCentrePoint() const
 
 void AutomationCurveEventsConnector::paint(Graphics &g)
 {
+    g.setColour(this->editor.getEventColour());
+
     for (const auto &p : this->linePath)
     {
         g.fillRect(p.getX() - 1.f, p.getY() - 0.75f, 2.f, 1.5f);

@@ -38,6 +38,8 @@ AutomationCurveHelper::AutomationCurveHelper(const AutomationEvent &event,
 
 void AutomationCurveHelper::paint(Graphics &g)
 {
+    g.setColour(this->editor.getEventColour());
+
     g.fillEllipse(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
 
     if (this->draggingState)

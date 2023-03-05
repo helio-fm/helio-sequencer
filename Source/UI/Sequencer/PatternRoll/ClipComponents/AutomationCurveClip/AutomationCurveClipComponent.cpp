@@ -32,12 +32,11 @@ AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectNode &project,
     MidiSequence *sequence, RollBase &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),
-    sequence(sequence),
-    draggingEvent(nullptr),
-    addNewEventMode(false)
+    sequence(sequence)
 {
-    this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
+    this->setMouseClickGrabsKeyboardFocus(false);
+    this->setInterceptsMouseClicks(true, true);
 
     this->reloadTrack();
 
@@ -238,9 +237,7 @@ void AutomationCurveClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
             auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
             
             component->setNextNeighbour(nextEventComponent);
-            //component->setVisible(false);
             this->updateCurveComponent(component);
-            //component->setVisible(true);
             
             if (previousEventComponent)
             {
@@ -269,7 +266,7 @@ void AutomationCurveClipComponent::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.getSequence() == this->sequence)
     {
-        const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(event);
+        const auto &autoEvent = static_cast<const AutomationEvent &>(event);
         
         auto *component = new AutomationCurveEventComponent(*this, autoEvent);
         this->addAndMakeVisible(component);
@@ -282,7 +279,6 @@ void AutomationCurveClipComponent::onAddMidiEvent(const MidiEvent &event)
         component->setNextNeighbour(nextEventComponent);
         this->updateCurveComponent(component);
         component->toFront(false);
-        //this->eventAnimator.fadeIn(component, Globals::UI::fadeInShort);
         
         if (previousEventComponent)
         {
@@ -334,6 +330,7 @@ void AutomationCurveClipComponent::onChangeTrackProperties(MidiTrack *const trac
 {
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
+        this->updateColours();
         this->repaint();
     }
 }
@@ -349,7 +346,6 @@ void AutomationCurveClipComponent::onReloadProjectContent(const Array<MidiTrack 
 
 void AutomationCurveClipComponent::onAddTrack(MidiTrack *const track)
 {
-    // TODO remove?
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
         this->reloadTrack();
@@ -389,7 +385,7 @@ void AutomationCurveClipComponent::reloadTrack()
     
     for (int j = 0; j < this->sequence->size(); ++j)
     {
-        MidiEvent *event = this->sequence->getUnchecked(j);
+        auto *event = this->sequence->getUnchecked(j);
         
         if (auto *autoEvent = dynamic_cast<AutomationEvent *>(event))
         {

@@ -450,7 +450,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
         App::Workspace().getAudioCore().getMonitor();
     
     this->pianoViewport = make<Viewport>();
-    this->pianoViewport->setScrollOnDragEnabled(false);
+    this->pianoViewport->setScrollOnDragMode(Viewport::ScrollOnDragMode::never);
     this->pianoViewport->setInterceptsMouseClicks(false, true);
     this->pianoViewport->setScrollBarsShown(false, false);
     this->pianoViewport->setWantsKeyboardFocus(false);
@@ -461,7 +461,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
         *this->pianoViewport, clippingDetector);
 
     this->patternViewport = make<Viewport>();
-    this->patternViewport->setScrollOnDragEnabled(false);
+    this->patternViewport->setScrollOnDragMode(Viewport::ScrollOnDragMode::never);
     this->patternViewport->setInterceptsMouseClicks(false, true);
     this->patternViewport->setScrollBarsShown(false, false);
     this->patternViewport->setWantsKeyboardFocus(false);

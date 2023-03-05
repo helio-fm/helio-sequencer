@@ -105,8 +105,8 @@ private:
     OwnedArray<AutomationCurveEventComponent> eventComponents;
     FlatHashMap<AutomationEvent, AutomationCurveEventComponent *, MidiEventHash> eventsHash;
 
-    AutomationCurveEventComponent *draggingEvent;
-    bool addNewEventMode;
+    AutomationCurveEventComponent *draggingEvent = nullptr;
+    bool addNewEventMode = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationCurveClipComponent)
 };

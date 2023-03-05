@@ -28,7 +28,8 @@ class AutomationCurveHelper final : public Component
 {
 public:
 
-    AutomationCurveHelper(const AutomationEvent &event, const AutomationCurveClipComponent &editor, Component *target1, Component *target2);
+    AutomationCurveHelper(const AutomationEvent &event,
+        const AutomationCurveClipComponent &editor, Component *target1, Component *target2);
 
     float getCurvature() const;
 

@@ -54,6 +54,11 @@ void AutomationCurveEventComponent::paint(Graphics &g)
     static constexpr auto circleMargin = 2.f;
     const auto centre = this->getLocalBounds().getCentre();
 
+    g.setColour(this->editor.getEventColour());
+
+    const float w = float(this->getWidth());
+    const float h = float(this->getHeight());
+
     if (this->draggingState)
     {
         // indicate dragging direction:
@@ -61,35 +66,33 @@ void AutomationCurveEventComponent::paint(Graphics &g)
         {
             // top/down dots
             g.fillRect(0.f, centre.y - 1.f, 1.f, 2.f);
-            g.fillRect(float(this->getWidth() - 1), centre.y - 1.f, 1.f, 2.f);
+            g.fillRect(w - 1.f, centre.y - 1.f, 1.f, 2.f);
         }
         else if (this->dragger.getMode() == FineTuningComponentDragger::Mode::DragOnlyY)
         {
             // left/right dots
             g.fillRect(centre.x - 1.f, 0.f, 2.f, 1.f);
-            g.fillRect(centre.x - 1.f, float(this->getHeight() - 1), 2.f, 1.f);
+            g.fillRect(centre.x - 1.f, h - 1.f, 2.f, 1.f);
         }
         else
         {
             g.fillEllipse(circleMargin, circleMargin,
-                float(this->getWidth()) - circleMargin * 2.f,
-                float(this->getHeight()) - circleMargin * 2.f);
+                w - circleMargin * 2.f, h - circleMargin * 2.f);
         }
     }
     else if (this->hoveredState)
     {
         // top/down dots
         g.fillRect(0.f, centre.y - 1.f, 1.f, 2.f);
-        g.fillRect(float(this->getWidth() - 1), centre.y - 1.f, 1.f, 2.f);
+        g.fillRect(w - 1.f, centre.y - 1.f, 1.f, 2.f);
         // left/right dots
         g.fillRect(centre.x - 1.f, 0.f, 2.f, 1.f);
-        g.fillRect(centre.x - 1.f, float(this->getHeight() - 1), 2.f, 1.f);
+        g.fillRect(centre.x - 1.f, h - 1.f, 2.f, 1.f);
     }
 
     g.fillEllipse(centre.x - 2.f, centre.y - 2.f, 4.f, 4.f);
     g.fillEllipse(circleMargin, circleMargin,
-        float(this->getWidth()) - circleMargin * 2.f,
-        float(this->getHeight()) - circleMargin * 2.f);
+        w - circleMargin * 2.f, h - circleMargin * 2.f);
 }
 
 bool AutomationCurveEventComponent::hitTest(int x, int y)
@@ -224,7 +227,7 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
 
 void AutomationCurveEventComponent::recreateConnector()
 {
-    this->connector = make<AutomationCurveEventsConnector>(this, this->nextEventHolder);
+    this->connector = make<AutomationCurveEventsConnector>(this->editor, this, this->nextEventHolder);
     this->editor.addAndMakeVisible(this->connector.get());
     this->updateConnector();
 }

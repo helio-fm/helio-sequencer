@@ -339,9 +339,6 @@ void ClipComponent::paint(Graphics &g)
         g.fillRect(0, this->getHeight() - cornerMargin, cornerSize, 1);
         g.fillRect(this->getWidth() - cornerSize, this->getHeight() - cornerMargin, cornerSize, 1);
     }
-
-    // speedup: set colour to be used by all child components, so they don't have to
-    g.setColour(this->clip.isMuted() ? this->eventMutedColour : this->eventColour);
 }
 
 //===----------------------------------------------------------------------===//

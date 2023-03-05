@@ -23,7 +23,8 @@ class AutomationCurveEventsConnector final : public Component
 {
 public:
 
-    AutomationCurveEventsConnector(AutomationCurveEventComponent *c1,
+    AutomationCurveEventsConnector(AutomationCurveClipComponent &editor,
+        AutomationCurveEventComponent *c1,
         AutomationCurveEventComponent *c2);
 
     Point<float> getCentrePoint() const;
@@ -39,6 +40,8 @@ public:
     void resized() override;
     
 private:
+
+    AutomationCurveClipComponent &editor;
 
     SafePointer<AutomationCurveEventComponent> component1;
     SafePointer<AutomationCurveEventComponent> component2;

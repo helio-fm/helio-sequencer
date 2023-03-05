@@ -312,10 +312,10 @@ String App::getDeviceId()
 
     if (kDeviceId.isEmpty())
     {
-        const auto &ids = SystemStats::getDeviceIdentifiers();
-        if (!ids.isEmpty())
+        const auto &id = SystemStats::getUniqueDeviceID();
+        if (!id.isEmpty())
         {
-            kDeviceId = String(constexprHash(ids.joinIntoString({}).toUTF8()));
+            kDeviceId = String(constexprHash(id.toUTF8()));
         }
         else
         {

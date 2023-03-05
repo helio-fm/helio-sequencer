@@ -49,8 +49,9 @@ PianoClipComponent::~PianoClipComponent()
 
 void PianoClipComponent::paint(Graphics &g)
 {
-    // Draw the frame, set the colour, etc:
     ClipComponent::paint(g);
+
+    g.setColour(this->clip.isMuted() ? this->eventMutedColour : this->eventColour);
 
     for (const auto &note : this->displayedNotes)
     {

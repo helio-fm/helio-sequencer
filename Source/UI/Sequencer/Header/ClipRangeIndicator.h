@@ -25,7 +25,7 @@ public:
 
     ClipRangeIndicator()
     {
-        this->setOpaque(true);
+        this->setOpaque(false);
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
     }
