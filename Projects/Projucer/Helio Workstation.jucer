@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="3.10"
+<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="3.11"
               bundleIdentifier="fm.helio" includeBinaryInAppConfig="1" companyWebsite="https://helio.fm"
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark"
@@ -1484,7 +1484,7 @@
         <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_IPHONE>
-    <VS2015 targetFolder="../../Projects/VisualStudio2015" smallIcon="DQTpOG"
+    <VS2017 targetFolder="../../Projects/VisualStudio2017" smallIcon="DQTpOG"
             bigIcon="DQTpOG" toolset="v140" IPPLibrary="" usePrecompiledHeaders="1"
             precompiledHeaderFileName="../../Source/Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
             windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC /Gy /bigobj /Zm123">
@@ -1492,7 +1492,7 @@
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" isDebug="1"
                        optimisation="1" targetName="Helio" enableIncrementalLinking="1"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
-                       warningsAreErrors="1" winArchitecture="Win32"/>
+                       warningsAreErrors="1" winArchitecture="x64"/>
         <CONFIGURATION name="Tests" winWarningLevel="4" generateManifest="1" isDebug="1"
                        optimisation="1" targetName="Helio" enableIncrementalLinking="1"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
@@ -1519,7 +1519,7 @@
         <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
-    </VS2015>
+    </VS2017>
     <VS2019 targetFolder="../../Projects/VisualStudio2019" extraCompilerFlags="/FC /Gy /bigobj"
             extraLinkerFlags="/OPT:REF /OPT:ICF=5" unityBuild="1" bigIcon="DQTpOG"
             smallIcon="DQTpOG">

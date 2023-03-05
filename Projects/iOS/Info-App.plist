@@ -50,9 +50,9 @@
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleShortVersionString</key>
-    <string>3.10</string>
+    <string>3.11</string>
     <key>CFBundleVersion</key>
-    <string>3.10</string>
+    <string>3.11</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>UISupportsDocumentBrowser</key>

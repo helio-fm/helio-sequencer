@@ -30,11 +30,13 @@
 		A236C4B36AB5D27B60E71572 /* CoreAudio.framework */ = {isa = PBXBuildFile; fileRef = 61F0F5481B6FC0DDA7DAAD87; };
 		A2BB9CF65D9EBD9FFDC06786 /* UnityBuild.cpp */ = {isa = PBXBuildFile; fileRef = 5935215BFC47DB5094F50454; };
 		A305C31E8E9FAB7120002087 /* include_juce_core.mm */ = {isa = PBXBuildFile; fileRef = 860977B5FFAFE20BC609AC63; };
+		AE6F95E899109BD073864731 /* include_juce_audio_processors_lv2_libs.cpp */ = {isa = PBXBuildFile; fileRef = 685C0FD781A101BF48C5B87B; };
 		B2F87FE87391EB37BB7133A4 /* UIKit.framework */ = {isa = PBXBuildFile; fileRef = A786517ECDC3A3DD0DCF6F95; };
 		C3131DD94FCAE95171168F1E /* include_juce_data_structures.mm */ = {isa = PBXBuildFile; fileRef = FC84392248E5BBB797AA7654; };
 		CA577550FEB18735D934056B /* include_juce_opengl.mm */ = {isa = PBXBuildFile; fileRef = 3590821780CD003952E75600; };
 		CB960CCA38C16AC998A1A267 /* CoreGraphics.framework */ = {isa = PBXBuildFile; fileRef = A1BD73B89A3FA29D88EE93A9; };
 		E6B221F9D2A7E49E5BEB05E3 /* BinaryData.cpp */ = {isa = PBXBuildFile; fileRef = 049110EFE86677978F8FA611; };
+		E9D238AD2EAA8DC32696D4A8 /* include_juce_audio_processors_ara.cpp */ = {isa = PBXBuildFile; fileRef = 904F8D86246DEE4DB2687F0B; };
 		EE12B91E0011CA927629E90F /* WebKit.framework */ = {isa = PBXBuildFile; fileRef = 97420F0C3474283958D59DC6; };
 		FD478BAA3C88F81D16AA5E67 /* Icon.icns */ = {isa = PBXBuildFile; fileRef = AB43B7209B4383E4833E3C27; };
 		FE1498208A23EE4115106D27 /* AudioToolbox.framework */ = {isa = PBXBuildFile; fileRef = 646F8C2256B4A823DAAB603E; };
@@ -381,6 +383,7 @@
 		67C1798FF2C9704EDBEF8785 /* ColourButton.h */ /* ColourButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ColourButton.h; path = ../../Source/UI/Common/ColourButton.h; sourceTree = SOURCE_ROOT; };
 		67CF2FBD2841C33AAA00C514 /* TranslationSettings.h */ /* TranslationSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TranslationSettings.h; path = ../../Source/UI/Pages/Settings/TranslationSettings.h; sourceTree = SOURCE_ROOT; };
 		68088989851C535E6F481896 /* App.cpp */ /* App.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = App.cpp; path = ../../Source/Core/App.cpp; sourceTree = SOURCE_ROOT; };
+		685C0FD781A101BF48C5B87B /* include_juce_audio_processors_lv2_libs.cpp */ /* include_juce_audio_processors_lv2_libs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_lv2_libs.cpp; path = ../Projucer/JuceLibraryCode/include_juce_audio_processors_lv2_libs.cpp; sourceTree = SOURCE_ROOT; };
 		685E005B67E2F1E5122D6EFF /* BinarySerializer.h */ /* BinarySerializer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BinarySerializer.h; path = ../../Source/Core/Serialization/BinarySerializer.h; sourceTree = SOURCE_ROOT; };
 		685E51F3663A53DDF6DC75FE /* Diff.h */ /* Diff.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Diff.h; path = ../../Source/Core/VCS/Diff.h; sourceTree = SOURCE_ROOT; };
 		68EF358F2AA914CA8096C19E /* ProgressIndicator.h */ /* ProgressIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProgressIndicator.h; path = ../../Source/UI/Popups/ProgressIndicator.h; sourceTree = SOURCE_ROOT; };
@@ -514,6 +517,7 @@
 		8FC072442021BF4B5512CA1E /* up.svg */ /* up.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = up.svg; path = ../../Resources/Icons/up.svg; sourceTree = SOURCE_ROOT; };
 		8FF7F08A6208BA09E0A4B432 /* MultiTouchController.h */ /* MultiTouchController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MultiTouchController.h; path = ../../Source/UI/Input/MultiTouchController.h; sourceTree = SOURCE_ROOT; };
 		903955FFA5AFBE0E7B421E57 /* ProjectMapScroller.cpp */ /* ProjectMapScroller.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProjectMapScroller.cpp; path = ../../Source/UI/Sequencer/MiniMaps/PianoMap/ProjectMapScroller.cpp; sourceTree = SOURCE_ROOT; };
+		904F8D86246DEE4DB2687F0B /* include_juce_audio_processors_ara.cpp */ /* include_juce_audio_processors_ara.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_ara.cpp; path = ../Projucer/JuceLibraryCode/include_juce_audio_processors_ara.cpp; sourceTree = SOURCE_ROOT; };
 		9065B72CD8BCC0BF5D163B35 /* LongTapListener.h */ /* LongTapListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LongTapListener.h; path = ../../Source/UI/Input/LongTapListener.h; sourceTree = SOURCE_ROOT; };
 		90922392E7D4325F75F91186 /* KeyboardMappingsCollection.cpp */ /* KeyboardMappingsCollection.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = KeyboardMappingsCollection.cpp; path = ../../Source/Core/Configuration/Resources/KeyboardMappingsCollection.cpp; sourceTree = SOURCE_ROOT; };
 		90C5D4A679AA323BE958B9E6 /* PatternOperations.cpp */ /* PatternOperations.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatternOperations.cpp; path = ../../Source/UI/Sequencer/Helpers/PatternOperations.cpp; sourceTree = SOURCE_ROOT; };
@@ -2131,6 +2135,8 @@
 				46D4C80D6AE8FCB681197BC7,
 				B4FAC894B2C8A223A7006BD9,
 				CFBB0BDC31CA8F0E5D42C538,
+				904F8D86246DEE4DB2687F0B,
+				685C0FD781A101BF48C5B87B,
 				860977B5FFAFE20BC609AC63,
 				FC84392248E5BBB797AA7654,
 				D0BA5E6B83B1AE9472C2A396,
@@ -2371,6 +2377,8 @@
 				461C4208C242ED4626DFC76D,
 				7EE39683D2EDF150459153CB,
 				1D78B3E4A876C8793F3BBD4A,
+				E9D238AD2EAA8DC32696D4A8,
+				AE6F95E899109BD073864731,
 				A305C31E8E9FAB7120002087,
 				C3131DD94FCAE95171168F1E,
 				281EE99BDE13C79D9838ACDA,
@@ -2461,8 +2469,8 @@
 					"JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0",
 					"JUCE_SUPPORT_CARBON=0",
 					"JUCER_XCODE_IPHONE_2A056B8=1",
-					"JUCE_APP_VERSION=3.10",
-					"JUCE_APP_VERSION_HEX=0x30a00",
+					"JUCE_APP_VERSION=3.11",
+					"JUCE_APP_VERSION_HEX=0x30b00",
 					"JucePlugin_Build_VST=0",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",
@@ -2583,8 +2591,8 @@
 					"JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0",
 					"JUCE_SUPPORT_CARBON=0",
 					"JUCER_XCODE_IPHONE_2A056B8=1",
-					"JUCE_APP_VERSION=3.10",
-					"JUCE_APP_VERSION_HEX=0x30a00",
+					"JUCE_APP_VERSION=3.11",
+					"JUCE_APP_VERSION_HEX=0x30b00",
 					"JucePlugin_Build_VST=0",
 					"JucePlugin_Build_VST3=0",
 					"JucePlugin_Build_AU=0",

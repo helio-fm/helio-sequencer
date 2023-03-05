@@ -43,8 +43,6 @@
 
 #define JUCE_USE_DARK_SPLASH_SCREEN 1
 
-#define JUCE_PROJUCER_VERSION 0x60104
-
 //==============================================================================
 #define JUCE_MODULE_AVAILABLE_juce_audio_basics          1
 #define JUCE_MODULE_AVAILABLE_juce_audio_devices         1
@@ -147,6 +145,14 @@
 
 #ifndef    JUCE_PLUGINHOST_LADSPA
  //#define JUCE_PLUGINHOST_LADSPA 0
+#endif
+
+#ifndef    JUCE_PLUGINHOST_LV2
+ //#define JUCE_PLUGINHOST_LV2 0
+#endif
+
+#ifndef    JUCE_PLUGINHOST_ARA
+ //#define JUCE_PLUGINHOST_ARA 0
 #endif
 
 #ifndef    JUCE_CUSTOM_VST3_SDK
