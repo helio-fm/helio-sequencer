@@ -892,8 +892,8 @@ public:
             "macOS/Info-App.plist",
             "<string>" + versionString + "</string>");
 
-        this->checkBuildSystem("VS2015 project resource file",
-            "VisualStudio2015/resources.rc",
+        this->checkBuildSystem("VS2017 project resource file",
+            "VisualStudio2017/resources.rc",
             versionString);
 
         this->checkBuildSystem("VS2019 project resource file",
