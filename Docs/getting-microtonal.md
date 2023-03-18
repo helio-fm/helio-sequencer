@@ -16,12 +16,15 @@ Otherwise, once you've [added an instrument](getting-started.md#instruments) to 
 
 The page allows you to adjust key mappings manually and preview the mapped keys by clicking on them. The upper limit is set to 2048 keys - this is the maximum number of keys that can fit into 16 MIDI channels. Which would be enough to handle temperaments of size up to 192-EDO:
 
-![keyboard-mapping]
+![keyboard-mapping-page]
 
 Some additional actions are available via context menu:
  * reset to the default mapping (modulo based),
  * load custom channel mapping(s) in [Scala .kbm format](#scala-keyboard-mapping),
- * copy/paste the mapping into/from the system clipboard as a string in Helio's [own format](#helio-keyboard-mapping-format).
+ * copy/paste the mapping into/from the system clipboard as a string in Helio's [own format](#helio-keyboard-mapping-format),
+ * select one of the presets or save yours.
+
+![keyboard-mapping-menu]
 
 While you can set up virtually any custom mapping by hand, there are a couple of (sometimes) more convenient ways, described below.
 
@@ -109,7 +112,29 @@ This feature is on by default, but it can be turned off in the audio settings se
 
 If you're using a microtonal physical keyboard, make sure to uncheck this box so that the app doesn't mess up MIDI input.
 
-[keyboard-mapping]: images/keyboard-mapping.png "Keyboard mapping page layout and menu"
+## Examples
+
+This section will describe setting up various microtonal plugins in Helio. For now, it's just the Pianoteq example, 
+if you managed to make any other plugin work, please [share](https://github.com/helio-fm/helio-workstation/blob/develop/Docs/getting-microtonal.md) your findings.
+
+### Pianoteq
+
+Steps to set up a custom equal temperament:
+
+ * In Pianoteq UI, navigate to the advanced tuning page:
+   * there, create a custom microtonal temperament via the `"Temperament" -> "Make equal temperament..."` dropdown menu,
+   * make sure to choose the `"Full rebuild"` option nearby instead of the `"String tension"` option,
+   * in the `"Keyboard mapping" -> "Extended layout for up to 16\*128 notes"` dropdown menu, check `"Multi-channel MIDI layout"`,
+   * the `"Main MIDI Channel"` option in the same menu should be set to the default `"MIDI channel 1"`.
+ * In Helio UI, navigate to your instrument's keyboard mapping page:
+   * there, either select a keyboard mapping preset for your temperament from the menu, if it's available: for now there are presets for 19-edo, 22-edo, 26-edo and 31-edo,
+   * or, set up your own multi-channel mapping (see examples above on this page).
+
+For more details on all Pianoteq's tuning parameters refer to [the manual](https://www.modartt.com/user_manual?product=pianoteq&lang=en).
+
+
+[keyboard-mapping-page]: images/keyboard-mapping-page.png "Keyboard mapping page layout"
+[keyboard-mapping-menu]: images/keyboard-mapping-menu.png "Keyboard mapping page menu"
 [change-temperament]: images/change-temperament.png "Switching and converting temperaments"
 [readjust-midi-input-recording]: images/readjust-midi-input-recording.png "Every key of one octave played on a 12-tone keyboard, recorded in 19-edo"
 [readjust-midi-input-checkbox]: images/readjust-midi-input-checkbox.png "Enable/disable recording microtonal notes from 12-tone keyboard"
