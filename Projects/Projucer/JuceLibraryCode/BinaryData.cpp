@@ -2188,19 +2188,19 @@ static const unsigned char temp_binary_data_98[] =
 "    \"keyboardMapping\": [\n"
 "      {\n"
 "        \"name\": \"Pianoteq 19-edo multi-channel\",\n"
-"        \"map\": \"0:0/15,18+,0/16,18+,0/1,18+,0/2,18+,0/3,18+,0/4,18+,0/5,18+,0/6,18+,0/7,18+,0/8,18+,0/9,19+\"\n"
+"        \"map\": \"0:17/14,1+,0/15,18+,0/16,18+,0/1,18+,0/2,18+,0/3,18+,0/4,18+,0/5,18+,0/6,18+,0/7,18+,0/8,18+,0/9,19+\"\n"
 "      },\n"
 "      {\n"
 "        \"name\": \"Pianoteq 22-edo multi-channel\",\n"
-"        \"map\": \"0:0/14,21+,0/15,21+,0/16,21+,0/1,21+,0/2,21+,0/3,21+,0/4,21+,0/5,21+,0/6,21+,0/7,21+,0/8,22+\"\n"
+"        \"map\": \"0:8/14,21+,8/15,21+,8/16,21+,8/1,21+,8/2,21+,8/3,21+,8/4,21+,8/5,21+,8/6,21+,8/7,21+,8/8,22+\"\n"
 "      },\n"
 "      {\n"
 "        \"name\": \"Pianoteq 26-edo multi-channel\",\n"
-"        \"map\": \"0:0/14,25+,0/15,25+,0/16,25+,0/1,25+,0/2,25+,0/3,25+,0/4,25+,0/5,25+,0/6,25+,0/7,25+,0/8,26+\"\n"
+"        \"map\": \"0:24/13,1+,0/14,25+,0/15,25+,0/16,25+,0/1,25+,0/2,25+,0/3,25+,0/4,25+,0/5,25+,0/6,25+,0/7,25+,0/8,26+\"\n"
 "      },\n"
 "      {\n"
 "        \"name\": \"Pianoteq 31-edo multi-channel\",\n"
-"        \"map\": \"0:0/14,30+,0/15,30+,0/16,30+,0/1,30+,0/2,30+,0/3,30+,0/4,30+,0/5,30+,0/6,30+,0/7,30+,0/8,31+\"\n"
+"        \"map\": \"0:15/13,15+,0/14,30+,0/15,30+,0/16,30+,0/1,30+,0/2,30+,0/3,30+,0/4,30+,0/5,30+,0/6,30+,0/7,30+,0/8,31+\"\n"
 "      }\n"
 "    ]\n"
 "  }\n"
@@ -5037,7 +5037,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 3374; return colourSchemes_json;
         case 0x25669f2b:  numBytes = 16310; return hotkeySchemes_json;
-        case 0xfd7446db:  numBytes = 764; return keyboardMappings_json;
+        case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 10616; return scales_json;
         case 0x77719112:  numBytes = 1366; return temperaments_json;

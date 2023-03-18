@@ -303,7 +303,7 @@ namespace BinaryData
     const int            hotkeySchemes_jsonSize = 16310;
 
     extern const char*   keyboardMappings_json;
-    const int            keyboardMappings_jsonSize = 764;
+    const int            keyboardMappings_jsonSize = 792;
 
     extern const char*   meters_json;
     const int            meters_jsonSize = 933;
