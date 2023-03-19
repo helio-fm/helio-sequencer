@@ -57,29 +57,5 @@ private:
     ComponentDragger dragger;
     UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
 
-    // a hack to make mouse wheel work on entire layout,
-    // not just on the dialog area: when the dialog is shown,
-    // temporarily register a global listener and simply pass
-    // the events, if they are outside of the dialog area
-    struct BackgroundWheelListener final : public MouseListener
-    {
-        explicit BackgroundWheelListener(DialogBase *dialog) :
-            parentDialog(dialog) {}
-
-        void mouseWheelMove(const MouseEvent &event,
-            const MouseWheelDetails &wheel) override
-        {
-            if (this->parentDialog != nullptr &&
-                !this->parentDialog->getScreenBounds().contains(event.getScreenPosition()))
-            {
-                this->parentDialog->mouseWheelMove(event, wheel);
-            }
-        }
-
-        SafePointer<DialogBase> parentDialog;
-    };
-
-    UniquePointer<MouseListener> backgroundWheelListener;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DialogBase)
 };

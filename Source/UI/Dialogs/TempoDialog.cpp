@@ -21,6 +21,41 @@
 #include "HelioTheme.h"
 #include "ColourIDs.h"
 
+// a hack to pass the TextEditor's mousewheel to the dialog,
+// which needs it for adjusting the tempo with mouse wheel:
+class TempoTextEditor final : public TextEditor, private AsyncUpdater
+{
+public:
+
+    Function<void(const MouseWheelDetails &wheel)> onWheelMove;
+
+    void mouseWheelMove(const MouseEvent &e,
+        const MouseWheelDetails &wheel) override
+    {
+        TextEditor::mouseWheelMove(e, wheel);
+
+        if (!wheel.isInertial)
+        {
+            // doing it asynchronously to avoid weird
+            // double mouseWheelMove callbacks in some cases:
+            this->details = wheel;
+            this->triggerAsyncUpdate();
+        }
+    }
+
+private:
+
+    void handleAsyncUpdate() override
+    {
+        if (this->onWheelMove != nullptr)
+        {
+            this->onWheelMove(this->details);
+        }
+    }
+
+    MouseWheelDetails details;
+};
+
 class TapTempoComponent final : public Component, private Timer
 {
 public:
@@ -172,7 +207,7 @@ TempoDialog::TempoDialog(int bpmValue)
         this->textEditor->setText(String(newTempoBpm), sendNotification);
     };
 
-    this->textEditor = make<TextEditor>();
+    this->textEditor = make<TempoTextEditor>();
     this->addAndMakeVisible(this->textEditor.get());
     this->textEditor->setMultiLine(false);
     this->textEditor->setReturnKeyStartsNewLine(false);
@@ -181,6 +216,20 @@ TempoDialog::TempoDialog(int bpmValue)
     this->textEditor->setCaretVisible(true);
     this->textEditor->setPopupMenuEnabled(true);
     this->textEditor->setFont(Globals::UI::Fonts::L);
+
+    this->textEditor->onWheelMove = [this](const MouseWheelDetails &wheel)
+    {
+        if (wheel.deltaY == 0)
+        {
+            return;
+        }
+
+        const auto delta = wheel.deltaY > 0 ? 1 : -1;
+        const auto newTempoBpm = this->textEditor->getText().getIntValue() + delta;
+        this->textEditor->setText(String(newTempoBpm));
+
+        this->updateOkButtonState();
+    };
 
     this->textEditor->onTextChange = [this]()
     {
@@ -221,21 +270,6 @@ TempoDialog::TempoDialog(int bpmValue)
 // still need to have this empty dtor here,
 // so that compiler can resolve the forward-declared TapTempo
 TempoDialog::~TempoDialog() = default;
-
-void TempoDialog::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
-{
-    if (wheel.deltaY == 0)
-    {
-        return;
-    }
-
-    const auto delta = wheel.deltaY > 0 ? 1 : -1;
-    const auto newTempoBpm =
-        this->textEditor->getText().getIntValue() + delta;
-    this->textEditor->setText(String(newTempoBpm));
-
-    this->updateOkButtonState();
-}
 
 void TempoDialog::resized()
 {

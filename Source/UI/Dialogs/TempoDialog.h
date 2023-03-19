@@ -19,6 +19,7 @@
 
 #include "DialogBase.h"
 
+class TempoTextEditor;
 class TapTempoComponent;
 
 class TempoDialog final : public DialogBase
@@ -30,9 +31,6 @@ public:
 
     Function<void(int newBpmValue)> onOk;
     Function<void()> onCancel;
-
-    void mouseWheelMove(const MouseEvent &e,
-        const MouseWheelDetails &wheel) override;
 
     void resized() override;
     void parentHierarchyChanged() override;
@@ -54,7 +52,7 @@ private:
     UniquePointer<TextButton> cancelButton;
     UniquePointer<TextButton> okButton;
     UniquePointer<TapTempoComponent> tapTempo;
-    UniquePointer<TextEditor> textEditor;
+    UniquePointer<TempoTextEditor> textEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TempoDialog)
 };
