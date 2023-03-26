@@ -1,21 +1,20 @@
 # Introduction
 
-Welcome to the documentation for the Helio project, a free lightweight music sequencer, which runs on all major desktop and mobile operating systems.
+Welcome to the documentation for the Helio project, a free lightweight music sequencer that runs on all major desktop and mobile operating systems.
 
-Helio was designed to save me the time of struggling with the MIDI editor, so I could focus more on musical ideas. In this documentation, I'll also try to save some time and write it down as short and simple as I can.
+Helio was designed to save me time struggling with the MIDI editor, so I could focus more on musical ideas. In this documentation, I'll also try to save time by keeping it as short and simple as possible.
 
-If you notice that something important is missing, which I'm pretty sure it is, send me an angry [email](mailto:peter.rudenko@gmail.com), or create a [PR](https://github.com/helio-fm/helio-workstation/pulls) on the Github.
+If you notice that something important is missing, which I'm pretty sure it is, send me an angry [email](mailto:peter.rudenko@gmail.com), or file a [PR](https://github.com/helio-fm/helio-workstation/pulls) on Github.
 
-*If you're reading this page in the project's repository, some generated content will be missing, see the full rendered version at [docs.helio.fm](https://docs.helio.fm).*
+*Some generated content will be missing if you read this page in the project's repository, see the full rendered version at [docs.helio.fm](https://docs.helio.fm).*
 
 #### How to read this
 
-If you're starting out with Helio, just continue with the [Getting Started](getting-started.md) page to learn the basic concepts of UI navigation, setting up [instruments](getting-started.md#instruments), [creating](getting-started.md#creating-a-project) a project, [editing and arranging](getting-started.md#editing-and-arranging) it and saving your work in the [version control](getting-started.md#version-control).
+If you're starting out with Helio, just keep reading the [Getting Started](getting-started.md) page to learn the basic concepts of UI navigation, setting up [instruments](getting-started.md#instruments), [creating](getting-started.md#creating-a-project) a project, [editing and arranging](getting-started.md#editing-and-arranging) it, and saving your work in the [version control](getting-started.md#version-control).
 
-Otherwise, you might find useful the [editing tips](tips-and-tricks.md): the majority of all the nifty tools and hacks will be described there.
+Otherwise, you might find the [editing tips](tips-and-tricks.md) useful: the majority of the nifty tools and hacks are described there.
 
 If you've already tinkered with Helio for a while, you'll probably only need the [hotkeys](hotkeys.md) section.
-
 
 ## Installation
 
@@ -24,30 +23,29 @@ In both flavors it has a small disk footprint (less than 10 Mb) and should run o
 
 ### Portable vs installer
 
-Installers are provided for Windows and Debian-based Linux distributions. The installer version is only needed, if you want to have the desktop shortcut and the uninstall tool.
+Installers are provided for Windows and Debian-based Linux distributions. The installer version is only required if you want the desktop shortcut and the uninstall tool.
 
-With the portable version, just download the compressed archive and unzip it to a folder of your choice.
+To use the portable version, simply download the compressed archive and unzip it to a folder of your choice.
 
 ### 32 or 64 bits
 
-The only practical difference between the two is that the 64-bit version will only be able to host 64-bit plugins, and the 32-bit version will only host 32-bit plugins.
+The only practical difference between the two is that the 64-bit version can only host 64-bit plugins, and the 32-bit version can only host 32-bit plugins.
 
 At the moment of writing this, Helio does not support plugin sandboxing or hosting both 32-bit and 64-bit plugins at the same time.
 
 ### Master build or development build
 
-Master builds are the latest stable versions. You can keep up to date with the latest changes through the [release notes](changelog.md). If you'd like to preview the latest features or verify bug fixes, you can install the development build.
-
+The master builds are the most recent stable versions. You can keep up to date with the latest changes through the [release notes](changelog.md). Install the development build if you want to preview the latest features or verify bug fixes.
 
 ## Used directories
 
-Helio keeps all files in two directories: one for the project files, and one for the configuration files.
+Helio keeps all files in two directories: one for project files, and another for configuration files.
 
-Note that the installer-based versions don't remove any of these when uninstalling the app. If you want to remove Helio from the system completely, you need to delete them manually.
+Note that the installer-based versions don't remove any of these when uninstalling the app. If you want to completely remove Helio from the system, you should delete them manually.
 
 ### The configuration directory
 
-All the configuration files are created on the first start under the user application data directory. The directory is a platform-dependent location:
+All configuration files are created on the first start under the user application data directory. The directory location is platform-dependent:
 
 * Windows: %APPDATA%\Helio
 * macOS: ~/Library/Application Support/Helio
@@ -55,15 +53,15 @@ All the configuration files are created on the first start under the user applic
 
 #### *settings.helio*
 
-This file basically contains all the settings, so if you delete or rename it, the app would run as if it was the first time. The settings are supposed to be human-readable and are stored in XML format.
+This file basically contains all the settings, so deleting or renaming it will cause the app to run as if it were the first time. The settings are intended to be human-readable and are stored in XML format.
 
 #### *translations.helio* and maybe others
 
-Some additional [resources](configs.md) are dynamically updated in the runtime, if the newer version is available. At the moment of writing, only translations are updated this way.
+If the update checks are enabled, some additional [resources](configs.md) are updated in the runtime. At the moment of writing, only translations are being updated in this manner.
 
 ### The projects directory
 
-The projects files are created in the `Helio` subfolder of the user's default documents folder. The location of this directory is also platform-dependent:
+The project files are saved to the user's default documents folder in the `Helio` subfolder. This directory's location is also platform-dependent: 
 
 * Windows: %HOMEPATH%\Helio (for example, "c:\Users\Peter\Documents\Helio\")
 * macOS: ~/Documents/Helio

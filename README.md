@@ -1,5 +1,5 @@
 ## ![Screenshot](Docs/images/screen-v3.png)
-[Helio Workstation](https://helio.fm) is free and open-source music sequencer, designed to be used on all major platforms.
+[Helio](https://helio.fm) is free and open-source music sequencer, designed to be used on all major platforms.
 
 
 ## Why another sequencer?
