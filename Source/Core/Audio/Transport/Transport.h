@@ -140,6 +140,11 @@ public:
         return this->projectLastBeat.get();
     }
 
+    bool hasSoloClips() const noexcept
+    {
+        return this->hasSoloClipsCache;
+    }
+
     //===------------------------------------------------------------------===//
     // Sending messages in real-time
     //===------------------------------------------------------------------===//
@@ -250,14 +255,17 @@ private:
     void rebuildPlaybackCacheIfNeeded() const;
     TransportPlaybackCache buildPlaybackCache(bool withMetronome) const;
 
-    // linksCache is <track id : instrument>
+    mutable bool hasSoloClipsCache = false;
+    bool findSoloClipFlagIfAny() const;
+
+    // <track id : instrument>
     mutable Array<const MidiTrack *> tracksCache;
     mutable FlatHashMap<String, WeakReference<Instrument>, StringHash> instrumentLinks;
     
     void updateInstrumentLinkForTrack(const MidiTrack *track);
     void clearInstrumentLinkForTrack(const MidiTrack *track);
     
-    // a nasty hack, see the description in BuiltInSynth.h:
+    // a nasty hack, see the description in DefaultSynth.h:
     void updateTemperamentInfoForBuiltInSynth(int periodSize, double periodRange) const;
 
 private:

@@ -735,6 +735,11 @@ void Transport::onAddClip(const Clip &clip)
 
     updateLengthAndTimeIfNeeded((&clip));
     this->playbackCacheIsOutdated = true;
+
+    if (clip.isSoloed())
+    {
+        this->hasSoloClipsCache = this->findSoloClipFlagIfAny();
+    }
 }
 
 void Transport::onChangeClip(const Clip &oldClip, const Clip &newClip)
@@ -742,6 +747,11 @@ void Transport::onChangeClip(const Clip &oldClip, const Clip &newClip)
     this->stopPlaybackAndRecording();
     updateLengthAndTimeIfNeeded((&newClip));
     this->playbackCacheIsOutdated = true;
+
+    if (oldClip.isSoloed() != newClip.isSoloed())
+    {
+        this->hasSoloClipsCache = this->findSoloClipFlagIfAny();
+    }
 }
 
 void Transport::onRemoveClip(const Clip &clip) {}
@@ -750,6 +760,7 @@ void Transport::onPostRemoveClip(Pattern *const pattern)
     this->stopPlaybackAndRecording();
     updateLengthAndTimeIfNeeded(pattern->getTrack());
     this->playbackCacheIsOutdated = true;
+    this->hasSoloClipsCache = this->findSoloClipFlagIfAny();
 }
 
 void Transport::onChangeTrackProperties(MidiTrack *const track)
@@ -814,6 +825,8 @@ void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks,
         this->updateInstrumentLinkForTrack(track);
     }
 
+    this->hasSoloClipsCache = this->findSoloClipFlagIfAny();
+
     this->stopPlaybackAndRecording();
 
     this->updateTemperamentInfoForBuiltInSynth(meta->getPeriodSize(), meta->getPeriodRange());
@@ -829,6 +842,7 @@ void Transport::onAddTrack(MidiTrack *const track)
     this->playbackCacheIsOutdated = true;
     this->tracksCache.addIfNotAlreadyThere(track);
     this->updateInstrumentLinkForTrack(track);
+    this->hasSoloClipsCache = this->findSoloClipFlagIfAny();
 }
 
 void Transport::onRemoveTrack(MidiTrack *const track)
@@ -838,6 +852,7 @@ void Transport::onRemoveTrack(MidiTrack *const track)
     this->playbackCacheIsOutdated = true;
     this->tracksCache.removeAllInstancesOf(track);
     this->clearInstrumentLinkForTrack(track);
+    this->hasSoloClipsCache = this->findSoloClipFlagIfAny();
 }
 
 void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
@@ -992,6 +1007,20 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float targetBea
 // Playback cache management
 //===----------------------------------------------------------------------===//
 
+bool Transport::findSoloClipFlagIfAny() const
+{
+    for (const auto *track : this->tracksCache)
+    {
+        if (track->getPattern() != nullptr &&
+            track->getPattern()->hasSoloClips())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void Transport::rebuildPlaybackCacheIfNeeded() const
 {
     if (this->playbackCacheIsOutdated.get())
@@ -1005,17 +1034,7 @@ TransportPlaybackCache Transport::buildPlaybackCache(bool withMetronome) const
 {
     TransportPlaybackCache result;
     
-    // Find solo clips, if any
-    bool hasSoloClips = false;
-    for (const auto *track : this->tracksCache)
-    {
-        if (track->getPattern() != nullptr &&
-            track->getPattern()->hasSoloClips())
-        {
-            hasSoloClips = true;
-            break;
-        }
-    }
+    this->hasSoloClipsCache = this->findSoloClipFlagIfAny();
 
     for (const auto *track : this->tracksCache)
     {
@@ -1029,7 +1048,7 @@ TransportPlaybackCache Transport::buildPlaybackCache(bool withMetronome) const
             for (const auto *clip : track->getPattern()->getClips())
             {
                 cached->track->exportMidi(cached->midiMessages, *clip,
-                    keyMap, hasSoloClips, withMetronome,
+                    keyMap, this->hasSoloClipsCache, withMetronome,
                     this->projectFirstBeat.get(), this->projectLastBeat.get());
             }
         }
@@ -1037,7 +1056,7 @@ TransportPlaybackCache Transport::buildPlaybackCache(bool withMetronome) const
         {
             static Clip noTransform;
             cached->track->exportMidi(cached->midiMessages, noTransform,
-                keyMap, hasSoloClips, withMetronome,
+                keyMap, this->hasSoloClipsCache, withMetronome,
                 this->projectFirstBeat.get(), this->projectLastBeat.get());
         }
 

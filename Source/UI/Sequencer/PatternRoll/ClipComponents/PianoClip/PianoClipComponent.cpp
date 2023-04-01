@@ -51,7 +51,10 @@ void PianoClipComponent::paint(Graphics &g)
 {
     ClipComponent::paint(g);
 
-    g.setColour(this->clip.isMuted() ? this->eventMutedColour : this->eventColour);
+    const auto isMuted = this->clip.isMuted() ||
+        (!this->clip.isSoloed() && this->getRoll().getTransport().hasSoloClips());
+
+    g.setColour(isMuted ? this->eventMutedColour : this->eventColour);
 
     for (const auto &note : this->displayedNotes)
     {

@@ -424,6 +424,14 @@ void PatternRoll::onAddClip(const Clip &clip)
             this->selectEvent(this->newClipDragging, true); // clear previous selection
         }
     }
+
+    if (clip.isSoloed()) // solo flags affect everyone's appearance
+    {
+        for (const auto &it : this->clipComponents)
+        {
+            this->triggerBatchRepaintFor(it.second.get());
+        }
+    }
 }
 
 void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)
@@ -433,6 +441,14 @@ void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)
         this->clipComponents.erase(clip);
         this->clipComponents[newClip] = UniquePointer<ClipComponent>(component);
         this->triggerBatchRepaintFor(component);
+    }
+
+    if (clip.isSoloed() != newClip.isSoloed())
+    {
+        for (const auto &it : this->clipComponents)
+        {
+            this->triggerBatchRepaintFor(it.second.get());
+        }
     }
 
     RollBase::onChangeClip(clip, newClip);
@@ -445,6 +461,14 @@ void PatternRoll::onRemoveClip(const Clip &clip)
         this->fader.fadeOut(deletedComponent, Globals::UI::fadeOutLong);
         this->selection.deselect(deletedComponent);
         this->clipComponents.erase(clip);
+    }
+
+    if (clip.isSoloed())
+    {
+        for (const auto &it : this->clipComponents)
+        {
+            this->triggerBatchRepaintFor(it.second.get());
+        }
     }
 }
 
