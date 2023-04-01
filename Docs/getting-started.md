@@ -302,6 +302,15 @@ To interact with it:
 
 Often, you only need one tempo for the whole song - for that, pick *"Set one tempo"* menu item in the tempo track menu, or project refactoring menu.
 
+### Mute and solo
+
+Individual clips can be muted via the `M` hotkey or the context menu in the pattern roll.
+Except for automation, all clips can be soloed (with the `S` hotkey or via the context menu) for the convenience of isolating chunks of notes without disabling the tempo/pedal/etc. automation at the same time.
+
+All clips that are explicitly or implicitly muted (muted by others) are displayed as dimmed:
+
+![solo-clips]
+
 ## Version control
 
 The concept of [version control](https://en.wikipedia.org/wiki/Version_control) comes from the software development world. If you're not familiar with it, you can think of it as of creating "save points" in your project, and tracking changes made since the last time you saved.
@@ -337,6 +346,7 @@ The right side shows the tree of all revisions that you have saved. Note a coupl
 [patterns-clips]: images/patterns-track-clips.png "Track instances (clips) and their modifications"
 [tempo-automation]: images/tempo-automation.png "Changing global tempo in pattern mode"
 [tempo-dialog]: images/tempo-dialog.png "Not quite my tempo. It's all good, no worries."
+[solo-clips]: images/solo-clips.png "While some clips are soloed, all others are implicitly muted."
 
 [velocity-map-toggle]: images/velocity-map-toggle.png "Velocity map overview"
 [velocity-map-ramps]: images/velocity-map-ramps.png "Velocity map linear ramps"
