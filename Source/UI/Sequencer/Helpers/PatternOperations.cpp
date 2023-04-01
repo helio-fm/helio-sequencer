@@ -422,14 +422,15 @@ void PatternOperations::toggleSoloClips(const Lasso &selection, bool shouldCheck
 
     bool didCheckpoint = !shouldCheckpoint;
 
-    // If have at least one soloed clip, unsolo all, otherwise solo all
+    // when having at least one soloed clip, unsolo all, otherwise solo all
     const bool newSoloState = !lassoContainsSoloedClip(selection);
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const auto &clip = selection.getItemAs<ClipComponent>(i)->getClip();
 
-        if (clip.isSoloed() == newSoloState)
+        if (clip.isSoloed() == newSoloState ||
+            (!clip.canBeSoloed() && !clip.isSoloed()))
         {
             continue;
         }
@@ -459,6 +460,12 @@ void PatternOperations::toggleMuteClip(const Clip &clip, bool shouldCheckpoint /
 void PatternOperations::toggleSoloClip(const Clip &clip, bool shouldCheckpoint /*= true*/)
 {
     auto *pattern = clip.getPattern();
+
+    // the solo flag can only be set in piano tracks
+    if (!clip.canBeSoloed() && !clip.isSoloed())
+    {
+        return;
+    }
 
     if (shouldCheckpoint)
     {

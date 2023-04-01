@@ -48,7 +48,7 @@ PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
 
 static bool canRenamePatternSelection(WeakReference<Lasso> lasso)
 {
-    const String trackId = lasso->getFirstAs<ClipComponent>()->getClip().getTrackId();
+    const auto trackId = lasso->getFirstAs<ClipComponent>()->getClip().getTrackId();
     for (int i = 0; i < lasso->getNumSelected(); ++i)
     {
         if (lasso->getItemAs<ClipComponent>(i)->getClip().getTrackId() != trackId)
@@ -57,6 +57,19 @@ static bool canRenamePatternSelection(WeakReference<Lasso> lasso)
         }
     }
     return true;
+}
+
+static bool canTriggerSoloForPatternSelection(WeakReference<Lasso> lasso)
+{
+    for (int i = 0; i < lasso->getNumSelected(); ++i)
+    {
+        const auto &clip = lasso->getItemAs<ClipComponent>(i)->getClip();
+        if (clip.isSoloed() || clip.canBeSoloed())
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
@@ -103,11 +116,17 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
     const auto muteAction = PatternOperations::lassoContainsMutedClip(*this->lasso.get()) ?
         TRANS(I18n::Menu::unmute) : TRANS(I18n::Menu::mute);
 
+    const auto canSolo = canTriggerSoloForPatternSelection(this->lasso);
     const auto soloAction = PatternOperations::lassoContainsSoloedClip(*this->lasso.get()) ?
         TRANS(I18n::Menu::unsolo) : TRANS(I18n::Menu::solo);
 
-    menu.add(MenuItem::item(Icons::mute, CommandIDs::ToggleMuteClips, muteAction)->closesMenu());
-    menu.add(MenuItem::item(Icons::unmute, CommandIDs::ToggleSoloClips, soloAction)->closesMenu());
+    menu.add(MenuItem::item(Icons::mute,
+        CommandIDs::ToggleMuteClips, muteAction)->closesMenu());
+
+    menu.add(MenuItem::item(Icons::unmute,
+        CommandIDs::ToggleSoloClips, soloAction)->
+        disabledIf(!canSolo)->
+        closesMenu());
 
     const auto canDuplicate = this->lasso->getNumSelected() == 1;
 

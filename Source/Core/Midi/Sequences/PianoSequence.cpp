@@ -62,27 +62,6 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence, short timeFo
     this->updateBeatRange(false);
 }
 
-void PianoSequence::exportMidi(MidiMessageSequence &outSequence,
-    const Clip &clip, const KeyboardMapping &keyMap,
-    bool soloPlaybackMode, bool exportMetronome,
-    float projectFirstBeat, float projectLastBeat,
-    double timeFactor /*= 1.0*/) const
-{
-    // This method pretty much duplicates base method, except for this check:
-    if (this->midiEvents.isEmpty() || clip.isMuted() ||
-        (soloPlaybackMode && !clip.isSoloed()))
-    {
-        return;
-    }
-
-    for (const auto *event : this->midiEvents)
-    {
-        event->exportMessages(outSequence, clip, keyMap, timeFactor);
-    }
-
-    outSequence.updateMatchedPairs();
-}
-
 //===----------------------------------------------------------------------===//
 // Undoable track editing
 //===----------------------------------------------------------------------===//

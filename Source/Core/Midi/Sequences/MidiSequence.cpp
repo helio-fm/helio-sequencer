@@ -92,24 +92,15 @@ void MidiSequence::clearUndoHistory()
 
 void MidiSequence::exportMidi(MidiMessageSequence &outSequence,
     const Clip &clip, const KeyboardMapping &keyMap,
-    bool soloPlaybackMode, bool exportMetronome,
+    bool projectHasSoloClips, bool exportMetronome,
     float projectFirstBeat, float projectLastBeat,
     double timeFactor /*= 1.0*/) const
 {
-    if (this->midiEvents.isEmpty() || clip.isMuted())
+    if (this->midiEvents.isEmpty() || clip.isMuted() ||
+        (projectHasSoloClips && !clip.isSoloed()))
     {
         return;
     }
-
-    // this will ignore soloPlaybackMode flag,
-    // (which means there's at least one solo clip somewhere),
-    // since not all sequence types are supposed to be soloed,
-    // for example, automations should be exported all the time unless muted;
-
-    // for now, PianoSequence overrides this method
-    // to make sure it skips all no-solo clips, when soloPlaybackMode is true,
-    // and TimeSignatureSequence overrides this method
-    // to emit the "virtual" metronome track, if needed
 
     for (const auto *event : this->midiEvents)
     {

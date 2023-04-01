@@ -47,9 +47,10 @@ public:
     const Id getId() const noexcept;
     const String &getKeyString() const noexcept;
     
+    bool isValid() const noexcept;
     bool isMuted() const noexcept;
     bool isSoloed() const noexcept;
-    bool isValid() const noexcept;
+    bool canBeSoloed() const noexcept;
 
     const String &getTrackId() const noexcept;
     Colour getTrackColour() const noexcept;
