@@ -22,10 +22,15 @@ fi
 # Update OpenSSH
 #
 # Ubuntu Trusty seems to be the only option for Android builds on Travis at the moment,
-# but I need a more recent OpenSSH client to be able to connect to updload the build
+# but I need a more recent OpenSSH client to be able to connect to upload the build
 
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 762E3157
 sudo apt-add-repository 'deb http://old-releases.ubuntu.com/ubuntu yakkety main universe multiverse'
+
+# Also remove this dead(?) repo which fails with 503
+sudo add-apt-repository --remove "deb http://toolbelt.heroku.com/ubuntu /"   
+sudo rm -fv /etc/apt/sources.list.d/heroku-toolbelt.list
+
 sudo apt-get update
 sudo apt-get install openssh-server=1:7.3p1-1
 
