@@ -96,8 +96,8 @@ bool Clip::isSoloed() const noexcept
 
 bool Clip::canBeSoloed() const noexcept
 {
-    jassert(this->pattern);
-    return this->pattern->getTrack()->canBeSoloed();
+    return (this->pattern != nullptr) ?
+        this->pattern->getTrack()->canBeSoloed() : false;
 }
 
 const String &Clip::getTrackId() const noexcept

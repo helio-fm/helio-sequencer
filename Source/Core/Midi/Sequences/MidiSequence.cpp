@@ -97,7 +97,7 @@ void MidiSequence::exportMidi(MidiMessageSequence &outSequence,
     double timeFactor /*= 1.0*/) const
 {
     if (this->midiEvents.isEmpty() || clip.isMuted() ||
-        (projectHasSoloClips && !clip.isSoloed()))
+        (projectHasSoloClips && !clip.isSoloed() && clip.canBeSoloed()))
     {
         return;
     }

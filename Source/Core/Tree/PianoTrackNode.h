@@ -27,6 +27,7 @@ public:
     explicit PianoTrackNode(const String &name);
 
     Image getIcon() const noexcept override;
+    bool canBeSoloed() const noexcept override { return true; }
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem

@@ -58,8 +58,9 @@ public:
     virtual int getTrackControllerNumber() const noexcept = 0;
     virtual void setTrackControllerNumber(int val,
         NotificationType notificationType) = 0;
-
-    virtual bool canBeSoloed() const noexcept { return true; }
+    
+    // "Can be soloed" also means "can be implicitly muted by others":
+    virtual bool canBeSoloed() const noexcept { return false; }
     // Whether a track has its own time signature which should be used instead of timeline's:
     virtual bool hasTimeSignatureOverride() const noexcept = 0;
     virtual const TimeSignatureEvent *getTimeSignatureOverride() const noexcept = 0;
