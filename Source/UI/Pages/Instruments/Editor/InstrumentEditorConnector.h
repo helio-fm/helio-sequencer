@@ -21,7 +21,7 @@ class InstrumentEditor;
 
 #include "Instrument.h"
 
-class InstrumentEditorConnector :
+class InstrumentEditorConnector final :
     public Component,
     public SettableTooltipClient
 {
@@ -37,11 +37,11 @@ public:
 
     void update();
     void resizeToFit();
-    void getPoints(float &x1, float &y1, float &x2, float &y2) const;
+    void getPinPoints(float &x1, float &y1, float &x2, float &y2) const;
 
     void paint(Graphics &g) override;
     bool hitTest(int x, int y) override;
-    void mouseDown(const MouseEvent &) override;
+    void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void resized() override;

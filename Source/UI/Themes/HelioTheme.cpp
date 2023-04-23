@@ -862,6 +862,12 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Backgrounds::headlineFill, s->getHeadlineFillColour());
     this->setColour(ColourIDs::Backgrounds::dialogFill, s->getDialogFillColour());
 
+    this->setColour(ColourIDs::Tooltip::messageFill, Colours::black.withAlpha(0.75f));
+    this->setColour(ColourIDs::Tooltip::okIconFill, Colours::black.withAlpha(0.5f));
+    this->setColour(ColourIDs::Tooltip::okIconForeground, Colours::white.withAlpha(0.75f));
+    this->setColour(ColourIDs::Tooltip::failIconFill, Colours::black.withAlpha(0.5f));
+    this->setColour(ColourIDs::Tooltip::failIconForeground, Colours::white.withAlpha(0.75f));
+
     this->setColour(ColourIDs::Panel::border, s->getFrameBorderColour().withAlpha(0.225f));
 
     this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPageFillColour().darker(0.4f));
@@ -874,10 +880,11 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Instrument::midiOut, textColour.contrasting().withAlpha(0.1f));
     this->setColour(ColourIDs::Instrument::audioIn, textColour.contrasting().withAlpha(0.15f));
     this->setColour(ColourIDs::Instrument::audioOut, textColour.contrasting().withAlpha(0.15f));
-    this->setColour(ColourIDs::Instrument::midiConnector, textColour.withAlpha(0.35f));
-    this->setColour(ColourIDs::Instrument::audioConnector, textColour.contrasting().withAlpha(0.25f));
-    this->setColour(ColourIDs::Instrument::shadowPin, textColour.withAlpha(0.1f));
-    this->setColour(ColourIDs::Instrument::shadowConnector, textColour.withAlpha(0.2f));
+
+    this->setColour(ColourIDs::Instrument::midiConnector, textColour.withAlpha(0.15f));
+    this->setColour(ColourIDs::Instrument::audioConnector, textColour.contrasting().withAlpha(0.75f));
+    this->setColour(ColourIDs::Instrument::pinShadow, textColour.withAlpha(0.1f));
+    this->setColour(ColourIDs::Instrument::connectorShadow, textColour.withAlpha(0.25f));
 
     // Borders
     this->setColour(ColourIDs::Common::borderLineLight, Colours::white.withAlpha(0.065f));

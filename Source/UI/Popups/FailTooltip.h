@@ -18,6 +18,7 @@
 #pragma once
 
 #include "CenteredTooltipComponent.h"
+#include "ColourIDs.h"
 #include "Icons.h"
 
 class FailTooltip final : public CenteredTooltipComponent,
@@ -33,11 +34,11 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(Colours::black.withAlpha(0.5f));
-        g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 15.000f);
+        g.setColour(this->backgroundColour);
+        g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 15.f);
 
-        g.setColour(Colours::white.withAlpha(0.7f));
-        Rectangle<int> imageBounds(0, 0, FailTooltip::imageSize, FailTooltip::imageSize);
+        g.setColour(this->textColour);
+        const Rectangle<int> imageBounds(0, 0, FailTooltip::imageSize, FailTooltip::imageSize);
         g.fillPath(this->iconShape, this->iconShape.getTransformToScaleToFit(
             imageBounds.withCentre(this->getLocalBounds().getCentre()).toFloat(),
             true, Justification::centred));
@@ -53,6 +54,12 @@ private:
     static constexpr auto onScreenTimeMs = 1000;
     static constexpr auto tooltipSize = 96;
     static constexpr auto imageSize = 40;
+
+    const Colour backgroundColour =
+        findDefaultColour(ColourIDs::Tooltip::failIconFill);
+
+    const Colour textColour =
+        findDefaultColour(ColourIDs::Tooltip::failIconForeground);
 
     void timerCallback() override
     {

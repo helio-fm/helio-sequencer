@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class TooltipContainer final : public Component, private Timer
 {
 public:
@@ -43,6 +45,9 @@ private:
     int timeCounter = -1;
     bool alignedToBottom = true;
     int clicksCountOnStart = 0;
+
+    const Colour backgroundColour =
+        findDefaultColour(ColourIDs::Tooltip::messageFill);
 
     ComponentAnimator animator;
 

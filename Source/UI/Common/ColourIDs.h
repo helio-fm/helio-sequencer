@@ -103,8 +103,8 @@ namespace ColourIDs
         static const int audioOut               = 0x2000603;
         static const int midiConnector          = 0x2000604;
         static const int audioConnector         = 0x2000605;
-        static const int shadowPin              = 0x2000606;
-        static const int shadowConnector        = 0x2000607;
+        static const int pinShadow              = 0x2000606;
+        static const int connectorShadow        = 0x2000607;
     }
 
     namespace VersionControl
@@ -126,6 +126,15 @@ namespace ColourIDs
         static const int sidebarFill            = 0x2000802;
         static const int headlineFill           = 0x2000803;
         static const int dialogFill             = 0x2000804;
+    }
+
+    namespace Tooltip
+    {
+        static const int messageFill            = 0x2000900;
+        static const int okIconFill             = 0x2000901;
+        static const int okIconForeground       = 0x2000902;
+        static const int failIconFill           = 0x2000903;
+        static const int failIconForeground     = 0x2000904;
     }
 
     namespace TrackScroller

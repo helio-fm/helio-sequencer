@@ -20,11 +20,6 @@
 #include "ClipComponent.h"
 #include "HelioTheme.h"
 
-static inline ComponentAnimator &rootAnimator()
-{
-    return Desktop::getInstance().getAnimator();
-}
-
 CutPointMark::CutPointMark(SafePointer<Component> targetComponent, float absPosX) :
     targetComponent(targetComponent),
     absPosX(absPosX)
@@ -37,23 +32,23 @@ CutPointMark::CutPointMark(SafePointer<Component> targetComponent, float absPosX
 
 CutPointMark::~CutPointMark()
 {
-    rootAnimator().cancelAnimation(this, false);
+    Desktop::getInstance().getAnimator().cancelAnimation(this, false);
     if (this->initialized)
     {
-        rootAnimator().animateComponent(this,this->getBounds(), 0.f,
+        Desktop::getInstance().getAnimator().animateComponent(this,this->getBounds(), 0.f,
             Globals::UI::fadeOutShort, true, 0.0, 0.0);
     }
 }
 
 void CutPointMark::fadeIn()
 {
-    rootAnimator().animateComponent(this,
+    Desktop::getInstance().getAnimator().animateComponent(this,
         this->getBounds(), 1.f, Globals::UI::fadeInShort, false, 0.0, 0.0);
 }
 
 void CutPointMark::updateBounds(bool forceNoAnimation)
 {
-    rootAnimator().cancelAnimation(this, false);
+    Desktop::getInstance().getAnimator().cancelAnimation(this, false);
 
     if (this->absPosX <= 0.f || this->absPosX >= 1.f)
     {
@@ -79,7 +74,7 @@ void CutPointMark::updateBounds(bool forceNoAnimation)
         }
         else
         {
-            rootAnimator().animateComponent(this, newBounds, 1.f, 20, false, 1.0, 0.0);
+            Desktop::getInstance().getAnimator().animateComponent(this, newBounds, 1.f, 20, false, 1.0, 0.0);
         }
     }
 }
@@ -140,7 +135,6 @@ ClipCutPointMark::ClipCutPointMark(SafePointer<ClipComponent> targetComponent) :
 void ClipCutPointMark::paint(Graphics &g)
 {
     const auto w = this->getWidth();
-    const auto h = this->getHeight();
 
     g.setColour(Colours::black.withAlpha(0.3f));
     g.fillRect(w / 2 - 1, 2, 3, this->getHeight() - 3);

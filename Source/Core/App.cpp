@@ -620,7 +620,6 @@ void App::shutdown()
             tempFolder.deleteRecursively();
         }
         
-        // Clear cache to avoid leak check to fire.
         Icons::clearPrerenderedCache();
         Icons::clearBuiltInImages();
     }

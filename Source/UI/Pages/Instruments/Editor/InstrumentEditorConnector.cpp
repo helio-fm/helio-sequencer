@@ -22,7 +22,6 @@
 #include "ColourIDs.h"
 
 InstrumentEditorConnector::InstrumentEditorConnector(WeakReference<Instrument> instrument) :
-    connection({}, {}),
     instrument(instrument)
 {
     this->setPaintingIsUnclipped(true);
@@ -49,27 +48,24 @@ void InstrumentEditorConnector::setOutput(const AudioProcessorGraph::NodeAndChan
 
 void InstrumentEditorConnector::dragStart(int x, int y)
 {
-    this->lastInputX = static_cast<float>( x);
-    this->lastInputY = static_cast<float>( y);
+    this->lastInputX = float(x);
+    this->lastInputY = float(y);
     this->resizeToFit();
 }
 
 void InstrumentEditorConnector::dragEnd(int x, int y)
 {
-    this->lastOutputX = static_cast<float>( x);
-    this->lastOutputY = static_cast<float>( y);
+    this->lastOutputX = float(x);
+    this->lastOutputY = float(y);
     this->resizeToFit();
 }
 
 void InstrumentEditorConnector::update()
 {
     float x1, y1, x2, y2;
-    this->getPoints(x1, y1, x2, y2);
+    this->getPinPoints(x1, y1, x2, y2);
 
-    if (lastInputX != x1
-        || lastInputY != y1
-        || lastOutputX != x2
-        || lastOutputY != y2)
+    if (lastInputX != x1 || lastInputY != y1 || lastOutputX != x2 || lastOutputY != y2)
     {
         this->resizeToFit();
     }
@@ -78,46 +74,48 @@ void InstrumentEditorConnector::update()
 void InstrumentEditorConnector::resizeToFit()
 {
     float x1, y1, x2, y2;
-    this->getPoints(x1, y1, x2, y2);
+    this->getPinPoints(x1, y1, x2, y2);
 
-    const Rectangle<int> newBounds(static_cast<int>(jmin(x1, x2)) - 4,
-                                   static_cast<int>(jmin(y1, y2)) - 4,
-                                   static_cast<int>(fabsf(x1 - x2)) + 8,
-                                   static_cast<int>(fabsf(y1 - y2)) + 8);
+    const Rectangle<int> newBounds(int(jmin(x1, x2)) - 4, int(jmin(y1, y2)) - 4,
+        int(fabsf(x1 - x2)) + 8, int(fabsf(y1 - y2)) + 8);
 
     if (newBounds != this->getBounds())
-    { this->setBounds(newBounds); }
+    {
+        this->setBounds(newBounds);
+    }
     else
-    { this->resized(); }
+    {
+        this->resized();
+    }
 }
 
-void InstrumentEditorConnector::getPoints(float &x1, float &y1, float &x2, float &y2) const
+void InstrumentEditorConnector::getPinPoints(float &x1, float &y1, float &x2, float &y2) const
 {
-    x1 = lastInputX;
-    y1 = lastInputY;
-    x2 = lastOutputX;
-    y2 = lastOutputY;
+    x1 = this->lastInputX;
+    y1 = this->lastInputY;
+    x2 = this->lastOutputX;
+    y2 = this->lastOutputY;
 
-    if (InstrumentEditor *const hostPanel = this->getGraphPanel())
+    if (const auto *hostPanel = this->getGraphPanel())
     {
-        if (InstrumentComponent *srcNodeComp =
+        if (auto *sourceNodeComponent =
             hostPanel->getComponentForNode(this->connection.source.nodeID))
         {
-            srcNodeComp->getPinPos(this->connection.source.channelIndex, false, x1, y1);
+            sourceNodeComponent->getPinPos(this->connection.source.channelIndex, false, x1, y1);
         }
 
-        if (InstrumentComponent *dstNodeComp =
+        if (auto *destinationNodeComponent =
             hostPanel->getComponentForNode(this->connection.destination.nodeID))
         {
-            dstNodeComp->getPinPos(this->connection.destination.channelIndex, true, x2, y2);
+            destinationNodeComponent->getPinPos(this->connection.destination.channelIndex, true, x2, y2);
         }
     }
 }
 
 void InstrumentEditorConnector::paint(Graphics &g)
 {
-    g.setColour(findDefaultColour(ColourIDs::Instrument::shadowConnector));
-    g.fillPath(linePath, AffineTransform::translation(0, 1));
+    g.setColour(findDefaultColour(ColourIDs::Instrument::connectorShadow));
+    g.fillPath(linePath, AffineTransform::translation(0, 0.5));
     
     const bool isMidiConnector =
         (this->connection.source.channelIndex == Instrument::midiChannelNumber ||
@@ -133,7 +131,7 @@ void InstrumentEditorConnector::paint(Graphics &g)
 
 bool InstrumentEditorConnector::hitTest(int x, int y)
 {
-    if (hitPath.contains(static_cast<float>( x), static_cast<float>( y)))
+    if (hitPath.contains(float(x), float(y)))
     {
         double distanceFromStart, distanceFromEnd;
         this->getDistancesFromEnds(x, y, distanceFromStart, distanceFromEnd);
@@ -186,12 +184,12 @@ void InstrumentEditorConnector::mouseUp(const MouseEvent &e)
 void InstrumentEditorConnector::resized()
 {
     float x1, y1, x2, y2;
-    this->getPoints(x1, y1, x2, y2);
+    this->getPinPoints(x1, y1, x2, y2);
 
-    lastInputX = x1;
-    lastInputY = y1;
-    lastOutputX = x2;
-    lastOutputY = y2;
+    this->lastInputX = x1;
+    this->lastInputY = y1;
+    this->lastOutputX = x2;
+    this->lastOutputY = y2;
 
     x1 -= this->getX();
     y1 -= this->getY();
@@ -201,22 +199,19 @@ void InstrumentEditorConnector::resized()
     const float dy = (y2 - y1);
     const float dx = (x2 - x1);
 
-    linePath.clear();
-    linePath.startNewSubPath(x1, y1);
+    this->linePath.clear();
+    this->linePath.startNewSubPath(x1, y1);
 
     const float curveX = (this->getParentWidth() == 0) ? 0.f :
-            (1.f - (fabsf(dx) / float(this->getParentWidth()))) * 1.5f;
+        (1.f - (fabsf(dx) / float(this->getParentWidth()))) * 1.5f;
     const float curveY = (this->getParentHeight() == 0) ? 0.f :
-            (fabsf(dy) / float(this->getParentHeight())) * 1.5f;
+        (fabsf(dy) / float(this->getParentHeight())) * 1.5f;
     const float curve = (curveX + curveY) / 2.f;
+    const float gravity = 0.6f +
+        jlimit(-1.f, 1.f, dy / float(this->getParentHeight())) / 3.f;
 
-    float gravity = dy / (float(this->getParentHeight()) / 3.f);
-    gravity = jmax(-1.f, gravity);
-    gravity = jmin(1.f, gravity);
-    gravity = (gravity / 3.f) + 0.45f;
-
-    linePath.cubicTo(x1 + dx * (curve * (1.f - gravity)), y1,
-                     x1 + dx * (1.f - (curve * gravity)), y2,
+    this->linePath.cubicTo(x1 + dx * (curve * (1.f - gravity)), y1,
+        x1 + dx * (1.f - (curve * gravity)), y2,
                      x2, y2);
 
     PathStrokeType wideStroke(8.0f);
@@ -225,7 +220,7 @@ void InstrumentEditorConnector::resized()
     PathStrokeType stroke(6.5f, PathStrokeType::beveled, PathStrokeType::rounded);
     stroke.createStrokedPath(linePath, linePath);
 
-    linePath.setUsingNonZeroWinding(false);
+    this->linePath.setUsingNonZeroWinding(false);
 }
 
 InstrumentEditor *InstrumentEditorConnector::getGraphPanel() const noexcept
@@ -236,8 +231,8 @@ InstrumentEditor *InstrumentEditorConnector::getGraphPanel() const noexcept
 void InstrumentEditorConnector::getDistancesFromEnds(int x, int y, double &distanceFromStart, double &distanceFromEnd) const
 {
     float x1, y1, x2, y2;
-    this->getPoints(x1, y1, x2, y2);
+    this->getPinPoints(x1, y1, x2, y2);
 
-    distanceFromStart = juce_hypot(x - (x1 - getX()), y - (y1 - getY()));
-    distanceFromEnd = juce_hypot(x - (x2 - getX()), y - (y2 - getY()));
+    distanceFromStart = juce_hypot(x - (x1 - this->getX()), y - (y1 - this->getY()));
+    distanceFromEnd = juce_hypot(x - (x2 - this->getX()), y - (y2 - this->getY()));
 }

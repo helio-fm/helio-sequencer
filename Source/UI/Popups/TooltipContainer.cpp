@@ -38,8 +38,8 @@ TooltipContainer::~TooltipContainer() = default;
 
 void TooltipContainer::paint(Graphics &g)
 {
-    g.setColour(Colour(0xc0000000)); // fixme no hardcoded colours pls
-    g.fillRoundedRectangle(0.f, 0.f, float(this->getWidth()), float(this->getHeight()), 5.f);
+    g.setColour(this->backgroundColour);
+    g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 4.f);
 }
 
 void TooltipContainer::resized()
