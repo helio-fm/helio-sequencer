@@ -879,6 +879,10 @@ public:
             "Deployment/Linux/Debian/x64/DEBIAN/control",
             "Version: " + versionString);
 
+        this->checkBuildSystem("AppStream file",
+            "Deployment/Linux/fm.helio.Workstation.metainfo.xml",
+            "version=\"" + versionString + "\"");
+
         this->checkBuildSystem("Inno Setup script",
             "Deployment/Windows/setup.iss",
             "\"" + versionString + "\"");
