@@ -4,6 +4,16 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.11
+ - Added built-in SoundFont player instrument
+ - Migrated to JUCE 7 and enabled experimental support for hosting LV2 plugins
+ - Microtonality: added built-in 26-edo temperament, fixed Alt + Up/Down transposition hotkeys for microtonal layouts, fixed Pianoteq keyboard mapping presets to match A440 on default settings
+ - Piano roll: added staccato and legato commands (Alt + S and Alt + L hotkeys), clicking a single note makes that note's velocity and length the default, holding Alt disables snapping to barlines
+ - Pattern roll: improved solo mode indication (implicitly muted tracks are dimmed)
+ - Tempo dialog: adjusting the tempo with mouse wheel
+ - Render dialog: preview the waveform while rendering
+ - Fixed regressions in computing time codes and in the audio rendering code
+
 ## Version 3.10
  - Added built-in metronome, toggled by Control + M hotkey, each time signature now has its own editable metronome scheme
  - Added an option to select the MIDI output device
