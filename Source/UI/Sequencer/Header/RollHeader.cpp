@@ -34,8 +34,10 @@ public:
 
     enum class Type { LoopStart, LoopEnd };
 
-    PlaybackLoopMarker(Transport &transport, RollBase &roll, Type type) :
+    PlaybackLoopMarker(Transport &transport,
+        RollHeader &header, RollBase &roll, Type type) :
         transport(transport),
+        header(header),
         roll(roll),
         type(type)
     {
@@ -68,10 +70,10 @@ public:
 
     void paint(Graphics &g) override
     {
+        g.setColour(this->header.getBarColour());
+
         const auto p1 = roundf(float(this->getHeight()) * 0.33f - 1.f);
         const auto p2 = roundf(float(this->getHeight()) * 0.66f - 4.f);
-
-        // painting context here reuses the color set by parent (red or regular)
 
         switch (this->type)
         {
@@ -149,12 +151,12 @@ private:
     const Type type;
 
     Transport &transport;
+    RollHeader &header;
     RollBase &roll;
 
     float beat = 0.f;
 
     const Colour shadowColour = findDefaultColour(ColourIDs::Common::borderLineDark);
-
 };
 
 RollHeader::RollHeader(Transport &transport, RollBase &roll, Viewport &viewport) :
@@ -174,11 +176,11 @@ RollHeader::RollHeader(Transport &transport, RollBase &roll, Viewport &viewport)
     // these two are added first, so when they repaint, they can use a color
     // set by the parent(this header), which is red when rendering or just regular
     this->loopMarkerStart = make<PlaybackLoopMarker>(transport,
-        roll, PlaybackLoopMarker::Type::LoopStart);
+        *this, roll, PlaybackLoopMarker::Type::LoopStart);
     this->addChildComponent(this->loopMarkerStart.get());
 
     this->loopMarkerEnd = make<PlaybackLoopMarker>(transport,
-        roll, PlaybackLoopMarker::Type::LoopEnd);
+        *this, roll, PlaybackLoopMarker::Type::LoopEnd);
     this->addChildComponent(this->loopMarkerEnd.get());
 
     this->selectionIndicator = make<HeaderSelectionIndicator>();
@@ -194,7 +196,7 @@ RollHeader::~RollHeader() = default;
 void RollHeader::updateColours()
 {
     // Painting is the very bottleneck of this app,
-    // so make sure we have no lookups inside paint method
+    // so make sure we have no lookups inside the paint method
     this->backColour = findDefaultColour(ColourIDs::Roll::headerFill);
     this->barShadeColour = this->backColour.darker(0.1f);
     this->recordingColour = findDefaultColour(ColourIDs::Roll::headerRecording);
@@ -206,6 +208,11 @@ void RollHeader::updateColours()
     this->bevelDarkColour = findDefaultColour(ColourIDs::Common::borderLineDark);
     this->bevelLightColour = findDefaultColour(ColourIDs::Common::borderLineLight)
         .withMultipliedAlpha(0.5f);
+}
+
+Colour RollHeader::getBarColour() const noexcept
+{
+    return this->barColour;
 }
 
 void RollHeader::showRecordingMode(bool showRecordingMarker)
@@ -555,14 +562,10 @@ void RollHeader::paint(Graphics &g)
     g.setColour(this->bevelDarkColour);
     g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
 
+    g.setColour(this->barColour);
     if (this->recordingMode.get())
     {
-        g.setColour(this->recordingColour);
         g.fillRect(0, this->getHeight() - 4, this->getWidth(), 3);
-    }
-    else
-    {
-        g.setColour(this->barColour);
     }
 }
 

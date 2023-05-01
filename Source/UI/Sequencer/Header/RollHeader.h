@@ -41,6 +41,8 @@ public:
     void updateClipRangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
     void updateSelectionRangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
 
+    Colour getBarColour() const noexcept;
+
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
