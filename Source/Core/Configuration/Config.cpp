@@ -21,9 +21,8 @@
 #include "XmlSerializer.h"
 #include "SerializationKeys.h"
 
-Config::Config(int timeoutToSaveMs) :
-    fileLock("Config Lock"),
-    saveTimeout(timeoutToSaveMs),
+Config::Config() :
+    fileLock("Config file lock"),
     propertiesFile(DocumentHelpers::getConfigSlot("settings.helio"))
 {
     this->translationsCollection = make<TranslationsCollection>();

@@ -171,6 +171,7 @@ void Workspace::createEmptyProject()
         {
             this->userProfile.onProjectLocalInfoUpdated(p->getId(),
                 p->getName(), p->getDocument()->getFullPath());
+            this->autosave();
         }
     });
 }

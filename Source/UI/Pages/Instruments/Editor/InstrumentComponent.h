@@ -50,7 +50,12 @@ private:
 
     WeakReference<Instrument> instrument;
 
+#if PLATFORM_DESKTOP
     const Font font = Globals::UI::Fonts::L;
+#elif PLATFORM_MOBILE
+    const Font font = Globals::UI::Fonts::XS;
+#endif
+
     const int pinSize = 0;
 
     bool isSelected = false;

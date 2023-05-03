@@ -26,7 +26,7 @@
 #   define DEFAULT_PIN_SIZE (18)
 #elif PLATFORM_MOBILE
 #   define CHANNELS_NUMBER_LIMIT 6
-#   define DEFAULT_PIN_SIZE (25)
+#   define DEFAULT_PIN_SIZE (22)
 #endif
 
 InstrumentComponent::InstrumentComponent(WeakReference<Instrument> instrument,
@@ -204,8 +204,8 @@ void InstrumentComponent::update()
 
     const int textWidth = this->font.getStringWidth(translatedName);
     const auto smallScreenMode = App::isRunningOnPhone();
-    const auto minSize = smallScreenMode ? 120 : 180;
-    const auto maxSize = smallScreenMode ? 150 : 300;
+    const auto minSize = smallScreenMode ? 130 : 180;
+    const auto maxSize = smallScreenMode ? 170 : 300;
     const auto size = jlimit(minSize, maxSize, textWidth);
     this->setSize(size, size);
 

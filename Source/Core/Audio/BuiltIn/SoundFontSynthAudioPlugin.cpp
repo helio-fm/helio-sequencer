@@ -23,6 +23,7 @@
 #include "PlayButton.h"
 #include "IconButton.h"
 #include "SerializationKeys.h"
+#include "Workspace.h"
 #include "HelioTheme.h"
 
 const String SoundFontSynthAudioPlugin::instrumentId = "<soundfont-player>";
@@ -159,6 +160,7 @@ public:
 
                     this->audioPlugin->applySynthParameters(newParams);
                     this->syncDataWithAudioPlugin();
+                    App::Workspace().autosave();
                 });
         }
         else if (commandId == CommandIDs::SelectNextPreset)
@@ -167,6 +169,7 @@ public:
             const auto newParams = this->audioPlugin->getSynthParameters().withProgramIndex(nextPreset);
             this->audioPlugin->applySynthParameters(newParams);
             this->syncDataWithAudioPlugin();
+            App::Workspace().autosave();
         }
         else if (commandId == CommandIDs::SelectPreviousPreset)
         {
@@ -174,6 +177,7 @@ public:
             const auto newParams = this->audioPlugin->getSynthParameters().withProgramIndex(prevPreset);
             this->audioPlugin->applySynthParameters(newParams);
             this->syncDataWithAudioPlugin();
+            App::Workspace().autosave();
         }
     }
 

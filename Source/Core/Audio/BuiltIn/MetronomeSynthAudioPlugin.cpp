@@ -20,7 +20,7 @@
 #include "BuiltInSynthsPluginFormat.h"
 #include "DocumentHelpers.h"
 #include "MetronomeEditor.h"
-
+#include "Workspace.h"
 #include "SerializationKeys.h"
 #include "PlayButton.h"
 #include "IconButton.h"
@@ -164,6 +164,7 @@ public:
                     this->lastUsedDirectory = file.getParentDirectory().getFullPathName();
                     this->metronomePlugin->applyCustomSample(syllable, file.getFullPathName());
                     this->syncDataWithAudioPlugin();
+                    App::Workspace().autosave();
                 });
         }
         else if (commandId >= CommandIDs::ResetMetronomeSample &&
@@ -173,6 +174,7 @@ public:
             const auto syllable = this->allSyllables[rowNumber];
             this->metronomePlugin->applyCustomSample(syllable, {});
             this->syncDataWithAudioPlugin();
+            App::Workspace().autosave();
         }
     }
 

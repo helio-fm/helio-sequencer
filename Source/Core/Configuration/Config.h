@@ -34,7 +34,7 @@ class Config final : private Timer
 {
 public:
 
-    explicit Config(int timeoutToSaveMs = 30000);
+    Config();
     ~Config() override;
 
     void initResources();
@@ -93,7 +93,12 @@ private:
     UniquePointer<UserInterfaceFlags> uiFlags;
 
     bool needsSaving = false;
-    int saveTimeout = 0;
+
+#if PLATFORM_DESKTOP
+    const int saveTimeout = 30000;
+#elif PLATFORM_MOBILE
+    const int saveTimeout = 0;
+#endif
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Config)
 };
