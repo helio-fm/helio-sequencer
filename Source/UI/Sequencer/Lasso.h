@@ -49,7 +49,7 @@ public:
     // and checkpoint could be skipped.
     UndoActionId generateLassoTransactionId(int actionId) const
     {
-        return (actionId * UndoActionIDs::MaxUndoActionId) + this->getId();
+        return actionId + this->getId();
     }
     
     // unchecked access and unchecked casts, not cool not cool

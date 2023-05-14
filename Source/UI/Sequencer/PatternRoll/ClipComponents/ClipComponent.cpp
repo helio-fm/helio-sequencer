@@ -93,6 +93,12 @@ const MidiEvent::Id ClipComponent::getId() const noexcept
     return this->clip.getId();
 }
 
+Rectangle<int> ClipComponent::getTextArea() const noexcept
+{
+    return Rectangle<int>(4, 5,
+        this->getWidth() - 8, this->getHeight() - 7);
+}
+
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -259,7 +265,7 @@ void ClipComponent::paint(Graphics &g)
     g.setColour(this->fillColour);
     g.fillRect(1.f, 0.f, w - 2.f, h);
 
-    const Rectangle<int> textBounds(4, 5, this->getWidth() - 8, this->getHeight() - 7);
+    const auto textBounds = this->getTextArea();
 
     g.setColour(this->frameColour);
 
@@ -290,11 +296,6 @@ void ClipComponent::paint(Graphics &g)
 
         g.fillRect(i + 1.f, 1.f, jmax(0.f, right - i - 1.f), 1.f);
         g.fillRect(i, 2.f, jmax(0.f, right - i + 1.f), 1.f);
-    }
-
-    if (this->clip.getKey() != 0)
-    {
-        g.drawText(this->clip.getKeyString(), textBounds, Justification::topLeft, false);
     }
 
     if (this->clip.isMuted())

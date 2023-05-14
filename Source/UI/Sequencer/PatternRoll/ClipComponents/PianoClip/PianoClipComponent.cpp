@@ -56,6 +56,12 @@ void PianoClipComponent::paint(Graphics &g)
 
     g.setColour(isMuted ? this->eventMutedColour : this->eventColour);
 
+    if (this->clip.getKey() != 0)
+    {
+        g.drawText(this->clip.getKeyString(),
+            this->getTextArea(), Justification::topLeft, false);
+    }
+
     for (const auto &note : this->displayedNotes)
     {
         const auto *ns = note.getSequence();

@@ -154,14 +154,25 @@ void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, boo
     const auto transactionId = selection.generateLassoTransactionId(operationId);
     const bool repeatsLastAction = pattern->getLastUndoActionId() == transactionId;
 
-    if (shouldCheckpoint && !repeatsLastAction)
-    {
-        pattern->checkpoint(transactionId);
-    }
+    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const auto &clip = selection.getItemAs<ClipComponent>(i)->getClip();
+        auto *track = clip.getPattern()->getTrack();
+
+        // only a piano clip can be transposed
+        if (nullptr == dynamic_cast<PianoSequence *>(track->getSequence()))
+        {
+            continue;
+        }
+
+        if (!didCheckpoint)
+        {
+            didCheckpoint = true;
+            pattern->checkpoint(transactionId);
+        }
+
         clip.getPattern()->change(clip, clip.withDeltaKey(deltaKey), true);
     }
 }
