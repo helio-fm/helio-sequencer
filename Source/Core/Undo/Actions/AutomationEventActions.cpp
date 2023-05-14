@@ -33,7 +33,7 @@ AutomationEventInsertAction::AutomationEventInsertAction(MidiTrackSource &source
 
 bool AutomationEventInsertAction::perform()
 {
-    if (AutomationSequence *sequence =
+    if (auto *sequence =
         this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
@@ -44,7 +44,7 @@ bool AutomationEventInsertAction::perform()
 
 bool AutomationEventInsertAction::undo()
 {
-    if (AutomationSequence *sequence =
+    if (auto *sequence =
         this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
@@ -90,7 +90,7 @@ AutomationEventRemoveAction::AutomationEventRemoveAction(MidiTrackSource &source
 
 bool AutomationEventRemoveAction::perform()
 {
-    if (AutomationSequence *sequence =
+    if (auto *sequence =
         this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
@@ -101,7 +101,7 @@ bool AutomationEventRemoveAction::perform()
 
 bool AutomationEventRemoveAction::undo()
 {
-    if (AutomationSequence *sequence =
+    if (auto *sequence =
         this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
@@ -149,7 +149,7 @@ AutomationEventChangeAction::AutomationEventChangeAction(MidiTrackSource &source
 
 bool AutomationEventChangeAction::perform()
 {
-    if (AutomationSequence *sequence =
+    if (auto *sequence =
         this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->change(this->eventBefore, this->eventAfter, false);
@@ -160,7 +160,7 @@ bool AutomationEventChangeAction::perform()
 
 bool AutomationEventChangeAction::undo()
 {
-    if (AutomationSequence *sequence =
+    if (auto *sequence =
         this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->change(this->eventAfter, this->eventBefore, false);
@@ -241,7 +241,7 @@ AutomationEventsGroupInsertAction::AutomationEventsGroupInsertAction(MidiTrackSo
 
 bool AutomationEventsGroupInsertAction::perform()
 {
-    if (AutomationSequence *sequence =
+    if (auto *sequence =
         this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->insertGroup(this->events, false);
@@ -252,7 +252,7 @@ bool AutomationEventsGroupInsertAction::perform()
 
 bool AutomationEventsGroupInsertAction::undo()
 {
-    if (AutomationSequence *sequence =
+    if (auto *sequence =
         this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->removeGroup(this->events, false);
@@ -312,7 +312,7 @@ AutomationEventsGroupRemoveAction::AutomationEventsGroupRemoveAction(MidiTrackSo
 
 bool AutomationEventsGroupRemoveAction::perform()
 {
-    if (AutomationSequence *sequence =
+    if (auto *sequence =
         this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->removeGroup(this->events, false);
@@ -323,7 +323,7 @@ bool AutomationEventsGroupRemoveAction::perform()
 
 bool AutomationEventsGroupRemoveAction::undo()
 {
-    if (AutomationSequence *sequence =
+    if (auto *sequence =
         this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->insertGroup(this->events, false);
@@ -385,7 +385,7 @@ AutomationEventsGroupChangeAction::AutomationEventsGroupChangeAction(MidiTrackSo
 
 bool AutomationEventsGroupChangeAction::perform()
 {
-    if (AutomationSequence *sequence =
+    if (auto *sequence =
         this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->changeGroup(this->eventsBefore, this->eventsAfter, false);
@@ -396,7 +396,7 @@ bool AutomationEventsGroupChangeAction::perform()
 
 bool AutomationEventsGroupChangeAction::undo()
 {
-    if (AutomationSequence *sequence =
+    if (auto *sequence =
         this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->changeGroup(this->eventsAfter, this->eventsBefore, false);
@@ -420,12 +420,11 @@ UndoAction *AutomationEventsGroupChangeAction::createCoalescedAction(UndoAction 
             return nullptr;
         }
 
-        // это явно неполная проверка, но ее будет достаточно
-        bool arraysContainSameNotes =
+        const bool arraySeemsToContainSameEvents =
             (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
             (this->eventsBefore[0].getId() == nextChanger->eventsAfter[0].getId());
 
-        if (arraysContainSameNotes)
+        if (arraySeemsToContainSameEvents)
         {
             return new AutomationEventsGroupChangeAction(this->source,
                 this->trackId, this->eventsBefore, nextChanger->eventsAfter);

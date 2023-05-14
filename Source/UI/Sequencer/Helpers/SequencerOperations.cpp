@@ -2598,6 +2598,63 @@ bool SequencerOperations::setOneTempoForProject(ProjectNode &project,
         range.getStart(), range.getEnd(), bpmValue, !didCheckpoint);
 }
 
+bool SequencerOperations::shiftTempoForProject(ProjectNode &project, int bpmDelta, bool shouldCheckpoint)
+{
+    if (bpmDelta == 0)
+    {
+        return false;
+    }
+
+    const auto transactionId = (bpmDelta > 0) ? UndoActionIDs::ShiftTempoUp : UndoActionIDs::ShiftTempoDown;
+    const bool repeatsLastOperation = project.getUndoStack()->getUndoActionId() == transactionId;
+
+    bool didCheckpoint = !shouldCheckpoint || repeatsLastOperation;
+
+    for (const auto *track : project.getTracks())
+    {
+        if (!track->isTempoTrack())
+        {
+            continue;
+        }
+
+        auto *autoSequence = dynamic_cast<AutomationSequence *>(track->getSequence());
+        assert(autoSequence != nullptr);
+
+        Array<AutomationEvent> eventsBefore;
+        Array<AutomationEvent> eventsAfter;
+
+        for (int i = 0; i < autoSequence->size(); ++i)
+        {
+            const auto *event = static_cast<AutomationEvent *>(autoSequence->getUnchecked(i));
+            auto newEvent = event->withTempoBpm(event->getControllerValueAsBPM() + bpmDelta);
+
+            // might not have changed if already at min/max
+            if (event->getControllerValue() == newEvent.getControllerValue())
+            {
+                continue;
+            }
+
+            eventsBefore.add(*event);
+            eventsAfter.add(move(newEvent));
+        }
+
+        if (eventsBefore.isEmpty())
+        {
+            continue;
+        }
+
+        if (!didCheckpoint)
+        {
+            autoSequence->checkpoint(transactionId);
+            didCheckpoint = true;
+        }
+
+        autoSequence->changeGroup(eventsBefore, eventsAfter, true);
+    }
+
+    return didCheckpoint;
+}
+
 //===----------------------------------------------------------------------===//
 // Templates
 //===----------------------------------------------------------------------===//
@@ -2835,7 +2892,6 @@ SerializedData SequencerOperations::createAutoTrackTemplate(ProjectNode &project
     outTrackId = newNode->getTrackId();
     return newNode->serialize();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Tests

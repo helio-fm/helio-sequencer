@@ -1994,6 +1994,8 @@ static const unsigned char temp_binary_data_97[] =
 "      { \"command\": \"ToggleSoloClips\", \"key\": \"S\" },\n"
 "      { \"command\": \"RenameTrack\", \"key\": \"F2\" },\n"
 "      { \"command\": \"SetTrackTimeSignature\", \"key\": \"Alt + F2\" },\n"
+"      { \"command\": \"TempoUp1Bpm\", \"key\": \"Shift + +\" },\n"
+"      { \"command\": \"TempoDown1Bpm\", \"key\": \"Shift + -\" },\n"
 "      { \"command\": \"BeatShiftLeft\", \"key\": \"Cursor Left\" },\n"
 "      { \"command\": \"BeatShiftRight\", \"key\": \"Cursor Right\" },\n"
 "      { \"command\": \"LengthDecrease\", \"key\": \"Shift + Cursor Left\" },\n"
@@ -2009,7 +2011,6 @@ static const unsigned char temp_binary_data_97[] =
 "      { \"command\": \"MakeStaccato\", \"key\": \"Alt + S\" },\n"
 "      { \"command\": \"MakeStaccatissimo\", \"key\": \"Shift + Alt + S\" },\n"
 "      { \"command\": \"MakeLegato\", \"key\": \"Alt + L\" },\n"
-"\n"
 "\n"
 "      // Refactor selection\n"
 "      { \"command\": \"Retrograde\", \"key\": \"Alt + R\" },\n"
@@ -2150,6 +2151,8 @@ static const unsigned char temp_binary_data_97[] =
 "      { \"command\": \"ToggleSoloClips\", \"key\": \"S\" },\n"
 "      { \"command\": \"RenameTrack\", \"key\": \"F2\" },\n"
 "      { \"command\": \"SetTrackTimeSignature\", \"key\": \"Alt + F2\" },\n"
+"      { \"command\": \"TempoUp1Bpm\", \"key\": \"Shift + +\" },\n"
+"      { \"command\": \"TempoDown1Bpm\", \"key\": \"Shift + -\" },\n"
 "      { \"command\": \"ClipVolumeUp\", \"key\": \"+\" },\n"
 "      { \"command\": \"ClipVolumeDown\", \"key\": \"-\" },\n"
 "      { \"command\": \"ClipTransposeUp\", \"key\": \"Cursor Up\" },\n"
@@ -5036,7 +5039,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 3374; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 16310; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 16537; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 10616; return scales_json;

@@ -54,9 +54,11 @@ namespace UndoActionIDs
         MakeLegato = 0x0082,
         MakeLegatoOverlapping = 0x0083,
 
+        ShiftTempoUp = 0x0090,
+        ShiftTempoDown = 0x0091,
+
         // ...
 
         MaxUndoActionId = 0x0100
     };
-    
 } // namespace UndoActionIDs

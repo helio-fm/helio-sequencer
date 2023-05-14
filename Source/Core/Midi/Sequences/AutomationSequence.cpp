@@ -218,12 +218,12 @@ bool AutomationSequence::changeGroup(const Array<AutomationEvent> groupBefore,
     {
         for (int i = 0; i < groupBefore.size(); ++i)
         {
-            const AutomationEvent &oldParams = groupBefore.getUnchecked(i);
-            const AutomationEvent &newParams = groupAfter.getUnchecked(i);
+            const auto &oldParams = groupBefore.getUnchecked(i);
+            const auto &newParams = groupAfter.getUnchecked(i);
             const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
             if (index >= 0)
             {
-                const auto changedEvent = static_cast<AutomationEvent *>(this->midiEvents[index]);
+                auto *changedEvent = static_cast<AutomationEvent *>(this->midiEvents[index]);
                 changedEvent->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedEvent, changedEvent);

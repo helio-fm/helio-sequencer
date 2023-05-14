@@ -98,15 +98,15 @@ String Transport::getTimeString(const RelativeTime &relTime, bool includeMillise
 
 int Transport::getTempoByControllerValue(float controllerValue) noexcept
 {
-    const double safeCV = jlimit(0.00005, 0.99999, double(controllerValue));
-    return int((1.0 - log2(safeCV)) * Globals::maxMsPerBeat * 1000);
+    const float safeCV = jlimit(0.00005f, 0.99999f, controllerValue);
+    return int((1.f - log2f(safeCV)) * Globals::maxMsPerBeat * 1000.f);
 }
 
 float Transport::getControllerValueByTempo(double secondsPerQuarterNote) noexcept
 {
-    const double cv = 1.0 - secondsPerQuarterNote / Globals::maxMsPerBeat * 1000.0;
-    const double value = pow(2.0, cv);
-    return jlimit(0.f, 1.f, float(value));
+    const float cv = 1.f - float(secondsPerQuarterNote / Globals::maxMsPerBeat * 1000.0);
+    const float value = powf(2.f, cv);
+    return jlimit(0.f, 1.f, value);
 }
 
 //===----------------------------------------------------------------------===//
@@ -687,7 +687,8 @@ void Transport::onPostRemoveInstrument()
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-// FIXME: need to do something more reasonable than this workaround:
+// FIXME: need to do something more reasonable than this workaround
+// (maybe an event like onChangeGlobalTempo instead of monitoring all changes)
 #define updateLengthAndTimeIfNeeded(event) \
     if (event->getTrackControllerNumber() == MidiTrack::tempoController) \
     { \
@@ -703,8 +704,8 @@ void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
         this->stopPlayback();
     }
 
-    updateLengthAndTimeIfNeeded((&newEvent));
     this->playbackCacheIsOutdated = true;
+    updateLengthAndTimeIfNeeded((&newEvent));
 }
 
 void Transport::onAddMidiEvent(const MidiEvent &event)
@@ -714,16 +715,16 @@ void Transport::onAddMidiEvent(const MidiEvent &event)
         this->stopPlayback();
     }
 
-    updateLengthAndTimeIfNeeded((&event));
     this->playbackCacheIsOutdated = true;
+    updateLengthAndTimeIfNeeded((&event));
 }
 
 void Transport::onRemoveMidiEvent(const MidiEvent &event) {}
 void Transport::onPostRemoveMidiEvent(MidiSequence *const sequence)
 {
     this->stopPlaybackAndRecording();
-    updateLengthAndTimeIfNeeded(sequence->getTrack());
     this->playbackCacheIsOutdated = true;
+    updateLengthAndTimeIfNeeded(sequence->getTrack());
 }
 
 void Transport::onAddClip(const Clip &clip)
@@ -733,8 +734,8 @@ void Transport::onAddClip(const Clip &clip)
         this->stopPlayback();
     }
 
-    updateLengthAndTimeIfNeeded((&clip));
     this->playbackCacheIsOutdated = true;
+    updateLengthAndTimeIfNeeded((&clip));
 
     if (clip.isSoloed())
     {
@@ -745,8 +746,8 @@ void Transport::onAddClip(const Clip &clip)
 void Transport::onChangeClip(const Clip &oldClip, const Clip &newClip)
 {
     this->stopPlaybackAndRecording();
-    updateLengthAndTimeIfNeeded((&newClip));
     this->playbackCacheIsOutdated = true;
+    updateLengthAndTimeIfNeeded((&newClip));
 
     if (oldClip.isSoloed() != newClip.isSoloed())
     {
@@ -758,8 +759,8 @@ void Transport::onRemoveClip(const Clip &clip) {}
 void Transport::onPostRemoveClip(Pattern *const pattern)
 {
     this->stopPlaybackAndRecording();
-    updateLengthAndTimeIfNeeded(pattern->getTrack());
     this->playbackCacheIsOutdated = true;
+    updateLengthAndTimeIfNeeded(pattern->getTrack());
     this->hasSoloClipsCache = this->findSoloClipFlagIfAny();
 }
 

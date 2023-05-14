@@ -175,6 +175,10 @@ public:
         double minTimeStamp = DBL_MAX;
         int targetSequenceIndex = -1;
 
+        // let's lock it manually one time here to avoid 3 separate locks below,
+        // CriticalSection is re-entrant, and the profiler shows it's faster:
+        const CriticalSection::ScopedLockType lock(this->sequences.getLock());
+
         for (int i = 0; i < this->sequences.size(); ++i)
         {
             const auto *wrapper = this->sequences.getObjectPointer(i);

@@ -1122,6 +1122,12 @@ void PianoRoll::handleCommandMessage(int commandId)
             true);
     }
     break;
+    case CommandIDs::TempoUp1Bpm:
+        SequencerOperations::shiftTempoForProject(this->getProject(), +1);
+        break;
+    case CommandIDs::TempoDown1Bpm:
+        SequencerOperations::shiftTempoForProject(this->getProject(), -1);
+        break;
     case CommandIDs::BeatShiftLeft:
         SequencerOperations::shiftBeatRelative(this->selection,
             -this->getMinVisibleBeatForCurrentZoomLevel());

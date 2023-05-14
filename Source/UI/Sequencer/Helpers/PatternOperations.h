@@ -48,6 +48,8 @@ struct PatternOperations final
 
     static void quantize(const Lasso &selection, float bar, bool shouldCheckpoint = true);
 
+    static bool shiftTempo(const Lasso &selection, int bpmDelta, bool shouldCheckpoint = true);
+
     static void mergeClips(ProjectNode &project, const Clip &targetClip,
         const Array<Clip> &sourceClips, bool shouldCheckpoint = true);
 

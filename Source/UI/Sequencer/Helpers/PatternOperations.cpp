@@ -503,6 +503,80 @@ void PatternOperations::quantize(const Lasso &selection,
     }
 }
 
+bool PatternOperations::shiftTempo(const Lasso &selection,
+    int bpmDelta, bool shouldCheckpoint /*= true*/)
+{
+    if (bpmDelta == 0 || selection.getNumSelected() == 0)
+    {
+        return false;
+    }
+
+    auto *pattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
+    const auto operationId = bpmDelta > 0 ? UndoActionIDs::ShiftTempoUp : UndoActionIDs::ShiftTempoDown;
+    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const bool repeatsLastOperation = pattern->getLastUndoActionId() == transactionId;
+
+    bool didCheckpoint = !shouldCheckpoint || repeatsLastOperation;
+
+    FlatHashSet<String, StringHash> processedTracks;
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto &clip = selection.getItemAs<ClipComponent>(i)->getClip();
+        auto *track = clip.getPattern()->getTrack();
+
+        if (!track->isTempoTrack())
+        {
+            continue;
+        }
+
+        if (processedTracks.contains(track->getTrackId()))
+        {
+            continue;
+        }
+
+        auto *autoSequence = dynamic_cast<AutomationSequence *>(track->getSequence());
+        if (autoSequence == nullptr)
+        {
+            continue;
+        }
+
+        Array<AutomationEvent> eventsBefore;
+        Array<AutomationEvent> eventsAfter;
+
+        for (int j = 0; j < autoSequence->size(); ++j)
+        {
+            const auto *event = static_cast<AutomationEvent *>(autoSequence->getUnchecked(j));
+            auto newEvent = event->withTempoBpm(event->getControllerValueAsBPM() + bpmDelta);
+
+            // might not have changed if already at min/max
+            if (event->getControllerValue() == newEvent.getControllerValue())
+            {
+                continue;
+            }
+
+            eventsBefore.add(*event);
+            eventsAfter.add(move(newEvent));
+        }
+
+        if (eventsBefore.isEmpty())
+        {
+            continue;
+        }
+
+        if (!didCheckpoint)
+        {
+            autoSequence->checkpoint(transactionId);
+            didCheckpoint = true;
+        }
+
+        processedTracks.insert(track->getTrackId());
+        autoSequence->changeGroup(eventsBefore, eventsAfter, true);
+    }
+
+    return didCheckpoint;
+}
+
 void PatternOperations::mergeClips(ProjectNode &project, const Clip &targetClip,
     const Array<Clip> &sourceClips, bool shouldCheckpoint /*= true*/)
 {

@@ -176,6 +176,8 @@
       { "command": "ToggleSoloClips", "key": "S" },
       { "command": "RenameTrack", "key": "F2" },
       { "command": "SetTrackTimeSignature", "key": "Alt + F2" },
+      { "command": "TempoUp1Bpm", "key": "Shift + +" },
+      { "command": "TempoDown1Bpm", "key": "Shift + -" },
       { "command": "BeatShiftLeft", "key": "Cursor Left" },
       { "command": "BeatShiftRight", "key": "Cursor Right" },
       { "command": "LengthDecrease", "key": "Shift + Cursor Left" },
@@ -191,7 +193,6 @@
       { "command": "MakeStaccato", "key": "Alt + S" },
       { "command": "MakeStaccatissimo", "key": "Shift + Alt + S" },
       { "command": "MakeLegato", "key": "Alt + L" },
-
 
       // Refactor selection
       { "command": "Retrograde", "key": "Alt + R" },
@@ -332,6 +333,8 @@
       { "command": "ToggleSoloClips", "key": "S" },
       { "command": "RenameTrack", "key": "F2" },
       { "command": "SetTrackTimeSignature", "key": "Alt + F2" },
+      { "command": "TempoUp1Bpm", "key": "Shift + +" },
+      { "command": "TempoDown1Bpm", "key": "Shift + -" },
       { "command": "ClipVolumeUp", "key": "+" },
       { "command": "ClipVolumeDown", "key": "-" },
       { "command": "ClipTransposeUp", "key": "Cursor Up" },

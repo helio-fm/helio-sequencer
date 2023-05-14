@@ -130,6 +130,7 @@ struct SequencerOperations final
     static bool mergeNotes(const Note &note1, const Note &note2, bool shouldCheckpoint = true);
 
     static bool setOneTempoForProject(ProjectNode &project, int bpmValue, bool shouldCheckpoint = true);
+    static bool shiftTempoForProject(ProjectNode &project, int bpmDelta, bool shouldCheckpoint = true);
     static bool setOneTempoForTrack(WeakReference<MidiTrack> track,
         float startBeat, float endBeat, int bpmValue, bool shouldCheckpoint = true);
 

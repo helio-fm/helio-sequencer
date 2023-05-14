@@ -799,6 +799,12 @@ void PatternRoll::handleCommandMessage(int commandId)
             this->project.setEditableScope(clip, true);
         }
         break;
+    case CommandIDs::TempoUp1Bpm:
+        PatternOperations::shiftTempo(this->selection, +1);
+        break;
+    case CommandIDs::TempoDown1Bpm:
+        PatternOperations::shiftTempo(this->selection, -1);
+        break;
     case CommandIDs::ClipTransposeUp:
         PatternOperations::transposeClips(this->selection, 1);
         break;

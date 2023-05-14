@@ -186,10 +186,10 @@ Rectangle<int> AutomationCurveClipComponent::getEventBounds(AutomationCurveEvent
 Rectangle<int> AutomationCurveClipComponent::getEventBounds(float beat,
     float sequenceLength, double controllerValue) const
 {
-    const int diameter = int(AutomationCurveClipComponent::eventComponentDiameter);
+    constexpr int diameter = int(AutomationCurveClipComponent::eventComponentDiameter);
     const int x = int(float(this->getWidth()) * (beat / sequenceLength));
     const int fullh = this->getAvailableHeight();
-    int y = int((1.0 - controllerValue) * fullh); // upside down flip
+    const int y = int((1.0 - controllerValue) * fullh); // upside down flip
     return { x - (diameter / 2), y - (diameter / 2), diameter, diameter };
 }
 
@@ -225,8 +225,8 @@ void AutomationCurveClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
 {
     if (newEvent.getSequence() == this->sequence)
     {
-        const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(oldEvent);
-        const AutomationEvent &newAutoEvent = static_cast<const AutomationEvent &>(newEvent);
+        const auto &autoEvent = static_cast<const AutomationEvent &>(oldEvent);
+        const auto &newAutoEvent = static_cast<const AutomationEvent &>(newEvent);
 
         if (auto *component = this->eventsHash[autoEvent])
         {
@@ -301,7 +301,7 @@ void AutomationCurveClipComponent::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.getSequence() == this->sequence)
     {
-        const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(event);
+        const auto &autoEvent = static_cast<const AutomationEvent &>(event);
         
         if (auto *component = this->eventsHash[autoEvent])
         {
