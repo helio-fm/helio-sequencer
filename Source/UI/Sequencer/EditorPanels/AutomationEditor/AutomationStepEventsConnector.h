@@ -17,18 +17,18 @@
 
 #pragma once
 
-class AutomationStepEventComponent;
+#include "AutomationEditorBase.h"
 
 class AutomationStepEventsConnector final : public Component
 {
 public:
 
-    AutomationStepEventsConnector(AutomationStepEventComponent *c1,
-        AutomationStepEventComponent *c2,
+    AutomationStepEventsConnector(AutomationEditorBase::EventComponentBase *c1,
+        AutomationEditorBase::EventComponentBase *c2,
         bool isEventTriggered);
     
-    void retargetAndUpdate(AutomationStepEventComponent *c1,
-        AutomationStepEventComponent *c2,
+    void retargetAndUpdate(AutomationEditorBase::EventComponentBase *c1,
+        AutomationEditorBase::EventComponentBase *c2,
         bool isEventTriggered);
 
     void resizeToFit(bool isEventTriggered);
@@ -37,8 +37,8 @@ public:
     // Component
     //===------------------------------------------------------------------===//
     
-    void paint(Graphics& g) override;
-    void mouseMove(const MouseEvent &e) override;
+    void paint(Graphics &g) override;
+    //void mouseMove(const MouseEvent &e) override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
@@ -49,20 +49,11 @@ private:
 
     void getPoints(float &x1, float &x2, float &y1, float &y2) const;
 
-    SafePointer<AutomationStepEventComponent> component1;
-    SafePointer<AutomationStepEventComponent> component2;
+    SafePointer<AutomationEditorBase::EventComponentBase> component1;
+    SafePointer<AutomationEditorBase::EventComponentBase> component2;
     
-    AutomationStepEventComponent *anyAliveChild() const;
-    
-    void applyCursorForEvent(const MouseEvent &e);
+    AutomationEditorBase::EventComponentBase *firstAliveEventComponent() const;
 
-    ComponentDragger dragger;
-
-    float anchorBeat = 0.f;
-    float anchorBeatChild1 = 0.f;
-    float anchorBeatChild2 = 0.f;
-
-    bool isDragging = false;
     bool isEventTriggered = false;
     bool isHighlighted = false;
 

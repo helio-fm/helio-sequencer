@@ -27,7 +27,7 @@ public:
     void setValue(float newValue);
     void setValue(float newValue, int valueView);
     void setValue(float newValue, float valueView);
-    void repositionToTargetAt(Component *component, Point<int> offset);
+    void repositionToTargetAt(Component *component);
     void setDisplayValue(bool shouldDisplay);
 
     void paint(Graphics &g) override;

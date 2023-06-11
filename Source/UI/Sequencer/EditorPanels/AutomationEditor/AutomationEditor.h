@@ -17,27 +17,36 @@
 
 #pragma once
 
-#include "Clip.h"
-#include "Note.h"
+#include "AutomationEditorBase.h"
 #include "ProjectListener.h"
 #include "ComponentFader.h"
+#include "HelperRectangle.h"
+#include "RollListener.h"
 
 class RollBase;
+class TrackMap;
 class ProjectNode;
-class VelocityMapNoteComponent;
-class VelocityLevelDraggingHelper;
-class FineTuningValueIndicator;
 
-class VelocityProjectMap final :
+class AutomationEditor final :
     public Component,
+    public AutomationEditorBase,
     public ProjectListener,
     public AsyncUpdater, // triggers batch repaints for children
     public ChangeListener // subscribes on parent roll's lasso changes
 {
 public:
 
-    VelocityProjectMap(ProjectNode &parentProject, RollBase &parentRoll);
-    ~VelocityProjectMap() override;
+    AutomationEditor(ProjectNode &parentProject, RollBase &parentRoll);
+    ~AutomationEditor() override;
+
+    //===------------------------------------------------------------------===//
+    // AutomationEditorBase
+    //===------------------------------------------------------------------===//
+
+    const Colour &getColour(const AutomationEvent &event) const override;
+    Rectangle<float> getEventBounds(const AutomationEvent &event, const Clip &clip) const override;
+    void getBeatValueByPosition(int x, int y, const Clip &clip, float &value, float &beat) const override;
+    float getBeatByPosition(int x, const Clip &clip) const override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -73,9 +82,18 @@ public:
 
 private:
 
+    EventComponentBase *getPreviousEventComponent(int indexOfSorted) const;
+    EventComponentBase *getNextEventComponent(int indexOfSorted) const;
+
+    friend class EventComponentBase;
+
+private:
+
+    Rectangle<float> getEventBounds(float beat, float sequenceLength, double controllerValue) const;
+
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
-    void applyNoteBounds(VelocityMapNoteComponent *nc);
+    void applyEventBounds(const AutomationEvent &event);
     void reloadTrackMap();
     void loadTrack(const MidiTrack *const track);
 
@@ -90,25 +108,15 @@ private:
 
     Clip activeClip;
 
-    using SequenceMap = FlatHashMap<Note, UniquePointer<VelocityMapNoteComponent>, MidiEventHash>;
+    using SequenceMap = FlatHashMap<Note, UniquePointer<EventComponentBase>, MidiEventHash>;
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
     PatternMap patternMap;
 
-    UniquePointer<VelocityLevelDraggingHelper> dragHelper;
-    FlatHashMap<Note, float, MidiEventHash> dragIntersections;
-    Array<Note> dragChangedNotes, dragChanges;
-    bool dragHasChanges = false;
-
-    float volumeBlendingAmount = 1.f;
-    UniquePointer<FineTuningValueIndicator> volumeBlendingIndicator;
-    void updateVolumeBlendingIndicator(const Point<int> &pos);
     ComponentFader fader;
 
-    void applyVolumeChanges();
-
-    void triggerBatchRepaintFor(VelocityMapNoteComponent *target);
+    void triggerBatchRepaintFor(Component *target);
     void handleAsyncUpdate() override;
     Array<WeakReference<Component>> batchRepaintList;
 
-    JUCE_LEAK_DETECTOR(VelocityProjectMap)
+    JUCE_LEAK_DETECTOR(AutomationEditor)
 };

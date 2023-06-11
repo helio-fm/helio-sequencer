@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "VelocityProjectMap.h"
+#include "VelocityEditor.h"
 #include "PlayerThread.h"
 #include "ProjectNode.h"
 #include "MidiTrack.h"
@@ -29,21 +29,21 @@
 #include "NoteComponent.h"
 #include "FineTuningValueIndicator.h"
 
-#define VELOCITY_MAP_BULK_REPAINT_START \
+#define VELOCITY_MAP_BATCH_REPAINT_START \
     if (this->isEnabled()) { this->setVisible(false); }
 
-#define VELOCITY_MAP_BULK_REPAINT_END \
+#define VELOCITY_MAP_BATCH_REPAINT_END \
     if (this->isEnabled()) { this->setVisible(true); }
 
 //===----------------------------------------------------------------------===//
 // Child level component
 //===----------------------------------------------------------------------===//
 
-class VelocityMapNoteComponent final : public Component
+class VelocityEditorNoteComponent final : public Component
 {
 public:
 
-    VelocityMapNoteComponent(const Note &note, const Clip &clip) :
+    VelocityEditorNoteComponent(const Note &note, const Clip &clip) :
         note(note),
         clip(clip)
     {
@@ -54,9 +54,14 @@ public:
         this->setMouseCursor(MouseCursor::UpDownResizeCursor);
     }
 
-    inline float getBeat() const noexcept
+    inline float getNoteBeat() const noexcept
     {
-        return this->note.getBeat() + this->clip.getBeat();
+        return this->note.getBeat();
+    }
+
+    inline float getClipBeat() const noexcept
+    {
+        return this->clip.getBeat();
     }
 
     inline float getLength() const noexcept
@@ -83,7 +88,7 @@ public:
 
     inline void updateColour()
     {
-        const Colour baseColour(findDefaultColour(ColourIDs::Roll::noteFill));
+        const auto baseColour = findDefaultColour(ColourIDs::Roll::noteFill);
         this->mainColour = this->note.getTrackColour()
             .interpolatedWith(baseColour, this->editable ? 0.35f : 0.5f)
             .withAlpha(this->editable ? 0.75f : 0.065f);
@@ -164,12 +169,12 @@ public:
 
 private:
 
-    friend class VelocityProjectMap;
+    friend class VelocityEditor;
 
-    VelocityProjectMap *getParentMap() const
+    VelocityEditor *getParentMap() const
     {
         jassert(this->getParentComponent());
-        return static_cast<VelocityProjectMap *>(this->getParentComponent());
+        return static_cast<VelocityEditor *>(this->getParentComponent());
     }
 
     const Note &note;
@@ -184,7 +189,7 @@ private:
     float velocityAnchor = 0.f;
     bool editable = true;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityMapNoteComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityEditorNoteComponent)
 };
 
 //===----------------------------------------------------------------------===//
@@ -195,7 +200,7 @@ class VelocityLevelDraggingHelper final : public Component
 {
 public:
 
-    VelocityLevelDraggingHelper(VelocityProjectMap &map) : map(map)
+    VelocityLevelDraggingHelper(VelocityEditor &map) : map(map)
     {
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
@@ -284,7 +289,7 @@ public:
 
 private:
 
-    VelocityProjectMap &map;
+    VelocityEditor &map;
 
     Point<double> startPosition;
     Point<double> endPosition;
@@ -313,7 +318,7 @@ private:
 // The map itself
 //===----------------------------------------------------------------------===//
 
-VelocityProjectMap::VelocityProjectMap(ProjectNode &parentProject, RollBase &parentRoll) :
+VelocityEditor::VelocityEditor(ProjectNode &parentProject, RollBase &parentRoll) :
     project(parentProject),
     roll(parentRoll)
 {
@@ -331,7 +336,7 @@ VelocityProjectMap::VelocityProjectMap(ProjectNode &parentProject, RollBase &par
     this->roll.getLassoSelection().addChangeListener(this);
 }
 
-VelocityProjectMap::~VelocityProjectMap()
+VelocityEditor::~VelocityEditor()
 {
     this->roll.getLassoSelection().removeChangeListener(this);
     this->project.removeListener(this);
@@ -341,9 +346,9 @@ VelocityProjectMap::~VelocityProjectMap()
 // Component
 //===----------------------------------------------------------------------===//
 
-void VelocityProjectMap::resized()
+void VelocityEditor::resized()
 {
-    VELOCITY_MAP_BULK_REPAINT_START
+    VELOCITY_MAP_BATCH_REPAINT_START
 
     for (const auto &c : this->patternMap)
     {
@@ -360,10 +365,10 @@ void VelocityProjectMap::resized()
         this->dragHelper->updateBounds();
     }
 
-    VELOCITY_MAP_BULK_REPAINT_END
+    VELOCITY_MAP_BATCH_REPAINT_END
 }
 
-void VelocityProjectMap::mouseDown(const MouseEvent &e)
+void VelocityEditor::mouseDown(const MouseEvent &e)
 {
     if (e.mods.isLeftButtonDown())
     {
@@ -382,7 +387,7 @@ constexpr float getVelocityByIntersection(const Point<float> &intersection)
     return 1.f - (intersection.y / float(Globals::UI::levelsMapHeight));
 }
 
-void VelocityProjectMap::mouseDrag(const MouseEvent &e)
+void VelocityEditor::mouseDrag(const MouseEvent &e)
 {
     if (this->dragHelper != nullptr)
     {
@@ -393,7 +398,7 @@ void VelocityProjectMap::mouseDrag(const MouseEvent &e)
     }
 }
 
-void VelocityProjectMap::mouseUp(const MouseEvent &e)
+void VelocityEditor::mouseUp(const MouseEvent &e)
 {
     if (this->dragHelper != nullptr)
     {
@@ -406,7 +411,7 @@ void VelocityProjectMap::mouseUp(const MouseEvent &e)
     }
 }
 
-void VelocityProjectMap::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
+void VelocityEditor::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
 {
     if (this->dragHelper != nullptr)
     {
@@ -431,7 +436,7 @@ void VelocityProjectMap::mouseWheelMove(const MouseEvent &e, const MouseWheelDet
     for (const auto &child : map) \
         if (child.first.getPattern()->getTrack() == track)
 
-void VelocityProjectMap::onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2)
+void VelocityEditor::onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2)
 {
     if (e1.isTypeOf(MidiEvent::Type::Note))
     {
@@ -445,21 +450,21 @@ void VelocityProjectMap::onChangeMidiEvent(const MidiEvent &e1, const MidiEvent 
             if (auto *component = sequenceMap[note].release())
             {
                 sequenceMap.erase(note);
-                sequenceMap[newNote] = UniquePointer<VelocityMapNoteComponent>(component);
+                sequenceMap[newNote] = UniquePointer<VelocityEditorNoteComponent>(component);
                 this->triggerBatchRepaintFor(component);
             }
         }
     }
 }
 
-void VelocityProjectMap::onAddMidiEvent(const MidiEvent &event)
+void VelocityEditor::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Type::Note))
     {
         const Note &note = static_cast<const Note &>(event);
         const auto *track = note.getSequence()->getTrack();
 
-        VELOCITY_MAP_BULK_REPAINT_START
+        VELOCITY_MAP_BATCH_REPAINT_START
 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
@@ -470,25 +475,25 @@ void VelocityProjectMap::onAddMidiEvent(const MidiEvent &event)
             const auto *clip = track->getPattern()->getUnchecked(i);
             const bool editable = this->activeClip == *clip;
 
-            auto *noteComponent = new VelocityMapNoteComponent(note, *clip);
+            auto *noteComponent = new VelocityEditorNoteComponent(note, *clip);
             noteComponent->setEditable(editable);
-            componentsMap[note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
+            componentsMap[note] = UniquePointer<VelocityEditorNoteComponent>(noteComponent);
             this->addAndMakeVisible(noteComponent);
             this->triggerBatchRepaintFor(noteComponent);
         }
 
-        VELOCITY_MAP_BULK_REPAINT_END
+        VELOCITY_MAP_BATCH_REPAINT_END
     }
 }
 
-void VelocityProjectMap::onRemoveMidiEvent(const MidiEvent &event)
+void VelocityEditor::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Type::Note))
     {
         const Note &note = static_cast<const Note &>(event);
         const auto *track = note.getSequence()->getTrack();
 
-        VELOCITY_MAP_BULK_REPAINT_START
+        VELOCITY_MAP_BATCH_REPAINT_START
 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
@@ -499,11 +504,11 @@ void VelocityProjectMap::onRemoveMidiEvent(const MidiEvent &event)
             }
         }
 
-        VELOCITY_MAP_BULK_REPAINT_END
+        VELOCITY_MAP_BATCH_REPAINT_END
     }
 }
 
-void VelocityProjectMap::onAddClip(const Clip &clip)
+void VelocityEditor::onAddClip(const Clip &clip)
 {
     const SequenceMap *referenceMap = nullptr;
     const auto *track = clip.getPattern()->getTrack();
@@ -525,7 +530,7 @@ void VelocityProjectMap::onAddClip(const Clip &clip)
     auto *sequenceMap = new SequenceMap();
     this->patternMap[clip] = UniquePointer<SequenceMap>(sequenceMap);
 
-    VELOCITY_MAP_BULK_REPAINT_START
+    VELOCITY_MAP_BATCH_REPAINT_START
 
     for (const auto &e : *referenceMap)
     {
@@ -533,18 +538,18 @@ void VelocityProjectMap::onAddClip(const Clip &clip)
         const auto &note = e.second.get()->note;
         const bool editable = this->activeClip == clip;
 
-        auto *noteComponent = new VelocityMapNoteComponent(note, clip);
+        auto *noteComponent = new VelocityEditorNoteComponent(note, clip);
         noteComponent->setEditable(editable);
 
-        (*sequenceMap)[note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
+        (*sequenceMap)[note] = UniquePointer<VelocityEditorNoteComponent>(noteComponent);
         this->addAndMakeVisible(noteComponent);
         this->applyNoteBounds(noteComponent);
     }
 
-    VELOCITY_MAP_BULK_REPAINT_END
+    VELOCITY_MAP_BATCH_REPAINT_END
 }
 
-void VelocityProjectMap::onChangeClip(const Clip &clip, const Clip &newClip)
+void VelocityEditor::onChangeClip(const Clip &clip, const Clip &newClip)
 {
     if (this->patternMap.contains(clip))
     {
@@ -563,23 +568,23 @@ void VelocityProjectMap::onChangeClip(const Clip &clip, const Clip &newClip)
     }
 }
 
-void VelocityProjectMap::onRemoveClip(const Clip &clip)
+void VelocityEditor::onRemoveClip(const Clip &clip)
 {
-    VELOCITY_MAP_BULK_REPAINT_START
+    VELOCITY_MAP_BATCH_REPAINT_START
 
     if (this->patternMap.contains(clip))
     {
         this->patternMap.erase(clip);
     }
 
-    VELOCITY_MAP_BULK_REPAINT_END
+    VELOCITY_MAP_BATCH_REPAINT_END
 }
 
-void VelocityProjectMap::onChangeTrackProperties(MidiTrack *const track)
+void VelocityEditor::onChangeTrackProperties(MidiTrack *const track)
 {
     if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
 
-    VELOCITY_MAP_BULK_REPAINT_START
+    VELOCITY_MAP_BATCH_REPAINT_START
 
     for (const auto &c : this->patternMap)
     {
@@ -590,27 +595,27 @@ void VelocityProjectMap::onChangeTrackProperties(MidiTrack *const track)
         }
     }
 
-    VELOCITY_MAP_BULK_REPAINT_END
+    VELOCITY_MAP_BATCH_REPAINT_END
 
     this->repaint();
 }
 
-void VelocityProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks,
+void VelocityEditor::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     const ProjectMetadata *meta)
 {
     this->reloadTrackMap();
 }
 
-void VelocityProjectMap::onAddTrack(MidiTrack *const track)
+void VelocityEditor::onAddTrack(MidiTrack *const track)
 {
     if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
 
-    VELOCITY_MAP_BULK_REPAINT_START
+    VELOCITY_MAP_BATCH_REPAINT_START
     this->loadTrack(track);
-    VELOCITY_MAP_BULK_REPAINT_END
+    VELOCITY_MAP_BATCH_REPAINT_END
 }
 
-void VelocityProjectMap::onRemoveTrack(MidiTrack *const track)
+void VelocityEditor::onRemoveTrack(MidiTrack *const track)
 {
     if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
 
@@ -624,7 +629,7 @@ void VelocityProjectMap::onRemoveTrack(MidiTrack *const track)
     }
 }
 
-void VelocityProjectMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+void VelocityEditor::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
@@ -636,7 +641,7 @@ void VelocityProjectMap::onChangeProjectBeatRange(float firstBeat, float lastBea
     }
 }
 
-void VelocityProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
+void VelocityEditor::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
     if (this->rollFirstBeat != firstBeat || this->rollLastBeat != lastBeat)
     {
@@ -645,7 +650,7 @@ void VelocityProjectMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
     }
 }
 
-void VelocityProjectMap::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
+void VelocityEditor::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
 {
     if (this->activeClip == clip)
     {
@@ -654,7 +659,7 @@ void VelocityProjectMap::onChangeViewEditableScope(MidiTrack *const, const Clip 
 
     this->activeClip = clip;
 
-    VELOCITY_MAP_BULK_REPAINT_START
+    VELOCITY_MAP_BATCH_REPAINT_START
 
     for (const auto &c : this->patternMap)
     {
@@ -666,10 +671,10 @@ void VelocityProjectMap::onChangeViewEditableScope(MidiTrack *const, const Clip 
         }
     }
 
-    VELOCITY_MAP_BULK_REPAINT_END
+    VELOCITY_MAP_BATCH_REPAINT_END
 }
 
-void VelocityProjectMap::changeListenerCallback(ChangeBroadcaster *source)
+void VelocityEditor::changeListenerCallback(ChangeBroadcaster *source)
 {
     // for convenience, let's set selected items as editable
 
@@ -685,7 +690,7 @@ void VelocityProjectMap::changeListenerCallback(ChangeBroadcaster *source)
 
     const auto *activeMap = activeMapIt->second.get();
 
-    VELOCITY_MAP_BULK_REPAINT_START
+    VELOCITY_MAP_BATCH_REPAINT_START
 
     if (selection->getNumSelected() == 0)
     {
@@ -709,14 +714,14 @@ void VelocityProjectMap::changeListenerCallback(ChangeBroadcaster *source)
         }
     }
 
-    VELOCITY_MAP_BULK_REPAINT_END
+    VELOCITY_MAP_BATCH_REPAINT_END
 }
 
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
 
-void VelocityProjectMap::updateVolumeBlendingIndicator(const Point<int> &pos)
+void VelocityEditor::updateVolumeBlendingIndicator(const Point<int> &pos)
 {
     if (this->volumeBlendingAmount == 1.f && this->volumeBlendingIndicator->isVisible())
     {
@@ -732,7 +737,7 @@ void VelocityProjectMap::updateVolumeBlendingIndicator(const Point<int> &pos)
     this->volumeBlendingIndicator->setCentrePosition(pos);
 }
 
-void VelocityProjectMap::applyVolumeChanges()
+void VelocityEditor::applyVolumeChanges()
 {
     const auto *activeMap = this->patternMap.at(this->activeClip).get();
     jassert(activeMap);
@@ -844,11 +849,11 @@ void VelocityProjectMap::applyVolumeChanges()
     }
 }
 
-void VelocityProjectMap::reloadTrackMap()
+void VelocityEditor::reloadTrackMap()
 {
     this->patternMap.clear();
 
-    VELOCITY_MAP_BULK_REPAINT_START
+    VELOCITY_MAP_BATCH_REPAINT_START
 
     const auto &tracks = this->project.getTracks();
     for (const auto *track : tracks)
@@ -859,10 +864,10 @@ void VelocityProjectMap::reloadTrackMap()
         }
     }
 
-    VELOCITY_MAP_BULK_REPAINT_END
+    VELOCITY_MAP_BATCH_REPAINT_END
 }
 
-void VelocityProjectMap::loadTrack(const MidiTrack *const track)
+void VelocityEditor::loadTrack(const MidiTrack *const track)
 {
     if (track->getPattern() == nullptr)
     {
@@ -871,7 +876,7 @@ void VelocityProjectMap::loadTrack(const MidiTrack *const track)
 
     for (int i = 0; i < track->getPattern()->size(); ++i)
     {
-        const Clip *clip = track->getPattern()->getUnchecked(i);
+        const auto *clip = track->getPattern()->getUnchecked(i);
         const bool editable = this->activeClip == *clip;
 
         auto *sequenceMap = new SequenceMap();
@@ -879,13 +884,13 @@ void VelocityProjectMap::loadTrack(const MidiTrack *const track)
 
         for (int j = 0; j < track->getSequence()->size(); ++j)
         {
-            const MidiEvent *event = track->getSequence()->getUnchecked(j);
+            const auto *event = track->getSequence()->getUnchecked(j);
             if (event->isTypeOf(MidiEvent::Type::Note))
             {
                 const auto *note = static_cast<const Note *>(event);
-                auto *noteComponent = new VelocityMapNoteComponent(*note, *clip);
+                auto *noteComponent = new VelocityEditorNoteComponent(*note, *clip);
                 noteComponent->setEditable(editable);
-                (*sequenceMap)[*note] = UniquePointer<VelocityMapNoteComponent>(noteComponent);
+                (*sequenceMap)[*note] = UniquePointer<VelocityEditorNoteComponent>(noteComponent);
                 this->addAndMakeVisible(noteComponent);
                 this->applyNoteBounds(noteComponent);
             }
@@ -893,45 +898,46 @@ void VelocityProjectMap::loadTrack(const MidiTrack *const track)
     }
 }
 
-void VelocityProjectMap::applyNoteBounds(VelocityMapNoteComponent *nc)
+void VelocityEditor::applyNoteBounds(VelocityEditorNoteComponent *nc)
 {
-    const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
-    const float projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
+    const float rollLengthInBeats = this->rollLastBeat - this->rollFirstBeat;
+    const float projectLengthInBeats = this->projectLastBeat - this->projectFirstBeat;
 
-    const float beat = (nc->getBeat() - this->rollFirstBeat);
+    const float beat = nc->getNoteBeat() + nc->getClipBeat() - this->rollFirstBeat;
     const float mapWidth = float(this->getWidth()) * (projectLengthInBeats / rollLengthInBeats);
 
-    const float x = (mapWidth * (beat / projectLengthInBeats));
-    const float w = (mapWidth * (nc->getLength() / projectLengthInBeats));
+    const float x = mapWidth * (beat / projectLengthInBeats);
+    const float w = mapWidth * (nc->getLength() / projectLengthInBeats);
 
     // at least 4 pixels are visible for 0 volume events:
     const int h = jmax(4, int(this->getHeight() * nc->getVelocity()));
     nc->setRealBounds(x, this->getHeight() - h, jmax(1.f, w), h);
 }
 
-void VelocityProjectMap::triggerBatchRepaintFor(VelocityMapNoteComponent *target)
+void VelocityEditor::triggerBatchRepaintFor(VelocityEditorNoteComponent *target)
 {
     this->batchRepaintList.add(target);
     this->triggerAsyncUpdate();
 }
 
-void VelocityProjectMap::handleAsyncUpdate()
+void VelocityEditor::handleAsyncUpdate()
 {
     // batch repaint & resize stuff
     if (this->batchRepaintList.size() > 0)
     {
-        VELOCITY_MAP_BULK_REPAINT_START
+        VELOCITY_MAP_BATCH_REPAINT_START
 
         for (int i = 0; i < this->batchRepaintList.size(); ++i)
         {
-            // There are still many cases when a scheduled component is deleted at this time:
+            // There are still many cases when a component
+            // scheduled for repainting/repositioning is deleted at this time:
             if (Component *component = this->batchRepaintList.getUnchecked(i))
             {
-                this->applyNoteBounds(static_cast<VelocityMapNoteComponent *>(component));
+                this->applyNoteBounds(static_cast<VelocityEditorNoteComponent *>(component));
             }
         }
 
-        VELOCITY_MAP_BULK_REPAINT_END
+        VELOCITY_MAP_BATCH_REPAINT_END
 
         this->batchRepaintList.clearQuick();
     }

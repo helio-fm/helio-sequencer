@@ -16,8 +16,7 @@
 */
 
 #include "Common.h"
-#include "ProjectMapScroller.h"
-#include "ProjectMapScrollerScreen.h"
+#include "ProjectMapsScroller.h"
 #include "PianoProjectMap.h"
 #include "Playhead.h"
 #include "Transport.h"
@@ -26,7 +25,7 @@
 #include "HelioTheme.h"
 #include "MainLayout.h"
 
-ProjectMapScroller::ProjectMapScroller(Transport &transportRef, SafePointer<RollBase> roll) :
+ProjectMapsScroller::ProjectMapsScroller(Transport &transportRef, SafePointer<RollBase> roll) :
     transport(transportRef),
     roll(roll),
     borderLineDark(findDefaultColour(ColourIDs::TrackScroller::borderLineDark)),
@@ -40,16 +39,16 @@ ProjectMapScroller::ProjectMapScroller(Transport &transportRef, SafePointer<Roll
     this->helperRectangle = make<HorizontalDragHelper>(*this);
     this->addAndMakeVisible(this->helperRectangle.get());
 
-    this->screenRange = make<ProjectMapScrollerScreen>(*this);
+    this->screenRange = make<ProjectMapsScroller::ScreenRange>(*this);
     this->addAndMakeVisible(this->screenRange.get());
 }
 
-ProjectMapScroller::~ProjectMapScroller()
+ProjectMapsScroller::~ProjectMapsScroller()
 {
     this->disconnectPlayhead();
 }
 
-void ProjectMapScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToFront)
+void ProjectMapsScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToFront)
 {
     this->trackMaps.add(newTrackMap);
     this->addAndMakeVisible(newTrackMap);
@@ -75,7 +74,7 @@ void ProjectMapScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToF
     }
 }
 
-void ProjectMapScroller::removeOwnedMap(Component *existingTrackMap)
+void ProjectMapsScroller::removeOwnedMap(Component *existingTrackMap)
 {
     if (this->trackMaps.contains(existingTrackMap))
     {
@@ -86,7 +85,7 @@ void ProjectMapScroller::removeOwnedMap(Component *existingTrackMap)
     }
 }
 
-void ProjectMapScroller::disconnectPlayhead()
+void ProjectMapsScroller::disconnectPlayhead()
 {
     if (this->playhead->getParentComponent())
     {
@@ -98,14 +97,14 @@ void ProjectMapScroller::disconnectPlayhead()
 // TrackScroller
 //===----------------------------------------------------------------------===//
 
-void ProjectMapScroller::horizontalDragByUser(Component *component, const Rectangle<int> &bounds)
+void ProjectMapsScroller::horizontalDragByUser(Component *component, const Rectangle<int> &bounds)
 {
     const Rectangle<float> &screenRangeBounds = this->screenRange->getRealBounds();
     this->screenRange->setRealBounds(screenRangeBounds.withX(float(component->getX())));
     this->xMoveByUser();
 }
 
-void ProjectMapScroller::xyMoveByUser()
+void ProjectMapsScroller::xyMoveByUser()
 {
     jassert(this->roll != nullptr);
      
@@ -134,7 +133,7 @@ void ProjectMapScroller::xyMoveByUser()
     }
 }
 
-void ProjectMapScroller::xMoveByUser()
+void ProjectMapsScroller::xMoveByUser()
 {
     jassert(this->roll != nullptr);
 
@@ -163,7 +162,7 @@ void ProjectMapScroller::xMoveByUser()
 // Component
 //===----------------------------------------------------------------------===//
 
-void ProjectMapScroller::resized()
+void ProjectMapsScroller::resized()
 {
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
@@ -177,7 +176,7 @@ void ProjectMapScroller::resized()
     }
 }
 
-void ProjectMapScroller::paint(Graphics &g)
+void ProjectMapsScroller::paint(Graphics &g)
 {
     const auto &theme = HelioTheme::getCurrentTheme();
     g.setFillType({ theme.getSidebarBackground(), {} });
@@ -200,7 +199,7 @@ void ProjectMapScroller::paint(Graphics &g)
     }
 }
 
-void ProjectMapScroller::mouseDown(const MouseEvent &event)
+void ProjectMapsScroller::mouseDown(const MouseEvent &event)
 {
     this->screenRangeAtDragStart = this->screenRange->getRealBounds();
     this->rollViewportPositionAtDragStart = this->roll->getViewport().getViewPosition();
@@ -216,7 +215,7 @@ void ProjectMapScroller::mouseDown(const MouseEvent &event)
     }
 }
 
-void ProjectMapScroller::mouseDrag(const MouseEvent &event)
+void ProjectMapsScroller::mouseDrag(const MouseEvent &event)
 {
     if (this->stretchedMode())
     {
@@ -260,7 +259,7 @@ void ProjectMapScroller::mouseDrag(const MouseEvent &event)
     }
 }
 
-void ProjectMapScroller::mouseUp(const MouseEvent &event)
+void ProjectMapsScroller::mouseUp(const MouseEvent &event)
 {
     this->setMouseCursor(MouseCursor::NormalCursor);
 
@@ -285,7 +284,7 @@ void ProjectMapScroller::mouseUp(const MouseEvent &event)
     }
 }
 
-void ProjectMapScroller::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
+void ProjectMapsScroller::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
     jassert(this->roll != nullptr);
     this->roll->mouseWheelMove(event.getEventRelativeTo(this->roll), wheel);
@@ -295,7 +294,7 @@ void ProjectMapScroller::mouseWheelMove(const MouseEvent &event, const MouseWhee
 // MidiRollListener
 //===----------------------------------------------------------------------===//
 
-void ProjectMapScroller::onMidiRollMoved(RollBase *targetRoll)
+void ProjectMapsScroller::onMidiRollMoved(RollBase *targetRoll)
 {
     if (this->isVisible() && this->roll == targetRoll && !this->isTimerRunning())
     {
@@ -303,7 +302,7 @@ void ProjectMapScroller::onMidiRollMoved(RollBase *targetRoll)
     }
 }
 
-void ProjectMapScroller::onMidiRollResized(RollBase *targetRoll)
+void ProjectMapsScroller::onMidiRollResized(RollBase *targetRoll)
 {
     if (this->isVisible() && this->roll == targetRoll && !this->isTimerRunning())
     {
@@ -312,7 +311,7 @@ void ProjectMapScroller::onMidiRollResized(RollBase *targetRoll)
 }
 
 // Starts quick and dirty animation from one bounds to another
-void ProjectMapScroller::switchToRoll(SafePointer<RollBase> roll)
+void ProjectMapsScroller::switchToRoll(SafePointer<RollBase> roll)
 {
     this->oldAreaBounds = this->getIndicatorBounds();
     this->oldMapBounds = this->getMapBounds().toFloat();
@@ -354,7 +353,7 @@ static float getRectangleDistance(const Rectangle<float> &r1,
         fabs(r1.getHeight() - r2.getHeight());
 }
 
-void ProjectMapScroller::timerCallback()
+void ProjectMapsScroller::timerCallback()
 {
     const auto mb = this->getMapBounds().toFloat();
     const auto mbLerp = lerpRectangle(this->oldMapBounds, mb, 0.35f);
@@ -386,12 +385,12 @@ void ProjectMapScroller::timerCallback()
 // AsyncUpdater
 //===----------------------------------------------------------------------===//
 
-void ProjectMapScroller::handleAsyncUpdate()
+void ProjectMapsScroller::handleAsyncUpdate()
 {
     this->updateAllBounds();
 }
 
-void ProjectMapScroller::updateAllBounds()
+void ProjectMapsScroller::updateAllBounds()
 {
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
@@ -411,7 +410,7 @@ void ProjectMapScroller::updateAllBounds()
 // Private
 //===----------------------------------------------------------------------===//
 
-Rectangle<float> ProjectMapScroller::getIndicatorBounds() const noexcept
+Rectangle<float> ProjectMapsScroller::getIndicatorBounds() const noexcept
 {
     jassert(this->roll != nullptr);
 
@@ -420,8 +419,8 @@ Rectangle<float> ProjectMapScroller::getIndicatorBounds() const noexcept
     const float rollWidth = float(this->roll->getWidth());
     const float rollInvisibleArea = rollWidth - viewWidth;
     const float trackWidth = float(this->getWidth());
-    const float trackInvisibleArea = float(this->getWidth() - ProjectMapScroller::screenRangeWidth);
-    const float mapWidth = (ProjectMapScroller::screenRangeWidth * rollWidth) / viewWidth;
+    const float trackInvisibleArea = float(this->getWidth() - ProjectMapsScroller::screenRangeWidth);
+    const float mapWidth = (ProjectMapsScroller::screenRangeWidth * rollWidth) / viewWidth;
 
     const float zoomFactorY = this->roll->getZoomFactorY();
     const float rollHeaderHeight = float(Globals::UI::rollHeaderHeight);
@@ -441,11 +440,11 @@ Rectangle<float> ProjectMapScroller::getIndicatorBounds() const noexcept
     }
 
     const float rX = (trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth);
-    const float rW = ProjectMapScroller::screenRangeWidth;
+    const float rW = ProjectMapsScroller::screenRangeWidth;
     return { rX, rY, rW, rH };
 }
 
-Rectangle<int> ProjectMapScroller::getMapBounds() const noexcept
+Rectangle<int> ProjectMapsScroller::getMapBounds() const noexcept
 {
     jassert(this->roll != nullptr);
 
@@ -453,8 +452,8 @@ Rectangle<int> ProjectMapScroller::getMapBounds() const noexcept
     const float viewWidth = float(this->roll->getViewport().getViewWidth());
     const float rollWidth = float(this->roll->getWidth());
     const float rollInvisibleArea = rollWidth - viewWidth;
-    const float trackInvisibleArea = float(this->getWidth() - ProjectMapScroller::screenRangeWidth);
-    const float mapWidth = (ProjectMapScroller::screenRangeWidth * rollWidth) / viewWidth;
+    const float trackInvisibleArea = float(this->getWidth() - ProjectMapsScroller::screenRangeWidth);
+    const float mapWidth = (ProjectMapsScroller::screenRangeWidth * rollWidth) / viewWidth;
 
     if (mapWidth <= this->getWidth() || !this->stretchedMode())
     {
@@ -466,7 +465,7 @@ Rectangle<int> ProjectMapScroller::getMapBounds() const noexcept
     return { int(rX - dX), 0, int(mapWidth), this->getHeight() };
 }
 
-void ProjectMapScroller::setScrollerMode(ScrollerMode mode)
+void ProjectMapsScroller::setScrollerMode(ScrollerMode mode)
 {
     if (this->scrollerMode == mode)
     {
@@ -497,7 +496,7 @@ void ProjectMapScroller::setScrollerMode(ScrollerMode mode)
     this->updateAllBounds();
 }
 
-ProjectMapScroller::ScrollerMode ProjectMapScroller::getScrollerMode() const noexcept
+ProjectMapsScroller::ScrollerMode ProjectMapsScroller::getScrollerMode() const noexcept
 {
     return this->scrollerMode;
 }
@@ -510,7 +509,7 @@ class HorizontalDragHelperConstrainer final : public ComponentBoundsConstrainer
 {
 public:
 
-    explicit HorizontalDragHelperConstrainer(ProjectMapScroller &scrollerRef) :
+    explicit HorizontalDragHelperConstrainer(ProjectMapsScroller &scrollerRef) :
         scroller(scrollerRef) {}
 
     void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override
@@ -521,10 +520,10 @@ public:
 
 private:
 
-    ProjectMapScroller &scroller;
+    ProjectMapsScroller &scroller;
 };
 
-ProjectMapScroller::HorizontalDragHelper::HorizontalDragHelper(ProjectMapScroller &scrollerRef) :
+ProjectMapsScroller::HorizontalDragHelper::HorizontalDragHelper(ProjectMapsScroller &scrollerRef) :
     scroller(scrollerRef)
 {
     this->setPaintingIsUnclipped(true);
@@ -539,29 +538,29 @@ ProjectMapScroller::HorizontalDragHelper::HorizontalDragHelper(ProjectMapScrolle
     this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
 }
 
-void ProjectMapScroller::HorizontalDragHelper::setBrightness(float brightness)
+void ProjectMapsScroller::HorizontalDragHelper::setBrightness(float brightness)
 {
     this->colour = findDefaultColour(ColourIDs::TrackScroller::scrollerFill).withMultipliedAlpha(brightness);
     this->repaint();
 }
 
-void ProjectMapScroller::HorizontalDragHelper::mouseDown(const MouseEvent &e)
+void ProjectMapsScroller::HorizontalDragHelper::mouseDown(const MouseEvent &e)
 {
     this->dragger.startDraggingComponent(this, e);
 }
 
-void ProjectMapScroller::HorizontalDragHelper::mouseDrag(const MouseEvent &e)
+void ProjectMapsScroller::HorizontalDragHelper::mouseDrag(const MouseEvent &e)
 {
     this->setMouseCursor(MouseCursor::DraggingHandCursor);
     this->dragger.dragComponent(this, e, this->moveConstrainer.get());
 }
 
-void ProjectMapScroller::HorizontalDragHelper::mouseUp(const MouseEvent &e)
+void ProjectMapsScroller::HorizontalDragHelper::mouseUp(const MouseEvent &e)
 {
     this->setMouseCursor(MouseCursor::NormalCursor);
 }
 
-void ProjectMapScroller::HorizontalDragHelper::paint(Graphics &g)
+void ProjectMapsScroller::HorizontalDragHelper::paint(Graphics &g)
 {
     g.setColour(this->colour);
     g.fillRect(this->getLocalBounds());

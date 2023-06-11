@@ -673,15 +673,16 @@ void RollBase::setBeatWidth(float newBeatWidth)
 
 float RollBase::getMinVisibleBeatForCurrentZoomLevel() const
 {
-    // min visible beat should start from 1/16, which is the max roll resolution
+    // min visible beat should start from 1/16, which is the max roll resolution:
+
     // pow-of-2     beat width   min note length
-    // 4            16           ...
+    // 4            16           clamped to 1
     // 5            32           1
     // 6            64           1/2
     // 7            128          1/4
     // 8            256          1/8
     // 9            512          1/16
-    // 10           1024         ...
+    // 10           1024         clamped to 1/16
 
     // note that computeVisibleBeatLines also uses (nearestPowTwo - 5.f) to set density,
     // so that the minimum visible beat is now consistent with visible snaps;

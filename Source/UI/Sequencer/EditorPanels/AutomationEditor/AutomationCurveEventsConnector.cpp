@@ -18,26 +18,25 @@
 #include "Common.h"
 #include "AutomationEvent.h"
 #include "AutomationCurveEventsConnector.h"
-#include "AutomationCurveClipComponent.h"
 
 AutomationCurveEventsConnector::AutomationCurveEventsConnector(
-    AutomationCurveClipComponent &editor,
-    AutomationCurveEventComponent *c1,
-    AutomationCurveEventComponent *c2) :
+    AutomationEditorBase &editor,
+    AutomationEditorBase::EventComponentBase *c1,
+    AutomationEditorBase::EventComponentBase *c2) :
     editor(editor),
     component1(c1),
     component2(c2)
 {
-    this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setMouseCursor(MouseCursor::UpDownResizeCursor);
+    this->setFocusContainerType(Component::FocusContainerType::none);
 }
 
-void AutomationCurveEventsConnector::retargetAndUpdate(AutomationCurveEventComponent *c1,
-    AutomationCurveEventComponent *c2)
+void AutomationCurveEventsConnector::retargetAndUpdate(AutomationEditorBase::EventComponentBase *c1,
+    AutomationEditorBase::EventComponentBase *c2)
 {
     this->component1 = c1;
     this->component2 = c2;
@@ -51,8 +50,8 @@ void AutomationCurveEventsConnector::resizeToFit(float newCurvature)
         return;
     }
 
-    const float x1 = float(this->component1->getBounds().getCentreX());
-    const float x2 = float(this->component2->getBounds().getCentreX());
+    const float x1 = this->component1->getFloatBounds().getCentreX();
+    const float x2 = this->component2->getFloatBounds().getCentreX();
     const Rectangle<int> newBounds(int(jmin(x1, x2)), 0,
         int(fabsf(x1 - x2)), this->getParentHeight());
 
@@ -63,12 +62,13 @@ void AutomationCurveEventsConnector::resizeToFit(float newCurvature)
 
 Point<float> AutomationCurveEventsConnector::getCentrePoint() const
 {
-    const auto c1 = this->component1->getBounds().getCentre();
-    const auto c2 = this->component2->getBounds().getCentre();
+    const auto c1 = this->component1->getFloatBounds().getCentre();
+    const auto c2 = this->component2->getFloatBounds().getCentre();
     const auto curve = this->component1->getEvent().getCurvature();
     const auto y1 = jmin(c1.getY(), c2.getY());
     const auto y2 = jmax(c1.getY(), c2.getY());
-    return { (c2.getX() - c1.getX()) / 2.f, y1 + (y2 - y1) * (1.f - curve) };
+    return { (c2.getX() - c1.getX()) / 2.f,
+        y1 + (y2 - y1) * (1.f - curve) };
 }
 
 //===----------------------------------------------------------------------===//
@@ -77,7 +77,10 @@ Point<float> AutomationCurveEventsConnector::getCentrePoint() const
 
 void AutomationCurveEventsConnector::paint(Graphics &g)
 {
-    g.setColour(this->editor.getEventColour());
+    if (this->component1 != nullptr)
+    {
+        g.setColour(this->editor.getColour(this->component1->getEvent()));
+    }
 
     for (const auto &p : this->linePath)
     {
@@ -101,8 +104,8 @@ void AutomationCurveEventsConnector::rebuildLinePath()
         return;
     }
 
-    const float x1 = float(this->component1->getBounds().getCentreX());
-    const float x2 = float(this->component2->getBounds().getCentreX());
+    const float x1 = this->component1->getFloatBounds().getCentreX();
+    const float x2 = this->component2->getFloatBounds().getCentreX();
 
     this->linePath.clearQuick();
 
@@ -117,7 +120,7 @@ void AutomationCurveEventsConnector::rebuildLinePath()
             AutomationEvent::interpolateEvents(e1.getControllerValue(),
                 e2.getControllerValue(), factor, e1.getCurvature());
 
-        const float x = ((x2 - x1) * factor);
+        const float x = (x2 - x1) * factor;
         const float y = float(this->getParentHeight()) * (1.f - interpolatedValue);
 
         const float controllerDelta = fabs(interpolatedValue - lastAppliedValue);

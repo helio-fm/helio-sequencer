@@ -18,10 +18,10 @@
 #include "Common.h"
 #include "AutomationCurveHelper.h"
 #include "AutomationSequence.h"
-#include "AutomationCurveClipComponent.h"
 
 AutomationCurveHelper::AutomationCurveHelper(const AutomationEvent &event,
-    const AutomationCurveClipComponent &editor, Component *target1, Component *target2) :
+    const AutomationEditorBase &editor,
+    Component *target1, Component *target2) :
     event(event),
     editor(editor),
     component1(target1),
@@ -38,7 +38,7 @@ AutomationCurveHelper::AutomationCurveHelper(const AutomationEvent &event,
 
 void AutomationCurveHelper::paint(Graphics &g)
 {
-    g.setColour(this->editor.getEventColour());
+    g.setColour(this->editor.getColour(this->event));
 
     g.fillEllipse(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
 
@@ -99,7 +99,13 @@ void AutomationCurveHelper::mouseDrag(const MouseEvent &e)
                 if (this->tuningIndicator == nullptr)
                 {
                     this->tuningIndicator = make<FineTuningValueIndicator>(this->event.getCurvature(), "");
-                    this->editor.getParentComponent()->addAndMakeVisible(this->tuningIndicator.get());
+
+                    // adding it to grandparent to avoid clipping
+                    assert(this->getParentComponent() != nullptr);
+                    assert(this->getParentComponent()->getParentComponent() != nullptr);
+                    auto *grandParent = this->getParentComponent()->getParentComponent();
+
+                    grandParent->addAndMakeVisible(this->tuningIndicator.get());
                     this->fader.fadeIn(this->tuningIndicator.get(), Globals::UI::fadeInLong);
                 }
 
@@ -110,7 +116,7 @@ void AutomationCurveHelper::mouseDrag(const MouseEvent &e)
                 {
                     const float cv = this->event.getCurvature();
                     this->tuningIndicator->setValue(cv, cv);
-                    this->tuningIndicator->repositionToTargetAt(this, this->editor.getPosition());
+                    this->tuningIndicator->repositionToTargetAt(this);
                 }
             }
         }

@@ -17,44 +17,39 @@
 
 #pragma once
 
-class ProjectMapScroller;
+#include "AutomationEditorBase.h"
 
-class ProjectMapScrollerScreen final : public Component
+class AutomationCurveEventsConnector final : public Component
 {
 public:
 
-    explicit ProjectMapScrollerScreen(ProjectMapScroller &scrollerRef);
+    AutomationCurveEventsConnector(AutomationEditorBase &editor,
+        AutomationEditorBase::EventComponentBase *c1,
+        AutomationEditorBase::EventComponentBase *c2);
 
-    Rectangle<float> getRealBounds() const noexcept
-    {
-        return this->realBounds;
-    }
-
-    void setRealBounds(const Rectangle<float> &bounds)
-    {
-        this->realBounds = bounds;
-        this->setBounds(this->realBounds.toType<int>());
-    }
+    Point<float> getCentrePoint() const;
+    void resizeToFit(float newCurvature = 0.5f);
+    void retargetAndUpdate(AutomationEditorBase::EventComponentBase *c1,
+        AutomationEditorBase::EventComponentBase *c2);
 
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
-    void mouseDown(const MouseEvent &e) override;
-    void mouseDrag(const MouseEvent &e) override;
-    void mouseUp(const MouseEvent &e) override;
-
     void paint(Graphics &g) override;
-
-private:
+    void resized() override;
     
-    Rectangle<float> realBounds;
+private:
 
-    Colour colour;
-    ProjectMapScroller &scroller;
-    ComponentDragger dragger;
+    AutomationEditorBase &editor;
 
-    UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
+    SafePointer<AutomationEditorBase::EventComponentBase> component1;
+    SafePointer<AutomationEditorBase::EventComponentBase> component2;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectMapScrollerScreen)
+    Array<Point<float>> linePath;
+    void rebuildLinePath();
+
+    float curvature = 0.5f;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationCurveEventsConnector)
 };

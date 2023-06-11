@@ -19,6 +19,7 @@
 
 #include "ClipComponent.h"
 #include "AutomationEvent.h"
+#include "AutomationEditorBase.h"
 #include "ProjectListener.h"
 
 class MidiSequence;
@@ -27,7 +28,10 @@ class ProjectNode;
 class AutomationStepEventComponent;
 class AutomationStepEventsConnector;
 
-class AutomationStepsClipComponent final : public ClipComponent, public ProjectListener
+class AutomationStepsClipComponent final :
+    public AutomationEditorBase,
+    public ClipComponent,
+    public ProjectListener
 {
 public:
 
@@ -36,10 +40,14 @@ public:
 
     ~AutomationStepsClipComponent() override;
 
-    inline const Colour getLineColour() const noexcept
-    {
-        return this->eventColour.withMultipliedAlpha(0.8f);
-    }
+    //===------------------------------------------------------------------===//
+    // AutomationEditorBase
+    //===------------------------------------------------------------------===//
+
+    const Colour &getColour(const AutomationEvent &event) const override;
+    Rectangle<float> getEventBounds(const AutomationEvent &event, const Clip &clip) const override;
+    void getBeatValueByPosition(int x, int y, const Clip &clip, float &value, float &beat) const override;
+    float getBeatByPosition(int x, const Clip &clip) const override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -74,29 +82,23 @@ public:
 protected:
 
     void insertNewEventAt(const MouseEvent &e, bool shouldAddTriggeredEvent);
-    void removeEventIfPossible(const AutomationEvent &e);
 
-    float getBeatByXPosition(int x) const;
+    EventComponentBase *getPreviousEventComponent(int indexOfSorted) const;
+    EventComponentBase *getNextEventComponent(int indexOfSorted) const;
 
-    AutomationStepEventComponent *getPreviousEventComponent(int indexOfSorted) const;
-    AutomationStepEventComponent *getNextEventComponent(int indexOfSorted) const;
-
-    Rectangle<float> getEventBounds(AutomationStepEventComponent *c) const;
     Rectangle<float> getEventBounds(float targetBeat, float sequenceLength, bool isPedalDown) const;
 
-    friend class AutomationStepEventComponent;
-    friend class AutomationStepEventsConnector;
+    friend class EventComponentBase;
 
 private:
 
-    void updateEventComponent(AutomationStepEventComponent *component) const;
     void reloadTrack();
 
     ProjectNode &project;
     WeakReference<MidiSequence> sequence;
 
-    OwnedArray<AutomationStepEventComponent> eventComponents;
-    FlatHashMap<AutomationEvent, AutomationStepEventComponent *, MidiEventHash> eventsHash;
+    OwnedArray<EventComponentBase> eventComponents;
+    FlatHashMap<AutomationEvent, EventComponentBase *, MidiEventHash> eventsHash;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationStepsClipComponent)
 };

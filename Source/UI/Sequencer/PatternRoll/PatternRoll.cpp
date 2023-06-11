@@ -125,11 +125,11 @@ static ClipComponent *createClipComponentFor(MidiTrack *track,
     auto *sequence = track->getSequence();
     jassert(sequence != nullptr);
 
-    if (auto *pianoLayer = dynamic_cast<PianoSequence *>(sequence))
+    if (dynamic_cast<PianoSequence *>(sequence))
     {
         return new PianoClipComponent(project, sequence, roll, clip);
     }
-    else if (auto *autoLayer = dynamic_cast<AutomationSequence *>(sequence))
+    else if (dynamic_cast<AutomationSequence *>(sequence))
     {
         if (track->isOnOffAutomationTrack())
         {
@@ -363,9 +363,9 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
 
 void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
 {
-    if (Pattern *pattern = track->getPattern())
+    if (track->getPattern() != nullptr)
     {
-        // track name could change here so we have to keep track array sorted by name:
+        //the track name could change here so we have to keep this array sorted by name:
         //debugTracksOrder(this->tracks);
         this->reloadRowsGrouping();
         //debugTracksOrder(this->tracks);
@@ -389,11 +389,11 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
     this->tracks.removeAllInstancesOf(track);
     this->reloadRowsGrouping();
 
-    if (Pattern *pattern = track->getPattern())
+    if (auto *pattern = track->getPattern())
     {
         for (int i = 0; i < pattern->size(); ++i)
         {
-            const Clip &clip = *pattern->getUnchecked(i);
+            const auto &clip = *pattern->getUnchecked(i);
             if (this->clipComponents.contains(clip))
             {
                 this->clipComponents.erase(clip);

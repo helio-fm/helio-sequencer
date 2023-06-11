@@ -24,18 +24,31 @@ class AutomationCurveEventComponent;
 
 #include "ClipComponent.h"
 #include "AutomationEvent.h"
+#include "AutomationEditorBase.h"
 #include "ProjectListener.h"
 
-class AutomationCurveClipComponent final : public ClipComponent, public ProjectListener
+class AutomationCurveClipComponent final :
+    public AutomationEditorBase,
+    public ClipComponent,
+    public ProjectListener
 {
 public:
 
-    AutomationCurveClipComponent(ProjectNode &project, MidiSequence *sequence,
-        RollBase &roll, const Clip &clip);
+    AutomationCurveClipComponent(ProjectNode &project,
+        MidiSequence *sequence, RollBase &roll, const Clip &clip);
 
     ~AutomationCurveClipComponent() override;
 
     void insertNewEventAt(const MouseEvent &e);
+
+    //===------------------------------------------------------------------===//
+    // AutomationEditorBase
+    //===------------------------------------------------------------------===//
+
+    const Colour &getColour(const AutomationEvent &event) const override;
+    Rectangle<float> getEventBounds(const AutomationEvent &event, const Clip &clip) const override;
+    void getBeatValueByPosition(int x, int y, const Clip &clip, float &value, float &beat) const override;
+    float getBeatByPosition(int x, const Clip &clip) const override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -57,7 +70,6 @@ public:
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
 
-    // TODO! As a part of `automation editors` story
     void onAddClip(const Clip &clip) override {}
     void onChangeClip(const Clip &oldClip, const Clip &newClip) override {}
     void onRemoveClip(const Clip &clip) override {}
@@ -73,37 +85,30 @@ public:
 
 protected:
 
-    void removeEventIfPossible(const AutomationEvent &e);
+    Rectangle<float> getEventBounds(float beat, float sequenceLength, double controllerValue) const;
 
-    Rectangle<int> getEventBounds(AutomationCurveEventComponent *event) const;
-    Rectangle<int> getEventBounds(float beat, float sequenceLength, double controllerValue) const;
-
-    void getRowsColsByMousePosition(int x, int y, float &targetValue, float &targetBeat) const;
     int getAvailableHeight() const;
 
 #if PLATFORM_DESKTOP
     static constexpr auto eventComponentDiameter = 16.f;
-    static constexpr auto helperComponentDiameter = 8.f;
 #elif PLATFORM_MOBILE
     static constexpr auto eventComponentDiameter = 24.f;
-    static constexpr auto helperComponentDiameter = 20.f;
 #endif
 
-    AutomationCurveEventComponent *getPreviousEventComponent(int indexOfSorted) const;
-    AutomationCurveEventComponent *getNextEventComponent(int indexOfSorted) const;
+    EventComponentBase *getPreviousEventComponent(int indexOfSorted) const;
+    EventComponentBase *getNextEventComponent(int indexOfSorted) const;
 
-    friend class AutomationCurveEventComponent;
+    friend class EventComponentBase;
 
 private:
 
-    void updateCurveComponent(AutomationCurveEventComponent *);
     void reloadTrack();
 
     ProjectNode &project;
     WeakReference<MidiSequence> sequence;
 
-    OwnedArray<AutomationCurveEventComponent> eventComponents;
-    FlatHashMap<AutomationEvent, AutomationCurveEventComponent *, MidiEventHash> eventsHash;
+    OwnedArray<EventComponentBase> eventComponents;
+    FlatHashMap<AutomationEvent, EventComponentBase *, MidiEventHash> eventsHash;
 
     AutomationCurveEventComponent *draggingEvent = nullptr;
     bool addNewEventMode = false;

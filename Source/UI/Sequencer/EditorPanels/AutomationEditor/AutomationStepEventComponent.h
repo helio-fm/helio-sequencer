@@ -17,42 +17,48 @@
 
 #pragma once
 
+#include "Clip.h"
 #include "AutomationEvent.h"
+#include "AutomationEditorBase.h"
 
 class AutomationStepEventsConnector;
-class AutomationStepsClipComponent;
 
-class AutomationStepEventComponent final : public Component
+class AutomationStepEventComponent final :
+    public AutomationEditorBase::EventComponentBase
 {
 public:
 
-    AutomationStepEventComponent(AutomationStepsClipComponent &parent, const AutomationEvent &targetEvent);
+    AutomationStepEventComponent(AutomationEditorBase &editor,
+        const AutomationEvent &event,
+        const Clip &clip);
     
-    inline AutomationStepsClipComponent *getEditor() const noexcept { return &this->editor; }
-    inline const AutomationEvent &getEvent() const noexcept { return this->event; };
-
     bool isPedalDownEvent() const noexcept;
-    float getBeat() const noexcept;
 
-    void setRealBounds(const Rectangle<float> bounds);
-    Rectangle<float> getRealBounds() const noexcept;
-    inline bool hasCompactMode() const noexcept
-    { return this->realBounds.getWidth() <= 2.f; }
+    //===------------------------------------------------------------------===//
+    // EventComponentBase
+    //===------------------------------------------------------------------===//
 
-    void updateConnector();
-    void setNextNeighbour(AutomationStepEventComponent *next);
-    void setPreviousNeighbour(AutomationStepEventComponent *prev);
-
-    static int compareElements(const AutomationStepEventComponent *first,
-                               const AutomationStepEventComponent *second)
+    const Clip &getClip() const noexcept override
     {
-        if (first == second) { return 0; }
+        return this->clip;
+    };
 
-        const float diff = first->event.getBeat() - second->event.getBeat();
-        const int diffResult = (diff > 0.f) - (diff < 0.f);
-        if (diffResult != 0) { return diffResult; }
+    const AutomationEvent &getEvent() const noexcept override
+    {
+        return this->event;
+    };
 
-        return first->event.getId() - second->event.getId();
+    const AutomationEditorBase &getEditor() const noexcept override
+    {
+        return this->editor;
+    }
+
+    void setNextNeighbour(EventComponentBase *next) override;
+    void setPreviousNeighbour(EventComponentBase *next) override;
+
+    void updateChildrenBounds() override
+    {
+        this->updateConnector();
     }
 
     //===------------------------------------------------------------------===//
@@ -61,6 +67,7 @@ public:
 
     void paint(Graphics &g) override;
     void moved() override;
+    void parentHierarchyChanged() override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
@@ -77,20 +84,22 @@ private:
     void drag(float targetBeat);
     void dragByDelta(float deltaBeat);
 
-    const AutomationEvent &event;
-    AutomationStepsClipComponent &editor;
+    AutomationEditorBase &editor;
 
-    Rectangle<float> realBounds;
+    const AutomationEvent &event;
+    const Clip &clip;
 
     ComponentDragger dragger;
     bool isDragging = false;
     bool isHighlighted = false;
 
+    void updateConnector();
     void recreateConnector();
 
     UniquePointer<AutomationStepEventsConnector> connector;
-    SafePointer<AutomationStepEventComponent> nextEventHolder;
-    SafePointer<AutomationStepEventComponent> prevEventHolder;
+
+    SafePointer<EventComponentBase> nextEventHolder;
+    SafePointer<EventComponentBase> prevEventHolder;
 
     friend class AutomationStepsClipComponent;
     friend class AutomationStepEventsConnector;

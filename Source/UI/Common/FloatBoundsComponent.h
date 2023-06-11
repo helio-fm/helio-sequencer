@@ -36,6 +36,11 @@ public:
         this->setBounds(bX, bY, bW, bH);
     }
 
+    inline Rectangle<float> getFloatBounds() const noexcept
+    {
+        return this->floatLocalBounds + this->getPosition().toFloat();
+    }
+
 protected:
 
     Rectangle<float> floatLocalBounds;

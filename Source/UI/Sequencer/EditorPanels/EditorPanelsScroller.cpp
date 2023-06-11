@@ -16,26 +16,26 @@
 */
 
 #include "Common.h"
-#include "LevelsMapScroller.h"
+#include "EditorPanelsScroller.h"
 #include "RollBase.h"
 #include "ColourIDs.h"
 #include "HelioTheme.h"
 
-LevelsMapScroller::LevelsMapScroller(SafePointer<RollBase> roll) : roll(roll)
+EditorPanelsScroller::EditorPanelsScroller(SafePointer<RollBase> roll) : roll(roll)
 {
-    this->setPaintingIsUnclipped(false); // cut dragger may and will go out of bounds
+    this->setPaintingIsUnclipped(false); // the cut dragger may and will go out of bounds
     this->setInterceptsMouseClicks(true, true);
     this->setOpaque(true);
 }
 
-void LevelsMapScroller::addOwnedMap(Component *newTrackMap)
+void EditorPanelsScroller::addOwnedMap(Component *newTrackMap)
 {
     this->trackMaps.add(newTrackMap);
     this->addAndMakeVisible(newTrackMap);
     newTrackMap->toFront(false);
 }
 
-void LevelsMapScroller::removeOwnedMap(Component *existingTrackMap)
+void EditorPanelsScroller::removeOwnedMap(Component *existingTrackMap)
 {
     if (this->trackMaps.contains(existingTrackMap))
     {
@@ -49,7 +49,7 @@ void LevelsMapScroller::removeOwnedMap(Component *existingTrackMap)
 // Component
 //===----------------------------------------------------------------------===//
 
-void LevelsMapScroller::resized()
+void EditorPanelsScroller::resized()
 {
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
@@ -57,7 +57,7 @@ void LevelsMapScroller::resized()
     }
 }
 
-void LevelsMapScroller::paint(Graphics &g)
+void EditorPanelsScroller::paint(Graphics &g)
 {
     const auto &theme = HelioTheme::getCurrentTheme();
     g.setFillType({ theme.getSidebarBackground(), {} });
@@ -70,7 +70,7 @@ void LevelsMapScroller::paint(Graphics &g)
     g.fillRect(0, 1, this->getWidth(), 1);
 }
 
-void LevelsMapScroller::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
+void EditorPanelsScroller::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
     if (this->roll != nullptr)
     {
@@ -82,7 +82,7 @@ void LevelsMapScroller::mouseWheelMove(const MouseEvent &event, const MouseWheel
 // MidiRollListener
 //===----------------------------------------------------------------------===//
 
-void LevelsMapScroller::onMidiRollMoved(RollBase *targetRoll)
+void EditorPanelsScroller::onMidiRollMoved(RollBase *targetRoll)
 {
     if (this->isVisible() && this->roll == targetRoll)
     {
@@ -90,7 +90,7 @@ void LevelsMapScroller::onMidiRollMoved(RollBase *targetRoll)
     }
 }
 
-void LevelsMapScroller::onMidiRollResized(RollBase *targetRoll)
+void EditorPanelsScroller::onMidiRollResized(RollBase *targetRoll)
 {
     if (this->isVisible() && this->roll == targetRoll)
     {
@@ -102,7 +102,7 @@ void LevelsMapScroller::onMidiRollResized(RollBase *targetRoll)
 // AsyncUpdater
 //===----------------------------------------------------------------------===//
 
-void LevelsMapScroller::handleAsyncUpdate()
+void EditorPanelsScroller::handleAsyncUpdate()
 {
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
@@ -114,7 +114,7 @@ void LevelsMapScroller::handleAsyncUpdate()
 // Private
 //===----------------------------------------------------------------------===//
 
-Rectangle<int> LevelsMapScroller::getMapBounds() const noexcept
+Rectangle<int> EditorPanelsScroller::getMapBounds() const noexcept
 {
     if (this->roll != nullptr)
     {
@@ -122,5 +122,5 @@ Rectangle<int> LevelsMapScroller::getMapBounds() const noexcept
         return { -viewX, 0, this->roll->getWidth(), this->getHeight() };
     }
 
-    return { 0, 0, 0, 0 };
+    return {};
 }

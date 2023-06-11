@@ -81,9 +81,12 @@ void FineTuningValueIndicator::setValue(float newValue, int valueView)
     this->repaint();
 }
 
-void FineTuningValueIndicator::repositionToTargetAt(Component *component, Point<int> offset)
+void FineTuningValueIndicator::repositionToTargetAt(Component *component)
 {
-    this->setTopLeftPosition(offset + component->getBounds().getCentre() - this->getLocalBounds().getCentre());
+    const auto centreRelativeToMyParent = this->getParentComponent()->
+        getLocalPoint(component, component->getLocalBounds().getCentre());
+
+    this->setTopLeftPosition(centreRelativeToMyParent - this->getLocalBounds().getCentre());
 }
 
 void FineTuningValueIndicator::setDisplayValue(bool shouldDisplay)

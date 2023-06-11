@@ -19,7 +19,6 @@
 
 class RollBase;
 class TrackMap;
-class ProjectMapScrollerScreen;
 class Playhead;
 class Transport;
 
@@ -27,7 +26,7 @@ class Transport;
 #include "RollListener.h"
 #include "ComponentFader.h"
 
-class ProjectMapScroller final :
+class ProjectMapsScroller final :
     public Component,
     public RollListener,
     private AsyncUpdater,
@@ -35,8 +34,8 @@ class ProjectMapScroller final :
 {
 public:
 
-    ProjectMapScroller(Transport &transport, SafePointer<RollBase> roll);
-    ~ProjectMapScroller() override;
+    ProjectMapsScroller(Transport &transport, SafePointer<RollBase> roll);
+    ~ProjectMapsScroller() override;
 
     void addOwnedMap(Component *newTrackMap, bool shouldBringToFront);
     void removeOwnedMap(Component *existingTrackMap);
@@ -95,7 +94,7 @@ public:
     {
     public:
         
-        explicit HorizontalDragHelper(ProjectMapScroller &scrollerRef);
+        explicit HorizontalDragHelper(ProjectMapsScroller &scrollerRef);
         void mouseDown(const MouseEvent &e) override;
         void mouseDrag(const MouseEvent &e) override;
         void mouseUp(const MouseEvent &e) override;
@@ -108,7 +107,7 @@ public:
     private:
         
         Colour colour;
-        ProjectMapScroller &scroller;
+        ProjectMapsScroller &scroller;
         ComponentDragger dragger;
         UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
     };
@@ -136,11 +135,82 @@ private:
 
 private:
 
+    class ScreenRange final : public Component
+    {
+    public:
+
+        explicit ScreenRange(ProjectMapsScroller &scrollerRef) :
+            colour(findDefaultColour(ColourIDs::TrackScroller::screenRangeFill)),
+            scroller(scrollerRef)
+        {
+            this->setPaintingIsUnclipped(true);
+            this->setMouseClickGrabsKeyboardFocus(false);
+
+            this->moveConstrainer = make<ComponentBoundsConstrainer>();
+            this->moveConstrainer->setMinimumSize(4, 4);
+            this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
+        }
+
+        Rectangle<float> getRealBounds() const noexcept
+        {
+            return this->realBounds;
+        }
+
+        void setRealBounds(const Rectangle<float> &bounds)
+        {
+            this->realBounds = bounds;
+            this->setBounds(this->realBounds.toType<int>());
+        }
+
+        //===------------------------------------------------------------------===//
+        // Component
+        //===------------------------------------------------------------------===//
+
+        void mouseDown(const MouseEvent &e) override
+        {
+            this->dragger.startDraggingComponent(this, e);
+        }
+
+        void mouseDrag(const MouseEvent &e) override
+        {
+            this->setMouseCursor(MouseCursor::DraggingHandCursor);
+            const auto lastPosition = this->getPosition().toFloat();
+            this->dragger.dragComponent(this, e, this->moveConstrainer.get());
+            const auto moveDelta = this->getPosition().toFloat() - lastPosition;
+            this->realBounds.translate(moveDelta.getX(), moveDelta.getY());
+            this->scroller.xyMoveByUser();
+        }
+
+        void mouseUp(const MouseEvent &e) override
+        {
+            this->setMouseCursor(MouseCursor::NormalCursor);
+        }
+
+        void paint(Graphics &g) override
+        {
+            g.setColour(this->colour);
+            g.fillRect(this->getLocalBounds());
+        }
+
+    private:
+        
+        Rectangle<float> realBounds;
+
+        Colour colour;
+        ProjectMapsScroller &scroller;
+        ComponentDragger dragger;
+
+        UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScreenRange)
+    };
+
+
+private:
+
     void horizontalDragByUser(Component *component, const Rectangle<int> &bounds);
     friend class HorizontalDragHelperConstrainer;
 
-private:
-    
     void handleAsyncUpdate() override;
     void timerCallback() override;
     void updateAllBounds();
@@ -153,7 +223,7 @@ private:
     Rectangle<float> oldMapBounds;
 
     static constexpr auto screenRangeWidth = 150.f;
-    UniquePointer<ProjectMapScrollerScreen> screenRange;
+    UniquePointer<ProjectMapsScroller::ScreenRange> screenRange;
     Rectangle<float> screenRangeAtDragStart;
 
     Rectangle<float> drawingNewScreenRange;

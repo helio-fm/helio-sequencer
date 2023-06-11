@@ -23,8 +23,8 @@ class RollBase;
 class RollsSwitchingProxy;
 class ProjectNode;
 class MidiTrack;
-class ProjectMapScroller;
-class LevelsMapScroller;
+class ProjectMapsScroller;
+class EditorPanelsScroller;
 class SequencerSidebarRight;
 class SequencerSidebarLeft;
 class Origami;
@@ -79,8 +79,8 @@ private:
     UniquePointer<Viewport> pianoViewport;
     UniquePointer<Viewport> patternViewport;
 
-    UniquePointer<ProjectMapScroller> mapScroller;
-    UniquePointer<LevelsMapScroller> levelsScroller;
+    UniquePointer<ProjectMapsScroller> bottomMapsScroller;
+    UniquePointer<EditorPanelsScroller> bottomEditorsScroller;
     UniquePointer<Component> scrollerShadow;
 
     UniquePointer<PianoRoll> pianoRoll;

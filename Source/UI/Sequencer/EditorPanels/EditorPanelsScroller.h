@@ -17,39 +17,43 @@
 
 #pragma once
 
-#include "AutomationCurveEventComponent.h"
+class RollBase;
 
-class AutomationCurveEventsConnector final : public Component
+#include "RollListener.h"
+
+class EditorPanelsScroller final :
+    public Component,
+    public RollListener,
+    private AsyncUpdater
 {
 public:
 
-    AutomationCurveEventsConnector(AutomationCurveClipComponent &editor,
-        AutomationCurveEventComponent *c1,
-        AutomationCurveEventComponent *c2);
-
-    Point<float> getCentrePoint() const;
-    void resizeToFit(float newCurvature = 0.5f);
-    void retargetAndUpdate(AutomationCurveEventComponent *c1,
-        AutomationCurveEventComponent *c2);
+    explicit EditorPanelsScroller(SafePointer<RollBase> roll);
+    
+    void addOwnedMap(Component *newTrackMap);
+    void removeOwnedMap(Component *existingTrackMap);
 
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
-
-    void paint(Graphics &g) override;
+    
     void resized() override;
+    void paint(Graphics &g) override;
+    void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
+    
+    //===------------------------------------------------------------------===//
+    // RollListener
+    //===------------------------------------------------------------------===//
+    
+    void onMidiRollMoved(RollBase *targetRoll) override;
+    void onMidiRollResized(RollBase *targetRoll) override;
     
 private:
+    
+    void handleAsyncUpdate() override;
+    Rectangle<int> getMapBounds() const noexcept;
 
-    AutomationCurveClipComponent &editor;
-
-    SafePointer<AutomationCurveEventComponent> component1;
-    SafePointer<AutomationCurveEventComponent> component2;
-
-    Array<Point<float>> linePath;
-    void rebuildLinePath();
-
-    float curvature = 0.5f;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationCurveEventsConnector)
+    SafePointer<RollBase> roll;
+    OwnedArray<Component> trackMaps;
+    
 };

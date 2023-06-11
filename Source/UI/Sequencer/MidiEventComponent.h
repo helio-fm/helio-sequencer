@@ -75,8 +75,6 @@ protected:
 
     float anchorBeat = 0.f;
 
-    // сдвиг мыши от нуля компонента во время клика.
-    // если его не учитывать, то ноты двигаются неестественно
     Point<int> clickOffset;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiEventComponent)

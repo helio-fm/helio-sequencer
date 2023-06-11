@@ -20,8 +20,8 @@
 #include "AutomationStepEventComponent.h"
 #include "AutomationStepsClipComponent.h"
 
-AutomationStepEventsConnector::AutomationStepEventsConnector(AutomationStepEventComponent *c1,
-    AutomationStepEventComponent *c2, bool isEventTriggered) :
+AutomationStepEventsConnector::AutomationStepEventsConnector(AutomationEditorBase::EventComponentBase *c1,
+    AutomationEditorBase::EventComponentBase *c2, bool isEventTriggered) :
     component1(c1),
     component2(c2),
     isEventTriggered(isEventTriggered)
@@ -36,19 +36,21 @@ void AutomationStepEventsConnector::getPoints(float &x1, float &x2, float &y1, f
 {
     if (this->component1 != nullptr)
     {
-        x1 = float(this->component1->getRealBounds().getRight());
-        y1 = float(this->component1->getRealBounds().getY());
+        const auto bounds1 = component1->getFloatBounds();
+        x1 = bounds1.getRight();
+        y1 = bounds1.getY();
     }
 
     if (this->component2 != nullptr)
     {
-        x2 = float(this->component2->getRealBounds().getX());
-        y2 = float(this->component2->getRealBounds().getBottom());
+        const auto bounds2 = component2->getFloatBounds();
+        x2 = bounds2.getX();
+        y2 = bounds2.getBottom();
     }
 }
 
-void AutomationStepEventsConnector::retargetAndUpdate(AutomationStepEventComponent *c1,
-    AutomationStepEventComponent *c2, bool isEventTriggered)
+void AutomationStepEventsConnector::retargetAndUpdate(AutomationEditorBase::EventComponentBase *c1,
+    AutomationEditorBase::EventComponentBase *c2, bool isEventTriggered)
 {
     this->component1 = c1;
     this->component2 = c2;
@@ -62,19 +64,19 @@ void AutomationStepEventsConnector::resizeToFit(bool isEventTriggered)
         return;
     }
 
-    const bool shouldRepaint = (this->isEventTriggered != isEventTriggered);
+    const bool shouldRepaint = this->isEventTriggered != isEventTriggered;
     this->isEventTriggered = isEventTriggered;
 
     constexpr auto r = AutomationStepEventComponent::pointOffset;
     float x1 = 0.f, x2 = 0.f, y1 = 0.f, y2 = 0.f;
     this->getPoints(x1, x2, y1, y2);
 
-    const bool compact = this->anyAliveChild()->hasCompactMode();
+    const bool compactMode = this->firstAliveEventComponent()->getWidth() <= 3;
     constexpr auto top = r + AutomationStepEventComponent::marginTop;
     const float bottom = y2 - r - AutomationStepEventComponent::marginBottom;
-    this->realBounds = { jmin(x1, x2) + (compact ? (r + 1.f) : (r - 1.f)),
+    this->realBounds = { jmin(x1, x2) + (compactMode ? (r + 1.f) : (r - 1.f)),
         this->isEventTriggered ? bottom : top,
-        fabsf(x1 - x2) - (compact ? r * 2.f : 1.f),
+        fabsf(x1 - x2) - (compactMode ? r * 2.f : 1.f),
         this->isEventTriggered ? top : bottom };
     
     this->setBounds(this->realBounds.toType<int>());
@@ -93,7 +95,10 @@ void AutomationStepEventsConnector::paint(Graphics &g)
 {
     if (this->realBounds.getWidth() > AutomationStepEventComponent::pointOffset)
     {
-        g.setColour(this->anyAliveChild()->getEditor()->getLineColour());
+        const auto *child = this->firstAliveEventComponent();
+        g.setColour(child->getEditor().
+            getColour(child->getEvent()).withMultipliedAlpha(0.75f));
+
         const float left = this->realBounds.getX() - float(this->getX());
         g.drawHorizontalLine(0, left, this->realBounds.getWidth());
 
@@ -104,62 +109,32 @@ void AutomationStepEventsConnector::paint(Graphics &g)
     }
 }
 
-void AutomationStepEventsConnector::mouseMove(const MouseEvent &e)
-{
-    this->applyCursorForEvent(e);
-}
-
 void AutomationStepEventsConnector::mouseDown(const MouseEvent &e)
 {
-    this->applyCursorForEvent(e);
-
-    if (e.mods.isLeftButtonDown() && !e.mods.isAnyModifierKeyDown())
+    BailOutChecker bailOutChecker(this);
+    auto *eventComponent = this->firstAliveEventComponent();
+    eventComponent->mouseDown(e.getEventRelativeTo(eventComponent));
+    if (!bailOutChecker.shouldBailOut())
     {
-        this->anchorBeat =  this->anyAliveChild()->getEditor()->getBeatByXPosition(this->anyAliveChild()->getX());
-        this->anchorBeatChild1 = this->component1 ? this->component1->getBeat() : 0.f;
-        this->anchorBeatChild2 = this->component2 ? this->component2->getBeat() : 0.f;
-        this->dragger.startDraggingComponent(this->anyAliveChild(), e);
-        this->isDragging = true;
-    }
-    else
-    {
-        this->anyAliveChild()->getEditor()->mouseDown(e.getEventRelativeTo(this->anyAliveChild()->getEditor()));
+        this->setMouseCursor(eventComponent->getMouseCursor());
     }
 }
 
 void AutomationStepEventsConnector::mouseDrag(const MouseEvent &e)
 {
-    this->applyCursorForEvent(e);
-
-    if (this->isDragging)
-    {
-        this->dragger.dragComponent(this->anyAliveChild(), e, nullptr);
-        float newRoundBeat = this->anyAliveChild()->getEditor()->getBeatByXPosition(this->anyAliveChild()->getX());
-        float deltaBeat = (newRoundBeat - this->anchorBeat);
-        float newBeatChild1 = (this->anchorBeatChild1 + deltaBeat);
-        float newBeatChild2 = (this->anchorBeatChild2 + deltaBeat);
-
-        if (this->component1)
-        {
-            this->component1->drag(newBeatChild1);
-            this->component1->updateConnector();
-        }
-        
-        if (this->component2)
-        {
-            this->component2->drag(newBeatChild2);
-            this->component2->updateConnector();
-        }
-    }
+    auto *eventComponent = this->firstAliveEventComponent();
+    eventComponent->mouseDrag(e.getEventRelativeTo(eventComponent));
+    this->setMouseCursor(eventComponent->getMouseCursor());
 }
 
 void AutomationStepEventsConnector::mouseUp(const MouseEvent &e)
 {
-    this->applyCursorForEvent(e);
-
-    if (this->isDragging)
+    BailOutChecker bailOutChecker(this);
+    auto *eventComponent = this->firstAliveEventComponent();
+    eventComponent->mouseUp(e.getEventRelativeTo(eventComponent));
+    if (!bailOutChecker.shouldBailOut())
     {
-        this->isDragging = false;
+        this->setMouseCursor(eventComponent->getMouseCursor());
     }
 }
 
@@ -167,27 +142,23 @@ void AutomationStepEventsConnector::mouseEnter(const MouseEvent &e)
 {
     this->isHighlighted = true;
     this->repaint();
+
+    // highlights the pivot component as well to give a cue
+    // that dragging this helper will also drag the pivot component
+    auto *eventComponent = this->firstAliveEventComponent();
+    eventComponent->mouseEnter(e.getEventRelativeTo(eventComponent));
 }
 
 void AutomationStepEventsConnector::mouseExit(const MouseEvent &e)
 {
     this->isHighlighted = false;
     this->repaint();
+
+    auto *eventComponent = this->firstAliveEventComponent();
+    eventComponent->mouseExit(e.getEventRelativeTo(eventComponent));
 }
 
-void AutomationStepEventsConnector::applyCursorForEvent(const MouseEvent &e)
-{
-    if (this->isDragging)
-    {
-        this->setMouseCursor(MouseCursor::DraggingHandCursor);
-    }
-    else
-    {
-        this->setMouseCursor(MouseCursor::NormalCursor);
-    }
-}
-
-AutomationStepEventComponent *AutomationStepEventsConnector::anyAliveChild() const
+AutomationEditorBase::EventComponentBase *AutomationStepEventsConnector::firstAliveEventComponent() const
 {
     jassert(this->component1 || this->component2);
     return (this->component1 ? this->component1 : this->component2);

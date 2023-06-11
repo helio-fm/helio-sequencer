@@ -17,55 +17,29 @@
 
 #pragma once
 
+#include "Clip.h"
 #include "AutomationEvent.h"
+#include "AutomationEditorBase.h"
 #include "FineTuningComponentDragger.h"
 #include "FineTuningValueIndicator.h"
 #include "ComponentFader.h"
 
 class AutomationCurveEventsConnector;
 class AutomationCurveHelper;
-class AutomationCurveClipComponent;
 
-class AutomationCurveEventComponent final : public Component
+class AutomationCurveEventComponent final :
+    public AutomationEditorBase::EventComponentBase
 {
 public:
 
-    AutomationCurveEventComponent(AutomationCurveClipComponent &parent,
-        const AutomationEvent &targetEvent);
-
-    inline float getBeat() const noexcept
-    {
-        return this->event.getBeat();
-    }
+    AutomationCurveEventComponent(AutomationEditorBase &editor,
+        const AutomationEvent &event,
+        const Clip &clip);
 
     inline float getControllerValue() const noexcept
     {
         return this->event.getControllerValue();
     }
-
-    inline const AutomationEvent &getEvent() const noexcept
-    {
-        return this->event;
-    };
-
-    void updateConnector();
-    void updateHelper();
-    void setNextNeighbour(AutomationCurveEventComponent *next);
-
-    static int compareElements(const AutomationCurveEventComponent *first,
-        const AutomationCurveEventComponent *second);
-
-    void paint(Graphics &g) override;
-    bool hitTest(int x, int y) override;
-
-    void mouseEnter(const MouseEvent &e) override;
-    void mouseExit(const MouseEvent &e) override;
-
-    void mouseDown(const MouseEvent &e) override;
-    void mouseDrag(const MouseEvent &e) override;
-    void mouseUp(const MouseEvent &e) override;
-
-private:
 
     void startDragging();
     bool isDragging() const;
@@ -75,10 +49,59 @@ private:
         bool &beatChanged, bool &valueChanged);
     void endDragging();
 
-    friend class AutomationCurveClipComponent;
+    //===------------------------------------------------------------------===//
+    // EventComponentBase
+    //===------------------------------------------------------------------===//
+
+    const Clip &getClip() const noexcept override
+    {
+        return this->clip;
+    };
+
+    const AutomationEvent &getEvent() const noexcept override
+    {
+        return this->event;
+    };
+
+    const AutomationEditorBase &getEditor() const noexcept override
+    {
+        return this->editor;
+    }
+
+    void setNextNeighbour(EventComponentBase *next) override;
+    void setPreviousNeighbour(EventComponentBase *next) override;
+
+    void updateChildrenBounds() override
+    {
+        this->updateConnector();
+        this->updateHelper();
+    }
+
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
+    void paint(Graphics &g) override;
+    bool hitTest(int x, int y) override;
+    void parentHierarchyChanged() override;
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseExit(const MouseEvent &e) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
+
+private:
+
+#if PLATFORM_DESKTOP
+    static constexpr auto helperComponentDiameter = 8.f;
+#elif PLATFORM_MOBILE
+    static constexpr auto helperComponentDiameter = 20.f;
+#endif
+
+    AutomationEditorBase &editor;
 
     const AutomationEvent &event;
-    AutomationCurveClipComponent &editor;
+    const Clip &clip;
 
     AutomationEvent anchor;
     FineTuningComponentDragger dragger;
@@ -93,12 +116,16 @@ private:
     const int controllerNumber;
     bool isTempoCurve() const noexcept;
 
+    void updateConnector();
+    void updateHelper();
+
     void recreateConnector();
     void recreateHelper();
 
     UniquePointer<AutomationCurveEventsConnector> connector;
     UniquePointer<AutomationCurveHelper> helper;
-    SafePointer<AutomationCurveEventComponent> nextEventHolder;
+
+    SafePointer<EventComponentBase> nextEventHolder;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationCurveEventComponent)
 };

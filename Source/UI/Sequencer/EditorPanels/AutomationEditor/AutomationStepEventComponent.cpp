@@ -17,53 +17,53 @@
 
 #include "Common.h"
 #include "AutomationStepEventComponent.h"
-#include "AutomationStepsClipComponent.h"
 #include "AutomationStepEventsConnector.h"
 #include "AutomationSequence.h"
 
-AutomationStepEventComponent::AutomationStepEventComponent(AutomationStepsClipComponent &parent,
-    const AutomationEvent &targetEvent) :
-    event(targetEvent),
-    editor(parent)
+AutomationStepEventComponent::AutomationStepEventComponent(AutomationEditorBase &editor,
+    const AutomationEvent &event, const Clip &clip) :
+    editor(editor),
+    event(event),
+    clip(clip)
 {
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
-    this->recreateConnector();
 }
 
 void AutomationStepEventComponent::paint(Graphics &g)
 {
     const bool prevDownState = this->prevEventHolder != nullptr ?
-        this->prevEventHolder->isPedalDownEvent() :
+        this->prevEventHolder->getEvent().isPedalDownEvent() :
         Globals::Defaults::onOffControllerState;
 
     constexpr auto threshold = AutomationStepEventComponent::minLengthInBeats * 3.f;
 
     const bool isCloseToPrevious = this->prevEventHolder != nullptr &&
-        (this->getBeat() - this->prevEventHolder->getBeat()) <= threshold;
+        (this->getEvent().getBeat() - this->prevEventHolder->getEvent().getBeat()) <= threshold;
 
     const bool isCloseToNext = this->nextEventHolder != nullptr &&
-        (this->nextEventHolder->getBeat() - this->getBeat()) <= threshold;
+        (this->nextEventHolder->getEvent().getBeat() - this->getEvent().getBeat()) <= threshold;
 
     constexpr auto r = AutomationStepEventComponent::pointOffset;
     constexpr auto d = r * 2.f;
     constexpr auto top = r + AutomationStepEventComponent::marginTop;
-    const float bottom = this->realBounds.getHeight() - r - AutomationStepEventComponent::marginBottom;
-    const float left = this->realBounds.getX() - float(this->getX());
-    const float right = jmax(left + 0.5f, this->realBounds.getWidth() - r);
+    const float bottom = this->floatLocalBounds.getHeight() - r - AutomationStepEventComponent::marginBottom;
+    const float left = this->floatLocalBounds.getX();
+    const float right = jmax(left + 0.5f, this->floatLocalBounds.getWidth() - r);
 
-    const auto lineColour = this->editor.getLineColour();
-    const auto pointColour = this->editor.getEventColour();
-    g.setColour(pointColour);
+    const auto mainColour = this->editor.getColour(this->event);
+    g.setColour(mainColour);
+
+    const auto lineColour = mainColour.withMultipliedAlpha(0.75f);
 
     if (this->event.isPedalDownEvent() && !prevDownState)
     {
         g.fillEllipse(right - r + 0.5f, bottom - r, d, d);
 
         g.setColour(lineColour);
-        const bool compact = isCloseToPrevious && this->hasCompactMode();
-        if (!compact)
+        const bool compactMode = isCloseToPrevious && this->getWidth() <= 3;
+        if (!compactMode)
         {
             g.drawLine(right + 0.5f, top, right + 0.5f, bottom - d + 1.f);
             g.drawHorizontalLine(int(top), left, right + 0.5f);
@@ -74,9 +74,9 @@ void AutomationStepEventComponent::paint(Graphics &g)
         g.fillEllipse(right - r, top - r, d, d);
 
         g.setColour(lineColour);
-        const bool compact = isCloseToNext && this->hasCompactMode();
-        g.drawLine(right, top + d, right, compact ? bottom - d + 1.f : bottom);
-        g.drawHorizontalLine(int(bottom), left, compact ? right - d : right + 0.5f);
+        const bool compactMode = isCloseToNext && this->getWidth() <= 3;
+        g.drawLine(right, top + d, right, compactMode ? bottom - d + 1.f : bottom);
+        g.drawHorizontalLine(int(bottom), left, compactMode ? right - d : right + 0.5f);
     }
     else if (this->event.isPedalDownEvent() && prevDownState)
     {
@@ -101,7 +101,15 @@ void AutomationStepEventComponent::paint(Graphics &g)
 
 void AutomationStepEventComponent::moved()
 {
-    this->updateConnector();
+    this->updateChildrenBounds();
+}
+
+void AutomationStepEventComponent::parentHierarchyChanged()
+{
+    if (this->getParentComponent() != nullptr)
+    {
+        this->recreateConnector();
+    }
 }
 
 void AutomationStepEventComponent::mouseDown(const MouseEvent &e)
@@ -120,8 +128,8 @@ void AutomationStepEventComponent::mouseDrag(const MouseEvent &e)
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->dragger.dragComponent(this, e, nullptr);
-        float newRoundBeat = this->editor.getBeatByXPosition(this->getX() + this->getWidth());
-        this->drag(newRoundBeat);
+        const float newBeat = this->editor.getBeatByPosition(this->getX() + this->getWidth(), this->clip);
+        this->drag(newBeat);
     }
 }
 
@@ -138,7 +146,12 @@ void AutomationStepEventComponent::mouseUp(const MouseEvent &e)
     }
     else if (e.mods.isRightButtonDown())
     {
-        this->editor.removeEventIfPossible(this->event);
+        auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
+        if (sequence->size() > 1) // no empty automation tracks please
+        {
+            sequence->checkpoint();
+            sequence->remove(this->event, true);
+        }
     }
 }
 
@@ -161,8 +174,8 @@ void AutomationStepEventComponent::drag(float targetBeat)
 
     // ограничим перемещение отрезком между двумя соседними компонентами
     const int myIndex = sequence->indexOfSorted(&this->event);
-    const bool hasPreviousEvent = (myIndex > 0);
-    const bool hasNextEvent = (myIndex < (sequence->size() - 1));
+    const bool hasPreviousEvent = myIndex > 0;
+    const bool hasNextEvent = myIndex < (sequence->size() - 1);
 
     if (hasPreviousEvent)
     {
@@ -178,37 +191,42 @@ void AutomationStepEventComponent::drag(float targetBeat)
 
     const float newRoundDeltaBeat = (newRoundBeat - this->event.getBeat());
 
-
     if (fabs(newRoundDeltaBeat) > 0.01)
     {
         sequence->change(this->event, this->event.withBeat(newRoundBeat), true);
     }
     else
     {
-        this->editor.updateEventComponent(this);
+        this->setFloatBounds(this->editor.getEventBounds(this->event, this->clip));
+        this->updateChildrenBounds();
     }
 }
 
 void AutomationStepEventComponent::dragByDelta(float deltaBeat)
 {
-    this->drag(this->getBeat() + deltaBeat);
+    this->drag(this->getEvent().getBeat() + deltaBeat);
 }
 
 void AutomationStepEventComponent::recreateConnector()
 {
     this->connector = make<AutomationStepEventsConnector>(this,
-        this->nextEventHolder, this->isPedalDownEvent());
+        this->nextEventHolder, this->event.isPedalDownEvent());
 
-    this->editor.addAndMakeVisible(this->connector.get());
+    assert(this->getParentComponent() != nullptr);
+    this->getParentComponent()->addAndMakeVisible(this->connector.get());
     this->updateConnector();
 }
 
 void AutomationStepEventComponent::updateConnector()
 {
-    this->connector->resizeToFit(this->isPedalDownEvent());
+    this->connector->resizeToFit(this->event.isPedalDownEvent());
 }
 
-void AutomationStepEventComponent::setNextNeighbour(AutomationStepEventComponent *next)
+//===----------------------------------------------------------------------===//
+// EventComponentBase
+//===----------------------------------------------------------------------===//
+
+void AutomationStepEventComponent::setNextNeighbour(EventComponentBase *next)
 {
     if (next != nullptr)
     {
@@ -217,7 +235,7 @@ void AutomationStepEventComponent::setNextNeighbour(AutomationStepEventComponent
 
     if (next == this->nextEventHolder)
     {
-        this->updateConnector();
+        this->updateChildrenBounds();
         return;
     }
 
@@ -225,34 +243,12 @@ void AutomationStepEventComponent::setNextNeighbour(AutomationStepEventComponent
     this->recreateConnector();
 }
 
-void AutomationStepEventComponent::setPreviousNeighbour(AutomationStepEventComponent *prev)
+void AutomationStepEventComponent::setPreviousNeighbour(EventComponentBase *prev)
 {
     if (prev == this->prevEventHolder)
     {
         return;
     }
 
-    // todo logic
     this->prevEventHolder = prev;
-}
-
-bool AutomationStepEventComponent::isPedalDownEvent() const noexcept
-{
-    return this->event.isPedalDownEvent();
-}
-
-float AutomationStepEventComponent::getBeat() const noexcept
-{
-    return this->event.getBeat();
-}
-
-void AutomationStepEventComponent::setRealBounds(const Rectangle<float> bounds)
-{
-    this->realBounds = bounds;
-    this->setBounds(bounds.toType<int>());
-}
-
-Rectangle<float> AutomationStepEventComponent::getRealBounds() const noexcept
-{
-    return this->realBounds;
 }

@@ -18,18 +18,18 @@
 #pragma once
 
 #include "AutomationEvent.h"
+#include "AutomationEditorBase.h"
 #include "FineTuningComponentDragger.h"
 #include "FineTuningValueIndicator.h"
 #include "ComponentFader.h"
-
-class AutomationCurveClipComponent;
 
 class AutomationCurveHelper final : public Component
 {
 public:
 
     AutomationCurveHelper(const AutomationEvent &event,
-        const AutomationCurveClipComponent &editor, Component *target1, Component *target2);
+        const AutomationEditorBase &editor,
+        Component *target1, Component *target2);
 
     float getCurvature() const;
 
@@ -42,7 +42,7 @@ public:
 private:
 
     const AutomationEvent &event;
-    const AutomationCurveClipComponent &editor;
+    const AutomationEditorBase &editor;
 
     Point<int> anchor;
     float curveAnchor = 0.f;

@@ -40,7 +40,7 @@ public:
     int getNumRows() const noexcept;
 
     //===------------------------------------------------------------------===//
-    // Note management
+    // Clip management
     //===------------------------------------------------------------------===//
 
     void addClip(Pattern *pattern, float beat);
