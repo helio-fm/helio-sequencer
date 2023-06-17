@@ -48,8 +48,8 @@ jobs:
     - name: "xcode 10.1 mac, release build"
       stage: Deploy
       os: osx
-      osx_image: xcode10.1
-      xcode_sdk: macosx10.14
+      osx_image: xcode13.1
+      xcode_sdk: macosx11.6
       addons: *deploy
       env: BUILD_TYPE=osx
     # - name: "xcode 11.6 ios, release build"

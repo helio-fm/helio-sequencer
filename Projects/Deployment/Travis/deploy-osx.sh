@@ -25,55 +25,33 @@ xcodebuild -archivePath \
     -exportPath /tmp/exported.app \
     -exportOptionsPlist ./Travis/export-options-osx.plist;
 
+DISK_IMAGE_DIR="/tmp/disk-image"
+mkdir -p ${DISK_IMAGE_DIR}
+cp -r /tmp/exported.app/Helio.app ${DISK_IMAGE_DIR}/Helio.app
+
+# Simply copy the the pre-generated .DS_Store file (styling data),
+# generating it on the fly with applescript only works in GUI mode since Mojave
+cp ./macOS/DS_Store ${DISK_IMAGE_DIR}/.DS_Store
+
 # Create disk image
 bash ./macOS/create-dmg.sh \
-    --volname Helio \
-    --background ./macOS/splash.jpg \
-    --window-size 700 400 \
-    --icon Helio.app 230 150 \
-    --app-drop-link 470 150 \
+    --volname "Helio Installer" \
+    --app-drop-link 100 100 \
     --no-internet-enable \
     /tmp/${RELEASE_FILENAME}.dmg \
-    /tmp/exported.app/Helio.app
+    ${DISK_IMAGE_DIR}/
 
-# Sign (and check)
-codesign --force --sign "Developer ID Application: Peter Rudenko (${OSX_ITC_PROVIDER_ID})" /tmp/${RELEASE_FILENAME}.dmg --asc-provider "${OSX_ITC_PROVIDER_ID}"
+# Sign and check
+codesign --force --sign "Developer ID Application: Peter Rudenko (${OSX_ITC_PROVIDER_ID})" /tmp/${RELEASE_FILENAME}.dmg
 spctl -a -t open --context context:primary-signature -v /tmp/${RELEASE_FILENAME}.dmg
 
-# Pain-in-the-ass notarization workflow
-# "The notary service generates a ticket for the top-level file ... as well as each nested file", so let's pass the disk image
-NOTARIZATION_RESPONSE=$(xcrun altool --notarize-app -t osx -f /tmp/${RELEASE_FILENAME}.dmg --primary-bundle-id "fm.helio" -u ${OSX_ITC_USERNAME} -p ${OSX_ITC_APP_PASSWORD} --asc-provider "${OSX_ITC_PROVIDER_ID}" --output-format xml)
-REQUEST_UUID=$(xmllint --xpath "/plist/dict[key='notarization-upload']/dict/key[.='RequestUUID']/following-sibling::string[1]/text()" - <<<"$NOTARIZATION_RESPONSE")
-echo "Notarization started with request uuid: ${REQUEST_UUID}"
-sleep 10s
+# Notarize
+# "The notary service generates a ticket for the top-level file ... as well as each nested file"
+xcrun notarytool submit /tmp/${RELEASE_FILENAME}.dmg --apple-id "${OSX_ITC_USERNAME}" --password "${OSX_ITC_APP_PASSWORD}" --team-id "${OSX_ITC_PROVIDER_ID}" --verbose --wait
 
-for i in {0..40} # 20 mins should be enough I guess
-do
-    NOTARIZATION_INFO=$(xcrun altool --notarization-info ${REQUEST_UUID} -u ${OSX_ITC_USERNAME} -p ${OSX_ITC_APP_PASSWORD} --output-format xml)
-    NOTARIZATION_STATUS=$(xmllint --xpath "/plist/dict[key='notarization-info']/dict/key[.='Status']/following-sibling::string[1]/text()" - <<<"$NOTARIZATION_INFO")
-    if [[ ${NOTARIZATION_STATUS} == "in progress" ]]; then
-        echo "Notarization in progress, waiting"
-        sleep 30s
-    elif [[ ${NOTARIZATION_STATUS} == "success" ]]; then
-        echo "Notarization done"
-        # Staple and verify
-        xcrun stapler staple /tmp/${RELEASE_FILENAME}.dmg
-        spctl -a -t open --context context:primary-signature -v /tmp/${RELEASE_FILENAME}.dmg
-        break
-    else
-        echo "Notarization fault (core dumped)"
-        echo ${NOTARIZATION_RESPONSE}
-        echo ${NOTARIZATION_INFO}
-        exit 1
-    fi
-done
-
-if [[ ${NOTARIZATION_STATUS} != "success" ]]; then
-    # It should be "less than an hour", Apple says, but looks like this time we're stuck
-    echo "Ah fuck :("
-    # Don't fail here though, it's better to ship the unstapled disk image, at least
-    # exit 1
-fi
+# Staple and verify
+xcrun stapler staple /tmp/${RELEASE_FILENAME}.dmg
+spctl -a -t open --context context:primary-signature -v /tmp/${RELEASE_FILENAME}.dmg
 
 # Finally, upload
 scp -o StrictHostKeyChecking=no -C /tmp/${RELEASE_FILENAME}.dmg ${DEPLOY_HOST}:${DEPLOY_PATH}/${RELEASE_FILENAME}.dmg
