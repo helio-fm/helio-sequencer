@@ -20,20 +20,27 @@
 #include "KeySignatureComponent.h"
 #include "KeySignatureEvent.h"
 #include "ProjectListener.h"
+#include "ProjectMapsScroller.h"
 
 class RollBase;
 class ProjectNode;
 
-class KeySignaturesProjectMap final : public Component, public ProjectListener
+class KeySignaturesProjectMap final :
+    public ProjectMapsScroller::ScrolledComponent,
+    public ProjectListener
 {
 public:
     
     enum class Type : int8 { Large, Small };
 
-    KeySignaturesProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type);
+    KeySignaturesProjectMap(ProjectNode &parentProject,
+        SafePointer<RollBase> roll, Type type);
+
     ~KeySignaturesProjectMap() override;
 
     void alignKeySignatureComponent(KeySignatureComponent *nc);
+
+    void switchToRoll(SafePointer<RollBase> roll) override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -96,8 +103,9 @@ private:
     
     int keyboardSize = Globals::twelveToneKeyboardSize;
 
-    RollBase &roll;
     ProjectNode &project;
+
+    SafePointer<RollBase> roll;
         
     ComponentAnimator animator;
 

@@ -52,8 +52,8 @@ public:
     // UserInterfaceFlags::Listener
     //===------------------------------------------------------------------===//
 
-    void onVelocityMapVisibilityFlagChanged(bool visible) override;
-    void onProjectMapVisibilityFlagChanged(bool showFullMap) override;
+    void onEditorPanelVisibilityFlagChanged(bool visible) override;
+    void onProjectMapLargeModeFlagChanged(bool showFullMap) override;
     void onUiAnimationsFlagChanged(bool enabled) override;
 
     //===------------------------------------------------------------------===//

@@ -76,8 +76,10 @@ void InstrumentEditorConnector::resizeToFit()
     float x1, y1, x2, y2;
     this->getPinPoints(x1, y1, x2, y2);
 
-    const Rectangle<int> newBounds(int(jmin(x1, x2)) - 4, int(jmin(y1, y2)) - 4,
-        int(fabsf(x1 - x2)) + 8, int(fabsf(y1 - y2)) + 8);
+    const Rectangle<int> newBounds(jmax(0, int(jmin(x1, x2)) - 4),
+        jmax(0, int(jmin(y1, y2)) - 4),
+        int(fabsf(x1 - x2)) + 8,
+        int(fabsf(y1 - y2)) + 8);
 
     if (newBounds != this->getBounds())
     {
@@ -202,13 +204,12 @@ void InstrumentEditorConnector::resized()
     this->linePath.clear();
     this->linePath.startNewSubPath(x1, y1);
 
-    const float curveX = (this->getParentWidth() == 0) ? 0.f :
-        (1.f - (fabsf(dx) / float(this->getParentWidth()))) * 1.5f;
-    const float curveY = (this->getParentHeight() == 0) ? 0.f :
-        (fabsf(dy) / float(this->getParentHeight())) * 1.5f;
+    const auto parentWidth = float(this->getParentWidth());
+    const auto parentHeight = float(this->getParentHeight());
+    const float gravity = parentHeight == 0.f ? 0.f : 0.6f + jlimit(-1.f, 1.f, dy / parentHeight) / 3.f;
+    const float curveX = parentWidth == 0.f ? 0.f : (1.f - (fabsf(dx) / parentWidth)) * 1.5f;
+    const float curveY = parentHeight == 0.f ? 0.f : (fabsf(dy) / parentHeight) * 1.5f;
     const float curve = (curveX + curveY) / 2.f;
-    const float gravity = 0.6f +
-        jlimit(-1.f, 1.f, dy / float(this->getParentHeight())) / 3.f;
 
     this->linePath.cubicTo(x1 + dx * (curve * (1.f - gravity)), y1,
         x1 + dx * (1.f - (curve * gravity)), y2,

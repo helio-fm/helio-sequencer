@@ -75,8 +75,8 @@ SequencerSidebarLeft::SequencerSidebarLeft()
     this->addAndMakeVisible(this->listBox.get());
 
     const auto *uiFlags = App::Config().getUiFlags();
-    this->miniMapVisible = uiFlags->isFullProjectMapVisible();
-    this->velocityMapVisible = uiFlags->isVelocityMapVisible();
+    this->miniMapVisible = uiFlags->isProjectMapInLargeMode();
+    this->velocityMapVisible = uiFlags->isEditorPanelVisible();
     this->noteNameGuidesEnabled = uiFlags->isNoteNameGuidesEnabled();
     this->scalesHighlightingEnabled = uiFlags->isScalesHighlightingEnabled();
 
@@ -228,14 +228,14 @@ void SequencerSidebarLeft::setPatternMode()
 // UserInterfaceFlags::Listener
 //===----------------------------------------------------------------------===//
 
-void SequencerSidebarLeft::onProjectMapVisibilityFlagChanged(bool showFullMap)
+void SequencerSidebarLeft::onProjectMapLargeModeFlagChanged(bool showFullMap)
 {
     this->miniMapVisible = showFullMap;
     this->recreateMenu();
     this->listBox->updateContent();
 }
 
-void SequencerSidebarLeft::onVelocityMapVisibilityFlagChanged(bool visible)
+void SequencerSidebarLeft::onEditorPanelVisibilityFlagChanged(bool visible)
 {
     this->velocityMapVisible = visible;
     this->recreateMenu();
@@ -286,17 +286,6 @@ void SequencerSidebarLeft::recreateMenu()
 
     // TODO add some controls to switch focus between tracks?
 
-    if (this->menuMode == MenuMode::PianoRollTools)
-    {
-        this->menu.add(MenuItem::item(Icons::paint, CommandIDs::ToggleScalesHighlighting)->
-            toggledIf(this->scalesHighlightingEnabled)->
-            withTooltip(TRANS(I18n::Tooltips::toggleScalesHighlighting)));
-
-        this->menu.add(MenuItem::item(Icons::tag, CommandIDs::ToggleNoteNameGuides)->
-            toggledIf(this->noteNameGuidesEnabled)->
-            withTooltip(TRANS(I18n::Tooltips::toggleNoteGuides)));
-    }
-
     // toggling the mini-map makes sense on mobile platforms, because of smaller screens,
     // but on the desktop it's more like a one-off choice, so let's not clog up the ui
     // (this action will still be available via hotkey, 'b' by default):
@@ -308,11 +297,19 @@ void SequencerSidebarLeft::recreateMenu()
 
 #endif
 
+    this->menu.add(MenuItem::item(Icons::volumePanel, CommandIDs::ToggleVolumePanel)->
+        toggledIf(this->velocityMapVisible)->
+        withTooltip(TRANS(I18n::Tooltips::toggleVolumePanel)));
+
     if (this->menuMode == MenuMode::PianoRollTools)
     {
-        this->menu.add(MenuItem::item(Icons::volumePanel, CommandIDs::ToggleVolumePanel)->
-            toggledIf(this->velocityMapVisible)->
-            withTooltip(TRANS(I18n::Tooltips::toggleVolumePanel)));
+        this->menu.add(MenuItem::item(Icons::paint, CommandIDs::ToggleScalesHighlighting)->
+            toggledIf(this->scalesHighlightingEnabled)->
+            withTooltip(TRANS(I18n::Tooltips::toggleScalesHighlighting)));
+
+        this->menu.add(MenuItem::item(Icons::tag, CommandIDs::ToggleNoteNameGuides)->
+            toggledIf(this->noteNameGuidesEnabled)->
+            withTooltip(TRANS(I18n::Tooltips::toggleNoteGuides)));
     }
 }
 

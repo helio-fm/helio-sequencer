@@ -19,23 +19,28 @@
 
 #include "AnnotationEvent.h"
 #include "ProjectListener.h"
+#include "ProjectMapsScroller.h"
 
 class RollBase;
 class ProjectNode;
 class AnnotationComponent;
 
 class AnnotationsProjectMap final :
-    public Component,
+    public ProjectMapsScroller::ScrolledComponent,
     public ProjectListener
 {
 public:
 
     enum class Type : int8 { Large, Small };
 
-    AnnotationsProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type);
+    AnnotationsProjectMap(ProjectNode &project,
+        SafePointer<RollBase> roll, Type type);
+
     ~AnnotationsProjectMap() override;
 
     void alignAnnotationComponent(AnnotationComponent *nc);
+
+    void switchToRoll(SafePointer<RollBase> roll) override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -92,9 +97,10 @@ private:
 
     float rollFirstBeat = 0.f;
     float rollLastBeat = Globals::Defaults::projectLength;
-    
-    RollBase &roll;
+
     ProjectNode &project;
+    
+    SafePointer<RollBase> roll;
     
     ComponentAnimator animator;
 

@@ -48,43 +48,6 @@ ProjectMapsScroller::~ProjectMapsScroller()
     this->disconnectPlayhead();
 }
 
-void ProjectMapsScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToFront)
-{
-    this->trackMaps.add(newTrackMap);
-    this->addAndMakeVisible(newTrackMap);
-
-    // playhead is always tied to the first map:
-    if (this->trackMaps.size() == 1)
-    {
-        this->disconnectPlayhead();
-        newTrackMap->addAndMakeVisible(this->playhead.get());
-    }
-
-    if (shouldBringToFront)
-    {
-        this->helperRectangle->toFront(false);
-        this->screenRange->toFront(false);
-        newTrackMap->toFront(false);
-    }
-    else
-    {
-        newTrackMap->toFront(false);
-        this->helperRectangle->toFront(false);
-        this->screenRange->toFront(false);
-    }
-}
-
-void ProjectMapsScroller::removeOwnedMap(Component *existingTrackMap)
-{
-    if (this->trackMaps.contains(existingTrackMap))
-    {
-        this->removeChildComponent(existingTrackMap);
-        this->trackMaps.removeObject(existingTrackMap);
-
-        this->resized();
-    }
-}
-
 void ProjectMapsScroller::disconnectPlayhead()
 {
     if (this->playhead->getParentComponent())
@@ -316,6 +279,11 @@ void ProjectMapsScroller::switchToRoll(SafePointer<RollBase> roll)
     this->oldAreaBounds = this->getIndicatorBounds();
     this->oldMapBounds = this->getMapBounds().toFloat();
     this->roll = roll;
+    for (auto *map : this->trackMaps)
+    {
+        map->switchToRoll(roll);
+    }
+
     this->startTimerHz(this->animationTimerFrequencyHz);
 }
 

@@ -29,9 +29,22 @@ class EditorPanelsScroller final :
 public:
 
     explicit EditorPanelsScroller(SafePointer<RollBase> roll);
-    
-    void addOwnedMap(Component *newTrackMap);
-    void removeOwnedMap(Component *existingTrackMap);
+
+    class ScrolledComponent : public Component
+    {
+    public:
+        virtual void switchToRoll(SafePointer<RollBase> roll) = 0;
+    };
+
+    template <typename T, typename... Args> inline
+        void addOwnedMap(Args &&... args)
+    {
+        auto *newTrackMap = this->trackMaps.add(new T(std::forward<Args>(args)...));
+        this->addAndMakeVisible(newTrackMap);
+        newTrackMap->toFront(false);
+    }
+
+    void switchToRoll(SafePointer<RollBase> roll);
 
     //===------------------------------------------------------------------===//
     // Component
@@ -54,6 +67,6 @@ private:
     Rectangle<int> getMapBounds() const noexcept;
 
     SafePointer<RollBase> roll;
-    OwnedArray<Component> trackMaps;
+    OwnedArray<ScrolledComponent> trackMaps;
     
 };

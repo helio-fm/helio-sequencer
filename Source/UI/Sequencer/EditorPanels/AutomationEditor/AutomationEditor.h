@@ -22,13 +22,14 @@
 #include "ComponentFader.h"
 #include "HelperRectangle.h"
 #include "RollListener.h"
+#include "EditorPanelsScroller.h"
 
 class RollBase;
 class TrackMap;
 class ProjectNode;
 
 class AutomationEditor final :
-    public Component,
+    public EditorPanelsScroller::ScrolledComponent,
     public AutomationEditorBase,
     public ProjectListener,
     public AsyncUpdater, // triggers batch repaints for children
@@ -36,8 +37,10 @@ class AutomationEditor final :
 {
 public:
 
-    AutomationEditor(ProjectNode &parentProject, RollBase &parentRoll);
+    AutomationEditor(ProjectNode &project, SafePointer<RollBase> roll);
     ~AutomationEditor() override;
+
+    void switchToRoll(SafePointer<RollBase> roll) override;
 
     //===------------------------------------------------------------------===//
     // AutomationEditorBase
@@ -103,8 +106,9 @@ private:
     float rollFirstBeat = 0.f;
     float rollLastBeat = Globals::Defaults::projectLength;
 
-    RollBase &roll;
     ProjectNode &project;
+
+    SafePointer<RollBase> roll;
 
     Clip activeClip;
 

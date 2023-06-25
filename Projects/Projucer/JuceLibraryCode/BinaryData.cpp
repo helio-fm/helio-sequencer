@@ -2167,6 +2167,7 @@ static const unsigned char temp_binary_data_97[] =
 "\n"
 "      // Various\n"
 "      { \"command\": \"ToggleBottomMiniMap\", \"key\": \"B\" },\n"
+"      { \"command\": \"ToggleVolumePanel\", \"key\": \"V\" },\n"
 "      { \"command\": \"ToggleMetronome\", \"key\": \"Control + M\" },\n"
 "      { \"command\": \"ToggleMetronome\", \"key\": \"Command + M\" },\n"
 "      { \"command\": \"DuplicateTrack\", \"key\": \"F5\" },\n"
@@ -5039,7 +5040,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 3374; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 16537; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 16591; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 10616; return scales_json;

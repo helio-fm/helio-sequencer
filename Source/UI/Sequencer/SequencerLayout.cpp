@@ -89,7 +89,7 @@ public:
 
         // the volume map's visiblilty is not persistent,
         // but the mini-map's state is, let's fix it right here
-        const auto showFullMiniMap = App::Config().getUiFlags()->isFullProjectMapVisible();
+        const auto showFullMiniMap = App::Config().getUiFlags()->isProjectMapInLargeMode();
         this->bottomMapsScroller->setScrollerMode(showFullMiniMap ?
             ProjectMapsScroller::ScrollerMode::Map : ProjectMapsScroller::ScrollerMode::Scroller);
         // the way I'm working with animations here is kinda frustrating,
@@ -114,16 +114,24 @@ public:
         return false;
     }
 
-    // it's not very cool that these two methods rely on
-    // animations state to tell what's going on in the UI:
-    inline bool isPatternMode() const noexcept
+    inline bool isPianoRollMode() const noexcept
     {
-        return this->rollsAnimation.getDirection() > 0.f;
+        return this->rollsAnimation.isInDefaultState();
     }
 
-    inline bool isVolumeMapMode() const
+    inline bool isPatternRollMode() const noexcept
     {
-        return this->mapsAnimation.getDirection() > 0.f;
+        return !this->isPianoRollMode();
+    }
+
+    inline bool isProjectMapVisible() const
+    {
+        return this->mapsAnimation.isInDefaultState();
+    }
+
+    inline bool isEditorPanelVisible() const
+    {
+        return !this->isProjectMapVisible();
     }
 
     inline bool isFullProjectMapMode() const
@@ -146,15 +154,19 @@ public:
     void startRollSwitchAnimation()
     {
         this->rollsAnimation.start(RollsSwitchingProxy::rollsAnimationStartSpeed);
-        const bool patternMode = this->isPatternMode();
-        this->bottomMapsScroller->switchToRoll(patternMode ? this->patternRoll : this->pianoRoll);
-        // Disabling the inactive controls prevents them from receiving keyboard events:
-        this->patternRoll->setEnabled(patternMode);
-        this->pianoRoll->setEnabled(!patternMode);
+
+        const bool patternRollMode = this->isPatternRollMode();
+        this->bottomMapsScroller->switchToRoll(patternRollMode ? this->patternRoll : this->pianoRoll);
+        this->bottomEditorsScroller->switchToRoll(patternRollMode ? this->patternRoll : this->pianoRoll);
+
+        // Disabling the rolls prevents them from receiving keyboard events:
+        this->patternRoll->setEnabled(patternRollMode);
+        this->pianoRoll->setEnabled(!patternRollMode);
         this->patternRoll->setVisible(true);
         this->pianoRoll->setVisible(true);
         this->patternViewport->setVisible(true);
         this->pianoViewport->setVisible(true);
+
         if (this->areAnimationsEnabled())
         {
             this->resized();
@@ -162,8 +174,6 @@ public:
         }
         else
         {
-            // here we want to switch the rolls immediately, if animations are disabled,
-            // because it's the slowest and the most resource-hungry animation in the app
             this->rollsAnimation.finish();
             this->timerCallback(Timers::rolls);
         }
@@ -172,12 +182,14 @@ public:
     void startMapSwitchAnimation()
     {
         this->mapsAnimation.start(RollsSwitchingProxy::mapsAnimationStartSpeed);
-        const bool levelsMode = this->isVolumeMapMode();
-        // Disabling the inactive controls prevents them from receiving keyboard events:
-        this->bottomEditorsScroller->setEnabled(levelsMode);
-        this->bottomMapsScroller->setEnabled(!levelsMode);
+
+        // Disabling the panels prevents them from receiving keyboard events:
+        const bool editorPanelMode = this->isEditorPanelVisible();
+        this->bottomEditorsScroller->setEnabled(editorPanelMode);
+        this->bottomMapsScroller->setEnabled(!editorPanelMode);
         this->bottomEditorsScroller->setVisible(true);
         this->bottomMapsScroller->setVisible(true);
+
         this->resized();
         this->startTimer(Timers::maps, this->animationsTimerInterval);
     }
@@ -298,7 +310,7 @@ private:
             {
                 this->stopTimer(Timers::rolls);
 
-                if (this->isPatternMode())
+                if (this->isPatternRollMode())
                 {
                     this->pianoRoll->setVisible(false);
                     this->pianoViewport->setVisible(false);
@@ -322,7 +334,7 @@ private:
             {
                 this->stopTimer(Timers::maps);
 
-                if (this->isVolumeMapMode())
+                if (this->isEditorPanelVisible())
                 {
                     this->bottomMapsScroller->setVisible(false);
                 }
@@ -396,14 +408,14 @@ private:
 
         bool canRestart() const
         {
-            // only allow restarting animation when most of previous animation is done
-            // (feels both responsive enough and not glitch-ish)
+            // only allow restarting the animation when the previous animation
+            // is close to be done so it doesn't feel glitchy but still responsive
             return (this->direction > 0.f && this->position > 0.85f) ||
                 (this->direction < 0.f && this->position < 0.15f);
         }
 
-        float getDirection() const noexcept { return direction; }
-        float getPosition() const noexcept { return position; }
+        float isInDefaultState() const noexcept { return this->direction < 0; }
+        float getPosition() const noexcept { return this->position; }
 
         void resetToStart() noexcept
         {
@@ -434,7 +446,7 @@ private:
 };
 
 //===----------------------------------------------------------------------===//
-// Sequencer Itself
+// SequencerLayout
 //===----------------------------------------------------------------------===//
 
 SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
@@ -445,10 +457,11 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->setPaintingIsUnclipped(true);
     this->setOpaque(true);
 
-    // Create viewports, containing the rolls
+    // make both rolls
+
     const WeakReference<AudioMonitor> clippingDetector =
         App::Workspace().getAudioCore().getMonitor();
-    
+
     this->pianoViewport = make<Viewport>();
     this->pianoViewport->setScrollOnDragMode(Viewport::ScrollOnDragMode::never);
     this->pianoViewport->setInterceptsMouseClicks(false, true);
@@ -457,8 +470,8 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->pianoViewport->setFocusContainerType(Component::FocusContainerType::none);
     this->pianoViewport->setPaintingIsUnclipped(true);
     
-    this->pianoRoll = make<PianoRoll>(this->project,
-        *this->pianoViewport, clippingDetector);
+    this->pianoRoll = make<PianoRoll>(this->project, *this->pianoViewport, clippingDetector);
+    this->pianoViewport->setViewedComponent(this->pianoRoll.get(), false);
 
     this->patternViewport = make<Viewport>();
     this->patternViewport->setScrollOnDragMode(Viewport::ScrollOnDragMode::never);
@@ -469,33 +482,32 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->patternViewport->setPaintingIsUnclipped(true);
 
     this->patternRoll = make<PatternRoll>(this->project, *this->patternViewport, clippingDetector);
+    this->patternViewport->setViewedComponent(this->patternRoll.get(), false);
 
-    this->bottomMapsScroller = make<ProjectMapsScroller>(this->project.getTransport(), this->pianoRoll.get());
-    this->bottomMapsScroller->addOwnedMap(new PianoProjectMap(this->project, *this->pianoRoll), false);
-    this->bottomMapsScroller->addOwnedMap(new AnnotationsProjectMap(this->project,
-        *this->pianoRoll, AnnotationsProjectMap::Type::Small), false);
-    this->bottomMapsScroller->addOwnedMap(new TimeSignaturesProjectMap(this->project,
-        *this->pianoRoll, TimeSignaturesProjectMap::Type::Small), false);
-    //this->mapScroller->addOwnedMap(new KeySignaturesProjectMap(this->project,
-    //    *this->pianoRoll, KeySignaturesProjectMap::Type::Small), false);
+    // bottom panels
 
-    this->bottomEditorsScroller = make<EditorPanelsScroller>(this->pianoRoll.get());
-    this->bottomEditorsScroller->addOwnedMap(new VelocityEditor(this->project, *this->pianoRoll));
+    SafePointer<RollBase> defaultRoll = this->pianoRoll.get();
+
+    this->bottomMapsScroller = make<ProjectMapsScroller>(this->project.getTransport(), defaultRoll);
+    this->bottomMapsScroller->addOwnedMap<PianoProjectMap>(this->project);
+    this->bottomMapsScroller->addOwnedMap<AnnotationsProjectMap>(this->project, defaultRoll, AnnotationsProjectMap::Type::Small);
+    this->bottomMapsScroller->addOwnedMap<TimeSignaturesProjectMap>(this->project, defaultRoll, TimeSignaturesProjectMap::Type::Small);
+    //this->mapScroller->addOwnedMap<KeySignaturesProjectMap>(this->project, defaultRoll, KeySignaturesProjectMap::Type::Small);
+
+    this->pianoRoll->addRollListener(this->bottomMapsScroller.get());
+    this->patternRoll->addRollListener(this->bottomMapsScroller.get());
+
+    this->bottomEditorsScroller = make<EditorPanelsScroller>(defaultRoll);
+    this->bottomEditorsScroller->addOwnedMap<VelocityEditor>(this->project, defaultRoll);
+    //this->bottomEditorsScroller->addOwnedMap<AutomationEditor>(this->project, defaultRoll);
+
+    this->pianoRoll->addRollListener(this->bottomEditorsScroller.get());
+    this->patternRoll->addRollListener(this->bottomEditorsScroller.get());
 
     this->scrollerShadow = make<ShadowUpwards>(ShadowType::Normal);
-
-    constexpr auto defaultBeatWidth = 48.f;
-
-    this->pianoRoll->setBeatWidth(defaultBeatWidth);
-    this->pianoViewport->setViewedComponent(this->pianoRoll.get(), false);
-    this->pianoRoll->addRollListener(this->bottomMapsScroller.get());
-    this->pianoRoll->addRollListener(this->bottomEditorsScroller.get());
-
-    this->patternRoll->setBeatWidth(defaultBeatWidth);
-    this->patternViewport->setViewedComponent(this->patternRoll.get(), false);
-    this->patternRoll->addRollListener(this->bottomMapsScroller.get());
     
-    // create a container with 2 editors and 2 types of project map scroller
+    // a container with 2 rolls and 2 types of bottom scroller panel
+
     this->rollContainer = make<RollsSwitchingProxy>(this->pianoRoll.get(), this->patternRoll.get(),
         this->pianoViewport.get(), this->patternViewport.get(),
         this->bottomMapsScroller.get(), this->bottomEditorsScroller.get(),
@@ -504,16 +516,17 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     const auto hasAnimations = App::Config().getUiFlags()->areUiAnimationsEnabled();
     this->rollContainer->setAnimationsEnabled(hasAnimations);
 
-    // add sidebars
+    // sidebars
+
     this->rollToolsSidebar = make<SequencerSidebarRight>(this->project);
     this->rollToolsSidebar->setSize(Globals::UI::sidebarWidth, this->getParentHeight());
 
     this->rollNavSidebar = make<SequencerSidebarLeft>();
     this->rollNavSidebar->setSize(Globals::UI::sidebarWidth, this->getParentHeight());
-    // Hopefully this doesn't crash, since sequencer layout is only created by a loaded project:
     this->rollNavSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
 
     // combine sidebars with editors
+
     this->sequencerLayout = make<OrigamiVertical>();
     this->sequencerLayout->addFixedPage(this->rollNavSidebar.get());
     this->sequencerLayout->addFlexiblePage(this->rollContainer.get());
@@ -553,29 +566,22 @@ SequencerLayout::~SequencerLayout()
 
 void SequencerLayout::showPatternEditor()
 {
-    if (! this->rollContainer->isPatternMode())
+    if (!this->rollContainer->isPatternRollMode())
     {
         this->rollContainer->startRollSwitchAnimation();
-    }
-
-    // Switch to piano map as levels map doesn't make sense in patterns mode
-    auto *uiFlags = App::Config().getUiFlags();
-    if (uiFlags->isVelocityMapVisible())
-    {
-        uiFlags->setVelocityMapVisible(false);
     }
 
     this->rollToolsSidebar->setPatternMode();
     this->rollNavSidebar->setPatternMode();
 
-    // sync pattern roll selection with piano roll edit scope:
+    // sync the pattern roll's selection with the piano roll's editable scope:
     this->patternRoll->selectClip(this->pianoRoll->getActiveClip());
     this->pianoRoll->deselectAll();
 }
 
 void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
 {
-    if (this->rollContainer->isPatternMode())
+    if (this->rollContainer->isPatternRollMode())
     {
         this->rollContainer->startRollSwitchAnimation();
     }
@@ -598,7 +604,7 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
 
 RollBase *SequencerLayout::getRoll() const noexcept
 {
-    if (this->rollContainer->isPatternMode())
+    if (this->rollContainer->isPatternRollMode())
     {
         return this->patternRoll.get();
     }
@@ -671,7 +677,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
             break;
         }
 
-        if (this->rollContainer->isPatternMode())
+        if (this->rollContainer->isPatternRollMode())
         {
             if (this->project.getLastShownTrack() == nullptr)
             {
@@ -696,9 +702,9 @@ void SequencerLayout::handleCommandMessage(int commandId)
 // UserInterfaceFlags::Listener
 //===----------------------------------------------------------------------===//
 
-void SequencerLayout::onVelocityMapVisibilityFlagChanged(bool shoudShow)
+void SequencerLayout::onEditorPanelVisibilityFlagChanged(bool shoudShow)
 {
-    const bool alreadyShowing = this->rollContainer->isVolumeMapMode();
+    const bool alreadyShowing = this->rollContainer->isEditorPanelVisible();
     if ((alreadyShowing && shoudShow) || (!alreadyShowing && !shoudShow))
     {
         return;
@@ -707,7 +713,7 @@ void SequencerLayout::onVelocityMapVisibilityFlagChanged(bool shoudShow)
     this->rollContainer->startMapSwitchAnimation();
 }
 
-void SequencerLayout::onProjectMapVisibilityFlagChanged(bool showFullMap)
+void SequencerLayout::onProjectMapLargeModeFlagChanged(bool showFullMap)
 {
     const bool alreadyShowing = this->rollContainer->isFullProjectMapMode();
     if ((alreadyShowing && showFullMap) || (!alreadyShowing && !showFullMap))

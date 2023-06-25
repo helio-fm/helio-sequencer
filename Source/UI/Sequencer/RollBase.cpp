@@ -99,17 +99,17 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
 
     if (hasAnnotationsTrack)
     {
-        this->annotationsMap = make<AnnotationsProjectMap>(this->project, *this, AnnotationsProjectMap::Type::Large);
+        this->annotationsMap = make<AnnotationsProjectMap>(this->project, this, AnnotationsProjectMap::Type::Large);
     }
 
     if (hasTimeSignaturesTrack)
     {
-        this->timeSignaturesMap = make<TimeSignaturesProjectMap>(this->project, *this, TimeSignaturesProjectMap::Type::Large);
+        this->timeSignaturesMap = make<TimeSignaturesProjectMap>(this->project, this, TimeSignaturesProjectMap::Type::Large);
     }
 
     if (hasKeySignaturesTrack)
     {
-        this->keySignaturesMap = make<KeySignaturesProjectMap>(this->project, *this, KeySignaturesProjectMap::Type::Large);
+        this->keySignaturesMap = make<KeySignaturesProjectMap>(this->project, this, KeySignaturesProjectMap::Type::Large);
     }
 
     this->playhead = make<Playhead>(*this, this->project.getTransport(), this);
@@ -167,6 +167,8 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     this->onUiAnimationsFlagChanged(uiFlags->areUiAnimationsEnabled());
     this->onMouseWheelFlagsChanged(uiFlags->getMouseWheelFlags());
     uiFlags->addListener(this);
+
+    this->updateBounds();
 }
 
 RollBase::~RollBase()
@@ -1421,7 +1423,7 @@ void RollBase::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::ToggleBottomMiniMap:
-        App::Config().getUiFlags()->toggleFullProjectMapVisibility();
+        App::Config().getUiFlags()->toggleProjectMapLargeMode();
         break;
     case CommandIDs::ToggleMetronome:
         App::Config().getUiFlags()->toggleMetronome();
@@ -1788,8 +1790,8 @@ void RollBase::handleAsyncUpdate()
     if (this->isTimerRunning())
     {
         const auto playheadOffset = this->findPlayheadOffsetFromViewCentre();
-        const int playheadX = this->getPlayheadPositionByBeat(this->lastPlayheadBeat.get(), double(this->getWidth()));
-        const int newX = playheadX - int(playheadOffset * 0.9) - (this->viewport.getViewWidth() / 2);
+        const auto playheadX = this->getPlayheadPositionByBeat(this->lastPlayheadBeat.get(), double(this->getWidth()));
+        const auto newX = playheadX - int(playheadOffset * 0.9) - (this->viewport.getViewWidth() / 2);
 
         const bool stuckFollowingPlayhead = newX == this->viewport.getViewPositionX() ||
             newX < 0 || newX > (this->getWidth() - this->viewport.getViewWidth());
@@ -1810,9 +1812,9 @@ void RollBase::handleAsyncUpdate()
 
 double RollBase::findPlayheadOffsetFromViewCentre() const
 {
-    const int playheadX = this->getPlayheadPositionByBeat(this->lastPlayheadBeat.get(), double(this->getWidth()));
-    const int viewportCentreX = this->viewport.getViewPositionX() + this->viewport.getViewWidth() / 2;
-    return double(playheadX) - double(viewportCentreX);
+    const auto playheadX = this->getPlayheadPositionByBeat(this->lastPlayheadBeat.get(), double(this->getWidth()));
+    const auto viewportCentreX = this->viewport.getViewPositionX() + this->viewport.getViewWidth() / 2;
+    return double(playheadX - viewportCentreX);
 }
 
 void RollBase::triggerBatchRepaintFor(FloatBoundsComponent *target)
@@ -1984,7 +1986,7 @@ Point<int> RollBase::getDefaultPositionForPopup() const
 
 void RollBase::updateBounds()
 {
-    const int newWidth = int(this->getNumBeats() * this->beatWidth);
+    const auto newWidth = int(this->getNumBeats() * this->beatWidth);
 
     if (this->getWidth() != newWidth)
     {
@@ -1996,10 +1998,10 @@ void RollBase::updateChildrenBounds()
 {
     ROLL_BATCH_REPAINT_START
 
-    const int &viewHeight = this->viewport.getViewHeight();
-    const int &viewWidth = this->viewport.getViewWidth();
-    const int &viewX = this->viewport.getViewPositionX();
-    const int &viewY = this->viewport.getViewPositionY();
+    const auto viewHeight = this->viewport.getViewHeight();
+    const auto viewWidth = this->viewport.getViewWidth();
+    const auto viewX = this->viewport.getViewPositionX();
+    const auto viewY = this->viewport.getViewPositionY();
 
     this->header->setBounds(0, viewY, this->getWidth(), Globals::UI::rollHeaderHeight);
     this->headerShadow->setBounds(viewX, viewY + Globals::UI::rollHeaderHeight,
@@ -2045,9 +2047,9 @@ void RollBase::updateChildrenPositions()
 {
     ROLL_BATCH_REPAINT_START
 
-    const int &viewHeight = this->viewport.getViewHeight();
-    const int &viewX = this->viewport.getViewPositionX();
-    const int &viewY = this->viewport.getViewPositionY();
+    const auto viewHeight = this->viewport.getViewHeight();
+    const auto viewX = this->viewport.getViewPositionX();
+    const auto viewY = this->viewport.getViewPositionY();
 
     this->header->setTopLeftPosition(0, viewY);
     this->headerShadow->setTopLeftPosition(viewX,

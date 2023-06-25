@@ -29,9 +29,10 @@
 #include "TimeSignatureLargeComponent.h"
 #include "TimeSignatureSmallComponent.h"
 
-TimeSignaturesProjectMap::TimeSignaturesProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type) :
-    project(parentProject),
-    roll(parentRoll),
+TimeSignaturesProjectMap::TimeSignaturesProjectMap(ProjectNode &project,
+    SafePointer<RollBase> roll, Type type) :
+    project(project),
+    roll(roll),
     type(type)
 {
     this->setAlwaysOnTop(true);
@@ -56,6 +57,11 @@ TimeSignaturesProjectMap::~TimeSignaturesProjectMap()
 {
     this->project.getTimeline()->getTimeSignaturesAggregator()->removeListener(this);
     this->project.removeListener(this);
+}
+
+void TimeSignaturesProjectMap::switchToRoll(SafePointer<RollBase> roll)
+{
+    this->roll = roll;
 }
 
 void TimeSignaturesProjectMap::updateTrackRangeIndicatorsAnchors()
@@ -244,8 +250,8 @@ void TimeSignaturesProjectMap::alternateActionFor(TimeSignatureComponent *nc)
 
 float TimeSignaturesProjectMap::getBeatByXPosition(int x) const
 {
-    const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll.getWidth()));
-    const float targetBeat = this->roll.getRoundBeatSnapByXPosition(xRoll);
+    const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll->getWidth()));
+    const float targetBeat = this->roll->getRoundBeatSnapByXPosition(xRoll);
     return jlimit(this->rollFirstBeat, this->rollLastBeat, targetBeat);
 }
 
@@ -286,8 +292,8 @@ void TimeSignaturesProjectMap::applyTimeSignatureBounds(TimeSignatureComponent *
         case Type::Large:
             // for the timeline we can reuse the roll's methods which will
             // provide more precise x position which aligns with the grid lines:
-            x = this->roll.getXPositionByBeat(c->getBeat());
-            nextX = nextOne ? this->roll.getXPositionByBeat(nextOne->getBeat()) : x + defaultWidth;
+            x = this->roll->getXPositionByBeat(c->getBeat());
+            nextX = nextOne ? this->roll->getXPositionByBeat(nextOne->getBeat()) : x + defaultWidth;
             break;
         case Type::Small:
             // for the mini-map we have to compute the x position ourselves:

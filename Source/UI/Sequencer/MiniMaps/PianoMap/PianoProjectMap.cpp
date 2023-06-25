@@ -27,9 +27,8 @@
 #include "AnnotationEvent.h"
 #include "ColourIDs.h"
 
-PianoProjectMap::PianoProjectMap(ProjectNode &parentProject, RollBase &parentRoll) :
-    project(parentProject),
-    roll(parentRoll)
+PianoProjectMap::PianoProjectMap(ProjectNode &parentProject) :
+    project(parentProject)
 {
     this->baseColour = findDefaultColour(ColourIDs::Roll::noteFill);
 

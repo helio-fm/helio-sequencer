@@ -20,22 +20,25 @@
 #include "Clip.h"
 #include "Note.h"
 #include "ProjectListener.h"
+#include "ProjectMapsScroller.h"
 
 class RollBase;
 class ProjectNode;
 class ProjectMapNoteComponent;
 
 class PianoProjectMap final :
-    public Component,
+    public ProjectMapsScroller::ScrolledComponent,
     public ProjectListener,
     public AsyncUpdater
 {
 public:
 
-    PianoProjectMap(ProjectNode &parentProject, RollBase &parentRoll);
+    explicit PianoProjectMap(ProjectNode &parentProject);
     ~PianoProjectMap() override;
 
     void setBrightness(float brighness);
+
+    void switchToRoll(SafePointer<RollBase> roll) override {}
 
     //===------------------------------------------------------------------===//
     // Component
@@ -85,7 +88,6 @@ private:
 
     int keyboardSize = Globals::twelveToneKeyboardSize;
 
-    RollBase &roll;
     ProjectNode &project;
 
     Clip activeClip;

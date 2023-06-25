@@ -23,6 +23,7 @@
 #include "ComponentFader.h"
 #include "HelperRectangle.h"
 #include "RollListener.h"
+#include "EditorPanelsScroller.h"
 
 class RollBase;
 class TrackMap;
@@ -32,15 +33,17 @@ class VelocityLevelDraggingHelper;
 class FineTuningValueIndicator;
 
 class VelocityEditor final :
-    public Component,
+    public EditorPanelsScroller::ScrolledComponent,
     public ProjectListener,
     public AsyncUpdater, // triggers batch repaints for children
     public ChangeListener // subscribes on parent roll's lasso changes
 {
 public:
 
-    VelocityEditor(ProjectNode &parentProject, RollBase &parentRoll);
+    VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll);
     ~VelocityEditor() override;
+
+    void switchToRoll(SafePointer<RollBase> roll) override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -88,10 +91,11 @@ private:
     float rollFirstBeat = 0.f;
     float rollLastBeat = Globals::Defaults::projectLength;
 
-    RollBase &roll;
     ProjectNode &project;
 
-    Clip activeClip;
+    SafePointer<RollBase> roll;
+
+    Optional<Clip> activeClip;
 
     using SequenceMap = FlatHashMap<Note, UniquePointer<VelocityEditorNoteComponent>, MidiEventHash>;
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
@@ -99,7 +103,7 @@ private:
 
     UniquePointer<VelocityLevelDraggingHelper> dragHelper;
     FlatHashMap<Note, float, MidiEventHash> dragIntersections;
-    Array<Note> dragChangedNotes, dragChanges;
+    Array<Note> dragChangesBefore, dragChangesAfter;
     bool dragHasChanges = false;
 
     float volumeBlendingAmount = 1.f;

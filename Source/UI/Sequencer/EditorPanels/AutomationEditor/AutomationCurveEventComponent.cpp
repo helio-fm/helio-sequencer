@@ -191,10 +191,6 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
                     this->tuningIndicator->setValue(cv);
                 }
 
-                const auto myCentreRelativeToRoll =
-                    this->tuningIndicator->getParentComponent()->
-                        getLocalPoint(this->getParentComponent(), this->getBounds().getCentre());
-
                 this->tuningIndicator->repositionToTargetAt(this);
             }
 

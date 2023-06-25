@@ -28,20 +28,12 @@ EditorPanelsScroller::EditorPanelsScroller(SafePointer<RollBase> roll) : roll(ro
     this->setOpaque(true);
 }
 
-void EditorPanelsScroller::addOwnedMap(Component *newTrackMap)
+void EditorPanelsScroller::switchToRoll(SafePointer<RollBase> roll)
 {
-    this->trackMaps.add(newTrackMap);
-    this->addAndMakeVisible(newTrackMap);
-    newTrackMap->toFront(false);
-}
-
-void EditorPanelsScroller::removeOwnedMap(Component *existingTrackMap)
-{
-    if (this->trackMaps.contains(existingTrackMap))
+    this->roll = roll;
+    for (auto *map : this->trackMaps)
     {
-        this->removeChildComponent(existingTrackMap);
-        this->trackMaps.removeObject(existingTrackMap);
-        this->resized();
+        map->switchToRoll(roll);
     }
 }
 

@@ -229,6 +229,7 @@ namespace Globals
         static constexpr auto rollScrollerHeight = 30;
         #endif
 
+        static constexpr auto defaultBeatWidth = 48;
         static constexpr auto rollHeaderHeight = 36;
         static constexpr auto rollHeaderShadowSize = 16;
         static constexpr auto headlineIconSize = 16;

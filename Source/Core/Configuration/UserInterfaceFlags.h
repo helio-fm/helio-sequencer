@@ -47,8 +47,8 @@ public:
         virtual void onOpenGlRendererFlagChanged(bool enabled) {}
         virtual void onNativeTitleBarFlagChanged(bool enabled) {}
 
-        virtual void onVelocityMapVisibilityFlagChanged(bool visible) {}
-        virtual void onProjectMapVisibilityFlagChanged(bool showFullMap) {}
+        virtual void onEditorPanelVisibilityFlagChanged(bool visible) {}
+        virtual void onProjectMapLargeModeFlagChanged(bool showFullMap) {}
 
         virtual void onUiAnimationsFlagChanged(bool enabled) {}
         virtual void onMouseWheelFlagsChanged(MouseWheelFlags flags) {}
@@ -82,13 +82,13 @@ public:
     bool isNativeTitleBarEnabled() const noexcept;
     void setNativeTitleBarEnabled(bool enabled);
 
-    bool isVelocityMapVisible() const noexcept;
-    void setVelocityMapVisible(bool visible);
-    void toggleVelocityMapVisibility();
+    bool isEditorPanelVisible() const noexcept;
+    void setEditorPanelVisible(bool visible);
+    void toggleEditorPanelVisibility();
 
-    bool isFullProjectMapVisible() const noexcept;
-    void setFullProjectMapVisible(bool visible);
-    void toggleFullProjectMapVisibility();
+    bool isProjectMapInLargeMode() const noexcept;
+    void setProjectMapLargeMode(bool largeMode);
+    void toggleProjectMapLargeMode();
 
     bool areExperimentalFeaturesEnabled() const noexcept;
 
@@ -121,12 +121,12 @@ private:
     bool noteNameGuides = false;
     bool scalesHighlighting = true;
 
-    bool velocityMapVisible = false;
+    bool editorPanelVisible = false;
 
 #if PLATFORM_MOBILE
-    bool fullProjectMapVisible = false;
+    bool projectMapLargeMode = false;
 #elif PLATFORM_DESKTOP
-    bool fullProjectMapVisible = true;
+    bool projectMapLargeMode = true;
 #endif
 
 #if JUCE_ANDROID

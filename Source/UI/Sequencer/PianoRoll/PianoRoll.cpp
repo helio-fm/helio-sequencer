@@ -1300,13 +1300,13 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::ToggleVolumePanel:
         if (Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown())
         {
-            // alternative mode:
+            // legacy volume editor:
             if (this->selection.getNumSelected() == 0) { this->selectAll(); }
             ModalCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
         }
         else
         {
-            App::Config().getUiFlags()->toggleVelocityMapVisibility();
+            App::Config().getUiFlags()->toggleEditorPanelVisibility();
         }
         break;
     case CommandIDs::NotesVolumeRandom:

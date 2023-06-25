@@ -25,9 +25,10 @@
 #include "AnnotationLargeComponent.h"
 #include "AnnotationSmallComponent.h"
 
-AnnotationsProjectMap::AnnotationsProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type) :
+AnnotationsProjectMap::AnnotationsProjectMap(ProjectNode &parentProject,
+    SafePointer<RollBase> roll, Type type) :
     project(parentProject),
-    roll(parentRoll),
+    roll(roll),
     type(type)
 {
     this->setAlwaysOnTop(true);
@@ -42,6 +43,11 @@ AnnotationsProjectMap::AnnotationsProjectMap(ProjectNode &parentProject, RollBas
 AnnotationsProjectMap::~AnnotationsProjectMap()
 {
     this->project.removeListener(this);
+}
+
+void AnnotationsProjectMap::switchToRoll(SafePointer<RollBase> roll)
+{
+    this->roll = roll;
 }
 
 //===----------------------------------------------------------------------===//
@@ -286,13 +292,13 @@ void AnnotationsProjectMap::alternateActionFor(AnnotationComponent *nc)
     const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
     const bool shouldClearSelection = !isShiftPressed;
     
-    this->roll.selectEventsInRange(startBeat, endBeat, shouldClearSelection);
+    this->roll->selectEventsInRange(startBeat, endBeat, shouldClearSelection);
 }
 
 float AnnotationsProjectMap::getBeatByXPosition(int x) const
 {
-    const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll.getWidth()));
-    const float targetBeat = this->roll.getRoundBeatSnapByXPosition(xRoll);
+    const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll->getWidth()));
+    const float targetBeat = this->roll->getRoundBeatSnapByXPosition(xRoll);
     return jlimit(this->rollFirstBeat, this->rollLastBeat, targetBeat);
 }
 

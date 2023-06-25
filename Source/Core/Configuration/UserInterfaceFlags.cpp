@@ -92,48 +92,48 @@ void UserInterfaceFlags::setNativeTitleBarEnabled(bool enabled)
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
-bool UserInterfaceFlags::isVelocityMapVisible() const noexcept
+bool UserInterfaceFlags::isEditorPanelVisible() const noexcept
 {
-    return this->velocityMapVisible;
+    return this->editorPanelVisible;
 }
 
-void UserInterfaceFlags::setVelocityMapVisible(bool visible)
+void UserInterfaceFlags::setEditorPanelVisible(bool visible)
 {
-    if (this->velocityMapVisible == visible)
+    if (this->editorPanelVisible == visible)
     {
         return;
     }
 
-    this->velocityMapVisible = visible;
-    this->listeners.call(&Listener::onVelocityMapVisibilityFlagChanged, this->velocityMapVisible);
+    this->editorPanelVisible = visible;
+    this->listeners.call(&Listener::onEditorPanelVisibilityFlagChanged, this->editorPanelVisible);
     // not saving this flag
 }
 
-void UserInterfaceFlags::toggleVelocityMapVisibility()
+void UserInterfaceFlags::toggleEditorPanelVisibility()
 {
-    this->setVelocityMapVisible(!this->velocityMapVisible);
+    this->setEditorPanelVisible(!this->editorPanelVisible);
 }
 
-bool UserInterfaceFlags::isFullProjectMapVisible() const noexcept
+bool UserInterfaceFlags::isProjectMapInLargeMode() const noexcept
 {
-    return this->fullProjectMapVisible;
+    return this->projectMapLargeMode;
 }
 
-void UserInterfaceFlags::setFullProjectMapVisible(bool visible)
+void UserInterfaceFlags::setProjectMapLargeMode(bool largeMode)
 {
-    if (this->fullProjectMapVisible == visible)
+    if (this->projectMapLargeMode == largeMode)
     {
         return;
     }
 
-    this->fullProjectMapVisible = visible;
-    this->listeners.call(&Listener::onProjectMapVisibilityFlagChanged, this->fullProjectMapVisible);
+    this->projectMapLargeMode = largeMode;
+    this->listeners.call(&Listener::onProjectMapLargeModeFlagChanged, this->projectMapLargeMode);
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
-void UserInterfaceFlags::toggleFullProjectMapVisibility()
+void UserInterfaceFlags::toggleProjectMapLargeMode()
 {
-    this->setFullProjectMapVisible(!this->fullProjectMapVisible);
+    this->setProjectMapLargeMode(!this->projectMapLargeMode);
 }
 
 bool UserInterfaceFlags::areExperimentalFeaturesEnabled() const noexcept
@@ -247,7 +247,7 @@ SerializedData UserInterfaceFlags::serialize() const
     tree.setProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     tree.setProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     tree.setProperty(UI::Flags::animations, this->rollAnimationsEnabled);
-    tree.setProperty(UI::Flags::showFullProjectMap, this->fullProjectMapVisible);
+    tree.setProperty(UI::Flags::showFullProjectMap, this->projectMapLargeMode);
     tree.setProperty(UI::Flags::uiScaleFactor, this->uiScaleFactor);
 
     tree.setProperty(UI::Flags::mouseWheelAltMode, this->mouseWheelFlags.usePanningByDefault);
@@ -278,7 +278,7 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->useOpenGLRenderer = root.getProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     this->useNativeTitleBar = root.getProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     this->rollAnimationsEnabled = root.getProperty(UI::Flags::animations, this->rollAnimationsEnabled);
-    this->fullProjectMapVisible = root.getProperty(UI::Flags::showFullProjectMap, this->fullProjectMapVisible);
+    this->projectMapLargeMode = root.getProperty(UI::Flags::showFullProjectMap, this->projectMapLargeMode);
 
     this->uiScaleFactor = root.getProperty(UI::Flags::uiScaleFactor, this->uiScaleFactor);
     this->uiScaleFactor = jlimit(UserInterfaceFlags::minUiScaleFactor, UserInterfaceFlags::maxUiScaleFactor, this->uiScaleFactor);
@@ -295,7 +295,7 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
 
     this->metronomeEnabled = root.getProperty(UI::Flags::metronomeEnabled, this->metronomeEnabled);
 
-    this->velocityMapVisible = false; // not serializing that
+    this->editorPanelVisible = false; // not serializing that
 
     this->experimentalFeaturesOn = root.getProperty(UI::Flags::experimentalFeaturesOn, this->experimentalFeaturesOn);
 }

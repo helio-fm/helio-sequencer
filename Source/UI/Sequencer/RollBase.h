@@ -399,7 +399,7 @@ protected:
     float projectFirstBeat = 0.f;
     float projectLastBeat = Globals::Defaults::projectLength;
 
-    float beatWidth = 0.f;
+    float beatWidth = Globals::UI::defaultBeatWidth;
     
     bool spaceDragMode = false;
     int draggedDistance = 0;

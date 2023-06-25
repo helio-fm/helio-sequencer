@@ -866,6 +866,9 @@ void PatternRoll::handleCommandMessage(int commandId)
         // inserting at the playhead position:
         this->showNewTrackMenu(this->lastPlayheadBeat.get());
         break;
+    case CommandIDs::ToggleVolumePanel:
+        App::Config().getUiFlags()->toggleEditorPanelVisibility();
+        break;
     case CommandIDs::PatternsGroupByName:
         this->deselectAll();
         this->project.setTrackGroupingMode(MidiTrack::Grouping::GroupByName);

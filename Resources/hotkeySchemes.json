@@ -349,6 +349,7 @@
 
       // Various
       { "command": "ToggleBottomMiniMap", "key": "B" },
+      { "command": "ToggleVolumePanel", "key": "V" },
       { "command": "ToggleMetronome", "key": "Control + M" },
       { "command": "ToggleMetronome", "key": "Command + M" },
       { "command": "DuplicateTrack", "key": "F5" },

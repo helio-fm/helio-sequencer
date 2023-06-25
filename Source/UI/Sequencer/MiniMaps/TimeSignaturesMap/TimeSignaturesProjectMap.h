@@ -26,8 +26,10 @@ class TimeSignatureComponent;
 #include "ProjectListener.h"
 #include "TimeSignatureEvent.h"
 #include "TimeSignaturesAggregator.h"
+#include "ProjectMapsScroller.h"
 
-class TimeSignaturesProjectMap final : public Component,
+class TimeSignaturesProjectMap final :
+    public ProjectMapsScroller::ScrolledComponent,
     public TimeSignaturesAggregator::Listener,
     public ProjectListener
 {
@@ -35,8 +37,12 @@ public:
 
     enum class Type : int8 { Large, Small };
 
-    TimeSignaturesProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type);
+    TimeSignaturesProjectMap(ProjectNode &parentProject,
+        SafePointer<RollBase> roll, Type type);
+
     ~TimeSignaturesProjectMap() override;
+
+    void switchToRoll(SafePointer<RollBase> roll) override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -91,9 +97,10 @@ private:
 
     float rollFirstBeat = 0.f;
     float rollLastBeat = Globals::Defaults::projectLength;
-    
-    RollBase &roll;
+
     ProjectNode &project;
+    
+    SafePointer<RollBase> roll;
     
     UniquePointer<TrackStartIndicator> trackStartIndicator;
     UniquePointer<TrackEndIndicator> trackEndIndicator;

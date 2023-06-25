@@ -29,9 +29,10 @@
 #include "RescalePreviewTool.h"
 #include "ModalCallout.h"
 
-KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &parentProject, RollBase &parentRoll, Type type) :
-    project(parentProject),
-    roll(parentRoll),
+KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &project,
+    SafePointer<RollBase> roll, Type type) :
+    project(project),
+    roll(roll),
     type(type)
 {
     this->setAlwaysOnTop(true);
@@ -46,6 +47,11 @@ KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &parentProject, Rol
 KeySignaturesProjectMap::~KeySignaturesProjectMap()
 {
     this->project.removeListener(this);
+}
+
+void KeySignaturesProjectMap::switchToRoll(SafePointer<RollBase> roll)
+{
+    this->roll = roll;
 }
 
 //===----------------------------------------------------------------------===//
@@ -285,7 +291,7 @@ void KeySignaturesProjectMap::onKeySignatureSelected(KeySignatureComponent *nc)
     const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
     const bool shouldClearSelection = !isShiftPressed;
 
-    this->roll.selectEventsInRange(startBeat, endBeat, shouldClearSelection);
+    this->roll->selectEventsInRange(startBeat, endBeat, shouldClearSelection);
 }
 
 void KeySignaturesProjectMap::onKeySignatureMainAction(KeySignatureComponent *ksc)
@@ -300,8 +306,8 @@ void KeySignaturesProjectMap::onKeySignatureAltAction(KeySignatureComponent *ksc
 
 float KeySignaturesProjectMap::getBeatByXPosition(int x) const
 {
-    const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll.getWidth()));
-    const float targetBeat = this->roll.getRoundBeatSnapByXPosition(xRoll);
+    const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll->getWidth()));
+    const float targetBeat = this->roll->getRoundBeatSnapByXPosition(xRoll);
     return jlimit(this->rollFirstBeat, this->rollLastBeat, targetBeat);
 }
 

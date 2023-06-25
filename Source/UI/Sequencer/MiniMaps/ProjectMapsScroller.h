@@ -37,24 +37,31 @@ public:
     ProjectMapsScroller(Transport &transport, SafePointer<RollBase> roll);
     ~ProjectMapsScroller() override;
 
-    void addOwnedMap(Component *newTrackMap, bool shouldBringToFront);
-    void removeOwnedMap(Component *existingTrackMap);
+    class ScrolledComponent : public Component
+    {
+    public:
+        virtual void switchToRoll(SafePointer<RollBase> roll) = 0;
+    };
+
+    template <typename T, typename... Args> inline
+    void addOwnedMap(Args &&... args)
+    {
+        auto *newTrackMap = this->trackMaps.add(new T(std::forward<Args>(args)...));
+        this->addAndMakeVisible(newTrackMap);
+
+        // playhead is always tied to the first map:
+        if (this->trackMaps.size() == 1)
+        {
+            this->disconnectPlayhead();
+            newTrackMap->addAndMakeVisible(this->playhead.get());
+        }
+
+        newTrackMap->toFront(false);
+        this->helperRectangle->toFront(false);
+        this->screenRange->toFront(false);
+    }
 
     void switchToRoll(SafePointer<RollBase> roll);
-
-    template<typename T>
-    T *findOwnedMapOfType()
-    {
-        for (int i = 0; i < this->trackMaps.size(); ++i)
-        {
-            if (T *target = dynamic_cast<T *>(this->trackMaps.getUnchecked(i)))
-            {
-                return target;
-            }
-        }
-        
-        return nullptr;
-    }
 
     void setAnimationsEnabled(bool enabled)
     {
@@ -230,7 +237,7 @@ private:
 
     UniquePointer<Playhead> playhead;
    
-    OwnedArray<Component> trackMaps;
+    OwnedArray<ScrolledComponent> trackMaps;
 
     void disconnectPlayhead();
     Rectangle<float> getIndicatorBounds() const noexcept;
