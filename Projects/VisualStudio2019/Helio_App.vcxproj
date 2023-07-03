@@ -4487,6 +4487,7 @@
     <None Include="..\..\Resources\Templates\emptyProject.json"/>
     <None Include="..\..\Resources\Templates\exampleProject.json"/>
     <None Include="..\..\Resources\logo-v2.png"/>
+    <None Include="..\..\Resources\logo-v2-mac.png"/>
     <None Include="..\..\Resources\arpeggiators.json"/>
     <None Include="..\..\Resources\chords.json"/>
     <None Include="..\..\Resources\colourSchemes.json"/>

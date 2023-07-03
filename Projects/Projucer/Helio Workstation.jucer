@@ -127,6 +127,7 @@
               file="../../Resources/Templates/exampleProject.json"/>
       </GROUP>
       <FILE id="DQTpOG" name="logo-v2.png" compile="0" resource="1" file="../../Resources/logo-v2.png"/>
+      <FILE id="WtPnG2" name="logo-v2-mac.png" compile="0" resource="1" file="../../Resources/logo-v2-mac.png"/>
       <FILE id="so7ZdZ" name="arpeggiators.json" compile="0" resource="1"
             file="../../Resources/arpeggiators.json"/>
       <FILE id="eMl1Wx" name="chords.json" compile="0" resource="1" file="../../Resources/chords.json"/>
@@ -1414,7 +1415,7 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="../../Projects/macOS" bigIcon="DQTpOG" smallIcon="DQTpOG"
+    <XCODE_MAC targetFolder="../../Projects/macOS" bigIcon="WtPnG2" smallIcon="WtPnG2"
                customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;  &#9;&lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;  &#9;&lt;string&gt;public.app-category.music&lt;/string&gt;&#10;  &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;    &lt;true/&gt;&#10;  &lt;/dict&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;&#10;"
                documentExtensions=".helio" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations"
                postbuildCommand="" extraDefs="" iosDevelopmentTeamID="EQL633LLC8"

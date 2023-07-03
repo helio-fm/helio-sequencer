@@ -290,6 +290,9 @@ namespace BinaryData
     extern const char*   logov2_png;
     const int            logov2_pngSize = 7326;
 
+    extern const char*   logov2mac_png;
+    const int            logov2mac_pngSize = 18403;
+
     extern const char*   arpeggiators_json;
     const int            arpeggiators_jsonSize = 64;
 
@@ -318,7 +321,7 @@ namespace BinaryData
     const int            translations_jsonSize = 177489;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 103;
+    const int namedResourceListSize = 104;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

@@ -764,6 +764,7 @@
 		E25BC7ADAA88DE6E508B6288 /* ChordsCollection.cpp */ /* ChordsCollection.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ChordsCollection.cpp; path = ../../Source/Core/Configuration/Resources/ChordsCollection.cpp; sourceTree = SOURCE_ROOT; };
 		E28D7AD894F4C48DAE00FB24 /* juce_audio_processors */ /* juce_audio_processors */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_processors; path = ../../ThirdParty/JUCE/modules/juce_audio_processors; sourceTree = SOURCE_ROOT; };
 		E2C1A2859123A25065D73061 /* App */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Helio.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2CF65E29E02D399C44FDB97 /* logo-v2-mac.png */ /* logo-v2-mac.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "logo-v2-mac.png"; path = "../../Resources/logo-v2-mac.png"; sourceTree = SOURCE_ROOT; };
 		E340C02D7364B18D5678BC32 /* RootNode.h */ /* RootNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RootNode.h; path = ../../Source/Core/Tree/RootNode.h; sourceTree = SOURCE_ROOT; };
 		E3E7AEE0AE3A65EE281E1BE6 /* OrchestraPitMenu.cpp */ /* OrchestraPitMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OrchestraPitMenu.cpp; path = ../../Source/UI/Menus/OrchestraPitMenu.cpp; sourceTree = SOURCE_ROOT; };
 		E4B24792BDAE9CD886C3F4A9 /* KnifeToolHelper.cpp */ /* KnifeToolHelper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = KnifeToolHelper.cpp; path = ../../Source/UI/Sequencer/Helpers/KnifeToolHelper.cpp; sourceTree = SOURCE_ROOT; };
@@ -1386,6 +1387,7 @@
 				AE3EE47BCDA7668A78BD20E5,
 				1AFEBE80310146EE997D5A01,
 				827AAD5C6900DDCDB38378D9,
+				E2CF65E29E02D399C44FDB97,
 				A55C893A1288B2A5F6F6030E,
 				D40C0CE45B78B2FB6B497FA4,
 				BDBE5C034C80B5342B78B373,
