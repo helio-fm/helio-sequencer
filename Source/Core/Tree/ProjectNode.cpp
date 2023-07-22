@@ -923,11 +923,10 @@ void ProjectNode::onDocumentImport(InputStream &stream)
 bool ProjectNode::onDocumentExport(OutputStream &stream)
 {
     // assumes MIDI export, todo checks
-    this->exportMidi(stream);
-    return true;
+    return this->exportMidi(stream);
 }
 
-void ProjectNode::exportMidi(OutputStream &stream) const
+bool ProjectNode::exportMidi(OutputStream &stream) const
 {
     MidiFile tempFile;
     static const double midiClock = 960.0;
@@ -986,7 +985,7 @@ void ProjectNode::exportMidi(OutputStream &stream) const
         tempFile.addTrack(i.second);
     }
 
-    tempFile.writeTo(stream);
+    return tempFile.writeTo(stream);
 }
 
 //===----------------------------------------------------------------------===//

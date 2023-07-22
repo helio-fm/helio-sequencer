@@ -140,18 +140,30 @@ void Document::exportAs(const String &exportExtension,
         Globals::UI::FileChooser::forFileToSave,
         [this](URL &url)
     {
-        if (url.isLocalFile() && url.getLocalFile().exists())
+        try
         {
-            url.getLocalFile().deleteFile();
-        }
-
-        if (auto outStream = url.createOutputStream())
-        {
-            outStream->setPosition(0); // just in case
-            if (this->owner.onDocumentExport(*outStream.get()))
+            if (url.isLocalFile() && url.getLocalFile().exists())
             {
-                App::Layout().showTooltip(TRANS(I18n::Dialog::documentExportDone));
+                url.getLocalFile().deleteFile();
             }
+
+            if (auto outStream = url.createOutputStream())
+            {
+                outStream->setPosition(0); // just in case
+                if (this->owner.onDocumentExport(*outStream.get()))
+                {
+                    App::Layout().showTooltip(TRANS(I18n::Dialog::documentExportDone));
+                }
+                else
+                {
+                    App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
+                }
+            }
+        }
+        catch (...)
+        {
+            assert(false); // a permission problem?
+            App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
         }
     });
 }

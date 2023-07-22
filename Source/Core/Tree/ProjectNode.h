@@ -68,7 +68,7 @@ public:
     RollBase *getLastFocusedRoll() const;
     
     void importMidi(InputStream &stream);
-    void exportMidi(OutputStream &stream) const;
+    bool exportMidi(OutputStream &stream) const;
 
     Image getIcon() const noexcept override;
 

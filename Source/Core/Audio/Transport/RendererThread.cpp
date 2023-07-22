@@ -50,14 +50,21 @@ bool RendererThread::startRendering(const URL &target, RenderFormat format,
     // since on iOS it contains a security bookmark:
     this->renderTarget = target;
 
-    if (this->renderTarget.isLocalFile() &&
-        this->renderTarget.getLocalFile().exists())
+    try
     {
-        const auto deleted = this->renderTarget.getLocalFile().deleteFile();
-        if (!deleted) {
-            // so the file exists but is probably inaccessible:
-            return false;
+        if (this->renderTarget.isLocalFile() &&
+            this->renderTarget.getLocalFile().exists())
+        {
+            const auto deleted = this->renderTarget.getLocalFile().deleteFile();
+            if (!deleted) {
+                // the file exists but is probably inaccessible:
+                return false;
+            }
         }
+    }
+    catch (...)
+    {
+        return false;
     }
 
     if (auto outStream = this->renderTarget.createOutputStream())
@@ -264,24 +271,31 @@ void RendererThread::run()
 
         for (auto *subBuffer : subBuffers)
         {
-            for (int j = 0; j < numOutChannels; ++j)
+            for (int channel = 0; channel < numOutChannels; ++channel)
             {
-                mixingBuffer.addFrom(j, 0,
-                    subBuffer->sampleBuffer, j, 0,
+                mixingBuffer.addFrom(channel, 0,
+                    subBuffer->sampleBuffer, channel, 0,
                     bufferSize,
                     1.f);
             }
         }
 
-        // write resulting buffer to disk
+        // write the resulting buffer to disk
+        // (make a few attempts and bail out if failed)
         {
             const ScopedLock lock(this->writerLock);
-            bool writtenSuccessfully = false;
             
-            while (! writtenSuccessfully)
+            bool writtenSuccessfully = false;
+            for (int i = 0; i < 10 && !writtenSuccessfully; ++i)
             {
                 writtenSuccessfully =
                     this->writer->writeFromAudioSampleBuffer(mixingBuffer, 0, mixingBuffer.getNumSamples());
+            }
+
+            if (! writtenSuccessfully)
+            {
+                jassert(false);
+                break;
             }
         }
 
