@@ -2071,10 +2071,11 @@ void PianoRoll::showChordTool(ToolType type, Point<int> position)
         }
         break;
     case ToolType::ChordPreview:
-        if (auto *harmonicContext =
-            dynamic_cast<KeySignaturesSequence *>(this->project.getTimeline()->getKeySignatures()->getSequence()))
         {
-            auto *popup = new ChordPreviewTool(*this, pianoSequence, this->activeClip, harmonicContext);
+            auto *harmonicContext = dynamic_cast<KeySignaturesSequence *>(
+                this->project.getTimeline()->getKeySignatures()->getSequence());
+            auto *timeContext = this->project.getTimeline()->getTimeSignaturesAggregator();
+            auto *popup = new ChordPreviewTool(*this, pianoSequence, this->activeClip, harmonicContext, timeContext);
             popup->setTopLeftPosition(position - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
             App::Layout().addAndMakeVisible(popup);
         }

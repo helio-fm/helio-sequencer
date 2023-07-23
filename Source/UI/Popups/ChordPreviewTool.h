@@ -22,6 +22,7 @@ class PianoRoll;
 class MidiSequence;
 class PianoSequence;
 class KeySignaturesSequence;
+class TimeSignaturesAggregator;
 
 #include "Note.h"
 #include "Clip.h"
@@ -35,8 +36,10 @@ class ChordPreviewTool final : public PopupMenuComponent,
 {
 public:
 
-    ChordPreviewTool(PianoRoll &caller, WeakReference<PianoSequence> target,
-        const Clip &clip, WeakReference<KeySignaturesSequence> harmonicContext);
+    ChordPreviewTool(PianoRoll &caller,
+        WeakReference<PianoSequence> target, const Clip &clip,
+        WeakReference<KeySignaturesSequence> harmonicContext,
+        WeakReference<TimeSignaturesAggregator> timeContext);
 
     ~ChordPreviewTool();
 
@@ -67,10 +70,12 @@ private:
     // detected on the fly as the user drags the tool around:
     int targetKey = 0;
     float targetBeat = 0;
+    float barLengthInBeats = Globals::beatsPerBar;
     Note::Key root;
     Scale::Ptr scale;
-    // using project context:
+
     WeakReference<KeySignaturesSequence> harmonicContext;
+    WeakReference<TimeSignaturesAggregator> timeContext;
     bool detectKeyBeatAndContext();
 
     Scale::Ptr defaultScale;

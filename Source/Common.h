@@ -204,7 +204,7 @@ namespace Globals
         static constexpr auto emptyClipLength = static_cast<float>(beatsPerBar * 2);
 
         // Note previews in various tools
-        static constexpr auto previewNoteVelocity = 0.35f;
+        static constexpr auto previewNoteVelocity = 0.25f;
         static constexpr auto previewNoteLength = static_cast<float>(beatsPerBar);
 
         // The default time is common time, 4/4

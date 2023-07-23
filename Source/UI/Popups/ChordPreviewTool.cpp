@@ -36,12 +36,14 @@ static Label *createPopupButtonLabel(const String &text)
 
 ChordPreviewTool::ChordPreviewTool(PianoRoll &caller,
     WeakReference<PianoSequence> target, const Clip &clip,
-    WeakReference<KeySignaturesSequence> harmonicContext) :
+    WeakReference<KeySignaturesSequence> harmonicContext,
+    WeakReference<TimeSignaturesAggregator> timeContext) :
     PopupMenuComponent(&caller),
     roll(caller),
     sequence(target),
     clip(clip),
     harmonicContext(harmonicContext),
+    timeContext(timeContext),
     defaultChords(App::Config().getChords()->getAll())
 {
     this->newChord = make<PopupCustomButton>(createPopupButtonLabel("+"));
@@ -232,7 +234,8 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
                 this->scale->getChromaticKey(inScaleKey, chordKey.getChromaticOffset(), false));
 
             const Note note(this->sequence.get(), key, this->targetBeat,
-                Globals::Defaults::previewNoteLength, Globals::Defaults::previewNoteVelocity);
+                this->barLengthInBeats,
+                this->roll.getDefaultNoteVolume());
 
             this->sequence->insert(note, true);
 
@@ -262,7 +265,8 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
     
     const int key = jlimit(0, this->roll.getNumKeys(), this->targetKey);
     const Note note(this->sequence.get(), key, this->targetBeat,
-        Globals::Defaults::previewNoteLength, Globals::Defaults::previewNoteVelocity);
+        this->barLengthInBeats,
+        this->roll.getDefaultNoteVolume());
 
     this->sequence->insert(note, true);
     if (shouldSendMidiMessage)
@@ -300,15 +304,16 @@ bool ChordPreviewTool::detectKeyBeatAndContext()
     this->targetKey = newKey;
     this->targetBeat = newBeat;
 
-    const KeySignatureEvent *context = nullptr;
+    const KeySignatureEvent *keySignature = nullptr;
     for (int i = 0; i < this->harmonicContext->size(); ++i)
     {
         const auto *event = this->harmonicContext->getUnchecked(i);
-        if (context == nullptr || event->getBeat() <= (this->targetBeat + this->clip.getBeat()))
+        if (keySignature == nullptr ||
+            event->getBeat() <= (this->targetBeat + this->clip.getBeat()))
         {
             // Take the first one no matter where it resides;
             // If event is still before the sequence start, update the context anyway:
-            context = static_cast<const KeySignatureEvent *>(event);
+            keySignature = static_cast<const KeySignatureEvent *>(event);
         }
         else if (event->getBeat() > (this->targetBeat + this->clip.getBeat()))
         {
@@ -318,15 +323,42 @@ bool ChordPreviewTool::detectKeyBeatAndContext()
     }
 
     // We've found the only context that doesn't change within a sequence:
-    if (context != nullptr)
+    if (keySignature != nullptr)
     {
-        this->scale = context->getScale();
-        this->root = context->getRootKey();
+        this->scale = keySignature->getScale();
+        this->root = keySignature->getRootKey();
     }
     else
     {
         this->scale = this->defaultScale;
         this->root = 0;
+    }
+
+    // detect the time signature
+    const TimeSignatureEvent *timeSignature = nullptr;
+    for (int i = 0; i < this->timeContext->getSequence()->size(); ++i)
+    {
+        const auto *event = static_cast<const TimeSignatureEvent *>
+            (this->timeContext->getSequence()->getUnchecked(i));
+
+        if (timeSignature == nullptr ||
+            event->getBeat() <= (this->targetBeat + this->clip.getBeat()))
+        {
+            timeSignature = static_cast<const TimeSignatureEvent *>(event);
+        }
+        else if (event->getBeat() > (this->targetBeat + this->clip.getBeat()))
+        {
+            break;
+        }
+    }
+
+    if (timeSignature != nullptr)
+    {
+        this->barLengthInBeats = timeSignature->getBarLengthInBeats();
+    }
+    else
+    {
+        this->barLengthInBeats = Globals::beatsPerBar;
     }
 
     return hasChanges;

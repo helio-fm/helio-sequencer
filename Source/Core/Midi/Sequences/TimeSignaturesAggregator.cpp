@@ -169,7 +169,7 @@ void TimeSignaturesAggregator::onAddMidiEvent(const MidiEvent &event)
     if (event.isTypeOf(MidiEvent::Type::TimeSignature) &&
         !this->isAggregatingTimeSignatureOverrides())
     {
-        jassert(static_cast<const TimeSignatureEvent &>(event).getSequence() == this->getSequence());
+        jassert(event.getSequence() == this->getSequence());
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
     }
 }
@@ -179,8 +179,8 @@ void TimeSignaturesAggregator::onChangeMidiEvent(const MidiEvent &oldEvent, cons
     if (newEvent.isTypeOf(MidiEvent::Type::TimeSignature) &&
         !this->isAggregatingTimeSignatureOverrides())
     {
-        jassert(static_cast<const TimeSignatureEvent &>(oldEvent).getSequence() == this->getSequence());
-        jassert(static_cast<const TimeSignatureEvent &>(newEvent).getSequence() == this->getSequence());
+        jassert(oldEvent.getSequence() == this->getSequence());
+        jassert(newEvent.getSequence() == this->getSequence());
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
     }
 }
