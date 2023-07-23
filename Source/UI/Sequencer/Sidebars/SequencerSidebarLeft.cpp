@@ -125,7 +125,7 @@ void SequencerSidebarLeft::resized()
     this->listBox->setBounds(0, headerSize + 1, this->getWidth(),
         this->getHeight() - headerSize - footerSize - 1);
 
-    constexpr auto shadowSize = 8;
+    constexpr auto shadowSize = 6;
     this->headShadow->setBounds(0, headerSize, this->getWidth(), shadowSize);
     this->footShadow->setBounds(0,
         this->getHeight() - footerSize - shadowSize,

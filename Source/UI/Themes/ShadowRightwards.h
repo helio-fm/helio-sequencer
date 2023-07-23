@@ -38,6 +38,8 @@ public:
     {
         if (this->cachedImage.getWidth() != this->getWidth())
         {
+            const auto w = float(this->getWidth());
+
             this->cachedImage = Image(Image::ARGB,
                 this->getWidth() + ShadowComponent::cachedImageMargin,
                 ShadowComponent::cachedImageSize, true);
@@ -45,11 +47,11 @@ public:
             Graphics g(this->cachedImage);
 
             g.setGradientFill(ColourGradient(this->shadowColour,
-                0.f, 0.f, Colours::transparentBlack, float(this->getWidth()), 0.f, false));
+                0.f, 0.f, Colours::transparentBlack, w, 0.f, false));
             g.fillRect(this->cachedImage.getBounds());
 
             g.setGradientFill(ColourGradient(this->shadowColour,
-                0.f, 0.f, Colours::transparentBlack, float(this->getWidth()) / 2.5f, 0.f, false));
+                0.f, 0.f, Colours::transparentBlack, w / 3.f, 0.f, false));
             g.fillRect(this->cachedImage.getBounds());
         }
     }

@@ -231,7 +231,7 @@ namespace Globals
 
         static constexpr auto defaultBeatWidth = 48;
         static constexpr auto rollHeaderHeight = 36;
-        static constexpr auto rollHeaderShadowSize = 16;
+        static constexpr auto rollHeaderShadowSize = 12;
         static constexpr auto headlineIconSize = 16;
         static constexpr auto sidebarRowHeight = 36;
 

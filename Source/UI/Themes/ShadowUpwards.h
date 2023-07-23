@@ -35,7 +35,8 @@ public:
     {
         if (this->cachedImage.getHeight() != this->getHeight())
         {
-            const float h = float(this->getHeight());
+            const auto h = float(this->getHeight());
+
             this->cachedImage = Image(Image::ARGB, ShadowComponent::cachedImageSize,
                 this->getHeight() + ShadowComponent::cachedImageMargin, true);
 
@@ -46,7 +47,7 @@ public:
             g.fillRect(this->cachedImage.getBounds());
 
             g.setGradientFill(ColourGradient(this->shadowColour,
-                0.f, h, Colours::transparentBlack, 0.f, h / 2.5f, false));
+                0.f, h, Colours::transparentBlack, 0.f, h / 3.f, false));
             g.fillRect(this->cachedImage.getBounds());
         }
     }

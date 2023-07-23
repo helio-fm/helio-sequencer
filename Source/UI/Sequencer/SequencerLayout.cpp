@@ -375,7 +375,7 @@ private:
     SafePointer<EditorPanelsScroller> bottomEditorsScroller;
     SafePointer<Component> scrollerShadow;
 
-    static constexpr auto scrollerShadowSize = 16;
+    static constexpr auto scrollerShadowSize = 12;
     static constexpr auto rollsAnimationStartSpeed = 0.4f;
     static constexpr auto mapsAnimationStartSpeed = 0.35f;
     static constexpr auto scrollerModeAnimationStartSpeed = 0.5f;
