@@ -175,10 +175,20 @@ void PianoRoll::setDefaultNoteVolume(float volume) noexcept
     this->newNoteVolume = volume;
 }
 
+float PianoRoll::getDefaultNoteVolume() const noexcept
+{
+    return this->newNoteVolume;
+}
+
 void PianoRoll::setDefaultNoteLength(float length) noexcept
 {
     // no less than 0.25f, as it can become pretty much unusable:
     this->newNoteLength = jmax(0.25f, length);
+}
+
+float PianoRoll::getDefaultNoteLength() const noexcept
+{
+    return this->newNoteLength;
 }
 
 void PianoRoll::setRowHeight(int newRowHeight)
@@ -1904,21 +1914,24 @@ Array<CommandPaletteActionsProvider *> PianoRoll::getCommandPaletteActionProvide
 SerializedData PianoRoll::serialize() const
 {
     using namespace Serialization;
-    SerializedData tree(UI::pianoRoll);
+    SerializedData data(UI::pianoRoll);
     
-    tree.setProperty(UI::beatWidth, roundf(this->beatWidth));
-    tree.setProperty(UI::rowHeight, this->getRowHeight());
+    data.setProperty(UI::beatWidth, roundf(this->beatWidth));
+    data.setProperty(UI::rowHeight, this->getRowHeight());
 
-    tree.setProperty(UI::startBeat,
+    data.setProperty(UI::startBeat,
         roundf(this->getRoundBeatSnapByXPosition(this->getViewport().getViewPositionX())));
 
-    tree.setProperty(UI::endBeat,
+    data.setProperty(UI::endBeat,
         roundf(this->getRoundBeatSnapByXPosition(this->getViewport().getViewPositionX() +
             this->getViewport().getViewWidth())));
 
-    tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY());
+    data.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY());
 
-    return tree;
+    data.setProperty(UI::defaultNoteLength, this->newNoteLength);
+    data.setProperty(UI::defaultNoteVolume, this->newNoteVolume);
+
+    return data;
 }
 
 void PianoRoll::deserialize(const SerializedData &data)
@@ -1936,6 +1949,9 @@ void PianoRoll::deserialize(const SerializedData &data)
     
     this->setBeatWidth(float(root.getProperty(UI::beatWidth, this->beatWidth)));
     this->setRowHeight(root.getProperty(UI::rowHeight, this->getRowHeight()));
+
+    this->newNoteLength = root.getProperty(UI::defaultNoteLength, this->newNoteLength);
+    this->newNoteVolume = root.getProperty(UI::defaultNoteVolume, this->newNoteVolume);
 
     // FIXME doesn't work right for now, as view range is sent after this
     const float startBeat = float(root.getProperty(UI::startBeat, 0.f));

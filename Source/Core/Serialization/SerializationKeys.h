@@ -260,6 +260,9 @@ namespace Serialization
         static const Identifier positionX = "positionX";
         static const Identifier positionY = "positionY";
 
+        static const Identifier defaultNoteLength = "defaultNoteLength";
+        static const Identifier defaultNoteVolume = "defaultNoteVolume";
+
         static const Identifier lastRenderPath = "lastRenderPath";
 
         namespace Flags

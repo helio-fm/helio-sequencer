@@ -50,7 +50,10 @@ public:
     const Clip &getActiveClip() const noexcept;
 
     void setDefaultNoteVolume(float volume) noexcept;
+    float getDefaultNoteVolume() const noexcept;
+
     void setDefaultNoteLength(float length) noexcept;
+    float getDefaultNoteLength() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Ghost notes
