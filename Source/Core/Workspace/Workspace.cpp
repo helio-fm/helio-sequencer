@@ -355,6 +355,11 @@ void Workspace::failedDeserializationFallback()
 
 void Workspace::importProject(const String &filePattern)
 {
+    if (!FileChooser::isPlatformDialogAvailable())
+    {
+        return;
+    }
+
 #if JUCE_ANDROID
     const auto filter = "*/*";
 #else
@@ -368,31 +373,42 @@ void Workspace::importProject(const String &filePattern)
         Globals::UI::FileChooser::forFileToOpen,
         [this](URL &url)
     {
-        if (!url.isLocalFile())
+        try
         {
-            return;
-        }
-
-        const auto file = url.getLocalFile();
-        const auto extension = file.getFileExtension();
-
-        if (extension == ".mid" || extension == ".midi" || extension == ".smf")
-        {
-            if (auto *p = this->treeRoot->importMidi(file))
+            if (!url.isLocalFile() ||
+                !url.getLocalFile().exists() ||
+                !url.getLocalFile().hasReadAccess())
             {
-                this->userProfile.onProjectLocalInfoUpdated(p->getId(),
-                    p->getName(), p->getDocument()->getFullPath());
-                this->autosave();
+                App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
+                return;
+            }
+
+            const auto file = url.getLocalFile();
+            const auto extension = file.getFileExtension();
+
+            if (extension == ".mid" || extension == ".midi" || extension == ".smf")
+            {
+                if (auto *p = this->treeRoot->importMidi(file))
+                {
+                    this->userProfile.onProjectLocalInfoUpdated(p->getId(),
+                        p->getName(), p->getDocument()->getFullPath());
+                    this->autosave();
+                }
+            }
+            else
+            {
+                if (auto *p = this->treeRoot->openProject(file))
+                {
+                    this->userProfile.onProjectLocalInfoUpdated(p->getId(),
+                        p->getName(), p->getDocument()->getFullPath());
+                    this->autosave();
+                }
             }
         }
-        else
+        catch (...)
         {
-            if (auto *p = this->treeRoot->openProject(file))
-            {
-                this->userProfile.onProjectLocalInfoUpdated(p->getId(),
-                    p->getName(), p->getDocument()->getFullPath());
-                this->autosave();
-            }
+            assert(false);
+            App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
         }
     });
 }

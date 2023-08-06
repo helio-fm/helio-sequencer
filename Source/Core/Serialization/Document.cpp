@@ -194,6 +194,11 @@ bool Document::load(const File &file)
 
 void Document::import(const String &filePattern)
 {
+    if (!FileChooser::isPlatformDialogAvailable())
+    {
+        return;
+    }
+
 #if JUCE_ANDROID
     const auto filter = "*/*";
 #else
@@ -207,13 +212,25 @@ void Document::import(const String &filePattern)
         Globals::UI::FileChooser::forFileToOpen,
         [this](URL &url)
     {
-        // todo someday:
-        // on some platforms (Android, for example) it's not permitted to do any network
-        // action from the message thread, so you must only call it from a background thread.
-
-        if (auto inStream = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress)))
+        try
         {
-            this->owner.onDocumentImport(*inStream.get());
+            if (!url.isLocalFile() ||
+                !url.getLocalFile().exists() ||
+                !url.getLocalFile().hasReadAccess())
+            {
+                App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
+                return;
+            }
+
+            if (auto inStream = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress)))
+            {
+                this->owner.onDocumentImport(*inStream.get());
+            }
+        }
+        catch (...)
+        {
+            assert(false); // likely a permission problem
+            App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
         }
     });
 }

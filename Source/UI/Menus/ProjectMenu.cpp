@@ -166,10 +166,8 @@ void ProjectMenu::showCreateItemsMenu(AnimationType animationType)
             this->showMainMenu(MenuPanel::SlideRight);
         }));
 
-#if PLATFORM_DESKTOP
     menu.add(MenuItem::item(Icons::browse, CommandIDs::ImportMidi,
         TRANS(I18n::Menu::Project::importMidi))->closesMenu());
-#endif
 
     menu.add(MenuItem::item(Icons::pianoTrack,
         TRANS(I18n::Menu::Project::addTrack))->withSubmenu()->withAction([this]()
