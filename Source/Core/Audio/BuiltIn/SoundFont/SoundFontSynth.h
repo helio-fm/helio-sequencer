@@ -61,7 +61,7 @@ public:
 
 private:
 
-    static constexpr auto numVoices = 16;
+    static constexpr auto numVoices = 64;
 
     int noteVelocities[128];
 

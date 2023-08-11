@@ -371,7 +371,9 @@ void SoundFontVoice::startNote(int midiNoteNumber, float floatVelocity, Synthesi
         this->region = sound->getRegionFor(midiNoteNumber, velocity);
     }
 
-    if ((this->region == nullptr) || (this->region->sample == nullptr) || (this->region->sample->getBuffer() == nullptr))
+    if ((this->region == nullptr) ||
+        (this->region->sample == nullptr) ||
+        (this->region->sample->getBuffer() == nullptr))
     {
         this->killNote();
         return;
@@ -527,10 +529,10 @@ void SoundFontVoice::renderNextBlock(AudioSampleBuffer &outputBuffer, int startS
 
     while (--numSamples >= 0)
     {
-        int pos = int(sourceSamplePosition);
+        const int pos = int(sourceSamplePosition);
         jassert(pos >= 0 && pos < bufferNumSamples);
-        float alpha = float(sourceSamplePosition - pos);
-        float invAlpha = 1.0f - alpha;
+        const float alpha = float(sourceSamplePosition - pos);
+        const float invAlpha = 1.0f - alpha;
         int nextPos = pos + 1;
         if ((loopStart < loopEnd) && (nextPos > loopEnd))
         {
@@ -538,13 +540,13 @@ void SoundFontVoice::renderNextBlock(AudioSampleBuffer &outputBuffer, int startS
         }
 
         // Simple linear interpolation with buffer overrun check
-        float nextL = nextPos < bufferNumSamples ? inL[nextPos] : inL[pos];
-        float nextR = inR ? (nextPos < bufferNumSamples ? inR[nextPos] : inR[pos]) : nextL;
+        const float nextL = nextPos < bufferNumSamples ? inL[nextPos] : inL[pos];
+        const float nextR = inR ? (nextPos < bufferNumSamples ? inR[nextPos] : inR[pos]) : nextL;
         float l = (inL[pos] * invAlpha + nextL * alpha);
         float r = inR ? (inR[pos] * invAlpha + nextR * alpha) : l;
 
-        float gainLeft = this->noteGainLeft * ampegGain;
-        float gainRight = this->noteGainRight * ampegGain;
+        const float gainLeft = this->noteGainLeft * ampegGain;
+        const float gainRight = this->noteGainRight * ampegGain;
         l *= gainLeft;
         r *= gainRight;
         // Shouldn't we dither here?
@@ -800,8 +802,19 @@ void SoundFontSynth::noteOn(int midiChannel, int midiNoteNumber, float velocity)
             if (region->matches(midiNoteNumber, midiVelocity, trigger))
             {
                 if (auto *voice = dynamic_cast<SoundFontVoice *>(this->findFreeVoice(sound,
-                        midiNoteNumber, midiChannel, this->isNoteStealingEnabled())))
+                    midiNoteNumber, midiChannel, this->isNoteStealingEnabled())))
                 {
+                    // This check duplicates what the Synthesiser's startVoice method does,
+                    // but we have to do it here, before assigning the region reference to the voice,
+                    // because the stopNote method will end up resetting that region reference,
+                    // and the voice will later fallback to picking the first matching region,
+                    // so when this loop runs out of unused voices, it ends up not playing
+                    // all matching regions while playing some of them twice:
+                    if (voice->getCurrentlyPlayingSound() != nullptr)
+                    {
+                        voice->stopNote(0.0f, false);
+                    }
+
                     voice->setRegion(region);
                     this->startVoice(voice, sound, midiChannel, midiNoteNumber, velocity);
                 }
@@ -821,10 +834,16 @@ void SoundFontSynth::noteOff(int midiChannel, int midiNoteNumber, float velocity
     // Start release region.
     if (auto *sound = dynamic_cast<SoundFontSound *>(this->getSound(0).get()))
     {
-        if (auto *region = sound->getRegionFor(midiNoteNumber, this->noteVelocities[midiNoteNumber], SoundFontRegion::Trigger::release))
+        if (auto *region = sound->getRegionFor(midiNoteNumber,
+            this->noteVelocities[midiNoteNumber], SoundFontRegion::Trigger::release))
         {
             if (auto *voice = dynamic_cast<SoundFontVoice *>(this->findFreeVoice(sound, midiNoteNumber, midiChannel, false)))
             {
+                if (voice->getCurrentlyPlayingSound() != nullptr)
+                {
+                    voice->stopNote(0.0f, false);
+                }
+
                 // Synthesiser is too locked-down (ivars are private rt protected), so
                 // we have to use a "setRegion()" mechanism.
                 voice->setRegion(region);

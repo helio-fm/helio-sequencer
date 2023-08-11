@@ -322,18 +322,21 @@ void SoundFontSynthAudioPlugin::setStateInformation(const void *data, int sizeIn
 
 void SoundFontSynthAudioPlugin::applySynthParameters(const SoundFontSynth::Parameters &newParameters)
 {
-    if (this->synthParameters.filePath != newParameters.filePath)
+    auto adjustedParameters = newParameters;
+    adjustedParameters.programIndex = jlimit(0,
+        jmax(0, this->getNumPrograms() - 1), newParameters.programIndex);
+
+    if (this->synthParameters.filePath != adjustedParameters.filePath)
     {
-        this->synth.initSynth(newParameters);
+        this->synth.initSynth(adjustedParameters);
     }
-    else if (this->synthParameters.programIndex != newParameters.programIndex)
+    else if (this->synthParameters.programIndex != adjustedParameters.programIndex)
     {
         // just the program # changed
-        jassert(newParameters.programIndex < this->getNumPrograms());
-        this->setCurrentProgram(newParameters.programIndex);
+        this->setCurrentProgram(adjustedParameters.programIndex);
     }
 
-    this->synthParameters = newParameters;
+    this->synthParameters = adjustedParameters;
 }
 
 const SoundFontSynth::Parameters &SoundFontSynthAudioPlugin::getSynthParameters() const noexcept
