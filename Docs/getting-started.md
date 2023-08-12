@@ -232,7 +232,7 @@ Interacting with piano roll also depends on the current edit mode:
 
 All notes, when edited, are aligned to the grid. The grid resolution (the density of barlines) depends on the zoom level and supports up to 1/64 notes. Tip: holding `Alt` while editing notes disables snapping to the grid.
 
-All edits are undoable; note that the last 10 undo actions are saved in the project and are still available after restarting the app.
+All edits are undoable, and there is no limit to the number of undo actions available until the app is restarted. Additionally, each project saves the last 16 undo actions (32 on mobile platforms), which remain undoable after restarting the app. This limit can be changed by editing the main [configuration file](index.md#settingshelio).
 
 All changes are saved automatically: on exit, and on a timeout after the last change.
 

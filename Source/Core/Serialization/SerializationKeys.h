@@ -219,6 +219,7 @@ namespace Serialization
         static const Identifier activeUiFlags = "activeUiFlags";
         static const Identifier currentLocale = "currentLocale";
         static const Identifier checkForUpdates = "checkForUpdates";
+        static const Identifier maxSavedUndoActions = "maxSavedUndoActions";
 
         static const Identifier lastShownPageId = "lastShownPageId";
         static const Identifier lastUsedScale = "lastUsedScale";

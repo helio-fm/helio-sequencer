@@ -30,6 +30,7 @@
 #include "KeySignatureEventActions.h"
 #include "ProjectMetadataActions.h"
 #include "PatternActions.h"
+#include "Config.h"
 
 UndoStack::Transaction::Transaction(ProjectNode &project, UndoActionId transactionId) :
     project(project),
@@ -398,7 +399,7 @@ SerializedData UndoStack::serialize() const
     int numStoredTransactions = 0;
     
     while (currentIndex >= 0 &&
-           numStoredTransactions < UndoStack::maxTransactionsToSerialize)
+           numStoredTransactions < App::Config().getMaxSavedUndoActions())
     {
         if (auto *action = this->transactions[currentIndex])
         {

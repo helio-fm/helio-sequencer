@@ -47,10 +47,15 @@ public:
     bool containsProperty(const Identifier &key) const noexcept;
 
     // some shortcuts for setProperty/getProperty
+
     void setUpdatesCheckEnabled(bool value);
     bool isUpdatesCheckEnabled() const noexcept;
 
+    void setMaxSavedUndoActions(int value);
+    int getMaxSavedUndoActions() const noexcept;
+
     // resource collections
+
     ChordsCollection *getChords() const noexcept;
     ScalesCollection *getScales() const noexcept;
     MetersCollection *getMeters() const noexcept;

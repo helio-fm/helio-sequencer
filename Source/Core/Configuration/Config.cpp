@@ -78,7 +78,9 @@ void Config::initResources()
                 this->children[child.getType()] = child;
             }
 
-            DBG("Config reloaded");
+            // force writing some default values in the config later
+            this->setUpdatesCheckEnabled(this->isUpdatesCheckEnabled());
+            this->setMaxSavedUndoActions(this->getMaxSavedUndoActions());
         }
     }
 
@@ -204,6 +206,25 @@ void Config::setUpdatesCheckEnabled(bool value)
 bool Config::isUpdatesCheckEnabled() const noexcept
 {
     return this->getProperty(Serialization::Config::checkForUpdates, true);
+}
+
+void Config::setMaxSavedUndoActions(int value)
+{
+    this->setProperty(Serialization::Config::maxSavedUndoActions, value);
+}
+
+int Config::getMaxSavedUndoActions() const noexcept
+{
+#if PLATFORM_DESKTOP
+    static constexpr auto defaultMaxActions = 16;
+#elif PLATFORM_MOBILE
+    // on mobile platforms the OS can kill the app in background whenever it wants,
+    // so we have to rely more on saved data than on memory and persist more actions
+    static constexpr auto defaultMaxActions = 32;
+#endif
+
+    const int maxActions = this->getProperty(Serialization::Config::maxSavedUndoActions, defaultMaxActions);
+    return jlimit(0, 256, maxActions);
 }
 
 // resource collections
