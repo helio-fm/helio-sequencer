@@ -29,7 +29,6 @@ public:
         drawMode,  // these two
         eraseMode, // are displayed as one
         selectionMode,
-        zoomMode,
         dragMode,
         knifeMode, // these two
         mergeMode  // are displayed as one
@@ -39,9 +38,6 @@ public:
 
     bool forbidsViewportDragging(const ModifierKeys &mods) const;
     bool forcesViewportDragging(const ModifierKeys &mods) const;
-
-    bool forbidsViewportZooming(const ModifierKeys &mods) const;
-    bool forcesViewportZooming(const ModifierKeys &mods) const;
 
     bool forbidsSelectionMode(const ModifierKeys &mods) const;
     bool forcesSelectionMode(const ModifierKeys &mods) const;

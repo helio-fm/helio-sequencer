@@ -263,6 +263,28 @@ float PianoRoll::findPreviousAnchorBeat(float beat) const
 }
 
 //===----------------------------------------------------------------------===//
+// MultiTouchListener
+//===----------------------------------------------------------------------===//
+
+void PianoRoll::multiTouchStartZooming()
+{
+    this->rowHeightAnchor = this->rowHeight;
+    RollBase::multiTouchStartZooming();
+}
+
+void PianoRoll::multiTouchContinueZooming(const Rectangle<float> &relativePositions,
+    const Rectangle<float> &relativeAnchor, const Rectangle<float> &absoluteAnchor)
+{
+    const auto minSensitivity = 35.f;
+    const float newRowHeight = float(this->rowHeightAnchor) *
+        (jmax(minSensitivity, relativePositions.getHeight()) / jmax(minSensitivity, relativeAnchor.getHeight()));
+
+    this->setRowHeight(int(roundf(newRowHeight)));
+
+    RollBase::multiTouchContinueZooming(relativePositions, relativeAnchor, absoluteAnchor);
+}
+
+//===----------------------------------------------------------------------===//
 // Ghost notes
 //===----------------------------------------------------------------------===//
 
@@ -1029,7 +1051,7 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
 
 void PianoRoll::mouseUp(const MouseEvent &e)
 {
-    if (const bool hasMultitouch = (e.source.getIndex() > 0))
+    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
         return;
     }

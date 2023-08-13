@@ -23,12 +23,10 @@ bool RollEditMode::forbidsViewportDragging(const ModifierKeys &mods) const
 {
 #if PLATFORM_DESKTOP
     return
-        this->isMode(RollEditMode::selectionMode) ||
-        this->isMode(RollEditMode::zoomMode);
+        this->isMode(RollEditMode::selectionMode);
 #elif PLATFORM_MOBILE
     return
         this->isMode(RollEditMode::selectionMode) ||
-        this->isMode(RollEditMode::zoomMode) ||
         this->isMode(RollEditMode::drawMode) ||
         this->isMode(RollEditMode::eraseMode) ||
         this->isMode(RollEditMode::knifeMode) ||
@@ -41,20 +39,9 @@ bool RollEditMode::forcesViewportDragging(const ModifierKeys &mods) const
     return this->isMode(RollEditMode::dragMode);
 }
 
-bool RollEditMode::forbidsViewportZooming(const ModifierKeys &mods) const
-{
-    return !this->isMode(RollEditMode::zoomMode);
-}
-
-bool RollEditMode::forcesViewportZooming(const ModifierKeys &mods) const
-{
-    return this->isMode(RollEditMode::zoomMode);
-}
-
 bool RollEditMode::forbidsSelectionMode(const ModifierKeys &mods) const
 {
     return
-        this->isMode(RollEditMode::zoomMode) ||
         this->isMode(RollEditMode::dragMode) ||
         this->isMode(RollEditMode::knifeMode) ||
         this->isMode(RollEditMode::mergeMode) ||
@@ -119,7 +106,6 @@ bool RollEditMode::shouldInteractWithChildren() const
             break;
 
         case selectionMode:
-        case zoomMode:
         case dragMode:
         case eraseMode:
         case knifeMode:
@@ -137,10 +123,6 @@ MouseCursor RollEditMode::getCursor() const
     {
         case defaultMode:
             return MouseCursor::NormalCursor;
-            break;
-
-        case zoomMode:
-            return MouseCursor(Icons::findByName(Icons::zoomIn, 24), 12, 12);
             break;
 
         case dragMode:

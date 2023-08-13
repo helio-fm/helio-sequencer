@@ -151,14 +151,17 @@ public:
     // MultiTouchListener
     //===------------------------------------------------------------------===//
 
-    void longTapEvent(const Point<float> &position,
-        const WeakReference<Component> &target) override;
+    void multiTouchStartZooming() override;
+    void multiTouchContinueZooming(
+        const Rectangle<float> &relativePosition,
+        const Rectangle<float> &relativePositionAnchor,
+        const Rectangle<float> &absolutePositionAnchor) override;
 
-    void multiTouchZoomEvent(const Point<float> &origin, const Point<float> &zoom) override;
-    void multiTouchPanEvent(const Point<float> &offset) override;
-    void multiTouchCancelZoom() override;
-    void multiTouchCancelPan() override;
-    Point<float> getMultiTouchOrigin(const Point<float> &from) override;
+    Point<float> getMultiTouchRelativeAnchor(const Point<float> &from) override;
+    Point<float> getMultiTouchAbsoluteAnchor(const Point<float> &from) override;
+
+    void longTapEvent(const Point<float> &position,
+                      const WeakReference<Component> &target) override;
 
     //===------------------------------------------------------------------===//
     // SmoothPanListener
@@ -362,19 +365,14 @@ protected:
 
     Point<int> viewportAnchor = { 0, 0 };
     Point<float> clickAnchor = { 0, 0 };
-    Point<float> zoomAnchor = { 0, 0 };
-    UniquePointer<Component> zoomMarker;
-    
+    float beatWidthAnchor = 0;
+
     void resetDraggingAnchors();
     void continueDragging(const MouseEvent &e);
     Point<float> getMouseOffset(Point<float> mouseScreenPosition) const;
 
     Point<int> getDefaultPositionForPopup() const;
 
-    void startZooming();
-    void continueZooming(const MouseEvent &e);
-    void endZooming();
-    
     Lasso selection;
 
     virtual void startErasingEvents(const Point<float> &mousePosition) = 0;
@@ -385,7 +383,6 @@ protected:
     virtual void continueMergingEvents(const Point<float> &mousePosition) = 0;
     virtual void endMergingEvents() = 0;
 
-    bool isViewportZoomEvent(const MouseEvent &e) const;
     bool isViewportDragEvent(const MouseEvent &e) const;
     bool isAddEvent(const MouseEvent &e) const;
     bool isLassoEvent(const MouseEvent &e) const;

@@ -185,6 +185,18 @@ protected:
     float findNextAnchorBeat(float beat) const override;
     float findPreviousAnchorBeat(float beat) const override;
 
+    //===------------------------------------------------------------------===//
+    // MultiTouchListener
+    //===------------------------------------------------------------------===//
+
+    void multiTouchStartZooming() override;
+    void multiTouchContinueZooming(
+        const Rectangle<float> &relativePosition,
+        const Rectangle<float> &relativePositionAnchor,
+        const Rectangle<float> &absolutePositionAnchor) override;
+
+    int rowHeightAnchor = 0;
+
 private:
 
     WeakReference<MidiTrack> activeTrack = nullptr;

@@ -382,34 +382,42 @@ void RollBase::longTapEvent(const Point<float> &position,
     }
 }
 
-void RollBase::multiTouchZoomEvent(const Point<float> &origin, const Point<float> &zoom)
+void RollBase::multiTouchStartZooming()
 {
-    this->smoothPanController->cancelPan();
-    this->smoothZoomController->zoomRelative(origin, zoom);
-}
+    this->beatWidthAnchor = this->beatWidth;
 
-void RollBase::multiTouchPanEvent(const Point<float> &offset)
-{
-    //this->smoothZoomController->cancelZoom();
-    const auto absOffset = this->viewport.getViewPosition() + offset.toInt();
-    this->panByOffset(absOffset.x, absOffset.y);
-}
-
-void RollBase::multiTouchCancelZoom()
-{
-    this->clickAnchor = Desktop::getInstance().getMainMouseSource().getScreenPosition();
     this->smoothZoomController->cancelZoom();
-}
-
-void RollBase::multiTouchCancelPan()
-{
-    this->clickAnchor = Desktop::getInstance().getMainMouseSource().getScreenPosition();
     this->smoothPanController->cancelPan();
+
+    this->stopFollowingPlayhead();
 }
 
-Point<float> RollBase::getMultiTouchOrigin(const Point<float> &from)
+void RollBase::multiTouchContinueZooming(const Rectangle<float> &relativePositions,
+     const Rectangle<float> &relativeAnchor, const Rectangle<float> &absoluteAnchor)
 {
-    return (from - this->viewport.getViewPosition().toFloat());
+    const auto minSensitivity = 35.f;
+    const float newBeatWidth = jmax(
+        float(this->viewport.getWidth() + 1) / this->getNumBeats(), // minimum beat width
+        this->beatWidthAnchor * (jmax(minSensitivity, relativePositions.getWidth()) / jmax(minSensitivity, relativeAnchor.getWidth())));
+
+    this->setBeatWidth(newBeatWidth);
+
+    const auto newViewX = (float(this->getWidth()) * absoluteAnchor.getX()) - relativePositions.getX();
+    const auto newViewY = (float(this->getHeight()) * absoluteAnchor.getY()) - relativePositions.getY();
+    this->viewport.setViewPosition(int(newViewX), int(newViewY));
+
+    this->updateChildrenPositions();
+    this->resetDraggingAnchors();
+}
+
+Point<float> RollBase::getMultiTouchRelativeAnchor(const Point<float> &from)
+{
+    return from - this->viewport.getViewPosition().toFloat();
+}
+
+Point<float> RollBase::getMultiTouchAbsoluteAnchor(const Point<float> &from)
+{
+    return from / this->getLocalBounds().getBottomRight().toFloat();
 }
 
 //===----------------------------------------------------------------------===//
@@ -534,6 +542,7 @@ void RollBase::zoomRelative(const Point<float> &origin,
 
     const auto hitsMinZoomThreshold = estimatedNewWidth < float(this->viewport.getViewWidth());
     const auto shouldAutoFitViewRange = hitsMinZoomThreshold && !isInertialZoom;
+
     if (hitsMinZoomThreshold)
     {
         newBeatWidth = float(this->viewport.getWidth() + 1) / this->getNumBeats();
@@ -1122,10 +1131,6 @@ void RollBase::mouseDown(const MouseEvent &e)
     {
         this->resetDraggingAnchors();
     }
-    else if (this->isViewportZoomEvent(e))
-    {
-        this->startZooming();
-    }
 }
 
 void RollBase::mouseDrag(const MouseEvent &e)
@@ -1153,10 +1158,6 @@ void RollBase::mouseDrag(const MouseEvent &e)
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->continueDragging(e);
-    }
-    else if (this->isViewportZoomEvent(e))
-    {
-        this->continueZooming(e);
     }
 }
 
@@ -1193,11 +1194,6 @@ void RollBase::mouseUp(const MouseEvent &e)
         // in the knife mode, and on mouse up we're switching back:
         jassert(this->project.getEditMode().isMode(RollEditMode::mergeMode));
         this->project.getEditMode().setMode(RollEditMode::knifeMode);
-    }
-
-    if (this->isViewportZoomEvent(e))
-    {
-        this->endZooming();
     }
 
     if (this->lassoComponent->isDragging())
@@ -1841,13 +1837,6 @@ void RollBase::hiResTimerCallback()
 // Events check
 //===----------------------------------------------------------------------===//
 
-bool RollBase::isViewportZoomEvent(const MouseEvent &e) const
-{
-    if (this->project.getEditMode().forbidsViewportZooming(e.mods)) { return false; }
-    if (this->project.getEditMode().forcesViewportZooming(e.mods)) { return true; }
-    return false;
-}
-
 bool RollBase::isViewportDragEvent(const MouseEvent &e) const
 {
     if (this->project.getEditMode().forbidsViewportDragging(e.mods)) { return false; }
@@ -1903,49 +1892,6 @@ void RollBase::continueDragging(const MouseEvent &e)
     this->smoothZoomController->cancelZoom();
     const auto offset = this->getMouseOffset(e.source.getScreenPosition()).toInt();
     this->panByOffset(offset.x, offset.y);
-}
-
-//===----------------------------------------------------------------------===//
-// Zooming
-//===----------------------------------------------------------------------===//
-
-void RollBase::startZooming()
-{
-    this->smoothPanController->cancelPan();
-    this->clickAnchor = Desktop::getInstance().getMainMouseSource().getScreenPosition();
-
-    this->zoomAnchor.setXY(0, 0);
-
-    this->zoomMarker = make<IconComponent>(Icons::zoomIn);
-    this->zoomMarker->setAlwaysOnTop(true);
-
-    const auto mouseDownPosition = this->clickAnchor.toInt() - this->viewport.getScreenPosition();
-
-    this->zoomMarker->setSize(24, 24);
-    this->zoomMarker->setCentrePosition(mouseDownPosition.getX(), mouseDownPosition.getY());
-    this->viewport.addAndMakeVisible(this->zoomMarker.get());
-
-    Desktop::getInstance().getMainMouseSource().enableUnboundedMouseMovement(true, false);
-}
-
-void RollBase::continueZooming(const MouseEvent &e)
-{
-    Desktop::getInstance().getMainMouseSource().setScreenPosition(e.getMouseDownScreenPosition().toFloat());
-
-    const auto clickOffset = e.position - this->viewport.getViewPosition().toFloat();
-    const float dragOffsetX = float(e.getPosition().getX() - e.getMouseDownPosition().getX());
-    const float dragOffsetY = -float(e.getPosition().getY() - e.getMouseDownPosition().getY());
-    const auto zoomOffset = (Point<float>(dragOffsetX, dragOffsetY) - this->zoomAnchor).toFloat() * 0.005f;
-
-    this->smoothZoomController->zoomRelative(clickOffset, zoomOffset);
-}
-
-void RollBase::endZooming()
-{
-    Desktop::getInstance().getMainMouseSource().enableUnboundedMouseMovement(false, false);
-
-    this->zoomAnchor.setXY(0, 0);
-    this->zoomMarker = nullptr;
 }
 
 //===----------------------------------------------------------------------===//

@@ -37,15 +37,15 @@ public:
 private:
 
     MultiTouchListener &listener;
-    
-    Point<float> finger1Position;
-    Point<float> finger2Position;
 
-    Point<float> center1;
-    Point<float> center2;
-    
-    Point<float> zoomDiff;
-    Point<float> dragDiff;
+    Point<float> relativePositionAnchor1;
+    Point<float> relativePositionAnchor2;
+
+    Point<float> relativePosition1;
+    Point<float> relativePosition2;
+
+    Point<float> absolutePositionAnchor1;
+    Point<float> absolutePositionAnchor2;
 
     bool finger1On = false;
     bool finger2On = false;

@@ -18,105 +18,69 @@
 #include "Common.h"
 #include "MultiTouchController.h"
 
-#if PLATFORM_DESKTOP
-#   define ZOOM_THRESHOLD 0.5
-#   define DRAG_THRESHOLD 10
-#   define ZOOM_H_SPEED 0.005f
-#   define ZOOM_V_SPEED 0.01f
-#elif JUCE_IOS
-#   define ZOOM_THRESHOLD 0.1f
-#   define DRAG_THRESHOLD 25
-#   define ZOOM_H_SPEED 0.0035f
-#   define ZOOM_V_SPEED 0.01f
-#elif JUCE_ANDROID
-#   define ZOOM_THRESHOLD 0.15f
-#   define DRAG_THRESHOLD 25
-#   define ZOOM_H_SPEED 0.0025f
-#   define ZOOM_V_SPEED 0.005f
-#endif
-
 MultiTouchController::MultiTouchController(MultiTouchListener &parent) :
-    listener(parent),
-    zoomDiff(0, 0),
-    dragDiff(0, 0),
-    finger1Position(0, 0),
-    finger2Position(0, 0),
-    center1(0, 0),
-    center2(0, 0) {}
+    listener(parent) {}
 
 void MultiTouchController::mouseDown(const MouseEvent &event)
 {
-    if (event.source.getIndex() > 1)
-    {
-        return;
-    }
+    jassert(event.source.getIndex() <= 1); // we only support 2-fingers multi-touch
 
     if (event.source.getIndex() == 0)
     {
         this->finger1On = true;
-        this->finger1Position = event.source.getScreenPosition();
-        this->center1 = this->listener.getMultiTouchOrigin(event.position);
+        this->relativePosition1 = this->listener.getMultiTouchRelativeAnchor(event.position);
+        this->relativePositionAnchor1 = this->listener.getMultiTouchRelativeAnchor(event.position);
+        this->absolutePositionAnchor1 = this->listener.getMultiTouchAbsoluteAnchor(event.position);
     }
     else if (event.source.getIndex() == 1)
     {
         this->finger2On = true;
-        this->finger2Position = event.source.getScreenPosition();
-        this->center2 = this->listener.getMultiTouchOrigin(event.position);
+        this->relativePosition2 = this->listener.getMultiTouchRelativeAnchor(event.position);
+        this->relativePositionAnchor2 = this->listener.getMultiTouchRelativeAnchor(event.position);
+        this->absolutePositionAnchor2 = this->listener.getMultiTouchAbsoluteAnchor(event.position);
     }
 
-    if (!this->hasMultitouch())
+    if (this->hasMultitouch())
     {
-        this->listener.multiTouchCancelPan();
-        this->listener.multiTouchCancelZoom();
+        this->listener.multiTouchStartZooming();
     }
-
-    const float xLength = fabsf(this->finger2Position.getX() - this->finger1Position.getX());
-    const float yLength = fabsf(this->finger2Position.getY() - this->finger1Position.getY());
-    this->zoomDiff.setXY(xLength, yLength);
 }
 
 void MultiTouchController::mouseDrag(const MouseEvent &event)
 {
-    if (!this->hasMultitouch())
+    if (!this->finger2On && event.source.getIndex() == 0)
     {
+        // simply update the anchors
+        this->relativePosition1 = this->listener.getMultiTouchRelativeAnchor(event.position);
+        this->relativePositionAnchor1 = this->listener.getMultiTouchRelativeAnchor(event.position);
+        this->absolutePositionAnchor1 = this->listener.getMultiTouchAbsoluteAnchor(event.position);
         return;
     }
     
     if (event.source.getIndex() == 0)
     {
-        this->finger1Position = event.source.getScreenPosition();
-        this->center1 = this->listener.getMultiTouchOrigin(event.position);
+        this->relativePosition1 = this->listener.getMultiTouchRelativeAnchor(event.position);
     }
     else if (event.source.getIndex() == 1)
     {
-        this->finger2Position = event.source.getScreenPosition();
-        this->center2 = this->listener.getMultiTouchOrigin(event.position);
+        this->relativePosition2 = this->listener.getMultiTouchRelativeAnchor(event.position);
     }
-        
-    const float vZoomLength = fabsf(this->finger2Position.getX() - this->finger1Position.getX());
-    const float hZoomLength = fabsf(this->finger2Position.getY() - this->finger1Position.getY());
-    const auto zoomOffset = (Point<float>(vZoomLength, hZoomLength) - this->zoomDiff) * Point<float>(ZOOM_V_SPEED, ZOOM_H_SPEED);
 
-    const Point<float> diffV(0.f, zoomOffset.getY());
-    this->listener.multiTouchCancelPan();
-    this->listener.multiTouchZoomEvent((this->center1 + this->center2) / 2.f, diffV);
+    const Rectangle<float> relativePositions(this->relativePosition1, this->relativePosition2);
+    const Rectangle<float> relativeAnchor(this->relativePositionAnchor1, this->relativePositionAnchor2);
+    const Rectangle<float> absoluteAnchor(this->absolutePositionAnchor1, this->absolutePositionAnchor2);
 
-    const Point<float> diffH(zoomOffset.getX(), 0.f);
-    this->listener.multiTouchCancelPan();
-    this->listener.multiTouchZoomEvent((this->center1 + this->center2) / 2.f, diffH);
-        
-    this->zoomDiff.setXY(vZoomLength, hZoomLength);
+    this->listener.multiTouchContinueZooming(relativePositions, relativeAnchor, absoluteAnchor);
 }
 
 void MultiTouchController::mouseUp(const MouseEvent &event)
 {
-    if (this->hasMultitouch())
+    if (event.source.getIndex() == 0)
     {
         this->finger1On = false;
+    }
+    else if (event.source.getIndex() == 1)
+    {
         this->finger2On = false;
-        this->zoomDiff.setXY(0, 0);
-        this->dragDiff.setXY(0, 0);
-        this->listener.multiTouchCancelPan();
-        this->listener.multiTouchCancelZoom();
     }
 }
