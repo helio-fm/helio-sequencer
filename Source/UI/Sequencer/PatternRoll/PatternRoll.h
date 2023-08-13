@@ -132,7 +132,12 @@ protected:
 
 private:
 
+#if PLATFORM_DESKTOP
     static constexpr auto clipHeight = 54;
+#elif PLATFORM_MOBILE
+    static constexpr auto clipHeight = 40;
+#endif
+
     static constexpr auto trackHeaderHeight = 3;
     static constexpr auto rowHeight = clipHeight + trackHeaderHeight;
 

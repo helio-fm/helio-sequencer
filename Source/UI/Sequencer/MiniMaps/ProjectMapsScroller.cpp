@@ -447,7 +447,7 @@ void ProjectMapsScroller::setScrollerMode(ScrollerMode mode)
     {
         if (auto *pianoMap = dynamic_cast<PianoProjectMap *>(map))
         {
-            pianoMap->setBrightness(isFullMap ? 1.f : 0.75f);
+            pianoMap->setBrightness(isFullMap ? 1.f : 0.85f);
         }
         else
         {
@@ -455,11 +455,8 @@ void ProjectMapsScroller::setScrollerMode(ScrollerMode mode)
         }
     }
 
-    this->screenRange->setVisible(isFullMap);
-    this->screenRange->setEnabled(isFullMap); // to disable mouse interaction
-
-    this->helperRectangle->setBrightness(isFullMap ?
-        HorizontalDragHelper::defaultBrightness : 1.f);
+    this->screenRange->setEnabled(isFullMap);
+    this->screenRange->setInterceptsMouseClicks(isFullMap, isFullMap);
 
     this->updateAllBounds();
 }

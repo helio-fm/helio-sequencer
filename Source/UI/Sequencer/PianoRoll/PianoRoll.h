@@ -297,9 +297,9 @@ private:
     static constexpr auto defaultRowHeight = 12;
     static constexpr auto maxRowHeight = 28;
 #elif PLATFORM_MOBILE
-    static constexpr auto minRowHeight = 10;
-    static constexpr auto defaultRowHeight = 15;
-    static constexpr auto maxRowHeight = 35;
+    static constexpr auto minRowHeight = 8;
+    static constexpr auto defaultRowHeight = 16;
+    static constexpr auto maxRowHeight = 40;
 #endif
 
     friend class HighlightingScheme;

@@ -221,17 +221,17 @@ namespace Globals
         static constexpr auto headlineHeight = 40;
         static constexpr auto menuPanelRowHeight = 40;
         static constexpr auto sidebarWidth = 44;
-        static constexpr auto rollScrollerHeight = 35;
+        static constexpr auto rollHeaderHeight = 34;
         #elif PLATFORM_DESKTOP
         static constexpr auto headlineHeight = 32;
         static constexpr auto menuPanelRowHeight = 32;
         static constexpr auto sidebarWidth = 38;
-        static constexpr auto rollScrollerHeight = 30;
+        static constexpr auto rollHeaderHeight = 36;
         #endif
 
         static constexpr auto defaultBeatWidth = 48;
-        static constexpr auto rollHeaderHeight = 36;
         static constexpr auto rollHeaderShadowSize = 12;
+        static constexpr auto rollScrollerHeight = 30;
         static constexpr auto headlineIconSize = 16;
         static constexpr auto sidebarRowHeight = 36;
 
