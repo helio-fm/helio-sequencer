@@ -62,6 +62,12 @@ void VersionControl::checkout(const VCS::Revision::Ptr revision)
     {
         this->head.moveTo(revision);
         this->head.checkout();
+
+        // with these two lines it will behave like a hard reset,
+        // which is less flexible but seems more convenient:
+        this->head.rebuildDiffIfNeeded();
+        this->resetAllChanges();
+
         this->sendChangeMessage();
     }
 }
