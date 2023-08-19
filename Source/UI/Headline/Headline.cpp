@@ -134,14 +134,14 @@ void Headline::handleAsyncUpdate()
 
         previousItem = static_cast<TreeNode *>(treeItem);
 
+        this->animator.cancelAnimation(child, false);
+
         const auto boundsBefore = child->getBounds();
         child->updateContent();
         const auto boundsAfter = child->getBounds().withX(posX - Headline::itemsOverlapOffset);
-        this->animator.cancelAnimation(child, false);
         if (boundsBefore != boundsAfter)
         {
-            child->setBounds(boundsBefore);
-            this->animator.animateComponent(child, boundsAfter, 1.f, this->fadeInTimeMs, false, 1.0, 0.0);
+            child->setBounds(boundsAfter);
         }
 
         posX += boundsAfter.getWidth() - Headline::itemsOverlapOffset;

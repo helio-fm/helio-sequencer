@@ -71,12 +71,13 @@ struct CachedLabelImage final : public CachedComponentImage
     // because they should be rare, pls do it manually:
     bool forceInvalidate()
     {
-        this->text = String();
+        this->text = {};
+        this->image = {};
         return false;
     }
 
     // Do nothing, this is called on every setVisible
-    // (image will be released anyway in a destructor)
+    // (image will be released anyway in the destructor)
     void releaseResources() override {}
 
 private:

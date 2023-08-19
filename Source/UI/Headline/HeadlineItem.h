@@ -31,7 +31,7 @@ class HeadlineItem final : public Component,
 {
 public:
 
-    HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, AsyncUpdater &parent);
+    HeadlineItem(WeakReference<HeadlineItemDataSource> dataSource, AsyncUpdater &parent);
     ~HeadlineItem();
 
     WeakReference<HeadlineItemDataSource> getDataSource() const noexcept;
@@ -49,6 +49,8 @@ public:
 
 private:
 
+    static constexpr auto maxWidth = 256;
+
     void changeListenerCallback(ChangeBroadcaster *source) override;
     void timerCallback() override;
     void showMenuIfAny();
@@ -56,7 +58,7 @@ private:
     ComponentFader animator;
     UniquePointer<HeadlineContextMenuMarker> menuMarker;
 
-    WeakReference<HeadlineItemDataSource> item;
+    WeakReference<HeadlineItemDataSource> dataSource;
     AsyncUpdater &parentHeadline;
 
     const Colour bgColour = findDefaultColour(ColourIDs::Backgrounds::headlineFill);

@@ -57,8 +57,8 @@ public:
     const Colour light = findDefaultColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(2.f);
 };
 
-HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, AsyncUpdater &parent) :
-    item(treeItem),
+HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> dataSource, AsyncUpdater &parent) :
+    dataSource(dataSource),
     parentHeadline(parent)
 {
     this->setInterceptsMouseClicks(true, true);
@@ -82,11 +82,11 @@ HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, Async
     this->menuMarker = make<HeadlineContextMenuMarker>();
     this->addChildComponent(this->menuMarker.get());
 
-    this->setSize(256, Globals::UI::headlineHeight);
+    this->setSize(HeadlineItem::maxWidth, Globals::UI::headlineHeight);
 
-    if (this->item != nullptr)
+    if (this->dataSource != nullptr)
     {
-        this->item->addChangeListener(this);
+        this->dataSource->addChangeListener(this);
     }
 }
 
@@ -94,9 +94,9 @@ HeadlineItem::~HeadlineItem()
 {
     this->stopTimer();
 
-    if (this->item != nullptr)
+    if (this->dataSource != nullptr)
     {
-        this->item->removeChangeListener(this);
+        this->dataSource->removeChangeListener(this);
     }
 }
 
@@ -161,16 +161,16 @@ void HeadlineItem::mouseExit(const MouseEvent &e)
 
 void HeadlineItem::mouseDown(const MouseEvent &e)
 {
-    if (this->item != nullptr)
+    if (this->dataSource != nullptr)
     {
         this->stopTimer();
 
         // on desktop versions, as quick click on a headline item opens its node's page,
         // on mobile versions, it always opens the menu first
 #if PLATFORM_DESKTOP
-        if (this->item->canBeSelectedAsMenuItem())
+        if (this->dataSource->canBeSelectedAsMenuItem())
         {
-            this->item->onSelectedAsMenuItem();
+            this->dataSource->onSelectedAsMenuItem();
         }
         else
         {
@@ -191,18 +191,34 @@ void HeadlineItem::mouseUp(const MouseEvent &e)
 
 WeakReference<HeadlineItemDataSource> HeadlineItem::getDataSource() const noexcept
 {
-    return this->item;
+    return this->dataSource;
 }
 
 void HeadlineItem::updateContent()
 {
-    if (this->item != nullptr)
+    if (this->dataSource == nullptr)
     {
-        this->icon->setIconImage(this->item->getIcon());
-        this->titleLabel->setText(this->item->getName(), dontSendNotification);
-        const int textWidth = this->titleLabel->getFont().getStringWidth(this->titleLabel->getText());
-        const int maxTextWidth = this->titleLabel->getWidth();
-        this->setSize(jmin(textWidth, maxTextWidth) + 46 + Headline::itemsOverlapOffset, Globals::UI::headlineHeight - 1);
+        return;
+    }
+
+    this->icon->setIconImage(this->dataSource->getIcon());
+
+    if (this->titleLabel->getText() != this->dataSource->getName())
+    {
+        const auto textWidth = this->titleLabel->getFont().getStringWidth(this->dataSource->getName());
+
+        constexpr auto iconOffset = 46;
+        this->setSize(jmin(HeadlineItem::maxWidth,
+            textWidth + iconOffset + Headline::itemsOverlapOffset),
+            Globals::UI::headlineHeight - 1);
+
+        this->titleLabel->setText(this->dataSource->getName(), dontSendNotification);
+
+        auto *cachedImage = static_cast<CachedLabelImage *>(this->titleLabel->getCachedComponentImage());
+        jassert(cachedImage != nullptr);
+        cachedImage->forceInvalidate();
+
+        this->repaint();
     }
 }
 
@@ -219,9 +235,9 @@ void HeadlineItem::timerCallback()
 
 void HeadlineItem::showMenuIfAny()
 {
-    if (this->item != nullptr && this->item->hasMenu())
+    if (this->dataSource != nullptr && this->dataSource->hasMenu())
     {
-        App::showModalComponent(make<HeadlineDropdown>(this->item, this->getPosition()));
+        App::showModalComponent(make<HeadlineDropdown>(this->dataSource, this->getPosition()));
     }
 }
 
