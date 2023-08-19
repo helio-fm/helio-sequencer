@@ -128,6 +128,11 @@ void NoteComponent::mouseMove(const MouseEvent &e)
 
 void NoteComponent::mouseDown(const MouseEvent &e)
 {
+    if (e.source.getIndex() > 0)
+    {
+        return;
+    }
+
     if (this->shouldGoQuickSelectTrackMode(e.mods))
     {
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
@@ -259,6 +264,11 @@ static int lastDeltaKey = 0;
 
 void NoteComponent::mouseDrag(const MouseEvent &e)
 {
+    if (e.source.getIndex() > 0)
+    {
+        return;
+    }
+
     bool snap = !e.mods.isAltDown();    //snap is disabled
 
     if (this->shouldGoQuickSelectTrackMode(e.mods))
@@ -496,6 +506,11 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 
 void NoteComponent::mouseUp(const MouseEvent &e)
 {
+    if (e.source.getIndex() > 0)
+    {
+        return;
+    }
+
     if (this->shouldGoQuickSelectTrackMode(e.mods))
     {
         return;

@@ -382,7 +382,7 @@ void RollBase::longTapEvent(const Point<float> &position,
     }
 }
 
-void RollBase::multiTouchStartZooming()
+void RollBase::multiTouchStartZooming(const MouseEvent &e)
 {
     this->beatWidthAnchor = this->beatWidth;
 
@@ -390,12 +390,20 @@ void RollBase::multiTouchStartZooming()
     this->smoothPanController->cancelPan();
 
     this->stopFollowingPlayhead();
+    this->resetDraggingAnchors(e);
 }
 
-void RollBase::multiTouchContinueZooming(const Rectangle<float> &relativePositions,
-     const Rectangle<float> &relativeAnchor, const Rectangle<float> &absoluteAnchor)
+void RollBase::multiTouchContinueZooming(const MouseEvent &e,
+    const Rectangle<float> &relativePositions,
+    const Rectangle<float> &relativeAnchor,
+    const Rectangle<float> &absoluteAnchor)
 {
+#if PLATFORM_DESKTOP
+    const auto minSensitivity = 70.f;
+#elif PLATFORM_MOBILE
     const auto minSensitivity = 35.f;
+#endif
+
     const float newBeatWidth = jmax(
         float(this->viewport.getWidth() + 1) / this->getNumBeats(), // minimum beat width
         this->beatWidthAnchor * (jmax(minSensitivity, relativePositions.getWidth()) / jmax(minSensitivity, relativeAnchor.getWidth())));
@@ -407,7 +415,7 @@ void RollBase::multiTouchContinueZooming(const Rectangle<float> &relativePositio
     this->viewport.setViewPosition(int(newViewX), int(newViewY));
 
     this->updateChildrenPositions();
-    this->resetDraggingAnchors();
+    this->resetDraggingAnchors(e);
 }
 
 Point<float> RollBase::getMultiTouchRelativeAnchor(const Point<float> &from)
@@ -1129,7 +1137,7 @@ void RollBase::mouseDown(const MouseEvent &e)
     }
     else if (this->isViewportDragEvent(e))
     {
-        this->resetDraggingAnchors();
+        this->resetDraggingAnchors(e);
     }
 }
 
@@ -1173,7 +1181,7 @@ void RollBase::mouseUp(const MouseEvent &e)
     // so instead:
     this->contextMenuController->cancelIfPending();
 
-    if (const bool hasMultitouch = (e.source.getIndex() > 0))
+    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
         return;
     }
@@ -1883,14 +1891,22 @@ bool RollBase::isErasingEvent(const MouseEvent &e) const
 void RollBase::resetDraggingAnchors()
 {
     this->viewportAnchor = this->viewport.getViewPosition();
+    // getting the last known screen position from the mouse source is less reliable,
+    // but sometimes it's all we've got, e.g. when zooming while dragging:
     this->clickAnchor = Desktop::getInstance().getMainMouseSource().getScreenPosition();
+}
+
+void RollBase::resetDraggingAnchors(const MouseEvent &e)
+{
+    this->viewportAnchor = this->viewport.getViewPosition();
+    this->clickAnchor = e.getScreenPosition().toFloat();
 }
 
 void RollBase::continueDragging(const MouseEvent &e)
 {
     this->draggedDistance = e.getDistanceFromDragStart();
     this->smoothZoomController->cancelZoom();
-    const auto offset = this->getMouseOffset(e.source.getScreenPosition()).toInt();
+    const auto offset = this->getMouseOffset(e.getScreenPosition());
     this->panByOffset(offset.x, offset.y);
 }
 
@@ -1898,23 +1914,19 @@ void RollBase::continueDragging(const MouseEvent &e)
 // Misc
 //===----------------------------------------------------------------------===//
 
-Point<float> RollBase::getMouseOffset(Point<float> mouseScreenPosition) const
+Point<int> RollBase::getMouseOffset(Point<int> mouseScreenPosition) const
 {
-    const int w = this->getWidth() - this->viewport.getWidth();
+    const auto distanceFromDragStart = mouseScreenPosition - this->clickAnchor.toInt();
 
-    const auto distanceFromDragStart = mouseScreenPosition - this->clickAnchor;
-    float x = this->viewportAnchor.getX() - distanceFromDragStart.getX();
+    const auto w = this->getWidth() - this->viewport.getWidth();
+    const auto x = jmax(0, jmin(w,
+        this->viewportAnchor.getX() - distanceFromDragStart.getX()));
 
-    x = (x < 0) ? 0 : x;
-    x = (x > w) ? w : x;
+    const auto h = this->getHeight() - this->viewport.getHeight();
+    const auto y = jmax(0, jmin(h,
+        this->viewportAnchor.getY() - distanceFromDragStart.getY()));
 
-    const int h = this->getHeight() - this->viewport.getHeight();
-    float y = this->viewportAnchor.getY() - distanceFromDragStart.getY();
-
-    y = (y < 0) ? 0 : y;
-    y = (y > h) ? h : y;
-
-    return Point<float>(x, y);
+    return {x, y};
 }
 
 Point<int> RollBase::getDefaultPositionForPopup() const

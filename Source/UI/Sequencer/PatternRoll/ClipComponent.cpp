@@ -116,6 +116,11 @@ void ClipComponent::mouseDoubleClick(const MouseEvent &e)
 
 void ClipComponent::mouseDown(const MouseEvent &e)
 {
+    if (e.source.getIndex() > 0)
+    {
+        return;
+    }
+
     if (e.mods.isRightButtonDown() &&
         (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
          this->roll.getEditMode().isMode(RollEditMode::drawMode)))
@@ -150,6 +155,11 @@ void ClipComponent::mouseDown(const MouseEvent &e)
 
 void ClipComponent::mouseDrag(const MouseEvent &e)
 {
+    if (e.source.getIndex() > 0)
+    {
+        return;
+    }
+
     if (!this->isActive())
     {
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
@@ -219,6 +229,11 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
 
 void ClipComponent::mouseUp(const MouseEvent &e)
 {
+    if (e.source.getIndex() > 0)
+    {
+        return;
+    }
+
     if (!this->isActive())
     {
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));

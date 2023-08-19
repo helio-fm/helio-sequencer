@@ -647,7 +647,7 @@ void PatternRoll::mouseDrag(const MouseEvent &e)
 
 void PatternRoll::mouseUp(const MouseEvent &e)
 {
-    if (const bool hasMultitouch = (e.source.getIndex() > 0))
+    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
         return;
     }

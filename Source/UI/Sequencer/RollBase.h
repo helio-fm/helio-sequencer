@@ -151,8 +151,8 @@ public:
     // MultiTouchListener
     //===------------------------------------------------------------------===//
 
-    void multiTouchStartZooming() override;
-    void multiTouchContinueZooming(
+    void multiTouchStartZooming(const MouseEvent &e) override;
+    void multiTouchContinueZooming(const MouseEvent &e,
         const Rectangle<float> &relativePosition,
         const Rectangle<float> &relativePositionAnchor,
         const Rectangle<float> &absolutePositionAnchor) override;
@@ -368,8 +368,9 @@ protected:
     float beatWidthAnchor = 0;
 
     void resetDraggingAnchors();
+    void resetDraggingAnchors(const MouseEvent &e);
     void continueDragging(const MouseEvent &e);
-    Point<float> getMouseOffset(Point<float> mouseScreenPosition) const;
+    Point<int> getMouseOffset(Point<int> mouseScreenPosition) const;
 
     Point<int> getDefaultPositionForPopup() const;
 

@@ -266,22 +266,30 @@ float PianoRoll::findPreviousAnchorBeat(float beat) const
 // MultiTouchListener
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::multiTouchStartZooming()
+void PianoRoll::multiTouchStartZooming(const MouseEvent &e)
 {
     this->rowHeightAnchor = this->rowHeight;
-    RollBase::multiTouchStartZooming();
+    RollBase::multiTouchStartZooming(e);
 }
 
-void PianoRoll::multiTouchContinueZooming(const Rectangle<float> &relativePositions,
-    const Rectangle<float> &relativeAnchor, const Rectangle<float> &absoluteAnchor)
+void PianoRoll::multiTouchContinueZooming(const MouseEvent &e,
+    const Rectangle<float> &relativePositions,
+    const Rectangle<float> &relativeAnchor,
+    const Rectangle<float> &absoluteAnchor)
 {
+#if PLATFORM_DESKTOP
+    const auto minSensitivity = 70.f;
+#elif PLATFORM_MOBILE
     const auto minSensitivity = 35.f;
+#endif
+
     const float newRowHeight = float(this->rowHeightAnchor) *
         (jmax(minSensitivity, relativePositions.getHeight()) / jmax(minSensitivity, relativeAnchor.getHeight()));
 
     this->setRowHeight(int(roundf(newRowHeight)));
 
-    RollBase::multiTouchContinueZooming(relativePositions, relativeAnchor, absoluteAnchor);
+    RollBase::multiTouchContinueZooming(e,
+        relativePositions, relativeAnchor, absoluteAnchor);
 }
 
 //===----------------------------------------------------------------------===//
@@ -986,13 +994,13 @@ float PianoRoll::getLassoEndBeat() const
 
 void PianoRoll::mouseDown(const MouseEvent &e)
 {
-    bool snap = !e.mods.isAltDown();    //holding alt disables snapping to barlines
-
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
         return;
     }
-    
+
+    const bool snap = !e.mods.isAltDown(); // holding alt disables snapping to barlines
+
     if (! this->isUsingSpaceDraggingMode())
     {
         this->setInterceptsMouseClicks(true, false);
@@ -1012,6 +1020,11 @@ void PianoRoll::mouseDown(const MouseEvent &e)
 
 void PianoRoll::mouseDoubleClick(const MouseEvent &e)
 {
+    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
+    {
+        return;
+    }
+
     if (!this->project.getEditMode().forbidsAddingEvents({}))
     {
         const auto e2 = e.getEventRelativeTo(&App::Layout());
