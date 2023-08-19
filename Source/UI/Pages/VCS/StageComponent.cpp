@@ -38,17 +38,11 @@ StageComponent::StageComponent(VersionControl &versionControl) : vcs(versionCont
     this->titleLabel->setJustificationType(Justification::centred);
     this->titleLabel->setFont(Globals::UI::Fonts::L);
 
-    this->progressIndicator = make<ProgressIndicator>();
-    this->addAndMakeVisible(this->progressIndicator.get());
-
     this->changesList = make<ListBox>(String(), this);
     this->addAndMakeVisible(this->changesList.get());
 
     this->separator = make<SeparatorHorizontalFadingReversed>();
     this->addAndMakeVisible(this->separator.get());
-
-    this->progressIndicator->setVisible(false);
-    this->progressIndicator->setAlpha(0.5f);
 
     this->changesList->getViewport()->setScrollBarThickness(2);
     this->changesList->getViewport()->setScrollBarsShown(true, false);
@@ -58,23 +52,14 @@ StageComponent::StageComponent(VersionControl &versionControl) : vcs(versionCont
     this->changesList->setRowHeight(rowHeight);
 
     this->updateList();
-
-    this->vcs.getHead().addChangeListener(this);
 }
 
-StageComponent::~StageComponent()
-{
-    this->vcs.getHead().removeChangeListener(this);
-}
+StageComponent::~StageComponent() = default;
 
 void StageComponent::resized()
 {
     constexpr auto labelHeight = 26;
     this->titleLabel->setBounds(0, 0, this->getWidth(), labelHeight);
-
-    constexpr auto spinnerSize = 32;
-    this->progressIndicator->setBounds((this->getWidth() / 2) - (spinnerSize / 2),
-        (this->getHeight() / 2) - (spinnerSize / 2), spinnerSize, spinnerSize);
 
     constexpr auto contentTopMargin = 42;
     this->changesList->setBounds(1, contentTopMargin,
@@ -130,27 +115,6 @@ void StageComponent::selectAll(NotificationType notificationType)
 void StageComponent::clearSelection()
 {
     this->changesList->setSelectedRows({}, dontSendNotification);
-}
-
-//===----------------------------------------------------------------------===//
-// ChangeListener
-//===----------------------------------------------------------------------===//
-
-void StageComponent::changeListenerCallback(ChangeBroadcaster *source)
-{
-    if (auto *head = dynamic_cast<VCS::Head *>(source))
-    {
-        if (head->isRebuildingDiff())
-        {
-            this->startProgressAnimation();
-            this->clearList();
-        }
-        else
-        {
-            this->stopProgressAnimation();
-            this->updateList();
-        }
-    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -225,29 +189,6 @@ void StageComponent::updateList()
     this->changesList->deselectAllRows();
     this->changesList->updateContent();
     this->repaint();
-}
-
-void StageComponent::clearList()
-{
-    const ScopedWriteLock lock(this->diffLock);
-    this->stageDeltas.clearQuick();
-    this->changesList->deselectAllRows();
-    this->changesList->updateContent();
-    this->repaint();
-}
-
-void StageComponent::startProgressAnimation()
-{
-    this->fader.cancelAllAnimations(false);
-    this->progressIndicator->startAnimating();
-    this->fader.fadeIn(this->progressIndicator.get(), Globals::UI::fadeInLong);
-}
-
-void StageComponent::stopProgressAnimation()
-{
-    this->fader.cancelAllAnimations(false);
-    this->progressIndicator->stopAnimating();
-    this->fader.fadeOut(this->progressIndicator.get(), Globals::UI::fadeOutLong);
 }
 
 //===----------------------------------------------------------------------===//

@@ -49,7 +49,7 @@ VersionControlEditor *VersionControl::createEditor()
 
 void VersionControl::moveHead(const VCS::Revision::Ptr revision)
 {
-    if (! revision->isEmpty())
+    if (!revision->isEmpty())
     {
         this->head.moveTo(revision);
         this->sendChangeMessage();
@@ -58,7 +58,7 @@ void VersionControl::moveHead(const VCS::Revision::Ptr revision)
 
 void VersionControl::checkout(const VCS::Revision::Ptr revision)
 {
-    if (! revision->isEmpty())
+    if (!revision->isEmpty())
     {
         this->head.moveTo(revision);
         this->head.checkout();
@@ -68,7 +68,7 @@ void VersionControl::checkout(const VCS::Revision::Ptr revision)
 
 void VersionControl::cherryPick(const VCS::Revision::Ptr revision, const Array<Uuid> uuids)
 {
-    if (! revision->isEmpty())
+    if (!revision->isEmpty())
     {
         auto headRevision(this->head.getHeadingRevision());
         this->head.moveTo(revision);
@@ -80,11 +80,9 @@ void VersionControl::cherryPick(const VCS::Revision::Ptr revision, const Array<U
 
 void VersionControl::replaceHistory(const VCS::Revision::Ptr root)
 {
-    // if parent revision id is empty, this is the root revision
-    // which means we're cloning project and replacing stub root with valid one:
-    DBG("Replacing history tree");
+    // if the parent revision id is empty, this is the root revision
+    // which means we're cloning the project and replacing stub root with valid one:
     this->rootRevision = root;
-    // make sure head doesn't point to replaced revision:
     this->head.moveTo(this->rootRevision);
     this->sendChangeMessage();
 }
@@ -119,7 +117,8 @@ void VersionControl::quickAmendItem(VCS::TrackedItem *targetItem)
 {
     // warning: this is not a fully-functional amend,
     // it is only used when a new tracked item is added to revision;
-    // changes and deletions to committed items will not work:
+    // changes and deletions to committed items will not work,
+    // this is only used when initializing the first version automatically:
     VCS::RevisionItem::Ptr revisionRecord(new VCS::RevisionItem(VCS::RevisionItem::Type::Added, targetItem));
     this->head.getHeadingRevision()->addItem(revisionRecord);
     this->head.moveTo(this->head.getHeadingRevision());
@@ -128,7 +127,10 @@ void VersionControl::quickAmendItem(VCS::TrackedItem *targetItem)
 
 bool VersionControl::resetChanges(SparseSet<int> selectedItems)
 {
-    if (selectedItems.size() == 0) { return false; }
+    if (selectedItems.isEmpty())
+    {
+        return false;
+    }
 
     VCS::Revision::Ptr allChanges(this->head.getDiff());
     Array<VCS::RevisionItem::Ptr> changesToReset;
@@ -143,10 +145,12 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
         }
     }
 
-    return this->head.resetChanges(changesToReset);
+    const auto result = this->head.resetChanges(changesToReset);
+    this->sendChangeMessage();
+    return result;
 }
 
-bool VersionControl::resetAllChanges()
+void VersionControl::resetAllChanges()
 {
     VCS::Revision::Ptr allChanges(this->head.getDiff());
     Array<VCS::RevisionItem::Ptr> changesToReset;
@@ -157,12 +161,15 @@ bool VersionControl::resetAllChanges()
     }
     
     this->head.resetChanges(changesToReset);
-    return true;
+    this->sendChangeMessage();
 }
 
 bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
 {
-    if (selectedItems.size() == 0) { return false; }
+    if (selectedItems.isEmpty())
+    {
+        return false;
+    }
 
     VCS::Revision::Ptr newRevision(new VCS::Revision(message));
     VCS::Revision::Ptr allChanges(this->head.getDiff());
@@ -195,7 +202,10 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
 bool VersionControl::stash(SparseSet<int> selectedItems,
     const String &message, bool shouldKeepChanges)
 {
-    if (selectedItems.size() == 0) { return false; }
+    if (selectedItems.isEmpty())
+    {
+        return false;
+    }
     
     VCS::Revision::Ptr newRevision(new VCS::Revision(message));
     VCS::Revision::Ptr allChanges(this->head.getDiff());
@@ -220,23 +230,23 @@ bool VersionControl::stash(SparseSet<int> selectedItems,
 
 bool VersionControl::applyStash(const VCS::Revision::Ptr stash, bool shouldKeepStash)
 {
-    if (! stash->isEmpty())
+    if (stash->isEmpty())
     {
-        VCS::Revision::Ptr headRevision(this->head.getHeadingRevision());
-        this->head.moveTo(stash);
-        this->head.cherryPickAll();
-        this->head.moveTo(headRevision);
-        
-        if (! shouldKeepStash)
-        {
-            this->stashes->removeStash(stash);
-        }
-        
-        this->sendChangeMessage();
-        return true;
+        return false;
     }
     
-    return false;
+    VCS::Revision::Ptr headRevision(this->head.getHeadingRevision());
+    this->head.moveTo(stash);
+    this->head.cherryPickAll();
+    this->head.moveTo(headRevision);
+
+    if (!shouldKeepStash)
+    {
+        this->stashes->removeStash(stash);
+    }
+
+    this->sendChangeMessage();
+    return true;
 }
 
 bool VersionControl::applyStash(const String &stashId, bool shouldKeepStash)
@@ -246,13 +256,15 @@ bool VersionControl::applyStash(const String &stashId, bool shouldKeepStash)
 
 bool VersionControl::hasQuickStash() const
 {
-    return (! this->stashes->hasQuickStash());
+    return !this->stashes->hasQuickStash();
 }
 
 bool VersionControl::quickStashAll()
 {
     if (this->hasQuickStash())
-    { return false; }
+    {
+        return false;
+    }
 
     VCS::Revision::Ptr allChanges(this->head.getDiff());
     this->stashes->storeQuickStash(allChanges);
@@ -264,8 +276,10 @@ bool VersionControl::quickStashAll()
 
 bool VersionControl::restoreQuickStash()
 {
-    if (! this->hasQuickStash())
-    { return false; }
+    if (!this->hasQuickStash())
+    {
+        return false;
+    }
     
     VCS::Head tempHead(this->head);
     tempHead.mergeStateWith(this->stashes->getQuickStash());
@@ -280,10 +294,9 @@ bool VersionControl::restoreQuickStash()
 // ChangeListener
 //===----------------------------------------------------------------------===//
 
-void VersionControl::changeListenerCallback(ChangeBroadcaster* source)
+void VersionControl::changeListenerCallback(ChangeBroadcaster *source)
 {
-    // Project changed
-    this->getHead().setDiffOutdated(true);
+    this->getHead().setDiffOutdated(true); // the project has changed
 }
 
 #if !NO_NETWORK
@@ -418,7 +431,8 @@ void VersionControl::deserialize(const SerializedData &data)
         const double headLoadStart = Time::getMillisecondCounterHiRes();
 #endif
         this->head.deserialize(root);
-        DBG("Loading VCS snapshot done in " + String(Time::getMillisecondCounterHiRes() - headLoadStart) + "ms");
+        DBG("Loading VCS snapshot done in " +
+            String(Time::getMillisecondCounterHiRes() - headLoadStart) + "ms");
     }
     
     if (auto headRevision = this->getRevisionById(this->rootRevision, headId))

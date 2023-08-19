@@ -26,9 +26,7 @@ namespace VCS
     class TrackedItemsSource;
 
     class Head :
-        private Thread,
         public ChangeListener, // listens to project changes to set diff outdated
-        public ChangeBroadcaster, // broadcasts the diff rebuild has started/ended
         public Serializable
     {
     public:
@@ -41,9 +39,6 @@ namespace VCS
         Revision::Ptr getDiff() const;
         bool isDiffOutdated() const;
         void setDiffOutdated(bool isOutdated);
-
-        bool isRebuildingDiff() const; // mainly for change-listeners
-        void setRebuildingDiffMode(bool isBuildingNow);
         
         bool hasAnythingOnTheStage() const;
         bool hasTrackedItemsOnTheStage() const;
@@ -57,9 +52,7 @@ namespace VCS
         void cherryPickAll();
         bool resetChanges(const Array<RevisionItem::Ptr> &changes);
 
-        void rebuildDiffIfNeeded(); // called from the editor when it gets visible
-        void rebuildDiffNow(); // called from the visible editor, when it receives vcs change message 
-        void rebuildDiffSynchronously(); // a hack foe quick-stash
+        void rebuildDiffIfNeeded();
         
         //===--------------------------------------------------------------===//
         // Serializable
@@ -77,28 +70,18 @@ namespace VCS
 
     private:
 
-        //===--------------------------------------------------------------===//
-        // Thread
-        //===--------------------------------------------------------------===//
-
-        void run() override;
         void checkoutItem(RevisionItem::Ptr stateItem);
         bool resetChangedItemToState(const RevisionItem::Ptr diffItem);
 
-        static constexpr auto diffRebuildThreadStopTimeoutMs = 5000;
-
-        ReadWriteLock outdatedMarkerLock;
-        bool diffOutdated;
+        Atomic<bool> diffOutdated = false;
 
         ReadWriteLock diffLock;
         Revision::Ptr diff;
-        
-        ReadWriteLock rebuildingDiffLock;
-        bool rebuildingDiffMode;
 
     private:
 
         Revision::Ptr headingAt;
+
         ReadWriteLock stateLock;
         UniquePointer<Snapshot> state;
 

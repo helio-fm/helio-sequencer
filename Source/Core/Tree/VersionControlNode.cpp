@@ -136,7 +136,7 @@ void VersionControlNode::toggleQuickStash()
         return;
     }
 
-    this->vcs->getHead().rebuildDiffSynchronously();
+    this->vcs->getHead().rebuildDiffIfNeeded();
     
     if (this->vcs->hasQuickStash())
     {

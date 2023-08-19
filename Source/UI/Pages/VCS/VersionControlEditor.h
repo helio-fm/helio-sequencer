@@ -25,7 +25,10 @@ class VersionControl;
 #include "PageBackgroundB.h"
 #include "SeparatorVerticalSkew.h"
 
-class VersionControlEditor final : public Component, public ChangeListener
+class VersionControlEditor final :
+    public Component,
+    public ChangeListener, // listens to VCS and project changes
+    public Timer // coalesce multiple updates on these ^ changes after a timeout
 {
 public:
 
@@ -43,6 +46,8 @@ private:
 
     VersionControl &vcs;
     void changeListenerCallback(ChangeBroadcaster *source) override;
+
+    void timerCallback() override;
 
     UniquePointer<PageBackgroundA> backgroundA;
     UniquePointer<SeparatorVerticalSkew> skew;

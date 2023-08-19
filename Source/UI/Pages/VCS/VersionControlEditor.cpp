@@ -70,12 +70,7 @@ void VersionControlEditor::broughtToFront()
 
 void VersionControlEditor::updateState()
 {
-    // VCS or project has changed
-    App::Layout().hideSelectionMenu();
-    this->stageComponent->clearSelection();
-    this->historyComponent->clearSelection();
-    this->vcs.getHead().rebuildDiffNow();
-    this->historyComponent->rebuildRevisionTree();
+    this->startTimer(100);
 }
 
 void VersionControlEditor::onStageSelectionChanged()
@@ -90,9 +85,22 @@ void VersionControlEditor::onHistorySelectionChanged()
 
 void VersionControlEditor::changeListenerCallback(ChangeBroadcaster *source)
 {
-    // VCS or project has changed
+    // received on VCS and project changes
     if (this->isShowing())
     {
         this->updateState();
     }
+}
+
+void VersionControlEditor::timerCallback()
+{
+    this->stopTimer();
+
+    App::Layout().hideSelectionMenu();
+
+    this->stageComponent->clearSelection();
+    this->historyComponent->clearSelection();
+    this->vcs.getHead().rebuildDiffIfNeeded();
+    this->stageComponent->updateList();
+    this->historyComponent->rebuildRevisionTree();
 }

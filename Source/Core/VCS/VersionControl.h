@@ -32,8 +32,8 @@ class VersionControlEditor;
 
 class VersionControl final :
     public Serializable,
-    public ChangeListener,
-    public ChangeBroadcaster
+    public ChangeListener, // listens to project changes
+    public ChangeBroadcaster // sends change messages to Head and VersionControlEditor
 {
 public:
 
@@ -50,7 +50,7 @@ public:
     VCS::Revision::Ptr getRoot() noexcept { return this->rootRevision; }
 
     //===------------------------------------------------------------------===//
-    // Version control: revisions
+    // Revisions
     //===------------------------------------------------------------------===//
 
     void moveHead(const VCS::Revision::Ptr revision);
@@ -62,12 +62,12 @@ public:
     VCS::Revision::Ptr updateShallowRevisionData(const String &id, const SerializedData &data);
 
     bool resetChanges(SparseSet<int> selectedItems);
-    bool resetAllChanges();
+    void resetAllChanges();
     bool commit(SparseSet<int> selectedItems, const String &message);
-    void quickAmendItem(VCS::TrackedItem *targetItem); // for first commit
+    void quickAmendItem(VCS::TrackedItem *targetItem); // for the first commit
 
     //===------------------------------------------------------------------===//
-    // Version control: stashes
+    // Stashes
     //===------------------------------------------------------------------===//
 
     bool stash(SparseSet<int> selectedItems, const String &message, bool shouldKeepChanges = false);

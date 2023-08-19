@@ -28,7 +28,6 @@ class ProgressIndicator;
 
 class StageComponent final : public Component,
     public ListBoxModel,
-    public ChangeListener,
     public HeadlineItemDataSource
 {
 public:
@@ -39,11 +38,7 @@ public:
     void selectAll(NotificationType notificationType);
     void clearSelection();
 
-    //===------------------------------------------------------------------===//
-    // ChangeListener - listens VCS head to refresh diff info
-    //===------------------------------------------------------------------===//
-
-    void changeListenerCallback(ChangeBroadcaster *source) override;
+    void updateList();
 
     //===------------------------------------------------------------------===//
     // ListBoxModel
@@ -80,19 +75,11 @@ private:
 
     ReferenceCountedArray<VCS::RevisionItem> stageDeltas;
 
-    ComponentFader fader;
-    void startProgressAnimation();
-    void stopProgressAnimation();
-
-    void updateList();
-    void clearList();
-
     void toggleQuickStash();
     void commitSelected();
     void resetSelected();
 
     UniquePointer<Label> titleLabel;
-    UniquePointer<ProgressIndicator> progressIndicator;
     UniquePointer<ListBox> changesList;
     UniquePointer<SeparatorHorizontalFadingReversed> separator;
 

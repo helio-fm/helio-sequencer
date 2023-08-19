@@ -23,19 +23,14 @@ namespace VCS
 {
 
 Head::Head(const Head &other) :
-    Thread("Diff Thread"),
     targetVcsItemsSource(other.targetVcsItemsSource),
     diffOutdated(other.diffOutdated),
-    rebuildingDiffMode(false),
     diff(other.diff),
     headingAt(other.headingAt),
     state(make<Snapshot>(other.state.get())) {}
 
 Head::Head(TrackedItemsSource &targetProject) :
-    Thread("Diff Thread"),
     targetVcsItemsSource(targetProject),
-    diffOutdated(false),
-    rebuildingDiffMode(false),
     diff(new Revision()),
     headingAt(new Revision()),
     state(make<Snapshot>()) {}
@@ -71,32 +66,16 @@ bool Head::hasTrackedItemsOnTheStage() const
 
 bool Head::isDiffOutdated() const
 {
-    const ScopedReadLock lock(this->outdatedMarkerLock);
-    return this->diffOutdated;
+    return this->diffOutdated.get();
 }
 
 void Head::setDiffOutdated(bool isOutdated)
 {
-    const ScopedWriteLock lock(this->outdatedMarkerLock);
     this->diffOutdated = isOutdated;
-}
-
-bool Head::isRebuildingDiff() const
-{
-    const ScopedReadLock lock(this->rebuildingDiffLock);
-    return this->rebuildingDiffMode;
-}
-
-void Head::setRebuildingDiffMode(bool isBuildingNow)
-{
-    const ScopedWriteLock lock(this->rebuildingDiffLock);
-    this->rebuildingDiffMode = isBuildingNow;
 }
 
 void Head::mergeStateWith(Revision::Ptr changes)
 {
-    DBG("Head::mergeStateWith " + changes->getUuid());
-
     Revision::Ptr headRevision(this->getHeadingRevision());
     for (auto *changesItem : changes->getItems())
     {
@@ -130,11 +109,6 @@ void Head::mergeStateWith(Revision::Ptr changes)
 
 bool Head::moveTo(const Revision::Ptr revision)
 {
-    if (this->isThreadRunning())
-    {
-        this->stopThread(Head::diffRebuildThreadStopTimeoutMs);
-    }
-
     // first, reset the snapshot state
     {
         const ScopedWriteLock lock(this->stateLock);
@@ -187,7 +161,6 @@ void Head::pointTo(const Revision::Ptr revision)
     this->headingAt = revision;
     this->setDiffOutdated(true);
 }
-
 
 bool Head::resetChangedItemToState(const RevisionItem::Ptr diffItem)
 {
@@ -367,13 +340,11 @@ bool Head::resetChanges(const Array<RevisionItem::Ptr> &changes)
 
 void Head::checkoutItem(RevisionItem::Ptr stateItem)
 {
-    // Changed и Added RevisionItem'ы нужно применять через resetStateTo
     TrackedItem *targetItem = nullptr;
     
-    // ищем в проекте айтем с соответствующим уидом
-    for (int j = 0; j < this->targetVcsItemsSource.getNumTrackedItems(); ++j)
+    for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
     {
-        TrackedItem *item = this->targetVcsItemsSource.getTrackedItem(j);
+        auto *item = this->targetVcsItemsSource.getTrackedItem(i);
 
         if (item->getUuid() == stateItem->getUuid())
         {
@@ -391,7 +362,6 @@ void Head::checkoutItem(RevisionItem::Ptr stateItem)
     }
     else if (stateItem->getType() == RevisionItem::Type::Added)
     {
-        // айтем не в проекте - добавляем
         if (!targetItem)
         {
             
@@ -412,28 +382,6 @@ void Head::checkoutItem(RevisionItem::Ptr stateItem)
         }
     }
 }
-
-
-void Head::rebuildDiffIfNeeded()
-{
-    if (this->isDiffOutdated() && !this->isThreadRunning())
-    {
-        this->startThread(5);
-    }
-}
-
-void Head::rebuildDiffNow()
-{
-    if (this->isThreadRunning())
-    {
-        // Better to wait for a couple of seconds here than kill a thread by force
-        // and have leaked Diff and/or race due to hanging read-write locks
-        this->stopThread(Head::diffRebuildThreadStopTimeoutMs);
-    }
-
-    this->startThread(9);
-}
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -485,148 +433,37 @@ void Head::reset()
     this->setDiffOutdated(true);
 }
 
-
 //===----------------------------------------------------------------------===//
 // ChangeListener
 //===----------------------------------------------------------------------===//
 
 void Head::changeListenerCallback(ChangeBroadcaster *source)
 {
-    this->setDiffOutdated(true);
+    this->setDiffOutdated(true); // the VCS has changed
 }
 
-
 //===----------------------------------------------------------------------===//
-// Thread
+// Rebuilding the diff
 //===----------------------------------------------------------------------===//
 
-void Head::run()
+void Head::rebuildDiffIfNeeded()
 {
     if (this->state == nullptr)
-    { return; }
-    
-    this->setRebuildingDiffMode(true);
-    this->sendChangeMessage();
-
     {
-        const ScopedWriteLock lock(this->diffLock);
-        this->diff->reset();
+        return;
     }
 
-    const ScopedReadLock threadStateLock(this->stateLock);
-
-    for (int i = 0; i < this->state->getNumTrackedItems(); ++i)
+    if (!this->isDiffOutdated())
     {
-        if (this->threadShouldExit())
-        {
-            this->setRebuildingDiffMode(false);
-            this->sendChangeMessage();
-            return;
-        }
-
-        bool foundItemInTarget = false;
-        const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
-
-        // will check `removed` records later
-        if (stateItem->getType() == RevisionItem::Type::Removed) { continue; }
-
-        for (int j = 0; j < this->targetVcsItemsSource.getNumTrackedItems(); ++j)
-        {
-            if (this->threadShouldExit())
-            {
-                this->setRebuildingDiffMode(false);
-                this->sendChangeMessage();
-                return;
-            }
-
-            TrackedItem *targetItem = this->targetVcsItemsSource.getTrackedItem(j); // i.e. LayerTreeItem
-
-            // state item exists in project, adding `changed` record, if needed
-            if (stateItem->getUuid() == targetItem->getUuid())
-            {
-                foundItemInTarget = true;
-
-                UniquePointer<Diff> itemDiff(targetItem->getDiffLogic()->createDiff(*stateItem));
-
-                if (itemDiff->hasAnyChanges())
-                {
-                    RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Changed, itemDiff.get()));
-                    const ScopedWriteLock itemDiffLock(this->diffLock);
-                    this->diff->addItem(revisionRecord);
-                }
-
-                break;
-            }
-        }
-
-        // state item was not found in project, adding `removed` record
-        if (! foundItemInTarget)
-        {
-            auto emptyDiff = make<Diff>(*stateItem);
-            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Removed, emptyDiff.get()));
-            const ScopedWriteLock emptyDiffLock(this->diffLock);
-            this->diff->addItem(revisionRecord);
-        }
+        return;
     }
 
-    // search for project item that are missing (or deleted) in the state
-    for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
-    {
-        if (this->threadShouldExit())
-        {
-            this->setRebuildingDiffMode(false);
-            this->sendChangeMessage();
-            return;
-        }
+    //DBG("VCS: rebuilding the diff");
 
-        bool foundItemInState = false;
-        TrackedItem *targetItem = this->targetVcsItemsSource.getTrackedItem(i);
-
-        for (int j = 0; j < this->state->getNumTrackedItems(); ++j)
-        {
-            const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(j));
-
-            if (stateItem->getType() == RevisionItem::Type::Removed) { continue; }
-
-            if (stateItem->getUuid() == targetItem->getUuid())
-            {
-                foundItemInState = true;
-                break;
-            }
-        }
-
-        // copy deltas from targetItem and add `added` record
-        if (! foundItemInState)
-        {
-            RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Added, targetItem));
-            const ScopedWriteLock lock(this->diffLock);
-            this->diff->addItem(revisionRecord);
-        }
-    }
-
-    this->setDiffOutdated(false);
-    this->setRebuildingDiffMode(false);
-    this->sendChangeMessage();
-}
-
-// FIXME: lots of duplicate code from Head::run
-void Head::rebuildDiffSynchronously()
-{
-    if (this->state == nullptr)
-    { return; }
+    const ScopedWriteLock scopedDiffLock(this->diffLock);
+    this->diff->reset();
     
-    if (this->isRebuildingDiff())
-    { return; }
-    
-    this->setRebuildingDiffMode(true);
-    
-    {
-        const ScopedWriteLock lock(this->diffLock);
-        this->diff->reset();
-    }
-    
-    const ScopedReadLock rebuildStateLock(this->stateLock);
-    
+    const ScopedReadLock scopedStateLock(this->stateLock);
     for (int i = 0; i < this->state->getNumTrackedItems(); ++i)
     {
         bool foundItemInTarget = false;
@@ -649,7 +486,6 @@ void Head::rebuildDiffSynchronously()
                 if (itemDiff->hasAnyChanges())
                 {
                     RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Changed, itemDiff.get()));
-                    const ScopedWriteLock lock(this->diffLock);
                     this->diff->addItem(revisionRecord);
                 }
                 
@@ -662,7 +498,6 @@ void Head::rebuildDiffSynchronously()
         {
             auto emptyDiff = make<Diff>(*stateItem);
             RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Removed, emptyDiff.get()));
-            const ScopedWriteLock lock(this->diffLock);
             this->diff->addItem(revisionRecord);
         }
     }
@@ -690,14 +525,11 @@ void Head::rebuildDiffSynchronously()
         if (! foundItemInState)
         {
             RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Added, targetItem));
-            const ScopedWriteLock lock(this->diffLock);
             this->diff->addItem(revisionRecord);
         }
     }
     
     this->setDiffOutdated(false);
-    this->setRebuildingDiffMode(false);
-    this->sendChangeMessage();
 }
 
 }
