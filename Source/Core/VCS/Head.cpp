@@ -24,7 +24,7 @@ namespace VCS
 
 Head::Head(const Head &other) :
     targetVcsItemsSource(other.targetVcsItemsSource),
-    diffOutdated(other.diffOutdated),
+    isDiffOutdated(other.isDiffOutdated),
     diff(other.diff),
     headingAt(other.headingAt),
     state(make<Snapshot>(other.state.get())) {}
@@ -46,32 +46,14 @@ Revision::Ptr Head::getDiff() const
     return this->diff;
 }
 
-bool Head::hasAnythingOnTheStage() const
+bool Head::diffHasChanges() const
 {
     return !this->getDiff()->getItems().isEmpty();
 }
 
-bool Head::hasTrackedItemsOnTheStage() const
-{
-    for (const auto *revRecord : this->getDiff()->getItems())
-    {
-        if (revRecord->getType() != RevisionItem::Type::Added)
-        {
-            return true;
-        }
-    }
-    
-    return false;
-}
-
-bool Head::isDiffOutdated() const
-{
-    return this->diffOutdated.get();
-}
-
 void Head::setDiffOutdated(bool isOutdated)
 {
-    this->diffOutdated = isOutdated;
+    this->isDiffOutdated = isOutdated;
 }
 
 void Head::mergeStateWith(Revision::Ptr changes)
@@ -453,7 +435,7 @@ void Head::rebuildDiffIfNeeded()
         return;
     }
 
-    if (!this->isDiffOutdated())
+    if (!this->isDiffOutdated.get())
     {
         return;
     }

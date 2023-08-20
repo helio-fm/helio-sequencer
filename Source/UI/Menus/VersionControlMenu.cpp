@@ -28,7 +28,7 @@ VersionControlMenu::VersionControlMenu(VersionControl &vcs)
 {
     MenuPanel::Menu menu;
 
-    const bool noStashNoChanges = !vcs.hasQuickStash() && !vcs.getHead().hasAnythingOnTheStage();
+    const bool noStashNoChanges = !vcs.hasQuickStash() && !vcs.getHead().diffHasChanges();
     const Icons::Id stashIcon = vcs.hasQuickStash() ? Icons::toggleOff : Icons::toggleOn;
     const String stashMessage = vcs.hasQuickStash() ?
         TRANS(I18n::Menu::vcsChangesShow) : TRANS(I18n::Menu::vcsChangesHide);

@@ -225,10 +225,10 @@ void StageComponent::toggleQuickStash()
     // 3 - has no quick stash, and has no changes - don't display toggle button
     // 4 - has quick stash, but also has changes - ? display toggle off button, show alert on press ?
 
-    const bool case1 = !this->vcs.hasQuickStash() && this->vcs.getHead().hasAnythingOnTheStage();
-    const bool case2 = this->vcs.hasQuickStash() && !this->vcs.getHead().hasAnythingOnTheStage();
+    const bool case1 = !this->vcs.hasQuickStash() && this->vcs.getHead().diffHasChanges();
+    const bool case2 = this->vcs.hasQuickStash() && !this->vcs.getHead().diffHasChanges();
     //const bool case3 = !this->vcs.hasQuickStash() && !this->vcs.getHead().hasAnythingOnTheStage();
-    const bool case4 = this->vcs.hasQuickStash() && this->vcs.getHead().hasAnythingOnTheStage();
+    const bool case4 = this->vcs.hasQuickStash() && this->vcs.getHead().diffHasChanges();
 
     if (case1)
     {

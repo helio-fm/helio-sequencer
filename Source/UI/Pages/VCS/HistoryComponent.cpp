@@ -69,7 +69,7 @@ void HistoryComponent::handleCommandMessage(int commandId)
     switch (commandId)
     {
     case CommandIDs::VersionControlCheckout:
-        if (this->vcs.getHead().hasTrackedItemsOnTheStage())
+        if (this->vcs.getHead().diffHasChanges())
         {
             auto confirmationDialog = ModalDialogConfirmation::Presets::forceCheckout();
             confirmationDialog->onOk = [this]()

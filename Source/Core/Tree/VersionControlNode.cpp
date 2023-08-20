@@ -140,7 +140,7 @@ void VersionControlNode::toggleQuickStash()
     
     if (this->vcs->hasQuickStash())
     {
-        if (this->vcs->getHead().hasAnythingOnTheStage())
+        if (this->vcs->getHead().diffHasChanges())
         {
             App::Layout().showTooltip(TRANS(I18n::VCS::warningCannotRevert),
                 MainLayout::TooltipIcon::Failure);
@@ -152,7 +152,7 @@ void VersionControlNode::toggleQuickStash()
     }
     else
     {
-        if (! this->vcs->getHead().hasAnythingOnTheStage())
+        if (!this->vcs->getHead().diffHasChanges())
         {
             return; // nothing to do
         }

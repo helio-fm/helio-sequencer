@@ -37,11 +37,8 @@ namespace VCS
         Revision::Ptr getHeadingRevision() const;
         
         Revision::Ptr getDiff() const;
-        bool isDiffOutdated() const;
         void setDiffOutdated(bool isOutdated);
-        
-        bool hasAnythingOnTheStage() const;
-        bool hasTrackedItemsOnTheStage() const;
+        bool diffHasChanges() const;
 
         void mergeStateWith(Revision::Ptr changes);
         bool moveTo(const Revision::Ptr revision); // rebuilds state index
@@ -73,7 +70,7 @@ namespace VCS
         void checkoutItem(RevisionItem::Ptr stateItem);
         bool resetChangedItemToState(const RevisionItem::Ptr diffItem);
 
-        Atomic<bool> diffOutdated = false;
+        Atomic<bool> isDiffOutdated = false;
 
         ReadWriteLock diffLock;
         Revision::Ptr diff;
