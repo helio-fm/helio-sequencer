@@ -169,6 +169,7 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     uiFlags->addListener(this);
 
     this->updateBounds();
+    this->resetDraggingAnchors();
 }
 
 RollBase::~RollBase()

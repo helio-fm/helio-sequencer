@@ -125,7 +125,7 @@ void Headline::handleAsyncUpdate()
             posX = this->rebuildChain(lastItem);
             if (hasSelectionItem)
             {
-                this->animator.cancelAnimation(this->selectionItem.get(), false);
+                this->animator.cancelAnimation(this->selectionItem.get(), true);
                 this->selectionItem->setTopLeftPosition(Headline::rootNodeOffset, this->selectionItem->getY());
             }
 
@@ -134,15 +134,11 @@ void Headline::handleAsyncUpdate()
 
         previousItem = static_cast<TreeNode *>(treeItem);
 
-        this->animator.cancelAnimation(child, false);
+        this->animator.cancelAnimation(child, true);
 
-        const auto boundsBefore = child->getBounds();
         child->updateContent();
         const auto boundsAfter = child->getBounds().withX(posX - Headline::itemsOverlapOffset);
-        if (boundsBefore != boundsAfter)
-        {
-            child->setBounds(boundsAfter);
-        }
+        child->setBounds(boundsAfter);
 
         posX += boundsAfter.getWidth() - Headline::itemsOverlapOffset;
     }

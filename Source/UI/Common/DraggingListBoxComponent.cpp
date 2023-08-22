@@ -27,6 +27,7 @@ DraggingListBoxComponent::DraggingListBoxComponent(Viewport *parent, bool disabl
     if (this->parentViewport)
     {
         this->parentViewport->setScrollBarThickness(2);
+        this->parentViewport->setScrollOnDragMode(Viewport::ScrollOnDragMode::never);
     }
     
     this->setInterceptsMouseClicks(true, false);
@@ -53,7 +54,7 @@ void DraggingListBoxComponent::childrenChanged()
 
 void DraggingListBoxComponent::mouseDown(const MouseEvent &event)
 {
-    if (! event.mods.isLeftButtonDown())
+    if (!event.mods.isLeftButtonDown() || event.source.getIndex() > 0)
     {
         return;
     }
@@ -83,7 +84,7 @@ void DraggingListBoxComponent::mouseUp(const MouseEvent &event)
 {
     this->isDraggingListbox = false;
     
-    if (! event.mods.isLeftButtonDown())
+    if (!event.mods.isLeftButtonDown() || event.source.getIndex() > 0)
     {
         return;
     }
@@ -107,7 +108,7 @@ void DraggingListBoxComponent::mouseUp(const MouseEvent &event)
 
 void DraggingListBoxComponent::mouseDrag(const MouseEvent &event)
 {
-    if (! event.mods.isLeftButtonDown())
+    if (!event.mods.isLeftButtonDown() || event.source.getIndex() > 0)
     {
         return;
     }
@@ -162,5 +163,6 @@ bool DraggingListBoxComponent::listCanBeScrolled() const
         return false;
     }
     
-    return (this->parentViewport->getViewHeight() < this->parentViewport->getViewedComponent()->getHeight());
+    return this->parentViewport->getViewHeight() <
+        this->parentViewport->getViewedComponent()->getHeight();
 }
