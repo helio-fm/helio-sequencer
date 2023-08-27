@@ -47,11 +47,10 @@ public:
     };
 
     void resized() override;
-    void visibilityChanged() override;
     void parentHierarchyChanged() override;
+    void visibilityChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage(int commandId) override;
-    void inputAttemptWhenModal() override;
 
 private:
 
@@ -66,6 +65,8 @@ private:
     void textEditorReturnKeyPressed(TextEditor&) override;
     void textEditorEscapeKeyPressed(TextEditor&) override;
     void textEditorFocusLost(TextEditor&) override;
+
+    Component *getPrimaryFocusTarget() override;
 
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> cancelButton;

@@ -25,8 +25,7 @@
 class ProjectNode;
 class IconComponent;
 
-class TrackPropertiesDialog final : public DialogBase,
-    public ColourButton::Listener
+class TrackPropertiesDialog final : public DialogBase, public ColourButton::Listener
 {
 public:
 
@@ -48,7 +47,6 @@ public:
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage(int commandId) override;
-    void inputAttemptWhenModal() override;
 
 private:
 
@@ -67,9 +65,9 @@ private:
 
     static constexpr auto colourSwatchesMargin = 6;
 
-    void onFocusLost();
-    void updateControls();
+    Component *getPrimaryFocusTarget() override;
 
+    void updateControls();
     void applyChangesIfAny();
     void cancelChangesIfAny();
     bool hasChanges() const;

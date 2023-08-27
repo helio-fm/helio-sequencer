@@ -49,7 +49,6 @@ public:
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage(int commandId) override;
-    void inputAttemptWhenModal() override;
 
 private:
 
@@ -61,6 +60,8 @@ private:
     void textEditorReturnKeyPressed(TextEditor&) override;
     void textEditorEscapeKeyPressed(TextEditor&) override;
     void textEditorFocusLost(TextEditor&) override;
+
+    Component *getPrimaryFocusTarget() override;
 
     inline void cancelAndDisappear();
     inline void updateOkButtonState();

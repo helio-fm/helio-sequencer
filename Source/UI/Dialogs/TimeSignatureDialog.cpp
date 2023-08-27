@@ -45,11 +45,14 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     jassert(this->targetSequence != nullptr || this->targetTrack != nullptr);
     jassert(this->targetTrack != nullptr || this->originalEvent.getSequence() != nullptr);
 
+    const auto isPhoneLayout = App::isRunningOnPhone();
+
     this->messageLabel = make<Label>();
-    this->addAndMakeVisible(this->messageLabel.get());
+    this->addChildComponent(this->messageLabel.get());
     this->messageLabel->setFont(Globals::UI::Fonts::L);
     this->messageLabel->setJustificationType(Justification::centred);
     this->messageLabel->setInterceptsMouseClicks(false, false);
+    this->messageLabel->setVisible(!isPhoneLayout);
 
     this->removeEventButton = make<TextButton>();
     this->addAndMakeVisible(this->removeEventButton.get());
@@ -95,32 +98,28 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     this->addAndMakeVisible(this->textEditor.get());
     this->textEditor->setFont(Globals::UI::Fonts::L);
 
-    const auto onLostFocus = [this]()
+    this->textEditor->onReturnKey = [this]()
+    {
+        if (this->textEditor->getText().isNotEmpty())
+        {
+            this->dismiss(); // apply on return key
+            return;
+        }
+
+        this->resetKeyboardFocus();
+    };
+
+    this->textEditor->onFocusLost = [this]()
     {
         this->updateOkButtonState();
 
-        auto *focusedComponent = Component::getCurrentlyFocusedComponent();
-
-        if (nullptr != dynamic_cast<TextEditor *>(focusedComponent) &&
-            this->textEditor.get() != focusedComponent)
+        if (nullptr != dynamic_cast<TextEditor *>(Component::getCurrentlyFocusedComponent()))
         {
-            return; // other editor is focused
+            return; // some other editor is focused
         }
 
-        if (this->textEditor->getText().isNotEmpty() &&
-            focusedComponent != this->okButton.get() &&
-            focusedComponent != this->removeEventButton.get())
-        {
-            this->dismiss(); // apply on return key
-        }
-        else
-        {
-            this->textEditor->grabKeyboardFocus();
-        }
+        this->resetKeyboardFocus();
     };
-
-    this->textEditor->onReturnKey = onLostFocus;
-    this->textEditor->onFocusLost = onLostFocus;
 
     this->textEditor->onTextChange = [this]()
     {
@@ -224,26 +223,27 @@ TimeSignatureDialog::~TimeSignatureDialog() = default;
 
 void TimeSignatureDialog::updateSize()
 {
+    const auto isPhoneLayout = App::isRunningOnPhone();
     const auto oldWidth = this->getWidth();
-    this->setSize(64 + this->metronomeEditor->getAllButtonsArea().getWidth(), 240);
+    const auto metronomeEditorPadding = 34;
+    this->setSize(this->getHorizontalSpacingExceptContent() +
+        this->metronomeEditor->getAllButtonsArea().getWidth() + metronomeEditorPadding,
+        isPhoneLayout ? DialogBase::Defaults::Phone::maxDialogHeight : 210);
     this->setTopLeftPosition(this->getPosition().translated((oldWidth - this->getWidth()) / 2, 0));
 }
 
 void TimeSignatureDialog::resized()
 {
+    this->presetsCombo->setBounds(this->getContentBounds(true));
     this->messageLabel->setBounds(this->getCaptionBounds());
-    this->presetsCombo->setBounds(this->getContentBounds(0.5f));
 
-    const auto buttonsBounds(this->getButtonsBounds());
-    const auto buttonWidth = buttonsBounds.getWidth() / 2;
+    this->okButton->setBounds(this->getButton1Bounds());
+    this->removeEventButton->setBounds(this->getButton2Bounds());
 
-    this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
-    this->removeEventButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
-
-    this->textEditor->setBounds(this->getRowBounds(0.25f, DialogBase::textEditorHeight));
+    this->textEditor->setBounds(this->getRowBounds(0.2f, DialogBase::Defaults::textEditorHeight));
 
     constexpr auto metronomeEditorHeight = 55;
-    this->metronomeEditor->setBounds(this->getRowBounds(0.7f, metronomeEditorHeight));
+    this->metronomeEditor->setBounds(this->getRowBounds(0.65f, metronomeEditorHeight));
 }
 
 void TimeSignatureDialog::parentHierarchyChanged()
@@ -270,16 +270,11 @@ void TimeSignatureDialog::handleCommandMessage(int commandId)
         if (targetIndex >= 0 && targetIndex < this->defaultMeters.size())
         {
             const auto meter = this->defaultMeters[targetIndex];
-            this->textEditor->grabKeyboardFocus();
             this->textEditor->setText(meter->getTimeAsString(), false);
+            this->resetKeyboardFocus();
             this->sendEventChange(this->editedEvent.withMeter(*meter));
         }
     }
-}
-
-void TimeSignatureDialog::inputAttemptWhenModal()
-{
-    this->postCommandMessage(CommandIDs::DismissDialog);
 }
 
 void TimeSignatureDialog::updateOkButtonState()
@@ -378,6 +373,15 @@ void TimeSignatureDialog::undoAndDismiss()
     }
 
     this->dismiss();
+}
+
+Component *TimeSignatureDialog::getPrimaryFocusTarget()
+{
+#if PLATFORM_DESKTOP
+    return this->textEditor.get();
+#elif PLATFORM_MOBILE
+    return this;
+#endif
 }
 
 UniquePointer<Component> TimeSignatureDialog::editingDialog(Component &owner,

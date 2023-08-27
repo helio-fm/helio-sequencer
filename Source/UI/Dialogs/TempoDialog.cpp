@@ -180,10 +180,13 @@ private:
 
 TempoDialog::TempoDialog(int bpmValue)
 {
+    const auto isPhoneLayout = App::isRunningOnPhone();
+
     this->messageLabel = make<Label>();
-    this->addAndMakeVisible(this->messageLabel.get());
+    this->addChildComponent(this->messageLabel.get());
     this->messageLabel->setFont(Globals::UI::Fonts::L);
     this->messageLabel->setJustificationType(Justification::centred);
+    this->messageLabel->setVisible(!isPhoneLayout);
 
     this->cancelButton = make<TextButton>();
     this->addAndMakeVisible(this->cancelButton.get());
@@ -238,12 +241,18 @@ TempoDialog::TempoDialog(int bpmValue)
 
     this->textEditor->onFocusLost = [this]()
     {
-        this->onTextFocusLost();
+        this->updateOkButtonState();
+        this->resetKeyboardFocus();
     };
 
     this->textEditor->onReturnKey = [this]()
     {
-        this->onTextFocusLost();
+        if (this->textEditor->getText().isNotEmpty())
+        {
+            this->doOk();
+        }
+
+        this->resetKeyboardFocus();
     };
 
     this->textEditor->onEscapeKey = [this]()
@@ -262,7 +271,8 @@ TempoDialog::TempoDialog(int bpmValue)
     this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
     this->cancelButton->setButtonText(TRANS(I18n::Dialog::cancel));
 
-    this->setSize(460, 230);
+    this->setSize(460, isPhoneLayout ? DialogBase::Defaults::Phone::maxDialogHeight : 210);
+
     this->updatePosition();
     this->updateOkButtonState();
 }
@@ -275,14 +285,11 @@ void TempoDialog::resized()
 {
     this->messageLabel->setBounds(this->getCaptionBounds());
 
-    const auto buttonsBounds(this->getButtonsBounds());
-    const auto buttonWidth = buttonsBounds.getWidth() / 2;
+    this->okButton->setBounds(this->getButton1Bounds());
+    this->cancelButton->setBounds(this->getButton2Bounds());
 
-    this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
-    this->cancelButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
-
-    this->textEditor->setBounds(this->getRowBounds(0.275f, DialogBase::textEditorHeight));
-    this->tapTempo->setBounds(this->getRowBounds(0.725f,
+    this->textEditor->setBounds(this->getRowBounds(0.2f, DialogBase::Defaults::textEditorHeight));
+    this->tapTempo->setBounds(this->getRowBounds(0.65f,
         TempoDialog::tapTempoHeight, TempoDialog::tapTempoMargin));
 }
 
@@ -304,11 +311,6 @@ void TempoDialog::handleCommandMessage(int commandId)
     }
 }
 
-void TempoDialog::inputAttemptWhenModal()
-{
-    this->postCommandMessage(CommandIDs::DismissDialog);
-}
-
 void TempoDialog::updateOkButtonState()
 {
     const bool textIsEmpty = this->textEditor->getText().isEmpty();
@@ -323,23 +325,6 @@ void TempoDialog::updateOkButtonState()
     else
     {
         this->messageLabel->setText(TRANS(I18n::Dialog::setTempoCaption), dontSendNotification);
-    }
-}
-
-void TempoDialog::onTextFocusLost()
-{
-    this->updateOkButtonState();
-
-    const auto *focusedComponent = Component::getCurrentlyFocusedComponent();
-    if (this->textEditor->getText().isNotEmpty() &&
-        focusedComponent != this->okButton.get() &&
-        focusedComponent != this->cancelButton.get())
-    {
-        this->doOk();
-    }
-    else
-    {
-        this->textEditor->grabKeyboardFocus();
     }
 }
 
@@ -383,4 +368,13 @@ void TempoDialog::doOk()
 
         this->dismiss();
     }
+}
+
+Component *TempoDialog::getPrimaryFocusTarget()
+{
+#if PLATFORM_DESKTOP
+    return this->textEditor.get();
+#elif PLATFORM_MOBILE
+    return this;
+#endif
 }

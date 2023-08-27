@@ -25,7 +25,7 @@ class DocumentOwner;
 class ProjectNode;
 class MenuItemComponent;
 
-class RenderDialog final : public DialogBase
+class RenderDialog final : public DialogBase, public Timer
 {
 public:
 
@@ -38,12 +38,10 @@ public:
     void parentSizeChanged() override;
     void handleCommandMessage(int commandId) override;
     bool keyPressed(const KeyPress& key) override;
-    void inputAttemptWhenModal() override;
 
 private:
 
-    static constexpr auto renderProgressTimer = 100;
-    void timerCallback(int timerId) override;
+    void timerCallback() override;
 
     void startTrackingProgress();
     void stopTrackingProgress();

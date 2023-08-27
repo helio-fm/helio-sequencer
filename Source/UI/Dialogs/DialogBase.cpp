@@ -21,6 +21,7 @@
 #include "HelioTheme.h"
 #include "MainLayout.h"
 #include "ColourIDs.h"
+#include "App.h"
 
 struct DialogDragConstrainer final : public ComponentBoundsConstrainer
 {
@@ -29,10 +30,14 @@ struct DialogDragConstrainer final : public ComponentBoundsConstrainer
         const Rectangle<int> &limits,
         bool, bool, bool, bool) override
     {
-        const auto constrain = App::Layout().getBoundsForPopups()
+#if PLATFORM_DESKTOP
+        const auto constrains = App::Layout().getBoundsForPopups()
             .translated(0, Globals::UI::headlineHeight).reduced(2);
+#elif PLATFORM_MOBILE
+        const auto constrains = App::Layout().getLocalBounds();
+#endif
 
-        bounds = bounds.constrainedWithin(constrain);
+        bounds = bounds.constrainedWithin(constrains);
     }
 };
 
@@ -41,20 +46,19 @@ DialogBase::DialogBase()
     this->toFront(true);
     this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(true, true);
+
+#if PLATFORM_DESKTOP
     this->setMouseClickGrabsKeyboardFocus(false);
+#elif PLATFORM_MOBILE
+    this->setWantsKeyboardFocus(true);
+    this->setMouseClickGrabsKeyboardFocus(true);
+#endif
 
     this->moveConstrainer = make<DialogDragConstrainer>();
-
-    this->startTimer(DialogBase::focusCheckTimer, 100);
 }
 
 DialogBase::~DialogBase()
 {
-    if (this->isTimerRunning(DialogBase::focusCheckTimer))
-    {
-        this->stopTimer(DialogBase::focusCheckTimer);
-    }
-
     if (this->background != nullptr)
     {
         this->background->postCommandMessage(CommandIDs::DismissDialog);
@@ -86,6 +90,14 @@ void DialogBase::parentHierarchyChanged()
     }
 }
 
+void DialogBase::visibilityChanged()
+{
+    if (this->isShowing())
+    {
+        this->resetKeyboardFocus();
+    }
+}
+
 void DialogBase::mouseDown(const MouseEvent &e)
 {
     this->dragger.startDraggingComponent(this, e);
@@ -94,6 +106,20 @@ void DialogBase::mouseDown(const MouseEvent &e)
 void DialogBase::mouseDrag(const MouseEvent &e)
 {
     this->dragger.dragComponent(this, e, this->moveConstrainer.get());
+}
+
+void DialogBase::inputAttemptWhenModal()
+{
+#if PLATFORM_MOBILE
+    // try to detect if the virtual keyboard is shown:
+    if (nullptr != dynamic_cast<TextEditor *>(Component::getCurrentlyFocusedComponent()))
+    {
+        this->resetKeyboardFocus(); // will hopefully hide it
+        return;
+    }
+#endif
+
+    this->postCommandMessage(CommandIDs::DismissDialog);
 }
 
 void DialogBase::dismiss()
@@ -122,64 +148,81 @@ void DialogBase::updatePosition()
 #if PLATFORM_DESKTOP
     this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 2);
 #elif PLATFORM_MOBILE
-    // Place the dialog slightly above the center, so that screen keyboard doesn't mess with it:
-    this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 3.5f);
+    const auto isPhoneLayout = App::isRunningOnPhone();
+    const auto minY = this->getHeight() / 2; // so the top is at 0
+    const auto centreY = isPhoneLayout ? minY : jmax(minY, this->getParentHeight() / 4);
+    this->setCentrePosition(this->getParentWidth() / 2, centreY);
 #endif
 }
 
-Rectangle<int> DialogBase::getContentBounds(float paddingAmount) const noexcept
+Rectangle<int> DialogBase::getContentBounds(bool noPadding) const noexcept
 {
-    const auto actualBounds = this->getLocalBounds()
-        .reduced(DialogBase::contentMargin)
-        .withTrimmedBottom(DialogBase::buttonsHeight)
-        .translated(0, 1); // 1 pixel y offset because we have a header line
+    const auto isPhoneLayout = App::isRunningOnPhone();
 
-    return actualBounds.reduced(int(DialogBase::contentPadding * paddingAmount));
+    constexpr auto headerSize = 4;
+    const auto actualBounds = this->getLocalBounds()
+        .reduced(DialogBase::Defaults::contentMargin)
+        .withTrimmedBottom(isPhoneLayout ? headerSize : headerSize + DialogBase::Defaults::DesktopAndTablet::buttonsHeight)
+        .withTrimmedRight(isPhoneLayout ? DialogBase::Defaults::Phone::buttonsWidth : 0)
+        .translated(0, headerSize);
+
+    return actualBounds.reduced(noPadding ? 1 : DialogBase::Defaults::contentPaddingHorizontal,
+        noPadding ? 1 : DialogBase::Defaults::contentPaddingVertical);
 }
 
 Rectangle<int> DialogBase::getCaptionBounds() const noexcept
 {
-    return this->getContentBounds().withHeight(DialogBase::captionHeight);
+    const auto isPhoneLayout = App::isRunningOnPhone();
+    return this->getContentBounds().withHeight(isPhoneLayout ?
+        DialogBase::Defaults::Phone::captionHeight :
+        DialogBase::Defaults::DesktopAndTablet::captionHeight);
 }
 
 Rectangle<int> DialogBase::getButtonsBounds() const noexcept
 {
-    const auto actualBounds = this->getLocalBounds().reduced(DialogBase::contentMargin);
-    return actualBounds.withHeight(DialogBase::buttonsHeight).withBottomY(actualBounds.getBottom());
+    const auto isPhoneLayout = App::isRunningOnPhone();
+    const auto actualBounds = this->getLocalBounds()
+        .reduced(DialogBase::Defaults::contentMargin);
+    return isPhoneLayout ?
+        actualBounds
+            .withWidth(DialogBase::Defaults::Phone::buttonsWidth)
+            .withRightX(actualBounds.getRight()) :
+        actualBounds
+            .withHeight(DialogBase::Defaults::DesktopAndTablet::buttonsHeight)
+            .withBottomY(actualBounds.getBottom()) ;
+}
+
+Rectangle<int> DialogBase::getButton1Bounds() const noexcept
+{
+    const auto isPhoneLayout = App::isRunningOnPhone();
+    const auto buttonsBounds = this->getButtonsBounds();
+    return isPhoneLayout ?
+        buttonsBounds.withTrimmedBottom(buttonsBounds.getHeight() / 2) :
+        buttonsBounds.withTrimmedLeft(buttonsBounds.getWidth() / 2);
+}
+
+Rectangle<int> DialogBase::getButton2Bounds() const noexcept
+{
+    const auto isPhoneLayout = App::isRunningOnPhone();
+    const auto buttonsBounds = this->getButtonsBounds();
+    return isPhoneLayout ?
+        buttonsBounds.withTrimmedTop(buttonsBounds.getHeight() / 2 + 1) :
+        buttonsBounds.withTrimmedRight(buttonsBounds.getWidth() / 2 + 1);
 }
 
 Rectangle<int> DialogBase::getRowBounds(float proportionOfHeight, int height, int xPadding) const noexcept
 {
-    const auto area = this->getContentBounds().withTrimmedTop(DialogBase::captionHeight).reduced(xPadding, 0);
+    const auto isPhoneLayout = App::isRunningOnPhone();
+    const auto area = this->getContentBounds().withTrimmedTop(isPhoneLayout ?
+        DialogBase::Defaults::Phone::captionHeight :
+        DialogBase::Defaults::DesktopAndTablet::captionHeight).reduced(xPadding, 0);
     const auto y = area.proportionOfHeight(proportionOfHeight);
     return area.withHeight(height).translated(0, y - height / 2);
 }
 
-int DialogBase::getPaddingAndMarginTotal() const noexcept
+int DialogBase::getHorizontalSpacingExceptContent() const noexcept
 {
-    return DialogBase::contentPadding * 2 + DialogBase::contentMargin * 2;
-}
-
-// This is a hack to workaround some tricky focus-related issues 
-void DialogBase::timerCallback(int timerId)
-{
-    if (timerId != DialogBase::focusCheckTimer)
-    {
-        return;
-    }
-
-    for (int i = 0; i < this->getNumChildComponents(); ++i)
-    {
-        auto *editor = dynamic_cast<TextEditor *>(this->getChildComponent(i));
-        if (editor != nullptr && !editor->hasKeyboardFocus(false))
-        {
-            this->stopTimer(DialogBase::focusCheckTimer);
-            editor->grabKeyboardFocus();
-            editor->selectAll();
-            return;
-        }
-    }
-
-    // no editor found, or it already has the focus
-    this->stopTimer(DialogBase::focusCheckTimer);
+    const auto isPhoneLayout = App::isRunningOnPhone();
+    const auto buttons = isPhoneLayout ? DialogBase::Defaults::Phone::buttonsWidth : 0;
+    return DialogBase::Defaults::contentPaddingHorizontal * 2 + DialogBase::Defaults::contentMargin * 2 + buttons;
 }

@@ -55,13 +55,16 @@ AnnotationDialog::AnnotationDialog(Component &owner,
     ownerComponent(owner),
     addsNewEvent(shouldAddNewEvent)
 {
+    const auto isPhoneLayout = App::isRunningOnPhone();
+
     this->presetsCombo = make<MobileComboBox::Container>();
     this->addAndMakeVisible(this->presetsCombo.get());
 
     this->messageLabel = make<Label>();
-    this->addAndMakeVisible(this->messageLabel.get());
+    this->addChildComponent(this->messageLabel.get());
     this->messageLabel->setFont(Globals::UI::Fonts::L);
     this->messageLabel->setJustificationType(Justification::centred);
+    this->messageLabel->setVisible(!isPhoneLayout);
 
     this->removeEventButton = make<TextButton>();
     this->addAndMakeVisible(this->removeEventButton.get());
@@ -150,9 +153,10 @@ AnnotationDialog::AnnotationDialog(Component &owner,
     this->presetsCombo->initWith(this->textEditor.get(), menu);
 
     static constexpr auto colourButtonSize = 30;
-    this->setSize(this->getPaddingAndMarginTotal() +
+    this->setSize(this->getHorizontalSpacingExceptContent() +
         AnnotationDialog::colourSwatchesMargin * 2 +
-        colourButtonSize * this->colourSwatches->getNumButtons(), 220);
+        colourButtonSize * this->colourSwatches->getNumButtons(),
+        isPhoneLayout ? 100 : 190);
 
     this->updatePosition();
     this->updateOkButtonState();
@@ -165,18 +169,15 @@ AnnotationDialog::~AnnotationDialog()
 
 void AnnotationDialog::resized()
 {
-    this->presetsCombo->setBounds(this->getContentBounds(0.5f));
+    this->presetsCombo->setBounds(this->getContentBounds(true));
     this->messageLabel->setBounds(this->getCaptionBounds());
 
-    const auto buttonsBounds(this->getButtonsBounds());
-    const auto buttonWidth = buttonsBounds.getWidth() / 2;
+    this->okButton->setBounds(this->getButton1Bounds());
+    this->removeEventButton->setBounds(this->getButton2Bounds());
 
-    this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
-    this->removeEventButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
-
-    this->textEditor->setBounds(this->getRowBounds(0.3f, DialogBase::textEditorHeight));
-    this->colourSwatches->setBounds(this->getRowBounds(0.7f,
-        DialogBase::textEditorHeight, AnnotationDialog::colourSwatchesMargin));
+    this->textEditor->setBounds(this->getRowBounds(0.225f, DialogBase::Defaults::textEditorHeight));
+    this->colourSwatches->setBounds(this->getRowBounds(0.675f,
+        DialogBase::Defaults::textEditorHeight, AnnotationDialog::colourSwatchesMargin));
 }
 
 void AnnotationDialog::parentHierarchyChanged()
@@ -204,16 +205,10 @@ void AnnotationDialog::handleCommandMessage(int commandId)
         {
             const String text = dynamics[targetIndex];
             this->colourSwatches->setSelectedColour(colours[targetIndex]);
-
-            this->textEditor->grabKeyboardFocus();
             this->textEditor->setText(text, true);
+            this->resetKeyboardFocus();
         }
     }
-}
-
-void AnnotationDialog::inputAttemptWhenModal()
-{
-    this->postCommandMessage(CommandIDs::DismissDialog);
 }
 
 UniquePointer<Component> AnnotationDialog::editingDialog(Component &owner,
@@ -305,7 +300,13 @@ void AnnotationDialog::textEditorTextChanged(TextEditor&)
 
 void AnnotationDialog::textEditorReturnKeyPressed(TextEditor &ed)
 {
-    this->textEditorFocusLost(ed);
+    if (this->textEditor->getText().isNotEmpty())
+    {
+        this->dismiss(); // apply on return key
+        return;
+    }
+
+    this->resetKeyboardFocus();
 }
 
 void AnnotationDialog::textEditorEscapeKeyPressed(TextEditor&)
@@ -317,24 +318,12 @@ void AnnotationDialog::textEditorFocusLost(TextEditor&)
 {
     this->updateOkButtonState();
 
-    auto *focusedComponent = Component::getCurrentlyFocusedComponent();
-
-    if (nullptr != dynamic_cast<TextEditor *>(focusedComponent) &&
-        this->textEditor.get() != focusedComponent)
+    if (nullptr != dynamic_cast<TextEditor *>(Component::getCurrentlyFocusedComponent()))
     {
-        return; // other editor is focused
+        return; // some other editor is focused
     }
 
-    if (this->textEditor->getText().isNotEmpty() &&
-        focusedComponent != this->okButton.get() &&
-        focusedComponent != this->removeEventButton.get())
-    {
-        this->dismiss(); // apply on return key
-    }
-    else
-    {
-        this->textEditor->grabKeyboardFocus();
-    }
+    this->resetKeyboardFocus();
 }
 
 void AnnotationDialog::cancelAndDisappear()
@@ -347,4 +336,13 @@ void AnnotationDialog::cancelAndDisappear()
     }
 
     this->dismiss();
+}
+
+Component *AnnotationDialog::getPrimaryFocusTarget()
+{
+#if PLATFORM_DESKTOP
+    return this->textEditor.get();
+#elif PLATFORM_MOBILE
+    return this;
+#endif
 }

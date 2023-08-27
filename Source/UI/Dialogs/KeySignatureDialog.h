@@ -51,7 +51,6 @@ public:
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage(int commandId) override;
-    void inputAttemptWhenModal() override;
 
 private:
 
@@ -66,6 +65,8 @@ private:
     void textEditorEscapeKeyPressed(TextEditor&) override;
     void textEditorFocusLost(TextEditor&) override;
 
+    Component *getPrimaryFocusTarget() override;
+
     ProjectNode &project;
     Transport &transport;
     KeySignatureEvent originalEvent;
@@ -75,8 +76,8 @@ private:
 
     void reloadScalesList();
 
-    inline void cancelAndDisappear();
-    inline void updateButtonsState();
+    void cancelAndDisappear();
+    void updateButtonsState();
 
     bool addsNewEvent = false;
     bool hasMadeChanges = false;

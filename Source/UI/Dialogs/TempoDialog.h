@@ -36,14 +36,14 @@ public:
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage(int commandId) override;
-    void inputAttemptWhenModal() override;
 
 private:
 
     static constexpr auto tapTempoHeight = 46;
     static constexpr auto tapTempoMargin = 8;
 
-    void onTextFocusLost();
+    Component *getPrimaryFocusTarget() override;
+
     void updateOkButtonState();
     void doCancel();
     void doOk();

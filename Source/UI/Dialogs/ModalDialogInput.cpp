@@ -23,6 +23,8 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message,
     const String &okText, const String &cancelText) :
     input(text)
 {
+    const auto isPhoneLayout = App::isRunningOnPhone();
+
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
     this->messageLabel->setFont(Globals::UI::Fonts::L);
@@ -65,7 +67,8 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message,
     this->okButton->setButtonText(okText);
     this->cancelButton->setButtonText(cancelText);
 
-    this->setSize(450, 165);
+    this->setSize(460, isPhoneLayout ? 120 : 160);
+
     this->updatePosition();
     this->updateOkButtonState();
 }
@@ -77,23 +80,16 @@ ModalDialogInput::~ModalDialogInput()
 
 void ModalDialogInput::resized()
 {
-    this->messageLabel->setBounds(this->getCaptionBounds());
+    const auto contentBounds = this->getContentBounds();
+    this->messageLabel->setBounds(contentBounds
+        .withTrimmedBottom(DialogBase::Defaults::textEditorHeight + 16));
 
-    const auto buttonsBounds(this->getButtonsBounds());
-    const auto buttonWidth = buttonsBounds.getWidth() / 2;
+    this->textEditor->setBounds(contentBounds
+        .withTrimmedTop(this->messageLabel->getHeight())
+        .withSizeKeepingCentre(contentBounds.getWidth(), DialogBase::Defaults::textEditorHeight));
 
-    this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
-    this->cancelButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
-
-    this->textEditor->setBounds(this->getRowBounds(0.5f, DialogBase::textEditorHeight));
-}
-
-void ModalDialogInput::visibilityChanged()
-{
-    if (this->isShowing())
-    {
-        this->textEditor->grabKeyboardFocus();
-    }
+    this->okButton->setBounds(this->getButton1Bounds());
+    this->cancelButton->setBounds(this->getButton2Bounds());
 }
 
 void ModalDialogInput::parentHierarchyChanged()
@@ -114,11 +110,6 @@ void ModalDialogInput::handleCommandMessage(int commandId)
     }
 }
 
-void ModalDialogInput::inputAttemptWhenModal()
-{
-    this->postCommandMessage(CommandIDs::DismissDialog);
-}
-
 void ModalDialogInput::textEditorTextChanged(TextEditor &editor)
 {
     this->input = editor.getText();
@@ -127,7 +118,13 @@ void ModalDialogInput::textEditorTextChanged(TextEditor &editor)
 
 void ModalDialogInput::textEditorReturnKeyPressed(TextEditor &editor)
 {
-    this->textEditorFocusLost(editor);
+    if (this->input.isNotEmpty())
+    {
+        this->okay(); // apply on return key
+        return;
+    }
+
+    this->resetKeyboardFocus();
 }
 
 void ModalDialogInput::textEditorEscapeKeyPressed(TextEditor &)
@@ -138,18 +135,7 @@ void ModalDialogInput::textEditorEscapeKeyPressed(TextEditor &)
 void ModalDialogInput::textEditorFocusLost(TextEditor &ed)
 {
     this->updateOkButtonState();
-
-    const Component *focusedComponent = Component::getCurrentlyFocusedComponent();
-    if (this->input.isNotEmpty() &&
-        focusedComponent != this->okButton.get() &&
-        focusedComponent != this->cancelButton.get())
-    {
-        this->okay();
-    }
-    else
-    {
-        ed.grabKeyboardFocus();
-    }
+    this->resetKeyboardFocus();
 }
 
 void ModalDialogInput::cancel()
@@ -190,6 +176,23 @@ void ModalDialogInput::okay()
 void ModalDialogInput::updateOkButtonState()
 {
     this->okButton->setEnabled(this->input.isNotEmpty());
+}
+
+Component *ModalDialogInput::getPrimaryFocusTarget()
+{
+#if PLATFORM_DESKTOP
+    return this->textEditor.get();
+#elif PLATFORM_MOBILE
+    return this;
+#endif
+}
+
+void ModalDialogInput::visibilityChanged()
+{
+    if (this->isShowing())
+    {
+        this->textEditor->grabKeyboardFocus();
+    }
 }
 
 //===----------------------------------------------------------------------===//

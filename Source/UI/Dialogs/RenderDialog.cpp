@@ -124,7 +124,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     // just in case..
     this->project.getTransport().stopPlaybackAndRecording();
 
-    this->setSize(550, 200);
+    this->setSize(560, 185);
     this->updatePosition();
     this->updateRenderTargetLabels();
 }
@@ -210,11 +210,6 @@ bool RenderDialog::keyPressed(const KeyPress &key)
     return false;
 }
 
-void RenderDialog::inputAttemptWhenModal()
-{
-    this->postCommandMessage(CommandIDs::DismissDialog);
-}
-
 void RenderDialog::startOrAbortRender()
 {
     auto &transport = this->project.getTransport();
@@ -253,13 +248,8 @@ void RenderDialog::stopRender()
     }
 }
 
-void RenderDialog::timerCallback(int timerId)
+void RenderDialog::timerCallback()
 {
-    if (timerId != RenderDialog::renderProgressTimer)
-    {
-        return;
-    }
-
     auto &transport = this->project.getTransport();
     if (transport.isRendering())
     {
@@ -276,7 +266,7 @@ void RenderDialog::timerCallback(int timerId)
 
 void RenderDialog::startTrackingProgress()
 {
-    this->startTimer(RenderDialog::renderProgressTimer, 250);
+    this->startTimer(250);
 
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderAbort));
     this->browseButton->setMouseCursor(MouseCursor::NormalCursor);
@@ -285,7 +275,7 @@ void RenderDialog::startTrackingProgress()
 
 void RenderDialog::stopTrackingProgress()
 {
-    this->stopTimer(RenderDialog::renderProgressTimer);
+    this->stopTimer();
 
     const auto &transport = this->project.getTransport();
     this->progressBar->update(transport.getRenderingPercentsComplete(),

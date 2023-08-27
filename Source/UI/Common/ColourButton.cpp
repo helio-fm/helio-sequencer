@@ -59,10 +59,7 @@ ColourButton::ColourButton(Colour c, ColourButton::Listener *listener) :
     this->setSize(32, 32);
 }
 
-ColourButton::~ColourButton()
-{
-    this->checkMark = nullptr;
-}
+ColourButton::~ColourButton() = default;
 
 void ColourButton::paint(Graphics &g)
 {
@@ -71,14 +68,12 @@ void ColourButton::paint(Graphics &g)
     const int x1 = 2;
     const int x2 = this->getWidth() - 2;
 
-    const Colour base(findDefaultColour(ColourIDs::ColourButton::outline));
+    const Colour outlineColour = findDefaultColour(ColourIDs::ColourButton::outline);
 
-    // To avoid smoothed rectangles:
-    g.setColour(this->colour.interpolatedWith(base, 0.25f).withAlpha(0.9f));
-    //g.fillRect(x1, y2 - 4, x2 - x1 + 1, 5);
+    g.setColour(this->colour.interpolatedWith(outlineColour, 0.25f).withAlpha(0.9f));
     g.fillRect(x1, y1, x2 - x1 + 1, 5);
 
-    g.setColour(this->colour.interpolatedWith(base, 0.5f).withAlpha(0.1f));
+    g.setColour(this->colour.interpolatedWith(outlineColour, 0.5f).withAlpha(0.1f));
     g.drawVerticalLine(x1 - 1, float(y1), float(y2 + 1));
     g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
     g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));
@@ -111,7 +106,11 @@ void ColourButton::mouseDown(const MouseEvent &e)
 
 Component *ColourButton::createHighlighterComponent()
 {
+#if PLATFORM_DESKTOP
     return new ColourButtonFrame();
+#elif PLATFORM_MOBILE
+    return new Component();
+#endif
 }
 
 void ColourButton::select()

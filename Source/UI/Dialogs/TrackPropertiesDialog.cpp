@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "TrackPropertiesDialog.h"
-
 #include "CommandIDs.h"
 #include "UndoStack.h"
 #include "ProjectNode.h"
@@ -42,10 +41,13 @@ TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
 
 void TrackPropertiesDialog::init(const String &title, const String &confirmation)
 {
+    const auto isPhoneLayout = App::isRunningOnPhone();
+
     this->messageLabel = make<Label>();
-    this->addAndMakeVisible(this->messageLabel.get());
+    this->addChildComponent(this->messageLabel.get());
     this->messageLabel->setFont(Globals::UI::Fonts::L);
     this->messageLabel->setJustificationType(Justification::centred);
+    this->messageLabel->setVisible(!isPhoneLayout);
 
     this->cancelButton = make<TextButton>();
     this->addAndMakeVisible(this->cancelButton.get());
@@ -81,12 +83,19 @@ void TrackPropertiesDialog::init(const String &title, const String &confirmation
 
     this->textEditor->onReturnKey = [this]()
     {
-        this->onFocusLost();
+        if (this->textEditor->getText().isNotEmpty())
+        {
+            this->doOk(); // apply on return key
+            return;
+        }
+
+        this->resetKeyboardFocus();
     };
 
     this->textEditor->onFocusLost = [this]()
     {
-        this->onFocusLost();
+        this->updateControls();
+        this->resetKeyboardFocus();
     };
 
     this->textEditor->onTextChange = [this]()
@@ -125,9 +134,10 @@ void TrackPropertiesDialog::init(const String &title, const String &confirmation
     this->messageLabel->setInterceptsMouseClicks(false, false);
 
     static constexpr auto colourButtonSize = 30;
-    this->setSize(this->getPaddingAndMarginTotal() + 
+    this->setSize(this->getHorizontalSpacingExceptContent() +
         TrackPropertiesDialog::colourSwatchesMargin * 2 +
-        colourButtonSize * this->colourSwatches->getNumButtons(), 220);
+        colourButtonSize * this->colourSwatches->getNumButtons(),
+        isPhoneLayout ? 100 : 190);
 
     this->updatePosition();
     this->updateControls();
@@ -139,14 +149,11 @@ void TrackPropertiesDialog::resized()
 {
     this->messageLabel->setBounds(this->getCaptionBounds());
 
-    const auto buttonsBounds(this->getButtonsBounds());
-    const auto buttonWidth = buttonsBounds.getWidth() / 2;
+    this->okButton->setBounds(this->getButton1Bounds());
+    this->cancelButton->setBounds(this->getButton2Bounds());
 
-    this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
-    this->cancelButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
-
-    this->textEditor->setBounds(this->getRowBounds(0.3f, DialogBase::textEditorHeight));
-    this->colourSwatches->setBounds(this->getRowBounds(0.7f, DialogBase::textEditorHeight,
+    this->textEditor->setBounds(this->getRowBounds(0.225f, DialogBase::Defaults::textEditorHeight));
+    this->colourSwatches->setBounds(this->getRowBounds(0.675f, DialogBase::Defaults::textEditorHeight,
         TrackPropertiesDialog::colourSwatchesMargin));
 
     constexpr auto iconSize = 16;
@@ -172,20 +179,13 @@ void TrackPropertiesDialog::handleCommandMessage(int commandId)
     }
 }
 
-void TrackPropertiesDialog::inputAttemptWhenModal()
-{
-    this->postCommandMessage(CommandIDs::DismissDialog);
-}
-
 void TrackPropertiesDialog::updateControls()
 {
     const auto hasManyTracks = this->tracks.size() > 1;
     this->multipleNamesIcon->setVisible(hasManyTracks && this->newName.isEmpty());
 
-    const auto colourIsOk = hasManyTracks ||
-        this->newColour != Colours::transparentBlack;
-    const auto textIsOk = hasManyTracks ||
-        this->newName.trim().isNotEmpty();
+    const auto colourIsOk = hasManyTracks || this->newColour != Colours::transparentBlack;
+    const auto textIsOk = hasManyTracks || this->newName.trim().isNotEmpty();
     this->okButton->setEnabled(colourIsOk && textIsOk);
 }
 
@@ -238,23 +238,6 @@ void TrackPropertiesDialog::applyChangesIfAny()
     this->hasMadeChanges = true;
 }
 
-void TrackPropertiesDialog::onFocusLost()
-{
-    this->updateControls();
-
-    const auto *focusedComponent = Component::getCurrentlyFocusedComponent();
-    if (this->textEditor->getText().isNotEmpty() &&
-        focusedComponent != this->okButton.get() &&
-        focusedComponent != this->cancelButton.get())
-    {
-        this->doOk(); // apply on return key
-    }
-    else
-    {
-        this->textEditor->grabKeyboardFocus();
-    }
-}
-
 void TrackPropertiesDialog::doCancel()
 {
     this->cancelChangesIfAny();
@@ -291,4 +274,13 @@ void TrackPropertiesDialog::doOk()
     }
 
     this->dismiss();
+}
+
+Component *TrackPropertiesDialog::getPrimaryFocusTarget()
+{
+#if PLATFORM_DESKTOP
+    return this->textEditor.get();
+#elif PLATFORM_MOBILE
+    return this;
+#endif
 }

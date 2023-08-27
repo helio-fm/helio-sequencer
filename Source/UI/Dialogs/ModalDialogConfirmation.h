@@ -44,7 +44,6 @@ public:
     void parentSizeChanged() override;
     void handleCommandMessage(int commandId) override;
     bool keyPressed(const KeyPress &key) override;
-    void inputAttemptWhenModal() override;
 
 private:
 

@@ -17,7 +17,7 @@
 
 #pragma once
 
-class DialogBase : public Component, protected MultiTimer
+class DialogBase : public Component
 {
 public:
     
@@ -26,28 +26,63 @@ public:
 
     void paint(Graphics &g) override;
     void parentHierarchyChanged() override;
+    void visibilityChanged() override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
+    void inputAttemptWhenModal() override;
 
 protected:
     
     void dismiss();
     virtual void updatePosition();
 
-    static constexpr auto focusCheckTimer = 0;
-    void timerCallback(int timerId) override;
-
-    Rectangle<int> getContentBounds(float paddingAmount = 1.f) const noexcept;
+    Rectangle<int> getContentBounds(bool noPadding = false) const noexcept;
     Rectangle<int> getCaptionBounds() const noexcept;
-    Rectangle<int> getButtonsBounds() const noexcept;
     Rectangle<int> getRowBounds(float proportionOfHeight, int height, int xPadding = 0) const noexcept;
-    int getPaddingAndMarginTotal() const noexcept;
+    Rectangle<int> getButtonsBounds() const noexcept;
+    Rectangle<int> getButton1Bounds() const noexcept;
+    Rectangle<int> getButton2Bounds() const noexcept;
 
-    static constexpr auto buttonsHeight = 48;
-    static constexpr auto contentMargin = 1;
-    static constexpr auto contentPadding = 14;
-    static constexpr auto captionHeight = 40;
-    static constexpr auto textEditorHeight = 32;
+    int getHorizontalSpacingExceptContent() const noexcept;
+
+protected:
+
+    // on desktop every dialog will try to keep the keyboard focus
+    // on the input field, if it has one, but on mobile platforms
+    // most dialogs will keep the focus on themselves by default
+    // to avoid showing the virtual keyboard immediately
+    virtual Component *getPrimaryFocusTarget() { return this; }
+
+    void resetKeyboardFocus()
+    {
+        if (auto *defaultFocusContainer = this->getPrimaryFocusTarget())
+        {
+            defaultFocusContainer->grabKeyboardFocus();
+        }
+    }
+
+    struct Defaults
+    {
+        // cannot do #ifdefs here: picking a constant
+        // depends on the device's physical screen size
+        struct Phone
+        {
+            static constexpr auto buttonsWidth = 128;
+            static constexpr auto captionHeight = 0;
+            static constexpr auto maxDialogHeight = 140;
+        };
+
+        struct DesktopAndTablet
+        {
+            static constexpr auto buttonsHeight = 48;
+            static constexpr auto captionHeight = 38;
+        };
+
+        static constexpr auto contentMargin = 1;
+        static constexpr auto contentPaddingHorizontal = 16;
+        static constexpr auto contentPaddingVertical = 6;
+        static constexpr auto textEditorHeight = 32;
+    };
 
 private:
 

@@ -50,7 +50,6 @@ public:
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage(int commandId) override;
-    void inputAttemptWhenModal() override;
 
 private:
 
@@ -69,8 +68,10 @@ private:
 
     const Array<Meter::Ptr> defaultMeters;
 
-    inline void undoAndDismiss();
-    inline void updateOkButtonState();
+    Component *getPrimaryFocusTarget() override;
+
+    void undoAndDismiss();
+    void updateOkButtonState();
     void updateSize();
 
     enum class Mode

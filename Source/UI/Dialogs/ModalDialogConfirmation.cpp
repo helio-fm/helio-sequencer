@@ -21,6 +21,8 @@
 
 ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const String &okText, const String &cancelText)
 {
+    const auto isPhoneLayout = App::isRunningOnPhone();
+
     this->messageLabel = make<Label>();
     this->addAndMakeVisible(this->messageLabel.get());
     this->messageLabel->setFont(Globals::UI::Fonts::L);
@@ -47,7 +49,8 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
     this->cancelButton->setButtonText(cancelText);
     this->messageLabel->setInterceptsMouseClicks(false, false);
 
-    this->setSize(410, 180);
+    this->setSize(410, isPhoneLayout ? 120 : 160);
+
     this->updatePosition();
 }
 
@@ -56,12 +59,8 @@ ModalDialogConfirmation::~ModalDialogConfirmation() = default;
 void ModalDialogConfirmation::resized()
 {
     this->messageLabel->setBounds(this->getContentBounds());
-
-    const auto buttonsBounds(this->getButtonsBounds());
-    const auto buttonWidth = buttonsBounds.getWidth() / 2;
-
-    this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
-    this->cancelButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
+    this->okButton->setBounds(this->getButton1Bounds());
+    this->cancelButton->setBounds(this->getButton2Bounds());
 }
 
 void ModalDialogConfirmation::parentHierarchyChanged()
@@ -96,11 +95,6 @@ bool ModalDialogConfirmation::keyPressed(const KeyPress &key)
     }
 
     return false;
-}
-
-void ModalDialogConfirmation::inputAttemptWhenModal()
-{
-    this->postCommandMessage(CommandIDs::DismissDialog);
 }
 
 void ModalDialogConfirmation::cancel()

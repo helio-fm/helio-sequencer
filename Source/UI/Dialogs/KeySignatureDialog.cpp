@@ -27,6 +27,7 @@
 #include "Transport.h"
 #include "CommandIDs.h"
 #include "Config.h"
+#include "App.h"
 
 class ScalePreviewThread final : public Thread
 {
@@ -93,13 +94,16 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     project(project),
     addsNewEvent(shouldAddNewEvent)
 {
+    const auto isPhoneLayout = App::isRunningOnPhone();
+
     this->presetsCombo = make<MobileComboBox::Container>();
     this->addAndMakeVisible(this->presetsCombo.get());
 
     this->messageLabel = make<Label>();
-    this->addAndMakeVisible(this->messageLabel.get());
+    this->addChildComponent(this->messageLabel.get());
     this->messageLabel->setFont(Globals::UI::Fonts::L);
     this->messageLabel->setJustificationType(Justification::centred);
+    this->messageLabel->setVisible(!isPhoneLayout);
 
     this->removeEventButton = make<TextButton>();
     this->addAndMakeVisible(this->removeEventButton.get());
@@ -199,7 +203,9 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
 
     static constexpr auto keyButtonSize = 34;
     const auto periodSize = getPeriod(project).size();
-    this->setSize(keyButtonSize * periodSize + this->getPaddingAndMarginTotal(), 270);
+
+    this->setSize(this->getHorizontalSpacingExceptContent() + keyButtonSize * periodSize,
+        isPhoneLayout ? DialogBase::Defaults::Phone::maxDialogHeight : 240);
 
     this->updatePosition();
     this->updateButtonsState();
@@ -219,23 +225,20 @@ KeySignatureDialog::~KeySignatureDialog()
 
 void KeySignatureDialog::resized()
 {
-    this->presetsCombo->setBounds(this->getContentBounds(0.5f));
+    this->presetsCombo->setBounds(this->getContentBounds(true));
     this->messageLabel->setBounds(this->getCaptionBounds());
 
-    const auto buttonsBounds(this->getButtonsBounds());
-    const auto buttonWidth = buttonsBounds.getWidth() / 2;
+    this->okButton->setBounds(this->getButton1Bounds());
+    this->removeEventButton->setBounds(this->getButton2Bounds());
 
-    this->okButton->setBounds(buttonsBounds.withTrimmedLeft(buttonWidth));
-    this->removeEventButton->setBounds(buttonsBounds.withTrimmedRight(buttonWidth + 1));
+    this->keySelector->setBounds(this->getRowBounds(0.17f, DialogBase::Defaults::textEditorHeight));
+    this->separator->setBounds(this->getRowBounds(0.34f, 4));
 
-    this->keySelector->setBounds(this->getRowBounds(0.15f, DialogBase::textEditorHeight));
-    this->separator->setBounds(this->getRowBounds(0.35f, 4));
-
-    this->scaleEditor->setBounds(this->getRowBounds(0.55f, DialogBase::textEditorHeight));
+    this->scaleEditor->setBounds(this->getRowBounds(0.5f, DialogBase::Defaults::textEditorHeight));
 
     static constexpr auto scaleHelperButtonWidth = 36;
     static constexpr auto scaleEditorMargin = 4;
-    const auto scaleEditorRow = this->getRowBounds(0.825f, DialogBase::textEditorHeight, scaleEditorMargin);
+    const auto scaleEditorRow = this->getRowBounds(0.825f, DialogBase::Defaults::textEditorHeight, scaleEditorMargin);
     this->scaleNameEditor->setBounds(scaleEditorRow.withTrimmedRight((scaleHelperButtonWidth + scaleEditorMargin) * 2));
 
     auto buttonsArea = scaleEditorRow.withTrimmedLeft(this->scaleNameEditor->getWidth());
@@ -305,13 +308,13 @@ void KeySignatureDialog::handleCommandMessage(int commandId)
             this->scale = this->scales[scaleIndex];
             this->scaleEditor->setScale(this->scale);
 
-            this->scaleNameEditor->grabKeyboardFocus();
             this->scaleNameEditor->setText(this->scale->getLocalizedName(), false);
             const auto newEvent = this->originalEvent
                 .withRootKey(this->rootKey).withScale(this->scale);
 
             this->sendEventChange(newEvent);
             this->updateButtonsState();
+            this->resetKeyboardFocus();
         }
     }
 }
@@ -372,11 +375,6 @@ void KeySignatureDialog::updateButtonsState()
     }
 
     this->savePresetButton->setEnabled(buttonsEnabled && !hasSameScaleInList);
-}
-
-void KeySignatureDialog::inputAttemptWhenModal()
-{
-    this->postCommandMessage(CommandIDs::DismissDialog);
 }
 
 UniquePointer<Component> KeySignatureDialog::editingDialog(ProjectNode &project,
@@ -535,7 +533,13 @@ void KeySignatureDialog::textEditorTextChanged(TextEditor &ed)
 
 void KeySignatureDialog::textEditorReturnKeyPressed(TextEditor &ed)
 {
-    this->textEditorFocusLost(ed);
+    if (this->scaleNameEditor->getText().isNotEmpty())
+    {
+        this->dismiss(); // apply on return key
+        return;
+    }
+
+    this->resetKeyboardFocus();
 }
 
 void KeySignatureDialog::textEditorEscapeKeyPressed(TextEditor &)
@@ -547,22 +551,19 @@ void KeySignatureDialog::textEditorFocusLost(TextEditor &)
 {
     this->updateButtonsState();
 
-    auto *focusedComponent = Component::getCurrentlyFocusedComponent();
-
-    if (nullptr != dynamic_cast<TextEditor *>(focusedComponent) &&
-        this->scaleNameEditor.get() != focusedComponent)
+    if (nullptr != dynamic_cast<TextEditor *>(Component::getCurrentlyFocusedComponent()))
     {
-        return; // other editor is focused
+        return; // some other editor is focused
     }
 
-    if (this->scaleNameEditor->getText().isNotEmpty() &&
-        focusedComponent != this->okButton.get() &&
-        focusedComponent != this->removeEventButton.get())
-    {
-        this->dismiss(); // apply on return key
-    }
-    else
-    {
-        this->scaleNameEditor->grabKeyboardFocus();
-    }
+    this->resetKeyboardFocus();
+}
+
+Component *KeySignatureDialog::getPrimaryFocusTarget()
+{
+#if PLATFORM_DESKTOP
+    return this->scaleNameEditor.get();
+#elif PLATFORM_MOBILE
+    return this;
+#endif
 }
