@@ -92,6 +92,8 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
 {
     jassert(target.isLocalFile());
 
+    const auto isPhoneLayout = App::isRunningOnPhone();
+
     this->renderButton = make<TextButton>();
     this->addAndMakeVisible(this->renderButton.get());
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderProceed));
@@ -124,7 +126,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     // just in case..
     this->project.getTransport().stopPlaybackAndRecording();
 
-    this->setSize(560, 185);
+    this->setSize(560, isPhoneLayout? 120 : 185);
     this->updatePosition();
     this->updateRenderTargetLabels();
 }
@@ -137,10 +139,10 @@ void RenderDialog::resized()
 
     this->captionLabel->setBounds(this->getCaptionBounds());
 
-    this->browseButton->setBounds(this->getRowBounds(0.15f, browseButtonSize)
+    this->browseButton->setBounds(this->getRowBounds(0.2f, browseButtonSize)
         .withWidth(browseButtonSize).translated(2, 0));
 
-    this->pathLabel->setBounds(this->getRowBounds(0.15f, browseButtonSize)
+    this->pathLabel->setBounds(this->getRowBounds(0.2f, browseButtonSize)
         .withTrimmedLeft(browseButtonSize));
 
     this->progressBar->setBounds(this->getRowBounds(0.7f, 38).reduced(5, 0));

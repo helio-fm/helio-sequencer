@@ -50,13 +50,14 @@ bool RendererThread::startRendering(const URL &target, RenderFormat format,
     // since on iOS it contains a security bookmark:
     this->renderTarget = target;
 
+#if PLATFORM_DESKTOP
+    // on some mobile systems we won't be able to write to the file after deleting it
     try
     {
         if (this->renderTarget.isLocalFile() &&
             this->renderTarget.getLocalFile().exists())
         {
-            const auto deleted = this->renderTarget.getLocalFile().deleteFile();
-            if (!deleted) {
+            if (!this->renderTarget.getLocalFile().deleteFile()) {
                 // the file exists but is probably inaccessible:
                 return false;
             }
@@ -66,6 +67,7 @@ bool RendererThread::startRendering(const URL &target, RenderFormat format,
     {
         return false;
     }
+#endif
 
     if (auto outStream = this->renderTarget.createOutputStream())
     {

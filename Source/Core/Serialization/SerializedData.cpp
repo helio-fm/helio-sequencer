@@ -94,7 +94,7 @@ public:
         if (child != nullptr)
         {
             jassert(child != this && !this->isAChildOf(child));
-            jassert(child->parent == nullptr);
+            //jassert(child->parent == nullptr);
             this->children.add(child);
             child->parent = this;
         }

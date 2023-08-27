@@ -294,8 +294,14 @@ void ProjectMenu::showRenderMenu()
             this->showMainMenu(MenuPanel::SlideRight);
         }));
 
+#if !JUCE_ANDROID
+    // WavAudioFormatWriter doesn't seem to work on my devices,
+    // it fails to write the header due to non-seekable file stream,
+    // see the assertion in WavAudioFormatWriter::writeHeader
+
     menu.add(MenuItem::item(Icons::render, CommandIDs::RenderToWAV,
         TRANS(I18n::Menu::Project::renderWav))->closesMenu());
+#endif
 
     menu.add(MenuItem::item(Icons::render, CommandIDs::RenderToFLAC,
         TRANS(I18n::Menu::Project::renderFlac))->closesMenu());

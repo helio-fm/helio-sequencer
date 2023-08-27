@@ -648,10 +648,14 @@ void SequencerLayout::proceedToRenderDialog(RenderFormat format)
         [this, format](URL &url)
     {
         // todo someday: render to any stream, not only local files
-        if (url.isLocalFile())
+        if (!url.isLocalFile() ||
+            !url.getLocalFile().hasWriteAccess())
         {
-            App::showModalComponent(make<RenderDialog>(this->project, url, format));
+            App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
+            return;
         }
+
+        App::showModalComponent(make<RenderDialog>(this->project, url, format));
     });
 }
 
