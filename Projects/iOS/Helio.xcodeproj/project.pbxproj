@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0CCFAEF7FC986B49B6573C91 /* CoreAudioKit.framework */ = {isa = PBXBuildFile; fileRef = 07C15EE793015A2B38B61F9E; };
-		1B7AF8550F97782DB5695373 /* Images.xcassets */ = {isa = PBXBuildFile; fileRef = 128A8F88680A6FA1C6D80434; };
 		1D78B3E4A876C8793F3BBD4A /* include_juce_audio_processors.mm */ = {isa = PBXBuildFile; fileRef = CFBB0BDC31CA8F0E5D42C538; };
 		1FFBD3CFBC762D971AD72168 /* App */ = {isa = PBXBuildFile; fileRef = E2C1A2859123A25065D73061; };
 		281EE99BDE13C79D9838ACDA /* include_juce_events.mm */ = {isa = PBXBuildFile; fileRef = D0BA5E6B83B1AE9472C2A396; };
@@ -18,6 +17,7 @@
 		4AF9DFBEC745072A73D91A73 /* include_juce_graphics.mm */ = {isa = PBXBuildFile; fileRef = CEADDB533C0F27D500255182; };
 		55384FA95ADB938FA2C8F207 /* AVFoundation.framework */ = {isa = PBXBuildFile; fileRef = 6E8441AF487334B3FB7B080F; };
 		6896459C435EA33C854C25E6 /* CoreMIDI.framework */ = {isa = PBXBuildFile; fileRef = 3F1E62A9CF59246B3DC7D662; };
+		6D16D03CCE7FDE23FFB80AF5 /* Images.xcassets */ = {isa = PBXBuildFile; fileRef = A573FFF0930A3C82A12CEE79; };
 		6FA24B24D71972AB3A2ACE0C /* CoreText.framework */ = {isa = PBXBuildFile; fileRef = AD444D3F0B05DCE69E45CD2A; };
 		75A30DBEF0059770B4565AE5 /* OpenGLES.framework */ = {isa = PBXBuildFile; fileRef = 1BEFBF01B2FC602C107F0317; };
 		76AF88FD3892992E33BF21B4 /* include_juce_gui_basics.mm */ = {isa = PBXBuildFile; fileRef = 30D41B20180846154487F41C; };
@@ -33,6 +33,7 @@
 		AE6F95E899109BD073864731 /* include_juce_audio_processors_lv2_libs.cpp */ = {isa = PBXBuildFile; fileRef = 685C0FD781A101BF48C5B87B; };
 		B2F87FE87391EB37BB7133A4 /* UIKit.framework */ = {isa = PBXBuildFile; fileRef = A786517ECDC3A3DD0DCF6F95; };
 		C3131DD94FCAE95171168F1E /* include_juce_data_structures.mm */ = {isa = PBXBuildFile; fileRef = FC84392248E5BBB797AA7654; };
+		C9F0B3B48C2DA77EB5D56BEC /* LaunchScreen.storyboard */ = {isa = PBXBuildFile; fileRef = FDDC45D7D4F15E09912FD674; };
 		CA577550FEB18735D934056B /* include_juce_opengl.mm */ = {isa = PBXBuildFile; fileRef = 3590821780CD003952E75600; };
 		CB960CCA38C16AC998A1A267 /* CoreGraphics.framework */ = {isa = PBXBuildFile; fileRef = A1BD73B89A3FA29D88EE93A9; };
 		E6B221F9D2A7E49E5BEB05E3 /* BinaryData.cpp */ = {isa = PBXBuildFile; fileRef = 049110EFE86677978F8FA611; };
@@ -107,7 +108,6 @@
 		108BC62D0CC3CAFBDFE53887 /* DialogBase.cpp */ /* DialogBase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DialogBase.cpp; path = ../../Source/UI/Dialogs/DialogBase.cpp; sourceTree = SOURCE_ROOT; };
 		11361C4E63D5B6E6FE82E917 /* PatternRoll.cpp */ /* PatternRoll.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatternRoll.cpp; path = ../../Source/UI/Sequencer/PatternRoll/PatternRoll.cpp; sourceTree = SOURCE_ROOT; };
 		124064B0C1702745C600DB6B /* KeySelector.cpp */ /* KeySelector.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = KeySelector.cpp; path = ../../Source/UI/Common/KeySelector.cpp; sourceTree = SOURCE_ROOT; };
-		128A8F88680A6FA1C6D80434 /* Images.xcassets */ /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../../Resources/iOS/Images.xcassets; sourceTree = "<group>"; };
 		12E15D689DC7EBC44BBE1CA8 /* selectAll.svg */ /* selectAll.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = selectAll.svg; path = ../../Resources/Icons/selectAll.svg; sourceTree = SOURCE_ROOT; };
 		12E7FE27F54734F791B11FFB /* ResourceSyncService.cpp */ /* ResourceSyncService.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ResourceSyncService.cpp; path = ../../Source/Core/Network/Services/ResourceSyncService.cpp; sourceTree = SOURCE_ROOT; };
 		139B98CFAA0F1E9F10D2F31E /* SpectralLogo.cpp */ /* SpectralLogo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SpectralLogo.cpp; path = ../../Source/UI/Common/SpectralLogo.cpp; sourceTree = SOURCE_ROOT; };
@@ -581,6 +581,7 @@
 		A460E38C0C2AC73506FC5A0D /* Arpeggiator.cpp */ /* Arpeggiator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Arpeggiator.cpp; path = ../../Source/Core/Configuration/Resources/Models/Arpeggiator.cpp; sourceTree = SOURCE_ROOT; };
 		A5406EDACDF2D97A3E5C29E0 /* translations.json */ /* translations.json */ = {isa = PBXFileReference; lastKnownFileType = file.json; name = translations.json; path = ../../Resources/translations.json; sourceTree = SOURCE_ROOT; };
 		A55C893A1288B2A5F6F6030E /* arpeggiators.json */ /* arpeggiators.json */ = {isa = PBXFileReference; lastKnownFileType = file.json; name = arpeggiators.json; path = ../../Resources/arpeggiators.json; sourceTree = SOURCE_ROOT; };
+		A573FFF0930A3C82A12CEE79 /* Images.xcassets */ /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Helio/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		A58BDD5BBD35395EE5FF620B /* SequencerSidebarLeft.h */ /* SequencerSidebarLeft.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SequencerSidebarLeft.h; path = ../../Source/UI/Sequencer/Sidebars/SequencerSidebarLeft.h; sourceTree = SOURCE_ROOT; };
 		A60CCAC6696362BF85CE208C /* PluginWindow.cpp */ /* PluginWindow.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PluginWindow.cpp; path = ../../Source/UI/Common/PluginWindow.cpp; sourceTree = SOURCE_ROOT; };
 		A6B4C3AD920E2F946E19ACA5 /* Scale.cpp */ /* Scale.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Scale.cpp; path = ../../Source/Core/Configuration/Resources/Models/Scale.cpp; sourceTree = SOURCE_ROOT; };
@@ -850,6 +851,7 @@
 		FD67948033F129628855B2A2 /* FineTuningValueIndicator.h */ /* FineTuningValueIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FineTuningValueIndicator.h; path = ../../Source/UI/Common/FineTuningValueIndicator.h; sourceTree = SOURCE_ROOT; };
 		FDAB8148BC574F77D1B6DF8B /* DashboardMenu.cpp */ /* DashboardMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DashboardMenu.cpp; path = ../../Source/UI/Pages/Dashboard/Menu/DashboardMenu.cpp; sourceTree = SOURCE_ROOT; };
 		FDB0388A075451656DF0B920 /* CommandIDs.h */ /* CommandIDs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandIDs.h; path = ../../Source/UI/Common/CommandIDs.h; sourceTree = SOURCE_ROOT; };
+		FDDC45D7D4F15E09912FD674 /* LaunchScreen.storyboard */ /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
 		FE70441C7967060480694B9B /* KeySignatureEventActions.h */ /* KeySignatureEventActions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeySignatureEventActions.h; path = ../../Source/Core/Undo/Actions/KeySignatureEventActions.h; sourceTree = SOURCE_ROOT; };
 		FEF8584232E07B492F67C828 /* CommandPaletteMoveNotesMenu.h */ /* CommandPaletteMoveNotesMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandPaletteMoveNotesMenu.h; path = ../../Source/Core/CommandPalette/CommandPaletteMoveNotesMenu.h; sourceTree = SOURCE_ROOT; };
 		FF2F34B06DF8F782AF4FCEC1 /* RadioButton.cpp */ /* RadioButton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RadioButton.cpp; path = ../../Source/UI/Common/RadioButton.cpp; sourceTree = SOURCE_ROOT; };
@@ -1662,7 +1664,8 @@
 			isa = PBXGroup;
 			children = (
 				66BCCCCB4F99E89B83C85CE0,
-				128A8F88680A6FA1C6D80434,
+				A573FFF0930A3C82A12CEE79,
+				FDDC45D7D4F15E09912FD674,
 				AB43B7209B4383E4833E3C27,
 			);
 			name = Resources;
@@ -2348,7 +2351,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1B7AF8550F97782DB5695373,
+				6D16D03CCE7FDE23FFB80AF5,
+				C9F0B3B48C2DA77EB5D56BEC,
 				FD478BAA3C88F81D16AA5E67,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2437,7 +2441,6 @@
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
@@ -2569,7 +2572,6 @@
 			buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++14";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_LINK_OBJC_RUNTIME = NO;
