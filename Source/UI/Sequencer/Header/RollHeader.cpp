@@ -26,7 +26,6 @@
 #include "ClipRangeIndicator.h"
 #include "ModalCallout.h"
 #include "TimelineMenu.h"
-#include "ColourIDs.h"
 
 class PlaybackLoopMarker final : public Component
 {
@@ -195,19 +194,14 @@ RollHeader::~RollHeader() = default;
 
 void RollHeader::updateColours()
 {
-    // Painting is the very bottleneck of this app,
-    // so make sure we have no lookups inside the paint method
-    this->backColour = findDefaultColour(ColourIDs::Roll::headerFill);
-    this->barShadeColour = this->backColour.darker(0.1f);
-    this->recordingColour = findDefaultColour(ColourIDs::Roll::headerRecording);
     this->barColour = this->recordingMode.get() ?
-        findDefaultColour(ColourIDs::Roll::headerRecording) :
-        findDefaultColour(ColourIDs::Roll::headerSnaps);
-    this->beatColour = this->barColour.withMultipliedAlpha(0.8f);
-    this->snapColour = this->barColour.withMultipliedAlpha(0.6f);
-    this->bevelDarkColour = findDefaultColour(ColourIDs::Common::borderLineDark);
-    this->bevelLightColour = findDefaultColour(ColourIDs::Common::borderLineLight)
-        .withMultipliedAlpha(0.5f);
+        this->snapsRecordingColour : this->snapsPlaybackColour;
+
+    this->beatColour = this->barColour
+        .withMultipliedAlpha(0.9f * this->roll.getBeatLineAlpha());
+
+    this->snapColour = this->barColour
+        .withMultipliedAlpha(0.75f * this->roll.getSnapLineAlpha());
 }
 
 Colour RollHeader::getBarColour() const noexcept
@@ -529,31 +523,31 @@ void RollHeader::paint(Graphics &g)
     const int paintStartX = this->viewport.getViewPositionX();
     const int paintEndX = this->viewport.getViewPositionX() + this->viewport.getViewWidth();
 
-    g.setColour(this->backColour);
+    g.setColour(this->fillColour);
     g.fillRect(paintStartX, 0, paintEndX - paintStartX, Globals::UI::rollHeaderHeight);
 
     g.setColour(this->barColour);
-    for (const auto f : this->roll.getVisibleBars())
+    for (const auto x : this->roll.getVisibleBars())
     {
-        g.fillRect(floorf(f), float(this->getHeight() - 13), 1.f, 12.f);
+        g.fillRect(floorf(x), float(this->getHeight() - 12), 1.f, 11.f);
     }
 
     g.setColour(this->barShadeColour);
-    for (const auto f : this->roll.getVisibleBars())
+    for (const auto x : this->roll.getVisibleBars())
     {
-        g.fillRect(floorf(f + 1), float(this->getHeight() - 12), 1.f, 11.f);
+        g.fillRect(floorf(x + 1), float(this->getHeight() - 11), 1.f, 10.f);
     }
 
     g.setColour(this->beatColour);
-    for (const auto f : this->roll.getVisibleBeats())
+    for (const auto x : this->roll.getVisibleBeats())
     {
-        g.fillRect(floorf(f), float(this->getHeight() - 8), 1.f, 7.f);
+        g.fillRect(floorf(x), float(this->getHeight() - 8), 1.f, 7.f);
     }
 
     g.setColour(this->snapColour);
-    for (const auto f : this->roll.getVisibleSnaps())
+    for (const auto x : this->roll.getVisibleSnaps())
     {
-        g.fillRect(floorf(f), float(this->getHeight() - 4), 1.f, 3.f);
+        g.fillRect(floorf(x), float(this->getHeight() - 5), 1.f, 4.f);
     }
 
     g.setColour(this->bevelLightColour);
@@ -565,7 +559,7 @@ void RollHeader::paint(Graphics &g)
     g.setColour(this->barColour);
     if (this->recordingMode.get())
     {
-        g.fillRect(0, this->getHeight() - 4, this->getWidth(), 3);
+        g.fillRect(0, this->getHeight() - 3, this->getWidth(), 2);
     }
 }
 

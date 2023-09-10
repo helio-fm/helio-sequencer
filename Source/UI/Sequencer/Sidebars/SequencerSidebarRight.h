@@ -109,7 +109,7 @@ private:
     UniquePointer<ShadowUpwards> footShadow;
     UniquePointer<SeparatorHorizontal> footRule;
     UniquePointer<ShadowDownwards> headShadow;
-    UniquePointer<MenuItemComponent> annotationsButton;
+    UniquePointer<MenuItemComponent> repriseButton;
     UniquePointer<TransportControlComponent> transportControl;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerSidebarRight)

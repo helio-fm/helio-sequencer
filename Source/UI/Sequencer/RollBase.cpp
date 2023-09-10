@@ -62,7 +62,6 @@
 #include "AudioCore.h"
 #include "AudioMonitor.h"
 #include "Config.h"
-#include "ColourIDs.h"
 
 #if PLATFORM_DESKTOP
 #   define ROLL_VIEW_FOLLOWS_PLAYHEAD 1
@@ -77,11 +76,7 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     bool hasTimeSignaturesTrack) :
     clippingDetector(audioMonitor),
     project(parentProject),
-    viewport(viewportRef),
-    barLineColour(findDefaultColour(ColourIDs::Roll::barLine)),
-    barLineBevelColour(findDefaultColour(ColourIDs::Roll::barLineBevel)),
-    beatLineColour(findDefaultColour(ColourIDs::Roll::beatLine)),
-    snapLineColour(findDefaultColour(ColourIDs::Roll::snapLine))
+    viewport(viewportRef)
 {
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
@@ -721,10 +716,10 @@ float RollBase::getMinVisibleBeatForCurrentZoomLevel() const
     return minBeat;
 }
 
-void RollBase::computeAllSnapLines()
+void RollBase::updateAllSnapLines()
 {
-    static constexpr auto minBarWidth = 14;
-    static constexpr auto minBeatWidth = 8;
+    static constexpr auto minBarWidth = 12;
+    static constexpr auto minBeatWidth = 7;
 
     constexpr auto beatsPerBar = float(Globals::beatsPerBar);
 
@@ -753,7 +748,6 @@ void RollBase::computeAllSnapLines()
     // in the absence of time signatures we still need defaults for the grid:
     int numerator = Globals::Defaults::timeSignatureNumerator;
     int denominator = Globals::Defaults::timeSignatureDenominator;
-    // in the absence of time signatures we still need defaults for the grid:
     float defaultMeterStartBeat = this->projectFirstBeat;
     timeSignatureAggregator->updateGridDefaultsIfNeeded(numerator, denominator, defaultMeterStartBeat);
 
@@ -780,8 +774,8 @@ void RollBase::computeAllSnapLines()
 
     // iterate backwards from the anchor, if needed, using the single default meter
     float barWidthSum = 0.f;
-    bool canDrawBarLine = false;
-    auto barIterator = defaultMeterStartBar;
+    bool canDrawBarLine = true;
+    auto barIterator = defaultMeterStartBar - defaultMeterBarLength;
 
     while (barIterator >= (paintStartBar - defaultMeterBarLength))
     {
@@ -906,6 +900,15 @@ void RollBase::computeAllSnapLines()
     {
         this->allSnaps.add(projectStartBeatX);
     }
+
+    // a nice fade-in/fade-out effect for the grid inspired by Miro
+    this->beatLineAlpha = 0.25f + 0.75f *
+        sqrtf(jmin(1.f, jmax(0.f, this->beatWidth - minBeatWidth) / (minBeatWidth * 8.f)));
+
+    this->snapLineAlpha = 0.1f + 0.9f *
+        sqrtf(jmin(1.f, jmax(0.f, this->beatWidth - minBeatWidth) / (minBeatWidth * 32.f)));
+
+    this->header->updateColours();
 }
 
 //===----------------------------------------------------------------------===//
@@ -1537,7 +1540,7 @@ void RollBase::resized()
 
 void RollBase::paint(Graphics &g)
 {
-    this->computeAllSnapLines();
+    this->updateAllSnapLines();
 
     const float y = float(this->viewport.getViewPositionY());
     const float h = float(this->viewport.getViewHeight());

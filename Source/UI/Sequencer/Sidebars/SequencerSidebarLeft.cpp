@@ -122,16 +122,16 @@ void SequencerSidebarLeft::resized()
     constexpr auto headerSize = Globals::UI::rollHeaderHeight;
     constexpr auto footerSize = Globals::UI::projectMapHeight;
 
-    this->listBox->setBounds(0, headerSize + 1, this->getWidth(),
-        this->getHeight() - headerSize - footerSize - 1);
+    this->listBox->setBounds(0, headerSize - 1, this->getWidth(),
+        this->getHeight() - headerSize - footerSize + 1);
 
     constexpr auto shadowSize = 6;
-    this->headShadow->setBounds(0, headerSize, this->getWidth(), shadowSize);
+    this->headShadow->setBounds(0, headerSize - 1, this->getWidth(), shadowSize);
     this->footShadow->setBounds(0,
         this->getHeight() - footerSize - shadowSize,
         this->getWidth(), shadowSize);
 
-    this->headRule->setBounds(0, headerSize - 1, this->getWidth(), 2);
+    this->headRule->setBounds(0, headerSize - 2, this->getWidth(), 2);
     this->footRule->setBounds(0,
         this->getHeight() - footerSize,
         this->getWidth(), 2);

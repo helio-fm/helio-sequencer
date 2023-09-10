@@ -1000,14 +1000,14 @@ float PatternRoll::findPreviousAnchorBeat(float beat) const
     return result;
 }
 
-void PatternRoll::computeAllSnapLines()
+void PatternRoll::updateAllSnapLines()
 {
     // PianoRoll is happy with the base implementation of computeAllSnapLines,
     // but PatternRoll wants to append those snaps with clips' right edges:
     // most of the time it will have no visible effect, but may come in handy
     // e.g. when doing some complex rhythms and dragging the clips around:
 
-    RollBase::computeAllSnapLines();
+    RollBase::updateAllSnapLines();
 
     const auto paintStartX = this->viewport.getViewPositionX();
     const auto paintEndX = paintStartX + this->viewport.getViewWidth();

@@ -25,6 +25,8 @@ class HeaderSelectionIndicator;
 class ClipRangeIndicator;
 class PlaybackLoopMarker;
 
+#include "ColourIDs.h"
+
 class RollHeader final : public Component
 {
 public:
@@ -41,6 +43,7 @@ public:
     void updateClipRangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
     void updateSelectionRangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
 
+    void updateColours();
     Colour getBarColour() const noexcept;
 
     //===------------------------------------------------------------------===//
@@ -65,16 +68,17 @@ protected:
     Atomic<bool> soundProbeMode = false;
     Atomic<bool> recordingMode = false;
 
-    Colour backColour;
+    const Colour fillColour = findDefaultColour(ColourIDs::Roll::headerFill);
+    const Colour barShadeColour = findDefaultColour(ColourIDs::Common::borderLineDark);
+    const Colour bevelDarkColour = findDefaultColour(ColourIDs::Common::borderLineDark);
+    const Colour bevelLightColour = findDefaultColour(ColourIDs::Roll::headerBorder);
+
+    const Colour snapsRecordingColour = findDefaultColour(ColourIDs::Roll::headerRecording);
+    const Colour snapsPlaybackColour = findDefaultColour(ColourIDs::Roll::headerSnaps);
+
     Colour barColour;
-    Colour barShadeColour;
     Colour beatColour;
     Colour snapColour;
-    Colour bevelLightColour;
-    Colour bevelDarkColour;
-    Colour recordingColour;
-
-    void updateColours();
 
     UniquePointer<ClipRangeIndicator> clipRangeIndicator;
     UniquePointer<ClipRangeIndicator> selectionRangeIndicator;
@@ -94,5 +98,4 @@ protected:
     void updateTimeDistanceIndicator();
     void updateClipRangeIndicatorPosition();
     void updateSelectionRangeIndicatorPosition();
-
 };

@@ -25,6 +25,7 @@ class Transport;
 #include "HelperRectangle.h"
 #include "RollListener.h"
 #include "ComponentFader.h"
+#include "ColourIDs.h"
 
 class ProjectMapsScroller final :
     public Component,
@@ -212,7 +213,6 @@ private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScreenRange)
     };
 
-
 private:
 
     void horizontalDragByUser(Component *component, const Rectangle<int> &bounds);
@@ -246,9 +246,10 @@ private:
     ComponentDragger helperDragger;
     UniquePointer<HorizontalDragHelper> helperRectangle;
 
-    const Colour borderLineDark;
-    const Colour borderLineLight;
+    const Colour borderLineDark = findDefaultColour(ColourIDs::TrackScroller::borderLineDark);
+    const Colour borderLineLight = findDefaultColour(ColourIDs::TrackScroller::borderLineLight);
 
     int animationTimerFrequencyHz = 60;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectMapsScroller)
 };

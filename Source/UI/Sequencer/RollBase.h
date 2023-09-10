@@ -52,6 +52,7 @@ class TimelineWarningMarker;
 #include "HeadlineContextMenuController.h"
 #include "TimeSignaturesAggregator.h"
 #include "Temperament.h"
+#include "ColourIDs.h"
 
 #if PLATFORM_MOBILE
 #   define ROLL_LISTENS_LONG_TAP 1
@@ -214,6 +215,8 @@ public:
     inline const Array<float> &getVisibleBars() const noexcept  { return this->visibleBars; }
     inline const Array<float> &getVisibleBeats() const noexcept { return this->visibleBeats; }
     inline const Array<float> &getVisibleSnaps() const noexcept { return this->visibleSnaps; }
+    inline float getBeatLineAlpha() const noexcept { return this->beatLineAlpha; }
+    inline float getSnapLineAlpha() const noexcept { return this->snapLineAlpha; }
     
     void setSpaceDraggingMode(bool dragMode);
     bool isUsingSpaceDraggingMode() const;
@@ -425,12 +428,15 @@ protected:
     // contains all three above so that it' easier to iterate them
     Array<float> allSnaps;
 
-    const Colour barLineColour;
-    const Colour barLineBevelColour;
-    const Colour beatLineColour;
-    const Colour snapLineColour;
+    const Colour barLineColour = findDefaultColour(ColourIDs::Roll::barLine);
+    const Colour barLineBevelColour = findDefaultColour(ColourIDs::Roll::barLineBevel);
+    const Colour beatLineColour = findDefaultColour(ColourIDs::Roll::beatLine);
+    const Colour snapLineColour = findDefaultColour(ColourIDs::Roll::snapLine);
 
-    virtual void computeAllSnapLines();
+    float beatLineAlpha = 1.f;
+    float snapLineAlpha = 1.f;
+
+    virtual void updateAllSnapLines();
 
 protected:
 

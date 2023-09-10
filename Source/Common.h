@@ -171,7 +171,7 @@ namespace Globals
     // (tech debt warning: while this is used in rolls to limit the grid resolution,
     // this is also used in serialization, so saved projects assume this constant;
     // in future we need to update the serialization format in a way that
-    // doesn't break exisitng projects, and allows to increase this limit)
+    // doesn't break existing projects, and allows to increase this limit)
     static constexpr auto ticksPerBeat = 16;
 
     static constexpr auto minClipLength = 1.f / static_cast<float>(ticksPerBeat);
@@ -221,16 +221,15 @@ namespace Globals
         static constexpr auto headlineHeight = 40;
         static constexpr auto menuPanelRowHeight = 40;
         static constexpr auto sidebarWidth = 44;
-        static constexpr auto rollHeaderHeight = 34;
         #elif PLATFORM_DESKTOP
         static constexpr auto headlineHeight = 32;
         static constexpr auto menuPanelRowHeight = 32;
         static constexpr auto sidebarWidth = 38;
-        static constexpr auto rollHeaderHeight = 36;
         #endif
 
         static constexpr auto defaultBeatWidth = 48;
         static constexpr auto rollHeaderShadowSize = 12;
+        static constexpr auto rollHeaderHeight = 35;
         static constexpr auto rollScrollerHeight = 30;
         static constexpr auto headlineIconSize = 16;
         static constexpr auto sidebarRowHeight = 36;

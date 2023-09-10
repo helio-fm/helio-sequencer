@@ -908,6 +908,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     const auto headerFill = s->getTimelineColour().darker(0.025f);
     this->setColour(ColourIDs::Roll::headerFill, headerFill);
+    this->setColour(ColourIDs::Roll::headerBorder, Colours::white.withAlpha(0.045f));
     this->setColour(ColourIDs::Roll::headerSnaps, headerFill.contrasting().interpolatedWith(headerFill, 0.63f));
     this->setColour(ColourIDs::Roll::headerRecording, headerFill.interpolatedWith(Colours::red, 0.55f));
 

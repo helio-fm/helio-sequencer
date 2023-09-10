@@ -60,11 +60,11 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) : project(pare
     this->headShadow = make<ShadowDownwards>(ShadowType::Light);
     this->addAndMakeVisible(this->headShadow.get());
 
-    this->annotationsButton = make<MenuItemComponent>(this, nullptr,
+    this->repriseButton = make<MenuItemComponent>(this, nullptr,
         MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection)->
         withTooltip(TRANS(I18n::Tooltips::togglePlaybackLoop)));
 
-    this->addAndMakeVisible(this->annotationsButton.get());
+    this->addAndMakeVisible(this->repriseButton.get());
 
     this->transportControl = make<TransportControlComponent>(nullptr);
     this->addAndMakeVisible(this->transportControl.get());
@@ -102,21 +102,21 @@ void SequencerSidebarRight::resized()
     constexpr auto headerSize = Globals::UI::rollHeaderHeight;
     constexpr auto footerSize = Globals::UI::projectMapHeight;
 
-    this->listBox->setBounds(0, headerSize + 1, this->getWidth(),
-        this->getHeight() - headerSize - footerSize - 1);
+    this->listBox->setBounds(0, headerSize - 1, this->getWidth(),
+        this->getHeight() - headerSize - footerSize + 1);
 
     constexpr auto shadowSize = 6;
-    this->headShadow->setBounds(0, headerSize, this->getWidth(), shadowSize);
+    this->headShadow->setBounds(0, headerSize - 1, this->getWidth(), shadowSize);
     this->footShadow->setBounds(0,
         this->getHeight() - footerSize - shadowSize,
         this->getWidth(), shadowSize);
 
-    this->headRule->setBounds(0, headerSize - 1, this->getWidth(), 2);
+    this->headRule->setBounds(0, headerSize - 2, this->getWidth(), 2);
     this->footRule->setBounds(0,
         this->getHeight() - footerSize,
         this->getWidth(), 2);
 
-    this->annotationsButton->setBounds(0, 0, this->getWidth(), headerSize - 1);
+    this->repriseButton->setBounds(0, 0, this->getWidth(), headerSize - 1);
 
     constexpr auto transportControlSize = footerSize - 1;
     this->transportControl->setBounds(0,
@@ -125,7 +125,7 @@ void SequencerSidebarRight::resized()
 
     // a hack for themes changing:
     this->listBox->updateContent();
-    this->annotationsButton->resized();
+    this->repriseButton->resized();
 }
 
 void SequencerSidebarRight::recreateMenu()
@@ -247,7 +247,7 @@ void SequencerSidebarRight::onTotalTimeChanged(double) {}
 
 void SequencerSidebarRight::onLoopModeChanged(bool hasLoop, float startBeat, float endBeat)
 {
-    this->annotationsButton->setChecked(hasLoop);
+    this->repriseButton->setChecked(hasLoop);
 }
 
 void SequencerSidebarRight::onPlay()
@@ -319,7 +319,7 @@ void SequencerSidebarRight::updateModeButtons()
 
 void SequencerSidebarRight::emitAnnotationsCallout(Component *newAnnotationsMenu)
 {
-    ModalCallout::emit(newAnnotationsMenu, this->annotationsButton.get());
+    ModalCallout::emit(newAnnotationsMenu, this->repriseButton.get());
 }
 
 void SequencerSidebarRight::setLinearMode()

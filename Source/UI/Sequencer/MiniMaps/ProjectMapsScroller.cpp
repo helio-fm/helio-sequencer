@@ -21,15 +21,12 @@
 #include "Playhead.h"
 #include "Transport.h"
 #include "RollBase.h"
-#include "ColourIDs.h"
 #include "HelioTheme.h"
 #include "MainLayout.h"
 
 ProjectMapsScroller::ProjectMapsScroller(Transport &transportRef, SafePointer<RollBase> roll) :
     transport(transportRef),
-    roll(roll),
-    borderLineDark(findDefaultColour(ColourIDs::TrackScroller::borderLineDark)),
-    borderLineLight(findDefaultColour(ColourIDs::TrackScroller::borderLineLight))
+    roll(roll)
 {
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);

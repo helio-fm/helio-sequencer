@@ -128,7 +128,7 @@ protected:
     float findNextAnchorBeat(float beat) const override;
     float findPreviousAnchorBeat(float beat) const override;
 
-    void computeAllSnapLines() override;
+    void updateAllSnapLines() override;
 
 private:
 
