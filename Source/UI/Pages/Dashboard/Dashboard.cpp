@@ -37,12 +37,6 @@ Dashboard::Dashboard(Workspace &workspace) : workspace(workspace)
     this->backgroundA = make<PageBackgroundA>();
     this->addAndMakeVisible(this->backgroundA.get());
 
-    this->patreonLabel = make<Label>();
-    this->addAndMakeVisible(this->patreonLabel.get());
-
-    this->patreonLabel->setFont(Globals::UI::Fonts::S);
-    this->patreonLabel->setJustificationType(Justification::centred);
-
     this->backgroundB = make<PageBackgroundB>();
     this->addAndMakeVisible(this->backgroundB.get());
 
@@ -68,18 +62,6 @@ Dashboard::Dashboard(Workspace &workspace) : workspace(workspace)
 
     this->updatesInfo = make<UpdatesInfoComponent>();
     this->addAndMakeVisible(this->updatesInfo.get());
-
-    this->patreonButton = make<OverlayButton>();
-    this->addAndMakeVisible(this->patreonButton.get());
-
-    this->patreonLabel->setText(TRANS(I18n::Common::supportProject), dontSendNotification);
-    this->patreonLabel->setColour(Label::textColourId,
-        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.25f));
-    this->patreonButton->onClick = []()
-    {
-        URL url("https://www.patreon.com/peterrudenko");
-        url.launchInDefaultBrowser();
-    };
 
     this->projectsList->updateListContent();
 
@@ -111,13 +93,10 @@ void Dashboard::resized()
     this->logo->setBounds(logoX, 32, logoSize, logoSize);
 
     constexpr auto buttonHeight = 32;
-    const auto buttonWidth = leftSectionWidth - 50;
+    constexpr auto buttonWidth = 270;
 
     const auto helperX = leftSectionWidth / 2 - buttonWidth / 2;
     this->updatesInfo->setBounds(helperX, 352, buttonWidth, 256);
-
-    this->patreonLabel->setBounds(helperX, getHeight() - 44, buttonWidth, buttonHeight);
-    this->patreonButton->setBounds(helperX, getHeight() - 44, buttonWidth, buttonHeight);
 
     // right section content:
     constexpr auto projectsListWidth = 350;

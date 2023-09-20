@@ -47,7 +47,6 @@ private:
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
     UniquePointer<PageBackgroundA> backgroundA;
-    UniquePointer<Label> patreonLabel;
     UniquePointer<PageBackgroundB> backgroundB;
     UniquePointer<OpenProjectButton> openProjectButton;
     UniquePointer<MobileComboBox::Container> createProjectCombo;
@@ -56,7 +55,6 @@ private:
     UniquePointer<DashboardMenu> projectsList;
     UniquePointer<CreateProjectButton> createProjectButton;
     UniquePointer<UpdatesInfoComponent> updatesInfo;
-    UniquePointer<OverlayButton> patreonButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dashboard)
 };

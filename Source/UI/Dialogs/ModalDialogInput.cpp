@@ -56,11 +56,7 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message,
     this->textEditor->setPopupMenuEnabled(true);
 
     this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
-#if PLATFORM_DESKTOP
     this->textEditor->setFont(Globals::UI::Fonts::L);
-#elif PLATFORM_MOBILE
-    this->textEditor->setFont(Globals::UI::Fonts::XL);
-#endif
     this->textEditor->setText(this->input, dontSendNotification);
     this->textEditor->addListener(this);
 
