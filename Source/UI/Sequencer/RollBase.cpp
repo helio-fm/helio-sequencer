@@ -752,27 +752,29 @@ void RollBase::updateAllSnapLines()
     timeSignatureAggregator->updateGridDefaultsIfNeeded(numerator, denominator, defaultMeterStartBeat);
 
     int nextTsIndex = 0;
-    // try to find the nearest time signature beyond the left side of visible area,
+    // try to find the nearest time signature before the left side of visible area,
     // or just pick the very first time signature, if available
-    for (; nextTsIndex < orderedTimeSignatures->size(); ++nextTsIndex)
+    for (bool hasPickedTheFirstMeter = false;
+         nextTsIndex < orderedTimeSignatures->size(); ++nextTsIndex)
     {
         const auto *signature = static_cast<const TimeSignatureEvent *>
-            (orderedTimeSignatures->getUnchecked(nextTsIndex));
+        (orderedTimeSignatures->getUnchecked(nextTsIndex));
+
+        if ((signature->getBeat() / beatsPerBar) >= paintStartBar && hasPickedTheFirstMeter)
+        {
+            break;
+        }
 
         numerator = signature->getNumerator();
         denominator = signature->getDenominator();
         defaultMeterStartBeat = signature->getBeat();
-
-        if ((signature->getBeat() / beatsPerBar) >= paintStartBar)
-        {
-            break;
-        }
+        hasPickedTheFirstMeter = true;
     }
 
     const float defaultMeterStartBar = defaultMeterStartBeat / beatsPerBar;
     const float defaultMeterBarLength = float(numerator) / float(denominator);
 
-    // iterate backwards from the anchor, if needed, using the single default meter
+    // iterate backwards from the first picked meter, if it starts on-screen
     float barWidthSum = 0.f;
     bool canDrawBarLine = true;
     auto barIterator = defaultMeterStartBar - defaultMeterBarLength;
@@ -822,8 +824,7 @@ void RollBase::updateAllSnapLines()
         barWidthSum = canDrawBarLine ? 0.f : barWidthSum;
     }
 
-    // now iterate forwards from the anchor,
-    // picking all the following time signatures
+    // now iterate forwards from the anchor
 
     barWidthSum = minBarWidth;
     barIterator = defaultMeterStartBar;
