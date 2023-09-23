@@ -647,14 +647,6 @@ void SequencerLayout::proceedToRenderDialog(RenderFormat format)
         Globals::UI::FileChooser::forFileToSave,
         [this, format](URL &url)
     {
-        // todo someday: render to any stream, not only local files
-        if (!url.isLocalFile() ||
-            !url.getLocalFile().hasWriteAccess())
-        {
-            App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
-            return;
-        }
-
         App::showModalComponent(make<RenderDialog>(this->project, url, format));
     });
 }

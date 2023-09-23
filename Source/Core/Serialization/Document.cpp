@@ -142,10 +142,12 @@ void Document::exportAs(const String &exportExtension,
     {
         try
         {
+#if PLATFORM_DESKTOP
             if (url.isLocalFile() && url.getLocalFile().exists())
             {
                 url.getLocalFile().deleteFile();
             }
+#endif
 
             if (auto outStream = url.createOutputStream())
             {
@@ -214,14 +216,6 @@ void Document::import(const String &filePattern)
     {
         try
         {
-            if (!url.isLocalFile() ||
-                !url.getLocalFile().exists() ||
-                !url.getLocalFile().hasReadAccess())
-            {
-                App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
-                return;
-            }
-
             if (auto inStream = url.createInputStream(URL::InputStreamOptions(URL::ParameterHandling::inAddress)))
             {
                 this->owner.onDocumentImport(*inStream.get());

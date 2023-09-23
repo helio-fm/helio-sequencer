@@ -90,8 +90,6 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     renderTarget(target),
     format(format)
 {
-    jassert(target.isLocalFile());
-
     const auto isPhoneLayout = App::isRunningOnPhone();
 
     this->renderButton = make<TextButton>();
@@ -185,20 +183,14 @@ void RenderDialog::launchFileChooser()
     DocumentHelpers::showFileChooser(this->renderFileChooser,
         Globals::UI::FileChooser::forFileToSave,
         [this](URL &url) {
-            // todo someday: test rendering to any stream, not only local files
-            if (url.isLocalFile())
-            {
-                this->renderTarget = url;
-                this->updateRenderTargetLabels();
-            }
+            this->renderTarget = url;
+            this->updateRenderTargetLabels();
         });
 }
 
 void RenderDialog::updateRenderTargetLabels()
 {
-    jassert(this->renderTarget.isLocalFile());
-    const auto file = this->renderTarget.getLocalFile();
-    this->pathLabel->setText(file.getFullPathName(), dontSendNotification);
+    this->pathLabel->setText(this->renderTarget.getLocalFile().getFullPathName(), dontSendNotification);
 }
 
 bool RenderDialog::keyPressed(const KeyPress &key)
