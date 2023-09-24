@@ -148,12 +148,10 @@ struct SoundFontRegion final
         this->ampeg.attack = timeCents2Secs(int(this->ampeg.attack));
         this->ampeg.hold = timeCents2Secs(int(this->ampeg.hold));
         this->ampeg.decay = timeCents2Secs(int(this->ampeg.decay));
-        if (this->ampeg.sustain < 0.0f)
-        {
-            this->ampeg.sustain = 0.0f;
-        }
-        this->ampeg.sustain = 100.0f * Decibels::decibelsToGain(-this->ampeg.sustain / 10.0f);
         this->ampeg.release = timeCents2Secs(int(this->ampeg.release));
+        
+        this->ampeg.start = jlimit(0.f, 100.f, this->ampeg.start);
+        this->ampeg.sustain = jlimit(0.f, 100.f, this->ampeg.sustain);
 
         // Pin very short EG segments.  Timecents don't get to zero, and our EG is
         // happier with zero values.

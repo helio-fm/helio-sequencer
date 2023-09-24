@@ -93,8 +93,8 @@ void SoundFontEnvelope::setExponentialDecay(bool newExponentialDecay)
     this->exponentialDecay = newExponentialDecay;
 }
 
-void SoundFontEnvelope::startNote(const EGParameters *newParameters, float floatVelocity, double newSampleRate,
-    const EGParameters *velMod)
+void SoundFontEnvelope::startNote(const EGParameters *newParameters,
+    float floatVelocity, double newSampleRate, const EGParameters *velMod)
 {
     this->parameters = *newParameters;
     if (velMod)
@@ -104,14 +104,7 @@ void SoundFontEnvelope::startNote(const EGParameters *newParameters, float float
         this->parameters.hold += floatVelocity * velMod->hold;
         this->parameters.decay += floatVelocity * velMod->decay;
         this->parameters.sustain += floatVelocity * velMod->sustain;
-        if (this->parameters.sustain < 0.0)
-        {
-            this->parameters.sustain = 0.0;
-        }
-        else if (this->parameters.sustain > 100.0)
-        {
-            this->parameters.sustain = 100.0;
-        }
+        this->parameters.sustain = jlimit(0.f, 100.f, this->parameters.sustain);
         this->parameters.release += floatVelocity * velMod->release;
     }
 
@@ -183,9 +176,9 @@ void SoundFontEnvelope::startAttack()
     else
     {
         this->segment = Segment::Attack;
-        this->level = this->parameters.start / 100.0f;
+        this->level = jlimit(0.f, 1.f, this->parameters.start / 100.0f);
         this->samplesUntilNextSegment = static_cast<int>(this->parameters.attack * this->sampleRate);
-        this->slope = 1.0f / this->samplesUntilNextSegment;
+        this->slope = (1.0f - this->level) / this->samplesUntilNextSegment;
         this->segmentIsExponential = false;
     }
 }
@@ -221,7 +214,7 @@ void SoundFontEnvelope::startDecay()
         if (this->exponentialDecay)
         {
             // I don't truly understand this; just following what LinuxSampler does.
-            float mysterySlope = -9.226f / this->samplesUntilNextSegment;
+            const float mysterySlope = -9.226f / this->samplesUntilNextSegment;
             this->slope = exp(mysterySlope);
             this->segmentIsExponential = true;
             if (this->parameters.sustain > 0.0)
@@ -240,7 +233,7 @@ void SoundFontEnvelope::startDecay()
         }
         else
         {
-            this->slope = (this->parameters.sustain / 100.0f - 1.0f) / this->samplesUntilNextSegment;
+            this->slope = (jmax(0.001f, this->parameters.sustain) / 100.0f - 1.0f) / this->samplesUntilNextSegment;
             this->segmentIsExponential = false;
         }
     }
@@ -346,7 +339,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundFontVoice)
 };
 
-static const float globalGain = -1.0;
+static constexpr float globalGain = -1.0;
 
 bool SoundFontVoice::canPlaySound(SynthesiserSound *sound)
 {
