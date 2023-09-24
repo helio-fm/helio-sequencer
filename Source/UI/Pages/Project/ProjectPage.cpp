@@ -179,17 +179,17 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
         this->temperamentText.get(), this->vcsStatsText.get(),
         this->contentStatsText.get(), this->locationText.get());
 
-    const auto smallScreenMode = App::isRunningOnPhone();
+    const auto phoneScreenMode = App::isRunningOnPhone();
 
     for (auto *metadataCaption : this->metadataCaptions)
     {
-        metadataCaption->setFont(smallScreenMode ? Globals::UI::Fonts::L : Globals::UI::Fonts::XL);
+        metadataCaption->setFont(phoneScreenMode ? Globals::UI::Fonts::L : Globals::UI::Fonts::XL);
         metadataCaption->setJustificationType(Justification::centredRight);
     }
 
     for (auto *metadataEditor : this->metadataEditors)
     {
-        metadataEditor->setFont(smallScreenMode ? Globals::UI::Fonts::XL : Globals::UI::Fonts::XXL);
+        metadataEditor->setFont(phoneScreenMode ? Globals::UI::Fonts::XL : Globals::UI::Fonts::XXL);
         metadataEditor->setJustificationType(Justification::centredLeft);
     }
 
@@ -197,7 +197,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
     {
         statisticsCaption->setFont(Globals::UI::Fonts::S);
         statisticsCaption->setJustificationType(Justification::centredRight);
-        if (smallScreenMode) // no screen space for all that on the phones
+        if (phoneScreenMode) // no screen space for all that on the phones
         {
             statisticsCaption->setVisible(false);
         }
@@ -207,7 +207,7 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
     {
         statisticsLabel->setFont(Globals::UI::Fonts::S);
         statisticsLabel->setJustificationType(Justification::centredLeft);
-        if (App::isRunningOnPhone())
+        if (phoneScreenMode)
         {
             statisticsLabel->setVisible(false);
         }
@@ -217,7 +217,6 @@ ProjectPage::ProjectPage(ProjectNode &parentProject) :
     this->project.getTransport().addTransportListener(this);
 
 #if PLATFORM_MOBILE
-    // не комильфо на мобильниках показывать расположение файлов
     this->locationLabel->setVisible(false);
     this->locationText->setVisible(false);
 #endif
@@ -297,22 +296,16 @@ void ProjectPage::visibilityChanged()
 
 void ProjectPage::updateContent()
 {
-    const String &fullname = this->project.getProjectInfo()->getFullName();
-    const String &author = this->project.getProjectInfo()->getAuthor();
-    const String &description = this->project.getProjectInfo()->getDescription();
-    const String &license = this->project.getProjectInfo()->getLicense();
-    const String &startTime = App::getHumanReadableDate(Time(this->project.getProjectInfo()->getStartTimestamp()));
-    const String &temperamentName = this->project.getProjectInfo()->getTemperament()->getName();
+    const auto fullname = this->project.getProjectInfo()->getFullName();
+    const auto author = this->project.getProjectInfo()->getAuthor();
+    const auto description = this->project.getProjectInfo()->getDescription();
+    const auto license = this->project.getProjectInfo()->getLicense();
+    const auto startTime = App::getHumanReadableDate(Time(this->project.getProjectInfo()->getStartTimestamp()));
+    const auto temperamentName = this->project.getProjectInfo()->getTemperament()->getName();
 
-#if PLATFORM_DESKTOP
-    const String &clickToEdit = TRANS(I18n::Page::projectDefaultValueDesktop);
-#elif PLATFORM_MOBILE
-    const String &clickToEdit = TRANS(I18n::Page::projectDefaultValueMobile);
-#endif
-
-    this->projectTitleEditor->setText(fullname.isEmpty() ? clickToEdit : fullname, dontSendNotification);
+    this->projectTitleEditor->setText(fullname.isEmpty() ? "..." : fullname, dontSendNotification);
     this->authorEditor->setText(author.isEmpty() ? TRANS(I18n::Page::projectDefaultAuthor) : author, dontSendNotification);
-    this->descriptionEditor->setText(description.isEmpty() ? clickToEdit : description, dontSendNotification);
+    this->descriptionEditor->setText(description.isEmpty() ? "..." : description, dontSendNotification);
     this->licenseEditor->setText(license.isEmpty() ? TRANS(I18n::Page::projectDefaultLicense) : license, dontSendNotification);
 
     this->startTimeText->setText(startTime, dontSendNotification);

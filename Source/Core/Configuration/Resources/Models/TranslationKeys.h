@@ -64,7 +64,6 @@ namespace I18n
         static constexpr auto documentExportDone = constexprHash("dialog::document::export::done");
         static constexpr auto documentImport = constexprHash("dialog::document::import");
         static constexpr auto documentLoad = constexprHash("dialog::document::load");
-        static constexpr auto documentSave = constexprHash("dialog::document::save");
         static constexpr auto instrumentRenameCaption = constexprHash("dialog::instrument::rename::caption");
         static constexpr auto instrumentRenameProceed = constexprHash("dialog::instrument::rename::proceed");
         static constexpr auto keySignatureAddCaption = constexprHash("dialog::keysignature::add::caption");
@@ -199,6 +198,7 @@ namespace I18n
         static constexpr auto timeSignatureChange = constexprHash("menu::timesignature::change");
         static constexpr auto timeSignatureDelete = constexprHash("menu::timesignature::delete");
         static constexpr auto trackChangeInstrument = constexprHash("menu::track::change::instrument");
+        static constexpr auto trackChangeChannel = constexprHash("menu::track::change::channel");
         static constexpr auto trackDelete = constexprHash("menu::track::delete");
         static constexpr auto trackRename = constexprHash("menu::track::rename");
         static constexpr auto trackDuplicate = constexprHash("menu::track::duplicate");
@@ -245,8 +245,6 @@ namespace I18n
         static constexpr auto projectAuthor = constexprHash("page::project::author");
         static constexpr auto projectDefaultAuthor = constexprHash("page::project::default::author");
         static constexpr auto projectDefaultLicense = constexprHash("page::project::default::license");
-        static constexpr auto projectDefaultValueDesktop = constexprHash("page::project::default::value::desktop");
-        static constexpr auto projectDefaultValueMobile = constexprHash("page::project::default::value::mobile");
         static constexpr auto projectDescription = constexprHash("page::project::description");
         static constexpr auto projectDuration = constexprHash("page::project::duration");
         static constexpr auto projectFilelocation = constexprHash("page::project::filelocation");
