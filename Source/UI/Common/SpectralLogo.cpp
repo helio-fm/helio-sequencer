@@ -27,7 +27,7 @@ SpectralLogo::SpectralLogo() : Thread("Logo Animation")
         this->bands.add(new SpectralLogo::Band(this));
     }
     
-    this->startThread(5);
+    this->startThread(3);
 }
 
 SpectralLogo::~SpectralLogo()
@@ -39,8 +39,8 @@ void SpectralLogo::run()
 {
     while (! this->threadShouldExit())
     {
-        static constexpr auto timerDelayMs = 50;
-        Thread::sleep(jlimit(10, 100, timerDelayMs - this->skewTime));
+        static constexpr auto timerDelayMs = 75;
+        Thread::sleep(jlimit(10, 150, timerDelayMs - this->skewTime));
         const double b = Time::getMillisecondCounterHiRes();
         this->triggerAsyncUpdate();
         const double a = Time::getMillisecondCounterHiRes();
@@ -50,7 +50,7 @@ void SpectralLogo::run()
 
 void SpectralLogo::handleAsyncUpdate()
 {
-    static constexpr auto pulseSpeed = 40.f;
+    static constexpr auto pulseSpeed = 35.f;
     this->pulse = fmodf(this->pulse +
         MathConstants<float>::pi / pulseSpeed,
         MathConstants<float>::twoPi);
@@ -76,7 +76,7 @@ float SpectralLogo::getLineWidth() const noexcept
 void SpectralLogo::resized()
 {
     this->randomnessRange = float(this->getWidth()) / 8.f;
-    this->lineThickness = ceilf(float(this->getWidth()) / 128.f);
+    this->lineThickness = ceilf(float(this->getWidth()) / 96.f);
     this->lineStepSize = ceilf(this->lineThickness * 1.5f);
     this->lineWidth = (float(this->getWidth()) / float(SpectralLogo::bandCount)); //* 1.1f)
 }
@@ -97,7 +97,7 @@ void SpectralLogo::paint(Graphics &g)
         g.setColour(this->colour);
 
         static constexpr auto numWaves = 7.f;
-        static constexpr auto coreCircleSize = 8;
+        static constexpr auto coreCircleSize = 6;
 
         for (int i = 0; i < SpectralLogo::bandCount; ++i)
         {

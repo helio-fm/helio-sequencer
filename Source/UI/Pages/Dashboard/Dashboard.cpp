@@ -24,7 +24,6 @@
 #include "PageBackgroundB.h"
 #include "OpenProjectButton.h"
 #include "CreateProjectButton.h"
-#include "UpdatesInfoComponent.h"
 #include "SeparatorVerticalSkew.h"
 #include "SeparatorHorizontalFadingReversed.h"
 
@@ -60,9 +59,6 @@ Dashboard::Dashboard(Workspace &workspace) : workspace(workspace)
         this->addAndMakeVisible(this->projectsList.get());
     }
 
-    this->updatesInfo = make<UpdatesInfoComponent>();
-    this->addAndMakeVisible(this->updatesInfo.get());
-
     this->projectsList->updateListContent();
 
     // to sync projects when logged in:
@@ -78,8 +74,8 @@ void Dashboard::resized()
 {
     // background stuff:
     const auto smallScreenMode = App::isRunningOnPhone();
-    const auto skewWidth = smallScreenMode ? 32 : 64;
-    const auto leftSectionWidth = smallScreenMode ? 220 : 320;
+    const auto skewWidth = smallScreenMode ? 32 : 48;
+    constexpr auto leftSectionWidth = 220;
     const auto rightSectionX = leftSectionWidth + skewWidth;
     const auto rightSectionWidth = this->getWidth() - rightSectionX;
 
@@ -88,15 +84,12 @@ void Dashboard::resized()
     this->backgroundB->setBounds(rightSectionX, 0, rightSectionWidth, this->getHeight());
 
     // left section content:
-    const auto logoSize = leftSectionWidth - 40;
-    const auto logoX = leftSectionWidth / 2 - logoSize / 2;
-    this->logo->setBounds(logoX, 32, logoSize, logoSize);
+    constexpr auto logoSize = 200;
+    const auto logoX = leftSectionWidth / 2 - logoSize / 2 + int(skewWidth / 2.5);
+    this->logo->setBounds(logoX, 24, logoSize, logoSize);
 
     constexpr auto buttonHeight = 32;
     constexpr auto buttonWidth = 270;
-
-    const auto helperX = leftSectionWidth / 2 - buttonWidth / 2;
-    this->updatesInfo->setBounds(helperX, 352, buttonWidth, 256);
 
     // right section content:
     constexpr auto projectsListWidth = 350;

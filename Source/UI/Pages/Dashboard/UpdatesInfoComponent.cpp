@@ -17,6 +17,8 @@
 
 #include "Common.h"
 
+/*
+
 #if !NO_NETWORK && !JUCE_LINUX
 
 #include "UpdatesInfoComponent.h"
@@ -101,3 +103,5 @@ void UpdatesInfoComponent::handleCommandMessage(int commandId)
 }
 
 #endif
+
+*/

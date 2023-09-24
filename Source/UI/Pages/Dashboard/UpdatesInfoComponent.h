@@ -20,6 +20,10 @@
 #include "AppVersionDto.h"
 #include "MobileComboBox.h"
 
+// TODO: rethink or remove this whole thing,
+// now it isn't displayed anywhere because it's too ugly
+
+/*
 class UpdatesInfoComponent final : public Component
 {
 public:
@@ -49,3 +53,4 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UpdatesInfoComponent)
 };
+*/

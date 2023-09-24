@@ -25,7 +25,6 @@ class PageBackgroundA;
 class PageBackgroundB;
 class OpenProjectButton;
 class CreateProjectButton;
-class UpdatesInfoComponent;
 class SeparatorVerticalSkew;
 
 #include "MobileComboBox.h"
@@ -54,7 +53,6 @@ private:
     UniquePointer<SpectralLogo> logo;
     UniquePointer<DashboardMenu> projectsList;
     UniquePointer<CreateProjectButton> createProjectButton;
-    UniquePointer<UpdatesInfoComponent> updatesInfo;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dashboard)
 };

@@ -933,7 +933,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::HelperRectangle::fill, s->getLassoFillColour().withAlpha(0.08f));
     this->setColour(ColourIDs::HelperRectangle::outline, s->getLassoBorderColour().withAlpha(0.3f));
 
-    this->setColour(ColourIDs::Logo::fill, textColour.withMultipliedAlpha(0.25f));
+    this->setColour(ColourIDs::Logo::fill, textColour.withMultipliedAlpha(0.2f));
     this->setColour(ColourIDs::AudioMonitor::foreground, textColour);
 
     this->setColour(ColourIDs::VersionControl::connector, textColour.withAlpha(0.2f));
