@@ -73,10 +73,10 @@ String KeyboardMapping::toString() const
 
     for (int channel = 0; channel < KeyboardMapping::numMappedChannels; ++channel)
     {
-        for (int i = 0; i < KeyboardMapping::numMappedKeys; ++i)
+        for (int key = 0; key < KeyboardMapping::numMappedKeys; ++key)
         {
-            const auto mappedKey = this->index[i][channel];
-            const auto mappingExpectedByRle = KeyboardMapping::getDefaultMappingFor(i, channel);
+            const auto mappedKey = this->index[key][channel];
+            const auto mappingExpectedByRle = KeyboardMapping::getDefaultMappingFor(key, channel);
 
             if (mappedKey != mappingExpectedByRle)
             {
@@ -89,19 +89,19 @@ String KeyboardMapping::toString() const
                         result << " ";
                     }
 
-                    result << i;
+                    result << key;
 
                     if (channel > 0)
                     {
-                        result << "/" << String(channel + 1);
+                        result << "/" << (channel + 1);
                     }
 
                     result << ":" << int(mappedKey.key) << "/" << int(mappedKey.channel);
                 }
                 else
                 {
-                    const auto defaultStep = lastMappedKey.getNextDefault();
-                    if (mappedKey == defaultStep)
+                    const auto nextStep = lastMappedKey.getNextDefault();
+                    if (mappedKey == nextStep)
                     {
                         rleSeriesInChunk++;
                     }
@@ -119,13 +119,13 @@ String KeyboardMapping::toString() const
             }
             else
             {
+                hasNewChunk = true;
+
                 if (rleSeriesInChunk > 0)
                 {
                     result << "," << rleSeriesInChunk << "+";
                     rleSeriesInChunk = 0;
                 }
-
-                hasNewChunk = true;
             }
 
             lastMappedKey = mappedKey;
@@ -163,6 +163,7 @@ void KeyboardMapping::loadMapFromString(const String &str)
 
     const auto updateIndex = [&]()
     {
+        assert(channelFrom > 0 && channelFrom <= Globals::numChannels);
         if (numStepsSkipped > 0)
         {
             auto keyIterator = KeyChannel(keyTo, channelTo);
@@ -174,17 +175,13 @@ void KeyboardMapping::loadMapFromString(const String &str)
         }
         else
         {
-            jassert(a < 128);
-            channelTo = int8(a);
-            if (channelTo > 0)
-            {
-                this->index[keyFrom + chunkOffset][channelFrom - 1] = KeyChannel(keyTo, channelTo);
-            }
+            channelTo = int8(jlimit(1, 16, a));
+            this->index[keyFrom + chunkOffset][channelFrom - 1] = KeyChannel(keyTo, channelTo);
         }
     };
 
-    bool inInSourceSection = true;
     bool hasChannelFrom = false;
+    bool isInMappingSection = false;
     auto ptr = str.getCharPointer();
     do
     {
@@ -204,20 +201,20 @@ void KeyboardMapping::loadMapFromString(const String &str)
             {
                 keyFrom = a;
             }
-            inInSourceSection = false;
+            isInMappingSection = true;
             a = 0;
             break;
         case '/':
-            if (inInSourceSection)
-            {
-                jassert(a >= 0 && a < 2048);
-                keyFrom = int8(a);
-                hasChannelFrom = true;
-            }
-            else
+            if (isInMappingSection)
             {
                 jassert(a >= 0 && a < 128);
                 keyTo = int8(a);
+            }
+            else
+            {
+                jassert(a >= 0 && a < 2048);
+                keyFrom = a;
+                hasChannelFrom = true;
             }
             a = 0;
             break;
@@ -227,19 +224,22 @@ void KeyboardMapping::loadMapFromString(const String &str)
             break;
         case ',':
             updateIndex();
+            a = 0;
             chunkOffset += jmax(numStepsSkipped, 1);
             numStepsSkipped = 0;
-            a = 0;
             break;
         case 0:
         case ' ':
-            updateIndex();
-            chunkOffset = 0;
-            numStepsSkipped = 0;
-            channelFrom = 1;
-            inInSourceSection = true;
-            hasChannelFrom = false;
-            a = 0;
+            if (isInMappingSection)
+            {
+                updateIndex();
+                a = 0;
+                chunkOffset = 0;
+                numStepsSkipped = 0;
+                channelFrom = 1;
+                isInMappingSection = false;
+                hasChannelFrom = false;
+            }
             break;
         default:
             break;
@@ -560,11 +560,11 @@ public:
         // test RLE
         SerializedData rleTest(KeyboardMappings::keyboardMapping);
         rleTest.setProperty(KeyboardMappings::map,
-            "0:0/1,1/1,120+  128:16/2,32/2,33/2,34/2,40/4 300:127/4,0/5,1/5,2/5 512:1/5 640/1:0/6 ");
+            "0:0/1,1/1,120+  128/1:16/2,32/2,33/2,34/2,40/4 300:127/4,0/5,1/5,2/5 512:1/5 640/1:0/6 ");
 
         map.deserialize(rleTest);
         expectEquals(getMap(map.serialize()),
-            String("128:16/2,32/2,2+,40/4 300:127/4,3+ 512:1/5"));
+            String("128:16/2,32/2,2+,40/4 300:127/4,3+ 512:1/5 640:0/6"));
 
         // from string / to string
         const String long31("0:0/15,30+ 31:0/16,30+ 62:0/1,30+ 93:0/2,30+ 124:0/3,30+ 155:0/4,30+ 186:0/5,30+ 217:0/6,30+ 248:0/7,30+ 279:0/8,30+ 310:0/9,30+");
@@ -624,6 +624,11 @@ public:
         map.loadScalaKbmFile(in2, "file_5");
         const auto serialized2 = map.serialize();
         expect(getMap(serialized2).startsWith("60:72/1,4+ 67:79/1,2+ 72:84/1,4+ 79:91/1,2+ 128:31/5,62+"));
+
+        // check that serialization/deserialization is consistent
+        map.deserialize(serialized2);
+        const auto serialized3 = map.serialize();
+        expectEquals(getMap(serialized2), getMap(serialized3));
     }
 };
 
