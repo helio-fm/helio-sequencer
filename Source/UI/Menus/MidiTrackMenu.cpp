@@ -58,6 +58,12 @@ void MidiTrackMenu::initDefaultMenu()
         CommandIDs::DeleteTrack, TRANS(I18n::Menu::trackDelete)));
 #endif
 
+    menu.add(MenuItem::item(Icons::list, TRANS(I18n::Menu::trackChangeChannel))->
+        withSubmenu()->withAction([this]()
+        {
+            this->initChannelSelectionMenu();
+        }));
+
     const auto instruments = App::Workspace().getAudioCore().getInstrumentsExceptInternal();
     menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->
         disabledIf(instruments.isEmpty())->withSubmenu()->withAction([this]()
@@ -84,6 +90,30 @@ void MidiTrackMenu::initDefaultMenu()
     this->updateContent(menu, MenuPanel::SlideRight);
 }
 
+void MidiTrackMenu::initChannelSelectionMenu()
+{
+    MenuPanel::Menu menu;
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
+    {
+        this->initDefaultMenu();
+    }));
+
+    for (int channel = 1; channel <= 16; ++channel)
+    {
+        const bool isTicked = this->track->getTrackChannel() == channel;
+        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::ellipsis, String(channel))->
+            disabledIf(isTicked)->
+            withAction([this, channel]()
+            {
+                this->undoStack->beginNewTransaction();
+                this->track->setTrackChannel(channel, true, sendNotification);
+                this->initDefaultMenu();
+            }));
+    }
+
+    this->updateContent(menu, MenuPanel::SlideLeft);
+}
+
 void MidiTrackMenu::initInstrumentSelectionMenu()
 {
     MenuPanel::Menu menu;
@@ -97,7 +127,7 @@ void MidiTrackMenu::initInstrumentSelectionMenu()
 
     for (const auto *instrument : audioCore.getInstrumentsExceptInternal())
     {
-        const bool isTicked = (instrument == selectedInstrument);
+        const bool isTicked = instrument == selectedInstrument;
         const String instrumentId = instrument->getIdAndHash();
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, instrument->getName())->
             disabledIf(!instrument->isValid() || isTicked)->

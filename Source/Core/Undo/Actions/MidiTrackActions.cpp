@@ -63,16 +63,16 @@ int MidiTrackRenameAction::getSizeInUnits()
 SerializedData MidiTrackRenameAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::midiTrackRenameAction);
-    tree.setProperty(Serialization::Undo::xPathBefore, this->pathBefore);
-    tree.setProperty(Serialization::Undo::xPathAfter, this->pathAfter);
+    tree.setProperty(Serialization::Undo::treePathBefore, this->pathBefore);
+    tree.setProperty(Serialization::Undo::treePathAfter, this->pathAfter);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
     return tree;
 }
 
 void MidiTrackRenameAction::deserialize(const SerializedData &data)
 {
-    this->pathBefore = data.getProperty(Serialization::Undo::xPathBefore);
-    this->pathAfter = data.getProperty(Serialization::Undo::xPathAfter);
+    this->pathBefore = data.getProperty(Serialization::Undo::treePathBefore);
+    this->pathAfter = data.getProperty(Serialization::Undo::treePathAfter);
     this->trackId = data.getProperty(Serialization::Undo::trackId);
 }
 
@@ -140,6 +140,65 @@ void MidiTrackChangeColourAction::deserialize(const SerializedData &data)
 void MidiTrackChangeColourAction::reset()
 {
     this->trackId.clear();
+}
+
+//===----------------------------------------------------------------------===//
+// Change Channel
+//===----------------------------------------------------------------------===//
+
+MidiTrackChangeChannelAction::MidiTrackChangeChannelAction(MidiTrackSource &source,
+    const String &trackId, const int newChannel) noexcept :
+    UndoAction(source),
+    trackId(trackId),
+    channelAfter(newChannel) {}
+
+bool MidiTrackChangeChannelAction::perform()
+{
+    if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
+    {
+        this->channelBefore = track->getTrackChannel();
+        track->setTrackChannel(this->channelAfter, false, sendNotification);
+        return true;
+    }
+
+    return false;
+}
+
+bool MidiTrackChangeChannelAction::undo()
+{
+    if (auto *track = this->source.findTrackById<MidiTrack>(this->trackId))
+    {
+        track->setTrackChannel(this->channelBefore, false, sendNotification);
+        return true;
+    }
+
+    return false;
+}
+
+int MidiTrackChangeChannelAction::getSizeInUnits()
+{
+    return sizeof(this->channelBefore) + sizeof(this->channelAfter);
+}
+
+SerializedData MidiTrackChangeChannelAction::serialize() const
+{
+    SerializedData tree(Serialization::Undo::midiTrackChangeChannelAction);
+    tree.setProperty(Serialization::Undo::channelBefore, this->channelBefore);
+    tree.setProperty(Serialization::Undo::channelAfter, this->channelAfter);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    return tree;
+}
+
+void MidiTrackChangeChannelAction::deserialize(const SerializedData &data)
+{
+    this->channelBefore = jlimit(1, 16, int(data.getProperty(Serialization::Undo::channelBefore, 1)));
+    this->channelAfter = jlimit(1, 16, int(data.getProperty(Serialization::Undo::channelAfter, 1)));
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
+}
+
+void MidiTrackChangeChannelAction::reset()
+{
+    this->channelBefore = this->channelAfter = 1;
 }
 
 //===----------------------------------------------------------------------===//

@@ -148,6 +148,12 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         this->updateContent(this->createQuantizationMenu(), MenuPanel::SlideLeft);
     }));
 
+    menu.add(MenuItem::item(Icons::list, TRANS(I18n::Menu::trackChangeChannel))->
+        withSubmenu()->withAction([this]()
+    {
+        this->updateContent(this->createChannelSelectionMenu(), MenuPanel::SlideLeft);
+    }));
+
     const auto instruments = App::Workspace().getAudioCore().getInstrumentsExceptInternal();
     menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->
         disabledIf(instruments.isEmpty())->withSubmenu()->withAction([this]()
@@ -193,6 +199,57 @@ MenuPanel::Menu PatternRollSelectionMenu::createQuantizationMenu()
     menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_32));
 
 #undef CLIP_QUANTIZE_ITEM
+
+    return menu;
+}
+
+MenuPanel::Menu PatternRollSelectionMenu::createChannelSelectionMenu()
+{
+    MenuPanel::Menu menu;
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
+    {
+        this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+    }));
+
+    Array<MidiTrack *> uniqueTracks;
+    FlatHashSet<int> uniqueChannels;
+    for (int i = 0; i < this->lasso->getNumSelected(); ++i)
+    {
+        const auto &clip = this->lasso->getItemAs<ClipComponent>(i)->getClip();
+        uniqueTracks.addIfNotAlreadyThere(clip.getPattern()->getTrack());
+        uniqueChannels.insert(clip.getPattern()->getTrack()->getTrackChannel());
+    }
+
+    for (int channel = 1; channel <= 16; ++channel)
+    {
+        const bool isTicked = uniqueChannels.size() == 1 && uniqueChannels.contains(channel);
+        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::ellipsis, String(channel))->
+            disabledIf(isTicked)->
+            withAction([this, channel, uniqueTracks]()
+        {
+            bool haveCheckpoint = false;
+            for (auto *track : uniqueTracks)
+            {
+                if (channel != track->getTrackChannel())
+                {
+                    auto *trackNode = dynamic_cast<MidiTrackNode *>(track);
+                    jassert(trackNode != nullptr);
+
+                    auto *project = trackNode->getProject();
+
+                    if (!haveCheckpoint)
+                    {
+                        project->checkpoint();
+                        haveCheckpoint = true;
+                    }
+
+                    track->setTrackChannel(channel, true, sendNotification);
+                }
+            }
+
+            this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+        }));
+    }
 
     return menu;
 }

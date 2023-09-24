@@ -425,7 +425,7 @@ void Transport::NotePreviewTimer::cancelAllPendingPreviews(bool sendRemainingNot
                 preview.instrument != nullptr)
             {
                 //DBG("noteOff " + String(key));
-                const auto mapped = preview.instrument->getKeyboardMapping()->map(key);
+                const auto mapped = preview.instrument->getKeyboardMapping()->map(key, 1);
                 MidiMessage message(MidiMessage::noteOff(mapped.channel, mapped.key));
                 message.setTimeStamp(TIME_NOW);
                 preview.instrument->getProcessorPlayer()
@@ -452,7 +452,7 @@ void Transport::NotePreviewTimer::previewNote(WeakReference<Instrument> instrume
         preview.instrument != nullptr)
     {
         //DBG("! noteOff " + String(key));
-        const auto mapped = preview.instrument->getKeyboardMapping()->map(key);
+        const auto mapped = preview.instrument->getKeyboardMapping()->map(key, 1);
         MidiMessage message(MidiMessage::noteOff(mapped.channel, mapped.key));
         message.setTimeStamp(TIME_NOW);
         preview.instrument->getProcessorPlayer()
@@ -491,8 +491,8 @@ void Transport::NotePreviewTimer::timerCallback()
             if (preview.noteOnTimeoutMs <= 0 && preview.instrument != nullptr)
             {
                 //DBG("noteOn " + String(key));
-                const auto mapped = preview.instrument->getKeyboardMapping()->map(key);
-                MidiMessage message(MidiMessage::noteOn(mapped.channel, mapped.key, preview.volume));
+                const auto mapped = preview.instrument->getKeyboardMapping()->map(key, 1);
+                auto message = MidiMessage::noteOn(mapped.channel, mapped.key, preview.volume);
                 message.setTimeStamp(time);
                 preview.instrument->getProcessorPlayer()
                     .getMidiMessageCollector().addMessageToQueue(message);
@@ -506,8 +506,8 @@ void Transport::NotePreviewTimer::timerCallback()
             if (preview.noteOffTimeoutMs <= 0 && preview.instrument != nullptr)
             {
                 //DBG("noteOff " + String(key));
-                const auto mapped = preview.instrument->getKeyboardMapping()->map(key);
-                MidiMessage message(MidiMessage::noteOff(mapped.channel, mapped.key));
+                const auto mapped = preview.instrument->getKeyboardMapping()->map(key, 1);
+                auto message = MidiMessage::noteOff(mapped.channel, mapped.key);
                 message.setTimeStamp(time);
                 preview.instrument->getProcessorPlayer()
                     .getMidiMessageCollector().addMessageToQueue(message);
@@ -560,7 +560,7 @@ static void stopSoundForInstrument(Instrument *instrument)
 {
     auto &collector = instrument->getProcessorPlayer().getMidiMessageCollector();
 
-    for (int i = 1; i < Globals::numChannels; ++i)
+    for (int i = 1; i <= Globals::numChannels; ++i)
     {
         collector.addMessageToQueue(MidiMessage::allControllersOff(i).withTimeStamp(TIME_NOW));
         collector.addMessageToQueue(MidiMessage::allNotesOff(i).withTimeStamp(TIME_NOW));
@@ -596,7 +596,7 @@ void Transport::allNotesControllersAndSoundOff() const
     this->sleepTimer.setAwake();
     this->notePreviewTimer.cancelAllPendingPreviews(true);
 
-    for (int i = 1; i < Globals::numChannels; ++i)
+    for (int i = 1; i <= Globals::numChannels; ++i)
     {
         const MidiMessage notesOff(MidiMessage::allNotesOff(i).withTimeStamp(TIME_NOW));
         const MidiMessage soundOff(MidiMessage::allSoundOff(i).withTimeStamp(TIME_NOW));
@@ -987,7 +987,8 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float targetBea
             cached.message.isController() &&
             cached.message.getControllerNumber() <= PlaybackContext::numCCs)
         {
-            context->ccStates[cached.message.getControllerNumber()] =
+            const auto channel = jlimit(0, Globals::numChannels - 1, cached.message.getChannel() - 1);
+            context->ccStates[cached.message.getControllerNumber()][channel] =
                 cached.message.getControllerValue();
         }
 

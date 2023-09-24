@@ -32,6 +32,8 @@ public:
     static constexpr auto numMappedKeys = 
         Globals::numChannels * Globals::twelveToneKeyboardSize;
 
+    static constexpr auto numMappedChannels = Globals::numChannels;
+
     using Ptr = ReferenceCountedObjectPtr<KeyboardMapping>;
 
     struct KeyChannel final
@@ -62,20 +64,16 @@ public:
         int8 key = -1;
         int8 channel = -1;
     };
-
-    void map(Note::Key &key, int &channel) const noexcept
+    
+    KeyChannel map(Note::Key key, int channel) const noexcept
     {
-        channel = this->index[key].channel;
-        key = this->index[key].key;
+        assert(key < numMappedKeys);
+        assert(channel > 0 && channel <= numMappedChannels);
+        return this->index[key][channel - 1]; // expects channel in range [1..16]
     }
 
-    KeyChannel map(const Note::Key &key) const noexcept
-    {
-        return this->index[key];
-    }
-
-    void updateKey(int key, const KeyChannel &keyChannel);
-    void updateKey(int key, int8 targetKey, int8 targetChannel);
+    void updateKey(int sourceKey, int sourceChannel, const KeyChannel &keyChannel);
+    void updateKey(int sourceKey, int sourceChannel, int8 targetKey, int8 targetChannel);
 
     // this method will not reset before loading a mapping,
     // because there can be a number of files for multiple channels,
@@ -108,10 +106,10 @@ public:
 
 private:
 
-    static KeyChannel getDefaultMappingFor(int key) noexcept;
+    KeyChannel getDefaultMappingFor(int key, int channel) const noexcept;
 
     String name;
-    KeyChannel index[numMappedKeys];
+    KeyChannel index[numMappedKeys][numMappedChannels];
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(KeyboardMapping)
 };

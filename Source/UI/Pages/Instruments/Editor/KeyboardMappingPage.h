@@ -52,13 +52,16 @@ private:
 
     WeakReference<Instrument> instrument;
 
-    void syncWithRange(int base);
+    int currentChannel = 1;
     int currentPageBase = 0;
+    void syncWithRange(int channel, int base);
 
     void stopAllSound();
     void onKeyPreview(int i);
     void onKeyMappingUpdated(int i);
 
+    bool canShowPreviousChannel() const noexcept;
+    bool canShowNextChannel() const noexcept;
     bool canShowPreviousPage() const noexcept;
     bool canShowNextPage() const noexcept;
 
@@ -71,8 +74,12 @@ private:
 
     UniquePointer<Component> background;
 
-    UniquePointer<IconButton> leftArrow;
-    UniquePointer<IconButton> rightArrow;
+    UniquePointer<IconButton> prevChannelArrow;
+    UniquePointer<IconButton> nextChannelArrow;
+    UniquePointer<Label> channelLabel;
+
+    UniquePointer<IconButton> prevPageArrow;
+    UniquePointer<IconButton> nextPageArrow;
     UniquePointer<Label> rangeLabel;
 
     OwnedArray<Button> keyButtons;

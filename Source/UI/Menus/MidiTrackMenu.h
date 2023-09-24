@@ -30,6 +30,7 @@ public:
 private:
     
     void initDefaultMenu();
+    void initChannelSelectionMenu();
     void initInstrumentSelectionMenu();
 
     WeakReference<MidiTrack> track;

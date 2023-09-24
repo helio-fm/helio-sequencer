@@ -123,7 +123,7 @@ public:
         // CC numbers 102–119 are undefined, and numbers 120-127 are
         // reserved for channel mode messages, which we will ignore
         static constexpr auto numCCs = 101;
-        int ccStates[numCCs + 1];
+        int ccStates[numCCs + 1][Globals::numChannels];
     };
 
     PlaybackContext::Ptr fillPlaybackContextAt(float beat) const;

@@ -27,6 +27,7 @@ namespace VCS
 
 SerializedData mergePath(const SerializedData &state, const SerializedData &changes);
 SerializedData mergeColour(const SerializedData &state, const SerializedData &changes);
+SerializedData mergeChannel(const SerializedData &state, const SerializedData &changes);
 SerializedData mergeInstrument(const SerializedData &state, const SerializedData &changes);
 SerializedData mergeTimeSignature(const SerializedData &state, const SerializedData &changes);
 
@@ -36,18 +37,18 @@ static SerializedData mergeNotesChanged(const SerializedData &state, const Seria
 
 DeltaDiff createPathDiff(const SerializedData &state, const SerializedData &changes);
 DeltaDiff createColourDiff(const SerializedData &state, const SerializedData &changes);
+DeltaDiff createChannelDiff(const SerializedData &state, const SerializedData &changes);
 DeltaDiff createInstrumentDiff(const SerializedData &state, const SerializedData &changes);
 DeltaDiff createTimeSignatureDiff(const SerializedData &state, const SerializedData &changes);
 
 static Array<DeltaDiff> createEventsDiffs(const SerializedData &state, const SerializedData &changes);
 
-static void deserializeLayerChanges(const SerializedData &state, const SerializedData &changes,
-    OwnedArray<Note> &stateNotes, OwnedArray<Note> &changesNotes);
-
 static DeltaDiff serializePianoTrackChanges(Array<const MidiEvent *> changes,
     const String &description, int64 numChanges,  const Identifier &deltaType);
 
 static SerializedData serializePianoSequence(Array<const MidiEvent *> changes, const Identifier &tag);
+static void deserializePianoSequence(const SerializedData &state, const SerializedData &changes,
+    OwnedArray<Note> &stateNotes, OwnedArray<Note> &changesNotes);
 static bool checkIfDeltaIsNotesType(const Delta *delta);
 
 
@@ -98,6 +99,10 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
             else if (myDelta->hasType(MidiTrackDeltas::trackColour))
             {
                 diff->applyDelta(createColourDiff(stateDeltaData, myDeltaData));
+            }
+            else if (myDelta->hasType(MidiTrackDeltas::trackChannel))
+            {
+                diff->applyDelta(createChannelDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(MidiTrackDeltas::trackInstrument))
             {
@@ -173,6 +178,12 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
                 {
                     auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
                     auto diffDeltaData = mergeColour(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
+                }
+                else if (targetDelta->hasType(MidiTrackDeltas::trackChannel))
+                {
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
+                    auto diffDeltaData = mergeChannel(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackInstrument))
@@ -260,6 +271,7 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
 
     bool stateHasClips = false;
     bool stateHasTrackTimeSignature = false;
+    bool stateHasChannelInfo = false;
 
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
@@ -267,6 +279,8 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
         stateHasClips = stateHasClips || PatternDiffHelpers::checkIfDeltaIsPatternType(stateDelta);
         stateHasTrackTimeSignature = stateHasTrackTimeSignature ||
             stateDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged);
+        stateHasChannelInfo = stateHasChannelInfo ||
+            stateDelta->hasType(MidiTrackDeltas::trackChannel);
     }
 
     if (!stateHasTrackTimeSignature)
@@ -295,6 +309,36 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
         else
         {
             diff->applyDelta(timeSignatureDelta.release(), emptyTimeSignatureDeltaData);
+        }
+    }
+
+    if (!stateHasChannelInfo)
+    {
+        SerializedData mergedChannelDeltaData;
+        SerializedData emptyChannelDeltaData(MidiTrackDeltas::trackChannel);
+        emptyChannelDeltaData.setProperty(delta, 1);
+        auto channelDelta = make<Delta>(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            MidiTrackDeltas::trackChannel);
+
+        for (int j = 0; j < this->target.getNumDeltas(); ++j)
+        {
+            const auto *targetDelta = this->target.getDelta(j);
+            const auto targetDeltaData(this->target.getDeltaData(j));
+
+            if (targetDelta->hasType(MidiTrackDeltas::trackChannel))
+            {
+                mergedChannelDeltaData = mergeChannel(emptyChannelDeltaData, targetDeltaData);
+            }
+        }
+
+        if (mergedChannelDeltaData.isValid())
+        {
+            diff->applyDelta(channelDelta.release(), mergedChannelDeltaData);
+        }
+        else
+        {
+            diff->applyDelta(channelDelta.release(), emptyChannelDeltaData);
         }
     }
 
@@ -360,6 +404,11 @@ SerializedData mergeColour(const SerializedData &state, const SerializedData &ch
     return changes.createCopy();
 }
 
+SerializedData mergeChannel(const SerializedData &state, const SerializedData &changes)
+{
+    return changes.createCopy();
+}
+
 SerializedData mergeInstrument(const SerializedData &state, const SerializedData &changes)
 {
     return changes.createCopy();
@@ -376,7 +425,7 @@ SerializedData mergeNotesAdded(const SerializedData &state, const SerializedData
 
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
-    deserializeLayerChanges(state, changes, stateNotes, changesNotes);
+    deserializePianoSequence(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -411,7 +460,7 @@ SerializedData mergeNotesRemoved(const SerializedData &state, const SerializedDa
 
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
-    deserializeLayerChanges(state, changes, stateNotes, changesNotes);
+    deserializePianoSequence(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -443,7 +492,7 @@ SerializedData mergeNotesChanged(const SerializedData &state, const SerializedDa
 
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
-    deserializeLayerChanges(state, changes, stateNotes, changesNotes);
+    deserializePianoSequence(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -498,6 +547,16 @@ DeltaDiff createColourDiff(const SerializedData &state, const SerializedData &ch
     return res;
 }
 
+DeltaDiff createChannelDiff(const SerializedData &state, const SerializedData &changes)
+{
+    DeltaDiff res;
+    using namespace Serialization::VCS;
+    res.delta = make<Delta>(DeltaDescription("channel changed"),
+        MidiTrackDeltas::trackChannel);
+    res.deltaData = changes.createCopy();
+    return res;
+}
+
 DeltaDiff createInstrumentDiff(const SerializedData &state, const SerializedData &changes)
 {
     DeltaDiff res;
@@ -529,7 +588,7 @@ Array<DeltaDiff> createEventsDiffs(const SerializedData &state, const Serialized
     // вот здесь по уму надо десериализовать слои
     // а для этого надо, чтоб в слоях не было ничего, кроме нот
     // поэтому пока есть, как есть, и это не критично
-    deserializeLayerChanges(state, changes, stateNotes, changesNotes);
+    deserializePianoSequence(state, changes, stateNotes, changesNotes);
 
     Array<DeltaDiff> res;
 
@@ -629,7 +688,7 @@ Array<DeltaDiff> createEventsDiffs(const SerializedData &state, const Serialized
 }
 
 
-void deserializeLayerChanges(const SerializedData &state, const SerializedData &changes,
+void deserializePianoSequence(const SerializedData &state, const SerializedData &changes,
         OwnedArray<Note> &stateNotes, OwnedArray<Note> &changesNotes)
 {
     if (state.isValid())

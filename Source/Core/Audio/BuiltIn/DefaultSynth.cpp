@@ -128,7 +128,7 @@ double DefaultSynth::Voice::getNoteInHertz(int noteNumber, double frequencyOfA /
 int DefaultSynth::Voice::getCurrentChannel() const noexcept
 {
     // the only way to access channel info in SynthesizerVoice :(
-    for (int i = 1; i < Globals::numChannels; ++i)
+    for (int i = 1; i <= Globals::numChannels; ++i)
     {
         if (this->isPlayingChannel(i))
         {

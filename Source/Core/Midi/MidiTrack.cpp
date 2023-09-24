@@ -57,6 +57,7 @@ void MidiTrack::deserializeTrackProperties(const SerializedData &tree)
     // track is not supposed to update listeners meanwhile loading,
     // its up to caller to make sure the views are updated after
     this->setTrackColour(Colour::fromString(colour), false, dontSendNotification);
+    this->setTrackChannel(jlimit(1, 16, int(channel)), false, dontSendNotification);
     this->setTrackInstrumentId(instrumentId, false, dontSendNotification);
     this->setTrackInstrumentId(instrumentId, false, dontSendNotification);
     this->setTrackControllerNumber(controllerNumber, dontSendNotification);

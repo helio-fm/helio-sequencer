@@ -37,17 +37,6 @@ void KeyboardMapping::deserialize(const SerializedData &data)
 {
     using namespace Serialization::Midi;
 
-    // legacy id's which I don't like:
-    static const Identifier keyMap = "keyMap";
-    static const Identifier channel1 = "channel1";
-    const auto rootLegacy = data.hasType(keyMap) ? data : data.getChildWithName(keyMap);
-    if (rootLegacy.isValid())
-    {
-        this->loadMapFromString(rootLegacy.getProperty(channel1));
-        return;
-    }
-    // todo remove this ^ block someday
-
     const auto root = data.hasType(KeyboardMappings::keyboardMapping) ?
         data : data.getChildWithName(KeyboardMappings::keyboardMapping);
 
@@ -78,57 +67,69 @@ String KeyboardMapping::toString() const
     // this will apply RLE-ish encoding and output a string like this:
     // "128:16/2,32/2,33/2,34/2,40/4 300:127/4,0/5,1/5,2/5 512:1/5"
     // or even: "128:16/2,32/2,2+,40/4 300:127/4,3+ 512:1/5"
-    KeyChannel lastKey;
+    KeyChannel lastMappedKey;
     bool hasNewChunk = true;
     int rleSeriesInChunk = 0;
-    for (int i = 0; i < KeyboardMapping::numMappedKeys; ++i)
+
+    for (int channel = 0; channel < KeyboardMapping::numMappedChannels; ++channel)
     {
-        const auto key = this->index[i];
-        const auto defaultKey = KeyboardMapping::getDefaultMappingFor(i);
-
-        if (key != defaultKey)
+        for (int i = 0; i < KeyboardMapping::numMappedKeys; ++i)
         {
-            if (hasNewChunk)
-            {
-                if (result.isNotEmpty())
-                {
-                    result << " ";
-                }
+            const auto mappedKey = this->index[i][channel];
+            const auto mappingExpectedByRle = KeyboardMapping::getDefaultMappingFor(i, channel);
 
-                result << i << ":" << int(key.key) << "/" << int(key.channel);
-                hasNewChunk = false;
-            }
-            else
+            if (mappedKey != mappingExpectedByRle)
             {
-                const auto defaultStep = lastKey.getNextDefault();
-                if (key == defaultStep)
+                if (hasNewChunk)
                 {
-                    rleSeriesInChunk++;
+                    hasNewChunk = false;
+
+                    if (result.isNotEmpty())
+                    {
+                        result << " ";
+                    }
+
+                    result << i;
+
+                    if (channel > 0)
+                    {
+                        result << "/" << String(channel + 1);
+                    }
+
+                    result << ":" << int(mappedKey.key) << "/" << int(mappedKey.channel);
                 }
                 else
                 {
-                    if (rleSeriesInChunk > 0)
+                    const auto defaultStep = lastMappedKey.getNextDefault();
+                    if (mappedKey == defaultStep)
                     {
-                        result << "," << rleSeriesInChunk << "+";
-                        rleSeriesInChunk = 0;
+                        rleSeriesInChunk++;
                     }
+                    else
+                    {
+                        if (rleSeriesInChunk > 0)
+                        {
+                            result << "," << rleSeriesInChunk << "+";
+                            rleSeriesInChunk = 0;
+                        }
 
-                    result << "," << int(key.key) << "/" << int(key.channel);
+                        result << "," << int(mappedKey.key) << "/" << int(mappedKey.channel);
+                    }
                 }
             }
-        }
-        else
-        {
-            if (rleSeriesInChunk > 0)
+            else
             {
-                result << "," << rleSeriesInChunk << "+";
-                rleSeriesInChunk = 0;
+                if (rleSeriesInChunk > 0)
+                {
+                    result << "," << rleSeriesInChunk << "+";
+                    rleSeriesInChunk = 0;
+                }
+
+                hasNewChunk = true;
             }
 
-            hasNewChunk = true;
+            lastMappedKey = mappedKey;
         }
-
-        lastKey = key;
     }
 
     return result;
@@ -141,38 +142,49 @@ void KeyboardMapping::loadMapFromString(const String &str)
         return;
     }
 
-    this->reset();
+    // mark all initial valies as invalid,
+    // so we can fill the missing keys with default values later
+    for (int channel = 0; channel < KeyboardMapping::numMappedChannels; ++channel)
+    {
+        for (int key = 0; key < KeyboardMapping::numMappedKeys; ++key)
+        {
+            this->index[key][channel] = { -1, -1 };
+        }
+    }
 
     int a = 0; // accumulator
-    int keyOffset = 0;
+    int keyFrom = 0;
+    int channelFrom = 1; // channels here are 1-based
     int chunkOffset = 0;
     int numStepsSkipped = 0;
-    int8 key = 0;
-    int8 channel = 0;
+    int8 keyTo = 0;
+    int8 channelTo = 1;
     juce_wchar c;
 
     const auto updateIndex = [&]()
     {
         if (numStepsSkipped > 0)
         {
-            auto keyIterator = KeyChannel(key, channel);
+            auto keyIterator = KeyChannel(keyTo, channelTo);
             for (int i = 0; i < numStepsSkipped; ++i)
             {
                 keyIterator = keyIterator.getNextDefault();
-                this->index[keyOffset + chunkOffset + i] = keyIterator;
+                this->index[keyFrom + chunkOffset + i][channelFrom - 1] = keyIterator;
             }
         }
         else
         {
             jassert(a < 128);
-            channel = int8(a);
-            if (channel > 0)
+            channelTo = int8(a);
+            if (channelTo > 0)
             {
-                this->index[keyOffset + chunkOffset] = KeyChannel(key, channel);
+                this->index[keyFrom + chunkOffset][channelFrom - 1] = KeyChannel(keyTo, channelTo);
             }
         }
     };
 
+    bool inInSourceSection = true;
+    bool hasChannelFrom = false;
     auto ptr = str.getCharPointer();
     do
     {
@@ -184,13 +196,28 @@ void KeyboardMapping::loadMapFromString(const String &str)
             a = a * 10 + ((int)c) - '0';
             break;
         case ':':
-            keyOffset = a;
+            if (hasChannelFrom)
+            {
+                channelFrom = jlimit(1, 16, a);
+            }
+            else
+            {
+                keyFrom = a;
+            }
+            inInSourceSection = false;
             a = 0;
             break;
         case '/':
-            jassert(a < 128);
-            key = int8(a);
-            jassert(key >= 0);
+            jassert(a >= 0 && a < 128);
+            if (inInSourceSection)
+            {
+                keyFrom = int8(a);
+                hasChannelFrom = true;
+            }
+            else
+            {
+                keyTo = int8(a);
+            }
             a = 0;
             break;
         case '+':
@@ -208,6 +235,9 @@ void KeyboardMapping::loadMapFromString(const String &str)
             updateIndex();
             chunkOffset = 0;
             numStepsSkipped = 0;
+            channelFrom = 1;
+            inInSourceSection = true;
+            hasChannelFrom = false;
             a = 0;
             break;
         default:
@@ -215,33 +245,47 @@ void KeyboardMapping::loadMapFromString(const String &str)
         }
     } while (c != 0);
 
+    for (int channel = 0; channel < KeyboardMapping::numMappedChannels; ++channel)
+    {
+        for (int key = 0; key < KeyboardMapping::numMappedKeys; ++key)
+        {
+            if (!this->index[key][channel].isValid())
+            {
+                this->index[key][channel] = KeyboardMapping::getDefaultMappingFor(key, channel);
+            }
+        }
+    }
+
     this->sendChangeMessage();
 }
 
 void KeyboardMapping::loadMapFromPreset(KeyboardMapping *preset)
 {
     jassert(preset != nullptr);
-
-    for (int i = 0; i < KeyboardMapping::numMappedKeys; ++i)
-    {
-        this->index[i] = preset->index[i];
-    }
-
+    memcpy(this->index, preset->index, sizeof(preset->index));
     this->sendChangeMessage();
 }
 
-KeyboardMapping::KeyChannel KeyboardMapping::getDefaultMappingFor(int key) noexcept
+KeyboardMapping::KeyChannel KeyboardMapping::getDefaultMappingFor(int key, int channel) const noexcept
 {
-    return {
-        int8(key % Globals::twelveToneKeyboardSize),
-        int8(key / Globals::twelveToneKeyboardSize + 1) };
+    if (channel == 0)
+    {
+        return { int8(key % Globals::twelveToneKeyboardSize), 1 };
+    }
+
+    auto basedOnPrevChannel = this->index[key][channel - 1];
+    basedOnPrevChannel.channel = (basedOnPrevChannel.channel % Globals::numChannels) + 1;
+    return basedOnPrevChannel;
 }
 
 void KeyboardMapping::reset()
 {
-    for (int key = 0; key < KeyboardMapping::numMappedKeys; ++key)
+    for (int channel = 0; channel < KeyboardMapping::numMappedChannels; ++channel)
     {
-        this->index[key] = KeyboardMapping::getDefaultMappingFor(key);
+        for (int key = 0; key < KeyboardMapping::numMappedKeys; ++key)
+        {
+            this->index[key][channel] = KeyboardMapping::getDefaultMappingFor(key, channel);
+        }
     }
 
     this->sendChangeMessage();
@@ -357,47 +401,51 @@ void KeyboardMapping::loadScalaKbmFile(InputStream &fileContentStream,
 
     // apply mapping
 
-    for (int key = 0; key < KeyboardMapping::numMappedKeys; ++key)
+    for (int channel = 0; channel < KeyboardMapping::numMappedChannels; ++channel)
     {
-        if (key >= firstNoteToRetune && key <= lastNoteToRetune)
+        for (int key = 0; key < KeyboardMapping::numMappedKeys; ++key)
         {
-            const auto noteOffset = (key % Globals::twelveToneKeyboardSize) - middleNote;
-            auto periodNumber = noteOffset / sizeOfMapPattern;
-            auto keyInPeriod = noteOffset % sizeOfMapPattern;
-
-            if (keyInPeriod < 0)
+            if (key >= firstNoteToRetune && key <= lastNoteToRetune)
             {
-                periodNumber--;
-                keyInPeriod += sizeOfMapPattern;
+                const auto noteOffset = (key % Globals::twelveToneKeyboardSize) - middleNote;
+                auto periodNumber = noteOffset / sizeOfMapPattern;
+                auto keyInPeriod = noteOffset % sizeOfMapPattern;
+
+                if (keyInPeriod < 0)
+                {
+                    periodNumber--;
+                    keyInPeriod += sizeOfMapPattern;
+                }
+
+                if (kbmMapping[keyInPeriod] < 0 ||
+                    kbmMapping[keyInPeriod] >= Globals::twelveToneKeyboardSize)
+                {
+                    continue; // not re-tuned
+                }
+
+                const auto mappedKey = kbmMapping[keyInPeriod] +
+                    (middleNote + periodNumber * periodSize);
+
+                this->index[key][channel] = { int8(mappedKey), int8(channelNumber) };
             }
-
-            if (kbmMapping[keyInPeriod] < 0 ||
-                kbmMapping[keyInPeriod] >= Globals::twelveToneKeyboardSize)
-            {
-                continue; // not re-tuned
-            }
-
-            const auto mappedKey = kbmMapping[keyInPeriod] +
-                (middleNote + periodNumber * periodSize);
-
-            this->index[key] = { int8(mappedKey), int8(channelNumber) };
         }
     }
 
     this->sendChangeMessage();
 }
 
-void KeyboardMapping::updateKey(int key, const KeyChannel &keyChannel)
+void KeyboardMapping::updateKey(int sourceKey, int sourceChannel, const KeyChannel &keyChannel)
 {
-    this->updateKey(key, keyChannel.key, keyChannel.channel);
+    this->updateKey(sourceKey, sourceChannel, keyChannel.key, keyChannel.channel);
 }
 
-void KeyboardMapping::updateKey(int key, int8 targetKey, int8 targetChannel)
+void KeyboardMapping::updateKey(int sourceKey, int sourceChannel, int8 targetKey, int8 targetChannel)
 {
-    jassert(key < KeyboardMapping::numMappedKeys);
+    jassert(sourceKey < KeyboardMapping::numMappedKeys);
+    jassert(sourceChannel > 0 && sourceChannel <= KeyboardMapping::numMappedChannels);
     jassert(targetKey >= 0);
     jassert(targetChannel > 0);
-    this->index[key] = { targetKey, targetChannel };
+    this->index[sourceKey][sourceChannel - 1] = { targetKey, targetChannel };
     this->sendChangeMessage();
 }
 

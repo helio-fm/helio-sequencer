@@ -631,9 +631,10 @@ void ProjectNode::importMidi(InputStream &stream)
         bool hasPianoEvents = false;
         bool hasControllerEvents = false;
         int trackControllerNumber = 0;
+        int trackChannel = 1;
 
         auto trackName = "Track " + String(i);
-        const auto colour = colours[r.nextInt(colours.size())]; // set some random colour
+        const auto trackColour = colours[r.nextInt(colours.size())]; // set some random colour
 
         for (int j = 0; j < importedTrack->getNumEvents(); ++j)
         {
@@ -642,10 +643,18 @@ void ProjectNode::importMidi(InputStream &stream)
             {
                 trackName = event->message.getTextFromTextMetaEvent();
             }
+            else if (event->message.isMidiChannelMetaEvent())
+            {
+                trackChannel = event->message.getMidiChannelMetaEventChannel();
+            }
             else if (event->message.isController())
             {
                 trackControllerNumber = event->message.getControllerNumber();
                 hasControllerEvents = true;
+                if (event->message.getChannel() > 0)
+                {
+                    trackChannel = event->message.getChannel();
+                }
             }
             else if (event->message.isTempoMetaEvent())
             {
@@ -655,6 +664,10 @@ void ProjectNode::importMidi(InputStream &stream)
             else if (event->message.isNoteOnOrOff())
             {
                 hasPianoEvents = true;
+                if (event->message.getChannel() > 0)
+                {
+                    trackChannel = event->message.getChannel();
+                }
             }
         }
 
@@ -671,7 +684,8 @@ void ProjectNode::importMidi(InputStream &stream)
             this->addChildNode(trackNode, -1, false);
 
             trackNode->setTrackControllerNumber(trackControllerNumber, dontSendNotification);
-            trackNode->setTrackColour(colour, false, dontSendNotification);
+            trackNode->setTrackChannel(trackChannel, false, dontSendNotification);
+            trackNode->setTrackColour(trackColour, false, dontSendNotification);
             trackNode->getSequence()->importMidi(*importedTrack, timeFormat);
         }
 
@@ -684,7 +698,8 @@ void ProjectNode::importMidi(InputStream &stream)
 
             this->addChildNode(trackNode, -1, false);
 
-            trackNode->setTrackColour(colour, false, dontSendNotification);
+            trackNode->setTrackChannel(trackChannel, false, dontSendNotification);
+            trackNode->setTrackColour(trackColour, false, dontSendNotification);
             trackNode->getSequence()->importMidi(*importedTrack, timeFormat);
         }
 

@@ -29,11 +29,13 @@ namespace VCS
 
 extern SerializedData mergePath(const SerializedData &state, const SerializedData &changes);
 extern SerializedData mergeColour(const SerializedData &state, const SerializedData &changes);
+extern SerializedData mergeChannel(const SerializedData &state, const SerializedData &changes);
 extern SerializedData mergeInstrument(const SerializedData &state, const SerializedData &changes);
 extern SerializedData mergeTimeSignature(const SerializedData &state, const SerializedData &changes);
 
 extern DeltaDiff createPathDiff(const SerializedData &state, const SerializedData &changes);
 extern DeltaDiff createColourDiff(const SerializedData &state, const SerializedData &changes);
+extern DeltaDiff createChannelDiff(const SerializedData &state, const SerializedData &changes);
 extern DeltaDiff createInstrumentDiff(const SerializedData &state, const SerializedData &changes);
 extern DeltaDiff createTimeSignatureDiff(const SerializedData &state, const SerializedData &changes);
 
@@ -47,13 +49,12 @@ static SerializedData mergeAutoEventsChanged(const SerializedData &state, const 
 static DeltaDiff createAutoTrackControllerDiff(const SerializedData &state, const SerializedData &changes);
 static Array<DeltaDiff> createAutoEventsDiffs(const SerializedData &state, const SerializedData &changes);
 
-static void deserializeAutoTrackChanges(const SerializedData &state, const SerializedData &changes,
-    OwnedArray<MidiEvent> &stateNotes, OwnedArray<MidiEvent> &changesNotes);
-
 static DeltaDiff serializeAutoTrackChanges(Array<const MidiEvent *> changes,
     const String &description, int64 numChanges, const Identifier &deltaType);
 
 static SerializedData serializeAutoSequence(Array<const MidiEvent *> changes, const Identifier &tag);
+static void deserializeAutoSequence(const SerializedData &state, const SerializedData &changes,
+    OwnedArray<MidiEvent> &stateNotes, OwnedArray<MidiEvent> &changesNotes);
 static bool checkIfDeltaIsEventsType(const Delta *delta);
 
 AutomationTrackDiffLogic::AutomationTrackDiffLogic(TrackedItem &targetItem) :
@@ -103,6 +104,10 @@ Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) cons
             else if (myDelta->hasType(MidiTrackDeltas::trackColour))
             {
                 diff->applyDelta(createColourDiff(stateDeltaData, myDeltaData));
+            }
+            else if (myDelta->hasType(MidiTrackDeltas::trackChannel))
+            {
+                diff->applyDelta(createChannelDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(MidiTrackDeltas::trackInstrument))
             {
@@ -183,6 +188,12 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
                 {
                     auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
                     SerializedData diffDeltaData = mergeColour(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
+                }
+                else if (targetDelta->hasType(MidiTrackDeltas::trackChannel))
+                {
+                    auto diffDelta = make<Delta>(targetDelta->getDescription(), targetDelta->getType());
+                    SerializedData diffDeltaData = mergeChannel(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackInstrument))
@@ -276,6 +287,7 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
 
     bool stateHasClips = false;
     bool stateHasTrackTimeSignature = false;
+    bool stateHasChannelInfo = false;
 
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
@@ -283,6 +295,8 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
         stateHasClips = stateHasClips || PatternDiffHelpers::checkIfDeltaIsPatternType(stateDelta);
         stateHasTrackTimeSignature = stateHasTrackTimeSignature ||
             stateDelta->hasType(TimeSignatureDeltas::timeSignaturesChanged);
+        stateHasChannelInfo = stateHasChannelInfo ||
+            stateDelta->hasType(MidiTrackDeltas::trackChannel);
     }
 
     if (!stateHasTrackTimeSignature)
@@ -311,6 +325,36 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
         else
         {
             diff->applyDelta(timeSignatureDelta.release(), emptyTimeSignatureDeltaData);
+        }
+    }
+
+    if (!stateHasChannelInfo)
+    {
+        SerializedData mergedChannelDeltaData;
+        SerializedData emptyChannelDeltaData(MidiTrackDeltas::trackChannel);
+        emptyChannelDeltaData.setProperty(delta, 1);
+        auto channelDelta = make<Delta>(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            MidiTrackDeltas::trackChannel);
+
+        for (int j = 0; j < this->target.getNumDeltas(); ++j)
+        {
+            const auto *targetDelta = this->target.getDelta(j);
+            const auto targetDeltaData(this->target.getDeltaData(j));
+
+            if (targetDelta->hasType(MidiTrackDeltas::trackChannel))
+            {
+                mergedChannelDeltaData = mergeChannel(emptyChannelDeltaData, targetDeltaData);
+            }
+        }
+
+        if (mergedChannelDeltaData.isValid())
+        {
+            diff->applyDelta(channelDelta.release(), mergedChannelDeltaData);
+        }
+        else
+        {
+            diff->applyDelta(channelDelta.release(), emptyChannelDeltaData);
         }
     }
 
@@ -378,7 +422,7 @@ SerializedData mergeAutoEventsAdded(const SerializedData &state, const Serialize
 
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    deserializeAutoTrackChanges(state, changes, stateNotes, changesNotes);
+    deserializeAutoSequence(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
     result.addArray(stateNotes);
@@ -415,7 +459,7 @@ SerializedData mergeAutoEventsRemoved(const SerializedData &state, const Seriali
 
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    deserializeAutoTrackChanges(state, changes, stateNotes, changesNotes);
+    deserializeAutoSequence(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -451,7 +495,7 @@ SerializedData mergeAutoEventsChanged(const SerializedData &state, const Seriali
 
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    deserializeAutoTrackChanges(state, changes, stateNotes, changesNotes);
+    deserializeAutoSequence(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
     result.addArray(stateNotes);
@@ -506,7 +550,7 @@ Array<DeltaDiff> createAutoEventsDiffs(const SerializedData &state, const Serial
     // вот здесь по уму надо десериализовать слои
     // а для этого надо, чтоб в слоях не было ничего, кроме нот
     // поэтому пока есть, как есть, и это не критично
-    deserializeAutoTrackChanges(state, changes, stateEvents, changesEvents);
+    deserializeAutoSequence(state, changes, stateEvents, changesEvents);
 
     Array<DeltaDiff> res;
     Array<const MidiEvent *> addedEvents;
@@ -601,7 +645,7 @@ Array<DeltaDiff> createAutoEventsDiffs(const SerializedData &state, const Serial
     return res;
 }
 
-void deserializeAutoTrackChanges(const SerializedData &state, const SerializedData &changes,
+void deserializeAutoSequence(const SerializedData &state, const SerializedData &changes,
         OwnedArray<MidiEvent> &stateNotes, OwnedArray<MidiEvent> &changesNotes)
 {
     if (state.isValid())

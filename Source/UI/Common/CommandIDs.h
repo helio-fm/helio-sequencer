@@ -219,8 +219,10 @@ namespace CommandIDs
         KeyMapLoadScala                 = 0x4211,
         KeyMapNextPage                  = 0x4212,
         KeyMapPreviousPage              = 0x4213,
-        KeyMapCopyToClipboard           = 0x4214,
-        KeyMapPasteFromClipboard        = 0x4215,
+        KeyMapNextChannel               = 0x4214,
+        KeyMapPreviousChannel           = 0x4215,
+        KeyMapCopyToClipboard           = 0x4216,
+        KeyMapPasteFromClipboard        = 0x4217,
 
         SavePreset                      = 0x4300,
         SelectNextPreset                = 0x4301,

@@ -44,7 +44,7 @@ void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
     const auto keyWithOffset = this->key + clip.getKey();
     const auto finalVolume = this->velocity * clip.getVelocity();
     const auto tupletLength = this->length / float(this->tuplet);
-    const auto mapped = keyMap.map(keyWithOffset);
+    const auto mapped = keyMap.map(keyWithOffset, this->sequence->getChannel());
 
     for (int i = 0; i < this->tuplet; ++i)
     {

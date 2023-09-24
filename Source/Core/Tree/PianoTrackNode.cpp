@@ -37,6 +37,7 @@ PianoTrackNode::PianoTrackNode(const String &name) :
     using namespace Serialization::VCS;
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackPath));
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackColour));
+    this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackChannel));
     this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackInstrument));
     this->deltas.add(new VCS::Delta({}, PianoSequenceDeltas::notesAdded));
     this->deltas.add(new VCS::Delta({}, PatternDeltas::clipsAdded));
@@ -101,6 +102,10 @@ SerializedData PianoTrackNode::getDeltaData(int deltaIndex) const
     {
         return this->serializeColourDelta();
     }
+    else if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackChannel))
+    {
+        return this->serializeChannelDelta();
+    }
     else if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackInstrument))
     {
         return this->serializeInstrumentDelta();
@@ -129,6 +134,10 @@ bool PianoTrackNode::deltaHasDefaultData(int deltaIndex) const
     {
         return !this->hasTimeSignatureOverride();
     }
+    else if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackChannel))
+    {
+        return this->getTrackChannel() == 1;
+    }
 
     return false;
 }
@@ -153,6 +162,10 @@ void PianoTrackNode::resetStateTo(const VCS::TrackedItem &newState)
         else if (newDelta->hasType(MidiTrackDeltas::trackColour))
         {
             this->resetColourDelta(newDeltaData);
+        }
+        else if (newDelta->hasType(MidiTrackDeltas::trackChannel))
+        {
+            this->resetChannelDelta(newDeltaData);
         }
         else if (newDelta->hasType(MidiTrackDeltas::trackInstrument))
         {

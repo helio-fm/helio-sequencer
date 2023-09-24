@@ -56,7 +56,7 @@ void MidiTrackNode::safeRename(const String &newName, bool sendNotifications)
         fixedName = fixedName.replace("//", "/");
     }
 
-    this->setXPath(fixedName, sendNotifications);
+    this->setTreePath(fixedName, sendNotifications);
 }
 
 //===----------------------------------------------------------------------===//
@@ -65,7 +65,7 @@ void MidiTrackNode::safeRename(const String &newName, bool sendNotifications)
 
 String MidiTrackNode::getVCSName() const
 {
-    return this->getXPath();
+    return this->getTreePath();
 }
 
 SerializedData MidiTrackNode::serializeClipsDelta() const
@@ -117,12 +117,36 @@ void MidiTrackNode::setTrackId(const String &val)
 
 String MidiTrackNode::getTrackName() const noexcept
 {
-    return this->getXPath();
+    return this->getTreePath();
 }
 
 int MidiTrackNode::getTrackChannel() const noexcept
 {
     return this->channel;
+}
+
+void MidiTrackNode::setTrackChannel(int channel, bool undoable, NotificationType notificationType)
+{
+    const auto clampedChannel = jlimit(1, 16, channel);
+    if (this->channel == clampedChannel)
+    {
+        return;
+    }
+
+    if (undoable)
+    {
+        this->getProject()->getUndoStack()->
+            perform(new MidiTrackChangeChannelAction(*this->getProject(),
+                this->getTrackId(), clampedChannel));
+    }
+    else
+    {
+        this->channel = clampedChannel;
+        if (notificationType != dontSendNotification)
+        {
+            this->dispatchChangeTrackProperties();
+        }
+    }
 }
 
 void MidiTrackNode::setTrackName(const String &newName, bool undoable, NotificationType notificationType)
@@ -218,7 +242,8 @@ void MidiTrackNode::setTrackControllerNumber(int val, NotificationType notificat
     {
         return;
     }
-
+    
+    // not undoable because it is only set once when the track is created
     this->controllerNumber = val;
 
     if (notificationType != dontSendNotification)
@@ -277,7 +302,7 @@ void MidiTrackNode::setTimeSignatureOverride(const TimeSignatureEvent &ts, bool 
 // ProjectEventDispatcher
 //===----------------------------------------------------------------------===//
 
-String MidiTrackNode::getXPath() const noexcept
+String MidiTrackNode::getTreePath() const noexcept
 {
     const TreeNodeBase *rootItem = this;
     String xpath = this->getName();
@@ -300,9 +325,9 @@ String MidiTrackNode::getXPath() const noexcept
     return xpath;
 }
 
-void MidiTrackNode::setXPath(const String &path, bool sendNotifications)
+void MidiTrackNode::setTreePath(const String &path, bool sendNotifications)
 {
-    if (path == this->getXPath() || path.isEmpty())
+    if (path == this->getTreePath() || path.isEmpty())
     {
         return;
     }
@@ -563,6 +588,14 @@ SerializedData MidiTrackNode::serializeColourDelta() const
     return tree;
 }
 
+SerializedData MidiTrackNode::serializeChannelDelta() const
+{
+    using namespace Serialization::VCS;
+    SerializedData tree(MidiTrackDeltas::trackChannel);
+    tree.setProperty(delta, this->getTrackChannel());
+    return tree;
+}
+
 SerializedData MidiTrackNode::serializeInstrumentDelta() const
 {
     using namespace Serialization::VCS;
@@ -595,6 +628,13 @@ void MidiTrackNode::resetColourDelta(const SerializedData &state)
     const String colourString = state.getProperty(Serialization::VCS::delta);
     const auto colour = Colour::fromString(colourString);
     this->setTrackColour(colour, false, dontSendNotification);
+}
+
+void MidiTrackNode::resetChannelDelta(const SerializedData &state)
+{
+    jassert(state.hasType(Serialization::VCS::MidiTrackDeltas::trackChannel));
+    const int channel = state.getProperty(Serialization::VCS::delta, 1);
+    this->setTrackChannel(channel, false, dontSendNotification);
 }
 
 void MidiTrackNode::resetInstrumentDelta(const SerializedData &state)

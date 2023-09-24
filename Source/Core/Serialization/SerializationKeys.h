@@ -488,6 +488,7 @@ namespace Serialization
         {
             static const Identifier trackPath = "path";
             static const Identifier trackColour = "colour";
+            static const Identifier trackChannel = "channel";
             static const Identifier trackInstrument = "instrument";
             static const Identifier trackController = "controller";
         }
@@ -648,10 +649,12 @@ namespace Serialization
         static const Identifier trackId = "trackId";
         static const Identifier group = "group";
 
-        static const Identifier xPathBefore = "pathBefore";
-        static const Identifier xPathAfter = "pathAfter";
+        static const Identifier treePathBefore = "pathBefore";
+        static const Identifier treePathAfter = "pathAfter";
         static const Identifier colourBefore = "colourBefore";
         static const Identifier colourAfter = "colourAfter";
+        static const Identifier channelBefore = "channelBefore";
+        static const Identifier channelAfter = "channelAfter";
         static const Identifier instrumentIdBefore = "instrumentIdBefore";
         static const Identifier instrumentIdAfter = "instrumentIdAfter";
         static const Identifier muteStateBefore = "muteStateBefore";
@@ -681,6 +684,7 @@ namespace Serialization
         static const Identifier midiTrackRenameAction = "midiTrackRename";
         
         static const Identifier midiTrackChangeColourAction = "midiTrackChangeColour";
+        static const Identifier midiTrackChangeChannelAction = "midiTrackChangeChannel";
         static const Identifier midiTrackChangeInstrumentAction = "midiTrackChangeInstrument";
         static const Identifier midiTrackChangeTimeSignatureAction = "midiTrackChangeTimeSignature";
         

@@ -38,8 +38,8 @@ public:
 
     MidiTrackNode(const String &name, const Identifier &type);
 
-    String getXPath() const noexcept;
-    void setXPath(const String &path, bool sendNotifications);
+    String getTreePath() const noexcept;
+    void setTreePath(const String &path, bool sendNotifications);
 
     void showPage() override;
     void safeRename(const String &newName, bool sendNotifications) override;
@@ -58,7 +58,10 @@ public:
     //===------------------------------------------------------------------===//
 
     const String &getTrackId() const noexcept override;
+
     int getTrackChannel() const noexcept override;
+    void setTrackChannel(int channel, bool undoable,
+        NotificationType notificationType) override;
 
     String getTrackName() const noexcept override;
     void setTrackName(const String &val, bool undoable,
@@ -122,11 +125,13 @@ protected:
     // VCS helpers used by subclasses:
     SerializedData serializePathDelta() const;
     SerializedData serializeColourDelta() const;
+    SerializedData serializeChannelDelta() const;
     SerializedData serializeInstrumentDelta() const;
     SerializedData serializeTimeSignatureDelta() const;
 
     void resetPathDelta(const SerializedData &state);
     void resetColourDelta(const SerializedData &state);
+    void resetChannelDelta(const SerializedData &state);
     void resetInstrumentDelta(const SerializedData &state);
     void resetTimeSignatureDelta(const SerializedData &state);
 

@@ -41,16 +41,27 @@ KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
     this->background = make<PageBackgroundB>();
     this->addAndMakeVisible(this->background.get());
 
+    this->channelLabel = make<Label>();
+    this->channelLabel->setFont(Globals::UI::Fonts::XL);
+    this->channelLabel->setJustificationType(Justification::centred);
+    this->addAndMakeVisible(this->channelLabel.get());
+
+    this->prevChannelArrow = make<IconButton>(Icons::stretchLeft, CommandIDs::KeyMapPreviousChannel);
+    this->addAndMakeVisible(this->prevChannelArrow.get());
+
+    this->nextChannelArrow = make<IconButton>(Icons::stretchRight, CommandIDs::KeyMapNextChannel);
+    this->addAndMakeVisible(this->nextChannelArrow.get());
+
     this->rangeLabel = make<Label>();
-    this->rangeLabel->setFont(Globals::UI::Fonts::XL);
+    this->rangeLabel->setFont(Globals::UI::Fonts::L);
     this->rangeLabel->setJustificationType(Justification::centred);
     this->addAndMakeVisible(this->rangeLabel.get());
 
-    this->leftArrow = make<IconButton>(Icons::stretchLeft, CommandIDs::KeyMapPreviousPage);
-    this->addAndMakeVisible(this->leftArrow.get());
+    this->prevPageArrow = make<IconButton>(Icons::stretchLeft, CommandIDs::KeyMapPreviousPage);
+    this->addAndMakeVisible(this->prevPageArrow.get());
 
-    this->rightArrow = make<IconButton>(Icons::stretchRight, CommandIDs::KeyMapNextPage);
-    this->addAndMakeVisible(this->rightArrow.get());
+    this->nextPageArrow = make<IconButton>(Icons::stretchRight, CommandIDs::KeyMapNextPage);
+    this->addAndMakeVisible(this->nextPageArrow.get());
 
     for (int i = 0; i < Globals::twelveToneKeyboardSize; ++i)
     {
@@ -89,7 +100,7 @@ KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
         this->mappingLabels.add(mappingLabel.release());
     }
 
-    this->syncWithRange(0);
+    this->syncWithRange(1, 0);
 
     this->instrument->getKeyboardMapping()->addChangeListener(this);
 }
@@ -108,19 +119,25 @@ void KeyboardMappingPage::resized()
 
     const auto centre = this->getLocalBounds().getCentre();
 
+    auto channelControlsBounds =
+        Rectangle<int>(0, 0, 256, 40).withCentre(centre.withY(80));
+
+    this->prevChannelArrow->setBounds(channelControlsBounds.removeFromLeft(64));
+    this->nextChannelArrow->setBounds(channelControlsBounds.removeFromRight(64));
+    this->channelLabel->setBounds(channelControlsBounds);
+
     auto rangeControlsBounds =
-        Rectangle<int>(0, 0, 256, 40).withCentre(centre.withY(96));
+        Rectangle<int>(0, 0, 256, 40).withCentre(centre.withY(this->getHeight() - 80));
 
-    const auto mappingsBounds =
-        this->getLocalBounds().reduced(96, 48).withTrimmedTop(128);
-
-    this->leftArrow->setBounds(rangeControlsBounds.removeFromLeft(64));
-    this->rightArrow->setBounds(rangeControlsBounds.removeFromRight(64));
+    this->prevPageArrow->setBounds(rangeControlsBounds.removeFromLeft(64));
+    this->nextPageArrow->setBounds(rangeControlsBounds.removeFromRight(64));
     this->rangeLabel->setBounds(rangeControlsBounds);
     
     static constexpr auto numRows = 16;
     static constexpr auto numColumns = Globals::twelveToneKeyboardSize / numRows;
     static constexpr auto editorHeight = 22;
+
+    const auto mappingsBounds = this->getLocalBounds().reduced(80, 128);
 
     for (int i = 0; i < Globals::twelveToneKeyboardSize; ++i)
     {
@@ -134,7 +151,7 @@ void KeyboardMappingPage::resized()
             Rectangle<int>(mappingsBounds.getX() + rowWidth * column,
                 mappingsBounds.getY() + rowHeight * row, rowWidth, rowHeight);
 
-        const auto keyBounds = rowBounds.removeFromLeft(48);
+        const auto keyBounds = rowBounds.removeFromLeft(64);
         this->keyLabels.getUnchecked(i)->setBounds(keyBounds);
         this->keyButtons.getUnchecked(i)->setBounds(keyBounds);
 
@@ -143,31 +160,42 @@ void KeyboardMappingPage::resized()
     }
 }
 
-void KeyboardMappingPage::syncWithRange(int base)
+void KeyboardMappingPage::syncWithRange(int channel, int base)
 {
+    this->currentChannel = channel;
     this->currentPageBase = base;
 
     const auto *keyMap = this->instrument->getKeyboardMapping();
 
+    this->channelLabel->setText(String(channel), dontSendNotification);
     this->rangeLabel->setText(String(base) + " - " + 
         String(base + Globals::twelveToneKeyboardSize - 1), dontSendNotification);
 
-    const auto canShowPreviousPave = this->canShowPreviousPage();
+    const auto canShowPreviousChannel = this->canShowPreviousChannel();
+    const auto canShowNextChannel = this->canShowNextChannel();
+
+    this->prevChannelArrow->setInterceptsMouseClicks(canShowPreviousChannel, false);
+    this->prevChannelArrow->setIconAlphaMultiplier(canShowPreviousChannel ? 1.f : 0.25f);
+
+    this->nextChannelArrow->setInterceptsMouseClicks(canShowNextChannel, false);
+    this->nextChannelArrow->setIconAlphaMultiplier(canShowNextChannel ? 1.f : 0.25f);
+
+    const auto canShowPreviousPage = this->canShowPreviousPage();
     const auto canShowNextPage = this->canShowNextPage();
 
-    this->leftArrow->setInterceptsMouseClicks(canShowPreviousPave, false);
-    this->leftArrow->setIconAlphaMultiplier(canShowPreviousPave ? 1.f : 0.25f);
+    this->prevPageArrow->setInterceptsMouseClicks(canShowPreviousPage, false);
+    this->prevPageArrow->setIconAlphaMultiplier(canShowPreviousPage ? 1.f : 0.25f);
 
-    this->rightArrow->setInterceptsMouseClicks(canShowNextPage, false);
-    this->rightArrow->setIconAlphaMultiplier(canShowNextPage ? 1.f : 0.25f);
+    this->nextPageArrow->setInterceptsMouseClicks(canShowNextPage, false);
+    this->nextPageArrow->setIconAlphaMultiplier(canShowNextPage ? 1.f : 0.25f);
 
-    for (int i = base; i < base + Globals::twelveToneKeyboardSize; ++i)
+    for (int key = base; key < base + Globals::twelveToneKeyboardSize; ++key)
     {
-        const auto mapped = keyMap->map(i);
-        const int buttonIndex = i % Globals::twelveToneKeyboardSize;
+        const auto mapped = keyMap->map(key, this->currentChannel);
+        const int buttonIndex = key % Globals::twelveToneKeyboardSize;
 
         this->keyLabels.getUnchecked(buttonIndex)->
-            setText(String(i) + ":", dontSendNotification);
+            setText(String(key) + "/" + String(this->currentChannel) + ":", dontSendNotification);
 
         this->mappingLabels.getUnchecked(buttonIndex)->
             setText(mapped.toString(), dontSendNotification);
@@ -178,16 +206,30 @@ void KeyboardMappingPage::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
+    case CommandIDs::KeyMapPreviousChannel:
+        if (this->canShowPreviousChannel())
+        {
+            this->syncWithRange(this->currentChannel - 1, this->currentPageBase);
+        }
+        return;
+    case CommandIDs::KeyMapNextChannel:
+        if (this->canShowNextChannel())
+        {
+            this->syncWithRange(this->currentChannel + 1, this->currentPageBase);
+        }
+        return;
     case CommandIDs::KeyMapPreviousPage:
         if (this->canShowPreviousPage())
         {
-            this->syncWithRange(this->currentPageBase - Globals::twelveToneKeyboardSize);
+            this->syncWithRange(this->currentChannel,
+                this->currentPageBase - Globals::twelveToneKeyboardSize);
         }
         return;
     case CommandIDs::KeyMapNextPage:
         if (this->canShowNextPage())
         {
-            this->syncWithRange(this->currentPageBase + Globals::twelveToneKeyboardSize);
+            this->syncWithRange(this->currentChannel,
+                this->currentPageBase + Globals::twelveToneKeyboardSize);
         }
         return;
     case CommandIDs::KeyMapLoadScala:
@@ -259,13 +301,13 @@ void KeyboardMappingPage::mouseDown(const MouseEvent &e)
 
 void KeyboardMappingPage::changeListenerCallback(ChangeBroadcaster *source)
 {
-    this->syncWithRange(this->currentPageBase);
+    this->syncWithRange(this->currentChannel, this->currentPageBase);
 }
 
 void KeyboardMappingPage::stopAllSound()
 {
     auto &midiCollector = this->instrument->getProcessorPlayer().getMidiMessageCollector();
-    for (int i = 1; i < Globals::numChannels; ++i)
+    for (int i = 1; i <= Globals::numChannels; ++i)
     {
         auto notesOff = MidiMessage::allNotesOff(i);
         notesOff.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
@@ -277,7 +319,7 @@ void KeyboardMappingPage::onKeyPreview(int i)
 {
     const int key = this->currentPageBase + i;
     auto *keyMap = this->instrument->getKeyboardMapping();
-    const auto mapped = keyMap->map(key);
+    const auto mapped = keyMap->map(key, this->currentChannel);
 
     const auto time = Time::getMillisecondCounterHiRes() * 0.001;
     auto &midiCollector = this->instrument->getProcessorPlayer().getMidiMessageCollector();
@@ -297,12 +339,22 @@ void KeyboardMappingPage::onKeyMappingUpdated(int i)
 
     if (mapped.isValid())
     {
-        keyMap->updateKey(key, mapped);
+        keyMap->updateKey(key, this->currentChannel, mapped);
     }
     else
     {
-        editor->setText(keyMap->map(key).toString(), dontSendNotification);
+        editor->setText(keyMap->map(key, this->currentChannel).toString(), dontSendNotification);
     }
+}
+
+bool KeyboardMappingPage::canShowPreviousChannel() const noexcept
+{
+    return this->currentChannel > 1;
+}
+
+bool KeyboardMappingPage::canShowNextChannel() const noexcept
+{
+    return this->currentChannel < 16;
 }
 
 bool KeyboardMappingPage::canShowPreviousPage() const noexcept

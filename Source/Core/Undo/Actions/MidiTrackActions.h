@@ -58,6 +58,38 @@ private:
 // Change Colour
 //===----------------------------------------------------------------------===//
 
+class MidiTrackChangeChannelAction final : public UndoAction
+{
+public:
+
+    explicit MidiTrackChangeChannelAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
+
+    MidiTrackChangeChannelAction(MidiTrackSource &source,
+        const String &trackId, const int newChannel) noexcept;
+
+    bool perform() override;
+    bool undo() override;
+    int getSizeInUnits() override;
+
+    SerializedData serialize() const override;
+    void deserialize(const SerializedData &data) override;
+    void reset() override;
+
+private:
+
+    String trackId;
+
+    int channelBefore = 1;
+    int channelAfter = 1;
+
+    JUCE_DECLARE_NON_COPYABLE(MidiTrackChangeChannelAction)
+};
+
+//===----------------------------------------------------------------------===//
+// Change Channel
+//===----------------------------------------------------------------------===//
+
 class MidiTrackChangeColourAction final : public UndoAction
 {
 public:

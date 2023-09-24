@@ -36,12 +36,15 @@ public:
     //===------------------------------------------------------------------===//
 
     virtual const String &getTrackId() const noexcept = 0;
-    virtual int getTrackChannel() const noexcept = 0;
 
     // sendNotifications argument here is only meant to be true,
     // when changing properties from user actions (see undo/redo action classes);
     // deserialization and resetting VCS state should always call
     // setX(123, false, dontSendNotification) to prevent notification hell
+
+    virtual int getTrackChannel() const noexcept = 0;
+    virtual void setTrackChannel(int channel, bool undoable,
+        NotificationType notificationType) = 0;
 
     virtual String getTrackName() const noexcept = 0;
     virtual void setTrackName(const String &val, bool undoable,
@@ -152,7 +155,9 @@ public:
 
     void setTrackId(const String &val) override {};
     const String &getTrackId() const noexcept override { return this->trackId; }
-    int getTrackChannel() const noexcept override { return 0; }
+    int getTrackChannel() const noexcept override { return 1; }
+    void setTrackChannel(int channel, bool undoable,
+        NotificationType notificationType) override {}
 
     String getTrackName() const noexcept override { return {}; }
     void setTrackName(const String &val, bool undoable,

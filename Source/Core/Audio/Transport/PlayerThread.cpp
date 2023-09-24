@@ -82,18 +82,18 @@ void PlayerThread::run()
 
     auto sendControllerStates = [&uniqueInstruments, this]()
     {
-        for (int cc = 0; cc < Transport::PlaybackContext::numCCs; ++cc)
+        for (auto &instrument : uniqueInstruments)
         {
-            const auto state = this->context->ccStates[cc];
-            if (state < 0) // not present in any track
+            for (int cc = 0; cc < Transport::PlaybackContext::numCCs; ++cc)
             {
-                continue;
-            }
-
-            for (auto &instrument : uniqueInstruments)
-            {
-                for (int channel = 1; channel < Globals::numChannels; ++channel)
+                for (int channel = 1; channel <= Globals::numChannels; ++channel)
                 {
+                    const auto state = this->context->ccStates[cc][channel - 1];
+                    if (state < 0) // not present in any track for this channel
+                    {
+                        continue;
+                    }
+
                     MidiMessage m(MidiMessage::controllerEvent(channel, cc, state));
                     m.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
                     instrument->getProcessorPlayer().getMidiMessageCollector().addMessageToQueue(m);

@@ -2704,8 +2704,9 @@ UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<N
     if (events.size() == 0) { return {}; }
 
     const auto *track = events.getReference(0).getSequence()->getTrack();
-    const auto &instrumentId = track->getTrackInstrumentId();
-    const auto &colour = track->getTrackColour();
+    const auto instrumentId = track->getTrackInstrumentId();
+    const auto colour = track->getTrackColour();
+    const auto channel = track->getTrackChannel();
     const auto *timeSignature = track->getTimeSignatureOverride();
 
     UniquePointer<MidiTrackNode> newNode(new PianoTrackNode({}));
@@ -2730,6 +2731,7 @@ UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<N
     pattern->insertGroup(copiedClips, false);
 
     newNode->setTrackColour(colour, false, dontSendNotification);
+    newNode->setTrackChannel(channel, false, dontSendNotification);
     newNode->setTrackInstrumentId(instrumentId, false, dontSendNotification);
     if (timeSignature != nullptr)
     {
@@ -2769,9 +2771,10 @@ UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
     if (events.size() == 0) { return {}; }
 
     const auto *track = events.getReference(0).getSequence()->getTrack();
-    const auto &instrumentId = track->getTrackInstrumentId();
-    const auto &cc = track->getTrackControllerNumber();
-    const auto &colour = track->getTrackColour();
+    const auto instrumentId = track->getTrackInstrumentId();
+    const auto cc = track->getTrackControllerNumber();
+    const auto colour = track->getTrackColour();
+    const auto channel = track->getTrackChannel();
     const auto *timeSignature = track->getTimeSignatureOverride();
 
     UniquePointer<MidiTrackNode> newTrack(new AutomationTrackNode({}));
@@ -2795,6 +2798,7 @@ UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
     pattern->insertGroup(copiedClips, false);
 
     newTrack->setTrackColour(colour, false, dontSendNotification);
+    newTrack->setTrackChannel(channel, false, dontSendNotification);
     newTrack->setTrackInstrumentId(instrumentId, false, dontSendNotification);
     newTrack->setTrackControllerNumber(cc, dontSendNotification);
     if (timeSignature != nullptr)
