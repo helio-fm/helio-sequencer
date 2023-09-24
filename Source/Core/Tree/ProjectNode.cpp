@@ -682,6 +682,8 @@ void ProjectNode::importMidi(InputStream &stream)
             trackNode->getPattern()->insert(clip, false);
 
             this->addChildNode(trackNode, -1, false);
+            this->isTracksCacheOutdated = true;
+            this->vcsItems.addIfNotAlreadyThere(trackNode);
 
             trackNode->setTrackControllerNumber(trackControllerNumber, dontSendNotification);
             trackNode->setTrackChannel(trackChannel, false, dontSendNotification);
@@ -697,6 +699,8 @@ void ProjectNode::importMidi(InputStream &stream)
             trackNode->getPattern()->insert(clip, false);
 
             this->addChildNode(trackNode, -1, false);
+            this->isTracksCacheOutdated = true;
+            this->vcsItems.addIfNotAlreadyThere(trackNode);
 
             trackNode->setTrackChannel(trackChannel, false, dontSendNotification);
             trackNode->setTrackColour(trackColour, false, dontSendNotification);
