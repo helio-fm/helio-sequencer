@@ -61,7 +61,8 @@ public:
 
 private:
 
-    static constexpr auto numVoices = 64;
+    // todo: make it configurable from the UI
+    static constexpr auto numVoices = 256;
 
     int noteVelocities[128];
 
