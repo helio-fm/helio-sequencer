@@ -298,6 +298,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     }
 
     const auto &selection = this->roll.getLassoSelection();
+    assert(selection.getNumSelected() > 0);
 
     if (this->state == State::DraggingResizing)
     {
@@ -324,8 +325,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             {
                 groupBefore.add(noteComponent->getNote());
                 groupAfter.add(noteComponent->continueDraggingResizing(deltaLength, deltaKey, shouldSendMidi, snap));
-                this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
+
+            this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
 
             SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
@@ -348,9 +350,10 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             {
                 groupBefore.add(noteComponent->getNote());
                 groupAfter.add(noteComponent->continueResizingRight(deltaLength, snap));
-                this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
-                
+
+            this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
+
             SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
@@ -372,8 +375,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             {
                 groupBefore.add(noteComponent->getNote());
                 groupAfter.add(noteComponent->continueResizingLeft(deltaLength, snap));
-                this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
             }
+
+            this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
 
             SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
@@ -397,7 +401,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 groupBefore.add(noteComponent->getNote());
                 groupAfter.add(noteComponent->continueGroupScalingRight(groupScaleFactor));
             }
-                
+
+            this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
+
             SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
@@ -420,7 +426,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 groupBefore.add(noteComponent->getNote());
                 groupAfter.add(noteComponent->continueGroupScalingLeft(groupScaleFactor));
             }
-                
+
+            this->getRoll().setDefaultNoteLength(groupAfter.getLast().getLength());
+
             SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
         else
@@ -766,7 +774,8 @@ MouseCursor NoteComponent::startEditingNewNote(const MouseEvent &e)
     // normally this would have been be set by mouseDown:
     this->dragger.startDraggingComponent(this, e);
 
-    // the default mode is editing key+length, which I think is more convenient,
+#if PLATFORM_DESKTOP
+    // on desktop the default mode is editing key+length, which I think is more convenient,
     // yet some folks might have muscle memory for a more widespread behavior,
     // which is just dragging the newly created note, so if any modifier key was down,
     // we'll be dragging both key and beat; if not, we'll be dragging key + length:
@@ -778,6 +787,12 @@ MouseCursor NoteComponent::startEditingNewNote(const MouseEvent &e)
     {
         this->startDraggingResizing(sendMidi);
     }
+#elif PLATFORM_MOBILE
+    // on mobile platforms the default dragging mode makes more sense,
+    // since the resizing helpers are on the screen already
+    // and no modifier keys are available to change the mode
+    this->startDragging(sendMidi);
+#endif
 
     // hack warning: this note is supposed to be created by roll in two actions,
     // (1) adding one, and (2) dragging it afterwards, so two checkpoints would happen,

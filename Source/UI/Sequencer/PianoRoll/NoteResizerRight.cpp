@@ -149,6 +149,7 @@ void NoteResizerRight::mouseUp(const MouseEvent &e)
     for (int i = 0; i < selection.getNumSelected(); i++)
     {
         auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+        nc->getRoll().setDefaultNoteLength(nc->getLength());
         nc->getRoll().hideAllGhostNotes();
         nc->endGroupScalingLeft();
     }
