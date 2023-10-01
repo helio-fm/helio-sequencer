@@ -128,7 +128,7 @@ void NoteComponent::mouseMove(const MouseEvent &e)
 
 void NoteComponent::mouseDown(const MouseEvent &e)
 {
-    if (e.source.getIndex() > 0)
+    if (this->roll.hasMultiTouch(e))
     {
         return;
     }
@@ -264,7 +264,7 @@ static int lastDeltaKey = 0;
 
 void NoteComponent::mouseDrag(const MouseEvent &e)
 {
-    if (e.source.getIndex() > 0)
+    if (this->roll.hasMultiTouch(e))
     {
         return;
     }
@@ -430,8 +430,6 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     }
     else if (this->state == State::Dragging)
     {
-        this->getRoll().showDragHelpers();
-
         int deltaKey = 0;
         float deltaBeat = 0.f;
         const bool eventChanged = this->getDraggingDelta(e, deltaBeat, deltaKey, snap);
@@ -448,6 +446,11 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             const bool firstChangeIsToCome = !this->firstChangeDone;
 
             this->checkpointIfNeeded();
+
+            if (firstChangeIsToCome)
+            {
+                this->getRoll().showDragHelpers();
+            }
             
             // Drag-and-copy logic:
             if (firstChangeIsToCome && e.mods.isShiftDown())    //changed to shift (perhaps ctrl? though, ctrl may be a good candidate for fine control mode)
@@ -506,7 +509,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 
 void NoteComponent::mouseUp(const MouseEvent &e)
 {
-    if (e.source.getIndex() > 0)
+    if (this->roll.hasMultiTouch(e))
     {
         return;
     }
@@ -708,13 +711,13 @@ void NoteComponent::startDragging(const bool sendMidiMessage)
 
 bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int &deltaKey, bool snap)
 {
-    this->dragger.dragComponent(this, e, nullptr);
+    const auto clickOffset = this->dragger.dragComponent(this, e);
 
     int newKey = -1;
     float newBeat = -1;
     this->getRoll().getRowsColsByComponentPosition(
-        this->getX() + this->floatLocalBounds.getX() + 1 /*+ this->clickOffset.getX()*/,
-        this->getY() + this->floatLocalBounds.getY() + this->clickOffset.getY(),
+        this->getX() + this->floatLocalBounds.getX() + 1,
+        this->getY() + this->floatLocalBounds.getY() + clickOffset.getY(),
         newKey, newBeat, snap);
 
     deltaKey = (newKey - this->anchor.getKey());
@@ -760,24 +763,21 @@ MouseCursor NoteComponent::startEditingNewNote(const MouseEvent &e)
     // don't send midi in this mode, it was already sent when this event was added:
     constexpr bool sendMidi = false;
 
+    // normally this would have been be set by mouseDown:
+    this->dragger.startDraggingComponent(this, e);
+
     // the default mode is editing key+length, which I think is more convenient,
     // yet some folks might have muscle memory for a more widespread behavior,
     // which is just dragging the newly created note, so if any modifier key was down,
     // we'll be dragging both key and beat; if not, we'll be dragging key + length:
     if (e.mods.isAnyModifierKeyDown())
     {
-        // normally this would have been be set by mouseDown:
-        this->dragger.startDraggingComponent(this, e);
         this->startDragging(sendMidi);
     }
     else
     {
         this->startDraggingResizing(sendMidi);
     }
-
-    // normally this would have been be set by mouseDown,
-    // but this note was created by the roll:
-    this->clickOffset.setXY(e.x, e.y);
 
     // hack warning: this note is supposed to be created by roll in two actions,
     // (1) adding one, and (2) dragging it afterwards, so two checkpoints would happen,

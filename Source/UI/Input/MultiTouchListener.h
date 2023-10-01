@@ -28,8 +28,8 @@ public:
         const Rectangle<float> &relativePosition,
         const Rectangle<float> &relativePositionAnchor,
         const Rectangle<float> &absolutePositionAnchor) = 0;
+    virtual void multiTouchEndZooming(const MouseEvent &anchorEvent) = 0;
 
-    virtual Point<float> getMultiTouchRelativeAnchor(const Point<float> &from) = 0;
-    virtual Point<float> getMultiTouchAbsoluteAnchor(const Point<float> &from) = 0;
-
+    virtual Point<float> getMultiTouchRelativeAnchor(const MouseEvent &e) = 0;
+    virtual Point<float> getMultiTouchAbsoluteAnchor(const MouseEvent &e) = 0;
 };

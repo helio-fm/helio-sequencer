@@ -141,7 +141,7 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
 #endif
 
     this->multiTouchController = make<MultiTouchController>(*this);
-    this->addMouseListener(this->multiTouchController.get(), false); // false = listens only this one
+    this->addMouseListener(this->multiTouchController.get(), true);
 
     this->smoothPanController = make<SmoothPanController>(*this);
     this->smoothZoomController = make<SmoothZoomController>(*this);
@@ -357,7 +357,7 @@ void RollBase::broadcastRollResized()
 void RollBase::longTapEvent(const Point<float> &position,
     const WeakReference<Component> &target)
 {
-    if (this->multiTouchController->hasMultitouch())
+    if (this->multiTouchController->hasMultiTouch())
     {
         return;
     }
@@ -402,7 +402,8 @@ void RollBase::multiTouchContinueZooming(const MouseEvent &e,
 
     const float newBeatWidth = jmax(
         float(this->viewport.getWidth() + 1) / this->getNumBeats(), // minimum beat width
-        this->beatWidthAnchor * (jmax(minSensitivity, relativePositions.getWidth()) / jmax(minSensitivity, relativeAnchor.getWidth())));
+        this->beatWidthAnchor * (jmax(minSensitivity,
+            relativePositions.getWidth()) / jmax(minSensitivity, relativeAnchor.getWidth())));
 
     this->setBeatWidth(newBeatWidth);
 
@@ -414,14 +415,24 @@ void RollBase::multiTouchContinueZooming(const MouseEvent &e,
     this->resetDraggingAnchors(e);
 }
 
-Point<float> RollBase::getMultiTouchRelativeAnchor(const Point<float> &from)
+void RollBase::multiTouchEndZooming(const MouseEvent &anchorEvent)
 {
-    return from - this->viewport.getViewPosition().toFloat();
+    this->resetDraggingAnchors(anchorEvent);
 }
 
-Point<float> RollBase::getMultiTouchAbsoluteAnchor(const Point<float> &from)
+Point<float> RollBase::getMultiTouchRelativeAnchor(const MouseEvent &event)
 {
-    return from / this->getLocalBounds().getBottomRight().toFloat();
+    return event.getEventRelativeTo(this).position - this->viewport.getViewPosition().toFloat();
+}
+
+Point<float> RollBase::getMultiTouchAbsoluteAnchor(const MouseEvent &event)
+{
+    return event.getEventRelativeTo(this).position / this->getLocalBounds().getBottomRight().toFloat();
+}
+
+bool RollBase::hasMultiTouch(const MouseEvent &e) const
+{
+    return this->multiTouchController->hasMultiTouch(e);
 }
 
 //===----------------------------------------------------------------------===//
@@ -1105,7 +1116,7 @@ void RollBase::onBeforeReloadProjectContent()
 
 void RollBase::mouseDown(const MouseEvent &e)
 {
-    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
+    if (this->hasMultiTouch(e))
     {
         this->contextMenuController->cancelIfPending();
         this->lassoComponent->endLasso();
@@ -1150,7 +1161,7 @@ void RollBase::mouseDrag(const MouseEvent &e)
 {
     this->contextMenuController->cancelIfPending();
 
-    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
+    if (this->hasMultiTouch(e))
     {
         return;
     }
@@ -1186,7 +1197,7 @@ void RollBase::mouseUp(const MouseEvent &e)
     // so instead:
     this->contextMenuController->cancelIfPending();
 
-    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
+    if (this->hasMultiTouch(e))
     {
         return;
     }

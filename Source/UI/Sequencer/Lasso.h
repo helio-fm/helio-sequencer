@@ -34,7 +34,7 @@ public:
 
     int64 getId() const noexcept;
     bool shouldDisplayGhostNotes() const noexcept;
-    void needsToCalculateSelectionBounds() noexcept;
+    void recalculateSelectionBounds() noexcept;
     Rectangle<int> getSelectionBounds() const noexcept;
 
     // Transaction identifier, and why is it needed:
@@ -81,7 +81,7 @@ public:
 private:
 
     Rectangle<int> bounds;
-    
+
     // A random id which is used to distinguish one selection from another
     // (collisions are still possible, but they are not critical,
     // see SequencerOperations class for usage example)

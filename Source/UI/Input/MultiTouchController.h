@@ -25,9 +25,17 @@ public:
 
     explicit MultiTouchController(MultiTouchListener &parent);
 
-    inline bool hasMultitouch() const noexcept
+    inline bool hasMultiTouch() const noexcept
     {
-        return this->finger1On && this->finger2On;
+        return this->hasFinger0 && this->hasFinger1;
+    }
+
+    // "is already in multitouch mode or entering it with this event"
+    inline bool hasMultiTouch(const MouseEvent &e) const noexcept
+    {
+        return (this->hasFinger0 && this->hasFinger1) ||
+               (this->hasFinger0 && e.source.getIndex() == 1) ||
+               (this->hasFinger1 && e.source.getIndex() == 0);
     }
 
     void mouseDown(const MouseEvent &event) override;
@@ -35,6 +43,8 @@ public:
     void mouseUp(const MouseEvent &event) override;
 
 private:
+
+    void processContinueZoomingEvent(const MouseEvent &e);
 
     MultiTouchListener &listener;
 
@@ -47,7 +57,7 @@ private:
     Point<float> absolutePositionAnchor1;
     Point<float> absolutePositionAnchor2;
 
-    bool finger1On = false;
-    bool finger2On = false;
+    bool hasFinger0 = false;
+    bool hasFinger1 = false;
 
 };

@@ -157,9 +157,12 @@ public:
         const Rectangle<float> &relativePosition,
         const Rectangle<float> &relativePositionAnchor,
         const Rectangle<float> &absolutePositionAnchor) override;
+    void multiTouchEndZooming(const MouseEvent &anchorEvent) override;
 
-    Point<float> getMultiTouchRelativeAnchor(const Point<float> &from) override;
-    Point<float> getMultiTouchAbsoluteAnchor(const Point<float> &from) override;
+    Point<float> getMultiTouchRelativeAnchor(const MouseEvent &e) override;
+    Point<float> getMultiTouchAbsoluteAnchor(const MouseEvent &e) override;
+
+    bool hasMultiTouch(const MouseEvent &e) const;
 
     void longTapEvent(const Point<float> &position,
                       const WeakReference<Component> &target) override;

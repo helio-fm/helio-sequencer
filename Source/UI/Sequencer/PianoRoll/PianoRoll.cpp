@@ -268,6 +268,8 @@ float PianoRoll::findPreviousAnchorBeat(float beat) const
 
 void PianoRoll::multiTouchStartZooming(const MouseEvent &e)
 {
+    this->hideAllGhostNotes();
+    this->hideDragHelpers();
     this->rowHeightAnchor = this->rowHeight;
     RollBase::multiTouchStartZooming(e);
 }
@@ -301,8 +303,7 @@ void PianoRoll::showGhostNoteFor(NoteComponent *target)
     auto *component = new NoteComponent(*this, target->getNote(), target->getClip());
     component->setEnabled(false);
 
-    //component->setAlpha(0.2f); // setAlpha makes everything slower
-    component->setGhostMode(); // use this, Luke.
+    component->setGhostMode();
 
     this->addAndMakeVisible(component);
     this->ghostNotes.add(component);
@@ -328,7 +329,7 @@ void PianoRoll::longTapEvent(const Point<float> &position,
     const WeakReference<Component> &target)
 {
     // try to switch to selected note's track:
-    if (!this->multiTouchController->hasMultitouch() &&
+    if (!this->multiTouchController->hasMultiTouch() &&
         !this->getEditMode().forbidsSelectionMode({}))
     {
         const auto *nc = dynamic_cast<NoteComponent *>(target.get());
@@ -497,7 +498,7 @@ void PianoRoll::showDragHelpers()
 {
     if (!this->draggingHelper->isVisible())
     {
-        this->selection.needsToCalculateSelectionBounds();
+        this->selection.recalculateSelectionBounds();
         this->moveDragHelpers(0.f, 0);
         this->draggingHelper->setAlpha(1.f);
         this->draggingHelper->setVisible(true);
@@ -514,12 +515,12 @@ void PianoRoll::hideDragHelpers()
 
 void PianoRoll::moveDragHelpers(const float deltaBeat, const int deltaKey)
 {
-    const Rectangle<int> selectionBounds = this->selection.getSelectionBounds();
-    const Rectangle<float> delta = this->getEventBounds(deltaKey - 1, deltaBeat + this->firstBeat, 1.f);
+    const auto selectionBounds = this->selection.getSelectionBounds();
+    const auto delta = this->getEventBounds(deltaKey - 1, deltaBeat + this->firstBeat, 1.f);
 
     const int deltaX = int(delta.getTopLeft().getX());
     const int deltaY = int(delta.getTopLeft().getY() - this->getHeight() - 1);
-    const Rectangle<int> selectionTranslated = selectionBounds.translated(deltaX, deltaY);
+    const auto selectionTranslated = selectionBounds.translated(deltaX, deltaY);
 
     const int vX = this->viewport.getViewPositionX();
     const int vW = this->viewport.getViewWidth();
@@ -994,7 +995,7 @@ float PianoRoll::getLassoEndBeat() const
 
 void PianoRoll::mouseDown(const MouseEvent &e)
 {
-    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
+    if (this->hasMultiTouch(e) || e.source.getIndex() > 0)
     {
         return;
     }
@@ -1020,7 +1021,7 @@ void PianoRoll::mouseDown(const MouseEvent &e)
 
 void PianoRoll::mouseDoubleClick(const MouseEvent &e)
 {
-    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
+    if (this->hasMultiTouch(e))
     {
         return;
     }
@@ -1036,7 +1037,7 @@ void PianoRoll::mouseDoubleClick(const MouseEvent &e)
 void PianoRoll::mouseDrag(const MouseEvent &e)
 {
     // can show menus
-    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
+    if (this->hasMultiTouch(e))
     {
         return;
     }
@@ -1064,7 +1065,7 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
 
 void PianoRoll::mouseUp(const MouseEvent &e)
 {
-    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
+    if (this->hasMultiTouch(e))
     {
         return;
     }

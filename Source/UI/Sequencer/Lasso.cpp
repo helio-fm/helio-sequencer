@@ -51,7 +51,7 @@ void Lasso::itemDeselected(SelectableComponent *item)
     item->setSelected(false);
 }
 
-void Lasso::needsToCalculateSelectionBounds() noexcept
+void Lasso::recalculateSelectionBounds() noexcept
 {
     this->bounds = Rectangle<int>();
 

@@ -116,7 +116,7 @@ void ClipComponent::mouseDoubleClick(const MouseEvent &e)
 
 void ClipComponent::mouseDown(const MouseEvent &e)
 {
-    if (e.source.getIndex() > 0)
+    if (this->roll.hasMultiTouch(e))
     {
         return;
     }
@@ -155,7 +155,7 @@ void ClipComponent::mouseDown(const MouseEvent &e)
 
 void ClipComponent::mouseDrag(const MouseEvent &e)
 {
-    if (e.source.getIndex() > 0)
+    if (this->roll.hasMultiTouch(e))
     {
         return;
     }
@@ -229,7 +229,7 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
 
 void ClipComponent::mouseUp(const MouseEvent &e)
 {
-    if (e.source.getIndex() > 0)
+    if (this->roll.hasMultiTouch(e))
     {
         return;
     }
@@ -444,7 +444,7 @@ bool ClipComponent::isDragging() const noexcept
 
 bool ClipComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat)
 {
-    this->dragger.dragComponent(this, e, nullptr);
+    this->dragger.dragComponent(this, e);
     const float newBeat =
         this->getRoll().getBeatForClipByXPosition(this->clip,
             this->getX() + this->floatLocalBounds.getX() + 1);

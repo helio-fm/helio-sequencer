@@ -55,7 +55,6 @@ public:
 protected:
 
     RollBase &roll;
-    ComponentDragger dragger;
 
     struct MidiEventComponentFlags final
     {
@@ -73,9 +72,47 @@ protected:
         MidiEventComponentFlags flags;
     };
 
-    float anchorBeat = 0.f;
+protected:
 
-    Point<int> clickOffset;
+    // this is similar to JUCE's ComponentDragger, except it keeps the mouse down position
+    // in percents not pixels to avoid glitches when the dragged component changes its size,
+    // e.g. when zooming the roll while dragging the note/clip
+    struct ComponentDragger final
+    {
+        ComponentDragger() = default;
+
+        void startDraggingComponent(Component *componentToDrag, const MouseEvent &e)
+        {
+            jassert(componentToDrag != nullptr);
+            jassert(e.mods.isAnyMouseButtonDown());
+
+            this->mouseDownWithinTarget =
+                e.getEventRelativeTo(componentToDrag).getMouseDownPosition().toFloat() /
+                    Point<float>(jmax(0.01f, float(componentToDrag->getWidth())),
+                        jmax(0.01f, float(componentToDrag->getHeight())));
+        }
+
+        // returns the mouse down offset in pixels
+        Point<int> dragComponent(Component *componentToDrag, const MouseEvent &e) const
+        {
+            jassert(componentToDrag != nullptr);
+            jassert(e.mods.isAnyMouseButtonDown());
+
+            const Point<int> mouseOffset(componentToDrag->proportionOfWidth(this->mouseDownWithinTarget.x),
+                componentToDrag->proportionOfHeight(this->mouseDownWithinTarget.y));
+
+            componentToDrag->setBounds(componentToDrag->getBounds() +
+                e.getEventRelativeTo(componentToDrag).getPosition() - mouseOffset);
+
+            return mouseOffset;
+        }
+
+        Point<float> mouseDownWithinTarget;
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ComponentDragger)
+    };
+
+    ComponentDragger dragger;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiEventComponent)
 };

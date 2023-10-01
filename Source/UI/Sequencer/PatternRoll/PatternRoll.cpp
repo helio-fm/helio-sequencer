@@ -568,7 +568,7 @@ float PatternRoll::getZoomFactorY() const noexcept
 
 void PatternRoll::longTapEvent(const Point<float> &position, const WeakReference<Component> &target)
 {
-    if (this->multiTouchController->hasMultitouch())
+    if (this->multiTouchController->hasMultiTouch())
     {
         return;
     }
@@ -592,7 +592,7 @@ void PatternRoll::longTapEvent(const Point<float> &position, const WeakReference
 
 void PatternRoll::mouseDown(const MouseEvent &e)
 {
-    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
+    if (this->hasMultiTouch(e))
     {
         return;
     }
@@ -616,7 +616,7 @@ void PatternRoll::mouseDown(const MouseEvent &e)
 
 void PatternRoll::mouseDrag(const MouseEvent &e)
 {
-    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
+    if (this->hasMultiTouch(e))
     {
         return;
     }
@@ -647,7 +647,7 @@ void PatternRoll::mouseDrag(const MouseEvent &e)
 
 void PatternRoll::mouseUp(const MouseEvent &e)
 {
-    if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
+    if (this->hasMultiTouch(e))
     {
         return;
     }

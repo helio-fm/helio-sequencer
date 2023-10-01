@@ -20,9 +20,7 @@
 #include "RollBase.h"
 
 MidiEventComponent::MidiEventComponent(RollBase &editor, bool isGhost) noexcept :
-    roll(editor),
-    dragger(),
-    clickOffset(0, 0)
+    roll(editor)
 {
     this->flags.isActive = true;
     this->flags.isSelected = false;
@@ -59,6 +57,7 @@ void MidiEventComponent::setActive(bool val, bool force)
 void MidiEventComponent::setGhostMode()
 {
     this->flags.isGhost = true;
+    this->setInterceptsMouseClicks(false, false);
     this->updateColours();
     this->repaint();
 }
@@ -69,8 +68,6 @@ void MidiEventComponent::setGhostMode()
 
 void MidiEventComponent::mouseDown(const MouseEvent &e)
 {
-    this->clickOffset.setXY(e.x, e.y);
-
     auto &selection = this->roll.getLassoSelection();
 
     // not using any modifiers to deselect the component here
