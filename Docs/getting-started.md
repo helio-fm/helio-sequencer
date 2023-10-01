@@ -302,6 +302,8 @@ To interact with it:
 
 Often, you only need one tempo for the whole song - for that, pick *"Set one tempo"* menu item in the tempo track menu, or project refactoring menu.
 
+*Tip: use `Shift +` and `Shift -` hotkeys to shift tempo tracks 1 BPM up or down. In the pattern roll it affects all selected tempo tracks, in the piano roll it affects all tempo tracks.*
+
 ### Mute and solo
 
 Individual clips can be muted via the `M` hotkey or the context menu in the pattern roll.

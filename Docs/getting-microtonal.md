@@ -14,9 +14,11 @@ Otherwise, once you've [added an instrument](getting-started.md#instruments) to 
 
 *Note: this describes the key mapping on the host side, but you'll need to set it up on the plugin's side as well. Unfortunately, can't help you with that, as it depends on the plugin, but here's an [example](https://soundbytesmag.net/microtonality-in-falcon/).*
 
-The page allows you to adjust key mappings manually and preview the mapped keys by clicking on them. The upper limit is set to 2048 keys - this is the maximum number of keys that can fit into 16 MIDI channels. Which would be enough to handle temperaments of size up to 192-EDO:
+The page allows you to adjust key mappings manually and preview the mapped keys by clicking on them. The upper limit for each source channel is set to 2048 keys, this is the maximum number of keys that can fit into 16 target MIDI channels. 2048 keys would be enough to handle temperaments of size up to 192-EDO:
 
 ![keyboard-mapping-page]
+
+*(source channel selection at the top, channel paging at the bottom)*
 
 Some additional actions are available via context menu:
  * reset to the default mapping (modulo based),
@@ -45,14 +47,14 @@ I think that Scala kbm format is obscure and unintuitive, so let me reinvent the
 
 Let's start with an example. The entire multi-channel mapping [for Pianoteq](https://forum.modartt.com/viewtopic.php?id=4307) 31-EDO could be written like this:
 
-`0:0/14,31+ 31:0/15,31+ 62:0/16,31+ 93:0/1,31+ 124:0/2,31+ 155:0/3,31+ 186:0/4,31+ 217:0/5,31+ 248:0/6,31+ 279:0/7,31+ 310:0/8,31+`
+`0/1:0/14,31+ 31:0/15,31+ 62:0/16,31+ 93:0/1,31+ 124:0/2,31+ 155:0/3,31+ 186:0/4,31+ 217:0/5,31+ 248:0/6,31+ 279:0/7,31+ 310:0/8,31+`
 
 Which reads:
- * starting from key `0` of the piano roll, map it to the key `0` of channel `14`, then map the next `31` keys in a sequential manner: for example, key `1` maps to `1/14`, key `2` maps to `2/14`, and so on,
- * starting from key `31`, map it to the key `0` of channel `15`, and, again, map the next `31` keys sequentially,
- * and so on.
+ * starting from key `0` channel `1` of the source channel, map it to the key `0` of channel `14`, then map the next `31` keys in a sequential manner: for example, key `1` maps to `1/14`, key `2` maps to `2/14`, and so on,
+ * starting from key `31`, map it to the key `0` of channel `15`, and, again, map the next `31` keys sequentially, and so on,
+ * for each next channel the mapping will pick the key from the previous channel and increase the channel number.
 
-Similarly, the 22-EDO Pianoteq mapping would look like this:
+Source channel can be omitted, since you probably only need channel 1. E.g., the 22-EDO Pianoteq mapping would look like this:
 
 `0:0/14,22+ 22:0/15,22+ 44:0/16,22+ 66:0/1,22+ 88:0/2,22+ 110:0/3,22+ 132:0/4,22+ 154:0/5,22+ 176:0/6,22+ 198:0/7,22+ 220:0/8,22+`
 
@@ -114,7 +116,7 @@ If you're using a microtonal physical keyboard, make sure to uncheck this box so
 
 ## Examples
 
-This section will describe setting up various microtonal plugins in Helio. For now, it's just the Pianoteq example, 
+This section will describe setting up various microtonal plugins in Helio. For now, it's just a couple of examples, 
 if you managed to make any other plugin work, please [share](https://github.com/helio-fm/helio-workstation/blob/develop/Docs/getting-microtonal.md) your findings.
 
 ### Pianoteq
@@ -131,6 +133,16 @@ Steps to set up a custom equal temperament:
    * or, set up your own multi-channel mapping (see examples above on this page).
 
 For more details on all Pianoteq's tuning parameters refer to [the manual](https://www.modartt.com/user_manual?product=pianoteq&lang=en).
+
+### Surge XT
+
+Surge synth supports multi-channel mapping since recent versions of Surge XT, so a custom equal temperament can be set up similarly:
+
+ * In the main menu, open the tuning settings submenu and check these two options there:
+   * `"Use MIDI channel for octave shift"`
+   * `"Tuning applied at MIDI input"`
+ * From the same tuning submenu, load the Scala tuning (Surge installation provides a set of equal temperament tunings),
+ * Navigate to your instrument's keyboard mapping page in Helio UI and choose a keyboard mapping preset; the same Pianoteq multi-channel presets will work for Surge.
 
 
 [keyboard-mapping-page]: images/keyboard-mapping-page.png "Keyboard mapping page layout"
