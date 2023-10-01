@@ -271,7 +271,9 @@ KeyboardMapping::KeyChannel KeyboardMapping::getDefaultMappingFor(int key, int c
 {
     if (channel == 0)
     {
-        return { int8(key % Globals::twelveToneKeyboardSize), 1 };
+        return {
+            int8(key % Globals::twelveToneKeyboardSize),
+            int8(key / Globals::twelveToneKeyboardSize + 1) };
     }
 
     auto basedOnPrevChannel = this->index[key][channel - 1];
@@ -564,7 +566,7 @@ public:
 
         map.deserialize(rleTest);
         expectEquals(getMap(map.serialize()),
-            String("128:16/2,32/2,2+,40/4 300:127/4,3+ 512:1/5 640:0/6"));
+            String("128:16/2,32/2,2+,40/4 300:127/4,3+ 512:1/5"));
 
         // from string / to string
         const String long31("0:0/15,30+ 31:0/16,30+ 62:0/1,30+ 93:0/2,30+ 124:0/3,30+ 155:0/4,30+ 186:0/5,30+ 217:0/6,30+ 248:0/7,30+ 279:0/8,30+ 310:0/9,30+");

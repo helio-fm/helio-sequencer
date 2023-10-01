@@ -120,14 +120,14 @@ void KeyboardMappingPage::resized()
     const auto centre = this->getLocalBounds().getCentre();
 
     auto channelControlsBounds =
-        Rectangle<int>(0, 0, 256, 40).withCentre(centre.withY(80));
+        Rectangle<int>(0, 0, 224, 40).withCentre(centre.withY(80));
 
     this->prevChannelArrow->setBounds(channelControlsBounds.removeFromLeft(64));
     this->nextChannelArrow->setBounds(channelControlsBounds.removeFromRight(64));
     this->channelLabel->setBounds(channelControlsBounds);
 
     auto rangeControlsBounds =
-        Rectangle<int>(0, 0, 256, 40).withCentre(centre.withY(this->getHeight() - 80));
+        Rectangle<int>(0, 0, 256, 32).withCentre(centre.withY(this->getHeight() - 80));
 
     this->prevPageArrow->setBounds(rangeControlsBounds.removeFromLeft(64));
     this->nextPageArrow->setBounds(rangeControlsBounds.removeFromRight(64));
