@@ -525,9 +525,9 @@ void PianoRoll::updateDragHelpers()
     const auto upperKeyBounds = this->getEventBounds(keyRange.getEnd(), this->firstBeat, 1.f);
 
     this->draggingHelper->setBounds(this->viewport.getViewPositionX(),
-        upperKeyBounds.getY() - 2,
+        int(upperKeyBounds.getY() - 2),
         this->viewport.getViewWidth(),
-        lowerKeyBounds.getBottom() - upperKeyBounds.getY() + 4);
+        int(lowerKeyBounds.getBottom() - upperKeyBounds.getY() + 4));
 }
 
 void PianoRoll::updateDragHelpers(int keyDelta)

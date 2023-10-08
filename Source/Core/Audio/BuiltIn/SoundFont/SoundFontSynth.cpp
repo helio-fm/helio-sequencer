@@ -81,12 +81,12 @@ private:
     float slope = 0.f;
     int samplesUntilNextSegment = 0;
     bool segmentIsExponential = false;
-    static const float BottomLevel;
+
+    static constexpr float bottomLevel = 0.001f;
+    static constexpr float fastReleaseTime = 0.01f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundFontEnvelope)
 };
-
-static const float fastReleaseTime = 0.01f;
 
 void SoundFontEnvelope::setExponentialDecay(bool newExponentialDecay)
 {
@@ -146,7 +146,7 @@ void SoundFontEnvelope::noteOff()
 void SoundFontEnvelope::fastRelease()
 {
     this->segment = Segment::Release;
-    this->samplesUntilNextSegment = int(fastReleaseTime * this->sampleRate);
+    this->samplesUntilNextSegment = int(SoundFontEnvelope::fastReleaseTime * this->sampleRate);
     this->slope = -this->level / this->samplesUntilNextSegment;
     this->segmentIsExponential = false;
 }
@@ -233,7 +233,7 @@ void SoundFontEnvelope::startDecay()
         }
         else
         {
-            this->slope = (jmax(0.001f, this->parameters.sustain) / 100.0f - 1.0f) / this->samplesUntilNextSegment;
+            this->slope = (jmax(SoundFontEnvelope::bottomLevel, this->parameters.sustain) / 100.0f - 1.0f) / this->samplesUntilNextSegment;
             this->segmentIsExponential = false;
         }
     }
@@ -261,7 +261,7 @@ void SoundFontEnvelope::startRelease()
     if (release <= 0)
     {
         // Enforce a short release, to prevent clicks.
-        release = fastReleaseTime;
+        release = SoundFontEnvelope::fastReleaseTime;
     }
 
     this->segment = Segment::Release;
@@ -279,8 +279,6 @@ void SoundFontEnvelope::startRelease()
         this->segmentIsExponential = false;
     }
 }
-
-const float SoundFontEnvelope::BottomLevel = 0.001f;
 
 //===----------------------------------------------------------------------===//
 // SoundFontVoice
@@ -336,18 +334,18 @@ private:
     void calcPitchRatio();
     void killNote();
 
+    static constexpr float globalGainDB = -0.1f;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundFontVoice)
 };
-
-static constexpr float globalGain = -1.0;
 
 bool SoundFontVoice::canPlaySound(SynthesiserSound *sound)
 {
     return dynamic_cast<SoundFontSound *>(sound) != nullptr;
 }
 
-void SoundFontVoice::startNote(int midiNoteNumber, float floatVelocity, SynthesiserSound *soundIn,
-    int currentPitchWheelPosition)
+void SoundFontVoice::startNote(int midiNoteNumber, float floatVelocity,
+    SynthesiserSound *soundIn, int currentPitchWheelPosition)
 {
     const auto *sound = dynamic_cast<SoundFontSound *>(soundIn);
 
@@ -384,7 +382,7 @@ void SoundFontVoice::startNote(int midiNoteNumber, float floatVelocity, Synthesi
     this->calcPitchRatio();
 
     // Gain.
-    double noteGainDB = globalGain + this->region->volume;
+    double noteGainDB = SoundFontVoice::globalGainDB + this->region->volume;
     // Thanks to <http:://www.drealm.info/sfz/plj-sfz.xhtml> for explaining the
     // velocity curve in a way that I could understand, although they mean
     // "log10" when they say "log".

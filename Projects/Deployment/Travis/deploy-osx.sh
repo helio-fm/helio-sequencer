@@ -41,9 +41,8 @@ bash ./macOS/create-dmg.sh \
     /tmp/${RELEASE_FILENAME}.dmg \
     ${DISK_IMAGE_DIR}/
 
-# Sign and check
+# Sign
 codesign --force --sign "Developer ID Application: Peter Rudenko (${OSX_ITC_PROVIDER_ID})" /tmp/${RELEASE_FILENAME}.dmg
-spctl -a -t open --context context:primary-signature -v /tmp/${RELEASE_FILENAME}.dmg
 
 # Notarize
 # "The notary service generates a ticket for the top-level file ... as well as each nested file"
