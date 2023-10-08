@@ -37,7 +37,7 @@ NoteResizerRight::NoteResizerRight(RollBase &parentRoll) : roll(parentRoll)
 
     this->setSize(NoteResizerRight::draggerSize, NoteResizerRight::draggerSize);
 
-    constexpr auto iconOffset = 8;
+    constexpr auto iconOffset = 6;
     constexpr auto iconSize = NoteResizerRight::draggerSize / 2;
     this->resizeIcon->setBounds(iconOffset, iconOffset, iconSize, iconSize);
 

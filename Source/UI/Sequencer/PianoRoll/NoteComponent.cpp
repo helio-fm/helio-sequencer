@@ -486,7 +486,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 }
             }
 
-            this->getRoll().moveDragHelpers(deltaBeat, deltaKey);
+            this->getRoll().updateDragHelpers(deltaKey);
             
             if (shouldSendMidi)
             {

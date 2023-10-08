@@ -56,13 +56,12 @@ private:
     UniquePointer<IconComponent> resizeIcon;
 
     Path draggerShape;
-    static constexpr auto draggerSize = 44;
-
-    static constexpr auto lineAlpha = 0.85f;
+    static constexpr auto draggerSize = 40;
+    static constexpr auto lineAlpha = 0.75f;
 
     const Colour lineColour =
         findDefaultColour(ColourIDs::SelectionComponent::outline)
-        .withMultipliedAlpha(lineAlpha);
+            .withMultipliedAlpha(lineAlpha);
 
     const Colour fillColour =
         findDefaultColour(ColourIDs::Backgrounds::sidebarFill);

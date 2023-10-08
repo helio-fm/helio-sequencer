@@ -904,9 +904,6 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteNameGuide.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteNameGuidesBar.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -962,9 +959,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\RollEditMode.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Lasso.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\LassoListeners.cpp">
@@ -3297,7 +3291,6 @@
     <ClInclude Include="..\..\Source\UI\Common\FineTuningValueIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Common\KeySelector.h"/>
     <ClInclude Include="..\..\Source\UI\Common\FloatBoundsComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Common\HelperRectangle.h"/>
     <ClInclude Include="..\..\Source\UI\Common\HighlightedComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\IconButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\IconComponent.h"/>
@@ -3442,6 +3435,7 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteNameGuidesBar.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerLeft.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerRight.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NotesDraggingGuide.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRoll.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarLeft.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarRight.h"/>

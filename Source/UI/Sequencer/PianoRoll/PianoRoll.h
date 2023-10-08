@@ -21,10 +21,10 @@ class MidiSequence;
 class NoteComponent;
 class CommandPaletteChordConstructor;
 class CommandPaletteMoveNotesMenu;
-class HelperRectangle;
 class KnifeToolHelper;
 class MergingNotesConnector;
 class NoteNameGuidesBar;
+class NotesDraggingGuide;
 
 #include "Note.h"
 #include "Clip.h"
@@ -94,7 +94,8 @@ public:
 
     void showDragHelpers();
     void hideDragHelpers();
-    void moveDragHelpers(const float deltaBeat, const int deltaKey);
+    void updateDragHelpers();
+    void updateDragHelpers(int keyDelta);
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -274,9 +275,10 @@ private:
     UniquePointer<NoteNameGuidesBar> noteNameGuides;
 
 private:
-    
+
     OwnedArray<NoteComponent> ghostNotes;
-    UniquePointer<HelperRectangle> draggingHelper;
+
+    UniquePointer<NotesDraggingGuide> draggingHelper;
 
     UniquePointer<NoteResizerLeft> noteResizerLeft;
     UniquePointer<NoteResizerRight> noteResizerRight;

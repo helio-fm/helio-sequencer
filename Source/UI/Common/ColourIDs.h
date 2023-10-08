@@ -65,6 +65,9 @@ namespace ColourIDs
         static const int noteNameFill           = 0x2000131;
         static const int noteNameBorder         = 0x2000132;
         static const int noteNameShadow         = 0x2000133;
+
+        static const int draggingGuide          = 0x2000140;
+        static const int draggingGuideShadow    = 0x2000141;
     }
 
     namespace TransportControl
@@ -82,12 +85,6 @@ namespace ColourIDs
     {
         static const int fill                   = 0x2000200;
         static const int frame                  = 0x2000201;
-    }
-    
-    namespace HelperRectangle
-    {
-        static const int fill                   = 0x2000300;
-        static const int outline                = 0x2000301;
     }
 
     namespace Icons

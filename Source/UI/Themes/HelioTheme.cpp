@@ -923,15 +923,15 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::noteNameBorder, textColour.withAlpha(0.4f));
     this->setColour(ColourIDs::Roll::noteNameShadow, textColour.withAlpha(0.25f));
 
+    this->setColour(ColourIDs::Roll::draggingGuide, s->getLassoBorderColour().withAlpha(0.35f));
+    this->setColour(ColourIDs::Roll::draggingGuideShadow, s->getLassoFillColour());
+
     this->setColour(ColourIDs::TransportControl::recordInactive, Colours::transparentBlack);
     this->setColour(ColourIDs::TransportControl::recordHighlight, Colours::red.withAlpha(0.35f));
     this->setColour(ColourIDs::TransportControl::recordActive, s->getTimelineColour().darker(0.05f).interpolatedWith(Colours::red, 0.5f));
     this->setColour(ColourIDs::TransportControl::playInactive, Colours::white.withAlpha(0.035f));
     this->setColour(ColourIDs::TransportControl::playHighlight, Colours::white.withAlpha(0.075f));
     this->setColour(ColourIDs::TransportControl::playActive, Colours::white.withAlpha(0.1f));
-
-    this->setColour(ColourIDs::HelperRectangle::fill, s->getLassoFillColour().withAlpha(0.08f));
-    this->setColour(ColourIDs::HelperRectangle::outline, s->getLassoBorderColour().withAlpha(0.3f));
 
     this->setColour(ColourIDs::Logo::fill, textColour.withMultipliedAlpha(0.2f));
     this->setColour(ColourIDs::AudioMonitor::foreground, textColour);

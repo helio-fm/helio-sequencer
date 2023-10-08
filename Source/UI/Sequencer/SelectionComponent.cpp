@@ -105,7 +105,11 @@ void SelectionComponent::paint(Graphics &g)
     g.fillRect(this->getLocalBounds());
 
     g.setColour(this->currentOutline);
-    HelioTheme::drawDashedFrame(g, this->getLocalBounds());
+#if PLATFORM_DESKTOP
+    HelioTheme::drawDashedFrame(g, this->getLocalBounds(), 4);
+#elif PLATFORM_MOBILE
+    HelioTheme::drawDashedFrame(g, this->getLocalBounds(), 6);
+#endif
 }
 
 const Point<double> SelectionComponent::getParentSize() const

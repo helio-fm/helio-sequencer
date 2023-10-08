@@ -31,8 +31,8 @@
 #include "Note.h"
 #include "NoteComponent.h"
 #include "NoteNameGuidesBar.h"
+#include "NotesDraggingGuide.h"
 #include "NotesTuningPanel.h"
-#include "HelperRectangle.h"
 #include "RollHeader.h"
 #include "KnifeToolHelper.h"
 #include "MergingEventsConnector.h"
@@ -85,7 +85,7 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
     this->selectionListeners.add(new PianoRollSelectionMenuManager(&this->selection, this->project));
     this->selectionListeners.add(new PianoRollSelectionRangeIndicatorController(&this->selection, *this));
 
-    this->draggingHelper = make<HelperRectangleHorizontal>();
+    this->draggingHelper = make<NotesDraggingGuide>();
     this->addChildComponent(this->draggingHelper.get());
 
     this->consoleMoveNotesMenu = make<CommandPaletteMoveNotesMenu>(*this, this->project);
@@ -494,10 +494,14 @@ void PianoRoll::showDragHelpers()
 {
     if (!this->draggingHelper->isVisible())
     {
-        this->selection.recalculateSelectionBounds();
-        this->moveDragHelpers(0.f, 0);
-        this->draggingHelper->setAlpha(1.f);
-        this->draggingHelper->setVisible(true);
+        this->draggingHelper->resetAnchor(this->selection);
+
+        // only display the dragging helper if there's more than one key in the selection
+        if (this->draggingHelper->getKeyRange().getLength() > 0)
+        {
+            this->draggingHelper->setAlpha(1.f);
+            this->draggingHelper->setVisible(true);
+        }
     }
 }
 
@@ -509,18 +513,30 @@ void PianoRoll::hideDragHelpers()
     }
 }
 
-void PianoRoll::moveDragHelpers(const float deltaBeat, const int deltaKey)
+void PianoRoll::updateDragHelpers()
 {
-    const auto selectionBounds = this->selection.getSelectionBounds();
-    const auto delta = this->getEventBounds(deltaKey - 1, deltaBeat + this->firstBeat, 1.f);
+    if (!this->draggingHelper->isVisible())
+    {
+        return;
+    }
 
-    const int deltaX = int(delta.getTopLeft().getX());
-    const int deltaY = int(delta.getTopLeft().getY() - this->getHeight() - 1);
-    const auto selectionTranslated = selectionBounds.translated(deltaX, deltaY);
+    const auto keyRange = this->draggingHelper->getKeyRange();
+    const auto lowerKeyBounds = this->getEventBounds(keyRange.getStart(), this->firstBeat, 1.f);
+    const auto upperKeyBounds = this->getEventBounds(keyRange.getEnd(), this->firstBeat, 1.f);
 
-    const int vX = this->viewport.getViewPositionX();
-    const int vW = this->viewport.getViewWidth();
-    this->draggingHelper->setBounds(selectionTranslated.withLeft(vX).withWidth(vW));
+    this->draggingHelper->setBounds(this->viewport.getViewPositionX(),
+        upperKeyBounds.getY() - 2,
+        this->viewport.getViewWidth(),
+        lowerKeyBounds.getBottom() - upperKeyBounds.getY() + 4);
+}
+
+void PianoRoll::updateDragHelpers(int keyDelta)
+{
+    if (this->draggingHelper->isVisible())
+    {
+        this->draggingHelper->setKeyDelta(keyDelta);
+        this->updateDragHelpers();
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -628,7 +644,7 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
     if (event.isTypeOf(MidiEvent::Type::Note))
     {
         this->hideDragHelpers();
-        this->hideAllGhostNotes(); // Avoids crash
+        this->hideAllGhostNotes();
 
         const Note &note = static_cast<const Note &>(event);
         const auto *track = note.getSequence()->getTrack();
@@ -787,7 +803,7 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
     this->selection.deselectAll();
 
     this->hideDragHelpers();
-    this->hideAllGhostNotes(); // Avoids crash
+    this->hideAllGhostNotes();
 
     for (int i = 0; i < track->getSequence()->size(); ++i)
     {

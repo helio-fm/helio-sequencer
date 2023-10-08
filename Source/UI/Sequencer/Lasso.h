@@ -25,17 +25,42 @@ class Lasso final : public SelectedItemSet<SelectableComponent *>
 {
 public:
 
-    Lasso();
-    explicit Lasso(const ItemArray &items);
-    explicit Lasso(const SelectedItemSet &other);
+    Lasso() : SelectedItemSet(), random(Time::currentTimeMillis())
+    {
+        this->resetSelectionId();
+    }
 
-    void itemSelected(SelectableComponent *item) override;
-    void itemDeselected(SelectableComponent *item) override;
+    explicit Lasso(const ItemArray &items) : SelectedItemSet(items), random(Time::currentTimeMillis())
+    {
+        this->resetSelectionId();
+    }
 
-    int64 getId() const noexcept;
-    bool shouldDisplayGhostNotes() const noexcept;
-    void recalculateSelectionBounds() noexcept;
-    Rectangle<int> getSelectionBounds() const noexcept;
+    explicit Lasso(const SelectedItemSet &other) : SelectedItemSet(other), random(Time::currentTimeMillis())
+    {
+        this->resetSelectionId();
+    }
+
+    void itemSelected(SelectableComponent *item) override
+    {
+        this->resetSelectionId();
+        item->setSelected(true);
+    }
+
+    void itemDeselected(SelectableComponent *item) override
+    {
+        this->resetSelectionId();
+        item->setSelected(false);
+    }
+
+    int64 getId() const noexcept
+    {
+        return this->id;
+    }
+
+    bool shouldDisplayGhostNotes() const noexcept
+    {
+        return this->getNumSelected() <= 32; // just a sane limit
+    }
 
     // Transaction identifier, and why is it needed:
     // some actions, like dragging notes around, are performed in a single undo transaction,
@@ -80,14 +105,15 @@ public:
 
 private:
 
-    Rectangle<int> bounds;
-
     // A random id which is used to distinguish one selection from another
     // (collisions are still possible, but they are not critical,
     // see SequencerOperations class for usage example)
     mutable int64 id;
     mutable Random random;
-    void resetSelectionId();
+    void resetSelectionId()
+    {
+        this->id = this->random.nextInt64();
+    }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Lasso)
     JUCE_DECLARE_WEAK_REFERENCEABLE(Lasso)

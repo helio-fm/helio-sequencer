@@ -21,7 +21,6 @@ class RollBase;
 class Playhead;
 class Transport;
 
-#include "HelperRectangle.h"
 #include "RollListener.h"
 #include "ComponentFader.h"
 #include "ColourIDs.h"
@@ -105,15 +104,15 @@ public:
     // Additional horizontal dragger
     //===------------------------------------------------------------------===//
     
-    class HorizontalDragHelper final : public HelperRectangle
+    class HorizontalDragHelper final : public Component
     {
     public:
         
         explicit HorizontalDragHelper(ProjectMapsScroller &scrollerRef);
+
         void mouseDown(const MouseEvent &e) override;
         void mouseDrag(const MouseEvent &e) override;
         void mouseUp(const MouseEvent &e) override;
-
         void paint(Graphics &g) override;
 
         void setBrightness(float brightness);
@@ -238,7 +237,6 @@ private:
 
     static constexpr auto screenRangeWidth = 150.f;
     UniquePointer<ProjectMapsScroller::ScreenRange> screenRange;
-    Rectangle<float> screenRangeAtDragStart;
 
     Rectangle<float> drawingNewScreenRange;
 

@@ -21,7 +21,6 @@
 #include "Note.h"
 #include "ProjectListener.h"
 #include "ComponentFader.h"
-#include "HelperRectangle.h"
 #include "RollListener.h"
 #include "EditorPanelsScroller.h"
 

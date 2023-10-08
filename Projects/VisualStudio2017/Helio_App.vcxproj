@@ -522,7 +522,6 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRoll.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\HighlightingScheme.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteNameGuide.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteNameGuidesBar.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerLeft.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerRight.cpp"/>
@@ -542,7 +541,6 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\ProjectMapsScroller.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\RollBase.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\RollEditMode.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Lasso.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\LassoListeners.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\MidiEventComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\SelectionComponent.cpp"/>
@@ -2885,7 +2883,6 @@
     <ClInclude Include="..\..\Source\UI\Common\FineTuningValueIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Common\KeySelector.h"/>
     <ClInclude Include="..\..\Source\UI\Common\FloatBoundsComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Common\HelperRectangle.h"/>
     <ClInclude Include="..\..\Source\UI\Common\HighlightedComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\IconButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\IconComponent.h"/>
@@ -3030,6 +3027,7 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteNameGuidesBar.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerLeft.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerRight.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NotesDraggingGuide.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRoll.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarLeft.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarRight.h"/>

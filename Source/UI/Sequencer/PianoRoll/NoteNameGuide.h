@@ -17,11 +17,27 @@
 
 #pragma once
 
+#include "CachedLabelImage.h"
+#include "ColourIDs.h"
+
 class NoteNameGuide final : public Component
 {
 public:
 
-    NoteNameGuide(const String &noteName, int noteNumber);
+    NoteNameGuide(const String &noteName, int noteNumber) : noteNumber(noteNumber)
+    {
+        this->setPaintingIsUnclipped(true);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+
+        this->noteNameLabel = make<Label>();
+        this->addAndMakeVisible(this->noteNameLabel.get());
+        this->noteNameLabel->setFont(Globals::UI::Fonts::S);
+        this->noteNameLabel->setJustificationType(Justification::centredLeft);
+
+        this->noteNameLabel->setCachedComponentImage(new CachedLabelImage(*this->noteNameLabel));
+        this->noteNameLabel->setText(noteName, dontSendNotification);
+    }
     
     inline int getNoteNumber() const noexcept
     {
@@ -33,16 +49,44 @@ public:
         return this->noteNumber % period == 0;
     }
 
-    void paint(Graphics &g) override;
-    void resized() override;
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->shadowColour);
+        g.fillPath(this->internalPath1);
+
+        g.setColour(this->fillColour);
+        g.fillPath(this->internalPath2);
+
+        g.setColour(this->borderColour);
+        g.fillRect(0, 1, 3, this->getHeight() - 1);
+    }
+
+    void resized() override
+    {
+        this->noteNameLabel->setBounds(1, (this->getHeight() / 2) - 10, 45, 21);
+
+        this->internalPath1.clear();
+        this->internalPath1.startNewSubPath (3.f, 1.f);
+        this->internalPath1.lineTo(30.f, 1.f);
+        this->internalPath1.lineTo(34.f, static_cast<float> (this->getHeight()));
+        this->internalPath1.lineTo(3.f, static_cast<float> (this->getHeight()));
+        this->internalPath1.closeSubPath();
+
+        this->internalPath2.clear();
+        this->internalPath2.startNewSubPath(0.f, 1.f);
+        this->internalPath2.lineTo(29.f, 1.f);
+        this->internalPath2.lineTo(33.f, static_cast<float>(this->getHeight()));
+        this->internalPath2.lineTo(0.f, static_cast<float>(this->getHeight()));
+        this->internalPath2.closeSubPath();
+    }
 
 private:
 
     const int noteNumber;
 
-    const Colour fillColour;
-    const Colour borderColour;
-    const Colour shadowColour;
+    const Colour fillColour = findDefaultColour(ColourIDs::Roll::noteNameFill);
+    const Colour borderColour = findDefaultColour(ColourIDs::Roll::noteNameBorder);
+    const Colour shadowColour = findDefaultColour(ColourIDs::Roll::noteNameShadow);
 
     UniquePointer<Label> noteNameLabel;
     Path internalPath1;
