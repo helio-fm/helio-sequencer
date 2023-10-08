@@ -250,6 +250,7 @@ TempoDialog::TempoDialog(int bpmValue)
         if (this->textEditor->getText().isNotEmpty())
         {
             this->doOk();
+            return;
         }
 
         this->resetKeyboardFocus();
