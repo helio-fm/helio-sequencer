@@ -161,7 +161,11 @@ void ProjectMapsScroller::paint(Graphics &g)
 
 void ProjectMapsScroller::mouseDown(const MouseEvent &event)
 {
-    this->screenRangeAtDragStart = this->screenRange->getRealBounds();
+    if (this->roll->hasMultiTouch(event))
+    {
+        return;
+    }
+
     this->rollViewportPositionAtDragStart = this->roll->getViewport().getViewPosition();
 
     if (event.mods.isLeftButtonDown())
@@ -177,6 +181,11 @@ void ProjectMapsScroller::mouseDown(const MouseEvent &event)
 
 void ProjectMapsScroller::mouseDrag(const MouseEvent &event)
 {
+    if (this->roll->hasMultiTouch(event))
+    {
+        return;
+    }
+
     if (this->stretchedMode())
     {
         if (event.mods.isLeftButtonDown())
@@ -222,6 +231,11 @@ void ProjectMapsScroller::mouseDrag(const MouseEvent &event)
 void ProjectMapsScroller::mouseUp(const MouseEvent &event)
 {
     this->setMouseCursor(MouseCursor::NormalCursor);
+
+    if (this->roll->hasMultiTouch(event))
+    {
+        return;
+    }
 
     if (event.getOffsetFromDragStart().isOrigin())
     {
@@ -282,6 +296,21 @@ void ProjectMapsScroller::switchToRoll(SafePointer<RollBase> roll)
     }
 
     this->startTimerHz(this->animationTimerFrequencyHz);
+}
+
+//===----------------------------------------------------------------------===//
+// Scrolledcomponent
+//===----------------------------------------------------------------------===//
+
+void ProjectMapsScroller::ScrolledComponent::switchToRoll(SafePointer<RollBase> roll)
+{
+    this->roll = roll;
+}
+
+bool ProjectMapsScroller::ScrolledComponent::rollHasMultiTouch(const MouseEvent &e) const
+{
+    jassert(this->roll != nullptr);
+    return this->roll->hasMultiTouch(e);
 }
 
 //===----------------------------------------------------------------------===//

@@ -18,7 +18,6 @@
 #pragma once
 
 class RollBase;
-class TrackMap;
 class Playhead;
 class Transport;
 
@@ -41,7 +40,15 @@ public:
     class ScrolledComponent : public Component
     {
     public:
-        virtual void switchToRoll(SafePointer<RollBase> roll) = 0;
+
+        explicit ScrolledComponent(SafePointer<RollBase> roll) : roll(roll) {}
+
+        void switchToRoll(SafePointer<RollBase> roll);
+        bool rollHasMultiTouch(const MouseEvent &e) const;
+
+    protected:
+
+        SafePointer<RollBase> roll;
     };
 
     template <typename T, typename... Args> inline

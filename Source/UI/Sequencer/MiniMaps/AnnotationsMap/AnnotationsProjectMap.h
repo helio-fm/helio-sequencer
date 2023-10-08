@@ -40,8 +40,6 @@ public:
 
     void alignAnnotationComponent(AnnotationComponent *nc);
 
-    void switchToRoll(SafePointer<RollBase> roll) override;
-
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
@@ -99,9 +97,7 @@ private:
     float rollLastBeat = Globals::Defaults::projectLength;
 
     ProjectNode &project;
-    
-    SafePointer<RollBase> roll;
-    
+
     ComponentAnimator animator;
 
     const Type type;

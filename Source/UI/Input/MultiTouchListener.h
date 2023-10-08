@@ -23,8 +23,8 @@ public:
     
     virtual ~MultiTouchListener() = default;
 
-    virtual void multiTouchStartZooming(const MouseEvent &e) = 0;
-    virtual void multiTouchContinueZooming(const MouseEvent &e,
+    virtual void multiTouchStartZooming() = 0;
+    virtual void multiTouchContinueZooming(
         const Rectangle<float> &relativePosition,
         const Rectangle<float> &relativePositionAnchor,
         const Rectangle<float> &absolutePositionAnchor) = 0;

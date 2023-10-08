@@ -58,6 +58,7 @@ void MidiEventComponent::setGhostMode()
 {
     this->flags.isGhost = true;
     this->setInterceptsMouseClicks(false, false);
+    this->setEnabled(false);
     this->updateColours();
     this->repaint();
 }
@@ -68,6 +69,8 @@ void MidiEventComponent::setGhostMode()
 
 void MidiEventComponent::mouseDown(const MouseEvent &e)
 {
+    jassert(!this->flags.isGhost);
+
     auto &selection = this->roll.getLassoSelection();
 
     // not using any modifiers to deselect the component here

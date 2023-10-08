@@ -24,7 +24,6 @@
 
 class RollBase;
 class ProjectNode;
-class ProjectMapNoteComponent;
 
 class PianoProjectMap final :
     public ProjectMapsScroller::ScrolledComponent,
@@ -37,8 +36,6 @@ public:
     ~PianoProjectMap() override;
 
     void setBrightness(float brighness);
-
-    void switchToRoll(SafePointer<RollBase> roll) override {}
 
     //===------------------------------------------------------------------===//
     // Component

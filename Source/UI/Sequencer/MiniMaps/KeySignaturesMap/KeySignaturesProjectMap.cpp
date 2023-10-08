@@ -31,8 +31,8 @@
 
 KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &project,
     SafePointer<RollBase> roll, Type type) :
+    ScrolledComponent(roll),
     project(project),
-    roll(roll),
     type(type)
 {
     this->setAlwaysOnTop(true);
@@ -47,11 +47,6 @@ KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &project,
 KeySignaturesProjectMap::~KeySignaturesProjectMap()
 {
     this->project.removeListener(this);
-}
-
-void KeySignaturesProjectMap::switchToRoll(SafePointer<RollBase> roll)
-{
-    this->roll = roll;
 }
 
 //===----------------------------------------------------------------------===//

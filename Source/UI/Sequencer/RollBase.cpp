@@ -378,7 +378,7 @@ void RollBase::longTapEvent(const Point<float> &position,
     }
 }
 
-void RollBase::multiTouchStartZooming(const MouseEvent &e)
+void RollBase::multiTouchStartZooming()
 {
     this->beatWidthAnchor = this->beatWidth;
 
@@ -386,10 +386,9 @@ void RollBase::multiTouchStartZooming(const MouseEvent &e)
     this->smoothPanController->cancelPan();
 
     this->stopFollowingPlayhead();
-    this->resetDraggingAnchors(e);
 }
 
-void RollBase::multiTouchContinueZooming(const MouseEvent &e,
+void RollBase::multiTouchContinueZooming(
     const Rectangle<float> &relativePositions,
     const Rectangle<float> &relativeAnchor,
     const Rectangle<float> &absoluteAnchor)
@@ -412,7 +411,6 @@ void RollBase::multiTouchContinueZooming(const MouseEvent &e,
     this->viewport.setViewPosition(int(newViewX), int(newViewY));
 
     this->updateChildrenPositions();
-    this->resetDraggingAnchors(e);
 }
 
 void RollBase::multiTouchEndZooming(const MouseEvent &anchorEvent)

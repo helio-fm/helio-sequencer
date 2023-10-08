@@ -27,15 +27,14 @@ public:
 
     inline bool hasMultiTouch() const noexcept
     {
-        return this->hasFinger0 && this->hasFinger1;
+        return this->touches.size() >= 2;
     }
 
     // "is already in multitouch mode or entering it with this event"
     inline bool hasMultiTouch(const MouseEvent &e) const noexcept
     {
-        return (this->hasFinger0 && this->hasFinger1) ||
-               (this->hasFinger0 && e.source.getIndex() == 1) ||
-               (this->hasFinger1 && e.source.getIndex() == 0);
+        return (this->touches.size() >= 2) ||
+            (this->touches.size() == 1 && !this->touches.contains(e.source.getIndex()));
     }
 
     void mouseDown(const MouseEvent &event) override;
@@ -48,16 +47,34 @@ private:
 
     MultiTouchListener &listener;
 
-    Point<float> relativePositionAnchor1;
-    Point<float> relativePositionAnchor2;
+    struct TouchData final
+    {
+        Point<float> relativePosition;
+        Point<float> relativePositionAnchor;
+        Point<float> absolutePositionAnchor;
+    };
 
-    Point<float> relativePosition1;
-    Point<float> relativePosition2;
+    TouchData getAllTouchData(const MouseEvent &e) const;
 
-    Point<float> absolutePositionAnchor1;
-    Point<float> absolutePositionAnchor2;
+    // the app only supports 2-fingers multitouch for zooming and panning
+    TouchData finger1;
+    TouchData finger2;
 
-    bool hasFinger0 = false;
-    bool hasFinger1 = false;
+    enum class TouchUsage : int
+    {
+        Unused = 0,
+        Finger1,
+        Finger2
+    };
 
+    // on some platforms (looking at you, Android) we can't seem to rely on specific
+    // event ids, e.g. assume that id 0 is the 1st touch and id 1 is the 2nd, hence this map:
+    FlatHashMap<int, TouchUsage> touches; // event id : used as
+
+    // also keeping track of unused touches for cases like
+    // "3 or more touches are on, so we're using only the first two,
+    // and if one of them is released, we reuse one of the remaining touches":
+    FlatHashMap<int, TouchData> anchorsCache; // event id : last anchors and position
+
+    //void dump() const;
 };

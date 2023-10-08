@@ -282,6 +282,13 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         return;
     }
 
+    const auto &selection = this->roll.getLassoSelection();
+    if (selection.getNumSelected() == 0)
+    {
+        this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
+        return; // happens on mobile after a long-tap switch-to-track
+    }
+
     if (e.mods.isRightButtonDown() &&
         this->roll.getEditMode().isMode(RollEditMode::defaultMode))
     {
@@ -296,9 +303,6 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
     }
-
-    const auto &selection = this->roll.getLassoSelection();
-    assert(selection.getNumSelected() > 0);
 
     if (this->state == State::DraggingResizing)
     {
@@ -517,10 +521,8 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 
 void NoteComponent::mouseUp(const MouseEvent &e)
 {
-    if (this->roll.hasMultiTouch(e))
-    {
-        return;
-    }
+    // no multi-touch check here, need to exit the editing mode (if any) even in multi-touch
+    //if (this->roll.hasMultiTouch(e)) { return; }
 
     if (this->shouldGoQuickSelectTrackMode(e.mods))
     {
@@ -531,6 +533,13 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     {
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));
         return;
+    }
+
+    const auto &selection = this->roll.getLassoSelection();
+    if (selection.getNumSelected() == 0)
+    {
+        this->roll.mouseUp(e.getEventRelativeTo(&this->roll));
+        return; // happens on mobile after a long-tap switch-to-track
     }
 
     if (e.mods.isRightButtonDown() &&
@@ -545,8 +554,6 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     this->getRoll().hideAllGhostNotes();
 
     const bool shouldSendMidi = true;
-    
-    const Lasso &selection = this->roll.getLassoSelection();
 
     if (this->state == State::DraggingResizing)
     {
@@ -766,7 +773,7 @@ void NoteComponent::endDragging(bool sendStopSoundMessage)
 
 MouseCursor NoteComponent::startEditingNewNote(const MouseEvent &e)
 {
-    jassert (!this->isInEditMode());
+    jassert(!this->isInEditMode());
 
     // don't send midi in this mode, it was already sent when this event was added:
     constexpr bool sendMidi = false;

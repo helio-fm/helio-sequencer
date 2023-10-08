@@ -266,23 +266,21 @@ float PianoRoll::findPreviousAnchorBeat(float beat) const
 // MultiTouchListener
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::multiTouchStartZooming(const MouseEvent &e)
+void PianoRoll::multiTouchStartZooming()
 {
-    this->hideAllGhostNotes();
-    this->hideDragHelpers();
     this->rowHeightAnchor = this->rowHeight;
-    RollBase::multiTouchStartZooming(e);
+    RollBase::multiTouchStartZooming();
 }
 
-void PianoRoll::multiTouchContinueZooming(const MouseEvent &e,
+void PianoRoll::multiTouchContinueZooming(
     const Rectangle<float> &relativePositions,
     const Rectangle<float> &relativeAnchor,
     const Rectangle<float> &absoluteAnchor)
 {
 #if PLATFORM_DESKTOP
-    const auto minSensitivity = 70.f;
+    const auto minSensitivity = 60.f;
 #elif PLATFORM_MOBILE
-    const auto minSensitivity = 35.f;
+    const auto minSensitivity = 30.f;
 #endif
 
     const float newRowHeight = float(this->rowHeightAnchor) *
@@ -290,8 +288,9 @@ void PianoRoll::multiTouchContinueZooming(const MouseEvent &e,
 
     this->setRowHeight(int(roundf(newRowHeight)));
 
-    RollBase::multiTouchContinueZooming(e,
-        relativePositions, relativeAnchor, absoluteAnchor);
+    RollBase::multiTouchContinueZooming(relativePositions, relativeAnchor, absoluteAnchor);
+
+    this->updateDragHelpers();
 }
 
 //===----------------------------------------------------------------------===//
@@ -301,14 +300,11 @@ void PianoRoll::multiTouchContinueZooming(const MouseEvent &e,
 void PianoRoll::showGhostNoteFor(NoteComponent *target)
 {
     auto *component = new NoteComponent(*this, target->getNote(), target->getClip());
-    component->setEnabled(false);
-
     component->setGhostMode();
+    component->toBack();
 
     this->addAndMakeVisible(component);
     this->ghostNotes.add(component);
-
-    this->triggerBatchRepaintFor(component);
 }
 
 void PianoRoll::hideAllGhostNotes()
@@ -995,7 +991,7 @@ float PianoRoll::getLassoEndBeat() const
 
 void PianoRoll::mouseDown(const MouseEvent &e)
 {
-    if (this->hasMultiTouch(e) || e.source.getIndex() > 0)
+    if (this->hasMultiTouch(e))
     {
         return;
     }

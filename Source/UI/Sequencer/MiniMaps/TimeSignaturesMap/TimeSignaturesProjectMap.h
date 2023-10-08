@@ -42,8 +42,6 @@ public:
 
     ~TimeSignaturesProjectMap() override;
 
-    void switchToRoll(SafePointer<RollBase> roll) override;
-
     //===------------------------------------------------------------------===//
     // ProjectListener
     //===------------------------------------------------------------------===//
@@ -99,9 +97,7 @@ private:
     float rollLastBeat = Globals::Defaults::projectLength;
 
     ProjectNode &project;
-    
-    SafePointer<RollBase> roll;
-    
+
     UniquePointer<TrackStartIndicator> trackStartIndicator;
     UniquePointer<TrackEndIndicator> trackEndIndicator;
     

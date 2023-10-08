@@ -28,6 +28,7 @@
 #include "ColourIDs.h"
 
 PianoProjectMap::PianoProjectMap(ProjectNode &parentProject) :
+    ScrolledComponent({}), // doesn't switch between rolls
     project(parentProject)
 {
     this->baseColour = findDefaultColour(ColourIDs::Roll::noteFill);

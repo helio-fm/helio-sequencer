@@ -78,6 +78,11 @@ void AnnotationLargeComponent::mouseMove(const MouseEvent &e)
 
 void AnnotationLargeComponent::mouseDown(const MouseEvent &e)
 {
+    if (this->editor.rollHasMultiTouch(e))
+    {
+        return;
+    }
+
     this->mouseDownWasTriggered = true;
 
     if (e.mods.isLeftButtonDown())
@@ -103,6 +108,11 @@ void AnnotationLargeComponent::mouseDown(const MouseEvent &e)
 
 void AnnotationLargeComponent::mouseDrag(const MouseEvent &e)
 {
+    if (this->editor.rollHasMultiTouch(e))
+    {
+        return;
+    }
+
     if (e.mods.isLeftButtonDown() && e.getDistanceFromDragStart() > 3)
     {
         if (this->state == State::ResizingRight)

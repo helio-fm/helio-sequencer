@@ -27,8 +27,8 @@
 
 AnnotationsProjectMap::AnnotationsProjectMap(ProjectNode &parentProject,
     SafePointer<RollBase> roll, Type type) :
+    ScrolledComponent(roll),
     project(parentProject),
-    roll(roll),
     type(type)
 {
     this->setAlwaysOnTop(true);
@@ -43,11 +43,6 @@ AnnotationsProjectMap::AnnotationsProjectMap(ProjectNode &parentProject,
 AnnotationsProjectMap::~AnnotationsProjectMap()
 {
     this->project.removeListener(this);
-}
-
-void AnnotationsProjectMap::switchToRoll(SafePointer<RollBase> roll)
-{
-    this->roll = roll;
 }
 
 //===----------------------------------------------------------------------===//

@@ -54,7 +54,7 @@ void DraggingListBoxComponent::childrenChanged()
 
 void DraggingListBoxComponent::mouseDown(const MouseEvent &event)
 {
-    if (!event.mods.isLeftButtonDown() || event.source.getIndex() > 0)
+    if (!event.mods.isLeftButtonDown())
     {
         return;
     }
@@ -64,7 +64,7 @@ void DraggingListBoxComponent::mouseDown(const MouseEvent &event)
         this->setSelected(true);
         return;
     }
-    
+
     if (this->listCanBeScrolled())
     {
         this->maxDragDistance = 0;
@@ -84,7 +84,7 @@ void DraggingListBoxComponent::mouseUp(const MouseEvent &event)
 {
     this->isDraggingListbox = false;
     
-    if (!event.mods.isLeftButtonDown() || event.source.getIndex() > 0)
+    if (!event.mods.isLeftButtonDown())
     {
         return;
     }
@@ -108,7 +108,7 @@ void DraggingListBoxComponent::mouseUp(const MouseEvent &event)
 
 void DraggingListBoxComponent::mouseDrag(const MouseEvent &event)
 {
-    if (!event.mods.isLeftButtonDown() || event.source.getIndex() > 0)
+    if (!event.mods.isLeftButtonDown())
     {
         return;
     }

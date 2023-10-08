@@ -40,8 +40,6 @@ public:
 
     void alignKeySignatureComponent(KeySignatureComponent *nc);
 
-    void switchToRoll(SafePointer<RollBase> roll) override;
-
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
@@ -105,8 +103,6 @@ private:
 
     ProjectNode &project;
 
-    SafePointer<RollBase> roll;
-        
     ComponentAnimator animator;
 
     const Type type;

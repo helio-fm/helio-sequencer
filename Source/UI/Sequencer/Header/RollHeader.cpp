@@ -340,6 +340,11 @@ void RollHeader::updateSelectionRangeIndicatorPosition()
 
 void RollHeader::mouseDown(const MouseEvent &e)
 {
+    if (this->roll.hasMultiTouch(e))
+    {
+        return;
+    }
+
     if (this->soundProbeMode.get())
     {
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x);
@@ -385,6 +390,11 @@ void RollHeader::mouseDown(const MouseEvent &e)
 
 void RollHeader::mouseDrag(const MouseEvent &e)
 {
+    if (this->roll.hasMultiTouch(e))
+    {
+        return;
+    }
+
     if (this->soundProbeMode.get())
     {
         if (this->pointingIndicator != nullptr)
@@ -444,6 +454,11 @@ void RollHeader::mouseDrag(const MouseEvent &e)
 
 void RollHeader::mouseUp(const MouseEvent &e)
 {
+    if (this->roll.hasMultiTouch(e))
+    {
+        return;
+    }
+
     this->probeIndicator = nullptr;
     this->timeDistanceIndicator = nullptr;
 

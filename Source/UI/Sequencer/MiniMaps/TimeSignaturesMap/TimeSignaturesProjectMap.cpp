@@ -31,8 +31,8 @@
 
 TimeSignaturesProjectMap::TimeSignaturesProjectMap(ProjectNode &project,
     SafePointer<RollBase> roll, Type type) :
+    ScrolledComponent(roll),
     project(project),
-    roll(roll),
     type(type)
 {
     this->setAlwaysOnTop(true);
@@ -57,11 +57,6 @@ TimeSignaturesProjectMap::~TimeSignaturesProjectMap()
 {
     this->project.getTimeline()->getTimeSignaturesAggregator()->removeListener(this);
     this->project.removeListener(this);
-}
-
-void TimeSignaturesProjectMap::switchToRoll(SafePointer<RollBase> roll)
-{
-    this->roll = roll;
 }
 
 void TimeSignaturesProjectMap::updateTrackRangeIndicatorsAnchors()

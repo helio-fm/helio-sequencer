@@ -56,6 +56,11 @@ void KeySignatureLargeComponent::paint(Graphics &g)
 
 void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)
 {
+    if (this->editor.rollHasMultiTouch(e))
+    {
+        return;
+    }
+
     this->mouseDownWasTriggered = true;
 
     if (e.mods.isLeftButtonDown())
@@ -76,6 +81,11 @@ void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)
 
 void KeySignatureLargeComponent::mouseDrag(const MouseEvent &e)
 {
+    if (this->editor.rollHasMultiTouch(e))
+    {
+        return;
+    }
+
     if (e.mods.isLeftButtonDown() && e.getDistanceFromDragStart() > 4)
     {
         if (this->draggingState)
