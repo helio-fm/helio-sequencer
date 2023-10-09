@@ -277,11 +277,8 @@ void PianoRoll::multiTouchContinueZooming(
     const Rectangle<float> &relativeAnchor,
     const Rectangle<float> &absoluteAnchor)
 {
-#if PLATFORM_DESKTOP
-    const auto minSensitivity = 60.f;
-#elif PLATFORM_MOBILE
-    const auto minSensitivity = 30.f;
-#endif
+    // when zooming horizontally, try to avoid vertical zooming glitches:
+    const auto minSensitivity = float(this->getViewport().getViewHeight()) / 8.f;
 
     const float newRowHeight = float(this->rowHeightAnchor) *
         (jmax(minSensitivity, relativePositions.getHeight()) / jmax(minSensitivity, relativeAnchor.getHeight()));
