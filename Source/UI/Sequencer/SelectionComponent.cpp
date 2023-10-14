@@ -81,7 +81,10 @@ void SelectionComponent::updateBounds()
     const auto parentSize(this->getParentSize());
     const auto start = (this->startPosition * parentSize).toInt();
     const auto end = (this->endPosition * parentSize).toInt();
-    this->setBounds({ start, end });
+    Rectangle<int> bounds(start, end);
+    bounds.setWidth(jmax(1, bounds.getWidth()));
+    bounds.setHeight(jmax(1, bounds.getHeight()));
+    this->setBounds(bounds);
 }
 
 void SelectionComponent::endLasso()

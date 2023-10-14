@@ -33,7 +33,7 @@ void HeaderSelectionIndicator::paint(Graphics &g)
 {
     g.setColour(this->currentFill);
     g.fillRect(0, this->getHeight() - 3, this->getWidth(), 2);
-    g.fillRect(1, this->getHeight() - 4, this->getWidth() - 2, 1);
+    g.fillRect(1, this->getHeight() - 4, jmax(0, this->getWidth() - 2), 1);
 }
 
 void HeaderSelectionIndicator::parentHierarchyChanged()
@@ -67,7 +67,7 @@ void HeaderSelectionIndicator::updateBounds()
     const int startX = int(double(this->getParentWidth()) * start);
     const int endX = int(double(this->getParentWidth()) * end);
 
-    this->setBounds(startX, this->getY(), (endX - startX), this->getHeight());
+    this->setBounds(startX, this->getY(), jmax(1, endX - startX), this->getHeight());
 }
 
 void HeaderSelectionIndicator::timerCallback()
