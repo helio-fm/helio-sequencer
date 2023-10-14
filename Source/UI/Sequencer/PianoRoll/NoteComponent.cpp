@@ -463,7 +463,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             {
                 this->getRoll().showDragHelpers();
             }
-            
+
             // Drag-and-copy logic:
             if (firstChangeIsToCome && e.mods.isShiftDown())    //changed to shift (perhaps ctrl? though, ctrl may be a good candidate for fine control mode)
             {
@@ -726,14 +726,24 @@ void NoteComponent::startDragging(const bool sendMidiMessage)
 
 bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int &deltaKey, bool snap)
 {
-    const auto clickOffset = this->dragger.dragComponent(this, e);
+    const auto componentClickOffset = this->dragger.dragComponent(this, e);
 
     int newKey = -1;
     float newBeat = -1;
-    this->getRoll().getRowsColsByComponentPosition(
-        this->getX() + this->floatLocalBounds.getX() + 1,
-        this->getY() + this->floatLocalBounds.getY() + clickOffset.getY(),
+    const auto x = this->getX() + this->floatLocalBounds.getX() + 1;
+    this->getRoll().getRowsColsByComponentPosition(x,
+        this->getY() + this->floatLocalBounds.getY() + componentClickOffset.getY(),
         newKey, newBeat, snap);
+
+    // make sure that the note is snapping to the original beat as well as
+    // to the displayed snaps, so that vertical dragging is more convenient
+    // when the snaps density is lower at higher zoom levels:
+    const auto newX = this->getRoll().getXPositionByBeat(newBeat + this->clip.getBeat());
+    const auto anchorX = this->getRoll().getXPositionByBeat(this->anchor.getBeat() + this->clip.getBeat());
+    if (fabs(x - anchorX) < fabs(x - newX))
+    {
+        newBeat = this->anchor.getBeat();
+    }
 
     deltaKey = (newKey - this->anchor.getKey());
     deltaBeat = (newBeat - this->anchor.getBeat());

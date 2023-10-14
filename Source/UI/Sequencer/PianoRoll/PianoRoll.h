@@ -279,6 +279,7 @@ private:
     OwnedArray<NoteComponent> ghostNotes;
 
     UniquePointer<NotesDraggingGuide> draggingHelper;
+    bool isDraggingAnyNotes = false;
 
     UniquePointer<NoteResizerLeft> noteResizerLeft;
     UniquePointer<NoteResizerRight> noteResizerRight;

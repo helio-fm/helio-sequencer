@@ -659,7 +659,7 @@ float RollBase::getFloorBeatSnapByXPosition(int x) const noexcept
     return this->getBeatByXPosition(targetX);
 }
 
-float RollBase::getRoundBeatSnapByXPosition(int x) const
+float RollBase::getRoundBeatSnapByXPosition(int x) const noexcept
 {
     float d = FLT_MAX;
     float targetX = float(x);
@@ -669,7 +669,6 @@ float RollBase::getRoundBeatSnapByXPosition(int x) const
         if (distance < d)
         {
             d = distance;
-            // get lowest beat possible for target x position:
             targetX = snapX;
         }
     }

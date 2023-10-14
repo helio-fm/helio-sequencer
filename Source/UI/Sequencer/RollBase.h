@@ -202,7 +202,8 @@ public:
 
     int getXPositionByBeat(float targetBeat) const noexcept;
     int getPlayheadPositionByBeat(double targetBeat, double parentWidth) const;
-    float getRoundBeatSnapByXPosition(int x) const;
+    float getFloorBeatSnapByXPosition(int x) const noexcept;
+    float getRoundBeatSnapByXPosition(int x) const noexcept;
 
     inline float getLastBeat() const noexcept { return this->lastBeat; }
     inline float getFirstBeat() const noexcept { return this->firstBeat; }
@@ -352,7 +353,6 @@ protected:
     virtual float findNextAnchorBeat(float beat) const = 0;
     virtual float findPreviousAnchorBeat(float beat) const = 0;
 
-    float getFloorBeatSnapByXPosition(int x) const noexcept;
     inline float getBeatByXPosition(float x) const noexcept
     {
         const float beatNumber = roundBeat(x / this->beatWidth + this->firstBeat);

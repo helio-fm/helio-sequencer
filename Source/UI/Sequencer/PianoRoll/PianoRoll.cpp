@@ -489,6 +489,8 @@ int PianoRoll::getYPositionByKey(int targetKey) const
 
 void PianoRoll::showDragHelpers()
 {
+    this->isDraggingAnyNotes = true;
+
     if (!this->draggingHelper->isVisible())
     {
         this->draggingHelper->resetAnchor(this->selection);
@@ -504,6 +506,8 @@ void PianoRoll::showDragHelpers()
 
 void PianoRoll::hideDragHelpers()
 {
+    this->isDraggingAnyNotes = false;
+
     if (this->draggingHelper->isVisible())
     {
         this->fader.fadeOut(this->draggingHelper.get(), Globals::UI::fadeOutShort);
@@ -595,25 +599,21 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
             const int i = track->getPattern()->indexOfSorted(targetParams);
             jassert(i >= 0);
             
-            const Clip *realClip = track->getPattern()->getUnchecked(i);
-            auto *component = new NoteComponent(*this, note, *realClip);
+            const auto *clip = track->getPattern()->getUnchecked(i);
+            auto *component = new NoteComponent(*this, note, *clip);
             sequenceMap[note] = UniquePointer<NoteComponent>(component);
             this->addAndMakeVisible(component);
 
             this->fader.fadeIn(component, Globals::UI::fadeInLong);
-
-            // TODO check this in a more elegant way
-            // (needed not to break shift+drag note copying)
-            const bool isCurrentlyDraggingNote = this->draggingHelper->isVisible();
 
             const bool isActive = component->belongsTo(this->activeTrack, this->activeClip);
             component->setActive(isActive, true);
 
             this->triggerBatchRepaintFor(component);
 
-            // arpeggiators preview cannot work without that:
-            if (isActive && !isCurrentlyDraggingNote)
+            if (isActive && !this->isDraggingAnyNotes)
             {
+                // arpeggiators preview cannot work without that:
                 this->selectEvent(component, false);
             }
 
