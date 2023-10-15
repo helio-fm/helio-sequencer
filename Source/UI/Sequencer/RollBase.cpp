@@ -163,7 +163,7 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     this->onMouseWheelFlagsChanged(uiFlags->getMouseWheelFlags());
     uiFlags->addListener(this);
 
-    this->updateBounds();
+    this->updateWidth();
     this->resetDraggingAnchors();
 }
 
@@ -401,8 +401,8 @@ void RollBase::multiTouchContinueZooming(
 
     const float newBeatWidth = jmax(
         float(this->viewport.getWidth() + 1) / this->getNumBeats(), // minimum beat width
-        this->beatWidthAnchor * (jmax(minSensitivity,
-            relativePositions.getWidth()) / jmax(minSensitivity, relativeAnchor.getWidth())));
+        this->beatWidthAnchor * (jmax(minSensitivity, relativePositions.getWidth()) /
+            jmax(minSensitivity, relativeAnchor.getWidth())));
 
     this->setBeatWidth(newBeatWidth);
 
@@ -685,7 +685,7 @@ void RollBase::setBeatRange(float first, float last)
 
     this->lastBeat = last;
     this->firstBeat = first;
-    this->updateBounds();
+    this->updateWidth();
 }
 
 void RollBase::setBeatWidth(float newBeatWidth)
@@ -696,7 +696,7 @@ void RollBase::setBeatWidth(float newBeatWidth)
     }
 
     this->beatWidth = jlimit(0.1f, 360.f, newBeatWidth);
-    this->updateBounds();
+    this->updateWidth();
 }
 
 float RollBase::getMinVisibleBeatForCurrentZoomLevel() const
@@ -1960,14 +1960,9 @@ Point<int> RollBase::getDefaultPositionForPopup() const
     return App::Layout().getBoundsForPopups().getCentre();
 }
 
-void RollBase::updateBounds()
+void RollBase::updateWidth()
 {
-    const auto newWidth = int(this->getNumBeats() * this->beatWidth);
-
-    if (this->getWidth() != newWidth)
-    {
-        this->setSize(newWidth, this->getHeight());
-    }
+    this->setSize(int(this->getNumBeats() * this->beatWidth), this->getHeight());
 }
 
 void RollBase::updateChildrenBounds()

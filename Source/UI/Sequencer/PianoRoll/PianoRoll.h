@@ -210,7 +210,7 @@ private:
     void reloadRollContent();
     void loadTrack(const MidiTrack *const track);
 
-    void updateSize();
+    void updateHeight();
     void updateChildrenBounds() override;
     void updateChildrenPositions() override;
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;

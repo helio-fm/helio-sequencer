@@ -359,7 +359,7 @@ protected:
         return jlimit(this->firstBeat, this->lastBeat, beatNumber);
     }
 
-    void updateBounds();
+    void updateWidth();
     
     WeakReference<AudioMonitor> clippingDetector;
     ProjectNode &project;

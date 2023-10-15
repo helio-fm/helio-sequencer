@@ -99,14 +99,19 @@ void MultiTouchController::mouseDrag(const MouseEvent &event)
 
 void MultiTouchController::mouseUp(const MouseEvent &event)
 {
-    jassert(this->touches.contains(event.source.getIndex()));
-
-    if (this->hasMultiTouch())
+    if (!this->touches.contains(event.source.getIndex()))
     {
-        this->processContinueZoomingEvent(event);
+        jassertfalse;
+        return;
     }
 
     const auto touchMode = this->touches[event.source.getIndex()];
+
+    if (this->hasMultiTouch() &&
+        touchMode != TouchUsage::Unused)
+    {
+        this->processContinueZoomingEvent(event);
+    }
 
     if (touchMode == TouchUsage::Finger1)
     {

@@ -195,10 +195,10 @@ void PianoRoll::setRowHeight(int newRowHeight)
 {
     if (newRowHeight == this->rowHeight) { return; }
     this->rowHeight = jlimit(PianoRoll::minRowHeight, PianoRoll::maxRowHeight, newRowHeight);
-    this->updateSize();
+    this->updateHeight();
 }
 
-void PianoRoll::updateSize()
+void PianoRoll::updateHeight()
 {
     this->setSize(this->getWidth(),
         Globals::UI::rollHeaderHeight + this->getNumKeys() * this->rowHeight);
@@ -833,7 +833,7 @@ void PianoRoll::onChangeProjectInfo(const ProjectMetadata *info)
         this->temperament = info->getTemperament();
         this->noteNameGuides->syncWithTemperament(this->temperament);
         this->updateBackgroundCachesAndRepaint();
-        this->updateSize(); // might have changed by due to different temperament
+        this->updateHeight(); // might have changed by due to different temperament
         this->updateChildrenPositions();
     }
 }
@@ -843,7 +843,7 @@ void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks, const P
     RollBase::onReloadProjectContent(tracks, meta); // updates temperament
     this->noteNameGuides->syncWithTemperament(this->temperament);
     this->reloadRollContent(); // will updateBackgroundCachesAndRepaint
-    this->updateSize(); // might have changed by due to different temperament
+    this->updateHeight(); // might have changed by due to different temperament
     this->updateChildrenPositions();
 
     // if this happens to be a new project, focus somewhere in the centre:
