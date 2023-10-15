@@ -150,9 +150,10 @@ void AudioCore::removeInstrument(Instrument *instrument)
 void AudioCore::addFilteredMidiInputCallback(MidiInputCallback *callbackToAdd,
     int periodSize, Scale::Ptr chromaticMapping)
 {
+    // disconnect it first but keep it in the internal list
     this->removeFilteredMidiInputCallback(callbackToAdd);
 
-    // update the existing filter
+    // then either update the parameters and reconnect
     for (const auto &mc : this->filteredMidiCallbacks)
     {
         if (mc.targetCallback == callbackToAdd)

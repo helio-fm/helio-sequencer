@@ -38,7 +38,7 @@ RescalePreviewTool *RescalePreviewTool::createWithinSelectionAndContext(SafePoin
         if (!SequencerOperations::findHarmonicContext(roll->getLassoSelection(), clip, keySignatures, scale, key))
         {
             DBG("Warning: harmonic context could not be detected");
-            return new RescalePreviewTool(roll, 0, Scale::getNaturalMajorScale());
+            return new RescalePreviewTool(roll, 0, Scale::makeNaturalMajorScale());
         }
 
         return new RescalePreviewTool(roll, key, scale);

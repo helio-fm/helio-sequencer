@@ -80,8 +80,8 @@ Temperament::Ptr Temperament::getTwelveToneEqualTemperament()
     t->id = defaultTemperamentId;
     t->name = "12 equal temperament";
     t->period = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
-    t->highlighting = Scale::getNaturalMajorScale();
-    t->chromaticMap = Scale::getChromaticScale();
+    t->highlighting = Scale::makeNaturalMajorScale();
+    t->chromaticMap = Scale::makeChromaticScale();
     t->keysTotal = Globals::twelveToneKeyboardSize;
     t->middleC = Globals::twelveTonePeriodSize * Temperament::periodNumForMiddleC;
     return t;
@@ -142,7 +142,7 @@ void Temperament::deserialize(const SerializedData &data)
 
     if (!this->highlighting->isValid())
     {
-        this->highlighting = Scale::getNaturalMajorScale();
+        this->highlighting = Scale::makeNaturalMajorScale();
     }
 
     this->chromaticMap = Scale::fromIntervalsAndPeriod(
@@ -150,7 +150,7 @@ void Temperament::deserialize(const SerializedData &data)
 
     if (!this->chromaticMap->isValid())
     {
-        this->chromaticMap = Scale::getChromaticScale();
+        this->chromaticMap = Scale::makeChromaticScale();
     }
 }
 

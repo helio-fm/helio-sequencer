@@ -34,7 +34,23 @@
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "AudioCore.h"
+#include "Scale.h"
 #include "Config.h"
+
+// previewing MIDI input for an instrument using default temperament:
+static void setupMidiInputPreviewFor(Instrument *instrument)
+{
+    if (auto mainNode = instrument->findMainPluginNode())
+    {
+        if (auto *synth = dynamic_cast<DefaultSynthAudioPlugin *>(mainNode->getProcessor()))
+        {
+            synth->setPeriodSizeAndRange(Globals::twelveTonePeriodSize, 2.0);
+        }
+    }
+
+    App::Workspace().getAudioCore().setActiveMidiPlayer(instrument->getIdAndHash(),
+        Globals::twelveTonePeriodSize, Scale::makeChromaticScale(), false);
+}
 
 InstrumentNode::InstrumentNode(Instrument *targetInstrument) :
     TreeNode({}, Serialization::Core::instrumentRoot),
@@ -66,6 +82,8 @@ void InstrumentNode::showPage()
         jassertfalse;
         return;
     }
+
+    setupMidiInputPreviewFor(this->instrument);
 
     App::Layout().showPage(this->instrumentEditor.get(), this);
 }
@@ -303,6 +321,8 @@ void AudioPluginNode::showPage()
         }
     }
 
+    setupMidiInputPreviewFor(instrument);
+
     App::Layout().showPage(this->audioPluginEditor.get(), this);
 }
 
@@ -402,6 +422,8 @@ void KeyboardMappingNode::showPage()
     {
         this->keyboardMappingPage = make<KeyboardMappingPage>(this->instrument);
     }
+
+    setupMidiInputPreviewFor(this->instrument);
 
     App::Layout().showPage(this->keyboardMappingPage.get(), this);
 }

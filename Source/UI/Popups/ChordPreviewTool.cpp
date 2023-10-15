@@ -51,7 +51,7 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller,
 
     this->setSize(500, 500);
 
-    this->defaultScale = Scale::getNaturalMajorScale();
+    this->defaultScale = Scale::makeNaturalMajorScale();
 
     const int numChordsToDisplay = jmin(16, this->defaultChords.size());
     for (int i = 0; i < numChordsToDisplay; ++i)

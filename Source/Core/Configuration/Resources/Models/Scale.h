@@ -97,9 +97,9 @@ public:
     // Hard-coded defaults
     //===------------------------------------------------------------------===//
 
-    static Scale::Ptr getChromaticScale();
-    static Scale::Ptr getNaturalMinorScale();
-    static Scale::Ptr getNaturalMajorScale();
+    static Scale::Ptr makeChromaticScale();
+    static Scale::Ptr makeNaturalMinorScale();
+    static Scale::Ptr makeNaturalMajorScale();
 
     //===------------------------------------------------------------------===//
     // Serializable

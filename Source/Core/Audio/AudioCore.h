@@ -244,11 +244,13 @@ private:
             {
                 mappedMessage = MidiMessage::noteOn(message.getChannel(),
                     this->getMappedKey(message.getNoteNumber()), message.getVelocity());
+                mappedMessage.setTimeStamp(message.getTimeStamp());
             }
             else if (message.isNoteOff())
             {
                 mappedMessage = MidiMessage::noteOff(message.getChannel(),
                     this->getMappedKey(message.getNoteNumber()), message.getVelocity());
+                mappedMessage.setTimeStamp(message.getTimeStamp());
             }
 
             this->targetInstrumentCallback->handleIncomingMidiMessage(source, mappedMessage);

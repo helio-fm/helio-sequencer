@@ -1473,8 +1473,8 @@ private:
     ChordParsing::ChordDescription chord;
     mutable Array<int> lastResult;
 
-    const Scale::Ptr major = Scale::getNaturalMajorScale();
-    const Scale::Ptr minor = Scale::getNaturalMinorScale();
+    const Scale::Ptr major = Scale::makeNaturalMajorScale();
+    const Scale::Ptr minor = Scale::makeNaturalMinorScale();
     const UniquePointer<ChordParsing::ChordQualityExpression> qualityFallback =
         make<ChordParsing::ChordQualityExpression>();
 

@@ -63,5 +63,5 @@ const Scale::Ptr TemperamentsCollection::findHighlightingFor(Temperament::Ptr te
     }
 
     // and fallback to 12-tone major
-    return Scale::getNaturalMajorScale();
+    return Scale::makeNaturalMajorScale();
 }

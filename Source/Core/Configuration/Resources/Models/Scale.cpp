@@ -48,7 +48,7 @@ inline static Array<int> getChromaticKeys()
     return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
 }
 
-Scale::Ptr Scale::getChromaticScale()
+Scale::Ptr Scale::makeChromaticScale()
 {
     Scale::Ptr s(new Scale());
     s->keys = getChromaticKeys();
@@ -61,7 +61,7 @@ inline static Array<int> getNaturalMinorKeys()
     return { 0, 2, 3, 5, 7, 8, 10 };
 }
 
-Scale::Ptr Scale::getNaturalMinorScale()
+Scale::Ptr Scale::makeNaturalMinorScale()
 {
     Scale::Ptr s(new Scale());
     s->keys = getNaturalMinorKeys();
@@ -74,7 +74,7 @@ inline static Array<int> getNaturalMajorKeys()
     return { 0, 2, 4, 5, 7, 9, 11 };
 }
 
-Scale::Ptr Scale::getNaturalMajorScale()
+Scale::Ptr Scale::makeNaturalMajorScale()
 {
     Scale::Ptr s(new Scale());
     s->keys = getNaturalMajorKeys();
