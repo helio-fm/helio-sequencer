@@ -248,26 +248,10 @@ void ProjectNode::setMidiRecordingTarget(const Clip *clip)
     if (clip != nullptr)
     {
         auto *track = clip->getPattern()->getTrack();
-        auto &audioCore = App::Workspace().getAudioCore();
-
-        instrumentId = track->getTrackInstrumentId();
-
-        // if the track and clip is not null,
-        // but they have no instrument assigned,
-        // we should fall back to the default piano
-        // (we cannot do it in setActiveMidiPlayer, because
-        // an empty instrument id passed there means "disconnect everyone",
-        // and it happens e.g. when track == nullptr)
-        if (instrumentId.isEmpty())
-        {
-            instrumentId = audioCore.getDefaultInstrument()->getIdAndHash();
-        }
-
-        const auto temperament = this->getProjectInfo()->getTemperament();
-        audioCore.setActiveMidiPlayer(instrumentId,
-            temperament->getPeriodSize(), temperament->getChromaticMap(), false);
+        instrumentId = this->handleChangeActiveMidiInputInstrument(track);
     }
 
+    // if clip == nullptr, pass empty instrment id meaning "disconnect everyone"
     this->midiRecorder->setTargetScope(clip, instrumentId);
 }
 
@@ -900,6 +884,25 @@ void ProjectNode::broadcastChangeViewBeatRange(float firstBeat, float lastBeat)
 {
     this->changeListeners.call(&ProjectListener::onChangeViewBeatRange, firstBeat, lastBeat);
     // this->sendChangeMessage(); the project itself didn't change, so dont call this
+}
+
+String ProjectNode::handleChangeActiveMidiInputInstrument(MidiTrack *const track)
+{
+    auto &audioCore = App::Workspace().getAudioCore();
+
+    auto instrumentId = track->getTrackInstrumentId();
+
+    // if the track has no instrument assigned, fallback to the default one
+    if (instrumentId.isEmpty())
+    {
+        instrumentId = audioCore.getDefaultInstrument()->getIdAndHash();
+    }
+
+    const auto temperament = this->getProjectInfo()->getTemperament();
+    audioCore.setActiveMidiPlayer(instrumentId,
+        temperament->getPeriodSize(), temperament->getChromaticMap(), false);
+
+    return instrumentId;
 }
 
 //===----------------------------------------------------------------------===//

@@ -29,6 +29,11 @@ public:
 
     void setCanSleepAfter(int timeoutMs = 0)
     {
+        // Audio device hibernation is now disabled
+        // until I can figure out how to do it properly;
+        // for now there a more issues than benefits,
+        // e.g. MIDI input callbacks stop working
+        /*
         if (timeoutMs < 0)
         {
             this->stopTimer();
@@ -43,12 +48,15 @@ public:
         {
             this->startTimer(timeoutMs);
         }
+        */
     }
 
     void setAwake()
     {
+        /*
         this->stopTimer();
         this->awakeNow();
+        */
     }
 
 protected:

@@ -104,6 +104,8 @@ public:
     void dispatchChangeTrackBeatRange() override;
     void dispatchChangeProjectBeatRange() override;
 
+    void dispatchChangeActiveMidiInputInstrument();
+
     ProjectNode *getProject() const noexcept override;
 
     //===------------------------------------------------------------------===//

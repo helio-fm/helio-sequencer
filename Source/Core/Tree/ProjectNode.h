@@ -162,6 +162,9 @@ public:
     void broadcastActivateProjectSubtree();
     void broadcastDeactivateProjectSubtree();
 
+    // returns the track's instrument id or the default one's
+    String handleChangeActiveMidiInputInstrument(MidiTrack *const track);
+
     //===------------------------------------------------------------------===//
     // VCS::TrackedItemsSource
     //===------------------------------------------------------------------===//

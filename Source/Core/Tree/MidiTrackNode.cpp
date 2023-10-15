@@ -227,6 +227,11 @@ void MidiTrackNode::setTrackInstrumentId(const String &val, bool undoable, Notif
         if (notificationType != dontSendNotification)
         {
             this->dispatchChangeTrackProperties();
+
+            if (this->isSelected())
+            {
+                this->dispatchChangeActiveMidiInputInstrument();
+            }
         }
     }
 }
@@ -459,6 +464,14 @@ void MidiTrackNode::dispatchChangeTrackProperties()
     if (this->lastFoundParent != nullptr)
     {
         this->lastFoundParent->broadcastChangeTrackProperties(this);
+    }
+}
+
+void MidiTrackNode::dispatchChangeActiveMidiInputInstrument()
+{
+    if (this->lastFoundParent != nullptr)
+    {
+        this->lastFoundParent->handleChangeActiveMidiInputInstrument(this);
     }
 }
 
