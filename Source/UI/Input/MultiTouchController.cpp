@@ -32,7 +32,12 @@ MultiTouchController::TouchData MultiTouchController::getAllTouchData(const Mous
 
 void MultiTouchController::mouseDown(const MouseEvent &event)
 {
-    jassert(!this->touches.contains(event.source.getIndex())); // really shouldn't happen
+    if (this->touches.contains(event.source.getIndex()))
+    {
+        jassertfalse; // pointer events out of order?
+        this->anchorsCache[event.source.getIndex()] = this->getAllTouchData(event);
+        return;
+    }
 
     const auto touchMode = this->touches.size() >= 2 ? TouchUsage::Unused :
         ((this->touches.size() == 1 && this->touches.begin()->second == TouchUsage::Finger1) ?
@@ -67,7 +72,12 @@ void MultiTouchController::mouseDown(const MouseEvent &event)
 
 void MultiTouchController::mouseDrag(const MouseEvent &event)
 {
-    jassert(this->touches.contains(event.source.getIndex()));
+    if (!this->touches.contains(event.source.getIndex()))
+    {
+        jassertfalse; // pointer events out of order?
+        this->mouseDown(event);
+    }
+
     const auto touchMode = this->touches[event.source.getIndex()];
 
     const auto touchData = this->getAllTouchData(event);
@@ -101,7 +111,7 @@ void MultiTouchController::mouseUp(const MouseEvent &event)
 {
     if (!this->touches.contains(event.source.getIndex()))
     {
-        jassertfalse;
+        jassertfalse; // pointer events out of order?
         return;
     }
 
