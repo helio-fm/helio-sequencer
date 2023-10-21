@@ -212,7 +212,7 @@ void MetronomeSynthAudioPlugin::fillInPluginDescription(PluginDescription &descr
     description.category = "Synth";
     description.pluginFormatName = BuiltInSynthsPluginFormat::formatName;
     description.fileOrIdentifier = BuiltInSynthsPluginFormat::formatIdentifier;
-    description.manufacturerName = "Helio Workstation";
+    description.manufacturerName = "Built-in";
     description.version = "1.0";
     description.isInstrument = true;
     description.numInputChannels = this->getTotalNumInputChannels();

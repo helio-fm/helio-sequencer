@@ -19,7 +19,7 @@
 #include "InternalIODevicesPluginFormat.h"
 
 const String InternalIODevicesPluginFormat::formatName = "Internal";
-const String InternalIODevicesPluginFormat::manufacturer = "Helio Workstation";
+const String InternalIODevicesPluginFormat::manufacturer = "Built-in";
 
 String InternalIODevicesPluginFormat::getName() const
 {
