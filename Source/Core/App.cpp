@@ -667,7 +667,6 @@ void App::suspended()
     if (this->workspace != nullptr)
     {
         this->workspace->stopPlaybackForAllProjects();
-        this->workspace->getAudioCore().setCanSleepAfter(0);
         this->workspace->autosave();
     }
     
@@ -678,11 +677,6 @@ void App::suspended()
 
 void App::resumed()
 {
-    if (this->workspace != nullptr)
-    {
-        this->workspace->getAudioCore().setAwake();
-    }
-
 #if JUCE_ANDROID
     this->window->attachOpenGLContext();
 #endif

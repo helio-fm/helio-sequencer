@@ -19,7 +19,6 @@
 
 class AudioMonitor;
 class WaveformAudioMonitorComponent;
-class SpectrogramAudioMonitorComponent;
 class MenuItemComponent;
 
 class ShadowUpwards;
@@ -32,9 +31,9 @@ class SeparatorHorizontalReversed;
 #include "UserInterfaceFlags.h"
 #include "ModeIndicatorComponent.h"
 
-class SequencerSidebarLeft final : public ModeIndicatorOwnerComponent,
-                                   protected UserInterfaceFlags::Listener,
-                                   protected ListBoxModel
+class SequencerSidebarLeft final : public Component,
+    protected UserInterfaceFlags::Listener,
+    protected ListBoxModel
 {
 public:
 
@@ -42,7 +41,6 @@ public:
     ~SequencerSidebarLeft();
 
     void setAudioMonitor(AudioMonitor *audioMonitor);
-    void handleChangeMode() override;
 
     void setLinearMode();
     void setPatternMode();
@@ -91,17 +89,11 @@ private:
     UniquePointer<SeparatorHorizontalReversed> headRule;
     UniquePointer<ShadowDownwards> headShadow;
     UniquePointer<SeparatorHorizontal> footRule;
-    UniquePointer<ModeIndicatorTrigger> modeIndicatorSelector;
-    UniquePointer<ModeIndicatorComponent> modeIndicator;
     UniquePointer<MenuItemComponent> switchPatternModeButton;
     UniquePointer<MenuItemComponent> switchLinearModeButton;
     UniquePointer<ListBox> listBox;
 
-    ComponentAnimator animator;
-    void switchMonitorsAnimated(Component *oldOne, Component *newOne);
-
     UniquePointer<WaveformAudioMonitorComponent> waveformMonitor;
-    UniquePointer<SpectrogramAudioMonitorComponent> spectrogramMonitor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SequencerSidebarLeft)
 };

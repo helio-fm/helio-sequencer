@@ -20,35 +20,20 @@
 #include "ComponentFader.h"
 #include "ColourIDs.h"
 
-SpectralLogo::SpectralLogo() : Thread("Logo Animation")
+SpectralLogo::SpectralLogo()
 {
     for (int i = 0; i < SpectralLogo::bandCount; ++i)
     {
         this->bands.add(new SpectralLogo::Band(this));
     }
-    
-    this->startThread(3);
 }
 
 SpectralLogo::~SpectralLogo()
 { 
-    this->stopThread(1000);
+    this->stopTimer();
 }
 
-void SpectralLogo::run()
-{
-    while (! this->threadShouldExit())
-    {
-        static constexpr auto timerDelayMs = 75;
-        Thread::sleep(jlimit(10, 150, timerDelayMs - this->skewTime));
-        const double b = Time::getMillisecondCounterHiRes();
-        this->triggerAsyncUpdate();
-        const double a = Time::getMillisecondCounterHiRes();
-        this->skewTime = int(a - b);
-    }
-}
-
-void SpectralLogo::handleAsyncUpdate()
+void SpectralLogo::timerCallback()
 {
     static constexpr auto pulseSpeed = 35.f;
     this->pulse = fmodf(this->pulse +
@@ -71,6 +56,18 @@ float SpectralLogo::getLineStepSize() const noexcept
 float SpectralLogo::getLineWidth() const noexcept
 {
     return this->lineWidth;
+}
+
+void SpectralLogo::parentHierarchyChanged()
+{
+    if (this->isShowing())
+    {
+        this->startTimer(70);
+    }
+    else
+    {
+        this->stopTimer();
+    }
 }
 
 void SpectralLogo::resized()

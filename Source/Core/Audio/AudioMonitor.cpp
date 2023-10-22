@@ -59,7 +59,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OversaturationWarningAsyncCallback)
 };
 
-AudioMonitor::AudioMonitor() : fft()
+AudioMonitor::AudioMonitor()
 {
     this->asyncClippingWarning = make<ClippingWarningAsyncCallback>(*this);
     this->asyncOversaturationWarning = make<OversaturationWarningAsyncCallback>(*this);
@@ -78,13 +78,6 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData, int num
     float **outputChannelData, int numOutputChannels, int numSamples)
 {
     const int minNumChannels = jmin(AudioMonitor::numChannels, numOutputChannels);
-    
-    for (int channel = 0; channel < minNumChannels; ++channel)
-    {
-        this->fft.computeSpectrum(outputChannelData[channel], 0, numSamples,
-            this->spectrum[channel], AudioMonitor::spectrumSize,
-            channel, numOutputChannels);
-    }
     
     for (int channel = 0; channel < minNumChannels; ++channel)
     {
@@ -117,31 +110,6 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData, int num
     {
         FloatVectorOperations::clear(outputChannelData[i], numSamples);
     }
-}
-
-//===----------------------------------------------------------------------===//
-// Spectrum data
-//===----------------------------------------------------------------------===//
-
-float AudioMonitor::getInterpolatedSpectrumAtFrequency(float frequency) const
-{
-    const float resolution = 
-        float(this->sampleRate.get() / 2.f) / float(AudioMonitor::spectrumSize);
-    
-    const int index1 = roundToInt(frequency / resolution);
-    const int safeIndex1 = jlimit(0, AudioMonitor::spectrumSize, index1);
-    const float f1 = index1 * resolution;
-    const float y1 = (this->spectrum[0][safeIndex1].get() +
-                      this->spectrum[1][safeIndex1].get()) / 2.f;
-    
-    const int index2 = index1 + 1;
-    const int safeIndex2 = jlimit(0, AudioMonitor::spectrumSize, index2);
-    const float f2 = index2 * resolution;
-    const float y2 = (this->spectrum[0][safeIndex2].get() +
-                      this->spectrum[1][safeIndex2].get()) / 2.f;
-    
-    return y1 + ((AudioCore::fastLog10(frequency) - AudioCore::fastLog10(f1)) /
-                 (AudioCore::fastLog10(f2) - AudioCore::fastLog10(f1))) * (y2 - y1);
 }
 
 //===----------------------------------------------------------------------===//

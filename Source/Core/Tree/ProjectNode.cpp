@@ -87,9 +87,8 @@ void ProjectNode::initialize()
     this->vcsItems.add(this->timeline.get());
 
     auto &orchestra = App::Workspace().getAudioCore();
-    auto &audioCoreSleepTimer = App::Workspace().getAudioCore(); // yup, the same
 
-    this->transport = make<Transport>(*this, orchestra, audioCoreSleepTimer);
+    this->transport = make<Transport>(*this, orchestra);
     this->midiRecorder = make<MidiRecorder>(*this);
 
     this->consoleTimelineEvents = make<CommandPaletteTimelineEvents>(*this);

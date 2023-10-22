@@ -78,12 +78,6 @@ Another one highlights the in-scale keys of the key signatures that are added to
 
 ![scales-highlighting]
 
-### More UI flags
-
-The audio monitor view can be toggled between two modes on click or tap, switching between the simple spectrogram mode and the waveform mode:
-
-![monitors]
-
 The mini-map mode can be toggled with `B` hotkey, or by clicking at any area except the screen range rectangle.
 
 When in compact mode, it is stretched to fit all project:
@@ -147,7 +141,6 @@ Track grouping also affects MIDI export: all segments on one row will be exporte
 [pen-tool-alt]: images/pen-tool-alt.png "Adding notes with shift"
 [drag-and-copy]: images/drag-and-copy.png "Drag-and-copy"
 
-[monitors]: images/monitors.png "Audio monitor view modes"
 [toggle-minimap]: images/toggle-minimap.png "Mini-map view modes"
 [zoom-to-region]: images/zoom-to-region.png "Mini-map zoom-to-region"
 [scales-highlighting]: images/scales-highlighting.png "Scales highlighting"

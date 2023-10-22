@@ -17,8 +17,6 @@
 
 #pragma once
 
-#include "SpectrumAnalyzer.h"
-
 class AudioMonitor final : public AudioIODeviceCallback
 {
 public:
@@ -57,29 +55,15 @@ public:
     
     float getPeak(int channel) const;
     float getRootMeanSquare(int channel) const;
-    
-    //===------------------------------------------------------------------===//
-    // Spectrum data
-    //===------------------------------------------------------------------===//
-    
-    float getInterpolatedSpectrumAtFrequency(float frequency) const;
-    
+        
 private:
 
-    SpectrumFFT fft;
-
-    // 256*2 == we just need quite a small resolution on a spectrum
-    static constexpr auto spectrumSize = 256;
     static constexpr auto numChannels = 2;
-
-    static_assert((numChannels * spectrumSize) <= SpectrumFFT::maxSpectrumSize, "Oh no");
-
     static constexpr auto defaultSampleRate = 44100;
     static constexpr auto clipThreshold = 0.995f;
     static constexpr auto oversaturationThreshold = 0.5f;
     static constexpr auto oversaturationRate = 4.f;
 
-    Atomic<float> spectrum[numChannels][spectrumSize];
     Atomic<float> peak[numChannels];
     Atomic<float> rms[numChannels];
 

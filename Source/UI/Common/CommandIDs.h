@@ -188,7 +188,6 @@ namespace CommandIDs
 
         ShowArpeggiatorsPanel           = 0x4040,
         ShowRescalePanel                = 0x4041,
-        ShowScalePanel                  = 0x4042,
         ShowChordPanel                  = 0x4043,
         ShowNewTrackPanel               = 0x4044,
         ShowMetronomeSettings           = 0x4045,

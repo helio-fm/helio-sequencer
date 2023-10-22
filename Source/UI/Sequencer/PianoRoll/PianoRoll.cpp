@@ -32,7 +32,6 @@
 #include "NoteComponent.h"
 #include "NoteNameGuidesBar.h"
 #include "NotesDraggingGuide.h"
-#include "NotesTuningPanel.h"
 #include "RollHeader.h"
 #include "KnifeToolHelper.h"
 #include "MergingEventsConnector.h"
@@ -42,7 +41,6 @@
 #include "ModalCallout.h"
 #include "RescalePreviewTool.h"
 #include "ChordPreviewTool.h"
-#include "ScalePreviewTool.h"
 #include "ArpPreviewTool.h"
 #include "SequencerOperations.h"
 #include "PatternOperations.h"
@@ -1037,9 +1035,7 @@ void PianoRoll::mouseDoubleClick(const MouseEvent &e)
 
     if (!this->project.getEditMode().forbidsAddingEvents({}))
     {
-        const auto e2 = e.getEventRelativeTo(&App::Layout());
-        this->showChordTool(e.mods.isAnyModifierKeyDown() ?
-            ToolType::ScalePreview : ToolType::ChordPreview, e2.getPosition());
+        this->showChordTool(e.getEventRelativeTo(&App::Layout()).getPosition());
     }
 }
 
@@ -1346,23 +1342,11 @@ void PianoRoll::handleCommandMessage(int commandId)
             ModalCallout::emit(panel, this, true);
         }
         break;
-    case CommandIDs::ShowScalePanel:
-        this->showChordTool(ToolType::ScalePreview, this->getDefaultPositionForPopup());
-        break;
     case CommandIDs::ShowChordPanel:
-        this->showChordTool(ToolType::ChordPreview, this->getDefaultPositionForPopup());
+        this->showChordTool(this->getDefaultPositionForPopup());
         break;
     case CommandIDs::ToggleVolumePanel:
-        if (Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown())
-        {
-            // legacy volume editor:
-            if (this->selection.getNumSelected() == 0) { this->selectAll(); }
-            ModalCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
-        }
-        else
-        {
-            App::Config().getUiFlags()->toggleEditorPanelVisibility();
-        }
+        App::Config().getUiFlags()->toggleEditorPanelVisibility();
         break;
     case CommandIDs::NotesVolumeRandom:
         ROLL_BATCH_REPAINT_START
@@ -2098,36 +2082,19 @@ int PianoRoll::binarySearchForHighlightingScheme(const KeySignatureEvent *const 
     return -1;
 }
 
-void PianoRoll::showChordTool(ToolType type, Point<int> position)
+void PianoRoll::showChordTool(Point<int> position)
 {
     auto *pianoSequence = dynamic_cast<PianoSequence *>(this->activeTrack->getSequence());
     jassert(pianoSequence);
 
     this->deselectAll();
 
-    switch (type)
-    {
-    case ToolType::ScalePreview:
-        if (pianoSequence != nullptr)
-        {
-            auto *popup = new ScalePreviewTool(this, pianoSequence);
-            popup->setTopLeftPosition(position - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
-            App::Layout().addAndMakeVisible(popup);
-        }
-        break;
-    case ToolType::ChordPreview:
-        {
-            auto *harmonicContext = dynamic_cast<KeySignaturesSequence *>(
-                this->project.getTimeline()->getKeySignatures()->getSequence());
-            auto *timeContext = this->project.getTimeline()->getTimeSignaturesAggregator();
-            auto *popup = new ChordPreviewTool(*this, pianoSequence, this->activeClip, harmonicContext, timeContext);
-            popup->setTopLeftPosition(position - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
-            App::Layout().addAndMakeVisible(popup);
-        }
-        break;
-    default:
-        break;
-    }
+    auto *harmonicContext = dynamic_cast<KeySignaturesSequence *>(
+        this->project.getTimeline()->getKeySignatures()->getSequence());
+    auto *timeContext = this->project.getTimeline()->getTimeSignaturesAggregator();
+    auto *popup = new ChordPreviewTool(*this, pianoSequence, this->activeClip, harmonicContext, timeContext);
+    popup->setTopLeftPosition(position - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
+    App::Layout().addAndMakeVisible(popup);
 }
 
 //===----------------------------------------------------------------------===//

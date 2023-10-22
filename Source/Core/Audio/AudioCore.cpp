@@ -45,55 +45,6 @@ AudioCore::~AudioCore()
     this->deviceManager.closeAudioDevice();
 }
 
-bool AudioCore::canSleepNow() noexcept
-{
-    // SleepTimer is used to disconnect all callbacks after some delay (i.e. sleep mode),
-    // but first we make sure the device is not making any sound, otherwise we'll wait more:
-    return this->deviceManager.getOutputLevelGetter()->getCurrentLevel() == 0.0;
-}
-
-void AudioCore::sleepNow()
-{
-    DBG("Audio core sleeps");
-    this->disconnectAllAudioCallbacks();
-}
-
-void AudioCore::awakeNow()
-{
-    this->reconnectAllAudioCallbacks();
-}
-
-void AudioCore::disconnectAllAudioCallbacks()
-{
-    if (!this->isMuted.get())
-    {
-        this->isMuted = true;
-
-        // Audio monitor is especially CPU-hungry, as it does FFT all the time:
-        this->deviceManager.removeAudioCallback(this->audioMonitor.get());
-
-        for (auto *instrument : this->instruments)
-        {
-            this->removeInstrumentFromAudioDevice(instrument);
-        }
-    }
-}
-
-void AudioCore::reconnectAllAudioCallbacks()
-{
-    if (this->isMuted.get())
-    {
-        for (auto *instrument : this->instruments)
-        {
-            this->addInstrumentToAudioDevice(instrument);
-        }
-
-        this->deviceManager.addAudioCallback(this->audioMonitor.get());
-
-        this->isMuted = false;
-    }
-}
-
 AudioDeviceManager &AudioCore::getDevice() noexcept
 {
     return this->deviceManager;

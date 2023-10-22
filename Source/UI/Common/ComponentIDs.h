@@ -22,7 +22,6 @@
 namespace ComponentIDs
 {
     static const String progressTooltipId = "ProgressTooltip";
-    static const String modeIndicatorComponentId = "ModeIndicator";
     static const String pianoRollId = "PianoRoll";
     static const String patternRollId = "PatternRoll";
     static const String mainLayoutId = "MainLayout";

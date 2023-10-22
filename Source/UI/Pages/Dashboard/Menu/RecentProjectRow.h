@@ -17,43 +17,135 @@
 
 #pragma once
 
-//[Headers]
-class DashboardMenu;
-class IconComponent;
-
+#include "Common.h"
 #include "RecentProjectInfo.h"
 #include "DraggingListBoxComponent.h"
-//[/Headers]
-
+#include "RecentProjectRow.h"
+#include "DashboardMenu.h"
+#include "IconComponent.h"
+#include "Icons.h"
 
 class RecentProjectRow final : public DraggingListBoxComponent
 {
 public:
 
-    RecentProjectRow(DashboardMenu &parent, ListBox &parentListBox);
-    ~RecentProjectRow();
+    RecentProjectRow(DashboardMenu &parent, ListBox &parentListBox) :
+        DraggingListBoxComponent(parentListBox.getViewport()),
+        parentList(parent)
+    {
+        this->titleLabel = make<Label>();
+        this->addAndMakeVisible(this->titleLabel.get());
+        this->titleLabel->setFont(Globals::UI::Fonts::M);
+        this->titleLabel->setJustificationType(Justification::centredRight);
+        this->titleLabel->setEditable(false, false, false);
 
-    //[UserMethods]
-    void setSelected(bool shouldBeSelected) override;
-    void updateDescription(const RecentProjectInfo::Ptr file, bool isLoaded, bool isLastRow);
-    //[/UserMethods]
+        this->dateLabel = make<Label>();
+        this->addAndMakeVisible(this->dateLabel.get());
+        this->dateLabel->setFont(Font(12.f, Font::plain));
+        this->dateLabel->setJustificationType(Justification::centredRight);
+        this->dateLabel->setEditable(false, false, false);
 
-    void paint (Graphics& g) override;
-    void resized() override;
+        this->activenessImage = make<IconComponent>(Icons::project);
+        this->addAndMakeVisible(this->activenessImage.get());
 
+        this->remoteIndicatorImage = make<IconComponent>(Icons::remote);
+        this->addAndMakeVisible(this->remoteIndicatorImage.get());
+
+        this->localIndicatorImage = make<IconComponent>(Icons::local);
+        this->addAndMakeVisible(this->localIndicatorImage.get());
+
+    #if NO_NETWORK
+        this->localIndicatorImage->setVisible(false);
+        this->remoteIndicatorImage->setVisible(false);
+    #endif
+
+        this->setSize(350, 56);
+    }
+
+    ~RecentProjectRow() = default;
+
+    void setSelected(bool shouldBeSelected) override
+    {
+        if (shouldBeSelected)
+        {
+            if (this->isFileLoaded)
+            {
+                this->parentList.unloadFile(this->targetFile);
+            }
+            else
+            {
+                this->parentList.loadFile(this->targetFile);
+            }
+        }
+    }
+
+    void updateDescription(const RecentProjectInfo::Ptr file, bool isLoaded, bool isLastRow)
+    {
+        this->targetFile = file;
+        this->isFileLoaded = isLoaded;
+
+        this->titleLabel->setText(this->targetFile->getTitle(), dontSendNotification);
+        this->dateLabel->setText(App::getHumanReadableDate(this->targetFile->getUpdatedAt()), dontSendNotification);
+
+        const float totalAlpha = this->isFileLoaded ? 1.f : 0.5f;
+
+        const float remoteIndicatorAlpha = totalAlpha *
+            (this->targetFile->hasRemoteCopy() ? 1.f : 0.3f);
+
+        const float localIndicatorAlpha = totalAlpha *
+            (this->targetFile->hasLocalCopy() ? 1.f : 0.3f);
+
+        const float loadIndicatorAlpha = totalAlpha *
+            (this->isFileLoaded ? 1.f : 0.7f);
+
+        this->remoteIndicatorImage->setIconAlphaMultiplier(remoteIndicatorAlpha);
+        this->localIndicatorImage->setIconAlphaMultiplier(localIndicatorAlpha);
+        this->activenessImage->setIconAlphaMultiplier(loadIndicatorAlpha);
+
+        this->titleLabel->setColour(Label::textColourId,
+            findDefaultColour(Label::textColourId).withMultipliedAlpha(totalAlpha));
+
+        this->dateLabel->setColour(Label::textColourId,
+            findDefaultColour(Label::textColourId).withMultipliedAlpha(totalAlpha));
+    }
+
+    void resized() override
+    {
+        this->titleLabel->setBounds(0, 5, this->getWidth() - 46, 24);
+        this->dateLabel->setBounds(0, 27, this->getWidth() - 46, 16);
+        this->activenessImage->setBounds(this->getWidth() - 44, (this->getHeight() / 2) - 4 - 18, 36, 36);
+        this->remoteIndicatorImage->setBounds(this->getWidth() - 38, this->getHeight() - 16, 8, 8);
+        this->localIndicatorImage->setBounds(this->getWidth() - 23, this->getHeight() - 16, 8, 8);
+    }
 
 private:
 
-    //[UserVariables]
+    class RecentFileSelectionComponent final : public Component
+    {
+    public:
 
-    Component *createHighlighterComponent() override;
+        RecentFileSelectionComponent()
+        {
+            this->setInterceptsMouseClicks(false, false);
+        }
+
+        void paint(Graphics &g) override
+        {
+            g.setColour(Colours::white.withAlpha(0.025f));
+            g.fillRoundedRectangle (5.f, 1.0f,
+                float(this->getWidth() - 10), float(this->getHeight() - 9), 2.f);
+        }
+    };
+
+    Component *createHighlighterComponent() override
+    {
+        return new RecentFileSelectionComponent();
+    }
 
     DashboardMenu &parentList;
     RecentProjectInfo::Ptr targetFile;
-    bool isFileLoaded;
-    bool isSelected;
-
-    //[/UserVariables]
+    bool isFileLoaded = false;
+    bool isSelected = false;
 
     UniquePointer<Label> titleLabel;
     UniquePointer<Label> dateLabel;

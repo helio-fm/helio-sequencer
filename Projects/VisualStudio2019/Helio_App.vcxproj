@@ -62,7 +62,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\Projucer\JuceLibraryCode;..\..\ThirdParty\JUCE\modules;../Projucer/JuceLibraryCode;../../ThirdParty/JUCE/modules;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/serd;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord/src;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sratom;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lv2;../../ThirdParty/ASIO/common;../../Source/;../../Source/Core;../../Source/Core/Audio;../../Source/Core/Audio/BuiltIn;../../Source/Core/Audio/BuiltIn/SoundFont;../../Source/Core/Audio/Instruments;../../Source/Core/Audio/Monitoring;../../Source/Core/Audio/Transport;../../Source/Core/Configuration;../../Source/Core/Configuration/Resources;../../Source/Core/Configuration/Resources/Models;../../Source/Core/CommandPalette;../../Source/Core/Midi;../../Source/Core/Midi/Patterns;../../Source/Core/Midi/Sequences;../../Source/Core/Midi/Sequences/Events;../../Source/Core/Network;../../Source/Core/Network/Models;../../Source/Core/Network/Requests;../../Source/Core/Network/Services;../../Source/Core/Serialization;../../Source/Core/Tree;../../Source/Core/Undo;../../Source/Core/Undo/Actions;../../Source/Core/VCS;../../Source/Core/VCS/DiffLogic;../../Source/Core/Workspace;../../Source/UI/;../../Source/UI/Common;../../Source/UI/Common/AudioMonitors;../../Source/UI/Common/Origami;../../Source/UI/Dialogs;../../Source/UI/Headline;../../Source/UI/Input;../../Source/UI/Menus;../../Source/UI/Menus/Base;../../Source/UI/Menus/SelectionMenus;../../Source/UI/Pages/Instruments;../../Source/UI/Pages/Instruments/Editor;../../Source/UI/Pages/Project;../../Source/UI/Pages/Settings;../../Source/UI/Pages/VCS;../../Source/UI/Pages/Dashboard;../../Source/UI/Pages/Dashboard/Menu;../../Source/UI/Popups;../../Source/UI/Sequencer;../../Source/UI/Sequencer/EditorPanels;../../Source/UI/Sequencer/EditorPanels/AutomationEditor;../../Source/UI/Sequencer/EditorPanels/VelocityEditor;../../Source/UI/Sequencer/Header;../../Source/UI/Sequencer/Helpers;../../Source/UI/Sequencer/MiniMaps;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap;../../Source/UI/Sequencer/MiniMaps/PianoMap;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap;../../Source/UI/Sequencer/PatternRoll;../../Source/UI/Sequencer/PianoRoll;../../Source/UI/Sequencer/Sidebars;../../Source/UI/Themes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\Projucer\JuceLibraryCode;..\..\ThirdParty\JUCE\modules;../Projucer/JuceLibraryCode;../../ThirdParty/JUCE/modules;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/serd;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord/src;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sratom;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lv2;../../ThirdParty/ASIO/common;../../Source/;../../Source/Core;../../Source/Core/Audio;../../Source/Core/Audio/BuiltIn;../../Source/Core/Audio/BuiltIn/SoundFont;../../Source/Core/Audio/Instruments;../../Source/Core/Audio/Transport;../../Source/Core/Configuration;../../Source/Core/Configuration/Resources;../../Source/Core/Configuration/Resources/Models;../../Source/Core/CommandPalette;../../Source/Core/Midi;../../Source/Core/Midi/Patterns;../../Source/Core/Midi/Sequences;../../Source/Core/Midi/Sequences/Events;../../Source/Core/Network;../../Source/Core/Network/Models;../../Source/Core/Network/Requests;../../Source/Core/Network/Services;../../Source/Core/Serialization;../../Source/Core/Tree;../../Source/Core/Undo;../../Source/Core/Undo/Actions;../../Source/Core/VCS;../../Source/Core/VCS/DiffLogic;../../Source/Core/Workspace;../../Source/UI/;../../Source/UI/Common;../../Source/UI/Common/Origami;../../Source/UI/Dialogs;../../Source/UI/Headline;../../Source/UI/Input;../../Source/UI/Menus;../../Source/UI/Menus/Base;../../Source/UI/Menus/SelectionMenus;../../Source/UI/Pages/Instruments;../../Source/UI/Pages/Instruments/Editor;../../Source/UI/Pages/Project;../../Source/UI/Pages/Settings;../../Source/UI/Pages/VCS;../../Source/UI/Pages/Dashboard;../../Source/UI/Pages/Dashboard/Menu;../../Source/UI/Popups;../../Source/UI/Sequencer;../../Source/UI/Sequencer/EditorPanels;../../Source/UI/Sequencer/EditorPanels/AutomationEditor;../../Source/UI/Sequencer/EditorPanels/VelocityEditor;../../Source/UI/Sequencer/Header;../../Source/UI/Sequencer/Helpers;../../Source/UI/Sequencer/MiniMaps;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap;../../Source/UI/Sequencer/MiniMaps/PianoMap;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap;../../Source/UI/Sequencer/PatternRoll;../../Source/UI/Sequencer/PianoRoll;../../Source/UI/Sequencer/Sidebars;../../Source/UI/Themes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2019_B56B0671=1;JUCE_APP_VERSION=3.11;JUCE_APP_VERSION_HEX=0x30b00;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -110,7 +110,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\Projucer\JuceLibraryCode;..\..\ThirdParty\JUCE\modules;../Projucer/JuceLibraryCode;../../ThirdParty/JUCE/modules;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/serd;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord/src;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sratom;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lv2;../../ThirdParty/ASIO/common;../../Source/;../../Source/Core;../../Source/Core/Audio;../../Source/Core/Audio/BuiltIn;../../Source/Core/Audio/BuiltIn/SoundFont;../../Source/Core/Audio/Instruments;../../Source/Core/Audio/Monitoring;../../Source/Core/Audio/Transport;../../Source/Core/Configuration;../../Source/Core/Configuration/Resources;../../Source/Core/Configuration/Resources/Models;../../Source/Core/CommandPalette;../../Source/Core/Midi;../../Source/Core/Midi/Patterns;../../Source/Core/Midi/Sequences;../../Source/Core/Midi/Sequences/Events;../../Source/Core/Network;../../Source/Core/Network/Models;../../Source/Core/Network/Requests;../../Source/Core/Network/Services;../../Source/Core/Serialization;../../Source/Core/Tree;../../Source/Core/Undo;../../Source/Core/Undo/Actions;../../Source/Core/VCS;../../Source/Core/VCS/DiffLogic;../../Source/Core/Workspace;../../Source/UI/;../../Source/UI/Common;../../Source/UI/Common/AudioMonitors;../../Source/UI/Common/Origami;../../Source/UI/Dialogs;../../Source/UI/Headline;../../Source/UI/Input;../../Source/UI/Menus;../../Source/UI/Menus/Base;../../Source/UI/Menus/SelectionMenus;../../Source/UI/Pages/Instruments;../../Source/UI/Pages/Instruments/Editor;../../Source/UI/Pages/Project;../../Source/UI/Pages/Settings;../../Source/UI/Pages/VCS;../../Source/UI/Pages/Dashboard;../../Source/UI/Pages/Dashboard/Menu;../../Source/UI/Popups;../../Source/UI/Sequencer;../../Source/UI/Sequencer/EditorPanels;../../Source/UI/Sequencer/EditorPanels/AutomationEditor;../../Source/UI/Sequencer/EditorPanels/VelocityEditor;../../Source/UI/Sequencer/Header;../../Source/UI/Sequencer/Helpers;../../Source/UI/Sequencer/MiniMaps;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap;../../Source/UI/Sequencer/MiniMaps/PianoMap;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap;../../Source/UI/Sequencer/PatternRoll;../../Source/UI/Sequencer/PianoRoll;../../Source/UI/Sequencer/Sidebars;../../Source/UI/Themes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\Projucer\JuceLibraryCode;..\..\ThirdParty\JUCE\modules;../Projucer/JuceLibraryCode;../../ThirdParty/JUCE/modules;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/serd;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord/src;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sratom;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lv2;../../ThirdParty/ASIO/common;../../Source/;../../Source/Core;../../Source/Core/Audio;../../Source/Core/Audio/BuiltIn;../../Source/Core/Audio/BuiltIn/SoundFont;../../Source/Core/Audio/Instruments;../../Source/Core/Audio/Transport;../../Source/Core/Configuration;../../Source/Core/Configuration/Resources;../../Source/Core/Configuration/Resources/Models;../../Source/Core/CommandPalette;../../Source/Core/Midi;../../Source/Core/Midi/Patterns;../../Source/Core/Midi/Sequences;../../Source/Core/Midi/Sequences/Events;../../Source/Core/Network;../../Source/Core/Network/Models;../../Source/Core/Network/Requests;../../Source/Core/Network/Services;../../Source/Core/Serialization;../../Source/Core/Tree;../../Source/Core/Undo;../../Source/Core/Undo/Actions;../../Source/Core/VCS;../../Source/Core/VCS/DiffLogic;../../Source/Core/Workspace;../../Source/UI/;../../Source/UI/Common;../../Source/UI/Common/Origami;../../Source/UI/Dialogs;../../Source/UI/Headline;../../Source/UI/Input;../../Source/UI/Menus;../../Source/UI/Menus/Base;../../Source/UI/Menus/SelectionMenus;../../Source/UI/Pages/Instruments;../../Source/UI/Pages/Instruments/Editor;../../Source/UI/Pages/Project;../../Source/UI/Pages/Settings;../../Source/UI/Pages/VCS;../../Source/UI/Pages/Dashboard;../../Source/UI/Pages/Dashboard/Menu;../../Source/UI/Popups;../../Source/UI/Sequencer;../../Source/UI/Sequencer/EditorPanels;../../Source/UI/Sequencer/EditorPanels/AutomationEditor;../../Source/UI/Sequencer/EditorPanels/VelocityEditor;../../Source/UI/Sequencer/Header;../../Source/UI/Sequencer/Helpers;../../Source/UI/Sequencer/MiniMaps;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap;../../Source/UI/Sequencer/MiniMaps/PianoMap;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap;../../Source/UI/Sequencer/PatternRoll;../../Source/UI/Sequencer/PianoRoll;../../Source/UI/Sequencer/Sidebars;../../Source/UI/Themes;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2019_B56B0671=1;JUCE_APP_VERSION=3.11;JUCE_APP_VERSION_HEX=0x30b00;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -190,12 +190,6 @@
     <ClCompile Include="..\..\Source\Core\Audio\Instruments\SerializablePluginDescription.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Audio\Monitoring\AudioMonitor.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Audio\Monitoring\SpectrumAnalyzer.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Audio\Transport\MidiRecorder.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -209,6 +203,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Audio\AudioCore.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Audio\AudioMonitor.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\Resources\Models\Arpeggiator.cpp">
@@ -535,12 +532,6 @@
     <ClCompile Include="..\..\Source\Core\App.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\AudioMonitors\SpectrogramAudioMonitorComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\AudioMonitors\WaveformAudioMonitorComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\Origami\Origami.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -697,9 +688,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\DashboardMenu.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Menu\RecentProjectRow.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Dashboard\Dashboard.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -796,9 +784,6 @@
     <ClCompile Include="..\..\Source\UI\Popups\CommandPalette.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\NotesTuningPanel.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\ArpPreviewTool.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -806,9 +791,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\RescalePreviewTool.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\ScalePreviewTool.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\ModalCallout.cpp">
@@ -920,6 +902,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarRight.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Sidebars\WaveformAudioMonitorComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\MiniMaps\AnnotationsMap\AnnotationLargeComponent.cpp">
@@ -3124,8 +3109,6 @@
     <ClInclude Include="..\..\Source\Core\Audio\Instruments\OrchestraPit.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Instruments\PluginScanner.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Instruments\SerializablePluginDescription.h"/>
-    <ClInclude Include="..\..\Source\Core\Audio\Monitoring\AudioMonitor.h"/>
-    <ClInclude Include="..\..\Source\Core\Audio\Monitoring\SpectrumAnalyzer.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\MidiRecorder.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\PlayerThread.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\PlayerThreadPool.h"/>
@@ -3135,6 +3118,7 @@
     <ClInclude Include="..\..\Source\Core\Audio\Transport\TransportListener.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\Transport\TransportPlaybackCache.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\AudioCore.h"/>
+    <ClInclude Include="..\..\Source\Core\Audio\AudioMonitor.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\ConfigurationResource.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Arpeggiator.h"/>
     <ClInclude Include="..\..\Source\Core\Configuration\Resources\Models\Chord.h"/>
@@ -3274,8 +3258,6 @@
     <ClInclude Include="..\..\Source\Core\Workspace\UserProfile.h"/>
     <ClInclude Include="..\..\Source\Core\Workspace\Workspace.h"/>
     <ClInclude Include="..\..\Source\Core\App.h"/>
-    <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\SpectrogramAudioMonitorComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\WaveformAudioMonitorComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\Origami\Origami.h"/>
     <ClInclude Include="..\..\Source\UI\Common\Origami\OrigamiHorizontal.h"/>
     <ClInclude Include="..\..\Source\UI\Common\Origami\OrigamiVertical.h"/>
@@ -3381,11 +3363,9 @@
     <ClInclude Include="..\..\Source\UI\Pages\VCS\StageComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\CommandPalette.h"/>
-    <ClInclude Include="..\..\Source\UI\Popups\NotesTuningPanel.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\ArpPreviewTool.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\ChordPreviewTool.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\RescalePreviewTool.h"/>
-    <ClInclude Include="..\..\Source\UI\Popups\ScalePreviewTool.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\ModalCallout.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\PopupButton.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\PopupButtonOwner.h"/>
@@ -3439,6 +3419,7 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRoll.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarLeft.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarRight.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\WaveformAudioMonitorComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\AnnotationsMap\AnnotationComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\AnnotationsMap\AnnotationLargeComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\AnnotationsMap\AnnotationSmallComponent.h"/>

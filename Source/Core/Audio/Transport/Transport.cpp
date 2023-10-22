@@ -25,7 +25,6 @@
 #include "MidiTrack.h"
 #include "Pattern.h"
 #include "Workspace.h"
-#include "AudioCore.h"
 #include "RollBase.h"
 #include "KeyboardMapping.h"
 #include "ProjectMetadata.h"
@@ -34,10 +33,9 @@
 
 #define TIME_NOW (Time::getMillisecondCounterHiRes() * 0.001)
 
-Transport::Transport(ProjectNode &project, OrchestraPit &orchestraPit, SleepTimer &sleepTimer) :
+Transport::Transport(ProjectNode &project, OrchestraPit &orchestraPit) :
     project(project),
-    orchestra(orchestraPit),
-    sleepTimer(sleepTimer)
+    orchestra(orchestraPit)
 {
     this->player = make<PlayerThreadPool>(*this);
     this->renderer = make<RendererThread>(*this);
@@ -137,7 +135,6 @@ void Transport::seekToBeat(float beatPosition)
 
 void Transport::probeSoundAtBeat(float targetBeat, const MidiSequence *limitToSequence)
 {
-    this->sleepTimer.setAwake();
     this->rebuildPlaybackCacheIfNeeded();
     
     const auto sequencesToProbe = this->playbackCache.getAllFor(limitToSequence);
@@ -162,8 +159,6 @@ void Transport::probeSoundAtBeat(float targetBeat, const MidiSequence *limitToSe
             }
         }
     }
-
-    this->sleepTimer.setCanSleepAfter(Transport::soundSleepDelayMs);
 }
 
 //===----------------------------------------------------------------------===//
@@ -177,7 +172,6 @@ void Transport::startPlayback()
 
 void Transport::startPlayback(float start)
 {
-    this->sleepTimer.setAwake();
     this->rebuildPlaybackCacheIfNeeded();
 
     this->stopPlayback();
@@ -201,7 +195,6 @@ void Transport::startPlayback(float start)
 
 void Transport::startPlaybackFragment(float startBeat, float endBeat, bool looped)
 {
-    this->sleepTimer.setAwake();
     this->rebuildPlaybackCacheIfNeeded();
     
     this->stopPlayback();
@@ -218,7 +211,6 @@ void Transport::stopPlayback()
         this->player->stopPlayback(); // after broadcastStop so that MM can be locked
         this->allNotesControllersAndSoundOff();
         this->seekToBeat(this->getSeekBeat());
-        this->sleepTimer.setCanSleepAfter(Transport::soundSleepDelayMs);
     }
 }
 
@@ -245,7 +237,6 @@ void Transport::startRecording()
 {
     if (!this->isPlaying())
     {
-        this->sleepTimer.setAwake();
         this->rebuildPlaybackCacheIfNeeded();
     }
 
@@ -359,7 +350,6 @@ bool Transport::startRender(const URL &renderTarget,
         return false;
     }
     
-    this->sleepTimer.setCanSleepAfter(0);
     return this->renderer->startRendering(renderTarget, format,
         this->fillPlaybackContextAt(this->getProjectFirstBeat()),
         thumbnailResolution);
@@ -373,8 +363,6 @@ void Transport::stopRender()
     }
     
     this->renderer->stop();
-    
-    this->sleepTimer.setAwake();
 }
 
 bool Transport::isRendering() const
@@ -524,8 +512,6 @@ void Transport::NotePreviewTimer::timerCallback()
 void Transport::previewKey(const String &trackId, int key,
     float volume, float lengthInBeats) const
 {
-    this->sleepTimer.setAwake();
-
     const auto foundLink = this->instrumentLinks.find(trackId);
 
     // in some cases we need to preview notes which are not tied to any
@@ -552,8 +538,6 @@ void Transport::previewKey(WeakReference<Instrument> instrument,
     // at the note position, which I think is a bit of an overkill:
     const auto noteOffTimeoutMs = int16(Globals::Defaults::msPerBeat * lengthInBeats);
     this->notePreviewTimer.previewNote(instrument, key, volume, noteOffTimeoutMs);
-
-    this->sleepTimer.setCanSleepAfter(Transport::soundSleepDelayMs + noteOffTimeoutMs * 2);
 }
 
 static void stopSoundForInstrument(Instrument *instrument)
@@ -570,7 +554,6 @@ static void stopSoundForInstrument(Instrument *instrument)
 
 void Transport::stopSound(const String &trackId) const
 {
-    this->sleepTimer.setAwake();
     this->notePreviewTimer.cancelAllPendingPreviews(true);
 
     if (Instrument *instrument = this->instrumentLinks[trackId])
@@ -587,13 +570,10 @@ void Transport::stopSound(const String &trackId) const
             }
         }
     }
-
-    this->sleepTimer.setCanSleepAfter(Transport::soundSleepDelayMs);
 }
 
 void Transport::allNotesControllersAndSoundOff() const
 {
-    this->sleepTimer.setAwake();
     this->notePreviewTimer.cancelAllPendingPreviews(true);
 
     for (int i = 1; i <= Globals::numChannels; ++i)
@@ -618,8 +598,6 @@ void Transport::allNotesControllersAndSoundOff() const
             }
         }
     }
-
-    this->sleepTimer.setCanSleepAfter(Transport::soundSleepDelayMs);
 }
 
 //===----------------------------------------------------------------------===//

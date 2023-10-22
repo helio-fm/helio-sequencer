@@ -19,7 +19,7 @@
 
 #include "ColourIDs.h"
 
-class SpectralLogo final : public Component, private Thread, private AsyncUpdater
+class SpectralLogo final : public Component, private Timer
 {
 public:
 
@@ -28,6 +28,7 @@ public:
     
     void paint(Graphics &g) override;
     void resized() override;
+    void parentHierarchyChanged() override;
 
     float getLineThickness() const noexcept;
     float getLineStepSize() const noexcept;
@@ -67,8 +68,7 @@ private:
     
 private:
     
-    void run() override;
-    void handleAsyncUpdate() override;
+    void timerCallback() override;
     
     const Colour colour = findDefaultColour(ColourIDs::Logo::fill);
 
@@ -77,7 +77,6 @@ private:
     
     static constexpr auto bandCount = 70;
 
-    int skewTime = 0;
     float pulse = 0.f;
     
     float randomnessRange = 0;

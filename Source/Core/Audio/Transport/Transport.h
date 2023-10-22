@@ -18,7 +18,6 @@
 #pragma once
 
 class ProjectNode;
-class SleepTimer;
 class OrchestraPit;
 class PlayerThread;
 class PlayerThreadPool;
@@ -42,7 +41,7 @@ class Transport final : public Serializable,
 {
 public:
 
-    Transport(ProjectNode &project, OrchestraPit &orchestraPit, SleepTimer &sleepTimer);
+    Transport(ProjectNode &project, OrchestraPit &orchestraPit);
     ~Transport() override;
     
     static String getTimeString(double timeMs, bool includeMilliseconds = false);
@@ -241,9 +240,6 @@ private:
     
     ProjectNode &project;
     OrchestraPit &orchestra;
-
-    SleepTimer &sleepTimer;
-    static constexpr auto soundSleepDelayMs = 60000;
 
     UniquePointer<PlayerThreadPool> player;
     UniquePointer<RendererThread> renderer;

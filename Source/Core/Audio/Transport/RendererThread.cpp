@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "RendererThread.h"
 #include "Workspace.h"
-#include "AudioCore.h"
 
 RendererThread::RendererThread(Transport &transport) :
     Thread("RendererThread"),
@@ -339,8 +338,6 @@ void RendererThread::run()
 
     // dispose the URL object, so that its security bookmark can be released by iOS
     this->renderTarget = {};
-
-    App::Workspace().getAudioCore().setAwake();
 }
 
 const Array<float, CriticalSection> &RendererThread::getWaveformThumbnail() const

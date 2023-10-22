@@ -76,9 +76,6 @@ ModeIndicatorComponent::ModeIndicatorComponent(int numModes)
 {
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
-
-    this->setComponentID(ComponentIDs::modeIndicatorComponentId);
-
     this->setNumModes(numModes);
 }
 
@@ -150,52 +147,5 @@ void ModeIndicatorComponent::updateBarsHighlighting()
     for (int i = 0; i < this->bars.size(); ++i)
     {
         this->bars.getUnchecked(i)->setHighlighted(i == this->activeMode);
-    }
-}
-
-void ModeIndicatorOwnerComponent::showModeIndicator()
-{
-    if (auto *i = this->findChildWithID(ComponentIDs::modeIndicatorComponentId))
-    {
-        this->modeIndicatorFader.fadeIn(i, Globals::UI::fadeInLong);
-    }
-}
-
-void ModeIndicatorOwnerComponent::hideModeIndicator()
-{
-    if (auto *i = this->findChildWithID(ComponentIDs::modeIndicatorComponentId))
-    {
-        this->modeIndicatorFader.fadeOut(i, Globals::UI::fadeOutLong);
-    }
-}
-
-ModeIndicatorTrigger::ModeIndicatorTrigger()
-{
-    this->setInterceptsMouseClicks(true, false);
-    this->setMouseClickGrabsKeyboardFocus(false);
-    this->setPaintingIsUnclipped(true);
-}
-
-void ModeIndicatorTrigger::mouseUp(const MouseEvent &event)
-{
-    if (auto *owner = dynamic_cast<ModeIndicatorOwnerComponent *>(this->getParentComponent()))
-    {
-        owner->handleChangeMode();
-    }
-}
-
-void ModeIndicatorTrigger::mouseEnter(const MouseEvent &event)
-{
-    if (auto *owner = dynamic_cast<ModeIndicatorOwnerComponent *>(this->getParentComponent()))
-    {
-        owner->showModeIndicator();
-    }
-}
-
-void ModeIndicatorTrigger::mouseExit(const MouseEvent &event)
-{
-    if (auto *owner = dynamic_cast<ModeIndicatorOwnerComponent *>(this->getParentComponent()))
-    {
-        owner->hideModeIndicator();
     }
 }

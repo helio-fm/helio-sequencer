@@ -23,65 +23,10 @@ class AudioMonitor;
 #include "OrchestraPit.h"
 #include "Scale.h"
 
-class SleepTimer : private Timer
-{
-public:
-
-    void setCanSleepAfter(int timeoutMs = 0)
-    {
-        // Audio device hibernation is now disabled
-        // until I can figure out how to do it properly;
-        // for now there a more issues than benefits,
-        // e.g. MIDI input callbacks stop working
-        /*
-        if (timeoutMs < 0)
-        {
-            this->stopTimer();
-            this->awakeNow();
-        }
-        else if (timeoutMs == 0)
-        {
-            this->stopTimer();
-            this->sleepNow();
-        }
-        else
-        {
-            this->startTimer(timeoutMs);
-        }
-        */
-    }
-
-    void setAwake()
-    {
-        /*
-        this->stopTimer();
-        this->awakeNow();
-        */
-    }
-
-protected:
-
-    virtual bool canSleepNow() = 0;
-    virtual void sleepNow() = 0;
-    virtual void awakeNow() = 0;
-
-private:
-
-    void timerCallback() override
-    {
-        if (this->canSleepNow())
-        {
-            this->stopTimer();
-            this->sleepNow();
-        }
-    }
-};
-
 class AudioCore final :
-    public Serializable,
-    public ChangeBroadcaster,
     public OrchestraPit,
-    public SleepTimer
+    public Serializable,
+    public ChangeBroadcaster
 {
 public:
 
@@ -179,12 +124,6 @@ public:
     
 private:
 
-    bool canSleepNow() noexcept override;
-    void sleepNow() override;
-    void awakeNow() override;
-    void disconnectAllAudioCallbacks();
-    void reconnectAllAudioCallbacks();
-
     void addInstrumentToMidiDevice(Instrument *instrument,
         int periodSize, Scale::Ptr chromaticMapping);
     void removeInstrumentFromMidiDevice(Instrument *instrument);
@@ -204,8 +143,6 @@ private:
 
     AudioPluginFormatManager formatManager;
     AudioDeviceManager deviceManager;
-
-    Atomic<bool> isMuted = false;
 
 private:
 

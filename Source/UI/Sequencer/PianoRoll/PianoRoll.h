@@ -248,15 +248,7 @@ private:
 
 private:
 
-    enum class ToolType : int8
-    {
-        ScalePreview,
-        ChordPreview
-    };
-
-    void showChordTool(ToolType type, Point<int> position);
-
-private:
+    void showChordTool(Point<int> position);
 
     void updateBackgroundCachesAndRepaint();
     void updateBackgroundCacheFor(const KeySignatureEvent &key);

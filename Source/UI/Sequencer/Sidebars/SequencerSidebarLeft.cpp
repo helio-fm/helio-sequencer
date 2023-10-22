@@ -19,7 +19,6 @@
 #include "SequencerSidebarLeft.h"
 
 #include "WaveformAudioMonitorComponent.h"
-#include "SpectrogramAudioMonitorComponent.h"
 #include "MenuItemComponent.h"
 #include "ShadowUpwards.h"
 #include "ShadowDownwards.h"
@@ -52,13 +51,6 @@ SequencerSidebarLeft::SequencerSidebarLeft()
     this->footRule = make<SeparatorHorizontal>();
     this->addAndMakeVisible(this->footRule.get());
 
-    this->modeIndicatorSelector = make<ModeIndicatorTrigger>();
-    this->addAndMakeVisible(this->modeIndicatorSelector.get());
-
-    this->modeIndicator = make<ModeIndicatorComponent>(2);
-    this->addAndMakeVisible(this->modeIndicator.get());
-    this->modeIndicator->setAlpha(0.f);
-
     this->switchPatternModeButton = make<MenuItemComponent>(this, nullptr,
         MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls)->
             withTooltip(TRANS(I18n::Tooltips::switchRolls)));
@@ -88,12 +80,9 @@ SequencerSidebarLeft::SequencerSidebarLeft()
     this->switchLinearModeButton->setVisible(false);
     this->switchPatternModeButton->setVisible(false);
 
-    // todo save the default monitor option in global UI flags?
     this->waveformMonitor = make<WaveformAudioMonitorComponent>(nullptr);
-    this->spectrogramMonitor = make<SpectrogramAudioMonitorComponent>(nullptr);
 
     this->addChildComponent(this->waveformMonitor.get());
-    this->addChildComponent(this->spectrogramMonitor.get());
 
     this->waveformMonitor->setVisible(true);
 
@@ -142,58 +131,13 @@ void SequencerSidebarLeft::resized()
         this->getHeight() - audioMonitorHeight,
         this->getWidth(), audioMonitorHeight);
 
-    this->spectrogramMonitor->setBounds(0,
-        this->getHeight() - audioMonitorHeight,
-        this->getWidth(), audioMonitorHeight);
-
-    this->modeIndicatorSelector->setBounds(0,
-        this->getHeight() - audioMonitorHeight,
-        this->getWidth(), audioMonitorHeight);
-
-    constexpr auto modeIndicatorSize = 6;
-    this->modeIndicator->setBounds(0,
-        this->getHeight() - modeIndicatorSize * 2,
-        this->getWidth(), modeIndicatorSize);
-
     this->switchPatternModeButton->setBounds(0, 0, this->getWidth(), headerSize - 1);
     this->switchLinearModeButton->setBounds(0, 0, this->getWidth(), headerSize - 1);
 }
 
 void SequencerSidebarLeft::setAudioMonitor(AudioMonitor *audioMonitor)
 {
-    this->spectrogramMonitor->setTargetAnalyzer(audioMonitor);
     this->waveformMonitor->setTargetAnalyzer(audioMonitor);
-}
-
-void SequencerSidebarLeft::handleChangeMode()
-{
-    switch (this->modeIndicator->scrollToNextMode())
-    {
-    case 0:
-        this->switchMonitorsAnimated(this->spectrogramMonitor.get(), this->waveformMonitor.get());
-        break;
-    case 1:
-        this->switchMonitorsAnimated(this->waveformMonitor.get(), this->spectrogramMonitor.get());
-        break;
-    default:
-        break;
-    }
-}
-
-void SequencerSidebarLeft::switchMonitorsAnimated(Component *oldOne, Component *newOne)
-{
-    jassert(newOne->getY() == oldOne->getY());
-    auto slideTime = Globals::UI::fadeOutLong;
-    const int w = this->getWidth();
-    const int y = newOne->getY();
-    this->animator.animateComponent(oldOne,
-        oldOne->getBounds().translated(-w, 0), 0.f, slideTime, true, 0.0, 1.0);
-    oldOne->setVisible(false);
-    newOne->setAlpha(0.f);
-    newOne->setVisible(true);
-    newOne->setTopLeftPosition(w, y);
-    this->animator.animateComponent(newOne,
-        newOne->getBounds().translated(-w, 0), 1.f, slideTime, false, 1.0, 0.0);
 }
 
 void SequencerSidebarLeft::setLinearMode()
