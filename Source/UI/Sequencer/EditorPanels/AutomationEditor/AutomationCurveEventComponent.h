@@ -69,7 +69,17 @@ public:
     }
 
     void setNextNeighbour(EventComponentBase *next) override;
-    void setPreviousNeighbour(EventComponentBase *next) override;
+    void setPreviousNeighbour(EventComponentBase *prev) override;
+
+    SafePointer<EventComponentBase> getNextNeighbour() const noexcept override
+    {
+        return this->nextEventHolder;
+    }
+
+    SafePointer<EventComponentBase> getPreviousNeighbour() const noexcept override
+    {
+        return this->prevEventHolder;
+    }
 
     void updateChildrenBounds() override
     {
@@ -126,6 +136,7 @@ private:
     UniquePointer<AutomationCurveHelper> helper;
 
     SafePointer<EventComponentBase> nextEventHolder;
+    SafePointer<EventComponentBase> prevEventHolder;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationCurveEventComponent)
 };

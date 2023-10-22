@@ -209,17 +209,23 @@ void AutomationStepEventComponent::dragByDelta(float deltaBeat)
 
 void AutomationStepEventComponent::recreateConnector()
 {
-    this->connector = make<AutomationStepEventsConnector>(this,
-        this->nextEventHolder, this->event.isPedalDownEvent());
+    if (this->nextEventHolder)
+    {
+        this->connector = make<AutomationStepEventsConnector>(this,
+            this->nextEventHolder, this->event.isPedalDownEvent());
 
-    assert(this->getParentComponent() != nullptr);
-    this->getParentComponent()->addAndMakeVisible(this->connector.get());
-    this->updateConnector();
+        assert(this->getParentComponent() != nullptr);
+        this->getParentComponent()->addAndMakeVisible(this->connector.get());
+        this->updateConnector();
+    }
 }
 
 void AutomationStepEventComponent::updateConnector()
 {
-    this->connector->resizeToFit(this->event.isPedalDownEvent());
+    if (this->connector)
+    {
+        this->connector->resizeToFit(this->event.isPedalDownEvent());
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -240,7 +246,15 @@ void AutomationStepEventComponent::setNextNeighbour(EventComponentBase *next)
     }
 
     this->nextEventHolder = next;
-    this->recreateConnector();
+
+    if (this->nextEventHolder == nullptr)
+    {
+        this->connector = nullptr;
+    }
+    else
+    {
+        this->recreateConnector();
+    }
 }
 
 void AutomationStepEventComponent::setPreviousNeighbour(EventComponentBase *prev)

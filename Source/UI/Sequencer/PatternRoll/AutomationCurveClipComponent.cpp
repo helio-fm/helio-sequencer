@@ -232,29 +232,40 @@ void AutomationCurveClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
 
         if (auto *component = this->eventsHash[autoEvent])
         {
-            // update links and connectors
             this->eventComponents.sort(*component);
             const int indexOfSorted = this->eventComponents.indexOfSorted(*component, component);
             auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
             auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
             
+            // if the neighbourhood has changed,
+            // connect the most recent neighbours to each other:
+            if (nextEventComponent != component->getNextNeighbour() ||
+                previousEventComponent != component->getPreviousNeighbour())
+            {
+                if (component->getPreviousNeighbour())
+                {
+                    component->getPreviousNeighbour()->setNextNeighbour(component->getNextNeighbour());
+                }
+
+                if (component->getNextNeighbour())
+                {
+                    component->getNextNeighbour()->setPreviousNeighbour(component->getPreviousNeighbour());
+                }
+            }
+
             component->setNextNeighbour(nextEventComponent);
+            component->setPreviousNeighbour(previousEventComponent);
             component->setFloatBounds(this->getEventBounds(newAutoEvent, this->clip));
             component->updateChildrenBounds();
             
             if (previousEventComponent)
             {
                 previousEventComponent->setNextNeighbour(component);
-                
-                if (auto *oneMorePrevious = this->getPreviousEventComponent(indexOfSorted - 1))
-                {
-                    oneMorePrevious->setNextNeighbour(previousEventComponent);
-                }
             }
             
             if (nextEventComponent)
             {
-                nextEventComponent->setNextNeighbour(this->getNextEventComponent(indexOfSorted + 1));
+                nextEventComponent->setPreviousNeighbour(component);
             }
             
             this->eventsHash.erase(autoEvent);
@@ -280,6 +291,7 @@ void AutomationCurveClipComponent::onAddMidiEvent(const MidiEvent &event)
         auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
 
         component->setNextNeighbour(nextEventComponent);
+        component->setPreviousNeighbour(previousEventComponent);
         component->setFloatBounds(this->getEventBounds(autoEvent, this->clip));
         component->updateChildrenBounds();
         component->toFront(false);
@@ -287,6 +299,11 @@ void AutomationCurveClipComponent::onAddMidiEvent(const MidiEvent &event)
         if (previousEventComponent)
         {
             previousEventComponent->setNextNeighbour(component);
+        }
+
+        if (nextEventComponent)
+        {
+            nextEventComponent->setPreviousNeighbour(component);
         }
 
         this->eventsHash[autoEvent] = component;
@@ -322,7 +339,12 @@ void AutomationCurveClipComponent::onRemoveMidiEvent(const MidiEvent &event)
             {
                 previousEventComponent->setNextNeighbour(nextEventComponent);
             }
-            
+
+            if (nextEventComponent)
+            {
+                nextEventComponent->setPreviousNeighbour(previousEventComponent);
+            }
+
             this->eventComponents.removeObject(component, true);
             
             this->roll.triggerBatchRepaintFor(this);
@@ -370,9 +392,9 @@ void AutomationCurveClipComponent::onRemoveTrack(MidiTrack *const track)
 
 void AutomationCurveClipComponent::reloadTrack()
 {
-    for (int i = 0; i < this->eventComponents.size(); ++i)
+    for (auto *component : this->eventComponents)
     {
-        this->removeChildComponent(this->eventComponents.getUnchecked(i));
+        this->removeChildComponent(component);
     }
     
     this->eventComponents.clear();
@@ -380,30 +402,37 @@ void AutomationCurveClipComponent::reloadTrack()
     
     this->setVisible(false);
     
-    for (int j = 0; j < this->sequence->size(); ++j)
+    for (int i = 0; i < this->sequence->size(); ++i)
     {
-        auto *event = this->sequence->getUnchecked(j);
-        
-        if (auto *autoEvent = dynamic_cast<AutomationEvent *>(event))
+        if (auto *autoEvent = dynamic_cast<AutomationEvent *>(this->sequence->getUnchecked(i)))
         {
             auto *component = new AutomationCurveEventComponent(*this, *autoEvent, this->clip);
+
             this->addAndMakeVisible(component);
-            
-            // update links and connectors
-            const int indexOfSorted = this->eventComponents.addSorted(*component, component);
-            auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
-            auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
-            
-            component->setNextNeighbour(nextEventComponent);
-            //this->updateCurveComponent(component);
             component->toFront(false);
-            
-            if (previousEventComponent)
-            {
-                previousEventComponent->setNextNeighbour(component);
-            }
-            
+
+            this->eventComponents.addSorted(*component, component);
             this->eventsHash[*autoEvent] = component;
+        }
+    }
+
+    for (int i = 0; i < this->eventComponents.size(); ++i)
+    {
+        auto *component = this->eventComponents.getUnchecked(i);
+        auto *previousEventComponent = this->getPreviousEventComponent(i);
+        auto *nextEventComponent = this->getNextEventComponent(i);
+
+        component->setNextNeighbour(nextEventComponent);
+        component->setPreviousNeighbour(previousEventComponent);
+
+        if (previousEventComponent)
+        {
+            previousEventComponent->setNextNeighbour(component);
+        }
+
+        if (nextEventComponent)
+        {
+            nextEventComponent->setPreviousNeighbour(component);
         }
     }
 

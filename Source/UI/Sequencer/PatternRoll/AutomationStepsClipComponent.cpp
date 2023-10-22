@@ -219,6 +219,22 @@ void AutomationStepsClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
             auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
             auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
             
+            // if the neighbourhood has changed,
+            // connect the most recent neighbours to each other:
+            if (nextEventComponent != component->getNextNeighbour() ||
+                previousEventComponent != component->getPreviousNeighbour())
+            {
+                if (component->getPreviousNeighbour())
+                {
+                    component->getPreviousNeighbour()->setNextNeighbour(component->getNextNeighbour());
+                }
+
+                if (component->getNextNeighbour())
+                {
+                    component->getNextNeighbour()->setPreviousNeighbour(component->getPreviousNeighbour());
+                }
+            }
+
             component->setNextNeighbour(nextEventComponent);
             component->setPreviousNeighbour(previousEventComponent);
             component->setFloatBounds(this->getEventBounds(newAutoEvent, this->clip));
@@ -228,27 +244,11 @@ void AutomationStepsClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
             if (previousEventComponent)
             {
                 previousEventComponent->setNextNeighbour(component);
-                
-                auto *oneMorePrevious = this->getPreviousEventComponent(indexOfSorted - 1);
-                previousEventComponent->setPreviousNeighbour(oneMorePrevious);
-                
-                if (oneMorePrevious)
-                {
-                    oneMorePrevious->setNextNeighbour(previousEventComponent);
-                }
             }
             
             if (nextEventComponent)
             {
                 nextEventComponent->setPreviousNeighbour(component);
-
-                auto *oneMoreNext = this->getNextEventComponent(indexOfSorted + 1);
-                nextEventComponent->setNextNeighbour(oneMoreNext);
-                
-                if (oneMoreNext)
-                {
-                    oneMoreNext->setPreviousNeighbour(nextEventComponent);
-                }
             }
             
             this->eventsHash.erase(autoEvent);
@@ -303,7 +303,6 @@ void AutomationStepsClipComponent::onRemoveMidiEvent(const MidiEvent &event)
         
         if (auto *component = this->eventsHash[autoEvent])
         {
-            //this->eventAnimator.fadeOut(component, Globals::UI::fadeOutShort);
             this->removeChildComponent(component);
             this->eventsHash.erase(autoEvent);
             
@@ -369,9 +368,9 @@ void AutomationStepsClipComponent::onRemoveTrack(MidiTrack *const track)
 
 void AutomationStepsClipComponent::reloadTrack()
 {
-    for (int i = 0; i < this->eventComponents.size(); ++i)
+    for (auto *component : this->eventComponents)
     {
-        this->removeChildComponent(this->eventComponents.getUnchecked(i));
+        this->removeChildComponent(component);
     }
     
     this->eventComponents.clear();
@@ -379,37 +378,41 @@ void AutomationStepsClipComponent::reloadTrack()
     
     this->setVisible(false);
     
-    for (int j = 0; j < this->sequence->size(); ++j)
+    for (int i = 0; i < this->sequence->size(); ++i)
     {
-        auto *event = this->sequence->getUnchecked(j);
-        
-        if (auto *autoEvent = dynamic_cast<AutomationEvent *>(event))
+        if (auto *autoEvent = dynamic_cast<AutomationEvent *>(this->sequence->getUnchecked(i)))
         {
             auto *component = new AutomationStepEventComponent(*this, *autoEvent, this->clip);
+
             this->addAndMakeVisible(component);
-            
-            // update links and connectors
-            const int indexOfSorted = this->eventComponents.addSorted(*component, component);
-            auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
-            auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
-            
-            component->setNextNeighbour(nextEventComponent);
-            component->setPreviousNeighbour(previousEventComponent);
-            
-            if (previousEventComponent)
-            {
-                previousEventComponent->setNextNeighbour(component);
-            }
+            component->toFront(false);
 
-            if (nextEventComponent)
-            {
-                nextEventComponent->setPreviousNeighbour(component);
-            }
-
+            this->eventComponents.addSorted(*component, component);
             this->eventsHash[*autoEvent] = component;
         }
     }
 
+    // update links and connectors
+    for (int i = 0; i < this->eventComponents.size(); ++i)
+    {
+        auto *component = this->eventComponents.getUnchecked(i);
+        auto *previousEventComponent = this->getPreviousEventComponent(i);
+        auto *nextEventComponent = this->getNextEventComponent(i);
+
+        component->setNextNeighbour(nextEventComponent);
+        component->setPreviousNeighbour(previousEventComponent);
+
+        if (previousEventComponent)
+        {
+            previousEventComponent->setNextNeighbour(component);
+        }
+
+        if (nextEventComponent)
+        {
+            nextEventComponent->setPreviousNeighbour(component);
+        }
+    }
+    
     this->resized(); // Re-calculates children bounds
     this->roll.triggerBatchRepaintFor(this);
     this->setVisible(true);

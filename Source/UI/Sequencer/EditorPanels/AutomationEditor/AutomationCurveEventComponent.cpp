@@ -249,28 +249,37 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
 
 void AutomationCurveEventComponent::recreateConnector()
 {
-    this->connector = make<AutomationCurveEventsConnector>(this->editor, this, this->nextEventHolder);
-    assert(this->getParentComponent() != nullptr);
-    this->getParentComponent()->addAndMakeVisible(this->connector.get());
-    this->updateConnector();
+    if (this->nextEventHolder)
+    {
+        this->connector = make<AutomationCurveEventsConnector>(this->editor, this, this->nextEventHolder);
+        assert(this->getParentComponent() != nullptr);
+        this->getParentComponent()->addAndMakeVisible(this->connector.get());
+        this->updateConnector();
+    }
 }
 
 void AutomationCurveEventComponent::recreateHelper()
 {
-    this->helper = make<AutomationCurveHelper>(this->event, this->editor, this, this->nextEventHolder);
-    assert(this->getParentComponent() != nullptr);
-    this->getParentComponent()->addAndMakeVisible(this->helper.get());
-    this->updateHelper();
+    if (this->nextEventHolder)
+    {
+        this->helper = make<AutomationCurveHelper>(this->event, this->editor, this, this->nextEventHolder);
+        assert(this->getParentComponent() != nullptr);
+        this->getParentComponent()->addAndMakeVisible(this->helper.get());
+        this->updateHelper();
+    }
 }
 
 void AutomationCurveEventComponent::updateConnector()
 {
-    this->connector->resizeToFit(this->event.getCurvature());
+    if (this->connector)
+    {
+        this->connector->resizeToFit(this->event.getCurvature());
+    }
 }
 
 void AutomationCurveEventComponent::updateHelper()
 {
-    if (this->helper && this->nextEventHolder)
+    if (this->helper && this->connector && this->nextEventHolder)
     {
         constexpr auto d = AutomationCurveEventComponent::helperComponentDiameter;
         const auto linePos = this->connector->getPosition();
@@ -296,21 +305,27 @@ void AutomationCurveEventComponent::setNextNeighbour(EventComponentBase *next)
     }
 
     this->nextEventHolder = next;
-    this->recreateConnector();
 
     if (this->nextEventHolder == nullptr)
     {
+        this->connector = nullptr;
         this->helper = nullptr;
     }
     else
     {
+        this->recreateConnector();
         this->recreateHelper();
     }
 }
 
-void AutomationCurveEventComponent::setPreviousNeighbour(EventComponentBase *next)
+void AutomationCurveEventComponent::setPreviousNeighbour(EventComponentBase *prev)
 {
-    // nothing to do
+    if (prev == this->prevEventHolder)
+    {
+        return;
+    }
+
+    this->prevEventHolder = prev;
 }
 
 //===----------------------------------------------------------------------===//

@@ -54,7 +54,17 @@ public:
     }
 
     void setNextNeighbour(EventComponentBase *next) override;
-    void setPreviousNeighbour(EventComponentBase *next) override;
+    void setPreviousNeighbour(EventComponentBase *prev) override;
+
+    SafePointer<EventComponentBase> getNextNeighbour() const noexcept override
+    {
+        return this->nextEventHolder;
+    }
+
+    SafePointer<EventComponentBase> getPreviousNeighbour() const noexcept override
+    {
+        return this->prevEventHolder;
+    }
 
     void updateChildrenBounds() override
     {

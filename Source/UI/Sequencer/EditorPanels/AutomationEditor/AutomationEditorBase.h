@@ -46,7 +46,10 @@ public:
         virtual ~EventComponentBase() = default;
 
         virtual void setNextNeighbour(EventComponentBase *next) = 0;
-        virtual void setPreviousNeighbour(EventComponentBase *next) = 0;
+        virtual void setPreviousNeighbour(EventComponentBase *prev) = 0;
+
+        virtual SafePointer<EventComponentBase> getNextNeighbour() const noexcept = 0;
+        virtual SafePointer<EventComponentBase> getPreviousNeighbour() const noexcept = 0;
 
         virtual const Clip &getClip() const noexcept = 0;
         virtual const AutomationEvent &getEvent() const noexcept = 0;
