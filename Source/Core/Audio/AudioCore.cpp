@@ -209,6 +209,36 @@ void AudioCore::setActiveMidiPlayer(const String &instrumentId,
     this->lastActiveMidiPlayer.chromaticMapping = chromaticMapping;
 }
 
+void AudioCore::disconnectAllAudioCallbacks()
+{
+    if (!this->isMuted.get())
+    {
+        this->isMuted = true;
+
+        for (auto *instrument : this->instruments)
+        {
+            this->removeInstrumentFromAudioDevice(instrument);
+        }
+
+        this->deviceManager.removeAudioCallback(this->audioMonitor.get());
+    }
+}
+
+void AudioCore::reconnectAllAudioCallbacks()
+{
+    if (this->isMuted.get())
+    {
+        this->deviceManager.addAudioCallback(this->audioMonitor.get());
+
+        for (auto *instrument : this->instruments)
+        {
+            this->addInstrumentToAudioDevice(instrument);
+        }
+
+        this->isMuted = false;
+    }
+}
+
 //===----------------------------------------------------------------------===//
 // OrchestraPit
 //===----------------------------------------------------------------------===//

@@ -39,6 +39,9 @@ public:
     void setActiveMidiPlayer(const String &instrumentId,
         int periodSize, Scale::Ptr chromaticMapping, bool forceReconnect);
 
+    void disconnectAllAudioCallbacks();
+    void reconnectAllAudioCallbacks();
+
     //===------------------------------------------------------------------===//
     // OrchestraPit
     //===------------------------------------------------------------------===//
@@ -143,6 +146,8 @@ private:
 
     AudioPluginFormatManager formatManager;
     AudioDeviceManager deviceManager;
+
+    Atomic<bool> isMuted = false;
 
 private:
 

@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "RendererThread.h"
 #include "Workspace.h"
+#include "AudioCore.h"
 
 RendererThread::RendererThread(Transport &transport) :
     Thread("RendererThread"),
@@ -135,6 +136,18 @@ struct RenderBuffer final
 void RendererThread::run()
 {
     auto sequences = this->transport.buildPlaybackCache(false);
+    sequences.seekToStart();
+
+    CachedMidiMessage nextMessage;
+    bool hasNextMessage = sequences.getNextMessage(nextMessage);
+    if (!hasNextMessage)
+    {
+        jassertfalse;
+        return;
+    }
+
+    App::Workspace().getAudioCore().disconnectAllAudioCallbacks();
+
     constexpr auto bufferSize = 512;
 
     // assuming that number of channels and sample rate is equal for all instruments
@@ -176,15 +189,6 @@ void RendererThread::run()
     Thread::sleep(200);
 
     // the render loop itself
-    sequences.seekToStart();
-    
-    CachedMidiMessage nextMessage;
-    bool hasNextMessage = sequences.getNextMessage(nextMessage);
-    if (!hasNextMessage)
-    {
-        jassertfalse;
-        return;
-    }
     
     // TODO: add double precision rendering someday (for processor graphs who support it)
     AudioBuffer<float> mixingBuffer(numOutChannels, bufferSize);
@@ -338,6 +342,8 @@ void RendererThread::run()
 
     // dispose the URL object, so that its security bookmark can be released by iOS
     this->renderTarget = {};
+
+    App::Workspace().getAudioCore().reconnectAllAudioCallbacks();
 }
 
 const Array<float, CriticalSection> &RendererThread::getWaveformThumbnail() const
