@@ -72,6 +72,11 @@ public:
             const int diffResult = (beatDiff > 0.f) - (beatDiff < 0.f);
             if (diffResult != 0) { return diffResult; }
 
+            const auto cvDiff = first->getEvent().getControllerValue() -
+                second->getEvent().getControllerValue();
+            const int cvResult = (cvDiff > 0) - (cvDiff < 0);
+            if (cvResult != 0) { return cvResult; }
+
             return first->getEvent().getId() - second->getEvent().getId();
         }
     };

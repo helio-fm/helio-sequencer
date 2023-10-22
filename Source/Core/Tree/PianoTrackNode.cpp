@@ -54,6 +54,14 @@ int PianoTrackNode::getNumDeltas() const
     return this->deltas.size();
 }
 
+void PianoTrackNode::showPage()
+{
+    if (auto *parentProject = this->findParentOfType<ProjectNode>())
+    {
+        parentProject->showLinearEditor(this, this);
+    }
+}
+
 //===----------------------------------------------------------------------===//
 // VCS stuff
 //===----------------------------------------------------------------------===//

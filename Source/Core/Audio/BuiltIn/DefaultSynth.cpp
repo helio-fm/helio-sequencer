@@ -28,7 +28,7 @@ DefaultSynth::Voice::Voice()
     ap.attack = 0.001f;
     ap.decay = 1.0f;
     ap.sustain = 0.2f;
-    ap.release = 0.5f;
+    ap.release = 0.6f;
     this->adsr.setParameters(ap);
 
     Reverb::Parameters rp;
@@ -36,7 +36,7 @@ DefaultSynth::Voice::Voice()
     rp.damping = 0.0f;
     rp.wetLevel = 0.23f;
     rp.dryLevel = 0.73f;
-    rp.width = 0.0f;
+    rp.width = 0.1f;
     rp.freezeMode = 0.4f;
     this->reverb.setParameters(rp);
 }
@@ -59,13 +59,18 @@ void DefaultSynth::Voice::setCurrentPlaybackSampleRate(double sampleRate)
 void DefaultSynth::Voice::startNote(int midiNoteNumber, float velocity, SynthesiserSound *, int)
 {
     const auto channel = this->getCurrentChannel();
-    const int realNoteNumber = midiNoteNumber +
-        Globals::twelveToneKeyboardSize * (channel - 1);
+
+    // for microtonal temperaments try to figure out the key
+    // assuming the default multi-channel keyboard mapping:
+    const int adjustedNoteNumber =
+        this->periodSize > Globals::twelveTonePeriodSize ?
+        midiNoteNumber + Globals::twelveToneKeyboardSize * (channel - 1) :
+        midiNoteNumber;
 
     this->currentAngle = 0.0;
     this->level = velocity * 0.15;
 
-    const auto cyclesPerSecond = this->getNoteInHertz(realNoteNumber);
+    const auto cyclesPerSecond = this->getNoteInHertz(adjustedNoteNumber);
     const auto cyclesPerSample = cyclesPerSecond / this->getSampleRate();
 
     this->angleDelta = cyclesPerSample * MathConstants<double>::twoPi;
@@ -94,7 +99,7 @@ void DefaultSynth::Voice::renderNextBlock(AudioBuffer<float> &outputBuffer, int 
         while (--numSamples >= 0)
         {
             const auto amplitude = this->adsr.getNextSample();
-            auto currentSample = (float)(std::sin(currentAngle) * level * amplitude);
+            auto currentSample = float(std::sin(currentAngle) * this->level * amplitude);
             this->reverb.processMono(&currentSample, 1);
 
             for (auto i = outputBuffer.getNumChannels(); i --> 0 ;)
@@ -122,7 +127,7 @@ void DefaultSynth::Voice::setPeriodRange(double periodRange) noexcept
 double DefaultSynth::Voice::getNoteInHertz(int noteNumber, double frequencyOfA /*= 440.0*/) noexcept
 {
     return frequencyOfA * std::pow(this->periodRange,
-        (noteNumber - this->middleC) / double(this->periodSize));
+        double(noteNumber - this->middleC) / double(this->periodSize));
 }
 
 int DefaultSynth::Voice::getCurrentChannel() const noexcept

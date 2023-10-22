@@ -27,6 +27,7 @@ public:
     explicit AutomationTrackNode(const String &name);
 
     Image getIcon() const noexcept override;
+    void showPage() override;
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem

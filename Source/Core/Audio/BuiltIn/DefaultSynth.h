@@ -84,7 +84,11 @@ protected:
     void handleSustainPedal(int midiChannel, bool isDown) override;
     void handleSostenutoPedal(int midiChannel, bool isDown) override;
 
+#if PLATFORM_DESKTOP
     static constexpr auto numVoices = 16;
+#elif PLATFORM_MOBILE
+    static constexpr auto numVoices = 8;
+#endif
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DefaultSynth)
 };

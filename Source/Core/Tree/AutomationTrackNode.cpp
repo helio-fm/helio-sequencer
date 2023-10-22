@@ -19,6 +19,7 @@
 #include "AutomationTrackNode.h"
 #include "AutomationSequence.h"
 #include "TreeNodeSerializer.h"
+#include "PatternEditorNode.h"
 #include "Icons.h"
 #include "Pattern.h"
 
@@ -44,6 +45,17 @@ AutomationTrackNode::AutomationTrackNode(const String &name) :
 Image AutomationTrackNode::getIcon() const noexcept
 {
     return Icons::findByName(Icons::automationTrack, Globals::UI::headlineIconSize);
+}
+
+void AutomationTrackNode::showPage()
+{
+    jassertfalse; // broken config? should select PatternEditorNode instead
+
+    if (auto *parentProject = this->findParentOfType<ProjectNode>())
+    {
+        parentProject->showPatternEditor(
+            parentProject->findChildOfType<PatternEditorNode>());
+    }
 }
 
 //===----------------------------------------------------------------------===//

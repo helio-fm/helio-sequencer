@@ -234,13 +234,6 @@ void ProjectNode::recreatePage()
     this->sequencerLayout->deserialize(layoutState);
 }
 
-void ProjectNode::showPatternEditor(WeakReference<TreeNode> source)
-{
-    jassert(source != nullptr);
-    this->sequencerLayout->showPatternEditor();
-    App::Layout().showPage(this->sequencerLayout.get(), source);
-}
-
 void ProjectNode::setMidiRecordingTarget(const Clip *clip)
 {
     String instrumentId;
@@ -276,18 +269,29 @@ void ProjectNode::setEditableScope(const Clip &activeClip, bool shouldFocusToAre
     }
 }
 
+void ProjectNode::showPatternEditor(WeakReference<TreeNode> source)
+{
+    jassert(source != nullptr);
+    this->sequencerLayout->showPatternEditor();
+    App::Layout().showPage(this->sequencerLayout.get(), source);
+}
+
 void ProjectNode::showLinearEditor(WeakReference<MidiTrack> activeTrack,
     WeakReference<TreeNode> source)
 {
     jassert(source != nullptr);
     jassert(activeTrack != nullptr);
 
-    if (auto *pianoTrack = dynamic_cast<PianoTrackNode *>(activeTrack.get()))
+    auto *pianoTrack = dynamic_cast<PianoTrackNode *>(activeTrack.get());
+    if (pianoTrack == nullptr)
     {
-        this->sequencerLayout->showLinearEditor(activeTrack);
-        this->lastShownTrack = source;
-        App::Layout().showPage(this->sequencerLayout.get(), source);
+        jassertfalse;
+        return;
     }
+
+    this->sequencerLayout->showLinearEditor(activeTrack);
+    this->lastShownTrack = source;
+    App::Layout().showPage(this->sequencerLayout.get(), source);
 }
 
 WeakReference<TreeNode> ProjectNode::getLastShownTrack() const noexcept

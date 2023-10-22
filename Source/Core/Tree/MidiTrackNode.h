@@ -41,7 +41,6 @@ public:
     String getTreePath() const noexcept;
     void setTreePath(const String &path, bool sendNotifications);
 
-    void showPage() override;
     void safeRename(const String &newName, bool sendNotifications) override;
 
     //===------------------------------------------------------------------===//

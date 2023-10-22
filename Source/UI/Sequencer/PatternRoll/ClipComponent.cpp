@@ -96,7 +96,7 @@ const MidiEvent::Id ClipComponent::getId() const noexcept
 Rectangle<int> ClipComponent::getTextArea() const noexcept
 {
     return Rectangle<int>(4, 5,
-        this->getWidth() - 8, this->getHeight() - 7);
+        jmax(0, this->getWidth() - 8), jmax(0, this->getHeight() - 7));
 }
 
 //===----------------------------------------------------------------------===//
@@ -276,7 +276,7 @@ void ClipComponent::paint(Graphics &g)
     const float v = this->clip.getVelocity();
 
     g.setColour(this->fillColour);
-    g.fillRect(1.f, 0.f, w - 2.f, h);
+    g.fillRect(1.f, 0.f, jmax(0.f, w - 2.f), h);
 
     const auto textBounds = this->getTextArea();
 
@@ -285,12 +285,12 @@ void ClipComponent::paint(Graphics &g)
     if (this->flags.isSelected)
     {
         // top and bottom lines
-        g.fillRect(1.f, 1.f, w - 2.f, 3.f);
-        g.fillRect(1, this->getHeight() - 1, this->getWidth() - 2, 1);
+        g.fillRect(1.f, 1.f, jmax(0.f, w - 2.f), 3.f);
+        g.fillRect(1, int(h - 1), jmax(0, int(w - 2)), 1);
 
         // volume multiplier indicator
         const float fs = (w - 4.f) - ((w - 4.f) * v);
-        g.fillRect(2.f + (fs / 2.f), 5.f, w - fs - 4.f, 2.f);
+        g.fillRect(2.f + (fs / 2.f), 5.f, jmax(0.f, w - fs - 4.f), 2.f);
         g.drawText(this->clip.getPattern()->getTrack()->getTrackName(),
             textBounds, Justification::bottomLeft, false);
     }

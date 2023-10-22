@@ -28,6 +28,7 @@ public:
 
     Image getIcon() const noexcept override;
     bool canBeSoloed() const noexcept override { return true; }
+    void showPage() override;
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem

@@ -62,17 +62,20 @@ void PianoClipComponent::paint(Graphics &g)
             this->getTextArea(), Justification::topLeft, false);
     }
 
+    const auto w = float(this->getWidth());
+    const auto h = float(this->getHeight());
+
+    const auto *sequence = this->clip.getPattern()->getTrack()->getSequence();
+    const auto sequenceLength = jmax(1.f, sequence->getLengthInBeats());
+
     for (const auto &note : this->displayedNotes)
     {
-        const auto *ns = note.getSequence();
-        const float sequenceLength = ns->getLengthInBeats();
-        const float beat = note.getBeat() - ns->getFirstBeat();
+        const float beat = note.getBeat() - sequence->getFirstBeat();
         const auto key = jlimit(0, this->keyboardSize, note.getKey() + this->clip.getKey());
-        const float x = static_cast<float>(this->getWidth()) * (beat / sequenceLength);
-        const float w = static_cast<float>(this->getWidth()) * (note.getLength() / sequenceLength);
-        const float h = static_cast<float>(this->getHeight());
-        const int y = static_cast<int>(h - key * h / static_cast<float>(this->keyboardSize));
-        g.fillRect(x, static_cast<float>(y), jmax(0.25f, w), 1.f);
+        const float clipX = w * (beat / sequenceLength);
+        const float clipW = w * (note.getLength() / sequenceLength);
+        const float clipY = roundf(h - key * h / float(this->keyboardSize));
+        g.fillRect(clipX, clipY, jmax(0.25f, clipW), 1.f);
     }
 }
 

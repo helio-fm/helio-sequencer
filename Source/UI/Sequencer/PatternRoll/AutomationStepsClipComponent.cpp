@@ -121,10 +121,11 @@ Rectangle<float> AutomationStepsClipComponent::getEventBounds(float beat,
     float sequenceLength, bool isPedalDown) const
 {
     const float minWidth = 2.f;
-    const float w = jmax(minWidth, float(this->getWidth()) *
-        (AutomationStepEventComponent::minLengthInBeats / sequenceLength));
+    const auto safeLength = jmax(1.f, sequenceLength);
+    const float w = jmax(minWidth, float(jmax(1, this->getWidth())) *
+        (AutomationStepEventComponent::minLengthInBeats / safeLength));
 
-    const float x = (float(this->getWidth()) * (beat / sequenceLength));
+    const float x = (float(this->getWidth()) * (beat / safeLength));
     return { x - w + AutomationStepEventComponent::pointOffset, 0.f, w, float(this->getHeight()) };
 }
 
@@ -136,7 +137,7 @@ void AutomationStepsClipComponent::insertNewEventAt(const MouseEvent &e, bool sh
 {
     const float sequenceLength = this->sequence->getLengthInBeats();
     const float w = float(this->getWidth()) *
-        (AutomationStepEventComponent::minLengthInBeats / sequenceLength);
+        (AutomationStepEventComponent::minLengthInBeats / jmax(1.f, sequenceLength));
  
     const float draggingBeat = this->getBeatByPosition(int(e.x + w / 2), this->clip);
     

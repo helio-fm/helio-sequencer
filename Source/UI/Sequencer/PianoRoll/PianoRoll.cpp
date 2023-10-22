@@ -387,11 +387,6 @@ void PianoRoll::zoomAbsolute(const Rectangle<float> &proportion)
     RollBase::zoomAbsolute(proportion);
 }
 
-float PianoRoll::getZoomFactorY() const noexcept
-{
-    return float(this->viewport.getViewHeight()) / float(this->getHeight());
-}
-
 void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
 {
     jassert(minKey >= 0);

@@ -133,7 +133,7 @@ private:
 
     MetronomeScheme metronome;
 
-    static constexpr auto minNumerator = 2;
+    static constexpr auto minNumerator = 1;
     static constexpr auto maxNumerator = 64;
 
     static constexpr auto minDenominator = 2;

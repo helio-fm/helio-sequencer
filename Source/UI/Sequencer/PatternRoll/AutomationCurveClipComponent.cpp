@@ -85,7 +85,7 @@ Rectangle<float> AutomationCurveClipComponent::getEventBounds(float beat,
     float sequenceLength, double controllerValue) const
 {
     constexpr auto diameter = AutomationCurveClipComponent::eventComponentDiameter;
-    const float x = roundf(float(this->getWidth()) * (beat / sequenceLength));
+    const float x = roundf(float(this->getWidth()) * (beat / jmax(1.f, sequenceLength)));
     const float fullh = float(this->getAvailableHeight());
     const float y = roundf(float(1.0 - controllerValue) * fullh); // flipped upside down
     return { x - (diameter / 2.f), y - (diameter / 2.f), diameter, diameter };

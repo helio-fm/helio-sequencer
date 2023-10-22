@@ -69,7 +69,6 @@ public:
     void longTapEvent(const Point<float> &position,
         const WeakReference<Component> &target) override;
 
-    float getZoomFactorY() const noexcept override;
     void zoomRelative(const Point<float> &origin,
         const Point<float> &factor, bool isInertial) override;
     void zoomAbsolute(const Rectangle<float> &proportion) override;

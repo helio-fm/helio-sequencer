@@ -39,14 +39,6 @@ MidiTrackNode::MidiTrackNode(const String &name, const Identifier &type) :
     // as newly created track is not attached to any parent
 }
 
-void MidiTrackNode::showPage()
-{
-    if (auto *parentProject = this->findParentOfType<ProjectNode>())
-    {
-        parentProject->showLinearEditor(this, this);
-    }
-}
-
 void MidiTrackNode::safeRename(const String &newName, bool sendNotifications)
 {
     String fixedName = newName.replace("\\", "/");

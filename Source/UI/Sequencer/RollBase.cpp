@@ -615,7 +615,8 @@ float RollBase::getZoomFactorX() const noexcept
 
 float RollBase::getZoomFactorY() const noexcept
 {
-    return 1.f;
+    return float(this->viewport.getViewHeight()) /
+        jmax(1.f, float(this->getHeight()));
 }
 
 //===----------------------------------------------------------------------===//
@@ -633,7 +634,7 @@ void RollBase::onTimeSignaturesUpdated()
 
 int RollBase::getPlayheadPositionByBeat(double targetBeat, double parentWidth) const
 {
-    const double widthRatio = parentWidth / double(this->getWidth());
+    const double widthRatio = parentWidth / jmax(1.0, double(this->getWidth()));
     return int((targetBeat - this->firstBeat) * this->beatWidth * widthRatio);
 }
 

@@ -560,12 +560,6 @@ void PatternRoll::selectClip(const Clip &clip)
 // SmoothZoomListener
 //===----------------------------------------------------------------------===//
 
-float PatternRoll::getZoomFactorY() const noexcept
-{
-    const float viewHeight = float(this->viewport.getViewHeight());
-    return viewHeight / float(this->getHeight());
-}
-
 void PatternRoll::longTapEvent(const Point<float> &position, const WeakReference<Component> &target)
 {
     if (this->multiTouchController->hasMultiTouch())
