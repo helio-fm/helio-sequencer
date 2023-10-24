@@ -1,6 +1,6 @@
 [submodule "ThirdParty/JUCE"]
 	path = ThirdParty/JUCE
-	url = https://github.com/peterrudenko/JUCE.git
+	url = https://github.com/helio-fm/JUCE.git
 [submodule "ThirdParty/HopscotchMap"]
 	path = ThirdParty/HopscotchMap
 	url = https://github.com/Tessil/hopscotch-map.git
