@@ -26,7 +26,7 @@ install:
 - SET PATH=%PATH%;C:\Program Files (x86)\Windows Kits\10\bin\x64\
 - cmd: git submodule update --init --depth 1 --recursive 2> $null
 - ps: >-
-    Push-Location ($PSScriptRoot + "\projects\helio-workstation\ThirdParty\ASIO\")
+    Push-Location ($PSScriptRoot + "\projects\helio-sequencer\ThirdParty\ASIO\")
 
     & ".\get_asio_sdk.ps1"
 
@@ -45,14 +45,14 @@ deploy_script:
 # Sign and deploy the 64-bit portable version
 - ps: signtool sign /f sign.pfx /p $env:encrypted_codesign_pwd /as /fd sha384 /tr http://timestamp.sectigo.com?td=sha384 /td sha384 /v "$env:artifact_64_bit"
 - 7z a portable-x64.zip "%APPVEYOR_BUILD_FOLDER%\%artifact_64_bit%"
-- C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-workstation/deploy-rsa -C /c/projects/helio-workstation/portable-x64.zip %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%-x64.zip"
+- C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-sequencer/deploy-rsa -C /c/projects/helio-sequencer/portable-x64.zip %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%-x64.zip"
 # Sign and deploy the 32-bit portable version
 - ps: signtool sign /f sign.pfx /p $env:encrypted_codesign_pwd /as /fd sha384 /tr http://timestamp.sectigo.com?td=sha384 /td sha384 /v "$env:artifact_32_bit"
 - 7z a portable-x32.zip "%APPVEYOR_BUILD_FOLDER%\%artifact_32_bit%"
-- C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-workstation/deploy-rsa -C /c/projects/helio-workstation/portable-x32.zip %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%-x32.zip"
+- C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-sequencer/deploy-rsa -C /c/projects/helio-sequencer/portable-x32.zip %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%-x32.zip"
 # Create the installer containing both signed versions, then sign the installer and deploy
 - set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 6"
 - iscc "%APPVEYOR_BUILD_FOLDER%\Projects\Deployment\Windows\setup.iss"
 - ps: signtool sign /f sign.pfx /p $env:encrypted_codesign_pwd /as /fd sha384 /tr http://timestamp.sectigo.com?td=sha384 /td sha384 /v "$env:artifact_installer"
 - copy %artifact_installer% .\installer.exe
-- C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-workstation/deploy-rsa -C /c/projects/helio-workstation/installer.exe %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%.exe"
+- C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-sequencer/deploy-rsa -C /c/projects/helio-sequencer/installer.exe %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%.exe"
