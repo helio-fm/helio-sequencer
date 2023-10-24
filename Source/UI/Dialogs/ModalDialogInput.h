@@ -26,7 +26,8 @@ class ModalDialogInput final : public DialogBase, public TextEditor::Listener
 public:
 
     ModalDialogInput(const String &text, const String &message,
-        const String &okText, const String &cancelText);
+        const String &okText, const String &cancelText,
+        const String &inputToRequire = {});
 
     ~ModalDialogInput();
 
@@ -41,7 +42,7 @@ public:
         static UniquePointer<ModalDialogInput> renameTrack(const String &name);
         static UniquePointer<ModalDialogInput> newTrack();
         static UniquePointer<ModalDialogInput> newArpeggiator();
-        static UniquePointer<ModalDialogInput> deleteProjectConfirmation();
+        static UniquePointer<ModalDialogInput> deleteProjectConfirmation(const String &projectNameCheck);
         static UniquePointer<ModalDialogInput> commit(const String &name);
         static UniquePointer<ModalDialogInput> savePreset();
     };
@@ -55,6 +56,8 @@ public:
 private:
 
     String input;
+
+    const String inputToRequire;
 
     void cancel();
     void okay();

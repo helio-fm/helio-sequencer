@@ -75,6 +75,12 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->pluginsList->setHeaderHeight(AudioPluginsListComponent::tableHeaderHeight);
     this->pluginsList->getViewport()->setScrollBarsShown(true, false);
 
+#if PLATFORM_DESKTOP
+    this->pluginsList->getViewport()->setScrollBarThickness(2);
+#elif PLATFORM_MOBILE
+    this->pluginsList->getViewport()->setScrollBarThickness(35);
+#endif
+
     const auto columnFlags =
         TableHeaderComponent::visible |
         TableHeaderComponent::appearsOnColumnMenu |
@@ -171,8 +177,8 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
 {
     const auto pd = this->pluginScanner.getPlugins()[rowNumber];
 
-    const int margin = h / 12;
-    const Colour colour(findDefaultColour(Label::textColourId));
+    constexpr int margin = 5;
+    const Colour colour = findDefaultColour(Label::textColourId);
 
 #if PLATFORM_MOBILE
     constexpr auto useSmallFonts = true;
@@ -189,41 +195,59 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
 
         g.setFont(useSmallFonts ? Globals::UI::Fonts::S : Globals::UI::Fonts::M);
         g.setColour(colour);
-        g.drawText(pd.descriptiveName, margin, margin, w, h, Justification::topLeft, false);
+        g.drawText(pd.descriptiveName, margin, margin,
+            w - margin * 2, h - margin * 2, Justification::topLeft, false);
 
         g.setFont(Globals::UI::Fonts::S);
-        g.setColour(colour.withAlpha(0.7f));
-        g.drawText(pd.manufacturerName, margin, 0, w, h, Justification::centredLeft, false);
+        g.setColour(colour.withMultipliedAlpha(0.75f));
+        g.drawText(pd.manufacturerName, margin, margin,
+            w - margin * 2, h - margin * 2, Justification::centredLeft, false);
 
-        g.setColour(colour.withAlpha(0.5f));
+        g.setColour(colour.withMultipliedAlpha(0.5f));
 
         String details = pd.version;
         if (inputChannelsString.isNotEmpty())
         {
-            details << ", " << inputChannelsString;
+            if (details.isNotEmpty())
+            {
+                details << ", ";
+            }
+
+            details << inputChannelsString;
         }
 
         if (outputChannelsString.isNotEmpty())
         {
-            details << ", " << outputChannelsString;
- 
+            if (details.isNotEmpty())
+            {
+                details << ", ";
+            }
+
+            details << outputChannelsString;
         }
 
-        g.drawText(details, margin, -margin, w, h, Justification::bottomLeft, false);
+        g.drawText(details, margin, margin,
+            w - margin * 2, h - margin * 2, Justification::bottomLeft, false);
+
         break;
     }
     case ColumnIds::category:
     {
         g.setFont(useSmallFonts ? Globals::UI::Fonts::XS : Globals::UI::Fonts::S);
-        g.setColour(colour.withAlpha(0.5f));
-        g.drawText(pd.category, 0, margin, w - int(margin * 1.5f), h, Justification::topRight, false);
+        g.setColour(colour.withMultipliedAlpha(0.5f));
+        g.drawText(pd.category, margin, margin,
+            w - margin * 2, h - margin * 2, Justification::topRight, false);
         break;
     }
     case ColumnIds::format:
     {
-        g.setFont(useSmallFonts ? Globals::UI::Fonts::XS : Globals::UI::Fonts::S);
-        g.setColour(colour.withAlpha(0.7f));
-        g.drawText(pd.pluginFormatName, margin, margin, w, h, Justification::topLeft, false);
+        if (pd.pluginFormatName != BuiltInSynthsPluginFormat::formatName)
+        {
+            g.setFont(useSmallFonts ? Globals::UI::Fonts::XS : Globals::UI::Fonts::S);
+            g.setColour(colour.withMultipliedAlpha(0.75f));
+            g.drawText(pd.pluginFormatName, margin, margin,
+                w - margin * 2, h - margin * 2, Justification::topLeft, false);
+        }
         break;
     }
     default:

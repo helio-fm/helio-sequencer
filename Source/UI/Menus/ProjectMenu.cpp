@@ -84,17 +84,11 @@ void ProjectMenu::handleCommandMessage(int commandId)
             auto &project = this->project;
             confirmationDialog->onOk = [&project]()
             {
-                auto inputDialog = ModalDialogInput::Presets::deleteProjectConfirmation();
+                auto inputDialog = ModalDialogInput::Presets::deleteProjectConfirmation(project.getName());
                 inputDialog->onOk = [&project](const String &text)
                 {
-                    if (text == project.getName())
-                    {
-                        App::Workspace().unloadProject(project.getId(), true, true);
-                    }
-                    else
-                    {
-                        App::Layout().showTooltip(TRANS(I18n::Menu::Project::deleteCancelled));
-                    }
+                    jassert(text == project.getName());
+                    App::Workspace().unloadProject(project.getId(), true, true);
                 };
 
                 App::showModalComponent(move(inputDialog));

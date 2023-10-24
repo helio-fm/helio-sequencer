@@ -78,17 +78,17 @@ private:
     UniquePointer<HeadlineContextMenuController> contextMenuController;
 
 #if PLATFORM_DESKTOP
-    static constexpr auto rowHeight = 64;
-    static constexpr auto tableHeaderHeight = 34;
+    static constexpr auto rowHeight = 60;
 #elif PLATFORM_MOBILE
     static constexpr auto rowHeight = 72;
-    static constexpr auto tableHeaderHeight = 40;
 #endif
+
+    static constexpr auto tableHeaderHeight = 40;
 
     enum ColumnIds
     {
-        vendorAndName = 1, // TableListBox needs any number apart from 0
-        category = 2,
+        category = 1, // TableListBox needs any number apart from 0
+        vendorAndName = 2,
         format = 3
     };
 

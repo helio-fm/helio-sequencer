@@ -20,8 +20,9 @@
 #include "CommandIDs.h"
 
 ModalDialogInput::ModalDialogInput(const String &text, const String &message,
-    const String &okText, const String &cancelText) :
-    input(text)
+    const String &okText, const String &cancelText, const String &inputToRequire) :
+    input(text),
+    inputToRequire(inputToRequire)
 {
     const auto isPhoneLayout = App::isRunningOnPhone();
 
@@ -114,7 +115,8 @@ void ModalDialogInput::textEditorTextChanged(TextEditor &editor)
 
 void ModalDialogInput::textEditorReturnKeyPressed(TextEditor &editor)
 {
-    if (this->input.isNotEmpty())
+    if (this->input.isNotEmpty() &&
+        (this->inputToRequire.isEmpty() || this->input == this->inputToRequire))
     {
         this->okay(); // apply on return key
         return;
@@ -151,7 +153,7 @@ void ModalDialogInput::cancel()
 
 void ModalDialogInput::okay()
 {
-    if (textEditor->getText().isEmpty())
+    if (this->textEditor->getText().isEmpty())
     {
         return;
     }
@@ -171,7 +173,8 @@ void ModalDialogInput::okay()
 
 void ModalDialogInput::updateOkButtonState()
 {
-    this->okButton->setEnabled(this->input.isNotEmpty());
+    this->okButton->setEnabled(this->input.isNotEmpty() &&
+        (this->inputToRequire.isEmpty() || this->input == this->inputToRequire));
 }
 
 Component *ModalDialogInput::getPrimaryFocusTarget()
@@ -235,12 +238,13 @@ UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newTrack()
         TRANS(I18n::Dialog::cancel));
 }
 
-UniquePointer<ModalDialogInput> ModalDialogInput::Presets::deleteProjectConfirmation()
+UniquePointer<ModalDialogInput> ModalDialogInput::Presets::deleteProjectConfirmation(const String &projectNameCheck)
 {
     return make<ModalDialogInput>(String(),
         TRANS(I18n::Dialog::deleteProjectConfirmCaption),
         TRANS(I18n::Dialog::delete_),
-        TRANS(I18n::Dialog::cancel));
+        TRANS(I18n::Dialog::cancel),
+        projectNameCheck);
 }
 
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::commit(const String &name)

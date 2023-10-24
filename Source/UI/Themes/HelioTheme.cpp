@@ -377,29 +377,13 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
 // Tables
 //===----------------------------------------------------------------------===//
 
-void HelioTheme::drawTableHeaderBackground(Graphics &g, TableHeaderComponent &header)
-{
-    Rectangle<int> r(header.getLocalBounds());
+void HelioTheme::drawTableHeaderBackground(Graphics &g, TableHeaderComponent &header) {}
 
-    g.setGradientFill (ColourGradient (Colour (0x35000000),
-                                       static_cast<float> ((r.getWidth() / 2)), 0.0f,
-                                       Colour (0x00000000),
-                                       0.0f, 0.0f,
-                                       true));
-    g.drawHorizontalLine(r.getHeight() - 1, 0.f, float(r.getWidth()));
-
-    g.setGradientFill (ColourGradient (Colour (0x15ffffff),
-                                       static_cast<float> ((r.getWidth() / 2)), 0.0f,
-                                       Colour (0x00ffffff),
-                                       0.0f, 0.0f,
-                                       true));
-    g.drawHorizontalLine(r.getHeight() - 2, 0.f, float(r.getWidth()));
-}
-
-void HelioTheme::drawTableHeaderColumn(Graphics &g, TableHeaderComponent &header, const String &columnName,
+void HelioTheme::drawTableHeaderColumn(Graphics &g,
+    TableHeaderComponent &header, const String &columnName,
     int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags)
 {
-    auto highlightColour = findDefaultColour(TableHeaderComponent::highlightColourId);
+    const auto highlightColour = findDefaultColour(TableHeaderComponent::highlightColourId);
 
     if (isMouseDown)
     {
@@ -417,15 +401,18 @@ void HelioTheme::drawTableHeaderColumn(Graphics &g, TableHeaderComponent &header
     if ((columnFlags & (TableHeaderComponent::sortedForwards | TableHeaderComponent::sortedBackwards)) != 0)
     {
         Path sortArrow;
-        sortArrow.addTriangle(0.0f, 0.0f,
-            0.5f, (columnFlags & TableHeaderComponent::sortedForwards) != 0 ? -0.9f : 0.9f,
-            1.0f, 0.0f);
+        sortArrow.addTriangle(0.f, 0.f,
+            0.5f, (columnFlags & TableHeaderComponent::sortedForwards) != 0 ? -0.8f : 0.8f,
+            1.f, 0.f);
 
-        g.fillPath(sortArrow, sortArrow.getTransformToScaleToFit(area.removeFromRight(height / 2).reduced(2).toFloat(), true));
+        g.fillPath(sortArrow,
+            sortArrow.getTransformToScaleToFit(area.removeFromRight(height / 2)
+                .reduced(6).toFloat(), true));
     }
 
     g.setFont(Globals::UI::Fonts::M);
-    g.drawFittedText(columnName, area, Justification::centredLeft, 1);
+    g.drawFittedText(columnName, area, columnId == 1 ? // a nasty hack, only used in AudioPluginsListComponent
+        Justification::centredRight : Justification::centredLeft, 1);
 }
 
 //===----------------------------------------------------------------------===//

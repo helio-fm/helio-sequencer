@@ -37,10 +37,11 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMa
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
 
     constexpr auto topPadding = 2.f;
-    constexpr auto triangleSize = 5.f;
+    constexpr auto triangleHeight = 4.5f;
+    constexpr auto triangleWidth = 7.5f;
     this->triangleShape.addTriangle(0.f, topPadding,
-        triangleSize * 1.5f, topPadding,
-        0.f, triangleSize + topPadding);
+        triangleWidth, topPadding,
+        0.f, triangleHeight + topPadding);
 }
 
 TimeSignatureSmallComponent::~TimeSignatureSmallComponent() = default;
@@ -61,7 +62,7 @@ void TimeSignatureSmallComponent::updateContent(const TimeSignatureEvent &newEve
     this->event = newEvent;
 
     this->colour = this->event.getTrackColour()
-        .interpolatedWith(findDefaultColour(ColourIDs::TrackScroller::scrollerFill), 0.97f);
+        .interpolatedWith(findDefaultColour(ColourIDs::TrackScroller::scrollerFill), 0.95f);
     const auto textColour = this->event.getTrackColour()
         .interpolatedWith(findDefaultColour(Label::textColourId), 0.5f);
     this->signatureLabel->setColour(Label::textColourId, textColour);

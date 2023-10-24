@@ -35,15 +35,16 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMa
     this->signatureLabel->setFont(Globals::UI::Fonts::M);
     this->signatureLabel->setJustificationType(Justification::topLeft);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
-    this->signatureLabel->setBounds(-2, 0, 48, TimeSignatureComponent::timeSignatureHeight);
+    this->signatureLabel->setBounds(-2, -1, 48, TimeSignatureComponent::timeSignatureHeight);
 
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
 
     constexpr auto topPadding = 0.f;
-    constexpr auto triangleSize = 5.f;
+    constexpr auto triangleHeight = 4.5f;
+    constexpr auto triangleWidth = 7.5f;
     this->triangleShape.addTriangle(0.f, topPadding,
-        triangleSize * 1.5f, topPadding,
-        0.f, triangleSize + topPadding);
+        triangleWidth, topPadding,
+        0.f, triangleHeight + topPadding);
 
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 }
@@ -185,9 +186,12 @@ void TimeSignatureLargeComponent::updateContent(const TimeSignatureEvent &newEve
     this->event = newEvent;
 
     this->colour = this->event.getTrackColour()
-        .interpolatedWith(findDefaultColour(ColourIDs::Roll::headerSnaps), 0.75f);
+        .interpolatedWith(findDefaultColour(ColourIDs::Roll::headerSnaps), 0.5f)
+        .withMultipliedAlpha(0.4f);
+
     const auto textColour = this->event.getTrackColour()
         .interpolatedWith(findDefaultColour(Label::textColourId), 0.5f);
+
     this->signatureLabel->setColour(Label::textColourId, textColour);
 
     auto *cachedImage = static_cast<CachedLabelImage *>(this->signatureLabel->getCachedComponentImage());

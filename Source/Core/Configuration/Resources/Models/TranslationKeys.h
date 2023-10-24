@@ -28,8 +28,6 @@ namespace I18n
     {
         static constexpr auto conjunction = constexprHash("common::and");
         static constexpr auto yesterday = constexprHash("common::yesterday");
-        static constexpr auto supportProject = constexprHash("common::support");
-        static constexpr auto updateProceed = constexprHash("update::proceed");
         static constexpr auto networkError = constexprHash("common::networkerror");
     }
 
@@ -145,7 +143,6 @@ namespace I18n
             static constexpr auto changeTemperament = constexprHash("menu::project::change::tmpr");
             static constexpr auto convertTemperament = constexprHash("menu::project::convert::tmpr");
             static constexpr auto deleteConfirm = constexprHash("menu::project::delete");
-            static constexpr auto deleteCancelled = constexprHash("menu::project::delete::cancelled");
             static constexpr auto editorLinear = constexprHash("menu::project::editor::linear");
             static constexpr auto editorPattern = constexprHash("menu::project::editor::pattern");
             static constexpr auto editorVcs = constexprHash("menu::project::editor::vcs");
