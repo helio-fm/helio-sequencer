@@ -116,7 +116,7 @@ void AutomationCurveHelper::mouseDrag(const MouseEvent &e)
                 {
                     const float cv = this->event.getCurvature();
                     this->tuningIndicator->setValue(cv, cv);
-                    this->tuningIndicator->repositionToTargetAt(this);
+                    this->tuningIndicator->repositionAtTargetCenter(this);
                 }
             }
         }

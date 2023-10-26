@@ -36,7 +36,7 @@
     if (this->isEnabled()) { this->setVisible(true); }
 
 //===----------------------------------------------------------------------===//
-// Child level component
+// Single note velocity component
 //===----------------------------------------------------------------------===//
 
 class VelocityEditorNoteComponent final : public Component
@@ -54,6 +54,11 @@ public:
         this->setMouseCursor(MouseCursor::UpDownResizeCursor);
     }
 
+    inline const Note &getNote() const noexcept
+    {
+        return this->note;
+    }
+
     inline float getNoteBeat() const noexcept
     {
         return this->note.getBeat();
@@ -69,7 +74,7 @@ public:
         return this->note.getLength();
     }
 
-    inline float getVelocity() const noexcept
+    inline float getFullVelocity() const noexcept
     {
         return this->note.getVelocity() * this->clip.getVelocity();
     }
@@ -149,33 +154,34 @@ public:
 
     bool hitTest(int, int y) noexcept override
     {
-        constexpr auto dragAreaSize = 5;
+#if PLATFORM_DESKTOP
+        constexpr auto dragAreaSize = 8;
+#elif PLATFORM_MOBILE
+        constexpr auto dragAreaSize = 16;
+#endif
         return this->editable && y <= dragAreaSize;
     }
 
     void mouseDown(const MouseEvent &e) override
     {
-        if (e.mods.isLeftButtonDown())
-        {
-            this->note.getSequence()->checkpoint();
-            this->velocityAnchor = this->getVelocity();
-        }
+        this->getEditor()->startFineTuning(this, e);
     }
 
     void mouseDrag(const MouseEvent &e) override
     {
-        const auto newVelocity = jlimit(0.f, 1.f, this->velocityAnchor -
-            float(e.getDistanceFromDragStartY()) / float(Globals::UI::levelsMapHeight));
+        this->getEditor()->continueFineTuning(this, e);
+    }
 
-        static_cast<PianoSequence *>(this->note.getSequence())->
-            change(this->note, this->note.withVelocity(newVelocity), true);
+    void mouseUp(const MouseEvent &e) override
+    {
+        this->getEditor()->endFineTuning(this, e);
     }
 
 private:
 
     friend class VelocityEditor;
 
-    VelocityEditor *getParentMap() const
+    VelocityEditor *getEditor() const
     {
         jassert(this->getParentComponent());
         return static_cast<VelocityEditor *>(this->getParentComponent());
@@ -190,8 +196,7 @@ private:
     float dx = 0.f;
     float dw = 0.f;
 
-    float velocityAnchor = 0.f;
-    bool editable = true;
+    bool editable = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityEditorNoteComponent)
 };
@@ -330,7 +335,7 @@ VelocityEditor::VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll)
     this->setPaintingIsUnclipped(true);
 
     this->volumeBlendingIndicator = make<FineTuningValueIndicator>(this->volumeBlendingAmount, "");
-    this->volumeBlendingIndicator->setDisplayValue(false);
+    this->volumeBlendingIndicator->setShouldDisplayValue(false);
     this->volumeBlendingIndicator->setSize(40, 40);
     this->addChildComponent(this->volumeBlendingIndicator.get());
 
@@ -414,10 +419,10 @@ void VelocityEditor::mouseUp(const MouseEvent &e)
     {
         this->volumeBlendingIndicator->setVisible(false);
         this->dragHelper = nullptr;
-        this->dragIntersections.clear();
-        this->dragChangesBefore.clearQuick();
-        this->dragChangesAfter.clearQuick();
-        this->dragHasChanges = false;
+        this->groupDragIntersections.clear();
+        this->groupDragChangesBefore.clearQuick();
+        this->groupDragChangesAfter.clearQuick();
+        this->groupDragHasChanges = false;
     }
 }
 
@@ -765,7 +770,86 @@ void VelocityEditor::changeListenerCallback(ChangeBroadcaster *source)
 }
 
 //===----------------------------------------------------------------------===//
-// Private
+// Fine-tuning a single note
+//===----------------------------------------------------------------------===//
+
+void VelocityEditor::startFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e)
+{
+    if (e.mods.isLeftButtonDown())
+    {
+        this->project.checkpoint();
+        this->fineTuningVelocityAnchor = target->getNote().getVelocity();
+
+        this->fineTuningDragger.startDraggingComponent(target, e,
+            this->fineTuningVelocityAnchor,
+            0.f, 1.f, VelocityEditor::fineTuningStep,
+            FineTuningComponentDragger::Mode::DragOnlyY);
+
+        this->fineTuningIndicator = make<FineTuningValueIndicator>(0.f, "");
+
+        const auto finalMidiVelocity = MidiMessage::floatValueToMidiByte(target->getFullVelocity());
+        this->fineTuningIndicator->setValue(target->getNote().getVelocity(), int(finalMidiVelocity));
+
+        // adding it to grandparent to avoid clipping
+        assert(this->getParentComponent() != nullptr);
+        assert(this->getParentComponent()->getParentComponent() != nullptr);
+        auto *grandParent = this->getParentComponent()->getParentComponent();
+
+        grandParent->addAndMakeVisible(this->fineTuningIndicator.get());
+        this->fineTuningIndicator->repositionAtTargetTop(target);
+        this->fader.fadeIn(this->fineTuningIndicator.get(), Globals::UI::fadeInLong);
+
+        // todo send midi?
+    }
+}
+
+void VelocityEditor::continueFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e)
+{
+    if (this->fineTuningIndicator != nullptr)
+    {
+        this->fineTuningDragger.dragComponent(target, e);
+
+        // fine-tuning by default, simple dragging with mod keys
+        const auto newNoteVelocity = e.mods.isAnyModifierKeyDown() ?
+            jlimit(0.f, 1.f, this->fineTuningVelocityAnchor -
+                float(e.getDistanceFromDragStartY()) / float(Globals::UI::levelsMapHeight)) :
+            this->fineTuningDragger.getValue();
+
+        const bool velocityChanged = target->getNote().getVelocity() != newNoteVelocity;
+
+        if (velocityChanged)
+        {
+            this->setMouseCursor(MouseCursor::DraggingHandCursor);
+            auto *sequence = static_cast<PianoSequence *>(target->getNote().getSequence());
+            sequence->change(target->getNote(), target->getNote().withVelocity(newNoteVelocity), true);
+        }
+        else
+        {
+            this->applyNoteBounds(target);
+        }
+
+        jassert(this->fineTuningIndicator != nullptr);
+        const auto finalMidiVelocity = MidiMessage::floatValueToMidiByte(target->getFullVelocity());
+        this->fineTuningIndicator->setValue(newNoteVelocity, int(finalMidiVelocity));
+        this->fineTuningIndicator->repositionAtTargetTop(target);
+    }
+}
+
+void VelocityEditor::endFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e)
+{
+    if (this->fineTuningIndicator != nullptr)
+    {
+        this->fader.fadeOut(this->fineTuningIndicator.get(), Globals::UI::fadeOutLong);
+        this->fineTuningIndicator = nullptr;
+
+        this->fineTuningDragger.endDraggingComponent(target, e);
+
+        this->applyNoteBounds(target);
+    }
+}
+
+//===----------------------------------------------------------------------===//
+// Adjusting a group of notes
 //===----------------------------------------------------------------------===//
 
 void VelocityEditor::updateVolumeBlendingIndicator(const Point<int> &pos)
@@ -851,55 +935,59 @@ void VelocityEditor::applyVolumeChanges()
             }
         }
 
-        auto existingIntersection = this->dragIntersections.find(i.first);
-        if (hasIntersection && existingIntersection == this->dragIntersections.end())
+        auto existingIntersection = this->groupDragIntersections.find(i.first);
+        if (hasIntersection && existingIntersection == this->groupDragIntersections.end())
         {
             // found new intersection
             shouldUndo = true;
-            this->dragIntersections.emplace(i.first, intersectionVelocity);
+            this->groupDragIntersections.emplace(i.first, intersectionVelocity);
         }
-        else if (!hasIntersection && existingIntersection != this->dragIntersections.end())
+        else if (!hasIntersection && existingIntersection != this->groupDragIntersections.end())
         {
             // lost existing intersection
             shouldUndo = true;
-            this->dragIntersections.erase(existingIntersection);
+            this->groupDragIntersections.erase(existingIntersection);
         }
         else if (hasIntersection)
         {
-            this->dragIntersections[i.first] = intersectionVelocity;
+            this->groupDragIntersections[i.first] = intersectionVelocity;
         }
     }
 
-    this->dragChangesBefore.clearQuick();
-    this->dragChangesAfter.clearQuick();
+    this->groupDragChangesBefore.clearQuick();
+    this->groupDragChangesAfter.clearQuick();
 
-    for (const auto &i : this->dragIntersections)
+    for (const auto &i : this->groupDragIntersections)
     {
         const auto newVelocity = (i.second * this->volumeBlendingAmount) +
             (i.first.getVelocity() * (1.f - this->volumeBlendingAmount));
 
-        this->dragChangesBefore.add(i.first);
-        this->dragChangesAfter.add(i.first.withVelocity(newVelocity));
+        this->groupDragChangesBefore.add(i.first);
+        this->groupDragChangesAfter.add(i.first.withVelocity(newVelocity));
     }
 
     auto *sequence = static_cast<PianoSequence *>(activeClip.getPattern()->getTrack()->getSequence());
 
-    if (shouldUndo && this->dragHasChanges)
+    if (shouldUndo && this->groupDragHasChanges)
     {
         this->project.getUndoStack()->undoCurrentTransactionOnly();
     }
 
-    if (!this->dragChangesBefore.isEmpty())
+    if (!this->groupDragChangesBefore.isEmpty())
     {
-        if (!this->dragHasChanges)
+        if (!this->groupDragHasChanges)
         {
-            this->dragHasChanges = true;
+            this->groupDragHasChanges = true;
             this->project.checkpoint();
         }
 
-        sequence->changeGroup(this->dragChangesBefore, this->dragChangesAfter, true);
+        sequence->changeGroup(this->groupDragChangesBefore, this->groupDragChangesAfter, true);
     }
 }
+
+//===----------------------------------------------------------------------===//
+// Reloading / resizing / repainting
+//===----------------------------------------------------------------------===//
 
 void VelocityEditor::reloadTrackMap()
 {
@@ -961,7 +1049,7 @@ void VelocityEditor::applyNoteBounds(VelocityEditorNoteComponent *nc)
     const float w = mapWidth * (nc->getLength() / projectLengthInBeats);
 
     // at least 4 pixels are visible for 0 volume events:
-    const int h = jmax(4, int(this->getHeight() * nc->getVelocity()));
+    const int h = jmax(4, int(this->getHeight() * nc->getFullVelocity()));
     nc->setRealBounds(x, this->getHeight() - h, jmax(1.f, w), h);
 }
 

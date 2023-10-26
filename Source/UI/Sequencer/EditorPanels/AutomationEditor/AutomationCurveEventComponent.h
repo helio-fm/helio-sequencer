@@ -114,8 +114,8 @@ private:
     const Clip &clip;
 
     AutomationEvent anchor;
-    FineTuningComponentDragger dragger;
 
+    FineTuningComponentDragger dragger;
     UniquePointer<FineTuningValueIndicator> tuningIndicator;
     ComponentFader fader;
 

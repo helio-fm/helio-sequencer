@@ -23,6 +23,7 @@
 #include "ComponentFader.h"
 #include "RollListener.h"
 #include "EditorPanelsScroller.h"
+#include "FineTuningComponentDragger.h"
 
 class RollBase;
 class TrackMap;
@@ -100,14 +101,37 @@ private:
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
     PatternMap patternMap;
 
+private:
+
+    // for adjusting a single note:
+
+    float fineTuningVelocityAnchor = 0.f;
+    FineTuningComponentDragger fineTuningDragger;
+    UniquePointer<FineTuningValueIndicator> fineTuningIndicator;
+
+    void startFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e);
+    void continueFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e);
+    void endFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e);
+
+    static constexpr auto fineTuningStep = 1.f / 128.f;
+
+    friend class VelocityEditorNoteComponent;
+
+private:
+
+    // for adjusting a group of notes:
+
     UniquePointer<VelocityLevelDraggingHelper> dragHelper;
-    FlatHashMap<Note, float, MidiEventHash> dragIntersections;
-    Array<Note> dragChangesBefore, dragChangesAfter;
-    bool dragHasChanges = false;
+    FlatHashMap<Note, float, MidiEventHash> groupDragIntersections;
+    Array<Note> groupDragChangesBefore, groupDragChangesAfter;
+    bool groupDragHasChanges = false;
+
+private:
 
     float volumeBlendingAmount = 1.f;
     UniquePointer<FineTuningValueIndicator> volumeBlendingIndicator;
     void updateVolumeBlendingIndicator(const Point<int> &pos);
+
     ComponentFader fader;
 
     void applyVolumeChanges();

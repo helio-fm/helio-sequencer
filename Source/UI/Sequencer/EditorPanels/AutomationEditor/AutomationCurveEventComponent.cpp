@@ -191,7 +191,7 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
                     this->tuningIndicator->setValue(cv);
                 }
 
-                this->tuningIndicator->repositionToTargetAt(this);
+                this->tuningIndicator->repositionAtTargetCenter(this);
             }
 
             this->repaint();

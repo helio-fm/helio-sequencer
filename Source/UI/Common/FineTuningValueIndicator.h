@@ -27,11 +27,13 @@ public:
     void setValue(float newValue);
     void setValue(float newValue, int valueView);
     void setValue(float newValue, float valueView);
-    void repositionToTargetAt(Component *component);
-    void setDisplayValue(bool shouldDisplay);
+
+    void repositionAtTargetTop(Component *component);
+    void repositionAtTargetCenter(Component *component);
+
+    void setShouldDisplayValue(bool shouldDisplay);
 
     void paint(Graphics &g) override;
-    void resized() override;
 
 private:
 
@@ -40,6 +42,8 @@ private:
     Slider dummySlider;
 
     UniquePointer<Label> valueLabel;
+
+    static constexpr auto labelHeight = 24;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FineTuningValueIndicator)
 };

@@ -42,12 +42,6 @@ void FineTuningValueIndicator::paint(Graphics &g)
         startAngleRadians, endAngleRadians, this->dummySlider);
 }
 
-void FineTuningValueIndicator::resized()
-{
-    static constexpr auto labelHeight = 24;
-    this->valueLabel->setBounds(0, this->getHeight() - labelHeight - 2, this->getWidth(), labelHeight);
-}
-
 void FineTuningValueIndicator::setValue(float newValue)
 {
     this->setValue(newValue, newValue);
@@ -81,15 +75,32 @@ void FineTuningValueIndicator::setValue(float newValue, int valueView)
     this->repaint();
 }
 
-void FineTuningValueIndicator::repositionToTargetAt(Component *component)
+void FineTuningValueIndicator::repositionAtTargetTop(Component *component)
+{
+    const auto topRelativeToMyParent = this->getParentComponent()->
+        getLocalPoint(component, Point<int>(component->getWidth() / 2, 0));
+
+    this->setTopLeftPosition(topRelativeToMyParent -
+        Point<int>(this->getWidth() / 2, this->getHeight() - 8));
+
+    this->valueLabel->setBounds(0,
+        this->getHeight() / 2 - FineTuningValueIndicator::labelHeight / 2,
+        this->getWidth(), FineTuningValueIndicator::labelHeight);
+}
+
+void FineTuningValueIndicator::repositionAtTargetCenter(Component *component)
 {
     const auto centreRelativeToMyParent = this->getParentComponent()->
         getLocalPoint(component, component->getLocalBounds().getCentre());
 
     this->setTopLeftPosition(centreRelativeToMyParent - this->getLocalBounds().getCentre());
+
+    this->valueLabel->setBounds(0,
+        this->getHeight() - FineTuningValueIndicator::labelHeight - 2,
+        this->getWidth(), FineTuningValueIndicator::labelHeight);
 }
 
-void FineTuningValueIndicator::setDisplayValue(bool shouldDisplay)
+void FineTuningValueIndicator::setShouldDisplayValue(bool shouldDisplay)
 {
     this->valueLabel->setVisible(shouldDisplay);
 }
