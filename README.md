@@ -24,8 +24,8 @@ Check out the documentation to get started: [docs.helio.fm](https://docs.helio.f
 
 ||AppVeyor|Travis CI|
 |---|---|---|
-|master|[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-sequencer?svg=true&branch=master)](https://ci.appveyor.com/project/helio-fm/helio-sequencer)|[![Travis CI Build Status](https://app.travis-ci.com/helio-fm/helio-workstation.svg?branch=master)](https://app.travis-ci.com/helio-fm/helio-workstation)|
-|develop|[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-sequencer?svg=true&branch=develop)](https://ci.appveyor.com/project/helio-fm/helio-sequencer)|[![Travis CI Build Status](https://app.travis-ci.com/helio-fm/helio-workstation.svg?branch=develop)](https://app.travis-ci.com/helio-fm/helio-workstation)|
+|master|[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-sequencer?svg=true&branch=master)](https://ci.appveyor.com/project/helio-fm/helio-sequencer)|[![Travis CI Build Status](https://app.travis-ci.com/helio-fm/helio-sequencer.svg?branch=master)](https://app.travis-ci.com/helio-fm/helio-sequencer)|
+|develop|[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/helio-fm/helio-sequencer?svg=true&branch=develop)](https://ci.appveyor.com/project/helio-fm/helio-sequencer)|[![Travis CI Build Status](https://app.travis-ci.com/helio-fm/helio-sequencer.svg?branch=develop)](https://app.travis-ci.com/helio-fm/helio-sequencer)|
 
 ### Packaging status
 
@@ -52,7 +52,7 @@ Helio is still a work in progress, and there are several ways you could help:
 
 ## License and credits
 
-GNU GPL v3 © Peter Rudenko and [contributors](https://github.com/helio-fm/helio-workstation/graphs/contributors), see ``LICENSE`` for details.
+GNU GPL v3 © Peter Rudenko and [contributors](https://github.com/helio-fm/helio-sequencer/graphs/contributors), see ``LICENSE`` for details.
 
 App icon by Valery Davletbaev, distributed under [CC-BY](https://creativecommons.org/licenses/by/4.0/). Other icons from various [free icon fonts](https://icomoon.io) are licensed under [SIL Open Font License](http://scripts.sil.org/cms/scripts/page.php?id=OFL) and [CC-BY](https://creativecommons.org/licenses/by/4.0/).
 

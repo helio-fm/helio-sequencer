@@ -76,7 +76,7 @@ Chunks follow this pattern: `base:key/channel,key2/channel2,key3/channel3`. Whic
 
 If each next key just incrementally moves by 1, the chunk could be shortened like this: `base:key/channel,count+`.
 
-// TODO more examples (if you have set up keyboard mappings, which work well for some of your instruments, feel free to [share them](https://github.com/helio-fm/helio-workstation/discussions) to improve these docs)
+// TODO more examples (if you have set up keyboard mappings, which work well for some of your instruments, feel free to [share them](https://github.com/helio-fm/helio-sequencer/discussions) to improve these docs)
 
 ## Switching temperaments
 
@@ -117,7 +117,7 @@ If you're using a microtonal physical keyboard, make sure to uncheck this box so
 ## Examples
 
 This section will describe setting up various microtonal plugins in Helio. For now, it's just a couple of examples, 
-if you managed to make any other plugin work, please [share](https://github.com/helio-fm/helio-workstation/blob/develop/Docs/getting-microtonal.md) your findings.
+if you managed to make any other plugin work, please [share](https://github.com/helio-fm/helio-sequencer/blob/develop/Docs/getting-microtonal.md) your findings.
 
 ### Pianoteq
 

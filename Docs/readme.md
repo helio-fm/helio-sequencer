@@ -4,7 +4,7 @@ Welcome to the documentation for the Helio project, a free lightweight music seq
 
 Helio was designed to save me time struggling with the MIDI editor, so I could focus more on musical ideas. In this documentation, I'll also try to save time by keeping it as short and simple as possible.
 
-If you notice that something important is missing, which I'm pretty sure it is, send me an angry [email](mailto:peter.rudenko@gmail.com), or file a [PR](https://github.com/helio-fm/helio-workstation/pulls) on Github.
+If you notice that something important is missing, which I'm pretty sure it is, send me an angry [email](mailto:peter.rudenko@gmail.com), or file a [PR](https://github.com/helio-fm/helio-sequencer/pulls) on Github.
 
 *Some generated content will be missing if you read this page in the project's repository, see the full rendered version at [docs.helio.fm](https://docs.helio.fm).*
 
@@ -79,7 +79,7 @@ Minimum deployment targets are:
 
 #### Basic build instructions
 
-* Clone with submodules: `git clone --recursive https://github.com/helio-fm/helio-workstation.git`.
+* Clone with submodules: `git clone --recursive https://github.com/helio-fm/helio-sequencer.git`.
 * Install dependencies:
   * On Windows, get ASIO SDK (which can't be redistributed in this project due to licensing restrictions, but you may use `ThirdParty/ASIO/get_asio_sdk.ps1` powershell script to download and extract the SDK source).
   * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev libc++-dev`; the makefile assumes you've set up either `export CONFIG=Debug`, `export CONFIG=Release32` or `export CONFIG=Release64` before you `make`.

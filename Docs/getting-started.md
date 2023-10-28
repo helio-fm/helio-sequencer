@@ -27,7 +27,7 @@ So, in general, I try to avoid adding UI controls if there is a way to do withou
 * one challenge is to keep the UI simple, even minimalistic, while also not being disorienting,
 * another challenge is to keep the UI look and behave consistently across all platforms, both desktop and mobile.
 
-If something feels misleading to you, please [report](https://github.com/helio-fm/helio-workstation/issues/new) it to help identify the main friction points.
+If something feels misleading to you, please [report](https://github.com/helio-fm/helio-sequencer/issues/new) it to help identify the main friction points.
 
 ### Workspace navigation
 

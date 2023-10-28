@@ -7,7 +7,7 @@ language = "en"
 src = "."
 
 [output.html]
-git-repository-url = "https://github.com/helio-fm/helio-workstation/tree/develop/Docs"
+git-repository-url = "https://github.com/helio-fm/helio-sequencer/tree/develop/Docs"
 default-theme = "navy"
 curly-quotes = true
 
