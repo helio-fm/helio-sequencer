@@ -274,6 +274,17 @@ public:
     void resized() override;
     void paint(Graphics &g) override;
 
+    //===------------------------------------------------------------------===//
+    // Edit mode helpers
+    //===------------------------------------------------------------------===//
+
+    bool isViewportDragEvent(const MouseEvent &e) const;
+    bool isAddEvent(const MouseEvent &e) const;
+    bool isLassoEvent(const MouseEvent &e) const;
+    bool isKnifeToolEvent(const MouseEvent &e) const;
+    bool isMergeToolEvent(const MouseEvent &e) const;
+    bool isErasingEvent(const MouseEvent &e) const;
+
 protected:
     
     ListenerList<RollListener> listeners;
@@ -389,13 +400,6 @@ protected:
     virtual void startMergingEvents(const Point<float> &mousePosition) = 0;
     virtual void continueMergingEvents(const Point<float> &mousePosition) = 0;
     virtual void endMergingEvents() = 0;
-
-    bool isViewportDragEvent(const MouseEvent &e) const;
-    bool isAddEvent(const MouseEvent &e) const;
-    bool isLassoEvent(const MouseEvent &e) const;
-    bool isKnifeToolEvent(const MouseEvent &e) const;
-    bool isMergeToolEvent(const MouseEvent &e) const;
-    bool isErasingEvent(const MouseEvent &e) const;
 
     float firstBeat = 0.f;
     float lastBeat = Globals::Defaults::projectLength;

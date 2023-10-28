@@ -385,16 +385,25 @@ void VelocityEditor::resized()
 
 void VelocityEditor::mouseDown(const MouseEvent &e)
 {
-    if (e.mods.isLeftButtonDown())
+    if (this->roll->hasMultiTouch(e))
     {
-        this->volumeBlendingIndicator->toFront(false);
-        this->updateVolumeBlendingIndicator(e.getPosition());
-
-        this->dragHelper = make<VelocityLevelDraggingHelper>(*this);
-        this->addAndMakeVisible(this->dragHelper.get());
-        this->dragHelper->setStartPosition(e.position);
-        this->dragHelper->setEndPosition(e.position);
+        return;
     }
+
+    // roll panning hack
+    if (this->roll->isViewportDragEvent(e))
+    {
+        this->roll->mouseDown(e.getEventRelativeTo(this->roll));
+        return;
+    }
+
+    this->volumeBlendingIndicator->toFront(false);
+    this->updateVolumeBlendingIndicator(e.getPosition());
+
+    this->dragHelper = make<VelocityLevelDraggingHelper>(*this);
+    this->addAndMakeVisible(this->dragHelper.get());
+    this->dragHelper->setStartPosition(e.position);
+    this->dragHelper->setEndPosition(e.position);
 }
 
 constexpr float getVelocityByIntersection(const Point<float> &intersection)
@@ -404,6 +413,18 @@ constexpr float getVelocityByIntersection(const Point<float> &intersection)
 
 void VelocityEditor::mouseDrag(const MouseEvent &e)
 {
+    if (this->roll->hasMultiTouch(e))
+    {
+        return;
+    }
+
+    if (this->roll->isViewportDragEvent(e))
+    {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
+        this->roll->mouseDrag(e.getEventRelativeTo(this->roll));
+        return;
+    }
+
     if (this->dragHelper != nullptr)
     {
         this->updateVolumeBlendingIndicator(e.getPosition());
@@ -415,6 +436,16 @@ void VelocityEditor::mouseDrag(const MouseEvent &e)
 
 void VelocityEditor::mouseUp(const MouseEvent &e)
 {
+    // no multi-touch check here, need to exit the editing mode (if any) even in multi-touch
+    //if (this->roll->hasMultiTouch(e)) { return; }
+
+    if (this->roll->isViewportDragEvent(e))
+    {
+        this->setMouseCursor(MouseCursor::NormalCursor);
+        this->roll->mouseUp(e.getEventRelativeTo(this->roll));
+        return;
+    }
+
     if (this->dragHelper != nullptr)
     {
         this->volumeBlendingIndicator->setVisible(false);
