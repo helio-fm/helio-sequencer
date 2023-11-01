@@ -126,5 +126,5 @@ deploy:
   script: bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-${BUILD_TYPE}.sh
   on:
     all_branches: true
-    repo: helio-fm/helio-workstation
+    repo: helio-fm/helio-sequencer
     condition: ${TRAVIS_BUILD_STAGE_NAME} = "Deploy"
