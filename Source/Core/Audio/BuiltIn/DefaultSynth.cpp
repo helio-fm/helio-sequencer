@@ -100,7 +100,11 @@ void DefaultSynth::Voice::renderNextBlock(AudioBuffer<float> &outputBuffer, int 
         {
             const auto amplitude = this->adsr.getNextSample();
             auto currentSample = float(std::sin(currentAngle) * this->level * amplitude);
+
+#if PLATFORM_DESKTOP
+            // even this seems to be too slow for realtime playback on many phones
             this->reverb.processMono(&currentSample, 1);
+#endif
 
             for (auto i = outputBuffer.getNumChannels(); i --> 0 ;)
             {
