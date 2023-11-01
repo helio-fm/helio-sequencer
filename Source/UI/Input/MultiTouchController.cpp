@@ -32,50 +32,32 @@ MultiTouchController::TouchData MultiTouchController::getAllTouchData(const Mous
 
 void MultiTouchController::mouseDown(const MouseEvent &event)
 {
-    if (this->touches.contains(event.source.getIndex()))
+#if JUCE_ANDROID
+    // normally, we should be registering all touch events here,
+    // but Android is never simple: some shells (looking at you, Realme UI),
+    // have strange multi-touch behavior in which all touches except the first
+    // are broken in a way that the touch down position and subsequent drag position
+    // for the same pointer id will sometimes differ a lot for whatever reason
+    // (is this a JUCE bug?), resulting in glitchy behavior due to instantly jumping
+    // far away from the anchors set in the down event handler when dragging begins;
+    // to get around this, we'll just rely on drag events, which always seem to be
+    // consistent with each other, and register new pointer events there;
+    // this hack shouldn't have any noticeable effects anyway
+    if (this->touches.empty())
     {
-        jassertfalse; // pointer events out of order?
-        this->anchorsCache[event.source.getIndex()] = this->getAllTouchData(event);
-        return;
+        this->registerTouchEvent(event);
     }
-
-    const auto touchMode = this->touches.size() >= 2 ? TouchUsage::Unused :
-        ((this->touches.size() == 1 && this->touches.begin()->second == TouchUsage::Finger1) ?
-            TouchUsage::Finger2 : TouchUsage::Finger1);
-
-    this->touches[event.source.getIndex()] = touchMode;
-
-    const auto touchData = this->getAllTouchData(event);
-    this->anchorsCache[event.source.getIndex()] = touchData;
-
-    //this->dump();
-
-    if (touchMode == TouchUsage::Unused)
-    {
-        return;
-    }
-
-    if (touchMode == TouchUsage::Finger1)
-    {
-        this->finger1 = touchData;
-    }
-    else if (touchMode == TouchUsage::Finger2)
-    {
-        this->finger2 = touchData;
-    }
-
-    if (this->hasMultiTouch())
-    {
-        this->listener.multiTouchStartZooming();
-    }
+#else
+    this->registerTouchEvent(event);
+#endif
 }
 
 void MultiTouchController::mouseDrag(const MouseEvent &event)
 {
     if (!this->touches.contains(event.source.getIndex()))
     {
-        jassertfalse; // pointer events out of order?
-        this->mouseDown(event);
+        // the mouseDown workaround
+        this->registerTouchEvent(event);
     }
 
     const auto touchMode = this->touches[event.source.getIndex()];
@@ -111,7 +93,7 @@ void MultiTouchController::mouseUp(const MouseEvent &event)
 {
     if (!this->touches.contains(event.source.getIndex()))
     {
-        jassertfalse; // pointer events out of order?
+        jassertfalse; // dragging never started
         return;
     }
 
@@ -163,6 +145,46 @@ void MultiTouchController::mouseUp(const MouseEvent &event)
     this->touches.erase(event.source.getIndex());
     this->anchorsCache.erase(event.source.getIndex());
     //this->dump();
+}
+
+void MultiTouchController::registerTouchEvent(const MouseEvent &event)
+{
+    if (this->touches.contains(event.source.getIndex()))
+    {
+        jassertfalse; // pointer events out of order?
+        this->anchorsCache[event.source.getIndex()] = this->getAllTouchData(event);
+        return;
+    }
+
+    const auto touchMode = this->touches.size() >= 2 ? TouchUsage::Unused :
+        ((this->touches.size() == 1 && this->touches.begin()->second == TouchUsage::Finger1) ?
+            TouchUsage::Finger2 : TouchUsage::Finger1);
+
+    this->touches[event.source.getIndex()] = touchMode;
+
+    const auto touchData = this->getAllTouchData(event);
+    this->anchorsCache[event.source.getIndex()] = touchData;
+
+    //this->dump();
+
+    if (touchMode == TouchUsage::Unused)
+    {
+        return;
+    }
+
+    if (touchMode == TouchUsage::Finger1)
+    {
+        this->finger1 = touchData;
+    }
+    else if (touchMode == TouchUsage::Finger2)
+    {
+        this->finger2 = touchData;
+    }
+
+    if (this->hasMultiTouch())
+    {
+        this->listener.multiTouchStartZooming();
+    }
 }
 
 void MultiTouchController::processContinueZoomingEvent(const MouseEvent &event)

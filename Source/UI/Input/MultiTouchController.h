@@ -43,6 +43,7 @@ public:
 
 private:
 
+    void registerTouchEvent(const MouseEvent &e);
     void processContinueZoomingEvent(const MouseEvent &e);
 
     MultiTouchListener &listener;
