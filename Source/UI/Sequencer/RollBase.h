@@ -200,8 +200,23 @@ public:
     // Misc
     //===------------------------------------------------------------------===//
 
-    int getXPositionByBeat(float targetBeat) const noexcept;
-    int getPlayheadPositionByBeat(double targetBeat, double parentWidth) const;
+    inline int getXPositionByBeat(float targetBeat) const noexcept
+    {
+        return int((targetBeat - this->firstBeat) * this->beatWidth);
+    }
+
+    inline int getXPositionByBeat(double targetBeat, double parentWidth) const noexcept
+    {
+        const double widthRatio = parentWidth / jmax(1.0, double(this->getWidth()));
+        return int((targetBeat - this->firstBeat) * this->beatWidth * widthRatio);
+    }
+
+    inline float getBeatByXPosition(float x) const noexcept
+    {
+        const float beatNumber = roundBeat(x / this->beatWidth + this->firstBeat);
+        return jlimit(this->firstBeat, this->lastBeat, beatNumber);
+    }
+
     float getFloorBeatSnapByXPosition(int x) const noexcept;
     float getRoundBeatSnapByXPosition(int x) const noexcept;
 
@@ -363,12 +378,6 @@ protected:
 
     virtual float findNextAnchorBeat(float beat) const = 0;
     virtual float findPreviousAnchorBeat(float beat) const = 0;
-
-    inline float getBeatByXPosition(float x) const noexcept
-    {
-        const float beatNumber = roundBeat(x / this->beatWidth + this->firstBeat);
-        return jlimit(this->firstBeat, this->lastBeat, beatNumber);
-    }
 
     void updateWidth();
     

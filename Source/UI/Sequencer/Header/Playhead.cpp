@@ -173,7 +173,7 @@ void Playhead::parentChanged()
 
 void Playhead::updatePosition(double position)
 {
-    const int newX = this->roll.getPlayheadPositionByBeat(position, double(this->getParentWidth()));
+    const int newX = this->roll.getXPositionByBeat(position, double(this->getParentWidth()));
     this->setTopLeftPosition(newX, 0);
 
     if (this->listener != nullptr)

@@ -29,7 +29,7 @@ class RollBase;
 class TrackMap;
 class ProjectNode;
 class VelocityEditorNoteComponent;
-class VelocityLevelDraggingHelper;
+class VelocityHandDrawingHelper;
 class FineTuningValueIndicator;
 
 class VelocityEditor final :
@@ -44,6 +44,8 @@ public:
     ~VelocityEditor() override;
 
     void switchToRoll(SafePointer<RollBase> roll) override;
+
+    float getBeatByXPosition(float x) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -113,7 +115,7 @@ private:
     void continueFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e);
     void endFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e);
 
-    static constexpr auto fineTuningStep = 1.f / 128.f;
+    static constexpr auto fineTuningStep = 1.f / 32.f;
 
     friend class VelocityEditorNoteComponent;
 
@@ -121,20 +123,20 @@ private:
 
     // for adjusting a group of notes:
 
-    UniquePointer<VelocityLevelDraggingHelper> dragHelper;
+    UniquePointer<VelocityHandDrawingHelper> handDrawingHelper;
     FlatHashMap<Note, float, MidiEventHash> groupDragIntersections;
     Array<Note> groupDragChangesBefore, groupDragChangesAfter;
     bool groupDragHasChanges = false;
-
-private:
 
     float volumeBlendingAmount = 1.f;
     UniquePointer<FineTuningValueIndicator> volumeBlendingIndicator;
     void updateVolumeBlendingIndicator(const Point<int> &pos);
 
+private:
+
     ComponentFader fader;
 
-    void applyVolumeChanges();
+    void applyGroupVolumeChanges();
 
     void triggerBatchRepaintFor(VelocityEditorNoteComponent *target);
     void handleAsyncUpdate() override;

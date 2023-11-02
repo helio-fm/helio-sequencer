@@ -70,3 +70,64 @@ private:
     OwnedArray<ScrolledComponent> trackMaps;
     
 };
+
+// Ramer-Douglas-Peucker algorithm for point reduction,
+// to be used in child editor panels for hand-drawing random shapes:
+template <typename T>
+struct PointReduction final
+{
+    static float getPerpendicularDistance(const Point<T> &p,
+        const Point<T> &lineP1, const Point<T> &lineP2)
+    {
+        const Point<T> vec1(p.x - lineP1.x, p.y - lineP1.y);
+        const Point<T> vec2(lineP2.x - lineP1.x, lineP2.y - lineP1.y);
+        const auto distance = sqrt(vec2.x * vec2.x + vec2.y * vec2.y);
+        const auto crossProduct = vec1.x * vec2.y - vec2.x * vec1.y;
+        return fabs(float(crossProduct / distance));
+    }
+
+    static Array<Point<T>> simplify(const Array<Point<T>> &points, float epsilon = 0.04f)
+    {
+        int index = 0;
+        float maxDistance = 0;
+
+        for (int i = 1; i < points.size() - 1; ++i)
+        {
+            const auto d = getPerpendicularDistance(points.getUnchecked(i),
+                points.getFirst(), points.getLast());
+
+            if (d > maxDistance)
+            {
+                index = i;
+                maxDistance = d;
+            }
+        }
+
+        if (maxDistance > epsilon)
+        {
+            Array<Point<T>> previousPart, nextPart;
+
+            for (int i = 0; i <= index; ++i)
+            {
+                previousPart.add(points.getUnchecked(i));
+            }
+
+            for (int i = index; i < points.size(); ++i)
+            {
+                nextPart.add(points.getUnchecked(i));
+            }
+
+            auto subList1 = simplify(previousPart, epsilon);
+            auto subList2 = simplify(nextPart, epsilon);
+
+            subList1.removeLast();
+            subList1.addArray(subList2);
+            return subList1;
+        }
+
+        return {
+            points.getFirst(),
+            points.getLast()
+        };
+    }
+};

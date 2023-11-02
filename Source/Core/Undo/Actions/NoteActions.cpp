@@ -34,8 +34,7 @@ NoteInsertAction::NoteInsertAction(MidiTrackSource &source,
 
 bool NoteInsertAction::perform()
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return (sequence->insert(this->note, false) != nullptr);
     }
@@ -45,8 +44,7 @@ bool NoteInsertAction::perform()
 
 bool NoteInsertAction::undo()
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->remove(this->note, false);
     }
@@ -93,7 +91,6 @@ UndoAction *NoteInsertAction::createCoalescedAction(UndoAction *nextAction)
             return nullptr;
         }
 
-        //DBG("NoteInsertAction ++");
         return new NotesGroupInsertAction(this->source,
             this->trackId, this->note, nextChanger->note);
     }
@@ -114,8 +111,7 @@ NoteRemoveAction::NoteRemoveAction(MidiTrackSource &source,
 
 bool NoteRemoveAction::perform()
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->remove(this->note, false);
     }
@@ -125,8 +121,7 @@ bool NoteRemoveAction::perform()
 
 bool NoteRemoveAction::undo()
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return (sequence->insert(this->note, false) != nullptr);
     }
@@ -175,8 +170,7 @@ NoteChangeAction::NoteChangeAction(MidiTrackSource &source,
 
 bool NoteChangeAction::perform()
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->change(this->noteBefore, this->noteAfter, false);
     }
@@ -186,8 +180,7 @@ bool NoteChangeAction::perform()
 
 bool NoteChangeAction::undo()
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->change(this->noteAfter, this->noteBefore, false);
     }
@@ -210,7 +203,6 @@ UndoAction *NoteChangeAction::createCoalescedAction(UndoAction *nextAction)
             
         if (idsAreEqual)
         {
-            //DBG("NoteChangeAction ++");
             return new NoteChangeAction(this->source,
                 this->trackId, this->noteBefore, nextChanger->noteAfter);
         }
@@ -276,8 +268,7 @@ NotesGroupInsertAction::NotesGroupInsertAction(MidiTrackSource &source,
 
 bool NotesGroupInsertAction::perform()
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->insertGroup(this->notes, false);
     }
@@ -287,8 +278,7 @@ bool NotesGroupInsertAction::perform()
 
 bool NotesGroupInsertAction::undo()
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->removeGroup(this->notes, false);
     }
@@ -342,7 +332,6 @@ UndoAction *NotesGroupInsertAction::createCoalescedAction(UndoAction *nextAction
             return nullptr;
         }
 
-        //DBG("NotesGroupInsertAction ++");
         this->notes.addArray(nextGroup->notes);
         return new NotesGroupInsertAction(this->source,
             this->trackId, this->notes);
@@ -354,7 +343,6 @@ UndoAction *NotesGroupInsertAction::createCoalescedAction(UndoAction *nextAction
             return nullptr;
         }
 
-        //DBG("NotesGroupInsertAction + NoteInsertAction");
         this->notes.add(nextChanger->note);
         return new NotesGroupInsertAction(this->source,
             this->trackId, this->notes);
@@ -378,8 +366,7 @@ NotesGroupRemoveAction::NotesGroupRemoveAction(MidiTrackSource &source,
 
 bool NotesGroupRemoveAction::perform()
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->removeGroup(this->notes, false);
     }
@@ -389,8 +376,7 @@ bool NotesGroupRemoveAction::perform()
 
 bool NotesGroupRemoveAction::undo()
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->insertGroup(this->notes, false);
     }
@@ -450,8 +436,7 @@ NotesGroupChangeAction::NotesGroupChangeAction(MidiTrackSource &source,
 
 bool NotesGroupChangeAction::perform()
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->changeGroup(this->notesBefore, this->notesAfter, false);
     }
@@ -461,8 +446,7 @@ bool NotesGroupChangeAction::perform()
 
 bool NotesGroupChangeAction::undo()
 {
-    if (PianoSequence *sequence =
-        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
+    if (auto *sequence = this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->changeGroup(this->notesAfter, this->notesBefore, false);
     }
@@ -499,7 +483,6 @@ UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction
             }
         }
             
-        //DBG("NotesGroupChangeAction ++");
         return new NotesGroupChangeAction(this->source,
             this->trackId, this->notesBefore, nextChanger->notesAfter);
     }

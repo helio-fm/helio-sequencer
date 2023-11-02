@@ -79,16 +79,15 @@ public:
         return this->note.getVelocity() * this->clip.getVelocity();
     }
 
-    Line<float> getStartLine() const noexcept
+    inline float getFullBeat() const noexcept
     {
-        const float x = this->getX() + this->dx;
-        return { x, 0.f, x, float(Globals::UI::levelsMapHeight) };
+        return this->note.getBeat() + this->clip.getBeat();
     }
 
-    Line<float> getEndLine() const noexcept
+    Line<float> getBeatIntersectionLine() const noexcept
     {
-        const float x = this->getX() + this->dx + this->getWidth() + this->dw;
-        return { x, 0.f, x, float(Globals::UI::levelsMapHeight) };
+        const auto beat = this->getFullBeat();
+        return { beat, 0.f, beat, float(Globals::UI::levelsMapHeight) };
     }
 
     inline void updateColour()
@@ -154,12 +153,7 @@ public:
 
     bool hitTest(int, int y) noexcept override
     {
-#if PLATFORM_DESKTOP
-        constexpr auto dragAreaSize = 8;
-#elif PLATFORM_MOBILE
-        constexpr auto dragAreaSize = 16;
-#endif
-        return this->editable && y <= dragAreaSize;
+        return this->editable;
     }
 
     void mouseDown(const MouseEvent &e) override
@@ -205,122 +199,127 @@ private:
 // Dragging helper
 //===----------------------------------------------------------------------===//
 
-class VelocityLevelDraggingHelper final : public Component
+class VelocityHandDrawingHelper final : public Component
 {
 public:
 
-    VelocityLevelDraggingHelper(VelocityEditor &map) : map(map)
+    VelocityHandDrawingHelper(VelocityEditor &map) : map(map)
     {
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
     }
 
-    const Line<float> &getLine() const noexcept
+    const Array<Line<float>> &getCurve() const noexcept
     {
-        return this->line;
-    }
-
-    const Line<float> &getExtendedLine() const noexcept
-    {
-        return this->lineExtended;
+        return this->curveInBeatVelocity;
     }
 
     void paint(Graphics &g) override
     {
         g.setColour(findDefaultColour(Label::textColourId));
-        g.fillPath(this->linePath);
-
-        // display dashed lines just a bit longer on both ends,
-        // so that it's more clear how it cuts the velocity levels:
-        g.fillPath(this->dashPath1);
-        g.fillPath(this->dashPath2);
+        g.fillPath(this->curveInPixels);
     }
 
-    void setStartPosition(const Point<float> &mousePos)
+    void setStartMousePosition(const Point<float> &mousePos)
     {
-        this->startPosition = mousePos.toDouble() / this->getParentSize();
+        this->rawPositions.clearQuick();
+        this->simplifiedPositions.clearQuick();
+        this->lastSimplifiedRawPointIndex = 0;
+
+        const auto newPosition = mousePos.toDouble() / this->getSize();
+
+        this->rawPositions.add(newPosition);
+        this->simplifiedPositions.add(newPosition);
     }
 
-    void setEndPosition(const Point<float> &mousePos)
+    void addMousePosition(const Point<float> &mousePos, const float viewWidth)
     {
-        this->endPosition = mousePos.toDouble() / this->getParentSize();
-    }
+        jassert(!this->rawPositions.isEmpty());
+        jassert(!this->simplifiedPositions.isEmpty());
 
-    void updateBounds()
-    {
-        static const int dashMargin = 37;
-        static const int margin = dashMargin + 2;
-        static const float lineThickness = 1.f;
-        static Array<float> dashes(4.f, 3.f);
+        const auto mySize = this->getSize();
+        const auto newPosition = mousePos.toDouble() / mySize;
 
-        const Point<double> parentSize(this->getParentSize());
-        const auto start = (this->startPosition * parentSize).toFloat();
-        const auto end = (this->endPosition * parentSize).toFloat();
-        const auto x1 = jmin(start.getX(), end.getX());
-        const auto x2 = jmax(start.getX(), end.getX());
-        const auto y1 = jmin(start.getY(), end.getY());
-        const auto y2 = jmax(start.getY(), end.getY());
-        this->line = { start, end };
-
-        if (this->line.getLength() == 0)
+        // pre-filtering: add it to raw positions if it's more than a couple of pixels away
+        constexpr auto prefilterThreshold = 1;
+        const auto lastPositionInPixels = this->rawPositions.getLast() * mySize;
+        const auto d = lastPositionInPixels.getDistanceFrom(mousePos.toDouble());
+        if (d > prefilterThreshold)
         {
-            return;
+            this->rawPositions.add(newPosition);
         }
 
-        static constexpr auto lineExtent = 1000;
-        this->lineExtended = { this->line.getPointAlongLine(-lineExtent),
-            this->line.getPointAlongLine(this->line.getLength() + lineExtent) };
+        // "lazy" reduction: update the simplified curve only when raw positions are piling up
+        constexpr auto lazyReductionThreshold = 3;
+        if (this->rawPositions.size() - this->lastSimplifiedRawPointIndex > lazyReductionThreshold)
+        {
+            // the epsilon is picked to cut ~50% of all points at any zoom level,
+            // which is a small reduction so that the curve shape barely changes;
+            // the point of doing it is that it filters out the noise nicely:
+            const auto epsilon  = jmax(0.000001f, viewWidth / float(mySize.getX()) * 0.001f);
+            this->simplifiedPositions =
+                PointReduction<double>::simplify(this->rawPositions, epsilon);
 
-        const Point<float> startOffset(x1 - margin, y1 - margin);
+            //DBG("Epsilon " + String(epsilon) +
+            //    " reduced " + String(this->rawPositions.size()) +
+            //    " points to " + String(this->simplifiedPositions.size()));
 
-        this->linePath.clear();
-        this->linePath.startNewSubPath(this->line.getPointAlongLine(0, lineThickness) - startOffset);
-        this->linePath.lineTo(this->line.getPointAlongLine(0, -lineThickness) - startOffset);
-        this->linePath.lineTo(this->line.reversed().getPointAlongLine(0, lineThickness) - startOffset);
-        this->linePath.lineTo(this->line.reversed().getPointAlongLine(0, -lineThickness) - startOffset);
-        this->linePath.closeSubPath();
+            this->lastSimplifiedRawPointIndex = this->rawPositions.size() - 1;
+        }
+        
+        if (this->simplifiedPositions.size() >= 2)
+        {
+            this->simplifiedPositions[this->simplifiedPositions.size() - 1] = newPosition;
+        }
+    }
 
-        this->dashPath1.clear();
-        this->dashPath1.startNewSubPath(this->line.getStart() - startOffset);
-        this->dashPath1.lineTo(this->line.getPointAlongLine(-dashMargin) - startOffset);
-        PathStrokeType(1.f).createDashedStroke(this->dashPath1, this->dashPath1,
+    void updateCurves()
+    {
+        jassert(!this->simplifiedPositions.isEmpty());
+
+        const auto mySize = this->getSize();
+
+        this->curveInBeatVelocity.clearQuick();
+        this->curveInPixels.clear();
+
+        auto previousPoint = (this->simplifiedPositions.getFirst() * mySize).toFloat();
+        this->curveInPixels.startNewSubPath(previousPoint);
+
+        for (int i = 1; i < this->simplifiedPositions.size(); ++i)
+        {
+            const auto nextPoint = (this->simplifiedPositions.getUnchecked(i) * mySize).toFloat();
+            this->curveInPixels.lineTo(nextPoint);
+
+            this->curveInBeatVelocity.add({
+                {this->map.getBeatByXPosition(previousPoint.x), previousPoint.y},
+                {this->map.getBeatByXPosition(nextPoint.x), nextPoint.y}});
+
+            previousPoint = nextPoint;
+        }
+
+        static const float lineThickness = 1.f;
+        static Array<float> dashes(4.f, 3.f);
+        PathStrokeType(1.f).createDashedStroke(this->curveInPixels, this->curveInPixels,
             dashes.getRawDataPointer(), dashes.size());
-
-        this->dashPath2.clear();
-        this->dashPath2.startNewSubPath(this->line.getEnd() - startOffset);
-        this->dashPath2.lineTo(this->line.getPointAlongLine(this->line.getLength() + dashMargin) - startOffset);
-        PathStrokeType(1.f).createDashedStroke(this->dashPath2, this->dashPath2,
-            dashes.getRawDataPointer(), dashes.size());
-
-        this->setBounds(int(x1) - margin, int(y1) - margin,
-            int(x2 - x1) + margin * 2, int(y2 - y1) + margin * 2);
     }
 
 private:
 
     VelocityEditor &map;
 
-    Point<double> startPosition;
-    Point<double> endPosition;
+    Array<Point<double>> rawPositions;
+    Array<Point<double>> simplifiedPositions; // both in absolute values, 0..1
+    int lastSimplifiedRawPointIndex = 0;
 
-    Line<float> line;
-    Line<float> lineExtended;
+    Path curveInPixels; // for painting
+    Array<Line<float>> curveInBeatVelocity; // for convenient intersection checks
 
-    Path linePath;
-    Path dashPath1;
-    Path dashPath2;
-
-    const Point<double> getParentSize() const
+    inline const Point<double> getSize() const noexcept
     {
-        if (const auto *p = this->getParentComponent())
-        {
-            return { double(p->getWidth()), double(p->getHeight()) };
-        }
-
-        return { 1.0, 1.0 };
+        return this->getLocalBounds().getBottomRight().toDouble();
     }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityLevelDraggingHelper)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityHandDrawingHelper)
 };
 
 //===----------------------------------------------------------------------===//
@@ -357,6 +356,12 @@ void VelocityEditor::switchToRoll(SafePointer<RollBase> roll)
     this->roll->getLassoSelection().addChangeListener(this);
 }
 
+float VelocityEditor::getBeatByXPosition(float x) const noexcept
+{
+    jassert(this->getWidth() == this->roll->getWidth());
+    return this->roll->getBeatByXPosition(x);
+}
+
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -375,9 +380,10 @@ void VelocityEditor::resized()
         }
     }
 
-    if (this->dragHelper != nullptr)
+    if (this->handDrawingHelper != nullptr)
     {
-        this->dragHelper->updateBounds();
+        this->handDrawingHelper->setBounds(this->getLocalBounds());
+        this->handDrawingHelper->updateCurves();
     }
 
     VELOCITY_MAP_BATCH_REPAINT_END
@@ -400,15 +406,10 @@ void VelocityEditor::mouseDown(const MouseEvent &e)
     this->volumeBlendingIndicator->toFront(false);
     this->updateVolumeBlendingIndicator(e.getPosition());
 
-    this->dragHelper = make<VelocityLevelDraggingHelper>(*this);
-    this->addAndMakeVisible(this->dragHelper.get());
-    this->dragHelper->setStartPosition(e.position);
-    this->dragHelper->setEndPosition(e.position);
-}
-
-constexpr float getVelocityByIntersection(const Point<float> &intersection)
-{
-    return 1.f - (intersection.y / float(Globals::UI::levelsMapHeight));
+    this->handDrawingHelper = make<VelocityHandDrawingHelper>(*this);
+    this->addAndMakeVisible(this->handDrawingHelper.get());
+    this->handDrawingHelper->setBounds(this->getLocalBounds());
+    this->handDrawingHelper->setStartMousePosition(e.position);
 }
 
 void VelocityEditor::mouseDrag(const MouseEvent &e)
@@ -425,12 +426,14 @@ void VelocityEditor::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (this->dragHelper != nullptr)
+    if (this->handDrawingHelper != nullptr)
     {
         this->updateVolumeBlendingIndicator(e.getPosition());
-        this->dragHelper->setEndPosition(e.position);
-        this->dragHelper->updateBounds();
-        this->applyVolumeChanges();
+        this->handDrawingHelper->addMousePosition(e.position,
+            float(this->roll->getViewport().getViewWidth()));
+        this->handDrawingHelper->updateCurves();
+        this->handDrawingHelper->repaint();
+        this->applyGroupVolumeChanges();
     }
 }
 
@@ -446,10 +449,10 @@ void VelocityEditor::mouseUp(const MouseEvent &e)
         return;
     }
 
-    if (this->dragHelper != nullptr)
+    if (this->handDrawingHelper != nullptr)
     {
         this->volumeBlendingIndicator->setVisible(false);
-        this->dragHelper = nullptr;
+        this->handDrawingHelper = nullptr;
         this->groupDragIntersections.clear();
         this->groupDragChangesBefore.clearQuick();
         this->groupDragChangesAfter.clearQuick();
@@ -459,14 +462,14 @@ void VelocityEditor::mouseUp(const MouseEvent &e)
 
 void VelocityEditor::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
 {
-    if (this->dragHelper != nullptr)
+    if (this->handDrawingHelper != nullptr)
     {
         static constexpr auto wheelSensivity = 5.f;
         const float delta = wheel.deltaY * (wheel.isReversed ? -1.f : 1.f);
         const float newBlendingAmount = this->volumeBlendingAmount + delta / wheelSensivity;
         this->volumeBlendingAmount = jlimit(0.f, 1.f, newBlendingAmount);
         this->updateVolumeBlendingIndicator(e.getPosition());
-        this->applyVolumeChanges();
+        this->applyGroupVolumeChanges();
     }
     else
     {
@@ -899,35 +902,38 @@ void VelocityEditor::updateVolumeBlendingIndicator(const Point<int> &pos)
     this->volumeBlendingIndicator->setCentrePosition(pos);
 }
 
-void VelocityEditor::applyVolumeChanges()
+constexpr float getVelocityByIntersection(const Point<float> &intersection)
+{
+    return 1.f - (intersection.y / float(Globals::UI::levelsMapHeight));
+}
+
+void VelocityEditor::applyGroupVolumeChanges()
 {
     if (!this->activeClip.hasValue())
     {
         return; // no editable components
     }
 
+    if (this->groupDragHasChanges)
+    {
+        // for simple actions, like dragging a note, the undo action logic
+        // can coalease multiple changes into one, e.g. a->b, b->c becomes a->c,
+        // but here drawing a curve affects variable number of events,
+        // so coalescing is non-trivial, and the simplest way to keep
+        // the undo stack nice and clean is to undo the changes we've made before,
+        // and then apply new changes, hopefully it isn't too slow:
+        this->project.getUndoStack()->undoCurrentTransactionOnly();
+    }
+
     const auto activeClip = *this->activeClip;
     const auto *activeMap = this->patternMap.at(activeClip).get();
     jassert(activeMap);
 
-    // this is where things start looking a bit dirty:
-    // to update notes velocities on the fly, we use undo/redo actions (as always),
-    // but we don't want to have lots of those actions in the undo transaction in the end,
-    // there should only be one action which holds the original parameters and the final parameters;
-    // the undo action is smart enough to turn a -> b, b -> c into a -> c,
-    // but it only works within the same group of notes, which may and will change
-    // as the user drags the helper around, so we track moments
-    // when the notes group changes and undo the current transaction
+    Point<float> intersectionPoint;
 
-    bool shouldUndo = false;
-    Point<float> intersectionA;
-    Point<float> intersectionB;
+    this->groupDragIntersections.clear();
 
-    jassert(this->dragHelper);
-    const auto &dragLine = this->dragHelper->getLine();
-    const auto &dragLineExt = this->dragHelper->getExtendedLine();
-    const bool ascending = (dragLine.getStartX() <= dragLine.getEndX() && dragLine.getStartY() >= dragLine.getEndY()) ||
-        (dragLine.getStartX() > dragLine.getEndX() && dragLine.getStartY() < dragLine.getEndY());
+    jassert(this->handDrawingHelper != nullptr);
 
     for (const auto &i : *activeMap)
     {
@@ -936,52 +942,13 @@ void VelocityEditor::applyVolumeChanges()
             continue;
         }
 
-        const bool ia = dragLine.intersects(i.second->getStartLine(), intersectionA);
-        const bool ib = dragLine.intersects(i.second->getEndLine(), intersectionB);
-        const bool hasIntersection = ia || ib;
-
-        float intersectionVelocity = 0.f;
-        if (ascending)
+        for (const auto &line : this->handDrawingHelper->getCurve())
         {
-            if (ia)
+            if (line.intersects(i.second->getBeatIntersectionLine(), intersectionPoint))
             {
-                intersectionVelocity = getVelocityByIntersection(intersectionA);
+                this->groupDragIntersections[i.first] = getVelocityByIntersection(intersectionPoint);
+                break;
             }
-            else
-            {
-                dragLineExt.intersects(i.second->getStartLine(), intersectionA);
-                intersectionVelocity = getVelocityByIntersection(intersectionA);
-            }
-        }
-        else
-        {
-            if (ib)
-            {
-                intersectionVelocity = getVelocityByIntersection(intersectionB);
-            }
-            else
-            {
-                dragLineExt.intersects(i.second->getEndLine(), intersectionB);
-                intersectionVelocity = getVelocityByIntersection(intersectionB);
-            }
-        }
-
-        auto existingIntersection = this->groupDragIntersections.find(i.first);
-        if (hasIntersection && existingIntersection == this->groupDragIntersections.end())
-        {
-            // found new intersection
-            shouldUndo = true;
-            this->groupDragIntersections.emplace(i.first, intersectionVelocity);
-        }
-        else if (!hasIntersection && existingIntersection != this->groupDragIntersections.end())
-        {
-            // lost existing intersection
-            shouldUndo = true;
-            this->groupDragIntersections.erase(existingIntersection);
-        }
-        else if (hasIntersection)
-        {
-            this->groupDragIntersections[i.first] = intersectionVelocity;
         }
     }
 
@@ -993,16 +960,14 @@ void VelocityEditor::applyVolumeChanges()
         const auto newVelocity = (i.second * this->volumeBlendingAmount) +
             (i.first.getVelocity() * (1.f - this->volumeBlendingAmount));
 
-        this->groupDragChangesBefore.add(i.first);
-        this->groupDragChangesAfter.add(i.first.withVelocity(newVelocity));
+        if (newVelocity != i.first.getVelocity())
+        {
+            this->groupDragChangesBefore.add(i.first);
+            this->groupDragChangesAfter.add(i.first.withVelocity(newVelocity));
+        }
     }
 
     auto *sequence = static_cast<PianoSequence *>(activeClip.getPattern()->getTrack()->getSequence());
-
-    if (shouldUndo && this->groupDragHasChanges)
-    {
-        this->project.getUndoStack()->undoCurrentTransactionOnly();
-    }
 
     if (!this->groupDragChangesBefore.isEmpty())
     {
@@ -1073,7 +1038,7 @@ void VelocityEditor::applyNoteBounds(VelocityEditorNoteComponent *nc)
     const float rollLengthInBeats = this->rollLastBeat - this->rollFirstBeat;
     const float projectLengthInBeats = this->projectLastBeat - this->projectFirstBeat;
 
-    const float beat = nc->getNoteBeat() + nc->getClipBeat() - this->rollFirstBeat;
+    const float beat = nc->getFullBeat() - this->rollFirstBeat;
     const float mapWidth = float(this->getWidth()) * (projectLengthInBeats / rollLengthInBeats);
 
     const float x = mapWidth * (beat / projectLengthInBeats);

@@ -632,17 +632,6 @@ void RollBase::onTimeSignaturesUpdated()
 // Accessors
 //===----------------------------------------------------------------------===//
 
-int RollBase::getPlayheadPositionByBeat(double targetBeat, double parentWidth) const
-{
-    const double widthRatio = parentWidth / jmax(1.0, double(this->getWidth()));
-    return int((targetBeat - this->firstBeat) * this->beatWidth * widthRatio);
-}
-
-int RollBase::getXPositionByBeat(float targetBeat) const noexcept
-{
-    return int((targetBeat - this->firstBeat) * this->beatWidth);
-}
-
 float RollBase::getFloorBeatSnapByXPosition(int x) const noexcept
 {
     float d = FLT_MAX;
@@ -1813,7 +1802,7 @@ void RollBase::handleAsyncUpdate()
     if (this->isTimerRunning())
     {
         const auto playheadOffset = this->findPlayheadOffsetFromViewCentre();
-        const auto playheadX = this->getPlayheadPositionByBeat(this->lastPlayheadBeat.get(), double(this->getWidth()));
+        const auto playheadX = this->getXPositionByBeat(this->lastPlayheadBeat.get(), double(this->getWidth()));
         const auto newX = playheadX - int(playheadOffset * 0.9) - (this->viewport.getViewWidth() / 2);
 
         const bool stuckFollowingPlayhead = newX == this->viewport.getViewPositionX() ||
@@ -1835,7 +1824,7 @@ void RollBase::handleAsyncUpdate()
 
 double RollBase::findPlayheadOffsetFromViewCentre() const
 {
-    const auto playheadX = this->getPlayheadPositionByBeat(this->lastPlayheadBeat.get(), double(this->getWidth()));
+    const auto playheadX = this->getXPositionByBeat(this->lastPlayheadBeat.get(), double(this->getWidth()));
     const auto viewportCentreX = this->viewport.getViewPositionX() + this->viewport.getViewWidth() / 2;
     return double(playheadX - viewportCentreX);
 }
