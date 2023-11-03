@@ -34,7 +34,7 @@ void MultiTouchController::mouseDown(const MouseEvent &event)
 {
 #if JUCE_ANDROID
     // normally, we should be registering all touch events here,
-    // but Android is never simple: some shells (looking at you, Realme UI),
+    // but Android is never simple: some shells (looking at you, Realme UI)
     // have strange multi-touch behavior in which all touches except the first
     // are broken in a way that the touch down position and subsequent drag position
     // for the same pointer id will sometimes differ a lot for whatever reason

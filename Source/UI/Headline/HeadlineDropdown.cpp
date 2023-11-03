@@ -101,10 +101,6 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
             this->syncWidthWithContent();
         }
     }
-
-#if PLATFORM_DESKTOP
-    this->startTimer(100);
-#endif
 }
 
 HeadlineDropdown::~HeadlineDropdown()
@@ -160,6 +156,20 @@ void HeadlineDropdown::mouseDown(const MouseEvent &e)
     }
 }
 
+void HeadlineDropdown::mouseEnter(const MouseEvent &e)
+{
+#if PLATFORM_DESKTOP
+    this->stopTimer();
+#endif
+}
+
+void HeadlineDropdown::mouseExit(const MouseEvent &e)
+{
+#if PLATFORM_DESKTOP
+    this->startTimer(75);
+#endif
+}
+
 void HeadlineDropdown::inputAttemptWhenModal()
 {
     this->stopTimer();
@@ -201,7 +211,8 @@ void HeadlineDropdown::timerCallback()
         this->exitModalState(0);
 
         Desktop::getInstance().getAnimator().cancelAllAnimations(false);
-        Desktop::getInstance().getAnimator().animateComponent(this, this->getBounds(), 0.f, 100, true, 0.f, 1.f);
+        Desktop::getInstance().getAnimator().animateComponent(this,
+            this->getBounds(), 0.f, Globals::UI::fadeOutShort / 2, true, 0.f, 1.f);
 
         delete this;
     }

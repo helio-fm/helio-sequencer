@@ -83,11 +83,9 @@ void SettingsNode::recreatePage()
     this->themeSettingsWrapper = make<SettingsFrameWrapper>(this->themeSettings.get(), TRANS(I18n::Settings::ui));
     this->settingsList->addAndMakeVisible(this->themeSettingsWrapper.get());
 
-#if PLATFORM_DESKTOP
     this->uiSettings = make<UserInterfaceSettings>();
     this->uiSettingsWrapper = make<SettingsFrameWrapper>(this->uiSettings.get());
     this->settingsList->addAndMakeVisible(this->uiSettingsWrapper.get());
-#endif
 
     this->audioSettings = make<AudioSettings>(App::Workspace().getAudioCore());
     this->audioSettingsWrapper = make<SettingsFrameWrapper>(this->audioSettings.get(), TRANS(I18n::Settings::audio));

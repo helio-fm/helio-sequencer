@@ -40,11 +40,12 @@ private:
     UniquePointer<ToggleButton> openGLRendererButton;
     UniquePointer<TextEditor> fontEditor;
     UniquePointer<ToggleButton> nativeTitleBarButton;
-    UniquePointer<ToggleButton> animationsEnabledButton;
     UniquePointer<SeparatorHorizontal> wheelFlagsSeparator;
     UniquePointer<ToggleButton> wheelAltModeButton;
     UniquePointer<ToggleButton> wheelVerticalPanningButton;
     UniquePointer<ToggleButton> wheelVerticalZoomingButton;
+    UniquePointer<SeparatorHorizontal> miscFlagsSeparator;
+    UniquePointer<ToggleButton> animationsEnabledButton;
     UniquePointer<SeparatorHorizontal> uiScaleSeparator;
     UniquePointer<ToggleButton> scaleUi1;
     UniquePointer<ToggleButton> scaleUi15;

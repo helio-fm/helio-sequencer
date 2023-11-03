@@ -37,7 +37,7 @@ public:
 #if PLATFORM_DESKTOP
         g.setFont(Globals::UI::Fonts::L);
 #elif PLATFORM_MOBILE
-        g.setFont(Globals::UI::Fonts::XL);
+        g.setFont(Globals::UI::Fonts::M);
 #endif
 
         g.drawFittedText(this->message,

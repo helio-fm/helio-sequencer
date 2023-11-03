@@ -81,11 +81,12 @@ public:
 
         this->addAndMakeVisible(this->pianoViewport);
         this->addChildComponent(this->patternViewport); // invisible by default
-        this->addChildComponent(this->bottomEditorsScroller); // invisible by default, behind piano map
+        this->addChildComponent(this->bottomEditorsScroller); // invisible by default, behind the piano map
         this->addAndMakeVisible(this->bottomMapsScroller);
         this->addAndMakeVisible(this->scrollerShadow);
 
         this->patternRoll->setEnabled(false);
+        this->patternRoll->setVisible(false);
 
         // the volume map's visiblilty is not persistent,
         // but the mini-map's state is, let's fix it right here
@@ -492,7 +493,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->bottomMapsScroller->addOwnedMap<PianoProjectMap>(this->project);
     this->bottomMapsScroller->addOwnedMap<AnnotationsProjectMap>(this->project, defaultRoll, AnnotationsProjectMap::Type::Small);
     this->bottomMapsScroller->addOwnedMap<TimeSignaturesProjectMap>(this->project, defaultRoll, TimeSignaturesProjectMap::Type::Small);
-    //this->mapScroller->addOwnedMap<KeySignaturesProjectMap>(this->project, defaultRoll, KeySignaturesProjectMap::Type::Small);
+    //this->bottomMapsScroller->addOwnedMap<KeySignaturesProjectMap>(this->project, defaultRoll, KeySignaturesProjectMap::Type::Small);
 
     this->pianoRoll->addRollListener(this->bottomMapsScroller.get());
     this->patternRoll->addRollListener(this->bottomMapsScroller.get());

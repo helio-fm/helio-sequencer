@@ -129,11 +129,11 @@ void HeadlineItem::resized()
         0, HeadlineItemArrow::arrowWidth, this->getHeight());
 
     this->backgroundShape.clear();
-    this->backgroundShape.startNewSubPath(2.0f, 1.0f);
-    this->backgroundShape.lineTo(float(this->getWidth() - HeadlineItemArrow::arrowWidth), 1.0f);
+    this->backgroundShape.startNewSubPath(2.f, 1.f);
+    this->backgroundShape.lineTo(float(this->getWidth() - HeadlineItemArrow::arrowWidth), 1.f);
     this->backgroundShape.lineTo(float(this->getWidth() - 2), float(this->getHeight() - 2));
-    this->backgroundShape.lineTo(1.0f, float(this->getHeight() - 1));
-    this->backgroundShape.lineTo(2.0f, float(this->getHeight() - 2));
+    this->backgroundShape.lineTo(1.f, float(this->getHeight() - 1));
+    this->backgroundShape.lineTo(2.f, float(this->getHeight() - 2));
     this->backgroundShape.closeSubPath();
 }
 
@@ -145,9 +145,10 @@ void HeadlineItem::mouseEnter(const MouseEvent& e)
     // won't work (maybe a JUCE bug), so get it from getMainMouseSource:
     const auto lastMouseDown =
         Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition().toInt();
+
     if (lastMouseDown != e.getScreenPosition())
     {
-        this->startTimer(100);
+        this->startTimer(75);
     }
 #endif
 }
@@ -244,11 +245,9 @@ void HeadlineItem::showMenuIfAny()
 void HeadlineItem::showContextMenuMarker()
 {
     this->animator.fadeIn(this->menuMarker.get(), Globals::UI::fadeInLong);
-    //this->menuMarker->setVisible(true);
 }
 
 void HeadlineItem::hideContextMenuMarker()
 {
     this->animator.fadeOut(this->menuMarker.get(), Globals::UI::fadeOutLong);
-    //this->menuMarker->setVisible(false);
 }

@@ -23,11 +23,19 @@
 #include "HelioTheme.h"
 #include "Config.h"
 
+#if PLATFORM_DESKTOP
+#define SIMPLIFIED_UI_SETTINGS 0
+#elif PLATFORM_MOBILE
+#define SIMPLIFIED_UI_SETTINGS 1
+#endif
+
 UserInterfaceSettings::UserInterfaceSettings()
 {
     this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
+
+#if !SIMPLIFIED_UI_SETTINGS
 
     const String lastUsedFontName = App::Config().getProperty(Serialization::Config::lastUsedFont);
 
@@ -104,14 +112,6 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->nativeTitleBarButton->setEnabled(false);
 #endif
 
-    this->animationsEnabledButton = make<ToggleButton>(TRANS(I18n::Settings::uiAnimations));
-    this->addAndMakeVisible(this->animationsEnabledButton.get());
-    this->animationsEnabledButton->onClick = [this]()
-    {
-        App::Config().getUiFlags()->setUiAnimationsEnabled(this->animationsEnabledButton->getToggleState());
-        this->updateButtons();
-    };
-
     this->wheelFlagsSeparator = make<SeparatorHorizontal>();
     this->addAndMakeVisible(this->wheelFlagsSeparator.get());
 
@@ -139,6 +139,19 @@ UserInterfaceSettings::UserInterfaceSettings()
         this->updateButtons();
     };
 
+    this->miscFlagsSeparator = make<SeparatorHorizontal>();
+    this->addAndMakeVisible(this->miscFlagsSeparator.get());
+
+#endif
+
+    this->animationsEnabledButton = make<ToggleButton>(TRANS(I18n::Settings::uiAnimations));
+    this->addAndMakeVisible(this->animationsEnabledButton.get());
+    this->animationsEnabledButton->onClick = [this]()
+    {
+        App::Config().getUiFlags()->setUiAnimationsEnabled(this->animationsEnabledButton->getToggleState());
+        this->updateButtons();
+    };
+
     this->uiScaleSeparator = make<SeparatorHorizontal>();
     this->addAndMakeVisible(this->uiScaleSeparator.get());
 
@@ -163,7 +176,11 @@ UserInterfaceSettings::UserInterfaceSettings()
         this->updateButtons();
     };
 
-    this->setSize(100, 405);
+#if SIMPLIFIED_UI_SETTINGS
+    this->setSize(100, 175);
+#else
+    this->setSize(100, 415);
+#endif
 }
 
 UserInterfaceSettings::~UserInterfaceSettings() = default;
@@ -171,12 +188,14 @@ UserInterfaceSettings::~UserInterfaceSettings() = default;
 void UserInterfaceSettings::resized()
 {
     constexpr auto margin1 = 4;
-    this->fontsCombo->setBounds(margin1, margin1,
-        this->getWidth() - margin1 * 2, this->getHeight() - margin1 * 2);
-
     constexpr auto margin2 = margin1 + 12;
     constexpr auto rowSize = 32;
     constexpr auto rowSpacing = 4;
+
+#if !SIMPLIFIED_UI_SETTINGS
+
+    this->fontsCombo->setBounds(margin1, margin1,
+        this->getWidth() - margin1 * 2, this->getHeight() - margin1 * 2);
 
     this->fontEditor->setBounds(margin2, margin2, this->getWidth() - margin2 * 2, rowSize);
 
@@ -186,11 +205,8 @@ void UserInterfaceSettings::resized()
     this->nativeTitleBarButton->setBounds(margin2,
         this->openGLRendererButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
-    this->animationsEnabledButton->setBounds(margin2,
-        this->nativeTitleBarButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
-
     this->wheelFlagsSeparator->setBounds(margin2,
-        this->animationsEnabledButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 4);
+        this->nativeTitleBarButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 4);
 
     this->wheelAltModeButton->setBounds(margin2,
         this->wheelFlagsSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
@@ -201,8 +217,22 @@ void UserInterfaceSettings::resized()
     this->wheelVerticalZoomingButton->setBounds(margin2,
         this->wheelVerticalPanningButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
-    this->uiScaleSeparator->setBounds(margin2,
+    this->miscFlagsSeparator->setBounds(margin2,
         this->wheelVerticalZoomingButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 4);
+
+    const auto bottomSectionStart = this->miscFlagsSeparator->getBottom() + rowSpacing;
+
+#else
+
+    const auto bottomSectionStart = margin2;
+
+#endif
+
+    this->animationsEnabledButton->setBounds(margin2,
+        bottomSectionStart, this->getWidth() - margin2 * 2, rowSize);
+
+    this->uiScaleSeparator->setBounds(margin2,
+        this->animationsEnabledButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 4);
 
     this->scaleUi1->setBounds(margin2,
         this->uiScaleSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
@@ -224,6 +254,7 @@ void UserInterfaceSettings::visibilityChanged()
 
 void UserInterfaceSettings::handleCommandMessage(int commandId)
 {
+#if !SIMPLIFIED_UI_SETTINGS
     if (commandId >= CommandIDs::SelectFont &&
         commandId <= (CommandIDs::SelectFont + this->systemFonts.size()))
     {
@@ -238,22 +269,25 @@ void UserInterfaceSettings::handleCommandMessage(int commandId)
             window->repaint();
         }
     }
+#endif
 }
 
 // fixme: isn't it better to make this class UserInterfaceFlags::Listener?
 void UserInterfaceSettings::updateButtons()
 {
-    this->openGLRendererButton->setToggleState(App::isOpenGLRendererEnabled(), dontSendNotification);
-
     const auto *uiFlags = App::Config().getUiFlags();
 
-    const bool hasRollAnimations = uiFlags->areUiAnimationsEnabled();
-    this->animationsEnabledButton->setToggleState(hasRollAnimations, dontSendNotification);
+#if !SIMPLIFIED_UI_SETTINGS
+    this->openGLRendererButton->setToggleState(App::isOpenGLRendererEnabled(), dontSendNotification);
 
     const auto wheelFlags = uiFlags->getMouseWheelFlags();
     this->wheelAltModeButton->setToggleState(wheelFlags.usePanningByDefault, dontSendNotification);
     this->wheelVerticalPanningButton->setToggleState(wheelFlags.useVerticalPanningByDefault, dontSendNotification);
     this->wheelVerticalZoomingButton->setToggleState(wheelFlags.useVerticalZoomingByDefault, dontSendNotification);
+#endif
+
+    const bool hasRollAnimations = uiFlags->areUiAnimationsEnabled();
+    this->animationsEnabledButton->setToggleState(hasRollAnimations, dontSendNotification);
 
     this->scaleUi1->setToggleState(uiFlags->getUiScaleFactor() == 1.f, dontSendNotification);
     this->scaleUi15->setToggleState(uiFlags->getUiScaleFactor() == 1.5f, dontSendNotification);

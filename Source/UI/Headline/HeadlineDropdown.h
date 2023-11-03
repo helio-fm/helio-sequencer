@@ -35,6 +35,8 @@ public:
     void paint(Graphics &g) override;
     void resized() override;
     void mouseDown(const MouseEvent &e) override;
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseExit(const MouseEvent &e) override;
     void inputAttemptWhenModal() override;
 
 private:

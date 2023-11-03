@@ -160,6 +160,11 @@ void SequencerSidebarRight::recreateMenu()
         toggledIf(dragMode)->withTooltip(TRANS(I18n::Tooltips::editModeDrag)));
 #endif
 
+#if PLATFORM_MOBILE
+    this->menu.add(MenuItem::item(Icons::undo, CommandIDs::Undo));
+    this->menu.add(MenuItem::item(Icons::redo, CommandIDs::Redo));
+#endif
+
     if (this->menuMode == MenuMode::PianoRollTools)
     {
         this->menu.add(MenuItem::item(Icons::chordBuilder, CommandIDs::ShowChordPanel)->
@@ -192,9 +197,6 @@ void SequencerSidebarRight::recreateMenu()
     {
         this->menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips));
     }
-
-    this->menu.add(MenuItem::item(Icons::undo, CommandIDs::Undo));
-    this->menu.add(MenuItem::item(Icons::redo, CommandIDs::Redo));
 #endif
 
     this->menu.add(MenuItem::item(Icons::metronome, CommandIDs::ToggleMetronome)->

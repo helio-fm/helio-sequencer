@@ -208,7 +208,7 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
 
         const int menuHeight = jmax(this->getHeight(),
             commands.size() * Globals::UI::menuPanelRowHeight);
-        const int maxMenuHeight = Globals::UI::menuPanelRowHeight * 12; // hard-coded for now
+        const int maxMenuHeight = Globals::UI::menuPanelRowHeight * 16; // hard-coded for now
         const int newHeight = jmin(menuHeight, maxMenuHeight) + this->getFooterHeight();
 
         this->setSize(newWidth, newHeight);

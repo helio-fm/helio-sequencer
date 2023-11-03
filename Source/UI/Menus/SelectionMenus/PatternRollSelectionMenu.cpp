@@ -103,7 +103,10 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
                 CommandIDs::TrackSetOneTempo, TRANS(I18n::Menu::setOneTempo))->closesMenu());
         }
     }
-    else
+
+#if PLATFORM_DESKTOP
+    if (this->lasso->getNumSelected() > 1)
+#endif
     {
         // todo: be more smart about automation tracks
         menu.add(MenuItem::item(Icons::up, CommandIDs::ClipTransposeUp,
