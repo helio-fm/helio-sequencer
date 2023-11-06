@@ -25,12 +25,12 @@
 
 static Label *createPopupButtonLabel(const String &text)
 {
-    const int size = 32;
+    constexpr int size = 32;
     auto *newLabel = new Label(text, text);
     newLabel->setJustificationType(Justification::centred);
     newLabel->setBounds(0, 0, size * 2, size);
     newLabel->setName(text + "_outline");
-    newLabel->setFont(Globals::UI::Fonts::S);
+    newLabel->setFont(App::isRunningOnPhone() ? Globals::UI::Fonts::XS : Globals::UI::Fonts::S);
     return newLabel;
 }
 
@@ -58,12 +58,14 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &caller,
     {
         const auto chord = this->defaultChords.getUnchecked(i);
         const float radians = float(i) * (MathConstants<float>::twoPi / float(numChordsToDisplay));
-        // 10 items fit well in a radius of 150, but the more chords there are, the larger r should be:
-        const int radius = 150 + jlimit(0, 8, numChordsToDisplay - 10) * 10;
+        const auto defaultRadius = App::isRunningOnPhone() ? 110 : 150;
+        // the more chords there are, the larger the raduis should be:
+        const int radius = defaultRadius + jlimit(0, 8, numChordsToDisplay - 10) * 10;
         const auto centreOffset = Point<int>(0, -radius).transformedBy(AffineTransform::rotation(radians, 0, 0));
         const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.65f, 1.f, 0.45f);
         auto *button = this->chordButtons.add(new PopupCustomButton(createPopupButtonLabel(chord->getName()), PopupButton::Shape::Hex, colour));
-        button->setSize(this->proportionOfWidth(0.135f), this->proportionOfHeight(0.135f));
+        const int buttonSize = App::isRunningOnPhone() ? 60 : 67;
+        button->setSize(buttonSize, buttonSize);
         button->setUserData(chord->getResourceId());
         const auto buttonSizeOffset = button->getLocalBounds().getCentre();
         const auto buttonPosition = this->getLocalBounds().getCentre() + centreOffset - buttonSizeOffset;
@@ -213,18 +215,15 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 
         const auto temperament = this->roll.getTemperament();
 
-        if (!App::isRunningOnPhone())
-        {
-            static const auto degreeNames = Chord::getLocalizedDegreeNames();
-            const String tooltip =
-                temperament->getMidiNoteName(periodOffset + this->root, true) + " "
-                + this->scale->getLocalizedName() + ", "
-                + degreeNames[scaleDegree] + ", "
-                + temperament->getMidiNoteName(this->targetKey + this->clip.getKey(), true) + " "
-                + chord->getName();
+        static const auto degreeNames = Chord::getLocalizedDegreeNames();
+        const String tooltip =
+            temperament->getMidiNoteName(periodOffset + this->root, true) + " "
+            + this->scale->getLocalizedName() + ", "
+            + degreeNames[scaleDegree] + ", "
+            + temperament->getMidiNoteName(this->targetKey + this->clip.getKey(), true) + " "
+            + chord->getName();
 
-            App::Layout().showTooltip(tooltip);
-        }
+        App::Layout().showTooltip(tooltip);
 
         for (const auto &chordKey : chord->getScaleKeys())
         {

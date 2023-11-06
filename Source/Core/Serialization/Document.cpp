@@ -154,7 +154,7 @@ void Document::exportAs(const String &exportExtension,
                 outStream->setPosition(0); // just in case
                 if (this->owner.onDocumentExport(*outStream.get()))
                 {
-                    App::Layout().showTooltip(TRANS(I18n::Dialog::documentExportDone));
+                    App::Layout().showTooltip({}, MainLayout::TooltipIcon::Success);
                 }
                 else
                 {

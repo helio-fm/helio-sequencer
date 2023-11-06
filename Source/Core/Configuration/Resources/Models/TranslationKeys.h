@@ -59,7 +59,6 @@ namespace I18n
         static constexpr auto deleteProjectCaption = constexprHash("dialog::deleteproject::caption");
         static constexpr auto deleteProjectConfirmCaption = constexprHash("dialog::deleteproject::confirm::caption");
         static constexpr auto documentExport = constexprHash("dialog::document::export");
-        static constexpr auto documentExportDone = constexprHash("dialog::document::export::done");
         static constexpr auto documentImport = constexprHash("dialog::document::import");
         static constexpr auto documentLoad = constexprHash("dialog::document::load");
         static constexpr auto instrumentRenameCaption = constexprHash("dialog::instrument::rename::caption");

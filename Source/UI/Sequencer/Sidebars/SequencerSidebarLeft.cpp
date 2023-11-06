@@ -230,14 +230,17 @@ void SequencerSidebarLeft::recreateMenu()
 
     // TODO add some controls to switch focus between tracks?
 
-    // toggling the mini-map makes sense on mobile platforms, because of smaller screens,
-    // but on the desktop it's more like a one-off choice, so let's not clog up the ui
-    // (this action will still be available via hotkey, 'b' by default):
+    // only display this button on tablets: on desktop the app will show the full map
+    // and on phones it will show the scroller, so let's not clog up the ui;
+    // switching between two modes is still available via hotkey 'b' or via clicking on the map:
 #if PLATFORM_MOBILE
 
-    this->menu.add(MenuItem::item(Icons::bottomBar, CommandIDs::ToggleBottomMiniMap)->
-        toggledIf(this->miniMapVisible)->
-        withTooltip(TRANS(I18n::Tooltips::toggleMiniMap)));
+    if (!App::isRunningOnPhone())
+    {
+        this->menu.add(MenuItem::item(Icons::bottomBar, CommandIDs::ToggleBottomMiniMap)->
+            toggledIf(this->miniMapVisible)->
+            withTooltip(TRANS(I18n::Tooltips::toggleMiniMap)));
+    }
 
 #endif
 

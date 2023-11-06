@@ -27,11 +27,14 @@ TooltipContainer::TooltipContainer()
     this->tooltipComponent = make<Component>();
     this->addAndMakeVisible(this->tooltipComponent.get());
 
-#if PLATFORM_MOBILE
-    this->setSize(500, 64);
-#elif PLATFORM_DESKTOP
-    this->setSize(500, 48);
-#endif
+    if (App::isRunningOnPhone())
+    {
+        this->setSize(450, 32);
+    }
+    else
+    {
+        this->setSize(500, 48);
+    }
 }
 
 TooltipContainer::~TooltipContainer() = default;
@@ -59,10 +62,14 @@ void TooltipContainer::parentSizeChanged()
 
 void TooltipContainer::updatePosition()
 {
+    // on phones use all available space,
+    // on larger screens try to be consistent with the layout
+    const auto paddingTop = App::isRunningOnPhone() ? 0 : Globals::UI::headlineHeight;
+    constexpr auto margin = 8;
     this->setCentrePosition(this->getParentWidth() / 2,
         this->alignedToBottom ?
-        (this->getParentHeight() - int(this->getHeight() / 2) - 16) :
-        ((this->getHeight() / 2) + 48));
+        (this->getParentHeight() - int(this->getHeight() / 2) - margin) :
+        ((this->getHeight() / 2) + paddingTop + margin));
 }
 
 void TooltipContainer::timerCallback()
