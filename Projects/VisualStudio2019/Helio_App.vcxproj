@@ -949,7 +949,7 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\LassoListeners.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\MidiEventComponent.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\RollChildComponentBase.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\SelectionComponent.cpp">
@@ -3439,7 +3439,7 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\RollListener.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Lasso.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\LassoListeners.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\MidiEventComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\RollChildComponentBase.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\SelectableComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\SelectionComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\SequencerLayout.h"/>

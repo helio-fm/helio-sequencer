@@ -35,13 +35,15 @@ AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationEditorBas
     anchor(event),
     controllerNumber(event.getTrackControllerNumber())
 {
-    this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
+
+    this->updateColour();
 }
 
 bool AutomationCurveEventComponent::isTempoCurve() const noexcept
@@ -49,17 +51,24 @@ bool AutomationCurveEventComponent::isTempoCurve() const noexcept
     return this->controllerNumber == MidiTrack::tempoController;
 }
 
+void AutomationCurveEventComponent::updateColour()
+{
+    this->colour = this->editor.getColour(this->event)
+        .withMultipliedSaturation(this->isEditable ? 1.f : 0.45f)
+        .withMultipliedAlpha(this->isEditable ? 1.f : 0.25f);
+}
+
 void AutomationCurveEventComponent::paint(Graphics &g)
 {
     static constexpr auto circleMargin = 2.f;
     const auto centre = this->getLocalBounds().getCentre();
 
-    g.setColour(this->editor.getColour(this->event));
+    g.setColour(this->colour);
 
     const float w = float(this->getWidth());
     const float h = float(this->getHeight());
 
-    if (this->draggingState)
+    if (this->isDragging)
     {
         // indicate dragging direction:
         if (this->dragger.getMode() == FineTuningComponentDragger::Mode::DragOnlyX)
@@ -80,7 +89,7 @@ void AutomationCurveEventComponent::paint(Graphics &g)
                 w - circleMargin * 2.f, h - circleMargin * 2.f);
         }
     }
-    else if (this->hoveredState)
+    else if (this->isHighlighted)
     {
         // top/down dots
         g.fillRect(0.f, centre.y - 1.f, 1.f, 2.f);
@@ -97,6 +106,11 @@ void AutomationCurveEventComponent::paint(Graphics &g)
 
 bool AutomationCurveEventComponent::hitTest(int x, int y)
 {
+    if (!this->isEditable)
+    {
+        return false;
+    }
+
     const int xCenter = this->getWidth() / 2;
     const int yCenter = this->getHeight() / 2;
 
@@ -117,18 +131,21 @@ void AutomationCurveEventComponent::parentHierarchyChanged()
 
 void AutomationCurveEventComponent::mouseEnter(const MouseEvent &e)
 {
-    this->hoveredState = true;
+    jassert(this->isEditable);
+    this->isHighlighted = true;
     this->repaint();
 }
 
 void AutomationCurveEventComponent::mouseExit(const MouseEvent &e)
 {
-    this->hoveredState = false;
+    jassert(this->isEditable);
+    this->isHighlighted = false;
     this->repaint();
 }
 
 void AutomationCurveEventComponent::mouseDown(const MouseEvent &e)
 {
+    jassert(this->isEditable);
     if (e.mods.isLeftButtonDown())
     {
         this->event.getSequence()->checkpoint();
@@ -143,9 +160,10 @@ void AutomationCurveEventComponent::mouseDown(const MouseEvent &e)
 
 void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
 {
+    jassert(this->isEditable);
     if (e.mods.isLeftButtonDown())
     {
-        if (this->draggingState)
+        if (this->isDragging)
         {
             float deltaBeat = 0.f;
             float deltaValue = 0.f;
@@ -159,8 +177,8 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
                 this->tuningIndicator = make<FineTuningValueIndicator>(cv, this->isTempoCurve() ? " bpm" : "");
 
                 // adding it to grandparent to avoid clipping
-                assert(this->getParentComponent() != nullptr);
-                assert(this->getParentComponent()->getParentComponent() != nullptr);
+                jassert(this->getParentComponent() != nullptr);
+                jassert(this->getParentComponent()->getParentComponent() != nullptr);
                 auto *grandParent = this->getParentComponent()->getParentComponent();
 
                 grandParent->addAndMakeVisible(this->tuningIndicator.get());
@@ -175,7 +193,7 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
             }
             else
             {
-                this->setBounds(this->editor.getEventBounds(this->event, this->clip).toNearestIntEdges());
+                this->setFloatBounds(this->editor.getEventBounds(this->event, this->clip));
                 this->updateChildrenBounds();
             }
 
@@ -201,12 +219,13 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
 
 void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
 {
+    jassert(this->isEditable);
     if (e.mods.isLeftButtonDown())
     {
-        if (this->draggingState)
+        if (this->isDragging)
         {
             this->setMouseCursor(MouseCursor::PointingHandCursor);
-            this->setBounds(this->editor.getEventBounds(this->event, this->clip).toNearestIntEdges());
+            this->setFloatBounds(this->editor.getEventBounds(this->event, this->clip));
             this->updateChildrenBounds();
 
             if (this->tuningIndicator != nullptr)
@@ -220,7 +239,7 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
 
             if (!this->dragger.hadChanges() && this->isTempoCurve())
             {
-                this->hoveredState = false;
+                this->isHighlighted = false;
                 this->repaint();
 
                 auto dialog = make<TempoDialog>(this->event.getControllerValueAsBPM());
@@ -252,7 +271,7 @@ void AutomationCurveEventComponent::recreateConnector()
     if (this->nextEventHolder)
     {
         this->connector = make<AutomationCurveEventsConnector>(this->editor, this, this->nextEventHolder);
-        assert(this->getParentComponent() != nullptr);
+        jassert(this->getParentComponent() != nullptr);
         this->getParentComponent()->addAndMakeVisible(this->connector.get());
         this->updateConnector();
     }
@@ -262,8 +281,8 @@ void AutomationCurveEventComponent::recreateHelper()
 {
     if (this->nextEventHolder)
     {
-        this->helper = make<AutomationCurveHelper>(this->event, this->editor, this, this->nextEventHolder);
-        assert(this->getParentComponent() != nullptr);
+        jassert(this->getParentComponent() != nullptr);
+        this->helper = make<AutomationCurveHelper>(this->event, this, this->nextEventHolder);
         this->getParentComponent()->addAndMakeVisible(this->helper.get());
         this->updateHelper();
     }
@@ -274,6 +293,7 @@ void AutomationCurveEventComponent::updateConnector()
     if (this->connector)
     {
         this->connector->resizeToFit(this->event.getCurvature());
+        this->connector->repaint();
     }
 }
 
@@ -288,7 +308,9 @@ void AutomationCurveEventComponent::updateHelper()
             linePos.getY() + int(lineCentre.getY() + 0.5f - (d / 2.f)),
             int(d), int(d));
 
+        this->helper->setEditable(this->isEditable);
         this->helper->setBounds(bounds);
+        this->helper->repaint();
     }
 }
 
@@ -328,19 +350,38 @@ void AutomationCurveEventComponent::setPreviousNeighbour(EventComponentBase *pre
     this->prevEventHolder = prev;
 }
 
+void AutomationCurveEventComponent::setEditable(bool shouldBeEditable)
+{
+    if (this->isEditable == shouldBeEditable)
+    {
+        return;
+    }
+
+    this->isEditable = shouldBeEditable;
+
+    this->updateColour();
+    this->updateHelper();
+    // the connector is not interactive, just skip it
+
+    if (this->isEditable)
+    {
+        this->toFront(false);
+    }
+}
+
 //===----------------------------------------------------------------------===//
 // Editing
 //===----------------------------------------------------------------------===//
 
 void AutomationCurveEventComponent::startDragging()
 {
-    this->draggingState = true;
+    this->isDragging = true;
     this->anchor = this->event;
 }
 
-bool AutomationCurveEventComponent::isDragging() const
+bool AutomationCurveEventComponent::isInEditMode() const
 {
-    return this->draggingState;
+    return this->isDragging;
 }
 
 void AutomationCurveEventComponent::getDraggingDeltas(const MouseEvent &e,
@@ -350,7 +391,11 @@ void AutomationCurveEventComponent::getDraggingDeltas(const MouseEvent &e,
 
     float newBeat = -1.f;
     float newValue = -1.f;
-    this->editor.getBeatValueByPosition(this->getX(), this->getY(), this->clip, newValue, newBeat);
+
+    // aligned by center:
+    this->editor.getBeatValueByPosition(this->getX() + this->getWidth() / 2,
+        this->getY() + this->getHeight() / 2,
+        this->clip, newValue, newBeat);
 
     deltaValue = (this->dragger.getValue() - this->anchor.getControllerValue());
     deltaBeat = (newBeat - this->anchor.getBeat());
@@ -368,5 +413,5 @@ AutomationEvent AutomationCurveEventComponent::continueDragging(const float delt
 
 void AutomationCurveEventComponent::endDragging()
 {
-    this->draggingState = false;
+    this->isDragging = false;
 }

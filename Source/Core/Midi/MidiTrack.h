@@ -153,7 +153,7 @@ public:
 
     VirtualMidiTrack() {}
 
-    void setTrackId(const String &val) override {};
+    void setTrackId(const String &val) override {}
     const String &getTrackId() const noexcept override { return this->trackId; }
     int getTrackChannel() const noexcept override { return 1; }
     void setTrackChannel(int channel, bool undoable,
@@ -169,10 +169,10 @@ public:
 
     String getTrackInstrumentId() const noexcept override { return {}; }
     void setTrackInstrumentId(const String &val, bool undoable,
-        NotificationType notificationType) override {};
+        NotificationType notificationType) override {}
 
     int getTrackControllerNumber() const noexcept override { return 0; }
-    void setTrackControllerNumber(int val, NotificationType notificationType) override {};
+    void setTrackControllerNumber(int val, NotificationType notificationType) override {}
 
     bool hasTimeSignatureOverride() const noexcept override { return false; }
     const TimeSignatureEvent *getTimeSignatureOverride() const noexcept override { return nullptr; }

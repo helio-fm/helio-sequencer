@@ -22,9 +22,9 @@ class RollBase;
 class PatternRoll;
 
 #include "Clip.h"
-#include "MidiEventComponent.h"
+#include "RollChildComponentBase.h"
 
-class ClipComponent : public MidiEventComponent
+class ClipComponent : public RollChildComponentBase
 {
 public:
 
@@ -54,9 +54,8 @@ public:
     // MidiEventComponent
     //===------------------------------------------------------------------===//
 
-    const String &getSelectionGroupId() const noexcept override;
     float getBeat() const noexcept override;
-    const MidiEvent::Id getId() const noexcept override;
+    const String &getSelectionGroupId() const noexcept override;
 
     //===------------------------------------------------------------------===//
     // Component

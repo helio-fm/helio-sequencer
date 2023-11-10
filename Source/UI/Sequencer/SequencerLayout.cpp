@@ -27,6 +27,7 @@
 #include "ProjectMapsScroller.h"
 #include "EditorPanelsScroller.h"
 #include "VelocityEditor.h"
+#include "AutomationEditor.h"
 #include "SequencerSidebarRight.h"
 #include "SequencerSidebarLeft.h"
 #include "OrigamiVertical.h"
@@ -498,9 +499,9 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->pianoRoll->addRollListener(this->bottomMapsScroller.get());
     this->patternRoll->addRollListener(this->bottomMapsScroller.get());
 
-    this->bottomEditorsScroller = make<EditorPanelsScroller>(defaultRoll);
+    this->bottomEditorsScroller = make<EditorPanelsScroller>(this->project, defaultRoll);
     this->bottomEditorsScroller->addOwnedMap<VelocityEditor>(this->project, defaultRoll);
-    //this->bottomEditorsScroller->addOwnedMap<AutomationEditor>(this->project, defaultRoll);
+    this->bottomEditorsScroller->addOwnedMap<AutomationEditor>(this->project, defaultRoll);
 
     this->pianoRoll->addRollListener(this->bottomEditorsScroller.get());
     this->patternRoll->addRollListener(this->bottomEditorsScroller.get());
@@ -550,6 +551,7 @@ SequencerLayout::~SequencerLayout()
     this->rollNavSidebar = nullptr;
     this->rollContainer = nullptr;
 
+    this->patternRoll->removeRollListener(this->bottomEditorsScroller.get());
     this->patternRoll->removeRollListener(this->bottomMapsScroller.get());
     this->pianoRoll->removeRollListener(this->bottomEditorsScroller.get());
     this->pianoRoll->removeRollListener(this->bottomMapsScroller.get());
@@ -593,12 +595,12 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
     //this->patternRoll->selectClip(this->pianoRoll->getActiveClip());
     this->pianoRoll->deselectAll();
 
-    const Clip &activeClip = this->pianoRoll->getActiveClip();
-    const Clip *trackFirstClip = track->getPattern()->getClips().getFirst();
+    const auto &activeClip = this->pianoRoll->getActiveClip();
+    const auto *trackFirstClip = track->getPattern()->getClips().getFirst();
     jassert(trackFirstClip);
 
-    const bool useActiveClip = (activeClip.getPattern() &&
-        activeClip.getPattern()->getTrack() == track);
+    const bool useActiveClip = activeClip.getPattern() != nullptr &&
+        activeClip.getPattern()->getTrack() == track;
 
     this->project.setEditableScope(useActiveClip ? activeClip : *trackFirstClip, false);
 }

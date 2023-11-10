@@ -28,33 +28,36 @@ class AutomationCurveHelper final : public Component
 public:
 
     AutomationCurveHelper(const AutomationEvent &event,
-        const AutomationEditorBase &editor,
-        Component *target1, Component *target2);
+        AutomationEditorBase::EventComponentBase *target1,
+        AutomationEditorBase::EventComponentBase *target2);
 
     float getCurvature() const;
+
+    void setEditable(bool shouldBeEditable);
 
     void paint(Graphics &g) override;
     bool hitTest(int x, int y) override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
-
+    
 private:
 
     const AutomationEvent &event;
-    const AutomationEditorBase &editor;
 
     Point<int> anchor;
     float curveAnchor = 0.f;
 
-    bool draggingState = false;
     FineTuningComponentDragger dragger;
+
+    bool isDragging = false;
+    bool isEditable = true;
 
     UniquePointer<FineTuningValueIndicator> tuningIndicator;
     ComponentFader fader;
 
-    SafePointer<Component> component1;
-    SafePointer<Component> component2;
+    SafePointer<AutomationEditorBase::EventComponentBase> component1;
+    SafePointer<AutomationEditorBase::EventComponentBase> component2;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationCurveHelper)
 };

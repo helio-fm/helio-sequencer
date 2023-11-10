@@ -18,26 +18,38 @@
 #pragma once
 
 class RollBase;
+class MidiSequence;
+class ProjectNode;
 
 #include "RollListener.h"
+#include "ProjectListener.h"
 
 class EditorPanelsScroller final :
     public Component,
+    public ProjectListener,
     public RollListener,
-    private AsyncUpdater
+    private AsyncUpdater, // triggers batch resize events for children
+    public ChangeListener // subscribes on the parent roll's lasso changes
 {
 public:
 
-    explicit EditorPanelsScroller(SafePointer<RollBase> roll);
+    EditorPanelsScroller(ProjectNode &project, SafePointer<RollBase> roll);
+    ~EditorPanelsScroller() override;
 
     class ScrolledComponent : public Component
     {
     public:
+
         virtual void switchToRoll(SafePointer<RollBase> roll) = 0;
+
+        virtual void setEditableScope(Optional<Clip> clip) = 0;
+        virtual void setEditableScope(WeakReference<Lasso> selection) = 0;
+
+        virtual bool canEditSequence(WeakReference<MidiSequence> sequence) const = 0;
     };
 
     template <typename T, typename... Args> inline
-        void addOwnedMap(Args &&... args)
+    void addOwnedMap(Args &&... args)
     {
         auto *newTrackMap = this->trackMaps.add(new T(std::forward<Args>(args)...));
         this->addAndMakeVisible(newTrackMap);
@@ -60,15 +72,25 @@ public:
     
     void onMidiRollMoved(RollBase *targetRoll) override;
     void onMidiRollResized(RollBase *targetRoll) override;
-    
+
+    //===------------------------------------------------------------------===//
+    // ProjectListener
+    //===------------------------------------------------------------------===//
+
+    void onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool) override;
+
 private:
+
+    ProjectNode &project;
+
+    SafePointer<RollBase> roll;
+
+    void changeListenerCallback(ChangeBroadcaster *source) override;
     
     void handleAsyncUpdate() override;
     Rectangle<int> getMapBounds() const noexcept;
 
-    SafePointer<RollBase> roll;
-    OwnedArray<ScrolledComponent> trackMaps;
-    
+    OwnedArray<ScrolledComponent> trackMaps;    
 };
 
 // Ramer-Douglas-Peucker algorithm for point reduction,

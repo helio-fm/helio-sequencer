@@ -26,7 +26,7 @@
 #include "Icons.h"
 
 ClipComponent::ClipComponent(RollBase &editor, const Clip &clip) :
-    MidiEventComponent(editor),
+    RollChildComponentBase(editor),
     clip(clip),
     anchor(clip)
 {
@@ -88,11 +88,6 @@ const String &ClipComponent::getSelectionGroupId() const noexcept
     return this->clip.getPattern()->getTrackId();
 }
 
-const MidiEvent::Id ClipComponent::getId() const noexcept
-{
-    return this->clip.getId();
-}
-
 Rectangle<int> ClipComponent::getTextArea() const noexcept
 {
     return Rectangle<int>(4, 5,
@@ -131,7 +126,7 @@ void ClipComponent::mouseDown(const MouseEvent &e)
         return;
     }
 
-    MidiEventComponent::mouseDown(e);
+    RollChildComponentBase::mouseDown(e);
 
     const auto &selection = this->roll.getLassoSelection();
     if (e.mods.isLeftButtonDown())
@@ -362,7 +357,7 @@ void ClipComponent::paint(Graphics &g)
 void ClipComponent::setSelected(bool selected)
 {
     const bool stateIsChanging = selected != this->isSelected();
-    MidiEventComponent::setSelected(selected);
+    RollChildComponentBase::setSelected(selected);
     if (stateIsChanging)
     {
         // this is not super effective (nested loops etc),

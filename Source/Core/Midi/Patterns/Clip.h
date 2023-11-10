@@ -45,7 +45,7 @@ public:
     float getBeat() const noexcept;
     float getVelocity() const noexcept;
     const Id getId() const noexcept;
-    const String &getKeyString() const noexcept;
+    const String &getKeyAsString() const noexcept;
     
     bool isValid() const noexcept;
     bool isMuted() const noexcept;

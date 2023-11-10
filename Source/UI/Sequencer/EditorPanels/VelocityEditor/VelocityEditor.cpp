@@ -47,11 +47,11 @@ public:
         note(note),
         clip(clip)
     {
-        this->updateColour();
         this->setInterceptsMouseClicks(true, false);
         this->setMouseClickGrabsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
         this->setMouseCursor(MouseCursor::UpDownResizeCursor);
+        this->updateColour();
     }
 
     inline const Note &getNote() const noexcept
@@ -94,8 +94,8 @@ public:
     {
         const auto baseColour = findDefaultColour(ColourIDs::Roll::noteFill);
         this->mainColour = this->note.getTrackColour()
-            .interpolatedWith(baseColour, this->editable ? 0.35f : 0.5f)
-            .withAlpha(this->editable ? 0.75f : 0.065f);
+            .interpolatedWith(baseColour, this->isEditable ? 0.35f : 0.5f)
+            .withAlpha(this->isEditable ? 0.75f : 0.065f);
         this->paleColour = this->mainColour
             .brighter(0.1f)
             .withMultipliedAlpha(0.1f);
@@ -108,24 +108,18 @@ public:
         this->setBounds(int(floorf(x)), y, int(ceilf(w)), h);
     }
 
-    bool isEditable() const noexcept
+    void setEditable(bool shouldBeEditable)
     {
-        return this->editable;
-    }
-
-    void setEditable(bool editable)
-    {
-        if (this->editable == editable)
+        if (this->isEditable == shouldBeEditable)
         {
             return;
         }
 
-        this->editable = editable;
+        this->isEditable = shouldBeEditable;
 
-        this->setEnabled(editable);
         this->updateColour();
 
-        if (this->editable)
+        if (this->isEditable)
         {
             // toBack() and toFront() use indexOf(this) so calling them sucks
             this->toFront(false);
@@ -153,21 +147,24 @@ public:
 
     bool hitTest(int, int y) noexcept override
     {
-        return this->editable;
+        return this->isEditable;
     }
 
     void mouseDown(const MouseEvent &e) override
     {
+        jassert(this->isEditable);
         this->getEditor()->startFineTuning(this, e);
     }
 
     void mouseDrag(const MouseEvent &e) override
     {
+        jassert(this->isEditable);
         this->getEditor()->continueFineTuning(this, e);
     }
 
     void mouseUp(const MouseEvent &e) override
     {
+        jassert(this->isEditable);
         this->getEditor()->endFineTuning(this, e);
     }
 
@@ -190,7 +187,7 @@ private:
     float dx = 0.f;
     float dw = 0.f;
 
-    bool editable = false;
+    bool isEditable = true;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityEditorNoteComponent)
 };
@@ -216,7 +213,7 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(findDefaultColour(Label::textColourId));
+        g.setColour(this->colour);
         g.fillPath(this->curveInPixels);
     }
 
@@ -314,6 +311,8 @@ private:
     Path curveInPixels; // for painting
     Array<Line<float>> curveInBeatVelocity; // for convenient intersection checks
 
+    const Colour colour = findDefaultColour(Label::textColourId);
+
     inline const Point<double> getSize() const noexcept
     {
         return this->getLocalBounds().getBottomRight().toDouble();
@@ -341,19 +340,11 @@ VelocityEditor::VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll)
     this->reloadTrackMap();
 
     this->project.addListener(this);
-    this->roll->getLassoSelection().addChangeListener(this);
 }
 
 VelocityEditor::~VelocityEditor()
 {
-    this->roll->getLassoSelection().removeChangeListener(this);
     this->project.removeListener(this);
-}
-void VelocityEditor::switchToRoll(SafePointer<RollBase> roll)
-{
-    this->roll->getLassoSelection().removeChangeListener(this);
-    this->roll = roll;
-    this->roll->getLassoSelection().addChangeListener(this);
 }
 
 float VelocityEditor::getBeatByXPosition(float x) const noexcept
@@ -478,6 +469,84 @@ void VelocityEditor::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails
 }
 
 //===----------------------------------------------------------------------===//
+// ScrolledComponent
+//===----------------------------------------------------------------------===//
+
+void VelocityEditor::switchToRoll(SafePointer<RollBase> roll)
+{
+    this->roll = roll;
+}
+
+void VelocityEditor::setEditableScope(Optional<Clip> clip)
+{
+    if (this->activeClip == clip)
+    {
+        return;
+    }
+
+    this->activeClip = clip;
+
+    VELOCITY_MAP_BATCH_REPAINT_START
+
+    for (const auto &c : this->patternMap)
+    {
+        const bool isEditable = c.first == clip;
+        const auto &componentsMap = *c.second.get();
+        for (const auto &e : componentsMap)
+        {
+            e.second->setEditable(isEditable);
+        }
+    }
+
+    VELOCITY_MAP_BATCH_REPAINT_END
+}
+
+void VelocityEditor::setEditableScope(WeakReference<Lasso> selection)
+{
+    jassert(this->activeClip.hasValue());
+    const auto activeMapIt = this->patternMap.find(*this->activeClip);
+    if (activeMapIt == this->patternMap.end())
+    {
+        jassertfalse;
+        return;
+    }
+
+    const auto *activeMap = activeMapIt->second.get();
+
+    VELOCITY_MAP_BATCH_REPAINT_START
+
+    if (selection->getNumSelected() == 0)
+    {
+        // no selection: the entire clip is editable
+        for (const auto &it : *activeMap)
+        {
+            it.second->setEditable(true);
+        }
+    }
+    else
+    {
+        for (const auto &it : *activeMap)
+        {
+            it.second->setEditable(false);
+        }
+
+        for (const auto *component : *selection)
+        {
+            jassert(dynamic_cast<const NoteComponent *>(component) != nullptr);
+            const auto *nc = dynamic_cast<const NoteComponent *>(component);
+            activeMap->at(nc->getNote())->setEditable(true);
+        }
+    }
+
+    VELOCITY_MAP_BATCH_REPAINT_END
+}
+
+bool VelocityEditor::canEditSequence(WeakReference<MidiSequence> sequence) const
+{
+    return dynamic_cast<PianoSequence *>(sequence.get()) != nullptr;
+}
+
+//===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
@@ -518,7 +587,8 @@ void VelocityEditor::onAddMidiEvent(const MidiEvent &event)
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
             auto &componentsMap = *c.second.get();
-            const int i = track->getPattern()->indexOfSorted(&c.first);
+            const auto *targetClipParams = &c.first;
+            const int i = track->getPattern()->indexOfSorted(targetClipParams);
             jassert(i >= 0);
 
             const auto *clip = track->getPattern()->getUnchecked(i);
@@ -699,111 +769,6 @@ void VelocityEditor::onChangeViewBeatRange(float firstBeat, float lastBeat)
 }
 
 //===----------------------------------------------------------------------===//
-// Editable scope selection
-//===----------------------------------------------------------------------===//
-
-// Only called when the piano roll is showing
-void VelocityEditor::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
-{
-    if (this->activeClip == clip)
-    {
-        return;
-    }
-
-    this->activeClip = clip;
-
-    VELOCITY_MAP_BATCH_REPAINT_START
-
-    for (const auto &c : this->patternMap)
-    {
-        const bool isEditable = c.first == clip;
-        const auto &componentsMap = *c.second.get();
-        for (const auto &e : componentsMap)
-        {
-            e.second->setEditable(isEditable);
-        }
-    }
-
-    VELOCITY_MAP_BATCH_REPAINT_END
-}
-
-// Can be called by both the piano roll and the pattern roll
-void VelocityEditor::changeListenerCallback(ChangeBroadcaster *source)
-{
-    jassert(dynamic_cast<Lasso *>(source));
-    const auto *selection = static_cast<Lasso *>(source);
-
-    if (dynamic_cast<PianoRoll *>(this->roll.getComponent()))
-    {
-        assert(this->activeClip.hasValue());
-        const auto activeMapIt = this->patternMap.find(*this->activeClip);
-        if (activeMapIt == this->patternMap.end())
-        {
-            jassertfalse;
-            return;
-        }
-
-        const auto *activeMap = activeMapIt->second.get();
-
-        VELOCITY_MAP_BATCH_REPAINT_START
-
-        if (selection->getNumSelected() == 0)
-        {
-            // no selection: the entire clip is editable
-            for (const auto &it : *activeMap)
-            {
-                it.second->setEditable(true);
-            }
-        }
-        else
-        {
-            for (const auto &it : *activeMap)
-            {
-                it.second->setEditable(false);
-            }
-
-            for (const auto *component : *selection)
-            {
-                assert(dynamic_cast<const NoteComponent *>(component) != nullptr);
-                const auto *nc = dynamic_cast<const NoteComponent *>(component);
-                activeMap->at(nc->getNote())->setEditable(true);
-            }
-        }
-
-        VELOCITY_MAP_BATCH_REPAINT_END
-    }
-    else if (dynamic_cast<PatternRoll *>(this->roll.getComponent()))
-    {
-        if (selection->getNumSelected() == 1)
-        {
-            const auto *cc = selection->getFirstAs<ClipComponent>();
-            this->activeClip = cc->getClip();
-        }
-        else
-        {
-            // simply disallow editing multiple clips at once,
-            // some of them may be the instances of the same track
-            this->activeClip = {};
-        }
-
-        VELOCITY_MAP_BATCH_REPAINT_START
-
-        for (const auto &it : this->patternMap)
-        {
-            const auto isEditable = this->activeClip == it.first;
-            const auto sequenceMap = it.second.get();
-            for (const auto &e : *sequenceMap)
-            {
-                jassert(e.second.get());
-                e.second->setEditable(isEditable);
-            }
-        }
-
-        VELOCITY_MAP_BATCH_REPAINT_END
-    }
-}
-
-//===----------------------------------------------------------------------===//
 // Fine-tuning a single note
 //===----------------------------------------------------------------------===//
 
@@ -825,8 +790,8 @@ void VelocityEditor::startFineTuning(VelocityEditorNoteComponent *target, const 
         this->fineTuningIndicator->setValue(target->getNote().getVelocity(), int(finalMidiVelocity));
 
         // adding it to grandparent to avoid clipping
-        assert(this->getParentComponent() != nullptr);
-        assert(this->getParentComponent()->getParentComponent() != nullptr);
+        jassert(this->getParentComponent() != nullptr);
+        jassert(this->getParentComponent()->getParentComponent() != nullptr);
         auto *grandParent = this->getParentComponent()->getParentComponent();
 
         grandParent->addAndMakeVisible(this->fineTuningIndicator.get());
@@ -926,8 +891,13 @@ void VelocityEditor::applyGroupVolumeChanges()
     }
 
     const auto activeClip = *this->activeClip;
+    if (!this->patternMap.contains(activeClip))
+    {
+        jassertfalse;
+        return;
+    }
+
     const auto *activeMap = this->patternMap.at(activeClip).get();
-    jassert(activeMap);
 
     Point<float> intersectionPoint;
 
@@ -937,7 +907,7 @@ void VelocityEditor::applyGroupVolumeChanges()
 
     for (const auto &i : *activeMap)
     {
-        if (!i.second->isEditable())
+        if (!i.second->isEditable)
         {
             continue;
         }
@@ -1006,6 +976,7 @@ void VelocityEditor::loadTrack(const MidiTrack *const track)
 {
     if (track->getPattern() == nullptr)
     {
+        jassertfalse;
         return;
     }
 

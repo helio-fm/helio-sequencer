@@ -274,7 +274,7 @@
 #include "../../Source/UI/Sequencer/RollBase.cpp"
 #include "../../Source/UI/Sequencer/RollEditMode.cpp"
 #include "../../Source/UI/Sequencer/LassoListeners.cpp"
-#include "../../Source/UI/Sequencer/MidiEventComponent.cpp"
+#include "../../Source/UI/Sequencer/RollChildComponentBase.cpp"
 #include "../../Source/UI/Sequencer/SelectionComponent.cpp"
 #include "../../Source/UI/Sequencer/SequencerLayout.cpp"
 #include "../../Source/UI/Themes/HelioTheme.cpp"

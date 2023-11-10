@@ -167,6 +167,8 @@ public:
         return &lhs == &rhs;
     }
 
+    JUCE_DECLARE_WEAK_REFERENCEABLE(MidiSequence)
+
 private:
 
     MidiTrack &track;
@@ -186,9 +188,6 @@ protected:
 
     OwnedArray<MidiEvent> midiEvents;
     mutable FlatHashSet<MidiEvent::Id> usedEventIds;
-    
-private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiSequence)
-    JUCE_DECLARE_WEAK_REFERENCEABLE(MidiSequence)
 };

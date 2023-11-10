@@ -74,7 +74,7 @@ const Clip::Id Clip::getId() const noexcept
     return this->id;
 }
 
-const String &Clip::getKeyString() const noexcept
+const String &Clip::getKeyAsString() const noexcept
 {
     return this->keyString;
 }

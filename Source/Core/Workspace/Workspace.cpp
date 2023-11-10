@@ -407,7 +407,7 @@ void Workspace::importProject(const String &filePattern)
         }
         catch (...)
         {
-            assert(false);
+            jassertfalse;
             App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
         }
     });

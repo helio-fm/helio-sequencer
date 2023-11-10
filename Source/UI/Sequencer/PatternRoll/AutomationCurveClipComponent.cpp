@@ -51,9 +51,22 @@ AutomationCurveClipComponent::~AutomationCurveClipComponent()
 // AutomationEditorBase
 //===----------------------------------------------------------------------===//
 
-const Colour &AutomationCurveClipComponent::getColour(const AutomationEvent &) const
+Colour AutomationCurveClipComponent::getColour(const AutomationEvent &) const
 {
     return this->getEventColour();
+}
+
+float AutomationCurveClipComponent::getBeatByPosition(int x, const Clip &clip) const
+{
+    return this->roll.getRoundBeatSnapByXPosition(this->getX() + x) - clip.getBeat();
+}
+
+void AutomationCurveClipComponent::getBeatValueByPosition(int x, int y,
+    const Clip &clip, float &targetValue, float &targetBeat) const
+{
+    targetBeat = this->getBeatByPosition(x, clip);
+    targetValue = float(this->getHeight() - y) / float(this->getHeight()); // flipped upside down
+    targetValue = jlimit(0.f, 1.f, targetValue);
 }
 
 Rectangle<float> AutomationCurveClipComponent::getEventBounds(const AutomationEvent &event, const Clip &clip) const
@@ -64,30 +77,12 @@ Rectangle<float> AutomationCurveClipComponent::getEventBounds(const AutomationEv
     return this->getEventBounds(beat, sequenceLength, event.getControllerValue());
 }
 
-float AutomationCurveClipComponent::getBeatByPosition(int x, const Clip &clip) const
-{
-    constexpr auto radius = int(AutomationCurveClipComponent::eventComponentDiameter / 2.f);
-    const int xRoll = this->getX() + x + radius;
-    return this->roll.getRoundBeatSnapByXPosition(xRoll) - clip.getBeat();
-}
-
-void AutomationCurveClipComponent::getBeatValueByPosition(int x, int y,
-    const Clip &clip, float &targetValue, float &targetBeat) const
-{
-    targetBeat = this->getBeatByPosition(x, clip);
-
-    constexpr auto radius = int(AutomationCurveClipComponent::eventComponentDiameter / 2.f);
-    targetValue = float(this->getAvailableHeight() - y - radius) / float(this->getAvailableHeight()); // flip upside down
-    targetValue = jlimit(0.f, 1.f, targetValue);
-}
-
 Rectangle<float> AutomationCurveClipComponent::getEventBounds(float beat,
     float sequenceLength, double controllerValue) const
 {
     constexpr auto diameter = AutomationCurveClipComponent::eventComponentDiameter;
     const float x = roundf(float(this->getWidth()) * (beat / jmax(1.f, sequenceLength)));
-    const float fullh = float(this->getAvailableHeight());
-    const float y = roundf(float(1.0 - controllerValue) * fullh); // flipped upside down
+    const float y = roundf(float(1.0 - controllerValue) * float(this->getHeight())); // flipped upside down
     return { x - (diameter / 2.f), y - (diameter / 2.f), diameter, diameter };
 }
 
@@ -127,7 +122,7 @@ void AutomationCurveClipComponent::mouseDrag(const MouseEvent &e)
 
     if (this->draggingEvent)
     {
-        if (this->draggingEvent->isDragging())
+        if (this->draggingEvent->isInEditMode())
         {
             this->draggingEvent->mouseDrag(e.getEventRelativeTo(this->draggingEvent));
         }
@@ -200,155 +195,141 @@ void AutomationCurveClipComponent::insertNewEventAt(const MouseEvent &e)
     autoSequence->insert(event, true);
 }
 
-int AutomationCurveClipComponent::getAvailableHeight() const
-{
-    return this->getHeight();
-}
-
-AutomationEditorBase::EventComponentBase *AutomationCurveClipComponent::getPreviousEventComponent(int indexOfSorted) const
-{
-    const int indexOfPrevious = indexOfSorted - 1;
-    return isPositiveAndBelow(indexOfPrevious, this->eventComponents.size()) ?
-        this->eventComponents.getUnchecked(indexOfPrevious) : nullptr;
-}
-
-AutomationEditorBase::EventComponentBase *AutomationCurveClipComponent::getNextEventComponent(int indexOfSorted) const
-{
-    const int indexOfNext = indexOfSorted + 1;
-    return isPositiveAndBelow(indexOfNext, this->eventComponents.size()) ?
-        this->eventComponents.getUnchecked(indexOfNext) : nullptr;
-}
-
 //===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
 void AutomationCurveClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (newEvent.getSequence() == this->sequence)
+    if (newEvent.getSequence() != this->sequence)
     {
-        const auto &autoEvent = static_cast<const AutomationEvent &>(oldEvent);
-        const auto &newAutoEvent = static_cast<const AutomationEvent &>(newEvent);
+        return;
+    }
 
-        if (auto *component = this->eventsHash[autoEvent])
+    const auto &autoEvent = static_cast<const AutomationEvent &>(oldEvent);
+    const auto &newAutoEvent = static_cast<const AutomationEvent &>(newEvent);
+
+    if (auto *component = this->eventsMap[autoEvent])
+    {
+        this->eventComponents.sort(*component);
+        const int indexOfSorted = this->eventComponents.indexOfSorted(*component, component);
+        auto *previousEventComponent = this->eventComponents[indexOfSorted - 1];
+        auto *nextEventComponent = this->eventComponents[indexOfSorted + 1];
+            
+        // if the neighbourhood has changed,
+        // connect the most recent neighbours to each other:
+        if (nextEventComponent != component->getNextNeighbour() ||
+            previousEventComponent != component->getPreviousNeighbour())
         {
-            this->eventComponents.sort(*component);
-            const int indexOfSorted = this->eventComponents.indexOfSorted(*component, component);
-            auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
-            auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
-            
-            // if the neighbourhood has changed,
-            // connect the most recent neighbours to each other:
-            if (nextEventComponent != component->getNextNeighbour() ||
-                previousEventComponent != component->getPreviousNeighbour())
+            if (component->getPreviousNeighbour())
             {
-                if (component->getPreviousNeighbour())
-                {
-                    component->getPreviousNeighbour()->setNextNeighbour(component->getNextNeighbour());
-                }
-
-                if (component->getNextNeighbour())
-                {
-                    component->getNextNeighbour()->setPreviousNeighbour(component->getPreviousNeighbour());
-                }
+                component->getPreviousNeighbour()->setNextNeighbour(component->getNextNeighbour());
             }
 
-            component->setNextNeighbour(nextEventComponent);
-            component->setPreviousNeighbour(previousEventComponent);
-            component->setFloatBounds(this->getEventBounds(newAutoEvent, this->clip));
-            component->updateChildrenBounds();
-            
-            if (previousEventComponent)
+            if (component->getNextNeighbour())
             {
-                previousEventComponent->setNextNeighbour(component);
+                component->getNextNeighbour()->setPreviousNeighbour(component->getPreviousNeighbour());
             }
-            
-            if (nextEventComponent)
-            {
-                nextEventComponent->setPreviousNeighbour(component);
-            }
-            
-            this->eventsHash.erase(autoEvent);
-            this->eventsHash[newAutoEvent] = component;
-            
-            this->roll.triggerBatchRepaintFor(this);
         }
+
+        component->setNextNeighbour(nextEventComponent);
+        component->setPreviousNeighbour(previousEventComponent);
+        component->setFloatBounds(this->getEventBounds(newAutoEvent, this->clip));
+        component->updateChildrenBounds();
+            
+        if (previousEventComponent)
+        {
+            previousEventComponent->setNextNeighbour(component);
+        }
+            
+        if (nextEventComponent)
+        {
+            nextEventComponent->setPreviousNeighbour(component);
+        }
+            
+        this->eventsMap.erase(autoEvent);
+        this->eventsMap[newAutoEvent] = component;
+            
+        this->roll.triggerBatchRepaintFor(this);
     }
 }
 
 void AutomationCurveClipComponent::onAddMidiEvent(const MidiEvent &event)
 {
-    if (event.getSequence() == this->sequence)
+    if (event.getSequence() != this->sequence)
     {
-        const auto &autoEvent = static_cast<const AutomationEvent &>(event);
-        
-        auto *component = new AutomationCurveEventComponent(*this, autoEvent, this->clip);
-        this->addAndMakeVisible(component);
-
-        // update links and connectors
-        const int indexOfSorted = this->eventComponents.addSorted(*component, component);
-        auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
-        auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
-
-        component->setNextNeighbour(nextEventComponent);
-        component->setPreviousNeighbour(previousEventComponent);
-        component->setFloatBounds(this->getEventBounds(autoEvent, this->clip));
-        component->updateChildrenBounds();
-        component->toFront(false);
-        
-        if (previousEventComponent)
-        {
-            previousEventComponent->setNextNeighbour(component);
-        }
-
-        if (nextEventComponent)
-        {
-            nextEventComponent->setPreviousNeighbour(component);
-        }
-
-        this->eventsHash[autoEvent] = component;
-                
-        if (this->addNewEventMode)
-        {
-            this->draggingEvent = component;
-            this->addNewEventMode = false;
-        }
-
-        this->roll.triggerBatchRepaintFor(this);
+        return;
     }
+
+    const auto &autoEvent = static_cast<const AutomationEvent &>(event);
+
+    auto *component = new AutomationCurveEventComponent(*this, autoEvent, this->clip);
+    this->addAndMakeVisible(component);
+
+    // update links and connectors
+    const int indexOfSorted = this->eventComponents.addSorted(*component, component);
+    auto *previousEventComponent = this->eventComponents[indexOfSorted - 1];
+    auto *nextEventComponent = this->eventComponents[indexOfSorted + 1];
+
+    component->setNextNeighbour(nextEventComponent);
+    component->setPreviousNeighbour(previousEventComponent);
+    component->setFloatBounds(this->getEventBounds(autoEvent, this->clip));
+    component->updateChildrenBounds();
+        
+    if (previousEventComponent)
+    {
+        previousEventComponent->setNextNeighbour(component);
+    }
+
+    if (nextEventComponent)
+    {
+        nextEventComponent->setPreviousNeighbour(component);
+    }
+
+    this->eventsMap[autoEvent] = component;
+                
+    if (this->addNewEventMode)
+    {
+        this->draggingEvent = component;
+        this->addNewEventMode = false;
+    }
+
+    this->roll.triggerBatchRepaintFor(this);
 }
 
 void AutomationCurveClipComponent::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.getSequence() == this->sequence)
+    if (event.getSequence() != this->sequence)
     {
-        const auto &autoEvent = static_cast<const AutomationEvent &>(event);
+        return;
+    }
+
+    const auto &autoEvent = static_cast<const AutomationEvent &>(event);
         
-        if (auto *component = this->eventsHash[autoEvent])
+    if (auto *component = this->eventsMap[autoEvent])
+    {
+        //this->eventAnimator.fadeOut(component, Globals::UI::fadeOutShort);
+        this->removeChildComponent(component);
+        this->eventsMap.erase(autoEvent);
+            
+        // update links and connectors for neighbors
+        const int indexOfSorted = this->eventComponents.indexOfSorted(*component, component);
+        auto *previousEventComponent = this->eventComponents[indexOfSorted - 1];
+        auto *nextEventComponent = this->eventComponents[indexOfSorted + 1];
+            
+        if (previousEventComponent)
         {
-            //this->eventAnimator.fadeOut(component, Globals::UI::fadeOutShort);
-            this->removeChildComponent(component);
-            this->eventsHash.erase(autoEvent);
-            
-            // update links and connectors for neighbors
-            const int indexOfSorted = this->eventComponents.indexOfSorted(*component, component);
-            auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
-            auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
-            
-            if (previousEventComponent)
-            {
-                previousEventComponent->setNextNeighbour(nextEventComponent);
-            }
-
-            if (nextEventComponent)
-            {
-                nextEventComponent->setPreviousNeighbour(previousEventComponent);
-            }
-
-            this->eventComponents.removeObject(component, true);
-            
-            this->roll.triggerBatchRepaintFor(this);
+            previousEventComponent->setNextNeighbour(nextEventComponent);
         }
+
+        if (nextEventComponent)
+        {
+            nextEventComponent->setPreviousNeighbour(previousEventComponent);
+        }
+
+        this->eventComponents.removeObject(component, true);
+            
+        this->roll.triggerBatchRepaintFor(this);
     }
 }
 
@@ -357,7 +338,13 @@ void AutomationCurveClipComponent::onChangeTrackProperties(MidiTrack *const trac
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
         this->updateColours();
-        this->repaint();
+
+        for (auto *component : this->eventComponents)
+        {
+            component->updateColour();
+        }
+
+        this->roll.triggerBatchRepaintFor(this);
     }
 }
 
@@ -398,29 +385,29 @@ void AutomationCurveClipComponent::reloadTrack()
     }
     
     this->eventComponents.clear();
-    this->eventsHash.clear();
+    this->eventsMap.clear();
     
     this->setVisible(false);
     
     for (int i = 0; i < this->sequence->size(); ++i)
     {
-        if (auto *autoEvent = dynamic_cast<AutomationEvent *>(this->sequence->getUnchecked(i)))
+        if (this->sequence->getUnchecked(i)->isTypeOf(MidiEvent::Type::Auto))
         {
+            auto *autoEvent = static_cast<AutomationEvent *>(this->sequence->getUnchecked(i));
             auto *component = new AutomationCurveEventComponent(*this, *autoEvent, this->clip);
 
             this->addAndMakeVisible(component);
-            component->toFront(false);
 
             this->eventComponents.addSorted(*component, component);
-            this->eventsHash[*autoEvent] = component;
+            this->eventsMap[*autoEvent] = component;
         }
     }
 
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
         auto *component = this->eventComponents.getUnchecked(i);
-        auto *previousEventComponent = this->getPreviousEventComponent(i);
-        auto *nextEventComponent = this->getNextEventComponent(i);
+        auto *previousEventComponent = this->eventComponents[i - 1];
+        auto *nextEventComponent = this->eventComponents[i + 1];
 
         component->setNextNeighbour(nextEventComponent);
         component->setPreviousNeighbour(previousEventComponent);

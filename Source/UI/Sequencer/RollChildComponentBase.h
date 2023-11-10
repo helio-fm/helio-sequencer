@@ -17,33 +17,23 @@
 
 #pragma once
 
-class MidiSequence;
 class RollBase;
 
-#include "MidiEvent.h"
 #include "FloatBoundsComponent.h"
 #include "SelectableComponent.h"
 
-class MidiEventComponent : public FloatBoundsComponent, public SelectableComponent
+class RollChildComponentBase : public FloatBoundsComponent, public SelectableComponent
 {
 public:
 
-    MidiEventComponent(RollBase &editor, bool ghostMode = false) noexcept;
+    RollChildComponentBase(RollBase &editor, bool ghostMode = false) noexcept;
 
     bool isActive() const noexcept;
     void setActive(bool val, bool force = false);
     void setGhostMode();
 
     virtual float getBeat() const noexcept = 0;
-    virtual const MidiEvent::Id getId() const noexcept = 0;
     virtual void updateColours() = 0;
-
-    //===------------------------------------------------------------------===//
-    // Component
-    //===------------------------------------------------------------------===//
-
-    void mouseDown(const MouseEvent &e) override;
-    static int compareElements(MidiEventComponent *c1, MidiEventComponent *c2) noexcept;
 
     //===------------------------------------------------------------------===//
     // SelectableComponent
@@ -52,11 +42,17 @@ public:
     void setSelected(bool selected) override;
     bool isSelected() const noexcept override;
 
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
+    void mouseDown(const MouseEvent &e) override;
+
 protected:
 
     RollBase &roll;
 
-    struct MidiEventComponentFlags final
+    struct Flags final
     {
         bool isSelected : 1;            // both clips and notes can be displayed as selected
         bool isInstanceOfSelected : 1;  // used to highlight all "instances" of selected clips
@@ -69,7 +65,7 @@ protected:
     union
     {
         uint8 componentFlags = 0;
-        MidiEventComponentFlags flags;
+        Flags flags;
     };
 
 protected:
@@ -114,5 +110,5 @@ protected:
 
     ComponentDragger dragger;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiEventComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RollChildComponentBase)
 };

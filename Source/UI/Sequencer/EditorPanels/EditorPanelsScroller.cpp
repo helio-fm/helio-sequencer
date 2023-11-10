@@ -17,20 +17,37 @@
 
 #include "Common.h"
 #include "EditorPanelsScroller.h"
+#include "AutomationEditorBase.h"
 #include "RollBase.h"
+#include "ProjectNode.h"
+#include "PianoClipComponent.h"
 #include "ColourIDs.h"
 #include "HelioTheme.h"
 
-EditorPanelsScroller::EditorPanelsScroller(SafePointer<RollBase> roll) : roll(roll)
+EditorPanelsScroller::EditorPanelsScroller(ProjectNode &project, SafePointer<RollBase> roll) :
+    project(project),
+    roll(roll)
 {
     this->setPaintingIsUnclipped(false); // the cut dragger may and will go out of bounds
     this->setInterceptsMouseClicks(true, true);
     this->setOpaque(true);
+
+    this->project.addListener(this);
+    this->roll->getLassoSelection().addChangeListener(this);
+}
+
+EditorPanelsScroller::~EditorPanelsScroller()
+{
+    this->roll->getLassoSelection().removeChangeListener(this);
+    this->project.removeListener(this);
 }
 
 void EditorPanelsScroller::switchToRoll(SafePointer<RollBase> roll)
 {
+    this->roll->getLassoSelection().removeChangeListener(this);
     this->roll = roll;
+    this->roll->getLassoSelection().addChangeListener(this);
+
     for (auto *map : this->trackMaps)
     {
         map->switchToRoll(roll);
@@ -108,11 +125,72 @@ void EditorPanelsScroller::handleAsyncUpdate()
 
 Rectangle<int> EditorPanelsScroller::getMapBounds() const noexcept
 {
-    if (this->roll != nullptr)
+    if (this->roll == nullptr)
     {
-        const auto viewX = this->roll->getViewport().getViewPositionX();
-        return { -viewX, 0, this->roll->getWidth(), this->getHeight() };
+        return {};
     }
 
-    return {};
+    const auto viewX = this->roll->getViewport().getViewPositionX();
+    return { -viewX, 0, this->roll->getWidth(), this->getHeight() };
+}
+
+//===----------------------------------------------------------------------===//
+// Editable scope selection
+//===----------------------------------------------------------------------===//
+
+// Only called when the piano roll is switched to another clip
+void EditorPanelsScroller::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
+{
+    for (auto *map : this->trackMaps)
+    {
+        const auto idEditable = map->canEditSequence(clip.getPattern()->getTrack()->getSequence());
+        map->setVisible(idEditable);
+        map->setEnabled(idEditable);
+    }
+
+    for (auto *map : this->trackMaps)
+    {
+        map->setEditableScope(clip);
+    }
+}
+
+// Can be called by both the piano roll and the pattern roll
+void EditorPanelsScroller::changeListenerCallback(ChangeBroadcaster *source)
+{
+    jassert(dynamic_cast<Lasso *>(source));
+    auto *selection = static_cast<Lasso *>(source);
+
+    if (dynamic_cast<PianoRoll *>(this->roll.getComponent()) != nullptr)
+    {
+        for (auto *map : this->trackMaps)
+        {
+            map->setEditableScope(selection);
+        }
+    }
+    else if (dynamic_cast<PatternRoll *>(this->roll.getComponent()) != nullptr)
+    {
+        if (selection->getNumSelected() == 1)
+        {
+            auto *cc = selection->getFirstAs<ClipComponent>();
+
+            for (auto *map : this->trackMaps)
+            {
+                const auto idEditable = map->canEditSequence(cc->getClip().getPattern()->getTrack()->getSequence());
+                map->setVisible(idEditable);
+                map->setEnabled(idEditable);
+
+                const auto editableClip = idEditable ? cc->getClip() : Optional<Clip>();
+                map->setEditableScope(editableClip);
+            }
+        }
+        else
+        {
+            // simply disallow editing multiple clips at once,
+            // because some of them may be the instances of the same track
+            for (auto *map : this->trackMaps)
+            {
+                map->setEditableScope(Optional<Clip>());
+            }
+        }
+    }
 }

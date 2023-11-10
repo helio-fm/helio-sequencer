@@ -164,7 +164,7 @@ void Document::exportAs(const String &exportExtension,
         }
         catch (...)
         {
-            assert(false); // a permission problem?
+            jassertfalse; // a permission problem?
             App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
         }
     });
@@ -223,7 +223,7 @@ void Document::import(const String &filePattern)
         }
         catch (...)
         {
-            assert(false); // likely a permission problem
+            jassertfalse; // likely a permission problem
             App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
         }
     });

@@ -58,7 +58,7 @@ void PianoClipComponent::paint(Graphics &g)
 
     if (this->clip.getKey() != 0)
     {
-        g.drawText(this->clip.getKeyString(),
+        g.drawText(this->clip.getKeyAsString(),
             this->getTextArea(), Justification::topLeft, false);
     }
 

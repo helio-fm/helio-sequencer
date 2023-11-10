@@ -537,7 +537,7 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\RollBase.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\RollEditMode.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\LassoListeners.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\MidiEventComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\RollChildComponentBase.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\SelectionComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\SequencerLayout.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\HelioTheme.cpp"/>
@@ -3041,7 +3041,7 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\RollListener.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Lasso.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\LassoListeners.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\MidiEventComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\RollChildComponentBase.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\SelectableComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\SelectionComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\SequencerLayout.h"/>

@@ -79,12 +79,22 @@ void AutomationStepEventsConnector::resizeToFit(bool isEventTriggered)
         fabsf(x1 - x2) - (compactMode ? r * 2.f : 1.f),
         this->isEventTriggered ? top : bottom };
     
-    this->setBounds(this->realBounds.toType<int>());
+    this->setBounds(this->realBounds.toNearestInt());
     
     if (shouldRepaint)
     {
         this->repaint();
     }
+}
+
+void AutomationStepEventsConnector::setEditable(bool shouldBeEditable)
+{
+    if (this->isEditable == shouldBeEditable)
+    {
+        return;
+    }
+
+    this->isEditable = shouldBeEditable;
 }
 
 //===----------------------------------------------------------------------===//
@@ -96,8 +106,7 @@ void AutomationStepEventsConnector::paint(Graphics &g)
     if (this->realBounds.getWidth() > AutomationStepEventComponent::pointOffset)
     {
         const auto *child = this->firstAliveEventComponent();
-        g.setColour(child->getEditor().
-            getColour(child->getEvent()).withMultipliedAlpha(0.75f));
+        g.setColour(child->getColour().withMultipliedAlpha(0.75f));
 
         const float left = this->realBounds.getX() - float(this->getX());
         g.drawHorizontalLine(0, left, this->realBounds.getWidth());
@@ -109,8 +118,19 @@ void AutomationStepEventsConnector::paint(Graphics &g)
     }
 }
 
+bool AutomationStepEventsConnector::hitTest(int x, int y)
+{
+    if (!this->isEditable)
+    {
+        return false;
+    }
+
+    return Component::hitTest(x, y);
+}
+
 void AutomationStepEventsConnector::mouseDown(const MouseEvent &e)
 {
+    jassert(this->isEditable);
     BailOutChecker bailOutChecker(this);
     auto *eventComponent = this->firstAliveEventComponent();
     eventComponent->mouseDown(e.getEventRelativeTo(eventComponent));
@@ -122,6 +142,7 @@ void AutomationStepEventsConnector::mouseDown(const MouseEvent &e)
 
 void AutomationStepEventsConnector::mouseDrag(const MouseEvent &e)
 {
+    jassert(this->isEditable);
     auto *eventComponent = this->firstAliveEventComponent();
     eventComponent->mouseDrag(e.getEventRelativeTo(eventComponent));
     this->setMouseCursor(eventComponent->getMouseCursor());
@@ -129,6 +150,7 @@ void AutomationStepEventsConnector::mouseDrag(const MouseEvent &e)
 
 void AutomationStepEventsConnector::mouseUp(const MouseEvent &e)
 {
+    jassert(this->isEditable);
     BailOutChecker bailOutChecker(this);
     auto *eventComponent = this->firstAliveEventComponent();
     eventComponent->mouseUp(e.getEventRelativeTo(eventComponent));
@@ -140,6 +162,7 @@ void AutomationStepEventsConnector::mouseUp(const MouseEvent &e)
 
 void AutomationStepEventsConnector::mouseEnter(const MouseEvent &e)
 {
+    jassert(this->isEditable);
     this->isHighlighted = true;
     this->repaint();
 
@@ -151,6 +174,7 @@ void AutomationStepEventsConnector::mouseEnter(const MouseEvent &e)
 
 void AutomationStepEventsConnector::mouseExit(const MouseEvent &e)
 {
+    jassert(this->isEditable);
     this->isHighlighted = false;
     this->repaint();
 

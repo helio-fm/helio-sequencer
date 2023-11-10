@@ -21,7 +21,6 @@
 
 #include "RollExpandMark.h"
 #include "MidiEvent.h"
-#include "MidiEventComponent.h"
 #include "SelectionComponent.h"
 #include "AnnotationLargeComponent.h"
 

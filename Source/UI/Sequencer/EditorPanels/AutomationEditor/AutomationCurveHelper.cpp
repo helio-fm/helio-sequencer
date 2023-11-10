@@ -20,10 +20,9 @@
 #include "AutomationSequence.h"
 
 AutomationCurveHelper::AutomationCurveHelper(const AutomationEvent &event,
-    const AutomationEditorBase &editor,
-    Component *target1, Component *target2) :
+    AutomationEditorBase::EventComponentBase *target1,
+    AutomationEditorBase::EventComponentBase *target2) :
     event(event),
-    editor(editor),
     component1(target1),
     component2(target2)
 {
@@ -36,13 +35,31 @@ AutomationCurveHelper::AutomationCurveHelper(const AutomationEvent &event,
     this->setPaintingIsUnclipped(true);
 }
 
+float AutomationCurveHelper::getCurvature() const
+{
+    return this->event.getCurvature();
+}
+
+void AutomationCurveHelper::setEditable(bool shouldBeEditable)
+{
+    if (this->isEditable == shouldBeEditable)
+    {
+        return;
+    }
+
+    this->isEditable = shouldBeEditable;
+}
+
 void AutomationCurveHelper::paint(Graphics &g)
 {
-    g.setColour(this->editor.getColour(this->event));
+    if (this->component1 != nullptr)
+    {
+        g.setColour(this->component1->getColour());
+    }
 
     g.fillEllipse(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
 
-    if (this->draggingState)
+    if (this->isDragging)
     {
         g.fillEllipse(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
     }
@@ -50,6 +67,11 @@ void AutomationCurveHelper::paint(Graphics &g)
 
 bool AutomationCurveHelper::hitTest(int x, int y)
 {
+    if (!this->isEditable)
+    {
+        return false;
+    }
+
     const int xCenter = this->getWidth() / 2;
     const int yCenter = this->getHeight() / 2;
 
@@ -67,6 +89,8 @@ void AutomationCurveHelper::mouseDown(const MouseEvent &e)
         return;
     }
 
+    jassert (this->isEditable);
+
     if (e.mods.isLeftButtonDown())
     {
         this->event.getSequence()->checkpoint();
@@ -76,7 +100,7 @@ void AutomationCurveHelper::mouseDown(const MouseEvent &e)
 
         this->anchor = this->getBounds().getCentre();
         this->curveAnchor = this->getCurvature();
-        this->draggingState = true;
+        this->isDragging = true;
         this->repaint();
     }
 }
@@ -90,7 +114,7 @@ void AutomationCurveHelper::mouseDrag(const MouseEvent &e)
 
     if (e.mods.isLeftButtonDown())
     {
-        if (this->draggingState)
+        if (this->isDragging)
         {
             this->dragger.dragComponent(this, e);
             const float newCurvature = this->dragger.getValue();
@@ -101,8 +125,8 @@ void AutomationCurveHelper::mouseDrag(const MouseEvent &e)
                     this->tuningIndicator = make<FineTuningValueIndicator>(this->event.getCurvature(), "");
 
                     // adding it to grandparent to avoid clipping
-                    assert(this->getParentComponent() != nullptr);
-                    assert(this->getParentComponent()->getParentComponent() != nullptr);
+                    jassert(this->getParentComponent() != nullptr);
+                    jassert(this->getParentComponent()->getParentComponent() != nullptr);
                     auto *grandParent = this->getParentComponent()->getParentComponent();
 
                     grandParent->addAndMakeVisible(this->tuningIndicator.get());
@@ -138,16 +162,11 @@ void AutomationCurveHelper::mouseUp(const MouseEvent &e)
 
     if (e.mods.isLeftButtonDown())
     {
-        if (this->draggingState)
+        if (this->isDragging)
         {
-            this->draggingState = false;
+            this->isDragging = false;
         }
 
         this->repaint();
     }
-}
-
-float AutomationCurveHelper::getCurvature() const
-{
-    return this->event.getCurvature();
 }

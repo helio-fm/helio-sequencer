@@ -41,8 +41,9 @@ public:
         return this->event.getControllerValue();
     }
 
+    bool isInEditMode() const;
+
     void startDragging();
-    bool isDragging() const;
     AutomationEvent continueDragging(const float deltaBeat, const float deltaValue);
     void getDraggingDeltas(const MouseEvent &e,
         float &deltaBeat, float &deltaValue,
@@ -63,10 +64,12 @@ public:
         return this->event;
     };
 
-    const AutomationEditorBase &getEditor() const noexcept override
+    const Colour &getColour() const noexcept override
     {
-        return this->editor;
+        return this->colour;
     }
+
+    void setEditable(bool shouldBeEditable) override;
 
     void setNextNeighbour(EventComponentBase *next) override;
     void setPreviousNeighbour(EventComponentBase *prev) override;
@@ -115,13 +118,17 @@ private:
 
     AutomationEvent anchor;
 
+    Colour colour;
+    void updateColour() override;
+
     FineTuningComponentDragger dragger;
     UniquePointer<FineTuningValueIndicator> tuningIndicator;
     ComponentFader fader;
 
     Point<int> clickOffset;
-    bool draggingState = false;
-    bool hoveredState = false;
+    bool isDragging = false;
+    bool isHighlighted = false;
+    bool isEditable = true;
 
     const int controllerNumber;
     bool isTempoCurve() const noexcept;

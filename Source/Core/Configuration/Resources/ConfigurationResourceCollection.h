@@ -123,7 +123,6 @@ protected:
     Resources baseResources;
     Resources userResources;
 
-    // customized Serializable:
     virtual SerializedData serializeResources(const Resources &resources);
     virtual void deserializeResources(const SerializedData &tree, Resources &outResources) = 0;
     virtual void reset();

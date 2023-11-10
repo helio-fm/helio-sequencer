@@ -20,11 +20,11 @@
 class PianoRoll;
 class MidiTrack;
 
-#include "MidiEventComponent.h"
+#include "RollChildComponentBase.h"
 #include "Note.h"
 #include "Clip.h"
 
-class NoteComponent final : public MidiEventComponent
+class NoteComponent final : public RollChildComponentBase
 {
 public:
 
@@ -58,12 +58,11 @@ public:
     void updateColours() override;
 
     //===------------------------------------------------------------------===//
-    // MidiEventComponent
+    // RollChildComponentBase
     //===------------------------------------------------------------------===//
 
-    const String &getSelectionGroupId() const noexcept override;
-    const MidiEvent::Id getId() const noexcept override { return this->note.getId(); }
     float getBeat() const noexcept override { return this->note.getBeat(); }
+    const String &getSelectionGroupId() const noexcept override;
 
     //===------------------------------------------------------------------===//
     // Component

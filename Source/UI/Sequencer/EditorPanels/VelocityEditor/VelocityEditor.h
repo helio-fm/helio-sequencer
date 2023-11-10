@@ -26,7 +26,6 @@
 #include "FineTuningComponentDragger.h"
 
 class RollBase;
-class TrackMap;
 class ProjectNode;
 class VelocityEditorNoteComponent;
 class VelocityHandDrawingHelper;
@@ -35,15 +34,12 @@ class FineTuningValueIndicator;
 class VelocityEditor final :
     public EditorPanelsScroller::ScrolledComponent,
     public ProjectListener,
-    public AsyncUpdater, // triggers batch repaints for children
-    public ChangeListener // subscribes on parent roll's lasso changes
+    public AsyncUpdater // triggers batch repaints for children
 {
 public:
 
     VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll);
     ~VelocityEditor() override;
-
-    void switchToRoll(SafePointer<RollBase> roll) override;
 
     float getBeatByXPosition(float x) const noexcept;
 
@@ -56,6 +52,15 @@ public:
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &w) override;
+
+    //===------------------------------------------------------------------===//
+    // ScrolledComponent
+    //===------------------------------------------------------------------===//
+
+    void switchToRoll(SafePointer<RollBase> roll) override;
+    void setEditableScope(Optional<Clip> clip) override;
+    void setEditableScope(WeakReference<Lasso> selection) override;
+    bool canEditSequence(WeakReference<MidiSequence> sequence) const override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -75,13 +80,10 @@ public:
 
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
-    void onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool) override;
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,
         const ProjectMetadata *meta) override;
 
 private:
-
-    void changeListenerCallback(ChangeBroadcaster *source) override;
 
     void applyNoteBounds(VelocityEditorNoteComponent *nc);
     void reloadTrackMap();
@@ -115,7 +117,11 @@ private:
     void continueFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e);
     void endFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e);
 
+#if PLATFORM_DESKTOP
     static constexpr auto fineTuningStep = 1.f / 32.f;
+#elif PLATFORM_MOBILE
+    static constexpr auto fineTuningStep = 1.f / 8.f;
+#endif
 
     friend class VelocityEditorNoteComponent;
 

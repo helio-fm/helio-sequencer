@@ -46,18 +46,8 @@ public:
     // ProjectListener
     //===------------------------------------------------------------------===//
 
-    void onChangeMidiEvent(const MidiEvent &, const MidiEvent &) override {}
-    void onAddMidiEvent(const MidiEvent &) override {}
-    void onRemoveMidiEvent(const MidiEvent &) override {}
-    void onAddClip(const Clip &) override {}
-    void onChangeClip(const Clip &, const Clip &) override {}
-    void onRemoveClip(const Clip &) override {}
-    void onAddTrack(MidiTrack *const) override {}
-    void onRemoveTrack(MidiTrack *const) override {}
-    void onChangeTrackProperties(MidiTrack *const) override {}
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
-    void onReloadProjectContent(const Array<MidiTrack *> &, const ProjectMetadata *) override {}
 
     //===------------------------------------------------------------------===//
     // TimeSignaturesAggregator::Listener

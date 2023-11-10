@@ -104,7 +104,7 @@ bool AutomationSequence::remove(const AutomationEvent &eventParams, bool undoabl
     }
     else
     {
-        assert(this->midiEvents.size() > 1); // no empty automation tracks please
+        jassert(this->midiEvents.size() > 1); // no empty automation tracks please
         const int index = this->midiEvents.indexOfSorted(eventParams, &eventParams);
         if (index >= 0)
         {
@@ -185,7 +185,7 @@ bool AutomationSequence::removeGroup(Array<AutomationEvent> &group, bool undoabl
     }
     else
     {
-        assert(this->midiEvents.size() > group.size()); // no empty automation tracks please
+        jassert(this->midiEvents.size() > group.size()); // no empty automation tracks please
         for (int i = 0; i < group.size(); ++i)
         {
             const AutomationEvent &autoEvent = group.getUnchecked(i);

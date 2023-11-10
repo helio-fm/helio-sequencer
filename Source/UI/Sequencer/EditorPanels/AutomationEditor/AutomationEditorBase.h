@@ -29,10 +29,12 @@ public:
 
     virtual ~AutomationEditorBase() = default;
 
-    virtual const Colour &getColour(const AutomationEvent &event) const = 0;
+    virtual Colour getColour(const AutomationEvent &event) const = 0;
     virtual Rectangle<float> getEventBounds(const AutomationEvent &event, const Clip &clip) const = 0;
-    virtual void getBeatValueByPosition(int x, int y, const Clip &clip, float &outValue, float &outBeat) const = 0;
+
+    // return beat relative to sequence so it can be used in sequence->change(...)
     virtual float getBeatByPosition(int x, const Clip &clip) const = 0;
+    virtual void getBeatValueByPosition(int x, int y, const Clip &clip, float &outValue, float &outBeat) const = 0;
 
     // All common stuff for automation event components:
     // first, they maintain connector components between them,
@@ -54,12 +56,10 @@ public:
         virtual const Clip &getClip() const noexcept = 0;
         virtual const AutomationEvent &getEvent() const noexcept = 0;
 
-        virtual const AutomationEditorBase &getEditor() const noexcept = 0;
+        virtual const Colour &getColour() const noexcept = 0;
+        virtual void updateColour() = 0;
 
-        float getBeatByPosition() const
-        {
-            return this->getEditor().getBeatByPosition(this->getX(), this->getClip());
-        }
+        virtual void setEditable(bool editable) = 0;
 
         // resize all connectors and other helpers
         virtual void updateChildrenBounds() = 0;
@@ -82,5 +82,7 @@ public:
 
             return first->getEvent().getId() - second->getEvent().getId();
         }
+
+        JUCE_DECLARE_WEAK_REFERENCEABLE(EventComponentBase)
     };
 };

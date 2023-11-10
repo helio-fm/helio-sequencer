@@ -33,12 +33,14 @@ public:
 
     void resizeToFit(bool isEventTriggered);
 
+    void setEditable(bool shouldBeEditable);
+
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
     
     void paint(Graphics &g) override;
-    //void mouseMove(const MouseEvent &e) override;
+    bool hitTest(int x, int y) override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
@@ -56,6 +58,7 @@ private:
 
     bool isEventTriggered = false;
     bool isHighlighted = false;
+    bool isEditable = true;
 
     Rectangle<float> realBounds;
     

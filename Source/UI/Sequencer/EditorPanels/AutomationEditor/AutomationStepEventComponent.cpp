@@ -26,9 +26,22 @@ AutomationStepEventComponent::AutomationStepEventComponent(AutomationEditorBase 
     event(event),
     clip(clip)
 {
+    this->setWantsKeyboardFocus(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
+    this->setMouseCursor(MouseCursor::PointingHandCursor);
+
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
+
+    this->updateColour();
+}
+
+void AutomationStepEventComponent::updateColour()
+{
+    this->colour = this->editor.getColour(this->event)
+        .withMultipliedSaturation(this->isEditable ? 1.f : 0.45f)
+        .withMultipliedAlpha(this->isEditable ? 1.f : 0.25f);
 }
 
 void AutomationStepEventComponent::paint(Graphics &g)
@@ -52,10 +65,9 @@ void AutomationStepEventComponent::paint(Graphics &g)
     const float left = this->floatLocalBounds.getX();
     const float right = jmax(left + 0.5f, this->floatLocalBounds.getWidth() - r);
 
-    const auto mainColour = this->editor.getColour(this->event);
-    g.setColour(mainColour);
+    g.setColour(this->colour);
 
-    const auto lineColour = mainColour.withMultipliedAlpha(0.75f);
+    const auto lineColour = this->colour.withMultipliedAlpha(0.75f);
 
     if (this->event.isPedalDownEvent() && !prevDownState)
     {
@@ -104,6 +116,16 @@ void AutomationStepEventComponent::moved()
     this->updateChildrenBounds();
 }
 
+bool AutomationStepEventComponent::hitTest(int x, int y)
+{
+    if (!this->isEditable)
+    {
+        return false;
+    }
+
+    return Component::hitTest(x, y);
+}
+
 void AutomationStepEventComponent::parentHierarchyChanged()
 {
     if (this->getParentComponent() != nullptr)
@@ -114,6 +136,7 @@ void AutomationStepEventComponent::parentHierarchyChanged()
 
 void AutomationStepEventComponent::mouseDown(const MouseEvent &e)
 {
+    jassert(this->isEditable);
     if (e.mods.isLeftButtonDown())
     {
         this->event.getSequence()->checkpoint();
@@ -124,18 +147,24 @@ void AutomationStepEventComponent::mouseDown(const MouseEvent &e)
 
 void AutomationStepEventComponent::mouseDrag(const MouseEvent &e)
 {
+    jassert(this->isEditable);
     if (e.mods.isLeftButtonDown() && this->isDragging)
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->dragger.dragComponent(this, e, nullptr);
-        const float newBeat = this->editor.getBeatByPosition(this->getX() + this->getWidth(), this->clip);
+
+        // aligned by right side:
+        const float newBeat = this->editor.getBeatByPosition(
+            this->getX() + this->getWidth(), this->clip);
+
         this->drag(newBeat);
     }
 }
 
 void AutomationStepEventComponent::mouseUp(const MouseEvent &e)
 {
-    this->setMouseCursor(MouseCursor::NormalCursor);
+    jassert(this->isEditable);
+    this->setMouseCursor(MouseCursor::PointingHandCursor);
 
     if (e.mods.isLeftButtonDown())
     {
@@ -157,12 +186,14 @@ void AutomationStepEventComponent::mouseUp(const MouseEvent &e)
 
 void AutomationStepEventComponent::mouseEnter(const MouseEvent &e)
 {
+    jassert(this->isEditable);
     this->isHighlighted = true;
     this->repaint();
 }
 
 void AutomationStepEventComponent::mouseExit(const MouseEvent &e)
 {
+    jassert(this->isEditable);
     this->isHighlighted = false;
     this->repaint();
 }
@@ -214,7 +245,7 @@ void AutomationStepEventComponent::recreateConnector()
         this->connector = make<AutomationStepEventsConnector>(this,
             this->nextEventHolder, this->event.isPedalDownEvent());
 
-        assert(this->getParentComponent() != nullptr);
+        jassert(this->getParentComponent() != nullptr);
         this->getParentComponent()->addAndMakeVisible(this->connector.get());
         this->updateConnector();
     }
@@ -224,7 +255,9 @@ void AutomationStepEventComponent::updateConnector()
 {
     if (this->connector)
     {
+        this->connector->setEditable(this->isEditable);
         this->connector->resizeToFit(this->event.isPedalDownEvent());
+        this->connector->repaint();
     }
 }
 
@@ -265,4 +298,22 @@ void AutomationStepEventComponent::setPreviousNeighbour(EventComponentBase *prev
     }
 
     this->prevEventHolder = prev;
+}
+
+void AutomationStepEventComponent::setEditable(bool shouldBeEditable)
+{
+    if (this->isEditable == shouldBeEditable)
+    {
+        return;
+    }
+
+    this->isEditable = shouldBeEditable;
+
+    this->updateColour();
+    this->updateConnector();
+
+    if (this->isEditable)
+    {
+        this->toFront(false);
+    }
 }

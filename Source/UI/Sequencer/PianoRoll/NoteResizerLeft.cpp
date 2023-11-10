@@ -158,12 +158,12 @@ void NoteResizerLeft::mouseUp(const MouseEvent &e)
 
 NoteComponent *NoteResizerLeft::findLeftMostEvent(const Lasso &selection)
 {
-    MidiEventComponent *mc = nullptr;
+    RollChildComponentBase *mc = nullptr;
     float leftMostBeat = FLT_MAX;
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        auto *const e = selection.getItemAs<MidiEventComponent>(i);
+        auto *const e = selection.getItemAs<RollChildComponentBase>(i);
 
         if (leftMostBeat > e->getBeat())
         {

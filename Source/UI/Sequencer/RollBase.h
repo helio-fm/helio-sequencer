@@ -33,12 +33,12 @@ class RollListener;
 class TimelineWarningMarker;
 
 #include "ComponentFader.h"
+#include "FloatBoundsComponent.h"
 #include "AnnotationsProjectMap.h"
 #include "TimeSignaturesProjectMap.h"
 #include "KeySignaturesProjectMap.h"
 #include "Playhead.h"
 #include "TransportListener.h"
-#include "MidiEventComponent.h"
 #include "LongTapListener.h"
 #include "SmoothPanListener.h"
 #include "SmoothZoomListener.h"

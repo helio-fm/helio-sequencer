@@ -31,7 +31,6 @@ AutomationCurveEventsConnector::AutomationCurveEventsConnector(
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, false);
     this->setMouseClickGrabsKeyboardFocus(false);
-    this->setMouseCursor(MouseCursor::UpDownResizeCursor);
     this->setFocusContainerType(Component::FocusContainerType::none);
 }
 
@@ -79,7 +78,7 @@ void AutomationCurveEventsConnector::paint(Graphics &g)
 {
     if (this->component1 != nullptr)
     {
-        g.setColour(this->editor.getColour(this->component1->getEvent()));
+        g.setColour(this->component1->getColour());
     }
 
     for (const auto &p : this->linePath)

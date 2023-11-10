@@ -28,7 +28,7 @@
 #include "ColourIDs.h"
 
 NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &clip, bool ghostMode) noexcept :
-    MidiEventComponent(editor, ghostMode),
+    RollChildComponentBase(editor, ghostMode),
     note(event),
     clip(clip)
 {
@@ -159,7 +159,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         return;
     }
 
-    MidiEventComponent::mouseDown(e);
+    RollChildComponentBase::mouseDown(e);
 
     const auto &selection = this->roll.getLassoSelection();
 

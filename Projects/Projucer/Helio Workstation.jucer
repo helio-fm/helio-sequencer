@@ -1325,10 +1325,10 @@
                 file="../../Source/UI/Sequencer/LassoListeners.cpp"/>
           <FILE id="H3NU49" name="LassoListeners.h" compile="0" resource="0"
                 file="../../Source/UI/Sequencer/LassoListeners.h"/>
-          <FILE id="zE33Ca" name="MidiEventComponent.cpp" compile="1" resource="0"
-                file="../../Source/UI/Sequencer/MidiEventComponent.cpp"/>
-          <FILE id="tTAM6N" name="MidiEventComponent.h" compile="0" resource="0"
-                file="../../Source/UI/Sequencer/MidiEventComponent.h"/>
+          <FILE id="zE33Ca" name="RollChildComponentBase.cpp" compile="1" resource="0"
+                file="../../Source/UI/Sequencer/RollChildComponentBase.cpp"/>
+          <FILE id="tTAM6N" name="RollChildComponentBase.h" compile="0" resource="0"
+                file="../../Source/UI/Sequencer/RollChildComponentBase.h"/>
           <FILE id="dAar0N" name="SelectableComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Sequencer/SelectableComponent.h"/>
           <FILE id="EQAkc4" name="SelectionComponent.cpp" compile="1" resource="0"

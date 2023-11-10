@@ -82,18 +82,20 @@ public:
     template<typename T>
     T *getFirstAs() const
     {
+        jassert(dynamic_cast<T *>(this->getSelectedItem(0)) != nullptr);
         return static_cast<T *>(this->getSelectedItem(0));
     }
 
     template<typename T>
     T *getItemAs(int index) const
     {
+        jassert(dynamic_cast<T *>(this->getSelectedItem(index)) != nullptr);
         return static_cast<T *>(this->getSelectedItem(index));
     }
 
     // I want selection listeners to observe changes in position
     // of the selected events, hence this hack. For speed we don't
-    // even check if the changed item is in selection or not
+    // even check if the changed item is in the selection or not
     // (see also the comment in LassoListeners.h)
     void onSelectableItemChanged()
     {

@@ -44,7 +44,7 @@ public:
     // AutomationEditorBase
     //===------------------------------------------------------------------===//
 
-    const Colour &getColour(const AutomationEvent &event) const override;
+    Colour getColour(const AutomationEvent &event) const override;
     Rectangle<float> getEventBounds(const AutomationEvent &event, const Clip &clip) const override;
     void getBeatValueByPosition(int x, int y, const Clip &clip, float &value, float &beat) const override;
     float getBeatByPosition(int x, const Clip &clip) const override;
@@ -66,25 +66,16 @@ public:
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
 
-    void onAddClip(const Clip &clip) override {}
-    void onChangeClip(const Clip &oldClip, const Clip &newClip) override {}
-    void onRemoveClip(const Clip &clip) override {}
-
     void onAddTrack(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;
 
-    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override {}
-    void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,
         const ProjectMetadata *meta) override;
 
 protected:
 
     void insertNewEventAt(const MouseEvent &e, bool shouldAddTriggeredEvent);
-
-    EventComponentBase *getPreviousEventComponent(int indexOfSorted) const;
-    EventComponentBase *getNextEventComponent(int indexOfSorted) const;
 
     Rectangle<float> getEventBounds(float targetBeat, float sequenceLength, bool isPedalDown) const;
 
@@ -98,7 +89,7 @@ private:
     WeakReference<MidiSequence> sequence;
 
     OwnedArray<EventComponentBase> eventComponents;
-    FlatHashMap<AutomationEvent, EventComponentBase *, MidiEventHash> eventsHash;
+    FlatHashMap<AutomationEvent, EventComponentBase *, MidiEventHash> eventsMap;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationStepsClipComponent)
 };

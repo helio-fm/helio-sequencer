@@ -45,7 +45,7 @@ public:
     // AutomationEditorBase
     //===------------------------------------------------------------------===//
 
-    const Colour &getColour(const AutomationEvent &event) const override;
+    Colour getColour(const AutomationEvent &event) const override;
     Rectangle<float> getEventBounds(const AutomationEvent &event, const Clip &clip) const override;
     void getBeatValueByPosition(int x, int y, const Clip &clip, float &value, float &beat) const override;
     float getBeatByPosition(int x, const Clip &clip) const override;
@@ -70,16 +70,10 @@ public:
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
 
-    void onAddClip(const Clip &clip) override {}
-    void onChangeClip(const Clip &oldClip, const Clip &newClip) override {}
-    void onRemoveClip(const Clip &clip) override {}
-
     void onAddTrack(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;
 
-    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override {}
-    void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,
         const ProjectMetadata *meta) override;
 
@@ -87,16 +81,7 @@ protected:
 
     Rectangle<float> getEventBounds(float beat, float sequenceLength, double controllerValue) const;
 
-    int getAvailableHeight() const;
-
-#if PLATFORM_DESKTOP
     static constexpr auto eventComponentDiameter = 16.f;
-#elif PLATFORM_MOBILE
-    static constexpr auto eventComponentDiameter = 24.f;
-#endif
-
-    EventComponentBase *getPreviousEventComponent(int indexOfSorted) const;
-    EventComponentBase *getNextEventComponent(int indexOfSorted) const;
 
     friend class EventComponentBase;
 
@@ -108,7 +93,7 @@ private:
     WeakReference<MidiSequence> sequence;
 
     OwnedArray<EventComponentBase> eventComponents;
-    FlatHashMap<AutomationEvent, EventComponentBase *, MidiEventHash> eventsHash;
+    FlatHashMap<AutomationEvent, EventComponentBase *, MidiEventHash> eventsMap;
 
     AutomationCurveEventComponent *draggingEvent = nullptr;
     bool addNewEventMode = false;

@@ -17,35 +17,32 @@
 
 #pragma once
 
+#include "AutomationEvent.h"
 #include "AutomationEditorBase.h"
 #include "ProjectListener.h"
 #include "ComponentFader.h"
 #include "RollListener.h"
 #include "EditorPanelsScroller.h"
+#include "Lasso.h"
 
 class RollBase;
-class TrackMap;
 class ProjectNode;
 
 class AutomationEditor final :
     public EditorPanelsScroller::ScrolledComponent,
     public AutomationEditorBase,
-    public ProjectListener,
-    public AsyncUpdater, // triggers batch repaints for children
-    public ChangeListener // subscribes on parent roll's lasso changes
+    public ProjectListener
 {
 public:
 
     AutomationEditor(ProjectNode &project, SafePointer<RollBase> roll);
     ~AutomationEditor() override;
 
-    void switchToRoll(SafePointer<RollBase> roll) override;
-
     //===------------------------------------------------------------------===//
     // AutomationEditorBase
     //===------------------------------------------------------------------===//
 
-    const Colour &getColour(const AutomationEvent &event) const override;
+    Colour getColour(const AutomationEvent &event) const override;
     Rectangle<float> getEventBounds(const AutomationEvent &event, const Clip &clip) const override;
     void getBeatValueByPosition(int x, int y, const Clip &clip, float &value, float &beat) const override;
     float getBeatByPosition(int x, const Clip &clip) const override;
@@ -59,6 +56,15 @@ public:
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &w) override;
+
+    //===------------------------------------------------------------------===//
+    // ScrolledComponent
+    //===------------------------------------------------------------------===//
+
+    void switchToRoll(SafePointer<RollBase> roll) override;
+    void setEditableScope(Optional<Clip> clip) override;
+    void setEditableScope(WeakReference<Lasso> selection) override;
+    bool canEditSequence(WeakReference<MidiSequence> sequence) const override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -78,24 +84,30 @@ public:
 
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
-    void onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool) override;
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,
         const ProjectMetadata *meta) override;
 
 private:
 
-    EventComponentBase *getPreviousEventComponent(int indexOfSorted) const;
-    EventComponentBase *getNextEventComponent(int indexOfSorted) const;
+    EventComponentBase *createCurveEventComponent(const AutomationEvent &event, const Clip &clip);
+    EventComponentBase *createOnOffEventComponent(const AutomationEvent &event, const Clip &clip);
 
     friend class EventComponentBase;
 
 private:
 
-    Rectangle<float> getEventBounds(float beat, float sequenceLength, double controllerValue) const;
+#if PLATFORM_DESKTOP
+    static constexpr auto curveEventComponentDiameter = 20.f;
+#elif PLATFORM_MOBILE
+    static constexpr auto curveEventComponentDiameter = 24.f;
+#endif
 
-    void changeListenerCallback(ChangeBroadcaster *source) override;
+    Rectangle<float> getCurveEventBounds(float beat,
+        float sequenceLength, double controllerValue) const;
 
-    void applyEventBounds(const AutomationEvent &event);
+    Rectangle<float> getOnOffEventBounds(float beat,
+        float sequenceLength, bool isPedalDown) const;
+
     void reloadTrackMap();
     void loadTrack(const MidiTrack *const track);
 
@@ -109,17 +121,23 @@ private:
 
     SafePointer<RollBase> roll;
 
-    Clip activeClip;
+    Optional<Clip> activeClip;
 
-    using SequenceMap = FlatHashMap<Note, UniquePointer<EventComponentBase>, MidiEventHash>;
+    struct SequenceMap final
+    {
+        // owned components, sorted by beat
+        OwnedArray<EventComponentBase> sortedComponents;
+        // component map for faster access
+        FlatHashMap<AutomationEvent, EventComponentBase *, MidiEventHash> eventsMap;
+    };
+
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
     PatternMap patternMap;
 
-    ComponentFader fader;
+    void applyEventBounds(EventComponentBase *c);
+    void applyEventsBounds(SequenceMap *map);
 
-    void triggerBatchRepaintFor(Component *target);
-    void handleAsyncUpdate() override;
-    Array<WeakReference<Component>> batchRepaintList;
+    ComponentFader fader;
 
     JUCE_LEAK_DETECTOR(AutomationEditor)
 };

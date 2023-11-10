@@ -695,7 +695,6 @@
 		CEADDB533C0F27D500255182 /* include_juce_graphics.mm */ /* include_juce_graphics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_graphics.mm; path = ../Projucer/JuceLibraryCode/include_juce_graphics.mm; sourceTree = SOURCE_ROOT; };
 		CF13F5D5D9FCFC2C72DEA400 /* AnnotationLargeComponent.cpp */ /* AnnotationLargeComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AnnotationLargeComponent.cpp; path = ../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationLargeComponent.cpp; sourceTree = SOURCE_ROOT; };
 		CF2C3A0E2B45E894742157AF /* App.entitlements */ /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = App.entitlements; path = App.entitlements; sourceTree = SOURCE_ROOT; };
-		CF47CEEE37E5DE880C371587 /* MidiEventComponent.h */ /* MidiEventComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MidiEventComponent.h; path = ../../Source/UI/Sequencer/MidiEventComponent.h; sourceTree = SOURCE_ROOT; };
 		CFBB0BDC31CA8F0E5D42C538 /* include_juce_audio_processors.mm */ /* include_juce_audio_processors.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_processors.mm; path = ../Projucer/JuceLibraryCode/include_juce_audio_processors.mm; sourceTree = SOURCE_ROOT; };
 		CFFC3C1B9DEB1CC76A985513 /* CommandPaletteMoveNotesMenu.cpp */ /* CommandPaletteMoveNotesMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CommandPaletteMoveNotesMenu.cpp; path = ../../Source/Core/CommandPalette/CommandPaletteMoveNotesMenu.cpp; sourceTree = SOURCE_ROOT; };
 		D05F251E5ECFE8E747DDDFAD /* audioPlugin.svg */ /* audioPlugin.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = audioPlugin.svg; path = ../../Resources/Icons/audioPlugin.svg; sourceTree = SOURCE_ROOT; };
@@ -728,7 +727,7 @@
 		D996ABA0431B8B058D6CEF2E /* ApiModel.h */ /* ApiModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ApiModel.h; path = ../../Source/Core/Network/Models/ApiModel.h; sourceTree = SOURCE_ROOT; };
 		DA47AB54458AEC968E0F5011 /* commit.svg */ /* commit.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = commit.svg; path = ../../Resources/Icons/commit.svg; sourceTree = SOURCE_ROOT; };
 		DA5B02B6610141E42B8A1C49 /* NavigationHistory.cpp */ /* NavigationHistory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NavigationHistory.cpp; path = ../../Source/Core/Workspace/NavigationHistory.cpp; sourceTree = SOURCE_ROOT; };
-		DA9E12DE05FA1FDA9F5EDB54 /* MidiEventComponent.cpp */ /* MidiEventComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MidiEventComponent.cpp; path = ../../Source/UI/Sequencer/MidiEventComponent.cpp; sourceTree = SOURCE_ROOT; };
+		DB789896B6E2DD59A63C11B3 /* RollChildComponentBase.cpp */ /* RollChildComponentBase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RollChildComponentBase.cpp; path = ../../Source/UI/Sequencer/RollChildComponentBase.cpp; sourceTree = SOURCE_ROOT; };
 		DBC6F9AC5940C0C92D3A3DA5 /* CommandPaletteChordConstructor.h */ /* CommandPaletteChordConstructor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandPaletteChordConstructor.h; path = ../../Source/Core/CommandPalette/CommandPaletteChordConstructor.h; sourceTree = SOURCE_ROOT; };
 		DC652073B48E01E79421C4D2 /* RevisionsSyncThread.cpp */ /* RevisionsSyncThread.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RevisionsSyncThread.cpp; path = ../../Source/Core/Network/Requests/RevisionsSyncThread.cpp; sourceTree = SOURCE_ROOT; };
 		DCCDA89550EE7B83B7560DD1 /* ArpPreviewTool.cpp */ /* ArpPreviewTool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ArpPreviewTool.cpp; path = ../../Source/UI/Popups/ArpPreviewTool.cpp; sourceTree = SOURCE_ROOT; };
@@ -809,6 +808,7 @@
 		F58E7088E21EEE373267FE8A /* SettingsFrameWrapper.cpp */ /* SettingsFrameWrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SettingsFrameWrapper.cpp; path = ../../Source/UI/Pages/Settings/SettingsFrameWrapper.cpp; sourceTree = SOURCE_ROOT; };
 		F5CD02A25BB21968413316D4 /* PopupButton.h */ /* PopupButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PopupButton.h; path = ../../Source/UI/Popups/PopupButton.h; sourceTree = SOURCE_ROOT; };
 		F675E5A69BA0218D4A42C8DB /* toggleOn.svg */ /* toggleOn.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = toggleOn.svg; path = ../../Resources/Icons/toggleOn.svg; sourceTree = SOURCE_ROOT; };
+		F693A5891FD99629F0C2716E /* RollChildComponentBase.h */ /* RollChildComponentBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RollChildComponentBase.h; path = ../../Source/UI/Sequencer/RollChildComponentBase.h; sourceTree = SOURCE_ROOT; };
 		F6B73726D6977AD5655F084C /* SpectralLogo.h */ /* SpectralLogo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SpectralLogo.h; path = ../../Source/UI/Common/SpectralLogo.h; sourceTree = SOURCE_ROOT; };
 		F6D0DCBDDDB1540F979066C1 /* UserSessionDto.h */ /* UserSessionDto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UserSessionDto.h; path = ../../Source/Core/Network/Models/UserSessionDto.h; sourceTree = SOURCE_ROOT; };
 		F734DCA59C6CE38A7B8F0604 /* KeyboardMappingsCollection.h */ /* KeyboardMappingsCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyboardMappingsCollection.h; path = ../../Source/Core/Configuration/Resources/KeyboardMappingsCollection.h; sourceTree = SOURCE_ROOT; };
@@ -1515,8 +1515,8 @@
 				02AD7D2FAD320C27B5B0001A,
 				8AF08C7187165CE244D367F9,
 				66ADF2249C9FE026E1166C79,
-				DA9E12DE05FA1FDA9F5EDB54,
-				CF47CEEE37E5DE880C371587,
+				DB789896B6E2DD59A63C11B3,
+				F693A5891FD99629F0C2716E,
 				947A84D70A59D8A47BC73985,
 				30E3CDC0BDC2B55721BB2A20,
 				8015D574DB5A1A4AA4A4F3CB,

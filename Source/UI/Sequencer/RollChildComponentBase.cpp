@@ -16,10 +16,10 @@
 */
 
 #include "Common.h"
-#include "MidiEventComponent.h"
+#include "RollChildComponentBase.h"
 #include "RollBase.h"
 
-MidiEventComponent::MidiEventComponent(RollBase &editor, bool isGhost) noexcept :
+RollChildComponentBase::RollChildComponentBase(RollBase &editor, bool isGhost) noexcept :
     roll(editor)
 {
     this->flags.isActive = true;
@@ -32,12 +32,12 @@ MidiEventComponent::MidiEventComponent(RollBase &editor, bool isGhost) noexcept 
     this->setWantsKeyboardFocus(false);
 }
 
-bool MidiEventComponent::isActive() const noexcept
+bool RollChildComponentBase::isActive() const noexcept
 {
     return this->flags.isActive;
 }
 
-void MidiEventComponent::setActive(bool val, bool force)
+void RollChildComponentBase::setActive(bool val, bool force)
 {
     if (!force && this->flags.isActive == val)
     {
@@ -54,7 +54,7 @@ void MidiEventComponent::setActive(bool val, bool force)
     }
 }
 
-void MidiEventComponent::setGhostMode()
+void RollChildComponentBase::setGhostMode()
 {
     this->flags.isGhost = true;
     this->setInterceptsMouseClicks(false, false);
@@ -67,7 +67,7 @@ void MidiEventComponent::setGhostMode()
 // Component
 //===----------------------------------------------------------------------===//
 
-void MidiEventComponent::mouseDown(const MouseEvent &e)
+void RollChildComponentBase::mouseDown(const MouseEvent &e)
 {
     jassert(!this->flags.isGhost);
 
@@ -95,7 +95,7 @@ void MidiEventComponent::mouseDown(const MouseEvent &e)
 // SelectableComponent
 //===----------------------------------------------------------------------===//
 
-void MidiEventComponent::setSelected(bool selected)
+void RollChildComponentBase::setSelected(bool selected)
 {
     if (this->flags.isSelected != selected)
     {
@@ -106,19 +106,7 @@ void MidiEventComponent::setSelected(bool selected)
     }
 }
 
-bool MidiEventComponent::isSelected() const noexcept
+bool RollChildComponentBase::isSelected() const noexcept
 {
     return this->flags.isSelected;
-}
-
-//===----------------------------------------------------------------------===//
-// Helpers
-//===----------------------------------------------------------------------===//
-
-int MidiEventComponent::compareElements(MidiEventComponent *first, MidiEventComponent *second) noexcept
-{
-    if (first == second) { return 0; }
-    const float diff = first->getBeat() - second->getBeat();
-    const int diffResult = (diff > 0.f) - (diff < 0.f);
-    return (diffResult != 0) ? diffResult : (first->getId() - second->getId());
 }

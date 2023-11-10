@@ -48,10 +48,12 @@ public:
         return this->event;
     };
 
-    const AutomationEditorBase &getEditor() const noexcept override
+    const Colour &getColour() const noexcept override
     {
-        return this->editor;
+        return this->colour;
     }
+
+    void setEditable(bool shouldBeEditable) override;
 
     void setNextNeighbour(EventComponentBase *next) override;
     void setPreviousNeighbour(EventComponentBase *prev) override;
@@ -77,19 +79,20 @@ public:
 
     void paint(Graphics &g) override;
     void moved() override;
+    bool hitTest(int x, int y) override;
     void parentHierarchyChanged() override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
-
-private:
-
+    
     static constexpr auto pointOffset = 2.5f;
     static constexpr auto minLengthInBeats = 0.25f;
     static constexpr auto marginTop = 20.f;
     static constexpr auto marginBottom = 18.f;
+
+private:
 
     void drag(float targetBeat);
     void dragByDelta(float deltaBeat);
@@ -99,9 +102,13 @@ private:
     const AutomationEvent &event;
     const Clip &clip;
 
+    Colour colour;
+    void updateColour() override;
+
     ComponentDragger dragger;
     bool isDragging = false;
     bool isHighlighted = false;
+    bool isEditable = true;
 
     void updateConnector();
     void recreateConnector();
@@ -110,9 +117,6 @@ private:
 
     SafePointer<EventComponentBase> nextEventHolder;
     SafePointer<EventComponentBase> prevEventHolder;
-
-    friend class AutomationStepsClipComponent;
-    friend class AutomationStepEventsConnector;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationStepEventComponent)
 };
