@@ -55,6 +55,7 @@ protected:
         void setCurrentPlaybackSampleRate(double sampleRate) override;
         void startNote(int midiNoteNumber, float velocity, SynthesiserSound *, int) override;
         void stopNote(float, bool allowTailOff) override;
+        bool isVoiceActive() const override;
         void pitchWheelMoved(int) override {}
         void controllerMoved(int, int) override {}
         void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, int numSamples) override;
@@ -63,11 +64,35 @@ protected:
 
         void setPeriodSize(int size) noexcept;
         void setPeriodRange(double periodRange) noexcept;
+        void setFrequency(double frequency) noexcept;
+
+        inline float getNextSample() noexcept
+        {
+            const auto index0 = int(this->currentIndex);
+            // the table is 1 sample larger than DefaultSynth::tableSize
+            // so we don't have to do another bounds check here:
+            const auto index1 = index0 + 1;
+ 
+            const auto frac = this->currentIndex - float(index0);
+ 
+            const auto *table = DefaultSynth::waveTable.getReadPointer(0);
+            const auto value0 = table[index0];
+            const auto value1 = table[index1];
+ 
+            const auto currentSample = value0 + frac * (value1 - value0);
+ 
+            if ((this->currentIndex += this->waveTableDelta) > DefaultSynth::tableSize)
+            {
+                this->currentIndex -= DefaultSynth::tableSize;
+            }
+ 
+            return currentSample;
+        }
 
     private:
 
-        double currentAngle = 0.0;
-        double angleDelta = 0.0;
+        float currentIndex = 0.f;
+        float waveTableDelta = 0.f;
         double level = 0.0;
 
         int periodSize = Globals::twelveTonePeriodSize;
@@ -85,10 +110,20 @@ protected:
     void handleSostenutoPedal(int midiChannel, bool isDown) override;
 
 #if PLATFORM_DESKTOP
-    static constexpr auto numVoices = 16;
+    static constexpr auto numVoices = 32;
 #elif PLATFORM_MOBILE
-    static constexpr auto numVoices = 8;
+    static constexpr auto numVoices = 16;
 #endif
+
+    static AudioSampleBuffer waveTable;
+
+#if PLATFORM_DESKTOP
+    static constexpr auto tableSize = 512;
+#elif PLATFORM_MOBILE
+    static constexpr auto tableSize = 256;
+#endif
+
+    void initWaveTable();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DefaultSynth)
 };
