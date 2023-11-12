@@ -107,7 +107,12 @@ void DefaultSynth::Voice::renderNextBlock(AudioBuffer<float> &outputBuffer, int 
         while (--numSamples >= 0)
         {
             const auto amplitude = this->adsr.getNextSample();
+
+#if JUCE_LINUX
+            auto currentSample = std::sin(this->currentAngle) * this->level * amplitude;
+#else
             auto currentSample = std::sinf(this->currentAngle) * this->level * amplitude;
+#endif
 
 #if PLATFORM_DESKTOP
             // even this seems to be too slow for realtime playback on many phones
