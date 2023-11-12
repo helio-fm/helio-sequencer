@@ -40,33 +40,32 @@ public:
 
     void run() override
     {
+        // the "warm-up" hack to avoid a bit broken rhythm of the first 1-2 iterations:
+        Thread::wait(100);
+
         for (const auto key : this->sequence)
         {
+            this->transport.stopSound();
+
             if (this->threadShouldExit())
             {
-                this->transport.stopSound();
                 return;
             }
 
-            this->transport.stopSound();
-            Thread::wait(25);
+            const auto endTime = Time::getMillisecondCounter() + 400;
+
             this->transport.previewKey(String(), key,
                 Globals::Defaults::previewNoteVelocity,
                 Globals::Defaults::previewNoteLength);
 
-            int c = 400;
-            while (c > 0)
+            while (Time::getMillisecondCounter() < endTime)
             {
-                const auto a = Time::getMillisecondCounter();
-                Thread::wait(25);
-                const auto b = Time::getMillisecondCounter();
-                c -= (b - a);
-
                 if (this->threadShouldExit())
                 {
-                    this->transport.stopSound();
-                    return;
+                    break;
                 }
+
+                Thread::wait(25);
             }
         }
 
