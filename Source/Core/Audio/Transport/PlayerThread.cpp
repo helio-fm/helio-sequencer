@@ -156,12 +156,15 @@ void PlayerThread::run()
             const uint32 targetTime =
                 Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
 
-            // Give thread a chance to exit by checking at least once a, say, second
+            // Give thread a chance to exit by checking it periodically
             while (nextEventTimeDelta > PlayerThread::minStopCheckTimeMs)
             {
-                nextEventTimeDelta -= PlayerThread::minStopCheckTimeMs;
+                const auto a = Time::getMillisecondCounter();
                 Thread::sleep(PlayerThread::minStopCheckTimeMs);
-                if (this->threadShouldExit())
+                const auto shouldExit = this->threadShouldExit();
+                const auto b = Time::getMillisecondCounter();
+                nextEventTimeDelta -= double(b - a);
+                if (shouldExit)
                 {
                     sendHoldingNotesOffAndMidiStop();
                     return; // the transport have already stopped
@@ -218,9 +221,12 @@ void PlayerThread::run()
             const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
             while (nextEventTimeDelta > PlayerThread::minStopCheckTimeMs)
             {
-                nextEventTimeDelta -= PlayerThread::minStopCheckTimeMs;
+                const auto a = Time::getMillisecondCounter();
                 Thread::sleep(PlayerThread::minStopCheckTimeMs);
-                if (this->threadShouldExit())
+                const auto shouldExit = this->threadShouldExit();
+                const auto b = Time::getMillisecondCounter();
+                nextEventTimeDelta -= double(b - a);
+                if (shouldExit)
                 {
                     sendHoldingNotesOffAndMidiStop();
                     return;
