@@ -25,10 +25,10 @@
 DefaultSynth::Voice::Voice()
 {
     ADSR::Parameters ap;
-    ap.attack = 0.001f;
+    ap.attack = 0.002f;
     ap.decay = 2.0f;
-    ap.sustain = 0.5f;
-    ap.release = 0.35f;
+    ap.sustain = 0.45f;
+    ap.release = 0.4f;
     this->adsr.setParameters(ap);
 
     Reverb::Parameters rp;
@@ -67,9 +67,13 @@ void DefaultSynth::Voice::startNote(int midiNoteNumber, float velocity, Synthesi
         midiNoteNumber + Globals::twelveToneKeyboardSize * (channel - 1) :
         midiNoteNumber;
 
-    this->level = velocity * 0.2; // hopefully not too loud
+    this->currentAngle = 0.f;
+    this->level = velocity * 0.2f; // hopefully not too loud
 
-    this->setFrequency(this->getNoteInHertz(adjustedNoteNumber));
+    const auto cyclesPerSecond = this->getNoteInHertz(adjustedNoteNumber);
+    const auto cyclesPerSample = cyclesPerSecond / this->getSampleRate();
+
+    this->angleDelta = float(cyclesPerSample) * MathConstants<float>::twoPi;
 
     this->reverb.reset();
     this->adsr.noteOn();
@@ -103,7 +107,7 @@ void DefaultSynth::Voice::renderNextBlock(AudioBuffer<float> &outputBuffer, int 
         while (--numSamples >= 0)
         {
             const auto amplitude = this->adsr.getNextSample();
-            auto currentSample = float(this->getNextSample() * this->level * amplitude);
+            auto currentSample = std::sinf(this->currentAngle) * this->level * amplitude;
 
 #if PLATFORM_DESKTOP
             // even this seems to be too slow for realtime playback on many phones
@@ -115,6 +119,7 @@ void DefaultSynth::Voice::renderNextBlock(AudioBuffer<float> &outputBuffer, int 
                 outputBuffer.addSample(i, startSample, currentSample);
             }
 
+            this->currentAngle += this->angleDelta;
             ++startSample;
         }
     }
@@ -129,12 +134,6 @@ void DefaultSynth::Voice::setPeriodSize(int size) noexcept
 void DefaultSynth::Voice::setPeriodRange(double periodRange) noexcept
 {
     this->periodRange = periodRange;
-}
-
-void DefaultSynth::Voice::setFrequency(double frequency) noexcept
-{
-    const auto tableSizeOverSampleRate = double(DefaultSynth::tableSize) / this->getSampleRate();
-    this->waveTableDelta = float(frequency * tableSizeOverSampleRate);
 }
 
 double DefaultSynth::Voice::getNoteInHertz(int noteNumber, double frequencyOfA /*= 440.0*/) noexcept
@@ -164,53 +163,12 @@ int DefaultSynth::Voice::getCurrentChannel() const noexcept
 
 DefaultSynth::DefaultSynth()
 {
-    this->initWaveTable();
-
     for (int i = DefaultSynth::numVoices; i --> 0 ;)
     {
         this->addVoice(new DefaultSynth::Voice());
     }
 
     this->addSound(new DefaultSynth::Sound());
-}
-
-AudioSampleBuffer DefaultSynth::waveTable;
-
-void DefaultSynth::initWaveTable()
-{
-//#if DEBUG
-//    const double initStart = Time::getMillisecondCounterHiRes();
-//#endif
-
-    // just following JUCE tutorial on wavetables here:
-    // https://docs.juce.com/master/tutorial_wavetable_synth.html
-
-    this->waveTable.setSize(1, DefaultSynth::tableSize + 1);
-    this->waveTable.clear();
- 
-    auto *samples = this->waveTable.getWritePointer(0);
-
-    constexpr float harmonics[] = { 1.f, 0.5f, 3.f };
-    constexpr float harmonicWeights[] = { 0.75f, 0.05f, 0.025f };
- 
-    for (auto harmonic = 0; harmonic < numElementsInArray(harmonics); ++harmonic)
-    {
-        auto currentAngle = 0.0;
-        const auto angleDelta = MathConstants<double>::twoPi /
-            double(DefaultSynth::tableSize - 1) * harmonics[harmonic];
-
-        for (unsigned int i = 0; i < tableSize; ++i)
-        {
-            const auto sample = std::sin(currentAngle);
-            samples[i] += float(sample) * harmonicWeights[harmonic];
-            currentAngle += angleDelta;
-        }
-    }
- 
-    samples[tableSize] = samples[0];
-
-    //DBG("Initialized default synth's wavetable in " +
-    //    String(Time::getMillisecondCounterHiRes() - initStart) + "ms");
 }
 
 void DefaultSynth::setPeriodSizeAndRange(int periodSize, double periodRange)
