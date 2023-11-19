@@ -37,6 +37,7 @@ namespace I18n
         static constexpr auto newProjectName = constexprHash("defaults::newproject::name");
         static constexpr auto midiTrackName = constexprHash("defaults::newtrack::name");
         static constexpr auto tempoTrackName = constexprHash("defaults::tempotrack::name");
+        static constexpr auto volumePanelName = constexprHash("defaults::volumepanel::name");
     }
 
     namespace Dialog

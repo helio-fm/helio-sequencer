@@ -1135,10 +1135,14 @@
               <FILE id="zzbmde" name="VelocityEditor.h" compile="0" resource="0"
                     file="../../Source/UI/Sequencer/EditorPanels/VelocityEditor/VelocityEditor.h"/>
             </GROUP>
+            <FILE id="rYOIMS" name="EditorPanelBase.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/EditorPanels/EditorPanelBase.h"/>
             <FILE id="LKYJHr" name="EditorPanelsScroller.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/EditorPanels/EditorPanelsScroller.cpp"/>
             <FILE id="SoqlGi" name="EditorPanelsScroller.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/EditorPanels/EditorPanelsScroller.h"/>
+            <FILE id="wDD9C3" name="EditorPanelsSwitcher.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/EditorPanels/EditorPanelsSwitcher.h"/>
           </GROUP>
           <GROUP id="{FFB3A4BD-F358-7D17-AC4A-525D35F9E965}" name="Header">
             <FILE id="kbi6Nd" name="ClipRangeIndicator.h" compile="0" resource="0"

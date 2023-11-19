@@ -2988,7 +2988,9 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\EditorPanels\AutomationEditor\AutomationStepEventComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\EditorPanels\AutomationEditor\AutomationStepEventsConnector.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\EditorPanels\VelocityEditor\VelocityEditor.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\EditorPanels\EditorPanelBase.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\EditorPanels\EditorPanelsScroller.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\EditorPanels\EditorPanelsSwitcher.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\ClipRangeIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\HeaderSelectionIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\RollHeader.h"/>

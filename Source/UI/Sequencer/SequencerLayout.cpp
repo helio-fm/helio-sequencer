@@ -26,6 +26,7 @@
 #include "PianoProjectMap.h"
 #include "ProjectMapsScroller.h"
 #include "EditorPanelsScroller.h"
+#include "EditorPanelsSwitcher.h"
 #include "VelocityEditor.h"
 #include "AutomationEditor.h"
 #include "SequencerSidebarRight.h"
@@ -68,6 +69,7 @@ public:
         Viewport *targetViewport2,
         ProjectMapsScroller *bottomMapsScroller,
         EditorPanelsScroller *bottomEditorsScroller,
+        EditorPanelsSwitcher *bottomEditorsSwitcher,
         Component *scrollerShadow) :
         pianoRoll(targetRoll1),
         pianoViewport(targetViewport1),
@@ -75,6 +77,7 @@ public:
         patternViewport(targetViewport2),
         bottomMapsScroller(bottomMapsScroller),
         bottomEditorsScroller(bottomEditorsScroller),
+        bottomEditorsSwitcher(bottomEditorsSwitcher),
         scrollerShadow(scrollerShadow)
     {
         this->setPaintingIsUnclipped(false);
@@ -82,9 +85,10 @@ public:
 
         this->addAndMakeVisible(this->pianoViewport);
         this->addChildComponent(this->patternViewport); // invisible by default
+        this->addAndMakeVisible(this->scrollerShadow);
+        this->addChildComponent(this->bottomEditorsSwitcher); // invisible by default, behind the scroller
         this->addChildComponent(this->bottomEditorsScroller); // invisible by default, behind the piano map
         this->addAndMakeVisible(this->bottomMapsScroller);
-        this->addAndMakeVisible(this->scrollerShadow);
 
         this->patternRoll->setEnabled(false);
         this->patternRoll->setVisible(false);
@@ -190,6 +194,7 @@ public:
         this->bottomEditorsScroller->setEnabled(editorPanelMode);
         this->bottomMapsScroller->setEnabled(!editorPanelMode);
         this->bottomEditorsScroller->setVisible(true);
+        this->bottomEditorsSwitcher->setVisible(true);
         this->bottomMapsScroller->setVisible(true);
 
         this->resized();
@@ -269,19 +274,26 @@ private:
             int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
                 this->scrollerModeAnimation.getPosition());
 
-        const auto pianoRect = this->getLocalBounds().removeFromBottom(projectMapHeight);
-        const auto levelsRect = this->getLocalBounds().removeFromBottom(Globals::UI::levelsMapHeight);
-        const auto levelsFullOffset = Globals::UI::levelsMapHeight - projectMapHeight;
+        const auto mapsBounds = this->getLocalBounds().removeFromBottom(projectMapHeight);
+        const auto panelsBounds = this->getLocalBounds().removeFromBottom(Globals::UI::editorPanelHeight);
+        const auto switcherBounds = panelsBounds
+            .translated(0, -EditorPanelsSwitcher::switcherHeight)
+            .withHeight(EditorPanelsSwitcher::switcherHeight);
 
-        const int pianoMapPos = int(this->mapsAnimation.getPosition() * projectMapHeight);
-        const int levelsMapPos = int(this->mapsAnimation.getPosition() * levelsFullOffset);
+        const auto panelsToMapsOffset = Globals::UI::editorPanelHeight - projectMapHeight;
+        const auto switcherToMapsOffset = panelsToMapsOffset + EditorPanelsSwitcher::switcherHeight;
 
-        this->bottomMapsScroller->setBounds(pianoRect.translated(0, pianoMapPos));
-        this->bottomEditorsScroller->setBounds(levelsRect.translated(0, levelsFullOffset - levelsMapPos));
+        const int mapsPosition = int(this->mapsAnimation.getPosition() * projectMapHeight);
+        const int panelsPosition = int(this->mapsAnimation.getPosition() * panelsToMapsOffset);
+        const int switcherPosition = int(this->mapsAnimation.getPosition() * switcherToMapsOffset);
 
-        this->scrollerShadow->setBounds(0,
-            this->bottomEditorsScroller->getY() - RollsSwitchingProxy::scrollerShadowSize,
-            this->getWidth(), RollsSwitchingProxy::scrollerShadowSize);
+        this->bottomMapsScroller->setBounds(mapsBounds.translated(0, mapsPosition));
+        this->bottomEditorsScroller->setBounds(panelsBounds.translated(0, panelsToMapsOffset - panelsPosition));
+        this->bottomEditorsSwitcher->setBounds(switcherBounds.translated(0, switcherToMapsOffset - switcherPosition));
+
+        this->scrollerShadow->setBounds(this->bottomEditorsScroller->getBounds()
+            .translated(0, -RollsSwitchingProxy::scrollerShadowSize)
+            .withHeight(RollsSwitchingProxy::scrollerShadowSize));
     }
 
     void updateAnimatedMapsPositions()
@@ -290,17 +302,20 @@ private:
             int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
                 this->scrollerModeAnimation.getPosition());
 
-        const auto pianoMapY = this->getHeight() - projectMapHeight;
-        const auto levelsFullOffset = Globals::UI::levelsMapHeight - projectMapHeight;
+        const auto mapsY = this->getHeight() - projectMapHeight;
+        const auto panelsToMapsOffset = Globals::UI::editorPanelHeight - projectMapHeight;
+        const auto switcherToMapsOffset = panelsToMapsOffset + EditorPanelsSwitcher::switcherHeight;
 
-        const int pianoMapPos = int(this->mapsAnimation.getPosition() * projectMapHeight);
-        const int levelsMapPos = int(this->mapsAnimation.getPosition() * levelsFullOffset);
+        const int mapsPosition = int(this->mapsAnimation.getPosition() * projectMapHeight);
+        const int panelsPosition = int(this->mapsAnimation.getPosition() * panelsToMapsOffset);
+        const int switcherPosition = int(this->mapsAnimation.getPosition() * switcherToMapsOffset);
 
-        this->bottomMapsScroller->setTopLeftPosition(0, pianoMapY + pianoMapPos);
-        this->bottomEditorsScroller->setTopLeftPosition(0, pianoMapY - levelsMapPos);
+        this->bottomMapsScroller->setTopLeftPosition(0, mapsY + mapsPosition);
+        this->bottomEditorsScroller->setTopLeftPosition(0, mapsY - panelsPosition);
+        this->bottomEditorsSwitcher->setTopLeftPosition(0, mapsY - switcherPosition);
 
         this->scrollerShadow->setTopLeftPosition(0,
-            pianoMapY - levelsMapPos - RollsSwitchingProxy::scrollerShadowSize);
+            this->bottomEditorsScroller->getY() - this->scrollerShadow->getHeight());
     }
 
     void timerCallback(int timerId) override
@@ -343,6 +358,7 @@ private:
                 else
                 {
                     this->bottomEditorsScroller->setVisible(false);
+                    this->bottomEditorsSwitcher->setVisible(false);
                 }
 
                 this->mapsAnimation.finish();
@@ -375,6 +391,7 @@ private:
 
     SafePointer<ProjectMapsScroller> bottomMapsScroller;
     SafePointer<EditorPanelsScroller> bottomEditorsScroller;
+    SafePointer<EditorPanelsSwitcher> bottomEditorsSwitcher;
     SafePointer<Component> scrollerShadow;
 
     static constexpr auto scrollerShadowSize = 12;
@@ -499,9 +516,11 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->pianoRoll->addRollListener(this->bottomMapsScroller.get());
     this->patternRoll->addRollListener(this->bottomMapsScroller.get());
 
-    this->bottomEditorsScroller = make<EditorPanelsScroller>(this->project, defaultRoll);
-    this->bottomEditorsScroller->addOwnedMap<VelocityEditor>(this->project, defaultRoll);
-    this->bottomEditorsScroller->addOwnedMap<AutomationEditor>(this->project, defaultRoll);
+    this->bottomEditorsSwitcher = make<EditorPanelsSwitcher>();
+    this->bottomEditorsScroller = make<EditorPanelsScroller>(this->project, defaultRoll, this->bottomEditorsSwitcher.get());
+    this->bottomEditorsScroller->addOwnedEditorPanel<VelocityEditor>(this->project, defaultRoll);
+    // fixme: shouldn't be visible?
+    this->bottomEditorsScroller->addOwnedEditorPanel<AutomationEditor>(this->project, defaultRoll);
 
     this->pianoRoll->addRollListener(this->bottomEditorsScroller.get());
     this->patternRoll->addRollListener(this->bottomEditorsScroller.get());
@@ -513,7 +532,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->rollContainer = make<RollsSwitchingProxy>(this->pianoRoll.get(), this->patternRoll.get(),
         this->pianoViewport.get(), this->patternViewport.get(),
         this->bottomMapsScroller.get(), this->bottomEditorsScroller.get(),
-        this->scrollerShadow.get());
+        this->bottomEditorsSwitcher.get(), this->scrollerShadow.get());
     
     const auto hasAnimations = App::Config().getUiFlags()->areUiAnimationsEnabled();
     this->rollContainer->setAnimationsEnabled(hasAnimations);
@@ -558,6 +577,7 @@ SequencerLayout::~SequencerLayout()
     
     this->scrollerShadow = nullptr;
     this->bottomEditorsScroller = nullptr;
+    this->bottomEditorsSwitcher = nullptr;
     this->bottomMapsScroller = nullptr;
 
     this->patternRoll = nullptr;

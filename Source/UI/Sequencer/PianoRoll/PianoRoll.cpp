@@ -701,9 +701,9 @@ void PianoRoll::onAddClip(const Clip &clip)
 
 void PianoRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 {
-    if (this->activeClip == clip)
+    if (this->activeClip == clip) // same id
     {
-        this->activeClip = newClip;
+        this->activeClip = newClip; // new parameters
     }
 
     if (auto *sequenceMap = this->patternMap[clip].release())

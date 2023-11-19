@@ -234,8 +234,8 @@ namespace Globals
         static constexpr auto headlineIconSize = 16;
         static constexpr auto sidebarRowHeight = 36;
 
-        static constexpr auto levelsMapHeight = 128;
         static constexpr auto projectMapHeight = 76;
+        static constexpr auto editorPanelHeight = 128;
 
         static constexpr auto fadeInShort = 90;
         static constexpr auto fadeOutShort = 110;

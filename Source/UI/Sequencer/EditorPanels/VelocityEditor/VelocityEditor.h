@@ -22,7 +22,7 @@
 #include "ProjectListener.h"
 #include "ComponentFader.h"
 #include "RollListener.h"
-#include "EditorPanelsScroller.h"
+#include "EditorPanelBase.h"
 #include "FineTuningComponentDragger.h"
 
 class RollBase;
@@ -32,7 +32,7 @@ class VelocityHandDrawingHelper;
 class FineTuningValueIndicator;
 
 class VelocityEditor final :
-    public EditorPanelsScroller::ScrolledComponent,
+    public EditorPanelBase,
     public ProjectListener,
     public AsyncUpdater // triggers batch repaints for children
 {
@@ -54,13 +54,15 @@ public:
     void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &w) override;
 
     //===------------------------------------------------------------------===//
-    // ScrolledComponent
+    // EditorPanelBase
     //===------------------------------------------------------------------===//
 
     void switchToRoll(SafePointer<RollBase> roll) override;
-    void setEditableScope(Optional<Clip> clip) override;
-    void setEditableScope(WeakReference<Lasso> selection) override;
+    void setEditableClip(Optional<Clip> clip) override;
+    void setEditableClip(const Clip &selectedClip, const EventFilter &filter) override;
+    void setEditableSelection(WeakReference<Lasso> selection) override;
     bool canEditSequence(WeakReference<MidiSequence> sequence) const override;
+    Array<EventFilter> getAllEventFilters() const override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener

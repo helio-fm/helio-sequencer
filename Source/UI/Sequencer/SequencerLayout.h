@@ -25,11 +25,10 @@ class ProjectNode;
 class MidiTrack;
 class ProjectMapsScroller;
 class EditorPanelsScroller;
+class EditorPanelsSwitcher;
 class SequencerSidebarRight;
 class SequencerSidebarLeft;
 class Origami;
-class Headline;
-class Clip;
 
 #include "RenderFormat.h"
 
@@ -81,6 +80,7 @@ private:
 
     UniquePointer<ProjectMapsScroller> bottomMapsScroller;
     UniquePointer<EditorPanelsScroller> bottomEditorsScroller;
+    UniquePointer<EditorPanelsSwitcher> bottomEditorsSwitcher;
     UniquePointer<Component> scrollerShadow;
 
     UniquePointer<PianoRoll> pianoRoll;

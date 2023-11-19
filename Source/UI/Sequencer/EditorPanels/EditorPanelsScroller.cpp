@@ -17,20 +17,44 @@
 
 #include "Common.h"
 #include "EditorPanelsScroller.h"
-#include "AutomationEditorBase.h"
+#include "EditorPanelsSwitcher.h"
 #include "RollBase.h"
 #include "ProjectNode.h"
 #include "PianoClipComponent.h"
+#include "HeadlineItemArrow.h"
 #include "ColourIDs.h"
 #include "HelioTheme.h"
 
-EditorPanelsScroller::EditorPanelsScroller(ProjectNode &project, SafePointer<RollBase> roll) :
+EditorPanelsScroller::EditorPanelsScroller(ProjectNode &project,
+    SafePointer<RollBase> roll, SafePointer<EditorPanelsSwitcher> panelsSwitcher) :
     project(project),
-    roll(roll)
+    roll(roll),
+    editorPanelsSwitcher(panelsSwitcher)
 {
-    this->setPaintingIsUnclipped(false); // the cut dragger may and will go out of bounds
-    this->setInterceptsMouseClicks(true, true);
     this->setOpaque(true);
+    this->setPaintingIsUnclipped(false);
+    this->setInterceptsMouseClicks(true, true);
+
+    this->editorPanelsSwitcher->onChangeSelection = [this](int panelId,
+        const EditorPanelBase::EventFilter &filter)
+    {
+        if (this->selectedEditorPanelIndex == panelId &&
+            this->selectedEventFilter == filter)
+        {
+            return;
+        }
+
+        this->selectedEditorPanelIndex = panelId;
+        this->selectedEventFilter = filter;
+
+        auto *editor = this->showEditorPanel(this->selectedEditorPanelIndex);
+        if (this->activeClip.isValid())
+        {
+            editor->setEditableClip(this->activeClip, this->selectedEventFilter);
+        }
+
+        this->editorPanelsSwitcher->updateSelection(panelId, filter);
+    };
 
     this->project.addListener(this);
     this->roll->getLassoSelection().addChangeListener(this);
@@ -38,6 +62,11 @@ EditorPanelsScroller::EditorPanelsScroller(ProjectNode &project, SafePointer<Rol
 
 EditorPanelsScroller::~EditorPanelsScroller()
 {
+    for (auto *editor : this->editorPanels)
+    {
+        editor->removeListener(this);
+    }
+
     this->roll->getLassoSelection().removeChangeListener(this);
     this->project.removeListener(this);
 }
@@ -48,9 +77,19 @@ void EditorPanelsScroller::switchToRoll(SafePointer<RollBase> roll)
     this->roll = roll;
     this->roll->getLassoSelection().addChangeListener(this);
 
-    for (auto *map : this->trackMaps)
+    for (auto *editor : this->editorPanels)
     {
-        map->switchToRoll(roll);
+        editor->switchToRoll(roll);
+    }
+
+    // in piano roll, allow manually switching between velocity and various automation tracks
+    this->editorPanelSelectionMode = dynamic_cast<PianoRoll *>(roll.getComponent()) != nullptr ?
+        EditorPanelSelectionMode::Manual : EditorPanelSelectionMode::Automatic;
+
+    auto *editor = this->showEditorPanel(this->selectedEditorPanelIndex);
+    if (this->activeClip.isValid())
+    {
+        editor->setEditableClip(this->activeClip, this->selectedEventFilter);
     }
 }
 
@@ -60,9 +99,9 @@ void EditorPanelsScroller::switchToRoll(SafePointer<RollBase> roll)
 
 void EditorPanelsScroller::resized()
 {
-    for (int i = 0; i < this->trackMaps.size(); ++i)
+    for (auto *editor : this->editorPanels)
     {
-        this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
+        editor->setBounds(this->getEditorPanelBounds());
     }
 }
 
@@ -72,10 +111,10 @@ void EditorPanelsScroller::paint(Graphics &g)
     g.setFillType({ theme.getSidebarBackground(), {} });
     g.fillRect(this->getLocalBounds());
 
-    g.setColour(findDefaultColour(ColourIDs::TrackScroller::borderLineDark));
+    g.setColour(this->borderColourDark);
     g.fillRect(0, 0, this->getWidth(), 1);
 
-    g.setColour(findDefaultColour(ColourIDs::TrackScroller::borderLineLight));
+    g.setColour(this->borderColourLight);
     g.fillRect(0, 1, this->getWidth(), 1);
 }
 
@@ -113,9 +152,9 @@ void EditorPanelsScroller::onMidiRollResized(RollBase *targetRoll)
 
 void EditorPanelsScroller::handleAsyncUpdate()
 {
-    for (int i = 0; i < this->trackMaps.size(); ++i)
+    for (auto *editor : this->editorPanels)
     {
-        this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
+        editor->setBounds(this->getEditorPanelBounds());
     }
 }
 
@@ -123,7 +162,7 @@ void EditorPanelsScroller::handleAsyncUpdate()
 // Private
 //===----------------------------------------------------------------------===//
 
-Rectangle<int> EditorPanelsScroller::getMapBounds() const noexcept
+Rectangle<int> EditorPanelsScroller::getEditorPanelBounds() const noexcept
 {
     if (this->roll == nullptr)
     {
@@ -135,22 +174,45 @@ Rectangle<int> EditorPanelsScroller::getMapBounds() const noexcept
 }
 
 //===----------------------------------------------------------------------===//
-// Editable scope selection
+// EditorPanelBase::Listener
 //===----------------------------------------------------------------------===//
 
-// Only called when the piano roll is switched to another clip
+void EditorPanelsScroller::onUpdateEventFilters()
+{
+    this->updateSwitcher();
+}
+
+//===----------------------------------------------------------------------===//
+// ProjectListener & editable scope selection
+//===----------------------------------------------------------------------===//
+
+void EditorPanelsScroller::onChangeClip(const Clip &clip, const Clip &newClip)
+{
+    if (this->activeClip == clip) // same id
+    {
+        this->activeClip = newClip; // new parameters
+    }
+}
+
+// Only called when the piano roll is switched to another clip;
 void EditorPanelsScroller::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
 {
-    for (auto *map : this->trackMaps)
+    if (this->activeClip == clip)
     {
-        const auto idEditable = map->canEditSequence(clip.getPattern()->getTrack()->getSequence());
-        map->setVisible(idEditable);
-        map->setEnabled(idEditable);
+        return;
     }
 
-    for (auto *map : this->trackMaps)
+    this->activeClip = clip;
+
+    if (this->editorPanelSelectionMode == EditorPanelSelectionMode::Automatic)
     {
-        map->setEditableScope(clip);
+        auto *editor = this->showEditorPanelForClip(clip);
+        editor->setEditableClip(clip);
+    }
+    else
+    {
+        auto *editor = this->showEditorPanel(this->selectedEditorPanelIndex);
+        editor->setEditableClip(clip, this->selectedEventFilter);
     }
 }
 
@@ -162,9 +224,9 @@ void EditorPanelsScroller::changeListenerCallback(ChangeBroadcaster *source)
 
     if (dynamic_cast<PianoRoll *>(this->roll.getComponent()) != nullptr)
     {
-        for (auto *map : this->trackMaps)
+        for (auto *editor : this->editorPanels)
         {
-            map->setEditableScope(selection);
+            editor->setEditableSelection(selection);
         }
     }
     else if (dynamic_cast<PatternRoll *>(this->roll.getComponent()) != nullptr)
@@ -173,24 +235,88 @@ void EditorPanelsScroller::changeListenerCallback(ChangeBroadcaster *source)
         {
             auto *cc = selection->getFirstAs<ClipComponent>();
 
-            for (auto *map : this->trackMaps)
+            if (this->editorPanelSelectionMode == EditorPanelSelectionMode::Automatic)
             {
-                const auto idEditable = map->canEditSequence(cc->getClip().getPattern()->getTrack()->getSequence());
-                map->setVisible(idEditable);
-                map->setEnabled(idEditable);
-
-                const auto editableClip = idEditable ? cc->getClip() : Optional<Clip>();
-                map->setEditableScope(editableClip);
+                auto *editor = this->showEditorPanelForClip(cc->getClip());
+                editor->setEditableClip(cc->getClip());
+            }
+            else
+            {
+                auto *editor = this->showEditorPanel(this->selectedEditorPanelIndex);
+                editor->setEditableClip(cc->getClip(), this->selectedEventFilter);
             }
         }
         else
         {
             // simply disallow editing multiple clips at once,
-            // because some of them may be the instances of the same track
-            for (auto *map : this->trackMaps)
+            // because some of them may be instances of the same track
+            for (auto *editor : this->editorPanels)
             {
-                map->setEditableScope(Optional<Clip>());
+                editor->setEditableClip(Optional<Clip>());
             }
         }
     }
+}
+
+EditorPanelBase *EditorPanelsScroller::showEditorPanelForClip(const Clip &clip)
+{
+    EditorPanelBase *result = nullptr;
+
+    for (auto *editor : this->editorPanels)
+    {
+        const auto isEditable = editor->canEditSequence(clip.getPattern()->getTrack()->getSequence());
+        editor->setVisible(isEditable);
+        editor->setEnabled(isEditable);
+        if (isEditable)
+        {
+            result = editor;
+        }
+    }
+
+    jassert(result != nullptr);
+    return result;
+}
+
+EditorPanelBase *EditorPanelsScroller::showEditorPanel(int panelIndex)
+{
+    EditorPanelBase *result = nullptr;
+
+    for (int i = 0; i < this->editorPanels.size(); ++i)
+    {
+        auto *editor = this->editorPanels.getUnchecked(i);
+        const auto isEditable = i == panelIndex;
+        editor->setVisible(isEditable);
+        editor->setEnabled(isEditable);
+        if (isEditable)
+        {
+            result = editor;
+        }
+    }
+
+    jassert(result != nullptr);
+    return result;
+}
+
+void EditorPanelsScroller::updateSwitcher()
+{
+    Array<EditorPanelsSwitcher::Filters> filters;
+    for (int i = 0; i < this->editorPanels.size(); ++i)
+    {
+        auto subFilters = this->editorPanels.getUnchecked(i)->getAllEventFilters();
+        if (!subFilters.isEmpty())
+        {
+            filters.add({i, move(subFilters)});
+        }
+    }
+
+    if (this->selectedEditorPanelIndex >= filters.size())
+    {
+        this->selectedEditorPanelIndex = 0;
+        jassert(!filters.isEmpty());
+        jassert(!filters.getFirst().eventFilters.isEmpty());
+        this->selectedEventFilter = filters.getFirst().eventFilters.getFirst();
+    }
+ 
+    this->editorPanelsSwitcher->reload(filters);
+    this->editorPanelsSwitcher->updateSelection(this->selectedEditorPanelIndex, this->selectedEventFilter);
 }

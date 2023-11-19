@@ -104,6 +104,7 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
+    // first/last beat relative to sequence, i.e. first beat is typically 0
     float getFirstBeat() const noexcept { return this->sequenceStartBeat; }
     float getLastBeat() const noexcept { return this->sequenceEndBeat; }
     float getLengthInBeats() const noexcept;

@@ -193,7 +193,7 @@ void AutomationEditor::mouseWheelMove(const MouseEvent &e, const MouseWheelDetai
 }
 
 //===----------------------------------------------------------------------===//
-// ScrolledComponent
+// EditorPanelBase
 //===----------------------------------------------------------------------===//
 
 void AutomationEditor::switchToRoll(SafePointer<RollBase> roll)
@@ -201,7 +201,7 @@ void AutomationEditor::switchToRoll(SafePointer<RollBase> roll)
     this->roll = roll;
 }
 
-void AutomationEditor::setEditableScope(Optional<Clip> clip)
+void AutomationEditor::setEditableClip(Optional<Clip> clip)
 {
     if (this->activeClip == clip)
     {
@@ -224,7 +224,46 @@ void AutomationEditor::setEditableScope(Optional<Clip> clip)
     AUTO_EDITOR_BATCH_REPAINT_END
 }
 
-void AutomationEditor::setEditableScope(WeakReference<Lasso> selection)
+void AutomationEditor::setEditableClip(const Clip &selectedClip, const EventFilter &filter)
+{
+    const auto *selectedSequence = selectedClip.getPattern()->getTrack()->getSequence();
+    const auto selectedRange = Range<float>(
+        selectedSequence->getFirstBeat() + selectedClip.getBeat(),
+        selectedSequence->getLastBeat() + selectedClip.getBeat());
+
+    Clip matchingClip;
+    float maxIntersectionLength = -1.f;
+    for (const auto &map : this->patternMap)
+    {
+        const auto *track = map.first.getPattern()->getTrack();
+        const auto *matchingSequence = track->getSequence();
+        if (track->getTrackControllerNumber() != filter.id)
+        {
+            continue;
+        }
+
+        const auto matchingRange = Range<float>(
+            matchingSequence->getFirstBeat() + map.first.getBeat(),
+            matchingSequence->getLastBeat() + map.first.getBeat());
+
+        const auto intersectionLength = selectedRange
+            .getIntersectionWith(matchingRange).getLength();
+
+        if (intersectionLength > maxIntersectionLength)
+        {
+            maxIntersectionLength = intersectionLength;
+            matchingClip = map.first;
+        }
+    }
+
+    jassert(matchingClip.isValid());
+    if (matchingClip.isValid())
+    {
+        this->setEditableClip(matchingClip);
+    }
+}
+
+void AutomationEditor::setEditableSelection(WeakReference<Lasso> selection)
 {
     // automation events can't be selected, so just keep the entire clip editable
 }
@@ -232,6 +271,29 @@ void AutomationEditor::setEditableScope(WeakReference<Lasso> selection)
 bool AutomationEditor::canEditSequence(WeakReference<MidiSequence> sequence) const
 {
     return dynamic_cast<AutomationSequence *>(sequence.get()) != nullptr;
+}
+
+Array<AutomationEditor::EventFilter> AutomationEditor::getAllEventFilters() const
+{
+    FlatHashMap<int, String> trackGrouping;
+    for (const auto &map : this->patternMap)
+    {
+        const auto *track = map.first.getPattern()->getTrack();
+        trackGrouping[track->getTrackControllerNumber()] =
+            track->isTempoTrack() ? TRANS(I18n::Defaults::tempoTrackName) :
+            track->getTrackName();
+    }
+
+    Array<AutomationEditor::EventFilter> result;
+    for (const auto &it : trackGrouping)
+    {
+        result.add({it.first, TRANS(it.second)});
+    }
+
+    static AutomationEditor::EventFilter orderById;
+    result.sort(orderById);
+
+    return result;
 }
 
 //===----------------------------------------------------------------------===//
@@ -468,6 +530,8 @@ void AutomationEditor::onAddClip(const Clip &clip)
     this->applyEventsBounds(sequenceMap);
 
     AUTO_EDITOR_BATCH_REPAINT_END
+
+    this->listeners.call(&Listener::onUpdateEventFilters);
 }
 
 void AutomationEditor::onChangeClip(const Clip &clip, const Clip &newClip)
@@ -496,6 +560,8 @@ void AutomationEditor::onRemoveClip(const Clip &clip)
     }
 
     AUTO_EDITOR_BATCH_REPAINT_END
+
+    this->listeners.call(&Listener::onUpdateEventFilters);
 }
 
 void AutomationEditor::onChangeTrackProperties(MidiTrack *const track)
@@ -515,12 +581,16 @@ void AutomationEditor::onChangeTrackProperties(MidiTrack *const track)
     AUTO_EDITOR_BATCH_REPAINT_END
 
     this->repaint();
+
+    // track name might have changed
+    this->listeners.call(&Listener::onUpdateEventFilters);
 }
 
 void AutomationEditor::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     const ProjectMetadata *meta)
 {
     this->reloadTrackMap();
+    this->listeners.call(&Listener::onUpdateEventFilters);
 }
 
 void AutomationEditor::onAddTrack(MidiTrack *const track)
@@ -530,6 +600,8 @@ void AutomationEditor::onAddTrack(MidiTrack *const track)
     AUTO_EDITOR_BATCH_REPAINT_START
     this->loadTrack(track);
     AUTO_EDITOR_BATCH_REPAINT_END
+
+    this->listeners.call(&Listener::onUpdateEventFilters);
 }
 
 void AutomationEditor::onRemoveTrack(MidiTrack *const track)
@@ -544,6 +616,8 @@ void AutomationEditor::onRemoveTrack(MidiTrack *const track)
             this->patternMap.erase(clip);
         }
     }
+
+    this->listeners.call(&Listener::onUpdateEventFilters);
 }
 
 void AutomationEditor::onChangeProjectBeatRange(float firstBeat, float lastBeat)

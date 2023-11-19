@@ -760,9 +760,9 @@ void ProjectNode::broadcastRemoveEvent(const MidiEvent &event)
     this->sendChangeMessage();
 }
 
-void ProjectNode::broadcastPostRemoveEvent(MidiSequence *const layer)
+void ProjectNode::broadcastPostRemoveEvent(MidiSequence *const sequence)
 {
-    this->changeListeners.call(&ProjectListener::onPostRemoveMidiEvent, layer);
+    this->changeListeners.call(&ProjectListener::onPostRemoveMidiEvent, sequence);
     this->sendChangeMessage();
 }
 

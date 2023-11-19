@@ -628,6 +628,7 @@
 		B691DFFEF06E8AB4AC845611 /* ColourSwatches.h */ /* ColourSwatches.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ColourSwatches.h; path = ../../Source/UI/Common/ColourSwatches.h; sourceTree = SOURCE_ROOT; };
 		B6FE326E0F7D0ED6D244D1C5 /* selectionTool.svg */ /* selectionTool.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = selectionTool.svg; path = ../../Resources/Icons/selectionTool.svg; sourceTree = SOURCE_ROOT; };
 		B7171AE42E525D650B7F50C0 /* HeadlineItem.cpp */ /* HeadlineItem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HeadlineItem.cpp; path = ../../Source/UI/Headline/HeadlineItem.cpp; sourceTree = SOURCE_ROOT; };
+		B921F49B5DD789AF6EFC9C91 /* EditorPanelBase.h */ /* EditorPanelBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EditorPanelBase.h; path = ../../Source/UI/Sequencer/EditorPanels/EditorPanelBase.h; sourceTree = SOURCE_ROOT; };
 		BA00F5CDEE9460D9E8CB976F /* OrigamiVertical.cpp */ /* OrigamiVertical.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OrigamiVertical.cpp; path = ../../Source/UI/Common/Origami/OrigamiVertical.cpp; sourceTree = SOURCE_ROOT; };
 		BACC4510D497ACA6F11A59F1 /* ColourSchemesCollection.h */ /* ColourSchemesCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ColourSchemesCollection.h; path = ../../Source/Core/Configuration/Resources/ColourSchemesCollection.h; sourceTree = SOURCE_ROOT; };
 		BACF565455C34AD0E000B052 /* AutomationCurveEventComponent.h */ /* AutomationCurveEventComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutomationCurveEventComponent.h; path = ../../Source/UI/Sequencer/EditorPanels/AutomationEditor/AutomationCurveEventComponent.h; sourceTree = SOURCE_ROOT; };
@@ -724,6 +725,7 @@
 		D84E1CE9EFE8BFADB3A28CA1 /* CachedLabelImage.h */ /* CachedLabelImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CachedLabelImage.h; path = ../../Source/UI/Common/CachedLabelImage.h; sourceTree = SOURCE_ROOT; };
 		D89A42F9BBB444EA54D8950F /* TreeNode.h */ /* TreeNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TreeNode.h; path = ../../Source/Core/Tree/TreeNode.h; sourceTree = SOURCE_ROOT; };
 		D8CDF77A64E07F574B61D7A0 /* ShadowComponent.h */ /* ShadowComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShadowComponent.h; path = ../../Source/UI/Themes/ShadowComponent.h; sourceTree = SOURCE_ROOT; };
+		D976B777D592996584FCB04D /* EditorPanelsSwitcher.h */ /* EditorPanelsSwitcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EditorPanelsSwitcher.h; path = ../../Source/UI/Sequencer/EditorPanels/EditorPanelsSwitcher.h; sourceTree = SOURCE_ROOT; };
 		D996ABA0431B8B058D6CEF2E /* ApiModel.h */ /* ApiModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ApiModel.h; path = ../../Source/Core/Network/Models/ApiModel.h; sourceTree = SOURCE_ROOT; };
 		DA47AB54458AEC968E0F5011 /* commit.svg */ /* commit.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = commit.svg; path = ../../Resources/Icons/commit.svg; sourceTree = SOURCE_ROOT; };
 		DA5B02B6610141E42B8A1C49 /* NavigationHistory.cpp */ /* NavigationHistory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NavigationHistory.cpp; path = ../../Source/Core/Workspace/NavigationHistory.cpp; sourceTree = SOURCE_ROOT; };
@@ -2096,8 +2098,10 @@
 			children = (
 				4EDFB01F75F921D0A81A8FC0,
 				CE9B624E7DC4D5E779CB14E0,
+				B921F49B5DD789AF6EFC9C91,
 				431E8E5C53FC6EA0C9523E97,
 				9842278A89E593133B2FFD8B,
+				D976B777D592996584FCB04D,
 			);
 			name = EditorPanels;
 			sourceTree = "<group>";

@@ -23,37 +23,31 @@ class ProjectNode;
 
 #include "RollListener.h"
 #include "ProjectListener.h"
+#include "EditorPanelBase.h"
 
 class EditorPanelsScroller final :
     public Component,
     public ProjectListener,
     public RollListener,
-    private AsyncUpdater, // triggers batch resize events for children
-    public ChangeListener // subscribes on the parent roll's lasso changes
+    public EditorPanelBase::Listener,
+    public ChangeListener, // subscribes on the parent roll's lasso changes
+    private AsyncUpdater // triggers batch resize events for children
 {
 public:
 
-    EditorPanelsScroller(ProjectNode &project, SafePointer<RollBase> roll);
+    EditorPanelsScroller(ProjectNode &project,
+        SafePointer<RollBase> roll, SafePointer<EditorPanelsSwitcher> panelsSwitcher);
+
     ~EditorPanelsScroller() override;
 
-    class ScrolledComponent : public Component
-    {
-    public:
-
-        virtual void switchToRoll(SafePointer<RollBase> roll) = 0;
-
-        virtual void setEditableScope(Optional<Clip> clip) = 0;
-        virtual void setEditableScope(WeakReference<Lasso> selection) = 0;
-
-        virtual bool canEditSequence(WeakReference<MidiSequence> sequence) const = 0;
-    };
-
     template <typename T, typename... Args> inline
-    void addOwnedMap(Args &&... args)
+    void addOwnedEditorPanel(Args &&... args)
     {
-        auto *newTrackMap = this->trackMaps.add(new T(std::forward<Args>(args)...));
+        auto *newTrackMap = this->editorPanels.add(new T(std::forward<Args>(args)...));
         this->addAndMakeVisible(newTrackMap);
+        newTrackMap->addListener(this);
         newTrackMap->toFront(false);
+        this->updateSwitcher();
     }
 
     void switchToRoll(SafePointer<RollBase> roll);
@@ -61,23 +55,30 @@ public:
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
-    
+
     void resized() override;
     void paint(Graphics &g) override;
     void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
-    
+
     //===------------------------------------------------------------------===//
     // RollListener
     //===------------------------------------------------------------------===//
-    
+
     void onMidiRollMoved(RollBase *targetRoll) override;
     void onMidiRollResized(RollBase *targetRoll) override;
+
+    //===------------------------------------------------------------------===//
+    // EditorPanelBase::Listener
+    //===------------------------------------------------------------------===//
+
+    void onUpdateEventFilters() override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
     //===------------------------------------------------------------------===//
 
-    void onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool) override;
+    void onChangeClip(const Clip &clip, const Clip &newClip) override;
+    void onChangeViewEditableScope(MidiTrack *const, const Clip &, bool) override;
 
 private:
 
@@ -85,71 +86,44 @@ private:
 
     SafePointer<RollBase> roll;
 
+    Clip activeClip;
+
     void changeListenerCallback(ChangeBroadcaster *source) override;
     
     void handleAsyncUpdate() override;
-    Rectangle<int> getMapBounds() const noexcept;
+    Rectangle<int> getEditorPanelBounds() const noexcept;
 
-    OwnedArray<ScrolledComponent> trackMaps;    
-};
+    OwnedArray<EditorPanelBase> editorPanels;
 
-// Ramer-Douglas-Peucker algorithm for point reduction,
-// to be used in child editor panels for hand-drawing random shapes:
-template <typename T>
-struct PointReduction final
-{
-    static float getPerpendicularDistance(const Point<T> &p,
-        const Point<T> &lineP1, const Point<T> &lineP2)
+    const Colour borderColourLight =
+        findDefaultColour(ColourIDs::TrackScroller::borderLineLight);
+
+    const Colour borderColourDark =
+        findDefaultColour(ColourIDs::TrackScroller::borderLineDark);
+
+private:
+
+    enum class EditorPanelSelectionMode
     {
-        const Point<T> vec1(p.x - lineP1.x, p.y - lineP1.y);
-        const Point<T> vec2(lineP2.x - lineP1.x, lineP2.y - lineP1.y);
-        const auto distance = sqrt(vec2.x * vec2.x + vec2.y * vec2.y);
-        const auto crossProduct = vec1.x * vec2.y - vec2.x * vec1.y;
-        return fabs(float(crossProduct / distance));
-    }
+        Manual, // let user decide what to edit, e.g. velocity, tempo, pedals
+        Automatic // based on the which clip is currently selected
+    };
 
-    static Array<Point<T>> simplify(const Array<Point<T>> &points, float epsilon = 0.04f)
-    {
-        int index = 0;
-        float maxDistance = 0;
+    EditorPanelSelectionMode editorPanelSelectionMode =
+        EditorPanelSelectionMode::Manual;
 
-        for (int i = 1; i < points.size() - 1; ++i)
-        {
-            const auto d = getPerpendicularDistance(points.getUnchecked(i),
-                points.getFirst(), points.getLast());
+    int selectedEditorPanelIndex = 0;
+    EditorPanelBase::EventFilter selectedEventFilter;
 
-            if (d > maxDistance)
-            {
-                index = i;
-                maxDistance = d;
-            }
-        }
+    // owned and positioned by SequencerLayout:
+    SafePointer<EditorPanelsSwitcher> editorPanelsSwitcher;
 
-        if (maxDistance > epsilon)
-        {
-            Array<Point<T>> previousPart, nextPart;
+    void updateSwitcher();
 
-            for (int i = 0; i <= index; ++i)
-            {
-                previousPart.add(points.getUnchecked(i));
-            }
+    EditorPanelBase *showEditorPanel(int panelIndex);
+    EditorPanelBase *showEditorPanelForClip(const Clip &clip);
 
-            for (int i = index; i < points.size(); ++i)
-            {
-                nextPart.add(points.getUnchecked(i));
-            }
+private:
 
-            auto subList1 = simplify(previousPart, epsilon);
-            auto subList2 = simplify(nextPart, epsilon);
-
-            subList1.removeLast();
-            subList1.addArray(subList2);
-            return subList1;
-        }
-
-        return {
-            points.getFirst(),
-            points.getLast()
-        };
-    }
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EditorPanelsScroller)
 };

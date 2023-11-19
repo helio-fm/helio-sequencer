@@ -87,7 +87,7 @@ public:
     Line<float> getBeatIntersectionLine() const noexcept
     {
         const auto beat = this->getFullBeat();
-        return { beat, 0.f, beat, float(Globals::UI::levelsMapHeight) };
+        return { beat, 0.f, beat, float(Globals::UI::editorPanelHeight) };
     }
 
     inline void updateColour()
@@ -469,7 +469,7 @@ void VelocityEditor::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails
 }
 
 //===----------------------------------------------------------------------===//
-// ScrolledComponent
+// EditorPanelBase
 //===----------------------------------------------------------------------===//
 
 void VelocityEditor::switchToRoll(SafePointer<RollBase> roll)
@@ -477,7 +477,7 @@ void VelocityEditor::switchToRoll(SafePointer<RollBase> roll)
     this->roll = roll;
 }
 
-void VelocityEditor::setEditableScope(Optional<Clip> clip)
+void VelocityEditor::setEditableClip(Optional<Clip> clip)
 {
     if (this->activeClip == clip)
     {
@@ -501,17 +501,22 @@ void VelocityEditor::setEditableScope(Optional<Clip> clip)
     VELOCITY_MAP_BATCH_REPAINT_END
 }
 
-void VelocityEditor::setEditableScope(WeakReference<Lasso> selection)
+void VelocityEditor::setEditableClip(const Clip &selectedClip, const EventFilter &)
+{
+    this->setEditableClip(selectedClip); // event filters not supported here
+}
+
+void VelocityEditor::setEditableSelection(WeakReference<Lasso> selection)
 {
     jassert(this->activeClip.hasValue());
-    const auto activeMapIt = this->patternMap.find(*this->activeClip);
-    if (activeMapIt == this->patternMap.end())
+    const auto foundActiveMap = this->patternMap.find(*this->activeClip);
+    if (foundActiveMap == this->patternMap.end())
     {
         jassertfalse;
         return;
     }
 
-    const auto *activeMap = activeMapIt->second.get();
+    const auto *activeMap = foundActiveMap->second.get();
 
     VELOCITY_MAP_BATCH_REPAINT_START
 
@@ -532,9 +537,20 @@ void VelocityEditor::setEditableScope(WeakReference<Lasso> selection)
 
         for (const auto *component : *selection)
         {
-            jassert(dynamic_cast<const NoteComponent *>(component) != nullptr);
-            const auto *nc = dynamic_cast<const NoteComponent *>(component);
-            activeMap->at(nc->getNote())->setEditable(true);
+            if (const auto *nc = dynamic_cast<const NoteComponent *>(component))
+            {
+                auto foundVolumeComponent = activeMap->find(nc->getNote());
+                if (foundVolumeComponent != activeMap->end())
+                {
+                    foundVolumeComponent->second->setEditable(true);
+                }
+#if DEBUG
+                else
+                {
+                    jassertfalse;
+                }
+#endif
+            }
         }
     }
 
@@ -544,6 +560,11 @@ void VelocityEditor::setEditableScope(WeakReference<Lasso> selection)
 bool VelocityEditor::canEditSequence(WeakReference<MidiSequence> sequence) const
 {
     return dynamic_cast<PianoSequence *>(sequence.get()) != nullptr;
+}
+
+Array<VelocityEditor::EventFilter> VelocityEditor::getAllEventFilters() const
+{
+    return { {0, TRANS(I18n::Defaults::volumePanelName)} };
 }
 
 //===----------------------------------------------------------------------===//
@@ -811,7 +832,7 @@ void VelocityEditor::continueFineTuning(VelocityEditorNoteComponent *target, con
         // fine-tuning by default, simple dragging with mod keys
         const auto newNoteVelocity = e.mods.isAnyModifierKeyDown() ?
             jlimit(0.f, 1.f, this->fineTuningVelocityAnchor -
-                float(e.getDistanceFromDragStartY()) / float(Globals::UI::levelsMapHeight)) :
+                float(e.getDistanceFromDragStartY()) / float(Globals::UI::editorPanelHeight)) :
             this->fineTuningDragger.getValue();
 
         const bool velocityChanged = target->getNote().getVelocity() != newNoteVelocity;
@@ -869,7 +890,7 @@ void VelocityEditor::updateVolumeBlendingIndicator(const Point<int> &pos)
 
 constexpr float getVelocityByIntersection(const Point<float> &intersection)
 {
-    return 1.f - (intersection.y / float(Globals::UI::levelsMapHeight));
+    return 1.f - (intersection.y / float(Globals::UI::editorPanelHeight));
 }
 
 void VelocityEditor::applyGroupVolumeChanges()
