@@ -59,8 +59,8 @@ public:
         constexpr auto buttonWidth = 29;
         this->navigatePrevious->setBounds(0, 0, buttonWidth, this->getHeight() - 1);
         this->navigateNext->setBounds(20, 0, buttonWidth, this->getHeight() - 1);
-        this->arrow->setBounds(this->getWidth() - HeadlineItemArrow::arrowWidth - 2,
-            0, HeadlineItemArrow::arrowWidth, this->getHeight() - 1);
+        this->arrow->setBounds(this->getWidth() - this->arrow->getWidth() - 2,
+            0, this->arrow->getWidth(), this->getHeight() - 1);
     }
 
     void handleCommandMessage(int commandId) override

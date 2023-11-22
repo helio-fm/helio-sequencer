@@ -55,10 +55,8 @@ public:
         }
 
 #if PLATFORM_DESKTOP
-
         App::Layout().showTooltip(this->getTooltipText(),
             MainLayout::TooltipIcon::None, Globals::UI::tooltipDelayMs);
-
 #endif
     }
 
@@ -70,18 +68,14 @@ public:
         }
 
 #if PLATFORM_DESKTOP
-
         App::Layout().hideTooltipIfAny();
-
 #endif
     }
 
     void mouseDown(const MouseEvent &e) override
     {
 #if PLATFORM_DESKTOP
-
         App::Layout().hideTooltipIfAny();
-
 #endif
     }
 
@@ -158,9 +152,7 @@ class TransportControlRecordBg final : public TransportControlButton
 public:
 
     explicit TransportControlRecordBg(TransportControlComponent &owner) :
-        TransportControlButton(owner),
-        lineColour(findDefaultColour(ColourIDs::Common::borderLineDark)),
-        tooltipText(MenuItem::createTooltip(TRANS(I18n::Tooltips::recordingMode), CommandIDs::TransportRecordingAwait))
+        TransportControlButton(owner)
     {
         this->inactiveColour = findDefaultColour(ColourIDs::TransportControl::recordInactive);
         this->highlightColour = findDefaultColour(ColourIDs::TransportControl::recordHighlight);
@@ -210,8 +202,12 @@ public:
         return this->tooltipText;
     }
 
-    const Colour lineColour;
-    const String tooltipText;
+    const Colour lineColour =
+        findDefaultColour(ColourIDs::Common::borderLineDark);
+
+    const String tooltipText =
+        MenuItem::createTooltip(TRANS(I18n::Tooltips::recordingMode),
+            CommandIDs::TransportRecordingAwait);
 };
 
 class TransportControlPlayBg final : public TransportControlButton
@@ -219,9 +215,7 @@ class TransportControlPlayBg final : public TransportControlButton
 public:
 
     explicit TransportControlPlayBg(TransportControlComponent &owner) :
-        TransportControlButton(owner),
-        lineColour(findDefaultColour(ColourIDs::Common::borderLineLight)),
-        tooltipText(MenuItem::createTooltip(TRANS(I18n::Tooltips::playbackMode), KeyPress(' ')))
+        TransportControlButton(owner)
     {
         this->inactiveColour = findDefaultColour(ColourIDs::TransportControl::playInactive);
         this->highlightColour = findDefaultColour(ColourIDs::TransportControl::playHighlight);
@@ -268,8 +262,11 @@ public:
         return this->tooltipText;
     }
 
-    const Colour lineColour;
-    const String tooltipText;
+    const Colour lineColour =
+        findDefaultColour(ColourIDs::Common::borderLineLight);
+
+    const String tooltipText =
+        MenuItem::createTooltip(TRANS(I18n::Tooltips::playbackMode), KeyPress(' '));
 };
 
 class RecordButtonBlinkAnimator final : public Timer
@@ -342,24 +339,27 @@ TransportControlComponent::~TransportControlComponent() = default;
 
 void TransportControlComponent::resized()
 {
-    this->recordBg->setBounds(0, 0, this->getWidth(), TransportControlComponent::recordButtonSize);
-    this->playBg->setBounds(0, this->getHeight() - TransportControlComponent::playButtonSize,
+    this->recordBg->setBounds(0, 0,
+        this->getWidth(), TransportControlComponent::recordButtonSize);
+
+    this->playBg->setBounds(0,
+        this->getHeight() - TransportControlComponent::playButtonSize,
         this->getWidth(), TransportControlComponent::playButtonSize);
 
-    const auto cw = this->getWidth() / 2;
-    const auto ch = this->getHeight() / 2;
-
     constexpr auto playIconSize = 24;
-    this->playIcon->setBounds(cw - (playIconSize / 2) + 2,
-        ch - (playIconSize / 2) + 15, playIconSize, playIconSize);
+    this->playIcon->setBounds(this->playBg->getBounds()
+        .withSizeKeepingCentre(playIconSize, playIconSize)
+        .translated(1, 1));
 
     constexpr auto stopIconSize = 22;
-    this->stopIcon->setBounds(cw - (stopIconSize / 2),
-        ch - (stopIconSize / 2) + 15, stopIconSize, stopIconSize);
+    this->stopIcon->setBounds(this->playBg->getBounds()
+        .withSizeKeepingCentre(stopIconSize, stopIconSize)
+        .translated(0, 1));
 
     constexpr auto recordIconSize = 18;
-    this->recordIcon->setBounds(cw - (recordIconSize / 2),
-        6, recordIconSize, recordIconSize);
+    this->recordIcon->setBounds(this->recordBg->getBounds()
+        .withSizeKeepingCentre(recordIconSize, recordIconSize)
+        .translated(0, -1));
 }
 
 void TransportControlComponent::showPlayingMode(bool isPlaying)

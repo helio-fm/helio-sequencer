@@ -54,8 +54,8 @@ bool AutomationCurveEventComponent::isTempoCurve() const noexcept
 void AutomationCurveEventComponent::updateColour()
 {
     this->colour = this->editor.getColour(this->event)
-        .withMultipliedSaturation(this->isEditable ? 1.f : 0.45f)
-        .withMultipliedAlpha(this->isEditable ? 1.f : 0.25f);
+        .withMultipliedSaturation(this->isEditable ? 1.f : 0.4f)
+        .withMultipliedAlpha(this->isEditable ? 1.f : 0.2f);
 }
 
 void AutomationCurveEventComponent::paint(Graphics &g)

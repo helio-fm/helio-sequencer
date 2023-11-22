@@ -65,8 +65,8 @@ public:
         this->titleLabel->setBounds(titleX,
             (this->getHeight() / 2) - (titleHeight / 2), this->getWidth() - titleX, titleHeight);
         this->icon->setBounds(iconX, (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
-        this->arrow->setBounds(this->getWidth() - HeadlineItemArrow::arrowWidth,
-            0, HeadlineItemArrow::arrowWidth, this->getHeight());
+        this->arrow->setBounds(this->getWidth() - this->arrow->getWidth(),
+            0, this->arrow->getWidth(), this->getHeight());
     }
 
 private:

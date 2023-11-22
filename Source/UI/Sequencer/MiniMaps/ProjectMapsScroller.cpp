@@ -220,12 +220,13 @@ void ProjectMapsScroller::mouseDrag(const MouseEvent &event)
             this->triggerAsyncUpdate();
         }
     }
-    else
-    {
-        this->setMouseCursor(MouseCursor::DraggingHandCursor);
-        this->screenRange->setRealBounds(this->screenRange->getRealBounds().withCentre(event.position));
-        this->xMoveByUser();
-    }
+    // this feels kinda glitchy, especially on mobile, commenting it out for now:
+    //else
+    //{
+    //    this->setMouseCursor(MouseCursor::DraggingHandCursor);
+    //    this->screenRange->setRealBounds(this->screenRange->getRealBounds().withCentre(event.position));
+    //    this->xMoveByUser();
+    //}
 }
 
 void ProjectMapsScroller::mouseUp(const MouseEvent &event)
@@ -248,13 +249,14 @@ void ProjectMapsScroller::mouseUp(const MouseEvent &event)
         
         this->roll->zoomAbsolute(this->drawingNewScreenRange);
 
-        // todo switch to piano roll if in the pattern roll mode now?
-
         this->drawingNewScreenRange = {};
         this->updateAllBounds();
         this->repaint();
 
-        this->startTimerHz(this->animationTimerFrequencyHz);
+        if (this->animationsEnabled)
+        {
+            this->startTimerHz(60);
+        }
     }
 }
 
@@ -289,13 +291,17 @@ void ProjectMapsScroller::switchToRoll(SafePointer<RollBase> roll)
 {
     this->oldAreaBounds = this->getIndicatorBounds();
     this->oldMapBounds = this->getMapBounds().toFloat();
+
     this->roll = roll;
     for (auto *map : this->trackMaps)
     {
         map->switchToRoll(roll);
     }
 
-    this->startTimerHz(this->animationTimerFrequencyHz);
+    if (this->animationsEnabled)
+    {
+        this->startTimerHz(60);
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -317,7 +323,7 @@ bool ProjectMapsScroller::ScrolledComponent::rollHasMultiTouch(const MouseEvent 
 // Timer
 //===----------------------------------------------------------------------===//
 
-static Rectangle<float> lerpRectangle(const Rectangle<float> &r1,
+static Rectangle<float> lerpMapBounds(const Rectangle<float> &r1,
     const Rectangle<float> &r2, float factor)
 {
     const float x1 = r1.getX();
@@ -338,7 +344,7 @@ static Rectangle<float> lerpRectangle(const Rectangle<float> &r1,
     return { lx1, ly1, lx2 - lx1, ly2 - ly1 };
 }
 
-static float getRectangleDistance(const Rectangle<float> &r1,
+static float getMapBoundsDistance(const Rectangle<float> &r1,
     const Rectangle<float> &r2)
 {
     return fabs(r1.getX() - r2.getX()) +
@@ -350,10 +356,10 @@ static float getRectangleDistance(const Rectangle<float> &r1,
 void ProjectMapsScroller::timerCallback()
 {
     const auto mb = this->getMapBounds().toFloat();
-    const auto mbLerp = lerpRectangle(this->oldMapBounds, mb, 0.35f);
+    const auto mbLerp = lerpMapBounds(this->oldMapBounds, mb, 0.4f);
     const auto ib = this->getIndicatorBounds();
-    const auto ibLerp = lerpRectangle(this->oldAreaBounds, ib, 0.35f);
-    const bool shouldStop = getRectangleDistance(this->oldAreaBounds, ib) < 0.5f;
+    const auto ibLerp = lerpMapBounds(this->oldAreaBounds, ib, 0.4f);
+    const bool shouldStop = getMapBoundsDistance(this->oldAreaBounds, ib) < 0.5f;
     const auto targetAreaBounds = shouldStop ? ib : ibLerp;
     const auto targetMapBounds = shouldStop ? mb : mbLerp;
 
@@ -409,7 +415,7 @@ Rectangle<float> ProjectMapsScroller::getIndicatorBounds() const noexcept
     jassert(this->roll != nullptr);
 
     const float viewX = float(this->roll->getViewport().getViewPositionX());
-    const float viewWidth = float(this->roll->getViewport().getViewWidth());
+    const float viewWidth = float(jmax(1, this->roll->getViewport().getViewWidth()));
     const float rollWidth = float(this->roll->getWidth());
     const float rollInvisibleArea = rollWidth - viewWidth;
     const float trackWidth = float(this->getWidth());
@@ -443,7 +449,7 @@ Rectangle<int> ProjectMapsScroller::getMapBounds() const noexcept
     jassert(this->roll != nullptr);
 
     const float viewX = float(this->roll->getViewport().getViewPositionX());
-    const float viewWidth = float(this->roll->getViewport().getViewWidth());
+    const float viewWidth = float(jmax(1, this->roll->getViewport().getViewWidth()));
     const float rollWidth = float(this->roll->getWidth());
     const float rollInvisibleArea = rollWidth - viewWidth;
     const float trackInvisibleArea = float(this->getWidth() - ProjectMapsScroller::screenRangeWidth);

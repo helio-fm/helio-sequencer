@@ -146,10 +146,11 @@ public:
             ProjectMapsScroller::ScrollerMode::Map;
     }
 
-    void setAnimationsEnabled(bool animationsEnabled)
+    void setAnimationsEnabled(bool shouldBeEnabled)
     {
-        this->animationsTimerInterval = animationsEnabled ? 1000 / 60 : 0;
-        this->bottomMapsScroller->setAnimationsEnabled(animationsEnabled);
+        this->animationsTimerInterval = shouldBeEnabled ? 1000 / 60 : 0;
+        this->bottomMapsScroller->setAnimationsEnabled(shouldBeEnabled);
+        this->bottomEditorsScroller->setAnimationsEnabled(shouldBeEnabled);
     }
 
     bool areAnimationsEnabled() const noexcept
@@ -192,6 +193,7 @@ public:
         // Disabling the panels prevents them from receiving keyboard events:
         const bool editorPanelMode = this->isEditorPanelVisible();
         this->bottomEditorsScroller->setEnabled(editorPanelMode);
+        this->bottomEditorsSwitcher->setEnabled(editorPanelMode);
         this->bottomMapsScroller->setEnabled(!editorPanelMode);
         this->bottomEditorsScroller->setVisible(true);
         this->bottomEditorsSwitcher->setVisible(true);
@@ -247,7 +249,7 @@ private:
                 this->scrollerModeAnimation.getPosition());
 
         const auto r = this->getLocalBounds();
-        const float rollViewportHeight = float(r.getHeight() - scrollerHeight + 1);
+        const int rollViewportHeight = r.getHeight() - scrollerHeight + 1;
         const Rectangle<int> rollSize(r.withBottom(r.getBottom() - scrollerHeight));
         const int viewport1Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight);
         const int viewport2Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight + rollViewportHeight);
@@ -261,7 +263,7 @@ private:
             int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
                 this->scrollerModeAnimation.getPosition());
 
-        const float rollViewportHeight = float(this->getHeight() - scrollerHeight + 1);
+        const int rollViewportHeight = this->getHeight() - scrollerHeight + 1;
         const int viewport1Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight);
         const int viewport2Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight + rollViewportHeight);
         this->pianoViewport->setTopLeftPosition(0, viewport1Pos);
@@ -283,13 +285,15 @@ private:
         const auto panelsToMapsOffset = Globals::UI::editorPanelHeight - projectMapHeight;
         const auto switcherToMapsOffset = panelsToMapsOffset + EditorPanelsSwitcher::switcherHeight;
 
-        const int mapsPosition = int(this->mapsAnimation.getPosition() * projectMapHeight);
-        const int panelsPosition = int(this->mapsAnimation.getPosition() * panelsToMapsOffset);
-        const int switcherPosition = int(this->mapsAnimation.getPosition() * switcherToMapsOffset);
+        const int mapsPosition = roundToInt(this->mapsAnimation.getPosition() * projectMapHeight);
+        const int panelsPosition = roundToInt(this->mapsAnimation.getPosition() * panelsToMapsOffset);
+        const int switcherPosition = roundToInt(this->mapsAnimation.getPosition() * switcherToMapsOffset);
 
         this->bottomMapsScroller->setBounds(mapsBounds.translated(0, mapsPosition));
         this->bottomEditorsScroller->setBounds(panelsBounds.translated(0, panelsToMapsOffset - panelsPosition));
-        this->bottomEditorsSwitcher->setBounds(switcherBounds.translated(0, switcherToMapsOffset - switcherPosition));
+
+        const auto switcherHidingOffset = roundToInt(this->rollsAnimation.getPosition() * this->bottomEditorsSwitcher->getHeight());
+        this->bottomEditorsSwitcher->setBounds(switcherBounds.translated(0, switcherToMapsOffset - switcherPosition + switcherHidingOffset));
 
         this->scrollerShadow->setBounds(this->bottomEditorsScroller->getBounds()
             .translated(0, -RollsSwitchingProxy::scrollerShadowSize)
@@ -306,13 +310,15 @@ private:
         const auto panelsToMapsOffset = Globals::UI::editorPanelHeight - projectMapHeight;
         const auto switcherToMapsOffset = panelsToMapsOffset + EditorPanelsSwitcher::switcherHeight;
 
-        const int mapsPosition = int(this->mapsAnimation.getPosition() * projectMapHeight);
-        const int panelsPosition = int(this->mapsAnimation.getPosition() * panelsToMapsOffset);
-        const int switcherPosition = int(this->mapsAnimation.getPosition() * switcherToMapsOffset);
+        const int mapsPosition = roundToInt(this->mapsAnimation.getPosition() * projectMapHeight);
+        const int panelsPosition = roundToInt(this->mapsAnimation.getPosition() * panelsToMapsOffset);
+        const int switcherPosition = roundToInt(this->mapsAnimation.getPosition() * switcherToMapsOffset);
 
         this->bottomMapsScroller->setTopLeftPosition(0, mapsY + mapsPosition);
         this->bottomEditorsScroller->setTopLeftPosition(0, mapsY - panelsPosition);
-        this->bottomEditorsSwitcher->setTopLeftPosition(0, mapsY - switcherPosition);
+
+        const auto switcherHidingOffset = roundToInt(this->rollsAnimation.getPosition() * this->bottomEditorsSwitcher->getHeight());
+        this->bottomEditorsSwitcher->setTopLeftPosition(0, mapsY - switcherPosition + switcherHidingOffset);
 
         this->scrollerShadow->setTopLeftPosition(0,
             this->bottomEditorsScroller->getY() - this->scrollerShadow->getHeight());
@@ -342,6 +348,7 @@ private:
                 this->resized();
             }
 
+            this->updateAnimatedMapsPositions();
             this->updateAnimatedRollsPositions();
             break;
 
@@ -405,41 +412,41 @@ private:
 
         void start(float startSpeed)
         {
-            this->direction *= -1.f;
+            this->direction *= -1.0;
             this->speed = startSpeed;
-            this->deceleration = 1.f - this->speed;
+            this->deceleration = 1.0 - this->speed;
         }
 
         bool tickAndCheckIfDone()
         {
             this->position = this->position + (this->direction * this->speed);
             this->speed *= this->deceleration;
-            return this->position < 0.001f ||
-                this->position > 0.999f ||
-                this->speed < 0.001f;
+            return this->position < 0.0005 ||
+                this->position > 0.9995 ||
+                this->speed < 0.0005;
         }
 
         void finish()
         {
             // push to either 0 or 1:
-            this->position = (jlimit(0.f, 1.f, this->position + this->direction));
+            this->position = jlimit(0.0, 1.0, this->position + this->direction);
         }
 
         bool canRestart() const
         {
             // only allow restarting the animation when the previous animation
             // is close to be done so it doesn't feel glitchy but still responsive
-            return (this->direction > 0.f && this->position > 0.85f) ||
-                (this->direction < 0.f && this->position < 0.15f);
+            return (this->direction > 0.0 && this->position > 0.85) ||
+                (this->direction < 0.0 && this->position < 0.15);
         }
 
-        float isInDefaultState() const noexcept { return this->direction < 0; }
-        float getPosition() const noexcept { return this->position; }
+        double isInDefaultState() const noexcept { return this->direction < 0.0; }
+        double getPosition() const noexcept { return this->position; }
 
         void resetToStart() noexcept
         {
-            this->position = 0.f;
-            this->direction = -1.f;
+            this->position = 0.0;
+            this->direction = -1.0;
         }
 
         void resetToEnd() noexcept
@@ -450,11 +457,11 @@ private:
 
     private:
 
-        // 0.f to 1.f, animates the switching between piano and pattern roll
-        float position = 0.f;
-        float direction = -1.f;
-        float speed = 0.f;
-        float deceleration = 1.f;
+        // 0 to 1, animates the switching between piano and pattern roll
+        double position = 0.0;
+        double direction = -1.0;
+        double speed = 0.0;
+        double deceleration = 1.0;
     };
 
     ToggleAnimation rollsAnimation;

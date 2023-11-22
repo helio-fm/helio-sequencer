@@ -28,8 +28,8 @@ class Transport;
 class ProjectMapsScroller final :
     public Component,
     public RollListener,
-    private AsyncUpdater,
-    private Timer
+    private AsyncUpdater, // triggers batch move/resize events for children
+    private Timer // optionally animates transitions between rolls
 {
 public:
 
@@ -70,9 +70,9 @@ public:
 
     void switchToRoll(SafePointer<RollBase> roll);
 
-    void setAnimationsEnabled(bool enabled)
+    void setAnimationsEnabled(bool shouldBeEnabled)
     {
-        this->animationTimerFrequencyHz = enabled ? 60 : 500;
+        this->animationsEnabled = shouldBeEnabled;
     }
 
     //===------------------------------------------------------------------===//
@@ -254,7 +254,7 @@ private:
     const Colour borderLineDark = findDefaultColour(ColourIDs::TrackScroller::borderLineDark);
     const Colour borderLineLight = findDefaultColour(ColourIDs::TrackScroller::borderLineLight);
 
-    int animationTimerFrequencyHz = 60;
+    bool animationsEnabled = true;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectMapsScroller)
 };

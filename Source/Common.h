@@ -151,9 +151,15 @@ namespace juce
 }
 #endif
 
-// Disable all network-related features on mobile platforms to keep it simple:
+// Disable all network-related features on mobile platforms to keep it simple
 #if PLATFORM_MOBILE
 #   define NO_NETWORK 1
+#endif
+
+// Catch floating point exceptions like division by zero
+#if DEBUG && JUCE_WINDOWS
+#include <float.h>
+unsigned int fpControlState = _controlfp(_EM_INEXACT, _MCW_EM);
 #endif
 
 //===----------------------------------------------------------------------===//
@@ -234,8 +240,13 @@ namespace Globals
         static constexpr auto headlineIconSize = 16;
         static constexpr auto sidebarRowHeight = 36;
 
+        #if PLATFORM_MOBILE
+        static constexpr auto projectMapHeight = 70;
+        static constexpr auto editorPanelHeight = 108;
+        #elif PLATFORM_DESKTOP
         static constexpr auto projectMapHeight = 76;
         static constexpr auto editorPanelHeight = 128;
+        #endif
 
         static constexpr auto fadeInShort = 90;
         static constexpr auto fadeOutShort = 110;

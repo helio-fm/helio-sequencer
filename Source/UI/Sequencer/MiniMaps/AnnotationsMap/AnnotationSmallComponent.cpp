@@ -70,7 +70,6 @@ void AnnotationSmallComponent::setRealBounds(const Rectangle<float> bounds)
 
 void AnnotationSmallComponent::updateContent()
 {
-
     if (this->lastColour != this->event.getColour())
     {
         this->lastColour = this->event.getColour();

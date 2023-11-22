@@ -73,6 +73,8 @@ EditorPanelsScroller::~EditorPanelsScroller()
 
 void EditorPanelsScroller::switchToRoll(SafePointer<RollBase> roll)
 {
+    this->panelsBoundsAnimationAnchor = this->getEditorPanelBounds().toFloat();
+
     this->roll->getLassoSelection().removeChangeListener(this);
     this->roll = roll;
     this->roll->getLassoSelection().addChangeListener(this);
@@ -90,6 +92,11 @@ void EditorPanelsScroller::switchToRoll(SafePointer<RollBase> roll)
     if (this->activeClip.isValid())
     {
         editor->setEditableClip(this->activeClip, this->selectedEventFilter);
+    }
+
+    if (this->animationsEnabled)
+    {
+        this->startTimerHz(60);
     }
 }
 
@@ -132,7 +139,7 @@ void EditorPanelsScroller::mouseWheelMove(const MouseEvent &event, const MouseWh
 
 void EditorPanelsScroller::onMidiRollMoved(RollBase *targetRoll)
 {
-    if (this->isVisible() && this->roll == targetRoll)
+    if (this->isVisible() && this->roll == targetRoll && !this->isTimerRunning())
     {
         this->triggerAsyncUpdate();
     }
@@ -140,7 +147,7 @@ void EditorPanelsScroller::onMidiRollMoved(RollBase *targetRoll)
 
 void EditorPanelsScroller::onMidiRollResized(RollBase *targetRoll)
 {
-    if (this->isVisible() && this->roll == targetRoll)
+    if (this->isVisible() && this->roll == targetRoll && !this->isTimerRunning())
     {
         this->triggerAsyncUpdate();
     }
@@ -155,6 +162,56 @@ void EditorPanelsScroller::handleAsyncUpdate()
     for (auto *editor : this->editorPanels)
     {
         editor->setBounds(this->getEditorPanelBounds());
+    }
+}
+
+//===----------------------------------------------------------------------===//
+// Timer animating transitions between rolls
+//===----------------------------------------------------------------------===//
+
+static Rectangle<float> lerpEditorPanelBounds(const Rectangle<float> &r1,
+    const Rectangle<float> &r2, float factor)
+{
+    const float x1 = r1.getX();
+    const float x2 = r1.getBottomRight().getX();
+
+    jassert(r1.getY() == r2.getY());
+    jassert(r1.getBottomRight().getY() == r2.getBottomRight().getY());
+    const float y1 = r1.getY();
+    const float y2 = r1.getBottomRight().getY();
+
+    const float dx1 = r2.getX() - x1;
+    const float dx2 = r2.getBottomRight().getX() - x2;
+
+    const float lx1 = x1 + dx1 * factor;
+    const float lx2 = x2 + dx2 * factor;
+
+    return { lx1, y1, lx2 - lx1, y2 };
+}
+
+static float getEditorPanelBoundsDistance(const Rectangle<float> &r1,
+    const Rectangle<float> &r2)
+{
+    return fabs(r1.getX() - r2.getX()) + fabs(r1.getWidth() - r2.getWidth());
+}
+
+void EditorPanelsScroller::timerCallback()
+{
+    const auto newBounds = this->getEditorPanelBounds().toFloat();
+    const auto interpolatedBounds = lerpEditorPanelBounds(this->panelsBoundsAnimationAnchor, newBounds, 0.6f);
+    const auto distance = getEditorPanelBoundsDistance(this->panelsBoundsAnimationAnchor, newBounds);
+    const bool shouldStop = distance < 1.f;
+    const auto finalBounds = shouldStop ? newBounds : interpolatedBounds;
+    this->panelsBoundsAnimationAnchor = finalBounds;
+
+    if (shouldStop)
+    {
+        this->stopTimer();
+    }
+
+    for (auto *editor : this->editorPanels)
+    {
+        editor->setBounds(finalBounds.toNearestInt());
     }
 }
 

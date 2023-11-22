@@ -91,8 +91,7 @@ Rectangle<float> AutomationEditor::getCurveEventBounds(float beat,
     float sequenceLength, double controllerValue) const
 {
     constexpr auto diameter = AutomationEditor::curveEventComponentDiameter;
-    jassert(this->getWidth() == this->roll->getWidth());
-    const float x = float(this->roll->getXPositionByBeat(beat));
+    const float x = float(this->roll->getXPositionByBeat(beat, double(this->getWidth())));
     const float y = roundf(float(1.0 - controllerValue) * float(this->getHeight())); // flipped upside down
     return { x - (diameter / 2.f), y - (diameter / 2.f), diameter, diameter };
 }
@@ -104,7 +103,7 @@ Rectangle<float> AutomationEditor::getOnOffEventBounds(float beat,
     const float w = jmax(minWidth,
         float(this->roll->getBeatWidth()) * AutomationStepEventComponent::minLengthInBeats);
 
-    const float x = float(this->roll->getXPositionByBeat(beat));
+    const float x = float(this->roll->getXPositionByBeat(beat, double(this->getWidth())));
     return { x - w + AutomationStepEventComponent::pointOffset, 0.f, w, float(this->getHeight()) };
 }
 

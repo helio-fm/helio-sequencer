@@ -21,13 +21,13 @@ class HeadlineItemArrow final : public Component
 {
 public:
 
-    HeadlineItemArrow()
+    explicit HeadlineItemArrow(int arrowWidth = 16) : arrowWidth(arrowWidth)
     {
         this->setOpaque(false);
         this->setBufferedToImage(true);
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
-        this->setSize(HeadlineItemArrow::arrowWidth, Globals::UI::headlineHeight);
+        this->setSize(this->arrowWidth, Globals::UI::headlineHeight);
     }
 
     void paint(Graphics &g) override
@@ -35,15 +35,15 @@ public:
         g.setGradientFill(ColourGradient(this->shadowColour1,
             float(this->getWidth() - 2), float(this->getHeight() - 2),
             this->shadowColour2,
-            float(this->getWidth() - HeadlineItemArrow::arrowWidth), 2.0f,
+            float(this->getWidth() - this->arrowWidth), 2.f,
             true));
 
-        g.strokePath(this->shadowPath, PathStrokeType(1.0f));
+        g.strokePath(this->shadowPath, PathStrokeType(1.f));
 
         g.setGradientFill(ColourGradient(this->arrowColour1,
             float(this->getWidth() - 3), float(this->getHeight() - 2),
             this->arrowColour2,
-            float(this->getWidth() - HeadlineItemArrow::arrowWidth), 0.0f,
+            float(this->getWidth() - this->arrowWidth), 0.f,
             true));
 
         g.strokePath(this->arrowPath, PathStrokeType(0.5f));
@@ -51,21 +51,24 @@ public:
 
     void resized() override
     {
+        const auto w = float(this->getWidth());
+        const auto h = float(this->getHeight());
+
         this->arrowPath.clear();
-        this->arrowPath.startNewSubPath(float(this->getWidth() - HeadlineItemArrow::arrowWidth - 1), 0.0f);
-        this->arrowPath.lineTo(float(this->getWidth() - 2.5), float(this->getHeight()));
+        this->arrowPath.startNewSubPath(w - this->arrowWidth - 1.f, 0.f);
+        this->arrowPath.lineTo(w - 2.5f, h);
 
         this->shadowPath.clear();
-        this->shadowPath.startNewSubPath(float(this->getWidth() - HeadlineItemArrow::arrowWidth), 0.0f);
-        this->shadowPath.lineTo(float(this->getWidth() - 1.5), float(this->getHeight()));
+        this->shadowPath.startNewSubPath(w - this->arrowWidth, 0.f);
+        this->shadowPath.lineTo(w - 1.5f, h);
     }
-
-    static constexpr auto arrowWidth = 16;
 
 private:
 
     Path arrowPath;
     Path shadowPath;
+
+    const int arrowWidth;
 
     const Colour arrowColour1 = Colour(0x30ffffff);
     const Colour arrowColour2 = Colour(0x0dffffff);

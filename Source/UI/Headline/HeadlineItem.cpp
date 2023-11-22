@@ -125,16 +125,21 @@ void HeadlineItem::resized()
     this->icon->setBounds(iconX,
         (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
 
-    this->arrow->setBounds(this->getWidth() - HeadlineItemArrow::arrowWidth,
-        0, HeadlineItemArrow::arrowWidth, this->getHeight());
+    this->arrow->setBounds(this->getWidth() - this->arrow->getWidth(),
+        0, this->arrow->getWidth(), this->getHeight());
 
     this->backgroundShape.clear();
     this->backgroundShape.startNewSubPath(2.f, 1.f);
-    this->backgroundShape.lineTo(float(this->getWidth() - HeadlineItemArrow::arrowWidth), 1.f);
+    this->backgroundShape.lineTo(float(this->getWidth() - this->arrow->getWidth()), 1.f);
     this->backgroundShape.lineTo(float(this->getWidth() - 2), float(this->getHeight() - 2));
     this->backgroundShape.lineTo(1.f, float(this->getHeight() - 1));
     this->backgroundShape.lineTo(2.f, float(this->getHeight() - 2));
     this->backgroundShape.closeSubPath();
+}
+
+bool HeadlineItem::hitTest(int x, int y)
+{
+    return this->backgroundShape.contains({float(x), float(y)});
 }
 
 void HeadlineItem::mouseEnter(const MouseEvent& e)

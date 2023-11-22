@@ -31,7 +31,8 @@ class EditorPanelsScroller final :
     public RollListener,
     public EditorPanelBase::Listener,
     public ChangeListener, // subscribes on the parent roll's lasso changes
-    private AsyncUpdater // triggers batch resize events for children
+    private AsyncUpdater, // triggers batch move/resize events for children
+    private Timer // optionally animates transitions between rolls
 {
 public:
 
@@ -51,6 +52,11 @@ public:
     }
 
     void switchToRoll(SafePointer<RollBase> roll);
+
+    void setAnimationsEnabled(bool shouldBeEnabled)
+    {
+        this->animationsEnabled = shouldBeEnabled;
+    }
 
     //===------------------------------------------------------------------===//
     // Component
@@ -91,6 +97,11 @@ private:
     void changeListenerCallback(ChangeBroadcaster *source) override;
     
     void handleAsyncUpdate() override;
+
+    void timerCallback() override;
+    Rectangle<float> panelsBoundsAnimationAnchor;
+    bool animationsEnabled = true;
+
     Rectangle<int> getEditorPanelBounds() const noexcept;
 
     OwnedArray<EditorPanelBase> editorPanels;

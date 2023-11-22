@@ -61,7 +61,7 @@ public:
 
             this->titleLabel->setCachedComponentImage(new CachedLabelImage(*this->titleLabel));
 
-            this->arrow = make<HeadlineItemArrow>();
+            this->arrow = make<HeadlineItemArrow>(ModeComponent::arrowWidth);
             this->addAndMakeVisible(this->arrow.get());
 
             const auto textWidth = this->titleLabel->getFont().getStringWidth(filter.name);
@@ -103,17 +103,15 @@ public:
 
         void paint(Graphics &g) override
         {
-            constexpr auto arrowWidth = HeadlineItemArrow::arrowWidth;
-
             const auto &theme = HelioTheme::getCurrentTheme();
             g.setFillType({ theme.getSidebarBackground(), {} });
             g.fillPath(this->backgroundShape);
 
             g.setColour(this->borderColourDark);
-            g.fillRect(0, 0, this->getWidth() - HeadlineItemArrow::arrowWidth, 1);
+            g.fillRect(0, 0, this->getWidth() - this->arrow->getWidth(), 1);
 
             g.setColour(this->borderColourLight);
-            g.fillRect(1, 1, this->getWidth() - HeadlineItemArrow::arrowWidth - 1, 1);
+            g.fillRect(1, 1, this->getWidth() - this->arrow->getWidth() - 1, 1);
         }
 
         bool hitTest(int x, int y) override
@@ -131,7 +129,7 @@ public:
 
         void resized() override
         {
-            constexpr auto arrowWidth = HeadlineItemArrow::arrowWidth;
+            const auto arrowWidth = this->arrow->getWidth();
 
             this->titleLabel->setBounds(EditorPanelsSwitcher::horizontalMargin, 0,
                 this->getWidth() - arrowWidth, this->getHeight());
@@ -145,6 +143,8 @@ public:
             this->backgroundShape.lineTo(0.f, float(this->getHeight()));
             this->backgroundShape.closeSubPath();
         }
+
+        static constexpr auto arrowWidth = 12;
 
     private:
 
@@ -249,8 +249,8 @@ public:
     }
 
     static constexpr auto switcherHeight = 27;
-    static constexpr auto horizontalMargin = HeadlineItemArrow::arrowWidth;
-    static constexpr auto componentsOverlapOffset = HeadlineItemArrow::arrowWidth;
+    static constexpr auto horizontalMargin = ModeComponent::arrowWidth;
+    static constexpr auto componentsOverlapOffset = ModeComponent::arrowWidth;
 
 private:
 

@@ -44,9 +44,11 @@ private:
     Atomic<bool> isPlaying = false;
     Atomic<bool> isRecording = false;
 
-    static constexpr auto playButtonSize = 48;
-    static constexpr auto recordButtonSize = 33;
-    static constexpr auto buttonSkew = 7;
+    static constexpr auto buttonSkew = 6;
+    static constexpr auto playButtonSize =
+        int(Globals::UI::projectMapHeight * 0.6) + buttonSkew / 2;
+    static constexpr auto recordButtonSize =
+        Globals::UI::projectMapHeight - playButtonSize + buttonSkew / 2 + 1;
 
     friend class TransportControlRecordBg;
     friend class TransportControlPlayBg;
