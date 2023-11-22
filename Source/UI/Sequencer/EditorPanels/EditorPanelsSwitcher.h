@@ -62,16 +62,18 @@ public:
             this->titleLabel->setJustificationType(Justification::centredLeft);
             this->titleLabel->setInterceptsMouseClicks(false, false);
             this->titleLabel->setColour(Label::textColourId,
-                findDefaultColour(Label::textColourId).withMultipliedAlpha(0.5f));
+                findDefaultColour(Label::textColourId).withMultipliedAlpha(0.4f));
 
             this->titleLabel->setCachedComponentImage(new CachedLabelImage(*this->titleLabel));
 
-            this->arrow = make<HeadlineItemArrow>(ModeComponent::arrowWidth);
+            constexpr auto arrowWidth = 12;
+            this->arrow = make<HeadlineItemArrow>(arrowWidth);
             this->addAndMakeVisible(this->arrow.get());
 
+            constexpr auto horizontalMargin = arrowWidth;
             const auto textWidth = this->titleLabel->getFont().getStringWidth(filter.name);
-            this->setSize(textWidth + EditorPanelsSwitcher::componentsOverlapOffset +
-                EditorPanelsSwitcher::horizontalMargin * 2, EditorPanelsSwitcher::switcherHeight);
+            this->setSize(textWidth + this->getOverlapOffset() + horizontalMargin * 2,
+                EditorPanelsSwitcher::switcherHeight);
         }
 
         Function<void(int panelId, const EditorPanelBase::EventFilter &filter)> onClick;
@@ -86,6 +88,11 @@ public:
             return this->filter;
         }
 
+        int getOverlapOffset() const noexcept
+        {
+            return this->arrow->getWidth();
+        }
+
         void setSelected(bool shouldBeSelected)
         {
             if (this->isSelected == shouldBeSelected)
@@ -97,7 +104,7 @@ public:
 
             const auto labelColour = findDefaultColour(Label::textColourId);
             this->titleLabel->setColour(Label::textColourId,
-                labelColour.withMultipliedAlpha(this->isSelected ? 1.f : 0.5f));
+                labelColour.withMultipliedAlpha(this->isSelected ? 1.f : 0.4f));
 
             auto *cachedImage = static_cast<CachedLabelImage *>(this->titleLabel->getCachedComponentImage());
             jassert(cachedImage != nullptr);
@@ -136,8 +143,7 @@ public:
         {
             const auto arrowWidth = this->arrow->getWidth();
 
-            this->titleLabel->setBounds(EditorPanelsSwitcher::horizontalMargin, 0,
-                this->getWidth() - arrowWidth, this->getHeight());
+            this->titleLabel->setBounds(this->getOverlapOffset(), 0, this->getWidth() - arrowWidth, this->getHeight());
 
             this->arrow->setBounds(this->getWidth() - arrowWidth, 0, arrowWidth, this->getHeight());
 
@@ -148,8 +154,6 @@ public:
             this->backgroundShape.lineTo(0.f, float(this->getHeight()));
             this->backgroundShape.closeSubPath();
         }
-
-        static constexpr auto arrowWidth = 12;
 
     private:
 
@@ -249,13 +253,11 @@ public:
         for (auto *component : this->modeComponents)
         {
             component->setTopLeftPosition(x, 0);
-            x += component->getWidth() - EditorPanelsSwitcher::componentsOverlapOffset;
+            x += component->getWidth() - component->getOverlapOffset();
         }
     }
 
     static constexpr auto switcherHeight = 27;
-    static constexpr auto horizontalMargin = ModeComponent::arrowWidth;
-    static constexpr auto componentsOverlapOffset = ModeComponent::arrowWidth;
 
 private:
 
