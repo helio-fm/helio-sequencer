@@ -239,7 +239,6 @@
       { "command": "ShowArpeggiatorsPanel", "key": "A" },
       { "command": "CreateArpeggiatorFromSelection", "key": "Shift + A" },
       { "command": "ShowRescalePanel", "key": "R" },
-      { "command": "ShowScalePanel", "key": "S" },
       { "command": "ShowChordPanel", "key": "C" },
 
       // Other toggles
