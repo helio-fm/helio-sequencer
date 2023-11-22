@@ -37,7 +37,12 @@ public:
     {
         int editorPanelIndex;
         Array<EditorPanelBase::EventFilter> eventFilters;
-        bool operator== (const Filters &other) const noexcept = default;
+
+        bool operator== (const Filters &other) const noexcept
+        {
+            return this->editorPanelIndex == other.editorPanelIndex &&
+                this->eventFilters == other.eventFilters;
+        }
     };
 
     class ModeComponent final : public HighlightedComponent

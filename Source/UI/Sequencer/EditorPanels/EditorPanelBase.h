@@ -42,7 +42,10 @@ public:
         // e.g. "velocity", "tempo", "sustain pedal",
         String name;
 
-        bool operator== (const EventFilter &other) const noexcept = default;
+        bool operator== (const EventFilter &other) const noexcept
+        {
+            return this->id == other.id && this->name == other.name;
+        }
 
         static int compareElements(const EventFilter &a, const EventFilter &b) noexcept
         {
