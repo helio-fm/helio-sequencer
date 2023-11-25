@@ -97,10 +97,16 @@ void MultiTouchController::mouseUp(const MouseEvent &event)
         return;
     }
 
+    if (!this->hasMultiTouch())
+    {
+        this->touches.erase(event.source.getIndex());
+        this->anchorsCache.erase(event.source.getIndex());
+        return;
+    }
+
     const auto touchMode = this->touches[event.source.getIndex()];
 
-    if (this->hasMultiTouch() &&
-        touchMode != TouchUsage::Unused)
+    if (touchMode != TouchUsage::Unused)
     {
         this->processContinueZoomingEvent(event);
     }

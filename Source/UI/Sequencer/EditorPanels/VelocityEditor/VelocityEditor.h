@@ -20,6 +20,7 @@
 #include "Clip.h"
 #include "Note.h"
 #include "ProjectListener.h"
+#include "MultiTouchListener.h"
 #include "ComponentFader.h"
 #include "RollListener.h"
 #include "EditorPanelBase.h"
@@ -30,9 +31,11 @@ class ProjectNode;
 class VelocityEditorNoteComponent;
 class VelocityHandDrawingHelper;
 class FineTuningValueIndicator;
+class MultiTouchController;
 
 class VelocityEditor final :
     public EditorPanelBase,
+    public MultiTouchListener,
     public ProjectListener,
     public AsyncUpdater // triggers batch repaints for children
 {
@@ -63,6 +66,22 @@ public:
     void setEditableSelection(WeakReference<Lasso> selection) override;
     bool canEditSequence(WeakReference<MidiSequence> sequence) const override;
     Array<EventFilter> getAllEventFilters() const override;
+
+    //===------------------------------------------------------------------===//
+    // MultiTouchListener
+    //===------------------------------------------------------------------===//
+
+    void multiTouchStartZooming() override;
+    void multiTouchContinueZooming(
+            const Rectangle<float> &relativePosition,
+            const Rectangle<float> &relativePositionAnchor,
+            const Rectangle<float> &absolutePositionAnchor) override;
+    void multiTouchEndZooming(const MouseEvent &anchorEvent) override;
+
+    Point<float> getMultiTouchRelativeAnchor(const MouseEvent &e) override;
+    Point<float> getMultiTouchAbsoluteAnchor(const MouseEvent &e) override;
+
+    bool hasMultiTouch(const MouseEvent &e) const;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -141,6 +160,10 @@ private:
     void updateVolumeBlendingIndicator(const Point<int> &pos);
 
 private:
+
+    UniquePointer<MultiTouchController> multiTouchController;
+
+    Point<int> dragStartPoint;
 
     ComponentFader fader;
 

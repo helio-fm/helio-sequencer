@@ -26,6 +26,7 @@
 #include "RollBase.h"
 #include "AutomationCurveEventComponent.h"
 #include "AutomationStepEventComponent.h"
+#include "MultiTouchController.h"
 #include "Lasso.h"
 #include "ColourIDs.h"
 #include "FineTuningValueIndicator.h"
@@ -43,6 +44,9 @@ AutomationEditor::AutomationEditor(ProjectNode &project, SafePointer<RollBase> r
     this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
 
+    this->multiTouchController = make<MultiTouchController>(*this);
+    this->addMouseListener(this->multiTouchController.get(), true);
+
     this->reloadTrackMap();
 
     this->project.addListener(this);
@@ -51,6 +55,7 @@ AutomationEditor::AutomationEditor(ProjectNode &project, SafePointer<RollBase> r
 AutomationEditor::~AutomationEditor()
 {
     this->project.removeListener(this);
+    this->removeMouseListener(this->multiTouchController.get());
 }
 
 //===----------------------------------------------------------------------===//
@@ -125,10 +130,12 @@ void AutomationEditor::resized()
 
 void AutomationEditor::mouseDown(const MouseEvent &e)
 {
-    if (this->roll->hasMultiTouch(e))
+    if (this->hasMultiTouch(e))
     {
         return;
     }
+
+    this->dragStartPoint = e.getPosition();
 
     // roll panning hack
     if (this->roll->isViewportDragEvent(e))
@@ -148,7 +155,7 @@ void AutomationEditor::mouseDown(const MouseEvent &e)
 
 void AutomationEditor::mouseDrag(const MouseEvent &e)
 {
-    if (this->roll->hasMultiTouch(e))
+    if (this->hasMultiTouch(e))
     {
         return;
     }
@@ -156,7 +163,10 @@ void AutomationEditor::mouseDrag(const MouseEvent &e)
     if (this->roll->isViewportDragEvent(e))
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
-        this->roll->mouseDrag(e.getEventRelativeTo(this->roll));
+        this->roll->mouseDrag(e
+            .withNewPosition(Point<int>(e.getPosition().getX(), this->dragStartPoint.getY()))
+            .getEventRelativeTo(this->roll));
+
         return;
     }
 
@@ -165,17 +175,22 @@ void AutomationEditor::mouseDrag(const MouseEvent &e)
 
 void AutomationEditor::mouseUp(const MouseEvent &e)
 {
-    // no multi-touch check here, need to exit the editing mode (if any) even in multi-touch
-    //if (this->roll->hasMultiTouch(e)) { return; }
+    // todo: hand-drawing custom shapes
+
+    if (this->hasMultiTouch(e))
+    {
+        return;
+    }
 
     if (this->roll->isViewportDragEvent(e))
     {
         this->setMouseCursor(MouseCursor::NormalCursor);
-        this->roll->mouseUp(e.getEventRelativeTo(this->roll));
+        this->roll->mouseUp(e
+            .withNewPosition(Point<int>(e.getPosition().getX(), this->dragStartPoint.getY()))
+            .getEventRelativeTo(this->roll));
+
         return;
     }
-
-    // todo: hand-drawing custom shapes
 }
 
 void AutomationEditor::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
@@ -293,6 +308,52 @@ Array<AutomationEditor::EventFilter> AutomationEditor::getAllEventFilters() cons
     result.sort(orderById);
 
     return result;
+}
+
+//===----------------------------------------------------------------------===//
+// MultiTouchListener
+//===----------------------------------------------------------------------===//
+
+// because the roll is the upstream of move-resize events for all bottom panels,
+// this will simply ensure that zooming and panning events are horizontal-only
+// and pass them to the currently active roll; the same logic can be found in VelocityEditor
+
+void AutomationEditor::multiTouchStartZooming()
+{
+    this->roll->multiTouchStartZooming();
+}
+
+void AutomationEditor::multiTouchContinueZooming(
+        const Rectangle<float> &relativePositions,
+        const Rectangle<float> &relativeAnchor,
+        const Rectangle<float> &absoluteAnchor)
+{
+    this->roll->multiTouchContinueZooming(relativePositions, relativeAnchor, absoluteAnchor);
+}
+
+void AutomationEditor::multiTouchEndZooming(const MouseEvent &anchorEvent)
+{
+    this->dragStartPoint = anchorEvent.getPosition();
+    this->roll->multiTouchEndZooming(anchorEvent.getEventRelativeTo(this->roll));
+}
+
+Point<float> AutomationEditor::getMultiTouchRelativeAnchor(const MouseEvent &event)
+{
+    return this->roll->getMultiTouchRelativeAnchor(event
+        .withNewPosition(Point<int>(event.getPosition().getX(), this->dragStartPoint.getY()))
+        .getEventRelativeTo(this->roll));
+}
+
+Point<float> AutomationEditor::getMultiTouchAbsoluteAnchor(const MouseEvent &event)
+{
+    return this->roll->getMultiTouchAbsoluteAnchor(event
+        .withNewPosition(Point<int>(event.getPosition().getX(), this->dragStartPoint.getY()))
+        .getEventRelativeTo(this->roll));
+}
+
+bool AutomationEditor::hasMultiTouch(const MouseEvent &e) const
+{
+    return this->roll->hasMultiTouch(e) || this->multiTouchController->hasMultiTouch(e);
 }
 
 //===----------------------------------------------------------------------===//

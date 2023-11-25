@@ -64,7 +64,6 @@ public:
 
     void resized() override;
     void paint(Graphics &g) override;
-    void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
 
     //===------------------------------------------------------------------===//
     // RollListener

@@ -78,36 +78,36 @@ public:
     //===------------------------------------------------------------------===//
     // TrackScroller
     //===------------------------------------------------------------------===//
-    
+
     void xyMoveByUser();
     void xMoveByUser();
-    
+
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
-    
+
     void resized() override;
     void paint(Graphics &g) override;
     void mouseDown(const MouseEvent &event) override;
     void mouseDrag(const MouseEvent &event) override;
     void mouseUp(const MouseEvent &event) override;
     void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
-    
+
     //===------------------------------------------------------------------===//
     // RollListener
     //===------------------------------------------------------------------===//
-    
+
     void onMidiRollMoved(RollBase *targetRoll) override;
     void onMidiRollResized(RollBase *targetRoll) override;
-    
+
     //===------------------------------------------------------------------===//
     // Additional horizontal dragger
     //===------------------------------------------------------------------===//
-    
+
     class HorizontalDragHelper final : public Component
     {
     public:
-        
+
         explicit HorizontalDragHelper(ProjectMapsScroller &scrollerRef);
 
         void mouseDown(const MouseEvent &e) override;
@@ -119,7 +119,7 @@ public:
         static constexpr auto defaultBrightness = 0.4f;
 
     private:
-        
+
         Colour colour;
         ProjectMapsScroller &scroller;
         ComponentDragger dragger;
@@ -207,7 +207,7 @@ private:
         }
 
     private:
-        
+
         Rectangle<float> realBounds;
 
         Colour colour;
@@ -227,27 +227,27 @@ private:
     void handleAsyncUpdate() override;
     void timerCallback() override;
     void updateAllBounds();
-    
+
     Transport &transport;
     SafePointer<RollBase> roll;
     Point<int> rollViewportPositionAtDragStart;
-    
+
     Rectangle<float> oldAreaBounds;
     Rectangle<float> oldMapBounds;
 
     static constexpr auto screenRangeWidth = 150.f;
     UniquePointer<ProjectMapsScroller::ScreenRange> screenRange;
 
-    Rectangle<float> drawingNewScreenRange;
+    Optional<Rectangle<float>> drawingNewScreenRange;
 
     UniquePointer<Playhead> playhead;
-   
+
     OwnedArray<ScrolledComponent> trackMaps;
 
     void disconnectPlayhead();
     Rectangle<float> getIndicatorBounds() const noexcept;
     Rectangle<int> getMapBounds() const noexcept;
-    
+
     ComponentDragger helperDragger;
     UniquePointer<HorizontalDragHelper> helperRectangle;
 

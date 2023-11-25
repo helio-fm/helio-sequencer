@@ -148,11 +148,9 @@ void ProjectMapsScroller::paint(Graphics &g)
     g.setColour(this->borderLineLight);
     g.fillRect(0, 1, this->getWidth(), 1);
 
-    if (this->drawingNewScreenRange.getWidth() > 0)
+    if (this->drawingNewScreenRange.hasValue() && !this->drawingNewScreenRange->isEmpty())
     {
-        const auto rect = this->getMapBounds().toFloat().
-            getProportion(this->drawingNewScreenRange);
-
+        const auto rect = this->getMapBounds().toFloat().getProportion(*this->drawingNewScreenRange);
         g.fillRect(rect);
         g.drawRect(rect);
         g.drawRect(rect);
@@ -168,7 +166,9 @@ void ProjectMapsScroller::mouseDown(const MouseEvent &event)
 
     this->rollViewportPositionAtDragStart = this->roll->getViewport().getViewPosition();
 
-    if (event.mods.isLeftButtonDown())
+    // this thing feels weird on mobile: panning as the default behaviour is more natural there,
+    // while on desktop panning is done via right mouse button everywhere:
+    if (!event.source.isTouch() && event.mods.isLeftButtonDown())
     {
         const auto mapBounds = this->getMapBounds();
         this->drawingNewScreenRange = {
@@ -188,16 +188,16 @@ void ProjectMapsScroller::mouseDrag(const MouseEvent &event)
 
     if (this->stretchedMode())
     {
-        if (event.mods.isLeftButtonDown())
+        if (this->drawingNewScreenRange.hasValue())
         {
             const auto mapBounds = this->getMapBounds();
             const auto r = (event.position.x - mapBounds.getX()) / float(mapBounds.getWidth());
             const auto b = (event.position.y - mapBounds.getY()) / float(mapBounds.getHeight());
-            this->drawingNewScreenRange.setRight(r);
-            this->drawingNewScreenRange.setBottom(b);
+            this->drawingNewScreenRange->setRight(r);
+            this->drawingNewScreenRange->setBottom(b);
             this->repaint();
         }
-        else if (event.mods.isRightButtonDown())
+        else if (event.source.getIndex() == 0)
         {
             this->setMouseCursor(MouseCursor::DraggingHandCursor);
 
@@ -241,13 +241,15 @@ void ProjectMapsScroller::mouseUp(const MouseEvent &event)
     if (event.getOffsetFromDragStart().isOrigin())
     {
         App::Layout().broadcastCommandMessage(CommandIDs::ToggleBottomMiniMap);
+        return;
     }
-    else if (!this->drawingNewScreenRange.isEmpty())
+
+    if (this->drawingNewScreenRange.hasValue() && !this->drawingNewScreenRange->isEmpty())
     {
         this->oldAreaBounds = this->getIndicatorBounds();
         this->oldMapBounds = this->getMapBounds().toFloat();
         
-        this->roll->zoomAbsolute(this->drawingNewScreenRange);
+        this->roll->zoomAbsolute(*this->drawingNewScreenRange);
 
         this->drawingNewScreenRange = {};
         this->updateAllBounds();

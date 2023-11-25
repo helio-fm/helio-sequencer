@@ -24,6 +24,7 @@
 #include "PianoSequence.h"
 #include "AnnotationEvent.h"
 #include "RollBase.h"
+#include "MultiTouchController.h"
 #include "Lasso.h"
 #include "ColourIDs.h"
 #include "NoteComponent.h"
@@ -322,7 +323,7 @@ private:
 };
 
 //===----------------------------------------------------------------------===//
-// The map itself
+// The panel itself
 //===----------------------------------------------------------------------===//
 
 VelocityEditor::VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll) :
@@ -337,6 +338,9 @@ VelocityEditor::VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll)
     this->volumeBlendingIndicator->setSize(40, 40);
     this->addChildComponent(this->volumeBlendingIndicator.get());
 
+    this->multiTouchController = make<MultiTouchController>(*this);
+    this->addMouseListener(this->multiTouchController.get(), true);
+
     this->reloadTrackMap();
 
     this->project.addListener(this);
@@ -345,6 +349,7 @@ VelocityEditor::VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll)
 VelocityEditor::~VelocityEditor()
 {
     this->project.removeListener(this);
+    this->removeMouseListener(this->multiTouchController.get());
 }
 
 float VelocityEditor::getBeatByXPosition(float x) const noexcept
@@ -382,10 +387,12 @@ void VelocityEditor::resized()
 
 void VelocityEditor::mouseDown(const MouseEvent &e)
 {
-    if (this->roll->hasMultiTouch(e))
+    if (this->hasMultiTouch(e))
     {
         return;
     }
+
+    this->dragStartPoint = e.getPosition();
 
     // roll panning hack
     if (this->roll->isViewportDragEvent(e))
@@ -405,7 +412,7 @@ void VelocityEditor::mouseDown(const MouseEvent &e)
 
 void VelocityEditor::mouseDrag(const MouseEvent &e)
 {
-    if (this->roll->hasMultiTouch(e))
+    if (this->hasMultiTouch(e))
     {
         return;
     }
@@ -413,7 +420,10 @@ void VelocityEditor::mouseDrag(const MouseEvent &e)
     if (this->roll->isViewportDragEvent(e))
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
-        this->roll->mouseDrag(e.getEventRelativeTo(this->roll));
+        this->roll->mouseDrag(e
+            .withNewPosition(Point<int>(e.getPosition().getX(), this->dragStartPoint.getY()))
+            .getEventRelativeTo(this->roll));
+
         return;
     }
 
@@ -430,16 +440,6 @@ void VelocityEditor::mouseDrag(const MouseEvent &e)
 
 void VelocityEditor::mouseUp(const MouseEvent &e)
 {
-    // no multi-touch check here, need to exit the editing mode (if any) even in multi-touch
-    //if (this->roll->hasMultiTouch(e)) { return; }
-
-    if (this->roll->isViewportDragEvent(e))
-    {
-        this->setMouseCursor(MouseCursor::NormalCursor);
-        this->roll->mouseUp(e.getEventRelativeTo(this->roll));
-        return;
-    }
-
     if (this->handDrawingHelper != nullptr)
     {
         this->volumeBlendingIndicator->setVisible(false);
@@ -448,6 +448,21 @@ void VelocityEditor::mouseUp(const MouseEvent &e)
         this->groupDragChangesBefore.clearQuick();
         this->groupDragChangesAfter.clearQuick();
         this->groupDragHasChanges = false;
+    }
+
+    if (this->hasMultiTouch(e))
+    {
+        return;
+    }
+
+    if (this->roll->isViewportDragEvent(e))
+    {
+        this->setMouseCursor(MouseCursor::NormalCursor);
+        this->roll->mouseUp(e
+            .withNewPosition(Point<int>(e.getPosition().getX(), this->dragStartPoint.getY()))
+            .getEventRelativeTo(this->roll));
+
+        return;
     }
 }
 
@@ -565,6 +580,52 @@ bool VelocityEditor::canEditSequence(WeakReference<MidiSequence> sequence) const
 Array<VelocityEditor::EventFilter> VelocityEditor::getAllEventFilters() const
 {
     return { {0, TRANS(I18n::Defaults::volumePanelName)} };
+}
+
+//===----------------------------------------------------------------------===//
+// MultiTouchListener
+//===----------------------------------------------------------------------===//
+
+// because the roll is the upstream of move-resize events for all bottom panels,
+// this will simply ensure that zooming and panning events are horizontal-only
+// and pass them to the currently active roll; the same logic can be found in AutomationEditor
+
+void VelocityEditor::multiTouchStartZooming()
+{
+    this->roll->multiTouchStartZooming();
+}
+
+void VelocityEditor::multiTouchContinueZooming(
+        const Rectangle<float> &relativePositions,
+        const Rectangle<float> &relativeAnchor,
+        const Rectangle<float> &absoluteAnchor)
+{
+    this->roll->multiTouchContinueZooming(relativePositions, relativeAnchor, absoluteAnchor);
+}
+
+void VelocityEditor::multiTouchEndZooming(const MouseEvent &anchorEvent)
+{
+    this->dragStartPoint = anchorEvent.getPosition();
+    this->roll->multiTouchEndZooming(anchorEvent.getEventRelativeTo(this->roll));
+}
+
+Point<float> VelocityEditor::getMultiTouchRelativeAnchor(const MouseEvent &event)
+{
+    return this->roll->getMultiTouchRelativeAnchor(event
+        .withNewPosition(Point<int>(event.getPosition().getX(), this->dragStartPoint.getY()))
+        .getEventRelativeTo(this->roll));
+}
+
+Point<float> VelocityEditor::getMultiTouchAbsoluteAnchor(const MouseEvent &event)
+{
+    return this->roll->getMultiTouchAbsoluteAnchor(event
+        .withNewPosition(Point<int>(event.getPosition().getX(), this->dragStartPoint.getY()))
+        .getEventRelativeTo(this->roll));
+}
+
+bool VelocityEditor::hasMultiTouch(const MouseEvent &e) const
+{
+    return this->roll->hasMultiTouch(e) || this->multiTouchController->hasMultiTouch(e);
 }
 
 //===----------------------------------------------------------------------===//

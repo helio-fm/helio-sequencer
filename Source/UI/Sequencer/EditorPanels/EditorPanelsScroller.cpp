@@ -33,7 +33,7 @@ EditorPanelsScroller::EditorPanelsScroller(ProjectNode &project,
 {
     this->setOpaque(true);
     this->setPaintingIsUnclipped(false);
-    this->setInterceptsMouseClicks(true, true);
+    this->setInterceptsMouseClicks(false, true);
 
     this->editorPanelsSwitcher->onChangeSelection = [this](int panelId,
         const EditorPanelBase::EventFilter &filter)
@@ -125,16 +125,8 @@ void EditorPanelsScroller::paint(Graphics &g)
     g.fillRect(0, 1, this->getWidth(), 1);
 }
 
-void EditorPanelsScroller::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
-{
-    if (this->roll != nullptr)
-    {
-        this->roll->mouseWheelMove(event.getEventRelativeTo(this->roll), wheel);
-    }
-}
-
 //===----------------------------------------------------------------------===//
-// MidiRollListener
+// RollListener
 //===----------------------------------------------------------------------===//
 
 void EditorPanelsScroller::onMidiRollMoved(RollBase *targetRoll)

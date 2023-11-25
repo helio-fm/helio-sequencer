@@ -20,6 +20,7 @@
 #include "AutomationEvent.h"
 #include "AutomationEditorBase.h"
 #include "ProjectListener.h"
+#include "MultiTouchListener.h"
 #include "ComponentFader.h"
 #include "RollListener.h"
 #include "EditorPanelBase.h"
@@ -27,10 +28,12 @@
 
 class RollBase;
 class ProjectNode;
+class MultiTouchController;
 
 class AutomationEditor final :
     public EditorPanelBase,
     public AutomationEditorBase,
+    public MultiTouchListener,
     public ProjectListener
 {
 public:
@@ -69,6 +72,22 @@ public:
     Array<EventFilter> getAllEventFilters() const override;
 
     //===------------------------------------------------------------------===//
+    // MultiTouchListener
+    //===------------------------------------------------------------------===//
+
+    void multiTouchStartZooming() override;
+    void multiTouchContinueZooming(
+            const Rectangle<float> &relativePosition,
+            const Rectangle<float> &relativePositionAnchor,
+            const Rectangle<float> &absolutePositionAnchor) override;
+    void multiTouchEndZooming(const MouseEvent &anchorEvent) override;
+
+    Point<float> getMultiTouchRelativeAnchor(const MouseEvent &e) override;
+    Point<float> getMultiTouchAbsoluteAnchor(const MouseEvent &e) override;
+
+    bool hasMultiTouch(const MouseEvent &e) const;
+
+    //===------------------------------------------------------------------===//
     // ProjectListener
     //===------------------------------------------------------------------===//
 
@@ -91,12 +110,35 @@ public:
 
 private:
 
+    ProjectNode &project;
+
+    SafePointer<RollBase> roll;
+
+    Optional<Clip> activeClip;
+
+    float projectFirstBeat = 0.f;
+    float projectLastBeat = Globals::Defaults::projectLength;
+
+    float rollFirstBeat = 0.f;
+    float rollLastBeat = Globals::Defaults::projectLength;
+
+    struct SequenceMap final
+    {
+        // owned components, sorted by beat
+        OwnedArray<EventComponentBase> sortedComponents;
+        // component map for faster access
+        FlatHashMap<AutomationEvent, EventComponentBase *, MidiEventHash> eventsMap;
+    };
+
+    using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
+    PatternMap patternMap;
+
+private:
+
     EventComponentBase *createCurveEventComponent(const AutomationEvent &event, const Clip &clip);
     EventComponentBase *createOnOffEventComponent(const AutomationEvent &event, const Clip &clip);
 
     friend class EventComponentBase;
-
-private:
 
 #if PLATFORM_DESKTOP
     static constexpr auto curveEventComponentDiameter = 20.f;
@@ -110,36 +152,19 @@ private:
     Rectangle<float> getOnOffEventBounds(float beat,
         float sequenceLength, bool isPedalDown) const;
 
-    void reloadTrackMap();
-    void loadTrack(const MidiTrack *const track);
+private:
 
-    float projectFirstBeat = 0.f;
-    float projectLastBeat = Globals::Defaults::projectLength;
+    UniquePointer<MultiTouchController> multiTouchController;
 
-    float rollFirstBeat = 0.f;
-    float rollLastBeat = Globals::Defaults::projectLength;
+    Point<int> dragStartPoint;
 
-    ProjectNode &project;
-
-    SafePointer<RollBase> roll;
-
-    Optional<Clip> activeClip;
-
-    struct SequenceMap final
-    {
-        // owned components, sorted by beat
-        OwnedArray<EventComponentBase> sortedComponents;
-        // component map for faster access
-        FlatHashMap<AutomationEvent, EventComponentBase *, MidiEventHash> eventsMap;
-    };
-
-    using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
-    PatternMap patternMap;
+    ComponentFader fader;
 
     void applyEventBounds(EventComponentBase *c);
     void applyEventsBounds(SequenceMap *map);
 
-    ComponentFader fader;
+    void reloadTrackMap();
+    void loadTrack(const MidiTrack *const track);
 
     JUCE_LEAK_DETECTOR(AutomationEditor)
 };
