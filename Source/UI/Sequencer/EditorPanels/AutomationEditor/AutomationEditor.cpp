@@ -31,6 +31,201 @@
 #include "ColourIDs.h"
 #include "FineTuningValueIndicator.h"
 
+//===----------------------------------------------------------------------===//
+// Hand-drawing helper
+//===----------------------------------------------------------------------===//
+
+// hand-drawing helper with home-cooked curve fitting algorithm
+// that works most of the time: for now, automation tracks use
+// curves with one control point for adjusting ease-in/ease-out
+// level for each curve point, so they are not nearly as flexible
+// as Bezier curves, and the fitting algorithm is less-than-ideal,
+// but I like how they are much simpler from the UI/UX perspective;
+// in future it may be worth supporting Bezier curves as well
+
+class AutomationHandDrawingHelper final : public Component
+{
+public:
+
+    AutomationHandDrawingHelper(AutomationEditor &editor) : editor(editor)
+    {
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+    }
+    
+    template <typename T>
+    struct LineWithEasing final : public Line<T>
+    {
+        LineWithEasing() = default;
+        LineWithEasing(Point<T> startPoint, Point<T> endPoint, float easing) noexcept :
+            Line(startPoint, endPoint),
+            easing(easing) {}
+
+        float easing = 0.f;
+    };
+
+    const Array<LineWithEasing<float>> &getSimplifiedCurve() const noexcept
+    {
+        return this->curveInBeats;
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->colour);
+        g.fillPath(this->curveInPixels);
+
+        for (const auto &pivotPoint : pivotsInPixels)
+        {
+            g.fillRect({ pivotPoint.translated(-2, -1), pivotPoint.translated(2, 1) });
+            g.fillRect({ pivotPoint.translated(-1, -2), pivotPoint.translated(1, 2) });
+        }
+    }
+
+    void setStartMousePosition(const Point<float> &mousePos)
+    {
+        this->rawPositions.clearQuick();
+        this->simplifiedPositionsL1.clearQuick();
+        this->simplifiedPositionsL2.clearQuick();
+
+        const auto newPosition = mousePos.toDouble() / this->getSize();
+
+        this->rawPositions.add(newPosition);
+        this->simplifiedPositionsL1.add(newPosition);
+        this->simplifiedPositionsL2.add({ newPosition, 0.f });
+    }
+
+    void addMousePosition(const Point<float> &mousePos, const float viewWidth)
+    {
+        jassert(!this->rawPositions.isEmpty());
+        jassert(!this->simplifiedPositionsL1.isEmpty());
+        jassert(!this->simplifiedPositionsL2.isEmpty());
+
+        const auto mySize = this->getSize();
+        const auto newPosition = mousePos.toDouble() / mySize;
+
+        constexpr auto prefilterThreshold = 1;
+        const auto lastPositionInPixels = this->rawPositions.getLast() * mySize;
+        const auto d = lastPositionInPixels.getDistanceFrom(mousePos.toDouble());
+        if (d > prefilterThreshold)
+        {
+            this->rawPositions.add(newPosition);
+        }
+
+        // picks the epsilon depending on zoom level
+        const auto epsilon1 = jmax(0.000001f, viewWidth / float(mySize.getX()) * 0.001f);
+        const auto epsilon2 = epsilon1 * 50.f;
+
+        // ~50% reduction for filtering out the noise for painting
+        this->simplifiedPositionsL1 =
+            PointReduction<double>::simplify(this->rawPositions, epsilon1);
+
+        // ~1-2 orders of magnitude reduction for actual curve fitting
+        this->simplifiedPositionsL2 =
+            PointReduction<double>::simplifyExtended(this->rawPositions, epsilon2);
+        
+        if (this->simplifiedPositionsL1.size() >= 2)
+        {
+            this->simplifiedPositionsL1[this->simplifiedPositionsL1.size() - 1] = newPosition;
+        }
+
+        if (this->simplifiedPositionsL2.size() >= 2)
+        {
+            this->simplifiedPositionsL2[this->simplifiedPositionsL2.size() - 1].point = newPosition;
+        }
+    }
+
+    void updateCurves()
+    {
+        const auto mySize = this->getSize();
+
+        this->curveInBeats.clearQuick();
+        this->pivotsInPixels.clearQuick();
+        this->curveInPixels.clear();
+
+        {
+            jassert(!this->simplifiedPositionsL1.isEmpty());
+            auto previousPointPx = (this->simplifiedPositionsL1.getFirst() * mySize).toFloat();
+            this->curveInPixels.startNewSubPath(previousPointPx);
+
+            for (int i = 1; i < this->simplifiedPositionsL1.size(); ++i)
+            {
+                const auto nextPointPx = (this->simplifiedPositionsL1.getUnchecked(i) * mySize).toFloat();
+                this->curveInPixels.lineTo(nextPointPx);
+                previousPointPx = nextPointPx;
+            }
+        }
+
+        {
+            jassert(!this->simplifiedPositionsL2.isEmpty());
+            auto previousPointPx = (this->simplifiedPositionsL2.getFirst().point * mySize).toFloat();
+            auto previousEasing = this->simplifiedPositionsL2.getFirst().easingLevel;
+            this->pivotsInPixels.add(previousPointPx.roundToInt());
+
+            for (int i = 1; i < this->simplifiedPositionsL2.size(); ++i)
+            {
+                const auto nextPointPx = (this->simplifiedPositionsL2.getUnchecked(i).point * mySize).toFloat();
+                const auto nextEasing = this->simplifiedPositionsL2.getUnchecked(i).easingLevel;
+
+                this->pivotsInPixels.add(nextPointPx.roundToInt());
+                this->curveInBeats.add({
+                    { this->editor.getBeatByXPosition(previousPointPx.x), previousPointPx.y },
+                    { this->editor.getBeatByXPosition(nextPointPx.x), nextPointPx.y },
+                    (previousPointPx.x < nextPointPx.x) ? previousEasing : 1.f - previousEasing
+                });
+
+                previousPointPx = nextPointPx;
+                previousEasing = nextEasing;
+            }
+
+            // fallback to a single point; on mouseUp it will just insert a single event
+            if (this->curveInBeats.isEmpty())
+            {
+                this->curveInBeats.add({
+                    { this->editor.getBeatByXPosition(previousPointPx.x), previousPointPx.y },
+                    { this->editor.getBeatByXPosition(previousPointPx.x), previousPointPx.y },
+                    previousEasing
+                });
+            }
+        }
+
+        static const float lineThickness = 1.f;
+        static Array<float> dashes(4.f, 3.f);
+        PathStrokeType(1.f).createDashedStroke(this->curveInPixels, this->curveInPixels,
+            dashes.getRawDataPointer(), dashes.size());
+    }
+
+private:
+
+    AutomationEditor &editor;
+
+    // all 3 in absolute values, 0..1
+    Array<Point<double>> rawPositions;
+    // ~50% reduction for painting:
+    Array<Point<double>> simplifiedPositionsL1;
+    // ~1-2 orders of magnitude reduction for curve fitting:
+    Array<PointReduction<double>::PointWithEasing> simplifiedPositionsL2;
+
+    // simplifiedPositionsL1 for painting
+    Path curveInPixels;
+    // simplifiedPositionsL2 for painting
+    Array<Point<int>> pivotsInPixels;
+    // simplifiedPositionsL2 in beats
+    Array<LineWithEasing<float>> curveInBeats;
+
+    const Colour colour = findDefaultColour(Label::textColourId);
+
+    inline const Point<double> getSize() const noexcept
+    {
+        return this->getLocalBounds().getBottomRight().toDouble();
+    }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationHandDrawingHelper)
+};
+
+//===----------------------------------------------------------------------===//
+// AutomationEditor
+//===----------------------------------------------------------------------===//
+
 #define AUTO_EDITOR_BATCH_REPAINT_START \
     if (this->isEnabled()) { this->setVisible(false); }
 
@@ -113,6 +308,118 @@ Rectangle<float> AutomationEditor::getOnOffEventBounds(float beat,
 }
 
 //===----------------------------------------------------------------------===//
+// Hand-drawing shapes
+//===----------------------------------------------------------------------===//
+
+constexpr float getControllerValueByY(float y)
+{
+    return 1.f - (y / float(Globals::UI::editorPanelHeight));
+}
+
+void AutomationEditor::applyHandDrawnCurve()
+{
+    if (!this->activeClip.hasValue())
+    {
+        jassertfalse;
+        return;
+    }
+
+    const auto activeClip = *this->activeClip;
+    if (!this->patternMap.contains(activeClip))
+    {
+        jassertfalse;
+        return;
+    }
+
+    jassert(!activeClip.getPattern()->getTrack()->isOnOffAutomationTrack());
+
+    const auto *activeMap = this->patternMap.at(activeClip).get();
+    auto *sequence = static_cast<AutomationSequence *>(activeClip.getPattern()->getTrack()->getSequence());
+
+    const auto &simplifiedCurve = this->handDrawingHelper->getSimplifiedCurve();
+    if (simplifiedCurve.isEmpty())
+    {
+        jassertfalse;
+        return;
+    }
+    
+    bool didCheckpoint = false;
+
+    {
+        // find all events within the range of the shape and delete them
+        Array<AutomationEvent> eventsToDelete;
+
+        constexpr auto threshold = 2.f;
+        for (const auto &i : activeMap->eventsMap)
+        {
+            const auto eventFullBeat =
+                i.second->getEvent().getBeat() + i.second->getClip().getBeat();
+
+            for (const auto &line : simplifiedCurve)
+            {
+                const auto startBeat = jmin(line.getStartX(), line.getEndX());
+                const auto endBeat = jmax(line.getStartX(), line.getEndX());
+
+                if (eventFullBeat >= (startBeat - threshold) &&
+                    eventFullBeat <= (endBeat + threshold))
+                {
+                    eventsToDelete.add(i.second->getEvent());
+                    break; // not adding it twice or more
+                }
+            }
+        }
+
+        if (!eventsToDelete.isEmpty())
+        {
+            if (!didCheckpoint)
+            {
+                didCheckpoint = true;
+                this->project.checkpoint();
+            }
+
+            sequence->removeGroup(eventsToDelete, true);
+        }
+    }
+
+    {
+        // insert new events
+        Array<AutomationEvent> newEvents;
+
+        const auto clipBeatOffset = activeClip.getBeat();
+
+        // if the shape is shorter that a beat,
+        // just insert one point at the end of the curve
+        if (fabs(simplifiedCurve.getLast().getEndX() - simplifiedCurve.getFirst().getStartX()) > 1.f)
+        {
+            for (const auto &line : simplifiedCurve)
+            {
+                newEvents.add(AutomationEvent(sequence,
+                    line.getStartX() - clipBeatOffset,
+                    getControllerValueByY(line.getStartY()))
+                        .withCurvature(simplifiedCurve.getLast().easing / 2.f + 0.5f));
+            }
+        }
+
+        // the last point
+        newEvents.add(AutomationEvent(sequence,
+            simplifiedCurve.getLast().getEndX() - clipBeatOffset,
+            getControllerValueByY(simplifiedCurve.getLast().getEndY()))
+                .withCurvature(simplifiedCurve.getLast().easing / 2.f + 0.5f));
+
+        if (!newEvents.isEmpty())
+        {
+            if (!didCheckpoint)
+            {
+                didCheckpoint = true;
+                this->project.checkpoint();
+            }
+
+            sequence->insertGroup(newEvents, true);
+        }
+    }
+}
+
+//===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
 
@@ -125,6 +432,12 @@ void AutomationEditor::resized()
         this->applyEventsBounds(map.second.get());
     }
 
+    if (this->handDrawingHelper != nullptr)
+    {
+        this->handDrawingHelper->setBounds(this->getLocalBounds());
+        this->handDrawingHelper->updateCurves();
+    }
+
     AUTO_EDITOR_BATCH_REPAINT_END
 }
 
@@ -135,7 +448,7 @@ void AutomationEditor::mouseDown(const MouseEvent &e)
         return;
     }
 
-    this->dragStartPoint = e.getPosition();
+    this->panningStart = e.getPosition();
 
     // roll panning hack
     if (this->roll->isViewportDragEvent(e))
@@ -144,13 +457,16 @@ void AutomationEditor::mouseDown(const MouseEvent &e)
         return;
     }
 
-    //if (e.mods.isLeftButtonDown())
-    //{
-    //    this->dragHelper = make<VelocityLevelDraggingHelper>(*this);
-    //    this->addAndMakeVisible(this->dragHelper.get());
-    //    this->dragHelper->setStartPosition(e.position);
-    //    this->dragHelper->setEndPosition(e.position);
-    //}
+    if (this->activeClip.hasValue() &&
+        !this->activeClip->getPattern()->getTrack()->isOnOffAutomationTrack())
+    {
+        this->handDrawingHelper = make<AutomationHandDrawingHelper>(*this);
+        this->addAndMakeVisible(this->handDrawingHelper.get());
+        this->handDrawingHelper->setBounds(this->getLocalBounds());
+        this->handDrawingHelper->setStartMousePosition(e.position);
+        this->handDrawingHelper->updateCurves();
+        this->handDrawingHelper->repaint();
+    }
 }
 
 void AutomationEditor::mouseDrag(const MouseEvent &e)
@@ -164,18 +480,28 @@ void AutomationEditor::mouseDrag(const MouseEvent &e)
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll->mouseDrag(e
-            .withNewPosition(Point<int>(e.getPosition().getX(), this->dragStartPoint.getY()))
+            .withNewPosition(Point<int>(e.getPosition().getX(), this->panningStart.getY()))
             .getEventRelativeTo(this->roll));
 
         return;
     }
 
-    // todo: hand-drawing custom shapes
+    if (this->handDrawingHelper != nullptr)
+    {
+        this->handDrawingHelper->addMousePosition(e.position,
+            float(this->roll->getViewport().getViewWidth()));
+        this->handDrawingHelper->updateCurves();
+        this->handDrawingHelper->repaint();
+    }
 }
 
 void AutomationEditor::mouseUp(const MouseEvent &e)
 {
-    // todo: hand-drawing custom shapes
+    if (this->handDrawingHelper != nullptr)
+    {
+        this->applyHandDrawnCurve();
+        this->handDrawingHelper = nullptr;
+    }
 
     if (this->hasMultiTouch(e))
     {
@@ -186,7 +512,7 @@ void AutomationEditor::mouseUp(const MouseEvent &e)
     {
         this->setMouseCursor(MouseCursor::NormalCursor);
         this->roll->mouseUp(e
-            .withNewPosition(Point<int>(e.getPosition().getX(), this->dragStartPoint.getY()))
+            .withNewPosition(Point<int>(e.getPosition().getX(), this->panningStart.getY()))
             .getEventRelativeTo(this->roll));
 
         return;
@@ -195,15 +521,8 @@ void AutomationEditor::mouseUp(const MouseEvent &e)
 
 void AutomationEditor::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
 {
-    //if ...
-    //{
-    //   todo: hand-drawing custom shapes
-    //}
-    //else
-    //{
     jassert(this->roll != nullptr);
     this->roll->mouseWheelMove(e.getEventRelativeTo(this->roll), wheel);
-    //}
 }
 
 //===----------------------------------------------------------------------===//
@@ -213,6 +532,12 @@ void AutomationEditor::mouseWheelMove(const MouseEvent &e, const MouseWheelDetai
 void AutomationEditor::switchToRoll(SafePointer<RollBase> roll)
 {
     this->roll = roll;
+}
+
+float AutomationEditor::getBeatByXPosition(float x) const noexcept
+{
+    jassert(this->getWidth() == this->roll->getWidth());
+    return this->roll->getBeatByXPosition(x);
 }
 
 void AutomationEditor::setEditableClip(Optional<Clip> clip)
@@ -333,21 +658,21 @@ void AutomationEditor::multiTouchContinueZooming(
 
 void AutomationEditor::multiTouchEndZooming(const MouseEvent &anchorEvent)
 {
-    this->dragStartPoint = anchorEvent.getPosition();
+    this->panningStart = anchorEvent.getPosition();
     this->roll->multiTouchEndZooming(anchorEvent.getEventRelativeTo(this->roll));
 }
 
 Point<float> AutomationEditor::getMultiTouchRelativeAnchor(const MouseEvent &event)
 {
     return this->roll->getMultiTouchRelativeAnchor(event
-        .withNewPosition(Point<int>(event.getPosition().getX(), this->dragStartPoint.getY()))
+        .withNewPosition(Point<int>(event.getPosition().getX(), this->panningStart.getY()))
         .getEventRelativeTo(this->roll));
 }
 
 Point<float> AutomationEditor::getMultiTouchAbsoluteAnchor(const MouseEvent &event)
 {
     return this->roll->getMultiTouchAbsoluteAnchor(event
-        .withNewPosition(Point<int>(event.getPosition().getX(), this->dragStartPoint.getY()))
+        .withNewPosition(Point<int>(event.getPosition().getX(), this->panningStart.getY()))
         .getEventRelativeTo(this->roll));
 }
 
@@ -596,6 +921,11 @@ void AutomationEditor::onAddClip(const Clip &clip)
 
 void AutomationEditor::onChangeClip(const Clip &clip, const Clip &newClip)
 {
+    if (this->activeClip == clip) // same id
+    {
+        this->activeClip = newClip; // new parameters
+    }
+
     if (this->patternMap.contains(clip))
     {
         AUTO_EDITOR_BATCH_REPAINT_START

@@ -66,6 +66,7 @@ public:
     void setEditableSelection(WeakReference<Lasso> selection) override;
     bool canEditSequence(WeakReference<MidiSequence> sequence) const override;
     Array<EventFilter> getAllEventFilters() const override;
+    float getBeatByXPosition(float x) const noexcept override;
 
     //===------------------------------------------------------------------===//
     // MultiTouchListener

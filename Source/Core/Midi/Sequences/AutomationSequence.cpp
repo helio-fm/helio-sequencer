@@ -186,7 +186,10 @@ bool AutomationSequence::removeGroup(Array<AutomationEvent> &group, bool undoabl
     }
     else
     {
-        jassert(this->midiEvents.size() > group.size()); // no empty automation tracks please
+        // hitting this when drawing shapes in AutiomationEditor is ok;
+        // otherwise, no empty automation tracks please:
+        jassert(this->midiEvents.size() > group.size());
+
         for (int i = 0; i < group.size(); ++i)
         {
             const AutomationEvent &autoEvent = group.getUnchecked(i);

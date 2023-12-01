@@ -29,6 +29,7 @@
 class RollBase;
 class ProjectNode;
 class MultiTouchController;
+class AutomationHandDrawingHelper;
 
 class AutomationEditor final :
     public EditorPanelBase,
@@ -51,16 +52,6 @@ public:
     float getBeatByPosition(int x, const Clip &clip) const override;
 
     //===------------------------------------------------------------------===//
-    // Component
-    //===------------------------------------------------------------------===//
-
-    void resized() override;
-    void mouseDown(const MouseEvent &e) override;
-    void mouseDrag(const MouseEvent &e) override;
-    void mouseUp(const MouseEvent &e) override;
-    void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &w) override;
-
-    //===------------------------------------------------------------------===//
     // EditorPanelBase
     //===------------------------------------------------------------------===//
 
@@ -70,6 +61,7 @@ public:
     void setEditableSelection(WeakReference<Lasso> selection) override;
     bool canEditSequence(WeakReference<MidiSequence> sequence) const override;
     Array<EventFilter> getAllEventFilters() const override;
+    float getBeatByXPosition(float x) const noexcept override;
 
     //===------------------------------------------------------------------===//
     // MultiTouchListener
@@ -107,6 +99,16 @@ public:
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,
         const ProjectMetadata *meta) override;
+    
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
+    void resized() override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
+    void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &w) override;
 
 private:
 
@@ -154,9 +156,15 @@ private:
 
 private:
 
+    UniquePointer<AutomationHandDrawingHelper> handDrawingHelper;
+
+    void applyHandDrawnCurve();
+
+private:
+
     UniquePointer<MultiTouchController> multiTouchController;
 
-    Point<int> dragStartPoint;
+    Point<int> panningStart;
 
     ComponentFader fader;
 
