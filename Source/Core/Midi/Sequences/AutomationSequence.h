@@ -45,6 +45,13 @@ public:
         Array<AutomationEvent> eventsAfter,
         bool undoable);
 
+    int indexOfSorted(const AutomationEvent *const event) const noexcept
+    {
+        const auto index = this->midiEvents.indexOfSorted(*event, event);
+        jassert(this->midiEvents[index] == event); // duplicate events?
+        return index;
+    }
+
     //===------------------------------------------------------------------===//
     // Import/export
     //===------------------------------------------------------------------===//

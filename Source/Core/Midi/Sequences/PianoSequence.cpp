@@ -325,7 +325,7 @@ void PianoSequence::deserialize(const SerializedData &data)
         this->usedEventIds.insert(parameters.getId());
     }
 
-    this->sort();
+    this->sort<Note>();
     this->updateBeatRange(false);
 }
 

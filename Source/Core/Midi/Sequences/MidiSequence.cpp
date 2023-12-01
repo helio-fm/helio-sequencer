@@ -44,14 +44,6 @@ MidiSequence::MidiSequence(MidiTrack &parentTrack,
     track(parentTrack),
     eventDispatcher(dispatcher) {}
 
-void MidiSequence::sort()
-{
-    if (this->midiEvents.size() > 0)
-    {
-        this->midiEvents.sort(*this->midiEvents.getFirst());
-    }
-}
-
 //===----------------------------------------------------------------------===//
 // Undoing
 //===----------------------------------------------------------------------===//

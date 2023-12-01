@@ -195,7 +195,7 @@ void KeySignaturesSequence::deserialize(const SerializedData &data)
         this->usedEventIds.insert(signature->getId());
     }
 
-    this->sort();
+    this->sort<KeySignatureEvent>();
     this->updateBeatRange(false);
 }
 

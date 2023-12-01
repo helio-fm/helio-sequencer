@@ -295,7 +295,7 @@ void TimeSignaturesSequence::deserialize(const SerializedData &data)
         this->usedEventIds.insert(signature->getId());
     }
 
-    this->sort();
+    this->sort<TimeSignatureEvent>();
     this->updateBeatRange(false);
 }
 

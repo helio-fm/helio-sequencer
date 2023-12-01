@@ -190,7 +190,7 @@ void AnnotationsSequence::deserialize(const SerializedData &data)
         this->usedEventIds.insert(annotation->getId());
     }
 
-    this->sort();
+    this->sort<AnnotationEvent>();
     this->updateBeatRange(false);
 }
 

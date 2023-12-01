@@ -77,6 +77,9 @@ int MidiEvent::compareElements(const MidiEvent *const first, const MidiEvent *co
 {
     if (first == second) { return 0; }
 
+    // notes and automation events should be sorted using their comparators:
+    jassert(!first->isTypeOf(Type::Note) && !first->isTypeOf(Type::Auto));
+
     const float diff = first->getBeat() - second->getBeat();
     const int diffResult = (diff > 0.f) - (diff < 0.f);
     if (diffResult != 0) { return diffResult; }

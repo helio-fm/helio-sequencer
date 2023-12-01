@@ -165,6 +165,7 @@ bool AutomationSequence::insertGroup(Array<AutomationEvent> &group, bool undoabl
         {
             const auto &eventParams = group.getUnchecked(i);
             auto *ownedEvent = new AutomationEvent(this, eventParams);
+            jassert(this->midiEvents.indexOfSorted(*ownedEvent, ownedEvent) == -1);
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
             this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         }
@@ -190,9 +191,10 @@ bool AutomationSequence::removeGroup(Array<AutomationEvent> &group, bool undoabl
         {
             const AutomationEvent &autoEvent = group.getUnchecked(i);
             const int index = this->midiEvents.indexOfSorted(autoEvent, &autoEvent);
+            jassert(index >= 0);
             if (index >= 0)
             {
-                const auto removedEvent = this->midiEvents[index];
+                auto *removedEvent = this->midiEvents[index];
                 this->eventDispatcher.dispatchRemoveEvent(*removedEvent);
                 this->midiEvents.remove(index, true);
             }
@@ -283,7 +285,7 @@ void AutomationSequence::deserialize(const SerializedData &data)
         this->usedEventIds.insert(event->getId());
     }
 
-    this->sort();
+    this->sort<AutomationEvent>();
     this->updateBeatRange(false);
 }
 

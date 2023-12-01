@@ -66,7 +66,7 @@ public:
     // Don't notify anybody to prevent notification hell.
     // Always call notifyLayerChanged() when you're done using it.
 
-    template<typename T>
+    template <typename T>
     void importMidiEvent(const MidiEvent &eventToImport)
     {
         const auto &event = static_cast<const T &>(eventToImport);
@@ -82,7 +82,7 @@ public:
         this->midiEvents.addSorted(comparator, new T(this, event));
     }
 
-    template<typename T>
+    template <typename T>
     void checkoutEvent(const SerializedData &parameters)
     {
         static T empty;
@@ -114,7 +114,12 @@ public:
     // OwnedArray wrapper
     //===------------------------------------------------------------------===//
 
-    void sort();
+    template <typename T>
+    void sort()
+    {
+        static T comparator;
+        this->midiEvents.sort(comparator);
+    }
 
     inline bool isEmpty() const noexcept
     { return this->midiEvents.isEmpty(); }
@@ -145,13 +150,6 @@ public:
 
     inline MidiEvent *getUnchecked(const int index) const noexcept
     { return this->midiEvents.getUnchecked(index); }
-
-    inline int indexOfSorted(const MidiEvent *const event) const noexcept
-    {
-        const auto index = this->midiEvents.indexOfSorted(*event, event);
-        jassert(this->midiEvents[index] == event);
-        return index;
-    }
 
     //===------------------------------------------------------------------===//
     // Helpers

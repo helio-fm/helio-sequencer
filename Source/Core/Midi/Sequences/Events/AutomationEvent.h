@@ -90,11 +90,8 @@ public:
 
     void applyChanges(const AutomationEvent &parameters) noexcept;
 
-    static inline int compareElements(const MidiEvent *const first,
-        const MidiEvent *const second) noexcept
-    {
-        return MidiEvent::compareElements(first, second);
-    }
+    static int compareElements(const AutomationEvent *const first,
+        const AutomationEvent *const second) noexcept;
 
     static inline int compareElements(const AutomationEvent &first,
         const AutomationEvent &second) noexcept
@@ -102,8 +99,15 @@ public:
         return AutomationEvent::compareElements(&first, &second);
     }
 
-    static int compareElements(const AutomationEvent *const first,
-        const AutomationEvent *const second) noexcept;
+    static inline int compareElements(const MidiEvent *const first,
+        const MidiEvent *const second) noexcept
+    {
+        jassert(dynamic_cast<const AutomationEvent *>(first));
+        jassert(dynamic_cast<const AutomationEvent *>(second));
+        return AutomationEvent::compareElements(
+            static_cast<const AutomationEvent *>(first),
+            static_cast<const AutomationEvent *>(second));
+    }
 
 protected:
 

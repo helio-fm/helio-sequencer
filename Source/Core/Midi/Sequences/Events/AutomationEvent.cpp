@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "AutomationEvent.h"
-#include "MidiSequence.h"
+#include "AutomationSequence.h"
 #include "Transport.h"
 #include "SerializationKeys.h"
 #include "MidiTrack.h"
@@ -78,7 +78,8 @@ void AutomationEvent::exportMessages(MidiMessageSequence &outSequence,
     outSequence.addEvent(cc);
 
     // add interpolated events, if needed
-    const int indexOfThis = this->getSequence()->indexOfSorted(this);
+    auto *sequence = static_cast<AutomationSequence *>(this->getSequence());
+    const int indexOfThis = sequence->indexOfSorted(this);
     const bool isPedalOrSwitchEvent = this->getSequence()->getTrack()->isOnOffAutomationTrack();
     if (!isPedalOrSwitchEvent && indexOfThis >= 0 && indexOfThis < (this->getSequence()->size() - 1))
     {

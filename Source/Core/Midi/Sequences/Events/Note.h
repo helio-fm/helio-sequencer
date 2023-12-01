@@ -82,17 +82,21 @@ public:
     
     void applyChanges(const Note &parameters) noexcept;
 
-    static inline int compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept
-    {
-        return MidiEvent::compareElements(first, second);
-    }
-
+    static int compareElements(const Note *const first, const Note *const second) noexcept;
+    
     static inline int compareElements(const Note &first, const Note &second) noexcept
     {
         return Note::compareElements(&first, &second);
     }
 
-    static int compareElements(const Note *const first, const Note *const second) noexcept;
+    static inline int compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept
+    {
+        jassert(dynamic_cast<const Note *>(first));
+        jassert(dynamic_cast<const Note *>(second));
+        return Note::compareElements(
+            static_cast<const Note *>(first),
+            static_cast<const Note *>(second));
+    }
 
 protected:
 
