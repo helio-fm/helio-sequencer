@@ -97,7 +97,7 @@ private:
     FlatHashMap<AutomationEvent, EventComponentBase *, MidiEventHash> eventsMap;
 
     AutomationCurveEventComponent *draggingEvent = nullptr;
-    bool addNewEventMode = false;
+    bool dragNewEventMode = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationCurveClipComponent)
 };

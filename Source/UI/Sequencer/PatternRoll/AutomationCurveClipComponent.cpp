@@ -25,6 +25,7 @@
 #include "PlayerThread.h"
 #include "PatternRoll.h"
 #include "MidiTrack.h"
+#include "TempoDialog.h"
 #include "Icons.h"
 
 AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectNode &project,
@@ -192,17 +193,30 @@ void AutomationCurveClipComponent::insertNewEventAt(const MouseEvent &e)
 {
     float draggingValue = 0;
     float draggingBeat = 0.f;
-    this->getBeatValueByPosition(
-        e.x - int(AutomationCurveClipComponent::eventComponentDiameter / 2),
-        e.y - int(AutomationCurveClipComponent::eventComponentDiameter / 2),
-        this->clip,
-        draggingValue, draggingBeat);
+    constexpr auto cursorOffset = 3;
+    this->getBeatValueByPosition(e.x + cursorOffset, e.y, this->clip, draggingValue, draggingBeat);
     
-    auto *autoSequence = static_cast<AutomationSequence *>(this->sequence.get());
-    this->addNewEventMode = true;
-    autoSequence->checkpoint();
-    AutomationEvent event(autoSequence, draggingBeat, draggingValue);
-    autoSequence->insert(event, true);
+    const auto shouldShowEditingDialog =
+        sequence->getTrack()->isTempoTrack() && e.mods.isAnyModifierKeyDown();
+    this->dragNewEventMode = !shouldShowEditingDialog;
+
+    auto *sequence = static_cast<AutomationSequence *>(this->sequence.get());
+    sequence->checkpoint();
+
+    const AutomationEvent event(sequence, draggingBeat, draggingValue);
+    sequence->insert(event, true);
+
+    if (shouldShowEditingDialog)
+    {
+        auto dialog = make<TempoDialog>(event.getControllerValueAsBPM());
+        dialog->onOk = [event](int newBpmValue)
+        {
+            auto *sequence = static_cast<AutomationSequence *>(event.getSequence());
+            sequence->change(event, event.withTempoBpm(newBpmValue), true);
+        };
+
+        App::showModalComponent(move(dialog));
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -297,11 +311,11 @@ void AutomationCurveClipComponent::onAddMidiEvent(const MidiEvent &event)
     }
 
     this->eventsMap[autoEvent] = component;
-                
-    if (this->addNewEventMode)
+
+    if (this->dragNewEventMode)
     {
         this->draggingEvent = component;
-        this->addNewEventMode = false;
+        this->dragNewEventMode = false;
     }
 
     this->roll.triggerBatchRepaintFor(this);

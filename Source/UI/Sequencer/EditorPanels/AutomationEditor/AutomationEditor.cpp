@@ -30,6 +30,7 @@
 #include "Lasso.h"
 #include "ColourIDs.h"
 #include "FineTuningValueIndicator.h"
+#include "TempoDialog.h"
 
 //===----------------------------------------------------------------------===//
 // Hand-drawing helper
@@ -323,7 +324,7 @@ constexpr float getControllerValueByY(float y)
     return 1.f - (y / float(Globals::UI::editorPanelHeight));
 }
 
-void AutomationEditor::applyHandDrawnCurve()
+void AutomationEditor::applyHandDrawnCurve(bool isAnyModifierKeyDown)
 {
     if (!this->activeClip.hasValue())
     {
@@ -396,7 +397,10 @@ void AutomationEditor::applyHandDrawnCurve()
 
         // if the shape is shorter that a beat,
         // just insert one point at the end of the curve
-        if (fabs(simplifiedCurve.getLast().getEndX() - simplifiedCurve.getFirst().getStartX()) > 1.f)
+        const bool isSingleEventInsertion =
+            fabs(simplifiedCurve.getLast().getEndX() - simplifiedCurve.getFirst().getStartX()) <= 1.f;
+
+        if (!isSingleEventInsertion)
         {
             for (const auto &line : simplifiedCurve)
             {
@@ -408,20 +412,32 @@ void AutomationEditor::applyHandDrawnCurve()
         }
 
         // the last point
-        newEvents.add(AutomationEvent(sequence,
+        const auto lastEvent = AutomationEvent(sequence,
             simplifiedCurve.getLast().getEndX() - clipBeatOffset,
             getControllerValueByY(simplifiedCurve.getLast().getEndY()))
-                .withCurvature(simplifiedCurve.getLast().easing / 2.f + 0.5f));
+                .withCurvature(simplifiedCurve.getLast().easing / 2.f + 0.5f);
 
-        if (!newEvents.isEmpty())
+        newEvents.add(lastEvent);
+
+        if (!didCheckpoint)
         {
-            if (!didCheckpoint)
-            {
-                didCheckpoint = true;
-                this->project.checkpoint();
-            }
+            didCheckpoint = true;
+            this->project.checkpoint();
+        }
 
-            sequence->insertGroup(newEvents, true);
+        sequence->insertGroup(newEvents, true);
+
+        if (sequence->getTrack()->isTempoTrack() &&
+            isSingleEventInsertion && isAnyModifierKeyDown)
+        {
+            auto dialog = make<TempoDialog>(lastEvent.getControllerValueAsBPM());
+            dialog->onOk = [lastEvent](int newBpmValue)
+            {
+                auto *sequence = static_cast<AutomationSequence *>(lastEvent.getSequence());
+                sequence->change(lastEvent, lastEvent.withTempoBpm(newBpmValue), true);
+            };
+
+            App::showModalComponent(move(dialog));
         }
     }
 }
@@ -502,7 +518,7 @@ void AutomationEditor::mouseUp(const MouseEvent &e)
 {
     if (this->handDrawingHelper != nullptr)
     {
-        this->applyHandDrawnCurve();
+        this->applyHandDrawnCurve(e.mods.isAnyModifierKeyDown());
         this->handDrawingHelper = nullptr;
     }
 

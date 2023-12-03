@@ -167,7 +167,7 @@ private:
 
     UniquePointer<AutomationHandDrawingHelper> handDrawingHelper;
 
-    void applyHandDrawnCurve();
+    void applyHandDrawnCurve(bool isAnyModifierKeyDown);
 
 private:
 
