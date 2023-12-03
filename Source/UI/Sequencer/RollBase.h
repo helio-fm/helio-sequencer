@@ -70,9 +70,9 @@ class RollBase :
     public MultiTouchListener,
     public ProjectListener,
     public LassoSource<SelectableComponent *>,
-    public Playhead::Listener, // for smooth scrolling to seek position
-    protected UserInterfaceFlags::Listener, // global UI options
-    protected ChangeListener, // listens to RollEditMode,
+    public Playhead::Listener,
+    protected UserInterfaceFlags::Listener,
+    protected RollEditMode::Listener,
     protected TransportListener, // for positioning the playhead component and auto-scrolling
     protected AsyncUpdater, // coalesce multiple transport events ^^ into a single async view change
     protected HighResolutionTimer, // for smooth scrolling to seek position,
@@ -303,8 +303,16 @@ protected:
     
     void broadcastRollMoved();
     void broadcastRollResized();
+
     
 protected:
+
+    //===------------------------------------------------------------------===//
+    // RollEditMode::Listener
+    //===------------------------------------------------------------------===//
+
+    void onChangeEditMode(const RollEditMode &mode) override;
+    void applyEditModeUpdates();
     
     //===------------------------------------------------------------------===//
     // Playhead::Listener
@@ -460,10 +468,5 @@ protected:
     UniquePointer<HeadlineContextMenuController> contextMenuController;
 
     Array<SafePointer<FloatBoundsComponent>> batchRepaintList;
-
-protected:
-    
-    void changeListenerCallback(ChangeBroadcaster *source) override;
-    void applyEditModeUpdates();
 
 };

@@ -148,7 +148,7 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
     this->project.addListener(this);
-    this->project.getEditMode().addChangeListener(this);
+    this->project.getEditMode().addListener(this);
     this->project.getTransport().addTransportListener(this);
     this->project.getTimeline()->getTimeSignaturesAggregator()->addListener(this);
 
@@ -179,7 +179,7 @@ RollBase::~RollBase()
 
     this->project.getTimeline()->getTimeSignaturesAggregator()->removeListener(this);
     this->project.getTransport().removeTransportListener(this);
-    this->project.getEditMode().removeChangeListener(this);
+    this->project.getEditMode().removeListener(this);
     this->project.removeListener(this);
 
     this->removeMouseListener(this->multiTouchController.get());
@@ -285,12 +285,12 @@ RollEditMode &RollBase::getEditMode() noexcept
 
 bool RollBase::isInSelectionMode() const
 {
-    return (this->project.getEditMode().isMode(RollEditMode::selectionMode));
+    return this->project.getEditMode().isMode(RollEditMode::selectionMode);
 }
 
 bool RollBase::isInDragMode() const
 {
-    return (this->project.getEditMode().isMode(RollEditMode::dragMode));
+    return this->project.getEditMode().isMode(RollEditMode::dragMode);
 }
 
 //===----------------------------------------------------------------------===//
@@ -1849,8 +1849,7 @@ bool RollBase::isViewportDragEvent(const MouseEvent &e) const
 {
     if (this->project.getEditMode().forbidsViewportDragging(e.mods)) { return false; }
     if (this->project.getEditMode().forcesViewportDragging(e.mods)) { return true; }
-    if (e.source.isTouch()) { return e.mods.isLeftButtonDown(); }
-    return (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown());
+    return e.source.isTouch() || e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown();
 }
 
 bool RollBase::isAddEvent(const MouseEvent &e) const
@@ -2041,10 +2040,10 @@ void RollBase::updateChildrenPositions()
 }
 
 //===----------------------------------------------------------------------===//
-// ChangeListener: edit mode changed
+// RollEditMode::Listener
 //===----------------------------------------------------------------------===//
 
-void RollBase::changeListenerCallback(ChangeBroadcaster *source)
+void RollBase::onChangeEditMode(const RollEditMode &mode)
 {
     if (this->lassoComponent->isDragging())
     {

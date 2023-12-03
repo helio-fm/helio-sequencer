@@ -76,14 +76,14 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) : project(pare
     MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
 
     this->project.getTransport().addTransportListener(this);
-    this->project.getEditMode().addChangeListener(this);
+    this->project.getEditMode().addListener(this);
     App::Config().getUiFlags()->addListener(this);
 }
 
 SequencerSidebarRight::~SequencerSidebarRight()
 {
     App::Config().getUiFlags()->removeListener(this);
-    this->project.getEditMode().removeChangeListener(this);
+    this->project.getEditMode().removeListener(this);
     this->project.getTransport().removeTransportListener(this);
 }
 
@@ -289,10 +289,10 @@ void SequencerSidebarRight::onStop()
 }
 
 //===----------------------------------------------------------------------===//
-// ChangeListener
+// RollEditMode::Listener
 //===----------------------------------------------------------------------===//
 
-void SequencerSidebarRight::changeListenerCallback(ChangeBroadcaster *source)
+void SequencerSidebarRight::onChangeEditMode(const RollEditMode &mode)
 {
     this->updateModeButtons();
 }

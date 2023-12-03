@@ -159,7 +159,7 @@ public:
     //===------------------------------------------------------------------===//
     
     void handleAsyncUpdate() override;
-    void changeListenerCallback(ChangeBroadcaster *source) override;
+    void onChangeEditMode(const RollEditMode &mode) override;
 
     //===------------------------------------------------------------------===//
     // Command Palette

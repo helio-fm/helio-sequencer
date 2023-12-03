@@ -245,10 +245,12 @@ AutomationEditor::AutomationEditor(ProjectNode &project, SafePointer<RollBase> r
     this->reloadTrackMap();
 
     this->project.addListener(this);
+    this->project.getEditMode().addListener(this);
 }
 
 AutomationEditor::~AutomationEditor()
 {
+    this->project.getEditMode().removeListener(this);
     this->project.removeListener(this);
     this->removeMouseListener(this->multiTouchController.get());
 }
@@ -455,14 +457,8 @@ void AutomationEditor::mouseDown(const MouseEvent &e)
 
     this->panningStart = e.getPosition();
 
-    // roll panning hack
-    if (this->roll->isViewportDragEvent(e))
-    {
-        this->roll->mouseDown(e.getEventRelativeTo(this->roll));
-        return;
-    }
-
-    if (this->activeClip.hasValue() &&
+    if (this->isDrawingEvent(e) &&
+        this->activeClip.hasValue() &&
         !this->activeClip->getPattern()->getTrack()->isOnOffAutomationTrack())
     {
         this->handDrawingHelper = make<AutomationHandDrawingHelper>(*this);
@@ -471,6 +467,10 @@ void AutomationEditor::mouseDown(const MouseEvent &e)
         this->handDrawingHelper->setStartMousePosition(e.position);
         this->handDrawingHelper->updateCurves();
         this->handDrawingHelper->repaint();
+    }
+    else if (this->isDraggingEvent(e))
+    {
+        this->roll->mouseDown(e.getEventRelativeTo(this->roll));
     }
 }
 
@@ -481,22 +481,20 @@ void AutomationEditor::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (this->roll->isViewportDragEvent(e))
-    {
-        this->setMouseCursor(MouseCursor::DraggingHandCursor);
-        this->roll->mouseDrag(e
-            .withNewPosition(Point<int>(e.getPosition().getX(), this->panningStart.getY()))
-            .getEventRelativeTo(this->roll));
-
-        return;
-    }
-
     if (this->handDrawingHelper != nullptr)
     {
         this->handDrawingHelper->addMousePosition(e.position,
             float(this->roll->getViewport().getViewWidth()));
         this->handDrawingHelper->updateCurves();
         this->handDrawingHelper->repaint();
+    }
+
+    if (this->isDraggingEvent(e))
+    {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
+        this->roll->mouseDrag(e
+            .withNewPosition(Point<int>(e.getPosition().getX(), this->panningStart.getY()))
+            .getEventRelativeTo(this->roll));
     }
 }
 
@@ -513,15 +511,14 @@ void AutomationEditor::mouseUp(const MouseEvent &e)
         return;
     }
 
-    if (this->roll->isViewportDragEvent(e))
+    if (this->isDraggingEvent(e))
     {
-        this->setMouseCursor(MouseCursor::NormalCursor);
         this->roll->mouseUp(e
             .withNewPosition(Point<int>(e.getPosition().getX(), this->panningStart.getY()))
             .getEventRelativeTo(this->roll));
-
-        return;
     }
+
+    this->setMouseCursor(this->getEditMode().getCursor());
 }
 
 void AutomationEditor::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
@@ -687,6 +684,57 @@ bool AutomationEditor::hasMultiTouch(const MouseEvent &e) const
 }
 
 //===----------------------------------------------------------------------===//
+// RollEditMode::Listener & edit mode helpers
+//===----------------------------------------------------------------------===//
+
+// for now, automation editor only supports three modes: dragging, drawing
+// and the default mode, i.e. no selection mode and no knife/merge tool;
+// this hack maps all existing edit modes to supported ones, so that
+// selection mode becomes the default mode and knife mode becomes drawing mode
+// (see the same logic in VelocityEditor)
+
+RollEditMode AutomationEditor::getSupportedEditMode(const RollEditMode &rollMode) const noexcept
+{
+    if (rollMode.isMode(RollEditMode::dragMode))
+    {
+        return RollEditMode::dragMode;
+    }
+    else if (rollMode.isMode(RollEditMode::drawMode) || rollMode.isMode(RollEditMode::knifeMode))
+    {
+        return RollEditMode::drawMode;
+    }
+
+    return RollEditMode::defaultMode;
+}
+
+RollEditMode AutomationEditor::getEditMode() const noexcept
+{
+    return this->getSupportedEditMode(this->project.getEditMode());
+}
+
+void AutomationEditor::onChangeEditMode(const RollEditMode &mode)
+{
+    this->setMouseCursor(this->getSupportedEditMode(mode).getCursor());
+    // todo fix children interaction someday as well
+    // (not straighforward because it shouldn't break setEditable stuff)
+}
+
+bool AutomationEditor::isDraggingEvent(const MouseEvent &e) const
+{
+    if (this->getEditMode().forbidsViewportDragging(e.mods)) { return false; }
+    if (this->getEditMode().forcesViewportDragging(e.mods)) { return true; }
+    return e.source.isTouch() || e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown();
+}
+
+bool AutomationEditor::isDrawingEvent(const MouseEvent &e) const
+{
+    if (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown()) { return false; }
+    if (this->getEditMode().forbidsAddingEvents(e.mods)) { return false; }
+    if (this->getEditMode().forcesAddingEvents(e.mods)) { return true; }
+    return false;
+}
+
+//===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
@@ -802,14 +850,6 @@ void AutomationEditor::onAddMidiEvent(const MidiEvent &event)
         }
 
         sequenceMap->eventsMap[autoEvent] = component;
-
-        /*
-        if (this->addNewEventMode)
-        {
-            this->draggingEvent = component;
-            this->addNewEventMode = false;
-        }
-        */
     }
 
     AUTO_EDITOR_BATCH_REPAINT_END
@@ -921,7 +961,7 @@ void AutomationEditor::onAddClip(const Clip &clip)
 
     AUTO_EDITOR_BATCH_REPAINT_END
 
-    this->listeners.call(&Listener::onUpdateEventFilters);
+    this->listeners.call(&EditorPanelBase::Listener::onUpdateEventFilters);
 }
 
 void AutomationEditor::onChangeClip(const Clip &clip, const Clip &newClip)
@@ -956,7 +996,7 @@ void AutomationEditor::onRemoveClip(const Clip &clip)
 
     AUTO_EDITOR_BATCH_REPAINT_END
 
-    this->listeners.call(&Listener::onUpdateEventFilters);
+    this->listeners.call(&EditorPanelBase::Listener::onUpdateEventFilters);
 }
 
 void AutomationEditor::onChangeTrackProperties(MidiTrack *const track)
@@ -978,14 +1018,14 @@ void AutomationEditor::onChangeTrackProperties(MidiTrack *const track)
     this->repaint();
 
     // track name might have changed
-    this->listeners.call(&Listener::onUpdateEventFilters);
+    this->listeners.call(&EditorPanelBase::Listener::onUpdateEventFilters);
 }
 
 void AutomationEditor::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     const ProjectMetadata *meta)
 {
     this->reloadTrackMap();
-    this->listeners.call(&Listener::onUpdateEventFilters);
+    this->listeners.call(&EditorPanelBase::Listener::onUpdateEventFilters);
 }
 
 void AutomationEditor::onAddTrack(MidiTrack *const track)
@@ -996,7 +1036,7 @@ void AutomationEditor::onAddTrack(MidiTrack *const track)
     this->loadTrack(track);
     AUTO_EDITOR_BATCH_REPAINT_END
 
-    this->listeners.call(&Listener::onUpdateEventFilters);
+    this->listeners.call(&EditorPanelBase::Listener::onUpdateEventFilters);
 }
 
 void AutomationEditor::onRemoveTrack(MidiTrack *const track)
@@ -1012,7 +1052,7 @@ void AutomationEditor::onRemoveTrack(MidiTrack *const track)
         }
     }
 
-    this->listeners.call(&Listener::onUpdateEventFilters);
+    this->listeners.call(&EditorPanelBase::Listener::onUpdateEventFilters);
 }
 
 void AutomationEditor::onChangeProjectBeatRange(float firstBeat, float lastBeat)

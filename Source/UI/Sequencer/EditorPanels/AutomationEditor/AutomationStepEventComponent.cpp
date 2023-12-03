@@ -149,7 +149,7 @@ void AutomationStepEventComponent::mouseDown(const MouseEvent &e)
 void AutomationStepEventComponent::mouseDrag(const MouseEvent &e)
 {
     jassert(this->isEditable);
-    if (e.mods.isLeftButtonDown() && this->isDragging)
+    if (this->isDragging)
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->dragger.dragComponent(this, e, nullptr);
@@ -167,12 +167,9 @@ void AutomationStepEventComponent::mouseUp(const MouseEvent &e)
     jassert(this->isEditable);
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 
-    if (e.mods.isLeftButtonDown())
+    if (this->isDragging)
     {
-        if (this->isDragging)
-        {
-            this->isDragging = false;
-        }
+        this->isDragging = false;
     }
 
     if (!this->anyChangeDone)

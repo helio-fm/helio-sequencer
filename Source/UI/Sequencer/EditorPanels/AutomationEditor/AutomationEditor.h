@@ -23,6 +23,7 @@
 #include "MultiTouchListener.h"
 #include "ComponentFader.h"
 #include "RollListener.h"
+#include "RollEditMode.h"
 #include "EditorPanelBase.h"
 #include "Lasso.h"
 
@@ -34,6 +35,7 @@ class AutomationHandDrawingHelper;
 class AutomationEditor final :
     public EditorPanelBase,
     public AutomationEditorBase,
+    public RollEditMode::Listener,
     public MultiTouchListener,
     public ProjectListener
 {
@@ -79,6 +81,12 @@ public:
     Point<float> getMultiTouchAbsoluteAnchor(const MouseEvent &e) override;
 
     bool hasMultiTouch(const MouseEvent &e) const;
+
+    //===------------------------------------------------------------------===//
+    // RollEditMode::Listener
+    //===------------------------------------------------------------------===//
+
+    void onChangeEditMode(const RollEditMode &mode) override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -160,6 +168,13 @@ private:
     UniquePointer<AutomationHandDrawingHelper> handDrawingHelper;
 
     void applyHandDrawnCurve();
+
+private:
+
+    RollEditMode getEditMode() const noexcept;
+    RollEditMode getSupportedEditMode(const RollEditMode &rollMode) const noexcept;
+    bool isDraggingEvent(const MouseEvent &e) const;
+    bool isDrawingEvent(const MouseEvent &e) const;
 
 private:
 

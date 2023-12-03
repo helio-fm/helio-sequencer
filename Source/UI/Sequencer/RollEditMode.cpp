@@ -19,6 +19,16 @@
 #include "RollEditMode.h"
 #include "Icons.h"
 
+void RollEditMode::addListener(Listener *listener)
+{
+    this->listeners.add(listener);
+}
+
+void RollEditMode::removeListener(Listener *listener)
+{
+    this->listeners.remove(listener);
+}
+
 bool RollEditMode::forbidsViewportDragging(const ModifierKeys &mods) const
 {
 #if PLATFORM_DESKTOP
@@ -152,7 +162,8 @@ void RollEditMode::unsetLastMode()
     Mode temp = this->mode;
     this->mode = this->previousMode;
     this->previousMode = temp;
-    this->sendChangeMessage();
+
+    this->listeners.call(&Listener::onChangeEditMode, *this);
 }
 
 void RollEditMode::setMode(Mode newMode, bool force)
@@ -164,7 +175,8 @@ void RollEditMode::setMode(Mode newMode, bool force)
 
     this->previousMode = this->mode;
     this->mode = newMode;
-    this->sendChangeMessage();
+
+    this->listeners.call(&Listener::onChangeEditMode, *this);
 }
 
 bool RollEditMode::isMode(Mode targetMode) const

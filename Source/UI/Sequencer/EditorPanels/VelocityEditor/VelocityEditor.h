@@ -23,6 +23,7 @@
 #include "MultiTouchListener.h"
 #include "ComponentFader.h"
 #include "RollListener.h"
+#include "RollEditMode.h"
 #include "EditorPanelBase.h"
 #include "FineTuningComponentDragger.h"
 
@@ -36,6 +37,7 @@ class MultiTouchController;
 class VelocityEditor final :
     public EditorPanelBase,
     public MultiTouchListener,
+    public RollEditMode::Listener,
     public ProjectListener,
     public AsyncUpdater // triggers batch repaints for children
 {
@@ -43,18 +45,6 @@ public:
 
     VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll);
     ~VelocityEditor() override;
-
-    float getBeatByXPosition(float x) const noexcept;
-
-    //===------------------------------------------------------------------===//
-    // Component
-    //===------------------------------------------------------------------===//
-
-    void resized() override;
-    void mouseDown(const MouseEvent &e) override;
-    void mouseDrag(const MouseEvent &e) override;
-    void mouseUp(const MouseEvent &e) override;
-    void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &w) override;
 
     //===------------------------------------------------------------------===//
     // EditorPanelBase
@@ -74,15 +64,21 @@ public:
 
     void multiTouchStartZooming() override;
     void multiTouchContinueZooming(
-            const Rectangle<float> &relativePosition,
-            const Rectangle<float> &relativePositionAnchor,
-            const Rectangle<float> &absolutePositionAnchor) override;
+        const Rectangle<float> &relativePosition,
+        const Rectangle<float> &relativePositionAnchor,
+        const Rectangle<float> &absolutePositionAnchor) override;
     void multiTouchEndZooming(const MouseEvent &anchorEvent) override;
 
     Point<float> getMultiTouchRelativeAnchor(const MouseEvent &e) override;
     Point<float> getMultiTouchAbsoluteAnchor(const MouseEvent &e) override;
 
     bool hasMultiTouch(const MouseEvent &e) const;
+
+    //===------------------------------------------------------------------===//
+    // RollEditMode::Listener
+    //===------------------------------------------------------------------===//
+
+    void onChangeEditMode(const RollEditMode &mode) override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -104,6 +100,16 @@ public:
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,
         const ProjectMetadata *meta) override;
+
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
+    void resized() override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
+    void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &w) override;
 
 private:
 
@@ -140,9 +146,9 @@ private:
     void endFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e);
 
 #if PLATFORM_DESKTOP
-    static constexpr auto fineTuningStep = 1.f / 32.f;
-#elif PLATFORM_MOBILE
     static constexpr auto fineTuningStep = 1.f / 8.f;
+#elif PLATFORM_MOBILE
+    static constexpr auto fineTuningStep = 1.f / 4.f;
 #endif
 
     friend class VelocityEditorNoteComponent;
@@ -162,9 +168,16 @@ private:
 
 private:
 
+    RollEditMode getEditMode() const noexcept;
+    RollEditMode getSupportedEditMode(const RollEditMode &rollMode) const noexcept;
+    bool isDraggingEvent(const MouseEvent &e) const;
+    bool isDrawingEvent(const MouseEvent &e) const;
+
+private:
+
     UniquePointer<MultiTouchController> multiTouchController;
 
-    Point<int> dragStartPoint;
+    Point<int> panningStart;
 
     ComponentFader fader;
 

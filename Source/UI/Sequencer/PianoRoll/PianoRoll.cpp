@@ -1863,10 +1863,10 @@ void PianoRoll::handleAsyncUpdate()
     RollBase::handleAsyncUpdate();
 }
 
-void PianoRoll::changeListenerCallback(ChangeBroadcaster *source)
+void PianoRoll::onChangeEditMode(const RollEditMode &mode)
 {
     this->endCuttingEventsIfNeeded();
-    RollBase::changeListenerCallback(source);
+    RollBase::onChangeEditMode(mode);
 }
 
 void PianoRoll::updateChildrenBounds()

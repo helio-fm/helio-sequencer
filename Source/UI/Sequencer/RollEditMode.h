@@ -17,9 +17,7 @@
 
 #pragma once
 
-// belongs to ProjectTreeItem
-
-class RollEditMode final : public ChangeBroadcaster
+class RollEditMode final
 {
 public:
 
@@ -35,6 +33,31 @@ public:
     };
 
     RollEditMode() = default;
+    RollEditMode(Mode mode) : mode(mode) {}
+    RollEditMode(const RollEditMode &other) :
+        mode(other.mode),
+        previousMode(other.previousMode) {}
+
+    //===------------------------------------------------------------------===//
+    // Listeners
+    //===------------------------------------------------------------------===//
+
+    class Listener
+    {
+    public:
+
+        Listener() = default;
+        virtual ~Listener() = default;
+
+        virtual void onChangeEditMode(const RollEditMode &mode) = 0;
+    };
+
+    void addListener(Listener *listener);
+    void removeListener(Listener *listener);
+
+    //===------------------------------------------------------------------===//
+    // Action checks
+    //===------------------------------------------------------------------===//
 
     bool forbidsViewportDragging(const ModifierKeys &mods) const;
     bool forcesViewportDragging(const ModifierKeys &mods) const;
@@ -65,6 +88,8 @@ private:
 
     Mode mode = defaultMode;
     Mode previousMode = defaultMode;
+
+    ListenerList<Listener> listeners;
 
     JUCE_LEAK_DETECTOR(RollEditMode)
 };

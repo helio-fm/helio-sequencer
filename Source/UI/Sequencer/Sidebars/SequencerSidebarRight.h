@@ -27,13 +27,14 @@ class TransportControlComponent;
 #include "Config.h"
 #include "UserInterfaceFlags.h"
 #include "TransportListener.h"
+#include "RollEditMode.h"
 #include "MenuPanel.h"
 
 class SequencerSidebarRight final : public Component,
-                                    protected TransportListener,
-                                    protected ListBoxModel,
-                                    protected ChangeListener,
-                                    protected UserInterfaceFlags::Listener
+    private TransportListener,
+    private ListBoxModel,
+    private RollEditMode::Listener,
+    private UserInterfaceFlags::Listener
 {
 public:
 
@@ -77,10 +78,10 @@ private:
     void paintListBoxItem(int, Graphics &, int, int, bool) override {}
 
     //===------------------------------------------------------------------===//
-    // ChangeListener
+    // RollEditMode::Listener
     //===------------------------------------------------------------------===//
 
-    void changeListenerCallback(ChangeBroadcaster *source) override;
+    void onChangeEditMode(const RollEditMode &mode) override;
 
     //===------------------------------------------------------------------===//
     // UserInterfaceFlags::Listener

@@ -30,12 +30,6 @@
 #include "NoteComponent.h"
 #include "FineTuningValueIndicator.h"
 
-#define VELOCITY_MAP_BATCH_REPAINT_START \
-    if (this->isEnabled()) { this->setVisible(false); }
-
-#define VELOCITY_MAP_BATCH_REPAINT_END \
-    if (this->isEnabled()) { this->setVisible(true); }
-
 //===----------------------------------------------------------------------===//
 // Single note velocity component
 //===----------------------------------------------------------------------===//
@@ -194,14 +188,14 @@ private:
 };
 
 //===----------------------------------------------------------------------===//
-// Dragging helper
+// Hand-drawing helper
 //===----------------------------------------------------------------------===//
 
 class VelocityHandDrawingHelper final : public Component
 {
 public:
 
-    VelocityHandDrawingHelper(VelocityEditor &map) : map(map)
+    VelocityHandDrawingHelper(VelocityEditor &editor) : editor(editor)
     {
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
@@ -209,7 +203,7 @@ public:
 
     const Array<Line<float>> &getCurve() const noexcept
     {
-        return this->curveInBeatVelocity;
+        return this->curveInBeats;
     }
 
     void paint(Graphics &g) override
@@ -222,7 +216,6 @@ public:
     {
         this->rawPositions.clearQuick();
         this->simplifiedPositions.clearQuick();
-        this->lastSimplifiedRawPointIndex = 0;
 
         const auto newPosition = mousePos.toDouble() / this->getSize();
 
@@ -247,23 +240,12 @@ public:
             this->rawPositions.add(newPosition);
         }
 
-        // "lazy" reduction: update the simplified curve only when raw positions are piling up
-        constexpr auto lazyReductionThreshold = 3;
-        if (this->rawPositions.size() - this->lastSimplifiedRawPointIndex > lazyReductionThreshold)
-        {
-            // the epsilon is picked to cut ~50% of all points at any zoom level,
-            // which is a small reduction so that the curve shape barely changes;
-            // the point of doing it is that it filters out the noise nicely:
-            const auto epsilon  = jmax(0.000001f, viewWidth / float(mySize.getX()) * 0.001f);
-            this->simplifiedPositions =
-                PointReduction<double>::simplify(this->rawPositions, epsilon);
-
-            //DBG("Epsilon " + String(epsilon) +
-            //    " reduced " + String(this->rawPositions.size()) +
-            //    " points to " + String(this->simplifiedPositions.size()));
-
-            this->lastSimplifiedRawPointIndex = this->rawPositions.size() - 1;
-        }
+        // the epsilon is picked to cut ~50% of all points at any zoom level,
+        // which is a small reduction so that the curve shape barely changes;
+        // the point of doing it is that it filters out the noise nicely:
+        const auto epsilon  = jmax(0.000001f, viewWidth / float(mySize.getX()) * 0.001f);
+        this->simplifiedPositions =
+            PointReduction<double>::simplify(this->rawPositions, epsilon);
         
         if (this->simplifiedPositions.size() >= 2)
         {
@@ -277,7 +259,7 @@ public:
 
         const auto mySize = this->getSize();
 
-        this->curveInBeatVelocity.clearQuick();
+        this->curveInBeats.clearQuick();
         this->curveInPixels.clear();
 
         auto previousPoint = (this->simplifiedPositions.getFirst() * mySize).toFloat();
@@ -288,9 +270,10 @@ public:
             const auto nextPoint = (this->simplifiedPositions.getUnchecked(i) * mySize).toFloat();
             this->curveInPixels.lineTo(nextPoint);
 
-            this->curveInBeatVelocity.add({
-                {this->map.getBeatByXPosition(previousPoint.x), previousPoint.y},
-                {this->map.getBeatByXPosition(nextPoint.x), nextPoint.y}});
+            this->curveInBeats.add({
+                { this->editor.getBeatByXPosition(previousPoint.x), previousPoint.y },
+                { this->editor.getBeatByXPosition(nextPoint.x), nextPoint.y }
+            });
 
             previousPoint = nextPoint;
         }
@@ -303,14 +286,13 @@ public:
 
 private:
 
-    VelocityEditor &map;
+    VelocityEditor &editor;
 
     Array<Point<double>> rawPositions;
     Array<Point<double>> simplifiedPositions; // both in absolute values, 0..1
-    int lastSimplifiedRawPointIndex = 0;
 
     Path curveInPixels; // for painting
-    Array<Line<float>> curveInBeatVelocity; // for convenient intersection checks
+    Array<Line<float>> curveInBeats; // for convenient intersection checks
 
     const Colour colour = findDefaultColour(Label::textColourId);
 
@@ -323,8 +305,14 @@ private:
 };
 
 //===----------------------------------------------------------------------===//
-// The panel itself
+// VelocityEditor
 //===----------------------------------------------------------------------===//
+
+#define VELOCITY_MAP_BATCH_REPAINT_START \
+    if (this->isEnabled()) { this->setVisible(false); }
+
+#define VELOCITY_MAP_BATCH_REPAINT_END \
+    if (this->isEnabled()) { this->setVisible(true); }
 
 VelocityEditor::VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll) :
     project(project),
@@ -344,18 +332,14 @@ VelocityEditor::VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll)
     this->reloadTrackMap();
 
     this->project.addListener(this);
+    this->project.getEditMode().addListener(this);
 }
 
 VelocityEditor::~VelocityEditor()
 {
+    this->project.getEditMode().removeListener(this);
     this->project.removeListener(this);
     this->removeMouseListener(this->multiTouchController.get());
-}
-
-float VelocityEditor::getBeatByXPosition(float x) const noexcept
-{
-    jassert(this->getWidth() == this->roll->getWidth());
-    return this->roll->getBeatByXPosition(x);
 }
 
 //===----------------------------------------------------------------------===//
@@ -392,38 +376,28 @@ void VelocityEditor::mouseDown(const MouseEvent &e)
         return;
     }
 
-    this->dragStartPoint = e.getPosition();
+    this->panningStart = e.getPosition();
 
-    // roll panning hack
-    if (this->roll->isViewportDragEvent(e))
+    if (this->isDrawingEvent(e))
+    {
+        this->volumeBlendingIndicator->toFront(false);
+        this->updateVolumeBlendingIndicator(e.getPosition());
+
+        this->handDrawingHelper = make<VelocityHandDrawingHelper>(*this);
+        this->addAndMakeVisible(this->handDrawingHelper.get());
+        this->handDrawingHelper->setBounds(this->getLocalBounds());
+        this->handDrawingHelper->setStartMousePosition(e.position);
+    }
+    else  if (this->isDraggingEvent(e))
     {
         this->roll->mouseDown(e.getEventRelativeTo(this->roll));
-        return;
     }
-
-    this->volumeBlendingIndicator->toFront(false);
-    this->updateVolumeBlendingIndicator(e.getPosition());
-
-    this->handDrawingHelper = make<VelocityHandDrawingHelper>(*this);
-    this->addAndMakeVisible(this->handDrawingHelper.get());
-    this->handDrawingHelper->setBounds(this->getLocalBounds());
-    this->handDrawingHelper->setStartMousePosition(e.position);
 }
 
 void VelocityEditor::mouseDrag(const MouseEvent &e)
 {
     if (this->hasMultiTouch(e))
     {
-        return;
-    }
-
-    if (this->roll->isViewportDragEvent(e))
-    {
-        this->setMouseCursor(MouseCursor::DraggingHandCursor);
-        this->roll->mouseDrag(e
-            .withNewPosition(Point<int>(e.getPosition().getX(), this->dragStartPoint.getY()))
-            .getEventRelativeTo(this->roll));
-
         return;
     }
 
@@ -435,6 +409,14 @@ void VelocityEditor::mouseDrag(const MouseEvent &e)
         this->handDrawingHelper->updateCurves();
         this->handDrawingHelper->repaint();
         this->applyGroupVolumeChanges();
+    }
+
+    if (this->isDraggingEvent(e))
+    {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
+        this->roll->mouseDrag(e
+            .withNewPosition(Point<int>(e.getPosition().getX(), this->panningStart.getY()))
+            .getEventRelativeTo(this->roll));
     }
 }
 
@@ -455,15 +437,14 @@ void VelocityEditor::mouseUp(const MouseEvent &e)
         return;
     }
 
-    if (this->roll->isViewportDragEvent(e))
+    if (this->isDraggingEvent(e))
     {
-        this->setMouseCursor(MouseCursor::NormalCursor);
         this->roll->mouseUp(e
-            .withNewPosition(Point<int>(e.getPosition().getX(), this->dragStartPoint.getY()))
+            .withNewPosition(Point<int>(e.getPosition().getX(), this->panningStart.getY()))
             .getEventRelativeTo(this->roll));
-
-        return;
     }
+
+    this->setMouseCursor(this->getEditMode().getCursor());
 }
 
 void VelocityEditor::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
@@ -490,6 +471,12 @@ void VelocityEditor::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails
 void VelocityEditor::switchToRoll(SafePointer<RollBase> roll)
 {
     this->roll = roll;
+}
+
+float VelocityEditor::getBeatByXPosition(float x) const noexcept
+{
+    jassert(this->getWidth() == this->roll->getWidth());
+    return this->roll->getBeatByXPosition(x);
 }
 
 void VelocityEditor::setEditableClip(Optional<Clip> clip)
@@ -609,27 +596,78 @@ void VelocityEditor::multiTouchContinueZooming(
 
 void VelocityEditor::multiTouchEndZooming(const MouseEvent &anchorEvent)
 {
-    this->dragStartPoint = anchorEvent.getPosition();
+    this->panningStart = anchorEvent.getPosition();
     this->roll->multiTouchEndZooming(anchorEvent.getEventRelativeTo(this->roll));
 }
 
 Point<float> VelocityEditor::getMultiTouchRelativeAnchor(const MouseEvent &event)
 {
     return this->roll->getMultiTouchRelativeAnchor(event
-        .withNewPosition(Point<int>(event.getPosition().getX(), this->dragStartPoint.getY()))
+        .withNewPosition(Point<int>(event.getPosition().getX(), this->panningStart.getY()))
         .getEventRelativeTo(this->roll));
 }
 
 Point<float> VelocityEditor::getMultiTouchAbsoluteAnchor(const MouseEvent &event)
 {
     return this->roll->getMultiTouchAbsoluteAnchor(event
-        .withNewPosition(Point<int>(event.getPosition().getX(), this->dragStartPoint.getY()))
+        .withNewPosition(Point<int>(event.getPosition().getX(), this->panningStart.getY()))
         .getEventRelativeTo(this->roll));
 }
 
 bool VelocityEditor::hasMultiTouch(const MouseEvent &e) const
 {
     return this->roll->hasMultiTouch(e) || this->multiTouchController->hasMultiTouch(e);
+}
+
+//===----------------------------------------------------------------------===//
+// RollEditMode::Listener & edit mode helpers
+//===----------------------------------------------------------------------===//
+
+// for now, velocity editor only supports three modes: dragging, drawing
+// and the default mode, i.e. no selection mode and no knife/merge tool;
+// this hack maps all existing edit modes to supported ones, so that
+// selection mode becomes the default mode and knife mode becomes drawing mode
+// (see the same logic in AutomationEditor)
+
+RollEditMode VelocityEditor::getSupportedEditMode(const RollEditMode &rollMode) const noexcept
+{
+    if (rollMode.isMode(RollEditMode::dragMode))
+    {
+        return RollEditMode::dragMode;
+    }
+    else if (rollMode.isMode(RollEditMode::drawMode) || rollMode.isMode(RollEditMode::knifeMode))
+    {
+        return RollEditMode::drawMode;
+    }
+
+    return RollEditMode::defaultMode;
+}
+
+RollEditMode VelocityEditor::getEditMode() const noexcept
+{
+    return this->getSupportedEditMode(this->project.getEditMode());
+}
+
+void VelocityEditor::onChangeEditMode(const RollEditMode &mode)
+{
+    this->setMouseCursor(this->getSupportedEditMode(mode).getCursor());
+    // todo fix children interaction someday as well
+    // (not straighforward because it shouldn't break setEditable stuff)
+}
+
+bool VelocityEditor::isDraggingEvent(const MouseEvent &e) const
+{
+    if (this->getEditMode().forbidsViewportDragging(e.mods)) { return false; }
+    if (this->getEditMode().forcesViewportDragging(e.mods)) { return true; }
+    return e.source.isTouch() || e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown();
+}
+
+bool VelocityEditor::isDrawingEvent(const MouseEvent &e) const
+{
+    if (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown()) { return false; }
+    if (this->getEditMode().forbidsAddingEvents(e.mods)) { return false; }
+    if (this->getEditMode().forcesAddingEvents(e.mods)) { return true; }
+    return false;
 }
 
 //===----------------------------------------------------------------------===//
@@ -755,6 +793,11 @@ void VelocityEditor::onAddClip(const Clip &clip)
 
 void VelocityEditor::onChangeClip(const Clip &clip, const Clip &newClip)
 {
+    if (this->activeClip == clip) // same id
+    {
+        this->activeClip = newClip; // new parameters
+    }
+
     if (this->patternMap.contains(clip))
     {
         // Set new key for existing sequence map
