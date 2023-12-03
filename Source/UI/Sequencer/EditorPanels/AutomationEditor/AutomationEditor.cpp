@@ -59,7 +59,7 @@ public:
     {
         LineWithEasing() = default;
         LineWithEasing(Point<T> startPoint, Point<T> endPoint, float easing) noexcept :
-            Line(startPoint, endPoint),
+            Line<T>(startPoint, endPoint),
             easing(easing) {}
 
         float easing = 0.f;
