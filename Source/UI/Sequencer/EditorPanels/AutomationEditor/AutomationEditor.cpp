@@ -307,6 +307,11 @@ Rectangle<float> AutomationEditor::getOnOffEventBounds(float beat,
     return { x - w + AutomationStepEventComponent::pointOffset, 0.f, w, float(this->getHeight()) };
 }
 
+bool AutomationEditor::hasEditMode(RollEditMode::Mode mode) const noexcept
+{
+    return this->getEditMode().isMode(mode);
+}
+
 //===----------------------------------------------------------------------===//
 // Hand-drawing shapes
 //===----------------------------------------------------------------------===//

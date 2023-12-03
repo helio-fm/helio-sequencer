@@ -20,6 +20,7 @@
 #include "Clip.h"
 #include "AutomationEvent.h"
 #include "FloatBoundsComponent.h"
+#include "RollEditMode.h"
 
 // Inherited by clip components in the pattern roll
 // and by the automation editor in the bottom panel:
@@ -35,6 +36,8 @@ public:
     // return beat relative to sequence so it can be used in sequence->change(...)
     virtual float getBeatByPosition(int x, const Clip &clip) const = 0;
     virtual void getBeatValueByPosition(int x, int y, const Clip &clip, float &outValue, float &outBeat) const = 0;
+
+    virtual bool hasEditMode(RollEditMode::Mode mode) const noexcept = 0;
 
     // All common stuff for automation event components:
     // first, they maintain connector components between them,

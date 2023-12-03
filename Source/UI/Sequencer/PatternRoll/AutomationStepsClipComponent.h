@@ -48,6 +48,7 @@ public:
     Rectangle<float> getEventBounds(const AutomationEvent &event, const Clip &clip) const override;
     void getBeatValueByPosition(int x, int y, const Clip &clip, float &value, float &beat) const override;
     float getBeatByPosition(int x, const Clip &clip) const override;
+    bool hasEditMode(RollEditMode::Mode mode) const noexcept override;
 
     //===------------------------------------------------------------------===//
     // Component

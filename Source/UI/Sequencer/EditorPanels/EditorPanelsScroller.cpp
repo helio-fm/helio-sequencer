@@ -35,7 +35,7 @@ EditorPanelsScroller::EditorPanelsScroller(ProjectNode &project,
     this->setPaintingIsUnclipped(false);
     this->setInterceptsMouseClicks(false, true);
 
-    this->editorPanelsSwitcher->onChangeSelection = [this](int panelId,
+    this->editorPanelsSwitcher->onClick = [this](int panelId,
         const EditorPanelBase::EventFilter &filter)
     {
         if (this->selectedEditorPanelIndex == panelId &&
@@ -54,6 +54,15 @@ EditorPanelsScroller::EditorPanelsScroller(ProjectNode &project,
         }
 
         this->editorPanelsSwitcher->updateSelection(panelId, filter);
+    };
+
+    this->editorPanelsSwitcher->onWheelMove = [this](const MouseEvent &e,
+        const MouseWheelDetails &wheel)
+    {
+        if (this->roll != nullptr)
+        {
+            this->roll->mouseWheelMove(e.getEventRelativeTo(this->roll), wheel);
+        }
     };
 
     this->project.addListener(this);
@@ -246,15 +255,19 @@ void EditorPanelsScroller::onChangeClip(const Clip &clip, const Clip &newClip)
 // Only called when the piano roll is switched to another clip;
 void EditorPanelsScroller::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
 {
-    if (this->activeClip == clip)
-    {
-        return;
-    }
-
     this->activeClip = clip;
+
+    for (auto *editor : this->editorPanels)
+    {
+        if (editor->canEditSequence(clip.getPattern()->getTrack()->getSequence()))
+        {
+            editor->setEditableClip(clip);
+        }
+    }
 
     if (this->editorPanelSelectionMode == EditorPanelSelectionMode::Automatic)
     {
+        jassertfalse; // piano roll is intended to use manual switching mode
         auto *editor = this->showEditorPanelForClip(clip);
         editor->setEditableClip(clip);
     }
@@ -291,8 +304,15 @@ void EditorPanelsScroller::changeListenerCallback(ChangeBroadcaster *source)
             }
             else
             {
+                jassertfalse; // pattern roll is intended to use automatic switching mode
                 auto *editor = this->showEditorPanel(this->selectedEditorPanelIndex);
                 editor->setEditableClip(cc->getClip(), this->selectedEventFilter);
+            }
+
+            // reset event selection, if any
+            for (auto *editor : this->editorPanels)
+            {
+                editor->setEditableSelection({});
             }
         }
         else

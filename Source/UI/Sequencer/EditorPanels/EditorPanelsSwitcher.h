@@ -30,8 +30,8 @@ public:
         this->setInterceptsMouseClicks(false, true);
     }
 
-    Function<void(int panelId,
-        const EditorPanelBase::EventFilter &filter)> onChangeSelection;
+    Function<void(int panelId, const EditorPanelBase::EventFilter &filter)> onClick;
+    Function<void(const MouseEvent &e, const MouseWheelDetails &wheel)> onWheelMove;
 
     struct Filters final
     {
@@ -77,6 +77,7 @@ public:
         }
 
         Function<void(int panelId, const EditorPanelBase::EventFilter &filter)> onClick;
+        Function<void(const MouseEvent &e, const MouseWheelDetails &wheel)> onWheelMove;
 
         int getEditorPanelId() const noexcept
         {
@@ -136,6 +137,14 @@ public:
             if (this->onClick)
             {
                 this->onClick(this->panelId, this->filter);
+            }
+        }
+        
+        void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel) override
+        {
+            if (this->onWheelMove)
+            {
+                this->onWheelMove(e, wheel);
             }
         }
 
@@ -229,7 +238,8 @@ public:
                 auto modeComponent = make<ModeComponent>(editMode.editorPanelIndex, filter);
                 this->addAndMakeVisible(modeComponent.get());
                 modeComponent->toBack();
-                modeComponent->onClick = this->onChangeSelection;
+                modeComponent->onClick = this->onClick;
+                modeComponent->onWheelMove = this->onWheelMove;
                 this->modeComponents.add(modeComponent.release());
             }
         }

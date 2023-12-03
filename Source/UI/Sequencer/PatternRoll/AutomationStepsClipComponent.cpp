@@ -88,6 +88,11 @@ Rectangle<float> AutomationStepsClipComponent::getEventBounds(float beat,
     return { x - w + AutomationStepEventComponent::pointOffset, 0.f, w, float(this->getHeight()) };
 }
 
+bool AutomationStepsClipComponent::hasEditMode(RollEditMode::Mode mode) const noexcept
+{
+    return this->project.getEditMode().isMode(mode);
+}
+
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//

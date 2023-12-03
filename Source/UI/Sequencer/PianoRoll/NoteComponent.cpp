@@ -542,6 +542,9 @@ void NoteComponent::mouseUp(const MouseEvent &e)
         return; // happens on mobile after a long-tap switch-to-track
     }
 
+    this->getRoll().hideAllGhostNotes();
+
+    // deleting the note on desktop platforms
     if (e.mods.isRightButtonDown() &&
         (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
          this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
@@ -551,7 +554,16 @@ void NoteComponent::mouseUp(const MouseEvent &e)
         return;
     }
     
-    this->getRoll().hideAllGhostNotes();
+    // deleting the note on mobile platforms is done by
+    // tapping on the note in the pen mode without editing it
+    if (!this->firstChangeDone && e.source.isTouch() &&
+        this->roll.getEditMode().isMode(RollEditMode::drawMode))
+    {
+        auto *sequence = static_cast<PianoSequence *>(this->note.getSequence());
+        sequence->checkpoint();
+        sequence->remove(this->note, true);
+        return;
+    }
 
     const bool shouldSendMidi = true;
 

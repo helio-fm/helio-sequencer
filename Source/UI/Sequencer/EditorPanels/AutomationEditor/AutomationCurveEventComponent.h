@@ -42,6 +42,7 @@ public:
     }
 
     bool isInEditMode() const;
+    MouseCursor startEditingNewEvent(const MouseEvent &e);
 
     void startDragging();
     AutomationEvent continueDragging(const float deltaBeat, const float deltaValue);
@@ -127,6 +128,8 @@ private:
 
     Point<int> clickOffset;
     bool isDragging = false;
+    bool anyChangeDone = false;
+
     bool isHighlighted = false;
     bool isEditable = true;
 

@@ -523,7 +523,11 @@ void VelocityEditor::setEditableClip(const Clip &selectedClip, const EventFilter
 
 void VelocityEditor::setEditableSelection(WeakReference<Lasso> selection)
 {
-    jassert(this->activeClip.hasValue());
+    if (!this->activeClip.hasValue())
+    {
+        return;
+    }
+
     const auto foundActiveMap = this->patternMap.find(*this->activeClip);
     if (foundActiveMap == this->patternMap.end())
     {
@@ -535,7 +539,7 @@ void VelocityEditor::setEditableSelection(WeakReference<Lasso> selection)
 
     VELOCITY_MAP_BATCH_REPAINT_START
 
-    if (selection->getNumSelected() == 0)
+    if (selection == nullptr || selection->getNumSelected() == 0)
     {
         // no selection: the entire clip is editable
         for (const auto &it : *activeMap)
@@ -562,7 +566,7 @@ void VelocityEditor::setEditableSelection(WeakReference<Lasso> selection)
 #if DEBUG
                 else
                 {
-                    jassertfalse;
+                    jassertfalse; // wrong activeClip?
                 }
 #endif
             }

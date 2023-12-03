@@ -86,6 +86,11 @@ Rectangle<float> AutomationCurveClipComponent::getEventBounds(float beat,
     return { x - (diameter / 2.f), y - (diameter / 2.f), diameter, diameter };
 }
 
+bool AutomationCurveClipComponent::hasEditMode(RollEditMode::Mode mode) const noexcept
+{
+    return this->project.getEditMode().isMode(mode);
+}
+
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -120,7 +125,7 @@ void AutomationCurveClipComponent::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (this->draggingEvent)
+    if (this->draggingEvent != nullptr)
     {
         if (this->draggingEvent->isInEditMode())
         {
@@ -128,8 +133,9 @@ void AutomationCurveClipComponent::mouseDrag(const MouseEvent &e)
         }
         else
         {
-            this->draggingEvent->mouseDown(e.getEventRelativeTo(this->draggingEvent));
-            this->setMouseCursor(MouseCursor::DraggingHandCursor);
+            const auto relativeEvent = e.getEventRelativeTo(this->draggingEvent);
+            const auto cursor = this->draggingEvent->startEditingNewEvent(relativeEvent);
+            this->setMouseCursor(cursor);
         }
     }
 }
@@ -144,8 +150,12 @@ void AutomationCurveClipComponent::mouseUp(const MouseEvent &e)
 
     if (this->draggingEvent != nullptr)
     {
-        this->draggingEvent->mouseUp(e.getEventRelativeTo(this->draggingEvent));
-        this->setMouseCursor(Icons::getCopyingCursor());
+        if (this->draggingEvent->isInEditMode())
+        {
+            this->draggingEvent->mouseUp(e.getEventRelativeTo(this->draggingEvent));
+            this->setMouseCursor(Icons::getCopyingCursor());
+        }
+
         this->draggingEvent = nullptr;
     }
 }

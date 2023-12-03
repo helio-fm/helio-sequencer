@@ -153,12 +153,11 @@ void SequencerSidebarRight::recreateMenu()
     this->menu.add(MenuItem::item(Icons::cutterTool, CommandIDs::EditModeKnife)->
         toggledIf(scissorsMode)->withTooltip(TRANS(I18n::Tooltips::editModeKnife)));
 
-    // Drag tool is useless on mobile platforms
-#if PLATFORM_DESKTOP
-    const bool dragMode = editMode.isMode(RollEditMode::dragMode);
-    this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::EditModePan)->
-        toggledIf(dragMode)->withTooltip(TRANS(I18n::Tooltips::editModeDrag)));
-#endif
+    // Dragging mode is not displayed (kinda useless),
+    // but holding space will temporarily switch to it
+    //const bool dragMode = editMode.isMode(RollEditMode::dragMode);
+    //this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::EditModePan)->
+    //    toggledIf(dragMode)->withTooltip(TRANS(I18n::Tooltips::editModeDrag)));
 
 #if PLATFORM_MOBILE
     this->menu.add(MenuItem::item(Icons::undo, CommandIDs::Undo));

@@ -148,8 +148,6 @@ void AutomationCurveEventComponent::mouseDown(const MouseEvent &e)
     jassert(this->isEditable);
     if (e.mods.isLeftButtonDown())
     {
-        this->event.getSequence()->checkpoint();
-
         this->dragger.startDraggingComponent(this, e, this->event.getControllerValue(),
             0.f, 1.f, AutomationEvent::curveInterpolationThreshold);
 
@@ -161,101 +159,91 @@ void AutomationCurveEventComponent::mouseDown(const MouseEvent &e)
 void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
 {
     jassert(this->isEditable);
-    if (e.mods.isLeftButtonDown())
+    if (this->isDragging)
     {
-        if (this->isDragging)
+        float deltaBeat = 0.f;
+        float deltaValue = 0.f;
+        bool beatChanged = false;
+        bool valueChanged = false;
+        this->getDraggingDeltas(e, deltaBeat, deltaValue, beatChanged, valueChanged);
+
+        if (valueChanged && this->tuningIndicator == nullptr)
         {
-            float deltaBeat = 0.f;
-            float deltaValue = 0.f;
-            bool beatChanged = false;
-            bool valueChanged = false;
-            this->getDraggingDeltas(e, deltaBeat, deltaValue, beatChanged, valueChanged);
+            const float cv = this->event.getControllerValue();
+            this->tuningIndicator = make<FineTuningValueIndicator>(cv, this->isTempoCurve() ? " bpm" : "");
 
-            if (valueChanged && this->tuningIndicator == nullptr)
+            // adding it to grandparent to avoid clipping
+            jassert(this->getParentComponent() != nullptr);
+            jassert(this->getParentComponent()->getParentComponent() != nullptr);
+            auto *grandParent = this->getParentComponent()->getParentComponent();
+
+            grandParent->addAndMakeVisible(this->tuningIndicator.get());
+            this->fader.fadeIn(this->tuningIndicator.get(), Globals::UI::fadeInLong);
+        }
+
+        if (beatChanged || valueChanged)
+        {
+            if (!this->anyChangeDone)
             {
-                const float cv = this->event.getControllerValue();
-                this->tuningIndicator = make<FineTuningValueIndicator>(cv, this->isTempoCurve() ? " bpm" : "");
-
-                // adding it to grandparent to avoid clipping
-                jassert(this->getParentComponent() != nullptr);
-                jassert(this->getParentComponent()->getParentComponent() != nullptr);
-                auto *grandParent = this->getParentComponent()->getParentComponent();
-
-                grandParent->addAndMakeVisible(this->tuningIndicator.get());
-                this->fader.fadeIn(this->tuningIndicator.get(), Globals::UI::fadeInLong);
+                this->event.getSequence()->checkpoint();
+                this->anyChangeDone = true;
             }
 
-            if (beatChanged || valueChanged)
+            this->setMouseCursor(MouseCursor::DraggingHandCursor);
+            auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
+            sequence->change(this->event, this->continueDragging(deltaBeat, deltaValue), true);
+        }
+        else
+        {
+            this->setFloatBounds(this->editor.getEventBounds(this->event, this->clip));
+            this->updateChildrenBounds();
+        }
+
+        if (this->tuningIndicator != nullptr)
+        {
+            const float cv = this->event.getControllerValue();
+            if (this->isTempoCurve())
             {
-                this->setMouseCursor(MouseCursor::DraggingHandCursor);
-                auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
-                sequence->change(this->event, this->continueDragging(deltaBeat, deltaValue), true);
+                this->tuningIndicator->setValue(cv, this->event.getControllerValueAsBPM());
             }
             else
             {
-                this->setFloatBounds(this->editor.getEventBounds(this->event, this->clip));
-                this->updateChildrenBounds();
+                this->tuningIndicator->setValue(cv);
             }
 
-            if (this->tuningIndicator != nullptr)
-            {
-                const float cv = this->event.getControllerValue();
-                if (this->isTempoCurve())
-                {
-                    this->tuningIndicator->setValue(cv, this->event.getControllerValueAsBPM());
-                }
-                else
-                {
-                    this->tuningIndicator->setValue(cv);
-                }
-
-                this->tuningIndicator->repositionAtTargetCenter(this);
-            }
-
-            this->repaint();
+            this->tuningIndicator->repositionAtTargetCenter(this);
         }
+
+        this->repaint();
     }
 }
 
 void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
 {
     jassert(this->isEditable);
-    if (e.mods.isLeftButtonDown())
+    if (this->isDragging)
     {
-        if (this->isDragging)
+        this->setMouseCursor(MouseCursor::PointingHandCursor);
+        this->setFloatBounds(this->editor.getEventBounds(this->event, this->clip));
+        this->updateChildrenBounds();
+
+        if (this->tuningIndicator != nullptr)
         {
-            this->setMouseCursor(MouseCursor::PointingHandCursor);
-            this->setFloatBounds(this->editor.getEventBounds(this->event, this->clip));
-            this->updateChildrenBounds();
-
-            if (this->tuningIndicator != nullptr)
-            {
-                this->fader.fadeOut(this->tuningIndicator.get(), Globals::UI::fadeOutLong);
-                this->tuningIndicator = nullptr;
-            }
-
-            this->dragger.endDraggingComponent(this, e);
-            this->endDragging();
-
-            if (!this->dragger.hadChanges() && this->isTempoCurve())
-            {
-                this->isHighlighted = false;
-                this->repaint();
-
-                auto dialog = make<TempoDialog>(this->event.getControllerValueAsBPM());
-                dialog->onOk = [this](int newBpmValue)
-                {
-                    auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
-                    sequence->change(this->event, this->event.withTempoBpm(newBpmValue), true);
-                };
-
-                App::showModalComponent(move(dialog));
-            }
+            this->fader.fadeOut(this->tuningIndicator.get(), Globals::UI::fadeOutLong);
+            this->tuningIndicator = nullptr;
         }
+
+        this->dragger.endDraggingComponent(this, e);
+        this->endDragging();
 
         this->repaint();
     }
-    else if (e.mods.isRightButtonDown())
+
+    // either deleting this event or showing the edit dialog
+    const auto isPenMode = this->editor.hasEditMode(RollEditMode::drawMode);
+        
+    if (e.mods.isRightButtonDown() ||
+        (e.source.isTouch() && isPenMode && !this->anyChangeDone))
     {
         auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
         if (sequence->size() > 1) // no empty automation tracks please
@@ -263,6 +251,22 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
             sequence->checkpoint();
             sequence->remove(this->event, true);
         }
+        return;
+    }
+    
+    if (!this->anyChangeDone && this->isTempoCurve())
+    {
+        this->isHighlighted = false;
+        this->repaint();
+
+        auto dialog = make<TempoDialog>(this->event.getControllerValueAsBPM());
+        dialog->onOk = [this](int newBpmValue)
+        {
+            auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
+            sequence->change(this->event, this->event.withTempoBpm(newBpmValue), true);
+        };
+
+        App::showModalComponent(move(dialog));
     }
 }
 
@@ -376,6 +380,7 @@ void AutomationCurveEventComponent::setEditable(bool shouldBeEditable)
 void AutomationCurveEventComponent::startDragging()
 {
     this->isDragging = true;
+    this->anyChangeDone = false;
     this->anchor = this->event;
 }
 
@@ -414,4 +419,21 @@ AutomationEvent AutomationCurveEventComponent::continueDragging(const float delt
 void AutomationCurveEventComponent::endDragging()
 {
     this->isDragging = false;
+}
+
+MouseCursor AutomationCurveEventComponent::startEditingNewEvent(const MouseEvent &e)
+{
+    this->dragger.startDraggingComponent(this, e,
+        this->event.getControllerValue(),
+        0.f, 1.f, AutomationEvent::curveInterpolationThreshold);
+
+    this->startDragging();
+    this->repaint();
+
+    // set this to true to avoid setting a checkpoint between
+    // inserting an event and dragging it, both actions
+    // should be done in a single transaction:
+    this->anyChangeDone = true;
+
+    return MouseCursor::DraggingHandCursor;
 }

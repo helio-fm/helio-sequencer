@@ -31,8 +31,6 @@ public:
     AutomationStepEventComponent(AutomationEditorBase &editor,
         const AutomationEvent &event,
         const Clip &clip);
-    
-    bool isPedalDownEvent() const noexcept;
 
     //===------------------------------------------------------------------===//
     // EventComponentBase
@@ -107,6 +105,8 @@ private:
 
     ComponentDragger dragger;
     bool isDragging = false;
+    bool anyChangeDone = false;
+
     bool isHighlighted = false;
     bool isEditable = true;
 

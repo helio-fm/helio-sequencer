@@ -1073,8 +1073,12 @@ void PianoRoll::mouseUp(const MouseEvent &e)
     // Dismiss newNoteDragging, if needed
     if (this->newNoteDragging != nullptr)
     {
-        this->newNoteDragging->mouseUp(e.getEventRelativeTo(this->newNoteDragging));
-        this->setMouseCursor(this->project.getEditMode().getCursor());
+        if (this->newNoteDragging->isInEditMode())
+        {
+            this->newNoteDragging->mouseUp(e.getEventRelativeTo(this->newNoteDragging));
+            this->setMouseCursor(this->project.getEditMode().getCursor());
+        }
+
         this->newNoteDragging = nullptr;
     }
 
@@ -1542,8 +1546,8 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e, bool snap)
 {
     int key = 0;
     float beat = 0.f;
-    int xOffset = 5;
-    this->getRowsColsByMousePosition(e.x + xOffset, e.y, key, beat, snap);    //Pretend the mouse is a little to the right of where it actually is. Boosts accuracy when placing notes - RPM
+    constexpr int xOffset = 5;
+    this->getRowsColsByMousePosition(e.x + xOffset, e.y, key, beat, snap); // Pretend the mouse is a little to the right of where it actually is. Boosts accuracy when placing notes - RPM
 
     auto *activeSequence = static_cast<PianoSequence *>(this->activeTrack->getSequence());
     activeSequence->checkpoint();

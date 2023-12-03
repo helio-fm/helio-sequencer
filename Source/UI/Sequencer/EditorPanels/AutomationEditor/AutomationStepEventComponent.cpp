@@ -142,6 +142,7 @@ void AutomationStepEventComponent::mouseDown(const MouseEvent &e)
         this->event.getSequence()->checkpoint();
         this->dragger.startDraggingComponent(this, e);
         this->isDragging = true;
+        this->anyChangeDone = false;
     }
 }
 
@@ -173,13 +174,19 @@ void AutomationStepEventComponent::mouseUp(const MouseEvent &e)
             this->isDragging = false;
         }
     }
-    else if (e.mods.isRightButtonDown())
+
+    if (!this->anyChangeDone)
     {
-        auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
-        if (sequence->size() > 1) // no empty automation tracks please
+        const auto isPenMode = this->editor.hasEditMode(RollEditMode::drawMode);
+
+        if (e.mods.isRightButtonDown() || (e.source.isTouch() && isPenMode))
         {
-            sequence->checkpoint();
-            sequence->remove(this->event, true);
+            auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
+            if (sequence->size() > 1) // no empty automation tracks please
+            {
+                sequence->checkpoint();
+                sequence->remove(this->event, true);
+            }
         }
     }
 }
@@ -225,6 +232,7 @@ void AutomationStepEventComponent::drag(float targetBeat)
     if (fabs(newRoundDeltaBeat) > 0.01)
     {
         sequence->change(this->event, this->event.withBeat(newRoundBeat), true);
+        this->anyChangeDone = true;
     }
     else
     {
