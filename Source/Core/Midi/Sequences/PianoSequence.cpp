@@ -210,9 +210,18 @@ bool PianoSequence::changeGroup(Array<Note> &groupBefore,
 
     if (undoable)
     {
-        this->getUndoStack()->
-            perform(new NotesGroupChangeAction(*this->getProject(),
-                this->getTrackId(), groupBefore, groupAfter));
+        if (groupBefore.size() == 1)
+        {
+            this->getUndoStack()->
+                perform(new NoteChangeAction(*this->getProject(),
+                    this->getTrackId(), groupBefore.getFirst(), groupAfter.getFirst()));
+        }
+        else
+        {
+            this->getUndoStack()->
+                perform(new NotesGroupChangeAction(*this->getProject(),
+                    this->getTrackId(), groupBefore, groupAfter));
+        }
     }
     else
     {

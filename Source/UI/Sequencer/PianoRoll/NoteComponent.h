@@ -53,6 +53,16 @@ public:
     inline const Note &getNote() const noexcept { return this->note; }
     inline const Clip &getClip() const noexcept { return this->clip; }
 
+    inline float getFullBeat() const noexcept
+    {
+        return this->note.getBeat() + this->clip.getBeat();
+    }
+
+    inline float getFullVelocity() const noexcept
+    {
+        return this->note.getVelocity() * this->clip.getVelocity();
+    }
+
     PianoRoll &getRoll() const noexcept;
 
     void updateColours() override;
@@ -206,6 +216,7 @@ private:
     friend class PianoRoll;
     friend class NoteResizerLeft;
     friend class NoteResizerRight;
+    friend class VelocityEditor;
     friend struct SequencerOperations;
 
     bool firstChangeDone = false;

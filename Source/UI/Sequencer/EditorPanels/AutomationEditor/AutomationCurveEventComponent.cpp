@@ -204,7 +204,8 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
             const float cv = this->event.getControllerValue();
             if (this->isTempoCurve())
             {
-                this->tuningIndicator->setValue(cv, this->event.getControllerValueAsBPM());
+                this->tuningIndicator->setValue(cv,
+                    String(this->event.getControllerValueAsBPM()));
             }
             else
             {

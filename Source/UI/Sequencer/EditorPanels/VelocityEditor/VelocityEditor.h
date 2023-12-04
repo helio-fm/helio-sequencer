@@ -114,7 +114,7 @@ public:
 private:
 
     void applyNoteBounds(VelocityEditorNoteComponent *nc);
-    void reloadTrackMap();
+    void reloadAllTracks();
     void loadTrack(const MidiTrack *const track);
 
     float projectFirstBeat = 0.f;
@@ -135,9 +135,9 @@ private:
 
 private:
 
-    // for adjusting a single note:
+    // for fine-tuning a single note or entire selection, if any:
 
-    float fineTuningVelocityAnchor = 0.f;
+    float fineTuningAnchor = 0.f;
     FineTuningComponentDragger fineTuningDragger;
     UniquePointer<FineTuningValueIndicator> fineTuningIndicator;
 
@@ -145,26 +145,21 @@ private:
     void continueFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e);
     void endFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e);
 
-#if PLATFORM_DESKTOP
-    static constexpr auto fineTuningStep = 1.f / 8.f;
-#elif PLATFORM_MOBILE
-    static constexpr auto fineTuningStep = 1.f / 4.f;
-#endif
-
     friend class VelocityEditorNoteComponent;
 
-private:
-
-    // for adjusting a group of notes:
+    // for adjusting a group of notes with hand-drawn curve:
 
     UniquePointer<VelocityHandDrawingHelper> handDrawingHelper;
     FlatHashMap<Note, float, MidiEventHash> groupDragIntersections;
     Array<Note> groupDragChangesBefore, groupDragChangesAfter;
-    bool groupDragHasChanges = false;
 
-    float volumeBlendingAmount = 1.f;
     UniquePointer<FineTuningValueIndicator> volumeBlendingIndicator;
     void updateVolumeBlendingIndicator(const Point<int> &pos);
+    float volumeBlendingAmount = 0.67f;
+
+    // for checkpoints in both ^ modes
+
+    bool editingHadChanges = false;
 
 private:
 
@@ -174,6 +169,8 @@ private:
     bool isDrawingEvent(const MouseEvent &e) const;
 
 private:
+
+    WeakReference<Lasso> selection;
 
     UniquePointer<MultiTouchController> multiTouchController;
 

@@ -28,6 +28,7 @@
 #include "Lasso.h"
 #include "ColourIDs.h"
 #include "NoteComponent.h"
+#include "SequencerOperations.h"
 #include "FineTuningValueIndicator.h"
 
 //===----------------------------------------------------------------------===//
@@ -89,11 +90,11 @@ public:
     {
         const auto baseColour = findDefaultColour(ColourIDs::Roll::noteFill);
         this->mainColour = this->note.getTrackColour()
-            .interpolatedWith(baseColour, this->isEditable ? 0.35f : 0.5f)
-            .withAlpha(this->isEditable ? 0.75f : 0.065f);
+            .interpolatedWith(baseColour, (this->isEditable || this->isHighlighted) ? 0.35f : 0.5f)
+            .withAlpha(this->isEditable ? 0.8f : (this->isHighlighted ? 0.125f : 0.06f));
         this->paleColour = this->mainColour
-            .brighter(0.1f)
-            .withMultipliedAlpha(0.1f);
+            .brighter(this->isHighlighted ? 0.3f : 0.1f)
+            .withMultipliedAlpha(this->isHighlighted ? 0.3f : 0.1f);
     }
 
     void setRealBounds(float x, int y, float w, int h) noexcept
@@ -103,14 +104,16 @@ public:
         this->setBounds(int(floorf(x)), y, int(ceilf(w)), h);
     }
 
-    void setEditable(bool shouldBeEditable)
+    void setEditable(bool shouldBeEditable, bool shouldBeHighlighted = false)
     {
-        if (this->isEditable == shouldBeEditable)
+        if (this->isEditable == shouldBeEditable &&
+            this->isHighlighted == shouldBeHighlighted)
         {
             return;
         }
 
         this->isEditable = shouldBeEditable;
+        this->isHighlighted = shouldBeHighlighted;
 
         this->updateColour();
 
@@ -183,6 +186,7 @@ private:
     float dw = 0.f;
 
     bool isEditable = true;
+    bool isHighlighted = true;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityEditorNoteComponent)
 };
@@ -329,7 +333,7 @@ VelocityEditor::VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll)
     this->multiTouchController = make<MultiTouchController>(*this);
     this->addMouseListener(this->multiTouchController.get(), true);
 
-    this->reloadTrackMap();
+    this->reloadAllTracks();
 
     this->project.addListener(this);
     this->project.getEditMode().addListener(this);
@@ -429,7 +433,7 @@ void VelocityEditor::mouseUp(const MouseEvent &e)
         this->groupDragIntersections.clear();
         this->groupDragChangesBefore.clearQuick();
         this->groupDragChangesAfter.clearQuick();
-        this->groupDragHasChanges = false;
+        this->editingHadChanges = false;
     }
 
     if (this->hasMultiTouch(e))
@@ -510,6 +514,8 @@ void VelocityEditor::setEditableClip(const Clip &selectedClip, const EventFilter
 
 void VelocityEditor::setEditableSelection(WeakReference<Lasso> selection)
 {
+    this->selection = selection;
+
     if (!this->activeClip.hasValue())
     {
         return;
@@ -538,7 +544,7 @@ void VelocityEditor::setEditableSelection(WeakReference<Lasso> selection)
     {
         for (const auto &it : *activeMap)
         {
-            it.second->setEditable(false);
+            it.second->setEditable(false, true);
         }
 
         for (const auto *component : *selection)
@@ -548,7 +554,7 @@ void VelocityEditor::setEditableSelection(WeakReference<Lasso> selection)
                 auto foundVolumeComponent = activeMap->find(nc->getNote());
                 if (foundVolumeComponent != activeMap->end())
                 {
-                    foundVolumeComponent->second->setEditable(true);
+                    foundVolumeComponent->second->setEditable(true, true);
                 }
 #if DEBUG
                 else
@@ -850,7 +856,7 @@ void VelocityEditor::onChangeTrackProperties(MidiTrack *const track)
 void VelocityEditor::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     const ProjectMetadata *meta)
 {
-    this->reloadTrackMap();
+    this->reloadAllTracks();
 }
 
 void VelocityEditor::onAddTrack(MidiTrack *const track)
@@ -898,25 +904,57 @@ void VelocityEditor::onChangeViewBeatRange(float firstBeat, float lastBeat)
 }
 
 //===----------------------------------------------------------------------===//
-// Fine-tuning a single note
+// Fine-tuning in the default edit mode
 //===----------------------------------------------------------------------===//
+
+static String getVelocityRangeView(WeakReference<Lasso> selection,
+    VelocityEditorNoteComponent *draggedNote)
+{
+    float minFullVelocity = 1.f;
+    float maxFullVelocity = 0.f;
+
+    if (selection != nullptr && selection->getNumSelected() > 0)
+    {
+        for (auto *component : *selection)
+        {
+            jassert(dynamic_cast<const NoteComponent *>(component));
+            if (auto *nc = dynamic_cast<NoteComponent *>(component))
+            {
+                minFullVelocity = jmin(minFullVelocity, nc->getFullVelocity());
+                maxFullVelocity = jmax(maxFullVelocity, nc->getFullVelocity());
+            }
+        }
+    }
+    else
+    {
+        minFullVelocity = maxFullVelocity = draggedNote->getFullVelocity();
+    }
+
+    return (minFullVelocity == maxFullVelocity) ?
+        String(MidiMessage::floatValueToMidiByte(minFullVelocity)) :
+        String(MidiMessage::floatValueToMidiByte(minFullVelocity)) + "-\n" +
+        String(MidiMessage::floatValueToMidiByte(maxFullVelocity));
+}
 
 void VelocityEditor::startFineTuning(VelocityEditorNoteComponent *target, const MouseEvent &e)
 {
     if (e.mods.isLeftButtonDown())
     {
-        this->project.checkpoint();
-        this->fineTuningVelocityAnchor = target->getNote().getVelocity();
+        this->fineTuningAnchor = target->getNote().getVelocity();
+
+        if (this->selection != nullptr &&
+            this->selection->getNumSelected() > 0)
+        {
+            SequencerOperations::startTuning(*this->selection);
+        }
 
         this->fineTuningDragger.startDraggingComponent(target, e,
-            this->fineTuningVelocityAnchor,
-            0.f, 1.f, VelocityEditor::fineTuningStep,
+            this->fineTuningAnchor, 0.f, 1.f, 1.f / 127.f,
             FineTuningComponentDragger::Mode::DragOnlyY);
 
         this->fineTuningIndicator = make<FineTuningValueIndicator>(0.f, "");
-
-        const auto finalMidiVelocity = MidiMessage::floatValueToMidiByte(target->getFullVelocity());
-        this->fineTuningIndicator->setValue(target->getNote().getVelocity(), int(finalMidiVelocity));
+        this->fineTuningIndicator->setValue(target->getNote().getVelocity(),
+            getVelocityRangeView(this->selection, target));
 
         // adding it to grandparent to avoid clipping
         jassert(this->getParentComponent() != nullptr);
@@ -926,6 +964,8 @@ void VelocityEditor::startFineTuning(VelocityEditorNoteComponent *target, const 
         grandParent->addAndMakeVisible(this->fineTuningIndicator.get());
         this->fineTuningIndicator->repositionAtTargetTop(target);
         this->fader.fadeIn(this->fineTuningIndicator.get(), Globals::UI::fadeInLong);
+
+        this->editingHadChanges = false;
 
         // todo send midi?
     }
@@ -937,28 +977,55 @@ void VelocityEditor::continueFineTuning(VelocityEditorNoteComponent *target, con
     {
         this->fineTuningDragger.dragComponent(target, e);
 
-        // fine-tuning by default, simple dragging with mod keys
-        const auto newNoteVelocity = e.mods.isAnyModifierKeyDown() ?
-            jlimit(0.f, 1.f, this->fineTuningVelocityAnchor -
-                float(e.getDistanceFromDragStartY()) / float(Globals::UI::editorPanelHeight)) :
-            this->fineTuningDragger.getValue();
+        const auto newVelocity = this->fineTuningDragger.getValue();
+        const auto velocityDelta = this->fineTuningAnchor - newVelocity;
 
-        const bool velocityChanged = target->getNote().getVelocity() != newNoteVelocity;
-
-        if (velocityChanged)
+        if (velocityDelta == 0.f)
         {
-            this->setMouseCursor(MouseCursor::DraggingHandCursor);
-            auto *sequence = static_cast<PianoSequence *>(target->getNote().getSequence());
-            sequence->change(target->getNote(), target->getNote().withVelocity(newNoteVelocity), true);
+            this->applyNoteBounds(target);
+            return;
+        }
+
+        if (!this->editingHadChanges)
+        {
+            this->project.checkpoint();
+            this->editingHadChanges = true;
+        }
+
+        if (this->selection != nullptr &&
+            this->selection->getNumSelected() > 0)
+        {
+            // for multiplication and sine mode, the factor is computed as:
+            // 0 .. fineTuningVelocityAnchor    ->  -1 .. 0
+            // fineTuningVelocityAnchor .. 1.0  ->   0 .. 1
+            const auto velocityFactor = (newVelocity < this->fineTuningAnchor) ?
+                ((newVelocity / this->fineTuningAnchor) - 1.f) :
+                ((newVelocity - this->fineTuningAnchor) / (1.f - this->fineTuningAnchor));
+
+            if (e.mods.isAltDown())
+            {
+                SequencerOperations::changeVolumeMultiplied(*this->selection, velocityFactor);
+            }
+            else if (e.mods.isShiftDown())
+            {
+                SequencerOperations::changeVolumeSine(*this->selection, velocityFactor);
+            }
+            else
+            {
+                SequencerOperations::changeVolumeLinear(*this->selection, velocityDelta);
+            }
         }
         else
         {
-            this->applyNoteBounds(target);
+            auto *sequence = static_cast<PianoSequence *>(target->getNote().getSequence());
+            sequence->change(target->getNote(),
+                target->getNote().withVelocity(newVelocity), true);
         }
 
         jassert(this->fineTuningIndicator != nullptr);
-        const auto finalMidiVelocity = MidiMessage::floatValueToMidiByte(target->getFullVelocity());
-        this->fineTuningIndicator->setValue(newNoteVelocity, int(finalMidiVelocity));
+        this->fineTuningIndicator->setValue(newVelocity,
+            getVelocityRangeView(this->selection, target));
+
         this->fineTuningIndicator->repositionAtTargetTop(target);
     }
 }
@@ -972,16 +1039,27 @@ void VelocityEditor::endFineTuning(VelocityEditorNoteComponent *target, const Mo
 
         this->fineTuningDragger.endDraggingComponent(target, e);
 
+        if (this->selection != nullptr &&
+            this->selection->getNumSelected() > 0)
+        {
+            SequencerOperations::endTuning(*this->selection);
+        }
+
         this->applyNoteBounds(target);
     }
 }
 
 //===----------------------------------------------------------------------===//
-// Adjusting a group of notes
+// Hand-drawing shapes in the pen mode
 //===----------------------------------------------------------------------===//
 
 void VelocityEditor::updateVolumeBlendingIndicator(const Point<int> &pos)
 {
+    // todo someday: display a mobile-friendly blending amount control
+#if PLATFORM_DESKTOP
+    this->volumeBlendingIndicator->setValue(this->volumeBlendingAmount);
+    this->volumeBlendingIndicator->setCentrePosition(pos);
+
     if (this->volumeBlendingAmount == 1.f && this->volumeBlendingIndicator->isVisible())
     {
         this->fader.fadeOut(this->volumeBlendingIndicator.get(), Globals::UI::fadeOutLong);
@@ -990,10 +1068,7 @@ void VelocityEditor::updateVolumeBlendingIndicator(const Point<int> &pos)
     {
         this->fader.fadeIn(this->volumeBlendingIndicator.get(), Globals::UI::fadeInLong);
     }
-
-    //this->volumeBlendingIndicator->setVisible(this->volumeBlendingAmount != 1.f);
-    this->volumeBlendingIndicator->setValue(this->volumeBlendingAmount);
-    this->volumeBlendingIndicator->setCentrePosition(pos);
+#endif
 }
 
 constexpr float getVelocityByIntersection(const Point<float> &intersection)
@@ -1008,7 +1083,7 @@ void VelocityEditor::applyGroupVolumeChanges()
         return; // no editable components
     }
 
-    if (this->groupDragHasChanges)
+    if (this->editingHadChanges)
     {
         // for simple actions, like dragging a note, the undo action logic
         // can coalease multiple changes into one, e.g. a->b, b->c becomes a->c,
@@ -1070,9 +1145,9 @@ void VelocityEditor::applyGroupVolumeChanges()
 
     if (!this->groupDragChangesBefore.isEmpty())
     {
-        if (!this->groupDragHasChanges)
+        if (!this->editingHadChanges)
         {
-            this->groupDragHasChanges = true;
+            this->editingHadChanges = true;
             this->project.checkpoint();
         }
 
@@ -1084,7 +1159,7 @@ void VelocityEditor::applyGroupVolumeChanges()
 // Reloading / resizing / repainting
 //===----------------------------------------------------------------------===//
 
-void VelocityEditor::reloadTrackMap()
+void VelocityEditor::reloadAllTracks()
 {
     this->patternMap.clear();
 

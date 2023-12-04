@@ -1114,7 +1114,7 @@ void SequencerOperations::startTuning(Lasso &selection)
     
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+        auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
         nc->startTuning();
     }
 }
@@ -1144,6 +1144,7 @@ void SequencerOperations::changeVolumeMultiplied(Lasso &selection, float volumeF
     if (selection.getNumSelected() == 0)
     { return; }
 
+    const auto factor = jlimit(-1.f, 1.f, volumeFactor);
     auto *pianoSequence = getPianoSequence(selection);
     jassert(pianoSequence);
 
@@ -1153,7 +1154,7 @@ void SequencerOperations::changeVolumeMultiplied(Lasso &selection, float volumeF
     {
         auto *nc = selection.getItemAs<NoteComponent>(i);
         groupBefore.add(nc->getNote());
-        groupAfter.add(nc->continueTuningMultiplied(volumeFactor));
+        groupAfter.add(nc->continueTuningMultiplied(factor));
     }
         
     pianoSequence->changeGroup(groupBefore, groupAfter, true);
@@ -1164,12 +1165,14 @@ void SequencerOperations::changeVolumeSine(Lasso &selection, float volumeFactor)
     if (selection.getNumSelected() == 0)
     { return; }
     
+    const auto factor = jlimit(-1.f, 1.f, volumeFactor);
+
     const float numSines = 2;
     float midline = 0.f;
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-        midline += nc->getVelocity();
+        midline += nc->anchor.getVelocity();
     }
     midline = midline / float(selection.getNumSelected());
     
@@ -1186,7 +1189,7 @@ void SequencerOperations::changeVolumeSine(Lasso &selection, float volumeFactor)
         auto *nc = selection.getItemAs<NoteComponent>(i);
         const float phase = ((nc->getBeat() - startBeat) / (endBeat - startBeat)) * MathConstants<float>::pi * 2.f * numSines;
         groupBefore.add(nc->getNote());
-        groupAfter.add(nc->continueTuningSine(volumeFactor, midline, phase));
+        groupAfter.add(nc->continueTuningSine(factor, midline, phase));
     }
 
     pianoSequence->changeGroup(groupBefore, groupAfter, true);

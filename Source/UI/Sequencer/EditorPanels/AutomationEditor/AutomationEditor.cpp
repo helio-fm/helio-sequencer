@@ -29,7 +29,6 @@
 #include "MultiTouchController.h"
 #include "Lasso.h"
 #include "ColourIDs.h"
-#include "FineTuningValueIndicator.h"
 #include "TempoDialog.h"
 
 //===----------------------------------------------------------------------===//
