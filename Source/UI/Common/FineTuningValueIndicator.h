@@ -21,19 +21,88 @@ class FineTuningValueIndicator final : public Component
 {
 public:
 
-    FineTuningValueIndicator(float initialValue, String suffix);
-    ~FineTuningValueIndicator();
+    FineTuningValueIndicator(float initialValue, const String &suffix) :
+        value(initialValue),
+        suffix(suffix)
+    {
+        this->valueLabel = make<Label>();
+        this->addAndMakeVisible(this->valueLabel.get());
+        this->valueLabel->setFont(Globals::UI::Fonts::XS);
+        this->valueLabel->setJustificationType(Justification::centred);
 
-    void setValue(float newValue);
-    void setValue(float newValue, int valueView);
-    void setValue(float newValue, float valueView);
+        this->setSize(64, 64);
+    }
+ 
+    ~FineTuningValueIndicator() = default;
 
-    void repositionAtTargetTop(Component *component);
-    void repositionAtTargetCenter(Component *component);
+    void setValue(float newValue)
+    {
+        this->setValue(newValue, newValue);
+    }
 
-    void setShouldDisplayValue(bool shouldDisplay);
+    void setValue(float newValue, float valueView)
+    {
+        if (this->value == newValue)
+        {
+            return;
+        }
 
-    void paint(Graphics &g) override;
+        static constexpr auto numDecimalPlaces = 3;
+        this->setValue(newValue, String(valueView, numDecimalPlaces));
+    }
+
+    void setValue(float newValue, const String &valueView)
+    {
+        if (this->value == newValue)
+        {
+            return;
+        }
+
+        this->value = newValue;
+        this->valueLabel->setText(valueView + this->suffix, dontSendNotification);
+
+        this->repaint();
+    }
+
+    void repositionAtTargetTop(Component *component)
+    {
+        const auto topRelativeToMyParent = this->getParentComponent()->
+            getLocalPoint(component, Point<int>(component->getWidth() / 2, 0));
+
+        this->setTopLeftPosition(topRelativeToMyParent -
+            Point<int>(this->getWidth() / 2, this->getHeight() - 8));
+
+        this->valueLabel->setBounds(0,
+            this->getHeight() / 2 - FineTuningValueIndicator::labelHeight / 2,
+            this->getWidth(), FineTuningValueIndicator::labelHeight);
+    }
+
+    void repositionAtTargetCenter(Component *component)
+    {
+        const auto centreRelativeToMyParent = this->getParentComponent()->
+            getLocalPoint(component, component->getLocalBounds().getCentre());
+
+        this->setTopLeftPosition(centreRelativeToMyParent - this->getLocalBounds().getCentre());
+
+        this->valueLabel->setBounds(0,
+            this->getHeight() - FineTuningValueIndicator::labelHeight - 2,
+            this->getWidth(), FineTuningValueIndicator::labelHeight);
+    }
+
+    void setShouldDisplayValue(bool shouldDisplay)
+    {
+        this->valueLabel->setVisible(shouldDisplay);
+    }
+
+    void paint(Graphics &g) override
+    {
+        constexpr auto startAngleRadians = MathConstants<float>::pi * 1.5f;
+        constexpr auto endAngleRadians = MathConstants<float>::pi * 2.5f;
+
+        LookAndFeel::getDefaultLookAndFeel().drawRotarySlider(g, 0, 0,
+            this->getWidth(), this->getHeight(), this->value,
+            startAngleRadians, endAngleRadians, this->dummySlider);
+    }
 
 private:
 

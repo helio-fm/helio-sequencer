@@ -556,12 +556,6 @@
     <ClCompile Include="..\..\Source\UI\Common\DraggingListBoxComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\FineTuningComponentDragger.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\FineTuningValueIndicator.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\KeySelector.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>

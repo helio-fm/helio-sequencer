@@ -406,8 +406,6 @@
     <ClCompile Include="..\..\Source\UI\Common\CommandIDs.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\ColourIDs.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\DraggingListBoxComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Common\FineTuningComponentDragger.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Common\FineTuningValueIndicator.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\KeySelector.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\MobileComboBox.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\ModeIndicatorComponent.cpp"/>

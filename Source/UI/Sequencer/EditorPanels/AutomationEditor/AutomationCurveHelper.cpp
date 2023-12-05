@@ -95,7 +95,7 @@ void AutomationCurveHelper::mouseDown(const MouseEvent &e)
     {
         this->event.getSequence()->checkpoint();
         this->dragger.startDraggingComponent(this, e, this->getCurvature(),
-            0.f, 1.f, AutomationEvent::curveInterpolationThreshold,
+            0.f, 1.f, 1.f / 100.f,
             FineTuningComponentDragger::Mode::DragOnlyY);
 
         this->anchor = this->getBounds().getCentre();

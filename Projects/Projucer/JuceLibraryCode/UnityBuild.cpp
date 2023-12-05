@@ -143,8 +143,6 @@
 #include "../../Source/UI/Common/CommandIDs.cpp"
 #include "../../Source/UI/Common/ColourIDs.cpp"
 #include "../../Source/UI/Common/DraggingListBoxComponent.cpp"
-#include "../../Source/UI/Common/FineTuningComponentDragger.cpp"
-#include "../../Source/UI/Common/FineTuningValueIndicator.cpp"
 #include "../../Source/UI/Common/KeySelector.cpp"
 #include "../../Source/UI/Common/MobileComboBox.cpp"
 #include "../../Source/UI/Common/ModeIndicatorComponent.cpp"

@@ -406,7 +406,6 @@
 		6F085F7134ECBFD7F473FBD2 /* UserInterfaceFlags.h */ /* UserInterfaceFlags.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UserInterfaceFlags.h; path = ../../Source/Core/Configuration/UserInterfaceFlags.h; sourceTree = SOURCE_ROOT; };
 		6F0AA28913D0FB1EBA8573D9 /* SyncSettings.cpp */ /* SyncSettings.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SyncSettings.cpp; path = ../../Source/UI/Pages/Settings/SyncSettings.cpp; sourceTree = SOURCE_ROOT; };
 		6F0B65CA46441E566FE11D1F /* PlayButton.cpp */ /* PlayButton.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PlayButton.cpp; path = ../../Source/UI/Common/PlayButton.cpp; sourceTree = SOURCE_ROOT; };
-		6F56C859352E67E9986708E1 /* FineTuningValueIndicator.cpp */ /* FineTuningValueIndicator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FineTuningValueIndicator.cpp; path = ../../Source/UI/Common/FineTuningValueIndicator.cpp; sourceTree = SOURCE_ROOT; };
 		6F58F3C4A61D4BCFB05246E6 /* UpdatesCheckThread.h */ /* UpdatesCheckThread.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UpdatesCheckThread.h; path = ../../Source/Core/Network/Requests/UpdatesCheckThread.h; sourceTree = SOURCE_ROOT; };
 		705E5C79C9A9AE72248B71E9 /* TimeSignatureDialog.cpp */ /* TimeSignatureDialog.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TimeSignatureDialog.cpp; path = ../../Source/UI/Dialogs/TimeSignatureDialog.cpp; sourceTree = SOURCE_ROOT; };
 		70640C903694C24AF359D7AB /* MidiTrackActions.h */ /* MidiTrackActions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MidiTrackActions.h; path = ../../Source/Core/Undo/Actions/MidiTrackActions.h; sourceTree = SOURCE_ROOT; };
@@ -638,7 +637,6 @@
 		BB4FA4F303C966399B8F51D1 /* MenuItemComponent.h */ /* MenuItemComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MenuItemComponent.h; path = ../../Source/UI/Menus/Base/MenuItemComponent.h; sourceTree = SOURCE_ROOT; };
 		BB8CB0CF7DE1E246D3B2C64A /* PatternRollSelectionMenu.cpp */ /* PatternRollSelectionMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatternRollSelectionMenu.cpp; path = ../../Source/UI/Menus/SelectionMenus/PatternRollSelectionMenu.cpp; sourceTree = SOURCE_ROOT; };
 		BB9E0F80AB404BF357BEDAE6 /* DefaultSynth.h */ /* DefaultSynth.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DefaultSynth.h; path = ../../Source/Core/Audio/BuiltIn/DefaultSynth.h; sourceTree = SOURCE_ROOT; };
-		BC8039905D5BAF9F9F2685C1 /* FineTuningComponentDragger.cpp */ /* FineTuningComponentDragger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FineTuningComponentDragger.cpp; path = ../../Source/UI/Common/FineTuningComponentDragger.cpp; sourceTree = SOURCE_ROOT; };
 		BC8B2AE81DB7ACAEA0B34D32 /* SettingsFrameWrapper.h */ /* SettingsFrameWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SettingsFrameWrapper.h; path = ../../Source/UI/Pages/Settings/SettingsFrameWrapper.h; sourceTree = SOURCE_ROOT; };
 		BCB338063E4E753B72F1CB2B /* ViewportFitProxyComponent.cpp */ /* ViewportFitProxyComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ViewportFitProxyComponent.cpp; path = ../../Source/UI/Common/ViewportFitProxyComponent.cpp; sourceTree = SOURCE_ROOT; };
 		BCB766C95158A5460C8B0F5F /* InstrumentMenu.h */ /* InstrumentMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InstrumentMenu.h; path = ../../Source/UI/Menus/InstrumentMenu.h; sourceTree = SOURCE_ROOT; };
@@ -1678,9 +1676,7 @@
 				06E26B56A0A8AA4AEDEADA1D,
 				3E0DD1DD3D9F1837F540917E,
 				A20EE998595AA6C24473AC71,
-				BC8039905D5BAF9F9F2685C1,
 				189D17790568F448C03B3DDB,
-				6F56C859352E67E9986708E1,
 				FD67948033F129628855B2A2,
 				124064B0C1702745C600DB6B,
 				7FA5F7B2C5F0ED9B1FE48A87,

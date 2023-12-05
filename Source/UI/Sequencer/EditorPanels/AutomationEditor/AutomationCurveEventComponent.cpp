@@ -149,7 +149,7 @@ void AutomationCurveEventComponent::mouseDown(const MouseEvent &e)
     if (e.mods.isLeftButtonDown())
     {
         this->dragger.startDraggingComponent(this, e, this->event.getControllerValue(),
-            0.f, 1.f, AutomationEvent::curveInterpolationThreshold);
+            0.f, 1.f, 1.f / 100.f);
 
         this->startDragging();
         this->repaint();
@@ -412,8 +412,8 @@ void AutomationCurveEventComponent::getDraggingDeltas(const MouseEvent &e,
 
 AutomationEvent AutomationCurveEventComponent::continueDragging(const float deltaBeat, const float deltaValue)
 {
-    const float &newValue = this->anchor.getControllerValue() + deltaValue;
-    const float &newBeat = this->anchor.getBeat() + deltaBeat;
+    const float newValue = this->anchor.getControllerValue() + deltaValue;
+    const float newBeat = this->anchor.getBeat() + deltaBeat;
     return this->event.withParameters(newBeat, newValue);
 }
 
@@ -426,7 +426,7 @@ MouseCursor AutomationCurveEventComponent::startEditingNewEvent(const MouseEvent
 {
     this->dragger.startDraggingComponent(this, e,
         this->event.getControllerValue(),
-        0.f, 1.f, AutomationEvent::curveInterpolationThreshold);
+        0.f, 1.f, 1.f / 100.f);
 
     this->startDragging();
     this->repaint();

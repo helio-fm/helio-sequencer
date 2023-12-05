@@ -32,9 +32,68 @@ public:
 
     void startDraggingComponent(Component *const component, const MouseEvent &e,
         float currentValue, float lowerBound = 0.f, float upperBound = 1.f,
-        float interval = 0.01f, Mode dragMode = Mode::AutoSelect);
-    void dragComponent(Component *const component, const MouseEvent &e);
-    void endDraggingComponent(Component *const component, const MouseEvent &e);
+        float interval = 0.01f, Mode dragMode = Mode::AutoSelect)
+    {
+        jassert(component != nullptr);
+        jassert(e.mods.isAnyMouseButtonDown());
+        jassert(lowerBound <= upperBound);
+
+        if (component != nullptr)
+        {
+            this->dragMode = dragMode;
+            this->range = { lowerBound, upperBound, interval };
+            this->mouseDownWithinTarget = e.getEventRelativeTo(component).getMouseDownPosition();
+            this->value = jlimit(lowerBound, upperBound, currentValue);
+            this->anchor = this->range.convertTo0to1(this->value);
+            this->dragComponent(component, e);
+        }
+    }
+
+    void dragComponent(Component *const component, const MouseEvent &e)
+    {
+        jassert(component != nullptr);
+        jassert(e.mods.isAnyMouseButtonDown()); // The event has to be a drag event!
+
+        if (component != nullptr)
+        {
+            const auto shift = e.getEventRelativeTo(component).getPosition() - this->mouseDownWithinTarget;
+
+            // once we have enough data to guess, try to auto-detect the dragging mode:
+            if (this->dragMode == Mode::AutoSelect && (shift.getDistanceFromOrigin() > 1.5f))
+            {
+                this->dragMode = (fabs(shift.getX()) - fabs(shift.getY())) > 1.f ? Mode::DragOnlyX : Mode::DragOnlyY;
+            }
+
+            // horizontal dragging, e.g. for changing beat position
+            if ((this->dragMode == Mode::DragOnlyX) && shift.getX() != 0.f)
+            {
+                component->setTopLeftPosition(component->getPosition().translated(shift.getX(), 0));
+            }
+
+            // vertical dragging, e.g. for adjusting velocity
+            if ((this->dragMode == Mode::DragOnlyY) && shift.getY() != 0.f)
+            {
+                const double mouseRangeY =
+                    this->range.getRange().getLength() / this->range.interval * 12.0;
+                const auto delta = double(-shift.getY()) / mouseRangeY;
+                this->value = this->range.convertFrom0to1(jlimit(0.0, 1.0, this->anchor + delta));
+                e.source.enableUnboundedMouseMovement(true, false);
+            }
+
+            this->value = jlimit(this->range.start, this->range.end, this->value);
+        }
+    }
+
+    void endDraggingComponent(Component *const component, const MouseEvent &e)
+    {
+        auto ms = Desktop::getInstance().getMainMouseSource();
+        if (ms.isUnboundedMouseMovementEnabled())
+        {
+            ms.enableUnboundedMouseMovement(false);
+            const auto mousePos = component->localPointToGlobal(this->mouseDownWithinTarget);
+            ms.setScreenPosition(mousePos.toFloat());
+        }
+    }
 
     inline Mode getMode() const noexcept
     {
@@ -43,28 +102,18 @@ public:
 
     inline float getValue() const noexcept
     {
-        return float(this->valueWhenLastDragged);
-    }
-
-    inline bool hadChanges() const noexcept
-    {
-        return this->mousePositionChanged;
+        return float(this->value);
     }
 
 private:
 
     Mode dragMode = Mode::AutoSelect;
 
-    bool mousePositionChanged = false;
-    double valueWhenLastDragged = 0.0;
+    double value = 0.0;
+    double anchor = 0.0;
 
     NormalisableRange<double> range;
     Point<int> mouseDownWithinTarget;
-    Point<float> mousePosWhenLastDragged;
-
-    static constexpr auto dragSpeedThreshold = 1.0;
-    static constexpr auto dragSpeedSensivity = 0.2;
-    static constexpr auto dragMaxSpeed = 200.0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FineTuningComponentDragger)
 };
