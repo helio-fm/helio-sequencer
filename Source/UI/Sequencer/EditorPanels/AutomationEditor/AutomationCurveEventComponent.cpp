@@ -183,14 +183,21 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
 
         if (beatChanged || valueChanged)
         {
+            this->setMouseCursor(MouseCursor::DraggingHandCursor);
+            auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
+
             if (!this->anyChangeDone)
             {
                 this->event.getSequence()->checkpoint();
                 this->anyChangeDone = true;
+
+                // drag-and-copy:
+                if (e.mods.isShiftDown())
+                {
+                    sequence->insert(this->event.withNewId(), true);
+                }
             }
 
-            this->setMouseCursor(MouseCursor::DraggingHandCursor);
-            auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
             sequence->change(this->event, this->continueDragging(deltaBeat, deltaValue), true);
         }
         else

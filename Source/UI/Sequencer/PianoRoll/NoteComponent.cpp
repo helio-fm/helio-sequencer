@@ -465,7 +465,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             }
 
             // Drag-and-copy logic:
-            if (firstChangeIsToCome && e.mods.isShiftDown())    //changed to shift (perhaps ctrl? though, ctrl may be a good candidate for fine control mode)
+            if (firstChangeIsToCome && e.mods.isShiftDown())
             {
                 // We duplicate the notes only at the very moment when they are about to be moved into the new position,
                 // to make sure that simple shift-clicks on a selection won't confuse a user with lots of silently created notes.

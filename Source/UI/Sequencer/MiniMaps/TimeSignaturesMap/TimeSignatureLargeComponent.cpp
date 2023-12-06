@@ -91,7 +91,6 @@ void TimeSignatureLargeComponent::mouseDrag(const MouseEvent &e)
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->dragger.dragComponent(this, e, nullptr);
-        const bool firstChangeIsToCome = !this->draggingHadCheckpoint;
 
         const float newBeat = this->editor.getBeatByXPosition(this->getX());
         if (this->draggingAnchorBeat == newBeat)
@@ -141,12 +140,12 @@ void TimeSignatureLargeComponent::mouseDrag(const MouseEvent &e)
             {
                 sequence->checkpoint();
                 this->draggingHadCheckpoint = true;
-            }
 
-            // drag-and-copy logic:
-            if (firstChangeIsToCome && e.mods.isAnyModifierKeyDown())
-            {
-                sequence->insert(this->event.withNewId(), true);
+                // drag-and-copy:
+                if (e.mods.isShiftDown())
+                {
+                    sequence->insert(this->event.withNewId(), true);
+                }
             }
 
             sequence->change(this->event, this->event.withBeat(newBeat), true);
