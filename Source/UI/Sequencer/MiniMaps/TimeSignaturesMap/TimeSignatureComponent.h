@@ -54,7 +54,6 @@ public:
         return first->event.getId() - second->event.getId();
     }
 
-
 #if PLATFORM_DESKTOP
     static constexpr auto timeSignatureHeight = 20;
 #elif PLATFORM_MOBILE

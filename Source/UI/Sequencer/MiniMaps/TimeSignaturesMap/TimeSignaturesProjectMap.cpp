@@ -126,6 +126,12 @@ void TimeSignaturesProjectMap::onTimeSignaturesUpdated()
         }
     }
 
+    if (!this->timeSignatureComponents.isEmpty())
+    {
+        // some time signatures' beats may have changed:
+        this->timeSignatureComponents.sort(*this->timeSignatureComponents.getFirst());
+    }
+
     jassert(this->timeSignatureComponents.size() == int(this->timeSignaturesMap.size()));
     jassert(this->timeSignatureComponents.size() >= sequenceToSyncWith.size());
 
