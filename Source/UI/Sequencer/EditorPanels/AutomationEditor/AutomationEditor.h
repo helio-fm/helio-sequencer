@@ -157,11 +157,8 @@ private:
     static constexpr auto curveEventComponentDiameter = 24.f;
 #endif
 
-    Rectangle<float> getCurveEventBounds(float beat,
-        float sequenceLength, double controllerValue) const;
-
-    Rectangle<float> getOnOffEventBounds(float beat,
-        float sequenceLength, bool isPedalDown) const;
+    Rectangle<float> getCurveEventBounds(float beat, double controllerValue) const;
+    Rectangle<float> getOnOffEventBounds(float beat, bool isPedalDown) const;
 
 private:
 
@@ -186,6 +183,8 @@ private:
 
     void applyEventBounds(EventComponentBase *c);
     void applyEventsBounds(SequenceMap *map);
+
+    void insertNewOnOffEventAt(const MouseEvent &e, bool shouldAddPairedEvents);
 
     void reloadTrackMap();
     void loadTrack(const MidiTrack *const track);

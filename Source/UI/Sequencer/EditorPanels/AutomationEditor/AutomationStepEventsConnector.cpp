@@ -30,6 +30,9 @@ AutomationStepEventsConnector::AutomationStepEventsConnector(AutomationEditorBas
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
+
+    jassert(this->firstAliveEventComponent() != nullptr);
+    this->setMouseCursor(this->firstAliveEventComponent()->getMouseCursor());
 }
 
 void AutomationStepEventsConnector::getPoints(float &x1, float &x2, float &y1, float &y2) const
@@ -67,17 +70,20 @@ void AutomationStepEventsConnector::resizeToFit(bool isEventTriggered)
     const bool shouldRepaint = this->isEventTriggered != isEventTriggered;
     this->isEventTriggered = isEventTriggered;
 
-    constexpr auto r = AutomationStepEventComponent::pointOffset;
+    constexpr auto r = AutomationStepEventComponent::pointRadius;
     float x1 = 0.f, x2 = 0.f, y1 = 0.f, y2 = 0.f;
     this->getPoints(x1, x2, y1, y2);
 
-    const bool compactMode = this->firstAliveEventComponent()->getWidth() <= 3;
-    constexpr auto top = r + AutomationStepEventComponent::marginTop;
+    if (x1 >= x2)
+    {
+        this->setBounds({});
+        return;
+    }
+
+    constexpr auto top = r + AutomationStepEventComponent::marginTop - 1;
     const float bottom = y2 - r - AutomationStepEventComponent::marginBottom;
-    this->realBounds = { jmin(x1, x2) + (compactMode ? (r + 1.f) : (r - 1.f)),
-        this->isEventTriggered ? bottom : top,
-        fabsf(x1 - x2) - (compactMode ? r * 2.f : 1.f),
-        this->isEventTriggered ? top : bottom };
+    this->realBounds = { jmin(x1, x2) + r, this->isEventTriggered ? bottom : top,
+        fabsf(x1 - x2), y2 - (this->isEventTriggered ? bottom : top) };
     
     this->setBounds(this->realBounds.toNearestInt());
     
@@ -103,17 +109,17 @@ void AutomationStepEventsConnector::setEditable(bool shouldBeEditable)
 
 void AutomationStepEventsConnector::paint(Graphics &g)
 {
-    if (this->realBounds.getWidth() > AutomationStepEventComponent::pointOffset)
+    if (this->realBounds.getWidth() > AutomationStepEventComponent::pointRadius)
     {
         const auto *child = this->firstAliveEventComponent();
-        g.setColour(child->getColour().withMultipliedAlpha(0.75f));
+        g.setColour(child->getColour());
 
         const float left = this->realBounds.getX() - float(this->getX());
         g.drawHorizontalLine(0, left, this->realBounds.getWidth());
 
         if (this->isHighlighted)
         {
-            g.fillRect(0, this->getHeight() - 8, this->getWidth(), 4);
+            g.fillRect(0, this->getHeight() - 6, this->getWidth(), 4);
         }
     }
 }

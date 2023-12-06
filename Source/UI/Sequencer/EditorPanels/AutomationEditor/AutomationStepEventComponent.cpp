@@ -39,70 +39,71 @@ AutomationStepEventComponent::AutomationStepEventComponent(AutomationEditorBase 
 
 void AutomationStepEventComponent::updateColour()
 {
-    this->colour = this->editor.getColour(this->event)
+    this->dotColour = this->editor.getColour(this->event)
         .withMultipliedSaturation(this->isEditable ? 1.f : 0.4f)
         .withMultipliedAlpha(this->isEditable ? 1.f : 0.2f);
+    this->lineColour = this->dotColour
+        .withMultipliedAlpha(0.75f);
 }
 
 void AutomationStepEventComponent::paint(Graphics &g)
 {
-    const bool prevDownState = this->prevEventHolder != nullptr ?
-        this->prevEventHolder->getEvent().isPedalDownEvent() :
-        Globals::Defaults::onOffControllerState;
-
-    constexpr auto threshold = AutomationStepEventComponent::minLengthInBeats * 3.f;
-
-    const bool isCloseToPrevious = this->prevEventHolder != nullptr &&
-        (this->getEvent().getBeat() - this->prevEventHolder->getEvent().getBeat()) <= threshold;
-
-    const bool isCloseToNext = this->nextEventHolder != nullptr &&
-        (this->nextEventHolder->getEvent().getBeat() - this->getEvent().getBeat()) <= threshold;
-
-    constexpr auto r = AutomationStepEventComponent::pointOffset;
+    constexpr auto r = AutomationStepEventComponent::pointRadius;
     constexpr auto d = r * 2.f;
     constexpr auto top = r + AutomationStepEventComponent::marginTop;
     const float bottom = this->floatLocalBounds.getHeight() - r - AutomationStepEventComponent::marginBottom;
-    const float left = this->floatLocalBounds.getX();
-    const float right = jmax(left + 0.5f, this->floatLocalBounds.getWidth() - r);
+    const float left = this->floatLocalBounds.getX() + r;
+    const float right = jmax(left, this->floatLocalBounds.getWidth() - r);
 
-    g.setColour(this->colour);
-
-    const auto lineColour = this->colour.withMultipliedAlpha(0.75f);
-
-    if (this->event.isPedalDownEvent() && !prevDownState)
+    g.setColour(this->dotColour);
+    if (this->event.isPedalDownEvent())
     {
-        g.fillEllipse(right - r + 0.5f, bottom - r, d, d);
+        //g.fillEllipse(right - r, bottom - r, d, d);
+        g.fillRect(right - r, bottom - r + 1.f, d, d - 2.f);
+        g.fillRect(right - r + 1.f, bottom - r, d - 2.f, d);
+    }
+    else
+    {
+        //g.fillEllipse(right - r, top - r, d, d);
+        g.fillRect(right - r, top - r + 1.f, d, d - 2.f);
+        g.fillRect(right - r + 1.f, top - r, d - 2.f, d);
+    }
 
-        g.setColour(lineColour);
-        const bool compactMode = isCloseToPrevious && this->getWidth() <= 3;
+    const bool previousIsPedalDown = this->prevEventHolder != nullptr ?
+        this->prevEventHolder->getEvent().isPedalDownEvent() :
+        Globals::Defaults::onOffControllerState;
+
+    const bool previousIsPedalUp = !previousIsPedalDown;
+
+    g.setColour(this->lineColour);
+    if (this->event.isPedalDownEvent() && previousIsPedalUp)
+    {
+        const bool compactMode = this->getWidth() <= d &&
+            this->prevEventHolder != nullptr &&
+            (this->getX() - this->prevEventHolder->getRight()) <= 1.f;
+
         if (!compactMode)
         {
-            g.drawLine(right + 0.5f, top, right + 0.5f, bottom - d + 1.f);
-            g.drawHorizontalLine(int(top), left, right + 0.5f);
+            g.drawLine(right, top, right, bottom - d);
+            g.drawHorizontalLine(int(top) - 1, left, right);
         }
     }
-    else if (this->event.isPedalUpEvent() && prevDownState)
+    else if (this->event.isPedalUpEvent() && previousIsPedalDown)
     {
-        g.fillEllipse(right - r, top - r, d, d);
+        const bool compactMode = this->getWidth() <= d &&
+            this->nextEventHolder != nullptr &&
+            (this->nextEventHolder->getX() - this->getRight()) <= 1.f;
 
-        g.setColour(lineColour);
-        const bool compactMode = isCloseToNext && this->getWidth() <= 3;
-        g.drawLine(right, top + d, right, compactMode ? bottom - d + 1.f : bottom);
-        g.drawHorizontalLine(int(bottom), left, compactMode ? right - d : right + 0.5f);
+        g.drawLine(right, top + d, right, compactMode ? bottom - d : bottom);
+        g.drawHorizontalLine(int(bottom), left, compactMode ? right - d : right);
     }
-    else if (this->event.isPedalDownEvent() && prevDownState)
+    else if (this->event.isPedalDownEvent() && previousIsPedalDown)
     {
-        g.fillEllipse(right - r + 0.5f, bottom - r, d, d);
-
-        g.setColour(lineColour);
         g.drawHorizontalLine(int(bottom), left, right - d);
     }
-    else if (this->event.isPedalUpEvent() && !prevDownState)
+    else if (this->event.isPedalUpEvent() && previousIsPedalUp)
     {
-        g.fillEllipse(right - r, top - r, d, d);
-
-        g.setColour(lineColour);
-        g.drawHorizontalLine(int(top), left, right - d);
+        g.drawHorizontalLine(int(top) - 1, left, right - d);
     }
 
     if (this->isHighlighted)
@@ -123,7 +124,7 @@ bool AutomationStepEventComponent::hitTest(int x, int y)
         return false;
     }
 
-    return Component::hitTest(x, y);
+    return y > AutomationStepEventComponent::marginTop;
 }
 
 void AutomationStepEventComponent::parentHierarchyChanged()

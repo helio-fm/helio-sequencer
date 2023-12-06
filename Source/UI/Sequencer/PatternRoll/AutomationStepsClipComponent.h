@@ -76,7 +76,7 @@ public:
 
 protected:
 
-    void insertNewEventAt(const MouseEvent &e, bool shouldAddTriggeredEvent);
+    void insertNewEventAt(const MouseEvent &e, bool shouldAddPairedEvents);
 
     Rectangle<float> getEventBounds(float targetBeat, float sequenceLength, bool isPedalDown) const;
 

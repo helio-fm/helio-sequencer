@@ -282,15 +282,13 @@ void AutomationEditor::getBeatValueByPosition(int x, int y,
 Rectangle<float> AutomationEditor::getEventBounds(const AutomationEvent &event, const Clip &clip) const
 {
     const auto *seqence = event.getSequence();
-    const float sequenceLength = seqence->getLengthInBeats();
     const float beat = event.getBeat() + clip.getBeat();
     return seqence->getTrack()->isOnOffAutomationTrack() ?
-        this->getOnOffEventBounds(beat, sequenceLength, event.isPedalDownEvent()) :
-        this->getCurveEventBounds(beat, sequenceLength, event.getControllerValue());
+        this->getOnOffEventBounds(beat, event.isPedalDownEvent()) :
+        this->getCurveEventBounds(beat, event.getControllerValue());
 }
 
-Rectangle<float> AutomationEditor::getCurveEventBounds(float beat,
-    float sequenceLength, double controllerValue) const
+Rectangle<float> AutomationEditor::getCurveEventBounds(float beat, double controllerValue) const
 {
     constexpr auto diameter = AutomationEditor::curveEventComponentDiameter;
     const float x = float(this->roll->getXPositionByBeat(beat, double(this->getWidth())));
@@ -298,15 +296,14 @@ Rectangle<float> AutomationEditor::getCurveEventBounds(float beat,
     return { x - (diameter / 2.f), y - (diameter / 2.f), diameter, diameter };
 }
 
-Rectangle<float> AutomationEditor::getOnOffEventBounds(float beat,
-    float sequenceLength, bool isPedalDown) const
+Rectangle<float> AutomationEditor::getOnOffEventBounds(float beat, bool isPedalDown) const
 {
-    const float minWidth = 2.f;
+    const float minWidth = AutomationStepEventComponent::pointRadius * 2.f;
     const float w = jmax(minWidth,
         float(this->roll->getBeatWidth()) * AutomationStepEventComponent::minLengthInBeats);
 
     const float x = float(this->roll->getXPositionByBeat(beat, double(this->getWidth())));
-    return { x - w + AutomationStepEventComponent::pointOffset, 0.f, w, float(this->getHeight()) };
+    return { x - w + AutomationStepEventComponent::pointRadius, 0.f, w, float(this->getHeight()) };
 }
 
 bool AutomationEditor::hasEditMode(RollEditMode::Mode mode) const noexcept
@@ -472,16 +469,21 @@ void AutomationEditor::mouseDown(const MouseEvent &e)
 
     this->panningStart = e.getPosition();
 
-    if (this->isDrawingEvent(e) &&
-        this->activeClip.hasValue() &&
-        !this->activeClip->getPattern()->getTrack()->isOnOffAutomationTrack())
+    if (this->isDrawingEvent(e) && this->activeClip.hasValue())
     {
-        this->handDrawingHelper = make<AutomationHandDrawingHelper>(*this);
-        this->addAndMakeVisible(this->handDrawingHelper.get());
-        this->handDrawingHelper->setBounds(this->getLocalBounds());
-        this->handDrawingHelper->setStartMousePosition(e.position);
-        this->handDrawingHelper->updateCurves();
-        this->handDrawingHelper->repaint();
+        if (this->activeClip->getPattern()->getTrack()->isOnOffAutomationTrack())
+        {
+            this->insertNewOnOffEventAt(e, true);
+        }
+        else
+        {
+            this->handDrawingHelper = make<AutomationHandDrawingHelper>(*this);
+            this->addAndMakeVisible(this->handDrawingHelper.get());
+            this->handDrawingHelper->setBounds(this->getLocalBounds());
+            this->handDrawingHelper->setStartMousePosition(e.position);
+            this->handDrawingHelper->updateCurves();
+            this->handDrawingHelper->repaint();
+        }
     }
     else if (this->isDraggingEvent(e))
     {
@@ -1205,4 +1207,54 @@ AutomationEditor::EventComponentBase *AutomationEditor::createCurveEventComponen
 AutomationEditor::EventComponentBase *AutomationEditor::createOnOffEventComponent(const AutomationEvent &event, const Clip &clip)
 {
     return new AutomationStepEventComponent(*this, event, clip);
+}
+
+void AutomationEditor::insertNewOnOffEventAt(const MouseEvent &e, bool shouldAddPairedEvents)
+{
+    if (!this->activeClip.hasValue())
+    {
+        jassertfalse;
+        return;
+    }
+
+    if (!this->patternMap.contains(*this->activeClip))
+    {
+        jassertfalse;
+        return;
+    }
+
+    const auto *track = this->activeClip->getPattern()->getTrack();
+    if (!track->isOnOffAutomationTrack())
+    {
+        jassertfalse;
+        return;
+    }
+
+    auto *sequence = static_cast<AutomationSequence *>(track->getSequence());
+
+    const float draggingBeat = this->getBeatByPosition(e.x, *this->activeClip);
+
+    float prevBeat = -FLT_MAX;
+    float prevCV = Globals::Defaults::onOffControllerState;
+    for (int i = 0; i < sequence->size(); ++i)
+    {
+        const auto *nextEvent = static_cast<AutomationEvent *>(sequence->getUnchecked(i));
+        if (prevBeat < draggingBeat && nextEvent->getBeat() > draggingBeat)
+        {
+            break;
+        }
+
+        prevCV = nextEvent->getControllerValue();
+        prevBeat = nextEvent->getBeat();
+    }
+
+    this->project.checkpoint();
+
+    const float invertedCV = 1.f - prevCV;
+    sequence->insert(AutomationEvent(sequence, draggingBeat, invertedCV), true);
+
+    if (shouldAddPairedEvents)
+    {
+        sequence->insert(AutomationEvent(sequence, draggingBeat + 0.5f, (1.f - invertedCV)), true);
+    }
 }

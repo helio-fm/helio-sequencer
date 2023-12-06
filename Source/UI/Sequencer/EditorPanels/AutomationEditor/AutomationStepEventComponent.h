@@ -48,7 +48,7 @@ public:
 
     const Colour &getColour() const noexcept override
     {
-        return this->colour;
+        return this->lineColour;
     }
 
     void setEditable(bool shouldBeEditable) override;
@@ -85,10 +85,10 @@ public:
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
     
-    static constexpr auto pointOffset = 2.5f;
+    static constexpr auto pointRadius = 2.f;
     static constexpr auto minLengthInBeats = 0.25f;
-    static constexpr auto marginTop = 20.f;
-    static constexpr auto marginBottom = 18.f;
+    static constexpr auto marginTop = 22.f;
+    static constexpr auto marginBottom = 16.f;
 
 private:
 
@@ -100,7 +100,8 @@ private:
     const AutomationEvent &event;
     const Clip &clip;
 
-    Colour colour;
+    Colour dotColour;
+    Colour lineColour;
     void updateColour() override;
 
     ComponentDragger dragger;
