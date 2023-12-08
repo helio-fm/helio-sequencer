@@ -1,12 +1,12 @@
 # Tips and tricks
 
-This page lists features, hacks and nuances, which might be handy, or non-obvious, or both.
+This page lists features, hacks, and nuances that may be handy, non-obvious, or both.
 
 ## Piano roll
 
 ### Warnings
 
-While playback, Helio may sometimes draw red or yellow vertical warning lines:
+During playback, Helio may sometimes draw red or yellow vertical warning lines:
 
 ![warnings]
 
@@ -14,7 +14,7 @@ These are the clipping and over-saturation warning markers:
 
  - red lines indicate problematic regions with [clipping sound](https://en.wikipedia.org/wiki/Clipping_(audio)),
 
- - yellow warning lines will appear in the areas where the perceived loudness (a.k.a. the root mean square loudness) is way lower than the peak loudness, which is considered ~~harmful~~ unhealthy: in my setup it typically means that I have some redundant duplicate notes at the same place.
+ - yellow warning lines will appear in the areas where the perceived loudness (a.k.a. the root mean square loudness) is way lower than the peak loudness, which is considered ~~harmful~~ unhealthy: in my setup it typically means that I have some redundant duplicate notes in the same place.
 
 ### Spacebar panning
 
@@ -22,31 +22,25 @@ One quick way to switch between the current editing mode and the canvas panning 
 
 ![space-drag]
 
-Dragging with the right mouse button does a similar thing, but it will also switch to another track, if clicked on any semi-transparent note.
+Dragging with the right mouse button does the same thing, but it also switches to another track when clicked on any semi-transparent note.
 
 ### Time measure tool
 
-Hold the `Space` key, then click-and-drag over the timeline to measure time between two points at the timeline:
+Hold the `Space` key, then click-and-drag over the timeline to measure time between two points on the timeline:
 
 ![time-measure-tool]
 
 ### Sound probe tool
 
-Finally, holding `Space` and clicking at the timeline is something I call "sound probe", which is supposed to give an idea of what notes are playing at the given point:
+Finally, holding `Space` and clicking on the timeline is what I call a "sound probe" and it's supposed to give you an idea of what notes are playing at the given point:
 
 ![sound-probe]
 
 ### Range selection
 
-Click-and-drag at the timeline while holding any modifier key (`Control`/`Alt`/`Shift`) to select all notes or clips in some time range:
+Click-and-drag on the timeline while holding any modifier key (`Control`/`Alt`/`Shift`) to select all notes or clips in a time range:
 
 ![range-select]
-
-### Velocity map fine-tuning
-
-It's possible to use the mouse wheel when dragging the velocity ramping tool to control how it blends with the original notes' velocities. The main use case for that is fine-tuning the dynamics:
-
-![velocity-map-fine-tuning]
 
 ### Resizing a group
 
@@ -56,49 +50,65 @@ Resize a group of notes proportionally by holding `Shift`:
 
 ### Drag-and-copy
 
-Hold `Shift` to drag-and-copy notes in the piano roll, clips in the pattern roll, key/time signatures and annotations at the timeline:
+Hold `Shift` to drag-and-copy notes in the piano roll, clips in the pattern roll, key/time signatures, annotations or automation events:
 
 ![drag-and-copy]
 
 ### Pen tool
 
-Also hold `Shift` or any modifier key to change the behavior of the pen tool when adding notes. By default, the newly added note is edited in the transpose-and-resize mode. Alternatively, it's the drag mode, more familiar:
+Also hold `Shift` or any modifier key to change the behavior of the pen tool when adding notes. By default, the newly added note is edited in transpose-and-resize mode. Alternatively, there is the drag mode, which is more familiar:
 
 ![pen-tool-alt]
 
+### Fine-tuning dynamics
+
+Use the pen tool to hand-draw custom ramps in the volume editor panel. Control how the ramp curve blends with the original velocities by using the mouse wheel:
+
+![velocity-panel-hand-drawing]
+
+In the default edit mode, fine-tune volume of the selected notes: dragging them vertically with no modifier keys will shift the velocities linearly, dragging while holding `Alt` will scale them.
+
+Holding `Shift` while dragging will shape-shift group's velocities into a sine (when dragging up) or flatten them, reducing dynamic range (when dragging down):
+
+![velocity-panel-fine-tuning]
+
+*(the indicator displays the group's lowest and highest MIDI volume)*
+
+You can also adjust notes volume linearly just by middle-button dragging the note components in the piano roll directly.
+
 ### UI flags
 
-A couple of display options are available to provide a visual cue. They are toggled either in the navigation panel, or via hotkeys (`G` and `H` by default).
+A couple of display options are available to provide a visual cue. They can be toggled using the navigation panel or hotkeys (`G` and `H` by default).
 
-The first one is for displaying the note name guides:
+The first is used for displaying the note name guides:
 
 ![note-names]
 
-Another one highlights the in-scale keys of the key signatures that are added to the timeline. If you prefer C Major coloring in the piano roll, just turn it off:
+Another highlights the in-scale keys of the key signatures that have been added to the timeline. If you prefer C Major coloring in the piano roll, just turn it off:
 
 ![scales-highlighting]
 
 The mini-map mode can be toggled with `B` hotkey, or by clicking at any area except the screen range rectangle.
 
-When in compact mode, it is stretched to fit all project:
+When in compact mode, the mini-map is stretched to fit all project:
 
 ![toggle-minimap]
 
-Tip: when in full mode, the mini-map allows to draw a region to zoom at:
+When in full mode, the mini-map allows you to draw a region to zoom in on:
 
 ![zoom-to-region]
 
 ### Chord tool
 
-By double-clicking on a row in the piano roll, you invoke the chord tool:
+By double-clicking on a row in the piano roll you invoke the chord tool:
 
 ![chord-tool]
 
-It picks the current key signature from the timeline to determine what scale and root key to use to generate chords. Hence the main limitation of this tool: it can only generate chords that are easy to define with in-scale keys.
+It picks the current key signature from the timeline to determine which scale and root key to use to generate chords. Hence the main limitation of this tool: it can only generate chords that are easy to define with in-scale keys.
 
-It can be dragged around by the center node — kinda helpful if you clicked the wrong row or position.
+It can be dragged around by the center node, which is helpful if you clicked the wrong row or position.
 
-Since it depends on the harmonic context, it will do nothing when placed on the out-of-scale note (the grey row). It might be a good idea to make sure the [scales highlighting](#ui-flags) is enabled to avoid confusion.
+Since it depends on the harmonic context, it will do nothing when placed on an out-of-scale note (darker rows). To avoid confusion, make sure the [scales highlighting](#ui-flags) option is enabled.
 
 #### See also: [piano roll hotkeys](hotkeys.md#piano-roll), [refactoring options](refactoring.md)
 
@@ -107,27 +117,27 @@ Since it depends on the harmonic context, it will do nothing when placed on the 
 
 ### Knife tool
 
-In my workflow, I'm often adding new tracks with a knife tool: even though there's a normal way to add an empty track via project menu, or duplicate a track, I often end up having added some sketches in different places of a single sequence, and then, after switching to the pattern mode I see that they represent different parts, and can be cut into different tracks:
+In my workflow, I'm often adding new tracks with a knife tool: even though there's a normal way to add an empty track via project menu, or duplicate a track, I often end up having added some sketches in different places of a single sequence, and then seeing that they represent different parts, and can be cut into different tracks after switching to the pattern mode:
 
 ![patterns-knife-tool]
 
 #### Merging tracks
 
-Knife tool has an alternative mode: use right-click-&-drag (or long-tap-&-drag on mobile platforms) to merge one clip with another:
+Knife tool has an alternative mode: use right-click and drag (or long-tap and drag on mobile platforms) to merge one clip with another:
 
 ![patterns-merge-tool]
 
 ### Clips and track grouping
 
-In the example above, two split tracks remain on the same row because the tracks are grouped by name, and the knife tool keeps the track name the same. Pattern roll can also group tracks by color, or by instrument, or by track id — yet grouping by name works better for me.
+In the example above, two split tracks remain on the same row because the tracks are grouped by name, and the knife tool keeps the track name the same. Pattern roll can also group tracks by color, instrument, or track id — yet grouping by name works better for me.
 
-So, the segments on one row might be either different tracks, or they also might be several instances (or "clips") of the same track. Instances always share the same notes, and have the same name and color, but they can be slightly modified: have different position, key shift or volume multiplier, which is mainly meant for prototyping:
+So, the segments on one row could be either different tracks or multiple instances (or "clips") of the same track. Instances always share the same notes, and have the same name and color, but they can be slightly modified: have different position, key shift or volume multiplier, which is mainly meant for prototyping:
 
 ![patterns-clips]
 
-Note that when you select an item in the pattern roll, all its instances are highlighted with a dashed header: this helps to tell where are the "instances", and where are other tracks of the same name or color on the same row. A quick way to convert an instance to a unique track is `F6` hotkey.
+When you select an item in the pattern roll, all of its instances are highlighted with a dashed header: this helps distinguish between "instances" and other tracks with the same name or color on the same row. The `F6` hotkey is a quick way to convert an instance to a unique track.
 
-Track grouping also affects MIDI export: all segments on one row will be exported as one track in the resulting MIDI file.
+Track grouping also affects MIDI export: all segments on a single row are exported as a single track in the resulting MIDI file.
 
 #### See also: [pattern roll hotkeys](hotkeys.md#pattern-roll)
 
@@ -148,8 +158,9 @@ Track grouping also affects MIDI export: all segments on one row will be exporte
 
 [chord-tool]: images/chord-tool.png "The chord tool"
 
-[warnings]: images/warnings.png "Clipping and oversaturation warning markers"
-[velocity-map-fine-tuning]: images/velocity-map-fine-tuning.png "Velocity map fine-tuning"
+[warnings]: images/warnings.png "Clipping and over-saturation warning markers"
+[velocity-panel-fine-tuning]: images/velocity-panel-fine-tuning.png "Velocity fine-tuning"
+[velocity-panel-hand-drawing]:  images/velocity-panel-hand-drawing.png "Hand-drawing velocities shape"
 
 [patterns-knife-tool]: images/patterns-knife-tool.png "Using knife tool in pattern mode"
 [patterns-merge-tool]: images/patterns-merge-tool.png "Merging tracks in pattern mode"

@@ -195,7 +195,7 @@ Most buttons on the sidebars have keyboard shortcuts, which makes them kinda red
  * ![sidebar-left-1] — switch the editor view between the piano roll and the pattern roll (`Tab`),
  * ![sidebar-left-2] — zoom out (`Shift + Z`), zoom in (`Z`), and zoom selection (`Control + Tab`),
  * ![sidebar-left-3] — jump over the timeline events (`,` and `.`),
- * ![sidebar-left-4] — toggle the [velocity map](#velocity-map) (`V`),
+ * ![sidebar-left-4] — toggle the [volume/automation editors](#volume-and-automation-editors) (`V`),
  * ![sidebar-left-5] — UI [flags](tips-and-tricks.md#ui-flags) that toggle scales highlighting and the note guides (`H` and `G`),
  * ![sidebar-left-6] — a simple waveform or spectrogram view.
 
@@ -204,7 +204,7 @@ Most buttons on the sidebars have keyboard shortcuts, which makes them kinda red
 This sidebar is responsible for editing tools and playback control:
 
  * ![sidebar-right-1] — toggle the playback loop over the selection (`F11`),
- * ![sidebar-right-2] — edit [modes](#edit-modes) (`1`, `2`, `3`, `4`),
+ * ![sidebar-right-2] — edit [modes](#edit-modes) (`1`, `2`, `3`),
  * ![sidebar-right-3] — some other tools - the chord tool and arpeggiators, if available,
  * ![sidebar-right-4] — copy and paste, undo and redo,
  * ![sidebar-right-5] — playback (`Space` or `Enter`) and recording (`F12`) control.
@@ -227,10 +227,10 @@ Interacting with piano roll also depends on the current edit mode:
    * alternatively, use it to delete notes or clips with right mouse button,
  * **knife mode**: cuts notes in the piano roll, [cuts tracks](tips-and-tricks.md#knife-tool) in the pattern roll,
    * alternatively, use it to [merge tracks](tips-and-tricks.md#merging-tracks) or notes with right mouse button,
- * **drag-only mode**: a kind of auxiliary mode, hold `Space` to [toggle](tips-and-tricks.md#spacebar-panning) it temporarily,
+ * **drag-only mode**: an auxiliary mode, hold `Space` to [toggle](tips-and-tricks.md#spacebar-panning) it temporarily,
  * **selection mode** is only displayed on mobile platforms.
 
-All notes, when edited, are aligned to the grid. The grid resolution (the density of barlines) depends on the zoom level and supports up to 1/64 notes. Tip: holding `Alt` while editing notes disables snapping to the grid.
+All notes, when edited, are aligned to the grid. The grid resolution (the density of bar lines) depends on the zoom level and supports up to 1/64 notes. Tip: holding `Alt` while editing notes disables snapping to the grid.
 
 All edits are undoable, and there is no limit to the number of undo actions available until the app is restarted. Additionally, each project saves the last 16 undo actions (32 on mobile platforms), which remain undoable after restarting the app. This limit can be changed by editing the main [configuration file](index.md#settingshelio).
 
@@ -242,33 +242,35 @@ The editor relies heavily on [hotkeys](hotkeys.md#piano-roll); feel free to expl
 
 Add new tracks by duplicating the existing ones (`F5`), or via project menu, or by [cutting](tips-and-tricks.md#knife-tool) tracks with the knife tool in the pattern roll.
 
-### Velocity map
+### Volume and automation editors
 
-The velocity levels editor (toggled by `V` hotkey) provides a way to visualize and draw gradual increase/decrease in note volume.
+The bottom panel (toggled by `V` hotkey) combines the volume editor and the automation editor:
 
-As well as the piano roll, the velocity map limits its editable scope to the active track. But in addition, if any notes are selected, the editable scope is limited to the selection, to make it easier to draw more complex ramps for different chunks of the track:
+![bottom-editors-panel]
 
-![velocity-map-toggle]
+*(the piano roll allows you to manually switch between volume and automation tracks, while the pattern roll switches the editor type based on the selected clip)*
 
-At the moment of writing, only linear ramps are implemented:
+The volume editor, like the piano roll, restricts its editable scope to the active clip. Furthermore, if any notes in the roll are selected, the editable scope is limited to the selection, making it easier to fine-tune and [draw more complex ramps](tips-and-tricks.md#fine-tuning-dynamics) for different sections of the track.
 
-![velocity-map-ramps]
+The automation editor's editable scope is limited to the active clip and the selected controller. The active clip is determined by the pattern roll's selection or by the closest range intersection with the piano roll's active clip.
 
-You can also change note velocities without this editor, just by middle-button dragging the note components on the roll.
+Unlike automation clips in the pattern roll, the automation editor allows you to use the pen tool to hand-draw custom curves for curve automations.
+
+Both the volume editor and the automation editor currently only support the default edit mode and the pen tool (no selection or knife tool).
 
 ### MIDI recording
 
-The record button (`F12`) will try to auto-detect the available and enabled MIDI input device, or provide a choice if there are more than one (the choice is "remembered" and can be changed later in the settings page):
+The record button (hotkey `F12`) will try to auto-detect the available and enabled MIDI input device, or will provide a selection if there are multiple (the choice is "remembered" and can be changed later in the settings page):
 
 ![recording-start]
 
-If the recording mode is on, but the playback has not started yet, it will wait until it receives the first MIDI event and start recording & playback.
+If the recording mode is on, but playback has not yet started, it will wait until it receives the first MIDI event and start recording & playback.
 
 In the piano roll mode, it always records to the selected track/clip:
 
 ![recording-piano-roll]
 
-In the pattern roll, it either records to the selected track/clip, or, if no piano clip is selected, it adds one, once the actual recording starts.
+In the pattern roll, it either records to the selected track/clip, or if no piano clip is selected, it adds one once the recording begins.
 
 ## Pattern roll
 
@@ -284,7 +286,7 @@ Pattern roll also allows you to tweak some track parameters, like key offset of 
 
 ### Global tempo
 
-Pattern roll is also the place to edit various MIDI controller automation tracks - most notable, the tempo track(s):
+Pattern roll is also where you can edit various MIDI controller automation tracks, most notably the tempo track(s):
 
 ![tempo-automation]
 
@@ -298,11 +300,13 @@ To interact with it:
 
 ![tempo-dialog]
 
-*Tip: use the mouse wheel to quickly ajdust the tempo in this dialog.*
+*Tip: use the mouse wheel to quickly adjust the tempo in this dialog.*
 
-Often, you only need one tempo for the whole song - for that, pick *"Set one tempo"* menu item in the tempo track menu, or project refactoring menu.
+*Tip: adding a tempo node while holding any mod key will immediately open the tempo dialog.*
 
-*Tip: use `Shift +` and `Shift -` hotkeys to shift tempo tracks 1 BPM up or down. In the pattern roll it affects all selected tempo tracks, in the piano roll it affects all tempo tracks.*
+Often, you only need one tempo for the whole song - for that, pick *"Set one tempo"* menu item from the tempo track menu or the project refactoring menu.
+
+*Tip: use `Shift +` and `Shift -` hotkeys to shift tempo tracks 1 BPM up or down. It affects all selected tempo tracks in the pattern roll, and all tempo tracks in the piano roll.*
 
 ### Mute and solo
 
@@ -346,12 +350,11 @@ The right side shows the tree of all revisions that you have saved. Note a coupl
 [piano-roll]: images/piano-roll.png "Interaction with piano roll canvas"
 [patterns]: images/patterns-arrange.png "Pattern mode for arrangements"
 [patterns-clips]: images/patterns-track-clips.png "Track instances (clips) and their modifications"
+[bottom-editors-panel]: images/bottom-editors-panel.png "Volume/automations editors panel"
+
 [tempo-automation]: images/tempo-automation.png "Changing global tempo in pattern mode"
 [tempo-dialog]: images/tempo-dialog.png "Not quite my tempo. It's all good, no worries."
 [solo-clips]: images/solo-clips.png "While some clips are soloed, all others are implicitly muted."
-
-[velocity-map-toggle]: images/velocity-map-toggle.png "Velocity map overview"
-[velocity-map-ramps]: images/velocity-map-ramps.png "Velocity map linear ramps"
 
 [timeline-events]: images/timeline-events.png "Timeline: interacting and events menu"
 [timeline-annotations]: images/timeline-annotations.png "Timeline: annotation events"
