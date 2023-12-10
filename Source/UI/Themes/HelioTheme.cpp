@@ -300,8 +300,11 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 
 Font HelioTheme::getTextButtonFont(TextButton &button, int buttonHeight)
 {
-    return Font(Font::getDefaultSansSerifFontName(),
-        jmin(Globals::UI::Fonts::L, float(buttonHeight * 0.75f)), Font::plain);
+#if PLATFORM_DESKTOP
+    return { Globals::UI::Fonts::L };
+#elif PLATFORM_MOBILE
+    return { Globals::UI::Fonts::M };
+#endif
 }
 
 void HelioTheme::drawButtonText(Graphics &g, TextButton &button,

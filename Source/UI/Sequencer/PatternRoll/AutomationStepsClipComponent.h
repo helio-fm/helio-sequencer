@@ -49,6 +49,7 @@ public:
     void getBeatValueByPosition(int x, int y, const Clip &clip, float &value, float &beat) const override;
     float getBeatByPosition(int x, const Clip &clip) const override;
     bool hasEditMode(RollEditMode::Mode mode) const noexcept override;
+    bool isMultiTouchEvent(const MouseEvent &e) const noexcept override;
 
     //===------------------------------------------------------------------===//
     // Component

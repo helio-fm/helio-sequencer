@@ -154,7 +154,8 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     this->scaleNameEditor->setPopupMenuEnabled(true);
 
     this->scaleNameEditor->addListener(this);
-    this->scaleNameEditor->setFont(Globals::UI::Fonts::L);
+    this->scaleNameEditor->setFont(Defaults::textEditorFont);
+    this->scaleNameEditor->setIndents(Defaults::textEditorLeftIndent, Defaults::textEditorTopIndent);
 
     this->reloadScalesList();
 

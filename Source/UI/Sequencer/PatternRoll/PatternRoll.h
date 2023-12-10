@@ -129,7 +129,7 @@ private:
 #if PLATFORM_DESKTOP
     static constexpr auto clipHeight = 54;
 #elif PLATFORM_MOBILE
-    static constexpr auto clipHeight = 40;
+    static constexpr auto clipHeight = 38;
 #endif
 
     static constexpr auto trackHeaderHeight = 3;

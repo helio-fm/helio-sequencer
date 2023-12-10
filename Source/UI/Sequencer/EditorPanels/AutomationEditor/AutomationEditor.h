@@ -53,6 +53,7 @@ public:
     void getBeatValueByPosition(int x, int y, const Clip &clip, float &value, float &beat) const override;
     float getBeatByPosition(int x, const Clip &clip) const override;
     bool hasEditMode(RollEditMode::Mode mode) const noexcept override;
+    bool isMultiTouchEvent(const MouseEvent &e) const noexcept override;
 
     //===------------------------------------------------------------------===//
     // EditorPanelBase
@@ -72,15 +73,13 @@ public:
 
     void multiTouchStartZooming() override;
     void multiTouchContinueZooming(
-            const Rectangle<float> &relativePosition,
-            const Rectangle<float> &relativePositionAnchor,
-            const Rectangle<float> &absolutePositionAnchor) override;
+        const Rectangle<float> &relativePosition,
+        const Rectangle<float> &relativePositionAnchor,
+        const Rectangle<float> &absolutePositionAnchor) override;
     void multiTouchEndZooming(const MouseEvent &anchorEvent) override;
 
     Point<float> getMultiTouchRelativeAnchor(const MouseEvent &e) override;
     Point<float> getMultiTouchAbsoluteAnchor(const MouseEvent &e) override;
-
-    bool hasMultiTouch(const MouseEvent &e) const;
 
     //===------------------------------------------------------------------===//
     // RollEditMode::Listener
@@ -154,7 +153,7 @@ private:
 #if PLATFORM_DESKTOP
     static constexpr auto curveEventComponentDiameter = 20.f;
 #elif PLATFORM_MOBILE
-    static constexpr auto curveEventComponentDiameter = 24.f;
+    static constexpr auto curveEventComponentDiameter = 28.f;
 #endif
 
     Rectangle<float> getCurveEventBounds(float beat, double controllerValue) const;

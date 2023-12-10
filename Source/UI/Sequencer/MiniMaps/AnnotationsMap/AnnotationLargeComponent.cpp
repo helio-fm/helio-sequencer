@@ -78,7 +78,7 @@ void AnnotationLargeComponent::mouseMove(const MouseEvent &e)
 
 void AnnotationLargeComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->editor.rollHasMultiTouch(e))
+    if (this->editor.isMultiTouchEvent(e))
     {
         return;
     }
@@ -108,7 +108,7 @@ void AnnotationLargeComponent::mouseDown(const MouseEvent &e)
 
 void AnnotationLargeComponent::mouseDrag(const MouseEvent &e)
 {
-    if (this->editor.rollHasMultiTouch(e))
+    if (this->editor.isMultiTouchEvent(e))
     {
         return;
     }

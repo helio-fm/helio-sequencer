@@ -56,7 +56,7 @@ void KeySignatureLargeComponent::paint(Graphics &g)
 
 void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->editor.rollHasMultiTouch(e))
+    if (this->editor.isMultiTouchEvent(e))
     {
         return;
     }
@@ -81,7 +81,7 @@ void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)
 
 void KeySignatureLargeComponent::mouseDrag(const MouseEvent &e)
 {
-    if (this->editor.rollHasMultiTouch(e))
+    if (this->editor.isMultiTouchEvent(e))
     {
         return;
     }

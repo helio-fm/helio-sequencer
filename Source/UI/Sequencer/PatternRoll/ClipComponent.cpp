@@ -111,7 +111,7 @@ void ClipComponent::mouseDoubleClick(const MouseEvent &e)
 
 void ClipComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->roll.hasMultiTouch(e))
+    if (this->roll.isMultiTouchEvent(e))
     {
         return;
     }
@@ -150,7 +150,7 @@ void ClipComponent::mouseDown(const MouseEvent &e)
 
 void ClipComponent::mouseDrag(const MouseEvent &e)
 {
-    if (this->roll.hasMultiTouch(e))
+    if (this->roll.isMultiTouchEvent(e))
     {
         return;
     }
@@ -225,7 +225,7 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
 void ClipComponent::mouseUp(const MouseEvent &e)
 {
     // no multi-touch check here, need to exit the editing mode (if any) even in multi-touch
-    //if (this->roll.hasMultiTouch(e)) { return; }
+    //if (this->roll.isMultiTouchEvent(e)) { return; }
 
     if (!this->isActive())
     {

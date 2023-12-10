@@ -159,7 +159,7 @@ void ProjectMapsScroller::paint(Graphics &g)
 
 void ProjectMapsScroller::mouseDown(const MouseEvent &event)
 {
-    if (this->roll->hasMultiTouch(event))
+    if (this->roll->isMultiTouchEvent(event))
     {
         return;
     }
@@ -181,7 +181,7 @@ void ProjectMapsScroller::mouseDown(const MouseEvent &event)
 
 void ProjectMapsScroller::mouseDrag(const MouseEvent &event)
 {
-    if (this->roll->hasMultiTouch(event))
+    if (this->roll->isMultiTouchEvent(event))
     {
         return;
     }
@@ -233,7 +233,7 @@ void ProjectMapsScroller::mouseUp(const MouseEvent &event)
 {
     this->setMouseCursor(MouseCursor::NormalCursor);
 
-    if (this->roll->hasMultiTouch(event))
+    if (this->roll->isMultiTouchEvent(event))
     {
         return;
     }
@@ -315,10 +315,10 @@ void ProjectMapsScroller::ScrolledComponent::switchToRoll(SafePointer<RollBase> 
     this->roll = roll;
 }
 
-bool ProjectMapsScroller::ScrolledComponent::rollHasMultiTouch(const MouseEvent &e) const
+bool ProjectMapsScroller::ScrolledComponent::isMultiTouchEvent(const MouseEvent &e) const noexcept
 {
     jassert(this->roll != nullptr);
-    return this->roll->hasMultiTouch(e);
+    return this->roll->isMultiTouchEvent(e);
 }
 
 //===----------------------------------------------------------------------===//

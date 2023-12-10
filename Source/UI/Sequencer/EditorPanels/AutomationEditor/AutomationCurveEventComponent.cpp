@@ -99,7 +99,7 @@ void AutomationCurveEventComponent::paint(Graphics &g)
         g.fillRect(centre.x - 1.f, h - 1.f, 2.f, 1.f);
     }
 
-    g.fillEllipse(centre.x - 2.f, centre.y - 2.f, 4.f, 4.f);
+    g.fillEllipse(centre.x - 3.f, centre.y - 3.f, 6.f, 6.f);
     g.fillEllipse(circleMargin, circleMargin,
         w - circleMargin * 2.f, h - circleMargin * 2.f);
 }
@@ -145,6 +145,11 @@ void AutomationCurveEventComponent::mouseExit(const MouseEvent &e)
 
 void AutomationCurveEventComponent::mouseDown(const MouseEvent &e)
 {
+    if (this->editor.isMultiTouchEvent(e))
+    {
+        return;
+    }
+
     jassert(this->isEditable);
     if (e.mods.isLeftButtonDown())
     {
@@ -158,6 +163,16 @@ void AutomationCurveEventComponent::mouseDown(const MouseEvent &e)
 
 void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
 {
+    if (this->editor.isMultiTouchEvent(e))
+    {
+        if (this->tuningIndicator != nullptr)
+        {
+            this->tuningIndicator->repositionAtTargetCenter(this);
+        }
+
+        return;
+    }
+
     jassert(this->isEditable);
     if (this->isDragging)
     {
@@ -313,11 +328,11 @@ void AutomationCurveEventComponent::updateHelper()
 {
     if (this->helper && this->connector && this->nextEventHolder)
     {
-        constexpr auto d = AutomationCurveEventComponent::helperComponentDiameter;
+        const auto d = float(this->getWidth()) * 0.65f;
         const auto linePos = this->connector->getPosition();
         const auto lineCentre = this->connector->getCentrePoint();
-        const Rectangle<int> bounds(linePos.getX() + int(lineCentre.getX()) - int(d / 2),
-            linePos.getY() + int(lineCentre.getY() + 0.5f - (d / 2.f)),
+        const Rectangle<int> bounds(linePos.getX() + int(lineCentre.getX() - (d / 2.f)),
+            linePos.getY() + int(lineCentre.getY() - (d / 2.f) + 0.5f),
             int(d), int(d));
 
         this->helper->setEditable(this->isEditable);

@@ -159,10 +159,10 @@ public:
     Point<float> getMultiTouchRelativeAnchor(const MouseEvent &e) override;
     Point<float> getMultiTouchAbsoluteAnchor(const MouseEvent &e) override;
 
-    bool hasMultiTouch(const MouseEvent &e) const;
+    bool isMultiTouchEvent(const MouseEvent &e) const noexcept;
 
     void longTapEvent(const Point<float> &position,
-                      const WeakReference<Component> &target) override;
+        const WeakReference<Component> &target) override;
 
     //===------------------------------------------------------------------===//
     // SmoothPanListener

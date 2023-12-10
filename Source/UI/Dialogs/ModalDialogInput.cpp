@@ -57,14 +57,15 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message,
     this->textEditor->setPopupMenuEnabled(true);
 
     this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
-    this->textEditor->setFont(Globals::UI::Fonts::L);
+    this->textEditor->setFont(Defaults::textEditorFont);
+    this->textEditor->setIndents(Defaults::textEditorLeftIndent, Defaults::textEditorTopIndent);
     this->textEditor->setText(this->input, dontSendNotification);
     this->textEditor->addListener(this);
 
     this->okButton->setButtonText(okText);
     this->cancelButton->setButtonText(cancelText);
 
-    this->setSize(460, isPhoneLayout ? 120 : 160);
+    this->setSize(475, isPhoneLayout ? 110 : 160);
 
     this->updatePosition();
     this->updateOkButtonState();

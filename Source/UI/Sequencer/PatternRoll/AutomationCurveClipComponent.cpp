@@ -92,6 +92,11 @@ bool AutomationCurveClipComponent::hasEditMode(RollEditMode::Mode mode) const no
     return this->project.getEditMode().isMode(mode);
 }
 
+bool AutomationCurveClipComponent::isMultiTouchEvent(const MouseEvent &e) const noexcept
+{
+    return this->roll.isMultiTouchEvent(e);
+}
+
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -106,6 +111,11 @@ void AutomationCurveClipComponent::mouseDoubleClick(const MouseEvent &e)
 
 void AutomationCurveClipComponent::mouseDown(const MouseEvent &e)
 {
+    if (this->roll.isMultiTouchEvent(e))
+    {
+        return;
+    }
+
     if (!this->project.getEditMode().forcesAddingEvents(e.mods))
     {
         ClipComponent::mouseDown(e);
@@ -120,6 +130,11 @@ void AutomationCurveClipComponent::mouseDown(const MouseEvent &e)
 
 void AutomationCurveClipComponent::mouseDrag(const MouseEvent &e)
 {
+    if (this->roll.isMultiTouchEvent(e))
+    {
+        return;
+    }
+
     if (!this->project.getEditMode().forcesAddingEvents(e.mods))
     {
         ClipComponent::mouseDrag(e);

@@ -72,7 +72,7 @@ public:
     Point<float> getMultiTouchRelativeAnchor(const MouseEvent &e) override;
     Point<float> getMultiTouchAbsoluteAnchor(const MouseEvent &e) override;
 
-    bool hasMultiTouch(const MouseEvent &e) const;
+    bool isMultiTouchEvent(const MouseEvent &e) const noexcept;
 
     //===------------------------------------------------------------------===//
     // RollEditMode::Listener

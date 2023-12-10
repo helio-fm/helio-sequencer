@@ -997,7 +997,7 @@ float PianoRoll::getLassoEndBeat() const
 
 void PianoRoll::mouseDown(const MouseEvent &e)
 {
-    if (this->hasMultiTouch(e))
+    if (this->isMultiTouchEvent(e))
     {
         return;
     }
@@ -1023,7 +1023,7 @@ void PianoRoll::mouseDown(const MouseEvent &e)
 
 void PianoRoll::mouseDoubleClick(const MouseEvent &e)
 {
-    if (this->hasMultiTouch(e))
+    if (this->isMultiTouchEvent(e))
     {
         return;
     }
@@ -1037,7 +1037,7 @@ void PianoRoll::mouseDoubleClick(const MouseEvent &e)
 void PianoRoll::mouseDrag(const MouseEvent &e)
 {
     // can show menus
-    if (this->hasMultiTouch(e))
+    if (this->isMultiTouchEvent(e))
     {
         return;
     }
@@ -1065,7 +1065,7 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
 
 void PianoRoll::mouseUp(const MouseEvent &e)
 {
-    if (this->hasMultiTouch(e))
+    if (this->isMultiTouchEvent(e))
     {
         return;
     }

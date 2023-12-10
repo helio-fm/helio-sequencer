@@ -427,7 +427,7 @@ Point<float> RollBase::getMultiTouchAbsoluteAnchor(const MouseEvent &event)
     return event.getEventRelativeTo(this).position / this->getLocalBounds().getBottomRight().toFloat();
 }
 
-bool RollBase::hasMultiTouch(const MouseEvent &e) const
+bool RollBase::isMultiTouchEvent(const MouseEvent &e) const noexcept
 {
     return this->multiTouchController->hasMultiTouch(e);
 }
@@ -1100,7 +1100,7 @@ void RollBase::onBeforeReloadProjectContent()
 
 void RollBase::mouseDown(const MouseEvent &e)
 {
-    if (this->hasMultiTouch(e))
+    if (this->isMultiTouchEvent(e))
     {
         this->contextMenuController->cancelIfPending();
         this->lassoComponent->endLasso();
@@ -1145,7 +1145,7 @@ void RollBase::mouseDrag(const MouseEvent &e)
 {
     this->contextMenuController->cancelIfPending();
 
-    if (this->hasMultiTouch(e))
+    if (this->isMultiTouchEvent(e))
     {
         return;
     }
@@ -1181,7 +1181,7 @@ void RollBase::mouseUp(const MouseEvent &e)
     // so instead:
     this->contextMenuController->cancelIfPending();
 
-    if (this->hasMultiTouch(e))
+    if (this->isMultiTouchEvent(e))
     {
         return;
     }
@@ -1210,9 +1210,9 @@ void RollBase::mouseUp(const MouseEvent &e)
     }
 
 #if PLATFORM_DESKTOP
-    constexpr auto minPanDistance = 10;
+    constexpr auto minPanDistance = 8;
 #elif PLATFORM_MOBILE
-    constexpr auto minPanDistance = 20;
+    constexpr auto minPanDistance = 16;
 #endif
 
     if (e.mods.isLeftButtonDown() &&

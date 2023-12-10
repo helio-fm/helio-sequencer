@@ -253,8 +253,16 @@ void PatternRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor curso
 void PatternRoll::updateRollSize()
 {
     constexpr auto addTrackHelper = PatternRoll::rowHeight;
+
+    // on small screens pretend we have a couple more rows
+    // so that the canvas can be scrolled up to make the bottom rows
+    // available if they are hidden by the bottom editor panels:
+    const auto numRows = App::isRunningOnPhone() ?
+         this->getNumRows() + 2 : this->getNumRows();
+
     const int h = Globals::UI::rollHeaderHeight +
-        this->getNumRows() * PatternRoll::rowHeight + addTrackHelper;
+        numRows * PatternRoll::rowHeight + addTrackHelper;
+
     this->setSize(this->getWidth(), jmax(h, this->viewport.getHeight()));
 }
 
@@ -586,7 +594,7 @@ void PatternRoll::longTapEvent(const Point<float> &position, const WeakReference
 
 void PatternRoll::mouseDown(const MouseEvent &e)
 {
-    if (this->hasMultiTouch(e))
+    if (this->isMultiTouchEvent(e))
     {
         return;
     }
@@ -610,7 +618,7 @@ void PatternRoll::mouseDown(const MouseEvent &e)
 
 void PatternRoll::mouseDrag(const MouseEvent &e)
 {
-    if (this->hasMultiTouch(e))
+    if (this->isMultiTouchEvent(e))
     {
         return;
     }
@@ -641,7 +649,7 @@ void PatternRoll::mouseDrag(const MouseEvent &e)
 
 void PatternRoll::mouseUp(const MouseEvent &e)
 {
-    if (this->hasMultiTouch(e))
+    if (this->isMultiTouchEvent(e))
     {
         return;
     }

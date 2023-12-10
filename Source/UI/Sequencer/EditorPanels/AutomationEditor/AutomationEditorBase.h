@@ -38,6 +38,7 @@ public:
     virtual void getBeatValueByPosition(int x, int y, const Clip &clip, float &outValue, float &outBeat) const = 0;
 
     virtual bool hasEditMode(RollEditMode::Mode mode) const noexcept = 0;
+    virtual bool isMultiTouchEvent(const MouseEvent &event) const noexcept = 0;
 
     // All common stuff for automation event components:
     // first, they maintain connector components between them,

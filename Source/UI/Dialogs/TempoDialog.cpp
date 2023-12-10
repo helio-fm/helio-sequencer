@@ -218,7 +218,8 @@ TempoDialog::TempoDialog(int bpmValue)
     this->textEditor->setScrollbarsShown(true);
     this->textEditor->setCaretVisible(true);
     this->textEditor->setPopupMenuEnabled(true);
-    this->textEditor->setFont(Globals::UI::Fonts::L);
+    this->textEditor->setFont(Defaults::textEditorFont);
+    this->textEditor->setIndents(Defaults::textEditorLeftIndent, Defaults::textEditorTopIndent);
 
     this->textEditor->onWheelMove = [this](const MouseWheelDetails &wheel)
     {

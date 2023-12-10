@@ -135,6 +135,7 @@ void MobileComboBox::initMenu(MenuPanel::Menu menu)
 void MobileComboBox::initHeader(TextEditor *editor, bool hasSearch, bool hasCaption)
 {
     this->searchTextBox->setFont(editor->getFont());
+    this->searchTextBox->setIndents(editor->getLeftIndent(), editor->getTopIndent());
     this->currentNameLabel->setFont(editor->getFont());
 
     this->initHeader(editor->getText(), hasSearch, hasCaption);
@@ -155,7 +156,7 @@ void MobileComboBox::initHeader(const String &text, bool hasSearch, bool hasCapt
     this->searchTextBox->setText({}, dontSendNotification);
     this->currentNameLabel->setText(text, dontSendNotification);
 
-    // on mobile, just show label: search box is not very convenient
+    // on mobile, just show the label: search box is not very convenient
 #if PLATFORM_DESKTOP
     this->searchTextBox->setVisible(hasSearch);
     this->currentNameLabel->setVisible(hasCaption);

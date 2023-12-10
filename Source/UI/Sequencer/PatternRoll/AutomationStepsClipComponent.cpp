@@ -93,12 +93,22 @@ bool AutomationStepsClipComponent::hasEditMode(RollEditMode::Mode mode) const no
     return this->project.getEditMode().isMode(mode);
 }
 
+bool AutomationStepsClipComponent::isMultiTouchEvent(const MouseEvent &e) const noexcept
+{
+    return this->roll.isMultiTouchEvent(e);
+}
+
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
 
 void AutomationStepsClipComponent::mouseDown(const MouseEvent &e)
 {
+    if (this->roll.isMultiTouchEvent(e))
+    {
+        return;
+    }
+
     if (!this->project.getEditMode().forcesAddingEvents(e.mods))
     {
         ClipComponent::mouseDown(e);

@@ -50,6 +50,7 @@ public:
     void getBeatValueByPosition(int x, int y, const Clip &clip, float &value, float &beat) const override;
     float getBeatByPosition(int x, const Clip &clip) const override;
     bool hasEditMode(RollEditMode::Mode mode) const noexcept override;
+    bool isMultiTouchEvent(const MouseEvent &e) const noexcept override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -82,7 +83,11 @@ protected:
 
     Rectangle<float> getEventBounds(float beat, float sequenceLength, double controllerValue) const;
 
+#if PLATFORM_DESKTOP
     static constexpr auto eventComponentDiameter = 16.f;
+#elif PLATFORM_MOBILE
+    static constexpr auto eventComponentDiameter = 20.f;
+#endif
 
     friend class EventComponentBase;
 

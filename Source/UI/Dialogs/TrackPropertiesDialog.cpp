@@ -74,7 +74,8 @@ void TrackPropertiesDialog::init(const String &title, const String &confirmation
     this->textEditor->setScrollbarsShown(true);
     this->textEditor->setCaretVisible(true);
     this->textEditor->setPopupMenuEnabled(true);
-    this->textEditor->setFont(Globals::UI::Fonts::L);
+    this->textEditor->setFont(Defaults::textEditorFont);
+    this->textEditor->setIndents(Defaults::textEditorLeftIndent, Defaults::textEditorTopIndent);
 
     this->textEditor->onEscapeKey = [this]()
     {

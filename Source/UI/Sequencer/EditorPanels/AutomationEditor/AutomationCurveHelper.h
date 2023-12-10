@@ -46,7 +46,6 @@ private:
     const AutomationEvent &event;
 
     Point<int> anchor;
-    float curveAnchor = 0.f;
 
     FineTuningComponentDragger dragger;
 

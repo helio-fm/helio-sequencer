@@ -34,9 +34,6 @@ public:
         const auto messageBounds = this->getLocalBounds().reduced(5, 5);
         g.setColour(Colours::white.withAlpha(0.9f));
 
-#if PLATFORM_DESKTOP
-        g.setFont(Globals::UI::Fonts::L);
-#elif PLATFORM_MOBILE
         if (App::isRunningOnPhone())
         {
             g.setFont(Globals::UI::Fonts::S);
@@ -45,7 +42,6 @@ public:
         {
             g.setFont(Globals::UI::Fonts::M);
         }
-#endif
 
         g.drawFittedText(this->message,
             messageBounds.getX(), messageBounds.getY(),

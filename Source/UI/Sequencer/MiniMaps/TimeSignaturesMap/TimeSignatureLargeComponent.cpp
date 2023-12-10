@@ -59,7 +59,7 @@ void TimeSignatureLargeComponent::paint(Graphics &g)
 
 void TimeSignatureLargeComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->editor.rollHasMultiTouch(e))
+    if (this->editor.isMultiTouchEvent(e))
     {
         return;
     }
@@ -81,7 +81,7 @@ void TimeSignatureLargeComponent::mouseDown(const MouseEvent &e)
 
 void TimeSignatureLargeComponent::mouseDrag(const MouseEvent &e)
 {
-    if (this->editor.rollHasMultiTouch(e))
+    if (this->editor.isMultiTouchEvent(e))
     {
         return;
     }

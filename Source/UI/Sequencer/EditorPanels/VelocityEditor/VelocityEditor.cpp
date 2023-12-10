@@ -151,12 +151,23 @@ public:
     void mouseDown(const MouseEvent &e) override
     {
         jassert(this->isEditable);
+        if (this->getEditor()->isMultiTouchEvent(e))
+        {
+            return;
+        }
+
         this->getEditor()->startFineTuning(this, e);
     }
 
     void mouseDrag(const MouseEvent &e) override
     {
         jassert(this->isEditable);
+        if (this->getEditor()->isMultiTouchEvent(e))
+        {
+            this->getEditor()->endFineTuning(this, e);
+            return;
+        }
+
         this->getEditor()->continueFineTuning(this, e);
     }
 
@@ -375,7 +386,7 @@ void VelocityEditor::resized()
 
 void VelocityEditor::mouseDown(const MouseEvent &e)
 {
-    if (this->hasMultiTouch(e))
+    if (this->isMultiTouchEvent(e))
     {
         return;
     }
@@ -394,13 +405,14 @@ void VelocityEditor::mouseDown(const MouseEvent &e)
     }
     else  if (this->isDraggingEvent(e))
     {
+        // roll panning hack
         this->roll->mouseDown(e.getEventRelativeTo(this->roll));
     }
 }
 
 void VelocityEditor::mouseDrag(const MouseEvent &e)
 {
-    if (this->hasMultiTouch(e))
+    if (this->isMultiTouchEvent(e))
     {
         return;
     }
@@ -436,17 +448,20 @@ void VelocityEditor::mouseUp(const MouseEvent &e)
         this->editingHadChanges = false;
     }
 
-    if (this->hasMultiTouch(e))
+    if (this->isMultiTouchEvent(e))
     {
         return;
     }
 
+    // skipping this to avoid deselection logic, we only needed panning:
+    /*
     if (this->isDraggingEvent(e))
     {
         this->roll->mouseUp(e
             .withNewPosition(Point<int>(e.getPosition().getX(), this->panningStart.getY()))
             .getEventRelativeTo(this->roll));
     }
+    */
 
     this->setMouseCursor(this->getEditMode().getCursor());
 }
@@ -602,7 +617,7 @@ void VelocityEditor::multiTouchContinueZooming(
 
 void VelocityEditor::multiTouchEndZooming(const MouseEvent &anchorEvent)
 {
-    this->panningStart = anchorEvent.getPosition();
+    this->panningStart = anchorEvent.getEventRelativeTo(this).getPosition();
     this->roll->multiTouchEndZooming(anchorEvent.getEventRelativeTo(this->roll));
 }
 
@@ -620,9 +635,9 @@ Point<float> VelocityEditor::getMultiTouchAbsoluteAnchor(const MouseEvent &event
         .getEventRelativeTo(this->roll));
 }
 
-bool VelocityEditor::hasMultiTouch(const MouseEvent &e) const
+bool VelocityEditor::isMultiTouchEvent(const MouseEvent &e) const noexcept
 {
-    return this->roll->hasMultiTouch(e) || this->multiTouchController->hasMultiTouch(e);
+    return this->roll->isMultiTouchEvent(e) || this->multiTouchController->hasMultiTouch(e);
 }
 
 //===----------------------------------------------------------------------===//

@@ -340,7 +340,7 @@ void RollHeader::updateSelectionRangeIndicatorPosition()
 
 void RollHeader::mouseDown(const MouseEvent &e)
 {
-    if (this->roll.hasMultiTouch(e))
+    if (this->roll.isMultiTouchEvent(e))
     {
         return;
     }
@@ -390,7 +390,7 @@ void RollHeader::mouseDown(const MouseEvent &e)
 
 void RollHeader::mouseDrag(const MouseEvent &e)
 {
-    if (this->roll.hasMultiTouch(e))
+    if (this->roll.isMultiTouchEvent(e))
     {
         return;
     }
@@ -454,7 +454,7 @@ void RollHeader::mouseDrag(const MouseEvent &e)
 
 void RollHeader::mouseUp(const MouseEvent &e)
 {
-    if (this->roll.hasMultiTouch(e))
+    if (this->roll.isMultiTouchEvent(e))
     {
         return;
     }

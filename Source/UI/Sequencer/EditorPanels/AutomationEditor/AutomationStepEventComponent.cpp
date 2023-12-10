@@ -137,6 +137,11 @@ void AutomationStepEventComponent::parentHierarchyChanged()
 
 void AutomationStepEventComponent::mouseDown(const MouseEvent &e)
 {
+    if (this->editor.isMultiTouchEvent(e))
+    {
+        return;
+    }
+
     jassert(this->isEditable);
     if (e.mods.isLeftButtonDown())
     {
@@ -149,6 +154,11 @@ void AutomationStepEventComponent::mouseDown(const MouseEvent &e)
 
 void AutomationStepEventComponent::mouseDrag(const MouseEvent &e)
 {
+    if (this->editor.isMultiTouchEvent(e))
+    {
+        return;
+    }
+
     jassert(this->isEditable);
     if (this->isDragging)
     {
@@ -191,6 +201,11 @@ void AutomationStepEventComponent::mouseUp(const MouseEvent &e)
 
 void AutomationStepEventComponent::mouseEnter(const MouseEvent &e)
 {
+    if (this->editor.isMultiTouchEvent(e))
+    {
+        return;
+    }
+
     jassert(this->isEditable);
     this->isHighlighted = true;
     this->repaint();

@@ -73,8 +73,13 @@ public:
             // vertical dragging, e.g. for adjusting velocity
             if ((this->dragMode == Mode::DragOnlyY) && shift.getY() != 0.f)
             {
+#if PLATFORM_DESKTOP
+                constexpr auto pixelsPerStep = 12.0;
+#elif PLATFORM_MOBILE
+                constexpr auto pixelsPerStep = 4.0;
+#endif
                 const double mouseRangeY =
-                    this->range.getRange().getLength() / this->range.interval * 12.0;
+                    this->range.getRange().getLength() / this->range.interval * pixelsPerStep;
                 const auto delta = double(-shift.getY()) / mouseRangeY;
                 this->value = this->range.convertFrom0to1(jlimit(0.0, 1.0, this->anchor + delta));
                 e.source.enableUnboundedMouseMovement(true, false);

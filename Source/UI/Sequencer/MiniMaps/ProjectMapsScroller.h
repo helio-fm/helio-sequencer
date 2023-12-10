@@ -43,7 +43,7 @@ public:
         explicit ScrolledComponent(SafePointer<RollBase> roll) : roll(roll) {}
 
         void switchToRoll(SafePointer<RollBase> roll);
-        bool rollHasMultiTouch(const MouseEvent &e) const;
+        bool isMultiTouchEvent(const MouseEvent &e) const noexcept;
 
     protected:
 

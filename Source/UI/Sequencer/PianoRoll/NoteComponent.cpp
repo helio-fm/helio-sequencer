@@ -128,7 +128,7 @@ void NoteComponent::mouseMove(const MouseEvent &e)
 
 void NoteComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->roll.hasMultiTouch(e))
+    if (this->roll.isMultiTouchEvent(e))
     {
         return;
     }
@@ -264,7 +264,7 @@ static int lastDeltaKey = 0;
 
 void NoteComponent::mouseDrag(const MouseEvent &e)
 {
-    if (this->roll.hasMultiTouch(e))
+    if (this->roll.isMultiTouchEvent(e))
     {
         return;
     }
@@ -522,7 +522,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 void NoteComponent::mouseUp(const MouseEvent &e)
 {
     // no multi-touch check here, need to exit the editing mode (if any) even in multi-touch
-    //if (this->roll.hasMultiTouch(e)) { return; }
+    //if (this->roll.isMultiTouchEvent(e)) { return; }
 
     if (this->shouldGoQuickSelectTrackMode(e.mods))
     {

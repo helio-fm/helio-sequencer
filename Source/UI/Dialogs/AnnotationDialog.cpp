@@ -133,7 +133,8 @@ AnnotationDialog::AnnotationDialog(Component &owner,
     this->colourSwatches->setSelectedColour(this->originalEvent.getColour());
 
     this->textEditor->addListener(this);
-    this->textEditor->setFont(Globals::UI::Fonts::L);
+    this->textEditor->setFont(Defaults::textEditorFont);
+    this->textEditor->setIndents(Defaults::textEditorLeftIndent, Defaults::textEditorTopIndent);
     this->textEditor->setText(this->originalEvent.getDescription(), dontSendNotification);
     // instead of selectAll(), which puts the caret at the start:
     this->textEditor->setCaretPosition(0);

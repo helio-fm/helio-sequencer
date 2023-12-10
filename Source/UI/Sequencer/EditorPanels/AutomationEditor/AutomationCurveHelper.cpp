@@ -99,7 +99,6 @@ void AutomationCurveHelper::mouseDown(const MouseEvent &e)
             FineTuningComponentDragger::Mode::DragOnlyY);
 
         this->anchor = this->getBounds().getCentre();
-        this->curveAnchor = this->getCurvature();
         this->isDragging = true;
         this->repaint();
     }

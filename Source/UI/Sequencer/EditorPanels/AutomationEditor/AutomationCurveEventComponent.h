@@ -106,12 +106,6 @@ public:
 
 private:
 
-#if PLATFORM_DESKTOP
-    static constexpr auto helperComponentDiameter = 8.f;
-#elif PLATFORM_MOBILE
-    static constexpr auto helperComponentDiameter = 20.f;
-#endif
-
     AutomationEditorBase &editor;
 
     const AutomationEvent &event;
