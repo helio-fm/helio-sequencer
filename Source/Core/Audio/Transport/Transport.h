@@ -30,6 +30,7 @@ class RendererThread;
 #include "ProjectListener.h"
 #include "RenderFormat.h"
 #include "Instrument.h"
+#include "Temperament.h"
 #include "UserInterfaceFlags.h"
 #include "Config.h"
 
@@ -262,7 +263,7 @@ private:
     void clearInstrumentLinkForTrack(const MidiTrack *track);
     
     // a nasty hack, see the description in DefaultSynth.h:
-    void updateTemperamentInfoForBuiltInSynth(int periodSize, double periodRange) const;
+    void updateTemperamentForBuiltInSynth(Temperament::Ptr temperament) const;
 
 private:
 

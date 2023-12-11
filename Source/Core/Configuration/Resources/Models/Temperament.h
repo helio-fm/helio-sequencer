@@ -102,8 +102,8 @@ private:
     Period period;
     double periodRange = 2.0;
 
-    Note::Key middleC = 0;
-    int keysTotal = 0;
+    int keysTotal = Globals::twelveToneKeyboardSize;
+    Note::Key middleC = Globals::twelveTonePeriodSize * Temperament::periodNumForMiddleC;
 
     Scale::Ptr highlighting;
     Scale::Ptr chromaticMap;

@@ -35,7 +35,7 @@ public:
     // perspective, and we will only support EDOs, because all built-in
     // temperaments and EDO's; hopefully someday I'll come up with
     // a better approach, or just get rid of this hack;
-    void setPeriodSizeAndRange(int periodSize, double periodRange);
+    void setTemperament(Temperament::Ptr temperament);
 
 protected:
 
@@ -62,8 +62,7 @@ protected:
 
         using SynthesiserVoice::renderNextBlock;
 
-        void setPeriodSize(int size) noexcept;
-        void setPeriodRange(double periodRange) noexcept;
+        void setTemperament(Temperament::Ptr temperament) noexcept;
 
     private:
 

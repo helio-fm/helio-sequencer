@@ -80,6 +80,7 @@ Temperament::Ptr Temperament::getTwelveToneEqualTemperament()
     t->id = defaultTemperamentId;
     t->name = "12 equal temperament";
     t->period = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+    t->periodRange = 2.0;
     t->highlighting = Scale::makeNaturalMajorScale();
     t->chromaticMap = Scale::makeChromaticScale();
     t->keysTotal = Globals::twelveToneKeyboardSize;

@@ -759,14 +759,14 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void Transport::updateTemperamentInfoForBuiltInSynth(int periodSize, double periodRange) const
+void Transport::updateTemperamentForBuiltInSynth(Temperament::Ptr temperament) const
 {
     const auto *defaultInstrument = this->orchestra.getDefaultInstrument();
     if (auto mainNode = defaultInstrument->findMainPluginNode())
     {
         if (auto *synth = dynamic_cast<DefaultSynthAudioPlugin *>(mainNode->getProcessor()))
         {
-            synth->setPeriodSizeAndRange(periodSize, periodRange);
+            synth->setTemperament(temperament);
         }
     }
 }
@@ -778,7 +778,7 @@ void Transport::onDeactivateProjectSubtree(const ProjectMetadata *meta)
 
 void Transport::onActivateProjectSubtree(const ProjectMetadata *meta)
 {
-    this->updateTemperamentInfoForBuiltInSynth(meta->getPeriodSize(), meta->getPeriodRange());
+    this->updateTemperamentForBuiltInSynth(meta->getTemperament());
 
     // let's reset midi caches, just in case some instrument's keyboard mapping
     // has changed in the meanwhile (no idea how to observe kbm changes in transport)
@@ -787,7 +787,7 @@ void Transport::onActivateProjectSubtree(const ProjectMetadata *meta)
 
 void Transport::onChangeProjectInfo(const ProjectMetadata *meta)
 {
-    this->updateTemperamentInfoForBuiltInSynth(meta->getPeriodSize(), meta->getPeriodRange());
+    this->updateTemperamentForBuiltInSynth(meta->getTemperament());
 }
 
 void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks,
@@ -808,7 +808,7 @@ void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks,
 
     this->stopPlaybackAndRecording();
 
-    this->updateTemperamentInfoForBuiltInSynth(meta->getPeriodSize(), meta->getPeriodRange());
+    this->updateTemperamentForBuiltInSynth(meta->getTemperament());
 }
 
 void Transport::onAddTrack(MidiTrack *const track)

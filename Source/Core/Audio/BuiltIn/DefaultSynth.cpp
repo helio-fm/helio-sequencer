@@ -132,16 +132,13 @@ void DefaultSynth::Voice::renderNextBlock(AudioBuffer<float> &outputBuffer, int 
     }
 }
 
-void DefaultSynth::Voice::setPeriodSize(int size) noexcept
+void DefaultSynth::Voice::setTemperament(Temperament::Ptr temperament) noexcept
 {
-    this->periodSize = size;
+    this->periodSize = temperament->getPeriodSize();
+    this->periodRange = temperament->getPeriodRange();
     this->middleA = Temperament::periodNumForMiddleC * this->periodSize +
-        roundToIntAccurate(double(this->periodSize) * (3.0 / 4.0));
-}
-
-void DefaultSynth::Voice::setPeriodRange(double periodRange) noexcept
-{
-    this->periodRange = periodRange;
+        // what the temperament considers to be the equivalent of "la" note:
+        temperament->getEquivalentOfTwelveToneInterval(Semitones::MajorSixth);
 }
 
 double DefaultSynth::Voice::getNoteInHertz(int noteNumber, double frequencyOfA /*= 440.0*/) noexcept
@@ -179,16 +176,14 @@ DefaultSynth::DefaultSynth()
     this->addSound(new DefaultSynth::Sound());
 }
 
-void DefaultSynth::setPeriodSizeAndRange(int periodSize, double periodRange)
+void DefaultSynth::setTemperament(Temperament::Ptr temperament)
 {
-    //DBG("Setting octave size for the default synth: " + String(periodSize));
     for (int i = 0; i < this->getNumVoices(); ++i)
     {
         if (auto *voice = dynamic_cast<DefaultSynth::Voice *>(this->getVoice(i)))
         {
             voice->stopNote(1.f, false);
-            voice->setPeriodSize(periodSize);
-            voice->setPeriodRange(periodRange);
+            voice->setTemperament(temperament);
         }
     }
 }
