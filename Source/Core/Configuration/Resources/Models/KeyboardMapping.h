@@ -67,8 +67,8 @@ public:
     
     KeyChannel map(Note::Key key, int channel) const noexcept
     {
-        assert(key < numMappedKeys);
-        assert(channel > 0 && channel <= numMappedChannels);
+        jassert(key < numMappedKeys);
+        jassert(channel > 0 && channel <= numMappedChannels);
         return this->index[key][channel - 1]; // expects channel in range [1..16]
     }
 

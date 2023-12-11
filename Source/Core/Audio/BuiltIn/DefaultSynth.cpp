@@ -109,6 +109,8 @@ void DefaultSynth::Voice::renderNextBlock(AudioBuffer<float> &outputBuffer, int 
             const auto amplitude = this->adsr.getNextSample();
 
 #if JUCE_LINUX
+            // the standard: std::sinf is available since c++11
+            // gcc: well yes, but actually no
             auto currentSample = std::sin(this->currentAngle) * this->level * amplitude;
 #else
             auto currentSample = std::sinf(this->currentAngle) * this->level * amplitude;
@@ -133,7 +135,8 @@ void DefaultSynth::Voice::renderNextBlock(AudioBuffer<float> &outputBuffer, int 
 void DefaultSynth::Voice::setPeriodSize(int size) noexcept
 {
     this->periodSize = size;
-    this->middleC = Temperament::periodNumForMiddleC * this->periodSize;
+    this->middleA = Temperament::periodNumForMiddleC * this->periodSize +
+        roundToIntAccurate(double(this->periodSize) * (3.0 / 4.0));
 }
 
 void DefaultSynth::Voice::setPeriodRange(double periodRange) noexcept
@@ -144,7 +147,7 @@ void DefaultSynth::Voice::setPeriodRange(double periodRange) noexcept
 double DefaultSynth::Voice::getNoteInHertz(int noteNumber, double frequencyOfA /*= 440.0*/) noexcept
 {
     return frequencyOfA * std::pow(this->periodRange,
-        double(noteNumber - this->middleC) / double(this->periodSize));
+        double(noteNumber - this->middleA) / double(this->periodSize));
 }
 
 int DefaultSynth::Voice::getCurrentChannel() const noexcept

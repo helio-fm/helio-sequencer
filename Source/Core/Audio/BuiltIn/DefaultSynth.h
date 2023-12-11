@@ -73,7 +73,7 @@ protected:
 
         int periodSize = Globals::twelveTonePeriodSize;
         double periodRange = 2.0;
-        int middleC = Temperament::periodNumForMiddleC * Globals::twelveTonePeriodSize;
+        int middleA = 69;
 
         ADSR adsr;
         Reverb reverb;

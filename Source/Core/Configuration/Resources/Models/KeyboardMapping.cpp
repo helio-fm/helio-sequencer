@@ -163,7 +163,7 @@ void KeyboardMapping::loadMapFromString(const String &str)
 
     const auto updateIndex = [&]()
     {
-        assert(channelFrom > 0 && channelFrom <= Globals::numChannels);
+        jassert(channelFrom > 0 && channelFrom <= Globals::numChannels);
         if (numStepsSkipped > 0)
         {
             auto keyIterator = KeyChannel(keyTo, channelTo);

@@ -2312,7 +2312,6 @@ static const unsigned char temp_binary_data_98[] =
 "      { \"command\": \"EditModeDefault\", \"key\": \"1\" },\n"
 "      { \"command\": \"EditModeDraw\", \"key\": \"2\" },\n"
 "      { \"command\": \"EditModeKnife\", \"key\": \"3\" },\n"
-"      { \"command\": \"EditModePan\", \"key\": \"4\" },\n"
 "\n"
 "      // Version control\n"
 "      { \"command\": \"VersionControlToggleQuickStash\", \"key\": \"Shift + Tab\" },\n"
@@ -2398,7 +2397,6 @@ static const unsigned char temp_binary_data_98[] =
 "      { \"command\": \"EditModeDefault\", \"key\": \"1\" },\n"
 "      { \"command\": \"EditModeDraw\", \"key\": \"2\" },\n"
 "      { \"command\": \"EditModeKnife\", \"key\": \"3\" },\n"
-"      { \"command\": \"EditModePan\", \"key\": \"4\" },\n"
 "\n"
 "      // Grouping\n"
 "      { \"command\": \"PatternsGroupByName\", \"key\": \"Q\" },\n"
@@ -2463,7 +2461,7 @@ static const unsigned char temp_binary_data_99[] =
 "      },\n"
 "      {\n"
 "        \"name\": \"Pianoteq 26-edo multi-channel\",\n"
-"        \"map\": \"0:24/13,1+,0/14,25+,0/15,25+,0/16,25+,0/1,25+,0/2,25+,0/3,25+,0/4,25+,0/5,25+,0/6,25+,0/7,25+,0/8,26+\"\n"
+"        \"map\": \"0:23/13,2+,0/14,25+,0/15,25+,0/16,25+,0/1,25+,0/2,25+,0/3,25+,0/4,25+,0/5,25+,0/6,25+,0/7,25+,0/8,26+\"\n"
 "      },\n"
 "      {\n"
 "        \"name\": \"Pianoteq 31-edo multi-channel\",\n"
@@ -4923,7 +4921,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 3374; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 16540; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 16444; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 10616; return scales_json;

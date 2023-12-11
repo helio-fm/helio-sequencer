@@ -93,7 +93,7 @@ public:
     int hashCode() const noexcept;
 
     static constexpr auto periodNumForMiddleC = 5;
-    static constexpr auto displayedPeriodNumForMiddleC = 3;
+    static constexpr auto displayedPeriodNumForMiddleC = 4;
 
 private:
 
