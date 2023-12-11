@@ -104,10 +104,7 @@ void MidiRecorder::onRecord()
         this->isRecording = true;
         this->shouldCheckpoint = true;
 
-        auto temperament = this->project.getProjectInfo()->getTemperament();
-        auto &audioCore = App::Workspace().getAudioCore();
-        audioCore.addFilteredMidiInputCallback(this,
-            temperament->getPeriodSize(), temperament->getChromaticMap());
+        App::Workspace().getAudioCore().getDevice().addMidiInputDeviceCallback({}, this);
 
         if (this->isPlaying.get())
         {
@@ -136,8 +133,7 @@ void MidiRecorder::onStop()
     {
         this->stopTimer();
 
-        auto &audioCore = App::Workspace().getAudioCore();
-        audioCore.removeFilteredMidiInputCallback(this);
+        App::Workspace().getAudioCore().getDevice().removeMidiInputDeviceCallback({}, this);
 
         this->isRecording = false;
 
@@ -243,7 +239,7 @@ void MidiRecorder::handleAsyncUpdate()
     {
         const auto last = this->noteOffsBuffer.size() - 1;
         const auto i = this->noteOffsBuffer.removeAndReturn(last);
-        const bool wasHandled = this->finaliseHoldingNote(i.getNoteNumber());
+        const bool wasHandled = this->finaliseHoldingNote(i);
         if (!wasHandled)
         {
             this->unhandledNoteOffs.add(i);
@@ -261,7 +257,7 @@ void MidiRecorder::handleAsyncUpdate()
     // handle unhandledNoteOffs and clean
     for (const auto &i : this->unhandledNoteOffs)
     {
-        this->finaliseHoldingNote(i.getNoteNumber());
+        this->finaliseHoldingNote(i);
     }
 
     this->unhandledNoteOffs.clearQuick();
@@ -321,24 +317,42 @@ void MidiRecorder::timerCallback()
 // Helpers
 //===----------------------------------------------------------------------===//
 
-void MidiRecorder::startHoldingNote(MidiMessage message)
+// hack warning: duplicates AudioCore::MidiRecordingKeyMapper logic
+int MidiRecorder::getMappedKey(int key) const noexcept
+{
+    auto &audioCore = App::Workspace().getAudioCore();
+    if (!audioCore.isFilteringMidiInput())
+    {
+        return key;
+    }
+
+    auto temperament = this->project.getProjectInfo()->getTemperament();
+    jassert(temperament->getChromaticMap()->isValid());
+
+    const auto periodNumber = key / Globals::twelveTonePeriodSize;
+    const auto keyInPeriod = key % Globals::twelveTonePeriodSize;
+    return temperament->getChromaticMap()->getChromaticKey(keyInPeriod,
+        temperament->getPeriodSize() * periodNumber, false);
+}
+
+void MidiRecorder::startHoldingNote(const MidiMessage &message)
 {
     jassert(this->activeClip != nullptr);
     jassert(this->activeTrack != nullptr);
 
-    const auto key = message.getNoteNumber();
+    const auto key = this->getMappedKey(message.getNoteNumber());
     
     if (this->holdingNotes.contains(key))
     {
         DBG("Found weird note-on/note-off order");
-        this->finaliseHoldingNote(key);
+        this->finaliseHoldingNote(message);
     }
 
     const Note noteParams(this->activeTrack->getSequence(),
         key - this->activeClip->getKey(),
         roundBeat(float(message.getTimeStamp()) - this->activeClip->getBeat()),
         Globals::minNoteLength,
-        float(message.getVelocity()) / 128.f);
+        float(message.getVelocity()) / 127.f);
 
     this->getPianoSequence()->insert(noteParams, true);
     this->holdingNotes[key] = noteParams;
@@ -351,7 +365,6 @@ void MidiRecorder::updateLengthsOfHoldingNotes() const
 
     if (this->holdingNotes.empty())
     {
-        //DBG("Skip 1");
         return;
     }
 
@@ -366,7 +379,6 @@ void MidiRecorder::updateLengthsOfHoldingNotes() const
         const auto newLength = roundBeat(currentBeat - i.second.getBeat());
         if (i.second.getLength() == newLength)
         {
-            //DBG("Skip 2");
             return;
         }
 
@@ -379,7 +391,7 @@ void MidiRecorder::updateLengthsOfHoldingNotes() const
 
 void MidiRecorder::finaliseAllHoldingNotes()
 {
-    if (this->activeTrack != nullptr) // a user cleared selection before hitting stop
+    if (this->activeTrack != nullptr) // the user cleared the selection before hitting stop
     {
         this->updateLengthsOfHoldingNotes();
     }
@@ -387,10 +399,12 @@ void MidiRecorder::finaliseAllHoldingNotes()
     this->holdingNotes.clear();
 }
 
-bool MidiRecorder::finaliseHoldingNote(int key)
+bool MidiRecorder::finaliseHoldingNote(const MidiMessage &message)
 {
     jassert(this->activeClip != nullptr);
     jassert(this->activeTrack != nullptr);
+
+    const auto key = this->getMappedKey(message.getNoteNumber());
 
     const auto currentBeat =
         float(this->getEstimatedPosition() - this->activeClip->getBeat());

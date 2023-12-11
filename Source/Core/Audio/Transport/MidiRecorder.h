@@ -27,9 +27,9 @@ class Transport;
 #include "TransportListener.h"
 
 class MidiRecorder final : public MidiInputCallback,
-                           public TransportListener,
-                           private AsyncUpdater,
-                           private Timer
+    public TransportListener,
+    private AsyncUpdater,
+    private Timer
 {
 public:
 
@@ -89,10 +89,12 @@ private:
     Array<MidiMessage> unhandledNoteOffs;
 
     FlatHashMap<int, Note> holdingNotes;
-    void startHoldingNote(MidiMessage message);
+    void startHoldingNote(const MidiMessage &message);
     void updateLengthsOfHoldingNotes() const;
     void finaliseAllHoldingNotes();
-    bool finaliseHoldingNote(int key);
+    bool finaliseHoldingNote(const MidiMessage &message);
+
+    int getMappedKey(int key) const noexcept;
 
     double getEstimatedPosition() const;
 

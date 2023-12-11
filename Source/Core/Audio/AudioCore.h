@@ -78,11 +78,11 @@ public:
     // MIDI input filtering
     //===------------------------------------------------------------------===//
 
-    void addFilteredMidiInputCallback(MidiInputCallback *callback,
-        int periodSize, Scale::Ptr chromaticMapping);
-    void removeFilteredMidiInputCallback(MidiInputCallback *callback);
     bool isFilteringMidiInput() const noexcept;
     void setFilteringMidiInput(bool isOn) noexcept;
+    void addFilteredMidiInputCallback(Instrument *instrument,
+        int periodSize, Scale::Ptr chromaticMapping);
+    void removeFilteredMidiInputCallback(Instrument *instrument);
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -159,10 +159,10 @@ private:
     {
         MidiRecordingKeyMapper() = delete;
         MidiRecordingKeyMapper(const AudioCore &audioCore,
-            MidiInputCallback *targetCallback,
+            WeakReference<Instrument> instrument,
             int periodSize, Scale::Ptr chromaticMapping) :
             audioCore(audioCore),
-            targetInstrumentCallback(targetCallback),
+            instrument(instrument),
             periodSize(periodSize),
             chromaticMapping(chromaticMapping) {}
 
@@ -172,9 +172,11 @@ private:
             this->chromaticMapping = newChromaticMapping;
         }
 
+        // note: this only fixes realtime playback,
+        // MidiRecorder has to do the same thing on its own:
         int getMappedKey(int key) const noexcept
         {
-            if (!this->audioCore.isReadjustingMidiInput.get())
+            if (!this->audioCore.isFilteringMidiInput())
             {
                 return key;
             }
@@ -192,36 +194,30 @@ private:
 
             if (message.isNoteOn())
             {
-                mappedMessage = MidiMessage::noteOn(message.getChannel(),
-                    this->getMappedKey(message.getNoteNumber()), message.getVelocity());
+                const auto keyInNewTemperament = this->getMappedKey(message.getNoteNumber());
+                const auto mapped = this->instrument->getKeyboardMapping()->map(keyInNewTemperament, 1);
+                mappedMessage = MidiMessage::noteOn(mapped.channel, mapped.key, message.getVelocity());
                 mappedMessage.setTimeStamp(message.getTimeStamp());
             }
             else if (message.isNoteOff())
             {
-                mappedMessage = MidiMessage::noteOff(message.getChannel(),
-                    this->getMappedKey(message.getNoteNumber()), message.getVelocity());
+                const auto keyInNewTemperament = this->getMappedKey(message.getNoteNumber());
+                const auto mapped = this->instrument->getKeyboardMapping()->map(keyInNewTemperament, 1);
+                mappedMessage = MidiMessage::noteOff(mapped.channel, mapped.key, message.getVelocity());
                 mappedMessage.setTimeStamp(message.getTimeStamp());
             }
 
-            this->targetInstrumentCallback->handleIncomingMidiMessage(source, mappedMessage);
-            jassert(this->targetInstrumentCallback != nullptr);
+            this->instrument->getProcessorPlayer().
+                getMidiMessageCollector().handleIncomingMidiMessage(source, mappedMessage);
         }
 
-    private:
-
         const AudioCore &audioCore;
-        MidiInputCallback *targetInstrumentCallback = nullptr;
+        WeakReference<Instrument> instrument;
         int periodSize = Globals::twelveTonePeriodSize;
         Scale::Ptr chromaticMapping;
     };
 
-    struct FilteredMidiCallback final
-    {
-        UniquePointer<MidiRecordingKeyMapper> filter;
-        MidiInputCallback *targetCallback;
-    };
-
-    Array<FilteredMidiCallback> filteredMidiCallbacks;
+    Array<UniquePointer<MidiRecordingKeyMapper>> filteredMidiCallbacks;
     Atomic<bool> isReadjustingMidiInput = true;
 
     struct MidiPlayerInfo final

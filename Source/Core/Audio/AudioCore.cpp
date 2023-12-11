@@ -98,38 +98,38 @@ void AudioCore::removeInstrument(Instrument *instrument)
 // Audio & MIDI callbacks and MIDI filtering
 //===----------------------------------------------------------------------===//
 
-void AudioCore::addFilteredMidiInputCallback(MidiInputCallback *callbackToAdd,
+void AudioCore::addFilteredMidiInputCallback(Instrument *instrument,
     int periodSize, Scale::Ptr chromaticMapping)
 {
     // disconnect it first but keep it in the internal list
-    this->removeFilteredMidiInputCallback(callbackToAdd);
+    this->removeFilteredMidiInputCallback(instrument);
 
     // then either update the parameters and reconnect
     for (const auto &mc : this->filteredMidiCallbacks)
     {
-        if (mc.targetCallback == callbackToAdd)
+        if (mc->instrument == instrument)
         {
-            mc.filter->update(periodSize, chromaticMapping);
-            this->deviceManager.addMidiInputDeviceCallback({}, mc.filter.get());
+            mc->update(periodSize, chromaticMapping);
+            this->deviceManager.addMidiInputDeviceCallback({}, mc.get());
             return;
         }
     }
 
     // or add a new one
     auto filter = make<MidiRecordingKeyMapper>(*this,
-        callbackToAdd, periodSize, chromaticMapping);
+        instrument, periodSize, chromaticMapping);
 
     this->deviceManager.addMidiInputDeviceCallback({}, filter.get());
-    this->filteredMidiCallbacks.add({ move(filter), callbackToAdd });
+    this->filteredMidiCallbacks.add(move(filter));
 }
 
-void AudioCore::removeFilteredMidiInputCallback(MidiInputCallback *callbackToRemove)
+void AudioCore::removeFilteredMidiInputCallback(Instrument *instrument)
 {
     for (const auto &mc : this->filteredMidiCallbacks)
     {
-        if (mc.targetCallback == callbackToRemove)
+        if (mc->instrument == instrument)
         {
-            this->deviceManager.removeMidiInputDeviceCallback({}, mc.filter.get());
+            this->deviceManager.removeMidiInputDeviceCallback({}, mc.get());
         }
     }
 }
@@ -147,15 +147,12 @@ void AudioCore::setFilteringMidiInput(bool isOn) noexcept
 void AudioCore::addInstrumentToMidiDevice(Instrument *instrument,
     int periodSize, Scale::Ptr chromaticMapping)
 {
-    this->addFilteredMidiInputCallback(
-        &instrument->getProcessorPlayer().getMidiMessageCollector(),
-        periodSize, chromaticMapping);
+    this->addFilteredMidiInputCallback(instrument, periodSize, chromaticMapping);
 }
 
 void AudioCore::removeInstrumentFromMidiDevice(Instrument *instrument)
 {
-    this->removeFilteredMidiInputCallback(
-        &instrument->getProcessorPlayer().getMidiMessageCollector());
+    this->removeFilteredMidiInputCallback(instrument);
 }
 
 void AudioCore::addInstrumentToAudioDevice(Instrument *instrument)
