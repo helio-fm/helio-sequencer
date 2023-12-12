@@ -4,6 +4,19 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.12
+ - This is mostly a mobile fixes release: reworked layouts for phone screens, fixed SoundFont player bugs, fixed import/export crashes, added adaptive and themed icons on Android, reworked multi-touch (better late than never)
+ - Added automations editor panel supporting hand-drawing custom curves with the pen tool
+ - Volume editor panel now also supports hand-drawing custom ramps and is more consistent with edit modes
+ - Both the piano roll and the pattern roll can display the volume editor and the automations editor
+ - Added support for MIDI channels (better late than never)
+ - Piano roll: the lasso component cannot be zero-width or zero-height, dragged notes snap to the original note's beat, the default note length and volume are persisted
+ - Version control: switching to another version now works like a hard reset
+ - Added commands to shift tempo tracks 1 BPM up/down (hotkeys Shift + and Shift -)
+ - Fixed re-adjusting MIDI input from 12-tone keyboards for microtonality
+ - The number of saved undo actions is now configurable
+ - Minor feature cutting: removed the updates info control, the legacy undocumented scale preview panel and the alternative spectrogram view
+
 ## Version 3.11
  - Added built-in SoundFont player instrument
  - Migrated to JUCE 7 and enabled experimental support for hosting LV2 plugins
