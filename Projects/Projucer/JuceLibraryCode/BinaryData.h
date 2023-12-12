@@ -285,7 +285,7 @@ namespace BinaryData
     const int            emptyProject_jsonSize = 885;
 
     extern const char*   exampleProject_json;
-    const int            exampleProject_jsonSize = 3287;
+    const int            exampleProject_jsonSize = 3285;
 
     extern const char*   logov2_png;
     const int            logov2_pngSize = 7326;
