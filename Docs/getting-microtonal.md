@@ -1,30 +1,30 @@
 # Getting microtonal
 
 Before you get started with microtonal music, you will need two things:
- * Find a plugin (VST/whatever), which supports microtonal temperaments: here's a [list](https://xen.wiki/w/List_of_microtonal_software_plugins) with some examples.
- * Set up keyboard mapping for that instrument: this needs to be done both in the plugin's settings and in the host (this app), to overcome the limits of MIDI 1.0. The piano roll works as a microtonal keyboard with a wide key range from 0 up to 2048, and it needs to map every key over 16 MIDI channels, of 128 keys each; then those MIDI messages are sent to the plugin, which needs to know how to interpret them, or how to map them back from multi-channel data.
+ * Find a plugin (VST/whatever) that supports microtonal temperaments: here's a [list](https://xen.wiki/w/List_of_microtonal_software_plugins) with some examples.
+ * Set up keyboard mapping for that instrument: this must be done both in the plugin's settings and in the host (this app), to overcome the limitations of MIDI 1.0. The piano roll works as a microtonal keyboard with a wide key range from 0 up to 2048, and it needs to map every key across 16 MIDI channels, of 128 keys each; these MIDI messages are sent to the plugin, which needs to know how to interpret them, or how to map them back from multi-channel data.
 
 ## Setting up instruments
 
-You can [skip](#switching-temperaments) the instrument setup steps, if you only want to get familiar with microtonal scales. The default instrument in Helio is silly, but it works out of the box with all temperaments with no setup required, and should give you some idea of how things work.
+You can [skip](#switching-temperaments) the instrument setup steps, if you only want to get familiar with microtonal scales. The default instrument in Helio is simple, but it works with all temperaments out of the box with no setup required, and it should give you an idea of how things work.
 
-Otherwise, once you've [added an instrument](getting-started.md#instruments) to the stage, just pick *"Edit keyboard mapping"* menu item. The "keyboard mapping" here means mapping MIDI events routed from the `Midi In` node to the plugin node(s).
+Otherwise, once you've [added an instrument](getting-started.md#instruments) to the stage, select *"Edit keyboard mapping"* from the menu. "Keyboard mapping" in this context refers to how MIDI events are transformed when they are routed from the 'Midi In' node to the plugin node(s).
 
 ### Keyboard mapping page
 
-*Note: this describes the key mapping on the host side, but you'll need to set it up on the plugin's side as well. Unfortunately, can't help you with that, as it depends on the plugin, but here's an [example](https://soundbytesmag.net/microtonality-in-falcon/).*
+*Note: this describes key mapping on the host side, but you'll need to set it up on the plugin side as well. Unfortunately, can't help you with that, as it depends on the plugin; see a couple of [examples below](#examples).*
 
-The page allows you to adjust key mappings manually and preview the mapped keys by clicking on them. The upper limit for each source channel is set to 2048 keys, this is the maximum number of keys that can fit into 16 target MIDI channels. 2048 keys would be enough to handle temperaments of size up to 192-EDO:
+The page allows you to manually adjust key mappings and preview mapped keys by clicking on them. The upper limit for each source channel is set to 2048 keys, this is the maximum number of keys that can fit into 16 target MIDI channels. 2048 keys would be enough to handle temperaments of size up to 192-EDO:
 
 ![keyboard-mapping-page]
 
 *(source channel selection at the top, channel paging at the bottom)*
 
 Some additional actions are available via context menu:
- * reset to the default mapping (modulo based),
+ * reset to the default modulo-based mapping,
  * load custom channel mapping(s) in [Scala .kbm format](#scala-keyboard-mapping),
- * copy/paste the mapping into/from the system clipboard as a string in Helio's [own format](#helio-keyboard-mapping-format),
- * select one of the presets or save yours.
+ * copy/paste the mapping as a string in Helio's [own format](#helio-keyboard-mapping-format) into/from the system clipboard,
+ * select one of the presets or save your own.
 
 ![keyboard-mapping-menu]
 
@@ -32,20 +32,18 @@ While you can set up virtually any custom mapping by hand, there are a couple of
 
 ### Scala keyboard mapping
 
-*Note: don't confuse Scala keyboard mapping (.kbm files) with Scala tuning files. The latter are not of much use for the piano roll, since it doesn't care about cents and ratios - those are only needed by instruments.*
+*Note: don't confuse Scala keyboard mapping (.kbm files) with Scala tuning files. The latter are of little use to the piano roll because it doesn't care about cents and ratios - those are only needed by instruments.*
 
-Helio can load [Scala keyboard mapping(s)](http://www.huygens-fokker.org/scala/help.htm#mappings), including multichannel mappings which consist of a set of single mapping files with the same name followed by an underscore and a channel number. When you pick a .kbm file, Helio will search for "same_name_*.kbm" files to try to determine whether or not there are multiple channels' mappings, and try to load them all.
+Helio can load [Scala keyboard mapping(s)](http://www.huygens-fokker.org/scala/help.htm#mappings), including multichannel mappings which consist of a set of single mapping files with the same name followed by an underscore and a channel number. When you pick a .kbm file, Helio will search for "same_name_*.kbm" files to try to determine whether or not there are multiple channel mappings, and try to load them all.
 
-Keep in mind that, on the sequencer side, the mapping will be *reversed* compared to the same mapping on the instrument side.
-The piano roll acts like a microtonal keyboard, which needs to overcome the limits of MIDI channels, and thus is mapping all the keys, which are above 127, across multiple channels.
-
-// TODO examples
+Keep in mind that the mapping on the sequencer side will be *reversed* when compared to the same mapping on the instrument side.
+The piano roll works as a microtonal keyboard that needs to overcome the limitations of MIDI channels by mapping all keys above 127 across multiple channels.
 
 ### Helio keyboard mapping format
 
-I think that Scala kbm format is obscure and unintuitive, so let me reinvent the wheel one more time and introduce another keyboard mapping format, supposed to be shorter, cleaner and kind of human-readable. You can use it on the keyboard mapping page by simply copying and pasting the mapping as a string.
+Although the Scala kbm format is flexible, I find it unintuitive, so let me reinvent the wheel and introduce another keyboard mapping format, supposed to be shorter, cleaner and kind of human-readable. You can use it on the keyboard mapping page by simply copying and pasting the mapping as a string.
 
-Let's start with an example. The entire multi-channel mapping [for Pianoteq](https://forum.modartt.com/viewtopic.php?id=4307) 31-EDO could be written like this:
+Let's start with an example: the entire multi-channel mapping [for Pianoteq](https://forum.modartt.com/viewtopic.php?id=4307) 31-EDO could be written like this:
 
 `0/1:0/14,31+ 31:0/15,31+ 62:0/16,31+ 93:0/1,31+ 124:0/2,31+ 155:0/3,31+ 186:0/4,31+ 217:0/5,31+ 248:0/6,31+ 279:0/7,31+ 310:0/8,31+`
 
@@ -84,17 +82,17 @@ The most straightforward way to start playing around with microtonal scales is t
 
 ![change-temperament]
 
-The project refactoring menus provides two choices:
+The project refactoring menus provide two choices:
  * the `"Change temperament"` command will simply switch the piano roll highlighting and update key signatures,
- * the `"Convert to temperament"` command will, in addition, update notes: the conversion is made using chromatic scale approximations - see the temperament model [description](configs.md#temperaments) - Helio will use these chromatic maps as the "least common denominators" among temperaments to convert from one to another.
+ * the `"Convert to temperament"` command will, in addition, update notes: the conversion is done using chromatic scale approximations (see the [temperament model](configs.md#temperaments) for more information). Helio will use these chromatic maps as the "least common denominators" among temperaments to convert from one to another.
 
-All scale-related tools will only show those scales with octave size matched with current temperament (the piano roll doesn't distinguish EDO's from non-EDO's, all that matters is the number of keys in octave, highlighting, key names, etc).
+All tool that work with scales will only show scales with octave size matching current temperament. The piano roll doesn't distinguish between EDOs and non-EDOs; all that matters is the number of keys per octave, highlighting, key names, and so on.
 
 ### Limitations
 
-The default built-in temperaments [list](configs.md#temperaments) includes 12-edo, 19-edo, 22-edo and 31-edo.
+The built-in temperaments [list](configs.md#temperaments) includes 12-edo, 19-edo, 22-edo, 26-edo and 31-edo.
 
-And the built-in scales [list](configs.md#scales) only includes 7-tone scales for each of those temperaments, because there are several pieces of the app which still assume working with diatonic scales, e.g. the chord tool or the arpeggiator tool, - so given that limitation, using these tools with any built-in temperament or scale would make at least some kind of sense.
+The built-in scales [list](configs.md#scales) only includes 7-tone scales for each of those temperaments, because there are several pieces of the app which still assume working with diatonic scales, e.g. the chord tool or the arpeggiator tool. With that limitation, using these tools with any built-in temperament or scale would make some sense.
 
 ### Adding a custom temperament
 
@@ -102,17 +100,15 @@ To add custom temperaments and their scales, follow the guide in the [сonfigs](
 
 ## Recording MIDI from 12-tone keyboard
 
-The app makes it possible to play and improvise on a standard 12-tone physical keyboard and record MIDI regardless of what temperament is used. For that, it uses the 'chromatic mapping' scale of the current temperament to readjust the incoming MIDI data so that all notes sound like their closest 12-tone equivalents.
+The app makes it possible to play and improvise on a standard 12-tone physical keyboard and record MIDI regardless of what temperament is used. For that, it uses the current temperament's 'chromatic mapping' scale to readjust the incoming MIDI data so that all notes sound like their closest 12-tone approximations.
 
-Here's an example of every key of chromatic scale played on a 12-tone MIDI keyboard and recorded in a 19-edo project:
+Here is an example of each chromatic scale key played on a 12-tone MIDI keyboard and recorded in a 19-EDO project:
 
 ![readjust-midi-input-recording]
 
-This feature is on by default, but it can be turned off in the audio settings section just below the MIDI device box:
+This feature is enabled by default, but it can be disabled in the audio settings section, just below the MIDI input device box. If you're using a microtonal physical keyboard, uncheck this box so that the app doesn't mess up MIDI input:
 
 ![readjust-midi-input-checkbox]
-
-If you're using a microtonal physical keyboard, make sure to uncheck this box so that the app doesn't mess up MIDI input.
 
 ## Examples
 
