@@ -52,11 +52,11 @@ private:
     // TransportListener
     //===------------------------------------------------------------------===//
 
-    void onTempoChanged(double) noexcept override;
+    void onCurrentTempoChanged(double) noexcept override;
     void onTotalTimeChanged(double) noexcept override {}
     void onLoopModeChanged(bool, float, float) override {}
 
-    void onSeek(float, double, double) noexcept override;
+    void onSeek(float beatPosition, double currentTimeMs) override;
     void onPlay() noexcept override;
     void onRecord() override;
     void onStop() override;

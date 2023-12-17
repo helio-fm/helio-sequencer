@@ -293,7 +293,6 @@ public:
             previousPoint = nextPoint;
         }
 
-        static const float lineThickness = 1.f;
         static Array<float> dashes(4.f, 3.f);
         PathStrokeType(1.f).createDashedStroke(this->curveInPixels, this->curveInPixels,
             dashes.getRawDataPointer(), dashes.size());

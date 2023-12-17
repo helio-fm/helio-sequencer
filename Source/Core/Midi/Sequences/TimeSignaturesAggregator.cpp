@@ -298,7 +298,7 @@ void TimeSignaturesAggregator::rebuildAll()
     // todo: multiple time signatures per track? now there can be only one
 
     Array<Clip *> allOrdererClips; // duplicate positions won't be a problem
-    for (const auto selectedTrack : this->selectedTracks)
+    for (const auto &selectedTrack : this->selectedTracks)
     {
         if (selectedTrack->hasTimeSignatureOverride())
         {

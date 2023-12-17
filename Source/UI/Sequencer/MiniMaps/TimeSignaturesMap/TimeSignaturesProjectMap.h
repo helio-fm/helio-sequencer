@@ -19,8 +19,6 @@
 
 class RollBase;
 class ProjectNode;
-class TrackStartIndicator;
-class TrackEndIndicator;
 class TimeSignatureComponent;
 
 #include "ProjectListener.h"
@@ -76,20 +74,14 @@ public:
 private:
     
     void reloadTrackMap();
-    void updateTrackRangeIndicatorsAnchors();
-    
-private:
     
     float projectFirstBeat = 0.f;
-    float projectLastBeat = Globals::Defaults::projectLength; // not zero!
+    float projectLastBeat = Globals::Defaults::projectLength;
 
     float rollFirstBeat = 0.f;
     float rollLastBeat = Globals::Defaults::projectLength;
 
     ProjectNode &project;
-
-    UniquePointer<TrackStartIndicator> trackStartIndicator;
-    UniquePointer<TrackEndIndicator> trackEndIndicator;
     
     ComponentAnimator animator;
 

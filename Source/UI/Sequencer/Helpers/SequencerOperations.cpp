@@ -2156,7 +2156,7 @@ bool SequencerOperations::remapKeySignaturesToTemperament(KeySignaturesSequence 
         // but let's search for the most similar scale (if there are any):
         Scale::Ptr similarScale = nullptr;
         int minDifference = INT_MAX;
-        for (const auto s : availableScales)
+        for (const auto &s : availableScales)
         {
             if (s->getBasePeriod() != otherTemperament->getPeriodSize())
             {
@@ -2621,7 +2621,7 @@ bool SequencerOperations::shiftTempoForProject(ProjectNode &project, int bpmDelt
         }
 
         auto *autoSequence = dynamic_cast<AutomationSequence *>(track->getSequence());
-        assert(autoSequence != nullptr);
+        jassert(autoSequence != nullptr);
 
         Array<AutomationEvent> eventsBefore;
         Array<AutomationEvent> eventsAfter;

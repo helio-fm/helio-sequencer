@@ -57,7 +57,7 @@ public:
         playbackContext->playbackLoopMode = loopMode;
 
         // let listeners know about the tempo before the playback starts
-        this->transport.broadcastTempoChanged(playbackContext->startBeatTempo);
+        this->transport.broadcastCurrentTempoChanged(playbackContext->startBeatTempo);
         this->currentPlayer->startPlayback(playbackContext);
     }
 

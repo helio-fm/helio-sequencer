@@ -63,8 +63,7 @@ Transport::~Transport()
 
 String Transport::getTimeString(double timeMs, bool includeMilliseconds)
 {
-    RelativeTime timeSec(timeMs / 1000.0);
-    return Transport::getTimeString(timeSec, includeMilliseconds);
+    return Transport::getTimeString(RelativeTime(timeMs / 1000.0), includeMilliseconds);
 }
 
 String Transport::getTimeString(const RelativeTime &relTime, bool includeMilliseconds)
@@ -128,9 +127,8 @@ void Transport::setSeekBeat(float beatPosition)
 void Transport::seekToBeat(float beatPosition)
 {
     const auto currentTimeMs = this->findTimeAt(this->projectFirstBeat.get());
-    const auto totalTimeMs = this->findTimeAt(this->projectLastBeat.get());
     this->setSeekBeat(beatPosition);
-    this->broadcastSeek(beatPosition, currentTimeMs, totalTimeMs);
+    this->broadcastSeek(beatPosition, currentTimeMs);
 }
 
 void Transport::probeSoundAtBeat(float targetBeat, const MidiSequence *limitToSequence)
@@ -562,13 +560,7 @@ void Transport::stopSound(const String &trackId) const
     }
     else
     {
-        for (const auto &link : this->instrumentLinks)
-        {
-            if (nullptr != link.second)
-            {
-                stopSoundForInstrument(link.second);
-            }
-        }
+        this->allNotesControllersAndSoundOff();
     }
 }
 
@@ -665,13 +657,16 @@ void Transport::onPostRemoveInstrument()
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-// FIXME: need to do something more reasonable than this workaround
-// (maybe an event like onChangeGlobalTempo instead of monitoring all changes)
-#define updateLengthAndTimeIfNeeded(event) \
-    if (event->getTrackControllerNumber() == MidiTrack::tempoController) \
-    { \
-        this->seekToBeat(this->getSeekBeat()); \
+void Transport::handlePossibleTempoChange(int trackControllerNumber)
+{
+    if (trackControllerNumber == MidiTrack::tempoController)
+    {
+        const auto currentTimeMs = this->findTimeAt(this->projectFirstBeat.get());
+        const auto totalTimeMs = this->findTimeAt(this->projectLastBeat.get());
+        this->broadcastSeek(this->getSeekBeat(), currentTimeMs);
+        this->broadcastTotalTimeChanged(totalTimeMs);
     }
+}
 
 void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
@@ -683,7 +678,7 @@ void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
     }
 
     this->playbackCacheIsOutdated = true;
-    updateLengthAndTimeIfNeeded((&newEvent));
+    this->handlePossibleTempoChange(newEvent.getTrackControllerNumber());
 }
 
 void Transport::onAddMidiEvent(const MidiEvent &event)
@@ -694,7 +689,7 @@ void Transport::onAddMidiEvent(const MidiEvent &event)
     }
 
     this->playbackCacheIsOutdated = true;
-    updateLengthAndTimeIfNeeded((&event));
+    this->handlePossibleTempoChange(event.getTrackControllerNumber());
 }
 
 void Transport::onRemoveMidiEvent(const MidiEvent &event) {}
@@ -702,7 +697,7 @@ void Transport::onPostRemoveMidiEvent(MidiSequence *const sequence)
 {
     this->stopPlaybackAndRecording();
     this->playbackCacheIsOutdated = true;
-    updateLengthAndTimeIfNeeded(sequence->getTrack());
+    this->handlePossibleTempoChange(sequence->getTrack()->getTrackControllerNumber());
 }
 
 void Transport::onAddClip(const Clip &clip)
@@ -713,7 +708,7 @@ void Transport::onAddClip(const Clip &clip)
     }
 
     this->playbackCacheIsOutdated = true;
-    updateLengthAndTimeIfNeeded((&clip));
+    this->handlePossibleTempoChange(clip.getTrackControllerNumber());
 
     if (clip.isSoloed())
     {
@@ -725,7 +720,7 @@ void Transport::onChangeClip(const Clip &oldClip, const Clip &newClip)
 {
     this->stopPlaybackAndRecording();
     this->playbackCacheIsOutdated = true;
-    updateLengthAndTimeIfNeeded((&newClip));
+    this->handlePossibleTempoChange(newClip.getTrackControllerNumber());
 
     if (oldClip.isSoloed() != newClip.isSoloed())
     {
@@ -738,16 +733,15 @@ void Transport::onPostRemoveClip(Pattern *const pattern)
 {
     this->stopPlaybackAndRecording();
     this->playbackCacheIsOutdated = true;
-    updateLengthAndTimeIfNeeded(pattern->getTrack());
+    this->handlePossibleTempoChange(pattern->getTrack()->getTrackControllerNumber());
     this->hasSoloClipsCache = this->findSoloClipFlagIfAny();
 }
 
 void Transport::onChangeTrackProperties(MidiTrack *const track)
 {
     // Stop playback only when instrument changes:
-    const auto &trackId = track->getTrackId();
-    if (!instrumentLinks.contains(trackId) ||
-        this->instrumentLinks[trackId]->getInstrumentId() != track->getTrackInstrumentId())
+    if (!instrumentLinks.contains(track->getTrackId()) ||
+        this->instrumentLinks[track->getTrackId()]->getInstrumentId() != track->getTrackInstrumentId())
     {
         if (!this->isRecording())
         {
@@ -1106,15 +1100,14 @@ void Transport::removeTransportListener(TransportListener *listener)
     this->transportListeners.remove(listener);
 }
 
-void Transport::broadcastSeek(float beat, double currentTimeMs, double totalTimeMs)
+void Transport::broadcastSeek(float beat, double currentTimeMs)
 {
-    this->transportListeners.call(&TransportListener::onSeek,
-        beat, currentTimeMs, totalTimeMs);
+    this->transportListeners.call(&TransportListener::onSeek, beat, currentTimeMs);
 }
 
-void Transport::broadcastTempoChanged(double newTempo)
+void Transport::broadcastCurrentTempoChanged(double newTempo)
 {
-    this->transportListeners.call(&TransportListener::onTempoChanged, newTempo);
+    this->transportListeners.call(&TransportListener::onCurrentTempoChanged, newTempo);
 }
 
 void Transport::broadcastTotalTimeChanged(double timeMs)

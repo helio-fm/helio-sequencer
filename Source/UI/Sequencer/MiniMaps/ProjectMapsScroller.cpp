@@ -19,29 +19,40 @@
 #include "ProjectMapsScroller.h"
 #include "PianoProjectMap.h"
 #include "Playhead.h"
-#include "Transport.h"
+#include "ProjectNode.h"
 #include "RollBase.h"
+#include "TrackStartIndicator.h"
+#include "TrackEndIndicator.h"
 #include "HelioTheme.h"
 #include "MainLayout.h"
 
-ProjectMapsScroller::ProjectMapsScroller(Transport &transportRef, SafePointer<RollBase> roll) :
-    transport(transportRef),
+ProjectMapsScroller::ProjectMapsScroller(ProjectNode &project, SafePointer<RollBase> roll) :
+    project(project),
     roll(roll)
 {
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
 
-    this->playhead = make<Playhead>(*this->roll, this->transport);
+    this->playhead = make<Playhead>(*this->roll, this->project.getTransport());
 
     this->helperRectangle = make<HorizontalDragHelper>(*this);
     this->addAndMakeVisible(this->helperRectangle.get());
 
     this->screenRange = make<ProjectMapsScroller::ScreenRange>(*this);
     this->addAndMakeVisible(this->screenRange.get());
+
+    this->projectStartIndicator = make<TrackStartIndicator>();
+    this->addAndMakeVisible(this->projectStartIndicator.get());
+
+    this->projectEndIndicator = make<TrackEndIndicator>();
+    this->addAndMakeVisible(this->projectEndIndicator.get());
+
+    this->project.addListener(this);
 }
 
 ProjectMapsScroller::~ProjectMapsScroller()
 {
+    this->project.removeListener(this);
     this->disconnectPlayhead();
 }
 
@@ -124,16 +135,7 @@ void ProjectMapsScroller::xMoveByUser()
 
 void ProjectMapsScroller::resized()
 {
-    const auto p = this->getIndicatorBounds();
-    const auto hp = p.toType<int>();
-    this->helperRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
-    this->screenRange->setRealBounds(p);
-    
-    const auto mapBounds = this->getMapBounds();
-    for (auto *map : this->trackMaps)
-    {
-        map->setBounds(mapBounds);
-    }
+    this->updateAllChildrenBounds();
 }
 
 void ProjectMapsScroller::paint(Graphics &g)
@@ -252,7 +254,7 @@ void ProjectMapsScroller::mouseUp(const MouseEvent &event)
         this->roll->zoomAbsolute(*this->drawingNewScreenRange);
 
         this->drawingNewScreenRange = {};
-        this->updateAllBounds();
+        this->updateAllChildrenBounds();
         this->repaint();
 
         if (this->animationsEnabled)
@@ -269,7 +271,33 @@ void ProjectMapsScroller::mouseWheelMove(const MouseEvent &event, const MouseWhe
 }
 
 //===----------------------------------------------------------------------===//
-// MidiRollListener
+// ProjectListener
+//===----------------------------------------------------------------------===//
+
+void ProjectMapsScroller::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+{
+    this->projectStartIndicator->updatePosition(firstBeat);
+    this->projectEndIndicator->updatePosition(lastBeat);
+
+    if (this->isVisible())
+    {
+        this->triggerAsyncUpdate();
+    }
+}
+
+void ProjectMapsScroller::onChangeViewBeatRange(float firstBeat, float lastBeat)
+{
+    this->projectStartIndicator->updateViewRange(firstBeat, lastBeat);
+    this->projectEndIndicator->updateViewRange(firstBeat, lastBeat);
+
+    if (this->isVisible())
+    {
+        this->triggerAsyncUpdate();
+    }
+}
+
+//===----------------------------------------------------------------------===//
+// RollListener
 //===----------------------------------------------------------------------===//
 
 void ProjectMapsScroller::onMidiRollMoved(RollBase *targetRoll)
@@ -389,10 +417,10 @@ void ProjectMapsScroller::timerCallback()
 
 void ProjectMapsScroller::handleAsyncUpdate()
 {
-    this->updateAllBounds();
+    this->updateAllChildrenBounds();
 }
 
-void ProjectMapsScroller::updateAllBounds()
+void ProjectMapsScroller::updateAllChildrenBounds()
 {
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
@@ -405,7 +433,10 @@ void ProjectMapsScroller::updateAllBounds()
         map->setBounds(mapBounds);
     }
 
-    this->playhead->parentSizeChanged(); // a hack: also update playhead position
+    this->projectStartIndicator->updateBounds(mapBounds);
+    this->projectEndIndicator->updateBounds(mapBounds);
+
+    this->playhead->updatePosition();
 }
 
 //===----------------------------------------------------------------------===//
@@ -492,7 +523,7 @@ void ProjectMapsScroller::setScrollerMode(ScrollerMode mode)
     this->screenRange->setEnabled(isFullMap);
     this->screenRange->setInterceptsMouseClicks(isFullMap, isFullMap);
 
-    this->updateAllBounds();
+    this->updateAllChildrenBounds();
 }
 
 ProjectMapsScroller::ScrollerMode ProjectMapsScroller::getScrollerMode() const noexcept

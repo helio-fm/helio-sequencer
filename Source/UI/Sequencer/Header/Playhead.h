@@ -44,12 +44,14 @@ public:
 
     ~Playhead() override;
 
+    void updatePosition();
+
     //===------------------------------------------------------------------===//
     // TransportListener
     //===------------------------------------------------------------------===//
 
-    void onSeek(float beat, double currentTimeMs, double totalTimeMs) override;
-    void onTempoChanged(double msPerQuarter) override;
+    void onSeek(float beatPosition, double currentTimeMs) override;
+    void onCurrentTempoChanged(double msPerQuarter) override;
     void onTotalTimeChanged(double timeMs) override {}
     void onLoopModeChanged(bool hasLoop, float start, float end) override {}
 
@@ -81,8 +83,8 @@ private:
 
     void parentChanged();
 
-    Atomic<float> timerStartPosition = 0.f;
-    Atomic<double> timerStartTime = 0.0;
+    Atomic<float> beatAnchor = 0.f;
+    Atomic<double> timeAnchor = 0.0;
     Atomic<double> msPerQuarterNote = Globals::Defaults::msPerBeat;
 
 private:
@@ -100,7 +102,7 @@ private:
     const Colour playbackColour;
     const Colour recordingColour;
 
-    Atomic<float> lastCorrectPosition = 0.f;
+    Atomic<float> lastCorrectBeat = 0.f;
 
     Listener *listener = nullptr;
 

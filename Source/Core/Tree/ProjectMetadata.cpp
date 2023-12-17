@@ -387,7 +387,7 @@ void ProjectMetadata::deserializeTemperament(const SerializedData &state)
     // but if it does, we'll take the one from the config:
     this->temperament->deserialize(state);
     const auto temperamentId = this->temperament->getResourceId();
-    for (const auto it : App::Config().getTemperaments()->getAll())
+    for (const auto &it : App::Config().getTemperaments()->getAll())
     {
         if (it->getResourceId() == temperamentId)
         {

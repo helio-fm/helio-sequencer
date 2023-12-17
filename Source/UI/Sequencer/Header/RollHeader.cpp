@@ -24,6 +24,8 @@
 #include "TimeDistanceIndicator.h"
 #include "HeaderSelectionIndicator.h"
 #include "ClipRangeIndicator.h"
+#include "TrackStartIndicator.h"
+#include "TrackEndIndicator.h"
 #include "ModalCallout.h"
 #include "TimelineMenu.h"
 
@@ -172,8 +174,6 @@ RollHeader::RollHeader(Transport &transport, RollBase &roll, Viewport &viewport)
 
     this->updateColours();
 
-    // these two are added first, so when they repaint, they can use a color
-    // set by the parent(this header), which is red when rendering or just regular
     this->loopMarkerStart = make<PlaybackLoopMarker>(transport,
         *this, roll, PlaybackLoopMarker::Type::LoopStart);
     this->addChildComponent(this->loopMarkerStart.get());
@@ -184,6 +184,12 @@ RollHeader::RollHeader(Transport &transport, RollBase &roll, Viewport &viewport)
 
     this->selectionIndicator = make<HeaderSelectionIndicator>();
     this->addChildComponent(this->selectionIndicator.get());
+
+    this->projectStartIndicator = make<TrackStartIndicator>();
+    this->addAndMakeVisible(this->projectStartIndicator.get());
+
+    this->projectEndIndicator = make<TrackEndIndicator>();
+    this->addAndMakeVisible(this->projectEndIndicator.get());
 
     this->setSize(this->getParentWidth(), Globals::UI::rollHeaderHeight);
     this->selectionIndicator->setTopLeftPosition(0,
@@ -246,6 +252,22 @@ void RollHeader::setSoundProbeMode(bool shouldPreviewOnClick)
         this->timeDistanceIndicator = nullptr;
         this->setMouseCursor(MouseCursor::NormalCursor);
     }
+}
+
+void RollHeader::updateProjectBeatRange(float firstBeat, float lastBeat)
+{
+    this->projectStartIndicator->updatePosition(firstBeat);
+    this->projectEndIndicator->updatePosition(lastBeat);
+    this->projectStartIndicator->updateBounds();
+    this->projectEndIndicator->updateBounds();
+}
+
+void RollHeader::updateRollBeatRange(float viewFirstBeat, float viewLastBeat)
+{
+    this->projectStartIndicator->updateViewRange(viewFirstBeat, viewLastBeat);
+    this->projectEndIndicator->updateViewRange(viewFirstBeat, viewLastBeat);
+    this->projectStartIndicator->updateBounds();
+    this->projectEndIndicator->updateBounds();
 }
 
 void RollHeader::updateClipRangeIndicator(const Colour &colour, float firstBeat, float lastBeat)
@@ -592,6 +614,9 @@ void RollHeader::resized()
 
     this->loopMarkerStart->updatePosition();
     this->loopMarkerEnd->updatePosition();
+
+    this->projectStartIndicator->updateBounds();
+    this->projectEndIndicator->updateBounds();
 }
 
 void RollHeader::showPopupMenu()

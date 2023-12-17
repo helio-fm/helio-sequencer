@@ -22,6 +22,8 @@
 #include "ProjectNode.h"
 #include "PianoClipComponent.h"
 #include "HeadlineItemArrow.h"
+#include "TrackStartIndicator.h"
+#include "TrackEndIndicator.h"
 #include "ColourIDs.h"
 #include "HelioTheme.h"
 
@@ -64,6 +66,12 @@ EditorPanelsScroller::EditorPanelsScroller(ProjectNode &project,
             this->roll->mouseWheelMove(e.getEventRelativeTo(this->roll), wheel);
         }
     };
+
+    this->projectStartIndicator = make<TrackStartIndicator>();
+    this->addAndMakeVisible(this->projectStartIndicator.get());
+
+    this->projectEndIndicator = make<TrackEndIndicator>();
+    this->addAndMakeVisible(this->projectEndIndicator.get());
 
     this->project.addListener(this);
     this->roll->getLassoSelection().addChangeListener(this);
@@ -115,10 +123,7 @@ void EditorPanelsScroller::switchToRoll(SafePointer<RollBase> roll)
 
 void EditorPanelsScroller::resized()
 {
-    for (auto *editor : this->editorPanels)
-    {
-        editor->setBounds(this->getEditorPanelBounds());
-    }
+    this->updateAllChildrenBounds();
 }
 
 void EditorPanelsScroller::paint(Graphics &g)
@@ -160,10 +165,20 @@ void EditorPanelsScroller::onMidiRollResized(RollBase *targetRoll)
 
 void EditorPanelsScroller::handleAsyncUpdate()
 {
+    this->updateAllChildrenBounds();
+}
+
+void EditorPanelsScroller::updateAllChildrenBounds()
+{
+    const auto panelBounds = this->getEditorPanelBounds();
+
     for (auto *editor : this->editorPanels)
     {
-        editor->setBounds(this->getEditorPanelBounds());
+        editor->setBounds(panelBounds);
     }
+
+    this->projectStartIndicator->updateBounds(panelBounds);
+    this->projectEndIndicator->updateBounds(panelBounds);
 }
 
 //===----------------------------------------------------------------------===//
@@ -241,8 +256,32 @@ void EditorPanelsScroller::onUpdateEventFilters()
 }
 
 //===----------------------------------------------------------------------===//
-// ProjectListener & editable scope selection
+// ProjectListener
 //===----------------------------------------------------------------------===//
+
+void EditorPanelsScroller::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+{
+    this->projectStartIndicator->updatePosition(firstBeat);
+    this->projectEndIndicator->updatePosition(lastBeat);
+
+    if (this->isVisible())
+    {
+        this->triggerAsyncUpdate();
+    }
+}
+
+void EditorPanelsScroller::onChangeViewBeatRange(float firstBeat, float lastBeat)
+{
+    this->projectStartIndicator->updateViewRange(firstBeat, lastBeat);
+    this->projectEndIndicator->updateViewRange(firstBeat, lastBeat);
+
+    if (this->isVisible())
+    {
+        this->triggerAsyncUpdate();
+    }
+}
+
+// editable scope selection:
 
 void EditorPanelsScroller::onChangeClip(const Clip &clip, const Clip &newClip)
 {

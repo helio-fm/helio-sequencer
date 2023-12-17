@@ -243,9 +243,6 @@ int SequencerSidebarRight::getNumRows()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void SequencerSidebarRight::onSeek(float, double, double) {}
-void SequencerSidebarRight::onTotalTimeChanged(double) {}
-
 void SequencerSidebarRight::onLoopModeChanged(bool hasLoop, float startBeat, float endBeat)
 {
     this->repriseButton->setChecked(hasLoop);

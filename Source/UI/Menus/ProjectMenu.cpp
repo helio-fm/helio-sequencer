@@ -361,10 +361,10 @@ void ProjectMenu::showTemperamentsMenu(bool convertTracks)
         this->showBatchActionsMenu(MenuPanel::SlideRight);
     }));
 
-    const auto &temperaments = App::Config().getTemperaments()->getAll();
+    const auto temperaments = App::Config().getTemperaments()->getAll();
     const auto currentTemperament = this->project.getProjectInfo()->getTemperament();
 
-    for (const auto otherTemperament : temperaments)
+    for (const auto &otherTemperament : temperaments)
     {
         menu.add(MenuItem::item(Icons::refactor,
             TRANS(otherTemperament->getName()))->

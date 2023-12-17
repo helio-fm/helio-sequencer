@@ -24,6 +24,8 @@ class TimeDistanceIndicator;
 class HeaderSelectionIndicator;
 class ClipRangeIndicator;
 class PlaybackLoopMarker;
+class TrackStartIndicator;
+class TrackEndIndicator;
 
 #include "ColourIDs.h"
 
@@ -40,6 +42,9 @@ public:
     void showRecordingMode(bool showRecordingMarker);
     void showLoopMode(bool hasLoop, float startBeat, float endBeat);
 
+    void updateProjectBeatRange(float projectFirstBeat, float projectLastBeat);
+    void updateRollBeatRange(float viewFirstBeat, float viewLastBeat);
+    
     void updateClipRangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
     void updateSelectionRangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
 
@@ -90,6 +95,9 @@ protected:
 
     UniquePointer<PlaybackLoopMarker> loopMarkerStart;
     UniquePointer<PlaybackLoopMarker> loopMarkerEnd;
+
+    UniquePointer<TrackStartIndicator> projectStartIndicator;
+    UniquePointer<TrackEndIndicator> projectEndIndicator;
 
     static constexpr auto minTimeDistanceIndicatorSize = 40;
 

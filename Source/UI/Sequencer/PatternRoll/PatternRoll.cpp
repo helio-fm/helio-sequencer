@@ -108,7 +108,6 @@ PatternRoll::PatternRoll(ProjectNode &parentProject,
 
     this->repaintBackgroundsCache();
     this->reloadRollContent();
-    this->setBeatRange(0, Globals::Defaults::projectLength);
 }
 
 void PatternRoll::selectAll()

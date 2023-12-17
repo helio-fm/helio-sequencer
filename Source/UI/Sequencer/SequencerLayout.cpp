@@ -514,7 +514,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
 
     SafePointer<RollBase> defaultRoll = this->pianoRoll.get();
 
-    this->bottomMapsScroller = make<ProjectMapsScroller>(this->project.getTransport(), defaultRoll);
+    this->bottomMapsScroller = make<ProjectMapsScroller>(this->project, defaultRoll);
     this->bottomMapsScroller->addOwnedMap<PianoProjectMap>(this->project);
     this->bottomMapsScroller->addOwnedMap<AnnotationsProjectMap>(this->project, defaultRoll, AnnotationsProjectMap::Type::Small);
     this->bottomMapsScroller->addOwnedMap<TimeSignaturesProjectMap>(this->project, defaultRoll, TimeSignaturesProjectMap::Type::Small);

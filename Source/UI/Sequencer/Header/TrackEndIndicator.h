@@ -32,46 +32,72 @@ public:
         this->setInterceptsMouseClicks(false, false);
     }
 
-    double getAnchor() const noexcept
+    void updatePosition(float newEndBeat)
     {
-        return this->absPosition;
+        if (this->beatPosition == newEndBeat)
+        {
+            return;
+        }
+
+        this->beatPosition = newEndBeat;
+        this->absPosition = double(this->beatPosition - this->viewFirstBeat) /
+            double(this->viewLastBeat - this->viewFirstBeat);
     }
 
-    inline void setAnchoredAt(double absX)
+    void updateViewRange(float newFirstBeat, float newLastBeat)
     {
-        this->absPosition = absX;
-        this->updateBounds();
+        if (this->viewFirstBeat == newFirstBeat &&
+            this->viewLastBeat == newLastBeat)
+        {
+            jassertfalse; // please only call this when ranges change
+            return;
+        }
+
+        this->viewFirstBeat = newFirstBeat;
+        this->viewLastBeat = newLastBeat;
+        this->absPosition = double(this->beatPosition - this->viewFirstBeat) /
+            double(this->viewLastBeat - this->viewFirstBeat);
     }
 
     void paint(Graphics &g) override
     {
-        g.setColour(Colour(0x1a000000));
+        g.setColour(this->fillColour);
         g.fillRect(this->getLocalBounds());
     }
 
     void resized() override
     {
-        this->shadow->setBounds(0, 0, 12, this->getHeight());
+        this->shadow->setBounds(0, 0, TrackEndIndicator::shadowWidth, this->getHeight());
     }
 
-    void parentHierarchyChanged() override
+    void updateBounds()
     {
-        this->updateBounds();
+        this->setBounds(int(ceil(double(this->getParentWidth()) * this->absPosition)), 0,
+            int(floor(double(this->getParentWidth()) * (1.0 - this->absPosition))),
+            this->getParentHeight());
+    }
+
+    void updateBounds(const Rectangle<int> &viewBounds)
+    {
+        this->setBounds(viewBounds.getX() + int(ceil(double(viewBounds.getWidth()) * this->absPosition)),
+            viewBounds.getY(),
+            int(floor(double(viewBounds.getWidth()) * (1.0 - this->absPosition))),
+            viewBounds.getHeight());
     }
 
 private:
 
-    double absPosition = 0.0;
+    double absPosition = 1.0;
+    float beatPosition = Globals::Defaults::projectLength;
 
-    void updateBounds()
-    {
-        this->toFront(false);
-        this->setBounds(int(double(this->getParentWidth()) * this->absPosition + 1.0), 0,
-            int(double(this->getParentWidth()) * (1.0 - this->absPosition) + 1.0),
-            this->getParentHeight());
-    }
+    float viewFirstBeat = 0.f;
+    float viewLastBeat = Globals::Defaults::projectLength;
+
+    const Colour fillColour = Colour(0x1b000000);
+
+    static constexpr int shadowWidth = 12;
 
     UniquePointer<ShadowRightwards> shadow;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackEndIndicator)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackEndIndicator)
 };

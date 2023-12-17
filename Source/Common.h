@@ -203,7 +203,7 @@ namespace Globals
         static constexpr auto tempoBpm = 60000 / msPerBeat;
 
         // Any length here is in beats
-        static constexpr auto projectLength = static_cast<float>(beatsPerBar * 8);
+        static constexpr auto projectLength = static_cast<float>(beatsPerBar * 4);
 
         static constexpr auto newNoteLength = 0.5f;
         static constexpr auto newNoteVelocity = 0.25f;

@@ -72,7 +72,7 @@ void MidiRecorder::setTargetScope(const Clip *clip, const String &instrumentId)
     }
 }
 
-void MidiRecorder::onSeek(float beatPosition, double, double) noexcept
+void MidiRecorder::onSeek(float beatPosition, double currentTimeMs)
 {
     // handle the loop rewind:
     if (this->isPlaying.get() &&
@@ -91,7 +91,7 @@ void MidiRecorder::onSeek(float beatPosition, double, double) noexcept
     this->lastUpdateTime = Time::getMillisecondCounterHiRes();
 }
 
-void MidiRecorder::onTempoChanged(double msPerQuarter) noexcept
+void MidiRecorder::onCurrentTempoChanged(double msPerQuarter) noexcept
 {
     this->msPerQuarterNote = jmax(msPerQuarter, 0.01);
     this->lastUpdateTime = Time::getMillisecondCounterHiRes();

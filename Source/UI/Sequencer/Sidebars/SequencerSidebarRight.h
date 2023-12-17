@@ -95,15 +95,14 @@ private:
     // TransportListener
     //===------------------------------------------------------------------===//
 
-    void onSeek(float beatPosition, double currentTimeMs, double totalTimeMs) override;
-    void onTempoChanged(double msPerQuarter) override {}
-    void onTotalTimeChanged(double timeMs) override;
-    void onLoopModeChanged(bool hasLoop, float startBeat, float endBeat) override;
-
     void onPlay() override;
     void onStop() override;
     void onRecord() override;
     void onRecordFailed(const Array<MidiDeviceInfo> &devices) override;
+    void onTotalTimeChanged(double timeMs) override {}
+    void onLoopModeChanged(bool hasLoop, float startBeat, float endBeat) override;
+    void onSeek(float beatPosition, double currentTimeMs) override {}
+    void onCurrentTempoChanged(double msPerQuarter) override {}
 
     UniquePointer<ListBox> listBox;
     UniquePointer<SeparatorHorizontalReversed> headRule;

@@ -261,7 +261,7 @@ void RollBase::addOwnedMap(Component *newTrackMap)
     this->addAndMakeVisible(newTrackMap);
     newTrackMap->toFront(false);
     this->playhead->toFront(false);
-    this->resized();
+    this->updateChildrenBounds();
 }
 
 void RollBase::removeOwnedMap(Component *existingTrackMap)
@@ -270,7 +270,7 @@ void RollBase::removeOwnedMap(Component *existingTrackMap)
     {
         this->removeChildComponent(existingTrackMap);
         this->trackMaps.removeObject(existingTrackMap);
-        this->resized();
+        this->updateChildrenBounds();
     }
 }
 
@@ -1043,6 +1043,8 @@ void RollBase::onChangeProjectBeatRange(float newFirstBeat, float newLastBeat)
     const float rollLastBeat = jmax(this->lastBeat, newLastBeat);
 
     this->setBeatRange(rollFirstBeat, rollLastBeat);
+
+    this->header->updateProjectBeatRange(newFirstBeat, newLastBeat);
 }
 
 void RollBase::onChangeViewBeatRange(float newFirstBeat, float newLastBeat)
@@ -1071,6 +1073,8 @@ void RollBase::onChangeViewBeatRange(float newFirstBeat, float newLastBeat)
         const auto newViewX = this->getXPositionByBeat(viewStartBeat);
         this->viewport.setViewPosition(newViewX, viewPos.y);
     }
+
+    this->header->updateRollBeatRange(newFirstBeat, newLastBeat);
 }
 
 void RollBase::onChangeProjectInfo(const ProjectMetadata *info)
@@ -1681,7 +1685,7 @@ void RollBase::onMouseWheelFlagsChanged(UserInterfaceFlags::MouseWheelFlags flag
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void RollBase::onSeek(float beatPosition, double currentTimeMs, double totalTimeMs)
+void RollBase::onSeek(float beatPosition, double currentTimeMs)
 {
     this->lastPlayheadBeat = beatPosition;
 }
@@ -1758,7 +1762,6 @@ void RollBase::stopFollowingPlayhead()
     this->playheadFollowMode = PlayheadFollowMode::None;
 #endif
 }
-
 
 //===----------------------------------------------------------------------===//
 // AsyncUpdater

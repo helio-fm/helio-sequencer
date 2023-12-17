@@ -23,8 +23,6 @@
 #include "ProjectTimeline.h"
 #include "PlayerThread.h"
 #include "RollBase.h"
-#include "TrackStartIndicator.h"
-#include "TrackEndIndicator.h"
 #include "TimeSignatureDialog.h"
 #include "TimeSignatureLargeComponent.h"
 #include "TimeSignatureSmallComponent.h"
@@ -39,14 +37,6 @@ TimeSignaturesProjectMap::TimeSignaturesProjectMap(ProjectNode &project,
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
 
-    this->trackStartIndicator = make<TrackStartIndicator>();
-    this->addAndMakeVisible(this->trackStartIndicator.get());
-
-    this->trackEndIndicator = make<TrackEndIndicator>();
-    this->addAndMakeVisible(this->trackEndIndicator.get());
-
-    this->updateTrackRangeIndicatorsAnchors();
-
     this->reloadTrackMap();
 
     this->project.addListener(this);
@@ -57,15 +47,6 @@ TimeSignaturesProjectMap::~TimeSignaturesProjectMap()
 {
     this->project.getTimeline()->getTimeSignaturesAggregator()->removeListener(this);
     this->project.removeListener(this);
-}
-
-void TimeSignaturesProjectMap::updateTrackRangeIndicatorsAnchors()
-{
-    const double rollLengthInBeats = double(this->rollLastBeat - this->rollFirstBeat);
-    const double absStart = double(this->projectFirstBeat - this->rollFirstBeat) / rollLengthInBeats;
-    const double absEnd = double(this->projectLastBeat - this->rollFirstBeat) / rollLengthInBeats;
-    this->trackStartIndicator->setAnchoredAt(absStart);
-    this->trackEndIndicator->setAnchoredAt(absEnd);
 }
 
 //===----------------------------------------------------------------------===//
@@ -92,8 +73,6 @@ void TimeSignaturesProjectMap::resized()
 
         previous = current;
     }
-
-    this->updateTrackRangeIndicatorsAnchors();
 }
 
 //===----------------------------------------------------------------------===//
@@ -182,10 +161,6 @@ void TimeSignaturesProjectMap::onChangeProjectBeatRange(float firstBeat, float l
         this->rollFirstBeat = jmin(firstBeat, this->rollFirstBeat);
         this->rollLastBeat = jmax(lastBeat, this->rollLastBeat);
         this->resized();
-    }
-    else
-    {
-        this->updateTrackRangeIndicatorsAnchors();
     }
 }
 

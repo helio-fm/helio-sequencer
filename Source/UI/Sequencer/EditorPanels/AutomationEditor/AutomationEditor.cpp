@@ -188,7 +188,6 @@ public:
             }
         }
 
-        static const float lineThickness = 1.f;
         static Array<float> dashes(4.f, 3.f);
         PathStrokeType(1.f).createDashedStroke(this->curveInPixels, this->curveInPixels,
             dashes.getRawDataPointer(), dashes.size());
@@ -950,7 +949,6 @@ void AutomationEditor::onAddClip(const Clip &clip)
     for (const auto *referenceComponent : referenceMap->sortedComponents)
     {
         const auto &referenceEvent = referenceComponent->getEvent();
-        const bool editable = this->activeClip == clip;
 
         auto *component = isOnOffTrack ?
             this->createOnOffEventComponent(referenceEvent, clip) :

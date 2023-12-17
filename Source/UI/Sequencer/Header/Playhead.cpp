@@ -40,9 +40,9 @@ Playhead::Playhead(RollBase &parentRoll,
     this->setAlwaysOnTop(true);
     this->setSize(width + 2, 1); // add some horizontal padding, trying to avoid glitches
 
-    this->lastCorrectPosition = this->transport.getSeekBeat();
-    this->timerStartPosition = this->lastCorrectPosition;
-    this->timerStartTime = Time::getMillisecondCounterHiRes();
+    this->lastCorrectBeat = this->transport.getSeekBeat();
+    this->beatAnchor = this->lastCorrectBeat;
+    this->timeAnchor = Time::getMillisecondCounterHiRes();
 
     this->transport.addTransportListener(this);
 }
@@ -56,34 +56,36 @@ Playhead::~Playhead()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void Playhead::onSeek(float beatPosition, double currentTimeMs, double totalTimeMs)
+void Playhead::onSeek(float beatPosition, double currentTimeMs)
 {
-    this->lastCorrectPosition = beatPosition;
+    this->lastCorrectBeat = beatPosition;
 
     this->triggerAsyncUpdate();
 
     if (this->isTimerRunning())
     {
-        this->timerStartTime = Time::getMillisecondCounterHiRes();
-        this->timerStartPosition = this->lastCorrectPosition;
+        this->timeAnchor = Time::getMillisecondCounterHiRes();
+        this->beatAnchor = this->lastCorrectBeat;
     }
 }
 
-void Playhead::onTempoChanged(double msPerQuarter)
+void Playhead::onCurrentTempoChanged(double msPerQuarter)
 {
     this->msPerQuarterNote = jmax(msPerQuarter, 0.01);
         
     if (this->isTimerRunning())
     {
-        this->timerStartTime = Time::getMillisecondCounterHiRes();
-        this->timerStartPosition = this->lastCorrectPosition;
+        // expects that lastCorrectBeat has been set
+        // just before calling this function:
+        this->timeAnchor = Time::getMillisecondCounterHiRes();
+        this->beatAnchor = this->lastCorrectBeat;
     }
 }
 
 void Playhead::onPlay()
 {
-    this->timerStartTime = Time::getMillisecondCounterHiRes();
-    this->timerStartPosition = this->lastCorrectPosition;
+    this->timeAnchor = Time::getMillisecondCounterHiRes();
+    this->beatAnchor = this->lastCorrectBeat;
     this->startTimerHz(60);
 }
 
@@ -100,8 +102,8 @@ void Playhead::onStop()
 
     this->stopTimer();
 
-    this->timerStartTime = 0.0;
-    this->timerStartPosition = 0.0;
+    this->timeAnchor = 0.0;
+    this->beatAnchor = 0.0;
     this->msPerQuarterNote = Globals::Defaults::msPerBeat;
 }
 
@@ -126,7 +128,7 @@ void Playhead::handleAsyncUpdate()
     }
     else
     {
-        this->updatePosition(this->lastCorrectPosition.get());
+        this->updatePosition();
     }
 }
 
@@ -165,7 +167,7 @@ void Playhead::parentChanged()
         }
         else
         {
-            this->updatePosition(this->lastCorrectPosition.get());
+            this->updatePosition();
             this->toFront(false);
         }
     }
@@ -182,10 +184,15 @@ void Playhead::updatePosition(double position)
     }
 }
 
+void Playhead::updatePosition()
+{
+    this->updatePosition(this->lastCorrectBeat.get());
+}
+
 void Playhead::tick()
 {
-    const double timeOffsetMs = Time::getMillisecondCounterHiRes() - this->timerStartTime.get();
+    const double timeOffsetMs = Time::getMillisecondCounterHiRes() - this->timeAnchor.get();
     const double positionOffset = timeOffsetMs / this->msPerQuarterNote.get();
-    const double estimatedPosition = this->timerStartPosition.get() + positionOffset;
+    const double estimatedPosition = this->beatAnchor.get() + positionOffset;
     this->updatePosition(estimatedPosition);
 }

@@ -20,6 +20,8 @@
 class RollBase;
 class MidiSequence;
 class ProjectNode;
+class TrackStartIndicator;
+class TrackEndIndicator;
 
 #include "RollListener.h"
 #include "ProjectListener.h"
@@ -84,6 +86,8 @@ public:
 
     void onChangeClip(const Clip &clip, const Clip &newClip) override;
     void onChangeViewEditableScope(MidiTrack *const, const Clip &, bool) override;
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
 
 private:
 
@@ -96,6 +100,7 @@ private:
     void changeListenerCallback(ChangeBroadcaster *source) override;
     
     void handleAsyncUpdate() override;
+    void updateAllChildrenBounds();
 
     void timerCallback() override;
     Rectangle<float> panelsBoundsAnimationAnchor;
@@ -134,6 +139,9 @@ private:
     EditorPanelBase *showEditorPanelForClip(const Clip &clip);
 
 private:
+
+    UniquePointer<TrackStartIndicator> projectStartIndicator;
+    UniquePointer<TrackEndIndicator> projectEndIndicator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EditorPanelsScroller)
 };

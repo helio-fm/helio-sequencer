@@ -53,8 +53,8 @@ private:
     // TransportListener
     //===----------------------------------------------------------------------===//
 
-    void onSeek(float beatPosition, double currentTimeMs, double totalTimeMs) override;
-    void onTempoChanged(double msPerQuarter) noexcept override {}
+    void onSeek(float beatPosition, double currentTimeMs) override {}
+    void onCurrentTempoChanged(double msPerQuarter) noexcept override {}
     void onTotalTimeChanged(double timeMs) noexcept override;
     void onLoopModeChanged(bool hasLoop, float start, float end) override {}
 

@@ -230,7 +230,7 @@ void TimeSignatureEvent::deserialize(const SerializedData &data)
         // but first, assign a fallback value, which simply matches
         // the meter size, in case we don't find the default scheme:
         this->meter = this->meter.withMetronome(MetronomeScheme().resized(numerator));
-        for (const auto it : App::Config().getMeters()->getAll())
+        for (const auto &it : App::Config().getMeters()->getAll())
         {
             // denominator check is kinda redundant here:
             if (it->getNumerator() == numerator)

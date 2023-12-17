@@ -47,8 +47,7 @@ void PlayerThread::run()
     auto broadcastSeek = [this](Atomic<float> &beat)
     {
         this->transport.broadcastSeek(beat.get(),
-            this->context->startBeatTimeMs,
-            this->context->totalTimeMs);
+            this->context->startBeatTimeMs);
     };
 
     const bool isLooped = this->context->playbackLoopMode;
@@ -260,7 +259,7 @@ void PlayerThread::run()
             if (wrapper.message.isTempoMetaEvent())
             {
                 currentTempo = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f;
-                this->transport.broadcastTempoChanged(currentTempo.get());
+                this->transport.broadcastCurrentTempoChanged(currentTempo.get());
 
                 // Sends this to everybody (need to do that for drum-machines) - TODO test
                 sendTempoChangeToEverybody(wrapper.message);

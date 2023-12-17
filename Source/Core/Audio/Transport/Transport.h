@@ -228,10 +228,11 @@ private:
     void broadcastStop();
     void broadcastRecord();
     void broadcastRecordFailed(const Array<MidiDeviceInfo> &devices);
-    void broadcastTempoChanged(double newTempo);
     void broadcastTotalTimeChanged(double timeMs);
     void broadcastLoopModeChanged(bool hasLoop, float startBeat, float endBeat);
-    void broadcastSeek(float newBeat, double currentTimeMs, double totalTimeMs);
+
+    void broadcastSeek(float newBeat, double currentTimeMs);
+    void broadcastCurrentTempoChanged(double newTempo);
 
     friend class PlayerThread;
     friend class PlayerThreadPool;
@@ -264,6 +265,8 @@ private:
     
     // a nasty hack, see the description in DefaultSynth.h:
     void updateTemperamentForBuiltInSynth(Temperament::Ptr temperament) const;
+
+    inline void handlePossibleTempoChange(int trackControllerNumber);
 
 private:
 

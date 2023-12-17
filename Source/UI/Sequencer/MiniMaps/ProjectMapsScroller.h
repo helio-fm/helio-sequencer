@@ -19,21 +19,25 @@
 
 class RollBase;
 class Playhead;
-class Transport;
+class ProjectNode;
+class TrackStartIndicator;
+class TrackEndIndicator;
 
+#include "ProjectListener.h"
 #include "RollListener.h"
 #include "ComponentFader.h"
 #include "ColourIDs.h"
 
 class ProjectMapsScroller final :
     public Component,
+    public ProjectListener,
     public RollListener,
     private AsyncUpdater, // triggers batch move/resize events for children
     private Timer // optionally animates transitions between rolls
 {
 public:
 
-    ProjectMapsScroller(Transport &transport, SafePointer<RollBase> roll);
+    ProjectMapsScroller(ProjectNode &project, SafePointer<RollBase> roll);
     ~ProjectMapsScroller() override;
 
     class ScrolledComponent : public Component
@@ -83,6 +87,20 @@ public:
     void xMoveByUser();
 
     //===------------------------------------------------------------------===//
+    // ProjectListener
+    //===------------------------------------------------------------------===//
+
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
+
+    //===------------------------------------------------------------------===//
+    // RollListener
+    //===------------------------------------------------------------------===//
+
+    void onMidiRollMoved(RollBase *targetRoll) override;
+    void onMidiRollResized(RollBase *targetRoll) override;
+
+    //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
@@ -92,13 +110,6 @@ public:
     void mouseDrag(const MouseEvent &event) override;
     void mouseUp(const MouseEvent &event) override;
     void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
-
-    //===------------------------------------------------------------------===//
-    // RollListener
-    //===------------------------------------------------------------------===//
-
-    void onMidiRollMoved(RollBase *targetRoll) override;
-    void onMidiRollResized(RollBase *targetRoll) override;
 
     //===------------------------------------------------------------------===//
     // Additional horizontal dragger
@@ -225,10 +236,11 @@ private:
     friend class HorizontalDragHelperConstrainer;
 
     void handleAsyncUpdate() override;
-    void timerCallback() override;
-    void updateAllBounds();
+    void updateAllChildrenBounds();
 
-    Transport &transport;
+    void timerCallback() override;
+
+    ProjectNode &project;
     SafePointer<RollBase> roll;
     Point<int> rollViewportPositionAtDragStart;
 
@@ -250,6 +262,9 @@ private:
 
     ComponentDragger helperDragger;
     UniquePointer<HorizontalDragHelper> helperRectangle;
+
+    UniquePointer<TrackStartIndicator> projectStartIndicator;
+    UniquePointer<TrackEndIndicator> projectEndIndicator;
 
     const Colour borderLineDark = findDefaultColour(ColourIDs::TrackScroller::borderLineDark);
     const Colour borderLineLight = findDefaultColour(ColourIDs::TrackScroller::borderLineLight);
