@@ -1,46 +1,46 @@
 # Refactoring
 
-This page describes several refactoring options, available via selection menu and hotkeys:
+This page describes various refactoring options, available via selection menus and hotkeys:
 
 ![refactoring-menu]
 
 ## Transposition and inversion
 
-Not listed in the menu, but also handy: `Shift + Up` and `Shift + Down` hotkeys transpose the selected notes one octave up or down.
+Not listed in the menu, but also handy: the `Shift + Up` and `Shift + Down` hotkeys transpose the selected notes one octave up or down.
 
 Also, `Alt + Shift + Up` and `Alt + Shift + Down` are used for transposition by a "fifth" - simply put, a transposition by +7 or -7 semitones in the 12-tone temperament, or by the closest equivalent of a perfect fifth in other temperaments, e.g. +18/-18 for 31-edo, etc.
 
-The latter is useful for introducing short-term chord modulations to a "neighboring key" (the key that moves one step either direction on the circle of fifths).
+The latter is useful for introducing short-term chord modulations to a "neighboring key" (one step in either direction on the circle of fifths).
 
-Note that the above hotkeys also work on the pattern roll selection: creating track ["instances"](tips-and-tricks.md#clips-and-track-grouping) and modulating them is one of the easiest way of prototyping the structure of the piece.
+Note that the above hotkeys also work for pattern roll selection: creating track ["instances"](tips-and-tricks.md#clips-and-track-grouping) and modulating them is one of the easiest ways to prototype the piece's structure.
 
 ### Chord inversion
 
-Use `Control + Up` and `Control + Down` for chord inversion (don't confuse it with [melodic inversion](#melodic-inversion)).
+Use the `Control + Up` and `Control + Down` hotkeys for chord inversion (don't confuse it with [melodic inversion](#melodic-inversion)).
 
-Chord inversion treats selected notes as chord(s); the lowest note in each chord moves one octave up (or the highest note moves one octave down), all others stay in place.
+Chord inversion treats selected notes as chord(s); the lowest note in each chord moves one octave up (or the highest note moves one octave down), while all others remain unchanged.
 
 ### In-scale transposition
 
-Use `Alt + Up` and `Alt + Down` hotkeys to transpose the selected notes using in-scale keys only:
+Use the `Alt + Up` and `Alt + Down` hotkeys to transpose the selected notes using in-scale keys only:
 
 ![inscale-transposition]
 
 The notes which are out of scale will be aligned up or down to the nearest in-scale keys.
 
-More generally, you can think of it as "transposition using highlighted rows only". For example, when the scales highlighting [flag](tips-and-tricks.md#ui-flags) is off, it can be useful in microtonal temperaments to transpose notes using only those keys which [approximate](configs.md#temperaments) the 12-tone scale.
+More generally, you can think of it as "transposition using highlighted rows only". For example, when the scales highlighting [flag](tips-and-tricks.md#ui-flags) is turned off, it can be useful in microtonal temperaments to transpose notes using only those keys which [approximate](configs.md#temperaments) the 12-tone scale.
 
 ### Melodic inversion
 
-`Alt + I` hotkey applies melodic inversion to selected notes. This contrapuntal derivation is better [described on Wikipedia](https://en.wikipedia.org/wiki/Inversion_(music)#Melodies); in short, it "flips" the melodic line upside down.
+The `Alt + I` hotkey applies melodic inversion to selected notes. This contrapuntal derivation is better [described on Wikipedia](https://wikipedia.org/wiki/Inversion_(music)#Melodies); in short, it "flips" the melodic line upside down.
 
 ### Retrograde
 
-`Alt + R` hotkey applies another contrapuntal derivation, [retrograde](https://en.wikipedia.org/wiki/Retrograde_(music)) or "walking backward".
+The `Alt + R` hotkey applies another contrapuntal derivation, [retrograde](https://wikipedia.org/wiki/Retrograde_(music)) or "walking backward".
 
-[Retrograde inversion](https://en.wikipedia.org/wiki/Retrograde_inversion), which is "backwards and upside down", can be done by simply applying both inversion and retrograde.
+[Retrograde inversion](https://wikipedia.org/wiki/Retrograde_inversion), which is "backwards and upside down", can be done by combining inversion and retrograde.
 
-**Tip**: use retrograde hotkey to quickly swap two neighbor chords:
+**Tip**: use the retrograde hotkey to quickly swap two neighbor chords:
 
 ![retrograde-swap-chords]
 
@@ -48,41 +48,41 @@ Or to swap two notes like this:
 
 ![retrograde-swap-notes]
 
-Retrograde hotkey also works in the pattern roll, re-ordering all selected clips backwards for each row:
+The retrograde hotkey also works in the pattern roll, re-ordering all selected clips backwards for each row:
 
 ![reverse-clips-order]
 
 ### Cleanup overlaps
 
-`Alt + O` hotkey removes duplicate notes and corrects lengths in a way that notes do not overlap each other.
+The `Alt + O` hotkey removes duplicate notes and corrects lengths in a way that notes do not overlap.
 
 ### Staccato and legato
 
-`Alt + S` and `Alt + L` hotkeys apply staccato and legato commands to the selection. Staccato simply shortens all selected notes (`Alt + Shift + S` makes them as short as possible). Legato connects selected notes together in a way that each note lasts until another note starts:
+The `Alt + S` and `Alt + L` hotkeys apply staccato and legato commands to the selection, respectively. Staccato simply shortens all selected notes (`Alt + Shift + S` shortens them to their shortest length). Legato connects selected notes together in a way that each note lasts until the next note begins:
 
 ![staccato-legato]
 
 ### Move to track
 
-Pretty self-explanatory shorthand; this function is also available in the [command palette](command-palette.md): press `:` and select another track to move the selected notes to. For convenience, the "closest" tracks will be listed first. 
+Pretty self-explanatory shorthand; this function is also available in the [command palette](command-palette.md): press `:` and select another track to move the selected notes to. The "closest" tracks will be listed first for convenience.
 
 ## Rescaling
 
 This re-aligns the selected notes into one of the parallel modes of the same tonic.
 
-You can think of it as introducing the in-place [modal interchange](https://en.wikipedia.org/wiki/Borrowed_chord).
+You can think of it as introducing the in-place [modal interchange](https://wikipedia.org/wiki/Borrowed_chord).
 
-As well as the [chord tool](tips-and-tricks.md#chord-tool), re-scaling assumes that the harmonic context is specified correctly. In the example below, the first section is marked as D Dorian, and all the notes in that section are in the key. Any out-of-scale notes will be left in their places.
+As well as the [chord tool](tips-and-tricks.md#chord-tool), re-scaling assumes that the harmonic context is specified correctly. In the example below, the first section is marked as D Dorian, and all of the notes in that section are in the key. Any out-of-scale notes will be left in their original positions.
 
 Note that this function doesn't change the key signature. Consider using it for introducing brief or transitory variations to bring more harmonic color.
 
-If you want to re-scale the entire section of your piece, use the next option:
+If you want to re-scale an entire section of your piece, use the next option:
 
 #### Quick rescale tool
 
-Once you right-click on any key signature at the timeline, you can choose another scale, into which all the tracks will be translated. This affects all notes of all tracks up to the next key signature (or the very end of the project), and updates the key signature, which may be useful for experiments.
+Right-click on any key signature at the timeline (long-tap on mobile platforms) to choose another scale into which all tracks will be translated. This affects all notes in all tracks until the next key signature or the end of the project and updates the key signature.
 
-This example shows rescaling, along with some undo/redo to see the difference:
+This example shows rescaling, along with some undo/redo to demonstrate the difference:
 
 ![quick-rescale]
 
