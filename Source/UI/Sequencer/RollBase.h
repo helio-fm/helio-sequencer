@@ -98,28 +98,7 @@ public:
     virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
     
     float getPositionForNewTimelineEvent() const;
-    void insertAnnotationWithinScreen(const String &annotation);
-    void insertTimeSignatureWithinScreen(int numerator, int denominator);
-    
-    //===------------------------------------------------------------------===//
-    // Custom maps
-    //===------------------------------------------------------------------===//
-    
-    void addOwnedMap(Component *newTrackMap);
-    void removeOwnedMap(Component *existingTrackMap);
-    template<typename T> inline T *findOwnedMapOfType() const
-    {
-        for (int i = 0; i < this->trackMaps.size(); ++i)
-        {
-            if (T *target = dynamic_cast<T *>(this->trackMaps.getUnchecked(i)))
-            {
-                return target;
-            }
-        }
-        
-        return nullptr;
-    }
-    
+
     //===------------------------------------------------------------------===//
     // Modes
     //===------------------------------------------------------------------===//
@@ -391,8 +370,6 @@ protected:
     Viewport &viewport;
     
     Temperament::Ptr temperament;
-
-    OwnedArray<Component> trackMaps;
 
     Point<int> viewportAnchor = { 0, 0 };
     Point<float> clickAnchor = { 0, 0 };

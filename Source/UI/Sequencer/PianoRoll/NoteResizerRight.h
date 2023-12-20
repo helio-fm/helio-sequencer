@@ -56,15 +56,16 @@ private:
     UniquePointer<IconComponent> resizeIcon;
 
     Path draggerShape;
-    static constexpr auto draggerSize = 40;
-    static constexpr auto lineAlpha = 0.75f;
+    static constexpr auto draggerSize = 32;
+    static constexpr auto alpha = 0.65f;
 
     const Colour lineColour =
         findDefaultColour(ColourIDs::SelectionComponent::outline)
-            .withMultipliedAlpha(lineAlpha);
+            .withMultipliedAlpha(alpha);
 
     const Colour fillColour =
-        findDefaultColour(ColourIDs::Backgrounds::sidebarFill);
+        findDefaultColour(ColourIDs::Backgrounds::sidebarFill)
+            .withMultipliedAlpha(alpha);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteResizerRight)
 };

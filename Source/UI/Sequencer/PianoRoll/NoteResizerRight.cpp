@@ -28,12 +28,13 @@
 NoteResizerRight::NoteResizerRight(RollBase &parentRoll) : roll(parentRoll)
 {
     this->resizeIcon = make<IconComponent>(Icons::stretchRight);
-    this->resizeIcon->setIconAlphaMultiplier(NoteResizerRight::lineAlpha);
+    this->resizeIcon->setIconAlphaMultiplier(NoteResizerRight::alpha);
     this->addAndMakeVisible(this->resizeIcon.get());
 
     this->setAlpha(0.f);
     this->setMouseCursor(MouseCursor::LeftRightResizeCursor);
     this->setInterceptsMouseClicks(false, false);
+    this->setAlwaysOnTop(true);
 
     this->setSize(NoteResizerRight::draggerSize, NoteResizerRight::draggerSize);
 
@@ -60,7 +61,7 @@ void NoteResizerRight::paint(Graphics &g)
     g.setColour(this->fillColour);
     g.fillPath(this->draggerShape);
 
-    g.setColour(Colours::black.withAlpha(NoteResizerRight::lineAlpha));
+    g.setColour(Colours::black.withAlpha(NoteResizerRight::alpha));
     g.strokePath(this->draggerShape, PathStrokeType(2.f));
 
     g.setColour(this->lineColour);
@@ -86,7 +87,7 @@ void NoteResizerRight::mouseEnter(const MouseEvent &e)
 
 void NoteResizerRight::mouseExit(const MouseEvent &e)
 {
-    this->resizeIcon->setIconAlphaMultiplier(NoteResizerRight::lineAlpha);
+    this->resizeIcon->setIconAlphaMultiplier(NoteResizerRight::alpha);
 }
 
 void NoteResizerRight::mouseDown(const MouseEvent &e)

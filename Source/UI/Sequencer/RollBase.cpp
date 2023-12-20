@@ -225,55 +225,6 @@ float RollBase::getPositionForNewTimelineEvent() const
     return this->getRoundBeatSnapByXPosition(viewCentre);
 }
 
-void RollBase::insertAnnotationWithinScreen(const String &annotation)
-{
-    if (auto *annotationsLayer = dynamic_cast<AnnotationsSequence *>(this->project.getTimeline()->getAnnotations()))
-    {
-        annotationsLayer->checkpoint();
-        const float targetBeat = this->getPositionForNewTimelineEvent();
-        AnnotationEvent event(annotationsLayer, targetBeat, annotation, Colours::transparentWhite);
-        annotationsLayer->insert(event, true);
-    }
-}
-
-void RollBase::insertTimeSignatureWithinScreen(int numerator, int denominator)
-{
-    jassert(denominator == 2 || denominator == 4 ||
-        denominator == 8 || denominator == 16 || denominator == 32);
-
-    if (auto *tsSequence = dynamic_cast<TimeSignaturesSequence *>(
-        this->project.getTimeline()->getTimeSignatures()->getSequence()))
-    {
-        tsSequence->checkpoint();
-        const float targetBeat = this->getPositionForNewTimelineEvent();
-        TimeSignatureEvent event(tsSequence, targetBeat, numerator, denominator);
-        tsSequence->insert(event, true);
-    }
-}
-
-//===----------------------------------------------------------------------===//
-// Custom maps
-//===----------------------------------------------------------------------===//
-
-void RollBase::addOwnedMap(Component *newTrackMap)
-{
-    this->trackMaps.add(newTrackMap);
-    this->addAndMakeVisible(newTrackMap);
-    newTrackMap->toFront(false);
-    this->playhead->toFront(false);
-    this->updateChildrenBounds();
-}
-
-void RollBase::removeOwnedMap(Component *existingTrackMap)
-{
-    if (this->trackMaps.contains(existingTrackMap))
-    {
-        this->removeChildComponent(existingTrackMap);
-        this->trackMaps.removeObject(existingTrackMap);
-        this->updateChildrenBounds();
-    }
-}
-
 //===----------------------------------------------------------------------===//
 // Modes
 //===----------------------------------------------------------------------===//
@@ -364,6 +315,12 @@ void RollBase::longTapEvent(const Point<float> &position,
     if (target == this->header.get())
     {
         this->header->showPopupMenu();
+        return;
+    }
+
+    if (auto *ksc = dynamic_cast<KeySignatureLargeComponent *>(target.get()))
+    {
+        this->keySignaturesMap->onKeySignatureAltAction(ksc); // re-scaling menu
         return;
     }
 
@@ -1985,14 +1942,6 @@ void RollBase::updateChildrenBounds()
             this->getWidth(), Globals::UI::rollHeaderHeight);
     }
 
-    for (auto *trackMap : this->trackMaps)
-    {
-        trackMap->setBounds(0,
-            viewY + viewHeight - trackMap->getHeight(),
-            this->getWidth(),
-            trackMap->getHeight());
-    }
-
     if (this->lassoComponent->isDragging())
     {
         this->lassoComponent->updateBounds();
@@ -2030,11 +1979,6 @@ void RollBase::updateChildrenPositions()
     if (this->timeSignaturesMap != nullptr)
     {
         this->timeSignaturesMap->setTopLeftPosition(0, viewY);
-    }
-
-    for (auto *trackMap : this->trackMaps)
-    {
-        trackMap->setTopLeftPosition(0, viewY + viewHeight - trackMap->getHeight());
     }
 
     this->broadcastRollMoved();

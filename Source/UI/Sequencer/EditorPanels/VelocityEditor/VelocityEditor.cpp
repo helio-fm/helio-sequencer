@@ -606,10 +606,8 @@ void VelocityEditor::multiTouchStartZooming()
     this->roll->multiTouchStartZooming();
 }
 
-void VelocityEditor::multiTouchContinueZooming(
-        const Rectangle<float> &relativePositions,
-        const Rectangle<float> &relativeAnchor,
-        const Rectangle<float> &absoluteAnchor)
+void VelocityEditor::multiTouchContinueZooming(const Rectangle<float> &relativePositions,
+    const Rectangle<float> &relativeAnchor, const Rectangle<float> &absoluteAnchor)
 {
     this->roll->multiTouchContinueZooming(relativePositions, relativeAnchor, absoluteAnchor);
 }

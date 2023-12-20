@@ -21,6 +21,7 @@
 #include "Playhead.h"
 #include "ProjectNode.h"
 #include "RollBase.h"
+#include "MultiTouchController.h"
 #include "TrackStartIndicator.h"
 #include "TrackEndIndicator.h"
 #include "HelioTheme.h"
@@ -35,17 +36,20 @@ ProjectMapsScroller::ProjectMapsScroller(ProjectNode &project, SafePointer<RollB
 
     this->playhead = make<Playhead>(*this->roll, this->project.getTransport());
 
-    this->helperRectangle = make<HorizontalDragHelper>(*this);
-    this->addAndMakeVisible(this->helperRectangle.get());
+    this->horizontalRangeRectangle = make<HorizontalRangeRectangle>(*this);
+    this->addAndMakeVisible(this->horizontalRangeRectangle.get());
 
-    this->screenRange = make<ProjectMapsScroller::ScreenRange>(*this);
-    this->addAndMakeVisible(this->screenRange.get());
+    this->screenRangeRectangle = make<ScreenRangeRectangle>(*this);
+    this->addAndMakeVisible(this->screenRangeRectangle.get());
 
     this->projectStartIndicator = make<TrackStartIndicator>();
     this->addAndMakeVisible(this->projectStartIndicator.get());
 
     this->projectEndIndicator = make<TrackEndIndicator>();
     this->addAndMakeVisible(this->projectEndIndicator.get());
+
+    this->multiTouchController = make<MultiTouchController>(*this);
+    this->addMouseListener(this->multiTouchController.get(), true);
 
     this->project.addListener(this);
 }
@@ -68,18 +72,17 @@ void ProjectMapsScroller::disconnectPlayhead()
 // TrackScroller
 //===----------------------------------------------------------------------===//
 
-void ProjectMapsScroller::horizontalDragByUser(Component *component, const Rectangle<int> &bounds)
+void ProjectMapsScroller::horizontalDragByUser(Component *component)
 {
-    const Rectangle<float> &screenRangeBounds = this->screenRange->getRealBounds();
-    this->screenRange->setRealBounds(screenRangeBounds.withX(float(component->getX())));
+    this->screenRangeRectangle->setRealBounds(this->screenRangeRectangle->getRealBounds()
+        .withX(float(component->getX())));
+
     this->xMoveByUser();
 }
 
 void ProjectMapsScroller::xyMoveByUser()
 {
-    jassert(this->roll != nullptr);
-     
-    const auto screenRangeBounds = this->screenRange->getRealBounds();
+    const auto screenRangeBounds = this->screenRangeRectangle->getRealBounds();
 
     const float mw = float(this->getWidth()) - screenRangeBounds.getWidth();
     const float propX = screenRangeBounds.getTopLeft().getX() / mw;
@@ -94,8 +97,8 @@ void ProjectMapsScroller::xyMoveByUser()
 
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
-    this->helperRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
-    this->screenRange->setRealBounds(p);
+    this->horizontalRangeRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
+    this->screenRangeRectangle->setRealBounds(p);
 
     const auto mapBounds = this->getMapBounds();
     for (auto *map : this->trackMaps)
@@ -106,9 +109,7 @@ void ProjectMapsScroller::xyMoveByUser()
 
 void ProjectMapsScroller::xMoveByUser()
 {
-    jassert(this->roll != nullptr);
-
-    const auto screenRangeBounds = this->screenRange->getRealBounds();
+    const auto screenRangeBounds = this->screenRangeRectangle->getRealBounds();
 
     const float mw = float(this->getWidth()) - screenRangeBounds.getWidth();
     const float propX = screenRangeBounds.getTopLeft().getX() / mw;
@@ -119,8 +120,8 @@ void ProjectMapsScroller::xMoveByUser()
 
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
-    this->helperRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
-    this->screenRange->setRealBounds(p);
+    this->horizontalRangeRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
+    this->screenRangeRectangle->setRealBounds(p);
 
     const auto mapBounds = this->getMapBounds();
     for (auto *map : this->trackMaps)
@@ -135,7 +136,7 @@ void ProjectMapsScroller::xMoveByUser()
 
 void ProjectMapsScroller::resized()
 {
-    this->updateAllChildrenBounds();
+    this->updateAllChildrenBounds(false);
 }
 
 void ProjectMapsScroller::paint(Graphics &g)
@@ -161,11 +162,12 @@ void ProjectMapsScroller::paint(Graphics &g)
 
 void ProjectMapsScroller::mouseDown(const MouseEvent &event)
 {
-    if (this->roll->isMultiTouchEvent(event))
+    if (this->isMultiTouchEvent(event))
     {
         return;
     }
 
+    this->panningStart = event.getPosition();
     this->rollViewportPositionAtDragStart = this->roll->getViewport().getViewPosition();
 
     // this thing feels weird on mobile: panning as the default behaviour is more natural there,
@@ -183,59 +185,46 @@ void ProjectMapsScroller::mouseDown(const MouseEvent &event)
 
 void ProjectMapsScroller::mouseDrag(const MouseEvent &event)
 {
-    if (this->roll->isMultiTouchEvent(event))
+    if (this->isMultiTouchEvent(event))
     {
         return;
     }
 
-    if (this->stretchedMode())
+    if (this->drawingNewScreenRange.hasValue())
     {
-        if (this->drawingNewScreenRange.hasValue())
-        {
-            const auto mapBounds = this->getMapBounds();
-            const auto r = (event.position.x - mapBounds.getX()) / float(mapBounds.getWidth());
-            const auto b = (event.position.y - mapBounds.getY()) / float(mapBounds.getHeight());
-            this->drawingNewScreenRange->setRight(r);
-            this->drawingNewScreenRange->setBottom(b);
-            this->repaint();
-        }
-        else if (event.source.getIndex() == 0)
-        {
-            this->setMouseCursor(MouseCursor::DraggingHandCursor);
+        const auto mapBounds = this->getMapBounds();
+        const auto r = (event.position.x - mapBounds.getX()) / float(mapBounds.getWidth());
+        const auto b = (event.position.y - mapBounds.getY()) / float(mapBounds.getHeight());
+        this->drawingNewScreenRange->setRight(r);
+        this->drawingNewScreenRange->setBottom(b);
+        this->repaint();
+    }
+    else
+    {
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
 
-            const auto mapWidth = this->getMapBounds().getWidth();
-            if (mapWidth <= this->getWidth())
-            {
-                return; // nowhere to move
-            }
-            
+        // simple dragging on mobile platforms to make it less awkward:
+        const bool simplePanning = event.source.isTouch();
+        const auto mapWidth = this->getMapBounds().getWidth();
+        if (simplePanning || mapWidth > this->getWidth())
+        {
             const auto viewWidth = this->roll->getViewport().getViewWidth();
-            const auto dragDistance = float(event.getDistanceFromDragStartX());
-
-            const auto rollWidthProportion =
+            const auto dragDistance = float(event.getPosition().getX() - this->panningStart.getX());
+            const auto dragSpeed = simplePanning ? 1.f :
                 float(this->roll->getWidth() - viewWidth) / float(mapWidth - this->getWidth());
             const auto xOffset = jlimit(1, this->roll->getWidth() - viewWidth - 1,
-                this->rollViewportPositionAtDragStart.x + int(-dragDistance * rollWidthProportion));
-
+                this->rollViewportPositionAtDragStart.x + int(-dragDistance * dragSpeed));
             this->roll->panByOffset(xOffset, this->rollViewportPositionAtDragStart.y);
-
             this->triggerAsyncUpdate();
         }
     }
-    // this feels kinda glitchy, especially on mobile, commenting it out for now:
-    //else
-    //{
-    //    this->setMouseCursor(MouseCursor::DraggingHandCursor);
-    //    this->screenRange->setRealBounds(this->screenRange->getRealBounds().withCentre(event.position));
-    //    this->xMoveByUser();
-    //}
 }
 
 void ProjectMapsScroller::mouseUp(const MouseEvent &event)
 {
     this->setMouseCursor(MouseCursor::NormalCursor);
 
-    if (this->roll->isMultiTouchEvent(event))
+    if (this->isMultiTouchEvent(event))
     {
         return;
     }
@@ -254,7 +243,7 @@ void ProjectMapsScroller::mouseUp(const MouseEvent &event)
         this->roll->zoomAbsolute(*this->drawingNewScreenRange);
 
         this->drawingNewScreenRange = {};
-        this->updateAllChildrenBounds();
+        this->updateAllChildrenBounds(true);
         this->repaint();
 
         if (this->animationsEnabled)
@@ -271,6 +260,55 @@ void ProjectMapsScroller::mouseWheelMove(const MouseEvent &event, const MouseWhe
 }
 
 //===----------------------------------------------------------------------===//
+// MultiTouchListener
+//===----------------------------------------------------------------------===//
+
+// because the roll is the upstream of move-resize events for all bottom panels,
+// this will simply ensure that zooming and panning events are horizontal-only
+// and pass them to the currently active roll;
+// the same logic can be found in AutomationEditor and VelocityEditor
+
+void ProjectMapsScroller::multiTouchStartZooming()
+{
+    this->roll->multiTouchStartZooming();
+}
+
+void ProjectMapsScroller::multiTouchContinueZooming(const Rectangle<float> &relativePositions,
+    const Rectangle<float> &relativeAnchor, const Rectangle<float> &absoluteAnchor)
+{
+    this->roll->multiTouchContinueZooming(relativePositions, relativeAnchor, absoluteAnchor);
+}
+
+void ProjectMapsScroller::multiTouchEndZooming(const MouseEvent &anchorEvent)
+{
+    this->roll->multiTouchEndZooming(anchorEvent.getEventRelativeTo(this->roll));
+    this->panningStart = anchorEvent.getEventRelativeTo(this).getPosition();
+    this->rollViewportPositionAtDragStart = this->roll->getViewport().getViewPosition();
+    // a hack to avoid the screen range jumping away instantly after multi-touch:
+    this->horizontalRangeRectangle->disableDraggingUntilTap();
+    this->screenRangeRectangle->disableDraggingUntilTap();
+}
+
+Point<float> ProjectMapsScroller::getMultiTouchRelativeAnchor(const MouseEvent &event)
+{
+    return this->roll->getMultiTouchRelativeAnchor(event
+        .withNewPosition(Point<int>(event.getPosition().getX(), 0))
+        .getEventRelativeTo(this->roll));
+}
+
+Point<float> ProjectMapsScroller::getMultiTouchAbsoluteAnchor(const MouseEvent &event)
+{
+    return this->roll->getMultiTouchAbsoluteAnchor(event
+        .withNewPosition(Point<int>(event.getPosition().getX(), 0))
+        .getEventRelativeTo(this->roll));
+}
+
+bool ProjectMapsScroller::isMultiTouchEvent(const MouseEvent &e) const noexcept
+{
+    return this->roll->isMultiTouchEvent(e) || this->multiTouchController->hasMultiTouch(e);
+}
+
+//===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
@@ -281,7 +319,7 @@ void ProjectMapsScroller::onChangeProjectBeatRange(float firstBeat, float lastBe
 
     if (this->isVisible())
     {
-        this->triggerAsyncUpdate();
+        this->updateAllChildrenBounds(true);
     }
 }
 
@@ -292,7 +330,7 @@ void ProjectMapsScroller::onChangeViewBeatRange(float firstBeat, float lastBeat)
 
     if (this->isVisible())
     {
-        this->triggerAsyncUpdate();
+        this->updateAllChildrenBounds(true);
     }
 }
 
@@ -316,7 +354,6 @@ void ProjectMapsScroller::onMidiRollResized(RollBase *targetRoll)
     }
 }
 
-// Starts quick and dirty animation from one bounds to another
 void ProjectMapsScroller::switchToRoll(SafePointer<RollBase> roll)
 {
     this->oldAreaBounds = this->getIndicatorBounds();
@@ -328,14 +365,21 @@ void ProjectMapsScroller::switchToRoll(SafePointer<RollBase> roll)
         map->switchToRoll(roll);
     }
 
+    this->screenRangeTargetBrightness =
+        (nullptr != dynamic_cast<PianoRoll *>(roll.getComponent())) ? 1.f : 0.f;
+
     if (this->animationsEnabled)
     {
         this->startTimerHz(60);
     }
+    else
+    {
+        this->screenRangeRectangle->setBrightness(this->screenRangeTargetBrightness);
+    }
 }
 
 //===----------------------------------------------------------------------===//
-// Scrolledcomponent
+// ScrolledComponent
 //===----------------------------------------------------------------------===//
 
 void ProjectMapsScroller::ScrolledComponent::switchToRoll(SafePointer<RollBase> roll)
@@ -396,17 +440,22 @@ void ProjectMapsScroller::timerCallback()
     this->oldAreaBounds = targetAreaBounds;
     this->oldMapBounds = targetMapBounds;
 
-    const auto helperBounds = targetAreaBounds.toType<int>();
-    this->helperRectangle->setBounds(helperBounds.withTop(1).withBottom(this->getHeight()));
-    this->screenRange->setRealBounds(targetAreaBounds);
+    const auto screenRangeBrightness =
+        (this->screenRangeRectangle->getBrightness() + this->screenRangeTargetBrightness) / 2.f;
+    this->screenRangeRectangle->setBrightness(screenRangeBrightness);
 
-    for (int i = 0; i < this->trackMaps.size(); ++i)
+    const auto helperBounds = targetAreaBounds.toType<int>();
+    this->horizontalRangeRectangle->setBounds(helperBounds.withTop(1).withBottom(this->getHeight()));
+    this->screenRangeRectangle->setRealBounds(targetAreaBounds);
+
+    for (auto *map : this->trackMaps)
     {
-        this->trackMaps.getUnchecked(i)->setBounds(targetMapBounds.toType<int>());
+        map->setBounds(targetMapBounds.toType<int>());
     }
 
     if (shouldStop)
     {
+        this->screenRangeRectangle->setBrightness(this->screenRangeTargetBrightness);
         this->stopTimer();
     }
 }
@@ -417,15 +466,15 @@ void ProjectMapsScroller::timerCallback()
 
 void ProjectMapsScroller::handleAsyncUpdate()
 {
-    this->updateAllChildrenBounds();
+    this->updateAllChildrenBounds(false);
 }
 
-void ProjectMapsScroller::updateAllChildrenBounds()
+void ProjectMapsScroller::updateAllChildrenBounds(bool shouldUpdatePlayhead)
 {
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toType<int>();
-    this->helperRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
-    this->screenRange->setRealBounds(p);
+    this->horizontalRangeRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
+    this->screenRangeRectangle->setRealBounds(p);
 
     const auto mapBounds = this->getMapBounds();
     for (auto *map : this->trackMaps)
@@ -436,7 +485,12 @@ void ProjectMapsScroller::updateAllChildrenBounds()
     this->projectStartIndicator->updateBounds(mapBounds);
     this->projectEndIndicator->updateBounds(mapBounds);
 
-    this->playhead->updatePosition();
+    // playhead shouldn't be updated on resizes
+    // to avoid glitches when zooming during playback
+    if (shouldUpdatePlayhead)
+    {
+        this->playhead->updatePosition();
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -465,7 +519,7 @@ Rectangle<float> ProjectMapsScroller::getIndicatorBounds() const noexcept
     const float rY = ceilf(trackHeight * (viewY / rollHeight)) - trackHeaderHeight + 1.f;
     const float rH = trackHeight * zoomFactorY;
 
-    if (mapWidth <= trackWidth || !this->stretchedMode())
+    if (mapWidth <= trackWidth || !this->isInStretchedMode())
     {
         const float rX = (trackWidth * viewX) / rollWidth;
         const float rW = trackWidth * this->roll->getZoomFactorX();
@@ -488,7 +542,7 @@ Rectangle<int> ProjectMapsScroller::getMapBounds() const noexcept
     const float trackInvisibleArea = float(this->getWidth() - ProjectMapsScroller::screenRangeWidth);
     const float mapWidth = (ProjectMapsScroller::screenRangeWidth * rollWidth) / viewWidth;
 
-    if (mapWidth <= this->getWidth() || !this->stretchedMode())
+    if (mapWidth <= this->getWidth() || !this->isInStretchedMode())
     {
         return { 0, 0, this->getWidth(), this->getHeight() };
     }
@@ -520,80 +574,13 @@ void ProjectMapsScroller::setScrollerMode(ScrollerMode mode)
         }
     }
 
-    this->screenRange->setEnabled(isFullMap);
-    this->screenRange->setInterceptsMouseClicks(isFullMap, isFullMap);
+    this->screenRangeRectangle->setEnabled(isFullMap);
+    this->screenRangeRectangle->setInterceptsMouseClicks(isFullMap, isFullMap);
 
-    this->updateAllChildrenBounds();
+    this->updateAllChildrenBounds(true);
 }
 
 ProjectMapsScroller::ScrollerMode ProjectMapsScroller::getScrollerMode() const noexcept
 {
     return this->scrollerMode;
-}
-
-//===----------------------------------------------------------------------===//
-// Additional horizontal dragger
-//===----------------------------------------------------------------------===//
-
-class HorizontalDragHelperConstrainer final : public ComponentBoundsConstrainer
-{
-public:
-
-    explicit HorizontalDragHelperConstrainer(ProjectMapsScroller &scrollerRef) :
-        scroller(scrollerRef) {}
-
-    void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override
-    {
-        ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
-        this->scroller.horizontalDragByUser(&component, bounds);
-    }
-
-private:
-
-    ProjectMapsScroller &scroller;
-};
-
-ProjectMapsScroller::HorizontalDragHelper::HorizontalDragHelper(ProjectMapsScroller &scrollerRef) :
-    scroller(scrollerRef)
-{
-    this->setPaintingIsUnclipped(true);
-    this->setInterceptsMouseClicks(true, false);
-    this->setMouseClickGrabsKeyboardFocus(false);
-    this->toBack();
-
-    this->setBrightness(HorizontalDragHelper::defaultBrightness);
-
-    this->moveConstrainer = make<HorizontalDragHelperConstrainer>(this->scroller);
-    this->moveConstrainer->setMinimumSize(4, 4);
-    this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
-}
-
-void ProjectMapsScroller::HorizontalDragHelper::setBrightness(float brightness)
-{
-    this->colour = findDefaultColour(ColourIDs::TrackScroller::scrollerFill).withMultipliedAlpha(brightness);
-    this->repaint();
-}
-
-void ProjectMapsScroller::HorizontalDragHelper::mouseDown(const MouseEvent &e)
-{
-    this->dragger.startDraggingComponent(this, e);
-}
-
-void ProjectMapsScroller::HorizontalDragHelper::mouseDrag(const MouseEvent &e)
-{
-    this->setMouseCursor(MouseCursor::DraggingHandCursor);
-    this->dragger.dragComponent(this, e, this->moveConstrainer.get());
-}
-
-void ProjectMapsScroller::HorizontalDragHelper::mouseUp(const MouseEvent &e)
-{
-    this->setMouseCursor(MouseCursor::NormalCursor);
-}
-
-void ProjectMapsScroller::HorizontalDragHelper::paint(Graphics &g)
-{
-    g.setColour(this->colour);
-    g.fillRect(this->getLocalBounds());
-    g.fillRect(0.f, 0.f, 1.f, float(this->getHeight()));
-    g.fillRect(float(this->getWidth() - 1.f), 0.f, 1.f, float(this->getHeight()));
 }

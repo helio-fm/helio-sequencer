@@ -1821,22 +1821,22 @@ void PianoRoll::endMergingEvents()
 void PianoRoll::handleAsyncUpdate()
 {
 #if PIANOROLL_HAS_NOTE_RESIZERS
-    // resizers for the mobile version
-    if (this->selection.getNumSelected() > 0 &&
-        this->noteResizerLeft == nullptr)
+    if (this->selection.getNumSelected() > 0)
     {
-        this->noteResizerLeft = make<NoteResizerLeft>(*this);
-        this->addAndMakeVisible(this->noteResizerLeft.get());
-    }
+        // resizers for the mobile version
+        if (this->noteResizerLeft == nullptr)
+        {
+            this->noteResizerLeft = make<NoteResizerLeft>(*this);
+            this->addAndMakeVisible(this->noteResizerLeft.get());
+        }
 
-    if (this->selection.getNumSelected() > 0 &&
-        this->noteResizerRight == nullptr)
-    {
-        this->noteResizerRight = make<NoteResizerRight>(*this);
-        this->addAndMakeVisible(this->noteResizerRight.get());
+        if (this->noteResizerRight == nullptr)
+        {
+            this->noteResizerRight = make<NoteResizerRight>(*this);
+            this->addAndMakeVisible(this->noteResizerRight.get());
+        }
     }
-
-    if (this->selection.getNumSelected() == 0)
+    else
     {
         this->noteResizerLeft = nullptr;
         this->noteResizerRight = nullptr;

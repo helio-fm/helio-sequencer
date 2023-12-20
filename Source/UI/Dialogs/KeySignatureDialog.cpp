@@ -236,12 +236,14 @@ void KeySignatureDialog::resized()
 
     this->scaleEditor->setBounds(this->getRowBounds(0.5f, DialogBase::Defaults::textEditorHeight));
 
-    static constexpr auto scaleHelperButtonWidth = 36;
     static constexpr auto scaleEditorMargin = 4;
+    static constexpr auto scaleHelperButtonWidth = 36;
+    static constexpr auto scaleHelperButtonHeight = 32;
     const auto scaleEditorRow = this->getRowBounds(0.825f, DialogBase::Defaults::textEditorHeight, scaleEditorMargin);
     this->scaleNameEditor->setBounds(scaleEditorRow.withTrimmedRight((scaleHelperButtonWidth + scaleEditorMargin) * 2));
 
-    auto buttonsArea = scaleEditorRow.withTrimmedLeft(this->scaleNameEditor->getWidth());
+    const auto buttonsRow = this->getRowBounds(0.825f, scaleHelperButtonHeight, scaleEditorMargin);
+    auto buttonsArea = buttonsRow.withTrimmedLeft(this->scaleNameEditor->getWidth());
     this->playButton->setBounds(buttonsArea.removeFromRight(scaleHelperButtonWidth));
     this->savePresetButton->setBounds(buttonsArea.removeFromRight(scaleHelperButtonWidth).withSizeKeepingCentre(20, 20));
 }

@@ -24,6 +24,7 @@ class TrackStartIndicator;
 class TrackEndIndicator;
 
 #include "ProjectListener.h"
+#include "MultiTouchListener.h"
 #include "RollListener.h"
 #include "ComponentFader.h"
 #include "ColourIDs.h"
@@ -32,6 +33,7 @@ class ProjectMapsScroller final :
     public Component,
     public ProjectListener,
     public RollListener,
+    public MultiTouchListener,
     private AsyncUpdater, // triggers batch move/resize events for children
     private Timer // optionally animates transitions between rolls
 {
@@ -68,8 +70,8 @@ public:
         }
 
         newTrackMap->toFront(false);
-        this->helperRectangle->toFront(false);
-        this->screenRange->toFront(false);
+        this->horizontalRangeRectangle->toFront(false);
+        this->screenRangeRectangle->toFront(false);
     }
 
     void switchToRoll(SafePointer<RollBase> roll);
@@ -101,6 +103,22 @@ public:
     void onMidiRollResized(RollBase *targetRoll) override;
 
     //===------------------------------------------------------------------===//
+    // MultiTouchListener
+    //===------------------------------------------------------------------===//
+
+    void multiTouchStartZooming() override;
+    void multiTouchContinueZooming(
+            const Rectangle<float> &relativePosition,
+            const Rectangle<float> &relativePositionAnchor,
+            const Rectangle<float> &absolutePositionAnchor) override;
+    void multiTouchEndZooming(const MouseEvent &anchorEvent) override;
+
+    Point<float> getMultiTouchRelativeAnchor(const MouseEvent &e) override;
+    Point<float> getMultiTouchAbsoluteAnchor(const MouseEvent &e) override;
+
+    bool isMultiTouchEvent(const MouseEvent &e) const noexcept;
+
+    //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
@@ -110,32 +128,6 @@ public:
     void mouseDrag(const MouseEvent &event) override;
     void mouseUp(const MouseEvent &event) override;
     void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
-
-    //===------------------------------------------------------------------===//
-    // Additional horizontal dragger
-    //===------------------------------------------------------------------===//
-
-    class HorizontalDragHelper final : public Component
-    {
-    public:
-
-        explicit HorizontalDragHelper(ProjectMapsScroller &scrollerRef);
-
-        void mouseDown(const MouseEvent &e) override;
-        void mouseDrag(const MouseEvent &e) override;
-        void mouseUp(const MouseEvent &e) override;
-        void paint(Graphics &g) override;
-
-        void setBrightness(float brightness);
-        static constexpr auto defaultBrightness = 0.4f;
-
-    private:
-
-        Colour colour;
-        ProjectMapsScroller &scroller;
-        ComponentDragger dragger;
-        UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
-    };
 
 public:
 
@@ -152,7 +144,7 @@ private:
 
     ScrollerMode scrollerMode = ScrollerMode::Map;
 
-    bool stretchedMode() const noexcept
+    bool isInStretchedMode() const noexcept
     {
         // no stretching in the scroller mode
         return this->scrollerMode == ScrollerMode::Map;
@@ -160,20 +152,21 @@ private:
 
 private:
 
-    class ScreenRange final : public Component
+    //===------------------------------------------------------------------===//
+    // Two helpers for dragging screen range rectangles
+    //===------------------------------------------------------------------===//
+
+    class ScreenRangeRectangle final : public Component
     {
     public:
 
-        explicit ScreenRange(ProjectMapsScroller &scrollerRef) :
-            colour(findDefaultColour(ColourIDs::TrackScroller::screenRangeFill)),
-            scroller(scrollerRef)
+        explicit ScreenRangeRectangle(ProjectMapsScroller &scroller) : scroller(scroller)
         {
             this->setPaintingIsUnclipped(true);
             this->setMouseClickGrabsKeyboardFocus(false);
 
-            this->moveConstrainer = make<ComponentBoundsConstrainer>();
-            this->moveConstrainer->setMinimumSize(4, 4);
-            this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
+            this->moveConstrainer.setMinimumSize(4, 4);
+            this->moveConstrainer.setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
         }
 
         Rectangle<float> getRealBounds() const noexcept
@@ -187,23 +180,54 @@ private:
             this->setBounds(this->realBounds.toType<int>());
         }
 
+        float getBrightness() const noexcept
+        {
+            return this->brightness;
+        }
+
+        void setBrightness(float newBrightness)
+        {
+            if (this->brightness == newBrightness)
+            {
+                return;
+            }
+
+            this->brightness = newBrightness;
+            this->colour = findDefaultColour(ColourIDs::TrackScroller::screenRangeFill)
+                .withMultipliedAlpha(this->brightness);
+            this->setVisible(this->brightness != 0.f);
+            this->repaint();
+        }
+
+        void disableDraggingUntilTap()
+        {
+            this->draggingDisabledUntilTap = true;
+        }
+
         //===------------------------------------------------------------------===//
         // Component
         //===------------------------------------------------------------------===//
 
         void mouseDown(const MouseEvent &e) override
         {
-            this->dragger.startDraggingComponent(this, e);
+            if (!this->scroller.isMultiTouchEvent(e))
+            {
+                this->dragger.startDraggingComponent(this, e);
+                this->draggingDisabledUntilTap = false;
+            }
         }
 
         void mouseDrag(const MouseEvent &e) override
         {
-            this->setMouseCursor(MouseCursor::DraggingHandCursor);
-            const auto lastPosition = this->getPosition().toFloat();
-            this->dragger.dragComponent(this, e, this->moveConstrainer.get());
-            const auto moveDelta = this->getPosition().toFloat() - lastPosition;
-            this->realBounds.translate(moveDelta.getX(), moveDelta.getY());
-            this->scroller.xyMoveByUser();
+            if (!this->scroller.isMultiTouchEvent(e) && !this->draggingDisabledUntilTap)
+            {
+                this->setMouseCursor(MouseCursor::DraggingHandCursor);
+                const auto lastPosition = this->getPosition().toFloat();
+                this->dragger.dragComponent(this, e, &this->moveConstrainer);
+                const auto moveDelta = this->getPosition().toFloat() - lastPosition;
+                this->realBounds.translate(moveDelta.getX(), moveDelta.getY());
+                this->scroller.xyMoveByUser();
+            }
         }
 
         void mouseUp(const MouseEvent &e) override
@@ -221,34 +245,119 @@ private:
 
         Rectangle<float> realBounds;
 
-        Colour colour;
+        Colour colour = findDefaultColour(ColourIDs::TrackScroller::screenRangeFill);
+        float brightness = 1.f;
+
         ProjectMapsScroller &scroller;
+
         ComponentDragger dragger;
+        bool draggingDisabledUntilTap = false;
 
-        UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
+        ComponentBoundsConstrainer moveConstrainer;
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScreenRange)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScreenRangeRectangle)
+    };
+
+    class HorizontalRangeRectangle final : public Component
+    {
+    public:
+
+        explicit HorizontalRangeRectangle(ProjectMapsScroller &scroller) :
+            scroller(scroller),
+            moveConstrainer(scroller)
+        {
+            this->setPaintingIsUnclipped(true);
+            this->setInterceptsMouseClicks(true, false);
+            this->setMouseClickGrabsKeyboardFocus(false);
+            this->toBack();
+
+            this->moveConstrainer.setMinimumSize(4, 4);
+            this->moveConstrainer.setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
+        }
+
+        void disableDraggingUntilTap()
+        {
+            this->draggingDisabledUntilTap = true;
+        }
+
+        void mouseDown(const MouseEvent &e) override
+        {
+            if (!this->scroller.isMultiTouchEvent(e))
+            {
+                this->dragger.startDraggingComponent(this, e);
+                this->draggingDisabledUntilTap = false;
+            }
+        }
+
+        void mouseDrag(const MouseEvent &e) override
+        {
+            if (!this->scroller.isMultiTouchEvent(e) && !this->draggingDisabledUntilTap)
+            {
+                this->setMouseCursor(MouseCursor::DraggingHandCursor);
+                this->dragger.dragComponent(this, e, &this->moveConstrainer);
+            }
+        }
+
+        void mouseUp(const MouseEvent &e) override
+        {
+            this->setMouseCursor(MouseCursor::NormalCursor);
+        }
+
+        void paint(Graphics &g) override
+        {
+            g.setColour(this->colour);
+            g.fillRect(this->getLocalBounds());
+            g.fillRect(0.f, 0.f, 1.f, float(this->getHeight()));
+            g.fillRect(float(this->getWidth() - 1.f), 0.f, 1.f, float(this->getHeight()));
+        }
+
+    private:
+
+        ProjectMapsScroller &scroller;
+
+        ComponentDragger dragger;
+        bool draggingDisabledUntilTap = false;
+
+        struct BoundsConstrainer final : public ComponentBoundsConstrainer
+        {
+            explicit BoundsConstrainer(ProjectMapsScroller &scrollerRef) : scroller(scrollerRef) {}
+
+            void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override
+            {
+                ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
+                this->scroller.horizontalDragByUser(&component);
+            }
+
+            ProjectMapsScroller &scroller;
+        };
+
+        BoundsConstrainer moveConstrainer;
+
+        const Colour colour = findDefaultColour(ColourIDs::TrackScroller::scrollerFill)
+            .withMultipliedAlpha(0.5f);
     };
 
 private:
 
-    void horizontalDragByUser(Component *component, const Rectangle<int> &bounds);
-    friend class HorizontalDragHelperConstrainer;
-
     void handleAsyncUpdate() override;
-    void updateAllChildrenBounds();
+    void updateAllChildrenBounds(bool shouldUpdatePlayhead);
 
     void timerCallback() override;
 
     ProjectNode &project;
     SafePointer<RollBase> roll;
     Point<int> rollViewportPositionAtDragStart;
+    Point<int> panningStart;
 
     Rectangle<float> oldAreaBounds;
     Rectangle<float> oldMapBounds;
 
+    UniquePointer<HorizontalRangeRectangle> horizontalRangeRectangle;
+    void horizontalDragByUser(Component *horizontalRangeRectangle);
+
     static constexpr auto screenRangeWidth = 150.f;
-    UniquePointer<ProjectMapsScroller::ScreenRange> screenRange;
+    UniquePointer<ScreenRangeRectangle> screenRangeRectangle;
+    float screenRangeTargetBrightness = 1.f;
 
     Optional<Rectangle<float>> drawingNewScreenRange;
 
@@ -260,11 +369,10 @@ private:
     Rectangle<float> getIndicatorBounds() const noexcept;
     Rectangle<int> getMapBounds() const noexcept;
 
-    ComponentDragger helperDragger;
-    UniquePointer<HorizontalDragHelper> helperRectangle;
-
     UniquePointer<TrackStartIndicator> projectStartIndicator;
     UniquePointer<TrackEndIndicator> projectEndIndicator;
+
+    UniquePointer<MultiTouchController> multiTouchController;
 
     const Colour borderLineDark = findDefaultColour(ColourIDs::TrackScroller::borderLineDark);
     const Colour borderLineLight = findDefaultColour(ColourIDs::TrackScroller::borderLineLight);

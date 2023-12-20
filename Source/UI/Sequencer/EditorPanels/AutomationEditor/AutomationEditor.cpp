@@ -671,10 +671,8 @@ void AutomationEditor::multiTouchStartZooming()
     this->roll->multiTouchStartZooming();
 }
 
-void AutomationEditor::multiTouchContinueZooming(
-        const Rectangle<float> &relativePositions,
-        const Rectangle<float> &relativeAnchor,
-        const Rectangle<float> &absoluteAnchor)
+void AutomationEditor::multiTouchContinueZooming(const Rectangle<float> &relativePositions,
+    const Rectangle<float> &relativeAnchor, const Rectangle<float> &absoluteAnchor)
 {
     this->roll->multiTouchContinueZooming(relativePositions, relativeAnchor, absoluteAnchor);
 }

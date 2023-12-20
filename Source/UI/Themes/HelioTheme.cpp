@@ -862,7 +862,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPageFillColour().darker(0.4f));
     this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.055f));
-    this->setColour(ColourIDs::TrackScroller::screenRangeFill, s->getIconBaseColour().withMultipliedAlpha(0.55f));
+    this->setColour(ColourIDs::TrackScroller::screenRangeFill, s->getIconBaseColour().withMultipliedAlpha(0.6f));
     this->setColour(ColourIDs::TrackScroller::scrollerFill, s->getIconBaseColour().withMultipliedAlpha(0.55f));
 
     // InstrumentEditor
