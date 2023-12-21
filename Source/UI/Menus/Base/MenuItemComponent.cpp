@@ -230,12 +230,13 @@ public:
         this->setPaintingIsUnclipped(true);
     }
 
-    public: void paint(Graphics &g) override
+    void paint(Graphics &g) override
     {
-        const auto fgColour = findDefaultColour(Label::textColourId);
-        g.setColour(fgColour.withAlpha(0.0175f));
+        g.setColour(this->fgColour);
         g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 2.f);
     }
+
+    const Colour fgColour = findDefaultColour(Label::textColourId).withAlpha(0.0175f);
 };
 
 class CommandItemSelector final : public Component
@@ -350,11 +351,8 @@ void MenuItemComponent::mouseDown(const MouseEvent &e)
     }
 
 #if PLATFORM_DESKTOP
-
     App::Layout().hideTooltipIfAny();
-
 #endif
-
 
     if (!this->hasText())
     {
@@ -388,7 +386,7 @@ void MenuItemComponent::mouseDown(const MouseEvent &e)
 
 void MenuItemComponent::mouseUp(const MouseEvent &e)
 {
-    if (! this->mouseDownWasTriggered)
+    if (!this->mouseDownWasTriggered)
     {
         return;
     }
@@ -435,7 +433,6 @@ void MenuItemComponent::mouseEnter(const MouseEvent &e)
     HighlightedComponent::mouseEnter(e);
 
 #if PLATFORM_DESKTOP
-
     if (this->description->tooltipText.isEmpty())
     {
         return;
@@ -443,7 +440,6 @@ void MenuItemComponent::mouseEnter(const MouseEvent &e)
 
     App::Layout().showTooltip(this->description->tooltipText,
         MainLayout::TooltipIcon::None, Globals::UI::tooltipDelayMs);
-
 #endif
 }
 
@@ -452,14 +448,12 @@ void MenuItemComponent::mouseExit(const MouseEvent &e)
     HighlightedComponent::mouseExit(e);
 
 #if PLATFORM_DESKTOP
-
     if (this->description->tooltipText.isEmpty())
     {
         return;
     }
 
     App::Layout().hideTooltipIfAny();
-
 #endif
 }
 

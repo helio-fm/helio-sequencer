@@ -77,8 +77,6 @@ public:
         return actionId + this->getId();
     }
     
-    // unchecked access and unchecked casts, not cool not cool
-    // todo pls pretty this up somehow someday
     template<typename T>
     T *getFirstAs() const
     {

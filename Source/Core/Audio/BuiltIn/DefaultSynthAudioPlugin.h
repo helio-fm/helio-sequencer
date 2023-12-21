@@ -27,7 +27,6 @@ public:
 
     static const String instrumentId;
     static const String instrumentName;
-    static const String instrumentNameOld;
 
     void setTemperament(Temperament::Ptr temperament)
     {

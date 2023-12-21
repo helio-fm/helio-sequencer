@@ -157,29 +157,46 @@ MouseCursor RollEditMode::getCursor() const
     return MouseCursor::NormalCursor;
 }
 
-void RollEditMode::unsetLastMode()
+bool RollEditMode::isMode(Mode targetMode) const
 {
-    Mode temp = this->mode;
-    this->mode = this->previousMode;
-    this->previousMode = temp;
-
-    this->listeners.call(&Listener::onChangeEditMode, *this);
+    return this->mode == targetMode;
 }
 
-void RollEditMode::setMode(Mode newMode, bool force)
+void RollEditMode::setMode(Mode newMode)
 {
-    if ((this->mode == newMode) && !force)
+    if (this->mode == newMode)
     {
         return;
     }
 
-    this->previousMode = this->mode;
+    this->mode = newMode;
+    this->modeToRecoverTo.reset();
+
+    this->listeners.call(&Listener::onChangeEditMode, *this);
+}
+
+void RollEditMode::setTemporaryMode(Mode newMode)
+{
+    if (this->mode == newMode)
+    {
+        return;
+    }
+
+    this->modeToRecoverTo = this->mode;
     this->mode = newMode;
 
     this->listeners.call(&Listener::onChangeEditMode, *this);
 }
 
-bool RollEditMode::isMode(Mode targetMode) const
+void RollEditMode::recoverFromTemporaryModeIfNeeded()
 {
-    return this->mode == targetMode;
+    if (!this->modeToRecoverTo.hasValue())
+    {
+        return;
+    }
+
+    this->mode = *this->modeToRecoverTo;
+    this->modeToRecoverTo.reset();
+
+    this->listeners.call(&Listener::onChangeEditMode, *this);
 }

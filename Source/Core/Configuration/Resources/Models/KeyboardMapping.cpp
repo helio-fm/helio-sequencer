@@ -525,7 +525,7 @@ String KeyboardMapping::KeyChannel::toString() const noexcept
 bool KeyboardMapping::KeyChannel::isValid() const noexcept
 {
     return this->key >= 0 &&
-        this->channel > 0 && this->channel <= 16;
+        this->channel > 0 && this->channel <= Globals::numChannels;
 }
 
 //===----------------------------------------------------------------------===//

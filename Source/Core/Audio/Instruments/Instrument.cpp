@@ -575,11 +575,6 @@ void Instrument::deserialize(const SerializedData &data)
 
     this->instrumentId = root.getProperty(Audio::instrumentId, this->instrumentId.toString());
     this->instrumentName = root.getProperty(Audio::instrumentName, this->instrumentName);
-    if (this->instrumentName == DefaultSynthAudioPlugin::instrumentNameOld)
-    {
-        // legacy naming workaround for the built-in instrument
-        this->instrumentName = DefaultSynthAudioPlugin::instrumentName;
-    }
 
     this->keyboardMapping->deserialize(root);
 

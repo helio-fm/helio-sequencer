@@ -216,8 +216,6 @@ void PluginScanner::run()
 
         try
         {
-            const auto myPath(File::getSpecialLocation(File::currentExecutableFile).getFullPathName());
-
             for (const auto &pluginPath : this->filesToScan)
             {
                 if (this->cancelled.get())
@@ -226,9 +224,9 @@ void PluginScanner::run()
                     break;
                 }
 
-#if SAFE_SCAN
-                DBG("Safe scanning: " + pluginPath);
+                DBG("Found: " + pluginPath);
 
+#if SAFE_SCAN
                 const Uuid tempFileName;
                 const File tempFile(DocumentHelpers::getTempSlot(tempFileName.toString()));
                 tempFile.appendText(pluginPath, false, false);
@@ -236,6 +234,7 @@ void PluginScanner::run()
                 Thread::sleep(50);
 
                 ChildProcess checkerProcess;
+                const auto myPath = File::getSpecialLocation(File::currentExecutableFile).getFullPathName();
                 const String commandLine(myPath + " " + tempFileName.toString());
                 checkerProcess.start(commandLine);
 
@@ -277,8 +276,6 @@ void PluginScanner::run()
 
                 tempFile.deleteFile();
 #else
-                DBG("Unsafe scanning: " + pluginPath);
-
                 KnownPluginList knownPluginList;
                 OwnedArray<PluginDescription> typesFound;
                     
@@ -286,13 +283,13 @@ void PluginScanner::run()
                 {
                     for (int j = 0; j < formatManager.getNumFormats(); ++j)
                     {
-                        AudioPluginFormat *format = formatManager.getFormat(j);
+                        auto *format = formatManager.getFormat(j);
                         knownPluginList.scanAndAddFile(pluginPath, false, typesFound, *format);
                     }
                 }
                 catch (...) {}
-                    
-                // at this point we are still alive and plugin haven't crashed the app
+
+                // at this point we are still alive and the plugin hasn't crashed the app
                 if (typesFound.size() != 0)
                 {
                     for (auto *type : typesFound)
@@ -312,7 +309,7 @@ void PluginScanner::run()
             this->cancelled = false;
             this->working = false;
             
-            DBG("Done scanning for audio plugins");
+            DBG("Done scanning audio plugins");
             this->sendChangeMessage();
         }
         

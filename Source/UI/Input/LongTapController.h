@@ -29,7 +29,7 @@ public:
     void timerCallback() override
     {
         this->reset();
-        this->listener.longTapEvent(this->position, this->component);
+        this->listener.onLongTap(this->position, this->component);
     }
 
     void mouseDown(const MouseEvent &e) override
@@ -71,7 +71,9 @@ public:
 
 private:
 
-    static constexpr auto delayMs = 500;
+    // both iOS and Android seem to have a default long tap delay of 500ms,
+    // but we'll cut it down to 400ms because long-tapping is used a lot for selection:
+    static constexpr auto delayMs = 400;
     static constexpr auto sqrThreshold = 16;
 
     inline void reset()

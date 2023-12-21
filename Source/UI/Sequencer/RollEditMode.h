@@ -34,9 +34,7 @@ public:
 
     RollEditMode() = default;
     RollEditMode(Mode mode) : mode(mode) {}
-    RollEditMode(const RollEditMode &other) :
-        mode(other.mode),
-        previousMode(other.previousMode) {}
+    RollEditMode(const RollEditMode &other) : mode(other.mode) {}
 
     //===------------------------------------------------------------------===//
     // Listeners
@@ -80,14 +78,17 @@ public:
     bool shouldInteractWithChildren() const;
     MouseCursor getCursor() const;
 
-    void unsetLastMode();
-    void setMode(Mode newMode, bool force = false);
     bool isMode(Mode targetMode) const;
+    void setMode(Mode newMode);
+
+    void setTemporaryMode(Mode newMode);
+    void recoverFromTemporaryModeIfNeeded();
 
 private:
 
     Mode mode = defaultMode;
-    Mode previousMode = defaultMode;
+
+    Optional<Mode> modeToRecoverTo;
 
     ListenerList<Listener> listeners;
 

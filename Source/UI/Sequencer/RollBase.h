@@ -140,7 +140,7 @@ public:
 
     bool isMultiTouchEvent(const MouseEvent &e) const noexcept;
 
-    void longTapEvent(const Point<float> &position,
+    void onLongTap(const Point<float> &position,
         const WeakReference<Component> &target) override;
 
     //===------------------------------------------------------------------===//

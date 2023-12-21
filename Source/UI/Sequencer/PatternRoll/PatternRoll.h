@@ -80,7 +80,7 @@ public:
     // LongTapListener
     //===------------------------------------------------------------------===//
 
-    void longTapEvent(const Point<float> &position,
+    void onLongTap(const Point<float> &position,
         const WeakReference<Component> &target) override;
 
     //===------------------------------------------------------------------===//

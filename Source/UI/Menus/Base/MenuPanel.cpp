@@ -285,7 +285,8 @@ Component *MenuPanel::refreshComponentForRow(int rowNumber,
 
 Rectangle<int> MenuPanel::getMenuBounds() const
 {
-    return this->getLocalBounds().withHeight(this->getHeight() - this->getFooterHeight());
+    const auto maxHeight = App::Layout().getBoundsForPopups().getHeight();
+    return this->getLocalBounds().withHeight(jmin(maxHeight, this->getHeight()) - this->getFooterHeight());
 }
 
 Rectangle<int> MenuPanel::getFooterBounds() const

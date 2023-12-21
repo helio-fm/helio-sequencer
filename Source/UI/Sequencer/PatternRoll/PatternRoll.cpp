@@ -567,7 +567,7 @@ void PatternRoll::selectClip(const Clip &clip)
 // SmoothZoomListener
 //===----------------------------------------------------------------------===//
 
-void PatternRoll::longTapEvent(const Point<float> &position, const WeakReference<Component> &target)
+void PatternRoll::onLongTap(const Point<float> &position, const WeakReference<Component> &target)
 {
     if (this->multiTouchController->hasMultiTouch())
     {
@@ -584,7 +584,7 @@ void PatternRoll::longTapEvent(const Point<float> &position, const WeakReference
         }
     }
 
-    RollBase::longTapEvent(position, target);
+    RollBase::onLongTap(position, target);
 }
 
 //===----------------------------------------------------------------------===//

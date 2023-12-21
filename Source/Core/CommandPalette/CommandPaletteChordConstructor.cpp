@@ -1469,7 +1469,6 @@ public:
 
 private:
 
-    // fixme naming?
     ChordParsing::ChordDescription chord;
     mutable Array<int> lastResult;
 

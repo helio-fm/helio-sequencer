@@ -85,10 +85,8 @@ struct IdentifierHash
 // Various helpers
 //===----------------------------------------------------------------------===//
 
-// The reason for these (and above) aliases to exist is that I hate
-// that stl::influenced<eye_bleeding, unspeakably_ugly> _code_style;
-// if anyone reading this is considering contributing, please please
-// please write in a cleaner, C#-like, pidgin C++, thank you so much.
+// More aliases to avoid stl::influenced<eye_bleeding> _code_style
+// in favour of a cleaner, C#-like, pidgin C++
 
 template <typename T>
 using UniquePointer = std::unique_ptr<T>;
@@ -286,7 +284,7 @@ namespace Globals
     }
 }
 
-// Rolls allow up to 16 divisions per beat, there's no need for better accuracy:
+// Rolls support up to 16 divisions per quarter note (see the comment above)
 inline float roundBeat(float beat)
 {
     return roundf(beat * static_cast<float>(Globals::ticksPerBeat)) /

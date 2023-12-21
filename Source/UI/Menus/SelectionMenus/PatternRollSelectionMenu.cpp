@@ -28,7 +28,7 @@
 
 #include "ProjectNode.h"
 #include "UndoStack.h"
-#include "MidiTrackNode.h"
+#include "PianoTrackNode.h"
 #include "AutomationSequence.h"
 #include "PianoSequence.h"
 
@@ -108,12 +108,21 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
     if (this->lasso->getNumSelected() > 1)
 #endif
     {
-        // todo: be more smart about automation tracks
-        menu.add(MenuItem::item(Icons::up, CommandIDs::ClipTransposeUp,
-            TRANS(I18n::Menu::Selection::clipsTransposeUp)));
+        bool hasAtLeastOnePianoTrack = false;
+        for (int i = 0; i < this->lasso->getNumSelected(); ++i)
+        {
+            auto *track = this->lasso->getItemAs<ClipComponent>(i)->getClip().getPattern()->getTrack();
+            hasAtLeastOnePianoTrack = hasAtLeastOnePianoTrack || (nullptr != dynamic_cast<PianoTrackNode *>(track));
+        }
 
-        menu.add(MenuItem::item(Icons::down, CommandIDs::ClipTransposeDown,
-            TRANS(I18n::Menu::Selection::clipsTransposeDown)));
+        if (hasAtLeastOnePianoTrack)
+        {
+            menu.add(MenuItem::item(Icons::up, CommandIDs::ClipTransposeUp,
+                TRANS(I18n::Menu::Selection::clipsTransposeUp)));
+
+            menu.add(MenuItem::item(Icons::down, CommandIDs::ClipTransposeDown,
+                TRANS(I18n::Menu::Selection::clipsTransposeDown)));
+        }
     }
 
     const auto muteAction = PatternOperations::lassoContainsMutedClip(*this->lasso.get()) ?
@@ -223,7 +232,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createChannelSelectionMenu()
         uniqueChannels.insert(clip.getPattern()->getTrack()->getTrackChannel());
     }
 
-    for (int channel = 1; channel <= 16; ++channel)
+    for (int channel = 1; channel <= Globals::numChannels; ++channel)
     {
         const bool isTicked = uniqueChannels.size() == 1 && uniqueChannels.contains(channel);
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::ellipsis, String(channel))->

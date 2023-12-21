@@ -66,7 +66,7 @@ public:
     // Input Listeners
     //===------------------------------------------------------------------===//
 
-    void longTapEvent(const Point<float> &position,
+    void onLongTap(const Point<float> &position,
         const WeakReference<Component> &target) override;
 
     void zoomRelative(const Point<float> &origin,

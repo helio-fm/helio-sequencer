@@ -549,6 +549,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
         (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
          this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
     {
+        this->stopSound();
         this->setMouseCursor(MouseCursor::NormalCursor);
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));
         return;
@@ -559,6 +560,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     if (!this->firstChangeDone && e.source.isTouch() &&
         this->roll.getEditMode().isMode(RollEditMode::drawMode))
     {
+        this->stopSound();
         auto *sequence = static_cast<PianoSequence *>(this->note.getSequence());
         sequence->checkpoint();
         sequence->remove(this->note, true);

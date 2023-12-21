@@ -98,7 +98,7 @@ void MidiTrackMenu::initChannelSelectionMenu()
         this->initDefaultMenu();
     }));
 
-    for (int channel = 1; channel <= 16; ++channel)
+    for (int channel = 1; channel <= Globals::numChannels; ++channel)
     {
         const bool isTicked = this->track->getTrackChannel() == channel;
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::ellipsis, String(channel))->

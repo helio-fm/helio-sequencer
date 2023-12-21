@@ -21,7 +21,6 @@
 
 const String DefaultSynthAudioPlugin::instrumentId = "<default>";
 const String DefaultSynthAudioPlugin::instrumentName = "Helio Default";
-const String DefaultSynthAudioPlugin::instrumentNameOld = "Helio Piano";
 
 DefaultSynthAudioPlugin::DefaultSynthAudioPlugin()
 {

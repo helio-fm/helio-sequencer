@@ -89,14 +89,6 @@ public:
     static Array<String> getLocalizedDegreeNames();
 
     //===------------------------------------------------------------------===//
-    // Hard-coded defaults
-    //===------------------------------------------------------------------===//
-
-    static Chord::Ptr getTriad();
-    static Chord::Ptr getPowerChord();
-    static Chord::Ptr getSeventhChord();
-
-    //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
@@ -110,9 +102,6 @@ private:
 
     // Chord keys indices for target scale
     Array<Key> scaleKeys;
-
-    // todo in future:
-    //int basePeriod;
 
     JUCE_LEAK_DETECTOR(Chord)
 };

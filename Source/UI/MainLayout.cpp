@@ -133,7 +133,7 @@ MainLayout::MainLayout()
         App::setTitleBarComponent(this->headline.get());
     }
 
-    // TODO make it able for user to select a scheme in settings page
+    // TODO make it possible for user to select a scheme in settings page
     this->hotkeyScheme = App::Config().getHotkeySchemes()->getCurrent();
 
     this->consoleCommonActions = make<CommandPaletteCommonActions>();

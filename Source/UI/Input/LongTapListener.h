@@ -20,12 +20,9 @@
 class LongTapListener
 {
 public:
-    virtual ~LongTapListener() = default;
-    
-    // When controller is subscribed as addMouseListener(this->longTapController, true)),
-    // listener may want to check for (target == this) before any action
-    // as the event may come from one of it's children:
-    virtual void longTapEvent(const Point<float> &position,
-        const WeakReference<Component> &target) = 0;
 
+    virtual ~LongTapListener() = default;
+
+    virtual void onLongTap(const Point<float> &position,
+        const WeakReference<Component> &target) = 0;
 };

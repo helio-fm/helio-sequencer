@@ -59,19 +59,19 @@ public:
     
 private:
 
-    void setArrowSize(float newSize);
     void findTargetPointAndUpdateBounds();
     void pointToAndFit(const Rectangle<int>& newAreaToPointTo,
-                       const Rectangle<int>& newAreaToFitIn);
+        const Rectangle<int>& newAreaToFitIn);
 
-    float arrowSize = 10.f;
+    static constexpr float arrowSize = 5.f;
 
     UniquePointer<Component> contentComponent;
     SafePointer<Component> targetComponent;
 
     Path outline;
     Point<float> targetPoint;
-    Rectangle<int> lastGoodAvailableArea, lastGoodTargetArea;
+    Rectangle<int> areaToFitIn;
+    Rectangle<int> areaToPointTo;
 
     Point<float> clickPointAbs;
     const bool alignsToMouse;

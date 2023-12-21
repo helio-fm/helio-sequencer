@@ -26,7 +26,6 @@ namespace Routes
 {
     namespace Web
     {
-        // TODO: make base urls configurable
         static const String baseURL = "https://helio.fm";
         static const String translationsURL = "/translations";
     }

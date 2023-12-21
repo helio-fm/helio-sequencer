@@ -316,7 +316,7 @@ void PianoRoll::hideAllGhostNotes()
 // Input Listeners
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::longTapEvent(const Point<float> &position,
+void PianoRoll::onLongTap(const Point<float> &position,
     const WeakReference<Component> &target)
 {
     // try to switch to selected note's track:
@@ -332,7 +332,7 @@ void PianoRoll::longTapEvent(const Point<float> &position,
     }
 
     // else - start dragging lasso, if needed:
-    RollBase::longTapEvent(position, target);
+    RollBase::onLongTap(position, target);
 }
 
 void PianoRoll::zoomRelative(const Point<float> &origin,
@@ -1823,7 +1823,6 @@ void PianoRoll::handleAsyncUpdate()
 #if PIANOROLL_HAS_NOTE_RESIZERS
     if (this->selection.getNumSelected() > 0)
     {
-        // resizers for the mobile version
         if (this->noteResizerLeft == nullptr)
         {
             this->noteResizerLeft = make<NoteResizerLeft>(*this);
@@ -1835,28 +1834,14 @@ void PianoRoll::handleAsyncUpdate()
             this->noteResizerRight = make<NoteResizerRight>(*this);
             this->addAndMakeVisible(this->noteResizerRight.get());
         }
+
+        this->noteResizerLeft->updateBounds();
+        this->noteResizerRight->updateBounds();
     }
     else
     {
         this->noteResizerLeft = nullptr;
         this->noteResizerRight = nullptr;
-    }
-
-    if (this->batchRepaintList.size() > 0)
-    {
-        ROLL_BATCH_REPAINT_START
-
-        if (this->noteResizerLeft != nullptr)
-        {
-            this->noteResizerLeft->updateBounds();
-        }
-
-        if (this->noteResizerRight != nullptr)
-        {
-            this->noteResizerRight->updateBounds();
-        }
-
-        ROLL_BATCH_REPAINT_END
     }
 #endif
 

@@ -278,7 +278,6 @@ namespace Serialization
             static const Identifier showFullProjectMap = "miniMap";
             static const Identifier uiScaleFactor = "uiScaleFactor";
             static const Identifier mouseWheelAltMode = "wheelAltMode";
-            static const Identifier mouseWheelAltDirection = "wheelAltDirection"; // legacy
             static const Identifier mouseWheelVerticalPanningByDefault = "wheelVerticalPan";
             static const Identifier mouseWheelVerticalZoomingByDefault = "wheelVerticalZoom";
             static const Identifier metronomeEnabled = "metronome";

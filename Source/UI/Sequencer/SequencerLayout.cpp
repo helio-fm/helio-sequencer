@@ -526,7 +526,6 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->bottomEditorsSwitcher = make<EditorPanelsSwitcher>();
     this->bottomEditorsScroller = make<EditorPanelsScroller>(this->project, defaultRoll, this->bottomEditorsSwitcher.get());
     this->bottomEditorsScroller->addOwnedEditorPanel<VelocityEditor>(this->project, defaultRoll);
-    // fixme: shouldn't be visible?
     this->bottomEditorsScroller->addOwnedEditorPanel<AutomationEditor>(this->project, defaultRoll);
 
     this->pianoRoll->addRollListener(this->bottomEditorsScroller.get());

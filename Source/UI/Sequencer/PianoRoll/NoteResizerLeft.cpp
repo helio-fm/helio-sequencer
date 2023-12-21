@@ -187,7 +187,7 @@ void NoteResizerLeft::updateBounds()
     const int h = this->roll.getViewport().getViewHeight();
     this->setBounds(xAnchor - this->getWidth(), yAnchor, this->getWidth(), h);
 
-    if (this->getAlpha() == 0.f && !this->fader.isAnimating())
+    if (this->getAlpha() < 1.f)
     {
         this->fader.fadeIn(this, Globals::UI::fadeInShort);
     }

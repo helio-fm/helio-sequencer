@@ -28,34 +28,6 @@ Chord::Chord(const String &name) noexcept :
     name(name) {}
 
 //===----------------------------------------------------------------------===//
-// Hard-coded defaults
-//===----------------------------------------------------------------------===//
-
-Chord::Ptr Chord::getTriad()
-{
-    Chord::Ptr s(new Chord());
-    s->scaleKeys = { Key::InScale::I, Key::InScale::III, Key::InScale::V };
-    s->name = "3"; // FIXME proper translated names?
-    return s;
-}
-
-Chord::Ptr Chord::getPowerChord()
-{
-    Chord::Ptr s(new Chord());
-    s->scaleKeys = { Key::InScale::I, Key::InScale::V };
-    s->name = "5"; // FIXME proper translated names?
-    return s;
-}
-
-Chord::Ptr Chord::getSeventhChord()
-{
-    Chord::Ptr s(new Chord());
-    s->scaleKeys = { Key::InScale::I, Key::InScale::III, Key::InScale::V, Key::InScale::VII };
-    s->name = "7"; // FIXME proper translated names?
-    return s;
-}
-
-//===----------------------------------------------------------------------===//
 // BaseResource
 //===----------------------------------------------------------------------===//
 

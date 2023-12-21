@@ -286,12 +286,10 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->mouseWheelFlags.usePanningByDefault =
         root.getProperty(UI::Flags::mouseWheelAltMode, this->mouseWheelFlags.usePanningByDefault);
 
-    // todo remove this key in future versions
-    const auto legacyAltDirection = root.getProperty(UI::Flags::mouseWheelAltDirection, false);
     this->mouseWheelFlags.useVerticalPanningByDefault =
-        root.getProperty(UI::Flags::mouseWheelVerticalPanningByDefault, legacyAltDirection);
+        root.getProperty(UI::Flags::mouseWheelVerticalPanningByDefault, false);
     this->mouseWheelFlags.useVerticalZoomingByDefault =
-        root.getProperty(UI::Flags::mouseWheelVerticalZoomingByDefault, legacyAltDirection);
+        root.getProperty(UI::Flags::mouseWheelVerticalZoomingByDefault, false);
 
     this->metronomeEnabled = root.getProperty(UI::Flags::metronomeEnabled, this->metronomeEnabled);
 

@@ -133,7 +133,8 @@ void KeySignatureLargeComponent::mouseUp(const MouseEvent &e)
 
         if (e.getDistanceFromDragStart() < 10 &&
             this->mouseDownWasTriggered &&
-            !this->draggingHadCheckpoint)
+            !this->draggingHadCheckpoint &&
+            Component::getCurrentlyModalComponent() == nullptr)
         {
             if (e.mods.isAnyModifierKeyDown())
             {

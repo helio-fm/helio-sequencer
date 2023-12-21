@@ -304,7 +304,7 @@ void RollBase::broadcastRollResized()
 // Input Listeners
 //===----------------------------------------------------------------------===//
 
-void RollBase::longTapEvent(const Point<float> &position,
+void RollBase::onLongTap(const Point<float> &position,
     const WeakReference<Component> &target)
 {
     if (this->multiTouchController->hasMultiTouch())
@@ -324,13 +324,11 @@ void RollBase::longTapEvent(const Point<float> &position,
         return;
     }
 
-    if (target == this)
+    if (target == this && !this->project.getEditMode().forbidsSelectionMode({}))
     {
-        if (!this->project.getEditMode().forbidsSelectionMode({}))
-        {
-            this->lassoComponent->beginLasso(position, this);
-            return;
-        }
+        this->project.getEditMode().setTemporaryMode(RollEditMode::selectionMode);
+        this->lassoComponent->beginLasso(position, this);
+        return;
     }
 }
 
@@ -884,11 +882,11 @@ void RollBase::setSpaceDraggingMode(bool dragMode)
 
     if (dragMode)
     {
-        this->project.getEditMode().setMode(RollEditMode::dragMode, true);
+        this->project.getEditMode().setTemporaryMode(RollEditMode::dragMode);
     }
     else
     {
-        this->project.getEditMode().unsetLastMode();
+        this->project.getEditMode().recoverFromTemporaryModeIfNeeded();
     }
 }
 
@@ -1168,6 +1166,7 @@ void RollBase::mouseUp(const MouseEvent &e)
     if (this->lassoComponent->isDragging())
     {
         this->lassoComponent->endLasso();
+        this->project.getEditMode().recoverFromTemporaryModeIfNeeded();
     }
 
 #if PLATFORM_DESKTOP
