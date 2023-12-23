@@ -41,7 +41,7 @@ public:
 
 private:
 
-    static constexpr auto padding = 15;
+    static constexpr auto padding = 7;
 
     WeakReference<HeadlineItemDataSource> item;
 

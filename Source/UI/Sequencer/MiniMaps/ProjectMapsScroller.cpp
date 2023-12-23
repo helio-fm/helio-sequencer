@@ -34,7 +34,7 @@ ProjectMapsScroller::ProjectMapsScroller(ProjectNode &project, SafePointer<RollB
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
 
-    this->playhead = make<Playhead>(*this->roll, this->project.getTransport());
+    this->playhead = make<Playhead>(*this->roll, this->project.getTransport(), nullptr, 0.75f);
 
     this->horizontalRangeRectangle = make<HorizontalRangeRectangle>(*this);
     this->addAndMakeVisible(this->horizontalRangeRectangle.get());
@@ -96,7 +96,7 @@ void ProjectMapsScroller::xyMoveByUser()
     this->roll->panProportionally(propX, propY2);
 
     const auto p = this->getIndicatorBounds();
-    const auto hp = p.toType<int>();
+    const auto hp = p.toNearestInt();
     this->horizontalRangeRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
     this->screenRangeRectangle->setRealBounds(p);
 
@@ -119,7 +119,7 @@ void ProjectMapsScroller::xMoveByUser()
     this->roll->panProportionally(propX, propY);
 
     const auto p = this->getIndicatorBounds();
-    const auto hp = p.toType<int>();
+    const auto hp = p.toNearestInt();
     this->horizontalRangeRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
     this->screenRangeRectangle->setRealBounds(p);
 
@@ -375,6 +375,7 @@ void ProjectMapsScroller::switchToRoll(SafePointer<RollBase> roll)
     else
     {
         this->screenRangeRectangle->setBrightness(this->screenRangeTargetBrightness);
+        this->updateAllChildrenBounds(true);
     }
 }
 
@@ -444,14 +445,18 @@ void ProjectMapsScroller::timerCallback()
         (this->screenRangeRectangle->getBrightness() + this->screenRangeTargetBrightness) / 2.f;
     this->screenRangeRectangle->setBrightness(screenRangeBrightness);
 
-    const auto helperBounds = targetAreaBounds.toType<int>();
+    const auto helperBounds = targetAreaBounds.toNearestInt();
     this->horizontalRangeRectangle->setBounds(helperBounds.withTop(1).withBottom(this->getHeight()));
     this->screenRangeRectangle->setRealBounds(targetAreaBounds);
 
+    const auto finalMapBounds = targetMapBounds.toNearestInt();
     for (auto *map : this->trackMaps)
     {
-        map->setBounds(targetMapBounds.toType<int>());
+        map->setBounds(finalMapBounds);
     }
+
+    this->projectStartIndicator->updateBounds(finalMapBounds);
+    this->projectEndIndicator->updateBounds(finalMapBounds);
 
     if (shouldStop)
     {
@@ -472,7 +477,7 @@ void ProjectMapsScroller::handleAsyncUpdate()
 void ProjectMapsScroller::updateAllChildrenBounds(bool shouldUpdatePlayhead)
 {
     const auto p = this->getIndicatorBounds();
-    const auto hp = p.toType<int>();
+    const auto hp = p.toNearestInt();
     this->horizontalRangeRectangle->setBounds(hp.withTop(1).withBottom(this->getHeight()));
     this->screenRangeRectangle->setRealBounds(p);
 
@@ -501,33 +506,33 @@ Rectangle<float> ProjectMapsScroller::getIndicatorBounds() const noexcept
 {
     jassert(this->roll != nullptr);
 
-    const float viewX = float(this->roll->getViewport().getViewPositionX());
-    const float viewWidth = float(jmax(1, this->roll->getViewport().getViewWidth()));
-    const float rollWidth = float(this->roll->getWidth());
-    const float rollInvisibleArea = rollWidth - viewWidth;
-    const float trackWidth = float(this->getWidth());
-    const float trackInvisibleArea = float(this->getWidth() - ProjectMapsScroller::screenRangeWidth);
-    const float mapWidth = (ProjectMapsScroller::screenRangeWidth * rollWidth) / viewWidth;
+    const auto viewX = float(this->roll->getViewport().getViewPositionX());
+    const auto viewWidth = float(jmax(1, this->roll->getViewport().getViewWidth()));
+    const auto rollWidth = float(this->roll->getWidth());
+    const auto rollInvisibleArea = rollWidth - viewWidth;
+    const auto trackWidth = float(this->getWidth());
+    const auto trackInvisibleArea = float(this->getWidth() - ProjectMapsScroller::screenRangeWidth);
+    const auto mapWidth = (ProjectMapsScroller::screenRangeWidth * rollWidth) / viewWidth;
 
-    const float zoomFactorY = this->roll->getZoomFactorY();
-    const float rollHeaderHeight = float(Globals::UI::rollHeaderHeight);
-    const float rollHeight = float(this->roll->getHeight() - rollHeaderHeight);
-    const float viewY = float(this->roll->getViewport().getViewPositionY() + rollHeaderHeight);
-    const float trackHeight = float(this->getHeight());
-    const float trackHeaderHeight = float(rollHeaderHeight * trackHeight / rollHeight);
+    constexpr auto rollHeaderHeight = float(Globals::UI::rollHeaderHeight);
+    const auto zoomFactorY = this->roll->getZoomFactorY();
+    const auto rollHeight = float(this->roll->getHeight() - rollHeaderHeight);
+    const auto viewY = float(this->roll->getViewport().getViewPositionY() + rollHeaderHeight);
+    const auto trackHeight = float(this->getHeight());
+    const auto trackHeaderHeight = float(rollHeaderHeight * trackHeight / rollHeight);
 
-    const float rY = ceilf(trackHeight * (viewY / rollHeight)) - trackHeaderHeight + 1.f;
-    const float rH = trackHeight * zoomFactorY;
+    const auto rY = roundf(trackHeight * (viewY / rollHeight)) - trackHeaderHeight;
+    const auto rH = trackHeight * zoomFactorY;
 
     if (mapWidth <= trackWidth || !this->isInStretchedMode())
     {
-        const float rX = (trackWidth * viewX) / rollWidth;
-        const float rW = trackWidth * this->roll->getZoomFactorX();
+        const auto rX = (trackWidth * viewX) / rollWidth;
+        const auto rW = trackWidth * this->roll->getZoomFactorX();
         return { rX, rY, rW, rH };
     }
 
-    const float rX = (trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth);
-    const float rW = ProjectMapsScroller::screenRangeWidth;
+    const auto rX = (trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth);
+    constexpr auto rW = ProjectMapsScroller::screenRangeWidth;
     return { rX, rY, rW, rH };
 }
 
@@ -535,21 +540,21 @@ Rectangle<int> ProjectMapsScroller::getMapBounds() const noexcept
 {
     jassert(this->roll != nullptr);
 
-    const float viewX = float(this->roll->getViewport().getViewPositionX());
-    const float viewWidth = float(jmax(1, this->roll->getViewport().getViewWidth()));
-    const float rollWidth = float(this->roll->getWidth());
-    const float rollInvisibleArea = rollWidth - viewWidth;
-    const float trackInvisibleArea = float(this->getWidth() - ProjectMapsScroller::screenRangeWidth);
-    const float mapWidth = (ProjectMapsScroller::screenRangeWidth * rollWidth) / viewWidth;
+    const auto viewX = float(this->roll->getViewport().getViewPositionX());
+    const auto viewWidth = float(jmax(1, this->roll->getViewport().getViewWidth()));
+    const auto rollWidth = float(this->roll->getWidth());
+    const auto rollInvisibleArea = rollWidth - viewWidth;
+    const auto trackInvisibleArea = float(this->getWidth() - ProjectMapsScroller::screenRangeWidth);
+    const auto mapWidth = (ProjectMapsScroller::screenRangeWidth * rollWidth) / viewWidth;
 
     if (mapWidth <= this->getWidth() || !this->isInStretchedMode())
     {
         return { 0, 0, this->getWidth(), this->getHeight() };
     }
 
-    const float rX = (trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth);
-    const float dX = (viewX * mapWidth) / rollWidth;
-    return { int(rX - dX), 0, int(mapWidth), this->getHeight() };
+    const auto rX = (trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth);
+    const auto dX = (viewX * mapWidth) / rollWidth;
+    return { roundToInt(rX - dX), 0, roundToInt(mapWidth), this->getHeight() };
 }
 
 void ProjectMapsScroller::setScrollerMode(ScrollerMode mode)
@@ -566,7 +571,7 @@ void ProjectMapsScroller::setScrollerMode(ScrollerMode mode)
     {
         if (auto *pianoMap = dynamic_cast<PianoProjectMap *>(map))
         {
-            pianoMap->setBrightness(isFullMap ? 1.f : 0.85f);
+            pianoMap->setBrightness(isFullMap ? 1.f : 0.75f);
         }
         else
         {

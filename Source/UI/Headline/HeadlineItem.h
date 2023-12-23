@@ -26,8 +26,8 @@ class HeadlineContextMenuMarker;
 class IconComponent;
 
 class HeadlineItem final : public Component,
-                           private Timer,
-                           private ChangeListener
+    private Timer,
+    private ChangeListener
 {
 public:
 

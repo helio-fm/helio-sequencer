@@ -21,7 +21,7 @@ class HeadlineItemArrow final : public Component
 {
 public:
 
-    explicit HeadlineItemArrow(int arrowWidth = 16) : arrowWidth(arrowWidth)
+    explicit HeadlineItemArrow(int arrowWidth = 11) : arrowWidth(arrowWidth)
     {
         this->setOpaque(false);
         this->setBufferedToImage(true);
@@ -55,12 +55,12 @@ public:
         const auto h = float(this->getHeight());
 
         this->arrowPath.clear();
-        this->arrowPath.startNewSubPath(w - this->arrowWidth - 1.f, 0.f);
-        this->arrowPath.lineTo(w - 2.5f, h);
+        this->arrowPath.startNewSubPath(w - this->arrowWidth, 0.f);
+        this->arrowPath.lineTo(w - 1.5f, h);
 
         this->shadowPath.clear();
-        this->shadowPath.startNewSubPath(w - this->arrowWidth, 0.f);
-        this->shadowPath.lineTo(w - 1.5f, h);
+        this->shadowPath.startNewSubPath(w - this->arrowWidth + 1.f, 0.f);
+        this->shadowPath.lineTo(w - 0.5f, h);
     }
 
 private:
@@ -70,10 +70,10 @@ private:
 
     const int arrowWidth;
 
-    const Colour arrowColour1 = Colour(0x30ffffff);
+    const Colour arrowColour1 = Colour(0x3fffffff);
     const Colour arrowColour2 = Colour(0x0dffffff);
-    const Colour shadowColour1 = Colour(0x77000000);
-    const Colour shadowColour2 = Colour(0x11000000);
+    const Colour shadowColour1 = Colour(0x7f000000);
+    const Colour shadowColour2 = Colour(0x0f000000);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineItemArrow)
 };

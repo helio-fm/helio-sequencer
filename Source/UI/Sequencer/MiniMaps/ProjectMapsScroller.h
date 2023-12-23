@@ -177,7 +177,7 @@ private:
         void setRealBounds(const Rectangle<float> &bounds)
         {
             this->realBounds = bounds;
-            this->setBounds(this->realBounds.toType<int>());
+            this->setBounds(this->realBounds.toNearestInt());
         }
 
         float getBrightness() const noexcept

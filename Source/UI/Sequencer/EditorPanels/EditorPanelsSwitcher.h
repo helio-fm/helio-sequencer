@@ -66,11 +66,11 @@ public:
 
             this->titleLabel->setCachedComponentImage(new CachedLabelImage(*this->titleLabel));
 
-            constexpr auto arrowWidth = 12;
+            constexpr auto arrowWidth = 8;
             this->arrow = make<HeadlineItemArrow>(arrowWidth);
             this->addAndMakeVisible(this->arrow.get());
 
-            constexpr auto horizontalMargin = arrowWidth;
+            constexpr auto horizontalMargin = arrowWidth + 2;
             const auto textWidth = this->titleLabel->getFont().getStringWidth(filter.name);
             this->setSize(textWidth + this->getOverlapOffset() + horizontalMargin * 2,
                 EditorPanelsSwitcher::switcherHeight);
@@ -154,12 +154,12 @@ public:
 
             this->titleLabel->setBounds(this->getOverlapOffset(), 0, this->getWidth() - arrowWidth, this->getHeight());
 
-            this->arrow->setBounds(this->getWidth() - arrowWidth, 0, arrowWidth, this->getHeight());
+            this->arrow->setBounds(this->getWidth() - arrowWidth, 1, arrowWidth, this->getHeight() - 1);
 
             this->backgroundShape.clear();
             this->backgroundShape.startNewSubPath(0.f, 0.f);
-            this->backgroundShape.lineTo(float(this->getWidth() - arrowWidth), 0.f);
-            this->backgroundShape.lineTo(float(this->getWidth() - 2), float(this->getHeight()));
+            this->backgroundShape.lineTo(float(this->getWidth() - arrowWidth + 1), 0.f);
+            this->backgroundShape.lineTo(float(this->getWidth()), float(this->getHeight()));
             this->backgroundShape.lineTo(0.f, float(this->getHeight()));
             this->backgroundShape.closeSubPath();
         }

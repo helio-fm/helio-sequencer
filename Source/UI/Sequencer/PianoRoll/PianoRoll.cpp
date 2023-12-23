@@ -1435,7 +1435,7 @@ void PianoRoll::handleCommandMessage(int commandId)
 
 void PianoRoll::resized()
 {
-    if (!this->isShowing())
+    if (!this->isEnabled())
     {
         return;
     }

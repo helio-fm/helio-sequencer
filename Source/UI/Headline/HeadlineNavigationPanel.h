@@ -54,12 +54,18 @@ public:
         this->navigateNext->setIconAlphaMultiplier(canGoNext ? 0.45f : 0.2f);
     }
 
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->fillColour);
+        g.fillRect(0, 0, this->getWidth(), this->getHeight() - 2);
+    }
+
     void resized() override
     {
-        constexpr auto buttonWidth = 29;
+        const auto buttonWidth = this->getWidth() / 2;
         this->navigatePrevious->setBounds(0, 0, buttonWidth, this->getHeight() - 1);
-        this->navigateNext->setBounds(20, 0, buttonWidth, this->getHeight() - 1);
-        this->arrow->setBounds(this->getWidth() - this->arrow->getWidth() - 2,
+        this->navigateNext->setBounds((this->getWidth() - this->arrow->getWidth() - 2) / 2, 0, buttonWidth, this->getHeight() - 1);
+        this->arrow->setBounds(this->getWidth() - this->arrow->getWidth() - 1,
             0, this->arrow->getWidth(), this->getHeight() - 1);
     }
 
@@ -83,6 +89,8 @@ private:
     UniquePointer<IconButton> navigatePrevious;
     UniquePointer<IconButton> navigateNext;
     UniquePointer<HeadlineItemArrow> arrow;
+
+    const Colour fillColour = findDefaultColour(ColourIDs::Backgrounds::headlineFill);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineNavigationPanel)
 };

@@ -338,13 +338,14 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
             }));
     }
 
-    menu.add(MenuItem::item(Icons::refactor,
+    // todo better icons
+    menu.add(MenuItem::item(Icons::arpeggiate,
         TRANS(I18n::Menu::Project::changeTemperament))->withSubmenu()->withAction([this]()
     {
         this->showTemperamentsMenu(false);
     }));
 
-    menu.add(MenuItem::item(Icons::refactor,
+    menu.add(MenuItem::item(Icons::arpeggiate,
         TRANS(I18n::Menu::Project::convertTemperament))->withSubmenu()->withAction([this]()
     {
         this->showTemperamentsMenu(true);
@@ -366,7 +367,7 @@ void ProjectMenu::showTemperamentsMenu(bool convertTracks)
 
     for (const auto &otherTemperament : temperaments)
     {
-        menu.add(MenuItem::item(Icons::refactor,
+        menu.add(MenuItem::item(Icons::arpeggiate,
             TRANS(otherTemperament->getName()))->
             disabledIf(otherTemperament->getPeriodSize() == currentTemperament->getPeriodSize())->
             closesMenu()->

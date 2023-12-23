@@ -877,7 +877,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Instrument::connectorShadow, textColour.withAlpha(0.25f));
 
     // Borders
-    this->setColour(ColourIDs::Common::borderLineLight, Colours::white.withAlpha(0.065f));
+    this->setColour(ColourIDs::Common::borderLineLight, Colours::white.withAlpha(0.0675f));
     this->setColour(ColourIDs::Common::borderLineDark, Colours::black.withAlpha(0.3f));
     this->setColour(ColourIDs::ColourButton::outline, textColour);
 

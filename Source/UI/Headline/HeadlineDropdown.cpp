@@ -19,6 +19,7 @@
 #include "HeadlineDropdown.h"
 
 #include "Headline.h"
+#include "HeadlineItem.h"
 #include "HeadlineItemArrow.h"
 #include "HeadlineItemDataSource.h"
 #include "IconComponent.h"
@@ -57,9 +58,9 @@ public:
 
     void resized() override
     {
-        constexpr auto iconX = 12;
-        constexpr auto iconSize = 26;
-        constexpr auto titleX = 33;
+        constexpr auto iconX = 10;
+        constexpr auto iconSize = 22;
+        constexpr auto titleX = 31;
         constexpr auto titleHeight = 30;
 
         this->titleLabel->setBounds(titleX,
@@ -67,6 +68,11 @@ public:
         this->icon->setBounds(iconX, (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
         this->arrow->setBounds(this->getWidth() - this->arrow->getWidth(),
             0, this->arrow->getWidth(), this->getHeight());
+    }
+
+    int getArrowWidth() const noexcept
+    {
+        return this->arrow->getWidth();
     }
 
 private:
@@ -79,7 +85,6 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineItemHighlighter)
 };
-
 
 HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem, const Point<int> &position) :
     item(targetItem)
@@ -112,28 +117,28 @@ HeadlineDropdown::~HeadlineDropdown()
 
 void HeadlineDropdown::paint(Graphics &g)
 {
-    g.setColour(findDefaultColour(ColourIDs::Backgrounds::headlineFill).brighter(0.035f));
-    g.fillRect(1, Globals::UI::headlineHeight - 3, this->getWidth() - 3, this->getHeight() - Globals::UI::headlineHeight + 2);
+    g.setColour(findDefaultColour(ColourIDs::Backgrounds::headlineFill).brighter(0.03f));
     g.fillPath(this->backgroundShape);
+    g.fillRect(1, Globals::UI::headlineHeight - 2,
+        this->getWidth() - 2, this->getHeight() - Globals::UI::headlineHeight + 2);
 
-    // Draw a nice border around the menu:
-    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.75f));
-    g.drawHorizontalLine(0, 1.f, float(this->getWidth() - Headline::itemsOverlapOffset));
-    g.drawVerticalLine(0, 1.f, float(this->getHeight() - 1));
+    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f));
+    g.drawHorizontalLine(0, 1.f, float(this->getWidth() - this->header->getArrowWidth() + 1));
 
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
+    g.drawVerticalLine(0, 1.f, float(this->getHeight() - 1));
     g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth() - 1));
-    g.drawVerticalLine(this->getWidth() - 2, float(Globals::UI::headlineHeight), float(this->getHeight() - 1));
+    g.drawVerticalLine(this->getWidth() - 1, float(Globals::UI::headlineHeight), float(this->getHeight() - 1));
 
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
     g.drawHorizontalLine(this->getHeight() - 2, 1.f, float(this->getWidth() - 2));
-    g.fillRect(1.f, 1.f, 3.f, float(this->getHeight() - 3));
-    g.drawVerticalLine(this->getWidth() - 3, float(Globals::UI::headlineHeight), float(this->getHeight() - 1));
+    g.fillRect(1.f, 1.f, 4.f, float(this->getHeight() - 3));
+    g.drawVerticalLine(this->getWidth() - 2, float(Globals::UI::headlineHeight), float(this->getHeight() - 1));
 }
 
 void HeadlineDropdown::resized()
 {
-    this->content->setBounds(HeadlineDropdown::padding / 2 + 1,
+    this->content->setBounds(HeadlineDropdown::padding / 2 + 2,
         Globals::UI::headlineHeight - 1,
         this->getWidth() - HeadlineDropdown::padding,
         this->getHeight() - Globals::UI::headlineHeight);
@@ -142,8 +147,8 @@ void HeadlineDropdown::resized()
 
     this->backgroundShape.clear();
     this->backgroundShape.startNewSubPath(1.f, 1.f);
-    this->backgroundShape.lineTo(float(this->getWidth() - Headline::itemsOverlapOffset), 1.f);
-    this->backgroundShape.lineTo(float(this->getWidth() - 2), float(Globals::UI::headlineHeight - 2));
+    this->backgroundShape.lineTo(float(this->getWidth() - this->header->getArrowWidth() + 1), 1.f);
+    this->backgroundShape.lineTo(float(this->getWidth() - 1), float(Globals::UI::headlineHeight - 1));
     this->backgroundShape.lineTo(1.f, float(Globals::UI::headlineHeight - 1));
     this->backgroundShape.closeSubPath();
 }
@@ -166,7 +171,7 @@ void HeadlineDropdown::mouseEnter(const MouseEvent &e)
 void HeadlineDropdown::mouseExit(const MouseEvent &e)
 {
 #if PLATFORM_DESKTOP
-    this->startTimer(75);
+    this->startTimer(50);
 #endif
 }
 
@@ -212,7 +217,7 @@ void HeadlineDropdown::timerCallback()
 
         Desktop::getInstance().getAnimator().cancelAllAnimations(false);
         Desktop::getInstance().getAnimator().animateComponent(this,
-            this->getBounds(), 0.f, Globals::UI::fadeOutShort / 2, true, 0.f, 1.f);
+            this->getBounds(), 0.f, Globals::UI::fadeOutShort / 3, true, 0.f, 1.f);
 
         delete this;
     }

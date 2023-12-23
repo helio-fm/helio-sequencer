@@ -113,9 +113,9 @@ void HeadlineItem::resized()
         this->getWidth() - Headline::itemsOverlapOffset,
         this->menuMarker->getHeight());
 
-    constexpr auto iconX = 12;
-    constexpr auto iconSize = 26;
-    constexpr auto titleX = 33;
+    constexpr auto iconX = 10;
+    constexpr auto iconSize = 22;
+    constexpr auto titleX = 31;
     constexpr auto titleHeight = 30;
 
     this->titleLabel->setBounds(titleX,
@@ -171,7 +171,7 @@ void HeadlineItem::mouseDown(const MouseEvent &e)
     {
         this->stopTimer();
 
-        // on desktop versions, as quick click on a headline item opens its node's page,
+        // on desktop versions, a quick click on a headline item opens its node's page,
         // on mobile versions, it always opens the menu first
 #if PLATFORM_DESKTOP
         if (this->dataSource->canBeSelectedAsMenuItem())
@@ -213,7 +213,7 @@ void HeadlineItem::updateContent()
     {
         const auto textWidth = this->titleLabel->getFont().getStringWidth(this->dataSource->getName());
 
-        constexpr auto iconOffset = 46;
+        constexpr auto iconOffset = 45;
         this->setSize(jmin(HeadlineItem::maxWidth,
             textWidth + iconOffset + Headline::itemsOverlapOffset),
             Globals::UI::headlineHeight - 1);

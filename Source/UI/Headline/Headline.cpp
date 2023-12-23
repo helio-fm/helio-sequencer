@@ -59,7 +59,7 @@ Headline::~Headline()
 
 void Headline::onUiAnimationsFlagChanged(bool animationsEnabled)
 {
-    this->fadeInTimeMs = animationsEnabled ? Globals::UI::fadeInLong : 20;
+    this->fadeInTimeMs = animationsEnabled ? Globals::UI::fadeInLong : 1;
     this->fadeOutTimeMs = animationsEnabled ? Globals::UI::fadeOutShort : 1;
 }
 
@@ -86,9 +86,10 @@ void Headline::paint(Graphics &g)
 
 void Headline::resized()
 {
-    constexpr auto navPanelSize = 60;
     constexpr auto consoleButtonSize = 45;
-
+    constexpr auto navPanelSize =
+        Globals::UI::sidebarWidth + Headline::itemsOverlapOffset;
+    
     this->navPanel->setBounds(0, 0, navPanelSize, this->getHeight());
     this->consoleButton->setBounds(this->getWidth() - consoleButtonSize, 1,
         consoleButtonSize, this->getHeight() - 2);

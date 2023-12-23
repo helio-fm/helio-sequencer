@@ -926,7 +926,7 @@ void PatternRoll::handleCommandMessage(int commandId)
 
 void PatternRoll::resized()
 {
-    if (!this->isShowing())
+    if (!this->isEnabled())
     {
         return;
     }

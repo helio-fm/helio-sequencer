@@ -58,13 +58,11 @@ void AutomationStepEventComponent::paint(Graphics &g)
     g.setColour(this->dotColour);
     if (this->event.isPedalDownEvent())
     {
-        //g.fillEllipse(right - r, bottom - r, d, d);
         g.fillRect(right - r, bottom - r + 1.f, d, d - 2.f);
         g.fillRect(right - r + 1.f, bottom - r, d - 2.f, d);
     }
     else
     {
-        //g.fillEllipse(right - r, top - r, d, d);
         g.fillRect(right - r, top - r + 1.f, d, d - 2.f);
         g.fillRect(right - r + 1.f, top - r, d - 2.f, d);
     }
@@ -84,7 +82,7 @@ void AutomationStepEventComponent::paint(Graphics &g)
 
         if (!compactMode)
         {
-            g.drawLine(right, top, right, bottom - d);
+            g.fillRect(right, top, 1.f, bottom - top - d);
             g.drawHorizontalLine(int(top) - 1, left, right);
         }
     }
@@ -94,7 +92,7 @@ void AutomationStepEventComponent::paint(Graphics &g)
             this->nextEventHolder != nullptr &&
             (this->nextEventHolder->getX() - this->getRight()) <= 1.f;
 
-        g.drawLine(right, top + d, right, compactMode ? bottom - d : bottom);
+        g.fillRect(right, top + d, 1.f, bottom - top - d - (compactMode ? d : 0.f));
         g.drawHorizontalLine(int(bottom), left, compactMode ? right - d : right);
     }
     else if (this->event.isPedalDownEvent() && previousIsPedalDown)

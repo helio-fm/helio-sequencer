@@ -25,20 +25,20 @@
 Playhead::Playhead(RollBase &parentRoll,
     Transport &owner,
     Playhead::Listener *movementListener /*= nullptr*/,
-    int width /*= 2*/) :
+    float alpha /*= 1.f*/) :
     roll(parentRoll),
     transport(owner),
     listener(movementListener),
     shadeColour(findDefaultColour(ColourIDs::Roll::playheadShade)),
-    playbackColour(findDefaultColour(ColourIDs::Roll::playheadPlayback)),
-    recordingColour(findDefaultColour(ColourIDs::Roll::playheadRecording))
+    playbackColour(findDefaultColour(ColourIDs::Roll::playheadPlayback).withMultipliedAlpha(alpha)),
+    recordingColour(findDefaultColour(ColourIDs::Roll::playheadRecording).withMultipliedAlpha(alpha))
 {
     this->currentColour = this->playbackColour;
 
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
     this->setAlwaysOnTop(true);
-    this->setSize(width + 2, 1); // add some horizontal padding, trying to avoid glitches
+    this->setSize(3, 1); // add some horizontal padding, trying to avoid glitches
 
     this->lastCorrectBeat = this->transport.getSeekBeat();
     this->beatAnchor = this->lastCorrectBeat;

@@ -21,6 +21,7 @@
 #include "Note.h"
 #include "ProjectListener.h"
 #include "ProjectMapsScroller.h"
+#include "ColourIDs.h"
 
 class RollBase;
 class ProjectNode;
@@ -80,15 +81,14 @@ private:
     float rollLastBeat = Globals::Defaults::projectLength;
 
     float componentHeight = 1.f;
-
     float brightnessFactor = 1.f;
-
     int keyboardSize = Globals::twelveToneKeyboardSize;
 
     ProjectNode &project;
 
     Clip activeClip;
-    Colour baseColour;
+
+    const Colour baseColour = findDefaultColour(ColourIDs::Roll::noteFill);
 
     using SequenceSet = FlatHashSet<Note, MidiEventHash>;
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceSet>, ClipHash>;

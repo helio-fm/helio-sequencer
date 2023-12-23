@@ -40,7 +40,7 @@ public:
     Playhead(RollBase &parentRoll,
         Transport &owner,
         Playhead::Listener *movementListener = nullptr,
-        int width = 1);
+        float alpha = 1.f);
 
     ~Playhead() override;
 

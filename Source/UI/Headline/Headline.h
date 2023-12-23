@@ -35,7 +35,7 @@ public:
     Headline();
     ~Headline();
 
-    static constexpr auto itemsOverlapOffset = 16;
+    static constexpr auto itemsOverlapOffset = 11;
 
     void syncWithTree(NavigationHistory &history, WeakReference<TreeNode> leaf);
     
@@ -69,11 +69,9 @@ private:
     int fadeInTimeMs = Globals::UI::fadeInLong;
     int fadeOutTimeMs = Globals::UI::fadeOutShort;
 
-    // A number of items associated with tree hierarchy
     OwnedArray<HeadlineItem> chain;
 
-    // A special item for `current selection` menu
-    // (if present, is always shown at the tail of chain)
+    // A special item for `current selection` menus
     UniquePointer<HeadlineItem> selectionItem;
 
     float getAlphaForAnimation() const noexcept;

@@ -269,7 +269,7 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver,
     this->subLabel->setFont(MenuItemComponent::fontSize);
     this->subLabel->setJustificationType(Justification::centredRight);
     this->subLabel->setInterceptsMouseClicks(false, false);
-    this->subLabel->setColour(Label::textColourId, desc->colour.withMultipliedAlpha(0.5f));
+    this->subLabel->setColour(Label::textColourId, desc->colour.withMultipliedAlpha(0.35f));
 
     this->textLabel = make<Label>();
     this->addAndMakeVisible(this->textLabel.get());

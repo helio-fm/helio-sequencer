@@ -25,14 +25,11 @@
 #include "PlayerThread.h"
 #include "RollBase.h"
 #include "AnnotationEvent.h"
-#include "ColourIDs.h"
 
 PianoProjectMap::PianoProjectMap(ProjectNode &parentProject) :
     ScrolledComponent({}), // doesn't switch between rolls
     project(parentProject)
 {
-    this->baseColour = findDefaultColour(ColourIDs::Roll::noteFill);
-
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
     this->reloadTrackMap();
@@ -67,6 +64,7 @@ void PianoProjectMap::paint(Graphics &g)
     const float rollLengthInBeats = this->rollLastBeat - this->rollFirstBeat;
     const float projectLengthInBeats = this->projectLastBeat - this->projectFirstBeat;
     const float mapWidth = float(this->getWidth()) * (projectLengthInBeats / rollLengthInBeats);
+    const auto h = float(this->getHeight());
 
     for (const auto &c : this->patternMap)
     {
@@ -74,9 +72,8 @@ void PianoProjectMap::paint(Graphics &g)
         const bool isActiveClip = this->activeClip == c.first;
 
         g.setColour(c.first.getTrackColour()
-            .interpolatedWith(this->baseColour, .4f)
-            .withAlpha(isActiveClip ? this->brightnessFactor * .9f : this->brightnessFactor * .65f)
-            .withMultipliedBrightness(this->brightnessFactor));
+            .interpolatedWith(this->baseColour, 0.45f)
+            .withAlpha(isActiveClip ? this->brightnessFactor : this->brightnessFactor * 0.65f));
 
         for (const auto &n : *sequenceMap)
         {
@@ -87,10 +84,9 @@ void PianoProjectMap::paint(Graphics &g)
             const float x = (mapWidth * (beat / projectLengthInBeats));
             const float w = (mapWidth * (length / projectLengthInBeats));
 
-            // with rounding, it just looks better:
-            const int y = this->getHeight() - static_cast<int>(key * this->componentHeight);
-
-            g.fillRect(x, static_cast<float>(y), jmax(0.25f, w), 1.0f);
+            // with rounding it just looks better:
+            const float y = roundf(h - (key * this->componentHeight));
+            g.fillRect(x, y, jmax(0.25f, w), 1.f);
         }
     }
 }

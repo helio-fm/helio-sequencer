@@ -115,6 +115,10 @@ void EditorPanelsScroller::switchToRoll(SafePointer<RollBase> roll)
     {
         this->startTimerHz(60);
     }
+    else
+    {
+        this->updateAllChildrenBounds();
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -217,18 +221,21 @@ void EditorPanelsScroller::timerCallback()
     const auto interpolatedBounds = lerpEditorPanelBounds(this->panelsBoundsAnimationAnchor, newBounds, 0.6f);
     const auto distance = getEditorPanelBoundsDistance(this->panelsBoundsAnimationAnchor, newBounds);
     const bool shouldStop = distance < 1.f;
-    const auto finalBounds = shouldStop ? newBounds : interpolatedBounds;
-    this->panelsBoundsAnimationAnchor = finalBounds;
+    this->panelsBoundsAnimationAnchor = shouldStop ? newBounds : interpolatedBounds;
 
     if (shouldStop)
     {
         this->stopTimer();
     }
 
+    const auto finalBounds = this->panelsBoundsAnimationAnchor.toNearestInt();
     for (auto *editor : this->editorPanels)
     {
-        editor->setBounds(finalBounds.toNearestInt());
+        editor->setBounds(finalBounds);
     }
+
+    this->projectStartIndicator->updateBounds(finalBounds);
+    this->projectEndIndicator->updateBounds(finalBounds);
 }
 
 //===----------------------------------------------------------------------===//
