@@ -213,7 +213,7 @@ void HeadlineItem::updateContent()
     {
         const auto textWidth = this->titleLabel->getFont().getStringWidth(this->dataSource->getName());
 
-        constexpr auto iconOffset = 45;
+        constexpr auto iconOffset = 44;
         this->setSize(jmin(HeadlineItem::maxWidth,
             textWidth + iconOffset + Headline::itemsOverlapOffset),
             Globals::UI::headlineHeight - 1);

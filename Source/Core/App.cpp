@@ -79,7 +79,7 @@ public:
         Desktop::getInstance().setKioskModeComponent(this);
 #endif
 
-        this->createLayoutComponent();
+        this->recreateLayoutComponent();
         this->setVisible(true);
 
         if (enableOpenGl)
@@ -95,7 +95,7 @@ public:
     ~MainWindow() override
     {
         this->detachOpenGLContextIfAny();
-        this->dismissLayoutComponent();
+        this->clearContentComponent();
     }
 
     void resized() override
@@ -161,13 +161,7 @@ private:
         }
     }
 
-    void dismissLayoutComponent()
-    {
-        this->clearContentComponent();
-        this->layout = nullptr;
-    }
-
-    void createLayoutComponent()
+    void recreateLayoutComponent()
     {
         this->layout = make<MainLayout>();
 
@@ -431,14 +425,12 @@ void App::recreateLayout()
     auto *window = static_cast<App *>(getInstance())->window.get();
     auto *workspace = static_cast<App *>(getInstance())->workspace.get();
 
-    window->dismissLayoutComponent();
-
     if (auto *root = workspace->getTreeRoot())
     {
         root->recreateSubtreePages();
     }
 
-    window->createLayoutComponent();
+    window->recreateLayoutComponent();
 }
 
 //===----------------------------------------------------------------------===//
@@ -812,6 +804,11 @@ void App::onUiScaleChanged(float scale)
 #endif
 
     Icons::clearPrerenderedCache();
+
+    if (auto *root = this->workspace->getTreeRoot())
+    {
+        root->recreateSubtreePages(); // resets cached label images
+    }
 
     const bool hasOpenGl = App::isOpenGLRendererEnabled();
     const bool hasNativeTitleBar = App::isUsingNativeTitleBar();

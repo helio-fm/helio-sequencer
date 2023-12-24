@@ -158,22 +158,34 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->scaleUi1 = make<ToggleButton>("x1");
     this->addAndMakeVisible(this->scaleUi1.get());
     this->scaleUi1->onClick = [this]() {
+        BailOutChecker checker(this);
         App::Config().getUiFlags()->setUiScaleFactor(1.f);
-        this->updateButtons();
+        if (!checker.shouldBailOut())
+        {
+            this->updateButtons();
+        }
     };
 
     this->scaleUi15 = make<ToggleButton>("x1.5");
     this->addAndMakeVisible(this->scaleUi15.get());
     this->scaleUi15->onClick = [this]() {
+        BailOutChecker checker(this);
         App::Config().getUiFlags()->setUiScaleFactor(1.5f);
-        this->updateButtons();
+        if (!checker.shouldBailOut())
+        {
+            this->updateButtons();
+        }
     };
 
     this->scaleUi2 = make<ToggleButton>("x2");
     this->addAndMakeVisible(this->scaleUi2.get());
     this->scaleUi2->onClick = [this]() {
+        BailOutChecker checker(this);
         App::Config().getUiFlags()->setUiScaleFactor(2.f);
-        this->updateButtons();
+        if (!checker.shouldBailOut())
+        {
+            this->updateButtons();
+        }
     };
 
 #if SIMPLIFIED_UI_SETTINGS
