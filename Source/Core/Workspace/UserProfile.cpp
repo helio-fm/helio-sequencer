@@ -129,22 +129,6 @@ void UserProfile::onProjectRemoteInfoUpdated(const ProjectDto &info)
     this->sendChangeMessage();
 }
 
-#endif
-
-void UserProfile::onConfigurationInfoReset(const Identifier &type, const String &name)
-{
-    for (int i = 0; i < this->resources.size(); ++i)
-    {
-        const auto resource = this->resources.getUnchecked(i);
-        if (resource->getType() == type && resource->getName() == name)
-        {
-            this->resources.remove(i);
-            this->sendChangeMessage();
-            return;
-        }
-    }
-}
-
 bool UserProfile::hasSyncedConfiguration(const Identifier &type, const String &name) const
 {
     // this check will be called each time user profile sends change message
@@ -179,6 +163,22 @@ bool UserProfile::hasSyncedConfiguration(const Identifier &type, const String &n
     }
 
     return false;
+}
+
+#endif
+
+void UserProfile::onConfigurationInfoReset(const Identifier &type, const String &name)
+{
+    for (int i = 0; i < this->resources.size(); ++i)
+    {
+        const auto resource = this->resources.getUnchecked(i);
+        if (resource->getType() == type && resource->getName() == name)
+        {
+            this->resources.remove(i);
+            this->sendChangeMessage();
+            return;
+        }
+    }
 }
 
 void UserProfile::onProjectLocalInfoUpdated(const String &id, const String &title, const String &path)
@@ -261,8 +261,6 @@ void UserProfile::deleteProjectRemotely(const String &id)
     this->sendChangeMessage();
 }
 
-#endif
-
 void UserProfile::clearProfileAndSession()
 {
     this->setApiToken({});
@@ -305,9 +303,15 @@ void UserProfile::setApiToken(const String &token)
     this->sendChangeMessage();
 }
 
+#endif
+
 bool UserProfile::isLoggedIn() const
 {
+#if !NO_NETWORK
     return this->getApiToken().isNotEmpty();
+#else
+    return false;
+#endif
 }
 
 const UserProfile::ProjectsList &UserProfile::getProjects() const noexcept

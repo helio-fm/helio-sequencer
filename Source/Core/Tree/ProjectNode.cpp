@@ -319,9 +319,9 @@ UniquePointer<Component> ProjectNode::createMenu()
 
 void ProjectNode::onNodeChildPostRemove(bool sendNotifications)
 {
-    // a track have removed, the range might have changed:
     if (sendNotifications)
     {
+        // a track was removed, the project range might have changed:
         this->broadcastChangeProjectBeatRange();
     }
 

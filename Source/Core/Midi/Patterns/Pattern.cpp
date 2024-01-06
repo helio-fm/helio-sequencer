@@ -335,7 +335,7 @@ void Pattern::transposeAll(int keyDelta, bool shouldCheckpoint)
     {
         Array<Clip> groupBefore, groupAfter;
 
-        for (int i = 0; i < this->size(); ++i)
+        for (int i = 0; i < this->clips.size(); ++i)
         {
             const Clip clip = *this->clips.getUnchecked(i);
             groupBefore.add(clip);

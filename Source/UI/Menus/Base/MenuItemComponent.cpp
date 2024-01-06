@@ -323,15 +323,9 @@ void MenuItemComponent::resized()
 
     if (this->checkMarker != nullptr)
     {
-        // this one might be still animating, and may screw up the bounds if not updated:
-        if (this->checkMarker->getLocalBounds() != this->getLocalBounds() &&
-            this->animator.isAnimating(this->checkMarker.get()))
-        {
-            this->animator.animateComponent(this->checkMarker.get(),
-                this->getLocalBounds(), 1.f, Globals::UI::fadeInShort, false, 0.0, 0.0);
-        }
-
-        this->checkMarker->setBounds(this->getLocalBounds());
+        this->checkMarker->setBounds(this->hasText() ?
+            this->getLocalBounds().withWidth(MenuItemComponent::iconSize + MenuItemComponent::iconMargin * 2) :
+            this->getLocalBounds());
     }
 
     this->icon = Icons::findByName(this->description->iconId, MenuItemComponent::iconSize);
@@ -604,15 +598,8 @@ void MenuItemComponent::doAction()
 void MenuItemComponent::showCheckMark()
 {
     this->checkMarker = make<MenuItemComponentCheckMark>();
-    this->checkMarker->setBounds(this->getLocalBounds());
-
-#if ! HAS_OPENGL_BUG
-    this->checkMarker->setAlpha(0.f);
-    this->animator.animateComponent(this->checkMarker.get(),
-        this->getLocalBounds(), 1.f, Globals::UI::fadeInShort, false, 0.0, 0.0);
-#endif
-
     this->addAndMakeVisible(this->checkMarker.get());
+    this->resized();
 }
 
 void MenuItemComponent::hideCheckMark()

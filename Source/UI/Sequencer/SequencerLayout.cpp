@@ -93,16 +93,23 @@ public:
         this->patternRoll->setEnabled(false);
         this->patternRoll->setVisible(false);
 
-        // the volume map's visiblilty is not persistent,
-        // but the mini-map's state is, let's fix it right here
-        const auto showFullMiniMap = App::Config().getUiFlags()->isProjectMapInLargeMode();
-        this->bottomMapsScroller->setScrollerMode(showFullMiniMap ?
+        const auto shouldShowFullMiniMap = App::Config().getUiFlags()->isProjectMapInLargeMode();
+        this->bottomMapsScroller->setScrollerMode(shouldShowFullMiniMap ?
             ProjectMapsScroller::ScrollerMode::Map : ProjectMapsScroller::ScrollerMode::Scroller);
+
         // the way I'm working with animations here is kinda frustrating,
         // but I'm out of ideas and time, todo refactor that someday
-        if (!showFullMiniMap)
+        if (!shouldShowFullMiniMap)
         {
             this->scrollerModeAnimation.resetToEnd();
+        }
+
+        if (App::Config().getUiFlags()->isEditorPanelVisible())
+        {
+            this->mapsAnimation.resetToEnd();
+            this->bottomMapsScroller->setVisible(false);
+            this->bottomEditorsScroller->setVisible(true);
+            this->bottomEditorsSwitcher->setVisible(true);
         }
     }
 

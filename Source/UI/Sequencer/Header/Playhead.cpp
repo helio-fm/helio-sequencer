@@ -155,6 +155,11 @@ void Playhead::parentHierarchyChanged()
     this->parentChanged();
 }
 
+bool Playhead::isMoving() const noexcept
+{
+    return this->isTimerRunning();
+}
+
 void Playhead::parentChanged()
 {
     if (this->getParentComponent() != nullptr)
@@ -176,6 +181,12 @@ void Playhead::parentChanged()
 void Playhead::updatePosition(double position)
 {
     const int newX = this->roll.getXPositionByBeat(position, double(this->getParentWidth()));
+
+    if (this->getPosition().getX() == newX)
+    {
+        return;
+    }
+
     this->setTopLeftPosition(newX, 0);
 
     if (this->listener != nullptr)

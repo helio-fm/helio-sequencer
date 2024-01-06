@@ -535,6 +535,7 @@ namespace Serialization
         }
     } // namespace VCS
 
+#if !NO_NETWORK
     namespace Api
     {
         // Config keys
@@ -637,6 +638,7 @@ namespace Serialization
         static const Identifier issuer = "iss";
         static const Identifier expiry = "exp";
     } // namespace JWT
+#endif
 
     namespace Undo
     {

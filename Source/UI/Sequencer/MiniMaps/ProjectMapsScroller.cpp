@@ -136,7 +136,7 @@ void ProjectMapsScroller::xMoveByUser()
 
 void ProjectMapsScroller::resized()
 {
-    this->updateAllChildrenBounds(false);
+    this->updateAllChildrenBounds();
 }
 
 void ProjectMapsScroller::paint(Graphics &g)
@@ -153,7 +153,9 @@ void ProjectMapsScroller::paint(Graphics &g)
 
     if (this->drawingNewScreenRange.hasValue() && !this->drawingNewScreenRange->isEmpty())
     {
-        const auto rect = this->getMapBounds().toFloat().getProportion(*this->drawingNewScreenRange);
+        const auto rect = this->getMapBounds()
+            .toFloat().getProportion(*this->drawingNewScreenRange);
+
         g.fillRect(rect);
         g.drawRect(rect);
         g.drawRect(rect);
@@ -172,7 +174,9 @@ void ProjectMapsScroller::mouseDown(const MouseEvent &event)
 
     // this thing feels weird on mobile: panning as the default behaviour is more natural there,
     // while on desktop panning is done via right mouse button everywhere:
-    if (!event.source.isTouch() && event.mods.isLeftButtonDown())
+    if (!event.source.isTouch() &&
+        this->isInStretchedMode() &&
+        event.mods.isLeftButtonDown())
     {
         const auto mapBounds = this->getMapBounds();
         this->drawingNewScreenRange = {
@@ -201,13 +205,12 @@ void ProjectMapsScroller::mouseDrag(const MouseEvent &event)
     }
     else
     {
-        this->setMouseCursor(MouseCursor::DraggingHandCursor);
-
         // simple dragging on mobile platforms to make it less awkward:
         const bool simplePanning = event.source.isTouch();
         const auto mapWidth = this->getMapBounds().getWidth();
         if (simplePanning || mapWidth > this->getWidth())
         {
+            this->setMouseCursor(MouseCursor::DraggingHandCursor);
             const auto viewWidth = this->roll->getViewport().getViewWidth();
             const auto dragDistance = float(event.getPosition().getX() - this->panningStart.getX());
             const auto dragSpeed = simplePanning ? 1.f :
@@ -229,27 +232,27 @@ void ProjectMapsScroller::mouseUp(const MouseEvent &event)
         return;
     }
 
-    if (event.getOffsetFromDragStart().isOrigin())
-    {
-        App::Layout().broadcastCommandMessage(CommandIDs::ToggleBottomMiniMap);
-        return;
-    }
-
     if (this->drawingNewScreenRange.hasValue() && !this->drawingNewScreenRange->isEmpty())
     {
         this->oldAreaBounds = this->getIndicatorBounds();
         this->oldMapBounds = this->getMapBounds().toFloat();
-        
+
         this->roll->zoomAbsolute(*this->drawingNewScreenRange);
 
-        this->drawingNewScreenRange = {};
-        this->updateAllChildrenBounds(true);
+        this->updateAllChildrenBounds();
         this->repaint();
 
         if (this->animationsEnabled)
         {
             this->startTimerHz(60);
         }
+    }
+
+    this->drawingNewScreenRange = {};
+
+    if (event.getOffsetFromDragStart().isOrigin())
+    {
+        App::Layout().broadcastCommandMessage(CommandIDs::ToggleBottomMiniMap);
     }
 }
 
@@ -319,7 +322,7 @@ void ProjectMapsScroller::onChangeProjectBeatRange(float firstBeat, float lastBe
 
     if (this->isVisible())
     {
-        this->updateAllChildrenBounds(true);
+        this->updateAllChildrenBounds();
     }
 }
 
@@ -330,7 +333,7 @@ void ProjectMapsScroller::onChangeViewBeatRange(float firstBeat, float lastBeat)
 
     if (this->isVisible())
     {
-        this->updateAllChildrenBounds(true);
+        this->updateAllChildrenBounds();
     }
 }
 
@@ -375,7 +378,7 @@ void ProjectMapsScroller::switchToRoll(SafePointer<RollBase> roll)
     else
     {
         this->screenRangeRectangle->setBrightness(this->screenRangeTargetBrightness);
-        this->updateAllChildrenBounds(true);
+        this->updateAllChildrenBounds();
     }
 }
 
@@ -471,10 +474,10 @@ void ProjectMapsScroller::timerCallback()
 
 void ProjectMapsScroller::handleAsyncUpdate()
 {
-    this->updateAllChildrenBounds(false);
+    this->updateAllChildrenBounds();
 }
 
-void ProjectMapsScroller::updateAllChildrenBounds(bool shouldUpdatePlayhead)
+void ProjectMapsScroller::updateAllChildrenBounds()
 {
     const auto p = this->getIndicatorBounds();
     const auto hp = p.toNearestInt();
@@ -490,9 +493,7 @@ void ProjectMapsScroller::updateAllChildrenBounds(bool shouldUpdatePlayhead)
     this->projectStartIndicator->updateBounds(mapBounds);
     this->projectEndIndicator->updateBounds(mapBounds);
 
-    // playhead shouldn't be updated on resizes
-    // to avoid glitches when zooming during playback
-    if (shouldUpdatePlayhead)
+    if (!this->playhead->isMoving()) // avoid glitches when zooming during playback
     {
         this->playhead->updatePosition();
     }
@@ -582,7 +583,7 @@ void ProjectMapsScroller::setScrollerMode(ScrollerMode mode)
     this->screenRangeRectangle->setEnabled(isFullMap);
     this->screenRangeRectangle->setInterceptsMouseClicks(isFullMap, isFullMap);
 
-    this->updateAllChildrenBounds(true);
+    this->updateAllChildrenBounds();
 }
 
 ProjectMapsScroller::ScrollerMode ProjectMapsScroller::getScrollerMode() const noexcept

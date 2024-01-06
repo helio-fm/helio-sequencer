@@ -40,9 +40,9 @@ public:
 
     void deleteProjectLocally(const String &id);
 
-    void clearProfileAndSession();
-
 #if !NO_NETWORK
+
+    void clearProfileAndSession();
 
     //===------------------------------------------------------------------===//
     // Network
@@ -55,13 +55,10 @@ public:
 
     void deleteProjectRemotely(const String &id);
 
-#endif
-
     //===------------------------------------------------------------------===//
     // Accessors
     //===------------------------------------------------------------------===//
 
-    bool isLoggedIn() const;
     String getApiToken() const;
     void setApiToken(const String &token);
 
@@ -71,6 +68,10 @@ public:
     String getProfileUrl() const noexcept;
 
     bool hasSyncedConfiguration(const Identifier &type, const String &name) const;
+
+#endif
+
+    bool isLoggedIn() const;
 
 #if !NO_NETWORK
     using SessionsList = ReferenceCountedArray<UserSessionInfo, CriticalSection>;

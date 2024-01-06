@@ -143,7 +143,7 @@ public:
         g.fillRect(this->dx, 0.f, float(this->getWidth()) + this->dw, float(this->getHeight()));
     }
 
-    bool hitTest(int, int y) noexcept override
+    bool hitTest(int x, int y) noexcept override
     {
         return this->isEditable;
     }

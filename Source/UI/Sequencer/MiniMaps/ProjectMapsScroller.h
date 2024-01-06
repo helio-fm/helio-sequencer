@@ -340,7 +340,7 @@ private:
 private:
 
     void handleAsyncUpdate() override;
-    void updateAllChildrenBounds(bool shouldUpdatePlayhead);
+    void updateAllChildrenBounds();
 
     void timerCallback() override;
 

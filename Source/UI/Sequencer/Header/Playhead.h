@@ -45,6 +45,7 @@ public:
     ~Playhead() override;
 
     void updatePosition();
+    bool isMoving() const noexcept;
 
     //===------------------------------------------------------------------===//
     // TransportListener

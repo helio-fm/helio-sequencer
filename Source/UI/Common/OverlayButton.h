@@ -21,11 +21,23 @@ class OverlayButton final : public Button
 {
 public:
 
-    OverlayButton();
+    OverlayButton() : Button({})
+    {
+        this->setMouseCursor(MouseCursor::PointingHandCursor);
+    }
 
 private:
 
-    void paintButton(Graphics &g, bool isMouseOverButton, bool isButtonDown) override;
+    void paintButton(Graphics &g, bool isMouseOverButton, bool isButtonDown) override
+    {
+        if (isMouseOverButton || isButtonDown)
+        {
+            g.setColour(Colours::white.withAlpha(isMouseOverButton && isButtonDown ? 0.075f : 0.025f));
+            g.fillRect(this->getLocalBounds().reduced(1, 0));
+            g.drawVerticalLine(0, 1.f, float(this->getHeight() - 1));
+            g.drawVerticalLine(this->getWidth() - 1, 1.f, float(this->getHeight() - 1));
+        }
+    }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OverlayButton)
 };
