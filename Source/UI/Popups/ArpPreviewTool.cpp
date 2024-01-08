@@ -25,7 +25,8 @@
 #include "Config.h"
 
 ArpPreviewTool *ArpPreviewTool::createWithinContext(PianoRoll &roll,
-    WeakReference<MidiTrack> keySignatures)
+    WeakReference<MidiTrack> keySignatures,
+    WeakReference<TimeSignaturesAggregator> timeContext)
 {
     if (roll.getLassoSelection().getNumSelected() > 1)
     {
@@ -33,28 +34,23 @@ ArpPreviewTool *ArpPreviewTool::createWithinContext(PianoRoll &roll,
             Desktop::getInstance().getMainMouseSource()
                 .getCurrentModifiers().isAnyModifierKeyDown();
 
-        Note::Key key;
-        Scale::Ptr scale = nullptr;
-        const Clip &clip = roll.getLassoSelection().getFirstAs<NoteComponent>()->getClip();
-        if (!SequencerOperations::findHarmonicContext(roll.getLassoSelection(),
-            clip, keySignatures, scale, key))
-        {
-            DBG("Warning: harmonic context could not be detected");
-            return new ArpPreviewTool(roll, 0, Scale::makeNaturalMajorScale(), advancedMode);
-        }
-
-        return new ArpPreviewTool(roll, key, scale, advancedMode);
+        auto *harmonicContext = dynamic_cast<KeySignaturesSequence *>(keySignatures->getSequence());
+        return new ArpPreviewTool(roll, harmonicContext, timeContext, advancedMode);
     }
 
     return nullptr;
 }
 
-ArpPreviewTool::ArpPreviewTool(PianoRoll &roll, Note::Key keyContext,
-    Scale::Ptr scaleContext, bool advancedMode) :
+ArpPreviewTool::ArpPreviewTool(PianoRoll &roll,
+    WeakReference<KeySignaturesSequence> harmonicContext,
+    WeakReference<TimeSignaturesAggregator> timeContext,
+    bool advancedMode) :
     roll(roll),
-    keyContext(keyContext),
-    scaleContext(scaleContext),
-    advancedMode(advancedMode)
+    harmonicContext(harmonicContext),
+    timeContext(timeContext),
+    advancedMode(advancedMode),
+    selectionStartBeat(roll.getLassoStartBeat()),
+    selectionEndBeat(roll.getLassoEndBeat())
 {
     // this code pretty much duplicates menu from PianoRollSelectionMenu,
     // but adds undos and starts/stops playback of the selected fragment
@@ -71,7 +67,7 @@ ArpPreviewTool::ArpPreviewTool(PianoRoll &roll, Note::Key keyContext,
         this->mainMenu.add(MenuItem::item(Icons::arpeggiate, arps.getUnchecked(i)->getName())->
             withSubmenuIf(this->advancedMode)->withAction([this, i]()
         {
-            if (this->roll.getLassoSelection().getNumSelected() < 2 || this->scaleContext == nullptr)
+            if (this->roll.getLassoSelection().getNumSelected() < 2)
             {
                 jassertfalse;
                 return;
@@ -127,25 +123,9 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Duration x0.75")->toggledIf(this->lastOptions.durationMultiplier == 0.75f)->withAction([this, arp]()
-    {
-        this->lastOptions.durationMultiplier = 0.75f;
-        this->previewArp(arp, this->lastOptions, true);
-        this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
-    }));
-
-    menu.add(MenuItem::item(Icons::arpeggiate,
         "Duration x1")->toggledIf(this->lastOptions.durationMultiplier == 1.f)->withAction([this, arp]()
     {
         this->lastOptions.durationMultiplier = 1.f;
-        this->previewArp(arp, this->lastOptions, true);
-        this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
-    }));
-
-    menu.add(MenuItem::item(Icons::arpeggiate,
-        "Duration x1.5")->toggledIf(this->lastOptions.durationMultiplier == 1.5f)->withAction([this, arp]()
-    {
-        this->lastOptions.durationMultiplier = 1.5f;
         this->previewArp(arp, this->lastOptions, true);
         this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
     }));
@@ -167,17 +147,17 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Randomness x0.5")->toggledIf(this->lastOptions.randomness == 0.5f)->withAction([this, arp]()
+        "Randomness x0.25")->toggledIf(this->lastOptions.randomness == 0.25f)->withAction([this, arp]()
     {
-        this->lastOptions.randomness = 0.5f;
+        this->lastOptions.randomness = 0.25f;
         this->previewArp(arp, this->lastOptions, true);
         this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Randomness x0.75")->toggledIf(this->lastOptions.randomness == 0.75f)->withAction([this, arp]()
+        "Randomness x0.5")->toggledIf(this->lastOptions.randomness == 0.5f)->withAction([this, arp]()
     {
-        this->lastOptions.randomness = 0.75f;
+        this->lastOptions.randomness = 0.5f;
         this->previewArp(arp, this->lastOptions, true);
         this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
     }));
@@ -188,6 +168,12 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
 void ArpPreviewTool::previewArp(Arpeggiator::Ptr arp, const Options options, bool forceRecreate)
 {
     auto &transport = this->roll.getTransport();
+
+    if (roll.getLassoSelection().getNumSelected() == 0)
+    {
+        return;
+    }
+
     if (forceRecreate || arp != this->lastChosenArp)
     {
         transport.stopPlaybackAndRecording();
@@ -195,10 +181,14 @@ void ArpPreviewTool::previewArp(Arpeggiator::Ptr arp, const Options options, boo
         this->undoIfNeeded();
 
         SequencerOperations::arpeggiate(this->roll.getLassoSelection(),
+            arp,
             this->roll.getTemperament(),
-            this->scaleContext, this->keyContext, arp,
-            options.durationMultiplier, options.randomness,
-            options.reversed, options.limitToChord,
+            this->harmonicContext,
+            this->timeContext,
+            options.durationMultiplier,
+            options.randomness,
+            options.reversed,
+            options.limitToChord,
             needsCheckpoint);
 
         this->lastChosenArp = arp;
@@ -211,9 +201,8 @@ void ArpPreviewTool::previewArp(Arpeggiator::Ptr arp, const Options options, boo
     }
     else
     {
-        const auto firstBeat = this->roll.getLassoStartBeat();
-        const auto lastBeat = this->roll.getLassoEndBeat();
-        transport.startPlaybackFragment(firstBeat - 0.001f, lastBeat, true);
+        transport.startPlaybackFragment(this->selectionStartBeat - 0.001f,
+            this->selectionEndBeat - 0.001f, true);
     }
 }
 

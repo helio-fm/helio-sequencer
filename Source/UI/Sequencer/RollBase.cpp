@@ -656,7 +656,7 @@ float RollBase::getMinVisibleBeatForCurrentZoomLevel() const
     // 9            512          1/16
     // 10           1024         clamped to 1/16
 
-    // note that computeVisibleBeatLines also uses (nearestPowTwo - 5.f) to set density,
+    // note that updateAllSnapLines also uses (nearestPowTwo - 5.f) to set density,
     // so that the minimum visible beat is now consistent with visible snaps;
     // probably these calculations should be refactored and put in one place:
     const float nearestPowOfTwo = ceilf(log(this->beatWidth) / log(2.f));
@@ -680,8 +680,7 @@ void RollBase::updateAllSnapLines()
     this->visibleSnaps.clearQuick();
     this->allSnaps.clearQuick();
 
-    auto *timeSignatureAggregator = this->project.getTimeline()->getTimeSignaturesAggregator();
-    const auto *orderedTimeSignatures = timeSignatureAggregator->getSequence();
+    auto *timeContext = this->project.getTimeline()->getTimeSignaturesAggregator();
 
     const float paintStartX = float(this->viewport.getViewPositionX());
     const float paintEndX = float(paintStartX + this->viewport.getViewWidth());
@@ -698,19 +697,18 @@ void RollBase::updateAllSnapLines()
     const float snapWidth = defaultBarWidth / numSnaps;
 
     // in the absence of time signatures we still need defaults for the grid:
-    int numerator = Globals::Defaults::timeSignatureNumerator;
-    int denominator = Globals::Defaults::timeSignatureDenominator;
-    float defaultMeterStartBeat = this->projectFirstBeat;
-    timeSignatureAggregator->updateGridDefaultsIfNeeded(numerator, denominator, defaultMeterStartBeat);
+    int numerator = timeContext->getDefaultNumerator();
+    int denominator = timeContext->getDefaultDenominator();
+    float defaultMeterStartBeat = timeContext->getDefaultMeterStartBeat();
 
     int nextTsIndex = 0;
     // try to find the nearest time signature before the left side of visible area,
     // or just pick the very first time signature, if available
     for (bool hasPickedTheFirstMeter = false;
-         nextTsIndex < orderedTimeSignatures->size(); ++nextTsIndex)
+         nextTsIndex < timeContext->getSequence()->size(); ++nextTsIndex)
     {
         const auto *signature = static_cast<const TimeSignatureEvent *>
-        (orderedTimeSignatures->getUnchecked(nextTsIndex));
+            (timeContext->getSequence()->getUnchecked(nextTsIndex));
 
         if ((signature->getBeat() / beatsPerBar) >= paintStartBar && hasPickedTheFirstMeter)
         {
@@ -811,9 +809,11 @@ void RollBase::updateAllSnapLines()
                 float nextBeatStartX = barStartX + defaultBarWidth * (j + beatStep);
 
                 // check if we have more time signatures to come
-                if (nextTsIndex < orderedTimeSignatures->size())
+                if (nextTsIndex < timeContext->getSequence()->size())
                 {
-                    const auto *nextSignature = static_cast<const TimeSignatureEvent *>(orderedTimeSignatures->getUnchecked(nextTsIndex));
+                    const auto *nextSignature = static_cast<const TimeSignatureEvent *>
+                        (timeContext->getSequence()->getUnchecked(nextTsIndex));
+
                     const float tsBar = nextSignature->getBeat() / beatsPerBar;
                     if (tsBar <= (barIterator + j + beatStep))
                     {

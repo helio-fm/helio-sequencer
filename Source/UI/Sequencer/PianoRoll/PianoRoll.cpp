@@ -1298,37 +1298,43 @@ void PianoRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::CreateArpeggiatorFromSelection:
-        if (this->selection.getNumSelected() >= 2)
+        if (this->selection.getNumSelected() >= 3)
         {
-            Array<Note> selectedNotes;
-            for (int i = 0; i < this->selection.getNumSelected(); ++i)
+            Scale::Ptr scale = nullptr;
+            Note::Key scaleRootKey = 0;
+            if (!SequencerOperations::findHarmonicContext(this->selection, this->activeClip,
+                this->project.getTimeline()->getKeySignatures(), scale, scaleRootKey))
             {
-                const auto nc = static_cast<NoteComponent *>(this->selection.getSelectedItem(i));
-                selectedNotes.add(nc->getNote());
+                jassertfalse;
+                break;
             }
 
-            Note::Key contextKey = 0;
-            Scale::Ptr contextScale = nullptr;
-            if (SequencerOperations::findHarmonicContext(this->selection, this->activeClip,
-                this->project.getTimeline()->getKeySignatures(), contextScale, contextKey))
+            // try to guess the arp's name:
+            auto name = SequencerOperations::findClosestOverlappingAnnotation(this->selection,
+                this->project.getTimeline()->getAnnotations());
+            if (name.isEmpty())
             {
-                auto newArpDialog = ModalDialogInput::Presets::newArpeggiator();
-                newArpDialog->onOk = [this, contextScale, contextKey, selectedNotes](const String &name)
-                {
-                    Arpeggiator::Ptr arp(new Arpeggiator(name,
-                        this->temperament, contextScale, selectedNotes, contextKey));
-
-                    App::Config().getArpeggiators()->updateUserResource(arp);
-                };
-
-                App::showModalComponent(move(newArpDialog));
+                name = this->activeTrack->getTrackName();
             }
+
+            auto newArpDialog = ModalDialogInput::Presets::newArpeggiator(name);
+            newArpDialog->onOk = [this, scale, scaleRootKey](const String &name)
+            {
+                auto arp = SequencerOperations::makeArpeggiator(name,
+                    this->selection, this->temperament, scale, scaleRootKey,
+                    this->project.getTimeline()->getTimeSignaturesAggregator());
+
+                App::Config().getArpeggiators()->updateUserResource(arp);
+            };
+
+            App::showModalComponent(move(newArpDialog));
         }
         break;
     case CommandIDs::ShowArpeggiatorsPanel:
         if (this->selection.getNumSelected() == 0) { this->selectAll(); }
         if (auto *panel = ArpPreviewTool::createWithinContext(*this,
-            this->project.getTimeline()->getKeySignatures()))
+            this->project.getTimeline()->getKeySignatures(),
+            this->project.getTimeline()->getTimeSignaturesAggregator()))
         {
             ModalCallout::emit(panel, this, true);
         }

@@ -365,15 +365,6 @@ namespace Serialization
         static const Identifier arpeggiator = "arpeggiator";
         static const Identifier name = "name";
         static const Identifier sequence = "sequence";
-        static const Identifier type = "type";
-
-        namespace Types
-        {
-            static const Identifier simpleTriadic = "simple";
-            static const Identifier diatonic = "diatonic";
-            static const Identifier pentatonic = "pentatonic"; // TODO more mappers for more scales
-        } // namespace Type
-
         static const Identifier key = "key";
 
         namespace Keys
@@ -383,6 +374,7 @@ namespace Serialization
             static const Identifier timestamp = "ts";
             static const Identifier length = "len";
             static const Identifier volume = "vol";
+            static const Identifier isBarStart = "barStart";
         } // namespace Key
     } // namespace Arps
 

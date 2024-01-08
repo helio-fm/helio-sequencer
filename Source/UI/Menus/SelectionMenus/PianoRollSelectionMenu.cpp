@@ -302,16 +302,22 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
             closesMenu()->
             withAction([this, i]()
         {
-            if (this->lasso->getNumSelected() < 2 || this->harmonicContextScale == nullptr)
+            if (this->lasso->getNumSelected() < 3)
             {
                 jassertfalse;
                 return;
             }
 
             const auto arps = App::Config().getArpeggiators()->getAll();
-            const auto temperament = this->project.getProjectInfo()->getTemperament();
-            SequencerOperations::arpeggiate(*this->lasso.get(), temperament, this->harmonicContextScale,
-                this->harmonicContextKey, arps[i], 1.0f, 0.0f, false, false, true);
+
+            auto *harmonicContext = dynamic_cast<KeySignaturesSequence *>(
+                this->project.getTimeline()->getKeySignatures()->getSequence());
+
+            SequencerOperations::arpeggiate(*this->lasso.get(), arps[i],
+                this->project.getProjectInfo()->getTemperament(),
+                harmonicContext,
+                this->project.getTimeline()->getTimeSignaturesAggregator(),
+                1.0f, 0.0f, false, false, true);
         }));
     }
 

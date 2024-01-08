@@ -35,6 +35,7 @@
 #include "AutomationSequence.h"
 #include "AnnotationsSequence.h"
 #include "KeySignaturesSequence.h"
+#include "TimeSignaturesAggregator.h"
 
 #include "Pattern.h"
 
@@ -326,7 +327,7 @@ float SequencerOperations::findEndBeat(const Array<Note> &selection)
     
     for (int i = 0; i < selection.size(); ++i)
     {
-        const Note &&nc = selection.getUnchecked(i);
+        const auto &nc = selection.getUnchecked(i);
         const float beatPlusLength = nc.getBeat() + nc.getLength();
         
         if (endBeat < beatPlusLength)
@@ -858,110 +859,218 @@ void SequencerOperations::melodicInversion(Lasso &selection, bool shouldCheckpoi
     applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
 }
 
-bool SequencerOperations::arpeggiate(Lasso &selection,
+bool SequencerOperations::isBarStart(float absBeat,
+    WeakReference<TimeSignaturesAggregator> timeContext)
+{
+    const TimeSignatureEvent *currentTimeSignature = nullptr;
+    for (int i = 0; i < timeContext->getSequence()->size(); ++i)
+    {
+        const auto *ts = static_cast<const TimeSignatureEvent *>
+            (timeContext->getSequence()->getUnchecked(i));
+
+        if (currentTimeSignature == nullptr || ts->getBeat() <= absBeat)
+        {
+            currentTimeSignature = ts;
+        }
+        else if (ts->getBeat() > absBeat)
+        {
+            break;
+        }
+    }
+
+    const float barLengthInBeats = currentTimeSignature != nullptr ?
+        currentTimeSignature->getBarLengthInBeats() :
+        timeContext->getDefaultMeterBarLength();
+
+    const float timeSignatureStartBeat = currentTimeSignature != nullptr ?
+        currentTimeSignature->getBeat() :
+        timeContext->getDefaultMeterStartBeat();
+
+    return fmodf(absBeat - timeSignatureStartBeat, barLengthInBeats) == 0.f;
+}
+
+Arpeggiator::Ptr SequencerOperations::makeArpeggiator(const String &name,
+    const Lasso &selection,
     const Temperament::Ptr temperament,
-    const Scale::Ptr chordScale, Note::Key chordRoot, const Arpeggiator::Ptr arp,
-    float durationMultiplier, float randomness,
-    bool isReversed, bool isLimitedToChord,
-    bool shouldCheckpoint)
+    const Scale::Ptr scale, Note::Key scaleRootKeyModuloPeriod,
+    WeakReference<TimeSignaturesAggregator> timeContext)
 {
     if (selection.getNumSelected() == 0)
     {
+        jassertfalse;
+        return {};
+    }
+
+    Array<Note> selectedNotes;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+        selectedNotes.add(nc->getNote());
+    }
+
+    const auto &clip = selection.getFirstAs<NoteComponent>()->getClip();
+
+    auto sequenceMeanKey = 0;
+    auto sequenceStartBeat = FLT_MAX;
+    for (const auto &note : selectedNotes)
+    {
+        sequenceStartBeat = jmin(sequenceStartBeat, note.getBeat());
+        sequenceMeanKey += (note.getKey() + clip.getKey());
+    }
+    sequenceMeanKey /= selectedNotes.size();
+
+    const auto arpRootKey = scaleRootKeyModuloPeriod +
+        (sequenceMeanKey / temperament->getPeriodSize()) * temperament->getPeriodSize();
+
+    Array<Arpeggiator::Key> keys;
+    static Arpeggiator::Key sorter;
+
+    for (const auto &note : selectedNotes)
+    {
+        const auto relativeChromaticKey = note.getKey() + clip.getKey() - arpRootKey;
+        const auto scaleKeyModuloPeriod = scale->getScaleKey(relativeChromaticKey);
+
+        const auto absoluteBeat = note.getBeat() + clip.getBeat();
+        const bool isBarStart = SequencerOperations::isBarStart(absoluteBeat, timeContext);
+
+        // Ignore all non-scale keys
+        // (-1 means the chromatic key is not in a target scale)
+        if (scaleKeyModuloPeriod >= 0)
+        {
+            const auto relativeBeat = note.getBeat() - sequenceStartBeat;
+            const auto period = int(floorf(float(relativeChromaticKey) / float(scale->getBasePeriod())));
+            keys.addSorted(sorter,
+                Arpeggiator::Key(scaleKeyModuloPeriod, period, relativeBeat,
+                    note.getLength(), note.getVelocity(), isBarStart));
+        }
+    }
+
+    return Arpeggiator::Ptr(new Arpeggiator(name, move(keys)));
+}
+
+bool SequencerOperations::arpeggiate(const Lasso &selection,
+    const Arpeggiator::Ptr arp,
+    const Temperament::Ptr temperament,
+    WeakReference<KeySignaturesSequence> harmonicContext,
+    WeakReference<TimeSignaturesAggregator> timeContext,
+    float durationMultiplier, float randomness, bool isReversed,
+    bool isLimitedToChord, bool shouldCheckpoint)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        jassertfalse;
         return false;
     }
 
     if (!arp->isValid())
     {
+        jassertfalse;
         return false;
     }
     
-    bool didCheckpoint = !shouldCheckpoint;
+    const auto &clip = selection.getFirstAs<NoteComponent>()->getClip();
+
     Array<Note> sortedRemovals;
     Array<Note> insertions;
 
-    // 1. sort selection
+    // sort the selection
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const auto *nc = selection.getItemAs<NoteComponent>(i);
         sortedRemovals.addSorted(nc->getNote(), nc->getNote());
     }
 
-    // 2. split chords
+    // split into chords
     Array<PianoChangeGroup> chords;
 
-    float prevBeat = 0.f;
-    int prevKey = 0;
-
-    float nextBeat = 0.f;
-    int nextKey = std::numeric_limits<int>::max();
-
     PianoChangeGroup currentChord;
-    bool currentChordNotesHasSameBeat = true;
-
     for (int i = 0; i < sortedRemovals.size(); ++i)
     {
-        if (i != (sortedRemovals.size() - 1))
-        {
-            nextKey = sortedRemovals.getUnchecked(i + 1).getKey();
-            nextBeat = sortedRemovals.getUnchecked(i + 1).getBeat();
-        }
-        else
-        {
-            nextKey = sortedRemovals.getUnchecked(i).getKey() - 12;
-            nextBeat = sortedRemovals.getUnchecked(i).getBeat() - 12;
-        }
+        const auto thisNote = sortedRemovals.getUnchecked(i);
+        const bool isLastNote = i == (sortedRemovals.size() - 1);
 
-        const bool beatWillChange = (sortedRemovals.getUnchecked(i).getBeat() != nextBeat);
-        const bool newChordWillStart = (beatWillChange && currentChord.size() > 1 && currentChordNotesHasSameBeat);
-        const bool newSequenceWillStart = (sortedRemovals.getUnchecked(i).getKey() > prevKey &&
-            sortedRemovals.getUnchecked(i).getKey() > nextKey);
+        const float nextBeat = isLastNote ? thisNote.getBeat() :
+            sortedRemovals.getUnchecked(i + 1).getBeat();
 
-        const bool chordEndsHere = newChordWillStart || newSequenceWillStart;
+        // input chords for the arpeggiator will have absolute keys (clip key offset
+        // included, so it's simpler for the arpeggiator to align to nearest in-scale keys),
+        // but relative beats (no clip beat offset, because arpeggiator's keys start from 0);
+        // later we'll subtract the clip key offset before inserting new notes into sequence
+        currentChord.add(sortedRemovals.getUnchecked(i).withDeltaKey(clip.getKey()));
 
-        if (beatWillChange)
-        {
-            currentChordNotesHasSameBeat = false;
-        }
+        const bool newChordWillStart = currentChord.size() >= 3 &&
+            nextBeat >= (thisNote.getBeat() + thisNote.getLength());
 
-        currentChord.add(sortedRemovals.getUnchecked(i));
-
-        if (chordEndsHere)
+        if (newChordWillStart || isLastNote)
         {
             chords.add(currentChord);
             currentChord.clear();
-            currentChordNotesHasSameBeat = true;
         }
-
-        prevKey = sortedRemovals.getUnchecked(i).getKey();
-        prevBeat = sortedRemovals.getUnchecked(i).getBeat();
     }
-
-    const float selectionStartBeat = SequencerOperations::findStartBeat(sortedRemovals);
-
-    // 3. arpeggiate every chord
-    int arpKeyIndex = 0;
-    float arpBeatOffset = 0.f;
-    const float arpSequenceLength = arp->getSequenceLength();
 
     if (chords.size() == 0)
     {
+        jassertfalse;
         return false;
     }
+
+    // try to clean up chords by removing octave intervals (at most one, if any)
+    for (auto &chord : chords)
+    {
+        for (int i = 0; i < chord.size() - 1; ++i)
+        {
+            if (chord.getUnchecked(i).getKey() ==
+                chord.getUnchecked(i + 1).getKey() - temperament->getPeriodSize())
+            {
+                chord.remove(i);
+                break;
+            }
+        }
+    }
+
+    // arpeggiate every chord
+    int arpKeyIndex = 0;
+    float arpBeatOffset = 0.f;
+    const float selectionStartBeat =
+        SequencerOperations::findStartBeat(sortedRemovals) + clip.getBeat();
+
+    const auto getAbsoluteBeatOffset =
+        [&selectionStartBeat, &arpBeatOffset, &durationMultiplier]()
+    {
+        return selectionStartBeat + (arpBeatOffset * durationMultiplier);
+    };
+
+    Scale::Ptr scale = Scale::makeNaturalMajorScale();
+    Note::Key scaleRootKey = 0;
 
     for (int i = 0; i < chords.size(); ++i)
     {
         const auto &chord = chords.getUnchecked(i);
-        const float chordEnd = SequencerOperations::findEndBeat(chord);
+        const float chordStart = SequencerOperations::findStartBeat(chord) + clip.getBeat();
+        const float chordEnd = SequencerOperations::findEndBeat(chord) + clip.getBeat();
+
+        // finding a key signature at the chord's start beat
+        // (note: not using findHarmonicContext(chordStart, chordEnd..
+        // to get one key signature even if the chord crosses several signatures)
+        SequencerOperations::findHarmonicContext(chordStart, chordStart,
+            harmonicContext, scale, scaleRootKey);
 
         while (1)
         {
-            const float beatOffset = selectionStartBeat + (arpBeatOffset * durationMultiplier);
-            const float nextNoteBeat = beatOffset + (arp->getBeatFor(arpKeyIndex) * durationMultiplier);
+            const float nextNoteBeat = getAbsoluteBeatOffset() +
+                (arp->getBeatFor(arpKeyIndex) * durationMultiplier);
+
+            if (SequencerOperations::isBarStart(nextNoteBeat, timeContext))
+            {
+                // try to be smarter about time signatures
+                arp->skipToBarStart(arpKeyIndex, arpBeatOffset);
+            }
+
             if (nextNoteBeat >= chordEnd)
             {
                 if (isLimitedToChord)
                 {
-                    // every next chord is arpeggiated from the start of arp sequence
+                    // arpeggiate every chord from the start of the arp's sequence
                     arpKeyIndex = 0;
                     arpBeatOffset = (chordEnd - selectionStartBeat) / durationMultiplier;
                 }
@@ -969,32 +1078,29 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
                 break;
             }
 
+            // see the comment above about clip's key/beat offsets
+            const float sequenceBeatOffset = getAbsoluteBeatOffset() - clip.getBeat();
             insertions.add(arp->mapArpKeyIntoChordSpace(temperament,
-                arpKeyIndex, beatOffset,
-                chord, chordScale, chordRoot,
-                isReversed, durationMultiplier, randomness));
+                arpKeyIndex, sequenceBeatOffset,
+                chord, scale, scaleRootKey,
+                isReversed, durationMultiplier, randomness)
+                    .withDeltaKey(-clip.getKey()));
 
-            arpKeyIndex++;
-            if (!arp->isKeyIndexValid(arpKeyIndex))
-            {
-                arpKeyIndex = 0;
-                arpBeatOffset += arpSequenceLength;
-            }
+            arp->proceedToNextKey(arpKeyIndex, arpBeatOffset);
         }
     }
 
-    // 4. remove selection and add result
-    auto *pianoSequence = getPianoSequence(selection);
-    jassert(pianoSequence);
+    // remove the selection and add result
+    auto *sequence = getPianoSequence(selection);
+    jassert(sequence != nullptr);
 
-    if (!didCheckpoint)
+    if (shouldCheckpoint)
     {
-        pianoSequence->checkpoint();
-        didCheckpoint = true;
+        sequence->checkpoint();
     }
 
-    pianoSequence->removeGroup(sortedRemovals, true);
-    pianoSequence->insertGroup(insertions, true);
+    sequence->removeGroup(sortedRemovals, true);
+    sequence->insertGroup(insertions, true);
 
     return true;
 }
@@ -1870,15 +1976,6 @@ bool SequencerOperations::quantize(WeakReference<MidiTrack> track,
     return true;
 }
 
-int SequencerOperations::findAbsoluteRootKey(const Temperament::Ptr temperament,
-    Note::Key relativeRoot, Note::Key keyToFindPeriodFor)
-{
-    const auto middleCOffset = temperament->getMiddleC() % temperament->getPeriodSize();
-    const auto sequenceBasePeriod = (keyToFindPeriodFor - middleCOffset - relativeRoot) / temperament->getPeriodSize();
-    const auto absRootKey = (sequenceBasePeriod * temperament->getPeriodSize()) + middleCOffset + relativeRoot;
-    return absRootKey;
-}
-
 static inline void doRescaleLogic(PianoChangeGroup &groupBefore, PianoChangeGroup &groupAfter,
     const Note &note, Note::Key keyOffset, Scale::Ptr scaleA, Scale::Ptr scaleB)
 {
@@ -2195,48 +2292,61 @@ bool SequencerOperations::remapKeySignaturesToTemperament(KeySignaturesSequence 
 // Tries to detect if there's one key signature that affects the whole sequence.
 // If there's none, of if there's more than one, returns false.
 bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
-    WeakReference<MidiTrack> keysTrack, Scale::Ptr &outScale, Note::Key &outRootKey)
+    WeakReference<KeySignaturesSequence> keySignatures, Scale::Ptr &outScale,
+    Note::Key &outRootKeyModuloPeriod)
+{
+    jassert(keySignatures != nullptr);
+
+    if (keySignatures->size() == 0)
+    {
+        return false;
+    }
+
+    const KeySignatureEvent *context = nullptr;
+
+    for (int i = 0; i < keySignatures->size(); ++i)
+    {
+        const auto event = keySignatures->getUnchecked(i);
+        if (context == nullptr || event->getBeat() <= startBeat)
+        {
+            // Take the first one no matter where it resides;
+            // If event is still before the sequence start, update the context anyway:
+            context = static_cast<KeySignatureEvent *>(event);
+        }
+        else if (event->getBeat() > startBeat && event->getBeat() < endBeat)
+        {
+            // Harmonic context is already here and changes within a sequence:
+            return false;
+        }
+        else if (event->getBeat() >= endBeat)
+        {
+            // No need to look further
+            break;
+        }
+    }
+
+    if (context != nullptr)
+    {
+        // We've found the only context that doesn't change within a sequence:
+        outScale = context->getScale();
+        outRootKeyModuloPeriod = context->getRootKey();
+        return true;
+    }
+
+    return false;
+}
+
+bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
+    WeakReference<MidiTrack> keysTrack, Scale::Ptr &outScale,
+    Note::Key &outRootKeyModuloPeriod)
 {
     jassert(keysTrack != nullptr);
 
-    if (const auto *keySignatures =
+    if (auto *keySignatures =
         dynamic_cast<KeySignaturesSequence *>(keysTrack->getSequence()))
     {
-        if (keySignatures->size() == 0)
-        {
-            return false;
-        }
-
-        const KeySignatureEvent *context = nullptr;
-
-        for (int i = 0; i < keySignatures->size(); ++i)
-        {
-            const auto event = keySignatures->getUnchecked(i);
-            if (context == nullptr || event->getBeat() <= startBeat)
-            {
-                // Take the first one no matter where it resides;
-                // If event is still before the sequence start, update the context anyway:
-                context = static_cast<KeySignatureEvent *>(event);
-            }
-            else if (event->getBeat() > startBeat && event->getBeat() < endBeat)
-            {
-                // Harmonic context is already here and changes within a sequence:
-                return false;
-            }
-            else if (event->getBeat() >= endBeat)
-            {
-                // No need to look further
-                break;
-            }
-        }
-
-        if (context != nullptr)
-        {
-            // We've found the only context that doesn't change within a sequence:
-            outScale = context->getScale();
-            outRootKey = context->getRootKey();
-            return true;
-        }
+        return SequencerOperations::findHarmonicContext(startBeat, endBeat,
+            keySignatures, outScale, outRootKeyModuloPeriod);
     }
 
     return false;
@@ -2301,20 +2411,47 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
     }
 }
 
-Clip &SequencerOperations::findClosestClip(Lasso &selection, WeakReference<MidiTrack> track, float &outMinDistance)
+String SequencerOperations::findClosestOverlappingAnnotation(Lasso &selection, WeakReference<MidiTrack> annotationsTrack)
 {
-    float selectionFirstBeat = FLT_MAX;
-    float selectionLastBeat = -FLT_MAX;
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    if (selection.getNumSelected() == 0)
     {
-        const auto &note = selection.getItemAs<NoteComponent>(i)->getNote();
-        selectionFirstBeat = jmin(note.getBeat(), selectionFirstBeat);
-        selectionLastBeat = jmax(note.getBeat(), selectionLastBeat);
+        jassertfalse;
+        return {};
     }
 
     const auto &sourceClip = selection.getFirstAs<NoteComponent>()->getClip();
-    const auto selectionStart = selectionFirstBeat + sourceClip.getBeat();
-    const auto selectionEnd = selectionLastBeat + sourceClip.getBeat() + 1.f;
+    const float selectionStart = SequencerOperations::findStartBeat(selection) + sourceClip.getBeat();
+    const float selectionEnd = SequencerOperations::findEndBeat(selection) + sourceClip.getBeat();
+
+    String result;
+    float minDistance = FLT_MAX;
+    for (int i = 0; i < annotationsTrack->getSequence()->size(); ++i)
+    {
+        const auto *event = annotationsTrack->getSequence()->getUnchecked(i);
+        jassert(dynamic_cast<const AnnotationEvent *>(event));
+        const auto *annotation = static_cast<const AnnotationEvent *>(event);
+
+        const auto annotationStart = annotation->getBeat();
+        const auto annotationEnd = annotation->getBeat() + annotation->getLength();
+        const float distance = fabs(annotationStart - selectionStart + annotationEnd - selectionEnd);
+        const bool isOverlapping = selectionStart <= annotationEnd && annotationStart <= selectionEnd;
+
+        if (minDistance > distance && isOverlapping)
+        {
+            minDistance = distance;
+            result = annotation->getDescription();
+        }
+    }
+
+    return result;
+}
+
+Clip &SequencerOperations::findClosestClip(Lasso &selection, WeakReference<MidiTrack> track, float &outMinDistance)
+{
+    jassert(selection.getNumSelected() > 0);
+    const auto &sourceClip = selection.getFirstAs<NoteComponent>()->getClip();
+    const float selectionStart = SequencerOperations::findStartBeat(selection) + sourceClip.getBeat();
+    const float selectionEnd = SequencerOperations::findEndBeat(selection) + sourceClip.getBeat();
 
     auto *result = track->getPattern()->getClips().getFirst();
     auto *targetSequence = static_cast<PianoSequence *>(track->getSequence());

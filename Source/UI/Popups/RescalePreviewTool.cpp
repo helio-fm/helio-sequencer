@@ -32,16 +32,16 @@ RescalePreviewTool *RescalePreviewTool::createWithinSelectionAndContext(SafePoin
 {
     if (roll->getLassoSelection().getNumSelected() > 0)
     {
-        Note::Key key;
+        Note::Key scaleRootKey = 0;
         Scale::Ptr scale = nullptr;
         const Clip &clip = roll->getLassoSelection().getFirstAs<NoteComponent>()->getClip();
-        if (!SequencerOperations::findHarmonicContext(roll->getLassoSelection(), clip, keySignatures, scale, key))
+        if (!SequencerOperations::findHarmonicContext(roll->getLassoSelection(), clip, keySignatures, scale, scaleRootKey))
         {
             DBG("Warning: harmonic context could not be detected");
             return new RescalePreviewTool(roll, 0, Scale::makeNaturalMajorScale());
         }
 
-        return new RescalePreviewTool(roll, key, scale);
+        return new RescalePreviewTool(roll, scaleRootKey, scale);
     }
 
     return nullptr;
@@ -103,7 +103,7 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
             {
                 const auto firstBeat = this->roll->getLassoStartBeat();
                 const auto lastBeat = this->roll->getLassoEndBeat();
-                transport.startPlaybackFragment(firstBeat - 0.001f, lastBeat, true);
+                transport.startPlaybackFragment(firstBeat - 0.001f, lastBeat - 0.001f, true);
             }
         }));
     }

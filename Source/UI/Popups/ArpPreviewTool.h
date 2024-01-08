@@ -20,6 +20,8 @@
 class Lasso;
 class MidiTrack;
 class PianoRoll;
+class KeySignaturesSequence;
+class TimeSignaturesAggregator;
 
 #include "Arpeggiator.h"
 #include "MenuPanel.h"
@@ -30,11 +32,14 @@ class ArpPreviewTool final : public MenuPanel
 {
 public:
 
-    ArpPreviewTool(PianoRoll &roll, Note::Key keyContext,
-        Scale::Ptr scaleContext, bool advancedMode);
+    ArpPreviewTool(PianoRoll &roll,
+        WeakReference<KeySignaturesSequence> harmonicContext,
+        WeakReference<TimeSignaturesAggregator> timeContext,
+        bool advancedMode);
 
     static ArpPreviewTool *createWithinContext(PianoRoll &roll,
-        WeakReference<MidiTrack> keySignatures);
+        WeakReference<MidiTrack> keySignatures,
+        WeakReference<TimeSignaturesAggregator> timeContext);
 
     void handleCommandMessage(int commandId) override;
 
@@ -58,14 +63,17 @@ private:
 
     PianoRoll &roll;
 
-    Note::Key keyContext;
-    Scale::Ptr scaleContext;
+    WeakReference<KeySignaturesSequence> harmonicContext;
+    WeakReference<TimeSignaturesAggregator> timeContext;
 
     bool advancedMode = false;
 
     bool hasMadeChanges = false;
     Arpeggiator::Ptr lastChosenArp = nullptr;
     Options lastOptions;
+
+    const float selectionStartBeat = 0.f;
+    const float selectionEndBeat = 0.f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpPreviewTool)
 };

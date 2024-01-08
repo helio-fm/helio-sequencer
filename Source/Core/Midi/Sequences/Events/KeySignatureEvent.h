@@ -71,7 +71,7 @@ public:
 
 private:
 
-    Note::Key rootKey = 0;
+    Note::Key rootKey = 0; // modulo period
     Scale::Ptr scale;
 
     JUCE_LEAK_DETECTOR(KeySignatureEvent)

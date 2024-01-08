@@ -49,17 +49,13 @@ public:
     void setActiveScope(Array<WeakReference<MidiTrack>> selectedTracks,
         bool forceRebuildAll = false);
 
-    // time signature aggregator may decide that the default grid
-    // should display something else than 4/4 at the project start
-    // (e.g. when the timeline has no time signatures and no clips selected,
-    // it may tell to use the time signature of the last selected clip,
-    // or one of the most frequently used signatures, or something like that);
-    // all passed params are expected to be initialized:
-    void updateGridDefaultsIfNeeded(int &numerator,
-        int &denominator, float &startBeat) const noexcept;
+    int getDefaultNumerator() const noexcept;
+    int getDefaultDenominator() const noexcept;
+    float getDefaultMeterBarLength() const noexcept;
+    float getDefaultMeterStartBeat() const noexcept;
 
     //===------------------------------------------------------------------===//
-    // Listeners management
+    // Listeners
     //===------------------------------------------------------------------===//
 
     struct Listener
@@ -115,9 +111,17 @@ private:
     UniquePointer<DummyProjectEventDispatcher> dummyEventDispatcher;
     UniquePointer<TimeSignaturesSequence> orderedEvents;
 
-    int defaultGridNumerator = Globals::Defaults::timeSignatureNumerator;
-    int defaultGridDenominator = Globals::Defaults::timeSignatureDenominator;
-    float defaultGridStart = 0.f;
+    // time signature aggregator may decide that the default grid
+    // should display something else than 4/4 at the project start
+    // (e.g. when the timeline has no time signatures and no clips selected,
+    // it may tell to use the time signature of the last selected clip,
+    // or one of the most frequently used signatures, or something like that):
+    Optional<int> defaultNumeratorOverride;
+    Optional<int> defaultDenominatorOverride;
+    Optional<float> gridStartBeatOverride;
+    void resetGridOverrides();
+
+    float defaultGridStartBeat = 0.f;
 
     ListenerList<Listener> listeners;
 

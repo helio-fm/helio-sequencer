@@ -21,6 +21,7 @@
 #include "PianoSequence.h"
 #include "PianoRoll.h"
 #include "KeySignaturesSequence.h"
+#include "TimeSignaturesAggregator.h"
 #include "Config.h"
 
 static Label *createPopupButtonLabel(const String &text)
@@ -343,7 +344,7 @@ bool ChordPreviewTool::detectKeyBeatAndContext()
         if (timeSignature == nullptr ||
             event->getBeat() <= (this->targetBeat + this->clip.getBeat()))
         {
-            timeSignature = static_cast<const TimeSignatureEvent *>(event);
+            timeSignature = event;
         }
         else if (event->getBeat() > (this->targetBeat + this->clip.getBeat()))
         {

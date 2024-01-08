@@ -22,29 +22,21 @@
 #include "Temperament.h"
 #include "ConfigurationResource.h"
 
-// Arpeggiators are created by user simply as a sequences within a scale.
-// Depending on arp type, it has a mapping from that sequence's space into target chord space,
-// so that the chord transformation becomes as straightforward as
-// iterating through arp's sequence and inserting a transformed note for each arp's key.
+// Arpeggiators are created by user as a sequence within a scale.
+// Depending on the arp type, it has a mapping from that sequence's
+// space into target chord space, so that the chord transformation
+// becomes as straightforward as iterating through arp's sequence
+// and inserting a transformed note for each arp's key.
 
 // This effectively allows to use any melody/sequence as an arpeggiator
-// (the only assumption is that it has no non-scale keys within, which will be ignored),
-// with no restrictions on a target chord's scale.
-
-// Which opens huge possibilities for experimentation,
-// like using an arpeggiated chord as a new arpeggiator, and so on.
-// See DiatonicArpMapper implementation for the most common mapping example.
+// (the only assumption is that it has no non-scale keys within,
+// which will be ignored), with no restrictions on a target chord's scale.
 
 class Arpeggiator final : public ConfigurationResource
 {
 public:
 
     Arpeggiator() = default;
-    Arpeggiator(const String &name, 
-        const Temperament::Ptr temperament,
-        const Scale::Ptr scale,
-        const Array<Note> &sequence,
-        Note::Key rootKey);
 
     using Ptr = ReferenceCountedObjectPtr<Arpeggiator>;
 
@@ -57,10 +49,15 @@ public:
     bool isKeyIndexValid(int index) const noexcept;
 
     float getBeatFor(int arpKeyIndex) const noexcept;
+
+    void proceedToNextKey(int &arpKeyIndex, float &arpBeatOffset) const;
+    void skipToBarStart(int &arpKeyIndex, float &arpBeatOffset) const;
+
     Note mapArpKeyIntoChordSpace(const Temperament::Ptr temperament,
-        int arpKeyIndex, float startBeat,
-        const Array<Note> &chord, const Scale::Ptr chordScale, Note::Key chordRoot,
-        bool reversed, float durationMultiplier = 1.f, float randomness = 0.f) const;
+        int arpKeyIndex, float startBeat, const Array<Note> &chord,
+        const Scale::Ptr chordScale, Note::Key scaleRootKey,
+        bool reversed, float durationMultiplier = 1.f,
+        float randomness = 0.f) const;
 
     Arpeggiator &operator=(const Arpeggiator &other);
     friend bool operator==(const Arpeggiator &l, const Arpeggiator &r);
@@ -72,19 +69,20 @@ public:
     struct Key final : public Serializable
     {
         Key() = default;
-        Key(int key, int period, float beat, float length, float velocity) noexcept :
-            key(key), period(period), beat(beat), length(length), velocity(velocity) {}
+        Key(int key, int period, float beat,
+            float length, float velocity, bool isBarStart = false) noexcept :
+            key(key), period(period), beat(beat),
+            length(length), velocity(velocity), isBarStart(isBarStart) {}
 
         // Key, relative to the root note, and translated into scale, may be negative
         int key;
         // Number of periods to offset, relative to root key, may be negative
-        // We cannot keep this info in a key, as target chord's scale might have different period
         int period;
-        // Velocity and length parameters is the same as for note
         float velocity;
         float length;
         // Beat is relative to sequence start (i.e. first one == 0)
         float beat;
+        bool isBarStart = false;
 
         SerializedData serialize() const override;
         void deserialize(const SerializedData &data) override;
@@ -93,27 +91,24 @@ public:
         static int compareElements(const Key &first, const Key &second) noexcept;
     };
 
-    class Mapper
+    Arpeggiator(const String &name, Array<Arpeggiator::Key> &&keys);
+
+    class DiatonicMapper final
     {
     public:
 
-        Mapper() = default;
-        virtual ~Mapper() = default;
-
-        virtual Note::Key mapArpKeyIntoChord(const Arpeggiator::Key &arpKey,
+        Note::Key mapArpKeyIntoChord(const Arpeggiator::Key &arpKey,
             const Array<Note> &chord, const Scale::Ptr chordScale,
-            Note::Key chordRoot, int scaleOffset = 0) const = 0;
+            Note::Key scaleRootKey, int scaleOffset = 0) const;
 
-        virtual float mapArpVelocityIntoChord(const Arpeggiator::Key &arpKey,
-            const Array<Note> &chord) const = 0;
+        float mapArpVelocityIntoChord(const Arpeggiator::Key &arpKey,
+            const Array<Note> &chord) const;
 
-    protected:
-
-        Note::Key getChordKey(const Array<Note> &chord, int chordKeyIndex,
-            const Scale::Ptr chordScale, Note::Key chordRoot, int scaleOffset) const;
+        Note::Key getChordKey(const Array<Note> &chord,
+            int chordKeyIndex, const Scale::Ptr chordScale,
+            Note::Key scaleRootKey, int scaleOffset) const;
 
         float getChordVelocity(const Array<Note> &chord, int chordKeyIndex) const;
-
     };
 
     //===------------------------------------------------------------------===//
@@ -134,9 +129,8 @@ public:
 protected:
 
     String name;
-    Identifier type;
     Array<Arpeggiator::Key> keys;
-    UniquePointer<Arpeggiator::Mapper> mapper;
+    DiatonicMapper mapper;
 
     JUCE_LEAK_DETECTOR(Arpeggiator)
 };

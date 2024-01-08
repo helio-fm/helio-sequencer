@@ -256,9 +256,9 @@ UniquePointer<ModalDialogInput> ModalDialogInput::Presets::commit(const String &
         TRANS(I18n::Dialog::cancel));
 }
 
-UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newArpeggiator()
+UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newArpeggiator(const String &name)
 {
-    return make<ModalDialogInput>(String(),
+    return make<ModalDialogInput>(name,
         TRANS(I18n::Dialog::addArpCaption),
         TRANS(I18n::Dialog::addArpProceed),
         TRANS(I18n::Dialog::cancel));

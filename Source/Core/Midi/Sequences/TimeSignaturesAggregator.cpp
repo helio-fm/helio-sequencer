@@ -111,14 +111,28 @@ void TimeSignaturesAggregator::setActiveScope(Array<WeakReference<MidiTrack>> tr
     this->rebuildAll();
 }
 
-void TimeSignaturesAggregator::updateGridDefaultsIfNeeded(int &numerator, int &denominator, float &startBeat) const noexcept
+int TimeSignaturesAggregator::getDefaultNumerator() const noexcept
 {
-    if (this->getSequence()->isEmpty()) // no time signatures at the timeline, and no clips selected
-    {
-        numerator = this->defaultGridNumerator;
-        denominator = this->defaultGridDenominator;
-        startBeat = this->defaultGridStart;
-    }
+    return this->defaultNumeratorOverride
+        .orFallback(Globals::Defaults::timeSignatureNumerator);
+}
+
+int TimeSignaturesAggregator::getDefaultDenominator() const noexcept
+{
+    return this->defaultDenominatorOverride
+        .orFallback(Globals::Defaults::timeSignatureDenominator);
+}
+
+float TimeSignaturesAggregator::getDefaultMeterBarLength() const noexcept
+{
+    return float(this->getDefaultNumerator()) /
+        float(this->getDefaultDenominator()) * float(Globals::beatsPerBar);
+}
+
+float TimeSignaturesAggregator::getDefaultMeterStartBeat() const noexcept
+{
+    return this->gridStartBeatOverride
+        .orFallback(this->defaultGridStartBeat);
 }
 
 //===----------------------------------------------------------------------===//
@@ -215,6 +229,7 @@ void TimeSignaturesAggregator::onRemoveClip(const Clip &clip)
 {
     if (this->isAggregatingTimeSignatureOverrides())
     {
+        this->resetGridOverrides();
         this->rebuildAll();
     }
 }
@@ -225,6 +240,7 @@ void TimeSignaturesAggregator::onChangeTrackProperties(MidiTrack *const track)
     {
         // track color might have changed, or its time signature override
         // might have been added, changed or removed:
+        this->resetGridOverrides();
         this->rebuildAll();
     }
 }
@@ -252,11 +268,16 @@ void TimeSignaturesAggregator::onRemoveTrack(MidiTrack *const track)
     if (this->selectedTracks.contains(track))
     {
         this->selectedTracks.removeAllInstancesOf(track);
+        this->resetGridOverrides();
         this->rebuildAll();
     }
 }
 
-void TimeSignaturesAggregator::onChangeProjectBeatRange(float firstBeat, float lastBeat) {}
+void TimeSignaturesAggregator::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+{
+    this->defaultGridStartBeat = firstBeat;
+}
+
 void TimeSignaturesAggregator::onChangeViewBeatRange(float firstBeat, float lastBeat) {}
 
 struct SortByTimeSignatureAbsolutePosition final
@@ -286,7 +307,7 @@ void TimeSignaturesAggregator::rebuildAll()
 {
     if (!this->isAggregatingTimeSignatureOverrides())
     {
-        // now it will return timeline's sequence in getSequence():
+        // now it will return the timeline's sequence in getSequence():
         this->orderedEvents = nullptr;
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
         return;
@@ -355,13 +376,22 @@ void TimeSignaturesAggregator::rebuildAll()
 
     // for now, simple as that: remember the very first one
     // of the aggregated time signatures, and use it as the grid default
+
+    jassert(!this->orderedEvents->isEmpty());
     if (!this->orderedEvents->isEmpty())
     {
         const auto *firstTimeSignature = static_cast<const TimeSignatureEvent *>(this->orderedEvents->getUnchecked(0));
-        this->defaultGridNumerator = firstTimeSignature->getNumerator();
-        this->defaultGridDenominator = firstTimeSignature->getDenominator();
-        this->defaultGridStart = firstTimeSignature->getBeat();
+        this->defaultNumeratorOverride = firstTimeSignature->getNumerator();
+        this->defaultDenominatorOverride = firstTimeSignature->getDenominator();
+        this->gridStartBeatOverride = firstTimeSignature->getBeat();
     }
 
     this->listeners.call(&Listener::onTimeSignaturesUpdated);
+}
+
+void TimeSignaturesAggregator::resetGridOverrides()
+{
+    this->defaultNumeratorOverride.reset();
+    this->defaultDenominatorOverride.reset();
+    this->gridStartBeatOverride.reset();
 }
