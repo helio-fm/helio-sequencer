@@ -88,21 +88,23 @@ This example shows rescaling, along with some undo/redo to demonstrate the diffe
 
 ## Arpeggiators
 
-Arpeggiators submenu is available in the notes selection menu. If you have created any arpeggiators, you will also find a button on the right sidebar to apply one of them to selection.
+Arpeggiators submenu is available in the notes selection menu. If you have created any arpeggiators, you will also find a button on the right sidebar to apply one of them to a selection.
 
 ### How arpeggiators work
 
-The idea behind arpeggiators was to remember any custom sequence of notes in their in-scale keys, so that the sequence doesn't depend on the scale anymore, and later apply that scale-agnostic sequence to some chords in whatever different harmonic context.
+The idea behind arpeggiators is to remember any custom sequence of notes in their in-scale keys, so that the sequence is no longer dependent on the scale, and later apply that scale-agnostic sequence to some chords in any different harmonic context.
 
-That said, creating and using arpeggiators is tied to harmonic context, meaning arpeggiators rely on valid key signatures at the timeline.
+Arpeggiators also rely on time signatures to remember bar starts. When you apply the arpeggiator, it will try to align to your time context by skipping some of its keys to the nearest bar start if necessary when it hits a bar start on the timeline.
 
 ### Creating an arpeggiator
 
- * First, make sure you have a key signature, then create any sequence in that key and scale;
- * Select that sequence and hit `Shift + A` hotkey (or select a submenu item) to create a named arpeggiator from it.
- * After that, in any other place, apply that arpeggiator to any other selection (presumably, to some chords).
+Because the creation and use of arpeggiators is tied to harmonic context, arpeggiators rely on valid key signatures at the timeline.
 
-Arpeggiators is one of the unfinished parts of this app: there's still no convenient way to edit or delete an arpeggiator, other than manually editing your [arpeggiators.json](configs.md#user-configs) in the [documents](index.md#the-projects-directory) directory. Hopefully this will be improved in future; as a workaround for editing arpeggiators, I'm maintaining a separate project just for arpeggiator sequences.
+ * First, create any sequence in the current key and scale (enable [scales highlighting](tips-and-tricks.md#ui-flags) to avoid confusion). Any out-of-scale keys will be ignored.
+ * To create a named arpeggiator from that sequence, select it and press the `Shift + A` hotkey or select a submenu item.
+ * After that, in any other place, apply that arpeggiator to any selection, presumably some chords.
+
+Arpeggiators is one of the unfinished parts of this app: there's still no convenient way to edit or delete an arpeggiator, other than manually editing your [arpeggiators.json](configs.md#user-configs) in the [documents](index.md#the-projects-directory) directory. Hopefully this will be improved in future; as a workaround for editing arpeggiators, I'm keeping a separate track just for arpeggiator sequences.
 
 
 [refactoring-menu]: images/refactoring-menu.png "Selection refactoring menu"

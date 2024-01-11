@@ -31,17 +31,17 @@ To use the portable version, simply download the compressed archive and unzip it
 
 The only practical difference between the two is that the 64-bit version can only host 64-bit plugins, and the 32-bit version can only host 32-bit plugins.
 
-At the moment of writing this, Helio does not support plugin sandboxing or hosting both 32-bit and 64-bit plugins at the same time.
+Helio does not currently support plugin sandboxing or hosting both 32-bit and 64-bit plugins.
 
-### Master build or development build
+### Stable build or development build
 
-The master builds are the most recent stable versions. You can keep up to date with the latest changes through the [release notes](changelog.md). Install the development build if you want to preview the latest features or verify bug fixes.
+The stable builds are supposed to be more reliable, but they are updated less frequently. You can keep up to date on the latest changes in stable builds through the [release notes](changelog.md). Install the development build if you want to test new features or verify bug fixes.
+
+The documentation is not versioned at the moment, and some of the features described at [docs.helio.fm](https://docs.helio.fm) may be present only in the development build.
 
 ## Used directories
 
 Helio keeps all files in two directories: one for project files, and another for configuration files.
-
-Note that the installer-based versions don't remove any of these when uninstalling the app. If you want to completely remove Helio from the system, you should delete them manually.
 
 ### The configuration directory
 
