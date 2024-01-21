@@ -46,7 +46,7 @@ private:
     bool playing = false;
 
     UniquePointer<IconComponent> playIcon;
-    UniquePointer<IconComponent> pauseIcon;
+    UniquePointer<IconComponent> stopIcon;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayButton)
 };

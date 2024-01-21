@@ -116,7 +116,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
         (this->instrumentNode.getInstrument() == this->pit.getMetronomeInstrument());
 
     menu.add(MenuItem::item(Icons::remove,
-        TRANS(I18n::Menu::instrumentDelete))->
+        TRANS(I18n::Menu::delete_))->
         disabledIf(isRequiredInstrument)->
         closesMenu()->
         withAction([this]()

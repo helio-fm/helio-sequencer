@@ -36,7 +36,6 @@ public:
         static UniquePointer<ModalDialogConfirmation> deleteProject();
         static UniquePointer<ModalDialogConfirmation> forceCheckout();
         static UniquePointer<ModalDialogConfirmation> resetChanges();
-        static UniquePointer<ModalDialogConfirmation> confirmOpenGL();
     };
 
     void resized() override;

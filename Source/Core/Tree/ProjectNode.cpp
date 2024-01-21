@@ -141,7 +141,7 @@ String ProjectNode::getStats() const
         numEvents += tracks[i]->getSequence()->size();
     }
 
-    return String(TRANS_PLURAL("{x} layers", numTracks) + " " + 
+    return String(TRANS_PLURAL("{x} tracks", numTracks) + " " + 
         TRANS(I18n::Common::conjunction) + " " +
         TRANS_PLURAL("{x} events", numEvents));
 }

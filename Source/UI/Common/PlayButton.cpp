@@ -28,8 +28,8 @@ public:
 
     PlayButtonHighlighter()
     {
-        this->setInterceptsMouseClicks(false, false);
         this->setPaintingIsUnclipped(true);
+        this->setInterceptsMouseClicks(false, false);
     }
 
     void paint(Graphics &g) override
@@ -37,11 +37,15 @@ public:
         const int size = jmin(this->getWidth(), this->getHeight());
         const auto bounds = this->getLocalBounds()
             .withSizeKeepingCentre(size, size)
-            .reduced(3).toFloat();
+            .reduced(2).toFloat();
 
-        g.setColour(findDefaultColour(ColourIDs::Icons::fill).withAlpha(0.2f));
+        g.setColour(this->colour);
         g.drawEllipse(bounds, 1.f);
     }
+
+private:
+
+    const Colour colour = findDefaultColour(ColourIDs::Icons::fill).withAlpha(0.1f);
 };
 
 PlayButton::PlayButton(WeakReference<Component> eventReceiver) :
@@ -57,9 +61,9 @@ PlayButton::PlayButton(WeakReference<Component> eventReceiver) :
     this->addAndMakeVisible(this->playIcon.get());
     this->playIcon->setInterceptsMouseClicks(false, false);
 
-    this->pauseIcon = make<IconComponent>(Icons::pause);
-    this->addChildComponent(this->pauseIcon.get()); // not visible
-    this->pauseIcon->setInterceptsMouseClicks(false, false);
+    this->stopIcon = make<IconComponent>(Icons::stop);
+    this->addChildComponent(this->stopIcon.get()); // not visible
+    this->stopIcon->setInterceptsMouseClicks(false, false);
 
     this->setSize(64, 64);
 }
@@ -73,7 +77,7 @@ void PlayButton::resized()
     this->playIcon->setBounds(this->getLocalBounds()
         .withSizeKeepingCentre(buttonSize, buttonSize).translated(1, 0));
 
-    this->pauseIcon->setBounds(this->getLocalBounds()
+    this->stopIcon->setBounds(this->getLocalBounds()
         .withSizeKeepingCentre(buttonSize, buttonSize));
 }
 
@@ -99,15 +103,13 @@ void PlayButton::setPlaying(bool isPlaying)
 
     if (this->playing)
     {
-        MessageManagerLock lock;
-        this->animator.fadeIn(this->pauseIcon.get(), Globals::UI::fadeInShort);
+        this->animator.fadeIn(this->stopIcon.get(), Globals::UI::fadeInShort);
         this->animator.fadeOut(this->playIcon.get(), Globals::UI::fadeOutShort);
     }
     else
     {
-        MessageManagerLock lock;
-        this->animator.fadeIn(this->playIcon.get(), Globals::UI::fadeInLong);
-        this->animator.fadeOut(this->pauseIcon.get(), Globals::UI::fadeOutLong);
+        this->animator.fadeIn(this->playIcon.get(), Globals::UI::fadeInShort);
+        this->animator.fadeOut(this->stopIcon.get(), Globals::UI::fadeOutShort);
     }
 }
 

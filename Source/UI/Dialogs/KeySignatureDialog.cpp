@@ -38,8 +38,20 @@ public:
         transport(transport),
         sequence(s) {}
 
+    Function<void()> onStartPlayback;
+    Function<void()> onStopPlayback;
+
     void run() override
     {
+        if (this->onStartPlayback)
+        {
+            MessageManagerLock lock(Thread::getCurrentThread());
+            if (lock.lockWasGained())
+            {
+                this->onStartPlayback();
+            }
+        }
+
         // the "warm-up" hack to avoid a bit broken rhythm of the first 1-2 iterations:
         Thread::wait(100);
 
@@ -49,7 +61,7 @@ public:
 
             if (this->threadShouldExit())
             {
-                return;
+                break;
             }
 
             const auto endTime = Time::getMillisecondCounter() + 400;
@@ -70,6 +82,15 @@ public:
         }
 
         this->transport.stopSound();
+
+        if (this->onStopPlayback)
+        {
+            MessageManagerLock lock(Thread::getCurrentThread());
+            if (lock.lockWasGained())
+            {
+                this->onStopPlayback();
+            }
+        }
     }
 
 private:
@@ -288,25 +309,32 @@ void KeySignatureDialog::handleCommandMessage(int commandId)
         }
 
         this->scalePreviewThread = make<ScalePreviewThread>(this->transport, move(scaleKeys));
-        this->scalePreviewThread->startThread(5);
 
-        this->playButton->setPlaying(true);
+        this->scalePreviewThread->onStartPlayback = [this]()
+        {
+            this->playButton->setPlaying(true);
+        };
+
+        this->scalePreviewThread->onStopPlayback = [this]()
+        {
+            this->playButton->setPlaying(false);
+        };
+
+        this->scalePreviewThread->startThread(5);
     }
     else if (commandId == CommandIDs::TransportStop)
     {
         if (this->scalePreviewThread != nullptr)
         {
             this->scalePreviewThread->stopThread(500);
+            this->playButton->setPlaying(false);
         }
-
-        this->playButton->setPlaying(false);
     }
     else
     {
         const int scaleIndex = commandId - CommandIDs::SelectScale;
         if (scaleIndex >= 0 && scaleIndex < this->scales.size())
         {
-            this->playButton->setPlaying(false);
             this->scale = this->scales[scaleIndex];
             this->scaleEditor->setScale(this->scale);
 
@@ -396,6 +424,12 @@ UniquePointer<Component> KeySignatureDialog::addingDialog(ProjectNode &project,
 void KeySignatureDialog::sendEventChange(const KeySignatureEvent &newEvent)
 {
     jassert(this->originalSequence != nullptr);
+
+    if (this->scalePreviewThread != nullptr)
+    {
+        this->scalePreviewThread->stopThread(500);
+        this->playButton->setPlaying(false);
+    }
 
     if (this->addsNewEvent)
     {

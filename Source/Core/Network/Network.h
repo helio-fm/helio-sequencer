@@ -22,15 +22,15 @@ class SessionService;
 class ResourceSyncService;
 class ProjectSyncService;
 
+#if !NO_NETWORK
+
 namespace Routes
 {
     namespace Web
     {
         static const String baseURL = "https://helio.fm";
-        static const String translationsURL = "/translations";
+        static const String translations = "/translations";
     }
-
-#if !NO_NETWORK
 
     namespace Api
     {
@@ -49,9 +49,9 @@ namespace Routes
         static const String projectRevision = "/my/projects/:projectId/revisions/:revisionId";
     }
 
-#endif
-
 }
+
+#endif
 
 class Network final
 {

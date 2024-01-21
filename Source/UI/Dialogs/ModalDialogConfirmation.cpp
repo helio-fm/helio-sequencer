@@ -157,11 +157,3 @@ UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::resetCh
         TRANS(I18n::Dialog::vcsResetProceed),
         TRANS(I18n::Dialog::cancel));
 }
-
-UniquePointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::confirmOpenGL()
-{
-    return make<ModalDialogConfirmation>(
-        TRANS(I18n::Dialog::openglCaption),
-        TRANS(I18n::Dialog::openglProceed),
-        TRANS(I18n::Dialog::cancel));
-}

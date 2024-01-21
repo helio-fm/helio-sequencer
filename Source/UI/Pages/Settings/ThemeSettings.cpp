@@ -26,17 +26,14 @@ ThemeSettings::ThemeSettings()
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
 
-    this->fontCombo = make<MobileComboBox::Container>();
-    this->addAndMakeVisible(this->fontCombo.get());
-
     this->themesList = make<ListBox>();
     this->addAndMakeVisible(this->themesList.get());
 
     this->schemes = App::Config().getColourSchemes()->getAll();
     this->currentScheme = App::Config().getColourSchemes()->getCurrent();
 
-    const int numSchemes = this->schemes.size();
-    this->setSize(600, 16 + numSchemes * ThemeSettings::rowHeight);
+    this->setSize(600, ThemeSettings::verticalContentMargin * 2 +
+        this->schemes.size() * ThemeSettings::rowHeight);
 
     this->themesList->setModel(this);
     this->themesList->setRowHeight(ThemeSettings::rowHeight);
@@ -52,8 +49,9 @@ ThemeSettings::~ThemeSettings()
 
 void ThemeSettings::resized()
 {
-    this->fontCombo->setBounds(4, 4, this->getWidth() - 8, this->getHeight() - 8);
-    this->themesList->setBounds(8, 8, this->getWidth() - 24, this->getHeight() - 16);
+    this->themesList->setBounds(this->getLocalBounds()
+        .reduced(ThemeSettings::horizontalContentMargin,
+            ThemeSettings::verticalContentMargin));
 }
 
 //===----------------------------------------------------------------------===//

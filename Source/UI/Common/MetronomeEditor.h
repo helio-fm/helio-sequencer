@@ -41,8 +41,20 @@ public:
         metronome(metronome),
         instrument(instrument) {}
 
+    Function<void()> onStartPlayback;
+    Function<void()> onStopPlayback;
+
     void run() override
     {
+        if (this->onStartPlayback)
+        {
+            MessageManagerLock lock(Thread::getCurrentThread());
+            if (lock.lockWasGained())
+            {
+                this->onStartPlayback();
+            }
+        }
+
         // this "warm-up" trick is here to avoid a bit broken rhythm of the first 1-2 ticks:
         Thread::wait(100);
 
@@ -76,6 +88,15 @@ public:
         }
 
         this->transport.stopSound({});
+
+        if (this->onStopPlayback)
+        {
+            MessageManagerLock lock(Thread::getCurrentThread());
+            if (lock.lockWasGained())
+            {
+                this->onStopPlayback();
+            }
+        }
     }
 
 private:
@@ -121,6 +142,12 @@ public:
         if (this->metronome == metronome)
         {
             return;
+        }
+
+        if (this->metronomePreviewThread != nullptr)
+        {
+            this->metronomePreviewThread->stopThread(500);
+            this->playButton->setPlaying(false);
         }
 
         this->metronome = metronome;
@@ -184,17 +211,25 @@ public:
             this->metronomePreviewThread = make<MetronomePreviewThread>(this->transport,
                 this->metronome, this->metronomeInstrument);
 
+            this->metronomePreviewThread->onStartPlayback = [this]()
+            {
+                this->playButton->setPlaying(true);
+            };
+
+            this->metronomePreviewThread->onStopPlayback = [this]()
+            {
+                this->playButton->setPlaying(false);
+            };
+
             this->metronomePreviewThread->startThread(5);
-            this->playButton->setPlaying(true);
         }
         else if (commandId == CommandIDs::TransportStop)
         {
             if (this->metronomePreviewThread != nullptr)
             {
                 this->metronomePreviewThread->stopThread(500);
+                this->playButton->setPlaying(false);
             }
-
-            this->playButton->setPlaying(false);
         }
         else if (commandId == CommandIDs::ShowMetronomeSettings)
         {
@@ -345,7 +380,7 @@ private:
 
     MetronomeScheme metronome;
 
-    UniquePointer<Thread> metronomePreviewThread;
+    UniquePointer<MetronomePreviewThread> metronomePreviewThread;
 
     static constexpr auto buttonWidth = 18;
     static constexpr auto buttonMargin = 12;

@@ -57,13 +57,14 @@ public:
 
         this->iconComponent = make<IconComponent>(Icons::apply);
         this->addAndMakeVisible(this->iconComponent.get());
-        this->iconComponent->setIconAlphaMultiplier(0.6f);
+        this->iconComponent->setIconAlphaMultiplier(0.7f);
     }
 
     void resized() override
     {
         constexpr auto size = 28;
-        this->iconComponent->setBounds(3, (this->getHeight() / 2) - (size / 2) - 1, size, size);
+        this->iconComponent->setBounds(3,
+            (this->getHeight() / 2) - (size / 2) - 1, size, size);
     }
 
 private:
@@ -152,13 +153,13 @@ void ThemeSettingsItem::paint(Graphics &g)
     g.drawHorizontalLine(int(lineEndY) - 1, 42, float(this->getWidth()) - 1.f);
 
     // Roll shadow left
-    g.setGradientFill (ColourGradient (Colour (0x15000000), 248.0f, 0.0f,
-                                        Colour (0x00000000), 268.0f, 0.0f,  false));
-    g.fillRect (248.f, paintStartY, 20.f, paintEndY);
+    g.setGradientFill(ColourGradient(Colour(0x15000000), 248.0f, 0.0f,
+        Colour(0x00000000), 268.0f, 0.0f,  false));
+    g.fillRect(248.f, paintStartY, 20.f, paintEndY);
 
-    g.setGradientFill (ColourGradient (Colour (0x15000000), 248.0f, 0.0f,
-                                        Colour (0x00000000), 260.0f, 0.0f, false));
-    g.fillRect (248.f, paintStartY, 12.f, paintEndY);
+    g.setGradientFill(ColourGradient (Colour (0x15000000), 248.0f, 0.0f,
+        Colour (0x00000000), 260.0f, 0.0f, false));
+    g.fillRect(248.f, paintStartY, 12.f, paintEndY);
 
     // Roll shadow right
     g.setGradientFill(ColourGradient(Colour(0x15000000), float(this->getWidth()), 0.0f,
@@ -170,10 +171,10 @@ void ThemeSettingsItem::paint(Graphics &g)
     g.fillRect(float(this->getWidth()) - 12.f, paintStartY, 12.f, paintEndY);
 
     // Separators
-    g.setColour (Colour (0x0f000000));
+    g.setColour(Colour(0x0f000000));
     g.drawVerticalLine(248, lineStartY, lineEndY);
 
-    g.setColour (Colour (0x0bffffff));
+    g.setColour(Colour(0x0bffffff));
     g.drawVerticalLine(247, lineStartY, lineEndY);
 
     g.setColour(Colours::black);

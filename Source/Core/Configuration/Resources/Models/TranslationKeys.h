@@ -66,8 +66,6 @@ namespace I18n
         static constexpr auto instrumentRenameProceed = constexprHash("dialog::instrument::rename::proceed");
         static constexpr auto keySignatureAddCaption = constexprHash("dialog::keysignature::add::caption");
         static constexpr auto keySignatureEditCaption = constexprHash("dialog::keysignature::edit::caption");
-        static constexpr auto openglCaption = constexprHash("dialog::opengl::caption");
-        static constexpr auto openglProceed = constexprHash("dialog::opengl::proceed");
         static constexpr auto renameTrackCaption = constexprHash("dialog::renametrack::caption");
         static constexpr auto renderAbort = constexprHash("dialog::render::abort");
         static constexpr auto renderCaption = constexprHash("dialog::render::caption");
@@ -100,9 +98,12 @@ namespace I18n
         static constexpr auto savePreset = constexprHash("menu::savepreset");
 
         static constexpr auto annotationAdd = constexprHash("menu::annotation::add");
-        static constexpr auto annotationDelete = constexprHash("menu::annotation::delete");
-        static constexpr auto annotationRename = constexprHash("menu::annotation::rename");
+        static constexpr auto timeSignatureAdd = constexprHash("menu::timesignature::add");
+        static constexpr auto timeSignatureChange = constexprHash("menu::timesignature::change");
+        static constexpr auto keySignatureAdd = constexprHash("menu::keysignature::add");
+
         static constexpr auto arpeggiatorsCreate = constexprHash("menu::arpeggiators::create");
+
         static constexpr auto groupByColour = constexprHash("menu::groupby::colour");
         static constexpr auto groupByInstrument = constexprHash("menu::groupby::instrument");
         static constexpr auto groupByName = constexprHash("menu::groupby::name");
@@ -110,20 +111,16 @@ namespace I18n
 
         static constexpr auto instrumentAddEffect = constexprHash("menu::instrument::addeffect");
         static constexpr auto instrumentAdd = constexprHash("menu::instrument::addinstrument");
-        static constexpr auto instrumentDelete = constexprHash("menu::instrument::delete");
         static constexpr auto instrumentRename = constexprHash("menu::instrument::rename");
-        static constexpr auto instrumentSetColour = constexprHash("menu::instrument::setcolour");
-        static constexpr auto instrumentSetIcon = constexprHash("menu::instrument::seticon");
         static constexpr auto instrumentShowEditor = constexprHash("menu::instrument::showeditor");
         static constexpr auto instrumentShowWindow = constexprHash("menu::instrument::showui");
+
         static constexpr auto instrumentsReload = constexprHash("menu::instruments::reload");
         static constexpr auto instrumentsScanFolder = constexprHash("menu::instruments::scanfolder");
 
         static constexpr auto keyboardMappingEdit = constexprHash("menu::kbm::edit");
         static constexpr auto keyboardMappingLoadScala = constexprHash("menu::kbm::load");
         static constexpr auto keyboardMappingReset = constexprHash("menu::kbm::reset");
-
-        static constexpr auto keySignatureAdd = constexprHash("menu::keysignature::add");
 
         static constexpr auto refactoringInverseDown = constexprHash("menu::refactoring::inversedown");
         static constexpr auto refactoringInverseUp = constexprHash("menu::refactoring::inverseup");
@@ -191,9 +188,6 @@ namespace I18n
             static constexpr auto vcsStage = constexprHash("menu::selection::vcs::stage");
         }
 
-        static constexpr auto timeSignatureAdd = constexprHash("menu::timesignature::add");
-        static constexpr auto timeSignatureChange = constexprHash("menu::timesignature::change");
-        static constexpr auto timeSignatureDelete = constexprHash("menu::timesignature::delete");
         static constexpr auto trackChangeInstrument = constexprHash("menu::track::change::instrument");
         static constexpr auto trackChangeChannel = constexprHash("menu::track::change::channel");
         static constexpr auto trackDelete = constexprHash("menu::track::delete");
@@ -240,7 +234,6 @@ namespace I18n
         static constexpr auto orchestraPlugins = constexprHash("page::orchestra::plugins");
         static constexpr auto orchestraVendorandname = constexprHash("page::orchestra::vendorandname");
         static constexpr auto projectAuthor = constexprHash("page::project::author");
-        static constexpr auto projectDefaultAuthor = constexprHash("page::project::default::author");
         static constexpr auto projectDefaultLicense = constexprHash("page::project::default::license");
         static constexpr auto projectDescription = constexprHash("page::project::description");
         static constexpr auto projectDuration = constexprHash("page::project::duration");
@@ -278,7 +271,6 @@ namespace I18n
         static constexpr auto midiOutputNone = constexprHash("settings::midi::output::none");
         static constexpr auto midiNoDevicesFound = constexprHash("settings::midi::nodevices");
         static constexpr auto midiRemap12ToneKeyboard = constexprHash("settings::midi::remap12tone");
-        static constexpr auto languageHelp = constexprHash("settings::language::help");
         static constexpr auto rendererOpengl = constexprHash("settings::renderer::opengl");
         static constexpr auto sync = constexprHash("settings::sync");
         static constexpr auto restartRequired = constexprHash("settings::restart");
@@ -316,8 +308,6 @@ namespace I18n
         static constexpr auto deltaTypeRemoved = constexprHash("vcs::delta::type::removed");
         static constexpr auto historyCaption = constexprHash("vcs::history::caption");
         static constexpr auto stageCaption = constexprHash("vcs::stage::caption");
-        static constexpr auto syncDone = constexprHash("vcs::sync::done");
-        static constexpr auto syncUptodate = constexprHash("vcs::sync::uptodate");
 
         static constexpr auto warningCannotCommit = constexprHash("vcs::warning::cannotcommit");
         static constexpr auto warningCannotReset = constexprHash("vcs::warning::cannotreset");

@@ -21,38 +21,6 @@
 #include "ColourIDs.h"
 #include "IconComponent.h"
 
-class TranslationSettingsItemSelection final : public Component
-{
-public:
-
-    TranslationSettingsItemSelection()
-    {
-        this->setPaintingIsUnclipped(true);
-
-        this->iconComponent = make<IconComponent>(Icons::apply);
-        this->addAndMakeVisible(this->iconComponent.get());
-        this->iconComponent->setIconAlphaMultiplier(0.6f);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
-        g.fillRoundedRectangle(40.f, 2.f, float(this->getWidth() - 45), float(this->getHeight() - 5), 2.f);
-    }
-
-    void resized() override
-    {
-        constexpr auto size = 24;
-        this->iconComponent->setBounds(6, (this->getHeight() / 2) - (size / 2) - 1, size, size);
-    }
-
-private:
-
-    UniquePointer<IconComponent> iconComponent;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationSettingsItemSelection)
-};
-
 class TranslationSettingsItemHighlighter final : public Component
 {
 public:
@@ -73,7 +41,42 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationSettingsItemHighlighter)
 };
 
-TranslationSettingsItem::TranslationSettingsItem(ListBox &parentListBox) : DraggingListBoxComponent(parentListBox.getViewport())
+class TranslationSettingsItemSelection final : public Component
+{
+public:
+
+    TranslationSettingsItemSelection()
+    {
+        this->setPaintingIsUnclipped(true);
+
+        this->iconComponent = make<IconComponent>(Icons::apply);
+        this->addAndMakeVisible(this->iconComponent.get());
+        this->iconComponent->setIconAlphaMultiplier(0.7f);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
+        g.fillRoundedRectangle(40.f, 2.f,
+            float(this->getWidth() - 45), float(this->getHeight() - 5), 2.f);
+    }
+
+    void resized() override
+    {
+        constexpr auto size = 28;
+        this->iconComponent->setBounds(3,
+            (this->getHeight() / 2) - (size / 2) - 1, size, size);
+    }
+
+private:
+
+    UniquePointer<IconComponent> iconComponent;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationSettingsItemSelection)
+};
+
+TranslationSettingsItem::TranslationSettingsItem(ListBox &parentListBox) :
+    DraggingListBoxComponent(parentListBox.getViewport())
 {
     this->localeLabel = make<Label>();
     this->addAndMakeVisible(this->localeLabel.get());
@@ -96,13 +99,13 @@ TranslationSettingsItem::~TranslationSettingsItem() = default;
 
 void TranslationSettingsItem::resized()
 {
-    constexpr auto leftMargin = 48;
-    constexpr auto rightMargin = 16;
+    constexpr auto leftMargin = 42;
+    constexpr auto rightMargin = 10;
     constexpr auto idLabelSize = 100;
 
     this->localeLabel->setBounds(leftMargin, 0, this->getWidth() - leftMargin, this->getHeight() - 2);
     this->idLabel->setBounds(this->getWidth() - (idLabelSize + rightMargin), 0, idLabelSize, this->getHeight() - 2);
-    this->separator->setBounds(leftMargin + 8, this->getHeight() - 2, this->getWidth() - (leftMargin + 16), 2);
+    this->separator->setBounds(leftMargin + 4, this->getHeight() - 2, this->getWidth() - leftMargin - 8, 2);
 
     this->selectionComponent->setBounds(this->getLocalBounds());
 }

@@ -18,11 +18,10 @@
 #pragma once
 
 #include "ColourScheme.h"
-#include "MobileComboBox.h"
 
 class ThemeSettings final : public Component,
-                            public ListBoxModel,
-                            private ChangeListener
+    public ListBoxModel,
+    private ChangeListener
 {
 public:
 
@@ -48,6 +47,9 @@ private:
     static constexpr auto rowHeight = 57;
 #endif
 
+    static constexpr auto horizontalContentMargin = 8;
+    static constexpr auto verticalContentMargin = 4;
+
     //===------------------------------------------------------------------===//
     // ChangeListener
     //===------------------------------------------------------------------===//
@@ -57,7 +59,6 @@ private:
     Array<ColourScheme::Ptr> schemes;
     ColourScheme::Ptr currentScheme;
 
-    UniquePointer<MobileComboBox::Container> fontCombo;
     UniquePointer<ListBox> themesList;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThemeSettings)

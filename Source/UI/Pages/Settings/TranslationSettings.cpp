@@ -30,19 +30,11 @@ TranslationSettings::TranslationSettings()
     this->translationsList = make<ListBox>();
     this->addAndMakeVisible(this->translationsList.get());
 
-    this->helpButton = make<TextButton>();
-    this->addAndMakeVisible(this->helpButton.get());
-    this->helpButton->setButtonText(TRANS(I18n::Settings::languageHelp));
-    this->helpButton->onClick = []()
-    {
-        URL updateUrl(Routes::Web::baseURL + Routes::Web::translationsURL);
-        updateUrl.launchInDefaultBrowser();
-    };
-
     this->availableTranslations = App::Config().getTranslations()->getAll();
     this->currentTranslation = App::Config().getTranslations()->getCurrent();
 
-    this->setSize(600, 40 + this->availableTranslations.size() * TranslationSettings::rowHeight);
+    this->setSize(600, TranslationSettings::verticalContentMargin * 2 +
+        this->availableTranslations.size() * TranslationSettings::rowHeight);
 
     this->translationsList->setModel(this);
     this->translationsList->setRowHeight(TranslationSettings::rowHeight);
@@ -60,13 +52,9 @@ TranslationSettings::~TranslationSettings()
 
 void TranslationSettings::resized()
 {
-    constexpr auto helpButtonSize = 32;
-    this->translationsList->setBounds(this->getLocalBounds().withTrimmedBottom(helpButtonSize + 8));
- 
-    constexpr auto leftMargin = 48;
-    constexpr auto rightMargin = 16;
-    this->helpButton->setBounds(leftMargin, this->getHeight() - helpButtonSize - 2,
-        this->getWidth() - (leftMargin + rightMargin), helpButtonSize);
+    this->translationsList->setBounds(this->getLocalBounds()
+        .reduced(TranslationSettings::horizontalContentMargin,
+            TranslationSettings::verticalContentMargin));
 }
 
 void TranslationSettings::scrollToSelectedLocale()

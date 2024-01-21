@@ -74,29 +74,9 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->addAndMakeVisible(this->openGLRendererButton.get());
     this->openGLRendererButton->onClick = [this]()
     {
-        if (!this->openGLRendererButton->getToggleState())
-        {
-            App::Config().getUiFlags()->setOpenGlRendererEnabled(false);
-            this->updateButtons();
-            return;
-        }
-
-        this->openGLRendererButton->setToggleState(false, dontSendNotification);
-
-        auto dialog = ModalDialogConfirmation::Presets::confirmOpenGL();
-
-        dialog->onOk = [this]()
-        {
-            App::Config().getUiFlags()->setOpenGlRendererEnabled(true);
-            this->updateButtons();
-        };
-
-        dialog->onCancel = [this]()
-        {
-            this->updateButtons();
-        };
-
-        App::showModalComponent(move(dialog));
+        const auto newState = this->openGLRendererButton->getToggleState();
+        App::Config().getUiFlags()->setOpenGlRendererEnabled(newState);
+        this->updateButtons();
     };
     
     this->nativeTitleBarButton = make<ToggleButton>(TRANS(I18n::Settings::nativeTitleBar));

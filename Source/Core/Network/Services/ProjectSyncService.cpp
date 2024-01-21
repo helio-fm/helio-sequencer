@@ -105,8 +105,7 @@ RevisionsSyncThread *ProjectSyncService::prepareSyncRevisionsThread()
 
     thread->onSyncDone = [this](bool nothingToSync)
     {
-        const String message = nothingToSync ? TRANS(I18n::VCS::syncUptodate) : TRANS(I18n::VCS::syncDone);
-        App::Layout().showTooltip(message, MainLayout::TooltipIcon::Success);
+        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Success);
     };
 
     thread->onSyncFailed = [](const Array<String> &errors)

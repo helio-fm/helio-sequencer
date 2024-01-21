@@ -28,6 +28,7 @@ class ProjectNode;
 class KeySignaturesSequence;
 class SeparatorHorizontalFading;
 class PlayButton;
+class ScalePreviewThread;
 
 class KeySignatureDialog final : public DialogBase,
     public TextEditor::Listener,
@@ -91,7 +92,7 @@ private:
 
     void savePreset();
 
-    UniquePointer<Thread> scalePreviewThread;
+    UniquePointer<ScalePreviewThread> scalePreviewThread;
 
     UniquePointer<MobileComboBox::Container> presetsCombo;
     UniquePointer<Label> messageLabel;

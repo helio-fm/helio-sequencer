@@ -304,7 +304,7 @@ void ProjectPage::updateContent()
     const auto temperamentName = this->project.getProjectInfo()->getTemperament()->getName();
 
     this->projectTitleEditor->setText(fullname.isEmpty() ? "..." : fullname, dontSendNotification);
-    this->authorEditor->setText(author.isEmpty() ? TRANS(I18n::Page::projectDefaultAuthor) : author, dontSendNotification);
+    this->authorEditor->setText(author.isEmpty() ? "..." : author, dontSendNotification);
     this->descriptionEditor->setText(description.isEmpty() ? "..." : description, dontSendNotification);
     this->licenseEditor->setText(license.isEmpty() ? TRANS(I18n::Page::projectDefaultLicense) : license, dontSendNotification);
 

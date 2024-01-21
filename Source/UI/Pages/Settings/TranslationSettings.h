@@ -54,8 +54,10 @@ private:
     static constexpr auto rowHeight = 48;
 #endif
 
+    static constexpr auto horizontalContentMargin = 8;
+    static constexpr auto verticalContentMargin = 4;
+
     UniquePointer<ListBox> translationsList;
-    UniquePointer<TextButton> helpButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationSettings)
 };
