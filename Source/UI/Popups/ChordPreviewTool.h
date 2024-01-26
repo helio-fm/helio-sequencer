@@ -67,18 +67,21 @@ private:
     bool hasMadeChanges = false;
     void undoChangesIfAny();
 
+    const WeakReference<KeySignaturesSequence> harmonicContext;
+    const WeakReference<TimeSignaturesAggregator> timeContext;
+
     // detected on the fly as the user drags the tool around:
     int targetKey = 0;
     float targetBeat = 0;
     float barLengthInBeats = Globals::beatsPerBar;
-    Note::Key root;
-    Scale::Ptr scale;
 
-    WeakReference<KeySignaturesSequence> harmonicContext;
-    WeakReference<TimeSignaturesAggregator> timeContext;
+    const Scale::Ptr defaultScale = Scale::makeNaturalMajorScale();
+    Scale::Ptr scale;
+    String scaleRootKeyName;
+    int scaleRootKey = 0;
+
     bool detectKeyBeatAndContext();
 
-    Scale::Ptr defaultScale;
     Array<Chord::Ptr> defaultChords;
 
     OwnedArray<PopupCustomButton> chordButtons;

@@ -21,30 +21,65 @@ class PianoRoll;
 class NoteNameGuide;
 class Lasso;
 
+#include "RollListener.h"
 #include "Temperament.h"
+#include "Scale.h"
+#include "Note.h"
 
-class NoteNameGuidesBar final : public Component, private ChangeListener
+class NoteNameGuidesBar final : public Component,
+    public RollListener,
+    public AsyncUpdater,
+    private ChangeListener // listens to roll's selection
 {
 public:
 
-    explicit NoteNameGuidesBar(PianoRoll &roll);
+    NoteNameGuidesBar(PianoRoll &roll, WeakReference<MidiTrack> keySignatures);
     ~NoteNameGuidesBar();
-    
-    void updatePosition();
-    void updateBounds();
 
-    void syncWithSelection(const Lasso *selection);
     void syncWithTemperament(Temperament::Ptr temperament);
+    void syncWithSelection(const Lasso *selection);
+
+    //===------------------------------------------------------------------===//
+    // RollListener
+    //===------------------------------------------------------------------===//
+
+    void onMidiRollMoved(RollBase *targetRoll) override;
+    void onMidiRollResized(RollBase *targetRoll) override;
+
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
+    void visibilityChanged() override;
 
 private:
 
     PianoRoll &roll;
+
     OwnedArray<NoteNameGuide> guides;
+
+    Temperament::Ptr temperament;
+
+    WeakReference<MidiTrack> keySignatures;
+
+    const Scale::Ptr defaultScale = Scale::makeNaturalMajorScale();
+    Scale::Ptr scale;
+    String scaleRootKeyName;
+    int scaleRootKey = 0;
+
+    Optional<float> selectionStartBeat;
+    FlatHashSet<Note::Key> selectedKeys;
 
     static constexpr auto defaultWidth = 36;
     static constexpr auto extendedWidth = 48;
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoteNameGuidesBar)
+    void handleAsyncUpdate() override;
+
+    void updatePosition();
+    void updateBounds();
+    void updateContent();
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteNameGuidesBar)
 };

@@ -38,6 +38,7 @@ protected:
 
     Rectangle<int> getContentBounds(bool noPadding = false) const noexcept;
     Rectangle<int> getCaptionBounds() const noexcept;
+    Rectangle<int> getContentWithoutCaptionBounds() const noexcept;
     Rectangle<int> getRowBounds(float proportionOfHeight, int height, int xPadding = 0) const noexcept;
     Rectangle<int> getButtonsBounds() const noexcept;
     Rectangle<int> getButton1Bounds() const noexcept;
@@ -103,5 +104,5 @@ private:
     ComponentDragger dragger;
     UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DialogBase)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DialogBase)
 };

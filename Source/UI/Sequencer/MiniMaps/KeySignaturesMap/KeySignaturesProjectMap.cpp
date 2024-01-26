@@ -424,7 +424,7 @@ KeySignatureComponent *KeySignaturesProjectMap::createComponent(const KeySignatu
     }
 }
 
-const StringArray &KeySignaturesProjectMap::getProjectKeyNames() const noexcept
+const Temperament::Period &KeySignaturesProjectMap::getProjectKeyNames() const noexcept
 {
     return this->project.getProjectInfo()->getTemperament()->getPeriod();
 }

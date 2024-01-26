@@ -21,20 +21,22 @@
 #include "NoteComponent.h"
 #include "PianoRoll.h"
 
-NoteNameGuidesBar::NoteNameGuidesBar(PianoRoll &roll) : roll(roll)
+NoteNameGuidesBar::NoteNameGuidesBar(PianoRoll &roll, WeakReference<MidiTrack> keySignatures) :
+    roll(roll),
+    keySignatures(keySignatures)
 {
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
 
-    this->setSize(NoteNameGuidesBar::defaultWidth, 32);
-
+    this->roll.addRollListener(this);
     this->roll.getLassoSelection().addChangeListener(this);
 }
 
 NoteNameGuidesBar::~NoteNameGuidesBar()
 {
     this->roll.getLassoSelection().removeChangeListener(this);
+    this->roll.removeRollListener(this);
 
     this->removeAllChildren();
     this->guides.clear(true);
@@ -44,7 +46,6 @@ void NoteNameGuidesBar::updateBounds()
 {
     this->setBounds(this->roll.getViewport().getViewPositionX(),
         0, this->getWidth(), this->roll.getHeight());
-
 
     for (auto *c : this->guides)
     {
@@ -63,42 +64,98 @@ void NoteNameGuidesBar::updatePosition()
     }
 }
 
-void NoteNameGuidesBar::syncWithSelection(const Lasso *selection)
+void NoteNameGuidesBar::updateContent()
 {
-    const bool wasVisible = this->isVisible();
-    this->setVisible(false);
+    if (!this->isVisible() ||
+        this->temperament == nullptr)
+    {
+        return;
+    }
 
-    const bool showsRootKeys = (selection->getNumSelected() <= 1);
-    const auto periodSize = this->roll.getPeriodSize();
+    const auto absBeat = this->selectionStartBeat.orFallback(
+        this->roll.getBeatByXPosition(float(this->roll.getViewport().getViewPositionX())));
+
+    if (!SequencerOperations::findHarmonicContext(absBeat, absBeat, this->keySignatures,
+        this->scale, this->scaleRootKey, this->scaleRootKeyName))
+    {
+        this->scale = this->defaultScale;
+        this->scaleRootKey = 0;
+        this->scaleRootKeyName = {};
+    }
+
+    const bool shouldShowsRootKeys = this->selectedKeys.size() <= 1;
 
     for (auto *c : this->guides)
     {
-        c->setVisible(showsRootKeys && c->isRootKey(periodSize));
+        const auto shouldBeVisible = shouldShowsRootKeys &&
+            c->isRootKey(this->scaleRootKey, this->roll.getPeriodSize());
+
+        if (shouldBeVisible)
+        {
+            c->setNoteName(temperament->getMidiNoteName(c->getNoteNumber(),
+                this->scaleRootKey, this->scaleRootKeyName, true));
+        }
+
+        c->setVisible(shouldBeVisible);
     }
 
-    for (const auto *e : *selection)
+    for (const auto &key : this->selectedKeys)
     {
-        // assuming we've subscribed only on a piano roll's lasso changes
-        const auto *nc = static_cast<const NoteComponent *>(e);
-        const auto key = jlimit(0, this->roll.getNumKeys(),
-            nc->getNote().getKey() + nc->getClip().getKey());
+        const auto noteName = temperament->getMidiNoteName(key,
+            this->scaleRootKey, this->scaleRootKeyName, true);
 
         if (key <= this->guides.size() - 1)
         {
+            this->guides.getUnchecked(key)->setNoteName(noteName);
             this->guides.getUnchecked(key)->setVisible(true);
         }
     }
-
-    this->setVisible(wasVisible);
 }
 
-void NoteNameGuidesBar::syncWithTemperament(Temperament::Ptr temperament)
+void NoteNameGuidesBar::syncWithSelection(const Lasso *selection)
 {
-    this->removeAllChildren();
-    this->guides.clearQuick(true);
-    const auto periodSize = temperament->getPeriodSize();
+    if (selection->getNumSelected() == 0)
+    {
+        this->selectedKeys.clear();
+        this->selectionStartBeat.reset();
+    }
+    else
+    {
+        this->selectedKeys.clear();
+        this->selectionStartBeat = FLT_MAX;
+        for (const auto *e : *selection)
+        {
+            // assuming we've subscribed on a piano roll's lasso changes
+            jassert(dynamic_cast<const NoteComponent *>(e));
+            const auto *nc = static_cast<const NoteComponent *>(e);
 
-    if (periodSize > Globals::twelveTonePeriodSize)
+            this->selectionStartBeat = jmin(*this->selectionStartBeat,
+                nc->getNote().getBeat() + nc->getClip().getBeat());
+
+            this->selectedKeys.insert(jlimit(0, this->roll.getNumKeys(),
+                nc->getNote().getKey() + nc->getClip().getKey()));
+        }
+    }
+
+    if (this->isVisible())
+    {
+        this->toFront(false);
+    }
+
+    this->updateContent();
+}
+
+void NoteNameGuidesBar::syncWithTemperament(Temperament::Ptr newTemperament)
+{
+    if (this->temperament == newTemperament)
+    {
+        return;
+    }
+
+    this->removeAllChildren();
+    this->temperament = newTemperament;
+
+    if (temperament->getPeriodSize() > Globals::twelveTonePeriodSize)
     {
         // add more width for longer note names:
         this->setSize(NoteNameGuidesBar::extendedWidth, this->getHeight());
@@ -108,20 +165,82 @@ void NoteNameGuidesBar::syncWithTemperament(Temperament::Ptr temperament)
         this->setSize(NoteNameGuidesBar::defaultWidth, this->getHeight());
     }
 
+    this->guides.clearQuick(true);
     for (int i = 0; i < temperament->getNumKeys(); ++i)
     {
-        const auto noteName = temperament->getMidiNoteName(i, true);
-        auto *guide = this->guides.add(new NoteNameGuide(noteName, i));
+        auto *guide = this->guides.add(new NoteNameGuide(i));
         this->addChildComponent(guide);
-        guide->setVisible(guide->isRootKey(periodSize));
     }
 
     this->updateBounds();
+    this->triggerAsyncUpdate();
 }
+
+//===----------------------------------------------------------------------===//
+// ChangeListener
+//===----------------------------------------------------------------------===//
 
 void NoteNameGuidesBar::changeListenerCallback(ChangeBroadcaster *source)
 {
     jassert(dynamic_cast<Lasso *>(source));
     const auto *selection = static_cast<const Lasso *>(source);
     this->syncWithSelection(selection);
+}
+
+//===----------------------------------------------------------------------===//
+// RollListener
+//===----------------------------------------------------------------------===//
+
+void NoteNameGuidesBar::onMidiRollMoved(RollBase *targetRoll)
+{
+    if (!this->isVisible())
+    {
+        return;
+    }
+
+    // reposition immediately, but update content asynchronously
+    this->updatePosition();
+    this->triggerAsyncUpdate();
+}
+
+void NoteNameGuidesBar::onMidiRollResized(RollBase *targetRoll)
+{
+    if (!this->isVisible())
+    {
+        return;
+    }
+
+    // reposition immediately, but update content asynchronously
+    this->updateBounds();
+    this->triggerAsyncUpdate();
+}
+
+//===----------------------------------------------------------------------===//
+// Component
+//===----------------------------------------------------------------------===//
+
+void NoteNameGuidesBar::visibilityChanged()
+{
+    if (!this->isVisible() ||
+        this->getParentComponent() == nullptr)
+    {
+        return;
+    }
+
+    this->updateBounds();
+    this->updateContent();
+
+    this->toFront(false);
+}
+
+//===----------------------------------------------------------------------===//
+// AsyncUpdater
+//===----------------------------------------------------------------------===//
+
+void NoteNameGuidesBar::handleAsyncUpdate()
+{
+    if (this->isVisible())
+    {
+        this->updateContent();
+    }
 }

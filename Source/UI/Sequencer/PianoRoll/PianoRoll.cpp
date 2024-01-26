@@ -91,11 +91,10 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
 
     const auto *uiFlags = App::Config().getUiFlags();
     this->scalesHighlightingEnabled = uiFlags->isScalesHighlightingEnabled();
-    const bool noteNameGuidesEnabled = uiFlags->isNoteNameGuidesEnabled();
 
-    this->noteNameGuides = make<NoteNameGuidesBar>(*this);
+    this->noteNameGuides = make<NoteNameGuidesBar>(*this, project.getTimeline()->getKeySignatures());
     this->addChildComponent(this->noteNameGuides.get());
-    this->noteNameGuides->setVisible(noteNameGuidesEnabled);
+    this->noteNameGuides->setVisible(uiFlags->areNoteNameGuidesEnabled());
 }
 
 PianoRoll::~PianoRoll() = default;
@@ -572,6 +571,7 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
             this->removeBackgroundCacheFor(oldKey);
             this->updateBackgroundCacheFor(newKey);
         }
+        this->noteNameGuides->triggerAsyncUpdate(); // possibly update key names
         this->repaint();
     }
 
@@ -623,6 +623,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
         // Repainting background caches on the fly may be costly
         const auto &key = static_cast<const KeySignatureEvent &>(event);
         this->updateBackgroundCacheFor(key);
+        this->noteNameGuides->triggerAsyncUpdate(); // possibly update key names
         this->repaint();
     }
 
@@ -655,6 +656,7 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
     {
         const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(event);
         this->removeBackgroundCacheFor(key);
+        this->noteNameGuides->triggerAsyncUpdate(); // possibly update key names
         this->repaint();
     }
 
@@ -1302,8 +1304,9 @@ void PianoRoll::handleCommandMessage(int commandId)
         {
             Scale::Ptr scale = nullptr;
             Note::Key scaleRootKey = 0;
+            String scaleRootKeyName;
             if (!SequencerOperations::findHarmonicContext(this->selection, this->activeClip,
-                this->project.getTimeline()->getKeySignatures(), scale, scaleRootKey))
+                this->project.getTimeline()->getKeySignatures(), scale, scaleRootKey, scaleRootKeyName))
             {
                 jassertfalse;
                 break;
@@ -1874,11 +1877,6 @@ void PianoRoll::updateChildrenBounds()
     }
 #endif
 
-    if (this->noteNameGuides->isVisible())
-    {
-        this->noteNameGuides->updateBounds();
-    }
-
     RollBase::updateChildrenBounds();
 }
 
@@ -1895,11 +1893,6 @@ void PianoRoll::updateChildrenPositions()
         this->noteResizerRight->updateTopPosition();
     }
 #endif
-
-    if (this->noteNameGuides->isVisible())
-    {
-        this->noteNameGuides->updatePosition();
-    }
 
     RollBase::updateChildrenPositions();
 }
@@ -2100,7 +2093,5 @@ void PianoRoll::onScalesHighlightingFlagChanged(bool enabled)
 void PianoRoll::onNoteNameGuidesFlagChanged(bool enabled)
 {
     this->noteNameGuides->setVisible(enabled);
-    this->noteNameGuides->toFront(false);
-    this->updateChildrenBounds();
     this->repaint();
 }

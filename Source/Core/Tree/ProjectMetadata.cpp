@@ -30,7 +30,7 @@ ProjectMetadata::ProjectMetadata(ProjectNode &parent) : project(parent)
     this->license = "Copyright";
     this->author = SystemStats::getFullUserName();
     this->description = "";
-    this->temperament = Temperament::getTwelveToneEqualTemperament();
+    this->temperament = Temperament::makeTwelveToneEqualTemperament();
 
     this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectLicense));
     this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectTitle));
@@ -195,7 +195,7 @@ void ProjectMetadata::resetStateTo(const TrackedItem &newState)
     using namespace Serialization::VCS;
 
     // first, reset default state for the new delta, which may be missing in base:
-    this->temperament = Temperament::getTwelveToneEqualTemperament();
+    this->temperament = Temperament::makeTwelveToneEqualTemperament();
 
     for (int i = 0; i < newState.getNumDeltas(); ++i)
     {
@@ -242,6 +242,8 @@ SerializedData ProjectMetadata::serialize() const
     tree.setProperty(ProjectInfoDeltas::projectAuthor, this->getAuthor());
     tree.setProperty(ProjectInfoDeltas::projectDescription, this->getDescription());
 
+    // for convenience this will be used as a reference
+    // to existing temperament model or as a fallback
     tree.appendChild(this->temperament->serialize());
 
     return tree;
@@ -273,7 +275,7 @@ void ProjectMetadata::deserialize(const SerializedData &data)
     else
     {
         // do we really need to fallback to the default one here?
-        this->temperament = Temperament::getTwelveToneEqualTemperament();
+        this->temperament = Temperament::makeTwelveToneEqualTemperament();
     }
 
     this->project.broadcastChangeProjectInfo(this);
@@ -376,14 +378,14 @@ void ProjectMetadata::resetTemperamentDelta(const SerializedData &state)
     }
     else
     {
-        this->temperament = Temperament::getTwelveToneEqualTemperament();
+        this->temperament = Temperament::makeTwelveToneEqualTemperament();
     }
 }
 
 void ProjectMetadata::deserializeTemperament(const SerializedData &state)
 {
-    // we'll be using the serialized temperament description as a fallback,
-    // if such temperament doesn't exist anymore in the global config,
+    // using the serialized temperament description as a fallback,
+    // if such temperament no longer exists in the global config,
     // but if it does, we'll take the one from the config:
     this->temperament->deserialize(state);
     const auto temperamentId = this->temperament->getResourceId();

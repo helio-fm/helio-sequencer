@@ -106,8 +106,10 @@ static inline const Temperament::Period &getPeriod(ProjectNode &project)
     return project.getProjectInfo()->getTemperament()->getPeriod();
 }
 
-KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequence *keySequence,
-    const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat) :
+KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
+    KeySignaturesSequence *keySequence,
+    const KeySignatureEvent &editedEvent,
+    bool shouldAddNewEvent, float targetBeat) :
     transport(project.getTransport()),
     originalEvent(editedEvent),
     originalSequence(keySequence),
@@ -150,7 +152,9 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
         }
     };
 
-    this->keySelector = make<KeySelector>(getPeriod(project));
+    const auto &period = getPeriod(project);
+
+    this->keySelector = make<KeySelector>(period);
     this->addAndMakeVisible(this->keySelector.get());
 
     this->separator = make<SeparatorHorizontalFading>();
@@ -189,12 +193,16 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     {
         Random r;
         const auto i = r.nextInt(this->scales.size());
-        this->rootKey = 0;
+
         this->scale = this->scales[i];
+        this->rootKey = 0;
+        this->rootKeyName = period.getFirst()[0];
+
         this->scaleEditor->setScale(this->scale);
-        this->keySelector->setSelectedKey(this->rootKey);
+        this->keySelector->setSelectedKey(this->rootKey, this->rootKeyName);
         this->scaleNameEditor->setText(this->scale->getLocalizedName());
-        this->originalEvent = KeySignatureEvent(this->originalSequence, this->scale, targetBeat, this->rootKey);
+        this->originalEvent = KeySignatureEvent(this->originalSequence,
+            this->scale, targetBeat, this->rootKey, this->rootKeyName);
 
         this->originalSequence->checkpoint();
         this->originalSequence->insert(this->originalEvent, true);
@@ -205,10 +213,16 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
     }
     else
     {
-        this->rootKey = this->originalEvent.getRootKey();
         this->scale = this->originalEvent.getScale();
+        this->rootKey = this->originalEvent.getRootKey();
+        this->rootKeyName = this->originalEvent.getRootKeyName();
+        if (this->rootKeyName.isEmpty())
+        {
+            this->rootKeyName = period[this->rootKey][0];
+        }
+
         this->scaleEditor->setScale(this->scale);
-        this->keySelector->setSelectedKey(this->rootKey);
+        this->keySelector->setSelectedKey(this->rootKey, this->rootKeyName);
         this->scaleNameEditor->setText(this->scale->getLocalizedName(), dontSendNotification);
 
         this->messageLabel->setText(TRANS(I18n::Dialog::keySignatureEditCaption), dontSendNotification);
@@ -222,11 +236,8 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project, KeySignaturesSequen
 
     this->messageLabel->setInterceptsMouseClicks(false, false);
 
-    static constexpr auto keyButtonSize = 34;
-    const auto periodSize = getPeriod(project).size();
-
-    this->setSize(this->getHorizontalSpacingExceptContent() + keyButtonSize * periodSize,
-        isPhoneLayout ? DialogBase::Defaults::Phone::maxDialogHeight : 240);
+    this->setSize(this->getHorizontalSpacingExceptContent() + this->keySelector->getWidth(),
+        (isPhoneLayout ? 110 : 210) + this->keySelector->getHeight());
 
     this->updatePosition();
     this->updateButtonsState();
@@ -252,21 +263,35 @@ void KeySignatureDialog::resized()
     this->okButton->setBounds(this->getButton1Bounds());
     this->removeEventButton->setBounds(this->getButton2Bounds());
 
-    this->keySelector->setBounds(this->getRowBounds(0.17f, DialogBase::Defaults::textEditorHeight));
-    this->separator->setBounds(this->getRowBounds(0.34f, 4));
+    static const auto margin = App::isRunningOnPhone() ? 3 : 4;
 
-    this->scaleEditor->setBounds(this->getRowBounds(0.5f, DialogBase::Defaults::textEditorHeight));
+    auto contentBounds = this->getContentWithoutCaptionBounds();
 
-    static constexpr auto scaleEditorMargin = 4;
-    static constexpr auto scaleHelperButtonWidth = 36;
-    static constexpr auto scaleHelperButtonHeight = 32;
-    const auto scaleEditorRow = this->getRowBounds(0.825f, DialogBase::Defaults::textEditorHeight, scaleEditorMargin);
-    this->scaleNameEditor->setBounds(scaleEditorRow.withTrimmedRight((scaleHelperButtonWidth + scaleEditorMargin) * 2));
+    contentBounds.removeFromTop(margin);
+    this->keySelector->setBounds(contentBounds.removeFromTop(this->keySelector->getHeight()));
 
-    const auto buttonsRow = this->getRowBounds(0.825f, scaleHelperButtonHeight, scaleEditorMargin);
-    auto buttonsArea = buttonsRow.withTrimmedLeft(this->scaleNameEditor->getWidth());
-    this->playButton->setBounds(buttonsArea.removeFromRight(scaleHelperButtonWidth));
-    this->savePresetButton->setBounds(buttonsArea.removeFromRight(scaleHelperButtonWidth).withSizeKeepingCentre(20, 20));
+    contentBounds.removeFromTop(margin * 2);
+    this->separator->setBounds(contentBounds.removeFromTop(2));
+
+    contentBounds.removeFromTop(margin * 2);
+    this->scaleEditor->setBounds(contentBounds.removeFromTop(DialogBase::Defaults::textEditorHeight));
+
+    contentBounds.removeFromTop(margin * 3);
+    auto scaleEditorRow = contentBounds.removeFromTop(DialogBase::Defaults::textEditorHeight);
+
+    static constexpr auto buttonWidth = 34;
+    static constexpr auto buttonsRowWidth = buttonWidth * 2;
+    static constexpr auto buttonsRowHeight = 32;
+    auto buttonsArea = scaleEditorRow.removeFromRight(buttonsRowWidth)
+        .withSizeKeepingCentre(buttonsRowWidth, buttonsRowHeight);
+
+    this->scaleNameEditor->setBounds(scaleEditorRow
+        .withTrimmedLeft(margin).withTrimmedRight(margin));
+
+    this->playButton->setBounds(buttonsArea.removeFromRight(buttonWidth));
+    this->savePresetButton->setBounds(buttonsArea
+        .removeFromRight(buttonWidth)
+        .withSizeKeepingCentre(20, 20));
 }
 
 void KeySignatureDialog::parentHierarchyChanged()
@@ -294,7 +319,7 @@ void KeySignatureDialog::handleCommandMessage(int commandId)
         const auto temperament =
             this->project.getProjectInfo()->getTemperament();
 
-        // scale preview: simply play it forward and backward
+        // ascending and descending scale preview
         auto scaleKeys = this->scale->getUpScale();
         scaleKeys.addArray(this->scale->getDownScale());
         for (int i = 0; i < scaleKeys.size(); ++i)
@@ -340,7 +365,8 @@ void KeySignatureDialog::handleCommandMessage(int commandId)
 
             this->scaleNameEditor->setText(this->scale->getLocalizedName(), false);
             const auto newEvent = this->originalEvent
-                .withRootKey(this->rootKey).withScale(this->scale);
+                .withRootKey(this->rootKey, this->rootKeyName)
+                .withScale(this->scale);
 
             this->sendEventChange(newEvent);
             this->updateButtonsState();
@@ -499,19 +525,21 @@ void KeySignatureDialog::previewNote(int keyRelative) const
 // KeySelector::Listener
 //===----------------------------------------------------------------------===//
 
-void KeySignatureDialog::onKeyChanged(int key)
+void KeySignatureDialog::onKeyChanged(int key, const String &keyName)
 {
-    if (this->rootKey != key)
+    if (this->rootKey != key || this->rootKeyName != keyName)
     {
         this->rootKey = key;
+        this->rootKeyName = keyName;
         const auto newEvent = this->originalEvent
-            .withRootKey(key).withScale(this->scale);
+            .withRootKey(key, keyName)
+            .withScale(this->scale);
 
         this->sendEventChange(newEvent);
     }
 }
 
-void KeySignatureDialog::onRootKeyPreview(int key)
+void KeySignatureDialog::onKeyPreview(int key)
 {
     this->previewNote(key);
 }
@@ -540,7 +568,8 @@ void KeySignatureDialog::onScaleChanged(const Scale::Ptr scale)
         }
 
         const auto newEvent = this->originalEvent
-            .withRootKey(this->rootKey).withScale(this->scale);
+            .withRootKey(this->rootKey, this->rootKeyName)
+            .withScale(this->scale);
 
         this->sendEventChange(newEvent);
         this->updateButtonsState();
@@ -561,7 +590,8 @@ void KeySignatureDialog::textEditorTextChanged(TextEditor &ed)
     this->scale = this->scale->withName(this->scaleNameEditor->getText());
     this->scaleEditor->setScale(this->scale);
     const auto newEvent = this->originalEvent
-        .withRootKey(this->rootKey).withScale(scale);
+        .withRootKey(this->rootKey, this->rootKeyName)
+        .withScale(scale);
 
     this->sendEventChange(newEvent);
     this->updateButtonsState();

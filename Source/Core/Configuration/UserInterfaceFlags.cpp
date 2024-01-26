@@ -40,7 +40,7 @@ void UserInterfaceFlags::setScalesHighlightingEnabled(bool enabled)
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
-bool UserInterfaceFlags::isNoteNameGuidesEnabled() const noexcept
+bool UserInterfaceFlags::areNoteNameGuidesEnabled() const noexcept
 {
     return this->noteNameGuides;
 }

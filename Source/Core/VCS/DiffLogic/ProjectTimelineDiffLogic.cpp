@@ -957,12 +957,12 @@ Array<DeltaDiff> createKeySignaturesDiffs(const SerializedData &state, const Ser
     for (int i = 0; i < stateEvents.size(); ++i)
     {
         bool foundEventInChanges = false;
-        const KeySignatureEvent *stateEvent =
+        const auto *stateEvent =
             static_cast<KeySignatureEvent *>(stateEvents.getUnchecked(i));
 
         for (int j = 0; j < changesEvents.size(); ++j)
         {
-            const KeySignatureEvent *changesEvent =
+            const auto *changesEvent =
                 static_cast<KeySignatureEvent *>(changesEvents.getUnchecked(j));
 
             // state event was found in changes, add `changed` records
@@ -973,6 +973,7 @@ Array<DeltaDiff> createKeySignaturesDiffs(const SerializedData &state, const Ser
                 const bool eventHasChanged =
                     (stateEvent->getBeat() != changesEvent->getBeat() ||
                         stateEvent->getRootKey() != changesEvent->getRootKey() ||
+                        stateEvent->getRootKeyName() != changesEvent->getRootKeyName() ||
                         ! stateEvent->getScale()->isEquivalentTo(changesEvent->getScale()));
 
                 if (eventHasChanged)

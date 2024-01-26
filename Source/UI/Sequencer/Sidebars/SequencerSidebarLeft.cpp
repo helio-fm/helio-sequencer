@@ -69,7 +69,7 @@ SequencerSidebarLeft::SequencerSidebarLeft()
     const auto *uiFlags = App::Config().getUiFlags();
     this->miniMapVisible = uiFlags->isProjectMapInLargeMode();
     this->velocityMapVisible = uiFlags->isEditorPanelVisible();
-    this->noteNameGuidesEnabled = uiFlags->isNoteNameGuidesEnabled();
+    this->noteNameGuidesEnabled = uiFlags->areNoteNameGuidesEnabled();
     this->scalesHighlightingEnabled = uiFlags->isScalesHighlightingEnabled();
 
     this->recreateMenu();

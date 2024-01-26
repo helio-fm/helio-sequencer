@@ -29,12 +29,12 @@ public:
     struct Listener
     {
         virtual ~Listener() = default;
-        virtual void onKeyChanged(int key) = 0;
-        virtual void onRootKeyPreview(int key) = 0;
+        virtual void onKeyChanged(int key, const String &keyName) = 0;
+        virtual void onKeyPreview(int key) = 0;
     };
 
     void onRadioButtonClicked(const MouseEvent &e, RadioButton *button) override;
-    void setSelectedKey(int key);
+    void setSelectedKey(int key, const String &keyName);
 
     void resized() override;
 
@@ -45,7 +45,21 @@ private:
         return dynamic_cast<Listener *>(this->getParentComponent());
     }
 
-    OwnedArray<RadioButton> buttons;
+    struct KeyEnharmonics final
+    {
+        UniquePointer<RadioButton> mainKey;
+        UniquePointer<RadioButton> flatKey;
+        UniquePointer<RadioButton> sharpKey;
+    };
+
+    Array<KeyEnharmonics> buttons;
+
+    static constexpr auto buttonWidth = 34;
+    static constexpr auto mainRowHeight = 32;
+    static constexpr auto altRowHeight = 26;
+
+    bool hasFlatsRow = false;
+    bool hasSharpsRow = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeySelector)
 };

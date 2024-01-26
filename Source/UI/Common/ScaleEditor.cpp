@@ -90,7 +90,7 @@ void ScaleEditor::rebuildButtons()
 
     this->buttons.clearQuick(true);
 
-    const Colour buttonColour(findDefaultColour(ColourIDs::ColourButton::outline));
+    const auto buttonColour = findDefaultColour(ColourIDs::ColourButton::outline);
 
     for (int i = 0; i < this->scale->getBasePeriod(); ++i)
     {

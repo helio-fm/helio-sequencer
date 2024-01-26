@@ -44,7 +44,7 @@ static void setupMidiInputPreviewFor(Instrument *instrument)
     {
         if (auto *synth = dynamic_cast<DefaultSynthAudioPlugin *>(mainNode->getProcessor()))
         {
-            synth->setTemperament(Temperament::getTwelveToneEqualTemperament());
+            synth->setTemperament(Temperament::makeTwelveToneEqualTemperament());
         }
     }
 

@@ -27,5 +27,5 @@ public:
     
     virtual void onMidiRollMoved(RollBase *targetRoll) = 0;
     virtual void onMidiRollResized(RollBase *targetRoll) = 0;
-    
+
 };

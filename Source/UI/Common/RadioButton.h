@@ -33,11 +33,12 @@ public:
     RadioButton(const String &text, Colour c, RadioButton::Listener *listener);
     ~RadioButton();
 
-    void deselect();
     void select();
+    void deselect();
 
     bool isSelected() const noexcept;
     Colour getColour() const noexcept;
+    const String &getButtonName() const noexcept;
 
     int getButtonIndex() const noexcept;
     void setButtonIndex(int val);
@@ -51,11 +52,16 @@ private:
     Component *createHighlighterComponent() override;
 
     int index = 0;
+    String name;
+    Colour colour;
+
     bool selected = false;
 
-    Colour colour;
+    const Colour outlineColour;
+    const Colour fillColour;
+
     UniquePointer<Component> checkMark;
-    RadioButton::Listener *owner = nullptr;
+    RadioButton::Listener *const listener;
     ComponentFader fader;
     UniquePointer<Label> label;
 

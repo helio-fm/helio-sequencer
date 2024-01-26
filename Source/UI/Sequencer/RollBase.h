@@ -189,6 +189,7 @@ public:
 
     inline float getBeatByXPosition(float x) const noexcept
     {
+        jassert(this->beatWidth > 0.f);
         const float beatNumber = roundBeat(x / this->beatWidth + this->firstBeat);
         return jlimit(this->firstBeat, this->lastBeat, beatNumber);
     }

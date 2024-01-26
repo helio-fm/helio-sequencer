@@ -27,50 +27,37 @@ KeySignatureEvent::KeySignatureEvent() noexcept :
 KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) noexcept :
     MidiEvent(other),
     rootKey(other.rootKey),
+    rootKeyName(other.rootKeyName),
     scale(other.scale) {}
 
 KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
     Scale::Ptr scale,
-    float newBeat /*= 0.f*/,
-    Note::Key key /*= 60*/) noexcept :
+    float newBeat,
+    Note::Key key,
+    const String &keyName) noexcept :
     MidiEvent(owner, Type::KeySignature, newBeat),
+    scale(scale),
     rootKey(key),
-    scale(scale) {}
+    rootKeyName(keyName) {}
 
 KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
     const KeySignatureEvent &parametersToCopy) noexcept :
     MidiEvent(owner, parametersToCopy),
     rootKey(parametersToCopy.rootKey),
+    rootKeyName(parametersToCopy.rootKeyName),
     scale(parametersToCopy.scale) {}
-
-String KeySignatureEvent::toString(const StringArray &keyNames) const
-{
-    const int index = this->rootKey % this->scale->getBasePeriod();
-    return keyNames[index] + ", " + this->scale->getLocalizedName();
-}
 
 void KeySignatureEvent::exportMessages(MidiMessageSequence &outSequence,
     const Clip &clip, const KeyboardMapping &keyMap, double timeFactor) const noexcept
 {
-    // Basically, we can have any non-standard scale here:
+    // basically, we can have any non-standard scale here,
     // from "symmetrical nonatonic" or "chromatic permutated diatonic dorian"
-    // to any kind of madness a human mind can come up with.
-
-    // But in order to conform midi format, we need to fit it into a circle of fifths
-    // (which only represents a number of western major and minor scales),
-    // and we have to guess if our scale is major or minor,
-    // and then try to determine a number of flats or a number of sharps.
-
+    // to whatever the human mind can come up with. But in order to conform to MIDI format,
+    // we must fit it into a circle of fifths (which only represents a limited number
+    // of western major and minor scales), guess whether our scale is major or minor,
+    // and then attempt to determine the number of flats or sharps:
     const bool isMinor = this->scale->seemsMinor();
-
-    // Hard-coded number of flats and sharps for major and minor keys in a circle of fifths,
-    // where negative numbers represent flats and positive numbers represent sharps,
-    // and index is a root key, starting from C:
-    static const int majorCircle[] = {  0, 7,  2, -3, 4, -1, 6,  1, -4, 3, -2, 5 };
-    static const int minorCircle[] = { -3, 4, -1, -6, 1, -4, 3, -2, -7, 0, -5, 2 };
-    const int root = this->rootKey % Globals::twelveTonePeriodSize;
-    const int flatsOrSharps = isMinor ? minorCircle[root] : majorCircle[root];
-
+    const int flatsOrSharps = this->getNumFlatsSharps();
     MidiMessage event(MidiMessage::keySignatureMetaEvent(flatsOrSharps, isMinor));
     event.setTimeStamp((this->beat + clip.getBeat()) * timeFactor);
     outSequence.addEvent(event);
@@ -90,10 +77,11 @@ KeySignatureEvent KeySignatureEvent::withBeat(float newBeat) const noexcept
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::withRootKey(Note::Key key) const noexcept
+KeySignatureEvent KeySignatureEvent::withRootKey(Note::Key key, const String &keyName) const noexcept
 {
     KeySignatureEvent e(*this);
     e.rootKey = key;
+    e.rootKeyName = keyName;
     return e;
 }
 
@@ -127,9 +115,39 @@ Note::Key KeySignatureEvent::getRootKey() const noexcept
     return this->rootKey;
 }
 
+const String &KeySignatureEvent::getRootKeyName() const noexcept
+{
+    return this->rootKeyName;
+}
+
+String KeySignatureEvent::toString(const Temperament::Period &defaultKeyNames) const
+{
+    const auto keyName = this->rootKeyName.isEmpty() ?
+        defaultKeyNames[this->rootKey % this->scale->getBasePeriod()][0] :
+        this->rootKeyName;
+
+    return keyName + ", " + this->scale->getLocalizedName();
+}
+
 const Scale::Ptr KeySignatureEvent::getScale() const noexcept
 {
     return this->scale;
+}
+
+int KeySignatureEvent::getNumFlatsSharps() const
+{
+    if (this->scale->getBasePeriod() > Globals::twelveTonePeriodSize)
+    {
+        return 0;
+    }
+
+    // the hard-coded number of flats and sharps for major and minor keys
+    // in a circle of fifths, where negative numbers represent flats and positive
+    // numbers represent sharps, and index is a root key, starting from C:
+    static const int majorCircle[] = { 0, 7,  2, -3, 4, -1, 6,  1, -4, 3, -2, 5 };
+    static const int minorCircle[] = { -3, 4, -1, -6, 1, -4, 3, -2, -7, 0, -5, 2 };
+    const int root = this->rootKey % Globals::twelveTonePeriodSize;
+    return this->scale->seemsMinor() ? minorCircle[root] : majorCircle[root];
 }
 
 //===----------------------------------------------------------------------===//
@@ -142,6 +160,10 @@ SerializedData KeySignatureEvent::serialize() const
     SerializedData tree(Midi::keySignature);
     tree.setProperty(Midi::id, packId(this->id));
     tree.setProperty(Midi::key, this->rootKey);
+    if (this->rootKeyName.isNotEmpty())
+    {
+        tree.setProperty(Midi::keyName, this->rootKeyName);
+    }
     tree.setProperty(Midi::timestamp, int(this->beat * Globals::ticksPerBeat));
     tree.appendChild(this->scale->serialize());
     return tree;
@@ -157,6 +179,8 @@ void KeySignatureEvent::deserialize(const SerializedData &data)
 
     const int root = data.getProperty(Midi::key, 0);
     this->rootKey = root % this->scale->getBasePeriod();
+    this->rootKeyName = data.getProperty(Midi::keyName);
+
     this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
     this->id = unpackId(data.getProperty(Midi::id));
 }
@@ -164,6 +188,7 @@ void KeySignatureEvent::deserialize(const SerializedData &data)
 void KeySignatureEvent::reset() noexcept
 {
     this->rootKey = 0;
+    this->rootKeyName.clear();
 
     if (this->scale != nullptr)
     {
@@ -176,5 +201,6 @@ void KeySignatureEvent::applyChanges(const KeySignatureEvent &parameters) noexce
     jassert(this->id == parameters.id);
     this->beat = parameters.beat;
     this->rootKey = parameters.rootKey;
+    this->rootKeyName = parameters.rootKeyName;
     this->scale = parameters.scale;
 }

@@ -130,11 +130,14 @@ struct SequencerOperations final
         const Array<Scale::Ptr> &availableScales, bool shouldCheckpoint = true);
 
     static bool findHarmonicContext(const Lasso &selection, const Clip &clip,
-        WeakReference<MidiTrack> keySignatures, Scale::Ptr &outScale, Note::Key &outRootKey);
+        WeakReference<MidiTrack> keySignatures, Scale::Ptr &outScale,
+        Note::Key &outRootKey, String &outKeyName);
     static bool findHarmonicContext(float startBeat, float endBeat,
-        WeakReference<MidiTrack> keySignatures, Scale::Ptr &outScale, Note::Key &outRootKey);
+        WeakReference<MidiTrack> keySignatures, Scale::Ptr &outScale,
+        Note::Key &outRootKey, String &outKeyName);
     static bool findHarmonicContext(float startBeat, float endBeat,
-        WeakReference<KeySignaturesSequence> keySignatures, Scale::Ptr &outScale, Note::Key &outRootKey);
+        WeakReference<KeySignaturesSequence> keySignatures, Scale::Ptr &outScale,
+        Note::Key &outRootKey, String &outKeyName);
 
     static Array<Note> cutNotes(const Array<Note> &notes,
         const Array<float> &relativeCutBeats, bool shouldCheckpoint = true);

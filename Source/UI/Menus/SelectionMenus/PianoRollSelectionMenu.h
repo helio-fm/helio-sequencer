@@ -37,6 +37,7 @@ private:
     WeakReference<Lasso> lasso;
 
     Note::Key harmonicContextKey = -1;
+    String harmonicContextKeyName;
     Scale::Ptr harmonicContextScale = nullptr;
 
     MenuPanel::Menu createDefaultPanel();

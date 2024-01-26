@@ -1042,6 +1042,7 @@ bool SequencerOperations::arpeggiate(const Lasso &selection,
 
     Scale::Ptr scale = Scale::makeNaturalMajorScale();
     Note::Key scaleRootKey = 0;
+    String scaleRootKeyName;
 
     for (int i = 0; i < chords.size(); ++i)
     {
@@ -1053,7 +1054,7 @@ bool SequencerOperations::arpeggiate(const Lasso &selection,
         // (note: not using findHarmonicContext(chordStart, chordEnd..
         // to get one key signature even if the chord crosses several signatures)
         SequencerOperations::findHarmonicContext(chordStart, chordStart,
-            harmonicContext, scale, scaleRootKey);
+            harmonicContext, scale, scaleRootKey, scaleRootKeyName);
 
         while (1)
         {
@@ -1559,6 +1560,7 @@ void SequencerOperations::shiftInScaleKeyRelative(const Lasso &selection,
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
 
     Note::Key rootKey = 0;
+    String rootKeyName;
     Scale::Ptr scale = defaultScale;
 
     Array<Note> groupBefore, groupAfter;
@@ -1571,7 +1573,7 @@ void SequencerOperations::shiftInScaleKeyRelative(const Lasso &selection,
 
         if (keySignatures != nullptr)
         {
-            findHarmonicContext(absBeat, absBeat, keySignatures, scale, rootKey);
+            findHarmonicContext(absBeat, absBeat, keySignatures, scale, rootKey, rootKeyName);
         }
 
         // scale key calculations are always painful and hardly readable,
@@ -2280,7 +2282,7 @@ bool SequencerOperations::remapKeySignaturesToTemperament(KeySignaturesSequence 
             didCheckpoint = true;
         }
 
-        keySignatures->change(*signature, signature->withRootKey(newRootKey)
+        keySignatures->change(*signature, signature->withRootKey(newRootKey, {})
             .withScale(similarScale != nullptr ? similarScale : convertedScale), true);
 
         hasMadeChanges = true;
@@ -2293,7 +2295,7 @@ bool SequencerOperations::remapKeySignaturesToTemperament(KeySignaturesSequence 
 // If there's none, of if there's more than one, returns false.
 bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
     WeakReference<KeySignaturesSequence> keySignatures, Scale::Ptr &outScale,
-    Note::Key &outRootKeyModuloPeriod)
+    Note::Key &outRootKey, String &outKeyName)
 {
     jassert(keySignatures != nullptr);
 
@@ -2329,7 +2331,8 @@ bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
     {
         // We've found the only context that doesn't change within a sequence:
         outScale = context->getScale();
-        outRootKeyModuloPeriod = context->getRootKey();
+        outRootKey = context->getRootKey();
+        outKeyName = context->getRootKeyName();
         return true;
     }
 
@@ -2338,7 +2341,7 @@ bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
 
 bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
     WeakReference<MidiTrack> keysTrack, Scale::Ptr &outScale,
-    Note::Key &outRootKeyModuloPeriod)
+    Note::Key &outRootKey, String &outKeyName)
 {
     jassert(keysTrack != nullptr);
 
@@ -2346,18 +2349,18 @@ bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
         dynamic_cast<KeySignaturesSequence *>(keysTrack->getSequence()))
     {
         return SequencerOperations::findHarmonicContext(startBeat, endBeat,
-            keySignatures, outScale, outRootKeyModuloPeriod);
+            keySignatures, outScale, outRootKey, outKeyName);
     }
 
     return false;
 }
 
 bool SequencerOperations::findHarmonicContext(const Lasso &selection, const Clip &clip,
-    WeakReference<MidiTrack> keysTrack, Scale::Ptr &outScale, Note::Key &outRootKey)
+    WeakReference<MidiTrack> keysTrack, Scale::Ptr &outScale, Note::Key &outRootKey, String &outKeyName)
 {
     const auto startBeat = SequencerOperations::findStartBeat(selection) + clip.getBeat();
     const auto endBeat = SequencerOperations::findEndBeat(selection) + clip.getBeat();
-    return SequencerOperations::findHarmonicContext(startBeat, endBeat, keysTrack, outScale, outRootKey);
+    return SequencerOperations::findHarmonicContext(startBeat, endBeat, keysTrack, outScale, outRootKey, outKeyName);
 }
 
 void SequencerOperations::duplicateSelection(const Lasso &selection, bool shouldCheckpoint)

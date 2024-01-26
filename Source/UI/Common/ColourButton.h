@@ -62,5 +62,5 @@ private:
     ColourButton::Listener *owner = nullptr;
     ComponentFader fader;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ColourButton)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourButton)
 };

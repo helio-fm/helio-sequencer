@@ -55,8 +55,8 @@ public:
 
 private:
 
-    void onKeyChanged(int key) override;
-    void onRootKeyPreview(int key) override;
+    void onKeyChanged(int key, const String &keyName) override;
+    void onKeyPreview(int key) override;
 
     void onScaleChanged(const Scale::Ptr scale) override;
     void onScaleNotePreview(int key) override;
@@ -88,6 +88,7 @@ private:
     void removeEvent();
 
     int rootKey = 0;
+    String rootKeyName;
     Scale::Ptr scale;
 
     void savePreset();

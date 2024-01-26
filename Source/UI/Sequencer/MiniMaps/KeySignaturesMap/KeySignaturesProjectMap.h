@@ -21,6 +21,7 @@
 #include "KeySignatureEvent.h"
 #include "ProjectListener.h"
 #include "ProjectMapsScroller.h"
+#include "Temperament.h"
 
 class RollBase;
 class ProjectNode;
@@ -84,7 +85,7 @@ private:
     KeySignatureComponent *getPreviousEventComponent(int indexOfSorted) const;
     KeySignatureComponent *getNextEventComponent(int indexOfSorted) const;
 
-    const StringArray &getProjectKeyNames() const noexcept;
+    const Temperament::Period &getProjectKeyNames() const noexcept;
     
 private:
 

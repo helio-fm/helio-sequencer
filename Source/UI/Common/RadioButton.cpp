@@ -22,7 +22,9 @@ class RadioButtonFrame final : public Component
 {
 public:
 
-    explicit RadioButtonFrame(float alpha) : alpha(alpha)
+    explicit RadioButtonFrame(float alpha) : 
+        fillColour(findDefaultColour(Label::textColourId).withAlpha(alpha)),
+        outlineColour(findDefaultColour(Label::textColourId).withAlpha(alpha * 0.5f))
     {
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
@@ -36,12 +38,10 @@ public:
         const int x1 = 2;
         const int x2 = this->getWidth() - 2;
 
-        const Colour baseColour(findDefaultColour(Label::textColourId));
+        g.setColour(this->fillColour);
+        g.fillRect(x1, y1, x2 - x1 + 1, 4);
 
-        g.setColour(baseColour.withAlpha(this->alpha * 0.75f));
-        g.fillRect(x1, y1, x2 - x1 + 1, 5);
-
-        g.setColour(baseColour.withAlpha(this->alpha * 0.25f));
+        g.setColour(this->outlineColour);
         g.drawVerticalLine(x1 - 1, float(y1), float(y2 + 1));
         g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
         g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));
@@ -50,32 +50,31 @@ public:
 
 private:
 
-    float alpha = 0.f;
+    const Colour fillColour;
+    const Colour outlineColour;
 };
 
-RadioButton::RadioButton(const String &text, Colour c, RadioButton::Listener *listener) :
-    colour(c),
-    owner(listener)
+RadioButton::RadioButton(const String &text,
+    Colour colour, RadioButton::Listener *listener) :
+    name(text),
+    colour(colour),
+    listener(listener),
+    fillColour(colour.interpolatedWith(
+        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.1f)),
+    outlineColour(colour.interpolatedWith(
+        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.15f))
 {
-    this->label = make<Label>();
+    this->label = make<Label>(String(), text);
     this->addAndMakeVisible(this->label.get());
-
     this->label->setFont(Globals::UI::Fonts::M);
-    this->label->setText(text, dontSendNotification);
     this->label->setJustificationType(Justification::centred);
     this->label->setInterceptsMouseClicks(false, false);
 
-    this->checkMark = make<RadioButtonFrame>(1.f);
+    this->checkMark = make<RadioButtonFrame>(0.75f);
     this->addChildComponent(this->checkMark.get());
-
-    this->setSize(32, 32);
 }
 
-RadioButton::~RadioButton()
-{
-    this->checkMark = nullptr;
-    this->label = nullptr;
-}
+RadioButton::~RadioButton() = default;
 
 void RadioButton::paint(Graphics &g)
 {
@@ -84,14 +83,10 @@ void RadioButton::paint(Graphics &g)
     const int x1 = 2;
     const int x2 = this->getWidth() - 2;
 
-    const Colour baseColour(findDefaultColour(Label::textColourId));
+    g.setColour(this->fillColour);
+    g.fillRect(x1, y1, x2 - x1 + 1, 3);
 
-    // To avoid smoothed rectangles:
-    g.setColour(this->colour.interpolatedWith(baseColour, 0.25f).withAlpha(0.1f));
-    //g.fillRect(x1, y2 - 4, x2 - x1 + 1, 5);
-    g.fillRect(x1, y1, x2 - x1 + 1, 5);
-
-    g.setColour(this->colour.interpolatedWith(baseColour, 0.5f).withAlpha(0.1f));
+    g.setColour(this->outlineColour);
     g.drawVerticalLine(x1 - 1, float(y1), float(y2 + 1));
     g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
     g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));
@@ -125,12 +120,12 @@ void RadioButton::mouseDown(const MouseEvent &e)
         }
     }
 
-    this->owner->onRadioButtonClicked(e, this);
+    this->listener->onRadioButtonClicked(e, this);
 }
 
 Component *RadioButton::createHighlighterComponent()
 {
-    return new RadioButtonFrame(0.5f);
+    return new RadioButtonFrame(0.3f);
 }
 
 void RadioButton::select()
@@ -156,9 +151,14 @@ int RadioButton::getButtonIndex() const noexcept
     return this->index;
 }
 
-void RadioButton::setButtonIndex(int val)
+void RadioButton::setButtonIndex(int newIndex)
 {
-    this->index = val;
+    this->index = newIndex;
+}
+
+const String &RadioButton::getButtonName() const noexcept
+{
+    return this->name;
 }
 
 bool RadioButton::isSelected() const noexcept

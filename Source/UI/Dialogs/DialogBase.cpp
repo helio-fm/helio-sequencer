@@ -210,12 +210,17 @@ Rectangle<int> DialogBase::getButton2Bounds() const noexcept
         buttonsBounds.withTrimmedRight(buttonsBounds.getWidth() / 2 + 1);
 }
 
-Rectangle<int> DialogBase::getRowBounds(float proportionOfHeight, int height, int xPadding) const noexcept
+Rectangle<int> DialogBase::getContentWithoutCaptionBounds() const noexcept
 {
     const auto isPhoneLayout = App::isRunningOnPhone();
-    const auto area = this->getContentBounds().withTrimmedTop(isPhoneLayout ?
+    return this->getContentBounds().withTrimmedTop(isPhoneLayout ?
         DialogBase::Defaults::Phone::captionHeight :
-        DialogBase::Defaults::DesktopAndTablet::captionHeight).reduced(xPadding, 0);
+        DialogBase::Defaults::DesktopAndTablet::captionHeight);
+}
+
+Rectangle<int> DialogBase::getRowBounds(float proportionOfHeight, int height, int xPadding) const noexcept
+{
+    const auto area = this->getContentWithoutCaptionBounds().reduced(xPadding, 0);
     const auto y = area.proportionOfHeight(proportionOfHeight);
     return area.withHeight(height).translated(0, y - height / 2);
 }

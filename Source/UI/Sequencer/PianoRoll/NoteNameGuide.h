@@ -24,7 +24,7 @@ class NoteNameGuide final : public Component
 {
 public:
 
-    NoteNameGuide(const String &noteName, int noteNumber) : noteNumber(noteNumber)
+    explicit NoteNameGuide(int noteNumber) : noteNumber(noteNumber)
     {
         this->setPaintingIsUnclipped(true);
         this->setWantsKeyboardFocus(false);
@@ -34,9 +34,6 @@ public:
         this->addAndMakeVisible(this->noteNameLabel.get());
         this->noteNameLabel->setFont(Globals::UI::Fonts::S);
         this->noteNameLabel->setJustificationType(Justification::centredLeft);
-
-        this->noteNameLabel->setCachedComponentImage(new CachedLabelImage(*this->noteNameLabel));
-        this->noteNameLabel->setText(noteName, dontSendNotification);
     }
     
     inline int getNoteNumber() const noexcept
@@ -44,9 +41,19 @@ public:
         return this->noteNumber;
     }
 
-    inline bool isRootKey(int period) const noexcept
+    inline bool isRootKey(int scaleRootKey, int period) const noexcept
     {
-        return this->noteNumber % period == 0;
+        return (this->noteNumber - scaleRootKey) % period == 0;
+    }
+
+    void setNoteName(const String &name)
+    {
+        if (this->noteNameLabel->getText() == name)
+        {
+            return;
+        }
+
+        this->noteNameLabel->setText(name, dontSendNotification);
     }
 
     void paint(Graphics &g) override
@@ -63,20 +70,21 @@ public:
 
     void resized() override
     {
+        const auto h = float(this->getHeight());
         this->noteNameLabel->setBounds(1, (this->getHeight() / 2) - 10, 45, 21);
 
         this->internalPath1.clear();
-        this->internalPath1.startNewSubPath (3.f, 1.f);
-        this->internalPath1.lineTo(30.f, 1.f);
-        this->internalPath1.lineTo(34.f, static_cast<float> (this->getHeight()));
-        this->internalPath1.lineTo(3.f, static_cast<float> (this->getHeight()));
+        this->internalPath1.startNewSubPath(3.f, 1.f);
+        this->internalPath1.lineTo(31.f, 1.f);
+        this->internalPath1.lineTo(34.f, h);
+        this->internalPath1.lineTo(3.f, h);
         this->internalPath1.closeSubPath();
 
         this->internalPath2.clear();
         this->internalPath2.startNewSubPath(0.f, 1.f);
-        this->internalPath2.lineTo(29.f, 1.f);
-        this->internalPath2.lineTo(33.f, static_cast<float>(this->getHeight()));
-        this->internalPath2.lineTo(0.f, static_cast<float>(this->getHeight()));
+        this->internalPath2.lineTo(30.f, 1.f);
+        this->internalPath2.lineTo(33.f, h);
+        this->internalPath2.lineTo(0.f, h);
         this->internalPath2.closeSubPath();
     }
 
@@ -89,6 +97,7 @@ private:
     const Colour shadowColour = findDefaultColour(ColourIDs::Roll::noteNameShadow);
 
     UniquePointer<Label> noteNameLabel;
+
     Path internalPath1;
     Path internalPath2;
 

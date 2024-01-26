@@ -27,7 +27,7 @@ public:
     ~KeySignatureSmallComponent();
 
     float getTextWidth() const override;
-    void updateContent(const StringArray &keyNames) override;
+    void updateContent(const Temperament::Period &keyNames) override;
     void setRealBounds(const Rectangle<float> bounds) override;
 
     void parentHierarchyChanged() override;

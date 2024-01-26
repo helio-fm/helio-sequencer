@@ -21,69 +21,133 @@
 
 KeySelector::KeySelector(const Temperament::Period &period)
 {
-    const Colour outline(findDefaultColour(ColourIDs::ColourButton::outline));
-    const Colour buttonColour(outline.withAlpha(0.5f));
+    this->setInterceptsMouseClicks(false, true);
 
+    const auto colour = findDefaultColour(ColourIDs::ColourButton::outline);
+
+    // arrange the enharmonics so that the first one in the list
+    // is considered the main one andis placed in the center;
+    // if any others are present, sharps are placed in
+    // the top row andflats are placed in the bottom row:
     for (int i = 0; i < period.size(); ++i)
     {
-        auto button = make<RadioButton>(period[i], buttonColour, this);
-        button->setButtonIndex(i);
-        this->addAndMakeVisible(button.get());
-        this->buttons.add(button.release());
+        const auto &enharmonics = period.getReference(i);
+        jassert(!enharmonics.isEmpty());
+
+        KeyEnharmonics keyButtons;
+        keyButtons.mainKey = make<RadioButton>(enharmonics[0], colour, this);
+        keyButtons.mainKey->setButtonIndex(i);
+        this->addAndMakeVisible(keyButtons.mainKey.get());
+
+        if (enharmonics.size() > 1)
+        {
+            auto keyButton = make<RadioButton>(enharmonics[1], colour, this);
+            keyButton->setButtonIndex(i);
+            this->addAndMakeVisible(keyButton.get());
+
+            if (enharmonics[1].endsWithChar('b'))
+            {
+                this->hasFlatsRow = true;
+                keyButtons.flatKey = move(keyButton);
+            }
+            else
+            {
+                this->hasSharpsRow = true;
+                keyButtons.sharpKey = move(keyButton);
+            }
+        }
+
+        if (enharmonics.size() > 2)
+        {
+            auto keyButton = make<RadioButton>(enharmonics[2], colour, this);
+            keyButton->setButtonIndex(i);
+            this->addAndMakeVisible(keyButton.get());
+
+            if (enharmonics[2].endsWithChar('b'))
+            {
+                this->hasFlatsRow = true;
+                keyButtons.flatKey = move(keyButton);
+            }
+            else
+            {
+                this->hasSharpsRow = true;
+                keyButtons.sharpKey = move(keyButton);
+            }
+        }
+
+        this->buttons.add(move(keyButtons));
     }
+
+    this->setSize(KeySelector::buttonWidth * period.size(),
+        KeySelector::mainRowHeight +
+            (this->hasFlatsRow ? KeySelector::altRowHeight : 0) +
+            (this->hasSharpsRow ? KeySelector::altRowHeight : 0));
 }
 
 void KeySelector::resized()
 {
     int x = 0;
-    for (const auto &button : this->buttons)
+    constexpr auto w = KeySelector::buttonWidth;
+    for (const auto &buttonKeys : this->buttons)
     {
-        const int w = this->getWidth() / this->buttons.size();
-        button->setBounds(x, 0, w, this->getHeight());
+        if (buttonKeys.sharpKey != nullptr)
+        {
+            buttonKeys.sharpKey->setBounds(x, 0, w, KeySelector::altRowHeight);
+        }
+
+        buttonKeys.mainKey->setBounds(x,
+            this->hasSharpsRow ? KeySelector::altRowHeight : 0,
+            w, KeySelector::mainRowHeight);
+
+        if (buttonKeys.flatKey != nullptr)
+        {
+            buttonKeys.flatKey->setBounds(x,
+                this->getHeight() - KeySelector::altRowHeight, w, KeySelector::altRowHeight);
+        }
+
         x += w;
     }
 }
 
-void KeySelector::onRadioButtonClicked(const MouseEvent &e, RadioButton *clickedButton)
+void KeySelector::onRadioButtonClicked(const MouseEvent &e, RadioButton *button)
 {
     if (e.mods.isRightButtonDown() || e.mods.isAnyModifierKeyDown())
     {
-        if (auto *parentListener = this->getParentListener())
+        if (auto *listener = this->getParentListener())
         {
-            parentListener->onRootKeyPreview(clickedButton->getButtonIndex());
+            listener->onKeyPreview(button->getButtonIndex());
         }
 
         return; // rmb click is note preview
     }
 
-    for (const auto &button : this->buttons)
-    {
-        if (button != clickedButton)
-        {
-            button->deselect();
-        }
-    }
+    this->setSelectedKey(button->getButtonIndex(), button->getButtonName());
 
-    clickedButton->select();
-
-    if (auto *parentListener = this->getParentListener())
+    if (auto *listener = this->getParentListener())
     {
-        parentListener->onKeyChanged(clickedButton->getButtonIndex());
+        // in the absence of enharmonic equivalents,
+        // pass an empty string indicating the default key name
+        const auto keyName = (this->hasFlatsRow || this->hasSharpsRow) ?
+            button->getButtonName() : String();
+        listener->onKeyChanged(button->getButtonIndex(), keyName);
     }
 }
 
-
-void KeySelector::setSelectedKey(int key)
+void KeySelector::setSelectedKey(int key, const String &keyName)
 {
-    for (const auto &button : this->buttons)
+    for (auto *child : this->getChildren())
     {
-        if (button->getButtonIndex() == key)
+        if (auto *button = dynamic_cast<RadioButton *>(child))
         {
-            button->select();
-        }
-        else
-        {
-            button->deselect();
+            if (button->getButtonIndex() == key &&
+                button->getButtonName() == keyName)
+            {
+                button->select();
+            }
+            else
+            {
+                button->deselect();
+            }
         }
     }
 }

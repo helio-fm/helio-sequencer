@@ -21,7 +21,7 @@
 #include "Scale.h"
 #include "Note.h"
 
-// just 12-tone intervals, named to avoid using magic numbers:
+// 12-tone intervals, named to avoid using magic numbers:
 enum class Semitones : int8
 {
     PerfectUnison = 0,
@@ -50,8 +50,12 @@ public:
     String getResourceId() const noexcept override;
     Identifier getResourceType() const noexcept override;
 
-    using Period = StringArray;
     using Ptr = ReferenceCountedObjectPtr<Temperament>;
+
+    // for each temperament key, this keeps all enharmonic
+    // equivalents in the language from which the key names
+    // are derived (presumably traditional notation):
+    using Period = Array<StringArray>;
 
     inline const String &getName() const noexcept { return this->name; }
     inline const Period &getPeriod() const noexcept { return this->period; }
@@ -66,13 +70,14 @@ public:
     const Scale::Ptr getChromaticMap() const noexcept { return this->chromaticMap; }
     Note::Key getEquivalentOfTwelveToneInterval(Semitones interval) const noexcept;
 
-    String getMidiNoteName(Note::Key note, bool includePeriod) const noexcept;
+    String getMidiNoteName(Note::Key note, int scaleRootKey,
+        const String &keyEnharmonic, bool includePeriod) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Hard-coded defaults
     //===------------------------------------------------------------------===//
 
-    static Temperament::Ptr getTwelveToneEqualTemperament();
+    static Temperament::Ptr makeTwelveToneEqualTemperament();
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -107,6 +112,8 @@ private:
 
     Scale::Ptr highlighting;
     Scale::Ptr chromaticMap;
+
+    FlatHashMap<String, StringArray, StringHash> chromaticScales;
 
     JUCE_LEAK_DETECTOR(Temperament)
 };

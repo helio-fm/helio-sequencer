@@ -18,6 +18,7 @@
 #pragma once
 
 #include "KeySignatureEvent.h"
+#include "Temperament.h"
 
 class KeySignaturesProjectMap;
 
@@ -40,7 +41,7 @@ public:
 
     virtual float getTextWidth() const = 0;
 
-    virtual void updateContent(const StringArray &keyNames) = 0;
+    virtual void updateContent(const Temperament::Period &keyNames) = 0;
     virtual void setRealBounds(const Rectangle<float> bounds) = 0;
 
     static int compareElements(const KeySignatureComponent *first,

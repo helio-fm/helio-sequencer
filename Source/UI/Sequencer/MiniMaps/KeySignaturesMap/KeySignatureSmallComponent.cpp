@@ -57,7 +57,7 @@ float KeySignatureSmallComponent::getTextWidth() const
     return this->textWidth;
 }
 
-void KeySignatureSmallComponent::updateContent(const StringArray &keyNames)
+void KeySignatureSmallComponent::updateContent(const Temperament::Period &keyNames)
 {
     const String originalName = this->event.toString(keyNames);
     if (this->eventName != originalName)

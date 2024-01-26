@@ -31,11 +31,28 @@ Temperament::Temperament(Temperament &&other) noexcept :
     this->period.swapWith(other.period);
 }
 
-String Temperament::getMidiNoteName(Note::Key note, bool includePeriod) const noexcept
+// key naming is a can of worms, because the piano roll displays both
+// the chromatic scale (the grid) and the key signature's scale (the highlighted rows),
+// but in the traditional notation language note names can differ between those scales;
+// the roll still needs to name notes somehow, so it will stick to chromatic scale
+// namings only, allowing to pick one of the enharmonic equivalents in the key signature
+// and display custom chromatic scale names for it, if specified in the temperament
+
+String Temperament::getMidiNoteName(Note::Key note, int scaleRootKey,
+    const String &keyEnharmonic, bool includePeriod) const noexcept
 {
     if (isPositiveAndBelow(note, this->getNumKeys()))
     {
-        String result(this->period[note % this->getPeriodSize()]);
+        const auto defaultScaleKey = note % this->getPeriodSize();
+        const auto defaultNoteName = this->period[defaultScaleKey][0];
+
+        const auto foundUserScale = this->chromaticScales.find(
+            keyEnharmonic.isEmpty() ? defaultNoteName : keyEnharmonic);
+
+        const auto inScaleKey = (note - scaleRootKey) % this->getPeriodSize();
+        String result = foundUserScale != this->chromaticScales.end() ?
+            foundUserScale->second[inScaleKey] :
+            defaultNoteName;
 
         if (includePeriod)
         {
@@ -74,12 +91,24 @@ Identifier Temperament::getResourceType() const noexcept
 
 static const String defaultTemperamentId = "12edo";
 
-Temperament::Ptr Temperament::getTwelveToneEqualTemperament()
+Temperament::Ptr Temperament::makeTwelveToneEqualTemperament()
 {
     Temperament::Ptr t(new Temperament());
     t->id = defaultTemperamentId;
     t->name = "12 equal temperament";
-    t->period = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
+    t->period = {
+        StringArray("C", "B#"),
+        StringArray("C#", "Db"),
+        StringArray("D"),
+        StringArray("Eb", "D#"),
+        StringArray("E", "Fb"),
+        StringArray("F", "E#"),
+        StringArray("F#", "Gb"),
+        StringArray("G"),
+        StringArray("G#", "Ab"),
+        StringArray("A"),
+        StringArray("Bb", "A#"),
+        StringArray("B", "Cb") };
     t->periodRange = 2.0;
     t->highlighting = Scale::makeNaturalMajorScale();
     t->chromaticMap = Scale::makeChromaticScale();
@@ -107,10 +136,24 @@ SerializedData Temperament::serialize() const
 
     data.setProperty(Midi::temperamentId, this->id);
     data.setProperty(Midi::temperamentName, this->name);
-    data.setProperty(Midi::temperamentPeriod, this->period.joinIntoString(" "));
+
+    StringArray periodString;
+    for (const auto &enharmonics : this->period)
+    {
+        periodString.add(enharmonics.joinIntoString("/"));
+    }
+    data.setProperty(Midi::temperamentPeriod, periodString.joinIntoString(" "));
+
     data.setProperty(Midi::temperamentPeriodRange, this->periodRange);
     data.setProperty(Midi::temperamentHighlighting, this->highlighting->getIntervals());
     data.setProperty(Midi::temperamentChromaticMap, this->chromaticMap->getIntervals());
+
+    // hack warning:
+    // temperaments are only serialized when they are saved as a part of the project,
+    // but upon loading projects treat them as references to the most recent temperament
+    // models, which are used instead, or as a fallback if no model with such id is found,
+    // this way it's more convenient to play around with notes namings etc;
+    // because of this temperament only serializes essential info, e.g. skips chromaticScales
 
     return data;
 }
@@ -130,11 +173,18 @@ void Temperament::deserialize(const SerializedData &data)
     this->name = root.getProperty(Midi::temperamentName, this->name);
 
     const String periodString = root.getProperty(Midi::temperamentPeriod);
-    this->period.addTokens(periodString, true);
+    StringArray enharmonicTokens;
+    enharmonicTokens.addTokens(periodString, true);
+    this->period.clearQuick();
+    for (const auto &keyTokens : enharmonicTokens)
+    {
+        StringArray keys;
+        keys.addTokens(keyTokens, "/", "");
+        this->period.add(move(keys));
+    }
 
     this->periodRange = root.getProperty(Midi::temperamentPeriodRange, 2.0);
 
-    // other parameters are computed quite straightforward, but let's do it here:
     this->middleC = Temperament::periodNumForMiddleC * this->getPeriodSize();
     this->keysTotal = int(Globals::numPeriodsInKeyboard * float(this->getPeriodSize()));
 
@@ -152,6 +202,21 @@ void Temperament::deserialize(const SerializedData &data)
     if (!this->chromaticMap->isValid())
     {
         this->chromaticMap = Scale::makeChromaticScale();
+    }
+
+    this->chromaticScales.clear();
+    forEachChildWithType(root, e, Midi::temperamentChromaticScale)
+    {
+        const String keyName = e.getProperty(Midi::key);
+        const String scaleTokens = e.getProperty(Midi::scale);
+
+        StringArray chromaticScale;
+        chromaticScale.addTokens(scaleTokens, false);
+
+        if (!keyName.isEmpty() && !chromaticScale.isEmpty())
+        {
+            this->chromaticScales[keyName] = move(chromaticScale);
+        }
     }
 }
 

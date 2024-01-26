@@ -142,7 +142,9 @@ Array<int> Scale::getDownScale() const
 
 bool Scale::seemsMinor() const noexcept
 {
-    return this->getChromaticKey(int(Chord::Key::InScale::III), 0, false) == 3;
+    constexpr auto minorThirdCentsProportion = 316.f / 1200.f;
+    const auto expectedNumSemitones = roundToIntAccurate(float(this->getBasePeriod()) * minorThirdCentsProportion);
+    return this->getChromaticKey(int(Chord::Key::InScale::III), 0, false) == expectedNumSemitones;
 }
 
 // Wraps a key (may be negative)

@@ -4,9 +4,32 @@
       {
         "id": "12edo",
         "name": "12 equal temperament",
-        "period": "C C# D D# E F F# G G# A A# B",
+        "period": "C/B# C#/Db D Eb/D# E/Fb F/E# F#/Gb G G#/Ab A Bb/A# B/Cb",
         "highlighting": "2 2 1 2 2 2 1",
-        "chromaticMap": "1 1 1 1 1 1 1 1 1 1 1 1"
+        "chromaticMap": "1 1 1 1 1 1 1 1 1 1 1 1",
+        "chromaticScale": [
+          { "key": "A", "scale": "A A# B C C# D D# E F F# G G#" },
+          { "key": "Ab", "scale": "Ab A Bb B C Db D Eb E F Gb G" },
+          { "key": "A#", "scale": "A# B C C# D D# E F F# G G# A" },
+          { "key": "B", "scale": "B C C# D D# E F F# G G# A A#" },
+          { "key": "Bb", "scale": "Bb B C Db D Eb E F Gb G Ab A" },
+          { "key": "B#", "scale": "B# C# D D# E F F# G G# A A# B" },
+          { "key": "C", "scale": "C C# D D# E F F# G G# A A# B" },
+          { "key": "Cb", "scale": "Cb C Db D Eb E F Gb G Ab A Bb" },
+          { "key": "C#", "scale": "C# D D# E F F# G G# A A# B C" },
+          { "key": "D", "scale": "D D# E F F# G G# A A# B C C#" },
+          { "key": "Db", "scale": "Db D Eb E F Gb G Ab A Bb B C" },
+          { "key": "D#", "scale": "D# E F F# G G# A A# B C C# D" },
+          { "key": "E", "scale": "E F F# G G# A A# B C C# D D#" },
+          { "key": "Eb", "scale": "Eb E F Gb G Ab A Bb B C Db D" },
+          { "key": "E#", "scale": "E# F# G G# A A# B C C# D D# E" },
+          { "key": "F", "scale": "F Gb G Ab A Bb B C Db D Eb E" },
+          { "key": "Fb", "scale": "Fb F Gb G Ab A Bb B C Db D Eb" },
+          { "key": "F#", "scale": "F# G G# A A# B C C# D D# E F" },
+          { "key": "G", "scale": "G G# A A# B C C# D D# E F F#" },
+          { "key": "Gb", "scale": "Gb G Ab A Bb B C Db D Eb E F" },
+          { "key": "G#", "scale": "G# A A# B C C# D D# E F F# G" }
+        ]
       },
       {
         "id": "19edo",

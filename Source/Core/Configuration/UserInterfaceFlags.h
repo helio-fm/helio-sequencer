@@ -73,7 +73,7 @@ public:
     bool isScalesHighlightingEnabled() const noexcept;
     void setScalesHighlightingEnabled(bool enabled);
 
-    bool isNoteNameGuidesEnabled() const noexcept;
+    bool areNoteNameGuidesEnabled() const noexcept;
     void setNoteNameGuidesEnabled(bool enabled);
 
     bool isOpenGlRendererEnabled() const noexcept;

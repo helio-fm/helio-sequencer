@@ -20,6 +20,7 @@
 #include "MidiEvent.h"
 #include "Scale.h"
 #include "Note.h"
+#include "Temperament.h"
 
 class KeySignatureEvent final : public MidiEvent
 {
@@ -33,16 +34,17 @@ public:
     explicit KeySignatureEvent(WeakReference<MidiSequence> owner,
         Scale::Ptr scale = nullptr,
         float newBeat = 0.f,
-        Note::Key key = 0) noexcept;
+        Note::Key key = 0,
+        const String &keyName = {}) noexcept;
 
-    String toString(const StringArray &keyNames) const;
+    String toString(const Temperament::Period &defaultKeyNames) const;
 
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         const KeyboardMapping &keyMap, double timeFactor) const noexcept override;
     
     KeySignatureEvent withDeltaBeat(float beatOffset) const noexcept;
     KeySignatureEvent withBeat(float newBeat) const noexcept;
-    KeySignatureEvent withRootKey(Note::Key key) const noexcept;
+    KeySignatureEvent withRootKey(Note::Key key, const String &keyName) const noexcept;
     KeySignatureEvent withScale(Scale::Ptr scale) const noexcept;
     KeySignatureEvent withParameters(const SerializedData &parameters) const noexcept;
 
@@ -53,7 +55,17 @@ public:
     //===------------------------------------------------------------------===//
 
     Note::Key getRootKey() const noexcept;
+    
+    // this is optional and can be empty;
+    // if empty, indicates the default key name:
+    const String &getRootKeyName() const noexcept;
+
     const Scale::Ptr getScale() const noexcept;
+
+    // this returns correct results only for diatonic scales in 12-edo,
+    // if positive, indicates the number of sharps,
+    // if negative, the number of flats:
+    int getNumFlatsSharps() const;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -71,7 +83,9 @@ public:
 
 private:
 
-    Note::Key rootKey = 0; // modulo period
+    Note::Key rootKey = 0; // # of semitones modulo period
+    String rootKeyName; // one of enharmonic equivalents
+
     Scale::Ptr scale;
 
     JUCE_LEAK_DETECTOR(KeySignatureEvent)

@@ -333,7 +333,7 @@ PianoRollSelectionMenu::PianoRollSelectionMenu(ProjectNode &project, WeakReferen
         const Clip &clip = this->lasso->getFirstAs<NoteComponent>()->getClip();
         if (!SequencerOperations::findHarmonicContext(*this->lasso.get(), clip,
             this->project.getTimeline()->getKeySignatures(),
-            this->harmonicContextScale, this->harmonicContextKey))
+            this->harmonicContextScale, this->harmonicContextKey, this->harmonicContextKeyName))
         {
             DBG("Warning: harmonic context could not be detected");
         }

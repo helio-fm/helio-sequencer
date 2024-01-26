@@ -86,5 +86,5 @@ private:
     UniquePointer<CommandPaletteTextEditor> textEditor;
     UniquePointer<ListBox> actionsList;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CommandPalette)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CommandPalette)
 };
