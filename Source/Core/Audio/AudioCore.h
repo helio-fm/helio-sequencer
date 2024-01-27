@@ -59,6 +59,7 @@ public:
 
     Instrument *findInstrumentById(const String &id) const override;
     Instrument *getDefaultInstrument() const noexcept override;
+    Instrument *getMidiOutputInstrument() const noexcept override;
     Instrument *getMetronomeInstrument() const noexcept override;
     String getMetronomeInstrumentId() const noexcept;
     void initBuiltInInstrumentsIfNeeded();
@@ -75,7 +76,7 @@ public:
     AudioMonitor *getMonitor() const noexcept;
 
     //===------------------------------------------------------------------===//
-    // MIDI input filtering
+    // MIDI input/output
     //===------------------------------------------------------------------===//
 
     bool isFilteringMidiInput() const noexcept;
@@ -83,6 +84,8 @@ public:
     void addFilteredMidiInputCallback(Instrument *instrument,
         int periodSize, Scale::Ptr chromaticMapping);
     void removeFilteredMidiInputCallback(Instrument *instrument);
+
+    void sendMidiOutputNow(const MidiBuffer &buffer);
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -127,6 +130,8 @@ public:
     
 private:
 
+    Instrument *addMidiOutputInstrument(const String &name);
+
     void addInstrumentToMidiDevice(Instrument *instrument,
         int periodSize, Scale::Ptr chromaticMapping);
     void removeInstrumentFromMidiDevice(Instrument *instrument);
@@ -141,6 +146,7 @@ private:
 
     WeakReference<Instrument> defaultInstrument;
     WeakReference<Instrument> metronomeInstrument;
+    WeakReference<Instrument> midiOutputInstrument;
 
     UniquePointer<AudioMonitor> audioMonitor;
 

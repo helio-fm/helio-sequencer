@@ -74,15 +74,16 @@ void MidiTrackMenu::initDefaultMenu()
     const auto trackInstrumentId = this->track->getTrackInstrumentId();
     for (const auto *instrument : instruments)
     {
-        // well, the track can have an instrument which has no window; but here,
-        // in the menu constructor, it's too expensive to check if this is the case,
-        // so we'll only enable this menu item, if the track has a valid instrument assigned:
         if (instrument->getIdAndHash() == trackInstrumentId)
         {
-            const auto editInstrumentCaption = instrument->getName() + ": " + TRANS(I18n::Menu::instrumentShowWindow);
-            menu.add(MenuItem::item(Icons::instrument, CommandIDs::EditCurrentInstrument, editInstrumentCaption)->
-                disabledIf(trackInstrumentId.isEmpty() || !instrument->isValid())->
-                closesMenu());
+            if (auto mainNode = instrument->findMainPluginNode())
+            {
+                const auto editInstrumentCaption = instrument->getName() + ": " + TRANS(I18n::Menu::instrumentShowWindow);
+                menu.add(MenuItem::item(Icons::instrument, CommandIDs::EditCurrentInstrument, editInstrumentCaption)->
+                    disabledIf(!instrument->isValid())->
+                    closesMenu());
+            }
+
             break;
         }
     }

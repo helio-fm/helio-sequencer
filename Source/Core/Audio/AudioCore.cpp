@@ -67,7 +67,7 @@ AudioMonitor *AudioCore::getMonitor() const noexcept
 void AudioCore::addInstrument(const PluginDescription &pluginDescription,
     const String &name, Instrument::InitializationCallback callback)
 {
-    auto *instrument = this->instruments.add(new Instrument(formatManager, name));
+    auto *instrument = this->instruments.add(new Instrument(this->formatManager, name));
     this->addInstrumentToAudioDevice(instrument);
     instrument->initializeFrom(pluginDescription,
         [this, callback](Instrument *instrument)
@@ -80,6 +80,15 @@ void AudioCore::addInstrument(const PluginDescription &pluginDescription,
             this->broadcastAddInstrument(instrument);
             DBG("Loaded " + instrument->getName());
         });
+}
+
+Instrument *AudioCore::addMidiOutputInstrument(const String &name)
+{
+    auto *instrument = this->instruments.add(new Instrument(this->formatManager, name));
+    this->addInstrumentToAudioDevice(instrument);
+    instrument->initializeMidiOutputInstrument();
+    this->broadcastAddInstrument(instrument);
+    return instrument;
 }
 
 void AudioCore::removeInstrument(Instrument *instrument)
@@ -142,6 +151,14 @@ bool AudioCore::isFilteringMidiInput() const noexcept
 void AudioCore::setFilteringMidiInput(bool isOn) noexcept
 {
     this->isReadjustingMidiInput = isOn;
+}
+
+void AudioCore::sendMidiOutputNow(const MidiBuffer &buffer)
+{
+    if (auto *midiOutput = this->deviceManager.getDefaultMidiOutput())
+    {
+        midiOutput->sendBlockOfMessagesNow(buffer);
+    }
 }
 
 void AudioCore::addInstrumentToMidiDevice(Instrument *instrument,
@@ -294,11 +311,16 @@ Instrument *AudioCore::getDefaultInstrument() const noexcept
         this->defaultInstrument.get() : this->instruments.getFirst();
 }
 
+Instrument *AudioCore::getMidiOutputInstrument() const noexcept
+{
+    jassert(this->midiOutputInstrument != nullptr || !this->instruments.isEmpty());
+    return this->midiOutputInstrument;
+}
+
 Instrument *AudioCore::getMetronomeInstrument() const noexcept
 {
     jassert(this->metronomeInstrument != nullptr);
-    return this->metronomeInstrument != nullptr ?
-        this->metronomeInstrument.get() : nullptr;
+    return this->metronomeInstrument;
 }
 
 String AudioCore::getMetronomeInstrumentId() const noexcept
@@ -334,6 +356,12 @@ void AudioCore::initBuiltInInstrumentsIfNeeded()
                 this->metronomeInstrument = instrument;
             });
     }
+
+    if (this->midiOutputInstrument == nullptr)
+    {
+        const auto name = TRANS(I18n::Instruments::midiOutputTitle);
+        this->midiOutputInstrument = this->addMidiOutputInstrument(name);
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -342,8 +370,6 @@ void AudioCore::initBuiltInInstrumentsIfNeeded()
 
 bool AudioCore::autodetectAudioDeviceSetup()
 {
-    //DBG("AudioCore::autodetectDeviceSetup");
-    
     // requesting 0 inputs and only 2 outputs because of freaking alsa
     this->deviceManager.initialise(0, 2, nullptr, true);
 
@@ -378,8 +404,6 @@ bool AudioCore::autodetectAudioDeviceSetup()
 
 bool AudioCore::autodetectMidiDeviceSetup()
 {
-    //DBG("AudioCore::autodetectMidiDeviceSetup");
-
     int numEnabledDevices = 0;
     const auto allDevices = MidiInput::getAvailableDevices();
     for (const auto &midiInput : allDevices)
@@ -671,6 +695,10 @@ void AudioCore::deserialize(const SerializedData &data)
                 else if (this->metronomeInstrument == nullptr && instrument->isMetronomeInstrument())
                 {
                     this->metronomeInstrument = instrument.get();
+                }
+                else if (this->midiOutputInstrument == nullptr && instrument->isMidiOutputInstrument())
+                {
+                    this->midiOutputInstrument = instrument.get();
                 }
 
                 this->instruments.add(instrument.release());

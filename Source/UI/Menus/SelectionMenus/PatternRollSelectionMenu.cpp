@@ -174,13 +174,17 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
     }));
 
     const auto selectionInstrumentId = PatternOperations::getSelectedInstrumentId(*this->lasso.get());
-    for (const auto *i : instruments)
+    for (const auto *instrument : instruments)
     {
-        if (i->getIdAndHash() == selectionInstrumentId)
+        if (instrument->getIdAndHash() == selectionInstrumentId)
         {
-            const auto editInstrumentCaption = i->getName() + ": " + TRANS(I18n::Menu::instrumentShowWindow);
-            menu.add(MenuItem::item(Icons::instrument, CommandIDs::EditCurrentInstrument,
-                editInstrumentCaption)->disabledIf(selectionInstrumentId.isEmpty())->closesMenu());
+            if (auto mainNode = instrument->findMainPluginNode())
+            {
+                const auto editInstrumentCaption = instrument->getName() + ": " + TRANS(I18n::Menu::instrumentShowWindow);
+                menu.add(MenuItem::item(Icons::instrument, CommandIDs::EditCurrentInstrument, editInstrumentCaption)->
+                    disabledIf(!instrument->isValid())->closesMenu());
+            }
+
             break;
         }
     }

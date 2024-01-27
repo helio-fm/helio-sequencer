@@ -297,6 +297,7 @@ namespace I18n
     namespace Instruments
     {
         static constexpr auto defultSynthTitle = constexprHash("instruments::defaultsynth::title");
+        static constexpr auto midiOutputTitle = constexprHash("instruments::midiout::title");
         static constexpr auto metronomeTitle = constexprHash("instruments::metronome::title");
         static constexpr auto metronomeBuiltInSoundPlaceholder = constexprHash("instruments::metronome::builtin");
     }

@@ -25,6 +25,8 @@
 #include "MetronomeSynthAudioPlugin.h"
 #include "BuiltInSynthsPluginFormat.h"
 #include "KeyboardMapping.h"
+#include "Workspace.h"
+#include "AudioCore.h"
 
 Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &name) :
     formatManager(formatManager),
@@ -106,6 +108,54 @@ bool Instrument::isMetronomeInstrument() const noexcept
     }
 
     return dynamic_cast<MetronomeSynthAudioPlugin *>(mainNode->getProcessor()) != nullptr;
+}
+
+// checks if the instrument only consists of standard IO nodes,
+// and if midi-in and midi-out processor nodes are present and connected
+bool Instrument::isMidiOutputInstrument() const noexcept
+{
+    AudioProcessorGraph::Node::Ptr midiIn = nullptr;
+    AudioProcessorGraph::Node::Ptr midiOut = nullptr;
+
+    for (int i = 0; i < this->getNumNodes(); ++i)
+    {
+        const auto node = this->getNode(i);
+        if (auto standardProcessor = dynamic_cast<AudioProcessorGraph::AudioGraphIOProcessor *>(node->getProcessor()))
+        {
+            if (standardProcessor->getType() == AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode)
+            {
+                midiIn = node;
+            }
+            else if (standardProcessor->getType() == AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode)
+            {
+                midiOut = node;
+            }
+        }
+        else
+        {
+            return false; // not expected anything but standard I/O in this instrument
+        }
+    }
+
+    return midiIn != nullptr && midiOut != nullptr && this->hasMidiConnection(midiIn, midiOut);
+}
+
+void Instrument::initializeMidiOutputInstrument()
+{
+    this->processorGraph->clear();
+
+    InternalIODevicesPluginFormat f;
+
+    const auto midiIn = this->addNode(*f.getDescriptionFor(
+        InternalIODevicesPluginFormat::Type::midiInput), 0.2f, 0.5f);
+
+    const auto midiOut = this->addNode(*f.getDescriptionFor(
+        InternalIODevicesPluginFormat::Type::midiOutput), 0.8f, 0.5f);
+
+    this->addConnection(midiIn->nodeID,
+        Instrument::midiChannelNumber,
+        midiOut->nodeID,
+        Instrument::midiChannelNumber);
 }
 
 void Instrument::initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback)
@@ -400,10 +450,13 @@ Array<AudioProcessorGraph::Node::Ptr> Instrument::findAudioProducers() const
 bool Instrument::hasMidiConnection(AudioProcessorGraph::Node::Ptr src,
     AudioProcessorGraph::Node::Ptr dest) const noexcept
 {
+    jassert(src != nullptr && dest != nullptr);
+
     for (const auto &c : this->getConnections())
     {
         if (c.source.nodeID == src->nodeID && c.destination.nodeID == dest->nodeID &&
-            c.source.channelIndex == midiChannelNumber && c.destination.channelIndex == midiChannelNumber)
+            c.source.channelIndex == Instrument::midiChannelNumber &&
+            c.destination.channelIndex == Instrument::midiChannelNumber)
         {
             return true;
         }
@@ -415,10 +468,13 @@ bool Instrument::hasMidiConnection(AudioProcessorGraph::Node::Ptr src,
 bool Instrument::hasAudioConnection(AudioProcessorGraph::Node::Ptr src,
     AudioProcessorGraph::Node::Ptr dest) const noexcept
 {
+    jassert(src != nullptr && dest != nullptr);
+
     for (const auto &c : this->getConnections())
     {
         if (c.source.nodeID == src->nodeID && c.destination.nodeID == dest->nodeID &&
-            c.source.channelIndex != midiChannelNumber && c.destination.channelIndex != midiChannelNumber)
+            c.source.channelIndex != Instrument::midiChannelNumber &&
+            c.destination.channelIndex != Instrument::midiChannelNumber)
         {
             return true;
         }
@@ -605,10 +661,13 @@ void Instrument::deserialize(const SerializedData &data)
     // these are standard i/o nodes and built-in plugins for now, but maybe we'll
     // add more conditions later, e.g. will only load AUv3 plugins asynchronously?
     Array<SerializedData> nodesToDeserializeAsync;
+    int numNodesInDescription = 0;
     forEachChildWithType(root, nodeState, Serialization::Audio::node)
     {
         SerializablePluginDescription desc;
         desc.deserialize(nodeState.getChild(0)); // "node"/"plugin"
+
+        numNodesInDescription++;
 
         if (desc.pluginFormatName == BuiltInSynthsPluginFormat::formatName ||
             desc.pluginFormatName == InternalIODevicesPluginFormat::formatName)
@@ -637,7 +696,8 @@ void Instrument::deserialize(const SerializedData &data)
         }
     }
 
-    this->deserializeNodesAsync(nodesToDeserializeAsync, [this, connectionDescriptions]()
+    this->deserializeNodesAsync(nodesToDeserializeAsync,
+        [this, numNodesInDescription, connectionDescriptions]()
     {
         for (const auto &connectionInfo : connectionDescriptions)
         {
@@ -654,17 +714,10 @@ void Instrument::deserialize(const SerializedData &data)
         // instead of a messed up state we'll have on deserialization failure
         // (because of, e.g. user switching between 64-bit and 32-bit versions);
         // the simplest way to test that is to check if the processor graph
-        // now contains nothing but standard input-output nodes:
-        for (int i = 0; i < this->getNumNodes(); ++i)
+        // now contains the same number of nodes as the description:
+        if (this->getNumNodes() == numNodesInDescription)
         {
-            const auto node = this->getNode(i);
-            if (!this->isNodeStandardIOProcessor(node))
-            {
-                // seems like something has been loaded ok at this point,
-                // so drop the last valid state backup, we won't need it:
-                this->lastValidStateFallback = {};
-                break;
-            }
+            this->lastValidStateFallback = {};
         }
 
         this->sendChangeMessage();
@@ -873,6 +926,12 @@ void Instrument::AudioCallback::audioDeviceIOCallback(const float** const inputC
             if (!this->processor->isSuspended())
             {
                 this->processor->processBlock(buffer, this->incomingMidi);
+
+                if (!this->incomingMidi.isEmpty()) // the processor wants to send events to MIDI output
+                {
+                    App::Workspace().getAudioCore().sendMidiOutputNow(this->incomingMidi);
+                }
+
                 return;
             }
         }

@@ -37,9 +37,11 @@ public:
 
     bool isDefaultInstrument() const noexcept;
     bool isMetronomeInstrument() const noexcept;
+    bool isMidiOutputInstrument() const noexcept;
 
     using InitializationCallback = Function<void(Instrument *)>;
 
+    void initializeMidiOutputInstrument();
     void initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback);
     void addNodeToFreeSpace(const PluginDescription &pluginDescription, InitializationCallback initCallback);
 
@@ -55,7 +57,7 @@ public:
         void audioDeviceIOCallback(const float **, int, float **, int, int) override;
         void audioDeviceAboutToStart(AudioIODevice *) override;
         void audioDeviceStopped() override;
-        void handleIncomingMidiMessage(MidiInput *, const MidiMessage&) override;
+        void handleIncomingMidiMessage(MidiInput *, const MidiMessage &) override;
 
     private:
 
@@ -116,7 +118,7 @@ public:
     bool isNodeStandardIOProcessor(AudioProcessorGraph::NodeID nodeId) const;
     bool isNodeStandardIOProcessor(AudioProcessorGraph::Node::Ptr node) const;
 
-    // Standard IO nodes included:
+    // results include standard IO nodes:
     Array<AudioProcessorGraph::Node::Ptr> findMidiAcceptors() const;
     Array<AudioProcessorGraph::Node::Ptr> findMidiProducers() const;
     Array<AudioProcessorGraph::Node::Ptr> findAudioAcceptors() const;
