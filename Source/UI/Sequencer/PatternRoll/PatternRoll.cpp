@@ -1113,11 +1113,7 @@ void PatternRoll::endErasingEvents()
         return;
     }
 
-    this->project.checkpoint();
-    for (const auto &clip : this->clipsToEraseOnMouseUp)
-    {
-        clip.getPattern()->remove(clip, true);
-    }
+    PatternOperations::deleteSelection(this->clipsToEraseOnMouseUp, this->project, true);
 
     this->clipsToEraseOnMouseUp.clearQuick();
 }

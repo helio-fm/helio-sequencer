@@ -27,7 +27,11 @@ struct PatternOperations final
     static float findStartBeat(const Lasso &selection);
     static float findEndBeat(const Lasso &selection);
 
-    static void deleteSelection(const Lasso &selection, ProjectNode &project, bool shouldCheckpoint = true);
+    static void deleteSelection(const Lasso &selection,
+        ProjectNode &project, bool shouldCheckpoint = true);
+    static void deleteSelection(const Array<Clip> &selection,
+        ProjectNode &project, bool shouldCheckpoint = true);
+
     static void duplicateSelection(const Lasso &selection, bool shouldCheckpoint = true);
 
     static void transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint = true);

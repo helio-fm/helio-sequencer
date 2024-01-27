@@ -120,7 +120,7 @@ void ClipComponent::mouseDown(const MouseEvent &e)
         (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
          this->roll.getEditMode().isMode(RollEditMode::drawMode)))
     {
-        // see the comment above PianoRoll::startErasingEvents for
+        // see the comment above PatternRoll::startErasingEvents for
         // the explanation of how erasing events works and why:
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
         return;

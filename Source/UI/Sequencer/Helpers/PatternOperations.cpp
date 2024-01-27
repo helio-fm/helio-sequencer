@@ -76,35 +76,51 @@ float PatternOperations::findEndBeat(const Lasso &selection)
     return endBeat;
 }
 
-void PatternOperations::deleteSelection(const Lasso &selection, ProjectNode &project, bool shouldCheckpoint)
+void PatternOperations::deleteSelection(const Lasso &selection,
+    ProjectNode &project, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
         return;
     }
 
-    OwnedArray<Array<Clip>> selections;
+    Array<Clip> clips;
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        const Clip clip = selection.getItemAs<ClipComponent>(i)->getClip();
+        clips.add(selection.getItemAs<ClipComponent>(i)->getClip());
+    }
+
+    PatternOperations::deleteSelection(clips, project, shouldCheckpoint);
+}
+
+void PatternOperations::deleteSelection(const Array<Clip> &selection,
+    ProjectNode &project, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.isEmpty())
+    {
+        return;
+    }
+
+    OwnedArray<Array<Clip>> groupedByPattern;
+    for (const auto &clip : selection)
+    {
         Pattern *ownerPattern = clip.getPattern();
         Array<Clip> *arrayToAddTo = nullptr;
 
-        for (int j = 0; j < selections.size(); ++j)
+        for (auto *patternSelection : groupedByPattern)
         {
-            if (selections.getUnchecked(j)->size() > 0)
+            if (!patternSelection->isEmpty() &&
+                patternSelection->getUnchecked(0).getPattern() == ownerPattern)
             {
-                if (selections.getUnchecked(j)->getUnchecked(0).getPattern() == ownerPattern)
-                {
-                    arrayToAddTo = selections.getUnchecked(j);
-                }
+                arrayToAddTo = patternSelection;
+                break;
             }
         }
 
         if (arrayToAddTo == nullptr)
         {
             arrayToAddTo = new Array<Clip>();
-            selections.add(arrayToAddTo);
+            groupedByPattern.add(arrayToAddTo);
         }
 
         arrayToAddTo->add(clip);
@@ -112,9 +128,9 @@ void PatternOperations::deleteSelection(const Lasso &selection, ProjectNode &pro
 
     bool didCheckpoint = !shouldCheckpoint;
 
-    for (int i = 0; i < selections.size(); ++i)
+    for (auto *patternSelection : groupedByPattern)
     {
-        auto *pattern = selections.getUnchecked(i)->getUnchecked(0).getPattern();
+        auto *pattern = patternSelection->getUnchecked(0).getPattern();
 
         if (!didCheckpoint)
         {
@@ -123,21 +139,13 @@ void PatternOperations::deleteSelection(const Lasso &selection, ProjectNode &pro
         }
 
         // Delete the entire track if all its clips have been selected:
-        if (pattern->size() == selections.getUnchecked(i)->size())
+        if (pattern->size() == patternSelection->size())
         {
             project.removeTrack(*pattern->getTrack());
         }
         else
         {
-            pattern->removeGroup(*selections.getUnchecked(i), true);
-            // At least one clip should always remain:
-            //for (Clip &c : *selections.getUnchecked(i))
-            //{
-            //    if (pattern->size() > 1)
-            //    {
-            //        pattern->remove(c, true);
-            //    }
-            //}
+            pattern->removeGroup(*patternSelection, true);
         }
     }
 }

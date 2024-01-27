@@ -194,6 +194,11 @@ bool Pattern::remove(const Clip &clipParams, bool undoable)
         jassert(index >= 0);
         if (index >= 0)
         {
+            // hitting this assertion means trying to delete
+            // all clips instead of deleting a track,
+            // use PatternOperations::deleteSelection instead:
+            jassert(this->clips.size() > 1);
+
             const auto *removedClip = this->clips.getUnchecked(index);
             jassert(removedClip->isValid());
             this->notifyClipRemoved(*removedClip);
@@ -271,6 +276,11 @@ bool Pattern::removeGroup(Array<Clip> &group, bool undoable)
     }
     else
     {
+        // hitting this assertion means trying to delete
+        // all clips instead of deleting a track,
+        // use PatternOperations::deleteSelection instead:
+        jassert(group.size() < this->clips.size());
+
         for (int i = 0; i < group.size(); ++i)
         {
             const Clip &clip = group.getReference(i);
