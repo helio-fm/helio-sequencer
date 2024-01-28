@@ -1158,8 +1158,9 @@ void NoteComponent::stopSound()
 
 void NoteComponent::sendNoteOn(int noteKey, float velocity) const
 {
-    const auto &trackId = this->note.getSequence()->getTrackId();
-    this->getRoll().getTransport().previewKey(trackId,
+    const auto *track = this->note.getSequence()->getTrack();
+    this->getRoll().getTransport().previewKey(track->getTrackId(),
+        track->getTrackChannel(),
         noteKey + this->clip.getKey(),
         velocity * this->clip.getVelocity(),
         this->note.getLength());

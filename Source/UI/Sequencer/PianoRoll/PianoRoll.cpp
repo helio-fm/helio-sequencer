@@ -1567,10 +1567,11 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e, bool snap)
     // so that the new note can be dragged, or resized, or whatever
 
     this->addNewNoteMode = true;
-    activeSequence->insert(Note(activeSequence, key, beat,  //does not require fineMode - rpm
+    activeSequence->insert(Note(activeSequence, key, beat,
         this->newNoteLength, this->newNoteVolume), true);
 
-    this->getTransport().previewKey(activeSequence->getTrackId(),
+    this->getTransport().previewKey(this->activeTrack->getTrackId(),
+        this->activeTrack->getTrackChannel(),
         key + this->activeClip.getKey(),
         this->newNoteVolume * this->activeClip.getVelocity(),
         this->newNoteLength);

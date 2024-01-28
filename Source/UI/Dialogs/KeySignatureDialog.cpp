@@ -66,7 +66,7 @@ public:
 
             const auto endTime = Time::getMillisecondCounter() + 400;
 
-            this->transport.previewKey(String(), key,
+            this->transport.previewKey(String(), 1, key,
                 Globals::Defaults::previewNoteVelocity,
                 Globals::Defaults::previewNoteLength);
 
@@ -516,7 +516,7 @@ void KeySignatureDialog::previewNote(int keyRelative) const
     const auto temperament = this->project.getProjectInfo()->getTemperament();
     const int key = temperament->getMiddleC() + keyRelative;
     this->transport.stopSound();
-    this->transport.previewKey(String(), key,
+    this->transport.previewKey(String(), 1, key,
         Globals::Defaults::previewNoteVelocity,
         Globals::Defaults::previewNoteLength);
 }

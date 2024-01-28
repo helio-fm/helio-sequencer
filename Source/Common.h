@@ -183,6 +183,7 @@ namespace Globals
 
     static constexpr auto velocitySaveResolution = 1024.f;
 
+    static constexpr auto maxKeyboardSize = 2048;
     static constexpr auto twelveToneKeyboardSize = 128;
     static constexpr auto twelveTonePeriodSize = 12;
     static constexpr auto numPeriodsInKeyboard =

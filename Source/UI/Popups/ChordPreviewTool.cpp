@@ -23,6 +23,7 @@
 #include "KeySignatureEvent.h"
 #include "KeySignaturesSequence.h"
 #include "TimeSignaturesAggregator.h"
+#include "MidiTrack.h"
 #include "Config.h"
 
 static Label *createPopupButtonLabel(const String &text)
@@ -244,7 +245,9 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 
             this->sequence->insert(note, true);
 
-            this->roll.getTransport().previewKey(this->sequence->getTrackId(),
+            const auto *track = this->sequence->getTrack();
+            this->roll.getTransport().previewKey(track->getTrackId(),
+                track->getTrackChannel(),
                 key + this->clip.getKey(),
                 note.getVelocity(),
                 note.getLength());
@@ -274,9 +277,12 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
         this->roll.getDefaultNoteVolume());
 
     this->sequence->insert(note, true);
+
     if (shouldSendMidiMessage)
     {
-        this->roll.getTransport().previewKey(this->sequence->getTrackId(),
+        const auto *track = this->sequence->getTrack();
+        this->roll.getTransport().previewKey(track->getTrackId(),
+            track->getTrackChannel(),
             key + this->clip.getKey(),
             note.getVelocity(),
             note.getLength());

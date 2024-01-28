@@ -1619,7 +1619,9 @@ void CommandPaletteChordConstructor::previewIfNeeded()
                     this->roll.isNoteVisible(clipKey + key, clipBeat + targetBeat,
                         CommandPaletteChordConstructor::noteLength);
 
-                this->roll.getTransport().previewKey(pianoSequence->getTrackId(),
+                const auto *track = pianoSequence->getTrack();
+                this->roll.getTransport().previewKey(track->getTrackId(),
+                    track->getTrackChannel(),
                     key + clipKey,
                     CommandPaletteChordConstructor::noteVelocity,
                     CommandPaletteChordConstructor::noteLength);

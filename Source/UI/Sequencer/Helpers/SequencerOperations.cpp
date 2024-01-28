@@ -1525,7 +1525,9 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
             
         if (transport != nullptr && selection.getNumSelected() < 8)
         {
-            transport->previewKey(pianoSequence->getTrackId(),
+            const auto *track = pianoSequence->getTrack();
+            transport->previewKey(track->getTrackId(),
+                track->getTrackChannel(),
                 newNote.getKey() + nc->getClip().getKey(),
                 newNote.getVelocity() * nc->getClip().getVelocity(),
                 newNote.getLength());
@@ -1603,7 +1605,9 @@ void SequencerOperations::shiftInScaleKeyRelative(const Lasso &selection,
         // lots of duplicate code again, fixme someday:
         if (transport != nullptr && selection.getNumSelected() < 8)
         {
-            transport->previewKey(pianoSequence->getTrackId(),
+            const auto *track = pianoSequence->getTrack();
+            transport->previewKey(track->getTrackId(),
+                track->getTrackChannel(),
                 newNote.getKey() + nc->getClip().getKey(),
                 newNote.getVelocity() * nc->getClip().getVelocity(),
                 newNote.getLength());
@@ -1773,7 +1777,9 @@ void SequencerOperations::invertChord(Lasso &selection,
         for (int i = 0; i < selection.getNumSelected(); ++i)
         {
             auto *nc = selection.getItemAs<NoteComponent>(i);
-            transport->previewKey(pianoSequence->getTrackId(),
+            const auto *track = pianoSequence->getTrack();
+            transport->previewKey(track->getTrackId(),
+                track->getTrackChannel(),
                 nc->getNote().getKey() + nc->getClip().getKey(),
                 nc->getVelocity() * nc->getClip().getVelocity(),
                 nc->getLength());

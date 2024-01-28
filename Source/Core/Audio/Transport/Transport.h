@@ -149,9 +149,9 @@ public:
     // Sending messages in real-time
     //===------------------------------------------------------------------===//
     
-    void previewKey(const String &trackId,
+    void previewKey(const String &trackId, int channel,
         int key, float volume, float lengthInBeats) const;
-    void previewKey(WeakReference<Instrument> instrument,
+    void previewKey(WeakReference<Instrument> instrument, int channel,
         int key, float volume, float lengthInBeats) const;
 
     void stopSound(const String &trackId = "") const;
@@ -279,7 +279,7 @@ private:
 
         void cancelAllPendingPreviews(bool sendRemainingNoteOffs);
         void previewNote(WeakReference<Instrument> instrument,
-            int key, float volume, int16 noteOffTimeoutMs);
+            int channel, int key, float volume, int16 noteOffTimeoutMs);
 
     private:
 
@@ -288,16 +288,15 @@ private:
         struct KeyPreviewState final
         {
             WeakReference<Instrument> instrument;
-            float volume = 0;
+            float volume = 0.f;
             int16 noteOnTimeoutMs = 0;
             int16 noteOffTimeoutMs = 0;
         };
 
-        static constexpr auto timerTickMs = 50;
-        static constexpr auto numPreviewedKeys =
-            Globals::numChannels * Globals::twelveToneKeyboardSize;
+        static constexpr auto timerTickMs = 75;
+        static constexpr auto numPreviewedKeys = Globals::maxKeyboardSize;
 
-        KeyPreviewState previews[numPreviewedKeys];
+        KeyPreviewState previews[numPreviewedKeys][Globals::numChannels];
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NotePreviewTimer)
     };

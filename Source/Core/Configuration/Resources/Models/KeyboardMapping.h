@@ -29,9 +29,7 @@ public:
 
     KeyboardMapping();
 
-    static constexpr auto numMappedKeys = 
-        Globals::numChannels * Globals::twelveToneKeyboardSize;
-
+    static constexpr auto numMappedKeys = Globals::maxKeyboardSize;
     static constexpr auto numMappedChannels = Globals::numChannels;
 
     using Ptr = ReferenceCountedObjectPtr<KeyboardMapping>;
@@ -67,7 +65,7 @@ public:
     
     KeyChannel map(Note::Key key, int channel) const noexcept
     {
-        jassert(key < numMappedKeys);
+        jassert(key < KeyboardMapping::numMappedKeys);
         jassert(channel > 0 && channel <= numMappedChannels);
         return this->index[key][channel - 1]; // expects channel in range [1..16]
     }
