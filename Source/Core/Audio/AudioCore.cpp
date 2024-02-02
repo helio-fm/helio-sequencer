@@ -153,11 +153,11 @@ void AudioCore::setFilteringMidiInput(bool isOn) noexcept
     this->isReadjustingMidiInput = isOn;
 }
 
-void AudioCore::sendMidiOutputNow(const MidiBuffer &buffer)
+void AudioCore::sendMessageToMidiOutputNow(const MidiMessage &message)
 {
     if (auto *midiOutput = this->deviceManager.getDefaultMidiOutput())
     {
-        midiOutput->sendBlockOfMessagesNow(buffer);
+        midiOutput->sendMessageNow(message);
     }
 }
 

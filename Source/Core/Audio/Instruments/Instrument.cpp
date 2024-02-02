@@ -856,7 +856,7 @@ void Instrument::AudioCallback::setProcessor(AudioProcessor *const newOne)
         AudioProcessor *oldOne;
 
         {
-            const ScopedLock sl(lock);
+            const ScopedLock sl(this->lock);
             oldOne = this->isPrepared ? this->processor : nullptr;
             this->processor = newOne;
             this->isPrepared = true;
@@ -927,9 +927,18 @@ void Instrument::AudioCallback::audioDeviceIOCallback(const float** const inputC
             {
                 this->processor->processBlock(buffer, this->incomingMidi);
 
-                if (!this->incomingMidi.isEmpty()) // the processor wants to send events to MIDI output
+                // if the MIDI message buffer is not empty here,
+                // the processor wants to send events to MIDI output:
+                for (const auto &metadata : this->incomingMidi)
                 {
-                    App::Workspace().getAudioCore().sendMidiOutputNow(this->incomingMidi);
+                    const auto message = metadata.getMessage();
+
+                    // we'll filter out meta events, because some instruments
+                    // may misinterpret them as random notes/controllers:
+                    if (!message.isMetaEvent())
+                    {
+                        App::Workspace().getAudioCore().sendMessageToMidiOutputNow(message);
+                    }
                 }
 
                 return;

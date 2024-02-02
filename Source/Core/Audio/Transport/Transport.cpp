@@ -384,12 +384,12 @@ const Array<float, CriticalSection> &Transport::getRenderingWaveformThumbnail() 
 
 /*
     The purpose of this class is to help previewing messages interactively in the sequencer.
-    It will simply send note-on events after a delay, and keep track of note-off events which
-    needs to be sent after a while; all those previews are cancelled by transport on stopSound;
-    The delay before the note-on is needed because some plugins (e.g. Kontakt in my case)
+    It will send note-on events after a delay and keep track of note-off events which need
+    to be sent later. All those previews will be cancelled by transport on stopSound.
+    The delay before the note-on event is needed because some plugins (e.g. Kontakt in my case)
     are sometimes processing play/stop messages out of order for whatever reason, which is weird -
-    note the word `queue` in addMessageToQueue() method name - but it still happens in some cases,
-    for example, when the user drags some notes around quickly.
+    note the word `queue` in the addMessageToQueue() method name - but it still happens
+    in some scenarios, such as when the user drags some notes around quickly.
 */
 
 Transport::NotePreviewTimer::~NotePreviewTimer()
@@ -403,56 +403,75 @@ void Transport::NotePreviewTimer::cancelAllPendingPreviews(bool sendRemainingNot
     {
         this->stopTimer();
 
-        for (int key = 0; key < NotePreviewTimer::numPreviewedKeys; ++key)
+        // can be accessed from a separate thread, like scale/metronome preview threads:
+        const CriticalSection::ScopedLockType lock(this->previews.getLock());
+
+        for (const auto &preview : this->previews)
         {
-            for (int channel = 1; channel <= Globals::numChannels; ++channel)
+            if (sendRemainingNoteOffs &&
+                preview.noteOnTimeoutMs <= 0 && // has sent the note-on message
+                preview.noteOffTimeoutMs > 0 && // but hasn't sent the note-off message yet
+                preview.instrument != nullptr)
             {
-                auto &preview = this->previews[key][channel - 1];
-
-                if (sendRemainingNoteOffs &&
-                    preview.noteOffTimeoutMs > 0 &&
-                    preview.instrument != nullptr)
-                {
-                    const auto mapped = preview.instrument->getKeyboardMapping()->map(key, channel);
-                    MidiMessage message(MidiMessage::noteOff(mapped.channel, mapped.key));
-                    message.setTimeStamp(TIME_NOW);
-                    preview.instrument->getProcessorPlayer()
-                        .getMidiMessageCollector().addMessageToQueue(message);
-                }
-
-                preview.instrument = nullptr;
-                preview.noteOnTimeoutMs = 0;
-                preview.noteOffTimeoutMs = 0;
-                preview.volume = 0.f;
+                const auto mapped = preview.instrument->getKeyboardMapping()->map(preview.key, preview.channel);
+                MidiMessage message(MidiMessage::noteOff(mapped.channel, mapped.key));
+                message.setTimeStamp(TIME_NOW);
+                preview.instrument->getProcessorPlayer()
+                    .getMidiMessageCollector().addMessageToQueue(message);
             }
         }
+
+        this->previews.clearQuick();
     }
 }
 
 void Transport::NotePreviewTimer::previewNote(WeakReference<Instrument> instrument,
     int channel, int key, float volume, int16 noteOffTimeoutMs)
 {
-    jassert(key >= 0 && key < NotePreviewTimer::numPreviewedKeys);
+    jassert(key >= 0 && key < Globals::maxKeyboardSize);
     jassert(channel > 0 && channel <= Globals::numChannels);
 
-    const auto zeroBasedChannel = jlimit(1, Globals::numChannels, channel) - 1;
-    auto &preview = this->previews[key][zeroBasedChannel];
+    const CriticalSection::ScopedLockType lock(this->previews.getLock());
 
-    if (preview.noteOffTimeoutMs > 0 &&
-        preview.instrument != instrument &&
-        preview.instrument != nullptr)
+    for (auto &preview : this->previews)
     {
-        const auto mapped = preview.instrument->getKeyboardMapping()->map(key, channel);
-        MidiMessage message(MidiMessage::noteOff(mapped.channel, mapped.key));
-        message.setTimeStamp(TIME_NOW);
-        preview.instrument->getProcessorPlayer()
-            .getMidiMessageCollector().addMessageToQueue(message);
+        if (preview.key == key && preview.channel == channel)
+        {
+            jassert(preview.instrument == instrument);
+
+            if (preview.noteOnTimeoutMs <= 0 && 
+                preview.noteOffTimeoutMs > 0 &&
+                preview.instrument != nullptr)
+            {
+                const auto mapped = preview.instrument->getKeyboardMapping()->map(key, channel);
+                MidiMessage message(MidiMessage::noteOff(mapped.channel, mapped.key));
+                message.setTimeStamp(TIME_NOW);
+                preview.instrument->getProcessorPlayer()
+                    .getMidiMessageCollector().addMessageToQueue(message);
+            }
+
+            preview.volume = volume;
+            preview.noteOnTimeoutMs = NotePreviewTimer::timerTickMs;
+            preview.noteOffTimeoutMs = noteOffTimeoutMs;
+            preview.instrument = instrument;
+
+            if (!this->isTimerRunning())
+            {
+                this->startTimer(NotePreviewTimer::timerTickMs);
+            }
+
+            return;
+        }
     }
 
+    Transport::NotePreviewTimer::KeyPreviewState preview;
+    preview.key = key;
+    preview.channel = channel;
     preview.volume = volume;
     preview.noteOnTimeoutMs = NotePreviewTimer::timerTickMs;
     preview.noteOffTimeoutMs = noteOffTimeoutMs;
     preview.instrument = instrument;
+    this->previews.add(move(preview));
 
     if (!this->isTimerRunning())
     {
@@ -469,39 +488,37 @@ void Transport::NotePreviewTimer::timerCallback()
     const auto time = TIME_NOW;
 #endif
 
+    const CriticalSection::ScopedLockType lock(this->previews.getLock());
+
     bool canStop = true;
-    for (int key = 0; key < NotePreviewTimer::numPreviewedKeys; ++key)
+    for (auto &preview : this->previews)
     {
-        for (int channel = 1; channel <= Globals::numChannels; ++channel)
+        if (preview.noteOnTimeoutMs > 0)
         {
-            auto &preview = this->previews[key][channel - 1];
-            if (preview.noteOnTimeoutMs > 0)
-            {
-                canStop = false;
-                preview.noteOnTimeoutMs -= NotePreviewTimer::timerTickMs;
+            canStop = false;
+            preview.noteOnTimeoutMs -= NotePreviewTimer::timerTickMs;
 
-                if (preview.noteOnTimeoutMs <= 0 && preview.instrument != nullptr)
-                {
-                    const auto mapped = preview.instrument->getKeyboardMapping()->map(key, channel);
-                    auto message = MidiMessage::noteOn(mapped.channel, mapped.key, preview.volume);
-                    message.setTimeStamp(time);
-                    preview.instrument->getProcessorPlayer()
-                        .getMidiMessageCollector().addMessageToQueue(message);
-                }
+            if (preview.noteOnTimeoutMs <= 0 && preview.instrument != nullptr)
+            {
+                const auto mapped = preview.instrument->getKeyboardMapping()->map(preview.key, preview.channel);
+                auto message = MidiMessage::noteOn(mapped.channel, mapped.key, preview.volume);
+                message.setTimeStamp(time);
+                preview.instrument->getProcessorPlayer()
+                    .getMidiMessageCollector().addMessageToQueue(message);
             }
-            else if (preview.noteOffTimeoutMs > 0)
-            {
-                canStop = false;
-                preview.noteOffTimeoutMs -= NotePreviewTimer::timerTickMs;
+        }
+        else if (preview.noteOffTimeoutMs > 0)
+        {
+            canStop = false;
+            preview.noteOffTimeoutMs -= NotePreviewTimer::timerTickMs;
 
-                if (preview.noteOffTimeoutMs <= 0 && preview.instrument != nullptr)
-                {
-                    const auto mapped = preview.instrument->getKeyboardMapping()->map(key, channel);
-                    auto message = MidiMessage::noteOff(mapped.channel, mapped.key);
-                    message.setTimeStamp(time);
-                    preview.instrument->getProcessorPlayer()
-                        .getMidiMessageCollector().addMessageToQueue(message);
-                }
+            if (preview.noteOffTimeoutMs <= 0 && preview.instrument != nullptr)
+            {
+                const auto mapped = preview.instrument->getKeyboardMapping()->map(preview.key, preview.channel);
+                auto message = MidiMessage::noteOff(mapped.channel, mapped.key);
+                message.setTimeStamp(time);
+                preview.instrument->getProcessorPlayer()
+                    .getMidiMessageCollector().addMessageToQueue(message);
             }
         }
     }

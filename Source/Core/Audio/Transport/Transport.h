@@ -287,16 +287,17 @@ private:
 
         struct KeyPreviewState final
         {
-            WeakReference<Instrument> instrument;
+            int key = 0;
+            int channel = 0;
             float volume = 0.f;
-            int16 noteOnTimeoutMs = 0;
-            int16 noteOffTimeoutMs = 0;
+            int noteOnTimeoutMs = 0;
+            int noteOffTimeoutMs = 0;
+            WeakReference<Instrument> instrument;
         };
 
-        static constexpr auto timerTickMs = 75;
-        static constexpr auto numPreviewedKeys = Globals::maxKeyboardSize;
+        static constexpr auto timerTickMs = 50;
 
-        KeyPreviewState previews[numPreviewedKeys][Globals::numChannels];
+        Array<KeyPreviewState, CriticalSection> previews;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NotePreviewTimer)
     };

@@ -85,7 +85,7 @@ public:
         int periodSize, Scale::Ptr chromaticMapping);
     void removeFilteredMidiInputCallback(Instrument *instrument);
 
-    void sendMidiOutputNow(const MidiBuffer &buffer);
+    void sendMessageToMidiOutputNow(const MidiMessage &message);
 
     //===------------------------------------------------------------------===//
     // Serializable
