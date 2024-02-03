@@ -297,6 +297,7 @@ void Instrument::addNodeAsync(const PluginDescription &desc, double x, double y,
 
         if (instance != nullptr)
         {
+            const ScopedLock initLock(instance->getCallbackLock());
             node = this->processorGraph->addNode(move(instance));
         }
 
@@ -608,7 +609,11 @@ SerializedData Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) co
         tree.appendChild(pd.serialize());
 
         MemoryBlock m;
-        node->getProcessor()->getStateInformation(m);
+        {
+            node->getProcessor()->suspendProcessing(true);
+            node->getProcessor()->getStateInformation(m);
+            node->getProcessor()->suspendProcessing(false);
+        }
         tree.setProperty(Serialization::Audio::pluginState, m.toBase64Encoding());
 
         return tree;
@@ -764,6 +769,7 @@ AudioProcessorGraph::Node::Ptr Instrument::addNode(const PluginDescription &desc
     
     if (instance != nullptr)
     {
+        const ScopedLock initLock(instance->getCallbackLock());
         node = this->processorGraph->addNode(move(instance));
     }
     
@@ -799,8 +805,13 @@ AudioProcessorGraph::Node::Ptr Instrument::addNode(UniquePointer<AudioPluginInst
     const double nodeX = data.getProperty(UI::positionX);
     const double nodeY = data.getProperty(UI::positionY);
 
-    AudioProcessorGraph::NodeID nodeId(nodeUid);
-    AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(move(instance), nodeId));
+    AudioProcessorGraph::Node::Ptr node = nullptr;
+    {
+        const ScopedLock initLock(instance->getCallbackLock());
+        node = this->processorGraph->addNode(move(instance),
+            AudioProcessorGraph::NodeID(nodeUid),
+            AudioProcessorGraph::UpdateKind::async);
+    }
 
     if (node == nullptr)
     {
@@ -809,9 +820,10 @@ AudioProcessorGraph::Node::Ptr Instrument::addNode(UniquePointer<AudioPluginInst
 
     if (nodeStateBlock.getSize() > 0)
     {
+        node->getProcessor()->suspendProcessing(true);
         node->getProcessor()->
-            setStateInformation(nodeStateBlock.getData(),
-                static_cast<int>(nodeStateBlock.getSize()));
+            setStateInformation(nodeStateBlock.getData(), int(nodeStateBlock.getSize()));
+        node->getProcessor()->suspendProcessing(false);
     }
 
     Uuid fallbackRandomHash;
