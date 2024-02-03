@@ -31,19 +31,27 @@ PianoSequence::PianoSequence(MidiTrack &track,
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void PianoSequence::importMidi(const MidiMessageSequence &sequence, short timeFormat)
+void PianoSequence::importMidi(const MidiMessageSequence &sequence,
+    short timeFormat, Optional<int> filterByChannel)
 {
     this->clearUndoHistory();
     this->checkpoint();
 
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {
-        const auto &messageOn = sequence.getEventPointer(i)->message;
-        if (messageOn.isNoteOn())
+        const auto &message = sequence.getEventPointer(i)->message;
+
+        if (filterByChannel.hasValue() &&
+            message.getChannel() != *filterByChannel)
         {
-            const int key = messageOn.getNoteNumber();
-            const float velocity = messageOn.getVelocity() / 128.f;
-            const float startBeat = MidiSequence::midiTicksToBeats(messageOn.getTimeStamp(), timeFormat);
+            continue;
+        }
+
+        if (message.isNoteOn())
+        {
+            const int key = message.getNoteNumber();
+            const float velocity = message.getVelocity() / 128.f;
+            const float startBeat = MidiSequence::midiTicksToBeats(message.getTimeStamp(), timeFormat);
             const int noteOffIndex = sequence.getIndexOfMatchingKeyUp(i);
             if (noteOffIndex > 0)
             {

@@ -44,17 +44,25 @@ float AutomationSequence::getAverageControllerValue() const
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void AutomationSequence::importMidi(const MidiMessageSequence &sequence, short timeFormat)
+void AutomationSequence::importMidi(const MidiMessageSequence &sequence,
+    short timeFormat, Optional<int> filterByCV)
 {
     this->clearUndoHistory();
     this->checkpoint();
     
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {
-        const MidiMessage &message = sequence.getEventPointer(i)->message;
+        const auto &message = sequence.getEventPointer(i)->message;
         const float startBeat = MidiSequence::midiTicksToBeats(message.getTimeStamp(), timeFormat);
+
         if (message.isController())
         {
+            if (filterByCV.hasValue() &&
+                message.getControllerNumber() != *filterByCV)
+            {
+                continue;
+            }
+
             const int controllerValue = message.getControllerValue();
             const AutomationEvent event(this, startBeat, float(controllerValue) / 127.f);
             this->importMidiEvent<AutomationEvent>(event);

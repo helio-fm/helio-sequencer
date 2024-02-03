@@ -56,7 +56,8 @@ public:
     // Import/export
     //===------------------------------------------------------------------===//
 
-    void importMidi(const MidiMessageSequence &sequence, short timeFormat) override;
+    void importMidi(const MidiMessageSequence &sequence,
+        short timeFormat, Optional<int> filterByCV) override;
 
     //===------------------------------------------------------------------===//
     // Serializable

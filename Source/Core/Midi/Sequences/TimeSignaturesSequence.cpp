@@ -33,7 +33,8 @@ TimeSignaturesSequence::TimeSignaturesSequence(MidiTrack &track,
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence, short timeFormat)
+void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence,
+    short timeFormat, Optional<int> customFilter)
 {
     this->clearUndoHistory();
     this->checkpoint();

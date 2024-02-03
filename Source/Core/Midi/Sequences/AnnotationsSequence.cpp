@@ -30,7 +30,8 @@ AnnotationsSequence::AnnotationsSequence(MidiTrack &track,
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence, short timeFormat)
+void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence,
+    short timeFormat, Optional<int> customFilter)
 {
     this->clearUndoHistory();
     this->checkpoint();

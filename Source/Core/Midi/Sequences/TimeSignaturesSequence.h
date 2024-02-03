@@ -31,7 +31,8 @@ public:
     // Import/export
     //===------------------------------------------------------------------===//
 
-    void importMidi(const MidiMessageSequence &sequence, short timeFormat) override;
+    void importMidi(const MidiMessageSequence &sequence,
+        short timeFormat, Optional<int> customFilter) override;
     void exportMidi(MidiMessageSequence &outSequence,
         const Clip &clip, const KeyboardMapping &keyMap,
         bool soloPlaybackMode, bool exportMetronome,

@@ -30,14 +30,15 @@ KeySignaturesSequence::KeySignaturesSequence(MidiTrack &track,
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence, short timeFormat)
+void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence,
+    short timeFormat, Optional<int> customFilter)
 {
     this->clearUndoHistory();
     this->checkpoint();
 
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {
-        const MidiMessage &message = sequence.getEventPointer(i)->message;
+        const auto &message = sequence.getEventPointer(i)->message;
         if (message.isKeySignatureMetaEvent())
         {
             const bool isMajor = message.isKeySignatureMajorKey();

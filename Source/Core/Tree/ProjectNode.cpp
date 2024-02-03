@@ -601,6 +601,7 @@ void ProjectNode::importMidi(InputStream &stream)
     if (!tempFile.readFrom(stream))
     {
         DBG("Midi file appears corrupted");
+        jassertfalse;
         return;
     }
 
@@ -615,55 +616,53 @@ void ProjectNode::importMidi(InputStream &stream)
     {
         const auto *importedTrack = tempFile.getTrack(i);
 
-        bool hasPianoEvents = false;
-        bool hasControllerEvents = false;
-        int trackControllerNumber = 0;
-        int trackChannel = 1;
-
         auto trackName = "Track " + String(i);
-        const auto trackColour = colours[r.nextInt(colours.size())]; // set some random colour
+        const auto trackColour = colours[r.nextInt(colours.size())];
+
+        // the MIDI standard allows to set channels and controller numbers per-message,
+        // while in Helio channels and controllers are per-track for simplicity,
+        // so let's group all found notes in each track by channel
+        // (a different channel often means a different instrument):
+        FlatHashSet<int> pianoChannels;
+        
+        // and group automation events by controller number, picking the last
+        // found channel for it, which is not ideal but should be ok in practice:
+        FlatHashMap<int, int> automationControllers;
 
         for (int j = 0; j < importedTrack->getNumEvents(); ++j)
         {
             const auto *event = importedTrack->getEventPointer(j);
+            const auto channel = jlimit(1, Globals::numChannels, event->message.getChannel());
+
             if (event->message.isTrackNameEvent())
             {
                 trackName = event->message.getTextFromTextMetaEvent();
             }
-            else if (event->message.isMidiChannelMetaEvent())
-            {
-                trackChannel = event->message.getMidiChannelMetaEventChannel();
-            }
             else if (event->message.isController())
             {
-                trackControllerNumber = event->message.getControllerNumber();
-                hasControllerEvents = true;
-                if (event->message.getChannel() > 0)
-                {
-                    trackChannel = event->message.getChannel();
-                }
+                automationControllers.insert({ event->message.getControllerNumber(), channel });
             }
             else if (event->message.isTempoMetaEvent())
             {
-                trackControllerNumber = MidiTrack::tempoController;
-                hasControllerEvents = true;
+                automationControllers.insert({ MidiTrack::DefaultControllers::tempoController, channel });
             }
             else if (event->message.isNoteOnOrOff())
             {
-                hasPianoEvents = true;
-                if (event->message.getChannel() > 0)
-                {
-                    trackChannel = event->message.getChannel();
-                }
+                pianoChannels.insert(channel);
             }
         }
 
-        if (hasControllerEvents)
+        // split into several automation tracks, if needed
+        for (const auto trackInfo : automationControllers)
         {
-            const String controllerName = trackControllerNumber == MidiTrack::tempoController ?
-                "Tempo" : MidiMessage::getControllerName(trackControllerNumber);
+            const auto trackControllerNumber = trackInfo.first;
+            const auto trackChannel = trackInfo.second;
+            const bool isTempoTrack = trackControllerNumber == MidiTrack::DefaultControllers::tempoController;
+            const String controllerName(MidiMessage::getControllerName(trackControllerNumber));
 
-            MidiTrackNode *trackNode = new AutomationTrackNode(trackName + " - " + controllerName);
+            MidiTrackNode *trackNode = new AutomationTrackNode(isTempoTrack ?
+                TRANS(I18n::Defaults::tempoTrackName) :
+                (controllerName.isEmpty() ? trackName : trackName + " - " + controllerName));
 
             const Clip clip(trackNode->getPattern());
             trackNode->getPattern()->insert(clip, false);
@@ -675,12 +674,17 @@ void ProjectNode::importMidi(InputStream &stream)
             trackNode->setTrackControllerNumber(trackControllerNumber, dontSendNotification);
             trackNode->setTrackChannel(trackChannel, false, dontSendNotification);
             trackNode->setTrackColour(trackColour, false, dontSendNotification);
-            trackNode->getSequence()->importMidi(*importedTrack, timeFormat);
+
+            const auto isSingleControllerTrack = automationControllers.size() == 1;
+            trackNode->getSequence()->importMidi(*importedTrack, timeFormat,
+                isSingleControllerTrack ? Optional<int>() : trackControllerNumber);
         }
 
-        if (hasPianoEvents)
+        // split into several piano tracks, if needed
+        for (const auto trackChannel : pianoChannels)
         {
-            MidiTrackNode *trackNode = new PianoTrackNode(trackName);
+            MidiTrackNode *trackNode = new PianoTrackNode(trackChannel == 1 ?
+                trackName : trackName + " - " + String(trackChannel));
 
             const Clip clip(trackNode->getPattern());
             trackNode->getPattern()->insert(clip, false);
@@ -691,15 +695,18 @@ void ProjectNode::importMidi(InputStream &stream)
 
             trackNode->setTrackChannel(trackChannel, false, dontSendNotification);
             trackNode->setTrackColour(trackColour, false, dontSendNotification);
-            trackNode->getSequence()->importMidi(*importedTrack, timeFormat);
+
+            const auto isSingleChannelTrack = pianoChannels.size() == 1;
+            trackNode->getSequence()->importMidi(*importedTrack, timeFormat,
+                isSingleChannelTrack ? Optional<int>() : trackChannel);
         }
 
         // if the track contains any key/time signatures, try importing them all,
         // skipping others (assuming that there might be cases where tracks contain
         // events of different types, e.g. mostly notes but also some meta events):
-        this->timeline->getAnnotations()->getSequence()->importMidi(*importedTrack, timeFormat);
-        this->timeline->getKeySignatures()->getSequence()->importMidi(*importedTrack, timeFormat);
-        this->timeline->getTimeSignatures()->getSequence()->importMidi(*importedTrack, timeFormat);
+        this->timeline->getAnnotations()->getSequence()->importMidi(*importedTrack, timeFormat, {});
+        this->timeline->getKeySignatures()->getSequence()->importMidi(*importedTrack, timeFormat, {});
+        this->timeline->getTimeSignatures()->getSequence()->importMidi(*importedTrack, timeFormat, {});
     }
     
     this->isTracksCacheOutdated = true;

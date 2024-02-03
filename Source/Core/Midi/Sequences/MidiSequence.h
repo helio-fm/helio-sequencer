@@ -50,7 +50,8 @@ public:
     //===------------------------------------------------------------------===//
 
     static float midiTicksToBeats(double ticks, int timeFormat) noexcept;
-    virtual void importMidi(const MidiMessageSequence &sequence, short timeFormat) = 0;
+    virtual void importMidi(const MidiMessageSequence &sequence,
+        short timeFormat, Optional<int> customFilter) = 0;
     virtual void exportMidi(MidiMessageSequence &outSequence,
         const Clip &clip, const KeyboardMapping &keyMap,
         bool soloPlaybackMode, bool exportMetronome,
