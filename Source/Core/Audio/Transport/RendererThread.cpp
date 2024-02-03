@@ -108,7 +108,13 @@ void RendererThread::stop()
 {
     if (this->isThreadRunning())
     {
-        this->stopThread(500);
+        this->stopThread(1000);
+
+        // the thread wasn't able to do that when stopped manually:
+        for (auto *instrument : this->transport.getPlaybackCache().getUniqueInstruments())
+        {
+            instrument->getProcessorGraph()->setNonRealtime(false);
+        }
     }
 
     {
@@ -159,30 +165,34 @@ void RendererThread::run()
     const double totalFrames = totalTimeMs / 1000.0 * sampleRate;
     double secPerQuarter = msPerQuarter / 1000.0;
 
-    // create a list of unique instruments with audio buffers for them
+    // create a list of instruments' audio buffers
     OwnedArray<RenderBuffer> subBuffers;
-    Array<Instrument *> uniqueInstruments;
-    uniqueInstruments.addArray(sequences.getUniqueInstruments());
-
-    for (int i = 0; i < uniqueInstruments.size(); ++i)
+    for (auto *instrument : sequences.getUniqueInstruments())
     {
-        Instrument *instrument = uniqueInstruments[i];
+        //DBG("Adding instrument: " + String(instrument->getName()));
         auto *subBuffer = new RenderBuffer();
         subBuffer->instrument = instrument;
         subBuffer->sampleBuffer = AudioBuffer<float>(numOutChannels, bufferSize);
         subBuffers.add(subBuffer);
-        //DBG("Adding instrument: " + String(instrument->getName()));
     }
 
     // release resources, prepare to play, etc
     for (auto *subBuffer : subBuffers)
     {
         auto *graph = subBuffer->instrument->getProcessorGraph();
-        graph->setPlayConfigDetails(numInChannels, numOutChannels, sampleRate, bufferSize);
+
+        MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void *
+        {
+            auto *graph = static_cast<AudioProcessorGraph *>(ptr);
+            graph->setNonRealtime(true); // LV2 plugins require doing this on the main thread
+            return nullptr;
+        }, graph);
+
+        graph->reset();
         graph->releaseResources();
+        graph->setPlayConfigDetails(numInChannels, numOutChannels, sampleRate, bufferSize);
         graph->setProcessingPrecision(AudioProcessor::singlePrecision);
         graph->prepareToPlay(graph->getSampleRate(), bufferSize);
-        graph->setNonRealtime(true);
     }
 
     // let the processor graphs handle their async updates
@@ -206,12 +216,22 @@ void RendererThread::run()
     double currentFrame = firstFrame;
     int messageFrame = 0;
 
-    // send MidiStart to everyone
+    // send MidiStart to everyone and process it immediately,
+    // otherwise in some plugins this message will mess up
+    // the following 0-timestamped messages:
     auto midiStart = MidiMessage::midiStart();
     midiStart.setTimeStamp(firstEventTimestamp);
     for (auto *subBuffer : subBuffers)
     {
         subBuffer->midiBuffer.addEvent(midiStart, messageFrame);
+
+        auto *graph = subBuffer->instrument->getProcessorGraph();
+        {
+            const ScopedLock lock(graph->getCallbackLock());
+            graph->processBlock(subBuffer->sampleBuffer, subBuffer->midiBuffer);
+        }
+
+        subBuffer->midiBuffer.clear();
     }
 
     while (currentFrame < lastFrame)
@@ -264,11 +284,11 @@ void RendererThread::run()
             auto *graph = subBuffer->instrument->getProcessorGraph();
             {
                 const ScopedLock lock(graph->getCallbackLock());
-                
                 graph->processBlock(subBuffer->sampleBuffer, subBuffer->midiBuffer);
-                subBuffer->midiBuffer.clear();
-                //Thread::yield();
             }
+
+            subBuffer->midiBuffer.clear();
+            //Thread::yield();
         }
 
         // mix them down to the render buffer
@@ -297,7 +317,7 @@ void RendererThread::run()
                     this->writer->writeFromAudioSampleBuffer(mixingBuffer, 0, mixingBuffer.getNumSamples());
             }
 
-            if (! writtenSuccessfully)
+            if (!writtenSuccessfully)
             {
                 jassert(false);
                 break;
@@ -317,21 +337,35 @@ void RendererThread::run()
         {
             this->waveformThumbnail.set(waveformFrameIndex, jmax(this->waveformThumbnail[waveformFrameIndex], peakLevel));
         }
-
-        // DBG("% done: " + String(this->percentsDone.get()));
     }
+
+    Thread::sleep(100);
 
     // setNonRealtime false
     for (auto *subBuffer : subBuffers)
     {
         auto *graph = subBuffer->instrument->getProcessorGraph();
-        graph->setNonRealtime(false);
+
         graph->reset();
         graph->releaseResources();
+
+        // if threadShouldExit, the message thread is not processing messages and is
+        // simply waiting for this thread to exit, so callFunctionOnMessageThread will hang;
+        // when stopping the thread manually, the stopping method should call
+        // setNonRealtime(false) on the message thread for all instruments
+        if (!this->threadShouldExit())
+        {
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void *
+            {
+                auto *graph = static_cast<AudioProcessorGraph *>(ptr);
+                graph->setNonRealtime(false); // LV2 plugins require doing this on the main thread
+                return nullptr;
+            }, graph);
+        }
     }
 
     // some plugins tend to make a weird post-rendering "tail" sound,
-    // and here is an attepmt to fix that by giving them time to do
+    // and here is an attempt to fix that by giving them time to do
     // whatever processing they need to do after resetting
     Thread::sleep(200);
     
