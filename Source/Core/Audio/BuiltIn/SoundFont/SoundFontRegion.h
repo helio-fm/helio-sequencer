@@ -87,8 +87,8 @@ struct SoundFontRegion final
         this->pitchKeyTrack = 100;
         this->bendUp = 200;
         this->bendDown = -200;
-        this->volume = this->pan = 0.0;
-        this->ampVelTrack = 100.0;
+        this->volume = this->pan = 0.f;
+        this->ampVelTrack = 100.f;
         this->ampeg.clear();
         this->ampegVelTrack.clearMod();
     }
@@ -100,20 +100,20 @@ struct SoundFontRegion final
         this->loopMode = LoopMode::noLoop;
 
         // SF2 defaults in timecents.
-        this->ampeg.delay = -12000.0;
-        this->ampeg.attack = -12000.0;
-        this->ampeg.hold = -12000.0;
-        this->ampeg.decay = -12000.0;
-        this->ampeg.sustain = 0.0;
-        this->ampeg.release = -12000.0;
+        this->ampeg.delay = -12000.f;
+        this->ampeg.attack = -12000.f;
+        this->ampeg.hold = -12000.f;
+        this->ampeg.decay = -12000.f;
+        this->ampeg.sustain = 0.f;
+        this->ampeg.release = -12000.f;
     }
 
     void clearForRelativeSF2()
     {
         this->clear();
         this->pitchKeyTrack = 0;
-        this->ampVelTrack = 0.0;
-        this->ampeg.sustain = 0.0;
+        this->ampVelTrack = 0.f;
+        this->ampeg.sustain = 0.f;
     }
 
     void addForSF2(SoundFontRegion *other)
@@ -140,7 +140,7 @@ struct SoundFontRegion final
     {
         const auto timeCents2Secs = [](int timeCents)
         {
-            return static_cast<float>(pow(2.0, timeCents / 1200.0));
+            return float(pow(2.0, timeCents / 1200.0));
         };
 
         // EG times need to be converted from timecents to seconds.
@@ -149,17 +149,17 @@ struct SoundFontRegion final
         this->ampeg.hold = timeCents2Secs(int(this->ampeg.hold));
         this->ampeg.decay = timeCents2Secs(int(this->ampeg.decay));
         this->ampeg.release = timeCents2Secs(int(this->ampeg.release));
-        
-        this->ampeg.start = jlimit(0.f, 100.f, this->ampeg.start);
-        this->ampeg.sustain = jlimit(0.f, 100.f, this->ampeg.sustain);
 
-        // Pin very short EG segments.  Timecents don't get to zero, and our EG is
-        // happier with zero values.
-        this->ampeg.delay = jmax(this->ampeg.delay, 0.01f);
-        this->ampeg.attack = jmax(this->ampeg.attack, 0.01f);
-        this->ampeg.hold = jmax(this->ampeg.hold, 0.01f);
-        this->ampeg.decay = jmax(this->ampeg.decay, 0.01f);
-        this->ampeg.release = jmax(this->ampeg.release, 0.01f);
+        this->ampeg.start = jlimit(0.f, 100.f, this->ampeg.start);
+        this->ampeg.sustain = jmax(this->ampeg.sustain, 0.f);
+        this->ampeg.sustain = 100.f * Decibels::decibelsToGain(-this->ampeg.sustain / 10.f);
+
+        // Restrict to min/max useful values according to specs:
+        this->ampeg.delay = jlimit(0.001f, 20.f, this->ampeg.delay);
+        this->ampeg.attack = jlimit(0.001f, 100.f, this->ampeg.attack);
+        this->ampeg.hold = jlimit(0.001f, 20.f, this->ampeg.hold);
+        this->ampeg.decay = jlimit(0.001f, 100.f, this->ampeg.decay);
+        this->ampeg.release = jlimit(0.001f, 100.f, this->ampeg.release);
 
         // Pin values to their ranges.
         this->pan = jlimit(-100.f, 100.f, this->pan);

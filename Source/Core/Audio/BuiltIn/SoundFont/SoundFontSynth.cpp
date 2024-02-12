@@ -153,15 +153,15 @@ void SoundFontEnvelope::fastRelease()
 
 void SoundFontEnvelope::startDelay()
 {
-    if (this->parameters.delay <= 0)
+    if (this->parameters.delay <= 0.f)
     {
         this->startAttack();
     }
     else
     {
         this->segment = Segment::Delay;
-        this->level = 0.0;
-        this->slope = 0.0;
+        this->level = 0.f;
+        this->slope = 0.f;
         this->samplesUntilNextSegment = int(this->parameters.delay * this->sampleRate);
         this->segmentIsExponential = false;
     }
@@ -169,40 +169,40 @@ void SoundFontEnvelope::startDelay()
 
 void SoundFontEnvelope::startAttack()
 {
-    if (this->parameters.attack <= 0)
+    if (this->parameters.attack <= 0.f)
     {
         this->startHold();
     }
     else
     {
         this->segment = Segment::Attack;
-        this->level = jlimit(0.f, 1.f, this->parameters.start / 100.0f);
+        this->level = jlimit(0.f, 1.f, this->parameters.start / 100.f);
         this->samplesUntilNextSegment = static_cast<int>(this->parameters.attack * this->sampleRate);
-        this->slope = (1.0f - this->level) / this->samplesUntilNextSegment;
+        this->slope = (1.f - this->level) / this->samplesUntilNextSegment;
         this->segmentIsExponential = false;
     }
 }
 
 void SoundFontEnvelope::startHold()
 {
-    if (this->parameters.hold <= 0)
+    if (this->parameters.hold <= 0.f)
     {
-        this->level = 1.0;
+        this->level = 1.f;
         this->startDecay();
     }
     else
     {
         this->segment = Segment::Hold;
         this->samplesUntilNextSegment = static_cast<int>(this->parameters.hold * this->sampleRate);
-        this->level = 1.0;
-        this->slope = 0.0;
+        this->level = 1.f;
+        this->slope = 0.f;
         this->segmentIsExponential = false;
     }
 }
 
 void SoundFontEnvelope::startDecay()
 {
-    if (this->parameters.decay <= 0)
+    if (this->parameters.decay <= 0.f)
     {
         this->startSustain();
     }
@@ -217,14 +217,14 @@ void SoundFontEnvelope::startDecay()
             const float mysterySlope = -9.226f / this->samplesUntilNextSegment;
             this->slope = exp(mysterySlope);
             this->segmentIsExponential = true;
-            if (this->parameters.sustain > 0.0)
+            if (this->parameters.sustain > 0.f)
             {
                 // Again, this is following LinuxSampler's example, which is similar to
                 // SF2-style decay, where "decay" specifies the time it would take to
                 // get to zero, not to the sustain level.  The SFZ spec is not that
                 // specific about what "decay" means, so perhaps it's really supposed
                 // to specify the time to reach the sustain level.
-                this->samplesUntilNextSegment = static_cast<int>(log((this->parameters.sustain / 100.0) / this->level) / mysterySlope);
+                this->samplesUntilNextSegment = int(log((this->parameters.sustain / 100.f) / this->level) / mysterySlope);
                 if (this->samplesUntilNextSegment <= 0)
                 {
                     this->startSustain();
@@ -233,7 +233,7 @@ void SoundFontEnvelope::startDecay()
         }
         else
         {
-            this->slope = (jmax(SoundFontEnvelope::bottomLevel, this->parameters.sustain) / 100.0f - 1.0f) / this->samplesUntilNextSegment;
+            this->slope = (jmax(SoundFontEnvelope::bottomLevel, this->parameters.sustain) / 100.f - 1.f) / this->samplesUntilNextSegment;
             this->segmentIsExponential = false;
         }
     }
@@ -241,15 +241,15 @@ void SoundFontEnvelope::startDecay()
 
 void SoundFontEnvelope::startSustain()
 {
-    if (this->parameters.sustain <= 0)
+    if (this->parameters.sustain <= 0.f)
     {
         this->startRelease();
     }
     else
     {
         this->segment = Segment::Sustain;
-        this->level = this->parameters.sustain / 100.0f;
-        this->slope = 0.0;
+        this->level = this->parameters.sustain / 100.f;
+        this->slope = 0.f;
         this->samplesUntilNextSegment = 0x7FFFFFFF;
         this->segmentIsExponential = false;
     }
@@ -257,12 +257,8 @@ void SoundFontEnvelope::startSustain()
 
 void SoundFontEnvelope::startRelease()
 {
-    float release = this->parameters.release;
-    if (release <= 0)
-    {
-        // Enforce a short release, to prevent clicks.
-        release = SoundFontEnvelope::fastReleaseTime;
-    }
+    // Pin to short release to prevent clicks
+    const float release = jmax(this->parameters.release, SoundFontEnvelope::fastReleaseTime);
 
     this->segment = Segment::Release;
     this->samplesUntilNextSegment = static_cast<int>(release * this->sampleRate);
