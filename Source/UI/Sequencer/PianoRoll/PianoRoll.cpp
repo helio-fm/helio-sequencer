@@ -150,17 +150,9 @@ void PianoRoll::loadTrack(const MidiTrack *const track)
 
 void PianoRoll::updateClipRangeIndicator() const
 {
-    if (this->activeTrack != nullptr)
+    if (this->activeClip.isValid())
     {
-        const auto clipBeat = this->activeClip.getBeat();
-        const auto *sequence = this->activeTrack->getSequence();
-        const auto firstBeat = sequence->getFirstBeat();
-        const auto lastBeat = sequence->isEmpty() ?
-            firstBeat + Globals::Defaults::emptyClipLength :
-            sequence->getLastBeat();
-
-        this->header->updateClipRangeIndicator(this->activeTrack->getTrackColour(),
-            firstBeat + clipBeat, lastBeat + clipBeat);
+        this->header->updateClipRangeIndicators(this->activeClip);
     }
 }
 

@@ -41,41 +41,56 @@ public:
     }
 
     // Returns true if range is updated and component should be repositioned
-    bool updateWith(const Colour &colour, float start, float end)
+    bool updateWith(const Colour &colour, float start, float end, bool shouldBeActive)
     {
-        bool updatedRange = this->firstBeat != start || this->lastBeat != end;
+        const bool hasRangeUpdates = this->firstBeat != start || this->lastBeat != end;
 
-        if (this->trackColour != colour)
+        if (this->trackColour != colour || this->isActive != shouldBeActive)
         {
             this->trackColour = colour;
+            this->isActive = shouldBeActive;
             const auto fgColour = findDefaultColour(Label::textColourId);
-            this->paintColour = colour.interpolatedWith(fgColour, 0.5f).withAlpha(0.45f);
+            this->paintColour = colour
+                .interpolatedWith(fgColour, 0.5f)
+                .withAlpha(shouldBeActive ? 0.5f : 0.4f);
+
             this->repaint();
         }
         
         this->firstBeat = start;
         this->lastBeat = end;
 
-        return updatedRange;
+        return hasRangeUpdates;
     }
 
     void paint(Graphics &g) override
     {
         g.setColour(this->paintColour);
-        g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+
+        if (this->isActive)
+        {
+            g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+        }
+        else
+        {
+            HelioTheme::drawDashedHorizontalLine(g, 0.f, 0.f, float(this->getWidth()));
+        }
     }
 
 protected:
 
     Colour paintColour;
     Colour trackColour;
+
     float firstBeat = 0.f;
     float lastBeat = 0.f;
+
+    bool isActive = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClipRangeIndicator)
 };
 
-class DashedClipRangeIndicator final : public ClipRangeIndicator
+class SelectionRangeIndicator final : public ClipRangeIndicator
 {
 public:
 

@@ -270,17 +270,51 @@ void RollHeader::updateRollBeatRange(float viewFirstBeat, float viewLastBeat)
     this->projectEndIndicator->updateBounds();
 }
 
-void RollHeader::updateClipRangeIndicator(const Colour &colour, float firstBeat, float lastBeat)
+void RollHeader::updateClipRangeIndicators(const Clip &activeClip)
 {
-    if (this->clipRangeIndicator == nullptr)
+    const auto *pattern = activeClip.getPattern();
+    if (pattern == nullptr)
     {
-        this->clipRangeIndicator = make<ClipRangeIndicator>();
-        this->addAndMakeVisible(this->clipRangeIndicator.get());
+        jassertfalse;
+        return;
     }
 
-    if (this->clipRangeIndicator->updateWith(colour, firstBeat, lastBeat))
+    if (this->clipRangeIndicators.size() != pattern->size())
     {
-        this->updateClipRangeIndicatorPosition();
+        this->clipRangeIndicators.clearQuick(true);
+
+        for (int i = 0; i < pattern->size(); ++i)
+        {
+            auto indicator = make<ClipRangeIndicator>();
+            this->addAndMakeVisible(indicator.get());
+            this->clipRangeIndicators.add(move(indicator));
+        }
+    }
+
+    const auto colour = pattern->getTrack()->getTrackColour();
+    const auto *sequence = pattern->getTrack()->getSequence();
+    const auto sequenceFirstBeat = sequence->getFirstBeat();
+    const auto sequenceLastBeat = sequence->isEmpty() ?
+        sequenceFirstBeat + Globals::Defaults::emptyClipLength :
+        sequence->getLastBeat();
+
+    bool hasUpdates = false;
+    for (int i = 0; i < pattern->size(); ++i)
+    {
+        const auto *clip = pattern->getUnchecked(i);
+        const auto clipBeat = clip->getBeat();
+        const bool isActive = *clip == activeClip;
+
+        if (this->clipRangeIndicators.getUnchecked(i)->updateWith(colour,
+            clipBeat + sequenceFirstBeat, clipBeat + sequenceLastBeat, isActive))
+        {
+            hasUpdates = true;
+        }
+    }
+    
+    if (hasUpdates)
+    {
+        this->updateClipRangeIndicatorPositions();
     }
 }
 
@@ -288,11 +322,11 @@ void RollHeader::updateSelectionRangeIndicator(const Colour &colour, float first
 {
     if (this->selectionRangeIndicator == nullptr)
     {
-        this->selectionRangeIndicator = make<DashedClipRangeIndicator>();
+        this->selectionRangeIndicator = make<SelectionRangeIndicator>();
         this->addAndMakeVisible(this->selectionRangeIndicator.get());
     }
 
-    if (this->selectionRangeIndicator->updateWith(colour, firstBeat, lastBeat))
+    if (this->selectionRangeIndicator->updateWith(colour, firstBeat, lastBeat, true))
     {
         this->updateSelectionRangeIndicatorPosition();
     }
@@ -339,21 +373,23 @@ void RollHeader::updateTimeDistanceIndicator()
     this->timeDistanceIndicator->getTimeLabel()->setText(timeDeltaText, dontSendNotification);
 }
 
-void RollHeader::updateClipRangeIndicatorPosition()
+void RollHeader::updateClipRangeIndicatorPositions()
 {
-    jassert(this->clipRangeIndicator != nullptr);
-    const int x1 = this->roll.getXPositionByBeat(this->clipRangeIndicator->getFirstBeat());
-    const int x2 = this->roll.getXPositionByBeat(this->clipRangeIndicator->getLastBeat());
-    this->clipRangeIndicator->setBounds(x1, 0, x2 - x1 + 1, 1);
+    for (auto *indicator : this->clipRangeIndicators)
+    {
+        const int x1 = this->roll.getXPositionByBeat(indicator->getFirstBeat());
+        const int x2 = this->roll.getXPositionByBeat(indicator->getLastBeat());
+        indicator->setBounds(x1, 0, x2 - x1 + 1, 1);
+    }
 }
 
 void RollHeader::updateSelectionRangeIndicatorPosition()
 {
     jassert(this->selectionRangeIndicator != nullptr);
-    const bool hasClipRangeDisplayed = this->clipRangeIndicator != nullptr;
+    const bool hasClipRangesDisplayed = !this->clipRangeIndicators.isEmpty();
     const int x1 = this->roll.getXPositionByBeat(this->selectionRangeIndicator->getFirstBeat());
     const int x2 = this->roll.getXPositionByBeat(this->selectionRangeIndicator->getLastBeat());
-    this->selectionRangeIndicator->setBounds(x1, hasClipRangeDisplayed ? 2 : 0, x2 - x1 + 1, 1);
+    this->selectionRangeIndicator->setBounds(x1, hasClipRangesDisplayed ? 2 : 0, x2 - x1 + 1, 1);
 }
 
 //===----------------------------------------------------------------------===//
@@ -602,10 +638,7 @@ void RollHeader::paint(Graphics &g)
 
 void RollHeader::resized()
 {
-    if (this->clipRangeIndicator != nullptr)
-    {
-        this->updateClipRangeIndicatorPosition();
-    }
+    this->updateClipRangeIndicatorPositions();
 
     if (this->selectionRangeIndicator != nullptr)
     {

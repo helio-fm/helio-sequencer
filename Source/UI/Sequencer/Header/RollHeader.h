@@ -17,6 +17,7 @@
 
 #pragma once
 
+class Clip;
 class RollBase;
 class Transport;
 class SoundProbeIndicator;
@@ -45,7 +46,7 @@ public:
     void updateProjectBeatRange(float projectFirstBeat, float projectLastBeat);
     void updateRollBeatRange(float viewFirstBeat, float viewLastBeat);
     
-    void updateClipRangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
+    void updateClipRangeIndicators(const Clip &activeClip);
     void updateSelectionRangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
 
     void updateColours();
@@ -85,7 +86,8 @@ protected:
     Colour beatColour;
     Colour snapColour;
 
-    UniquePointer<ClipRangeIndicator> clipRangeIndicator;
+    OwnedArray<ClipRangeIndicator> clipRangeIndicators;
+
     UniquePointer<ClipRangeIndicator> selectionRangeIndicator;
 
     UniquePointer<SoundProbeIndicator> probeIndicator;
@@ -104,6 +106,6 @@ protected:
     void updateSoundProbeIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e);
     double getUnalignedAnchorForEvent(const MouseEvent &e) const;
     void updateTimeDistanceIndicator();
-    void updateClipRangeIndicatorPosition();
+    void updateClipRangeIndicatorPositions();
     void updateSelectionRangeIndicatorPosition();
 };
