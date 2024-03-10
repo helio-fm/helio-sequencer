@@ -33,7 +33,7 @@ public:
     virtual void onLoopModeChanged(bool hasLoop, float startBeat, float endBeat) = 0;
 
     // these 2 methods could be called from a separate thread
-    virtual void onSeek(float beatPosition, double currentTimeMs) = 0;
+    virtual void onSeek(float beatPosition) = 0;
     virtual void onCurrentTempoChanged(double msPerQuarterNote) = 0;
 
 };

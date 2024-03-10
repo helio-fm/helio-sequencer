@@ -878,7 +878,7 @@ void RollBase::setSpaceDraggingMode(bool dragMode)
     this->spaceDragMode = dragMode;
     this->resetDraggingAnchors();
     this->draggedDistance = 0;
-    this->timeEnteredDragMode = Time::getCurrentTime();
+    this->timeEnteredDragMode = Time::getMillisecondCounter();
 
     if (dragMode)
     {
@@ -1381,21 +1381,39 @@ void RollBase::handleCommandMessage(int commandId)
         this->header->setSoundProbeMode(false);
         if (this->isUsingSpaceDraggingMode())
         {
+            // tech debt: even though the command is EndDragViewport,
+            // this also handles Space key release to start/stop playback
+
             const bool noDraggingWasDone = (this->draggedDistance < 3);
-            const bool notTooMuchTimeSpent =
-                (Time::getCurrentTime() - this->timeEnteredDragMode).inMilliseconds() < 300;
-            if (noDraggingWasDone && notTooMuchTimeSpent)
-            {
-                this->getTransport().toggleStartStopPlayback();
-            }
+            const bool hasQuickPress =
+                (Time::getMillisecondCounter() - this->timeEnteredDragMode) < 300;
+
             this->setSpaceDraggingMode(false);
+
+            if (noDraggingWasDone && hasQuickPress)
+            {
+                if (!this->getTransport().isPlaying())
+                {
+                    this->timeStartedPlayback = Time::getMillisecondCounter();
+                    this->getTransport().startPlayback();
+                }
+                else
+                {
+                    const bool hasQuickDoublePress =
+                        (Time::getMillisecondCounter() - this->timeStartedPlayback) < 400;
+
+                    // tech debt warning: see duplicate code in TransportPlaybackStart case
+                    if (hasQuickDoublePress)
+                    {
+                        this->getTransport().setPlaybackSpeedMultiplier(1.5f);
+                    }
+                    else
+                    {
+                        this->getTransport().stopPlayback();
+                    }
+                }
+            }
         }
-        break;
-    case CommandIDs::ToggleBottomMiniMap:
-        App::Config().getUiFlags()->toggleProjectMapLargeMode();
-        break;
-    case CommandIDs::ToggleMetronome:
-        App::Config().getUiFlags()->toggleMetronome();
         break;
     case CommandIDs::TransportRecordingAwait:
         if (this->getTransport().isRecording())
@@ -1420,7 +1438,18 @@ void RollBase::handleCommandMessage(int commandId)
         this->stopFollowingPlayhead();
         if (!this->getTransport().isPlaying())
         {
+            this->timeStartedPlayback = Time::getMillisecondCounter();
             this->getTransport().startPlayback();
+        }
+        else
+        {
+            const bool hasQuickDoublePress =
+                (Time::getMillisecondCounter() - this->timeStartedPlayback) < 400;
+
+            if (hasQuickDoublePress)
+            {
+                this->getTransport().setPlaybackSpeedMultiplier(1.5f);
+            }
         }
         this->startFollowingPlayhead();
         break;
@@ -1439,6 +1468,12 @@ void RollBase::handleCommandMessage(int commandId)
 
         this->getTransport().stopPlaybackAndRecording();
         this->getTransport().stopSound();
+        break;
+    case CommandIDs::ToggleBottomMiniMap:
+        App::Config().getUiFlags()->toggleProjectMapLargeMode();
+        break;
+    case CommandIDs::ToggleMetronome:
+        App::Config().getUiFlags()->toggleMetronome();
         break;
     case CommandIDs::VersionControlToggleQuickStash:
         if (auto *vcs = this->project.findChildOfType<VersionControlNode>())
@@ -1641,7 +1676,7 @@ void RollBase::onMouseWheelFlagsChanged(UserInterfaceFlags::MouseWheelFlags flag
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void RollBase::onSeek(float beatPosition, double currentTimeMs)
+void RollBase::onSeek(float beatPosition)
 {
     this->lastPlayheadBeat = beatPosition;
 }

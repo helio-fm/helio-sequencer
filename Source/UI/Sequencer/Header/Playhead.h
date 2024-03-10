@@ -51,7 +51,7 @@ public:
     // TransportListener
     //===------------------------------------------------------------------===//
 
-    void onSeek(float beatPosition, double currentTimeMs) override;
+    void onSeek(float beatPosition) override;
     void onCurrentTempoChanged(double msPerQuarter) override;
     void onTotalTimeChanged(double timeMs) override {}
     void onLoopModeChanged(bool hasLoop, float start, float end) override {}

@@ -101,7 +101,7 @@ private:
     void onRecordFailed(const Array<MidiDeviceInfo> &devices) override;
     void onTotalTimeChanged(double timeMs) override {}
     void onLoopModeChanged(bool hasLoop, float startBeat, float endBeat) override;
-    void onSeek(float beatPosition, double currentTimeMs) override {}
+    void onSeek(float beatPosition) override {}
     void onCurrentTempoChanged(double msPerQuarter) override {}
 
     UniquePointer<ListBox> listBox;

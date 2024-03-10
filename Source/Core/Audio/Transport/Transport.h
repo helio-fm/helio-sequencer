@@ -65,6 +65,7 @@ public:
     void startPlayback();
     void startPlayback(float startBeatOverride);
     void startPlaybackFragment(float startBeat, float endBeat, bool looped);
+    void setPlaybackSpeedMultiplier(float multiplier);
 
     bool isPlaying() const;
     void stopPlayback();
@@ -231,7 +232,7 @@ private:
     void broadcastTotalTimeChanged(double timeMs);
     void broadcastLoopModeChanged(bool hasLoop, float startBeat, float endBeat);
 
-    void broadcastSeek(float newBeat, double currentTimeMs);
+    void broadcastSeek(float newBeat);
     void broadcastCurrentTempoChanged(double newTempo);
 
     friend class PlayerThread;

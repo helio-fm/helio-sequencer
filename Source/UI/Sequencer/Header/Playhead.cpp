@@ -56,7 +56,7 @@ Playhead::~Playhead()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void Playhead::onSeek(float beatPosition, double currentTimeMs)
+void Playhead::onSeek(float beatPosition)
 {
     this->lastCorrectBeat = beatPosition;
 
@@ -72,7 +72,7 @@ void Playhead::onSeek(float beatPosition, double currentTimeMs)
 void Playhead::onCurrentTempoChanged(double msPerQuarter)
 {
     this->msPerQuarterNote = jmax(msPerQuarter, 0.01);
-        
+
     if (this->isTimerRunning())
     {
         // expects that lastCorrectBeat has been set

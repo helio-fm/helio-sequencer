@@ -28,6 +28,8 @@ public:
 
     void startPlayback(Transport::PlaybackContext::Ptr context);
 
+    void setSpeedMultiplier(float multiplier);
+
 private:
 
     void run() override;
@@ -36,6 +38,11 @@ private:
     TransportPlaybackCache sequences;
 
     Transport::PlaybackContext::Ptr context;
+
+    Atomic<float> speedMultiplier = 1.f;
+    Atomic<bool> speedMultiplierChanged = false;
+
+    Atomic<double> currentTempo = 0.f;
 
     // check if the thread needs to stop at least every x ms:
     static constexpr auto minStopCheckTimeMs = 200;

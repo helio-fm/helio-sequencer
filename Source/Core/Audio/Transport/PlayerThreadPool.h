@@ -71,6 +71,15 @@ public:
         }
     }
 
+    void setPlaybackSpeedMultiplier(float multiplier)
+    {
+        jassert(this->isPlaying());
+        if (this->currentPlayer->isThreadRunning())
+        {
+            this->currentPlayer->setSpeedMultiplier(multiplier);
+        }
+    }
+
     bool isPlaying() const
     {
         return (this->currentPlayer->isThreadRunning() &&

@@ -19,11 +19,13 @@
 
 class TransportControlPlayBg;
 class TransportControlRecordBg;
+class LongTapController;
 
+#include "LongTapListener.h"
 #include "IconComponent.h"
 #include "CommandIDs.h"
 
-class TransportControlComponent final : public Component
+class TransportControlComponent final : public Component, public LongTapListener
 {
 public:
 
@@ -37,6 +39,8 @@ public:
 
     void resized() override;
 
+    void onLongTap(const Point<float> &position,
+        const WeakReference<Component> &target) override;
 private:
 
     WeakReference<Component> eventReceiver;
@@ -65,6 +69,8 @@ private:
 
     ComponentAnimator animator;
     UniquePointer<Timer> recordButtonBlinkAnimator;
+
+    UniquePointer<LongTapController> longTapController;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TransportControlComponent)
 };

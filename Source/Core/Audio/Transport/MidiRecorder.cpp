@@ -72,7 +72,7 @@ void MidiRecorder::setTargetScope(const Clip *clip, const String &instrumentId)
     }
 }
 
-void MidiRecorder::onSeek(float beatPosition, double currentTimeMs)
+void MidiRecorder::onSeek(float beatPosition)
 {
     // handle the loop rewind:
     if (this->isPlaying.get() &&

@@ -126,9 +126,8 @@ void Transport::setSeekBeat(float beatPosition)
 
 void Transport::seekToBeat(float beatPosition)
 {
-    const auto currentTimeMs = this->findTimeAt(this->projectFirstBeat.get());
     this->setSeekBeat(beatPosition);
-    this->broadcastSeek(beatPosition, currentTimeMs);
+    this->broadcastSeek(beatPosition);
 }
 
 void Transport::probeSoundAtBeat(float targetBeat, const MidiSequence *limitToSequence)
@@ -199,6 +198,13 @@ void Transport::startPlaybackFragment(float startBeat, float endBeat, bool loope
 
     this->player->startPlayback(startBeat, startBeat, endBeat, looped);
     this->broadcastPlay();
+}
+
+void Transport::setPlaybackSpeedMultiplier(float multiplier)
+{
+    jassert(this->isPlaying());
+    jassert(multiplier > 0.5f && multiplier < 5.f);
+    this->player->setPlaybackSpeedMultiplier(multiplier);
 }
 
 void Transport::stopPlayback()
@@ -683,9 +689,7 @@ void Transport::handlePossibleTempoChange(int trackControllerNumber)
 {
     if (trackControllerNumber == MidiTrack::tempoController)
     {
-        const auto currentTimeMs = this->findTimeAt(this->projectFirstBeat.get());
         const auto totalTimeMs = this->findTimeAt(this->projectLastBeat.get());
-        this->broadcastSeek(this->getSeekBeat(), currentTimeMs);
         this->broadcastTotalTimeChanged(totalTimeMs);
     }
 }
@@ -1122,9 +1126,9 @@ void Transport::removeTransportListener(TransportListener *listener)
     this->transportListeners.remove(listener);
 }
 
-void Transport::broadcastSeek(float beat, double currentTimeMs)
+void Transport::broadcastSeek(float beat)
 {
-    this->transportListeners.call(&TransportListener::onSeek, beat, currentTimeMs);
+    this->transportListeners.call(&TransportListener::onSeek, beat);
 }
 
 void Transport::broadcastCurrentTempoChanged(double newTempo)
