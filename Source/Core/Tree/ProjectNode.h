@@ -75,7 +75,7 @@ public:
     void showPage() override;
     void recreatePage() override;
     void showPatternEditor(WeakReference<TreeNode> source);
-    void showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeNode> source);
+    void showLinearEditor(const Clip &activeClip, WeakReference<TreeNode> source);
     WeakReference<TreeNode> getLastShownTrack() const noexcept;
 
     void safeRename(const String &newName, bool sendNotifications) override;

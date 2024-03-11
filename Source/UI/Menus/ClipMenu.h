@@ -18,21 +18,23 @@
 #pragma once
 
 #include "MenuPanel.h"
-#include "MidiTrack.h"
 #include "UndoStack.h"
+#include "Clip.h"
 
-class MidiTrackMenu final : public MenuPanel
+class ClipMenu final : public MenuPanel
 {
 public:
     
-    MidiTrackMenu(WeakReference<MidiTrack> track, WeakReference<UndoStack> undoStack);
+    ClipMenu(const Clip &clip, WeakReference<UndoStack> undoStack);
     
 private:
     
-    void initDefaultMenu();
-    void initChannelSelectionMenu();
-    void initInstrumentSelectionMenu();
+    MenuPanel::Menu makeDefaultMenu();
+    MenuPanel::Menu makeQuantizationMenu();
+    MenuPanel::Menu makeChannelSelectionMenu();
+    MenuPanel::Menu makeInstrumentSelectionMenu();
 
-    WeakReference<MidiTrack> track;
+    const Clip &clip;
+
     WeakReference<UndoStack> undoStack;
 };

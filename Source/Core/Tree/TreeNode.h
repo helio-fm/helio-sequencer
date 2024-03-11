@@ -37,7 +37,7 @@ public:
     String getNodeIdentifier() const;
 
     bool isSelected() const noexcept;
-    void setSelected(NotificationType shouldNotify = sendNotification);
+    virtual void setSelected(NotificationType shouldNotify = sendNotification);
     // late notify, if called setSelected(doneSendNotification) earlier
     // used in version control operations, which don't send notifications
     void sendSelectionNotification();

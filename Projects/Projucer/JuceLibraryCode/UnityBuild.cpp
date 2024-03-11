@@ -175,7 +175,7 @@
 #include "../../Source/UI/Menus/SelectionMenus/VersionControlHistorySelectionMenu.cpp"
 #include "../../Source/UI/Menus/SelectionMenus/VersionControlStageSelectionMenu.cpp"
 #include "../../Source/UI/Menus/InstrumentMenu.cpp"
-#include "../../Source/UI/Menus/MidiTrackMenu.cpp"
+#include "../../Source/UI/Menus/ClipMenu.cpp"
 #include "../../Source/UI/Menus/OrchestraPitMenu.cpp"
 #include "../../Source/UI/Menus/PatternsMenu.cpp"
 #include "../../Source/UI/Menus/ProjectMenu.cpp"

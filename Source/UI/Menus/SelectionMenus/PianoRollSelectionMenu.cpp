@@ -31,7 +31,7 @@
 #include "MainLayout.h"
 #include "Config.h"
 
-MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
+MenuPanel::Menu PianoRollSelectionMenu::makeDefaultMenu()
 {
     MenuPanel::Menu menu;
 
@@ -47,54 +47,46 @@ MenuPanel::Menu PianoRollSelectionMenu::createDefaultPanel()
     menu.add(MenuItem::item(Icons::reprise,
         CommandIDs::ToggleLoopOverSelection,
         TRANS(I18n::CommandPalette::toggleLoopOverSelection))->closesMenu());
-
-    menu.add(MenuItem::item(Icons::refactor,
-        TRANS(I18n::Menu::Selection::notesRefactor))->
-        withSubmenu()->
-        withAction([this]()
-    {
-        this->updateContent(this->createRefactoringPanel(), MenuPanel::SlideLeft);
-    }));
-
-    const bool canArpeggiate = (this->lasso->getNumSelected() > 1) && (this->harmonicContextScale != nullptr);
-
-    menu.add(MenuItem::item(Icons::arpeggiate,
-        TRANS(I18n::Menu::Selection::notesArpeggiate))->
-        disabledIf(!canArpeggiate)->
-        withSubmenu()->
-        withAction([this]()
-    {
-        this->updateContent(this->createArpsPanel(), MenuPanel::SlideLeft);
-    }));
-
+    
     menu.add(MenuItem::item(Icons::ellipsis,
         TRANS(I18n::Menu::Selection::notesDivisions))->
         withSubmenu()->
         withAction([this]()
-    {
-        this->updateContent(this->createTupletsPanel(), MenuPanel::SlideLeft);
-    }));
+        {
+            this->updateContent(this->makeTupletsMenu(), MenuPanel::SlideLeft);
+        }));
 
-    menu.add(MenuItem::item(Icons::ellipsis,
-        TRANS(I18n::Menu::Selection::notesQuantizeTo))->
+    jassert(this->lasso->getNumSelected() > 0);
+    const bool hasSingleNote = this->lasso->getNumSelected() == 1;
+
+    menu.add(MenuItem::item(Icons::arpeggiate,
+        TRANS(I18n::Menu::Selection::notesArpeggiate))->
+        disabledIf(hasSingleNote)->
         withSubmenu()->
         withAction([this]()
-    {
-        this->updateContent(this->createQuantizationPanel(), MenuPanel::SlideLeft);
-    }));
+        {
+            this->updateContent(this->makeArpsMenu(), MenuPanel::SlideLeft);
+        }));
+    
+    menu.add(MenuItem::item(Icons::refactor,
+        TRANS(I18n::Menu::Selection::notesRefactor))->
+        withSubmenu()->
+        withAction([this]()
+        {
+            this->updateContent(this->makeRefactoringMenu(), MenuPanel::SlideLeft);
+        }));
 
     return menu;
 }
 
-MenuPanel::Menu PianoRollSelectionMenu::createMoveToTrackPanel()
+MenuPanel::Menu PianoRollSelectionMenu::makeMoveToTrackMenu()
 {
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
-        this->updateContent(this->createRefactoringPanel(), MenuPanel::SlideRight);
+        this->updateContent(this->makeRefactoringMenu(), MenuPanel::SlideRight);
     }));
-
 
     if (this->lasso->getNumSelected() == 0)
     {
@@ -121,11 +113,14 @@ MenuPanel::Menu PianoRollSelectionMenu::createMoveToTrackPanel()
             withWeight(outDistance)->
             closesMenu()->
             withAction([this, &closestClip]()
-        {
-            auto &selection = *this->lasso.get();
-            SequencerOperations::moveSelection(selection, closestClip, true);
-            this->project.setEditableScope(closestClip, false);
-        }));
+            {
+                auto &selection = *this->lasso.get();
+                SequencerOperations::moveSelection(selection, closestClip, true);
+                //const auto newNotes = SequencerOperations::moveSelection(selection, closestClip, true);
+                this->project.setEditableScope(closestClip, false);
+                // todo fix selection someday
+                //this->roll.selectEvents(newNotes, true);
+            }));
     }
 
     static MenuItem::SortByWeight sortByWeight;
@@ -133,38 +128,48 @@ MenuPanel::Menu PianoRollSelectionMenu::createMoveToTrackPanel()
     return menu;
 }
 
-MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
+MenuPanel::Menu PianoRollSelectionMenu::makeRefactoringMenu()
 {
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
-        this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
+        this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
     }));
     
-    const bool canRefactor = this->lasso->getNumSelected() > 1;
+    // in some cases transforming a single note makes no sense
+    jassert(this->lasso->getNumSelected() > 0);
+    const bool hasSingleNote = this->lasso->getNumSelected() == 1;
+
+    menu.add(MenuItem::item(Icons::inversion, CommandIDs::MelodicInversion,
+        TRANS(I18n::Menu::Refactor::melodicInversion))->disabledIf(hasSingleNote)->closesMenu());
+
+    menu.add(MenuItem::item(Icons::retrograde, CommandIDs::Retrograde,
+        TRANS(I18n::Menu::Refactor::retrograde))->disabledIf(hasSingleNote)->closesMenu());
+
+    menu.add(MenuItem::item(Icons::cleanup, CommandIDs::CleanupOverlaps,
+        TRANS(I18n::Menu::Refactor::cleanup))->disabledIf(hasSingleNote)->closesMenu());
 
     menu.add(MenuItem::item(Icons::inverseUp, CommandIDs::InvertChordUp,
-        TRANS(I18n::Menu::refactoringInverseUp))->disabledIf(!canRefactor)->closesMenu());
+        TRANS(I18n::Menu::Refactor::inverseUp))->closesMenu());
 
     menu.add(MenuItem::item(Icons::inverseDown, CommandIDs::InvertChordDown,
-        TRANS(I18n::Menu::refactoringInverseDown))->disabledIf(!canRefactor)->closesMenu());
+        TRANS(I18n::Menu::Refactor::inverseDown))->closesMenu());
 
     menu.add(MenuItem::item(Icons::up, CommandIDs::TransposeScaleKeyUp,
-        TRANS(I18n::Menu::refactoringInScaleTransposeUp))->disabledIf(!canRefactor)->closesMenu());
+        TRANS(I18n::Menu::Refactor::inScaleTransposeUp))->closesMenu());
 
     menu.add(MenuItem::item(Icons::down, CommandIDs::TransposeScaleKeyDown,
-        TRANS(I18n::Menu::refactoringInScaleTransposeDown))->disabledIf(!canRefactor)->closesMenu());
+        TRANS(I18n::Menu::Refactor::inScaleTransposeDown))->closesMenu());
 
-    // todo icons for refactoring commands:
-    menu.add(MenuItem::item(Icons::refactor, CommandIDs::MelodicInversion,
-        TRANS(I18n::Menu::refactoringMelodicInversion))->disabledIf(!canRefactor)->closesMenu());
+    menu.add(MenuItem::item(Icons::snap, CommandIDs::AlignToScale,
+        TRANS(I18n::Menu::Refactor::alignToScale))->closesMenu());
 
-    menu.add(MenuItem::item(Icons::refactor, CommandIDs::Retrograde,
-        TRANS(I18n::Menu::refactoringRetrograde))->disabledIf(!canRefactor)->closesMenu());
+    menu.add(MenuItem::item(Icons::legato, CommandIDs::MakeLegato,
+        TRANS(I18n::Menu::Refactor::legato))->disabledIf(hasSingleNote)->closesMenu());
 
-    menu.add(MenuItem::item(Icons::refactor, CommandIDs::CleanupOverlaps,
-        TRANS(I18n::Menu::refactoringCleanup))->disabledIf(!canRefactor)->closesMenu());
+    menu.add(MenuItem::item(Icons::staccato, CommandIDs::MakeStaccato,
+        TRANS(I18n::Menu::Refactor::staccato))->closesMenu());
 
     menu.add(MenuItem::item(Icons::cut, CommandIDs::NewTrackFromSelection,
         TRANS(I18n::Menu::Selection::notesToTrack))->closesMenu());
@@ -173,34 +178,38 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
 
     menu.add(MenuItem::item(Icons::cut,
         TRANS(I18n::Menu::Selection::notesMoveTo))->
-        disabledIf(nowhereToMove)->
-        withSubmenu()->
-        withAction([this]()
-    {
-        this->updateContent(this->createMoveToTrackPanel(), MenuPanel::SlideLeft);
-    }));
+        disabledIf(nowhereToMove)->withSubmenu()->withAction([this]()
+        {
+            this->updateContent(this->makeMoveToTrackMenu(), MenuPanel::SlideLeft);
+        }));
 
-    const bool canRescale = this->harmonicContextScale != nullptr;
-
-    menu.add(MenuItem::item(Icons::arpeggiate, // todo new icon for this
+    menu.add(MenuItem::item(Icons::arpeggiate,
         TRANS(I18n::Menu::Selection::notesRescale))->
-        disabledIf(!canRescale)->
+        disabledIf(hasSingleNote)->
         withSubmenu()->
         withAction([this]()
-    {
-        this->updateContent(this->createScalesPanel(), MenuPanel::SlideLeft);
-    }));
+        {
+            this->updateContent(this->makeRescalingMenu(), MenuPanel::SlideLeft);
+        }));
+
+    menu.add(MenuItem::item(Icons::ellipsis,
+        TRANS(I18n::Menu::Selection::notesQuantizeTo))->
+        withSubmenu()->
+        withAction([this]()
+        {
+            this->updateContent(this->makeQuantizationMenu(), MenuPanel::SlideLeft);
+        }));
 
     return menu;
 }
 
-MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
+MenuPanel::Menu PianoRollSelectionMenu::makeRescalingMenu()
 {
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
-        this->updateContent(this->createRefactoringPanel(), MenuPanel::SlideRight);
+        this->updateContent(this->makeRefactoringMenu(), MenuPanel::SlideRight);
     }));
 
     const auto &scales = App::Config().getScales()->getAll();
@@ -216,23 +225,26 @@ MenuPanel::Menu PianoRollSelectionMenu::createScalesPanel()
             scales.getUnchecked(i)->getLocalizedName())->
             closesMenu()->
             withAction([this, i]()
-        {
-            if (this->harmonicContextScale == nullptr)
             {
-                jassertfalse;
-                return;
-            }
+                if (this->lasso->getNumSelected() < 1)
+                {
+                    jassertfalse;
+                    return;
+                }
 
-            const auto &scales = App::Config().getScales()->getAll();
-            SequencerOperations::rescale(*this->lasso.get(), this->harmonicContextKey,
-                this->harmonicContextScale, scales[i], true);
-        }));
+                const auto &scales = App::Config().getScales()->getAll();
+                const auto &clip = this->lasso->getFirstAs<NoteComponent>()->getClip();
+
+                SequencerOperations::rescale(*this->lasso.get(), clip,
+                    this->project.getTimeline()->getKeySignaturesSequence(), scales[i],
+                    true, true);
+            }));
     }
 
     return menu;
 }
 
-MenuPanel::Menu PianoRollSelectionMenu::createQuantizationPanel()
+MenuPanel::Menu PianoRollSelectionMenu::makeQuantizationMenu()
 {
     MenuPanel::Menu menu;
 
@@ -240,7 +252,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createQuantizationPanel()
 
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
-        this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
+        this->updateContent(this->makeRefactoringMenu(), MenuPanel::SlideRight);
     }));
 
 #define EVENTS_QUANTIZE_ITEM(cmd) \
@@ -259,13 +271,13 @@ MenuPanel::Menu PianoRollSelectionMenu::createQuantizationPanel()
     return menu;
 }
 
-MenuPanel::Menu PianoRollSelectionMenu::createTupletsPanel()
+MenuPanel::Menu PianoRollSelectionMenu::makeTupletsMenu()
 {
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
-        this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
+        this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
     }));
 
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::Tuplet1, TRANS(I18n::Menu::tuplet1))->closesMenu());
@@ -281,13 +293,13 @@ MenuPanel::Menu PianoRollSelectionMenu::createTupletsPanel()
     return menu;
 }
 
-MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
+MenuPanel::Menu PianoRollSelectionMenu::makeArpsMenu()
 {
     MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
-        this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
+        this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
     }));
 
     menu.add(MenuItem::item(Icons::create,
@@ -297,28 +309,26 @@ MenuPanel::Menu PianoRollSelectionMenu::createArpsPanel()
     const auto arps = App::Config().getArpeggiators()->getAll();
     for (int i = 0; i < arps.size(); ++i)
     {
-        menu.add(MenuItem::item(Icons::arpeggiate,
-            arps.getUnchecked(i)->getName())->
-            closesMenu()->
-            withAction([this, i]()
-        {
-            if (this->lasso->getNumSelected() < 3)
+        menu.add(MenuItem::item(Icons::arpeggiate, arps.getUnchecked(i)->getName())->
+            closesMenu()->withAction([this, i]()
             {
-                jassertfalse;
-                return;
-            }
+                if (this->lasso->getNumSelected() < 3)
+                {
+                    jassertfalse;
+                    return;
+                }
 
-            const auto arps = App::Config().getArpeggiators()->getAll();
+                const auto arps = App::Config().getArpeggiators()->getAll();
+                const auto &clip = this->lasso->getFirstAs<NoteComponent>()->getClip();
 
-            auto *harmonicContext = dynamic_cast<KeySignaturesSequence *>(
-                this->project.getTimeline()->getKeySignatures()->getSequence());
-
-            SequencerOperations::arpeggiate(*this->lasso.get(), arps[i],
-                this->project.getProjectInfo()->getTemperament(),
-                harmonicContext,
-                this->project.getTimeline()->getTimeSignaturesAggregator(),
-                1.0f, 0.0f, false, false, true);
-        }));
+                SequencerOperations::arpeggiate(*this->lasso.get(), clip,
+                    arps[i],
+                    this->project.getProjectInfo()->getTemperament(),
+                    this->project.getTimeline()->getKeySignaturesSequence(),
+                    this->project.getTimeline()->getTimeSignaturesAggregator(),
+                    1.0f, 0.0f, false, false,
+                    true, true);
+            }));
     }
 
     return menu;
@@ -328,16 +338,5 @@ PianoRollSelectionMenu::PianoRollSelectionMenu(ProjectNode &project, WeakReferen
     project(project),
     lasso(lasso)
 {
-    if (this->lasso->getNumSelected() > 0)
-    {
-        const Clip &clip = this->lasso->getFirstAs<NoteComponent>()->getClip();
-        if (!SequencerOperations::findHarmonicContext(*this->lasso.get(), clip,
-            this->project.getTimeline()->getKeySignatures(),
-            this->harmonicContextScale, this->harmonicContextKey, this->harmonicContextKeyName))
-        {
-            DBG("Warning: harmonic context could not be detected");
-        }
-    }
-
-    this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
+    this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
 }

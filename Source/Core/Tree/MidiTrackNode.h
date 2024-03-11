@@ -43,6 +43,11 @@ public:
 
     void safeRename(const String &newName, bool sendNotifications) override;
 
+    // wrappers around TreeNode::setSelected() to allow setting selected clip
+    void setSelected(NotificationType shouldNotify = sendNotification) override;
+    void setSelected(const Clip &editableScope,
+        NotificationType shouldNotify = sendNotification);
+
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem
     //===------------------------------------------------------------------===//
@@ -143,6 +148,15 @@ protected:
     UniquePointer<MidiSequence> sequence;
     UniquePointer<Pattern> pattern;
     
+    // this is set when the track is selected, but it's
+    // not updated if the corresponding clip's params change
+    // (would require a subscription to project events)
+    Clip selectedClipId;
+    // it's easier to keep it as an identifier and look up
+    // the up-to-date clip reference in the pattern when needed
+    // (PianoRoll and others do similar thing in onAddMidiEvent):
+    const Clip &getSelectedClip() const;
+
 protected:
 
     void setTrackId(const String &val) override;

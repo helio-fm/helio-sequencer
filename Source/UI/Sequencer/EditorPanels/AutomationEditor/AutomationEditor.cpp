@@ -835,8 +835,8 @@ void AutomationEditor::onAddMidiEvent(const MidiEvent &event)
     forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
     {
         auto *sequenceMap = c.second.get();
-        const auto *targetClipParams = &c.first;
-        const int i = track->getPattern()->indexOfSorted(targetClipParams);
+        const auto *targetClipId = &c.first;
+        const int i = track->getPattern()->indexOfSorted(targetClipId);
         jassert(i >= 0);
 
         const auto *clip = track->getPattern()->getUnchecked(i);

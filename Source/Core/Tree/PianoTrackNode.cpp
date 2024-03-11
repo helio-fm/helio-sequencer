@@ -58,7 +58,7 @@ void PianoTrackNode::showPage()
 {
     if (auto *parentProject = this->findParentOfType<ProjectNode>())
     {
-        parentProject->showLinearEditor(this, this);
+        parentProject->showLinearEditor(this->getSelectedClip(), this);
     }
 }
 

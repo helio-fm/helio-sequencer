@@ -43,7 +43,7 @@ public:
     ~SequencerLayout() override;
 
     void showPatternEditor();
-    void showLinearEditor(WeakReference<MidiTrack> activeTrack);
+    void showLinearEditor(const Clip &activeClip);
 
     RollBase *getRoll() const noexcept;
     

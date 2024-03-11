@@ -79,11 +79,11 @@ void TrackGroupNode::sortByNameAmongSiblings()
         {
             String currentChildName;
             
-            if (TrackGroupNode *layerGroupItem = dynamic_cast<TrackGroupNode *>(parentItem->getChild(i)))
+            if (auto *layerGroupItem = dynamic_cast<TrackGroupNode *>(parentItem->getChild(i)))
             {
                 currentChildName = layerGroupItem->getName();
             }
-            else if (MidiTrackNode *layerItem = dynamic_cast<MidiTrackNode *>(parentItem->getChild(i)))
+            else if (auto *layerItem = dynamic_cast<MidiTrackNode *>(parentItem->getChild(i)))
             {
                 currentChildName = layerItem->getName();
             }
@@ -113,11 +113,12 @@ void TrackGroupNode::sortByNameAmongSiblings()
 void TrackGroupNode::showPage()
 {
     Array<MidiTrackNode *> subTracks(this->findChildrenOfType<MidiTrackNode>());
-    if (! subTracks.isEmpty())
+    if (!subTracks.isEmpty())
     {
-        if (ProjectNode *parentProject = this->findParentOfType<ProjectNode>())
+        if (auto *parentProject = this->findParentOfType<ProjectNode>())
         {
-            parentProject->showLinearEditor(subTracks.getFirst(), this);
+            auto *firstClip = subTracks.getFirst()->getPattern()->getClips().getFirst();
+            parentProject->showLinearEditor(*firstClip, this);
         }
     }
 }

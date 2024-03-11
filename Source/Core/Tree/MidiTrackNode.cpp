@@ -24,7 +24,7 @@
 
 #include "Pattern.h"
 #include "PianoRoll.h"
-#include "MidiTrackMenu.h"
+#include "ClipMenu.h"
 
 #include "UndoStack.h"
 #include "MidiTrackActions.h"
@@ -49,6 +49,26 @@ void MidiTrackNode::safeRename(const String &newName, bool sendNotifications)
     }
 
     this->setTreePath(fixedName, sendNotifications);
+}
+
+void MidiTrackNode::setSelected(NotificationType shouldNotify)
+{
+    const auto *firstClip = this->getPattern()->getClips().getFirst();
+    this->setSelected(*firstClip, shouldNotify);
+}
+
+void MidiTrackNode::setSelected(const Clip &editableScope, NotificationType shouldNotify)
+{
+    this->selectedClipId = editableScope;
+    TreeNode::setSelected(shouldNotify);
+}
+
+const Clip &MidiTrackNode::getSelectedClip() const
+{
+    const auto index = this->getPattern()->indexOfSorted(&this->selectedClipId);
+    jassert(index >= 0);
+    return index >= 0 ?
+        *this->getPattern()->getClips()[index] : this->selectedClipId;
 }
 
 //===----------------------------------------------------------------------===//
@@ -345,7 +365,7 @@ void MidiTrackNode::setTreePath(const String &path, bool sendNotifications)
 
         for (int j = 0; j < rootItem->getNumChildren(); ++j)
         {
-            if (TrackGroupNode *group = dynamic_cast<TrackGroupNode *>(rootItem->getChild(j)))
+            if (auto *group = dynamic_cast<TrackGroupNode *>(rootItem->getChild(j)))
             {
                 if (group->getName() == parts[i])
                 {
@@ -570,7 +590,7 @@ bool MidiTrackNode::hasMenu() const noexcept
 
 UniquePointer<Component> MidiTrackNode::createMenu()
 {
-    return make<MidiTrackMenu>(this, this->getProject()->getUndoStack());
+    return make<ClipMenu>(this->getSelectedClip(), this->getProject()->getUndoStack());
 }
 
 //===----------------------------------------------------------------------===//

@@ -878,9 +878,8 @@
                 file="../../Source/UI/Menus/InstrumentMenu.cpp"/>
           <FILE id="GfB3bQ" name="InstrumentMenu.h" compile="0" resource="0"
                 file="../../Source/UI/Menus/InstrumentMenu.h"/>
-          <FILE id="cM8qY1" name="MidiTrackMenu.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/MidiTrackMenu.cpp"/>
-          <FILE id="UXHKHD" name="MidiTrackMenu.h" compile="0" resource="0" file="../../Source/UI/Menus/MidiTrackMenu.h"/>
+          <FILE id="cM8qY1" name="ClipMenu.cpp" compile="1" resource="0" file="../../Source/UI/Menus/ClipMenu.cpp"/>
+          <FILE id="UXHKHD" name="ClipMenu.h" compile="0" resource="0" file="../../Source/UI/Menus/ClipMenu.h"/>
           <FILE id="B2uckf" name="OrchestraPitMenu.cpp" compile="1" resource="0"
                 file="../../Source/UI/Menus/OrchestraPitMenu.cpp"/>
           <FILE id="ya6dc4" name="OrchestraPitMenu.h" compile="0" resource="0"

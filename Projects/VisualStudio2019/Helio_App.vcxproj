@@ -652,7 +652,7 @@
     <ClCompile Include="..\..\Source\UI\Menus\InstrumentMenu.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\MidiTrackMenu.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\ClipMenu.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\OrchestraPitMenu.cpp">
@@ -3305,7 +3305,7 @@
     <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlHistorySelectionMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlStageSelectionMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\InstrumentMenu.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\MidiTrackMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\ClipMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\OrchestraPitMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\PatternsMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\ProjectMenu.h"/>

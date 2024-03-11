@@ -250,18 +250,14 @@ void ProjectNode::setMidiRecordingTarget(const Clip *clip)
 void ProjectNode::setEditableScope(const Clip &activeClip, bool shouldFocusToArea)
 {
     auto *activeTrack = activeClip.getPattern()->getTrack();
-
     if (auto *item = dynamic_cast<PianoTrackNode *>(activeTrack))
     {
         this->timeline->getTimeSignaturesAggregator()->setActiveScope({ activeTrack });
 
-        // make sure the item is selected, if it's not yet;
-        // this implies calling showPage() -> showLinearEditor(),
-        // which may update the scope to its first clip,
-        item->setSelected();
+        // make sure the item is selected, if it's not yet; this may end up calling
+        // setSelected() -> showPage() -> showLinearEditor() -> setEditableScope() again
+        item->setSelected(activeClip);
 
-        // and then we have to update the scope to correct clip,
-        // so that roll's scope is updated twice :(
         this->changeListeners.call(&ProjectListener::onChangeViewEditableScope,
             activeTrack, activeClip, shouldFocusToArea);
 
@@ -276,20 +272,18 @@ void ProjectNode::showPatternEditor(WeakReference<TreeNode> source)
     App::Layout().showPage(this->sequencerLayout.get(), source);
 }
 
-void ProjectNode::showLinearEditor(WeakReference<MidiTrack> activeTrack,
+void ProjectNode::showLinearEditor(const Clip &activeClip,
     WeakReference<TreeNode> source)
 {
     jassert(source != nullptr);
-    jassert(activeTrack != nullptr);
 
-    auto *pianoTrack = dynamic_cast<PianoTrackNode *>(activeTrack.get());
-    if (pianoTrack == nullptr)
+    if (!activeClip.isValid())
     {
         jassertfalse;
         return;
     }
 
-    this->sequencerLayout->showLinearEditor(activeTrack);
+    this->sequencerLayout->showLinearEditor(activeClip);
     this->lastShownTrack = source;
     App::Layout().showPage(this->sequencerLayout.get(), source);
 }

@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "MidiTrackMenu.h"
+#include "ClipMenu.h"
 #include "MidiTrackNode.h"
 
 #include "MainLayout.h"
@@ -26,16 +26,23 @@
 
 #include "Workspace.h"
 
-MidiTrackMenu::MidiTrackMenu(WeakReference<MidiTrack> track, WeakReference<UndoStack> undoStack) :
-    track(track),
+ClipMenu::ClipMenu(const Clip &clip, WeakReference<UndoStack> undoStack) :
+    clip(clip),
     undoStack(undoStack)
 {
-    this->initDefaultMenu();
+    jassert(clip.isValid());
+    this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
 }
 
-void MidiTrackMenu::initDefaultMenu()
+MenuPanel::Menu ClipMenu::makeDefaultMenu()
 {
     MenuPanel::Menu menu;
+
+    // big part of this menu duplicates the menu code
+    // in PatternRollSelectionMenu with minor differences
+
+    jassert(clip.isValid());
+    const auto *track = this->clip.getPattern()->getTrack();
 
 #if PLATFORM_MOBILE
     menu.add(MenuItem::item(Icons::selectAll, CommandIDs::SelectAllEvents,
@@ -45,9 +52,21 @@ void MidiTrackMenu::initDefaultMenu()
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
         TRANS(I18n::Menu::trackRename))->closesMenu());
 
-    const auto hasTs = this->track->hasTimeSignatureOverride();
+    const auto hasTs = track->hasTimeSignatureOverride();
     menu.add(MenuItem::item(Icons::meter, CommandIDs::SetTrackTimeSignature,
         hasTs ? TRANS(I18n::Menu::timeSignatureChange) : TRANS(I18n::Menu::timeSignatureAdd))->
+        closesMenu());
+
+    const auto muteAction = this->clip.isMuted() ?
+        TRANS(I18n::Menu::unmute) : TRANS(I18n::Menu::mute);
+    menu.add(MenuItem::item(Icons::mute,
+        CommandIDs::ToggleMuteClips, muteAction)->closesMenu());
+
+    const auto soloAction = this->clip.isSoloed() ?
+        TRANS(I18n::Menu::unsolo) : TRANS(I18n::Menu::solo);
+    menu.add(MenuItem::item(Icons::unmute,
+        CommandIDs::ToggleSoloClips, soloAction)->
+        disabledIf(!this->clip.canBeSoloed())->
         closesMenu());
 
     menu.add(MenuItem::item(Icons::copy, CommandIDs::DuplicateTrack,
@@ -58,20 +77,32 @@ void MidiTrackMenu::initDefaultMenu()
         CommandIDs::DeleteTrack, TRANS(I18n::Menu::trackDelete)));
 #endif
 
+    menu.add(MenuItem::item(Icons::reprise,
+        CommandIDs::ToggleLoopOverSelection,
+        TRANS(I18n::CommandPalette::toggleLoopOverSelection))->closesMenu());
+
+    menu.add(MenuItem::item(Icons::ellipsis,
+        TRANS(I18n::Menu::Selection::notesQuantizeTo))->
+        withSubmenu()->
+        withAction([this]()
+    {
+        this->updateContent(this->makeQuantizationMenu(), MenuPanel::SlideLeft);
+    }));
+
     menu.add(MenuItem::item(Icons::list, TRANS(I18n::Menu::trackChangeChannel))->
         withSubmenu()->withAction([this]()
-        {
-            this->initChannelSelectionMenu();
-        }));
+    {
+        this->updateContent(this->makeChannelSelectionMenu(), MenuPanel::SlideLeft);
+    }));
 
     const auto instruments = App::Workspace().getAudioCore().getInstrumentsExceptInternal();
     menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->
         disabledIf(instruments.isEmpty())->withSubmenu()->withAction([this]()
     {
-        this->initInstrumentSelectionMenu();
+        this->updateContent(this->makeInstrumentSelectionMenu(), MenuPanel::SlideLeft);
     }));
 
-    const auto trackInstrumentId = this->track->getTrackInstrumentId();
+    const auto trackInstrumentId = track->getTrackInstrumentId();
     for (const auto *instrument : instruments)
     {
         if (instrument->getIdAndHash() == trackInstrumentId)
@@ -88,43 +119,76 @@ void MidiTrackMenu::initDefaultMenu()
         }
     }
 
-    this->updateContent(menu, MenuPanel::SlideRight);
+    return menu;
 }
 
-void MidiTrackMenu::initChannelSelectionMenu()
+MenuPanel::Menu ClipMenu::makeQuantizationMenu()
+{
+    MenuPanel::Menu menu;
+
+    using namespace I18n::Menu;
+
+    menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
+    {
+        this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
+    }));
+
+#define CLIP_QUANTIZE_ITEM(cmd) \
+    MenuItem::item(Icons::ellipsis, cmd, \
+        TRANS(CommandIDs::getTranslationKeyFor(cmd)))->closesMenu()
+
+    menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_1));
+    menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_2));
+    menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_4));
+    menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_8));
+    menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_16));
+    menu.add(CLIP_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_32));
+
+#undef CLIP_QUANTIZE_ITEM
+
+    return menu;
+}
+
+MenuPanel::Menu ClipMenu::makeChannelSelectionMenu()
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
-        this->initDefaultMenu();
+        this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
     }));
+
+    jassert(clip.isValid());
+    auto *track = this->clip.getPattern()->getTrack();
 
     for (int channel = 1; channel <= Globals::numChannels; ++channel)
     {
-        const bool isTicked = this->track->getTrackChannel() == channel;
+        const bool isTicked = track->getTrackChannel() == channel;
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::ellipsis, String(channel))->
             disabledIf(isTicked)->
-            withAction([this, channel]()
-            {
-                this->undoStack->beginNewTransaction();
-                this->track->setTrackChannel(channel, true, sendNotification);
-                this->initDefaultMenu();
-            }));
+            withAction([this, track, channel]()
+        {
+            this->undoStack->beginNewTransaction();
+            track->setTrackChannel(channel, true, sendNotification);
+            this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
+        }));
     }
 
-    this->updateContent(menu, MenuPanel::SlideLeft);
+    return menu;
 }
 
-void MidiTrackMenu::initInstrumentSelectionMenu()
+MenuPanel::Menu ClipMenu::makeInstrumentSelectionMenu()
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
-        this->initDefaultMenu();
+        this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
     }));
     
+    jassert(clip.isValid());
+    auto *track = this->clip.getPattern()->getTrack();
+
     const auto &audioCore = App::Workspace().getAudioCore();
-    const auto *selectedInstrument = audioCore.findInstrumentById(this->track->getTrackInstrumentId());
+    const auto *selectedInstrument = audioCore.findInstrumentById(track->getTrackInstrumentId());
 
     for (const auto *instrument : audioCore.getInstrumentsExceptInternal())
     {
@@ -132,13 +196,13 @@ void MidiTrackMenu::initInstrumentSelectionMenu()
         const String instrumentId = instrument->getIdAndHash();
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, instrument->getName())->
             disabledIf(!instrument->isValid() || isTicked)->
-            withAction([this, instrumentId]()
+            withAction([this, track, instrumentId]()
         {
             this->undoStack->beginNewTransaction();
-            this->track->setTrackInstrumentId(instrumentId, true, sendNotification);
-            this->initDefaultMenu();
+            track->setTrackInstrumentId(instrumentId, true, sendNotification);
+            this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
         }));
     }
     
-    this->updateContent(menu, MenuPanel::SlideLeft);
+    return menu;
 }

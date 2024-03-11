@@ -36,16 +36,12 @@ private:
     ProjectNode &project;
     WeakReference<Lasso> lasso;
 
-    Note::Key harmonicContextKey = -1;
-    String harmonicContextKeyName;
-    Scale::Ptr harmonicContextScale = nullptr;
-
-    MenuPanel::Menu createDefaultPanel();
-    MenuPanel::Menu createQuantizationPanel();
-    MenuPanel::Menu createRefactoringPanel();
-    MenuPanel::Menu createMoveToTrackPanel();
-    MenuPanel::Menu createTupletsPanel();
-    MenuPanel::Menu createScalesPanel();
-    MenuPanel::Menu createArpsPanel();
+    MenuPanel::Menu makeDefaultMenu();
+    MenuPanel::Menu makeQuantizationMenu();
+    MenuPanel::Menu makeRefactoringMenu();
+    MenuPanel::Menu makeMoveToTrackMenu();
+    MenuPanel::Menu makeTupletsMenu();
+    MenuPanel::Menu makeRescalingMenu();
+    MenuPanel::Menu makeArpsMenu();
 
 };
