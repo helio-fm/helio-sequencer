@@ -25,17 +25,14 @@ class ProjectNode;
 #include "MenuPanel.h"
 #include "Scale.h"
 #include "Note.h"
-#include "KeySignatureEvent.h"
+#include "KeySignaturesSequence.h"
 
 class RescalePreviewTool final : public MenuPanel
 {
 public:
 
-    RescalePreviewTool(SafePointer<PianoRoll> roll,
-        Note::Key keyContext, Scale::Ptr scaleContext);
-
-    static RescalePreviewTool *createWithinSelectionAndContext(SafePointer<PianoRoll> roll,
-        WeakReference<MidiTrack> keySignatures);
+    RescalePreviewTool(PianoRoll &roll,
+        WeakReference<KeySignaturesSequence> harmonicContext);
 
     void handleCommandMessage(int commandId) override;
 
@@ -44,10 +41,8 @@ private:
     void dismissCalloutAsync();
     void undoIfNeeded();
 
-    SafePointer<PianoRoll> roll;
-
-    Note::Key keyContext;
-    Scale::Ptr scaleContext;
+    PianoRoll &roll;
+    WeakReference<KeySignaturesSequence> harmonicContext;
 
     bool hasMadeChanges = false;
     Scale::Ptr lastChosenScale;

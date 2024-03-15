@@ -44,216 +44,15 @@
 
 #include "ColourIDs.h"
 
-// a big FIXME:
-// most of this code assumes every track has its own undo stack;
-// sounds weird, which it is, but that's how it was implemented back in 2014;
-// later I've discovered that the idea of multiple undo stacks sucks,
-// and left wrappers in sequence classes which use the project's undo stack;
-// the code here still needs refactoring and passing common undo stack
-// reference to each method.
-
-using PianoChangeGroup = Array<Note>;
-using AnnotationChangeGroup = Array<AnnotationEvent>;
-using AutoChangeGroup = Array<AutomationEvent>;
-
-template <typename T>
-class ChangeGroupProxy final : public T, public ReferenceCountedObject
-{
-public:
-
-    ChangeGroupProxy() {}
-    using Ptr = ReferenceCountedObjectPtr<ChangeGroupProxy>;
-};
-
-using PianoChangeGroupProxy = ChangeGroupProxy<PianoChangeGroup>;
-using AutoChangeGroupProxy = ChangeGroupProxy<AutoChangeGroup>;
-
-using PianoChangeGroupsPerLayer = FlatHashMap<String, PianoChangeGroupProxy::Ptr, StringHash>;
-using AutoChangeGroupsPerLayer = FlatHashMap<String, AutoChangeGroupProxy::Ptr, StringHash>;
-
-template<typename TEvent, typename TGroup, typename TGroups>
-void splitChangeGroupByLayers(const TGroup &group, TGroups &outGroups)
-{
-    for (int i = 0; i < group.size(); ++i)
-    {
-        const TEvent &note = group.getUnchecked(i);
-        const String &trackId(note.getSequence()->getTrackId());
-        
-        typename ChangeGroupProxy<TGroup>::Ptr targetArray;
-        
-        if (outGroups.contains(trackId))
-        {
-            targetArray = outGroups[trackId];
-        }
-        else
-        {
-            targetArray = new ChangeGroupProxy<TGroup>();
-        }
-        
-        targetArray->add(note);
-        outGroups[trackId] = targetArray;
-    }
-}
-
-// returns true if madeAnyChanges
-template<typename TEvent, typename TLayer, typename TGroup, typename TGroups>
-bool applyChanges(const TGroup &groupBefore,
-                  const TGroup &groupAfter,
-                  bool &didCheckpoint)
-{
-    bool madeAnyChanges = false;
-    
-    TGroups groupsBefore, groupsAfter;
-    
-    splitChangeGroupByLayers<TEvent, TGroup, TGroups>(groupBefore, groupsBefore);
-    splitChangeGroupByLayers<TEvent, TGroup, TGroups>(groupAfter, groupsAfter);
-    
-    for (const auto &changeGroupsIterator : groupsBefore)
-    {
-        auto currentGroupBefore = changeGroupsIterator.second;
-        auto currentGroupAfter = groupsAfter[changeGroupsIterator.first];
-        
-        MidiSequence *midiLayer = currentGroupBefore->getFirst().getSequence();
-        TLayer *targetLayer = dynamic_cast<TLayer *>(midiLayer);
-        jassert(targetLayer != nullptr);
-        
-        if (! didCheckpoint)
-        {
-            targetLayer->checkpoint();
-            didCheckpoint = true;
-        }
-        
-        targetLayer->changeGroup(*currentGroupBefore, *currentGroupAfter, true);
-        madeAnyChanges = true;
-    }
-    
-    return madeAnyChanges;
-}
-
-// returns true if madeAnyChanges
-template<typename TEvent, typename TLayer, typename TGroup, typename TGroups>
-bool applyRemovals(const TGroup &groupToRemove,
-                   bool &didCheckpoint)
-{
-    bool madeAnyChanges = false;
-    
-    TGroups groupsToRemove;
-    
-    splitChangeGroupByLayers<TEvent, TGroup, TGroups>(groupToRemove, groupsToRemove);
-    
-    for (const auto &changeGroupsIterator : groupsToRemove)
-    {
-        auto currentRemovalGroup = changeGroupsIterator.second;
-        
-        MidiSequence *midiLayer = currentRemovalGroup->getFirst().getSequence();
-        TLayer *targetLayer = dynamic_cast<TLayer *>(midiLayer);
-        jassert(targetLayer != nullptr);
-        
-        if (! didCheckpoint)
-        {
-            targetLayer->checkpoint();
-            didCheckpoint = true;
-        }
-        
-        targetLayer->removeGroup(*currentRemovalGroup, true);
-        madeAnyChanges = true;
-    }
-    
-    return madeAnyChanges;
-}
-
-// returns true if madeAnyChanges
-template<typename TEvent, typename TLayer, typename TGroup, typename TGroups>
-bool applyInsertions(const TGroup &groupToInsert,
-                     bool &didCheckpoint)
-{
-    bool madeAnyChanges = false;
-    
-    TGroups groupsToInsert;
-    
-    splitChangeGroupByLayers<TEvent, TGroup, TGroups>(groupToInsert, groupsToInsert);
-    
-    for (const auto &changeGroupsIterator : groupsToInsert)
-    {
-        auto currentInsertionGroup = changeGroupsIterator.second;
-        
-        MidiSequence *midiLayer = currentInsertionGroup->getFirst().getSequence();
-        TLayer *targetLayer = dynamic_cast<TLayer *>(midiLayer);
-        jassert(targetLayer != nullptr);
-        
-        if (! didCheckpoint)
-        {
-            targetLayer->checkpoint();
-            didCheckpoint = true;
-        }
-        
-        targetLayer->insertGroup(*currentInsertionGroup, true);
-        madeAnyChanges = true;
-    }
-    
-    return madeAnyChanges;
-}
-
-bool applyPianoChanges(const PianoChangeGroup &groupBefore, const PianoChangeGroup &groupAfter, bool &didCheckpoint)
-{ return applyChanges<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint); }
-
-bool applyAutoChanges(const AutoChangeGroup &groupBefore, const AutoChangeGroup &groupAfter, bool &didCheckpoint)
-{ return applyChanges<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint); }
-
-
-bool applyPianoRemovals(const PianoChangeGroup &group, bool &didCheckpoint)
-{ return applyRemovals<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, didCheckpoint); }
-
-// особенный случай - я хочу, чтоб хотя бы одно авто-событие на слое оставалось
-bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint)
-{
-    bool madeAnyChanges = false;
-    
-    AutoChangeGroupsPerLayer groupsToRemove;
-    
-    splitChangeGroupByLayers<AutomationEvent, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, groupsToRemove);
-    
-    for (const auto &changeGroupsIterator : groupsToRemove)
-    {
-        auto currentRemovalGroup = changeGroupsIterator.second;
-        
-        MidiSequence *sequence = currentRemovalGroup->getFirst().getSequence();
-        AutomationSequence *targetLayer = dynamic_cast<AutomationSequence *>(sequence);
-        jassert(targetLayer != nullptr);
-        
-        if ((targetLayer->size() - currentRemovalGroup->size()) <= 1)
-        {
-            currentRemovalGroup->remove(0);
-        }
-        
-        if (! didCheckpoint)
-        {
-            targetLayer->checkpoint();
-            didCheckpoint = true;
-        }
-        
-        targetLayer->removeGroup(*currentRemovalGroup, true);
-        madeAnyChanges = true;
-    }
-    
-    return madeAnyChanges;
-}
-
-bool applyPianoInsertions(const PianoChangeGroup &group, bool &didCheckpoint)
-{ return applyInsertions<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, didCheckpoint); }
-
-bool applyAutoInsertions(const AutoChangeGroup &group, bool &didCheckpoint)
-{ return applyInsertions<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint); }
-
 //===----------------------------------------------------------------------===//
-// More helpers
+// Helpers
 //===----------------------------------------------------------------------===//
 
-PianoSequence *SequencerOperations::getPianoSequence(const Lasso &selection)
+PianoSequence *SequencerOperations::getPianoSequence(const NoteListBase &notes)
 {
     // assumes all selection only contains notes of a single sequence
-    jassert(selection.getNumSelected() > 0);
-    return static_cast<PianoSequence *>(selection.getFirstAs<NoteComponent>()->getNote().getSequence());
+    jassert(notes.size() > 0);
+    return static_cast<PianoSequence *>(notes.getNoteUnchecked(0).getSequence());
 }
 
 PianoSequence *SequencerOperations::getPianoSequence(const Clip &targetClip)
@@ -261,34 +60,35 @@ PianoSequence *SequencerOperations::getPianoSequence(const Clip &targetClip)
     return static_cast<PianoSequence *>(targetClip.getPattern()->getTrack()->getSequence());
 }
 
-float SequencerOperations::findStartBeat(const Lasso &selection)
+float SequencerOperations::findStartBeat(const NoteListBase &notes)
 {
-    if (selection.getNumSelected() == 0)
-    { return 0.f; }
+    if (notes.size() == 0)
+    {
+        return 0.f;
+    }
     
     float startBeat = FLT_MAX;
-    
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    for (int i = 0; i < notes.size(); ++i)
     {
-        const auto *note = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-        startBeat = jmin(startBeat, note->getBeat());
+        const auto &note = notes.getNoteUnchecked(i);
+        startBeat = jmin(startBeat, note.getBeat());
     }
     
     return startBeat;
 }
 
-float SequencerOperations::findEndBeat(const Lasso &selection)
+float SequencerOperations::findEndBeat(const NoteListBase &notes)
 {
-    if (selection.getNumSelected() == 0)
-    { return 0.f; }
+    if (notes.size() == 0)
+    {
+        return 0.f;
+    }
     
     float endBeat = -FLT_MAX;
-    
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    for (int i = 0; i < notes.size(); ++i)
     {
-        const auto *nc = static_cast<const NoteComponent *>(selection.getSelectedItem(i));
-        const float beatPlusLength = nc->getBeat() + nc->getLength();
-        endBeat = jmax(endBeat, beatPlusLength);
+        const auto &note = notes.getNoteUnchecked(i);
+        endBeat = jmax(endBeat, note.getBeat() + note.getLength());
     }
     
     return endBeat;
@@ -297,16 +97,14 @@ float SequencerOperations::findEndBeat(const Lasso &selection)
 float SequencerOperations::findStartBeat(const Array<Note> &selection)
 {
     if (selection.size() == 0)
-    { return 0.f; }
+    {
+        return 0.f;
+    }
     
     float startBeat = FLT_MAX;
-    
-    for (int i = 0; i < selection.size(); ++i)
+    for (const auto &note : selection)
     {
-        if (startBeat > selection.getUnchecked(i).getBeat())
-        {
-            startBeat = selection.getUnchecked(i).getBeat();
-        }
+        startBeat = jmin(startBeat, note.getBeat());
     }
     
     return startBeat;
@@ -314,26 +112,25 @@ float SequencerOperations::findStartBeat(const Array<Note> &selection)
 
 float SequencerOperations::findStartBeat(const WeakReference<Lasso> selection)
 {
-    if (selection != nullptr) { return findStartBeat(*selection); }
-    return 0.f;
+    if (selection == nullptr)
+    {
+        return 0.f;
+    }
+
+    return SequencerOperations::findStartBeat(*selection);
 }
 
 float SequencerOperations::findEndBeat(const Array<Note> &selection)
 {
     if (selection.size() == 0)
-    { return 0.f; }
+    {
+        return 0.f;
+    }
     
     float endBeat = -FLT_MAX;
-    
-    for (int i = 0; i < selection.size(); ++i)
+    for (const auto &note : selection)
     {
-        const auto &nc = selection.getUnchecked(i);
-        const float beatPlusLength = nc.getBeat() + nc.getLength();
-        
-        if (endBeat < beatPlusLength)
-        {
-            endBeat = beatPlusLength;
-        }
+        endBeat = jmax(endBeat, note.getBeat() + note.getLength());
     }
     
     return endBeat;
@@ -341,75 +138,116 @@ float SequencerOperations::findEndBeat(const Array<Note> &selection)
 
 float SequencerOperations::findEndBeat(const WeakReference<Lasso> selection)
 {
-    if (selection != nullptr) { return findEndBeat(*selection); }
-    return 0.f;
+    if (selection == nullptr)
+    {
+        return 0.f;
+    }
+
+    return SequencerOperations::findEndBeat(*selection);
 }
 
-void SequencerOperations::cleanupOverlaps(Lasso &selection, bool shouldCheckpoint)
+void SequencerOperations::previewSelection(const Lasso &selection, Transport &transport, int maxSize /*= 7*/)
 {
-    if (selection.getNumSelected() < 2)
+    if (selection.size() == 0)
+    {
+        return;
+    }
+
+    auto *sequence = getPianoSequence(selection);
+    jassert(sequence);
+
+    if (selection.getNumSelected() <= maxSize)
+    {
+        for (int i = 0; i < selection.getNumSelected(); ++i)
+        {
+            auto *nc = selection.getItemAs<NoteComponent>(i);
+            transport.previewKey(sequence->getTrack()->getTrackId(),
+                sequence->getTrack()->getTrackChannel(),
+                nc->getNote().getKey() + nc->getClip().getKey(),
+                nc->getVelocity() * nc->getClip().getVelocity(),
+                nc->getLength());
+        }
+    }
+}
+
+void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoable, bool shouldCheckpoint)
+{
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() < 2)
     {
         return;
     }
 
     bool didCheckpoint = !shouldCheckpoint;
 
-    // 1 convert this
+    auto *pianoSequence = getPianoSequence(notes);
+    jassert(pianoSequence);
+
+    // convert this
     //    ----
     // ------------
     // into this
     //    ---------
     // ------------
     
-    // todo repeat while does any changes
-    
     bool step1HasChanges = false;
     
     do
     {
-        PianoChangeGroup group1Before, group1After;
+        Array<Note> group1Before, group1After;
 
-        for (int i = 0; i < selection.getNumSelected(); ++i)
+        for (int i = 0; i < notes.size(); ++i)
         {
-            const auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            const auto &note = notes.getNoteUnchecked(i);
             
             // для каждой ноты найти ноту, которая полностью перекрывает ее на максимальную длину
             
-            float deltaBeats = -FLT_MAX;
+            float deltaLength = -FLT_MAX;
             const Note *overlappingNote = nullptr;
             
-            for (int j = 0; j < selection.getNumSelected(); ++j)
+            for (int j = 0; j < notes.size(); ++j)
             {
-                auto *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
+                const auto &otherNote = notes.getNoteUnchecked(j);
                 
-                if (nc->getKey() == nc2->getKey() &&
-                    nc->getBeat() > nc2->getBeat() &&
-                    (nc->getBeat() + nc->getLength()) < (nc2->getBeat() + nc2->getLength()))
+                if (note.getKey() == otherNote.getKey() &&
+                    note.getBeat() > otherNote.getBeat() &&
+                    (note.getBeat() + note.getLength()) < (otherNote.getBeat() + otherNote.getLength()))
                 {
-                    const float currentDelta = (nc2->getBeat() + nc2->getLength()) - (nc->getBeat() + nc->getLength());
+                    const float currentDelta =
+                        (otherNote.getBeat() + otherNote.getLength()) - (note.getBeat() + note.getLength());
                     
-                    if (deltaBeats < currentDelta)
+                    if (deltaLength < currentDelta)
                     {
-                        deltaBeats = currentDelta;
-                        overlappingNote = &nc2->getNote();
+                        deltaLength = currentDelta;
+                        overlappingNote = &otherNote;
                     }
                 }
             }
             
             if (overlappingNote != nullptr)
             {
-                const float newLength = nc->getLength() + deltaBeats;
-                group1Before.add(nc->getNote());
-                group1After.add(nc->getNote().withLength(newLength));
+                group1Before.add(note);
+                group1After.add(note.withDeltaLength(deltaLength));
             }
         }
         
-        step1HasChanges = applyPianoChanges(group1Before, group1After, didCheckpoint);
+        step1HasChanges = !group1Before.isEmpty();
+
+        if (step1HasChanges)
+        {
+            if (!didCheckpoint)
+            {
+                pianoSequence->checkpoint();
+                didCheckpoint = true;
+            }
+
+            pianoSequence->changeGroup(group1Before, group1After, undoable);
+        }
     }
     while (step1HasChanges);
     
-    
-    // 1 convert this
+
+    // convert this
     //    -------------
     // ------------
     // into this
@@ -420,49 +258,61 @@ void SequencerOperations::cleanupOverlaps(Lasso &selection, bool shouldCheckpoin
 
     do
     {
-        PianoChangeGroup group2Before, group2After;
+        Array<Note> group2Before, group2After;
         
-        for (int i = 0; i < selection.getNumSelected(); ++i)
+        for (int i = 0; i < notes.size(); ++i)
         {
-            const auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            const auto &note = notes.getNoteUnchecked(i);
             
             // для каждой ноты найти ноту, которая полностью перекрывает ее на максимальную длину
             
-            float deltaBeats = -FLT_MAX;
-            const NoteComponent *overlappingNote = nullptr;
+            float deltaLength = -FLT_MAX;
+            const Note *overlappingNote = nullptr;
             
-            for (int j = 0; j < selection.getNumSelected(); ++j)
+            for (int j = 0; j < notes.size(); ++j)
             {
-                auto *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
+                const auto &otherNote = notes.getNoteUnchecked(j);
                 
-                if (nc->getKey() == nc2->getKey() &&
-                    nc->getBeat() > nc2->getBeat() &&
-                    nc->getBeat() < (nc2->getBeat() + nc2->getLength()) &&
-                    (nc->getBeat() + nc->getLength()) > (nc2->getBeat() + nc2->getLength()))
+                if (note.getKey() == otherNote.getKey() &&
+                    note.getBeat() > otherNote.getBeat() &&
+                    note.getBeat() < (otherNote.getBeat() + otherNote.getLength()) &&
+                    (note.getBeat() + note.getLength()) > (otherNote.getBeat() + otherNote.getLength()))
                 {
-                    const float currentDelta = (nc->getBeat() + nc->getLength()) - (nc2->getBeat() + nc2->getLength());
+                    const float currentDelta =
+                        (note.getBeat() + note.getLength()) - (otherNote.getBeat() + otherNote.getLength());
                     
-                    if (deltaBeats < currentDelta)
+                    if (deltaLength < currentDelta)
                     {
-                        deltaBeats = currentDelta;
-                        overlappingNote = nc2;
+                        deltaLength = currentDelta;
+                        overlappingNote = &otherNote;
                     }
                 }
             }
             
             if (overlappingNote != nullptr)
             {
-                group2Before.add(overlappingNote->getNote());
-                group2After.add(overlappingNote->getNote().withDeltaLength(deltaBeats));
+                group2Before.add(*overlappingNote);
+                group2After.add(overlappingNote->withDeltaLength(deltaLength));
             }
         }
-        
-        step2HasChanges = applyPianoChanges(group2Before, group2After, didCheckpoint);
+
+        step2HasChanges = !group2Before.isEmpty();
+
+        if (step2HasChanges)
+        {
+            if (!didCheckpoint)
+            {
+                pianoSequence->checkpoint();
+                didCheckpoint = true;
+            }
+
+            pianoSequence->changeGroup(group2Before, group2After, undoable);
+        }
     }
     while (step2HasChanges);
     
     
-    // 3 convert this
+    // convert this
     // ------------       ---------
     //    ---------    ------------
     // into this
@@ -473,170 +323,176 @@ void SequencerOperations::cleanupOverlaps(Lasso &selection, bool shouldCheckpoin
 
     do
     {
-        PianoChangeGroup group3Before, group3After;
+        Array<Note> group3Before, group3After;
         
-        for (int i = 0; i < selection.getNumSelected(); ++i)
+        for (int i = 0; i < notes.size(); ++i)
         {
-            const auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            const auto &note = notes.getNoteUnchecked(i);
             
             // для каждой ноты найти ноту, которая перекрывает ее максимально
             
             float overlappingBeats = -FLT_MAX;
-            const NoteComponent *overlappingNote = nullptr;
+            const Note *overlappingNote = nullptr;
             
-            for (int j = 0; j < selection.getNumSelected(); ++j)
+            for (int j = 0; j < notes.size(); ++j)
             {
-                auto *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
+                const auto &otherNote = notes.getNoteUnchecked(j);
                 
-                if (nc->getKey() == nc2->getKey() &&
-                    nc->getBeat() < nc2->getBeat() &&
-                    (nc->getBeat() + nc->getLength()) >= (nc2->getBeat() + nc2->getLength()))
+                if (note.getKey() == otherNote.getKey() &&
+                    note.getBeat() < otherNote.getBeat() &&
+                    (note.getBeat() + note.getLength()) >= (otherNote.getBeat() + otherNote.getLength()))
                 {
                     // >0 : has overlap
-                    const float overlapsWith = (nc->getBeat() + nc->getLength()) - nc2->getBeat();
+                    const float overlapsWith = (note.getBeat() + note.getLength()) - otherNote.getBeat();
                     
                     if (overlapsWith > overlappingBeats)
                     {
                         overlappingBeats = overlapsWith;
-                        overlappingNote = nc2;
+                        overlappingNote = &otherNote;
                     }
                 }
             }
             
             if (overlappingNote != nullptr)
             {
-                const float newLength = nc->getLength() - overlappingBeats;
-                group3Before.add(nc->getNote());
-                group3After.add(nc->getNote().withLength(newLength));
+                group3Before.add(note);
+                group3After.add(note.withDeltaLength(-overlappingBeats));
             }
         }
-        
-        step3HasChanges = applyPianoChanges(group3Before, group3After, didCheckpoint);
+
+        step3HasChanges = !group3Before.isEmpty();
+
+        if (step3HasChanges)
+        {
+            if (!didCheckpoint)
+            {
+                pianoSequence->checkpoint();
+                didCheckpoint = true;
+            }
+
+            pianoSequence->changeGroup(group3Before, group3After, undoable);
+        }
     }
     while (step3HasChanges);
-    
     
     // remove duplicates
     
     FlatHashMap<MidiEvent::Id, Note> deferredRemoval;
     FlatHashMap<MidiEvent::Id, Note> unremovableNotes;
     
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    for (int i = 0; i < notes.size(); ++i)
     {
-        const auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+        const auto &note = notes.getNoteUnchecked(i);
         
-        for (int j = 0; j < selection.getNumSelected(); ++j)
+        for (int j = 0; j < notes.size(); ++j)
         {
             if (i == j)
             {
                 continue;
             }
             
-            const auto *nc2 = static_cast<NoteComponent *>(selection.getSelectedItem(j));
+            const auto &otherNote = notes.getNoteUnchecked(j);
             
-            // full overlap
-            //const bool isOverlappingNote = (nc->getKey() == nc2->getKey() &&
-            //                                nc->getBeat() >= nc2->getBeat() &&
-            //                                (nc->getBeat() + nc->getLength()) <= (nc2->getBeat() + nc2->getLength()));
+            // full overlap (shouldn't happen at this point)
+            //const bool isOverlappingNote = (note.getKey() == otherNote.getKey() &&
+            //    note.getBeat() >= otherNote.getBeat() &&
+            //    (note.getBeat() + note.getLength()) <= (otherNote.getBeat() + otherNote.getLength()));
 
-            // partial overlaps also
-            const bool isOverlappingNote = (nc->getKey() == nc2->getKey() &&
-                                            nc->getBeat() >= nc2->getBeat() &&
-                                            nc->getBeat() < (nc2->getBeat() + nc2->getLength()));
+            // partial overlap
+            const bool isOverlappingNote =
+                (note.getKey() == otherNote.getKey() &&
+                    note.getBeat() >= otherNote.getBeat() &&
+                    note.getBeat() < (otherNote.getBeat() + otherNote.getLength()));
             
-            const bool startsFromTheSameBeat = (nc->getKey() == nc2->getKey() &&
-                                                nc->getBeat() == nc2->getBeat());
+            const bool startsFromTheSameBeat =
+                (note.getKey() == otherNote.getKey() &&
+                    note.getBeat() == otherNote.getBeat());
             
-            const bool isOriginalNote = unremovableNotes.contains(nc2->getNote().getId());
+            const bool isOriginalNote = unremovableNotes.contains(otherNote.getId());
             
-            if (! isOriginalNote &&
+            if (!isOriginalNote &&
                 (isOverlappingNote || startsFromTheSameBeat))
             {
-                unremovableNotes[nc->getNote().getId()] = nc->getNote();
-                deferredRemoval[nc2->getNote().getId()] = nc2->getNote();
+                unremovableNotes[note.getId()] = note;
+                deferredRemoval[otherNote.getId()] = otherNote;
             }
         }
     }
     
-    PianoChangeGroup removalGroup;
+    Array<Note> removalGroup;
     for (const auto &deferredRemovalIterator : deferredRemoval)
     {
         removalGroup.add(deferredRemovalIterator.second);
     }
 
-    applyPianoRemovals(removalGroup, didCheckpoint);
-}
-
-//make notes staccato (custom length applies)
-void SequencerOperations::makeStaccato(Lasso &selection, float newLength, bool shouldCheckpoint)
-{
-
-    if (selection.getNumSelected() == 0) {
-        DBG("no notes selected!");
-        return;
-
-    }
-    if (newLength == 0) { return ;}   //don't bother trying to make notes any shorter than this
-
-    auto *pianoSequence = getPianoSequence(selection);
-    jassert(pianoSequence);
-
-    const auto operationId = UndoActionIDs::MakeStaccato;
-    const auto transactionId = selection.generateLassoTransactionId(operationId);
-    //const bool repeatsLastAction = pianoSequence->getLastUndoActionId() == transactionId;
-
-    bool didCheckpoint = !shouldCheckpoint;
-
-    PianoChangeGroup groupBefore, groupAfter;
-
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    if (!removalGroup.isEmpty())
     {
-        auto *nc = selection.getItemAs<NoteComponent>(i);
-        groupBefore.add(nc->getNote());
-
-        Note newNote(nc->getNote().withLength(newLength));
-        groupAfter.add(newNote);
-    }
-
-    if (groupBefore.size() > 0)
-    {
-        if (! didCheckpoint)
+        if (!didCheckpoint)
         {
-            pianoSequence->checkpoint(transactionId);
+            pianoSequence->checkpoint();
             didCheckpoint = true;
         }
-    }
 
-    pianoSequence->changeGroup(groupBefore, groupAfter, true);
+        pianoSequence->removeGroup(removalGroup, undoable);
+    }
 }
 
-//a very ugly legato function. For now, it works well. I promise I will clean this up!
-bool SequencerOperations::makeLegato(const Lasso& selection, float overlap, bool shouldCheckpoint /*= true*/)   //extends each note to the note that follows (target note is bottommost note that is to the right)
+void SequencerOperations::makeStaccato(const NoteListBase &notes,
+    float newLength, bool undoable, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0)
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() == 0 || newLength == 0.f)
+    {
+        return;
+    }
+
+    auto *pianoSequence = getPianoSequence(notes);
+    jassert(pianoSequence);
+
+    Array<Note> groupBefore, groupAfter;
+
+    for (int i = 0; i < notes.size(); ++i)
+    {
+        const auto &note = notes.getNoteUnchecked(i);
+        groupBefore.add(note);
+        groupAfter.add(note.withLength(newLength));
+    }
+
+    if (groupBefore.size() > 0 && shouldCheckpoint)
+    {
+        pianoSequence->checkpoint();
+    }
+
+    pianoSequence->changeGroup(groupBefore, groupAfter, undoable);
+}
+
+// extends each note to the note that follows (target note is bottommost note that is to the right)
+bool SequencerOperations::makeLegato(const NoteListBase &notes,
+    float overlap, bool undoable, bool shouldCheckpoint)
+{
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() == 0)
     {
         DBG("no notes selected!");
         return false;
     }
 
-    auto* sequence = getPianoSequence(selection);
+    auto *sequence = getPianoSequence(notes);
     jassert(sequence);
 
-    //the sequence isn't neccecarily serial (organized from left to right)
-    //therefore, we will need to continuously re-target the bottommost note that is to the right of the current subject
-    //additionally, we will continuously need to pick the next subject that is the bottommost leftmost note that is above the subject
+    // the sequence isn't neccecarily serial (organized from left to right)
+    // therefore, we will need to continuously re-target the bottommost note that is to the right of the current subject
+    // additionally, we will continuously need to pick the next subject that is the bottommost leftmost note that is above the subject
 
-    PianoChangeGroup removals;
-    PianoChangeGroup groupBefore, groupAfter;
+    Array<Note> groupBefore, groupAfter;
 
-    int selectionSize = selection.getNumSelected(); //for use in various for loops
+    const int numNotes = notes.size();
+    auto *subject = &notes.getNoteUnchecked(0); // subject = the note we are currently extending
+    auto *candidate = &notes.getNoteUnchecked(numNotes - 1); // candidate = the current note being considered to replace the current best candidate
+    auto *target = &notes.getNoteUnchecked(numNotes - 1); // the note we are extending our subject to
+    auto *bestCandidate = &notes.getNoteUnchecked(numNotes - 1); // the current best candidate (note that fits our selection criteria)
 
-    auto* subject = selection.getFirstAs<NoteComponent>(); //subject = the note we are currently extending
-    auto* candidate = selection.getItemAs<NoteComponent>(selectionSize - 1); //candidate = the current note being considered to replace the current best candidate
-    auto* target = selection.getItemAs<NoteComponent>(selectionSize - 1); //the note we are extending our subject to
-    auto* bestCandidate = selection.getItemAs<NoteComponent>(selectionSize - 1); //the current best candidate (note that fits our selection criteria)
-
-    //initializing various things
+    // initializing various things
     float subjectBeat = -1 * FLT_MAX;
     int subjectKey = -1 * INT_MAX;
     float candidateBeat = FLT_MAX;
@@ -646,14 +502,14 @@ bool SequencerOperations::makeLegato(const Lasso& selection, float overlap, bool
     float targetBeat = FLT_MAX;
     int targetKey = INT_MAX;
 
-    for (int i = 0; i < selection.getNumSelected(); ++i) //iterate through the selection to get the first subject (leftmost, bottommost note)
+    for (int i = 0; i < notes.size(); ++i) // iterate through the selection to get the first subject (leftmost, bottommost note)
     {
-        //re-initialize candidate variables
-        candidate = selection.getItemAs<NoteComponent>(i);
+        // re-initialize candidate variables
+        candidate = &notes.getNoteUnchecked(i);
         candidateBeat = candidate->getBeat();
         candidateKey = candidate->getKey();
 
-        //if the candidate is to the left of the last best note, OR if it is equal but lower in key
+        // if the candidate is to the left of the last best note, OR if it is equal but lower in key
         if ((candidateBeat < bestCandidateBeat) || (candidateBeat == bestCandidateBeat && candidateKey < bestCandidateKey))
         {
             bestCandidate = candidate;
@@ -662,26 +518,26 @@ bool SequencerOperations::makeLegato(const Lasso& selection, float overlap, bool
         }
     }
 
-    //subject is now the leftmost bottommost note in the selection
-    //we're setting all this afterward just to make the code more readable later
+    // subject is now the leftmost bottommost note in the selection
+    // we're setting all this afterward just to make the code more readable later
     subject = bestCandidate;
     subjectBeat = bestCandidate->getBeat();
     subjectKey = bestCandidate->getKey();
 
-    for (int notes = 0; notes < selection.getNumSelected(); ++notes) //since we have set our first subject (before beginning our proper loop), now we commence through the "real" legato loop.
+    for (int i = 0; i < notes.size(); ++i) // since we have set our first subject (before beginning our proper loop), now we commence through the "real" legato loop.
     {
-        //re-init best candidate variables
+        // re-init best candidate variables
         bestCandidateBeat = FLT_MAX;
         bestCandidateKey = INT_MAX;
 
-        for (int i = 0; i < selection.getNumSelected(); ++i) //iterate through the selection to get the target note(leftmost, bottommost note that is to the right of the subject)
+        for (int j = 0; j < notes.size(); ++j) // iterate through the selection to get the target note(leftmost, bottommost note that is to the right of the subject)
         {
-            //re-initialize candidate variables
-            candidate = selection.getItemAs<NoteComponent>(i);
+            // re-initialize candidate variables
+            candidate = &notes.getNoteUnchecked(j);
             candidateBeat = candidate->getBeat();
             candidateKey = candidate->getKey();
 
-            //if the candidate is to the left of the last best note, OR if it is equal but lower in key, AND it is to the right of the subject
+            // if the candidate is to the left of the last best note, OR if it is equal but lower in key, AND it is to the right of the subject
             if (candidateBeat < bestCandidateBeat && candidateBeat > subjectBeat)
             {
                 bestCandidate = candidate;
@@ -696,49 +552,48 @@ bool SequencerOperations::makeLegato(const Lasso& selection, float overlap, bool
             }
         }
 
-        //the target is now the leftmost note that is 1) to the right of the subject AND 2) among multilbe targets of the same beat, the lowest one
+        // the target is now the leftmost note that is 1) to the right of the subject AND 2) among multilbe targets of the same beat, the lowest one
         target = bestCandidate;
         targetBeat = bestCandidate->getBeat();
         targetKey = bestCandidate->getKey();
 
-        float newLength = subject->getLength(); //initialize as subject length (just in case)
+        float newLength = subject->getLength(); // initialize as subject length (just in case)
 
-        if (targetBeat != subjectBeat && targetKey != subjectKey) //only change length if target is not of the same beat (dirty hack)
+        if (targetBeat != subjectBeat && targetKey != subjectKey) // only change length if target is not of the same beat (dirty hack)
         {
-            newLength = targetBeat - subjectBeat + overlap; //new length is the new length + the overlap specified by overlap
+            newLength = targetBeat - subjectBeat + overlap; // new length is the new length + the overlap specified by overlap
         }
-        if (targetBeat != subjectBeat && targetKey == subjectKey) //add slight buffer if they're the same key (so note on/off signals dont occur on the same beat (screws with some vsts)
+        if (targetBeat != subjectBeat && targetKey == subjectKey)
         {
-            newLength = targetBeat - subjectBeat - Globals::minNoteLength; // 64'th note
+            newLength = targetBeat - subjectBeat;
         }
 
-        groupBefore.add(subject->getNote());
+        groupBefore.add(*subject);
+        groupAfter.add(subject->withLength(newLength));
 
-        groupAfter.add(subject->getNote().withLength(newLength)); //use fineMode is true
-
-        //re-init best candidate variables
+        // re-init best candidate variables
         bestCandidateBeat = FLT_MAX;
         bestCandidateKey = INT_MAX;
 
-        for (int i = 0; i < selection.getNumSelected(); ++i) //set the next subject in the same way as before, but is must be at least above our last subject, or to the right.
+        for (int j = 0; j < notes.size(); ++j) // set the next subject in the same way as before, but is must be at least above our last subject, or to the right.
         {
-            candidate = selection.getItemAs<NoteComponent>(i); //re-initialize candidate variables
+            candidate = &notes.getNoteUnchecked(j); // re-initialize candidate variables
             candidateBeat = candidate->getBeat();
             candidateKey = candidate->getKey();
 
-            if (candidateBeat < bestCandidateBeat && candidateBeat > subjectBeat)   //if its to the left of the prior while being greater than the subject
+            if (candidateBeat < bestCandidateBeat && candidateBeat > subjectBeat) // if its to the left of the prior while being greater than the subject
             {
                 bestCandidate = candidate;
                 bestCandidateBeat = candidate->getBeat();
                 bestCandidateKey = candidate->getKey();
             }
-            if (candidateBeat == bestCandidateBeat && candidateKey < bestCandidateKey && candidateKey > subjectKey) //if it's the same as the prior
+            if (candidateBeat == bestCandidateBeat && candidateKey < bestCandidateKey && candidateKey > subjectKey) // if it's the same as the prior
             {
                 bestCandidate = candidate;
                 bestCandidateBeat = candidate->getBeat();
                 bestCandidateKey = candidate->getKey();
             }
-            if (candidateBeat == subjectBeat && candidateKey < bestCandidateKey && candidateKey > subjectKey)   //if it's the same beat as the prior
+            if (candidateBeat == subjectBeat && candidateKey < bestCandidateKey && candidateKey > subjectKey) // if it's the same beat as the prior
             {
                 bestCandidate = candidate;
                 bestCandidateBeat = candidate->getBeat();
@@ -746,59 +601,51 @@ bool SequencerOperations::makeLegato(const Lasso& selection, float overlap, bool
             }
         }
 
-        subject = bestCandidate; //our subject is now the bottommost leftmost note that is to the right of the subject or at least above it in key
+        subject = bestCandidate; // our subject is now the bottommost leftmost note that is to the right of the subject or at least above it in key
         subjectBeat = bestCandidate->getBeat();
         subjectKey = bestCandidate->getKey();
     }
 
-
-    if (groupBefore.isEmpty() && removals.isEmpty()) //ditch if either of the groups are empty
+    if (groupBefore.isEmpty()) // ditch if either of the groups are empty
     {
         return false;
     }
 
-    if (shouldCheckpoint) //undo checkpoint
+    if (shouldCheckpoint)
     {
         sequence->checkpoint();
     }
 
     if (!groupBefore.isEmpty())
     {
-        sequence->changeGroup(groupBefore, groupAfter, true);
+        sequence->changeGroup(groupBefore, groupAfter, undoable);
     }
-
-    if (!removals.isEmpty())
-    {
-        sequence->removeGroup(removals, true);
-    }
-
-    sequence->changeGroup(groupBefore, groupAfter, true);
 
     return true;
 }
 
-void SequencerOperations::retrograde(Lasso &selection, bool shouldCheckpoint /*= true*/)
+void SequencerOperations::retrograde(const NoteListBase &notes,
+    bool undoable /*= true*/, bool shouldCheckpoint /*= true*/)
 {
-    if (selection.getNumSelected() < 2)
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() < 2)
     {
         return;
     }
 
-    bool didCheckpoint = !shouldCheckpoint;
-
-    // 1. sort selection
+    // sort the selection
     Array<Note> sortedSelection;
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    for (int i = 0; i < notes.size(); ++i)
     {
-        const auto *nc = selection.getItemAs<NoteComponent>(i);
-        sortedSelection.addSorted(nc->getNote(), nc->getNote());
+        const auto &note = notes.getNoteUnchecked(i);
+        sortedSelection.addSorted(note, note);
     }
 
-    PianoChangeGroup groupBefore;
-    PianoChangeGroup groupAfter;
+    Array<Note> groupBefore;
+    Array<Note> groupAfter;
 
-    // 2. pick a note at the start and at the end swap keys
-    // (assumes selection is a melodic line, will work weird for chord sequences)
+    // pick a note at the start and at the end swapping their keys
+    // (assumes the selection is a melodic line, will work weird for chord sequences)
     int start = 0;
     int end = sortedSelection.size() - 1;
     do
@@ -817,29 +664,35 @@ void SequencerOperations::retrograde(Lasso &selection, bool shouldCheckpoint /*=
     }
     while (start < end);
 
-    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
+    auto *sequence = getPianoSequence(notes);
+    if (shouldCheckpoint)
+    {
+        sequence->checkpoint();
+    }
+
+    sequence->changeGroup(groupBefore, groupAfter, undoable);
 }
 
-void SequencerOperations::melodicInversion(Lasso &selection, bool shouldCheckpoint /*= true*/)
+void SequencerOperations::melodicInversion(const NoteListBase &notes,
+    bool undoable /*= true*/, bool shouldCheckpoint /*= true*/)
 {
-    if (selection.getNumSelected() < 2)
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() < 2)
     {
         return;
     }
 
-    bool didCheckpoint = !shouldCheckpoint;
-
-    // 1. sort selection
+    // sort the selection
     Array<Note> sortedSelection;
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    for (int i = 0; i < notes.size(); ++i)
     {
-        const auto *nc = selection.getItemAs<NoteComponent>(i);
-        sortedSelection.addSorted(nc->getNote(), nc->getNote());
+        const auto &note = notes.getNoteUnchecked(i);
+        sortedSelection.addSorted(note, note);
     }
 
     Array<Note> groupBefore, groupAfter;
 
-    // 2. invert key intervals between each note and the previous one
+    // invert key intervals between each note and the previous one
     // (as well as retrograde, this assumes selection is a melodic line,
     // and will work weird for chord sequences)
     int keyOffset = 0;
@@ -856,7 +709,13 @@ void SequencerOperations::melodicInversion(Lasso &selection, bool shouldCheckpoi
         groupAfter.add(next.withDeltaKey(keyOffset));
     }
 
-    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
+    auto *sequence = getPianoSequence(notes);
+    if (shouldCheckpoint)
+    {
+        sequence->checkpoint();
+    }
+
+    sequence->changeGroup(groupBefore, groupAfter, undoable);
 }
 
 bool SequencerOperations::isBarStart(float absBeat,
@@ -948,15 +807,18 @@ Arpeggiator::Ptr SequencerOperations::makeArpeggiator(const String &name,
     return Arpeggiator::Ptr(new Arpeggiator(name, move(keys)));
 }
 
-bool SequencerOperations::arpeggiate(const Lasso &selection,
+bool SequencerOperations::arpeggiate(const NoteListBase &notes,
+    const Clip &clip,
     const Arpeggiator::Ptr arp,
     const Temperament::Ptr temperament,
     WeakReference<KeySignaturesSequence> harmonicContext,
     WeakReference<TimeSignaturesAggregator> timeContext,
-    float durationMultiplier, float randomness, bool isReversed,
-    bool isLimitedToChord, bool shouldCheckpoint)
+    float durationMultiplier, float randomness,
+    bool isReversed, bool isLimitedToChord,
+    bool undoable, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0)
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() == 0)
     {
         jassertfalse;
         return false;
@@ -967,23 +829,21 @@ bool SequencerOperations::arpeggiate(const Lasso &selection,
         jassertfalse;
         return false;
     }
-    
-    const auto &clip = selection.getFirstAs<NoteComponent>()->getClip();
 
     Array<Note> sortedRemovals;
     Array<Note> insertions;
 
     // sort the selection
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    for (int i = 0; i < notes.size(); ++i)
     {
-        const auto *nc = selection.getItemAs<NoteComponent>(i);
-        sortedRemovals.addSorted(nc->getNote(), nc->getNote());
+        const auto &note = notes.getNoteUnchecked(i);
+        sortedRemovals.addSorted(note, note);
     }
 
     // split into chords
-    Array<PianoChangeGroup> chords;
+    Array<Array<Note>> chords;
 
-    PianoChangeGroup currentChord;
+    Array<Note> currentChord;
     for (int i = 0; i < sortedRemovals.size(); ++i)
     {
         const auto thisNote = sortedRemovals.getUnchecked(i);
@@ -1092,7 +952,7 @@ bool SequencerOperations::arpeggiate(const Lasso &selection,
     }
 
     // remove the selection and add result
-    auto *sequence = getPianoSequence(selection);
+    auto *sequence = getPianoSequence(notes);
     jassert(sequence != nullptr);
 
     if (shouldCheckpoint)
@@ -1100,27 +960,29 @@ bool SequencerOperations::arpeggiate(const Lasso &selection,
         sequence->checkpoint();
     }
 
-    sequence->removeGroup(sortedRemovals, true);
-    sequence->insertGroup(insertions, true);
+    sequence->removeGroup(sortedRemovals, undoable);
+    sequence->insertGroup(insertions, undoable);
 
     return true;
 }
 
-void SequencerOperations::randomizeVolume(Lasso &selection, float factor, bool shouldCheckpoint)
+void SequencerOperations::randomizeVolume(const Lasso &selection, float factor, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
         return;
     }
+
+    auto *sequence = getPianoSequence(selection);
+    jassert(sequence);
     
-    bool didCheckpoint = !shouldCheckpoint;
     Random random(Time::currentTimeMillis());
 
-    PianoChangeGroup groupBefore, groupAfter;
+    Array<Note> groupBefore, groupAfter;
     
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        if (NoteComponent *nc = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
+        if (auto *nc = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
         {
             const float r = ((random.nextFloat() * 2.f) - 1.f) * factor; // (-1 .. 1) * factor
             const float v = nc->getNote().getVelocity();
@@ -1131,11 +993,19 @@ void SequencerOperations::randomizeVolume(Lasso &selection, float factor, bool s
             groupAfter.add(nc->getNote().withVelocity(newVelocity));
         }
     }
-    
-    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
+
+    if (!groupBefore.isEmpty())
+    {
+        if (shouldCheckpoint)
+        {
+            sequence->checkpoint();
+        }
+
+        sequence->changeGroup(groupBefore, groupAfter, true);
+    }
 }
 
-void SequencerOperations::fadeOutVolume(Lasso &selection, float factor, bool shouldCheckpoint)
+void SequencerOperations::fadeOutVolume(const Lasso &selection, float factor, bool shouldCheckpoint)
 {
     // Smooth fade out like
     // 1 - ((x / sqrt(x)) * factor)
@@ -1144,11 +1014,13 @@ void SequencerOperations::fadeOutVolume(Lasso &selection, float factor, bool sho
     {
         return;
     }
-    
+
+    auto *sequence = getPianoSequence(selection);
+    jassert(sequence);
+
     float minBeat = FLT_MAX;
     float maxBeat = -FLT_MAX;
-    bool didCheckpoint = !shouldCheckpoint;
-    PianoChangeGroup groupBefore, groupAfter;
+    Array<Note> groupBefore, groupAfter;
     
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
@@ -1168,7 +1040,7 @@ void SequencerOperations::fadeOutVolume(Lasso &selection, float factor, bool sho
     
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        if (NoteComponent *nc = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
+        if (auto *nc = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
         {
             const float localBeat = nc->getBeat() - minBeat;
             const float localX = (localBeat / selectionBeatLength) + 0.0001f; // not 0
@@ -1180,10 +1052,18 @@ void SequencerOperations::fadeOutVolume(Lasso &selection, float factor, bool sho
         }
     }
     
-    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
+    if (!groupBefore.isEmpty())
+    {
+        if (shouldCheckpoint)
+        {
+            sequence->checkpoint();
+        }
+
+        sequence->changeGroup(groupBefore, groupAfter, true);
+    }
 }
 
-void SequencerOperations::tuneVolume(Lasso &selection, float delta, bool shouldCheckpoint /*= true*/)
+void SequencerOperations::tuneVolume(const Lasso &selection, float delta, bool shouldCheckpoint /*= true*/)
 {
     if (selection.getNumSelected() == 0 || delta == 0.f)
     {
@@ -1194,7 +1074,7 @@ void SequencerOperations::tuneVolume(Lasso &selection, float delta, bool shouldC
     jassert(sequence);
 
     const auto operationId = (delta > 0.f) ? UndoActionIDs::NotesVolumeUp : UndoActionIDs::NotesVolumeDown;
-    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const auto transactionId = selection.generateTransactionId(operationId);
     const bool repeatsLastOperation = sequence->getLastUndoActionId() == transactionId;
 
     if (shouldCheckpoint && !repeatsLastOperation)
@@ -1202,7 +1082,7 @@ void SequencerOperations::tuneVolume(Lasso &selection, float delta, bool shouldC
         sequence->checkpoint(transactionId);
     }
 
-    PianoChangeGroup groupBefore, groupAfter;
+    Array<Note> groupBefore, groupAfter;
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
@@ -1214,10 +1094,12 @@ void SequencerOperations::tuneVolume(Lasso &selection, float delta, bool shouldC
     sequence->changeGroup(groupBefore, groupAfter, true);
 }
 
-void SequencerOperations::startTuning(Lasso &selection)
+void SequencerOperations::startTuning(const Lasso &selection)
 {
     if (selection.getNumSelected() == 0)
-    { return; }
+    {
+        return;
+    }
     
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
@@ -1226,15 +1108,17 @@ void SequencerOperations::startTuning(Lasso &selection)
     }
 }
 
-void SequencerOperations::changeVolumeLinear(Lasso &selection, float volumeDelta)
+void SequencerOperations::changeVolumeLinear(const Lasso &selection, float volumeDelta)
 {
     if (selection.getNumSelected() == 0)
-    { return; }
+    {
+        return;
+    }
 
     auto *pianoSequence = getPianoSequence(selection);
     jassert(pianoSequence);
 
-    PianoChangeGroup groupBefore, groupAfter;
+    Array<Note> groupBefore, groupAfter;
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
@@ -1246,16 +1130,18 @@ void SequencerOperations::changeVolumeLinear(Lasso &selection, float volumeDelta
     pianoSequence->changeGroup(groupBefore, groupAfter, true);
 }
 
-void SequencerOperations::changeVolumeMultiplied(Lasso &selection, float volumeFactor)
+void SequencerOperations::changeVolumeMultiplied(const Lasso &selection, float volumeFactor)
 {
     if (selection.getNumSelected() == 0)
-    { return; }
+    {
+        return;
+    }
 
     const auto factor = jlimit(-1.f, 1.f, volumeFactor);
     auto *pianoSequence = getPianoSequence(selection);
     jassert(pianoSequence);
 
-    PianoChangeGroup groupBefore, groupAfter;
+    Array<Note> groupBefore, groupAfter;
         
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
@@ -1267,10 +1153,12 @@ void SequencerOperations::changeVolumeMultiplied(Lasso &selection, float volumeF
     pianoSequence->changeGroup(groupBefore, groupAfter, true);
 }
 
-void SequencerOperations::changeVolumeSine(Lasso &selection, float volumeFactor)
+void SequencerOperations::changeVolumeSine(const Lasso &selection, float volumeFactor)
 {
     if (selection.getNumSelected() == 0)
-    { return; }
+    {
+        return;
+    }
     
     const auto factor = jlimit(-1.f, 1.f, volumeFactor);
 
@@ -1289,7 +1177,7 @@ void SequencerOperations::changeVolumeSine(Lasso &selection, float volumeFactor)
     auto *pianoSequence = getPianoSequence(selection);
     jassert(pianoSequence);
 
-    PianoChangeGroup groupBefore, groupAfter;
+    Array<Note> groupBefore, groupAfter;
         
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
@@ -1302,7 +1190,7 @@ void SequencerOperations::changeVolumeSine(Lasso &selection, float volumeFactor)
     pianoSequence->changeGroup(groupBefore, groupAfter, true);
 }
 
-void SequencerOperations::endTuning(Lasso &selection)
+void SequencerOperations::endTuning(const Lasso &selection)
 {
     jassert(selection.getNumSelected() > 0);
     
@@ -1349,12 +1237,18 @@ void SequencerOperations::copyToClipboard(Clipboard &clipboard, const Lasso &sel
 void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &project,
     WeakReference<MidiTrack> selectedTrack, float targetBeatPosition, bool shouldCheckpoint)
 {
-    if (selectedTrack == nullptr) { return; }
+    if (selectedTrack == nullptr)
+    {
+        return;
+    }
 
     const auto root = clipboard.getData().hasType(Serialization::Clipboard::clipboard) ?
         clipboard.getData() : clipboard.getData().getChildWithName(Serialization::Clipboard::clipboard);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     bool didCheckpoint = !shouldCheckpoint;
 
@@ -1384,8 +1278,10 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
             Array<AutomationEvent> pastedEvents;
             forEachChildWithType(layerElement, autoElement, Serialization::Midi::automationEvent)
             {
-                const auto &ae = AutomationEvent(automationSequence).withParameters(autoElement).withNewId();
-                pastedEvents.add(ae.withDeltaBeat(deltaBeat));
+                pastedEvents.add(AutomationEvent(automationSequence)
+                    .withParameters(autoElement)
+                    .withDeltaBeat(deltaBeat)
+                    .withNewId());
             }
 
             if (pastedEvents.size() > 0)
@@ -1404,8 +1300,10 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
             Array<Note> pastedNotes;
             forEachChildWithType(layerElement, noteElement, Serialization::Midi::note)
             {
-                const auto &n = Note(pianoSequence).withParameters(noteElement).withNewId();
-                pastedNotes.add(n.withDeltaBeat(deltaBeat));
+                pastedNotes.add(Note(pianoSequence)
+                    .withParameters(noteElement)
+                    .withDeltaBeat(deltaBeat)
+                    .withNewId());
             }
 
             if (pastedNotes.size() > 0)
@@ -1427,8 +1325,10 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
             {
                 forEachChildWithType(patternElement, clipElement, Serialization::Midi::clip)
                 {
-                    auto &&c = Clip(targetPattern).withParameters(clipElement).withNewId();
-                    pastedClips.add(c.withDeltaBeat(deltaBeat));
+                    pastedClips.add(Clip(targetPattern)
+                        .withParameters(clipElement)
+                        .withDeltaBeat(deltaBeat)
+                        .withNewId());
                 }
         
                 if (pastedClips.size() > 0)
@@ -1439,7 +1339,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
                         didCheckpoint = true;
                     }
         
-                    for (Clip &c : pastedClips)
+                    for (auto &c : pastedClips)
                     {
                         targetPattern->insert(c, true);
                     }
@@ -1456,7 +1356,7 @@ void SequencerOperations::deleteSelection(const Lasso &selection, bool shouldChe
         return;
     }
 
-    OwnedArray<PianoChangeGroup> selectionsByTrack;
+    OwnedArray<Array<Note>> selectionsByTrack;
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const Note &note = selection.getItemAs<NoteComponent>(i)->getNote();
@@ -1491,75 +1391,59 @@ void SequencerOperations::deleteSelection(const Lasso &selection, bool shouldChe
 
         if (!didCheckpoint)
         {
-            didCheckpoint = true;
             sequence->checkpoint();
+            didCheckpoint = true;
         }
 
         sequence->removeGroup(*selectionsByTrack.getUnchecked(i), true);
     }
 }
 
-void SequencerOperations::shiftKeyRelative(Lasso &selection,
-    int deltaKey, Transport *transport, bool shouldCheckpoint)
+void SequencerOperations::shiftKeyRelative(const NoteListBase &notes,
+    int deltaKey, bool undoable, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0 || deltaKey == 0) { return; }
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() == 0 || deltaKey == 0)
+    {
+        return;
+    }
 
-    auto *pianoSequence = getPianoSequence(selection);
+    auto *pianoSequence = getPianoSequence(notes);
     jassert(pianoSequence);
 
     const auto operationId = deltaKey > 0 ? UndoActionIDs::KeyShiftUp : UndoActionIDs::KeyShiftDown;
-    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const auto transactionId = notes.generateTransactionId(operationId);
     const bool repeatsLastAction = pianoSequence->getLastUndoActionId() == transactionId;
 
-    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
-
-    PianoChangeGroup groupBefore, groupAfter;
+    Array<Note> groupBefore, groupAfter;
         
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    for (int i = 0; i < notes.size(); ++i)
     {
-        auto *nc = selection.getItemAs<NoteComponent>(i);
-        groupBefore.add(nc->getNote());
-            
-        Note newNote(nc->getNote().withDeltaKey(deltaKey));
-        groupAfter.add(newNote);
-            
-        if (transport != nullptr && selection.getNumSelected() < 8)
-        {
-            const auto *track = pianoSequence->getTrack();
-            transport->previewKey(track->getTrackId(),
-                track->getTrackChannel(),
-                newNote.getKey() + nc->getClip().getKey(),
-                newNote.getVelocity() * nc->getClip().getVelocity(),
-                newNote.getLength());
-        }
+        const auto &note = notes.getNoteUnchecked(i);
+        groupBefore.add(note);
+        groupAfter.add(note.withDeltaKey(deltaKey));
     }
         
-    if (groupBefore.size() > 0)
+    if (!groupBefore.isEmpty())
     {
-        if (! didCheckpoint)
+        if (shouldCheckpoint && !repeatsLastAction)
         {
             pianoSequence->checkpoint(transactionId);
-            didCheckpoint = true;
         }
+
+        pianoSequence->changeGroup(groupBefore, groupAfter, undoable);
     }
-        
-    pianoSequence->changeGroup(groupBefore, groupAfter, true);
 }
 
-void SequencerOperations::shiftInScaleKeyRelative(const Lasso &selection,
-    WeakReference<MidiTrack> keySignatures, Scale::Ptr defaultScale, int deltaKey,
-    Transport *transport, bool shouldCheckpoint)
+void SequencerOperations::shiftInScaleKeyRelative(const NoteListBase &notes, const Clip &clip,
+    WeakReference<KeySignaturesSequence> keySignatures, Scale::Ptr defaultScale,
+    int deltaKey, bool undoable, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0 || deltaKey == 0) { return; }
-
-    auto *pianoSequence = getPianoSequence(selection);
-    jassert(pianoSequence);
-
-    const auto operationId = deltaKey > 0 ? UndoActionIDs::ScaleKeyShiftUp : UndoActionIDs::ScaleKeyShiftDown;
-    const auto transactionId = selection.generateLassoTransactionId(operationId);
-    const bool repeatsLastAction = pianoSequence->getLastUndoActionId() == transactionId;
-
-    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() == 0)
+    {
+        return;
+    }
 
     Note::Key rootKey = 0;
     String rootKeyName;
@@ -1567,11 +1451,11 @@ void SequencerOperations::shiftInScaleKeyRelative(const Lasso &selection,
 
     Array<Note> groupBefore, groupAfter;
 
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    for (int i = 0; i < notes.size(); ++i)
     {
-        auto *nc = selection.getItemAs<NoteComponent>(i);
-        const auto absKey = nc->getNote().getKey() + nc->getClip().getKey();
-        const auto absBeat = nc->getNote().getBeat() + nc->getClip().getBeat();
+        const auto &note = notes.getNoteUnchecked(i);
+        const auto absKey = note.getKey() + clip.getKey();
+        const auto absBeat = note.getBeat() + clip.getBeat();
 
         if (keySignatures != nullptr)
         {
@@ -1583,137 +1467,136 @@ void SequencerOperations::shiftInScaleKeyRelative(const Lasso &selection,
         // please refactor this someday:
         const auto period = (absKey - rootKey) / scale->getBasePeriod();
         const auto periodOffset = period * scale->getBasePeriod();
-        const auto targetKeyOffset = absKey % scale->getBasePeriod();
-        const auto chromaticOffset = targetKeyOffset - rootKey;
-        
+        const auto chromaticOffset = (absKey - rootKey) % scale->getBasePeriod();
+
         const auto inScaleKey = scale->getNearestScaleKey(chromaticOffset,
-            deltaKey < 0 ? Scale::ScaleKeyAlignment::Floor : Scale::ScaleKeyAlignment::Ceil);
+            deltaKey == 0 ? Scale::ScaleKeyAlignment::Round :
+                (deltaKey < 0 ? Scale::ScaleKeyAlignment::Floor : Scale::ScaleKeyAlignment::Ceil));
 
         const auto absAlignedInScale = scale->getChromaticKey(inScaleKey, periodOffset + rootKey, false);
         const auto absNewKey = scale->getChromaticKey(inScaleKey + deltaKey, periodOffset + rootKey, false);
 
         // если нота стоит в ладу, то поднимаем или опускаем на ступень лада,
-        // если не в ладу, то поднимаем или опускаем до ближайшей ступени лада:
+        // если не в ладу, то округляем до ближайшей ступени лада:
         const auto d = (absAlignedInScale == absKey) ?
             (absNewKey - absKey) : (absAlignedInScale - absKey);
 
-        Note newNote(nc->getNote().withDeltaKey(d));
-
-        groupBefore.add(nc->getNote());
-        groupAfter.add(newNote);
-
-        // lots of duplicate code again, fixme someday:
-        if (transport != nullptr && selection.getNumSelected() < 8)
-        {
-            const auto *track = pianoSequence->getTrack();
-            transport->previewKey(track->getTrackId(),
-                track->getTrackChannel(),
-                newNote.getKey() + nc->getClip().getKey(),
-                newNote.getVelocity() * nc->getClip().getVelocity(),
-                newNote.getLength());
-        }
+        groupBefore.add(note);
+        groupAfter.add(note.withDeltaKey(d));
     }
 
-    if (groupBefore.size() > 0)
+    auto *pianoSequence = getPianoSequence(notes);
+    jassert(pianoSequence);
+
+    if (!groupBefore.isEmpty())
     {
-        if (!didCheckpoint)
+        if (shouldCheckpoint)
         {
-            pianoSequence->checkpoint(transactionId);
-            didCheckpoint = true;
+            const auto operationId = deltaKey == 0 ? UndoActionIDs::SnapToScale :
+                (deltaKey > 0 ? UndoActionIDs::ScaleKeyShiftUp : UndoActionIDs::ScaleKeyShiftDown);
+            const auto transactionId = notes.generateTransactionId(operationId);
+            const bool repeatsLastAction = pianoSequence->getLastUndoActionId() == transactionId;
+            if (!repeatsLastAction)
+            {
+                pianoSequence->checkpoint(transactionId);
+            }
         }
-    }
 
-    pianoSequence->changeGroup(groupBefore, groupAfter, true);
+        pianoSequence->changeGroup(groupBefore, groupAfter, undoable);
+    }
 }
 
-void SequencerOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, bool shouldCheckpoint)
+void SequencerOperations::shiftBeatRelative(const NoteListBase &notes,
+    float deltaBeat, bool undoable, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0 || deltaBeat == 0) { return; }
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() == 0 || deltaBeat == 0.f)
+    {
+        return;
+    }
 
-    auto *pianoSequence = getPianoSequence(selection);
+    auto *pianoSequence = getPianoSequence(notes);
     jassert(pianoSequence);
 
     const auto operationId = deltaBeat > 0 ? UndoActionIDs::BeatShiftRight : UndoActionIDs::BeatShiftLeft;
-    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const auto transactionId = notes.generateTransactionId(operationId);
     const bool repeatsLastAction = pianoSequence->getLastUndoActionId() == transactionId;
 
-    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
-
-    PianoChangeGroup groupBefore, groupAfter;
+    Array<Note> groupBefore, groupAfter;
         
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    for (int i = 0; i < notes.size(); ++i)
     {
-        auto *nc = selection.getItemAs<NoteComponent>(i);
-        groupBefore.add(nc->getNote());
-            
-        Note newNote(nc->getNote().withDeltaBeat(deltaBeat));
-        groupAfter.add(newNote);
+        const auto &note = notes.getNoteUnchecked(i);
+        groupBefore.add(note);
+        groupAfter.add(note.withDeltaBeat(deltaBeat));
     }
         
-    if (groupBefore.size() > 0 && !didCheckpoint)
+    if (groupBefore.size() > 0 &&
+        shouldCheckpoint && !repeatsLastAction)
     {
         pianoSequence->checkpoint(transactionId);
-        didCheckpoint = true;
     }
         
-    pianoSequence->changeGroup(groupBefore, groupAfter, true);
+    pianoSequence->changeGroup(groupBefore, groupAfter, undoable);
 }
 
-void SequencerOperations::shiftLengthRelative(Lasso &selection, float deltaLength, bool shouldCheckpoint)
+void SequencerOperations::shiftLengthRelative(const NoteListBase &notes,
+    float deltaLength, bool undoable, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0 || deltaLength == 0.f) { return; }
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() == 0 || deltaLength == 0.f)
+    {
+        return;
+    }
 
-    auto *pianoSequence = getPianoSequence(selection);
+    auto *pianoSequence = getPianoSequence(notes);
     jassert(pianoSequence);
 
     const auto operationId = deltaLength > 0 ? UndoActionIDs::LengthIncrease : UndoActionIDs::LengthDecrease;
-    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const auto transactionId = notes.generateTransactionId(operationId);
     const bool repeatsLastAction = pianoSequence->getLastUndoActionId() == transactionId;
 
-    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
+    Array<Note> groupBefore, groupAfter;
 
-    PianoChangeGroup groupBefore, groupAfter;
-
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    for (int i = 0; i < notes.size(); ++i)
     {
-        auto *nc = selection.getItemAs<NoteComponent>(i);
-        groupBefore.add(nc->getNote());
-
-        Note newNote(nc->getNote().withDeltaLength(deltaLength));
-        groupAfter.add(newNote);
+        const auto &note = notes.getNoteUnchecked(i);
+        groupBefore.add(note);
+        groupAfter.add(note.withDeltaLength(deltaLength));
     }
 
-    if (groupBefore.size() > 0 && !didCheckpoint)
+    if (groupBefore.size() > 0 &&
+        shouldCheckpoint && !repeatsLastAction)
     {
         pianoSequence->checkpoint(transactionId);
-        didCheckpoint = true;
     }
 
-    pianoSequence->changeGroup(groupBefore, groupAfter, true);
+    pianoSequence->changeGroup(groupBefore, groupAfter, undoable);
 }
 
-void SequencerOperations::invertChord(Lasso &selection, 
-    int deltaKey, bool shouldCheckpoint, Transport *transport)
+void SequencerOperations::invertChord(const NoteListBase &notes,
+    int deltaKey, bool undoable, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0)
-    { return; }
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() == 0)
+    {
+        return;
+    }
 
-    bool didCheckpoint = !shouldCheckpoint;
-    
-    auto *pianoSequence = getPianoSequence(selection);
+    auto *pianoSequence = getPianoSequence(notes);
     jassert(pianoSequence);
         
-    // step 1. sort selection
-    PianoChangeGroup selectedNotes;
+    // sort selection
+    Array<Note> selectedNotes;
         
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    for (int i = 0; i < notes.size(); ++i)
     {
-        auto *nc = selection.getItemAs<NoteComponent>(i);
-        selectedNotes.addSorted(nc->getNote(), nc->getNote());
+        const auto &note = notes.getNoteUnchecked(i);
+        selectedNotes.addSorted(note, note);
     }
         
-    // step 2. detect target keys (upper or lower)
-    PianoChangeGroup targetNotes;
+    // detect target keys (upper or lower)
+    Array<Note> targetNotes;
         
     float prevBeat = 0.f;
     int prevKey = (deltaKey > 0) ? std::numeric_limits<int>::max() : 0;
@@ -1750,61 +1633,49 @@ void SequencerOperations::invertChord(Lasso &selection,
         prevKey = selectedNotes[i].getKey();
         prevBeat = selectedNotes[i].getBeat();
     }
-        
-    // step 3. octave shift
-    PianoChangeGroup groupBefore, groupAfter;
-        
+
+    if (targetNotes.isEmpty())
+    {
+        return;
+    }
+
+    // octave shift
+    Array<Note> groupBefore, groupAfter;
+
     for (auto && targetNote : targetNotes)
     {
         groupBefore.add(targetNote);
         groupAfter.add(targetNote.withDeltaKey(deltaKey));
     }
-        
-    if (groupBefore.size() > 0)
+
+    if (shouldCheckpoint)
     {
-        if (! didCheckpoint)
-        {
-            pianoSequence->checkpoint();
-            didCheckpoint = true;
-        }
+        pianoSequence->checkpoint();
     }
-        
-    pianoSequence->changeGroup(groupBefore, groupAfter, true);
-        
-    // step 4. make em sound, if needed
-    if (transport != nullptr && selection.getNumSelected() < 8)
-    {
-        for (int i = 0; i < selection.getNumSelected(); ++i)
-        {
-            auto *nc = selection.getItemAs<NoteComponent>(i);
-            const auto *track = pianoSequence->getTrack();
-            transport->previewKey(track->getTrackId(),
-                track->getTrackChannel(),
-                nc->getNote().getKey() + nc->getClip().getKey(),
-                nc->getVelocity() * nc->getClip().getVelocity(),
-                nc->getLength());
-        }
-    }
+
+    pianoSequence->changeGroup(groupBefore, groupAfter, undoable);
 }
 
-void SequencerOperations::applyTuplets(Lasso &selection, Note::Tuplet tuplet, bool shouldCheckpoint /*= true*/)
+void SequencerOperations::applyTuplets(const NoteListBase &notes,
+    Note::Tuplet tuplet, bool undoable, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0)
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() == 0)
     {
         return;
     }
 
-    auto *sequence = getPianoSequence(selection);
+    auto *sequence = getPianoSequence(notes);
     jassert(sequence);
 
-    PianoChangeGroup groupBefore, groupAfter;
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    Array<Note> groupBefore, groupAfter;
+    for (int i = 0; i < notes.size(); ++i)
     {
-        const auto *nc = selection.getItemAs<NoteComponent>(i);
-        if (nc->getNote().getTuplet() != tuplet)
+        const auto &note = notes.getNoteUnchecked(i);
+        if (note.getTuplet() != tuplet)
         {
-            groupBefore.add(nc->getNote());
-            groupAfter.add(nc->getNote().withTuplet(tuplet));
+            groupBefore.add(note);
+            groupAfter.add(note.withTuplet(tuplet));
         }
     }
 
@@ -1818,7 +1689,7 @@ void SequencerOperations::applyTuplets(Lasso &selection, Note::Tuplet tuplet, bo
         sequence->checkpoint();
     }
 
-    sequence->changeGroup(groupBefore, groupAfter, true);
+    sequence->changeGroup(groupBefore, groupAfter, undoable);
 }
 
 static inline void doQuantize(float &startBeat, float &length, float bar)
@@ -1838,27 +1709,29 @@ static inline void doQuantize(float &startBeat, float &length, float bar)
     length = jmax(minQuantizedBeat, endBeatRound - startBeat);
 }
 
-bool SequencerOperations::quantize(const Lasso &selection, float bar, bool shouldCheckpoint /*= true*/)
+bool SequencerOperations::quantize(const NoteListBase &notes, float bar,
+    bool undoable, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0)
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() == 0)
     {
         return false;
     }
 
-    auto *sequence = getPianoSequence(selection);
+    auto *sequence = getPianoSequence(notes);
     jassert(sequence);
 
-    PianoChangeGroup removals;
-    PianoChangeGroup groupBefore, groupAfter;
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    Array<Note> removals;
+    Array<Note> groupBefore, groupAfter;
+    for (int i = 0; i < notes.size(); ++i)
     {
-        const auto *nc = selection.getItemAs<NoteComponent>(i);
-        float startBeat = nc->getBeat();
-        float length = nc->getLength();
+        const auto &note = notes.getNoteUnchecked(i);
+        float startBeat = note.getBeat();
+        float length = note.getLength();
 
         doQuantize(startBeat, length, bar);
 
-        if (startBeat == nc->getBeat() && length == nc->getLength())
+        if (startBeat == note.getBeat() && length == note.getLength())
         {
             continue;
         }
@@ -1866,7 +1739,7 @@ bool SequencerOperations::quantize(const Lasso &selection, float bar, bool shoul
         bool duplicateFound = false;
         for (const auto &other : groupAfter)
         {
-            if (nc->getKey() == other.getKey() &&
+            if (note.getKey() == other.getKey() &&
                 startBeat == other.getBeat() &&
                 length == other.getLength())
             {
@@ -1877,12 +1750,12 @@ bool SequencerOperations::quantize(const Lasso &selection, float bar, bool shoul
 
         if (duplicateFound)
         {
-            removals.add(nc->getNote());
+            removals.add(note);
             continue;
         }
 
-        groupBefore.add(nc->getNote());
-        groupAfter.add(nc->getNote().withBeat(startBeat).withLength(length));
+        groupBefore.add(note);
+        groupAfter.add(note.withBeat(startBeat).withLength(length));
     }
 
     if (groupBefore.isEmpty() && removals.isEmpty())
@@ -1897,94 +1770,18 @@ bool SequencerOperations::quantize(const Lasso &selection, float bar, bool shoul
 
     if (!groupBefore.isEmpty())
     {
-        sequence->changeGroup(groupBefore, groupAfter, true);
+        sequence->changeGroup(groupBefore, groupAfter, undoable);
     }
 
     if (!removals.isEmpty())
     {
-        sequence->removeGroup(removals, true);
-    }
-
-    sequence->changeGroup(groupBefore, groupAfter, true);
-    return true;
-}
-
-bool SequencerOperations::quantize(WeakReference<MidiTrack> track,
-    float bar, bool shouldCheckpoint /*= true*/)
-{
-    if (track->getSequence()->size() == 0)
-    {
-        return false;
-    }
-
-    auto *sequence = dynamic_cast<PianoSequence *>(track->getSequence());
-    if (sequence == nullptr)
-    {
-        return false;
-    }
-
-    
-    PianoChangeGroup removals;
-    PianoChangeGroup groupBefore, groupAfter;
-    for (int i = 0; i < sequence->size(); ++i)
-    {
-        auto *note = static_cast<Note *>(sequence->getUnchecked(i));
-        float startBeat = note->getBeat();
-        float length = note->getLength();
-
-        doQuantize(startBeat, length, bar);
-
-        if (startBeat == note->getBeat() && length == note->getLength())
-        {
-            continue;
-        }
-
-        bool duplicateFound = false;
-        for (const auto &other : groupAfter)
-        {
-            if (note->getKey() == other.getKey() &&
-                startBeat == other.getBeat() &&
-                length == other.getLength())
-            {
-                duplicateFound = true;
-                break;
-            }
-        }
-
-        if (duplicateFound)
-        {
-            removals.add(*note);
-            continue;
-        }
-
-        groupBefore.add(*note);
-        groupAfter.add(note->withBeat(startBeat).withLength(length));
-    }
-
-    if (groupBefore.isEmpty() && removals.isEmpty())
-    {
-        return false;
-    }
-
-    if (shouldCheckpoint)
-    {
-        sequence->checkpoint();
-    }
-
-    if (!groupBefore.isEmpty())
-    {
-        sequence->changeGroup(groupBefore, groupAfter, true);
-    }
-
-    if (!removals.isEmpty())
-    {
-        sequence->removeGroup(removals, true);
+        sequence->removeGroup(removals, undoable);
     }
 
     return true;
 }
 
-static inline void doRescaleLogic(PianoChangeGroup &groupBefore, PianoChangeGroup &groupAfter,
+static inline void doRescaleLogic(Array<Note> &groupBefore, Array<Note> &groupAfter,
     const Note &note, Note::Key keyOffset, Scale::Ptr scaleA, Scale::Ptr scaleB)
 {
     const auto noteKey = note.getKey() - keyOffset;
@@ -1992,31 +1789,43 @@ static inline void doRescaleLogic(PianoChangeGroup &groupBefore, PianoChangeGrou
     const auto inScaleKey = scaleA->getScaleKey(noteKey);
     if (inScaleKey >= 0)
     {
-        const auto newChromaticKey = scaleB->getBasePeriod() * periodNumber
-            + scaleB->getChromaticKey(inScaleKey, 0, false) + keyOffset;
+        const auto newChromaticKey = scaleB->getBasePeriod() * periodNumber +
+            scaleB->getChromaticKey(inScaleKey, 0, false) + keyOffset;
 
         groupBefore.add(note);
         groupAfter.add(note.withKey(newChromaticKey));
     }
 }
 
-void SequencerOperations::rescale(Lasso &selection, Note::Key rootKey,
-    Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint /*= true*/)
+void SequencerOperations::rescale(const NoteListBase &notes, const Clip &clip,
+    WeakReference<KeySignaturesSequence> harmonicContext, Scale::Ptr targetScale,
+    bool undoable, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0)
+    jassert(targetScale != nullptr);
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() == 0)
     {
         return;
     }
 
-    auto *sequence = getPianoSequence(selection);
+    auto *sequence = getPianoSequence(notes);
     jassert(sequence);
 
-    PianoChangeGroup groupBefore, groupAfter;
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    Scale::Ptr scale = Scale::makeNaturalMajorScale();
+    Note::Key scaleRootKey = 0;
+    String scaleRootKeyName;
+
+    Array<Note> groupBefore, groupAfter;
+    for (int i = 0; i < notes.size(); ++i)
     {
-        const auto *nc = selection.getItemAs<NoteComponent>(i);
-        // todo clip key offset?
-        doRescaleLogic(groupBefore, groupAfter, nc->getNote(), rootKey, scaleA, scaleB);
+        const auto &note = notes.getNoteUnchecked(i);
+
+        const float noteStart = note.getBeat() + clip.getBeat();
+        SequencerOperations::findHarmonicContext(noteStart, noteStart,
+            harmonicContext, scale, scaleRootKey, scaleRootKeyName);
+
+        const auto keyOffset = scaleRootKey - clip.getKey();
+        doRescaleLogic(groupBefore, groupAfter, note, keyOffset, scale, targetScale);
     }
 
     if (groupBefore.size() == 0)
@@ -2029,21 +1838,25 @@ void SequencerOperations::rescale(Lasso &selection, Note::Key rootKey,
         sequence->checkpoint();
     }
 
-    sequence->changeGroup(groupBefore, groupAfter, true);
+    sequence->changeGroup(groupBefore, groupAfter, undoable);
 }
 
 bool SequencerOperations::rescale(const ProjectNode &project, float startBeat, float endBeat,
-    Note::Key rootKey, Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint /*= true*/)
+    Note::Key rootKey, Scale::Ptr scaleA, Scale::Ptr scaleB,
+    bool undoable, bool shouldCheckpoint)
 {
+    jassert(undoable || !shouldCheckpoint);
+
     bool hasMadeChanges = false;
     bool didCheckpoint = !shouldCheckpoint;
 
     const auto pianoTracks = project.findChildrenOfType<PianoTrackNode>();
     for (const auto *track : pianoTracks)
     {
-        auto *sequence = static_cast<PianoSequence *>(track->getSequence());
+        auto *sequence = dynamic_cast<PianoSequence *>(track->getSequence());
+        jassert(sequence != nullptr);
 
-        PianoChangeGroup groupBefore, groupAfter;
+        Array<Note> groupBefore, groupAfter;
 
         // find events in between (only consider events of one clip!),
         // skipping clips of the same track if already processed any other:
@@ -2080,7 +1893,7 @@ bool SequencerOperations::rescale(const ProjectNode &project, float startBeat, f
         }
 
         hasMadeChanges = true;
-        sequence->changeGroup(groupBefore, groupAfter, true);
+        sequence->changeGroup(groupBefore, groupAfter, undoable);
     }
 
     return hasMadeChanges;
@@ -2303,9 +2116,8 @@ bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
     WeakReference<KeySignaturesSequence> keySignatures, Scale::Ptr &outScale,
     Note::Key &outRootKey, String &outKeyName)
 {
-    jassert(keySignatures != nullptr);
-
-    if (keySignatures->size() == 0)
+    if (keySignatures == nullptr ||
+        keySignatures->size() == 0)
     {
         return false;
     }
@@ -2361,11 +2173,11 @@ bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
     return false;
 }
 
-bool SequencerOperations::findHarmonicContext(const Lasso &selection, const Clip &clip,
+bool SequencerOperations::findHarmonicContext(const NoteListBase &notes, const Clip &clip,
     WeakReference<MidiTrack> keysTrack, Scale::Ptr &outScale, Note::Key &outRootKey, String &outKeyName)
 {
-    const auto startBeat = SequencerOperations::findStartBeat(selection) + clip.getBeat();
-    const auto endBeat = SequencerOperations::findEndBeat(selection) + clip.getBeat();
+    const auto startBeat = SequencerOperations::findStartBeat(notes) + clip.getBeat();
+    const auto endBeat = SequencerOperations::findEndBeat(notes) + clip.getBeat();
     return SequencerOperations::findHarmonicContext(startBeat, endBeat, keysTrack, outScale, outRootKey, outKeyName);
 }
 
@@ -2377,7 +2189,7 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
     }
 
     // fixme: cleanup this; the selection will always contain notes for 1 track
-    OwnedArray<PianoChangeGroup> selectionsByTrack;
+    OwnedArray<Array<Note>> selectionsByTrack;
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const Note &note = selection.getItemAs<NoteComponent>(i)->getNote();
@@ -2420,7 +2232,7 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
     }
 }
 
-String SequencerOperations::findClosestOverlappingAnnotation(Lasso &selection, WeakReference<MidiTrack> annotationsTrack)
+String SequencerOperations::findClosestOverlappingAnnotation(const Lasso &selection, WeakReference<MidiTrack> annotationsTrack)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -2455,7 +2267,7 @@ String SequencerOperations::findClosestOverlappingAnnotation(Lasso &selection, W
     return result;
 }
 
-Clip &SequencerOperations::findClosestClip(Lasso &selection, WeakReference<MidiTrack> track, float &outMinDistance)
+Clip &SequencerOperations::findClosestClip(const Lasso &selection, WeakReference<MidiTrack> track, float &outMinDistance)
 {
     jassert(selection.getNumSelected() > 0);
     const auto &sourceClip = selection.getFirstAs<NoteComponent>()->getClip();
@@ -2482,10 +2294,13 @@ Clip &SequencerOperations::findClosestClip(Lasso &selection, WeakReference<MidiT
     return *result;
 }
 
-Array<Note> SequencerOperations::moveSelection(Lasso &selection,
+Array<Note> SequencerOperations::moveSelection(const Lasso &selection,
     Clip &targetClip, bool shouldCheckpoint /*= true*/)
 {
-    if (selection.getNumSelected() == 0) { return {}; }
+    if (selection.getNumSelected() == 0)
+    {
+        return {};
+    }
 
     auto *targetSequence = getPianoSequence(targetClip);
     auto *sourceSequence = getPianoSequence(selection);
@@ -2522,24 +2337,36 @@ Array<Note> SequencerOperations::cutNotes(const Array<Note> &notes,
         return {};
     }
 
-    bool didCheckpoint = !shouldCheckpoint;
+    auto *sequence = static_cast<PianoSequence *>(notes.getFirst().getSequence());
 
     Array<Note> newEventsToTheRight;
-    PianoChangeGroup shortenedNotes;
+    Array<Note> shortenedNotesBefore, shortenedNotesAfter;
+
     for (int i = 0; i < notes.size(); ++i)
     {
-        const Note &n = notes.getUnchecked(i);
+        const auto &note = notes.getUnchecked(i);
         const float cutBeat = relativeCutBeats.getUnchecked(i);
-        if (cutBeat > 0.f && cutBeat < n.getLength())
+        if (cutBeat > 0.f && cutBeat < note.getLength())
         {
-            shortenedNotes.add(n.withLength(cutBeat));
-            newEventsToTheRight.add(n.withDeltaBeat(cutBeat).withDeltaLength(-cutBeat).withNewId());
+            shortenedNotesBefore.add(note);
+            shortenedNotesAfter.add(note.withLength(cutBeat));
+            newEventsToTheRight.add(note.withDeltaBeat(cutBeat).withDeltaLength(-cutBeat).withNewId());
         }
     }
 
-    applyPianoChanges(notes, shortenedNotes, didCheckpoint);
-    applyPianoInsertions(newEventsToTheRight, didCheckpoint);
-    return newEventsToTheRight;
+    const auto insertedEventsCopy = newEventsToTheRight; // newEventsToTheRight will be emptied
+    if (!shortenedNotesBefore.isEmpty() && !newEventsToTheRight.isEmpty())
+    {
+        if (shouldCheckpoint)
+        {
+            sequence->checkpoint();
+        }
+
+        sequence->changeGroup(shortenedNotesBefore, shortenedNotesAfter, true);
+        sequence->insertGroup(newEventsToTheRight, true);
+    }
+
+    return insertedEventsCopy;
 }
 
 bool SequencerOperations::mergeNotes(const Note &note1, const Note &note2, bool shouldCheckpoint /*= true*/)
@@ -2862,7 +2689,7 @@ UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<N
     auto *pattern = newNode->getPattern();
     auto *sequence = static_cast<PianoSequence *>(newNode->getSequence());
 
-    PianoChangeGroup copiedContent;
+    Array<Note> copiedContent;
     for (const auto &note : events)
     {
         copiedContent.add(note.withNewId(sequence));
@@ -2930,7 +2757,7 @@ UniquePointer<MidiTrackNode> SequencerOperations::createAutomationTrack(const Ar
     auto *sequence = static_cast<AutomationSequence *>(newTrack->getSequence());
     auto *pattern = newTrack->getPattern();
 
-    AutoChangeGroup copiedContent;
+    Array<AutomationEvent> copiedContent;
     for (const auto &event : events)
     {
         copiedContent.add(event.withNewId(sequence));

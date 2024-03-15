@@ -22,7 +22,25 @@
 
 class PianoRoll;
 
-class PianoSequence final : public MidiSequence
+// this is the base class for the collection of notes that can be
+// transformed by SequencerOperations methods; it is inherited by Lasso
+// for manual editing, and by PianoSequence for transforming entire
+// sequences either by a user or by parametric modifiers
+class NoteListBase
+{
+public:
+
+    virtual ~NoteListBase() = default;
+
+    virtual int size() const noexcept = 0;
+    virtual const Note &getNoteUnchecked(int i) const = 0;
+
+    // see the comment in Lasso class
+    virtual UndoActionId generateTransactionId(int actionId) const = 0;
+
+};
+
+class PianoSequence final : public MidiSequence, public NoteListBase
 {
 public:
 
@@ -41,15 +59,29 @@ public:
     
     MidiEvent *insert(const Note &note, const bool undoable);
     bool remove(const Note &note, const bool undoable);
-    bool change(const Note &note,
-        const Note &newNote,
-        bool undoable);
+    bool change(const Note &note, const Note &newNote, bool undoable);
 
     bool insertGroup(Array<Note> &notes, bool undoable);
     bool removeGroup(Array<Note> &notes, bool undoable);
     bool changeGroup(Array<Note> &eventsBefore,
         Array<Note> &eventsAfter, bool undoable);
-    
+
+    //===------------------------------------------------------------------===//
+    // NoteListBase
+    //===------------------------------------------------------------------===//
+
+    int size() const noexcept override
+    {
+        return MidiSequence::size();
+    }
+
+    const Note &getNoteUnchecked(int i) const override
+    {
+        return *static_cast<Note *>(this->getUnchecked(i));
+    }
+
+    UndoActionId generateTransactionId(int actionId) const override { return 0; }
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//

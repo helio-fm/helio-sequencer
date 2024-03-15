@@ -1776,6 +1776,7 @@ void RollBase::handleAsyncUpdate()
             // scheduled for update is deleted at this time:
             if (FloatBoundsComponent *component = this->batchRepaintList.getUnchecked(i))
             {
+                // warning: setInterceptsMouseClicks will break ghost notes and any notes that shouldn't be interacted with
                 component->setInterceptsMouseClicks(childrenInteractionEnabled, childrenInteractionEnabled);
                 component->setMouseCursor(childCursor);
                 component->setFloatBounds(this->getEventBounds(component));

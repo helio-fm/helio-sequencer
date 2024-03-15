@@ -389,10 +389,8 @@ void ProjectMenu::showTemperamentsMenu(bool convertTracks)
             }
 
             // let's also update key signatures (todo move this code somewhere):
-            auto *keySignatures = static_cast<KeySignaturesSequence *>(this->project.
-                getTimeline()->getKeySignatures()->getSequence());
-
-            SequencerOperations::remapKeySignaturesToTemperament(keySignatures,
+            auto *harmonicContext = this->project.getTimeline()->getKeySignaturesSequence();
+            SequencerOperations::remapKeySignaturesToTemperament(harmonicContext,
                 currentTemperament, otherTemperament, App::Config().getScales()->getAll(),
                 false); // false == already did checkpoint earlier
 

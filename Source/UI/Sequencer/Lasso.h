@@ -19,23 +19,33 @@
 
 #include "SelectableComponent.h"
 #include "MidiSequence.h"
+#include "PianoSequence.h"
+#include "NoteComponent.h"
 #include "UndoActionIDs.h"
 
-class Lasso final : public SelectedItemSet<SelectableComponent *>
+class Lasso final :
+    public SelectedItemSet<SelectableComponent *>,
+    public NoteListBase
 {
 public:
 
-    Lasso() : SelectedItemSet(), random(Time::currentTimeMillis())
+    Lasso() :
+        SelectedItemSet(),
+        random(Time::currentTimeMillis())
     {
         this->resetSelectionId();
     }
 
-    explicit Lasso(const ItemArray &items) : SelectedItemSet(items), random(Time::currentTimeMillis())
+    explicit Lasso(const ItemArray &items) :
+        SelectedItemSet(items),
+        random(Time::currentTimeMillis())
     {
         this->resetSelectionId();
     }
 
-    explicit Lasso(const SelectedItemSet &other) : SelectedItemSet(other), random(Time::currentTimeMillis())
+    explicit Lasso(const SelectedItemSet &other) :
+        SelectedItemSet(other),
+        random(Time::currentTimeMillis())
     {
         this->resetSelectionId();
     }
@@ -61,21 +71,6 @@ public:
     {
         return this->getNumSelected() <= 32; // just a sane limit
     }
-
-    // Transaction identifier, and why is it needed:
-    // some actions, like dragging notes around, are performed in a single undo transaction,
-    // but, unlike mouse dragging (where it's clear when to start and when to end a transaction),
-    // hotkey-handled actions will always do a checkpoint at every keypress, so that
-    // pressing `cursor down` 5 times and `cursor up` 3 times will result in 8 undo actions,
-    // (there only should be 2, for transposing events down and up accordingly).
-    // So, Lasso class re-generates its random id every time it changes,
-    // and some transform operations here will use that id, combined with operation id
-    // to identify the transaction and see if the last one was exactly of the same type and target,
-    // and checkpoint could be skipped.
-    UndoActionId generateLassoTransactionId(int actionId) const
-    {
-        return actionId + this->getId();
-    }
     
     template<typename T>
     T *getFirstAs() const
@@ -90,7 +85,7 @@ public:
         jassert(dynamic_cast<T *>(this->getSelectedItem(index)) != nullptr);
         return static_cast<T *>(this->getSelectedItem(index));
     }
-
+    
     // I want selection listeners to observe changes in position
     // of the selected events, hence this hack. For speed we don't
     // even check if the changed item is in the selection or not
@@ -101,6 +96,35 @@ public:
         {
             this->sendChangeMessage();
         }
+    }
+
+    //===------------------------------------------------------------------===//
+    // NoteListBase
+    //===------------------------------------------------------------------===//
+
+    int size() const noexcept override
+    {
+        return this->getNumSelected();
+    }
+
+    const Note &getNoteUnchecked(int i) const override
+    {
+        return this->getItemAs<NoteComponent>(i)->getNote();
+    }
+    
+    // Transaction identifier, and why is it needed:
+    // some actions, like dragging notes around, are performed in a single undo transaction,
+    // but, unlike mouse dragging (where it's clear when to start and when to end a transaction),
+    // hotkey-handled actions will always do a checkpoint at every keypress, so that
+    // pressing `cursor down` 5 times and `cursor up` 3 times will result in 8 undo actions,
+    // (there only should be 2, for transposing events down and up accordingly).
+    // So, Lasso class re-generates its random id every time it changes,
+    // and some transform operations here will use that id, combined with operation id
+    // to identify the transaction and see if the last one was exactly of the same type and target,
+    // and checkpoint could be skipped.
+    UndoActionId generateTransactionId(int actionId) const override
+    {
+        return actionId + this->getId();
     }
 
 private:

@@ -24,23 +24,6 @@
 #include "CommandIDs.h"
 #include "Config.h"
 
-ArpPreviewTool *ArpPreviewTool::createWithinContext(PianoRoll &roll,
-    WeakReference<MidiTrack> keySignatures,
-    WeakReference<TimeSignaturesAggregator> timeContext)
-{
-    if (roll.getLassoSelection().getNumSelected() > 1)
-    {
-        const bool advancedMode =
-            Desktop::getInstance().getMainMouseSource()
-                .getCurrentModifiers().isAnyModifierKeyDown();
-
-        auto *harmonicContext = dynamic_cast<KeySignaturesSequence *>(keySignatures->getSequence());
-        return new ArpPreviewTool(roll, harmonicContext, timeContext, advancedMode);
-    }
-
-    return nullptr;
-}
-
 ArpPreviewTool::ArpPreviewTool(PianoRoll &roll,
     WeakReference<KeySignaturesSequence> harmonicContext,
     WeakReference<TimeSignaturesAggregator> timeContext,
@@ -48,9 +31,7 @@ ArpPreviewTool::ArpPreviewTool(PianoRoll &roll,
     roll(roll),
     harmonicContext(harmonicContext),
     timeContext(timeContext),
-    advancedMode(advancedMode),
-    selectionStartBeat(roll.getLassoStartBeat()),
-    selectionEndBeat(roll.getLassoEndBeat())
+    advancedMode(advancedMode)
 {
     // this code pretty much duplicates menu from PianoRollSelectionMenu,
     // but adds undos and starts/stops playback of the selected fragment
@@ -67,21 +48,13 @@ ArpPreviewTool::ArpPreviewTool(PianoRoll &roll,
         this->mainMenu.add(MenuItem::item(Icons::arpeggiate, arps.getUnchecked(i)->getName())->
             withSubmenuIf(this->advancedMode)->withAction([this, i]()
         {
-            if (this->roll.getLassoSelection().getNumSelected() < 2)
-            {
-                jassertfalse;
-                return;
-            }
-
             const auto arps = App::Config().getArpeggiators()->getAll();
+            this->previewArp(arps[i], this->lastOptions, false);
 
             if (this->advancedMode)
             {
                 this->updateContent(this->createOptionsMenu(arps[i]), MenuPanel::SlideLeft);
-                return;
             }
-
-            this->previewArp(arps[i], this->lastOptions, false);
         }));
     }
 
@@ -99,68 +72,44 @@ MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
     }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Reversed")->toggledIf(this->lastOptions.reversed)->withAction([this, arp]()
-    {
-        this->lastOptions.reversed = !this->lastOptions.reversed;
-        this->previewArp(arp, this->lastOptions, true);
-        this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
-    }));
+        "x0.25")->toggledIf(this->lastOptions.durationMultiplier == 0.25f)->withAction([this, arp]()
+        {
+            this->lastOptions.durationMultiplier = 0.25f;
+            this->previewArp(arp, this->lastOptions, true);
+            this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
+        }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Limit to chord")->toggledIf(this->lastOptions.limitToChord)->withAction([this, arp]()
-    {
-        this->lastOptions.limitToChord = !this->lastOptions.limitToChord;
-        this->previewArp(arp, this->lastOptions, true);
-        this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
-    }));
+        "x0.5")->toggledIf(this->lastOptions.durationMultiplier == 0.5f)->withAction([this, arp]()
+        {
+            this->lastOptions.durationMultiplier = 0.5f;
+            this->previewArp(arp, this->lastOptions, true);
+            this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
+        }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Duration x0.5")->toggledIf(this->lastOptions.durationMultiplier == 0.5f)->withAction([this, arp]()
-    {
-        this->lastOptions.durationMultiplier = 0.5f;
-        this->previewArp(arp, this->lastOptions, true);
-        this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
-    }));
+        "x1")->toggledIf(this->lastOptions.durationMultiplier == 1.f)->withAction([this, arp]()
+        {
+            this->lastOptions.durationMultiplier = 1.f;
+            this->previewArp(arp, this->lastOptions, true);
+            this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
+        }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Duration x1")->toggledIf(this->lastOptions.durationMultiplier == 1.f)->withAction([this, arp]()
-    {
-        this->lastOptions.durationMultiplier = 1.f;
-        this->previewArp(arp, this->lastOptions, true);
-        this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
-    }));
+        "x2")->toggledIf(this->lastOptions.durationMultiplier == 2.f)->withAction([this, arp]()
+        {
+            this->lastOptions.durationMultiplier = 2.f;
+            this->previewArp(arp, this->lastOptions, true);
+            this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
+        }));
 
     menu.add(MenuItem::item(Icons::arpeggiate,
-        "Duration x2")->toggledIf(this->lastOptions.durationMultiplier == 2.f)->withAction([this, arp]()
-    {
-        this->lastOptions.durationMultiplier = 2.f;
-        this->previewArp(arp, this->lastOptions, true);
-        this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
-    }));
-
-    menu.add(MenuItem::item(Icons::arpeggiate,
-        "Randomness x0")->toggledIf(this->lastOptions.randomness == 0.f)->withAction([this, arp]()
-    {
-        this->lastOptions.randomness = 0.f;
-        this->previewArp(arp, this->lastOptions, true);
-        this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
-    }));
-
-    menu.add(MenuItem::item(Icons::arpeggiate,
-        "Randomness x0.25")->toggledIf(this->lastOptions.randomness == 0.25f)->withAction([this, arp]()
-    {
-        this->lastOptions.randomness = 0.25f;
-        this->previewArp(arp, this->lastOptions, true);
-        this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
-    }));
-
-    menu.add(MenuItem::item(Icons::arpeggiate,
-        "Randomness x0.5")->toggledIf(this->lastOptions.randomness == 0.5f)->withAction([this, arp]()
-    {
-        this->lastOptions.randomness = 0.5f;
-        this->previewArp(arp, this->lastOptions, true);
-        this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
-    }));
+        "x4")->toggledIf(this->lastOptions.durationMultiplier == 4.f)->withAction([this, arp]()
+        {
+            this->lastOptions.durationMultiplier = 4.f;
+            this->previewArp(arp, this->lastOptions, true);
+            this->updateContent(this->createOptionsMenu(arp), MenuPanel::None);
+        }));
 
     return menu;
 }
@@ -169,18 +118,14 @@ void ArpPreviewTool::previewArp(Arpeggiator::Ptr arp, const Options options, boo
 {
     auto &transport = this->roll.getTransport();
 
-    if (roll.getLassoSelection().getNumSelected() == 0)
-    {
-        return;
-    }
-
     if (forceRecreate || arp != this->lastChosenArp)
     {
         transport.stopPlaybackAndRecording();
         const bool needsCheckpoint = !this->hasMadeChanges;
         this->undoIfNeeded();
 
-        SequencerOperations::arpeggiate(this->roll.getLassoSelection(),
+        SequencerOperations::arpeggiate(this->roll.getLassoOrEntireSequence(),
+            this->roll.getActiveClip(),
             arp,
             this->roll.getTemperament(),
             this->harmonicContext,
@@ -189,6 +134,7 @@ void ArpPreviewTool::previewArp(Arpeggiator::Ptr arp, const Options options, boo
             options.randomness,
             options.reversed,
             options.limitToChord,
+            true,
             needsCheckpoint);
 
         this->lastChosenArp = arp;
@@ -201,8 +147,13 @@ void ArpPreviewTool::previewArp(Arpeggiator::Ptr arp, const Options options, boo
     }
     else
     {
-        transport.startPlaybackFragment(this->selectionStartBeat - 0.001f,
-            this->selectionEndBeat - 0.001f, true);
+        const auto playbackStartBeat = this->roll.getActiveClip().getBeat() +
+            SequencerOperations::findStartBeat(this->roll.getLassoOrEntireSequence()) - 0.001f;
+
+        const auto playbackEndBeat = this->roll.getActiveClip().getBeat() +
+            SequencerOperations::findEndBeat(this->roll.getLassoOrEntireSequence()) - 0.001f;
+
+        transport.startPlaybackFragment(playbackStartBeat, playbackEndBeat, true);
     }
 }
 

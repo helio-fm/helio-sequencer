@@ -33,7 +33,7 @@ ClipInsertAction::ClipInsertAction(MidiTrackSource &source,
 
 bool ClipInsertAction::perform()
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->insert(this->clip, false);
     }
@@ -43,7 +43,7 @@ bool ClipInsertAction::perform()
 
 bool ClipInsertAction::undo()
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->remove(this->clip, false);
     }
@@ -88,7 +88,7 @@ ClipRemoveAction::ClipRemoveAction(MidiTrackSource &source,
 
 bool ClipRemoveAction::perform()
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->remove(this->clip, false);
     }
@@ -98,7 +98,7 @@ bool ClipRemoveAction::perform()
 
 bool ClipRemoveAction::undo()
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->insert(this->clip, false);
     }
@@ -147,7 +147,7 @@ ClipChangeAction::ClipChangeAction(MidiTrackSource &source,
 
 bool ClipChangeAction::perform()
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->change(this->clipBefore, this->clipAfter, false);
     }
@@ -157,7 +157,7 @@ bool ClipChangeAction::perform()
 
 bool ClipChangeAction::undo()
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->change(this->clipAfter, this->clipBefore, false);
     }
@@ -237,7 +237,7 @@ ClipsGroupInsertAction::ClipsGroupInsertAction(MidiTrackSource &source,
 
 bool ClipsGroupInsertAction::perform()
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->insertGroup(this->clips, false);
     }
@@ -247,7 +247,7 @@ bool ClipsGroupInsertAction::perform()
 
 bool ClipsGroupInsertAction::undo()
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->removeGroup(this->clips, false);
     }
@@ -257,7 +257,7 @@ bool ClipsGroupInsertAction::undo()
 
 int ClipsGroupInsertAction::getSizeInUnits()
 {
-    return (sizeof(Clip) * this->clips.size());
+    return sizeof(Clip) * this->clips.size();
 }
 
 SerializedData ClipsGroupInsertAction::serialize() const
@@ -265,9 +265,9 @@ SerializedData ClipsGroupInsertAction::serialize() const
     SerializedData tree(Serialization::Undo::clipsGroupInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
 
-    for (int i = 0; i < this->clips.size(); ++i)
+    for (const auto &clip : this->clips)
     {
-        tree.appendChild(this->clips.getUnchecked(i).serialize());
+        tree.appendChild(clip.serialize());
     }
 
     return tree;
@@ -306,7 +306,7 @@ ClipsGroupRemoveAction::ClipsGroupRemoveAction(MidiTrackSource &source,
 
 bool ClipsGroupRemoveAction::perform()
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->removeGroup(this->clips, false);
     }
@@ -316,7 +316,7 @@ bool ClipsGroupRemoveAction::perform()
 
 bool ClipsGroupRemoveAction::undo()
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->insertGroup(this->clips, false);
     }
@@ -334,9 +334,9 @@ SerializedData ClipsGroupRemoveAction::serialize() const
     SerializedData tree(Serialization::Undo::clipsGroupRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
 
-    for (int i = 0; i < this->clips.size(); ++i)
+    for (const auto &clip : this->clips)
     {
-        tree.appendChild(this->clips.getUnchecked(i).serialize());
+        tree.appendChild(clip.serialize());
     }
 
     return tree;
@@ -376,7 +376,7 @@ ClipsGroupChangeAction::ClipsGroupChangeAction(MidiTrackSource &source,
 
 bool ClipsGroupChangeAction::perform()
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->changeGroup(this->clipsBefore, this->clipsAfter, false);
     }
@@ -386,7 +386,7 @@ bool ClipsGroupChangeAction::perform()
 
 bool ClipsGroupChangeAction::undo()
 {
-    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    if (auto *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->changeGroup(this->clipsAfter, this->clipsBefore, false);
     }
@@ -402,7 +402,7 @@ int ClipsGroupChangeAction::getSizeInUnits()
 
 UndoAction *ClipsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (auto nextChanger = dynamic_cast<ClipsGroupChangeAction *>(nextAction))
+    if (auto *nextChanger = dynamic_cast<ClipsGroupChangeAction *>(nextAction))
     {
         if (nextChanger->trackId != this->trackId)
         {
@@ -439,14 +439,14 @@ SerializedData ClipsGroupChangeAction::serialize() const
     SerializedData groupBeforeChild(Serialization::Undo::groupBefore);
     SerializedData groupAfterChild(Serialization::Undo::groupAfter);
 
-    for (int i = 0; i < this->clipsBefore.size(); ++i)
+    for (const auto &clip : this->clipsBefore)
     {
-        groupBeforeChild.appendChild(this->clipsBefore.getUnchecked(i).serialize());
+        groupBeforeChild.appendChild(clip.serialize());
     }
 
-    for (int i = 0; i < this->clipsAfter.size(); ++i)
+    for (const auto &clip : this->clipsAfter)
     {
-        groupAfterChild.appendChild(this->clipsAfter.getUnchecked(i).serialize());
+        groupAfterChild.appendChild(clip.serialize());
     }
 
     tree.appendChild(groupBeforeChild);

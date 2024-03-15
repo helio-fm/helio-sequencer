@@ -35,11 +35,7 @@ public:
     ArpPreviewTool(PianoRoll &roll,
         WeakReference<KeySignaturesSequence> harmonicContext,
         WeakReference<TimeSignaturesAggregator> timeContext,
-        bool advancedMode);
-
-    static ArpPreviewTool *createWithinContext(PianoRoll &roll,
-        WeakReference<MidiTrack> keySignatures,
-        WeakReference<TimeSignaturesAggregator> timeContext);
+        bool advancedMode = true);
 
     void handleCommandMessage(int commandId) override;
 
@@ -66,14 +62,11 @@ private:
     WeakReference<KeySignaturesSequence> harmonicContext;
     WeakReference<TimeSignaturesAggregator> timeContext;
 
-    bool advancedMode = false;
+    const bool advancedMode = true; // ...isAnyModifierKeyDown();
 
     bool hasMadeChanges = false;
     Arpeggiator::Ptr lastChosenArp = nullptr;
     Options lastOptions;
-
-    const float selectionStartBeat = 0.f;
-    const float selectionEndBeat = 0.f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpPreviewTool)
 };

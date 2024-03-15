@@ -25,8 +25,8 @@
 #include "Workspace.h"
 #include "AudioCore.h"
 
-// A simple wrappers around the sequences
-// We don't need any patterns here
+// Simple wrappers around timeline tracks,
+// we don't need any patterns for them:
 class AnnotationsTrack final : public VirtualMidiTrack
 {
 public:
@@ -132,6 +132,11 @@ MidiTrack *ProjectTimeline::getKeySignatures() const noexcept
     return this->keySignaturesTrack.get();
 }
 
+KeySignaturesSequence *ProjectTimeline::getKeySignaturesSequence() const noexcept
+{
+    return static_cast<KeySignaturesSequence *>(this->keySignaturesSequence.get());
+}
+
 MidiTrack *ProjectTimeline::getTimeSignatures() const noexcept
 {
     return this->timeSignaturesTrack.get();
@@ -162,7 +167,7 @@ static float findNextTrackAnchor(MidiTrack *track, float beat)
 
 static float findPreviousTrackAnchor(MidiTrack *track, float beat)
 {
-    for (int i = track->getSequence()->size(); i --> 0                        ;)
+    for (int i = track->getSequence()->size(); i --> 0 ;)
     {
         const auto *current = track->getSequence()->getUnchecked(i);
         if (current->getBeat() < beat)

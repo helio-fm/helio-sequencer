@@ -27,33 +27,10 @@
 #include "CommandIDs.h"
 #include "Config.h"
 
-RescalePreviewTool *RescalePreviewTool::createWithinSelectionAndContext(SafePointer<PianoRoll> roll,
-    WeakReference<MidiTrack> keySignatures)
-{
-    if (roll->getLassoSelection().getNumSelected() > 0)
-    {
-        Note::Key scaleRootKey = 0;
-        String scaleRootKeyName;
-        Scale::Ptr scale = nullptr;
-        const Clip &clip = roll->getLassoSelection().getFirstAs<NoteComponent>()->getClip();
-        if (!SequencerOperations::findHarmonicContext(roll->getLassoSelection(), clip,
-            keySignatures, scale, scaleRootKey, scaleRootKeyName))
-        {
-            DBG("Warning: harmonic context could not be detected");
-            return new RescalePreviewTool(roll, 0, Scale::makeNaturalMajorScale());
-        }
-
-        return new RescalePreviewTool(roll, scaleRootKey, scale);
-    }
-
-    return nullptr;
-}
-
-RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
-    Note::Key keyContext, Scale::Ptr scaleContext) :
+RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
+    WeakReference<KeySignaturesSequence> harmonicContext) :
     roll(roll),
-    keyContext(keyContext),
-    scaleContext(scaleContext)
+    harmonicContext(harmonicContext)
 {
     // this code pretty much duplicates menu from PianoRollSelectionMenu,
     // but adds undos and starts/stops playback of the selected fragment
@@ -68,7 +45,7 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
     const auto scales = App::Config().getScales()->getAll();
     for (int i = 0; i < scales.size(); ++i)
     {
-        if (scales.getUnchecked(i)->getBasePeriod() != this->roll->getPeriodSize())
+        if (scales.getUnchecked(i)->getBasePeriod() != this->roll.getPeriodSize())
         {
             continue;
         }
@@ -76,13 +53,7 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
         menu.add(MenuItem::item(Icons::arpeggiate,
             scales.getUnchecked(i)->getLocalizedName())->withAction([this, i]()
         {
-            if (this->scaleContext == nullptr)
-            {
-                jassertfalse;
-                return;
-            }
-
-            auto &transport = this->roll->getTransport();
+            auto &transport = this->roll.getTransport();
             const auto scales = App::Config().getScales()->getAll();
             if (!scales[i]->isEquivalentTo(this->lastChosenScale))
             {
@@ -90,8 +61,9 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
                 const bool needsCheckpoint = !this->hasMadeChanges;
                 this->undoIfNeeded();
 
-                SequencerOperations::rescale(this->roll->getLassoSelection(),
-                    this->keyContext, this->scaleContext, scales[i], needsCheckpoint);
+                SequencerOperations::rescale(this->roll.getLassoOrEntireSequence(),
+                    this->roll.getActiveClip(), this->harmonicContext, scales[i],
+                    true, needsCheckpoint);
 
                 this->lastChosenScale = scales[i];
                 this->hasMadeChanges = true;
@@ -103,9 +75,13 @@ RescalePreviewTool::RescalePreviewTool(SafePointer<PianoRoll> roll,
             }
             else
             {
-                const auto firstBeat = this->roll->getLassoStartBeat();
-                const auto lastBeat = this->roll->getLassoEndBeat();
-                transport.startPlaybackFragment(firstBeat - 0.001f, lastBeat - 0.001f, true);
+                const auto playbackStartBeat = this->roll.getActiveClip().getBeat() +
+                    SequencerOperations::findStartBeat(this->roll.getLassoOrEntireSequence()) - 0.001f;
+
+                const auto playbackEndBeat = this->roll.getActiveClip().getBeat() +
+                    SequencerOperations::findEndBeat(this->roll.getLassoOrEntireSequence()) - 0.001f;
+
+                transport.startPlaybackFragment(playbackStartBeat, playbackEndBeat, true);
             }
         }));
     }
@@ -133,7 +109,7 @@ void RescalePreviewTool::undoIfNeeded()
 {
     if (this->hasMadeChanges)
     {
-        this->roll->getActiveTrack()->getSequence()->undo();
+        this->roll.getActiveTrack()->getSequence()->undo();
     }
 }
 
@@ -163,7 +139,8 @@ QuickRescaleMenu::QuickRescaleMenu(const ProjectNode &project,
             {
                 const bool hasMadeChanges = 
                     SequencerOperations::rescale(this->project, this->event.getBeat(), this->endBeat,
-                    this->event.getRootKey(), this->event.getScale(), scales[i], true);
+                        this->event.getRootKey(), this->event.getScale(), scales[i],
+                        true, true);
 
                 auto *keySequence = static_cast<KeySignaturesSequence *>(this->event.getSequence());
                 if (!hasMadeChanges)

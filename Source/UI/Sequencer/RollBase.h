@@ -283,7 +283,6 @@ protected:
     
     void broadcastRollMoved();
     void broadcastRollResized();
-
     
 protected:
 

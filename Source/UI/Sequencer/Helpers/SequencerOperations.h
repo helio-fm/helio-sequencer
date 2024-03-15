@@ -24,7 +24,6 @@ class MidiTrackNode;
 class MidiTrack;
 class Pattern;
 class Clipboard;
-class PianoSequence;
 class AutomationSequence;
 class KeySignaturesSequence;
 class TimeSignaturesAggregator;
@@ -35,17 +34,26 @@ class TimeSignaturesAggregator;
 #include "Scale.h"
 #include "Temperament.h"
 #include "Arpeggiator.h"
+#include "PianoSequence.h"
 
 struct SequencerOperations final
 {
-    static float findStartBeat(const Lasso &selection);
-    static float findEndBeat(const Lasso &selection);
+    static float findStartBeat(const NoteListBase &notes);
+    static float findEndBeat(const NoteListBase &notes);
     static float findStartBeat(const WeakReference<Lasso> selection);
     static float findEndBeat(const WeakReference<Lasso> selection);
     static float findStartBeat(const Array<Note> &selection);
     static float findEndBeat(const Array<Note> &selection);
 
-    static PianoSequence *getPianoSequence(const Lasso &selection);
+    static void previewSelection(const Lasso &selection, Transport &transport, int maxSize = 7);
+    
+    static Clip &findClosestClip(const Lasso &selection,
+        WeakReference<MidiTrack> track, float &outDistance);
+
+    static String findClosestOverlappingAnnotation(const Lasso &selection,
+        WeakReference<MidiTrack> annotations);
+
+    static PianoSequence *getPianoSequence(const NoteListBase &notes);
     static PianoSequence *getPianoSequence(const Clip &targetClip);
 
     static Arpeggiator::Ptr makeArpeggiator(const String &name,
@@ -54,28 +62,28 @@ struct SequencerOperations final
         const Scale::Ptr scale, Note::Key scaleRootKey, 
         WeakReference<TimeSignaturesAggregator> timeContext);
 
-    static bool arpeggiate(const Lasso &selection,
+    static bool arpeggiate(const NoteListBase &notes, const Clip &clip,
         const Arpeggiator::Ptr arpeggiator,
         const Temperament::Ptr temperament,
         WeakReference<KeySignaturesSequence> harmonicContext,
         WeakReference<TimeSignaturesAggregator> timeContext,
-        float durationMultiplier, float randomness, bool reversed = false,
-        bool limitToChord = false, bool shouldCheckpoint = true);
+        float durationMultiplier, float randomness, bool reversed = false, bool limitToChord = false,
+        bool undoable = true, bool shouldCheckpoint = true);
 
     static bool isBarStart(float absBeat,
         WeakReference<TimeSignaturesAggregator> timeContext);
 
     // for hotkey commands:
-    static void randomizeVolume(Lasso &selection, float factor = 0.5f, bool shouldCheckpoint = true);
-    static void fadeOutVolume(Lasso &selection, float factor = 0.5f, bool shouldCheckpoint = true);
-    static void tuneVolume(Lasso &selection, float delta, bool shouldCheckpoint = true);
+    static void randomizeVolume(const Lasso &selection, float factor = 0.5f, bool shouldCheckpoint = true);
+    static void fadeOutVolume(const Lasso &selection, float factor = 0.5f, bool shouldCheckpoint = true);
+    static void tuneVolume(const Lasso &selection, float delta, bool shouldCheckpoint = true);
 
     // for interactive volume changes:
-    static void startTuning(Lasso &selection);
-    static void changeVolumeLinear(Lasso &selection, float volumeDelta);
-    static void changeVolumeMultiplied(Lasso &selection, float volumeFactor);
-    static void changeVolumeSine(Lasso &selection, float volumeFactor);
-    static void endTuning(Lasso &selection);
+    static void startTuning(const Lasso &selection);
+    static void changeVolumeLinear(const Lasso &selection, float volumeDelta);
+    static void changeVolumeMultiplied(const Lasso &selection, float volumeFactor);
+    static void changeVolumeSine(const Lasso &selection, float volumeFactor);
+    static void endTuning(const Lasso &selection);
 
     static void copyToClipboard(Clipboard &clipboard, const Lasso &selection);
     static void pasteFromClipboard(Clipboard &clipboard, ProjectNode &project,
@@ -84,43 +92,49 @@ struct SequencerOperations final
     static void deleteSelection(const Lasso &selection, bool shouldCheckpoint = true);
     static void duplicateSelection(const Lasso &selection, bool shouldCheckpoint = true);
 
-    static String findClosestOverlappingAnnotation(Lasso &selection, WeakReference<MidiTrack> annotations);
+    static Array<Note> moveSelection(const Lasso &selection,
+        Clip &targetClip, bool shouldCheckpoint = true);
 
-    static Clip &findClosestClip(Lasso &selection, WeakReference<MidiTrack> track, float &outDistance);
-    static Array<Note> moveSelection(Lasso &selection, Clip &targetClip, bool shouldCheckpoint = true);
+    static void shiftKeyRelative(const NoteListBase &notes, int deltaKey,
+        bool undoable = true, bool shouldCheckpoint = true);
 
-    static void shiftKeyRelative(Lasso &selection, int deltaKey,
-        Transport *transport = nullptr, bool shouldCheckpoint = true);
+    // pass deltaKey=0 to do snap-to-scale:
+    static void shiftInScaleKeyRelative(const NoteListBase &notes, const Clip &clip,
+        WeakReference<KeySignaturesSequence> keySignatures, Scale::Ptr defaultScale,
+        int deltaKey, bool undoable = true, bool shouldCheckpoint = true);
 
-    static void shiftInScaleKeyRelative(const Lasso &selection,
-        WeakReference<MidiTrack> keySignatures, Scale::Ptr defaultScale,
-        int deltaKey, Transport *transport = nullptr, bool shouldCheckpoint = true);
+    static void shiftBeatRelative(const NoteListBase &notes,
+        float deltaBeat, bool undoable = true, bool shouldCheckpoint = true);
 
-    static void shiftBeatRelative(Lasso &selection, float deltaBeat,
-        bool shouldCheckpoint = true);
+    static void shiftLengthRelative(const NoteListBase &notes,
+        float deltaLength, bool undoable = true, bool shouldCheckpoint = true);
 
-    static void shiftLengthRelative(Lasso &selection, float deltaLength,
-        bool shouldCheckpoint = true);
+    static void invertChord(const NoteListBase &notes, int deltaKey,
+        bool undoable = true, bool shouldCheckpoint = true);
 
-    static void invertChord(Lasso &selection, int deltaKey,
-        bool shouldCheckpoint = true, Transport *transport = nullptr);
+    static void cleanupOverlaps(const NoteListBase &notes, bool undoable = true, bool shouldCheckpoint = true);
 
-    static void cleanupOverlaps(Lasso &selection, bool shouldCheckpoint = true);
-    static void retrograde(Lasso &selection, bool shouldCheckpoint = true);
-    static void melodicInversion(Lasso &selection, bool shouldCheckpoint = true);
+    static void retrograde(const NoteListBase &notes, bool undoable = true, bool shouldCheckpoint = true);
+    static void melodicInversion(const NoteListBase &notes, bool undoable = true, bool shouldCheckpoint = true);
 
-    static void makeStaccato(Lasso &selection, float newLength, bool shouldCheckpoint = true);
-    static bool makeLegato(const Lasso& selection, float overlap, bool shouldCheckpoint = true);
+    static void makeStaccato(const NoteListBase &notes,
+        float newLength, bool undoable = true, bool shouldCheckpoint = true);
+    static bool makeLegato(const NoteListBase &notes,
+        float overlap, bool undoable = true, bool shouldCheckpoint = true);
 
-    static void applyTuplets(Lasso &selection, Note::Tuplet tuplet, bool shouldCheckpoint = true);
-    static bool quantize(const Lasso &selection, float bar, bool shouldCheckpoint = true);
-    static bool quantize(WeakReference<MidiTrack> track, float bar, bool shouldCheckpoint = true);
+    static bool quantize(const NoteListBase &notes, float bar,
+        bool undoable = true, bool shouldCheckpoint = true);
 
-    static void rescale(Lasso &selection, Note::Key rootKey,
-        Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint = true);
+    static void applyTuplets(const NoteListBase &notes, Note::Tuplet tuplet,
+        bool undoable = true, bool shouldCheckpoint = true);
+
+    static void rescale(const NoteListBase &notes, const Clip &clip,
+        WeakReference<KeySignaturesSequence> harmonicContext, Scale::Ptr targetScale,
+        bool undoable = true, bool shouldCheckpoint = true);
 
     static bool rescale(const ProjectNode &project, float startBeat, float endBeat,
-        Note::Key rootKey, Scale::Ptr scaleA, Scale::Ptr scaleB, bool shouldCheckpoint = true);
+        Note::Key rootKey, Scale::Ptr scaleA, Scale::Ptr scaleB,
+        bool undoable = true, bool shouldCheckpoint = true);
 
     static bool remapNotesToTemperament(const ProjectNode &project,
         Temperament::Ptr temperament, bool shouldCheckpoint = true);
@@ -129,7 +143,7 @@ struct SequencerOperations final
         Temperament::Ptr currentTemperament, Temperament::Ptr otherTemperament,
         const Array<Scale::Ptr> &availableScales, bool shouldCheckpoint = true);
 
-    static bool findHarmonicContext(const Lasso &selection, const Clip &clip,
+    static bool findHarmonicContext(const NoteListBase &notes, const Clip &clip,
         WeakReference<MidiTrack> keySignatures, Scale::Ptr &outScale,
         Note::Key &outRootKey, String &outKeyName);
     static bool findHarmonicContext(float startBeat, float endBeat,

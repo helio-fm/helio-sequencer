@@ -70,7 +70,7 @@ int AutomationTrackInsertAction::getSizeInUnits()
 SerializedData AutomationTrackInsertAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::automationTrackInsertAction);
-    tree.setProperty(Serialization::Undo::xPath, this->trackName);
+    tree.setProperty(Serialization::Undo::path, this->trackName);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
     tree.appendChild(this->trackState.createCopy());
     return tree;
@@ -78,7 +78,7 @@ SerializedData AutomationTrackInsertAction::serialize() const
 
 void AutomationTrackInsertAction::deserialize(const SerializedData &data)
 {
-    this->trackName = data.getProperty(Serialization::Undo::xPath);
+    this->trackName = data.getProperty(Serialization::Undo::path);
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->trackState = data.getChild(0).createCopy();
 }
@@ -145,7 +145,7 @@ int AutomationTrackRemoveAction::getSizeInUnits()
 SerializedData AutomationTrackRemoveAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::automationTrackRemoveAction);
-    tree.setProperty(Serialization::Undo::xPath, this->trackName);
+    tree.setProperty(Serialization::Undo::path, this->trackName);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
     tree.appendChild(this->serializedTreeItem.createCopy());
     return tree;
@@ -153,7 +153,7 @@ SerializedData AutomationTrackRemoveAction::serialize() const
 
 void AutomationTrackRemoveAction::deserialize(const SerializedData &data)
 {
-    this->trackName = data.getProperty(Serialization::Undo::xPath);
+    this->trackName = data.getProperty(Serialization::Undo::path);
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->serializedTreeItem = data.getChild(0).createCopy();
 }

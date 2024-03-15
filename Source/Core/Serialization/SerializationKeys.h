@@ -640,7 +640,7 @@ namespace Serialization
         static const Identifier transaction = "transaction";
 
         static const Identifier name = "name";
-        static const Identifier xPath = "path";
+        static const Identifier path = "path";
         static const Identifier trackId = "trackId";
         static const Identifier group = "group";
 

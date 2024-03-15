@@ -71,7 +71,7 @@ int PianoTrackInsertAction::getSizeInUnits()
 SerializedData PianoTrackInsertAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::pianoTrackInsertAction);
-    tree.setProperty(Serialization::Undo::xPath, this->trackName);
+    tree.setProperty(Serialization::Undo::path, this->trackName);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
     tree.appendChild(this->trackState.createCopy());
     return tree;
@@ -79,7 +79,7 @@ SerializedData PianoTrackInsertAction::serialize() const
 
 void PianoTrackInsertAction::deserialize(const SerializedData &data)
 {
-    this->trackName = data.getProperty(Serialization::Undo::xPath);
+    this->trackName = data.getProperty(Serialization::Undo::path);
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->trackState = data.getChild(0).createCopy();
 }
@@ -149,7 +149,7 @@ int PianoTrackRemoveAction::getSizeInUnits()
 SerializedData PianoTrackRemoveAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::pianoTrackRemoveAction);
-    tree.setProperty(Serialization::Undo::xPath, this->trackName);
+    tree.setProperty(Serialization::Undo::path, this->trackName);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
     tree.appendChild(this->serializedTreeItem.createCopy());
     return tree;
@@ -157,7 +157,7 @@ SerializedData PianoTrackRemoveAction::serialize() const
 
 void PianoTrackRemoveAction::deserialize(const SerializedData &data)
 {
-    this->trackName = data.getProperty(Serialization::Undo::xPath);
+    this->trackName = data.getProperty(Serialization::Undo::path);
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->serializedTreeItem = data.getChild(0).createCopy();
 }

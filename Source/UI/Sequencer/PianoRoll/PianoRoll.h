@@ -83,9 +83,11 @@ public:
     Rectangle<float> getEventBounds(int key, float beat, float length) const;
     bool isNoteVisible(int key, float beat, float length) const;
 
-    // Note that beat is returned relative to active clip's beat offset:
-    void getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber, bool snap = true) const;
-    void getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber, bool snap = true) const;
+    // the beat is returned relative to active clip's beat offset:
+    void getRowsColsByComponentPosition(float x, float y,
+        int &noteNumber, float &beatNumber, bool snap = true) const;
+    void getRowsColsByMousePosition(int x, int y,
+        int &noteNumber, float &beatNumber, bool snap = true) const;
 
     //===------------------------------------------------------------------===//
     // Drag helpers
@@ -141,6 +143,10 @@ public:
     void selectEvents(const Array<Note> &notes, bool shouldDeselectAllOthers);
     float getLassoStartBeat() const;
     float getLassoEndBeat() const;
+
+    // a hepler method for calling SequencerOperations::whatever(),
+    // returns the entire sequence if nothing is selected:
+    const NoteListBase &getLassoOrEntireSequence() const;
 
     //===------------------------------------------------------------------===//
     // Component

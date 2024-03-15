@@ -53,22 +53,3 @@ public:
 
     virtual ProjectNode *getProject() const noexcept { return nullptr; }
 };
-
-class EmptyEventDispatcher final : public ProjectEventDispatcher
-{
-public:
-
-    void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) noexcept override {}
-    void dispatchAddEvent(const MidiEvent &event) noexcept override {}
-    void dispatchRemoveEvent(const MidiEvent &event) noexcept override {}
-    void dispatchPostRemoveEvent(MidiSequence *const layer) noexcept override {}
-
-    void dispatchAddClip(const Clip &clip) noexcept override {}
-    void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) noexcept override {}
-    void dispatchRemoveClip(const Clip &clip) noexcept override {}
-    void dispatchPostRemoveClip(Pattern *const pattern) noexcept override {}
-
-    void dispatchChangeTrackProperties() noexcept override {}
-    void dispatchChangeProjectBeatRange() noexcept override {}
-    void dispatchChangeTrackBeatRange() noexcept override {}
-};
