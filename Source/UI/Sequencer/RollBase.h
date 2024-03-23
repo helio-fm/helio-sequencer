@@ -75,7 +75,7 @@ class RollBase :
     protected RollEditMode::Listener,
     protected TransportListener, // for positioning the playhead component and auto-scrolling
     protected AsyncUpdater, // coalesce multiple transport events ^^ into a single async view change
-    protected HighResolutionTimer, // for smooth scrolling to seek position,
+    protected Timer, // for smooth scrolling to seek position,
     protected TimeSignaturesAggregator::Listener, // when the editable scope changes, active time signatures may change
     protected AudioMonitor::ClippingListener // for displaying clipping indicator components
 {
@@ -181,9 +181,9 @@ public:
         return int((targetBeat - this->firstBeat) * this->beatWidth);
     }
 
-    inline int getXPositionByBeat(double targetBeat, double parentWidth) const noexcept
+    inline int getXPositionByBeat(float targetBeat, float parentWidth) const noexcept
     {
-        const double widthRatio = parentWidth / jmax(1.0, double(this->getWidth()));
+        const auto widthRatio = parentWidth / jmax(1.f, float(this->getWidth()));
         return int((targetBeat - this->firstBeat) * this->beatWidth * widthRatio);
     }
 
@@ -219,8 +219,8 @@ public:
     
     void triggerBatchRepaintFor(FloatBoundsComponent *target);
 
-    bool scrollToPlayheadPositionIfNeeded();
-    void startFollowingPlayhead();
+    bool scrollToPlayheadPositionIfNeeded(int edgeMargin = 50);
+    void startFollowingPlayhead(bool forceScrollToPlayhead = false);
     void stopFollowingPlayhead();
     
     //===------------------------------------------------------------------===//
@@ -315,6 +315,7 @@ protected:
     // UserInterfaceFlags::Listener
     //===------------------------------------------------------------------===//
 
+    void onFollowPlayheadFlagChanged(bool following) override;
     void onUiAnimationsFlagChanged(bool enabled) override;
     void onMouseWheelFlagsChanged(UserInterfaceFlags::MouseWheelFlags flags) override;
     void onLockZoomLevelFlagChanged(bool zoomLocked) override;
@@ -334,9 +335,8 @@ protected:
 
     Atomic<float> lastPlayheadBeat = 0.f; // modified from the player thread
 
-    enum class PlayheadFollowMode { None, Once, Always };
-    PlayheadFollowMode playheadFollowMode = PlayheadFollowMode::None;
-    int scrollToPlayheadTimerMs = 6;
+    enum class PlayheadFollowMode { Disabled, Free, CatchWhenOffscreen, Follow };
+    PlayheadFollowMode playheadFollowMode = PlayheadFollowMode::Free;
 
     //===------------------------------------------------------------------===//
     // AsyncUpdater
@@ -351,7 +351,7 @@ protected:
     // Timer
     //===------------------------------------------------------------------===//
 
-    void hiResTimerCallback() override;
+    void timerCallback() override;
     
 protected:
     

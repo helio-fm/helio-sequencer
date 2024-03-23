@@ -95,7 +95,7 @@ private:
     //===------------------------------------------------------------------===//
 
     void handleAsyncUpdate() override;
-    void updatePosition(double position);
+    void updatePosition(float position);
 
     Colour currentColour;
 

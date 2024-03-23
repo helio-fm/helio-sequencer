@@ -45,6 +45,7 @@ private:
     UniquePointer<ToggleButton> wheelVerticalPanningButton;
     UniquePointer<ToggleButton> wheelVerticalZoomingButton;
     UniquePointer<SeparatorHorizontal> miscFlagsSeparator;
+    UniquePointer<ToggleButton> followPlayheadButton;
     UniquePointer<ToggleButton> animationsEnabledButton;
     UniquePointer<SeparatorHorizontal> uiScaleSeparator;
     UniquePointer<ToggleButton> scaleUi1;

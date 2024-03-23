@@ -50,6 +50,7 @@ public:
         virtual void onEditorPanelVisibilityFlagChanged(bool visible) {}
         virtual void onProjectMapLargeModeFlagChanged(bool showFullMap) {}
 
+        virtual void onFollowPlayheadFlagChanged(bool following) {}
         virtual void onUiAnimationsFlagChanged(bool enabled) {}
         virtual void onLockZoomLevelFlagChanged(bool zoomLocked) {}
         virtual void onMouseWheelFlagsChanged(MouseWheelFlags flags) {}
@@ -92,6 +93,9 @@ public:
     void toggleProjectMapLargeMode();
 
     bool areExperimentalFeaturesEnabled() const noexcept;
+
+    bool isFollowingPlayhead() const noexcept;
+    void setFollowingPlayhead(bool following);
 
     bool areUiAnimationsEnabled() const noexcept;
     void setUiAnimationsEnabled(bool enabled);
@@ -158,6 +162,7 @@ private:
 #endif
 
     bool experimentalFeaturesOn = false;
+    bool followPlayhead = false;
     bool rollAnimationsEnabled = true;
     bool zoomLevelLocked = false;
 

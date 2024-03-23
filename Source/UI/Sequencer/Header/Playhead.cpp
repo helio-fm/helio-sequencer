@@ -42,7 +42,7 @@ Playhead::Playhead(RollBase &parentRoll,
 
     this->lastCorrectBeat = this->transport.getSeekBeat();
     this->beatAnchor = this->lastCorrectBeat;
-    this->timeAnchor = Time::getMillisecondCounterHiRes();
+    this->timeAnchor = Time::getMillisecondCounter();
 
     this->transport.addTransportListener(this);
 }
@@ -64,7 +64,7 @@ void Playhead::onSeek(float beatPosition)
 
     if (this->isTimerRunning())
     {
-        this->timeAnchor = Time::getMillisecondCounterHiRes();
+        this->timeAnchor = Time::getMillisecondCounter();
         this->beatAnchor = this->lastCorrectBeat;
     }
 }
@@ -77,16 +77,16 @@ void Playhead::onCurrentTempoChanged(double msPerQuarter)
     {
         // expects that lastCorrectBeat has been set
         // just before calling this function:
-        this->timeAnchor = Time::getMillisecondCounterHiRes();
+        this->timeAnchor = Time::getMillisecondCounter();
         this->beatAnchor = this->lastCorrectBeat;
     }
 }
 
 void Playhead::onPlay()
 {
-    this->timeAnchor = Time::getMillisecondCounterHiRes();
+    this->timeAnchor = Time::getMillisecondCounter();
     this->beatAnchor = this->lastCorrectBeat;
-    this->startTimerHz(60);
+    this->startTimerHz(120);
 }
 
 void Playhead::onRecord()
@@ -178,14 +178,9 @@ void Playhead::parentChanged()
     }
 }
 
-void Playhead::updatePosition(double position)
+void Playhead::updatePosition(float position)
 {
-    const int newX = this->roll.getXPositionByBeat(position, double(this->getParentWidth()));
-
-    if (this->getPosition().getX() == newX)
-    {
-        return;
-    }
+    const int newX = this->roll.getXPositionByBeat(position, float(this->getParentWidth()));
 
     this->setTopLeftPosition(newX, 0);
 
@@ -202,8 +197,8 @@ void Playhead::updatePosition()
 
 void Playhead::tick()
 {
-    const double timeOffsetMs = Time::getMillisecondCounterHiRes() - this->timeAnchor.get();
+    const double timeOffsetMs = Time::getMillisecondCounter() - this->timeAnchor.get();
     const double positionOffset = timeOffsetMs / this->msPerQuarterNote.get();
     const double estimatedPosition = this->beatAnchor.get() + positionOffset;
-    this->updatePosition(estimatedPosition);
+    this->updatePosition(float(estimatedPosition));
 }

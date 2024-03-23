@@ -293,6 +293,7 @@ namespace I18n
         static constexpr auto ui = constexprHash("settings::ui");
         static constexpr auto uiFont = constexprHash("settings::ui::font");
         static constexpr auto nativeTitleBar = constexprHash("settings::ui::nativebar");
+        static constexpr auto followPlayhead = constexprHash("settings::ui::catchplayhead");
         static constexpr auto uiAnimations = constexprHash("settings::ui::animations");
         static constexpr auto mouseWheelPanningByDefault = constexprHash("settings::ui::wheel::panning");
         static constexpr auto mouseWheelVerticalPanningByDefault = constexprHash("settings::ui::wheel::verticalpan");

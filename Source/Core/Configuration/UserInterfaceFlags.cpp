@@ -141,6 +141,23 @@ bool UserInterfaceFlags::areExperimentalFeaturesEnabled() const noexcept
     return this->experimentalFeaturesOn;
 }
 
+bool UserInterfaceFlags::isFollowingPlayhead() const noexcept
+{
+    return this->followPlayhead;
+}
+
+void UserInterfaceFlags::setFollowingPlayhead(bool following)
+{
+    if (this->followPlayhead == following)
+    {
+        return;
+    }
+
+    this->followPlayhead = following;
+    this->listeners.call(&Listener::onFollowPlayheadFlagChanged, this->followPlayhead);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
 bool UserInterfaceFlags::areUiAnimationsEnabled() const noexcept
 {
     return this->rollAnimationsEnabled;
@@ -268,6 +285,7 @@ SerializedData UserInterfaceFlags::serialize() const
     tree.setProperty(UI::Flags::scalesHighlighting, this->scalesHighlighting);
     tree.setProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     tree.setProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
+    tree.setProperty(UI::Flags::followPlayhead, this->followPlayhead);
     tree.setProperty(UI::Flags::animations, this->rollAnimationsEnabled);
     tree.setProperty(UI::Flags::lockZoomLevel, this->zoomLevelLocked);
     tree.setProperty(UI::Flags::showFullProjectMap, this->projectMapLargeMode);
@@ -300,6 +318,7 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->scalesHighlighting = root.getProperty(UI::Flags::scalesHighlighting, this->scalesHighlighting);
     this->useOpenGLRenderer = root.getProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     this->useNativeTitleBar = root.getProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
+    this->followPlayhead = root.getProperty(UI::Flags::followPlayhead, this->followPlayhead);
     this->rollAnimationsEnabled = root.getProperty(UI::Flags::animations, this->rollAnimationsEnabled);
     this->zoomLevelLocked = root.getProperty(UI::Flags::lockZoomLevel, this->zoomLevelLocked);
     this->projectMapLargeMode = root.getProperty(UI::Flags::showFullProjectMap, this->projectMapLargeMode);

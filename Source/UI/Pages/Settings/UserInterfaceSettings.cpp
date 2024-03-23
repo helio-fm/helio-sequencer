@@ -124,6 +124,14 @@ UserInterfaceSettings::UserInterfaceSettings()
 
 #endif
 
+    this->followPlayheadButton = make<ToggleButton>(TRANS(I18n::Settings::followPlayhead));
+    this->addAndMakeVisible(this->followPlayheadButton.get());
+    this->followPlayheadButton->onClick = [this]()
+    {
+        App::Config().getUiFlags()->setFollowingPlayhead(this->followPlayheadButton->getToggleState());
+        this->updateButtons();
+    };
+
     this->animationsEnabledButton = make<ToggleButton>(TRANS(I18n::Settings::uiAnimations));
     this->addAndMakeVisible(this->animationsEnabledButton.get());
     this->animationsEnabledButton->onClick = [this]()
@@ -169,9 +177,9 @@ UserInterfaceSettings::UserInterfaceSettings()
     };
 
 #if SIMPLIFIED_UI_SETTINGS
-    this->setSize(100, 175);
+    this->setSize(100, 210);
 #else
-    this->setSize(100, 415);
+    this->setSize(100, 450);
 #endif
 }
 
@@ -220,8 +228,11 @@ void UserInterfaceSettings::resized()
 
 #endif
 
-    this->animationsEnabledButton->setBounds(margin2,
+    this->followPlayheadButton->setBounds(margin2,
         bottomSectionStart, this->getWidth() - margin2 * 2, rowSize);
+
+    this->animationsEnabledButton->setBounds(margin2,
+        this->followPlayheadButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->uiScaleSeparator->setBounds(margin2,
         this->animationsEnabledButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 4);
@@ -264,7 +275,6 @@ void UserInterfaceSettings::handleCommandMessage(int commandId)
 #endif
 }
 
-// fixme: isn't it better to make this class UserInterfaceFlags::Listener?
 void UserInterfaceSettings::updateButtons()
 {
     const auto *uiFlags = App::Config().getUiFlags();
@@ -278,8 +288,8 @@ void UserInterfaceSettings::updateButtons()
     this->wheelVerticalZoomingButton->setToggleState(wheelFlags.useVerticalZoomingByDefault, dontSendNotification);
 #endif
 
-    const bool hasRollAnimations = uiFlags->areUiAnimationsEnabled();
-    this->animationsEnabledButton->setToggleState(hasRollAnimations, dontSendNotification);
+    this->followPlayheadButton->setToggleState(uiFlags->isFollowingPlayhead(), dontSendNotification);
+    this->animationsEnabledButton->setToggleState(uiFlags->areUiAnimationsEnabled(), dontSendNotification);
 
     this->scaleUi1->setToggleState(uiFlags->getUiScaleFactor() == 1.f, dontSendNotification);
     this->scaleUi15->setToggleState(uiFlags->getUiScaleFactor() == 1.5f, dontSendNotification);

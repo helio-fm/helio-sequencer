@@ -291,7 +291,7 @@ Rectangle<float> AutomationEditor::getEventBounds(const AutomationEvent &event, 
 Rectangle<float> AutomationEditor::getCurveEventBounds(float beat, double controllerValue) const
 {
     constexpr auto diameter = AutomationEditor::curveEventComponentDiameter;
-    const float x = float(this->roll->getXPositionByBeat(beat, double(this->getWidth())));
+    const float x = float(this->roll->getXPositionByBeat(beat, float(this->getWidth())));
     const float y = roundf(float(1.0 - controllerValue) * float(this->getHeight())); // flipped upside down
     return { x - (diameter / 2.f), y - (diameter / 2.f), diameter, diameter };
 }
@@ -302,7 +302,7 @@ Rectangle<float> AutomationEditor::getOnOffEventBounds(float beat, bool isPedalD
     const float w = jmax(minWidth,
         float(this->roll->getBeatWidth()) * AutomationStepEventComponent::minLengthInBeats);
 
-    const float x = float(this->roll->getXPositionByBeat(beat, double(this->getWidth())));
+    const float x = float(this->roll->getXPositionByBeat(beat, float(this->getWidth())));
     return { x - w + AutomationStepEventComponent::pointRadius, 0.f, w, float(this->getHeight()) };
 }
 

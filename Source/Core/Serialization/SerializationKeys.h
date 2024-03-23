@@ -298,6 +298,7 @@ namespace Serialization
             static const Identifier noteNameGuides = "noteNameGuides";
             static const Identifier scalesHighlighting = "scalesHighlighting";
             static const Identifier experimentalFeaturesOn = "experimentalFeatures";
+            static const Identifier followPlayhead ="catchPlayhead";
             static const Identifier animations = "animations";
             static const Identifier lockZoomLevel = "lockZoom";
             static const Identifier showFullProjectMap = "miniMap";
