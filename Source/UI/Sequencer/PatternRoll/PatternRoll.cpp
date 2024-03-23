@@ -502,7 +502,7 @@ void PatternRoll::selectEventsInRange(float startBeat, float endBeat, bool shoul
     for (const auto &e : this->clipComponents)
     {
         const auto component = e.second.get();
-        if (component->isActive() &&
+        if (component->isActiveAndEditable() &&
             component->getBeat() >= startBeat &&
             component->getBeat() < endBeat)
         {
@@ -516,7 +516,7 @@ void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
     for (const auto &e : this->clipComponents)
     {
         const auto component = e.second.get();
-        if (rectangle.intersects(component->getBounds()) && component->isActive())
+        if (rectangle.intersects(component->getBounds()) && component->isActiveAndEditable())
         {
             jassert(!itemsFound.contains(component));
             itemsFound.add(component);
@@ -849,6 +849,9 @@ void PatternRoll::handleCommandMessage(int commandId)
     case CommandIDs::ToggleSoloClips:
         PatternOperations::toggleSoloClips(this->selection);
         break;
+    case CommandIDs::ToggleMuteModifiers:
+        PatternOperations::toggleMuteModifiersStack(this->selection);
+        break;
     case CommandIDs::ToggleLoopOverSelection:
         if (this->selection.getNumSelected() > 0)
         {
@@ -1086,7 +1089,7 @@ void PatternRoll::continueErasingEvents(const Point<float> &mousePosition)
     for (const auto &it : this->clipComponents)
     {
         auto *cc = it.second.get();
-        if (!cc->isActive() || !cc->isVisible())
+        if (!cc->isActiveAndEditable() || !cc->isVisible())
         {
             continue;
         }

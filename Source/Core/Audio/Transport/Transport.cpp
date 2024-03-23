@@ -1035,11 +1035,13 @@ TransportPlaybackCache Transport::buildPlaybackCache(bool withMetronome) const
     TransportPlaybackCache result;
     
     this->hasSoloClipsCache = this->findSoloClipFlagIfAny();
+    auto &generatedSequences = *this->project.getGeneratedSequences();
 
     for (const auto *track : this->tracksCache)
     {
         const auto instrument = this->instrumentLinks[track->getTrackId()];
-        const auto &keyMap = *instrument->getKeyboardMapping();
+        jassert(instrument != nullptr);
+        const auto &keyMapping = *instrument->getKeyboardMapping();
 
         auto cached = CachedMidiSequence::createFrom(instrument, track->getSequence());
 
@@ -1048,7 +1050,8 @@ TransportPlaybackCache Transport::buildPlaybackCache(bool withMetronome) const
             for (const auto *clip : track->getPattern()->getClips())
             {
                 cached->track->exportMidi(cached->midiMessages, *clip,
-                    keyMap, this->hasSoloClipsCache, withMetronome,
+                    keyMapping, generatedSequences,
+                    this->hasSoloClipsCache, withMetronome,
                     this->projectFirstBeat.get(), this->projectLastBeat.get());
             }
         }
@@ -1056,7 +1059,8 @@ TransportPlaybackCache Transport::buildPlaybackCache(bool withMetronome) const
         {
             static Clip noTransform;
             cached->track->exportMidi(cached->midiMessages, noTransform,
-                keyMap, this->hasSoloClipsCache, withMetronome,
+                keyMapping, generatedSequences,
+                this->hasSoloClipsCache, withMetronome,
                 this->projectFirstBeat.get(), this->projectLastBeat.get());
         }
 

@@ -26,11 +26,14 @@ class RollChildComponentBase : public FloatBoundsComponent, public SelectableCom
 {
 public:
 
-    RollChildComponentBase(RollBase &editor, bool ghostMode = false) noexcept;
+    explicit RollChildComponentBase(RollBase &editor) noexcept;
 
-    bool isActive() const noexcept;
+    // non-editable events may still be enabled and intercept mouse events,
+    // for example, for activating their clip on rclick mouse down or long-tap:
+    bool isActiveAndEditable() const noexcept;
+
+    void setEditable(bool val);
     void setActive(bool val, bool force = false);
-    void setGhostMode();
 
     virtual float getBeat() const noexcept = 0;
     virtual void updateColours() = 0;
@@ -55,16 +58,18 @@ protected:
     struct Flags final
     {
         bool isSelected : 1;            // both clips and notes can be displayed as selected
-        bool isInstanceOfSelected : 1;  // used to highlight all "instances" of selected clips
-        bool isActive : 1;              // whether a note belongs to the selected track or not
+        bool isActive : 1;              // whether a note belongs to the currently active clip or not
+        bool isEditable : 1;            // whether an event is editable or not for whatever reason
         bool isGhost : 1;               // indicates helper notes which are used for visual cue
+        bool isGenerated : 1;           // indicates notes generated or affected by parametric modifiers
+        bool isInstanceOfSelected : 1;  // used to highlight all "instances" of selected clips
         bool isRecordingTarget : 1;     // indicates that a clip is used as a target to MIDI recording
         bool isMergeTarget : 1;         // indicates clips which are to be merged into one
     };
 
     union
     {
-        uint8 componentFlags = 0;
+        uint16 componentFlags = 0;
         Flags flags;
     };
 

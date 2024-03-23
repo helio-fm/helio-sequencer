@@ -27,15 +27,46 @@
 #include "SequencerOperations.h"
 #include "ColourIDs.h"
 
-NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &clip, bool ghostMode) noexcept :
-    RollChildComponentBase(editor, ghostMode),
+NoteComponent::NoteComponent(PianoRoll &editor,
+    const Note &event, const Clip &clip, bool enabled) noexcept :
+    RollChildComponentBase(editor),
     note(event),
     clip(clip)
 {
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
     this->setMouseClickGrabsKeyboardFocus(false);
+
+    if (!enabled)
+    {
+        this->flags.isEditable = false;
+        this->setInterceptsMouseClicks(false, false);
+        this->setEnabled(false);
+    }
+
     this->setFloatBounds(this->getRoll().getEventBounds(this));
+}
+
+void NoteComponent::setDisplayAsGhost(bool shouldBeGhost)
+{
+    if (this->flags.isGhost == shouldBeGhost)
+    {
+        return;
+    }
+
+    this->flags.isGhost = shouldBeGhost;
+    this->updateColours();
+}
+
+void NoteComponent::setDisplayAsGenerated(bool shouldBeGenerated)
+{
+    if (this->flags.isGenerated == shouldBeGenerated)
+    {
+        return;
+    }
+
+    this->flags.isGenerated = shouldBeGenerated;
+    this->updateColours();
 }
 
 PianoRoll &NoteComponent::getRoll() const noexcept
@@ -49,29 +80,31 @@ PianoRoll &NoteComponent::getRoll() const noexcept
 
 void NoteComponent::updateColours()
 {
+    const bool generated = this->flags.isGenerated;
     const bool ghost = this->flags.isGhost || !this->flags.isActive;
+    const bool darkTheme = HelioTheme::getCurrentTheme().isDark();
     const auto base = findDefaultColour(ColourIDs::Roll::noteFill);
 
     this->colour = this->getNote().getTrackColour()
-        .interpolatedWith(base, ghost ? 0.15f : 0.4f)
+        .interpolatedWith(base, ghost ? 0.15f : (generated ? 0.3f : 0.4f))
         .brighter(this->flags.isSelected ? 1.15f : 0.f)
-        .withMultipliedSaturationHSL(ghost ? 1.5f : 1.f)
-        .withAlpha(ghost ? 0.25f : 0.9f);
+        .withMultipliedSaturationHSL(ghost || generated ? 1.5f : 1.f)
+        .withAlpha(ghost ? 0.25f : (generated ? 0.4f : 0.95f));
 
     if (ghost)
     {
-        this->colour = HelioTheme::getCurrentTheme().isDark() ?
+        this->colour = darkTheme ?
             this->colour.brighter(0.55f) : this->colour.darker(0.45f);
     }
 
-    this->colourLighter = this->colour.brighter(0.125f).withMultipliedAlpha(1.45f);
-    this->colourDarker = this->colour.darker(0.175f).withMultipliedAlpha(1.45f);
-    this->colourVolume = this->colour.darker(0.8f).withAlpha(ghost ? 0.f : 0.5f);
+    this->colourLighter = this->colour.brighter(darkTheme ? 0.125f : 0.2f);
+    this->colourDarker = this->colour.darker(darkTheme ? 0.25f : 0.15f).withMultipliedAlpha(1.25f);
+    this->colourVolume = this->colour.darker(0.75f).withAlpha(ghost || generated ? 0.f : 0.5f);
 }
 
 bool NoteComponent::shouldGoQuickSelectTrackMode(const ModifierKeys &modifiers) const
 {
-    return modifiers.isRightButtonDown() && !this->isActive();
+    return modifiers.isRightButtonDown() && !this->isActiveAndEditable();
 }
 
 //===----------------------------------------------------------------------===//
@@ -99,12 +132,12 @@ void NoteComponent::modifierKeysChanged(const ModifierKeys &modifiers)
 
 void NoteComponent::mouseMove(const MouseEvent &e)
 {
-    if (this->shouldGoQuickSelectTrackMode(e.mods))
-    {
-        return;
-    }
+    //if (this->shouldGoQuickSelectTrackMode(e.mods))
+    //{
+    //    return;
+    //}
 
-    if (! this->isActive())
+    if (!this->isActiveAndEditable())
     {
         this->roll.mouseMove(e.getEventRelativeTo(&this->roll));
         return;
@@ -140,7 +173,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         return;
     }
     
-    if (! this->isActive())
+    if (!this->isActiveAndEditable())
     {
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
         return;
@@ -269,14 +302,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    bool snap = !e.mods.isAltDown();    //snap is disabled
-
-    if (this->shouldGoQuickSelectTrackMode(e.mods))
-    {
-        return;
-    }
-
-    if (!this->isActive())
+    if (!this->isActiveAndEditable())
     {
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
@@ -303,6 +329,8 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
     }
+
+    const bool snap = !e.mods.isAltDown();
 
     if (this->state == State::DraggingResizing)
     {
@@ -524,12 +552,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     // no multi-touch check here, need to exit the editing mode (if any) even in multi-touch
     //if (this->roll.isMultiTouchEvent(e)) { return; }
 
-    if (this->shouldGoQuickSelectTrackMode(e.mods))
-    {
-        return;
-    }
-    
-    if (!this->isActive())
+    if (!this->isActiveAndEditable())
     {
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));
         return;
@@ -627,7 +650,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
 
 void NoteComponent::mouseDoubleClick(const MouseEvent &e)
 {
-    if (!this->isActive())
+    if (!this->isActiveAndEditable())
     {
         this->roll.mouseDoubleClick(e.getEventRelativeTo(&this->roll));
         return;
@@ -642,33 +665,43 @@ void NoteComponent::mouseDoubleClick(const MouseEvent &e)
 // or fillRect - these are the ones with minimal overhead:
 void NoteComponent::paint(Graphics &g) noexcept
 {
-    const float w = this->floatLocalBounds.getWidth() - .5f; // a small gap between notes
-    const float h = this->floatLocalBounds.getHeight();
-    const float x = this->floatLocalBounds.getX();
+    const float x = this->floatLocalBounds.getX() + 0.5f; // a small gap
+    const float w = this->floatLocalBounds.getWidth() - 1.f; // between notes
     const float y = this->floatLocalBounds.getY();
+    const float h = this->floatLocalBounds.getHeight();
     
     g.setColour(this->colour);
-    g.fillRect(x + 0.5f, y + h / 6.f, 0.5f, h / 1.5f);
 
-    if (w >= 1.25f)
+    if (w >= 0.5f)
     {
-        g.fillRect(x + w - 0.75f, y + h / 6.f, 0.5f, h / 1.5f);
-        g.fillRect(x + 0.75f, y + 0.75f, w - 1.25f, h - 1.5f);
+        // fill
+        g.fillRect(x + 0.25f, y + 1.f, w - 0.5f, h - 2.f);
+
+        if (this->flags.isGenerated)
+        {
+            HelioTheme::drawStripes({ x + 0.25f, y + 0.5f, w - 0.5f, h - 1.f }, g);
+        }
     }
 
-    if (w >= 2.25f)
+    // left/right vertical lines
+    g.fillRect(x, y + h / 6.f, 0.5f, h / 1.5f);
+    g.fillRect(x + w - 0.5f, y + h / 6.f, 0.5f, h / 1.5f);
+
+    if (w >= 1.5f)
     {
+        // top/bottom horizontal borders
         g.setColour(this->colourLighter);
-        g.fillRect(x + 1.25f, roundf(y), w - 2.25f, 1.f);
+        g.fillRect(x + 0.75f, roundf(y), w - 1.5f, 1.f);
 
         g.setColour(this->colourDarker);
-        g.fillRect(x + 1.25f, roundf(y + h - 1), w - 2.25f, 1.f);
+        g.fillRect(x + 0.75f, roundf(h - 1.f), w - 1.5f, 1.f);
     }
 
+    // velocity line
     if (w >= 6.f)
     {
         g.setColour(this->colourVolume);
-        const float sx = x + 2.f;
+        const float sx = x + 1.5f;
         const float sh = jmin(h - 2.f, 4.f);
         const float sy = h - sh - 1.f;
         const float sw1 = (w - 4.f) * this->note.getVelocity();
@@ -678,11 +711,12 @@ void NoteComponent::paint(Graphics &g) noexcept
         g.fillRect(sx, sy, sw2, sh);
 
         g.fillRect(sx + sw1, sy + 1.f, 1.f, sh - 1.f);
-        g.fillRect(sx + sw2, sy + 1.f, 1.f, sh - 1.f);
+        //g.fillRect(sx + sw2, sy + 1.f, 1.f, sh - 1.f);
     }
 
+    // tuplet marks
     const auto tuplet = this->note.getTuplet();
-    if (tuplet > 1 && this->getWidth() > 25)
+    if (tuplet > 1 && w > 25.f)
     {
         g.setColour(this->colourLighter);
         for (int i = 1; i < tuplet; ++i)
@@ -708,17 +742,21 @@ void NoteComponent::paint(Graphics &g) noexcept
 // Helpers
 //===----------------------------------------------------------------------===//
 
-bool NoteComponent::belongsTo(const WeakReference<MidiTrack> &track, const Clip &clip) const noexcept
+bool NoteComponent::belongsTo(const Clip &clip) const noexcept
 {
-    return this->clip == clip && this->note.getSequence()->getTrack() == track;
+    return this->clip == clip;
 }
 
-void NoteComponent::switchActiveTrackToSelected(bool zoomToScope) const
+void NoteComponent::switchActiveTrackToSelected(bool shouldZoomToScope) const
 {
-    this->roll.getProject().setEditableScope(this->getClip(), zoomToScope);
-    if (zoomToScope)
+    if (this->getRoll().getActiveClip() != this->getClip())
     {
-        this->getRoll().zoomOutImpulse(0.5f);
+        this->getRoll().getProject().setEditableScope(this->getClip(), shouldZoomToScope);
+
+        if (shouldZoomToScope)
+        {
+            this->getRoll().zoomOutImpulse(0.5f);
+        }
     }
 }
 

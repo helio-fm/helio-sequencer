@@ -209,8 +209,11 @@ void HeadlineDropdown::childBoundsChanged(Component *child)
 void HeadlineDropdown::timerCallback()
 {
 #if PLATFORM_DESKTOP
-    auto *componentUnderMouse = Desktop::getInstance().getMainMouseSource().getComponentUnderMouse();
-    if (this != findParent<HeadlineDropdown>(componentUnderMouse))
+    auto *componentUnderMouse = Desktop::getInstance().
+        getMainMouseSource().getComponentUnderMouse();
+
+    if (componentUnderMouse != nullptr &&
+        this != findParent<HeadlineDropdown>(componentUnderMouse))
     {
         this->stopTimer();
         this->exitModalState(0);
@@ -219,7 +222,7 @@ void HeadlineDropdown::timerCallback()
         Desktop::getInstance().getAnimator().animateComponent(this,
             this->getBounds(), 0.f, Globals::UI::fadeOutShort / 3, true, 0.f, 1.f);
 
-        delete this;
+        UniquePointer<Component> deleter(this);
     }
 #endif
 }

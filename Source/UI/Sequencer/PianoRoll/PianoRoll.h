@@ -109,6 +109,8 @@ public:
     void onAddClip(const Clip &clip) override;
     void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
     void onRemoveClip(const Clip &clip) override;
+    void onReloadGeneratedSequence(const Clip &clip,
+        MidiSequence *const generatedSequence) override;
 
     void onAddTrack(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
@@ -147,6 +149,13 @@ public:
     // a hepler method for calling SequencerOperations::whatever(),
     // returns the entire sequence if nothing is selected:
     const NoteListBase &getLassoOrEntireSequence() const;
+
+    //===------------------------------------------------------------------===//
+    // TransportListener
+    //===------------------------------------------------------------------===//
+
+    void onPlay() override;
+    void onStop() override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -289,6 +298,9 @@ private:
     using SequenceMap = FlatHashMap<Note, UniquePointer<NoteComponent>, MidiEventHash>;
     using PatternMap = FlatHashMap<Clip, UniquePointer<SequenceMap>, ClipHash>;
     PatternMap patternMap;
+
+    // a separate map for parametrically-generated sequences:
+    FlatHashMap<Clip, OwnedArray<NoteComponent>, ClipHash> generatedNotes;
 
 private:
 

@@ -130,19 +130,18 @@ void PianoRoll::loadTrack(const MidiTrack *const track)
 
         auto *sequenceMap = new SequenceMap();
         this->patternMap[*clip] = UniquePointer<SequenceMap>(sequenceMap);
+        const bool isActive = this->activeClip == *clip;
 
         for (int j = 0; j < track->getSequence()->size(); ++j)
         {
-            const MidiEvent *event = track->getSequence()->getUnchecked(j);
+            const auto *event = track->getSequence()->getUnchecked(j);
             if (event->isTypeOf(MidiEvent::Type::Note))
             {
-                const Note *note = static_cast<const Note *>(event);
+                const auto *note = static_cast<const Note *>(event);
                 auto *nc = new NoteComponent(*this, *note, *clip);
                 (*sequenceMap)[*note] = UniquePointer<NoteComponent>(nc);
-                const bool isActive = nc->belongsTo(this->activeTrack, this->activeClip);
                 nc->setActive(isActive, true);
                 this->addAndMakeVisible(nc);
-                nc->setFloatBounds(this->getEventBounds(nc));
             }
         }
     }
@@ -202,7 +201,7 @@ void PianoRoll::selectAll()
     forEachEventComponent(this->patternMap, e)
     {
         auto *childComponent = e.second.get();
-        if (childComponent->belongsTo(this->activeTrack, activeClip))
+        if (childComponent->belongsTo(this->activeClip))
         {
             this->selectEvent(childComponent, false);
         }
@@ -285,8 +284,8 @@ void PianoRoll::multiTouchContinueZooming(
 
 void PianoRoll::showGhostNoteFor(NoteComponent *target)
 {
-    auto *component = new NoteComponent(*this, target->getNote(), target->getClip());
-    component->setGhostMode();
+    auto *component = new NoteComponent(*this, target->getNote(), target->getClip(), false);
+    component->setDisplayAsGhost(true);
     component->toBack();
 
     this->addAndMakeVisible(component);
@@ -295,9 +294,9 @@ void PianoRoll::showGhostNoteFor(NoteComponent *target)
 
 void PianoRoll::hideAllGhostNotes()
 {
-    for (int i = 0; i < this->ghostNotes.size(); ++i)
+    for (auto *ghostNote : this->ghostNotes)
     {
-        this->fader.fadeOut(this->ghostNotes.getUnchecked(i), Globals::UI::fadeOutShort);
+        this->fader.fadeOut(ghostNote, Globals::UI::fadeOutShort);
     }
 
     this->ghostNotes.clear();
@@ -315,7 +314,7 @@ void PianoRoll::onLongTap(const Point<float> &position,
         !this->getEditMode().forbidsSelectionMode({}))
     {
         const auto *nc = dynamic_cast<NoteComponent *>(target.get());
-        if (nc != nullptr && !nc->isActive())
+        if (nc != nullptr && !nc->isActiveAndEditable())
         {
             this->project.setEditableScope(nc->getClip(), false);
             return;
@@ -591,10 +590,8 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
 
             this->fader.fadeIn(component, Globals::UI::fadeInLong);
 
-            const bool isActive = component->belongsTo(this->activeTrack, this->activeClip);
+            const bool isActive = component->belongsTo(this->activeClip);
             component->setActive(isActive, true);
-
-            this->triggerBatchRepaintFor(component);
 
             if (isActive && !this->isDraggingAnyNotes)
             {
@@ -612,7 +609,6 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
     }
     else if (event.isTypeOf(MidiEvent::Type::KeySignature))
     {
-        // Repainting background caches on the fly may be costly
         const auto &key = static_cast<const KeySignatureEvent &>(event);
         this->updateBackgroundCacheFor(key);
         this->noteNameGuides->triggerAsyncUpdate(); // possibly update key names
@@ -684,10 +680,8 @@ void PianoRoll::onAddClip(const Clip &clip)
         (*sequenceMap)[note] = UniquePointer<NoteComponent>(component);
         this->addAndMakeVisible(component);
 
-        const bool isActive = component->belongsTo(this->activeTrack, this->activeClip);
+        const bool isActive = component->belongsTo(this->activeClip);
         component->setActive(isActive);
-
-        this->batchRepaintList.add(component);
     }
 
     this->triggerAsyncUpdate();
@@ -736,6 +730,37 @@ void PianoRoll::onRemoveClip(const Clip &clip)
     ROLL_BATCH_REPAINT_END
 }
 
+void PianoRoll::onReloadGeneratedSequence(const Clip &clip,
+    MidiSequence *const generatedSequence)
+{
+    this->generatedNotes.erase(clip);
+
+    if (generatedSequence == nullptr ||
+        generatedSequence->isEmpty() ||
+        !clip.hasEnabledModifiers())
+    {
+        return;
+    }
+
+    auto &newComponents = this->generatedNotes[clip];
+    const bool isActive = clip == this->activeClip;
+
+    for (const auto *event : *generatedSequence)
+    {
+        // only notes are supported at the moment
+        jassert(dynamic_cast<const Note *>(event));
+        const auto *note = static_cast<const Note *>(event);
+
+        auto *component = new NoteComponent(*this, *note, clip);
+        component->setDisplayAsGenerated(true);
+        component->setActive(isActive);
+        component->setEditable(false);
+        this->addAndMakeVisible(component, 0);
+
+        newComponents.add(component);
+    }
+}
+
 void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
 {
     if (dynamic_cast<const PianoSequence *>(track->getSequence()))
@@ -744,6 +769,14 @@ void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
         {
             const auto component = e.second.get();
             component->updateColours();
+        }
+
+        for (const auto &generatedMap : this->generatedNotes)
+        {
+            for (auto *component : generatedMap.second)
+            {
+                component->updateColours();
+            }
         }
 
         this->updateClipRangeIndicator(); // colour might have changed
@@ -766,9 +799,8 @@ void PianoRoll::onAddTrack(MidiTrack *const track)
     this->loadTrack(track);
     this->applyEditModeUpdates();
 
-    for (int j = 0; j < track->getSequence()->size(); ++j)
+    for (const auto *event : *track->getSequence())
     {
-        const MidiEvent *const event = track->getSequence()->getUnchecked(j);
         if (event->isTypeOf(MidiEvent::Type::KeySignature))
         {
             const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(*event);
@@ -875,20 +907,36 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
     float focusMaxBeat = -FLT_MAX;
     bool hasComponentsToFocusOn = false;
 
-    forEachEventComponent(this->patternMap, e)
+    for (const auto &generatedMap : this->generatedNotes)
     {
-        auto *nc = e.second.get();
-        const bool isActive = nc->belongsTo(this->activeTrack, this->activeClip);
-        const auto key = nc->getKey() + this->activeClip.getKey();
-        nc->setActive(isActive, true);
+        const bool belongsToActiveClip =
+            generatedMap.first == this->activeClip; // same id
 
-        if (shouldFocus && isActive)
+        for (auto *component : generatedMap.second)
         {
-            hasComponentsToFocusOn = true;
-            focusMinKey = jmin(focusMinKey, key);
-            focusMaxKey = jmax(focusMaxKey, key);
-            focusMinBeat = jmin(focusMinBeat, nc->getBeat());
-            focusMaxBeat = jmax(focusMaxBeat, nc->getBeat() + nc->getLength());
+            component->setActive(belongsToActiveClip);
+        }
+    }
+
+    for (const auto &sequenceMap : this->patternMap)
+    {
+        const bool isActive =
+            sequenceMap.first == this->activeClip; // same id
+
+        for (const auto &components : *sequenceMap.second)
+        {
+            auto *nc = components.second.get();
+            const auto key = nc->getKey() + this->activeClip.getKey();
+            nc->setActive(isActive, true);
+
+            if (shouldFocus && isActive)
+            {
+                hasComponentsToFocusOn = true;
+                focusMinKey = jmin(focusMinKey, key);
+                focusMaxKey = jmax(focusMaxKey, key);
+                focusMinBeat = jmin(focusMinBeat, nc->getBeat());
+                focusMaxBeat = jmax(focusMaxBeat, nc->getBeat() + nc->getLength());
+            }
         }
     }
 
@@ -933,7 +981,7 @@ void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldC
     forEachEventComponent(this->patternMap, e)
     {
         auto *component = e.second.get();
-        if (component->isActive() &&
+        if (component->isActiveAndEditable() &&
             (component->getNote().getBeat() + component->getClip().getBeat()) >= startBeat &&
             (component->getNote().getBeat() + component->getClip().getBeat()) < endBeat)
         {
@@ -947,7 +995,7 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
     forEachEventComponent(this->patternMap, e)
     {
         auto *component = e.second.get();
-        if (rectangle.intersects(component->getBounds()) && component->isActive())
+        if (rectangle.intersects(component->getBounds()) && component->isActiveAndEditable())
         {
             jassert(!itemsFound.contains(component));
             itemsFound.add(component);
@@ -996,6 +1044,59 @@ const NoteListBase &PianoRoll::getLassoOrEntireSequence() const
     jassert(sequence != nullptr);
     return *sequence;
 }
+
+//===----------------------------------------------------------------------===//
+// TransportListener
+//===----------------------------------------------------------------------===//
+
+void PianoRoll::onPlay()
+{
+    for (const auto &generatedMap : this->generatedNotes)
+    {
+        jassert(this->patternMap.contains(generatedMap.first));
+        if (auto *sequenceMap = this->patternMap[generatedMap.first].get())
+        {
+            for (const auto &it : *sequenceMap)
+            {
+                it.second->setDisplayAsGenerated(true);
+            }
+        }
+
+        for (auto *component : generatedMap.second)
+        {
+            component->setDisplayAsGenerated(false);
+        }
+    }
+
+    this->repaint();
+
+    RollBase::onPlay();
+}
+
+void PianoRoll::onStop()
+{
+    for (const auto &generatedMap : this->generatedNotes)
+    {
+        jassert(this->patternMap.contains(generatedMap.first));
+        if (auto *sequenceMap = this->patternMap[generatedMap.first].get())
+        {
+            for (const auto &it : *sequenceMap)
+            {
+                it.second->setDisplayAsGenerated(false);
+            }
+        }
+
+        for (auto *component : generatedMap.second)
+        {
+            component->setDisplayAsGenerated(true);
+        }
+    }
+
+    this->repaint();
+
+    RollBase::onStop();
+}
+
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -1159,7 +1260,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         return;
     }
     case CommandIDs::NewTrackFromSelection:
-        if (this->selection.getNumSelected() > 0)
+        if (this->selection.size() > 0)
         {
             this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::AddNewTrack);
             auto trackPreset = SequencerOperations::createPianoTrack(this->selection);
@@ -1485,9 +1586,17 @@ void PianoRoll::resized()
         component->setFloatBounds(this->getEventBounds(component));
     }
 
-    for (const auto component : this->ghostNotes)
+    for (auto *component : this->ghostNotes)
     {
         component->setFloatBounds(this->getEventBounds(component));
+    }
+
+    for (const auto &components : this->generatedNotes)
+    {
+        for (auto *component : components.second)
+        {
+            component->setFloatBounds(this->getEventBounds(component));
+        }
     }
 
     if (this->knifeToolHelper != nullptr)
@@ -1674,7 +1783,7 @@ void PianoRoll::continueErasingEvents(const Point<float> &mousePosition)
     forEachEventComponent(this->patternMap, it)
     {
         auto *nc = it.second.get();
-        if (!nc->isActive() || !nc->isVisible())
+        if (!nc->isActiveAndEditable() || !nc->isVisible())
         {
             continue;
         }
@@ -1739,7 +1848,7 @@ void PianoRoll::continueCuttingEvents(const Point<float> &mousePosition)
         {
             addsPoint = false;
             auto *nc = e.second.get();
-            if (!nc->isActive())
+            if (!nc->isActiveAndEditable())
             {
                 continue;
             }
@@ -1793,7 +1902,7 @@ void PianoRoll::startMergingEvents(const Point<float> &mousePosition)
     forEachEventComponent(this->patternMap, e)
     {
         auto *nc = e.second.get();
-        if (nc->isActive() &&
+        if (nc->isActiveAndEditable() &&
             nc->getBounds().contains(mousePosition.toInt()))
         {
             targetNote = nc;
@@ -1819,7 +1928,7 @@ void PianoRoll::continueMergingEvents(const Point<float> &mousePosition)
     forEachEventComponent(this->patternMap, e)
     {
         auto *nc = e.second.get();
-        if (nc->isActive() &&
+        if (nc->isActiveAndEditable() &&
             nc->getBounds().contains(mousePosition.toInt()) &&
             this->mergeToolHelper->canMergeInto(nc))
         {

@@ -34,8 +34,7 @@ Note::Key Arpeggiator::DiatonicMapper::getChordKey(const Array<Note> &chord, int
     // in SequencerOperations::shiftInScaleKeyRelative
     const auto period = (absChordKey - scaleRootKeyModuloPeriod) / scale->getBasePeriod();
     const auto periodOffset = period * scale->getBasePeriod();
-    const auto targetKeyOffset = absChordKey % scale->getBasePeriod();
-    const auto chromaticOffset = targetKeyOffset - scaleRootKeyModuloPeriod;
+    const auto chromaticOffset = (absChordKey - scaleRootKeyModuloPeriod) % scale->getBasePeriod();
 
     int targetScaleKey = scale->getScaleKey(chromaticOffset);
     if (targetScaleKey < 0 && scaleOffset != 0)
@@ -127,7 +126,18 @@ Arpeggiator &Arpeggiator::operator=(const Arpeggiator &other)
 
 bool operator==(const Arpeggiator &l, const Arpeggiator &r)
 {
-    return &l == &r || l.name == r.name;
+    return &l == &r ||
+        (l.name == r.name && l.keys == r.keys);
+}
+
+bool operator==(const Arpeggiator::Key &l, const Arpeggiator::Key &r)
+{
+    return l.key == r.key &&
+        l.period == r.period &&
+        l.beat == r.beat &&
+        l.length == r.length &&
+        l.velocity == r.velocity &&
+        l.isBarStart == r.isBarStart;
 }
 
 Arpeggiator::Arpeggiator(const String &name, Array<Key> &&keys) :
@@ -339,8 +349,8 @@ void Arpeggiator::Key::deserialize(const SerializedData &data)
     this->period = data.getProperty(Arps::Keys::period);
     this->beat = float(data.getProperty(Arps::Keys::timestamp)) / Globals::ticksPerBeat;
     this->length = float(data.getProperty(Arps::Keys::length)) / Globals::ticksPerBeat;
-    const auto vol = float(data.getProperty(Arps::Keys::volume)) / Globals::velocitySaveResolution;
-    this->velocity = jmax(jmin(vol, 1.f), 0.f);
+    this->velocity = jlimit(0.f, 1.f,
+        float(data.getProperty(Arps::Keys::volume)) / Globals::velocitySaveResolution);
     this->isBarStart = data.getProperty(Arps::Keys::isBarStart, false);
 }
 

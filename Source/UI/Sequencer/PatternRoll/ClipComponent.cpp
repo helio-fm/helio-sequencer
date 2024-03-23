@@ -155,7 +155,7 @@ void ClipComponent::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (!this->isActive())
+    if (!this->isActiveAndEditable())
     {
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
@@ -227,7 +227,7 @@ void ClipComponent::mouseUp(const MouseEvent &e)
     // no multi-touch check here, need to exit the editing mode (if any) even in multi-touch
     //if (this->roll.isMultiTouchEvent(e)) { return; }
 
-    if (!this->isActive())
+    if (!this->isActiveAndEditable())
     {
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));
         return;

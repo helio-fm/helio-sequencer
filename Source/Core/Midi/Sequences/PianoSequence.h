@@ -46,6 +46,10 @@ public:
 
     PianoSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher) noexcept;
 
+    // a constructor for GeneratedSequenceBuilder
+    PianoSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher,
+        const PianoSequence &sequenceToCopy) noexcept;
+
     //===------------------------------------------------------------------===//
     // Import/export
     //===------------------------------------------------------------------===//

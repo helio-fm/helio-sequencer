@@ -186,6 +186,13 @@ String MenuItem::createTooltip(String message, KeyPress keyPress)
     return move(message) + '\n' + TRANS(I18n::Tooltips::hotkey) + " " + keyPress.getTextDescription();
 }
 
+MenuItem::Ptr MenuItem::withHotkeyText(int commandId)
+{
+    MenuItem::Ptr description(this);
+    description->hotkeyText = findHotkeyText(commandId);
+    return description;
+}
+
 MenuItem::Ptr MenuItem::disabledIf(bool condition)
 {
     MenuItem::Ptr description(this);
@@ -200,6 +207,11 @@ MenuItem::Ptr MenuItem::withAction(const Callback &lambda)
     return description;
 }
 
+MenuItem::Ptr MenuItem::withActionIf(bool condition, const Callback &lambda)
+{
+    return condition ? this->withAction(lambda) : this;
+}
+
 MenuItem::Ptr MenuItem::closesMenu()
 {
     MenuItem::Ptr description(this);
@@ -212,6 +224,13 @@ MenuItem::Ptr MenuItem::withWeight(float weight)
 {
     MenuItem::Ptr description(this);
     description->weight = weight;
+    return description;
+}
+
+MenuItem::Ptr MenuItem::withButton(bool isEnabled, Icons::Id icon, const Callback &lambda)
+{
+    MenuItem::Ptr description(this);
+    description->buttons.insert(0, { isEnabled, icon, lambda });
     return description;
 }
 
@@ -260,10 +279,14 @@ public:
 
 MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver,
     Viewport *parentViewport, const MenuItem::Ptr desc) :
-    DraggingListBoxComponent(parentViewport),
+    DraggingListBoxComponent(parentViewport, false),
     parent(parentCommandReceiver),
     description(MenuItem::empty())
 {
+    this->setMouseClickGrabsKeyboardFocus(false);
+    this->setInterceptsMouseClicks(true, true);
+    this->setPaintingIsUnclipped(true);
+
     this->subLabel = make<Label>();
     this->addAndMakeVisible(this->subLabel.get());
     this->subLabel->setFont(MenuItemComponent::fontSize);
@@ -280,9 +303,18 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver,
     this->submenuMarker = make<IconComponent>(Icons::submenu, 0.25f);
     this->addAndMakeVisible(this->submenuMarker.get());
 
-    this->setMouseClickGrabsKeyboardFocus(false);
-    this->setInterceptsMouseClicks(true, true);
-    this->setPaintingIsUnclipped(true);
+    static constexpr auto buttonIconSize = 12;
+    for (int i = 0; i < desc->buttons.size(); ++i)
+    {
+        const auto &buttonDescription = desc->buttons[i];
+        auto button = make<IconButton>(buttonDescription.iconId, i, this, buttonIconSize);
+        button->setEnabled(buttonDescription.isEnabled);
+        // those buttons are tiny, lets emphasize the hover state:
+        button->setMouseCursor(buttonDescription.isEnabled ?
+            MouseCursor::PointingHandCursor : MouseCursor::NormalCursor);
+        this->addAndMakeVisible(button.get());
+        this->buttons.add(move(button));
+    }
 
     this->setSize(64, Globals::UI::menuPanelRowHeight);
     this->update(desc);
@@ -316,25 +348,45 @@ void MenuItemComponent::resized()
 {
     constexpr auto rightMargin = 4;
     constexpr auto subLabelWidth = 128;
+    constexpr auto iconSize = MenuItemComponent::iconSize;
     this->subLabel->setBounds(this->getWidth() - subLabelWidth - rightMargin, 0, subLabelWidth, this->getHeight());
-    this->submenuMarker->setBounds(this->getWidth() - MenuItemComponent::iconSize - rightMargin,
-        (this->getHeight() / 2) - (MenuItemComponent::iconSize / 2),
-        MenuItemComponent::iconSize, MenuItemComponent::iconSize);
+    this->submenuMarker->setBounds(this->getWidth() - iconSize - rightMargin,
+        (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
 
     if (this->checkMarker != nullptr)
     {
         this->checkMarker->setBounds(this->hasText() ?
-            this->getLocalBounds().withWidth(MenuItemComponent::iconSize + MenuItemComponent::iconMargin * 2) :
+            this->getLocalBounds().withWidth(iconSize + MenuItemComponent::iconMargin * 2) :
             this->getLocalBounds());
     }
 
-    this->icon = Icons::findByName(this->description->iconId, MenuItemComponent::iconSize);
+    this->icon = Icons::findByName(this->description->iconId, iconSize);
 
-    this->textLabel->setBounds(MenuItemComponent::iconSize + MenuItemComponent::iconMargin, 0,
-        this->getWidth() - MenuItemComponent::iconSize - MenuItemComponent::iconMargin, this->getHeight());
+    this->textLabel->setBounds(iconSize + MenuItemComponent::iconMargin, 0,
+        this->getWidth() - iconSize - MenuItemComponent::iconMargin, this->getHeight());
 
-    this->textLabel->setFont(MenuItemComponent::fontSize);
-    this->subLabel->setFont(MenuItemComponent::fontSize);
+    for (int i = 0; i < this->buttons.size(); ++i)
+    {
+        auto *button = this->buttons.getReference(i).get();
+        constexpr auto buttonRightMargin = iconSize * 2;
+        button->setBounds(this->getWidth() - buttonRightMargin - iconSize * (i + 1),
+            0, iconSize, this->getHeight());
+    }
+}
+
+void MenuItemComponent::handleCommandMessage(int commandId)
+{
+    jassert(commandId >= 0 && commandId < this->buttons.size());
+    if (commandId >= 0 && commandId < this->description->buttons.size())
+    {
+        const auto &button = this->description->buttons[commandId];
+
+        jassert(button.callback);
+        if (button.callback)
+        {
+            button.callback();
+        }
+    }
 }
 
 void MenuItemComponent::mouseDown(const MouseEvent &e)
@@ -354,7 +406,8 @@ void MenuItemComponent::mouseDown(const MouseEvent &e)
     }
     else
     {
-        if (!this->description->flags.isDisabled)
+        if (!this->description->flags.isDisabled &&
+            (this->description->commandId > 0 || this->description->callback != nullptr))
         {
             this->clickMarker = make<CommandDragHighlighter>();
             this->addChildComponent(this->clickMarker.get());

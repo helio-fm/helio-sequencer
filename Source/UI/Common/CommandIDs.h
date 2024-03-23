@@ -95,6 +95,7 @@ namespace CommandIDs
         ToggleNoteNameGuides            = 0x1633,
         ToggleLoopOverSelection         = 0x1634,
         ToggleMetronome                 = 0x1635,
+        ToggleMuteModifiers             = 0x1636,
 
         ZoomIn                          = 0x1800,
         ZoomOut                         = 0x1801,
@@ -175,6 +176,7 @@ namespace CommandIDs
         TransposeOctaveDown             = 0x4019,
         TransposeFifthUp                = 0x401a,
         TransposeFifthDown              = 0x401b,
+        AlignToScale                    = 0x401c,
 
         CleanupOverlaps                 = 0x4030,
         InvertChordUp                   = 0x4031,

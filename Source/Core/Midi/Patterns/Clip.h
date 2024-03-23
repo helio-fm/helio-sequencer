@@ -19,10 +19,12 @@
 
 class Pattern;
 
-// Just an instance of a midi sequence on a certain position,
+#include "SequenceModifier.h"
+
+// Clip is an instance of a sequence on a certain position.
 // Optionally, with key delta, velocity multiplier, muted or soloed.
-// In future it should have adjustable length too
-// (and a stack of parametric modifiers like user-defined arps, scripts, etc.)
+// Optionally, has a stack of parametric modifiers like arps, rescaling, etc.
+// (todo in future: a scripting language for parametric modifiers)
 
 class Clip final : public Serializable
 {
@@ -34,7 +36,7 @@ public:
     Clip(WeakReference<Pattern> owner, const Clip &parametersToCopy);
     explicit Clip(WeakReference<Pattern> owner, float beatVal = 0.f, int key = 0);
 
-    Clip(const Clip &other) noexcept = default;
+    Clip(const Clip &other) = default;
     Clip &operator= (const Clip &other) = default;
 
     Clip(Clip &&other) noexcept = default;
@@ -46,11 +48,14 @@ public:
     float getVelocity() const noexcept;
     const Id getId() const noexcept;
     const String &getKeyAsString() const noexcept;
+    const Array<SequenceModifier::Ptr> &getModifiers() const noexcept;
     
     bool isValid() const noexcept;
     bool isMuted() const noexcept;
     bool isSoloed() const noexcept;
     bool canBeSoloed() const noexcept;
+    bool hasModifiers() const noexcept;
+    bool hasEnabledModifiers() const noexcept;
 
     const String &getTrackId() const noexcept;
     Colour getTrackColour() const noexcept;
@@ -65,6 +70,13 @@ public:
     Clip withDeltaVelocity(float deltaVelocity) const;
     Clip withMute(bool mute) const;
     Clip withSolo(bool solo) const;
+
+    Clip withModifiers(Array<SequenceModifier::Ptr> &&mods) const;
+    Clip withAppendedModifier(SequenceModifier::Ptr mod) const;
+    Clip withRemovedModifier(SequenceModifier::Ptr mod) const;
+    Clip withShiftedModifier(SequenceModifier::Ptr mod, int orderDelta) const;
+    Clip withUpdatedModifier(SequenceModifier::Ptr before,
+        SequenceModifier::Ptr after) const;
 
     Clip withNewId(Pattern *newOwner = nullptr) const;
 
@@ -95,6 +107,12 @@ public:
     static int compareElements(const Clip &first, const Clip &second);
     static int compareElements(const Clip *const first, const Clip *const second);
 
+    // this is used to compare modifiers in version control:
+    // simply comparing them as arrays of ptr's will sometimes return false negatives
+    // (there may be different objects with same parameters), which is ok for
+    // updating generated sequences, but vcs needs a more accurate check
+    bool hasEquivalentModifiers(const Clip &other) const;
+
     void applyChanges(const Clip &parameters);
 
 private:
@@ -107,6 +125,14 @@ private:
 
     bool mute = false;
     bool solo = false;
+
+private:
+
+    Array<SequenceModifier::Ptr> sequenceModifiers;
+
+    SequenceModifier::Ptr makeSequenceModifierByTag(const Identifier &tagName) const;
+
+private:
 
     Id id = 0;
     Id createId() const noexcept;

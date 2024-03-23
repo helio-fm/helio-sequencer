@@ -969,12 +969,17 @@ Array<DeltaDiff> createKeySignaturesDiffs(const SerializedData &state, const Ser
             if (stateEvent->getId() == changesEvent->getId())
             {
                 foundEventInChanges = true;
+                jassert(stateEvent->getScale() != nullptr);
+                jassert(changesEvent->getScale() != nullptr);
 
                 const bool eventHasChanged =
                     (stateEvent->getBeat() != changesEvent->getBeat() ||
                         stateEvent->getRootKey() != changesEvent->getRootKey() ||
                         stateEvent->getRootKeyName() != changesEvent->getRootKeyName() ||
-                        ! stateEvent->getScale()->isEquivalentTo(changesEvent->getScale()));
+                        !stateEvent->getScale()->isEquivalentTo(changesEvent->getScale()) ||
+                        stateEvent->getScale()->getLocalizedName() !=
+                            (changesEvent->getScale() != nullptr ?
+                                changesEvent->getScale()->getLocalizedName() : String()));
 
                 if (eventHasChanged)
                 {

@@ -77,23 +77,23 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
         }
         else if (animationType == SlideLeft)
         {
-            const auto fb(this->listBox->getBounds().translated(-this->listBox->getWidth(), 0));
-            this->animator.animateComponent(this->listBox.get(), fb, 1.f, fadeOutTime, true, 1.0, 0.0);
+            const auto b = this->listBox->getBounds().translated(-this->listBox->getWidth(), 0);
+            this->animator.animateComponent(this->listBox.get(), b, 1.f, fadeOutTime, true, 1.0, 0.0);
         }
         else if (animationType == SlideRight)
         {
-            const auto fb(this->listBox->getBounds().translated(this->listBox->getWidth(), 0));
-            this->animator.animateComponent(this->listBox.get(), fb, 1.f, fadeOutTime, true, 1.0, 0.0);
+            const auto b = this->listBox->getBounds().translated(this->listBox->getWidth(), 0);
+            this->animator.animateComponent(this->listBox.get(), b, 1.f, fadeOutTime, true, 1.0, 0.0);
         }
         else if (animationType == SlideUp)
         {
-            const auto fb(this->listBox->getBounds().translated(0, -this->listBox->getHeight()));
-            this->animator.animateComponent(this->listBox.get(), fb, 1.f, fadeOutTime, true, 1.0, 0.0);
+            const auto b = this->listBox->getBounds().translated(0, -this->listBox->getHeight());
+            this->animator.animateComponent(this->listBox.get(), b, 1.f, fadeOutTime, true, 1.0, 0.0);
         }
         else if (animationType == SlideDown)
         {
-            const auto fb(this->listBox->getBounds().translated(0, this->listBox->getHeight()));
-            this->animator.animateComponent(this->listBox.get(), fb, 1.f, fadeOutTime, true, 1.0, 0.0);
+            const auto b = this->listBox->getBounds().translated(0, this->listBox->getHeight());
+            this->animator.animateComponent(this->listBox.get(), b, 1.f, fadeOutTime, true, 1.0, 0.0);
         }
 
         this->removeChildComponent(this->listBox.get());
@@ -192,22 +192,23 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
 
     if (this->shouldResizeToFitContent && receivedNewCommands)
     {
-        const auto tempItem = make<MenuItemComponent>(nullptr, nullptr, MenuItem::empty());
-        Font stringFont(tempItem->getFont()); // a nasty hack(
+        const Font stringFont(MenuItemComponent::fontSize);
 
         int estimatedWidth = 0;
         for (const auto &command : commands)
         {
-            const int stringWidth = stringFont.getStringWidth(command->commandText) +
+            constexpr auto buttonsMargin = MenuItemComponent::iconSize;
+            const int buttonsWidth =
+                (command->buttons.size() * MenuItemComponent::iconSize) +
+                (command->buttons.size() > 0 ? buttonsMargin : 0);
+            const int stringWidth =
+                stringFont.getStringWidth(command->commandText) +
                 stringFont.getStringWidth(command->hotkeyText);
 
-            if (estimatedWidth < stringWidth)
-            {
-                estimatedWidth = stringWidth;
-            }
+            estimatedWidth = jmax(estimatedWidth, stringWidth + buttonsWidth);
         }
 
-        constexpr auto widthMargin = 68;
+        constexpr auto widthMargin = 69;
         const int newWidth = jmax(estimatedWidth + widthMargin, this->getWidth());
 
         const int menuHeight = jmax(this->getHeight(),

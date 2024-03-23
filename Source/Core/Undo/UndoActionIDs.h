@@ -30,6 +30,7 @@ namespace UndoActionIDs
 
         ScaleKeyShiftUp = 0x0010,
         ScaleKeyShiftDown = 0x0011,
+        SnapToScale = 0x0012,
 
         BeatShiftRight = 0x0020,
         BeatShiftLeft = 0x0021,

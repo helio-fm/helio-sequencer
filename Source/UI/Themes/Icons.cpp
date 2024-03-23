@@ -132,12 +132,19 @@ void Icons::initBuiltInImages()
     setIconForKey(cropTool);
     setIconForKey(cutterTool);
     setIconForKey(chordBuilder);
+    setIconForKey(submenu);
+
+    setIconForKey(expand);
     setIconForKey(stretchLeft);
     setIconForKey(stretchRight);
     setIconForKey(inverseDown);
     setIconForKey(inverseUp);
-    setIconForKey(expand);
-    setIconForKey(submenu);
+    setIconForKey(inversion);
+    setIconForKey(retrograde);
+    setIconForKey(legato);
+    setIconForKey(staccato);
+    setIconForKey(snap);
+    setIconForKey(cleanup);
 
     setIconForKey(up);
     setIconForKey(down);

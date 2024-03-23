@@ -21,6 +21,10 @@
 #include "MidiTrack.h"
 #include "SerializationKeys.h"
 
+#include "RefactoringSequenceModifier.h"
+#include "TuningSequenceModifier.h"
+#include "ArpeggiationSequenceModifier.h"
+
 Clip::Clip() : pattern(nullptr) {}
 
 Clip::Clip(WeakReference<Pattern> owner, float beatVal, int key) :
@@ -39,6 +43,7 @@ Clip::Clip(WeakReference<Pattern> owner, const Clip &parametersToCopy) :
     velocity(parametersToCopy.velocity),
     mute(parametersToCopy.mute),
     solo(parametersToCopy.solo),
+    sequenceModifiers(parametersToCopy.sequenceModifiers),
     id(parametersToCopy.id)
 {
     this->updateCaches();
@@ -79,6 +84,11 @@ const String &Clip::getKeyAsString() const noexcept
     return this->keyString;
 }
 
+const Array<SequenceModifier::Ptr> &Clip::getModifiers() const noexcept
+{
+    return this->sequenceModifiers;
+}
+
 bool Clip::isValid() const noexcept
 {
     return this->pattern != nullptr && this->id != 0;
@@ -98,6 +108,24 @@ bool Clip::canBeSoloed() const noexcept
 {
     return (this->pattern != nullptr) ?
         this->pattern->getTrack()->canBeSoloed() : false;
+}
+
+bool Clip::hasModifiers() const noexcept
+{
+    return !this->sequenceModifiers.isEmpty();
+}
+
+bool Clip::hasEnabledModifiers() const noexcept
+{
+    for (const auto &modifier : this->sequenceModifiers)
+    {
+        if (modifier->isEnabled())
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 const String &Clip::getTrackId() const noexcept
@@ -204,6 +232,57 @@ Clip Clip::withSolo(bool solo) const
     return other;
 }
 
+Clip Clip::withModifiers(Array<SequenceModifier::Ptr> &&mods) const
+{
+    Clip other(*this);
+    other.sequenceModifiers.swapWith(mods);
+    return other;
+}
+
+Clip Clip::withAppendedModifier(SequenceModifier::Ptr mod) const
+{
+    Clip other(*this);
+    other.sequenceModifiers.add(mod);
+    return other;
+}
+
+Clip Clip::withRemovedModifier(SequenceModifier::Ptr mod) const
+{
+    Clip other(*this);
+    other.sequenceModifiers.removeAllInstancesOf(mod);
+    return other;
+}
+
+Clip Clip::withUpdatedModifier(SequenceModifier::Ptr before, SequenceModifier::Ptr after) const
+{
+    Clip other(*this);
+
+    const auto index = other.sequenceModifiers.indexOf(before);
+    jassert(index >= 0);
+    if (index >= 0)
+    {
+        other.sequenceModifiers.setUnchecked(index, after);
+    }
+
+    return other;
+}
+
+Clip Clip::withShiftedModifier(SequenceModifier::Ptr mod, int delta) const
+{
+    Clip other(*this);
+
+    const auto index = other.sequenceModifiers.indexOf(mod);
+    jassert(index >= 0);
+    if (index >= 0)
+    {
+        const auto otherIndex = jlimit(0, other.sequenceModifiers.size() - 1, index + delta);
+        jassert(otherIndex != index);
+        other.sequenceModifiers.swap(index, otherIndex);
+    }
+
+    return other;
+}
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -228,6 +307,11 @@ SerializedData Clip::serialize() const
         tree.setProperty(Midi::solo, 1);
     }
 
+    for (const auto &modifier : this->sequenceModifiers)
+    {
+        tree.appendChild(modifier->serialize());
+    }
+
     return tree;
 }
 
@@ -237,11 +321,39 @@ void Clip::deserialize(const SerializedData &data)
     this->key = data.getProperty(Midi::key, 0);
     this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
     this->id = unpackId(data.getProperty(Midi::id, this->id));
-    const auto vol = float(data.getProperty(Midi::volume, Globals::velocitySaveResolution)) / Globals::velocitySaveResolution;
-    this->velocity = jmax(jmin(vol, 1.f), 0.f);
+    this->velocity = jlimit(0.f, 1.f,
+        float(data.getProperty(Midi::volume, Globals::velocitySaveResolution)) / Globals::velocitySaveResolution);
     this->mute = bool(data.getProperty(Midi::mute, 0));
     this->solo = bool(data.getProperty(Midi::solo, 0));
+
+    for (const auto &modifierData : data)
+    {
+        if (auto modifier = this->makeSequenceModifierByTag(modifierData.getType()))
+        {
+            modifier->deserialize(modifierData);
+            this->sequenceModifiers.add(modifier);
+        }
+#if DEBUG
+        else
+        {
+            jassertfalse; // not expecting any child elements other than modifiers here
+        }
+#endif
+    }
+
     this->updateCaches();
+}
+
+SequenceModifier::Ptr Clip::makeSequenceModifierByTag(const Identifier &tagName) const
+{
+    using namespace Serialization;
+
+    if (tagName == Modifiers::refactoringModifier) { return new RefactoringSequenceModifier(); }
+    else if (tagName == Modifiers::arpeggiationModifier) { return new ArpeggiationSequenceModifier(); }
+    else if (tagName == Modifiers::tuningModifier) { return new TuningSequenceModifier(); }
+
+    jassertfalse;
+    return nullptr;
 }
 
 void Clip::reset()
@@ -249,6 +361,9 @@ void Clip::reset()
     this->key = 0;
     this->beat = 0.f;
     this->velocity = 1.f;
+    this->mute = false;
+    this->solo = false;
+    this->sequenceModifiers.clear();
     this->updateCaches();
 }
 
@@ -272,6 +387,27 @@ int Clip::compareElements(const Clip *const first, const Clip *const second)
     return Clip::compareElements(*first, *second);
 }
 
+bool Clip::hasEquivalentModifiers(const Clip &other) const
+{
+    if (this->sequenceModifiers.size() != other.sequenceModifiers.size())
+    {
+        return false;
+    }
+
+    for (int i = 0; i < this->sequenceModifiers.size(); ++i)
+    {
+        const auto mod = this->sequenceModifiers.getUnchecked(i);
+        const auto otherMod = other.sequenceModifiers.getUnchecked(i);
+
+        if (!mod->isEquivalentTo(otherMod))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void Clip::applyChanges(const Clip &other)
 {
     jassert(this->id == other.id);
@@ -280,6 +416,7 @@ void Clip::applyChanges(const Clip &other)
     this->velocity = other.velocity;
     this->mute = other.mute;
     this->solo = other.solo;
+    this->sequenceModifiers = other.sequenceModifiers;
     this->updateCaches();
 }
 

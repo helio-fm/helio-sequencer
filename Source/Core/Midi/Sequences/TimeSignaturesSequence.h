@@ -35,6 +35,7 @@ public:
         short timeFormat, Optional<int> customFilter) override;
     void exportMidi(MidiMessageSequence &outSequence,
         const Clip &clip, const KeyboardMapping &keyMap,
+        GeneratedSequenceBuilder &generatedSequences,
         bool soloPlaybackMode, bool exportMetronome,
         float projectFirstBeat, float projectLastBeat,
         double timeFactor = 1.0) const override;

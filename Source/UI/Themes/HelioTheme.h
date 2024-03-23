@@ -36,7 +36,7 @@ public:
     void drawNoise(Graphics &g, float alphaMultiply = 1.f) const;
     static void drawNoise(Component *target, Graphics &g, float alphaMultiply = 1.f);
     static void drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply = 1.f);
-    static void drawNoiseWithin(Rectangle<int> bounds, Graphics &g, float alphaMultiply = 1.f);
+    static void drawStripes(Rectangle<float> bounds, Graphics &g, float alphaMultiply = 1.f);
 
     static void drawFrame(Graphics &g, int width, int height,
         float lightAlphaMultiplier = 1.f, float darkAlphaMultiplier = 1.f);
@@ -151,6 +151,8 @@ public:
 protected:
     
     const Image backgroundNoise;
+    const Image backgroundStripes;
+
     Colour backgroundTextureBaseColour;
     Image cachedBackground;
     

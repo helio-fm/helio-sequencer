@@ -74,6 +74,8 @@ public:
             key(key), period(period), beat(beat),
             length(length), velocity(velocity), isBarStart(isBarStart) {}
 
+        friend bool operator==(const Key &l, const Key &r);
+
         // Key, relative to the root note, and translated into scale, may be negative
         int key;
         // Number of periods to offset, relative to root key, may be negative

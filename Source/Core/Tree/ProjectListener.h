@@ -34,12 +34,14 @@ public:
     virtual void onAddMidiEvent(const MidiEvent &event) {}
     virtual void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) {}
     virtual void onRemoveMidiEvent(const MidiEvent &event) {}
-    virtual void onPostRemoveMidiEvent(MidiSequence *const layer) {}
+    virtual void onPostRemoveMidiEvent(MidiSequence *const sequence) {}
 
     virtual void onAddClip(const Clip &clip) {}
     virtual void onChangeClip(const Clip &oldClip, const Clip &newClip) {}
     virtual void onRemoveClip(const Clip &clip) {}
     virtual void onPostRemoveClip(Pattern *const pattern) {}
+    virtual void onReloadGeneratedSequence(const Clip &clip,
+        MidiSequence *const generatedSequence) {} // generatedSequence can be nullptr
 
     virtual void onAddTrack(MidiTrack *const track) {}
     virtual void onRemoveTrack(MidiTrack *const track) {}

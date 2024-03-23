@@ -21,6 +21,7 @@
 #include "ProjectMetadata.h"
 #include "UndoStack.h"
 #include "MidiTrack.h"
+#include "GeneratedSequenceBuilder.h"
 
 struct EventIdGenerator final
 {
@@ -84,6 +85,7 @@ void MidiSequence::clearUndoHistory()
 
 void MidiSequence::exportMidi(MidiMessageSequence &outSequence,
     const Clip &clip, const KeyboardMapping &keyMap,
+    GeneratedSequenceBuilder &generatedSequences,
     bool projectHasSoloClips, bool exportMetronome,
     float projectFirstBeat, float projectLastBeat,
     double timeFactor /*= 1.0*/) const
@@ -94,9 +96,23 @@ void MidiSequence::exportMidi(MidiMessageSequence &outSequence,
         return;
     }
 
-    for (const auto *event : this->midiEvents)
+    if (clip.hasModifiers())
     {
-        event->exportMessages(outSequence, clip, keyMap, timeFactor);
+        // generated events
+        auto *sequence = generatedSequences.getSequenceFor(clip);
+        jassert(sequence != nullptr);
+        for (const auto *event : sequence->midiEvents)
+        {
+            event->exportMessages(outSequence, clip, keyMap, timeFactor);
+        }
+    }
+    else
+    {
+        // original events
+        for (const auto *event : this->midiEvents)
+        {
+            event->exportMessages(outSequence, clip, keyMap, timeFactor);
+        }
     }
 
     outSequence.updateMatchedPairs();
@@ -144,7 +160,9 @@ MidiTrack *MidiSequence::getTrack() const noexcept
     return &this->track;
 }
 
-// I hate these 3 getters but have very little idea how to do without:
+// Todo someday: refactor SequencerOperations in a way that
+// its methods would receive UndoStack reference explicitly
+// rather than accessing it through the sequence:
 
 ProjectNode *MidiSequence::getProject() const noexcept
 {
@@ -156,11 +174,6 @@ UndoStack *MidiSequence::getUndoStack() const noexcept
     return this->eventDispatcher.getProject()->getUndoStack();
 }
 
-int MidiSequence::getPeriodSize() const noexcept
-{
-    return this->eventDispatcher.getProject()->getProjectInfo()->
-        getTemperament()->getPeriodSize();
-}
 
 //===----------------------------------------------------------------------===//
 // Events change listener

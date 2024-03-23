@@ -124,7 +124,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     // just in case..
     this->project.getTransport().stopPlaybackAndRecording();
 
-    this->setSize(560, isPhoneLayout? 120 : 185);
+    this->setSize(562, isPhoneLayout? 120 : 185);
     this->updatePosition();
     this->updateRenderTargetLabels();
 }

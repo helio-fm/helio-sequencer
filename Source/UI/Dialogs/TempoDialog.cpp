@@ -86,7 +86,7 @@ public:
     {
         g.setColour(this->currentFillColour);
         g.fillRect(this->getLocalBounds());
-        HelioTheme::drawNoiseWithin(this->getLocalBounds().reduced(2), g);
+        HelioTheme::drawStripes(this->getLocalBounds().toFloat().reduced(2.5f), g, 0.2f);
         g.setColour(this->outlineColour);
         HelioTheme::drawDashedFrame(g, this->getLocalBounds());
     }

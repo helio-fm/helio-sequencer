@@ -201,7 +201,8 @@ Array<VCS::DeltaDiff> PatternDiffHelpers::createClipsDiffs(const SerializedData 
                     stateClip.getBeat() != changesClip.getBeat() ||
                     stateClip.getVelocity() != changesClip.getVelocity() ||
                     stateClip.isMuted() != changesClip.isMuted() ||
-                    stateClip.isSoloed() != changesClip.isSoloed())
+                    stateClip.isSoloed() != changesClip.isSoloed() ||
+                    !stateClip.hasEquivalentModifiers(changesClip))
                 {
                     changedClips.add(changesClip);
                 }

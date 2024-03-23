@@ -27,8 +27,9 @@ public:
     
     explicit IconButton(Icons::Id iconId,
         int commandId = CommandIDs::IconButtonPressed,
-        WeakReference<Component> listener = nullptr) :
-        IconComponent(iconId),
+        WeakReference<Component> listener = nullptr,
+        Optional<int> iconSize = {}) :
+        IconComponent(iconId, 1.f, iconSize),
         commandId(commandId),
         listener(listener)
     {
@@ -66,7 +67,7 @@ public:
 
     void enablementChanged() override
     {
-        this->setAlpha(this->isEnabled() ? 1.0f : 0.5f);
+        this->setAlpha(this->isEnabled() ? 1.0f : 0.4f);
     }
 
     // Silence the useless VC C4250 warnings:
@@ -92,8 +93,9 @@ private:
     Component *createHighlighterComponent() override
     {
         return this->image.isNull() ?
-            new IconButton(this->iconId) :
+            new IconButton(this->iconId, this->commandId, nullptr, this->iconSize) :
             new IconButton(this->image);
     }
     
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IconButton)
 };

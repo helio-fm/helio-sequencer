@@ -143,6 +143,28 @@ namespace Serialization
         }
     } // namespace Midi
 
+    namespace Modifiers
+    {
+        static const Identifier refactoringModifier = "refactoring";
+        static const Identifier arpeggiationModifier = "arpeggiation";
+        static const Identifier tuningModifier = "tuning";
+
+        static const Identifier isEnabled = "enabled";
+
+        static const Identifier refactoringType = "type";
+        static const Identifier refactoringParameter = "parameter";
+        static const Identifier refactoringMelodicInversion = "inversion";
+        static const Identifier refactoringRetrograde = "retrograde";
+        static const Identifier refactoringChordInversion = "chordInversion";
+        static const Identifier refactoringInScaleTransposition = "inScaleShift";
+        static const Identifier refactoringQuantization = "quantization";
+        static const Identifier refactoringLegato = "legato";
+        static const Identifier refactoringStaccato = "staccato";
+        static const Identifier refactoringCleanupOverlaps = "cleanup";
+
+        static const Identifier arpeggiationSpeed = "speed";
+    } // namespace Modifiers
+
     namespace Audio
     {
         static const Identifier instrument = "instrument";

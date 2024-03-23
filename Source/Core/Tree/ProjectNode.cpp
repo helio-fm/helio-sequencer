@@ -39,12 +39,13 @@
 #include "UndoStack.h"
 #include "MidiRecorder.h"
 #include "KeyboardMapping.h"
+#include "GeneratedSequenceBuilder.h"
+#include "CommandPaletteTimelineEvents.h"
 
 #include "ProjectMetadata.h"
 #include "ProjectTimeline.h"
 #include "ProjectPage.h"
 #include "ProjectMenu.h"
-#include "CommandPaletteTimelineEvents.h"
 
 #include "SequencerLayout.h"
 #include "MainLayout.h"
@@ -92,6 +93,7 @@ void ProjectNode::initialize()
     this->midiRecorder = make<MidiRecorder>(*this);
 
     this->consoleTimelineEvents = make<CommandPaletteTimelineEvents>(*this);
+    this->generatedSequenceBuilder = make<GeneratedSequenceBuilder>(*this);
 
     this->recreatePage();
 
@@ -113,6 +115,7 @@ ProjectNode::~ProjectNode()
     this->removeAllListeners();
     this->sequencerLayout = nullptr;
 
+    this->generatedSequenceBuilder = nullptr;
     this->consoleTimelineEvents = nullptr;
 
     this->midiRecorder = nullptr;
@@ -172,6 +175,11 @@ RollEditMode &ProjectNode::getEditMode() noexcept
 RollBase *ProjectNode::getLastFocusedRoll() const
 {
     return this->sequencerLayout->getRoll();
+}
+
+GeneratedSequenceBuilder *ProjectNode::getGeneratedSequences() const
+{
+    return this->generatedSequenceBuilder.get();
 }
 
 Image ProjectNode::getIcon() const noexcept
@@ -734,7 +742,6 @@ void ProjectNode::removeAllListeners()
     this->changeListeners.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Broadcaster
 //===----------------------------------------------------------------------===//
@@ -828,6 +835,13 @@ void ProjectNode::broadcastRemoveClip(const Clip &clip)
 void ProjectNode::broadcastPostRemoveClip(Pattern *const pattern)
 {
     this->changeListeners.call(&ProjectListener::onPostRemoveClip, pattern);
+    this->sendChangeMessage();
+}
+
+void ProjectNode::broadcastReloadGeneratedSequence(const Clip &clip,
+    MidiSequence *const generatedSequence)
+{
+    this->changeListeners.call(&ProjectListener::onReloadGeneratedSequence, clip, generatedSequence);
     this->sendChangeMessage();
 }
 
@@ -987,7 +1001,8 @@ bool ProjectNode::exportMidi(OutputStream &stream) const
             for (const auto *clip : track->getPattern()->getClips())
             {
                 track->getSequence()->exportMidi(sequence, *clip,
-                    simpleMapping, soloFlag, metronomeFlag,
+                    simpleMapping, *this->generatedSequenceBuilder,
+                    soloFlag, metronomeFlag,
                     this->beatRange.getStart(), this->beatRange.getEnd(),
                     midiClock);
             }
@@ -995,7 +1010,8 @@ bool ProjectNode::exportMidi(OutputStream &stream) const
         else
         {
             track->getSequence()->exportMidi(sequence, noTransform,
-                simpleMapping, soloFlag, metronomeFlag,
+                simpleMapping, *this->generatedSequenceBuilder,
+                soloFlag, metronomeFlag,
                 this->beatRange.getStart(), this->beatRange.getEnd(),
                 midiClock);
         }

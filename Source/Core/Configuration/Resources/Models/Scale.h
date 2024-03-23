@@ -117,7 +117,7 @@ public:
     friend bool operator==(const Scale &l, const Scale &r);
     friend bool operator!=(const Scale &l, const Scale &r);
 
-    // Used to compare scales in version control
+    // Used to compare scale keys
     // (there may be lots of synonyms for the same sets of notes,
     // e.g. Phrygian is called Zokuso in Japan and Ousak in Greece)
     bool isEquivalentTo(const Scale *other) const;

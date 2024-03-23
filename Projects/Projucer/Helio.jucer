@@ -5,7 +5,7 @@
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark"
               usePrecompiledHeaders="0" precompiledHeaderFileName="" precompiledHeaderExcludedWildcard="include_juce_*"
-              companyCopyright="Peter Rudenko" headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/serd&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord/src&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sratom&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lv2&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/BuiltIn/SoundFont&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Resources&#10;../../Source/Core/Configuration/Resources/Models&#10;../../Source/Core/CommandPalette&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/Workspace&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Dashboard&#10;../../Source/UI/Popups&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/EditorPanels&#10;../../Source/UI/Sequencer/EditorPanels/AutomationEditor&#10;../../Source/UI/Sequencer/EditorPanels/VelocityEditor&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes"
+              companyCopyright="Peter Rudenko" headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/JUCE/modules&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/serd&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord/src&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sratom&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src&#10;../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lv2&#10;../../ThirdParty/ASIO/common&#10;../../Source/&#10;../../Source/Core&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/BuiltIn/SoundFont&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Configuration&#10;../../Source/Core/Configuration/Resources&#10;../../Source/Core/Configuration/Resources/Models&#10;../../Source/Core/CommandPalette&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Patterns/Modifiers&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Network/Models&#10;../../Source/Core/Network/Requests&#10;../../Source/Core/Network/Services&#10;../../Source/Core/Serialization&#10;../../Source/Core/Tree&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/Workspace&#10;../../Source/UI/&#10;../../Source/UI/Common&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Menus/SelectionMenus&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Dashboard&#10;../../Source/UI/Popups&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/EditorPanels&#10;../../Source/UI/Sequencer/EditorPanels/AutomationEditor&#10;../../Source/UI/Sequencer/EditorPanels/VelocityEditor&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/MiniMaps&#10;../../Source/UI/Sequencer/MiniMaps/AnnotationsMap&#10;../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap&#10;../../Source/UI/Sequencer/MiniMaps/PianoMap&#10;../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/Sidebars&#10;../../Source/UI/Themes"
               projectLineFeed="&#10;" jucerFormatVersion="1" cppLanguageStandard="14">
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
@@ -21,6 +21,7 @@
         <FILE id="Z7oHFa" name="browse.svg" compile="0" resource="1" file="../../Resources/Icons/browse.svg"/>
         <FILE id="X70Jbq" name="chordBuilder.svg" compile="0" resource="1"
               file="../../Resources/Icons/chordBuilder.svg"/>
+        <FILE id="HvqgdN" name="cleanup.svg" compile="0" resource="1" file="../../Resources/Icons/cleanup.svg"/>
         <FILE id="Id1ypQ" name="close.svg" compile="0" resource="1" file="../../Resources/Icons/close.svg"/>
         <FILE id="QzpxYC" name="colour.svg" compile="0" resource="1" file="../../Resources/Icons/colour.svg"/>
         <FILE id="ja4Raa" name="commit.svg" compile="0" resource="1" file="../../Resources/Icons/commit.svg"/>
@@ -45,6 +46,8 @@
               file="../../Resources/Icons/instrumentNode.svg"/>
         <FILE id="vN18jv" name="inverseDown.svg" compile="0" resource="1" file="../../Resources/Icons/inverseDown.svg"/>
         <FILE id="yctt0l" name="inverseUp.svg" compile="0" resource="1" file="../../Resources/Icons/inverseUp.svg"/>
+        <FILE id="JuTOqg" name="inversion.svg" compile="0" resource="1" file="../../Resources/Icons/inversion.svg"/>
+        <FILE id="xO4mOF" name="legato.svg" compile="0" resource="1" file="../../Resources/Icons/legato.svg"/>
         <FILE id="Tp3StV" name="list.svg" compile="0" resource="1" file="../../Resources/Icons/list.svg"/>
         <FILE id="vkA7la" name="local.svg" compile="0" resource="1" file="../../Resources/Icons/local.svg"/>
         <FILE id="CexsNu" name="meter.svg" compile="0" resource="1" file="../../Resources/Icons/meter.svg"/>
@@ -72,6 +75,7 @@
         <FILE id="Kv4MaK" name="render.svg" compile="0" resource="1" file="../../Resources/Icons/render.svg"/>
         <FILE id="EtEvEQ" name="reprise.svg" compile="0" resource="1" file="../../Resources/Icons/reprise.svg"/>
         <FILE id="kAPtlo" name="reset.svg" compile="0" resource="1" file="../../Resources/Icons/reset.svg"/>
+        <FILE id="BSzfC7" name="retrograde.svg" compile="0" resource="1" file="../../Resources/Icons/retrograde.svg"/>
         <FILE id="FgLHwk" name="revision.svg" compile="0" resource="1" file="../../Resources/Icons/revision.svg"/>
         <FILE id="fref2V" name="routing.svg" compile="0" resource="1" file="../../Resources/Icons/routing.svg"/>
         <FILE id="b1fUSl" name="selectionTool.svg" compile="0" resource="1"
@@ -80,6 +84,8 @@
         <FILE id="M4yCpT" name="selectAll.svg" compile="0" resource="1" file="../../Resources/Icons/selectAll.svg"/>
         <FILE id="GM5TrL" name="selectNone.svg" compile="0" resource="1" file="../../Resources/Icons/selectNone.svg"/>
         <FILE id="D6EOW7" name="settings.svg" compile="0" resource="1" file="../../Resources/Icons/settings.svg"/>
+        <FILE id="tLCptC" name="snap.svg" compile="0" resource="1" file="../../Resources/Icons/snap.svg"/>
+        <FILE id="LUFp39" name="staccato.svg" compile="0" resource="1" file="../../Resources/Icons/staccato.svg"/>
         <FILE id="z6XXzu" name="stop.svg" compile="0" resource="1" file="../../Resources/Icons/stop.svg"/>
         <FILE id="M4E2VZ" name="stretchLeft.svg" compile="0" resource="1" file="../../Resources/Icons/stretchLeft.svg"/>
         <FILE id="BGvTna" name="stretchRight.svg" compile="0" resource="1"
@@ -105,6 +111,7 @@
         <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>
         <FILE id="KPqaBe" name="zoomToFit.svg" compile="0" resource="1" file="../../Resources/Icons/zoomToFit.svg"/>
         <FILE id="aMBPbX" name="noise.png" compile="0" resource="1" file="../../Resources/Icons/noise.png"/>
+        <FILE id="o2O2gw" name="stripes.png" compile="0" resource="1" file="../../Resources/Icons/stripes.png"/>
         <FILE id="oCmMjk" name="copyingCursor.gif" compile="0" resource="1"
               file="../../Resources/Icons/copyingCursor.gif"/>
         <FILE id="KemsRO" name="erasingCursor.gif" compile="0" resource="1"
@@ -345,6 +352,20 @@
         </GROUP>
         <GROUP id="{93B0AF7A-BC73-2049-CF6B-76592F77C01F}" name="Midi">
           <GROUP id="{5A19293F-FDB1-F5B4-F808-E06A0B919C46}" name="Patterns">
+            <GROUP id="{E67D5206-AD2A-7E67-A0B1-94B04061537C}" name="Modifiers">
+              <FILE id="f2tEMl" name="ArpeggiationSequenceModifier.h" compile="0"
+                    resource="0" file="../../Source/Core/Midi/Patterns/Modifiers/ArpeggiationSequenceModifier.h"/>
+              <FILE id="Gh8LwC" name="RefactoringSequenceModifier.h" compile="0"
+                    resource="0" file="../../Source/Core/Midi/Patterns/Modifiers/RefactoringSequenceModifier.h"/>
+              <FILE id="K48HCe" name="TuningSequenceModifier.h" compile="0" resource="0"
+                    file="../../Source/Core/Midi/Patterns/Modifiers/TuningSequenceModifier.h"/>
+              <FILE id="jyQU2E" name="SequenceModifier.h" compile="0" resource="0"
+                    file="../../Source/Core/Midi/Patterns/Modifiers/SequenceModifier.h"/>
+              <FILE id="VNzm7X" name="GeneratedSequenceBuilder.cpp" compile="1" resource="0"
+                    file="../../Source/Core/Midi/Patterns/Modifiers/GeneratedSequenceBuilder.cpp"/>
+              <FILE id="pK4Xsy" name="GeneratedSequenceBuilder.h" compile="0" resource="0"
+                    file="../../Source/Core/Midi/Patterns/Modifiers/GeneratedSequenceBuilder.h"/>
+            </GROUP>
             <FILE id="dwdkYP" name="Clip.cpp" compile="1" resource="0" file="../../Source/Core/Midi/Patterns/Clip.cpp"/>
             <FILE id="WmNSez" name="Clip.h" compile="0" resource="0" file="../../Source/Core/Midi/Patterns/Clip.h"/>
             <FILE id="ieMiv0" name="Pattern.cpp" compile="1" resource="0" file="../../Source/Core/Midi/Patterns/Pattern.cpp"/>

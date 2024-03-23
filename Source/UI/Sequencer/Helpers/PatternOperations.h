@@ -36,7 +36,7 @@ struct PatternOperations final
 
     static void transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint = true);
     static void tuneClips(const Lasso &selection, float deltaVelocity, bool shouldCheckpoint = true);
-    static void shiftBeatRelative(Lasso &selection, float deltaBeat, bool shouldCheckpoint = true);
+    static void shiftBeatRelative(const Lasso &selection, float deltaBeat, bool shouldCheckpoint = true);
 
     static void cutClip(ProjectNode &project, const Clip &clip, float relativeCutBeat,
         bool shouldRenameNewTrack, bool shouldCheckpoint = true);
@@ -58,7 +58,20 @@ struct PatternOperations final
         const Array<Clip> &sourceClips, bool shouldCheckpoint = true);
 
     // simply reverse the clips order for each row
-    static void retrograde(ProjectNode &project, Lasso &selection, bool shouldCheckpoint = true);
+    static void retrograde(ProjectNode &project, const Lasso &selection, bool shouldCheckpoint = true);
+
+    // will "apply" the modifiers stack by doing either of the following:
+    // if there's a single clip in the pattern, will delete all events
+    // in the sequence and insert events from the generated sequence,
+    // and clear the clip's parametric modifiers stack after all that;
+    // if there's more than one clip, will delete it and insert
+    // a new track of the same parameters with generated events in it
+    static bool applyModifiersStack(const Clip &clip, bool shouldCheckpoint = true);
+
+    // toggle enable/disable all modifiers:
+    // if any modifiers are enabled, disable all, otherwise enable all
+    static bool toggleMuteModifiersStack(const Clip &clip, bool shouldCheckpoint = true);
+    static void toggleMuteModifiersStack(const Lasso &selection, bool shouldCheckpoint = true);
 
     // if all selected clips are "assigned" to the same instrument,
     // this returns that instrument id, otherwise returns an empty string:

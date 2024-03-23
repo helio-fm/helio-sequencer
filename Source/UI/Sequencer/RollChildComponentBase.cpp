@@ -19,22 +19,36 @@
 #include "RollChildComponentBase.h"
 #include "RollBase.h"
 
-RollChildComponentBase::RollChildComponentBase(RollBase &editor, bool isGhost) noexcept :
+RollChildComponentBase::RollChildComponentBase(RollBase &editor) noexcept :
     roll(editor)
 {
     this->flags.isActive = true;
+    this->flags.isEditable = true;
     this->flags.isSelected = false;
     this->flags.isInstanceOfSelected = false;
     this->flags.isRecordingTarget = false;
     this->flags.isMergeTarget = false;
-    this->flags.isGhost = isGhost;
+    this->flags.isGenerated = false;
+    this->flags.isGhost = false;
 
     this->setWantsKeyboardFocus(false);
 }
 
-bool RollChildComponentBase::isActive() const noexcept
+
+bool RollChildComponentBase::isActiveAndEditable() const noexcept
 {
-    return this->flags.isActive;
+    jassert(!this->flags.isGhost);
+    return this->flags.isActive && this->flags.isEditable;
+}
+
+void RollChildComponentBase::setEditable(bool val)
+{
+    if (this->flags.isEditable == val)
+    {
+        return;
+    }
+
+    this->flags.isEditable = val;
 }
 
 void RollChildComponentBase::setActive(bool val, bool force)
@@ -54,22 +68,13 @@ void RollChildComponentBase::setActive(bool val, bool force)
     }
 }
 
-void RollChildComponentBase::setGhostMode()
-{
-    this->flags.isGhost = true;
-    this->setInterceptsMouseClicks(false, false);
-    this->setEnabled(false);
-    this->updateColours();
-    this->repaint();
-}
-
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
 
 void RollChildComponentBase::mouseDown(const MouseEvent &e)
 {
-    jassert(!this->flags.isGhost);
+    jassert(this->isActiveAndEditable());
 
     auto &selection = this->roll.getLassoSelection();
 

@@ -27,6 +27,21 @@ PianoSequence::PianoSequence(MidiTrack &track,
     ProjectEventDispatcher &dispatcher) noexcept :
     MidiSequence(track, dispatcher) {}
 
+PianoSequence::PianoSequence(MidiTrack &track,
+    ProjectEventDispatcher &dispatcher,
+    const PianoSequence &sequenceToCopy) noexcept :
+    MidiSequence(track, dispatcher)
+{
+    this->sequenceStartBeat = sequenceToCopy.sequenceStartBeat;
+    this->sequenceEndBeat = sequenceToCopy.sequenceEndBeat;
+    this->usedEventIds = sequenceToCopy.usedEventIds;
+
+    for (const auto *event : sequenceToCopy.midiEvents)
+    {
+        jassert(dynamic_cast<const Note *>(event) != nullptr);
+        this->midiEvents.add(new Note(this, static_cast<const Note &>(*event)));
+    }
+}
 //===----------------------------------------------------------------------===//
 // Import/export
 //===----------------------------------------------------------------------===//

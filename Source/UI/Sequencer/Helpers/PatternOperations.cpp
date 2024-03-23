@@ -21,6 +21,7 @@
 #include "ProjectNode.h"
 #include "UndoStack.h"
 #include "PianoTrackNode.h"
+#include "PianoSequence.h"
 #include "AutomationTrackNode.h"
 #include "PianoTrackActions.h"
 #include "AutomationTrackActions.h"
@@ -159,7 +160,7 @@ void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, boo
 
     auto *pattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
     const auto operationId = deltaKey > 0 ? UndoActionIDs::ClipTransposeUp : UndoActionIDs::ClipTransposeDown;
-    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const auto transactionId = selection.generateTransactionId(operationId);
     const bool repeatsLastAction = pattern->getLastUndoActionId() == transactionId;
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
@@ -194,7 +195,7 @@ void PatternOperations::tuneClips(const Lasso &selection, float deltaVelocity, b
 
     auto *pattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
     const auto operationId = deltaVelocity > 0 ? UndoActionIDs::ClipVolumeUp : UndoActionIDs::ClipVolumeDown;
-    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const auto transactionId = selection.generateTransactionId(operationId);
     const bool repeatsLastAction = pattern->getLastUndoActionId() == transactionId;
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
@@ -216,7 +217,7 @@ void PatternOperations::tuneClips(const Lasso &selection, float deltaVelocity, b
     }
 }
 
-void PatternOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, bool shouldCheckpoint)
+void PatternOperations::shiftBeatRelative(const Lasso &selection, float deltaBeat, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0 || deltaBeat == 0)
     {
@@ -225,7 +226,7 @@ void PatternOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, boo
 
     auto *firstPattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
     const auto operationId = deltaBeat > 0 ? UndoActionIDs::BeatShiftRight : UndoActionIDs::BeatShiftLeft;
-    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const auto transactionId = selection.generateTransactionId(operationId);
     const bool repeatsLastAction = firstPattern->getLastUndoActionId() == transactionId;
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
@@ -509,13 +510,20 @@ void PatternOperations::quantize(const Lasso &selection,
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const auto &clip = selection.getItemAs<ClipComponent>(i)->getClip();
-        auto *track = clip.getPattern()->getTrack();
+        const auto *track = clip.getPattern()->getTrack();
         if (processedTracks.contains(track->getTrackId()))
         {
             continue;
         }
 
-        const auto hasMadeChanges = SequencerOperations::quantize(track, bar, !didCheckpoint);
+        auto *pianoSequence = dynamic_cast<PianoSequence *>(track->getSequence());
+        if (pianoSequence == nullptr)
+        {
+            jassertfalse; // will only quantize notes
+            continue;
+        }
+
+        const auto hasMadeChanges = SequencerOperations::quantize(*pianoSequence, bar, !didCheckpoint);
         didCheckpoint = didCheckpoint || hasMadeChanges;
 
         processedTracks.insert(track->getTrackId());
@@ -532,7 +540,7 @@ bool PatternOperations::shiftTempo(const Lasso &selection,
 
     auto *pattern = selection.getFirstAs<ClipComponent>()->getClip().getPattern();
     const auto operationId = bpmDelta > 0 ? UndoActionIDs::ShiftTempoUp : UndoActionIDs::ShiftTempoDown;
-    const auto transactionId = selection.generateLassoTransactionId(operationId);
+    const auto transactionId = selection.generateTransactionId(operationId);
     const bool repeatsLastOperation = pattern->getLastUndoActionId() == transactionId;
 
     bool didCheckpoint = !shouldCheckpoint || repeatsLastOperation;
@@ -781,7 +789,7 @@ struct SortClipsByAbsoluteBeatPosition final
     }
 };
 
-void PatternOperations::retrograde(ProjectNode &project, Lasso &selection, bool shouldCheckpoint /*= true*/)
+void PatternOperations::retrograde(ProjectNode &project, const Lasso &selection, bool shouldCheckpoint /*= true*/)
 {
     if (selection.getNumSelected() < 2)
     {
@@ -850,6 +858,126 @@ void PatternOperations::retrograde(ProjectNode &project, Lasso &selection, bool 
             start++;
             end--;
         } while (start <= end);
+    }
+}
+
+bool PatternOperations::applyModifiersStack(const Clip &clip, bool shouldCheckpoint /*= true*/)
+{
+    auto *pattern = clip.getPattern();
+    auto *generatedSequence = dynamic_cast<PianoSequence *>(pattern->
+        getProject()->getGeneratedSequences()->getSequenceFor(clip));
+
+    if (generatedSequence == nullptr)
+    {
+        jassertfalse; // modifiers only support transforming notes at the moment
+        return false;
+    }
+
+    auto *sourceSequence = dynamic_cast<PianoSequence *>(pattern->getTrack()->getSequence());
+    if (sourceSequence == nullptr)
+    {
+        jassertfalse;
+        return false;
+    }
+
+    auto *project = pattern->getProject();
+
+    if (shouldCheckpoint)
+    {
+        project->checkpoint();
+    }
+
+    if (pattern->size() == 1)
+    {
+        {
+            Array<Note> removedEvents;
+            for (int i = 0; i < sourceSequence->size(); ++i)
+            {
+                const auto *note = static_cast<Note *>(sourceSequence->getUnchecked(i));
+                removedEvents.add(*note);
+            }
+
+            sourceSequence->removeGroup(removedEvents, true);
+        }
+
+        {
+            Array<Note> newEvents;
+            for (int i = 0; i < generatedSequence->size(); ++i)
+            {
+                const auto *paramsToCopy = static_cast<Note *>(generatedSequence->getUnchecked(i));
+                newEvents.add(Note(sourceSequence, *paramsToCopy));
+            }
+
+            sourceSequence->insertGroup(newEvents, true);
+        }
+
+        // finally, delete all modifiers
+        pattern->change(clip, clip.withModifiers({}), true);
+    }
+    else
+    {
+        // make the clip "unique" if the pattern has more than 1 clip
+        auto trackPreset = SequencerOperations::createPianoTrack(
+            generatedSequence, clip.withModifiers({}));
+
+        const auto trackId = trackPreset->getTrackId();
+        const auto trackName = pattern->getTrack()->getTrackName();
+
+        pattern->remove(clip, true);
+        project->getUndoStack()->perform(new PianoTrackInsertAction(*project,
+            project, trackPreset->serialize(), trackName));
+
+        // focus on it
+        auto *newlyAddedTrack = project->findTrackById<MidiTrackNode>(trackId);
+        auto *tracksSingleClip = newlyAddedTrack->getPattern()->getUnchecked(0);
+        project->setEditableScope(*tracksSingleClip, false);
+    }
+
+    return true;
+}
+
+bool PatternOperations::toggleMuteModifiersStack(const Clip &clip, bool shouldCheckpoint /*= true*/)
+{
+    if (clip.getModifiers().isEmpty())
+    {
+        return false;
+    }
+
+    auto *pattern = clip.getPattern();
+    auto *project = pattern->getProject();
+
+    if (shouldCheckpoint)
+    {
+        project->checkpoint();
+    }
+
+    const auto newEnabledFlag = !clip.hasEnabledModifiers();
+    Array<SequenceModifier::Ptr> updatedModifiers;
+    for (const auto &modifier : clip.getModifiers())
+    {
+        updatedModifiers.add(modifier->withEnabledFlag(newEnabledFlag));
+    }
+
+    return pattern->change(clip, clip.withModifiers(move(updatedModifiers)), true);
+}
+
+void PatternOperations::toggleMuteModifiersStack(const Lasso &selection, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
+
+    bool didCheckpoint = !shouldCheckpoint;
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const auto &clip = selection.getItemAs<ClipComponent>(i)->getClip();
+
+        if (PatternOperations::toggleMuteModifiersStack(clip, !didCheckpoint))
+        {
+            didCheckpoint = true;
+        }
     }
 }
 

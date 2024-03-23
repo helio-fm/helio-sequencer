@@ -29,6 +29,7 @@ class MidiRecorder;
 class ProjectMetadata;
 class ProjectTimeline;
 class CommandPaletteTimelineEvents;
+class GeneratedSequenceBuilder;
 class UndoStack;
 class Pattern;
 class Clip;
@@ -66,6 +67,7 @@ public:
     ProjectTimeline *getTimeline() const noexcept;
     RollEditMode &getEditMode() noexcept;
     RollBase *getLastFocusedRoll() const;
+    GeneratedSequenceBuilder *getGeneratedSequences() const;
     
     void importMidi(InputStream &stream);
     bool exportMidi(OutputStream &stream) const;
@@ -140,7 +142,7 @@ public:
     void broadcastAddEvent(const MidiEvent &event);
     void broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent);
     void broadcastRemoveEvent(const MidiEvent &event);
-    void broadcastPostRemoveEvent(MidiSequence *const layer);
+    void broadcastPostRemoveEvent(MidiSequence *const sequence);
 
     void broadcastAddTrack(MidiTrack *const track);
     void broadcastRemoveTrack(MidiTrack *const track);
@@ -151,6 +153,8 @@ public:
     void broadcastChangeClip(const Clip &oldClip, const Clip &newClip);
     void broadcastRemoveClip(const Clip &clip);
     void broadcastPostRemoveClip(Pattern *const pattern);
+    void broadcastReloadGeneratedSequence(const Clip &clip,
+        MidiSequence *const generatedSequence);
 
     void broadcastChangeProjectInfo(const ProjectMetadata *info);
     void broadcastChangeViewBeatRange(float firstBeat, float lastBeat);
@@ -231,6 +235,8 @@ private:
     WeakReference<TreeNode> lastShownTrack;
 
     UniquePointer<CommandPaletteTimelineEvents> consoleTimelineEvents;
+
+    UniquePointer<GeneratedSequenceBuilder> generatedSequenceBuilder;
 
 private:
 

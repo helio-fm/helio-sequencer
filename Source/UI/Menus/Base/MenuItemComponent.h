@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Icons.h"
+#include "IconButton.h"
 #include "DraggingListBoxComponent.h"
 
 class IconComponent;
@@ -43,6 +44,15 @@ struct MenuItem final : public ReferenceCountedObject
 
     Alignment alignment = Alignment::Left;
     Callback callback = nullptr;
+
+    struct Button
+    {
+        bool isEnabled = true;
+        Icons::Id iconId = 0;
+        Callback callback = nullptr;
+    };
+
+    Array<Button> buttons;
 
     struct MenuItemFlags final
     {
@@ -74,6 +84,7 @@ struct MenuItem final : public ReferenceCountedObject
     MenuItem::Ptr withSubmenuIf(bool condition);
     MenuItem::Ptr withColour(const Colour &colour);
     MenuItem::Ptr withTooltip(String tooltip);
+    MenuItem::Ptr withHotkeyText(int commandId);
     MenuItem::Ptr withWeight(float weight);
     MenuItem::Ptr toggledIf(bool shouldBeToggled);
     MenuItem::Ptr disabledIf(bool condition);
@@ -86,6 +97,10 @@ struct MenuItem final : public ReferenceCountedObject
     // All other menu items should use command ids,
     // which are passed to the component the same way that hotkeys pass their command id's.
     MenuItem::Ptr withAction(const Callback &lambda);
+    MenuItem::Ptr withActionIf(bool condition, const Callback &lambda);
+
+    // Each menu item can have several helper buttons
+    MenuItem::Ptr withButton(bool isEnabled, Icons::Id icon, const Callback &lambda);
 
     static MenuItem::Ptr empty();
     static MenuItem::Ptr item(Icons::Id iconId, String text);
@@ -123,11 +138,13 @@ public:
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
 
-private:
+    void handleCommandMessage(int commandId) override;
 
     static constexpr auto iconMargin = 6;
     static constexpr auto iconSize = 20;
     static constexpr auto fontSize = Globals::UI::Fonts::M;
+
+private:
 
     Image icon;
     MenuItem::Ptr description;
@@ -136,6 +153,8 @@ private:
 
     UniquePointer<Component> clickMarker;
     UniquePointer<Component> checkMarker;
+
+    Array<UniquePointer<IconButton>> buttons;
 
     ComponentAnimator animator;
 

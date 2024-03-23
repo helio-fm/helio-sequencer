@@ -20,8 +20,9 @@
 class Lasso;
 
 #include "MenuPanel.h"
+#include "ClipMenu.h"
 
-class PatternRollSelectionMenu final : public MenuPanel
+class PatternRollSelectionMenu final : public ClipModifiersMenu
 {
 public:
     
@@ -29,10 +30,10 @@ public:
     
 private:
 
-    MenuPanel::Menu createDefaultMenu();
-    MenuPanel::Menu createQuantizationMenu();
-    MenuPanel::Menu createChannelSelectionMenu();
-    MenuPanel::Menu createInstrumentSelectionMenu();
+    MenuPanel::Menu makeDefaultMenu();
+    MenuPanel::Menu makeQuantizationMenu();
+    MenuPanel::Menu makeChannelSelectionMenu();
+    MenuPanel::Menu makeInstrumentSelectionMenu();
 
     WeakReference<Lasso> lasso;
 

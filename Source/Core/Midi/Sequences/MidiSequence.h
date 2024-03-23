@@ -26,6 +26,7 @@ class ProjectNode;
 class MidiTrack;
 class UndoStack;
 class KeyboardMapping;
+class GeneratedSequenceBuilder;
 
 class MidiSequence : public Serializable
 {
@@ -54,6 +55,7 @@ public:
         short timeFormat, Optional<int> customFilter) = 0;
     virtual void exportMidi(MidiMessageSequence &outSequence,
         const Clip &clip, const KeyboardMapping &keyMap,
+        GeneratedSequenceBuilder &generatedSequences,
         bool soloPlaybackMode, bool exportMetronome,
         float projectFirstBeat, float projectLastBeat,
         double timeFactor = 1.0) const;
@@ -149,7 +151,7 @@ public:
     inline MidiEvent *const *data() const noexcept
     { return this->begin(); }
 
-    inline MidiEvent *getUnchecked(const int index) const noexcept
+    inline MidiEvent *getUnchecked(int index) const noexcept
     { return this->midiEvents.getUnchecked(index); }
 
     //===------------------------------------------------------------------===//
@@ -169,14 +171,12 @@ public:
 
     JUCE_DECLARE_WEAK_REFERENCEABLE(MidiSequence)
 
-private:
+protected:
 
     MidiTrack &track;
 
     float sequenceEndBeat = 0.f;
     float sequenceStartBeat = 0.f;
-
-protected:
 
     virtual float findFirstBeat() const noexcept;
     virtual float findLastBeat() const noexcept;
@@ -184,9 +184,9 @@ protected:
     ProjectEventDispatcher &eventDispatcher;
     ProjectNode *getProject() const noexcept;
     UndoStack *getUndoStack() const noexcept;
-    int getPeriodSize() const noexcept;
 
     OwnedArray<MidiEvent> midiEvents;
+
     mutable FlatHashSet<MidiEvent::Id> usedEventIds;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiSequence)

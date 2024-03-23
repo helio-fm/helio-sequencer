@@ -29,7 +29,10 @@ class NoteComponent final : public RollChildComponentBase
 public:
 
     NoteComponent(PianoRoll &gridRef, const Note &note,
-        const Clip &clip, bool ghostMode = false) noexcept;
+        const Clip &clip, bool enabled = true) noexcept;
+
+    void setDisplayAsGhost(bool shouldBeGhost);
+    void setDisplayAsGenerated(bool shouldBeGenerated);
 
     enum class State : uint8
     {
@@ -133,7 +136,7 @@ private:
 
 private:
 
-    bool belongsTo(const WeakReference<MidiTrack> &track, const Clip &clip) const noexcept;
+    bool belongsTo(const Clip &clip) const noexcept;
     void switchActiveTrackToSelected(bool zoomToScope) const;
 
     MouseCursor startEditingNewNote(const MouseEvent &e);

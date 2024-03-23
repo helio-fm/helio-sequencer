@@ -19,17 +19,55 @@
 
 #include "MenuPanel.h"
 #include "UndoStack.h"
+#include "SequenceModifier.h"
+#include "RefactoringSequenceModifier.h"
 #include "Clip.h"
 
-class ClipMenu final : public MenuPanel
+class ClipModifiersMenu : public MenuPanel
+{
+public:
+
+    ClipModifiersMenu(const Clip &clip, WeakReference<UndoStack> undoStack);
+
+    // either falls back to "add modifiers" menu if no modifiers found,
+    // or displays an "edit modifiers" menu with "add modifiers" submenu
+    MenuPanel::Menu makeModifiersMenu(const MenuItem::Callback &goBack);
+    MenuPanel::Menu makeEditModifiersMenu(const MenuItem::Callback &goBack);
+    MenuPanel::Menu makeAddModifiersMenu(const MenuItem::Callback &goBack);
+
+    // adds new modifiers or updates existing ones
+    MenuPanel::Menu makeModifiersArpsMenu(const MenuItem::Callback &goBack,
+        SequenceModifier::Ptr updatedModifier);
+
+    MenuPanel::Menu makeModifiersArpsSpeedMenu(const MenuItem::Callback &goBack,
+        const MenuItem::Callback &onAdd,
+        SequenceModifier::Ptr updatedModifier,
+        const Arpeggiator::Ptr arp,
+        const Array<float> &speedValues);
+
+    MenuPanel::Menu makeModifiersRefactoringStepsMenu(const MenuItem::Callback &goBack,
+        const MenuItem::Callback &onAdd, SequenceModifier::Ptr updatedModifier,
+        RefactoringSequenceModifier::Type type, Icons::Id iconId,
+        const Array<RefactoringSequenceModifier::Parameter> &parameters);
+
+private:
+
+    const Clip &clip;
+
+    WeakReference<UndoStack> undoStack;
+
+};
+
+class ClipMenu final : public ClipModifiersMenu
 {
 public:
     
     ClipMenu(const Clip &clip, WeakReference<UndoStack> undoStack);
-    
+
 private:
     
     MenuPanel::Menu makeDefaultMenu();
+    MenuPanel::Menu makeRefactoringMenu();
     MenuPanel::Menu makeQuantizationMenu();
     MenuPanel::Menu makeChannelSelectionMenu();
     MenuPanel::Menu makeInstrumentSelectionMenu();

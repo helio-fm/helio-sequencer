@@ -54,6 +54,7 @@
 #include "../../Source/Core/CommandPalette/CommandPaletteMoveNotesMenu.cpp"
 #include "../../Source/Core/CommandPalette/CommandPaletteProjectsList.cpp"
 #include "../../Source/Core/CommandPalette/CommandPaletteTimelineEvents.cpp"
+#include "../../Source/Core/Midi/Patterns/Modifiers/GeneratedSequenceBuilder.cpp"
 #include "../../Source/Core/Midi/Patterns/Clip.cpp"
 #include "../../Source/Core/Midi/Patterns/Pattern.cpp"
 #include "../../Source/Core/Midi/Sequences/Events/AnnotationEvent.cpp"

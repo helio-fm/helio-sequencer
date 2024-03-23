@@ -26,14 +26,9 @@
 #include "PageBackgroundB.h"
 #include "PanelBackground.h"
 
-#if PLATFORM_DESKTOP
-#   define SCROLLBAR_WIDTH (17)
-#elif PLATFORM_MOBILE
-#   define SCROLLBAR_WIDTH (50)
-#endif
-
 HelioTheme::HelioTheme() :
-    backgroundNoise(ImageCache::getFromMemory(BinaryData::noise_png, BinaryData::noise_pngSize)) {}
+    backgroundNoise(ImageCache::getFromMemory(BinaryData::noise_png, BinaryData::noise_pngSize)),
+    backgroundStripes(ImageCache::getFromMemory(BinaryData::stripes_png, BinaryData::stripes_pngSize)) {}
 
 HelioTheme &HelioTheme::getCurrentTheme() noexcept
 {
@@ -60,9 +55,10 @@ void HelioTheme::drawNoise(const HelioTheme &theme, Graphics &g, float alphaMult
     theme.drawNoise(g, alphaMultiply);
 }
 
-void HelioTheme::drawNoiseWithin(Rectangle<int> bounds, Graphics &g, float alphaMultiply /*= 1.f*/)
+void HelioTheme::drawStripes(Rectangle<float> bounds, Graphics &g, float alphaMultiply /*= 1.f*/)
 {
-    g.setTiledImageFill(getCurrentTheme().backgroundNoise, 0, 0, noiseAlpha * alphaMultiply);
+    const auto &theme = getCurrentTheme();
+    g.setTiledImageFill(theme.backgroundStripes, 0, 0, alphaMultiply * theme.isDarkTheme ? 0.25f : 0.1f);
     g.fillRect(bounds);
 }
 
@@ -424,7 +420,11 @@ void HelioTheme::drawTableHeaderColumn(Graphics &g,
 
 int HelioTheme::getDefaultScrollbarWidth()
 {
-    return SCROLLBAR_WIDTH;
+#if PLATFORM_DESKTOP
+    return 16;
+#elif PLATFORM_MOBILE
+    return 50;
+#endif
 }
 
 void HelioTheme::drawScrollbar(Graphics &g, ScrollBar &scrollbar,

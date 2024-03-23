@@ -40,6 +40,9 @@ public:
     MidiTrack *getTrack() const noexcept;
     int indexOfSorted(const Clip *target) const;
 
+    ProjectNode *getProject() const noexcept;
+    UndoStack *getUndoStack() const noexcept;
+
     //===------------------------------------------------------------------===//
     // Undoing
     //===------------------------------------------------------------------===//
@@ -124,9 +127,6 @@ protected:
     // sending unnecessary "beat range changed" events:
     float lastEndBeat = 0.f;
     float lastStartBeat = 0.f;
-
-    ProjectNode *getProject() const noexcept;
-    UndoStack *getUndoStack() const noexcept;
 
     OwnedArray<Clip> clips;
     mutable FlatHashSet<Clip::Id> usedClipIds;

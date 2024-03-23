@@ -32,18 +32,22 @@
 #include "AutomationSequence.h"
 #include "PianoSequence.h"
 
+#include "ArpeggiationSequenceModifier.h"
+#include "RefactoringSequenceModifier.h"
+#include "TuningSequenceModifier.h"
+
 #include "TempoDialog.h"
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "CommandIDs.h"
 
 PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
+    ClipModifiersMenu(lasso->getFirstAs<ClipComponent>()->getClip(),
+        lasso->getFirstAs<ClipComponent>()->getClip().getPattern()->getUndoStack()),
     lasso(lasso)
 {
-    if (lasso->getNumSelected() > 0)
-    {
-        this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
-    }
+    jassert(lasso->getNumSelected() > 0);
+    this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
 }
 
 static bool canRenamePatternSelection(WeakReference<Lasso> lasso)
@@ -72,7 +76,7 @@ static bool canTriggerSoloForPatternSelection(WeakReference<Lasso> lasso)
     return false;
 }
 
-MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
+MenuPanel::Menu PatternRollSelectionMenu::makeDefaultMenu()
 {
     MenuPanel::Menu menu;
 
@@ -88,7 +92,8 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
 
     if (this->lasso->getNumSelected() == 1)
     {
-        auto *track = this->lasso->getFirstAs<ClipComponent>()->getClip().getPattern()->getTrack();
+        const auto &clip = this->lasso->getFirstAs<ClipComponent>()->getClip();
+        const auto *track = clip.getPattern()->getTrack();
 
         const auto tsActionlabel = track->hasTimeSignatureOverride() ?
             TRANS(I18n::Menu::timeSignatureChange) :
@@ -152,26 +157,40 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
         CommandIDs::ToggleLoopOverSelection,
         TRANS(I18n::CommandPalette::toggleLoopOverSelection))->closesMenu());
 
+    if (this->lasso->getNumSelected() == 1)
+    {
+        const auto &clip = this->lasso->getFirstAs<ClipComponent>()->getClip();
+        menu.add(MenuItem::item(Icons::arpeggiate,
+            clip.hasModifiers() ? TRANS(I18n::Menu::Modifiers::edit) : TRANS(I18n::Menu::Modifiers::add))->
+            withSubmenu()->withAction([this]()
+            {
+                this->updateContent(this->makeModifiersMenu([this]()
+                {
+                    this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
+                }), MenuPanel::SlideLeft);
+            }));
+    }
+
     menu.add(MenuItem::item(Icons::ellipsis,
         TRANS(I18n::Menu::Selection::notesQuantizeTo))->
         withSubmenu()->
         withAction([this]()
     {
-        this->updateContent(this->createQuantizationMenu(), MenuPanel::SlideLeft);
+        this->updateContent(this->makeQuantizationMenu(), MenuPanel::SlideLeft);
     }));
 
     menu.add(MenuItem::item(Icons::list, TRANS(I18n::Menu::trackChangeChannel))->
         withSubmenu()->withAction([this]()
-    {
-        this->updateContent(this->createChannelSelectionMenu(), MenuPanel::SlideLeft);
-    }));
+        {
+            this->updateContent(this->makeChannelSelectionMenu(), MenuPanel::SlideLeft);
+        }));
 
     const auto instruments = App::Workspace().getAudioCore().getInstrumentsExceptInternal();
     menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Menu::trackChangeInstrument))->
         disabledIf(instruments.isEmpty())->withSubmenu()->withAction([this]()
-    {
-        this->updateContent(this->createInstrumentSelectionMenu(), MenuPanel::SlideLeft);
-    }));
+        {
+            this->updateContent(this->makeInstrumentSelectionMenu(), MenuPanel::SlideLeft);
+        }));
 
     const auto selectionInstrumentId = PatternOperations::getSelectedInstrumentId(*this->lasso.get());
     for (const auto *instrument : instruments)
@@ -192,7 +211,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createDefaultMenu()
     return menu;
 }
 
-MenuPanel::Menu PatternRollSelectionMenu::createQuantizationMenu()
+MenuPanel::Menu PatternRollSelectionMenu::makeQuantizationMenu()
 {
     MenuPanel::Menu menu;
 
@@ -200,7 +219,7 @@ MenuPanel::Menu PatternRollSelectionMenu::createQuantizationMenu()
 
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
-        this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+        this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
     }));
 
 #define CLIP_QUANTIZE_ITEM(cmd) \
@@ -219,12 +238,12 @@ MenuPanel::Menu PatternRollSelectionMenu::createQuantizationMenu()
     return menu;
 }
 
-MenuPanel::Menu PatternRollSelectionMenu::createChannelSelectionMenu()
+MenuPanel::Menu PatternRollSelectionMenu::makeChannelSelectionMenu()
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
-        this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+        this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
     }));
 
     Array<MidiTrack *> uniqueTracks;
@@ -242,40 +261,40 @@ MenuPanel::Menu PatternRollSelectionMenu::createChannelSelectionMenu()
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::ellipsis, String(channel))->
             disabledIf(isTicked)->
             withAction([this, channel, uniqueTracks]()
-        {
-            bool haveCheckpoint = false;
-            for (auto *track : uniqueTracks)
             {
-                if (channel != track->getTrackChannel())
+                bool haveCheckpoint = false;
+                for (auto *track : uniqueTracks)
                 {
-                    auto *trackNode = dynamic_cast<MidiTrackNode *>(track);
-                    jassert(trackNode != nullptr);
-
-                    auto *project = trackNode->getProject();
-
-                    if (!haveCheckpoint)
+                    if (channel != track->getTrackChannel())
                     {
-                        project->checkpoint();
-                        haveCheckpoint = true;
+                        auto *trackNode = dynamic_cast<MidiTrackNode *>(track);
+                        jassert(trackNode != nullptr);
+
+                        auto *project = trackNode->getProject();
+
+                        if (!haveCheckpoint)
+                        {
+                            project->checkpoint();
+                            haveCheckpoint = true;
+                        }
+
+                        track->setTrackChannel(channel, true, sendNotification);
                     }
-
-                    track->setTrackChannel(channel, true, sendNotification);
                 }
-            }
 
-            this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
-        }));
+                this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
+            }));
     }
 
     return menu;
 }
 
-MenuPanel::Menu PatternRollSelectionMenu::createInstrumentSelectionMenu()
+MenuPanel::Menu PatternRollSelectionMenu::makeInstrumentSelectionMenu()
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
-        this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+        this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
     }));
 
     // get all unique track nodes in the selection;
@@ -307,30 +326,30 @@ MenuPanel::Menu PatternRollSelectionMenu::createInstrumentSelectionMenu()
         menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument,
             instrument->getName())->disabledIf(isTicked)->
             withAction([this, instrumentId, uniqueTracks]()
-        {
-            //DBG(instrumentId);
-            bool haveCheckpoint = false;
-            for (auto *track : uniqueTracks)
             {
-                if (instrumentId != track->getTrackInstrumentId())
+                //DBG(instrumentId);
+                bool haveCheckpoint = false;
+                for (auto *track : uniqueTracks)
                 {
-                    auto *trackNode = dynamic_cast<MidiTrackNode *>(track);
-                    jassert(trackNode != nullptr);
-
-                    auto *project = trackNode->getProject();
-
-                    if (!haveCheckpoint)
+                    if (instrumentId != track->getTrackInstrumentId())
                     {
-                        project->checkpoint();
-                        haveCheckpoint = true;
+                        auto *trackNode = dynamic_cast<MidiTrackNode *>(track);
+                        jassert(trackNode != nullptr);
+
+                        auto *project = trackNode->getProject();
+
+                        if (!haveCheckpoint)
+                        {
+                            project->checkpoint();
+                            haveCheckpoint = true;
+                        }
+
+                        track->setTrackInstrumentId(instrumentId, true, sendNotification);
                     }
-
-                    track->setTrackInstrumentId(instrumentId, true, sendNotification);
                 }
-            }
 
-            this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
-        }));
+                this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
+            }));
     }
 
     return menu;

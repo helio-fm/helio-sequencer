@@ -308,6 +308,9 @@ void PlayerThread::run()
                 wrapper.listener->addMessageToQueue(wrapper.message);
             }
             
+            // todo automating individual plugin node parameters
+            //wrapper.instrument->getNodeForId(node id)->getProcessor()->getParameters()[param index]->setValue()
+
             if (wrapper.message.isNoteOn())
             {
                 holdingNotes.add({ key, channel, wrapper.listener });

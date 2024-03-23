@@ -122,13 +122,29 @@ namespace I18n
         static constexpr auto keyboardMappingLoadScala = constexprHash("menu::kbm::load");
         static constexpr auto keyboardMappingReset = constexprHash("menu::kbm::reset");
 
-        static constexpr auto refactoringInverseDown = constexprHash("menu::refactoring::inversedown");
-        static constexpr auto refactoringInverseUp = constexprHash("menu::refactoring::inverseup");
-        static constexpr auto refactoringMelodicInversion = constexprHash("menu::refactoring::inversion");
-        static constexpr auto refactoringRetrograde = constexprHash("menu::refactoring::retrograde");
-        static constexpr auto refactoringCleanup = constexprHash("menu::refactoring::cleanup");
-        static constexpr auto refactoringInScaleTransposeUp = constexprHash("menu::refactoring::inscalekeyup");
-        static constexpr auto refactoringInScaleTransposeDown = constexprHash("menu::refactoring::inscalekeydown");
+        namespace Refactor
+        {
+            static constexpr auto inverseDown = constexprHash("menu::refactoring::inversedown");
+            static constexpr auto inverseUp = constexprHash("menu::refactoring::inverseup");
+            static constexpr auto melodicInversion = constexprHash("menu::refactoring::inversion");
+            static constexpr auto retrograde = constexprHash("menu::refactoring::retrograde");
+            static constexpr auto cleanup = constexprHash("menu::refactoring::cleanup");
+            static constexpr auto legato = constexprHash("menu::refactoring::legato");
+            static constexpr auto staccato = constexprHash("menu::refactoring::staccato");
+            static constexpr auto inScaleTransposeUp = constexprHash("menu::refactoring::inscalekeyup");
+            static constexpr auto inScaleTransposeDown = constexprHash("menu::refactoring::inscalekeydown");
+            static constexpr auto alignToScale = constexprHash("menu::refactoring::snaptoscale");
+        }
+
+        namespace Modifiers
+        {
+            static constexpr auto edit = constexprHash("menu::modifiers::edit");
+            static constexpr auto add = constexprHash("menu::modifiers::add");
+            static constexpr auto enableAll = constexprHash("menu::modifiers::enable");
+            static constexpr auto disableAll = constexprHash("menu::modifiers::disable");
+            static constexpr auto applyAll = constexprHash("menu::modifiers::apply");
+            static constexpr auto deleteAll = constexprHash("menu::modifiers::delete");
+        }
 
         namespace Project
         {

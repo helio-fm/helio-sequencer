@@ -71,7 +71,7 @@ void Note::exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         // sometimes (rarely) results in second note silenced immediately;
         // this is the easiest fix, although because of it note-off will not
         // be aligned accurately, so someday we might come up with a better fix:
-        constexpr auto noteOffOffset = 1.0 / 1000.0;
+        constexpr auto noteOffOffset = double(Globals::minNoteLength) / 16.0;
 
         MidiMessage eventNoteOff(MidiMessage::noteOff(mapped.channel, mapped.key));
         const double endTime = (tupletStart + tupletLength + clip.getBeat()) * timeFactor - noteOffOffset;
@@ -231,8 +231,8 @@ void Note::deserialize(const SerializedData &data)
     this->key = data.getProperty(Midi::key);
     this->beat = float(data.getProperty(Midi::timestamp)) / Globals::ticksPerBeat;
     this->length = float(data.getProperty(Midi::length)) / Globals::ticksPerBeat;
-    const auto vol = float(data.getProperty(Midi::volume)) / Globals::velocitySaveResolution;
-    this->velocity = jmax(jmin(vol, 1.f), 0.f);
+    this->velocity = jlimit(0.f, 1.f,
+        float(data.getProperty(Midi::volume)) / Globals::velocitySaveResolution);
     this->tuplet = Tuplet(int(data.getProperty(Midi::tuplet, 1)));
 }
 
