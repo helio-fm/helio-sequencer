@@ -50,6 +50,7 @@
         <FILE id="xO4mOF" name="legato.svg" compile="0" resource="1" file="../../Resources/Icons/legato.svg"/>
         <FILE id="Tp3StV" name="list.svg" compile="0" resource="1" file="../../Resources/Icons/list.svg"/>
         <FILE id="vkA7la" name="local.svg" compile="0" resource="1" file="../../Resources/Icons/local.svg"/>
+        <FILE id="hOrAvo" name="lockZoom.svg" compile="0" resource="1" file="../../Resources/Icons/lockZoom.svg"/>
         <FILE id="CexsNu" name="meter.svg" compile="0" resource="1" file="../../Resources/Icons/meter.svg"/>
         <FILE id="LBASSh" name="metronome.svg" compile="0" resource="1" file="../../Resources/Icons/metronome.svg"/>
         <FILE id="GtzvG7" name="mute.svg" compile="0" resource="1" file="../../Resources/Icons/mute.svg"/>

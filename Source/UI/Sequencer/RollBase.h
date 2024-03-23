@@ -163,7 +163,7 @@ public:
 
     void zoomInImpulse(float factor = 1.f);
     void zoomOutImpulse(float factor = 1.f);
-    void zoomToArea(float minBeat, float maxBeat, float margin = Globals::beatsPerBar * 2);
+    void zoomToArea(float minBeat, float maxBeat);
     void startSmoothZoom(const Point<float> &origin, const Point<float> &factor);
 
     //===------------------------------------------------------------------===//
@@ -317,6 +317,7 @@ protected:
 
     void onUiAnimationsFlagChanged(bool enabled) override;
     void onMouseWheelFlagsChanged(UserInterfaceFlags::MouseWheelFlags flags) override;
+    void onLockZoomLevelFlagChanged(bool zoomLocked) override;
 
     //===------------------------------------------------------------------===//
     // TransportListener
@@ -406,6 +407,7 @@ protected:
     uint32 timeStartedPlayback = 0;
 
     UserInterfaceFlags::MouseWheelFlags mouseWheelFlags;
+    bool zoomLevelLocked = false;
 
     ComponentFader fader;
 

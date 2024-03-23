@@ -51,6 +51,7 @@ public:
         virtual void onProjectMapLargeModeFlagChanged(bool showFullMap) {}
 
         virtual void onUiAnimationsFlagChanged(bool enabled) {}
+        virtual void onLockZoomLevelFlagChanged(bool zoomLocked) {}
         virtual void onMouseWheelFlagsChanged(MouseWheelFlags flags) {}
 
         virtual void onUiScaleChanged(float scale) {}
@@ -94,6 +95,10 @@ public:
 
     bool areUiAnimationsEnabled() const noexcept;
     void setUiAnimationsEnabled(bool enabled);
+
+    bool isZoomLevelLocked() const noexcept;
+    void setZoomLevelLocked(bool locked);
+    void toggleLockZoomLevel();
 
     void setMouseWheelUsePanningByDefault(bool usePanning);
     void setMouseWheelUseVerticalPanningByDefault(bool useVerticalPanning);
@@ -154,6 +159,7 @@ private:
 
     bool experimentalFeaturesOn = false;
     bool rollAnimationsEnabled = true;
+    bool zoomLevelLocked = false;
 
     MouseWheelFlags mouseWheelFlags;
 

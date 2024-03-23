@@ -333,7 +333,7 @@ void MenuItemComponent::paint(Graphics &g)
         g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
     }
 
-    g.setOpacity(1.f);
+    g.setOpacity(this->description->flags.isDisabled ? 0.5f : 1.f);
 
     const int iconX = this->hasText() ?
         MenuItemComponent::iconSize / 2 + MenuItemComponent::iconMargin :
@@ -508,9 +508,11 @@ void MenuItemComponent::setSelected(bool shouldBeSelected)
 {
     if (shouldBeSelected && (this->parent != nullptr))
     {
-        if (!this->hasText())
+#if !HAS_OPENGL_BUG
+        if (!this->hasText() &&
+            !this->description->flags.isDisabled &&
+            (this->description->commandId > 0 || this->description->callback != nullptr))
         {
-#if ! HAS_OPENGL_BUG
             // possible glDeleteTexture bug here?
             auto highlighter = make<CommandItemSelector>();
             this->addAndMakeVisible(highlighter.get());
@@ -518,8 +520,8 @@ void MenuItemComponent::setSelected(bool shouldBeSelected)
             this->animator.animateComponent(highlighter.get(),
                 this->getLocalBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
             this->removeChildComponent(highlighter.get());
-#endif
         }
+#endif
 
         this->doAction();
     }

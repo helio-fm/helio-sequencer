@@ -97,6 +97,7 @@ public:
         zoomIn,
         zoomOut,
         zoomToFit,
+        lockZoom,
 
         cursorTool,
         drawTool,

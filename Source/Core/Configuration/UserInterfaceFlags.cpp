@@ -158,6 +158,28 @@ void UserInterfaceFlags::setUiAnimationsEnabled(bool enabled)
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
+bool UserInterfaceFlags::isZoomLevelLocked() const noexcept
+{
+    return this->zoomLevelLocked;
+}
+
+void UserInterfaceFlags::setZoomLevelLocked(bool locked)
+{
+    if (this->zoomLevelLocked == locked)
+    {
+        return;
+    }
+
+    this->zoomLevelLocked = locked;
+    this->listeners.call(&Listener::onLockZoomLevelFlagChanged, this->zoomLevelLocked);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
+void UserInterfaceFlags::toggleLockZoomLevel()
+{
+    this->setZoomLevelLocked(!this->zoomLevelLocked);
+}
+
 void UserInterfaceFlags::setMouseWheelUsePanningByDefault(bool usePanning)
 {
     if (this->mouseWheelFlags.usePanningByDefault == usePanning)
@@ -247,6 +269,7 @@ SerializedData UserInterfaceFlags::serialize() const
     tree.setProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     tree.setProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     tree.setProperty(UI::Flags::animations, this->rollAnimationsEnabled);
+    tree.setProperty(UI::Flags::lockZoomLevel, this->zoomLevelLocked);
     tree.setProperty(UI::Flags::showFullProjectMap, this->projectMapLargeMode);
     tree.setProperty(UI::Flags::uiScaleFactor, this->uiScaleFactor);
 
@@ -278,6 +301,7 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->useOpenGLRenderer = root.getProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     this->useNativeTitleBar = root.getProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     this->rollAnimationsEnabled = root.getProperty(UI::Flags::animations, this->rollAnimationsEnabled);
+    this->zoomLevelLocked = root.getProperty(UI::Flags::lockZoomLevel, this->zoomLevelLocked);
     this->projectMapLargeMode = root.getProperty(UI::Flags::showFullProjectMap, this->projectMapLargeMode);
 
     this->uiScaleFactor = root.getProperty(UI::Flags::uiScaleFactor, this->uiScaleFactor);

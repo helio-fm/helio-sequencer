@@ -123,11 +123,12 @@ void Icons::initBuiltInImages()
 
     setIconForKey(zoomIn);
     setIconForKey(zoomOut);
+    setIconForKey(zoomToFit);
+    setIconForKey(lockZoom);
 
     setIconForKey(cursorTool);
     setIconForKey(drawTool);
     setIconForKey(selectionTool);
-    setIconForKey(zoomToFit);
     setIconForKey(dragTool);
     setIconForKey(cropTool);
     setIconForKey(cutterTool);

@@ -137,7 +137,7 @@ private:
 private:
 
     bool belongsTo(const Clip &clip) const noexcept;
-    void switchActiveTrackToSelected(bool zoomToScope) const;
+    void switchActiveTrackToSelected(bool shouldFocusToArea) const;
 
     MouseCursor startEditingNewNote(const MouseEvent &e);
 

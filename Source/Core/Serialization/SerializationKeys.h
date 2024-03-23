@@ -299,6 +299,7 @@ namespace Serialization
             static const Identifier scalesHighlighting = "scalesHighlighting";
             static const Identifier experimentalFeaturesOn = "experimentalFeatures";
             static const Identifier animations = "animations";
+            static const Identifier lockZoomLevel = "lockZoom";
             static const Identifier showFullProjectMap = "miniMap";
             static const Identifier uiScaleFactor = "uiScaleFactor";
             static const Identifier mouseWheelAltMode = "wheelAltMode";

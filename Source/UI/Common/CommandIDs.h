@@ -100,6 +100,7 @@ namespace CommandIDs
         ZoomIn                          = 0x1800,
         ZoomOut                         = 0x1801,
         ZoomEntireClip                  = 0x1802,
+        ToggleLockZoomLevel             = 0x1803,
 
         Undo                            = 0x1900,
         Redo                            = 0x1901,

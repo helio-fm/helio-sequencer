@@ -160,6 +160,7 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     auto *uiFlags = App::Config().getUiFlags();
     this->onUiAnimationsFlagChanged(uiFlags->areUiAnimationsEnabled());
     this->onMouseWheelFlagsChanged(uiFlags->getMouseWheelFlags());
+    this->onLockZoomLevelFlagChanged(uiFlags->isZoomLevelLocked());
     uiFlags->addListener(this);
 
     this->updateWidth();
@@ -477,17 +478,23 @@ void RollBase::zoomOutImpulse(float factor)
     this->startSmoothZoom(origin.toFloat(), f);
 }
 
-void RollBase::zoomToArea(float minBeat, float maxBeat, float marginBeats)
+void RollBase::zoomToArea(float minBeat, float maxBeat)
 {
     jassert(maxBeat > minBeat);
     jassert(minBeat >= this->getFirstBeat());
     jassert(maxBeat <= this->getLastBeat());
 
-    this->stopFollowingPlayhead();
+    // leave some spacing on the sides:
+    const auto marginBeats = (this->viewport.getWidth() / 10) / this->beatWidth;
 
-    const float widthToFit = float(this->viewport.getViewWidth());
-    const float numBeatsToFit = maxBeat - minBeat + (marginBeats * 2.f);
-    this->setBeatWidth(widthToFit / numBeatsToFit);
+    if (!this->zoomLevelLocked)
+    {
+        this->stopFollowingPlayhead();
+
+        const float widthToFit = float(this->viewport.getViewWidth());
+        const float numBeatsToFit = maxBeat - minBeat + (marginBeats * 2.f);
+        this->setBeatWidth(widthToFit / numBeatsToFit);
+    }
 
     const int minBeatX = this->getXPositionByBeat(minBeat - marginBeats);
     this->viewport.setViewPosition(minBeatX, this->viewport.getViewPositionY());
@@ -498,6 +505,11 @@ void RollBase::zoomToArea(float minBeat, float maxBeat, float marginBeats)
 void RollBase::zoomRelative(const Point<float> &origin,
     const Point<float> &factor, bool isInertialZoom)
 {
+    if (this->zoomLevelLocked)
+    {
+        return;
+    }
+
     this->stopFollowingPlayhead();
 
     const auto oldViewPosition = this->viewport.getViewPosition().toFloat();
@@ -548,10 +560,14 @@ void RollBase::zoomAbsolute(const Rectangle<float> &proportion)
     jassert(!proportion.isEmpty());
     jassert(proportion.isFinite());
 
-    const float widthToFit = float(this->viewport.getViewWidth());
     const auto rollLengthInBeats = this->getLastBeat() - this->getFirstBeat();
-    const float numBeatsToFit = jmax(1.f, rollLengthInBeats * proportion.getWidth());
-    this->setBeatWidth(widthToFit / numBeatsToFit);
+
+    if (!this->zoomLevelLocked)
+    {
+        const float widthToFit = float(this->viewport.getViewWidth());
+        const float numBeatsToFit = jmax(1.f, rollLengthInBeats * proportion.getWidth());
+        this->setBeatWidth(widthToFit / numBeatsToFit);
+    }
 
     const auto minBeat = this->getFirstBeat() + rollLengthInBeats * proportion.getX();
     const int minBeatX = this->getXPositionByBeat(minBeat);
@@ -1475,6 +1491,9 @@ void RollBase::handleCommandMessage(int commandId)
     case CommandIDs::ToggleMetronome:
         App::Config().getUiFlags()->toggleMetronome();
         break;
+    case CommandIDs::ToggleLockZoomLevel:
+        App::Config().getUiFlags()->toggleLockZoomLevel();
+        break;
     case CommandIDs::VersionControlToggleQuickStash:
         if (auto *vcs = this->project.findChildOfType<VersionControlNode>())
         {
@@ -1670,6 +1689,11 @@ void RollBase::onUiAnimationsFlagChanged(bool enabled)
 void RollBase::onMouseWheelFlagsChanged(UserInterfaceFlags::MouseWheelFlags flags)
 {
     this->mouseWheelFlags = flags;
+}
+
+void RollBase::onLockZoomLevelFlagChanged(bool zoomLocked)
+{
+    this->zoomLevelLocked = zoomLocked;
 }
 
 //===----------------------------------------------------------------------===//

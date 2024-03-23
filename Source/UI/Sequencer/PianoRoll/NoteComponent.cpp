@@ -747,16 +747,11 @@ bool NoteComponent::belongsTo(const Clip &clip) const noexcept
     return this->clip == clip;
 }
 
-void NoteComponent::switchActiveTrackToSelected(bool shouldZoomToScope) const
+void NoteComponent::switchActiveTrackToSelected(bool shouldFocusToArea) const
 {
     if (this->getRoll().getActiveClip() != this->getClip())
     {
-        this->getRoll().getProject().setEditableScope(this->getClip(), shouldZoomToScope);
-
-        if (shouldZoomToScope)
-        {
-            this->getRoll().zoomOutImpulse(0.5f);
-        }
+        this->getRoll().getProject().setEditableScope(this->getClip(), shouldFocusToArea);
     }
 }
 

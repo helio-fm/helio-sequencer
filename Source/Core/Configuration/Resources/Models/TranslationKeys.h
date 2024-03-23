@@ -364,6 +364,7 @@ namespace I18n
         static constexpr auto zoomIn = constexprHash("tooltip::zoomin");
         static constexpr auto zoomOut = constexprHash("tooltip::zoomout");
         static constexpr auto zoomToFit = constexprHash("tooltip::zoomtofit");
+        static constexpr auto lockZoom = constexprHash("tooltip::lockzoom");
         static constexpr auto jumpToNextAnchor = constexprHash("tooltip::jumpnext");
         static constexpr auto jumpToPrevAnchor = constexprHash("tooltip::jumpprev");
         static constexpr auto toggleScalesHighlighting = constexprHash("tooltip::scaleshl");

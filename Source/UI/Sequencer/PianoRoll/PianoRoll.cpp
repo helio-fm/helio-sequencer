@@ -328,6 +328,11 @@ void PianoRoll::onLongTap(const Point<float> &position,
 void PianoRoll::zoomRelative(const Point<float> &origin,
     const Point<float> &factor, bool isInertial)
 {
+    if (this->zoomLevelLocked)
+    {
+        return;
+    }
+
     static const float yZoomThreshold = 0.035f;
 
     if (fabs(factor.getY()) > yZoomThreshold)
@@ -364,10 +369,15 @@ void PianoRoll::zoomAbsolute(const Rectangle<float> &proportion)
     jassert(!proportion.isEmpty());
     jassert(proportion.isFinite());
 
+
     const auto keysTotal = this->getNumKeys();
-    const float heightToFit = float(this->viewport.getViewHeight());
-    const auto numKeysToFit = jmax(1.f, float(keysTotal) * proportion.getHeight());
-    this->setRowHeight(int(heightToFit / numKeysToFit));
+
+    if (!this->zoomLevelLocked)
+    {
+        const float heightToFit = float(this->viewport.getViewHeight());
+        const auto numKeysToFit = jmax(1.f, float(keysTotal) * proportion.getHeight());
+        this->setRowHeight(int(heightToFit / numKeysToFit));
+    }
 
     const auto firstKey = int(float(keysTotal) * proportion.getY());
     const int firstKeyY = this->getRowHeight() * firstKey;
@@ -382,14 +392,17 @@ void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
     jassert(minKey >= 0);
     jassert(maxKey >= minKey);
 
-    constexpr auto margin = Globals::twelveTonePeriodSize;
-    const float numKeysToFit = float(maxKey - minKey + (margin * 2));
-    const float heightToFit = float(this->viewport.getViewHeight());
-    this->setRowHeight(int(heightToFit / numKeysToFit));
+    if (!this->zoomLevelLocked)
+    {
+        constexpr auto margin = Globals::twelveTonePeriodSize;
+        const float numKeysToFit = float(maxKey - minKey + (margin * 2));
+        const float heightToFit = float(this->viewport.getViewHeight());
+        this->setRowHeight(int(heightToFit / numKeysToFit));
+    }
 
-    const int maxKeyY = this->getRowHeight() * (this->getNumKeys() - maxKey - margin);
-    this->viewport.setViewPosition(this->viewport.getViewPositionY() -
-        Globals::UI::rollHeaderHeight, maxKeyY);
+    const int centerY = this->getHeight() - this->getRowHeight() * ((maxKey + minKey) / 2);
+    this->viewport.setViewPosition(this->viewport.getViewPositionX(),
+        centerY - (this->viewport.getViewHeight() / 2));
 
     RollBase::zoomToArea(minBeat, maxBeat);
 }

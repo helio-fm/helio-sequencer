@@ -159,9 +159,9 @@
       // Navigation
       { "command": "ZoomIn", "key": "Z" },
       { "command": "ZoomOut", "key": "Shift + Z" },
-      { "command": "ZoomEntireClip", "key": "Alt + Z" },
       { "command": "ZoomEntireClip", "key": "Command + Tab" },
       { "command": "ZoomEntireClip", "key": "Control + Tab" },
+      { "command": "ToggleLockZoomLevel", "key": "Alt + Z" },
       { "command": "TimelineJumpNext", "key": "." },
       { "command": "TimelineJumpPrevious", "key": "," },
       { "command": "TimelineJumpHome", "key": "Home" },
@@ -293,9 +293,9 @@
       // Navigation
       { "command": "ZoomIn", "key": "Z" },
       { "command": "ZoomOut", "key": "Shift + Z" },
-      { "command": "ZoomEntireClip", "key": "Alt + Z" },
       { "command": "ZoomEntireClip", "key": "Command + Tab" },
       { "command": "ZoomEntireClip", "key": "Control + Tab" },
+      { "command": "ToggleLockZoomLevel", "key": "Alt + Z" },
       { "command": "TimelineJumpNext", "key": "." },
       { "command": "TimelineJumpPrevious", "key": "," },
       { "command": "TimelineJumpHome", "key": "Home" },

@@ -67,6 +67,7 @@ SequencerSidebarLeft::SequencerSidebarLeft()
     this->addAndMakeVisible(this->listBox.get());
 
     const auto *uiFlags = App::Config().getUiFlags();
+    this->zoomLevelLocked = uiFlags->isZoomLevelLocked();
     this->miniMapVisible = uiFlags->isProjectMapInLargeMode();
     this->velocityMapVisible = uiFlags->isEditorPanelVisible();
     this->noteNameGuidesEnabled = uiFlags->areNoteNameGuidesEnabled();
@@ -172,6 +173,14 @@ void SequencerSidebarLeft::setPatternMode()
 // UserInterfaceFlags::Listener
 //===----------------------------------------------------------------------===//
 
+void SequencerSidebarLeft::onLockZoomLevelFlagChanged(bool zoomLocked)
+{
+    this->zoomLevelLocked = zoomLocked;
+    this->recreateMenu();
+    this->listBox->updateContent();
+    this->repaint();
+}
+
 void SequencerSidebarLeft::onProjectMapLargeModeFlagChanged(bool showFullMap)
 {
     this->miniMapVisible = showFullMap;
@@ -208,16 +217,23 @@ void SequencerSidebarLeft::recreateMenu()
 {
     this->menu.clearQuick();
     this->menu.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut)->
+        disabledIf(this->zoomLevelLocked)->
         withTooltip(TRANS(I18n::Tooltips::zoomOut)));
 
     this->menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn)->
+        disabledIf(this->zoomLevelLocked)->
         withTooltip(TRANS(I18n::Tooltips::zoomIn)));
 
     this->menu.add(MenuItem::item(Icons::zoomToFit, CommandIDs::ZoomEntireClip)->
+        disabledIf(this->zoomLevelLocked)->
         withTooltip(TRANS(I18n::Tooltips::zoomToFit)));
 
+    this->menu.add(MenuItem::item(Icons::lockZoom, CommandIDs::ToggleLockZoomLevel)->
+        toggledIf(this->zoomLevelLocked)->
+        withTooltip(TRANS(I18n::Tooltips::lockZoom)));
+
     // Jump to playhead position (or start following playhead when playing)
-    //this->menu.add(MenuItem::item(Icons::playhead, CommandIDs::FollowFlayhead));
+    //this->menu.add(MenuItem::item(Icons::playhead, CommandIDs::FollowPlayhead));
 
     // Jump to the next/previous anchor,
     // i.e. any timeline event or active track's start in the piano roll mode,
