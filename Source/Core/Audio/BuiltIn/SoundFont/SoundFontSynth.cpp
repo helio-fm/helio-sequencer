@@ -306,8 +306,6 @@ public:
     // Set the region to be used by the next startNote().
     void setRegion(SoundFontRegion *nextRegion);
 
-    String infoString();
-
 private:
 
     SoundFontRegion *region = nullptr;
@@ -612,27 +610,6 @@ void SoundFontVoice::setRegion(SoundFontRegion *nextRegion)
     this->region = nextRegion;
 }
 
-String SoundFontVoice::infoString()
-{
-    const char *egSegmentNames[] = {"delay", "attack", "hold", "decay", "sustain", "release", "done"};
-
-    const static int numEGSegments(sizeof(egSegmentNames) / sizeof(egSegmentNames[0]));
-
-    const char *egSegmentName = "-Invalid-";
-    int egSegmentIndex = this->envelope.segmentIndex();
-    if ((egSegmentIndex >= 0) && (egSegmentIndex < numEGSegments))
-    {
-        egSegmentName = egSegmentNames[egSegmentIndex];
-    }
-
-    String info;
-    info << "note: " << this->currentMidiNote << ", vel: " << this->currentVelocity
-         << ", pan: " << this->region->pan << ", eg: " << egSegmentName
-         << ", loops: " << this->numLoops;
-
-    return info;
-}
-
 void SoundFontVoice::calcPitchRatio()
 {
     double note = this->currentMidiNote;
@@ -641,11 +618,11 @@ void SoundFontVoice::calcPitchRatio()
     note += this->region->tune / 100.0;
 
     double adjustedPitch = this->region->pitchKeyCenter +
-                           (note - this->region->pitchKeyCenter) * (this->region->pitchKeyTrack / 100.0);
+        (note - this->region->pitchKeyCenter) * (this->region->pitchKeyTrack / 100.0);
 
     if (this->currentPitchWheel != 8192)
     {
-        double wheel = ((2.0 * this->currentPitchWheel / 16383.0) - 1.0);
+        const double wheel = ((2.0 * this->currentPitchWheel / 16383.0) - 1.0);
         if (wheel > 0)
         {
             adjustedPitch += wheel * this->region->bendUp / 100.0;

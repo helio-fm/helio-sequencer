@@ -110,6 +110,7 @@ void GeneratedSequenceBuilder::onAddClip(const Clip &clip)
 void GeneratedSequenceBuilder::onChangeClip(const Clip &oldClip, const Clip &newClip)
 {
     if (oldClip.getKey() != newClip.getKey() ||
+        oldClip.getBeat() != newClip.getBeat() ||
         // pointer-wise comparison of modifier arrays here
         // as a minor trade-off for performance: we don't care much
         // if we may occasionally rebuild the same modifiers

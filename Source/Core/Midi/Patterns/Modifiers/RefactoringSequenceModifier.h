@@ -44,7 +44,7 @@ public:
         Quantization
     };
 
-    static constexpr Type allTypes[11] = {
+    static constexpr Type allTypes[] = {
         Type::MelodicInversion,
         Type::Retrograde,
         Type::CleanupOverlaps,

@@ -38,12 +38,6 @@ HelioTheme &HelioTheme::getCurrentTheme() noexcept
 
 static constexpr auto noiseAlpha = 0.0125f;
 
-void HelioTheme::drawNoise(Component *target, Graphics &g, float alphaMultiply /*= 1.f*/)
-{
-    g.setTiledImageFill(getCurrentTheme().backgroundNoise, 0, 0, noiseAlpha * alphaMultiply);
-    g.fillRect(0, 0, target->getWidth(), target->getHeight());
-}
-
 void HelioTheme::drawNoise(Graphics &g, float alphaMultiply /*= 1.f*/) const
 {
     g.setTiledImageFill(this->backgroundNoise, 0, 0, noiseAlpha * alphaMultiply);
@@ -58,7 +52,8 @@ void HelioTheme::drawNoise(const HelioTheme &theme, Graphics &g, float alphaMult
 void HelioTheme::drawStripes(Rectangle<float> bounds, Graphics &g, float alphaMultiply /*= 1.f*/)
 {
     const auto &theme = getCurrentTheme();
-    g.setTiledImageFill(theme.backgroundStripes, 0, 0, alphaMultiply * theme.isDarkTheme ? 0.25f : 0.1f);
+    g.setTiledImageFill(theme.backgroundStripes, 0, 0,
+        alphaMultiply * (theme.isDarkTheme ? 0.25f : 0.1f));
     g.fillRect(bounds);
 }
 

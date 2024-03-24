@@ -1451,8 +1451,9 @@ void RollBase::handleCommandMessage(int commandId)
         }
         else
         {
+#if PLATFORM_DESKTOP
             this->startFollowingPlayhead(true);
-
+#endif
             const bool hasQuickDoublePress =
                 (Time::getMillisecondCounter() - this->timeStartedPlayback) < 400;
 

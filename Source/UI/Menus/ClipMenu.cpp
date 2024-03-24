@@ -395,6 +395,9 @@ MenuPanel::Menu ClipModifiersMenu::makeEditModifiersMenu(const MenuItem::Callbac
     return menu;
 }
 
+// todo remove this when migrating to C++17
+constexpr RefactoringSequenceModifier::Type RefactoringSequenceModifier::allTypes[];
+
 MenuPanel::Menu ClipModifiersMenu::makeAddModifiersMenu(const MenuItem::Callback &goBackToParent)
 {
     MenuPanel::Menu menu;

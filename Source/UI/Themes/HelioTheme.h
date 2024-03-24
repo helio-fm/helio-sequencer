@@ -34,7 +34,6 @@ public:
     Typeface::Ptr getTypefaceForFont(const Font &) override;
 
     void drawNoise(Graphics &g, float alphaMultiply = 1.f) const;
-    static void drawNoise(Component *target, Graphics &g, float alphaMultiply = 1.f);
     static void drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply = 1.f);
     static void drawStripes(Rectangle<float> bounds, Graphics &g, float alphaMultiply = 1.f);
 

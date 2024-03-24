@@ -86,7 +86,7 @@ void Playhead::onPlay()
 {
     this->timeAnchor = Time::getMillisecondCounter();
     this->beatAnchor = this->lastCorrectBeat;
-    this->startTimerHz(120);
+    this->startTimerHz(60);
 }
 
 void Playhead::onRecord()
