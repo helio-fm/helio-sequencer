@@ -45,6 +45,7 @@
 		00F4D915B03E0AC7B1D222E9 /* SoundFontSynth.cpp */ /* SoundFontSynth.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SoundFontSynth.cpp; path = ../../Source/Core/Audio/BuiltIn/SoundFont/SoundFontSynth.cpp; sourceTree = SOURCE_ROOT; };
 		0165A09CC53E9529288AE3F3 /* ShadowDownwards.h */ /* ShadowDownwards.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShadowDownwards.h; path = ../../Source/UI/Themes/ShadowDownwards.h; sourceTree = SOURCE_ROOT; };
 		0174999DDF119F454ECC55E5 /* PianoProjectMap.cpp */ /* PianoProjectMap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PianoProjectMap.cpp; path = ../../Source/UI/Sequencer/MiniMaps/PianoMap/PianoProjectMap.cpp; sourceTree = SOURCE_ROOT; };
+		020A0A8FCC5AE1B0F96845BB /* staccato.svg */ /* staccato.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = staccato.svg; path = ../../Resources/Icons/staccato.svg; sourceTree = SOURCE_ROOT; };
 		025FA4F850CE0AE10E836CF7 /* undo.svg */ /* undo.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = undo.svg; path = ../../Resources/Icons/undo.svg; sourceTree = SOURCE_ROOT; };
 		02AA13F519C51E967EE8F102 /* project.svg */ /* project.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = project.svg; path = ../../Resources/Icons/project.svg; sourceTree = SOURCE_ROOT; };
 		02AD7D2FAD320C27B5B0001A /* Lasso.h */ /* Lasso.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Lasso.h; path = ../../Source/UI/Sequencer/Lasso.h; sourceTree = SOURCE_ROOT; };
@@ -292,6 +293,7 @@
 		4929B6CEECF84AC5328BB653 /* NoteActions.cpp */ /* NoteActions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NoteActions.cpp; path = ../../Source/Core/Undo/Actions/NoteActions.cpp; sourceTree = SOURCE_ROOT; };
 		496A9B0ECD248530B795F781 /* TimeSignatureComponent.h */ /* TimeSignatureComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimeSignatureComponent.h; path = ../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap/TimeSignatureComponent.h; sourceTree = SOURCE_ROOT; };
 		499F37C4491EFD4B89BCED25 /* Playhead.h */ /* Playhead.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Playhead.h; path = ../../Source/UI/Sequencer/Header/Playhead.h; sourceTree = SOURCE_ROOT; };
+		49BE8FBA3C7796B693E3FDEC /* GeneratedSequenceBuilder.cpp */ /* GeneratedSequenceBuilder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GeneratedSequenceBuilder.cpp; path = ../../Source/Core/Midi/Patterns/Modifiers/GeneratedSequenceBuilder.cpp; sourceTree = SOURCE_ROOT; };
 		49F17469AAE4808760986237 /* juce_data_structures */ /* juce_data_structures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_data_structures; path = ../../ThirdParty/JUCE/modules/juce_data_structures; sourceTree = SOURCE_ROOT; };
 		4A47F530CE17FF749803954C /* UserProfileDto.h */ /* UserProfileDto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UserProfileDto.h; path = ../../Source/Core/Network/Models/UserProfileDto.h; sourceTree = SOURCE_ROOT; };
 		4A8D94CD8D64C832D1196781 /* InstrumentsListComponent.h */ /* InstrumentsListComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InstrumentsListComponent.h; path = ../../Source/UI/Pages/Instruments/InstrumentsListComponent.h; sourceTree = SOURCE_ROOT; };
@@ -354,6 +356,7 @@
 		5F021C5479877AD68BF1F7B1 /* RollExpandMark.cpp */ /* RollExpandMark.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RollExpandMark.cpp; path = ../../Source/UI/Sequencer/Helpers/RollExpandMark.cpp; sourceTree = SOURCE_ROOT; };
 		5F58550F8C045EC23CDEE415 /* MenuItemComponent.cpp */ /* MenuItemComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MenuItemComponent.cpp; path = ../../Source/UI/Menus/Base/MenuItemComponent.cpp; sourceTree = SOURCE_ROOT; };
 		60F9682086FC3D0E1AFA8860 /* AudioCore.cpp */ /* AudioCore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AudioCore.cpp; path = ../../Source/Core/Audio/AudioCore.cpp; sourceTree = SOURCE_ROOT; };
+		616489BC0B3C1B9A6A6E18FC /* legato.svg */ /* legato.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = legato.svg; path = ../../Resources/Icons/legato.svg; sourceTree = SOURCE_ROOT; };
 		617761CA23B28352AD72BE99 /* UndoActionIDs.h */ /* UndoActionIDs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UndoActionIDs.h; path = ../../Source/Core/Undo/UndoActionIDs.h; sourceTree = SOURCE_ROOT; };
 		61F0F5481B6FC0DDA7DAAD87 /* CoreAudio.framework */ /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		62A6602CD8C92AFCE9960B58 /* VelocityEditor.h */ /* VelocityEditor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VelocityEditor.h; path = ../../Source/UI/Sequencer/EditorPanels/VelocityEditor/VelocityEditor.h; sourceTree = SOURCE_ROOT; };
@@ -382,6 +385,7 @@
 		685E51F3663A53DDF6DC75FE /* Diff.h */ /* Diff.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Diff.h; path = ../../Source/Core/VCS/Diff.h; sourceTree = SOURCE_ROOT; };
 		68EF358F2AA914CA8096C19E /* ProgressIndicator.h */ /* ProgressIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProgressIndicator.h; path = ../../Source/UI/Popups/ProgressIndicator.h; sourceTree = SOURCE_ROOT; };
 		6905230EFEBAC9CD41F85214 /* InstrumentEditorConnector.cpp */ /* InstrumentEditorConnector.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InstrumentEditorConnector.cpp; path = ../../Source/UI/Pages/Instruments/Editor/InstrumentEditorConnector.cpp; sourceTree = SOURCE_ROOT; };
+		691B83E5F12BC7A383B30C1C /* GeneratedSequenceBuilder.h */ /* GeneratedSequenceBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GeneratedSequenceBuilder.h; path = ../../Source/Core/Midi/Patterns/Modifiers/GeneratedSequenceBuilder.h; sourceTree = SOURCE_ROOT; };
 		698A56770E267538984CCC74 /* zoomToFit.svg */ /* zoomToFit.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = zoomToFit.svg; path = ../../Resources/Icons/zoomToFit.svg; sourceTree = SOURCE_ROOT; };
 		69A8B7D5BF03BF8BD0F473EC /* cursorTool.svg */ /* cursorTool.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = cursorTool.svg; path = ../../Resources/Icons/cursorTool.svg; sourceTree = SOURCE_ROOT; };
 		6A595361D0F8263DEACF8A56 /* TempoDialog.h */ /* TempoDialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TempoDialog.h; path = ../../Source/UI/Dialogs/TempoDialog.h; sourceTree = SOURCE_ROOT; };
@@ -476,6 +480,7 @@
 		84D97333B50601A875395FB4 /* ConfigurationResourceCollection.cpp */ /* ConfigurationResourceCollection.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ConfigurationResourceCollection.cpp; path = ../../Source/Core/Configuration/Resources/ConfigurationResourceCollection.cpp; sourceTree = SOURCE_ROOT; };
 		8595F5B6143C4355B21C1149 /* TimeSignaturesSequence.cpp */ /* TimeSignaturesSequence.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TimeSignaturesSequence.cpp; path = ../../Source/Core/Midi/Sequences/TimeSignaturesSequence.cpp; sourceTree = SOURCE_ROOT; };
 		860977B5FFAFE20BC609AC63 /* include_juce_core.mm */ /* include_juce_core.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_core.mm; path = ../Projucer/JuceLibraryCode/include_juce_core.mm; sourceTree = SOURCE_ROOT; };
+		860CF7E487D7C85AB2F20730 /* lockZoom.svg */ /* lockZoom.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = lockZoom.svg; path = ../../Resources/Icons/lockZoom.svg; sourceTree = SOURCE_ROOT; };
 		8611A29AB9757D44B75A36FF /* IOKit.framework */ /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		863B2AB2A472DFD4099F36F2 /* routing.svg */ /* routing.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = routing.svg; path = ../../Resources/Icons/routing.svg; sourceTree = SOURCE_ROOT; };
 		865141DDA0A3D465DD0BF96D /* RootNode.cpp */ /* RootNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RootNode.cpp; path = ../../Source/Core/Tree/RootNode.cpp; sourceTree = SOURCE_ROOT; };
@@ -492,12 +497,14 @@
 		8ACC97861C00C49EF341371C /* ShadowLeftwards.h */ /* ShadowLeftwards.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ShadowLeftwards.h; path = ../../Source/UI/Themes/ShadowLeftwards.h; sourceTree = SOURCE_ROOT; };
 		8AF08C7187165CE244D367F9 /* LassoListeners.cpp */ /* LassoListeners.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LassoListeners.cpp; path = ../../Source/UI/Sequencer/LassoListeners.cpp; sourceTree = SOURCE_ROOT; };
 		8B836143BEB3DAF74104842D /* RollEditMode.cpp */ /* RollEditMode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RollEditMode.cpp; path = ../../Source/UI/Sequencer/RollEditMode.cpp; sourceTree = SOURCE_ROOT; };
+		8C143E0D3861DD2F9CFE49F6 /* RefactoringSequenceModifier.h */ /* RefactoringSequenceModifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RefactoringSequenceModifier.h; path = ../../Source/Core/Midi/Patterns/Modifiers/RefactoringSequenceModifier.h; sourceTree = SOURCE_ROOT; };
 		8C17AC1033669FBCD9147309 /* RollExpandMark.h */ /* RollExpandMark.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RollExpandMark.h; path = ../../Source/UI/Sequencer/Helpers/RollExpandMark.h; sourceTree = SOURCE_ROOT; };
 		8C7D1515483F4788ADB6D0F0 /* pull.svg */ /* pull.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = pull.svg; path = ../../Resources/Icons/pull.svg; sourceTree = SOURCE_ROOT; };
 		8CD7A5104E4395EEF49A4267 /* cutterTool.svg */ /* cutterTool.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = cutterTool.svg; path = ../../Resources/Icons/cutterTool.svg; sourceTree = SOURCE_ROOT; };
 		8D489A2D2C212906DCBC731A /* AnnotationsProjectMap.h */ /* AnnotationsProjectMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnnotationsProjectMap.h; path = ../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationsProjectMap.h; sourceTree = SOURCE_ROOT; };
 		8D5E4B7612CD7AA5C3880C31 /* ComponentsList.cpp */ /* ComponentsList.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ComponentsList.cpp; path = ../../Source/UI/Pages/Settings/ComponentsList.cpp; sourceTree = SOURCE_ROOT; };
 		8D9D6EF0537A519368A14AB2 /* VersionControlNode.cpp */ /* VersionControlNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VersionControlNode.cpp; path = ../../Source/Core/Tree/VersionControlNode.cpp; sourceTree = SOURCE_ROOT; };
+		8DCF0356AB61183B653D0B40 /* retrograde.svg */ /* retrograde.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = retrograde.svg; path = ../../Resources/Icons/retrograde.svg; sourceTree = SOURCE_ROOT; };
 		8E7E3506C82E656F0F8652E0 /* timelineNext.svg */ /* timelineNext.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = timelineNext.svg; path = ../../Resources/Icons/timelineNext.svg; sourceTree = SOURCE_ROOT; };
 		8E97CF697D185668CDB66304 /* VersionControlHistorySelectionMenu.cpp */ /* VersionControlHistorySelectionMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VersionControlHistorySelectionMenu.cpp; path = ../../Source/UI/Menus/SelectionMenus/VersionControlHistorySelectionMenu.cpp; sourceTree = SOURCE_ROOT; };
 		8FA7511E4563F92B7083C20E /* settings.svg */ /* settings.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = settings.svg; path = ../../Resources/Icons/settings.svg; sourceTree = SOURCE_ROOT; };
@@ -561,6 +568,7 @@
 		A21080A883E5B939545443A4 /* TrackStartIndicator.h */ /* TrackStartIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TrackStartIndicator.h; path = ../../Source/UI/Sequencer/Header/TrackStartIndicator.h; sourceTree = SOURCE_ROOT; };
 		A2368718BC726B7235100BB5 /* PianoTrackActions.cpp */ /* PianoTrackActions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PianoTrackActions.cpp; path = ../../Source/Core/Undo/Actions/PianoTrackActions.cpp; sourceTree = SOURCE_ROOT; };
 		A24BC262594EE57EF1887C93 /* RevisionTooltipComponent.h */ /* RevisionTooltipComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RevisionTooltipComponent.h; path = ../../Source/UI/Pages/VCS/RevisionTooltipComponent.h; sourceTree = SOURCE_ROOT; };
+		A2B269FE88B82A6F4BBA66BB /* snap.svg */ /* snap.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = snap.svg; path = ../../Resources/Icons/snap.svg; sourceTree = SOURCE_ROOT; };
 		A2F0B1B11EB847FBBC92F5B0 /* ProjectInfoDiffLogic.cpp */ /* ProjectInfoDiffLogic.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProjectInfoDiffLogic.cpp; path = ../../Source/Core/VCS/DiffLogic/ProjectInfoDiffLogic.cpp; sourceTree = SOURCE_ROOT; };
 		A3941862B59534C9DE56E424 /* MobileComboBox.cpp */ /* MobileComboBox.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MobileComboBox.cpp; path = ../../Source/UI/Common/MobileComboBox.cpp; sourceTree = SOURCE_ROOT; };
 		A3DDC9CF37C94393EF6E8063 /* TimeSignatureDialog.h */ /* TimeSignatureDialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimeSignatureDialog.h; path = ../../Source/UI/Dialogs/TimeSignatureDialog.h; sourceTree = SOURCE_ROOT; };
@@ -568,7 +576,9 @@
 		A5406EDACDF2D97A3E5C29E0 /* translations.json */ /* translations.json */ = {isa = PBXFileReference; lastKnownFileType = file.json; name = translations.json; path = ../../Resources/translations.json; sourceTree = SOURCE_ROOT; };
 		A55C893A1288B2A5F6F6030E /* arpeggiators.json */ /* arpeggiators.json */ = {isa = PBXFileReference; lastKnownFileType = file.json; name = arpeggiators.json; path = ../../Resources/arpeggiators.json; sourceTree = SOURCE_ROOT; };
 		A58BDD5BBD35395EE5FF620B /* SequencerSidebarLeft.h */ /* SequencerSidebarLeft.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SequencerSidebarLeft.h; path = ../../Source/UI/Sequencer/Sidebars/SequencerSidebarLeft.h; sourceTree = SOURCE_ROOT; };
+		A5D197875DD31390C83588C4 /* SequenceModifier.h */ /* SequenceModifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SequenceModifier.h; path = ../../Source/Core/Midi/Patterns/Modifiers/SequenceModifier.h; sourceTree = SOURCE_ROOT; };
 		A60CCAC6696362BF85CE208C /* PluginWindow.cpp */ /* PluginWindow.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PluginWindow.cpp; path = ../../Source/UI/Common/PluginWindow.cpp; sourceTree = SOURCE_ROOT; };
+		A682764A69379288AD63B612 /* inversion.svg */ /* inversion.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = inversion.svg; path = ../../Resources/Icons/inversion.svg; sourceTree = SOURCE_ROOT; };
 		A6B4C3AD920E2F946E19ACA5 /* Scale.cpp */ /* Scale.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Scale.cpp; path = ../../Source/Core/Configuration/Resources/Models/Scale.cpp; sourceTree = SOURCE_ROOT; };
 		A797173F1F4C165290FA4E1E /* Serializable.h */ /* Serializable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Serializable.h; path = ../../Source/Core/Serialization/Serializable.h; sourceTree = SOURCE_ROOT; };
 		A8612FAB37A5435382F46179 /* HeaderSelectionIndicator.h */ /* HeaderSelectionIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HeaderSelectionIndicator.h; path = ../../Source/UI/Sequencer/Header/HeaderSelectionIndicator.h; sourceTree = SOURCE_ROOT; };
@@ -726,6 +736,7 @@
 		DA5B02B6610141E42B8A1C49 /* NavigationHistory.cpp */ /* NavigationHistory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NavigationHistory.cpp; path = ../../Source/Core/Workspace/NavigationHistory.cpp; sourceTree = SOURCE_ROOT; };
 		DB789896B6E2DD59A63C11B3 /* RollChildComponentBase.cpp */ /* RollChildComponentBase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RollChildComponentBase.cpp; path = ../../Source/UI/Sequencer/RollChildComponentBase.cpp; sourceTree = SOURCE_ROOT; };
 		DBC6F9AC5940C0C92D3A3DA5 /* CommandPaletteChordConstructor.h */ /* CommandPaletteChordConstructor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandPaletteChordConstructor.h; path = ../../Source/Core/CommandPalette/CommandPaletteChordConstructor.h; sourceTree = SOURCE_ROOT; };
+		DC109490913F82A611D4B5EE /* stripes.png */ /* stripes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stripes.png; path = ../../Resources/Icons/stripes.png; sourceTree = SOURCE_ROOT; };
 		DC652073B48E01E79421C4D2 /* RevisionsSyncThread.cpp */ /* RevisionsSyncThread.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RevisionsSyncThread.cpp; path = ../../Source/Core/Network/Requests/RevisionsSyncThread.cpp; sourceTree = SOURCE_ROOT; };
 		DCCDA89550EE7B83B7560DD1 /* ArpPreviewTool.cpp */ /* ArpPreviewTool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ArpPreviewTool.cpp; path = ../../Source/UI/Popups/ArpPreviewTool.cpp; sourceTree = SOURCE_ROOT; };
 		DCEC2C28CB864C32BCB2381A /* ColourIDs.h */ /* ColourIDs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ColourIDs.h; path = ../../Source/UI/Common/ColourIDs.h; sourceTree = SOURCE_ROOT; };
@@ -761,6 +772,7 @@
 		E5185424CFC6141210A0F5EB /* ProjectListener.h */ /* ProjectListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProjectListener.h; path = ../../Source/Core/Tree/ProjectListener.h; sourceTree = SOURCE_ROOT; };
 		E6821B4011BDCA9B46E32554 /* redo.svg */ /* redo.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = redo.svg; path = ../../Resources/Icons/redo.svg; sourceTree = SOURCE_ROOT; };
 		E6866B8F6A24B97D0EA35CE1 /* Clip.cpp */ /* Clip.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Clip.cpp; path = ../../Source/Core/Midi/Patterns/Clip.cpp; sourceTree = SOURCE_ROOT; };
+		E6CEBC83869BBBF930AF9E4E /* ArpeggiationSequenceModifier.h */ /* ArpeggiationSequenceModifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ArpeggiationSequenceModifier.h; path = ../../Source/Core/Midi/Patterns/Modifiers/ArpeggiationSequenceModifier.h; sourceTree = SOURCE_ROOT; };
 		E6E052F0B1323369628EC2FB /* CommandPaletteCommonActions.h */ /* CommandPaletteCommonActions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandPaletteCommonActions.h; path = ../../Source/Core/CommandPalette/CommandPaletteCommonActions.h; sourceTree = SOURCE_ROOT; };
 		E784DA781B1088C227E1D35A /* OrigamiVertical.h */ /* OrigamiVertical.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OrigamiVertical.h; path = ../../Source/UI/Common/OrigamiVertical.h; sourceTree = SOURCE_ROOT; };
 		E7994F69C1E98A7AFC41D20B /* chordBuilder.svg */ /* chordBuilder.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = chordBuilder.svg; path = ../../Resources/Icons/chordBuilder.svg; sourceTree = SOURCE_ROOT; };
@@ -802,6 +814,7 @@
 		F4610814BF7C06CEE3B3A22A /* AutomationSequence.cpp */ /* AutomationSequence.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AutomationSequence.cpp; path = ../../Source/Core/Midi/Sequences/AutomationSequence.cpp; sourceTree = SOURCE_ROOT; };
 		F4DB0F7FDE088076C0BA89AF /* CommandPaletteActionsProvider.h */ /* CommandPaletteActionsProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandPaletteActionsProvider.h; path = ../../Source/Core/CommandPalette/CommandPaletteActionsProvider.h; sourceTree = SOURCE_ROOT; };
 		F518C6C068D3598777DBA99D /* Common.cpp */ /* Common.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Common.cpp; path = ../../Source/Common.cpp; sourceTree = SOURCE_ROOT; };
+		F540EBD75E92CF79ECF67688 /* TuningSequenceModifier.h */ /* TuningSequenceModifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TuningSequenceModifier.h; path = ../../Source/Core/Midi/Patterns/Modifiers/TuningSequenceModifier.h; sourceTree = SOURCE_ROOT; };
 		F5885C43DA4240C5A1C2C51A /* AutomationEditor.h */ /* AutomationEditor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutomationEditor.h; path = ../../Source/UI/Sequencer/EditorPanels/AutomationEditor/AutomationEditor.h; sourceTree = SOURCE_ROOT; };
 		F58E7088E21EEE373267FE8A /* SettingsFrameWrapper.cpp */ /* SettingsFrameWrapper.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SettingsFrameWrapper.cpp; path = ../../Source/UI/Pages/Settings/SettingsFrameWrapper.cpp; sourceTree = SOURCE_ROOT; };
 		F5CD02A25BB21968413316D4 /* PopupButton.h */ /* PopupButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PopupButton.h; path = ../../Source/UI/Popups/PopupButton.h; sourceTree = SOURCE_ROOT; };
@@ -816,6 +829,7 @@
 		F8E8B5E89444D55A21A8E484 /* local.svg */ /* local.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = local.svg; path = ../../Resources/Icons/local.svg; sourceTree = SOURCE_ROOT; };
 		F91C8DFB4DC445BA20315BE3 /* paint.svg */ /* paint.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = paint.svg; path = ../../Resources/Icons/paint.svg; sourceTree = SOURCE_ROOT; };
 		F9CE211DEEE1E9F878A2D024 /* AnnotationDialog.h */ /* AnnotationDialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnnotationDialog.h; path = ../../Source/UI/Dialogs/AnnotationDialog.h; sourceTree = SOURCE_ROOT; };
+		FA43F862B8383A9B131B8579 /* cleanup.svg */ /* cleanup.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = cleanup.svg; path = ../../Resources/Icons/cleanup.svg; sourceTree = SOURCE_ROOT; };
 		FA8EBE25F4B30087F2A30446 /* App.h */ /* App.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = App.h; path = ../../Source/Core/App.h; sourceTree = SOURCE_ROOT; };
 		FAADEAB04F18C33E7E18730B /* KeyboardMapping.cpp */ /* KeyboardMapping.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = KeyboardMapping.cpp; path = ../../Source/Core/Configuration/Resources/Models/KeyboardMapping.cpp; sourceTree = SOURCE_ROOT; };
 		FB9A16743FF593FE9C99CFA2 /* UserProfile.cpp */ /* UserProfile.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = UserProfile.cpp; path = ../../Source/Core/Workspace/UserProfile.cpp; sourceTree = SOURCE_ROOT; };
@@ -971,6 +985,7 @@
 				E87D050150AECE26828A193F,
 				1D1D9574714B1D5BF6E173DF,
 				E7994F69C1E98A7AFC41D20B,
+				FA43F862B8383A9B131B8579,
 				4ACF099154865E0DC5BA2C21,
 				3BF24EA416853F30AC4C2A45,
 				DA47AB54458AEC968E0F5011,
@@ -994,8 +1009,11 @@
 				0F28562BF71A0B5DF8D40F04,
 				2A034F224EBF4BA9B3352E86,
 				2DA06104F65305C09877EA73,
+				A682764A69379288AD63B612,
+				616489BC0B3C1B9A6A6E18FC,
 				35CE31907AAAF6A87836E985,
 				F8E8B5E89444D55A21A8E484,
+				860CF7E487D7C85AB2F20730,
 				4786B401E6EB60046940A571,
 				D523F29E525024D861F08B0D,
 				38F77D254EEDB3C3C286D7B0,
@@ -1019,6 +1037,7 @@
 				CE6277E05E45DC7AA6397170,
 				80E39F4A8371DD78C034AD2B,
 				9FC2E070E8CCBBA6EA2ADD48,
+				8DCF0356AB61183B653D0B40,
 				F192718DCDD97FAFA543C27B,
 				863B2AB2A472DFD4099F36F2,
 				B6FE326E0F7D0ED6D244D1C5,
@@ -1026,6 +1045,8 @@
 				12E15D689DC7EBC44BBE1CA8,
 				1FBF288C32A306DB3955C5C1,
 				8FA7511E4563F92B7083C20E,
+				A2B269FE88B82A6F4BBA66BB,
+				020A0A8FCC5AE1B0F96845BB,
 				CA4D0CA209854767FEEA9373,
 				3AFA2C7B955DD6E33554EABF,
 				6E8240BD097F42C29EF6E848,
@@ -1047,6 +1068,7 @@
 				B235731CCB550DF1E2BDDF28,
 				698A56770E267538984CCC74,
 				28F1C77296DC1646565D53EE,
+				DC109490913F82A611D4B5EE,
 				E5077C0A869E48EA27DBE103,
 				78CEF9C0F6D9CAB020FDC238,
 			);
@@ -1182,6 +1204,7 @@
 		2FCDEC922FFB91C90E0B8040 /* Patterns */ = {
 			isa = PBXGroup;
 			children = (
+				DB871FE3115B4746512DBFBA,
 				E6866B8F6A24B97D0EA35CE1,
 				6BF6426361E32D40FFE0DB24,
 				98FD63098128A07D39717066,
@@ -2065,6 +2088,19 @@
 			name = "JUCE Library Code";
 			sourceTree = "<group>";
 		};
+		DB871FE3115B4746512DBFBA /* Modifiers */ = {
+			isa = PBXGroup;
+			children = (
+				E6CEBC83869BBBF930AF9E4E,
+				8C143E0D3861DD2F9CFE49F6,
+				F540EBD75E92CF79ECF67688,
+				A5D197875DD31390C83588C4,
+				49BE8FBA3C7796B693E3FDEC,
+				691B83E5F12BC7A383B30C1C,
+			);
+			name = Modifiers;
+			sourceTree = "<group>";
+		};
 		DCC5A709DA1A9279B22B84F7 /* EditorPanels */ = {
 			isa = PBXGroup;
 			children = (
@@ -2414,6 +2450,7 @@
 					"$(SRCROOT)/../../Source/Core/CommandPalette",
 					"$(SRCROOT)/../../Source/Core/Midi",
 					"$(SRCROOT)/../../Source/Core/Midi/Patterns",
+					"$(SRCROOT)/../../Source/Core/Midi/Patterns/Modifiers",
 					"$(SRCROOT)/../../Source/Core/Midi/Sequences",
 					"$(SRCROOT)/../../Source/Core/Midi/Sequences/Events",
 					"$(SRCROOT)/../../Source/Core/Network",
@@ -2464,7 +2501,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../Projucer/JuceLibraryCode $(SRCROOT)/../../ThirdParty/JUCE/modules $(SRCROOT)/../Projucer/JuceLibraryCode $(SRCROOT)/../../ThirdParty/JUCE/modules $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../ThirdParty/ASIO/common $(SRCROOT)/../../Source/ $(SRCROOT)/../../Source/Core $(SRCROOT)/../../Source/Core/Audio $(SRCROOT)/../../Source/Core/Audio/BuiltIn $(SRCROOT)/../../Source/Core/Audio/BuiltIn/SoundFont $(SRCROOT)/../../Source/Core/Audio/Instruments $(SRCROOT)/../../Source/Core/Audio/Transport $(SRCROOT)/../../Source/Core/Configuration $(SRCROOT)/../../Source/Core/Configuration/Resources $(SRCROOT)/../../Source/Core/Configuration/Resources/Models $(SRCROOT)/../../Source/Core/CommandPalette $(SRCROOT)/../../Source/Core/Midi $(SRCROOT)/../../Source/Core/Midi/Patterns $(SRCROOT)/../../Source/Core/Midi/Sequences $(SRCROOT)/../../Source/Core/Midi/Sequences/Events $(SRCROOT)/../../Source/Core/Network $(SRCROOT)/../../Source/Core/Network/Models $(SRCROOT)/../../Source/Core/Network/Requests $(SRCROOT)/../../Source/Core/Network/Services $(SRCROOT)/../../Source/Core/Serialization $(SRCROOT)/../../Source/Core/Tree $(SRCROOT)/../../Source/Core/Undo $(SRCROOT)/../../Source/Core/Undo/Actions $(SRCROOT)/../../Source/Core/VCS $(SRCROOT)/../../Source/Core/VCS/DiffLogic $(SRCROOT)/../../Source/Core/Workspace $(SRCROOT)/../../Source/UI/ $(SRCROOT)/../../Source/UI/Common $(SRCROOT)/../../Source/UI/Dialogs $(SRCROOT)/../../Source/UI/Headline $(SRCROOT)/../../Source/UI/Input $(SRCROOT)/../../Source/UI/Menus $(SRCROOT)/../../Source/UI/Menus/Base $(SRCROOT)/../../Source/UI/Menus/SelectionMenus $(SRCROOT)/../../Source/UI/Pages/Instruments $(SRCROOT)/../../Source/UI/Pages/Instruments/Editor $(SRCROOT)/../../Source/UI/Pages/Project $(SRCROOT)/../../Source/UI/Pages/Settings $(SRCROOT)/../../Source/UI/Pages/VCS $(SRCROOT)/../../Source/UI/Pages/Dashboard $(SRCROOT)/../../Source/UI/Popups $(SRCROOT)/../../Source/UI/Sequencer $(SRCROOT)/../../Source/UI/Sequencer/EditorPanels $(SRCROOT)/../../Source/UI/Sequencer/EditorPanels/AutomationEditor $(SRCROOT)/../../Source/UI/Sequencer/EditorPanels/VelocityEditor $(SRCROOT)/../../Source/UI/Sequencer/Header $(SRCROOT)/../../Source/UI/Sequencer/Helpers $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/AnnotationsMap $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/PianoMap $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap $(SRCROOT)/../../Source/UI/Sequencer/PatternRoll $(SRCROOT)/../../Source/UI/Sequencer/PianoRoll $(SRCROOT)/../../Source/UI/Sequencer/Sidebars $(SRCROOT)/../../Source/UI/Themes";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../Projucer/JuceLibraryCode $(SRCROOT)/../../ThirdParty/JUCE/modules $(SRCROOT)/../Projucer/JuceLibraryCode $(SRCROOT)/../../ThirdParty/JUCE/modules $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../ThirdParty/ASIO/common $(SRCROOT)/../../Source/ $(SRCROOT)/../../Source/Core $(SRCROOT)/../../Source/Core/Audio $(SRCROOT)/../../Source/Core/Audio/BuiltIn $(SRCROOT)/../../Source/Core/Audio/BuiltIn/SoundFont $(SRCROOT)/../../Source/Core/Audio/Instruments $(SRCROOT)/../../Source/Core/Audio/Transport $(SRCROOT)/../../Source/Core/Configuration $(SRCROOT)/../../Source/Core/Configuration/Resources $(SRCROOT)/../../Source/Core/Configuration/Resources/Models $(SRCROOT)/../../Source/Core/CommandPalette $(SRCROOT)/../../Source/Core/Midi $(SRCROOT)/../../Source/Core/Midi/Patterns $(SRCROOT)/../../Source/Core/Midi/Patterns/Modifiers $(SRCROOT)/../../Source/Core/Midi/Sequences $(SRCROOT)/../../Source/Core/Midi/Sequences/Events $(SRCROOT)/../../Source/Core/Network $(SRCROOT)/../../Source/Core/Network/Models $(SRCROOT)/../../Source/Core/Network/Requests $(SRCROOT)/../../Source/Core/Network/Services $(SRCROOT)/../../Source/Core/Serialization $(SRCROOT)/../../Source/Core/Tree $(SRCROOT)/../../Source/Core/Undo $(SRCROOT)/../../Source/Core/Undo/Actions $(SRCROOT)/../../Source/Core/VCS $(SRCROOT)/../../Source/Core/VCS/DiffLogic $(SRCROOT)/../../Source/Core/Workspace $(SRCROOT)/../../Source/UI/ $(SRCROOT)/../../Source/UI/Common $(SRCROOT)/../../Source/UI/Dialogs $(SRCROOT)/../../Source/UI/Headline $(SRCROOT)/../../Source/UI/Input $(SRCROOT)/../../Source/UI/Menus $(SRCROOT)/../../Source/UI/Menus/Base $(SRCROOT)/../../Source/UI/Menus/SelectionMenus $(SRCROOT)/../../Source/UI/Pages/Instruments $(SRCROOT)/../../Source/UI/Pages/Instruments/Editor $(SRCROOT)/../../Source/UI/Pages/Project $(SRCROOT)/../../Source/UI/Pages/Settings $(SRCROOT)/../../Source/UI/Pages/VCS $(SRCROOT)/../../Source/UI/Pages/Dashboard $(SRCROOT)/../../Source/UI/Popups $(SRCROOT)/../../Source/UI/Sequencer $(SRCROOT)/../../Source/UI/Sequencer/EditorPanels $(SRCROOT)/../../Source/UI/Sequencer/EditorPanels/AutomationEditor $(SRCROOT)/../../Source/UI/Sequencer/EditorPanels/VelocityEditor $(SRCROOT)/../../Source/UI/Sequencer/Header $(SRCROOT)/../../Source/UI/Sequencer/Helpers $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/AnnotationsMap $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/PianoMap $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap $(SRCROOT)/../../Source/UI/Sequencer/PatternRoll $(SRCROOT)/../../Source/UI/Sequencer/PianoRoll $(SRCROOT)/../../Source/UI/Sequencer/Sidebars $(SRCROOT)/../../Source/UI/Themes";
 				OTHER_CFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations";
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations";
 				OTHER_LDFLAGS = "-weak_framework Metal -weak_framework MetalKit";
@@ -2539,6 +2576,7 @@
 					"$(SRCROOT)/../../Source/Core/CommandPalette",
 					"$(SRCROOT)/../../Source/Core/Midi",
 					"$(SRCROOT)/../../Source/Core/Midi/Patterns",
+					"$(SRCROOT)/../../Source/Core/Midi/Patterns/Modifiers",
 					"$(SRCROOT)/../../Source/Core/Midi/Sequences",
 					"$(SRCROOT)/../../Source/Core/Midi/Sequences/Events",
 					"$(SRCROOT)/../../Source/Core/Network",
@@ -2588,7 +2626,7 @@
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../Projucer/JuceLibraryCode $(SRCROOT)/../../ThirdParty/JUCE/modules $(SRCROOT)/../Projucer/JuceLibraryCode $(SRCROOT)/../../ThirdParty/JUCE/modules $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../ThirdParty/ASIO/common $(SRCROOT)/../../Source/ $(SRCROOT)/../../Source/Core $(SRCROOT)/../../Source/Core/Audio $(SRCROOT)/../../Source/Core/Audio/BuiltIn $(SRCROOT)/../../Source/Core/Audio/BuiltIn/SoundFont $(SRCROOT)/../../Source/Core/Audio/Instruments $(SRCROOT)/../../Source/Core/Audio/Transport $(SRCROOT)/../../Source/Core/Configuration $(SRCROOT)/../../Source/Core/Configuration/Resources $(SRCROOT)/../../Source/Core/Configuration/Resources/Models $(SRCROOT)/../../Source/Core/CommandPalette $(SRCROOT)/../../Source/Core/Midi $(SRCROOT)/../../Source/Core/Midi/Patterns $(SRCROOT)/../../Source/Core/Midi/Sequences $(SRCROOT)/../../Source/Core/Midi/Sequences/Events $(SRCROOT)/../../Source/Core/Network $(SRCROOT)/../../Source/Core/Network/Models $(SRCROOT)/../../Source/Core/Network/Requests $(SRCROOT)/../../Source/Core/Network/Services $(SRCROOT)/../../Source/Core/Serialization $(SRCROOT)/../../Source/Core/Tree $(SRCROOT)/../../Source/Core/Undo $(SRCROOT)/../../Source/Core/Undo/Actions $(SRCROOT)/../../Source/Core/VCS $(SRCROOT)/../../Source/Core/VCS/DiffLogic $(SRCROOT)/../../Source/Core/Workspace $(SRCROOT)/../../Source/UI/ $(SRCROOT)/../../Source/UI/Common $(SRCROOT)/../../Source/UI/Dialogs $(SRCROOT)/../../Source/UI/Headline $(SRCROOT)/../../Source/UI/Input $(SRCROOT)/../../Source/UI/Menus $(SRCROOT)/../../Source/UI/Menus/Base $(SRCROOT)/../../Source/UI/Menus/SelectionMenus $(SRCROOT)/../../Source/UI/Pages/Instruments $(SRCROOT)/../../Source/UI/Pages/Instruments/Editor $(SRCROOT)/../../Source/UI/Pages/Project $(SRCROOT)/../../Source/UI/Pages/Settings $(SRCROOT)/../../Source/UI/Pages/VCS $(SRCROOT)/../../Source/UI/Pages/Dashboard $(SRCROOT)/../../Source/UI/Popups $(SRCROOT)/../../Source/UI/Sequencer $(SRCROOT)/../../Source/UI/Sequencer/EditorPanels $(SRCROOT)/../../Source/UI/Sequencer/EditorPanels/AutomationEditor $(SRCROOT)/../../Source/UI/Sequencer/EditorPanels/VelocityEditor $(SRCROOT)/../../Source/UI/Sequencer/Header $(SRCROOT)/../../Source/UI/Sequencer/Helpers $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/AnnotationsMap $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/PianoMap $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap $(SRCROOT)/../../Source/UI/Sequencer/PatternRoll $(SRCROOT)/../../Source/UI/Sequencer/PianoRoll $(SRCROOT)/../../Source/UI/Sequencer/Sidebars $(SRCROOT)/../../Source/UI/Themes";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../Projucer/JuceLibraryCode $(SRCROOT)/../../ThirdParty/JUCE/modules $(SRCROOT)/../Projucer/JuceLibraryCode $(SRCROOT)/../../ThirdParty/JUCE/modules $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/serd $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sord/src $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/sratom $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lilv/src $(SRCROOT)/../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/LV2_SDK/lv2 $(SRCROOT)/../../ThirdParty/ASIO/common $(SRCROOT)/../../Source/ $(SRCROOT)/../../Source/Core $(SRCROOT)/../../Source/Core/Audio $(SRCROOT)/../../Source/Core/Audio/BuiltIn $(SRCROOT)/../../Source/Core/Audio/BuiltIn/SoundFont $(SRCROOT)/../../Source/Core/Audio/Instruments $(SRCROOT)/../../Source/Core/Audio/Transport $(SRCROOT)/../../Source/Core/Configuration $(SRCROOT)/../../Source/Core/Configuration/Resources $(SRCROOT)/../../Source/Core/Configuration/Resources/Models $(SRCROOT)/../../Source/Core/CommandPalette $(SRCROOT)/../../Source/Core/Midi $(SRCROOT)/../../Source/Core/Midi/Patterns $(SRCROOT)/../../Source/Core/Midi/Patterns/Modifiers $(SRCROOT)/../../Source/Core/Midi/Sequences $(SRCROOT)/../../Source/Core/Midi/Sequences/Events $(SRCROOT)/../../Source/Core/Network $(SRCROOT)/../../Source/Core/Network/Models $(SRCROOT)/../../Source/Core/Network/Requests $(SRCROOT)/../../Source/Core/Network/Services $(SRCROOT)/../../Source/Core/Serialization $(SRCROOT)/../../Source/Core/Tree $(SRCROOT)/../../Source/Core/Undo $(SRCROOT)/../../Source/Core/Undo/Actions $(SRCROOT)/../../Source/Core/VCS $(SRCROOT)/../../Source/Core/VCS/DiffLogic $(SRCROOT)/../../Source/Core/Workspace $(SRCROOT)/../../Source/UI/ $(SRCROOT)/../../Source/UI/Common $(SRCROOT)/../../Source/UI/Dialogs $(SRCROOT)/../../Source/UI/Headline $(SRCROOT)/../../Source/UI/Input $(SRCROOT)/../../Source/UI/Menus $(SRCROOT)/../../Source/UI/Menus/Base $(SRCROOT)/../../Source/UI/Menus/SelectionMenus $(SRCROOT)/../../Source/UI/Pages/Instruments $(SRCROOT)/../../Source/UI/Pages/Instruments/Editor $(SRCROOT)/../../Source/UI/Pages/Project $(SRCROOT)/../../Source/UI/Pages/Settings $(SRCROOT)/../../Source/UI/Pages/VCS $(SRCROOT)/../../Source/UI/Pages/Dashboard $(SRCROOT)/../../Source/UI/Popups $(SRCROOT)/../../Source/UI/Sequencer $(SRCROOT)/../../Source/UI/Sequencer/EditorPanels $(SRCROOT)/../../Source/UI/Sequencer/EditorPanels/AutomationEditor $(SRCROOT)/../../Source/UI/Sequencer/EditorPanels/VelocityEditor $(SRCROOT)/../../Source/UI/Sequencer/Header $(SRCROOT)/../../Source/UI/Sequencer/Helpers $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/AnnotationsMap $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/PianoMap $(SRCROOT)/../../Source/UI/Sequencer/MiniMaps/TimeSignaturesMap $(SRCROOT)/../../Source/UI/Sequencer/PatternRoll $(SRCROOT)/../../Source/UI/Sequencer/PianoRoll $(SRCROOT)/../../Source/UI/Sequencer/Sidebars $(SRCROOT)/../../Source/UI/Themes";
 				OTHER_CFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations";
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations";
 				OTHER_LDFLAGS = "-weak_framework Metal -weak_framework MetalKit";

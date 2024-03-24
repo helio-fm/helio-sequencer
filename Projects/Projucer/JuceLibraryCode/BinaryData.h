@@ -35,6 +35,9 @@ namespace BinaryData
     extern const char*   chordBuilder_svg;
     const int            chordBuilder_svgSize = 829;
 
+    extern const char*   cleanup_svg;
+    const int            cleanup_svgSize = 324;
+
     extern const char*   close_svg;
     const int            close_svgSize = 400;
 
@@ -104,11 +107,20 @@ namespace BinaryData
     extern const char*   inverseUp_svg;
     const int            inverseUp_svgSize = 305;
 
+    extern const char*   inversion_svg;
+    const int            inversion_svgSize = 527;
+
+    extern const char*   legato_svg;
+    const int            legato_svgSize = 361;
+
     extern const char*   list_svg;
     const int            list_svgSize = 528;
 
     extern const char*   local_svg;
     const int            local_svgSize = 495;
+
+    extern const char*   lockZoom_svg;
+    const int            lockZoom_svgSize = 250;
 
     extern const char*   meter_svg;
     const int            meter_svgSize = 221;
@@ -179,6 +191,9 @@ namespace BinaryData
     extern const char*   reset_svg;
     const int            reset_svgSize = 435;
 
+    extern const char*   retrograde_svg;
+    const int            retrograde_svgSize = 317;
+
     extern const char*   revision_svg;
     const int            revision_svgSize = 584;
 
@@ -199,6 +214,12 @@ namespace BinaryData
 
     extern const char*   settings_svg;
     const int            settings_svgSize = 1058;
+
+    extern const char*   snap_svg;
+    const int            snap_svgSize = 541;
+
+    extern const char*   staccato_svg;
+    const int            staccato_svgSize = 208;
 
     extern const char*   stop_svg;
     const int            stop_svgSize = 227;
@@ -263,6 +284,9 @@ namespace BinaryData
     extern const char*   noise_png;
     const int            noise_pngSize = 149;
 
+    extern const char*   stripes_png;
+    const int            stripes_pngSize = 162;
+
     extern const char*   copyingCursor_gif;
     const int            copyingCursor_gifSize = 119;
 
@@ -303,7 +327,7 @@ namespace BinaryData
     const int            colourSchemes_jsonSize = 3374;
 
     extern const char*   hotkeySchemes_json;
-    const int            hotkeySchemes_jsonSize = 16444;
+    const int            hotkeySchemes_jsonSize = 16633;
 
     extern const char*   keyboardMappings_json;
     const int            keyboardMappings_jsonSize = 792;
@@ -318,10 +342,10 @@ namespace BinaryData
     const int            temperaments_jsonSize = 2856;
 
     extern const char*   translations_json;
-    const int            translations_jsonSize = 144638;
+    const int            translations_jsonSize = 95572;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 104;
+    const int namedResourceListSize = 112;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
