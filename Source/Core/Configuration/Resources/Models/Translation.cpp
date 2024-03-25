@@ -42,7 +42,7 @@ SerializedData Translation::serialize() const
 
 void Translation::deserialize(const SerializedData &data)
 {
-    // never reset here: translations are to be extended
+    // don't reset so that user's translation appends the built-in one instead of replacing it
     // this->reset();
 
     using namespace Serialization;

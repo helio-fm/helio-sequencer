@@ -63,9 +63,15 @@ void HotkeySchemesCollection::deserializeResources(const SerializedData &tree, R
 
     forEachChildWithType(root, schemeNode, Serialization::UI::Hotkeys::scheme)
     {
-        HotkeyScheme::Ptr hs(new HotkeyScheme());
-        hs->deserialize(schemeNode);
-        outResources[hs->getResourceId()] = hs;
+        // if the existing scheme is found, just extend it:
+        const auto schemeName = schemeNode.getProperty(Serialization::UI::Hotkeys::schemeName).toString();
+        const auto existingScheme = this->getResourceById(schemeName);
+
+        HotkeyScheme::Ptr scheme(existingScheme != nullptr ?
+            static_cast<HotkeyScheme *>(existingScheme.get()) : new HotkeyScheme());
+        scheme->deserialize(schemeNode);
+
+        outResources[scheme->getResourceId()] = scheme;
     }
 
     this->activeScheme = this->findActiveScheme();

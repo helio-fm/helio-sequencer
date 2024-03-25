@@ -32,12 +32,13 @@ static CommandPaletteActionsProvider::Actions buildCommandsListFor(const Compone
 
     for (const auto &keyPress : hotkeys->getKeyPresses())
     {
-        const auto i18nKey = CommandIDs::getTranslationKeyFor(keyPress.commandId);
-        if (i18nKey != 0 && keyPress.componentId == target->getComponentID())
+        const auto commandId = keyPress.second;
+        const auto i18nKey = CommandIDs::getTranslationKeyFor(commandId);
+        if (i18nKey != 0 && keyPress.first.componentId == target->getComponentID())
         {
-            const auto action = [keyPress](TextEditor &ed)
+            const auto action = [commandId](TextEditor &ed)
             {
-                App::Layout().broadcastCommandMessage(keyPress.commandId);
+                App::Layout().broadcastCommandMessage(commandId);
                 return true;
             };
 
@@ -46,7 +47,7 @@ static CommandPaletteActionsProvider::Actions buildCommandsListFor(const Compone
             {
                 duplicateLookup.insert(i18nKey);
                 actions.add(CommandPaletteAction::action(TRANS(i18nKey),
-                    keyPress.keyPress.getTextDescription(), 0.f)->
+                    keyPress.first.keyPress.getTextDescription(), 0.f)->
                     withColour(actionColor)->withCallback(action));
             }
         }

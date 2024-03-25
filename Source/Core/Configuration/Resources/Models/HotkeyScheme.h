@@ -29,18 +29,26 @@ public:
 
     using Ptr = ReferenceCountedObjectPtr<HotkeyScheme>;
 
-    class Hotkey final
+    struct Hotkey final
     {
-    public:
         KeyPress keyPress;
         String componentId;
-        CommandIDs::Id commandId;
+        friend bool operator==(const Hotkey &lhs, const Hotkey &rhs);
+    };
+
+    struct HotkeyHash
+    {
+        inline HashCode operator()(const Hotkey &key) const noexcept
+        {
+            return static_cast<HashCode>(key.keyPress.getKeyCode() + key.componentId.hashCode());
+        }
     };
 
     String findHotkeyDescription(int commandId) const noexcept;
 
     // To be used by command palette:
-    const Array<Hotkey> &getKeyPresses() const noexcept;
+    using HotkeyMap = FlatHashMap<Hotkey, CommandIDs::Id, HotkeyHash>;
+    const HotkeyMap &getKeyPresses() const noexcept;
     KeyPress getLastKeyPress() const noexcept;
 
     bool dispatchKeyPress(KeyPress keyPress,
@@ -74,17 +82,25 @@ private:
     String name;
     KeyPress lastKeyPress;
 
-    Array<Hotkey> keyPresses;
-    Array<Hotkey> keyDowns;
-    Array<Hotkey> keyUps;
-    Array<KeyPress> holdKeys;
+    HotkeyMap keyPresses;
+    HotkeyMap keyDowns;
+    HotkeyMap keyUps;
+
+    struct KeyPressHash
+    {
+        inline HashCode operator()(const KeyPress &key) const noexcept
+        {
+            return static_cast<HashCode>(key.getKeyCode());
+        }
+    };
+
+    FlatHashSet<KeyPress, KeyPressHash> holdKeys;
 
     WeakReference<Component> lastReceiver;
     FlatHashMap<String, WeakReference<Component>, StringHash> receiverChildren;
 
-    bool sendHotkeyCommand(Hotkey key,
-        WeakReference<Component> root,
-        WeakReference<Component> target);
+    bool sendHotkeyCommand(const String &componentId, CommandIDs::Id commandId,
+        WeakReference<Component> root, WeakReference<Component> target);
 
     JUCE_LEAK_DETECTOR(HotkeyScheme)
 };

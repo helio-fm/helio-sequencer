@@ -174,10 +174,10 @@ void TranslationsCollection::deserializeResources(const SerializedData &tree, Re
         // if the existing translation for locale id is found,
         // just extend it, otherwise some new keys may be missing:
         const auto translationId = translationRoot.getProperty(Serialization::Translations::localeId).toString().toLowerCase();
-        const auto existingTranslation = outResources.find(translationId);
+        const auto existingTranslation = this->getResourceById(translationId);
 
-        Translation::Ptr translation(existingTranslation != outResources.end() ?
-            static_cast<Translation *>(existingTranslation->second.get()) : new Translation());
+        Translation::Ptr translation(existingTranslation != nullptr ?
+            static_cast<Translation *>(existingTranslation.get()) : new Translation());
 
         //DBG(translationId + "/" + translation->getResourceId());
         translation->deserialize(translationRoot);

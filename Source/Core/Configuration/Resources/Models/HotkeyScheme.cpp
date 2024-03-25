@@ -19,6 +19,12 @@
 #include "HotkeyScheme.h"
 #include "SerializationKeys.h"
 
+bool operator==(const HotkeyScheme::Hotkey &lhs, const HotkeyScheme::Hotkey &rhs)
+{
+    return lhs.keyPress == rhs.keyPress &&
+        lhs.componentId == rhs.componentId;
+}
+
 HotkeyScheme::HotkeyScheme(const HotkeyScheme &other)
 {
     operator= (other);
@@ -28,9 +34,9 @@ String HotkeyScheme::findHotkeyDescription(int commandId) const noexcept
 {
     for (const auto &key : this->keyPresses)
     {
-        if (key.commandId == commandId)
+        if (key.second == commandId)
         {
-            return key.keyPress.getTextDescriptionWithIcons();
+            return key.first.keyPress.getTextDescriptionWithIcons();
         }
     }
 
@@ -43,9 +49,9 @@ bool HotkeyScheme::dispatchKeyPress(KeyPress keyPress,
 {
     for (const auto &key : this->keyPresses)
     {
-        if (keyPress == key.keyPress)
+        if (key.first.keyPress == keyPress)
         {
-            if (this->sendHotkeyCommand(key, keyPressReceiver, messageReceiver))
+            if (this->sendHotkeyCommand(key.first.componentId, key.second, keyPressReceiver, messageReceiver))
             {
                 this->lastKeyPress = keyPress;
                 return true;
@@ -66,10 +72,10 @@ bool HotkeyScheme::dispatchKeyStateChange(bool isKeyDown,
     {
         for (const auto &key : this->keyDowns)
         {
-            if (key.keyPress.isCurrentlyDown() &&
-                this->sendHotkeyCommand(key, keyPressReceiver, messageReceiver))
+            if (key.first.keyPress.isCurrentlyDown() &&
+                this->sendHotkeyCommand(key.first.componentId, key.second, keyPressReceiver, messageReceiver))
             {
-                this->holdKeys.addIfNotAlreadyThere(key.keyPress);
+                this->holdKeys.insert(key.first.keyPress);
                 return true;
             }
         }
@@ -78,11 +84,11 @@ bool HotkeyScheme::dispatchKeyStateChange(bool isKeyDown,
     {
         for (const auto &key : this->keyUps)
         {
-            if (!key.keyPress.isCurrentlyDown() && 
-                this->holdKeys.contains(key.keyPress) &&
-                this->sendHotkeyCommand(key, keyPressReceiver, messageReceiver))
+            if (!key.first.keyPress.isCurrentlyDown() && 
+                this->holdKeys.contains(key.first.keyPress) &&
+                this->sendHotkeyCommand(key.first.componentId, key.second, keyPressReceiver, messageReceiver))
             {
-                this->holdKeys.removeAllInstancesOf(key.keyPress);
+                this->holdKeys.erase(key.first.keyPress);
                 return true;
             }
         }
@@ -109,7 +115,8 @@ static Component *findMessageReceiver(Component *root, const String &id)
     return nullptr;
 }
 
-bool HotkeyScheme::sendHotkeyCommand(Hotkey key,
+bool HotkeyScheme::sendHotkeyCommand(const String &componentId,
+    CommandIDs::Id commandId,
     WeakReference<Component> keyPressReceiver,
     WeakReference<Component> messageReceiver)
 {
@@ -119,11 +126,11 @@ bool HotkeyScheme::sendHotkeyCommand(Hotkey key,
         this->receiverChildren.clear();
     }
 
-    auto receiver = this->receiverChildren[key.componentId];
+    auto receiver = this->receiverChildren[componentId];
     if (receiver == nullptr)
     {
         if (keyPressReceiver != nullptr &&
-            keyPressReceiver->getComponentID() == key.componentId)
+            keyPressReceiver->getComponentID() == componentId)
         {
             // main layout itself
             receiver = keyPressReceiver;
@@ -131,17 +138,17 @@ bool HotkeyScheme::sendHotkeyCommand(Hotkey key,
         else if (messageReceiver != nullptr)
         {
             // child of the showing page
-            receiver = findMessageReceiver(messageReceiver, key.componentId);
+            receiver = findMessageReceiver(messageReceiver, componentId);
         }
 
-        this->receiverChildren[key.componentId] = receiver;
+        this->receiverChildren[componentId] = receiver;
     }
 
     if (receiver != nullptr)
     {
         if (receiver->isEnabled() && receiver->isShowing())
         {
-            receiver->postCommandMessage(key.commandId);
+            receiver->postCommandMessage(commandId);
             return true;
         }
     }
@@ -157,30 +164,38 @@ SerializedData HotkeyScheme::serialize() const
 {
     SerializedData tree(Serialization::UI::Hotkeys::scheme);
     tree.setProperty(Serialization::UI::Hotkeys::schemeName, this->name);
-    // Not implemented (cannot convert command id's to string messages back)
+    jassert(false); // not implemented
     return tree;
 }
 
-static inline HotkeyScheme::Hotkey createHotkey(const SerializedData &e, const String &receiver = "")
+static inline HotkeyScheme::Hotkey deserializeHotkey(const SerializedData &e, const String &receiver = "")
 {
-    HotkeyScheme::Hotkey key;
+    HotkeyScheme::Hotkey result;
+    
+    const auto keyPressDesc =
+        e.getProperty(Serialization::UI::Hotkeys::hotkeyDescription);
 
-    const auto command = e.getProperty(Serialization::UI::Hotkeys::hotkeyCommand);
-    const auto keyPressDesc = e.getProperty(Serialization::UI::Hotkeys::hotkeyDescription);
-
-    key.keyPress = KeyPress::createFromDescription(keyPressDesc);
-    key.commandId = CommandIDs::getIdForName(command);
-    key.componentId = receiver.isNotEmpty() ? receiver :
+    result.keyPress = KeyPress::createFromDescription(keyPressDesc);
+    result.componentId = receiver.isNotEmpty() ? receiver :
         e.getProperty(Serialization::UI::Hotkeys::hotkeyReceiver).toString();
 
-    return key;
+    return result;
+}
+
+static inline CommandIDs::Id deserializeCommand(const SerializedData &e)
+{
+    const auto command = e.getProperty(Serialization::UI::Hotkeys::hotkeyCommand);
+    return CommandIDs::getIdForName(command);
+
 }
 
 void HotkeyScheme::deserialize(const SerializedData &data)
 {
-    using namespace Serialization::UI;
+    // don't reset so that user's scheme appends
+    // the built-in one instead of replacing it
+    // this->reset();
 
-    this->reset();
+    using namespace Serialization::UI;
 
     const auto root =
         data.hasType(Hotkeys::scheme) ?
@@ -197,17 +212,17 @@ void HotkeyScheme::deserialize(const SerializedData &data)
 
     forEachChildWithType(root, e, Hotkeys::keyPress)
     {
-        this->keyPresses.add(createHotkey(e));
+        this->keyPresses[deserializeHotkey(e)] = deserializeCommand(e);
     }
 
     forEachChildWithType(root, e, Hotkeys::keyDown)
     {
-        this->keyDowns.add(createHotkey(e));
+        this->keyDowns[deserializeHotkey(e)] = deserializeCommand(e);
     }
 
     forEachChildWithType(root, e, Hotkeys::keyUp)
     {
-        this->keyUps.add(createHotkey(e));
+        this->keyUps[deserializeHotkey(e)] = deserializeCommand(e);
     }
 
     // grouped format:
@@ -218,17 +233,17 @@ void HotkeyScheme::deserialize(const SerializedData &data)
 
         forEachChildWithType(group, e, Hotkeys::keyPress)
         {
-            this->keyPresses.add(createHotkey(e, receiver));
+            this->keyPresses[deserializeHotkey(e, receiver)] = deserializeCommand(e);
         }
 
         forEachChildWithType(group, e, Hotkeys::keyDown)
         {
-            this->keyDowns.add(createHotkey(e, receiver));
+            this->keyDowns[deserializeHotkey(e, receiver)] = deserializeCommand(e);
         }
 
         forEachChildWithType(group, e, Hotkeys::keyUp)
         {
-            this->keyUps.add(createHotkey(e, receiver));
+            this->keyUps[deserializeHotkey(e, receiver)] = deserializeCommand(e);
         }
     }
 }
@@ -236,23 +251,23 @@ void HotkeyScheme::deserialize(const SerializedData &data)
 void HotkeyScheme::reset()
 {
     this->name.clear();
-    this->keyPresses.clearQuick();
-    this->keyDowns.clearQuick();
-    this->keyUps.clearQuick();
+    this->keyPresses.clear();
+    this->keyDowns.clear();
+    this->keyUps.clear();
     this->receiverChildren.clear();
-    this->holdKeys.clearQuick();
+    this->holdKeys.clear();
     this->lastReceiver = nullptr;
 }
 
 HotkeyScheme &HotkeyScheme::operator=(const HotkeyScheme &other)
 {
     this->name = other.name;
-    this->keyPresses.clearQuick();
-    this->keyDowns.clearQuick();
-    this->keyUps.clearQuick();
-    this->keyPresses.addArray(other.keyPresses);
-    this->keyDowns.addArray(other.keyDowns);
-    this->keyUps.addArray(other.keyUps);
+    this->keyPresses.clear();
+    this->keyDowns.clear();
+    this->keyUps.clear();
+    this->keyPresses.insert(other.keyPresses.begin(), other.keyPresses.end());
+    this->keyDowns.insert(other.keyDowns.begin(), other.keyDowns.end());
+    this->keyUps.insert(other.keyUps.begin(), other.keyUps.end());
     return *this;
 }
 
@@ -275,7 +290,7 @@ KeyPress HotkeyScheme::getLastKeyPress() const noexcept
     return this->lastKeyPress;
 }
 
-const Array<HotkeyScheme::Hotkey> &HotkeyScheme::getKeyPresses() const noexcept
+const HotkeyScheme::HotkeyMap &HotkeyScheme::getKeyPresses() const noexcept
 {
     return this->keyPresses;
 }
