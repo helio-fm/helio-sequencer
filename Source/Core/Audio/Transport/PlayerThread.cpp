@@ -67,6 +67,8 @@ void PlayerThread::run()
         }
     };
 
+    this->currentTempo = this->context->startBeatTempo;
+
     const bool isLooped = this->context->playbackLoopMode;
 
     this->sequences.seekToTime(this->context->startBeat);
@@ -157,7 +159,6 @@ void PlayerThread::run()
 
     double nextEventTimeDelta = 0.0;
     double deltaTimePassed = 0.0;
-    this->currentTempo = this->context->startBeatTempo;
 
     while (1)
     {

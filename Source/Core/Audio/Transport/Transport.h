@@ -65,7 +65,7 @@ public:
     void startPlayback();
     void startPlayback(float startBeatOverride);
     void startPlaybackFragment(float startBeat, float endBeat, bool looped);
-    void setPlaybackSpeedMultiplier(float multiplier);
+    void speedUpPlayback(float multiplier = 1.5f);
 
     bool isPlaying() const;
     void stopPlayback();

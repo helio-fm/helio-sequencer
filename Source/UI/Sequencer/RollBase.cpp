@@ -1411,12 +1411,12 @@ void RollBase::handleCommandMessage(int commandId)
                 else
                 {
                     const bool hasQuickDoublePress =
-                        (Time::getMillisecondCounter() - this->timeStartedPlayback) < 400;
+                        (Time::getMillisecondCounter() - this->timeStartedPlayback) < 500;
 
                     // tech debt warning: see duplicate code in TransportPlaybackStart case
                     if (hasQuickDoublePress)
                     {
-                        this->getTransport().setPlaybackSpeedMultiplier(1.5f);
+                        this->getTransport().speedUpPlayback();
                     }
                     else
                     {
@@ -1455,11 +1455,11 @@ void RollBase::handleCommandMessage(int commandId)
             this->startFollowingPlayhead(true);
 #endif
             const bool hasQuickDoublePress =
-                (Time::getMillisecondCounter() - this->timeStartedPlayback) < 400;
+                (Time::getMillisecondCounter() - this->timeStartedPlayback) < 500;
 
             if (hasQuickDoublePress)
             {
-                this->getTransport().setPlaybackSpeedMultiplier(1.5f);
+                this->getTransport().speedUpPlayback();
             }
         }
         break;
@@ -1578,23 +1578,24 @@ void RollBase::paint(Graphics &g)
 // Playhead::Listener
 //===----------------------------------------------------------------------===//
 
-void RollBase::onPlayheadMoved(int playheadX)
+void RollBase::onMovePlayhead(int oldPlayheadX, int newPlayheadX)
 {
     if (this->playheadFollowMode == PlayheadFollowMode::CatchWhenOffscreen &&
         this->getTransport().isPlaying() &&
-        (playheadX < this->viewport.getViewPositionX() ||
-            playheadX > this->viewport.getViewPositionX() + int(this->viewport.getViewWidth() * 0.85f)))
+        (newPlayheadX < this->viewport.getViewPositionX() ||
+            newPlayheadX > this->viewport.getViewPositionX() + int(this->viewport.getViewWidth() * 0.85f)))
     {
         this->playheadFollowMode = PlayheadFollowMode::Follow;
     }
 
     if (this->playheadFollowMode == PlayheadFollowMode::Follow)
     {
-        const int viewHalfWidth = this->viewport.getViewWidth() / 2;
-        const int viewportCentreX = this->viewport.getViewPositionX() + viewHalfWidth;
-        const float offset = float(playheadX) - float(viewportCentreX);
-        const int newViewPosX = playheadX - viewHalfWidth -
-            roundToIntAccurate(fabs(offset) < 16.f ? 0.f : offset * 0.5f);
+        const auto viewHalfWidth = this->viewport.getViewWidth() / 2;
+        const auto viewportCentreX = this->viewport.getViewPositionX() + viewHalfWidth;
+        const auto offset = float(newPlayheadX) - float(viewportCentreX);
+        const auto playheadDelta = float(newPlayheadX - oldPlayheadX);
+        const auto newViewPosX = newPlayheadX - viewHalfWidth -
+            roundToIntAccurate((fabs(offset) <= playheadDelta * 2.f) ? 0.f : offset * 0.5f);
         this->viewport.setViewPosition(newViewPosX, this->viewport.getViewPositionY());
         this->updateChildrenPositions();
     }
@@ -1729,7 +1730,12 @@ void RollBase::onRecord()
 void RollBase::onStop()
 {
     this->header->showRecordingMode(false);
+    const auto shouldCatchPlayhead = this->playheadFollowMode == PlayheadFollowMode::Follow;
     this->stopFollowingPlayhead();
+    if (shouldCatchPlayhead)
+    {
+        this->startTimerHz(60);
+    }
 }
 
 bool RollBase::scrollToPlayheadPositionIfNeeded(int edgeMargin)
@@ -1746,7 +1752,7 @@ bool RollBase::scrollToPlayheadPositionIfNeeded(int edgeMargin)
 
     if (App::Config().getUiFlags()->areUiAnimationsEnabled())
     {
-        this->startTimerHz(120);
+        this->startTimerHz(60);
     }
     else
     {
@@ -1846,7 +1852,8 @@ void RollBase::timerCallback()
     const auto playheadOffset = (this->playhead->getX() - viewportCentreX);
     const auto newX = this->playhead->getX() - int(playheadOffset * 0.75) - (this->viewport.getViewWidth() / 2);
 
-    const bool doneFollowingPlayhead = fabs(playheadOffset) < 3.f;
+    const bool doneFollowingPlayhead =
+        fabs(playheadOffset) < (this->getTransport().isPlaying() ? 20.f : 2.f);
     const bool stuckFollowingPlayhead = newX == this->viewport.getViewPositionX() ||
         newX < 0 || newX > (this->getWidth() - this->viewport.getViewWidth());
 

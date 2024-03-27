@@ -34,7 +34,7 @@ public:
     {
     public:
         virtual ~Listener() = default;
-        virtual void onPlayheadMoved(int playheadX) = 0;
+        virtual void onMovePlayhead(int oldX, int newX) = 0;
     };
 
     Playhead(RollBase &parentRoll,

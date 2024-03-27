@@ -788,7 +788,24 @@ void PatternRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::EditCurrentInstrument:
-        PluginWindow::showWindowFor(PatternOperations::getSelectedInstrumentId(this->selection));
+    {
+        auto currentInstrumentId = PatternOperations::getSelectedInstrumentId(this->selection);
+
+        if (currentInstrumentId.isEmpty())
+        {
+            currentInstrumentId = this->lastShownInstrumentId;
+        }
+
+        if (currentInstrumentId.isEmpty() && !this->tracks.isEmpty())
+        {
+            currentInstrumentId = this->tracks.getFirst()->getTrackInstrumentId();
+        }
+
+        if (PluginWindow::showWindowFor(currentInstrumentId))
+        {
+            this->lastShownInstrumentId = currentInstrumentId;
+        }
+    }
         break;
     case CommandIDs::DeleteClips:
         PatternOperations::deleteSelection(this->selection, this->project);

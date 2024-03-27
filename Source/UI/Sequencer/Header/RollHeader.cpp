@@ -417,7 +417,8 @@ void RollHeader::mouseDown(const MouseEvent &e)
         const auto parentEvent = e.getEventRelativeTo(&this->roll);
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
 
-        if (e.mods.isAnyModifierKeyDown() || this->roll.isInSelectionMode())
+        if (!this->transport.isPlaying() &&
+            (e.mods.isAnyModifierKeyDown() || this->roll.isInSelectionMode()))
         {
             this->roll.getSelectionComponent()->beginLasso({ parentEvent.position.x, 0.f }, &this->roll);
             this->selectionIndicator->fadeIn();
@@ -545,6 +546,11 @@ void RollHeader::mouseUp(const MouseEvent &e)
         else if (e.mods.isMiddleButtonDown())
         {
             this->transport.startPlayback();
+
+            if (e.mods.isAnyModifierKeyDown())
+            {
+                this->transport.speedUpPlayback();
+            }
         }
     }
 }
@@ -588,6 +594,11 @@ void RollHeader::mouseDoubleClick(const MouseEvent &e)
     this->transport.stopPlaybackAndRecording();
     this->transport.seekToBeat(roundBeat);
     this->transport.startPlayback();
+
+    if (e.mods.isAnyModifierKeyDown())
+    {
+        this->transport.speedUpPlayback();
+    }
 #endif
 }
 

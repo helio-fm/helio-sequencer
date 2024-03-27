@@ -297,7 +297,7 @@ protected:
     // Playhead::Listener
     //===------------------------------------------------------------------===//
     
-    void onPlayheadMoved(int indicatorX) override;
+    void onMovePlayhead(int oldX, int newX) override;
     
     //===------------------------------------------------------------------===//
     // VolumeCallback::ClippingListener

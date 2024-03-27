@@ -176,6 +176,8 @@ private:
     // for grouping and highlighting:
     Array<const MidiTrack *> tracks;
 
+    String lastShownInstrumentId;
+
     OwnedArray<ChangeListener> selectionListeners;
 
     using ClipComponentsMap = FlatHashMap<Clip, UniquePointer<ClipComponent>, ClipHash>;

@@ -73,7 +73,7 @@ struct PatternOperations final
     static bool toggleMuteModifiersStack(const Clip &clip, bool shouldCheckpoint = true);
     static void toggleMuteModifiersStack(const Lasso &selection, bool shouldCheckpoint = true);
 
-    // if all selected clips are "assigned" to the same instrument,
+    // if all selected clips are assigned to the same instrument,
     // this returns that instrument id, otherwise returns an empty string:
     static String getSelectedInstrumentId(const Lasso &selection);
 };

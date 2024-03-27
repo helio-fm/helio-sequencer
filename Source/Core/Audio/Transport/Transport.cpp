@@ -200,7 +200,7 @@ void Transport::startPlaybackFragment(float startBeat, float endBeat, bool loope
     this->broadcastPlay();
 }
 
-void Transport::setPlaybackSpeedMultiplier(float multiplier)
+void Transport::speedUpPlayback(float multiplier)
 {
     jassert(this->isPlaying());
     jassert(multiplier > 0.5f && multiplier < 5.f);

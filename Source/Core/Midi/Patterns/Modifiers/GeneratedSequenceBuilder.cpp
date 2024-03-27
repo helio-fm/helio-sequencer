@@ -226,13 +226,20 @@ void GeneratedSequenceBuilder::handleAsyncUpdate()
 
     for (const auto &clip : this->clipsToUpdate)
     {
-        jassert(clip.isValid());
-
-        if (!clip.isValid() ||
-            (!clip.hasModifiers() && this->generatedSequences.contains(clip)))
+        if (!clip.isValid())
         {
-            this->project.broadcastReloadGeneratedSequence(clip, nullptr);
-            this->generatedSequences.erase(clip);
+            jassertfalse;
+            continue;
+        }
+
+        if (!clip.hasModifiers())
+        {
+            if (this->generatedSequences.contains(clip))
+            {
+                this->project.broadcastReloadGeneratedSequence(clip, nullptr);
+                this->generatedSequences.erase(clip);
+            }
+
             continue;
         }
 

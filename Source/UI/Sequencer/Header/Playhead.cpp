@@ -71,6 +71,7 @@ void Playhead::onSeek(float beatPosition)
 
 void Playhead::onCurrentTempoChanged(double msPerQuarter)
 {
+    jassert(msPerQuarter >= 0.01);
     this->msPerQuarterNote = jmax(msPerQuarter, 0.01);
 
     if (this->isTimerRunning())
@@ -182,12 +183,12 @@ void Playhead::updatePosition(float position)
 {
     const int newX = this->roll.getXPositionByBeat(position, float(this->getParentWidth()));
 
-    this->setTopLeftPosition(newX, 0);
-
     if (this->listener != nullptr)
     {
-        this->listener->onPlayheadMoved(newX);
+        this->listener->onMovePlayhead(this->getX(), newX);
     }
+
+    this->setTopLeftPosition(newX, 0);
 }
 
 void Playhead::updatePosition()
