@@ -523,7 +523,7 @@ void VelocityEditor::setEditableClip(Optional<Clip> clip)
 
 void VelocityEditor::setEditableClip(const Clip &selectedClip, const EventFilter &)
 {
-    this->setEditableClip(selectedClip); // event filters not supported here
+    this->setEditableClip(selectedClip); // event filters aren't supported here
 }
 
 void VelocityEditor::setEditableSelection(WeakReference<Lasso> selection)

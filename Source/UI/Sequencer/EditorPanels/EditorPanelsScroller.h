@@ -120,12 +120,12 @@ private:
 
     enum class EditorPanelSelectionMode
     {
-        Manual, // let user decide what to edit, e.g. velocity, tempo, pedals
-        Automatic // based on the which clip is currently selected
+        PianoRoll, // let user decide what to edit, e.g. velocity, tempo, pedals
+        PatternRoll // based on the which clip is currently selected
     };
 
     EditorPanelSelectionMode editorPanelSelectionMode =
-        EditorPanelSelectionMode::Manual;
+        EditorPanelSelectionMode::PianoRoll;
 
     int selectedEditorPanelIndex = 0;
     EditorPanelBase::EventFilter selectedEventFilter;

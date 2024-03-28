@@ -103,7 +103,7 @@ void EditorPanelsScroller::switchToRoll(SafePointer<RollBase> roll)
 
     // in piano roll, allow manually switching between velocity and various automation tracks
     this->editorPanelSelectionMode = dynamic_cast<PianoRoll *>(roll.getComponent()) != nullptr ?
-        EditorPanelSelectionMode::Manual : EditorPanelSelectionMode::Automatic;
+        EditorPanelSelectionMode::PianoRoll : EditorPanelSelectionMode::PatternRoll;
 
     auto *editor = this->showEditorPanel(this->selectedEditorPanelIndex);
     if (this->activeClip.isValid())
@@ -298,7 +298,7 @@ void EditorPanelsScroller::onChangeClip(const Clip &clip, const Clip &newClip)
     }
 }
 
-// Only called when the piano roll is switched to another clip;
+// only called when the piano roll is switched to another clip:
 void EditorPanelsScroller::onChangeViewEditableScope(MidiTrack *const, const Clip &clip, bool)
 {
     this->activeClip = clip;
@@ -311,7 +311,7 @@ void EditorPanelsScroller::onChangeViewEditableScope(MidiTrack *const, const Cli
         }
     }
 
-    if (this->editorPanelSelectionMode == EditorPanelSelectionMode::Automatic)
+    if (this->editorPanelSelectionMode == EditorPanelSelectionMode::PatternRoll)
     {
         jassertfalse; // piano roll is intended to use manual switching mode
         auto *editor = this->showEditorPanelForClip(clip);
@@ -324,7 +324,7 @@ void EditorPanelsScroller::onChangeViewEditableScope(MidiTrack *const, const Cli
     }
 }
 
-// Can be called by both the piano roll and the pattern roll
+// can be called by both the piano roll and the pattern roll:
 void EditorPanelsScroller::changeListenerCallback(ChangeBroadcaster *source)
 {
     jassert(dynamic_cast<Lasso *>(source));
@@ -343,7 +343,7 @@ void EditorPanelsScroller::changeListenerCallback(ChangeBroadcaster *source)
         {
             auto *cc = selection->getFirstAs<ClipComponent>();
 
-            if (this->editorPanelSelectionMode == EditorPanelSelectionMode::Automatic)
+            if (this->editorPanelSelectionMode == EditorPanelSelectionMode::PatternRoll)
             {
                 auto *editor = this->showEditorPanelForClip(cc->getClip());
                 editor->setEditableClip(cc->getClip());

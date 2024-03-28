@@ -588,13 +588,18 @@ void AutomationEditor::setEditableClip(Optional<Clip> clip)
 
 void AutomationEditor::setEditableClip(const Clip &selectedClip, const EventFilter &filter)
 {
-    const auto *selectedSequence = selectedClip.getPattern()->getTrack()->getSequence();
+    jassert(selectedClip.isValid());
+    const auto *selectedTrack = selectedClip.getPattern()->getTrack();
     const auto selectedRange = Range<float>(
-        selectedSequence->getFirstBeat() + selectedClip.getBeat(),
-        selectedSequence->getLastBeat() + selectedClip.getBeat());
+        selectedTrack->getSequence()->getFirstBeat() + selectedClip.getBeat(),
+        selectedTrack->getSequence()->getLastBeat() + selectedClip.getBeat());
 
-    Clip matchingClip;
-    float maxIntersectionLength = -1.f;
+    Clip matchByRange;
+    float maxIntersection = -1.f;
+
+    Clip matchByRangeAndInstrument;
+    float maxIntersectionForInstrument = -1.f;
+
     for (const auto &map : this->patternMap)
     {
         const auto *track = map.first.getPattern()->getTrack();
@@ -611,17 +616,29 @@ void AutomationEditor::setEditableClip(const Clip &selectedClip, const EventFilt
         const auto intersectionLength = selectedRange
             .getIntersectionWith(matchingRange).getLength();
 
-        if (intersectionLength > maxIntersectionLength)
+        if (track->getTrackChannel() == selectedTrack->getTrackChannel() &&
+            track->getTrackInstrumentId() == selectedTrack->getTrackInstrumentId() &&
+            intersectionLength > maxIntersectionForInstrument)
         {
-            maxIntersectionLength = intersectionLength;
-            matchingClip = map.first;
+            maxIntersectionForInstrument = intersectionLength;
+            matchByRangeAndInstrument = map.first;
+        }
+
+        if (intersectionLength > maxIntersection)
+        {
+            maxIntersection = intersectionLength;
+            matchByRange = map.first;
         }
     }
 
-    jassert(matchingClip.isValid());
-    if (matchingClip.isValid())
+    jassert(matchByRange.isValid());
+    if (matchByRangeAndInstrument.isValid())
     {
-        this->setEditableClip(matchingClip);
+        this->setEditableClip(matchByRangeAndInstrument);
+    }
+    else if (matchByRange.isValid())
+    {
+        this->setEditableClip(matchByRange);
     }
 }
 
