@@ -4,7 +4,7 @@
 
 ## Why another sequencer?
 
-Most of the DAW interfaces often seem [overcomplicated](http://mashable.com/2015/09/18/german-u-boat/), and they only tend to get more and more bloated over time. Many of them are commercial, proprietary-licensed and almost none of them support all major operating systems at the same time.
+Most of the DAW interfaces often seem [overcomplicated](https://mashable.com/archive/german-u-boat), and they only tend to get more and more bloated over time. Many of them are commercial, proprietary-licensed and almost none of them support all major operating systems at the same time.
 
 Helio is an attempt to rethink a music sequencer to create a tool that **feels right**.
 
