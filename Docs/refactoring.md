@@ -4,6 +4,32 @@ This page describes various refactoring options, available via selection menus a
 
 ![refactoring-menu]
 
+### Melodic inversion
+
+The `Alt + I` hotkey applies melodic inversion to selected notes. This contrapuntal derivation is better [described on Wikipedia](https://wikipedia.org/wiki/Inversion_(music)#Melodies); in short, it "flips" the melodic line upside down.
+
+### Retrograde
+
+The `Alt + R` hotkey applies another contrapuntal derivation, [retrograde](https://wikipedia.org/wiki/Retrograde_(music)) or "walking backward".
+
+[Retrograde inversion](https://wikipedia.org/wiki/Retrograde_inversion), which is "backwards and upside down", can be done by combining inversion and retrograde.
+
+**Tip**: use the retrograde hotkey to quickly swap two neighbor chords:
+
+![retrograde-swap-chords]
+
+Or to swap two notes like this:
+
+![retrograde-swap-notes]
+
+The retrograde hotkey also works in the pattern roll, re-ordering all selected clips backwards for each row:
+
+![reverse-clips-order]
+
+### Cleanup overlaps
+
+The `Alt + O` hotkey removes duplicate notes and corrects lengths in a way that notes do not overlap.
+
 ## Transposition and inversion
 
 Not listed in the menu, but also handy: the `Shift + Up` and `Shift + Down` hotkeys transpose the selected notes one octave up or down.
@@ -30,31 +56,9 @@ The notes which are out of scale will be aligned up or down to the nearest in-sc
 
 More generally, you can think of it as "transposition using highlighted rows only". For example, when the scales highlighting [flag](tips-and-tricks.md#ui-flags) is turned off, it can be useful in microtonal temperaments to transpose notes using only those keys which [approximate](configs.md#temperaments) the 12-tone scale.
 
-### Melodic inversion
+#### Align to scale
 
-The `Alt + I` hotkey applies melodic inversion to selected notes. This contrapuntal derivation is better [described on Wikipedia](https://wikipedia.org/wiki/Inversion_(music)#Melodies); in short, it "flips" the melodic line upside down.
-
-### Retrograde
-
-The `Alt + R` hotkey applies another contrapuntal derivation, [retrograde](https://wikipedia.org/wiki/Retrograde_(music)) or "walking backward".
-
-[Retrograde inversion](https://wikipedia.org/wiki/Retrograde_inversion), which is "backwards and upside down", can be done by combining inversion and retrograde.
-
-**Tip**: use the retrograde hotkey to quickly swap two neighbor chords:
-
-![retrograde-swap-chords]
-
-Or to swap two notes like this:
-
-![retrograde-swap-notes]
-
-The retrograde hotkey also works in the pattern roll, re-ordering all selected clips backwards for each row:
-
-![reverse-clips-order]
-
-### Cleanup overlaps
-
-The `Alt + O` hotkey removes duplicate notes and corrects lengths in a way that notes do not overlap.
+Similarly to above, the `Alt + A` hotkey will snap the selected notes to the nearest highlighted rows.
 
 ### Staccato and legato
 

@@ -2,11 +2,15 @@
 
 This page lists features, hacks, and nuances that may be handy, non-obvious, or both.
 
-## Piano roll
+### Faster playback
+
+Hitting `Space` or `Enter` twice will start playback at 1.5x speed, which can be useful for quickly previewing a sequence, e.g. when prototyping a chord progression.
+
+Alternatively, double-click or middle-click in the roll header while holding any modifier key, or long-tap the play button in the corner.
 
 ### Warnings
 
-During playback, Helio may sometimes draw red or yellow vertical warning lines:
+During playback, the sequencer may sometimes draw red or yellow vertical warning lines:
 
 ![warnings]
 
@@ -110,11 +114,6 @@ It can be dragged around by the center node, which is helpful if you clicked the
 
 Since it depends on the harmonic context, it will do nothing when placed on an out-of-scale note (darker rows). To avoid confusion, make sure the [scales highlighting](#ui-flags) option is enabled.
 
-#### See also: [piano roll hotkeys](hotkeys.md#piano-roll), [refactoring options](refactoring.md)
-
-
-## Pattern roll
-
 ### Knife tool
 
 In my workflow, I'm often adding new tracks with a knife tool: even though there's a normal way to add an empty track via project menu, or duplicate a track, I often end up having added some sketches in different places of a single sequence, and then seeing that they represent different parts, and can be cut into different tracks after switching to the pattern mode:
@@ -139,7 +138,7 @@ When you select an item in the pattern roll, all of its instances are highlighte
 
 Track grouping also affects MIDI export: all segments on a single row are exported as a single track in the resulting MIDI file.
 
-#### See also: [pattern roll hotkeys](hotkeys.md#pattern-roll)
+#### See also: [piano roll hotkeys](hotkeys.md#piano-roll), [pattern roll hotkeys](hotkeys.md#pattern-roll), [refactoring options](refactoring.md)
 
 
 [space-drag]: images/space-drag.png "Dragging the canvas"
