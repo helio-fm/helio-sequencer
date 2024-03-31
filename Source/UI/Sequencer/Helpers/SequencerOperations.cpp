@@ -1349,56 +1349,6 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
     }
 }
 
-void SequencerOperations::deleteSelection(const Lasso &selection, bool shouldCheckpoint)
-{
-    if (selection.getNumSelected() == 0)
-    {
-        return;
-    }
-
-    OwnedArray<Array<Note>> selectionsByTrack;
-    for (int i = 0; i < selection.getNumSelected(); ++i)
-    {
-        const Note &note = selection.getItemAs<NoteComponent>(i)->getNote();
-        const MidiSequence *ownerSequence = note.getSequence();
-        Array<Note> *arrayToAddTo = nullptr;
-
-        for (int j = 0; j < selectionsByTrack.size(); ++j)
-        {
-            if (selectionsByTrack.getUnchecked(j)->size() > 0)
-            {
-                if (selectionsByTrack.getUnchecked(j)->getUnchecked(0).getSequence() == ownerSequence)
-                {
-                    arrayToAddTo = selectionsByTrack.getUnchecked(j);
-                }
-            }
-        }
-
-        if (arrayToAddTo == nullptr)
-        {
-            arrayToAddTo = new Array<Note>();
-            selectionsByTrack.add(arrayToAddTo);
-        }
-
-        arrayToAddTo->add(note);
-    }
-
-    bool didCheckpoint = !shouldCheckpoint;
-
-    for (int i = 0; i < selectionsByTrack.size(); ++i)
-    {
-        auto sequence = static_cast<PianoSequence *>(selectionsByTrack.getUnchecked(i)->getUnchecked(0).getSequence());
-
-        if (!didCheckpoint)
-        {
-            sequence->checkpoint();
-            didCheckpoint = true;
-        }
-
-        sequence->removeGroup(*selectionsByTrack.getUnchecked(i), true);
-    }
-}
-
 void SequencerOperations::shiftKeyRelative(const NoteListBase &notes,
     int deltaKey, bool undoable, bool shouldCheckpoint)
 {
@@ -2183,53 +2133,48 @@ bool SequencerOperations::findHarmonicContext(const NoteListBase &notes, const C
 
 void SequencerOperations::duplicateSelection(const Lasso &selection, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0)
+    if (selection.size() == 0)
     {
         return;
     }
 
-    // fixme: cleanup this; the selection will always contain notes for 1 track
-    OwnedArray<Array<Note>> selectionsByTrack;
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    auto *sequence = getPianoSequence(selection);
+
+    Array<Note> newNotes;
+    for (int i = 0; i < selection.size(); ++i)
     {
-        const Note &note = selection.getItemAs<NoteComponent>(i)->getNote();
-        const MidiSequence *ownerSequence = note.getSequence();
-        Array<Note> *arrayToAddTo = nullptr;
-
-        for (int j = 0; j < selectionsByTrack.size(); ++j)
-        {
-            if (selectionsByTrack.getUnchecked(j)->size() > 0)
-            {
-                if (selectionsByTrack.getUnchecked(j)->getUnchecked(0).getSequence() == ownerSequence)
-                {
-                    arrayToAddTo = selectionsByTrack.getUnchecked(j);
-                }
-            }
-        }
-
-        if (arrayToAddTo == nullptr)
-        {
-            arrayToAddTo = new Array<Note>();
-            selectionsByTrack.add(arrayToAddTo);
-        }
-
-        arrayToAddTo->add(note.withNewId());
+        newNotes.add(selection.getNoteUnchecked(i).withNewId());
     }
 
-    bool didCheckpoint = !shouldCheckpoint;
-
-    for (int i = 0; i < selectionsByTrack.size(); ++i)
+    if (shouldCheckpoint)
     {
-        auto sequence = static_cast<PianoSequence *>(selectionsByTrack.getUnchecked(i)->getUnchecked(0).getSequence());
-
-        if (!didCheckpoint)
-        {
-            didCheckpoint = true;
-            sequence->checkpoint();
-        }
-
-        sequence->insertGroup(*selectionsByTrack.getUnchecked(i), true);
+        sequence->checkpoint();
     }
+
+    sequence->insertGroup(newNotes, true);
+}
+
+void SequencerOperations::deleteSelection(const Lasso &selection, bool shouldCheckpoint)
+{
+    if (selection.size() == 0)
+    {
+        return;
+    }
+
+    auto *sequence = getPianoSequence(selection);
+
+    Array<Note> removedNotes;
+    for (int i = 0; i < selection.size(); ++i)
+    {
+        removedNotes.add(selection.getNoteUnchecked(i));
+    }
+
+    if (shouldCheckpoint)
+    {
+        sequence->checkpoint();
+    }
+
+    sequence->removeGroup(removedNotes, true);
 }
 
 String SequencerOperations::findClosestOverlappingAnnotation(const Lasso &selection, WeakReference<MidiTrack> annotationsTrack)

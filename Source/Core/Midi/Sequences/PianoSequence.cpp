@@ -304,6 +304,25 @@ float PianoSequence::findLastBeat() const noexcept
 }
 
 //===----------------------------------------------------------------------===//
+// NoteListBase
+//===----------------------------------------------------------------------===//
+
+int PianoSequence::size() const noexcept
+{
+    return MidiSequence::size();
+}
+
+const Note &PianoSequence::getNoteUnchecked(int i) const
+{
+    return *static_cast<Note *>(this->getUnchecked(i));
+}
+
+UndoActionId PianoSequence::generateTransactionId(int actionId) const
+{
+    return actionId + this->getTrackId().hashCode();
+}
+
+//===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 

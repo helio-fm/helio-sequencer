@@ -1308,9 +1308,6 @@ SerializedData PatternRoll::serialize() const
 
     tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY());
 
-    // m?
-    //tree.setProperty(UI::selection, this->selection.serialize(), nullptr);
-
     return tree;
 }
 
@@ -1330,13 +1327,10 @@ void PatternRoll::deserialize(const SerializedData &data)
 
     this->setBeatWidth(float(root.getProperty(UI::beatWidth, this->beatWidth)));
 
-    // FIXME doesn't work right for now, as view range is sent after this
     const float startBeat = float(root.getProperty(UI::startBeat, 0.f));
     const int x = this->getXPositionByBeat(startBeat);
     const int y = root.getProperty(UI::viewportPositionY);
     this->getViewport().setViewPosition(x, y);
-
-    // restore selection?
 }
 
 void PatternRoll::reset() {}

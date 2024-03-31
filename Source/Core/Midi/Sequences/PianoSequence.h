@@ -74,17 +74,9 @@ public:
     // NoteListBase
     //===------------------------------------------------------------------===//
 
-    int size() const noexcept override
-    {
-        return MidiSequence::size();
-    }
-
-    const Note &getNoteUnchecked(int i) const override
-    {
-        return *static_cast<Note *>(this->getUnchecked(i));
-    }
-
-    UndoActionId generateTransactionId(int actionId) const override { return 0; }
+    int size() const noexcept override;
+    const Note &getNoteUnchecked(int i) const override;
+    UndoActionId generateTransactionId(int actionId) const override;
 
     //===------------------------------------------------------------------===//
     // Serializable

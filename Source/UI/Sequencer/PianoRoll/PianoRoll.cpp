@@ -2116,13 +2116,10 @@ void PianoRoll::deserialize(const SerializedData &data)
     this->newNoteLength = root.getProperty(UI::defaultNoteLength, this->newNoteLength);
     this->newNoteVolume = root.getProperty(UI::defaultNoteVolume, this->newNoteVolume);
 
-    // FIXME doesn't work right for now, as view range is sent after this
     const float startBeat = float(root.getProperty(UI::startBeat, 0.f));
     const int x = this->getXPositionByBeat(startBeat);
     const int y = root.getProperty(UI::viewportPositionY);
     this->getViewport().setViewPosition(x, y);
-
-    // restore selection?
 }
 
 void PianoRoll::reset() {}
