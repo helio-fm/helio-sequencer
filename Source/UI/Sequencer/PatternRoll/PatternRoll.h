@@ -127,9 +127,9 @@ protected:
 private:
 
 #if PLATFORM_DESKTOP
-    static constexpr auto clipHeight = 54;
+    static constexpr auto clipHeight = 55;
 #elif PLATFORM_MOBILE
-    static constexpr auto clipHeight = 38;
+    static constexpr auto clipHeight = 37;
 #endif
 
     static constexpr auto trackHeaderHeight = 3;
@@ -138,7 +138,8 @@ private:
 private:
 
     Image rowPattern;
-    static Image renderRowsPattern(const HelioTheme &theme, int height);
+    static constexpr auto rowPatternHeight = rowHeight * 8;
+    static Image renderRowsPattern(const HelioTheme &theme);
     void repaintBackgroundsCache();
 
     void reloadRollContent();

@@ -128,7 +128,7 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
         posY -= currentHeight;
     }
 
-    HelioTheme::drawNoise(theme, g, 2.f);
+    HelioTheme::drawNoise(theme, g, 1.5f);
 
     return patternImage;
 }

@@ -90,7 +90,7 @@ const String &ClipComponent::getSelectionGroupId() const noexcept
 
 Rectangle<int> ClipComponent::getTextArea() const noexcept
 {
-    return Rectangle<int>(4, 5,
+    return Rectangle<int>(4, 4,
         jmax(0, this->getWidth() - 8), jmax(0, this->getHeight() - 7));
 }
 
@@ -280,12 +280,12 @@ void ClipComponent::paint(Graphics &g)
     if (this->flags.isSelected)
     {
         // top and bottom lines
-        g.fillRect(1.f, 1.f, jmax(0.f, w - 2.f), 3.f);
+        g.fillRect(1.f, 0.f, jmax(0.f, w - 2.f), 3.f);
         g.fillRect(1, int(h - 1), jmax(0, int(w - 2)), 1);
 
         // volume multiplier indicator
         const float fs = (w - 4.f) - ((w - 4.f) * v);
-        g.fillRect(2.f + (fs / 2.f), 5.f, jmax(0.f, w - fs - 4.f), 2.f);
+        g.fillRect(2.f + (fs / 2.f), 4.f, jmax(0.f, w - fs - 4.f), 2.f);
         g.drawText(this->clip.getPattern()->getTrack()->getTrackName(),
             textBounds, Justification::bottomLeft, false);
     }
@@ -298,12 +298,12 @@ void ClipComponent::paint(Graphics &g)
         float i = 1.f;
         for (; i < right - dash; i += dash2)
         {
-            g.fillRect(i + 1.f, 1.f, dash, 1.f);
-            g.fillRect(i, 2.f, dash, 1.f);
+            g.fillRect(i + 1.f, 0.f, dash, 1.f);
+            g.fillRect(i, 1.f, dash, 1.f);
         }
 
-        g.fillRect(i + 1.f, 1.f, jmax(0.f, right - i - 1.f), 1.f);
-        g.fillRect(i, 2.f, jmax(0.f, right - i + 1.f), 1.f);
+        g.fillRect(i + 1.f, 0.f, jmax(0.f, right - i - 1.f), 1.f);
+        g.fillRect(i, 1.f, jmax(0.f, right - i + 1.f), 1.f);
     }
 
     if (this->clip.isMuted())
@@ -320,7 +320,7 @@ void ClipComponent::paint(Graphics &g)
     {
         constexpr float dash = 3.f;
         constexpr float dash2 = dash * 2.f;
-        for (float i = 2.f; i < this->getHeight() - 2.f; i += dash2)
+        for (float i = 1.f; i < this->getHeight() - 2.f; i += dash2)
         {
             g.fillRect(0.f, i, 1.f, dash);
             g.fillRect(float(this->getWidth() - 1), i, 1.f, dash);
@@ -329,24 +329,23 @@ void ClipComponent::paint(Graphics &g)
     else // left and right lines
     {
         g.setColour(this->frameBorderColour);
-        g.fillRect(0, 2, 1, this->getHeight() - 3);
-        g.fillRect(this->getWidth() - 1, 2, 1, this->getHeight() - 3);
+        g.fillRect(0, 1, 1, this->getHeight() - 2);
+        g.fillRect(this->getWidth() - 1, 1, 1, this->getHeight() - 2);
         g.setColour(this->frameCornerColour);
     }
     
     if (!this->flags.isSelected) // add little corners for the [  ] look
     {
         constexpr auto cornerSize = 3;
-        constexpr auto cornerMargin = 1;
 
         if (!this->flags.isInstanceOfSelected)
         {
-            g.fillRect(0, cornerMargin, cornerSize, 1);
-            g.fillRect(this->getWidth() - cornerSize, cornerMargin, cornerSize, 1);
+            g.fillRect(0, 0, cornerSize, 1);
+            g.fillRect(this->getWidth() - cornerSize, 0, cornerSize, 1);
         }
 
-        g.fillRect(0, this->getHeight() - cornerMargin, cornerSize, 1);
-        g.fillRect(this->getWidth() - cornerSize, this->getHeight() - cornerMargin, cornerSize, 1);
+        g.fillRect(0, this->getHeight() - 1, cornerSize, 1);
+        g.fillRect(this->getWidth() - cornerSize, this->getHeight() - 1, cornerSize, 1);
     }
 }
 
