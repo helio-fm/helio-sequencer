@@ -248,12 +248,25 @@ void GeneratedSequenceBuilder::handleAsyncUpdate()
         auto sequence = make<PianoSequence>(*originalTrack, *this,
             static_cast<const PianoSequence &>(*originalTrack->getSequence()));
 
-        for (const auto &modifier : clip.getModifiers())
+        // the clip object stored in clipsToUpdate is a copy with all
+        // the valid parameters, which we can use for generating a sequence,
+        // but it will be erased after that, and we'll need a reference
+        // to the original clip in the pattern to pass it to the listeners:
+        const int i = originalTrack->getPattern()->indexOfSorted(&clip);
+        if (i < 0)
         {
-            modifier->processSequence(this->project, clip, *sequence);
+            jassertfalse; // deleted already? shouldn't happen ever
+            continue;
         }
 
-        this->project.broadcastReloadGeneratedSequence(clip, sequence.get());
+        const auto *originalClip = originalTrack->getPattern()->getUnchecked(i);
+
+        for (const auto &modifier : originalClip->getModifiers())
+        {
+            modifier->processSequence(this->project, *originalClip, *sequence);
+        }
+
+        this->project.broadcastReloadGeneratedSequence(*originalClip, sequence.get());
         this->generatedSequences[clip] = move(sequence);
     }
 

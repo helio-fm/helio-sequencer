@@ -160,10 +160,6 @@ MidiTrack *MidiSequence::getTrack() const noexcept
     return &this->track;
 }
 
-// Todo someday: refactor SequencerOperations in a way that
-// its methods would receive UndoStack reference explicitly
-// rather than accessing it through the sequence:
-
 ProjectNode *MidiSequence::getProject() const noexcept
 {
     return this->eventDispatcher.getProject();
@@ -173,7 +169,6 @@ UndoStack *MidiSequence::getUndoStack() const noexcept
 {
     return this->eventDispatcher.getProject()->getUndoStack();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Events change listener

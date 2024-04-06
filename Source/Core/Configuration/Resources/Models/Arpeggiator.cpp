@@ -95,15 +95,15 @@ float Arpeggiator::DiatonicMapper::mapArpVelocityIntoChord(const Arpeggiator::Ke
 {
     switch (arpKey.key)
     {
-    case 0: return arpKey.velocity * 0.3f + this->getChordVelocity(chord, 0) * 0.7f;
-    case 1: return arpKey.velocity * 0.3f + this->getChordVelocity(chord, 0) * 0.7f;
-    case 2: return arpKey.velocity * 0.3f + this->getChordVelocity(chord, 1) * 0.7f;
-    case 3: return arpKey.velocity * 0.3f + this->getChordVelocity(chord, 1) * 0.7f;
-    case 4: return arpKey.velocity * 0.3f + this->getChordVelocity(chord, 2) * 0.7f;
-    case 5: return arpKey.velocity * 0.3f + this->getChordVelocity(chord, 2) * 0.7f;
+    case 0: return arpKey.velocity * 0.75f + this->getChordVelocity(chord, 0) * 0.25f;
+    case 1: return arpKey.velocity * 0.75f + this->getChordVelocity(chord, 0) * 0.25f;
+    case 2: return arpKey.velocity * 0.75f + this->getChordVelocity(chord, 1) * 0.25f;
+    case 3: return arpKey.velocity * 0.75f + this->getChordVelocity(chord, 1) * 0.25f;
+    case 4: return arpKey.velocity * 0.75f + this->getChordVelocity(chord, 2) * 0.25f;
+    case 5: return arpKey.velocity * 0.75f + this->getChordVelocity(chord, 2) * 0.25f;
     case 6: return (chord.size() <= 3) ? 
-        arpKey.velocity * 0.3f + this->getChordVelocity(chord, 2) * 0.7f :
-        arpKey.velocity * 0.3f + this->getChordVelocity(chord, 3) * 0.7f;
+        arpKey.velocity * 0.75f + this->getChordVelocity(chord, 2) * 0.25f :
+        arpKey.velocity * 0.75f + this->getChordVelocity(chord, 3) * 0.25f;
     default: jassertfalse; return arpKey.velocity;
     }
 }
