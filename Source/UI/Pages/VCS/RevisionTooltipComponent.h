@@ -48,10 +48,10 @@ private:
 #if PLATFORM_DESKTOP
     static constexpr auto numRowsOnScreen = 5;
 #elif PLATFORM_MOBILE
-    static constexpr auto numRowsOnScreen = 4;
+    static constexpr auto numRowsOnScreen = 3;
 #endif
 
-    static constexpr auto rowHeight = 56;
+    static constexpr auto rowHeight = 58;
 
     const VCS::Revision::Ptr revision;
     const ReferenceCountedArray<VCS::RevisionItem> revisionItemsOnly;

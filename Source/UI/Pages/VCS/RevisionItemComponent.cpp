@@ -34,17 +34,15 @@ public:
 
     void paint(Graphics &g) override
     {
-        const float height = float(this->getHeight());
-        const auto imgOk = Icons::findByName(Icons::apply, int(height * 0.5f));
-
-        g.setColour(Colours::black.withAlpha(0.15f));
-        g.fillRoundedRectangle(4.0f, 3.0f,
-            float(this->getWidth() - 10), float(this->getHeight() - 10), 2.f);
+        g.setColour(Colours::black.withAlpha(0.125f));
+        g.fillRoundedRectangle(3.f, 2.f,
+            float(this->getWidth() - 6), float(this->getHeight() - 6), 2.f);
 
         if (this->getWidth() > 100)
         {
-            g.setOpacity(0.45f);
+            g.setOpacity(0.5f);
             const int rightTextBorder = this->getWidth() - this->getHeight() / 2 - 5;
+            const auto imgOk = Icons::findByName(Icons::apply, int(float(this->getHeight()) * 0.5f));
             Icons::drawImageRetinaAware(imgOk, g, rightTextBorder, this->getHeight() / 2 - 2);
         }
     }
@@ -88,18 +86,20 @@ RevisionItemComponent::~RevisionItemComponent() = default;
 
 void RevisionItemComponent::resized()
 {
-    this->itemLabel->setBounds(8, 3, this->getWidth() - 16, 24);
-    this->deltasLabel->setBounds(8, 24, this->getWidth() - 24, 24);
-    this->separator->setBounds(10, this->getHeight() - 3, this->getWidth() - 24, 2);
-
     if (this->isEnabled())
     {
+        this->itemLabel->setBounds(6, 2, this->getWidth() - 12, 24);
+        this->deltasLabel->setBounds(6, 22, this->getWidth() - 24, 24);
         this->selectionComponent->setBounds(this->getLocalBounds());
     }
     else
     {
-        this->deltasLabel->setBounds(5, 25, this->getWidth() - 30, this->getHeight() - 32);
+        // assume compact mode
+        this->itemLabel->setBounds(4, 2, this->getWidth() - 8, 18);
+        this->deltasLabel->setBounds(4, 18, this->getWidth() - 16, this->getHeight() - 18);
     }
+
+    this->separator->setBounds(8, this->getHeight() - 2, this->getWidth() - 16, 2);
 }
 
 void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemInfo,

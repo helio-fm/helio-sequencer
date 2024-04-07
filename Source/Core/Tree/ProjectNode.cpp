@@ -427,6 +427,12 @@ Range<float> ProjectNode::calculateProjectBeatRange() const
     for (const auto &i : this->tracksRefsCache)
     {
         const auto *track = i.second.get();
+        if (track == nullptr)
+        {
+            jassertfalse;
+            continue;
+        }
+
         if (track->getSequence()->isEmpty())
         {
             // ignore empty tracks as they affect the project range in a misleading way

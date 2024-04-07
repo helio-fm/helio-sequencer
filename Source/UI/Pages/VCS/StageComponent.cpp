@@ -40,16 +40,14 @@ StageComponent::StageComponent(VersionControl &versionControl) : vcs(versionCont
 
     this->changesList = make<ListBox>(String(), this);
     this->addAndMakeVisible(this->changesList.get());
-
-    this->separator = make<SeparatorHorizontalFadingReversed>();
-    this->addAndMakeVisible(this->separator.get());
-
+    this->changesList->setWantsKeyboardFocus(false);
     this->changesList->getViewport()->setScrollBarThickness(2);
     this->changesList->getViewport()->setScrollBarsShown(true, false);
     this->changesList->setMultipleSelectionEnabled(true);
+    this->changesList->setRowHeight(48);
 
-    constexpr auto rowHeight = 56;
-    this->changesList->setRowHeight(rowHeight);
+    this->separator = make<SeparatorHorizontalFadingReversed>();
+    this->addAndMakeVisible(this->separator.get());
 
     this->updateList();
 }

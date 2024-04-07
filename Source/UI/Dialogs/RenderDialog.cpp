@@ -95,6 +95,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     this->renderButton = make<TextButton>();
     this->addAndMakeVisible(this->renderButton.get());
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderProceed));
+    this->renderButton->setWantsKeyboardFocus(false);
     this->renderButton->onClick = [this]() {
         this->startOrAbortRender();
     };
@@ -114,6 +115,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
 
     this->addAndMakeVisible(this->browseButton.get());
     this->browseButton->setMouseCursor(MouseCursor::PointingHandCursor);
+    this->browseButton->setWantsKeyboardFocus(false);
 
     this->pathLabel = make<Label>();
     this->addAndMakeVisible(this->pathLabel.get());

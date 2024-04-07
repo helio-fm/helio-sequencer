@@ -181,18 +181,16 @@ void AutomationStepEventComponent::mouseUp(const MouseEvent &e)
         this->isDragging = false;
     }
 
-    if (!this->anyChangeDone)
-    {
-        const auto isPenMode = this->editor.hasEditMode(RollEditMode::drawMode);
+    const auto isPenMode = this->editor.hasEditMode(RollEditMode::drawMode);
 
-        if (e.mods.isRightButtonDown() || (e.source.isTouch() && isPenMode))
+    if (e.mods.isRightButtonDown() ||
+        (e.source.isTouch() && isPenMode && !this->anyChangeDone))
+    {
+        auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
+        if (sequence->size() > 1) // no empty automation tracks please
         {
-            auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
-            if (sequence->size() > 1) // no empty automation tracks please
-            {
-                sequence->checkpoint();
-                sequence->remove(this->event, true);
-            }
+            sequence->checkpoint();
+            sequence->remove(this->event, true);
         }
     }
 }
