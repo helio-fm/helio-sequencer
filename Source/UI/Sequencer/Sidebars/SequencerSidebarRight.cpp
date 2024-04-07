@@ -159,10 +159,10 @@ void SequencerSidebarRight::recreateMenu()
     //this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::EditModePan)->
     //    toggledIf(dragMode)->withTooltip(TRANS(I18n::Tooltips::editModeDrag)));
 
-#if PLATFORM_MOBILE
-    this->menu.add(MenuItem::item(Icons::undo, CommandIDs::Undo));
-    this->menu.add(MenuItem::item(Icons::redo, CommandIDs::Redo));
-#endif
+    // Undo/redo buttons make less sense on desktop because of hotkeys,
+    // but they may still be useful at times because of how often they are needed
+    this->menu.add(MenuItem::item(Icons::undo, CommandIDs::Undo)->withTooltip({}));
+    this->menu.add(MenuItem::item(Icons::redo, CommandIDs::Redo)->withTooltip({}));
 
     if (this->menuMode == MenuMode::PianoRollTools)
     {
