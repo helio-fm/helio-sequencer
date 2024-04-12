@@ -174,11 +174,21 @@ If you need to manage complex rhythms, see [this page](getting-polymetric.md).
 
 #### Key signatures
 
-Key signatures affect the way the rows are highlighted in the piano roll, but this can be [disabled](tips-and-tricks.md#ui-flags).
+Key signatures affect the way the rows are highlighted in the piano roll (but this effect can be [disabled](tips-and-tricks.md#scales-highlighting)).
 
 ![timeline-key-signatures]
 
-Apart from that, arpeggiators and a [couple](tips-and-tricks.md#chord-tool) of [other tools](tips-and-tricks.md#quick-rescale-tool) rely on key signatures to figure out the current harmonic context.
+Key signatures also affect note naming, and various tools like [arpeggiators](refactoring.md#arpeggiators) and [the chord tool](tips-and-tricks.md#chord-tool) rely on key signatures to figure out the harmonic context.
+
+A key signature is a combination of the root key and the scale:
+
+![key-signature-dialog]
+
+*Tip: right-click on any key button to preview it.*
+
+The root key selection allows you to pick one of the key's enharmonic equivalents, which only affects [note naming](tips-and-tricks.md#note-name-guides) to provide better compatibility with traditional notation language.
+
+A scale is defined as a subset of the current temperament's octave keys. While this is not the same as how traditional notation defines, say, [diatonic scales](https://wikipedia.org/wiki/Diatonic_scale), this approach is flexible and makes more sense for the piano roll.
 
 #### Reprise
 
@@ -361,6 +371,7 @@ The right side shows the tree of all revisions that you have saved. Note a coupl
 [timeline-key-signatures]: images/timeline-key-signatures.png "Timeline: key signature events"
 [timeline-time-signatures]: images/timeline-time-signatures.png "Timeline: time signature events"
 [timeline-reprise]: images/timeline-reprise.png "Timeline: repeat signs"
+[key-signature-dialog]: images/key-signature-dialog.png "Key signature dialog"
 
 [sidebar-left-1]: images/sidebar-left-1.png "Navigation sidebar 1"
 [sidebar-left-2]: images/sidebar-left-2.png "Navigation sidebar 2"

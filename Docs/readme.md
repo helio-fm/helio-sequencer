@@ -4,7 +4,7 @@ Welcome to the documentation for the Helio project, a free lightweight music seq
 
 Helio was designed to save me time struggling with the MIDI editor, so I could focus more on musical ideas. In this documentation, I'll also try to save time by keeping it as short and simple as possible.
 
-If you notice that something important is missing, which I'm pretty sure it is, send me an angry [email](mailto:peter.rudenko@gmail.com), or file a [PR](https://github.com/helio-fm/helio-sequencer/pulls) on Github.
+If you notice that something important is missing, send me an [email](mailto:peter.rudenko@gmail.com), or file a [PR](https://github.com/helio-fm/helio-sequencer/pulls) on Github.
 
 *Some generated content will be missing if you read this page in the project's repository, see the full rendered version at [docs.helio.fm](https://docs.helio.fm).*
 

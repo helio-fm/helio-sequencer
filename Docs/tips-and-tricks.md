@@ -84,13 +84,21 @@ You can also adjust notes volume linearly just by middle-button dragging the not
 
 A couple of display options are available to provide a visual cue. They can be toggled using the navigation panel or hotkeys (`G` and `H` by default).
 
-The first is used for displaying the note name guides:
+#### Note name guides
+
+The `G` hotkey toggles the note name guides:
 
 ![note-names]
 
-Another highlights the in-scale keys of the key signatures that have been added to the timeline. If you prefer C Major coloring in the piano roll, just turn it off:
+Note names depend on the root key of a key signature found at the start of the viewport or selection (see the comment for the [temperament model](configs.md#temperaments)).
+
+#### Scales highlighting
+
+Another flag highlights the in-scale keys of the key signatures that have been added to the timeline. If you prefer C Major coloring in the piano roll, turn it off:
 
 ![scales-highlighting]
+
+#### Mini-maps
 
 The mini-map mode can be toggled with `B` hotkey, or by clicking at any area except the screen range rectangle.
 
@@ -112,7 +120,7 @@ It picks the current key signature from the timeline to determine which scale an
 
 It can be dragged around by the center node, which is helpful if you clicked the wrong row or position.
 
-Since it depends on the harmonic context, it will do nothing when placed on an out-of-scale note (darker rows). To avoid confusion, make sure the [scales highlighting](#ui-flags) option is enabled.
+Since it depends on the harmonic context, it will do nothing when placed on an out-of-scale note (darker rows). To avoid confusion, make sure the [scales highlighting](#scales-highlighting) option is enabled.
 
 ### Knife tool
 

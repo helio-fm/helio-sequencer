@@ -1,5 +1,8 @@
-## ![Screenshot](Docs/images/screen-v3.png)
-[Helio](https://helio.fm) is free and open-source music sequencer, designed to be used on all major platforms.
+[Helio](https://helio.fm) is a free and open-source music sequencer for desktop and mobile platforms:
+
+![On desktop](Docs/images/screen-v3.png)
+
+![On mobile](Docs/images/screen-v3-mobile.png)
 
 
 ## Why another sequencer?
@@ -8,7 +11,7 @@ Most of the DAW interfaces often seem [overcomplicated](https://mashable.com/arc
 
 Helio is an attempt to rethink a music sequencer to create a tool that **feels right**.
 
-It aims to be a modern music creation software, featuring linear-based/pattern-based sequencer with clean UI, integrated version control for synchronizing project between devices, microtonal temperaments support, small portable builds and more; mainly targeted at hobbyist composers, game developers and indie artists. Check out this [YouTube channel](https://www.youtube.com/channel/UCO3K8iCd1k2FTqSocoE-WXw/) for some showcases.
+It aims to be a modern music creation software, featuring linear-based/pattern-based sequencer with clean UI, integrated version control, microtonal temperaments support, small portable builds and more; mainly targeted at hobbyist composers, game developers and indie artists. Check out this [YouTube channel](https://www.youtube.com/channel/UCO3K8iCd1k2FTqSocoE-WXw/) for some showcases.
 
 
 ## Getting started

@@ -54,7 +54,7 @@ Use the `Alt + Up` and `Alt + Down` hotkeys to transpose the selected notes usin
 
 The notes which are out of scale will be aligned up or down to the nearest in-scale keys.
 
-More generally, you can think of it as "transposition using highlighted rows only". For example, when the scales highlighting [flag](tips-and-tricks.md#ui-flags) is turned off, it can be useful in microtonal temperaments to transpose notes using only those keys which [approximate](configs.md#temperaments) the 12-tone scale.
+More generally, you can think of it as "transposition using highlighted rows only". For example, when the scales highlighting [flag](tips-and-tricks.md#scales-highlighting) is turned off, it can be useful in microtonal temperaments to transpose notes using only those keys which [approximate](configs.md#temperaments) the 12-tone scale.
 
 #### Align to scale
 
@@ -72,23 +72,25 @@ Pretty self-explanatory shorthand; this function is also available in the [comma
 
 ## Rescaling
 
-This re-aligns the selected notes into one of the parallel modes of the same tonic.
+This re-aligns the selected notes or the entire sequence into one of the parallel modes of the same tonic. You can think of it as introducing the in-place [modal interchange](https://wikipedia.org/wiki/Borrowed_chord).
 
-You can think of it as introducing the in-place [modal interchange](https://wikipedia.org/wiki/Borrowed_chord).
+As well as the [chord tool](tips-and-tricks.md#chord-tool), re-scaling assumes that the harmonic context is specified correctly.
 
-As well as the [chord tool](tips-and-tricks.md#chord-tool), re-scaling assumes that the harmonic context is specified correctly. In the example below, the first section is marked as D Dorian, and all of the notes in that section are in the key. Any out-of-scale notes will be left in their original positions.
+*Tip: press the `R` hotkey to apply re-scaling interactively instead of having to choose the target scale from menus.*
 
-Note that this function doesn't change the key signature. Consider using it for introducing brief or transitory variations to bring more harmonic color.
-
-If you want to re-scale an entire section of your piece, use the next option:
+Note that this function doesn't change the key signature. Consider using it for introducing brief or transitory variations to bring more harmonic color. If you want to re-scale an entire section of your piece, use the next option:
 
 #### Quick rescale tool
 
-Right-click on any key signature at the timeline (long-tap on mobile platforms) to choose another scale into which all tracks will be translated. This affects all notes in all tracks until the next key signature or the end of the project and updates the key signature.
+Right-click on any key signature at the timeline to choose another scale into which all tracks will be translated.
 
-This example shows rescaling, along with some undo/redo to demonstrate the difference:
+This affects all notes in all tracks until the next key signature or the end of the project and updates the key signature. Any out-of-scale notes will be left in their original positions:
 
-![quick-rescale]
+![quick-rescale-desktop]
+
+On mobile platforms, long-tap on the key signature:
+
+![quick-rescale-mobile]
 
 ## Arpeggiators
 
@@ -104,11 +106,15 @@ Arpeggiators also rely on time signatures to remember bar starts. When you apply
 
 Because the creation and use of arpeggiators is tied to harmonic context, arpeggiators rely on valid key signatures at the timeline.
 
- * First, create any sequence in the current key and scale (enable [scales highlighting](tips-and-tricks.md#ui-flags) to avoid confusion). Any out-of-scale keys will be ignored.
+ * First, create any sequence in the current key and scale (enable [scales highlighting](tips-and-tricks.md#scales-highlighting) to avoid confusion). Any out-of-scale keys will be ignored.
  * To create a named arpeggiator from that sequence, select it and press the `Shift + A` hotkey or select a submenu item.
  * After that, in any other place, apply that arpeggiator to any selection, presumably some chords.
 
-Arpeggiators is one of the unfinished parts of this app: there's still no convenient way to edit or delete an arpeggiator, other than manually editing your [arpeggiators.json](configs.md#user-configs) in the [documents](index.md#the-projects-directory) directory. Hopefully this will be improved in future; as a workaround for editing arpeggiators, I'm keeping a separate track just for arpeggiator sequences.
+### Editing arpeggiators
+
+Helio doesn't provide a separate editor for arpeggiators, but, since each arpeggiator is simply a sequence within a scale, consider the workaround that I ended up using: have a separate project just for arpeggiators and keep them in distinct tracks for convenience, so updating an arpeggiator after editing it is just selecting all events and pressing `Shift + A` to save it under the same name.
+
+To delete an arpeggiator, manually edit your [arpeggiators.json](configs.md#user-configs) in the [documents](index.md#the-projects-directory) directory.
 
 
 [refactoring-menu]: images/refactoring-menu.png "Selection refactoring menu"
@@ -116,5 +122,6 @@ Arpeggiators is one of the unfinished parts of this app: there's still no conven
 [retrograde-swap-chords]: images/retrograde-swap-chords.png "Swap two neighbor chords with Alt + R hotkey"
 [reverse-clips-order]: images/reverse-clips-order.png "Retrograde hotkey applied to pattern roll selection"
 [inscale-transposition]: images/inscale-transposition.png "In-scale transposition"
-[quick-rescale]: images/quick-rescale.png "The quick rescale tool"
+[quick-rescale-mobile]: images/quick-rescale-mobile.png "The quick rescale tool on mobile"
+[quick-rescale-desktop]: images/quick-rescale-desktop.png "The quick rescale tool on desktop"
 [staccato-legato]: images/staccato-legato.png "Staccato and legato shortcuts"
