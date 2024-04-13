@@ -53,8 +53,7 @@ void MidiTrackNode::safeRename(const String &newName, bool sendNotifications)
 
 void MidiTrackNode::setSelected(NotificationType shouldNotify)
 {
-    const auto *firstClip = this->getPattern()->getClips().getFirst();
-    this->setSelected(*firstClip, shouldNotify);
+    this->setSelected(this->getSelectedClip(), shouldNotify);
 }
 
 void MidiTrackNode::setSelected(const Clip &editableScope, NotificationType shouldNotify)
@@ -65,10 +64,15 @@ void MidiTrackNode::setSelected(const Clip &editableScope, NotificationType shou
 
 const Clip &MidiTrackNode::getSelectedClip() const
 {
+    if (!this->selectedClipId.isValid())
+    {
+        jassert(!this->getPattern()->getClips().isEmpty());
+        return *this->getPattern()->getClips().getFirst();
+    }
+
     const auto index = this->getPattern()->indexOfSorted(&this->selectedClipId);
     jassert(index >= 0);
-    return index >= 0 ?
-        *this->getPattern()->getClips()[index] : this->selectedClipId;
+    return index >= 0 ? *this->getPattern()->getClips()[index] : this->selectedClipId;
 }
 
 //===----------------------------------------------------------------------===//

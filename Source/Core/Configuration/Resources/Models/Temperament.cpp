@@ -22,11 +22,13 @@
 Temperament::Temperament(const Temperament &other) noexcept :
     id(other.id), name(other.name),
     period(other.period), middleC(other.middleC), keysTotal(other.keysTotal),
-    highlighting(other.highlighting), chromaticMap(other.chromaticMap) {}
+    highlighting(other.highlighting), chromaticMap(other.chromaticMap),
+    chromaticScales(other.chromaticScales) {}
 
 Temperament::Temperament(Temperament &&other) noexcept :
     id(other.id), name(other.name), middleC(other.middleC), keysTotal(other.keysTotal),
-    highlighting(other.highlighting), chromaticMap(other.chromaticMap)
+    highlighting(other.highlighting), chromaticMap(other.chromaticMap),
+    chromaticScales(other.chromaticScales)
 {
     this->period.swapWith(other.period);
 }
@@ -227,6 +229,7 @@ void Temperament::reset()
     this->period.clearQuick();
     this->highlighting.reset();
     this->chromaticMap.reset();
+    this->chromaticScales.clear();
 }
 
 Temperament &Temperament::operator=(const Temperament &other)
@@ -238,6 +241,7 @@ Temperament &Temperament::operator=(const Temperament &other)
     this->keysTotal = other.keysTotal;
     this->highlighting = other.highlighting;
     this->chromaticMap = other.chromaticMap;
+    this->chromaticScales = other.chromaticScales;
     return *this;
 }
 

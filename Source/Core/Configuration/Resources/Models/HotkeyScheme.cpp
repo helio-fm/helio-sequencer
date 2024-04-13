@@ -186,7 +186,6 @@ static inline CommandIDs::Id deserializeCommand(const SerializedData &e)
 {
     const auto command = e.getProperty(Serialization::UI::Hotkeys::hotkeyCommand);
     return CommandIDs::getIdForName(command);
-
 }
 
 void HotkeyScheme::deserialize(const SerializedData &data)

@@ -270,9 +270,6 @@ MenuPanel::Menu ClipMenu::makeInstrumentSelectionMenu()
 }
 
 
-
-
-
 //===----------------------------------------------------------------------===//
 // Parametric modifiers menus
 //===----------------------------------------------------------------------===//
@@ -308,11 +305,12 @@ MenuPanel::Menu ClipModifiersMenu::makeEditModifiersMenu(const MenuItem::Callbac
     for (const auto &modifier : this->clip.getModifiers())
     {
         menu.add(MenuItem::item(modifier->getIconId(), modifier->getDescription())->
-            withButton(true, Icons::close, [this, goBackToParent, modifier]()
+            withButton(true, modifier->isEnabled() ? Icons::toggleOn : Icons::toggleOff, [this, goBackToParent, modifier]()
             {
                 this->undoStack->beginNewTransaction();
                 this->clip.getPattern()->change(this->clip,
-                    this->clip.withRemovedModifier(modifier), true);
+                    this->clip.withUpdatedModifier(modifier,
+                        modifier->withEnabledFlag(!modifier->isEnabled())), true);
                 this->updateContent(this->makeEditModifiersMenu(goBackToParent), MenuPanel::None);
             })->
             withButton(modifier != this->clip.getModifiers().getFirst(), Icons::up, [this, goBackToParent, modifier]()
@@ -329,12 +327,11 @@ MenuPanel::Menu ClipModifiersMenu::makeEditModifiersMenu(const MenuItem::Callbac
                     this->clip.withShiftedModifier(modifier, 1), true);
                 this->updateContent(this->makeEditModifiersMenu(goBackToParent), MenuPanel::None);
             })->
-            withButton(true, modifier->isEnabled() ? Icons::toggleOn : Icons::toggleOff, [this, goBackToParent, modifier]()
+            withButton(true, Icons::close, [this, goBackToParent, modifier]()
             {
                 this->undoStack->beginNewTransaction();
                 this->clip.getPattern()->change(this->clip,
-                    this->clip.withUpdatedModifier(modifier,
-                        modifier->withEnabledFlag(!modifier->isEnabled())), true);
+                    this->clip.withRemovedModifier(modifier), true);
                 this->updateContent(this->makeEditModifiersMenu(goBackToParent), MenuPanel::None);
             })->
             disabledIf(!modifier->isEnabled())->

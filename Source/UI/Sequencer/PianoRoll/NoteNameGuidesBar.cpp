@@ -92,7 +92,7 @@ void NoteNameGuidesBar::updateContent()
 
         if (shouldBeVisible)
         {
-            c->setNoteName(temperament->getMidiNoteName(c->getNoteNumber(),
+            c->setNoteName(this->temperament->getMidiNoteName(c->getNoteNumber(),
                 this->scaleRootKey, this->scaleRootKeyName, true));
         }
 
@@ -101,7 +101,7 @@ void NoteNameGuidesBar::updateContent()
 
     for (const auto &key : this->selectedKeys)
     {
-        const auto noteName = temperament->getMidiNoteName(key,
+        const auto noteName = this->temperament->getMidiNoteName(key,
             this->scaleRootKey, this->scaleRootKeyName, true);
 
         if (key <= this->guides.size() - 1)

@@ -706,13 +706,13 @@ void SequencerLayout::handleCommandMessage(int commandId)
 
         if (this->rollContainer->isPatternRollMode())
         {
-            if (this->project.getLastShownTrack() == nullptr)
+            if (this->project.getLastShownTrack() != nullptr)
             {
-                this->project.selectFirstChildOfType<PianoTrackNode>();
+                this->project.getLastShownTrack()->setSelected();
             }
             else
             {
-                this->project.getLastShownTrack()->setSelected();
+                this->project.selectFirstChildOfType<PianoTrackNode>();
             }
         }
         else

@@ -69,7 +69,14 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
             closesMenu()->
             withAction([this, project]()
             {
-                project->selectFirstChildOfType<PianoTrackNode, PatternEditorNode>();
+                if (project->getLastShownTrack() != nullptr)
+                {
+                    project->getLastShownTrack()->setSelected();
+                }
+                else
+                {
+                    project->selectFirstChildOfType<PianoTrackNode, PatternEditorNode>();
+                }
             }));
     }
 

@@ -269,9 +269,16 @@ void Workspace::unloadProject(const String &projectId, bool deleteLocally, bool 
     
     if (shouldSwitchToOtherPage)
     {
-        if (projectToSwitchTo)
+        if (projectToSwitchTo != nullptr)
         {
-            projectToSwitchTo->setSelected();
+            if (projectToSwitchTo->getLastShownTrack() != nullptr)
+            {
+                projectToSwitchTo->getLastShownTrack()->setSelected();
+            }
+            else if (!projectToSwitchTo->selectFirstChildOfType<PianoTrackNode, PatternEditorNode>())
+            {
+                projectToSwitchTo->setSelected();
+            }
         }
         else
         {
