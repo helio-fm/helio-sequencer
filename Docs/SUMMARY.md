@@ -1,12 +1,14 @@
 # Summary
-- [Intro](./readme.md)
+- [Intro](readme.md)
   - [Release Notes](changelog.md)
 ---
-- [Getting Started](./getting-started.md)
-  - [Getting Microtonal](./getting-microtonal.md)
-  - [Getting Polymetric](./getting-polymetric.md)
+- [Getting Started](getting-started.md)
+  - [Getting Microtonal](getting-microtonal.md)
+  - [Getting Polymetric](getting-polymetric.md)
+---
 - [Tips And Tricks](tips-and-tricks.md)
   - [Refactoring](refactoring.md)
+  - [Parametric Modifiers](parametric-modifiers.md)
   - [Command Palette](command-palette.md)
 ---
 - [Configs](configs.md)
