@@ -17,16 +17,20 @@
 
 #pragma once
 
+#include "Lasso.h"
 #include "SelectableComponent.h"
 
 class SelectionComponent final : public Component, private Timer
 {
 public:
 
+    enum class LassoType { Rectangle, Path };
+
     SelectionComponent();
 
     void beginLasso(const Point<float> &position,
-        LassoSource<SelectableComponent *> *lassoSource);
+        DrawableLassoSource<SelectableComponent *> *lassoSource,
+        LassoType lassoType = LassoType::Rectangle);
     void dragLasso(const MouseEvent &e);
     void endLasso();
     bool isDragging() const;
@@ -36,18 +40,28 @@ public:
 
 private:
 
-    Array<SelectableComponent *> originalSelection;
-    LassoSource<SelectableComponent *> *source = nullptr;
+    LassoType lassoType = LassoType::Rectangle;
 
-    Point<double> startPosition { 0, 0 };
-    Point<double> endPosition { 0, 0 };
+    Array<SelectableComponent *> originalSelection;
+    DrawableLassoSource<SelectableComponent *> *source = nullptr;
+
+    // rectangle mode, the start and the end
+    // in absolute values, as a fraction of the parent size:
+    Point<double> startPosition;
+    Point<double> endPosition;
+
+    // drawing mode, the raw positions in absolute values,
+    // the reduced points in pixels, and paths for painting:
+    Array<Point<double>> drawnAreaRaw;
+    Array<Point<float>> drawnArea;
+    Path drawnPathFill;
+    Path drawnPathOutline;
 
     const Point<double> getParentSize() const;
 
 private:
 
-    // some helpers for the fancy animation stuff
-
+    // some helpers for the fancy animations
     void timerCallback() override;
     void fadeIn();
     void fadeOut();

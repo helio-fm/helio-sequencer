@@ -490,7 +490,7 @@ void PatternRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks,
 }
 
 //===----------------------------------------------------------------------===//
-// LassoSource
+// DrawableLassoSource
 //===----------------------------------------------------------------------===//
 
 void PatternRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldClearAllOthers)
@@ -512,12 +512,34 @@ void PatternRoll::selectEventsInRange(float startBeat, float endBeat, bool shoul
     }
 }
 
-void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, const Rectangle<int> &rectangle)
+void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
+    const Rectangle<int> &rectangle)
 {
     for (const auto &e : this->clipComponents)
     {
         const auto component = e.second.get();
-        if (rectangle.intersects(component->getBounds()) && component->isActiveAndEditable())
+        if (component->isActiveAndEditable() &&
+            rectangle.intersects(component->getBounds()))
+        {
+            jassert(!itemsFound.contains(component));
+            itemsFound.add(component);
+        }
+    }
+}
+
+void PatternRoll::findLassoItemsInPolygon(Array<SelectableComponent *> &itemsFound,
+    const Rectangle<int> &bounds, const Array<Point<float>> &polygon)
+{
+    for (const auto &e : this->clipComponents)
+    {
+        const auto component = e.second.get();
+        if (!component->isActiveAndEditable() ||
+            !bounds.intersects(component->getBounds())) // fast path
+        {
+            continue;
+        }
+
+        if (DrawableLassoSource::boundsIntersectPolygon(component->getFloatBounds(), polygon))
         {
             jassert(!itemsFound.contains(component));
             itemsFound.add(component);

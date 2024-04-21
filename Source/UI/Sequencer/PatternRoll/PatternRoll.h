@@ -65,14 +65,16 @@ public:
         const ProjectMetadata *meta) override;
 
     //===------------------------------------------------------------------===//
-    // LassoSource
+    // DrawableLassoSource
     //===------------------------------------------------------------------===//
 
     void selectEventsInRange(float startBeat,
         float endBeat, bool shouldClearAllOthers) override;
 
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
-        const Rectangle<int> &rectangle) override;
+        const Rectangle<int> &bounds) override;
+    void findLassoItemsInPolygon(Array<SelectableComponent *> &itemsFound,
+        const Rectangle<int> &bounds, const Array<Point<float>> &polygon) override;
 
     void updateHighlightedInstances();
 

@@ -30,6 +30,7 @@
 #include "Lasso.h"
 #include "ColourIDs.h"
 #include "TempoDialog.h"
+#include "PointReduction.h"
 
 //===----------------------------------------------------------------------===//
 // Hand-drawing helper

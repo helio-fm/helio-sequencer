@@ -2885,6 +2885,7 @@
     <ClInclude Include="..\..\Source\UI\Common\OverlayButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\PlayButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\PluginWindow.h"/>
+    <ClInclude Include="..\..\Source\UI\Common\PointReduction.h"/>
     <ClInclude Include="..\..\Source\UI\Common\RadioButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ScaleEditor.h"/>
     <ClInclude Include="..\..\Source\UI\Common\SpectralLogo.h"/>

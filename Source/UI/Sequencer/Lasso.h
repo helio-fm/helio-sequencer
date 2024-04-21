@@ -23,6 +23,79 @@
 #include "NoteComponent.h"
 #include "UndoActionIDs.h"
 
+template <class SelectableItemType>
+class DrawableLassoSource : public LassoSource<SelectableItemType>
+{
+public:
+
+    virtual void findLassoItemsInPolygon(Array<SelectableItemType> &itemsFound,
+        const Rectangle<int> &bounds, const Array<Point<float>> &polygonInPixels) = 0;
+
+    static bool polygonContainsPoint(const Point<float> &point,
+        const Array<Point<float>> &polygon)
+    {
+        if (polygon.size() < 2)
+        {
+            jassertfalse;
+            return false;
+        }
+
+        bool result = false;
+        int j = polygon.size() - 1;
+        for (int i = 0; i < polygon.size(); ++i)
+        {
+            if ((polygon.getReference(i).x < point.x && polygon.getReference(j).x >= point.x ||
+                polygon.getReference(j).x < point.x && polygon.getReference(i).x >= point.x) &&
+                (polygon.getReference(i).y + (point.x - polygon.getReference(i).x) /
+                    (polygon.getReference(j).x - polygon.getReference(i).x) *
+                    (polygon.getReference(j).y - polygon.getReference(i).y) < point.y))
+            {
+                result = !result;
+            }
+
+            j = i;
+        }
+
+        return result;
+    }
+
+    static bool lineIntersectsPolygon(const Line<float> &line,
+        const Array<Point<float>> &polygon)
+    {
+        if (polygon.size() < 2)
+        {
+            jassertfalse;
+            return false;
+        }
+
+        Point<float> intersection;
+        int j = polygon.size() - 1;
+
+        for (int i = 0; i < polygon.size(); ++i)
+        {
+            if (line.intersects({ polygon.getReference(i).x, polygon.getReference(i).y,
+                polygon.getReference(j).x, polygon.getReference(j).y }, intersection))
+            {
+                return true;
+            }
+
+            j = i;
+        }
+
+        return false;
+    }
+    
+    static bool boundsIntersectPolygon(const Rectangle<float> &bounds,
+        const Array<Point<float>> &polygon)
+    {
+        return polygonContainsPoint(bounds.getTopLeft(), polygon) ||
+            lineIntersectsPolygon({ bounds.getTopLeft(), bounds.getTopRight() }, polygon) ||
+            lineIntersectsPolygon({ bounds.getBottomRight(), bounds.getBottomLeft() }, polygon) ||
+            lineIntersectsPolygon({ bounds.getTopRight(), bounds.getBottomRight() }, polygon) ||
+            lineIntersectsPolygon({ bounds.getBottomLeft(), bounds.getTopLeft() }, polygon);
+    }
+};
+
 class Lasso final :
     public SelectedItemSet<SelectableComponent *>,
     public NoteListBase

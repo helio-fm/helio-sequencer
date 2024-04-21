@@ -322,8 +322,11 @@ void RollBase::onLongTap(const Point<float> &position,
 
     if (target == this && !this->project.getEditMode().forbidsSelectionMode({}))
     {
+        const auto lassoType =
+            this->project.getEditMode().isMode(RollEditMode::selectionMode) ?
+            SelectionComponent::LassoType::Path : SelectionComponent::LassoType::Rectangle;
         this->project.getEditMode().setTemporaryMode(RollEditMode::selectionMode);
-        this->lassoComponent->beginLasso(position, this);
+        this->lassoComponent->beginLasso(position, this, lassoType);
         return;
     }
 }
@@ -1103,7 +1106,10 @@ void RollBase::mouseDown(const MouseEvent &e)
     }
     else if (this->isLassoEvent(e))
     {
-        this->lassoComponent->beginLasso(e.position, this);
+        const auto lassoType = (e.mods.isCtrlDown() || e.mods.isCommandDown()) ?
+            SelectionComponent::LassoType::Path : SelectionComponent::LassoType::Rectangle;
+
+        this->lassoComponent->beginLasso(e.position, this, lassoType);
     }
     else if (this->isViewportDragEvent(e))
     {
@@ -1130,7 +1136,7 @@ void RollBase::mouseDrag(const MouseEvent &e)
     }
     else if (this->lassoComponent->isDragging())
     {
-        this->lassoComponent->dragLasso(e); // if any. will do the check itself
+        this->lassoComponent->dragLasso(e);
     }
     else if (this->isViewportDragEvent(e))
     {

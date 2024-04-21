@@ -46,6 +46,12 @@ Click-and-drag on the timeline while holding any modifier key (`Control`/`Alt`/`
 
 ![range-select]
 
+Holding `Shift` adds the items to the selection, holding `Alt` removes them.
+
+### Freeform selection
+
+`Control-dragging` in the piano roll or pattern roll allows you to draw a lasso with a freeform shape instead of a usual box. On mobile platforms, long-tap in the selection mode to draw a freeform lasso (in the default mode, long-tap will temporarily switch to box selection).
+
 ### Resizing a group
 
 Resize a group of notes proportionally by holding `Shift`:

@@ -30,6 +30,7 @@
 #include "NoteComponent.h"
 #include "SequencerOperations.h"
 #include "FineTuningValueIndicator.h"
+#include "PointReduction.h"
 
 //===----------------------------------------------------------------------===//
 // Single note velocity component

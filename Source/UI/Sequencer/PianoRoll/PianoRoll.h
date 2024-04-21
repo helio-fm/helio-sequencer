@@ -133,21 +133,23 @@ public:
     void onNoteNameGuidesFlagChanged(bool enabled) override;
 
     //===------------------------------------------------------------------===//
-    // LassoSource
+    // DrawableLassoSource
     //===------------------------------------------------------------------===//
 
     void selectEventsInRange(float startBeat,
         float endBeat, bool shouldClearAllOthers) override;
 
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
-        const Rectangle<int> &rectangle) override;
+        const Rectangle<int> &bounds) override;
+    void findLassoItemsInPolygon(Array<SelectableComponent *> &itemsFound,
+        const Rectangle<int> &bounds, const Array<Point<float>> &polygon) override;
 
     void selectEvents(const Array<Note> &notes, bool shouldDeselectAllOthers);
     float getLassoStartBeat() const;
     float getLassoEndBeat() const;
 
-    // a hepler method for calling SequencerOperations::whatever(),
-    // returns the entire sequence if nothing is selected:
+    // a helper method for calling SequencerOperations::whatever(),
+    // returns the selection or the entire sequence if nothing is selected:
     const NoteListBase &getLassoOrEntireSequence() const;
 
     //===------------------------------------------------------------------===//

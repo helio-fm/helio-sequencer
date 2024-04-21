@@ -981,7 +981,7 @@ void PianoRoll::onChangeViewEditableScope(MidiTrack *const newActiveTrack,
 }
 
 //===----------------------------------------------------------------------===//
-// LassoSource
+// DrawableLassoSource
 //===----------------------------------------------------------------------===//
 
 void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldClearAllOthers)
@@ -1003,12 +1003,34 @@ void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldC
     }
 }
 
-void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, const Rectangle<int> &rectangle)
+void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
+    const Rectangle<int> &rectangle)
 {
     forEachEventComponent(this->patternMap, e)
     {
         auto *component = e.second.get();
-        if (rectangle.intersects(component->getBounds()) && component->isActiveAndEditable())
+        if (component->isActiveAndEditable() &&
+            rectangle.intersects(component->getBounds()))
+        {
+            jassert(!itemsFound.contains(component));
+            itemsFound.add(component);
+        }
+    }
+}
+
+void PianoRoll::findLassoItemsInPolygon(Array<SelectableComponent *> &itemsFound,
+    const Rectangle<int> &bounds, const Array<Point<float>> &polygon)
+{
+    forEachEventComponent(this->patternMap, e)
+    {
+        auto *component = e.second.get();
+        if (!component->isActiveAndEditable() ||
+            !bounds.intersects(component->getBounds())) // fast path
+        {
+            continue;
+        }
+
+        if (DrawableLassoSource::boundsIntersectPolygon(component->getFloatBounds(), polygon))
         {
             jassert(!itemsFound.contains(component));
             itemsFound.add(component);

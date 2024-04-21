@@ -818,6 +818,7 @@
 		F308BBBCEBFCA75701C6766A /* NoteResizerLeft.cpp */ /* NoteResizerLeft.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NoteResizerLeft.cpp; path = ../../Source/UI/Sequencer/PianoRoll/NoteResizerLeft.cpp; sourceTree = SOURCE_ROOT; };
 		F30E6F16A555B29C52A9B728 /* ProjectSyncService.h */ /* ProjectSyncService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProjectSyncService.h; path = ../../Source/Core/Network/Services/ProjectSyncService.h; sourceTree = SOURCE_ROOT; };
 		F3FFD1E9E286E6EDCAF90314 /* AutomationStepEventsConnector.cpp */ /* AutomationStepEventsConnector.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AutomationStepEventsConnector.cpp; path = ../../Source/UI/Sequencer/EditorPanels/AutomationEditor/AutomationStepEventsConnector.cpp; sourceTree = SOURCE_ROOT; };
+		F407AF7A1A9B0780FDEC5C8A /* PointReduction.h */ /* PointReduction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PointReduction.h; path = ../../Source/UI/Common/PointReduction.h; sourceTree = SOURCE_ROOT; };
 		F4610814BF7C06CEE3B3A22A /* AutomationSequence.cpp */ /* AutomationSequence.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AutomationSequence.cpp; path = ../../Source/Core/Midi/Sequences/AutomationSequence.cpp; sourceTree = SOURCE_ROOT; };
 		F4DB0F7FDE088076C0BA89AF /* CommandPaletteActionsProvider.h */ /* CommandPaletteActionsProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CommandPaletteActionsProvider.h; path = ../../Source/Core/CommandPalette/CommandPaletteActionsProvider.h; sourceTree = SOURCE_ROOT; };
 		F518C6C068D3598777DBA99D /* Common.cpp */ /* Common.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Common.cpp; path = ../../Source/Common.cpp; sourceTree = SOURCE_ROOT; };
@@ -1709,6 +1710,7 @@
 				EDC3D1F59A1069F57B89F860,
 				A60CCAC6696362BF85CE208C,
 				C019A3A0F79C20C6AFF6A94B,
+				F407AF7A1A9B0780FDEC5C8A,
 				FF2F34B06DF8F782AF4FCEC1,
 				100CCFB42B080570F7D3B705,
 				2232FA7E284ABDCE49EF2D6F,

@@ -69,8 +69,8 @@ class RollBase :
     public SmoothZoomListener,
     public MultiTouchListener,
     public ProjectListener,
-    public LassoSource<SelectableComponent *>,
     public Playhead::Listener,
+    public DrawableLassoSource<SelectableComponent *>,
     protected UserInterfaceFlags::Listener,
     protected RollEditMode::Listener,
     protected TransportListener, // for positioning the playhead component and auto-scrolling
