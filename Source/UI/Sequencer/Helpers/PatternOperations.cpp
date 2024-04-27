@@ -863,6 +863,12 @@ void PatternOperations::retrograde(ProjectNode &project, const Lasso &selection,
 
 bool PatternOperations::applyModifiersStack(const Clip &clip, bool shouldCheckpoint /*= true*/)
 {
+    if (!clip.isValid() || !clip.hasModifiers())
+    {
+        jassertfalse;
+        return false;
+    }
+
     auto *pattern = clip.getPattern();
     auto *generatedSequence = dynamic_cast<PianoSequence *>(pattern->
         getProject()->getGeneratedSequences()->getSequenceFor(clip));

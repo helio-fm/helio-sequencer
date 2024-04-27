@@ -37,6 +37,7 @@ public:
 
     // adds new modifiers or updates existing ones
     MenuPanel::Menu makeModifiersArpsMenu(const MenuItem::Callback &goBack,
+        const MenuItem::Callback &onAdd,
         SequenceModifier::Ptr updatedModifier);
 
     MenuPanel::Menu makeModifiersArpsSpeedMenu(const MenuItem::Callback &goBack,

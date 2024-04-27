@@ -50,7 +50,7 @@ public:
     {
         this->setPaintingIsUnclipped(true);
 
-        this->iconComponent = make<IconComponent>(Icons::apply, 1.f, iconSize);
+        this->iconComponent = make<IconComponent>(Icons::apply, 1.f, int(iconSize));
         this->addAndMakeVisible(this->iconComponent.get());
     }
 

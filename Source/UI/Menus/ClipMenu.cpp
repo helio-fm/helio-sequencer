@@ -340,7 +340,7 @@ MenuPanel::Menu ClipModifiersMenu::makeEditModifiersMenu(const MenuItem::Callbac
             {
                 if (dynamic_cast<ArpeggiationSequenceModifier *>(modifier.get()))
                 {
-                    this->updateContent(this->makeModifiersArpsMenu(goBackToMe, modifier), MenuPanel::SlideLeft);
+                    this->updateContent(this->makeModifiersArpsMenu(goBackToMe, goBackToMe, modifier), MenuPanel::SlideLeft);
                 }
                 else if (auto *refactoringMod = dynamic_cast<RefactoringSequenceModifier *>(modifier.get()))
                 {
@@ -368,6 +368,7 @@ MenuPanel::Menu ClipModifiersMenu::makeEditModifiersMenu(const MenuItem::Callbac
     menu.add(MenuItem::item(shouldMute ? Icons::mute : Icons::unmute,
         shouldMute ? TRANS(I18n::Menu::Modifiers::disableAll) : TRANS(I18n::Menu::Modifiers::enableAll))->
         withHotkeyText(CommandIDs::ToggleMuteModifiers)->
+        disabledIf(!this->clip.hasModifiers())->
         withAction([this, goBackToParent]()
         {
             PatternOperations::toggleMuteModifiersStack(clip, true);
@@ -375,6 +376,7 @@ MenuPanel::Menu ClipModifiersMenu::makeEditModifiersMenu(const MenuItem::Callbac
         }));
     
     menu.add(MenuItem::item(Icons::apply, TRANS(I18n::Menu::Modifiers::applyAll))->
+        disabledIf(!this->clip.hasEnabledModifiers())->
         closesMenu()->
         withAction([this, goBackToParent]()
         {
@@ -382,6 +384,7 @@ MenuPanel::Menu ClipModifiersMenu::makeEditModifiersMenu(const MenuItem::Callbac
         }));
 
     menu.add(MenuItem::item(Icons::close, TRANS(I18n::Menu::Modifiers::deleteAll))->
+        disabledIf(!this->clip.hasModifiers())->
         closesMenu()->
         withAction([goBackToParent, this]()
         {
@@ -411,9 +414,9 @@ MenuPanel::Menu ClipModifiersMenu::makeAddModifiersMenu(const MenuItem::Callback
 
     menu.add(MenuItem::item(Icons::arpeggiate, TRANS(I18n::Menu::Selection::notesArpeggiate))->
         disabledIf(App::Config().getArpeggiators()->isEmpty())->
-        withSubmenu()->withAction([this, goBackToMe]()
+        withSubmenu()->withAction([this, goBackToParent, goBackToMe]()
         {
-            this->updateContent(this->makeModifiersArpsMenu(goBackToMe, {}), MenuPanel::SlideLeft);
+            this->updateContent(this->makeModifiersArpsMenu(goBackToMe, goBackToParent, {}), MenuPanel::SlideLeft);
         }));
 
     for (const auto type : RefactoringSequenceModifier::allTypes)
@@ -447,7 +450,7 @@ MenuPanel::Menu ClipModifiersMenu::makeAddModifiersMenu(const MenuItem::Callback
 }
 
 MenuPanel::Menu ClipModifiersMenu::makeModifiersArpsMenu(const MenuItem::Callback &goBackToParent,
-    SequenceModifier::Ptr updatedModifier)
+    const MenuItem::Callback &onAdd, SequenceModifier::Ptr updatedModifier)
 {
     MenuPanel::Menu menu;
     if (goBackToParent)
@@ -456,10 +459,10 @@ MenuPanel::Menu ClipModifiersMenu::makeModifiersArpsMenu(const MenuItem::Callbac
             TRANS(I18n::Menu::back))->withAction(goBackToParent));
     }
 
-    const auto goBackToMe = [this, goBackToParent, updatedModifier]()
+    const auto goBackToMe = [this, goBackToParent, onAdd, updatedModifier]()
     {
         this->updateContent(this->makeModifiersArpsMenu(
-            goBackToParent, updatedModifier), MenuPanel::SlideRight);
+            goBackToParent, onAdd, updatedModifier), MenuPanel::SlideRight);
     };
 
     const auto arps = App::Config().getArpeggiators()->getAll();
@@ -467,9 +470,9 @@ MenuPanel::Menu ClipModifiersMenu::makeModifiersArpsMenu(const MenuItem::Callbac
     {
         Arpeggiator::Ptr arp = arps[i];
         menu.add(MenuItem::item(Icons::arpeggiate, arp->getName())->
-            withSubmenu()->withAction([this, goBackToParent, goBackToMe, updatedModifier, arp]()
+            withSubmenu()->withAction([this, goBackToMe, onAdd, updatedModifier, arp]()
             {
-                this->updateContent(this->makeModifiersArpsSpeedMenu(goBackToMe, goBackToParent,
+                this->updateContent(this->makeModifiersArpsSpeedMenu(goBackToMe, onAdd,
                     updatedModifier, arp, { 0.25, 0.5f, 1.f, 2.f, 4.f }), MenuPanel::SlideLeft);
             }));
     }

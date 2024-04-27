@@ -102,6 +102,7 @@ PianoRoll::~PianoRoll() = default;
 void PianoRoll::reloadRollContent()
 {
     this->selection.deselectAll();
+    this->generatedNotes.clear();
     this->patternMap.clear();
 
     ROLL_BATCH_REPAINT_START
@@ -142,6 +143,8 @@ void PianoRoll::loadTrack(const MidiTrack *const track)
                 (*sequenceMap)[*note] = UniquePointer<NoteComponent>(nc);
                 nc->setActive(isActive, true);
                 this->addAndMakeVisible(nc);
+                // project/view ranges may change right after reloading, so:
+                this->triggerBatchRepaintFor(nc);
             }
         }
     }

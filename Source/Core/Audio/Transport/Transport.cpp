@@ -1049,7 +1049,7 @@ TransportPlaybackCache Transport::buildPlaybackCache(bool withMetronome) const
         {
             for (const auto *clip : track->getPattern()->getClips())
             {
-                cached->track->exportMidi(cached->midiMessages, *clip,
+                cached->sequence->exportMidi(cached->midiMessages, *clip,
                     keyMapping, generatedSequences,
                     this->hasSoloClipsCache, withMetronome,
                     this->projectFirstBeat.get(), this->projectLastBeat.get());
@@ -1058,7 +1058,7 @@ TransportPlaybackCache Transport::buildPlaybackCache(bool withMetronome) const
         else
         {
             static Clip noTransform;
-            cached->track->exportMidi(cached->midiMessages, noTransform,
+            cached->sequence->exportMidi(cached->midiMessages, noTransform,
                 keyMapping, generatedSequences,
                 this->hasSoloClipsCache, withMetronome,
                 this->projectFirstBeat.get(), this->projectLastBeat.get());

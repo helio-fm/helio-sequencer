@@ -27,15 +27,15 @@ struct CachedMidiSequence final : public ReferenceCountedObject
     int currentIndex;
     MidiMessageCollector *listener;
     Instrument *instrument;
-    const MidiSequence *track;
+    const MidiSequence *sequence;
 
     using Ptr = ReferenceCountedObjectPtr<CachedMidiSequence>;
 
-    static Ptr createFrom(Instrument *instrument, const MidiSequence *track = nullptr)
+    static Ptr createFrom(Instrument *instrument, const MidiSequence *sequence)
     {
         jassert(instrument != nullptr);
         CachedMidiSequence::Ptr wrapper(new CachedMidiSequence());
-        wrapper->track = track;
+        wrapper->sequence = sequence;
         wrapper->currentIndex = 0;
         wrapper->instrument = instrument;
         wrapper->listener = &instrument->getProcessorPlayer().getMidiMessageCollector();
@@ -139,15 +139,15 @@ public:
         return this->sequences[0]->instrument->getProcessorGraph()->getTotalNumInputChannels();
     }
 
-    ReferenceCountedArray<CachedMidiSequence> getAllFor(const MidiSequence *midiTrack)
+    ReferenceCountedArray<CachedMidiSequence> getAllFor(const MidiSequence *sequence)
     {
         ReferenceCountedArray<CachedMidiSequence> result;
         for (int i = 0; i < this->sequences.size(); ++i)
         {
-            CachedMidiSequence::Ptr seq(this->sequences[i]);
-            if (midiTrack == nullptr || midiTrack == seq->track)
+            CachedMidiSequence::Ptr cached(this->sequences[i]);
+            if (sequence == nullptr || sequence == cached->sequence)
             {
-                result.add(seq);
+                result.add(cached);
             }
         }
         

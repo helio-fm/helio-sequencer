@@ -41,12 +41,12 @@ MidiSequence *GeneratedSequenceBuilder::getSequenceFor(const Clip &clip)
     }
 
     const auto foundSequence = this->generatedSequences.find(clip);
-    if (foundSequence == this->generatedSequences.end())
+    if (foundSequence == this->generatedSequences.end() || // not generated yet
+        this->clipsToUpdate.contains(clip)) // or the cached sequence is stale
     {
         // this method was probably called before the update for this clip
         // was triggered, let's update it synchronously
         // (warning: some duplicate code here)
-        //jassertfalse;
 
         auto *originalTrack = clip.getPattern()->getTrack();
         jassert(dynamic_cast<PianoSequence *>(originalTrack->getSequence()));
@@ -172,6 +172,8 @@ void GeneratedSequenceBuilder::onRemoveTrack(MidiTrack *const track)
 
 void GeneratedSequenceBuilder::onReloadProjectContent(const Array<MidiTrack *> &tracks, const ProjectMetadata *meta)
 {
+    this->generatedSequences.clear();
+
     for (auto *track : tracks)
     {
         this->triggerAsyncUpdatesForTrack(track);

@@ -44,8 +44,8 @@ public:
         int j = polygon.size() - 1;
         for (int i = 0; i < polygon.size(); ++i)
         {
-            if ((polygon.getReference(i).x < point.x && polygon.getReference(j).x >= point.x ||
-                polygon.getReference(j).x < point.x && polygon.getReference(i).x >= point.x) &&
+            if (((polygon.getReference(i).x < point.x && polygon.getReference(j).x >= point.x) ||
+                (polygon.getReference(j).x < point.x && polygon.getReference(i).x >= point.x)) &&
                 (polygon.getReference(i).y + (point.x - polygon.getReference(i).x) /
                     (polygon.getReference(j).x - polygon.getReference(i).x) *
                     (polygon.getReference(j).y - polygon.getReference(i).y) < point.y))
