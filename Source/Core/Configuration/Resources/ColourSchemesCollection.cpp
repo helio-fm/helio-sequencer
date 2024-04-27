@@ -29,16 +29,21 @@ ColourScheme::Ptr ColourSchemesCollection::getCurrent() const
     {
         ColourScheme::Ptr cs(new ColourScheme());
         App::Config().load(cs.get(), Serialization::Config::activeColourScheme);
+
+        // try to load its latest version from the configs if it's still present
+        const auto latestVersion = this->getResourceById<ColourScheme>(cs->getResourceId());
+        if (latestVersion != nullptr)
+        {
+            return latestVersion;
+        }
+
         return cs;
     }
 
     // likely the config file is missing here, meaning the app runs for the first time:
-    for (const auto &scheme : this->getAll())
+    if (const auto defaultScheme = this->getResourceById<ColourScheme>("Helio Theme v2"))
     {
-        if (scheme->getName().startsWith("Helio Theme v2"))
-        {
-            return scheme;
-        }
+        return defaultScheme;
     }
 
     jassertfalse;

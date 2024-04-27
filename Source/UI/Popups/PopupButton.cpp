@@ -119,8 +119,8 @@ PopupButton::PopupButton(bool shouldShowConfirmImage, Shape shapeType, Colour co
 void PopupButton::paint(Graphics &g)
 {
     const float r = this->getRadiusDelta();
-    static const float outline1 = 4.5f;
-    static const float outline2 = 2.f;
+    static constexpr float outline1 = 4.5f;
+    static constexpr float outline2 = 2.f;
 
     switch (this->shapeType)
     {
@@ -143,14 +143,14 @@ void PopupButton::paint(Graphics &g)
             outline1 + outline2 + r,
             float(this->getWidth()) - (outline1 + outline2 + r) * 2.f,
             float(this->getHeight()) - (outline1 + outline2 + r) * 2.f);
-
+        break;
     case Shape::Hex:
-        g.setColour(Colours::black.withAlpha(0.9f));
-        g.strokePath(this->shape, PathStrokeType(outline2));
+        g.setColour(Colours::black.withAlpha(0.85f));
+        g.strokePath(this->shape, PathStrokeType(1.f));
 
         g.setColour(this->colour);
         g.fillPath(this->shape);
-
+        break;
     default:
         break;
     }

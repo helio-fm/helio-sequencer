@@ -54,13 +54,14 @@ void VersionControlEditor::resized()
     this->skew->setBounds(halfWidth - skewWidth / 2, 0, skewWidth, this->getHeight());
     this->backgroundB->setBounds(halfWidth + skewWidth / 2, 0, halfWidth - skewWidth / 2, this->getHeight());
 
-    constexpr auto contentMargin = 10;
-    this->stageComponent->setBounds(15, contentMargin,
-        halfWidth - skewWidth / 2 - 15,
-        this->getHeight() - contentMargin * 2);
-    this->historyComponent->setBounds(halfWidth + 32, contentMargin,
-        halfWidth - skewWidth / 2 - 15,
-        this->getHeight() - contentMargin * 2);
+    constexpr auto contentMarginX = 16;
+    constexpr auto contentMarginY = 8;
+    this->stageComponent->setBounds(contentMarginX, contentMarginY,
+        halfWidth - skewWidth / 2 - contentMarginX,
+        this->getHeight() - contentMarginY * 2);
+    this->historyComponent->setBounds(halfWidth + skewWidth / 2, contentMarginY,
+        halfWidth - skewWidth / 2 - contentMarginX,
+        this->getHeight() - contentMarginY * 2);
 }
 
 void VersionControlEditor::broughtToFront()

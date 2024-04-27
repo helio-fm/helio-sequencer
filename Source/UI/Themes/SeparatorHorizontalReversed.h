@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class SeparatorHorizontalReversed final : public Component
 {
 public:
@@ -29,14 +31,21 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(Colours::white.withAlpha(11.f / 255.f));
+        g.setColour(this->lightColour);
         g.fillRect(0, 0, this->getWidth(), 1);
-
-        g.setColour(Colours::black.withAlpha(45.f / 255.f));
+        g.setColour(this->darkColour);
         g.fillRect(0, 1, this->getWidth(), 1);
     }
 
 private:
+
+    const Colour lightColour =
+        findDefaultColour(ColourIDs::Common::separatorLineLight)
+            .withMultipliedAlpha(0.5f);
+
+    const Colour darkColour =
+        findDefaultColour(ColourIDs::Common::separatorLineDark)
+            .withMultipliedAlpha(0.5f);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SeparatorHorizontalReversed)
 };

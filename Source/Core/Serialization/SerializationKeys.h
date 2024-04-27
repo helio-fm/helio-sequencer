@@ -350,7 +350,6 @@ namespace Serialization
             static const Identifier whiteKey = "whiteKey";
 
             static const Identifier row = "row";
-            static const Identifier beat = "beat";
             static const Identifier bar = "bar";
 
             static const Identifier text = "text";

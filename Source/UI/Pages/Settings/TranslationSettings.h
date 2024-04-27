@@ -49,9 +49,9 @@ private:
     Translation::Ptr currentTranslation;
 
 #if PLATFORM_DESKTOP
-    static constexpr auto rowHeight = 32;
+    static constexpr auto rowHeight = 33;
 #elif PLATFORM_MOBILE
-    static constexpr auto rowHeight = 48;
+    static constexpr auto rowHeight = 44;
 #endif
 
     static constexpr auto horizontalContentMargin = 8;

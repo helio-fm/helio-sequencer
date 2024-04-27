@@ -24,8 +24,9 @@
 InstrumentEditorConnector::InstrumentEditorConnector(WeakReference<Instrument> instrument) :
     instrument(instrument)
 {
-    this->setPaintingIsUnclipped(true);
     this->setAlwaysOnTop(true);
+    this->setPaintingIsUnclipped(true);
+    this->setMouseCursor(MouseCursor::PointingHandCursor);
 }
 
 void InstrumentEditorConnector::setInput(const AudioProcessorGraph::NodeAndChannel node)
@@ -148,6 +149,7 @@ bool InstrumentEditorConnector::hitTest(int x, int y)
 void InstrumentEditorConnector::mouseDown(const MouseEvent &)
 {
     this->dragging = false;
+    this->setMouseCursor(MouseCursor::DraggingHandCursor);
 }
 
 void InstrumentEditorConnector::mouseDrag(const MouseEvent &e)
@@ -177,6 +179,8 @@ void InstrumentEditorConnector::mouseDrag(const MouseEvent &e)
 
 void InstrumentEditorConnector::mouseUp(const MouseEvent &e)
 {
+    this->setMouseCursor(MouseCursor::PointingHandCursor);
+
     if (this->dragging)
     {
         this->getGraphPanel()->endDraggingConnector(e);

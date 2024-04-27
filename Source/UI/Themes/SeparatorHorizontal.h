@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class SeparatorHorizontal final : public Component
 {
 public:
@@ -27,24 +29,23 @@ public:
         this->setInterceptsMouseClicks(false, false);
     }
 
-    void setAlphaMultiplier(float a)
-    {
-        this->alphaFactor = a;
-        this->repaint();
-    }
-
     void paint(Graphics &g) override
     {
-        g.setColour(Colours::black.withAlpha(11.f / 255.f * this->alphaFactor));
+        g.setColour(this->darkColour);
         g.fillRect(0, 0, this->getWidth(), 1);
-
-        g.setColour(Colours::white.withAlpha(9.f / 255.f * this->alphaFactor));
+        g.setColour(this->lightColour);
         g.fillRect(0, 1, this->getWidth(), 1);
     }
     
 private:
 
-    float alphaFactor = 1.f;
+    const Colour lightColour =
+        findDefaultColour(ColourIDs::Common::separatorLineLight)
+            .withMultipliedAlpha(0.5f);
+
+    const Colour darkColour =
+        findDefaultColour(ColourIDs::Common::separatorLineDark)
+            .withMultipliedAlpha(0.5f);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SeparatorHorizontal)
 };

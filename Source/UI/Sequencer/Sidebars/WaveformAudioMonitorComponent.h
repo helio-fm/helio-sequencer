@@ -19,6 +19,7 @@
 
 class AudioMonitor;
 
+#include "ColourIDs.h"
 #include "SequencerLayout.h"
 
 class WaveformAudioMonitorComponent final :
@@ -42,7 +43,13 @@ private:
     void run() override;
     void handleAsyncUpdate() override;
     
-    const Colour colour;
+    const Colour peaksColour =
+        findDefaultColour(ColourIDs::AudioMonitor::foreground)
+            .withMultipliedAlpha(0.5f);
+
+    const Colour rmsColour =
+        findDefaultColour(ColourIDs::AudioMonitor::foreground)
+            .withMultipliedAlpha(0.65f);
 
     WeakReference<AudioMonitor> audioMonitor;
     
@@ -53,8 +60,6 @@ private:
 
     Atomic<float> lRmsBuffer[bufferSize];
     Atomic<float> rRmsBuffer[bufferSize];
-
-    int skewTime = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveformAudioMonitorComponent)
 

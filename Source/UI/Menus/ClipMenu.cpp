@@ -225,7 +225,7 @@ MenuPanel::Menu ClipMenu::makeChannelSelectionMenu()
     for (int channel = 1; channel <= Globals::numChannels; ++channel)
     {
         const bool isTicked = track->getTrackChannel() == channel;
-        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::ellipsis, String(channel))->
+        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::list, String(channel))->
             disabledIf(isTicked)->
             withAction([this, track, channel]()
             {

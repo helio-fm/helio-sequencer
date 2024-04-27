@@ -75,17 +75,17 @@ void OrchestraPitPage::resized()
     this->backgroundA->setBounds(0, 0, leftSideWidth, this->getHeight());
     this->backgroundB->setBounds(this->getWidth() - rightSideWidth, 0, rightSideWidth, this->getHeight());
 
-    constexpr auto paddingH = 14;
-    constexpr auto paddingV = 10;
+    constexpr auto contentMarginX = 16;
+    constexpr auto contentMarginY = 8;
 
-    this->pluginsList->setBounds(paddingH, paddingV,
-        leftSideWidth - paddingH - 2,
-        this->getHeight() - paddingV * 2);
+    this->pluginsList->setBounds(contentMarginX, contentMarginY,
+        leftSideWidth - contentMarginX - 2,
+        this->getHeight() - contentMarginY * 2);
 
-    this->instrumentsList->setBounds((this->getWidth() - rightSideWidth) + paddingH,
-        paddingV,
-        rightSideWidth - paddingH * 2,
-        this->getHeight() - paddingV * 2);
+    this->instrumentsList->setBounds((this->getWidth() - rightSideWidth) + contentMarginX,
+        contentMarginY,
+        rightSideWidth - contentMarginX * 2,
+        this->getHeight() - contentMarginY * 2);
 }
 
 void OrchestraPitPage::handleCommandMessage(int commandId)

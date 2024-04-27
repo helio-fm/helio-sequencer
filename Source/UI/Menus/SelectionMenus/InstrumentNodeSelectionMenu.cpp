@@ -44,9 +44,11 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()
         TRANS(I18n::Menu::instrumentShowWindow))->
         disabledIf(!hasEditor)->closesMenu()->
         withAction([this]()
-    {
-        PluginWindow::showWindowFor(this->instrument.getIdAndHash());
-    }));
+        {
+            MessageManager::callAsync([this]() {
+                PluginWindow::showWindowFor(this->instrument.getIdAndHash());
+            });
+        }));
 
     menu.add(MenuItem::item(Icons::routing,
         TRANS(I18n::Menu::Selection::routeGetMidi))->
@@ -122,10 +124,10 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioSourcesMenu()
             disabledIf(hasConnection || n == this->node)->
             closesMenu()->
             withAction([this, n]()
-        {
-            this->instrument.addConnection(n->nodeID, 0, this->node->nodeID, 0);
-            this->instrument.addConnection(n->nodeID, 1, this->node->nodeID, 1);
-        }));
+            {
+                this->instrument.addConnection(n->nodeID, 0, this->node->nodeID, 0);
+                this->instrument.addConnection(n->nodeID, 1, this->node->nodeID, 1);
+            }));
     }
 
     return menu;
@@ -148,10 +150,10 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioDestinationsMenu()
             disabledIf(hasConnection || n == this->node)->
             closesMenu()->
             withAction([this, n]()
-        {
-            this->instrument.addConnection(this->node->nodeID, 0, n->nodeID, 0);
-            this->instrument.addConnection(this->node->nodeID, 1, n->nodeID, 1);
-        }));
+            {
+                this->instrument.addConnection(this->node->nodeID, 0, n->nodeID, 0);
+                this->instrument.addConnection(this->node->nodeID, 1, n->nodeID, 1);
+            }));
     }
 
     return menu;
@@ -173,10 +175,10 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createMidiSourcesMenu()
             disabledIf(hasConnection || n == this->node)->
             closesMenu()->
             withAction([this, n]()
-        {
-            this->instrument.addConnection(n->nodeID,
-                Instrument::midiChannelNumber, this->node->nodeID, Instrument::midiChannelNumber);
-        }));
+            {
+                this->instrument.addConnection(n->nodeID,
+                    Instrument::midiChannelNumber, this->node->nodeID, Instrument::midiChannelNumber);
+            }));
     }
 
     return menu;
@@ -199,10 +201,10 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createMidiDestinationsMenu()
             disabledIf(hasConnection || n == this->node)->
             closesMenu()->
             withAction([this, n]()
-        {
-            this->instrument.addConnection(this->node->nodeID,
-                Instrument::midiChannelNumber, n->nodeID, Instrument::midiChannelNumber);
-        }));
+            {
+                this->instrument.addConnection(this->node->nodeID,
+                    Instrument::midiChannelNumber, n->nodeID, Instrument::midiChannelNumber);
+            }));
     }
 
     return menu;

@@ -56,7 +56,7 @@ void ClipComponent::updateColours()
 
     this->fillColour = this->flags.isRecordingTarget ?
         Colours::black.interpolatedWith(findDefaultColour(ColourIDs::Roll::headerRecording), 0.5f) :
-        Colours::black.withAlpha(0.4f);
+        findDefaultColour(ColourIDs::Roll::clipFill);
 
     this->frameColour = Colours::white
         .interpolatedWith(this->getClip().getTrackColour(), 0.55f)

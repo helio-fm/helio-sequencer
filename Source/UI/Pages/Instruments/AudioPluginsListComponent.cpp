@@ -103,16 +103,13 @@ AudioPluginsListComponent::~AudioPluginsListComponent() = default;
 
 void AudioPluginsListComponent::resized()
 {
-    constexpr auto titleHeight = 26;
-    constexpr auto listPadding = 40;
-
-    this->pluginsList->setBounds(this->getLocalBounds().withTrimmedTop(listPadding).reduced(2));
-    this->titleLabel->setBounds(0, 0, this->getWidth(), titleHeight);
-    this->titleSeparator->setBounds(0, listPadding, this->getWidth(), 3);
+    constexpr auto headerSize = 40;
+    this->titleLabel->setBounds(0, 0, this->getWidth(), headerSize - 4);
+    this->pluginsList->setBounds(this->getLocalBounds().withTrimmedTop(headerSize).reduced(2));
+    this->titleSeparator->setBounds(0, headerSize, this->getWidth(), 2);
 
     constexpr auto scanButtonWidth = 150;
     constexpr auto scanButtonHeight = 96;
-
     const auto scanButtonBounds = this->getLocalBounds().withSizeKeepingCentre(scanButtonWidth, scanButtonHeight);
     this->initialScanButton->setBounds(scanButtonBounds);
 
@@ -151,11 +148,9 @@ void AudioPluginsListComponent::updateListContent()
 var AudioPluginsListComponent::getDragSourceDescription(const SparseSet<int> &currentlySelectedRows)
 {
     const auto pd = this->pluginScanner.getPlugins()[currentlySelectedRows[0]];
-
-    PluginDescriptionDragnDropWrapper::Ptr pluginWrapper = new PluginDescriptionDragnDropWrapper();
+    PluginDescriptionDragnDropWrapper::Ptr pluginWrapper(new PluginDescriptionDragnDropWrapper());
     pluginWrapper->pluginDescription = pd;
     var pluginVar(pluginWrapper.get());
-
     return pluginVar;
 }
 
@@ -163,11 +158,11 @@ void AudioPluginsListComponent::paintRowBackground(Graphics &g, int rowNumber, i
 {
     if (rowIsSelected)
     {
-        g.fillAll(Colours::white.withAlpha(0.075f));
+        g.fillAll(findDefaultColour(Label::textColourId).withAlpha(0.08f));
     }
     else if (rowNumber % 2)
     {
-        g.fillAll(Colours::black.withAlpha(0.05f));
+        g.fillAll(Colours::black.withAlpha(0.025f));
     }
 }
 
@@ -203,8 +198,6 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
         g.drawText(pd.manufacturerName, margin, margin,
             w - margin * 2, h - margin * 2, Justification::centredLeft, false);
 
-        g.setColour(colour.withMultipliedAlpha(0.5f));
-
         String details = pd.version;
         if (inputChannelsString.isNotEmpty())
         {
@@ -226,8 +219,9 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
             details << outputChannelsString;
         }
 
+        g.setColour(colour.withMultipliedAlpha(0.5f));
         g.drawText(details, margin, margin,
-            w - margin * 2, h - margin * 2, Justification::bottomLeft, false);
+            w - margin * 2, h - margin * 2 - 1, Justification::bottomLeft, false);
 
         break;
     }

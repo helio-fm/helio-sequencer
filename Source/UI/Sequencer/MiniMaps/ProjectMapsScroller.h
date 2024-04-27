@@ -333,8 +333,9 @@ private:
 
         BoundsConstrainer moveConstrainer;
 
-        const Colour colour = findDefaultColour(ColourIDs::TrackScroller::scrollerFill)
-            .withMultipliedAlpha(0.5f);
+        const Colour colour =
+            findDefaultColour(ColourIDs::TrackScroller::screenRangeFill)
+                .withMultipliedAlpha(0.5f);
     };
 
 private:

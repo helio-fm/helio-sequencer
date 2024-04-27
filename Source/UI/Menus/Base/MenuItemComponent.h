@@ -40,7 +40,7 @@ struct MenuItem final : public ReferenceCountedObject
     Colour colour;
 
     int commandId = 0;
-    Icons::Id iconId = 0;
+    Icons::Id iconId = Icons::empty;
 
     Alignment alignment = Alignment::Left;
     Callback callback = nullptr;

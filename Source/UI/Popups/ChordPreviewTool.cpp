@@ -63,7 +63,7 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
         // the more chords there are, the larger the raduis should be:
         const int radius = defaultRadius + jlimit(0, 8, numChordsToDisplay - 10) * 10;
         const auto centreOffset = Point<int>(0, -radius).transformedBy(AffineTransform::rotation(radians, 0, 0));
-        const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.65f, 1.f, 0.45f);
+        const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.65f, 1.f, 0.5f);
         auto *button = this->chordButtons.add(new PopupCustomButton(createPopupButtonLabel(chord->getName()), PopupButton::Shape::Hex, colour));
         const int buttonSize = App::isRunningOnPhone() ? 60 : 67;
         button->setSize(buttonSize, buttonSize);

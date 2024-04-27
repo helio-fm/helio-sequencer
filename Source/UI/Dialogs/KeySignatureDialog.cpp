@@ -25,6 +25,7 @@
 #include "PlayButton.h"
 #include "Temperament.h"
 #include "Transport.h"
+#include "HelioTheme.h"
 #include "CommandIDs.h"
 #include "Config.h"
 #include "App.h"
@@ -169,18 +170,9 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
     this->playButton = make<PlayButton>(this);
     this->addAndMakeVisible(this->playButton.get());
 
-    this->scaleNameEditor = make<TextEditor>();
+    this->scaleNameEditor = HelioTheme::makeSingleLineTextEditor(true, DialogBase::Defaults::textEditorFont);
     this->addAndMakeVisible(this->scaleNameEditor.get());
-    this->scaleNameEditor->setMultiLine(false);
-    this->scaleNameEditor->setReturnKeyStartsNewLine(false);
-    this->scaleNameEditor->setReadOnly(false);
-    this->scaleNameEditor->setScrollbarsShown(true);
-    this->scaleNameEditor->setCaretVisible(true);
-    this->scaleNameEditor->setPopupMenuEnabled(true);
-
     this->scaleNameEditor->addListener(this);
-    this->scaleNameEditor->setFont(Defaults::textEditorFont);
-    this->scaleNameEditor->setIndents(Defaults::textEditorLeftIndent, Defaults::textEditorTopIndent);
 
     this->reloadScalesList();
 
@@ -274,14 +266,14 @@ void KeySignatureDialog::resized()
     this->separator->setBounds(contentBounds.removeFromTop(2));
 
     contentBounds.removeFromTop(margin * 2);
-    this->scaleEditor->setBounds(contentBounds.removeFromTop(DialogBase::Defaults::textEditorHeight));
+    this->scaleEditor->setBounds(contentBounds.removeFromTop(Globals::UI::textEditorHeight));
 
     contentBounds.removeFromTop(margin * 3);
-    auto scaleEditorRow = contentBounds.removeFromTop(DialogBase::Defaults::textEditorHeight);
+    auto scaleEditorRow = contentBounds.removeFromTop(Globals::UI::textEditorHeight);
 
     static constexpr auto buttonWidth = 34;
     static constexpr auto buttonsRowWidth = buttonWidth * 2;
-    static constexpr auto buttonsRowHeight = 32;
+    static constexpr auto buttonsRowHeight = Globals::UI::textEditorHeight;
     auto buttonsArea = scaleEditorRow.removeFromRight(buttonsRowWidth)
         .withSizeKeepingCentre(buttonsRowWidth, buttonsRowHeight);
 
@@ -409,7 +401,7 @@ void KeySignatureDialog::reloadScalesList()
     for (int i = 0; i < this->scales.size(); ++i)
     {
         const auto &s = this->scales.getUnchecked(i);
-        menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::SelectScale + i, s->getLocalizedName()));
+        menu.add(MenuItem::item(Icons::empty, CommandIDs::SelectScale + i, s->getLocalizedName()));
     }
 
     this->presetsCombo->initWith(this->scaleNameEditor.get(), menu);

@@ -19,11 +19,9 @@
 #include "WaveformAudioMonitorComponent.h"
 #include "AudioMonitor.h"
 #include "AudioCore.h"
-#include "ColourIDs.h"
 
 WaveformAudioMonitorComponent::WaveformAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer) :
     Thread("WaveformAudioMonitor"),
-    colour(findDefaultColour(ColourIDs::AudioMonitor::foreground)),
     audioMonitor(targetAnalyzer)
 {
     this->setInterceptsMouseClicks(false, false);
@@ -51,13 +49,14 @@ void WaveformAudioMonitorComponent::setTargetAnalyzer(WeakReference<AudioMonitor
 
 void WaveformAudioMonitorComponent::run()
 {
-    while (! this->threadShouldExit())
+    constexpr auto bufferLastIndex = WaveformAudioMonitorComponent::bufferSize - 1;
+
+    while (!this->threadShouldExit())
     {
-        Thread::sleep(jlimit(10, 100, 35 - this->skewTime));
-        const double b = Time::getMillisecondCounterHiRes();
+        Thread::sleep(35);
 
         // Shift buffers:
-        for (int i = 0; i < WaveformAudioMonitorComponent::bufferSize - 1; ++i)
+        for (int i = 0; i < bufferLastIndex; ++i)
         {
             this->lPeakBuffer[i] = this->lPeakBuffer[i + 1].get();
             this->rPeakBuffer[i] = this->rPeakBuffer[i + 1].get();
@@ -65,21 +64,13 @@ void WaveformAudioMonitorComponent::run()
             this->rRmsBuffer[i] = this->rRmsBuffer[i + 1].get();
         }
 
-        const int i = WaveformAudioMonitorComponent::bufferSize - 1;
-
         // Push next values:
-        this->lPeakBuffer[i] = this->audioMonitor->getPeak(0);
-        this->rPeakBuffer[i] = this->audioMonitor->getPeak(1);
-        this->lRmsBuffer[i] = this->audioMonitor->getRootMeanSquare(0);
-        this->rRmsBuffer[i] = this->audioMonitor->getRootMeanSquare(1);
+        this->lPeakBuffer[bufferLastIndex] = this->audioMonitor->getPeak(0);
+        this->rPeakBuffer[bufferLastIndex] = this->audioMonitor->getPeak(1);
+        this->lRmsBuffer[bufferLastIndex] = this->audioMonitor->getRootMeanSquare(0);
+        this->rRmsBuffer[bufferLastIndex] = this->audioMonitor->getRootMeanSquare(1);
 
-        if (this->isVisible())
-        {
-            this->triggerAsyncUpdate();
-        }
-
-        const double a = Time::getMillisecondCounterHiRes();
-        this->skewTime = int(a - b);
+        this->triggerAsyncUpdate();
     }
 }
 
@@ -94,13 +85,10 @@ void WaveformAudioMonitorComponent::handleAsyncUpdate()
 
 inline static float waveformIecLevel(float peak)
 {
-    static constexpr auto maxDb = +4.0f;
-    static constexpr auto minDb = -69.0f;
-    // -69 instead of -70 to have that nearly invisible horizontal line
-
-    const float vauleInDb = jlimit(minDb, maxDb,
-        20.0f * AudioCore::fastLog10(peak));
-
+    // -69 instead of -70 to have that nearly invisible horizontal line:
+    static constexpr auto maxDb = +4.f;
+    static constexpr auto minDb = -69.f;
+    const auto vauleInDb = jlimit(minDb, maxDb, 20.f * AudioCore::fastLog10(peak));
     return AudioCore::iecLevel(vauleInDb);
 }
 
@@ -114,7 +102,7 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
     const float midH = float(this->getHeight()) / 2.f;
     constexpr int w = WaveformAudioMonitorComponent::bufferSize;
 
-    g.setColour(this->colour.withAlpha(0.2f));
+    g.setColour(this->peaksColour);
 
     for (int i = 0; i < w - 1; ++i)
     {
@@ -124,7 +112,7 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
         g.fillRect(1.f + (i * 2.f), midH - peakL, 1.f, peakR + peakL);
     }
 
-    g.setColour(this->colour.withAlpha(0.25f));
+    g.setColour(this->rmsColour);
 
     for (int i = 0; i < w; ++i)
     {

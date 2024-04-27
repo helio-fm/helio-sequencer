@@ -18,6 +18,7 @@
 #pragma once
 
 #include "Icons.h"
+#include "ColourIDs.h"
 
 class IconComponent : virtual public Component
 {
@@ -65,7 +66,7 @@ public:
     
     void paint(Graphics &g) override
     {
-        g.setColour(findDefaultColour(Label::textColourId).withMultipliedAlpha(this->alpha));
+        g.setColour(this->colour.withMultipliedAlpha(this->alpha));
 
         if (this->image.isNull())
         {
@@ -87,4 +88,6 @@ protected:
     Image image;
     Optional<int> iconSize;
     
+    const Colour colour = findDefaultColour(Label::textColourId);
+
 };

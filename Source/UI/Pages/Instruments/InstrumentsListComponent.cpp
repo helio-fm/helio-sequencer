@@ -36,7 +36,7 @@ InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner,
     this->instrumentsList = make<ListBox>(String(), this);
     this->addAndMakeVisible(this->instrumentsList.get());
 
-    this->titleLabel = make<Label>(String(),TRANS(I18n::Page::orchestraInstruments));
+    this->titleLabel = make<Label>(String(), TRANS(I18n::Page::orchestraInstruments));
     this->addAndMakeVisible(this->titleLabel.get());
     this->titleLabel->setJustificationType(Justification::centred);
     this->titleLabel->setFont(Globals::UI::Fonts::L);
@@ -54,12 +54,10 @@ InstrumentsListComponent::~InstrumentsListComponent() = default;
 
 void InstrumentsListComponent::resized()
 {
-    constexpr auto titleHeight = 26;
-    constexpr auto listPadding = 40;
-
-    this->instrumentsList->setBounds(this->getLocalBounds().withTrimmedTop(listPadding).reduced(2));
-    this->titleLabel->setBounds(0, 0, this->getWidth(), titleHeight);
-    this->separator->setBounds(0, listPadding, this->getWidth(), 3);
+    constexpr auto headerSize = 40;
+    this->titleLabel->setBounds(0, 0, this->getWidth(), headerSize - 4);
+    this->instrumentsList->setBounds(this->getLocalBounds().withTrimmedTop(headerSize).reduced(2));
+    this->separator->setBounds(0, headerSize, this->getWidth(), 2);
 }
 
 void InstrumentsListComponent::parentHierarchyChanged()
@@ -102,12 +100,12 @@ void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int 
 
     if (rowIsSelected)
     {
-        g.fillAll(Colours::white.withAlpha(0.075f));
+        g.fillAll(findDefaultColour(Label::textColourId).withAlpha(0.08f));
     }
-    else if (rowNumber % 2)
-    {
-        g.fillAll(Colours::black.withAlpha(0.05f));
-    }
+    //else if (rowNumber % 2)
+    //{
+    //    g.fillAll(Colours::black.withAlpha(0.025f));
+    //}
 
     const auto instrument = instrumentNode->getInstrument();
     if (instrument == nullptr)

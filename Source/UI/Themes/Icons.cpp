@@ -268,15 +268,53 @@ void Icons::clearPrerenderedCache()
 
 static float getScaleFactor()
 {
-    return App::Config().getUiFlags()->getUiScaleFactor()  *
+    return App::Config().getUiFlags()->getUiScaleFactor() *
         float(Desktop::getInstance().getDisplays().getPrimaryDisplay()->scale);
 }
+
+static const int kMaxIconSize = 30;
+static const int kIconSizes[] = {
+  8, // 0
+  8, // 1
+  8, // 2
+  8, // 3
+  8, // 4
+  8, // 5
+  8, // 6
+  8, // 7
+  8, // 8
+  8, // 9
+  8, // 10
+  8, // 11
+  8, // 12
+  8, // 13
+  8, // 14
+  8, // 15
+  14, // 16
+  14, // 17
+  14, // 18
+  14, // 19
+  14, // 20
+  14, // 21
+  14, // 22
+  14, // 23
+  22, // 24
+  22, // 25
+  22, // 26
+  22, // 27
+  22, // 28
+  22, // 29
+  22, // 30
+  22, // 31
+  22 // 32
+};
 
 Image Icons::findByName(Icons::Id id, int maxSize)
 {
     const auto retinaFactor = getScaleFactor();
-    const int fixedSize = int(floorf(float(maxSize) / Globals::UI::iconSizeStep) *
-        Globals::UI::iconSizeStep * retinaFactor);
+    const auto lookupSize = sizeof(kIconSizes) / sizeof(kIconSizes[0]);
+    const int fixedSize = (maxSize < 0 || maxSize >= lookupSize) ?
+        int(kMaxIconSize * retinaFactor) : int(kIconSizes[maxSize] * retinaFactor);
 
     const uint32 iconKey = (id * 1000) + fixedSize;
     if (prerenderedSVGs.contains(iconKey))
@@ -295,8 +333,9 @@ Image Icons::findByName(Icons::Id id, int maxSize)
 Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
 {
     const auto retinaFactor = getScaleFactor();
-    const int fixedSize = int(floorf(float(maxSize) / Globals::UI::iconSizeStep) *
-        Globals::UI::iconSizeStep * retinaFactor);
+    const auto lookupSize = sizeof(kIconSizes) / sizeof(kIconSizes[0]);
+    const int fixedSize = (maxSize < 0 || maxSize >= lookupSize) ?
+        int(kMaxIconSize * retinaFactor) : int(kIconSizes[maxSize] * retinaFactor);
 
     const Colour iconBaseColour(lf.findColour(ColourIDs::Icons::fill));
     const Colour iconShadeColour(lf.findColour(ColourIDs::Icons::shadow));

@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ModalDialogInput.h"
+#include "HelioTheme.h"
 #include "CommandIDs.h"
 
 ModalDialogInput::ModalDialogInput(const String &text, const String &message,
@@ -47,20 +48,15 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message,
         this->okay();
     };
 
-    this->textEditor = make<TextEditor>();
+    this->textEditor = HelioTheme::makeSingleLineTextEditor(true, DialogBase::Defaults::textEditorFont);
     this->addAndMakeVisible(this->textEditor.get());
-    this->textEditor->setMultiLine(false);
-    this->textEditor->setReturnKeyStartsNewLine(false);
-    this->textEditor->setReadOnly(false);
-    this->textEditor->setScrollbarsShown(false);
-    this->textEditor->setCaretVisible(true);
-    this->textEditor->setPopupMenuEnabled(true);
-
     this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
-    this->textEditor->setFont(Defaults::textEditorFont);
-    this->textEditor->setIndents(Defaults::textEditorLeftIndent, Defaults::textEditorTopIndent);
     this->textEditor->setText(this->input, dontSendNotification);
     this->textEditor->addListener(this);
+
+    // instead of selectAll(), which puts the caret at the start:
+    this->textEditor->setCaretPosition(0);
+    this->textEditor->moveCaretToEnd(true);
 
     this->okButton->setButtonText(okText);
     this->cancelButton->setButtonText(cancelText);
@@ -80,11 +76,11 @@ void ModalDialogInput::resized()
 {
     const auto contentBounds = this->getContentBounds();
     this->messageLabel->setBounds(contentBounds
-        .withTrimmedBottom(DialogBase::Defaults::textEditorHeight + 16));
+        .withTrimmedBottom(Globals::UI::textEditorHeight + 16));
 
     this->textEditor->setBounds(contentBounds
         .withTrimmedTop(this->messageLabel->getHeight())
-        .withSizeKeepingCentre(contentBounds.getWidth(), DialogBase::Defaults::textEditorHeight));
+        .withSizeKeepingCentre(contentBounds.getWidth(), Globals::UI::textEditorHeight));
 
     this->okButton->setBounds(this->getButton1Bounds());
     this->cancelButton->setBounds(this->getButton2Bounds());

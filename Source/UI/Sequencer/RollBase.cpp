@@ -1417,7 +1417,7 @@ void RollBase::handleCommandMessage(int commandId)
                 else
                 {
                     const bool hasQuickDoublePress =
-                        (Time::getMillisecondCounter() - this->timeStartedPlayback) < 500;
+                        (Time::getMillisecondCounter() - this->timeStartedPlayback) < 400;
 
                     // tech debt warning: see duplicate code in TransportPlaybackStart case
                     if (hasQuickDoublePress)
@@ -1461,7 +1461,7 @@ void RollBase::handleCommandMessage(int commandId)
             this->startFollowingPlayhead(true);
 #endif
             const bool hasQuickDoublePress =
-                (Time::getMillisecondCounter() - this->timeStartedPlayback) < 500;
+                (Time::getMillisecondCounter() - this->timeStartedPlayback) < 400;
 
             if (hasQuickDoublePress)
             {

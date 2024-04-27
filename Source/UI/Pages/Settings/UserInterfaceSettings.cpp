@@ -56,14 +56,8 @@ UserInterfaceSettings::UserInterfaceSettings()
         return fontsMenu;
     };
 
-    this->fontEditor = make<TextEditor>(String());
+    this->fontEditor = HelioTheme::makeSingleLineTextEditor(false);
     this->addAndMakeVisible(this->fontEditor.get());
-    this->fontEditor->setFont(Globals::UI::Fonts::M);
-    this->fontEditor->setReadOnly(true);
-    this->fontEditor->setScrollbarsShown(false);
-    this->fontEditor->setCaretVisible(false);
-    this->fontEditor->setPopupMenuEnabled(false);
-    this->fontEditor->setInterceptsMouseClicks(false, true);
     this->fontEditor->setText(TRANS(I18n::Settings::uiFont) + ": " + lastUsedFontName);
 
     this->fontsCombo = make<MobileComboBox::Container>();
@@ -177,9 +171,9 @@ UserInterfaceSettings::UserInterfaceSettings()
     };
 
 #if SIMPLIFIED_UI_SETTINGS
-    this->setSize(100, 210);
+    this->setSize(100, 200);
 #else
-    this->setSize(100, 450);
+    this->setSize(100, 420);
 #endif
 }
 
@@ -189,7 +183,7 @@ void UserInterfaceSettings::resized()
 {
     constexpr auto margin1 = 4;
     constexpr auto margin2 = margin1 + 12;
-    constexpr auto rowSize = 32;
+    constexpr auto rowSize = 30;
     constexpr auto rowSpacing = 4;
 
 #if !SIMPLIFIED_UI_SETTINGS
@@ -197,16 +191,17 @@ void UserInterfaceSettings::resized()
     this->fontsCombo->setBounds(margin1, margin1,
         this->getWidth() - margin1 * 2, this->getHeight() - margin1 * 2);
 
-    this->fontEditor->setBounds(margin2, margin2, this->getWidth() - margin2 * 2, rowSize);
+    this->fontEditor->setBounds(margin2, margin2,
+        this->getWidth() - margin2 * 2, Globals::UI::textEditorHeight);
 
     this->openGLRendererButton->setBounds(margin2,
-        this->fontEditor->getBottom() + margin2, this->getWidth() - margin2 * 2, rowSize);
+        this->fontEditor->getBottom() + (rowSpacing * 2), this->getWidth() - margin2 * 2, rowSize);
 
     this->nativeTitleBarButton->setBounds(margin2,
         this->openGLRendererButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->wheelFlagsSeparator->setBounds(margin2,
-        this->nativeTitleBarButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 4);
+        this->nativeTitleBarButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 2);
 
     this->wheelAltModeButton->setBounds(margin2,
         this->wheelFlagsSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
@@ -218,7 +213,7 @@ void UserInterfaceSettings::resized()
         this->wheelVerticalPanningButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->miscFlagsSeparator->setBounds(margin2,
-        this->wheelVerticalZoomingButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 4);
+        this->wheelVerticalZoomingButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 2);
 
     const auto bottomSectionStart = this->miscFlagsSeparator->getBottom() + rowSpacing;
 
@@ -235,7 +230,7 @@ void UserInterfaceSettings::resized()
         this->followPlayheadButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->uiScaleSeparator->setBounds(margin2,
-        this->animationsEnabledButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 4);
+        this->animationsEnabledButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 2);
 
     this->scaleUi1->setBounds(margin2,
         this->uiScaleSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);

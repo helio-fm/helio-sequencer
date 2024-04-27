@@ -1383,7 +1383,7 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme)
     g.setColour(fillColour);
     g.fillRect(patternImage.getBounds());
 
-    const auto shadowColour = Colours::black.withAlpha(0.11f);
+    const auto shadowColour = Colours::black.withAlpha(theme.isDark() ? 0.075f : 0.025f);
 
     int yBase = 0;
     while (yBase < PatternRoll::rowPatternHeight)

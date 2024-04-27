@@ -616,12 +616,6 @@ void RollHeader::paint(Graphics &g)
         g.fillRect(floorf(x), float(this->getHeight() - 12), 1.f, 11.f);
     }
 
-    g.setColour(this->barShadeColour);
-    for (const auto x : this->roll.getVisibleBars())
-    {
-        g.fillRect(floorf(x + 1), float(this->getHeight() - 11), 1.f, 10.f);
-    }
-
     g.setColour(this->beatColour);
     for (const auto x : this->roll.getVisibleBeats())
     {

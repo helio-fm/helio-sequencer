@@ -16,6 +16,7 @@
 */
 
 #include "Common.h"
+#include "ColourIDs.h"
 #include "TimeSignaturesSequence.h"
 #include "TimeSignaturesProjectMap.h"
 #include "CachedLabelImage.h"
@@ -36,7 +37,7 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMa
     this->signatureLabel->setInterceptsMouseClicks(false, false);
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
 
-    constexpr auto topPadding = 2.f;
+    constexpr auto topPadding = 1.f;
     constexpr auto triangleHeight = 4.5f;
     constexpr auto triangleWidth = 7.5f;
     this->triangleShape.addTriangle(0.f, topPadding,
@@ -62,9 +63,12 @@ void TimeSignatureSmallComponent::updateContent(const TimeSignatureEvent &newEve
     this->event = newEvent;
 
     this->colour = this->event.getTrackColour()
-        .interpolatedWith(findDefaultColour(ColourIDs::TrackScroller::scrollerFill), 0.95f);
+        .interpolatedWith(findDefaultColour(ColourIDs::Roll::headerSnaps), 0.5f)
+        .withMultipliedAlpha(0.35f);
+
     const auto textColour = this->event.getTrackColour()
         .interpolatedWith(findDefaultColour(Label::textColourId), 0.5f);
+
     this->signatureLabel->setColour(Label::textColourId, textColour);
 
     auto *cachedImage = static_cast<CachedLabelImage *>(this->signatureLabel->getCachedComponentImage());

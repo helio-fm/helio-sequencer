@@ -94,10 +94,8 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
         this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
     }
 
-    this->textEditor = make<TextEditor>();
+    this->textEditor = HelioTheme::makeSingleLineTextEditor(true, DialogBase::Defaults::textEditorFont);
     this->addAndMakeVisible(this->textEditor.get());
-    this->textEditor->setFont(Defaults::textEditorFont);
-    this->textEditor->setIndents(Defaults::textEditorLeftIndent, Defaults::textEditorTopIndent);
 
     this->textEditor->onReturnKey = [this]()
     {
@@ -241,7 +239,7 @@ void TimeSignatureDialog::resized()
     this->okButton->setBounds(this->getButton1Bounds());
     this->removeEventButton->setBounds(this->getButton2Bounds());
 
-    this->textEditor->setBounds(this->getRowBounds(0.2f, DialogBase::Defaults::textEditorHeight));
+    this->textEditor->setBounds(this->getRowBounds(0.2f, Globals::UI::textEditorHeight));
 
     constexpr auto metronomeEditorHeight = 55;
     this->metronomeEditor->setBounds(this->getRowBounds(0.65f, metronomeEditorHeight));

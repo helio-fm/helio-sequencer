@@ -425,6 +425,7 @@ void App::recreateLayout()
     auto *window = static_cast<App *>(getInstance())->window.get();
     auto *workspace = static_cast<App *>(getInstance())->workspace.get();
 
+    workspace->recreateCommandPaletteActions();
     if (auto *root = workspace->getTreeRoot())
     {
         root->recreateSubtreePages();

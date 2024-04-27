@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "ColourIDs.h"
 #include "ShadowLeftwards.h"
 
 class TrackStartIndicator final : public Component
@@ -94,7 +95,8 @@ private:
     float viewFirstBeat = 0.f;
     float viewLastBeat = Globals::Defaults::projectLength;
 
-    const Colour fillColour = Colour(0x1b000000);
+    const Colour fillColour =
+        findDefaultColour(ColourIDs::TrackScroller::outOfRangeFill);
 
     static constexpr int shadowWidth = 12;
 

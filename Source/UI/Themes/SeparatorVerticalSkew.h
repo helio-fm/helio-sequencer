@@ -18,6 +18,7 @@
 #pragma once
 
 #include "HelioTheme.h"
+#include "ColourIDs.h"
 
 class SeparatorVerticalSkew final : public Component
 {
@@ -44,10 +45,10 @@ public:
             g.fillPath(this->shape1, {});
         }
 
-        g.setColour(Colours::black.withAlpha(45.f / 255.f));
+        g.setColour(this->darkColour);
         g.fillPath(this->line1, {});
 
-        g.setColour(Colours::white.withAlpha(15.f / 255.f));
+        g.setColour(this->lightColour);
         g.fillPath(this->line2, {});
     }
 
@@ -82,6 +83,12 @@ private:
 
     Path shape1;
     Path shape2;
+
+    const Colour lightColour =
+        findDefaultColour(ColourIDs::Common::separatorLineLight);
+
+    const Colour darkColour =
+        findDefaultColour(ColourIDs::Common::separatorLineDark);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SeparatorVerticalSkew)
 };

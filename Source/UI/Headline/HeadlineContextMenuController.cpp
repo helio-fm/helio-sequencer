@@ -47,7 +47,7 @@ public:
         if (this->content.get())
         {
             this->addAndMakeVisible(this->content.get());
-            this->content->setTopLeftPosition(padding / 2, padding / 2);
+            this->content->setTopLeftPosition(padding / 2, padding / 2 + 1);
             this->syncBoundsWithContent();
         }
     }
@@ -80,15 +80,15 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(findDefaultColour(ColourIDs::Backgrounds::headlineFill).brighter(0.035f));
+        g.setColour(findDefaultColour(ColourIDs::Backgrounds::menuFill));
         g.fillRect(1, 1, this->getWidth() - 2, this->getHeight() - 2);
 
-        HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.5f, 1.f);
+        HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.25f, 1.f);
 
         g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
         g.fillRect(1, 1, this->getWidth() - 2, 3);
 
-        g.setColour(findDefaultColour(ColourIDs::Backgrounds::headlineFill).darker(0.015f));
+        g.setColour(findDefaultColour(ColourIDs::Backgrounds::menuFill).darker(0.015f));
         HelioTheme::drawDashedHorizontalLine3(g, 4.f, 1.f, float(this->getWidth() - 4), 8.f);
     }
 

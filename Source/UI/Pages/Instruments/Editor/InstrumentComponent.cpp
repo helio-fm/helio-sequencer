@@ -37,7 +37,6 @@ InstrumentComponent::InstrumentComponent(WeakReference<Instrument> instrument,
 {
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
-    this->setMouseCursor(MouseCursor::PointingHandCursor);
 }
 
 InstrumentComponent::~InstrumentComponent()
@@ -65,13 +64,10 @@ void InstrumentComponent::mouseDrag(const MouseEvent &e)
         (pos.getY() + getHeight() / 2) / static_cast<double>(this->getParentHeight()));
 
     this->getParentEditor()->updateComponents();
-    this->setMouseCursor(MouseCursor::DraggingHandCursor);
 }
 
 void InstrumentComponent::mouseUp(const MouseEvent &e)
 {
-    this->setMouseCursor(MouseCursor::PointingHandCursor);
-
     if (e.getOffsetFromDragStart().isOrigin())
     {
         if (this->instrument->isNodeStandardIOProcessor(this->nodeId) ||
@@ -114,22 +110,21 @@ void InstrumentComponent::paint(Graphics &g)
     const auto w = float(this->getWidth());
     const auto h = float(this->getHeight());
 
-    g.setGradientFill(ColourGradient(Colour(0x59ffffff), 0.0f, h,
-        Colour(0x30ffffff), w, 0.0f, true));
+    g.setColour(Colour(0x55ffffff));
+    g.fillEllipse(1.f, 1.f, w - 2.f, h - 2.f);
 
-    g.fillEllipse(1.0f, 1.0f, w - 2.f, h - 2.f);
-
-    g.setColour(Colour(0x5d000000));
-    g.drawEllipse(1.0f, 1.0f, w - 2.f, h - 2.f, 0.5f);
+    g.setColour(Colour(0x55000000));
+    g.drawEllipse(1.f, 1.f, w - 2.f, h - 2.f, 0.75f);
 
     if (this->isSelected)
     {
-        g.drawEllipse(5.0f, 5.0f, w - 10.f, h - 10.f, 1.5f);
+        g.drawEllipse(5.f, 5.f, w - 10.f, h - 10.f, 1.5f);
     }
 
     g.setFont(this->font);
     g.setColour(Colours::black.withAlpha(0.75f));
-    g.drawFittedText(this->getName(), getLocalBounds().reduced(this->pinSize * 2, this->pinSize), Justification::centred, 3, 1.f);
+    g.drawFittedText(this->getName(),
+        getLocalBounds().reduced(this->pinSize * 2, this->pinSize), Justification::centred, 3, 1.f);
 }
 
 void InstrumentComponent::resized()

@@ -75,7 +75,6 @@ protected:
     Atomic<bool> recordingMode = false;
 
     const Colour fillColour = findDefaultColour(ColourIDs::Roll::headerFill);
-    const Colour barShadeColour = findDefaultColour(ColourIDs::Common::borderLineDark);
     const Colour bevelDarkColour = findDefaultColour(ColourIDs::Common::borderLineDark);
     const Colour bevelLightColour = findDefaultColour(ColourIDs::Roll::headerBorder);
 

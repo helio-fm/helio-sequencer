@@ -37,9 +37,17 @@ public:
         Trigger(WeakReference<Component> listener = nullptr);
         void parentHierarchyChanged() override;
         void parentSizeChanged() override;
+        void mouseWheelMove(const MouseEvent &e,
+            const MouseWheelDetails &wheel) override;
+        void paint(Graphics &g) override;
         void updateBounds();
 
     private:
+
+        Component *createHighlighterComponent() override;
+
+        static constexpr int iconSize = 18;
+        static constexpr int triggerSize = 36;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Trigger)
     };

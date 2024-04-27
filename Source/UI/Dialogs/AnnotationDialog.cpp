@@ -17,8 +17,8 @@
 
 #include "Common.h"
 #include "AnnotationDialog.h"
-
 #include "AnnotationsSequence.h"
+#include "HelioTheme.h"
 #include "ColourIDs.h"
 
 static Array<String> getDynamics()
@@ -94,14 +94,8 @@ AnnotationDialog::AnnotationDialog(Component &owner,
     this->colourSwatches = make<ColourSwatches>();
     this->addAndMakeVisible(this->colourSwatches.get());
 
-    this->textEditor = make<TextEditor>();
+    this->textEditor = HelioTheme::makeSingleLineTextEditor(true, DialogBase::Defaults::textEditorFont);
     this->addAndMakeVisible(this->textEditor.get());
-    this->textEditor->setMultiLine(false);
-    this->textEditor->setReturnKeyStartsNewLine(false);
-    this->textEditor->setReadOnly(false);
-    this->textEditor->setScrollbarsShown(true);
-    this->textEditor->setCaretVisible(true);
-    this->textEditor->setPopupMenuEnabled(true);
 
     jassert(this->originalSequence != nullptr);
     jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
@@ -133,8 +127,6 @@ AnnotationDialog::AnnotationDialog(Component &owner,
     this->colourSwatches->setSelectedColour(this->originalEvent.getColour());
 
     this->textEditor->addListener(this);
-    this->textEditor->setFont(Defaults::textEditorFont);
-    this->textEditor->setIndents(Defaults::textEditorLeftIndent, Defaults::textEditorTopIndent);
     this->textEditor->setText(this->originalEvent.getDescription(), dontSendNotification);
     // instead of selectAll(), which puts the caret at the start:
     this->textEditor->setCaretPosition(0);
@@ -176,9 +168,9 @@ void AnnotationDialog::resized()
     this->okButton->setBounds(this->getButton1Bounds());
     this->removeEventButton->setBounds(this->getButton2Bounds());
 
-    this->textEditor->setBounds(this->getRowBounds(0.225f, DialogBase::Defaults::textEditorHeight));
+    this->textEditor->setBounds(this->getRowBounds(0.225f, Globals::UI::textEditorHeight));
     this->colourSwatches->setBounds(this->getRowBounds(0.675f,
-        DialogBase::Defaults::textEditorHeight, AnnotationDialog::colourSwatchesMargin));
+        Globals::UI::textEditorHeight, AnnotationDialog::colourSwatchesMargin));
 }
 
 void AnnotationDialog::parentHierarchyChanged()

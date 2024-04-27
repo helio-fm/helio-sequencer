@@ -27,6 +27,7 @@ InstrumentEditorPin::InstrumentEditorPin(AudioProcessorGraph::NodeID nodeID, int
 {
     this->setSize(18, 18);
     this->setWantsKeyboardFocus(false);
+    this->setMouseCursor(MouseCursor::PointingHandCursor);
 }
 
 void InstrumentEditorPin::paint(Graphics &g)
@@ -53,6 +54,7 @@ void InstrumentEditorPin::mouseDown(const MouseEvent &e)
     const AudioProcessorGraph::NodeID sourceId(isInput ? 0 : nodeID.uid);
     const AudioProcessorGraph::NodeID destinationId(isInput ? nodeID.uid : 0);
     this->getParentEditor()->beginConnectorDrag(sourceId, index, destinationId, index, e);
+    this->setMouseCursor(MouseCursor::DraggingHandCursor);
 }
 
 void InstrumentEditorPin::mouseDrag(const MouseEvent &e)
@@ -62,6 +64,7 @@ void InstrumentEditorPin::mouseDrag(const MouseEvent &e)
 
 void InstrumentEditorPin::mouseUp(const MouseEvent &e)
 {
+    this->setMouseCursor(MouseCursor::PointingHandCursor);
     this->getParentEditor()->endDraggingConnector(e);
 }
 

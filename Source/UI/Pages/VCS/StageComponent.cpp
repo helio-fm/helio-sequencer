@@ -56,14 +56,10 @@ StageComponent::~StageComponent() = default;
 
 void StageComponent::resized()
 {
-    constexpr auto labelHeight = 26;
-    this->titleLabel->setBounds(0, 0, this->getWidth(), labelHeight);
-
-    constexpr auto contentTopMargin = 42;
-    this->changesList->setBounds(1, contentTopMargin,
-        this->getWidth() - 2, this->getHeight() - contentTopMargin - 1);
-
-    this->separator->setBounds(0, contentTopMargin - 2, this->getWidth(), 3);
+    constexpr auto headerSize = 40;
+    this->titleLabel->setBounds(0, 0, this->getWidth(), headerSize - 4);
+    this->changesList->setBounds(this->getLocalBounds().withTrimmedTop(headerSize).reduced(2));
+    this->separator->setBounds(0, headerSize, this->getWidth(), 2);
 }
 
 void StageComponent::handleCommandMessage(int commandId)

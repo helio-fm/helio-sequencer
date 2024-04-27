@@ -54,14 +54,10 @@ HistoryComponent::~HistoryComponent() = default;
 
 void HistoryComponent::resized()
 {
-    constexpr auto labelHeight = 26;
-    this->revisionTreeLabel->setBounds(0, 0, this->getWidth(), labelHeight);
-
-    constexpr auto contentTopMargin = 42;
-    this->revisionViewport->setBounds(1, contentTopMargin,
-        this->getWidth() - 2, this->getHeight() - contentTopMargin - 1);
-
-    this->separator->setBounds(0, contentTopMargin - 2, this->getWidth() - 0, 3);
+    constexpr auto headerSize = 40;
+    this->revisionTreeLabel->setBounds(0, 0, this->getWidth(), headerSize - 4);
+    this->revisionViewport->setBounds(this->getLocalBounds().withTrimmedTop(headerSize).reduced(2));
+    this->separator->setBounds(0, headerSize, this->getWidth() - 0, 2);
 }
 
 void HistoryComponent::handleCommandMessage(int commandId)

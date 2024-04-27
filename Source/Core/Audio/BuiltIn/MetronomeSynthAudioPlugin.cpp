@@ -62,10 +62,7 @@ public:
             this->addAndMakeVisible(syllableIcon.get());
             this->syllableIcons.add(syllableIcon.release());
 
-            auto samplePathEditor = make<TextEditor>();
-            samplePathEditor->setReadOnly(true);
-            samplePathEditor->setFont(Globals::UI::Fonts::M);
-            samplePathEditor->setJustification(Justification::centredLeft);
+            auto samplePathEditor = HelioTheme::makeSingleLineTextEditor(false);
             this->addAndMakeVisible(samplePathEditor.get());
             this->samplePaths.add(samplePathEditor.release());
 

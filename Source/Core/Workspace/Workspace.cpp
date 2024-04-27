@@ -429,6 +429,12 @@ Array<CommandPaletteActionsProvider *> Workspace::getCommandPaletteActionProvide
     return { this->consoleProjectsList.get() };
 }
 
+void Workspace::recreateCommandPaletteActions()
+{
+    jassert(this->wasInitialized);
+    this->consoleProjectsList = make<CommandPaletteProjectsList>(*this);
+}
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//

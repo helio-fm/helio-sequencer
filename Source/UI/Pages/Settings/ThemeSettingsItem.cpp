@@ -40,10 +40,10 @@ public:
         const float lineEndY = paintEndY + paintStartY;
 
         g.setColour(Colours::white.withAlpha(0.2f));
-        g.drawVerticalLine(41, lineStartY, lineEndY);
+        g.drawVerticalLine(37, lineStartY, lineEndY);
         g.drawVerticalLine(this->getWidth() - 1, lineStartY, lineEndY);
-        g.drawHorizontalLine(int(lineStartY) - 1, 42.f, float(this->getWidth()) - 1.f);
-        g.drawHorizontalLine(int(lineEndY), 42.f, float(this->getWidth()) - 1.f);
+        g.drawHorizontalLine(int(lineStartY) - 1, 38.f, float(this->getWidth()) - 1.f);
+        g.drawHorizontalLine(int(lineEndY), 38.f, float(this->getWidth()) - 1.f);
     }
 };
 
@@ -55,21 +55,21 @@ public:
     {
         this->setPaintingIsUnclipped(true);
 
-        this->iconComponent = make<IconComponent>(Icons::apply);
+        this->iconComponent = make<IconComponent>(Icons::apply, 1.f, iconSize);
         this->addAndMakeVisible(this->iconComponent.get());
-        this->iconComponent->setIconAlphaMultiplier(0.7f);
     }
 
     void resized() override
     {
-        constexpr auto size = 28;
-        this->iconComponent->setBounds(3,
-            (this->getHeight() / 2) - (size / 2) - 1, size, size);
+        this->iconComponent->setBounds(12,
+            (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
     }
 
 private:
 
+    static constexpr auto iconSize = 16;
     UniquePointer<IconComponent> iconComponent;
+
 };
 
 ThemeSettingsItem::ThemeSettingsItem(ListBox &parentListBox) :
@@ -106,8 +106,6 @@ void ThemeSettingsItem::paint(Graphics &g)
 
     const int barWidth = 64;
     const int dynamicGridSize = 4;
-    int i = int(paintStartY / barWidth) + 2;
-    const int j = this->getWidth() / barWidth;
     const int beatWidth = barWidth / dynamicGridSize;
 
     const Colour barStart = this->theme->findColour(ColourIDs::Roll::barLine);
@@ -115,6 +113,8 @@ void ThemeSettingsItem::paint(Graphics &g)
     const Colour beatStart = this->theme->findColour(ColourIDs::Roll::beatLine);
     const Colour snapStart = this->theme->findColour(ColourIDs::Roll::snapLine);
 
+    int i = 2;
+    const int j = this->getWidth() / barWidth;
     while (i <= j)
     {
         const int startX1 = barWidth * i;
@@ -136,38 +136,38 @@ void ThemeSettingsItem::paint(Graphics &g)
     }
 
     g.setColour(this->colours->getPageFillColour());
-    g.fillRect(41.f, paintStartY, 207.f, paintEndY);
+    g.fillRect(37.f, paintStartY, 211.f, paintEndY);
 
     // Outer glow
-    g.setColour (this->colours->getPageFillColour().brighter(0.2f));
-    g.drawVerticalLine(41, lineStartY, lineEndY);
+    g.setColour(this->colours->getPageFillColour().brighter(0.2f));
+    g.drawVerticalLine(37, lineStartY, lineEndY);
     g.drawVerticalLine(this->getWidth() - 1, lineStartY, lineEndY);
-    g.drawHorizontalLine(int(lineStartY) - 1, 42.f, float(this->getWidth()) - 1.f);
-    g.drawHorizontalLine(int(lineEndY), 42.f, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(int(lineStartY) - 1, 38.f, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(int(lineEndY), 38.f, float(this->getWidth()) - 1.f);
 
     // Inner shadow
     g.setColour(this->colours->getPageFillColour().darker(0.05f));
-    g.drawVerticalLine(42, lineStartY, lineEndY);
+    g.drawVerticalLine(38, lineStartY, lineEndY);
     g.drawVerticalLine(this->getWidth() - 2, lineStartY, lineEndY);
-    g.drawHorizontalLine(int(lineStartY), 42, float(this->getWidth()) - 1.f);
-    g.drawHorizontalLine(int(lineEndY) - 1, 42, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(int(lineStartY), 38, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(int(lineEndY) - 1, 38, float(this->getWidth()) - 1.f);
 
     // Roll shadow left
-    g.setGradientFill(ColourGradient(Colour(0x15000000), 248.0f, 0.0f,
-        Colour(0x00000000), 268.0f, 0.0f,  false));
+    g.setGradientFill(ColourGradient(Colour(0x10000000), 248.f, 0.f,
+        Colours::transparentBlack, 268.f, 0.f, false));
     g.fillRect(248.f, paintStartY, 20.f, paintEndY);
 
-    g.setGradientFill(ColourGradient (Colour (0x15000000), 248.0f, 0.0f,
-        Colour (0x00000000), 260.0f, 0.0f, false));
+    g.setGradientFill(ColourGradient(Colour(0x10000000), 248.f, 0.f,
+        Colours::transparentBlack, 260.0f, 0.f, false));
     g.fillRect(248.f, paintStartY, 12.f, paintEndY);
 
     // Roll shadow right
-    g.setGradientFill(ColourGradient(Colour(0x15000000), float(this->getWidth()), 0.0f,
-        Colour(0x00000000), float(this->getWidth()) - 20.f, 0.0f, false));
+    g.setGradientFill(ColourGradient(Colour(0x10000000), float(this->getWidth()), 0.f,
+        Colours::transparentBlack, float(this->getWidth()) - 20.f, 0.f, false));
     g.fillRect(float(this->getWidth()) - 20.f, paintStartY, 20.f, paintEndY);
 
-    g.setGradientFill(ColourGradient(Colour(0x15000000), float(this->getWidth()), 0.0f,
-        Colour(0x00000000), float(this->getWidth()) - 12.f, 0.0f, false));
+    g.setGradientFill(ColourGradient(Colour(0x10000000), float(this->getWidth()), 0.f,
+        Colours::transparentBlack, float(this->getWidth()) - 12.f, 0.f, false));
     g.fillRect(float(this->getWidth()) - 12.f, paintStartY, 12.f, paintEndY);
 
     // Separators
@@ -178,13 +178,13 @@ void ThemeSettingsItem::paint(Graphics &g)
     g.drawVerticalLine(247, lineStartY, lineEndY);
 
     g.setColour(Colours::black);
-    Icons::drawImageRetinaAware(this->icon1, g, 48 + 10, (this->getHeight() / 2) - 1);
-    Icons::drawImageRetinaAware(this->icon2, g, 220 + 10, (this->getHeight() / 2) - 1);
+    Icons::drawImageRetinaAware(this->icon1, g, 55, (this->getHeight() / 2) - 1);
+    Icons::drawImageRetinaAware(this->icon2, g, 230, (this->getHeight() / 2) - 1);
 }
 
 void ThemeSettingsItem::resized()
 {
-    this->schemeNameLabel->setBounds(67, 2, 174, this->getHeight() - 6);
+    this->schemeNameLabel->setBounds(64, 2, 180, this->getHeight() - 6);
     this->selectionComponent->setBounds(this->getLocalBounds());
 }
 
@@ -232,7 +232,7 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
     this->theme = make<HelioTheme>();
     this->theme->initColours(colours);
 
-    this->schemeNameLabel->setText("\"" + colours->getName() + "\"", dontSendNotification);
+    this->schemeNameLabel->setText(colours->getName(), dontSendNotification);
     this->schemeNameLabel->setColour(Label::textColourId, this->theme->findColour(Label::textColourId));
 
     this->rollImage = HighlightingScheme::renderRowsPattern(*this->theme,

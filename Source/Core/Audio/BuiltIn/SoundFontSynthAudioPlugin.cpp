@@ -41,11 +41,8 @@ public:
         AudioProcessorEditor(soundFontPlugin),
         audioPlugin(soundFontPlugin)
     {
-        this->filePath = make<TextEditor>();
-        this->filePath->setReadOnly(true);
-        this->filePath->setFont(Globals::UI::Fonts::M);
-        this->filePath->setJustification(Justification::centredLeft);
-        this->addAndMakeVisible(this->filePath.get());
+        this->filePathEditor = HelioTheme::makeSingleLineTextEditor(false);
+        this->addAndMakeVisible(this->filePathEditor.get());
 
         this->browseButton = make<IconButton>(Icons::browse, CommandIDs::Browse);
         this->browseButton->setMouseCursor(MouseCursor::PointingHandCursor);
@@ -90,15 +87,15 @@ public:
         const auto synthParams = this->audioPlugin->getSynthParameters();
         if (synthParams.filePath.isNotEmpty())
         {
-            this->filePath->setAlpha(1.f);
-            this->filePath->setInterceptsMouseClicks(true, true);
-            this->filePath->setText(synthParams.filePath);
+            this->filePathEditor->setAlpha(1.f);
+            this->filePathEditor->setInterceptsMouseClicks(true, true);
+            this->filePathEditor->setText(synthParams.filePath);
         }
         else
         {
-            this->filePath->setAlpha(0.75f);
-            this->filePath->setInterceptsMouseClicks(false, false);
-            this->filePath->setText({}); // todo placeholder?
+            this->filePathEditor->setAlpha(0.75f);
+            this->filePathEditor->setInterceptsMouseClicks(false, false);
+            this->filePathEditor->setText("...");
         }
     }
 
@@ -118,7 +115,7 @@ public:
 
         auto browseFileArea = getRowArea(0.15f, rowHeight);
         this->browseButton->setBounds(browseFileArea.removeFromRight(iconWidth).reduced(paddingX, 2).translated(iconMarginX, 0));
-        this->filePath->setBounds(browseFileArea.reduced(paddingX, 0));
+        this->filePathEditor->setBounds(browseFileArea.reduced(paddingX, 0));
 
         auto selectProgramArea = getRowArea(0.7f, rowHeight).reduced(iconWidth + paddingX, 0);
         this->leftArrow->setBounds(selectProgramArea.removeFromLeft(iconWidth).reduced(paddingX, 2).translated(-iconMarginX, 0));
@@ -186,7 +183,7 @@ private:
     WeakReference<SoundFontSynthAudioPlugin> audioPlugin;
 
     // soundfont file picker
-    UniquePointer<TextEditor> filePath;
+    UniquePointer<TextEditor> filePathEditor;
     UniquePointer<IconButton> browseButton;
 
     UniquePointer<FileChooser> fileChooser;

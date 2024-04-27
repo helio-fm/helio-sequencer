@@ -186,7 +186,7 @@ void TimeSignatureLargeComponent::updateContent(const TimeSignatureEvent &newEve
 
     this->colour = this->event.getTrackColour()
         .interpolatedWith(findDefaultColour(ColourIDs::Roll::headerSnaps), 0.5f)
-        .withMultipliedAlpha(0.4f);
+        .withMultipliedAlpha(0.6f);
 
     const auto textColour = this->event.getTrackColour()
         .interpolatedWith(findDefaultColour(Label::textColourId), 0.5f);

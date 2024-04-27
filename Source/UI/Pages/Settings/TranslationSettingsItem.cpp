@@ -33,7 +33,8 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
-        g.fillRoundedRectangle(40.f, 2.f, float(this->getWidth() - 45), float(this->getHeight() - 5), 2.f);
+        g.fillRoundedRectangle(36.f, 2.f,
+            float(this->getWidth() - 41), float(this->getHeight() - 6), 2.f);
     }
 
 private:
@@ -49,27 +50,26 @@ public:
     {
         this->setPaintingIsUnclipped(true);
 
-        this->iconComponent = make<IconComponent>(Icons::apply);
+        this->iconComponent = make<IconComponent>(Icons::apply, 1.f, iconSize);
         this->addAndMakeVisible(this->iconComponent.get());
-        this->iconComponent->setIconAlphaMultiplier(0.7f);
     }
 
     void paint(Graphics &g) override
     {
         g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
-        g.fillRoundedRectangle(40.f, 2.f,
-            float(this->getWidth() - 45), float(this->getHeight() - 5), 2.f);
+        g.fillRoundedRectangle(36.f, 2.f,
+            float(this->getWidth() - 41), float(this->getHeight() - 6), 2.f);
     }
 
     void resized() override
     {
-        constexpr auto size = 28;
-        this->iconComponent->setBounds(3,
-            (this->getHeight() / 2) - (size / 2) - 1, size, size);
+        this->iconComponent->setBounds(12,
+            (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
     }
 
 private:
 
+    static constexpr auto iconSize = 16;
     UniquePointer<IconComponent> iconComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationSettingsItemSelection)
@@ -81,12 +81,12 @@ TranslationSettingsItem::TranslationSettingsItem(ListBox &parentListBox) :
     this->localeLabel = make<Label>();
     this->addAndMakeVisible(this->localeLabel.get());
     this->localeLabel->setJustificationType(Justification::centredLeft);
-    this->localeLabel->setFont(Globals::UI::Fonts::L);
+    this->localeLabel->setFont(Globals::UI::Fonts::M);
 
     this->idLabel = make<Label>();
     this->addAndMakeVisible(this->idLabel.get());
     this->idLabel->setJustificationType(Justification::centredRight);
-    this->idLabel->setFont(Globals::UI::Fonts::L);
+    this->idLabel->setFont(Globals::UI::Fonts::M);
 
     this->separator = make<SeparatorHorizontal>();
     this->addAndMakeVisible(this->separator.get());
@@ -99,13 +99,13 @@ TranslationSettingsItem::~TranslationSettingsItem() = default;
 
 void TranslationSettingsItem::resized()
 {
-    constexpr auto leftMargin = 42;
+    constexpr auto leftMargin = 38;
     constexpr auto rightMargin = 10;
     constexpr auto idLabelSize = 100;
 
-    this->localeLabel->setBounds(leftMargin, 0, this->getWidth() - leftMargin, this->getHeight() - 2);
-    this->idLabel->setBounds(this->getWidth() - (idLabelSize + rightMargin), 0, idLabelSize, this->getHeight() - 2);
-    this->separator->setBounds(leftMargin + 4, this->getHeight() - 2, this->getWidth() - leftMargin - 8, 2);
+    this->localeLabel->setBounds(leftMargin, 0, this->getWidth() - leftMargin, this->getHeight() - 3);
+    this->idLabel->setBounds(this->getWidth() - (idLabelSize + rightMargin), 0, idLabelSize, this->getHeight() - 3);
+    this->separator->setBounds(leftMargin, this->getHeight() - 2, this->getWidth() - leftMargin - 8, 2);
 
     this->selectionComponent->setBounds(this->getLocalBounds());
 }

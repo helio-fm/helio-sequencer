@@ -218,8 +218,9 @@ TempoDialog::TempoDialog(int bpmValue)
     this->textEditor->setScrollbarsShown(true);
     this->textEditor->setCaretVisible(true);
     this->textEditor->setPopupMenuEnabled(true);
-    this->textEditor->setFont(Defaults::textEditorFont);
-    this->textEditor->setIndents(Defaults::textEditorLeftIndent, Defaults::textEditorTopIndent);
+    this->textEditor->setFont(DialogBase::Defaults::textEditorFont);
+    this->textEditor->setJustification(Justification::centredLeft);
+    this->textEditor->setIndents(4, 0);
 
     this->textEditor->onWheelMove = [this](const MouseWheelDetails &wheel)
     {
@@ -290,7 +291,7 @@ void TempoDialog::resized()
     this->okButton->setBounds(this->getButton1Bounds());
     this->cancelButton->setBounds(this->getButton2Bounds());
 
-    this->textEditor->setBounds(this->getRowBounds(0.2f, DialogBase::Defaults::textEditorHeight));
+    this->textEditor->setBounds(this->getRowBounds(0.2f, Globals::UI::textEditorHeight));
     this->tapTempo->setBounds(this->getRowBounds(0.65f,
         TempoDialog::tapTempoHeight, TempoDialog::tapTempoMargin));
 }

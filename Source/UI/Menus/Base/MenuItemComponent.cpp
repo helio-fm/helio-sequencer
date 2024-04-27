@@ -348,7 +348,8 @@ void MenuItemComponent::resized()
 {
     constexpr auto rightMargin = 4;
     constexpr auto subLabelWidth = 128;
-    constexpr auto iconSize = MenuItemComponent::iconSize;
+    const auto iconSize = (this->description->iconId == Icons::empty) ? 0 : MenuItemComponent::iconSize;
+
     this->subLabel->setBounds(this->getWidth() - subLabelWidth - rightMargin, 0, subLabelWidth, this->getHeight());
     this->submenuMarker->setBounds(this->getWidth() - iconSize - rightMargin,
         (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
@@ -368,8 +369,8 @@ void MenuItemComponent::resized()
     for (int i = 0; i < this->buttons.size(); ++i)
     {
         auto *button = this->buttons.getReference(i).get();
-        constexpr auto buttonRightMargin = iconSize * 2;
-        button->setBounds(this->getWidth() - buttonRightMargin - iconSize * (i + 1),
+        constexpr auto buttonRightMargin = MenuItemComponent::iconSize * 2;
+        button->setBounds(this->getWidth() - buttonRightMargin - MenuItemComponent::iconSize * (i + 1),
             0, iconSize, this->getHeight());
     }
 }

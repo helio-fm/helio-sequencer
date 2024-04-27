@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "MobileComboBox.h"
 #include "PanelBackground.h"
+#include "HelioTheme.h"
 
 MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Component> container) :
     editor(editor),
@@ -33,26 +34,19 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     this->menu = make<MenuPanel>();
     this->addAndMakeVisible(this->menu.get());
 
-    this->triggerButton = make<MobileComboBox::Trigger>();
-    this->addAndMakeVisible(this->triggerButton.get());
-
     this->separator = make<SeparatorHorizontalReversed>();
     this->addAndMakeVisible(this->separator.get());
 
     this->currentNameLabel = make<Label>();
     this->addAndMakeVisible(this->currentNameLabel.get());
-    this->currentNameLabel->setFont(Globals::UI::Fonts::L);
+    this->currentNameLabel->setFont(Globals::UI::Fonts::M);
     this->currentNameLabel->setJustificationType(Justification::centredLeft);
 
-    this->searchTextBox = make<TextEditor>();
-    this->addAndMakeVisible(this->searchTextBox.get());
-    this->searchTextBox->setFont(Globals::UI::Fonts::L);
-    this->searchTextBox->setMultiLine(false);
-    this->searchTextBox->setReturnKeyStartsNewLine(false);
-    this->searchTextBox->setScrollbarsShown(true);
+    this->searchTextBox = HelioTheme::makeSingleLineTextEditor(true);
     this->searchTextBox->setPopupMenuEnabled(false);
-    this->searchTextBox->setCaretVisible(true);
-    this->searchTextBox->setEnabled(true);
+    this->addAndMakeVisible(this->searchTextBox.get());
+
+    this->triggerButton = make<MobileComboBox::Trigger>(this);
 
     this->searchTextBox->onEscapeKey = [this]()
     {
@@ -67,7 +61,7 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
 
 void MobileComboBox::resized()
 {
-    static constexpr auto menuY = 32;
+    static constexpr auto menuY = Globals::UI::textEditorHeight + 2;
 
     if (this->isSimpleDropdown())
     {
@@ -82,7 +76,7 @@ void MobileComboBox::resized()
     this->currentNameLabel->setBounds(0, 0, this->getWidth() - 0, menuY - 2);
 
     this->menu->setBounds(2, menuY, this->getWidth() - 4, this->getHeight() - menuY);
-    this->searchTextBox->setBounds(1, 1, this->getWidth() - 2, menuY - 2);
+    this->searchTextBox->setBounds(1, 1, this->getWidth() - 2, Globals::UI::textEditorHeight);
 
     // a hack to prevent sending `resized` message to menu
     // and thus to prevent it from starting its animation,
@@ -155,14 +149,24 @@ void MobileComboBox::initHeader(const String &text, bool hasSearch, bool hasCapt
 
     this->searchTextBox->setText({}, dontSendNotification);
     this->currentNameLabel->setText(text, dontSendNotification);
+    this->currentNameLabel->setInterceptsMouseClicks(false, true);
 
     // on mobile, just show the label: search box is not very convenient
 #if PLATFORM_DESKTOP
     this->searchTextBox->setVisible(hasSearch);
     this->currentNameLabel->setVisible(hasCaption);
+    if (hasCaption)
+    {
+        this->currentNameLabel->addAndMakeVisible(this->triggerButton.get());
+    }
+    else
+    {
+        this->searchTextBox->addAndMakeVisible(this->triggerButton.get());
+    }
 #elif PLATFORM_MOBILE
     this->searchTextBox->setVisible(false);
     this->currentNameLabel->setVisible(hasSearch || hasCaption);
+    this->currentNameLabel->addAndMakeVisible(this->triggerButton.get());
 #endif
 
     if (this->searchTextBox->isVisible())
@@ -262,7 +266,7 @@ void MobileComboBox::Container::handleCommandMessage(int commandId)
 }
 
 MobileComboBox::Trigger::Trigger(WeakReference<Component> listener) :
-    IconButton(Icons::findByName(Icons::down, 16),
+    IconButton(Icons::findByName(Icons::down, Trigger::iconSize),
         CommandIDs::ToggleShowHideCombo, listener) {}
 
 void MobileComboBox::Trigger::parentHierarchyChanged()
@@ -275,19 +279,68 @@ void MobileComboBox::Trigger::parentSizeChanged()
     this->updateBounds();
 }
 
+void MobileComboBox::Trigger::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
+{
+    // a hack to pass wheel to the grandparent (parent is often just a text editor)
+    auto *parent = this->getParentComponent();
+    if (parent == nullptr)
+    {
+        return;
+    }
+
+    auto *grandParent = parent->getParentComponent();
+    if (grandParent != nullptr)
+    {
+        grandParent->mouseWheelMove(e, wheel);
+    }
+}
+
+void MobileComboBox::Trigger::paint(Graphics &g)
+{
+    g.setColour(this->colour.withMultipliedAlpha(this->alpha));
+
+    if (this->image.isNull())
+    {
+        const Image i(Icons::findByName(this->iconId, Trigger::iconSize));
+
+        Icons::drawImageRetinaAware(i, g,
+            this->getWidth() - (Trigger::triggerSize / 2), this->getHeight() / 2);
+    }
+    else
+    {
+        Icons::drawImageRetinaAware(this->image, g,
+            this->getWidth() - (Trigger::triggerSize / 2), this->getHeight() / 2);
+    }
+}
+
 void MobileComboBox::Trigger::updateBounds()
 {
-    if (const auto *parent = this->getParentComponent())
+    const auto *parent = this->getParentComponent();
+    if (parent == nullptr)
     {
-        static constexpr auto triggerSize = 32;
-
-        const int w = triggerSize * 2;
-        const int h = triggerSize;
-        const int x = parent->getWidth() - w / 2 - triggerSize / 2;
-        const int y = 0;
-
-        this->setBounds(x, y, w, h);
-        this->setAlwaysOnTop(true);
-        this->toFront(false);
+        return;
     }
+
+    bool allowsClicksOnSelf = false;
+    bool allowsClicksOnChildren = false;
+    parent->getInterceptsMouseClicks(allowsClicksOnSelf, allowsClicksOnChildren);
+    const auto maxParentHeight = jmin(parent->getHeight(), Globals::UI::textEditorHeight);
+    if (allowsClicksOnSelf) // && dynamic_cast<const TextEditor *>(parent))
+    {
+        const int w = Trigger::triggerSize;
+        const int x = parent->getWidth() - Trigger::triggerSize;
+        this->setBounds(x, 0, w, maxParentHeight);
+    }
+    else
+    {
+        this->setBounds(parent->getLocalBounds().withHeight(maxParentHeight));
+    }
+
+    this->setAlwaysOnTop(true);
+    this->toFront(false);
+}
+
+Component *MobileComboBox::Trigger::createHighlighterComponent()
+{
+    return new MobileComboBox::Trigger(nullptr);
 }

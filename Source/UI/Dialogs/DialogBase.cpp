@@ -71,8 +71,7 @@ void DialogBase::paint(Graphics &g)
     g.setFillType({ theme.getDialogBackground(), {} });
     g.fillRect(1, 2, this->getWidth() - 2, this->getHeight() - 4);
 
-    static constexpr auto lightAlpha = 2.f;
-
+    static constexpr auto lightAlpha = 1.5f;
     HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), lightAlpha);
 
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight).

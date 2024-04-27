@@ -19,6 +19,7 @@
 #include "AudioSettings.h"
 #include "AudioCore.h"
 #include "Workspace.h"
+#include "HelioTheme.h"
 
 AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
 {
@@ -40,50 +41,20 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
     this->deviceCombo = make<MobileComboBox::Container>();
     this->addAndMakeVisible(this->deviceCombo.get());
 
-    this->deviceTypeEditor = make<TextEditor>();
+    this->deviceTypeEditor = HelioTheme::makeSingleLineTextEditor(false);
     this->addAndMakeVisible(this->deviceTypeEditor.get());
-    this->deviceTypeEditor->setReadOnly(true);
-    this->deviceTypeEditor->setScrollbarsShown(false);
-    this->deviceTypeEditor->setCaretVisible(false);
-    this->deviceTypeEditor->setPopupMenuEnabled(false);
-    this->deviceTypeEditor->setInterceptsMouseClicks(false, true);
-    this->deviceTypeEditor->setFont(Globals::UI::Fonts::M);
 
-    this->deviceEditor = make<TextEditor>();
+    this->deviceEditor = HelioTheme::makeSingleLineTextEditor(false);
     this->addAndMakeVisible(this->deviceEditor.get());
-    this->deviceEditor->setReadOnly(true);
-    this->deviceEditor->setScrollbarsShown(false);
-    this->deviceEditor->setCaretVisible(false);
-    this->deviceEditor->setPopupMenuEnabled(false);
-    this->deviceEditor->setInterceptsMouseClicks(false, true);
-    this->deviceEditor->setFont(Globals::UI::Fonts::M);
 
-    this->sampleRateEditor = make<TextEditor>();
+    this->sampleRateEditor = HelioTheme::makeSingleLineTextEditor(false);
     this->addAndMakeVisible(this->sampleRateEditor.get());
-    this->sampleRateEditor->setReadOnly(true);
-    this->sampleRateEditor->setScrollbarsShown(false);
-    this->sampleRateEditor->setCaretVisible(false);
-    this->sampleRateEditor->setPopupMenuEnabled(false);
-    this->sampleRateEditor->setInterceptsMouseClicks(false, true);
-    this->sampleRateEditor->setFont(Globals::UI::Fonts::M);
 
-    this->bufferSizeEditor = make<TextEditor>();
+    this->bufferSizeEditor = HelioTheme::makeSingleLineTextEditor(false);
     this->addAndMakeVisible(this->bufferSizeEditor.get());
-    this->bufferSizeEditor->setReadOnly(true);
-    this->bufferSizeEditor->setScrollbarsShown(false);
-    this->bufferSizeEditor->setCaretVisible(false);
-    this->bufferSizeEditor->setPopupMenuEnabled(false);
-    this->bufferSizeEditor->setInterceptsMouseClicks(false, true);
-    this->bufferSizeEditor->setFont(Globals::UI::Fonts::M);
 
-    this->midiInputEditor = make<TextEditor>();
+    this->midiInputEditor = HelioTheme::makeSingleLineTextEditor(false);
     this->addAndMakeVisible(this->midiInputEditor.get());
-    this->midiInputEditor->setReadOnly(true);
-    this->midiInputEditor->setScrollbarsShown(false);
-    this->midiInputEditor->setCaretVisible(false);
-    this->midiInputEditor->setPopupMenuEnabled(false);
-    this->midiInputEditor->setInterceptsMouseClicks(false, true);
-    this->midiInputEditor->setFont(Globals::UI::Fonts::M);
 
     // "record microtonal notes from 12-tone keyboard" checkbox
     this->midiInputRemappingCheckbox = make<ToggleButton>(TRANS(I18n::Settings::midiRemap12ToneKeyboard));
@@ -96,16 +67,10 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
         App::Workspace().getAudioCore().setFilteringMidiInput(shouldFilterMidi);
     };
 
-    this->midiOutputEditor = make<TextEditor>();
+    this->midiOutputEditor = HelioTheme::makeSingleLineTextEditor(false);
     this->addAndMakeVisible(this->midiOutputEditor.get());
-    this->midiOutputEditor->setReadOnly(true);
-    this->midiOutputEditor->setScrollbarsShown(false);
-    this->midiOutputEditor->setCaretVisible(false);
-    this->midiOutputEditor->setPopupMenuEnabled(false);
-    this->midiOutputEditor->setInterceptsMouseClicks(false, true);
-    this->midiOutputEditor->setFont(Globals::UI::Fonts::M);
 
-    this->setSize(550, 320);
+    this->setSize(550, 310);
 
     MenuPanel::Menu emptyMenu;
     this->deviceTypeCombo->initWith(this->deviceTypeEditor.get(), emptyMenu);
@@ -129,17 +94,32 @@ void AudioSettings::resized()
     this->deviceTypeCombo->setBounds(comboBounds);
     this->deviceCombo->setBounds(comboBounds);
 
-    const Rectangle<int> editorBounds(16, 0, this->getWidth() - 32, 32);
+    constexpr auto marginX = 16;
+    constexpr auto marginY = 16;
+    constexpr auto rowSpacing = 10;
+    Rectangle<int> editorBounds(marginX, marginY,
+        this->getWidth() - (marginX * 2), this->getHeight() - (marginY * 2));
 
-    this->deviceTypeEditor->setBounds(editorBounds.withY(12));
-    this->deviceEditor->setBounds(editorBounds.withY(60));
-    this->sampleRateEditor->setBounds(editorBounds.withY(108));
-    this->bufferSizeEditor->setBounds(editorBounds.withY(156));
+    this->deviceTypeEditor->setBounds(editorBounds.removeFromTop(Globals::UI::textEditorHeight));
 
-    this->midiInputEditor->setBounds(editorBounds.withY(200));
-    this->midiInputRemappingCheckbox->setBounds(editorBounds.withY(238).translated(4, 0));
+    editorBounds.removeFromTop(rowSpacing);
+    this->deviceEditor->setBounds(editorBounds.removeFromTop(Globals::UI::textEditorHeight));
 
-    this->midiOutputEditor->setBounds(editorBounds.withY(280));
+    editorBounds.removeFromTop(rowSpacing);
+    this->sampleRateEditor->setBounds(editorBounds.removeFromTop(Globals::UI::textEditorHeight));
+
+    editorBounds.removeFromTop(rowSpacing);
+    this->bufferSizeEditor->setBounds(editorBounds.removeFromTop(Globals::UI::textEditorHeight));
+
+    editorBounds.removeFromTop(rowSpacing);
+    this->midiInputEditor->setBounds(editorBounds.removeFromTop(Globals::UI::textEditorHeight));
+
+    editorBounds.removeFromTop(rowSpacing / 2);
+    this->midiInputRemappingCheckbox->setBounds(editorBounds
+        .removeFromTop(Globals::UI::textEditorHeight).translated(4, 0));
+
+    editorBounds.removeFromTop(rowSpacing);
+    this->midiOutputEditor->setBounds(editorBounds.removeFromTop(Globals::UI::textEditorHeight));
 }
 
 void AudioSettings::parentHierarchyChanged()

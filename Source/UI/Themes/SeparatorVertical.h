@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class SeparatorVertical final : public Component
 {
 public:
@@ -29,14 +31,22 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(Colour(0x09ffffff));
+        g.setColour(this->lightColour);
         g.fillRect(0, 0, 1, this->getHeight());
 
-        g.setColour(Colour(0x0b000000));
+        g.setColour(this->darkColour);
         g.fillRect(1, 0, 1, this->getHeight());
     }
 
 private:
+
+    const Colour lightColour =
+        findDefaultColour(ColourIDs::Common::separatorLineLight)
+            .withMultipliedAlpha(0.75f);
+
+    const Colour darkColour =
+        findDefaultColour(ColourIDs::Common::separatorLineDark)
+            .withMultipliedAlpha(0.75f);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SeparatorVertical)
 };

@@ -74,6 +74,7 @@ public:
     //===------------------------------------------------------------------===//
 
     Array<CommandPaletteActionsProvider *> getCommandPaletteActionProviders() const override;
+    void recreateCommandPaletteActions();
 
     //===------------------------------------------------------------------===//
     // Serializable

@@ -17,10 +17,11 @@
 
 #include "Common.h"
 #include "TrackPropertiesDialog.h"
-#include "CommandIDs.h"
 #include "UndoStack.h"
 #include "ProjectNode.h"
 #include "IconComponent.h"
+#include "HelioTheme.h"
+#include "CommandIDs.h"
 
 TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
     WeakReference<MidiTrack> track,
@@ -66,16 +67,8 @@ void TrackPropertiesDialog::init(const String &title, const String &confirmation
     this->colourSwatches = make<ColourSwatches>();
     this->addAndMakeVisible(this->colourSwatches.get());
 
-    this->textEditor = make<TextEditor>();
+    this->textEditor = HelioTheme::makeSingleLineTextEditor(true, DialogBase::Defaults::textEditorFont);
     this->addAndMakeVisible(this->textEditor.get());
-    this->textEditor->setMultiLine(false);
-    this->textEditor->setReturnKeyStartsNewLine(false);
-    this->textEditor->setReadOnly(false);
-    this->textEditor->setScrollbarsShown(true);
-    this->textEditor->setCaretVisible(true);
-    this->textEditor->setPopupMenuEnabled(true);
-    this->textEditor->setFont(Defaults::textEditorFont);
-    this->textEditor->setIndents(Defaults::textEditorLeftIndent, Defaults::textEditorTopIndent);
 
     this->textEditor->onEscapeKey = [this]()
     {
@@ -153,8 +146,8 @@ void TrackPropertiesDialog::resized()
     this->okButton->setBounds(this->getButton1Bounds());
     this->cancelButton->setBounds(this->getButton2Bounds());
 
-    this->textEditor->setBounds(this->getRowBounds(0.225f, DialogBase::Defaults::textEditorHeight));
-    this->colourSwatches->setBounds(this->getRowBounds(0.675f, DialogBase::Defaults::textEditorHeight,
+    this->textEditor->setBounds(this->getRowBounds(0.225f, Globals::UI::textEditorHeight));
+    this->colourSwatches->setBounds(this->getRowBounds(0.675f, Globals::UI::textEditorHeight,
         TrackPropertiesDialog::colourSwatchesMargin));
 
     constexpr auto iconSize = 16;

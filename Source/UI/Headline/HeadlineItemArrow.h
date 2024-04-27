@@ -70,10 +70,10 @@ private:
 
     const int arrowWidth;
 
-    const Colour arrowColour1 = Colour(0x3fffffff);
-    const Colour arrowColour2 = Colour(0x0dffffff);
+    const Colour arrowColour1 = Colour(0x33ffffff);
+    const Colour arrowColour2 = Colour(0x17ffffff);
     const Colour shadowColour1 = Colour(0x7f000000);
-    const Colour shadowColour2 = Colour(0x0f000000);
+    const Colour shadowColour2 = Colour(0x17000000);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineItemArrow)
 };

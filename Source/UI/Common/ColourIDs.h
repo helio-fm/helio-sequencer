@@ -34,14 +34,16 @@ namespace ColourIDs
     {
         static const int borderLineLight        = 0x2000000;
         static const int borderLineDark         = 0x2000001;
+
+        static const int separatorLineLight     = 0x2000002;
+        static const int separatorLineDark      = 0x2000003;
     }
 
     namespace Roll
     {
         static const int blackKey               = 0x2000100;
-        static const int blackKeyAlt            = 0x2000101;
-        static const int whiteKey               = 0x2000102;
-        static const int whiteKeyAlt            = 0x2000103;
+        static const int whiteKey               = 0x2000101;
+        static const int rootKey                = 0x2000102;
 
         static const int rowLine                = 0x2000104;
         static const int barLine                = 0x2000105;
@@ -65,6 +67,7 @@ namespace ColourIDs
         static const int noteNameFill           = 0x2000131;
         static const int noteNameBorder         = 0x2000132;
         static const int noteNameShadow         = 0x2000133;
+        static const int clipFill               = 0x2000134;
 
         static const int draggingGuide          = 0x2000140;
         static const int draggingGuideShadow    = 0x2000141;
@@ -124,6 +127,7 @@ namespace ColourIDs
         static const int sidebarFill            = 0x2000802;
         static const int headlineFill           = 0x2000803;
         static const int dialogFill             = 0x2000804;
+        static const int menuFill               = 0x2000805;
     }
 
     namespace Tooltip
@@ -140,7 +144,7 @@ namespace ColourIDs
         static const int borderLineDark         = 0x2001200;
         static const int borderLineLight        = 0x2001201;
         static const int screenRangeFill        = 0x2001202;
-        static const int scrollerFill           = 0x2001203;
+        static const int outOfRangeFill         = 0x2001203;
     }
 
     namespace SelectionComponent

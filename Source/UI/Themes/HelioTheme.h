@@ -59,6 +59,8 @@ public:
 
     void fillTextEditorBackground(Graphics&, int w, int h, TextEditor&) override;
     void drawTextEditorOutline(Graphics&, int w, int h, TextEditor&) override {}
+    static UniquePointer<TextEditor> makeSingleLineTextEditor(bool isEditable,
+        float font = Globals::UI::Fonts::M);
         
     //===------------------------------------------------------------------===//
     // Labels
@@ -69,7 +71,7 @@ public:
     Font getLabelFont(Label&) override;
 
     //===------------------------------------------------------------------===//
-    // Button
+    // Buttons
     //===------------------------------------------------------------------===//
 
     Font getTextButtonFont(TextButton&, int buttonHeight) override;
@@ -78,6 +80,8 @@ public:
     void drawButtonBackground(Graphics &g, Button &button,
         const Colour &backgroundColour,
         bool isMouseOverButton, bool isButtonDown) override;
+    void drawToggleButton(Graphics &g, ToggleButton &button,
+        bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
 
     //===------------------------------------------------------------------===//
     // Tables

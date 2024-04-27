@@ -83,17 +83,11 @@ protected:
         static constexpr auto contentPaddingHorizontal = 16;
         static constexpr auto contentPaddingVertical = 6;
 
-#if PLATFORM_DESKTOP
-        static constexpr auto textEditorHeight = 32;
-        static constexpr auto textEditorLeftIndent = 4;
-        static constexpr auto textEditorTopIndent = 4;
+        #if PLATFORM_DESKTOP
         static constexpr auto textEditorFont = Globals::UI::Fonts::L;
-#elif PLATFORM_MOBILE
-        static constexpr auto textEditorHeight = 30;
-        static constexpr auto textEditorLeftIndent = 4;
-        static constexpr auto textEditorTopIndent = 6;
+        #elif PLATFORM_MOBILE
         static constexpr auto textEditorFont = Globals::UI::Fonts::M;
-#endif
+        #endif
     };
 
 private:

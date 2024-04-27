@@ -238,6 +238,7 @@ namespace Globals
         static constexpr auto rollScrollerHeight = 30;
         static constexpr auto headlineIconSize = 16;
         static constexpr auto sidebarRowHeight = 36;
+        static constexpr auto textEditorHeight = 32;
 
         #if PLATFORM_MOBILE
         static constexpr auto projectMapHeight = 70;
@@ -254,8 +255,6 @@ namespace Globals
         static constexpr auto fadeOutLong = 150;
 
         static constexpr auto tooltipDelayMs = 650;
-
-        static constexpr auto iconSizeStep = 8;
 
         namespace Fonts
         {

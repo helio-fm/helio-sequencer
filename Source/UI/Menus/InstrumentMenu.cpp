@@ -39,18 +39,22 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
 
     const auto instrument = this->instrumentNode.getInstrument();
 
+    bool instrumentHasEditor = false;
     if (auto mainNode = instrument->findMainPluginNode())
     {
-        const auto hasEditor = mainNode->getProcessor()->hasEditor();
-        menu.add(MenuItem::item(Icons::instrument,
-            TRANS(I18n::Menu::instrumentShowWindow))->
-            disabledIf(!hasEditor)->
-            closesMenu()->
-            withAction([instrument]()
-            {
-                PluginWindow::showWindowFor(instrument->getIdAndHash());
-            }));
+        instrumentHasEditor = mainNode->getProcessor()->hasEditor();
     }
+
+    menu.add(MenuItem::item(Icons::instrument,
+        TRANS(I18n::Menu::instrumentShowWindow))->
+        disabledIf(!instrumentHasEditor)->
+        closesMenu()->
+        withAction([instrument]()
+        {
+            MessageManager::callAsync([instrument]() {
+                PluginWindow::showWindowFor(instrument->getIdAndHash());
+            });
+        }));
 
     if (!this->instrumentNode.isSelected()) // isSelectedOrHasSelectedChild() ?
     {

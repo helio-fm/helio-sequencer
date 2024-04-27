@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "ColourIDs.h"
 #include "TimeSignatureComponent.h"
 
 class TimeSignatureSmallComponent final : public TimeSignatureComponent
@@ -42,8 +41,7 @@ private:
 
     UniquePointer<Label> signatureLabel;
 
-    Colour colour = findDefaultColour(ColourIDs::TrackScroller::scrollerFill);
-
+    Colour colour;
     Path triangleShape;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeSignatureSmallComponent)
