@@ -20,6 +20,7 @@
 class Lasso;
 class MidiTrack;
 class ProjectNode;
+class PianoRoll;
 
 #include "MenuPanel.h"
 #include "Scale.h"
@@ -29,12 +30,14 @@ class PianoRollSelectionMenu final : public MenuPanel
 {
 public:
     
-    PianoRollSelectionMenu(ProjectNode &project, WeakReference<Lasso> lasso);
+    PianoRollSelectionMenu(PianoRoll &roll, WeakReference<Lasso> lasso);
 
 private:
 
-    ProjectNode &project;
+    PianoRoll &roll;
     WeakReference<Lasso> lasso;
+
+    ProjectNode &getProject();
 
     MenuPanel::Menu makeDefaultMenu();
     MenuPanel::Menu makeQuantizationMenu();

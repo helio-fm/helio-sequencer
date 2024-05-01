@@ -80,7 +80,7 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
 {
     this->setComponentID(ComponentIDs::pianoRollId);
 
-    this->selectionListeners.add(new PianoRollSelectionMenuManager(&this->selection, this->project));
+    this->selectionListeners.add(new PianoRollSelectionMenuManager(&this->selection, *this));
     this->selectionListeners.add(new PianoRollSelectionRangeIndicatorController(&this->selection, *this));
 
     this->draggingHelper = make<NotesDraggingGuide>();
@@ -206,6 +206,7 @@ void PianoRoll::selectAll()
         auto *childComponent = e.second.get();
         if (childComponent->belongsTo(this->activeClip))
         {
+            jassert(childComponent->isActiveAndEditable());
             this->selectEvent(childComponent, false);
         }
     }
@@ -1048,14 +1049,18 @@ void PianoRoll::selectEvents(const Array<Note> &notes, bool shouldDeselectAllOth
         this->deselectAll();
     }
 
-    forEachSequenceMapOfGivenTrack(this->patternMap, c, this->activeTrack)
+    for (const auto &it : this->patternMap)
     {
-        auto &sequenceMap = *c.second.get();
-        for (const auto &note : notes)
+        if (it.first == this->activeClip)
         {
-            if (auto *component = sequenceMap[note].get())
+            auto &sequenceMap = *it.second.get();
+            for (const auto &note : notes)
             {
-                this->selectEvent(component, false);
+                if (auto *component = sequenceMap[note].get())
+                {
+                    jassert(component->isActiveAndEditable());
+                    this->selectEvent(component, false);
+                }
             }
         }
     }

@@ -311,7 +311,7 @@ void RollHeader::updateClipRangeIndicators(const Clip &activeClip)
             hasUpdates = true;
         }
     }
-    
+
     if (hasUpdates)
     {
         this->updateClipRangeIndicatorPositions();
@@ -379,7 +379,7 @@ void RollHeader::updateClipRangeIndicatorPositions()
     {
         const int x1 = this->roll.getXPositionByBeat(indicator->getFirstBeat());
         const int x2 = this->roll.getXPositionByBeat(indicator->getLastBeat());
-        indicator->setBounds(x1, 0, x2 - x1 + 1, 1);
+        indicator->setBounds(x1, 0, jmax(x2 - x1, 1), 1);
     }
 }
 

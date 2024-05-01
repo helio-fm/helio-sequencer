@@ -21,7 +21,7 @@
 #include "Lasso.h"
 #include "SequencerOperations.h"
 #include "NoteComponent.h"
-
+#include "PianoRoll.h"
 #include "ProjectNode.h"
 #include "ProjectMetadata.h"
 #include "PianoTrackNode.h"
@@ -98,7 +98,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeMoveToTrackMenu()
 
     const auto *sourceTrack = this->lasso->getFirstAs<NoteComponent>()->getNote().getSequence()->getTrack();
 
-    for (auto *targetTrack : this->project.findChildrenOfType<PianoTrackNode>())
+    for (auto *targetTrack : this->getProject().findChildrenOfType<PianoTrackNode>())
     {
         if (targetTrack == sourceTrack)
         {
@@ -115,11 +115,11 @@ MenuPanel::Menu PianoRollSelectionMenu::makeMoveToTrackMenu()
             withAction([this, &closestClip]()
             {
                 auto &selection = *this->lasso.get();
-                SequencerOperations::moveSelection(selection, closestClip, true);
-                //const auto newNotes = SequencerOperations::moveSelection(selection, closestClip, true);
-                this->project.setEditableScope(closestClip, false);
-                // todo fix selection someday
-                //this->roll.selectEvents(newNotes, true);
+                auto &project = this->getProject();
+                auto &roll = this->roll; // save for later when "this" is not longer a valid object
+                const auto newNotes = SequencerOperations::moveSelection(selection, closestClip, true);
+                project.setEditableScope(closestClip, false); // likely dismisses the menu
+                roll.selectEvents(newNotes, true);
             }));
     }
 
@@ -174,7 +174,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeRefactoringMenu()
     menu.add(MenuItem::item(Icons::cut, CommandIDs::NewTrackFromSelection,
         TRANS(I18n::Menu::Selection::notesToTrack))->closesMenu());
 
-    const bool nowhereToMove = this->project.findChildrenOfType<PianoTrackNode>().size() < 2;
+    const bool nowhereToMove = this->getProject().findChildrenOfType<PianoTrackNode>().size() < 2;
 
     menu.add(MenuItem::item(Icons::cut,
         TRANS(I18n::Menu::Selection::notesMoveTo))->
@@ -216,7 +216,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeRescalingMenu()
     for (int i = 0; i < scales.size(); ++i)
     {
         if (scales.getUnchecked(i)->getBasePeriod() !=
-            this->project.getProjectInfo()->getTemperament()->getPeriodSize())
+            this->getProject().getProjectInfo()->getTemperament()->getPeriodSize())
         {
             continue;
         }
@@ -236,7 +236,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeRescalingMenu()
                 const auto &clip = this->lasso->getFirstAs<NoteComponent>()->getClip();
 
                 SequencerOperations::rescale(*this->lasso.get(), clip,
-                    this->project.getTimeline()->getKeySignaturesSequence(), scales[i],
+                    this->getProject().getTimeline()->getKeySignaturesSequence(), scales[i],
                     true, true);
             }));
     }
@@ -323,9 +323,9 @@ MenuPanel::Menu PianoRollSelectionMenu::makeArpsMenu()
 
                 SequencerOperations::arpeggiate(*this->lasso.get(), clip,
                     arps[i],
-                    this->project.getProjectInfo()->getTemperament(),
-                    this->project.getTimeline()->getKeySignaturesSequence(),
-                    this->project.getTimeline()->getTimeSignaturesAggregator(),
+                    this->getProject().getProjectInfo()->getTemperament(),
+                    this->getProject().getTimeline()->getKeySignaturesSequence(),
+                    this->getProject().getTimeline()->getTimeSignaturesAggregator(),
                     1.0f, 0.0f, false, false,
                     true, true);
             }));
@@ -334,9 +334,14 @@ MenuPanel::Menu PianoRollSelectionMenu::makeArpsMenu()
     return menu;
 }
 
-PianoRollSelectionMenu::PianoRollSelectionMenu(ProjectNode &project, WeakReference<Lasso> lasso) :
-    project(project),
+PianoRollSelectionMenu::PianoRollSelectionMenu(PianoRoll &roll, WeakReference<Lasso> lasso) :
+    roll(roll),
     lasso(lasso)
 {
     this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
+}
+
+ProjectNode &PianoRollSelectionMenu::getProject()
+{
+    return this->roll.getProject();
 }

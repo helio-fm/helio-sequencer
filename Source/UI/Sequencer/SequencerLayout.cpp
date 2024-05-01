@@ -538,7 +538,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->pianoRoll->addRollListener(this->bottomEditorsScroller.get());
     this->patternRoll->addRollListener(this->bottomEditorsScroller.get());
 
-    this->scrollerShadow = make<ShadowUpwards>(ShadowType::Normal);
+    this->scrollerShadow = make<ShadowUpwards>(ShadowType::Light);
     
     // a container with 2 rolls and 2 types of bottom scroller panel
 
