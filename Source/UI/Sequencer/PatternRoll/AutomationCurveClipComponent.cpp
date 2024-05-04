@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "AutomationCurveClipComponent.h"
 #include "AutomationCurveEventsConnector.h"
+#include "AutomationCurveEventComponent.h"
 #include "AutomationCurveHelper.h"
 #include "ProjectNode.h"
 #include "MidiSequence.h"

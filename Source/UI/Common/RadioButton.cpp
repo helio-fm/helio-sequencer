@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "RadioButton.h"
+#include "ColourIDs.h"
 
 class RadioButtonFrame final : public Component
 {
@@ -62,13 +63,16 @@ RadioButton::RadioButton(const String &text,
     fillColour(colour.interpolatedWith(
         findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.1f)),
     outlineColour(colour.interpolatedWith(
-        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.15f))
+        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.15f)),
+    labelSelectedColour(findDefaultColour(Label::textColourId)),
+    labelDeselectedColour(findDefaultColour(Label::textColourId).withMultipliedAlpha(0.9f))
 {
     this->label = make<Label>(String(), text);
     this->addAndMakeVisible(this->label.get());
     this->label->setFont(Globals::UI::Fonts::M);
     this->label->setJustificationType(Justification::centred);
     this->label->setInterceptsMouseClicks(false, false);
+    this->label->setColour(Label::textColourId, this->labelDeselectedColour);
 
     this->checkMark = make<RadioButtonFrame>(0.75f);
     this->addChildComponent(this->checkMark.get());
@@ -134,6 +138,7 @@ void RadioButton::select()
     {
         this->selected = true;
         this->fader.fadeIn(this->checkMark.get(), Globals::UI::fadeInShort);
+        this->label->setColour(Label::textColourId, this->labelSelectedColour);
     }
 }
 
@@ -143,6 +148,7 @@ void RadioButton::deselect()
     {
         this->selected = false;
         this->fader.fadeOut(this->checkMark.get(), Globals::UI::fadeOutLong);
+        this->label->setColour(Label::textColourId, this->labelDeselectedColour);
     }
 }
 

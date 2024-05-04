@@ -17,6 +17,8 @@
 
 #include "Common.h"
 #include "NoteNameGuidesBar.h"
+#include "MidiTrack.h"
+#include "SequencerOperations.h"
 #include "NoteNameGuide.h"
 #include "NoteComponent.h"
 #include "PianoRoll.h"

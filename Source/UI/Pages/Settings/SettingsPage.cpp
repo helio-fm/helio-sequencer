@@ -30,7 +30,7 @@ SettingsPage::SettingsPage(Component *settingsList)
 #if PLATFORM_DESKTOP
     this->viewport->setScrollBarThickness(2);
 #elif PLATFORM_MOBILE
-    this->viewport->setScrollBarThickness(35);
+    this->viewport->setScrollBarThickness(36);
 #endif
 
     this->viewport->setViewedComponent(settingsList, false);

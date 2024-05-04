@@ -24,6 +24,8 @@
 #include "PluginScanner.h"
 #include "SettingsNode.h"
 #include "OrchestraPitNode.h"
+#include "PianoTrackNode.h"
+#include "PatternEditorNode.h"
 #include "ProjectNode.h"
 #include "SerializationKeys.h"
 #include "CommandPaletteProjectsList.h"

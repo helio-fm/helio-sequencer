@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "RollHeader.h"
 #include "RollBase.h"
+#include "Pattern.h"
 #include "Transport.h"
 #include "SelectionComponent.h"
 #include "SoundProbeIndicator.h"

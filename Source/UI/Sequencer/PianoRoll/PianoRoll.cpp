@@ -373,7 +373,6 @@ void PianoRoll::zoomAbsolute(const Rectangle<float> &proportion)
     jassert(!proportion.isEmpty());
     jassert(proportion.isFinite());
 
-
     const auto keysTotal = this->getNumKeys();
 
     if (!this->zoomLevelLocked)
@@ -398,15 +397,16 @@ void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
 
     if (!this->zoomLevelLocked)
     {
-        constexpr auto margin = Globals::twelveTonePeriodSize;
-        const float numKeysToFit = float(maxKey - minKey + (margin * 2));
+        const auto keyMargin = App::isRunningOnPhone() ?
+            Globals::twelveTonePeriodSize / 2 : Globals::twelveTonePeriodSize;
+        const float numKeysToFit = float(maxKey - minKey + (keyMargin * 2));
         const float heightToFit = float(this->viewport.getViewHeight());
         this->setRowHeight(int(heightToFit / numKeysToFit));
     }
 
     const int centerY = this->getHeight() - this->getRowHeight() * ((maxKey + minKey) / 2);
     this->viewport.setViewPosition(this->viewport.getViewPositionX(),
-        centerY - (this->viewport.getViewHeight() / 2));
+        centerY - Globals::UI::rollHeaderHeight - (this->viewport.getViewHeight() / 2));
 
     RollBase::zoomToArea(minBeat, maxBeat);
 }
@@ -1261,7 +1261,9 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::ZoomEntireClip:
         this->project.setEditableScope(this->activeClip, true);
+        #if PLATFORM_DESKTOP
         this->zoomOutImpulse(0.35f);
+        #endif
         break;
     case CommandIDs::SwitchToClipInViewport:
         this->switchToClipInViewport();

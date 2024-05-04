@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "SequencerSidebarLeft.h"
-
+#include "AudioMonitor.h"
 #include "WaveformAudioMonitorComponent.h"
 #include "MenuItemComponent.h"
 #include "ShadowUpwards.h"
@@ -64,6 +64,11 @@ SequencerSidebarLeft::SequencerSidebarLeft()
     this->addAndMakeVisible(switchLinearModeButton.get());
 
     this->listBox = make<ListBox>();
+    this->listBox->setModel(this);
+    this->listBox->setMultipleSelectionEnabled(false);
+    this->listBox->setRowHeight(Globals::UI::sidebarRowHeight);
+    this->listBox->getViewport()->setScrollBarPosition(false, true);
+    this->listBox->getViewport()->setScrollOnDragMode(Viewport::ScrollOnDragMode::never);
     this->addAndMakeVisible(this->listBox.get());
 
     const auto *uiFlags = App::Config().getUiFlags();
@@ -72,11 +77,6 @@ SequencerSidebarLeft::SequencerSidebarLeft()
     this->velocityMapVisible = uiFlags->isEditorPanelVisible();
     this->noteNameGuidesEnabled = uiFlags->areNoteNameGuidesEnabled();
     this->scalesHighlightingEnabled = uiFlags->isScalesHighlightingEnabled();
-
-    this->recreateMenu();
-    this->listBox->setMultipleSelectionEnabled(false);
-    this->listBox->setRowHeight(Globals::UI::sidebarRowHeight);
-    this->listBox->setModel(this);
 
     this->switchLinearModeButton->setVisible(false);
     this->switchPatternModeButton->setVisible(false);

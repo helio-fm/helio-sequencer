@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "PianoRollSelectionMenu.h"
-
 #include "Lasso.h"
 #include "SequencerOperations.h"
 #include "NoteComponent.h"
@@ -26,9 +25,9 @@
 #include "ProjectMetadata.h"
 #include "PianoTrackNode.h"
 #include "ProjectTimeline.h"
-
-#include "CommandIDs.h"
+#include "KeySignaturesSequence.h"
 #include "MainLayout.h"
+#include "CommandIDs.h"
 #include "Config.h"
 
 MenuPanel::Menu PianoRollSelectionMenu::makeDefaultMenu()

@@ -60,6 +60,9 @@ private:
     const Colour outlineColour;
     const Colour fillColour;
 
+    const Colour labelSelectedColour;
+    const Colour labelDeselectedColour;
+
     UniquePointer<Component> checkMark;
     RadioButton::Listener *const listener;
     ComponentFader fader;

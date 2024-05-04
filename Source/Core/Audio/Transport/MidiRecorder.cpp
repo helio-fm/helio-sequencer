@@ -25,7 +25,6 @@
 #include "PianoTrackNode.h"
 #include "PianoSequence.h"
 
-#include "PatternRoll.h"
 #include "SequencerOperations.h"
 #include "PianoTrackActions.h"
 #include "UndoStack.h"

@@ -899,11 +899,9 @@ void PatternRoll::handleCommandMessage(int commandId)
             const auto endBeat = PatternOperations::findEndBeat(this->selection);
             this->getTransport().togglePlaybackLoop(startBeat, endBeat);
         }
-        else // no selection, just place the loop at the playhead position:
+        else // no selection, loop the entire project:
         {
-            const auto startBeat = this->getTransport().getSeekBeat();
-            const auto endBeat = startBeat + Globals::beatsPerBar * 4;
-            this->getTransport().togglePlaybackLoop(startBeat, endBeat);
+            this->getTransport().togglePlaybackLoop(this->projectFirstBeat, this->projectLastBeat);
         }
         break;
     case CommandIDs::ShowNewTrackPanel:

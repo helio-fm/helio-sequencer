@@ -17,6 +17,8 @@
 
 #include "Common.h"
 #include "MenuPanel.h"
+#include "MainLayout.h"
+#include "Config.h"
 
 MenuPanel::MenuPanel()
 {

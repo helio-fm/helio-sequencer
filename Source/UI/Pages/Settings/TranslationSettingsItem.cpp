@@ -21,27 +21,6 @@
 #include "ColourIDs.h"
 #include "IconComponent.h"
 
-class TranslationSettingsItemHighlighter final : public Component
-{
-public:
-
-    TranslationSettingsItemHighlighter()
-    {
-        this->setPaintingIsUnclipped(true);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
-        g.fillRoundedRectangle(36.f, 2.f,
-            float(this->getWidth() - 41), float(this->getHeight() - 6), 2.f);
-    }
-
-private:
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationSettingsItemHighlighter)
-};
-
 class TranslationSettingsItemSelection final : public Component
 {
 public:
@@ -56,21 +35,24 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
-        g.fillRoundedRectangle(36.f, 2.f,
-            float(this->getWidth() - 41), float(this->getHeight() - 6), 2.f);
+        g.setColour(this->fillColour);
+        g.fillRoundedRectangle(36.f, 3.f,
+            float(this->getWidth() - 41), float(this->getHeight() - 8), 2.f);
     }
 
     void resized() override
     {
         this->iconComponent->setBounds(12,
-            (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
+            (this->getHeight() / 2) - (iconSize / 2) - 1, iconSize, iconSize);
     }
 
 private:
 
     static constexpr auto iconSize = 16;
     UniquePointer<IconComponent> iconComponent;
+
+    const Colour fillColour =
+        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.025f);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationSettingsItemSelection)
 };
@@ -134,9 +116,4 @@ void TranslationSettingsItem::updateDescription(bool isLastRowInList,
     {
         this->selectionAnimator.fadeOut(this->selectionComponent.get(), Globals::UI::fadeOutShort);
     }
-}
-
-Component *TranslationSettingsItem::createHighlighterComponent()
-{
-    return new TranslationSettingsItemHighlighter();
 }

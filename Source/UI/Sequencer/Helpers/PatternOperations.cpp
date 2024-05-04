@@ -25,6 +25,7 @@
 #include "AutomationTrackNode.h"
 #include "PianoTrackActions.h"
 #include "AutomationTrackActions.h"
+#include "GeneratedSequenceBuilder.h"
 #include "Note.h"
 #include "AutomationEvent.h"
 #include "Clip.h"

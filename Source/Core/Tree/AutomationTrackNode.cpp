@@ -20,8 +20,9 @@
 #include "AutomationSequence.h"
 #include "TreeNodeSerializer.h"
 #include "PatternEditorNode.h"
-#include "Icons.h"
+#include "ProjectNode.h"
 #include "Pattern.h"
+#include "Icons.h"
 
 AutomationTrackNode::AutomationTrackNode(const String &name) :
     MidiTrackNode(name, Serialization::Core::automationTrack)

@@ -38,8 +38,6 @@ private:
     ComponentAnimator selectionAnimator;
     UniquePointer<Component> selectionComponent;
 
-    Component *createHighlighterComponent() override;
-
     friend class TranslationSettings;
 
     UniquePointer<Label> localeLabel;

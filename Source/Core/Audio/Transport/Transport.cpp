@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "Transport.h"
 #include "OrchestraPit.h"
+#include "AudioCore.h"
 #include "RendererThread.h"
 #include "PlayerThread.h"
 #include "PlayerThreadPool.h"

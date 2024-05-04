@@ -23,6 +23,7 @@
 #include "TimeSignatureEvent.h"
 #include "TrackedItem.h"
 #include "Delta.h"
+#include "Clip.h"
 
 class Pattern;
 class MidiSequence;

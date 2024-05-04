@@ -177,9 +177,9 @@ void HelioTheme::drawStretchableLayoutResizerBar(Graphics &g,
 
 void HelioTheme::fillTextEditorBackground(Graphics &g, int w, int h, TextEditor &ed)
 {
-    g.setColour(findDefaultColour(TextEditor::backgroundColourId));
+    g.setColour(this->findColour(TextEditor::backgroundColourId));
     g.fillRect(1, 1, w - 2, h - 2);
-    g.setColour(findDefaultColour(TextEditor::outlineColourId));
+    g.setColour(this->findColour(TextEditor::outlineColourId));
     g.drawVerticalLine(0, 1.f, h - 1.f);
     g.drawVerticalLine(w - 1, 1.f, h - 1.f);
     g.drawHorizontalLine(0, 1.f, w - 1.f);
@@ -207,19 +207,6 @@ UniquePointer<TextEditor> HelioTheme::makeSingleLineTextEditor(bool isEditable, 
 // Labels
 //===----------------------------------------------------------------------===//
 
-Font HelioTheme::getLabelFont(Label &label)
-{
-#if PLATFORM_DESKTOP
-    return label.getFont();
-#elif PLATFORM_MOBILE
-    // For whatever reason, fonts on the mobiles look way larger
-    // than fonts of same height on the desktops:
-    auto font = label.getFont();
-    font.setHeight(font.getHeight() - 2);
-    return font;
-#endif
-}
-
 void HelioTheme::drawLabel(Graphics &g, Label &label)
 {
     this->drawLabel(g, label, 0);
@@ -241,7 +228,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 {
     if (! label.isBeingEdited())
     {
-        const Font font(this->getLabelFont(label));
+        const auto font = this->getLabelFont(label);
         const String textToDraw = (passwordCharacter != 0) ?
             String::repeatedString(String::charToString(passwordCharacter), label.getText().length()) :
             label.getText();
@@ -250,7 +237,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
         const int maxLines = int(float(label.getHeight()) / font.getHeight());
 
         // using label.findColour, not findDefaultColour, as it is actually overridden in some places:
-        const Colour colour = label.findColour(Label::textColourId);
+        const auto colour = label.findColour(Label::textColourId);
 
 #if SMOOTH_RENDERED_FONT
 
@@ -281,19 +268,20 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 
 #else
 
-        const auto textArea = label.getBorderSize().subtractedFrom(label.getLocalBounds());
-
         // I really have no idea why drawFittedText on both iOS and Android renders the font
         // slightly above the desired position, so I'm simply adding some offset:
         const int yOffsetHack = 1;
+        const auto textArea = label.getBorderSize()
+            .subtractedFrom(label.getLocalBounds())
+            .translated(0, yOffsetHack);
 
         g.setFont(font);
         g.setColour(colour);
         g.drawFittedText(textToDraw,
             textArea.getX(),
-            textArea.getY() + yOffsetHack,
+            textArea.getY(),
             textArea.getWidth(),
-            textArea.getHeight() + yOffsetHack,
+            textArea.getHeight(),
             label.getJustificationType(),
             maxLines,
             1.0);
@@ -308,11 +296,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 
 Font HelioTheme::getTextButtonFont(TextButton &button, int buttonHeight)
 {
-#if PLATFORM_DESKTOP
     return { Globals::UI::Fonts::L };
-#elif PLATFORM_MOBILE
-    return { Globals::UI::Fonts::M };
-#endif
 }
 
 void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
@@ -420,7 +404,7 @@ void HelioTheme::drawTableHeaderColumn(Graphics &g,
     TableHeaderComponent &header, const String &columnName,
     int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags)
 {
-    const auto highlightColour = findDefaultColour(TableHeaderComponent::highlightColourId);
+    const auto highlightColour = this->findColour(TableHeaderComponent::highlightColourId);
 
     if (isMouseDown)
     {
@@ -447,7 +431,12 @@ void HelioTheme::drawTableHeaderColumn(Graphics &g,
                 .reduced(6).toFloat(), true));
     }
 
+#if PLATFORM_DESKTOP
     g.setFont(Globals::UI::Fonts::M);
+#elif PLATFORM_MOBILE
+    g.setFont(Globals::UI::Fonts::S);
+#endif
+
     g.drawFittedText(columnName, area, columnId == 1 ? // a nasty hack, only used in AudioPluginsListComponent
         Justification::centredRight : Justification::centredLeft, 1);
 }
@@ -491,12 +480,8 @@ void HelioTheme::drawScrollbar(Graphics &g, ScrollBar &scrollbar,
         }
     }
 
-    Colour thumbCol(findDefaultColour(ScrollBar::thumbColourId));
-
-    if (isMouseOver || isMouseDown)
-    { thumbCol = thumbCol.withMultipliedAlpha(0.5f); }
-    else
-    { thumbCol = thumbCol.withMultipliedAlpha(0.1f); }
+    const auto thumbCol = this->findColour(ScrollBar::thumbColourId)
+        .withMultipliedAlpha((isMouseOver || isMouseDown) ? 0.5f : 0.1f);
 
     g.setColour(thumbCol);
     g.fillPath(thumbPath);
@@ -864,8 +849,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->setColour(TableHeaderComponent::backgroundColourId, Colours::transparentBlack);
     this->setColour(TableHeaderComponent::outlineColourId, s->getFrameBorderColour().withAlpha(0.05f));
-    this->setColour(TableHeaderComponent::highlightColourId, s->getPageFillColour().brighter(0.04f));
-    this->setColour(TableHeaderComponent::textColourId, textColour.withMultipliedAlpha(0.75f));
+    this->setColour(TableHeaderComponent::highlightColourId, s->getPageFillColour().brighter(0.05f));
+    this->setColour(TableHeaderComponent::textColourId, textColour.withMultipliedAlpha(0.8f));
 
     // Check boxes, radio buttons
     this->setColour(ToggleButton::textColourId, textColour);

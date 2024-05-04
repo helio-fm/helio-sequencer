@@ -49,12 +49,12 @@ public:
 
     void mouseEnter(const MouseEvent &e) override
     {
+#if PLATFORM_DESKTOP
         if (this->state != State::Active)
         {
             this->setHighlighted();
         }
 
-#if PLATFORM_DESKTOP
         App::Layout().showTooltip(this->getTooltipText(),
             MainLayout::TooltipIcon::None, Globals::UI::tooltipDelayMs);
 #endif

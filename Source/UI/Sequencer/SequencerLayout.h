@@ -29,6 +29,7 @@ class EditorPanelsSwitcher;
 class SequencerSidebarRight;
 class SequencerSidebarLeft;
 class Origami;
+class Clip;
 
 #include "RenderFormat.h"
 

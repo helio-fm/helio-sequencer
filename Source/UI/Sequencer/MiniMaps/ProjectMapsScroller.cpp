@@ -20,7 +20,7 @@
 #include "PianoProjectMap.h"
 #include "Playhead.h"
 #include "ProjectNode.h"
-#include "RollBase.h"
+#include "PianoRoll.h"
 #include "MultiTouchController.h"
 #include "TrackStartIndicator.h"
 #include "TrackEndIndicator.h"

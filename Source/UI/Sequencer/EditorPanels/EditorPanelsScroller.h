@@ -22,10 +22,13 @@ class MidiSequence;
 class ProjectNode;
 class TrackStartIndicator;
 class TrackEndIndicator;
+class EditorPanelsSwitcher;
 
 #include "RollListener.h"
 #include "ProjectListener.h"
 #include "EditorPanelBase.h"
+#include "Clip.h"
+#include "ColourIDs.h"
 
 class EditorPanelsScroller final :
     public Component,

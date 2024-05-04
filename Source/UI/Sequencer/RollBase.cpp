@@ -23,6 +23,7 @@
 #include "MidiEvent.h"
 #include "SelectionComponent.h"
 #include "AnnotationLargeComponent.h"
+#include "KeySignatureLargeComponent.h"
 
 #include "UndoStack.h"
 #include "UndoActionIDs.h"

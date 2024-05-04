@@ -20,6 +20,7 @@
 #include "PianoSequence.h"
 #include "ProjectNode.h"
 #include "MidiEvent.h"
+#include "Pattern.h"
 
 GeneratedSequenceBuilder::GeneratedSequenceBuilder(ProjectNode &project) :
     project(project)

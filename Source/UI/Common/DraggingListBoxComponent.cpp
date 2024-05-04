@@ -26,7 +26,11 @@ DraggingListBoxComponent::DraggingListBoxComponent(Viewport *parent, bool disabl
 {
     if (this->parentViewport)
     {
+#if PLATFORM_DESKTOP
         this->parentViewport->setScrollBarThickness(2);
+#elif PLATFORM_MOBILE
+        this->parentViewport->setScrollBarThickness(1);
+#endif
         this->parentViewport->setScrollOnDragMode(Viewport::ScrollOnDragMode::never);
     }
     

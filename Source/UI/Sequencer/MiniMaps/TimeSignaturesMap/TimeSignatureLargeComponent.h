@@ -37,8 +37,6 @@ public:
 private:
 
     ComponentDragger dragger;
-    
-    Point<int> clickOffset;
 
     bool draggingState = false;
     bool draggingHadCheckpoint = false;

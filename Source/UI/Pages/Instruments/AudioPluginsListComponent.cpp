@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "AudioPluginsListComponent.h"
-
+#include "BuiltInSynthsPluginFormat.h"
 #include "MenuItemComponent.h"
 #include "OrchestraPit.h"
 #include "OrchestraPitPage.h"
@@ -78,7 +78,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
 #if PLATFORM_DESKTOP
     this->pluginsList->getViewport()->setScrollBarThickness(2);
 #elif PLATFORM_MOBILE
-    this->pluginsList->getViewport()->setScrollBarThickness(35);
+    this->pluginsList->getViewport()->setScrollBarThickness(36);
 #endif
 
     const auto columnFlags =
@@ -173,7 +173,7 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     const auto pd = this->pluginScanner.getPlugins()[rowNumber];
 
     constexpr int margin = 5;
-    const Colour colour = findDefaultColour(Label::textColourId);
+    const auto colour = findDefaultColour(Label::textColourId);
 
 #if PLATFORM_MOBILE
     constexpr auto useSmallFonts = true;

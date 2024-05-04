@@ -21,6 +21,8 @@ class ProjectNode;
 class PianoSequence;
 
 #include "ProjectListener.h"
+#include "ProjectEventDispatcher.h"
+#include "Clip.h"
 
 // the purpose of this class is to listen to project changes and use
 // the clip's modifiers stacks to rebuild the generated sequences asynchronously

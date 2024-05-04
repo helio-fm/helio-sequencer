@@ -18,12 +18,13 @@
 #include "Common.h"
 #include "ClipMenu.h"
 #include "MidiTrackNode.h"
-
+#include "Pattern.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "MidiSequence.h"
 #include "RollBase.h"
-
+#include "PatternOperations.h"
+#include "ArpeggiationSequenceModifier.h"
 #include "Workspace.h"
 
 ClipMenu::ClipMenu(const Clip &clip, WeakReference<UndoStack> undoStack) :

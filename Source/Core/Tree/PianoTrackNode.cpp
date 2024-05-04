@@ -21,8 +21,8 @@
 #include "ProjectNode.h"
 #include "UndoStack.h"
 #include "MidiTrackActions.h"
-#include "Pattern.h"
 #include "TreeNodeSerializer.h"
+#include "Pattern.h"
 #include "MainLayout.h"
 #include "Icons.h"
 

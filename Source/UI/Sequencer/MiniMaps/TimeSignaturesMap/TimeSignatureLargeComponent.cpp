@@ -35,7 +35,7 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMa
     this->signatureLabel->setFont(Globals::UI::Fonts::M);
     this->signatureLabel->setJustificationType(Justification::topLeft);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
-    this->signatureLabel->setBounds(-2, -1, 48, TimeSignatureComponent::timeSignatureHeight);
+    this->signatureLabel->setBounds(-2, TimeSignatureComponent::timeSignatureY, 48, TimeSignatureComponent::timeSignatureHeight);
 
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
 

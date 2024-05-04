@@ -23,6 +23,7 @@
 #include "ProjectNode.h"
 #include "ProjectMetadata.h"
 #include "ProjectTimeline.h"
+#include "KeySignaturesSequence.h"
 #include "MidiTrack.h"
 
 class RefactoringSequenceModifier final : public SequenceModifier

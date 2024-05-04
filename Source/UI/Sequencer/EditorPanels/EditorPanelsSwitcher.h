@@ -19,6 +19,9 @@
 
 #include "EditorPanelBase.h"
 #include "HeadlineItemArrow.h"
+#include "HighlightedComponent.h"
+#include "CachedLabelImage.h"
+#include "HelioTheme.h"
 
 class EditorPanelsSwitcher final : public Component
 {

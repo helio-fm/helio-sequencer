@@ -21,6 +21,7 @@ class AudioMonitor;
 
 #include "Instrument.h"
 #include "OrchestraPit.h"
+#include "KeyboardMapping.h"
 #include "Scale.h"
 
 class AudioCore final :

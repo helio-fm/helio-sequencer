@@ -80,7 +80,7 @@ private:
 #if PLATFORM_DESKTOP
     static constexpr auto rowHeight = 60;
 #elif PLATFORM_MOBILE
-    static constexpr auto rowHeight = 72;
+    static constexpr auto rowHeight = 64;
 #endif
 
     static constexpr auto tableHeaderHeight = 40;

@@ -258,12 +258,21 @@ namespace Globals
 
         namespace Fonts
         {
+            #if PLATFORM_MOBILE
+            static constexpr auto XS = 12.f;
+            static constexpr auto S = 14.f;
+            static constexpr auto M = 16.f;
+            static constexpr auto L = 18.f;
+            static constexpr auto XL = 24.f;
+            static constexpr auto XXL = 32.f;
+            #elif PLATFORM_DESKTOP
             static constexpr auto XS = 14.f;
             static constexpr auto S = 16.f;
             static constexpr auto M = 18.f;
             static constexpr auto L = 21.f;
             static constexpr auto XL = 28.f;
             static constexpr auto XXL = 37.f;
+            #endif
         }
 
         namespace FileChooser

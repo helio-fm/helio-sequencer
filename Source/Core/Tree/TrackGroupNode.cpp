@@ -19,6 +19,7 @@
 #include "TrackGroupNode.h"
 #include "ProjectNode.h"
 #include "PianoTrackNode.h"
+#include "Pattern.h"
 #include "Icons.h"
 
 TrackGroupNode::TrackGroupNode(const String &name) :

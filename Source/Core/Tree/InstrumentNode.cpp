@@ -24,6 +24,7 @@
 
 #include "OrchestraPit.h"
 #include "OrchestraPitNode.h"
+#include "DefaultSynthAudioPlugin.h"
 
 #include "KeyboardMapping.h"
 #include "KeyboardMappingPage.h"

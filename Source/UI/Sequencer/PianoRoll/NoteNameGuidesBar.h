@@ -20,6 +20,7 @@
 class PianoRoll;
 class NoteNameGuide;
 class Lasso;
+class MidiTrack;
 
 #include "RollListener.h"
 #include "Temperament.h"

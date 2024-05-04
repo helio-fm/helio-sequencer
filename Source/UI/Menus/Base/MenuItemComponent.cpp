@@ -363,7 +363,7 @@ void MenuItemComponent::resized()
 
     this->icon = Icons::findByName(this->description->iconId, iconSize);
 
-    this->textLabel->setBounds(iconSize + MenuItemComponent::iconMargin, 0,
+    this->textLabel->setBounds(iconSize + MenuItemComponent::iconMargin - 1, 0,
         this->getWidth() - iconSize - MenuItemComponent::iconMargin, this->getHeight());
 
     for (int i = 0; i < this->buttons.size(); ++i)
@@ -419,7 +419,7 @@ void MenuItemComponent::mouseDown(const MouseEvent &e)
             this->clickMarker->setVisible(true);
 #else
             this->animator.animateComponent(this->clickMarker.get(),
-                this->getLocalBounds(), 1.f, Globals::UI::fadeInShort, true, 0.0, 0.0);
+                this->getLocalBounds(), 1.f, Globals::UI::fadeInShort, true, 0.0, 1.0);
 #endif
         }
 
@@ -451,7 +451,7 @@ void MenuItemComponent::mouseUp(const MouseEvent &e)
         {
 #if ! HAS_OPENGL_BUG
             this->animator.animateComponent(this->clickMarker.get(),
-                this->getLocalBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
+                this->getLocalBounds(), 0.f, Globals::UI::fadeOutLong, true, 0.0, 1.0);
 #endif
 
             this->removeChildComponent(this->clickMarker.get());
@@ -595,6 +595,7 @@ bool MenuItemComponent::hasText() const noexcept
 
 Component *MenuItemComponent::createHighlighterComponent()
 {
+#if PLATFORM_DESKTOP
     if (!this->description->flags.isDisabled)
     {
         MenuItem::Ptr desc2 = MenuItem::empty();
@@ -606,6 +607,7 @@ Component *MenuItemComponent::createHighlighterComponent()
         desc2->alignment = this->description->alignment;
         return new MenuItemComponent(this->parent, nullptr, desc2);
     }
+#endif
 
     return nullptr;
 }

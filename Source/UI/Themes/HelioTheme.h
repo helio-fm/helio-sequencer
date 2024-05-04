@@ -68,7 +68,6 @@ public:
 
     void drawLabel(Graphics &, Label &) override;
     void drawLabel(Graphics &, Label &, juce_wchar passwordCharacter);
-    Font getLabelFont(Label&) override;
 
     //===------------------------------------------------------------------===//
     // Buttons

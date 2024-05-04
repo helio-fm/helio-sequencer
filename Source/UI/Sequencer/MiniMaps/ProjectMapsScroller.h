@@ -22,6 +22,7 @@ class Playhead;
 class ProjectNode;
 class TrackStartIndicator;
 class TrackEndIndicator;
+class MultiTouchController;
 
 #include "ProjectListener.h"
 #include "MultiTouchListener.h"

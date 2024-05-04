@@ -24,7 +24,10 @@ class ColourButtonFrame final : public Component
 {
 public:
 
-    ColourButtonFrame()
+    explicit ColourButtonFrame(Colour colour) :
+        colour(colour
+            .interpolatedWith(findDefaultColour(ColourIDs::ColourButton::outline), 0.75f)
+            .withAlpha(0.35f))
     {
         this->setInterceptsMouseClicks(false, false);
         this->setWantsKeyboardFocus(false);
@@ -38,12 +41,16 @@ public:
         const int x1 = 2;
         const int x2 = this->getWidth() - 2;
 
-        g.setColour(findDefaultColour(ColourIDs::ColourButton::outline).withAlpha(0.5f));
+        g.setColour(this->colour);
         g.drawVerticalLine(x1 - 1, float(y1), float(y2 + 1));
         g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
         g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));
         g.drawHorizontalLine(y2 + 1, float(x1), float(x2 + 1));
     }
+
+private:
+
+    const Colour colour;
 };
 
 ColourButton::ColourButton(Colour c, ColourButton::Listener *listener) :
@@ -107,9 +114,9 @@ void ColourButton::mouseDown(const MouseEvent &e)
 Component *ColourButton::createHighlighterComponent()
 {
 #if PLATFORM_DESKTOP
-    return new ColourButtonFrame();
+    return new ColourButtonFrame(this->colour);
 #elif PLATFORM_MOBILE
-    return new Component();
+    return nullptr;
 #endif
 }
 

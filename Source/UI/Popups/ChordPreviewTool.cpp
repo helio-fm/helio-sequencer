@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "ChordPreviewTool.h"
-
+#include "SequencerOperations.h"
 #include "PianoSequence.h"
 #include "PianoRoll.h"
 #include "KeySignatureEvent.h"

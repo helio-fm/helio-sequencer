@@ -19,6 +19,7 @@
 #include "VelocityEditor.h"
 #include "PlayerThread.h"
 #include "ProjectNode.h"
+#include "UndoStack.h"
 #include "MidiTrack.h"
 #include "Pattern.h"
 #include "PianoSequence.h"
@@ -26,11 +27,11 @@
 #include "RollBase.h"
 #include "MultiTouchController.h"
 #include "Lasso.h"
-#include "ColourIDs.h"
 #include "NoteComponent.h"
 #include "SequencerOperations.h"
 #include "FineTuningValueIndicator.h"
 #include "PointReduction.h"
+#include "ColourIDs.h"
 
 //===----------------------------------------------------------------------===//
 // Single note velocity component

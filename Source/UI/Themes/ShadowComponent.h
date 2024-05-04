@@ -18,6 +18,7 @@
 #pragma once
 
 #include "ColourIDs.h"
+#include "HelioTheme.h"
 
 enum class ShadowType : int8
 {

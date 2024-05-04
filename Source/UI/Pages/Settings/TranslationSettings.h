@@ -51,7 +51,7 @@ private:
 #if PLATFORM_DESKTOP
     static constexpr auto rowHeight = 33;
 #elif PLATFORM_MOBILE
-    static constexpr auto rowHeight = 44;
+    static constexpr auto rowHeight = 37;
 #endif
 
     static constexpr auto horizontalContentMargin = 8;

@@ -60,7 +60,7 @@ public:
     {
         constexpr auto iconX = 10;
         constexpr auto iconSize = 22;
-        constexpr auto titleX = 31;
+        constexpr auto titleX = 30;
         constexpr auto titleHeight = 30;
 
         this->titleLabel->setBounds(titleX,

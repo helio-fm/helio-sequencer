@@ -23,24 +23,6 @@
 
 AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
 {
-    this->midiInputsCombo = make<MobileComboBox::Container>();
-    this->addAndMakeVisible(this->midiInputsCombo.get());
-
-    this->midiOutputsCombo = make<MobileComboBox::Container>();
-    this->addAndMakeVisible(this->midiOutputsCombo.get());
-
-    this->sampleRateCombo = make<MobileComboBox::Container>();
-    this->addAndMakeVisible(this->sampleRateCombo.get());
-
-    this->bufferSizeCombo = make<MobileComboBox::Container>();
-    this->addAndMakeVisible(this->bufferSizeCombo.get());
-
-    this->deviceTypeCombo = make<MobileComboBox::Container>();
-    this->addAndMakeVisible(this->deviceTypeCombo.get());
-
-    this->deviceCombo = make<MobileComboBox::Container>();
-    this->addAndMakeVisible(this->deviceCombo.get());
-
     this->deviceTypeEditor = HelioTheme::makeSingleLineTextEditor(false);
     this->addAndMakeVisible(this->deviceTypeEditor.get());
 
@@ -56,7 +38,6 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
     this->midiInputEditor = HelioTheme::makeSingleLineTextEditor(false);
     this->addAndMakeVisible(this->midiInputEditor.get());
 
-    // "record microtonal notes from 12-tone keyboard" checkbox
     this->midiInputRemappingCheckbox = make<ToggleButton>(TRANS(I18n::Settings::midiRemap12ToneKeyboard));
     this->addAndMakeVisible(this->midiInputRemappingCheckbox.get());
     const auto isFilteringMidi = App::Workspace().getAudioCore().isFilteringMidiInput();
@@ -70,15 +51,33 @@ AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
     this->midiOutputEditor = HelioTheme::makeSingleLineTextEditor(false);
     this->addAndMakeVisible(this->midiOutputEditor.get());
 
-    this->setSize(550, 310);
-
     MenuPanel::Menu emptyMenu;
+
+    this->deviceTypeCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->deviceTypeCombo.get());
     this->deviceTypeCombo->initWith(this->deviceTypeEditor.get(), emptyMenu);
+
+    this->deviceCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->deviceCombo.get());
     this->deviceCombo->initWith(this->deviceEditor.get(), emptyMenu);
+
+    this->sampleRateCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->sampleRateCombo.get());
     this->sampleRateCombo->initWith(this->sampleRateEditor.get(), emptyMenu);
+
+    this->bufferSizeCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->bufferSizeCombo.get());
     this->bufferSizeCombo->initWith(this->bufferSizeEditor.get(), emptyMenu);
+
+    this->midiInputsCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->midiInputsCombo.get());
     this->midiInputsCombo->initWith(this->midiInputEditor.get(), emptyMenu);
+
+    this->midiOutputsCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->midiOutputsCombo.get());
     this->midiOutputsCombo->initWith(this->midiOutputEditor.get(), emptyMenu);
+
+    this->setSize(550, 310);
 }
 
 AudioSettings::~AudioSettings() = default;

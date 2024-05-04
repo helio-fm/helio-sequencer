@@ -37,6 +37,10 @@ public:
     void paintListBoxItem(int, Graphics&, int, int, bool) override {}
     void listBoxItemClicked(int, const MouseEvent &) override {}
 
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
     void resized() override;
 
 private:
@@ -44,7 +48,7 @@ private:
 #if PLATFORM_DESKTOP
     static constexpr auto rowHeight = 46;
 #elif PLATFORM_MOBILE
-    static constexpr auto rowHeight = 57;
+    static constexpr auto rowHeight = 52;
 #endif
 
     static constexpr auto horizontalContentMargin = 8;

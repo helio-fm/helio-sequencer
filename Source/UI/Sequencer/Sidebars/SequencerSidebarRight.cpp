@@ -45,9 +45,6 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) : project(pare
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
 
-    this->listBox = make<ListBox>();
-    this->addAndMakeVisible(this->listBox.get());
-
     this->headRule = make<SeparatorHorizontalReversed>();
     this->addAndMakeVisible(this->headRule.get());
 
@@ -69,9 +66,13 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) : project(pare
     this->transportControl = make<TransportControlComponent>(nullptr);
     this->addAndMakeVisible(this->transportControl.get());
 
+    this->listBox = make<ListBox>();
+    this->listBox->setModel(this);
     this->listBox->setMultipleSelectionEnabled(false);
     this->listBox->setRowHeight(Globals::UI::sidebarRowHeight);
-    this->listBox->setModel(this);
+    this->listBox->getViewport()->setScrollBarPosition(true, true);
+    this->listBox->getViewport()->setScrollOnDragMode(Viewport::ScrollOnDragMode::never);
+    this->addAndMakeVisible(this->listBox.get());
 
     MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
 
