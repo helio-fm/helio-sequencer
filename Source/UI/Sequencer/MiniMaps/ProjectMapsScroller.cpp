@@ -493,7 +493,7 @@ void ProjectMapsScroller::updateAllChildrenBounds()
     this->projectStartIndicator->updateBounds(mapBounds);
     this->projectEndIndicator->updateBounds(mapBounds);
 
-    if (!this->playhead->isMoving()) // avoid glitches when zooming during playback
+    if (!this->playhead->isTimerRunning()) // avoid glitches when zooming during playback
     {
         this->playhead->updatePosition();
     }

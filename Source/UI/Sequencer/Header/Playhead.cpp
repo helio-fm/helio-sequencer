@@ -58,19 +58,25 @@ Playhead::~Playhead()
 
 void Playhead::onSeek(float beatPosition)
 {
-    this->lastCorrectBeat = beatPosition;
+    const SpinLock::ScopedLockType lock(this->moveLock);
 
-    this->triggerAsyncUpdate();
+    this->lastCorrectBeat = beatPosition;
 
     if (this->isTimerRunning())
     {
         this->timeAnchor = Time::getMillisecondCounter();
         this->beatAnchor = this->lastCorrectBeat;
     }
+    else
+    {
+        this->triggerAsyncUpdate();
+    }
 }
 
 void Playhead::onCurrentTempoChanged(double msPerQuarter)
 {
+    const SpinLock::ScopedLockType lock(this->moveLock);
+
     jassert(msPerQuarter >= 0.01);
     this->msPerQuarterNote = jmax(msPerQuarter, 0.01);
 
@@ -80,6 +86,10 @@ void Playhead::onCurrentTempoChanged(double msPerQuarter)
         // just before calling this function:
         this->timeAnchor = Time::getMillisecondCounter();
         this->beatAnchor = this->lastCorrectBeat;
+    }
+    else
+    {
+        this->triggerAsyncUpdate();
     }
 }
 
@@ -114,7 +124,8 @@ void Playhead::onStop()
 
 void Playhead::timerCallback()
 {
-    this->triggerAsyncUpdate();
+    const SpinLock::ScopedLockType lock(this->moveLock);
+    this->updatePosition();
 }
 
 //===----------------------------------------------------------------------===//
@@ -123,11 +134,7 @@ void Playhead::timerCallback()
 
 void Playhead::handleAsyncUpdate()
 {
-    if (this->isTimerRunning())
-    {
-        this->tick();
-    }
-    else
+    if (!this->isTimerRunning())
     {
         this->updatePosition();
     }
@@ -156,50 +163,40 @@ void Playhead::parentHierarchyChanged()
     this->parentChanged();
 }
 
-bool Playhead::isMoving() const noexcept
-{
-    return this->isTimerRunning();
-}
-
 void Playhead::parentChanged()
 {
     if (this->getParentComponent() != nullptr)
     {
         this->setSize(this->getWidth(), this->getParentHeight());
-        
-        if (this->isTimerRunning())
-        {
-            this->tick();
-        }
-        else
-        {
-            this->updatePosition();
-            this->toFront(false);
-        }
+        this->updatePosition();
+        this->toFront(false);
     }
 }
 
 void Playhead::updatePosition(float position)
 {
+    const auto oldX = this->getX();
     const int newX = this->roll.getXPositionByBeat(position, float(this->getParentWidth()));
+
+    this->setTopLeftPosition(newX, 0);
 
     if (this->listener != nullptr)
     {
-        this->listener->onMovePlayhead(this->getX(), newX);
+        this->listener->onMovePlayhead(oldX, newX);
     }
-
-    this->setTopLeftPosition(newX, 0);
 }
 
 void Playhead::updatePosition()
 {
-    this->updatePosition(this->lastCorrectBeat.get());
-}
-
-void Playhead::tick()
-{
-    const double timeOffsetMs = Time::getMillisecondCounter() - this->timeAnchor.get();
-    const double positionOffset = timeOffsetMs / this->msPerQuarterNote.get();
-    const double estimatedPosition = this->beatAnchor.get() + positionOffset;
-    this->updatePosition(float(estimatedPosition));
+    if (this->isTimerRunning())
+    {
+        const double timeOffsetMs = Time::getMillisecondCounter() - this->timeAnchor;
+        const double positionOffset = timeOffsetMs / this->msPerQuarterNote;
+        const float estimatedPosition = float(this->beatAnchor + positionOffset);
+        this->updatePosition(estimatedPosition);
+    }
+    else
+    {
+        this->updatePosition(this->lastCorrectBeat);
+    }
 }

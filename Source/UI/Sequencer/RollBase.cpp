@@ -1860,7 +1860,7 @@ void RollBase::timerCallback()
     const auto newX = this->playhead->getX() - int(playheadOffset * 0.75) - (this->viewport.getViewWidth() / 2);
 
     const bool doneFollowingPlayhead =
-        fabs(playheadOffset) < (this->getTransport().isPlaying() ? 20.f : 2.f);
+        fabs(playheadOffset) < (this->getTransport().isPlaying() ? this->beatWidth : 2.f);
     const bool stuckFollowingPlayhead = newX == this->viewport.getViewPositionX() ||
         newX < 0 || newX > (this->getWidth() - this->viewport.getViewWidth());
 

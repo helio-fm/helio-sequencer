@@ -25,8 +25,8 @@ class RollBase;
 class Playhead final :
     public Component,
     public TransportListener,
-    private AsyncUpdater,
-    private Timer
+    public AsyncUpdater,
+    public Timer
 {
 public:
 
@@ -45,7 +45,7 @@ public:
     ~Playhead() override;
 
     void updatePosition();
-    bool isMoving() const noexcept;
+    void updatePosition(float position);
 
     //===------------------------------------------------------------------===//
     // TransportListener
@@ -61,6 +61,18 @@ public:
     void onStop() override;
 
     //===------------------------------------------------------------------===//
+    // Timer
+    //===------------------------------------------------------------------===//
+
+    void timerCallback() override;
+
+    //===------------------------------------------------------------------===//
+    // AsyncUpdater
+    //===------------------------------------------------------------------===//
+
+    void handleAsyncUpdate() override;
+
+    //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
@@ -68,43 +80,35 @@ public:
     void parentSizeChanged() override;
     void parentHierarchyChanged() override;
 
-protected:
+private:
 
     RollBase &roll;
     Transport &transport;
 
+    Listener *listener = nullptr;
+
 private:
-
-    //===------------------------------------------------------------------===//
-    // Timer
-    //===------------------------------------------------------------------===//
-
-    void timerCallback() override;
-    void tick();
 
     void parentChanged();
 
-    Atomic<float> beatAnchor = 0.f;
-    Atomic<double> timeAnchor = 0.0;
-    Atomic<double> msPerQuarterNote = Globals::Defaults::msPerBeat;
+    // warning: spinlock is not reentrant, use carefully;
+    // for now it synchronizes updates in TransportListener callbacks
+    // coming from the background thread with the timer callback
+    // on the main thread, so that position changes are smooth
+    SpinLock moveLock;
+
+    float beatAnchor = 0.f;
+    double timeAnchor = 0.0;
+
+    float lastCorrectBeat = 0.f;
+    double msPerQuarterNote = Globals::Defaults::msPerBeat;
 
 private:
-
-    //===------------------------------------------------------------------===//
-    // AsyncUpdater
-    //===------------------------------------------------------------------===//
-
-    void handleAsyncUpdate() override;
-    void updatePosition(float position);
 
     Colour currentColour;
 
     const Colour shadeColour;
     const Colour playbackColour;
     const Colour recordingColour;
-
-    Atomic<float> lastCorrectBeat = 0.f;
-
-    Listener *listener = nullptr;
 
 };
