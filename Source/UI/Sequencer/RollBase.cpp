@@ -1987,7 +1987,6 @@ void RollBase::updateChildrenBounds()
 {
     ROLL_BATCH_REPAINT_START
 
-    const auto viewHeight = this->viewport.getViewHeight();
     const auto viewWidth = this->viewport.getViewWidth();
     const auto viewX = this->viewport.getViewPositionX();
     const auto viewY = this->viewport.getViewPositionY();
@@ -2028,7 +2027,6 @@ void RollBase::updateChildrenPositions()
 {
     ROLL_BATCH_REPAINT_START
 
-    const auto viewHeight = this->viewport.getViewHeight();
     const auto viewX = this->viewport.getViewPositionX();
     const auto viewY = this->viewport.getViewPositionY();
 

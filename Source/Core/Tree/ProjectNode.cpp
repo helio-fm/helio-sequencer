@@ -661,7 +661,7 @@ void ProjectNode::importMidi(InputStream &stream)
         }
 
         // split into several automation tracks, if needed
-        for (const auto trackInfo : automationControllers)
+        for (const auto &trackInfo : automationControllers)
         {
             const auto trackControllerNumber = trackInfo.first;
             const auto trackChannel = trackInfo.second;

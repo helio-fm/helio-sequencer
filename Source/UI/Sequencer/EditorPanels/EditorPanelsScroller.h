@@ -36,7 +36,6 @@ class EditorPanelsScroller final :
     public RollListener,
     public EditorPanelBase::Listener,
     public ChangeListener, // subscribes on the parent roll's lasso changes
-    private AsyncUpdater, // triggers batch move/resize events for children
     private Timer // optionally animates transitions between rolls
 {
 public:
@@ -101,8 +100,7 @@ private:
     Clip activeClip;
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
-    
-    void handleAsyncUpdate() override;
+
     void updateAllChildrenBounds();
 
     void timerCallback() override;

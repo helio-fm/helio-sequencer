@@ -25,7 +25,6 @@ class RollBase;
 class Playhead final :
     public Component,
     public TransportListener,
-    public AsyncUpdater,
     public Timer
 {
 public:
@@ -67,12 +66,6 @@ public:
     void timerCallback() override;
 
     //===------------------------------------------------------------------===//
-    // AsyncUpdater
-    //===------------------------------------------------------------------===//
-
-    void handleAsyncUpdate() override;
-
-    //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
@@ -95,13 +88,16 @@ private:
     // for now it synchronizes updates in TransportListener callbacks
     // coming from the background thread with the timer callback
     // on the main thread, so that position changes are smooth
-    SpinLock moveLock;
+    SpinLock playbackUpdatesLock;
 
+    // it's meant to lock these 4 fields:
     float beatAnchor = 0.f;
     double timeAnchor = 0.0;
-
-    float lastCorrectBeat = 0.f;
     double msPerQuarterNote = Globals::Defaults::msPerBeat;
+    float lastCorrectBeat = 0.f;
+
+    float lastEstimatedBeat = 0.f;
+    float calculateEstimatedBeat() const noexcept;
 
 private:
 

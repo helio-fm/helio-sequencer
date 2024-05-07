@@ -218,7 +218,6 @@ void ProjectMapsScroller::mouseDrag(const MouseEvent &event)
             const auto xOffset = jlimit(1, this->roll->getWidth() - viewWidth - 1,
                 this->rollViewportPositionAtDragStart.x + int(-dragDistance * dragSpeed));
             this->roll->panByOffset(xOffset, this->rollViewportPositionAtDragStart.y);
-            this->triggerAsyncUpdate();
         }
     }
 }
@@ -345,7 +344,7 @@ void ProjectMapsScroller::onMidiRollMoved(RollBase *targetRoll)
 {
     if (this->isVisible() && this->roll == targetRoll && !this->isTimerRunning())
     {
-        this->triggerAsyncUpdate();
+        this->updateAllChildrenBounds();
     }
 }
 
@@ -353,7 +352,7 @@ void ProjectMapsScroller::onMidiRollResized(RollBase *targetRoll)
 {
     if (this->isVisible() && this->roll == targetRoll && !this->isTimerRunning())
     {
-        this->triggerAsyncUpdate();
+        this->updateAllChildrenBounds();
     }
 }
 
@@ -466,15 +465,6 @@ void ProjectMapsScroller::timerCallback()
         this->screenRangeRectangle->setBrightness(this->screenRangeTargetBrightness);
         this->stopTimer();
     }
-}
-
-//===----------------------------------------------------------------------===//
-// AsyncUpdater
-//===----------------------------------------------------------------------===//
-
-void ProjectMapsScroller::handleAsyncUpdate()
-{
-    this->updateAllChildrenBounds();
 }
 
 void ProjectMapsScroller::updateAllChildrenBounds()

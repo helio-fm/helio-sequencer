@@ -35,7 +35,6 @@ class ProjectMapsScroller final :
     public ProjectListener,
     public RollListener,
     public MultiTouchListener,
-    private AsyncUpdater, // triggers batch move/resize events for children
     private Timer // optionally animates transitions between rolls
 {
 public:
@@ -341,7 +340,6 @@ private:
 
 private:
 
-    void handleAsyncUpdate() override;
     void updateAllChildrenBounds();
 
     void timerCallback() override;

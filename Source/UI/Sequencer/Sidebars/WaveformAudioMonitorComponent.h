@@ -23,7 +23,8 @@ class AudioMonitor;
 #include "SequencerLayout.h"
 
 class WaveformAudioMonitorComponent final :
-    public Component, private Thread, private AsyncUpdater
+    public Component,
+    private Timer
 {
 public:
 
@@ -40,8 +41,7 @@ public:
 
 private:
 
-    void run() override;
-    void handleAsyncUpdate() override;
+    void timerCallback() override;
     
     const Colour peaksColour =
         findDefaultColour(ColourIDs::AudioMonitor::foreground)
@@ -55,11 +55,11 @@ private:
     
     static constexpr auto bufferSize = Globals::UI::sidebarWidth / 2;
 
-    Atomic<float> lPeakBuffer[bufferSize];
-    Atomic<float> rPeakBuffer[bufferSize];
+    float lPeakBuffer[bufferSize] = {};
+    float rPeakBuffer[bufferSize] = {};
 
-    Atomic<float> lRmsBuffer[bufferSize];
-    Atomic<float> rRmsBuffer[bufferSize];
+    float lRmsBuffer[bufferSize] = {};
+    float rRmsBuffer[bufferSize] = {};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveformAudioMonitorComponent)
 

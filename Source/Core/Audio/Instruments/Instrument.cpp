@@ -941,7 +941,7 @@ void Instrument::AudioCallback::audioDeviceIOCallback(const float** const inputC
 
                 // if the MIDI message buffer is not empty here,
                 // the processor wants to send events to MIDI output:
-                for (const auto &metadata : this->incomingMidi)
+                for (const auto metadata : this->incomingMidi)
                 {
                     const auto message = metadata.getMessage();
 

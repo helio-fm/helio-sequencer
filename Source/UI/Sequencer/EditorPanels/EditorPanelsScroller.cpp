@@ -153,7 +153,7 @@ void EditorPanelsScroller::onMidiRollMoved(RollBase *targetRoll)
 {
     if (this->isVisible() && this->roll == targetRoll && !this->isTimerRunning())
     {
-        this->triggerAsyncUpdate();
+        this->updateAllChildrenBounds();
     }
 }
 
@@ -161,17 +161,8 @@ void EditorPanelsScroller::onMidiRollResized(RollBase *targetRoll)
 {
     if (this->isVisible() && this->roll == targetRoll && !this->isTimerRunning())
     {
-        this->triggerAsyncUpdate();
+        this->updateAllChildrenBounds();
     }
-}
-
-//===----------------------------------------------------------------------===//
-// AsyncUpdater
-//===----------------------------------------------------------------------===//
-
-void EditorPanelsScroller::handleAsyncUpdate()
-{
-    this->updateAllChildrenBounds();
 }
 
 void EditorPanelsScroller::updateAllChildrenBounds()
@@ -275,7 +266,7 @@ void EditorPanelsScroller::onChangeProjectBeatRange(float firstBeat, float lastB
 
     if (this->isVisible())
     {
-        this->triggerAsyncUpdate();
+        this->updateAllChildrenBounds();
     }
 }
 
@@ -286,7 +277,7 @@ void EditorPanelsScroller::onChangeViewBeatRange(float firstBeat, float lastBeat
 
     if (this->isVisible())
     {
-        this->triggerAsyncUpdate();
+        this->updateAllChildrenBounds();
     }
 }
 

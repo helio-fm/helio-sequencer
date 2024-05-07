@@ -21,7 +21,6 @@
 #include "AudioCore.h"
 
 WaveformAudioMonitorComponent::WaveformAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer) :
-    Thread("WaveformAudioMonitor"),
     audioMonitor(targetAnalyzer)
 {
     this->setInterceptsMouseClicks(false, false);
@@ -29,13 +28,13 @@ WaveformAudioMonitorComponent::WaveformAudioMonitorComponent(WeakReference<Audio
 
     if (this->audioMonitor != nullptr)
     {
-        this->startThread(6);
+        this->startTimerHz(30);
     }
 }
 
 WaveformAudioMonitorComponent::~WaveformAudioMonitorComponent()
 {
-    this->stopThread(1000);
+    this->stopTimer();
 }
 
 void WaveformAudioMonitorComponent::setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyzer)
@@ -43,39 +42,29 @@ void WaveformAudioMonitorComponent::setTargetAnalyzer(WeakReference<AudioMonitor
     if (targetAnalyzer != nullptr)
     {
         this->audioMonitor = targetAnalyzer;
-        this->startThread(6);
+        this->startTimerHz(30);
     }
 }
 
-void WaveformAudioMonitorComponent::run()
+void WaveformAudioMonitorComponent::timerCallback()
 {
     constexpr auto bufferLastIndex = WaveformAudioMonitorComponent::bufferSize - 1;
 
-    while (!this->threadShouldExit())
+    // Shift buffers:
+    for (int i = 0; i < bufferLastIndex; ++i)
     {
-        Thread::sleep(35);
-
-        // Shift buffers:
-        for (int i = 0; i < bufferLastIndex; ++i)
-        {
-            this->lPeakBuffer[i] = this->lPeakBuffer[i + 1].get();
-            this->rPeakBuffer[i] = this->rPeakBuffer[i + 1].get();
-            this->lRmsBuffer[i] = this->lRmsBuffer[i + 1].get();
-            this->rRmsBuffer[i] = this->rRmsBuffer[i + 1].get();
-        }
-
-        // Push next values:
-        this->lPeakBuffer[bufferLastIndex] = this->audioMonitor->getPeak(0);
-        this->rPeakBuffer[bufferLastIndex] = this->audioMonitor->getPeak(1);
-        this->lRmsBuffer[bufferLastIndex] = this->audioMonitor->getRootMeanSquare(0);
-        this->rRmsBuffer[bufferLastIndex] = this->audioMonitor->getRootMeanSquare(1);
-
-        this->triggerAsyncUpdate();
+        this->lPeakBuffer[i] = this->lPeakBuffer[i + 1];
+        this->rPeakBuffer[i] = this->rPeakBuffer[i + 1];
+        this->lRmsBuffer[i] = this->lRmsBuffer[i + 1];
+        this->rRmsBuffer[i] = this->rRmsBuffer[i + 1];
     }
-}
 
-void WaveformAudioMonitorComponent::handleAsyncUpdate()
-{
+    // Push next values:
+    this->lPeakBuffer[bufferLastIndex] = this->audioMonitor->getPeak(0);
+    this->rPeakBuffer[bufferLastIndex] = this->audioMonitor->getPeak(1);
+    this->lRmsBuffer[bufferLastIndex] = this->audioMonitor->getRootMeanSquare(0);
+    this->rRmsBuffer[bufferLastIndex] = this->audioMonitor->getRootMeanSquare(1);
+
     this->repaint();
 }
 
@@ -107,8 +96,8 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
     for (int i = 0; i < w - 1; ++i)
     {
         const float fancyFade = (i == 0 || i == (w - 2)) ? 0.75f : ((i == 1 || i == (w - 3)) ? 0.9f : 1.f);
-        const float peakL = waveformIecLevel(this->lPeakBuffer[i].get()) * midH * fancyFade;
-        const float peakR = waveformIecLevel(this->rPeakBuffer[i].get()) * midH * fancyFade;
+        const float peakL = waveformIecLevel(this->lPeakBuffer[i]) * midH * fancyFade;
+        const float peakR = waveformIecLevel(this->rPeakBuffer[i]) * midH * fancyFade;
         g.fillRect(1.f + (i * 2.f), midH - peakL, 1.f, peakR + peakL);
     }
 
@@ -117,8 +106,8 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
     for (int i = 0; i < w; ++i)
     {
         const float fancyFade = (i == 0 || i == (w - 1)) ? 0.85f : ((i == 1 || i == (w - 2)) ? 0.95f : 1.f);
-        const float rmsL = waveformIecLevel(this->lRmsBuffer[i].get()) * midH * fancyFade;
-        const float rmsR = waveformIecLevel(this->rRmsBuffer[i].get()) * midH * fancyFade;
+        const float rmsL = waveformIecLevel(this->lRmsBuffer[i]) * midH * fancyFade;
+        const float rmsR = waveformIecLevel(this->rRmsBuffer[i]) * midH * fancyFade;
         g.fillRect(i * 2.f, midH - rmsL, 1.f, rmsR + rmsL);
     }
 }

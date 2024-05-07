@@ -118,15 +118,14 @@ public:
 
     inline static float iecLevel(float db)
     {
-        auto result = 1.f;
-        if (db < -70.f) { result = 0.f; }
-        else if (db < -60.f) { result = (db + 70.f) * 0.0025f; }
-        else if (db < -50.f) { result = (db + 60.f) * 0.005f + 0.025f; }
-        else if (db < -40.f) { result = (db + 50.f) * 0.0075f + 0.075f; }
-        else if (db < -30.f) { result = (db + 40.f) * 0.015f + 0.15f; }
-        else if (db < -20.f) { result = (db + 30.f) * 0.02f + 0.3f; }
-        else /* if (dB < 0.f) */ { result = (db + 20.f) * 0.025f + 0.5f; }
-        return result;
+        if (db < -70.f) { return 0.f; }
+        else if (db < -60.f) { return (db + 70.f) * 0.0025f; }
+        else if (db < -50.f) { return (db + 60.f) * 0.005f + 0.025f; }
+        else if (db < -40.f) { return (db + 50.f) * 0.0075f + 0.075f; }
+        else if (db < -30.f) { return (db + 40.f) * 0.015f + 0.15f; }
+        else if (db < -20.f) { return (db + 30.f) * 0.02f + 0.3f; }
+        /* else if (dB < 0.f) */
+        return (db + 20.f) * 0.025f + 0.5f;
     }
     
 private:

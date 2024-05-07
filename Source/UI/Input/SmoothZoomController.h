@@ -19,25 +19,16 @@
 
 #include "SmoothZoomListener.h"
 
-class SmoothZoomController final :
-    private Thread,
-    private WaitableEvent,
-    private AsyncUpdater
+class SmoothZoomController final : private Timer
 {
 public:
 
     explicit SmoothZoomController(SmoothZoomListener &parent) :
-        Thread("SmoothZoom"),
-        listener(parent)
-    {
-        this->startThread(9);
-    }
+        listener(parent) {}
 
     ~SmoothZoomController() override
     {
-        this->signalThreadShouldExit();
-        this->signal();
-        this->stopThread(500);
+        this->stopTimer();
     }
 
     static inline float getInitialSpeed() noexcept
@@ -47,13 +38,14 @@ public:
 
     inline bool isZooming() const noexcept
     {
-        return this->factorX.get() != 0.f;
+        return this->factorX != 0.f;
     }
 
     void cancelZoom() noexcept
     {
         this->factorX = 0.f;
         this->factorY = 0.f;
+        this->stopTimer();
     }
 
     void setAnimationsEnabled(bool enabled)
@@ -69,59 +61,39 @@ public:
     {
         this->inertialZoom = this->isZooming();
 
-        this->factorX = (this->factorX.get() + zoom.getX()) * Defaults::zoomSmoothFactor;
-        this->factorY = (this->factorY.get() + zoom.getY()) * Defaults::zoomSmoothFactor;
+        this->factorX += zoom.getX();
+        this->factorY += zoom.getY();
         this->originX = from.getX();
         this->originY = from.getY();
 
-        WaitableEvent::signal();
+        this->startTimer(this->animationDelay);
     }
 
 private:
 
     inline bool stillNeedsZoom() const noexcept
     {
-        return juce_hypot(this->factorX.get(), this->factorY.get()) >= Defaults::zoomStopFactor;
+        return juce_hypot(this->factorX, this->factorY) >= Defaults::zoomStopFactor;
     }
 
-    void run() override
+    void timerCallback() override
     {
-        while (! this->threadShouldExit())
+        if (this->stillNeedsZoom())
         {
-            while (this->stillNeedsZoom())
-            {
-                if (this->threadShouldExit())
-                {
-                    return;
-                }
+            this->factorX = this->factorX * this->zoomDecay;
+            this->factorY = this->factorY * this->zoomDecay;
 
-                this->factorX = this->factorX.get() * this->zoomDecay.get();
-                this->factorY = this->factorY.get() * this->zoomDecay.get();
+            this->listener.zoomRelative(
+                { this->originX, this->originY },
+                { this->factorX, this->factorY },
+                this->inertialZoom);
 
-                this->triggerAsyncUpdate();
-
-                Thread::sleep(this->animationDelay.get());
-            }
-
-            this->cancelZoom();
-
-            if (this->threadShouldExit())
-            {
-                return;
-            }
-
-            WaitableEvent::wait();
+            this->inertialZoom = true;
         }
-    }
-
-    void handleAsyncUpdate() noexcept override
-    {
-        this->listener.zoomRelative(
-            { this->originX.get(), this->originY.get() },
-            { this->factorX.get(), this->factorY.get() },
-            this->inertialZoom.get());
-
-        this->inertialZoom = true;
+        else
+        {
+            this->cancelZoom();
+        }
     }
 
     SmoothZoomListener &listener;
@@ -130,24 +102,22 @@ private:
 
     struct Defaults
     {
-        static constexpr auto timerDelay = 7;
+        static constexpr auto timerDelay = 6;
         static constexpr auto timerDelayNoAnim = 1;
-        static constexpr auto zoomDecayFactor = 0.725f;
+        static constexpr auto zoomDecayFactor = 0.72f;
         static constexpr auto zoomDecayFactorNoAnim = 0.8f;
-
         static constexpr auto zoomStopFactor = 0.0005f;
-        static constexpr auto zoomSmoothFactor = 0.9f;
         static constexpr auto initialZoomSpeed = 0.35f;
     };
     
-    Atomic<float> factorX = 0.f;
-    Atomic<float> factorY = 0.f;
-    Atomic<float> originX = 0.f;
-    Atomic<float> originY = 0.f;
-    Atomic<bool> inertialZoom = false;
+    float factorX = 0.f;
+    float factorY = 0.f;
+    float originX = 0.f;
+    float originY = 0.f;
+    bool inertialZoom = false;
 
-    Atomic<int> animationDelay = Defaults::timerDelay;
-    Atomic<float> zoomDecay = Defaults::zoomDecayFactor;
+    int animationDelay = Defaults::timerDelay;
+    float zoomDecay = Defaults::zoomDecayFactor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SmoothZoomController)
 };

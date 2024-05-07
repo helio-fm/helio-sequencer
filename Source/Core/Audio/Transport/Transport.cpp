@@ -127,6 +127,13 @@ void Transport::setSeekBeat(float beatPosition)
 
 void Transport::seekToBeat(float beatPosition)
 {
+    if (this->isPlaying())
+    {
+        jassertfalse;
+        this->stopPlaybackAndRecording();
+        this->stopSound();
+    }
+
     this->setSeekBeat(beatPosition);
     this->broadcastSeek(beatPosition);
 }
@@ -174,6 +181,8 @@ void Transport::startPlayback(float start)
 
     this->stopPlayback();
 
+    this->broadcastPlay();
+
     if (this->loopMode.get())
     {
         const auto loopStart = this->loopStartBeat.get();
@@ -187,8 +196,6 @@ void Transport::startPlayback(float start)
         this->player->startPlayback(start,
             this->getSeekBeat(), this->getProjectLastBeat(), false);
     }
-
-    this->broadcastPlay();
 }
 
 void Transport::startPlaybackFragment(float startBeat, float endBeat, bool looped)
@@ -197,8 +204,8 @@ void Transport::startPlaybackFragment(float startBeat, float endBeat, bool loope
     
     this->stopPlayback();
 
-    this->player->startPlayback(startBeat, startBeat, endBeat, looped);
     this->broadcastPlay();
+    this->player->startPlayback(startBeat, startBeat, endBeat, looped);
 }
 
 void Transport::speedUpPlayback(float multiplier)
