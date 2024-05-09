@@ -37,7 +37,7 @@ Playhead::Playhead(RollBase &parentRoll,
 
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
-    this->setSize(2, 1);
+    this->setSize(3, 1); // 3 not 2 to avoid flickering on macOS, I don't know why it works
 
     this->lastCorrectBeat = this->transport.getSeekBeat();
     this->beatAnchor = this->lastCorrectBeat;

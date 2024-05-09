@@ -268,12 +268,18 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 
 #else
 
-        // I really have no idea why drawFittedText on both iOS and Android renders the font
-        // slightly above the desired position, so I'm simply adding some offset:
-        const int yOffsetHack = 1;
         const auto textArea = label.getBorderSize()
-            .subtractedFrom(label.getLocalBounds())
-            .translated(0, yOffsetHack);
+            .subtractedFrom(label.getLocalBounds());
+
+        // there is something wrong with how JUCE does vertical font centering
+        // on both iOS and Android; my guess is that it might be incorrectly
+        // handling ascents/descents/bounding boxes of the default fonts;
+        // whatever it is, this dirty hack is here to aid it:
+#if JUCE_IOS
+        const int heightHack = 3;
+#elif JUCE_ANDROID
+        const int heightHack = 2;
+#endif
 
         g.setFont(font);
         g.setColour(colour);
@@ -281,7 +287,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
             textArea.getX(),
             textArea.getY(),
             textArea.getWidth(),
-            textArea.getHeight(),
+            textArea.getHeight() + heightHack,
             label.getJustificationType(),
             maxLines,
             1.0);
