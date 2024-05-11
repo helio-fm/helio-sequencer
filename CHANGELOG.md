@@ -4,6 +4,17 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.13
+ - Added initial support for parametric modifiers: arpeggiators and most of the refactoring options can now be applied in a non-destructive way
+ - Reworked note naming to be more compatible with traditional notation language, at least for chromatic scales in 12-tone temperament
+ - Fixed arpeggiators so that they finally work as intended
+ - Fixed sending events to MIDI output, also the 'MIDI output' instrument is now created automatically
+ - Implemented drawing freeform lasso with Control-dragging
+ - Added new UI flags to toggle following playhead, and to lock current zoom level and prevent auto-zooming
+ - Double-pressing Space/Enter or long-tapping the play button speeds up playback by 1.5x
+ - MIDI import now groups the imported events into tracks by channels and controller numbers
+ - More QoL fixes for mobile platforms, more SoundFont and LV2 bugs fixed, more UI tidying up
+
 ## Version 3.12
  - This is mostly a mobile fixes release: reworked layouts for phone screens, fixed SoundFont player bugs, fixed import/export crashes, added adaptive and themed icons on Android, reworked multi-touch (better late than never)
  - Added automations editor panel supporting hand-drawing custom curves with the pen tool
