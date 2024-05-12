@@ -69,7 +69,7 @@ When you first launch Helio, you should see a simple example project open in the
 
  * to rename the project, click `Example Project` in the breadcrumb control, and you'll be taken to the project info page, where you can edit some details,
  * after renaming, return to the piano roll page by pressing `Alt + Left Arrow` or by pressing the back button on the top left.
- * note that you can only edit one track at a time: use right-click to switch to another track (or long tap on mobile),
+ * you can only edit one track at a time: use right-click (or long tap on mobile) to switch to another track; holding any modifier key while switching will also adjust the zoom level so that the entire track fits the viewport,
  * to play with arrangement, switch to the pattern roll by pressing `Tab` or `Page Down`, or by clicking the uppermost button in the left sidebar,
  * double-click any clip to return to the piano roll with that clip in focus; at this point you should get an idea of how the sequencer layout works.
 
@@ -132,6 +132,14 @@ Interacting with nodes:
  * use mouse drag to connect sockets representing audio and MIDI inputs and outputs.
 
 While it is possible to set up a multi-plugin instrument with audio/MIDI routing in Helio, the convenience of the instrument page was not of a particular concern: the development is rather focused on the sequencer functionality. If you are running it under Linux, it might be a good idea to add [Carla](https://kx.studio/Applications:Carla) as an instrument, and use it to manage VST/whatever plugins and routing.
+
+### Default instruments
+
+A few built-in instruments are created automatically and cannot be removed:
+
+* the "Helio Default" instrument is a simple sine wave voice that supports all built-in temperaments with no setup; aside from being the default instrument, it is used to preview scales in the [key signature](#key-signatures) dialog,
+* the "MIDI Output" instrument generates no sound but sends all events, except meta-events, to the MIDI output specified on the settings page,
+* the "Metronome" instrument gives you the option to select custom [metronome](getting-polymetric.md#metronome) samples.
 
 
 ## Editing and arranging
@@ -260,7 +268,7 @@ The bottom panel (toggled by `V` hotkey) combines the volume editor and the auto
 
 *(the piano roll allows you to manually switch between volume and automation tracks, while the pattern roll switches the editor type based on the selected clip)*
 
-The volume editor, like the piano roll, restricts its editable scope to the active clip. Furthermore, if any notes in the roll are selected, the editable scope is limited to the selection, making it easier to fine-tune and [draw more complex ramps](tips-and-tricks.md#fine-tuning-dynamics) for different sections of the track.
+The volume editor, like the piano roll, restricts its editable scope to the active clip. Furthermore, if any notes in the roll are selected, the editable scope is limited to the selection, making it easier to fine-tune and [draw more complex ramps](tips-and-tricks.md#fine-tuning-dynamics) for different sections of the track. On mobile platforms, this panel is the main way to edit volume; on desktop platforms, you can also adjust note volumes in the piano roll using the middle mouse button and the `+` and `-` hotkeys on the numpad.
 
 The automation editor's editable scope is limited to the active clip and the selected controller. The active clip is determined by the pattern roll's selection or by the closest range intersection with the piano roll's active clip.
 

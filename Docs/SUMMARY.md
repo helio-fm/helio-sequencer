@@ -6,7 +6,7 @@
   - [Getting Microtonal](getting-microtonal.md)
   - [Getting Polymetric](getting-polymetric.md)
 ---
-- [Tips And Tricks](tips-and-tricks.md)
+- [Tips and Tricks](tips-and-tricks.md)
   - [Refactoring](refactoring.md)
   - [Parametric Modifiers](parametric-modifiers.md)
   - [Command Palette](command-palette.md)

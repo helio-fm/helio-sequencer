@@ -1,6 +1,6 @@
 # Configs
 
-Helio uses several configuration files, such as: scales, in-scale chords, temperaments, hotkeys, color schemes and translations.
+Helio uses several configuration files, such as: scales, in-scale chords, temperaments, hotkeys, colour schemes and translations.
 
 For each of those configs, there can be up to three versions, which are loaded and merged in this order: 
  * ones that a built-in into executable,
@@ -65,7 +65,7 @@ The translations are updated in the runtime, if there are any changes: the lates
 
 ## User configs
 
-To override or extend the built-in data, you can create a file with one of these names in your [documents directory](index.md#the-projects-directory):
+To override or extend the built-in data, you can create a file with one of these names in your [projects directory](index.md#the-projects-directory):
 
  * `chords.json`
  * `scales.json`
@@ -138,6 +138,37 @@ You might want to add some scales for it, for example:
 }
 ```
 
-### Custom arpeggiators
+### Custom colour schemes
 
-Arpeggiators are created in the app, you will find them saved in `arpeggiators.json`. You can edit this file by hand, but you probably won't need to.
+To add your theme to the built-in themes, put a `colourSchemes.json` file in your [projects directory](index.md#the-projects-directory). Here's an example:
+
+```json
+{
+  "colourSchemes": {
+    "colourScheme": [
+      {
+        "name": "Tonsky Mode",
+        "colourMap":
+        {
+          "text": "ff000000",
+          "headlineFill": "fffddb29",
+          "pageFill": "fffddb29",
+          "sidebarFill": "fffddb29",
+          "dialogFill": "fffddb29",
+          "lassoFill": "aaf9b579",
+          "lassoBorder": "55000000",
+          "buttonFill": "18000000",
+          "frameBorder": "58000000",
+          "whiteKey": "fffddb29",
+          "blackKey": "fffdce29",
+          "bar": "ff978717",
+          "row": "fffbc851",
+          "timeline": "fffddb29",
+          "iconBase": "5f000000",
+          "iconShadow": "27fde258"
+        }
+      }
+    ]
+  }
+}
+```
