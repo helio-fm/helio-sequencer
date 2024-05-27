@@ -1811,8 +1811,7 @@ void RollBase::handleAsyncUpdate()
     {
         const auto &editMode = this->project.getEditMode();
         const bool childrenInteractionEnabled = editMode.shouldInteractWithChildren();
-        const auto childCursor = childrenInteractionEnabled ?
-            MouseCursor::NormalCursor : editMode.getCursor();
+        const auto cursorOverride = editMode.getCursor();
 
         ROLL_BATCH_REPAINT_START
 
@@ -1824,7 +1823,10 @@ void RollBase::handleAsyncUpdate()
             {
                 // warning: setInterceptsMouseClicks will break ghost notes and any notes that shouldn't be interacted with
                 component->setInterceptsMouseClicks(childrenInteractionEnabled, childrenInteractionEnabled);
-                component->setMouseCursor(childCursor);
+                if (!childrenInteractionEnabled)
+                {
+                    component->setMouseCursor(cursorOverride);
+                }
                 component->setFloatBounds(this->getEventBounds(component));
                 component->repaint();
             }
