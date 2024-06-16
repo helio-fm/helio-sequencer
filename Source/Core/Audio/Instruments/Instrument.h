@@ -45,6 +45,9 @@ public:
     void initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback);
     void addNodeToFreeSpace(const PluginDescription &pluginDescription, InitializationCallback initCallback);
 
+    static UniquePointer<ScopedDPIAwarenessDisabler>
+        makeDPIAwarenessDisabler(const PluginDescription &description);
+
     class AudioCallback final : public AudioIODeviceCallback, public MidiInputCallback
     {
     public:

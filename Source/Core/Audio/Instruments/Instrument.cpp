@@ -228,6 +228,22 @@ void Instrument::addNodeToFreeSpace(const PluginDescription &pluginDescription, 
     });
 }
 
+UniquePointer<ScopedDPIAwarenessDisabler> Instrument::makeDPIAwarenessDisabler(const PluginDescription &description)
+{
+    constexpr bool autoScaleOptionAvailable =
+#if JUCE_WINDOWS && JUCE_WIN_PER_MONITOR_DPI_AWARE
+        true;
+#else
+        false;
+#endif
+
+    const bool isAutoScaleAvailable = autoScaleOptionAvailable &&
+        (description.pluginFormatName.containsIgnoreCase("VST")
+            || description.pluginFormatName.containsIgnoreCase("LV2"));
+
+    return isAutoScaleAvailable ? make<ScopedDPIAwarenessDisabler>() : nullptr;
+}
+
 
 //===----------------------------------------------------------------------===//
 // Nodes
@@ -290,7 +306,10 @@ const AudioProcessorGraph::Node::Ptr Instrument::findMainPluginNode() const
 
 void Instrument::addNodeAsync(const PluginDescription &desc, double x, double y, AddNodeCallback f)
 {
-    const auto callback = [this, desc, x, y, f]
+    std::shared_ptr<ScopedDPIAwarenessDisabler> dpiDisabler =
+        Instrument::makeDPIAwarenessDisabler(desc);
+
+    const auto callback = [this, dpiDisabler, desc, x, y, f]
     (UniquePointer<AudioPluginInstance> instance, const String &error)
     {
         AudioProcessorGraph::Node::Ptr node = nullptr;
@@ -678,6 +697,8 @@ void Instrument::deserialize(const SerializedData &data)
             desc.pluginFormatName == InternalIODevicesPluginFormat::formatName)
         {
             String error;
+
+            const auto dpiDisabler = Instrument::makeDPIAwarenessDisabler(desc);
             auto instance = this->formatManager.createPluginInstance(desc,
                 this->processorGraph->getSampleRate(),
                 this->processorGraph->getBlockSize(),
@@ -743,8 +764,11 @@ void Instrument::deserializeNodesAsync(Array<SerializedData> nodesToDeserialize,
 
     SerializablePluginDescription desc;
     desc.deserialize(tree.getChild(0)); // "node"/"plugin"
-    
-    const auto callback = [this, nodesToDeserialize, tree, allDoneCallback]
+
+    std::shared_ptr<ScopedDPIAwarenessDisabler> dpiDisabler =
+        Instrument::makeDPIAwarenessDisabler(desc);
+
+    const auto callback = [this, dpiDisabler, nodesToDeserialize, tree, allDoneCallback]
     (UniquePointer<AudioPluginInstance> instance, const String &error)
     {
         this->addNode(move(instance), tree);
@@ -760,6 +784,7 @@ void Instrument::deserializeNodesAsync(Array<SerializedData> nodesToDeserialize,
 AudioProcessorGraph::Node::Ptr Instrument::addNode(const PluginDescription &desc, double x, double y)
 {
     String errorMessage;
+    const auto dpiDisabler = Instrument::makeDPIAwarenessDisabler(desc);
     auto instance = this->formatManager.createPluginInstance(desc,
         this->processorGraph->getSampleRate(),
         this->processorGraph->getBlockSize(),

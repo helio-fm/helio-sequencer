@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "PluginWindow.h"
-
+#include "Instrument.h"
 #include "Workspace.h"
 #include "RootNode.h"
 #include "InstrumentNode.h"
@@ -73,13 +73,6 @@ void PluginWindow::closeAllCurrentlyOpenWindows()
     }
 }
 
-constexpr bool autoScaleOptionAvailable =
-#if JUCE_WINDOWS && JUCE_WIN_PER_MONITOR_DPI_AWARE
-    true;
-#else
-    false;
-#endif
-
 PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node)
 {
     for (auto *window : activePluginWindows)
@@ -90,16 +83,10 @@ PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node)
         }
     }
 
-    const auto makeDPIAwarenessDisabler = [](const PluginDescription &desc)
-    {
-        const bool isAutoScaleAvailable = autoScaleOptionAvailable && desc.pluginFormatName.containsIgnoreCase("VST");
-        return isAutoScaleAvailable ? make<ScopedDPIAwarenessDisabler>() : nullptr;
-    };
-
     UniquePointer<ScopedDPIAwarenessDisabler> scopedDpiDisabler;
     if (auto *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor()))
     {
-        scopedDpiDisabler = makeDPIAwarenessDisabler(plugin->getPluginDescription());
+        scopedDpiDisabler = Instrument::makeDPIAwarenessDisabler(plugin->getPluginDescription());
     }
     
     AudioProcessorEditor *ui = nullptr;
