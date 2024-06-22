@@ -19,14 +19,20 @@
 
 #include "SoundFontSynth.h"
 #include "JsonSerializer.h"
+#include "BuiltInMicrotonalPlugin.h"
 
-class SoundFontSynthAudioPlugin final : public AudioPluginInstance
+class SoundFontSynthAudioPlugin final : public BuiltInMicrotonalPlugin
 {
 public:
 
     SoundFontSynthAudioPlugin();
 
     static const String instrumentId;
+
+    void setTemperament(Temperament::Ptr temperament) override
+    {
+        this->synth.setTemperament(temperament);
+    }
 
     //===------------------------------------------------------------------===//
     // AudioPluginInstance

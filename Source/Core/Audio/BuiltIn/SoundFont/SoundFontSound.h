@@ -22,6 +22,7 @@
 #pragma once
 
 #include "SoundFontRegion.h"
+#include "Temperament.h"
 
 class SoundFontSample;
 
@@ -53,6 +54,11 @@ public:
     virtual String getPresetName(int whichSubsound) const;
     virtual void setSelectedPreset(int whichSubsound);
     virtual int getSelectedPreset() const;
+
+    void setTemperament(Temperament::Ptr temperament)
+    {
+        this->temperament = temperament;
+    }
 
     void addError(const String &message);
     void addUnsupportedOpcode(const String &opcode);
@@ -96,6 +102,8 @@ private:
     StringArray errors;
     StringArray warnings;
     FlatHashMap<String, String> unsupportedOpcodes;
+
+    Temperament::Ptr temperament;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundFontSound)
 };

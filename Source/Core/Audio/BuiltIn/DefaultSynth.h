@@ -25,16 +25,6 @@ public:
 
     DefaultSynth();
 
-    // what we want here is to make all built-in temperaments
-    // work out of the box with the built-in instrument, so that
-    // all features are easily previewed even before the user
-    // sets up any instruments and keyboard mappings;
-    // for that we need to let the instrument know which temperament
-    // the project is currently in, and even simpler - we only need
-    // an octave size, because this is what matters from the sequencer's
-    // perspective, and we will only support EDOs, because all built-in
-    // temperaments and EDO's; hopefully someday I'll come up with
-    // a better approach, or just get rid of this hack;
     void setTemperament(Temperament::Ptr temperament);
 
 protected:
@@ -70,15 +60,10 @@ protected:
         float angleDelta = 0.f;
         float level = 0.f;
 
-        int periodSize = Globals::twelveTonePeriodSize;
-        double periodRange = 2.0;
-        int middleA = 69;
+        Temperament::Ptr temperament;
 
         ADSR adsr;
         Reverb reverb;
-
-        double getNoteInHertz(int noteNumber, double frequencyOfA = 440.0) noexcept;
-        int getCurrentChannel() const noexcept;
     };
 
     void handleSustainPedal(int midiChannel, bool isDown) override;

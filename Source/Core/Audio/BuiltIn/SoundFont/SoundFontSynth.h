@@ -21,14 +21,20 @@
 
 #pragma once
 
+#include "Temperament.h"
+
 class SoundFontSynth final : public Synthesiser
 {
 public:
 
     SoundFontSynth() = default;
 
+    void setTemperament(Temperament::Ptr temperament);
+
     void noteOn(int midiChannel, int midiNoteNumber, float velocity) override;
     void noteOff(int midiChannel, int midiNoteNumber, float velocity, bool allowTailOff) override;
+
+    inline SoundFontSound *getSoundFontSound() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Synth parameters
@@ -64,7 +70,9 @@ private:
     // todo: make it configurable from the UI
     static constexpr auto numVoices = 256;
 
-    int noteVelocities[128];
+    int noteVelocities[Globals::maxKeyboardSize] = {};
+
+    Temperament::Ptr temperament;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundFontSynth)
 };

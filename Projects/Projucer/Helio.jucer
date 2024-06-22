@@ -178,6 +178,8 @@
                   resource="0" file="../../Source/Core/Audio/BuiltIn/InternalIODevicesPluginFormat.cpp"/>
             <FILE id="LuBc4N" name="InternalIODevicesPluginFormat.h" compile="0"
                   resource="0" file="../../Source/Core/Audio/BuiltIn/InternalIODevicesPluginFormat.h"/>
+            <FILE id="JZNQTz" name="BuiltInMicrotonalPlugin.h" compile="0" resource="0"
+                  file="../../Source/Core/Audio/BuiltIn/BuiltInMicrotonalPlugin.h"/>
             <FILE id="u3XxWY" name="BuiltInSynthsPluginFormat.cpp" compile="1"
                   resource="0" file="../../Source/Core/Audio/BuiltIn/BuiltInSynthsPluginFormat.cpp"/>
             <FILE id="QbQrqy" name="BuiltInSynthsPluginFormat.h" compile="0" resource="0"

@@ -2696,6 +2696,7 @@
     <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\SoundFont\SoundFontSound.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\SoundFont\SoundFontSynth.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\InternalIODevicesPluginFormat.h"/>
+    <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\BuiltInMicrotonalPlugin.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\BuiltInSynthsPluginFormat.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\DefaultSynthAudioPlugin.h"/>
     <ClInclude Include="..\..\Source\Core\Audio\BuiltIn\DefaultSynth.h"/>

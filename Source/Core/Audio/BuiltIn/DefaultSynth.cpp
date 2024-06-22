@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "DefaultSynth.h"
+#include "KeyboardMapping.h"
 
 //===----------------------------------------------------------------------===//
 // Voice
@@ -58,19 +59,20 @@ void DefaultSynth::Voice::setCurrentPlaybackSampleRate(double sampleRate)
 
 void DefaultSynth::Voice::startNote(int midiNoteNumber, float velocity, SynthesiserSound *, int)
 {
-    const auto channel = this->getCurrentChannel();
+    if (this->temperament == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
 
-    // for microtonal temperaments try to figure out the key
-    // assuming the default multi-channel keyboard mapping:
-    const int adjustedNoteNumber =
-        this->periodSize > Globals::twelveTonePeriodSize ?
-        midiNoteNumber + Globals::twelveToneKeyboardSize * (channel - 1) :
-        midiNoteNumber;
+    const double actualNoteNumber =
+        this->temperament->unmapMicrotonalNote(
+            midiNoteNumber, this->getCurrentPlayingChannel());
 
     this->currentAngle = 0.f;
     this->level = velocity * 0.2f; // hopefully not too loud
-
-    const auto cyclesPerSecond = this->getNoteInHertz(adjustedNoteNumber);
+    
+    const auto cyclesPerSecond = this->temperament->getNoteInHertz(actualNoteNumber);
     const auto cyclesPerSample = cyclesPerSecond / this->getSampleRate();
 
     this->angleDelta = float(cyclesPerSample) * MathConstants<float>::twoPi;
@@ -134,32 +136,7 @@ void DefaultSynth::Voice::renderNextBlock(AudioBuffer<float> &outputBuffer, int 
 
 void DefaultSynth::Voice::setTemperament(Temperament::Ptr temperament) noexcept
 {
-    this->periodSize = temperament->getPeriodSize();
-    this->periodRange = temperament->getPeriodRange();
-    this->middleA = Temperament::periodNumForMiddleC * this->periodSize +
-        // what the temperament considers to be the equivalent of "la" note:
-        temperament->getEquivalentOfTwelveToneInterval(Semitones::MajorSixth);
-}
-
-double DefaultSynth::Voice::getNoteInHertz(int noteNumber, double frequencyOfA /*= 440.0*/) noexcept
-{
-    return frequencyOfA * std::pow(this->periodRange,
-        double(noteNumber - this->middleA) / double(this->periodSize));
-}
-
-int DefaultSynth::Voice::getCurrentChannel() const noexcept
-{
-    // the only way to access channel info in SynthesizerVoice :(
-    for (int i = 1; i <= Globals::numChannels; ++i)
-    {
-        if (this->isPlayingChannel(i))
-        {
-            return i;
-        }
-    }
-
-    jassertfalse;
-    return 1;
+    this->temperament = temperament;
 }
 
 //===----------------------------------------------------------------------===//

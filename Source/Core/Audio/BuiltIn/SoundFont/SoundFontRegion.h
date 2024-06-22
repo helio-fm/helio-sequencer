@@ -176,10 +176,19 @@ struct SoundFontRegion final
         return info;
     }
 
-    bool matches(int note, int velocity, Trigger trig) const
+    bool matches(int note, int velocity, Trigger trigger, int periodSize) const noexcept
     {
-        return (note >= this->lokey && note <= this->hikey && velocity >= this->lovel && velocity <= this->hivel &&
-            (trig == this->trigger || (this->trigger == Trigger::attack && (trig == Trigger::first || trig == Trigger::legato))));
+        int mappedNote = note;
+        if (periodSize != Globals::twelveTonePeriodSize)
+        {
+            mappedNote = int(double(note * Globals::twelveTonePeriodSize) / double(periodSize));
+        }
+
+        return (mappedNote >= this->lokey && mappedNote <= this->hikey &&
+            velocity >= this->lovel && velocity <= this->hivel &&
+            (trigger == this->trigger ||
+                (this->trigger == Trigger::attack &&
+                    (trigger == Trigger::first || trigger == Trigger::legato))));
     }
 
     WeakReference<SoundFontSample> sample;

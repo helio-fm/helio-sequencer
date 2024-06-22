@@ -30,6 +30,7 @@
 #include "KeyboardMapping.h"
 #include "ProjectMetadata.h"
 #include "ProjectTimeline.h"
+#include "BuiltInMicrotonalPlugin.h"
 #include "DefaultSynthAudioPlugin.h"
 
 #define TIME_NOW (Time::getMillisecondCounterHiRes() * 0.001)
@@ -789,12 +790,14 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
 
 void Transport::updateTemperamentForBuiltInSynth(Temperament::Ptr temperament) const
 {
-    const auto *defaultInstrument = this->orchestra.getDefaultInstrument();
-    if (auto mainNode = defaultInstrument->findMainPluginNode())
+    for (auto *instrument : this->orchestra.getInstruments())
     {
-        if (auto *synth = dynamic_cast<DefaultSynthAudioPlugin *>(mainNode->getProcessor()))
+        if (auto mainNode = instrument->findMainPluginNode())
         {
-            synth->setTemperament(temperament);
+            if (auto *plugin = dynamic_cast<BuiltInMicrotonalPlugin *>(mainNode->getProcessor()))
+            {
+                plugin->setTemperament(temperament);
+            }
         }
     }
 }

@@ -25,6 +25,7 @@
 #include "SoundFont2Sound.h"
 #include "SoundFontRegion.h"
 #include "SoundFontSample.h"
+#include "KeyboardMapping.h"
 #include "SerializationKeys.h"
 
 class SoundFontEnvelope final
@@ -289,14 +290,21 @@ public:
         this->envelope.setExponentialDecay(true);
     }
 
+    void setTemperament(Temperament::Ptr temperament) noexcept
+    {
+        this->temperament = temperament;
+    }
+
     bool canPlaySound(SynthesiserSound *sound) override;
-    void startNote(int midiNoteNumber, float velocity, SynthesiserSound *sound, int currentPitchWheelPosition) override;
+    void startNote(int midiNoteNumber, float velocity,
+        SynthesiserSound *sound, int currentPitchWheelPosition) override;
     void stopNote(float velocity, bool allowTailOff) override;
     void stopNoteForGroup();
     void stopNoteQuick();
     void pitchWheelMoved(int newValue) override;
     void controllerMoved(int controllerNumber, int newValue) override {}
-    void renderNextBlock(AudioSampleBuffer &outputBuffer, int startSample, int numSamples) override;
+    void renderNextBlock(AudioSampleBuffer &outputBuffer,
+        int startSample, int numSamples) override;
     bool isPlayingNoteDown();
     bool isPlayingOneShot();
 
@@ -309,6 +317,9 @@ public:
 private:
 
     SoundFontRegion *region = nullptr;
+
+    Temperament::Ptr temperament;
+
     int trigger = 0;
     int currentMidiNote = 0;
     int currentPitchWheel = 0;
@@ -341,19 +352,28 @@ bool SoundFontVoice::canPlaySound(SynthesiserSound *sound)
 void SoundFontVoice::startNote(int midiNoteNumber, float floatVelocity,
     SynthesiserSound *soundIn, int currentPitchWheelPosition)
 {
-    const auto *sound = dynamic_cast<SoundFontSound *>(soundIn);
+    if (this->temperament == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
 
+    const auto *sound = dynamic_cast<SoundFontSound *>(soundIn);
     if (sound == nullptr)
     {
         this->killNote();
         return;
     }
 
-    const int velocity = static_cast<int>(floatVelocity * 127.0);
+    const int actualNoteNumber =
+        this->temperament->unmapMicrotonalNote(midiNoteNumber,
+            this->getCurrentPlayingChannel());
+
+    const int velocity = int(floatVelocity * 127.f);
     this->currentVelocity = velocity;
     if (this->region == nullptr)
     {
-        this->region = sound->getRegionFor(midiNoteNumber, velocity);
+        this->region = sound->getRegionFor(actualNoteNumber, velocity);
     }
 
     if ((this->region == nullptr) ||
@@ -371,7 +391,7 @@ void SoundFontVoice::startNote(int midiNoteNumber, float floatVelocity,
     }
 
     // Pitch.
-    this->currentMidiNote = midiNoteNumber;
+    this->currentMidiNote = actualNoteNumber;
     this->currentPitchWheel = currentPitchWheelPosition;
     this->calcPitchRatio();
 
@@ -612,13 +632,22 @@ void SoundFontVoice::setRegion(SoundFontRegion *nextRegion)
 
 void SoundFontVoice::calcPitchRatio()
 {
-    double note = this->currentMidiNote;
+    if (this->temperament == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
 
-    note += this->region->transpose;
+    double note = this->currentMidiNote;
+    note += this->temperament->getEquivalentOfTwelveToneInterval(Semitones(this->region->transpose));
     note += this->region->tune / 100.0;
 
-    double adjustedPitch = this->region->pitchKeyCenter +
-        (note - this->region->pitchKeyCenter) * (this->region->pitchKeyTrack / 100.0);
+    const double adjustedPitchKeyCenter =
+        double(this->region->pitchKeyCenter * this->temperament->getPeriodSize()) /
+            double(Globals::twelveTonePeriodSize); 
+
+    double adjustedPitch = adjustedPitchKeyCenter +
+        (note - adjustedPitchKeyCenter) * (this->region->pitchKeyTrack / 100.0);
 
     if (this->currentPitchWheel != 8192)
     {
@@ -633,17 +662,11 @@ void SoundFontVoice::calcPitchRatio()
         }
     }
 
-    // todo someday: support equal temperaments like the default synth does?
-    const auto fractionalMidiNoteInHz = [](double note, double freqOfA = 440.0) {
-        // Like MidiMessage::getMidiNoteInHertz(), but with a float note.
-        note -= 69;
-        // Now 0 = A
-        return freqOfA * pow(2.0, note / 12.0);
-    };
-
-    const double targetFreq = fractionalMidiNoteInHz(adjustedPitch);
+    const double targetFreq = this->temperament->getNoteInHertz(adjustedPitch);
     const double naturalFreq = MidiMessage::getMidiNoteInHertz(this->region->pitchKeyCenter);
-    this->pitchRatio = (targetFreq * this->region->sample->getSampleRate()) / (naturalFreq * getSampleRate());
+    this->pitchRatio =
+        (targetFreq * this->region->sample->getSampleRate()) /
+        (naturalFreq * this->getSampleRate());
 }
 
 void SoundFontVoice::killNote()
@@ -664,14 +687,16 @@ void SoundFontSynth::initSynth(const Parameters &parameters)
         return;
     }
 
-    ScopedLock locker(this->lock);
+    const ScopedLock locker(this->lock);
 
     this->allNotesOff(0, false);
 
     this->clearVoices();
     for (int i = SoundFontSynth::numVoices; i --> 0 ;)
     {
-        this->addVoice(new SoundFontVoice());
+        auto voice = make<SoundFontVoice>();
+        voice->setTemperament(this->temperament);
+        this->addVoice(voice.release());
     }
 
     this->clearSounds();
@@ -684,6 +709,7 @@ void SoundFontSynth::initSynth(const Parameters &parameters)
         auto sound = make<SoundFont2Sound>(file);
         sound->loadRegions();
         sound->loadSamples(audioFormatManager);
+        sound->setTemperament(this->temperament);
         this->sounds.add(sound.release());
     }
     else if (file.getFullPathName().endsWithIgnoreCase("sbk"))
@@ -691,6 +717,7 @@ void SoundFontSynth::initSynth(const Parameters &parameters)
         auto sound = make<SoundFontSound>(file);
         sound->loadRegions();
         sound->loadSamples(audioFormatManager);
+        sound->setTemperament(this->temperament);
         this->sounds.add(sound.release());
     }
 
@@ -701,19 +728,26 @@ void SoundFontSynth::initSynth(const Parameters &parameters)
 
 void SoundFontSynth::noteOn(int midiChannel, int midiNoteNumber, float velocity)
 {
-    int i;
-
     const ScopedLock locker(this->lock);
 
-    int midiVelocity = static_cast<int>(velocity * 127);
+    if (this->temperament == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    const int actualNoteNumber =
+        this->temperament->unmapMicrotonalNote(midiNoteNumber, midiChannel);
+
+    const int midiVelocity = int(velocity * 127.f);
 
     // First, stop any currently-playing sounds in the group.
     // Currently, this only pays attention to the first matching region.
     int group = 0;
-    auto *sound = dynamic_cast<SoundFontSound *>(this->getSound(0).get());
+    auto *sound = this->getSoundFontSound();
     if (sound != nullptr)
     {
-        if (auto *region = sound->getRegionFor(midiNoteNumber, midiVelocity))
+        if (auto *region = sound->getRegionFor(actualNoteNumber, midiVelocity))
         {
             group = region->group;
         }
@@ -759,11 +793,14 @@ void SoundFontSynth::noteOn(int midiChannel, int midiNoteNumber, float velocity)
     // Play *all* matching regions.
     if (sound != nullptr)
     {
-        const auto trigger = anyNotesPlaying ? SoundFontRegion::Trigger::legato : SoundFontRegion::Trigger::first;
-        for (i = 0; i < sound->getNumRegions(); ++i)
+        const auto periodSize = this->temperament->getPeriodSize();
+        const auto trigger = anyNotesPlaying ?
+            SoundFontRegion::Trigger::legato : SoundFontRegion::Trigger::first;
+
+        for (int i = 0; i < sound->getNumRegions(); ++i)
         {
             auto *region = sound->regionAt(i);
-            if (region->matches(midiNoteNumber, midiVelocity, trigger))
+            if (region->matches(actualNoteNumber, midiVelocity, trigger, periodSize))
             {
                 if (auto *voice = dynamic_cast<SoundFontVoice *>(this->findFreeVoice(sound,
                     midiNoteNumber, midiChannel, this->isNoteStealingEnabled())))
@@ -776,7 +813,7 @@ void SoundFontSynth::noteOn(int midiChannel, int midiNoteNumber, float velocity)
                     // all matching regions while playing some of them twice:
                     if (voice->getCurrentlyPlayingSound() != nullptr)
                     {
-                        voice->stopNote(0.0f, false);
+                        voice->stopNote(0.f, false);
                     }
 
                     voice->setRegion(region);
@@ -786,7 +823,7 @@ void SoundFontSynth::noteOn(int midiChannel, int midiNoteNumber, float velocity)
         }
     }
 
-    this->noteVelocities[midiNoteNumber] = midiVelocity;
+    this->noteVelocities[actualNoteNumber] = midiVelocity;
 }
 
 void SoundFontSynth::noteOff(int midiChannel, int midiNoteNumber, float velocity, bool allowTailOff)
@@ -796,22 +833,32 @@ void SoundFontSynth::noteOff(int midiChannel, int midiNoteNumber, float velocity
     Synthesiser::noteOff(midiChannel, midiNoteNumber, velocity, allowTailOff);
 
     // Start release region.
-    if (auto *sound = dynamic_cast<SoundFontSound *>(this->getSound(0).get()))
+    if (auto *sound = this->getSoundFontSound())
     {
-        if (auto *region = sound->getRegionFor(midiNoteNumber,
-            this->noteVelocities[midiNoteNumber], SoundFontRegion::Trigger::release))
+        if (this->temperament == nullptr)
+        {
+            jassertfalse;
+            return;
+        }
+
+        const int actualNoteNumber =
+            this->temperament->unmapMicrotonalNote(midiNoteNumber, midiChannel);
+
+        if (auto *region = sound->getRegionFor(actualNoteNumber,
+            this->noteVelocities[actualNoteNumber], SoundFontRegion::Trigger::release))
         {
             if (auto *voice = dynamic_cast<SoundFontVoice *>(this->findFreeVoice(sound, midiNoteNumber, midiChannel, false)))
             {
                 if (voice->getCurrentlyPlayingSound() != nullptr)
                 {
-                    voice->stopNote(0.0f, false);
+                    voice->stopNote(0.f, false);
                 }
 
                 // Synthesiser is too locked-down (ivars are private rt protected), so
                 // we have to use a "setRegion()" mechanism.
                 voice->setRegion(region);
-                this->startVoice(voice, sound, midiChannel, midiNoteNumber, this->noteVelocities[midiNoteNumber] / 127.0f);
+                this->startVoice(voice, sound, midiChannel, midiNoteNumber,
+                    this->noteVelocities[actualNoteNumber] / 127.f);
             }
         }
     }
@@ -823,7 +870,7 @@ void SoundFontSynth::noteOff(int midiChannel, int midiNoteNumber, float velocity
 
 int SoundFontSynth::getNumPrograms() const
 {
-    if (auto *sound = dynamic_cast<SoundFontSound *>(this->getSound(0).get()))
+    if (auto *sound = this->getSoundFontSound())
     {
         return sound->getNumPresets();
     }
@@ -833,7 +880,7 @@ int SoundFontSynth::getNumPrograms() const
 
 int SoundFontSynth::getCurrentProgram() const
 {
-    if (auto *sound = dynamic_cast<SoundFontSound *>(this->getSound(0).get()))
+    if (auto *sound = this->getSoundFontSound())
     {
         return sound->getSelectedPreset();
     }
@@ -843,7 +890,7 @@ int SoundFontSynth::getCurrentProgram() const
 
 void SoundFontSynth::setCurrentProgram(int index)
 {
-    if (auto *sound = dynamic_cast<SoundFontSound *>(this->getSound(0).get()))
+    if (auto *sound = this->getSoundFontSound())
     {
         return sound->setSelectedPreset(index < this->getNumPrograms() ? index : 0);
     }
@@ -851,7 +898,7 @@ void SoundFontSynth::setCurrentProgram(int index)
 
 const String SoundFontSynth::getProgramName(int index) const
 {
-    if (auto *sound = dynamic_cast<SoundFontSound *>(this->getSound(0).get()))
+    if (auto *sound = this->getSoundFontSound())
     {
         return sound->getPresetName(index);
     }
@@ -862,6 +909,40 @@ const String SoundFontSynth::getProgramName(int index) const
 void SoundFontSynth::changeProgramName(int index, const String &newName)
 {
     jassertfalse;
+}
+
+void SoundFontSynth::setTemperament(Temperament::Ptr temperament)
+{
+    if (this->temperament == temperament)
+    {
+        return;
+    }
+
+    this->temperament = temperament;
+
+    for (auto *v : this->voices)
+    {
+        jassert(dynamic_cast<SoundFontVoice *>(v));
+        auto *voice = static_cast<SoundFontVoice *>(v);
+        voice->stopNote(0.f, false);
+        voice->setTemperament(temperament);
+    }
+
+    if (auto *sound = this->getSoundFontSound())
+    {
+        sound->setTemperament(temperament);
+    }
+}
+
+SoundFontSound *SoundFontSynth::getSoundFontSound() const noexcept
+{
+    if (this->getNumSounds() == 0)
+    {
+        return nullptr;
+    }
+
+    jassert(dynamic_cast<SoundFontSound *>(this->getSound(0).get()));
+    return static_cast<SoundFontSound *>(this->getSound(0).get());
 }
 
 //===----------------------------------------------------------------------===//

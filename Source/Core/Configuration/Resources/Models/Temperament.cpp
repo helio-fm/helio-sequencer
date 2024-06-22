@@ -21,12 +21,14 @@
 
 Temperament::Temperament(const Temperament &other) noexcept :
     id(other.id), name(other.name),
-    period(other.period), middleC(other.middleC), keysTotal(other.keysTotal),
+    period(other.period), keysTotal(other.keysTotal),
+    middleC(other.middleC), middleA(other.middleA),
     highlighting(other.highlighting), chromaticMap(other.chromaticMap),
     chromaticScales(other.chromaticScales) {}
 
 Temperament::Temperament(Temperament &&other) noexcept :
-    id(other.id), name(other.name), middleC(other.middleC), keysTotal(other.keysTotal),
+    id(other.id), name(other.name), keysTotal(other.keysTotal),
+    middleC(other.middleC),  middleA(other.middleA),
     highlighting(other.highlighting), chromaticMap(other.chromaticMap),
     chromaticScales(other.chromaticScales)
 {
@@ -66,6 +68,20 @@ String Temperament::getMidiNoteName(Note::Key note, int scaleRootKey,
     }
 
     return {};
+}
+
+double Temperament::getNoteInHertz(double noteNumber, double frequencyOfA /*= 440.0*/) const noexcept
+{
+    return frequencyOfA * std::pow(this->periodRange,
+        double(noteNumber - this->middleA) / double(this->getPeriodSize()));
+}
+
+Note::Key Temperament::unmapMicrotonalNote(int mappedNoteNumber, int mappedChannel) noexcept
+{
+    jassert(mappedChannel > 0);
+    return this->getPeriodSize() > Globals::twelveTonePeriodSize ?
+        mappedNoteNumber + Globals::twelveToneKeyboardSize * (mappedChannel - 1) :
+        mappedNoteNumber;
 }
 
 Note::Key Temperament::getEquivalentOfTwelveToneInterval(Semitones interval) const noexcept
@@ -116,6 +132,7 @@ Temperament::Ptr Temperament::makeTwelveToneEqualTemperament()
     t->chromaticMap = Scale::makeChromaticScale();
     t->keysTotal = Globals::twelveToneKeyboardSize;
     t->middleC = Globals::twelveTonePeriodSize * Temperament::periodNumForMiddleC;
+    t->middleA = t->middleC + Note::Key(Semitones::MajorSixth);
     return t;
 }
 
@@ -187,9 +204,6 @@ void Temperament::deserialize(const SerializedData &data)
 
     this->periodRange = root.getProperty(Midi::temperamentPeriodRange, 2.0);
 
-    this->middleC = Temperament::periodNumForMiddleC * this->getPeriodSize();
-    this->keysTotal = int(Globals::numPeriodsInKeyboard * float(this->getPeriodSize()));
-
     this->highlighting = Scale::fromIntervalsAndPeriod(
         root.getProperty(Midi::temperamentHighlighting), this->getPeriodSize());
 
@@ -220,6 +234,10 @@ void Temperament::deserialize(const SerializedData &data)
             this->chromaticScales[keyName] = move(chromaticScale);
         }
     }
+    
+    this->keysTotal = int(Globals::numPeriodsInKeyboard * float(this->getPeriodSize()));
+    this->middleC = Temperament::periodNumForMiddleC * this->getPeriodSize();
+    this->middleA = this->middleC + this->getEquivalentOfTwelveToneInterval(Semitones::MajorSixth);
 }
 
 void Temperament::reset()

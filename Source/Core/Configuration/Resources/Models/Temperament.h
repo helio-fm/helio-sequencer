@@ -73,6 +73,13 @@ public:
     String getMidiNoteName(Note::Key note, int scaleRootKey,
         const String &keyEnharmonic, bool includePeriod) const noexcept;
 
+    double getNoteInHertz(double key, double frequencyOfA = 440.0) const noexcept;
+
+    // a helper to get the actual key in microtonal temperaments
+    // assuming the default multi-channel mapping (see KeyboardMapping);
+    // this is used in subclasses of BuiltInMicrotonalPlugin:
+    Note::Key unmapMicrotonalNote(int mappedNoteNumber, int mappedChannel) noexcept;
+
     //===------------------------------------------------------------------===//
     // Hard-coded defaults
     //===------------------------------------------------------------------===//
@@ -108,7 +115,13 @@ private:
     double periodRange = 2.0;
 
     int keysTotal = Globals::twelveToneKeyboardSize;
-    Note::Key middleC = Globals::twelveTonePeriodSize * Temperament::periodNumForMiddleC;
+
+    Note::Key middleC =
+        Globals::twelveTonePeriodSize * Temperament::periodNumForMiddleC;
+
+    Note::Key middleA =
+        Globals::twelveTonePeriodSize * Temperament::periodNumForMiddleC +
+        Note::Key(Semitones::MajorSixth);
 
     Scale::Ptr highlighting;
     Scale::Ptr chromaticMap;

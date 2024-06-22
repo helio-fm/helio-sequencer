@@ -18,8 +18,9 @@
 #pragma once
 
 #include "DefaultSynth.h"
+#include "BuiltInMicrotonalPlugin.h"
 
-class DefaultSynthAudioPlugin final : public AudioPluginInstance
+class DefaultSynthAudioPlugin final : public BuiltInMicrotonalPlugin
 {
 public:
 
@@ -28,7 +29,7 @@ public:
     static const String instrumentId;
     static const String instrumentName;
 
-    void setTemperament(Temperament::Ptr temperament)
+    void setTemperament(Temperament::Ptr temperament) override
     {
         this->synth.setTemperament(temperament);
     }

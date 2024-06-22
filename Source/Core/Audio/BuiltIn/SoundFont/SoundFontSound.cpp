@@ -741,11 +741,15 @@ void SoundFontSound::loadSamples(AudioFormatManager &formatManager)
     }
 }
 
-SoundFontRegion *SoundFontSound::getRegionFor(int note, int velocity, SoundFontRegion::Trigger trigger) const
+SoundFontRegion *SoundFontSound::getRegionFor(int note,
+    int velocity, SoundFontRegion::Trigger trigger) const
 {
+    jassert(this->temperament != nullptr);
+    const auto periodSize = this->temperament->getPeriodSize();
+
     for (auto *region : this->regions)
     {
-        if (region->matches(note, velocity, trigger))
+        if (region->matches(note, velocity, trigger, periodSize))
         {
             return region;
         }
