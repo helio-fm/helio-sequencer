@@ -40,7 +40,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
     const auto instrument = this->instrumentNode.getInstrument();
 
     bool instrumentHasEditor = false;
-    if (auto mainNode = instrument->findMainPluginNode())
+    if (auto mainNode = instrument->findFirstMidiReceiver())
     {
         instrumentHasEditor = mainNode->getProcessor()->hasEditor();
     }

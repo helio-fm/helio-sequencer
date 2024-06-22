@@ -36,6 +36,8 @@ public:
     virtual void removeInstrument(Instrument *instrument) = 0;
     virtual void addInstrument(const PluginDescription &pluginDescription,
         const String &name, Instrument::InitializationCallback callback) = 0;
+    virtual Instrument *addBuiltInInstrument(const PluginDescription &pluginDescription,
+        const String &name) = 0;
 
     virtual Array<Instrument *> getInstruments() const = 0;
     virtual Instrument *findInstrumentById(const String &id) const = 0;

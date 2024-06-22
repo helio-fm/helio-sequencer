@@ -197,7 +197,7 @@ MenuPanel::Menu PatternRollSelectionMenu::makeDefaultMenu()
     {
         if (instrument->getIdAndHash() == selectionInstrumentId)
         {
-            if (auto mainNode = instrument->findMainPluginNode())
+            if (auto mainNode = instrument->findFirstMidiReceiver())
             {
                 const auto editInstrumentCaption = instrument->getName() + ": " + TRANS(I18n::Menu::instrumentShowWindow);
                 menu.add(MenuItem::item(Icons::instrument, CommandIDs::EditCurrentInstrument, editInstrumentCaption)->

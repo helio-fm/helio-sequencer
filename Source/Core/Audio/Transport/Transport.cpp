@@ -792,7 +792,7 @@ void Transport::updateTemperamentForBuiltInSynth(Temperament::Ptr temperament) c
 {
     for (auto *instrument : this->orchestra.getInstruments())
     {
-        if (auto mainNode = instrument->findMainPluginNode())
+        if (auto mainNode = instrument->findFirstMidiReceiver())
         {
             if (auto *plugin = dynamic_cast<BuiltInMicrotonalPlugin *>(mainNode->getProcessor()))
             {

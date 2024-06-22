@@ -50,6 +50,8 @@ public:
     void removeInstrument(Instrument *instrument) override;
     void addInstrument(const PluginDescription &pluginDescription,
         const String &name, Instrument::InitializationCallback callback) override;
+    Instrument *addBuiltInInstrument(const PluginDescription &pluginDescription,
+        const String &name) override;
 
     Array<Instrument *> getInstruments() const override;
 

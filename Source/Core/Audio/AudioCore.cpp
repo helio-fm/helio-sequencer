@@ -82,6 +82,15 @@ void AudioCore::addInstrument(const PluginDescription &pluginDescription,
         });
 }
 
+Instrument *AudioCore::addBuiltInInstrument(const PluginDescription &pluginDescription, const String &name)
+{
+    auto *instrument = this->instruments.add(new Instrument(this->formatManager, name));
+    this->addInstrumentToAudioDevice(instrument);
+    instrument->initializeBuiltInInstrument(pluginDescription);
+    this->broadcastAddInstrument(instrument);
+    return instrument;
+}
+
 Instrument *AudioCore::addMidiOutputInstrument(const String &name)
 {
     auto *instrument = this->instruments.add(new Instrument(this->formatManager, name));
@@ -336,12 +345,9 @@ void AudioCore::initBuiltInInstrumentsIfNeeded()
         PluginDescription defaultPluginDescription;
         DefaultSynthAudioPlugin defaultAudioPlugin;
         defaultAudioPlugin.fillInPluginDescription(defaultPluginDescription);
-
-        this->addInstrument(defaultPluginDescription,
-            TRANS(I18n::Instruments::defultSynthTitle),
-            [this](Instrument *instrument) {
-                this->defaultInstrument = instrument;
-            });
+        this->defaultInstrument =
+            this->addBuiltInInstrument(defaultPluginDescription,
+                TRANS(I18n::Instruments::defultSynthTitle));
     }
 
     if (this->metronomeInstrument == nullptr)
@@ -349,12 +355,9 @@ void AudioCore::initBuiltInInstrumentsIfNeeded()
         PluginDescription metronomePluginDescription;
         MetronomeSynthAudioPlugin metronomeAudioPlugin;
         metronomeAudioPlugin.fillInPluginDescription(metronomePluginDescription);
-
-        this->addInstrument(metronomePluginDescription,
-            TRANS(I18n::Instruments::metronomeTitle),
-            [this](Instrument *instrument) {
-                this->metronomeInstrument = instrument;
-            });
+        this->metronomeInstrument =
+            this->addBuiltInInstrument(metronomePluginDescription,
+                TRANS(I18n::Instruments::metronomeTitle));
     }
 
     if (this->midiOutputInstrument == nullptr)

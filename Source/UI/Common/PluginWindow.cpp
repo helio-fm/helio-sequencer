@@ -120,9 +120,9 @@ bool PluginWindow::showWindowFor(const String &instrumentId)
 {
     if (auto *instrument = App::Workspace().getAudioCore().findInstrumentById(instrumentId))
     {
-        if (auto node = instrument->findMainPluginNode())
+        if (auto mainNode = instrument->findFirstMidiReceiver())
         {
-            return PluginWindow::showWindowFor(node);
+            return PluginWindow::showWindowFor(mainNode);
         }
     }
 

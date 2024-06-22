@@ -90,24 +90,22 @@ bool Instrument::isValid() const noexcept
 
 bool Instrument::isDefaultInstrument() const noexcept
 {
-    const auto mainNode = this->findMainPluginNode();
-    if (mainNode == nullptr)
+    if (const auto mainNode = this->findFirstMidiReceiver())
     {
-        return false;
+        return dynamic_cast<DefaultSynthAudioPlugin *>(mainNode->getProcessor()) != nullptr;
     }
 
-    return dynamic_cast<DefaultSynthAudioPlugin *>(mainNode->getProcessor()) != nullptr;
+    return false;
 }
 
 bool Instrument::isMetronomeInstrument() const noexcept
 {
-    const auto mainNode = this->findMainPluginNode();
-    if (mainNode == nullptr)
+    if (const auto mainNode = this->findFirstMidiReceiver())
     {
-        return false;
+        return dynamic_cast<MetronomeSynthAudioPlugin *>(mainNode->getProcessor()) != nullptr;
     }
 
-    return dynamic_cast<MetronomeSynthAudioPlugin *>(mainNode->getProcessor()) != nullptr;
+    return false;
 }
 
 // checks if the instrument only consists of standard IO nodes,
@@ -120,13 +118,13 @@ bool Instrument::isMidiOutputInstrument() const noexcept
     for (int i = 0; i < this->getNumNodes(); ++i)
     {
         const auto node = this->getNode(i);
-        if (auto standardProcessor = dynamic_cast<AudioProcessorGraph::AudioGraphIOProcessor *>(node->getProcessor()))
+        if (auto standardProcessor = dynamic_cast<IOProcessor *>(node->getProcessor()))
         {
-            if (standardProcessor->getType() == AudioProcessorGraph::AudioGraphIOProcessor::midiInputNode)
+            if (standardProcessor->getType() == IOProcessor::midiInputNode)
             {
                 midiIn = node;
             }
-            else if (standardProcessor->getType() == AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode)
+            else if (standardProcessor->getType() == IOProcessor::midiOutputNode)
             {
                 midiOut = node;
             }
@@ -158,57 +156,72 @@ void Instrument::initializeMidiOutputInstrument()
         Instrument::midiChannelNumber);
 }
 
+void Instrument::initializeBuiltInInstrument(const PluginDescription &pluginDescription)
+{
+    this->processorGraph->clear();
+    auto mainNode = this->addNode(pluginDescription, 0.5f, 0.5f);
+    this->initializeIODevicesFor(mainNode);
+    this->sendChangeMessage();
+}
+
 void Instrument::initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback)
 {
     this->processorGraph->clear();
-
     this->addNodeAsync(pluginDescription, 0.5f, 0.5f, 
-        [initCallback, this](AudioProcessorGraph::Node::Ptr instrument)
+        [initCallback, this](AudioProcessorGraph::Node::Ptr mainNode)
         {
-            if (instrument == nullptr) { return; }
-
-            InternalIODevicesPluginFormat f;
-            const auto audioIn = this->addNode(*f.getDescriptionFor(
-                InternalIODevicesPluginFormat::Type::audioInput), 0.1f, 0.15f);
-
-            const auto audioOut = this->addNode(*f.getDescriptionFor(
-                InternalIODevicesPluginFormat::Type::audioOutput), 0.9f, 0.15f);
-
-            const auto midiIn = this->addNode(*f.getDescriptionFor(
-                InternalIODevicesPluginFormat::Type::midiInput), 0.1f, 0.85f);
-
-            const auto midiOut = this->addNode(*f.getDescriptionFor(
-                InternalIODevicesPluginFormat::Type::midiOutput), 0.9f, 0.85f);
-
-            for (int i = 0; i < instrument->getProcessor()->getTotalNumInputChannels(); ++i)
+            if (mainNode == nullptr)
             {
-                this->addConnection(audioIn->nodeID, i, instrument->nodeID, i);
+                jassertfalse;
+                return;
             }
 
-            if (instrument->getProcessor()->acceptsMidi())
-            {
-                this->addConnection(midiIn->nodeID,
-                    Instrument::midiChannelNumber,
-                    instrument->nodeID,
-                    Instrument::midiChannelNumber);
-            }
-
-            for (int i = 0; i < instrument->getProcessor()->getTotalNumOutputChannels(); ++i)
-            {
-                this->addConnection(instrument->nodeID, i, audioOut->nodeID, i);
-            }
-
-            if (instrument->getProcessor()->producesMidi())
-            {
-                this->addConnection(instrument->nodeID,
-                    Instrument::midiChannelNumber,
-                    midiOut->nodeID,
-                    Instrument::midiChannelNumber);
-            }
-
+            this->initializeIODevicesFor(mainNode);
             initCallback(this);
             this->sendChangeMessage();
         });
+}
+
+void Instrument::initializeIODevicesFor(AudioProcessorGraph::Node::Ptr mainNode)
+{
+    InternalIODevicesPluginFormat f;
+    const auto audioIn = this->addNode(*f.getDescriptionFor(
+        InternalIODevicesPluginFormat::Type::audioInput), 0.1f, 0.15f);
+
+    const auto audioOut = this->addNode(*f.getDescriptionFor(
+        InternalIODevicesPluginFormat::Type::audioOutput), 0.9f, 0.15f);
+
+    const auto midiIn = this->addNode(*f.getDescriptionFor(
+        InternalIODevicesPluginFormat::Type::midiInput), 0.1f, 0.85f);
+
+    const auto midiOut = this->addNode(*f.getDescriptionFor(
+        InternalIODevicesPluginFormat::Type::midiOutput), 0.9f, 0.85f);
+
+    for (int i = 0; i < mainNode->getProcessor()->getTotalNumInputChannels(); ++i)
+    {
+        this->addConnection(audioIn->nodeID, i, mainNode->nodeID, i);
+    }
+
+    if (mainNode->getProcessor()->acceptsMidi())
+    {
+        this->addConnection(midiIn->nodeID,
+            Instrument::midiChannelNumber,
+            mainNode->nodeID,
+            Instrument::midiChannelNumber);
+    }
+
+    for (int i = 0; i < mainNode->getProcessor()->getTotalNumOutputChannels(); ++i)
+    {
+        this->addConnection(mainNode->nodeID, i, audioOut->nodeID, i);
+    }
+
+    if (mainNode->getProcessor()->producesMidi())
+    {
+        this->addConnection(mainNode->nodeID,
+            Instrument::midiChannelNumber,
+            midiOut->nodeID,
+            Instrument::midiChannelNumber);
+    }
 }
 
 void Instrument::addNodeToFreeSpace(const PluginDescription &pluginDescription, InitializationCallback initCallback)
@@ -277,31 +290,37 @@ bool Instrument::contains(AudioProcessorGraph::Node::Ptr node) const noexcept
     return false;
 }
 
-const AudioProcessorGraph::Node::Ptr Instrument::findMainPluginNode() const
+const AudioProcessorGraph::Node::Ptr Instrument::findFirstMidiReceiver() const
 {
-    AudioProcessorGraph::Node::Ptr pluginNode = nullptr;
+    AudioProcessorGraph::Node::Ptr midiIn = nullptr;
+    for (int i = 0; i < this->getNumNodes(); ++i)
+    {
+        const auto node = this->getNode(i);
+        if (auto standardProcessor = dynamic_cast<IOProcessor *>(node->getProcessor()))
+        {
+            if (standardProcessor->getType() == IOProcessor::midiInputNode)
+            {
+                midiIn = node;
+            }
+        }
+    }
+
+    if (midiIn == nullptr)
+    {
+        return nullptr;
+    }
 
     for (int i = 0; i < this->getNumNodes(); ++i)
     {
         const auto node = this->getNode(i);
-
-        if (this->isNodeStandardIOProcessor(node))
+        if (!this->isNodeStandardIOProcessor(node) &&
+            this->hasMidiConnection(midiIn, node))
         {
-            continue;
-        }
-
-        if (pluginNode == nullptr)
-        {
-            pluginNode = node;
-        }
-        else
-        {
-            // there are more than one plugin nodes in the instrument:
-            return nullptr;
+            return node;
         }
     }
 
-    return pluginNode;
+    return nullptr;
 }
 
 void Instrument::addNodeAsync(const PluginDescription &desc, double x, double y, AddNodeCallback f)
@@ -400,7 +419,7 @@ bool Instrument::isNodeStandardIOProcessor(AudioProcessorGraph::NodeID nodeId) c
 
 bool Instrument::isNodeStandardIOProcessor(AudioProcessorGraph::Node::Ptr node) const
 {
-    return (nullptr != dynamic_cast<AudioProcessorGraph::AudioGraphIOProcessor *>(node->getProcessor()));
+    return (nullptr != dynamic_cast<IOProcessor *>(node->getProcessor()));
 }
 
 Array<AudioProcessorGraph::Node::Ptr> Instrument::findMidiAcceptors() const

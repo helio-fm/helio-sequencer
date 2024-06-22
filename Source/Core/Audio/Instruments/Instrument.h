@@ -41,7 +41,10 @@ public:
 
     using InitializationCallback = Function<void(Instrument *)>;
 
+    using IOProcessor = AudioProcessorGraph::AudioGraphIOProcessor;
+
     void initializeMidiOutputInstrument();
+    void initializeBuiltInInstrument(const PluginDescription &pluginDescription);
     void initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback);
     void addNodeToFreeSpace(const PluginDescription &pluginDescription, InitializationCallback initCallback);
 
@@ -105,10 +108,7 @@ public:
     const AudioProcessorGraph::Node::Ptr getNodeForId(AudioProcessorGraph::NodeID uid) const noexcept;
     bool contains(AudioProcessorGraph::Node::Ptr node) const noexcept;
 
-    // this method will assume the instrument is simple and only contains
-    // system I/O processor nodes and a single plugin node connected to them,
-    // and will return that node, or nullptr otherwise
-    const AudioProcessorGraph::Node::Ptr findMainPluginNode() const;
+    const AudioProcessorGraph::Node::Ptr findFirstMidiReceiver() const;
 
     void removeNode(AudioProcessorGraph::NodeID id);
     void disconnectNode(AudioProcessorGraph::NodeID id);
@@ -159,6 +159,7 @@ protected:
     using AddNodeCallback = Function<void(AudioProcessorGraph::Node::Ptr)>;
     void addNodeAsync(const PluginDescription &desc, double x, double y, AddNodeCallback f);
     void removeIllegalConnections();
+    void initializeIODevicesFor(AudioProcessorGraph::Node::Ptr mainNode);
 
     Uuid instrumentId;
     String instrumentName;

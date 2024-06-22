@@ -119,7 +119,7 @@ MenuPanel::Menu ClipMenu::makeDefaultMenu()
     {
         if (instrument->getIdAndHash() == trackInstrumentId)
         {
-            if (auto mainNode = instrument->findMainPluginNode())
+            if (auto mainNode = instrument->findFirstMidiReceiver())
             {
                 const auto editInstrumentCaption = instrument->getName() + ": " + TRANS(I18n::Menu::instrumentShowWindow);
                 menu.add(MenuItem::item(Icons::instrument, CommandIDs::EditCurrentInstrument, editInstrumentCaption)->

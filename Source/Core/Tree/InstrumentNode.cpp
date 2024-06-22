@@ -24,7 +24,7 @@
 
 #include "OrchestraPit.h"
 #include "OrchestraPitNode.h"
-#include "DefaultSynthAudioPlugin.h"
+#include "BuiltInMicrotonalPlugin.h"
 
 #include "KeyboardMapping.h"
 #include "KeyboardMappingPage.h"
@@ -41,9 +41,9 @@
 // previewing MIDI input for an instrument using default temperament:
 static void setupMidiInputPreviewFor(Instrument *instrument)
 {
-    if (auto mainNode = instrument->findMainPluginNode())
+    if (auto mainNode = instrument->findFirstMidiReceiver())
     {
-        if (auto *synth = dynamic_cast<DefaultSynthAudioPlugin *>(mainNode->getProcessor()))
+        if (auto *synth = dynamic_cast<BuiltInMicrotonalPlugin *>(mainNode->getProcessor()))
         {
             synth->setTemperament(Temperament::makeTwelveToneEqualTemperament());
         }
