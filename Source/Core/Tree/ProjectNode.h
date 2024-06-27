@@ -105,7 +105,6 @@ public:
     void checkpoint();
     void undo();
     void redo();
-    void clearUndoHistory();
     UndoStack *getUndoStack() const noexcept;
     void removeTrack(const MidiTrack &track);
 

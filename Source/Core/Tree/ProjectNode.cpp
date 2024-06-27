@@ -354,11 +354,6 @@ void ProjectNode::redo()
     this->getUndoStack()->redo();
 }
 
-void ProjectNode::clearUndoHistory()
-{
-    this->getUndoStack()->clearUndoHistory();
-}
-
 void ProjectNode::removeTrack(const MidiTrack &track)
 {
     const String &trackId = track.getTrackId();
@@ -1154,6 +1149,7 @@ void ProjectNode::onBeforeResetState()
 
 void ProjectNode::onResetState()
 {
+    this->undoStack->clearUndoHistory();
     this->broadcastReloadProjectContent();
     constexpr auto margin = Globals::beatsPerBar * 2;
     const auto range = this->broadcastChangeProjectBeatRange();

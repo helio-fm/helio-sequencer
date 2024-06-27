@@ -418,8 +418,7 @@ void RollHeader::mouseDown(const MouseEvent &e)
         const auto parentEvent = e.getEventRelativeTo(&this->roll);
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
 
-        if (!this->transport.isPlaying() &&
-            (e.mods.isAnyModifierKeyDown() || this->roll.isInSelectionMode()))
+        if ((e.mods.isAnyModifierKeyDown() || this->roll.isInSelectionMode()))
         {
             this->roll.getSelectionComponent()->beginLasso({ parentEvent.position.x, 0.f }, &this->roll);
             this->selectionIndicator->fadeIn();

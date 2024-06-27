@@ -35,7 +35,7 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &
     this->addAndMakeVisible(this->signatureLabel.get());
     this->signatureLabel->setFont(Globals::UI::Fonts::S);
     this->signatureLabel->setJustificationType(Justification::centredLeft);
-    this->signatureLabel->setBounds(-2, 1, 192, 24);
+    this->signatureLabel->setBounds(-2, 1, 256, 24);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
     this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
 

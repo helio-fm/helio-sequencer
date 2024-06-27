@@ -834,10 +834,15 @@ void PatternRoll::handleCommandMessage(int commandId)
         PatternOperations::deleteSelection(this->selection, this->project);
         break;
     case CommandIDs::ZoomEntireClip:
-        if (this->selection.getNumSelected() > 0)
+        if (this->selection.getNumSelected() == 1)
         {
             const auto &clip = this->selection.getFirstAs<ClipComponent>()->getClip();
             this->project.setEditableScope(clip, true);
+        }
+        else if (auto *clipComponentUnderMouse = dynamic_cast<PianoClipComponent *>
+            (Desktop::getInstance().getMainMouseSource().getComponentUnderMouse()))
+        {
+            this->project.setEditableScope(clipComponentUnderMouse->getClip(), true);
         }
         break;
     case CommandIDs::TempoUp1Bpm:
