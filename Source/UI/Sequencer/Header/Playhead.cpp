@@ -125,7 +125,10 @@ void Playhead::onStop()
 
 void Playhead::handleAsyncUpdate()
 {
-    this->updatePosition();
+    if (!this->isTimerRunning())
+    {
+        this->updatePosition();
+    }
 }
 
 //===----------------------------------------------------------------------===//
