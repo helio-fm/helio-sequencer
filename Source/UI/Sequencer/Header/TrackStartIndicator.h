@@ -50,7 +50,7 @@ public:
         if (this->viewFirstBeat == newFirstBeat &&
             this->viewLastBeat == newLastBeat)
         {
-            jassertfalse; // please only call this when ranges change
+            //jassertfalse; // please only call this when ranges change
             return;
         }
 

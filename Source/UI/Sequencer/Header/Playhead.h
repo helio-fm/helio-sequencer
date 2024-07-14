@@ -25,7 +25,8 @@ class RollBase;
 class Playhead final :
     public Component,
     public TransportListener,
-    public Timer
+    public Timer,
+    private AsyncUpdater
 {
 public:
 
@@ -83,6 +84,8 @@ private:
 private:
 
     void parentChanged();
+
+    void handleAsyncUpdate() override;
 
     // warning: spinlock is not reentrant, use carefully;
     // for now it synchronizes updates in TransportListener callbacks

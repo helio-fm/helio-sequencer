@@ -68,8 +68,8 @@ void Playhead::onSeek(float beatPosition)
     }
     else
     {
-        JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
-        this->updatePosition();
+        //JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
+        this->triggerAsyncUpdate();
     }
 }
 
@@ -90,7 +90,7 @@ void Playhead::onCurrentTempoChanged(double msPerQuarter)
     else
     {
         JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
-        this->updatePosition();
+        this->triggerAsyncUpdate();
     }
 }
 
@@ -117,6 +117,15 @@ void Playhead::onStop()
     this->timeAnchor = 0.0;
     this->beatAnchor = 0.0;
     this->msPerQuarterNote = Globals::Defaults::msPerBeat;
+}
+
+//===----------------------------------------------------------------------===//
+// AsyncUpdater to call updatePosition on the main thread
+//===----------------------------------------------------------------------===//
+
+void Playhead::handleAsyncUpdate()
+{
+    this->updatePosition();
 }
 
 //===----------------------------------------------------------------------===//

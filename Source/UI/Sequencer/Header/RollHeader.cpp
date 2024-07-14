@@ -421,7 +421,6 @@ void RollHeader::mouseDown(const MouseEvent &e)
         if ((e.mods.isAnyModifierKeyDown() || this->roll.isInSelectionMode()))
         {
             this->roll.getSelectionComponent()->beginLasso({ parentEvent.position.x, 0.f }, &this->roll);
-            this->selectionIndicator->fadeIn();
             this->selectionIndicator->setStartAnchor(this->getUnalignedAnchorForEvent(e));
         }
         else if (!this->transport.isPlayingAndRecording())
@@ -496,6 +495,11 @@ void RollHeader::mouseDrag(const MouseEvent &e)
     {
         if (this->roll.getSelectionComponent()->isDragging())
         {
+            if (!this->selectionIndicator->isVisible())
+            {
+                this->selectionIndicator->fadeIn();
+            }
+
             const auto parentEvent = e.getEventRelativeTo(&this->roll);
             const auto parentGlobalSelection = parentEvent.withNewPosition(Point<int>(parentEvent.x, this->roll.getHeight()));
             this->roll.getSelectionComponent()->dragLasso(parentGlobalSelection);
