@@ -28,6 +28,7 @@ public:
     SoundFontSynthAudioPlugin();
 
     static const String instrumentId;
+    static const String instrumentName;
 
     void setTemperament(Temperament::Ptr temperament) override
     {
@@ -83,8 +84,6 @@ public:
     const SoundFontSynth::Parameters &getSynthParameters() const noexcept;
 
 private:
-
-    static const String instrumentName;
 
     SoundFontSynth synth;
     SoundFontSynth::Parameters synthParameters;

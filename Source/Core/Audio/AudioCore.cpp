@@ -21,6 +21,7 @@
 #include "BuiltInSynthsPluginFormat.h"
 #include "DefaultSynthAudioPlugin.h"
 #include "MetronomeSynthAudioPlugin.h"
+#include "SoundFontSynthAudioPlugin.h"
 #include "SerializationKeys.h"
 #include "AudioMonitor.h"
 
@@ -338,7 +339,7 @@ String AudioCore::getMetronomeInstrumentId() const noexcept
     return metronome != nullptr ? metronome->getInstrumentId() : String();
 }
 
-void AudioCore::initBuiltInInstrumentsIfNeeded()
+void AudioCore::initRequiredInstruments()
 {
     if (this->defaultInstrument == nullptr)
     {
@@ -365,6 +366,22 @@ void AudioCore::initBuiltInInstrumentsIfNeeded()
         const auto name = TRANS(I18n::Instruments::midiOutputTitle);
         this->midiOutputInstrument = this->addMidiOutputInstrument(name);
     }
+}
+
+void AudioCore::initFirstLaunchInstruments()
+{
+// on mobile platforms, let's make the soundfont player instrument
+// available immediately, because plugin support is still not great,
+// and the soundfont player is likely to be one of the main instruments
+#if PLATFORM_MOBILE
+    // not doing this "if (this->soundFontInstrument == nullptr)" check
+    // because the method is only supposed to be run on the first launch
+    PluginDescription soundFontPluginDescription;
+    SoundFontSynthAudioPlugin soundFontSynthAudioPlugin;
+    soundFontSynthAudioPlugin.fillInPluginDescription(soundFontPluginDescription);
+    this->addBuiltInInstrument(soundFontPluginDescription,
+        SoundFontSynthAudioPlugin::instrumentName);
+#endif
 }
 
 //===----------------------------------------------------------------------===//
@@ -711,7 +728,7 @@ void AudioCore::deserialize(const SerializedData &data)
     }
 
     // add the required built-in instruments if they haven't been found already
-    this->initBuiltInInstrumentsIfNeeded();
+    this->initRequiredInstruments();
 }
 
 void AudioCore::reset()

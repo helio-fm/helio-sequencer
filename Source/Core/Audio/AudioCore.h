@@ -65,7 +65,9 @@ public:
     Instrument *getMidiOutputInstrument() const noexcept override;
     Instrument *getMetronomeInstrument() const noexcept override;
     String getMetronomeInstrumentId() const noexcept;
-    void initBuiltInInstrumentsIfNeeded();
+
+    void initRequiredInstruments();
+    void initFirstLaunchInstruments();
 
     //===------------------------------------------------------------------===//
     // Setup
