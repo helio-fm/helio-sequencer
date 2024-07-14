@@ -1,14 +1,20 @@
 # Getting microtonal
 
-Before you get started with microtonal music, you will need two things:
- * Find a plugin (VST/whatever) that supports microtonal temperaments: here's a [list](https://xen.wiki/w/List_of_microtonal_software_plugins) with some examples.
- * Set up keyboard mapping for that instrument: this must be done both in the plugin's settings and in the host (this app), to overcome the limitations of MIDI 1.0. The piano roll works as a microtonal keyboard with a wide key range from 0 up to 2048, and it needs to map every key across 16 MIDI channels, of 128 keys each; these MIDI messages are sent to the plugin, which needs to know how to interpret them, or how to map them back from multi-channel data.
+The piano roll comes with a number of built-in microtonal temperaments and 7-tone scales for each of them, but you can also add your own if necessary.
+
+Helio's default instrument and built-in SoundFont player work with all temperaments out of the box, with no setup required. Use them if you only want to get familiar with microtonal scales and get a sense of how they sound, and [skip](#switching-temperaments) the instrument setup steps below.
+
+On mobile platforms, the built-in SoundFont player is likely the only way to have an instrument of choice playing in microtonal temperament. It will automatically recalculate the pitches and ranges of your samples to match the frequencies of the current temperament (see [the example](https://youtu.be/eDXmhGmJP6A)).
 
 ## Setting up instruments
 
-You can [skip](#switching-temperaments) the instrument setup steps, if you only want to get familiar with microtonal scales. The default instrument in Helio is simple, but it works with all temperaments out of the box with no setup required, and it should give you an idea of how things work.
+The following describes how to set up external (VST/whatever) instruments such as Pianoteq to work with extended microtonal piano roll.
 
-Otherwise, once you've [added an instrument](getting-started.md#instruments) to the stage, select *"Edit keyboard mapping"* from the menu. "Keyboard mapping" in this context refers to how MIDI events are transformed when they are routed from the 'Midi In' node to the plugin node(s).
+First, you need to find a plugin that supports microtonal temperaments: here's a [list](https://xen.wiki/w/List_of_microtonal_software_plugins) with some examples.
+
+Then, set up keyboard mapping for that instrument: this must be done both in the plugin's settings and in the host (this app), to overcome the limitations of MIDI 1.0. The piano roll works as a microtonal keyboard with a wide key range from 0 up to 2048, and it needs to map every key across 16 MIDI channels, of 128 keys each; these MIDI messages are sent to the plugin, which needs to know how to interpret them, or how to map them back from multi-channel data.
+
+Once you've added an [instrument](getting-started.md#instruments) to the stage, select *"Edit keyboard mapping"* from the menu. "Keyboard mapping" in this context refers to how MIDI events are transformed when they are routed from the 'Midi In' node to the plugin node(s).
 
 ### Keyboard mapping page
 
@@ -90,9 +96,9 @@ All tool that work with scales will only show scales with octave size matching c
 
 ### Limitations
 
-The built-in temperaments [list](configs.md#temperaments) includes 12-edo, 19-edo, 22-edo, 26-edo and 31-edo.
+The built-in temperaments [list](configs.md#temperaments) includes 12-edo, 19-edo, 22-edo, 26-edo, and 31-edo.
 
-The built-in scales [list](configs.md#scales) only includes 7-tone scales for each of those temperaments, because there are several pieces of the app which still assume working with diatonic scales, e.g. the chord tool or the arpeggiator tool. With that limitation, using these tools with any built-in temperament or scale would make some sense.
+The built-in scales [list](configs.md#scales) only includes 7-tone scales for each of those temperaments because several parts of the app, such as the chord tool and the arpeggiator tool, still assume working with diatonic scales. Given that limitation, using these tools with any built-in temperament or scale makes sense.
 
 ### Adding a custom temperament
 
