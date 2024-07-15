@@ -64,15 +64,16 @@ void MidiTrackNode::setSelected(const Clip &editableScope, NotificationType shou
 
 const Clip &MidiTrackNode::getSelectedClip() const
 {
-    if (!this->selectedClipId.isValid())
+    if (!this->selectedClipId.isValid()) // not set yet, fallback to default
     {
         jassert(!this->getPattern()->getClips().isEmpty());
         return *this->getPattern()->getClips().getFirst();
     }
 
     const auto index = this->getPattern()->indexOfSorted(&this->selectedClipId);
-    jassert(index >= 0);
-    return index >= 0 ? *this->getPattern()->getClips()[index] : this->selectedClipId;
+    return index >= 0 ?
+        *this->getPattern()->getClips()[index] :
+        *this->getPattern()->getClips().getFirst(); // the clip was deleted
 }
 
 //===----------------------------------------------------------------------===//

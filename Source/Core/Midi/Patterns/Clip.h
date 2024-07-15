@@ -23,7 +23,7 @@ class Pattern;
 
 // Clip is an instance of a sequence on a certain position.
 // Optionally, with key delta, velocity multiplier, muted or soloed.
-// Optionally, has a stack of parametric modifiers like arps, rescaling, etc.
+// Optionally, has a stack of parametric modifiers like arps and refactorings.
 // (todo in future: a scripting language for parametric modifiers)
 
 class Clip final : public Serializable

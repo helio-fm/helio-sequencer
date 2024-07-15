@@ -528,6 +528,7 @@ void ProjectNode::reset()
     this->vcsItems.add(this->metadata.get());
     this->vcsItems.add(this->timeline.get());
     this->undoStack->clearUndoHistory();
+    this->lastShownTrack = nullptr;
     TreeNode::reset();
 }
 
@@ -1149,6 +1150,7 @@ void ProjectNode::onBeforeResetState()
 
 void ProjectNode::onResetState()
 {
+    this->lastShownTrack = nullptr;
     this->undoStack->clearUndoHistory();
     this->broadcastReloadProjectContent();
     constexpr auto margin = Globals::beatsPerBar * 2;
