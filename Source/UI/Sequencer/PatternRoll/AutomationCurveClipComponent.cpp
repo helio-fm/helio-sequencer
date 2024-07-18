@@ -207,7 +207,7 @@ void AutomationCurveClipComponent::mouseWheelMove(const MouseEvent &event, const
 
 void AutomationCurveClipComponent::insertNewEventAt(const MouseEvent &e)
 {
-    float draggingValue = 0;
+    float draggingValue = 0.f;
     float draggingBeat = 0.f;
     constexpr auto cursorOffset = 3;
     this->getBeatValueByPosition(e.x + cursorOffset, e.y, this->clip, draggingValue, draggingBeat);
@@ -219,7 +219,32 @@ void AutomationCurveClipComponent::insertNewEventAt(const MouseEvent &e)
     auto *sequence = static_cast<AutomationSequence *>(this->sequence.get());
     sequence->checkpoint();
 
-    const AutomationEvent event(sequence, draggingBeat, draggingValue);
+    // try to snap to the closest event's value, if the click isn't too far away
+    float snappedValue = draggingValue;
+    {
+        float minDistance = FLT_MAX;
+        AutomationEditorBase::EventComponentBase *closestComponent = nullptr;
+
+        for (int i = 0; i < this->eventComponents.size(); ++i)
+        {
+            auto *component = this->eventComponents.getUnchecked(i);
+            // ignore the clip's beat, it is already substracted from draggingBeat
+            const auto beatDistance = fabs(component->getEvent().getBeat() - draggingBeat);
+            if (minDistance > beatDistance)
+            {
+                closestComponent = component;
+                minDistance = beatDistance;
+            }
+        }
+
+        if (closestComponent != nullptr &&
+            fabs(closestComponent->getEvent().getControllerValue() - snappedValue) < 0.1f)
+        {
+            snappedValue = closestComponent->getEvent().getControllerValue();
+        }
+    }
+
+    const AutomationEvent event(sequence, draggingBeat, snappedValue);
     sequence->insert(event, true);
 
     if (shouldShowEditingDialog)
@@ -431,6 +456,7 @@ void AutomationCurveClipComponent::reloadTrack()
     
     for (int i = 0; i < this->sequence->size(); ++i)
     {
+        jassert(this->sequence->getUnchecked(i)->isTypeOf(MidiEvent::Type::Auto));
         if (this->sequence->getUnchecked(i)->isTypeOf(MidiEvent::Type::Auto))
         {
             auto *autoEvent = static_cast<AutomationEvent *>(this->sequence->getUnchecked(i));
