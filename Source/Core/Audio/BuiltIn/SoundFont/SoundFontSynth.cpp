@@ -704,7 +704,8 @@ void SoundFontSynth::initSynth(const Parameters &parameters)
     AudioFormatManager audioFormatManager;
     audioFormatManager.registerBasicFormats();
 
-    if (file.getFullPathName().endsWithIgnoreCase("sf2"))
+    const auto fullPath = file.getFullPathName();
+    if (fullPath.endsWithIgnoreCase("sf2"))
     {
         auto sound = make<SoundFont2Sound>(file);
         sound->loadRegions();
@@ -712,7 +713,15 @@ void SoundFontSynth::initSynth(const Parameters &parameters)
         sound->setTemperament(this->temperament);
         this->sounds.add(sound.release());
     }
-    else if (file.getFullPathName().endsWithIgnoreCase("sbk"))
+    else if (fullPath.endsWithIgnoreCase("sf3") || fullPath.endsWithIgnoreCase("sf4"))
+    {
+        auto sound = make<SoundFont3Sound>(file);
+        sound->loadRegions();
+        sound->loadSamples(audioFormatManager);
+        sound->setTemperament(this->temperament);
+        this->sounds.add(sound.release());
+    }
+    else if (fullPath.endsWithIgnoreCase("sbk"))
     {
         auto sound = make<SoundFontSound>(file);
         sound->loadRegions();

@@ -622,32 +622,34 @@ const SoundFont2Generator *GeneratorFor(int index)
 // SoundFont2Reader
 //===----------------------------------------------------------------------===//
 
-class SoundFont2Reader final
+class SoundFont2Reader
 {
 public:
 
-    SoundFont2Reader(SoundFont2Sound &sound, const File &file);
+    virtual ~SoundFont2Reader() = default;
 
-    void read();
+    SoundFont2Reader(SoundFont2Sound &sound, const File &file) :
+        sf2Sound(sound),
+        fileInputStream(file.createInputStream()) {}
+
+    void readRegions();
 
     SharedAudioSampleBuffer::Ptr readSamples();
 
-private:
+protected:
 
     SoundFont2Sound &sf2Sound;
 
     UniquePointer<FileInputStream> fileInputStream;
+
+    Optional<RIFFChunk> seekToSampleSection();
 
     void addGeneratorToRegion(sf2word genOper, SF2::genAmountType *amount, SoundFontRegion *region);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundFont2Reader)
 };
 
-SoundFont2Reader::SoundFont2Reader(SoundFont2Sound &soundIn, const File &fileIn) :
-    sf2Sound(soundIn),
-    fileInputStream(fileIn.createInputStream()) {}
-
-void SoundFont2Reader::read()
+void SoundFont2Reader::readRegions()
 {
     if (this->fileInputStream == nullptr)
     {
@@ -811,14 +813,12 @@ void SoundFont2Reader::read()
     }
 }
 
-SharedAudioSampleBuffer::Ptr SoundFont2Reader::readSamples()
+Optional<RIFFChunk> SoundFont2Reader::seekToSampleSection()
 {
-    static const int bufferSize = 32768;
-
     if (this->fileInputStream == nullptr)
     {
         this->sf2Sound.addError("Couldn't open file.");
-        return nullptr;
+        return {};
     }
 
     // Find the "sdta" chunk.
@@ -855,13 +855,26 @@ SharedAudioSampleBuffer::Ptr SoundFont2Reader::readSamples()
     if (!found)
     {
         this->sf2Sound.addError("SF2 is missing its \"smpl\" chunk.");
+        return {};
+    }
+
+    return chunk;
+}
+
+SharedAudioSampleBuffer::Ptr SoundFont2Reader::readSamples()
+{
+    const auto samplesChunk = this->seekToSampleSection();
+    if (!samplesChunk.hasValue())
+    {
+        jassertfalse;
         return nullptr;
     }
 
-    const int numSamples = (int)chunk.size / sizeof(short);
+    const int numSamples = (int)samplesChunk->size / sizeof(short);
     SharedAudioSampleBuffer::Ptr sampleBuffer(new SharedAudioSampleBuffer(1, numSamples));
 
     // Read and convert.
+    constexpr int bufferSize = 32768;
     HeapBlock<short> buffer(bufferSize);
     int samplesLeft = numSamples;
     float *out = sampleBuffer->getWritePointer(0);
@@ -881,9 +894,9 @@ SharedAudioSampleBuffer::Ptr SoundFont2Reader::readSamples()
         short *in = buffer.getData();
         for (; samplesToConvert > 0; --samplesToConvert)
         {
-            // If we ever need to compile for big-endian platforms, we'll need to
-            // byte-swap here.
-            *out++ = *in++ / 32767.0f;
+            // If we ever need to compile for big-endian platforms,
+            // we'll need to byte-swap here.
+            *out++ = *in++ / 32767.f;
         }
 
         samplesLeft -= samplesToRead;
@@ -1080,7 +1093,7 @@ public:
 void SoundFont2Sound::loadRegions()
 {
     SoundFont2Reader reader(*this, this->file);
-    reader.read();
+    reader.readRegions();
 
     PresetComparator comparator;
     this->presets.sort(comparator);
@@ -1137,7 +1150,10 @@ void SoundFont2Sound::setSelectedPreset(int whichPreset)
 {
     this->selectedPreset = whichPreset;
     this->regions.clear();
-    this->regions.addArray(this->presets[whichPreset]->regions);
+    if (!this->presets.isEmpty())
+    {
+        this->regions.addArray(this->presets[whichPreset]->regions);
+    }
 }
 
 int SoundFont2Sound::getSelectedPreset() const
@@ -1153,4 +1169,141 @@ WeakReference<SoundFontSample> SoundFont2Sound::getSampleFor(double sampleRate)
     }
 
     return this->samplesByRate[int(sampleRate)].get();
+}
+
+//===----------------------------------------------------------------------===//
+// SF3
+//===----------------------------------------------------------------------===//
+
+class SoundFont3Reader final : public SoundFont2Reader
+{
+public:
+
+    SoundFont3Reader(SoundFont2Sound &sound, const File &file) :
+        SoundFont2Reader(sound, file) {}
+
+    MemoryBlock readSamplesSection()
+    {
+        const auto samplesChunk = this->seekToSampleSection();
+        if (!samplesChunk.hasValue())
+        {
+            jassertfalse;
+            return {};
+        }
+
+        MemoryBlock result;
+        this->fileInputStream->readIntoMemoryBlock(result, samplesChunk->size);
+        return result;
+    }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundFont3Reader)
+};
+
+struct SampleRangeHash
+{
+    inline HashCode operator()(const Range<int64> &key) const noexcept
+    {
+        // using only the start point should be enough for the hash,
+        // we don't expect different samples to start at the same point
+        return static_cast<HashCode>(key.getStart());
+    }
+};
+
+SoundFont3Sound::SoundFont3Sound(const File &file) : SoundFont2Sound(file) {}
+
+SoundFont3Sound::~SoundFont3Sound() = default;
+
+void SoundFont3Sound::loadSamples(AudioFormatManager &formatManager)
+{
+    SoundFont3Reader soundFontReader(*this, this->file);
+    const auto samplesBlock = soundFontReader.readSamplesSection();
+    if (samplesBlock.isEmpty())
+    {
+        jassertfalse;
+        return;
+    }
+
+    const auto *sampleBlockStart = static_cast<const char *>(samplesBlock.getData());
+
+    OggVorbisAudioFormat oggVorbisAudioFormat;
+    FlacAudioFormat flacAudioFormat;
+
+    // ranges in bytes in compressed stream
+    // to ranges in 16-bit sample data points in uncompressed stream
+    FlatHashMap<Range<int64>, Range<int64>, SampleRangeHash> decompressedRanges;
+
+    SharedAudioSampleBuffer::Ptr sampleBuffer(new SharedAudioSampleBuffer(1, 0));
+    int64 currentSampleOffset = 0; // in result buffer
+
+    // TODO lazy loading, i.e. only load one preset at a time in setSelectedPreset()?
+
+    jassert(!this->presets.isEmpty()); // should have called loadRegions before
+    for (auto *preset : this->presets)
+    {
+        // decompress samples and re-calculate regions' sample offsets
+        for (auto *region : preset->regions)
+        {
+            const Range<int64> compressedByteRange(region->offset, region->end);
+            const auto foundDecompressedRange = decompressedRanges.find(compressedByteRange);
+            if (foundDecompressedRange != decompressedRanges.end())
+            {
+                // the decompressed region is already present in the shared buffer
+                region->offset = foundDecompressedRange->second.getStart();
+                region->end = foundDecompressedRange->second.getEnd();
+                continue;
+            }
+
+            DBG("Reading sample at " + String(region->offset));
+
+            jassert(region->end <= int64(samplesBlock.getSize()));
+            jassert(region->offset < int64(samplesBlock.getSize()));
+
+            const auto *readStart = static_cast<const void *>(sampleBlockStart + region->offset);
+            const auto readLength = region->end > 0 ? size_t(region->end - region->offset) :
+                size_t(samplesBlock.getSize() - region->offset);
+
+            UniquePointer<AudioFormatReader> sampleReader(oggVorbisAudioFormat
+                .createReaderFor(new MemoryInputStream(readStart, readLength, false), true));
+
+            if (sampleReader == nullptr)
+            {
+                sampleReader = UniquePointer<AudioFormatReader>(flacAudioFormat
+                    .createReaderFor(new MemoryInputStream(readStart, readLength, false), true));
+            }
+
+            if (sampleReader == nullptr)
+            {
+                jassertfalse;
+                continue;
+            }
+
+            sampleBuffer->setSize(sampleReader->numChannels, int(currentSampleOffset + sampleReader->lengthInSamples), true, true);
+            sampleReader->read(sampleBuffer.get(), int(currentSampleOffset), int(sampleReader->lengthInSamples), 0, true, true);
+
+            const Range<int64> decompressedSampleRange(currentSampleOffset, currentSampleOffset + sampleReader->lengthInSamples);
+
+            decompressedRanges[compressedByteRange] = decompressedSampleRange;
+
+            region->offset = decompressedSampleRange.getStart();
+            region->end = decompressedSampleRange.getEnd();
+
+            currentSampleOffset += sampleReader->lengthInSamples;
+        }
+    }
+
+    // In SF3, loop start and end are based on the beginning of each sample,
+    // we need them to be based on the beginning of the decompressed sample buffer
+    for (auto *preset : this->presets)
+    {
+        for (auto *region : preset->regions)
+        {
+            region->loopStart += region->offset;
+            region->loopEnd += region->offset;
+        }
+    }
+
+    for (auto &sample : this->samplesByRate)
+    {
+        sample.second->setBuffer(sampleBuffer);
+    }
 }
