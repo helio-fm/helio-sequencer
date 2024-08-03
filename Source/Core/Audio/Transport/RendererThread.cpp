@@ -75,7 +75,7 @@ bool RendererThread::startRendering(const URL &target, RenderFormat format,
         
         // 16 bits per sample should be enough for anybody :)
         // ..wanna fight about it? https://people.xiph.org/~xiphmont/demo/neil-young.html
-        const int bitDepth = 16;
+        constexpr int bitDepth = 16;
 
         if (this->format == RenderFormat::WAV)
         {

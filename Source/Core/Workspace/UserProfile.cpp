@@ -17,10 +17,6 @@
 
 #include "Common.h"
 #include "UserProfile.h"
-#include "SessionService.h"
-#include "ProjectSyncService.h"
-#include "ResourceSyncService.h"
-
 #include "App.h"
 #include "Config.h"
 #include "SerializationKeys.h"
@@ -29,6 +25,10 @@ static RecentProjectInfo kProjectsSort;
 static SyncedConfigurationInfo kResourcesSort;
 
 #if !NO_NETWORK
+
+#include "SessionService.h"
+#include "ProjectSyncService.h"
+#include "ResourceSyncService.h"
 
 static UserSessionInfo kSessionsSort;
 

@@ -150,17 +150,18 @@ void AutomationStepsClipComponent::mouseWheelMove(const MouseEvent &event, const
 
 void AutomationStepsClipComponent::insertNewEventAt(const MouseEvent &e, bool shouldAddPairedEvents)
 {
+    constexpr auto minLength = AutomationStepEventComponent::minLengthInBeats;
     const float sequenceLength = this->sequence->getLengthInBeats();
-    const float w = float(this->getWidth()) *
-        (AutomationStepEventComponent::minLengthInBeats / jmax(1.f, sequenceLength));
+    const float w = float(this->getWidth()) * (minLength / jmax(1.f, sequenceLength));
 
-    const float draggingBeat = this->getBeatByPosition(int(e.x + w / 2), this->clip);
+    const float draggingBeat = this->getBeatByPosition(e.x, this->clip);
 
     if (auto *sequence = dynamic_cast<AutomationSequence *>(this->sequence.get()))
     {
         float prevBeat = -FLT_MAX;
         float nextBeat = FLT_MAX;
         float prevCV = Globals::Defaults::onOffControllerState;
+
         for (int i = 0; i < sequence->size(); ++i)
         {
             const auto *nextEvent = static_cast<AutomationEvent *>(sequence->getUnchecked(i));
@@ -176,15 +177,14 @@ void AutomationStepsClipComponent::insertNewEventAt(const MouseEvent &e, bool sh
         }
         
         const float invertedCV = 1.f - prevCV;
-        const float alignedBeat = jmin((nextBeat - AutomationStepEventComponent::minLengthInBeats),
-            jmax((prevBeat + AutomationStepEventComponent::minLengthInBeats), draggingBeat));
+        const float alignedBeat = jmin((nextBeat - minLength), jmax((prevBeat + minLength), draggingBeat));
         
         sequence->checkpoint();
         sequence->insert(AutomationEvent(sequence, alignedBeat, invertedCV), true);
         
         if (shouldAddPairedEvents)
         {
-            sequence->insert(AutomationEvent(sequence, alignedBeat + 0.5f, (1.f - invertedCV)), true);
+            sequence->insert(AutomationEvent(sequence, alignedBeat + minLength, (1.f - invertedCV)), true);
         }
     }
 }

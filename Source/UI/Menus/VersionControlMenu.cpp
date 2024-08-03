@@ -17,10 +17,9 @@
 
 #include "Common.h"
 #include "VersionControlMenu.h"
-
 #include "VersionControl.h"
 #include "Workspace.h"
-#include "Network.h"
+#include "NetworkServices.h"
 #include "SessionService.h"
 #include "CommandIDs.h"
 

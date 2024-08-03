@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "Temperament.h"
+
 struct BuiltInMicrotonalPlugin : public AudioPluginInstance
 {
     virtual ~BuiltInMicrotonalPlugin() = default;

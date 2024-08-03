@@ -21,6 +21,8 @@
 
 #pragma once
 
+class SoundFontSound;
+
 #include "Temperament.h"
 
 class SoundFontSynth final : public Synthesiser

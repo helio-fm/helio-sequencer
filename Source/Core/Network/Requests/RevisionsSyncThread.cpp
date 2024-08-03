@@ -20,7 +20,7 @@
 #include "ProjectDto.h"
 #include "RevisionsSyncHelpers.h"
 #include "Workspace.h"
-#include "Network.h"
+#include "NetworkServices.h"
 
 #if !NO_NETWORK
 

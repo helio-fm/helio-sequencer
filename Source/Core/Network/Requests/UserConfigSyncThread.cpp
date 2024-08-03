@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "UserConfigSyncThread.h"
-#include "Network.h"
+#include "NetworkServices.h"
 
 #if !NO_NETWORK
 

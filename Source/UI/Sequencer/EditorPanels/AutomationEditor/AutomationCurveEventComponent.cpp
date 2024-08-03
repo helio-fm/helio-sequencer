@@ -286,6 +286,7 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
         dialog->onOk = [this](int newBpmValue)
         {
             auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
+            sequence->checkpoint();
             sequence->change(this->event, this->event.withTempoBpm(newBpmValue), true);
         };
 

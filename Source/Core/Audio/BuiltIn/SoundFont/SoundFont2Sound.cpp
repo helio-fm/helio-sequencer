@@ -1137,7 +1137,10 @@ void SoundFont2Sound::setSelectedPreset(int whichPreset)
 {
     this->selectedPreset = whichPreset;
     this->regions.clear();
-    this->regions.addArray(this->presets[whichPreset]->regions);
+    if (!this->presets.isEmpty())
+    {
+        this->regions.addArray(this->presets[whichPreset]->regions);
+    }
 }
 
 int SoundFont2Sound::getSelectedPreset() const

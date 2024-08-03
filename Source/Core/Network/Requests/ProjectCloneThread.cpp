@@ -19,7 +19,7 @@
 #include "ProjectCloneThread.h"
 #include "RevisionsSyncHelpers.h"
 #include "ProjectDto.h"
-#include "Network.h"
+#include "NetworkServices.h"
 
 #if !NO_NETWORK
 

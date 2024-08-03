@@ -20,7 +20,7 @@
 #if !NO_NETWORK
 
 #include "BackendRequest.h"
-#include "Network.h"
+#include "NetworkServices.h"
 
 class BaseConfigSyncThread final : public Thread
 {

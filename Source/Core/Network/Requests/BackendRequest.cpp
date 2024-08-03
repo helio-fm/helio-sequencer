@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "BackendRequest.h"
 #include "Workspace.h"
-#include "Network.h"
+#include "NetworkServices.h"
 
 #if !NO_NETWORK
 

@@ -498,8 +498,10 @@
             <FILE id="cWX3ze" name="SessionService.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Services/SessionService.h"/>
           </GROUP>
-          <FILE id="ZNZV5h" name="Network.cpp" compile="1" resource="0" file="../../Source/Core/Network/Network.cpp"/>
-          <FILE id="bgfCFA" name="Network.h" compile="0" resource="0" file="../../Source/Core/Network/Network.h"/>
+          <FILE id="ZNZV5h" name="NetworkServices.cpp" compile="1" resource="0"
+                file="../../Source/Core/Network/NetworkServices.cpp"/>
+          <FILE id="bgfCFA" name="NetworkServices.h" compile="0" resource="0"
+                file="../../Source/Core/Network/NetworkServices.h"/>
         </GROUP>
         <GROUP id="{B690F2B3-8242-3091-4182-FD3492158B1A}" name="Serialization">
           <FILE id="E2KE99" name="Autosaver.cpp" compile="1" resource="0" file="../../Source/Core/Serialization/Autosaver.cpp"/>

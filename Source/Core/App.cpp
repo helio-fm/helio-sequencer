@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "AudioCore.h"
-#include "Network.h"
+#include "NetworkServices.h"
 #include "HelioTheme.h"
 #include "Config.h"
 #include "Icons.h"
@@ -657,11 +657,14 @@ void App::systemRequestedQuit()
 
 void App::suspended()
 {
+#if !JUCE_IOS
+    // on iOS we have the background audio capability
     if (this->workspace != nullptr)
     {
         this->workspace->stopPlaybackForAllProjects();
         this->workspace->autosave();
     }
+#endif
     
 #if JUCE_ANDROID
     this->window->detachOpenGLContextIfAny();

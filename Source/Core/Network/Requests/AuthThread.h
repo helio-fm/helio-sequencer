@@ -22,7 +22,7 @@
 #include "BackendRequest.h"
 #include "SerializationKeys.h"
 #include "AuthSessionDto.h"
-#include "Network.h"
+#include "NetworkServices.h"
 #include "Config.h"
 
 class AuthThread final : public Thread

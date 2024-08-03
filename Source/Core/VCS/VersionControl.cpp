@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "VersionControl.h"
 #include "VersionControlEditor.h"
-#include "Network.h"
 #include "ProjectSyncService.h"
 
 VersionControl::VersionControl(VCS::TrackedItemsSource &parent) :
@@ -310,6 +309,8 @@ void VersionControl::changeListenerCallback(ChangeBroadcaster *source)
 //===----------------------------------------------------------------------===//
 // Network
 //===----------------------------------------------------------------------===//
+
+#include "NetworkServices.h"
 
 void VersionControl::syncAllRevisions()
 {

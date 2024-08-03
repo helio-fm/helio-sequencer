@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "Network.h"
+#include "NetworkServices.h"
 #include "Workspace.h"
 #include "SessionService.h"
 #include "ProjectSyncService.h"

@@ -26,7 +26,6 @@
 #include "VersionControlEditor.h"
 #include "Workspace.h"
 #include "MainLayout.h"
-#include "Network.h"
 #include "ProjectSyncService.h"
 
 VersionControlNode::VersionControlNode() :
@@ -208,6 +207,8 @@ UniquePointer<Component> VersionControlNode::createMenu()
 //===----------------------------------------------------------------------===//
 // Network
 //===----------------------------------------------------------------------===//
+
+#include "NetworkServices.h"
 
 void VersionControlNode::cloneProject()
 {

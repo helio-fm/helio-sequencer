@@ -23,7 +23,7 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 #include "AppInfoDto.h"
-#include "Network.h"
+#include "NetworkServices.h"
 
 class UpdatesCheckThread final : public Thread
 {

@@ -80,7 +80,7 @@
 #include "../../Source/Core/Network/Services/ProjectSyncService.cpp"
 #include "../../Source/Core/Network/Services/ResourceSyncService.cpp"
 #include "../../Source/Core/Network/Services/SessionService.cpp"
-#include "../../Source/Core/Network/Network.cpp"
+#include "../../Source/Core/Network/NetworkServices.cpp"
 #include "../../Source/Core/Serialization/Autosaver.cpp"
 #include "../../Source/Core/Serialization/Document.cpp"
 #include "../../Source/Core/Serialization/DocumentHelpers.cpp"

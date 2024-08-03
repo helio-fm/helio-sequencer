@@ -471,9 +471,10 @@ bool SequencerOperations::makeLegato(const NoteListBase &notes,
     float overlap, bool undoable, bool shouldCheckpoint)
 {
     jassert(undoable || !shouldCheckpoint);
+
     if (notes.size() == 0)
     {
-        DBG("no notes selected!");
+        jassertfalse;
         return false;
     }
 

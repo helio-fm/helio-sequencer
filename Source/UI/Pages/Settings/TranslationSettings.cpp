@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "TranslationSettings.h"
 #include "TranslationSettingsItem.h"
-#include "Network.h"
 #include "Config.h"
 
 TranslationSettings::TranslationSettings()

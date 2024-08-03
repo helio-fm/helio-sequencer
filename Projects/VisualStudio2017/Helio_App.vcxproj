@@ -343,7 +343,7 @@
     <ClCompile Include="..\..\Source\Core\Network\Services\ProjectSyncService.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Services\ResourceSyncService.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Services\SessionService.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Network\Network.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Network\NetworkServices.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\Autosaver.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\Document.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\DocumentHelpers.cpp"/>
@@ -2795,7 +2795,7 @@
     <ClInclude Include="..\..\Source\Core\Network\Services\ProjectSyncService.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Services\ResourceSyncService.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Services\SessionService.h"/>
-    <ClInclude Include="..\..\Source\Core\Network\Network.h"/>
+    <ClInclude Include="..\..\Source\Core\Network\NetworkServices.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\Autosaver.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\Document.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\DocumentHelpers.h"/>

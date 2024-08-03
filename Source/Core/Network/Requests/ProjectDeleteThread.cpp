@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "ProjectDeleteThread.h"
-#include "Network.h"
+#include "NetworkServices.h"
 
 #if !NO_NETWORK
 
