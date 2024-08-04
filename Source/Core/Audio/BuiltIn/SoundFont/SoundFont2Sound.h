@@ -23,7 +23,7 @@
 
 #include "SoundFontSound.h"
 
-class SoundFont2Sound final : public SoundFontSound
+class SoundFont2Sound : public SoundFontSound
 {
 public:
 
@@ -40,7 +40,7 @@ public:
 
     WeakReference<SoundFontSample> getSampleFor(double sampleRate);
 
-private:
+protected:
 
     friend class SoundFont2Reader;
     void addPreset(UniquePointer<Preset> &&preset);
@@ -52,4 +52,19 @@ private:
     int selectedPreset = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundFont2Sound)
+};
+
+// the same as SoundFont2Sound, but supports OGG/FLAC-compressed samples
+class SoundFont3Sound final : public SoundFont2Sound
+{
+public:
+
+    explicit SoundFont3Sound(const File &file);
+    ~SoundFont3Sound() override;
+
+    void loadSamples(AudioFormatManager &formatManager) override;
+
+private:
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundFont3Sound)
 };

@@ -113,7 +113,7 @@
 #endif
 
 #ifndef    JUCE_USE_OGGVORBIS
- #define   JUCE_USE_OGGVORBIS 0
+ #define   JUCE_USE_OGGVORBIS 1
 #endif
 
 #ifndef    JUCE_USE_MP3AUDIOFORMAT

@@ -138,7 +138,7 @@ public:
         if (commandId == CommandIDs::Browse)
         {
             this->fileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentLoad),
-                this->lastUsedDirectory, ("*.sf2;*.sbk"), true);
+                this->lastUsedDirectory, ("*.sf2;*.sf3;*.sf4;*.sbk"), true);
 
             DocumentHelpers::showFileChooser(this->fileChooser,
                 Globals::UI::FileChooser::forFileToOpen,
