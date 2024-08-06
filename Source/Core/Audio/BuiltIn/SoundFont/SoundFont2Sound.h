@@ -66,5 +66,9 @@ public:
 
 private:
 
+    FlacAudioFormat flacAudioFormat;
+    OggVorbisAudioFormat oggVorbisAudioFormat;
+    UniquePointer<AudioFormatReader> makeReaderFor(const void *start, size_t length);
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundFont3Sound)
 };

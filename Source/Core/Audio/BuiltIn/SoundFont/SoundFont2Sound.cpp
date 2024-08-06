@@ -67,14 +67,14 @@ struct RIFFChunk final
         this->size = static_cast<sf2dword>(file.readInt());
         this->start = file.getPosition();
 
-        if (FourCCEquals(id, "RIFF"))
+        if (FourCCEquals(this->id, "RIFF"))
         {
             this->type = Type::RIFF;
             file.read(&this->id, sizeof(sf2fourcc));
             this->start += sizeof(sf2fourcc);
             this->size -= sizeof(sf2fourcc);
         }
-        else if (FourCCEquals(id, "LIST"))
+        else if (FourCCEquals(this->id, "LIST"))
         {
             this->type = Type::LIST;
             file.read(&this->id, sizeof(sf2fourcc));
@@ -1218,6 +1218,23 @@ SoundFont3Sound::SoundFont3Sound(const File &file) : SoundFont2Sound(file) {}
 
 SoundFont3Sound::~SoundFont3Sound() = default;
 
+UniquePointer<AudioFormatReader> SoundFont3Sound::makeReaderFor(const void *readStart, size_t readLength)
+{
+    if (memcmp(readStart, "fLaC", 4) == 0)
+    {
+        return UniquePointer<AudioFormatReader>(this->flacAudioFormat
+            .createReaderFor(new MemoryInputStream(readStart, readLength, false), true));
+    }
+    else if (memcmp(readStart, "OggS", 4) == 0)
+    {
+        return UniquePointer<AudioFormatReader>(this->oggVorbisAudioFormat
+            .createReaderFor(new MemoryInputStream(readStart, readLength, false), true));
+    }
+
+    jassertfalse;
+    return {};
+}
+
 void SoundFont3Sound::loadSamples(AudioFormatManager &formatManager)
 {
     if (this->presets.isEmpty())
@@ -1240,21 +1257,46 @@ void SoundFont3Sound::loadSamples(AudioFormatManager &formatManager)
 
     const auto *sampleBlockStart = static_cast<const char *>(samplesBlock.getData());
 
-    FlacAudioFormat flacAudioFormat;
-    OggVorbisAudioFormat oggVorbisAudioFormat;
-
     // ranges in bytes in compressed stream
     // to ranges in 16-bit sample data points in uncompressed stream
     FlatHashMap<Range<int64>, Range<int64>, SampleRangeHash> decompressedRanges;
 
-    // the way JUCE resizes the sample buffer makes loading way too slow if we resize it
-    // every time we add a new sample; instead, let's try to avoid as many reallocations
-    // as possible and grow by a large chunk of the size of the compressed block;
-    // this way, we'll still have several reallocations (depending on compression ratio),
-    // but not too much memory overhead
-    int bufferSizeGrowFactor = 2;
-    const int bufferSizeBaseline = int(samplesBlock.getSize());
-    SharedAudioSampleBuffer::Ptr sampleBuffer(new SharedAudioSampleBuffer(1, bufferSizeBaseline));
+    // we have to precompute the length of the uncompressed samples buffer
+    // to avoid resizing it later, which would cause painful reallocations
+    int numChannels = 1;
+    int64 numUncompressedSamples = 0;
+    {
+        FlatHashSet<Range<int64>, SampleRangeHash> uniqueCompressedRanges;
+
+        for (auto *preset : this->presets)
+        {
+            for (auto *region : preset->regions)
+            {
+                uniqueCompressedRanges.insert({ region->offset, region->end });
+            }
+        }
+
+        for (const auto &range : uniqueCompressedRanges)
+        {
+            const auto *readStart = static_cast<const void *>(sampleBlockStart + range.getStart());
+            const auto readLength = range.getLength() > 0 ?
+                size_t(range.getLength()) :
+                size_t(samplesBlock.getSize() - range.getStart());
+
+            // even though this involves creating readers and parsing sample headers,
+            // it is still cheaper and faster than resizing the buffer later
+            if (const auto sampleReader = this->makeReaderFor(readStart, readLength))
+            {
+                numUncompressedSamples += sampleReader->lengthInSamples;
+                numChannels = jmax(numChannels, int(sampleReader->numChannels));
+            }
+        }
+    }
+
+    jassert(numUncompressedSamples < INT_MAX);
+    DBG("SoundFont: read samples length in " + String(Time::getMillisecondCounter() - startTime) + " ms");
+
+    SharedAudioSampleBuffer::Ptr sampleBuffer(new SharedAudioSampleBuffer(numChannels, int(numUncompressedSamples)));
     int64 currentSampleOffset = 0; // in the result buffer
 
     for (auto *preset : this->presets)
@@ -1278,18 +1320,11 @@ void SoundFont3Sound::loadSamples(AudioFormatManager &formatManager)
             jassert(region->offset < int64(samplesBlock.getSize()));
 
             const auto *readStart = static_cast<const void *>(sampleBlockStart + region->offset);
-            const auto readLength = region->end > 0 ? size_t(region->end - region->offset) :
+            const auto readLength = region->end > region->offset ?
+                size_t(region->end - region->offset) :
                 size_t(samplesBlock.getSize() - region->offset);
 
-            UniquePointer<AudioFormatReader> sampleReader(oggVorbisAudioFormat
-                .createReaderFor(new MemoryInputStream(readStart, readLength, false), true));
-
-            if (sampleReader == nullptr)
-            {
-                sampleReader = UniquePointer<AudioFormatReader>(flacAudioFormat
-                    .createReaderFor(new MemoryInputStream(readStart, readLength, false), true));
-            }
-
+            const auto sampleReader = this->makeReaderFor(readStart, readLength);
             if (sampleReader == nullptr)
             {
                 //jassertfalse;
@@ -1297,15 +1332,8 @@ void SoundFont3Sound::loadSamples(AudioFormatManager &formatManager)
                 continue;
             }
 
-            const auto requiredBufferSize = int(currentSampleOffset + sampleReader->lengthInSamples);
-            if (sampleBuffer->getNumSamples() < requiredBufferSize ||
-                sampleBuffer->getNumChannels() < int(sampleReader->numChannels))
-            {
-                bufferSizeGrowFactor++;
-                const int newBufferSize = jmax(requiredBufferSize, bufferSizeBaseline * bufferSizeGrowFactor);
-                //DBG("Reallocating to " + String(newBufferSize));
-                sampleBuffer->setSize(sampleReader->numChannels, newBufferSize, true, false, true);
-            }
+            jassert(sampleBuffer->getNumChannels() >= int(sampleReader->numChannels) &&
+                sampleBuffer->getNumSamples() >= int(currentSampleOffset + sampleReader->lengthInSamples));
 
             sampleReader->read(sampleBuffer.get(),
                 int(currentSampleOffset), int(sampleReader->lengthInSamples), 0, true, true);
@@ -1322,10 +1350,6 @@ void SoundFont3Sound::loadSamples(AudioFormatManager &formatManager)
         }
     }
 
-    DBG("SoundFont: loaded samples in " + String(Time::getMillisecondCounter() - startTime) + " ms");
-    DBG("SoundFont: allocated sample buffer of " + String(sampleBuffer->getNumSamples()) +
-        " samples, used " + String(roundf(float(currentSampleOffset) / float(sampleBuffer->getNumSamples()) * 100.f)) + "%");
-
     // in SF3, loop start and end are based on the beginning of each sample,
     // we need them to be based on the beginning of the decompressed sample buffer
     for (auto *preset : this->presets)
@@ -1336,6 +1360,9 @@ void SoundFont3Sound::loadSamples(AudioFormatManager &formatManager)
             region->loopEnd += region->offset;
         }
     }
+
+    DBG("SoundFont: loaded samples in " + String(Time::getMillisecondCounter() - startTime) + " ms");
+    DBG("SoundFont: allocated sample buffer of " + String(sampleBuffer->getNumSamples()) + " samples");
 
     for (auto &sample : this->samplesByRate)
     {
