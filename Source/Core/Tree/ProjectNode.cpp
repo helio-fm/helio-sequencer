@@ -1017,16 +1017,16 @@ bool ProjectNode::exportMidi(OutputStream &stream) const
                 this->beatRange.getStart(), this->beatRange.getEnd(),
                 midiClock);
         }
-
-        // the project will not necessarily start from 0 timestamp;
-        // normally we don't care (not caring about that also makes the code simpler),
-        // but when exporting to MIDI file, let's make sure the start is at zero:
-        sequence.addTimeToMessages(-this->beatRange.getStart());
     }
 
     for (const auto &i : sequences)
     {
-        tempFile.addTrack(i.second);
+        // the project will not necessarily start from 0 timestamp;
+        // normally we don't care (not caring about that also makes the code simpler),
+        // but when exporting to MIDI file, let's make sure the start is at zero:
+        auto &sequence = sequences[i.first];
+        sequence.addTimeToMessages(-this->beatRange.getStart() * midiClock);
+        tempFile.addTrack(sequence);
     }
 
     return tempFile.writeTo(stream);
