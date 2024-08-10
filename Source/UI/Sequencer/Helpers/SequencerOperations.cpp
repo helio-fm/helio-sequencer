@@ -1238,7 +1238,7 @@ void SequencerOperations::copyToClipboard(Clipboard &clipboard, const Lasso &sel
 void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &project,
     WeakReference<MidiTrack> selectedTrack, float targetBeatPosition, bool shouldCheckpoint)
 {
-    if (selectedTrack == nullptr)
+    if (selectedTrack == nullptr || clipboard.getData().isEmpty())
     {
         return;
     }
