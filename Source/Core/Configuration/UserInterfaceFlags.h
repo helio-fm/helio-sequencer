@@ -117,6 +117,10 @@ public:
     bool isMetronomeEnabled() const noexcept;
     void toggleMetronome();
 
+    KnownPluginList::SortMethod getPluginSorting() const noexcept;
+    bool isPluginSortingForwards() const noexcept;
+    void setPluginSorting(KnownPluginList::SortMethod sorting, bool forwards);
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
@@ -174,11 +178,15 @@ private:
 
     bool metronomeEnabled = false;
 
+    bool pluginSortingForwards = true;
+    KnownPluginList::SortMethod pluginSorting =
+        KnownPluginList::SortMethod::sortByFormat;
+
 private:
 
     // all these options are expected to be toggled by hotkeys,
     // so let's have a sensible delay before we serialize anything:
-    static constexpr auto saveTimeoutMs = 3000;
+    static constexpr auto saveTimeoutMs = 2000;
 
     void timerCallback() override;
     ListenerList<Listener> listeners;

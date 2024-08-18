@@ -307,6 +307,7 @@ namespace Serialization
             static const Identifier mouseWheelVerticalPanningByDefault = "wheelVerticalPan";
             static const Identifier mouseWheelVerticalZoomingByDefault = "wheelVerticalZoom";
             static const Identifier metronomeEnabled = "metronome";
+            static const Identifier pluginsSorting = "pluginsSorting";
             } // namespace Flags
 
         namespace Hotkeys

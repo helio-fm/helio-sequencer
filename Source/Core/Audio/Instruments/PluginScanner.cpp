@@ -28,10 +28,10 @@
 #include "SoundFontSynthAudioPlugin.h"
 #include "SerializablePluginDescription.h"
 
-#if PLATFORM_DESKTOP
-#   define SAFE_SCAN 1
-#else
+#if PLATFORM_MOBILE || JUCE_MAC
 #   define SAFE_SCAN 0
+#else
+#   define SAFE_SCAN 1
 #endif
 
 PluginScanner::PluginScanner() : Thread("Plugin Scanner") {}
@@ -81,6 +81,7 @@ void PluginScanner::removePlugin(const PluginDescription &description)
 void PluginScanner::sortList(KnownPluginList::SortMethod fieldToSortBy, bool forwards)
 {
     this->pluginsList.sort(fieldToSortBy, forwards);
+    this->sendChangeMessage();
 }
 
 bool PluginScanner::isWorking() const
@@ -214,6 +215,9 @@ void PluginScanner::run()
             }
         }
 
+        const auto pluginSorting = App::Config().getUiFlags()->getPluginSorting();
+        const auto pluginSortingForwards = App::Config().getUiFlags()->isPluginSortingForwards();
+
         try
         {
             for (const auto &pluginPath : this->filesToScan)
@@ -266,8 +270,8 @@ void PluginScanner::run()
                                     pluginDescription.deserialize(e);
                                     this->pluginsList.addType(pluginDescription);
                                 }
-                                    
-                                this->sendChangeMessage();
+
+                                this->sortList(pluginSorting, pluginSortingForwards); // will also sendChangeMessage();
                             }
                         }
                         catch (...) {}
@@ -278,7 +282,7 @@ void PluginScanner::run()
 #else
                 KnownPluginList knownPluginList;
                 OwnedArray<PluginDescription> typesFound;
-                    
+
                 try
                 {
                     for (int j = 0; j < formatManager.getNumFormats(); ++j)
@@ -296,9 +300,10 @@ void PluginScanner::run()
                     {
                         this->pluginsList.addType(*type);
                     }
+
+                    this->sortList(pluginSorting, pluginSortingForwards); // will also sendChangeMessage();
                 }
-                    
-                this->sendChangeMessage();
+                
                 Thread::sleep(150);
 #endif
             }
@@ -312,7 +317,7 @@ void PluginScanner::run()
             DBG("Done scanning audio plugins");
             this->sendChangeMessage();
         }
-        
+
         WaitableEvent::wait();
     }
 }
@@ -407,13 +412,21 @@ void PluginScanner::deserialize(const SerializedData &data)
 
     if (!root.isValid()) { return; }
     
+    Array<SerializablePluginDescription> descriptions;
     for (const auto &child : root)
     {
         SerializablePluginDescription pluginDescription;
         pluginDescription.deserialize(child);
-        if (pluginDescription.isValid())
+        descriptions.add(move(pluginDescription));
+    }
+
+    // for whatever reason addType inserts in the beginning of the array,
+    // so we have to iterate backwards to preserve the serialized order
+    for (int i = descriptions.size(); i --> 0 ;)
+    {
+        if (descriptions.getUnchecked(i).isValid())
         {
-            this->pluginsList.addType(pluginDescription);
+            this->pluginsList.addType(descriptions.getUnchecked(i));
         }
     }
 

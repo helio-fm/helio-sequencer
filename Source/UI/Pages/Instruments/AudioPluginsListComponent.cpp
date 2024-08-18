@@ -26,15 +26,32 @@
 #include "HeadlineContextMenuController.h"
 #include "PluginScanner.h"
 #include "MainLayout.h"
+#include "Config.h"
 
 AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot) :
     pluginScanner(pluginScanner),
-    instrumentsRoot(instrumentsRoot)
+    instrumentsRoot(instrumentsRoot),
+    pluginDescriptions(pluginScanner.getPlugins()),
+    filteredDescriptions(pluginScanner.getPlugins())
 {
     this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
+
+    this->searchTextEditor = HelioTheme::makeSingleLineTextEditor(true);
+    this->addAndMakeVisible(this->searchTextEditor.get());
+
+    this->searchTextEditor->onEscapeKey = [this]()
+    {
+        this->searchTextEditor->setText({}, true);
+    };
+
+    this->searchTextEditor->onTextChange = [this]()
+    {
+        this->updateFilteredDescriptions();
+        this->pluginsList->updateContent();
+    };
 
     this->pluginsList = make<TableListBox>(String(), this);
     this->addAndMakeVisible(this->pluginsList.get());
@@ -56,7 +73,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
             CommandIDs::ScanPluginsFolder, TRANS(I18n::Menu::instrumentsScanFolder)));
     this->addAndMakeVisible(this->initialScanButton.get());
     this->initialScanButton->setMouseCursor(MouseCursor::PointingHandCursor);
-    this->showScanButtonIf(this->pluginScanner.getNumPlugins() == 0);
+    this->showScanButtonIf(this->filteredDescriptions.isEmpty());
 
 #elif PLATFORM_MOBILE
 
@@ -67,7 +84,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
             TRANS(I18n::Menu::instrumentsReload)));
 
     this->addAndMakeVisible(this->initialScanButton.get());
-    this->showScanButtonIf(this->pluginScanner.getNumPlugins() == 0);
+    this->showScanButtonIf(this->filteredDescriptions.isEmpty());
 
 #endif
 
@@ -81,21 +98,33 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
     this->pluginsList->getViewport()->setScrollBarThickness(36);
 #endif
 
+    const auto uiFlags = App::Config().getUiFlags();
+    const auto pluginSorting = uiFlags->getPluginSorting();
+    const auto pluginSortingForwards = uiFlags->isPluginSortingForwards();
+
     const auto columnFlags =
         TableHeaderComponent::visible |
         TableHeaderComponent::appearsOnColumnMenu |
         TableHeaderComponent::sortable;
 
     this->pluginsList->getHeader().addColumn(TRANS(I18n::Page::orchestraCategory),
-        ColumnIds::category, 50, 50, -1, columnFlags);
+        ColumnIds::category, 50, 50, -1,
+            (pluginSorting != KnownPluginList::SortMethod::sortByCategory) ? columnFlags :
+                columnFlags | (pluginSortingForwards ?
+                    TableHeaderComponent::sortedForwards : TableHeaderComponent::sortedBackwards));
 
     this->pluginsList->getHeader().addColumn(TRANS(I18n::Page::orchestraVendorandname),
-        ColumnIds::vendorAndName, 50, 50, -1, columnFlags);
+        ColumnIds::vendorAndName, 50, 50, -1,
+            (pluginSorting != KnownPluginList::SortMethod::sortAlphabetically) ? columnFlags :
+                columnFlags | (pluginSortingForwards ?
+                    TableHeaderComponent::sortedForwards : TableHeaderComponent::sortedBackwards));
 
     this->pluginsList->getHeader().addColumn(TRANS(I18n::Page::orchestraFormat),
-        ColumnIds::format, 50, 50, -1, columnFlags);
+        ColumnIds::format, 50, 50, -1,
+            (pluginSorting != KnownPluginList::SortMethod::sortByFormat) ? columnFlags :
+                columnFlags | (pluginSortingForwards ?
+                    TableHeaderComponent::sortedForwards : TableHeaderComponent::sortedBackwards));
 
-    this->pluginsList->getHeader().setSortColumnId(ColumnIds::vendorAndName, true);
     this->pluginsList->setMultipleSelectionEnabled(false);
 }
 
@@ -105,8 +134,13 @@ void AudioPluginsListComponent::resized()
 {
     constexpr auto headerSize = 40;
     this->titleLabel->setBounds(0, 0, this->getWidth(), headerSize - 4);
-    this->pluginsList->setBounds(this->getLocalBounds().withTrimmedTop(headerSize).reduced(2));
     this->titleSeparator->setBounds(0, headerSize, this->getWidth(), 2);
+
+    auto pluginsListArea = this->getLocalBounds().withTrimmedTop(headerSize).reduced(2);
+    pluginsListArea.removeFromTop(6);
+    this->searchTextEditor->setBounds(pluginsListArea.removeFromTop(Globals::UI::textEditorHeight).reduced(6, 0));
+    pluginsListArea.removeFromTop(2);
+    this->pluginsList->setBounds(pluginsListArea);
 
     constexpr auto scanButtonWidth = 150;
     constexpr auto scanButtonHeight = 96;
@@ -127,6 +161,7 @@ void AudioPluginsListComponent::parentHierarchyChanged()
 void AudioPluginsListComponent::showScanButtonIf(bool hasNoPlugins)
 {
     this->pluginsList->setVisible(!hasNoPlugins);
+    this->searchTextEditor->setVisible(!hasNoPlugins);
     this->initialScanButton->setVisible(hasNoPlugins);
 }
 
@@ -137,22 +172,43 @@ void AudioPluginsListComponent::clearSelection()
 
 void AudioPluginsListComponent::updateListContent()
 {
-    this->pluginsList->updateContent();
+    auto newPlugins = this->pluginScanner.getPlugins();
+    const auto shouldResetFilter = newPlugins.size() != this->pluginDescriptions.size();
     this->clearSelection();
+    this->pluginDescriptions.swapWith(newPlugins);
+    if (shouldResetFilter && !this->searchTextEditor->isEmpty())
+    {
+        this->searchTextEditor->setText({}, false);
+    }
+    this->showScanButtonIf(this->pluginDescriptions.isEmpty());
+    this->updateFilteredDescriptions();
+    this->pluginsList->updateContent();
+}
+
+void AudioPluginsListComponent::updateFilteredDescriptions()
+{
+    const auto searchText = this->searchTextEditor->getText();
+    if (searchText.isEmpty())
+    {
+        this->filteredDescriptions = this->pluginDescriptions;
+        return;
+    }
+
+    this->filteredDescriptions.clearQuick();
+    for (const auto &pd : this->pluginDescriptions)
+    {
+        if (pd.descriptiveName.containsIgnoreCase(searchText) ||
+            pd.pluginFormatName.containsIgnoreCase(searchText) ||
+            pd.manufacturerName.containsIgnoreCase(searchText))
+        {
+            this->filteredDescriptions.add(pd);
+        }
+    }
 }
 
 //===----------------------------------------------------------------------===//
 // TableListBoxModel
 //===----------------------------------------------------------------------===//
-
-var AudioPluginsListComponent::getDragSourceDescription(const SparseSet<int> &currentlySelectedRows)
-{
-    const auto pd = this->pluginScanner.getPlugins()[currentlySelectedRows[0]];
-    PluginDescriptionDragnDropWrapper::Ptr pluginWrapper(new PluginDescriptionDragnDropWrapper());
-    pluginWrapper->pluginDescription = pd;
-    var pluginVar(pluginWrapper.get());
-    return pluginVar;
-}
 
 void AudioPluginsListComponent::paintRowBackground(Graphics &g, int rowNumber, int, int, bool rowIsSelected)
 {
@@ -170,7 +226,7 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     int rowNumber, int columnId,
     int w, int h, bool rowIsSelected)
 {
-    const auto pd = this->pluginScanner.getPlugins()[rowNumber];
+    const auto pd = this->filteredDescriptions[rowNumber];
 
     constexpr int margin = 5;
     const auto colour = findDefaultColour(Label::textColourId);
@@ -251,24 +307,29 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
 
 void AudioPluginsListComponent::sortOrderChanged(int newSortColumnId, bool isForwards)
 {
+    KnownPluginList::SortMethod sortMethod = KnownPluginList::SortMethod::defaultOrder;
     switch (newSortColumnId)
     {
     case ColumnIds::vendorAndName:
-        this->pluginScanner.sortList(KnownPluginList::SortMethod::sortByManufacturer, isForwards);
+        sortMethod = KnownPluginList::SortMethod::sortAlphabetically;
+        break;
     case ColumnIds::category:
-        this->pluginScanner.sortList(KnownPluginList::SortMethod::sortByCategory, isForwards);
+        sortMethod = KnownPluginList::SortMethod::sortByCategory;
+        break;
     case ColumnIds::format:
-        this->pluginScanner.sortList(KnownPluginList::SortMethod::sortByFormat, isForwards);
+        sortMethod = KnownPluginList::SortMethod::sortByFormat;
+        break;
     default:
         break;
     }
 
-    this->pluginsList->updateContent();
+    this->pluginScanner.sortList(sortMethod, isForwards);
+    App::Config().getUiFlags()->setPluginSorting(sortMethod, isForwards);
 }
 
 int AudioPluginsListComponent::getNumRows()
 {
-    return this->pluginScanner.getNumPlugins();
+    return this->filteredDescriptions.size();
 }
 
 int AudioPluginsListComponent::getColumnAutoSizeWidth(int columnId)
@@ -290,17 +351,11 @@ int AudioPluginsListComponent::getColumnAutoSizeWidth(int columnId)
     }
 }
 
-String AudioPluginsListComponent::getCellTooltip(int rowNumber, int columnId)
-{
-    const auto description = pluginScanner.getPlugins()[rowNumber];
-    return description.fileOrIdentifier;
-}
-
 void AudioPluginsListComponent::selectedRowsChanged(int lastRowSelected)
 {
     if (this->pluginsList->getNumSelectedRows() > 0)
     {
-        // Hide existing because selection will be always different:
+        // re-init the existing menu because the selection will be different:
         App::Layout().hideSelectionMenu();
         App::Layout().showSelectionMenu(this);
     }
@@ -325,8 +380,8 @@ bool AudioPluginsListComponent::canBeSelectedAsMenuItem() const { return false; 
 UniquePointer<Component> AudioPluginsListComponent::createMenu()
 {
     const auto selectedRow = this->pluginsList->getSelectedRow();
-    const auto description = pluginScanner.getPlugins()[selectedRow];
-    return make<AudioPluginSelectionMenu>(description, this->instrumentsRoot, this->pluginScanner);
+    return make<AudioPluginSelectionMenu>(this->filteredDescriptions[selectedRow],
+        this->instrumentsRoot, this->pluginScanner);
 }
 
 Image AudioPluginsListComponent::getIcon() const
@@ -337,8 +392,7 @@ Image AudioPluginsListComponent::getIcon() const
 String AudioPluginsListComponent::getName() const
 {
     const auto selectedRow = this->pluginsList->getSelectedRow();
-    const auto description = pluginScanner.getPlugins()[selectedRow];
-    return description.descriptiveName;
+    return this->filteredDescriptions[selectedRow].descriptiveName;
 }
 
 void AudioPluginsListComponent::cellClicked(int rowNumber, int columnId, const MouseEvent &e)

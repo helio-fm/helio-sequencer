@@ -45,14 +45,12 @@ public:
     //===------------------------------------------------------------------===//
 
     int getNumRows() override;
-    var getDragSourceDescription(const SparseSet<int> &currentlySelectedRows) override;
     void paintRowBackground(Graphics &, int, int, int, bool) override;
     void paintCell(Graphics &, int, int, int, int, bool) override;
     void sortOrderChanged(int newSortColumnId, bool isForwards) override;
     int getColumnAutoSizeWidth(int columnId) override;
-    String getCellTooltip(int rowNumber, int columnId) override;
     void selectedRowsChanged(int lastRowSelected) override;
-    void cellClicked(int rowNumber, int columnId, const MouseEvent&) override;
+    void cellClicked(int rowNumber, int columnId, const MouseEvent &) override;
 
     //===------------------------------------------------------------------===//
     // HeadlineItemDataSource
@@ -92,6 +90,11 @@ private:
         format = 3
     };
 
+    Array<PluginDescription> pluginDescriptions;
+    Array<PluginDescription> filteredDescriptions;
+    void updateFilteredDescriptions();
+
+    UniquePointer<TextEditor> searchTextEditor;
     UniquePointer<TableListBox> pluginsList;
     UniquePointer<MenuItemComponent> initialScanButton;
     UniquePointer<Label> titleLabel;

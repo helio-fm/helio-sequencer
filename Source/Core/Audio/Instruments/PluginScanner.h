@@ -33,16 +33,12 @@ public:
     bool hasInstruments() const;
 
     void removePlugin(const PluginDescription &description);
-    void sortList(KnownPluginList::SortMethod method, bool forwards);
+    void sortList(KnownPluginList::SortMethod method =
+        KnownPluginList::SortMethod::sortByFormat, bool forwards = true);
 
     inline const Array<PluginDescription> getPlugins() const noexcept
     {
         return this->pluginsList.getTypes();
-    }
-
-    inline const int getNumPlugins() const noexcept
-    {
-        return this->pluginsList.getNumTypes();
     }
 
     void runInitialScan();

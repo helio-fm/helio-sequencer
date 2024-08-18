@@ -134,7 +134,6 @@ void OrchestraPitPage::handleCommandMessage(int commandId)
 
 void OrchestraPitPage::changeListenerCallback(ChangeBroadcaster *source)
 {
-    this->pluginsList->showScanButtonIf(this->pluginScanner.getNumPlugins() == 0);
     this->pluginsList->updateListContent();
     this->instrumentsList->updateListContent();
 

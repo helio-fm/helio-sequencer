@@ -272,6 +272,29 @@ AffineTransform UserInterfaceFlags::getScaledTransformFor(Component *component) 
     return component->getTransform().scaled(this->uiScaleFactor, this->uiScaleFactor);
 }
 
+KnownPluginList::SortMethod UserInterfaceFlags::getPluginSorting() const noexcept
+{
+    return this->pluginSorting;
+}
+
+bool UserInterfaceFlags::isPluginSortingForwards() const noexcept
+{
+    return this->pluginSortingForwards;
+}
+
+void UserInterfaceFlags::setPluginSorting(KnownPluginList::SortMethod sorting, bool forwards)
+{
+    if (this->pluginSorting == sorting && this->pluginSortingForwards == forwards)
+    {
+        return;
+    }
+
+    this->pluginSorting = sorting;
+    this->pluginSortingForwards = forwards;
+    // no listener event here, not needed yet
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -296,6 +319,9 @@ SerializedData UserInterfaceFlags::serialize() const
     tree.setProperty(UI::Flags::mouseWheelVerticalZoomingByDefault, this->mouseWheelFlags.useVerticalZoomingByDefault);
 
     tree.setProperty(UI::Flags::metronomeEnabled, this->metronomeEnabled);
+
+    const auto pluginSortingValue = int(this->pluginSorting) * (this->pluginSortingForwards ? 1 : -1);
+    tree.setProperty(UI::Flags::pluginsSorting, pluginSortingValue);
 
     // skips experimentalFeaturesOn, it's read only
 
@@ -335,6 +361,10 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
         root.getProperty(UI::Flags::mouseWheelVerticalZoomingByDefault, false);
 
     this->metronomeEnabled = root.getProperty(UI::Flags::metronomeEnabled, this->metronomeEnabled);
+
+    const int pluginsSortMethod = root.getProperty(UI::Flags::pluginsSorting, int(this->pluginSorting));
+    this->pluginSorting = KnownPluginList::SortMethod(abs(pluginsSortMethod));
+    this->pluginSortingForwards = pluginsSortMethod >= 0;
 
     this->editorPanelVisible = false; // not serializing that
 
