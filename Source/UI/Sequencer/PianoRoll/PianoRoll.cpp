@@ -866,10 +866,18 @@ void PianoRoll::onChangeProjectInfo(const ProjectMetadata *info)
     // because it only updates temperament, and we have a very own logic here
     if (this->temperament != info->getTemperament())
     {
+        // try to preserve the canvas y position when changing temperaments
+        const auto viewCentreY =
+            float(this->getViewport().getViewArea().getCentreY()) / float(jmax(1, this->getHeight()));
+
         this->temperament = info->getTemperament();
         this->noteNameGuides->syncWithTemperament(this->temperament);
         this->updateBackgroundCachesAndRepaint();
         this->updateHeight(); // might have changed by due to different temperament
+
+        this->getViewport().setViewPosition(this->getViewport().getViewPositionX(),
+            int(float(this->getHeight()) * viewCentreY - this->getViewport().getViewHeight() / 2));
+
         this->updateChildrenPositions();
     }
 }
