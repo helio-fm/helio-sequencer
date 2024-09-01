@@ -257,9 +257,6 @@ namespace BinaryData
     extern const char*   undo_svg;
     const int            undo_svgSize = 252;
 
-    extern const char*   unmute_svg;
-    const int            unmute_svgSize = 1401;
-
     extern const char*   up_svg;
     const int            up_svgSize = 294;
 
@@ -268,6 +265,12 @@ namespace BinaryData
 
     extern const char*   volume_svg;
     const int            volume_svgSize = 179;
+
+    extern const char*   volumeUp_svg;
+    const int            volumeUp_svgSize = 1401;
+
+    extern const char*   volumeDown_svg;
+    const int            volumeDown_svgSize = 881;
 
     extern const char*   volumePanel_svg;
     const int            volumePanel_svgSize = 250;
@@ -345,7 +348,7 @@ namespace BinaryData
     const int            translations_jsonSize = 95572;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 112;
+    const int namedResourceListSize = 113;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

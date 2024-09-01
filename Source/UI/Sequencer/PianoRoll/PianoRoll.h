@@ -172,7 +172,7 @@ public:
     void paint(Graphics &g) override;
     
     //===------------------------------------------------------------------===//
-    // RollBase's legacy
+    // RollBase
     //===------------------------------------------------------------------===//
     
     void handleAsyncUpdate() override;

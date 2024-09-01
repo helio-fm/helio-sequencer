@@ -102,11 +102,12 @@
         <FILE id="PwfEJV" name="toggleOn.svg" compile="0" resource="1" file="../../Resources/Icons/toggleOn.svg"/>
         <FILE id="BBNAVx" name="trackGroup.svg" compile="0" resource="1" file="../../Resources/Icons/trackGroup.svg"/>
         <FILE id="jMjNbd" name="undo.svg" compile="0" resource="1" file="../../Resources/Icons/undo.svg"/>
-        <FILE id="uvrBo1" name="unmute.svg" compile="0" resource="1" file="../../Resources/Icons/unmute.svg"/>
         <FILE id="b3kVn6" name="up.svg" compile="0" resource="1" file="../../Resources/Icons/up.svg"/>
         <FILE id="gFGVNu" name="versionControl.svg" compile="0" resource="1"
               file="../../Resources/Icons/versionControl.svg"/>
         <FILE id="EcPJkd" name="volume.svg" compile="0" resource="1" file="../../Resources/Icons/volume.svg"/>
+        <FILE id="uvrBo1" name="volumeUp.svg" compile="0" resource="1" file="../../Resources/Icons/volumeUp.svg"/>
+        <FILE id="wzawVO" name="volumeDown.svg" compile="0" resource="1" file="../../Resources/Icons/volumeDown.svg"/>
         <FILE id="dIbx50" name="volumePanel.svg" compile="0" resource="1" file="../../Resources/Icons/volumePanel.svg"/>
         <FILE id="jm0Ajr" name="zoomIn.svg" compile="0" resource="1" file="../../Resources/Icons/zoomIn.svg"/>
         <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>

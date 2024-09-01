@@ -66,7 +66,7 @@ MenuPanel::Menu ClipMenu::makeDefaultMenu()
 
     const auto soloAction = this->clip.isSoloed() ?
         TRANS(I18n::Menu::unsolo) : TRANS(I18n::Menu::solo);
-    menu.add(MenuItem::item(Icons::unmute,
+    menu.add(MenuItem::item(Icons::volumeUp,
         CommandIDs::ToggleSoloClips, soloAction)->
         disabledIf(!this->clip.canBeSoloed())->
         closesMenu());
@@ -366,7 +366,7 @@ MenuPanel::Menu ClipModifiersMenu::makeEditModifiersMenu(const MenuItem::Callbac
         }));
 
     const auto shouldMute = clip.hasEnabledModifiers();
-    menu.add(MenuItem::item(shouldMute ? Icons::mute : Icons::unmute,
+    menu.add(MenuItem::item(shouldMute ? Icons::mute : Icons::volumeUp,
         shouldMute ? TRANS(I18n::Menu::Modifiers::disableAll) : TRANS(I18n::Menu::Modifiers::enableAll))->
         withHotkeyText(CommandIDs::ToggleMuteModifiers)->
         disabledIf(!this->clip.hasModifiers())->

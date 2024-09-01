@@ -4447,10 +4447,11 @@
     <None Include="..\..\Resources\Icons\toggleOn.svg"/>
     <None Include="..\..\Resources\Icons\trackGroup.svg"/>
     <None Include="..\..\Resources\Icons\undo.svg"/>
-    <None Include="..\..\Resources\Icons\unmute.svg"/>
     <None Include="..\..\Resources\Icons\up.svg"/>
     <None Include="..\..\Resources\Icons\versionControl.svg"/>
     <None Include="..\..\Resources\Icons\volume.svg"/>
+    <None Include="..\..\Resources\Icons\volumeUp.svg"/>
+    <None Include="..\..\Resources\Icons\volumeDown.svg"/>
     <None Include="..\..\Resources\Icons\volumePanel.svg"/>
     <None Include="..\..\Resources\Icons\zoomIn.svg"/>
     <None Include="..\..\Resources\Icons\zoomOut.svg"/>

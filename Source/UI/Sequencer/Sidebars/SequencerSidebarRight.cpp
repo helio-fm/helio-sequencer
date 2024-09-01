@@ -178,7 +178,6 @@ void SequencerSidebarRight::recreateMenu()
 
 #if PLATFORM_MOBILE
         this->menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents));
-
         this->menu.add(MenuItem::item(Icons::paste, CommandIDs::PasteEvents));
 #endif
     }
@@ -195,6 +194,10 @@ void SequencerSidebarRight::recreateMenu()
     }
     else if (this->menuMode == MenuMode::PatternRollTools)
     {
+        this->menu.add(MenuItem::item(Icons::volumeUp, CommandIDs::ClipVolumeUp));
+        this->menu.add(MenuItem::item(Icons::volumeDown, CommandIDs::ClipVolumeDown));
+        this->menu.add(MenuItem::item(Icons::up, CommandIDs::ClipTransposeUp));
+        this->menu.add(MenuItem::item(Icons::down, CommandIDs::ClipTransposeDown));
         this->menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips));
     }
 #endif

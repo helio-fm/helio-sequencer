@@ -88,14 +88,17 @@ void Icons::initBuiltInImages()
     setIconForKey(meter);
     setIconForKey(metronome);
 
+    setIconForKey(mute);
+    setIconForKey(volumeUp);
+    setIconForKey(volumeDown);
     setIconForKey(volume);
     setIconForKey(volumePanel);
-    setIconForKey(bottomBar);
 
     setIconForKey(list);
     setIconForKey(ellipsis);
     setIconForKey(progressIndicator);
     setIconForKey(console);
+    setIconForKey(bottomBar);
 
     setIconForKey(browse);
     setIconForKey(apply);
@@ -167,9 +170,6 @@ void Icons::initBuiltInImages()
     setIconForKey(push);
     setIconForKey(pull);
 
-    setIconForKey(mute);
-    setIconForKey(unmute);
-
     setIconForKey(arpeggiate);
     setIconForKey(refactor);
     setIconForKey(render);
@@ -223,7 +223,7 @@ static Image renderVector(Icons::Id id, int maxSize,
     drawableSVG->replaceColour(Colours::black, iconBaseColour);
 
     Rectangle<int> area(0, 0, maxSize, maxSize);
-    drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.0f);
+    drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.f);
     
 #if PLATFORM_DESKTOP
     GlowEffect glow;
@@ -231,7 +231,7 @@ static Image renderVector(Icons::Id id, int maxSize,
     glow.applyEffect(resultImage, g, 1.f, 1.f);
 #endif
         
-    drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.0f);
+    drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.f);
 
     return resultImage;
 }

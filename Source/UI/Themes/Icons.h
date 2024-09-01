@@ -61,14 +61,17 @@ public:
         meter,
         metronome,
 
+        mute,
+        volumeUp,
+        volumeDown,
         volume,
         volumePanel,
-        bottomBar,
 
         list,
         ellipsis,
         progressIndicator,
         console,
+        bottomBar,
 
         browse,
         apply,
@@ -139,9 +142,6 @@ public:
         reset,
         push,
         pull,
-
-        mute,
-        unmute,
 
         arpeggiate,
         refactor,

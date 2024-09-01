@@ -290,7 +290,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
             textArea.getHeight() + heightHack,
             label.getJustificationType(),
             maxLines,
-            1.0);
+            0.75f);
 
 #endif
     }

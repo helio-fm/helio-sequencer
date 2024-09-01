@@ -140,7 +140,7 @@ MenuPanel::Menu PatternRollSelectionMenu::makeDefaultMenu()
     menu.add(MenuItem::item(Icons::mute,
         CommandIDs::ToggleMuteClips, muteAction)->closesMenu());
 
-    menu.add(MenuItem::item(Icons::unmute,
+    menu.add(MenuItem::item(Icons::volumeUp,
         CommandIDs::ToggleSoloClips, soloAction)->
         disabledIf(!canSolo)->
         closesMenu());
