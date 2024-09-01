@@ -113,9 +113,9 @@ void KeySelector::onRadioButtonClicked(const MouseEvent &e, RadioButton *button)
 {
     if (e.mods.isRightButtonDown() || e.mods.isAnyModifierKeyDown())
     {
-        if (auto *listener = this->getParentListener())
+        if (this->onKeyPreview != nullptr)
         {
-            listener->onKeyPreview(button->getButtonIndex());
+            this->onKeyPreview(button->getButtonIndex());
         }
 
         return; // rmb click is note preview
@@ -123,13 +123,14 @@ void KeySelector::onRadioButtonClicked(const MouseEvent &e, RadioButton *button)
 
     this->setSelectedKey(button->getButtonIndex(), button->getButtonName());
 
-    if (auto *listener = this->getParentListener())
+    if (this->onKeyChanged != nullptr)
     {
         // in the absence of enharmonic equivalents,
         // pass an empty string indicating the default key name
         const auto keyName = (this->hasFlatsRow || this->hasSharpsRow) ?
             button->getButtonName() : String();
-        listener->onKeyChanged(button->getButtonIndex(), keyName);
+
+        this->onKeyChanged(button->getButtonIndex(), keyName);
     }
 }
 

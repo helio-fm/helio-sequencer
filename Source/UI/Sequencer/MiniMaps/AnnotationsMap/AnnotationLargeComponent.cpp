@@ -113,7 +113,7 @@ void AnnotationLargeComponent::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isLeftButtonDown() && e.getDistanceFromDragStart() > 3)
+    if (e.mods.isLeftButtonDown() && e.getDistanceFromDragStart() > 4)
     {
         if (this->state == State::ResizingRight)
         {

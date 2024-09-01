@@ -26,12 +26,8 @@ public:
 
     explicit KeySelector(const Temperament::Period &period);
 
-    struct Listener
-    {
-        virtual ~Listener() = default;
-        virtual void onKeyChanged(int key, const String &keyName) = 0;
-        virtual void onKeyPreview(int key) = 0;
-    };
+    Function<void(int key)> onKeyPreview;
+    Function<void(int key, const String &keyName)> onKeyChanged;
 
     void onRadioButtonClicked(const MouseEvent &e, RadioButton *button) override;
     void setSelectedKey(int key, const String &keyName);
@@ -39,11 +35,6 @@ public:
     void resized() override;
 
 private:
-
-    Listener *getParentListener() const noexcept
-    {
-        return dynamic_cast<Listener *>(this->getParentComponent());
-    }
 
     struct KeyEnharmonics final
     {

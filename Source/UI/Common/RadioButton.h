@@ -46,8 +46,12 @@ public:
     void paint(Graphics &g) override;
     void resized() override;
     void mouseDown(const MouseEvent &e) override;
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
 private:
+
+    void handleClick(const MouseEvent &e);
 
     Component *createHighlighterComponent() override;
 

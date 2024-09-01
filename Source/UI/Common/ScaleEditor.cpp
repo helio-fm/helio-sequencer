@@ -17,16 +17,15 @@
 
 #include "Common.h"
 #include "ScaleEditor.h"
-#include "ColourIDs.h"
 
 ScaleEditor::~ScaleEditor() = default;
 
 void ScaleEditor::resized()
 {
     int x = 0;
+    constexpr auto w = ScaleEditor::buttonWidth;
     for (const auto &button : this->buttons)
     {
-        const int w = this->getWidth() / this->buttons.size();
         button->setBounds(x, 0, w, this->getHeight());
         x += w;
     }
@@ -42,9 +41,9 @@ void ScaleEditor::onRadioButtonClicked(const MouseEvent &e, RadioButton *clicked
 
     if (e.mods.isRightButtonDown() || e.mods.isAnyModifierKeyDown())
     {
-        if (auto *parentListener = this->getParentListener())
+        if (this->onScaleNotePreview != nullptr)
         {
-            parentListener->onScaleNotePreview(clickedButton->getButtonIndex());
+            this->onScaleNotePreview(clickedButton->getButtonIndex());
         }
 
         return; // rmb click is note preview
@@ -64,9 +63,9 @@ void ScaleEditor::onRadioButtonClicked(const MouseEvent &e, RadioButton *clicked
     this->scale = this->scale->withKeys(keys);
     this->updateButtonsState();
 
-    if (auto *parentListener = this->getParentListener())
+    if (this->onScaleChanged != nullptr)
     {
-        parentListener->onScaleChanged(this->scale);
+        this->onScaleChanged(this->scale);
     }
 }
 
@@ -90,17 +89,16 @@ void ScaleEditor::rebuildButtons()
 
     this->buttons.clearQuick(true);
 
-    const auto buttonColour = findDefaultColour(ColourIDs::ColourButton::outline);
-
     for (int i = 0; i < this->scale->getBasePeriod(); ++i)
     {
-        auto button = make<RadioButton>(String(i), buttonColour, this);
+        auto button = make<RadioButton>(String(i), this->buttonColour, this);
         button->setButtonIndex(i);
         this->addAndMakeVisible(button.get());
         this->buttons.add(button.release());
     }
 
-    this->resized();
+    this->setSize(ScaleEditor::buttonWidth * this->buttons.size(), ScaleEditor::rowHeight);
+    this->resized(); // force repositioning the buttons
     this->updateButtonsState();
 }
 

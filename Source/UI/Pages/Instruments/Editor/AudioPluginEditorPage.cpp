@@ -39,7 +39,7 @@ AudioPluginEditorPage::AudioPluginEditorPage(Component *contentOwned)
     }
     else
     {
-        this->viewport = make<Viewport>("AudioPluginEditor Viewport");
+        this->viewport = make<Viewport>();
         this->viewport->setAlwaysOnTop(true);
         this->viewport->setViewedComponent(contentOwned, true);
         this->addAndMakeVisible(this->viewport.get());

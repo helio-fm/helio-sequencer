@@ -19,6 +19,12 @@
 #include "RadioButton.h"
 #include "ColourIDs.h"
 
+#if PLATFORM_DESKTOP
+#   define RADIO_BUTTON_TRIGGERED_ON_MOUSE_UP 0
+#elif PLATFORM_MOBILE
+#   define RADIO_BUTTON_TRIGGERED_ON_MOUSE_UP 1
+#endif
+
 class RadioButtonFrame final : public Component
 {
 public:
@@ -107,8 +113,13 @@ void RadioButton::resized()
     HighlightedComponent::resized();
 }
 
-void RadioButton::mouseDown(const MouseEvent &e)
+void RadioButton::handleClick(const MouseEvent &e)
 {
+    if (e.getDistanceFromDragStart() > 4)
+    {
+        return;
+    }
+
     // let's say only left-click with no mod keys triggers the button
     // (this is kinda ugly because ScaleEditor and KeySelector depend
     // very much on this logic, but I'll leave it as it is for now)
@@ -125,6 +136,32 @@ void RadioButton::mouseDown(const MouseEvent &e)
     }
 
     this->listener->onRadioButtonClicked(e, this);
+}
+
+void RadioButton::mouseDown(const MouseEvent &e)
+{
+#if RADIO_BUTTON_TRIGGERED_ON_MOUSE_UP
+    this->setHighlighted(true);
+#else
+    this->handleClick(e);
+#endif
+}
+
+void RadioButton::mouseEnter(const MouseEvent &e)
+{
+#if RADIO_BUTTON_TRIGGERED_ON_MOUSE_UP
+    this->setHighlighted(false);
+#else
+    HighlightedComponent::mouseEnter(e);
+#endif
+}
+
+void RadioButton::mouseUp(const MouseEvent &e)
+{
+#if RADIO_BUTTON_TRIGGERED_ON_MOUSE_UP
+    this->setHighlighted(false);
+    this->handleClick(e);
+#endif
 }
 
 Component *RadioButton::createHighlighterComponent()

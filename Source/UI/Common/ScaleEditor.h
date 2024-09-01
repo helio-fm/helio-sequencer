@@ -19,20 +19,17 @@
 
 #include "Scale.h"
 #include "RadioButton.h"
+#include "ColourIDs.h"
 
 class ScaleEditor final : public Component, public RadioButton::Listener
 {
 public:
 
     ScaleEditor() = default;
-    ~ScaleEditor();
+    ~ScaleEditor() override;
 
-    struct Listener
-    {
-        virtual ~Listener() = default;
-        virtual void onScaleChanged(const Scale::Ptr scale) = 0;
-        virtual void onScaleNotePreview(int key) = 0;
-    };
+    Function<void(int key)> onScaleNotePreview;
+    Function<void(const Scale::Ptr scale)> onScaleChanged;
 
     void onRadioButtonClicked(const MouseEvent &e, RadioButton *button) override;
     void setScale(const Scale::Ptr scale);
@@ -42,15 +39,16 @@ public:
 private:
 
     Scale::Ptr scale;
+
     OwnedArray<RadioButton> buttons;
+
+    static constexpr auto buttonWidth = 34;
+    static constexpr auto rowHeight = 32;
+
+    const Colour buttonColour = findDefaultColour(ColourIDs::ColourButton::outline);
 
     void rebuildButtons();
     void updateButtonsState();
 
-    Listener *getParentListener() const noexcept
-    {
-        return dynamic_cast<Listener *>(this->getParentComponent());
-    }
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScaleEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScaleEditor)
 };

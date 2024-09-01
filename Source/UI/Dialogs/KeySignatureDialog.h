@@ -19,8 +19,6 @@
 
 #include "DialogBase.h"
 #include "KeySignatureEvent.h"
-#include "ScaleEditor.h"
-#include "KeySelector.h"
 #include "MobileComboBox.h"
 
 class Transport;
@@ -29,11 +27,11 @@ class KeySignaturesSequence;
 class SeparatorHorizontalFading;
 class PlayButton;
 class ScalePreviewThread;
+class ScaleEditor;
+class KeySelector;
 
 class KeySignatureDialog final : public DialogBase,
-    public TextEditor::Listener,
-    public ScaleEditor::Listener,
-    public KeySelector::Listener
+    public TextEditor::Listener
 {
 public:
 
@@ -54,12 +52,6 @@ public:
     void handleCommandMessage(int commandId) override;
 
 private:
-
-    void onKeyChanged(int key, const String &keyName) override;
-    void onKeyPreview(int key) override;
-
-    void onScaleChanged(const Scale::Ptr scale) override;
-    void onScaleNotePreview(int key) override;
 
     void textEditorTextChanged(TextEditor&) override;
     void textEditorReturnKeyPressed(TextEditor&) override;
@@ -98,10 +90,16 @@ private:
     UniquePointer<MobileComboBox::Container> presetsCombo;
     UniquePointer<Label> messageLabel;
 
+    UniquePointer<Viewport> keySelectorViewport;
     UniquePointer<KeySelector> keySelector;
+    UniquePointer<Component> keySelectorShadowLeft;
+    UniquePointer<Component> keySelectorShadowRight;
     UniquePointer<SeparatorHorizontalFading> separator;
 
+    UniquePointer<Viewport> scaleEditorViewport;
     UniquePointer<ScaleEditor> scaleEditor;
+    UniquePointer<Component> scaleEditorShadowLeft;
+    UniquePointer<Component> scaleEditorShadowRight;
     UniquePointer<TextEditor> scaleNameEditor;
     UniquePointer<IconButton> savePresetButton;
     UniquePointer<PlayButton> playButton;
@@ -109,5 +107,5 @@ private:
     UniquePointer<TextButton> okButton;
     UniquePointer<TextButton> removeEventButton;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeySignatureDialog)
 };
