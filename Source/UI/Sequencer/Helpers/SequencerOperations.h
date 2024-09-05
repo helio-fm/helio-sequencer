@@ -137,7 +137,8 @@ struct SequencerOperations final
         bool undoable = true, bool shouldCheckpoint = true);
 
     static bool remapNotesToTemperament(const ProjectNode &project,
-        Temperament::Ptr temperament, bool shouldCheckpoint = true);
+        Temperament::Ptr temperament, bool shouldUseChromaticMaps = true,
+        bool shouldCheckpoint = true);
 
     static bool remapKeySignaturesToTemperament(KeySignaturesSequence *keySignatures,
         Temperament::Ptr currentTemperament, Temperament::Ptr otherTemperament,

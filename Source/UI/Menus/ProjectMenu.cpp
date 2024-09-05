@@ -375,8 +375,16 @@ void ProjectMenu::showTemperamentsMenu(bool convertTracks)
         {
             if (convertTracks)
             {
+                const bool anyModKeyPressed = Desktop::getInstance()
+                    .getMainMouseSource().getCurrentModifiers().isAnyModifierKeyDown();
+                // by default, convert notes using the temperaments' chromatic maps,
+                // which is more flexible (doesn't make assumptions about temperaments),
+                // as an alt mode, when any mod key is pressed, convert notes assuming
+                // equal temperaments and using just proportions, which is more accurate
+                const bool defaultConversionMode = !anyModKeyPressed;
                 const bool hasMadeChanges =
-                    SequencerOperations::remapNotesToTemperament(this->project, otherTemperament, true);
+                    SequencerOperations::remapNotesToTemperament(this->project,
+                        otherTemperament, defaultConversionMode, true);
 
                 if (!hasMadeChanges)
                 {

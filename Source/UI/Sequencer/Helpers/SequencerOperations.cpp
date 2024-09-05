@@ -1851,7 +1851,7 @@ bool SequencerOperations::rescale(const ProjectNode &project, float startBeat, f
 }
 
 bool SequencerOperations::remapNotesToTemperament(const ProjectNode &project,
-    Temperament::Ptr temperament, bool shouldCheckpoint)
+    Temperament::Ptr temperament, bool shouldUseChromaticMaps, bool shouldCheckpoint)
 {
     bool hasMadeChanges = false;
     bool didCheckpoint = !shouldCheckpoint;
@@ -1910,57 +1910,79 @@ bool SequencerOperations::remapNotesToTemperament(const ProjectNode &project,
     const auto pianoTracks = project.findChildrenOfType<PianoTrackNode>();
     for (const auto *track : pianoTracks)
     {
-        // upscaling temperament from twelve-tone is really straightforward,
-        // but we'll also support downscaling from larger temperament to smaller one:
-        // for that we'll just round each key to the nearest key of chromatic approximation scale
+        auto *pattern = track->getPattern();
         auto *sequence = static_cast<PianoSequence *>(track->getSequence());
 
         Array<Note> notesBefore, notesAfter;
         for (int n = 0; n < sequence->size(); ++n)
         {
             const auto *note = static_cast<Note *>(sequence->getUnchecked(n));
-
-            const auto rootKeyBefore = findRootKey(note->getBeat());
-            const auto rootIndexInChromaticMap = chromaticMapFrom->getNearestScaleKey(rootKeyBefore);
-            const auto rootKeyAfter = chromaticMapTo->getChromaticKey(rootIndexInChromaticMap, 0, true);
-
+            
+            // simply using the first clip's position to determine harmonic context,
+            // (there could be several clips, in which case I have no idea what to do)
+            const auto rootKeyBefore = findRootKey(note->getBeat() + pattern->getFirstBeat());
             const auto key = note->getKey() - rootKeyBefore;
             const auto periodNum = key / periodSizeBefore;
             const auto relativeKey = key % periodSizeBefore;
 
-            // now we need to round relative key to the nearest one in chromaticMapFrom 
-            const auto keyIndexInChromaticMap = chromaticMapFrom->getNearestScaleKey(relativeKey);
-            const auto newRelativeKey = chromaticMapTo->getChromaticKey(keyIndexInChromaticMap, rootKeyAfter, false);
-            const auto newKey = periodNum * periodSizeAfter + newRelativeKey;
+            // key signatures are converted in a different method
+            // (tech debt warning: these two lines should be the same in both methods)
+            const auto rootIndexInChromaticMap = chromaticMapFrom->getNearestScaleKey(rootKeyBefore);
+            const auto rootKeyAfter = chromaticMapTo->getChromaticKey(rootIndexInChromaticMap, 0, true);
 
+            // convert notes either by using the temperaments' chromatic maps,
+            // or by assuming equal temperaments and using proportions (more accurate):
+            int newKey = 0;
+            if (shouldUseChromaticMaps)
+            {
+                // round the relative key to the nearest one in chromaticMapFrom 
+                const auto keyIndexInChromaticMap = chromaticMapFrom->getNearestScaleKey(relativeKey);
+                const auto newRelativeKey = chromaticMapTo->getChromaticKey(keyIndexInChromaticMap, rootKeyAfter, false);
+                newKey = periodNum * periodSizeAfter + newRelativeKey;
+            }
+            else
+            {
+                const auto relativeKeyAsFraction = double(relativeKey) / double(periodSizeBefore);
+                const auto newRelativeKey = int(round(periodSizeAfter * relativeKeyAsFraction));
+                newKey = periodNum * periodSizeAfter + newRelativeKey + rootKeyAfter;
+            }
+
+            jassert(newKey != 0);
             notesBefore.add(*note);
             notesAfter.add(note->withKey(newKey));
         }
 
-        // same mapping rules apply to any keys, so we will adjust clip key offsets as well
-
-        auto *pattern = track->getPattern();
-
+        // adjust clip key offsets in a similar way
         Array<Clip> clipsBefore, clipsAfter;
-
         for (int i = 0; i < pattern->size(); ++i)
         {
             const auto *clip = pattern->getUnchecked(i);
 
             const auto key = clip->getKey();
-            const auto periodNum = key / periodSizeBefore;
-            const auto relativeKey = key % periodSizeBefore;
+            const auto periodNum = abs(key) / periodSizeBefore;
+            const auto relativeKey = abs(key) % periodSizeBefore;
             const auto keySign = (key > 0) - (key < 0); // key offset can be negative
 
-            const auto keyIndexInChromaticMap = chromaticMapFrom->getNearestScaleKey(relativeKey);
-            const auto newRelativeKey = chromaticMapTo->getChromaticKey(keyIndexInChromaticMap, 0, false);
-            const auto newKey = periodNum * periodSizeAfter + newRelativeKey * keySign;
+            int newKey = 0;
+            if (shouldUseChromaticMaps)
+            {
+                const auto keyIndexInChromaticMap = chromaticMapFrom->getNearestScaleKey(relativeKey);
+                const auto newRelativeKey = chromaticMapTo->getChromaticKey(keyIndexInChromaticMap, 0, false);
+                newKey = (periodNum * periodSizeAfter + newRelativeKey) * keySign;
+            }
+            else
+            {
+                const auto relativeKeyAsFraction = double(relativeKey) / double(periodSizeBefore);
+                const auto newRelativeKey = int(round(periodSizeAfter * relativeKeyAsFraction));
+                newKey = (periodNum * periodSizeAfter + newRelativeKey) * keySign;
+            }
 
-            clipsBefore.add(*clip);
-            clipsAfter.add(clip->withKey(newKey));
+            if (key != newKey)
+            {
+                clipsBefore.add(*clip);
+                clipsAfter.add(clip->withKey(newKey));
+            }
         }
-
-        // now just apply changes
 
         if (notesBefore.isEmpty() && clipsBefore.isEmpty())
         {
