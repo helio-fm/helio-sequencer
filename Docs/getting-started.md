@@ -141,6 +141,7 @@ A few built-in instruments are created automatically and cannot be removed:
 * the "MIDI Output" instrument generates no sound but sends all events, except meta-events, to the MIDI output specified on the settings page,
 * the "Metronome" instrument gives you the option to select custom [metronome](getting-polymetric.md#metronome) samples.
 
+Apart from those, Helio includes the built-in SoundFont player instrument which can be found in the plugins list after scanning. It can load SF2 format and SF3 format with OGG/FLAC sample compression and supports microtonal temperaments. On mobile platforms it will be automatically added to the orchestra pit on the first launch.
 
 ## Editing and arranging
 

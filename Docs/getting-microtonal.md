@@ -90,7 +90,8 @@ The most straightforward way to start playing around with microtonal scales is t
 
 The project refactoring menus provide two choices:
  * the `"Change temperament"` command will simply switch the piano roll highlighting and update key signatures,
- * the `"Convert to temperament"` command will, in addition, update notes: the conversion is done using chromatic scale approximations (see the [temperament model](configs.md#temperaments) for more information). Helio will use these chromatic maps as the "least common denominators" among temperaments to convert from one to another.
+ * the `"Convert to temperament"` command will, in addition, update notes: the conversion is done using chromatic scale approximations (see the [temperament model](configs.md#temperaments) for more information). Helio will use these chromatic maps as the "least common denominators" among temperaments to convert from one to another,
+   * *tip: use this menu with any modifier key pressed for the alternative conversion mode: the converter will assume equal temperaments and use key proportions instead of 12-tone maps for better accuracy.*
 
 All tool that work with scales will only show scales with octave size matching current temperament. The piano roll doesn't distinguish between EDOs and non-EDOs; all that matters is the number of keys per octave, highlighting, key names, and so on.
 

@@ -2,13 +2,13 @@
 
 Helio uses several configuration files, such as: scales, in-scale chords, temperaments, hotkeys, colour schemes and translations.
 
-For each of those configs, there can be up to three versions, which are loaded and merged in this order: 
- * ones that a built-in into executable,
- * latest updates fetched from helio.fm - they extend and override the built-in ones,
+Each configuration type can have up to three versions, which are loaded and merged in this order:
+ * built-in into the executable,
+ * latest updates fetched from helio.fm, which extend and override the built-in ones,
    * for example, translations, which is now the only resource updated in the runtime,
- * user's configs - they extend and override the previous step.
+ * [user's configs](#user-configs), which extend and override the previous step
    * for example, arpeggiators that you create in the app,
-   * or any other configuration you might [add](#user-configs) and fill by hand.
+   * or any other configuration you might add and fill by hand.
 
 ## Built-in configs
 
@@ -75,7 +75,7 @@ To override or extend the built-in data, you can create a file with one of these
 
 ### Custom scales
 
-Let's say, you want to add a scale - here's the example content for `scales.json`:
+The minimal content for `scales.json` is as follows:
 
 ```json
 {
@@ -90,11 +90,76 @@ Let's say, you want to add a scale - here's the example content for `scales.json
 What it means:
  * `"period": 12` - this scale will be available only in twelve-tone projects,
  * `"name": "Oriental"` - scales are merged by name; if the built-in list contained a scale with such name, it would be replaced,
- * `"intervals": "1 3 1 1 3 1 2"` - this one is a heptatonic scale, i.e. it contains 7 intervals.
+ * `"intervals": "1 3 1 1 3 1 2"` - successive intervals, in dieses (this one is a heptatonic scale, i.e. it contains 7 intervals).
+
+Here's the example config with additional heptatonic scales for [19-edo](https://xen.wiki/w/19edo_modes) and [31-edo](https://xen.wiki/w/31edo_modes):
+
+```json
+{
+  "scales": {
+    "scale": [
+      { "name": "Deutone 0|6", "period": 19, "intervals": "1 3 3 3 3 3 3" },
+      { "name": "Deutone 1|5", "period": 19, "intervals": "3 1 3 3 3 3 3" },
+      { "name": "Deutone 2|4", "period": 19, "intervals": "3 3 1 3 3 3 3" },
+      { "name": "Deutone 3|3", "period": 19, "intervals": "3 3 3 1 3 3 3" },
+      { "name": "Deutone 4|2", "period": 19, "intervals": "3 3 3 3 1 3 3" },
+      { "name": "Deutone 5|1", "period": 19, "intervals": "3 3 3 3 3 1 3" },
+      { "name": "Deutone 6|0", "period": 19, "intervals": "3 3 3 3 3 3 1" },
+      { "name": "Kleismic 0|6", "period": 19, "intervals": "1 4 1 4 1 4 4" },
+      { "name": "Kleismic 1|5", "period": 19, "intervals": "1 4 1 4 4 1 4" },
+      { "name": "Kleismic 2|4", "period": 19, "intervals": "1 4 4 1 4 1 4" },
+      { "name": "Kleismic 3|3", "period": 19, "intervals": "4 1 4 1 4 1 4" },
+      { "name": "Kleismic 4|2", "period": 19, "intervals": "4 1 4 1 4 4 1" },
+      { "name": "Kleismic 5|1", "period": 19, "intervals": "4 1 4 4 1 4 1" },
+      { "name": "Kleismic 6|0", "period": 19, "intervals": "4 4 1 4 1 4 1" },
+      { "name": "Liese 0|6", "period": 19, "intervals": "1 1 1 7 1 1 7" },
+      { "name": "Liese 1|5", "period": 19, "intervals": "1 1 7 1 1 1 7" },
+      { "name": "Liese 2|4", "period": 19, "intervals": "1 1 7 1 1 7 1" },
+      { "name": "Liese 3|3", "period": 19, "intervals": "1 7 1 1 1 7 1" },
+      { "name": "Liese 4|2", "period": 19, "intervals": "1 7 1 1 7 1 1" },
+      { "name": "Liese 5|1", "period": 19, "intervals": "7 1 1 1 7 1 1" },
+      { "name": "Liese 6|0", "period": 19, "intervals": "7 1 1 7 1 1 1" },
+      { "name": "Magic 0|6", "period": 19, "intervals": "1 1 5 1 5 1 5" },
+      { "name": "Magic 1|5", "period": 19, "intervals": "1 5 1 1 5 1 5" },
+      { "name": "Magic 2|4", "period": 19, "intervals": "1 5 1 5 1 1 5" },
+      { "name": "Magic 3|3", "period": 19, "intervals": "1 5 1 5 1 5 1" },
+      { "name": "Magic 4|2", "period": 19, "intervals": "5 1 1 5 1 5 1" },
+      { "name": "Magic 5|1", "period": 19, "intervals": "5 1 5 1 1 5 1" },
+      { "name": "Magic 6|0", "period": 19, "intervals": "5 1 5 1 5 1 1" },
+      { "name": "Altered Dorian", "period": 31, "intervals": "5 3 5 5 5 4 4" },
+      { "name": "Altered Neapolitan Major", "period": 31, "intervals": "3 5 5 5 5 4 4" },
+      { "name": "AugmentedPlus", "period": 31, "intervals": "8 2 8 2 8 2 1" },
+      { "name": "Enharmonic Dorian", "period": 31, "intervals": "1 2 10 5 1 2 10" },
+      { "name": "Enharmonic Hypodorian", "period": 31, "intervals": "5 1 2 10 1 2 10" },
+      { "name": "Enharmonic Hypolydian", "period": 31, "intervals": "2 10 5 1 2 10 1" },
+      { "name": "Enharmonic Hypophrygian", "period": 31, "intervals": "10 5 1 2 10 1 2" },
+      { "name": "Enharmonic Lydian", "period": 31, "intervals": "2 10 1 2 10 5 1" },
+      { "name": "Enharmonic Mixolydian", "period": 31, "intervals": "1 2 10 1 2 10 5" },
+      { "name": "Enharmonic Phrygian", "period": 31, "intervals": "10 1 2 10 5 1 2" },
+      { "name": "Harmonic Series 7", "period": 31, "intervals": "6 5 5 4 4 4 3" },
+      { "name": "Harrison Major", "period": 31, "intervals": "5 6 2 5 5 6 2" },
+      { "name": "Hyperblue Dorian", "period": 31, "intervals": "8 5 2 3 6 2 5" },
+      { "name": "Hyperblue Harmonic", "period": 31, "intervals": "8 5 2 3 2 9 2" },
+      { "name": "Hypermavila", "period": 31, "intervals": "8 3 3 8 3 3 3" },
+      { "name": "Maqam Bayati", "period": 31, "intervals": "4 4 5 5 3 5 5" },
+      { "name": "Maqam Rast", "period": 31, "intervals": "5 4 4 5 5 4 4" },
+      { "name": "Neutral[7]", "period": 31, "intervals": "4 5 4 5 4 5 4" },
+      { "name": "Phrygian Harmonic", "period": 31, "intervals": "2 8 3 5 2 5 6" },
+      { "name": "Scorp", "period": 31, "intervals": "5 4 5 3 5 4 5" },
+      { "name": "Screamapillar", "period": 31, "intervals": "5 5 4 4 5 5 3" },
+      { "name": "Sheimanic", "period": 31, "intervals": "4 4 4 4 5 5 5" },
+      { "name": "Subminor Altered", "period": 31, "intervals": "2 5 3 5 5 5 6" },
+      { "name": "Thaiic", "period": 31, "intervals": "4 5 5 4 4 4 5" },
+      { "name": "Tropical Major", "period": 31, "intervals": "5 7 1 5 7 5 1" },
+      { "name": "Turkish Major", "period": 31, "intervals": "5 5 3 5 4 5 4" }
+    ]
+  }
+}
+```
 
 ### Custom temperaments
 
-Or, if you want to add a temperament, create `temperaments.json`; for example, let's add 24-EDO:
+To add a temperament, create `temperaments.json`; for example, let's add 24-EDO:
 
 ```json
 {
