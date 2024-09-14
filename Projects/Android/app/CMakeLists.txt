@@ -8,7 +8,7 @@ set(BINARY_NAME "juce_jni")
 add_library("cpufeatures" STATIC "${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c")
 set_source_files_properties("${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c" PROPERTIES COMPILE_FLAGS "-Wno-sign-conversion -Wno-gnu-statement-expression")
 
-add_definitions("-DJUCE_ANDROID=1" "-DJUCE_ANDROID_API_VERSION=21" "-DJUCE_ANDROID_GL_ES_VERSION_3_0=1" "-DJUCER_ANDROIDSTUDIO_6AB8437A=1" "-DJUCE_APP_VERSION=3.13" "-DJUCE_APP_VERSION_HEX=0x30d00")
+add_definitions("-DJUCE_ANDROID=1" "-DJUCE_ANDROID_API_VERSION=21" "-DJUCE_ANDROID_GL_ES_VERSION_3_0=1" "-DJUCER_ANDROIDSTUDIO_6AB8437A=1" "-DJUCE_APP_VERSION=3.14" "-DJUCE_APP_VERSION_HEX=0x30e00")
 
 include_directories( AFTER
     "../../../ThirdParty/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"
@@ -20,7 +20,7 @@ include_directories( AFTER
 enable_language(ASM)
 
 if(JUCE_BUILD_CONFIGURATION MATCHES "DEBUG")
-    add_definitions("-DJUCER_ANDROIDSTUDIO_6AB8437A=1" "-DJUCE_APP_VERSION=3.13" "-DJUCE_APP_VERSION_HEX=0x30d00" "-DDEBUG=1" "-D_DEBUG=1")
+    add_definitions("-DJUCER_ANDROIDSTUDIO_6AB8437A=1" "-DJUCE_APP_VERSION=3.14" "-DJUCE_APP_VERSION_HEX=0x30e00" "-DDEBUG=1" "-D_DEBUG=1")
     include_directories( AFTER
         "../../Projucer/JuceLibraryCode"
         "../../../ThirdParty/JUCE/modules"
@@ -94,7 +94,7 @@ if(JUCE_BUILD_CONFIGURATION MATCHES "DEBUG")
     )
 
 elseif(JUCE_BUILD_CONFIGURATION MATCHES "RELEASE")
-    add_definitions("-DJUCER_ANDROIDSTUDIO_6AB8437A=1" "-DJUCE_APP_VERSION=3.13" "-DJUCE_APP_VERSION_HEX=0x30d00" "-DNDEBUG=1")
+    add_definitions("-DJUCER_ANDROIDSTUDIO_6AB8437A=1" "-DJUCE_APP_VERSION=3.14" "-DJUCE_APP_VERSION_HEX=0x30e00" "-DNDEBUG=1")
     include_directories( AFTER
         "../../Projucer/JuceLibraryCode"
         "../../../ThirdParty/JUCE/modules"

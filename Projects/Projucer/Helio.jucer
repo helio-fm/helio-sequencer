@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="3.13"
+<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="3.14"
               bundleIdentifier="fm.helio" includeBinaryInAppConfig="1" companyWebsite="https://helio.fm"
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark"
@@ -1446,11 +1446,9 @@
                   userNotes="" extraLinkerFlags="-weak_framework Metal -weak_framework MetalKit -weak_framework UserNotifications"
                   externalLibraries="" extraFrameworks="" iosDeviceFamily="1,2"
                   iPadScreenOrientation="UIInterfaceOrientationLandscapeLeft,UIInterfaceOrientationLandscapeRight"
-                  useHeaderMap="0" bundleIdentifier="fm.helio.mobile" unityBuild="1"
-                  iosBackgroundBle="1" iCloudPermissions="1" iosContentSharing="1"
-                  iosBackgroundAudio="1" cameraPermissionNeeded="0" iosBluetoothPermissionNeeded="1"
-                  microphonePermissionNeeded="0" UISupportsDocumentBrowser="1"
-                  UIRequiresFullScreen="1">
+                  useHeaderMap="0" unityBuild="1" iCloudPermissions="1" iosContentSharing="1"
+                  iosBackgroundAudio="1" cameraPermissionNeeded="0" microphonePermissionNeeded="0"
+                  UISupportsDocumentBrowser="1" UIRequiresFullScreen="1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" iosCompatibility="11.0" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++14" cppLibType="libc++"
@@ -1572,7 +1570,7 @@
                    androidInternetNeeded="0" androidOtherPermissions="android.permission.MODIFY_AUDIO_SETTINGS"
                    cppLanguageStandard="-std=c++14" androidTheme="@android:style/Theme.Material.NoActionBar.Fullscreen"
                    smallIcon="DQTpOG" bigIcon="DQTpOG" androidScreenOrientation="landscape"
-                   androidVersionCode="313" gradleToolchain="clang" cameraPermissionNeeded="0"
+                   androidVersionCode="314" gradleToolchain="clang" cameraPermissionNeeded="0"
                    microphonePermissionNeeded="0" androidBluetoothNeeded="1" androidInAppBilling="0"
                    androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
                    androidEnableRemoteNotifications="0" buildToolsVersion="28.0.0"

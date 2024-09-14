@@ -31,10 +31,6 @@
     <false/>
     <key>UIViewControllerBasedStatusBarAppearance~ipad</key>
     <false/>
-    <key>NSBluetoothAlwaysUsageDescription</key>
-    <string>This app requires access to Bluetooth to function correctly.</string>
-    <key>NSBluetoothPeripheralUsageDescription</key>
-    <string>This app requires access to Bluetooth to function correctly.</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
     <key>UILaunchStoryboardName</key>
@@ -42,7 +38,7 @@
     <key>CFBundleExecutable</key>
     <string>${EXECUTABLE_NAME}</string>
     <key>CFBundleIdentifier</key>
-    <string>fm.helio.mobile</string>
+    <string>fm.helio</string>
     <key>CFBundleName</key>
     <string>Helio</string>
     <key>CFBundleDisplayName</key>
@@ -52,9 +48,9 @@
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleShortVersionString</key>
-    <string>3.13</string>
+    <string>3.14</string>
     <key>CFBundleVersion</key>
-    <string>3.13</string>
+    <string>3.14</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>UISupportsDocumentBrowser</key>
