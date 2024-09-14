@@ -4,6 +4,15 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.14
+ - The built-in SoundFont player now supports microtonal temperaments with no setup
+ - The built-in SoundFont player supports SF3 format with OGG/FLAC sample compression
+ - Fixed edge cases when converting between temperaments
+ - Fixed MIDI export for offbeat tracks
+ - Orchestra pit: the plugins list is now searchable, and table sorting is persistent
+ - Mobile platforms: added scrollable scale editor for microtonal temperaments for phone screens, added sidebar buttons for tuning and transposing clips in the pattern roll, enabled background audio on iOS
+ - Fixed misc annoyances: fixed crashes on pasting empty/invalid data, fixed undo issues after VCS checkouts, fixed edge cases when switching the editable scope
+
 ## Version 3.13
  - Added initial support for parametric modifiers: arpeggiators and most of the refactoring options can now be applied in a non-destructive way
  - Reworked note naming to be more compatible with traditional notation language, at least for chromatic scales in 12-tone temperament
