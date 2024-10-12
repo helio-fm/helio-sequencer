@@ -2632,12 +2632,16 @@ UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const PianoSe
 
 UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<Note> &events, const Pattern *pattern)
 {
-    if (events.size() == 0) { return {}; }
-
     Array<Clip> clips;
     for (const auto *clip : pattern->getClips())
     {
         clips.add(*clip);
+    }
+
+    if (clips.size() == 0)
+    {
+        jassertfalse;
+        return {};
     }
 
     return createPianoTrack(events, clips);
@@ -2645,9 +2649,13 @@ UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<N
 
 UniquePointer<MidiTrackNode> SequencerOperations::createPianoTrack(const Array<Note> &events, const Array<Clip> &clips)
 {
-    if (events.size() == 0) { return {}; }
+    if (clips.size() == 0)
+    {
+        jassertfalse;
+        return {};
+    }
 
-    const auto *track = events.getReference(0).getSequence()->getTrack();
+    const auto *track = clips.getReference(0).getPattern()->getTrack();
     const auto instrumentId = track->getTrackInstrumentId();
     const auto colour = track->getTrackColour();
     const auto channel = track->getTrackChannel();
