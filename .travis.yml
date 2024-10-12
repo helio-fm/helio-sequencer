@@ -20,11 +20,11 @@ stages:
     if: (type = push || type = api) && fork = false
 
 addons_shortcuts:
-  addons_gcc5: &gcc5
+  addons_gcc9: &gcc9
     apt:
       packages: [ 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
     ssh_known_hosts: helio.fm
-  addons_clang7: &clang7
+  addons_clang16: &clang16
     apt:
       packages: [ 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
     ssh_known_hosts: helio.fm
@@ -33,18 +33,18 @@ addons_shortcuts:
 
 jobs:
   include:
-    - name: "gcc 5, debug build x64"
+    - name: "gcc 9, debug build x64"
       stage: Test
       os: linux
-      dist: xenial
-      addons: *gcc5
-      env: BUILD_TYPE=linux CONFIG=Tests CFLAGS=-fno-pie
-    - name: "gcc 5, release build x64"
+      dist: focal
+      addons: *gcc9
+      env: BUILD_TYPE=linux CONFIG=Tests CFLAGS=-fno-pie LDFLAGS=-no-pie
+    - name: "gcc 9, release build x64"
       stage: Deploy
       os: linux
-      dist: xenial
-      addons: *gcc5
-      env: BUILD_TYPE=linux CONFIG=Release64 CFLAGS=-fno-pie
+      dist: focal
+      addons: *gcc9
+      env: BUILD_TYPE=linux CONFIG=Release64 CFLAGS=-fno-pie LDFLAGS=-no-pie
     - name: "xcode 10.1 mac, release build"
       stage: Deploy
       os: osx
