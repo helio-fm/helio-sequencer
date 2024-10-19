@@ -617,19 +617,19 @@ void RollHeader::paint(Graphics &g)
     g.setColour(this->barColour);
     for (const auto x : this->roll.getVisibleBars())
     {
-        g.fillRect(floorf(x), float(this->getHeight() - 12), 1.f, 11.f);
+        g.fillRect(floorf(x), float(this->getHeight() - 12), 1.f, 10.75f);
     }
 
     g.setColour(this->beatColour);
     for (const auto x : this->roll.getVisibleBeats())
     {
-        g.fillRect(floorf(x), float(this->getHeight() - 8), 1.f, 7.f);
+        g.fillRect(floorf(x), float(this->getHeight() - 8), 1.f, 6.75f);
     }
 
     g.setColour(this->snapColour);
     for (const auto x : this->roll.getVisibleSnaps())
     {
-        g.fillRect(floorf(x), float(this->getHeight() - 5), 1.f, 4.f);
+        g.fillRect(floorf(x), float(this->getHeight() - 5), 1.f, 3.75f);
     }
 
     g.setColour(this->bevelLightColour);

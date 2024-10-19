@@ -1995,7 +1995,7 @@ void RollBase::updateChildrenBounds()
 
     this->header->setBounds(0, viewY, this->getWidth(), Globals::UI::rollHeaderHeight);
     this->headerShadow->setBounds(viewX, viewY + Globals::UI::rollHeaderHeight,
-        viewWidth, Globals::UI::rollHeaderShadowSize);
+        viewWidth, Globals::UI::rollShadowSize);
 
     if (this->annotationsMap != nullptr)
     {

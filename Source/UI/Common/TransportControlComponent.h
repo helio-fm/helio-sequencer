@@ -50,9 +50,9 @@ private:
 
     static constexpr auto buttonSkew = 6;
     static constexpr auto playButtonSize =
-        int(Globals::UI::projectMapHeight * 0.6) + buttonSkew / 2;
+        int(Globals::UI::sidebarFooterHeight * 0.6) + buttonSkew / 2;
     static constexpr auto recordButtonSize =
-        Globals::UI::projectMapHeight - playButtonSize + buttonSkew / 2 + 1;
+        Globals::UI::sidebarFooterHeight - playButtonSize + buttonSkew / 2 + 1;
 
     friend class TransportControlRecordBg;
     friend class TransportControlPlayBg;

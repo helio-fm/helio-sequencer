@@ -31,8 +31,9 @@
 #include "AutomationEditor.h"
 #include "SequencerSidebarRight.h"
 #include "SequencerSidebarLeft.h"
-#include "OrigamiVertical.h"
 #include "ShadowUpwards.h"
+#include "ShadowRightwards.h"
+#include "ShadowLeftwards.h"
 #include "NoteComponent.h"
 #include "ClipComponent.h"
 #include "KnifeToolHelper.h"
@@ -80,6 +81,9 @@ public:
         bottomEditorsSwitcher(bottomEditorsSwitcher),
         scrollerShadow(scrollerShadow)
     {
+        this->setFocusContainerType(Component::FocusContainerType::none);
+        this->setWantsKeyboardFocus(false);
+        this->setMouseClickGrabsKeyboardFocus(false);
         this->setPaintingIsUnclipped(false);
         this->setInterceptsMouseClicks(false, true);
 
@@ -111,6 +115,8 @@ public:
             this->bottomEditorsScroller->setVisible(true);
             this->bottomEditorsSwitcher->setVisible(true);
         }
+
+        this->setSize(256, 256); // not 0
     }
 
     inline bool canAnimate(Timers timer) const noexcept
@@ -549,26 +555,21 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     
     const auto hasAnimations = App::Config().getUiFlags()->areUiAnimationsEnabled();
     this->rollContainer->setAnimationsEnabled(hasAnimations);
+    this->addAndMakeVisible(this->rollContainer.get());
 
     // sidebars
 
     this->rollToolsSidebar = make<SequencerSidebarRight>(this->project);
-    this->rollToolsSidebar->setSize(Globals::UI::sidebarWidth, this->getParentHeight());
+    this->addAndMakeVisible(this->rollToolsSidebar.get());
 
-    this->rollNavSidebar = make<SequencerSidebarLeft>();
-    this->rollNavSidebar->setSize(Globals::UI::sidebarWidth, this->getParentHeight());
-    this->rollNavSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
+    this->rollNavigationSidebar = make<SequencerSidebarLeft>();
+    this->rollNavigationSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
+    this->addAndMakeVisible(this->rollNavigationSidebar.get());
 
-    // combine sidebars with editors
-
-    this->sequencerLayout = make<OrigamiVertical>();
-    this->sequencerLayout->addFixedPage(this->rollNavSidebar.get());
-    this->sequencerLayout->addFlexiblePage(this->rollContainer.get());
-    this->sequencerLayout->addShadowAtTheStart();
-    this->sequencerLayout->addShadowAtTheEnd();
-    this->sequencerLayout->addFixedPage(this->rollToolsSidebar.get());
-
-    this->addAndMakeVisible(this->sequencerLayout.get());
+    this->leftSidebarShadow = make<ShadowRightwards>(ShadowType::Normal);
+    this->addAndMakeVisible(this->leftSidebarShadow.get());
+    this->rightSidebarShadow = make<ShadowLeftwards>(ShadowType::Normal);
+    this->addAndMakeVisible(this->rightSidebarShadow.get());
 
     App::Config().getUiFlags()->addListener(this);
 }
@@ -576,11 +577,11 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
 SequencerLayout::~SequencerLayout()
 {
     App::Config().getUiFlags()->removeListener(this);
-
-    this->sequencerLayout = nullptr;
     
+    this->leftSidebarShadow = nullptr;
+    this->rightSidebarShadow = nullptr;
     this->rollToolsSidebar = nullptr;
-    this->rollNavSidebar = nullptr;
+    this->rollNavigationSidebar = nullptr;
     this->rollContainer = nullptr;
 
     this->patternRoll->removeRollListener(this->bottomEditorsScroller.get());
@@ -608,7 +609,7 @@ void SequencerLayout::showPatternEditor()
     }
 
     this->rollToolsSidebar->setPatternMode();
-    this->rollNavSidebar->setPatternMode();
+    this->rollNavigationSidebar->setPatternMode();
 
     // sync the pattern roll's selection with the piano roll's editable scope:
     this->patternRoll->selectClip(this->pianoRoll->getActiveClip());
@@ -625,7 +626,7 @@ void SequencerLayout::showLinearEditor(const Clip &activeClip)
     }
 
     this->rollToolsSidebar->setLinearMode();
-    this->rollNavSidebar->setLinearMode();
+    this->rollNavigationSidebar->setLinearMode();
 
     //this->patternRoll->selectClip(activeClip);
     this->pianoRoll->deselectAll();
@@ -651,10 +652,17 @@ RollBase *SequencerLayout::getRoll() const noexcept
 
 void SequencerLayout::resized()
 {
-    this->sequencerLayout->setBounds(this->getLocalBounds());
+    auto localBounds = this->getLocalBounds();
 
+    this->rollNavigationSidebar->setBounds(localBounds.removeFromLeft(Globals::UI::sidebarWidth));
+    this->rollToolsSidebar->setBounds(localBounds.removeFromRight(Globals::UI::sidebarWidth));
     // a hack for themes changing
     this->rollToolsSidebar->resized();
+    
+    this->rollContainer->setBounds(localBounds);
+    
+    this->leftSidebarShadow->setBounds(localBounds.removeFromLeft(Globals::UI::rollShadowSize));
+    this->rightSidebarShadow->setBounds(localBounds.removeFromRight(Globals::UI::rollShadowSize));
 }
 
 void SequencerLayout::proceedToRenderDialog(RenderFormat format)

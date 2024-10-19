@@ -44,7 +44,7 @@ public:
     void setLinearMode();
     void setPatternMode();
 
-    void paint(Graphics& g) override;
+    void paint(Graphics &g) override;
     void resized() override;
 
 private:

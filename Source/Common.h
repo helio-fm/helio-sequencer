@@ -226,27 +226,25 @@ namespace Globals
         static constexpr auto headlineHeight = 36;
         static constexpr auto menuPanelRowHeight = 36;
         static constexpr auto sidebarWidth = 42;
+        static constexpr auto sidebarFooterHeight = 70;
+        static constexpr auto projectMapHeight = 70;
+        static constexpr auto editorPanelHeight = 108;
         #elif PLATFORM_DESKTOP
         static constexpr auto headlineHeight = 32;
         static constexpr auto menuPanelRowHeight = 32;
         static constexpr auto sidebarWidth = 38;
+        static constexpr auto sidebarFooterHeight = 76;
+        static constexpr auto projectMapHeight = 76;
+        static constexpr auto editorPanelHeight = 128;
         #endif
 
         static constexpr auto defaultBeatWidth = 48;
-        static constexpr auto rollHeaderShadowSize = 12;
+        static constexpr auto rollShadowSize = 12;
         static constexpr auto rollHeaderHeight = 35;
         static constexpr auto rollScrollerHeight = 30;
         static constexpr auto headlineIconSize = 16;
         static constexpr auto sidebarRowHeight = 36;
         static constexpr auto textEditorHeight = 32;
-
-        #if PLATFORM_MOBILE
-        static constexpr auto projectMapHeight = 70;
-        static constexpr auto editorPanelHeight = 108;
-        #elif PLATFORM_DESKTOP
-        static constexpr auto projectMapHeight = 76;
-        static constexpr auto editorPanelHeight = 128;
-        #endif
 
         static constexpr auto fadeInShort = 90;
         static constexpr auto fadeOutShort = 110;

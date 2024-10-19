@@ -24,7 +24,6 @@ class SequencerLayout;
 class RollBase;
 class MidiEvent;
 class ProjectPage;
-class Origami;
 class MidiRecorder;
 class ProjectMetadata;
 class ProjectTimeline;

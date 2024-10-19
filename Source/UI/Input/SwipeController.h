@@ -17,24 +17,27 @@
 
 #pragma once
 
-#include "Origami.h"
-
-class OrigamiVertical final : public Origami
+class SwipeController final : public MouseListener
 {
 public:
 
-    void addFlexiblePage(Component *component) override;
-    void addFixedPage(Component *component) override;
-    void addShadowAtTheStart() override;
-    void addShadowAtTheEnd() override;
-    void addResizer(int minSize, int maxSize) override;
+    class Listener
+    {
+    public:
+        virtual ~Listener() = default;
+        virtual int getVerticalSwipeAnchor() { return 0; }
+        virtual void onVerticalSwipe(int anchor, int distance) {}
+        virtual int getHorizontalSwipeAnchor() { return 0; }
+        virtual void onHorizontalSwipe(int anchor, int distance) {}
+    };
 
-    void onPageResized(Component *component) override;
-    void resized() override;
+    explicit SwipeController(Listener &listener) :
+        listener(listener) {}
 
-private:
+    void mouseDrag(const MouseEvent &event) override
+    {
 
-    int getCommonFixedWidth() const;
-    void updateLayout(const Origami::Page *page, Rectangle<int> bounds);
+    }
 
+    Listener &listener;
 };

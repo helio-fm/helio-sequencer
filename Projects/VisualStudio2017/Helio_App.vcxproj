@@ -407,8 +407,6 @@
     <ClCompile Include="..\..\Source\UI\Common\KeySelector.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\MobileComboBox.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\ModeIndicatorComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Common\OrigamiHorizontal.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Common\OrigamiVertical.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\PlayButton.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\PluginWindow.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\RadioButton.cpp"/>
@@ -2880,9 +2878,6 @@
     <ClInclude Include="..\..\Source\UI\Common\MetronomeEditor.h"/>
     <ClInclude Include="..\..\Source\UI\Common\MobileComboBox.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ModeIndicatorComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Common\Origami.h"/>
-    <ClInclude Include="..\..\Source\UI\Common\OrigamiHorizontal.h"/>
-    <ClInclude Include="..\..\Source\UI\Common\OrigamiVertical.h"/>
     <ClInclude Include="..\..\Source\UI\Common\OverlayButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\PlayButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\PluginWindow.h"/>
@@ -2916,6 +2911,7 @@
     <ClInclude Include="..\..\Source\UI\Input\SmoothPanListener.h"/>
     <ClInclude Include="..\..\Source\UI\Input\SmoothZoomController.h"/>
     <ClInclude Include="..\..\Source\UI\Input\SmoothZoomListener.h"/>
+    <ClInclude Include="..\..\Source\UI\Input\SwipeController.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\Base\MenuItemComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\Base\MenuPanel.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\AudioPluginSelectionMenu.h"/>

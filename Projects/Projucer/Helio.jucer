@@ -761,15 +761,6 @@
                 file="../../Source/UI/Common/ModeIndicatorComponent.cpp"/>
           <FILE id="EhpPoR" name="ModeIndicatorComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Common/ModeIndicatorComponent.h"/>
-          <FILE id="RD7GXq" name="Origami.h" compile="0" resource="0" file="../../Source/UI/Common/Origami.h"/>
-          <FILE id="a0FCs1" name="OrigamiHorizontal.cpp" compile="1" resource="0"
-                file="../../Source/UI/Common/OrigamiHorizontal.cpp"/>
-          <FILE id="j1rcU6" name="OrigamiHorizontal.h" compile="0" resource="0"
-                file="../../Source/UI/Common/OrigamiHorizontal.h"/>
-          <FILE id="yLtjJd" name="OrigamiVertical.cpp" compile="1" resource="0"
-                file="../../Source/UI/Common/OrigamiVertical.cpp"/>
-          <FILE id="vKQRAK" name="OrigamiVertical.h" compile="0" resource="0"
-                file="../../Source/UI/Common/OrigamiVertical.h"/>
           <FILE id="qUVkx6" name="OverlayButton.h" compile="0" resource="0" file="../../Source/UI/Common/OverlayButton.h"/>
           <FILE id="f1fXjR" name="PlayButton.cpp" compile="1" resource="0" file="../../Source/UI/Common/PlayButton.cpp"/>
           <FILE id="Z9JjQa" name="PlayButton.h" compile="0" resource="0" file="../../Source/UI/Common/PlayButton.h"/>
@@ -867,6 +858,8 @@
                 file="../../Source/UI/Input/SmoothZoomController.h"/>
           <FILE id="bl1ZxP" name="SmoothZoomListener.h" compile="0" resource="0"
                 file="../../Source/UI/Input/SmoothZoomListener.h"/>
+          <FILE id="vI8Mui" name="SwipeController.h" compile="0" resource="0"
+                file="../../Source/UI/Input/SwipeController.h"/>
         </GROUP>
         <GROUP id="{92C62E35-FD04-7F5D-A959-2BA2FC9AB735}" name="Menus">
           <GROUP id="{07D13160-8953-42AA-BBDE-F7B24DAEB9A2}" name="Base">

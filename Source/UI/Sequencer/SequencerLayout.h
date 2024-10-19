@@ -28,7 +28,6 @@ class EditorPanelsScroller;
 class EditorPanelsSwitcher;
 class SequencerSidebarRight;
 class SequencerSidebarLeft;
-class Origami;
 class Clip;
 
 #include "RenderFormat.h"
@@ -88,10 +87,10 @@ private:
     UniquePointer<PatternRoll> patternRoll;
     UniquePointer<RollsSwitchingProxy> rollContainer;
 
-    UniquePointer<SequencerSidebarLeft> rollNavSidebar;
+    UniquePointer<SequencerSidebarLeft> rollNavigationSidebar;
     UniquePointer<SequencerSidebarRight> rollToolsSidebar;
-
-    UniquePointer<Origami> sequencerLayout; // all editors combined with sidebars
+    UniquePointer<Component> leftSidebarShadow;
+    UniquePointer<Component> rightSidebarShadow;
 
     void proceedToRenderDialog(RenderFormat format);
     UniquePointer<FileChooser> renderTargetFileChooser;

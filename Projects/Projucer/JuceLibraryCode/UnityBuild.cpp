@@ -144,8 +144,6 @@
 #include "../../Source/UI/Common/KeySelector.cpp"
 #include "../../Source/UI/Common/MobileComboBox.cpp"
 #include "../../Source/UI/Common/ModeIndicatorComponent.cpp"
-#include "../../Source/UI/Common/OrigamiHorizontal.cpp"
-#include "../../Source/UI/Common/OrigamiVertical.cpp"
 #include "../../Source/UI/Common/PlayButton.cpp"
 #include "../../Source/UI/Common/PluginWindow.cpp"
 #include "../../Source/UI/Common/RadioButton.cpp"

@@ -110,7 +110,7 @@ void SequencerSidebarLeft::paint(Graphics &g)
 void SequencerSidebarLeft::resized()
 {
     constexpr auto headerSize = Globals::UI::rollHeaderHeight;
-    constexpr auto footerSize = Globals::UI::projectMapHeight;
+    constexpr auto footerSize = Globals::UI::sidebarFooterHeight;
 
     this->listBox->setBounds(0, headerSize - 1, this->getWidth(),
         this->getHeight() - headerSize - footerSize + 1);
