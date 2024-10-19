@@ -197,6 +197,38 @@ void UserInterfaceFlags::toggleLockZoomLevel()
     this->setZoomLevelLocked(!this->zoomLevelLocked);
 }
 
+int UserInterfaceFlags::getLeftSidebarWidth() const noexcept
+{
+    return this->leftSidebarWidth;
+}
+
+void UserInterfaceFlags::setLeftSidebarWidth(int width)
+{
+    if (this->leftSidebarWidth == width)
+    {
+        return;
+    }
+
+    this->leftSidebarWidth = width;
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
+int UserInterfaceFlags::getRightSidebarWidth() const noexcept
+{
+    return this->rightSidebarWidth;
+}
+
+void UserInterfaceFlags::setRightSidebarWidth(int width)
+{
+    if (this->rightSidebarWidth == width)
+    {
+        return;
+    }
+
+    this->rightSidebarWidth = width;
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
 void UserInterfaceFlags::setMouseWheelUsePanningByDefault(bool usePanning)
 {
     if (this->mouseWheelFlags.usePanningByDefault == usePanning)
@@ -314,6 +346,16 @@ SerializedData UserInterfaceFlags::serialize() const
     tree.setProperty(UI::Flags::showFullProjectMap, this->projectMapLargeMode);
     tree.setProperty(UI::Flags::uiScaleFactor, this->uiScaleFactor);
 
+    if (this->leftSidebarWidth > Globals::UI::sidebarWidth)
+    {
+        tree.setProperty(UI::Flags::leftSidebarWidth, this->leftSidebarWidth);
+    }
+
+    if (this->rightSidebarWidth > Globals::UI::sidebarWidth)
+    {
+        tree.setProperty(UI::Flags::rightSidebarWidth, this->rightSidebarWidth);
+    }
+
     tree.setProperty(UI::Flags::mouseWheelAltMode, this->mouseWheelFlags.usePanningByDefault);
     tree.setProperty(UI::Flags::mouseWheelVerticalPanningByDefault, this->mouseWheelFlags.useVerticalPanningByDefault);
     tree.setProperty(UI::Flags::mouseWheelVerticalZoomingByDefault, this->mouseWheelFlags.useVerticalZoomingByDefault);
@@ -351,6 +393,9 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
 
     this->uiScaleFactor = root.getProperty(UI::Flags::uiScaleFactor, this->uiScaleFactor);
     this->uiScaleFactor = jlimit(UserInterfaceFlags::minUiScaleFactor, UserInterfaceFlags::maxUiScaleFactor, this->uiScaleFactor);
+
+    this->leftSidebarWidth = root.getProperty(UI::Flags::leftSidebarWidth, this->leftSidebarWidth);
+    this->rightSidebarWidth = root.getProperty(UI::Flags::rightSidebarWidth, this->rightSidebarWidth);
 
     this->mouseWheelFlags.usePanningByDefault =
         root.getProperty(UI::Flags::mouseWheelAltMode, this->mouseWheelFlags.usePanningByDefault);

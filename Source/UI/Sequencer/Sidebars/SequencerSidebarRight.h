@@ -27,14 +27,17 @@ class TransportControlComponent;
 #include "Config.h"
 #include "UserInterfaceFlags.h"
 #include "TransportListener.h"
+#include "SwipeController.h"
 #include "RollEditMode.h"
 #include "MenuPanel.h"
+#include "ColourIDs.h"
 
 class SequencerSidebarRight final : public Component,
-    private TransportListener,
-    private ListBoxModel,
+    public SwipeController::Listener,
+    private UserInterfaceFlags::Listener,
     private RollEditMode::Listener,
-    private UserInterfaceFlags::Listener
+    private TransportListener,
+    private ListBoxModel
 {
 public:
 
@@ -48,6 +51,13 @@ public:
     void resized() override;
 
 private:
+
+    //===------------------------------------------------------------------===//
+    // SwipeController::Listener
+    //===------------------------------------------------------------------===//
+
+    int getHorizontalSwipeAnchor() override;
+    void onHorizontalSwipe(int anchor, int distance) override;
 
     //===------------------------------------------------------------------===//
     // SequencerSidebarRight
@@ -103,6 +113,12 @@ private:
     void onLoopModeChanged(bool hasLoop, float startBeat, float endBeat) override;
     void onSeek(float beatPosition) override {}
     void onCurrentTempoChanged(double msPerQuarter) override {}
+
+private:
+
+    const Colour borderColour = findDefaultColour(ColourIDs::Common::borderLineLight);
+
+    UniquePointer<SwipeController> swipeController;
 
     UniquePointer<ListBox> listBox;
     UniquePointer<SeparatorHorizontalReversed> headRule;

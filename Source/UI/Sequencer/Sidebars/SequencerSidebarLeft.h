@@ -20,7 +20,6 @@
 class AudioMonitor;
 class WaveformAudioMonitorComponent;
 class MenuItemComponent;
-
 class ShadowUpwards;
 class ShadowDownwards;
 class SeparatorHorizontal;
@@ -30,10 +29,14 @@ class SeparatorHorizontalReversed;
 #include "ComponentFader.h"
 #include "UserInterfaceFlags.h"
 #include "ModeIndicatorComponent.h"
+#include "SwipeController.h"
+#include "MenuPanel.h"
+#include "ColourIDs.h"
 
 class SequencerSidebarLeft final : public Component,
-    protected UserInterfaceFlags::Listener,
-    protected ListBoxModel
+    public SwipeController::Listener,
+    private UserInterfaceFlags::Listener,
+    private ListBoxModel
 {
 public:
 
@@ -49,6 +52,13 @@ public:
     void resized() override;
 
 private:
+
+    //===------------------------------------------------------------------===//
+    // SwipeController::Listener
+    //===------------------------------------------------------------------===//
+
+    int getHorizontalSwipeAnchor() override;
+    void onHorizontalSwipe(int anchor, int distance) override;
 
     //===------------------------------------------------------------------===//
     // UserInterfaceFlags::Listener
@@ -86,6 +96,12 @@ private:
     int getNumRows() override;
     Component *refreshComponentForRow(int, bool, Component *) override;
     void paintListBoxItem(int, Graphics &, int, int, bool) override {}
+
+private:
+
+    const Colour borderColour = findDefaultColour(ColourIDs::Common::borderLineLight);
+
+    UniquePointer<SwipeController> swipeController;
 
     UniquePointer<ShadowUpwards> footShadow;
     UniquePointer<SeparatorHorizontalReversed> headRule;

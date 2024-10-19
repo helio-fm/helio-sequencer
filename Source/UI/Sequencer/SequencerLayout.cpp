@@ -654,15 +654,17 @@ void SequencerLayout::resized()
 {
     auto localBounds = this->getLocalBounds();
 
-    this->rollNavigationSidebar->setBounds(localBounds.removeFromLeft(Globals::UI::sidebarWidth));
-    this->rollToolsSidebar->setBounds(localBounds.removeFromRight(Globals::UI::sidebarWidth));
+    const auto leftSidebarWidth = this->rollNavigationSidebar->getWidth();
+    const auto rightSidebarWidth = this->rollToolsSidebar->getWidth();
+    this->rollNavigationSidebar->setBounds(localBounds.removeFromLeft(leftSidebarWidth));
+    this->rollToolsSidebar->setBounds(localBounds.removeFromRight(rightSidebarWidth));
     // a hack for themes changing
     this->rollToolsSidebar->resized();
     
     this->rollContainer->setBounds(localBounds);
     
-    this->leftSidebarShadow->setBounds(localBounds.removeFromLeft(Globals::UI::rollShadowSize));
-    this->rightSidebarShadow->setBounds(localBounds.removeFromRight(Globals::UI::rollShadowSize));
+    this->leftSidebarShadow->setBounds(localBounds.removeFromLeft(leftSidebarWidth));
+    this->rightSidebarShadow->setBounds(localBounds.removeFromRight(rightSidebarWidth));
 }
 
 void SequencerLayout::proceedToRenderDialog(RenderFormat format)

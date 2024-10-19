@@ -36,14 +36,20 @@
 #include "Workspace.h"
 #include "Config.h"
 #include "CommandIDs.h"
-#include "ColourIDs.h"
 #include "Icons.h"
 
 SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) : project(parent)
 {
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
+
+#if PLATFORM_DESKTOP
     this->setInterceptsMouseClicks(false, true);
+#elif PLATFORM_MOBILE
+    this->setInterceptsMouseClicks(true, true);
+    this->swipeController = make<SwipeController>(*this);
+    this->addMouseListener(this->swipeController.get(), true);
+#endif
 
     this->headRule = make<SeparatorHorizontalReversed>();
     this->addAndMakeVisible(this->headRule.get());
@@ -79,6 +85,8 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) : project(pare
     this->project.getTransport().addTransportListener(this);
     this->project.getEditMode().addListener(this);
     App::Config().getUiFlags()->addListener(this);
+
+    this->setSize(App::Config().getUiFlags()->getRightSidebarWidth(), 16);
 }
 
 SequencerSidebarRight::~SequencerSidebarRight()
@@ -90,21 +98,30 @@ SequencerSidebarRight::~SequencerSidebarRight()
 
 void SequencerSidebarRight::paint(Graphics &g)
 {
+    auto localBounds = this->getLocalBounds();
     const auto &theme = HelioTheme::getCurrentTheme();
     g.setFillType({ theme.getSidebarBackground(), {} });
     g.fillRect(this->getLocalBounds());
 
-    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
+    g.setColour(this->borderColour);
     g.fillRect(0, 0, 1, this->getHeight());
+
+    if (localBounds.getWidth() > Globals::UI::sidebarWidth)
+    {
+        localBounds.removeFromLeft(Globals::UI::sidebarWidth);
+        localBounds.removeFromBottom(Globals::UI::sidebarFooterHeight);
+        theme.drawStripes(localBounds.toFloat(), g, 0.5f);
+    }
 }
 
 void SequencerSidebarRight::resized()
 {
+    constexpr auto toolbarSize = Globals::UI::sidebarWidth;
     constexpr auto headerSize = Globals::UI::rollHeaderHeight;
     constexpr auto footerSize = Globals::UI::sidebarFooterHeight;
 
-    this->listBox->setBounds(0, headerSize - 1, this->getWidth(),
-        this->getHeight() - headerSize - footerSize + 1);
+    this->listBox->setBounds(0, headerSize - 1,
+        toolbarSize, this->getHeight() - headerSize - footerSize + 1);
 
     constexpr auto shadowSize = 6;
     this->headShadow->setBounds(0, headerSize - 1, this->getWidth(), shadowSize);
@@ -117,7 +134,7 @@ void SequencerSidebarRight::resized()
         this->getHeight() - footerSize,
         this->getWidth(), 2);
 
-    this->repriseButton->setBounds(0, 0, this->getWidth(), headerSize - 1);
+    this->repriseButton->setBounds(0, 0, toolbarSize, headerSize - 1);
 
     constexpr auto transportControlSize = footerSize - 1;
     this->transportControl->setBounds(0,
@@ -205,6 +222,30 @@ void SequencerSidebarRight::recreateMenu()
     this->menu.add(MenuItem::item(Icons::metronome, CommandIDs::ToggleMetronome)->
         withTooltip(TRANS(I18n::Tooltips::metronome))->
         toggledIf(this->isMetronomeEnabled));
+}
+
+//===----------------------------------------------------------------------===//
+// SwipeController::Listener
+//===----------------------------------------------------------------------===//
+
+int SequencerSidebarRight::getHorizontalSwipeAnchor()
+{
+    return this->getWidth();
+}
+
+void SequencerSidebarRight::onHorizontalSwipe(int anchor, int distance)
+{
+    constexpr auto minWidth = Globals::UI::sidebarWidth;
+    constexpr auto maxWidth = Globals::UI::sidebarWidth * 2;
+
+    const auto newWidth = jlimit(minWidth, maxWidth, anchor - distance);
+    App::Config().getUiFlags()->setRightSidebarWidth(newWidth);
+
+    this->setSize(newWidth, this->getHeight());
+    if (auto *parentComponent = this->getParentComponent())
+    {
+        parentComponent->resized();
+    }
 }
 
 //===----------------------------------------------------------------------===//

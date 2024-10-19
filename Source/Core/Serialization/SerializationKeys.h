@@ -303,6 +303,8 @@ namespace Serialization
             static const Identifier lockZoomLevel = "lockZoom";
             static const Identifier showFullProjectMap = "miniMap";
             static const Identifier uiScaleFactor = "uiScaleFactor";
+            static const Identifier leftSidebarWidth = "leftSidebarWidth";
+            static const Identifier rightSidebarWidth = "rightSidebarWidth";
             static const Identifier mouseWheelAltMode = "wheelAltMode";
             static const Identifier mouseWheelVerticalPanningByDefault = "wheelVerticalPan";
             static const Identifier mouseWheelVerticalZoomingByDefault = "wheelVerticalZoom";

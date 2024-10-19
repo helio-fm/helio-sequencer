@@ -90,6 +90,15 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
     
     const float midH = float(this->getHeight()) / 2.f;
     constexpr int w = WaveformAudioMonitorComponent::bufferSize;
+    
+#if PLATFORM_DESKTOP
+    // the audio monitor is not supposed to be stretched on desktop platforms
+    constexpr float peakStretch = 1.f;
+#elif PLATFORM_MOBILE
+    // the entire sidebar can be stretched to avoid being cut-off by frontal camera,
+    // let's try to make the audio monotor look nicer in that case
+    const float peakStretch = float(this->getWidth()) / float(w * 2.f);
+#endif
 
     g.setColour(this->peaksColour);
 
@@ -98,7 +107,7 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
         const float fancyFade = (i == 0 || i == (w - 2)) ? 0.75f : ((i == 1 || i == (w - 3)) ? 0.9f : 1.f);
         const float peakL = waveformIecLevel(this->lPeakBuffer[i]) * midH * fancyFade;
         const float peakR = waveformIecLevel(this->rPeakBuffer[i]) * midH * fancyFade;
-        g.fillRect(1.f + (i * 2.f), midH - peakL, 1.f, peakR + peakL);
+        g.fillRect(((i * 2.f) * peakStretch) + peakStretch, midH - peakL, 1.f, peakR + peakL);
     }
 
     g.setColour(this->rmsColour);
@@ -108,6 +117,6 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
         const float fancyFade = (i == 0 || i == (w - 1)) ? 0.85f : ((i == 1 || i == (w - 2)) ? 0.95f : 1.f);
         const float rmsL = waveformIecLevel(this->lRmsBuffer[i]) * midH * fancyFade;
         const float rmsR = waveformIecLevel(this->rRmsBuffer[i]) * midH * fancyFade;
-        g.fillRect(i * 2.f, midH - rmsL, 1.f, rmsR + rmsL);
+        g.fillRect((i * 2.f) * peakStretch, midH - rmsL, 1.f, rmsR + rmsL);
     }
 }

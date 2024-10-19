@@ -104,6 +104,11 @@ public:
     void setZoomLevelLocked(bool locked);
     void toggleLockZoomLevel();
 
+    int getLeftSidebarWidth() const noexcept;
+    void setLeftSidebarWidth(int width);
+    int getRightSidebarWidth() const noexcept;
+    void setRightSidebarWidth(int width);
+
     void setMouseWheelUsePanningByDefault(bool usePanning);
     void setMouseWheelUseVerticalPanningByDefault(bool useVerticalPanning);
     void setMouseWheelUseVerticalZoomingByDefault(bool useVerticalZooming);
@@ -169,6 +174,9 @@ private:
     bool followPlayhead = false;
     bool rollAnimationsEnabled = true;
     bool zoomLevelLocked = false;
+
+    int leftSidebarWidth = Globals::UI::sidebarWidth;
+    int rightSidebarWidth = Globals::UI::sidebarWidth;
 
     MouseWheelFlags mouseWheelFlags;
 

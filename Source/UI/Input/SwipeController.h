@@ -31,13 +31,57 @@ public:
         virtual void onHorizontalSwipe(int anchor, int distance) {}
     };
 
+    enum class Direction : int
+    {
+        Undecided = 0,
+        Horizontal,
+        Vertical
+    };
+
     explicit SwipeController(Listener &listener) :
         listener(listener) {}
 
     void mouseDrag(const MouseEvent &event) override
     {
+        const auto dragOffset = event.getOffsetFromDragStart();
 
+        if (this->direction == Direction::Undecided)
+        {
+            if (abs(dragOffset.x) > SwipeController::dragThreshold &&
+                abs(dragOffset.x) > abs(dragOffset.y))
+            {
+                this->direction = Direction::Horizontal;
+                this->anchor = this->listener.getHorizontalSwipeAnchor();
+            }
+            else if (abs(dragOffset.y) > SwipeController::dragThreshold &&
+                abs(dragOffset.y) > abs(dragOffset.x))
+            {
+                this->direction = Direction::Vertical;
+                this->anchor = this->listener.getVerticalSwipeAnchor();
+            }
+        }
+
+        if (this->direction == Direction::Horizontal)
+        {
+            this->listener.onHorizontalSwipe(this->anchor, dragOffset.x);
+        }
+        else if (this->direction == Direction::Vertical)
+        {
+            this->listener.onVerticalSwipe(this->anchor, dragOffset.y);
+        }
+    }
+
+    void mouseUp(const MouseEvent &event) override
+    {
+        this->direction = Direction::Undecided;
+        this->anchor = 0;
     }
 
     Listener &listener;
+
+    static constexpr int dragThreshold = 8;
+
+    Direction direction = Direction::Undecided;
+    int anchor = 0;
+
 };
