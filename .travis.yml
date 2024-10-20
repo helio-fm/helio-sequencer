@@ -84,7 +84,7 @@ jobs:
     - name: "deploy docs"
       stage: Deploy
       os: linux
-      dist: bionic
+      dist: focal
       language: rust
       rust: stable
       cache: cargo
@@ -122,6 +122,7 @@ before_deploy:
 
 deploy:
   provider: script
+  dpl_version: 1.10.16
   skip_cleanup: true
   script: bash ${TRAVIS_BUILD_DIR}/Projects/Deployment/Travis/deploy-${BUILD_TYPE}.sh
   on:
