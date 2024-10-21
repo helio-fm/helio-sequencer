@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "MetronomeSynth.h"
+#include "DocumentHelpers.h"
 #include "SerializationKeys.h"
 #include "BinaryData.h"
 
@@ -53,8 +54,14 @@ AudioFormatReader *MetronomeSynth::TickSample::createReader()
     File sampleFile(this->customSamplePath);
     if (!sampleFile.existsAsFile())
     {
-        jassertfalse;
-        return nullptr;
+        // iOS hack: the `documents` path will change between launches
+        sampleFile = DocumentHelpers::getDocumentSlot(sampleFile.getFileName());
+
+        if (!sampleFile.existsAsFile())
+        {
+            jassertfalse;
+            return nullptr;
+        }
     }
 
     if (this->customSamplePath.endsWithIgnoreCase(".wav"))

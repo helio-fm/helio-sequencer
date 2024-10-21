@@ -884,11 +884,11 @@ public:
 
         this->checkBuildSystem("iOS project plist",
             "iOS/Info-App.plist",
-            "<string>" + versionString + "</string>");
+            "<string>" + versionString);
 
         this->checkBuildSystem("macOS project plist",
             "macOS/Info-App.plist",
-            "<string>" + versionString + "</string>");
+            "<string>" + versionString);
 
         this->checkBuildSystem("VS2017 project resource file",
             "VisualStudio2017/resources.rc",

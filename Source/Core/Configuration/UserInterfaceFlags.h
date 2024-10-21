@@ -186,7 +186,11 @@ private:
 
     bool metronomeEnabled = false;
 
+#if JUCE_IOS
+    bool pluginSortingForwards = false;
+#else
     bool pluginSortingForwards = true;
+#endif
     KnownPluginList::SortMethod pluginSorting =
         KnownPluginList::SortMethod::sortByFormat;
 

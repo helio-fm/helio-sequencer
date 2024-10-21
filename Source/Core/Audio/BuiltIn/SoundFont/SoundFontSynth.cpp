@@ -26,6 +26,7 @@
 #include "SoundFontRegion.h"
 #include "SoundFontSample.h"
 #include "KeyboardMapping.h"
+#include "DocumentHelpers.h"
 #include "SerializationKeys.h"
 
 class SoundFontEnvelope final
@@ -681,10 +682,15 @@ void SoundFontVoice::killNote()
 
 void SoundFontSynth::initSynth(const Parameters &parameters)
 {
-    const File file(parameters.filePath);
+    File file(parameters.filePath);
     if (!file.existsAsFile())
     {
-        return;
+        // iOS hack: the `documents` path will change between launches
+        file = DocumentHelpers::getDocumentSlot(file.getFileName());
+        if (!file.existsAsFile())
+        {
+            return;
+        }
     }
 
     const ScopedLock locker(this->lock);
