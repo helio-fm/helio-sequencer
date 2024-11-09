@@ -13,3 +13,5 @@
 ---
 - [Configs](configs.md)
   - [Hotkeys](hotkeys.md)
+---
+- [Troubleshooting](troubleshooting.md)
