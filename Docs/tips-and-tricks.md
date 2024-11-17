@@ -36,7 +36,7 @@ Hold the `Space` key, then click-and-drag over the timeline to measure time betw
 
 ### Sound probe tool
 
-Finally, holding `Space` and clicking on the timeline is what I call a "sound probe" and it's supposed to give you an idea of what notes are playing at the given point:
+Holding `Space` and clicking on the timeline is what I call a "sound probe", and it's supposed to give you an idea of what notes are playing at any given time:
 
 ![sound-probe]
 

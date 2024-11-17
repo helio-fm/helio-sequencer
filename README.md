@@ -32,7 +32,7 @@ Check out the documentation to get started: [docs.helio.fm](https://docs.helio.f
 
 ### Packaging status
 
-[![Packaging status](https://repology.org/badge/vertical-allrepos/helio.svg?header=helio-workstation)](https://repology.org/project/helio/versions)
+[![Packaging status](https://repology.org/badge/vertical-allrepos/helio.svg?header=helio-sequencer)](https://repology.org/project/helio/versions)
 
 
 ## Contributing

@@ -34,11 +34,11 @@ The `Alt + O` hotkey removes duplicate notes and corrects lengths in a way that 
 
 Not listed in the menu, but also handy: the `Shift + Up` and `Shift + Down` hotkeys transpose the selected notes one octave up or down.
 
-Also, `Alt + Shift + Up` and `Alt + Shift + Down` are used for transposition by a "fifth" - simply put, a transposition by +7 or -7 semitones in the 12-tone temperament, or by the closest equivalent of a perfect fifth in other temperaments, e.g. +18/-18 for 31-edo, etc.
+Also, `Alt + Shift + Up` and `Alt + Shift + Down` are used for transposition by a "fifth" - a transposition by +7 or -7 semitones in the 12-tone temperament, or by the closest equivalent of a perfect fifth in other temperaments, e.g. +18/-18 for 31-edo, etc.
 
 The latter is useful for introducing short-term chord modulations to a "neighboring key" (one step in either direction on the circle of fifths).
 
-Note that the above hotkeys also work for pattern roll selection: creating track ["instances"](tips-and-tricks.md#clips-and-track-grouping) and modulating them is one of the easiest ways to prototype the piece's structure.
+The above hotkeys also work for pattern roll selection: creating track ["instances"](tips-and-tricks.md#clips-and-track-grouping) and modulating them may help prototyping the piece's structure.
 
 ### Chord inversion
 

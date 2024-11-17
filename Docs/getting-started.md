@@ -33,15 +33,15 @@ If something feels misleading to you, please [report](https://github.com/helio-f
 
 The breadcrumb control on the top is responsible for navigating the workspace.
 
-The `Studio` root node contains links to all available pages and open projects:
+All items in the breadcrumb control have their own context menus. The `Studio` root node contains all available pages and open projects:
 
-![breadcrumbs-root-menu]
+![breadcrumbs-menus]
 
 #### Workspace structure
 
 Breadcrumbs show the hierarchy of the current page you're on.
 
-Under the hood, all pages have a tree-like structure that looks like this:
+Under the hood, the workspace is a tree-like structure that looks like this:
 
 - **Dashboard** for the projects list, a fancy logo, and a couple of buttons
 - **Settings** for choosing a language, audio drivers, playing with UI flags, etc
@@ -55,13 +55,6 @@ Under the hood, all pages have a tree-like structure that looks like this:
 - **Project 2** page
   - [**Piano roll**](#piano-roll)
   - ..and so on
-
-#### Context menus
-
-Note that all items in the breadcrumb control have their own context menus:
-
-![breadcrumbs-menus]
-
 
 ## Creating a Project
 
@@ -362,8 +355,6 @@ The right side shows the tree of all revisions that you have saved. Note a coupl
 [orchestra-pit]: images/orchestra-pit.png "The instruments management page"
 [instrument-routing]: images/instrument-routing.png "The instrument details page"
 [version-control]: images/version-control.png "The version control page"
-
-[breadcrumbs-root-menu]: images/breadcrumbs-root-menu.png "Breadcrumbs control, root menu"
 [breadcrumbs-menus]: images/breadcrumbs-menus.png "Breadcrumbs control, context menus"
 
 [piano-roll]: images/piano-roll.png "Interaction with piano roll canvas"
