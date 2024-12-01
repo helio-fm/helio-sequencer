@@ -78,12 +78,8 @@ Rectangle<float> AutomationStepsClipComponent::getEventBounds(const AutomationEv
 Rectangle<float> AutomationStepsClipComponent::getEventBounds(float beat,
     float sequenceLength, bool isPedalDown) const
 {
-    const float minWidth = AutomationStepEventComponent::pointRadius * 2.f;
+    const float w = AutomationStepEventComponent::pointRadius * 4.f;
     const auto safeLength = jmax(1.f, sequenceLength);
-    const float w = jmax(minWidth,
-        float(jmax(1, this->getWidth())) *
-            (AutomationStepEventComponent::minLengthInBeats / safeLength));
-
     const float x = float(this->getWidth()) * (beat / safeLength);
     return { x - w + AutomationStepEventComponent::pointRadius, 0.f, w, float(this->getHeight()) };
 }

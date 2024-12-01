@@ -85,7 +85,7 @@ public:
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
     
-    static constexpr auto minLengthInBeats = 0.25f;
+    static constexpr auto minLengthInBeats = 1.f / 8.f;
 
 #if PLATFORM_DESKTOP
     static constexpr auto pointRadius = 2.f;

@@ -25,14 +25,9 @@ public:
 
     AutomationStepEventsConnector(AutomationEditorBase::EventComponentBase *c1,
         AutomationEditorBase::EventComponentBase *c2,
-        bool isEventTriggered);
-    
-    void retargetAndUpdate(AutomationEditorBase::EventComponentBase *c1,
-        AutomationEditorBase::EventComponentBase *c2,
-        bool isEventTriggered);
+        float eventControllerValue);
 
-    void resizeToFit(bool isEventTriggered);
-
+    void resizeToFit(float eventControllerValue);
     void setEditable(bool shouldBeEditable);
 
     //===------------------------------------------------------------------===//
@@ -56,7 +51,8 @@ private:
     
     AutomationEditorBase::EventComponentBase *firstAliveEventComponent() const;
 
-    bool isEventTriggered = false;
+    float eventControllerValue = Globals::Defaults::onOffControllerState;
+
     bool isHighlighted = false;
     bool isEditable = true;
 

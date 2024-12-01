@@ -21,10 +21,10 @@
 #include "AutomationStepsClipComponent.h"
 
 AutomationStepEventsConnector::AutomationStepEventsConnector(AutomationEditorBase::EventComponentBase *c1,
-    AutomationEditorBase::EventComponentBase *c2, bool isEventTriggered) :
+    AutomationEditorBase::EventComponentBase *c2, float eventControllerValue) :
     component1(c1),
     component2(c2),
-    isEventTriggered(isEventTriggered)
+    eventControllerValue(eventControllerValue)
 {
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, false);
@@ -52,25 +52,21 @@ void AutomationStepEventsConnector::getPoints(float &x1, float &x2, float &y1, f
     }
 }
 
-void AutomationStepEventsConnector::retargetAndUpdate(AutomationEditorBase::EventComponentBase *c1,
-    AutomationEditorBase::EventComponentBase *c2, bool isEventTriggered)
-{
-    this->component1 = c1;
-    this->component2 = c2;
-    this->resizeToFit(isEventTriggered);
-}
-
-void AutomationStepEventsConnector::resizeToFit(bool isEventTriggered)
+void AutomationStepEventsConnector::resizeToFit(float newControllerValue)
 {
     if (this->component1 == nullptr && this->component2 == nullptr)
     {
         return;
     }
 
-    const bool shouldRepaint = this->isEventTriggered != isEventTriggered;
-    this->isEventTriggered = isEventTriggered;
+    const bool shouldRepaint = this->eventControllerValue != newControllerValue;
+    this->eventControllerValue = newControllerValue;
 
+    constexpr auto marginTop = AutomationStepEventComponent::marginTop;
+    constexpr auto marginBottom = AutomationStepEventComponent::marginBottom;
     constexpr auto r = AutomationStepEventComponent::pointRadius;
+    constexpr auto d = r * 2.f;
+
     float x1 = 0.f, x2 = 0.f, y1 = 0.f, y2 = 0.f;
     this->getPoints(x1, x2, y1, y2);
 
@@ -80,10 +76,10 @@ void AutomationStepEventsConnector::resizeToFit(bool isEventTriggered)
         return;
     }
 
-    constexpr auto top = r + AutomationStepEventComponent::marginTop - 1;
-    const float bottom = y2 - r - AutomationStepEventComponent::marginBottom;
-    this->realBounds = { jmin(x1, x2) + r, this->isEventTriggered ? bottom : top,
-        fabsf(x1 - x2), y2 - (this->isEventTriggered ? bottom : top) };
+    const float h = y2 - d - marginTop - marginBottom;
+    const float y = r + marginTop + (h * this->eventControllerValue);
+
+    this->realBounds = { jmin(x1, x2) + r, y, fabsf(x1 - x2), y2 - y };
     
     this->setBounds(this->realBounds.toNearestInt());
     

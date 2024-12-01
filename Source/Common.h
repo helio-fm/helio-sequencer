@@ -216,7 +216,7 @@ namespace Globals
         static constexpr auto timeSignatureNumerator = 4;
         static constexpr auto timeSignatureDenominator = 4;
 
-        static constexpr auto onOffControllerState = false;
+        static constexpr auto onOffControllerState = 0.f;
         static constexpr auto automationControllerCurve = 0.5f;
     }
 

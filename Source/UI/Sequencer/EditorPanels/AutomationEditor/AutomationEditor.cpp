@@ -299,10 +299,7 @@ Rectangle<float> AutomationEditor::getCurveEventBounds(float beat, double contro
 
 Rectangle<float> AutomationEditor::getOnOffEventBounds(float beat, bool isPedalDown) const
 {
-    const float minWidth = AutomationStepEventComponent::pointRadius * 2.f;
-    const float w = jmax(minWidth,
-        float(this->roll->getBeatWidth()) * AutomationStepEventComponent::minLengthInBeats);
-
+    const float w = AutomationStepEventComponent::pointRadius * 4.f;
     const float x = float(this->roll->getXPositionByBeat(beat, float(this->getWidth())));
     return { x - w + AutomationStepEventComponent::pointRadius, 0.f, w, float(this->getHeight()) };
 }
