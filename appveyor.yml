@@ -11,6 +11,12 @@ clone_depth: 1
 environment:
   encrypted_deploy_key:
     secure: ++30FOn93CZGPrm6JMlLQe2A5CDBmwsL4nDAlUlbgLGhDhMCfSe8oz5uvLFdsW2M8+plXilRBWvo/bdfITBHvxOtbHN7kNKRNuUY2z2z4lLy+1mYK5YG33DDkrgMokq3n5keLCh4Z9oTEBQkz+S4GQ==
+  encrypted_codesign_key:
+    secure: QF5dcXGfGUFB2oJEj1j3FnUZT7vjTO/rTns8dV0caCvQLK/rNFWwWoiYkSnIRusskUx2DvxVjEgyIDwWQBSkVBXwst+iTU4nMefG+y/ikoc=
+  encrypted_codesign_salt:
+    secure: N4AYGRmjlNzsf0ladofx1nA8NaO6JT+4tjMpLKEQmTtZVMprNI3Zz9/WF4Gz3RLRhOwi7g9PmhWXOPQBtxdhrg==
+  encrypted_codesign_pwd:
+    secure: BmTxIijgP7+E9ebjV7/Fnfj50FMckbTFVl5KBGOX2sY=
   artifact_32_bit: Projects\VisualStudio2019\Win32\Release32\App\Helio.exe
   artifact_64_bit: Projects\VisualStudio2019\x64\Release64\App\Helio.exe
   artifact_installer: Projects\Deployment\Windows\installer.exe
@@ -27,6 +33,7 @@ install:
     Pop-Location
 - ps: iex ((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/appveyor/secure-file/master/install.ps1'))
 - cmd: appveyor-tools\secure-file -decrypt Projects\Deployment\AppVeyor\deploy-rsa.enc -secret %encrypted_deploy_key% -out deploy-rsa
+- cmd: appveyor-tools\secure-file -decrypt Projects\Deployment\AppVeyor\code-sign.enc -secret %encrypted_codesign_key% -salt %encrypted_codesign_salt% -out sign.pfx
 cache: ThirdParty\ASIO
 # A hack
 build: off
@@ -35,14 +42,17 @@ test_script:
 - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86 && ECHO "x32 building..." && msbuild Projects\VisualStudio2019\Helio.sln /t:Build /p:Configuration=Release32;Platform=Win32
 - if /I "%APPVEYOR_REPO_TAG%" == "false" set APPVEYOR_REPO_TAG_NAME=dev
 deploy_script:
-# 64-bit portable version
+# Sign and deploy the 64-bit portable version
+- ps: signtool sign /f sign.pfx /p $env:encrypted_codesign_pwd /as /fd sha384 /tr http://timestamp.sectigo.com?td=sha384 /td sha384 /v "$env:artifact_64_bit"
 - 7z a portable-x64.zip "%APPVEYOR_BUILD_FOLDER%\%artifact_64_bit%"
 - C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-sequencer/deploy-rsa -C /c/projects/helio-sequencer/portable-x64.zip %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%-x64.zip"
-# 32-bit portable version
+# Sign and deploy the 32-bit portable version
+- ps: signtool sign /f sign.pfx /p $env:encrypted_codesign_pwd /as /fd sha384 /tr http://timestamp.sectigo.com?td=sha384 /td sha384 /v "$env:artifact_32_bit"
 - 7z a portable-x32.zip "%APPVEYOR_BUILD_FOLDER%\%artifact_32_bit%"
 - C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-sequencer/deploy-rsa -C /c/projects/helio-sequencer/portable-x32.zip %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%-x32.zip"
-# installer containing both versions
+# Create the installer containing both signed versions, then sign the installer and deploy
 - set PATH=%PATH%;"C:\\Program Files (x86)\\Inno Setup 6"
 - iscc "%APPVEYOR_BUILD_FOLDER%\Projects\Deployment\Windows\setup.iss"
+- ps: signtool sign /f sign.pfx /p $env:encrypted_codesign_pwd /as /fd sha384 /tr http://timestamp.sectigo.com?td=sha384 /td sha384 /v "$env:artifact_installer"
 - copy %artifact_installer% .\installer.exe
 - C:\msys64\usr\bin\bash --login -c "scp -o StrictHostKeyChecking=no -i /c/projects/helio-sequencer/deploy-rsa -C /c/projects/helio-sequencer/installer.exe %deploy_host%:%deploy_path%/helio-%APPVEYOR_REPO_TAG_NAME%.exe"
