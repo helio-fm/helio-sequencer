@@ -129,10 +129,10 @@ MenuPanel::Menu PatternRollSelectionMenu::makeDefaultMenu()
         if (hasAtLeastOnePianoTrack)
         {
             menu.add(MenuItem::item(Icons::up, CommandIDs::ClipTransposeUp,
-                TRANS(I18n::Menu::Selection::clipsTransposeUp)));
+                TRANS(I18n::Menu::Selection::transposeUp)));
 
             menu.add(MenuItem::item(Icons::down, CommandIDs::ClipTransposeDown,
-                TRANS(I18n::Menu::Selection::clipsTransposeDown)));
+                TRANS(I18n::Menu::Selection::transposeDown)));
         }
     }
 

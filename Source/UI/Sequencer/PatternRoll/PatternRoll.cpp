@@ -783,6 +783,7 @@ void PatternRoll::handleCommandMessage(int commandId)
                 false);
         }
         break;
+    // the next 3 commands will first try to change only the selected tempo tracks, if any
     case CommandIDs::TrackSetOneTempo:
         if (this->selection.getNumSelected() == 1)
         {
@@ -790,6 +791,7 @@ void PatternRoll::handleCommandMessage(int commandId)
             auto *track = clip.getPattern()->getTrack();
             if (!track->isTempoTrack())
             {
+                this->postCommandMessage(CommandIDs::ProjectSetOneTempo);
                 break;
             }
             if (auto *autoSequence = dynamic_cast<AutomationSequence *>(track->getSequence()))
@@ -808,6 +810,26 @@ void PatternRoll::handleCommandMessage(int commandId)
 
                 App::showModalComponent(move(dialog));
             }
+            else
+            {
+                this->postCommandMessage(CommandIDs::ProjectSetOneTempo);
+            }
+        }
+        else
+        {
+            this->postCommandMessage(CommandIDs::ProjectSetOneTempo);
+        }
+        break;
+    case CommandIDs::TempoUp1Bpm:
+        if (!PatternOperations::shiftTempo(this->selection, +1))
+        {
+            this->postCommandMessage(CommandIDs::ProjectTempoUp1Bpm);
+        }
+        break;
+    case CommandIDs::TempoDown1Bpm:
+        if (!PatternOperations::shiftTempo(this->selection, -1))
+        {
+            this->postCommandMessage(CommandIDs::ProjectTempoDown1Bpm);
         }
         break;
     case CommandIDs::EditCurrentInstrument:
@@ -844,12 +866,6 @@ void PatternRoll::handleCommandMessage(int commandId)
         {
             this->project.setEditableScope(clipComponentUnderMouse->getClip(), true);
         }
-        break;
-    case CommandIDs::TempoUp1Bpm:
-        PatternOperations::shiftTempo(this->selection, +1);
-        break;
-    case CommandIDs::TempoDown1Bpm:
-        PatternOperations::shiftTempo(this->selection, -1);
         break;
     case CommandIDs::ClipTransposeUp:
         PatternOperations::transposeClips(this->selection, 1);

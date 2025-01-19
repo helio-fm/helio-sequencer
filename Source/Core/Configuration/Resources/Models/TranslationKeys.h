@@ -174,8 +174,6 @@ namespace I18n
         namespace Selection
         {
             static constexpr auto clipsEdit = constexprHash("menu::selection::clips::edit");
-            static constexpr auto clipsTransposeDown = constexprHash("menu::selection::clips::transpose::down");
-            static constexpr auto clipsTransposeUp = constexprHash("menu::selection::clips::transpose::up");
             static constexpr auto notes = constexprHash("menu::selection::notes");
             static constexpr auto notesArpeggiate = constexprHash("menu::selection::notes::arpeggiate");
             static constexpr auto notesDivisions = constexprHash("menu::selection::notes::divisions");
@@ -184,6 +182,8 @@ namespace I18n
             static constexpr auto notesRefactor = constexprHash("menu::selection::notes::refactor");
             static constexpr auto notesRescale = constexprHash("menu::selection::notes::rescale");
             static constexpr auto notesToTrack = constexprHash("menu::selection::notes::totrack");
+            static constexpr auto transposeDown = constexprHash("menu::selection::transpose::down");
+            static constexpr auto transposeUp = constexprHash("menu::selection::transpose::up");
             static constexpr auto pluginInit = constexprHash("menu::selection::plugin::init");
             static constexpr auto pluginPlug = constexprHash("menu::selection::plugin::plug");
             static constexpr auto pluginRemove = constexprHash("menu::selection::plugin::remove");

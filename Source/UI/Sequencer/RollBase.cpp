@@ -1539,6 +1539,12 @@ void RollBase::handleCommandMessage(int commandId)
         App::showModalComponent(move(dialog));
         break;
     }
+    case CommandIDs::ProjectTempoUp1Bpm:
+        SequencerOperations::shiftTempoForProject(this->getProject(), +1);
+        break;
+    case CommandIDs::ProjectTempoDown1Bpm:
+        SequencerOperations::shiftTempoForProject(this->getProject(), -1);
+        break;
     default:
         break;
     }
