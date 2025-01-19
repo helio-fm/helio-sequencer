@@ -317,6 +317,7 @@ namespace I18n
         static constexpr auto midiOutputTitle = constexprHash("instruments::midiout::title");
         static constexpr auto metronomeTitle = constexprHash("instruments::metronome::title");
         static constexpr auto metronomeBuiltInSoundPlaceholder = constexprHash("instruments::metronome::builtin");
+        static constexpr auto soundFontSynthTitle = constexprHash("instruments::soundfont::title");
     }
 
     namespace VCS

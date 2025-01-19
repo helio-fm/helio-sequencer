@@ -380,7 +380,7 @@ void AudioCore::initFirstLaunchInstruments()
     SoundFontSynthAudioPlugin soundFontSynthAudioPlugin;
     soundFontSynthAudioPlugin.fillInPluginDescription(soundFontPluginDescription);
     this->addBuiltInInstrument(soundFontPluginDescription,
-        SoundFontSynthAudioPlugin::instrumentName);
+        TRANS(I18n::Instruments::soundFontSynthTitle));
 #endif
 }
 
