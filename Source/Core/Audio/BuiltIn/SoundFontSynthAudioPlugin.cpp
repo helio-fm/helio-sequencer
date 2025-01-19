@@ -20,6 +20,7 @@
 #include "BuiltInSynthsPluginFormat.h"
 #include "DocumentHelpers.h"
 #include "ModeIndicatorComponent.h"
+#include "MobileComboBox.h"
 #include "PlayButton.h"
 #include "IconButton.h"
 #include "SerializationKeys.h"
@@ -48,19 +49,13 @@ public:
         this->browseButton->setMouseCursor(MouseCursor::PointingHandCursor);
         this->addAndMakeVisible(this->browseButton.get());
 
-        this->leftArrow = make<IconButton>(Icons::stretchLeft, CommandIDs::SelectPreviousPreset);
-        this->addAndMakeVisible(this->leftArrow.get());
-
-        this->rightArrow = make<IconButton>(Icons::stretchRight, CommandIDs::SelectNextPreset);
-        this->addAndMakeVisible(this->rightArrow.get());
-
-        this->programIndexIndicator = make<ModeIndicatorComponent>();
-        this->addAndMakeVisible(this->programIndexIndicator.get());
-
-        this->programNameLabel = make<Label>();
-        this->programNameLabel->setFont(Globals::UI::Fonts::M);
-        this->programNameLabel->setJustificationType(Justification::centred);
+        // non-editable text editor instead of a label just to have a nice frame
+        this->programNameLabel = HelioTheme::makeSingleLineTextEditor(false);
+        this->programNameLabel->setMouseCursor(MouseCursor::PointingHandCursor);
         this->addAndMakeVisible(this->programNameLabel.get());
+
+        this->programsComboBox = make<MobileComboBox::Container>();
+        this->addAndMakeVisible(this->programsComboBox.get());
 
         this->syncDataWithAudioPlugin();
         this->setSize(640, 120);
@@ -70,19 +65,19 @@ public:
     {
         const auto numPrograms = this->audioPlugin->getNumPrograms();
         const auto currentProgram = this->audioPlugin->getCurrentProgram();
+
         const bool hasPresetSelection = numPrograms > 1;
-
-        this->leftArrow->setVisible(hasPresetSelection);
-        this->leftArrow->setEnabled(currentProgram > 0);
-
-        this->rightArrow->setVisible(hasPresetSelection);
-        this->rightArrow->setEnabled(currentProgram < numPrograms - 1);
-
-        this->programIndexIndicator->setVisible(hasPresetSelection);
-        this->programIndexIndicator->setNumModes(numPrograms);
-        this->programIndexIndicator->setCurrentMode(currentProgram);
-
+        this->programNameLabel->setVisible(hasPresetSelection);
         this->programNameLabel->setText(this->audioPlugin->getCurrentProgramName(), dontSendNotification);
+
+        MenuPanel::Menu programsMenu;
+        for (int i = 0; i < numPrograms; ++i)
+        {
+            const auto programName = this->audioPlugin->getProgramName(i);
+            programsMenu.add(MenuItem::item(Icons::empty, CommandIDs::SelectPreset + i, programName));
+        }
+
+        this->programsComboBox->initWith(this->programNameLabel.get(), programsMenu);
 
         const auto synthParams = this->audioPlugin->getSynthParameters();
         if (synthParams.filePath.isNotEmpty())
@@ -117,11 +112,9 @@ public:
         this->browseButton->setBounds(browseFileArea.removeFromRight(iconWidth).reduced(paddingX, 2).translated(iconMarginX, 0));
         this->filePathEditor->setBounds(browseFileArea.reduced(paddingX, 0));
 
-        auto selectProgramArea = getRowArea(0.7f, rowHeight).reduced(iconWidth + paddingX, 0);
-        this->leftArrow->setBounds(selectProgramArea.removeFromLeft(iconWidth).reduced(paddingX, 2).translated(-iconMarginX, 0));
-        this->rightArrow->setBounds(selectProgramArea.removeFromRight(iconWidth).reduced(paddingX, 2).translated(iconMarginX, 0));
+        auto selectProgramArea = getRowArea(0.7f, rowHeight);
         this->programNameLabel->setBounds(selectProgramArea.reduced(paddingX, 0));
-        this->programIndexIndicator->setBounds(selectProgramArea.translated(0, rowHeight));
+        this->programsComboBox->setBounds(this->getLocalBounds().reduced(2));
     }
 
     void paint(Graphics &g) override
@@ -160,21 +153,16 @@ public:
                     App::Workspace().autosave();
                 });
         }
-        else if (commandId == CommandIDs::SelectNextPreset)
+        else
         {
-            const auto nextPreset = jmin(synthParams.programIndex + 1, this->audioPlugin->getNumPrograms() - 1);
-            const auto newParams = this->audioPlugin->getSynthParameters().withProgramIndex(nextPreset);
-            this->audioPlugin->applySynthParameters(newParams);
-            this->syncDataWithAudioPlugin();
-            App::Workspace().autosave();
-        }
-        else if (commandId == CommandIDs::SelectPreviousPreset)
-        {
-            const auto prevPreset = jmax(synthParams.programIndex - 1, 0);
-            const auto newParams = this->audioPlugin->getSynthParameters().withProgramIndex(prevPreset);
-            this->audioPlugin->applySynthParameters(newParams);
-            this->syncDataWithAudioPlugin();
-            App::Workspace().autosave();
+            const int presetIndex = commandId - CommandIDs::SelectPreset;
+            if (presetIndex >= 0 && presetIndex < this->audioPlugin->getNumPrograms())
+            {
+                const auto newParams = this->audioPlugin->getSynthParameters().withProgramIndex(presetIndex);
+                this->audioPlugin->applySynthParameters(newParams);
+                this->syncDataWithAudioPlugin();
+                App::Workspace().autosave();
+            }
         }
     }
 
@@ -190,10 +178,8 @@ private:
     String lastUsedDirectory = File::getCurrentWorkingDirectory().getFullPathName();
 
     // preset selection
-    UniquePointer<IconButton> leftArrow;
-    UniquePointer<IconButton> rightArrow;
-    UniquePointer<Label> programNameLabel;
-    UniquePointer<ModeIndicatorComponent> programIndexIndicator;
+    UniquePointer<TextEditor> programNameLabel;
+    UniquePointer<MobileComboBox::Container> programsComboBox;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SoundFontSynthEditor)
 };

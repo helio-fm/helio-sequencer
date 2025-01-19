@@ -240,7 +240,10 @@ void MobileComboBox::Container::handleCommandMessage(int commandId)
             this->menuInitializer = nullptr;
         }
 
-        const bool hasSearchBox = this->combo->menu->getMenuSize() > 20;
+        const bool hasSearchBox =
+            this->combo->menu->getMenuSize() > 16 ||
+            this->combo->menu->getMenuHeight() > this->getHeight();
+
         const bool hasCaptionLabel = !hasSearchBox;
 
         this->getParentComponent()->addAndMakeVisible(this->combo.get());

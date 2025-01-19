@@ -55,6 +55,11 @@ public:
         return this->menu.size();
     }
 
+    inline int getMenuHeight() const noexcept
+    {
+        return this->getMenuSize() * Globals::UI::menuPanelRowHeight;
+    }
+
     void updateContent(const Menu &commands,
         AnimationType animationType = SlideDown,
         bool adjustsWidth = true,
