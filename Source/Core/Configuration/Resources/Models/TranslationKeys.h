@@ -230,6 +230,8 @@ namespace I18n
         static constexpr auto unmute = constexprHash("menu::unmute");
         static constexpr auto unsolo = constexprHash("menu::unsolo");
         static constexpr auto setOneTempo = constexprHash("menu::onetempo");
+        static constexpr auto tempoUp1Bpm = constexprHash("menu::tempoUp1Bpm");
+        static constexpr auto tempoDown1Bpm = constexprHash("menu::tempoDown1Bpm");
 
         static constexpr auto vcsChangesHide = constexprHash("menu::vcs::changes::hide");
         static constexpr auto vcsChangesShow = constexprHash("menu::vcs::changes::show");

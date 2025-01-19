@@ -106,6 +106,12 @@ MenuPanel::Menu PatternRollSelectionMenu::makeDefaultMenu()
         {
             menu.add(MenuItem::item(Icons::automationTrack,
                 CommandIDs::TrackSetOneTempo, TRANS(I18n::Menu::setOneTempo))->closesMenu());
+
+            menu.add(MenuItem::item(Icons::automationTrack,
+                CommandIDs::TempoUp1Bpm, TRANS(I18n::Menu::tempoUp1Bpm))->closesMenu());
+
+            menu.add(MenuItem::item(Icons::automationTrack,
+                CommandIDs::TempoDown1Bpm, TRANS(I18n::Menu::tempoDown1Bpm))->closesMenu());
         }
     }
 

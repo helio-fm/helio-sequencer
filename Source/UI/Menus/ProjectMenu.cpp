@@ -323,10 +323,14 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
         CommandIDs::ProjectTransposeDown,
         TRANS(I18n::Menu::Project::transposeDown)));
 
-    //menu.add(MenuItem::item(Icons::group, CommandIDs::RefactorRemoveOverlaps, TRANS(I18n::Menu::Project::cleanup)));
-
     menu.add(MenuItem::item(Icons::automationTrack, CommandIDs::ProjectSetOneTempo,
         TRANS(I18n::Menu::setOneTempo))->closesMenu());
+
+    menu.add(MenuItem::item(Icons::automationTrack, CommandIDs::ProjectTempoUp1Bpm,
+        TRANS(I18n::Menu::tempoUp1Bpm)));
+
+    menu.add(MenuItem::item(Icons::automationTrack, CommandIDs::ProjectTempoDown1Bpm,
+        TRANS(I18n::Menu::tempoDown1Bpm)));
 
     const auto tracks = this->project.findChildrenOfType<MidiTrackNode>();
     if (this->instruments.size() > 1 && tracks.size() > 0)
@@ -339,11 +343,15 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
     }
 
     // todo better icons
-    menu.add(MenuItem::item(Icons::arpeggiate,
-        TRANS(I18n::Menu::Project::changeTemperament))->withSubmenu()->withAction([this]()
+    if (App::Config().getUiFlags()->areExperimentalFeaturesEnabled())
     {
-        this->showTemperamentsMenu(false);
-    }));
+        // hide this option by default, it seems to be rather confusing compared to the next one
+        menu.add(MenuItem::item(Icons::arpeggiate,
+            TRANS(I18n::Menu::Project::changeTemperament))->withSubmenu()->withAction([this]()
+        {
+            this->showTemperamentsMenu(false);
+        }));
+    }
 
     menu.add(MenuItem::item(Icons::arpeggiate,
         TRANS(I18n::Menu::Project::convertTemperament))->withSubmenu()->withAction([this]()

@@ -130,8 +130,10 @@ namespace CommandIDs
         ProjectTransposeDown            = 0x2071,
         ProjectSetOneTempo              = 0x2072,
         TrackSetOneTempo                = 0x2073,
-        TempoUp1Bpm                     = 0x2074,
-        TempoDown1Bpm                   = 0x2075,
+        ProjectTempoUp1Bpm              = 0x2074,
+        ProjectTempoDown1Bpm            = 0x2075,
+        TempoUp1Bpm                     = 0x2076,
+        TempoDown1Bpm                   = 0x2077,
 
         SelectScaleDegree               = 0x2120, // more ids reserved for sub-items
         SelectScale                     = 0x2200, // more ids reserved for sub-items
