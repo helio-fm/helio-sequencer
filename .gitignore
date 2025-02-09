@@ -56,6 +56,7 @@ local.properties
 obj/
 .objs/
 build/
+.cxx/
 cmake-build-*/
 ThirdParty/ASIO/asio
 ThirdParty/ASIO/common
