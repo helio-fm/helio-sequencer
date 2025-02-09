@@ -24,7 +24,7 @@ DraggingListBoxComponent::DraggingListBoxComponent(Viewport *parent, bool disabl
     parentViewport(parent),
     shouldDisableAllChildren(disablesAllChildren)
 {
-    if (this->parentViewport)
+    if (this->parentViewport != nullptr)
     {
 #if PLATFORM_DESKTOP
         this->parentViewport->setScrollBarThickness(2);
@@ -45,13 +45,11 @@ DraggingListBoxComponent::DraggingListBoxComponent(Viewport *parent, bool disabl
 
 void DraggingListBoxComponent::childrenChanged()
 {
-    // all children are not to be clicked on
     if (this->shouldDisableAllChildren)
     {
         for (int i = 0; i < this->getNumChildComponents(); ++i)
         {
-            Component *childComponent = this->getChildComponent(i);
-            childComponent->setInterceptsMouseClicks(false, false);
+            this->getChildComponent(i)->setInterceptsMouseClicks(false, false);
         }
     }
 }
@@ -63,50 +61,48 @@ void DraggingListBoxComponent::mouseDown(const MouseEvent &event)
         return;
     }
     
-    if (! this->parentViewport)
+    if (this->parentViewport == nullptr)
     {
         this->setSelected(true);
         return;
     }
 
+    this->maxDragDistance = 0;
+    this->dragStartMilliseconds = Time::getMillisecondCounterHiRes();
+
     if (this->listCanBeScrolled())
     {
-        this->maxDragDistance = 0;
+        jassert(this->parentViewport != nullptr);
         this->viewportStartPosY = this->parentViewport->getViewPosition().getY();
-        this->isDraggingListbox = true;
-        
-        this->dragStartMilliseconds = Time::getMillisecondCounterHiRes();
         ViewportKineticSlider::instance().stopAnimationForViewport(this->parentViewport);
-    }
-    else
-    {
-        this->setSelected(true);
     }
 }
 
 void DraggingListBoxComponent::mouseUp(const MouseEvent &event)
 {
-    this->isDraggingListbox = false;
-    
     if (!event.mods.isLeftButtonDown())
     {
         return;
     }
-    
+
+    if (this->parentViewport == nullptr)
+    {
+        return; // have already reacted on mouseDown
+    }
+
+    if (this->maxDragDistance < DraggingListBoxComponent::dragStartThreshold)
+    {
+        this->setSelected(true);
+        return;
+    }
+
     if (this->listCanBeScrolled())
     {
-        if (this->maxDragDistance < DraggingListBoxComponent::dragStartThreshold)
-        {
-            this->setSelected(true);
-            return;
-        }
-        else
-        {
-            const float dragTimeMs = float(Time::getMillisecondCounterHiRes() - this->dragStartMilliseconds);
-            const float dragDistance = float(event.getOffsetFromDragStart().getY());
-            const float pixelsPerMs = dragDistance / dragTimeMs;
-            ViewportKineticSlider::instance().startAnimationForViewport(this->parentViewport, Point<float>(0.f, pixelsPerMs));
-        }
+        jassert(this->parentViewport != nullptr);
+        const float dragTimeMs = float(Time::getMillisecondCounterHiRes() - this->dragStartMilliseconds);
+        const float dragDistance = float(event.getOffsetFromDragStart().getY());
+        const float pixelsPerMs = dragDistance / dragTimeMs;
+        ViewportKineticSlider::instance().startAnimationForViewport(this->parentViewport, Point<float>(0.f, pixelsPerMs));
     }
 }
 
@@ -116,17 +112,18 @@ void DraggingListBoxComponent::mouseDrag(const MouseEvent &event)
     {
         return;
     }
+
+    this->maxDragDistance = jmax(abs(event.getDistanceFromDragStartY()), this->maxDragDistance);
     
-    if (this->parentViewport && this->isDraggingListbox)
+    if (this->listCanBeScrolled())
     {
+        jassert(this->parentViewport != nullptr);
         this->parentViewport->setViewPosition(0, this->viewportStartPosY - event.getDistanceFromDragStartY());
-        this->maxDragDistance = jmax(abs(event.getDistanceFromDragStartY()), this->maxDragDistance);
         ViewportKineticSlider::instance().calculateDragSpeedForViewport(this->parentViewport, event.getOffsetFromDragStart().toFloat());
     }
 }
 
-void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event,
-                                              const MouseWheelDetails &wheel)
+void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
     const int forwardWheel = int(wheel.deltaY *
         (wheel.isReversed ? -DraggingListBoxComponent::dragSpeed : DraggingListBoxComponent::dragSpeed));
@@ -139,7 +136,7 @@ void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event,
         // If viewport is owned by Listbox,
         // the Listbox has just updated its contents here,
         // and the component may be deleted:
-        if (! checker.shouldBailOut())
+        if (!checker.shouldBailOut())
         {
             ViewportKineticSlider::instance().startAnimationForViewport(this->parentViewport, Point<float>(0.f, float(forwardWheel) / 50.f));
             
@@ -157,7 +154,7 @@ void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event,
 
 bool DraggingListBoxComponent::listCanBeScrolled() const
 {
-    if (! this->parentViewport)
+    if (this->parentViewport == nullptr)
     {
         return false;
     }

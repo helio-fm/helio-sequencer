@@ -49,7 +49,6 @@ private:
 
     int maxDragDistance = 0;
     int viewportStartPosY = 0;
-    bool isDraggingListbox = false;
     const bool shouldDisableAllChildren = false;
     
 private:

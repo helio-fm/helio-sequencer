@@ -285,14 +285,14 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
 
         SequencerOperations::cutNotes(intersectedEvents, intersectionPoints, false);
 
-        Array<Note> eventsRemove;
+        Array<Note> eventsToRemove;
         Array<Note> eventsToAdd;
         for (int i = 0; i < sequence->size(); ++i)
         {
             auto *note = static_cast<Note *>(sequence->getUnchecked(i));
             if (note->getBeat() >= cutBeat)
             {
-                eventsRemove.add(*note);
+                eventsToRemove.add(*note);
                 // to make it cleaner, make sure that the moved sequence starts at zero,
                 // while the new clips are shifted to the cut point (see below)
                 eventsToAdd.add(note->withDeltaBeat(-cutBeat));
@@ -308,7 +308,7 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
 
         const auto trackTemplate = newTrack->serialize();
 
-        sequence->removeGroup(eventsRemove, true);
+        sequence->removeGroup(eventsToRemove, true);
         project.getUndoStack()->perform(new PianoTrackInsertAction(project, &project, trackTemplate, newName));
     }
     else if (auto *autoTrack = dynamic_cast<AutomationTrackNode *>(track))

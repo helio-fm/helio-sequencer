@@ -21,6 +21,30 @@
 #include "ColourIDs.h"
 #include "IconComponent.h"
 
+class TranslationSettingsItemHighlighter final : public Component
+{
+public:
+
+    TranslationSettingsItemHighlighter()
+    {
+        this->setPaintingIsUnclipped(true);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->fillColour);
+        g.fillRoundedRectangle(36.f, 3.f,
+            float(this->getWidth() - 41), float(this->getHeight() - 8), 2.f);
+    }
+
+private:
+
+    const Colour fillColour =
+        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.015f);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationSettingsItemHighlighter)
+};
+
 class TranslationSettingsItemSelection final : public Component
 {
 public:
@@ -28,7 +52,6 @@ public:
     TranslationSettingsItemSelection()
     {
         this->setPaintingIsUnclipped(true);
-
         this->iconComponent = make<IconComponent>(Icons::apply, 1.f, int(iconSize));
         this->addAndMakeVisible(this->iconComponent.get());
     }
@@ -116,4 +139,9 @@ void TranslationSettingsItem::updateDescription(bool isLastRowInList,
     {
         this->selectionAnimator.fadeOut(this->selectionComponent.get(), Globals::UI::fadeOutShort);
     }
+}
+
+Component *TranslationSettingsItem::createHighlighterComponent()
+{
+    return new TranslationSettingsItemHighlighter();
 }

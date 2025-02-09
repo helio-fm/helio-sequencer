@@ -35,6 +35,8 @@ public:
 
 private:
 
+    Component *createHighlighterComponent() override;
+
     ComponentAnimator selectionAnimator;
     UniquePointer<Component> selectionComponent;
 

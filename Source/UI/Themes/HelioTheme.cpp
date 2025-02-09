@@ -896,7 +896,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPageFillColour().darker(0.4f));
     this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.055f));
     this->setColour(ColourIDs::TrackScroller::screenRangeFill,
-        s->getIconBaseColour().withMultipliedAlpha(this->isDarkTheme ? 0.6f : 0.3f));
+        s->getIconBaseColour().withMultipliedAlpha(this->isDarkTheme ? 0.5f : 0.25f));
     this->setColour(ColourIDs::TrackScroller::outOfRangeFill,
         Colours::black.withAlpha(this->isDarkTheme ? 0.12f : 0.065f));
 

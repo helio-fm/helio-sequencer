@@ -48,6 +48,9 @@ public:
         this->setMouseClickGrabsKeyboardFocus(false);
     }
 
+    // on desktop platforms buttons react on mouse down (feels a bit more responsive I guess),
+    // but on mobile platforms they react on mouse up to be able to check if this was a tap, not dragging
+#if PLATFORM_DESKTOP
     void mouseDown(const MouseEvent &e) override
     {
         if (this->isEnabled())
@@ -64,6 +67,24 @@ public:
 
         HighlightedComponent::mouseExit(e);
     }
+#elif PLATFORM_MOBILE
+    void mouseUp(const MouseEvent &e) override
+    {
+        if (this->isEnabled() && e.getDistanceFromDragStart() < IconButton::dragStartThreshold)
+        {
+            if (this->listener != nullptr)
+            {
+                this->listener->postCommandMessage(this->commandId);
+            }
+            else if (this->getParentComponent() != nullptr)
+            {
+                this->getParentComponent()->postCommandMessage(this->commandId);
+            }
+        }
+
+        HighlightedComponent::mouseExit(e);
+    }
+#endif
 
     void enablementChanged() override
     {
@@ -96,6 +117,8 @@ private:
             new IconButton(this->iconId, this->commandId, nullptr, this->iconSize) :
             new IconButton(this->image);
     }
+
+    static constexpr auto dragStartThreshold = 5;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IconButton)
 };

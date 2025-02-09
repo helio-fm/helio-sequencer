@@ -305,8 +305,10 @@ private:
 
         void paint(Graphics &g) override
         {
-            g.setColour(this->colour);
+            g.setColour(this->fillColour);
             g.fillRect(this->getLocalBounds());
+
+            g.setColour(this->borderColour);
             g.fillRect(0.f, 0.f, 1.f, float(this->getHeight()));
             g.fillRect(float(this->getWidth() - 1.f), 0.f, 1.f, float(this->getHeight()));
         }
@@ -333,7 +335,11 @@ private:
 
         BoundsConstrainer moveConstrainer;
 
-        const Colour colour =
+        const Colour borderColour =
+            findDefaultColour(ColourIDs::TrackScroller::screenRangeFill)
+                .withMultipliedAlpha(0.25f);
+
+        const Colour fillColour =
             findDefaultColour(ColourIDs::TrackScroller::screenRangeFill)
                 .withMultipliedAlpha(0.5f);
     };
