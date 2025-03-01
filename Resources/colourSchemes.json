@@ -129,6 +129,28 @@
           "iconBase": "29ffffff",
           "iconShadow": "ff000000"
         }
+      },
+      {
+        "name": "High Contrast",
+        "colourMap":
+        {
+          "text": "ffffffff",
+          "headlineFill": "ff15151e",
+          "pageFill": "ff15151e",
+          "sidebarFill": "ff17161f",
+          "dialogFill": "ff17161f",
+          "lassoFill": "051a1a1a",
+          "lassoBorder": "ffcccccc",
+          "buttonFill": "20ffffff",
+          "frameBorder": "dfffffff",
+          "whiteKey": "ff2b2933",
+          "blackKey": "ff0d0c0f",
+          "bar": "ff26232a",
+          "row": "ff0a080b",
+          "timeline": "ff111119",
+          "iconBase": "3fffffff",
+          "iconShadow": "ff000000"
+        }
       }
     ]
   }

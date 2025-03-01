@@ -1449,7 +1449,7 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme)
         yBase += PatternRoll::rowHeight;
     }
 
-    HelioTheme::drawNoise(theme, g, 1.25f);
+    HelioTheme::drawNoise(theme, g);
     return patternImage;
 }
 

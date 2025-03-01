@@ -23,16 +23,11 @@ SettingsPage::SettingsPage(Component *settingsList)
 {
     this->background = make<PageBackgroundB>();
     this->addAndMakeVisible(this->background.get());
+
     this->viewport = make<Viewport>();
     this->addAndMakeVisible(this->viewport.get());
     this->viewport->setScrollBarsShown(true, false);
-
-#if PLATFORM_DESKTOP
-    this->viewport->setScrollBarThickness(2);
-#elif PLATFORM_MOBILE
-    this->viewport->setScrollBarThickness(36);
-#endif
-
+    this->viewport->setScrollBarThickness(SettingsPage::viewportScrollBarWidth);
     this->viewport->setViewedComponent(settingsList, false);
 
     this->setFocusContainerType(Component::FocusContainerType::keyboardFocusContainer);
@@ -47,8 +42,7 @@ SettingsPage::~SettingsPage() = default;
 void SettingsPage::resized()
 {
     this->background->setBounds(this->getLocalBounds());
-    this->viewport->setBounds(this->getLocalBounds().reduced(16, 0));
-    
+    this->viewport->setBounds(this->getLocalBounds().reduced(6, 0));
     this->viewport->getViewedComponent()->
         setSize(this->viewport->getMaximumVisibleWidth(),
             this->viewport->getViewedComponent()->getHeight());

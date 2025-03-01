@@ -28,6 +28,12 @@ public:
 
     void resized() override;
 
+#if PLATFORM_DESKTOP
+    static constexpr auto viewportScrollBarWidth = 2;
+#elif PLATFORM_MOBILE
+    static constexpr auto viewportScrollBarWidth = 32;
+#endif
+
 private:
 
     UniquePointer<PageBackgroundB> background;

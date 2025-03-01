@@ -71,9 +71,11 @@ void SettingsNode::recreatePage()
     this->audioSettingsWrapper = nullptr;
     this->audioSettings = nullptr;
     this->settingsList = nullptr;
-    
-    this->settingsList = make<ComponentsList>(0, 6);
-    
+
+    constexpr auto listPadding = 10;
+    this->settingsList = make<ComponentsList>(listPadding,
+        jmax(0, listPadding - SettingsPage::viewportScrollBarWidth));
+
     this->translationSettings = make<TranslationSettings>();
     const String untranslatedLanguageCaption(CharPointer_UTF8("Language / \xe8\xaf\xad\xe8\xa8\x80 / Sprache / \xd0\xaf\xd0\xb7\xd1\x8b\xd0\xba"));
     this->translationSettingsWrapper = make<SettingsFrameWrapper>(this->translationSettings.get(), untranslatedLanguageCaption);

@@ -36,12 +36,11 @@ private:
     UniquePointer<FramePanel> panel;
     UniquePointer<Label> titleLabel;
 
-    static constexpr auto titleMargin = 8;
-    static constexpr auto titleHeight = 24;
-    static constexpr auto panelMargin = 12;
-
-    static constexpr auto contentMarginX = 4;
-    static constexpr auto contentMarginY = 6;
+    static constexpr auto titleMargin = 6;
+    static constexpr auto titleHeight = 28;
+    static constexpr auto panelMargin = 6;
+    static constexpr auto contentMarginX = 2;
+    static constexpr auto contentMarginY = 2;
 
     static constexpr auto labeledTotalMargins =
         contentMarginY * 2 + titleHeight + titleMargin * 2 + panelMargin;
