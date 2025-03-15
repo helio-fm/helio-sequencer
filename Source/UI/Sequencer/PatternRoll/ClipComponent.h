@@ -48,7 +48,7 @@ public:
     inline const Colour &getEventColour() const noexcept
     { return this->eventColour; }
 
-    Rectangle<int> getTextArea() const noexcept;
+    Rectangle<float> getTextArea() const noexcept;
 
     //===------------------------------------------------------------------===//
     // MidiEventComponent

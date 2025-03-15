@@ -21,6 +21,7 @@
 #include "CommandIDs.h"
 #include "SerializationKeys.h"
 #include "Config.h"
+#include "HelioTheme.h"
 
 #include "Workspace.h"
 #include "MainLayout.h"
@@ -271,7 +272,8 @@ void CommandPalette::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, 
     g.setColour(mainTextColour.withMultipliedAlpha(0.7f)
         .withMultipliedSaturation(0.6f));
 
-    g.drawFittedText(action->getHint(),
+    HelioTheme::drawFittedText(g,
+        action->getHint(),
         0, 0, w - int(margin * 2), h,
         Justification::centredRight, 1);
 }

@@ -23,6 +23,7 @@
 #include "HeadlineContextMenuController.h"
 #include "Instrument.h"
 #include "MainLayout.h"
+#include "HelioTheme.h"
 
 InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot) :
     pluginScanner(pluginScanner),
@@ -121,9 +122,10 @@ void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int 
     g.setColour(findDefaultColour(ListBox::textColourId).withMultipliedAlpha(alpha));
 
     constexpr auto margin = 6;
-    g.drawText(instrumentNode->getName(),
+    HelioTheme::drawText(g,
+        instrumentNode->getName(),
         (margin * 2) + int(InstrumentsListComponent::iconSize), margin,
-        w, h - (margin * 2), Justification::centredLeft, false);
+        w, h - (margin * 2), Justification::centredLeft);
 
     Icons::drawImageRetinaAware(this->instrumentIcon, g, h / 2, h / 2);
 }

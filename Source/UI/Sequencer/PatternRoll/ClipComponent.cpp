@@ -21,6 +21,7 @@
 #include "PatternRoll.h"
 #include "Pattern.h"
 #include "PatternOperations.h"
+#include "HelioTheme.h"
 #include "CommandIDs.h"
 #include "ColourIDs.h"
 #include "Icons.h"
@@ -88,10 +89,11 @@ const String &ClipComponent::getSelectionGroupId() const noexcept
     return this->clip.getPattern()->getTrackId();
 }
 
-Rectangle<int> ClipComponent::getTextArea() const noexcept
+Rectangle<float> ClipComponent::getTextArea() const noexcept
 {
-    return Rectangle<int>(4, 4,
-        jmax(0, this->getWidth() - 8), jmax(0, this->getHeight() - 7));
+    return Rectangle<float>(4.f, 4.f,
+        jmax(0.f, float(this->getWidth() - 8)),
+        jmax(0.f, float(this->getHeight() - 7)));
 }
 
 //===----------------------------------------------------------------------===//
@@ -286,8 +288,9 @@ void ClipComponent::paint(Graphics &g)
         // volume multiplier indicator
         const float fs = (w - 4.f) - ((w - 4.f) * v);
         g.fillRect(2.f + (fs / 2.f), 4.f, jmax(0.f, w - fs - 4.f), 2.f);
-        g.drawText(this->clip.getPattern()->getTrack()->getTrackName(),
-            textBounds, Justification::bottomLeft, false);
+        HelioTheme::drawText(g,
+            this->clip.getPattern()->getTrack()->getTrackName(),
+            textBounds, Justification::bottomLeft);
     }
     else if (this->flags.isInstanceOfSelected)
     {
@@ -308,12 +311,14 @@ void ClipComponent::paint(Graphics &g)
 
     if (this->clip.isMuted())
     {
-        g.drawText("M", textBounds, Justification::topRight, false);
+        HelioTheme::drawText(g,
+            "M", textBounds, Justification::topRight);
     }
 
     if (this->clip.isSoloed())
     {
-        g.drawText("S", textBounds, Justification::topRight, false);
+        HelioTheme::drawText(g,
+            "S", textBounds, Justification::topRight);
     }
 
     if (this->flags.isMergeTarget)

@@ -20,6 +20,7 @@
 #include "InstrumentEditor.h"
 #include "InstrumentEditorPin.h"
 #include "PluginWindow.h"
+#include "HelioTheme.h"
 
 #if PLATFORM_DESKTOP
 #   define CHANNELS_NUMBER_LIMIT 12
@@ -123,8 +124,14 @@ void InstrumentComponent::paint(Graphics &g)
 
     g.setFont(this->font);
     g.setColour(Colours::black.withAlpha(0.75f));
-    g.drawFittedText(this->getName(),
-        getLocalBounds().reduced(this->pinSize * 2, this->pinSize), Justification::centred, 3, 1.f);
+
+    const auto area = this->getLocalBounds().
+        reduced(this->pinSize * 2, this->pinSize);
+
+    HelioTheme::drawFittedText(g,
+        this->getName(),
+        area.getX(), area.getY(), area.getWidth(), area.getHeight(),
+        Justification::centred, 3, 1.f);
 }
 
 void InstrumentComponent::resized()

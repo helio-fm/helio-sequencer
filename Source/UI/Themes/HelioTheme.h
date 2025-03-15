@@ -37,6 +37,23 @@ public:
     static void drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply = 1.f);
     static void drawStripes(Rectangle<float> bounds, Graphics &g, float alphaMultiply = 1.f);
 
+    inline static void drawText(Graphics &g,
+        const String &text, Rectangle<float> area,
+        Justification justificationType, bool useEllipsesIfTooBig = false);
+    inline static void drawFittedText(Graphics &g,
+        const String &text, int x, int y, int width, int height,
+        Justification justification,
+        const int maximumNumberOfLines,
+        const float minimumHorizontalScale = 0.f);
+    inline static void drawText(Graphics &g,
+        const String &text, int x, int y, int width, int height,
+        Justification justificationType, bool useEllipsesIfTooBig = false)
+    {
+        HelioTheme::drawText(g, text,
+            Rectangle<float>(float(x), float(y), float(width), float(height)),
+            justificationType, useEllipsesIfTooBig);
+    }
+
     static void drawFrame(Graphics &g, int width, int height,
         float lightAlphaMultiplier = 1.f, float darkAlphaMultiplier = 1.f);
     static void drawDashedFrame(Graphics &g, const Rectangle<int> &area, int dashLength = 4);

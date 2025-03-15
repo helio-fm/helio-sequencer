@@ -920,4 +920,59 @@ private:
 
 static VersionConsistencyTests versionConsistencyTests;
 
+class BenchmarkPlayground final : public UnitTest
+{
+public:
+
+    BenchmarkPlayground() :
+        UnitTest("Benchmark playground", UnitTestCategories::helio) {}
+
+    void runTest() override
+    {
+        this->beginTest("Glyph arrangement caching on/off benchmark");
+
+        const int iterations = 32;
+        const auto text = Uuid().toString();
+
+        Image img(Image::PixelFormat::ARGB, 1024, 1024, true);
+        Graphics g(img);
+        g.setFont(Font(Globals::UI::Fonts::S));
+
+        const auto t1 = Time::getMillisecondCounterHiRes();
+
+        for (int i = 0; i < iterations; ++i)
+        {
+            for (int w = 0; w < 256; ++w)
+            {
+                HelioTheme::drawText(g, text,
+                    Rectangle<float>(0.f, 10.f, float(w), 100.f), Justification::centred);
+            }
+        }
+
+        const auto t2 = Time::getMillisecondCounterHiRes();
+
+        this->logMessage("GlyphArrangementCache off: " + String(t2 - t1) + "ms");
+
+        const auto t3 = Time::getMillisecondCounterHiRes();
+
+        for (int i = 0; i < iterations; ++i)
+        {
+            for (int w = 0; w < 256; ++w)
+            {
+                g.drawText(text,
+                    Rectangle<float>(0.f, 10.f, float(w), 100.f), Justification::centred);
+            }
+        }
+
+        const auto t4 = Time::getMillisecondCounterHiRes();
+
+        this->logMessage("GlyphArrangementCache on: " + String(t4 - t3) + "ms");
+
+        this->expect((t2 - t1) < (t4 - t3),
+            "No caching works up to 2x faster, at least on my machine");
+    }
+};
+
+//static BenchmarkPlayground benchmarkPlayground;
+
 #endif

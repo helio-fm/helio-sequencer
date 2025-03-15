@@ -41,7 +41,7 @@ public:
     Colour getSidebarFillColour() const;
     Colour getDialogFillColour() const;
 
-    Colour getButtonFillColour() const;
+    Colour getPanelFillColour() const;
     Colour getFrameBorderColour() const;
 
     Colour getLassoFillColour() const;

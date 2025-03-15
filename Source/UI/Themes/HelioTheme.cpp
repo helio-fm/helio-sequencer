@@ -154,6 +154,49 @@ void HelioTheme::drawDashedVerticalLine(Graphics &g, float x, float y, float hei
     }
 }
 
+//===----------------------------------------------------------------------===//
+// GlyphArrangement helpers to avoid using JUCE's GlyphArrangementCache
+//===----------------------------------------------------------------------===//
+
+void HelioTheme::drawText(Graphics &g,
+    const String &text, Rectangle<float> area,
+    Justification justificationType, bool useEllipsesIfTooBig)
+{
+    GlyphArrangement arrangement;
+
+    arrangement.addCurtailedLineOfText(g.getCurrentFont(),
+        text, 0.f, 0.f,
+        area.getWidth(),
+        useEllipsesIfTooBig);
+
+    arrangement.justifyGlyphs(0,
+        arrangement.getNumGlyphs(),
+        area.getX(), area.getY(),
+        area.getWidth(), area.getHeight(),
+        justificationType);
+
+    arrangement.draw(g);
+}
+
+void HelioTheme::drawFittedText(Graphics &g,
+    const String &text, int x, int y, int width, int height,
+    Justification justification,
+    const int maximumNumberOfLines,
+    const float minimumHorizontalScale)
+{
+    GlyphArrangement arrangement;
+
+    arrangement.addFittedText(g.getCurrentFont(),
+        text,
+        float(x), float(y),
+        float(width), float(height),
+        justification,
+        maximumNumberOfLines,
+        minimumHorizontalScale);
+
+    arrangement.draw(g);
+}
+
 Typeface::Ptr HelioTheme::getTypefaceForFont(const Font &font)
 {
 #if PLATFORM_DESKTOP
@@ -308,10 +351,8 @@ Font HelioTheme::getTextButtonFont(TextButton &button, int buttonHeight)
 void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
     bool isMouseOverButton, bool isButtonDown)
 {
-    const auto font = getTextButtonFont(button, button.getHeight());
+    const auto font = this->getTextButtonFont(button, button.getHeight());
     g.setFont(font);
-    g.setColour(findDefaultColour(TextButton::buttonColourId).contrasting()
-        .withMultipliedAlpha(button.isEnabled() ? 0.9f : 0.4f));
     
     const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
     const int yHeight = (button.getHeight() - (yIndent * 2));
@@ -324,7 +365,8 @@ void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
     g.setColour(findDefaultColour(TextButton::textColourOnId)
         .withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
 
-    g.drawFittedText(button.getButtonText(),
+    HelioTheme::drawFittedText(g,
+        button.getButtonText(),
         leftIndent,
         yIndent,
         button.getWidth() - leftIndent - rightIndent,
@@ -387,17 +429,25 @@ void HelioTheme::drawToggleButton(Graphics &g, ToggleButton &button,
         shouldDrawButtonAsHighlighted,
         shouldDrawButtonAsDown);
 
+    const Font font(fontSize);
+    g.setFont(font);
     g.setColour(this->findColour(ToggleButton::textColourId));
-    g.setFont(fontSize);
 
     if (!button.isEnabled())
     {
         g.setOpacity(0.5f);
     }
 
-    g.drawFittedText(button.getButtonText(),
-        button.getLocalBounds().withTrimmedLeft(roundToInt(tickWidth) + 10)
-            .withTrimmedRight(2), Justification::centredLeft, 10);
+    const auto area = button.getLocalBounds()
+        .withTrimmedLeft(roundToInt(tickWidth) + 10)
+        .withTrimmedRight(2);
+
+    HelioTheme::drawFittedText(g,
+        button.getButtonText(),
+        area.getX(), area.getY(),
+        area.getWidth(), area.getHeight(),
+        Justification::centredLeft,
+        10, 1.f);
 }
 
 //===----------------------------------------------------------------------===//
@@ -443,8 +493,11 @@ void HelioTheme::drawTableHeaderColumn(Graphics &g,
     g.setFont(Globals::UI::Fonts::S);
 #endif
 
-    g.drawFittedText(columnName, area, columnId == 1 ? // a nasty hack, only used in AudioPluginsListComponent
-        Justification::centredRight : Justification::centredLeft, 1);
+    HelioTheme::drawFittedText(g,
+        columnName,
+        area.getX(), area.getY(), area.getWidth(), area.getHeight(),
+        columnId == 1 ? // a nasty hack, only used in AudioPluginsListComponent
+            Justification::centredRight : Justification::centredLeft, 1);
 }
 
 //===----------------------------------------------------------------------===//
@@ -785,12 +838,12 @@ void HelioTheme::initResources()
 
     if (pickedFontName.isNotEmpty())
     {
-        this->textTypefaceCache = Typeface::createSystemTypefaceFor({ pickedFontName, 0, 0 });
+        this->textTypefaceCache = Typeface::createSystemTypefaceFor({ pickedFontName, 0, Font::plain });
     }
     else
     {
         // Verdana on Windows, Bitstream Vera Sans or something on Linux, Lucida Grande on macOS:
-        this->textTypefaceCache = Font::getDefaultTypefaceForFont({ Font::getDefaultSansSerifFontName(), 0, 0 });
+        this->textTypefaceCache = Font::getDefaultTypefaceForFont({ Font::getDefaultSansSerifFontName(), 0, Font::plain });
     }
 
     DBG("Using font: " + this->textTypefaceCache->getName());
@@ -832,10 +885,10 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     // MainWindow
     this->setColour(ResizableWindow::backgroundColourId, s->getPageFillColour().brighter(0.045f));
     this->setColour(ScrollBar::backgroundColourId, Colours::transparentBlack);
-    this->setColour(ScrollBar::thumbColourId, s->getButtonFillColour().withAlpha(1.f));
+    this->setColour(ScrollBar::thumbColourId, s->getPanelFillColour().withAlpha(1.f));
 
     // TextButton
-    this->setColour(TextButton::buttonColourId, s->getButtonFillColour());
+    this->setColour(TextButton::buttonColourId, s->getPanelFillColour());
     this->setColour(TextButton::buttonOnColourId, s->getFrameBorderColour());
     this->setColour(TextButton::textColourOnId, textColour.withMultipliedAlpha(0.75f));
     this->setColour(TextButton::textColourOffId, textColour.withMultipliedAlpha(0.5f));

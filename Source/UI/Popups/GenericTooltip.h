@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "HelioTheme.h"
+
 class GenericTooltip final : public Component
 {
 public:
@@ -43,7 +45,8 @@ public:
             g.setFont(Globals::UI::Fonts::M);
         }
 
-        g.drawFittedText(this->message,
+        HelioTheme::drawFittedText(g,
+            this->message,
             messageBounds.getX(), messageBounds.getY(),
             messageBounds.getWidth(), messageBounds.getHeight(),
             Justification::centred, 3, 1.f);

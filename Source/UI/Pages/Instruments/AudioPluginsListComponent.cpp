@@ -26,6 +26,7 @@
 #include "HeadlineContextMenuController.h"
 #include "PluginScanner.h"
 #include "MainLayout.h"
+#include "HelioTheme.h"
 #include "Config.h"
 
 AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanner, OrchestraPitNode &instrumentsRoot) :
@@ -246,13 +247,15 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
 
         g.setFont(useSmallFonts ? Globals::UI::Fonts::S : Globals::UI::Fonts::M);
         g.setColour(colour);
-        g.drawText(pd.descriptiveName, margin, margin,
-            w - margin * 2, h - margin * 2, Justification::topLeft, false);
+        HelioTheme::drawText(g,
+            pd.descriptiveName, margin, margin,
+            w - margin * 2, h - margin * 2, Justification::topLeft);
 
         g.setFont(Globals::UI::Fonts::S);
         g.setColour(colour.withMultipliedAlpha(0.75f));
-        g.drawText(pd.manufacturerName, margin, margin,
-            w - margin * 2, h - margin * 2, Justification::centredLeft, false);
+        HelioTheme::drawText(g,
+            pd.manufacturerName, margin, margin,
+            w - margin * 2, h - margin * 2, Justification::centredLeft);
 
         String details = pd.version;
         if (inputChannelsString.isNotEmpty())
@@ -276,8 +279,9 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
         }
 
         g.setColour(colour.withMultipliedAlpha(0.5f));
-        g.drawText(details, margin, margin,
-            w - margin * 2, h - margin * 2 - 1, Justification::bottomLeft, false);
+        HelioTheme::drawText(g,
+            details, margin, margin,
+            w - margin * 2, h - margin * 2 - 1, Justification::bottomLeft);
 
         break;
     }
@@ -285,8 +289,9 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     {
         g.setFont(useSmallFonts ? Globals::UI::Fonts::XS : Globals::UI::Fonts::S);
         g.setColour(colour.withMultipliedAlpha(0.5f));
-        g.drawText(pd.category, margin, margin,
-            w - margin * 2, h - margin * 2, Justification::topRight, false);
+        HelioTheme::drawText(g,
+            pd.category, margin, margin,
+            w - margin * 2, h - margin * 2, Justification::topRight);
         break;
     }
     case ColumnIds::format:
@@ -295,8 +300,9 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
         {
             g.setFont(useSmallFonts ? Globals::UI::Fonts::XS : Globals::UI::Fonts::S);
             g.setColour(colour.withMultipliedAlpha(0.75f));
-            g.drawText(pd.pluginFormatName, margin, margin,
-                w - margin * 2, h - margin * 2, Justification::topLeft, false);
+            HelioTheme::drawText(g,
+                pd.pluginFormatName, margin, margin,
+                w - margin * 2, h - margin * 2, Justification::topLeft);
         }
         break;
     }

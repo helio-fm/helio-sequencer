@@ -26,6 +26,7 @@
 #include "AnnotationEvent.h"
 #include "MidiTrack.h"
 #include "PatternRoll.h"
+#include "HelioTheme.h"
 
 PianoClipComponent::PianoClipComponent(ProjectNode &project, MidiSequence *sequence,
     RollBase &roll, const Clip &clip) :
@@ -58,8 +59,9 @@ void PianoClipComponent::paint(Graphics &g)
 
     if (this->clip.getKey() != 0)
     {
-        g.drawText(this->clip.getKeyAsString(),
-            this->getTextArea(), Justification::topLeft, false);
+        HelioTheme::drawText(g,
+            this->clip.getKeyAsString(),
+            this->getTextArea(), Justification::topLeft);
     }
 
     const auto w = float(this->getWidth());
