@@ -22,6 +22,7 @@ class Network;
 class Workspace;
 class MainWindow;
 class MainLayout;
+class HelioTheme;
 
 #include "Serializable.h"
 #include "UserInterfaceFlags.h"
@@ -104,7 +105,7 @@ private:
 
     class Clipboard clipboard;
 
-    UniquePointer<class LookAndFeel> theme;
+    UniquePointer<class HelioTheme> theme;
     UniquePointer<class Config> config;
     UniquePointer<class Workspace> workspace;
     UniquePointer<class MainWindow> window;

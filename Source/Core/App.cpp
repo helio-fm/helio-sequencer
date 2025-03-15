@@ -516,12 +516,10 @@ void App::initialise(const String &commandLine)
         this->config = make<class Config>();
         this->config->initResources();
 
-        auto helioTheme = make<HelioTheme>();
-        helioTheme->initResources();
-        helioTheme->initColours(this->config->getColourSchemes()->getCurrent());
-
-        this->theme = move(helioTheme);
+        this->theme = make<HelioTheme>();
         LookAndFeel::setDefaultLookAndFeel(this->theme.get());
+        this->theme->initResources();
+        this->theme->initColours(this->config->getColourSchemes()->getCurrent());
 
 #if JUCE_UNIT_TESTS
 
