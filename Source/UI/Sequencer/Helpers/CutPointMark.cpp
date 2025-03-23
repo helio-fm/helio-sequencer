@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "CutPointMark.h"
-#include "ClipComponent.h"
+#include "Clip.h"
 #include "HelioTheme.h"
 
 CutPointMark::CutPointMark(SafePointer<Component> targetComponent, float absPosX) :
@@ -128,9 +128,9 @@ void NoteCutPointMark::paint(Graphics &g)
 // For the pattern roll
 //===----------------------------------------------------------------------===//
 
-ClipCutPointMark::ClipCutPointMark(SafePointer<ClipComponent> targetComponent) :
-    CutPointMark(static_cast<Component *>(targetComponent.getComponent()), 0.f),
-    colour(targetComponent->getClip().getTrackColour().interpolatedWith(Colours::white, 0.5f)) {}
+ClipCutPointMark::ClipCutPointMark(SafePointer<Component> targetComponent, const Clip &clip) :
+    CutPointMark(targetComponent, 0.f),
+    markColour(clip.getTrackColour().interpolatedWith(Colours::white, 0.5f)) {}
 
 void ClipCutPointMark::paint(Graphics &g)
 {
@@ -160,6 +160,65 @@ void ClipCutPointMark::updatePositionFromMouseEvent(int mouseX, int mouseY)
     {
         this->absPosX = jlimit(0.f, 1.f,
             float(mouseX - this->targetComponent->getX()) /
+            float(this->targetComponent->getWidth()));
+    }
+
+    this->updateBounds();
+}
+
+//===----------------------------------------------------------------------===//
+// For the automation editors
+//===----------------------------------------------------------------------===//
+
+AutomationEditorCutPointMark::AutomationEditorCutPointMark(SafePointer<Component> targetComponent, const Clip &clip) :
+    ClipCutPointMark(targetComponent, clip) {}
+
+// these two are similar to the above, but both omit the targetComponent->getX() offset:
+
+void AutomationEditorCutPointMark::updateBounds(bool forceNoAnimation /*= false*/)
+{
+    Desktop::getInstance().getAnimator().cancelAnimation(this, false);
+
+    if (this->absPosX <= 0.f || this->absPosX >= 1.f)
+    {
+        if (this->initialized)
+        {
+            this->setVisible(false);
+            this->initialized = false;
+        }
+    }
+    else if (this->targetComponent != nullptr)
+    {
+        const float wt = float(this->targetComponent->getWidth());
+        const int ht = this->targetComponent->getHeight();
+        const int x = int(wt * this->absPosX);
+        const int y = this->targetComponent->getY();
+        const Rectangle<int> newBounds(x - 2, y, 5, ht);
+
+        if (!this->initialized || forceNoAnimation)
+        {
+            this->initialized = true;
+            this->setVisible(true);
+            this->setBounds(newBounds);
+        }
+        else
+        {
+            Desktop::getInstance().getAnimator().animateComponent(this, newBounds, 1.f, 20, false, 1.0, 0.0);
+        }
+    }
+}
+
+void AutomationEditorCutPointMark::updatePositionFromMouseEvent(int mouseX, int mouseY)
+{
+    if (mouseY < this->targetComponent->getY() ||
+        mouseY > this->targetComponent->getBottom())
+    {
+        this->absPosX = -1.f;
+    }
+    else
+    {
+        this->absPosX = jlimit(0.f, 1.f,
+            float(mouseX) /
             float(this->targetComponent->getWidth()));
     }
 

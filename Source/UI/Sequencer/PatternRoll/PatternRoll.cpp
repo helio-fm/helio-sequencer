@@ -1196,19 +1196,19 @@ void PatternRoll::endErasingEvents()
 
 void PatternRoll::startCuttingClips(const Point<float> &mousePosition)
 {
-    ClipComponent *targetClip = nullptr;
+    ClipComponent *targetComponent = nullptr;
     for (const auto &cc : this->clipComponents)
     {
         if (cc.second.get()->getBounds().contains(mousePosition.toInt()))
         {
-            targetClip = cc.second.get();
+            targetComponent = cc.second.get();
             break;
         }
     }
 
-    if (this->knifeToolHelper == nullptr && targetClip != nullptr)
+    if (this->knifeToolHelper == nullptr && targetComponent != nullptr)
     {
-        this->knifeToolHelper = make<ClipCutPointMark>(targetClip);
+        this->knifeToolHelper = make<ClipCutPointMark>(targetComponent, targetComponent->getClip());
         this->addAndMakeVisible(this->knifeToolHelper.get());
 
         const float cutBeat = this->getRoundBeatSnapByXPosition(int(mousePosition.x));

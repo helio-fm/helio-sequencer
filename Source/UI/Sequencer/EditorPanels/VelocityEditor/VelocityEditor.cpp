@@ -643,21 +643,16 @@ bool VelocityEditor::isMultiTouchEvent(const MouseEvent &e) const noexcept
 // RollEditMode::Listener & edit mode helpers
 //===----------------------------------------------------------------------===//
 
-// for now, velocity editor only supports three modes: dragging, drawing
-// and the default mode, i.e. no selection mode and no knife/merge tool;
-// this hack maps all existing edit modes to supported ones, so that
-// selection mode becomes the default mode and knife mode becomes drawing mode
-// (see the same logic in AutomationEditor)
+// the velocity editor supports all edit modes, except the selection mode and the knife mode,
+// this hack maps all edit modes to supported ones, so that the unsupported modes
+// fallback to the default mode (see similar logic in AutomationEditor)
 
 RollEditMode VelocityEditor::getSupportedEditMode(const RollEditMode &rollMode) const noexcept
 {
-    if (rollMode.isMode(RollEditMode::dragMode))
+    if (rollMode.isMode(RollEditMode::dragMode) ||
+        rollMode.isMode(RollEditMode::drawMode))
     {
-        return RollEditMode::dragMode;
-    }
-    else if (rollMode.isMode(RollEditMode::drawMode) || rollMode.isMode(RollEditMode::knifeMode))
-    {
-        return RollEditMode::drawMode;
+        return rollMode;
     }
 
     return RollEditMode::defaultMode;

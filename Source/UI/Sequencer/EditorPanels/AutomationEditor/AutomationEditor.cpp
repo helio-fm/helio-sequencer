@@ -27,6 +27,7 @@
 #include "AutomationCurveEventComponent.h"
 #include "AutomationStepEventComponent.h"
 #include "MultiTouchController.h"
+#include "CutPointMark.h"
 #include "Lasso.h"
 #include "ColourIDs.h"
 #include "TempoDialog.h"
@@ -437,6 +438,66 @@ void AutomationEditor::applyHandDrawnCurve(bool isAnyModifierKeyDown)
 }
 
 //===----------------------------------------------------------------------===//
+// Cutting the clip
+//===----------------------------------------------------------------------===//
+
+void AutomationEditor::startCuttingClip(const Point<float> &mousePosition)
+{
+    if (!this->activeClip.hasValue())
+    {
+        jassertfalse;
+        return;
+    }
+
+    if (this->knifeToolHelper == nullptr)
+    {
+        this->knifeToolHelper = make<AutomationEditorCutPointMark>(this, *this->activeClip);
+        this->addAndMakeVisible(this->knifeToolHelper.get());
+    }
+
+    const float cutBeat = this->roll->getRoundBeatSnapByXPosition(int(mousePosition.x));
+    const int beatX = this->roll->getXPositionByBeat(cutBeat);
+    this->knifeToolHelper->updatePositionFromMouseEvent(beatX, int(mousePosition.y));
+    this->knifeToolHelper->toFront(false);
+    this->knifeToolHelper->fadeIn();
+}
+
+void AutomationEditor::continueCuttingClip(const Point<float> &mousePosition)
+{
+    if (this->knifeToolHelper == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    const float cutBeat = this->roll->getRoundBeatSnapByXPosition(int(mousePosition.x));
+    const int beatX = this->roll->getXPositionByBeat(cutBeat);
+    this->knifeToolHelper->updatePositionFromMouseEvent(beatX, int(mousePosition.y));
+}
+
+void AutomationEditor::endCuttingClipIfNeeded(bool shouldCut, bool shouldRenameNewTracks)
+{
+    if (this->knifeToolHelper == nullptr)
+    {
+        return;
+    }
+
+    if (shouldCut && this->activeClip.hasValue())
+    {
+        const float cutPos = this->knifeToolHelper->getCutPosition();
+        if (cutPos > 0.f && cutPos < 1.f)
+        {
+            // assumes the same width with the roll:
+            const float cutBeat = this->roll->getRoundBeatSnapByXPosition(int(this->getWidth() * cutPos));
+            PatternOperations::cutClip(this->project, *this->activeClip, cutBeat, shouldRenameNewTracks);
+        }
+    }
+
+    this->knifeToolHelper->updatePosition(-1.f);
+    this->knifeToolHelper = nullptr;
+}
+
+//===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
 
@@ -467,6 +528,13 @@ void AutomationEditor::mouseDown(const MouseEvent &e)
 
     this->panningStart = e.getPosition();
 
+    // !this->activeClip.hasValue() means no selection in the roll
+    if (this->isKnifeToolEvent(e) && this->activeClip.hasValue())
+    {
+        // the automation editor doesn't support merging with the knife tool,
+        // because our scope is limited to one clip, so cutting only
+        this->startCuttingClip(e.position);
+    }
     if (this->isDrawingEvent(e) && this->activeClip.hasValue())
     {
         if (this->activeClip->getPattern()->getTrack()->isOnOffAutomationTrack())
@@ -512,6 +580,10 @@ void AutomationEditor::mouseDrag(const MouseEvent &e)
             .withNewPosition(Point<int>(e.getPosition().getX(), this->panningStart.getY()))
             .getEventRelativeTo(this->roll));
     }
+    else if (this->isKnifeToolEvent(e))
+    {
+        this->continueCuttingClip(e.position);
+    }
 }
 
 void AutomationEditor::mouseUp(const MouseEvent &e)
@@ -526,6 +598,8 @@ void AutomationEditor::mouseUp(const MouseEvent &e)
     {
         return;
     }
+
+    this->endCuttingClipIfNeeded(true, e.mods.isAnyModifierKeyDown());
 
     // skipping this to avoid deselection logic, we only needed panning:
     /*
@@ -721,21 +795,17 @@ bool AutomationEditor::isMultiTouchEvent(const MouseEvent &e) const noexcept
 // RollEditMode::Listener & edit mode helpers
 //===----------------------------------------------------------------------===//
 
-// for now, automation editor only supports three modes: dragging, drawing
-// and the default mode, i.e. no selection mode and no knife/merge tool;
-// this hack maps all existing edit modes to supported ones, so that
-// selection mode becomes the default mode and knife mode becomes drawing mode
-// (see the same logic in VelocityEditor)
+// the automation editor supports all edit modes, except the selection mode;
+// this hack maps all edit modes to supported ones, so that the selection mode
+// becomes the default mode (see similar logic in VelocityEditor)
 
 RollEditMode AutomationEditor::getSupportedEditMode(const RollEditMode &rollMode) const noexcept
 {
-    if (rollMode.isMode(RollEditMode::dragMode))
+    if (rollMode.isMode(RollEditMode::dragMode) ||
+        rollMode.isMode(RollEditMode::drawMode) ||
+        rollMode.isMode(RollEditMode::knifeMode))
     {
-        return RollEditMode::dragMode;
-    }
-    else if (rollMode.isMode(RollEditMode::drawMode) || rollMode.isMode(RollEditMode::knifeMode))
-    {
-        return RollEditMode::drawMode;
+        return rollMode;
     }
 
     return RollEditMode::defaultMode;
@@ -765,6 +835,14 @@ bool AutomationEditor::isDrawingEvent(const MouseEvent &e) const
     if (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown()) { return false; }
     if (this->getEditMode().forbidsAddingEvents(e.mods)) { return false; }
     if (this->getEditMode().forcesAddingEvents(e.mods)) { return true; }
+    return false;
+}
+
+bool AutomationEditor::isKnifeToolEvent(const MouseEvent &e) const
+{
+    if (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown()) { return false; } // todo check rmb dragging
+    if (this->getEditMode().forbidsCuttingEvents(e.mods)) { return false; }
+    if (this->getEditMode().forcesCuttingEvents(e.mods)) { return true; }
     return false;
 }
 

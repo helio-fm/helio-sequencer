@@ -26,7 +26,8 @@ public:
 
     void fadeIn();
     void updatePosition(float pos);
-    void updateBounds(bool forceNoAnimation = false);
+
+    virtual void updateBounds(bool forceNoAnimation = false);
 
     Component *getComponent() const noexcept;
     float getCutPosition() const noexcept;
@@ -50,19 +51,30 @@ public:
     void paint(Graphics &g) override;
 };
 
-class ClipComponent;
+class Clip;
 
-class ClipCutPointMark final : public CutPointMark
+class ClipCutPointMark : public CutPointMark
 {
 public:
 
-    explicit ClipCutPointMark(SafePointer<ClipComponent> targetComponent);
+    ClipCutPointMark(SafePointer<Component> targetComponent, const Clip &clip);
 
     void paint(Graphics &g) override;
 
-    void updatePositionFromMouseEvent(int mouseX, int mouseY);
+    virtual void updatePositionFromMouseEvent(int mouseX, int mouseY);
 
 private:
 
     const Colour colour;
+};
+
+class AutomationEditorCutPointMark final : public ClipCutPointMark
+{
+public:
+
+    AutomationEditorCutPointMark(SafePointer<Component> targetComponent, const Clip &clip);
+
+    void updateBounds(bool forceNoAnimation = false) override;
+    void updatePositionFromMouseEvent(int mouseX, int mouseY) override;
+
 };

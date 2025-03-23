@@ -31,6 +31,7 @@ class RollBase;
 class ProjectNode;
 class MultiTouchController;
 class AutomationHandDrawingHelper;
+class AutomationEditorCutPointMark;
 
 class AutomationEditor final :
     public EditorPanelBase,
@@ -161,16 +162,19 @@ private:
 
 private:
 
-    UniquePointer<AutomationHandDrawingHelper> handDrawingHelper;
-
-    void applyHandDrawnCurve(bool isAnyModifierKeyDown);
-
-private:
-
     RollEditMode getEditMode() const noexcept;
     RollEditMode getSupportedEditMode(const RollEditMode &rollMode) const noexcept;
     bool isDraggingEvent(const MouseEvent &e) const;
     bool isDrawingEvent(const MouseEvent &e) const;
+    bool isKnifeToolEvent(const MouseEvent &e) const;
+
+    UniquePointer<AutomationHandDrawingHelper> handDrawingHelper;
+    void applyHandDrawnCurve(bool isAnyModifierKeyDown);
+
+    UniquePointer<AutomationEditorCutPointMark> knifeToolHelper;
+    void startCuttingClip(const Point<float> &mousePosition);
+    void continueCuttingClip(const Point<float> &mousePosition);
+    void endCuttingClipIfNeeded(bool shouldCut, bool shouldRenameNewTracks);
 
 private:
 

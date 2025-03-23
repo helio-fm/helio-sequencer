@@ -248,7 +248,7 @@ void PatternOperations::shiftBeatRelative(const Lasso &selection, float deltaBea
 }
 
 void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
-    float relativeCutBeat, bool shouldRenameNewTrack, bool shouldCheckpoint)
+    float absCutBeat, bool shouldRenameNewTrack, bool shouldCheckpoint)
 {
     MidiTrack *track = clip.getPattern()->getTrack();
 
@@ -256,7 +256,8 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
         SequencerOperations::generateNextNameForNewTrack(track->getTrackName(), project.getAllTrackNames()) :
         track->getTrackName();
 
-    const float cutBeat = relativeCutBeat - clip.getBeat();
+    // relative to the sequence's first beat:
+    const float cutBeat = absCutBeat - clip.getBeat();
 
     // If this is a piano roll, need to cut events, if any intersect the given beat.
     // Create a new track - either piano or automation, depending on the selected one.
@@ -264,9 +265,17 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
 
     if (auto *pianoTrack = dynamic_cast<PianoTrackNode *>(track))
     {
+        auto *sequence = static_cast<PianoSequence *>(track->getSequence());
+        if (sequence->isEmpty() ||
+            sequence->getFirstBeat() >= cutBeat ||
+            sequence->getLastBeat() <= cutBeat)
+        {
+            jassertfalse;
+            return;
+        }
+
         Array<Note> intersectedEvents;
         Array<float> intersectionPoints;
-        auto *sequence = static_cast<PianoSequence *>(track->getSequence());
         for (int i = 0; i < sequence->size(); ++i)
         {
             auto *note = static_cast<Note *>(sequence->getUnchecked(i));
@@ -277,7 +286,6 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
             }
         }
 
-        // assumes that any changes will be done anyway, i.e. too simple check, but ok for now
         if (shouldCheckpoint)
         {
             sequence->checkpoint();
@@ -299,6 +307,7 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
             }
         }
 
+        jassert(!eventsToAdd.isEmpty());
         const auto newTrack = SequencerOperations::createPianoTrack(eventsToAdd, clip.getPattern());
 
         for (auto *newClip : newTrack->getPattern()->getClips())
@@ -310,11 +319,20 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
 
         sequence->removeGroup(eventsToRemove, true);
         project.getUndoStack()->perform(new PianoTrackInsertAction(project, &project, trackTemplate, newName));
+        project.broadcastChangeProjectBeatRange();
     }
     else if (auto *autoTrack = dynamic_cast<AutomationTrackNode *>(track))
     {
-        Array<AutomationEvent> eventsToBeMoved;
         auto *sequence = static_cast<AutomationSequence *>(track->getSequence());
+        if (sequence->isEmpty() ||
+            sequence->getFirstBeat() >= cutBeat ||
+            sequence->getLastBeat() <= cutBeat)
+        {
+            jassertfalse;
+            return;
+        }
+
+        Array<AutomationEvent> eventsToBeMoved;
         for (int i = 0; i < sequence->size(); ++i)
         {
             auto *event = static_cast<AutomationEvent *>(sequence->getUnchecked(i));
@@ -323,6 +341,8 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
                 eventsToBeMoved.add(*event);
             }
         }
+
+        jassert(!eventsToBeMoved.isEmpty());
 
         const auto newTrack = SequencerOperations::createAutomationTrack(eventsToBeMoved, clip.getPattern());
         const auto trackTemplate = newTrack->serialize();
@@ -334,6 +354,7 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
 
         sequence->removeGroup(eventsToBeMoved, true);
         project.getUndoStack()->perform(new AutomationTrackInsertAction(project, &project, trackTemplate, newName));
+        project.broadcastChangeProjectBeatRange();
     }
 }
 
@@ -943,6 +964,7 @@ bool PatternOperations::applyModifiersStack(const Clip &clip, bool shouldCheckpo
         pattern->remove(clip, true);
         project->getUndoStack()->perform(new PianoTrackInsertAction(*project,
             project, trackPreset->serialize(), trackName));
+        project->broadcastChangeProjectBeatRange();
 
         // focus on it
         auto *newlyAddedTrack = project->findTrackById<MidiTrackNode>(trackId);
