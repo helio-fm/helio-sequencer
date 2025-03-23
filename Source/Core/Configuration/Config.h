@@ -54,6 +54,9 @@ public:
     void setMaxSavedUndoActions(int value);
     int getMaxSavedUndoActions() const noexcept;
 
+    void setWindowBounds(const Rectangle<int> &bounds);
+    Optional<Rectangle<int>> getWindowBounds() const noexcept;
+
     // resource collections
 
     ChordsCollection *getChords() const noexcept;

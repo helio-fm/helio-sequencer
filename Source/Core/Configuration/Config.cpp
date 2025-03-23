@@ -196,7 +196,9 @@ void Config::onConfigChanged()
     }
 }
 
-// properties shortcuts
+//===----------------------------------------------------------------------===//
+// Properties shortcuts
+//===----------------------------------------------------------------------===//
 
 void Config::setUpdatesCheckEnabled(bool value)
 {
@@ -227,7 +229,23 @@ int Config::getMaxSavedUndoActions() const noexcept
     return jlimit(0, 256, maxActions);
 }
 
-// resource collections
+
+void Config::setWindowBounds(const Rectangle<int> &bounds)
+{
+    this->setProperty(Serialization::Config::windowBounds, bounds.toString());
+}
+
+Optional<Rectangle<int>> Config::getWindowBounds() const noexcept
+{
+    const String boundsString = this->getProperty(Serialization::Config::windowBounds);
+    return boundsString.isEmpty() ?
+        Optional<Rectangle<int>>() :
+        Rectangle<int>::fromString(boundsString);
+}
+
+//===----------------------------------------------------------------------===//
+// Resource collections
+//===----------------------------------------------------------------------===//
 
 ResourceCollectionsLookup &Config::getAllResources() noexcept
 {

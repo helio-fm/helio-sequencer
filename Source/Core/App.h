@@ -105,8 +105,8 @@ private:
 
     class Clipboard clipboard;
 
-    UniquePointer<class HelioTheme> theme;
     UniquePointer<class Config> config;
+    UniquePointer<class HelioTheme> theme;
     UniquePointer<class Workspace> workspace;
     UniquePointer<class MainWindow> window;
     UniquePointer<class Network> network;

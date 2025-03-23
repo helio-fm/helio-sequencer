@@ -42,16 +42,17 @@ public:
 
     MainWindow() : DocumentWindow("Helio", Colours::darkgrey, DocumentWindow::allButtons) {}
 
-    // the reason for this method to exist is that heavy-weight constructor is evil:
-    void init(bool enableOpenGl, bool useNativeTitleBar)
+    void initialise(bool enableOpenGl, bool useNativeTitleBar)
     {
         this->setWantsKeyboardFocus(false);
         this->setOpaque(true);
 
 #if PLATFORM_DESKTOP
 
-        //this->setResizeLimits(568, 320, 8192, 8192); // phone size test
-        this->setResizeLimits(1024, 650, 8192, 8192); // production
+        constexpr auto minWidth = 1024; // 568, 320 for small phone size test
+        constexpr auto minHeight= 650;
+
+        this->setResizeLimits(minWidth, minHeight, 8192, 8192);
 
         const bool hasResizableCorner = !useNativeTitleBar;
         this->setResizable(true, hasResizableCorner);
@@ -63,10 +64,18 @@ public:
             this->resizableCorner->setBufferedToImage(true);
         }
 
-        this->setBounds(int(0.1f * this->getParentWidth()),
+        const auto defaultBounds = Rectangle<int>(
+            int(0.1f * this->getParentWidth()),
             int(0.1f * this->getParentHeight()),
             jmin(1280, int(0.85f * this->getParentWidth())),
             jmin(768, int(0.85f * this->getParentHeight())));
+
+        const auto windowBounds =
+            App::Config().getWindowBounds().orFallback(defaultBounds);
+
+        this->setBounds(windowBounds.withSize(
+            jmax(windowBounds.getWidth(), minWidth),
+            jmax(windowBounds.getHeight(), minHeight)));
 
 #endif
 
@@ -94,6 +103,10 @@ public:
 
     ~MainWindow() override
     {
+#if PLATFORM_DESKTOP
+        App::Config().setWindowBounds(this->getBounds());
+#endif
+
         this->detachOpenGLContextIfAny();
         this->clearContentComponent();
     }
@@ -562,7 +575,7 @@ void App::initialise(const String &commandLine)
         const auto shouldUseNativeTitleBar = this->config->getUiFlags()->isNativeTitleBarEnabled();
 
         this->window = make<MainWindow>();
-        this->window->init(shouldEnableOpenGL, shouldUseNativeTitleBar);
+        this->window->initialise(shouldEnableOpenGL, shouldUseNativeTitleBar);
 
         this->network = make<class Network>(*this->workspace.get());
 
@@ -593,8 +606,8 @@ void App::shutdown()
 
         DBG("Shutting down");
 
-        this->window = nullptr;
         this->network = nullptr;
+        this->window = nullptr;
         
         if (this->workspace != nullptr)
         {
@@ -772,7 +785,7 @@ void App::onNativeTitleBarFlagChanged(bool shouldUseNativeTitleBar)
     const bool hasOpenGl = App::isOpenGLRendererEnabled();
     auto *self = static_cast<App *>(getInstance());
     self->window = make<MainWindow>();
-    self->window->init(hasOpenGl, shouldUseNativeTitleBar);
+    self->window->initialise(hasOpenGl, shouldUseNativeTitleBar);
 
 #   elif JUCE_LINUX
 
@@ -817,7 +830,7 @@ void App::onUiScaleChanged(float scale)
 
     auto *self = static_cast<App *>(getInstance());
     self->window = make<MainWindow>();
-    self->window->init(hasOpenGl, hasNativeTitleBar);
+    self->window->initialise(hasOpenGl, hasNativeTitleBar);
 }
 
 //===----------------------------------------------------------------------===//
