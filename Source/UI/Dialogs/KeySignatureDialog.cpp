@@ -165,6 +165,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
 
     this->keySelector = make<KeySelector>(period);
     this->keySelectorViewport = make<Viewport>();
+    this->keySelectorViewport->setWantsKeyboardFocus(false);
     this->keySelectorViewport->setViewedComponent(this->keySelector.get());
     this->keySelectorViewport->setScrollBarsShown(false, false);
     this->keySelectorViewport->setScrollOnDragMode(Viewport::ScrollOnDragMode::nonHover);
@@ -199,6 +200,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
 
     this->scaleEditor = make<ScaleEditor>();
     this->scaleEditorViewport = make<Viewport>();
+    this->scaleEditorViewport->setWantsKeyboardFocus(false);
     this->scaleEditorViewport->setViewedComponent(this->scaleEditor.get());
     this->scaleEditorViewport->setScrollBarsShown(false, false);
     this->scaleEditorViewport->setScrollOnDragMode(Viewport::ScrollOnDragMode::nonHover);

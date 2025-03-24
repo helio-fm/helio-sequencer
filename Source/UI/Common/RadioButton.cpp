@@ -73,6 +73,9 @@ RadioButton::RadioButton(const String &text,
     labelSelectedColour(findDefaultColour(Label::textColourId)),
     labelDeselectedColour(findDefaultColour(Label::textColourId).withMultipliedAlpha(0.9f))
 {
+    this->setWantsKeyboardFocus(false);
+    this->setMouseClickGrabsKeyboardFocus(false);
+
     this->label = make<Label>(String(), text);
     this->addAndMakeVisible(this->label.get());
     this->label->setFont(Globals::UI::Fonts::M);

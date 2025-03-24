@@ -33,6 +33,7 @@ public:
         commandId(commandId),
         listener(listener)
     {
+        this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(true, false);
         this->setMouseClickGrabsKeyboardFocus(false);
     }
@@ -44,6 +45,7 @@ public:
         commandId(commandId),
         listener(listener)
     {
+        this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(true, false);
         this->setMouseClickGrabsKeyboardFocus(false);
     }

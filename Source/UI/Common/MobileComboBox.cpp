@@ -185,7 +185,9 @@ void MobileComboBox::initBackground(Component *newCustomBackground)
 
 MobileComboBox::Container::Container()
 {
+    this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
 }
 
 MobileComboBox::Container::~Container()

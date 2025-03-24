@@ -21,7 +21,9 @@
 
 KeySelector::KeySelector(const Temperament::Period &period)
 {
+    this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
+    this->setMouseClickGrabsKeyboardFocus(false);
 
     const auto colour = findDefaultColour(ColourIDs::ColourButton::outline);
 
