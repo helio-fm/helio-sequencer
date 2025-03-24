@@ -62,25 +62,25 @@ jobs:
     - name: "android 21, release build"
       stage: Deploy
       os: linux
-      dist: trusty
+      dist: focal
       language: android
       sudo: true
-      jdk: oraclejdk8
+      jdk: openjdk11
       addons: *deploy
       env: BUILD_TYPE=android ANDROID_NDK_HOME=${ANDROID_HOME}/ndk-bundle
       android:
         components:
-          - tools
           - platform-tools
-          - build-tools-28.0.3
-          - android-28
+          - build-tools;28.0.3
+          - platforms;android-28
+          - system-images;android-28
       before_cache:
         - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
         - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
       cache:
         directories:
-         - $HOME/.gradle/caches/
-         - $HOME/.gradle/wrapper/
+          - $HOME/.gradle/caches/
+          - $HOME/.gradle/wrapper/
     - name: "deploy docs"
       stage: Deploy
       os: linux
