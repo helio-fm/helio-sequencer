@@ -49,6 +49,7 @@ namespace UndoActionIDs
 
         AddNewTrack = 0x0070,
         DuplicateTrack = 0x0071,
+        MakeUniqueTrack = 0x0072,
 
         MakeStaccato = 0x0080,
         MakeStaccatissimo = 0x0081,

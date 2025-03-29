@@ -768,7 +768,10 @@ void PatternRoll::handleCommandMessage(int commandId)
             const bool altMode = clonedTrack->getPattern()->size() > 1 &&
                 commandId == CommandIDs::InstanceToUniqueTrack;
 
-            this->project.getUndoStack()->beginNewTransaction(UndoActionIDs::DuplicateTrack);
+            const auto undoActionId = altMode ?
+                UndoActionIDs::MakeUniqueTrack : UndoActionIDs::DuplicateTrack;
+
+            this->project.getUndoStack()->beginNewTransaction(undoActionId);
 
             if (altMode)
             {
@@ -779,7 +782,8 @@ void PatternRoll::handleCommandMessage(int commandId)
             const bool generateNewName = !altMode;
             InteractiveActions::addNewTrack(this->project,
                 move(trackPreset), clonedTrack->getTrackName(), generateNewName,
-                UndoActionIDs::DuplicateTrack, TRANS(I18n::Menu::trackDuplicate),
+                undoActionId,
+                altMode ? TRANS(I18n::Menu::trackMakeUnique) : TRANS(I18n::Menu::trackDuplicate),
                 false);
         }
         break;

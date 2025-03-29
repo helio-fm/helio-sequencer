@@ -209,6 +209,7 @@ namespace I18n
         static constexpr auto trackDelete = constexprHash("menu::track::delete");
         static constexpr auto trackRename = constexprHash("menu::track::rename");
         static constexpr auto trackDuplicate = constexprHash("menu::track::duplicate");
+        static constexpr auto trackMakeUnique = constexprHash("menu::track::makeunique");
         static constexpr auto trackSelectall = constexprHash("menu::track::selectall");
         static constexpr auto tuplet1 = constexprHash("menu::tuplet::1");
         static constexpr auto tuplet2 = constexprHash("menu::tuplet::2");

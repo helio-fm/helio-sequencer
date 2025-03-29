@@ -76,6 +76,16 @@ static bool canTriggerSoloForPatternSelection(WeakReference<Lasso> lasso)
     return false;
 }
 
+static bool canMakeUnique(WeakReference<Lasso> lasso)
+{
+    if (lasso->getNumSelected() != 1)
+    {
+        return false;
+    }
+
+    return lasso->getFirstAs<ClipComponent>()->getClip().getPattern()->size() > 1;
+}
+
 MenuPanel::Menu PatternRollSelectionMenu::makeDefaultMenu()
 {
     MenuPanel::Menu menu;
@@ -151,10 +161,17 @@ MenuPanel::Menu PatternRollSelectionMenu::makeDefaultMenu()
         disabledIf(!canSolo)->
         closesMenu());
 
-    const auto canDuplicate = this->lasso->getNumSelected() == 1;
+    if (this->lasso->getNumSelected() == 1)
+    {
+        menu.add(MenuItem::item(Icons::copy, CommandIDs::DuplicateTrack,
+            TRANS(I18n::Menu::trackDuplicate))->closesMenu());
+    }
 
-    menu.add(MenuItem::item(Icons::copy, CommandIDs::DuplicateTrack,
-        TRANS(I18n::Menu::trackDuplicate))->disabledIf(!canDuplicate)->closesMenu());
+    if (canMakeUnique(this->lasso))
+    {
+        menu.add(MenuItem::item(Icons::paste, CommandIDs::InstanceToUniqueTrack,
+            TRANS(I18n::Menu::trackMakeUnique))->closesMenu());
+    }
 
     menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips,
         TRANS(I18n::Menu::delete_))->closesMenu());
