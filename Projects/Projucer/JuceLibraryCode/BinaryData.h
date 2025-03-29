@@ -68,6 +68,12 @@ namespace BinaryData
     extern const char*   cutterTool_svg;
     const int            cutterTool_svgSize = 437;
 
+    extern const char*   doubleFlat_svg;
+    const int            doubleFlat_svgSize = 794;
+
+    extern const char*   doubleSharp_svg;
+    const int            doubleSharp_svgSize = 806;
+
     extern const char*   down_svg;
     const int            down_svgSize = 291;
 
@@ -85,6 +91,9 @@ namespace BinaryData
 
     extern const char*   fail_svg;
     const int            fail_svgSize = 400;
+
+    extern const char*   flat_svg;
+    const int            flat_svgSize = 416;
 
     extern const char*   forward_svg;
     const int            forward_svgSize = 296;
@@ -127,6 +136,18 @@ namespace BinaryData
 
     extern const char*   metronome_svg;
     const int            metronome_svgSize = 556;
+
+    extern const char*   microtoneDown_svg;
+    const int            microtoneDown_svgSize = 317;
+
+    extern const char*   microtoneDown2_svg;
+    const int            microtoneDown2_svgSize = 552;
+
+    extern const char*   microtoneUp_svg;
+    const int            microtoneUp_svgSize = 340;
+
+    extern const char*   microtoneUp2_svg;
+    const int            microtoneUp2_svgSize = 571;
 
     extern const char*   mute_svg;
     const int            mute_svgSize = 707;
@@ -214,6 +235,9 @@ namespace BinaryData
 
     extern const char*   settings_svg;
     const int            settings_svgSize = 1058;
+
+    extern const char*   sharp_svg;
+    const int            sharp_svgSize = 301;
 
     extern const char*   snap_svg;
     const int            snap_svgSize = 541;
@@ -327,7 +351,7 @@ namespace BinaryData
     const int            chords_jsonSize = 768;
 
     extern const char*   colourSchemes_json;
-    const int            colourSchemes_jsonSize = 4506;
+    const int            colourSchemes_jsonSize = 4550;
 
     extern const char*   hotkeySchemes_json;
     const int            hotkeySchemes_jsonSize = 16633;
@@ -345,10 +369,10 @@ namespace BinaryData
     const int            temperaments_jsonSize = 2856;
 
     extern const char*   translations_json;
-    const int            translations_jsonSize = 96169;
+    const int            translations_jsonSize = 123582;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 113;
+    const int namedResourceListSize = 121;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
