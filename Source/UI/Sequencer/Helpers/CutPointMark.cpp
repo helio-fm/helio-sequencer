@@ -107,13 +107,11 @@ void NoteCutPointMark::paint(Graphics &g)
     const auto w = float(this->getWidth());
     const auto h = float(this->getHeight());
 
-    g.setColour(Colours::white.withAlpha(0.25f));
+    g.setColour(this->outlineColour);
     g.fillRect(w / 2.f - 1.5f, 1.f, 3.f, h - 2.f);
-    //g.fillRect(w / 2.f - 1.f, 1.f, 2.f, h - 2.f);
 
-    g.setColour(Colours::black.withAlpha(0.9f));
+    g.setColour(this->markColour);
     g.fillRect(w / 2.f - 0.75f, 1.f, 1.5f, h - 2.f);
-    //g.fillRect(w / 2.f - 0.5f, 1.f, 1.f, h - 2.f);
 
     Path p;
     p.addTriangle(0.f, 0.f, w, 0.f, w / 2.f, 2.f);
@@ -130,16 +128,17 @@ void NoteCutPointMark::paint(Graphics &g)
 
 ClipCutPointMark::ClipCutPointMark(SafePointer<Component> targetComponent, const Clip &clip) :
     CutPointMark(targetComponent, 0.f),
-    markColour(clip.getTrackColour().interpolatedWith(Colours::white, 0.5f)) {}
+    markColour(clip.getTrackColour().
+        interpolatedWith(findDefaultColour(ColourIDs::Roll::cuttingGuide), 0.75f)) {}
 
 void ClipCutPointMark::paint(Graphics &g)
 {
     const auto w = this->getWidth();
 
-    g.setColour(Colours::black.withAlpha(0.3f));
+    g.setColour(this->outlineColour);
     g.fillRect(w / 2 - 1, 2, 3, this->getHeight() - 3);
 
-    g.setColour(this->colour.withAlpha(0.75f));
+    g.setColour(this->markColour);
     HelioTheme::drawDashedVerticalLine(g,
         2.f, 1.f,
         float(this->getHeight() - 2),

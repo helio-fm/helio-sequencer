@@ -26,14 +26,14 @@
 #include "NoteNameComponent.h"
 #include "MidiTrack.h"
 #include "Config.h"
+#include "ColourIDs.h"
 
 static Label *createPopupButtonLabel(const String &text)
 {
     constexpr int size = 50;
     auto *newLabel = new Label(text, text);
     newLabel->setJustificationType(Justification::centred);
-    newLabel->setBounds(0, 0, size * 2, size);
-    newLabel->setName(text + "_outline");
+    newLabel->setBounds(0, 0, size, size);
     newLabel->setFont(App::isRunningOnPhone() ? Globals::UI::Fonts::XS : Globals::UI::Fonts::S);
     return newLabel;
 }
@@ -118,8 +118,11 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
     timeContext(timeContext),
     defaultChords(App::Config().getChords()->getAll())
 {
-    this->newChord = make<PopupCustomButton>(createPopupButtonLabel("+"));
-    this->addAndMakeVisible(this->newChord.get());
+    const auto bgColour = findDefaultColour(ColourIDs::Roll::blackKey).withMultipliedAlpha(0.5f);
+
+    this->centreButton = make<PopupCustomButton>(createPopupButtonLabel("+"),
+        PopupButton::Shape::Circle, bgColour.withMultipliedAlpha(0.5f));
+    this->addAndMakeVisible(this->centreButton.get());
 
     this->setSize(500, 500);
 
@@ -127,12 +130,12 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
     for (int i = 0; i < numChordsToDisplay; ++i)
     {
         const auto chord = this->defaultChords.getUnchecked(i);
-        const float radians = float(i) * (MathConstants<float>::twoPi / float(numChordsToDisplay));
-        const auto defaultRadius = App::isRunningOnPhone() ? 110 : 150;
+        const auto radians = float(i) * (MathConstants<float>::twoPi / float(numChordsToDisplay));
+        const auto defaultRadius = App::isRunningOnPhone() ? 100 : 140;
         // the more chords there are, the larger the raduis should be:
-        const int radius = defaultRadius + jlimit(0, 8, numChordsToDisplay - 10) * 10;
+        const auto radius = defaultRadius + jlimit(0, 8, numChordsToDisplay - 10) * 10;
         const auto centreOffset = Point<int>(0, -radius).transformedBy(AffineTransform::rotation(radians, 0, 0));
-        const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.65f, 1.f, 0.5f);
+        const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.675f, 1.f, 1.f).interpolatedWith(bgColour, 0.4f);
         auto *button = this->chordButtons.add(new PopupCustomButton(createPopupButtonLabel(chord->getName()), PopupButton::Shape::Hex, colour));
         const int buttonSize = App::isRunningOnPhone() ? 60 : 67;
         button->setSize(buttonSize, buttonSize);
@@ -147,7 +150,7 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
     this->setInterceptsMouseClicks(false, true);
     this->enterModalState(false, nullptr, true); // deleted when dismissed
 
-    this->newChord->setMouseCursor(MouseCursor::DraggingHandCursor);
+    this->centreButton->setMouseCursor(MouseCursor::DraggingHandCursor);
 }
 
 ChordPreviewTool::~ChordPreviewTool()
@@ -158,7 +161,7 @@ ChordPreviewTool::~ChordPreviewTool()
 void ChordPreviewTool::resized()
 {
     static constexpr auto yOffset = 0.14f;
-    this->newChord->setBounds((this->getWidth() / 2) - (this->proportionOfWidth(yOffset) / 2),
+    this->centreButton->setBounds((this->getWidth() / 2) - (this->proportionOfWidth(yOffset) / 2),
         (this->getHeight() / 2) - (this->proportionOfHeight(yOffset) / 2),
         this->proportionOfWidth(yOffset), this->proportionOfHeight(yOffset));
 }
@@ -167,7 +170,7 @@ void ChordPreviewTool::parentHierarchyChanged()
 {
     this->detectKeyBeatAndContext();
     this->buildNewNote(true);
-    this->newChord->setState(true);
+    this->centreButton->setState(true);
 }
 
 void ChordPreviewTool::handleCommandMessage(int commandId)
@@ -209,7 +212,7 @@ void ChordPreviewTool::onPopupsResetState(PopupButton *button)
 
 void ChordPreviewTool::onPopupButtonFirstAction(PopupButton *button)
 {
-    if (button != this->newChord.get())
+    if (button != this->centreButton.get())
     {
         App::Layout().hideTooltipIfAny();
         if (auto chord = this->findChordFor(button))
@@ -227,9 +230,9 @@ void ChordPreviewTool::onPopupButtonSecondAction(PopupButton *button)
 
 bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
 {
-    if (button == this->newChord.get())
+    if (button == this->centreButton.get())
     {
-        const auto dragDelta = this->newChord->getDragDelta();
+        const auto dragDelta = this->centreButton->getDragDelta();
         this->setTopLeftPosition(this->getPosition() + dragDelta);
         const bool hasChanges = this->detectKeyBeatAndContext();
         if (hasChanges)
@@ -253,7 +256,7 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
         }
 
         // reset click state:
-        this->newChord->setState(false);
+        this->centreButton->setState(false);
         for (auto *b : this->chordButtons)
         {
             b->setState(false);

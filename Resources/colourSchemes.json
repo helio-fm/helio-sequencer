@@ -3,7 +3,8 @@
     "colourScheme": [
       {
         "name": "Helio Theme v2",
-        "colourMap": {
+        "colourMap":
+        {
           "text": "ffffffff",
           "headlineFill": "ff25252e",
           "pageFill": "ff25252e",
@@ -11,7 +12,7 @@
           "dialogFill": "ff27262f",
           "lassoFill": "17000000",
           "lassoBorder": "ffad7fff",
-          "buttonFill": "18ffffff",
+          "buttonFill": "4557565f",
           "frameBorder": "afffffff",
           "whiteKey": "ff34323d",
           "blackKey": "ff1b1a1f",
@@ -24,7 +25,8 @@
       },
       {
         "name": "Helio Theme v1",
-        "colourMap": {
+        "colourMap":
+        {
           "text": "ffffffff",
           "headlineFill": "ff373c6e",
           "pageFill": "ff373c6e",
@@ -45,23 +47,24 @@
       },
       {
         "name": "Ural Winter",
-        "colourMap": {
+        "colourMap":
+        {
           "text": "ff000000",
           "headlineFill": "ffefedff",
-          "pageFill": "ffefedff",
-          "sidebarFill": "ffefedff",
+          "pageFill": "ffeeefff",
+          "sidebarFill": "ffeeefff",
           "dialogFill": "ffdfe2f4",
           "lassoFill": "17ffffff",
           "lassoBorder": "ff260058",
-          "buttonFill": "18000000",
+          "buttonFill": "6fffffff",
           "frameBorder": "ca000000",
-          "whiteKey": "ffd9e0f2",
-          "blackKey": "ffc5d1e9",
-          "bar": "ff97a2ba",
-          "row": "ffcbd4e8",
+          "whiteKey": "ffdae1f5",
+          "blackKey": "ffc3d1e9",
+          "bar": "ff8792a9",
+          "row": "ffbcc7eb",
           "timeline": "ffefedff",
           "iconShadow": "33ffffff",
-          "iconBase": "55000000"
+          "iconBase": "5f000000"
         }
       },
       {
@@ -75,7 +78,7 @@
           "dialogFill": "ff242424",
           "lassoFill": "25000000",
           "lassoBorder": "ffd4d4d4",
-          "buttonFill": "ff252526",
+          "buttonFill": "45454546",
           "frameBorder": "ff585858",
           "whiteKey": "ff1a1a1a",
           "blackKey": "ff141414",
@@ -87,29 +90,7 @@
         }
       },
       {
-        "name": "Grayscale Light",
-        "colourMap":
-        {
-          "text": "fff0f0f0",
-          "headlineFill": "ff2d2d30",
-          "pageFill": "ff2d2d30",
-          "sidebarFill": "ff2d2d30",
-          "dialogFill": "ff333333",
-          "lassoFill": "25000000",
-          "lassoBorder": "ffd4d4d4",
-          "buttonFill": "18ffffff",
-          "frameBorder": "ff585858",
-          "whiteKey": "ff262626",
-          "blackKey": "ff1e1e1e",
-          "bar": "271b1923",
-          "row": "ff1b1923",
-          "timeline": "ff2d2d30",
-          "iconBase": "27ffffff",
-          "iconShadow": "ff000000"
-        }
-      },
-      {
-        "name": "Placid Dark",
+        "name": "Low Contrast",
         "colourMap":
         {
           "text": "ffffffff",
@@ -119,9 +100,9 @@
           "dialogFill": "ff27262f",
           "lassoFill": "17000000",
           "lassoBorder": "ffad7fff",
-          "buttonFill": "18ffffff",
+          "buttonFill": "0cffffff",
           "frameBorder": "afffffff",
-          "whiteKey": "ff25252e",
+          "whiteKey": "ff2f2f38",
           "blackKey": "ff23232b",
           "bar": "271b1923",
           "row": "ff1b1923",
@@ -135,21 +116,43 @@
         "colourMap":
         {
           "text": "ffffffff",
-          "headlineFill": "ff15151e",
-          "pageFill": "ff15151e",
-          "sidebarFill": "ff17161f",
-          "dialogFill": "ff17161f",
+          "headlineFill": "ff13131c",
+          "pageFill": "ff13131c",
+          "sidebarFill": "ff15141e",
+          "dialogFill": "ff15141e",
           "lassoFill": "051a1a1a",
           "lassoBorder": "ffcccccc",
-          "buttonFill": "20ffffff",
+          "buttonFill": "4545444e",
           "frameBorder": "dfffffff",
-          "whiteKey": "ff2b2933",
-          "blackKey": "ff0d0c0f",
-          "bar": "ff26232a",
-          "row": "ff0a080b",
+          "whiteKey": "ff2c2a35",
+          "blackKey": "ff090b0f",
+          "bar": "ff494855",
+          "row": "ff05070d",
           "timeline": "ff111119",
           "iconBase": "3fffffff",
           "iconShadow": "ff000000"
+        }
+      },
+      {
+        "name": "Nonconformist", // aka "Tonsky Mode"
+        "colourMap":
+        {
+          "text": "ff000000",
+          "headlineFill": "fffddb29",
+          "pageFill": "fffddb29",
+          "sidebarFill": "fffddb29",
+          "dialogFill": "fffddb29",
+          "lassoFill": "aaf9b579",
+          "lassoBorder": "55000000",
+          "buttonFill": "3fffffdd",
+          "frameBorder": "58000000",
+          "whiteKey": "fffddb49",
+          "blackKey": "fffdce29",
+          "bar": "ff857505",
+          "row": "fffbc851",
+          "timeline": "fffddb29",
+          "iconBase": "5f000000",
+          "iconShadow": "27fde258"
         }
       }
     ]

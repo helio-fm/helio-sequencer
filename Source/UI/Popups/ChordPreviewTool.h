@@ -92,7 +92,7 @@ private:
 
     void stopSound();
 
-    UniquePointer<PopupCustomButton> newChord;
+    UniquePointer<PopupCustomButton> centreButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChordPreviewTool)
 };

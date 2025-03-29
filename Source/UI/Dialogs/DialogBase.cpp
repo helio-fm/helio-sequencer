@@ -71,13 +71,10 @@ void DialogBase::paint(Graphics &g)
     g.setFillType({ theme.getDialogBackground(), {} });
     g.fillRect(1, 2, this->getWidth() - 2, this->getHeight() - 4);
 
-    static constexpr auto lightAlpha = 1.5f;
-    HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), lightAlpha);
+    HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.5f);
 
-    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight).
-        withMultipliedAlpha(lightAlpha));
-
-    g.fillRect(2, 1, this->getWidth() - 4, 5);
+    g.setColour(findDefaultColour(ColourIDs::Backgrounds::dialogHeader));
+    g.fillRect(1.25f, 1.f, float(this->getWidth()) - 2.5f, 2.f);
 }
 
 void DialogBase::parentHierarchyChanged()
@@ -158,7 +155,7 @@ Rectangle<int> DialogBase::getContentBounds(bool noPadding) const noexcept
 {
     const auto isPhoneLayout = App::isRunningOnPhone();
 
-    constexpr auto headerSize = 4;
+    constexpr auto headerSize = 1;
     const auto actualBounds = this->getLocalBounds()
         .reduced(DialogBase::Defaults::contentMargin)
         .withTrimmedBottom(isPhoneLayout ? headerSize : headerSize + DialogBase::Defaults::DesktopAndTablet::buttonsHeight)

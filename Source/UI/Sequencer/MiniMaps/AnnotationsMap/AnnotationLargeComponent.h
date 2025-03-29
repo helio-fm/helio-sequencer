@@ -71,9 +71,9 @@ private:
     const Colour fillColour = findDefaultColour(ColourIDs::Roll::noteNameFill);
 
     static constexpr float fillUnfocusedAlpha = 0.2f;
-    static constexpr float borderUnfocusedAlpha = 0.7f;
-    static constexpr float fillFocusedAlpha = 0.5f;
-    static constexpr float borderFocusedAlpha = 0.8f;
+    static constexpr float borderUnfocusedAlpha = 0.6f;
+    static constexpr float fillFocusedAlpha = 0.4f;
+    static constexpr float borderFocusedAlpha = 0.7f;
 
     float fillAlpha = fillUnfocusedAlpha;
     float borderAlpha = borderUnfocusedAlpha;

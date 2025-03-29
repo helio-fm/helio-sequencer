@@ -19,6 +19,7 @@
 #include "MergingEventsConnector.h"
 #include "PianoClipComponent.h"
 #include "NoteComponent.h"
+#include "ColourIDs.h"
 
 //===----------------------------------------------------------------------===//
 // Base
@@ -94,7 +95,9 @@ MergingNotesConnector::MergingNotesConnector(SafePointer<Component> sourceCompon
 {
     if (auto *nc = dynamic_cast<NoteComponent *>(sourceComponent.getComponent()))
     {
-        this->colour = nc->getNote().getTrackColour().brighter(0.1f);
+        this->colour = nc->getNote().getTrackColour().
+            interpolatedWith(findDefaultColour(ColourIDs::Roll::cuttingGuide), 0.4f).
+            brighter(0.1f);
     }
 }
 
@@ -175,7 +178,7 @@ void MergingNotesConnector::paint(Graphics &g)
     }
     else
     {
-        g.setColour(Colours::black.withAlpha(0.5f));
+        g.setColour(Colours::black.withAlpha(0.4f));
         g.drawArrow(Line<float>(sourceX, drawCentreY, targetX, drawCentreY), drawHeight + 1.f, noteHeight + 1.f, 6);
 
         g.setColour(this->colour);
@@ -197,7 +200,9 @@ MergingClipsConnector::MergingClipsConnector(SafePointer<Component> sourceCompon
 {
     if (auto *clipComponent = dynamic_cast<ClipComponent *>(sourceComponent.getComponent()))
     {
-        this->startColour = clipComponent->getClip().getTrackColour();
+        this->startColour = clipComponent->getClip().getTrackColour().
+            interpolatedWith(findDefaultColour(ColourIDs::Roll::cuttingGuide), 0.5f);
+
         this->endColour = this->startColour;
     }
 }
@@ -206,7 +211,8 @@ void MergingClipsConnector::setTargetComponent(SafePointer<Component> component)
 {
     if (auto *clipComponent = dynamic_cast<ClipComponent *>(component.getComponent()))
     {
-        this->endColour = clipComponent->getClip().getTrackColour();
+        this->endColour = clipComponent->getClip().getTrackColour().
+            interpolatedWith(findDefaultColour(ColourIDs::Roll::cuttingGuide), 0.5f);
     }
     else
     {

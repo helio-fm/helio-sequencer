@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "TooltipContainer.h"
+#include "HelioTheme.h"
 
 TooltipContainer::TooltipContainer()
 {
@@ -29,7 +30,7 @@ TooltipContainer::TooltipContainer()
 
     if (App::isRunningOnPhone())
     {
-        this->setSize(450, 32);
+        this->setSize(450, 36);
     }
     else
     {
@@ -42,7 +43,13 @@ TooltipContainer::~TooltipContainer() = default;
 void TooltipContainer::paint(Graphics &g)
 {
     g.setColour(this->backgroundColour);
-    g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 4.f);
+    g.fillRect(this->getLocalBounds().reduced(1, 1));
+
+    g.setColour(this->borderColour);
+    g.fillRect(1, 0, this->getWidth() - 2, 1);
+    g.fillRect(1, this->getHeight() - 1, this->getWidth() - 2, 1);
+    g.fillRect(0, 1, 1, this->getHeight() - 2);
+    g.fillRect(this->getWidth() - 1, 1, 1, this->getHeight() - 2);
 }
 
 void TooltipContainer::resized()
@@ -62,14 +69,10 @@ void TooltipContainer::parentSizeChanged()
 
 void TooltipContainer::updatePosition()
 {
-    // on phones use all available space,
-    // on larger screens try to be consistent with the layout
-    const auto paddingTop = App::isRunningOnPhone() ? 0 : Globals::UI::headlineHeight;
-    constexpr auto margin = 8;
     this->setCentrePosition(this->getParentWidth() / 2,
         this->alignedToBottom ?
-        (this->getParentHeight() - int(this->getHeight() / 2) - margin) :
-        ((this->getHeight() / 2) + paddingTop + margin));
+        (this->getParentHeight() - Globals::UI::projectMapHeight / 2) :
+        ((this->getHeight() / 2) + 8));
 }
 
 void TooltipContainer::timerCallback()

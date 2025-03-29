@@ -46,8 +46,12 @@ public:
 
     void paint(Graphics &g) override
     {
-        const auto messageBounds = this->getLocalBounds().reduced(5, 5);
-        g.setColour(Colours::white.withAlpha(0.9f));
+        if (this->message.isEmpty())
+        {
+            return;
+        }
+
+        g.setColour(findDefaultColour(ColourIDs::Tooltip::messageText));
 
         if (App::isRunningOnPhone())
         {
@@ -58,6 +62,7 @@ public:
             g.setFont(Globals::UI::Fonts::M);
         }
 
+        const auto messageBounds = this->getLocalBounds().reduced(5, 5);
         HelioTheme::drawFittedText(g,
             this->message,
             messageBounds.getX(), messageBounds.getY(),

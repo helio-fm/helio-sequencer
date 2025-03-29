@@ -24,9 +24,6 @@ namespace ColourIDs
     // JUCE internal colour id's all look like 0x1xxxxxx;
     // so we start from 0x2000000 to make sure id's do not overlap.
 
-    // The colour are generated in HelioTheme::initColours,
-    // based on current colour scheme containing a number of common colours.
-
     // Tech debt warning: lots of colours out there in the app are hardcoded in components,
     // hopefully in future they all will be set in HelioTheme and accessed via these ids.
 
@@ -60,17 +57,25 @@ namespace ColourIDs
         static const int playheadRecording      = 0x2000114;
         static const int playheadShade          = 0x2000115;
 
-        static const int trackHeaderFill        = 0x2000120;
-        static const int trackHeaderBorder      = 0x2000121;
+        static const int patternRowFill         = 0x2000120;
+        static const int trackHeaderFill        = 0x2000121;
+        static const int trackHeaderShadow      = 0x2000122;
+        static const int trackHeaderBorderLight = 0x2000123;
+        static const int trackHeaderBorderDark  = 0x2000124;
 
         static const int noteFill               = 0x2000130;
         static const int noteNameFill           = 0x2000131;
         static const int noteNameBorder         = 0x2000132;
         static const int noteNameShadow         = 0x2000133;
         static const int clipFill               = 0x2000134;
+        static const int clipForeground         = 0x2000135;
 
-        static const int draggingGuide          = 0x2000140;
-        static const int draggingGuideShadow    = 0x2000141;
+        static const int noteCutMark            = 0x2000140;
+        static const int noteCutMarkOutline     = 0x2000141;
+        static const int cuttingGuide           = 0x2000142;
+        static const int cuttingGuideOutline    = 0x2000143;
+        static const int draggingGuide          = 0x2000144;
+        static const int draggingGuideShadow    = 0x2000145;
     }
 
     namespace TransportControl
@@ -120,6 +125,14 @@ namespace ColourIDs
         static const int border                 = 0x2000700;
     }
 
+    namespace Arrow
+    {
+        static const int lineStart              = 0x2000750;
+        static const int lineEnd                = 0x2000751;
+        static const int shadowStart            = 0x2000752;
+        static const int shadowEnd              = 0x2000753;
+    }
+
     namespace Backgrounds
     {
         static const int pageFillA              = 0x2000800;
@@ -127,16 +140,19 @@ namespace ColourIDs
         static const int sidebarFill            = 0x2000802;
         static const int headlineFill           = 0x2000803;
         static const int dialogFill             = 0x2000804;
-        static const int menuFill               = 0x2000805;
+        static const int dialogHeader           = 0x2000805;
+        static const int menuFill               = 0x2000806;
     }
 
     namespace Tooltip
     {
         static const int messageFill            = 0x2000900;
-        static const int okIconFill             = 0x2000901;
-        static const int okIconForeground       = 0x2000902;
-        static const int failIconFill           = 0x2000903;
-        static const int failIconForeground     = 0x2000904;
+        static const int messageBorder          = 0x2000901;
+        static const int messageText            = 0x2000902;
+        static const int okIconFill             = 0x2000903;
+        static const int okIconForeground       = 0x2000904;
+        static const int failIconFill           = 0x2000905;
+        static const int failIconForeground     = 0x2000906;
     }
 
     namespace TrackScroller

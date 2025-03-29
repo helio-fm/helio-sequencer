@@ -47,8 +47,8 @@ private:
     Colour colour;
     Path triangleShape;
 
-    static constexpr float fillUnfocusedAlpha = 0.65f;
-    static constexpr float fillFocusedAlpha = 0.95f;
+    static constexpr float fillUnfocusedAlpha = 0.6f;
+    static constexpr float fillFocusedAlpha = 0.8f;
 
     float fillAlpha = fillUnfocusedAlpha;
 

@@ -675,7 +675,7 @@ void NoteComponent::paint(Graphics &g) noexcept
     if (w >= 0.5f)
     {
         // fill
-        g.fillRect(x + 0.25f, y + 1.f, w - 0.5f, h - 2.f);
+        g.fillRect(x + 0.25f, y + 0.5f, w - 0.5f, h - 1.f);
 
         if (this->flags.isGenerated)
         {

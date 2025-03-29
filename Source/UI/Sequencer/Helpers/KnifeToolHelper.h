@@ -22,6 +22,7 @@ class NoteComponent;
 class NoteCutPointMark;
 
 #include "Note.h"
+#include "ColourIDs.h"
 
 class KnifeToolHelper final : public Component
 {
@@ -60,6 +61,9 @@ private:
 
     FlatHashMap<Note, UniquePointer<NoteCutPointMark>, MidiEventHash> noteCutMarks;
     FlatHashMap<Note, float, MidiEventHash> cutPoints;
+
+    const Colour fillColour = findDefaultColour(ColourIDs::Roll::cuttingGuide);
+    const Colour outlineColour = findDefaultColour(ColourIDs::Roll::cuttingGuideOutline);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KnifeToolHelper)
 };

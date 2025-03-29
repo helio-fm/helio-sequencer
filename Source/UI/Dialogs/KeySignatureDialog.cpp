@@ -306,7 +306,7 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
 
     this->messageLabel->setInterceptsMouseClicks(false, false);
 
-    const auto maxWidth = App::getWindowBounds().getWidth() - (Globals::UI::sidebarWidth * 2);
+    const auto maxWidth = App::getWindowBounds().getWidth();
     const auto fullDialogWidth = this->getHorizontalSpacingExceptContent() + this->keySelector->getWidth();
     this->setSize(jmin(fullDialogWidth, maxWidth), (isPhoneLayout ? 110 : 210) + this->keySelector->getHeight());
 

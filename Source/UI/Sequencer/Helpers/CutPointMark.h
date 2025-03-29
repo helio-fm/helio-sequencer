@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class CutPointMark : public Component
 {
 public:
@@ -49,6 +51,12 @@ public:
     NoteCutPointMark(SafePointer<Component> targetComponent, float absPosX);
 
     void paint(Graphics &g) override;
+
+private:
+
+    const Colour markColour = findDefaultColour(ColourIDs::Roll::noteCutMark);
+    const Colour outlineColour = findDefaultColour(ColourIDs::Roll::noteCutMarkOutline);
+
 };
 
 class Clip;
@@ -65,7 +73,9 @@ public:
 
 private:
 
-    const Colour colour;
+    const Colour markColour;
+    const Colour outlineColour = findDefaultColour(ColourIDs::Roll::cuttingGuideOutline);
+
 };
 
 class AutomationEditorCutPointMark final : public ClipCutPointMark

@@ -89,7 +89,7 @@ public:
 
     Image getIcon() const override
     {
-        return Icons::findByName(Icons::selection, Globals::UI::headlineIconSize);
+        return Icons::findByName(Icons::selectionTool, Globals::UI::headlineIconSize);
     }
 
     String getName() const override
@@ -136,7 +136,7 @@ public:
 
     Image getIcon() const override
     {
-        return Icons::findByName(Icons::selection, Globals::UI::headlineIconSize);
+        return Icons::findByName(Icons::selectionTool, Globals::UI::headlineIconSize);
     }
 
     String getName() const override

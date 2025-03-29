@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class HeadlineItemArrow final : public Component
 {
 public:
@@ -70,10 +72,10 @@ private:
 
     const int arrowWidth;
 
-    const Colour arrowColour1 = Colour(0x33ffffff);
-    const Colour arrowColour2 = Colour(0x17ffffff);
-    const Colour shadowColour1 = Colour(0x77000000);
-    const Colour shadowColour2 = Colour(0x17000000);
+    const Colour arrowColour1 = findDefaultColour(ColourIDs::Arrow::lineStart);
+    const Colour arrowColour2 = findDefaultColour(ColourIDs::Arrow::lineEnd);
+    const Colour shadowColour1 = findDefaultColour(ColourIDs::Arrow::shadowStart);
+    const Colour shadowColour2 = findDefaultColour(ColourIDs::Arrow::shadowEnd);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineItemArrow)
 };

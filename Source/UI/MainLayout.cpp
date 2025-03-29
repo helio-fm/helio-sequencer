@@ -358,8 +358,10 @@ Rectangle<int> MainLayout::getBoundsForPopups() const
 {
     Rectangle<int> r(this->getLocalBounds());
 
+#if PLATFORM_DESKTOP
     r.removeFromLeft(Globals::UI::sidebarWidth);
     r.removeFromRight(Globals::UI::sidebarWidth);
+#endif
 
     if (App::isUsingNativeTitleBar())
     {

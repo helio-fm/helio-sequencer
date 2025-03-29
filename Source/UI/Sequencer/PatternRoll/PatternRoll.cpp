@@ -1398,11 +1398,10 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme)
     Image patternImage(Image::RGB, width, PatternRoll::rowPatternHeight, false);
     Graphics g(patternImage);
 
-    const auto fillColour = theme.findColour(ColourIDs::Roll::blackKey).brighter(0.02f);
-    g.setColour(fillColour);
+    g.setColour(theme.findColour(ColourIDs::Roll::patternRowFill));
     g.fillRect(patternImage.getBounds());
 
-    const auto shadowColour = Colours::black.withAlpha(theme.isDark() ? 0.075f : 0.025f);
+    const auto shadowColour = theme.findColour(ColourIDs::Roll::trackHeaderShadow);
 
     int yBase = 0;
     while (yBase < PatternRoll::rowPatternHeight)
@@ -1410,11 +1409,11 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme)
         g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderFill));
         g.fillRect(0, yBase, width, PatternRoll::trackHeaderHeight);
 
-        g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorder));
+        g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorderLight));
         g.drawHorizontalLine(yBase, 0.f, float(width));
         g.drawHorizontalLine(yBase + PatternRoll::trackHeaderHeight - 1, 0.f, float(width));
 
-        g.setColour(shadowColour);
+        g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorderDark));
         g.drawHorizontalLine(yBase + PatternRoll::rowHeight - 1, 0.f, float(width));
         g.drawHorizontalLine(yBase + PatternRoll::trackHeaderHeight, 0.f, float(width));
 

@@ -46,8 +46,8 @@ NoteResizerLeft::NoteResizerLeft(RollBase &parentRoll) : roll(parentRoll)
     this->draggerShape.clear();
     this->draggerShape.startNewSubPath(0.f, 0.f);
     this->draggerShape.lineTo(float(this->getWidth()) * 0.25f, float(this->getHeight()) * 0.75f);
-    this->draggerShape.lineTo(float(this->getWidth() - 0.25f), float(this->getHeight()));
-    this->draggerShape.lineTo(float(this->getWidth() - 0.25f), 0.f);
+    this->draggerShape.lineTo(float(this->getWidth()) - 0.25f, float(this->getHeight()));
+    this->draggerShape.lineTo(float(this->getWidth()) - 0.25f, 0.f);
     this->draggerShape.closeSubPath();
 }
 
@@ -62,11 +62,8 @@ void NoteResizerLeft::paint(Graphics &g)
     g.setColour(this->fillColour);
     g.fillPath(this->draggerShape);
 
-    g.setColour(Colours::black.withAlpha(NoteResizerLeft::alpha));
-    g.strokePath(this->draggerShape, PathStrokeType(2.f));
-
     g.setColour(this->lineColour);
-    g.strokePath(this->draggerShape, PathStrokeType(1.f));
+    g.strokePath(this->draggerShape, PathStrokeType(1.5f));
 
     HelioTheme::drawDashedVerticalLine(g,
         float(this->getWidth() - 1),

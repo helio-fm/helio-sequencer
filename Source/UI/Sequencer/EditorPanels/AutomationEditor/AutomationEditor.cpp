@@ -262,10 +262,11 @@ AutomationEditor::~AutomationEditor()
 
 Colour AutomationEditor::getColour(const AutomationEvent &event) const
 {
-    return event.getTrackColour()
+    return findDefaultColour(ColourIDs::Roll::clipForeground)
+        .interpolatedWith(event.getTrackColour(), 0.5f)
         .withMultipliedAlpha(0.95f)
         .withMultipliedSaturation(0.75f)
-        .withMultipliedBrightness(1.5f);
+        .withMultipliedBrightness(1.25f);
 }
 
 float AutomationEditor::getBeatByPosition(int x, const Clip &clip) const

@@ -48,6 +48,8 @@ private:
 
     const Colour backgroundColour =
         findDefaultColour(ColourIDs::Tooltip::messageFill);
+    const Colour borderColour =
+        findDefaultColour(ColourIDs::Tooltip::messageBorder);
 
     ComponentAnimator animator;
 

@@ -61,11 +61,8 @@ void NoteResizerRight::paint(Graphics &g)
     g.setColour(this->fillColour);
     g.fillPath(this->draggerShape);
 
-    g.setColour(Colours::black.withAlpha(NoteResizerRight::alpha));
-    g.strokePath(this->draggerShape, PathStrokeType(2.f));
-
     g.setColour(this->lineColour);
-    g.strokePath(this->draggerShape, PathStrokeType(1.f));
+    g.strokePath(this->draggerShape, PathStrokeType(1.5f));
 
     HelioTheme::drawDashedVerticalLine(g,
         0.f,

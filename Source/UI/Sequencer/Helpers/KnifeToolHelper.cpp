@@ -41,10 +41,10 @@ Line<float> KnifeToolHelper::getLine() const noexcept
 
 void KnifeToolHelper::paint(Graphics &g)
 {
-    g.setColour(Colours::black);
-    g.strokePath(this->path, PathStrokeType(.5f));
+    g.setColour(this->outlineColour);
+    g.strokePath(this->path, PathStrokeType(1.f));
 
-    g.setColour(Colours::white.withAlpha(0.65f));
+    g.setColour(this->fillColour);
     g.fillPath(this->path);
 }
 
@@ -69,7 +69,7 @@ void KnifeToolHelper::updateBounds()
     this->path.startNewSubPath(pathEnd);
     this->path.lineTo(pathStart);
     static Array<float> dashes(6.f, 8.f);
-    PathStrokeType(2.f).createDashedStroke(this->path, this->path,
+    PathStrokeType(1.5f).createDashedStroke(this->path, this->path,
         dashes.getRawDataPointer(), dashes.size());
 
     this->path.addEllipse(pathStart.x - 1.f, pathStart.y - 1.f, 2.f, 2.f);
