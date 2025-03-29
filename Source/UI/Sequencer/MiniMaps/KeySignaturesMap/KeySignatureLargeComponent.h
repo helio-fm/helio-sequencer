@@ -30,7 +30,7 @@ public:
     ~KeySignatureLargeComponent();
 
     float getTextWidth() const override;
-    void updateContent(const Temperament::Period &keyNames) override;
+    void updateContent(const Temperament::Period &keyNames, bool useFixedDo) override;
     void setRealBounds(const Rectangle<float> bounds) override;
 
     void paint(Graphics &g) override;
@@ -42,15 +42,14 @@ public:
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
 
+    static constexpr auto keySignatureHeight = 25;
+
 private:
 
     ComponentDragger dragger;
     KeySignatureEvent anchor;
 
     float textWidth = 0.f;
-
-    String noteName;
-    String detailsText;
 
     Rectangle<float> boundsOffset;
     Point<int> clickOffset;
@@ -62,15 +61,13 @@ private:
 
     UniquePointer<NoteNameComponent> nameComponent;
 
-    const Colour fillColour =
-        findDefaultColour(ColourIDs::Roll::noteNameFill);
-    const Colour borderColour =
-        findDefaultColour(Label::textColourId);
+    const Colour fillColour = findDefaultColour(ColourIDs::Roll::noteNameFill);
+    const Colour borderColour = findDefaultColour(Label::textColourId);
 
-    static constexpr float fillUnfocusedAlpha = 0.5f;
+    static constexpr float fillUnfocusedAlpha = 0.2f;
     static constexpr float borderUnfocusedAlpha = 0.7f;
-    static constexpr float fillFocusedAlpha = 0.7f;
-    static constexpr float borderFocusedAlpha = 0.95f;
+    static constexpr float fillFocusedAlpha = 0.5f;
+    static constexpr float borderFocusedAlpha = 0.8f;
 
     float fillAlpha = fillUnfocusedAlpha;
     float borderAlpha = borderUnfocusedAlpha;

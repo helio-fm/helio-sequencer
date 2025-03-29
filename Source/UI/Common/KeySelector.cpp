@@ -18,12 +18,15 @@
 #include "Common.h"
 #include "KeySelector.h"
 #include "ColourIDs.h"
+#include "Config.h"
 
 KeySelector::KeySelector(const Temperament::Period &period)
 {
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(false);
+
+    const auto useFixedDo = App::Config().getUiFlags()->isUsingFixedDoNotation();
 
     // arrange the enharmonics so that the first one in the list
     // is considered the main one andis placed in the center;
@@ -35,13 +38,13 @@ KeySelector::KeySelector(const Temperament::Period &period)
         jassert(!enharmonics.isEmpty());
 
         KeyEnharmonics keyButtons;
-        keyButtons.mainKey = make<RadioButton>(enharmonics[0], this);
+        keyButtons.mainKey = make<RadioButton>(enharmonics[0], useFixedDo, this);
         keyButtons.mainKey->setButtonIndex(i);
         this->addAndMakeVisible(keyButtons.mainKey.get());
 
         if (enharmonics.size() > 1)
         {
-            auto keyButton = make<RadioButton>(enharmonics[1], this);
+            auto keyButton = make<RadioButton>(enharmonics[1], useFixedDo, this);
             keyButton->setButtonIndex(i);
             this->addAndMakeVisible(keyButton.get());
 
@@ -59,7 +62,7 @@ KeySelector::KeySelector(const Temperament::Period &period)
 
         if (enharmonics.size() > 2)
         {
-            auto keyButton = make<RadioButton>(enharmonics[2], this);
+            auto keyButton = make<RadioButton>(enharmonics[2], useFixedDo, this);
             keyButton->setButtonIndex(i);
             this->addAndMakeVisible(keyButton.get());
 
@@ -89,7 +92,7 @@ KeySelector::KeySelector(const Temperament::Period &period)
     }
 
     // some margin:
-    this->buttonWidth += 4;
+    this->buttonWidth += 6;
 
     this->setSize(this->buttonWidth * period.size(),
         KeySelector::mainRowHeight +

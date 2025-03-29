@@ -264,17 +264,26 @@ namespace I18n
         static constexpr auto projectTemperament = constexprHash("page::project::temperament");
     }
 
-    namespace Popup
+    namespace Degrees
     {
-        static constexpr auto cancelled = constexprHash("popup::cancelled");
-        static constexpr auto chordFunction1 = constexprHash("popup::chord::function::1");
-        static constexpr auto chordFunction2 = constexprHash("popup::chord::function::2");
-        static constexpr auto chordFunction3 = constexprHash("popup::chord::function::3");
-        static constexpr auto chordFunction4 = constexprHash("popup::chord::function::4");
-        static constexpr auto chordFunction5 = constexprHash("popup::chord::function::5");
-        static constexpr auto chordFunction6 = constexprHash("popup::chord::function::6");
-        static constexpr auto chordFunction7 = constexprHash("popup::chord::function::7");
-        static constexpr auto chordRootKey = constexprHash("popup::chord::rootkey");
+        static constexpr auto tonic = constexprHash("popup::chord::function::1");
+        static constexpr auto supertonic = constexprHash("popup::chord::function::2");
+        static constexpr auto mediant = constexprHash("popup::chord::function::3");
+        static constexpr auto subdominant = constexprHash("popup::chord::function::4");
+        static constexpr auto dominant = constexprHash("popup::chord::function::5");
+        static constexpr auto submediant = constexprHash("popup::chord::function::6");
+        static constexpr auto subtonic = constexprHash("popup::chord::function::7");
+    }
+
+    namespace Solfege
+    {
+        static constexpr auto ut = constexprHash("solfege::ut");
+        static constexpr auto re = constexprHash("solfege::re");
+        static constexpr auto mi = constexprHash("solfege::mi");
+        static constexpr auto fa = constexprHash("solfege::fa");
+        static constexpr auto sol = constexprHash("solfege::sol");
+        static constexpr auto la = constexprHash("solfege::la");
+        static constexpr auto si = constexprHash("solfege::si");
     }
 
     namespace Settings
@@ -293,6 +302,7 @@ namespace I18n
         static constexpr auto sync = constexprHash("settings::sync");
         static constexpr auto restartRequired = constexprHash("settings::restart");
         static constexpr auto ui = constexprHash("settings::ui");
+        static constexpr auto uiFlags = constexprHash("settings::ui::flags");
         static constexpr auto uiFont = constexprHash("settings::ui::font");
         static constexpr auto nativeTitleBar = constexprHash("settings::ui::nativebar");
         static constexpr auto followPlayhead = constexprHash("settings::ui::catchplayhead");
@@ -300,6 +310,8 @@ namespace I18n
         static constexpr auto mouseWheelPanningByDefault = constexprHash("settings::ui::wheel::panning");
         static constexpr auto mouseWheelVerticalPanningByDefault = constexprHash("settings::ui::wheel::verticalpan");
         static constexpr auto mouseWheelVerticalZoomingByDefault = constexprHash("settings::ui::wheel::verticalzoom");
+        static constexpr auto uiScaling = constexprHash("settings::ui::scaling");
+        static constexpr auto noteNames = constexprHash("settings::ui::notenames");
         static constexpr auto checkForUpdates = constexprHash("settings:checkupdates");
     }
 

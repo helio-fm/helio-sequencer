@@ -54,8 +54,8 @@ private:
     static constexpr auto rowHeight = 37;
 #endif
 
-    static constexpr auto horizontalContentMargin = 8;
-    static constexpr auto verticalContentMargin = 4;
+    static constexpr auto horizontalContentMargin = 16;
+    static constexpr auto verticalContentMargin = 8;
 
     UniquePointer<ListBox> translationsList;
 

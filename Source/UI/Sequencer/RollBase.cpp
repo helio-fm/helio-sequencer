@@ -2012,7 +2012,7 @@ void RollBase::updateChildrenBounds()
     if (this->keySignaturesMap != nullptr)
     {
         this->keySignaturesMap->setBounds(0, viewY + Globals::UI::rollHeaderHeight,
-            this->getWidth(), Globals::UI::rollHeaderHeight);
+            this->getWidth(), KeySignatureLargeComponent::keySignatureHeight);
     }
 
     if (this->timeSignaturesMap != nullptr)

@@ -57,6 +57,23 @@ void UserInterfaceFlags::setNoteNameGuidesEnabled(bool enabled)
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
+bool UserInterfaceFlags::isUsingFixedDoNotation() const noexcept
+{
+    return this->useFixedDoNotation;
+}
+
+void UserInterfaceFlags::setUseFixedDoNotation(bool enabled)
+{
+    if (this->useFixedDoNotation == enabled)
+    {
+        return;
+    }
+
+    this->useFixedDoNotation = enabled;
+    this->listeners.call(&Listener::onUseFixedDoFlagChanged, this->useFixedDoNotation);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
 bool UserInterfaceFlags::isOpenGlRendererEnabled() const noexcept
 {
     return this->useOpenGLRenderer;
@@ -338,6 +355,8 @@ SerializedData UserInterfaceFlags::serialize() const
     
     tree.setProperty(UI::Flags::noteNameGuides, this->noteNameGuides);
     tree.setProperty(UI::Flags::scalesHighlighting, this->scalesHighlighting);
+    tree.setProperty(UI::Flags::useFixedDoNotation, this->useFixedDoNotation);
+
     tree.setProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     tree.setProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     tree.setProperty(UI::Flags::followPlayhead, this->followPlayhead);
@@ -384,6 +403,8 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
 
     this->noteNameGuides = root.getProperty(UI::Flags::noteNameGuides, this->noteNameGuides);
     this->scalesHighlighting = root.getProperty(UI::Flags::scalesHighlighting, this->scalesHighlighting);
+    this->useFixedDoNotation = root.getProperty(UI::Flags::useFixedDoNotation, this->useFixedDoNotation);
+
     this->useOpenGLRenderer = root.getProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     this->useNativeTitleBar = root.getProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     this->followPlayhead = root.getProperty(UI::Flags::followPlayhead, this->followPlayhead);

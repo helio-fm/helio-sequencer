@@ -297,6 +297,7 @@ namespace Serialization
             static const Identifier openGlRenderer = "openGlRenderer";
             static const Identifier noteNameGuides = "noteNameGuides";
             static const Identifier scalesHighlighting = "scalesHighlighting";
+            static const Identifier useFixedDoNotation = "useFixedDoNotation";
             static const Identifier experimentalFeaturesOn = "experimentalFeatures";
             static const Identifier followPlayhead ="catchPlayhead";
             static const Identifier animations = "animations";

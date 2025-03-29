@@ -57,14 +57,10 @@ float KeySignatureSmallComponent::getTextWidth() const
     return this->textWidth;
 }
 
-void KeySignatureSmallComponent::updateContent(const Temperament::Period &keyNames)
+void KeySignatureSmallComponent::updateContent(const Temperament::Period &keyNames, bool useFixedDo)
 {
-    const String originalName = this->event.toString(keyNames);
-    if (this->eventName != originalName)
-    {
-        this->eventName = originalName;
-        this->textWidth = float(this->signatureLabel->getFont().getStringWidth(originalName));
-        this->signatureLabel->setText(originalName, dontSendNotification);
-        this->repaint();
-    }
+    const String newName = this->event.toString(keyNames);
+    this->textWidth = float(this->signatureLabel->getFont().getStringWidth(newName));
+    this->signatureLabel->setText(newName, dontSendNotification);
+    this->repaint();
 }

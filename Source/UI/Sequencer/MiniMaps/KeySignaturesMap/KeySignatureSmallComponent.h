@@ -27,7 +27,7 @@ public:
     ~KeySignatureSmallComponent();
 
     float getTextWidth() const override;
-    void updateContent(const Temperament::Period &keyNames) override;
+    void updateContent(const Temperament::Period &keyNames, bool useFixedDo) override;
     void setRealBounds(const Rectangle<float> bounds) override;
 
     void parentHierarchyChanged() override;
@@ -35,7 +35,6 @@ public:
 private:
 
     float textWidth = 0.f;
-    String eventName;
 
     Rectangle<float> boundsOffset;
 

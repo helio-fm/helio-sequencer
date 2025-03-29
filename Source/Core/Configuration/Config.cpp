@@ -83,6 +83,16 @@ void Config::initResources()
             this->setMaxSavedUndoActions(this->getMaxSavedUndoActions());
         }
     }
+    else // the app is launched for the first time:
+    {
+        const auto userLanguage =
+            SystemStats::getUserLanguage().toLowerCase().substring(0, 2);
+        // most of the UI flags have compile-time defaults depending on the platform,
+        // but here we'll need the user's locale to guess which note naming to prefer:
+        this->uiFlags->setUseFixedDoNotation(userLanguage == "ru" ||
+            userLanguage == "fr" || userLanguage == "it" || userLanguage == "es" ||
+            userLanguage == "el" || userLanguage == "nl" || userLanguage == "pt");
+    }
 
     for (auto &manager : this->resources)
     {

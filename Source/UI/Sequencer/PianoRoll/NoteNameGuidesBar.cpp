@@ -22,6 +22,7 @@
 #include "NoteNameGuide.h"
 #include "NoteComponent.h"
 #include "PianoRoll.h"
+#include "Config.h"
 
 NoteNameGuidesBar::NoteNameGuidesBar(PianoRoll &roll, WeakReference<MidiTrack> keySignatures) :
     roll(roll),
@@ -31,12 +32,16 @@ NoteNameGuidesBar::NoteNameGuidesBar(PianoRoll &roll, WeakReference<MidiTrack> k
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
 
+    this->useFixedDoNotation = App::Config().getUiFlags()->isUsingFixedDoNotation();
+
     this->roll.addRollListener(this);
     this->roll.getLassoSelection().addChangeListener(this);
+    App::Config().getUiFlags()->addListener(this);
 }
 
 NoteNameGuidesBar::~NoteNameGuidesBar()
 {
+    App::Config().getUiFlags()->removeListener(this);
     this->roll.getLassoSelection().removeChangeListener(this);
     this->roll.removeRollListener(this);
 
@@ -99,7 +104,7 @@ void NoteNameGuidesBar::updateContent()
         {
             const auto noteName = this->temperament->getMidiNoteName(c->getNoteNumber(),
                 this->scaleRootKey, this->scaleRootKeyName, periodNumber);
-            const auto width = c->setNoteName(noteName, periodNumber);
+            const auto width = c->setNoteName(noteName, periodNumber, this->useFixedDoNotation);
             guidesWidth = jmax(guidesWidth, width);
         }
 
@@ -114,7 +119,7 @@ void NoteNameGuidesBar::updateContent()
         if (key <= this->guides.size() - 1)
         {
             auto *guide = this->guides.getUnchecked(key);
-            const auto width = guide->setNoteName(noteName, periodNumber);
+            const auto width = guide->setNoteName(noteName, periodNumber, this->useFixedDoNotation);
             guidesWidth = jmax(guidesWidth, width);
             guide->setVisible(true);
         }
@@ -122,7 +127,7 @@ void NoteNameGuidesBar::updateContent()
 
     guidesWidth += int(NoteNameGuidesBar::borderWidth +
         NoteNameGuidesBar::arrowWidth +
-        NoteNameGuidesBar::nameMargin);
+        NoteNameGuidesBar::nameMargin * 2);
 
     this->setSize(guidesWidth, this->getWidth());
     this->updateBounds();
@@ -180,6 +185,21 @@ void NoteNameGuidesBar::syncWithTemperament(Temperament::Ptr newTemperament)
 
     this->updateBounds();
     this->triggerAsyncUpdate();
+}
+
+//===----------------------------------------------------------------------===//
+// UserInterfaceFlags::Listener
+//===----------------------------------------------------------------------===//
+
+void NoteNameGuidesBar::onUseFixedDoFlagChanged(bool shouldUseFixedDo)
+{
+    if (this->useFixedDoNotation == shouldUseFixedDo)
+    {
+        return;
+    }
+
+    this->useFixedDoNotation = shouldUseFixedDo;
+    this->updateContent();
 }
 
 //===----------------------------------------------------------------------===//

@@ -33,7 +33,8 @@ public:
     void resized() override;
 
     void setNoteName(const String &noteName,
-        Optional<String> detailsText);
+        Optional<String> detailsText,
+        bool useFixedDoNotation);
 
     int getRequiredWidth() const noexcept;
     float getRequiredWidthFloat() const noexcept;

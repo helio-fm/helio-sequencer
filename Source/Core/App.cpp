@@ -189,6 +189,20 @@ private:
         }
 
         this->layout->restoreLastOpenedPage();
+
+#if PLATFORM_DESKTOP
+        if (this->resizableCorner != nullptr)
+        {
+            this->setResizable(false, false);
+            this->setResizable(true, true); // recreates the component
+            if (this->resizableCorner != nullptr)
+            {
+                this->resizableCorner->setRepaintsOnMouseActivity(false);
+                this->resizableCorner->setPaintingIsUnclipped(true);
+                this->resizableCorner->setBufferedToImage(true);
+            }
+        }
+#endif
     }
 
     void setTitleComponent(WeakReference<Component> component)

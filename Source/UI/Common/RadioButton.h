@@ -37,7 +37,7 @@ public:
 
     // constructs a button with NoteNameComponent
     RadioButton(const String &noteName,
-        RadioButton::Listener *listener);
+        bool shouldUseFixedDo, RadioButton::Listener *listener);
 
     ~RadioButton();
 

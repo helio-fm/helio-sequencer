@@ -17,9 +17,8 @@
 
 #include "Common.h"
 #include "UserInterfaceSettings.h"
-
-#include "SerializationKeys.h"
 #include "ModalDialogConfirmation.h"
+#include "SerializationKeys.h"
 #include "HelioTheme.h"
 #include "Config.h"
 
@@ -134,8 +133,52 @@ UserInterfaceSettings::UserInterfaceSettings()
         this->updateButtons();
     };
 
+    this->noteNamesSeparator = make<SeparatorHorizontal>();
+    this->addAndMakeVisible(this->noteNamesSeparator.get());
+
+    this->noteNamesTitle = make<Label>(String(), TRANS(I18n::Settings::noteNames));
+    this->addAndMakeVisible(this->noteNamesTitle.get());
+    this->noteNamesTitle->setFont(Globals::UI::Fonts::M);
+    this->noteNamesTitle->setJustificationType(Justification::centredLeft);
+    this->noteNamesTitle->setBorderSize({ 0, 2, 0, 2 });
+    this->noteNamesTitle->setInterceptsMouseClicks(false, false);
+
+    this->germanNotation = make<ToggleButton>("C, D, E, F, G, A, B");
+    this->addAndMakeVisible(this->germanNotation.get());
+    this->germanNotation->onClick = [this]() {
+        BailOutChecker checker(this);
+        App::Config().getUiFlags()->setUseFixedDoNotation(false);
+        if (!checker.shouldBailOut())
+        {
+            this->updateButtons();
+        }
+    };
+
+    const StringArray fixedDoNames(TRANS(I18n::Solfege::ut),
+        TRANS(I18n::Solfege::re), TRANS(I18n::Solfege::mi),
+        TRANS(I18n::Solfege::fa), TRANS(I18n::Solfege::sol),
+        TRANS(I18n::Solfege::la), TRANS(I18n::Solfege::si));
+
+    this->fixedDoNotation = make<ToggleButton>(fixedDoNames.joinIntoString(", "));
+    this->addAndMakeVisible(this->fixedDoNotation.get());
+    this->fixedDoNotation->onClick = [this]() {
+        BailOutChecker checker(this);
+        App::Config().getUiFlags()->setUseFixedDoNotation(true);
+        if (!checker.shouldBailOut())
+        {
+            this->updateButtons();
+        }
+    };
+
     this->uiScaleSeparator = make<SeparatorHorizontal>();
     this->addAndMakeVisible(this->uiScaleSeparator.get());
+
+    this->uiScaleTitle = make<Label>(String(), TRANS(I18n::Settings::uiScaling));
+    this->addAndMakeVisible(this->uiScaleTitle.get());
+    this->uiScaleTitle->setFont(Globals::UI::Fonts::M);
+    this->uiScaleTitle->setJustificationType(Justification::centredLeft);
+    this->uiScaleTitle->setBorderSize({ 0, 2, 0, 2 });
+    this->uiScaleTitle->setInterceptsMouseClicks(false, false);
 
     this->scaleUi1 = make<ToggleButton>("x1");
     this->addAndMakeVisible(this->scaleUi1.get());
@@ -171,9 +214,9 @@ UserInterfaceSettings::UserInterfaceSettings()
     };
 
 #if SIMPLIFIED_UI_SETTINGS
-    this->setSize(100, 200);
+    this->setSize(100, 305);
 #else
-    this->setSize(100, 420);
+    this->setSize(100, 515);
 #endif
 }
 
@@ -183,7 +226,8 @@ void UserInterfaceSettings::resized()
 {
     constexpr auto margin1 = 4;
     constexpr auto margin2 = margin1 + 12;
-    constexpr auto rowSize = 30;
+    constexpr auto titleSize = 20;
+    constexpr auto rowSize = 26;
     constexpr auto rowSpacing = 4;
 
 #if !SIMPLIFIED_UI_SETTINGS
@@ -201,7 +245,7 @@ void UserInterfaceSettings::resized()
         this->openGLRendererButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->wheelFlagsSeparator->setBounds(margin2,
-        this->nativeTitleBarButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 2);
+        this->nativeTitleBarButton->getBottom() + rowSpacing + 2, this->getWidth() - margin2 * 2, 5);
 
     this->wheelAltModeButton->setBounds(margin2,
         this->wheelFlagsSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
@@ -213,7 +257,7 @@ void UserInterfaceSettings::resized()
         this->wheelVerticalPanningButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->miscFlagsSeparator->setBounds(margin2,
-        this->wheelVerticalZoomingButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 2);
+        this->wheelVerticalZoomingButton->getBottom() + rowSpacing + 2, this->getWidth() - margin2 * 2, 5);
 
     const auto bottomSectionStart = this->miscFlagsSeparator->getBottom() + rowSpacing;
 
@@ -229,11 +273,26 @@ void UserInterfaceSettings::resized()
     this->animationsEnabledButton->setBounds(margin2,
         this->followPlayheadButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
+    this->noteNamesSeparator->setBounds(margin2,
+        this->animationsEnabledButton->getBottom() + rowSpacing + 2, this->getWidth() - margin2 * 2, 5);
+
+    this->noteNamesTitle->setBounds(margin2,
+        this->noteNamesSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, titleSize);
+
+    this->germanNotation->setBounds(margin2,
+        this->noteNamesTitle->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+
+    this->fixedDoNotation->setBounds(margin2,
+        this->germanNotation->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+
     this->uiScaleSeparator->setBounds(margin2,
-        this->animationsEnabledButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, 2);
+        this->fixedDoNotation->getBottom() + rowSpacing + 2, this->getWidth() - margin2 * 2, 5);
+
+    this->uiScaleTitle->setBounds(margin2,
+        this->uiScaleSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, titleSize);
 
     this->scaleUi1->setBounds(margin2,
-        this->uiScaleSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+        this->uiScaleTitle->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->scaleUi15->setBounds(margin2,
         this->scaleUi1->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
@@ -289,4 +348,7 @@ void UserInterfaceSettings::updateButtons()
     this->scaleUi1->setToggleState(uiFlags->getUiScaleFactor() == 1.f, dontSendNotification);
     this->scaleUi15->setToggleState(uiFlags->getUiScaleFactor() == 1.5f, dontSendNotification);
     this->scaleUi2->setToggleState(uiFlags->getUiScaleFactor() == 2.f, dontSendNotification);
+
+    this->germanNotation->setToggleState(!uiFlags->isUsingFixedDoNotation(), dontSendNotification);
+    this->fixedDoNotation->setToggleState(uiFlags->isUsingFixedDoNotation(), dontSendNotification);
 }

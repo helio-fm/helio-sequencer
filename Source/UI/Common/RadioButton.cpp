@@ -89,7 +89,7 @@ RadioButton::RadioButton(const String &text,
     this->addChildComponent(this->checkMark.get());
 }
 
-RadioButton::RadioButton(const String &noteName, Listener *listener) :
+RadioButton::RadioButton(const String &noteName, bool shouldUseFixedDo, Listener *listener) :
     name(noteName),
     colour(findDefaultColour(ColourIDs::ColourButton::outline)),
     listener(listener),
@@ -100,7 +100,7 @@ RadioButton::RadioButton(const String &noteName, Listener *listener) :
 {
     auto noteNameComponent = make<NoteNameComponent>(true, Globals::UI::Fonts::M);
     this->addAndMakeVisible(noteNameComponent.get());
-    noteNameComponent->setNoteName(noteName, {});
+    noteNameComponent->setNoteName(noteName, {}, shouldUseFixedDo);
     noteNameComponent->setAlpha(RadioButton::contentDeselectedAlpha);
 
     this->minWidth = noteNameComponent->getRequiredWidth();

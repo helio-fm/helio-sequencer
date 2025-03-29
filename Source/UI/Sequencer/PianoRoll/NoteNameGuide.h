@@ -46,9 +46,9 @@ public:
         return (this->noteNumber - scaleRootKey) % period == 0;
     }
 
-    int setNoteName(const String &name, int periodNumber)
+    int setNoteName(const String &name, int periodNumber, bool useFixedDo)
     {
-        this->noteName->setNoteName(name, String(periodNumber));
+        this->noteName->setNoteName(name, String(periodNumber), useFixedDo);
         return this->noteName->getRequiredWidth();
     }
 

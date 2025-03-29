@@ -33,8 +33,8 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(this->fillColour);
-        g.fillRoundedRectangle(36.f, 3.f,
-            float(this->getWidth() - 41), float(this->getHeight() - 8), 2.f);
+        g.fillRoundedRectangle(26.f, 3.f,
+            float(this->getWidth() - 32), float(this->getHeight() - 8), 2.f);
     }
 
 private:
@@ -59,13 +59,13 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(this->fillColour);
-        g.fillRoundedRectangle(36.f, 3.f,
-            float(this->getWidth() - 41), float(this->getHeight() - 8), 2.f);
+        g.fillRoundedRectangle(26.f, 3.f,
+            float(this->getWidth() - 32), float(this->getHeight() - 8), 2.f);
     }
 
     void resized() override
     {
-        this->iconComponent->setBounds(12,
+        this->iconComponent->setBounds(2,
             (this->getHeight() / 2) - (iconSize / 2) - 1, iconSize, iconSize);
     }
 
@@ -104,8 +104,8 @@ TranslationSettingsItem::~TranslationSettingsItem() = default;
 
 void TranslationSettingsItem::resized()
 {
-    constexpr auto leftMargin = 38;
-    constexpr auto rightMargin = 10;
+    constexpr auto leftMargin = 28;
+    constexpr auto rightMargin = 9;
     constexpr auto idLabelSize = 100;
 
     this->localeLabel->setBounds(leftMargin, 0, this->getWidth() - leftMargin, this->getHeight() - 3);

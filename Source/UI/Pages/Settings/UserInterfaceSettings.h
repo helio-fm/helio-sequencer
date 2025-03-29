@@ -48,9 +48,14 @@ private:
     UniquePointer<ToggleButton> followPlayheadButton;
     UniquePointer<ToggleButton> animationsEnabledButton;
     UniquePointer<SeparatorHorizontal> uiScaleSeparator;
+    UniquePointer<Label> uiScaleTitle;
     UniquePointer<ToggleButton> scaleUi1;
     UniquePointer<ToggleButton> scaleUi15;
     UniquePointer<ToggleButton> scaleUi2;
+    UniquePointer<SeparatorHorizontal> noteNamesSeparator;
+    UniquePointer<Label> noteNamesTitle;
+    UniquePointer<ToggleButton> germanNotation;
+    UniquePointer<ToggleButton> fixedDoNotation;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UserInterfaceSettings)
 };

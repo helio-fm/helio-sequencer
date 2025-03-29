@@ -34,10 +34,9 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &
 
     this->nameComponent = make<NoteNameComponent>();
     this->addAndMakeVisible(this->nameComponent.get());
-    this->nameComponent->setBounds(4, 1, 256, 24);
+    this->nameComponent->setBounds(4, 1, 256, KeySignatureLargeComponent::keySignatureHeight - 1);
 
     this->setMouseCursor(MouseCursor::PointingHandCursor);
-    this->setSize(24, 24);
 }
 
 KeySignatureLargeComponent::~KeySignatureLargeComponent() = default;
@@ -57,13 +56,12 @@ void KeySignatureLargeComponent::resized()
     const auto w = float(this->getWidth());
     const auto h = float(this->getHeight());
 
-    constexpr auto skewWidth = 3;
-
+    constexpr auto skewWidth = 4;
     this->internalPath.clear();
     this->internalPath.startNewSubPath(1.f, 0.f);
     this->internalPath.lineTo(1.f, h);
-    this->internalPath.lineTo(w - skewWidth - 1.f, h);
-    this->internalPath.lineTo(w - 1.f, 0.f);
+    this->internalPath.lineTo(w - skewWidth, h);
+    this->internalPath.lineTo(w, 0.f);
     this->internalPath.closeSubPath();
 }
 
@@ -188,20 +186,13 @@ float KeySignatureLargeComponent::getTextWidth() const
     return this->textWidth;
 }
 
-void KeySignatureLargeComponent::updateContent(const Temperament::Period &keyNames)
+void KeySignatureLargeComponent::updateContent(const Temperament::Period &keyNames, bool useFixedDo)
 {
     const auto newNoteName = this->event.getRootKeyNameOfDefault(keyNames);
     const auto newDetailsText = this->event.getScale()->getLocalizedName();
 
-    if (this->noteName != newNoteName ||
-        this->detailsText != newDetailsText)
-    {
-        this->noteName = newNoteName;
-        this->detailsText = newDetailsText;
+    this->nameComponent->setNoteName(newNoteName, newDetailsText, useFixedDo);
+    this->textWidth = this->nameComponent->getRequiredWidthFloat();
 
-        this->nameComponent->setNoteName(newNoteName, newDetailsText);
-        this->textWidth = this->nameComponent->getRequiredWidthFloat();
-
-        this->repaint();
-    }
+    this->repaint();
 }

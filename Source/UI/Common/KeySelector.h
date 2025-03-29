@@ -47,7 +47,7 @@ private:
 
     Array<KeyEnharmonics> buttons;
 
-    int buttonWidth = 32;
+    int buttonWidth = 30;
 
     static constexpr auto mainRowHeight = 32;
     static constexpr auto altRowHeight = 26;

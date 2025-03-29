@@ -40,10 +40,10 @@ public:
         const float lineEndY = paintEndY + paintStartY;
 
         g.setColour(Colours::white.withAlpha(0.2f));
-        g.drawVerticalLine(37, lineStartY, lineEndY);
+        g.drawVerticalLine(27, lineStartY, lineEndY);
         g.drawVerticalLine(this->getWidth() - 1, lineStartY, lineEndY);
-        g.drawHorizontalLine(int(lineStartY) - 1, 38.f, float(this->getWidth()) - 1.f);
-        g.drawHorizontalLine(int(lineEndY), 38.f, float(this->getWidth()) - 1.f);
+        g.drawHorizontalLine(int(lineStartY) - 1, 28.f, float(this->getWidth()) - 1.f);
+        g.drawHorizontalLine(int(lineEndY), 28.f, float(this->getWidth()) - 1.f);
     }
 };
 
@@ -61,7 +61,7 @@ public:
 
     void resized() override
     {
-        this->iconComponent->setBounds(12,
+        this->iconComponent->setBounds(2,
             (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
     }
 
@@ -136,30 +136,30 @@ void ThemeSettingsItem::paint(Graphics &g)
     }
 
     g.setColour(this->colours->getPageFillColour());
-    g.fillRect(37.f, paintStartY, 211.f, paintEndY);
+    g.fillRect(27.f, paintStartY, 211.f, paintEndY);
 
     // Outer glow
     g.setColour(this->colours->getPageFillColour().brighter(0.2f));
-    g.drawVerticalLine(37, lineStartY, lineEndY);
+    g.drawVerticalLine(27, lineStartY, lineEndY);
     g.drawVerticalLine(this->getWidth() - 1, lineStartY, lineEndY);
-    g.drawHorizontalLine(int(lineStartY) - 1, 38.f, float(this->getWidth()) - 1.f);
-    g.drawHorizontalLine(int(lineEndY), 38.f, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(int(lineStartY) - 1, 28.f, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(int(lineEndY), 28.f, float(this->getWidth()) - 1.f);
 
     // Inner shadow
     g.setColour(this->colours->getPageFillColour().darker(0.05f));
-    g.drawVerticalLine(38, lineStartY, lineEndY);
+    g.drawVerticalLine(28, lineStartY, lineEndY);
     g.drawVerticalLine(this->getWidth() - 2, lineStartY, lineEndY);
-    g.drawHorizontalLine(int(lineStartY), 38, float(this->getWidth()) - 1.f);
-    g.drawHorizontalLine(int(lineEndY) - 1, 38, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(int(lineStartY), 28, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(int(lineEndY) - 1, 28, float(this->getWidth()) - 1.f);
 
     // Roll shadow left
-    g.setGradientFill(ColourGradient(Colour(0x10000000), 248.f, 0.f,
-        Colours::transparentBlack, 268.f, 0.f, false));
-    g.fillRect(248.f, paintStartY, 20.f, paintEndY);
+    g.setGradientFill(ColourGradient(Colour(0x10000000), 238.f, 0.f,
+        Colours::transparentBlack, 258.f, 0.f, false));
+    g.fillRect(238.f, paintStartY, 20.f, paintEndY);
 
-    g.setGradientFill(ColourGradient(Colour(0x10000000), 248.f, 0.f,
-        Colours::transparentBlack, 260.0f, 0.f, false));
-    g.fillRect(248.f, paintStartY, 12.f, paintEndY);
+    g.setGradientFill(ColourGradient(Colour(0x10000000), 238.f, 0.f,
+        Colours::transparentBlack, 250.0f, 0.f, false));
+    g.fillRect(238.f, paintStartY, 12.f, paintEndY);
 
     // Roll shadow right
     g.setGradientFill(ColourGradient(Colour(0x10000000), float(this->getWidth()), 0.f,
@@ -172,14 +172,14 @@ void ThemeSettingsItem::paint(Graphics &g)
 
     // Separators
     g.setColour(Colour(0x0f000000));
-    g.drawVerticalLine(248, lineStartY, lineEndY);
+    g.drawVerticalLine(238, lineStartY, lineEndY);
 
     g.setColour(Colour(0x0bffffff));
-    g.drawVerticalLine(247, lineStartY, lineEndY);
+    g.drawVerticalLine(237, lineStartY, lineEndY);
 
     g.setColour(Colours::black);
-    Icons::drawImageRetinaAware(this->icon1, g, 55, (this->getHeight() / 2) - 1);
-    Icons::drawImageRetinaAware(this->icon2, g, 230, (this->getHeight() / 2) - 1);
+    Icons::drawImageRetinaAware(this->icon1, g, 45, (this->getHeight() / 2) - 1);
+    Icons::drawImageRetinaAware(this->icon2, g, 220, (this->getHeight() / 2) - 1);
 }
 
 void ThemeSettingsItem::resized()

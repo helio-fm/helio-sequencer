@@ -86,7 +86,7 @@ void SettingsNode::recreatePage()
     this->settingsList->addAndMakeVisible(this->themeSettingsWrapper.get());
 
     this->uiSettings = make<UserInterfaceSettings>();
-    this->uiSettingsWrapper = make<SettingsFrameWrapper>(this->uiSettings.get());
+    this->uiSettingsWrapper = make<SettingsFrameWrapper>(this->uiSettings.get(), TRANS(I18n::Settings::uiFlags));
     this->settingsList->addAndMakeVisible(this->uiSettingsWrapper.get());
 
     this->audioSettings = make<AudioSettings>(App::Workspace().getAudioCore());

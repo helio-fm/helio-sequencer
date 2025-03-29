@@ -35,32 +35,47 @@ AnnotationLargeComponent::~AnnotationLargeComponent() = default;
 
 void AnnotationLargeComponent::paint(Graphics &g)
 {
-    const Colour baseColour(findDefaultColour(Label::textColourId));
+    g.setColour(this->fillColour.withMultipliedAlpha(this->fillAlpha));
+    g.fillPath(this->internalPath);
 
-    g.setColour(this->event.getColour()
-        .interpolatedWith(baseColour, 0.5f).withAlpha(this->borderAlpha));
+    g.setColour(this->event.getColour().
+        interpolatedWith(this->baseColour, 0.5f).withAlpha(this->borderAlpha));
 
     g.fillRect(1.f, 0.f, float(this->getWidth() - 1), 2.f);
     g.fillRect(1.5f, 2.f, float(this->getWidth() - 2), 1.f);
 
     if (this->event.getDescription().isNotEmpty())
     {
-        const Font labelFont(16.f, Font::plain);
-        g.setColour(this->event.getColour().interpolatedWith(baseColour, 0.55f).withAlpha(0.9f));
+        g.setColour(this->event.getColour().
+            interpolatedWith(this->baseColour, 0.6f).withAlpha(0.95f));
 
         GlyphArrangement arr;
-        arr.addFittedText(labelFont,
+        arr.addFittedText(this->font,
             this->event.getDescription(),
-            2.f + this->boundsOffset.getX(),
-            0.f,
-            float(this->getWidth()) - 16.f,
-            float(this->getHeight()) - 8.f,
+            4.f + this->boundsOffset.getX(),
+            1.f,
+            float(this->getWidth()) - AnnotationLargeComponent::borderResizingArea - 4.f,
+            float(this->getHeight() - 1),
             Justification::centredLeft,
             1,
             0.85f);
 
         arr.draw(g);
     }
+}
+
+void AnnotationLargeComponent::resized()
+{
+    const auto w = float(this->getWidth());
+    const auto h = float(this->getHeight());
+
+    constexpr auto skewWidth = 4;
+    this->internalPath.clear();
+    this->internalPath.startNewSubPath(1.f, 0.f);
+    this->internalPath.lineTo(1.f, h);
+    this->internalPath.lineTo(w - skewWidth, h);
+    this->internalPath.lineTo(w, 0.f);
+    this->internalPath.closeSubPath();
 }
 
 void AnnotationLargeComponent::mouseMove(const MouseEvent &e)
@@ -189,12 +204,14 @@ void AnnotationLargeComponent::mouseUp(const MouseEvent &e)
 
 void AnnotationLargeComponent::mouseEnter(const MouseEvent &e)
 {
+    this->fillAlpha = AnnotationLargeComponent::fillFocusedAlpha;
     this->borderAlpha = AnnotationLargeComponent::borderFocusedAlpha;
     this->repaint();
 }
 
 void AnnotationLargeComponent::mouseExit(const MouseEvent &e)
 {
+    this->fillAlpha = AnnotationLargeComponent::fillUnfocusedAlpha;
     this->borderAlpha = AnnotationLargeComponent::borderUnfocusedAlpha;
     this->repaint();
 }

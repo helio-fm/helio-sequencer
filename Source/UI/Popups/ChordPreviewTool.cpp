@@ -29,7 +29,7 @@
 
 static Label *createPopupButtonLabel(const String &text)
 {
-    constexpr int size = 32;
+    constexpr int size = 50;
     auto *newLabel = new Label(text, text);
     newLabel->setJustificationType(Justification::centred);
     newLabel->setBounds(0, 0, size * 2, size);
@@ -42,96 +42,68 @@ class ChordTooltip final : public Component
 {
 public:
 
-    ChordTooltip(const String &rootKeyName, const String &keySignatureDetail,
-        const String &chordDetail, const String &chordKeyName, const String &chordName)
+    ChordTooltip(const String &chordName, const String &keyDegree, const String &keyName)
     {
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
         this->setWantsKeyboardFocus(false);
 
-        this->keyNameComponent = make<NoteNameComponent>(false, fontSize);
-        this->addAndMakeVisible(this->keyNameComponent.get());
-        this->keyNameComponent->setNoteName(rootKeyName, keySignatureDetail);
-        this->keyNameComponent->setAlpha(0.7f);
+        const auto useFixedDo = App::Config().getUiFlags()->isUsingFixedDoNotation();
+        const auto fontSize = App::isRunningOnPhone() ?
+            Globals::UI::Fonts::S : Globals::UI::Fonts::M;
 
-        this->chordDetailLabel = make<Label>(String(), chordDetail);
-        this->addAndMakeVisible(this->chordDetailLabel.get());
-        this->chordDetailLabel->setFont(this->fontSize);
-        this->chordDetailLabel->setJustificationType(Justification::centred);
-        this->chordDetailLabel->setBorderSize({});
-        this->chordDetailLabel->setInterceptsMouseClicks(false, false);
+        this->chordNameLabel = make<Label>(String(), chordName);
+        this->addAndMakeVisible(this->chordNameLabel.get());
+        this->chordNameLabel->setFont(fontSize);
+        this->chordNameLabel->setJustificationType(Justification::centredLeft);
+        this->chordNameLabel->setBorderSize({});
+        this->chordNameLabel->setInterceptsMouseClicks(false, false);
+        this->chordNameLabel->setAlpha(0.75f);
 
-        this->chordKeyNameComponent = make<NoteNameComponent>(false, fontSize);
-        this->addAndMakeVisible(this->chordKeyNameComponent.get());
-        this->chordKeyNameComponent->setNoteName(chordKeyName, chordName);
-
-        const auto chordDetailWidth = this->chordDetailLabel->getFont().getStringWidth(chordDetail) + 6;
-        const auto chordKeyNameWidth = this->chordKeyNameComponent->getRequiredWidth();
-        const auto keyNameWidth = this->keyNameComponent->getRequiredWidth();
-        const auto contentWidth = jmax(keyNameWidth, chordDetailWidth + chordKeyNameWidth);
-
-        constexpr auto height = 36;
-        this->setSize(contentWidth, height);
-        auto localBounds = this->getLocalBounds();
-        auto topLine = localBounds.removeFromTop(height / 2).withSizeKeepingCentre(keyNameWidth, height / 2);
-        this->keyNameComponent->setBounds(topLine);
-        auto bottomLine = localBounds.withSizeKeepingCentre(chordDetailWidth + chordKeyNameWidth, height / 2);
-        this->chordDetailLabel->setBounds(bottomLine.removeFromLeft(chordDetailWidth));
-        this->chordKeyNameComponent->setBounds(bottomLine);
-    }
-
-private:
-
-    const float fontSize = App::isRunningOnPhone() ?
-        Globals::UI::Fonts::S : Globals::UI::Fonts::M;
-
-    UniquePointer<NoteNameComponent> keyNameComponent;
-    UniquePointer<Label> chordDetailLabel;
-    UniquePointer<NoteNameComponent> chordKeyNameComponent;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChordTooltip)
-};
-
-class RootKeyTooltip final : public Component
-{
-public:
-
-    RootKeyTooltip(const String &rootKeyName, int periodNumber)
-    {
-        this->setPaintingIsUnclipped(true);
-        this->setInterceptsMouseClicks(false, false);
-        this->setWantsKeyboardFocus(false);
-
-        this->textLabel = make<Label>(String(), TRANS(I18n::Popup::chordRootKey) + ":");
-        this->addAndMakeVisible(this->textLabel.get());
-        this->textLabel->setFont(this->fontSize);
-        this->textLabel->setJustificationType(Justification::centredLeft);
-        this->textLabel->setBorderSize({});
-        this->textLabel->setInterceptsMouseClicks(false, false);
+        this->keyDegreeLabel = make<Label>(String(), keyDegree);
+        this->addAndMakeVisible(this->keyDegreeLabel.get());
+        this->keyDegreeLabel->setFont(fontSize);
+        this->keyDegreeLabel->setJustificationType(Justification::centredLeft);
+        this->keyDegreeLabel->setBorderSize({});
+        this->keyDegreeLabel->setInterceptsMouseClicks(false, false);
 
         this->rootKeyNameComponent = make<NoteNameComponent>(false, fontSize);
         this->addAndMakeVisible(this->rootKeyNameComponent.get());
-        this->rootKeyNameComponent->setNoteName(rootKeyName, String(periodNumber));
+        this->rootKeyNameComponent->setNoteName(keyName, String(), useFixedDo);
 
-        const auto textWidth = this->textLabel->getFont().getStringWidth(this->textLabel->getText()) + 4;
+        const auto keyDegreeWidth = this->keyDegreeLabel->getFont().
+            getStringWidth(keyDegree) + (keyDegree.isEmpty() ? 0 : 3);
         const auto rootKeyWidth = this->rootKeyNameComponent->getRequiredWidth();
-        const auto contentWidth = textWidth + rootKeyWidth;
+        const auto chordNameWidth = this->chordNameLabel->getFont().getStringWidth(chordName);
+        const auto contentWidth = jmax(chordNameWidth, keyDegreeWidth + rootKeyWidth);
 
-        this->setSize(contentWidth, 23);
-        auto localBounds = this->getLocalBounds();
-        this->textLabel->setBounds(localBounds.removeFromLeft(textWidth));
-        this->rootKeyNameComponent->setBounds(localBounds);
+        constexpr int lineHeight = int(Globals::UI::Fonts::M);
+        if (chordName.isEmpty())
+        {
+            this->setSize(contentWidth, lineHeight);
+            auto localBounds = this->getLocalBounds();
+            this->keyDegreeLabel->setBounds(localBounds.removeFromLeft(keyDegreeWidth));
+            this->rootKeyNameComponent->setBounds(localBounds);
+        }
+        else
+        {
+            this->setSize(contentWidth, lineHeight * 2);
+            auto localBounds = this->getLocalBounds();
+            const auto topLine = localBounds.removeFromTop(lineHeight).withSizeKeepingCentre(chordNameWidth, lineHeight);
+            this->chordNameLabel->setBounds(topLine);
+            auto bottomLine = localBounds.withSizeKeepingCentre(keyDegreeWidth + rootKeyWidth, lineHeight);
+            this->keyDegreeLabel->setBounds(bottomLine.removeFromLeft(keyDegreeWidth));
+            this->rootKeyNameComponent->setBounds(bottomLine);
+        }
     }
 
 private:
 
-    const float fontSize = App::isRunningOnPhone() ?
-        Globals::UI::Fonts::S : Globals::UI::Fonts::M;
-
-    UniquePointer<Label> textLabel;
+    UniquePointer<Label> chordNameLabel;
+    UniquePointer<Label> keyDegreeLabel;
     UniquePointer<NoteNameComponent> rootKeyNameComponent;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RootKeyTooltip)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChordTooltip)
 };
 
 ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
@@ -264,12 +236,19 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
         {
             this->buildNewNote(true);
 
+            const auto targetKeyOffset = (this->targetKey + this->clip.getKey()) % this->scale->getBasePeriod();
+            const auto chromaticOffset = targetKeyOffset - this->scaleRootKey;
+            const auto scaleDegree = this->scale->getScaleKey(chromaticOffset);
+
+            static const auto degreeNames = Chord::getLocalizedDegreeNames();
+            const auto degreeName = (scaleDegree >= 0) ? degreeNames[scaleDegree] : String();
+
             int periodNumber = 0;
             auto keyName = this->roll.getTemperament()->
                 getMidiNoteName(this->targetKey + this->clip.getKey(),
                     this->scaleRootKey, this->scaleRootKeyName, periodNumber);
 
-            auto tooltip = make<RootKeyTooltip>(keyName, periodNumber);
+            auto tooltip = make<ChordTooltip>(String(), degreeName, keyName);
             App::Layout().showTooltip(move(tooltip));
         }
 
@@ -307,7 +286,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
     const auto chromaticOffset = targetKeyOffset - this->scaleRootKey;
     const auto scaleDegree = this->scale->getScaleKey(chromaticOffset);
 
-    if (scaleDegree >= 0) // todo just use nearest neighbor key in scale?
+    if (scaleDegree >= 0) // todo some indication that the key is not in scale?
     {
         this->undoChangesIfAny();
         this->stopSound();
@@ -319,21 +298,15 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 
         const auto temperament = this->roll.getTemperament();
 
-        static const auto degreeNames = Chord::getLocalizedDegreeNames();
-
         int periodNumber = 0;
-        const auto chordRootKey =
+        const auto keyName =
             temperament->getMidiNoteName(this->targetKey + this->clip.getKey(),
                 this->scaleRootKey, this->scaleRootKeyName, periodNumber);
 
-        const auto keySignatureKey =
-            temperament->getMidiNoteName(periodOffset + this->scaleRootKey,
-                this->scaleRootKey, this->scaleRootKeyName, periodNumber);
+        static const auto degreeNames = Chord::getLocalizedDegreeNames();
+        const auto degreeName = degreeNames[scaleDegree];
 
-        const String keySignatureDetail = String(periodNumber) + " " + this->scale->getLocalizedName();
-        const String chordDetail = degreeNames[scaleDegree];
-
-        auto tooltip = make<ChordTooltip>(keySignatureKey, keySignatureDetail, chordDetail, chordRootKey, chord->getName());
+        auto tooltip = make<ChordTooltip>(chord->getName(), degreeName, keyName);
         App::Layout().showTooltip(move(tooltip));
 
         for (const auto &chordKey : chord->getScaleKeys())

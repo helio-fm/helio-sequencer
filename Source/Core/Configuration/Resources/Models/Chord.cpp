@@ -111,13 +111,13 @@ void Chord::reset()
 Array<String> Chord::getLocalizedDegreeNames()
 {
     static Array<String> names = {
-        TRANS(I18n::Popup::chordFunction1),
-        TRANS(I18n::Popup::chordFunction2),
-        TRANS(I18n::Popup::chordFunction3),
-        TRANS(I18n::Popup::chordFunction4),
-        TRANS(I18n::Popup::chordFunction5),
-        TRANS(I18n::Popup::chordFunction6),
-        TRANS(I18n::Popup::chordFunction7)
+        TRANS(I18n::Degrees::tonic),
+        TRANS(I18n::Degrees::supertonic),
+        TRANS(I18n::Degrees::mediant),
+        TRANS(I18n::Degrees::subdominant),
+        TRANS(I18n::Degrees::dominant),
+        TRANS(I18n::Degrees::submediant),
+        TRANS(I18n::Degrees::subtonic)
     };
 
     return names;

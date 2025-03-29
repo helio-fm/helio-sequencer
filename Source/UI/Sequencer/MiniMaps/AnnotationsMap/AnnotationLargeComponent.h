@@ -38,6 +38,8 @@ public:
     void setRealBounds(const Rectangle<float> bounds) override;
 
     void paint(Graphics &g) override;
+    void resized() override;
+
     void mouseMove(const MouseEvent &e) override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
@@ -45,7 +47,7 @@ public:
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
 
-    static constexpr auto annotationHeight = 32;
+    static constexpr auto annotationHeight = 25;
 
 private:
 
@@ -63,9 +65,17 @@ private:
     String text;
     float textWidth = 0.f;
 
-    static constexpr float borderUnfocusedAlpha = 0.7f;
-    static constexpr float borderFocusedAlpha = 0.95f;
+    Path internalPath;
 
+    const Colour baseColour = findDefaultColour(Label::textColourId);
+    const Colour fillColour = findDefaultColour(ColourIDs::Roll::noteNameFill);
+
+    static constexpr float fillUnfocusedAlpha = 0.2f;
+    static constexpr float borderUnfocusedAlpha = 0.7f;
+    static constexpr float fillFocusedAlpha = 0.5f;
+    static constexpr float borderFocusedAlpha = 0.8f;
+
+    float fillAlpha = fillUnfocusedAlpha;
     float borderAlpha = borderUnfocusedAlpha;
 
     bool canResize() const noexcept;

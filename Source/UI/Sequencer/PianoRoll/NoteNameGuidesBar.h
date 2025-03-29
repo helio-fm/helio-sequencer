@@ -22,6 +22,7 @@ class NoteNameGuide;
 class Lasso;
 class MidiTrack;
 
+#include "UserInterfaceFlags.h"
 #include "RollListener.h"
 #include "Temperament.h"
 #include "Scale.h"
@@ -29,6 +30,7 @@ class MidiTrack;
 
 class NoteNameGuidesBar final : public Component,
     public RollListener,
+    public UserInterfaceFlags::Listener,
     public AsyncUpdater,
     private ChangeListener // listens to roll's selection
 {
@@ -43,6 +45,12 @@ public:
 
     void syncWithTemperament(Temperament::Ptr temperament);
     void syncWithSelection(const Lasso *selection);
+
+    //===------------------------------------------------------------------===//
+    // UserInterfaceFlags::Listener
+    //===------------------------------------------------------------------===//
+
+    void onUseFixedDoFlagChanged(bool shouldUseFixedDo) override;
 
     //===------------------------------------------------------------------===//
     // RollListener
@@ -71,6 +79,7 @@ private:
     Scale::Ptr scale;
     String scaleRootKeyName;
     int scaleRootKey = 0;
+    bool useFixedDoNotation = false;
 
     Optional<float> selectionStartBeat;
     FlatHashSet<Note::Key> selectedKeys;

@@ -22,12 +22,14 @@
 #include "ProjectListener.h"
 #include "ProjectMapsScroller.h"
 #include "Temperament.h"
+#include "UserInterfaceFlags.h"
 
 class RollBase;
 class ProjectNode;
 
 class KeySignaturesProjectMap final :
     public ProjectMapsScroller::ScrolledComponent,
+    public UserInterfaceFlags::Listener,
     public ProjectListener
 {
 public:
@@ -42,10 +44,10 @@ public:
     void alignKeySignatureComponent(KeySignatureComponent *nc);
 
     //===------------------------------------------------------------------===//
-    // Component
+    // UserInterfaceFlags::Listener
     //===------------------------------------------------------------------===//
 
-    void resized() override;
+    void onUseFixedDoFlagChanged(bool shouldUseFixedDo) override;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -66,6 +68,12 @@ public:
     void onBeforeReloadProjectContent() override;
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,
         const ProjectMetadata *meta) override;
+
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
+    void resized() override;
 
     //===------------------------------------------------------------------===//
     // Stuff for children
@@ -96,6 +104,8 @@ private:
     float rollLastBeat = Globals::Defaults::projectLength;
     
     int keyboardSize = Globals::twelveToneKeyboardSize;
+
+    bool useFixedDoNotation = false;
 
     ProjectNode &project;
 

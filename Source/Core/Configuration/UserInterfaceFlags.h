@@ -43,6 +43,7 @@ public:
 
         virtual void onScalesHighlightingFlagChanged(bool enabled) {}
         virtual void onNoteNameGuidesFlagChanged(bool enabled) {}
+        virtual void onUseFixedDoFlagChanged(bool enabled) {}
 
         virtual void onOpenGlRendererFlagChanged(bool enabled) {}
         virtual void onNativeTitleBarFlagChanged(bool enabled) {}
@@ -77,6 +78,9 @@ public:
 
     bool areNoteNameGuidesEnabled() const noexcept;
     void setNoteNameGuidesEnabled(bool enabled);
+
+    bool isUsingFixedDoNotation() const noexcept;
+    void setUseFixedDoNotation(bool enabled);
 
     bool isOpenGlRendererEnabled() const noexcept;
     void setOpenGlRendererEnabled(bool enabled);
@@ -138,6 +142,7 @@ private:
 
     bool noteNameGuides = false;
     bool scalesHighlighting = true;
+    bool useFixedDoNotation = false;
 
     bool editorPanelVisible = false;
 

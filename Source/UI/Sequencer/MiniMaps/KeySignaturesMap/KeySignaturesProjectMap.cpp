@@ -28,6 +28,7 @@
 #include "KeySignatureSmallComponent.h"
 #include "RescalePreviewTool.h"
 #include "ModalCallout.h"
+#include "Config.h"
 
 KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &project,
     SafePointer<RollBase> roll, Type type) :
@@ -40,12 +41,16 @@ KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &project,
     this->setPaintingIsUnclipped(true);
 
     this->reloadTrackMap();
-    
+
+    this->useFixedDoNotation = App::Config().getUiFlags()->isUsingFixedDoNotation();
+
     this->project.addListener(this);
+    App::Config().getUiFlags()->addListener(this);
 }
 
 KeySignaturesProjectMap::~KeySignaturesProjectMap()
 {
+    App::Config().getUiFlags()->removeListener(this);
     this->project.removeListener(this);
 }
 
@@ -73,6 +78,21 @@ void KeySignaturesProjectMap::resized()
 
         previous = current;
     }
+}
+
+//===----------------------------------------------------------------------===//
+// UserInterfaceFlags::Listener
+//===----------------------------------------------------------------------===//
+
+void KeySignaturesProjectMap::onUseFixedDoFlagChanged(bool shouldUseFixedDo)
+{
+    if (this->useFixedDoNotation == shouldUseFixedDo)
+    {
+        return;
+    }
+
+    this->useFixedDoNotation = shouldUseFixedDo;
+    this->reloadTrackMap();
 }
 
 //===----------------------------------------------------------------------===//
@@ -120,7 +140,7 @@ void KeySignaturesProjectMap::alignKeySignatureComponent(KeySignatureComponent *
         this->applyKeySignatureBounds(nextEventComponent, oneMoreNext);
     }
     
-    component->updateContent(this->getProjectKeyNames());
+    component->updateContent(this->getProjectKeyNames(), this->useFixedDoNotation);
     this->applyKeySignatureBounds(component, nextEventComponent);
 }
 
@@ -137,7 +157,7 @@ void KeySignaturesProjectMap::onAddMidiEvent(const MidiEvent &event)
         auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
         auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
 
-        component->updateContent(this->getProjectKeyNames());
+        component->updateContent(this->getProjectKeyNames(), this->useFixedDoNotation);
         this->applyKeySignatureBounds(component, nextEventComponent);
         component->toFront(false);
 
@@ -230,7 +250,7 @@ void KeySignaturesProjectMap::onChangeProjectInfo(const ProjectMetadata *info)
         const auto &keyNames = this->getProjectKeyNames();
         for (auto *component : this->keySignatureComponents)
         {
-            component->updateContent(keyNames);
+            component->updateContent(keyNames, this->useFixedDoNotation);
         }
     }
 }
@@ -360,7 +380,7 @@ void KeySignaturesProjectMap::reloadTrackMap()
         KeySignatureEvent *keySignature = static_cast<KeySignatureEvent *>(event);
         auto *component = this->createComponent(*keySignature);
         this->addAndMakeVisible(component);
-        component->updateContent(keyNames);
+        component->updateContent(keyNames, this->useFixedDoNotation);
 
         this->keySignatureComponents.addSorted(*component, component);
         this->keySignaturesMap[*keySignature] = component;
@@ -389,7 +409,7 @@ void KeySignaturesProjectMap::applyKeySignatureBounds(KeySignatureComponent *nc,
     const float w = jmax(minWidth,
         jmin((maxWidth - componentsPadding), (nc->getTextWidth() + widthMargin)));
 
-    nc->setRealBounds(Rectangle<float>(x, 0.f, w, float(nc->getHeight())));
+    nc->setRealBounds(Rectangle<float>(x, 0.f, w, float(this->getHeight())));
 }
 
 KeySignatureComponent *KeySignaturesProjectMap::getPreviousEventComponent(int indexOfSorted) const

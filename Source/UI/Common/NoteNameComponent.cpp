@@ -105,14 +105,8 @@ float NoteNameComponent::getRequiredWidthFloat() const noexcept
 }
 
 void NoteNameComponent::setNoteName(const String &newNoteName,
-    Optional<String> newDetailsText)
+    Optional<String> newDetailsText, bool useFixedDoNotation)
 {
-    if (newNoteName == this->noteName &&
-        newDetailsText == this->detailsText)
-    {
-        return;
-    }
-
     this->noteName = newNoteName;
     this->detailsText = newDetailsText;
 
@@ -155,26 +149,26 @@ void NoteNameComponent::setNoteName(const String &newNoteName,
             numSharps += 2;
             break;
         case 'A':
-            this->nameLabel->setText("A", dontSendNotification);
+            this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::la) : "A", dontSendNotification);
             break;
         case 'B':
         case 'H':
-            this->nameLabel->setText("B", dontSendNotification);
+            this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::si) : "B", dontSendNotification);
             break;
         case 'C':
-            this->nameLabel->setText("C", dontSendNotification);
+            this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::ut) : "C", dontSendNotification);
             break;
         case 'D':
-            this->nameLabel->setText("D", dontSendNotification);
+            this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::re) : "D", dontSendNotification);
             break;
         case 'E':
-            this->nameLabel->setText("E", dontSendNotification);
+            this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::mi) : "E", dontSendNotification);
             break;
         case 'F':
-            this->nameLabel->setText("F", dontSendNotification);
+            this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::fa) : "F", dontSendNotification);
             break;
         case 'G':
-            this->nameLabel->setText("G", dontSendNotification);
+            this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::sol) : "G", dontSendNotification);
             break;
         default:
             break;
