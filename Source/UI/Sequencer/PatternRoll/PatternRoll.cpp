@@ -293,20 +293,23 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip) const
     const auto trackGroupKey = track->getTrackGroupKey(grouping);
     const int trackIndex = this->rows.indexOfSorted(kStringSort, trackGroupKey);
 
-    // In case there are no events, display an empty clip of some default length,
-    // if there are some really short events (e.g. the first moments in recording mode),
-    // set the minimal limit for the clip bounds:
-    const float sequenceLength = sequence->isEmpty() ? Globals::Defaults::emptyClipLength :
-        jmax(sequence->getLengthInBeats(), Globals::minClipLength);
-
-    const float w = this->beatWidth * sequenceLength;
     const float x = this->beatWidth * (sequence->getFirstBeat() + clip.getBeat() - this->firstBeat);
     const float y = float(trackIndex * PatternRoll::rowHeight);
-    constexpr auto verticalMargin = 1;
 
+    // - in case there are no events, still display an empty clip of some default length,
+    // also make sure that the clip isn't too short even if the sequence is (e.g. first moments when recording);
+    // - calculating the width like (lastBeat - floor(firstBeat)) instead of (beatWidth * sequenceLength)
+    // to place clip edges precisely on bar lines on higher zoom levels and avoid nasty fluttering:
+    const float w = sequence->isEmpty() ?
+        (this->beatWidth * Globals::Defaults::emptyClipLength) :
+        jmax(this->beatWidth * Globals::minClipLength,
+            this->beatWidth * (sequence->getLastBeat() + clip.getBeat() - this->firstBeat) - floorf(x));
+
+    constexpr auto verticalMargin = 1;
     return Rectangle<float>(x,
         Globals::UI::rollHeaderHeight + PatternRoll::trackHeaderHeight + y + verticalMargin,
-        w, float(PatternRoll::clipHeight - (verticalMargin * 2)));
+        w,
+        float(PatternRoll::clipHeight - (verticalMargin * 2)));
 }
 
 float PatternRoll::getBeatForClipByXPosition(const Clip &clip, float x) const
