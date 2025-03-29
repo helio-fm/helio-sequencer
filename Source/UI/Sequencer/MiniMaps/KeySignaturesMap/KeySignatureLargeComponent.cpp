@@ -16,12 +16,13 @@
 */
 
 #include "Common.h"
+#include "KeySignatureLargeComponent.h"
 #include "KeySignaturesSequence.h"
 #include "RollBase.h"
-#include "ColourIDs.h"
 #include "CachedLabelImage.h"
-#include "KeySignatureLargeComponent.h"
+#include "NoteNameComponent.h"
 #include "HelioTheme.h"
+#include "ColourIDs.h"
 
 KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &parent,
     const KeySignatureEvent &targetEvent) :
@@ -31,13 +32,9 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
 
-    this->signatureLabel = make<Label>();
-    this->addAndMakeVisible(this->signatureLabel.get());
-    this->signatureLabel->setFont(Globals::UI::Fonts::S);
-    this->signatureLabel->setJustificationType(Justification::centredLeft);
-    this->signatureLabel->setBounds(-2, 1, 256, 24);
-    this->signatureLabel->setInterceptsMouseClicks(false, false);
-    this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
+    this->nameComponent = make<NoteNameComponent>();
+    this->addAndMakeVisible(this->nameComponent.get());
+    this->nameComponent->setBounds(4, 1, 256, 24);
 
     this->setMouseCursor(MouseCursor::PointingHandCursor);
     this->setSize(24, 24);
@@ -47,11 +44,27 @@ KeySignatureLargeComponent::~KeySignatureLargeComponent() = default;
 
 void KeySignatureLargeComponent::paint(Graphics &g)
 {
-    g.setColour(findDefaultColour(ColourIDs::Roll::headerSnaps));
-    g.fillRect(1.f, 0.f, float(this->getWidth() - 3), 3.f);
+    g.setColour(this->fillColour.withMultipliedAlpha(this->fillAlpha));
+    g.fillPath(this->internalPath);
 
-    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
-    HelioTheme::drawDashedHorizontalLine3(g, 1.f, 0.f, float(this->getWidth() - 1), 8.f);
+    g.setColour(this->borderColour.withMultipliedAlpha(this->borderAlpha));
+    g.fillRect(1.f, 0.f, float(this->getWidth() - 1), 2.f);
+    g.fillRect(1.5f, 2.f, float(this->getWidth() - 2), 1.f);
+}
+
+void KeySignatureLargeComponent::resized()
+{
+    const auto w = float(this->getWidth());
+    const auto h = float(this->getHeight());
+
+    constexpr auto skewWidth = 3;
+
+    this->internalPath.clear();
+    this->internalPath.startNewSubPath(1.f, 0.f);
+    this->internalPath.lineTo(1.f, h);
+    this->internalPath.lineTo(w - skewWidth - 1.f, h);
+    this->internalPath.lineTo(w - 1.f, 0.f);
+    this->internalPath.closeSubPath();
 }
 
 void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)
@@ -60,8 +73,6 @@ void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)
     {
         return;
     }
-
-    this->mouseDownWasTriggered = true;
 
     if (e.mods.isLeftButtonDown())
     {
@@ -132,7 +143,6 @@ void KeySignatureLargeComponent::mouseUp(const MouseEvent &e)
         }
 
         if (e.getDistanceFromDragStart() < 10 &&
-            this->mouseDownWasTriggered &&
             !this->draggingHadCheckpoint &&
             Component::getCurrentlyModalComponent() == nullptr)
         {
@@ -146,8 +156,20 @@ void KeySignatureLargeComponent::mouseUp(const MouseEvent &e)
             }
         }
     }
+}
 
-    this->mouseDownWasTriggered = false;
+void KeySignatureLargeComponent::mouseEnter(const MouseEvent &e)
+{
+    this->fillAlpha = KeySignatureLargeComponent::fillFocusedAlpha;
+    this->borderAlpha = KeySignatureLargeComponent::borderFocusedAlpha;
+    this->repaint();
+}
+
+void KeySignatureLargeComponent::mouseExit(const MouseEvent &e)
+{
+    this->fillAlpha = KeySignatureLargeComponent::fillUnfocusedAlpha;
+    this->borderAlpha = KeySignatureLargeComponent::borderUnfocusedAlpha;
+    this->repaint();
 }
 
 void KeySignatureLargeComponent::setRealBounds(const Rectangle<float> bounds)
@@ -168,12 +190,18 @@ float KeySignatureLargeComponent::getTextWidth() const
 
 void KeySignatureLargeComponent::updateContent(const Temperament::Period &keyNames)
 {
-    const String originalName = this->event.toString(keyNames);
-    if (this->eventName != originalName)
+    const auto newNoteName = this->event.getRootKeyNameOfDefault(keyNames);
+    const auto newDetailsText = this->event.getScale()->getLocalizedName();
+
+    if (this->noteName != newNoteName ||
+        this->detailsText != newDetailsText)
     {
-        this->eventName = originalName;
-        this->textWidth = float(this->signatureLabel->getFont().getStringWidth(originalName));
-        this->signatureLabel->setText(originalName, dontSendNotification);
+        this->noteName = newNoteName;
+        this->detailsText = newDetailsText;
+
+        this->nameComponent->setNoteName(newNoteName, newDetailsText);
+        this->textWidth = this->nameComponent->getRequiredWidthFloat();
+
         this->repaint();
     }
 }

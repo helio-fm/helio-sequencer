@@ -28,6 +28,11 @@ public:
     static void clearPrerenderedCache();
 
     static Image findByName(Icons::Id id, int maxSize);
+    static Image findByName(Icons::Id id, int exactSize,
+        RectanglePlacement alignment,
+        const Colour &fillColour, const Colour &shadowColour,
+        Rectangle<float> &outContentBounds);
+
     static Image renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize);
     static void drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy);
 
@@ -149,6 +154,15 @@ public:
 
         selection,
         selectAll,
-        selectNone
+        selectNone,
+
+        flat,
+        sharp,
+        doubleFlat,
+        doubleSharp,
+        microtoneUp,
+        microtoneUp2,
+        microtoneDown,
+        microtoneDown2
     };
 };

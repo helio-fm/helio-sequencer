@@ -206,6 +206,9 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
     this->scaleEditorViewport->setScrollOnDragMode(Viewport::ScrollOnDragMode::nonHover);
     this->addAndMakeVisible(this->scaleEditorViewport.get());
 
+    // button width is calculated dynamically in KeySelector depending on note names
+    this->scaleEditor->setButtonWidth(this->keySelector->getButtonWidth());
+
     this->scaleEditor->onScaleChanged = [this](const Scale::Ptr scale)
     {
         if (!this->scale->isEquivalentTo(scale))

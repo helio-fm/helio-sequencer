@@ -559,6 +559,9 @@
     <ClCompile Include="..\..\Source\UI\Common\ModeIndicatorComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Common\NoteNameComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\PlayButton.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3264,6 +3267,7 @@
     <ClInclude Include="..\..\Source\UI\Common\MetronomeEditor.h"/>
     <ClInclude Include="..\..\Source\UI\Common\MobileComboBox.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ModeIndicatorComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Common\NoteNameComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\OverlayButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\PlayButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\PluginWindow.h"/>
@@ -4376,12 +4380,15 @@
     <None Include="..\..\Resources\Icons\cursorTool.svg"/>
     <None Include="..\..\Resources\Icons\cut.svg"/>
     <None Include="..\..\Resources\Icons\cutterTool.svg"/>
+    <None Include="..\..\Resources\Icons\doubleFlat.svg"/>
+    <None Include="..\..\Resources\Icons\doubleSharp.svg"/>
     <None Include="..\..\Resources\Icons\down.svg"/>
     <None Include="..\..\Resources\Icons\dragTool.svg"/>
     <None Include="..\..\Resources\Icons\drawTool.svg"/>
     <None Include="..\..\Resources\Icons\ellipsis.svg"/>
     <None Include="..\..\Resources\Icons\expand.svg"/>
     <None Include="..\..\Resources\Icons\fail.svg"/>
+    <None Include="..\..\Resources\Icons\flat.svg"/>
     <None Include="..\..\Resources\Icons\forward.svg"/>
     <None Include="..\..\Resources\Icons\github.svg"/>
     <None Include="..\..\Resources\Icons\helio.svg"/>
@@ -4396,6 +4403,10 @@
     <None Include="..\..\Resources\Icons\lockZoom.svg"/>
     <None Include="..\..\Resources\Icons\meter.svg"/>
     <None Include="..\..\Resources\Icons\metronome.svg"/>
+    <None Include="..\..\Resources\Icons\microtoneDown.svg"/>
+    <None Include="..\..\Resources\Icons\microtoneDown2.svg"/>
+    <None Include="..\..\Resources\Icons\microtoneUp.svg"/>
+    <None Include="..\..\Resources\Icons\microtoneUp2.svg"/>
     <None Include="..\..\Resources\Icons\mute.svg"/>
     <None Include="..\..\Resources\Icons\orchestraPit.svg"/>
     <None Include="..\..\Resources\Icons\paint.svg"/>
@@ -4425,6 +4436,7 @@
     <None Include="..\..\Resources\Icons\selectAll.svg"/>
     <None Include="..\..\Resources\Icons\selectNone.svg"/>
     <None Include="..\..\Resources\Icons\settings.svg"/>
+    <None Include="..\..\Resources\Icons\sharp.svg"/>
     <None Include="..\..\Resources\Icons\snap.svg"/>
     <None Include="..\..\Resources\Icons\staccato.svg"/>
     <None Include="..\..\Resources\Icons\stop.svg"/>

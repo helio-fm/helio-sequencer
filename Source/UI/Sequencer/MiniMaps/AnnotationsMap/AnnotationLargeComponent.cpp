@@ -38,7 +38,7 @@ void AnnotationLargeComponent::paint(Graphics &g)
     const Colour baseColour(findDefaultColour(Label::textColourId));
 
     g.setColour(this->event.getColour()
-        .interpolatedWith(baseColour, 0.5f).withAlpha(0.65f));
+        .interpolatedWith(baseColour, 0.5f).withAlpha(this->borderAlpha));
 
     g.fillRect(1.f, 0.f, float(this->getWidth() - 1), 2.f);
     g.fillRect(1.5f, 2.f, float(this->getWidth() - 2), 1.f);
@@ -82,8 +82,6 @@ void AnnotationLargeComponent::mouseDown(const MouseEvent &e)
     {
         return;
     }
-
-    this->mouseDownWasTriggered = true;
 
     if (e.mods.isLeftButtonDown())
     {
@@ -182,14 +180,23 @@ void AnnotationLargeComponent::mouseUp(const MouseEvent &e)
         }
 
         if (e.getDistanceFromDragStart() < 10 &&
-            this->mouseDownWasTriggered &&
             !this->hadCheckpoint)
         {
             this->editor.onAnnotationTapped(this);
         }
     }
+}
 
-    this->mouseDownWasTriggered = false;
+void AnnotationLargeComponent::mouseEnter(const MouseEvent &e)
+{
+    this->borderAlpha = AnnotationLargeComponent::borderFocusedAlpha;
+    this->repaint();
+}
+
+void AnnotationLargeComponent::mouseExit(const MouseEvent &e)
+{
+    this->borderAlpha = AnnotationLargeComponent::borderUnfocusedAlpha;
+    this->repaint();
 }
 
 void AnnotationLargeComponent::setRealBounds(const Rectangle<float> bounds)

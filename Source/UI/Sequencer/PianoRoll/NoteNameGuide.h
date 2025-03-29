@@ -18,6 +18,8 @@
 #pragma once
 
 #include "CachedLabelImage.h"
+#include "NoteNameComponent.h"
+#include "NoteNameGuidesBar.h"
 #include "ColourIDs.h"
 
 class NoteNameGuide final : public Component
@@ -30,10 +32,8 @@ public:
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
 
-        this->noteNameLabel = make<Label>();
-        this->addAndMakeVisible(this->noteNameLabel.get());
-        this->noteNameLabel->setFont(Globals::UI::Fonts::S);
-        this->noteNameLabel->setJustificationType(Justification::centredLeft);
+        this->noteName = make<NoteNameComponent>();
+        this->addAndMakeVisible(this->noteName.get());
     }
     
     inline int getNoteNumber() const noexcept
@@ -46,14 +46,19 @@ public:
         return (this->noteNumber - scaleRootKey) % period == 0;
     }
 
-    void setNoteName(const String &name)
+    int setNoteName(const String &name, int periodNumber)
     {
-        if (this->noteNameLabel->getText() == name)
-        {
-            return;
-        }
+        this->noteName->setNoteName(name, String(periodNumber));
+        return this->noteName->getRequiredWidth();
+    }
 
-        this->noteNameLabel->setText(name, dontSendNotification);
+    void setWidth(int newWidth)
+    {
+        if (this->nameWidth != newWidth)
+        {
+            this->nameWidth = newWidth;
+            this->resized();
+        }
     }
 
     void paint(Graphics &g) override
@@ -65,25 +70,33 @@ public:
         g.fillPath(this->internalPath2);
 
         g.setColour(this->borderColour);
-        g.fillRect(0, 1, 3, this->getHeight() - 1);
+        g.fillRect(0.f, 0.5f, NoteNameGuidesBar::borderWidth, float(this->getHeight()) - 0.5f);
     }
 
     void resized() override
     {
+        // even if the height is too small, the name shouldn't be cut
+        constexpr auto minHeight = int(Globals::UI::Fonts::M);
+        const auto nameHeight = jmax(this->getHeight(), minHeight);
+        this->noteName->setBounds(int(NoteNameGuidesBar::borderWidth + NoteNameGuidesBar::nameMargin),
+            (this->getHeight() - nameHeight) / 2, this->nameWidth, nameHeight);
+
+        const auto w = float(this->getWidth());
         const auto h = float(this->getHeight());
-        this->noteNameLabel->setBounds(1, (this->getHeight() / 2) - 10, 45, 21);
 
         this->internalPath1.clear();
-        this->internalPath1.startNewSubPath(3.f, 1.f);
-        this->internalPath1.lineTo(31.f, 1.f);
-        this->internalPath1.lineTo(34.f, h);
-        this->internalPath1.lineTo(3.f, h);
+        this->internalPath1.startNewSubPath(NoteNameGuidesBar::borderWidth + 1, 1.f);
+        this->internalPath1.lineTo(w - NoteNameGuidesBar::arrowWidth, 1.f);
+        this->internalPath1.lineTo(w, (h / 2.f) + 0.5f);
+        this->internalPath1.lineTo(w - NoteNameGuidesBar::arrowWidth, h);
+        this->internalPath1.lineTo(NoteNameGuidesBar::borderWidth + 1.f, h);
         this->internalPath1.closeSubPath();
 
         this->internalPath2.clear();
         this->internalPath2.startNewSubPath(0.f, 1.f);
-        this->internalPath2.lineTo(30.f, 1.f);
-        this->internalPath2.lineTo(33.f, h);
+        this->internalPath2.lineTo(w - NoteNameGuidesBar::arrowWidth - 1.f, 1.f);
+        this->internalPath2.lineTo(w - 1.f, (h / 2.f) + 0.5f);
+        this->internalPath2.lineTo(w - NoteNameGuidesBar::arrowWidth - 1.f, h);
         this->internalPath2.lineTo(0.f, h);
         this->internalPath2.closeSubPath();
     }
@@ -92,11 +105,13 @@ private:
 
     const int noteNumber;
 
+    int nameWidth = 32;
+
     const Colour fillColour = findDefaultColour(ColourIDs::Roll::noteNameFill);
     const Colour borderColour = findDefaultColour(ColourIDs::Roll::noteNameBorder);
     const Colour shadowColour = findDefaultColour(ColourIDs::Roll::noteNameShadow);
 
-    UniquePointer<Label> noteNameLabel;
+    UniquePointer<NoteNameComponent> noteName;
 
     Path internalPath1;
     Path internalPath2;

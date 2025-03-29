@@ -67,10 +67,10 @@ public:
         Failure
     };
 
-    void hideTooltipIfAny(); // and cancel pending, if any
     void showTooltip(const String &message,
-        TooltipIcon icon = TooltipIcon::None,
-        int tooltipDelayMs = 0);
+        TooltipIcon icon = TooltipIcon::None, int delayMs = 0);
+    void showTooltip(UniquePointer<Component> &&tooltipContent, int delayMs = 0);
+    void hideTooltipIfAny(); // and cancel pending, if any
 
     //===------------------------------------------------------------------===//
     // Component
@@ -96,6 +96,7 @@ private:
     void showTooltipNow();
     String tooltipMessage;
     TooltipIcon tooltipIcon;
+    UniquePointer<Component> tooltipContent;
 
     void clearInitScreen();
     UniquePointer<InitScreen> initScreen;

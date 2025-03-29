@@ -177,6 +177,15 @@ void Icons::initBuiltInImages()
     setIconForKey(selection);
     setIconForKey(selectAll);
     setIconForKey(selectNone);
+
+    setIconForKey(flat);
+    setIconForKey(sharp);
+    setIconForKey(doubleFlat);
+    setIconForKey(doubleSharp);
+    setIconForKey(microtoneUp);
+    setIconForKey(microtoneUp2);
+    setIconForKey(microtoneDown);
+    setIconForKey(microtoneDown2);
 }
 
 static const Path extractPathFromDrawable(const Drawable *d)
@@ -208,7 +217,9 @@ static const Path extractPathFromDrawable(const Drawable *d)
 }
 
 static Image renderVector(Icons::Id id, int maxSize,
-    const Colour &iconBaseColour, const Colour &iconShadeColour)
+    const Colour &iconBaseColour, const Colour &iconShadowColour,
+    Rectangle<float> &outContentBounds,
+    RectanglePlacement placement = RectanglePlacement::centred)
 {
     const auto foundImage = builtInImages.find(id);
     if (foundImage == builtInImages.end() || maxSize < 1)
@@ -219,19 +230,34 @@ static Image renderVector(Icons::Id id, int maxSize,
     Image resultImage(Image::ARGB, maxSize, maxSize, true);
     Graphics g(resultImage);
     
-    UniquePointer<Drawable> drawableSVG(Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes));
-    drawableSVG->replaceColour(Colours::black, iconBaseColour);
+    UniquePointer<Drawable> drawable(Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes));
+    auto *drawableSvg = dynamic_cast<DrawableComposite *>(drawable.get());
+    if (drawableSvg == nullptr)
+    {
+        jassertfalse; // expects svg's
+        return {};
+    }
 
-    Rectangle<int> area(0, 0, maxSize, maxSize);
-    drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.f);
+    drawableSvg->replaceColour(Colours::black, iconBaseColour);
+
+    const auto drawableBounds = drawableSvg->getDrawableBounds();
+    const auto area = Rectangle<float>(0.f, 0.f, float(maxSize), float(maxSize));
+    auto transformToFit = placement.getTransformToFit(drawableBounds, area);
+
+    outContentBounds = drawableBounds.transformedBy(transformToFit);
+
+    drawableSvg->draw(g, 1.f, transformToFit);
     
 #if PLATFORM_DESKTOP
-    GlowEffect glow;
-    glow.setGlowProperties(1.25, iconShadeColour);
-    glow.applyEffect(resultImage, g, 1.f, 1.f);
+    if (iconShadowColour.getAlpha() > 0)
+    {
+        GlowEffect glow;
+        glow.setGlowProperties(1.25, iconShadowColour);
+        glow.applyEffect(resultImage, g, 1.f, 1.f);
+    }
 #endif
-        
-    drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.f);
+
+    drawableSvg->draw(g, 1.f, transformToFit);
 
     return resultImage;
 }
@@ -260,6 +286,7 @@ Path Icons::getPathByName(Icons::Id id)
 }
 
 static FlatHashMap<uint32, Image> prerenderedSVGs;
+static FlatHashMap<uint32, Rectangle<float>> prerenderedBounds;
 
 void Icons::clearPrerenderedCache()
 {
@@ -322,10 +349,40 @@ Image Icons::findByName(Icons::Id id, int maxSize)
         return prerenderedSVGs[iconKey];
     }
     
+    Rectangle<float> contentBounds;
     const Colour iconBaseColour(findDefaultColour(ColourIDs::Icons::fill));
     const Colour iconShadeColour(findDefaultColour(ColourIDs::Icons::shadow));
-    const Image prerenderedImage(renderVector(id, fixedSize, iconBaseColour, iconShadeColour));
+    const Image prerenderedImage(renderVector(id, fixedSize,
+        iconBaseColour, iconShadeColour, contentBounds));
+
     prerenderedSVGs[iconKey] = prerenderedImage;
+
+    return prerenderedImage;
+}
+
+Image Icons::findByName(Icons::Id id, int exactSize,
+    RectanglePlacement alignment,
+    const Colour &fillColour, const Colour &shadowColour,
+    Rectangle<float> &outContentBounds)
+{
+    const auto retinaFactor = getScaleFactor();
+    const int scaledSize = int(exactSize * retinaFactor);
+
+    const uint32 iconKey = (id * 1000) + scaledSize;
+    if (prerenderedSVGs.contains(iconKey))
+    {
+        outContentBounds = prerenderedBounds[iconKey];
+        return prerenderedSVGs[iconKey];
+    }
+    
+    const Image prerenderedImage(renderVector(id, scaledSize,
+        fillColour, shadowColour, outContentBounds, alignment));
+
+    outContentBounds /= retinaFactor;
+    //DBG(outContentBounds.toString());
+
+    prerenderedSVGs[iconKey] = prerenderedImage;
+    prerenderedBounds[iconKey] = outContentBounds;
 
     return prerenderedImage;
 }
@@ -337,9 +394,10 @@ Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
     const int fixedSize = (maxSize < 0 || maxSize >= lookupSize) ?
         int(kMaxIconSize * retinaFactor) : int(kIconSizes[maxSize] * retinaFactor);
 
+    Rectangle<float> contentBounds;
     const Colour iconBaseColour(lf.findColour(ColourIDs::Icons::fill));
     const Colour iconShadeColour(lf.findColour(ColourIDs::Icons::shadow));
-    const Image prerenderedImage(renderVector(id, fixedSize, iconBaseColour, iconShadeColour));
+    const Image prerenderedImage(renderVector(id, fixedSize, iconBaseColour, iconShadeColour, contentBounds));
     return prerenderedImage;
 }
 

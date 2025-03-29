@@ -120,12 +120,16 @@ const String &KeySignatureEvent::getRootKeyName() const noexcept
     return this->rootKeyName;
 }
 
-String KeySignatureEvent::toString(const Temperament::Period &defaultKeyNames) const
+const String KeySignatureEvent::getRootKeyNameOfDefault(const Temperament::Period &defaultKeyNames) const noexcept
 {
-    const auto keyName = this->rootKeyName.isEmpty() ?
+    return this->rootKeyName.isEmpty() ?
         defaultKeyNames[this->rootKey % this->scale->getBasePeriod()][0] :
         this->rootKeyName;
+}
 
+String KeySignatureEvent::toString(const Temperament::Period &defaultKeyNames) const
+{
+    const auto keyName = this->getRootKeyNameOfDefault(defaultKeyNames);
     return keyName + ", " + this->scale->getLocalizedName();
 }
 

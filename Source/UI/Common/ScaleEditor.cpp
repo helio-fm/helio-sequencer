@@ -23,7 +23,7 @@ ScaleEditor::~ScaleEditor() = default;
 void ScaleEditor::resized()
 {
     int x = 0;
-    constexpr auto w = ScaleEditor::buttonWidth;
+    const auto w = this->buttonWidth;
     for (const auto &button : this->buttons)
     {
         button->setBounds(x, 0, w, this->getHeight());
@@ -35,7 +35,7 @@ void ScaleEditor::onRadioButtonClicked(const MouseEvent &e, RadioButton *clicked
 {
     if (clickedButton->getButtonIndex() == 0)
     {
-        // Root key cannot be missed
+        // no empty scales please, and no scales without the root key
         clickedButton->select();
     }
 
@@ -97,7 +97,7 @@ void ScaleEditor::rebuildButtons()
         this->buttons.add(button.release());
     }
 
-    this->setSize(ScaleEditor::buttonWidth * this->buttons.size(), ScaleEditor::rowHeight);
+    this->setSize(this->buttonWidth * this->buttons.size(), ScaleEditor::rowHeight);
     this->resized(); // force repositioning the buttons
     this->updateButtonsState();
 }
@@ -116,4 +116,9 @@ void ScaleEditor::updateButtonsState()
             buttons.getUnchecked(i)->deselect();
         }
     }
+}
+
+void ScaleEditor::setButtonWidth(int newWidth)
+{
+    this->buttonWidth = newWidth;
 }

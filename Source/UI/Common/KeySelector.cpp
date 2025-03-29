@@ -25,8 +25,6 @@ KeySelector::KeySelector(const Temperament::Period &period)
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(false);
 
-    const auto colour = findDefaultColour(ColourIDs::ColourButton::outline);
-
     // arrange the enharmonics so that the first one in the list
     // is considered the main one andis placed in the center;
     // if any others are present, sharps are placed in
@@ -37,13 +35,13 @@ KeySelector::KeySelector(const Temperament::Period &period)
         jassert(!enharmonics.isEmpty());
 
         KeyEnharmonics keyButtons;
-        keyButtons.mainKey = make<RadioButton>(enharmonics[0], colour, this);
+        keyButtons.mainKey = make<RadioButton>(enharmonics[0], this);
         keyButtons.mainKey->setButtonIndex(i);
         this->addAndMakeVisible(keyButtons.mainKey.get());
 
         if (enharmonics.size() > 1)
         {
-            auto keyButton = make<RadioButton>(enharmonics[1], colour, this);
+            auto keyButton = make<RadioButton>(enharmonics[1], this);
             keyButton->setButtonIndex(i);
             this->addAndMakeVisible(keyButton.get());
 
@@ -61,7 +59,7 @@ KeySelector::KeySelector(const Temperament::Period &period)
 
         if (enharmonics.size() > 2)
         {
-            auto keyButton = make<RadioButton>(enharmonics[2], colour, this);
+            auto keyButton = make<RadioButton>(enharmonics[2], this);
             keyButton->setButtonIndex(i);
             this->addAndMakeVisible(keyButton.get());
 
@@ -77,10 +75,23 @@ KeySelector::KeySelector(const Temperament::Period &period)
             }
         }
 
+        this->buttonWidth = jmax(this->buttonWidth, keyButtons.mainKey->getMinButtonWidth());
+        if (keyButtons.flatKey != nullptr)
+        {
+            this->buttonWidth = jmax(this->buttonWidth, keyButtons.flatKey->getMinButtonWidth());
+        }
+        if (keyButtons.sharpKey != nullptr)
+        {
+            this->buttonWidth = jmax(this->buttonWidth, keyButtons.sharpKey->getMinButtonWidth());
+        }
+
         this->buttons.add(move(keyButtons));
     }
 
-    this->setSize(KeySelector::buttonWidth * period.size(),
+    // some margin:
+    this->buttonWidth += 4;
+
+    this->setSize(this->buttonWidth * period.size(),
         KeySelector::mainRowHeight +
             (this->hasFlatsRow ? KeySelector::altRowHeight : 0) +
             (this->hasSharpsRow ? KeySelector::altRowHeight : 0));
@@ -89,7 +100,7 @@ KeySelector::KeySelector(const Temperament::Period &period)
 void KeySelector::resized()
 {
     int x = 0;
-    constexpr auto w = KeySelector::buttonWidth;
+    const auto w = this->buttonWidth;
     for (const auto &buttonKeys : this->buttons)
     {
         if (buttonKeys.sharpKey != nullptr)
@@ -153,4 +164,9 @@ void KeySelector::setSelectedKey(int key, const String &keyName)
             }
         }
     }
+}
+
+int KeySelector::getButtonWidth() const noexcept
+{
+    return this->buttonWidth;
 }

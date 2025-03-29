@@ -33,6 +33,8 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseExit(const MouseEvent &e) override;
 
 private:
 
@@ -45,9 +47,10 @@ private:
     Colour colour;
     Path triangleShape;
 
-    // workaround странного поведения juce
-    // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает
-    bool mouseDownWasTriggered = false;
+    static constexpr float fillUnfocusedAlpha = 0.65f;
+    static constexpr float fillFocusedAlpha = 0.95f;
+
+    float fillAlpha = fillUnfocusedAlpha;
 
     UniquePointer<Label> signatureLabel;
     float textWidth = 0.f;

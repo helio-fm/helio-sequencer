@@ -17,7 +17,10 @@
 
 #pragma once
 
+class NoteNameComponent;
+
 #include "KeySignatureComponent.h"
+#include "ColourIDs.h"
 
 class KeySignatureLargeComponent final : public KeySignatureComponent
 {
@@ -31,9 +34,13 @@ public:
     void setRealBounds(const Rectangle<float> bounds) override;
 
     void paint(Graphics &g) override;
+    void resized() override;
+
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseExit(const MouseEvent &e) override;
 
 private:
 
@@ -41,7 +48,9 @@ private:
     KeySignatureEvent anchor;
 
     float textWidth = 0.f;
-    String eventName;
+
+    String noteName;
+    String detailsText;
 
     Rectangle<float> boundsOffset;
     Point<int> clickOffset;
@@ -49,11 +58,22 @@ private:
     bool draggingState = false;
     bool draggingHadCheckpoint = false;
 
-    // workaround странного поведения juce
-    // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает
-    bool mouseDownWasTriggered = false;
+    Path internalPath;
 
-    UniquePointer<Label> signatureLabel;
+    UniquePointer<NoteNameComponent> nameComponent;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureLargeComponent)
+    const Colour fillColour =
+        findDefaultColour(ColourIDs::Roll::noteNameFill);
+    const Colour borderColour =
+        findDefaultColour(Label::textColourId);
+
+    static constexpr float fillUnfocusedAlpha = 0.5f;
+    static constexpr float borderUnfocusedAlpha = 0.7f;
+    static constexpr float fillFocusedAlpha = 0.7f;
+    static constexpr float borderFocusedAlpha = 0.95f;
+
+    float fillAlpha = fillUnfocusedAlpha;
+    float borderAlpha = borderUnfocusedAlpha;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeySignatureLargeComponent)
 };

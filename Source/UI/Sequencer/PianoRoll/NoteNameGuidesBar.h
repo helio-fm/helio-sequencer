@@ -37,6 +37,10 @@ public:
     NoteNameGuidesBar(PianoRoll &roll, WeakReference<MidiTrack> keySignatures);
     ~NoteNameGuidesBar();
 
+    static constexpr float borderWidth = 1.f;
+    static constexpr float arrowWidth = 2.f;
+    static constexpr float nameMargin = 4.f;
+
     void syncWithTemperament(Temperament::Ptr temperament);
     void syncWithSelection(const Lasso *selection);
 
@@ -70,9 +74,6 @@ private:
 
     Optional<float> selectionStartBeat;
     FlatHashSet<Note::Key> selectedKeys;
-
-    static constexpr auto defaultWidth = 36;
-    static constexpr auto extendedWidth = 48;
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
 

@@ -294,14 +294,30 @@ void MainLayout::hideSelectionMenu()
 // Tooltips
 //===----------------------------------------------------------------------===//
 
-void MainLayout::showTooltip(const String &message, TooltipIcon icon, int showDelayMs)
+void MainLayout::showTooltip(const String &message, TooltipIcon icon /*= TooltipIcon::None*/, int delayMs /*= 0*/)
 {
     this->tooltipIcon = icon;
     this->tooltipMessage = message;
+    this->tooltipContent = {};
 
-    if (showDelayMs > 0)
+    if (delayMs > 0)
     {
-        this->startTimer(showDelayMs);
+        this->startTimer(delayMs);
+        return;
+    }
+
+    this->showTooltipNow();
+}
+
+void MainLayout::showTooltip(UniquePointer<Component> &&newTooltipContent, int delayMs /*= 0*/)
+{
+    this->tooltipIcon = TooltipIcon::None;
+    this->tooltipMessage = {};
+    this->tooltipContent = move(newTooltipContent);
+
+    if (delayMs > 0)
+    {
+        this->startTimer(delayMs);
         return;
     }
 
@@ -310,11 +326,16 @@ void MainLayout::showTooltip(const String &message, TooltipIcon icon, int showDe
 
 void MainLayout::showTooltipNow()
 {
+    constexpr auto timeoutToHideMs = 20000;
     if (this->tooltipMessage.isNotEmpty())
     {
-        constexpr auto timeoutToHideMs = 15000;
         this->tooltipContainer->showWithComponent(
             make<GenericTooltip>(this->tooltipMessage), timeoutToHideMs);
+    }
+    else if (this->tooltipContent != nullptr)
+    {
+        this->tooltipContainer->showWithComponent(
+            make<GenericTooltip>(move(this->tooltipContent)), timeoutToHideMs);
     }
 
     if (this->tooltipIcon == TooltipIcon::Success)

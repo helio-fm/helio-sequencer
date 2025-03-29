@@ -53,7 +53,7 @@ TimeSignatureLargeComponent::~TimeSignatureLargeComponent() = default;
 
 void TimeSignatureLargeComponent::paint(Graphics &g)
 {
-    g.setColour(this->colour);
+    g.setColour(this->colour.withMultipliedAlpha(this->fillAlpha));
     g.fillPath(this->triangleShape);
 }
 
@@ -63,8 +63,6 @@ void TimeSignatureLargeComponent::mouseDown(const MouseEvent &e)
     {
         return;
     }
-
-    this->mouseDownWasTriggered = true;
 
     if (e.mods.isLeftButtonDown())
     {
@@ -165,14 +163,23 @@ void TimeSignatureLargeComponent::mouseUp(const MouseEvent &e)
         }
 
         if (e.getDistanceFromDragStart() < 10 &&
-            this->mouseDownWasTriggered &&
             !this->draggingHadCheckpoint)
         {
             this->editor.onTimeSignatureTapped(this);
         }
     }
+}
 
-    this->mouseDownWasTriggered = false;
+void TimeSignatureLargeComponent::mouseEnter(const MouseEvent &e)
+{
+    this->fillAlpha = TimeSignatureLargeComponent::fillFocusedAlpha;
+    this->repaint();
+}
+
+void TimeSignatureLargeComponent::mouseExit(const MouseEvent &e)
+{
+    this->fillAlpha = TimeSignatureLargeComponent::fillUnfocusedAlpha;
+    this->repaint();
 }
 
 float TimeSignatureLargeComponent::getTextWidth() const noexcept
@@ -185,8 +192,7 @@ void TimeSignatureLargeComponent::updateContent(const TimeSignatureEvent &newEve
     this->event = newEvent;
 
     this->colour = this->event.getTrackColour()
-        .interpolatedWith(findDefaultColour(ColourIDs::Roll::headerSnaps), 0.5f)
-        .withMultipliedAlpha(0.6f);
+        .interpolatedWith(findDefaultColour(ColourIDs::Roll::headerSnaps), 0.5f);
 
     const auto textColour = this->event.getTrackColour()
         .interpolatedWith(findDefaultColour(Label::textColourId), 0.5f);

@@ -383,10 +383,11 @@ void KeySignaturesProjectMap::applyKeySignatureBounds(KeySignatureComponent *nc,
     const float nextX = mapWidth * (nextBeat / projectLengthInBeats);
 
     const float minWidth = 10.f;
-    const float widthMargin = 16.f;
+    const float widthMargin = 15.f;
     const float componentsPadding = 10.f;
     const float maxWidth = nextX - x;
-    const float w = jmax(minWidth, jmin((maxWidth - componentsPadding), (nc->getTextWidth() + widthMargin)));
+    const float w = jmax(minWidth,
+        jmin((maxWidth - componentsPadding), (nc->getTextWidth() + widthMargin)));
 
     nc->setRealBounds(Rectangle<float>(x, 0.f, w, float(nc->getHeight())));
 }

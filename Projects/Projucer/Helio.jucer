@@ -32,12 +32,15 @@
         <FILE id="eeLgJV" name="cursorTool.svg" compile="0" resource="1" file="../../Resources/Icons/cursorTool.svg"/>
         <FILE id="kqVbqH" name="cut.svg" compile="0" resource="1" file="../../Resources/Icons/cut.svg"/>
         <FILE id="qhKsHT" name="cutterTool.svg" compile="0" resource="1" file="../../Resources/Icons/cutterTool.svg"/>
+        <FILE id="ThDazf" name="doubleFlat.svg" compile="0" resource="1" file="../../Resources/Icons/doubleFlat.svg"/>
+        <FILE id="bcJYU7" name="doubleSharp.svg" compile="0" resource="1" file="../../Resources/Icons/doubleSharp.svg"/>
         <FILE id="qQqffF" name="down.svg" compile="0" resource="1" file="../../Resources/Icons/down.svg"/>
         <FILE id="TZOeiP" name="dragTool.svg" compile="0" resource="1" file="../../Resources/Icons/dragTool.svg"/>
         <FILE id="S0dKhu" name="drawTool.svg" compile="0" resource="1" file="../../Resources/Icons/drawTool.svg"/>
         <FILE id="pt25MQ" name="ellipsis.svg" compile="0" resource="1" file="../../Resources/Icons/ellipsis.svg"/>
         <FILE id="PjELEM" name="expand.svg" compile="0" resource="1" file="../../Resources/Icons/expand.svg"/>
         <FILE id="XzECGs" name="fail.svg" compile="0" resource="1" file="../../Resources/Icons/fail.svg"/>
+        <FILE id="Udyt7R" name="flat.svg" compile="0" resource="1" file="../../Resources/Icons/flat.svg"/>
         <FILE id="mgkKBL" name="forward.svg" compile="0" resource="1" file="../../Resources/Icons/forward.svg"/>
         <FILE id="lQBQI5" name="github.svg" compile="0" resource="1" file="../../Resources/Icons/github.svg"/>
         <FILE id="WO0LHL" name="helio.svg" compile="0" resource="1" file="../../Resources/Icons/helio.svg"/>
@@ -53,6 +56,13 @@
         <FILE id="hOrAvo" name="lockZoom.svg" compile="0" resource="1" file="../../Resources/Icons/lockZoom.svg"/>
         <FILE id="CexsNu" name="meter.svg" compile="0" resource="1" file="../../Resources/Icons/meter.svg"/>
         <FILE id="LBASSh" name="metronome.svg" compile="0" resource="1" file="../../Resources/Icons/metronome.svg"/>
+        <FILE id="xR8FXg" name="microtoneDown.svg" compile="0" resource="1"
+              file="../../Resources/Icons/microtoneDown.svg"/>
+        <FILE id="nnALsD" name="microtoneDown2.svg" compile="0" resource="1"
+              file="../../Resources/Icons/microtoneDown2.svg"/>
+        <FILE id="YNvhPW" name="microtoneUp.svg" compile="0" resource="1" file="../../Resources/Icons/microtoneUp.svg"/>
+        <FILE id="Ppd3BU" name="microtoneUp2.svg" compile="0" resource="1"
+              file="../../Resources/Icons/microtoneUp2.svg"/>
         <FILE id="GtzvG7" name="mute.svg" compile="0" resource="1" file="../../Resources/Icons/mute.svg"/>
         <FILE id="TWchuX" name="orchestraPit.svg" compile="0" resource="1"
               file="../../Resources/Icons/orchestraPit.svg"/>
@@ -85,6 +95,7 @@
         <FILE id="M4yCpT" name="selectAll.svg" compile="0" resource="1" file="../../Resources/Icons/selectAll.svg"/>
         <FILE id="GM5TrL" name="selectNone.svg" compile="0" resource="1" file="../../Resources/Icons/selectNone.svg"/>
         <FILE id="D6EOW7" name="settings.svg" compile="0" resource="1" file="../../Resources/Icons/settings.svg"/>
+        <FILE id="l1C4Jo" name="sharp.svg" compile="0" resource="1" file="../../Resources/Icons/sharp.svg"/>
         <FILE id="tLCptC" name="snap.svg" compile="0" resource="1" file="../../Resources/Icons/snap.svg"/>
         <FILE id="LUFp39" name="staccato.svg" compile="0" resource="1" file="../../Resources/Icons/staccato.svg"/>
         <FILE id="z6XXzu" name="stop.svg" compile="0" resource="1" file="../../Resources/Icons/stop.svg"/>
@@ -761,6 +772,10 @@
                 file="../../Source/UI/Common/ModeIndicatorComponent.cpp"/>
           <FILE id="EhpPoR" name="ModeIndicatorComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Common/ModeIndicatorComponent.h"/>
+          <FILE id="SApTu8" name="NoteNameComponent.cpp" compile="1" resource="0"
+                file="../../Source/UI/Common/NoteNameComponent.cpp"/>
+          <FILE id="wniJ6H" name="NoteNameComponent.h" compile="0" resource="0"
+                file="../../Source/UI/Common/NoteNameComponent.h"/>
           <FILE id="qUVkx6" name="OverlayButton.h" compile="0" resource="0" file="../../Source/UI/Common/OverlayButton.h"/>
           <FILE id="f1fXjR" name="PlayButton.cpp" compile="1" resource="0" file="../../Source/UI/Common/PlayButton.cpp"/>
           <FILE id="Z9JjQa" name="PlayButton.h" compile="0" resource="0" file="../../Source/UI/Common/PlayButton.h"/>

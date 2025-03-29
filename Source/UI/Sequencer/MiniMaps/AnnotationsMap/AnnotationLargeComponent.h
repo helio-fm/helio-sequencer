@@ -42,6 +42,8 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
+    void mouseEnter(const MouseEvent &e) override;
+    void mouseExit(const MouseEvent &e) override;
 
     static constexpr auto annotationHeight = 32;
 
@@ -61,9 +63,10 @@ private:
     String text;
     float textWidth = 0.f;
 
-    // workaround странного поведения juce
-    // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает
-    bool mouseDownWasTriggered = false;
+    static constexpr float borderUnfocusedAlpha = 0.7f;
+    static constexpr float borderFocusedAlpha = 0.95f;
+
+    float borderAlpha = borderUnfocusedAlpha;
 
     bool canResize() const noexcept;
 

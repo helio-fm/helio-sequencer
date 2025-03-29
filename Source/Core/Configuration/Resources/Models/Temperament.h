@@ -71,7 +71,7 @@ public:
     Note::Key getEquivalentOfTwelveToneInterval(Semitones interval) const noexcept;
 
     String getMidiNoteName(Note::Key note, int scaleRootKey,
-        const String &keyEnharmonic, bool includePeriod) const noexcept;
+        const String &keyEnharmonic, int &outPeriodNumber) const noexcept;
 
     double getNoteInHertz(double key, double frequencyOfA = 440.0) const noexcept;
 

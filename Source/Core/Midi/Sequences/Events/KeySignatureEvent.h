@@ -60,6 +60,9 @@ public:
     // if empty, indicates the default key name:
     const String &getRootKeyName() const noexcept;
 
+    const String getRootKeyNameOfDefault(const
+        Temperament::Period &defaultKeyNames) const noexcept;
+
     const Scale::Ptr getScale() const noexcept;
 
     // this returns correct results only for diatonic scales in 12-edo,

@@ -32,6 +32,8 @@ public:
     void onRadioButtonClicked(const MouseEvent &e, RadioButton *button) override;
     void setSelectedKey(int key, const String &keyName);
 
+    int getButtonWidth() const noexcept;
+
     void resized() override;
 
 private:
@@ -45,7 +47,8 @@ private:
 
     Array<KeyEnharmonics> buttons;
 
-    static constexpr auto buttonWidth = 34;
+    int buttonWidth = 32;
+
     static constexpr auto mainRowHeight = 32;
     static constexpr auto altRowHeight = 26;
 

@@ -18,17 +18,30 @@
 #pragma once
 
 #include "HelioTheme.h"
+#include "ColourIDs.h"
 
 class GenericTooltip final : public Component
 {
 public:
 
-    explicit GenericTooltip(const String &tooltip) : message(tooltip)
+    explicit GenericTooltip(const String &tooltip) :
+        message(tooltip)
     {
         this->setFocusContainerType(Component::FocusContainerType::none);
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
         this->setPaintingIsUnclipped(true);
+    }
+    
+    explicit GenericTooltip(UniquePointer<Component> &&content) :
+        content(move(content))
+    {
+        this->setFocusContainerType(Component::FocusContainerType::none);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+        this->setPaintingIsUnclipped(true);
+
+        this->addAndMakeVisible(this->content.get());
     }
 
     void paint(Graphics &g) override
@@ -51,10 +64,21 @@ public:
             messageBounds.getWidth(), messageBounds.getHeight(),
             Justification::centred, 3, 1.f);
     }
+
+    void resized() override
+    {
+        if (this->content != nullptr)
+        {
+            this->content->setBounds(this->getLocalBounds().
+                withSizeKeepingCentre(this->content->getWidth(), this->content->getHeight()));
+        }
+    }
     
 private:
 
     String message;
+
+    UniquePointer<Component> content;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericTooltip)
 };

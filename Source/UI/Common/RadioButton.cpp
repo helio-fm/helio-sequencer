@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "RadioButton.h"
-#include "ColourIDs.h"
+#include "NoteNameComponent.h"
 
 #if PLATFORM_DESKTOP
 #   define RADIO_BUTTON_TRIGGERED_ON_MOUSE_UP 0
@@ -69,25 +69,54 @@ RadioButton::RadioButton(const String &text,
     fillColour(colour.interpolatedWith(
         findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.1f)),
     outlineColour(colour.interpolatedWith(
-        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.15f)),
-    labelSelectedColour(findDefaultColour(Label::textColourId)),
-    labelDeselectedColour(findDefaultColour(Label::textColourId).withMultipliedAlpha(0.9f))
+        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.15f))
 {
     this->setWantsKeyboardFocus(false);
     this->setMouseClickGrabsKeyboardFocus(false);
 
-    this->label = make<Label>(String(), text);
-    this->addAndMakeVisible(this->label.get());
-    this->label->setFont(Globals::UI::Fonts::M);
-    this->label->setJustificationType(Justification::centred);
-    this->label->setInterceptsMouseClicks(false, false);
-    this->label->setColour(Label::textColourId, this->labelDeselectedColour);
+    auto label = make<Label>(String(), text);
+    this->addAndMakeVisible(label.get());
+    label->setFont(Globals::UI::Fonts::M);
+    label->setJustificationType(Justification::centred);
+    label->setInterceptsMouseClicks(false, false);
+    label->setAlpha(RadioButton::contentDeselectedAlpha);
+
+    this->minWidth = label->getFont().getStringWidth(text);
+
+    this->content = move(label);
 
     this->checkMark = make<RadioButtonFrame>(0.75f);
     this->addChildComponent(this->checkMark.get());
 }
 
+RadioButton::RadioButton(const String &noteName, Listener *listener) :
+    name(noteName),
+    colour(findDefaultColour(ColourIDs::ColourButton::outline)),
+    listener(listener),
+    fillColour(colour.interpolatedWith(
+        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.1f)),
+    outlineColour(colour.interpolatedWith(
+        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.15f))
+{
+    auto noteNameComponent = make<NoteNameComponent>(true, Globals::UI::Fonts::M);
+    this->addAndMakeVisible(noteNameComponent.get());
+    noteNameComponent->setNoteName(noteName, {});
+    noteNameComponent->setAlpha(RadioButton::contentDeselectedAlpha);
+
+    this->minWidth = noteNameComponent->getRequiredWidth();
+
+    this->content = move(noteNameComponent);
+    
+    this->checkMark = make<RadioButtonFrame>(0.75f);
+    this->addChildComponent(this->checkMark.get());
+}
+
 RadioButton::~RadioButton() = default;
+
+int RadioButton::getMinButtonWidth() const noexcept
+{
+    return this->minWidth;
+}
 
 void RadioButton::paint(Graphics &g)
 {
@@ -110,7 +139,7 @@ void RadioButton::resized()
 {
     this->fader.cancelAllAnimations(true);
 
-    this->label->setBounds(0, 3, this->getWidth(), this->getHeight() - 3);
+    this->content->setBounds(0, 3, this->getWidth(), this->getHeight() - 3);
     this->checkMark->setBounds(this->getLocalBounds());
 
     HighlightedComponent::resized();
@@ -178,7 +207,7 @@ void RadioButton::select()
     {
         this->selected = true;
         this->fader.fadeIn(this->checkMark.get(), Globals::UI::fadeInShort);
-        this->label->setColour(Label::textColourId, this->labelSelectedColour);
+        this->content->setAlpha(RadioButton::contentSelectedAlpha);
     }
 }
 
@@ -188,7 +217,7 @@ void RadioButton::deselect()
     {
         this->selected = false;
         this->fader.fadeOut(this->checkMark.get(), Globals::UI::fadeOutLong);
-        this->label->setColour(Label::textColourId, this->labelDeselectedColour);
+        this->content->setAlpha(RadioButton::contentDeselectedAlpha);
     }
 }
 

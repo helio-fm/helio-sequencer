@@ -19,6 +19,7 @@
 
 #include "HighlightedComponent.h"
 #include "ComponentFader.h"
+#include "ColourIDs.h"
 
 class RadioButton final : public HighlightedComponent
 {
@@ -30,7 +31,14 @@ public:
         virtual void onRadioButtonClicked(const MouseEvent &e, RadioButton *button) = 0;
     };
 
-    RadioButton(const String &text, Colour c, RadioButton::Listener *listener);
+    // constructs a button with a simple label
+    RadioButton(const String &labelText,
+        Colour c, RadioButton::Listener *listener);
+
+    // constructs a button with NoteNameComponent
+    RadioButton(const String &noteName,
+        RadioButton::Listener *listener);
+
     ~RadioButton();
 
     void select();
@@ -42,6 +50,8 @@ public:
 
     int getButtonIndex() const noexcept;
     void setButtonIndex(int val);
+
+    int getMinButtonWidth() const noexcept;
 
     void paint(Graphics &g) override;
     void resized() override;
@@ -55,24 +65,28 @@ private:
 
     Component *createHighlighterComponent() override;
 
+    int minWidth = 32;
+
     int index = 0;
     String name;
     Colour colour;
 
     bool selected = false;
 
-    const Colour outlineColour;
     const Colour fillColour;
+    const Colour outlineColour;
 
-    const Colour labelSelectedColour;
-    const Colour labelDeselectedColour;
+    static constexpr float contentSelectedAlpha = 1.f;
+    static constexpr float contentDeselectedAlpha = 0.9f;
+
+    RadioButton::Listener *const listener;
 
     UniquePointer<Component> checkMark;
-    RadioButton::Listener *const listener;
-    ComponentFader fader;
-    UniquePointer<Label> label;
+    UniquePointer<Component> content;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RadioButton)
+    ComponentFader fader;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RadioButton)
 };
 
 

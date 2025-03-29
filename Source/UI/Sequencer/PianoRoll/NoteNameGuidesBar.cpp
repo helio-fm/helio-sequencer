@@ -87,6 +87,9 @@ void NoteNameGuidesBar::updateContent()
 
     const bool shouldShowsRootKeys = this->selectedKeys.size() <= 1;
 
+    int periodNumber = 0;
+    int guidesWidth = 32;
+
     for (auto *c : this->guides)
     {
         const auto shouldBeVisible = shouldShowsRootKeys &&
@@ -94,8 +97,10 @@ void NoteNameGuidesBar::updateContent()
 
         if (shouldBeVisible)
         {
-            c->setNoteName(this->temperament->getMidiNoteName(c->getNoteNumber(),
-                this->scaleRootKey, this->scaleRootKeyName, true));
+            const auto noteName = this->temperament->getMidiNoteName(c->getNoteNumber(),
+                this->scaleRootKey, this->scaleRootKeyName, periodNumber);
+            const auto width = c->setNoteName(noteName, periodNumber);
+            guidesWidth = jmax(guidesWidth, width);
         }
 
         c->setVisible(shouldBeVisible);
@@ -104,14 +109,23 @@ void NoteNameGuidesBar::updateContent()
     for (const auto &key : this->selectedKeys)
     {
         const auto noteName = this->temperament->getMidiNoteName(key,
-            this->scaleRootKey, this->scaleRootKeyName, true);
+            this->scaleRootKey, this->scaleRootKeyName, periodNumber);
 
         if (key <= this->guides.size() - 1)
         {
-            this->guides.getUnchecked(key)->setNoteName(noteName);
-            this->guides.getUnchecked(key)->setVisible(true);
+            auto *guide = this->guides.getUnchecked(key);
+            const auto width = guide->setNoteName(noteName, periodNumber);
+            guidesWidth = jmax(guidesWidth, width);
+            guide->setVisible(true);
         }
     }
+
+    guidesWidth += int(NoteNameGuidesBar::borderWidth +
+        NoteNameGuidesBar::arrowWidth +
+        NoteNameGuidesBar::nameMargin);
+
+    this->setSize(guidesWidth, this->getWidth());
+    this->updateBounds();
 }
 
 void NoteNameGuidesBar::syncWithSelection(const Lasso *selection)
@@ -156,16 +170,6 @@ void NoteNameGuidesBar::syncWithTemperament(Temperament::Ptr newTemperament)
 
     this->removeAllChildren();
     this->temperament = newTemperament;
-
-    if (temperament->getPeriodSize() > Globals::twelveTonePeriodSize)
-    {
-        // add more width for longer note names:
-        this->setSize(NoteNameGuidesBar::extendedWidth, this->getHeight());
-    }
-    else
-    {
-        this->setSize(NoteNameGuidesBar::defaultWidth, this->getHeight());
-    }
 
     this->guides.clearQuick(true);
     for (int i = 0; i < temperament->getNumKeys(); ++i)
@@ -229,9 +233,7 @@ void NoteNameGuidesBar::visibilityChanged()
         return;
     }
 
-    this->updateBounds();
     this->updateContent();
-
     this->toFront(false);
 }
 

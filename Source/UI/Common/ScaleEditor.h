@@ -34,6 +34,8 @@ public:
     void onRadioButtonClicked(const MouseEvent &e, RadioButton *button) override;
     void setScale(const Scale::Ptr scale);
 
+    void setButtonWidth(int newWidth);
+
     void resized() override;
 
 private:
@@ -42,7 +44,8 @@ private:
 
     OwnedArray<RadioButton> buttons;
 
-    static constexpr auto buttonWidth = 34;
+    int buttonWidth = 32;
+
     static constexpr auto rowHeight = 32;
 
     const Colour buttonColour = findDefaultColour(ColourIDs::ColourButton::outline);
