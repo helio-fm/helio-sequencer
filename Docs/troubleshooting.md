@@ -34,5 +34,11 @@ Some mobile devices have a display notch or a frontal camera cutout, partially c
 
 Sidebar positions are remembered between sessions.
 
+## Building from source
+
+* If you experience the error: `'exchange' is not a member of 'std'`, add `#include <utility>` to `JUCE/modules/juce_core/system/juce_StandardHeader.h` in the appropriate place. This is an issue pending resolution with the JUCE library, and is probably not a problem with your compiler.
+* Be sure to clone the repository with recursive mode enabled so that the ThirdParty folder is pre-populated with the necessary files. Alternatively, add them yourself by going to their respective repositories.
+* If you experience build errors, make sure you have all required dependencies installed in your system.
+
 
 [stretch-sidebars]: images/stretch-sidebars.png "Sidebars can be stretched sideways to avoid being cut-off by the display notch"

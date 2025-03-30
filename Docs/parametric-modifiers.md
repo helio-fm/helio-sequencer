@@ -6,13 +6,13 @@ Add or edit them via the "Modifiers" menu of the selected clip or track. Modifie
 
 ![modifiers-menu]
 
-Parametric modifiers are mainly meant for testing [arpeggiators](refactoring.md#arpeggiators), while keeping the underlying chords editable, but most of the refactoring options are available too.
+Parametric modifiers are meant for testing [arpeggiators](refactoring.md#arpeggiators) and refactoring options, while keeping the underlying chords editable. Keeping the original notes editable lowers the cost of error, especially on the early stages of development. The goal, as with [version control](getting-started.md#version-control), is to reduce friction while experimenting and sketching the piece.
 
 The generated sequence cannot be edited manually and is displayed as dashed semi-transparent notes. When playback starts, the sequencer switches between display modes for the generated and original notes to indicate which notes are being played:
 
 ![modifiers-arp]
 
-*(the main intended use case for parametric modifiers is prototyping arpeggios for a chord sequence)*
+*(the main intended use case is prototyping arpeggios for a chord sequence)*
 
 A few tips:
  * The generated sequences are used in playback and MIDI export.

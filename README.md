@@ -1,9 +1,10 @@
 [Helio](https://helio.fm) is a free and open-source music sequencer for desktop and mobile platforms:
 
-![On desktop](Docs/images/screen-v3.png)
+![On desktop (Windows)](Docs/images/screen-v3.png)
 
-![On mobile](Docs/images/screen-v3-mobile.png)
+![On smartphone (Pixel 6a)](Docs/images/screen-v3-android.png)
 
+![On tablet (iPad mini)](Docs/images/screen-v3-ios.png)
 
 ## Why another sequencer?
 
@@ -35,17 +36,6 @@ Check out the documentation to get started: [docs.helio.fm](https://docs.helio.f
 [![Packaging status](https://repology.org/badge/vertical-allrepos/helio.svg?header=helio-sequencer)](https://repology.org/project/helio/versions)
 
 
-## Contributing
-
-Helio is still a work in progress, and there are several ways you could help:
-
-* [Proofread and improve the translation](https://helio.fm/translations) for your native language.
-
-* Maintain a package for your favorite Linux distro - highly appreciated, please see the list of available and missing packages [here](https://repology.org/project/helio-workstation/versions).
-
-* Your thoughts on any usability improvements are welcome: friendly and lightweight UI is the main development priority in this project, so feel free to help identifying the main friction points.
-
-
 ## Support the project
 
 * [Become a backer on Patreon](https://www.patreon.com/peterrudenko)
@@ -70,9 +60,12 @@ All documentation, translations and logotypes are distributed under [CC-BY](http
 Afrikaans - Jacques Viviers  
 Chinese - Bowen Sun, Yingchun Soul  
 German - Aninsi Sasberg  
+Greek - Pavlos Mavromatis  
 Italian - Claudio Stano, Riccardo Cariboni  
 Japanese - Kotone Itaya  
 Korean - YoungGwang Jeon, DaYeon Lee, HyoHee Jeon  
 Polish - Dawid Bugajski  
 Portuguese - Dario Silva, Daniel Leandro  
 Vietnamese - Dat T.The  
+
+You can help proofread and improve the translation for your native language [here](https://helio.fm/translations).

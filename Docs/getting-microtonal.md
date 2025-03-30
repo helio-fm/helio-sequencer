@@ -84,16 +84,15 @@ If each next key just incrementally moves by 1, the chunk could be shortened lik
 
 ## Switching temperaments
 
-The most straightforward way to start playing around with microtonal scales is to convert any of your twelve-tone pieces (or a new project) into other temperament.
+Start playing around with microtonal scales by converting any of your twelve-tone pieces (or a new project) into other temperament in the project refactoring menu:
 
-![change-temperament]
+![convert-to-temperament]
 
-The project refactoring menus provide two choices:
- * the `"Change temperament"` command will simply switch the piano roll highlighting and update key signatures,
- * the `"Convert to temperament"` command will, in addition, update notes: the conversion is done using chromatic scale approximations (see the [temperament model](configs.md#temperaments) for more information). Helio will use these chromatic maps as the "least common denominators" among temperaments to convert from one to another,
-   * *tip: use this menu with any modifier key pressed for the alternative conversion mode: the converter will assume equal temperaments and use key proportions instead of 12-tone maps for better accuracy.*
+The `"Convert to temperament"` command will switch the piano roll highlighting, update key signatures and update notes: the conversion is done using chromatic scale approximations (see the [temperament model](configs.md#temperaments) for more information). Helio will use these chromatic maps as the "least common denominators" among temperaments to convert from one to another,
 
-All tool that work with scales will only show scales with octave size matching current temperament. The piano roll doesn't distinguish between EDOs and non-EDOs; all that matters is the number of keys per octave, highlighting, key names, and so on.
+*Tip: use this menu with any modifier key pressed for the alternative conversion mode: the converter will assume equal temperaments and use key proportions instead of 12-tone maps for better accuracy.*
+
+All tools that work with scales will only show scales with octave size matching current temperament. The piano roll doesn't distinguish between EDOs and non-EDOs; all that matters is the number of keys per octave, highlighting, key names, and so on.
 
 ### Limitations
 
@@ -150,6 +149,6 @@ Surge synth supports multi-channel mapping since recent versions of Surge XT, so
 
 [keyboard-mapping-page]: images/keyboard-mapping-page.png "Keyboard mapping page layout"
 [keyboard-mapping-menu]: images/keyboard-mapping-menu.png "Keyboard mapping page menu"
-[change-temperament]: images/change-temperament.png "Switching and converting temperaments"
+[convert-to-temperament]: images/convert-to-temperament.png "Changing temperaments"
 [readjust-midi-input-recording]: images/readjust-midi-input-recording.png "Every key of one octave played on a 12-tone keyboard, recorded in 19-edo"
 [readjust-midi-input-checkbox]: images/readjust-midi-input-checkbox.png "Enable/disable recording microtonal notes from 12-tone keyboard"

@@ -212,25 +212,25 @@ To add your theme to the built-in themes, put a `colourSchemes.json` file in you
   "colourSchemes": {
     "colourScheme": [
       {
-        "name": "Tonsky Mode",
+        "name": "Grayscale Light",
         "colourMap":
         {
-          "text": "ff000000",
-          "headlineFill": "fffddb29",
-          "pageFill": "fffddb29",
-          "sidebarFill": "fffddb29",
-          "dialogFill": "fffddb29",
-          "lassoFill": "aaf9b579",
-          "lassoBorder": "55000000",
-          "buttonFill": "18000000",
-          "frameBorder": "58000000",
-          "whiteKey": "fffddb29",
-          "blackKey": "fffdce29",
-          "bar": "ff978717",
-          "row": "fffbc851",
-          "timeline": "fffddb29",
-          "iconBase": "5f000000",
-          "iconShadow": "27fde258"
+          "text": "fff0f0f0",
+          "headlineFill": "ff2d2d30",
+          "pageFill": "ff2d2d30",
+          "sidebarFill": "ff2d2d30",
+          "dialogFill": "ff333333",
+          "lassoFill": "25000000",
+          "lassoBorder": "ffd4d4d4",
+          "buttonFill": "18ffffff",
+          "frameBorder": "ff585858",
+          "whiteKey": "ff262626",
+          "blackKey": "ff1e1e1e",
+          "bar": "271b1923",
+          "row": "ff1b1923",
+          "timeline": "ff2d2d30",
+          "iconBase": "27ffffff",
+          "iconShadow": "ff000000"
         }
       }
     ]

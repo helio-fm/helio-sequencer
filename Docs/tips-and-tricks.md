@@ -136,7 +136,7 @@ In my workflow, I'm often adding new tracks with a knife tool: even though there
 
 #### Merging tracks
 
-Knife tool has an alternative mode: use right-click and drag (or long-tap and drag on mobile platforms) to merge one clip with another:
+The knife tool has an alternative mode: right-click and drag (or long-tap and drag on mobile platforms) to merge one clip with another:
 
 ![patterns-merge-tool]
 
