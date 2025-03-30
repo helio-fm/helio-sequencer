@@ -247,10 +247,9 @@ void KeySignaturesProjectMap::onChangeProjectInfo(const ProjectMetadata *info)
     if (this->keyboardSize != info->getKeyboardSize())
     {
         this->keyboardSize = info->getKeyboardSize();
-        const auto &keyNames = this->getProjectKeyNames();
         for (auto *component : this->keySignatureComponents)
         {
-            component->updateContent(keyNames, this->useFixedDoNotation);
+            this->alignKeySignatureComponent(component);
         }
     }
 }
