@@ -1099,8 +1099,8 @@ void PatternRoll::updateAllSnapLines()
 
         if (clipEndX > paintStartX && clipEndX < paintEndX)
         {
-            // for less rounding errors:
-            this->allSnaps.add(this->getEventBounds(clip).getRight());
+            this->allSnaps.add(roundBeat(this->beatWidth *
+                (clip.getPattern()->getTrack()->getSequence()->getLastBeat() + clip.getBeat() - this->firstBeat)));
         }
     }
 }
