@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="3.14"
+<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="3.15"
               bundleIdentifier="fm.helio" includeBinaryInAppConfig="1" companyWebsite="https://helio.fm"
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark"
@@ -1578,7 +1578,7 @@
                    androidInternetNeeded="0" androidOtherPermissions="android.permission.MODIFY_AUDIO_SETTINGS"
                    cppLanguageStandard="-std=c++14" androidTheme="@android:style/Theme.Material.NoActionBar.Fullscreen"
                    smallIcon="DQTpOG" bigIcon="DQTpOG" androidScreenOrientation="landscape"
-                   androidVersionCode="314" gradleToolchain="clang" cameraPermissionNeeded="0"
+                   androidVersionCode="315" gradleToolchain="clang" cameraPermissionNeeded="0"
                    microphonePermissionNeeded="0" androidBluetoothNeeded="1" androidInAppBilling="0"
                    androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
                    androidEnableRemoteNotifications="0" buildToolsVersion="28.0.0"

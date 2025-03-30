@@ -1,9 +1,9 @@
 Package: helio-workstation
-Version: 3.14
+Version: 3.15
 Architecture: amd64
 Maintainer: Peter Rudenko <peter.rudenko@gmail.com>
 Origin: https://helio.fm
 Section: editors
 Priority: optional
-Description: Helio is free and cross-platform lightweight music creation playground.
+Description: Helio is free and cross-platform lightweight music sequencer.
 Installed-Size: 9000

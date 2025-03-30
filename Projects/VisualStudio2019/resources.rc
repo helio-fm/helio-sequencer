@@ -9,7 +9,7 @@
 #include <windows.h>
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION  3,14,0,0
+FILEVERSION  3,15,0,0
 BEGIN
   BLOCK "StringFileInfo"
   BEGIN
@@ -18,9 +18,9 @@ BEGIN
       VALUE "CompanyName",  "Peter Rudenko\0"
       VALUE "LegalCopyright",  "Peter Rudenko\0"
       VALUE "FileDescription",  "Helio\0"
-      VALUE "FileVersion",  "3.14\0"
+      VALUE "FileVersion",  "3.15\0"
       VALUE "ProductName",  "Helio\0"
-      VALUE "ProductVersion",  "3.14\0"
+      VALUE "ProductVersion",  "3.15\0"
     END
   END
 

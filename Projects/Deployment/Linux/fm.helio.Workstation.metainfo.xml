@@ -4,7 +4,7 @@
   <metadata_license>CC0</metadata_license>
   <project_license>GPL-3.0</project_license>
   <name>Helio</name>
-  <summary>Helio Project libre music composition software</summary>
+  <summary>Helio, free and cross-platform lightweight music sequencer</summary>
   <description>
     <p>
       Helio is an attempt to rethink a music sequencer to create a
@@ -21,6 +21,6 @@
   <content_rating type="oars-1.1" />
   <url type="homepage">https://helio.fm/</url>
   <releases>
-    <release date="2024-09-14" version="3.14" />
+    <release date="2025-03-29" version="3.15" />
   </releases>
 </component>
