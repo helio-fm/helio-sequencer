@@ -20,6 +20,7 @@
 #include "Icons.h"
 #include "IconButton.h"
 #include "DraggingListBoxComponent.h"
+#include "ColourIDs.h"
 
 class IconComponent;
 
@@ -42,7 +43,7 @@ struct MenuItem final : public ReferenceCountedObject
     int commandId = 0;
     Icons::Id iconId = Icons::empty;
 
-    Alignment alignment = Alignment::Left;
+    Alignment textAlignment = Alignment::Left;
     Callback callback = nullptr;
 
     struct Button
@@ -147,7 +148,7 @@ public:
 private:
 
     Image icon;
-    MenuItem::Ptr description;
+    MenuItem::Ptr description = MenuItem::empty();
 
     SafePointer<Component> parent;
 
@@ -159,7 +160,12 @@ private:
     ComponentAnimator animator;
 
     Component *createHighlighterComponent() override;
+
     bool hasText() const noexcept;
+    inline bool isIconCentered() const noexcept
+    {
+        return !this->hasText();
+    }
 
     void showCheckMark();
     void hideCheckMark();
@@ -173,6 +179,13 @@ private:
     UniquePointer<Label> subLabel;
     UniquePointer<Label> textLabel;
     UniquePointer<IconComponent> submenuMarker;
+
+    const Colour borderLightColour =
+        findDefaultColour(ColourIDs::Common::borderLineLight).
+            withMultipliedAlpha(0.33f);
+    const Colour borderDarkColour =
+        findDefaultColour(ColourIDs::Common::borderLineDark).
+            withMultipliedAlpha(0.33f);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemComponent)
 };

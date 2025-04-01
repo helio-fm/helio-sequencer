@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class HeaderSelectionIndicator final : public Component, private Timer
 {
 public:
@@ -40,9 +42,10 @@ private:
     double startAbsPosition = 0.0;
     double endAbsPosition = 0.0;
 
-    const Colour fill;
-    Colour currentFill;
-    Colour targetFill;
+    const Colour fillColourBase = findDefaultColour(ColourIDs::RollHeader::selection);
+
+    Colour currentFillColour;
+    Colour targetFillColour;
 
     void updateBounds();
 

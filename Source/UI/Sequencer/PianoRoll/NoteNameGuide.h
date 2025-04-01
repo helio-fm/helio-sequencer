@@ -52,15 +52,6 @@ public:
         return this->noteName->getRequiredWidth();
     }
 
-    void setWidth(int newWidth)
-    {
-        if (this->nameWidth != newWidth)
-        {
-            this->nameWidth = newWidth;
-            this->resized();
-        }
-    }
-
     void paint(Graphics &g) override
     {
         g.setColour(this->shadowColour);
@@ -78,8 +69,10 @@ public:
         // even if the height is too small, the name shouldn't be cut
         constexpr auto minHeight = int(Globals::UI::Fonts::M);
         const auto nameHeight = jmax(this->getHeight(), minHeight);
-        this->noteName->setBounds(int(NoteNameGuidesBar::borderWidth + NoteNameGuidesBar::nameMargin),
-            (this->getHeight() - nameHeight) / 2, this->nameWidth, nameHeight);
+        this->noteName->setBounds(int(NoteNameGuidesBar::borderWidth + NoteNameGuidesBar::nameMarginLeft),
+            roundToIntAccurate(float(this->getHeight() - nameHeight) / 2.f),
+            this->getWidth(),
+            nameHeight);
 
         const auto w = float(this->getWidth());
         const auto h = float(this->getHeight());
@@ -104,8 +97,6 @@ public:
 private:
 
     const int noteNumber;
-
-    int nameWidth = 32;
 
     const Colour fillColour = findDefaultColour(ColourIDs::Roll::noteNameFill);
     const Colour borderColour = findDefaultColour(ColourIDs::Roll::noteNameBorder);

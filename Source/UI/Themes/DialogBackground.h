@@ -61,8 +61,8 @@ public:
 
 private:
 
-    static constexpr auto alphaStep = 0.02f;
-    static constexpr auto maxAlpha = 0.1f;
+    static constexpr auto alphaStep = 0.01f;
+    static constexpr auto maxAlpha = 0.05f;
 
     void timerCallback() override
     {

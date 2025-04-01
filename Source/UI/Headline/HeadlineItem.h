@@ -26,7 +26,6 @@ class HeadlineContextMenuMarker;
 class IconComponent;
 
 class HeadlineItem final : public Component,
-    private Timer,
     private ChangeListener
 {
 public:
@@ -44,16 +43,13 @@ public:
     void resized() override;
     bool hitTest(int x, int y) override;
     void mouseEnter(const MouseEvent &e) override;
-    void mouseExit(const MouseEvent &e) override;
     void mouseDown(const MouseEvent &e) override;
-    void mouseUp(const MouseEvent &e) override;
 
 private:
 
     static constexpr auto maxWidth = 256;
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
-    void timerCallback() override;
     void showMenuIfAny();
 
     ComponentFader animator;
@@ -62,7 +58,7 @@ private:
     WeakReference<HeadlineItemDataSource> dataSource;
     AsyncUpdater &parentHeadline;
 
-    const Colour bgColour = findDefaultColour(ColourIDs::Backgrounds::headlineFill);
+    const Colour bgColour = findDefaultColour(ColourIDs::Breadcrumbs::fill);
 
     UniquePointer<Label> titleLabel;
     UniquePointer<IconComponent> icon;

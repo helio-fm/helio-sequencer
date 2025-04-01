@@ -246,7 +246,7 @@ namespace Globals
         static constexpr auto sidebarRowHeight = 36;
         static constexpr auto textEditorHeight = 32;
 
-        static constexpr auto fadeInShort = 90;
+        static constexpr auto fadeInShort = 75;
         static constexpr auto fadeOutShort = 110;
 
         static constexpr auto fadeInLong = 130;

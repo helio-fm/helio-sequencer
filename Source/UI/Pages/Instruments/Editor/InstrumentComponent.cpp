@@ -126,7 +126,7 @@ void InstrumentComponent::paint(Graphics &g)
     g.setColour(Colours::black.withAlpha(0.75f));
 
     const auto area = this->getLocalBounds().
-        reduced(this->pinSize * 2, this->pinSize);
+        reduced(this->pinSize, this->pinSize / 2);
 
     HelioTheme::drawFittedText(g,
         this->getName(),

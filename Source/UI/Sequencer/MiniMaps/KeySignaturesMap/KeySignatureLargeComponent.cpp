@@ -192,7 +192,7 @@ void KeySignatureLargeComponent::updateContent(const Temperament::Period &keyNam
     const auto newDetailsText = this->event.getScale()->getLocalizedName();
 
     this->nameComponent->setNoteName(newNoteName, newDetailsText, useFixedDo);
-    this->textWidth = this->nameComponent->getRequiredWidthFloat();
+    this->textWidth = this->nameComponent->getContentWidthFloat();
 
     this->repaint();
 }

@@ -38,7 +38,7 @@ public:
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
 
-        const auto shadowMultiplier = HelioTheme::getCurrentTheme().isDark() ? 1.f : 0.3f;
+        const auto shadowMultiplier = HelioTheme::getCurrentTheme().isDark() ? 1.f : 0.25f;
 
         switch (type)
         {

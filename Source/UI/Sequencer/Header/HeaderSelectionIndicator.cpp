@@ -17,11 +17,9 @@
 
 #include "Common.h"
 #include "HeaderSelectionIndicator.h"
-#include "ColourIDs.h"
 
 HeaderSelectionIndicator::HeaderSelectionIndicator() :
-    fill(findDefaultColour(ColourIDs::RollHeader::selection)),
-    currentFill(fill)
+    currentFillColour(fillColourBase)
 {
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
@@ -31,7 +29,7 @@ HeaderSelectionIndicator::HeaderSelectionIndicator() :
 
 void HeaderSelectionIndicator::paint(Graphics &g)
 {
-    g.setColour(this->currentFill);
+    g.setColour(this->currentFillColour);
     g.fillRect(0, this->getHeight() - 3, this->getWidth(), 2);
     g.fillRect(1, this->getHeight() - 4, jmax(0, this->getWidth() - 2), 1);
 }
@@ -72,9 +70,9 @@ void HeaderSelectionIndicator::updateBounds()
 
 void HeaderSelectionIndicator::timerCallback()
 {
-    const auto newFill = this->currentFill.interpolatedWith(this->targetFill, 0.4f);
+    const auto newFill = this->currentFillColour.interpolatedWith(this->targetFillColour, 0.4f);
 
-    if (this->currentFill == newFill)
+    if (this->currentFillColour == newFill)
     {
         this->stopTimer();
 
@@ -85,7 +83,7 @@ void HeaderSelectionIndicator::timerCallback()
     }
     else
     {
-        this->currentFill = newFill;
+        this->currentFillColour = newFill;
         this->updateBounds();
         this->repaint();
     }
@@ -93,13 +91,13 @@ void HeaderSelectionIndicator::timerCallback()
 
 void HeaderSelectionIndicator::fadeIn()
 {
-    this->targetFill = this->fill;
+    this->targetFillColour = this->fillColourBase;
     this->setVisible(true);
     this->startTimerHz(60);
 }
 
 void HeaderSelectionIndicator::fadeOut()
 {
-    this->targetFill = Colours::transparentBlack;
+    this->targetFillColour = Colours::transparentBlack;
     this->startTimerHz(60);
 }

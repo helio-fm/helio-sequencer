@@ -41,7 +41,8 @@ public:
 
     static constexpr float borderWidth = 1.f;
     static constexpr float arrowWidth = 2.f;
-    static constexpr float nameMargin = 4.f;
+    static constexpr float nameMarginLeft = 4.f;
+    static constexpr float nameMarginRight = 5.f;
 
     void syncWithTemperament(Temperament::Ptr temperament);
     void syncWithSelection(const Lasso *selection);

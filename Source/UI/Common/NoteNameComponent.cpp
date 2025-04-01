@@ -49,7 +49,7 @@ void NoteNameComponent::resized()
 
     if (this->isCentered)
     {
-        const auto contentWidth = this->getRequiredWidthFloat();
+        const auto contentWidth = this->getContentWidthFloat();
         localBounds.removeFromLeft(roundToIntAccurate((float(this->getWidth()) - contentWidth) / 2.f));
     }
 
@@ -79,10 +79,27 @@ void NoteNameComponent::resized()
 
 int NoteNameComponent::getRequiredWidth() const noexcept
 {
-    return int(ceilf(this->getRequiredWidthFloat()));
+    float result = ceilf(this->textWidth);
+
+    if (this->prefix != nullptr)
+    {
+        result += ceilf(this->prefixBounds.getWidth()) + NoteNameComponent::iconMargin;
+    }
+
+    if (this->suffix != nullptr)
+    {
+        result += ceilf(this->suffixBounds.getWidth()) + NoteNameComponent::iconMargin;
+    }
+
+    if (this->detailsText.hasValue())
+    {
+         result += ceilf(this->detailsWidth) + NoteNameComponent::detailsMargin;
+    }
+
+    return int(ceilf(result));
 }
 
-float NoteNameComponent::getRequiredWidthFloat() const noexcept
+float NoteNameComponent::getContentWidthFloat() const noexcept
 {
     float result = this->textWidth;
 
@@ -183,7 +200,7 @@ void NoteNameComponent::setNoteName(const String &newNoteName,
     constexpr auto suffixAlignment = RectanglePlacement::xLeft | RectanglePlacement::yMid;
     constexpr auto prefixAlignment = RectanglePlacement::xRight | RectanglePlacement::yMid;
 
-    const auto iconColour = findDefaultColour(Label::textColourId).withMultipliedAlpha(0.65f);
+    const auto iconColour = findDefaultColour(Label::textColourId).withMultipliedAlpha(0.7f);
 
     if (numSharps == 1)
     {

@@ -117,7 +117,7 @@ HeadlineDropdown::~HeadlineDropdown()
 
 void HeadlineDropdown::paint(Graphics &g)
 {
-    g.setColour(findDefaultColour(ColourIDs::Backgrounds::headlineFill).brighter(0.03f));
+    g.setColour(findDefaultColour(ColourIDs::Breadcrumbs::fill).brighter(0.03f));
     g.fillPath(this->backgroundShape);
     g.fillRect(1, Globals::UI::headlineHeight - 2,
         this->getWidth() - 2, this->getHeight() - Globals::UI::headlineHeight + 2);
@@ -180,7 +180,7 @@ void HeadlineDropdown::inputAttemptWhenModal()
     this->stopTimer();
     Desktop::getInstance().getAnimator().cancelAllAnimations(false);
     this->exitModalState(0);
-    delete this;
+    UniquePointer<Component> deleter(this);
 }
 
 template<typename T>
@@ -218,7 +218,6 @@ void HeadlineDropdown::timerCallback()
         this->stopTimer();
         this->exitModalState(0);
 
-        Desktop::getInstance().getAnimator().cancelAllAnimations(false);
         Desktop::getInstance().getAnimator().animateComponent(this,
             this->getBounds(), 0.f, Globals::UI::fadeOutShort / 3, true, 0.f, 1.f);
 

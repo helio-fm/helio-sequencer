@@ -53,7 +53,7 @@ private:
     SafePointer<Component> content;
 
     const float scale = App::Config().getUiFlags()->getUiScaleFactor();
-    const Colour backgroundColour = findDefaultColour(ColourIDs::Backgrounds::pageFillA);
+    const Colour backgroundColour = findDefaultColour(ColourIDs::Panel::pageFillA);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScaledComponentProxy)
 };

@@ -102,7 +102,7 @@ private:
         this->startTimerHz(60);
     }
 
-    Colour fillColour = findDefaultColour(ColourIDs::Backgrounds::pageFillA);
+    Colour fillColour = findDefaultColour(ColourIDs::Panel::pageFillA);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InitScreen)
 };

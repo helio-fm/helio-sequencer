@@ -242,7 +242,7 @@ static Image renderVector(Icons::Id id, int maxSize,
 
     const auto drawableBounds = drawableSvg->getDrawableBounds();
     const auto area = Rectangle<float>(0.f, 0.f, float(maxSize), float(maxSize));
-    auto transformToFit = placement.getTransformToFit(drawableBounds, area);
+    const auto transformToFit = placement.getTransformToFit(drawableBounds, area);
 
     outContentBounds = drawableBounds.transformedBy(transformToFit);
 
@@ -252,8 +252,8 @@ static Image renderVector(Icons::Id id, int maxSize,
     if (iconShadowColour.getAlpha() > 0)
     {
         GlowEffect glow;
-        glow.setGlowProperties(1.25, iconShadowColour);
-        glow.applyEffect(resultImage, g, 1.f, 1.f);
+        glow.setGlowProperties(1.25f, iconShadowColour);
+        glow.applyEffect(resultImage, g, 1.f, 0.75f);
     }
 #endif
 
@@ -341,7 +341,7 @@ Image Icons::findByName(Icons::Id id, int maxSize)
     const auto retinaFactor = getScaleFactor();
     const auto lookupSize = sizeof(kIconSizes) / sizeof(kIconSizes[0]);
     const int fixedSize = (maxSize < 0 || maxSize >= lookupSize) ?
-        int(kMaxIconSize * retinaFactor) : int(kIconSizes[maxSize] * retinaFactor);
+        int(ceilf(kMaxIconSize * retinaFactor)) : int(ceilf(kIconSizes[maxSize] * retinaFactor));
 
     const uint32 iconKey = (id * 1000) + fixedSize;
     if (prerenderedSVGs.contains(iconKey))
@@ -366,7 +366,7 @@ Image Icons::findByName(Icons::Id id, int exactSize,
     Rectangle<float> &outContentBounds)
 {
     const auto retinaFactor = getScaleFactor();
-    const int scaledSize = int(exactSize * retinaFactor);
+    const int scaledSize = int(ceilf(exactSize * retinaFactor));
 
     const uint32 iconKey = (id * 1000) + scaledSize;
     if (prerenderedSVGs.contains(iconKey))
@@ -392,7 +392,7 @@ Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
     const auto retinaFactor = getScaleFactor();
     const auto lookupSize = sizeof(kIconSizes) / sizeof(kIconSizes[0]);
     const int fixedSize = (maxSize < 0 || maxSize >= lookupSize) ?
-        int(kMaxIconSize * retinaFactor) : int(kIconSizes[maxSize] * retinaFactor);
+        int(ceilf(kMaxIconSize * retinaFactor)) : int(ceilf(kIconSizes[maxSize] * retinaFactor));
 
     Rectangle<float> contentBounds;
     const Colour iconBaseColour(lf.findColour(ColourIDs::Icons::fill));
@@ -404,26 +404,25 @@ Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
 void Icons::drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy)
 {
     const auto scale = getScaleFactor();
-
     const int w = image.getWidth();
     const int h = image.getHeight();
 
-    if (scale > 1)
+    if (scale > 1.f)
     {
-        const auto w2 = int(w / scale);
-        const auto h2 = int(h / scale);
-        
+        const auto w2 = roundToIntAccurate(float(w) / scale);
+        const auto h2 = roundToIntAccurate(float(h) / scale);
+
         g.drawImage(image,
-                    cx - int(w2 / 2),
-                    cy - int(h2 / 2),
-                    w2, h2,
-                    0, 0,
-                    w, h,
-                    false);
+            cx - (w2 / 2),
+            cy - (h2 / 2),
+            w2, h2,
+            0, 0,
+            w, h,
+            false);
     }
     else
     {
-        g.drawImageAt(image, cx - int(w / 2), cy - int(h / 2));
+        g.drawImageAt(image, cx - (w / 2), cy - (h / 2));
     }
 }
 

@@ -63,7 +63,6 @@ public:
     // ---   ---   ---   ---   ----
     static void drawDashedHorizontalLine(Graphics &g, float x, float y, float width, float dashLength = 4);
     static void drawDashedHorizontalLine2(Graphics &g, float x, float y, float width, float dashLength = 4);
-    static void drawDashedHorizontalLine3(Graphics &g, float x, float y, float width, float dashLength = 4);
     static void drawDashedVerticalLine(Graphics &g, float x, float y, float height, float dashLength = 4);
 
     void drawStretchableLayoutResizerBar(Graphics &g,

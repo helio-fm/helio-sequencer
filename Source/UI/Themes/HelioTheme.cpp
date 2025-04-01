@@ -124,23 +124,6 @@ void HelioTheme::drawDashedHorizontalLine2(Graphics &g, float x, float y, float 
     }
 }
 
-void HelioTheme::drawDashedHorizontalLine3(Graphics &g, float x, float y, float width, float dashLength)
-{
-    for (; x < width - dashLength; x += dashLength * 2.f)
-    {
-        g.fillRect(x + 2.f, y, dashLength, 1.f);
-        g.fillRect(x + 1.f, y + 1.f, dashLength, 1.f);
-        g.fillRect(x, y + 2.f, dashLength, 1.f);
-    }
-
-    if (width > dashLength)
-    {
-        g.fillRect(x + 2.f, y, jmax(0.f, 1.f + width - x - 4.f), 1.f);
-        g.fillRect(x + 1.f, y + 1.f, jmax(0.f, 1.f + width - x - 2.f), 1.f);
-        g.fillRect(x, y + 2.f, jmax(0.f, 1.f + width - x), 1.f);
-    }
-}
-
 void HelioTheme::drawDashedVerticalLine(Graphics &g, float x, float y, float height, float dashLength)
 {
     for (; y < height - dashLength; y += dashLength * 2.f)
@@ -255,10 +238,6 @@ void HelioTheme::drawLabel(Graphics &g, Label &label)
     this->drawLabel(g, label, 0);
 }
 
-#if PLATFORM_DESKTOP
-#   define SMOOTH_RENDERED_FONT 1
-#endif
-
 // Label rendering is one of the most time-consuming bottlenecks in the app.
 // Calling this method too often should be avoided at any costs:
 // relatively small labels that are always on the screen (like headline titles,
@@ -269,74 +248,46 @@ void HelioTheme::drawLabel(Graphics &g, Label &label)
 
 void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharacter)
 {
-    if (! label.isBeingEdited())
+    if (label.isBeingEdited())
     {
-        const auto font = this->getLabelFont(label);
-        const String textToDraw = (passwordCharacter != 0) ?
-            String::repeatedString(String::charToString(passwordCharacter), label.getText().length()) :
-            label.getText();
-
-        // Try to guess the right max number of lines depending on label height and font height:
-        const int maxLines = int(float(label.getHeight()) / font.getHeight());
-
-        // using label.findColour, not findDefaultColour, as it is actually overridden in some places:
-        const auto colour = label.findColour(Label::textColourId);
-
-#if SMOOTH_RENDERED_FONT
-
-        Path textPath;
-        GlyphArrangement glyphs;
-
-        const auto textArea =
-            label.getBorderSize().subtractedFrom(label.getLocalBounds()).toFloat();
-
-        glyphs.addFittedText(font,
-            textToDraw,
-            textArea.getX(),
-            textArea.getY(),
-            textArea.getWidth(),
-            textArea.getHeight(),
-            label.getJustificationType(),
-            maxLines,
-            1.0);
-
-        glyphs.createPath(textPath);
-
-        // todo play with outlines for some cached labels?
-        //g.setColour(findDefaultColour(Label::outlineColourId));
-        //g.strokePath(textPath, PathStrokeType(2.0f));
-
-        g.setColour(colour);
-        g.fillPath(textPath);
-
-#else
-
-        const auto textArea = label.getBorderSize()
-            .subtractedFrom(label.getLocalBounds());
-
-        // there is something wrong with how JUCE does vertical font centering
-        // on both iOS and Android; my guess is that it might be incorrectly
-        // handling ascents/descents/bounding boxes of the default fonts;
-        // whatever it is, this dirty hack is here to aid it:
-#if JUCE_IOS
-        const int heightHack = 3;
-#elif JUCE_ANDROID
-        const int heightHack = 2;
-#endif
-
-        g.setFont(font);
-        g.setColour(colour);
-        g.drawFittedText(textToDraw,
-            textArea.getX(),
-            textArea.getY(),
-            textArea.getWidth(),
-            textArea.getHeight() + heightHack,
-            label.getJustificationType(),
-            maxLines,
-            0.75f);
-
-#endif
+        return;
     }
+
+    const auto font = this->getLabelFont(label);
+    const auto textToDraw = (passwordCharacter != 0) ?
+        String::repeatedString(String::charToString(passwordCharacter), label.getText().length()) :
+        label.getText();
+
+    // Try to guess the right max number of lines depending on label height and font height:
+    const int maxLines = int(float(label.getHeight()) / font.getHeight());
+
+    // using label.findColour, not findDefaultColour, as it is actually overridden in some places:
+    const auto colour = label.findColour(Label::textColourId);
+    const auto textArea = label.getBorderSize().subtractedFrom(label.getLocalBounds());
+
+    // there is something wrong with how JUCE does vertical font centering
+    // on both iOS and Android; my guess is that it might be incorrectly
+    // handling ascents/descents/bounding boxes of the default fonts;
+    // whatever it is, this dirty hack is here to aid it:
+#if JUCE_IOS
+    const int heightHack = 3;
+#elif JUCE_ANDROID
+    const int heightHack = 2;
+#else
+    const int heightHack = 0;
+#endif
+
+    g.setFont(font);
+    g.setColour(colour);
+    HelioTheme::drawFittedText(g,
+        textToDraw,
+        textArea.getX(),
+        textArea.getY(),
+        textArea.getWidth(),
+        textArea.getHeight() + heightHack,
+        label.getJustificationType(),
+        maxLines,
+        0.75f);
 }
 
 //===----------------------------------------------------------------------===//
@@ -534,7 +485,7 @@ void HelioTheme::drawScrollbar(Graphics &g, ScrollBar &scrollbar,
     if (width > 2)
     {
         const auto thumbCol = this->findColour(ScrollBar::thumbColourId).
-            withMultipliedAlpha((isMouseOver || isMouseDown) ? 0.75f : 0.25f);
+            withMultipliedAlpha((isMouseOver || isMouseDown) ? 0.4f : 0.2f);
 
         g.setColour(thumbCol);
         g.fillPath(thumbPath);
@@ -857,29 +808,23 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->isDarkTheme = textColour.getPerceivedBrightness() > 0.5f;
 
     // JUCE component colour id's:
-
-    // Sliders
     this->setColour(Slider::rotarySliderOutlineColourId, textColour.contrasting(0.9f).withMultipliedAlpha(0.5f));
     this->setColour(Slider::rotarySliderFillColourId, textColour);
     this->setColour(Slider::thumbColourId, textColour);
     this->setColour(Slider::trackColourId, textColour.withMultipliedAlpha(0.5f));
 
-    // Labels
     this->setColour(Label::textColourId, textColour);
     this->setColour(Label::outlineColourId, textColour.contrasting());
 
-    // MainWindow
     this->setColour(ResizableWindow::backgroundColourId, s->getPageFillColour().brighter(0.045f));
     this->setColour(ScrollBar::backgroundColourId, Colours::transparentBlack);
     this->setColour(ScrollBar::thumbColourId, s->getPanelFillColour().withAlpha(1.f));
 
-    // TextButton
     this->setColour(TextButton::buttonColourId, s->getPanelFillColour());
     this->setColour(TextButton::buttonOnColourId, s->getFrameBorderColour());
     this->setColour(TextButton::textColourOnId, textColour.withMultipliedAlpha(0.75f));
     this->setColour(TextButton::textColourOffId, textColour.withMultipliedAlpha(0.5f));
 
-    // TextEditor
     this->setColour(TextEditor::textColourId, textColour);
     this->setColour(TextEditor::backgroundColourId, s->getPageFillColour().darker(0.055f));
     this->setColour(TextEditor::outlineColourId, s->getFrameBorderColour().withAlpha(0.075f));
@@ -889,7 +834,6 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(TextEditor::highlightColourId, textColour.withAlpha(this->isDarkTheme ? 0.035f : 0.07f));
     this->setColour(CaretComponent::caretColourId, textColour.withAlpha(0.35f));
 
-    // TableListBox
     this->setColour(ListBox::textColourId, textColour);
     this->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->setColour(TableHeaderComponent::backgroundColourId, Colours::transparentBlack);
@@ -897,43 +841,42 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(TableHeaderComponent::highlightColourId, s->getPageFillColour().brighter(0.05f));
     this->setColour(TableHeaderComponent::textColourId, textColour.withMultipliedAlpha(0.8f));
 
-    // Check boxes, radio buttons
     this->setColour(ToggleButton::textColourId, textColour);
     this->setColour(ToggleButton::tickColourId, textColour);
     this->setColour(ToggleButton::tickDisabledColourId, textColour.withMultipliedAlpha(0.65f));
 
     // Helio colours:
-
-    // Lasso
     this->setColour(ColourIDs::SelectionComponent::fill, s->getLassoFillColour().withAlpha(0.2f));
     this->setColour(ColourIDs::SelectionComponent::outline, s->getLassoBorderColour().withAlpha(0.75f));
-    // Similar things for the roll header tools
+
     this->setColour(ColourIDs::RollHeader::selection, s->getLassoBorderColour().withAlpha(0.8f));
     this->setColour(ColourIDs::RollHeader::soundProbe, s->getLassoBorderColour().withMultipliedBrightness(1.1f).withAlpha(0.75f));
     this->setColour(ColourIDs::RollHeader::timeDistance, textColour.withAlpha(0.4f));
 
-    // A hack for icon base colors
     this->setColour(ColourIDs::Icons::fill, s->getIconBaseColour());
     this->setColour(ColourIDs::Icons::shadow, s->getIconShadowColour());
 
-    // Backgrounds
-    this->setColour(ColourIDs::Backgrounds::pageFillA, s->getPageFillColour());
-    this->setColour(ColourIDs::Backgrounds::pageFillB, s->getPageFillColour().darker(0.025f));
-    this->setColour(ColourIDs::Backgrounds::sidebarFill, s->getSidebarFillColour());
-    this->setColour(ColourIDs::Backgrounds::headlineFill, s->getHeadlineFillColour());
-    this->setColour(ColourIDs::Backgrounds::dialogFill, s->getDialogFillColour());
-    this->setColour(ColourIDs::Backgrounds::dialogHeader, textColour.withAlpha(this->isDarkTheme ? 0.35f : 0.65f));
-    this->setColour(ColourIDs::Backgrounds::menuFill, s->getHeadlineFillColour());
+    this->setColour(ColourIDs::Panel::pageFillA, s->getPageFillColour());
+    this->setColour(ColourIDs::Panel::pageFillB, s->getPageFillColour().darker(0.025f));
+    this->setColour(ColourIDs::Panel::sidebarFill, s->getSidebarFillColour());
+    this->setColour(ColourIDs::Breadcrumbs::fill, s->getHeadlineFillColour());
+    this->setColour(ColourIDs::Breadcrumbs::selectionMarker, this->isDarkTheme ?
+        Colours::white.withAlpha(0.1f) : Colours::black.withAlpha(0.1f));
+    this->setColour(ColourIDs::Dialog::fill, s->getDialogFillColour());
+    this->setColour(ColourIDs::Dialog::header, textColour.withAlpha(this->isDarkTheme ? 0.35f : 0.65f));
+    this->setColour(ColourIDs::Menu::fill, s->getHeadlineFillColour());
+    this->setColour(ColourIDs::Menu::header,
+        s->getHeadlineFillColour().brighter(this->isDarkTheme ? 0.05f : 0.2f));
+    this->setColour(ColourIDs::Menu::selectionMarker, this->isDarkTheme ?
+        Colours::white.withAlpha(0.05f) : Colours::black.withAlpha(0.1f));
 
-    // Arrow
     this->setColour(ColourIDs::Arrow::lineStart, this->isDarkTheme ? Colour(0x33ffffff) : Colour(0x44ffffff));
     this->setColour(ColourIDs::Arrow::lineEnd, this->isDarkTheme ? Colour(0x17ffffff) : Colour(0x27ffffff));
     this->setColour(ColourIDs::Arrow::shadowStart, this->isDarkTheme ? Colour(0x77000000) : Colour(0x66000000));
     this->setColour(ColourIDs::Arrow::shadowEnd, this->isDarkTheme ? Colour(0x17000000) : Colour(0x27000000));
 
     const auto tooltipFill = this->isDarkTheme ?
-        s->getPageFillColour().darker(0.45f) :
-        s->getPageFillColour().brighter(0.15f);
+        s->getPageFillColour().darker(0.45f) : s->getPageFillColour().brighter(0.15f);
     this->setColour(ColourIDs::Tooltip::messageFill, tooltipFill);
     this->setColour(ColourIDs::Tooltip::messageBorder, textColour.withMultipliedAlpha(0.025f));
     this->setColour(ColourIDs::Tooltip::messageText, textColour);
@@ -952,7 +895,6 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::TrackScroller::outOfRangeFill,
         Colours::black.withAlpha(this->isDarkTheme ? 0.12f : 0.065f));
 
-    // InstrumentEditor
     this->setColour(ColourIDs::Instrument::midiIn, Colours::black.withAlpha(0.15f));
     this->setColour(ColourIDs::Instrument::midiOut, Colours::black.withAlpha(0.15f));
     this->setColour(ColourIDs::Instrument::audioIn, Colours::black.withAlpha(0.15f));
@@ -964,11 +906,10 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Instrument::pinShadow, Colours::black.withAlpha(0.15f));
     this->setColour(ColourIDs::Instrument::connectorShadow, Colours::black.withAlpha(0.3f));
 
-    // Borders
     this->setColour(ColourIDs::Common::borderLineLight,
-        Colours::white.withAlpha(this->isDarkTheme ? 0.0675f : 0.2f));
+        Colours::white.withAlpha(this->isDarkTheme ? 0.0675f : 0.25f));
     this->setColour(ColourIDs::Common::borderLineDark,
-        Colours::black.withAlpha(0.3f));
+        Colours::black.withAlpha(this->isDarkTheme ? 0.3f : 0.25f));
     this->setColour(ColourIDs::Common::separatorLineLight,
         Colours::white.withAlpha(this->isDarkTheme ? 0.075f : 0.3f));
     this->setColour(ColourIDs::Common::separatorLineDark,
@@ -976,11 +917,9 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ColourIDs::ColourButton::outline, textColour);
 
-    // CallOutBox
     this->setColour(ColourIDs::Callout::fill, s->getDialogFillColour().darker(0.025f));
     this->setColour(ColourIDs::Callout::frame, Colours::black.withAlpha(0.5f));
 
-    // Rolls
     this->setColour(ColourIDs::Roll::blackKey, s->getBlackKeyColour());
     this->setColour(ColourIDs::Roll::whiteKey, s->getWhiteKeyColour());
     this->setColour(ColourIDs::Roll::rootKey,
@@ -1063,14 +1002,14 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::TapTempoControl::fillHighlighted, textColour.withAlpha(0.05f));
     this->setColour(ColourIDs::TapTempoControl::outline, textColour.withAlpha(0.25f));
 
-    // Update pre-rendered caches:
+    // Pre-rendered image backgrounds:
     constexpr int w = 128;
     constexpr int h = 128;
 
     {
         this->pageBackgroundA = Image(Image::ARGB, w, h, true);
         Graphics g(this->pageBackgroundA);
-        g.setColour(this->findColour(ColourIDs::Backgrounds::pageFillA));
+        g.setColour(this->findColour(ColourIDs::Panel::pageFillA));
         g.fillAll();
         this->drawNoise(g, 0.35f);
     }
@@ -1078,7 +1017,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     {
         this->pageBackgroundB = Image(Image::ARGB, w, h, true);
         Graphics g(this->pageBackgroundB);
-        g.setColour(this->findColour(ColourIDs::Backgrounds::pageFillB));
+        g.setColour(this->findColour(ColourIDs::Panel::pageFillB));
         g.fillAll();
         this->drawNoise(g, 0.35f);
     }
@@ -1086,7 +1025,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     {
         this->sidebarBackground = Image(Image::ARGB, w, h, true);
         Graphics g(this->sidebarBackground);
-        g.setColour(this->findColour(ColourIDs::Backgrounds::sidebarFill));
+        g.setColour(this->findColour(ColourIDs::Panel::sidebarFill));
         g.fillAll();
         this->drawNoise(g);
     }
@@ -1094,7 +1033,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     {
         this->headlineBackground = Image(Image::ARGB, w, h, true);
         Graphics g(this->headlineBackground);
-        g.setColour(this->findColour(ColourIDs::Backgrounds::headlineFill));
+        g.setColour(this->findColour(ColourIDs::Breadcrumbs::fill));
         g.fillAll();
         this->drawNoise(g);
     }
@@ -1102,7 +1041,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     {
         this->dialogBackground = Image(Image::ARGB, w, h, true);
         Graphics g(this->dialogBackground);
-        g.setColour(this->findColour(ColourIDs::Backgrounds::dialogFill));
+        g.setColour(this->findColour(ColourIDs::Dialog::fill));
         g.fillAll();
         this->drawNoise(g, 0.5f);
     }

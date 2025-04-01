@@ -122,7 +122,7 @@ MenuItem::Ptr MenuItem::item(Icons::Id iconId, String text)
 MenuItem::Ptr MenuItem::withAlignment(Alignment alignment)
 {
     MenuItem::Ptr description(this);
-    description->alignment = alignment;
+    description->textAlignment = alignment;
     return description;
 }
 
@@ -280,8 +280,7 @@ public:
 MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver,
     Viewport *parentViewport, const MenuItem::Ptr desc) :
     DraggingListBoxComponent(parentViewport, false),
-    parent(parentCommandReceiver),
-    description(MenuItem::empty())
+    parent(parentCommandReceiver)
 {
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, true);
@@ -300,7 +299,7 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver,
     this->textLabel->setJustificationType(Justification::centredLeft);
     this->textLabel->setInterceptsMouseClicks(false, false);
 
-    this->submenuMarker = make<IconComponent>(Icons::submenu, 0.25f);
+    this->submenuMarker = make<IconComponent>(Icons::submenu, 0.3f);
     this->addAndMakeVisible(this->submenuMarker.get());
 
     static constexpr auto buttonIconSize = 12;
@@ -326,18 +325,17 @@ void MenuItemComponent::paint(Graphics &g)
 {
     if (this->parentViewport != nullptr)
     {
-        g.setColour(Colour(0x06ffffff));
+        g.setColour(this->borderLightColour);
         g.fillRect(0, 0, this->getWidth(), 1);
 
-        g.setColour(Colour(0x0f000000));
+        g.setColour(this->borderDarkColour);
         g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
     }
 
     g.setOpacity(this->description->flags.isDisabled ? 0.5f : 1.f);
 
-    const int iconX = this->hasText() ?
-        MenuItemComponent::iconSize / 2 + MenuItemComponent::iconMargin :
-        this->getWidth() / 2;
+    const int iconX = this->isIconCentered() ? this->getWidth() / 2 :
+        MenuItemComponent::iconSize / 2 + MenuItemComponent::iconMargin;
 
     jassert(this->icon.isValid());
 
@@ -356,9 +354,8 @@ void MenuItemComponent::resized()
 
     if (this->checkMarker != nullptr)
     {
-        this->checkMarker->setBounds(this->hasText() ?
-            this->getLocalBounds().withWidth(iconSize + MenuItemComponent::iconMargin * 2) :
-            this->getLocalBounds());
+        this->checkMarker->setBounds(this->isIconCentered() ? this->getLocalBounds() :
+            this->getLocalBounds().withWidth(iconSize + MenuItemComponent::iconMargin * 2));
     }
 
     this->icon = Icons::findByName(this->description->iconId, iconSize);
@@ -566,7 +563,7 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
     this->textLabel->setColour(Label::textColourId,
         desc->colour.withMultipliedAlpha(desc->flags.isDisabled ? 0.5f : 1.f));
 
-    this->textLabel->setJustificationType(desc->alignment == MenuItem::Alignment::Left ?
+    this->textLabel->setJustificationType(desc->textAlignment == MenuItem::Alignment::Left ?
         Justification::centredLeft : Justification::centredRight);
 
     this->submenuMarker->setVisible(desc->flags.hasSubmenu);
@@ -593,19 +590,48 @@ bool MenuItemComponent::hasText() const noexcept
     return this->description->commandText.isNotEmpty();
 }
 
+class MenuItemHighlighter final : public Component
+{
+public:
+
+    MenuItemHighlighter(Icons::Id iconId, bool iconIsCentered) :
+        iconIsCentered(iconIsCentered)
+    {
+        this->setInterceptsMouseClicks(false, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
+        this->setPaintingIsUnclipped(true);
+
+        this->icon = Icons::findByName(iconId, MenuItemComponent::iconSize);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->fgColour);
+        g.fillRoundedRectangle(this->getLocalBounds().reduced(0, 1).toFloat(), 1.f);
+
+        const int iconX = iconIsCentered ? this->getWidth() / 2 :
+            MenuItemComponent::iconSize / 2 + MenuItemComponent::iconMargin;
+
+        jassert(this->icon.isValid());
+        g.setOpacity(0.7f);
+        Icons::drawImageRetinaAware(this->icon, g, iconX, this->getHeight() / 2);
+    }
+
+    Image icon;
+    const bool iconIsCentered;
+
+    const Colour fgColour =
+        findDefaultColour(Label::textColourId).withAlpha(0.0125f);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemHighlighter)
+};
+
 Component *MenuItemComponent::createHighlighterComponent()
 {
 #if PLATFORM_DESKTOP
     if (!this->description->flags.isDisabled)
     {
-        MenuItem::Ptr desc2 = MenuItem::empty();
-        desc2->iconId = this->description->iconId;
-        desc2->commandText = this->description->commandText;
-        //desc2->hotkeyText = this->description->hotkeyText;
-        desc2->flags.hasSubmenu = this->description->flags.hasSubmenu;
-        desc2->colour = this->description->colour;
-        desc2->alignment = this->description->alignment;
-        return new MenuItemComponent(this->parent, nullptr, desc2);
+        return new MenuItemHighlighter(this->description->iconId, this->isIconCentered());
     }
 #endif
 

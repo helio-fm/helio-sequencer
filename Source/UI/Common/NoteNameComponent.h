@@ -37,7 +37,7 @@ public:
         bool useFixedDoNotation);
 
     int getRequiredWidth() const noexcept;
-    float getRequiredWidthFloat() const noexcept;
+    float getContentWidthFloat() const noexcept;
 
 private:
 
@@ -61,7 +61,7 @@ private:
     const int iconSize = 11;
 
     static constexpr int iconMargin = 1;
-    static constexpr int detailsMargin = 2;
+    static constexpr int detailsMargin = 3;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteNameComponent)
 };

@@ -24,28 +24,31 @@ RollExpandMark::RollExpandMark(RollBase &parentRoll, float targetBeat, float num
     beat(targetBeat),
     numBeats(numBeatsToTake)
 {
-    this->plusImage = make<IconComponent>(Icons::expand);
-    this->addChildComponent(this->plusImage.get());
-    this->plusImage->setVisible(showPlusIcon);
+    //this->plusImage = make<IconComponent>(Icons::expand);
+    //this->addChildComponent(this->plusImage.get());
+    //this->plusImage->setVisible(showPlusIcon);
 
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
     this->startTimerHz(60);
 }
 
-RollExpandMark::~RollExpandMark() = default;
+RollExpandMark::~RollExpandMark()
+{
+    this->stopTimer();
+}
 
 void RollExpandMark::paint(Graphics &g)
 {
-    g.setColour(findDefaultColour(Label::textColourId).withAlpha(0.15f * this->alpha));
+    g.setColour(this->colour.withAlpha(0.2f * this->alpha));
     g.fillRect(this->getLocalBounds());
 }
 
 void RollExpandMark::resized()
 {
-    constexpr auto iconSize = 16;
-    this->plusImage->setBounds((this->getWidth() / 2) - (iconSize / 2),
-        (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
+    //constexpr auto iconSize = 16;
+    //this->plusImage->setBounds((this->getWidth() / 2) - (iconSize / 2),
+    //    (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
 }
 
 void RollExpandMark::parentHierarchyChanged()
@@ -68,16 +71,16 @@ void RollExpandMark::updatePosition()
 
 void RollExpandMark::timerCallback()
 {
-    this->alpha *= 0.945f;
+    this->alpha *= 0.925f;
 
     if (this->alpha <= 0.02f)
     {
-        delete this;
+        this->stopTimer();
+        UniquePointer<Component> deleter(this);
     }
     else
     {
-        // we're avoiding setAlpha at all costs
-        this->plusImage->setIconAlphaMultiplier(this->alpha);
+        //this->plusImage->setIconAlphaMultiplier(this->alpha);
         this->repaint();
     }
 }

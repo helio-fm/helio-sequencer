@@ -93,7 +93,7 @@ void NoteNameGuidesBar::updateContent()
     const bool shouldShowsRootKeys = this->selectedKeys.size() <= 1;
 
     int periodNumber = 0;
-    int guidesWidth = 32;
+    int guidesWidth = 0;
 
     for (auto *c : this->guides)
     {
@@ -125,11 +125,10 @@ void NoteNameGuidesBar::updateContent()
         }
     }
 
-    guidesWidth += int(NoteNameGuidesBar::borderWidth +
-        NoteNameGuidesBar::arrowWidth +
-        NoteNameGuidesBar::nameMargin * 2);
+    guidesWidth += int(NoteNameGuidesBar::borderWidth + NoteNameGuidesBar::arrowWidth +
+        NoteNameGuidesBar::nameMarginLeft + NoteNameGuidesBar::nameMarginRight);
 
-    this->setSize(guidesWidth, this->getWidth());
+    this->setSize(guidesWidth, this->getHeight());
     this->updateBounds();
 }
 

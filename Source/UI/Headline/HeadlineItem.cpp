@@ -43,18 +43,11 @@ public:
 
     void paint(Graphics &g) override
     {
-        const auto w = float(this->getWidth() - 4);
-
-        g.setColour(this->dark);
-        g.fillRect(1.f, 1.f, w - 2.f, 1.f);
-        g.fillRect(0.f, 2.f, w, 1.f);
-
-        g.setColour(this->light);
-        HelioTheme::drawDashedHorizontalLine2(g, 0.f, 1.f, w, 8.f);
+        g.setColour(this->dashColour);
+        HelioTheme::drawDashedHorizontalLine2(g, 0.f, 1.f, float(this->getWidth() - 3), 8.f);
     }
 
-    const Colour dark = findDefaultColour(ColourIDs::Common::borderLineDark).withMultipliedAlpha(0.5f);
-    const Colour light = findDefaultColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(2.f);
+    const Colour dashColour = findDefaultColour(ColourIDs::Breadcrumbs::selectionMarker);
 };
 
 HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> dataSource, AsyncUpdater &parent) :
@@ -92,8 +85,6 @@ HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> dataSource, Asy
 
 HeadlineItem::~HeadlineItem()
 {
-    this->stopTimer();
-
     if (this->dataSource != nullptr)
     {
         this->dataSource->removeChangeListener(this);
@@ -139,7 +130,7 @@ void HeadlineItem::resized()
 
 bool HeadlineItem::hitTest(int x, int y)
 {
-    return this->backgroundShape.contains({float(x), float(y)});
+    return this->backgroundShape.contains({ float(x), float(y) });
 }
 
 void HeadlineItem::mouseEnter(const MouseEvent& e)
@@ -153,15 +144,8 @@ void HeadlineItem::mouseEnter(const MouseEvent& e)
 
     if (lastMouseDown != e.getScreenPosition())
     {
-        this->startTimer(75);
+        this->showMenuIfAny();
     }
-#endif
-}
-
-void HeadlineItem::mouseExit(const MouseEvent &e)
-{
-#if PLATFORM_DESKTOP
-    this->stopTimer();
 #endif
 }
 
@@ -169,8 +153,6 @@ void HeadlineItem::mouseDown(const MouseEvent &e)
 {
     if (this->dataSource != nullptr)
     {
-        this->stopTimer();
-
         // on desktop versions, a quick click on a headline item opens its node's page,
         // on mobile versions, it always opens the menu first
 #if PLATFORM_DESKTOP
@@ -186,13 +168,6 @@ void HeadlineItem::mouseDown(const MouseEvent &e)
         this->showMenuIfAny();
 #endif
     }
-}
-
-void HeadlineItem::mouseUp(const MouseEvent &e)
-{
-#if PLATFORM_DESKTOP
-    this->stopTimer();
-#endif
 }
 
 WeakReference<HeadlineItemDataSource> HeadlineItem::getDataSource() const noexcept
@@ -231,12 +206,6 @@ void HeadlineItem::updateContent()
 void HeadlineItem::changeListenerCallback(ChangeBroadcaster *source)
 {
     this->parentHeadline.triggerAsyncUpdate();
-}
-
-void HeadlineItem::timerCallback()
-{
-    this->stopTimer();
-    this->showMenuIfAny();
 }
 
 void HeadlineItem::showMenuIfAny()

@@ -90,7 +90,7 @@ private:
     UniquePointer<IconButton> navigateNext;
     UniquePointer<HeadlineItemArrow> arrow;
 
-    const Colour fillColour = findDefaultColour(ColourIDs::Backgrounds::headlineFill);
+    const Colour fillColour = findDefaultColour(ColourIDs::Breadcrumbs::fill);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineNavigationPanel)
 };

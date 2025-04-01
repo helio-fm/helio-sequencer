@@ -41,7 +41,7 @@ public:
         }
         else
         {
-            g.setColour(findDefaultColour(ColourIDs::Backgrounds::pageFillA));
+            g.setColour(findDefaultColour(ColourIDs::Panel::pageFillA));
             g.fillRect(this->getLocalBounds());
         }
     }

@@ -51,7 +51,7 @@ private:
     WeakReference<Instrument> instrument;
 
 #if PLATFORM_DESKTOP
-    const Font font = Globals::UI::Fonts::L;
+    const Font font = Globals::UI::Fonts::M;
 #elif PLATFORM_MOBILE
     const Font font = Globals::UI::Fonts::XS;
 #endif

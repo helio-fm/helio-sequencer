@@ -96,7 +96,7 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
 #if PLATFORM_DESKTOP
     this->pluginsList->getViewport()->setScrollBarThickness(2);
 #elif PLATFORM_MOBILE
-    this->pluginsList->getViewport()->setScrollBarThickness(36);
+    this->pluginsList->getViewport()->setScrollBarThickness(32);
 #endif
 
     const auto uiFlags = App::Config().getUiFlags();
@@ -341,9 +341,9 @@ int AudioPluginsListComponent::getNumRows()
 int AudioPluginsListComponent::getColumnAutoSizeWidth(int columnId)
 {
     const auto smallScreenMode = App::isRunningOnPhone();
-    const auto formatColumnWidth = smallScreenMode ? 48 : 96;
+    const auto formatColumnWidth = smallScreenMode ? 64 : 96;
     const auto categoryColumnWidth = smallScreenMode ? 64 : 112;
-
+    
     switch (columnId)
     {
     case ColumnIds::vendorAndName:

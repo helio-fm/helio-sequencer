@@ -73,7 +73,7 @@ void DialogBase::paint(Graphics &g)
 
     HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.5f);
 
-    g.setColour(findDefaultColour(ColourIDs::Backgrounds::dialogHeader));
+    g.setColour(findDefaultColour(ColourIDs::Dialog::header));
     g.fillRect(1.25f, 1.f, float(this->getWidth()) - 2.5f, 2.f);
 }
 

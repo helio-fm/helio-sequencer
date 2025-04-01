@@ -123,6 +123,9 @@ namespace ColourIDs
     namespace Panel
     {
         static const int border                 = 0x2000700;
+        static const int pageFillA              = 0x2000701;
+        static const int pageFillB              = 0x2000702;
+        static const int sidebarFill            = 0x2000703;
     }
 
     namespace Arrow
@@ -133,15 +136,23 @@ namespace ColourIDs
         static const int shadowEnd              = 0x2000753;
     }
 
-    namespace Backgrounds
+    namespace Breadcrumbs
     {
-        static const int pageFillA              = 0x2000800;
-        static const int pageFillB              = 0x2000801;
-        static const int sidebarFill            = 0x2000802;
-        static const int headlineFill           = 0x2000803;
-        static const int dialogFill             = 0x2000804;
-        static const int dialogHeader           = 0x2000805;
-        static const int menuFill               = 0x2000806;
+        static const int fill                   = 0x2000800;
+        static const int selectionMarker        = 0x2000801;
+    }
+
+    namespace Dialog
+    {
+        static const int fill                   = 0x2000810;
+        static const int header                 = 0x2000811;
+    }
+
+    namespace Menu
+    {
+        static const int fill                   = 0x2000820;
+        static const int header                 = 0x2000821;
+        static const int selectionMarker        = 0x2000822;
     }
 
     namespace Tooltip

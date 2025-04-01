@@ -64,7 +64,7 @@ private:
             .withMultipliedAlpha(alpha);
 
     const Colour fillColour =
-        findDefaultColour(ColourIDs::Backgrounds::sidebarFill);
+        findDefaultColour(ColourIDs::Panel::sidebarFill);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteResizerRight)
 };

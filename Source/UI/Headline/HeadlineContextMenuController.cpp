@@ -80,21 +80,21 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(findDefaultColour(ColourIDs::Backgrounds::menuFill));
+        g.setColour(findDefaultColour(ColourIDs::Menu::fill));
         g.fillRect(1, 1, this->getWidth() - 2, this->getHeight() - 2);
 
         HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.25f, 1.f);
 
-        g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
-        g.fillRect(1, 1, this->getWidth() - 2, 3);
+        g.setColour(findDefaultColour(ColourIDs::Menu::header));
+        g.fillRect(1, 1, this->getWidth() - 2, 2);
 
-        g.setColour(findDefaultColour(ColourIDs::Backgrounds::menuFill).darker(0.015f));
-        HelioTheme::drawDashedHorizontalLine3(g, 4.f, 1.f, float(this->getWidth() - 4), 8.f);
+        g.setColour(findDefaultColour(ColourIDs::Menu::selectionMarker));
+        HelioTheme::drawDashedHorizontalLine2(g, 4.f, 1.f, float(this->getWidth() - 3), 8.f);
     }
 
 private:
 
-    static constexpr auto padding = 4;
+    static constexpr auto padding = 3;
 
     void syncBoundsWithContent()
     {

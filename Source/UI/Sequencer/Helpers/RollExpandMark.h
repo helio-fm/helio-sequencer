@@ -46,7 +46,9 @@ private:
 
     float alpha = 1.f;
 
-    UniquePointer<IconComponent> plusImage;
+    //UniquePointer<IconComponent> plusImage;
+
+    const Colour colour = findDefaultColour(Label::textColourId);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RollExpandMark)
 };
