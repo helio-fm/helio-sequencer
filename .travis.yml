@@ -45,13 +45,14 @@ jobs:
       dist: focal
       addons: *gcc9
       env: BUILD_TYPE=linux CONFIG=Release64 CFLAGS=-fno-pie LDFLAGS=-no-pie
-    - name: "xcode 10.1 mac, release build"
-      stage: Deploy
-      os: osx
-      osx_image: xcode13.1
-      xcode_sdk: macosx11.6
-      addons: *deploy
-      env: BUILD_TYPE=osx
+    # macOS builds are no longer supported in Travis :/
+    # - name: "xcode 10.1 mac, release build"
+    #   stage: Deploy
+    #   os: osx
+    #   osx_image: xcode13.1
+    #   xcode_sdk: macosx11.6
+    #   addons: *deploy
+    #   env: BUILD_TYPE=osx
     # - name: "xcode 11.6 ios, release build"
     #   stage: Deploy
     #   os: osx
