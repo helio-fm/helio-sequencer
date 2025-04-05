@@ -105,7 +105,7 @@ void OrchestraPitPage::handleCommandMessage(int commandId)
     else if (commandId == CommandIDs::ScanPluginsFolder)
     {
         this->scanFolderFileChooser = make<FileChooser>(TRANS(I18n::Dialog::scanFolderCaption),
-            File::getCurrentWorkingDirectory(), ("*.*"), true);
+            File::getCurrentWorkingDirectory(), String(), true);
 
         DocumentHelpers::showFileChooser(this->scanFolderFileChooser,
             Globals::UI::FileChooser::forDirectory,

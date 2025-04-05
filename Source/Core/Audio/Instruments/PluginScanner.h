@@ -70,6 +70,11 @@ private:
     FileSearchPath searchPath;
     StringArray filesToScan;
 
+    // some plugin formats ignore the specified folders
+    // and search everywhere; this flag indicates that
+    // we'll skip those formats when scanning a custom folder:
+    Atomic<bool> isGlobalScan = true;
+
     FileSearchPath getCommonFolders();
     void scanPossibleSubfolders(const StringArray &possibleSubfolders,
         const File &currentSystemFolder, FileSearchPath &foldersOut);

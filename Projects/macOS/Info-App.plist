@@ -32,6 +32,8 @@
     <string>Peter Rudenko</string>
     <key>NSHighResolutionCapable</key>
     <true/>
+	<key>LSUIElement</key>
+	<true/>
     <key>CFBundleDocumentTypes</key>
     <array>
       <dict>

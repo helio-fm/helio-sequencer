@@ -28,7 +28,7 @@
 #include "SoundFontSynthAudioPlugin.h"
 #include "SerializablePluginDescription.h"
 
-#if PLATFORM_MOBILE || JUCE_MAC
+#if PLATFORM_MOBILE
 #   define SAFE_SCAN 0
 #else
 #   define SAFE_SCAN 1
@@ -119,6 +119,7 @@ void PluginScanner::runInitialScan()
 
     this->filesToScan.clearQuick();
     this->searchPath = this->getCommonFolders();
+    this->isGlobalScan = true;
 
     // built-in synths to be added first:
     this->filesToScan.addIfNotAlreadyThere(DefaultSynthAudioPlugin::instrumentId);
@@ -167,6 +168,7 @@ void PluginScanner::scanFolderAndAddResults(const File &dir)
 
     this->filesToScan.clearQuick();
     this->searchPath = dir.getFullPathName();
+    this->isGlobalScan = false;
 
     Array<File> subPaths;
     this->searchPath.findChildFiles(subPaths, File::findDirectories, false);
@@ -205,6 +207,15 @@ void PluginScanner::run()
         for (int i = 0; i < formatManager.getNumFormats(); ++i)
         {
             auto *format = formatManager.getFormat(i);
+
+#if JUCE_MAC
+            if (!this->isGlobalScan.get() &&
+                dynamic_cast<AudioUnitPluginFormat *>(format) != nullptr)
+            {
+                continue; // skip AudioUnitPluginFormat when scanning a specific folder
+            }
+#endif
+
             const auto foundPlugins = format->searchPathsForPlugins(this->searchPath, true, true);
             this->filesToScan.addArray(foundPlugins);
 

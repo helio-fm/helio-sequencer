@@ -535,6 +535,10 @@ void App::initialise(const String &commandLine)
 
     if (this->runMode == RunMode::Normal)
     {
+#if JUCE_MAC
+        Process::setDockIconVisible(true);
+#endif
+
         DBG("Helio v" + App::getAppReadableVersion());
 
         const auto album = Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise;
@@ -607,6 +611,10 @@ void App::initialise(const String &commandLine)
     }
     else if (this->runMode == RunMode::PluginCheck)
     {
+#if JUCE_MAC
+        Process::setDockIconVisible(false);
+#endif
+
         this->checkPlugin(commandLine);
         this->quit();
     }
@@ -709,10 +717,6 @@ void App::resumed()
 
 void App::checkPlugin(const String &markerFile)
 {
-#if JUCE_MAC
-    Process::setDockIconVisible(false);
-#endif
-
     const File tempFile(DocumentHelpers::getTempSlot(markerFile));
 
     try
