@@ -890,10 +890,11 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPageFillColour().darker(0.4f));
     this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.055f));
-    this->setColour(ColourIDs::TrackScroller::screenRangeFill,
-        s->getIconBaseColour().withMultipliedAlpha(this->isDarkTheme ? 0.5f : 0.25f));
+    this->setColour(ColourIDs::TrackScroller::screenRangeFill, this->isDarkTheme ?
+        s->getIconBaseColour().withMultipliedAlpha(0.275f) :
+        s->getIconBaseColour().interpolatedWith(s->getLassoFillColour(), 0.5f).withMultipliedAlpha(0.275f));
     this->setColour(ColourIDs::TrackScroller::outOfRangeFill,
-        Colours::black.withAlpha(this->isDarkTheme ? 0.12f : 0.065f));
+        Colours::black.withAlpha(this->isDarkTheme ? 0.125f : 0.055f));
 
     this->setColour(ColourIDs::Instrument::midiIn, Colours::black.withAlpha(0.15f));
     this->setColour(ColourIDs::Instrument::midiOut, Colours::black.withAlpha(0.15f));
@@ -970,9 +971,11 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::noteCutMarkOutline, Colours::white.withAlpha(0.2f));
     this->setColour(ColourIDs::Roll::cuttingGuide, s->getLassoBorderColour().withAlpha(0.9f));
     this->setColour(ColourIDs::Roll::cuttingGuideOutline, s->getLassoBorderColour().contrasting().withAlpha(0.1f));
-
-    this->setColour(ColourIDs::Roll::draggingGuide, s->getLassoBorderColour().withAlpha(0.35f));
-    this->setColour(ColourIDs::Roll::draggingGuideShadow, s->getLassoFillColour());
+    this->setColour(ColourIDs::Roll::draggingGuide, s->getLassoBorderColour().withAlpha(0.5f));
+    this->setColour(ColourIDs::Roll::draggingGuideShadow, s->getWhiteKeyColour().withMultipliedAlpha(0.25f));
+    this->setColour(ColourIDs::Roll::resizingGuideFill, s->getSidebarFillColour());
+    this->setColour(ColourIDs::Roll::resizingGuideOutline, s->getLassoBorderColour().withAlpha(0.7f));
+    this->setColour(ColourIDs::Roll::resizingGuideShadow, s->getWhiteKeyColour().withMultipliedAlpha(0.5f));
 
     this->setColour(ColourIDs::TransportControl::recordInactive, Colours::transparentBlack);
     this->setColour(ColourIDs::TransportControl::recordHighlight, Colours::red.withAlpha(0.35f));

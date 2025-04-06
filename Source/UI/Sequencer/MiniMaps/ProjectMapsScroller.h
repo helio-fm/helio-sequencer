@@ -340,8 +340,7 @@ private:
                 .withMultipliedAlpha(0.25f);
 
         const Colour fillColour =
-            findDefaultColour(ColourIDs::TrackScroller::screenRangeFill)
-                .withMultipliedAlpha(0.5f);
+            findDefaultColour(ColourIDs::TrackScroller::screenRangeFill);
     };
 
 private:

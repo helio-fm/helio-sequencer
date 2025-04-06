@@ -20,6 +20,7 @@
 #include "ColourIDs.h"
 #include "Lasso.h"
 #include "NoteComponent.h"
+#include "HelioTheme.h"
 
 class NotesDraggingGuide final : public Component
 {
@@ -33,14 +34,16 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(this->shadowColour);
-        g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
-        g.drawHorizontalLine(this->getHeight() - 2, 0.f, float(this->getWidth()));
-        //HelioTheme::drawDashedHorizontalLine(g, 0.f, 0.f, float(this->getWidth()), 6.f);
-        //HelioTheme::drawDashedHorizontalLine(g, 0.f, float(this->getHeight() - 1), float(this->getWidth()), 6.f);
-
-        g.setColour(this->dashColour);
+        //g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
+        //g.drawHorizontalLine(this->getHeight() - 2, 0.f, float(this->getWidth()));
         g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
         g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
+
+        g.setColour(this->dashColour);
+        //g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+        //g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
+        HelioTheme::drawDashedHorizontalLine(g, 0.f, 0.f, float(this->getWidth()), 8.f);
+        HelioTheme::drawDashedHorizontalLine(g, 0.f, float(this->getHeight() - 1), float(this->getWidth()), 8.f);
     }
 
     void resetAnchor(const Lasso &lasso)

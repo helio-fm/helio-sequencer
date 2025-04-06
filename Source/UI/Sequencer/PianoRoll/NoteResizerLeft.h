@@ -33,19 +33,18 @@ public:
     ~NoteResizerLeft();
 
     void updateBounds();
-    void updateTopPosition();
 
     void paint(Graphics &g) override;
     bool hitTest(int x, int y) override;
-    void mouseEnter(const MouseEvent &e) override;
-    void mouseExit(const MouseEvent &e) override;
+    void resized() override;
+
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
 
 private:
 
-    NoteComponent *findLeftMostEvent(const Lasso &selection);
+    NoteComponent *findLeftmostTopmostEvent(const Lasso &selection);
 
     RollBase &roll;
     SafePointer<NoteComponent> groupResizerNote;
@@ -57,14 +56,13 @@ private:
 
     Path draggerShape;
     static constexpr auto draggerSize = 32;
-    static constexpr auto alpha = 0.65f;
-
-    const Colour lineColour =
-        findDefaultColour(ColourIDs::SelectionComponent::outline)
-            .withMultipliedAlpha(alpha);
 
     const Colour fillColour =
-        findDefaultColour(ColourIDs::Panel::sidebarFill);
+        findDefaultColour(ColourIDs::Roll::resizingGuideFill);
+    const Colour lineColour =
+        findDefaultColour(ColourIDs::Roll::resizingGuideOutline);
+    const Colour shadowColour =
+        findDefaultColour(ColourIDs::Roll::resizingGuideShadow);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteResizerLeft)
 };

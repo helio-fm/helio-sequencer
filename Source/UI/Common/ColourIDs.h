@@ -76,6 +76,9 @@ namespace ColourIDs
         static const int cuttingGuideOutline    = 0x2000143;
         static const int draggingGuide          = 0x2000144;
         static const int draggingGuideShadow    = 0x2000145;
+        static const int resizingGuideFill      = 0x2000146;
+        static const int resizingGuideOutline   = 0x2000147;
+        static const int resizingGuideShadow    = 0x2000148;
     }
 
     namespace TransportControl

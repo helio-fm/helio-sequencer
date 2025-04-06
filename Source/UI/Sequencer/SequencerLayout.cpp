@@ -261,9 +261,14 @@ private:
             int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
                 this->scrollerModeAnimation.getPosition());
 
+        const auto editorPanelHeight =
+            int(Globals::UI::editorPanelHeight * this->mapsAnimation.getPosition());
+
+        const auto maxBottomPanelHeight = jmax(scrollerHeight, editorPanelHeight);
+
         const auto r = this->getLocalBounds();
-        const int rollViewportHeight = r.getHeight() - scrollerHeight + 1;
-        const Rectangle<int> rollSize(r.withBottom(r.getBottom() - scrollerHeight));
+        const int rollViewportHeight = r.getHeight() - maxBottomPanelHeight + 1;
+        const Rectangle<int> rollSize(r.withBottom(r.getBottom() - maxBottomPanelHeight));
         const int viewport1Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight);
         const int viewport2Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight + rollViewportHeight);
         this->pianoViewport->setBounds(rollSize.withY(viewport1Pos));
@@ -276,7 +281,12 @@ private:
             int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
                 this->scrollerModeAnimation.getPosition());
 
-        const int rollViewportHeight = this->getHeight() - scrollerHeight + 1;
+        const auto editorPanelHeight =
+            int(Globals::UI::editorPanelHeight * this->mapsAnimation.getPosition());
+
+        const auto maxBottomPanelHeight = jmax(scrollerHeight, editorPanelHeight);
+
+        const int rollViewportHeight = this->getHeight() - maxBottomPanelHeight + 1;
         const int viewport1Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight);
         const int viewport2Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight + rollViewportHeight);
         this->pianoViewport->setTopLeftPosition(0, viewport1Pos);
@@ -385,6 +395,7 @@ private:
             }
 
             this->updateAnimatedMapsPositions();
+            this->updateAnimatedRollsBounds();
             break;
 
         case Timers::scrollerMode:

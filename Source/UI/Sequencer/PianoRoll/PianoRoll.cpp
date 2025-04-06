@@ -2076,12 +2076,12 @@ void PianoRoll::updateChildrenPositions()
 #if PIANOROLL_HAS_NOTE_RESIZERS
     if (this->noteResizerLeft != nullptr)
     {
-        this->noteResizerLeft->updateTopPosition();
+        this->noteResizerLeft->updateBounds();
     }
 
     if (this->noteResizerRight != nullptr)
     {
-        this->noteResizerRight->updateTopPosition();
+        this->noteResizerRight->updateBounds();
     }
 #endif
 

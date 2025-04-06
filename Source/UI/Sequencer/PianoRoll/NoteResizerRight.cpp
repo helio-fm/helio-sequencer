@@ -27,8 +27,9 @@
 
 NoteResizerRight::NoteResizerRight(RollBase &parentRoll) : roll(parentRoll)
 {
+    constexpr auto iconSize = NoteResizerRight::draggerSize / 2;
     this->resizeIcon = make<IconComponent>(Icons::stretchRight);
-    this->resizeIcon->setIconAlphaMultiplier(NoteResizerRight::alpha);
+    this->resizeIcon->setSize(iconSize, iconSize);
     this->addAndMakeVisible(this->resizeIcon.get());
 
     this->setAlpha(0.f);
@@ -37,17 +38,6 @@ NoteResizerRight::NoteResizerRight(RollBase &parentRoll) : roll(parentRoll)
     this->setAlwaysOnTop(true);
 
     this->setSize(NoteResizerRight::draggerSize, NoteResizerRight::draggerSize);
-
-    constexpr auto iconOffset = 6;
-    constexpr auto iconSize = NoteResizerRight::draggerSize / 2;
-    this->resizeIcon->setBounds(iconOffset, iconOffset, iconSize, iconSize);
-
-    this->draggerShape.clear();
-    this->draggerShape.startNewSubPath(0.25f, 0.f);
-    this->draggerShape.lineTo(float(this->getWidth()), 0.f);
-    this->draggerShape.lineTo(float(this->getWidth()) * 0.75f, float(this->getHeight()) * 0.75f);
-    this->draggerShape.lineTo(0.25f, float(this->getHeight()));
-    this->draggerShape.closeSubPath();
 }
 
 NoteResizerRight::~NoteResizerRight()
@@ -61,30 +51,41 @@ void NoteResizerRight::paint(Graphics &g)
     g.setColour(this->fillColour);
     g.fillPath(this->draggerShape);
 
+    g.setColour(this->shadowColour);
+    g.drawVerticalLine(0, 1,
+        float(this->getHeight() - NoteResizerRight::draggerSize));
+
     g.setColour(this->lineColour);
     g.strokePath(this->draggerShape, PathStrokeType(1.5f));
 
     HelioTheme::drawDashedVerticalLine(g,
         0.f,
-        NoteResizerRight::draggerSize + 1.f,
-        float(this->getHeight() - 1),
+        1.f,
+        float(this->getHeight() - NoteResizerRight::draggerSize - 1),
         8.f);
 }
 
 bool NoteResizerRight::hitTest(int x, int y)
 {
-    constexpr auto r = NoteResizerRight::draggerSize;
-    return (x * x + y * y) < (r * r);
+    return y > (this->getHeight() - NoteResizerRight::draggerSize);
 }
 
-void NoteResizerRight::mouseEnter(const MouseEvent &e)
+void NoteResizerRight::resized()
 {
-    this->resizeIcon->setIconAlphaMultiplier(1.f);
-}
+    this->resizeIcon->setCentrePosition(int(this->getWidth() * 0.45f),
+        (this->getHeight() - int(NoteResizerRight::draggerSize * 0.45f)));
 
-void NoteResizerRight::mouseExit(const MouseEvent &e)
-{
-    this->resizeIcon->setIconAlphaMultiplier(NoteResizerRight::alpha);
+    const auto w = float(this->getWidth());
+    const auto h = float(this->getHeight());
+    const auto l = 0.25f;
+    const auto shapeSize = float(NoteResizerRight::draggerSize);
+
+    this->draggerShape.clear();
+    this->draggerShape.startNewSubPath(l, h - shapeSize);
+    this->draggerShape.lineTo(w * 0.75f, h - (shapeSize * 0.75f));
+    this->draggerShape.lineTo(w, h);
+    this->draggerShape.lineTo(l, h);
+    this->draggerShape.closeSubPath();
 }
 
 void NoteResizerRight::mouseDown(const MouseEvent &e)
@@ -94,17 +95,17 @@ void NoteResizerRight::mouseDown(const MouseEvent &e)
     const auto &selection = this->roll.getLassoSelection();
     const float groupStartBeat = SequencerOperations::findStartBeat(selection);
 
-    this->groupResizerNote = this->findRightMostEvent(selection);
+    this->groupResizerNote = this->findRightmostTopmostEvent(selection);
 
     for (int i = 0; i < selection.getNumSelected(); i++)
     {
-        if (auto *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
+        auto *note = selection.getItemAs<NoteComponent>(i);
+        if (selection.shouldDisplayGhostNotes())
         {
-            if (selection.shouldDisplayGhostNotes())
-            { note->getRoll().showGhostNoteFor(note); }
-
-            note->startGroupScalingRight(groupStartBeat);
+            note->getRoll().showGhostNoteFor(note);
         }
+
+        note->startGroupScalingRight(groupStartBeat);
     }
 }
 
@@ -127,7 +128,7 @@ void NoteResizerRight::mouseDrag(const MouseEvent &e)
         Array<Note> groupDragBefore, groupDragAfter;
         for (int i = 0; i < selection.getNumSelected(); ++i)
         {
-            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            auto *nc = selection.getItemAs<NoteComponent>(i);
             groupDragBefore.add(nc->getNote());
             groupDragAfter.add(nc->continueGroupScalingRight(groupScaleFactor));
         }
@@ -146,52 +147,56 @@ void NoteResizerRight::mouseUp(const MouseEvent &e)
 
     for (int i = 0; i < selection.getNumSelected(); i++)
     {
-        auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+        auto *nc = selection.getItemAs<NoteComponent>(i);
         nc->getRoll().setDefaultNoteLength(nc->getLength());
         nc->getRoll().hideAllGhostNotes();
         nc->endGroupScalingLeft();
     }
 }
 
-NoteComponent *NoteResizerRight::findRightMostEvent(const Lasso &selection)
+NoteComponent *NoteResizerRight::findRightmostTopmostEvent(const Lasso &selection)
 {
-    NoteComponent *mc = nullptr;
-    float rightMostBeat = -FLT_MAX;
+    jassert(selection.size() > 0);
 
-    for (int i = 0; i < selection.getNumSelected(); ++i)
+    NoteComponent *resultNoteComponent = nullptr;
+    auto endBeat = std::numeric_limits<float>::lowest();
+    auto startKey = std::numeric_limits<Note::Key>::lowest();
+
+    for (int i = 0; i < selection.size(); ++i)
     {
-        auto *currentEvent = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-        const float beatPlusLength = currentEvent->getBeat() + currentEvent->getLength();
-
-        if (rightMostBeat < beatPlusLength)
+        auto *noteComponent = selection.getItemAs<NoteComponent>(i);
+        const auto beatPlusLength = noteComponent->getBeat() + noteComponent->getLength();
+        if (endBeat < beatPlusLength ||
+            (endBeat == beatPlusLength && startKey < noteComponent->getKey()))
         {
-            rightMostBeat = beatPlusLength;
-            mc = currentEvent;
+            endBeat = beatPlusLength;
+            startKey = noteComponent->getKey();
+            resultNoteComponent = noteComponent;
         }
     }
 
-    return mc;
+    return resultNoteComponent;
 }
 
 void NoteResizerRight::updateBounds()
 {
     const auto &selection = this->roll.getLassoSelection();
-    const float groupEndBeat = SequencerOperations::findEndBeat(selection);
-    const float clipBeat = selection.getFirstAs<NoteComponent>()->getClip().getBeat();
+    jassert(selection.getNumSelected() > 0);
 
-    const int xAnchor = this->roll.getXPositionByBeat(groupEndBeat + clipBeat);
-    const int yAnchor = this->roll.getViewport().getViewPositionY() + Globals::UI::rollHeaderHeight;
-    const int h = this->roll.getViewport().getViewHeight();
-    this->setBounds(xAnchor, yAnchor, this->getWidth(), h);
+    auto *groupStartNoteComponent = this->findRightmostTopmostEvent(selection);
+    const auto anchor = this->roll.getEventBounds(groupStartNoteComponent);
+
+    const auto &viewport = this->roll.getViewport();
+    const int minY = viewport.getViewPositionY() + Globals::UI::rollHeaderHeight;
+    const int maxY = viewport.getViewPositionY() + viewport.getViewHeight() - NoteResizerRight::draggerSize;
+
+    const auto y = jmax(minY, jmin(maxY, roundToIntAccurate(anchor.getBottom() - 1)));
+    const auto h = maxY - y + NoteResizerRight::draggerSize + 1;
+
+    this->setBounds(int(floorf(anchor.getRight())), y, this->getWidth(), h);
 
     if (this->getAlpha() < 1.f)
     {
         this->fader.fadeIn(this, Globals::UI::fadeInShort);
     }
-}
-
-void NoteResizerRight::updateTopPosition()
-{
-    const int yAnchor = this->roll.getViewport().getViewPositionY() + Globals::UI::rollHeaderHeight;
-    this->setTopLeftPosition(this->getX(), yAnchor);
 }
