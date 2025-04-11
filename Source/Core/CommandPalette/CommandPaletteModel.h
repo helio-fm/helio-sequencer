@@ -27,5 +27,5 @@ public:
     virtual ~CommandPaletteModel() = default;
 
     virtual Array<CommandPaletteActionsProvider *>
-        getCommandPaletteActionProviders() const = 0;
+        getCommandPaletteActionProviders() = 0;
 };

@@ -75,6 +75,8 @@ private:
     float targetBeat = 0;
     float barLengthInBeats = Globals::beatsPerBar;
 
+    const StringArray degreeNames = Chord::getLocalizedDegreeNames();
+
     const Scale::Ptr defaultScale = Scale::makeNaturalMajorScale();
     Scale::Ptr scale;
     String scaleRootKeyName;

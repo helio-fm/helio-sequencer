@@ -56,7 +56,7 @@ void NoteResizerLeft::paint(Graphics &g)
         float(this->getHeight() - NoteResizerLeft::draggerSize));
 
     g.setColour(this->lineColour);
-    g.strokePath(this->draggerShape, PathStrokeType(1.5f));
+    g.strokePath(this->draggerShape, PathStrokeType(1.25f));
 
     HelioTheme::drawDashedVerticalLine(g,
         float(this->getWidth() - 1),
@@ -72,8 +72,8 @@ bool NoteResizerLeft::hitTest(int x, int y)
 
 void NoteResizerLeft::resized()
 {
-    this->resizeIcon->setCentrePosition(int(this->getWidth() * 0.55f),
-        (this->getHeight() - int(NoteResizerLeft::draggerSize * 0.45f)));
+    constexpr auto iconOffset = 14;
+    this->resizeIcon->setCentrePosition(this->getWidth() - iconOffset, this->getHeight() - iconOffset);
 
     const auto w = float(this->getWidth());
     const auto h = float(this->getHeight());

@@ -57,6 +57,7 @@ public:
         const bool hasResizableCorner = !useNativeTitleBar;
         this->setResizable(true, hasResizableCorner);
         this->setUsingNativeTitleBar(useNativeTitleBar);
+        this->setDropShadowEnabled(false);
         if (this->resizableCorner != nullptr)
         {
             this->resizableCorner->setRepaintsOnMouseActivity(false);

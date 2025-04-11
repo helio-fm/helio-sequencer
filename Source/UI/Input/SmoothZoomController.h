@@ -59,7 +59,8 @@ public:
 
     void zoomRelative(const Point<float> &from, const Point<float> &zoom) noexcept
     {
-        this->inertialZoom = this->isZooming();
+        this->inertialZoom =
+            juce_hypot(this->factorX, this->factorY) >= (Defaults::zoomStopFactor * 10.f);
 
         this->factorX += zoom.getX();
         this->factorY += zoom.getY();

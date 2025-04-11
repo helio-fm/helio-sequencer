@@ -86,9 +86,6 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
     this->draggingHelper = make<NotesDraggingGuide>();
     this->addChildComponent(this->draggingHelper.get());
 
-    this->consoleMoveNotesMenu = make<CommandPaletteMoveNotesMenu>(*this, this->project);
-    this->consoleChordConstructor = make<CommandPaletteChordConstructor>(*this);
-
     const auto *uiFlags = App::Config().getUiFlags();
     this->scalesHighlightingEnabled = uiFlags->isScalesHighlightingEnabled();
 
@@ -2092,18 +2089,21 @@ void PianoRoll::updateChildrenPositions()
 // Command Palette
 //===----------------------------------------------------------------------===//
 
-Array<CommandPaletteActionsProvider *> PianoRoll::getCommandPaletteActionProviders() const
+Array<CommandPaletteActionsProvider *> PianoRoll::getCommandPaletteActionProviders()
 {
     Array<CommandPaletteActionsProvider *> result;
 
+    // recreates actions every time they are needed to avoid keeping their state, like undo flags
     if (this->getPeriodSize() == Globals::twelveTonePeriodSize)
     {
+        this->consoleChordConstructor = make<CommandPaletteChordConstructor>(*this);
         result.add(this->consoleChordConstructor.get());
     }
 
     if (this->selection.getNumSelected() > 0 &&
         this->project.findChildrenOfType<PianoTrackNode>().size() > 1)
     {
+        this->consoleMoveNotesMenu = make<CommandPaletteMoveNotesMenu>(*this, this->project);
         result.add(this->consoleMoveNotesMenu.get());
     }
 

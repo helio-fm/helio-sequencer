@@ -427,7 +427,7 @@ void Workspace::importProject(const String &filePattern)
 // Command Palette
 //===----------------------------------------------------------------------===//
 
-Array<CommandPaletteActionsProvider *> Workspace::getCommandPaletteActionProviders() const
+Array<CommandPaletteActionsProvider *> Workspace::getCommandPaletteActionProviders()
 {
     return { this->consoleProjectsList.get() };
 }

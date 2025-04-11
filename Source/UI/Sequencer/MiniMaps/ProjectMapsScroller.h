@@ -193,8 +193,9 @@ private:
             }
 
             this->brightness = newBrightness;
-            this->colour = findDefaultColour(ColourIDs::TrackScroller::screenRangeFill)
+            this->colour = findDefaultColour(ColourIDs::TrackScroller::viewRangeFill)
                 .withMultipliedAlpha(this->brightness);
+
             this->setVisible(this->brightness != 0.f);
             this->repaint();
         }
@@ -245,7 +246,7 @@ private:
 
         Rectangle<float> realBounds;
 
-        Colour colour = findDefaultColour(ColourIDs::TrackScroller::screenRangeFill);
+        Colour colour = findDefaultColour(ColourIDs::TrackScroller::viewRangeFill);
         float brightness = 1.f;
 
         ProjectMapsScroller &scroller;
@@ -336,11 +337,10 @@ private:
         BoundsConstrainer moveConstrainer;
 
         const Colour borderColour =
-            findDefaultColour(ColourIDs::TrackScroller::screenRangeFill)
-                .withMultipliedAlpha(0.25f);
+            findDefaultColour(ColourIDs::TrackScroller::viewBeatRangeBorder);
 
         const Colour fillColour =
-            findDefaultColour(ColourIDs::TrackScroller::screenRangeFill);
+            findDefaultColour(ColourIDs::TrackScroller::viewBeatRangeFill);
     };
 
 private:

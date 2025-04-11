@@ -86,7 +86,7 @@ public:
     const String &getName() const noexcept;
     const Array<Key> &getScaleKeys() const noexcept;
 
-    static Array<String> getLocalizedDegreeNames();
+    static StringArray getLocalizedDegreeNames();
 
     //===------------------------------------------------------------------===//
     // Serializable

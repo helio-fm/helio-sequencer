@@ -140,7 +140,7 @@ public:
 
 private:
 
-    bool noteNameGuides = false;
+    bool noteNameGuides = true;
     bool scalesHighlighting = true;
     bool useFixedDoNotation = false;
 

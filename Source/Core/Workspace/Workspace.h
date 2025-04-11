@@ -73,7 +73,7 @@ public:
     // Command Palette
     //===------------------------------------------------------------------===//
 
-    Array<CommandPaletteActionsProvider *> getCommandPaletteActionProviders() const override;
+    Array<CommandPaletteActionsProvider *> getCommandPaletteActionProviders() override;
     void recreateCommandPaletteActions();
 
     //===------------------------------------------------------------------===//

@@ -96,13 +96,13 @@ void ThemeSettingsItem::paint(Graphics &g)
         return;
     }
 
-    const float paintStartY = 4.f;
-    const float paintEndY = float(this->getHeight()) - 10.f;
-    const float lineStartY = paintStartY;
-    const float lineEndY = paintEndY + paintStartY;
+    const int paintStartY = 4;
+    const int paintEndY = this->getHeight() - 10;
+    const int lineStartY = paintStartY;
+    const int lineEndY = paintEndY + paintStartY;
 
     g.setTiledImageFill(this->rollImage, 0, -3, 1.f);
-    g.fillRect(200.f, paintStartY, float(this->getWidth()) - 200.f, paintEndY);
+    g.fillRect(200, paintStartY, this->getWidth() - 200, paintEndY);
 
     const int barWidth = 64;
     const int dynamicGridSize = 4;
@@ -120,62 +120,62 @@ void ThemeSettingsItem::paint(Graphics &g)
         const int startX1 = barWidth * i;
 
         g.setColour(barStart);
-        g.drawVerticalLine(startX1, lineStartY, lineEndY);
+        g.drawVerticalLine(startX1, float(lineStartY), float(lineEndY));
 
         g.setColour(barBevel);
-        g.drawVerticalLine(startX1 + 1, lineStartY, lineEndY);
+        g.drawVerticalLine(startX1 + 1, float(lineStartY), float(lineEndY));
 
         g.setColour(beatStart);
-        g.drawVerticalLine((barWidth * i + beatWidth * 2), lineStartY, lineEndY);
+        g.drawVerticalLine((barWidth * i + beatWidth * 2), float(lineStartY), float(lineEndY));
 
         g.setColour(snapStart);
-        g.drawVerticalLine((barWidth * i + beatWidth), lineStartY, lineEndY);
-        g.drawVerticalLine((barWidth * i + beatWidth * 3), lineStartY, lineEndY);
+        g.drawVerticalLine((barWidth * i + beatWidth), float(lineStartY), float(lineEndY));
+        g.drawVerticalLine((barWidth * i + beatWidth * 3), float(lineStartY), float(lineEndY));
 
         i++;
     }
 
     g.setColour(this->colours->getPageFillColour());
-    g.fillRect(27.f, paintStartY, 211.f, paintEndY);
+    g.fillRect(27, paintStartY, 211, paintEndY);
 
     // Outer glow
     g.setColour(this->colours->getPageFillColour().brighter(0.2f));
-    g.drawVerticalLine(27, lineStartY, lineEndY);
-    g.drawVerticalLine(this->getWidth() - 1, lineStartY, lineEndY);
-    g.drawHorizontalLine(int(lineStartY) - 1, 28.f, float(this->getWidth()) - 1.f);
-    g.drawHorizontalLine(int(lineEndY), 28.f, float(this->getWidth()) - 1.f);
+    g.drawVerticalLine(27, float(lineStartY), float(lineEndY));
+    g.drawVerticalLine(this->getWidth() - 1, float(lineStartY), float(lineEndY));
+    g.drawHorizontalLine(lineStartY - 1, 28.f, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(lineEndY, 28.f, float(this->getWidth()) - 1.f);
 
     // Inner shadow
     g.setColour(this->colours->getPageFillColour().darker(0.05f));
-    g.drawVerticalLine(28, lineStartY, lineEndY);
-    g.drawVerticalLine(this->getWidth() - 2, lineStartY, lineEndY);
-    g.drawHorizontalLine(int(lineStartY), 28, float(this->getWidth()) - 1.f);
-    g.drawHorizontalLine(int(lineEndY) - 1, 28, float(this->getWidth()) - 1.f);
+    g.drawVerticalLine(28, float(lineStartY), float(lineEndY));
+    g.drawVerticalLine(this->getWidth() - 2, float(lineStartY), float(lineEndY));
+    g.drawHorizontalLine(lineStartY, 28, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(lineEndY - 1, 28, float(this->getWidth()) - 1.f);
 
     // Roll shadow left
-    g.setGradientFill(ColourGradient(Colour(0x10000000), 238.f, 0.f,
+    g.setGradientFill(ColourGradient(Colour(0x0c000000), 238.f, 0.f,
         Colours::transparentBlack, 258.f, 0.f, false));
-    g.fillRect(238.f, paintStartY, 20.f, paintEndY);
+    g.fillRect(238, paintStartY, 20, paintEndY);
 
-    g.setGradientFill(ColourGradient(Colour(0x10000000), 238.f, 0.f,
+    g.setGradientFill(ColourGradient(Colour(0x0c000000), 238.f, 0.f,
         Colours::transparentBlack, 250.0f, 0.f, false));
-    g.fillRect(238.f, paintStartY, 12.f, paintEndY);
+    g.fillRect(238, paintStartY, 12, paintEndY);
 
     // Roll shadow right
-    g.setGradientFill(ColourGradient(Colour(0x10000000), float(this->getWidth()), 0.f,
+    g.setGradientFill(ColourGradient(Colour(0x0c000000), float(this->getWidth()), 0.f,
         Colours::transparentBlack, float(this->getWidth()) - 20.f, 0.f, false));
-    g.fillRect(float(this->getWidth()) - 20.f, paintStartY, 20.f, paintEndY);
+    g.fillRect(this->getWidth() - 20, paintStartY, 20, paintEndY);
 
-    g.setGradientFill(ColourGradient(Colour(0x10000000), float(this->getWidth()), 0.f,
+    g.setGradientFill(ColourGradient(Colour(0x0c000000), float(this->getWidth()), 0.f,
         Colours::transparentBlack, float(this->getWidth()) - 12.f, 0.f, false));
-    g.fillRect(float(this->getWidth()) - 12.f, paintStartY, 12.f, paintEndY);
+    g.fillRect(this->getWidth() - 12, paintStartY, 12, paintEndY);
 
     // Separators
     g.setColour(Colour(0x0f000000));
-    g.drawVerticalLine(238, lineStartY, lineEndY);
+    g.drawVerticalLine(238, float(lineStartY), float(lineEndY));
 
     g.setColour(Colour(0x0bffffff));
-    g.drawVerticalLine(237, lineStartY, lineEndY);
+    g.drawVerticalLine(237, float(lineStartY), float(lineEndY));
 
     g.setColour(Colours::black);
     Icons::drawImageRetinaAware(this->icon1, g, 45, (this->getHeight() / 2) - 1);

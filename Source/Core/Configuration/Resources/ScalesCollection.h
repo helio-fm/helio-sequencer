@@ -38,20 +38,21 @@ public:
 
 private:
 
+    SerializedData serializeResources(const Resources &resources) override;
     void deserializeResources(const SerializedData &tree, Resources &outResources) override;
     void reset() override;
 
     struct ScalesComparator final : public DummyConfigurationResource
     {
-        ScalesComparator(const StringArray &order);
+        ScalesComparator(const FlatHashMap<String, int, StringHash> &order);
         int compareElements(const ConfigurationResource::Ptr first,
             const ConfigurationResource::Ptr second) const override;
-        const StringArray &order;
+        const FlatHashMap<String, int, StringHash> &order;
     };
 
     ScalesComparator scalesComparator;
     const ConfigurationResource &getResourceComparator() const override;
-    StringArray order;
+    FlatHashMap<String, int, StringHash> order;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScalesCollection)
 };

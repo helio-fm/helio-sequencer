@@ -23,23 +23,23 @@ ScalesCollection::ScalesCollection() :
     ConfigurationResourceCollection(Serialization::Resources::scales),
     scalesComparator(this->order) {}
 
-ScalesCollection::ScalesComparator::ScalesComparator(const StringArray &order) :
+ScalesCollection::ScalesComparator::ScalesComparator(const FlatHashMap<String, int, StringHash> &order) :
     order(order) {}
 
-// Any other scales, including user's, are displayed below and sorted alphabetically:
 int ScalesCollection::ScalesComparator::compareElements(const ConfigurationResource::Ptr first,
     const ConfigurationResource::Ptr second) const
 {
-    const int i1 = this->order.indexOf(first->getResourceId());
-    const int i2 = this->order.indexOf(second->getResourceId());
+    const auto i1 = this->order.find(first->getResourceId());
+    const auto i2 = this->order.find(second->getResourceId());
 
-    const int mixedDiff = (i2 != -1) - (i1 != -1);
-    if (mixedDiff != 0) { return mixedDiff; }
+    if ((i2 == this->order.end()) || (i1 == this->order.end()))
+    {
+        //jassertfalse; // happens after adding a scale manually
+        return (i2 != this->order.end()) - (i1 != this->order.end());
+    }
 
-    const int indexDiff = ((i1 - i2) > 0) - ((i1 - i2) < 0);
-    if (indexDiff != 0) { return indexDiff; }
-
-    return first->getResourceId().compare(second->getResourceId());
+    const auto diff = i1->second - i2->second;
+    return (diff > 0) - (diff < 0);
 }
 
 const ConfigurationResource &ScalesCollection::getResourceComparator() const
@@ -51,10 +51,23 @@ const ConfigurationResource &ScalesCollection::getResourceComparator() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-// The comparator just makes sure that some most common scale names
-// have priorities over others, and such scales, if present,
-// should be displayed at the top of the list with the following order.
-#define NUM_ORDERED_SCALES 17
+SerializedData ScalesCollection::serializeResources(const Resources &resources)
+{
+    Array<typename Scale::Ptr> sortedResult;
+    for (const auto &resource : resources)
+    {
+        sortedResult.addSorted(this->getResourceComparator(),
+            typename Scale::Ptr(static_cast<Scale *>(resource.second.get())));
+    }
+
+    SerializedData data(Serialization::Resources::scales);
+    for (const auto &resource : sortedResult)
+    {
+        data.appendChild(resource->serialize());
+    }
+
+    return data;
+}
 
 void ScalesCollection::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
@@ -67,17 +80,14 @@ void ScalesCollection::deserializeResources(const SerializedData &tree, Resource
     {
         Scale::Ptr scale(new Scale());
         scale->deserialize(scaleNode);
-        outResources[scale->getResourceId()] = scale;
-
-        if (this->order.size() < NUM_ORDERED_SCALES)
-        {
-            this->order.add(scale->getResourceId());
-        }
+        const auto scaleId = scale->getResourceId();
+        outResources[scaleId] = scale;
+        this->order[scaleId] = int(this->order.size());
     }
 }
 
 void ScalesCollection::reset()
 {
-    this->order.clearQuick();
+    this->order.clear();
     ConfigurationResourceCollection::reset();
 }

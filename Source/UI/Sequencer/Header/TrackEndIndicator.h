@@ -95,7 +95,7 @@ private:
     float viewLastBeat = Globals::Defaults::projectLength;
 
     const Colour fillColour =
-        findDefaultColour(ColourIDs::TrackScroller::outOfRangeFill);
+        findDefaultColour(ColourIDs::TrackScroller::projectOutRangeFill);
 
     static constexpr int shadowWidth = 12;
 

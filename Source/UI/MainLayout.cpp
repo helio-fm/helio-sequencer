@@ -576,7 +576,7 @@ void MainLayout::broadcastCommandMessage(int commandId)
 //===----------------------------------------------------------------------===//
 
 Array<CommandPaletteActionsProvider *>
-MainLayout::getCommandPaletteActionProviders() const
+MainLayout::getCommandPaletteActionProviders()
 {
     return { this->consoleCommonActions.get() };
 }

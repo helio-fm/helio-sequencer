@@ -226,6 +226,7 @@ int Scale::getBasePeriod() const noexcept
 Scale &Scale::operator=(const Scale &other)
 {
     this->name = other.name;
+    this->basePeriod = other.basePeriod;
     this->keys = other.keys;
     return *this;
 }

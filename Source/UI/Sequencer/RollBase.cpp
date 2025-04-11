@@ -541,15 +541,26 @@ void RollBase::zoomRelative(const Point<float> &origin,
         const auto projectRange = this->project.getProjectBeatRange();
         const auto newFirstBeat = projectRange.getStart() - margin;
         const auto newLastBeat = projectRange.getEnd() + margin;
-
-        if (this->firstBeat < newFirstBeat || this->lastBeat > newLastBeat)
+        const auto affectsLeftSide = this->firstBeat < newFirstBeat;
+        const auto affectsRightSide = this->lastBeat > newLastBeat;
+        if (affectsLeftSide || affectsRightSide)
         {
             this->smoothZoomController->cancelZoom();
             this->project.broadcastChangeViewBeatRange(newFirstBeat, newLastBeat);
 
             const auto markWidthInBeats = 4.f / this->beatWidth;
-            this->viewport.addAndMakeVisible(new RollExpandMark(*this, newFirstBeat, markWidthInBeats, false));
-            this->viewport.addAndMakeVisible(new RollExpandMark(*this, newLastBeat - markWidthInBeats, markWidthInBeats, false));
+
+            if (affectsLeftSide)
+            {
+                this->viewport.addAndMakeVisible(new RollExpandMark(*this,
+                    newFirstBeat, markWidthInBeats, false));
+            }
+
+            if (affectsRightSide)
+            {
+                this->viewport.addAndMakeVisible(new RollExpandMark(*this,
+                    newLastBeat - markWidthInBeats, markWidthInBeats, false));
+            }
         }
     }
 }

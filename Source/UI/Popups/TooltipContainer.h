@@ -43,8 +43,9 @@ private:
 
     int hideTimeout = -1;
     int timeCounter = -1;
-    bool alignedToBottom = true;
     int clicksCountOnStart = 0;
+
+    static bool isAlignedToBottom();
 
     const Colour backgroundColour =
         findDefaultColour(ColourIDs::Tooltip::messageFill);

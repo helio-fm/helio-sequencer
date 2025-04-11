@@ -71,7 +71,7 @@ void RollExpandMark::updatePosition()
 
 void RollExpandMark::timerCallback()
 {
-    this->alpha *= 0.925f;
+    this->alpha *= 0.915f;
 
     if (this->alpha <= 0.02f)
     {

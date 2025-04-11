@@ -59,6 +59,7 @@ namespace UndoActionIDs
         ShiftTempoUp = 0x0090,
         ShiftTempoDown = 0x0091,
 
+        MakeChord = 0x0100,
         // ...
 
         MaxUndoActionId = 0x0100

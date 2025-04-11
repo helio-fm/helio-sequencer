@@ -27,6 +27,7 @@
 #include "MidiTrack.h"
 #include "Config.h"
 #include "ColourIDs.h"
+#include "UndoActionIDs.h"
 
 static Label *createPopupButtonLabel(const String &text)
 {
@@ -118,7 +119,7 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
     timeContext(timeContext),
     defaultChords(App::Config().getChords()->getAll())
 {
-    const auto bgColour = findDefaultColour(ColourIDs::Roll::blackKey).withMultipliedAlpha(0.5f);
+    const auto bgColour = findDefaultColour(ColourIDs::Roll::blackKey).withMultipliedAlpha(0.65f);
 
     this->centreButton = make<PopupCustomButton>(createPopupButtonLabel("+"),
         PopupButton::Shape::Circle, bgColour.withMultipliedAlpha(0.5f));
@@ -243,16 +244,22 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
             const auto chromaticOffset = targetKeyOffset - this->scaleRootKey;
             const auto scaleDegree = this->scale->getScaleKey(chromaticOffset);
 
-            static const auto degreeNames = Chord::getLocalizedDegreeNames();
-            const auto degreeName = (scaleDegree >= 0) ? degreeNames[scaleDegree] : String();
+            if (scaleDegree >= 0)
+            {
+                const auto degreeName = this->degreeNames[scaleDegree];
 
-            int periodNumber = 0;
-            auto keyName = this->roll.getTemperament()->
-                getMidiNoteName(this->targetKey + this->clip.getKey(),
-                    this->scaleRootKey, this->scaleRootKeyName, periodNumber);
+                int periodNumber = 0;
+                auto keyName = this->roll.getTemperament()->
+                    getMidiNoteName(this->targetKey + this->clip.getKey(),
+                        this->scaleRootKey, this->scaleRootKeyName, periodNumber);
 
-            auto tooltip = make<ChordTooltip>(String(), degreeName, keyName);
-            App::Layout().showTooltip(move(tooltip));
+                auto tooltip = make<ChordTooltip>(String(), degreeName, keyName);
+                App::Layout().showTooltip(move(tooltip));
+            }
+            else
+            {
+                App::Layout().hideTooltipIfAny();
+            }
         }
 
         // reset click state:
@@ -296,7 +303,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 
         if (!this->hasMadeChanges)
         {
-            this->sequence->checkpoint();
+            this->sequence->checkpoint(UndoActionIDs::MakeChord);
         }
 
         const auto temperament = this->roll.getTemperament();
@@ -306,8 +313,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
             temperament->getMidiNoteName(this->targetKey + this->clip.getKey(),
                 this->scaleRootKey, this->scaleRootKeyName, periodNumber);
 
-        static const auto degreeNames = Chord::getLocalizedDegreeNames();
-        const auto degreeName = degreeNames[scaleDegree];
+        const auto degreeName = this->degreeNames[scaleDegree];
 
         auto tooltip = make<ChordTooltip>(chord->getName(), degreeName, keyName);
         App::Layout().showTooltip(move(tooltip));
@@ -348,7 +354,7 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
 
     if (!this->hasMadeChanges)
     {
-        this->sequence->checkpoint();
+        this->sequence->checkpoint(UndoActionIDs::MakeChord);
     }
     
     const int key = jlimit(0, this->roll.getNumKeys(), this->targetKey);

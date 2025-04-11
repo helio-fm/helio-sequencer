@@ -108,9 +108,9 @@ void Chord::reset()
     this->name = {};
 }
 
-Array<String> Chord::getLocalizedDegreeNames()
+StringArray Chord::getLocalizedDegreeNames()
 {
-    static Array<String> names = {
+    return {
         TRANS(I18n::Degrees::tonic),
         TRANS(I18n::Degrees::supertonic),
         TRANS(I18n::Degrees::mediant),
@@ -119,6 +119,4 @@ Array<String> Chord::getLocalizedDegreeNames()
         TRANS(I18n::Degrees::submediant),
         TRANS(I18n::Degrees::subtonic)
     };
-
-    return names;
 }

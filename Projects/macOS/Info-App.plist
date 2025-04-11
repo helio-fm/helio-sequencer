@@ -5,6 +5,8 @@
   <dict>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.music</string>
+    <key>LSUIElement</key>
+    <true/>
     <key>NSAppTransportSecurity</key>
     <dict>
       <key>NSAllowsArbitraryLoads</key>
@@ -32,8 +34,6 @@
     <string>Peter Rudenko</string>
     <key>NSHighResolutionCapable</key>
     <true/>
-	<key>LSUIElement</key>
-	<true/>
     <key>CFBundleDocumentTypes</key>
     <array>
       <dict>

@@ -67,10 +67,15 @@ void TooltipContainer::parentSizeChanged()
     this->updatePosition();
 }
 
+bool TooltipContainer::isAlignedToBottom()
+{
+    return !App::isRunningOnPhone();
+}
+
 void TooltipContainer::updatePosition()
 {
     this->setCentrePosition(this->getParentWidth() / 2,
-        this->alignedToBottom ?
+        TooltipContainer::isAlignedToBottom() ?
         (this->getParentHeight() - Globals::UI::projectMapHeight / 2) :
         ((this->getHeight() / 2) + 8));
 }
@@ -110,21 +115,6 @@ void TooltipContainer::showWithComponent(UniquePointer<Component> newComponent,
         this->hide();
         return;
     }
-
-#if PLATFORM_MOBILE
-
-    const Point<int> callerOrigin = callerScreenBounds.getCentre();
-
-    const Point<int> topLevelOrigin =
-        this->getTopLevelComponent()->getScreenPosition();
-
-    // there's much visual less space on mobile platforms,
-    // so tooltip will try to detect a better position
-
-    this->alignedToBottom =
-        (callerOrigin - topLevelOrigin).getY() < (this->getTopLevelComponent()->getHeight() / 2);
-
-#endif
 
     this->clicksCountOnStart = Desktop::getInstance().getMouseButtonClickCounter();
     this->timeCounter = 0;

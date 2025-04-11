@@ -876,9 +876,9 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Arrow::shadowEnd, this->isDarkTheme ? Colour(0x17000000) : Colour(0x27000000));
 
     const auto tooltipFill = this->isDarkTheme ?
-        s->getPageFillColour().darker(0.45f) : s->getPageFillColour().brighter(0.15f);
+        s->getPageFillColour().darker(0.5f) : s->getPageFillColour().brighter(0.25f);
     this->setColour(ColourIDs::Tooltip::messageFill, tooltipFill);
-    this->setColour(ColourIDs::Tooltip::messageBorder, textColour.withMultipliedAlpha(0.025f));
+    this->setColour(ColourIDs::Tooltip::messageBorder, textColour.withMultipliedAlpha(0.03f));
     this->setColour(ColourIDs::Tooltip::messageText, textColour);
     this->setColour(ColourIDs::Tooltip::okIconFill, tooltipFill);
     this->setColour(ColourIDs::Tooltip::okIconForeground, textColour);
@@ -890,10 +890,12 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPageFillColour().darker(0.4f));
     this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.055f));
-    this->setColour(ColourIDs::TrackScroller::screenRangeFill, this->isDarkTheme ?
-        s->getIconBaseColour().withMultipliedAlpha(0.275f) :
-        s->getIconBaseColour().interpolatedWith(s->getLassoFillColour(), 0.5f).withMultipliedAlpha(0.275f));
-    this->setColour(ColourIDs::TrackScroller::outOfRangeFill,
+    const auto screenRangeFill = this->isDarkTheme ? s->getIconBaseColour() :
+        s->getIconBaseColour().interpolatedWith(s->getWhiteKeyColour(), 0.6f);
+    this->setColour(ColourIDs::TrackScroller::viewBeatRangeFill, screenRangeFill.withMultipliedAlpha(0.25f));
+    this->setColour(ColourIDs::TrackScroller::viewBeatRangeBorder, screenRangeFill.withMultipliedAlpha(0.125f));
+    this->setColour(ColourIDs::TrackScroller::viewRangeFill, screenRangeFill.withMultipliedAlpha(0.35f));
+    this->setColour(ColourIDs::TrackScroller::projectOutRangeFill,
         Colours::black.withAlpha(this->isDarkTheme ? 0.125f : 0.055f));
 
     this->setColour(ColourIDs::Instrument::midiIn, Colours::black.withAlpha(0.15f));
@@ -971,11 +973,11 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::noteCutMarkOutline, Colours::white.withAlpha(0.2f));
     this->setColour(ColourIDs::Roll::cuttingGuide, s->getLassoBorderColour().withAlpha(0.9f));
     this->setColour(ColourIDs::Roll::cuttingGuideOutline, s->getLassoBorderColour().contrasting().withAlpha(0.1f));
-    this->setColour(ColourIDs::Roll::draggingGuide, s->getLassoBorderColour().withAlpha(0.5f));
-    this->setColour(ColourIDs::Roll::draggingGuideShadow, s->getWhiteKeyColour().withMultipliedAlpha(0.25f));
+    this->setColour(ColourIDs::Roll::draggingGuide, s->getLassoBorderColour().withAlpha(0.45f));
+    this->setColour(ColourIDs::Roll::draggingGuideShadow, s->getBlackKeyColour().withMultipliedAlpha(0.55f));
     this->setColour(ColourIDs::Roll::resizingGuideFill, s->getSidebarFillColour());
-    this->setColour(ColourIDs::Roll::resizingGuideOutline, s->getLassoBorderColour().withAlpha(0.7f));
-    this->setColour(ColourIDs::Roll::resizingGuideShadow, s->getWhiteKeyColour().withMultipliedAlpha(0.5f));
+    this->setColour(ColourIDs::Roll::resizingGuideOutline, s->getLassoBorderColour().withAlpha(0.6f));
+    this->setColour(ColourIDs::Roll::resizingGuideShadow, s->getBlackKeyColour().withMultipliedAlpha(0.7f));
 
     this->setColour(ColourIDs::TransportControl::recordInactive, Colours::transparentBlack);
     this->setColour(ColourIDs::TransportControl::recordHighlight, Colours::red.withAlpha(0.35f));

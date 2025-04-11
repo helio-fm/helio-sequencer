@@ -173,8 +173,10 @@ namespace ColourIDs
     {
         static const int borderLineDark         = 0x2001200;
         static const int borderLineLight        = 0x2001201;
-        static const int screenRangeFill        = 0x2001202;
-        static const int outOfRangeFill         = 0x2001203;
+        static const int viewBeatRangeFill      = 0x2001202;
+        static const int viewBeatRangeBorder    = 0x2001203;
+        static const int viewRangeFill          = 0x2001204;
+        static const int projectOutRangeFill    = 0x2001205;
     }
 
     namespace SelectionComponent

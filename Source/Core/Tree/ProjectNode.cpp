@@ -585,11 +585,15 @@ void ProjectNode::load(const SerializedData &tree)
     // a hack to add some margin to project beat range,
     // then to round beats to nearest bars
     // because rolls' view ranges are rounded to bars
-    const float r = float(Globals::beatsPerBar);
-    const float viewStartWithMargin = range.getStart() - r;
-    const float viewEndWithMargin = range.getEnd() + r;
-    const float viewFirstBeat = floorf(viewStartWithMargin / r) * r;
-    const float viewLastBeat = ceilf(viewEndWithMargin / r) * r;
+#if PLATFORM_DESKTOP
+    const float viewMargin = float(Globals::beatsPerBar * 4);
+#elif PLATFORM_MOBILE
+    const float viewMargin = float(Globals::beatsPerBar);
+#endif
+    const float viewStartWithMargin = range.getStart() - viewMargin;
+    const float viewEndWithMargin = range.getEnd() + viewMargin;
+    const float viewFirstBeat = floorf(viewStartWithMargin / Globals::beatsPerBar) * Globals::beatsPerBar;
+    const float viewLastBeat = ceilf(viewEndWithMargin / Globals::beatsPerBar) * Globals::beatsPerBar;
     this->broadcastChangeViewBeatRange(viewFirstBeat, viewLastBeat);
 
     this->undoStack->deserialize(root);
@@ -716,8 +720,8 @@ void ProjectNode::importMidi(InputStream &stream)
     this->isTracksCacheOutdated = true;
     this->broadcastReloadProjectContent();
     const auto range = this->broadcastChangeProjectBeatRange();
-    this->broadcastChangeViewBeatRange(range.getStart() - Globals::beatsPerBar,
-        range.getEnd() + Globals::beatsPerBar); // adding some margin
+    this->broadcastChangeViewBeatRange(range.getStart() - Globals::beatsPerBar * 4,
+        range.getEnd() + Globals::beatsPerBar * 4); // adding some margin
 
     this->getDocument()->save();
 }
@@ -1153,7 +1157,7 @@ void ProjectNode::onResetState()
     this->lastShownTrack = nullptr;
     this->undoStack->clearUndoHistory();
     this->broadcastReloadProjectContent();
-    constexpr auto margin = Globals::beatsPerBar * 2;
+    constexpr auto margin = Globals::beatsPerBar * 4;
     const auto range = this->broadcastChangeProjectBeatRange();
     this->broadcastChangeViewBeatRange(range.getStart() - margin, range.getEnd() + margin);
 
@@ -1166,7 +1170,7 @@ void ProjectNode::onResetState()
 // Command Palette
 //===----------------------------------------------------------------------===//
 
-Array<CommandPaletteActionsProvider *> ProjectNode::getCommandPaletteActionProviders() const
+Array<CommandPaletteActionsProvider *> ProjectNode::getCommandPaletteActionProviders()
 {
     if (this->getLastFocusedRoll()->isShowing())
     {

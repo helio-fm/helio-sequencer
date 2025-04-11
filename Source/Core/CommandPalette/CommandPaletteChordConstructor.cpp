@@ -20,6 +20,7 @@
 #include "Scale.h"
 #include "PianoRoll.h"
 #include "PianoSequence.h"
+#include "UndoActionIDs.h"
 
 /*
     This tool attempts to parse chord symbols, as described in:
@@ -1612,8 +1613,13 @@ void CommandPaletteChordConstructor::previewIfNeeded()
                     CommandPaletteChordConstructor::noteLength,
                     CommandPaletteChordConstructor::noteVelocity);
 
+                if (!this->hasMadeChanges)
+                {
+                    pianoSequence->checkpoint(UndoActionIDs::MakeChord);
+                    this->hasMadeChanges = true;
+                }
+
                 pianoSequence->insert(note, true);
-                this->hasMadeChanges = true;
 
                 atLeastOneNoteShowsInViewport = atLeastOneNoteShowsInViewport ||
                     this->roll.isNoteVisible(clipKey + key, clipBeat + targetBeat,
