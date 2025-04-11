@@ -112,10 +112,13 @@ public:
     //===------------------------------------------------------------------===//
 
     Array<MidiTrack *> getTracks() const;
-    Range<float> getProjectBeatRange() const;
     StringArray getAllTrackNames() const;
+
     MidiTrack::Grouping getTrackGroupingMode() const noexcept;
     void setTrackGroupingMode(MidiTrack::Grouping mode);
+
+    Range<float> getProjectBeatRange() const;
+    static void applyDefaultViewMargin(Range<float> &projectBeatRange);
 
     //===------------------------------------------------------------------===//
     // Serializable

@@ -537,10 +537,10 @@ void RollBase::zoomRelative(const Point<float> &origin,
 
     if (shouldAutoFitViewRange)
     {
-        constexpr auto margin = Globals::beatsPerBar * 4;
-        const auto projectRange = this->project.getProjectBeatRange();
-        const auto newFirstBeat = projectRange.getStart() - margin;
-        const auto newLastBeat = projectRange.getEnd() + margin;
+        auto projectRange = this->project.getProjectBeatRange();
+        ProjectNode::applyDefaultViewMargin(projectRange);
+        const auto newFirstBeat = projectRange.getStart();
+        const auto newLastBeat = projectRange.getEnd();
         const auto affectsLeftSide = this->firstBeat < newFirstBeat;
         const auto affectsRightSide = this->lastBeat > newLastBeat;
         if (affectsLeftSide || affectsRightSide)

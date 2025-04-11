@@ -412,6 +412,18 @@ Range<float> ProjectNode::getProjectBeatRange() const
     return this->beatRange;
 }
 
+inline void ProjectNode::applyDefaultViewMargin(Range<float> &beatRange)
+{
+    // set smaller margins for shorter projects:
+    const auto length = jmax(float(Globals::Defaults::projectLength), beatRange.getLength());
+    const auto viewMargin = jlimit(float(Globals::beatsPerBar), float(Globals::beatsPerBar * 4), length / 6.f);
+    // also align the edges to nearest bars so that the grid looks nicer:
+    const auto viewStartWithMargin = beatRange.getStart() - viewMargin;
+    const auto viewEndWithMargin = beatRange.getEnd() + viewMargin;
+    beatRange.setStart(floorf(viewStartWithMargin / Globals::beatsPerBar) * Globals::beatsPerBar);
+    beatRange.setEnd(ceilf(viewEndWithMargin / Globals::beatsPerBar) * Globals::beatsPerBar);
+}
+
 Range<float> ProjectNode::calculateProjectBeatRange() const
 {
     float lastBeat = -FLT_MAX;
@@ -580,21 +592,10 @@ void ProjectNode::load(const SerializedData &tree)
     }
 
     this->broadcastReloadProjectContent();
-    const auto range = this->broadcastChangeProjectBeatRange();
 
-    // a hack to add some margin to project beat range,
-    // then to round beats to nearest bars
-    // because rolls' view ranges are rounded to bars
-#if PLATFORM_DESKTOP
-    const float viewMargin = float(Globals::beatsPerBar * 4);
-#elif PLATFORM_MOBILE
-    const float viewMargin = float(Globals::beatsPerBar);
-#endif
-    const float viewStartWithMargin = range.getStart() - viewMargin;
-    const float viewEndWithMargin = range.getEnd() + viewMargin;
-    const float viewFirstBeat = floorf(viewStartWithMargin / Globals::beatsPerBar) * Globals::beatsPerBar;
-    const float viewLastBeat = ceilf(viewEndWithMargin / Globals::beatsPerBar) * Globals::beatsPerBar;
-    this->broadcastChangeViewBeatRange(viewFirstBeat, viewLastBeat);
+    auto range = this->broadcastChangeProjectBeatRange();
+    ProjectNode::applyDefaultViewMargin(range);
+    this->broadcastChangeViewBeatRange(range.getStart(), range.getEnd());
 
     this->undoStack->deserialize(root);
 
@@ -719,9 +720,9 @@ void ProjectNode::importMidi(InputStream &stream)
     
     this->isTracksCacheOutdated = true;
     this->broadcastReloadProjectContent();
-    const auto range = this->broadcastChangeProjectBeatRange();
-    this->broadcastChangeViewBeatRange(range.getStart() - Globals::beatsPerBar * 4,
-        range.getEnd() + Globals::beatsPerBar * 4); // adding some margin
+    auto range = this->broadcastChangeProjectBeatRange();
+    ProjectNode::applyDefaultViewMargin(range);
+    this->broadcastChangeViewBeatRange(range.getStart(), range.getEnd());
 
     this->getDocument()->save();
 }
@@ -1157,9 +1158,10 @@ void ProjectNode::onResetState()
     this->lastShownTrack = nullptr;
     this->undoStack->clearUndoHistory();
     this->broadcastReloadProjectContent();
-    constexpr auto margin = Globals::beatsPerBar * 4;
-    const auto range = this->broadcastChangeProjectBeatRange();
-    this->broadcastChangeViewBeatRange(range.getStart() - margin, range.getEnd() + margin);
+
+    auto range = this->broadcastChangeProjectBeatRange();
+    ProjectNode::applyDefaultViewMargin(range);
+    this->broadcastChangeViewBeatRange(range.getStart(), range.getEnd());
 
     // during vcs operations, notifications are not sent, including tree selection changes,
     // which happen, when something is deleted, so we need to do it afterwards:
