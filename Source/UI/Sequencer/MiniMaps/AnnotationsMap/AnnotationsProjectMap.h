@@ -20,6 +20,7 @@
 #include "AnnotationEvent.h"
 #include "ProjectListener.h"
 #include "ProjectMapsScroller.h"
+#include "ComponentFader.h"
 
 class RollBase;
 class ProjectNode;
@@ -98,7 +99,7 @@ private:
 
     ProjectNode &project;
 
-    ComponentAnimator animator;
+    ComponentFader animator;
 
     const Type type;
     AnnotationComponent *createComponent(const AnnotationEvent &event);

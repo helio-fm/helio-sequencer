@@ -18,6 +18,7 @@
 #pragma once
 
 #include "IconComponent.h"
+#include "ComponentFader.h"
 #include "HighlightedComponent.h"
 
 class PlayButton final : public HighlightedComponent
@@ -41,7 +42,7 @@ private:
 
     Component *createHighlighterComponent() override;
 
-    ComponentAnimator animator;
+    ComponentFader animator;
     WeakReference<Component> eventReceiver;
     bool playing = false;
 

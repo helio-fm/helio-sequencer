@@ -218,10 +218,10 @@ void HeadlineItem::showMenuIfAny()
 
 void HeadlineItem::showContextMenuMarker()
 {
-    this->animator.fadeIn(this->menuMarker.get(), Globals::UI::fadeInLong);
+    App::fadeInComponent(this->menuMarker.get(), Globals::UI::fadeInShort);
 }
 
 void HeadlineItem::hideContextMenuMarker()
 {
-    this->animator.fadeOut(this->menuMarker.get(), Globals::UI::fadeOutLong);
+    App::fadeOutComponent(this->menuMarker.get(), Globals::UI::fadeOutShort);
 }

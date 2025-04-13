@@ -19,6 +19,7 @@
 
 #include "DraggingListBoxComponent.h"
 #include "HelioTheme.h"
+#include "ComponentFader.h"
 #include "ColourScheme.h"
 
 class IconComponent;
@@ -47,7 +48,7 @@ private:
     UniquePointer<HelioTheme> theme;
 
     ListBox &listBox;
-    ComponentAnimator selectionAnimator;
+    ComponentFader selectionAnimator;
     UniquePointer<Component> selectionComponent;
 
     Image rollImage;

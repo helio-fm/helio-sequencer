@@ -23,6 +23,7 @@
 #include "ProjectMapsScroller.h"
 #include "Temperament.h"
 #include "UserInterfaceFlags.h"
+#include "ComponentFader.h"
 
 class RollBase;
 class ProjectNode;
@@ -109,7 +110,7 @@ private:
 
     ProjectNode &project;
 
-    ComponentAnimator animator;
+    ComponentFader animator;
 
     const Type type;
     KeySignatureComponent *createComponent(const KeySignatureEvent &keySignature);

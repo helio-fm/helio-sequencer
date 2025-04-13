@@ -35,7 +35,7 @@ public:
 
     ~SoundProbeIndicator() override
     {
-        Desktop::getInstance().getAnimator().animateComponent(this,
+        App::animateComponent(this,
             this->getBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
     }
 

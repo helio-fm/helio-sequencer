@@ -42,8 +42,7 @@ NoteResizerRight::NoteResizerRight(RollBase &parentRoll) : roll(parentRoll)
 
 NoteResizerRight::~NoteResizerRight()
 {
-    Desktop::getInstance().getAnimator().animateComponent(this,
-        this->getBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
+    App::fadeOutComponent(this, Globals::UI::fadeOutShort);
 }
 
 void NoteResizerRight::paint(Graphics &g)
@@ -197,6 +196,6 @@ void NoteResizerRight::updateBounds()
 
     if (this->getAlpha() < 1.f)
     {
-        this->fader.fadeIn(this, Globals::UI::fadeInShort);
+        App::fadeInComponent(this, Globals::UI::fadeInShort);
     }
 }

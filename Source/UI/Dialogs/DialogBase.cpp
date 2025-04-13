@@ -121,20 +121,19 @@ void DialogBase::inputAttemptWhenModal()
 void DialogBase::dismiss()
 {
     this->fadeOut();
-    delete this;
+    UniquePointer<Component> deleter(this);
 }
 
 void DialogBase::fadeOut()
 {
-    auto &animator = Desktop::getInstance().getAnimator();
     if (App::isOpenGLRendererEnabled())
     {
-        animator.animateComponent(this, this->getBounds().reduced(20),
+        App::animateComponent(this, this->getBounds().reduced(20),
             0.f, Globals::UI::fadeOutLong, true, 0.0, 1.0);
     }
     else
     {
-        animator.animateComponent(this, this->getBounds(),
+        App::animateComponent(this, this->getBounds(),
             0.f, Globals::UI::fadeOutLong, true, 0.0, 1.0);
     }
 }

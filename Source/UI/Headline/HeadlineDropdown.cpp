@@ -178,7 +178,7 @@ void HeadlineDropdown::mouseExit(const MouseEvent &e)
 void HeadlineDropdown::inputAttemptWhenModal()
 {
     this->stopTimer();
-    Desktop::getInstance().getAnimator().cancelAllAnimations(false);
+    App::cancelAnimation(this);
     this->exitModalState(0);
     UniquePointer<Component> deleter(this);
 }
@@ -218,7 +218,7 @@ void HeadlineDropdown::timerCallback()
         this->stopTimer();
         this->exitModalState(0);
 
-        Desktop::getInstance().getAnimator().animateComponent(this,
+        App::animateComponent(this,
             this->getBounds(), 0.f, Globals::UI::fadeOutShort / 3, true, 0.f, 1.f);
 
         UniquePointer<Component> deleter(this);

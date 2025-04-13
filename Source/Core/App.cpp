@@ -16,6 +16,7 @@
 */
 
 #include "Common.h"
+#include "App.h"
 #include "AudioCore.h"
 #include "NetworkServices.h"
 #include "HelioTheme.h"
@@ -481,8 +482,8 @@ void App::showModalComponent(UniquePointer<Component> target)
     window->addChildComponent(target.get());
 
     target->setAlpha(0.f);
-    Desktop::getInstance().getAnimator().animateComponent(target.get(),
-        target->getBounds(), 1.f, Globals::UI::fadeInShort, false, 0.0, 1.0);
+    App::animateComponent(target.get(), target->getBounds(), 1.f,
+        Globals::UI::fadeInShort, false, 0.0, 1.0);
 
     target->toFront(false);
     target->enterModalState(true, nullptr, true);
@@ -499,6 +500,66 @@ void App::dismissAllModalComponents()
         //DBG("Dismissing a modal component");
         UniquePointer<Component> deleter(modal);
     }
+}
+
+void App::animateComponent(Component *component,
+    const Rectangle<int> &finalBounds, float finalAlpha,
+    int millisecondsToTake, bool useProxyComponent,
+    double startSpeed, double endSpeed)
+{
+    if (component == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    if (App::Config().getUiFlags()->areUiAnimationsEnabled())
+    {
+        Desktop::getInstance().getAnimator().animateComponent(component,
+            finalBounds, finalAlpha, millisecondsToTake, useProxyComponent, startSpeed, endSpeed);
+    }
+    else
+    {
+        component->setAlpha(finalAlpha);
+        component->setBounds(finalBounds);
+        component->setVisible(finalAlpha > 0);
+    }
+}
+
+void App::fadeInComponent(Component *component, int millisecondsToTake)
+{
+    if (component == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    if (!(component->isVisible() && component->getAlpha() == 1.f))
+    {
+        component->setAlpha(0.f);
+        component->setVisible(true);
+        App::animateComponent(component, component->getBounds(), 1.f, millisecondsToTake, false, 1.0, 0.0);
+    }
+}
+
+void App::fadeOutComponent(Component *component, int millisecondsToTake)
+{
+    if (component == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    if (component->isVisible())
+    {
+        App::animateComponent(component, component->getBounds(), 0.f, millisecondsToTake, true, 0.0, 1.0);
+        component->setVisible(false);
+    }
+}
+
+void App::cancelAnimation(Component *component)
+{
+    Desktop::getInstance().getAnimator().cancelAnimation(component, false);
 }
 
 bool App::isOpenGLRendererEnabled() noexcept
@@ -625,6 +686,8 @@ void App::shutdown()
 {
     if (this->runMode == RunMode::Normal)
     {
+        Desktop::getInstance().getAnimator().cancelAllAnimations(false);
+
         this->config->getUiFlags()->removeListener(this);
 
         DBG("Shutting down");

@@ -23,7 +23,6 @@ class ProgressIndicator;
 #include "Revision.h"
 #include "RevisionItem.h"
 #include "HeadlineItemDataSource.h"
-#include "ComponentFader.h"
 #include "SeparatorHorizontalFadingReversed.h"
 
 class StageComponent final : public Component,

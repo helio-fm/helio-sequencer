@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "SpectralLogo.h"
-#include "ComponentFader.h"
 #include "ColourIDs.h"
 
 SpectralLogo::SpectralLogo()
@@ -156,7 +155,7 @@ inline Path SpectralLogo::Band::buildPath(float valueInY,
         float newProgress = msElapsed / Band::bandFadeTimeMs;
         if (newProgress >= 0.f && newProgress < 1.f)
         {
-            newProgress = ComponentFader::timeToDistance(newProgress);
+            newProgress = SpectralLogo::timeToDistance(newProgress);
             jassert(newProgress >= this->valueDecay);
             const float delta = (newProgress - this->valueDecay) / (1.f - this->valueDecay);
             this->valueDecay = newProgress;
@@ -180,7 +179,7 @@ inline Path SpectralLogo::Band::buildPath(float valueInY,
         float newProgress = msElapsed / Band::peakFadeTimeMs;
         if (newProgress >= 0.f && newProgress < 1.f)
         {
-            newProgress = ComponentFader::timeToDistance(newProgress);
+            newProgress = SpectralLogo::timeToDistance(newProgress);
             jassert(newProgress >= this->peakDecay);
             const float delta = (newProgress - this->peakDecay) / (1.f - this->peakDecay);
             this->peakDecayColour = (newProgress * newProgress * newProgress) * Band::peakMaxAlpha;

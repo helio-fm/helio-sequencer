@@ -18,6 +18,7 @@
 #pragma once
 
 #include "MenuItemComponent.h"
+#include "ComponentFader.h"
 
 struct MenuPanelUtils final
 {
@@ -91,7 +92,7 @@ private:
 
 private:
 
-    ComponentAnimator animator;
+    ComponentFader animator;
 
     bool shouldResizeToFitContent = false;
     AnimationType lastAnimationType = AnimationType::None;

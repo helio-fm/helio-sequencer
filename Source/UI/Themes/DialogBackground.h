@@ -19,10 +19,7 @@
 
 #include "CommandIDs.h"
 
-// Used by modal dialogs, supposed to be unowned
-// and deletes itself after a fadeout animation
-
-class DialogBackground final : public Component, private Timer
+class DialogBackground final : public Component
 {
 public:
     
@@ -31,15 +28,13 @@ public:
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
         this->setWantsKeyboardFocus(false);
-        this->startTimerHz(60);
     }
     
     void handleCommandMessage(int commandId) override
     {
         if (commandId == CommandIDs::DismissDialog)
         {
-            this->appearMode = false;
-            this->startTimerHz(60);
+            UniquePointer<Component> deleter(this);
         }
     }
 
@@ -55,39 +50,8 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(Colours::black.withAlpha(this->alpha));
+        g.setColour(Colours::black.withAlpha(0.025f));
         g.fillRect(this->getLocalBounds()); 
     }
 
-private:
-
-    static constexpr auto alphaStep = 0.01f;
-    static constexpr auto maxAlpha = 0.05f;
-
-    void timerCallback() override
-    {
-        if (this->appearMode)
-        {
-            this->alpha += alphaStep;
-            this->repaint();
-
-            if (this->alpha >= maxAlpha)
-            {
-                this->stopTimer();
-            }
-        }
-        else
-        {
-            this->alpha -= alphaStep;
-            this->repaint();
-
-            if (this->alpha <= alphaStep)
-            {
-                delete this;
-            }
-        }
-    }
-
-    bool appearMode = true;
-    float alpha = 0.f;
 };

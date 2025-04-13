@@ -22,7 +22,6 @@ class NoteComponent;
 class Lasso;
 
 #include "IconComponent.h"
-#include "ComponentFader.h"
 #include "ColourIDs.h"
 
 class NoteResizerRight final : public Component
@@ -49,7 +48,6 @@ private:
     RollBase &roll;
     SafePointer<NoteComponent> groupResizerNote;
 
-    ComponentFader fader;
     ComponentDragger dragger;
 
     UniquePointer<IconComponent> resizeIcon;

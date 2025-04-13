@@ -22,6 +22,7 @@ class HeadlineContextMenuController;
 #include "RevisionItem.h"
 #include "DraggingListBoxComponent.h"
 #include "SeparatorHorizontal.h"
+#include "ComponentFader.h"
 
 class RevisionItemComponent final : public DraggingListBoxComponent
 {
@@ -46,7 +47,7 @@ public:
 
 private:
 
-    mutable ComponentAnimator selectionAnimator;
+    mutable ComponentFader selectionAnimator;
 
     void invertSelection() const;
     bool isSelected() const;

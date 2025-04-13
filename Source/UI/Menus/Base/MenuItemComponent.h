@@ -20,6 +20,7 @@
 #include "Icons.h"
 #include "IconButton.h"
 #include "DraggingListBoxComponent.h"
+#include "ComponentFader.h"
 #include "ColourIDs.h"
 
 class IconComponent;
@@ -157,7 +158,7 @@ private:
 
     Array<UniquePointer<IconButton>> buttons;
 
-    ComponentAnimator animator;
+    ComponentFader animator;
 
     Component *createHighlighterComponent() override;
 

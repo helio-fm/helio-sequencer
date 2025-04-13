@@ -121,12 +121,11 @@ HeadlineContextMenuController::HeadlineContextMenuController(Component &owner) :
 void HeadlineContextMenuController::showMenu(const MouseEvent &e, int delay)
 {
 #if PLATFORM_DESKTOP
-    //if (!e.mods.isRightButtonDown())
-    //{
-    //    return;
-    //}
-
-    jassert(e.mods.isRightButtonDown());
+    if (!e.mods.isRightButtonDown())
+    {
+        jassertfalse;
+        return;
+    }
 
     this->menuPosition = e.getEventRelativeTo(&App::Layout()).getPosition();
 

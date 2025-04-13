@@ -50,7 +50,7 @@ int ModalCallout::getBorderSize() const noexcept
 
 void ModalCallout::fadeIn()
 {
-    Desktop::getInstance().getAnimator().animateComponent(this,
+    App::animateComponent(this,
         this->getBounds(), 1.f, Globals::UI::fadeInLong, false, 0.0, 0.0);
 }
 
@@ -60,7 +60,7 @@ void ModalCallout::fadeOut()
     const auto offset = this->targetPoint - this->getBounds().getCentre().toFloat();
     const auto offsetNormalized = (offset / offset.getDistanceFromOrigin() * reduceBy).toInt();
     
-    Desktop::getInstance().getAnimator().animateComponent(this,
+    App::animateComponent(this,
         this->getBounds().reduced(reduceBy).translated(offsetNormalized.getX(), offsetNormalized.getY()),
         0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
 }

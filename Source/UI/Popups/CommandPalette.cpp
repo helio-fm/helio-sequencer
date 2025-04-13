@@ -364,21 +364,20 @@ void CommandPalette::textEditorFocusLost(TextEditor &)
 void CommandPalette::dismiss()
 {
     this->fadeOut();
-    delete this;
+    UniquePointer<Component> deleter(this);
 }
 
 void CommandPalette::fadeOut()
 {
-    auto &animator = Desktop::getInstance().getAnimator();
     if (App::isOpenGLRendererEnabled())
     {
-        animator.animateComponent(this,
+        App::animateComponent(this,
             this->getBounds().reduced(10).translated(0, -10),
             0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
     }
     else
     {
-        animator.animateComponent(this, this->getBounds(),
+        App::animateComponent(this, this->getBounds(),
             0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
     }
 }

@@ -27,7 +27,6 @@ class MultiTouchController;
 #include "ProjectListener.h"
 #include "MultiTouchListener.h"
 #include "RollListener.h"
-#include "ComponentFader.h"
 #include "ColourIDs.h"
 
 class ProjectMapsScroller final :

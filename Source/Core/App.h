@@ -83,6 +83,14 @@ public:
     static void showModalComponent(UniquePointer<Component> target);
     static void dismissAllModalComponents();
 
+    static void animateComponent(Component *component,
+        const Rectangle<int> &finalBounds, float finalAlpha,
+        int millisecondsToTake, bool useProxyComponent,
+        double startSpeed, double endSpeed);
+    static void fadeInComponent(Component *component, int millisecondsToTake);
+    static void fadeOutComponent(Component *component, int millisecondsToTake);
+    static void cancelAnimation(Component *component);
+
 private:
 
     //===------------------------------------------------------------------===//

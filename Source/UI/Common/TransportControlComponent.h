@@ -23,6 +23,7 @@ class LongTapController;
 
 #include "LongTapListener.h"
 #include "IconComponent.h"
+#include "ComponentFader.h"
 #include "CommandIDs.h"
 
 class TransportControlComponent final : public Component, public LongTapListener
@@ -67,7 +68,7 @@ private:
     UniquePointer<IconComponent> stopIcon;
     UniquePointer<IconComponent> recordIcon;
 
-    ComponentAnimator animator;
+    ComponentFader animator;
     UniquePointer<Timer> recordButtonBlinkAnimator;
 
     UniquePointer<LongTapController> longTapController;

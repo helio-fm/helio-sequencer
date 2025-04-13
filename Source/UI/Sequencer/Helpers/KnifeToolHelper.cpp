@@ -30,7 +30,7 @@ KnifeToolHelper::KnifeToolHelper(RollBase &roll) : roll(roll)
 
 KnifeToolHelper::~KnifeToolHelper()
 {
-    Desktop::getInstance().getAnimator().animateComponent(this,
+    App::animateComponent(this,
         this->getBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
 }
 
@@ -88,7 +88,7 @@ void KnifeToolHelper::updateCutMarks()
 
 void KnifeToolHelper::fadeIn()
 {
-    Desktop::getInstance().getAnimator().animateComponent(this,
+    App::animateComponent(this,
         this->getBounds(), 1.f, Globals::UI::fadeInShort, false, 0.0, 0.0);
 }
 

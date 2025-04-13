@@ -17,6 +17,9 @@
 
 #pragma once
 
+#include "Config.h"
+#include "UserInterfaceFlags.h"
+
 // Simply a shortcut wrapper for convenience
 class ComponentFader final : public ComponentAnimator
 {
@@ -24,31 +27,69 @@ public:
 
     ComponentFader() = default;
 
-    // Always uses proxy component
     void fadeOut(Component *component, int millisecondsToTake)
     {
-        if (component != nullptr)
+        if (component == nullptr)
         {
-            this->animateComponent(component, component->getBounds(), 0.0f, millisecondsToTake, true, 1.0, 1.0);
-            component->setVisible(false);
+            jassertfalse;
+            return;
         }
+
+        if (App::Config().getUiFlags()->areUiAnimationsEnabled())
+        {
+            ComponentAnimator::animateComponent(component,
+                component->getBounds(), 0.f, millisecondsToTake, true, 0.0, 1.0);
+        }
+
+        component->setVisible(false);
     }
 
     void fadeIn(Component *component, int millisecondsToTake)
     {
-        if (component != nullptr && !(component->isVisible() && component->getAlpha() == 1.0f))
+        if (component == nullptr)
         {
-            component->setAlpha(0.0f);
-            component->setVisible(true);
-            this->animateComponent(component, component->getBounds(), 1.0f, millisecondsToTake, false, 1.0, 1.0);
+            jassertfalse;
+            return;
+        }
+
+        if (!(component->isVisible() && component->getAlpha() == 1.f))
+        {
+            if (App::Config().getUiFlags()->areUiAnimationsEnabled())
+            {
+                component->setAlpha(0.f);
+                component->setVisible(true);
+                ComponentAnimator::animateComponent(component,
+                    component->getBounds(), 1.f, millisecondsToTake, false, 1.0, 0.0);
+            }
+            else
+            {
+                component->setAlpha(1.f);
+                component->setVisible(true);
+            }
         }
     }
 
-    static float timeToDistance(float time, float startSpeed = 0.f,
-        float midSpeed = 2.f, float endSpeed = 0.f) noexcept
+    void animateComponent(Component *component,
+        const Rectangle<int> &finalBounds,
+        float finalAlpha, int millisecondsToTake,
+        bool useProxyComponent, double startSpeed, double endSpeed)
     {
-        return (time < 0.5f) ? time * (startSpeed + time * (midSpeed - startSpeed))
-            : 0.5f * (startSpeed + 0.5f * (midSpeed - startSpeed))
-            + (time - 0.5f) * (midSpeed + (time - 0.5f) * (endSpeed - midSpeed));
+        if (component == nullptr)
+        {
+            jassertfalse;
+            return;
+        }
+
+        if (App::Config().getUiFlags()->areUiAnimationsEnabled())
+        {
+            ComponentAnimator::animateComponent(component,
+                finalBounds, finalAlpha, millisecondsToTake, useProxyComponent, startSpeed, endSpeed);
+        }
+        else
+        {
+            component->setAlpha(finalAlpha);
+            component->setBounds(finalBounds);
+            component->setVisible(finalAlpha > 0);
+        }
     }
 };

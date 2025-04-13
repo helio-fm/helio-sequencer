@@ -18,6 +18,7 @@
 #pragma once
 
 #include "ColourIDs.h"
+#include "ComponentFader.h"
 
 class TooltipContainer final : public Component, private Timer
 {
@@ -52,14 +53,14 @@ private:
     const Colour borderColour =
         findDefaultColour(ColourIDs::Tooltip::messageBorder);
 
-    ComponentAnimator animator;
+    ComponentFader animator;
 
     void timerCallback() override;
     void updatePosition();
 
     UniquePointer<Component> tooltipComponent;
 
-    static constexpr auto timerMs = 100;
+    static constexpr auto timerMs = 200;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TooltipContainer)
 };

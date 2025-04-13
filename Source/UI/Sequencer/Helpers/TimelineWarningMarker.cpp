@@ -73,6 +73,6 @@ float TimelineWarningMarker::getEndBeat() const noexcept
 
 void TimelineWarningMarker::setEndBeat(float beat)
 {
-    this->endBeat = jmax(beat,  this->startBeat + TimelineWarningMarker::minSizeInBeats);
+    this->endBeat = jmax(beat, this->startBeat + TimelineWarningMarker::minSizeInBeats);
     this->updateBounds();
 }

@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "ComponentFader.h"
+
 class HighlightedComponent : virtual public Component
 {
 public:
@@ -122,7 +124,7 @@ private:
     bool highlighted = false;
     
     UniquePointer<Component> highlighter;
-    ComponentAnimator highlightAnimator;
+    ComponentFader highlightAnimator;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighlightedComponent)
 };

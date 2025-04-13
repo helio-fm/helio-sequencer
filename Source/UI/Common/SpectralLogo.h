@@ -70,6 +70,15 @@ private:
     
     void timerCallback() override;
     
+    static float timeToDistance(float time, float startSpeed = 0.f,
+        float midSpeed = 2.f, float endSpeed = 0.f) noexcept
+    {
+        return (time < 0.5f) ?
+            time * (startSpeed + time * (midSpeed - startSpeed)) :
+            0.5f * (startSpeed + 0.5f * (midSpeed - startSpeed)) +
+                (time - 0.5f) * (midSpeed + (time - 0.5f) * (endSpeed - midSpeed));
+    }
+
     const Colour colour = findDefaultColour(ColourIDs::Logo::fill);
 
     OwnedArray<SpectralLogo::Band> bands;

@@ -62,9 +62,8 @@ void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
     this->lastAnimationType = animationType;
     this->shouldResizeToFitContent = adjustsWidth;
 
-    const auto animationsEnabled = App::Config().getUiFlags()->areUiAnimationsEnabled();
-    const auto fadeInTime = animationsEnabled ? Globals::UI::fadeInShort : 1;
-    const auto fadeOutTime = animationsEnabled ? Globals::UI::fadeOutShort : 1;
+    constexpr auto fadeInTime = Globals::UI::fadeInShort;
+    constexpr auto fadeOutTime = Globals::UI::fadeOutShort;
 
     // If has new commands, fade out old list and create a new one
     const bool receivedNewCommands = commands != this->menu;

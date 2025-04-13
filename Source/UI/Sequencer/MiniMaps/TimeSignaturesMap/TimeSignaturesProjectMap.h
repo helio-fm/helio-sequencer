@@ -25,6 +25,7 @@ class TimeSignatureComponent;
 #include "TimeSignatureEvent.h"
 #include "TimeSignaturesAggregator.h"
 #include "ProjectMapsScroller.h"
+#include "ComponentFader.h"
 
 class TimeSignaturesProjectMap final :
     public ProjectMapsScroller::ScrolledComponent,
@@ -83,7 +84,7 @@ private:
 
     ProjectNode &project;
     
-    ComponentAnimator animator;
+    ComponentFader animator;
 
     const Type type;
     TimeSignatureComponent *createComponent();

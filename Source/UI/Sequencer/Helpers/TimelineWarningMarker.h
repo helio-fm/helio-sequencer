@@ -17,8 +17,6 @@
 
 #pragma once
 
-#include "ComponentFader.h"
-
 class RollBase;
 
 class TimelineWarningMarker final : public Component

@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "Headline.h"
-
 #include "HeadlineItem.h"
 #include "HelioTheme.h"
 #include "MainLayout.h"
@@ -40,27 +39,12 @@ Headline::Headline()
     this->consoleButton->setVisible(App::isUsingNativeTitleBar());
 #endif
 
-    auto *uiFlags = App::Config().getUiFlags();
-    this->onUiAnimationsFlagChanged(uiFlags->areUiAnimationsEnabled());
-    uiFlags->addListener(this);
-
     this->setSize(100, Globals::UI::headlineHeight);
 }
 
 Headline::~Headline()
 {
-    App::Config().getUiFlags()->removeListener(this);
     this->chain.clearQuick(true);
-}
-
-//===----------------------------------------------------------------------===//
-// UserInterfaceFlags::Listener
-//===----------------------------------------------------------------------===//
-
-void Headline::onUiAnimationsFlagChanged(bool animationsEnabled)
-{
-    this->fadeInTimeMs = animationsEnabled ? Globals::UI::fadeInLong : 1;
-    this->fadeOutTimeMs = animationsEnabled ? Globals::UI::fadeOutShort : 1;
 }
 
 //===----------------------------------------------------------------------===//
@@ -148,7 +132,7 @@ void Headline::handleAsyncUpdate()
     {
         const auto finalPos = this->selectionItem->getBounds().withX(posX - Headline::itemsOverlapOffset);
         this->animator.cancelAnimation(this->selectionItem.get(), false);
-        this->animator.animateComponent(this->selectionItem.get(), finalPos, 1.f, this->fadeInTimeMs, false, 1.0, 0.0);
+        this->animator.animateComponent(this->selectionItem.get(), finalPos, 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
         this->selectionItem->toBack();
         this->navPanel->toFront(false);
     }
@@ -211,7 +195,7 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
         const auto child = this->chain[i];
         const auto finalPos = child->getBounds().withX(fadePositionX - child->getWidth());
         this->animator.cancelAnimation(child, false);
-        this->animator.animateComponent(child, finalPos, startingAlpha, this->fadeOutTimeMs, true, 0.0, 1.0);
+        this->animator.animateComponent(child, finalPos, startingAlpha, Globals::UI::fadeOutShort, true, 0.0, 1.0);
         this->chain.remove(i, true);
     }
 
@@ -228,7 +212,7 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
         child->toBack();
         const auto finalPos = child->getBounds().withX(lastPosX - Headline::itemsOverlapOffset);
         lastPosX += child->getWidth() - Headline::itemsOverlapOffset;
-        this->animator.animateComponent(child, finalPos, 1.f, this->fadeInTimeMs, false, 1.0, 0.0);
+        this->animator.animateComponent(child, finalPos, 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
     }
 
     this->navPanel->toFront(false);
@@ -263,7 +247,7 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
     this->selectionItem->toBack();
     const auto finalPos = this->selectionItem->getBounds().withX(x);
     this->animator.animateComponent(this->selectionItem.get(), finalPos,
-        1.f, this->fadeInTimeMs, false, 1.0, 0.0);
+        1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
 
     this->navPanel->toFront(false);
 }
@@ -277,7 +261,7 @@ void Headline::hideSelectionMenu()
         const auto finalPos = this->selectionItem->getBounds().withX(Headline::rootNodeOffset);
         this->animator.cancelAnimation(this->selectionItem.get(), false);
         this->animator.animateComponent(this->selectionItem.get(), finalPos,
-            this->getAlphaForAnimation(), this->fadeOutTimeMs, true, 0.0, 1.0);
+            this->getAlphaForAnimation(), Globals::UI::fadeOutShort, true, 0.0, 1.0);
         this->selectionItem = nullptr;
     }
 }

@@ -30,7 +30,7 @@ TooltipContainer::TooltipContainer()
 
     if (App::isRunningOnPhone())
     {
-        this->setSize(450, 36);
+        this->setSize(450, 42);
     }
     else
     {

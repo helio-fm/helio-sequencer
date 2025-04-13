@@ -20,15 +20,14 @@
 #include "TreeNode.h"
 #include "NavigationHistory.h"
 #include "HeadlineNavigationPanel.h"
-#include "UserInterfaceFlags.h"
+#include "ComponentFader.h"
 
 class IconButton;
 class HeadlineItem;
 class HeadlineItemDataSource;
 
 class Headline final : public Component,
-    public AsyncUpdater, // called when any child needs to be updated
-    public UserInterfaceFlags::Listener
+    public AsyncUpdater // called when any child needs to be updated
 {
 public:
 
@@ -52,12 +51,6 @@ public:
     void resized() override;
     void handleCommandMessage(int commandId) override;
 
-    //===------------------------------------------------------------------===//
-    // UserInterfaceFlags::Listener
-    //===------------------------------------------------------------------===//
-
-    void onUiAnimationsFlagChanged(bool enabled) override;
-
 private:
 
     // A way to receive a single coalesced update from multiple signaling sub-items:
@@ -65,9 +58,7 @@ private:
     int rebuildChain(WeakReference<TreeNode> leaf);
     int getChainWidth() const noexcept;
 
-    ComponentAnimator animator;
-    int fadeInTimeMs = Globals::UI::fadeInLong;
-    int fadeOutTimeMs = Globals::UI::fadeOutShort;
+    ComponentFader animator;
 
     OwnedArray<HeadlineItem> chain;
 

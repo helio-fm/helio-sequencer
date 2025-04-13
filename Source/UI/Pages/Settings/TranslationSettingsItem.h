@@ -19,6 +19,7 @@
 
 #include "DraggingListBoxComponent.h"
 #include "SeparatorHorizontal.h"
+#include "ComponentFader.h"
 
 class TranslationSettingsItem final : public DraggingListBoxComponent
 {
@@ -37,7 +38,7 @@ private:
 
     Component *createHighlighterComponent() override;
 
-    ComponentAnimator selectionAnimator;
+    ComponentFader selectionAnimator;
     UniquePointer<Component> selectionComponent;
 
     friend class TranslationSettings;

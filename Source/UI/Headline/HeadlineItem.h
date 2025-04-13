@@ -19,7 +19,6 @@
 
 #include "HeadlineItemArrow.h"
 #include "HeadlineItemDataSource.h"
-#include "ComponentFader.h"
 #include "ColourIDs.h"
 
 class HeadlineContextMenuMarker;
@@ -52,7 +51,6 @@ private:
     void changeListenerCallback(ChangeBroadcaster *source) override;
     void showMenuIfAny();
 
-    ComponentFader animator;
     UniquePointer<HeadlineContextMenuMarker> menuMarker;
 
     WeakReference<HeadlineItemDataSource> dataSource;

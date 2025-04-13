@@ -32,23 +32,23 @@ CutPointMark::CutPointMark(SafePointer<Component> targetComponent, float absPosX
 
 CutPointMark::~CutPointMark()
 {
-    Desktop::getInstance().getAnimator().cancelAnimation(this, false);
+    App::cancelAnimation(this);
     if (this->initialized)
     {
-        Desktop::getInstance().getAnimator().animateComponent(this,this->getBounds(), 0.f,
-            Globals::UI::fadeOutShort, true, 0.0, 0.0);
+        App::animateComponent(this,
+            this->getBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
     }
 }
 
 void CutPointMark::fadeIn()
 {
-    Desktop::getInstance().getAnimator().animateComponent(this,
+    App::animateComponent(this,
         this->getBounds(), 1.f, Globals::UI::fadeInShort, false, 0.0, 0.0);
 }
 
 void CutPointMark::updateBounds(bool forceNoAnimation)
 {
-    Desktop::getInstance().getAnimator().cancelAnimation(this, false);
+    App::cancelAnimation(this);
 
     if (this->absPosX <= 0.f || this->absPosX >= 1.f)
     {
@@ -74,7 +74,7 @@ void CutPointMark::updateBounds(bool forceNoAnimation)
         }
         else
         {
-            Desktop::getInstance().getAnimator().animateComponent(this, newBounds, 1.f, 20, false, 1.0, 0.0);
+            App::animateComponent(this, newBounds, 1.f, 20, false, 1.0, 0.0);
         }
     }
 }
@@ -176,7 +176,7 @@ AutomationEditorCutPointMark::AutomationEditorCutPointMark(SafePointer<Component
 
 void AutomationEditorCutPointMark::updateBounds(bool forceNoAnimation /*= false*/)
 {
-    Desktop::getInstance().getAnimator().cancelAnimation(this, false);
+    App::cancelAnimation(this);
 
     if (this->absPosX <= 0.f || this->absPosX >= 1.f)
     {
@@ -202,7 +202,7 @@ void AutomationEditorCutPointMark::updateBounds(bool forceNoAnimation /*= false*
         }
         else
         {
-            Desktop::getInstance().getAnimator().animateComponent(this, newBounds, 1.f, 20, false, 1.0, 0.0);
+            App::animateComponent(this, newBounds, 1.f, 20, false, 1.0, 0.0);
         }
     }
 }

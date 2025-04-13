@@ -25,7 +25,6 @@ class TooltipContainer;
 class InitScreen;
 
 #include "CommandPaletteModel.h"
-#include "ComponentFader.h"
 #include "HotkeyScheme.h"
 #include "TreeNode.h"
 
