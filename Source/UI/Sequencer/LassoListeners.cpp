@@ -190,10 +190,19 @@ PianoRollSelectionRangeIndicatorController::~PianoRollSelectionRangeIndicatorCon
 
 void PianoRollSelectionRangeIndicatorController::changeListenerCallback(ChangeBroadcaster *source)
 {
+    if (!this->roll.isEnabled())
+    {
+        return;
+    }
+
     const auto numSelected = this->lasso->getNumSelected();
     const auto hasSelection = numSelected > 0;
 
-    jassert(!hasSelection || this->roll.getActiveClip().isValid());
+    if (hasSelection && !this->roll.getActiveClip().isValid())
+    {
+        jassertfalse;
+        return;
+    }
 
     auto lastBeat = hasSelection ? std::numeric_limits<float>::lowest() : 0.f;
     auto firstBeat = hasSelection ? std::numeric_limits<float>::max() : 0.f;
@@ -236,6 +245,11 @@ PatternRollSelectionRangeIndicatorController::~PatternRollSelectionRangeIndicato
 
 void PatternRollSelectionRangeIndicatorController::changeListenerCallback(ChangeBroadcaster *source)
 {
+    if (!this->roll.isEnabled())
+    {
+        return;
+    }
+
     const auto numSelected = this->lasso->getNumSelected();
 
     auto lastBeat = numSelected > 0 ? std::numeric_limits<float>::lowest() : 0.f;
