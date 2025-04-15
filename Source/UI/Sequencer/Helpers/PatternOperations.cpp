@@ -266,9 +266,8 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
     if (auto *pianoTrack = dynamic_cast<PianoTrackNode *>(track))
     {
         auto *sequence = static_cast<PianoSequence *>(track->getSequence());
-        if (sequence->isEmpty() ||
-            sequence->getFirstBeat() >= cutBeat ||
-            sequence->getLastBeat() <= cutBeat)
+        if (sequence->getFirstBeat() >= cutBeat ||
+            (!sequence->isEmpty() && sequence->getLastBeat() <= cutBeat))
         {
             jassertfalse;
             return;
@@ -307,13 +306,18 @@ void PatternOperations::cutClip(ProjectNode &project, const Clip &clip,
             }
         }
 
-        jassert(!eventsToAdd.isEmpty());
+        jassert(!eventsToAdd.isEmpty() || sequence->isEmpty());
         const auto newTrack = SequencerOperations::createPianoTrack(eventsToAdd, clip.getPattern());
 
+        Array<Clip> clipsBefore;
+        Array<Clip> clipsAfter;
         for (auto *newClip : newTrack->getPattern()->getClips())
         {
-            newTrack->getPattern()->change(*newClip, newClip->withDeltaBeat(cutBeat), false);
+            clipsBefore.add(*newClip);
+            clipsAfter.add(newClip->withDeltaBeat(cutBeat));
         }
+
+        newTrack->getPattern()->changeGroup(clipsBefore, clipsAfter, false);
 
         const auto trackTemplate = newTrack->serialize();
 
