@@ -76,6 +76,7 @@ public:
     static String translate(const String &plural, int64 number);
 
     static void recreateLayout();
+    static bool isWorkspaceInitialized() noexcept;
     static bool isOpenGLRendererEnabled() noexcept;
     static bool isUsingNativeTitleBar() noexcept;
     static void setTitleBarComponent(WeakReference<Component> titleComponent);

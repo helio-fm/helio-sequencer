@@ -327,7 +327,7 @@ MenuPanel::Menu PatternRollSelectionMenu::makeInstrumentSelectionMenu()
     const auto &audioCore = App::Workspace().getAudioCore();
     const auto instruments = audioCore.getInstrumentsExceptInternal();
 
-    Array<MidiTrack *> uniqueTracks;
+    Array<WeakReference<MidiTrack>> uniqueTracks;
     StringArray uniqueInstrumentIds;
     for (int i = 0; i < this->lasso->getNumSelected(); ++i)
     {
@@ -352,13 +352,17 @@ MenuPanel::Menu PatternRollSelectionMenu::makeInstrumentSelectionMenu()
             {
                 //DBG(instrumentId);
                 bool haveCheckpoint = false;
-                for (auto *track : uniqueTracks)
+                for (auto &track : uniqueTracks)
                 {
+                    auto *trackNode = dynamic_cast<MidiTrackNode *>(track.get());
+                    if (trackNode == nullptr)
+                    {
+                        jassertfalse;
+                        continue;
+                    }
+
                     if (instrumentId != track->getTrackInstrumentId())
                     {
-                        auto *trackNode = dynamic_cast<MidiTrackNode *>(track);
-                        jassert(trackNode != nullptr);
-
                         auto *project = trackNode->getProject();
 
                         if (!haveCheckpoint)

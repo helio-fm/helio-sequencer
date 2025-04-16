@@ -156,6 +156,16 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
 
 ChordPreviewTool::~ChordPreviewTool()
 {
+#if PLATFORM_MOBILE
+    if (!App::isWorkspaceInitialized())
+    {
+        // this can happen when the app is manually shut down
+        // while this modal component is still showing,
+        // and the workspace doesn't exist at this point:
+        return;
+    }
+#endif
+
     this->stopSound();
 }
 

@@ -91,7 +91,11 @@ public:
             {
                 this->samplePaths[i]->setAlpha(1.f);
                 this->samplePaths[i]->setInterceptsMouseClicks(true, true);
+#if JUCE_IOS
+                this->samplePaths[i]->setText(File(customSample->second).getFileName());
+#else
                 this->samplePaths[i]->setText(customSample->second);
+#endif
             }
             else
             {

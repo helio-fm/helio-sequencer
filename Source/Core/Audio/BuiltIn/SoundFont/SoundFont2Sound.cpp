@@ -1137,16 +1137,26 @@ int SoundFont2Sound::getNumPresets() const
 
 String SoundFont2Sound::getPresetName(int whichSubsound) const
 {
-    Preset *preset = this->presets[whichSubsound];
     String result;
-
-    if (preset->bank != 0)
+    if (whichSubsound < 0 || whichSubsound >= this->presets.size())
     {
-        result += preset->bank;
-        result += "/";
+        jassertfalse;
+        return result;
     }
-    result += preset->preset;
-    result += ": ";
+    
+    Preset *preset = this->presets[whichSubsound];
+    if (this->presets.size() > 1)
+    {
+        if (preset->bank > 0)
+        {
+            result += String(preset->bank);
+            result += "/";
+        }
+
+        result += String(preset->preset);
+        result += ": ";
+    }
+
     result += preset->name;
     return result;
 }

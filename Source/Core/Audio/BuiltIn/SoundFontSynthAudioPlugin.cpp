@@ -64,7 +64,6 @@ public:
     void syncDataWithAudioPlugin()
     {
         const auto numPrograms = this->audioPlugin->getNumPrograms();
-        const auto currentProgram = this->audioPlugin->getCurrentProgram();
 
         const bool hasPresetSelection = numPrograms > 1;
         this->programNameLabel->setVisible(hasPresetSelection);
@@ -84,7 +83,11 @@ public:
         {
             this->filePathEditor->setAlpha(1.f);
             this->filePathEditor->setInterceptsMouseClicks(true, true);
+#if JUCE_IOS
+            this->filePathEditor->setText(File(synthParams.filePath).getFileName());
+#else
             this->filePathEditor->setText(synthParams.filePath);
+#endif
         }
         else
         {

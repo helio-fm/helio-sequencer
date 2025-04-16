@@ -169,6 +169,12 @@ void InstrumentNode::recreateChildrenEditors()
 {
     this->deleteAllChildren();
 
+    if (this->instrument == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
     for (int i = 0; i < this->instrument->getNumNodes(); ++i)
     {
         const auto node = this->instrument->getNode(i);

@@ -567,6 +567,13 @@ bool App::isOpenGLRendererEnabled() noexcept
     return static_cast<App *>(getInstance())->window->openGLContext != nullptr;
 }
 
+bool App::isWorkspaceInitialized() noexcept
+{
+    auto *self = dynamic_cast<App *>(getInstance());
+    return self != nullptr &&
+        self->workspace != nullptr && self->workspace->isInitialized();
+}
+
 bool App::isUsingNativeTitleBar() noexcept
 {
 #if JUCE_WINDOWS || JUCE_LINUX
@@ -911,6 +918,13 @@ void App::onUiScaleChanged(float scale)
     const bool hasNativeTitleBar = App::isUsingNativeTitleBar();
 
     auto *self = static_cast<App *>(getInstance());
+    
+#if JUCE_IOS
+    // iOS will crash without this:
+    Desktop::getInstance().setKioskModeComponent(nullptr);
+    // (on Android it will do nothing except blink the screen)
+#endif
+
     self->window = make<MainWindow>();
     self->window->initialise(hasOpenGl, hasNativeTitleBar);
 }
