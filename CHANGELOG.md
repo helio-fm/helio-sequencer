@@ -4,6 +4,15 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.15
+ - Added an option to display note names in either German or Fixed Do notation (C-D-E or Do-Re-Mi); flats/sharps are now displayed as icons rather than ASCII symbols
+ - Added two colour schemes with higher contrast
+ - Desktop platforms: window position and size are persisted, fixed undo issues in the chord compiler
+ - macOS: fixed scanning custom plugin folders and font switching issues
+ - Mobile platforms: sidebars can be stretched sideways to avoid being cut-off by the display notch, scrolling the settings page should now be more convenient
+ - iOS: project files were inaccessible via the file picker, and the SoundFont player lost track of SoundFont files between sessions, fixed a couple of iOS-specific crashes
+ - Misc QoL tweaks: better support for the "no UI animations" mode, the built-in SoundFont player displays the program selection control as a combo-box, better support for the knife tool
+
 ## Version 3.14
  - The built-in SoundFont player now supports microtonal temperaments with no setup
  - The built-in SoundFont player supports SF3 format with OGG/FLAC sample compression
