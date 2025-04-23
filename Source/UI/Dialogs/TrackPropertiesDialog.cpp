@@ -127,7 +127,7 @@ void TrackPropertiesDialog::init(const String &title, const String &confirmation
 
     this->messageLabel->setInterceptsMouseClicks(false, false);
 
-    static constexpr auto colourButtonSize = 30;
+    const auto colourButtonSize = isPhoneLayout ? 26 : 30;
     this->setSize(this->getHorizontalSpacingExceptContent() +
         TrackPropertiesDialog::colourSwatchesMargin * 2 +
         colourButtonSize * this->colourSwatches->getNumButtons(),
