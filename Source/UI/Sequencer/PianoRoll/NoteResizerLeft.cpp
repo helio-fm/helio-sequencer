@@ -92,6 +92,12 @@ void NoteResizerLeft::mouseDown(const MouseEvent &e)
     this->dragger.startDraggingComponent(this, e);
 
     const auto &selection = this->roll.getLassoSelection();
+    if (selection.getNumSelected() == 0)
+    {
+        jassertfalse;
+        return;
+    }
+
     const float groupEndBeat = SequencerOperations::findEndBeat(selection);
 
     this->groupResizerNote = this->findLeftmostTopmostEvent(selection);
@@ -113,6 +119,11 @@ void NoteResizerLeft::mouseDrag(const MouseEvent &e)
     this->dragger.dragComponent(this, e, nullptr);
 
     const auto &selection = this->roll.getLassoSelection();
+    if (selection.getNumSelected() == 0)
+    {
+        jassertfalse;
+        return;
+    }
 
     float groupScaleFactor = 1.f;
     const bool scaleFactorChanged = this->groupResizerNote->getGroupScaleLeftFactor(
@@ -142,6 +153,11 @@ void NoteResizerLeft::mouseDrag(const MouseEvent &e)
 void NoteResizerLeft::mouseUp(const MouseEvent &e)
 {
     const auto &selection = this->roll.getLassoSelection();
+    if (selection.getNumSelected() == 0)
+    {
+        jassertfalse;
+        return;
+    }
 
     for (int i = 0; i < selection.getNumSelected(); i++)
     {
@@ -178,7 +194,10 @@ NoteComponent *NoteResizerLeft::findLeftmostTopmostEvent(const Lasso &selection)
 void NoteResizerLeft::updateBounds()
 {
     const auto &selection = this->roll.getLassoSelection();
-    jassert(selection.getNumSelected() > 0);
+    if (selection.getNumSelected() == 0)
+    {
+        return; // the roll somehow called this method before hiding the resizer
+    }
 
     auto *groupStartNoteComponent = this->findLeftmostTopmostEvent(selection);
     const auto anchor = this->roll.getEventBounds(groupStartNoteComponent);
