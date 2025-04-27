@@ -67,9 +67,9 @@ RadioButton::RadioButton(const String &text,
     colour(colour),
     listener(listener),
     fillColour(colour.interpolatedWith(
-        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.1f)),
+        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.075f)),
     outlineColour(colour.interpolatedWith(
-        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.15f))
+        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.1f))
 {
     this->setWantsKeyboardFocus(false);
     this->setMouseClickGrabsKeyboardFocus(false);
@@ -85,7 +85,7 @@ RadioButton::RadioButton(const String &text,
 
     this->content = move(label);
 
-    this->checkMark = make<RadioButtonFrame>(0.75f);
+    this->checkMark = make<RadioButtonFrame>(0.8f);
     this->addChildComponent(this->checkMark.get());
 }
 
@@ -94,9 +94,9 @@ RadioButton::RadioButton(const String &noteName, bool shouldUseFixedDo, Listener
     colour(findDefaultColour(ColourIDs::ColourButton::outline)),
     listener(listener),
     fillColour(colour.interpolatedWith(
-        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.1f)),
+        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.075f)),
     outlineColour(colour.interpolatedWith(
-        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.15f))
+        findDefaultColour(Label::textColourId), 0.5f).withAlpha(0.1f))
 {
     auto noteNameComponent = make<NoteNameComponent>(true, Globals::UI::Fonts::M);
     this->addAndMakeVisible(noteNameComponent.get());
@@ -107,7 +107,7 @@ RadioButton::RadioButton(const String &noteName, bool shouldUseFixedDo, Listener
 
     this->content = move(noteNameComponent);
     
-    this->checkMark = make<RadioButtonFrame>(0.75f);
+    this->checkMark = make<RadioButtonFrame>(0.8f);
     this->addChildComponent(this->checkMark.get());
 }
 
@@ -198,7 +198,7 @@ void RadioButton::mouseUp(const MouseEvent &e)
 
 Component *RadioButton::createHighlighterComponent()
 {
-    return new RadioButtonFrame(0.3f);
+    return new RadioButtonFrame(0.35f);
 }
 
 void RadioButton::select()

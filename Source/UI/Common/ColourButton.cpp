@@ -97,7 +97,7 @@ void ColourButton::resized()
     jassert(s < 30);
 
     const auto c = this->getLocalBounds().getCentre();
-    this->checkMark->setCentrePosition(c.x, c.y + 3);
+    this->checkMark->setCentrePosition(c.x + 1, c.y + 3);
 
     HighlightedComponent::resized();
 }

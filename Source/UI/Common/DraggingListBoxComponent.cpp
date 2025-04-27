@@ -47,9 +47,9 @@ void DraggingListBoxComponent::childrenChanged()
 {
     if (this->shouldDisableAllChildren)
     {
-        for (int i = 0; i < this->getNumChildComponents(); ++i)
+        for (auto *child : this->getChildren())
         {
-            this->getChildComponent(i)->setInterceptsMouseClicks(false, false);
+            child->setInterceptsMouseClicks(false, false);
         }
     }
 }
@@ -100,9 +100,13 @@ void DraggingListBoxComponent::mouseUp(const MouseEvent &event)
     {
         jassert(this->parentViewport != nullptr);
         const float dragTimeMs = float(Time::getMillisecondCounterHiRes() - this->dragStartMilliseconds);
-        const float dragDistance = float(event.getOffsetFromDragStart().getY());
-        const float pixelsPerMs = dragDistance / dragTimeMs;
-        ViewportKineticSlider::instance().startAnimationForViewport(this->parentViewport, Point<float>(0.f, pixelsPerMs));
+        if (dragTimeMs < 300)
+        {
+            const float dragDistance = float(event.getOffsetFromDragStart().getY());
+            const float pixelsPerMs = dragDistance / dragTimeMs;
+            ViewportKineticSlider::instance().startAnimationForViewport(this->parentViewport,
+                Point<float>(0.f, pixelsPerMs / DraggingListBoxComponent::dragSpeed));
+        }
     }
 }
 
@@ -125,20 +129,20 @@ void DraggingListBoxComponent::mouseDrag(const MouseEvent &event)
 
 void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
-    const int forwardWheel = int(wheel.deltaY *
-        (wheel.isReversed ? -DraggingListBoxComponent::dragSpeed : DraggingListBoxComponent::dragSpeed));
+    const float forwardWheel = wheel.deltaY *
+        (wheel.isReversed ? -DraggingListBoxComponent::dragSpeed : DraggingListBoxComponent::dragSpeed);
     
     if (this->parentViewport != nullptr)
     {
         const BailOutChecker checker(this);
-        this->parentViewport->setViewPosition(0, this->parentViewport->getViewPosition().getY() - forwardWheel);
+        this->parentViewport->setViewPosition(0, this->parentViewport->getViewPosition().getY() - int(forwardWheel));
         
         // If viewport is owned by Listbox,
         // the Listbox has just updated its contents here,
         // and the component may be deleted:
         if (!checker.shouldBailOut())
         {
-            ViewportKineticSlider::instance().startAnimationForViewport(this->parentViewport, Point<float>(0.f, float(forwardWheel) / 50.f));
+            ViewportKineticSlider::instance().startAnimationForViewport(this->parentViewport, Point<float>(0.f, forwardWheel));
             
             const bool eventWasUsed =
                 (wheel.deltaX != 0 && this->parentViewport->getHorizontalScrollBar().isVisible()) ||

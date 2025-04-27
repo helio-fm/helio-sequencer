@@ -2279,6 +2279,14 @@ void PianoRoll::onScalesHighlightingFlagChanged(bool enabled)
 
 void PianoRoll::onNoteNameGuidesFlagChanged(bool enabled)
 {
-    this->noteNameGuides->setVisible(enabled);
+    if (enabled && !this->noteNameGuides->isVisible())
+    {
+        this->fader.fadeIn(this->noteNameGuides.get(), Globals::UI::fadeInShort);
+    }
+    else
+    {
+        this->noteNameGuides->setVisible(enabled);
+    }
+
     this->repaint();
 }

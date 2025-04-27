@@ -63,7 +63,7 @@ private:
 
     bool hasMadeChanges = false;
 
-    static constexpr auto colourSwatchesMargin = 6;
+    static constexpr auto colourSwatchesMargin = 4;
 
     Component *getPrimaryFocusTarget() override;
 

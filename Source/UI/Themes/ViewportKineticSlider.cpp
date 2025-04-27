@@ -97,7 +97,7 @@ void ViewportKineticSlider::startAnimationForViewport(Viewport *targetViewport, 
     // cleans up
     this->stopAnimationForViewport(targetViewport);
 
-    static constexpr auto maxForce = 0.7f;
+    static constexpr auto maxForce = 0.75f;
     static constexpr auto startingForceMultiplier = -50.f;
 
     const float newLimitedForceX = jmax(-maxForce, jmin(maxForce, newForce.getX()));

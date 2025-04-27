@@ -56,6 +56,6 @@ private:
     double dragStartMilliseconds = 0.0;
 
     static constexpr auto dragStartThreshold = 5;
-    static constexpr auto dragSpeed = 100.f;
+    static constexpr auto dragSpeed = 2.f;
     
 };

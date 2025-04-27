@@ -69,7 +69,7 @@ private:
     const bool addsNewEvent = false;
     bool hasMadeChanges = false;
 
-    static constexpr auto colourSwatchesMargin = 6;
+    static constexpr auto colourSwatchesMargin = 4;
 
     void sendEventChange(const AnnotationEvent &newEvent);
     void removeEvent();

@@ -196,6 +196,7 @@ void NoteResizerLeft::updateBounds()
     const auto &selection = this->roll.getLassoSelection();
     if (selection.getNumSelected() == 0)
     {
+        this->setAlpha(0.f);
         return; // the roll somehow called this method before hiding the resizer
     }
 

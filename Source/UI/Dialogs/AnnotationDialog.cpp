@@ -145,10 +145,10 @@ AnnotationDialog::AnnotationDialog(Component &owner,
 
     this->presetsCombo->initWith(this->textEditor.get(), menu);
 
-    const auto colourButtonSize = isPhoneLayout ? 26 : 30;
+    const auto buttonSizeWithMargin = isPhoneLayout ? 25 : 29;
     this->setSize(this->getHorizontalSpacingExceptContent() +
         AnnotationDialog::colourSwatchesMargin * 2 +
-        colourButtonSize * this->colourSwatches->getNumButtons(),
+        buttonSizeWithMargin * this->colourSwatches->getNumButtons(),
         isPhoneLayout ? 100 : 190);
 
     this->updatePosition();

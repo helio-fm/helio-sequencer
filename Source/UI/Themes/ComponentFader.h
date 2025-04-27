@@ -35,7 +35,8 @@ public:
             return;
         }
 
-        if (App::Config().getUiFlags()->areUiAnimationsEnabled())
+        if (component->isVisible() &&
+            App::Config().getUiFlags()->areUiAnimationsEnabled())
         {
             ComponentAnimator::animateComponent(component,
                 component->getBounds(), 0.f, millisecondsToTake, true, 0.0, 1.0);
