@@ -54,25 +54,7 @@ public:
         this->setHighlighted(false);
         this->clearHighlighterComponentCache();
     }
-    
-protected:
-    
-    virtual Component *createHighlighterComponent()
-    {
-        return new Component();
-    }
-    
-    void clearHighlighterComponentCache()
-    {
-        this->highlighter = nullptr;
-    }
-    
-    void clearHighlighterAndStopAnimations()
-    {
-        this->highlightAnimator.cancelAllAnimations(true);
-        this->highlighter = nullptr;
-    }
-    
+
     virtual void setHighlighted(bool shouldBeHighlighted)
     {
         if (this->highlighted == shouldBeHighlighted)
@@ -116,6 +98,24 @@ protected:
                 this->removeChildComponent(this->highlighter.get());
             }
         }
+    }
+
+protected:
+    
+    virtual Component *createHighlighterComponent()
+    {
+        return new Component();
+    }
+    
+    void clearHighlighterComponentCache()
+    {
+        this->highlighter = nullptr;
+    }
+    
+    void clearHighlighterAndStopAnimations()
+    {
+        this->highlightAnimator.cancelAllAnimations(true);
+        this->highlighter = nullptr;
     }
     
 private:

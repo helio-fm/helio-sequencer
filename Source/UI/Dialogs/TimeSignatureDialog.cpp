@@ -157,12 +157,12 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     {
         const auto meter = this->defaultMeters[i];
         menu.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectTimeSignature + i, meter->getLocalizedName()));
+            CommandIDs::SelectTimeSignature + i, meter->getTimeAsString()));
     }
 
     this->presetsCombo = make<MobileComboBox::Container>();
     this->addAndMakeVisible(this->presetsCombo.get());
-    this->presetsCombo->initWith(this->textEditor.get(), menu);
+    this->presetsCombo->initWith(this->textEditor.get(), menu, true);
 
     this->metronomeEditor = make<MetronomeEditor>(project.getTransport(),
         App::Workspace().getAudioCore().getMetronomeInstrument());

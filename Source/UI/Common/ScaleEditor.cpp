@@ -87,14 +87,17 @@ void ScaleEditor::rebuildButtons()
 {
     jassert(this->scale != nullptr);
 
-    this->buttons.clearQuick(true);
-
-    for (int i = 0; i < this->scale->getBasePeriod(); ++i)
+    if (this->buttons.size() != this->scale->getBasePeriod())
     {
-        auto button = make<RadioButton>(String(i), this->buttonColour, this);
-        button->setButtonIndex(i);
-        this->addAndMakeVisible(button.get());
-        this->buttons.add(button.release());
+        this->buttons.clearQuick(true);
+
+        for (int i = 0; i < this->scale->getBasePeriod(); ++i)
+        {
+            auto button = make<RadioButton>(String(i), this->buttonColour, this);
+            button->setButtonIndex(i);
+            this->addAndMakeVisible(button.get());
+            this->buttons.add(button.release());
+        }
     }
 
     this->setSize(this->buttonWidth * this->buttons.size(), ScaleEditor::rowHeight);

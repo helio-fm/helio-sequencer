@@ -30,26 +30,34 @@ public:
 
     void initMenu(MenuPanel::Menu menu);
 
-    class Trigger final : public IconButton
+    class HelperButton final : public IconButton
     {
     public:
 
-        Trigger(WeakReference<Component> listener = nullptr);
+        HelperButton(WeakReference<Component> listener,
+            Image targetImage, int commandId,
+            int buttonSize, int xOffset = 0);
+
+        static UniquePointer<HelperButton>
+            makeComboTriggerButton(WeakReference<Component> listener);
+
         void parentHierarchyChanged() override;
         void parentSizeChanged() override;
-        void mouseWheelMove(const MouseEvent &e,
-            const MouseWheelDetails &wheel) override;
+        void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel) override;
         void paint(Graphics &g) override;
         void updateBounds();
 
+        static constexpr int iconSize = 18;
+        static constexpr int triggerButtonSize = 36;
+
     private:
+
+        const int buttonSize;
+        const int xOffset = 0;
 
         Component *createHighlighterComponent() override;
 
-        static constexpr int iconSize = 18;
-        static constexpr int triggerSize = 36;
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Trigger)
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HelperButton)
     };
 
     class Container final : public Component
@@ -62,24 +70,24 @@ public:
         void handleCommandMessage(int commandId) override;
 
         void initWith(WeakReference<Component> textEditor,
-            MenuPanel::Menu menu,
-            Component *newCustomBackground = nullptr);
+            MenuPanel::Menu menu, bool shouldShowNextPreviousButtons = false);
 
         void initWith(WeakReference<Component> textEditor,
-            Function<MenuPanel::Menu(void)> menuInitializer,
-            Component *newCustomBackground = nullptr);
+            Function<MenuPanel::Menu(void)> menuInitializer);
 
         void updateMenu(MenuPanel::Menu menu);
-
-        // this needs to be called before target text editor is deleted
-        void cleanup();
 
     private:
 
         ComponentAnimator animator;
+
         UniquePointer<MobileComboBox> combo;
-        UniquePointer<MobileComboBox::Trigger> comboTrigger;
+        UniquePointer<MobileComboBox::HelperButton> previousPresetButton;
+        UniquePointer<MobileComboBox::HelperButton> nextPresetButton;
+        UniquePointer<MobileComboBox::HelperButton> comboTrigger;
+
         WeakReference<Component> textEditor;
+
         Function<MenuPanel::Menu(void)> menuInitializer;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Container)
@@ -95,8 +103,6 @@ private:
     void initHeader(TextEditor *editor, bool hasSearch, bool hasCaption);
     void initHeader(Label *label, bool hasSearch, bool hasCaption);
     void initHeader(const String &text, bool hasSearch, bool hasCaption);
-
-    void initBackground(Component *newCustomBackground);
 
     bool isSimpleDropdown() const noexcept
     {
@@ -114,7 +120,8 @@ private:
 
     UniquePointer<Component> background;
     UniquePointer<MenuPanel> menu;
-    UniquePointer<MobileComboBox::Trigger> triggerButton;
+
+    UniquePointer<MobileComboBox::HelperButton> triggerButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MobileComboBox)
 };

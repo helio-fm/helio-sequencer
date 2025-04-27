@@ -107,7 +107,7 @@ public:
     void mouseExit(const MouseEvent &event) override
     { HighlightedComponent::mouseExit(event); }
 
-private:
+protected:
 
     const int commandId = 0;
     

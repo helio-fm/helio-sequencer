@@ -28,7 +28,7 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(false);
 
-    this->background = make<Component>();
+    this->background = make<PanelBackground>();
     this->addAndMakeVisible(this->background.get());
 
     this->menu = make<MenuPanel>();
@@ -46,7 +46,7 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     this->searchTextBox->setPopupMenuEnabled(false);
     this->addAndMakeVisible(this->searchTextBox.get());
 
-    this->triggerButton = make<MobileComboBox::Trigger>(this);
+    this->triggerButton = MobileComboBox::HelperButton::makeComboTriggerButton(this);
 
     this->searchTextBox->onEscapeKey = [this]()
     {
@@ -106,6 +106,9 @@ void MobileComboBox::parentSizeChanged()
 
 void MobileComboBox::handleCommandMessage(int commandId)
 {
+    jassert(commandId != CommandIDs::SelectPreviousPreset &&
+            commandId != CommandIDs::SelectNextPreset);
+
     if (this->getParentComponent() != nullptr && this->editor != nullptr)
     {
         if (commandId != CommandIDs::ToggleShowHideCombo)
@@ -175,13 +178,9 @@ void MobileComboBox::initHeader(const String &text, bool hasSearch, bool hasCapt
     }
 }
 
-void MobileComboBox::initBackground(Component *newCustomBackground)
-{
-    this->background.reset(newCustomBackground != nullptr ?
-        newCustomBackground : new PanelBackground());
-    this->addAndMakeVisible(this->background.get());
-    this->background->toBack();
-}
+// todo remove this when migrating to C++17
+constexpr int MobileComboBox::HelperButton::iconSize;
+constexpr int MobileComboBox::HelperButton::triggerButtonSize;
 
 MobileComboBox::Container::Container()
 {
@@ -190,43 +189,55 @@ MobileComboBox::Container::Container()
     this->setMouseClickGrabsKeyboardFocus(false);
 }
 
-MobileComboBox::Container::~Container()
-{
-    this->cleanup();
-}
+MobileComboBox::Container::~Container() = default;
 
 void MobileComboBox::Container::initWith(WeakReference<Component> editor,
-    MenuPanel::Menu menu, Component *newCustomBackground)
+    MenuPanel::Menu menu, bool shouldShowNextPreviousButtons)
 {
     this->toFront(false);
     this->textEditor = editor;
     this->combo = make<MobileComboBox>(editor, this);
-    this->combo->initBackground(newCustomBackground);
     this->combo->initMenu(menu);
-    this->comboTrigger = make<MobileComboBox::Trigger>(this);
 
+    this->comboTrigger = HelperButton::makeComboTriggerButton(this);
     if (this->textEditor != nullptr)
     {
         this->textEditor->addAndMakeVisible(this->comboTrigger.get());
     }
+
+    if (shouldShowNextPreviousButtons)
+    {
+        constexpr auto buttonSize = 28;
+        this->previousPresetButton = make<HelperButton>(this,
+            Icons::findByName(Icons::back, HelperButton::iconSize),
+            int(CommandIDs::SelectPreviousPreset),
+            buttonSize, HelperButton::triggerButtonSize + buttonSize);
+        this->nextPresetButton = make<HelperButton>(this,
+            Icons::findByName(Icons::forward, HelperButton::iconSize),
+            int(CommandIDs::SelectNextPreset),
+            buttonSize, HelperButton::triggerButtonSize);
+
+        this->previousPresetButton->setIconAlphaMultiplier(0.25f);
+        this->nextPresetButton->setIconAlphaMultiplier(0.25f);
+
+        if (this->textEditor != nullptr)
+        {
+            this->textEditor->addAndMakeVisible(this->previousPresetButton.get());
+            this->textEditor->addAndMakeVisible(this->nextPresetButton.get());
+        }
+    }
 }
 
 void MobileComboBox::Container::initWith(WeakReference<Component> textEditor,
-    Function<MenuPanel::Menu(void)> menuInitializer,
-    Component *newCustomBackground /*= nullptr*/)
+    Function<MenuPanel::Menu(void)> menuInitializer)
 {
     this->menuInitializer = menuInitializer;
-    this->initWith(textEditor, MenuPanel::Menu(), newCustomBackground);
+    this->initWith(textEditor, MenuPanel::Menu(), false);
 }
 
 void MobileComboBox::Container::updateMenu(MenuPanel::Menu menu)
 {
     this->combo->initMenu(menu);
-}
-
-void MobileComboBox::Container::cleanup()
-{
-    this->comboTrigger = nullptr;
 }
 
 void MobileComboBox::Container::handleCommandMessage(int commandId)
@@ -268,23 +279,82 @@ void MobileComboBox::Container::handleCommandMessage(int commandId)
         this->animator.animateComponent(this->combo.get(),
             this->getBounds(), 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
     }
+    else if (commandId == CommandIDs::SelectPreviousPreset)
+    {
+        // the next/previous preset buttons were added as a quick hack,
+        // so certain menu options are not supported here
+        jassert(this->menuInitializer == nullptr);
+        jassert(dynamic_cast<TextEditor *>(this->textEditor.get()));
+
+        if (auto *ed = dynamic_cast<TextEditor *>(this->textEditor.get()))
+        {
+            jassert(this->previousPresetButton != nullptr);
+            const int index = this->combo->menu->indexOfItemNamed(ed->getText());
+            if (index < 0)
+            {
+                this->previousPresetButton->setHighlighted(false);
+                return;
+            }
+            const int previous = jlimit(0, this->combo->menu->getMenuSize(), index - 1);
+            if (auto menuItem = this->combo->menu->getMenuItem(previous))
+            {
+                jassert(menuItem->callback == nullptr); // not supported for now
+                this->getParentComponent()->postCommandMessage(menuItem->commandId);
+                this->previousPresetButton->setHighlighted(true);
+            }
+        }
+    }
+    else if (commandId == CommandIDs::SelectNextPreset)
+    {
+        jassert(this->menuInitializer == nullptr);
+        jassert(dynamic_cast<TextEditor *>(this->textEditor.get()));
+
+        if (auto *ed = dynamic_cast<TextEditor *>(this->textEditor.get()))
+        {
+            jassert(this->nextPresetButton != nullptr);
+            const int index = this->combo->menu->indexOfItemNamed(ed->getText());
+            if (index < 0)
+            {
+                this->nextPresetButton->setHighlighted(false);
+                return;
+            }
+            const int next = jlimit(0, this->combo->menu->getMenuSize(), index + 1);
+            if (auto menuItem = this->combo->menu->getMenuItem(next))
+            {
+                jassert(menuItem->callback == nullptr); // not supported for now
+                this->getParentComponent()->postCommandMessage(menuItem->commandId);
+                this->nextPresetButton->setHighlighted(true);
+            }
+        }
+    }
 }
 
-MobileComboBox::Trigger::Trigger(WeakReference<Component> listener) :
-    IconButton(Icons::findByName(Icons::down, Trigger::iconSize),
-        CommandIDs::ToggleShowHideCombo, listener) {}
+MobileComboBox::HelperButton::HelperButton(WeakReference<Component> listener,
+    Image targetImage, int commandId, int buttonSize, int xOffset) :
+    IconButton(targetImage, commandId, listener),
+    buttonSize(buttonSize),
+    xOffset(xOffset) {}
 
-void MobileComboBox::Trigger::parentHierarchyChanged()
+UniquePointer<MobileComboBox::HelperButton>
+MobileComboBox::HelperButton::makeComboTriggerButton(WeakReference<Component> listener)
+{
+    return make<HelperButton>(listener,
+        Icons::findByName(Icons::down, HelperButton::iconSize),
+        int(CommandIDs::ToggleShowHideCombo),
+        HelperButton::triggerButtonSize, 0);
+}
+
+void MobileComboBox::HelperButton::parentHierarchyChanged()
 {
     this->updateBounds();
 }
 
-void MobileComboBox::Trigger::parentSizeChanged()
+void MobileComboBox::HelperButton::parentSizeChanged()
 {
     this->updateBounds();
 }
 
-void MobileComboBox::Trigger::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
+void MobileComboBox::HelperButton::mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel)
 {
     // a hack to pass wheel to the grandparent (parent is often just a text editor)
     auto *parent = this->getParentComponent();
@@ -300,25 +370,24 @@ void MobileComboBox::Trigger::mouseWheelMove(const MouseEvent &e, const MouseWhe
     }
 }
 
-void MobileComboBox::Trigger::paint(Graphics &g)
+void MobileComboBox::HelperButton::paint(Graphics &g)
 {
     g.setColour(this->colour.withMultipliedAlpha(this->alpha));
 
     if (this->image.isNull())
     {
-        const Image i(Icons::findByName(this->iconId, Trigger::iconSize));
-
+        const auto i = Icons::findByName(this->iconId, HelperButton::iconSize);
         Icons::drawImageRetinaAware(i, g,
-            this->getWidth() - (Trigger::triggerSize / 2), this->getHeight() / 2);
+            this->getWidth() - (this->buttonSize / 2), this->getHeight() / 2);
     }
     else
     {
         Icons::drawImageRetinaAware(this->image, g,
-            this->getWidth() - (Trigger::triggerSize / 2), this->getHeight() / 2);
+            this->getWidth() - (this->buttonSize / 2), this->getHeight() / 2);
     }
 }
 
-void MobileComboBox::Trigger::updateBounds()
+void MobileComboBox::HelperButton::updateBounds()
 {
     const auto *parent = this->getParentComponent();
     if (parent == nullptr)
@@ -326,14 +395,15 @@ void MobileComboBox::Trigger::updateBounds()
         return;
     }
 
-    bool allowsClicksOnSelf = false;
-    bool allowsClicksOnChildren = false;
-    parent->getInterceptsMouseClicks(allowsClicksOnSelf, allowsClicksOnChildren);
+    bool parentAllowsClicks = false;
+    bool parentAllowsClicksOnChildren = false;
+    parent->getInterceptsMouseClicks(parentAllowsClicks, parentAllowsClicksOnChildren);
     const auto maxParentHeight = jmin(parent->getHeight(), Globals::UI::textEditorHeight);
-    if (allowsClicksOnSelf) // && dynamic_cast<const TextEditor *>(parent))
+    const auto isAlignedToEdge = this->xOffset == 0;
+    if (parentAllowsClicks || !isAlignedToEdge)
     {
-        const int w = Trigger::triggerSize;
-        const int x = parent->getWidth() - Trigger::triggerSize;
+        const int w = this->buttonSize;
+        const int x = parent->getWidth() - this->xOffset - w;
         this->setBounds(x, 0, w, maxParentHeight);
     }
     else
@@ -345,7 +415,10 @@ void MobileComboBox::Trigger::updateBounds()
     this->toFront(false);
 }
 
-Component *MobileComboBox::Trigger::createHighlighterComponent()
+Component *MobileComboBox::HelperButton::createHighlighterComponent()
 {
-    return new MobileComboBox::Trigger(nullptr);
+    auto highlighter = make<MobileComboBox::HelperButton>(nullptr,
+        this->image, this->commandId, this->buttonSize, 0);
+    highlighter->setIconAlphaMultiplier(jmin(1.f, this->alpha * 2.f));
+    return highlighter.release();
 }

@@ -328,7 +328,6 @@ KeySignatureDialog::~KeySignatureDialog()
         this->scalePreviewThread->stopThread(500);
     }
 
-    this->presetsCombo->cleanup();
     this->transport.stopPlayback();
     this->scaleNameEditor->removeListener(this);
 }
@@ -496,7 +495,7 @@ void KeySignatureDialog::reloadScalesList()
         menu.add(MenuItem::item(Icons::empty, CommandIDs::SelectScale + i, s->getLocalizedName()));
     }
 
-    this->presetsCombo->initWith(this->scaleNameEditor.get(), menu);
+    this->presetsCombo->initWith(this->scaleNameEditor.get(), menu, true);
 }
 
 void KeySignatureDialog::updateButtonsState()

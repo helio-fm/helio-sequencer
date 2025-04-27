@@ -71,6 +71,9 @@ public:
     void resized() override;
     void handleCommandMessage(int commandId) override;
 
+    int indexOfItemNamed(const String &name);
+    const MenuItem::Ptr getMenuItem(int index) const;
+
 private:
 
     friend class MenuItemComponent;

@@ -56,8 +56,30 @@ void MenuPanel::handleCommandMessage(int commandId)
     }
 }
 
-void MenuPanel::updateContent(const Menu &commands, AnimationType animationType,
-    bool adjustsWidth, Component *newFooter)
+int MenuPanel::indexOfItemNamed(const String &nameToLookFor)
+{
+    jassert(this->filteredMenu.isEmpty()); // pls only use it with full menu
+
+    for (int i = 0; i < this->menu.size(); ++i)
+    {
+        if (this->menu.getUnchecked(i)->commandText == nameToLookFor)
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+const MenuItem::Ptr MenuPanel::getMenuItem(int index) const
+{
+    jassert(this->filteredMenu.isEmpty()); // not supposed to be used with filters
+    jassert(index >= 0 && index < this->menu.size());
+    return this->menu[index];
+}
+
+void MenuPanel::updateContent(const Menu &commands,
+    AnimationType animationType, bool adjustsWidth, Component *newFooter)
 {
     this->lastAnimationType = animationType;
     this->shouldResizeToFitContent = adjustsWidth;
