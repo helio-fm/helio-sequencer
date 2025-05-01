@@ -191,6 +191,17 @@ UserInterfaceSettings::UserInterfaceSettings()
         }
     };
 
+    this->scaleUi125 = make<ToggleButton>("x1.25");
+    this->addAndMakeVisible(this->scaleUi125.get());
+    this->scaleUi125->onClick = [this]() {
+        BailOutChecker checker(this);
+        App::Config().getUiFlags()->setUiScaleFactor(1.25f);
+        if (!checker.shouldBailOut())
+        {
+            this->updateButtons();
+        }
+    };
+
     this->scaleUi15 = make<ToggleButton>("x1.5");
     this->addAndMakeVisible(this->scaleUi15.get());
     this->scaleUi15->onClick = [this]() {
@@ -214,9 +225,9 @@ UserInterfaceSettings::UserInterfaceSettings()
     };
 
 #if SIMPLIFIED_UI_SETTINGS
-    this->setSize(100, 305);
+    this->setSize(100, 335);
 #else
-    this->setSize(100, 515);
+    this->setSize(100, 545);
 #endif
 }
 
@@ -294,8 +305,11 @@ void UserInterfaceSettings::resized()
     this->scaleUi1->setBounds(margin2,
         this->uiScaleTitle->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
-    this->scaleUi15->setBounds(margin2,
+    this->scaleUi125->setBounds(margin2,
         this->scaleUi1->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+
+    this->scaleUi15->setBounds(margin2,
+        this->scaleUi125->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->scaleUi2->setBounds(margin2,
         this->scaleUi15->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
@@ -346,6 +360,7 @@ void UserInterfaceSettings::updateButtons()
     this->animationsEnabledButton->setToggleState(uiFlags->areUiAnimationsEnabled(), dontSendNotification);
 
     this->scaleUi1->setToggleState(uiFlags->getUiScaleFactor() == 1.f, dontSendNotification);
+    this->scaleUi125->setToggleState(uiFlags->getUiScaleFactor() == 1.25f, dontSendNotification);
     this->scaleUi15->setToggleState(uiFlags->getUiScaleFactor() == 1.5f, dontSendNotification);
     this->scaleUi2->setToggleState(uiFlags->getUiScaleFactor() == 2.f, dontSendNotification);
 

@@ -50,6 +50,7 @@ private:
     UniquePointer<SeparatorHorizontal> uiScaleSeparator;
     UniquePointer<Label> uiScaleTitle;
     UniquePointer<ToggleButton> scaleUi1;
+    UniquePointer<ToggleButton> scaleUi125;
     UniquePointer<ToggleButton> scaleUi15;
     UniquePointer<ToggleButton> scaleUi2;
     UniquePointer<SeparatorHorizontal> noteNamesSeparator;
