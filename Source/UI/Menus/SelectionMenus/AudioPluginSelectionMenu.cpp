@@ -76,11 +76,18 @@ MenuPanel::Menu AudioPluginSelectionMenu::createInstrumentsMenu()
     {
         menu.add(MenuItem::item(Icons::instrument, instrumentNode->getName())->
             closesMenu()->
-            withAction([this, instrumentNode]()
+            withAction([this, instrumentNode = WeakReference<InstrumentNode>(instrumentNode)]()
         {
+            jassert(instrumentNode != nullptr);
             instrumentNode->getInstrument()->addNodeToFreeSpace(this->pluginDescription,
-                [this, instrumentNode](Instrument *instrument)
+                [instrumentNode](Instrument *instrument)
                 {
+                    if (instrumentNode == nullptr)
+                    {
+                        jassertfalse;
+                        return;
+                    }
+
                     instrumentNode->recreateChildrenEditors();
                     instrumentNode->notifyOrchestraChanged(); // will update the pit page
                 });

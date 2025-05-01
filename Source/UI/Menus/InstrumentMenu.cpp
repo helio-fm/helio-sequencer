@@ -147,10 +147,18 @@ MenuPanel::Menu InstrumentMenu::createEffectsMenu()
                 closesMenu()->
                 withAction([this, description]()
                 {
-                    this->instrumentNode.getInstrument()->addNodeToFreeSpace(description, [this](Instrument *instrument)
+                    WeakReference<InstrumentNode> instrumentNode(&this->instrumentNode);
+                    instrumentNode->getInstrument()->addNodeToFreeSpace(description,
+                        [instrumentNode](Instrument *instrument)
                     {
-                        this->instrumentNode.recreateChildrenEditors();
-                        this->instrumentNode.setSelected();
+                        if (instrumentNode == nullptr)
+                        {
+                            jassertfalse;
+                            return;
+                        }
+
+                        instrumentNode->recreateChildrenEditors();
+                        instrumentNode->setSelected();
                     });
                 }));
         }
@@ -177,10 +185,18 @@ MenuPanel::Menu InstrumentMenu::createInstrumentsMenu()
                 closesMenu()->
                 withAction([this, description]()
                 {
-                    this->instrumentNode.getInstrument()->addNodeToFreeSpace(description, [this](Instrument *instrument)
+                    WeakReference<InstrumentNode> instrumentNode(&this->instrumentNode);
+                    instrumentNode->getInstrument()->addNodeToFreeSpace(description,
+                        [instrumentNode](Instrument *instrument)
                     {
-                        this->instrumentNode.recreateChildrenEditors();
-                        this->instrumentNode.setSelected();
+                        if (instrumentNode == nullptr)
+                        {
+                            jassertfalse;
+                            return;
+                        }
+
+                        instrumentNode->recreateChildrenEditors();
+                        instrumentNode->setSelected();
                     });
                 }));
         }
