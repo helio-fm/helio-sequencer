@@ -18,6 +18,7 @@
 #pragma once
 
 class InstrumentEditor;
+class InstrumentEditorPin;
 
 #include "Instrument.h"
 
@@ -37,6 +38,7 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
+    bool hitTest(int x, int y) override;
     void paint(Graphics &g) override;
     void resized() override;
 
@@ -50,13 +52,15 @@ private:
 
     WeakReference<Instrument> instrument;
 
+    OwnedArray<InstrumentEditorPin> pinComponents;
+
 #if PLATFORM_DESKTOP
+    const int pinSize = 18;
     const Font font = Globals::UI::Fonts::M;
 #elif PLATFORM_MOBILE
+    const int pinSize = 22;
     const Font font = Globals::UI::Fonts::XS;
 #endif
-
-    const int pinSize = 0;
 
     bool isSelected = false;
     Point<int> originalPos;
@@ -64,8 +68,7 @@ private:
     int numInputs = 0;
     int numOutputs = 0;
 
-    bool hitTest(int x, int y) override;
-
     InstrumentEditor *getParentEditor() const noexcept;
-    InstrumentComponent(const InstrumentComponent &);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentComponent)
 };

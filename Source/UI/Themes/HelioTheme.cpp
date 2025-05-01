@@ -940,7 +940,9 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::headerBorder,
         Colours::white.withAlpha(this->isDarkTheme ? 0.045f : 0.15f));
     this->setColour(ColourIDs::Roll::headerSnaps,
-        headerFill.contrasting().interpolatedWith(headerFill, 0.63f));
+        headerFill.contrasting().interpolatedWith(headerFill, 0.625f));
+    this->setColour(ColourIDs::Roll::headerReprise,
+        headerFill.contrasting().interpolatedWith(headerFill, this->isDarkTheme ? 0.55f : 0.4f));
     this->setColour(ColourIDs::Roll::headerRecording,
         headerFill.interpolatedWith(Colours::red, 0.55f));
 

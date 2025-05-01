@@ -23,8 +23,8 @@
 #include "SeparatorHorizontal.h"
 #include "ShadowDownwards.h"
 #include "TransportControlComponent.h"
-
 #include "ProjectNode.h"
+#include "Transport.h"
 #include "PlayerThread.h"
 #include "PianoRoll.h"
 #include "MenuItemComponent.h"
@@ -66,7 +66,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) : project(pare
     this->repriseButton = make<MenuItemComponent>(this, nullptr,
         MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection)->
         withTooltip(TRANS(I18n::Tooltips::togglePlaybackLoop)));
-
+    this->repriseButton->setChecked(this->project.getTransport().hasPlaybackLoop());
     this->addAndMakeVisible(this->repriseButton.get());
 
     this->transportControl = make<TransportControlComponent>(nullptr);

@@ -22,28 +22,16 @@
 #include "PluginWindow.h"
 #include "HelioTheme.h"
 
-#if PLATFORM_DESKTOP
-#   define CHANNELS_NUMBER_LIMIT 12
-#   define DEFAULT_PIN_SIZE (18)
-#elif PLATFORM_MOBILE
-#   define CHANNELS_NUMBER_LIMIT 6
-#   define DEFAULT_PIN_SIZE (22)
-#endif
-
 InstrumentComponent::InstrumentComponent(WeakReference<Instrument> instrument,
     AudioProcessorGraph::NodeID nodeId) :
     instrument(instrument),
-    nodeId(nodeId),
-    pinSize(DEFAULT_PIN_SIZE)
+    nodeId(nodeId)
 {
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
 }
 
-InstrumentComponent::~InstrumentComponent()
-{
-    this->deleteAllChildren();
-}
+InstrumentComponent::~InstrumentComponent() = default;
 
 void InstrumentComponent::mouseDown(const MouseEvent &e)
 {
@@ -53,7 +41,8 @@ void InstrumentComponent::mouseDown(const MouseEvent &e)
 
 void InstrumentComponent::mouseDrag(const MouseEvent &e)
 {
-    Point<int> pos(this->originalPos + Point<int>(e.getDistanceFromDragStartX(), e.getDistanceFromDragStartY()));
+    auto pos = this->originalPos +
+        Point<int>(e.getDistanceFromDragStartX(), e.getDistanceFromDragStartY());
 
     if (this->getParentComponent() != nullptr)
     {
@@ -61,48 +50,49 @@ void InstrumentComponent::mouseDrag(const MouseEvent &e)
     }
 
     this->instrument->setNodePosition(this->nodeId,
-        (pos.getX() + getWidth() / 2) / static_cast<double>(this->getParentWidth()),
-        (pos.getY() + getHeight() / 2) / static_cast<double>(this->getParentHeight()));
+        double(pos.getX() + this->getWidth() / 2) / double(this->getParentWidth()),
+        double(pos.getY() + this->getHeight() / 2) / double(this->getParentHeight()));
 
     this->getParentEditor()->updateComponents();
 }
 
 void InstrumentComponent::mouseUp(const MouseEvent &e)
 {
-    if (e.getOffsetFromDragStart().isOrigin())
-    {
-        if (this->instrument->isNodeStandardIOProcessor(this->nodeId) ||
-            e.mods.isRightButtonDown() || e.mods.isAnyModifierKeyDown())
-        {
-            this->getParentEditor()->selectNode(this->nodeId, e);
-            return;
-        }
-
-        this->getParentEditor()->deselectAllNodes();
-
-        if (const auto node = this->instrument->getNodeForId(this->nodeId))
-        {
-            if (!PluginWindow::showWindowFor(node))
-            {
-                this->getParentEditor()->selectNode(this->nodeId, e);
-            }
-        }
-    }
-    else
+    if (e.source.hasMovedSignificantlySincePressed())
     {
         this->getParentEditor()->updateComponents();
+        return;
     }
+
+#if PLATFORM_DESKTOP
+    if (e.mods.isRightButtonDown() ||
+        e.mods.isAnyModifierKeyDown() ||
+        this->instrument->isNodeStandardIOProcessor(this->nodeId))
+    {
+        this->getParentEditor()->selectNode(this->nodeId, e);
+        return;
+    }
+
+    this->getParentEditor()->deselectAllNodes();
+
+    if (const auto node = this->instrument->getNodeForId(this->nodeId))
+    {
+        if (!PluginWindow::showWindowFor(node))
+        {
+            this->getParentEditor()->selectNode(this->nodeId, e);
+        }
+    }
+
+#elif PLATFORM_MOBILE
+    this->getParentEditor()->selectNode(this->nodeId, e);
+#endif
 }
 
 bool InstrumentComponent::hitTest(int x, int y)
 {
-    const int xCenter = this->getWidth() / 2;
-    const int yCenter = this->getHeight() / 2;
-
-    const int dx = x - xCenter;
-    const int dy = y - yCenter;
+    const int dx = x - (this->getWidth() / 2);
+    const int dy = y - (this->getHeight() / 2);
     const int r = (this->getWidth() + this->getHeight()) / 4;
-
     return (dx * dx) + (dy * dy) < (r * r);
 }
 
@@ -188,16 +178,22 @@ void InstrumentComponent::update()
     const auto node = this->instrument->getNodeForId(nodeId);
     if (node == nullptr)
     {
-        delete this;
+        UniquePointer<Component> deleter(this);
         return;
     }
 
+#if PLATFORM_DESKTOP
+    constexpr auto maxChannels = 12;
+#elif PLATFORM_MOBILE
+    constexpr auto maxChannels = 6;
+#endif
+
     const int newNumInputs =
-        jmin(node->getProcessor()->getTotalNumInputChannels(), CHANNELS_NUMBER_LIMIT) +
+        jmin(node->getProcessor()->getTotalNumInputChannels(), maxChannels) +
         (node->getProcessor()->acceptsMidi() ? 1 : 0);
 
     const int newNumOutputs =
-        jmin(node->getProcessor()->getTotalNumOutputChannels(), CHANNELS_NUMBER_LIMIT) +
+        jmin(node->getProcessor()->getTotalNumOutputChannels(), maxChannels) +
         (node->getProcessor()->producesMidi() ? 1 : 0);
 
     // a hack needed for "Audio Input", "Audio Output" etc nodes:
@@ -222,28 +218,34 @@ void InstrumentComponent::update()
         this->numInputs = newNumInputs;
         this->numOutputs = newNumOutputs;
 
-        this->deleteAllChildren();
+        this->pinComponents.clearQuick(true);
 
-        int i;
-
-        for (i = 0; i < this->numInputs; ++i)
+        for (int i = 0; i < this->numInputs; ++i)
         {
-            this->addAndMakeVisible(new InstrumentEditorPin(nodeId, i, true));
+            auto pin = make<InstrumentEditorPin>(nodeId, i, true);
+            this->addAndMakeVisible(pin.get());
+            this->pinComponents.add(move(pin));
         }
 
         if (node->getProcessor()->acceptsMidi())
         {
-            this->addAndMakeVisible(new InstrumentEditorPin(nodeId, Instrument::midiChannelNumber, true));
+            auto pin = make<InstrumentEditorPin>(nodeId, Instrument::midiChannelNumber, true);
+            this->addAndMakeVisible(pin.get());
+            this->pinComponents.add(move(pin));
         }
 
-        for (i = 0; i < this->numOutputs; ++i)
+        for (int i = 0; i < this->numOutputs; ++i)
         {
-            this->addAndMakeVisible(new InstrumentEditorPin(nodeId, i, false));
+            auto pin = make<InstrumentEditorPin>(nodeId, i, false);
+            this->addAndMakeVisible(pin.get());
+            this->pinComponents.add(move(pin));
         }
 
         if (node->getProcessor()->producesMidi())
         {
-            this->addAndMakeVisible(new InstrumentEditorPin(nodeId, Instrument::midiChannelNumber, false));
+            auto pin = make<InstrumentEditorPin>(nodeId, Instrument::midiChannelNumber, false);
+            this->addAndMakeVisible(pin.get());
+            this->pinComponents.add(move(pin));
         }
 
         this->resized();

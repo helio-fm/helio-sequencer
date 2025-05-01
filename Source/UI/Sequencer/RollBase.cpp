@@ -83,7 +83,11 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
 
     this->temperament = this->project.getProjectInfo()->getTemperament();
 
-    this->header = make<RollHeader>(this->project.getTransport(), *this, this->viewport);
+    auto &transport = this->project.getTransport();
+    this->header = make<RollHeader>(transport, *this, this->viewport);
+    this->header->showLoopMode(transport.hasPlaybackLoop(),
+        transport.getPlaybackLoopStart(), transport.getPlaybackLoopEnd());
+
     this->headerShadow = make<ShadowDownwards>(ShadowType::Normal);
 
     if (hasAnnotationsTrack)

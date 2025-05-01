@@ -85,6 +85,7 @@ public:
     void togglePlaybackLoop(float startBeat, float endBeat);
     void setPlaybackLoop(float startBeat, float endBeat);
     void disablePlaybackLoop();
+    bool hasPlaybackLoop() const noexcept;
     float getPlaybackLoopStart() const noexcept;
     float getPlaybackLoopEnd() const noexcept;
 

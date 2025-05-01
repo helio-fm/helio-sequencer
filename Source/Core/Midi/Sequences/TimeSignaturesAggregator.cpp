@@ -193,7 +193,7 @@ void TimeSignaturesAggregator::onChangeMidiEvent(const MidiEvent &oldEvent, cons
     if (newEvent.isTypeOf(MidiEvent::Type::TimeSignature) &&
         !this->isAggregatingTimeSignatureOverrides())
     {
-        jassert(oldEvent.getSequence() == this->getSequence());
+        jassert(oldEvent.getSequence() == this->getSequence() || oldEvent.getSequence() == nullptr);
         jassert(newEvent.getSequence() == this->getSequence());
         this->listeners.call(&Listener::onTimeSignaturesUpdated);
     }

@@ -43,7 +43,6 @@ public:
         roll(roll),
         type(type)
     {
-        //this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(true, false);
         this->setMouseCursor(MouseCursor::PointingHandCursor);
         this->setSize(16, 16);
@@ -72,7 +71,7 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(this->header.getBarColour());
+        g.setColour(this->header.getRepriseColour());
 
         const auto p1 = roundf(float(this->getHeight()) * 0.33f - 1.f);
         const auto p2 = roundf(float(this->getHeight()) * 0.66f - 4.f);
@@ -80,8 +79,8 @@ public:
         switch (this->type)
         {
         case Type::LoopStart:
-            g.fillRect(0, 1, 3, this->getHeight() - 2);
-            g.fillRect(5, 1, 1, this->getHeight() - 2);
+            g.fillRect(0, 0, 3, this->getHeight() - 1);
+            g.fillRect(5, 0, 1, this->getHeight() - 1);
 
             g.fillRect(float(9), p1, 2.f, 4.f);
             g.fillRect(float(8), p1 + 1, 4.f, 2.f);
@@ -89,17 +88,15 @@ public:
             g.fillRect(float(9), p2, 2.f, 4.f);
             g.fillRect(float(8), p2 + 1, 4.f, 2.f);
 
-            // some fancy shadows
             g.setColour(this->shadowColour);
-
-            g.fillRect(3, 1, 1, this->getHeight() - 2);
-            g.fillRect(6, 1, 1, this->getHeight() - 2);
+            g.fillRect(3, 0, 1, this->getHeight() - 1);
+            g.fillRect(6, 0, 1, this->getHeight() - 1);
             break;
         case Type::LoopEnd:
             const int x = this->getWidth();
 
-            g.fillRect(x - 3, 1, 3, this->getHeight() - 2);
-            g.fillRect(x - 6, 1, 1, this->getHeight() - 2);
+            g.fillRect(x - 3, 0, 3, this->getHeight() - 1);
+            g.fillRect(x - 6, 0, 1, this->getHeight() - 1);
 
             g.fillRect(float(x - 11), p1, 2.f, 4.f);
             g.fillRect(float(x - 12), p1 + 1, 4.f, 2.f);
@@ -107,11 +104,9 @@ public:
             g.fillRect(float(x - 11), p2, 2.f, 4.f);
             g.fillRect(float(x - 12), p2 + 1, 4.f, 2.f);
 
-            // some fancy shadows
             g.setColour(this->shadowColour);
-
-            g.fillRect(x, 1, 1, this->getHeight() - 2);
-            g.fillRect(x - 5, 1, 1, this->getHeight() - 2);
+            g.fillRect(x - 4, 0, 1, this->getHeight() - 1);
+            g.fillRect(x - 7, 0, 1, this->getHeight() - 1);
             break;
         }
     }
@@ -158,7 +153,7 @@ private:
 
     float beat = 0.f;
 
-    const Colour shadowColour = findDefaultColour(ColourIDs::Common::borderLineDark);
+    const Colour shadowColour = findDefaultColour(ColourIDs::Roll::trackHeaderShadow);
 };
 
 RollHeader::RollHeader(Transport &transport, RollBase &roll, Viewport &viewport) :
@@ -201,8 +196,11 @@ RollHeader::~RollHeader() = default;
 
 void RollHeader::updateColours()
 {
+    this->repriseColour = this->recordingMode.get() ?
+        this->recordingColour : this->reprisePlaybackColour;
+
     this->barColour = this->recordingMode.get() ?
-        this->snapsRecordingColour : this->snapsPlaybackColour;
+        this->recordingColour : this->snapsPlaybackColour;
 
     this->beatColour = this->barColour
         .withMultipliedAlpha(0.9f * this->roll.getBeatLineAlpha());
@@ -214,6 +212,11 @@ void RollHeader::updateColours()
 Colour RollHeader::getBarColour() const noexcept
 {
     return this->barColour;
+}
+
+Colour RollHeader::getRepriseColour() const noexcept
+{
+    return this->repriseColour;
 }
 
 void RollHeader::showRecordingMode(bool showRecordingMarker)

@@ -341,6 +341,11 @@ void Transport::disablePlaybackLoop()
     this->broadcastLoopModeChanged(false, 0.f, 0.f);
 }
 
+bool Transport::hasPlaybackLoop() const noexcept
+{
+    return this->loopMode.get();
+}
+
 float Transport::getPlaybackLoopStart() const noexcept
 {
     return this->loopStartBeat.get();

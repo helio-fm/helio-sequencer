@@ -147,9 +147,6 @@ void AutomationStepsClipComponent::mouseWheelMove(const MouseEvent &event, const
 void AutomationStepsClipComponent::insertNewEventAt(const MouseEvent &e, bool shouldAddPairedEvents)
 {
     constexpr auto minLength = AutomationStepEventComponent::minLengthInBeats;
-    const float sequenceLength = this->sequence->getLengthInBeats();
-    const float w = float(this->getWidth()) * (minLength / jmax(1.f, sequenceLength));
-
     const float draggingBeat = this->getBeatByPosition(e.x, this->clip);
 
     if (auto *sequence = dynamic_cast<AutomationSequence *>(this->sequence.get()))

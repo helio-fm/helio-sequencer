@@ -56,7 +56,6 @@ void AutomationStepEventComponent::paint(Graphics &g)
     const float left = this->floatLocalBounds.getX() + r;
     const float right = jmax(left, this->floatLocalBounds.getWidth() - r);
     const float top = r + marginTop;
-    const float bottom = this->floatLocalBounds.getHeight() - r - marginBottom;
     const float h = this->floatLocalBounds.getHeight() - d - marginTop - marginBottom;
     const float y = top + (h * this->event.getControllerValue());
     const float previousY = top + (h * (this->prevEventHolder != nullptr ?

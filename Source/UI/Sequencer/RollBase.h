@@ -222,6 +222,9 @@ public:
     bool scrollToPlayheadPositionIfNeeded(int edgeMargin = 50);
     void startFollowingPlayhead(bool forceScrollToPlayhead = false);
     void stopFollowingPlayhead();
+
+    void resetDraggingAnchors();
+    void resetDraggingAnchors(const MouseEvent &e);
     
     //===------------------------------------------------------------------===//
     // LassoSource
@@ -376,8 +379,6 @@ protected:
     Point<float> clickAnchor = { 0, 0 };
     float beatWidthAnchor = 0;
 
-    void resetDraggingAnchors();
-    void resetDraggingAnchors(const MouseEvent &e);
     void continueDragging(const MouseEvent &e);
     Point<int> getMouseOffset(Point<int> mouseScreenPosition) const;
 

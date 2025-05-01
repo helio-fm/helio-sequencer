@@ -152,7 +152,7 @@ public:
     void reset() override;
 
     // The special channel index used to refer to a filter's midi channel
-    static constexpr auto midiChannelNumber = 0x1000;
+    static constexpr int midiChannelNumber = 0x1000;
     
 protected:
 

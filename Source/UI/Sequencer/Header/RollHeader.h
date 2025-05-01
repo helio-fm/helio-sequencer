@@ -51,6 +51,7 @@ public:
 
     void updateColours();
     Colour getBarColour() const noexcept;
+    Colour getRepriseColour() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -77,13 +78,14 @@ protected:
     const Colour fillColour = findDefaultColour(ColourIDs::Roll::headerFill);
     const Colour bevelDarkColour = findDefaultColour(ColourIDs::Common::borderLineDark);
     const Colour bevelLightColour = findDefaultColour(ColourIDs::Roll::headerBorder);
-
-    const Colour snapsRecordingColour = findDefaultColour(ColourIDs::Roll::headerRecording);
     const Colour snapsPlaybackColour = findDefaultColour(ColourIDs::Roll::headerSnaps);
+    const Colour reprisePlaybackColour = findDefaultColour(ColourIDs::Roll::headerReprise);
+    const Colour recordingColour = findDefaultColour(ColourIDs::Roll::headerRecording);
 
     Colour barColour;
     Colour beatColour;
     Colour snapColour;
+    Colour repriseColour;
 
     OwnedArray<ClipRangeIndicator> clipRangeIndicators;
 

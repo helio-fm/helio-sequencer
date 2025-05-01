@@ -55,7 +55,7 @@ void NoteResizerRight::paint(Graphics &g)
         float(this->getHeight() - NoteResizerRight::draggerSize));
 
     g.setColour(this->lineColour);
-    g.strokePath(this->draggerShape, PathStrokeType(1.25f));
+    g.strokePath(this->draggerShape, PathStrokeType(1.f));
 
     HelioTheme::drawDashedVerticalLine(g,
         0.f,

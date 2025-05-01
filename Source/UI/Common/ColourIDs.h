@@ -52,10 +52,11 @@ namespace ColourIDs
         static const int headerBorder           = 0x2000110;
         static const int headerSnaps            = 0x2000111;
         static const int headerRecording        = 0x2000112;
+        static const int headerReprise          = 0x2000113;
 
-        static const int playheadPlayback       = 0x2000113;
-        static const int playheadRecording      = 0x2000114;
-        static const int playheadShade          = 0x2000115;
+        static const int playheadPlayback       = 0x2000114;
+        static const int playheadRecording      = 0x2000115;
+        static const int playheadShade          = 0x2000116;
 
         static const int patternRowFill         = 0x2000120;
         static const int trackHeaderFill        = 0x2000121;

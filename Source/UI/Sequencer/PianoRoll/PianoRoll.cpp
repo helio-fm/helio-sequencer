@@ -1224,7 +1224,6 @@ void PianoRoll::mouseUp(const MouseEvent &e)
         return;
     }
     
-    // Dismiss newNoteDragging, if needed
     if (this->newNoteDragging != nullptr)
     {
         if (this->newNoteDragging->isInEditMode())
@@ -1234,6 +1233,10 @@ void PianoRoll::mouseUp(const MouseEvent &e)
         }
 
         this->newNoteDragging = nullptr;
+
+        // all the following checks are irrelevant,
+        // we also want to skip the deselectAll call later:
+        return;
     }
 
     this->endCuttingEventsIfNeeded();
