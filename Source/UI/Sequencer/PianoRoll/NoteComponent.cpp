@@ -99,7 +99,7 @@ void NoteComponent::updateColours()
 
     this->colourLighter = this->colour.brighter(darkTheme ? 0.125f : 0.2f);
     this->colourDarker = this->colour.darker(darkTheme ? 0.25f : 0.15f).withMultipliedAlpha(1.25f);
-    this->colourVolume = this->colour.darker(0.75f).withAlpha(ghost || generated ? 0.f : 0.5f);
+    this->colourVolume = this->colour.darker(0.75f).withAlpha(0.5f);
 }
 
 bool NoteComponent::shouldGoQuickSelectTrackMode(const ModifierKeys &modifiers) const
@@ -672,6 +672,10 @@ void NoteComponent::paint(Graphics &g) noexcept
     
     g.setColour(this->colour);
 
+    // left/right vertical lines
+    g.fillRect(x, y + 1.5f, 0.5f, h - 3.f);
+    g.fillRect(x + w - 0.5f, y + 1.5f, 0.5f, h - 3.f);
+
     if (w >= 0.5f)
     {
         // fill
@@ -683,10 +687,6 @@ void NoteComponent::paint(Graphics &g) noexcept
         }
     }
 
-    // left/right vertical lines
-    g.fillRect(x, y + h / 6.f, 0.5f, h / 1.5f);
-    g.fillRect(x + w - 0.5f, y + h / 6.f, 0.5f, h / 1.5f);
-
     if (w >= 1.5f)
     {
         // top/bottom horizontal borders
@@ -697,19 +697,23 @@ void NoteComponent::paint(Graphics &g) noexcept
         g.fillRect(x + 0.75f, roundf(h - 1.f), w - 1.5f, 1.f);
     }
 
+    if (!this->flags.isActive || this->flags.isGenerated || this->flags.isGhost)
+    {
+        return;
+    }
+
     // velocity line
     if (w >= 6.f)
     {
-        g.setColour(this->colourVolume);
         const float sx = x + 1.5f;
         const float sh = jmin(h - 2.f, 4.f);
         const float sy = h - sh - 1.f;
         const float sw1 = (w - 4.f) * this->note.getVelocity();
         const float sw2 = (w - 4.f) * this->note.getVelocity() * this->clip.getVelocity();
 
+        g.setColour(this->colourVolume);
         g.fillRect(sx, sy, sw1, sh);
         g.fillRect(sx, sy, sw2, sh);
-
         g.fillRect(sx + sw1, sy + 1.f, 1.f, sh - 1.f);
         //g.fillRect(sx + sw2, sy + 1.f, 1.f, sh - 1.f);
     }

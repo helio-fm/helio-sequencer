@@ -1708,10 +1708,11 @@ void PianoRoll::paint(Graphics &g)
                 sequencer rows are messed up, so we have to say explicitly where to fill each period.
             */
 
-            for (int i = paintStartY; i < y + h; i += periodHeight)
+            const auto tileHeight = periodHeight * 2;
+            for (int i = paintStartY; i < y + h; i += tileHeight)
             {
                 g.setFillType({ fillImage, AffineTransform::translation(0.f, float(i)) });
-                g.fillRect(prevBeatX, i, beatX - prevBeatX, periodHeight);
+                g.fillRect(prevBeatX, i, beatX - prevBeatX, tileHeight);
             }
         }
 

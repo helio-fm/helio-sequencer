@@ -64,7 +64,7 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
     }
 
     const auto periodSize = temperament->getPeriodSize();
-    const auto numRowsToRender = periodSize * 2;
+    const auto numRowsToRender = periodSize * 3;
 
     Image patternImage(Image::RGB, 8, height * numRowsToRender, false);
     Graphics g(patternImage);
@@ -82,7 +82,11 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
     const auto rowLineColour = theme.findColour(ColourIDs::Roll::rowLine);
     const auto bevelBrightness = theme.isDark() ? 0.025f : 0.1f;
 
-    // draw rows
+    g.setColour(blackKeyColour);
+    g.fillAll();
+
+    HelioTheme::drawNoise(theme, g, 0.75f);
+
     for (int i = lastPeriodRemainder;
         (i < numRowsToRender + lastPeriodRemainder) && ((posY + previousHeight) >= 0.0f);
         i++)
@@ -105,11 +109,6 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
             g.setColour(whiteKeyColour.brighter(bevelBrightness));
             g.drawHorizontalLine(int(posY + 1), 0.f, float(patternImage.getWidth()));
         }
-        else
-        {
-            g.setColour(blackKeyColour);
-            g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
-        }
 
         // fill divider line
         g.setColour(rowLineColour);
@@ -118,8 +117,6 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
         currentHeight = float(height);
         posY -= currentHeight;
     }
-
-    HelioTheme::drawNoise(theme, g, 1.f);
 
     return patternImage;
 }
