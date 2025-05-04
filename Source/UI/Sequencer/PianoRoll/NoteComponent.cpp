@@ -1052,7 +1052,7 @@ bool NoteComponent::getGroupScaleRightFactor(const MouseEvent &e, float &absScal
         this->getY() + this->floatLocalBounds.getY() + e.y,
         newNote, newBeat, snap);
     
-    const float minGroupLength = 1.f;
+    const float minGroupLength = Globals::minNoteLength;
     const float myEndBeat = this->getBeat() + this->getLength();
     const float newGroupLength = jmax(minGroupLength, newBeat - this->groupScalingAnchor.getBeat());
 
@@ -1098,7 +1098,7 @@ bool NoteComponent::getGroupScaleLeftFactor(const MouseEvent &e, float &absScale
         this->getY() + this->floatLocalBounds.getY() + e.y,
         newNote, newBeat, snap);
     
-    const float minGroupLength = 1.f;
+    const float minGroupLength = Globals::minNoteLength;
     const float groupAnchorEndBeat = this->groupScalingAnchor.getBeat() + this->groupScalingAnchor.getLength();
 
     const float newGroupLength = jmax(minGroupLength, (groupAnchorEndBeat - newBeat));
