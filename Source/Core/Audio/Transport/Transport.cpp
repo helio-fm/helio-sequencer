@@ -793,13 +793,13 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void Transport::updateTemperamentForBuiltInSynth(Temperament::Ptr temperament) const
+void Transport::updateTemperamentForBuiltInSynths(Temperament::Ptr temperament) const
 {
     for (auto *instrument : this->orchestra.getInstruments())
     {
-        if (auto mainNode = instrument->findFirstMidiReceiver())
+        for (int i = 0; i < instrument->getNumNodes(); ++i)
         {
-            if (auto *plugin = dynamic_cast<BuiltInMicrotonalPlugin *>(mainNode->getProcessor()))
+            if (auto *plugin = dynamic_cast<BuiltInMicrotonalPlugin *>(instrument->getNode(i)->getProcessor()))
             {
                 plugin->setTemperament(temperament);
             }
@@ -814,7 +814,7 @@ void Transport::onDeactivateProjectSubtree(const ProjectMetadata *meta)
 
 void Transport::onActivateProjectSubtree(const ProjectMetadata *meta)
 {
-    this->updateTemperamentForBuiltInSynth(meta->getTemperament());
+    this->updateTemperamentForBuiltInSynths(meta->getTemperament());
 
     // let's reset midi caches, just in case some instrument's keyboard mapping
     // has changed in the meanwhile (no idea how to observe kbm changes in transport)
@@ -823,7 +823,7 @@ void Transport::onActivateProjectSubtree(const ProjectMetadata *meta)
 
 void Transport::onChangeProjectInfo(const ProjectMetadata *meta)
 {
-    this->updateTemperamentForBuiltInSynth(meta->getTemperament());
+    this->updateTemperamentForBuiltInSynths(meta->getTemperament());
 }
 
 void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks,
@@ -844,7 +844,7 @@ void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks,
 
     this->stopPlaybackAndRecording();
 
-    this->updateTemperamentForBuiltInSynth(meta->getTemperament());
+    this->updateTemperamentForBuiltInSynths(meta->getTemperament());
 }
 
 void Transport::onAddTrack(MidiTrack *const track)

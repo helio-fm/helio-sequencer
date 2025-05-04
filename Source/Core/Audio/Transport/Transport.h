@@ -266,7 +266,7 @@ private:
     void clearInstrumentLinkForTrack(const MidiTrack *track);
     
     // a nasty hack, see the description in DefaultSynth.h:
-    void updateTemperamentForBuiltInSynth(Temperament::Ptr temperament) const;
+    void updateTemperamentForBuiltInSynths(Temperament::Ptr temperament) const;
 
     inline void handlePossibleTempoChange(int trackControllerNumber);
 
