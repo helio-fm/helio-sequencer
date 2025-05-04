@@ -956,7 +956,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::trackHeaderBorderLight,
         Colours::white.withAlpha(this->isDarkTheme ? 0.085f : 0.15f));
     this->setColour(ColourIDs::Roll::trackHeaderShadow,
-        Colours::black.withAlpha(this->isDarkTheme ? 0.085f : 0.02f));
+        Colours::black.withAlpha(this->isDarkTheme ? 0.1f : 0.025f));
     this->setColour(ColourIDs::Roll::trackHeaderBorderDark,
         Colours::black.withAlpha(this->isDarkTheme ? 0.1f : 0.07f));
 
@@ -978,8 +978,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::draggingGuide, s->getLassoBorderColour().withAlpha(0.45f));
     this->setColour(ColourIDs::Roll::draggingGuideShadow, s->getBlackKeyColour().withMultipliedAlpha(0.55f));
     this->setColour(ColourIDs::Roll::resizingGuideFill, s->getSidebarFillColour());
-    this->setColour(ColourIDs::Roll::resizingGuideOutline, s->getLassoBorderColour().withAlpha(0.6f));
-    this->setColour(ColourIDs::Roll::resizingGuideShadow, s->getBlackKeyColour().withMultipliedAlpha(0.7f));
+    this->setColour(ColourIDs::Roll::resizingGuideOutline, s->getLassoBorderColour().withAlpha(0.55f));
+    this->setColour(ColourIDs::Roll::resizingGuideShadow, s->getBlackKeyColour().withMultipliedAlpha(0.65f));
 
     this->setColour(ColourIDs::TransportControl::recordInactive, Colours::transparentBlack);
     this->setColour(ColourIDs::TransportControl::recordHighlight, Colours::red.withAlpha(0.35f));

@@ -31,14 +31,14 @@ class ShadowComponent : public Component
 {
 public:
 
-    ShadowComponent(ShadowType type)
+    explicit ShadowComponent(ShadowType type)
     {
         this->setOpaque(false);
         this->setPaintingIsUnclipped(true);
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
 
-        const auto shadowMultiplier = HelioTheme::getCurrentTheme().isDark() ? 1.f : 0.25f;
+        const auto shadowMultiplier = HelioTheme::getCurrentTheme().isDark() ? 1.f : 0.5f;
 
         switch (type)
         {
@@ -53,9 +53,9 @@ public:
                 .withMultipliedAlpha(shadowMultiplier * 0.5f);
             break;
         case ShadowType::Light:
-            this->shadowColour = Colours::black.withAlpha(shadowMultiplier * 0.045f);
+            this->shadowColour = Colours::black.withAlpha(shadowMultiplier * 0.05f);
             this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark)
-                .withMultipliedAlpha(shadowMultiplier * 0.35f);
+                .withMultipliedAlpha(shadowMultiplier * 0.4f);
             break;
         default:
             this->shadowColour = Colours::transparentBlack;

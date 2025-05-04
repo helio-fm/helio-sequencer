@@ -23,7 +23,6 @@
 #include "Pattern.h"
 #include "PatternRoll.h"
 #include "PianoClipComponent.h"
-#include "HeadlineItemArrow.h"
 #include "TrackStartIndicator.h"
 #include "TrackEndIndicator.h"
 #include "ColourIDs.h"

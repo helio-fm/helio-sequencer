@@ -70,7 +70,7 @@ public:
             this->titleLabel->setCachedComponentImage(new CachedLabelImage(*this->titleLabel));
 
             constexpr auto arrowWidth = 8;
-            this->arrow = make<HeadlineItemArrow>(arrowWidth);
+            this->arrow = make<HeadlineItemArrow>(arrowWidth, false);
             this->addAndMakeVisible(this->arrow.get());
 
             constexpr auto horizontalMargin = arrowWidth + 2;

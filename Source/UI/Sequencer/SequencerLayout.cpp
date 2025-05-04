@@ -577,9 +577,9 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->rollNavigationSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
     this->addAndMakeVisible(this->rollNavigationSidebar.get());
 
-    this->leftSidebarShadow = make<ShadowRightwards>(ShadowType::Normal);
+    this->leftSidebarShadow = make<ShadowRightwards>(ShadowType::Light);
     this->addAndMakeVisible(this->leftSidebarShadow.get());
-    this->rightSidebarShadow = make<ShadowLeftwards>(ShadowType::Normal);
+    this->rightSidebarShadow = make<ShadowLeftwards>(ShadowType::Light);
     this->addAndMakeVisible(this->rightSidebarShadow.get());
 
     App::Config().getUiFlags()->addListener(this);
@@ -674,8 +674,9 @@ void SequencerLayout::resized()
     
     this->rollContainer->setBounds(localBounds);
     
-    this->leftSidebarShadow->setBounds(localBounds.removeFromLeft(leftSidebarWidth));
-    this->rightSidebarShadow->setBounds(localBounds.removeFromRight(rightSidebarWidth));
+    constexpr auto sidebarShadowSize = Globals::UI::rollShadowSize * 2;
+    this->leftSidebarShadow->setBounds(localBounds.removeFromLeft(sidebarShadowSize));
+    this->rightSidebarShadow->setBounds(localBounds.removeFromRight(sidebarShadowSize));
 }
 
 void SequencerLayout::proceedToRenderDialog(RenderFormat format)

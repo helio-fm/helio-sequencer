@@ -23,7 +23,9 @@ class HeadlineItemArrow final : public Component
 {
 public:
 
-    explicit HeadlineItemArrow(int arrowWidth = 11) : arrowWidth(arrowWidth)
+    HeadlineItemArrow(int arrowWidth = 11, bool hasGradient = true) :
+        arrowWidth(arrowWidth),
+        hasGradient(hasGradient)
     {
         this->setOpaque(false);
         this->setBufferedToImage(true);
@@ -34,19 +36,33 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setGradientFill(ColourGradient(this->shadowColour1,
-            float(this->getWidth() - 2), float(this->getHeight() - 2),
-            this->shadowColour2,
-            float(this->getWidth() - this->arrowWidth), 2.f,
-            true));
+        if (this->hasGradient)
+        {
+            g.setGradientFill(ColourGradient(this->shadowColour1,
+                float(this->getWidth() - 2), float(this->getHeight() - 2),
+                this->shadowColour2,
+                float(this->getWidth() - this->arrowWidth), 2.f,
+                true));
+        }
+        else
+        {
+            g.setColour(this->shadowColour2);
+        }
 
         g.strokePath(this->shadowPath, PathStrokeType(1.f));
 
-        g.setGradientFill(ColourGradient(this->arrowColour1,
-            float(this->getWidth() - 3), float(this->getHeight() - 2),
-            this->arrowColour2,
-            float(this->getWidth() - this->arrowWidth), 0.f,
-            true));
+        if (this->hasGradient)
+        {
+            g.setGradientFill(ColourGradient(this->arrowColour1,
+                float(this->getWidth() - 3), float(this->getHeight() - 2),
+                this->arrowColour2,
+                float(this->getWidth() - this->arrowWidth), 0.f,
+                true));
+        }
+        else
+        {
+            g.setColour(this->arrowColour2);
+        }
 
         g.strokePath(this->arrowPath, PathStrokeType(0.5f));
     }
@@ -71,6 +87,7 @@ private:
     Path shadowPath;
 
     const int arrowWidth;
+    const bool hasGradient;
 
     const Colour arrowColour1 = findDefaultColour(ColourIDs::Arrow::lineStart);
     const Colour arrowColour2 = findDefaultColour(ColourIDs::Arrow::lineEnd);

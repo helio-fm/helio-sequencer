@@ -1408,7 +1408,10 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme)
     g.setColour(theme.findColour(ColourIDs::Roll::patternRowFill));
     g.fillRect(patternImage.getBounds());
 
+    HelioTheme::drawNoise(theme, g);
+
     const auto shadowColour = theme.findColour(ColourIDs::Roll::trackHeaderShadow);
+    const auto shadowColourLight = shadowColour.withMultipliedAlpha(0.33f);
 
     int yBase = 0;
     while (yBase < PatternRoll::rowPatternHeight)
@@ -1427,35 +1430,34 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme)
         {
             float x = 0, y = float(yBase + PatternRoll::trackHeaderHeight);
             g.setGradientFill(ColourGradient(shadowColour, x, y,
-                Colours::transparentBlack, x, float(shadowHeight + y), false));
+                Colours::transparentBlack, x, float(y + shadowHeight), false));
             g.fillRect(int(x), int(y), width, shadowHeight);
         }
 
         {
             float x = 0, y = float(yBase + PatternRoll::trackHeaderHeight);
             g.setGradientFill(ColourGradient(shadowColour, x, y,
-                Colours::transparentBlack, x, float((shadowHeight / 2) + y), false));
+                Colours::transparentBlack, x, float(y + (shadowHeight / 2)), false));
             g.fillRect(int(x), int(y), width, shadowHeight);
         }
 
         {
             float x = 0, y = float(yBase + PatternRoll::rowHeight - shadowHeight);
             g.setGradientFill(ColourGradient(Colours::transparentBlack, x, y,
-                shadowColour, x, float(PatternRoll::rowHeight - 1), false));
+                shadowColourLight, x, float(y + shadowHeight), false));
             g.fillRect(int(x), int(y), width, shadowHeight);
         }
 
         {
             float x = 0, y = float(yBase + PatternRoll::rowHeight - shadowHeight / 2);
             g.setGradientFill(ColourGradient(Colours::transparentBlack, x, y,
-                shadowColour, x, float(PatternRoll::rowHeight - 1), false));
+                shadowColourLight, x, float(y + (shadowHeight / 2)), false));
             g.fillRect(int(x), int(y), width, shadowHeight);
         }
 
         yBase += PatternRoll::rowHeight;
     }
 
-    HelioTheme::drawNoise(theme, g);
     return patternImage;
 }
 
