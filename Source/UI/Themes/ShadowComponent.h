@@ -38,24 +38,19 @@ public:
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
 
-        const auto shadowMultiplier = HelioTheme::getCurrentTheme().isDark() ? 1.f : 0.5f;
-
         switch (type)
         {
         case ShadowType::Hard:
-            this->shadowColour = Colours::black.withAlpha(shadowMultiplier * 0.15f);
-            this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark)
-                .withMultipliedAlpha(shadowMultiplier * 0.75f);
+            this->shadowColour = findDefaultColour(ColourIDs::Shadows::fillHard);
+            this->lineColour = findDefaultColour(ColourIDs::Shadows::borderHard);
             break;
         case ShadowType::Normal:
-            this->shadowColour = Colours::black.withAlpha(shadowMultiplier * 0.1f);
-            this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark)
-                .withMultipliedAlpha(shadowMultiplier * 0.5f);
+            this->shadowColour = findDefaultColour(ColourIDs::Shadows::fillNormal);
+            this->lineColour = findDefaultColour(ColourIDs::Shadows::borderNormal);
             break;
         case ShadowType::Light:
-            this->shadowColour = Colours::black.withAlpha(shadowMultiplier * 0.05f);
-            this->lineColour = findDefaultColour(ColourIDs::Common::borderLineDark)
-                .withMultipliedAlpha(shadowMultiplier * 0.4f);
+            this->shadowColour = findDefaultColour(ColourIDs::Shadows::fillLight);
+            this->lineColour = findDefaultColour(ColourIDs::Shadows::borderLight);
             break;
         default:
             this->shadowColour = Colours::transparentBlack;

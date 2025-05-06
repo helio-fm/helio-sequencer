@@ -857,7 +857,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Icons::shadow, s->getIconShadowColour());
 
     this->setColour(ColourIDs::Panel::pageFillA, s->getPageFillColour());
-    this->setColour(ColourIDs::Panel::pageFillB, s->getPageFillColour().darker(0.025f));
+    this->setColour(ColourIDs::Panel::pageFillB, s->getPageFillColour().darker(0.01f));
     this->setColour(ColourIDs::Panel::sidebarFill, s->getSidebarFillColour());
     this->setColour(ColourIDs::Breadcrumbs::fill, s->getHeadlineFillColour());
     this->setColour(ColourIDs::Breadcrumbs::selectionMarker, this->isDarkTheme ?
@@ -896,7 +896,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::TrackScroller::viewBeatRangeBorder, screenRangeFill.withMultipliedAlpha(0.125f));
     this->setColour(ColourIDs::TrackScroller::viewRangeFill, screenRangeFill.withMultipliedAlpha(0.35f));
     this->setColour(ColourIDs::TrackScroller::projectOutRangeFill,
-        Colours::black.withAlpha(this->isDarkTheme ? 0.125f : 0.055f));
+        Colours::black.withAlpha(this->isDarkTheme ? 0.125f : 0.05f));
 
     this->setColour(ColourIDs::Instrument::midiIn, Colours::black.withAlpha(0.15f));
     this->setColour(ColourIDs::Instrument::midiOut, Colours::black.withAlpha(0.15f));
@@ -1008,6 +1008,14 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::TapTempoControl::fill, textColour.withAlpha(0.015f));
     this->setColour(ColourIDs::TapTempoControl::fillHighlighted, textColour.withAlpha(0.05f));
     this->setColour(ColourIDs::TapTempoControl::outline, textColour.withAlpha(0.25f));
+
+    const auto shadowIntensity = this->isDarkTheme ? 1.f : 0.35f;
+    this->setColour(ColourIDs::Shadows::fillLight, Colours::black.withAlpha(shadowIntensity * 0.05f));
+    this->setColour(ColourIDs::Shadows::borderLight, Colours::black.withAlpha(shadowIntensity * 0.125f));
+    this->setColour(ColourIDs::Shadows::fillNormal, Colours::black.withAlpha(shadowIntensity * 0.09f));
+    this->setColour(ColourIDs::Shadows::borderNormal, Colours::black.withAlpha(shadowIntensity * 0.15f));
+    this->setColour(ColourIDs::Shadows::fillHard, Colours::black.withAlpha(shadowIntensity * 0.13f));
+    this->setColour(ColourIDs::Shadows::borderHard, Colours::black.withAlpha(shadowIntensity * 0.2f));
 
     // Pre-rendered image backgrounds:
     constexpr int w = 128;

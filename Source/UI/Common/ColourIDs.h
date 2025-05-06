@@ -98,6 +98,16 @@ namespace ColourIDs
         static const int fill                   = 0x2000200;
         static const int frame                  = 0x2000201;
     }
+    
+    namespace Shadows
+    {
+        static const int fillLight              = 0x2000300;
+        static const int borderLight            = 0x2000301;
+        static const int fillNormal             = 0x2000302;
+        static const int borderNormal           = 0x2000303;
+        static const int fillHard               = 0x2000304;
+        static const int borderHard             = 0x2000305;
+    }
 
     namespace Icons
     {
