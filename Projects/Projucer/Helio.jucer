@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="3.15"
+<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="3.16"
               bundleIdentifier="fm.helio" includeBinaryInAppConfig="1" companyWebsite="https://helio.fm"
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               displaySplashScreen="0" reportAppUsage="0" splashScreenColour="Dark"
@@ -1489,11 +1489,11 @@
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" isDebug="1"
                        optimisation="1" targetName="Helio" enableIncrementalLinking="1"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
-                       warningsAreErrors="1" winArchitecture="x64"/>
+                       warningsAreErrors="1" winArchitecture="x64" useRuntimeLibDLL="0"/>
         <CONFIGURATION name="Tests" winWarningLevel="4" generateManifest="1" isDebug="1"
                        optimisation="1" targetName="Helio" enableIncrementalLinking="1"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="0"
-                       warningsAreErrors="1" defines="JUCE_UNIT_TESTS=1"/>
+                       warningsAreErrors="1" defines="JUCE_UNIT_TESTS=1" useRuntimeLibDLL="0"/>
         <CONFIGURATION name="Release32" winWarningLevel="4" generateManifest="1" winArchitecture="Win32"
                        isDebug="0" optimisation="3" targetName="Helio" useRuntimeLibDLL="0"
                        enableIncrementalLinking="0" debugInformationFormat="ProgramDatabase"
@@ -1578,7 +1578,7 @@
                    androidInternetNeeded="0" androidOtherPermissions="android.permission.MODIFY_AUDIO_SETTINGS"
                    cppLanguageStandard="-std=c++14" androidTheme="@android:style/Theme.Material.NoActionBar.Fullscreen"
                    smallIcon="DQTpOG" bigIcon="DQTpOG" androidScreenOrientation="landscape"
-                   androidVersionCode="315" gradleToolchain="clang" cameraPermissionNeeded="0"
+                   androidVersionCode="316" gradleToolchain="clang" cameraPermissionNeeded="0"
                    microphonePermissionNeeded="0" androidBluetoothNeeded="1" androidInAppBilling="0"
                    androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
                    androidEnableRemoteNotifications="0" buildToolsVersion="28.0.0"

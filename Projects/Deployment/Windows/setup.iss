@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Helio"
-#define MyAppVersion "3.15"
+#define MyAppVersion "3.16"
 #define MyAppPublisher "Peter Rudenko"
 #define MyAppURL "https://helio.fm"
 #define MyAppExeName "Helio.exe"
