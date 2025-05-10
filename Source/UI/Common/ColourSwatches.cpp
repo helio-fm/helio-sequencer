@@ -19,11 +19,12 @@
 #include "ColourSwatches.h"
 #include "ColourIDs.h"
 
-ColourSwatches::ColourSwatches()
+ColourSwatches::ColourSwatches(int buttonSize)
 {
     for (const auto &colour : ColourIDs::getColoursList())
     {
         auto button = make<ColourButton>(colour, this);
+        button->setSize(buttonSize, buttonSize);
         this->addAndMakeVisible(button.get());
         this->buttons.add(button.release());
     }
@@ -34,9 +35,8 @@ void ColourSwatches::resized()
     int x = 0;
     for (const auto &button : this->buttons)
     {
-        const int w = this->getWidth() / this->buttons.size();
-        button->setBounds(x, 0, w, this->getHeight());
-        x += w;
+        button->setBounds(x, 0, button->getWidth(), this->getHeight());
+        x += button->getWidth();
     }
 }
 

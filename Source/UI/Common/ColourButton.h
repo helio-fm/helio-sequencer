@@ -19,6 +19,7 @@
 
 #include "HighlightedComponent.h"
 #include "ComponentFader.h"
+#include "ColourIDs.h"
 
 class IconComponent;
 class ColourButton;
@@ -36,7 +37,6 @@ public:
     ColourButton(Colour c, ColourButton::Listener *listener);
     ~ColourButton();
 
-    //[UserMethods]
     void deselect();
     void select();
 
@@ -61,6 +61,8 @@ private:
     UniquePointer<IconComponent> checkMark;
     ColourButton::Listener *owner = nullptr;
     ComponentFader fader;
+
+    const Colour outlineColour = findDefaultColour(ColourIDs::ColourButton::outline);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourButton)
 };

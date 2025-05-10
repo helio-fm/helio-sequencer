@@ -64,7 +64,8 @@ void TrackPropertiesDialog::init(const String &title, const String &confirmation
         this->doOk();
     };
 
-    this->colourSwatches = make<ColourSwatches>();
+    const auto colourButtonSizeWithMargin = isPhoneLayout ? 25 : 29;
+    this->colourSwatches = make<ColourSwatches>(colourButtonSizeWithMargin);
     this->addAndMakeVisible(this->colourSwatches.get());
 
     this->textEditor = HelioTheme::makeSingleLineTextEditor(true, DialogBase::Defaults::textEditorFont);
@@ -127,10 +128,9 @@ void TrackPropertiesDialog::init(const String &title, const String &confirmation
 
     this->messageLabel->setInterceptsMouseClicks(false, false);
 
-    const auto buttonSizeWithMargin = isPhoneLayout ? 25 : 29;
     this->setSize(this->getHorizontalSpacingExceptContent() +
         TrackPropertiesDialog::colourSwatchesMargin * 2 +
-        buttonSizeWithMargin * this->colourSwatches->getNumButtons(),
+        (colourButtonSizeWithMargin * this->colourSwatches->getNumButtons()) + 1,
         isPhoneLayout ? 100 : 190);
 
     this->updatePosition();

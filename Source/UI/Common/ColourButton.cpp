@@ -70,17 +70,15 @@ ColourButton::~ColourButton() = default;
 
 void ColourButton::paint(Graphics &g)
 {
-    const int y1 = 2;
-    const int y2 = this->getHeight() - 2;
     const int x1 = 2;
     const int x2 = this->getWidth() - 2;
+    const int y1 = 2;
+    const int y2 = this->getHeight() - 2;
 
-    const Colour outlineColour = findDefaultColour(ColourIDs::ColourButton::outline);
-
-    g.setColour(this->colour.interpolatedWith(outlineColour, 0.25f).withAlpha(0.9f));
+    g.setColour(this->colour.interpolatedWith(this->outlineColour, 0.25f).withAlpha(0.9f));
     g.fillRect(x1, y1, x2 - x1 + 1, 5);
 
-    g.setColour(this->colour.interpolatedWith(outlineColour, 0.5f).withAlpha(0.1f));
+    g.setColour(this->colour.interpolatedWith(this->outlineColour, 0.5f).withAlpha(0.1f));
     g.drawVerticalLine(x1 - 1, float(y1), float(y2 + 1));
     g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
     g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));

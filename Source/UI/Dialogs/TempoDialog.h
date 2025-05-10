@@ -40,7 +40,7 @@ public:
 private:
 
     static constexpr auto tapTempoHeight = 46;
-    static constexpr auto tapTempoMargin = 8;
+    static constexpr auto tapTempoMargin = 6;
 
     Component *getPrimaryFocusTarget() override;
 

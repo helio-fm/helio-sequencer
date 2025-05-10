@@ -23,7 +23,7 @@ class ColourSwatches final : public Component, public ColourButton::Listener
 {
 public:
 
-    ColourSwatches();
+    explicit ColourSwatches(int buttonSize);
 
     void onColourButtonClicked(ColourButton *button) override;
     void setSelectedColour(Colour colour);

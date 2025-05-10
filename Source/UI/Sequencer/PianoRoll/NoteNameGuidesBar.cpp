@@ -90,7 +90,9 @@ void NoteNameGuidesBar::updateContent()
         this->scaleRootKeyName = {};
     }
 
-    const bool shouldShowsRootKeys = this->selectedKeys.size() <= 1;
+    // show all selected notes and root notes, but also try not to clutter the view
+    // and hide root notes if the selection is larger than a simple triad chord:
+    const bool shouldShowsRootKeys = this->selectedKeys.size() <= 3;
 
     int periodNumber = 0;
     int guidesWidth = 0;
