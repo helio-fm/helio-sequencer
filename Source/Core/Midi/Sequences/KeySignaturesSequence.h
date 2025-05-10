@@ -19,6 +19,7 @@
 
 #include "MidiSequence.h"
 #include "KeySignatureEvent.h"
+#include "Temperament.h"
 
 class KeySignaturesSequence final : public MidiSequence
 {
@@ -43,6 +44,9 @@ public:
     bool change(const KeySignatureEvent &signature,
         const KeySignatureEvent &newSignature,
         bool undoable);
+    
+    // Batch actions:
+    void transposeAll(int keyDelta, Temperament::Ptr temperament, bool checkpoint);
 
     //===------------------------------------------------------------------===//
     // Serializable

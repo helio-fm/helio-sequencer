@@ -25,6 +25,7 @@
 #include "AutomationTrackNode.h"
 #include "PianoTrackActions.h"
 #include "AutomationTrackActions.h"
+#include "KeySignatureEventActions.h"
 #include "GeneratedSequenceBuilder.h"
 #include "Note.h"
 #include "AutomationEvent.h"
@@ -152,10 +153,82 @@ void PatternOperations::deleteSelection(const Array<Clip> &selection,
     }
 }
 
+void PatternOperations::transposeProject(ProjectNode &project,
+    int deltaKey, int64 transactionId, bool shouldCheckpoint)
+{
+    const auto tracks = project.getTracks();
+    if (tracks.size() == 0 || deltaKey == 0)
+    {
+        jassertfalse;
+        return;
+    }
+
+    // don't make extra checkpoints for any transpositions made from the same menu;
+    // also, don't distinguish between transposing up or down to be able to rely on
+    // chromatic scales of the original key signatures (see the comment below)
+    const auto operationId = UndoActionIDs::TransposeEntireProject + transactionId;
+
+    // let's try to be smarter about transposing the project several times in a row,
+    // first, to coalesce many transpositions into one, and second, to transpose
+    // the key signatures correctly: assume the root key from the very first change
+    // and find the new root key using the chromatic scale of the original signature
+    // (tech debt warning: this could be done in a separate undo action class,
+    // which would use createCoalescedAction() for this purposes, but I'm too lazy)
+    auto coalescedKeyDelta = deltaKey;
+    while (project.getUndoStack()->getUndoActionId() == operationId)
+    {
+        // we only need one changeset, others are expected to have the same key deltas
+        auto *transposeAction = project.getUndoStack()->findUndoAction<ClipsGroupChangeAction>();
+        if (transposeAction == nullptr ||
+            transposeAction->getClipsBefore().isEmpty() ||
+            transposeAction->getClipsAfter().isEmpty())
+        {
+            jassertfalse;
+            break;
+        }
+
+        const auto keyDelta =
+            transposeAction->getClipsAfter().getFirst().getKey() -
+            transposeAction->getClipsBefore().getFirst().getKey();
+
+        coalescedKeyDelta += keyDelta;
+        //DBG("Undoing transposition with key delta = " +
+        //    String(keyDelta) + ", coalesced delta = " + String(coalescedKeyDelta));
+
+        project.undo();
+    }
+
+    if (coalescedKeyDelta == 0)
+    {
+        return;
+    }
+
+    if (shouldCheckpoint)
+    {
+        project.checkpoint(operationId);
+    }
+
+    for (int i = 0; i < tracks.size(); ++i)
+    {
+        auto *track = tracks.getUnchecked(i);
+        if (dynamic_cast<PianoSequence *>(track->getSequence()))
+        {
+            track->getPattern()->transposeAll(coalescedKeyDelta, false);
+        }
+        else if (auto *keySignatureSequence =
+            dynamic_cast<KeySignaturesSequence *>(track->getSequence()))
+        {
+            keySignatureSequence->transposeAll(coalescedKeyDelta,
+                project.getProjectInfo()->getTemperament(), false);
+        }
+    }
+}
+
 void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0 || deltaKey == 0)
     {
+        jassertfalse;
         return;
     }
 

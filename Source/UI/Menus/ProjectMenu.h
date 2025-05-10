@@ -38,6 +38,8 @@ private:
     ProjectNode &project;
     Array<Instrument *> instruments;
 
+    const int64 transactionId = Random::getSystemRandom().nextInt64();
+
     void showMainMenu(AnimationType animationType);
     void showBatchActionsMenu(AnimationType animationType);
     void showRenderMenu();

@@ -60,8 +60,9 @@ namespace UndoActionIDs
         ShiftTempoDown = 0x0091,
 
         MakeChord = 0x0100,
+        TransposeEntireProject = 0x0200,
         // ...
 
-        MaxUndoActionId = 0x0100
+        MaxUndoActionId = 0x0200
     };
 } // namespace UndoActionIDs

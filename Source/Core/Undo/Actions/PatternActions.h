@@ -194,6 +194,9 @@ public:
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
 
+    const Array<Clip> &getClipsBefore() const noexcept;
+    const Array<Clip> &getClipsAfter() const noexcept;
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;

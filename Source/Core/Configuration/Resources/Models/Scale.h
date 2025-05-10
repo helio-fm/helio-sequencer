@@ -51,6 +51,10 @@ public:
     // Helpers
     //===------------------------------------------------------------------===//
 
+    // Wraps a possibly negative key in the [lower, upper) range;
+    // the main use case is to wrapKey(key, 0, periodSize)
+    static int wrapKey(int key, int lowerKey, int upperKey);
+
     bool isValid() const noexcept;
     int getSize() const noexcept;
     String getLocalizedName() const;

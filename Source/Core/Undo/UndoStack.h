@@ -67,6 +67,24 @@ public:
         return UndoStack::transactionHas<T>(this->getNextSet());
     }
 
+    template <typename T>
+    T *findUndoAction() const
+    {
+        auto *s = this->getCurrentSet();
+        if (s != nullptr)
+        {
+            for (int i = 0; i < s->actions.size(); ++i)
+            {
+                if (auto *foundAction = dynamic_cast<T *>(s->actions.getUnchecked(i)))
+                {
+                    return foundAction;
+                }
+            }
+        }
+
+        return nullptr;
+    }
+
     // for multi-step interactive actions which might involve >1 checkpoints
     bool mergeTransactionsUpTo(UndoActionId transactionId);
 

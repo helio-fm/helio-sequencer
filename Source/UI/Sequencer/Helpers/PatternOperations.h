@@ -34,7 +34,12 @@ struct PatternOperations final
 
     static void duplicateSelection(const Lasso &selection, bool shouldCheckpoint = true);
 
+    // this one transposes all clips and updates all key signatures:
+    static void transposeProject(ProjectNode &project,
+        int deltaKey, int64 transactionId, bool shouldCheckpoint = true);
+    // this one just transposes selected clips:
     static void transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint = true);
+
     static void tuneClips(const Lasso &selection, float deltaVelocity, bool shouldCheckpoint = true);
     static void shiftBeatRelative(const Lasso &selection, float deltaBeat, bool shouldCheckpoint = true);
 

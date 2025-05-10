@@ -147,8 +147,7 @@ bool Scale::seemsMinor() const noexcept
     return this->getChromaticKey(int(Chord::Key::InScale::III), 0, false) == expectedNumSemitones;
 }
 
-// Wraps a key (may be negative)
-static int wrapKey(int key, int const lowerKey, int const upperKey)
+int Scale::wrapKey(int key, int lowerKey, int upperKey)
 {
     const int keyRange = upperKey - lowerKey;
     const int safeKey =
@@ -161,19 +160,19 @@ static int wrapKey(int key, int const lowerKey, int const upperKey)
 
 bool Scale::hasKey(int chromaticKey) const
 {
-    const auto wrappedKey = wrapKey(chromaticKey, 0, this->getBasePeriod());
+    const auto wrappedKey = Scale::wrapKey(chromaticKey, 0, this->getBasePeriod());
     return this->keys.contains(wrappedKey);
 }
 
 int Scale::getScaleKey(int chromaticKey) const
 {
-    const auto wrappedKey = wrapKey(chromaticKey, 0, this->getBasePeriod());
+    const auto wrappedKey = Scale::wrapKey(chromaticKey, 0, this->getBasePeriod());
     return this->keys.indexOf(wrappedKey);
 }
 
 int Scale::getNearestScaleKey(int chromaticKey, ScaleKeyAlignment alignment) const
 {
-    const auto wrappedTargetKey = wrapKey(chromaticKey, 0, this->getBasePeriod());
+    const auto wrappedTargetKey = Scale::wrapKey(chromaticKey, 0, this->getBasePeriod());
     auto minDelta = this->getBasePeriod();
     auto result = wrappedTargetKey;
 
@@ -210,7 +209,7 @@ int Scale::getNearestScaleKey(int chromaticKey, ScaleKeyAlignment alignment) con
 int Scale::getChromaticKey(int inScaleKey, int extraChromaticOffset,
     bool shouldRestrictToOneOctave) const noexcept
 {
-    const auto wrappedKey = wrapKey(inScaleKey, 0, this->getSize());
+    const auto wrappedKey = Scale::wrapKey(inScaleKey, 0, this->getSize());
     const int index = this->keys[wrappedKey];
     const auto periodsToOffset = inScaleKey / this->getSize();
     const auto scaleToChromatic = shouldRestrictToOneOctave ? index :

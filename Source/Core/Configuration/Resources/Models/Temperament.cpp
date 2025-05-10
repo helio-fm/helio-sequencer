@@ -43,7 +43,7 @@ Temperament::Temperament(Temperament &&other) noexcept :
 // and display custom chromatic scale names for it, if specified in the temperament
 
 String Temperament::getMidiNoteName(Note::Key note, int scaleRootKey,
-    const String &keyEnharmonic, int &outPeriodNumber) const noexcept
+    const String &rootKeyEnharmonic, int &outPeriodNumber) const noexcept
 {
     if (isPositiveAndBelow(note, this->getNumKeys()))
     {
@@ -51,9 +51,9 @@ String Temperament::getMidiNoteName(Note::Key note, int scaleRootKey,
         const auto defaultNoteName = this->period[defaultScaleKey][0];
 
         const auto foundUserScale = this->chromaticScales.find(
-            keyEnharmonic.isEmpty() ? defaultNoteName : keyEnharmonic);
+            rootKeyEnharmonic.isEmpty() ? defaultNoteName : rootKeyEnharmonic);
 
-        const auto inScaleKey = (note - scaleRootKey) % this->getPeriodSize();
+        const auto inScaleKey = Scale::wrapKey(note - scaleRootKey, 0, this->getPeriodSize());
         const String result = foundUserScale != this->chromaticScales.end() ?
             foundUserScale->second[inScaleKey] :
             defaultNoteName;

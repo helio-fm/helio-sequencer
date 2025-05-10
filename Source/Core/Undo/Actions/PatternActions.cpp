@@ -431,6 +431,16 @@ UndoAction *ClipsGroupChangeAction::createCoalescedAction(UndoAction *nextAction
     return nullptr;
 }
 
+const Array<Clip> &ClipsGroupChangeAction::getClipsBefore() const noexcept
+{
+    return this->clipsBefore;
+}
+
+const Array<Clip> &ClipsGroupChangeAction::getClipsAfter() const noexcept
+{
+    return this->clipsAfter;
+}
+
 SerializedData ClipsGroupChangeAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::clipsGroupChangeAction);

@@ -21,6 +21,7 @@
 #include "SerializationKeys.h"
 #include "ProjectNode.h"
 #include "UndoStack.h"
+#include "Scale.h"
 
 KeySignaturesSequence::KeySignaturesSequence(MidiTrack &track,
     ProjectEventDispatcher &dispatcher) noexcept :
@@ -148,6 +149,46 @@ bool KeySignaturesSequence::change(const KeySignatureEvent &oldParams,
     }
 
     return true;
+}
+
+//===----------------------------------------------------------------------===//
+// Batch actions
+//===----------------------------------------------------------------------===//
+
+void KeySignaturesSequence::transposeAll(int keyDelta,
+    Temperament::Ptr temperament, bool shouldCheckpoint)
+{
+    if (this->size() == 0)
+    {
+        jassertfalse;
+        return;
+    }
+
+    Array<KeySignatureEvent> groupBefore, groupAfter;
+
+    for (int i = 0; i < this->size(); ++i)
+    {
+        jassert(this->getUnchecked(i)->isTypeOf(MidiEvent::Type::KeySignature));
+        const auto &event = static_cast<const KeySignatureEvent &>(*this->getUnchecked(i));
+
+        int periodNumber;
+        const auto newRootKey = Scale::wrapKey(event.getRootKey() + keyDelta, 0, temperament->getPeriodSize());
+        const auto newRootKeyName = temperament->getMidiNoteName(newRootKey,
+            event.getRootKey(), event.getRootKeyName(), periodNumber);
+
+        groupBefore.add(event);
+        groupAfter.add(event.withRootKey(newRootKey, newRootKeyName));
+    }
+
+    if (shouldCheckpoint)
+    {
+        this->checkpoint();
+    }
+
+    for (int i = 0; i < groupBefore.size(); ++i)
+    {
+        this->change(groupBefore.getUnchecked(i), groupAfter.getUnchecked(i), true);
+    }
 }
 
 //===----------------------------------------------------------------------===//

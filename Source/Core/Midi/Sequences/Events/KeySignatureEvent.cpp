@@ -80,6 +80,7 @@ KeySignatureEvent KeySignatureEvent::withBeat(float newBeat) const noexcept
 KeySignatureEvent KeySignatureEvent::withRootKey(Note::Key key, const String &keyName) const noexcept
 {
     KeySignatureEvent e(*this);
+    jassert(key >= 0);
     e.rootKey = key;
     e.rootKeyName = keyName;
     return e;

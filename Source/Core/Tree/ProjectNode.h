@@ -42,6 +42,7 @@ class Clip;
 #include "CommandPaletteModel.h"
 #include "MidiTrack.h"
 #include "MidiTrackSource.h"
+#include "UndoActionIDs.h"
 
 class ProjectNode final :
     public TreeNode,
@@ -101,7 +102,7 @@ public:
     // Undos
     //===------------------------------------------------------------------===//
 
-    void checkpoint();
+    void checkpoint(UndoActionId transactionId = UndoActionIDs::None);
     void undo();
     void redo();
     UndoStack *getUndoStack() const noexcept;

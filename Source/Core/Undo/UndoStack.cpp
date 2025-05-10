@@ -186,8 +186,7 @@ bool UndoStack::perform(UndoAction *const newAction)
         
         if (this->reentrancyCheck)
         {
-            jassertfalse;  // don't call perform() recursively from the UndoAction::perform()
-            // or undo() methods, or else these actions will be discarded!
+            jassertfalse;
             return false;
         }
 

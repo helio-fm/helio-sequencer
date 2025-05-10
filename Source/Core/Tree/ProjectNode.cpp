@@ -339,9 +339,9 @@ UndoStack *ProjectNode::getUndoStack() const noexcept
     return this->undoStack.get();
 }
 
-void ProjectNode::checkpoint()
+void ProjectNode::checkpoint(UndoActionId transactionId)
 {
-    this->getUndoStack()->beginNewTransaction();
+    this->getUndoStack()->beginNewTransaction(transactionId);
 }
 
 void ProjectNode::undo()

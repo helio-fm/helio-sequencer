@@ -31,6 +31,7 @@
 #include "PianoSequence.h"
 #include "RollBase.h"
 #include "SequencerOperations.h"
+#include "PatternOperations.h"
 #include "PianoTrackActions.h"
 #include "AutomationTrackActions.h"
 #include "Pattern.h"
@@ -51,33 +52,11 @@ void ProjectMenu::handleCommandMessage(int commandId)
     switch (commandId)
     {
         case CommandIDs::ProjectTransposeUp:
-        {
-            this->project.checkpoint();
-            const auto tracks = this->project.getTracks();
-            for (int i = 0; i < tracks.size(); ++i)
-            {
-                if (dynamic_cast<PianoSequence *>(tracks.getUnchecked(i)->getSequence()))
-                {
-                    tracks.getUnchecked(i)->getPattern()->transposeAll(1, false);
-                }
-            }
-        }
-        return;
-
+            PatternOperations::transposeProject(this->project, 1, this->transactionId);
+            return;
         case CommandIDs::ProjectTransposeDown:
-        {
-            this->project.checkpoint();
-            const auto tracks = this->project.getTracks();
-            for (int i = 0; i < tracks.size(); ++i)
-            {
-                if (dynamic_cast<PianoSequence *>(tracks.getUnchecked(i)->getSequence()))
-                {
-                    tracks.getUnchecked(i)->getPattern()->transposeAll(-1, false);
-                }
-            }
-        }
-        return;
-
+            PatternOperations::transposeProject(this->project, -1, this->transactionId);
+            return;
         case CommandIDs::DeleteProject:
         {
             auto confirmationDialog = ModalDialogConfirmation::Presets::deleteProject();
@@ -97,7 +76,6 @@ void ProjectMenu::handleCommandMessage(int commandId)
             App::showModalComponent(move(confirmationDialog));
             return;
         }
-
         default:
             break;
     }
@@ -146,7 +124,8 @@ void ProjectMenu::showMainMenu(AnimationType animationType)
             App::Workspace().unloadProject(this->project.getId(), false, false);
         }));
 
-    menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteProject, TRANS(I18n::Menu::Project::deleteConfirm)));
+    menu.add(MenuItem::item(Icons::remove,
+        CommandIDs::DeleteProject, TRANS(I18n::Menu::Project::deleteConfirm)));
 
     this->updateContent(menu, animationType);
 }
@@ -263,7 +242,8 @@ void ProjectMenu::showControllersMenuForInstrument(const WeakReference<Instrumen
                 {
                     String outTrackId;
                     const String instrumentId = instrument ? instrument->getIdAndHash() : "";
-                    const String trackName = TreeNode::createSafeName(MidiMessage::getControllerName(controllerNumber));
+                    const String trackName =
+                        TreeNode::createSafeName(MidiMessage::getControllerName(controllerNumber));
                     const auto autoTrackParams =
                         SequencerOperations::createAutoTrackTemplate(this->project,
                             trackName, controllerNumber, instrumentId, outTrackId);
