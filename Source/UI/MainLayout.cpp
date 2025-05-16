@@ -51,6 +51,7 @@ public:
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(true, false);
         this->setPaintingIsUnclipped(true);
+        this->setAccessible(false);
     }
 
     void paint(Graphics &g) override
@@ -118,6 +119,7 @@ MainLayout::MainLayout()
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(true);
+    this->setAccessible(false);
 
     this->tooltipContainer = make<TooltipContainer>();
     this->addChildComponent(this->tooltipContainer.get());

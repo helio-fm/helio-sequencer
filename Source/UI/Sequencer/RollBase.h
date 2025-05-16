@@ -267,7 +267,7 @@ public:
 
     void handleCommandMessage(int commandId) override;
     void resized() override;
-    void paint(Graphics &g) override;
+    void paint(Graphics &g) noexcept override;
 
     //===------------------------------------------------------------------===//
     // Edit mode helpers

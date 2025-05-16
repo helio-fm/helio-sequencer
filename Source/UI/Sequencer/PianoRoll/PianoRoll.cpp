@@ -1663,7 +1663,7 @@ void PianoRoll::resized()
     ROLL_BATCH_REPAINT_END
 }
 
-void PianoRoll::paint(Graphics &g)
+void PianoRoll::paint(Graphics &g) noexcept
 {
     jassert(this->defaultHighlighting != nullptr); // trying to paint before the content is ready
 
@@ -1708,7 +1708,7 @@ void PianoRoll::paint(Graphics &g)
                 sequencer rows are messed up, so we have to say explicitly where to fill each period.
             */
 
-            const auto tileHeight = periodHeight * 2;
+            const auto tileHeight = periodHeight * HighlightingScheme::periodsInTile;
             for (int i = paintStartY; i < y + h; i += tileHeight)
             {
                 g.setFillType({ fillImage, AffineTransform::translation(0.f, float(i)) });
@@ -1731,11 +1731,11 @@ void PianoRoll::paint(Graphics &g)
         const auto *s = (prevScheme == nullptr) ? this->defaultHighlighting.get() : prevScheme;
         const auto fillImage = s->getUnchecked(this->rowHeight);
 
-        // just because we cannot rely on OpenGL tiling:
-        for (int i = paintStartY; i < y + h; i += periodHeight)
+        const auto tileHeight = periodHeight * HighlightingScheme::periodsInTile;
+        for (int i = paintStartY; i < y + h; i += tileHeight)
         {
             g.setFillType({ fillImage, AffineTransform::translation(0.f, float(i)) });
-            g.fillRect(prevBeatX, i, paintEndX - prevBeatX, periodHeight);
+            g.fillRect(prevBeatX, i, paintEndX - prevBeatX, tileHeight);
         }
 
         RollBase::paint(g);

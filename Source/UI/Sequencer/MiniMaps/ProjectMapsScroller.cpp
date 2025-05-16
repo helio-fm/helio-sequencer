@@ -33,8 +33,9 @@ ProjectMapsScroller::ProjectMapsScroller(ProjectNode &project, SafePointer<RollB
 {
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
+    this->setAccessible(false);
 
-    this->playhead = make<Playhead>(*this->roll, this->project.getTransport(), nullptr, 0.75f);
+    this->playhead = make<PlayheadSmall>(*this->roll, this->project.getTransport());
 
     this->horizontalRangeRectangle = make<HorizontalRangeRectangle>(*this);
     this->addAndMakeVisible(this->horizontalRangeRectangle.get());
@@ -156,7 +157,10 @@ void ProjectMapsScroller::paint(Graphics &g)
         const auto rect = this->getMapBounds()
             .toFloat().getProportion(*this->drawingNewScreenRange);
 
+        g.setColour(this->beatRangeBorderColour);
         g.fillRect(rect);
+
+        g.setColour(this->beatRangeFillColour);
         g.drawRect(rect);
         g.drawRect(rect);
     }

@@ -29,6 +29,7 @@ AutomationStepEventComponent::AutomationStepEventComponent(AutomationEditorBase 
     this->setWantsKeyboardFocus(false);
     this->setFocusContainerType(Component::FocusContainerType::none);
     this->setMouseCursor(MouseCursor::PointingHandCursor);
+    this->setAccessible(false);
 
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);

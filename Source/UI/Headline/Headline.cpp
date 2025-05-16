@@ -27,6 +27,7 @@ Headline::Headline()
 {
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
+    this->setAccessible(false);
     this->setOpaque(App::isUsingNativeTitleBar());
 
     this->navPanel = make<HeadlineNavigationPanel>();

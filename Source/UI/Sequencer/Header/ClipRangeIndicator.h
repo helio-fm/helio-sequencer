@@ -28,6 +28,7 @@ public:
         this->setOpaque(false);
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
+        this->setAccessible(false);
     }
 
     float getFirstBeat() const noexcept

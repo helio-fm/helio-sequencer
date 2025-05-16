@@ -169,7 +169,7 @@ public:
     void mouseDrag(const MouseEvent &e) override;
     void handleCommandMessage(int commandId) override;
     void resized() override;
-    void paint(Graphics &g) override;
+    void paint(Graphics &g) noexcept override;
     
     //===------------------------------------------------------------------===//
     // RollBase

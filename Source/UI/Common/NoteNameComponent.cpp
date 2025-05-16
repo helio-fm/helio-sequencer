@@ -25,11 +25,13 @@ NoteNameComponent::NoteNameComponent(bool isCentered, float fontSize) :
 {
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, false);
+    this->setAccessible(false);
 
     this->nameLabel = make<Label>();
     this->addAndMakeVisible(this->nameLabel.get());
     this->nameLabel->setFont(fontSize);
     this->nameLabel->setBorderSize({});
+    this->nameLabel->setAccessible(false);
     this->nameLabel->setJustificationType(Justification::centred);
 
     this->detailsLabel = make<Label>();
@@ -37,8 +39,8 @@ NoteNameComponent::NoteNameComponent(bool isCentered, float fontSize) :
     this->detailsLabel->setFont(fontSize);
     this->detailsLabel->setBorderSize({});
     this->detailsLabel->setJustificationType(Justification::centred);
-    this->detailsLabel->setColour(Label::textColourId,
-        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.9f));
+    this->detailsLabel->setAccessible(false);
+    this->detailsLabel->setColour(Label::textColourId, this->textColour.withMultipliedAlpha(0.9f));
 }
 
 NoteNameComponent::~NoteNameComponent() = default;
@@ -200,7 +202,7 @@ void NoteNameComponent::setNoteName(const String &newNoteName,
     constexpr auto suffixAlignment = RectanglePlacement::xLeft | RectanglePlacement::yMid;
     constexpr auto prefixAlignment = RectanglePlacement::xRight | RectanglePlacement::yMid;
 
-    const auto iconColour = findDefaultColour(Label::textColourId).withMultipliedAlpha(0.7f);
+    const auto iconColour = this->textColour.withMultipliedAlpha(0.7f);
 
     if (numSharps == 1)
     {

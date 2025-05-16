@@ -48,6 +48,8 @@ public:
         this->setInterceptsMouseClicks(true, false);
         this->setMouseClickGrabsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
+        this->setAccessible(false);
+
         this->setMouseCursor(MouseCursor::UpDownResizeCursor);
         this->updateColour();
     }
@@ -216,6 +218,7 @@ public:
     {
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
+        this->setAccessible(false);
     }
 
     const Array<Line<float>> &getCurve() const noexcept
@@ -336,6 +339,7 @@ VelocityEditor::VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll)
 {
     this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
+    this->setAccessible(false);
 
     this->volumeBlendingIndicator = make<FineTuningValueIndicator>(this->volumeBlendingAmount, "");
     this->volumeBlendingIndicator->setShouldDisplayValue(false);

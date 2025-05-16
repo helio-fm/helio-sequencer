@@ -74,6 +74,7 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
 {
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
+    this->setAccessible(false);
 
     this->setSize(this->viewport.getWidth(), this->viewport.getHeight());
 
@@ -784,14 +785,20 @@ void RollBase::updateAllSnapLines()
                 // snap lines and beat lines
                 for (float k = beatStartX + snapWidth; k < (nextBeatStartX - 1); k += snapWidth)
                 {
-                    this->visibleSnaps.add(k);
+                    if (k >= paintStartX && k <= paintEndX)
+                    {
+                        this->visibleSnaps.add(k);
+                    }
                     this->allSnaps.add(k);
                 }
 
                 if (j >= beatStep && // don't draw the first one as it is a bar line
                     (nextBeatStartX - beatStartX) > minBeatWidth)
                 {
-                    this->visibleBeats.add(beatStartX);
+                    if (beatStartX >= paintStartX && beatStartX <= paintEndX)
+                    {
+                        this->visibleBeats.add(beatStartX);
+                    }
                     this->allSnaps.add(beatStartX);
                 }
             }
@@ -860,14 +867,20 @@ void RollBase::updateAllSnapLines()
                 // snap lines and beat lines
                 for (float k = beatStartX + snapWidth; k < (nextBeatStartX - 1); k += snapWidth)
                 {
-                    this->visibleSnaps.add(k);
+                    if (k >= paintStartX && k <= paintEndX)
+                    {
+                        this->visibleSnaps.add(k);
+                    }
                     this->allSnaps.add(k);
                 }
 
                 if (j >= beatStep && // don't draw the first one as it is a bar line
                     (nextBeatStartX - beatStartX) > minBeatWidth)
                 {
-                    this->visibleBeats.add(beatStartX);
+                    if (beatStartX >= paintStartX && beatStartX <= paintEndX)
+                    {
+                        this->visibleBeats.add(beatStartX);
+                    }
                     this->allSnaps.add(beatStartX);
                 }
             }
@@ -1439,7 +1452,7 @@ void RollBase::handleCommandMessage(int commandId)
                 else
                 {
                     const bool hasQuickDoublePress =
-                        (Time::getMillisecondCounter() - this->timeStartedPlayback) < 400;
+                        (Time::getMillisecondCounter() - this->timeStartedPlayback) < 300;
 
                     // tech debt warning: see duplicate code in TransportPlaybackStart case
                     if (hasQuickDoublePress)
@@ -1576,7 +1589,7 @@ void RollBase::resized()
     this->updateChildrenBounds();
 }
 
-void RollBase::paint(Graphics &g)
+void RollBase::paint(Graphics &g) noexcept
 {
     this->updateAllSnapLines();
 

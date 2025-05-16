@@ -163,6 +163,7 @@ private:
         {
             this->setPaintingIsUnclipped(true);
             this->setMouseClickGrabsKeyboardFocus(false);
+            this->setAccessible(false);
 
             this->moveConstrainer.setMinimumSize(4, 4);
             this->moveConstrainer.setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
@@ -269,6 +270,8 @@ private:
             this->setPaintingIsUnclipped(true);
             this->setInterceptsMouseClicks(true, false);
             this->setMouseClickGrabsKeyboardFocus(false);
+            this->setAccessible(false);
+
             this->toBack();
 
             this->moveConstrainer.setMinimumSize(4, 4);
@@ -378,8 +381,14 @@ private:
 
     UniquePointer<MultiTouchController> multiTouchController;
 
-    const Colour borderLineDark = findDefaultColour(ColourIDs::TrackScroller::borderLineDark);
-    const Colour borderLineLight = findDefaultColour(ColourIDs::TrackScroller::borderLineLight);
+    const Colour borderLineDark =
+        findDefaultColour(ColourIDs::TrackScroller::borderLineDark);
+    const Colour borderLineLight =
+        findDefaultColour(ColourIDs::TrackScroller::borderLineLight);
+    const Colour beatRangeBorderColour =
+        findDefaultColour(ColourIDs::TrackScroller::viewBeatRangeBorder);
+    const Colour beatRangeFillColour =
+        findDefaultColour(ColourIDs::TrackScroller::viewBeatRangeFill);
 
     bool animationsEnabled = true;
 

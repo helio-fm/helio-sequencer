@@ -37,6 +37,7 @@ EditorPanelsScroller::EditorPanelsScroller(ProjectNode &project,
     this->setOpaque(true);
     this->setPaintingIsUnclipped(false);
     this->setInterceptsMouseClicks(false, true);
+    this->setAccessible(false);
 
     this->editorPanelsSwitcher->onClick = [this](int panelId,
         const EditorPanelBase::EventFilter &filter)

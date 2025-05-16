@@ -19,6 +19,8 @@
 
 class IconComponent;
 
+#include "ColourIDs.h"
+
 // This uses a mix of labels and svg icons to display note names,
 // because even the Noto typeface lacks double-sharp and double-flat signs
 class NoteNameComponent final : public Component
@@ -59,6 +61,7 @@ private:
     Rectangle<float> suffixBounds;
 
     const int iconSize = 11;
+    const Colour textColour = findDefaultColour(Label::textColourId);
 
     static constexpr int iconMargin = 1;
     static constexpr int detailsMargin = 3;

@@ -27,7 +27,6 @@ public:
 
     void paint(Graphics &g)
     {
-
         g.setTiledImageFill(this->cachedImage, 0, 0, 1.f);
         g.fillRect(this->getLocalBounds());
     }

@@ -1018,7 +1018,7 @@ void PatternRoll::resized()
     ROLL_BATCH_REPAINT_END
 }
 
-void PatternRoll::paint(Graphics &g)
+void PatternRoll::paint(Graphics &g) noexcept
 {
     g.setImageResamplingQuality(Graphics::lowResamplingQuality);
 

@@ -37,6 +37,8 @@ public:
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
         this->setWantsKeyboardFocus(false);
+        this->setAccessible(false);
+
         this->setSize(1, 3);
         this->setAlpha(0.f);
     }
@@ -58,6 +60,7 @@ HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> dataSource, Asy
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
     this->setOpaque(false);
+    this->setAccessible(false);
 
     this->titleLabel = make<Label>();
     this->addAndMakeVisible(this->titleLabel.get());

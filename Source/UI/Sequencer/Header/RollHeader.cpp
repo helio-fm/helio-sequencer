@@ -44,6 +44,7 @@ public:
         type(type)
     {
         this->setInterceptsMouseClicks(true, false);
+        this->setAccessible(false);
         this->setMouseCursor(MouseCursor::PointingHandCursor);
         this->setSize(16, 16);
     }
@@ -167,6 +168,7 @@ RollHeader::RollHeader(Transport &transport, RollBase &roll, Viewport &viewport)
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
     this->setMouseClickGrabsKeyboardFocus(false);
+    this->setAccessible(false);
 
     this->updateColours();
 
@@ -641,9 +643,9 @@ void RollHeader::paint(Graphics &g)
     g.setColour(this->bevelDarkColour);
     g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
 
-    g.setColour(this->barColour);
     if (this->recordingMode.get())
     {
+        g.setColour(this->barColour);
         g.fillRect(0, this->getHeight() - 3, this->getWidth(), 2);
     }
 }

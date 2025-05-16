@@ -32,12 +32,14 @@ public:
     {
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
+        this->setAccessible(false);
     }
 
     explicit IconComponent(Image targetImage) :
         image(targetImage)
     {
         this->setInterceptsMouseClicks(false, false);
+        this->setAccessible(false);
     }
 
     void setIconName(Icons::Id id)

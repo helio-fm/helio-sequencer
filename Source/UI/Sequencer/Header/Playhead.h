@@ -22,7 +22,7 @@ class RollBase;
 
 #include "TransportListener.h"
 
-class Playhead final :
+class Playhead :
     public Component,
     public TransportListener,
     public Timer,
@@ -37,8 +37,7 @@ public:
         virtual void onMovePlayhead(int oldX, int newX) = 0;
     };
 
-    Playhead(RollBase &parentRoll,
-        Transport &owner,
+    Playhead(RollBase &parentRoll, Transport &owner,
         Playhead::Listener *movementListener = nullptr,
         float alpha = 1.f);
 
@@ -74,16 +73,12 @@ public:
     void parentSizeChanged() override;
     void parentHierarchyChanged() override;
 
-private:
+protected:
 
     RollBase &roll;
     Transport &transport;
 
     Listener *listener = nullptr;
-
-private:
-
-    void parentChanged();
 
     void handleAsyncUpdate() override;
 
@@ -102,12 +97,19 @@ private:
     float lastEstimatedBeat = 0.f;
     float calculateEstimatedBeat() const noexcept;
 
-private:
-
     Colour currentColour;
 
     const Colour shadeColour;
     const Colour playbackColour;
     const Colour recordingColour;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Playhead)
+};
+
+class PlayheadSmall final : public Playhead
+{
+public:
+
+    PlayheadSmall(RollBase &parentRoll, Transport &owner);
+    void paint(Graphics &g) override;
 };

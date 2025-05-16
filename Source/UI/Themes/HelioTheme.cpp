@@ -41,7 +41,7 @@ static constexpr auto noiseAlpha = 0.01f;
 void HelioTheme::drawNoise(Graphics &g, float alphaMultiply /*= 1.f*/) const
 {
     g.setTiledImageFill(this->backgroundNoise, 0, 0, noiseAlpha * alphaMultiply);
-    g.fillRect(0, 0, g.getClipBounds().getWidth(), g.getClipBounds().getHeight());
+    g.fillAll();
 }
 
 void HelioTheme::drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply /*= 1.f*/)

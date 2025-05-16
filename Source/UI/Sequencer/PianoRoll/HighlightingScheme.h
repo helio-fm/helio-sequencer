@@ -52,6 +52,8 @@ public:
         const Temperament::Ptr temperament, const Scale::Ptr scale,
         Note::Key root, int height);
 
+    static constexpr int periodsInTile = 2;
+
 private:
 
     Scale::Ptr scale;

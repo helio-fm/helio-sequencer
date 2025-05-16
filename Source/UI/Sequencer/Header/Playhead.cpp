@@ -29,7 +29,7 @@ Playhead::Playhead(RollBase &parentRoll,
     roll(parentRoll),
     transport(owner),
     listener(movementListener),
-    shadeColour(findDefaultColour(ColourIDs::Roll::playheadShade)),
+    shadeColour(findDefaultColour(ColourIDs::Roll::playheadShade).withMultipliedAlpha(alpha)),
     playbackColour(findDefaultColour(ColourIDs::Roll::playheadPlayback).withMultipliedAlpha(alpha)),
     recordingColour(findDefaultColour(ColourIDs::Roll::playheadRecording).withMultipliedAlpha(alpha))
 {
@@ -37,7 +37,9 @@ Playhead::Playhead(RollBase &parentRoll,
 
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
-    this->setSize(3, 1); // 3 not 2 to avoid flickering on macOS, I don't know why it works
+    this->setAccessible(false);
+
+    this->setSize(3, 1);
 
     this->lastCorrectBeat = this->transport.getSeekBeat();
     this->beatAnchor = this->lastCorrectBeat;
@@ -153,23 +155,19 @@ void Playhead::timerCallback()
 void Playhead::paint(Graphics &g)
 {
     g.setColour(this->currentColour);
-    g.fillRect(0, 1, 1, this->getHeight() - 1);
+    g.fillRect(0, 0, 1, this->getHeight());
 
     g.setColour(this->shadeColour);
-    g.fillRect(1, 1, 1, this->getHeight() - 1);
+    g.fillRect(1, 0, 1, this->getHeight());
 }
 
 void Playhead::parentSizeChanged()
 {
-    this->parentChanged();
+    this->setSize(this->getWidth(), this->getParentHeight());
+    this->updatePosition();
 }
 
 void Playhead::parentHierarchyChanged()
-{
-    this->parentChanged();
-}
-
-void Playhead::parentChanged()
 {
     if (this->getParentComponent() == nullptr)
     {
@@ -214,4 +212,16 @@ float Playhead::calculateEstimatedBeat() const noexcept
     const double timeOffsetMs = Time::getMillisecondCounter() - this->timeAnchor;
     const double positionOffset = timeOffsetMs / this->msPerQuarterNote;
     return float(this->beatAnchor + positionOffset);
+}
+
+PlayheadSmall::PlayheadSmall(RollBase &parentRoll, Transport &owner) :
+    Playhead(parentRoll, owner, nullptr, 0.75f)
+{
+    this->setSize(1, 1);
+}
+
+void PlayheadSmall::paint(Graphics &g)
+{
+    g.setColour(this->currentColour);
+    g.fillRect(0, 1, 1, this->getHeight() - 1);
 }

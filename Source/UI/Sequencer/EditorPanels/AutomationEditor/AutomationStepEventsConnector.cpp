@@ -30,6 +30,7 @@ AutomationStepEventsConnector::AutomationStepEventsConnector(AutomationEditorBas
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
+    this->setAccessible(false);
 
     jassert(this->firstAliveEventComponent() != nullptr);
     this->setMouseCursor(this->firstAliveEventComponent()->getMouseCursor());

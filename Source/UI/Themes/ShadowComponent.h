@@ -37,6 +37,7 @@ public:
         this->setPaintingIsUnclipped(true);
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
+        this->setAccessible(false);
 
         switch (type)
         {

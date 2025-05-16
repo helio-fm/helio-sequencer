@@ -36,6 +36,7 @@ TimeSignaturesProjectMap::TimeSignaturesProjectMap(ProjectNode &project,
     this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
+    this->setAccessible(false);
 
     this->reloadTrackMap();
 

@@ -36,6 +36,7 @@ NoteComponent::NoteComponent(PianoRoll &editor,
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
     this->setMouseClickGrabsKeyboardFocus(false);
+    this->setAccessible(false);
 
     if (!enabled)
     {
@@ -709,7 +710,7 @@ void NoteComponent::paint(Graphics &g) noexcept
         const float sh = jmin(h - 2.f, 4.f);
         const float sy = h - sh - 1.f;
         const float sw1 = (w - 4.f) * this->note.getVelocity();
-        const float sw2 = (w - 4.f) * this->note.getVelocity() * this->clip.getVelocity();
+        const float sw2 = sw1 * this->clip.getVelocity();
 
         g.setColour(this->colourVolume);
         g.fillRect(sx, sy, sw1, sh);
@@ -756,6 +757,7 @@ void NoteComponent::switchActiveTrackToSelected(bool shouldFocusToArea) const
     if (this->getRoll().getActiveClip() != this->getClip())
     {
         this->getRoll().getProject().setEditableScope(this->getClip(), shouldFocusToArea);
+        this->getRoll().resetDraggingAnchors();
     }
 }
 

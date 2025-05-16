@@ -53,6 +53,7 @@ public:
     {
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
+        this->setAccessible(false);
     }
     
     template <typename T>
@@ -239,6 +240,7 @@ AutomationEditor::AutomationEditor(ProjectNode &project, SafePointer<RollBase> r
 {
     this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
+    this->setAccessible(false);
 
     this->multiTouchController = make<MultiTouchController>(*this);
     this->addMouseListener(this->multiTouchController.get(), true);

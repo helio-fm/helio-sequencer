@@ -31,6 +31,7 @@ public:
         this->setPaintingIsUnclipped(true);
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
+        this->setAccessible(false);
 
         this->noteName = make<NoteNameComponent>();
         this->addAndMakeVisible(this->noteName.get());
@@ -78,6 +79,7 @@ public:
         const auto h = float(this->getHeight());
 
         this->internalPath1.clear();
+        this->internalPath1.preallocateSpace(16);
         this->internalPath1.startNewSubPath(NoteNameGuidesBar::borderWidth + 1, 1.f);
         this->internalPath1.lineTo(w - NoteNameGuidesBar::arrowWidth, 1.f);
         this->internalPath1.lineTo(w, (h / 2.f) + 0.5f);
@@ -86,6 +88,7 @@ public:
         this->internalPath1.closeSubPath();
 
         this->internalPath2.clear();
+        this->internalPath2.preallocateSpace(16);
         this->internalPath2.startNewSubPath(0.f, 1.f);
         this->internalPath2.lineTo(w - NoteNameGuidesBar::arrowWidth - 1.f, 1.f);
         this->internalPath2.lineTo(w - 1.f, (h / 2.f) + 0.5f);

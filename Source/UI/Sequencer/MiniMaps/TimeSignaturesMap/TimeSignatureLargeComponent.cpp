@@ -29,6 +29,7 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMa
 {
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
+    this->setAccessible(false);
 
     this->signatureLabel = make<Label>();
     this->addAndMakeVisible(this->signatureLabel.get());

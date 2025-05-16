@@ -28,11 +28,12 @@ public:
     {
         this->timeLabel = make<Label>();
         this->addAndMakeVisible(this->timeLabel.get());
-        this->timeLabel->setFont(Globals::UI::Fonts::L);
+        this->timeLabel->setFont(Globals::UI::Fonts::M);
         this->timeLabel->setJustificationType(Justification::centred);
 
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
+        this->setAccessible(false);
         this->setAlwaysOnTop(true);
 
         this->setSize(32, 32);

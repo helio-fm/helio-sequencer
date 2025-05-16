@@ -31,6 +31,7 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &
 {
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
+    this->setAccessible(false);
 
     this->nameComponent = make<NoteNameComponent>();
     this->addAndMakeVisible(this->nameComponent.get());

@@ -86,6 +86,7 @@ public:
         this->setMouseClickGrabsKeyboardFocus(false);
         this->setPaintingIsUnclipped(false);
         this->setInterceptsMouseClicks(false, true);
+        this->setAccessible(false);
 
         this->addAndMakeVisible(this->pianoViewport);
         this->addChildComponent(this->patternViewport); // invisible by default
@@ -505,6 +506,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->setComponentID(ComponentIDs::sequencerLayoutId);
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
+    this->setAccessible(false);
     this->setOpaque(true);
 
     // make both rolls

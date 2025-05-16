@@ -36,11 +36,6 @@ public:
         return Defaults::initialZoomSpeed;
     }
 
-    inline bool isZooming() const noexcept
-    {
-        return this->factorX != 0.f;
-    }
-
     void cancelZoom() noexcept
     {
         this->factorX = 0.f;

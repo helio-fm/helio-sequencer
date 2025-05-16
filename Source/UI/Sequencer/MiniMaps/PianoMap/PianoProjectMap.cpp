@@ -32,6 +32,8 @@ PianoProjectMap::PianoProjectMap(ProjectNode &parentProject) :
 {
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
+    this->setAccessible(false);
+
     this->reloadTrackMap();
 
     this->project.addListener(this);

@@ -36,6 +36,7 @@ ClipComponent::ClipComponent(RollBase &editor, const Clip &clip) :
     this->toFront(false);
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
+    this->setAccessible(false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setFloatBounds(this->getRoll().getEventBounds(this));
 }

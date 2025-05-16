@@ -80,9 +80,9 @@ void PlayerThread::run()
     // to be able to send noteOff's when playback interrupts.
     struct HoldingNote final
     {
-        int key;
-        int channel;
-        MidiMessageCollector *listener;
+        const int key;
+        const int channel;
+        MidiMessageCollector *const listener;
     };
     // (some plugins just don't understand allNotesOff message)
     Array<HoldingNote> holdingNotes;
@@ -90,7 +90,7 @@ void PlayerThread::run()
     // Some shorthands:
     auto sendMidiStart = [&uniqueInstruments]()
     {
-        for (auto &instrument : uniqueInstruments)
+        for (auto *instrument : uniqueInstruments)
         {
             MidiMessage startPlayback(MidiMessage::midiStart());
             startPlayback.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
@@ -100,7 +100,7 @@ void PlayerThread::run()
 
     auto sendControllerStates = [&uniqueInstruments, this]()
     {
-        for (auto &instrument : uniqueInstruments)
+        for (auto *instrument : uniqueInstruments)
         {
             for (int cc = 0; cc < Transport::PlaybackContext::numCCs; ++cc)
             {
@@ -132,7 +132,7 @@ void PlayerThread::run()
         MidiMessage stopPlayback(MidiMessage::midiStop());
         stopPlayback.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
         
-        for (auto &instrument : uniqueInstruments)
+        for (auto *instrument : uniqueInstruments)
         {
             instrument->getProcessorPlayer()
                 .getMidiMessageCollector().addMessageToQueue(stopPlayback);
@@ -145,7 +145,7 @@ void PlayerThread::run()
     auto sendTempoChangeToEverybody =
         [&uniqueInstruments](const MidiMessage &tempoEvent)
     {
-        for (auto &instrument : uniqueInstruments)
+        for (auto *instrument : uniqueInstruments)
         {
             instrument->getProcessorPlayer().
                 getMidiMessageCollector().addMessageToQueue(tempoEvent);
@@ -321,9 +321,9 @@ void PlayerThread::run()
             {
                 for (int i = 0; i < holdingNotes.size(); ++i)
                 {
-                    if (holdingNotes[i].key == key &&
-                        holdingNotes[i].channel == channel &&
-                        holdingNotes[i].listener == wrapper.listener)
+                    if (holdingNotes.getReference(i).key == key &&
+                        holdingNotes.getReference(i).channel == channel &&
+                        holdingNotes.getReference(i).listener == wrapper.listener)
                     {
                         holdingNotes.remove(i);
                         break;

@@ -28,6 +28,7 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMa
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, false);
     this->setMouseClickGrabsKeyboardFocus(false);
+    this->setAccessible(false);
 
     this->signatureLabel = make<Label>();
     this->addAndMakeVisible(this->signatureLabel.get());

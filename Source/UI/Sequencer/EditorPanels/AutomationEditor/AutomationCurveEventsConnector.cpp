@@ -31,6 +31,7 @@ AutomationCurveEventsConnector::AutomationCurveEventsConnector(
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, false);
     this->setMouseClickGrabsKeyboardFocus(false);
+    this->setAccessible(false);
     this->setFocusContainerType(Component::FocusContainerType::none);
 }
 

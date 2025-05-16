@@ -31,6 +31,7 @@ NoteNameGuidesBar::NoteNameGuidesBar(PianoRoll &roll, WeakReference<MidiTrack> k
     this->setPaintingIsUnclipped(true);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
+    this->setAccessible(false);
 
     this->useFixedDoNotation = App::Config().getUiFlags()->isUsingFixedDoNotation();
 

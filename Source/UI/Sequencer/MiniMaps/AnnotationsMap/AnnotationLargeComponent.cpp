@@ -27,6 +27,7 @@ AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsProjectMap &parent
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
+    this->setAccessible(false);
 
     this->font = Font(Globals::UI::Fonts::S, Font::plain);
 }

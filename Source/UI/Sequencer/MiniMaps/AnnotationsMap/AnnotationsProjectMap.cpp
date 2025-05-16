@@ -34,6 +34,7 @@ AnnotationsProjectMap::AnnotationsProjectMap(ProjectNode &parentProject,
     this->setAlwaysOnTop(true);
     this->setPaintingIsUnclipped(false);
     this->setInterceptsMouseClicks(false, true);
+    this->setAccessible(false);
 
     this->reloadTrackMap();
     

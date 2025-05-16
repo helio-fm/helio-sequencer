@@ -54,20 +54,27 @@ void HighlightingScheme::renderBackgroundCache(Temperament::Ptr temperament)
     this->rows.swapWith(result);
 }
 
+// todo remove this when migrating to C++17
+constexpr int HighlightingScheme::periodsInTile;
+
 Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
     const Temperament::Ptr temperament,
     const Scale::Ptr scale, Note::Key root, int height)
 {
     if (height < PianoRoll::minRowHeight)
     {
+        jassertfalse;
         return Image(Image::RGB, 1, 1, true);
     }
 
     const auto periodSize = temperament->getPeriodSize();
-    const auto numRowsToRender = periodSize * 3;
+    const auto numRowsToRender =
+        periodSize * (HighlightingScheme::periodsInTile + 1);
 
     Image patternImage(Image::RGB, 8, height * numRowsToRender, false);
     Graphics g(patternImage);
+
+    g.setImageResamplingQuality(Graphics::lowResamplingQuality);
 
     float currentHeight = float(height);
     float previousHeight = 0;
@@ -110,7 +117,6 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
             g.drawHorizontalLine(int(posY + 1), 0.f, float(patternImage.getWidth()));
         }
 
-        // fill divider line
         g.setColour(rowLineColour);
         g.drawHorizontalLine(int(posY), 0.f, float(patternImage.getWidth()));
 

@@ -42,6 +42,7 @@ AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationEditorBas
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
+    this->setAccessible(false);
 
     this->updateColour();
 }
