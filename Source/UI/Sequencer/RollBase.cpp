@@ -1026,8 +1026,14 @@ void RollBase::onChangeProjectBeatRange(float newFirstBeat, float newLastBeat)
 
     const float rollFirstBeat = jmin(this->firstBeat, newFirstBeat);
     const float rollLastBeat = jmax(this->lastBeat, newLastBeat);
-
-    this->setBeatRange(rollFirstBeat, rollLastBeat);
+    if (this->firstBeat > rollFirstBeat || this->lastBeat < rollLastBeat)
+    {
+        // the view range cannot be smaller than the project range,
+        // so notify everybody about expanding the view range;
+        // the roll is the only one who's responsible for changing it,
+        // automations editors and mini-maps only listen to onChangeViewBeatRange
+        this->project.broadcastChangeViewBeatRange(rollFirstBeat, rollLastBeat);
+    }
 
     this->header->updateProjectBeatRange(newFirstBeat, newLastBeat);
 }

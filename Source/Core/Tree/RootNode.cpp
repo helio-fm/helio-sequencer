@@ -164,8 +164,11 @@ static ProjectNode *createProjectContentFromTemplate(ProjectNode *project, const
     }
 
     project->broadcastReloadProjectContent();
-    const auto range = project->broadcastChangeProjectBeatRange();
+
+    auto range = project->broadcastChangeProjectBeatRange();
+    ProjectNode::applyDefaultViewMargin(range);
     project->broadcastChangeViewBeatRange(range.getStart(), range.getEnd());
+
     project->getDocument()->save();
 
     return project;
