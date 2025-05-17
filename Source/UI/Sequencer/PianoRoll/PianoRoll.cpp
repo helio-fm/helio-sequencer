@@ -747,16 +747,19 @@ void PianoRoll::onRemoveClip(const Clip &clip)
 void PianoRoll::onReloadGeneratedSequence(const Clip &clip,
     MidiSequence *const generatedSequence)
 {
-    this->generatedNotes.erase(clip);
-
     if (generatedSequence == nullptr ||
         generatedSequence->isEmpty() ||
         !clip.hasEnabledModifiers())
     {
+        this->generatedNotes.erase(clip);
         return;
     }
 
+    ROLL_BATCH_REPAINT_START
+
     auto &newComponents = this->generatedNotes[clip];
+    newComponents.clearQuick(true);
+
     const bool isActive = clip == this->activeClip;
 
     for (const auto *event : *generatedSequence)
@@ -773,6 +776,8 @@ void PianoRoll::onReloadGeneratedSequence(const Clip &clip,
 
         newComponents.add(component);
     }
+
+    ROLL_BATCH_REPAINT_END
 }
 
 void PianoRoll::onChangeTrackProperties(MidiTrack *const track)

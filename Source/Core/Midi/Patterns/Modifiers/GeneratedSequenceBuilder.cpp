@@ -78,7 +78,14 @@ MidiSequence *GeneratedSequenceBuilder::getSequenceFor(const Clip &clip)
 
 void GeneratedSequenceBuilder::onAddMidiEvent(const MidiEvent &event)
 {
-    if (!event.isTypeOf(MidiEvent::Type::Auto))
+    if (event.isTypeOf(MidiEvent::Type::KeySignature))
+    {
+        for (auto &it : this->generatedSequences)
+        {
+            this->triggerAsyncUpdateForClip(it.first);
+        }
+    }
+    else if (!event.isTypeOf(MidiEvent::Type::Auto))
     {
         this->triggerAsyncUpdatesForTrack(event.getSequence()->getTrack());
     }
@@ -86,7 +93,14 @@ void GeneratedSequenceBuilder::onAddMidiEvent(const MidiEvent &event)
 
 void GeneratedSequenceBuilder::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (!newEvent.isTypeOf(MidiEvent::Type::Auto))
+    if (newEvent.isTypeOf(MidiEvent::Type::KeySignature))
+    {
+        for (auto &it : this->generatedSequences)
+        {
+            this->triggerAsyncUpdateForClip(it.first);
+        }
+    }
+    else if (!newEvent.isTypeOf(MidiEvent::Type::Auto))
     {
         this->triggerAsyncUpdatesForTrack(newEvent.getSequence()->getTrack());
     }
@@ -94,7 +108,14 @@ void GeneratedSequenceBuilder::onChangeMidiEvent(const MidiEvent &oldEvent, cons
 
 void GeneratedSequenceBuilder::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (!event.isTypeOf(MidiEvent::Type::Auto))
+    if (event.isTypeOf(MidiEvent::Type::KeySignature))
+    {
+        for (auto &it : this->generatedSequences)
+        {
+            this->triggerAsyncUpdateForClip(it.first);
+        }
+    }
+    else if (!event.isTypeOf(MidiEvent::Type::Auto))
     {
         this->triggerAsyncUpdatesForTrack(event.getSequence()->getTrack());
     }
