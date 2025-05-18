@@ -42,6 +42,7 @@ public:
         static UniquePointer<ModalDialogInput> renameTrack(const String &name);
         static UniquePointer<ModalDialogInput> newTrack();
         static UniquePointer<ModalDialogInput> newArpeggiator(const String &name);
+        static UniquePointer<ModalDialogInput> newProject(const String &defaultName);
         static UniquePointer<ModalDialogInput> deleteProjectConfirmation(const String &projectNameCheck);
         static UniquePointer<ModalDialogInput> commit(const String &name);
         static UniquePointer<ModalDialogInput> savePreset();

@@ -19,6 +19,7 @@
 #include "Workspace.h"
 #include "Config.h"
 #include "DocumentHelpers.h"
+#include "ModalDialogInput.h"
 #include "AudioCore.h"
 #include "RootNode.h"
 #include "PluginScanner.h"
@@ -152,12 +153,32 @@ UserProfile &Workspace::getUserProfile() noexcept
 
 void Workspace::createEmptyProject()
 {
-    const String newProjectName = TRANS(I18n::Defaults::newProjectName);
-    const String fileName = newProjectName + ".helio";
+    const String defaultProjectName = TRANS(I18n::Defaults::newProjectName);
 
+#if JUCE_IOS
+
+    // The iOS file picker will allow to select something like the iCloud folder,
+    // which will not be accessible across sessions because security,
+    // so the only place where we want to keep all projects is the app's local folder:
+    auto dialog = ModalDialogInput::Presets::newProject(defaultProjectName);
+    dialog->onOk = [this](const String &projectName)
+    {
+        if (auto *p = this->treeRoot->addEmptyProject(projectName, {}))
+        {
+            this->userProfile.onProjectLocalInfoUpdated(p->getId(),
+                p->getName(), p->getDocument()->getFullPath());
+            this->autosave();
+        }
+    };
+
+    App::showModalComponent(move(dialog));
+
+#else
+
+    const String defaultFileName = defaultProjectName + ".helio";
     this->newProjectFileChooser = make<FileChooser>(
         TRANS(I18n::Dialog::workspaceCreateProjectCaption),
-        DocumentHelpers::getDocumentSlot(fileName), "*.helio", true);
+        DocumentHelpers::getDocumentSlot(defaultFileName), "*.helio", true);
 
     DocumentHelpers::showFileChooser(this->newProjectFileChooser,
         Globals::UI::FileChooser::forFileToSave,
@@ -176,6 +197,8 @@ void Workspace::createEmptyProject()
             this->autosave();
         }
     });
+
+#endif
 }
 
 bool Workspace::loadRecentProject(RecentProjectInfo::Ptr info)

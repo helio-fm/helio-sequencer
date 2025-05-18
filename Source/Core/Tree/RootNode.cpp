@@ -187,7 +187,7 @@ static void addAllEssentialProjectNodes(ProjectNode *parent)
     parent->addChildNode(new PatternEditorNode());
 }
 
-// this one is for desktops
+// create project after showing the file chooser dialog
 ProjectNode *RootNode::addEmptyProject(const File &projectLocation, const String &templateName)
 {
     auto *project = new ProjectNode(projectLocation);
@@ -198,7 +198,7 @@ ProjectNode *RootNode::addEmptyProject(const File &projectLocation, const String
     return project;
 }
 
-// this one is for mobiles, where we don't have file chooser dialog
+// create project after showing the name input dialog
 ProjectNode *RootNode::addEmptyProject(const String &projectName, const String &templateName)
 {
     auto *project = new ProjectNode(projectName);

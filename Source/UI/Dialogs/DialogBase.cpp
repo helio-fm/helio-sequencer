@@ -72,7 +72,7 @@ void DialogBase::paint(Graphics &g)
 {
     const auto &theme = HelioTheme::getCurrentTheme();
     g.setFillType({ theme.getDialogBackground(), {} });
-    g.fillRect(1, 2, this->getWidth() - 2, this->getHeight() - 4);
+    g.fillRect(1, 2, this->getWidth() - 2, this->getHeight() - 3);
 
     HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.5f);
 

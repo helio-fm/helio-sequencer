@@ -376,7 +376,7 @@ void KeyboardMappingPage::loadScalaMappings()
     const auto filter = "*.kbm";
 #endif
 
-    this->importFileChooser = make<FileChooser>(TRANS(I18n::Dialog::workspaceCreateProjectCaption),
+    this->importFileChooser = make<FileChooser>(TRANS(I18n::Menu::keyboardMappingLoadScala),
         File::getSpecialLocation(File::userDocumentsDirectory), filter, true);
     
     DocumentHelpers::showFileChooser(this->importFileChooser,

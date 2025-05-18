@@ -260,6 +260,14 @@ UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newArpeggiator(const 
         TRANS(I18n::Dialog::cancel));
 }
 
+UniquePointer<ModalDialogInput> ModalDialogInput::Presets::newProject(const String &defaultName)
+{
+    return make<ModalDialogInput>(defaultName,
+        TRANS(I18n::Dialog::workspaceCreateProjectCaption),
+        TRANS(I18n::Dialog::add),
+        TRANS(I18n::Dialog::cancel));
+}
+
 UniquePointer<ModalDialogInput> ModalDialogInput::Presets::savePreset()
 {
     return make<ModalDialogInput>(String(),
