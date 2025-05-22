@@ -1203,7 +1203,15 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
 
     if (this->newNoteDragging != nullptr)
     {
-        if (this->newNoteDragging->isInEditMode())
+        if (this->selection.size() != 1)
+        {
+            // normally this shouldn't happen, bail out
+            // (switched to another track while drawing a note or something?)
+            jassertfalse;
+            this->newNoteDragging = nullptr;
+            this->setMouseCursor(this->project.getEditMode().getCursor());
+        }
+        else if (this->newNoteDragging->isInEditMode())
         {
             this->newNoteDragging->mouseDrag(e.getEventRelativeTo(this->newNoteDragging));
         }
@@ -1231,7 +1239,12 @@ void PianoRoll::mouseUp(const MouseEvent &e)
     
     if (this->newNoteDragging != nullptr)
     {
-        if (this->newNoteDragging->isInEditMode())
+        if (this->selection.size() != 1)
+        {
+            jassertfalse; // same check in mouseDrag
+            this->setMouseCursor(this->project.getEditMode().getCursor());
+        }
+        else if (this->newNoteDragging->isInEditMode())
         {
             this->newNoteDragging->mouseUp(e.getEventRelativeTo(this->newNoteDragging));
             this->setMouseCursor(this->project.getEditMode().getCursor());

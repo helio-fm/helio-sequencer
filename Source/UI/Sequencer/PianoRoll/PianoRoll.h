@@ -250,7 +250,7 @@ private:
     void continueErasingEvents(const Point<float> &mousePosition) override;
     void endErasingEvents() override;
 
-    NoteComponent *newNoteDragging = nullptr;
+    SafePointer<NoteComponent> newNoteDragging;
     bool addNewNoteMode = false;
     float newNoteVolume = Globals::Defaults::newNoteVelocity;
     float newNoteLength = Globals::Defaults::newNoteLength;
