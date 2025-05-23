@@ -89,6 +89,11 @@ void NoteResizerLeft::resized()
 
 void NoteResizerLeft::mouseDown(const MouseEvent &e)
 {
+    if (this->roll.isMultiTouchEvent(e))
+    {
+        return;
+    }
+
     this->dragger.startDraggingComponent(this, e);
 
     const auto &selection = this->roll.getLassoSelection();
@@ -116,6 +121,11 @@ void NoteResizerLeft::mouseDown(const MouseEvent &e)
 
 void NoteResizerLeft::mouseDrag(const MouseEvent &e)
 {
+    if (this->roll.isMultiTouchEvent(e) || this->groupResizerNote == nullptr)
+    {
+        return;
+    }
+    
     this->dragger.dragComponent(this, e, nullptr);
 
     const auto &selection = this->roll.getLassoSelection();
@@ -152,6 +162,11 @@ void NoteResizerLeft::mouseDrag(const MouseEvent &e)
 
 void NoteResizerLeft::mouseUp(const MouseEvent &e)
 {
+    if (this->roll.isMultiTouchEvent(e))
+    {
+        return;
+    }
+
     const auto &selection = this->roll.getLassoSelection();
     if (selection.getNumSelected() == 0)
     {
