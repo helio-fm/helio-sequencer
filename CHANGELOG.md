@@ -4,6 +4,15 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.16
+ - Improved UI performance in the piano roll, fixed glitches, added x1.25 UI scaling option
+ - Tidied up the built-in scales list and added more microtonal scales
+ - Transposing an entire project via project refactoring menu now also updates all key signatures 
+ - Added next/previous preset buttons for the key/time signature dialogs, and the built-in SoundFont player's preset selection
+ - Fixed parametric modifiers not updating when the harmonic context changes
+ - Mobile platforms: made dialog boxes fit better on small screens
+ - iOS: new projects are always created in the app's documents folder to avoid confusion, fixed crashes on adding AudioUnit effects to instruments
+
 ## Version 3.15
  - Added an option to display note names in either German or Fixed Do notation (C-D-E or Do-Re-Mi); flats/sharps are now displayed as icons rather than ASCII symbols
  - Added two colour schemes with higher contrast
