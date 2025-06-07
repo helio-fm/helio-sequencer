@@ -224,8 +224,10 @@ void PatternOperations::transposeProject(ProjectNode &project,
     }
 }
 
-void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, bool shouldCheckpoint)
+void PatternOperations::transposeClips(const Lasso &selection, int deltaKey,
+    bool shouldCheckpoint, bool forceCheckpoint)
 {
+    jassert(shouldCheckpoint || !forceCheckpoint);
     if (selection.getNumSelected() == 0 || deltaKey == 0)
     {
         jassertfalse;
@@ -237,7 +239,8 @@ void PatternOperations::transposeClips(const Lasso &selection, int deltaKey, boo
     const auto transactionId = selection.generateTransactionId(operationId);
     const bool repeatsLastAction = pattern->getLastUndoActionId() == transactionId;
 
-    bool didCheckpoint = !shouldCheckpoint || repeatsLastAction;
+    bool didCheckpoint = !shouldCheckpoint || (repeatsLastAction && !forceCheckpoint);
+    //               or !(shouldCheckpoint && (!repeatsLastAction || forceCheckpoint))
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {

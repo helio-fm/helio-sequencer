@@ -95,8 +95,9 @@ struct SequencerOperations final
     static Array<Note> moveSelection(const Lasso &selection,
         Clip &targetClip, bool shouldCheckpoint = true);
 
+    // set forceCheckpoint to avoid coalescing similar transpositions into one
     static void shiftKeyRelative(const NoteListBase &notes, int deltaKey,
-        bool undoable = true, bool shouldCheckpoint = true);
+        bool undoable = true, bool shouldCheckpoint = true, bool forceCheckpoint = false);
 
     // pass deltaKey=0 to do snap-to-scale:
     static void shiftInScaleKeyRelative(const NoteListBase &notes, const Clip &clip,

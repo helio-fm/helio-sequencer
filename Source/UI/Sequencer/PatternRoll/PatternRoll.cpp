@@ -882,19 +882,19 @@ void PatternRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::ClipTransposeOctaveUp:
         PatternOperations::transposeClips(this->selection,
-            this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave));
+            this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave), true, true);
         break;
     case CommandIDs::ClipTransposeOctaveDown:
         PatternOperations::transposeClips(this->selection,
-            -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave));
+            -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave), true, true);
         break;
     case CommandIDs::ClipTransposeFifthUp:
         PatternOperations::transposeClips(this->selection,
-            this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth));
+            this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth), true, true);
         break;
     case CommandIDs::ClipTransposeFifthDown:
         PatternOperations::transposeClips(this->selection,
-            -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth));
+            -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth), true, true);
         break;
     case CommandIDs::ClipVolumeUp:
         PatternOperations::tuneClips(this->selection, 1.f / 32.f);

@@ -1351,9 +1351,10 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
 }
 
 void SequencerOperations::shiftKeyRelative(const NoteListBase &notes,
-    int deltaKey, bool undoable, bool shouldCheckpoint)
+    int deltaKey, bool undoable, bool shouldCheckpoint, bool forceCheckpoint)
 {
     jassert(undoable || !shouldCheckpoint);
+    jassert(shouldCheckpoint || !forceCheckpoint);
     if (notes.size() == 0 || deltaKey == 0)
     {
         return;
@@ -1377,7 +1378,7 @@ void SequencerOperations::shiftKeyRelative(const NoteListBase &notes,
         
     if (!groupBefore.isEmpty())
     {
-        if (shouldCheckpoint && !repeatsLastAction)
+        if (shouldCheckpoint && (!repeatsLastAction || forceCheckpoint))
         {
             pianoSequence->checkpoint(transactionId);
         }

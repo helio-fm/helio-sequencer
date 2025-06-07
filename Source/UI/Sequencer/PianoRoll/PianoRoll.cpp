@@ -1377,11 +1377,11 @@ void PianoRoll::handleCommandMessage(int commandId)
             -this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::TransposeUp:
-        SequencerOperations::shiftKeyRelative(this->selection, 1, true, true);
+        SequencerOperations::shiftKeyRelative(this->selection, 1, true, true, false);
         SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::TransposeDown:
-        SequencerOperations::shiftKeyRelative(this->selection, -1, true, true);
+        SequencerOperations::shiftKeyRelative(this->selection, -1, true, true, false);
         SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::TransposeScaleKeyUp:
@@ -1391,19 +1391,13 @@ void PianoRoll::handleCommandMessage(int commandId)
         SequencerOperations::shiftInScaleKeyRelative(this->getLassoOrEntireSequence(), this->activeClip,
             this->scalesHighlightingEnabled ? this->project.getTimeline()->getKeySignaturesSequence() : nullptr,
             this->temperament->getHighlighting(), 1, true, true);
-        if (this->selection.size() > 0)
-        {
-            SequencerOperations::previewSelection(this->selection, this->getTransport());
-        }
+        SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::TransposeScaleKeyDown:
         SequencerOperations::shiftInScaleKeyRelative(this->getLassoOrEntireSequence(), this->activeClip,
             this->scalesHighlightingEnabled ? this->project.getTimeline()->getKeySignaturesSequence() : nullptr,
             this->temperament->getHighlighting(), -1, true, true);
-        if (this->selection.size() > 0)
-        {
-            SequencerOperations::previewSelection(this->selection, this->getTransport());
-        }
+        SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::AlignToScale:
         SequencerOperations::shiftInScaleKeyRelative(this->getLassoOrEntireSequence(), this->activeClip,
@@ -1412,35 +1406,23 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::TransposeOctaveUp:
         SequencerOperations::shiftKeyRelative(this->getLassoOrEntireSequence(),
-            this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave), true, true);
-        if (this->selection.size() > 0)
-        {
-            SequencerOperations::previewSelection(this->selection, this->getTransport());
-        }
+            this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave), true, true, true);
+        SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::TransposeOctaveDown:
         SequencerOperations::shiftKeyRelative(this->getLassoOrEntireSequence(),
-            -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave), true, true);
-        if (this->selection.size() > 0)
-        {
-            SequencerOperations::previewSelection(this->selection, this->getTransport());
-        }
+            -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectOctave), true, true, true);
+        SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::TransposeFifthUp:
         SequencerOperations::shiftKeyRelative(this->getLassoOrEntireSequence(),
-            this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth), true, true);
-        if (this->selection.size() > 0)
-        {
-            SequencerOperations::previewSelection(this->selection, this->getTransport());
-        }
+            this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth), true, true, true);
+        SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::TransposeFifthDown:
         SequencerOperations::shiftKeyRelative(this->getLassoOrEntireSequence(),
-            -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth), true, true);
-        if (this->selection.size() > 0)
-        {
-            SequencerOperations::previewSelection(this->selection, this->getTransport());
-        }
+            -this->temperament->getEquivalentOfTwelveToneInterval(Semitones::PerfectFifth), true, true, true);
+        SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::MakeStaccato:
         SequencerOperations::makeStaccato(this->getLassoOrEntireSequence(), Globals::minNoteLength * 2.f, true);
@@ -1465,17 +1447,11 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::InvertChordUp:
         SequencerOperations::invertChord(this->getLassoOrEntireSequence(), this->getPeriodSize(), true, true);
-        if (this->selection.size() > 0)
-        {
-            SequencerOperations::previewSelection(this->selection, this->getTransport());
-        }
+        SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::InvertChordDown:
         SequencerOperations::invertChord(this->getLassoOrEntireSequence(), -this->getPeriodSize(), true, true);
-        if (this->selection.size() > 0)
-        {
-            SequencerOperations::previewSelection(this->selection, this->getTransport());
-        }
+        SequencerOperations::previewSelection(this->selection, this->getTransport());
         break;
     case CommandIDs::ToggleMuteClips:
         PatternOperations::toggleMuteClip(this->activeClip);
