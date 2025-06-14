@@ -66,6 +66,7 @@ Japanese - Kotone Itaya
 Korean - YoungGwang Jeon, DaYeon Lee, HyoHee Jeon  
 Polish - Dawid Bugajski  
 Portuguese - Dario Silva, Daniel Leandro  
+Ukrainian - Denys Nykula  
 Vietnamese - Dat T.The  
 
 You can help proofread and improve the translation for your native language [here](https://helio.fm/translations).

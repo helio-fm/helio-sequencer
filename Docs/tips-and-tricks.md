@@ -98,6 +98,8 @@ The `G` hotkey toggles the note name guides:
 
 Note names depend on the root key of a key signature found at the start of the viewport or selection (see the comment for the [temperament model](configs.md#temperaments)).
 
+Depending on your settings, note names can be displayed in either German or Fixed Do notation (C-D-E or Do-Re-Mi, where Do is always C, Re is always D, and so on).
+
 #### Scales highlighting
 
 Another flag highlights the in-scale keys of the key signatures that have been added to the timeline. If you prefer C Major coloring in the piano roll, turn it off:
@@ -133,6 +135,8 @@ Since it depends on the harmonic context, it will do nothing when placed on an o
 In my workflow, I'm often adding new tracks with a knife tool: even though there's a normal way to add an empty track via project menu, or duplicate a track, I often end up having added some sketches in different places of a single sequence, and then seeing that they represent different parts, and can be cut into different tracks after switching to the pattern mode:
 
 ![patterns-knife-tool]
+
+*Tip: cutting clips while holding any modifier key will immediately rename one of the new tracks to place it on another row.*
 
 #### Merging tracks
 
