@@ -18,6 +18,8 @@
 #include "Common.h"
 #include "ModalCallout.h"
 #include "MainLayout.h"
+#include "SequencerLayout.h"
+#include "RollBase.h"
 #include "ColourIDs.h"
 
 static int kClickCounterOnPopupClose = 0;
@@ -145,6 +147,19 @@ bool ModalCallout::hitTest(int x, int y)
 
 void ModalCallout::inputAttemptWhenModal()
 {
+    // hack warning:
+    // when you rclick/tap outside of the callout to hide it and start dragging the roll immediately,
+    // JUCE never sends the mouseDown event to the roll because the modal callout is still showing,
+    // and after the callout is dismissed, dragging continues with incorrect anchor
+    // and the viewport position jumps away unpredictably; this check compensates for that:
+    if (auto *sequencer = dynamic_cast<SequencerLayout *>(App::Layout().findChildWithID(ComponentIDs::sequencerLayoutId)))
+    {
+        if (auto *roll = sequencer->getRoll())
+        {
+            roll->resetDraggingAnchors();
+        }
+    }
+
     this->postCommandMessage(CommandIDs::DismissCallout);
 }
 

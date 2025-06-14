@@ -122,40 +122,58 @@ QuickRescaleMenu::QuickRescaleMenu(const ProjectNode &project,
 {
     MenuPanel::Menu menu;
 
+    int currentScaleIndex = -1;
     const auto scales = App::Config().getScales()->getAll();
     for (int i = 0; i < scales.size(); ++i)
     {
-        if (scales.getUnchecked(i)->getBasePeriod() !=
+        auto scale = scales.getUnchecked(i);
+        if (scale->getBasePeriod() !=
             this->project.getProjectInfo()->getTemperament()->getPeriodSize())
         {
             continue;
         }
 
+        const auto isEquivalentToCurrent =
+            scale->isEquivalentTo(this->event.getScale());
+        const auto isCurrentScale =
+            scale->getUnlocalizedName() == this->event.getScale()->getUnlocalizedName() ||
+            (currentScaleIndex == -1 && isEquivalentToCurrent);
+        if (isCurrentScale)
+        {
+            currentScaleIndex = menu.size();
+        }
+
         menu.add(MenuItem::item(Icons::arpeggiate,
-            scales.getUnchecked(i)->getLocalizedName())->withAction([this, i]()
+            scales.getUnchecked(i)->getLocalizedName())->
+            disabledIf(isEquivalentToCurrent)->
+            withAction([this, i]()
         {
             const auto scales = App::Config().getScales()->getAll();
-            if (!scales[i]->isEquivalentTo(this->event.getScale()))
+            jassert(!scales[i]->isEquivalentTo(this->event.getScale()));
+
+            const bool hasMadeChanges = 
+                SequencerOperations::rescale(this->project, this->event.getBeat(), this->endBeat,
+                    this->event.getRootKey(), this->event.getScale(), scales[i],
+                    true, true);
+
+            auto *keySequence = static_cast<KeySignaturesSequence *>(this->event.getSequence());
+            if (!hasMadeChanges)
             {
-                const bool hasMadeChanges = 
-                    SequencerOperations::rescale(this->project, this->event.getBeat(), this->endBeat,
-                        this->event.getRootKey(), this->event.getScale(), scales[i],
-                        true, true);
-
-                auto *keySequence = static_cast<KeySignaturesSequence *>(this->event.getSequence());
-                if (!hasMadeChanges)
-                {
-                    keySequence->checkpoint();
-                }
-
-                keySequence->change(this->event, this->event.withScale(scales[i]), true);
-
-                this->dismissCalloutAsync();
+                keySequence->checkpoint();
             }
+
+            keySequence->change(this->event, this->event.withScale(scales[i]), true);
+
+            this->dismissCalloutAsync();
         }));
     }
 
     this->updateContent(menu, MenuPanel::SlideDown);
+
+    if (currentScaleIndex >= 0)
+    {
+        this->scrollToItem(currentScaleIndex);
+    }
 }
 
 void QuickRescaleMenu::dismissCalloutAsync()

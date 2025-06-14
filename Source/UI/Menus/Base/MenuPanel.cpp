@@ -78,6 +78,13 @@ const MenuItem::Ptr MenuPanel::getMenuItem(int index) const
     return this->menu[index];
 }
 
+void MenuPanel::scrollToItem(int index)
+{
+    jassert(this->filteredMenu.isEmpty()); // not supposed to be used with filters
+    jassert(index >= 0 && index < this->menu.size());
+    this->listBox->scrollToEnsureRowIsOnscreen(index);
+}
+
 void MenuPanel::updateContent(const Menu &commands,
     AnimationType animationType, bool adjustsWidth, Component *newFooter)
 {

@@ -74,6 +74,8 @@ public:
     int indexOfItemNamed(const String &name);
     const MenuItem::Ptr getMenuItem(int index) const;
 
+    void scrollToItem(int index);
+
 private:
 
     friend class MenuItemComponent;
