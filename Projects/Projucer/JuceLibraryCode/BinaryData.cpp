@@ -2753,7 +2753,7 @@ static const unsigned char temp_binary_data_118[] =
 "      { \"period\": 19, \"name\": \"Lydian\", \"intervals\": \"3 3 3 2 3 3 2\" },\n"
 "      { \"period\": 19, \"name\": \"Mixolydian\", \"intervals\": \"3 3 2 3 3 2 3\" },\n"
 "      { \"period\": 19, \"name\": \"Dorian\", \"intervals\": \"3 2 3 3 3 2 3\" },\n"
-"      { \"period\": 19, \"name\": \"Phrygian\", \"intervals\": \"2 3 3 3 2 3 3 \"},\n"
+"      { \"period\": 19, \"name\": \"Phrygian\", \"intervals\": \"2 3 3 3 2 3 3\"},\n"
 "      { \"period\": 19, \"name\": \"Locrian\", \"intervals\": \"2 3 3 2 3 3 3\" },\n"
 "      { \"period\": 19, \"name\": \"Major Locrian\", \"intervals\": \"2 2 3 3 3 3 3\" },\n"
 "      { \"period\": 19, \"name\": \"Melodic Minor\", \"intervals\": \"2 3 2 3 3 3 3\" },\n"
@@ -4818,7 +4818,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x25669f2b:  numBytes = 16633; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
-        case 0x048f5efe:  numBytes = 13263; return scales_json;
+        case 0x048f5efe:  numBytes = 13262; return scales_json;
         case 0x77719112:  numBytes = 2856; return temperaments_json;
         case 0xf8655f25:  numBytes = 123582; return translations_json;
         default: break;

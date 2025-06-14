@@ -49,7 +49,7 @@
       { "period": 19, "name": "Lydian", "intervals": "3 3 3 2 3 3 2" },
       { "period": 19, "name": "Mixolydian", "intervals": "3 3 2 3 3 2 3" },
       { "period": 19, "name": "Dorian", "intervals": "3 2 3 3 3 2 3" },
-      { "period": 19, "name": "Phrygian", "intervals": "2 3 3 3 2 3 3 "},
+      { "period": 19, "name": "Phrygian", "intervals": "2 3 3 3 2 3 3"},
       { "period": 19, "name": "Locrian", "intervals": "2 3 3 2 3 3 3" },
       { "period": 19, "name": "Major Locrian", "intervals": "2 2 3 3 3 3 3" },
       { "period": 19, "name": "Melodic Minor", "intervals": "2 3 2 3 3 3 3" },
