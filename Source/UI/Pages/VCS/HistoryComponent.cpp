@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "HistoryComponent.h"
-
 #include "VersionControl.h"
 #include "VersionControlEditor.h"
 #include "RevisionTreeComponent.h"
@@ -44,10 +43,6 @@ HistoryComponent::HistoryComponent(VersionControl &owner) : vcs(owner)
 
     this->separator = make<SeparatorHorizontalFadingReversed>();
     this->addAndMakeVisible(this->separator.get());
-
-#if !NO_NETWORK
-    this->vcs.fetchRevisionsIfNeeded();
-#endif
 }
 
 HistoryComponent::~HistoryComponent() = default;
@@ -79,14 +74,6 @@ void HistoryComponent::handleCommandMessage(int commandId)
             this->vcs.checkout(this->revisionTree->getSelectedRevision());
         }
         break;
-#if !NO_NETWORK
-    case CommandIDs::VersionControlPushSelected:
-        this->vcs.pushBranch(this->revisionTree->getSelectedRevision());
-        break;
-    case CommandIDs::VersionControlPullSelected:
-        this->vcs.pullBranch(this->revisionTree->getSelectedRevision());
-        break;
-#endif
     default:
         break;
     }

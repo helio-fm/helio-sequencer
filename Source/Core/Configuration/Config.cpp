@@ -69,17 +69,32 @@ void Config::initResources()
             for (int i = 0; i < doc.getNumProperties(); ++i)
             {
                 const auto key(doc.getPropertyName(i));
+
+                // cleanup deprecated properties, todo remove this in future versions
+                static const Identifier checkForUpdates = "checkForUpdates";
+                if (key == checkForUpdates)
+                {
+                    continue;
+                }
+
                 this->properties[key] = doc.getProperty(key);
             }
 
             for (int i = 0; i < doc.getNumChildren(); ++i)
             {
                 const auto child(doc.getChild(i));
+
+                // cleanup deprecated children, todo remove this in future versions
+                static const Identifier lastUpdatesInfo = "lastUpdatesInfo";
+                if (child.getType() == lastUpdatesInfo)
+                {
+                    continue;
+                }
+
                 this->children[child.getType()] = child;
             }
 
             // force writing some default values in the config later
-            this->setUpdatesCheckEnabled(this->isUpdatesCheckEnabled());
             this->setMaxSavedUndoActions(this->getMaxSavedUndoActions());
         }
     }
@@ -209,16 +224,6 @@ void Config::onConfigChanged()
 //===----------------------------------------------------------------------===//
 // Properties shortcuts
 //===----------------------------------------------------------------------===//
-
-void Config::setUpdatesCheckEnabled(bool value)
-{
-    this->setProperty(Serialization::Config::checkForUpdates, value);
-}
-
-bool Config::isUpdatesCheckEnabled() const noexcept
-{
-    return this->getProperty(Serialization::Config::checkForUpdates, true);
-}
 
 void Config::setMaxSavedUndoActions(int value)
 {

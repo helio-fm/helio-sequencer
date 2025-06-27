@@ -24,17 +24,17 @@ class HeadlineContextMenuController;
 #include "IconComponent.h"
 #include "SeparatorHorizontalFadingReversed.h"
 #include "SeparatorHorizontalFading.h"
+#include "ColourIDs.h"
 
 class RevisionComponent final : public Component
 {
 public:
 
     RevisionComponent(VersionControl &owner,
-        const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead);
+        const VCS::Revision::Ptr revision, bool isHead);
     ~RevisionComponent();
 
     // Helpers for tree traverse:
-
     float x = 0.f;
     float y = 0.f;
     float mod = 0.f;
@@ -71,7 +71,6 @@ private:
 
     bool isSelected = false;
     bool isHeadRevision = false;
-    VCS::Revision::SyncState viewState;
 
     UniquePointer<HeadlineContextMenuController> contextMenuController;
 
@@ -81,8 +80,8 @@ private:
     UniquePointer<Label> revisionDate;
     UniquePointer<SeparatorHorizontalFadingReversed> line2;
     UniquePointer<SeparatorHorizontalFading> line3;
-    UniquePointer<IconComponent> remoteIndicatorImage;
-    UniquePointer<IconComponent> localIndicatorImage;
+
+    const Colour outlineColour = findDefaultColour(ColourIDs::VersionControl::outline);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionComponent)
 };

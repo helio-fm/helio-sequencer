@@ -17,18 +17,15 @@
 
 #include "Common.h"
 #include "RevisionComponent.h"
-
 #include "VersionControl.h"
 #include "RevisionTreeComponent.h"
 #include "HeadlineContextMenuController.h"
-#include "ColourIDs.h"
 
 RevisionComponent::RevisionComponent(VersionControl &owner,
-    const VCS::Revision::Ptr revision, VCS::Revision::SyncState viewState, bool isHead) :
+    const VCS::Revision::Ptr revision, bool isHead) :
     vcs(owner),
     revision(revision),
-    isHeadRevision(isHead),
-    viewState(viewState)
+    isHeadRevision(isHead)
 {
     this->revisionDescription= make<Label>();
     this->addAndMakeVisible(this->revisionDescription.get());
@@ -48,12 +45,6 @@ RevisionComponent::RevisionComponent(VersionControl &owner,
     this->line3= make<SeparatorHorizontalFading>();
     this->addAndMakeVisible(this->line3.get());
 
-    this->remoteIndicatorImage= make<IconComponent>(Icons::remote);
-    this->addAndMakeVisible(this->remoteIndicatorImage.get());
-
-    this->localIndicatorImage= make<IconComponent>(Icons::local);
-    this->addAndMakeVisible(this->localIndicatorImage.get());
-
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
     const auto &message = this->revision->getMessage();
@@ -67,56 +58,34 @@ RevisionComponent::RevisionComponent(VersionControl &owner,
     this->revisionDate->setInterceptsMouseClicks(false, false);
     this->revisionDescription->setInterceptsMouseClicks(false, false);
 
-#if NO_NETWORK
-
-    this->localIndicatorImage->setVisible(false);
-    this->remoteIndicatorImage->setVisible(false);
-
-#else
-
-    switch (this->viewState)
-    {
-    case VCS::Revision::NoSync:
-        this->remoteIndicatorImage->setIconAlphaMultiplier(0.15f);
-        break;
-    case VCS::Revision::ShallowCopy:
-        this->localIndicatorImage->setIconAlphaMultiplier(0.15f);
-        break;
-    case VCS::Revision::FullSync:
-    default:
-        break;
-    }
-
-#endif
-
-    this->setSize(165, 50);
+    this->setSize(175, 40);
 }
 
 RevisionComponent::~RevisionComponent() = default;
 
 void RevisionComponent::paint(Graphics &g)
 {
-    g.setColour(findDefaultColour(ColourIDs::VersionControl::outline));
+    g.setColour(this->outlineColour);
 
     if (this->isHeadRevision)
     {
-        g.drawRoundedRectangle(0.0f, 0.0f, float(this->getWidth()), float(this->getHeight()), 9.000f, 1.0f);
+        g.drawRoundedRectangle(0.f, 0.f,
+            float(this->getWidth()), float(this->getHeight()), 9.f, 1.f);
     }
 
     if (this->isSelected)
     {
-        g.fillRoundedRectangle(1.0f, 1.0f, float(this->getWidth() - 2), float(this->getHeight() - 2), 7.000f);
+        g.fillRoundedRectangle(1.f, 1.f,
+            float(this->getWidth() - 2), float(this->getHeight() - 2), 7.f);
     }
 }
 
 void RevisionComponent::resized()
 {
-    this->revisionDescription->setBounds(4, 1, this->getWidth() - 8, 20);
-    this->revisionDate->setBounds(16, 20, this->getWidth() - 32, 14);
+    this->revisionDescription->setBounds(4, 2, this->getWidth() - 8, 20);
+    this->revisionDate->setBounds(16, 20, this->getWidth() - 32, 18);
     this->line2->setBounds(8, 0, this->getWidth() - 16, 2);
     this->line3->setBounds(8, this->getHeight() - 2, this->getWidth() - 16, 2);
-    this->remoteIndicatorImage->setBounds(this->getWidth() / 2 - 12, 36, 8, 8);
-    this->localIndicatorImage->setBounds(this->getWidth() / 2 + 4, 36, 8, 8);
 }
 
 void RevisionComponent::mouseMove(const MouseEvent &e)
@@ -174,7 +143,11 @@ RevisionComponent *RevisionComponent::getLeftBrother() const
     {
         for (auto i : this->parent->children)
         {
-            if (i == this) { return n; }
+            if (i == this)
+            {
+                return n;
+            }
+
             n = i;
         }
     }
@@ -184,12 +157,20 @@ RevisionComponent *RevisionComponent::getLeftBrother() const
 
 RevisionComponent *RevisionComponent::right() const
 {
-    if (this->children.size() > 0) { return this->children.getLast(); }
+    if (this->children.size() > 0)
+    {
+        return this->children.getLast();
+    }
+
     return this->wired;
 }
 
 RevisionComponent *RevisionComponent::left() const
 {
-    if (this->children.size() > 0) { return this->children.getFirst(); }
+    if (this->children.size() > 0)
+    {
+        return this->children.getFirst();
+    }
+
     return this->wired;
 }

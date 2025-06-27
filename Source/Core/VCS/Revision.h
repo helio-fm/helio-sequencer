@@ -19,7 +19,6 @@
 
 #include "Serializable.h"
 #include "RevisionItem.h"
-#include "RevisionDto.h"
 
 namespace VCS
 {
@@ -27,20 +26,9 @@ namespace VCS
     {
     public:
 
-        enum SyncState
-        {
-            NoSync,         // revision is present locally, but it is unknown if remote copy exists
-            ShallowCopy,    // remote revision info has been added to the tree, but data is yet to be fetched
-            FullSync,       // either local revision that was pushed, or a remote that was fully pulled
-        };
-
         using Ptr = ReferenceCountedObjectPtr<Revision>;
 
         Revision(const String &name = {});
-
-#if !NO_NETWORK
-        Revision(const RevisionDto &remoteDescription); // creates shallow copy
-#endif
 
         const ReferenceCountedArray<RevisionItem> &getItems() const noexcept;
         const ReferenceCountedArray<Revision> &getChildren() const noexcept;
@@ -55,8 +43,6 @@ namespace VCS
         void removeChild(Revision::Ptr revision);
 
         void copyDeltasFrom(Revision::Ptr other);
-
-        bool isShallowCopy() const noexcept;
 
         WeakReference<Revision> getParent() const noexcept;
         String getMessage() const noexcept;

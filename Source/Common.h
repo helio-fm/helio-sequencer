@@ -149,11 +149,6 @@ namespace juce
 }
 #endif
 
-// Disable all network-related features on mobile platforms to keep it simple
-#if PLATFORM_MOBILE
-#   define NO_NETWORK 1
-#endif
-
 // Catch floating point exceptions like division by zero
 #if DEBUG && JUCE_WINDOWS
 #include <float.h>

@@ -44,10 +44,6 @@ public:
     ProjectNode *importMidi(const File &file);
     ProjectNode *openProject(const File &file);
 
-#if !NO_NETWORK
-    ProjectNode *checkoutProject(const String &id, const String &name);
-#endif
-
     ProjectNode *addExampleProject();
     ProjectNode *addEmptyProject(const File &projectLocation, const String &templateName);
     ProjectNode *addEmptyProject(const String &projectName, const String &templateName);

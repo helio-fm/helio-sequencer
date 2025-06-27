@@ -26,15 +26,6 @@ Revision::Revision(const String &name /*= String::empty*/) :
     id(Uuid().toString()),
     timestamp(Time::getCurrentTime().toMilliseconds()) {}
 
-#if !NO_NETWORK
-
-Revision::Revision(const RevisionDto &dto) :
-    message(dto.getMessage()),
-    id(dto.getId()),
-    timestamp(dto.getTimestamp()) {}
-
-#endif
-
 void Revision::copyDeltasFrom(Revision::Ptr other)
 {
     this->deltas.clearQuick();
@@ -47,12 +38,6 @@ void Revision::copyDeltasFrom(Revision::Ptr other)
 bool Revision::isEmpty() const noexcept
 {
     return this->deltas.isEmpty() && this->children.isEmpty();
-}
-
-bool Revision::isShallowCopy() const noexcept
-{
-    // children might me not empty though:
-    return this->deltas.isEmpty();
 }
 
 int64 Revision::getTimeStamp() const noexcept
@@ -138,7 +123,7 @@ SerializedData Revision::serializeDeltas() const
 
 void Revision::deserializeDeltas(SerializedData data)
 {
-    jassert(this->isShallowCopy());
+    jassert(this->isEmpty());
 
     const auto root =
         data.hasType(Serialization::VCS::revision) ?

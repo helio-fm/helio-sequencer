@@ -54,7 +54,7 @@ void DashboardMenu::loadFile(RecentProjectInfo::Ptr project)
 
 void DashboardMenu::unloadFile(RecentProjectInfo::Ptr project)
 {
-    this->workspace.unloadProject(project->getProjectId(), false, false);
+    this->workspace.unloadProject(project->getProjectId(), false);
     this->updateListContent();
 }
 

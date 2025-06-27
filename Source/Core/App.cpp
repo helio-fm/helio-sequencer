@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "App.h"
 #include "AudioCore.h"
-#include "NetworkServices.h"
 #include "HelioTheme.h"
 #include "Config.h"
 #include "Icons.h"
@@ -283,11 +282,6 @@ class MainLayout &App::Layout() noexcept
 class Config &App::Config() noexcept
 {
     return *static_cast<App *>(getInstance())->config;
-}
-
-class Network &App::Network() noexcept
-{
-    return *static_cast<App *>(getInstance())->network;
 }
 
 class Clipboard &App::Clipboard() noexcept
@@ -626,7 +620,7 @@ void App::initialise(const String &commandLine)
         DBG("===");
 
         // for unit tests, we want the app and config/resources initialized
-        // (we don't need a window, workspace and network services though)
+        // (we don't need a window and a workspace though)
         UnitTestRunner runner;
 
         // we don't want to run JUCE's unit tests, just the ones in our category:
@@ -664,8 +658,6 @@ void App::initialise(const String &commandLine)
         this->window = make<MainWindow>();
         this->window->initialise(shouldEnableOpenGL, shouldUseNativeTitleBar);
 
-        this->network = make<class Network>(*this->workspace.get());
-
         this->config->getUiFlags()->addListener(this);
         
 #   if PLATFORM_MOBILE
@@ -699,7 +691,6 @@ void App::shutdown()
 
         DBG("Shutting down");
 
-        this->network = nullptr;
         this->window = nullptr;
         
         if (this->workspace != nullptr)

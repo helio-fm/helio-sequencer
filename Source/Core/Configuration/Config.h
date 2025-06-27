@@ -48,9 +48,6 @@ public:
 
     // some shortcuts for setProperty/getProperty
 
-    void setUpdatesCheckEnabled(bool value);
-    bool isUpdatesCheckEnabled() const noexcept;
-
     void setMaxSavedUndoActions(int value);
     int getMaxSavedUndoActions() const noexcept;
 

@@ -208,33 +208,11 @@ bool Workspace::loadRecentProject(RecentProjectInfo::Ptr info)
     {
         return this->treeRoot->openProject(file) != nullptr;
     }
-#if !NO_NETWORK
-    else if (info->hasRemoteCopy()) // and not present locally
-    {
-        if (this->userProfile.isLoggedIn())
-        {
-            if (auto *p = this->treeRoot->checkoutProject(info->getProjectId(), info->getTitle()))
-            {
-                this->userProfile.onProjectLocalInfoUpdated(p->getId(),
-                    p->getName(), p->getDocument()->getFullPath());
-
-                return true;
-            }
-
-            return false;
-        }
-        else
-        {
-            // TODO show message "yo, login pls"
-            return true;
-        }
-    }
-#endif
 
     return false;
 }
 
-void Workspace::unloadProject(const String &projectId, bool deleteLocally, bool deleteRemotely)
+void Workspace::unloadProject(const String &projectId, bool deleteLocally)
 {
     const auto projects = this->treeRoot->findChildrenOfType<ProjectNode>();
     TreeNode *currentShowingItem = this->navigationHistory.getCurrentItem();
@@ -283,13 +261,6 @@ void Workspace::unloadProject(const String &projectId, bool deleteLocally, bool 
         {
             this->userProfile.deleteProjectLocally(projectId);
         }
-
-#if !NO_NETWORK
-        if (deleteRemotely)
-        {
-            this->userProfile.deleteProjectRemotely(projectId);
-        }
-#endif
     }
     
     if (shouldSwitchToOtherPage)

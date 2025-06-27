@@ -161,10 +161,6 @@ void Icons::initBuiltInImages()
     setIconForKey(paint);
     setIconForKey(tag);
 
-    setIconForKey(remote);
-    setIconForKey(local);
-    setIconForKey(github);
-
     setIconForKey(commit);
     setIconForKey(reset);
     setIconForKey(push);

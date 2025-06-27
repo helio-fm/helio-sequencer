@@ -31,23 +31,6 @@ ConfigurationResourceCollection::~ConfigurationResourceCollection()
     this->reset();
 }
 
-void ConfigurationResourceCollection::updateBaseResource(const SerializedData &resource)
-{
-    DBG("Updating downloaded resource file for " + this->resourceType.toString());
-
-#if DEBUG
-    JsonSerializer serializer(false);
-#else
-    BinarySerializer serializer;
-#endif
-
-    serializer.saveToFile(this->getDownloadedResourceFile(), resource);
-
-    // do not reload anything here to avoid possible issues,
-    // all updates will just appear at the next start:
-    //this->reloadResources();
-}
-
 void ConfigurationResourceCollection::updateUserResource(const ConfigurationResource::Ptr resource)
 {
     this->userResources[resource->getResourceId()] = resource;
@@ -61,12 +44,6 @@ void ConfigurationResourceCollection::updateUserResource(const ConfigurationReso
 
     // Should we really send update message here?
     this->sendChangeMessage();
-}
-
-File ConfigurationResourceCollection::getDownloadedResourceFile() const
-{
-    const String assumedFileName = this->resourceType + ".helio";
-    return DocumentHelpers::getConfigSlot(assumedFileName);
 }
 
 File ConfigurationResourceCollection::getUsersResourceFile() const
@@ -115,13 +92,8 @@ void ConfigurationResourceCollection::reloadResources()
 {
     bool shouldBroadcastChange = false;
 
-    // Reset and store an empty tree to append user objects to
     this->baseResources.clear();
     this->userResources.clear();
-
-    // load both built-in and downloaded resource:
-    // downloaded extends and overrides built-in one,
-    // user's config extends and overrides the previous step
 
 #if DEBUG
     auto startTime = Time::getMillisecondCounter();
@@ -144,25 +116,7 @@ void ConfigurationResourceCollection::reloadResources()
     startTime = Time::getMillisecondCounter();
 #endif
 
-    // Try to extend built-in config with downloaded one
-    const File downloadedResource(this->getDownloadedResourceFile());
-    if (downloadedResource.existsAsFile())
-    {
-        const auto tree(DocumentHelpers::load(downloadedResource));
-        if (tree.isValid())
-        {
-            this->deserializeResources(tree, this->baseResources);
-            shouldBroadcastChange = true;
-        }
-
-        DBG("Loaded extended " + this->resourceType.toString() + " in " + String(Time::getMillisecondCounter() - startTime) + " ms");
-    }
-
-#if DEBUG
-    startTime = Time::getMillisecondCounter();
-#endif
-
-    // Try to extend base config with user's settings
+    // the user's config extends and overrides the defaults
     const File usersResource(this->getUsersResourceFile());
 
     if (usersResource.existsAsFile())

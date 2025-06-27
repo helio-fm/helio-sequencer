@@ -22,11 +22,11 @@ stages:
 addons_shortcuts:
   addons_gcc9: &gcc9
     apt:
-      packages: [ 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
+      packages: [ 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
     ssh_known_hosts: helio.fm
   addons_clang16: &clang16
     apt:
-      packages: [ 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
+      packages: [ 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
     ssh_known_hosts: helio.fm
   addons_deploy: &deploy
     ssh_known_hosts: helio.fm

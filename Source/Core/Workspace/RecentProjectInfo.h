@@ -18,7 +18,6 @@
 #pragma once
 
 #include "Serializable.h"
-#include "ProjectDto.h"
 
 class RecentProjectInfo final : public Serializable,
                                 public ReferenceCountedObject
@@ -29,25 +28,15 @@ public:
     RecentProjectInfo(const String &localId,
         const String &localTitle, const String &localPath);
 
-#if !NO_NETWORK
-    RecentProjectInfo(const ProjectDto &remoteInfo);
-    void updateRemoteInfo(const ProjectDto &remoteInfo);
-#endif
-
     Time getUpdatedAt() const noexcept;
     String getProjectId() const noexcept;
     String getTitle() const;
     File getLocalFile() const;
 
-    bool hasLocalCopy() const noexcept;
-    bool hasRemoteCopy() const noexcept;
     bool isValid() const;
 
-    void updateLocalInfo(const String &localId, const String &localTitle, const String &localPath);
+    void updateLocalInfo(const String &localTitle, const String &localPath);
     void updateLocalTimestampAsNow();
-
-    void resetLocalInfo();
-    void resetRemoteInfo();
 
     using Ptr = ReferenceCountedObjectPtr<RecentProjectInfo>;
     static int compareElements(RecentProjectInfo *first, RecentProjectInfo *second);
@@ -62,6 +51,8 @@ public:
 
 private:
 
+    String projectId;
+
     struct LocalInfo final
     {
         File path;
@@ -69,17 +60,7 @@ private:
         int64 lastModifiedMs;
     };
 
-    struct RemoteInfo final
-    {
-        String alias;
-        String title;
-        int64 lastModifiedMs;
-    };
-
-    String projectId;
-
-    UniquePointer<LocalInfo> local;
-    UniquePointer<RemoteInfo> remote;
+    LocalInfo localInfo;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RecentProjectInfo)
 };

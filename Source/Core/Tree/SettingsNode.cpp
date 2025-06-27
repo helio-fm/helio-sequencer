@@ -18,15 +18,11 @@
 #include "Common.h"
 #include "SettingsNode.h"
 #include "SerializationKeys.h"
-
-#include "SyncSettings.h"
 #include "AudioSettings.h"
 #include "ThemeSettings.h"
 #include "UserInterfaceSettings.h"
 #include "TranslationSettings.h"
-
 #include "SettingsFrameWrapper.h"
-
 #include "ComponentsList.h"
 #include "SettingsPage.h"
 #include "MainLayout.h"
@@ -58,10 +54,6 @@ void SettingsNode::showPage()
 void SettingsNode::recreatePage()
 {
     this->settingsPage = nullptr;
-    this->syncSettingsWrapper = nullptr;
-    this->syncSettings = nullptr;
-    this->networkSettings = nullptr;
-    this->networkSettingsWrapper = nullptr;
     this->translationSettingsWrapper = nullptr;
     this->translationSettings = nullptr;
     this->uiSettingsWrapper = nullptr;
@@ -92,16 +84,6 @@ void SettingsNode::recreatePage()
     this->audioSettings = make<AudioSettings>(App::Workspace().getAudioCore());
     this->audioSettingsWrapper = make<SettingsFrameWrapper>(this->audioSettings.get(), TRANS(I18n::Settings::audio));
     this->settingsList->addAndMakeVisible(this->audioSettingsWrapper.get());
-
-#if !NO_NETWORK
-    this->networkSettings = make<NetworkSettings>();
-    this->networkSettingsWrapper = make<SettingsFrameWrapper>(this->networkSettings.get());
-    this->settingsList->addAndMakeVisible(this->networkSettingsWrapper.get());
-
-    this->syncSettings = make<SyncSettings>();
-    this->syncSettingsWrapper = make<SettingsFrameWrapper>(this->syncSettings.get(), TRANS(I18n::Settings::sync));
-    this->settingsList->addAndMakeVisible(this->syncSettingsWrapper.get());
-#endif
 
     this->settingsPage = make<SettingsPage>(this->settingsList.get());
 }

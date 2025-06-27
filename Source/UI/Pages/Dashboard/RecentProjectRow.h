@@ -48,17 +48,6 @@ public:
         this->activenessImage = make<IconComponent>(Icons::project);
         this->addAndMakeVisible(this->activenessImage.get());
 
-        this->remoteIndicatorImage = make<IconComponent>(Icons::remote);
-        this->addAndMakeVisible(this->remoteIndicatorImage.get());
-
-        this->localIndicatorImage = make<IconComponent>(Icons::local);
-        this->addAndMakeVisible(this->localIndicatorImage.get());
-
-    #if NO_NETWORK
-        this->localIndicatorImage->setVisible(false);
-        this->remoteIndicatorImage->setVisible(false);
-    #endif
-
         this->setSize(350, 56);
     }
 
@@ -88,18 +77,7 @@ public:
         this->dateLabel->setText(App::getHumanReadableDate(this->targetFile->getUpdatedAt()), dontSendNotification);
 
         const float totalAlpha = this->isFileLoaded ? 1.f : 0.5f;
-
-        const float remoteIndicatorAlpha = totalAlpha *
-            (this->targetFile->hasRemoteCopy() ? 1.f : 0.3f);
-
-        const float localIndicatorAlpha = totalAlpha *
-            (this->targetFile->hasLocalCopy() ? 1.f : 0.3f);
-
-        const float loadIndicatorAlpha = totalAlpha *
-            (this->isFileLoaded ? 1.f : 0.7f);
-
-        this->remoteIndicatorImage->setIconAlphaMultiplier(remoteIndicatorAlpha);
-        this->localIndicatorImage->setIconAlphaMultiplier(localIndicatorAlpha);
+        const float loadIndicatorAlpha = totalAlpha * (this->isFileLoaded ? 1.f : 0.5f);
         this->activenessImage->setIconAlphaMultiplier(loadIndicatorAlpha);
 
         this->titleLabel->setColour(Label::textColourId,
@@ -114,8 +92,6 @@ public:
         this->titleLabel->setBounds(0, 5, this->getWidth() - 46, 24);
         this->dateLabel->setBounds(0, 27, this->getWidth() - 46, 16);
         this->activenessImage->setBounds(this->getWidth() - 44, (this->getHeight() / 2) - 4 - 18, 36, 36);
-        this->remoteIndicatorImage->setBounds(this->getWidth() - 38, this->getHeight() - 16, 8, 8);
-        this->localIndicatorImage->setBounds(this->getWidth() - 23, this->getHeight() - 16, 8, 8);
     }
 
 private:
@@ -144,14 +120,13 @@ private:
 
     DashboardMenu &parentList;
     RecentProjectInfo::Ptr targetFile;
+
     bool isFileLoaded = false;
     bool isSelected = false;
 
     UniquePointer<Label> titleLabel;
     UniquePointer<Label> dateLabel;
     UniquePointer<IconComponent> activenessImage;
-    UniquePointer<IconComponent> remoteIndicatorImage;
-    UniquePointer<IconComponent> localIndicatorImage;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RecentProjectRow)
 };

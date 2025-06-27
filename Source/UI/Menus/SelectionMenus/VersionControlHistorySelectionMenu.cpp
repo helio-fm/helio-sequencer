@@ -25,27 +25,8 @@ static MenuPanel::Menu createDefaultPanel(VCS::Revision::Ptr revision, VersionCo
 {
     MenuPanel::Menu menu;
 
-#if NO_NETWORK
-
     menu.add(MenuItem::item(Icons::versionControl, CommandIDs::VersionControlCheckout,
         TRANS(I18n::Menu::Selection::vcsCheckout))->closesMenu());
-
-#else
-
-    const auto syncState = vcs.getRevisionSyncState(revision);
-    const bool needsPush = syncState == VCS::Revision::NoSync;
-    const bool needsPull = syncState == VCS::Revision::ShallowCopy;
-
-    menu.add(MenuItem::item(Icons::versionControl, CommandIDs::VersionControlCheckout,
-        TRANS(I18n::Menu::Selection::vcsCheckout))->disabledIf(needsPull)->closesMenu());
-
-    menu.add(MenuItem::item(Icons::push, CommandIDs::VersionControlPushSelected,
-        TRANS(I18n::Menu::Selection::vcsPush))->disabledIf(!needsPush)->closesMenu());
-
-    menu.add(MenuItem::item(Icons::pull, CommandIDs::VersionControlPullSelected,
-        TRANS(I18n::Menu::Selection::vcsPull))->disabledIf(!needsPull)->closesMenu());
-
-#endif
 
     return menu;
 }
@@ -54,12 +35,7 @@ VersionControlHistorySelectionMenu::VersionControlHistorySelectionMenu(VCS::Revi
     revision(revision),
     vcs(vcs)
 {
-    UniquePointer<Component> content;
-    if (!revision->isShallowCopy())
-    {
-        content = make<RevisionTooltipComponent>(revision);
-    }
-
+    auto content = make<RevisionTooltipComponent>(revision);
     this->updateContent(createDefaultPanel(revision, vcs),
         MenuPanel::SlideRight, true, content.release());
 }

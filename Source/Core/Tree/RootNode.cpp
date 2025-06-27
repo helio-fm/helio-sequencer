@@ -108,30 +108,6 @@ ProjectNode *RootNode::openProject(const File &file)
     return nullptr;
 }
 
-#if !NO_NETWORK
-
-ProjectNode *RootNode::checkoutProject(const String &id, const String &name)
-{
-    DBG("Cloning project: " + name);
-    if (id.isNotEmpty())
-    {
-        // construct a stub project with no first revision and no tracks,
-        // only the essential stuff it will need anyway:
-        auto project = make<ProjectNode>(name, id);
-        this->addChildNode(project.get(), 1);
-        auto vcs = make<VersionControlNode>();
-        project->addChildNode(vcs.get());
-        project->addChildNode(new PatternEditorNode());
-        vcs->cloneProject();
-        vcs.release();
-        return project.release();
-    }
-
-    return nullptr;
-}
-
-#endif
-
 static ProjectNode *createProjectContentFromTemplate(ProjectNode *project, const String &templateName)
 {
     int numBytes = 0;

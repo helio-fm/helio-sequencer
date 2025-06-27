@@ -242,12 +242,10 @@ namespace Serialization
         static const Identifier activeHotkeyScheme = "activeHotkeyScheme";
         static const Identifier activeUiFlags = "activeUiFlags";
         static const Identifier currentLocale = "currentLocale";
-        static const Identifier checkForUpdates = "checkForUpdates";
         static const Identifier maxSavedUndoActions = "maxSavedUndoActions";
         static const Identifier windowBounds = "windowBounds";
         static const Identifier lastShownPageId = "lastShownPageId";
         static const Identifier lastUsedScale = "lastUsedScale";
-        static const Identifier lastUpdatesInfo = "lastUpdatesInfo";
         static const Identifier lastUsedFont = "lastUsedFont";
         static const Identifier lastSearch = "lastSearch";
     } // namespace Config
@@ -417,44 +415,18 @@ namespace Serialization
 
     namespace User
     {
-        namespace Profile
-        {
-            static const Identifier userProfile = "userProfile";
-            static const Identifier url = "url";
-            static const Identifier name = "name";
-            static const Identifier login = "login";
-            static const Identifier thumbnail = "thumbnail";
-        } // namespace Profile
+        static const Identifier profile = "userProfile";
 
         namespace RecentProjects
         {
             static const Identifier recentProject = "recentProject";
             static const Identifier localProjectInfo = "localProjectInfo";
-            static const Identifier remoteProjectInfo = "remoteProjectInfo";
             static const Identifier path = "path";
             static const Identifier file = "file";
             static const Identifier title = "title";
             static const Identifier projectId = "id";
             static const Identifier updatedAt = "updatedAt";
         } // namespace RecentProjects
-
-        namespace Sessions
-        {
-            static const Identifier session = "session";
-            static const Identifier deviceId = "deviceId";
-            static const Identifier platformId = "platformId";
-            static const Identifier createdAt = "createdAt";
-            static const Identifier updatedAt = "updatedAt";
-        } // namespace Sessions
-
-        namespace Configurations
-        {
-            static const Identifier resource = "resource";
-            static const Identifier type = "type";
-            static const Identifier name = "name";
-            static const Identifier hash = "hash";
-            static const Identifier updatedAt = "updatedAt";
-        } // namespace Configurations
     } // namespace User
 
     namespace VCS
@@ -464,12 +436,6 @@ namespace Serialization
         static const Identifier quickStash = "quickStash";
         static const Identifier quickStashId = "quickStashId";
         static const Identifier diffFormatVersion = "diffFormatVersion";
-
-        static const Identifier remoteCache = "remoteCache";
-        static const Identifier remoteCacheSyncTime = "lastSync";
-        static const Identifier remoteRevision = "revision";
-        static const Identifier remoteRevisionId = "id";
-        static const Identifier remoteRevisionTimeStamp = "ts";
 
         static const Identifier revision = "revision";
         static const Identifier head = "head";
@@ -555,111 +521,6 @@ namespace Serialization
             static const Identifier keySignaturesChanged = "keySignaturesChanged";
         }
     } // namespace VCS
-
-#if !NO_NETWORK
-    namespace Api
-    {
-        // Config keys
-        static const Identifier sessionToken = "sessionToken";
-        static const Identifier sessionUserProfile = "sessionUserProfile";
-        static const Identifier updatesInfo = "updatesInfo";
-        
-        // JSON keys
-        namespace V1
-        {
-            static const Identifier status = "status";
-            static const Identifier message = "message";
-
-            static const Identifier user = "user";
-            static const Identifier token = "token";
-            static const Identifier session = "session";
-            static const Identifier deviceId = "deviceId";
-            static const Identifier platformId = "platformId";
-
-            namespace Identity
-            {
-                static const Identifier name = "name";
-                static const Identifier login = "login";
-                static const Identifier profileUrl = "profileUrl";
-                static const Identifier avatarUrl = "avatar";
-                static const Identifier password = "password";
-                static const Identifier passwordConfirmation = "passwordConfirmation";
-            }
-
-            namespace AuthSession
-            {
-                static const Identifier id = "id";
-                static const Identifier session = "session";
-                static const Identifier secret = "secretKey";
-                static const Identifier provider = "provider";
-                static const Identifier appName = "appName";
-                static const Identifier appVersion = "appVersion";
-                static const Identifier appPlatform = "appPlatform";
-                static const Identifier deviceId = "deviceId";
-                static const Identifier token = "token";
-            }
-
-            namespace Resources
-            {
-                static const Identifier resource = "resource";
-                static const Identifier resources = "resources";
-                static const Identifier type = "type";
-                static const Identifier hash = "hash";
-                static const Identifier name = "name";
-                static const Identifier data = "data";
-                static const Identifier updatedAt = "updatedAt";
-            }
-
-            namespace Versions
-            {
-                static const Identifier versions = "versions";
-                static const Identifier branch = "branch";
-                static const Identifier architecture = "architecture";
-                static const Identifier platformType = "platformType";
-                static const Identifier buildType = "buildType";
-                static const Identifier version = "version";
-                static const Identifier link = "link";
-            }
-
-            namespace Sessions
-            {
-                static const Identifier sessions = "sessions";
-                static const Identifier createdAt = "createdAt";
-                static const Identifier updatedAt = "updatedAt";
-                static const Identifier deviceId = "deviceId";
-                static const Identifier platformId = "platformId";
-            }
-
-            namespace Projects
-            {
-                static const Identifier project = "project";
-                static const Identifier projects = "projects";
-                static const Identifier id = "id";
-                static const Identifier title = "title";
-                static const Identifier alias = "alias";
-                static const Identifier head = "head";
-                static const Identifier updatedAt = "updatedAt";
-            }
-
-            namespace Revisions
-            {
-                static const Identifier revision = "revision";
-                static const Identifier revisions = "revisions";
-                static const Identifier id = "id";
-                static const Identifier message = "message";
-                static const Identifier timestamp = "timestamp";
-                static const Identifier parentId = "parentId";
-                static const Identifier data = "data";
-            }
-        } // namespace V1
-    } // namespace Api
-
-    namespace JWT
-    {
-        static const Identifier issuer = "iss";
-        static const Identifier expiry = "exp";
-    } // namespace JWT
-#endif
 
     namespace Undo
     {

@@ -28,7 +28,6 @@ namespace I18n
     {
         static constexpr auto conjunction = constexprHash("common::and");
         static constexpr auto yesterday = constexprHash("common::yesterday");
-        static constexpr auto networkError = constexprHash("common::networkerror");
     }
 
     namespace Defaults
@@ -56,7 +55,6 @@ namespace I18n
         static constexpr auto annotationRenameCancel = constexprHash("dialog::annotation::rename::cancel");
         static constexpr auto annotationRenameCaption = constexprHash("dialog::annotation::rename::caption");
         static constexpr auto annotationRenameProceed = constexprHash("dialog::annotation::rename::proceed");
-        static constexpr auto authGithub = constexprHash("dialog::auth::github");
         static constexpr auto deleteProjectCaption = constexprHash("dialog::deleteproject::caption");
         static constexpr auto deleteProjectConfirmCaption = constexprHash("dialog::deleteproject::confirm::caption");
         static constexpr auto documentExport = constexprHash("dialog::document::export");
@@ -196,8 +194,6 @@ namespace I18n
             static constexpr auto vcsCheckout = constexprHash("menu::selection::vcs::checkout");
             static constexpr auto vcsCommit = constexprHash("menu::selection::vcs::commit");
             static constexpr auto vcsHistory = constexprHash("menu::selection::vcs::history");
-            static constexpr auto vcsPull = constexprHash("menu::selection::vcs::pull");
-            static constexpr auto vcsPush = constexprHash("menu::selection::vcs::push");
             static constexpr auto vcsReset = constexprHash("menu::selection::vcs::reset");
             static constexpr auto vcsSelectAll = constexprHash("menu::selection::vcs::selectall");
             static constexpr auto vcsSelectNone = constexprHash("menu::selection::vcs::selectnone");
@@ -240,7 +236,6 @@ namespace I18n
 
         static constexpr auto vcsCommitAll = constexprHash("menu::vcs::commitall");
         static constexpr auto vcsResetAll = constexprHash("menu::vcs::resetall");
-        static constexpr auto vcsSyncAll = constexprHash("menu::vcs::syncall");
         static constexpr auto workspaceProjectCreate = constexprHash("menu::workspace::project::create");
         static constexpr auto workspaceProjectOpen = constexprHash("menu::workspace::project::open");
     }
@@ -300,7 +295,6 @@ namespace I18n
         static constexpr auto midiNoDevicesFound = constexprHash("settings::midi::nodevices");
         static constexpr auto midiRemap12ToneKeyboard = constexprHash("settings::midi::remap12tone");
         static constexpr auto rendererOpengl = constexprHash("settings::renderer::opengl");
-        static constexpr auto sync = constexprHash("settings::sync");
         static constexpr auto restartRequired = constexprHash("settings::restart");
         static constexpr auto ui = constexprHash("settings::ui");
         static constexpr auto uiFlags = constexprHash("settings::ui::flags");
@@ -313,7 +307,6 @@ namespace I18n
         static constexpr auto mouseWheelVerticalZoomingByDefault = constexprHash("settings::ui::wheel::verticalzoom");
         static constexpr auto uiScaling = constexprHash("settings::ui::scaling");
         static constexpr auto noteNames = constexprHash("settings::ui::notenames");
-        static constexpr auto checkForUpdates = constexprHash("settings:checkupdates");
     }
 
     namespace Tree

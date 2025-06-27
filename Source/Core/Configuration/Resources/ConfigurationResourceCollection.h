@@ -109,12 +109,10 @@ public:
 
     virtual ConfigurationResource::Ptr createResource() const = 0;
 
-    void updateBaseResource(const SerializedData &resource);
     void updateUserResource(const ConfigurationResource::Ptr resource);
 
 protected:
 
-    virtual File getDownloadedResourceFile() const;
     virtual File getUsersResourceFile() const;
     virtual String getBuiltInResourceString() const;
     virtual const ConfigurationResource &getResourceComparator() const;

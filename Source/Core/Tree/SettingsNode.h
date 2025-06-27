@@ -46,10 +46,6 @@ private:
     UniquePointer<Component> themeSettingsWrapper;
     UniquePointer<Component> translationSettings;
     UniquePointer<Component> translationSettingsWrapper;
-    UniquePointer<Component> networkSettings;
-    UniquePointer<Component> networkSettingsWrapper;
-    UniquePointer<Component> syncSettings;
-    UniquePointer<Component> syncSettingsWrapper;
     UniquePointer<Component> settingsPage;
 
 };

@@ -26,7 +26,6 @@
 #include "VersionControlEditor.h"
 #include "Workspace.h"
 #include "MainLayout.h"
-#include "ProjectSyncService.h"
 
 VersionControlNode::VersionControlNode() :
     TreeNode("Versions", Serialization::Core::versionControl)
@@ -201,26 +200,6 @@ UniquePointer<Component> VersionControlNode::createMenu()
 
     return make<VersionControlMenu>(*this->vcs);
 }
-
-#if !NO_NETWORK
-
-//===----------------------------------------------------------------------===//
-// Network
-//===----------------------------------------------------------------------===//
-
-#include "NetworkServices.h"
-
-void VersionControlNode::cloneProject()
-{
-    auto *parentProject = this->findParentOfType<ProjectNode>();
-    if (parentProject != nullptr && this->vcs != nullptr)
-    {
-        App::Network().getProjectSyncService()->
-            cloneProject(this->vcs.get(), parentProject->getId());
-    }
-}
-
-#endif
 
 //===----------------------------------------------------------------------===//
 // Serializable

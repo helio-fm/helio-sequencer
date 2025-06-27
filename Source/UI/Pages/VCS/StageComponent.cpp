@@ -89,11 +89,6 @@ void StageComponent::handleCommandMessage(int commandId)
         this->selectAll(sendNotification);
         this->resetSelected();
         break;
-#if !NO_NETWORK
-    case CommandIDs::VersionControlSyncAll:
-        this->vcs.syncAllRevisions();
-        break;
-#endif
     default:
         break;
     }

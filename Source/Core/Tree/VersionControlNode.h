@@ -47,16 +47,6 @@ public:
     void onNodeAddToTree(bool sendNotifications) override;
     void onNodeRemoveFromTree(bool sendNotifications) override;
 
-#if !NO_NETWORK
-
-    //===------------------------------------------------------------------===//
-    // Network
-    //===------------------------------------------------------------------===//
-
-    void cloneProject();
-
-#endif
-
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//

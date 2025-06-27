@@ -67,7 +67,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
                 inputDialog->onOk = [&project](const String &text)
                 {
                     jassert(text == project.getName());
-                    App::Workspace().unloadProject(project.getId(), true, true);
+                    App::Workspace().unloadProject(project.getId(), true);
                 };
 
                 App::showModalComponent(move(inputDialog));
@@ -121,7 +121,7 @@ void ProjectMenu::showMainMenu(AnimationType animationType)
         closesMenu()->
         withAction([this]()
         {
-            App::Workspace().unloadProject(this->project.getId(), false, false);
+            App::Workspace().unloadProject(this->project.getId(), false);
         }));
 
     menu.add(MenuItem::item(Icons::remove,

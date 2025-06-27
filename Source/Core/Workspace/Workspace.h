@@ -59,7 +59,7 @@ public:
     bool loadRecentProject(RecentProjectInfo::Ptr file);
     Array<ProjectNode *> getLoadedProjects() const;
     bool hasLoadedProject(const RecentProjectInfo::Ptr file) const;
-    void unloadProject(const String &id, bool deleteLocally, bool deleteRemotely);
+    void unloadProject(const String &id, bool deleteFileLocally);
 
     //===------------------------------------------------------------------===//
     // Save/Load

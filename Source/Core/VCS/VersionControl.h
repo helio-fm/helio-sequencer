@@ -27,7 +27,6 @@ class VersionControlEditor;
 #include "Delta.h"
 #include "Revision.h"
 #include "Head.h"
-#include "RemoteCache.h"
 #include "StashesRepository.h"
 
 class VersionControl final :
@@ -57,10 +56,6 @@ public:
     void checkout(const VCS::Revision::Ptr revision);
     void cherryPick(const VCS::Revision::Ptr revision, const Array<Uuid> uuids);
 
-    void replaceHistory(const VCS::Revision::Ptr root);
-    void appendSubtree(const VCS::Revision::Ptr subtree, const String &appendRevisionId);
-    VCS::Revision::Ptr updateShallowRevisionData(const String &id, const SerializedData &data);
-
     bool resetChanges(SparseSet<int> selectedItems);
     void resetAllChanges();
     bool commit(SparseSet<int> selectedItems, const String &message);
@@ -77,23 +72,6 @@ public:
     bool hasQuickStash() const;
     bool quickStashAll();
     bool restoreQuickStash();
-
-#if !NO_NETWORK
-
-    //===------------------------------------------------------------------===//
-    // Network
-    //===------------------------------------------------------------------===//
-
-    void syncAllRevisions();
-    void pushBranch(const VCS::Revision::Ptr leaf);
-    void pullBranch(const VCS::Revision::Ptr leaf);
-    void fetchRevisionsIfNeeded();
-
-    void updateLocalSyncCache(const VCS::Revision::Ptr revision);
-    void updateRemoteSyncCache(const Array<RevisionDto> &revisions);
-    VCS::Revision::SyncState getRevisionSyncState(const VCS::Revision::Ptr revision) const;
-
-#endif
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -116,9 +94,6 @@ protected:
     VCS::Head head;
     VCS::StashesRepository::Ptr stashes;
     VCS::Revision::Ptr rootRevision; // the history tree itself
-#if !NO_NETWORK
-    VCS::RemoteCache remoteCache;
-#endif
 
     static constexpr int diffFormatVersion = 0x0309;
 

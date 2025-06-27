@@ -20,73 +20,24 @@
 #include "DocumentHelpers.h"
 #include "SerializationKeys.h"
 
-#if !NO_NETWORK
-
-RecentProjectInfo::RecentProjectInfo(const ProjectDto &remoteInfo) :
-    projectId(remoteInfo.getId()),
-    local(nullptr),
-    remote(new RemoteInfo())
-{
-    this->updateRemoteInfo(remoteInfo);
-}
-
-
-void RecentProjectInfo::updateRemoteInfo(const ProjectDto &remoteInfo)
-{
-    jassert(this->projectId == remoteInfo.getId());
-    if (this->remote == nullptr)
-    {
-        this->remote = make<RemoteInfo>();
-    }
-
-    this->remote->title = remoteInfo.getTitle();
-    this->remote->alias = remoteInfo.getAlias();
-    this->remote->lastModifiedMs = remoteInfo.getUpdateTime();
-}
-
-#endif
-
 RecentProjectInfo::RecentProjectInfo(const String &localId,
     const String &localTitle, const String &localPath) :
-    projectId(localId),
-    local(new LocalInfo()),
-    remote(nullptr)
+    projectId(localId)
 {
-    this->updateLocalInfo(localId, localTitle, localPath);
+    this->updateLocalInfo(localTitle, localPath);
 }
 
-void RecentProjectInfo::updateLocalInfo(const String &localId,
-    const String &localTitle, const String &localPath)
+void RecentProjectInfo::updateLocalInfo(const String &localTitle, const String &localPath)
 {
-    jassert(this->projectId == localId);
-    if (this->local == nullptr)
-    {
-        this->local = make<LocalInfo>();
-    }
-
     jassert(localPath.isNotEmpty());
-    this->local->title = localTitle;
-    this->local->path = localPath;
-    this->local->lastModifiedMs = Time::currentTimeMillis();
+    this->localInfo.title = localTitle;
+    this->localInfo.path = localPath;
+    this->localInfo.lastModifiedMs = Time::currentTimeMillis();
 }
 
 void RecentProjectInfo::updateLocalTimestampAsNow()
 {
-    jassert(this->local != nullptr);
-    if (this->local != nullptr)
-    {
-        this->local->lastModifiedMs = Time::currentTimeMillis();
-    }
-}
-
-void RecentProjectInfo::resetLocalInfo()
-{
-    this->local = nullptr;
-}
-
-void RecentProjectInfo::resetRemoteInfo()
-{
-    this->remote = nullptr;
+    this->localInfo.lastModifiedMs = Time::currentTimeMillis();
 }
 
 String RecentProjectInfo::getProjectId() const noexcept
@@ -96,72 +47,26 @@ String RecentProjectInfo::getProjectId() const noexcept
 
 File RecentProjectInfo::getLocalFile() const
 {
-    if (this->local != nullptr)
-    {
-        // the file may be missing here, because we store absolute path,
-        // but some platforms, like iOS, change documents folder path on every app run
-        // so we need to check in a the document folder as well:
-        return this->local->path.existsAsFile() ? this->local->path :
-            File(DocumentHelpers::getDocumentSlot(this->local->path.getFileName()));
-    }
-
-    return {};
+    // the file may be missing here, because we store the absolute path,
+    // but some platforms, like iOS, change documents folder path on every app run
+    // so we need to check in a the document folder as well:
+    return this->localInfo.path.existsAsFile() ? this->localInfo.path :
+        File(DocumentHelpers::getDocumentSlot(this->localInfo.path.getFileName()));
 }
 
 String RecentProjectInfo::getTitle() const
 {
-    if (this->local != nullptr)
-    {
-        if (this->remote != nullptr &&
-            this->remote->lastModifiedMs > this->local->lastModifiedMs)
-        {
-            return this->remote->title;
-        }
-
-        return this->local->title;
-    }
-    else if (this->remote != nullptr)
-    {
-        return this->remote->title;
-    }
-
-    return {};
+    return this->localInfo.title;
 }
 
 Time RecentProjectInfo::getUpdatedAt() const noexcept
 {
-    if (this->local != nullptr && this->remote != nullptr)
-    {
-        return Time(jmax(this->remote->lastModifiedMs, this->local->lastModifiedMs));
-    }
-    else if (this->local != nullptr)
-    {
-        return Time(this->local->lastModifiedMs);
-    }
-    else if (this->remote != nullptr)
-    {
-        return Time(this->remote->lastModifiedMs);
-    }
-
-    return {};
-}
-
-bool RecentProjectInfo::hasLocalCopy() const noexcept
-{
-    return this->local != nullptr;
-}
-
-bool RecentProjectInfo::hasRemoteCopy() const noexcept
-{
-    return this->remote != nullptr;
+    return Time(this->localInfo.lastModifiedMs);
 }
 
 bool RecentProjectInfo::isValid() const
 {
-    const bool isFoundSomewhere = this->hasRemoteCopy() ||
-        (this->hasLocalCopy() && this->getLocalFile().existsAsFile());
-
-    return this->projectId.isNotEmpty() && isFoundSomewhere;
+    return this->projectId.isNotEmpty() && this->getLocalFile().existsAsFile();
 }
 
 int RecentProjectInfo::compareElements(RecentProjectInfo *first, RecentProjectInfo *second)
@@ -184,23 +89,11 @@ SerializedData RecentProjectInfo::serialize() const
 
     root.setProperty(RecentProjects::projectId, this->projectId);
 
-    if (this->local != nullptr)
-    {
-        SerializedData localRoot(RecentProjects::localProjectInfo);
-        localRoot.setProperty(RecentProjects::path, this->local->path.getFullPathName());
-        localRoot.setProperty(RecentProjects::title, this->local->title);
-        localRoot.setProperty(RecentProjects::updatedAt, this->local->lastModifiedMs);
-        root.appendChild(localRoot);
-    }
-
-    if (this->remote != nullptr)
-    {
-        SerializedData remoteRoot(RecentProjects::remoteProjectInfo);
-        remoteRoot.setProperty(RecentProjects::path, this->remote->alias);
-        remoteRoot.setProperty(RecentProjects::title, this->remote->title);
-        remoteRoot.setProperty(RecentProjects::updatedAt, this->remote->lastModifiedMs);
-        root.appendChild(remoteRoot);
-    }
+    SerializedData localRoot(RecentProjects::localProjectInfo);
+    localRoot.setProperty(RecentProjects::path, this->localInfo.path.getFullPathName());
+    localRoot.setProperty(RecentProjects::title, this->localInfo.title);
+    localRoot.setProperty(RecentProjects::updatedAt, this->localInfo.lastModifiedMs);
+    root.appendChild(localRoot);
 
     return root;
 }
@@ -220,24 +113,15 @@ void RecentProjectInfo::deserialize(const SerializedData &data)
     const auto localRoot(root.getChildWithName(RecentProjects::localProjectInfo));
     if (localRoot.isValid())
     {
-        this->local = make<LocalInfo>();
-        this->local->path = localRoot.getProperty(RecentProjects::path);
-        this->local->title = localRoot.getProperty(RecentProjects::title);
-        this->local->lastModifiedMs = localRoot.getProperty(RecentProjects::updatedAt);
-    }
-
-    const auto remoteRoot(root.getChildWithName(RecentProjects::remoteProjectInfo));
-    if (remoteRoot.isValid())
-    {
-        this->remote = make<RemoteInfo>();
-        this->remote->alias = remoteRoot.getProperty(RecentProjects::path);
-        this->remote->title = remoteRoot.getProperty(RecentProjects::title);
-        this->remote->lastModifiedMs = remoteRoot.getProperty(RecentProjects::updatedAt);
+        this->localInfo.path = localRoot.getProperty(RecentProjects::path);
+        this->localInfo.title = localRoot.getProperty(RecentProjects::title);
+        this->localInfo.lastModifiedMs = localRoot.getProperty(RecentProjects::updatedAt);
     }
 }
 
 void RecentProjectInfo::reset()
 {
-    this->local.reset();
-    this->remote.reset();
+    this->localInfo.path = {};
+    this->localInfo.title = {};
+    this->localInfo.lastModifiedMs = 0;
 }

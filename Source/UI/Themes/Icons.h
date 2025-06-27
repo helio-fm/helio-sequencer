@@ -139,10 +139,6 @@ public:
         paint,
         tag,
 
-        remote,
-        local,
-        github,
-
         commit,
         reset,
         push,

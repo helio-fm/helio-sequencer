@@ -1,10 +1,5 @@
 /*
-
-    IMPORTANT! This file is auto-generated each time you save your
-    project - if you alter its contents, your changes may be overwritten!
-
-    Unity build a.k.a. amalgamated build.
-
+    Unity build a.k.a. amalgamation build a.k.a. abomination build
 */
 
 #include "../../Source/Core/Audio/BuiltIn/SoundFont/SoundFont2Sound.cpp"
@@ -71,16 +66,6 @@
 #include "../../Source/Core/Midi/Sequences/TimeSignaturesSequence.cpp"
 #include "../../Source/Core/Midi/Sequences/TimeSignaturesAggregator.cpp"
 #include "../../Source/Core/Midi/MidiTrack.cpp"
-#include "../../Source/Core/Network/Requests/BackendRequest.cpp"
-#include "../../Source/Core/Network/Requests/UserConfigSyncThread.cpp"
-#include "../../Source/Core/Network/Requests/ProjectCloneThread.cpp"
-#include "../../Source/Core/Network/Requests/ProjectDeleteThread.cpp"
-#include "../../Source/Core/Network/Requests/RevisionsSyncHelpers.cpp"
-#include "../../Source/Core/Network/Requests/RevisionsSyncThread.cpp"
-#include "../../Source/Core/Network/Services/ProjectSyncService.cpp"
-#include "../../Source/Core/Network/Services/ResourceSyncService.cpp"
-#include "../../Source/Core/Network/Services/SessionService.cpp"
-#include "../../Source/Core/Network/NetworkServices.cpp"
 #include "../../Source/Core/Serialization/Autosaver.cpp"
 #include "../../Source/Core/Serialization/Document.cpp"
 #include "../../Source/Core/Serialization/DocumentHelpers.cpp"
@@ -123,7 +108,6 @@
 #include "../../Source/Core/VCS/Delta.cpp"
 #include "../../Source/Core/VCS/Diff.cpp"
 #include "../../Source/Core/VCS/Head.cpp"
-#include "../../Source/Core/VCS/RemoteCache.cpp"
 #include "../../Source/Core/VCS/Revision.cpp"
 #include "../../Source/Core/VCS/RevisionItem.cpp"
 #include "../../Source/Core/VCS/Snapshot.cpp"
@@ -131,8 +115,6 @@
 #include "../../Source/Core/VCS/VersionControl.cpp"
 #include "../../Source/Core/Workspace/NavigationHistory.cpp"
 #include "../../Source/Core/Workspace/RecentProjectInfo.cpp"
-#include "../../Source/Core/Workspace/SyncedConfigurationInfo.cpp"
-#include "../../Source/Core/Workspace/UserSessionInfo.cpp"
 #include "../../Source/Core/Workspace/UserProfile.cpp"
 #include "../../Source/Core/Workspace/Workspace.cpp"
 #include "../../Source/Core/App.cpp"
@@ -198,8 +180,6 @@
 #include "../../Source/UI/Pages/Settings/ComponentsList.cpp"
 #include "../../Source/UI/Pages/Settings/SettingsFrameWrapper.cpp"
 #include "../../Source/UI/Pages/Settings/SettingsPage.cpp"
-#include "../../Source/UI/Pages/Settings/SyncSettings.cpp"
-#include "../../Source/UI/Pages/Settings/SyncSettingsItem.cpp"
 #include "../../Source/UI/Pages/Settings/ThemeSettings.cpp"
 #include "../../Source/UI/Pages/Settings/ThemeSettingsItem.cpp"
 #include "../../Source/UI/Pages/Settings/TranslationSettings.cpp"

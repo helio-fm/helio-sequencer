@@ -18,7 +18,6 @@
 #pragma once
 
 class Config;
-class Network;
 class Workspace;
 class MainWindow;
 class MainLayout;
@@ -56,7 +55,6 @@ public:
     //===------------------------------------------------------------------===//
 
     static class Config &Config() noexcept;
-    static class Network &Network() noexcept;
     static class MainLayout &Layout() noexcept;
     static class Workspace &Workspace() noexcept;
     static class Clipboard &Clipboard() noexcept;
@@ -118,7 +116,6 @@ private:
     UniquePointer<class HelioTheme> theme;
     UniquePointer<class Workspace> workspace;
     UniquePointer<class MainWindow> window;
-    UniquePointer<class Network> network;
 
 private:
 

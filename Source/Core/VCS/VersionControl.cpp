@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "VersionControl.h"
 #include "VersionControlEditor.h"
-#include "ProjectSyncService.h"
 
 VersionControl::VersionControl(VCS::TrackedItemsSource &parent) :
     parent(parent),
@@ -81,41 +80,6 @@ void VersionControl::cherryPick(const VCS::Revision::Ptr revision, const Array<U
         this->head.moveTo(headRevision);
         this->sendChangeMessage();
     }
-}
-
-void VersionControl::replaceHistory(const VCS::Revision::Ptr root)
-{
-    // if the parent revision id is empty, this is the root revision
-    // which means we're cloning the project and replacing stub root with valid one:
-    this->rootRevision = root;
-    this->head.moveTo(this->rootRevision);
-    this->sendChangeMessage();
-}
-
-void VersionControl::appendSubtree(const VCS::Revision::Ptr subtree, const String &appendRevisionId)
-{
-    jassert(appendRevisionId.isNotEmpty());
-    if (auto targetRevision = this->getRevisionById(this->rootRevision, appendRevisionId))
-    {
-        targetRevision->addChild(subtree);
-        this->sendChangeMessage();
-    }
-}
-
-VCS::Revision::Ptr VersionControl::updateShallowRevisionData(const String &id, const SerializedData &data)
-{
-    if (auto revision = this->getRevisionById(this->rootRevision, id))
-    {
-        if (revision->isShallowCopy())
-        {
-            revision->deserializeDeltas(data);
-            this->sendChangeMessage();
-        }
-
-        return revision;
-    }
-
-    return nullptr;
 }
 
 void VersionControl::quickAmendItem(VCS::TrackedItem *targetItem)
@@ -304,95 +268,6 @@ void VersionControl::changeListenerCallback(ChangeBroadcaster *source)
     this->getHead().setDiffOutdated(true); // the project has changed
 }
 
-#if !NO_NETWORK
-
-//===----------------------------------------------------------------------===//
-// Network
-//===----------------------------------------------------------------------===//
-
-#include "NetworkServices.h"
-
-void VersionControl::syncAllRevisions()
-{
-    App::Network().getProjectSyncService()->syncRevisions(this,
-        this->parent.getVCSId(), this->parent.getVCSName(), {}, {});
-}
-
-void VersionControl::fetchRevisionsIfNeeded()
-{
-    if (this->remoteCache.isOutdated())
-    {
-        DBG("Remote revisions cache is outdated, fetching the latest project info");
-        App::Network().getProjectSyncService()->fetchRevisionsInfo(this,
-            this->parent.getVCSId(), this->parent.getVCSName());
-    }
-}
-
-void VersionControl::pushBranch(const VCS::Revision::Ptr leaf)
-{
-    // we need to sync the whole branch, i.e. all parents of that revision:
-    Array<String> subtreeToPush = { leaf->getUuid() };
-
-    WeakReference<VCS::Revision> it = leaf.get();
-    while (it->getParent() != nullptr)
-    {
-        it = it->getParent();
-        subtreeToPush.add(it->getUuid());
-    }
-
-    App::Network().getProjectSyncService()->syncRevisions(this,
-        this->parent.getVCSId(), this->parent.getVCSName(),
-        {}, subtreeToPush);
-}
-
-void VersionControl::pullBranch(const VCS::Revision::Ptr leaf)
-{
-    // we need to sync the whole branch, i.e. all parents of that revision:
-    Array<String> subtreeToPull = { leaf->getUuid() };
-
-    WeakReference<VCS::Revision> it = leaf.get();
-    while (it->getParent() != nullptr)
-    {
-        it = it->getParent();
-        if (it->isShallowCopy())
-        {
-            subtreeToPull.add(it->getUuid());
-        }
-    }
-
-    App::Network().getProjectSyncService()->syncRevisions(this,
-        this->parent.getVCSId(), this->parent.getVCSName(),
-        subtreeToPull, {});
-}
-
-void VersionControl::updateLocalSyncCache(const VCS::Revision::Ptr revision)
-{
-    this->remoteCache.updateForLocalRevision(revision);
-    this->sendChangeMessage();
-}
-
-void VersionControl::updateRemoteSyncCache(const Array<RevisionDto> &revisions)
-{
-    this->remoteCache.updateForRemoteRevisions(revisions);
-    this->sendChangeMessage();
-}
-
-VCS::Revision::SyncState VersionControl::getRevisionSyncState(const VCS::Revision::Ptr revision) const
-{
-    if (!revision->isShallowCopy() && this->remoteCache.hasRevisionTracked(revision))
-    {
-        return VCS::Revision::FullSync;
-    }
-    else if (revision->isShallowCopy())
-    {
-        return VCS::Revision::ShallowCopy;
-    }
-
-    return VCS::Revision::NoSync;
-}
-
-#endif
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -407,10 +282,6 @@ SerializedData VersionControl::serialize() const
     tree.appendChild(this->rootRevision->serialize());
     tree.appendChild(this->stashes->serialize());
     tree.appendChild(this->head.serialize());
-
-#if !NO_NETWORK
-    tree.appendChild(this->remoteCache.serialize());
-#endif
 
     return tree;
 }
@@ -428,10 +299,6 @@ void VersionControl::deserialize(const SerializedData &data)
 
     this->rootRevision->deserialize(root);
     this->stashes->deserialize(root);
-
-#if !NO_NETWORK
-    this->remoteCache.deserialize(root);
-#endif
 
     {
 #if DEBUG
@@ -475,9 +342,6 @@ void VersionControl::reset()
     this->rootRevision->reset();
     this->head.reset();
     this->stashes->reset();
-#if !NO_NETWORK
-    this->remoteCache.reset();
-#endif
 }
 
 //===----------------------------------------------------------------------===//
