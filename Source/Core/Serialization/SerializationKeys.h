@@ -244,6 +244,7 @@ namespace Serialization
         static const Identifier currentLocale = "currentLocale";
         static const Identifier maxSavedUndoActions = "maxSavedUndoActions";
         static const Identifier windowBounds = "windowBounds";
+        static const Identifier windowIsMaximised = "windowIsMaximised";
         static const Identifier lastShownPageId = "lastShownPageId";
         static const Identifier lastUsedScale = "lastUsedScale";
         static const Identifier lastUsedFont = "lastUsedFont";

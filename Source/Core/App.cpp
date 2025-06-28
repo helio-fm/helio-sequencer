@@ -49,15 +49,12 @@ public:
 
 #if PLATFORM_DESKTOP
 
-        constexpr auto minWidth = 1024; // 568, 320 for small phone size test
-        constexpr auto minHeight= 650;
-
-        this->setResizeLimits(minWidth, minHeight, 8192, 8192);
+        this->setDropShadowEnabled(false);
+        this->setUsingNativeTitleBar(useNativeTitleBar);
 
         const bool hasResizableCorner = !useNativeTitleBar;
         this->setResizable(true, hasResizableCorner);
-        this->setUsingNativeTitleBar(useNativeTitleBar);
-        this->setDropShadowEnabled(false);
+
         if (this->resizableCorner != nullptr)
         {
             this->resizableCorner->setRepaintsOnMouseActivity(false);
@@ -74,9 +71,15 @@ public:
         const auto windowBounds =
             App::Config().getWindowBounds().orFallback(defaultBounds);
 
+        // 568, 320 for small phone size test
+        constexpr auto minWidth = 1024;
+        constexpr auto minHeight= 650;
+
         this->setBounds(windowBounds.withSize(
             jmax(windowBounds.getWidth(), minWidth),
             jmax(windowBounds.getHeight(), minHeight)));
+
+        this->setResizeLimits(minWidth, minHeight, 8192, 8192);
 
 #endif
 
@@ -92,6 +95,13 @@ public:
         this->recreateLayoutComponent();
         this->setVisible(true);
 
+#if PLATFORM_DESKTOP
+        if (App::Config().isWindowMaximised())
+        {
+            this->setFullScreen(true);
+        }
+#endif
+
         if (enableOpenGl)
         {
             this->attachOpenGLContext();
@@ -105,11 +115,28 @@ public:
     ~MainWindow() override
     {
 #if PLATFORM_DESKTOP
-        App::Config().setWindowBounds(this->getBounds());
+        if (!this->isFullScreen())
+        {
+            App::Config().setWindowBounds(this->getBounds());
+        }
+
+        App::Config().setWindowMaximised(this->isFullScreen());
 #endif
 
         this->detachOpenGLContextIfAny();
         this->clearContentComponent();
+    }
+
+    void moved() override
+    {
+        DocumentWindow::moved();
+
+#if PLATFORM_DESKTOP
+        if (this->isVisible() && this->isOnDesktop() && !this->isFullScreen())
+        {
+            App::Config().setWindowBounds(this->getBounds());
+        }
+#endif
     }
 
     void resized() override
@@ -120,6 +147,13 @@ public:
         {
             this->header->setBounds(0, 1, this->getWidth(), this->header->getHeight());
         }
+
+#if PLATFORM_DESKTOP
+        if (this->isVisible() && this->isOnDesktop() && !this->isFullScreen())
+        {
+            App::Config().setWindowBounds(this->getBounds());
+        }
+#endif
     }
 
     void paint(Graphics &g) override

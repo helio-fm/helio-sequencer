@@ -53,6 +53,8 @@ public:
 
     void setWindowBounds(const Rectangle<int> &bounds);
     Optional<Rectangle<int>> getWindowBounds() const noexcept;
+    void setWindowMaximised(bool isMaximised);
+    bool isWindowMaximised() const noexcept;
 
     // resource collections
 

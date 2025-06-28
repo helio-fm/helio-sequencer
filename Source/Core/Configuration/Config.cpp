@@ -258,6 +258,16 @@ Optional<Rectangle<int>> Config::getWindowBounds() const noexcept
         Rectangle<int>::fromString(boundsString);
 }
 
+void Config::setWindowMaximised(bool isMaximised)
+{
+    this->setProperty(Serialization::Config::windowIsMaximised, isMaximised);
+}
+
+bool Config::isWindowMaximised() const noexcept
+{
+    return this->getProperty(Serialization::Config::windowIsMaximised, false);
+}
+
 //===----------------------------------------------------------------------===//
 // Resource collections
 //===----------------------------------------------------------------------===//
