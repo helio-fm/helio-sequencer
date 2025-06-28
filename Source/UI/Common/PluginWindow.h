@@ -33,7 +33,7 @@ public:
 
 private:
 
-    PluginWindow(Component *uiComp, AudioProcessorGraph::Node::Ptr owner);
+    PluginWindow(AudioProcessorGraph::Node::Ptr owner);
     static PluginWindow *getWindowFor(AudioProcessorGraph::Node::Ptr node);
 
     float getDesktopScaleFactor() const override { return 1.f; }

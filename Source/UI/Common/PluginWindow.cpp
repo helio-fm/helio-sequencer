@@ -23,20 +23,44 @@
 #include "InstrumentNode.h"
 #include "AudioCore.h"
 
+static AudioProcessorEditor *createProcessorEditor(AudioProcessor &processor)
+{
+    if (processor.hasEditor())
+    {
+        if (auto *ui = processor.createEditorIfNeeded())
+        {
+            return ui;
+        }
+    }
+    
+    if (!processor.getParameters().isEmpty())
+    {
+        return new GenericAudioProcessorEditor(processor);
+    }
+
+    jassertfalse;
+    return nullptr;
+}
+
 static OwnedArray<PluginWindow> activePluginWindows;
 
-PluginWindow::PluginWindow(Component *uiComponent,
-    AudioProcessorGraph::Node::Ptr owner) : 
-    DocumentWindow(uiComponent->getName(), Colours::darkgrey, DocumentWindow::closeButton),
+PluginWindow::PluginWindow(AudioProcessorGraph::Node::Ptr owner) : 
+    DocumentWindow(owner->getProcessor()->getName(), Colours::darkgrey, DocumentWindow::closeButton),
     owner(owner)
 {
     this->setSize(640, 480);
-    this->setContentOwned(uiComponent, true);
+    this->setUsingNativeTitleBar(true);
+
+    jassert(owner->getProcessor() != nullptr);
+    if (auto *editor = createProcessorEditor(*owner->getProcessor()))
+    {
+        this->setContentOwned(editor, true);
+        this->setResizable(editor->isResizable(), false);
+    }
+
     this->setTopLeftPosition(100 + Random::getSystemRandom().nextInt(500),
                              100 + Random::getSystemRandom().nextInt(500));
-    
-    this->setUsingNativeTitleBar(true);
-    this->setResizable(true, false);
+
     this->setVisible(true);
 
     activePluginWindows.add(this);
@@ -50,7 +74,7 @@ PluginWindow::~PluginWindow()
 
 void PluginWindow::closeButtonPressed()
 {
-    delete this;
+    UniquePointer<PluginWindow> deleter(this);
 }
 
 void PluginWindow::closeCurrentlyOpenWindowsFor(const AudioProcessorGraph::NodeID nodeId)
@@ -67,10 +91,7 @@ void PluginWindow::closeCurrentlyOpenWindowsFor(const AudioProcessorGraph::NodeI
 
 void PluginWindow::closeAllCurrentlyOpenWindows()
 {
-    for (int i = activePluginWindows.size(); --i >= 0;)
-    {
-        delete activePluginWindows.getUnchecked(i);
-    }
+    activePluginWindows.clear();
 }
 
 PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node)
@@ -87,30 +108,7 @@ PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node)
     if (auto *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor()))
     {
         scopedDpiDisabler = Instrument::makeDPIAwarenessDisabler(plugin->getPluginDescription());
-    }
-    
-    AudioProcessorEditor *ui = nullptr;
-
-    if (node->getProcessor()->hasEditor())
-    {
-        ui = node->getProcessor()->createEditorIfNeeded();
-    }
-
-    if (ui == nullptr && !node->getProcessor()->getParameters().isEmpty())
-    {
-        ui = new GenericAudioProcessorEditor(*node->getProcessor());
-    }
-
-    if (ui != nullptr)
-    {
-        auto *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor());
-        
-        if (plugin != nullptr)
-        {
-            ui->setName(plugin->getName());
-        }
-        
-        return new PluginWindow(ui, node);
+        return new PluginWindow(node);
     }
     
     return nullptr;
