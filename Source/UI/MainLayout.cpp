@@ -486,7 +486,7 @@ static ProjectNode *findParentProjectOfSelectedNode()
     return nullptr;
 }
 
-static void emitCommandPalette()
+static void emitCommandPalette(const String &defaultText = {})
 {
     if (auto *project = findParentProjectOfSelectedNode())
     {
@@ -501,7 +501,7 @@ static void emitCommandPalette()
 
         // activeRoll is ok to be null
         // (project is too, but there'll be no useful content shown):
-        App::showModalComponent(make<CommandPalette>(project, activeRoll));
+        App::showModalComponent(make<CommandPalette>(project, activeRoll, defaultText));
     }
 }
 
@@ -549,8 +549,7 @@ void MainLayout::handleCommandMessage(int commandId)
     case CommandIDs::CommandPaletteWithMode:
     {
         const auto modeKey = this->hotkeyScheme->getLastKeyPress().getTextCharacter();
-        App::Config().setProperty(Serialization::Config::lastSearch, String::charToString(modeKey));
-        emitCommandPalette();
+        emitCommandPalette(String::charToString(modeKey));
         break;
     }
     default:

@@ -340,9 +340,6 @@
     <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Serialization\Autosaver.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Serialization\Document.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -739,9 +736,6 @@
     <ClCompile Include="..\..\Source\UI\Popups\PopupButton.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\PopupCustomButton.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\ProgressTooltip.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -812,9 +806,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\DummyClipComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRoll.cpp">
@@ -3282,7 +3273,6 @@
     <ClInclude Include="..\..\Source\UI\Popups\ModalCallout.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\PopupButton.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\PopupButtonOwner.h"/>
-    <ClInclude Include="..\..\Source\UI\Popups\PopupCustomButton.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\PopupMenuComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\CenteredTooltipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\FailTooltip.h"/>
@@ -3322,7 +3312,6 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\AutomationStepsClipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\PianoClipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\DummyClipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRoll.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\HighlightingScheme.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteComponent.h"/>
@@ -3359,7 +3348,6 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\SelectionComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\SequencerLayout.h"/>
     <ClInclude Include="..\..\Source\UI\Themes\ComponentFader.h"/>
-    <ClInclude Include="..\..\Source\UI\Themes\DialogBackground.h"/>
     <ClInclude Include="..\..\Source\UI\Themes\HelioTheme.h"/>
     <ClInclude Include="..\..\Source\UI\Themes\Icons.h"/>
     <ClInclude Include="..\..\Source\UI\Themes\FramePanel.h"/>

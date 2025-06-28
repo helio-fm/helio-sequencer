@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class DialogBase : public Component
 {
 public:
@@ -25,7 +27,6 @@ public:
     ~DialogBase() override;
 
     void paint(Graphics &g) override;
-    void parentHierarchyChanged() override;
     void visibilityChanged() override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
@@ -93,10 +94,11 @@ protected:
 private:
 
     void fadeOut();
-    SafePointer<Component> background;
 
     ComponentDragger dragger;
     UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
+
+    const Colour headerColour = findDefaultColour(ColourIDs::Dialog::header);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DialogBase)
 };

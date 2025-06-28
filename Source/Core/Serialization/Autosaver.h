@@ -17,23 +17,40 @@
 
 #pragma once
 
-class DocumentOwner;
+#include "DocumentOwner.h"
 
-class Autosaver final :
-    private ChangeListener,
-    private Timer
+class Autosaver final : private ChangeListener, private Timer
 {
 public:
 
-    explicit Autosaver(DocumentOwner &targetDocumentOwner, int waitDelayMs = 30000);
+    explicit Autosaver(DocumentOwner &documentOwner, int waitDelayMs = 30000) :
+        documentOwner(documentOwner),
+        delay(waitDelayMs)
+    {
+        this->documentOwner.addChangeListener(this);
+    }
 
-    ~Autosaver() override;
+    ~Autosaver() override
+    {
+        this->documentOwner.removeChangeListener(this);
+    }
 
 private:
 
-    void changeListenerCallback(ChangeBroadcaster *source) override;
+    void changeListenerCallback(ChangeBroadcaster *source) override
+    {
+        // add some randomness to the delay, so that 
+        // several open projects are not saved at once:
+        static Random r;
+        this->startTimer(this->delay + r.nextInt(1000));
+    }
 
-    void timerCallback() override;
+    void timerCallback() override
+    {
+        this->stopTimer();
+        this->documentOwner.getDocument()->save();
+    }
+
 
     DocumentOwner &documentOwner;
 

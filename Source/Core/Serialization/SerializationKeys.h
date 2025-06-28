@@ -247,7 +247,6 @@ namespace Serialization
         static const Identifier lastShownPageId = "lastShownPageId";
         static const Identifier lastUsedScale = "lastUsedScale";
         static const Identifier lastUsedFont = "lastUsedFont";
-        static const Identifier lastSearch = "lastSearch";
     } // namespace Config
 
     // Available types of dynamically fetched resources/configs

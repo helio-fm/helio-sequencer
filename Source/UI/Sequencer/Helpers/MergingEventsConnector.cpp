@@ -186,8 +186,8 @@ void MergingNotesConnector::paint(Graphics &g)
     }
 
     //#if DEBUG
-    //    g.setColour(Colours::blanchedalmond.withAlpha(0.1f));
-    //    g.fillAll();
+    //g.setColour(Colours::blanchedalmond.withAlpha(0.1f));
+    //g.fillAll();
     //#endif
 }
 
@@ -265,7 +265,7 @@ void MergingClipsConnector::paint(Graphics &g)
     g.fillRect(start.x, start.y - brushSize, 1.f, brushSize * 2.f);
 
     //#if DEBUG
-    //    g.setColour(Colours::blanchedalmond.withAlpha(0.1f));
-    //    g.fillAll();
+    //g.setColour(Colours::blanchedalmond.withAlpha(0.1f));
+    //g.fillAll();
     //#endif
 }

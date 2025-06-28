@@ -23,6 +23,7 @@
 #include "RecentProjectRow.h"
 #include "DashboardMenu.h"
 #include "IconComponent.h"
+#include "ColourIDs.h"
 #include "Icons.h"
 
 class RecentProjectRow final : public DraggingListBoxComponent
@@ -41,12 +42,14 @@ public:
 
         this->dateLabel = make<Label>();
         this->addAndMakeVisible(this->dateLabel.get());
-        this->dateLabel->setFont(Font(12.f, Font::plain));
+        this->dateLabel->setFont(Globals::UI::Fonts::XS);
         this->dateLabel->setJustificationType(Justification::centredRight);
         this->dateLabel->setEditable(false, false, false);
 
         this->activenessImage = make<IconComponent>(Icons::project);
         this->addAndMakeVisible(this->activenessImage.get());
+
+        this->setMouseCursor(MouseCursor::PointingHandCursor);
 
         this->setSize(350, 56);
     }
@@ -84,38 +87,46 @@ public:
             findDefaultColour(Label::textColourId).withMultipliedAlpha(totalAlpha));
 
         this->dateLabel->setColour(Label::textColourId,
-            findDefaultColour(Label::textColourId).withMultipliedAlpha(totalAlpha));
+            findDefaultColour(Label::textColourId).withMultipliedAlpha(totalAlpha * 0.5f));
     }
 
     void resized() override
     {
         this->titleLabel->setBounds(0, 5, this->getWidth() - 46, 24);
-        this->dateLabel->setBounds(0, 27, this->getWidth() - 46, 16);
-        this->activenessImage->setBounds(this->getWidth() - 44, (this->getHeight() / 2) - 4 - 18, 36, 36);
+        this->dateLabel->setBounds(0, 25, this->getWidth() - 46, 16);
+        this->activenessImage->setBounds(this->getWidth() - 50, (this->getHeight() / 2) - 4 - 18, 36, 36);
     }
 
 private:
 
-    class RecentFileSelectionComponent final : public Component
+    class SelectionComponent final : public Component
     {
     public:
 
-        RecentFileSelectionComponent()
+        SelectionComponent()
         {
+            this->setAccessible(false);
             this->setInterceptsMouseClicks(false, false);
+            this->setPaintingIsUnclipped(true);
         }
 
         void paint(Graphics &g) override
         {
-            g.setColour(Colours::white.withAlpha(0.025f));
+            g.setColour(this->fillColour);
             g.fillRoundedRectangle (5.f, 1.0f,
                 float(this->getWidth() - 10), float(this->getHeight() - 9), 2.f);
         }
+
+    private:
+
+        const Colour fillColour = findDefaultColour(ColourIDs::ColourButton::highlight);
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SelectionComponent)
     };
 
     Component *createHighlighterComponent() override
     {
-        return new RecentFileSelectionComponent();
+        return new RecentProjectRow::SelectionComponent();
     }
 
     DashboardMenu &parentList;
@@ -128,5 +139,5 @@ private:
     UniquePointer<Label> dateLabel;
     UniquePointer<IconComponent> activenessImage;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RecentProjectRow)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RecentProjectRow)
 };

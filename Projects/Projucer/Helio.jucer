@@ -437,7 +437,6 @@
           <FILE id="BA8BhP" name="MidiTrack.h" compile="0" resource="0" file="../../Source/Core/Midi/MidiTrack.h"/>
         </GROUP>
         <GROUP id="{B690F2B3-8242-3091-4182-FD3492158B1A}" name="Serialization">
-          <FILE id="E2KE99" name="Autosaver.cpp" compile="1" resource="0" file="../../Source/Core/Serialization/Autosaver.cpp"/>
           <FILE id="AqX33p" name="Autosaver.h" compile="0" resource="0" file="../../Source/Core/Serialization/Autosaver.h"/>
           <FILE id="rJb2Ee" name="Document.cpp" compile="1" resource="0" file="../../Source/Core/Serialization/Document.cpp"/>
           <FILE id="uWTVv3" name="Document.h" compile="0" resource="0" file="../../Source/Core/Serialization/Document.h"/>
@@ -1000,10 +999,6 @@
           <FILE id="cL1fC7" name="PopupButton.h" compile="0" resource="0" file="../../Source/UI/Popups/PopupButton.h"/>
           <FILE id="oCbbhn" name="PopupButtonOwner.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/PopupButtonOwner.h"/>
-          <FILE id="bVPuNH" name="PopupCustomButton.cpp" compile="1" resource="0"
-                file="../../Source/UI/Popups/PopupCustomButton.cpp"/>
-          <FILE id="jScuWZ" name="PopupCustomButton.h" compile="0" resource="0"
-                file="../../Source/UI/Popups/PopupCustomButton.h"/>
           <FILE id="Z8rbjQ" name="PopupMenuComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/PopupMenuComponent.h"/>
           <FILE id="yq7LlT" name="CenteredTooltipComponent.h" compile="0" resource="0"
@@ -1136,10 +1131,6 @@
             <FILE id="M5FJQn" name="ClipComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/PatternRoll/ClipComponent.cpp"/>
             <FILE id="mNhiKM" name="ClipComponent.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponent.h"/>
-            <FILE id="S8wdr8" name="DummyClipComponent.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/PatternRoll/DummyClipComponent.cpp"/>
-            <FILE id="CMhzcm" name="DummyClipComponent.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/PatternRoll/DummyClipComponent.h"/>
             <FILE id="Fq4aoW" name="PatternRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.cpp"/>
             <FILE id="MXsdDW" name="PatternRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.h"/>
           </GROUP>
@@ -1272,8 +1263,6 @@
         <GROUP id="{F85E9949-99EB-1D99-18B7-41B94B555349}" name="Themes">
           <FILE id="QUBfY2" name="ComponentFader.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/ComponentFader.h"/>
-          <FILE id="A9QahU" name="DialogBackground.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/DialogBackground.h"/>
           <FILE id="UTkx9C" name="HelioTheme.cpp" compile="1" resource="0" file="../../Source/UI/Themes/HelioTheme.cpp"/>
           <FILE id="OSxFyU" name="HelioTheme.h" compile="0" resource="0" file="../../Source/UI/Themes/HelioTheme.h"/>
           <FILE id="e3IJC6" name="Icons.cpp" compile="1" resource="0" file="../../Source/UI/Themes/Icons.cpp"/>

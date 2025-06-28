@@ -43,15 +43,31 @@ String HotkeyScheme::findHotkeyDescription(int commandId) const noexcept
     return {};
 }
 
+Array<KeyPress> HotkeyScheme::findAllKeyPressesFor(int commandId) const noexcept
+{
+    Array<KeyPress> result;
+
+    for (const auto &key : this->keyPresses)
+    {
+        if (key.second == commandId)
+        {
+            result.add(key.first.keyPress);
+        }
+    }
+
+    return result;
+}
+
 bool HotkeyScheme::dispatchKeyPress(KeyPress keyPress,
-    WeakReference<Component> keyPressReceiver,
-    WeakReference<Component> messageReceiver)
+    WeakReference<Component> keyPressReceivedFrom,
+    WeakReference<Component> componentToSendMessageTo)
 {
     for (const auto &key : this->keyPresses)
     {
         if (key.first.keyPress == keyPress)
         {
-            if (this->sendHotkeyCommand(key.first.componentId, key.second, keyPressReceiver, messageReceiver))
+            if (this->sendHotkeyCommand(key.first.componentId,
+                key.second, keyPressReceivedFrom, componentToSendMessageTo))
             {
                 this->lastKeyPress = keyPress;
                 return true;
@@ -63,8 +79,8 @@ bool HotkeyScheme::dispatchKeyPress(KeyPress keyPress,
 }
 
 bool HotkeyScheme::dispatchKeyStateChange(bool isKeyDown,
-    WeakReference<Component> keyPressReceiver,
-    WeakReference<Component> messageReceiver)
+    WeakReference<Component> keyPressReceivedFrom,
+    WeakReference<Component> componentToSendMessageTo)
 {
     // TODO test multiple key-downs:
 
@@ -73,7 +89,8 @@ bool HotkeyScheme::dispatchKeyStateChange(bool isKeyDown,
         for (const auto &key : this->keyDowns)
         {
             if (key.first.keyPress.isCurrentlyDown() &&
-                this->sendHotkeyCommand(key.first.componentId, key.second, keyPressReceiver, messageReceiver))
+                this->sendHotkeyCommand(key.first.componentId,
+                    key.second, keyPressReceivedFrom, componentToSendMessageTo))
             {
                 this->holdKeys.insert(key.first.keyPress);
                 return true;
@@ -86,7 +103,8 @@ bool HotkeyScheme::dispatchKeyStateChange(bool isKeyDown,
         {
             if (!key.first.keyPress.isCurrentlyDown() && 
                 this->holdKeys.contains(key.first.keyPress) &&
-                this->sendHotkeyCommand(key.first.componentId, key.second, keyPressReceiver, messageReceiver))
+                this->sendHotkeyCommand(key.first.componentId, key.second,
+                    keyPressReceivedFrom, componentToSendMessageTo))
             {
                 this->holdKeys.erase(key.first.keyPress);
                 return true;
@@ -117,31 +135,31 @@ static Component *findMessageReceiver(Component *root, const String &id)
 
 bool HotkeyScheme::sendHotkeyCommand(const String &componentId,
     CommandIDs::Id commandId,
-    WeakReference<Component> keyPressReceiver,
-    WeakReference<Component> messageReceiver)
+    WeakReference<Component> keyPressReceivedFrom,
+    WeakReference<Component> componentToSendMessageTo)
 {
-    if (messageReceiver != this->lastReceiver)
+    if (componentToSendMessageTo != this->lastReceiver)
     {
-        this->lastReceiver = messageReceiver;
-        this->receiverChildren.clear();
+        this->lastReceiver = componentToSendMessageTo;
+        this->receiversById.clear();
     }
 
-    auto receiver = this->receiverChildren[componentId];
+    auto receiver = this->receiversById[componentId];
     if (receiver == nullptr)
     {
-        if (keyPressReceiver != nullptr &&
-            keyPressReceiver->getComponentID() == componentId)
+        if (keyPressReceivedFrom != nullptr &&
+            keyPressReceivedFrom->getComponentID() == componentId)
         {
-            // main layout itself
-            receiver = keyPressReceiver;
+            // the main layout itself
+            receiver = keyPressReceivedFrom;
         }
-        else if (messageReceiver != nullptr)
+        else if (componentToSendMessageTo != nullptr)
         {
-            // child of the showing page
-            receiver = findMessageReceiver(messageReceiver, componentId);
+            // child of the showing page or the page itself
+            receiver = findMessageReceiver(componentToSendMessageTo, componentId);
         }
 
-        this->receiverChildren[componentId] = receiver;
+        this->receiversById[componentId] = receiver;
     }
 
     if (receiver != nullptr)
@@ -176,7 +194,8 @@ static inline HotkeyScheme::Hotkey deserializeHotkey(const SerializedData &e, co
         e.getProperty(Serialization::UI::Hotkeys::hotkeyDescription);
 
     result.keyPress = KeyPress::createFromDescription(keyPressDesc);
-    result.componentId = receiver.isNotEmpty() ? receiver :
+    result.componentId = receiver.isNotEmpty() ?
+        receiver :
         e.getProperty(Serialization::UI::Hotkeys::hotkeyReceiver).toString();
 
     return result;
@@ -253,7 +272,7 @@ void HotkeyScheme::reset()
     this->keyPresses.clear();
     this->keyDowns.clear();
     this->keyUps.clear();
-    this->receiverChildren.clear();
+    this->receiversById.clear();
     this->holdKeys.clear();
     this->lastReceiver = nullptr;
 }

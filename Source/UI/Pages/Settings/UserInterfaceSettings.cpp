@@ -224,10 +224,18 @@ UserInterfaceSettings::UserInterfaceSettings()
         }
     };
 
+    this->germanNotation->setRadioGroupId(1);
+    this->fixedDoNotation->setRadioGroupId(1);
+
+    this->scaleUi1->setRadioGroupId(2);
+    this->scaleUi125->setRadioGroupId(2);
+    this->scaleUi15->setRadioGroupId(2);
+    this->scaleUi2->setRadioGroupId(2);
+
 #if SIMPLIFIED_UI_SETTINGS
-    this->setSize(100, 335);
+    this->setSize(100, 320);
 #else
-    this->setSize(100, 545);
+    this->setSize(100, 530);
 #endif
 }
 
@@ -237,9 +245,12 @@ void UserInterfaceSettings::resized()
 {
     constexpr auto margin1 = 4;
     constexpr auto margin2 = margin1 + 12;
-    constexpr auto titleSize = 20;
+    constexpr auto separatorSize = 2;
+    constexpr auto separatorMargin = 3;
+    constexpr auto titleSize = 18;
     constexpr auto rowSize = 26;
     constexpr auto rowSpacing = 4;
+    constexpr auto radioButtonSpacing = 1;
 
 #if !SIMPLIFIED_UI_SETTINGS
 
@@ -256,10 +267,11 @@ void UserInterfaceSettings::resized()
         this->openGLRendererButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->wheelFlagsSeparator->setBounds(margin2,
-        this->nativeTitleBarButton->getBottom() + rowSpacing + 2, this->getWidth() - margin2 * 2, 5);
+        this->nativeTitleBarButton->getBottom() + rowSpacing + separatorMargin,
+        this->getWidth() - margin2 * 2, separatorSize);
 
     this->wheelAltModeButton->setBounds(margin2,
-        this->wheelFlagsSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+        this->wheelFlagsSeparator->getBottom() + separatorMargin + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->wheelVerticalPanningButton->setBounds(margin2,
         this->wheelAltModeButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
@@ -268,9 +280,10 @@ void UserInterfaceSettings::resized()
         this->wheelVerticalPanningButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->miscFlagsSeparator->setBounds(margin2,
-        this->wheelVerticalZoomingButton->getBottom() + rowSpacing + 2, this->getWidth() - margin2 * 2, 5);
+        this->wheelVerticalZoomingButton->getBottom() + rowSpacing + separatorMargin,
+        this->getWidth() - margin2 * 2, separatorSize);
 
-    const auto bottomSectionStart = this->miscFlagsSeparator->getBottom() + rowSpacing;
+    const auto bottomSectionStart = this->miscFlagsSeparator->getBottom() + separatorMargin + rowSpacing;
 
 #else
 
@@ -285,34 +298,36 @@ void UserInterfaceSettings::resized()
         this->followPlayheadButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->noteNamesSeparator->setBounds(margin2,
-        this->animationsEnabledButton->getBottom() + rowSpacing + 2, this->getWidth() - margin2 * 2, 5);
+        this->animationsEnabledButton->getBottom() + rowSpacing + separatorMargin,
+        this->getWidth() - margin2 * 2, separatorSize);
 
     this->noteNamesTitle->setBounds(margin2,
-        this->noteNamesSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, titleSize);
+        this->noteNamesSeparator->getBottom() + separatorMargin + rowSpacing, this->getWidth() - margin2 * 2, titleSize);
 
     this->germanNotation->setBounds(margin2,
         this->noteNamesTitle->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->fixedDoNotation->setBounds(margin2,
-        this->germanNotation->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+        this->germanNotation->getBottom() + radioButtonSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->uiScaleSeparator->setBounds(margin2,
-        this->fixedDoNotation->getBottom() + rowSpacing + 2, this->getWidth() - margin2 * 2, 5);
+        this->fixedDoNotation->getBottom() + rowSpacing + separatorMargin,
+        this->getWidth() - margin2 * 2, separatorSize);
 
     this->uiScaleTitle->setBounds(margin2,
-        this->uiScaleSeparator->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, titleSize);
+        this->uiScaleSeparator->getBottom() + separatorMargin + rowSpacing, this->getWidth() - margin2 * 2, titleSize);
 
     this->scaleUi1->setBounds(margin2,
         this->uiScaleTitle->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->scaleUi125->setBounds(margin2,
-        this->scaleUi1->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+        this->scaleUi1->getBottom() + radioButtonSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->scaleUi15->setBounds(margin2,
-        this->scaleUi125->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+        this->scaleUi125->getBottom() + radioButtonSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->scaleUi2->setBounds(margin2,
-        this->scaleUi15->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+        this->scaleUi15->getBottom() + radioButtonSpacing, this->getWidth() - margin2 * 2, rowSize);
 }
 
 void UserInterfaceSettings::visibilityChanged()

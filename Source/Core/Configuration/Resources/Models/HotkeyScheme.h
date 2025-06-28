@@ -45,6 +45,7 @@ public:
     };
 
     String findHotkeyDescription(int commandId) const noexcept;
+    Array<KeyPress> findAllKeyPressesFor(int commandId) const noexcept;
 
     // To be used by command palette:
     using HotkeyMap = FlatHashMap<Hotkey, CommandIDs::Id, HotkeyHash>;
@@ -97,7 +98,7 @@ private:
     FlatHashSet<KeyPress, KeyPressHash> holdKeys;
 
     WeakReference<Component> lastReceiver;
-    FlatHashMap<String, WeakReference<Component>, StringHash> receiverChildren;
+    FlatHashMap<String, WeakReference<Component>, StringHash> receiversById;
 
     bool sendHotkeyCommand(const String &componentId, CommandIDs::Id commandId,
         WeakReference<Component> root, WeakReference<Component> target);

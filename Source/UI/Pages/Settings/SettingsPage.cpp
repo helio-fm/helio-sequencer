@@ -42,7 +42,7 @@ SettingsPage::~SettingsPage() = default;
 void SettingsPage::resized()
 {
     this->background->setBounds(this->getLocalBounds());
-    this->viewport->setBounds(this->getLocalBounds().reduced(6, 0));
+    this->viewport->setBounds(this->getLocalBounds().reduced(6));
     this->viewport->getViewedComponent()->
         setSize(this->viewport->getMaximumVisibleWidth(),
             this->viewport->getViewedComponent()->getHeight());

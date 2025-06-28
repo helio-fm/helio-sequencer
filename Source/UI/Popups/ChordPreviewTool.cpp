@@ -39,6 +39,38 @@ static Label *createPopupButtonLabel(const String &text)
     return newLabel;
 }
 
+class ChordButton final : public PopupButton
+{
+public:
+
+    ChordButton(Component *newOwnedComponent,
+        PopupButton::Shape shapeType = PopupButton::Shape::Circle,
+        Colour colour = Colours::black.withAlpha(0.45f)) :
+        PopupButton(true, shapeType, colour),
+        ownedComponent(newOwnedComponent)
+    {
+        this->ownedComponent->setInterceptsMouseClicks(false, false);
+        this->addAndMakeVisible(this->ownedComponent.get());
+        this->setSize(48, 48);
+    }
+
+    void resized() override
+    {
+        PopupButton::resized();
+
+        this->ownedComponent->
+            setTopLeftPosition((this->getWidth() / 2) - (ownedComponent->getWidth() / 2),
+                               (this->getHeight() / 2) - (ownedComponent->getHeight() / 2));
+    }
+
+private:
+
+    UniquePointer<Component> ownedComponent;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChordButton)
+};
+
+
 class ChordTooltip final : public Component
 {
 public:
@@ -121,7 +153,7 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
 {
     const auto bgColour = findDefaultColour(ColourIDs::Roll::blackKey).withMultipliedAlpha(0.65f);
 
-    this->centreButton = make<PopupCustomButton>(createPopupButtonLabel("+"),
+    this->centreButton = make<ChordButton>(createPopupButtonLabel("+"),
         PopupButton::Shape::Circle, bgColour.withMultipliedAlpha(0.5f));
     this->addAndMakeVisible(this->centreButton.get());
 
@@ -137,7 +169,7 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
         const auto radius = defaultRadius + jlimit(0, 8, numChordsToDisplay - 10) * 10;
         const auto centreOffset = Point<int>(0, -radius).transformedBy(AffineTransform::rotation(radians, 0, 0));
         const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.675f, 1.f, 1.f).interpolatedWith(bgColour, 0.4f);
-        auto *button = this->chordButtons.add(new PopupCustomButton(createPopupButtonLabel(chord->getName()), PopupButton::Shape::Hex, colour));
+        auto *button = this->chordButtons.add(new ChordButton(createPopupButtonLabel(chord->getName()), PopupButton::Shape::Hex, colour));
         const int buttonSize = App::isRunningOnPhone() ? 60 : 67;
         button->setSize(buttonSize, buttonSize);
         button->setUserData(chord->getResourceId());

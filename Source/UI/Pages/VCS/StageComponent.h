@@ -18,7 +18,6 @@
 #pragma once
 
 class VersionControl;
-class ProgressIndicator;
 
 #include "Revision.h"
 #include "RevisionItem.h"

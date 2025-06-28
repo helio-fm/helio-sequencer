@@ -101,10 +101,10 @@ void InstrumentComponent::paint(Graphics &g)
     const auto w = float(this->getWidth());
     const auto h = float(this->getHeight());
 
-    g.setColour(Colour(0x55ffffff));
+    g.setColour(this->fillColour);
     g.fillEllipse(1.f, 1.f, w - 2.f, h - 2.f);
 
-    g.setColour(Colour(0x55000000));
+    g.setColour(this->outlineColour);
     g.drawEllipse(1.f, 1.f, w - 2.f, h - 2.f, 0.75f);
 
     if (this->isSelected)
@@ -113,7 +113,7 @@ void InstrumentComponent::paint(Graphics &g)
     }
 
     g.setFont(this->font);
-    g.setColour(Colours::black.withAlpha(0.75f));
+    g.setColour(this->textColour);
 
     const auto area = this->getLocalBounds().
         reduced(this->pinSize, this->pinSize / 2);

@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class RevisionConnectorComponent final :
     public Component,
     public SettableTooltipClient
@@ -38,6 +40,9 @@ private:
 
     SafePointer<Component> component1;
     SafePointer<Component> component2;
+
+    const Colour fillColour =
+        findDefaultColour(ColourIDs::VersionControl::revisionConnector);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionConnectorComponent)
 };

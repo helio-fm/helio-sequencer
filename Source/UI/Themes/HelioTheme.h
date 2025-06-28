@@ -158,6 +158,7 @@ public:
     inline const Image &getPageBackgroundA() const noexcept { return this->pageBackgroundA; }
     inline const Image &getPageBackgroundB() const noexcept { return this->pageBackgroundB; }
     inline const Image &getSidebarBackground() const noexcept { return this->sidebarBackground; }
+    inline const Image &getBottomPanelBackground() const noexcept { return this->bottomPanelBackground; }
     inline const Image &getHeadlineBackground() const noexcept { return this->headlineBackground; }
     inline const Image &getDialogBackground() const noexcept { return this->dialogBackground; }
 
@@ -179,6 +180,7 @@ protected:
     Image pageBackgroundA;
     Image pageBackgroundB;
     Image sidebarBackground;
+    Image bottomPanelBackground;
     Image headlineBackground;
     Image dialogBackground;
 

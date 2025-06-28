@@ -736,11 +736,12 @@ void NoteComponent::paint(Graphics &g) noexcept
         }
     }
 
-    // debug
+    //#if DEBUG
     //g.setColour(Colours::orangered);
     //const auto edge = this->getResizableEdge();
     //g.fillRect(0, 0, edge, this->getHeight());
     //g.fillRect(this->getWidth() - edge, 0, edge, this->getHeight());
+    //#endif
 }
 
 //===----------------------------------------------------------------------===//

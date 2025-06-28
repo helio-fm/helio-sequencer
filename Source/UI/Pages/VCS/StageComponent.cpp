@@ -17,12 +17,10 @@
 
 #include "Common.h"
 #include "StageComponent.h"
-
 #include "VersionControl.h"
 #include "VersionControlEditor.h"
 #include "ModalDialogConfirmation.h"
 #include "ModalDialogInput.h"
-#include "ProgressIndicator.h"
 #include "MainLayout.h"
 #include "VersionControlStageSelectionMenu.h"
 #include "RevisionItemComponent.h"

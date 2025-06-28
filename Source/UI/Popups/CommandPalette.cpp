@@ -17,25 +17,22 @@
 
 #include "Common.h"
 #include "CommandPalette.h"
-
-#include "CommandIDs.h"
-#include "SerializationKeys.h"
-#include "Config.h"
-#include "HelioTheme.h"
-
 #include "Workspace.h"
 #include "MainLayout.h"
 #include "ProjectNode.h"
 #include "PianoRoll.h"
-
 #include "ShadowDownwards.h"
 #include "PanelBackground.h"
 #include "ShadowLeftwards.h"
 #include "ShadowRightwards.h"
+#include "HotkeyScheme.h"
+#include "HelioTheme.h"
+#include "Config.h"
+#include "SerializationKeys.h"
+#include "CommandIDs.h"
 
-static constexpr juce_wchar kTildaKey = '`';
-
-CommandPalette::CommandPalette(ProjectNode *project, RollBase *roll)
+CommandPalette::CommandPalette(ProjectNode *project, RollBase *roll, const String &defaultText) :
+    roll(roll)
 {
     this->shadowDn = make<ShadowDownwards>(ShadowType::Hard);
     this->addAndMakeVisible(this->shadowDn.get());
@@ -64,7 +61,7 @@ CommandPalette::CommandPalette(ProjectNode *project, RollBase *roll)
     }
 
     // chord tools, if also opened in a piano roll:
-    if (auto *pianoRoll = dynamic_cast<PianoRoll *>(roll))
+    if (auto *pianoRoll = dynamic_cast<PianoRoll *>(this->roll.getComponent()))
     {
         if (pianoRoll->isShowing())
         {
@@ -105,12 +102,9 @@ CommandPalette::CommandPalette(ProjectNode *project, RollBase *roll)
     this->textEditor->setCaretVisible(true);
     this->textEditor->setMultiLine(false);
     this->textEditor->setReadOnly(false);
-    this->textEditor->setFont(Globals::UI::Fonts::L);
-
+    this->textEditor->setFont(Globals::UI::Fonts::M);
     this->textEditor->addListener(this);
-    
-    const String lastText = App::Config().getProperty(Serialization::Config::lastSearch);
-    this->textEditor->setText(lastText, false);
+    this->textEditor->setText(defaultText, false);
 
     this->setSize(620, 100);
 
@@ -170,6 +164,15 @@ void CommandPalette::handleCommandMessage(int commandId)
 
 bool CommandPalette::keyPressed(const KeyPress &key)
 {
+    for (const auto &dismissKey : CommandPalette::getAllDismissHotkeys())
+    {
+        if (key == dismissKey)
+        {
+            this->dismiss();
+            return true;
+        }
+    }
+
     if (key.isKeyCode(KeyPress::escapeKey))
     {
         // on escape keypress first try to erase the text, if any:
@@ -181,11 +184,6 @@ bool CommandPalette::keyPressed(const KeyPress &key)
         {
             this->textEditor->setText({});
         }
-        return true;
-    }
-    else if (key.isKeyCode(kTildaKey))
-    {
-        this->dismiss();
         return true;
     }
     else if (key.isKeyCode(KeyPress::downKey))
@@ -214,6 +212,16 @@ bool CommandPalette::keyPressed(const KeyPress &key)
 
 void CommandPalette::inputAttemptWhenModal()
 {
+    // hack warning:
+    // when you rclick/tap outside of the palette to hide it and start dragging the roll immediately,
+    // JUCE never sends the mouseDown event to the roll because the command palette is still showing,
+    // and after the palette is dismissed, dragging continues with incorrect anchor
+    // and the viewport position jumps away unpredictably; this check compensates for that:
+    if (this->roll != nullptr)
+    {
+        this->roll->resetDraggingAnchors();
+    }
+
     this->postCommandMessage(CommandIDs::DismissDialog);
 }
 
@@ -255,26 +263,25 @@ void CommandPalette::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, 
         g.fillAll(highlightingColour.withAlpha(0.015f));
     }
 
-    g.setFont(Globals::UI::Fonts::L);
-    const float margin = float(h / 12.f);
+    g.setFont(Globals::UI::Fonts::M);
 
     // main text
     g.setColour(mainTextColour);
 
     auto glyphs = action->getGlyphArrangement();
     glyphs.justifyGlyphs(0, glyphs.getNumGlyphs(),
-        (margin * 2), 0.f, float(w), float(h),
+        4.f, 0.f, float(w), float(h),
         Justification::centredLeft);
 
     glyphs.draw(g);
 
     // hint text
-    g.setColour(mainTextColour.withMultipliedAlpha(0.7f)
-        .withMultipliedSaturation(0.6f));
+    g.setColour(mainTextColour
+        .interpolatedWith(labelColour, 0.5f).withMultipliedAlpha(0.5f));
 
     HelioTheme::drawFittedText(g,
         action->getHint(),
-        0, 0, w - int(margin * 2), h,
+        0, 0, w - 4, h,
         Justification::centredRight, 1);
 }
 
@@ -340,9 +347,6 @@ void CommandPalette::textEditorTextChanged(TextEditor &ed)
 
     // force repaint, sometimes it doesn't update the underlined matches:
     this->actionsList->repaint();
-
-    // todo only save at exit?
-    App::Config().setProperty(Serialization::Config::lastSearch, ed.getText());
 }
 
 void CommandPalette::textEditorReturnKeyPressed(TextEditor &ed)
@@ -373,12 +377,12 @@ void CommandPalette::fadeOut()
     {
         App::animateComponent(this,
             this->getBounds().reduced(10).translated(0, -10),
-            0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
+                0.f, Globals::UI::fadeOutShort, true, 1.0, 0.0);
     }
     else
     {
         App::animateComponent(this, this->getBounds(),
-            0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
+            0.f, Globals::UI::fadeOutShort, true, 1.0, 0.0);
     }
 }
 
@@ -393,17 +397,30 @@ void CommandPalette::updatePosition()
     this->setTopLeftPosition(centered.getX(), top);
 }
 
+Array<KeyPress> CommandPalette::getAllDismissHotkeys()
+{
+    return App::Config().getHotkeySchemes()->getCurrent()->
+        findAllKeyPressesFor(CommandIDs::CommandPalette);
+}
+
 bool CommandPaletteTextEditor::keyPressed(const KeyPress &key)
 {
-    // if escape or ~, just pass the keypress up
-    if (key.isKeyCode(kTildaKey) ||
-        key.isKeyCode(KeyPress::escapeKey) ||
+    // pass the keypress up, if needed
+    if (key.isKeyCode(KeyPress::escapeKey) ||
         key.isKeyCode(KeyPress::downKey) ||
         key.isKeyCode(KeyPress::upKey) ||
         key.isKeyCode(KeyPress::pageDownKey) ||
         key.isKeyCode(KeyPress::pageUpKey))
     {
         return false;
+    }
+
+    for (const auto &dismissKey : CommandPalette::getAllDismissHotkeys())
+    {
+        if (key == dismissKey)
+        {
+            return false;
+        }
     }
 
     return TextEditor::keyPressed(key);
@@ -431,7 +448,6 @@ void CommandPalette::applySelectedCommand()
 
         if (shouldDismiss)
         {
-            App::Config().setProperty(Serialization::Config::lastSearch, "");
             this->dismiss();
         }
     }

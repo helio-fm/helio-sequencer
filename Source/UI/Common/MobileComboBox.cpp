@@ -24,12 +24,11 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     editor(editor),
     container(container)
 {
+    this->setOpaque(true);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(false);
-
-    this->background = make<PanelBackground>();
-    this->addAndMakeVisible(this->background.get());
+    this->setAccessible(false);
 
     this->menu = make<MenuPanel>();
     this->addAndMakeVisible(this->menu.get());
@@ -59,18 +58,16 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     };
 }
 
+void MobileComboBox::paint(Graphics &g)
+{
+    const auto &theme = HelioTheme::getCurrentTheme();
+    g.setTiledImageFill(theme.getSidebarBackground(), 0, 0, 1.f);
+    g.fillRect(this->getLocalBounds());
+}
+
 void MobileComboBox::resized()
 {
     static constexpr auto menuY = Globals::UI::textEditorHeight + 2;
-
-    if (this->isSimpleDropdown())
-    {
-        this->background->setBounds(0, menuY, this->getWidth(), this->getHeight() - menuY);
-    }
-    else
-    {
-        this->background->setBounds(0, 0, this->getWidth(), this->getHeight());
-    }
 
     this->separator->setBounds(1, menuY - 2, this->getWidth() - 2, 2);
     this->currentNameLabel->setBounds(0, 0, this->getWidth() - 0, menuY - 2);
@@ -184,6 +181,7 @@ constexpr int MobileComboBox::HelperButton::triggerButtonSize;
 
 MobileComboBox::Container::Container()
 {
+    this->setAccessible(false);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
     this->setMouseClickGrabsKeyboardFocus(false);

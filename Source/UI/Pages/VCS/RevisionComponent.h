@@ -31,7 +31,8 @@ class RevisionComponent final : public Component
 public:
 
     RevisionComponent(VersionControl &owner,
-        const VCS::Revision::Ptr revision, bool isHead);
+        const VCS::Revision::Ptr revision, bool isHeadRevision);
+
     ~RevisionComponent();
 
     // Helpers for tree traverse:
@@ -70,7 +71,7 @@ private:
     VersionControl &vcs;
 
     bool isSelected = false;
-    bool isHeadRevision = false;
+    const bool isHeadRevision = false;
 
     UniquePointer<HeadlineContextMenuController> contextMenuController;
 
@@ -81,7 +82,9 @@ private:
     UniquePointer<SeparatorHorizontalFadingReversed> line2;
     UniquePointer<SeparatorHorizontalFading> line3;
 
-    const Colour outlineColour = findDefaultColour(ColourIDs::VersionControl::outline);
+    const Colour fillColour = findDefaultColour(ColourIDs::VersionControl::revisionFill);
+    const Colour outlineColour = findDefaultColour(ColourIDs::VersionControl::revisionOutline);
+    const Colour highlightColour = findDefaultColour(ColourIDs::VersionControl::revisionHighlight);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionComponent)
 };

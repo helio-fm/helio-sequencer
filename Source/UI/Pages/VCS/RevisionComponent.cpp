@@ -22,27 +22,27 @@
 #include "HeadlineContextMenuController.h"
 
 RevisionComponent::RevisionComponent(VersionControl &owner,
-    const VCS::Revision::Ptr revision, bool isHead) :
+    const VCS::Revision::Ptr revision, bool isHeadRevision) :
     vcs(owner),
     revision(revision),
-    isHeadRevision(isHead)
+    isHeadRevision(isHeadRevision)
 {
-    this->revisionDescription= make<Label>();
+    this->revisionDescription = make<Label>();
     this->addAndMakeVisible(this->revisionDescription.get());
     this->revisionDescription->setFont(Globals::UI::Fonts::M);
     this->revisionDescription->setJustificationType(Justification::centred);
 
-    this->revisionDate= make<Label>();
+    this->revisionDate = make<Label>();
     this->addAndMakeVisible(this->revisionDate.get());
     this->revisionDate->setFont(Globals::UI::Fonts::XS);
     this->revisionDate->setJustificationType(Justification::centred);
     this->revisionDate->setColour(Label::textColourId,
-        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.5f));
+        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.35f));
 
-    this->line2= make<SeparatorHorizontalFadingReversed>();
+    this->line2 = make<SeparatorHorizontalFadingReversed>();
     this->addAndMakeVisible(this->line2.get());
 
-    this->line3= make<SeparatorHorizontalFading>();
+    this->line3 = make<SeparatorHorizontalFading>();
     this->addAndMakeVisible(this->line3.get());
 
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
@@ -65,16 +65,24 @@ RevisionComponent::~RevisionComponent() = default;
 
 void RevisionComponent::paint(Graphics &g)
 {
-    g.setColour(this->outlineColour);
-
     if (this->isHeadRevision)
     {
+        g.setColour(this->outlineColour);
         g.drawRoundedRectangle(0.f, 0.f,
             float(this->getWidth()), float(this->getHeight()), 9.f, 1.f);
     }
 
+    g.setColour(this->fillColour);
+    g.fillRoundedRectangle(1.f, 1.f,
+        float(this->getWidth() - 2), float(this->getHeight() - 2), 7.f);
+
     if (this->isSelected)
     {
+        g.setColour(this->outlineColour.withMultipliedAlpha(0.5f));
+        g.drawRoundedRectangle(1.f, 1.f,
+            float(this->getWidth() - 2), float(this->getHeight() - 2), 7.f, 1.f);
+
+        g.setColour(this->highlightColour);
         g.fillRoundedRectangle(1.f, 1.f,
             float(this->getWidth() - 2), float(this->getHeight() - 2), 7.f);
     }
@@ -83,7 +91,7 @@ void RevisionComponent::paint(Graphics &g)
 void RevisionComponent::resized()
 {
     this->revisionDescription->setBounds(4, 2, this->getWidth() - 8, 20);
-    this->revisionDate->setBounds(16, 20, this->getWidth() - 32, 18);
+    this->revisionDate->setBounds(16, 20, this->getWidth() - 32, 16);
     this->line2->setBounds(8, 0, this->getWidth() - 16, 2);
     this->line3->setBounds(8, this->getHeight() - 2, this->getWidth() - 16, 2);
 }

@@ -103,7 +103,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     this->captionLabel = make<Label>();
     this->addAndMakeVisible(this->captionLabel.get());
     this->captionLabel->setFont(Globals::UI::Fonts::L);
-    this->captionLabel->setJustificationType(Justification::centredLeft);
+    this->captionLabel->setJustificationType(Justification::bottomLeft);
     this->captionLabel->setInterceptsMouseClicks(false, false);
     this->captionLabel->setText(TRANS(I18n::Dialog::renderCaption), dontSendNotification);
 

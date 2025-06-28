@@ -21,6 +21,7 @@ class InstrumentEditor;
 class InstrumentEditorPin;
 
 #include "Instrument.h"
+#include "ColourIDs.h"
 
 class InstrumentComponent final : public Component
 {
@@ -61,6 +62,10 @@ private:
     const int pinSize = 22;
     const Font font = Globals::UI::Fonts::XS;
 #endif
+
+    const Colour fillColour = findDefaultColour(ColourIDs::Instrument::fill);
+    const Colour outlineColour = findDefaultColour(ColourIDs::Instrument::outline);
+    const Colour textColour = findDefaultColour(ColourIDs::Instrument::text);
 
     bool isSelected = false;
     Point<int> originalPos;

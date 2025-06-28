@@ -25,15 +25,14 @@ class InstrumentEditorPin :
 {
 public:
 
-    InstrumentEditorPin(AudioProcessorGraph::NodeID nodeID,
-        int index, bool isInput);
+    InstrumentEditorPin(AudioProcessorGraph::NodeID nodeId, int index, bool isInput);
 
     void paint(Graphics &g) override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
 
-    const AudioProcessorGraph::NodeID nodeID;
+    const AudioProcessorGraph::NodeID nodeId;
     const int index;
     const bool isInput;
 

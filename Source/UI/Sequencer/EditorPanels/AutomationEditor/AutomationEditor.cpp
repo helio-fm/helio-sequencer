@@ -28,8 +28,6 @@
 #include "AutomationStepEventComponent.h"
 #include "MultiTouchController.h"
 #include "CutPointMark.h"
-#include "Lasso.h"
-#include "ColourIDs.h"
 #include "TempoDialog.h"
 #include "PointReduction.h"
 
@@ -264,11 +262,10 @@ AutomationEditor::~AutomationEditor()
 
 Colour AutomationEditor::getColour(const AutomationEvent &event) const
 {
-    return findDefaultColour(ColourIDs::Roll::clipForeground)
-        .interpolatedWith(event.getTrackColour(), 0.5f)
-        .withMultipliedAlpha(0.95f)
-        .withMultipliedSaturation(0.75f)
-        .withMultipliedBrightness(1.25f);
+    return event.getTrackColour()
+        .interpolatedWith(this->baseColour, 0.35f)
+        .withMultipliedSaturationHSL(0.95f)
+        .withAlpha(0.9f);
 }
 
 float AutomationEditor::getBeatByPosition(int x, const Clip &clip) const

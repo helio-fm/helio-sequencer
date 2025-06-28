@@ -24,9 +24,6 @@ namespace ColourIDs
     // JUCE internal colour id's all look like 0x1xxxxxx;
     // so we start from 0x2000000 to make sure id's do not overlap.
 
-    // Tech debt warning: lots of colours out there in the app are hardcoded in components,
-    // hopefully in future they all will be set in HelioTheme and accessed via these ids.
-
     namespace Common
     {
         static const int borderLineLight        = 0x2000000;
@@ -117,21 +114,24 @@ namespace ColourIDs
 
     namespace Instrument
     {
-        static const int midiIn                 = 0x2000600;
-        static const int midiOut                = 0x2000601;
-        static const int audioIn                = 0x2000602;
-        static const int audioOut               = 0x2000603;
-        static const int midiConnector          = 0x2000604;
-        static const int audioConnector         = 0x2000605;
-        static const int pinShadow              = 0x2000606;
-        static const int connectorShadow        = 0x2000607;
+        static const int fill                   = 0x2000600;
+        static const int outline                = 0x2000601;
+        static const int text                   = 0x2000602;
+        static const int midiNode               = 0x2000603;
+        static const int audioNode              = 0x2000604;
+        static const int midiConnector          = 0x2000605;
+        static const int audioConnector         = 0x2000606;
+        static const int pinShadow              = 0x2000607;
+        static const int connectorShadow        = 0x2000608;
     }
 
     namespace VersionControl
     {
-        static const int connector              = 0x2000610;
-        static const int outline                = 0x2000611;
-        static const int highlight              = 0x2000612;
+        static const int revisionConnector      = 0x2000610;
+        static const int revisionOutline        = 0x2000611;
+        static const int revisionHighlight      = 0x2000612;
+        static const int revisionFill           = 0x2000613;
+        static const int stageSelectionFill     = 0x2000614;
     }
 
     namespace Panel
@@ -140,6 +140,7 @@ namespace ColourIDs
         static const int pageFillA              = 0x2000701;
         static const int pageFillB              = 0x2000702;
         static const int sidebarFill            = 0x2000703;
+        static const int bottomPanelFill        = 0x2000704;
     }
 
     namespace Arrow
@@ -211,6 +212,8 @@ namespace ColourIDs
     namespace ColourButton
     {
         static const int outline                = 0x2001600;
+        static const int highlight              = 0x2001601;
+        static const int pressed                = 0x2001602;
     }
 
     namespace AudioMonitor

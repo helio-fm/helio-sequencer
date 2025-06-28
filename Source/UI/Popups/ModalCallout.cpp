@@ -20,6 +20,7 @@
 #include "MainLayout.h"
 #include "SequencerLayout.h"
 #include "RollBase.h"
+#include "ComponentIDs.h"
 #include "ColourIDs.h"
 
 static int kClickCounterOnPopupClose = 0;

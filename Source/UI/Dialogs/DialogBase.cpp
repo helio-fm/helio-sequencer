@@ -17,12 +17,10 @@
 
 #include "Common.h"
 #include "DialogBase.h"
-#include "DialogBackground.h"
 #include "HelioTheme.h"
 #include "MainLayout.h"
 #include "SequencerLayout.h"
 #include "RollBase.h"
-#include "ColourIDs.h"
 #include "ComponentIDs.h"
 #include "App.h"
 
@@ -60,13 +58,7 @@ DialogBase::DialogBase()
     this->moveConstrainer = make<DialogDragConstrainer>();
 }
 
-DialogBase::~DialogBase()
-{
-    if (this->background != nullptr)
-    {
-        this->background->postCommandMessage(CommandIDs::DismissDialog);
-    }
-}
+DialogBase::~DialogBase() = default;
 
 void DialogBase::paint(Graphics &g)
 {
@@ -76,17 +68,8 @@ void DialogBase::paint(Graphics &g)
 
     HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.5f);
 
-    g.setColour(findDefaultColour(ColourIDs::Dialog::header));
+    g.setColour(this->headerColour);
     g.fillRect(1.25f, 1.f, float(this->getWidth()) - 2.5f, 2.f);
-}
-
-void DialogBase::parentHierarchyChanged()
-{
-    if (this->background == nullptr)
-    {
-        this->background = new DialogBackground();
-        App::Layout().addAndMakeVisible(this->background);
-    }
 }
 
 void DialogBase::visibilityChanged()

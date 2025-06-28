@@ -20,8 +20,8 @@
 #include "InstrumentEditor.h"
 #include "ColourIDs.h"
 
-InstrumentEditorPin::InstrumentEditorPin(AudioProcessorGraph::NodeID nodeID, int index, bool isInput) :
-    nodeID(nodeID),
+InstrumentEditorPin::InstrumentEditorPin(AudioProcessorGraph::NodeID nodeId, int index, bool isInput) :
+    nodeId(nodeId),
     index(index),
     isInput(isInput)
 {
@@ -32,28 +32,24 @@ InstrumentEditorPin::InstrumentEditorPin(AudioProcessorGraph::NodeID nodeID, int
 
 void InstrumentEditorPin::paint(Graphics &g)
 {
-    using namespace ColourIDs::Instrument;
-
     const auto w = float(this->getWidth());
     const auto h = float(this->getHeight());
     const bool isMidiChannel = (this->index == Instrument::midiChannelNumber);
 
-    g.setColour(findDefaultColour(pinShadow));
+    g.setColour(findDefaultColour(ColourIDs::Instrument::pinShadow));
     g.drawEllipse(3.f, 4.f, w - 6.f, h - 6.f, 4.f);
 
     const int colourId = isMidiChannel ?
-        (this->isInput ? midiIn : midiOut) :
-        (this->isInput ? audioIn : audioOut);
-
+        ColourIDs::Instrument::midiNode : ColourIDs::Instrument::audioNode;
     g.setColour(findDefaultColour(colourId));
     g.drawEllipse(3.f, 3.f, w - 6.f, h - 6.f, 4.f);
 }
 
 void InstrumentEditorPin::mouseDown(const MouseEvent &e)
 {
-    const AudioProcessorGraph::NodeID sourceId(isInput ? 0 : nodeID.uid);
-    const AudioProcessorGraph::NodeID destinationId(isInput ? nodeID.uid : 0);
-    this->getParentEditor()->beginConnectorDrag(sourceId, index, destinationId, index, e);
+    const AudioProcessorGraph::NodeID sourceId(this->isInput ? 0 : this->nodeId.uid);
+    const AudioProcessorGraph::NodeID destinationId(this->isInput ? this->nodeId.uid : 0);
+    this->getParentEditor()->beginConnectorDrag(sourceId, this->index, destinationId, this->index, e);
     this->setMouseCursor(MouseCursor::DraggingHandCursor);
 }
 

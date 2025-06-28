@@ -26,6 +26,7 @@
 #include "RollEditMode.h"
 #include "EditorPanelBase.h"
 #include "Lasso.h"
+#include "ColourIDs.h"
 
 class RollBase;
 class ProjectNode;
@@ -191,6 +192,8 @@ private:
 
     void reloadTrackMap();
     void loadTrack(const MidiTrack *const track);
+
+    const Colour baseColour = findDefaultColour(ColourIDs::Roll::clipForeground);
 
     JUCE_LEAK_DETECTOR(AutomationEditor)
 };

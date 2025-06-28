@@ -57,7 +57,7 @@ struct CachedLabelImage final : public CachedComponentImage
             this->text = this->owner.getText();
         }
 
-        g.setColour(Colours::black.withAlpha(this->owner.getAlpha()));
+        g.setOpacity(this->owner.getAlpha());
         g.drawImageTransformed(this->image,
             AffineTransform::scale(compBounds.getWidth() / (float)imageBounds.getWidth(),
                 compBounds.getHeight() / (float)imageBounds.getHeight()), false);

@@ -17,10 +17,9 @@
 
 #include "Common.h"
 #include "RevisionItemComponent.h"
-
+#include "HeadlineContextMenuController.h"
 #include "Icons.h"
 #include "ColourIDs.h"
-#include "HeadlineContextMenuController.h"
 
 class RevisionItemSelectionComponent final : public Component
 {
@@ -28,24 +27,31 @@ public:
 
     RevisionItemSelectionComponent()
     {
+        this->setAccessible(false);
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
     }
 
     void paint(Graphics &g) override
     {
-        g.setColour(Colours::black.withAlpha(0.125f));
+        g.setColour(this->fillColour);
         g.fillRoundedRectangle(3.f, 2.f,
             float(this->getWidth() - 6), float(this->getHeight() - 6), 2.f);
 
         if (this->getWidth() > 100)
         {
-            g.setOpacity(0.5f);
+            g.setOpacity(0.75f);
             const int rightTextBorder = this->getWidth() - this->getHeight() / 2 - 5;
-            const auto imgOk = Icons::findByName(Icons::apply, int(float(this->getHeight()) * 0.5f));
-            Icons::drawImageRetinaAware(imgOk, g, rightTextBorder, this->getHeight() / 2 - 2);
+            Icons::drawImageRetinaAware(this->checkImage, g, rightTextBorder, this->getHeight() / 2 - 2);
         }
     }
+
+private:
+
+    const Image checkImage = Icons::findByName(Icons::apply, 16);
+    const Colour fillColour = findDefaultColour(ColourIDs::VersionControl::stageSelectionFill);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionItemSelectionComponent)
 };
 
 RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox) :
@@ -140,11 +146,11 @@ void RevisionItemComponent::updateItemInfo(VCS::RevisionItem::Ptr revisionItemIn
         this->itemLabel->setText(itemDescription, dontSendNotification);
     }
 
-    const auto textColor = findDefaultColour(Label::textColourId);
-    const auto revisionColour = this->revisionItem->getDisplayColour();
-    this->itemLabel->setColour(Label::textColourId, revisionColour.interpolatedWith(textColor, 0.5f));
-    this->deltasLabel->setColour(Label::textColourId, revisionColour.
-        interpolatedWith(textColor, 0.5f).withMultipliedAlpha(0.75f));
+    const auto textColour = this->revisionItem->getDisplayColour().
+        interpolatedWith(findDefaultColour(Label::textColourId), 0.55f);
+
+    this->itemLabel->setColour(Label::textColourId, textColour);
+    this->deltasLabel->setColour(Label::textColourId, textColour.withMultipliedAlpha(0.75f));
 
     this->deltasLabel->setText(itemDeltas, dontSendNotification);
 

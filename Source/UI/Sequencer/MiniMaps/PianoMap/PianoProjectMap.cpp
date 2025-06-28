@@ -216,7 +216,7 @@ void PianoProjectMap::onChangeProjectInfo(const ProjectMetadata *info)
     if (this->keyboardSize != info->getKeyboardSize())
     {
         this->keyboardSize = info->getKeyboardSize();
-        this->resized(); // updates componenetHeight
+        this->resized(); // updates componentHeight
         this->triggerAsyncUpdate(); // repaints
     }
 }
@@ -231,6 +231,7 @@ void PianoProjectMap::onReloadProjectContent(const Array<MidiTrack *> &tracks,
     const ProjectMetadata *meta)
 {
     this->keyboardSize = meta->getKeyboardSize();
+    this->resized(); // updates componentHeight
     this->reloadTrackMap();
 }
 

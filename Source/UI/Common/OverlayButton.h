@@ -17,12 +17,16 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class OverlayButton final : public Button
 {
 public:
 
     OverlayButton() : Button({})
     {
+        this->setAccessible(false);
+        this->setPaintingIsUnclipped(true);
         this->setMouseCursor(MouseCursor::PointingHandCursor);
     }
 
@@ -32,12 +36,15 @@ private:
     {
         if (isMouseOverButton || isButtonDown)
         {
-            g.setColour(Colours::white.withAlpha(isMouseOverButton && isButtonDown ? 0.075f : 0.025f));
+            g.setColour(isButtonDown ? pressedFillColour : fillColour);
             g.fillRect(this->getLocalBounds().reduced(1, 0));
             g.drawVerticalLine(0, 1.f, float(this->getHeight() - 1));
             g.drawVerticalLine(this->getWidth() - 1, 1.f, float(this->getHeight() - 1));
         }
     }
+
+    const Colour fillColour = findDefaultColour(ColourIDs::ColourButton::highlight);
+    const Colour pressedFillColour = findDefaultColour(ColourIDs::ColourButton::pressed);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OverlayButton)
 };

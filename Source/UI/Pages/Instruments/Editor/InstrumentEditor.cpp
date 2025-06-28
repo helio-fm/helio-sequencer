@@ -278,12 +278,12 @@ void InstrumentEditor::dragConnector(const MouseEvent &e)
             
             if (c.source.nodeID == idZero && !pin->isInput)
             {
-                c.source.nodeID = pin->nodeID;
+                c.source.nodeID = pin->nodeId;
                 c.source.channelIndex = pin->index;
             }
             else if (c.destination.nodeID == idZero && pin->isInput)
             {
-                c.destination.nodeID = pin->nodeID;
+                c.destination.nodeID = pin->nodeId;
                 c.destination.channelIndex = pin->index;
             }
             
@@ -334,7 +334,7 @@ void InstrumentEditor::endDraggingConnector(const MouseEvent &e)
             if (pin->isInput)
             { return; }
             
-            srcNode = pin->nodeID;
+            srcNode = pin->nodeId;
             srcChannel = pin->index;
         }
         else
@@ -342,7 +342,7 @@ void InstrumentEditor::endDraggingConnector(const MouseEvent &e)
             if (! pin->isInput)
             { return; }
             
-            dstNode = pin->nodeID;
+            dstNode = pin->nodeId;
             dstChannel = pin->index;
         }
         

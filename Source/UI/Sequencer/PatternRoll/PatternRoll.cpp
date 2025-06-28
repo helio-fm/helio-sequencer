@@ -50,7 +50,6 @@
 #include "PianoClipComponent.h"
 #include "AutomationCurveClipComponent.h"
 #include "AutomationStepsClipComponent.h"
-#include "DummyClipComponent.h"
 
 #include "HelioTheme.h"
 #include "SerializationKeys.h"
@@ -1400,8 +1399,8 @@ void PatternRoll::reset() {}
 
 Image PatternRoll::renderRowsPattern(const HelioTheme &theme)
 {
-    static const int width = 64;
     const int shadowHeight = PatternRoll::trackHeaderHeight * 2;
+    constexpr int width = 64;
     Image patternImage(Image::RGB, width, PatternRoll::rowPatternHeight, false);
     Graphics g(patternImage);
 
@@ -1411,7 +1410,7 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme)
     HelioTheme::drawNoise(theme, g);
 
     const auto shadowColour = theme.findColour(ColourIDs::Roll::trackHeaderShadow);
-    const auto shadowColourLight = shadowColour.withMultipliedAlpha(0.33f);
+    const auto shadowColourLight = shadowColour.withMultipliedAlpha(0.25f);
 
     int yBase = 0;
     while (yBase < PatternRoll::rowPatternHeight)

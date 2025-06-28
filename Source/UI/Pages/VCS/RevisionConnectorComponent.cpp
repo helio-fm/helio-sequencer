@@ -17,13 +17,14 @@
 
 #include "Common.h"
 #include "RevisionConnectorComponent.h"
-#include "ColourIDs.h"
 
 RevisionConnectorComponent::RevisionConnectorComponent(Component *c1, Component *c2) :
     component1(c1),
     component2(c2)
 {
+    this->setAccessible(false);
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     this->resizeToFit();
 }
 
@@ -57,7 +58,7 @@ void RevisionConnectorComponent::resizeToFit()
 
 void RevisionConnectorComponent::paint(Graphics &g)
 {
-    g.setColour(findDefaultColour(ColourIDs::VersionControl::connector));
+    g.setColour(this->fillColour);
     g.fillPath(this->linePath);
 }
 

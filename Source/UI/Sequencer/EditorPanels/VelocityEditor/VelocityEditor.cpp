@@ -92,16 +92,17 @@ public:
 
     inline void updateColour()
     {
-        const auto baseColour = findDefaultColour(ColourIDs::Roll::noteFill);
+        const auto baseColour = findDefaultColour(ColourIDs::Roll::clipForeground);
         this->mainColour = this->note.getTrackColour()
-            .interpolatedWith(baseColour, (this->isEditable || this->isHighlighted) ? 0.35f : 0.5f)
-            .withAlpha(this->isEditable ? 0.8f : (this->isHighlighted ? 0.125f : 0.06f));
+            .interpolatedWith(baseColour, (this->isEditable || this->isHighlighted) ? 0.35f : 0.45f)
+            .withMultipliedSaturationHSL(0.95f)
+            .withAlpha(this->isEditable ? 0.9f : (this->isHighlighted ? 0.125f : 0.06f));
         this->paleColour = this->mainColour
-            .brighter(this->isHighlighted ? 0.3f : 0.1f)
-            .withMultipliedAlpha(this->isHighlighted ? 0.3f : 0.1f);
+            .brighter(this->isHighlighted ? 0.25f : 0.1f)
+            .withMultipliedAlpha(this->isHighlighted ? 0.25f : 0.1f);
     }
 
-    void setRealBounds(float x, int y, float w, int h) noexcept
+    void setFloatBounds(float x, int y, float w, int h) noexcept
     {
         this->dx = x - floorf(x);
         this->dw = w - ceilf(w);
@@ -1234,7 +1235,7 @@ void VelocityEditor::applyNoteBounds(VelocityEditorNoteComponent *nc)
 
     // at least 4 pixels are visible for 0 volume events:
     const int h = jmax(4, int(this->getHeight() * nc->getFullVelocity()));
-    nc->setRealBounds(x, this->getHeight() - h, jmax(1.f, w), h);
+    nc->setFloatBounds(x, this->getHeight() - h, jmax(1.f, w), h);
 }
 
 void VelocityEditor::triggerBatchRepaintFor(VelocityEditorNoteComponent *target)

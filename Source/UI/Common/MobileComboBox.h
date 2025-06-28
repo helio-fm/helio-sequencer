@@ -93,6 +93,7 @@ public:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Container)
     };
 
+    void paint(Graphics &g) override;
     void resized() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
@@ -118,7 +119,6 @@ private:
     UniquePointer<SeparatorHorizontalReversed> separator;
     UniquePointer<Label> currentNameLabel;
 
-    UniquePointer<Component> background;
     UniquePointer<MenuPanel> menu;
 
     UniquePointer<MobileComboBox::HelperButton> triggerButton;

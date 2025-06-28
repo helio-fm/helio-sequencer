@@ -29,7 +29,7 @@ class TimeSignaturesAggregator;
 #include "Chord.h"
 #include "Scale.h"
 #include "PopupMenuComponent.h"
-#include "PopupCustomButton.h"
+#include "PopupButton.h"
 
 class ChordPreviewTool final : public PopupMenuComponent,
                                public PopupButtonOwner
@@ -86,7 +86,7 @@ private:
 
     Array<Chord::Ptr> defaultChords;
 
-    OwnedArray<PopupCustomButton> chordButtons;
+    OwnedArray<PopupButton> chordButtons;
 
     Chord::Ptr findChordFor(PopupButton *button) const;
     void buildChord(const Chord::Ptr chord);
@@ -94,7 +94,7 @@ private:
 
     void stopSound();
 
-    UniquePointer<PopupCustomButton> centreButton;
+    UniquePointer<PopupButton> centreButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChordPreviewTool)
 };

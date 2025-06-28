@@ -120,7 +120,7 @@ public:
         void paint(Graphics &g) override
         {
             const auto &theme = HelioTheme::getCurrentTheme();
-            g.setFillType({ theme.getSidebarBackground(), {} });
+            g.setFillType({ theme.getBottomPanelBackground(), {} });
             g.fillPath(this->backgroundShape);
 
             g.setColour(this->borderColourDark);

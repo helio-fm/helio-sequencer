@@ -35,7 +35,9 @@ class CommandPalette final : public Component,
 {
 public:
 
-    CommandPalette(ProjectNode *project, RollBase *roll);
+    CommandPalette(ProjectNode *project,
+        RollBase *roll, const String &defaultText = {});
+
     ~CommandPalette();
 
     void resized() override;
@@ -43,6 +45,8 @@ public:
     void handleCommandMessage(int commandId) override;
     bool keyPressed(const KeyPress &key) override;
     void inputAttemptWhenModal() override;
+
+    static Array<KeyPress> getAllDismissHotkeys();
 
 private:
 
@@ -74,6 +78,8 @@ private:
     void dismiss();
     void fadeOut();
     void updatePosition();
+
+    SafePointer<RollBase> roll;
 
     Array<WeakReference<CommandPaletteActionsProvider>> actionsProviders;
     WeakReference<CommandPaletteActionsProvider> currentActionsProvider;
