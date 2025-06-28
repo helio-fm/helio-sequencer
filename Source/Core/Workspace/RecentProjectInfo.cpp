@@ -121,7 +121,7 @@ void RecentProjectInfo::deserialize(const SerializedData &data)
 
 void RecentProjectInfo::reset()
 {
-    this->localInfo.path = {};
+    this->localInfo.path = File();
     this->localInfo.title = {};
     this->localInfo.lastModifiedMs = 0;
 }
