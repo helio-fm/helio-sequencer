@@ -55,9 +55,9 @@ PluginWindow::PluginWindow(AudioProcessorGraph::Node::Ptr owner) :
     if (auto *editor = createProcessorEditor(*owner->getProcessor()))
     {
         this->setContentOwned(editor, true);
-        this->setResizable(editor->isResizable(), false);
     }
 
+    this->setResizable(true, false);
     this->setTopLeftPosition(100 + Random::getSystemRandom().nextInt(500),
                              100 + Random::getSystemRandom().nextInt(500));
 
