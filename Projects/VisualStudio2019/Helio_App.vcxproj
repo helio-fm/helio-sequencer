@@ -676,19 +676,10 @@
     <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsFrameWrapper.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsPage.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ThemeSettings.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ThemeSettingsItem.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\TranslationSettings.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\TranslationSettingsItem.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\UserInterfaceSettings.cpp">
@@ -3255,8 +3246,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ThemeSettings.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ThemeSettingsItem.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\TranslationSettings.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\TranslationSettingsItem.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\UserInterfaceSettings.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\HistoryComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\RevisionComponent.h"/>

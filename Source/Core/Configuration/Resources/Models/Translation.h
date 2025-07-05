@@ -33,7 +33,8 @@ public:
     //===------------------------------------------------------------------===//
 
     SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
+    void deserialize(const SerializedData &data) override { jassertfalse; }
+    void deserialize(const SerializedData &data, bool needsDescriptionOnly);
     void reset() override;
 
     //===------------------------------------------------------------------===//

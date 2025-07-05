@@ -917,8 +917,6 @@
                   file="../../Source/UI/Pages/Settings/SettingsFrameWrapper.cpp"/>
             <FILE id="f3JYry" name="SettingsFrameWrapper.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Settings/SettingsFrameWrapper.h"/>
-            <FILE id="NQm5bG" name="SettingsPage.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/SettingsPage.cpp"/>
             <FILE id="KbKtdO" name="SettingsPage.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/SettingsPage.h"/>
             <FILE id="wyFYMy" name="ThemeSettings.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/ThemeSettings.cpp"/>
@@ -927,14 +925,6 @@
                   file="../../Source/UI/Pages/Settings/ThemeSettingsItem.cpp"/>
             <FILE id="Jkf4Uy" name="ThemeSettingsItem.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Settings/ThemeSettingsItem.h"/>
-            <FILE id="T6CQNI" name="TranslationSettings.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/TranslationSettings.cpp"/>
-            <FILE id="QKNR9p" name="TranslationSettings.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Settings/TranslationSettings.h"/>
-            <FILE id="iOQRBM" name="TranslationSettingsItem.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/TranslationSettingsItem.cpp"/>
-            <FILE id="YESMIX" name="TranslationSettingsItem.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Settings/TranslationSettingsItem.h"/>
             <FILE id="dRiPAr" name="UserInterfaceSettings.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/UserInterfaceSettings.cpp"/>
             <FILE id="SSPYoV" name="UserInterfaceSettings.h" compile="0" resource="0"

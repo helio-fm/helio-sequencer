@@ -39,37 +39,18 @@ public:
         const float lineStartY = paintStartY;
         const float lineEndY = paintEndY + paintStartY;
 
+        g.setColour(Colours::black.withAlpha(0.4f));
+        g.drawVerticalLine(1, lineStartY + 1, lineEndY - 1);
+        g.drawVerticalLine(this->getWidth() - 2, lineStartY + 1, lineEndY - 1);
+        g.drawHorizontalLine(int(lineStartY), 2.f, float(this->getWidth()) - 2.f);
+        g.drawHorizontalLine(int(lineEndY) - 1, 2.f, float(this->getWidth()) - 2.f);
+
         g.setColour(Colours::white.withAlpha(0.2f));
-        g.drawVerticalLine(27, lineStartY, lineEndY);
+        g.drawVerticalLine(0, lineStartY, lineEndY);
         g.drawVerticalLine(this->getWidth() - 1, lineStartY, lineEndY);
-        g.drawHorizontalLine(int(lineStartY) - 1, 28.f, float(this->getWidth()) - 1.f);
-        g.drawHorizontalLine(int(lineEndY), 28.f, float(this->getWidth()) - 1.f);
+        g.drawHorizontalLine(int(lineStartY) - 1, 1.f, float(this->getWidth()) - 1.f);
+        g.drawHorizontalLine(int(lineEndY), 1.f, float(this->getWidth()) - 1.f);
     }
-};
-
-class ThemeSettingsItemSelection final : public Component
-{
-public:
-
-    ThemeSettingsItemSelection()
-    {
-        this->setPaintingIsUnclipped(true);
-
-        this->iconComponent = make<IconComponent>(Icons::apply, 1.f, int(iconSize));
-        this->addAndMakeVisible(this->iconComponent.get());
-    }
-
-    void resized() override
-    {
-        this->iconComponent->setBounds(2,
-            (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
-    }
-
-private:
-
-    static constexpr auto iconSize = 16;
-    UniquePointer<IconComponent> iconComponent;
-
 };
 
 ThemeSettingsItem::ThemeSettingsItem(ListBox &parentListBox) :
@@ -82,9 +63,6 @@ ThemeSettingsItem::ThemeSettingsItem(ListBox &parentListBox) :
     this->addAndMakeVisible(this->schemeNameLabel.get());
     this->schemeNameLabel->setFont(Globals::UI::Fonts::M);
     this->schemeNameLabel->setJustificationType(Justification::centredLeft);
-
-    this->selectionComponent = make<ThemeSettingsItemSelection>();
-    this->addChildComponent(this->selectionComponent.get());
 }
 
 ThemeSettingsItem::~ThemeSettingsItem() = default;
@@ -136,30 +114,30 @@ void ThemeSettingsItem::paint(Graphics &g)
     }
 
     g.setColour(this->colours->getPageFillColour());
-    g.fillRect(27, paintStartY, 211, paintEndY);
+    g.fillRect(0, paintStartY, 218, paintEndY);
 
     // Outer glow
     g.setColour(this->colours->getPageFillColour().brighter(0.2f));
-    g.drawVerticalLine(27, float(lineStartY), float(lineEndY));
+    g.drawVerticalLine(0, float(lineStartY), float(lineEndY));
     g.drawVerticalLine(this->getWidth() - 1, float(lineStartY), float(lineEndY));
-    g.drawHorizontalLine(lineStartY - 1, 28.f, float(this->getWidth()) - 1.f);
-    g.drawHorizontalLine(lineEndY, 28.f, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(lineStartY - 1, 1.f, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(lineEndY, 1.f, float(this->getWidth()) - 1.f);
 
     // Inner shadow
     g.setColour(this->colours->getPageFillColour().darker(0.05f));
-    g.drawVerticalLine(28, float(lineStartY), float(lineEndY));
+    g.drawVerticalLine(1, float(lineStartY), float(lineEndY));
     g.drawVerticalLine(this->getWidth() - 2, float(lineStartY), float(lineEndY));
-    g.drawHorizontalLine(lineStartY, 28, float(this->getWidth()) - 1.f);
-    g.drawHorizontalLine(lineEndY - 1, 28, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(lineStartY, 1.f, float(this->getWidth()) - 1.f);
+    g.drawHorizontalLine(lineEndY - 1, 1.f, float(this->getWidth()) - 1.f);
 
     // Roll shadow left
-    g.setGradientFill(ColourGradient(Colour(0x0c000000), 238.f, 0.f,
-        Colours::transparentBlack, 258.f, 0.f, false));
-    g.fillRect(238, paintStartY, 20, paintEndY);
+    g.setGradientFill(ColourGradient(Colour(0x0c000000), 218.f, 0.f,
+        Colours::transparentBlack, 238.f, 0.f, false));
+    g.fillRect(218, paintStartY, 20, paintEndY);
 
-    g.setGradientFill(ColourGradient(Colour(0x0c000000), 238.f, 0.f,
-        Colours::transparentBlack, 250.0f, 0.f, false));
-    g.fillRect(238, paintStartY, 12, paintEndY);
+    g.setGradientFill(ColourGradient(Colour(0x0c000000), 218.f, 0.f,
+        Colours::transparentBlack, 230.0f, 0.f, false));
+    g.fillRect(218, paintStartY, 12, paintEndY);
 
     // Roll shadow right
     g.setGradientFill(ColourGradient(Colour(0x0c000000), float(this->getWidth()), 0.f,
@@ -172,20 +150,21 @@ void ThemeSettingsItem::paint(Graphics &g)
 
     // Separators
     g.setColour(Colour(0x0f000000));
-    g.drawVerticalLine(238, float(lineStartY), float(lineEndY));
+    g.drawVerticalLine(218, float(lineStartY), float(lineEndY));
 
     g.setColour(Colour(0x0bffffff));
-    g.drawVerticalLine(237, float(lineStartY), float(lineEndY));
+    g.drawVerticalLine(217, float(lineStartY), float(lineEndY));
 
     g.setColour(Colours::black);
-    Icons::drawImageRetinaAware(this->icon1, g, 45, (this->getHeight() / 2) - 1);
-    Icons::drawImageRetinaAware(this->icon2, g, 220, (this->getHeight() / 2) - 1);
+    Icons::drawImageRetinaAware(this->icon1, g, 17, (this->getHeight() / 2) - 1);
+
+    g.setColour(Colours::black.withAlpha(this->isCurrentTheme ? 1.f : 0.5f));
+    Icons::drawImageRetinaAware(this->icon2, g, 201, (this->getHeight() / 2) - 1);
 }
 
 void ThemeSettingsItem::resized()
 {
-    this->schemeNameLabel->setBounds(64, 2, 180, this->getHeight() - 6);
-    this->selectionComponent->setBounds(this->getLocalBounds());
+    this->schemeNameLabel->setBounds(26, 2, 180, this->getHeight() - 6);
 }
 
 void ThemeSettingsItem::applyTheme(const ColourScheme::Ptr colours)
@@ -204,29 +183,22 @@ void ThemeSettingsItem::applyTheme(const ColourScheme::Ptr colours)
 
 void ThemeSettingsItem::setSelected(bool shouldBeSelected)
 {
-    if (shouldBeSelected)
+    if (shouldBeSelected && !this->isCurrentTheme)
     {
         this->applyTheme(this->colours);
     }
 }
 
-void ThemeSettingsItem::updateDescription(bool isLastRowInList,
-    bool isCurrentTheme, const ColourScheme::Ptr colours)
+void ThemeSettingsItem::updateDescription(bool isLastRowInList, bool isCurrent, const ColourScheme::Ptr colours)
 {
-    if (isCurrentTheme)
-    {
-        this->selectionAnimator.fadeIn(this->selectionComponent.get(), Globals::UI::fadeInShort);
-    }
-    else
-    {
-        this->selectionAnimator.fadeOut(this->selectionComponent.get(), Globals::UI::fadeOutShort);
-    }
-
     if (this->colours != nullptr &&
-        this->colours->getResourceId() == colours->getResourceId())
+        this->colours->getResourceId() == colours->getResourceId() &&
+        this->isCurrentTheme == isCurrent)
     {
         return;
     }
+
+    this->isCurrentTheme = isCurrent;
 
     this->colours = colours;
     this->theme = make<HelioTheme>();
@@ -239,7 +211,7 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
         Temperament::makeTwelveToneEqualTemperament(), Scale::makeNaturalMajorScale(),
         0, PianoRoll::minRowHeight);
 
-    this->icon1 = Icons::renderForTheme(*this->theme, Icons::pianoTrack, 20);
+    this->icon1 = Icons::renderForTheme(*this->theme, this->isCurrentTheme ? Icons::apply : Icons::pianoTrack, 20);
     this->icon2 = Icons::renderForTheme(*this->theme, Icons::submenu, 20);
 
     this->repaint();
@@ -247,6 +219,5 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
 
 Component *ThemeSettingsItem::createHighlighterComponent()
 {
-    return new ThemeSettingsItemHighlighter();
+    return this->isCurrentTheme ? nullptr : new ThemeSettingsItemHighlighter();
 }
-

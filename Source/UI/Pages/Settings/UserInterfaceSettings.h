@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "Translation.h"
 #include "MobileComboBox.h"
 #include "SeparatorHorizontal.h"
 
@@ -34,11 +35,18 @@ public:
 private:
 
     void updateButtons();
+
     StringArray systemFonts;
 
+    Array<Translation::Ptr> translations;
+    Translation::Ptr currentTranslation;
+
+    UniquePointer<MobileComboBox::Container> languageCombo;
+    UniquePointer<TextEditor> languageEditor;
     UniquePointer<MobileComboBox::Container> fontsCombo;
-    UniquePointer<ToggleButton> openGLRendererButton;
     UniquePointer<TextEditor> fontEditor;
+    UniquePointer<SeparatorHorizontal> combosSeparator;
+    UniquePointer<ToggleButton> openGLRendererButton;
     UniquePointer<ToggleButton> nativeTitleBarButton;
     UniquePointer<SeparatorHorizontal> wheelFlagsSeparator;
     UniquePointer<ToggleButton> wheelAltModeButton;

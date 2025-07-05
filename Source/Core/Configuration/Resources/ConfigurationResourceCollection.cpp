@@ -35,7 +35,6 @@ void ConfigurationResourceCollection::updateUserResource(const ConfigurationReso
 {
     this->userResources[resource->getResourceId()] = resource;
 
-    // TODO sync with server?
     DBG("Updating user's resource file for " + this->resourceType.toString());
 
     JsonSerializer serializer(false);

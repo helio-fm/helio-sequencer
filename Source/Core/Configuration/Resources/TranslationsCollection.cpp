@@ -82,10 +82,12 @@ void TranslationsCollection::loadLocaleWithId(const String &localeId)
         return;
     }
 
+    App::Config().setProperty(Serialization::Config::currentLocale, localeId);
+    this->reloadResources();
+
     if (const auto translation = this->getResourceById<Translation>(localeId))
     {
         this->currentTranslation = translation;
-        App::Config().setProperty(Serialization::Config::currentLocale, localeId);
         this->sendChangeMessage();
     }
 }
@@ -108,12 +110,6 @@ String TranslationsCollection::translate(I18n::Key key)
     if (foundCurrentSingular != this->currentTranslation->singulars.end())
     {
         return foundCurrentSingular->second;
-    }
-
-    const auto foundFallbackSingular = this->fallbackTranslation->singulars.find(key);
-    if (foundFallbackSingular != this->fallbackTranslation->singulars.end())
-    {
-        return foundFallbackSingular->second;
     }
 
     return {};
@@ -158,8 +154,6 @@ String TranslationsCollection::translate(const String &baseLiteral, int64 target
 // Serializable
 //===----------------------------------------------------------------------===//
 
-const static String fallbackTranslationId = "en";
-
 void TranslationsCollection::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::translations) ?
@@ -173,14 +167,17 @@ void TranslationsCollection::deserializeResources(const SerializedData &tree, Re
     {
         // if the existing translation for locale id is found,
         // just extend it, otherwise some new keys may be missing:
-        const auto translationId = translationRoot.getProperty(Serialization::Translations::localeId).toString().toLowerCase();
+        const auto translationId =
+            translationRoot.getProperty(Serialization::Translations::localeId).toString().toLowerCase();
         const auto existingTranslation = this->getResourceById(translationId);
 
         Translation::Ptr translation(existingTranslation != nullptr ?
             static_cast<Translation *>(existingTranslation.get()) : new Translation());
 
+        const auto isCurrentTranslation = translationId == selectedLocaleId;
+
         //DBG(translationId + "/" + translation->getResourceId());
-        translation->deserialize(translationRoot);
+        translation->deserialize(translationRoot, !isCurrentTranslation);
 
         outResources[translation->getResourceId()] = translation;
 
@@ -188,33 +185,23 @@ void TranslationsCollection::deserializeResources(const SerializedData &tree, Re
         {
             this->currentTranslation = translation;
         }
-
-        if (translation->id == fallbackTranslationId)
-        {
-            this->fallbackTranslation = translation;
-        }
-    }
-
-    if (this->currentTranslation == nullptr)
-    {
-        this->currentTranslation = this->fallbackTranslation;
     }
 
     jassert(this->currentTranslation != nullptr);
-    jassert(this->fallbackTranslation != nullptr);
 }
 
 void TranslationsCollection::reset()
 {
     ConfigurationResourceCollection::reset();
     this->currentTranslation = nullptr;
-    this->fallbackTranslation = nullptr;
     this->equationResult.clear();
 }
 
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
+
+const static String fallbackTranslationId = "en";
 
 String TranslationsCollection::getSelectedLocaleId() const
 {

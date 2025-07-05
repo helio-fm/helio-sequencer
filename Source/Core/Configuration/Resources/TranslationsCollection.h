@@ -59,7 +59,6 @@ private:
 
     SpinLock currentTranslationLock;
     Translation::Ptr currentTranslation;
-    Translation::Ptr fallbackTranslation;
 
     String getSelectedLocaleId() const;
     friend struct PluralEquationWrapper;

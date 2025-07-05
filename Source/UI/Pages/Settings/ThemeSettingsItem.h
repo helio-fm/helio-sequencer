@@ -47,9 +47,9 @@ private:
     ColourScheme::Ptr colours;
     UniquePointer<HelioTheme> theme;
 
+    bool isCurrentTheme = false;
+
     ListBox &listBox;
-    ComponentFader selectionAnimator;
-    UniquePointer<Component> selectionComponent;
 
     Image rollImage;
     Image icon1;

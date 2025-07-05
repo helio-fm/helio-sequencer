@@ -159,7 +159,8 @@ namespace CommandIDs
         SelectMidiInputDevice           = 0x3400, // more ids reserved for sub-items
         SelectMidiNoOutputDevice        = 0x3500,
         SelectMidiOutputDevice          = 0x3501, // more ids reserved for sub-items
-        SelectFont                      = 0x3600, // more ids reserved for sub-items
+        SelectLanguage                  = 0x3600, // more ids reserved for sub-items
+        SelectFont                      = 0x3700, // more ids reserved for sub-items
 
         EditModeDefault                 = 0x4000,
         EditModeDraw                    = 0x4001,

@@ -44,8 +44,6 @@ private:
     UniquePointer<Component> uiSettingsWrapper;
     UniquePointer<Component> themeSettings;
     UniquePointer<Component> themeSettingsWrapper;
-    UniquePointer<Component> translationSettings;
-    UniquePointer<Component> translationSettingsWrapper;
     UniquePointer<Component> settingsPage;
 
 };

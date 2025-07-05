@@ -446,11 +446,8 @@
     <ClCompile Include="..\..\Source\UI\Pages\Settings\AudioSettings.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ComponentsList.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsFrameWrapper.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsPage.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ThemeSettings.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ThemeSettingsItem.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\TranslationSettings.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\TranslationSettingsItem.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\UserInterfaceSettings.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\HistoryComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\RevisionComponent.cpp"/>
@@ -2903,8 +2900,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ThemeSettings.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ThemeSettingsItem.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\TranslationSettings.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\TranslationSettingsItem.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\UserInterfaceSettings.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\HistoryComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\RevisionComponent.h"/>

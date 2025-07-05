@@ -40,7 +40,7 @@ SerializedData Translation::serialize() const
     return emptyXml;
 }
 
-void Translation::deserialize(const SerializedData &data)
+void Translation::deserialize(const SerializedData &data, bool needsDescriptionOnly)
 {
     // don't reset so that user's translation appends the built-in one instead of replacing it
     // this->reset();
@@ -54,6 +54,11 @@ void Translation::deserialize(const SerializedData &data)
 
     this->id = root.getProperty(Translations::localeId).toString().toLowerCase();
     this->name = root.getProperty(Translations::localeName);
+
+    if (needsDescriptionOnly)
+    {
+        return;
+    }
 
     this->pluralEquation = Translations::wrapperClassName + "." +
         Translations::wrapperMethodName + "(" +

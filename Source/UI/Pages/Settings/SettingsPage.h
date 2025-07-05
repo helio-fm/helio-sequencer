@@ -17,16 +17,36 @@
 
 #pragma once
 
-class PageBackgroundB;
+#include "PageBackgroundB.h"
 
 class SettingsPage final : public Component
 {
 public:
 
-    explicit SettingsPage(Component *settingsList);
-    ~SettingsPage() override;
+    explicit SettingsPage(Component *settingsList)
+    {
+        this->background = make<PageBackgroundB>();
+        this->addAndMakeVisible(this->background.get());
 
-    void resized() override;
+        this->viewport = make<Viewport>();
+        this->addAndMakeVisible(this->viewport.get());
+        this->viewport->setScrollBarsShown(true, false);
+        this->viewport->setScrollBarThickness(SettingsPage::viewportScrollBarWidth);
+        this->viewport->setViewedComponent(settingsList, false);
+
+        this->setFocusContainerType(Component::FocusContainerType::keyboardFocusContainer);
+        this->setWantsKeyboardFocus(true);
+        this->setPaintingIsUnclipped(true);
+    }
+
+    void resized() override
+    {
+        this->background->setBounds(this->getLocalBounds());
+        this->viewport->setBounds(this->getLocalBounds().reduced(6));
+        this->viewport->getViewedComponent()->
+            setSize(this->viewport->getMaximumVisibleWidth(),
+                this->viewport->getViewedComponent()->getHeight());
+    }
 
 #if PLATFORM_DESKTOP
     static constexpr auto viewportScrollBarWidth = 2;

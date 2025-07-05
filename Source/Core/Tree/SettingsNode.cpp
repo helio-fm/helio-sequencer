@@ -21,7 +21,6 @@
 #include "AudioSettings.h"
 #include "ThemeSettings.h"
 #include "UserInterfaceSettings.h"
-#include "TranslationSettings.h"
 #include "SettingsFrameWrapper.h"
 #include "ComponentsList.h"
 #include "SettingsPage.h"
@@ -54,8 +53,6 @@ void SettingsNode::showPage()
 void SettingsNode::recreatePage()
 {
     this->settingsPage = nullptr;
-    this->translationSettingsWrapper = nullptr;
-    this->translationSettings = nullptr;
     this->uiSettingsWrapper = nullptr;
     this->uiSettings = nullptr;
     this->themeSettingsWrapper = nullptr;
@@ -67,11 +64,6 @@ void SettingsNode::recreatePage()
     constexpr auto listPadding = 10;
     this->settingsList = make<ComponentsList>(listPadding,
         jmax(0, listPadding - SettingsPage::viewportScrollBarWidth));
-
-    this->translationSettings = make<TranslationSettings>();
-    const String untranslatedLanguageCaption(CharPointer_UTF8("Language / \xe8\xaf\xad\xe8\xa8\x80 / Sprache / \xd0\xaf\xd0\xb7\xd1\x8b\xd0\xba"));
-    this->translationSettingsWrapper = make<SettingsFrameWrapper>(this->translationSettings.get(), untranslatedLanguageCaption);
-    this->settingsList->addAndMakeVisible(this->translationSettingsWrapper.get());
 
     this->themeSettings = make<ThemeSettings>();
     this->themeSettingsWrapper = make<SettingsFrameWrapper>(this->themeSettings.get(), TRANS(I18n::Settings::ui));

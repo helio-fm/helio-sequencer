@@ -186,6 +186,13 @@ String MenuItem::createTooltip(String message, KeyPress keyPress)
     return move(message) + '\n' + TRANS(I18n::Tooltips::hotkey) + " " + keyPress.getTextDescription();
 }
 
+MenuItem::Ptr MenuItem::withSubtitle(const String &string)
+{
+    MenuItem::Ptr description(this);
+    description->hotkeyText = string;
+    return description;
+}
+
 MenuItem::Ptr MenuItem::withHotkeyText(int commandId)
 {
     MenuItem::Ptr description(this);

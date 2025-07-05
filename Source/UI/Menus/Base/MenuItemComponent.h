@@ -87,6 +87,7 @@ struct MenuItem final : public ReferenceCountedObject
     MenuItem::Ptr withColour(const Colour &colour);
     MenuItem::Ptr withTooltip(String tooltip);
     MenuItem::Ptr withHotkeyText(int commandId);
+    MenuItem::Ptr withSubtitle(const String &string);
     MenuItem::Ptr withWeight(float weight);
     MenuItem::Ptr toggledIf(bool shouldBeToggled);
     MenuItem::Ptr disabledIf(bool condition);

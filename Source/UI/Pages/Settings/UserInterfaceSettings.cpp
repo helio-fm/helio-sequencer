@@ -34,9 +34,40 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
 
+    this->currentTranslation =
+        App::Config().getTranslations()->getCurrent();
+
+    const auto languageMenuProvider = [this]()
+    {
+        MenuPanel::Menu languageMenu;
+
+        this->translations = App::Config().getTranslations()->getAll();
+        for (int i = 0; i < this->translations.size(); ++i)
+        {
+            const auto translation = this->translations.getUnchecked(i);
+            const bool isSelected = translation == this->currentTranslation;
+            languageMenu.add(MenuItem::item(isSelected ? Icons::apply : Icons::empty,
+                CommandIDs::SelectLanguage + i, translation->getName())->
+                    withSubtitle(translation->getId()));
+        }
+
+        return languageMenu;
+    };
+
+    const String untranslatedLanguageCaption(CharPointer_UTF8("Language / \xe8\xaf\xad\xe8\xa8\x80 / Sprache / \xd0\xaf\xd0\xb7\xd1\x8b\xd0\xba"));
+
+    this->languageEditor = HelioTheme::makeSingleLineTextEditor(false);
+    this->addAndMakeVisible(this->languageEditor.get());
+    this->languageEditor->setText(untranslatedLanguageCaption + ": " + this->currentTranslation->getName());
+
+    this->languageCombo = make<MobileComboBox::Container>();
+    this->addAndMakeVisible(this->languageCombo.get());
+    this->languageCombo->initWith(this->languageEditor.get(), languageMenuProvider);
+
 #if !SIMPLIFIED_UI_SETTINGS
 
-    const String lastUsedFontName = App::Config().getProperty(Serialization::Config::lastUsedFont);
+    const String lastUsedFontName =
+        App::Config().getProperty(Serialization::Config::lastUsedFont);
 
     // deferred menu initialization:
     const auto fontsMenuProvider = [this, lastUsedFontName]()
@@ -116,6 +147,9 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->addAndMakeVisible(this->miscFlagsSeparator.get());
 
 #endif
+
+    this->combosSeparator = make<SeparatorHorizontal>();
+    this->addAndMakeVisible(this->combosSeparator.get());
 
     this->followPlayheadButton = make<ToggleButton>(TRANS(I18n::Settings::followPlayhead));
     this->addAndMakeVisible(this->followPlayheadButton.get());
@@ -233,9 +267,9 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->scaleUi2->setRadioGroupId(2);
 
 #if SIMPLIFIED_UI_SETTINGS
-    this->setSize(100, 320);
+    this->setSize(100, 365);
 #else
-    this->setSize(100, 530);
+    this->setSize(100, 580);
 #endif
 }
 
@@ -250,18 +284,29 @@ void UserInterfaceSettings::resized()
     constexpr auto titleSize = 18;
     constexpr auto rowSize = 26;
     constexpr auto rowSpacing = 4;
-    constexpr auto radioButtonSpacing = 1;
+
+    this->languageCombo->setBounds(margin1, margin1,
+        this->getWidth() - margin1 * 2, this->getHeight() - margin1 * 2);
+
+    this->languageEditor->setBounds(margin2, margin2,
+        this->getWidth() - margin2 * 2, Globals::UI::textEditorHeight);
 
 #if !SIMPLIFIED_UI_SETTINGS
 
     this->fontsCombo->setBounds(margin1, margin1,
         this->getWidth() - margin1 * 2, this->getHeight() - margin1 * 2);
 
-    this->fontEditor->setBounds(margin2, margin2,
+    this->fontEditor->setBounds(margin2,
+        this->languageEditor->getBottom() + (rowSpacing * 2),
         this->getWidth() - margin2 * 2, Globals::UI::textEditorHeight);
 
+    this->combosSeparator->setBounds(margin2,
+        this->fontEditor->getBottom() + (rowSpacing * 2) + separatorMargin,
+        this->getWidth() - margin2 * 2, separatorSize);
+
     this->openGLRendererButton->setBounds(margin2,
-        this->fontEditor->getBottom() + (rowSpacing * 2), this->getWidth() - margin2 * 2, rowSize);
+        this->combosSeparator->getBottom() + separatorMargin + rowSpacing,
+        this->getWidth() - margin2 * 2, rowSize);
 
     this->nativeTitleBarButton->setBounds(margin2,
         this->openGLRendererButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
@@ -287,7 +332,12 @@ void UserInterfaceSettings::resized()
 
 #else
 
-    const auto bottomSectionStart = margin2;
+    this->combosSeparator->setBounds(margin2,
+        this->languageEditor->getBottom() + (rowSpacing * 2) + separatorMargin,
+        this->getWidth() - margin2 * 2, separatorSize);
+
+    const auto bottomSectionStart =
+        this->combosSeparator->getBottom() + separatorMargin + rowSpacing;
 
 #endif
 
@@ -308,7 +358,7 @@ void UserInterfaceSettings::resized()
         this->noteNamesTitle->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->fixedDoNotation->setBounds(margin2,
-        this->germanNotation->getBottom() + radioButtonSpacing, this->getWidth() - margin2 * 2, rowSize);
+        this->germanNotation->getBottom(), this->getWidth() - margin2 * 2, rowSize);
 
     this->uiScaleSeparator->setBounds(margin2,
         this->fixedDoNotation->getBottom() + rowSpacing + separatorMargin,
@@ -321,13 +371,13 @@ void UserInterfaceSettings::resized()
         this->uiScaleTitle->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->scaleUi125->setBounds(margin2,
-        this->scaleUi1->getBottom() + radioButtonSpacing, this->getWidth() - margin2 * 2, rowSize);
+        this->scaleUi1->getBottom(), this->getWidth() - margin2 * 2, rowSize);
 
     this->scaleUi15->setBounds(margin2,
-        this->scaleUi125->getBottom() + radioButtonSpacing, this->getWidth() - margin2 * 2, rowSize);
+        this->scaleUi125->getBottom(), this->getWidth() - margin2 * 2, rowSize);
 
     this->scaleUi2->setBounds(margin2,
-        this->scaleUi15->getBottom() + radioButtonSpacing, this->getWidth() - margin2 * 2, rowSize);
+        this->scaleUi15->getBottom(), this->getWidth() - margin2 * 2, rowSize);
 }
 
 void UserInterfaceSettings::visibilityChanged()
@@ -340,6 +390,21 @@ void UserInterfaceSettings::visibilityChanged()
 
 void UserInterfaceSettings::handleCommandMessage(int commandId)
 {
+    if (commandId >= CommandIDs::SelectLanguage &&
+        commandId <= (CommandIDs::SelectLanguage + this->translations.size()))
+    {
+        const int translationIndex = commandId - CommandIDs::SelectLanguage;
+        const auto newLocaleId = this->translations[translationIndex]->getId();
+        if (newLocaleId == this->currentTranslation->getId())
+        {
+            return;
+        }
+
+        App::Config().getTranslations()->loadLocaleWithId(newLocaleId);
+        App::recreateLayout();
+        return;
+    }
+
 #if !SIMPLIFIED_UI_SETTINGS
     if (commandId >= CommandIDs::SelectFont &&
         commandId <= (CommandIDs::SelectFont + this->systemFonts.size()))
@@ -354,6 +419,7 @@ void UserInterfaceSettings::handleCommandMessage(int commandId)
             window->resized();
             window->repaint();
         }
+        return;
     }
 #endif
 }
