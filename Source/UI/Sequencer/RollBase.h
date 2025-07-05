@@ -382,8 +382,6 @@ protected:
     void continueDragging(const MouseEvent &e);
     Point<int> getMouseOffset(Point<int> mouseScreenPosition) const;
 
-    Point<int> getDefaultPositionForPopup() const;
-
     Lasso selection;
 
     virtual void startErasingEvents(const Point<float> &mousePosition) = 0;

@@ -55,6 +55,8 @@ public:
     void setDefaultNoteLength(float length) noexcept;
     float getDefaultNoteLength() const noexcept;
 
+    Point<int> getDefaultPositionForChordTool() const;
+
     //===------------------------------------------------------------------===//
     // Ghost notes
     //===------------------------------------------------------------------===//

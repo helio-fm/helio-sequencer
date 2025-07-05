@@ -2002,24 +2002,6 @@ Point<int> RollBase::getMouseOffset(Point<int> mouseScreenPosition) const
     return {x, y};
 }
 
-Point<int> RollBase::getDefaultPositionForPopup() const
-{
-    // a point where pop-ups will appear when keypress is hit or toolbar button is clicked
-    // on desktop, if mouse position is within a roll, use it, instead, use main layout centre
-#if PLATFORM_DESKTOP
-    const auto mousePositionWithinApp =
-        Desktop::getInstance().getMainMouseSource().getScreenPosition().toInt() -
-        App::Layout().getScreenBounds().getPosition();
-
-    if (App::Layout().getBoundsForPopups().contains(mousePositionWithinApp))
-    {
-        return mousePositionWithinApp;
-    }
-#endif
-
-    return App::Layout().getBoundsForPopups().getCentre();
-}
-
 void RollBase::updateWidth()
 {
     this->setSize(int(this->getNumBeats() * this->beatWidth), this->getHeight());

@@ -60,7 +60,7 @@ public:
 
 private:
 
-    const PianoRoll &roll;
+    PianoRoll &roll;
     WeakReference<PianoSequence> sequence;
     const Clip clip;
 

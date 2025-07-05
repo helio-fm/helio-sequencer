@@ -237,6 +237,9 @@ bool ChordPreviewTool::keyPressed(const KeyPress &key)
 
 void ChordPreviewTool::inputAttemptWhenModal()
 {
+    // a hack, see the same in CommandPalette, DialogBase and ModalCallout:
+    this->roll.resetDraggingAnchors();
+
     this->dismissAsCancelled();
 }
 
@@ -282,7 +285,8 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
         {
             this->buildNewNote(true);
 
-            const auto targetKeyOffset = (this->targetKey + this->clip.getKey()) % this->scale->getBasePeriod();
+            const auto absKey = this->targetKey + this->clip.getKey();
+            const auto targetKeyOffset = absKey % this->scale->getBasePeriod();
             const auto chromaticOffset = targetKeyOffset - this->scaleRootKey;
             const auto scaleDegree = this->scale->getScaleKey(chromaticOffset);
 
@@ -292,8 +296,7 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
 
                 int periodNumber = 0;
                 auto keyName = this->roll.getTemperament()->
-                    getMidiNoteName(this->targetKey + this->clip.getKey(),
-                        this->scaleRootKey, this->scaleRootKeyName, periodNumber);
+                    getMidiNoteName(absKey, this->scaleRootKey, this->scaleRootKeyName, periodNumber);
 
                 auto tooltip = make<ChordTooltip>(String(), degreeName, keyName);
                 App::Layout().showTooltip(move(tooltip));
@@ -332,9 +335,10 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 {
     if (!chord->isValid()) { return; }
 
-    const auto period = (this->targetKey - this->scaleRootKey) / this->scale->getBasePeriod();
+    const auto absKey = this->targetKey + this->clip.getKey();
+    const auto period = (absKey - this->scaleRootKey) / this->scale->getBasePeriod();
     const auto periodOffset = period * this->scale->getBasePeriod();
-    const auto targetKeyOffset = (this->targetKey + this->clip.getKey()) % this->scale->getBasePeriod();
+    const auto targetKeyOffset = absKey % this->scale->getBasePeriod();
     const auto chromaticOffset = targetKeyOffset - this->scaleRootKey;
     const auto scaleDegree = this->scale->getScaleKey(chromaticOffset);
 
@@ -352,7 +356,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 
         int periodNumber = 0;
         const auto keyName =
-            temperament->getMidiNoteName(this->targetKey + this->clip.getKey(),
+            temperament->getMidiNoteName(absKey,
                 this->scaleRootKey, this->scaleRootKeyName, periodNumber);
 
         const auto degreeName = this->degreeNames[scaleDegree];
@@ -364,10 +368,12 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
         {
             const auto inScaleKey = scaleDegree + chordKey.getInScaleKey();
             const auto finalRootOffset = periodOffset + this->scaleRootKey;
-            const int key = jlimit(0, temperament->getNumKeys(), finalRootOffset +
+            const auto key = jlimit(0, temperament->getNumKeys(), finalRootOffset +
                 this->scale->getChromaticKey(inScaleKey, chordKey.getChromaticOffset(), false));
 
-            const Note note(this->sequence.get(), key, this->targetBeat,
+            const Note note(this->sequence.get(),
+                key - this->clip.getKey(),
+                this->targetBeat,
                 this->barLengthInBeats,
                 this->roll.getDefaultNoteVolume());
 
@@ -376,7 +382,7 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
             const auto *track = this->sequence->getTrack();
             this->roll.getTransport().previewKey(track->getTrackId(),
                 track->getTrackChannel(),
-                key + this->clip.getKey(),
+                key,
                 note.getVelocity(),
                 note.getLength());
         }

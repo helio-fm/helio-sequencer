@@ -186,6 +186,40 @@ void PianoRoll::setRowHeight(int newRowHeight)
     this->updateHeight();
 }
 
+Point<int> PianoRoll::getDefaultPositionForChordTool() const
+{
+    auto centre = this->viewport.getViewArea().getCentre();
+
+    // a hack: try to place the chord tool on the closest in-scale key by default;
+    // instead we could just return App::Layout().getBoundsForPopups().getCentre()
+    int targetKey = 0;
+    float targetBeat = 0.f;
+    int scaleRootKey = 0;
+    String scaleRootKeyName;
+    auto scale = Scale::makeNaturalMajorScale();
+    for (int i = 0; i < 7; ++i)
+    {
+        this->getRowsColsByMousePosition(centre.x, centre.y, targetKey, targetBeat);
+
+        const auto absKey = targetKey + this->activeClip.getKey();
+        const auto absBeat = targetBeat + this->activeClip.getBeat();
+        auto *harmonicContext = this->project.getTimeline()->getKeySignaturesSequence();
+        SequencerOperations::findHarmonicContext(absBeat, absBeat,
+            harmonicContext, scale, scaleRootKey, scaleRootKeyName);
+
+        const auto targetKeyOffset = absKey % scale->getBasePeriod();
+        const auto chromaticOffset = targetKeyOffset - scaleRootKey;
+        if (scale->getScaleKey(chromaticOffset) >= 0)
+        {
+            break;
+        }
+
+        centre = centre.translated(0, -this->rowHeight);
+    }
+
+    return App::Layout().getLocalPoint(this, centre);
+}
+
 void PianoRoll::updateHeight()
 {
     this->setSize(this->getWidth(),
@@ -1533,7 +1567,7 @@ void PianoRoll::handleCommandMessage(int commandId)
             this->project.getTimeline()->getKeySignaturesSequence()), this, true);
         break;
     case CommandIDs::ShowChordPanel:
-        this->showChordTool(this->getDefaultPositionForPopup());
+        this->showChordTool(this->getDefaultPositionForChordTool());
         break;
     case CommandIDs::ToggleVolumePanel:
         App::Config().getUiFlags()->toggleEditorPanelVisibility();
