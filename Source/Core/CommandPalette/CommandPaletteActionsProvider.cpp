@@ -146,13 +146,13 @@ bool CommandPaletteAction::isUnfiltered() const noexcept
     return this->required;
 }
 
-// Actions filtering makes use of Sublime-like fuzzy matcher,
-// taken from this public domain library by Forrest Smith,
-// adapted for JUCE String class for the sake of Unicode support:
+// Actions filtering uses a Sublime-like fuzzy matcher
+// based on the public domain library by Forrest Smith
+// and adapted for the JUCE String class to support Unicode:
 // https://github.com/forrestthewoods/lib_fts/blob/master/code/fts_fuzzy_match.h
 // https://www.forrestthewoods.com/blog/reverse_engineering_sublime_texts_fuzzy_match
 
-// Original code had a limit of 256, but I really expect it to be way lower:
+// The original code had a limit of 256, but I really expect it to be way lower:
 #define FUZZY_MAX_MATCHES (32)
 #define FUZZY_MAX_RECURSION (8)
 
@@ -273,7 +273,7 @@ static bool fuzzyMatch(String::CharPointerType pattern, String::CharPointerType 
             }
 
             // Advance
-            matches[nextMatch++] = (uint8)(str - strBegin);
+            matches[nextMatch++] = uint8(strBegin.lengthUpTo(str));
             ++pattern;
         }
         ++str;
@@ -312,7 +312,7 @@ static bool fuzzyMatch(String::CharPointerType pattern, String::CharPointerType 
         outScore += penalty;
 
         // Apply unmatched penalty
-        const auto unmatched = (int)(str - strBegin) - nextMatch;
+        const auto unmatched = int(strBegin.lengthUpTo(str)) - nextMatch;
         outScore += unmatchedLetterPenalty * unmatched;
 
         // Apply ordering bonuses

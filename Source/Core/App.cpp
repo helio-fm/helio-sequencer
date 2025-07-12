@@ -32,6 +32,8 @@
 #include "Workspace.h"
 #include "RootNode.h"
 
+#include <locale>
+
 //===----------------------------------------------------------------------===//
 // Window
 //===----------------------------------------------------------------------===//
@@ -637,6 +639,10 @@ void App::initialise(const String &commandLine)
 #endif
 
         DBG("Helio v" + App::getAppReadableVersion());
+
+        // set the default locale to the environment locale
+        // for things like toLowerCase() to work properly
+        std::locale::global(std::locale(""));
 
         const auto album = Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise;
         Desktop::getInstance().setOrientationsEnabled(album);
