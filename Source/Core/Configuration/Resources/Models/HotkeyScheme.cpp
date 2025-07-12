@@ -19,6 +19,165 @@
 #include "HotkeyScheme.h"
 #include "SerializationKeys.h"
 
+// this class copies createFromDescription() etc from the KeyPress class,
+// except it allows to specify spacebar as a modifier as well as a keypress:
+// the app uses spacebar as a temporary toggle for the panning mode,
+// so we want navigation hotkeys to be consistent with it, e.g. spacebar + cursor keys
+struct KeyPressReader final
+{
+    static const char *numberPadPrefix() noexcept
+    {
+        return "numpad ";
+    }
+
+    static int getNumpadKeyCode(const String &desc)
+    {
+        if (desc.containsIgnoreCase(numberPadPrefix()))
+        {
+            const auto lastChar = desc.trimEnd().getLastCharacter();
+            switch (lastChar)
+            {
+                case '0': case '1': case '2': case '3': case '4':
+                case '5': case '6': case '7': case '8': case '9':
+                    return int(KeyPress::numberPad0 + int(lastChar) - '0');
+                case '+':   return KeyPress::numberPadAdd;
+                case '-':   return KeyPress::numberPadSubtract;
+                case '*':   return KeyPress::numberPadMultiply;
+                case '/':   return KeyPress::numberPadDivide;
+                case '.':   return KeyPress::numberPadDecimalPoint;
+                case '=':   return KeyPress::numberPadEquals;
+                default:    break;
+            }
+
+            if (desc.endsWith ("separator"))  return KeyPress::numberPadSeparator;
+            if (desc.endsWith ("delete"))     return KeyPress::numberPadDelete;
+        }
+
+        return 0;
+    }
+
+    static KeyPress createFromDescription(const String &desc)
+    {
+        struct KeyNameAndCode final
+        {
+            const char *name;
+            int code;
+        };
+
+        const KeyNameAndCode translations[] =
+        {
+            { "spacebar",       KeyPress::spaceKey },
+            { "return",         KeyPress::returnKey },
+            { "escape",         KeyPress::escapeKey },
+            { "backspace",      KeyPress::backspaceKey },
+            { "cursor left",    KeyPress::leftKey },
+            { "cursor right",   KeyPress::rightKey },
+            { "cursor up",      KeyPress::upKey },
+            { "cursor down",    KeyPress::downKey },
+            { "page up",        KeyPress::pageUpKey },
+            { "page down",      KeyPress::pageDownKey },
+            { "home",           KeyPress::homeKey },
+            { "end",            KeyPress::endKey },
+            { "delete",         KeyPress::deleteKey },
+            { "insert",         KeyPress::insertKey },
+            { "tab",            KeyPress::tabKey },
+            { "play",           KeyPress::playKey },
+            { "stop",           KeyPress::stopKey },
+            { "fast forward",   KeyPress::fastForwardKey },
+            { "rewind",         KeyPress::rewindKey }
+        };
+
+        struct ModifierDescription final
+        {
+            const char *name;
+            int flag;
+        };
+
+        static const ModifierDescription modifierNames[] =
+        {
+            { "ctrl",      ModifierKeys::ctrlModifier },
+            { "control",   ModifierKeys::ctrlModifier },
+            { "ctl",       ModifierKeys::ctrlModifier },
+            { "shift",     ModifierKeys::shiftModifier },
+            { "shft",      ModifierKeys::shiftModifier },
+            { "alt",       ModifierKeys::altModifier },
+            { "option",    ModifierKeys::altModifier },
+            { "command",   ModifierKeys::commandModifier },
+            { "cmd",       ModifierKeys::commandModifier },
+            // let's reuse the MMB modifier for the spacebar modifier,
+            // since their function is nearly identical in the app (panning mode);
+            // see also the HotkeyScheme::dispatchKeyPress method
+            { "spacebar",  ModifierKeys::middleButtonModifier }
+        };
+
+        int modifiers = 0;
+        StringArray usedModifierNames;
+        for (int i = 0; i < numElementsInArray(modifierNames); ++i)
+        {
+            const String modifierName(modifierNames[i].name);
+            if (desc.containsWholeWordIgnoreCase(modifierName) &&
+                !desc.endsWithIgnoreCase(modifierName)) // is a modifier, not a keypress
+            {
+                modifiers |= modifierNames[i].flag;
+                usedModifierNames.add(modifierName);
+            }
+        }
+
+        int key = 0;
+        for (int i = 0; i < numElementsInArray(translations); ++i)
+        {
+            const String translationName(translations[i].name);
+            if (desc.containsWholeWordIgnoreCase(translationName) &&
+                !usedModifierNames.contains(translationName)) // is a keypress, not a modifier
+            {
+                key = translations[i].code;
+                break;
+            }
+        }
+
+        if (key == 0)
+        {
+            key = KeyPressReader::getNumpadKeyCode(desc);
+        }
+
+        if (key == 0)
+        {
+            // see if it's a function key..
+            if (!desc.containsChar('#')) // avoid mistaking hex-codes like "#f1"
+            {
+                for (int i = 1; i <= 35; ++i)
+                {
+                    if (desc.containsWholeWordIgnoreCase("f" + String(i)))
+                    {
+                        if (i <= 16)        key = KeyPress::F1Key + i - 1;
+                        else if (i <= 24)   key = KeyPress::F17Key + i - 17;
+                        else if (i <= 35)   key = KeyPress::F25Key + i - 25;
+                    }
+                }
+            }
+
+            if (key == 0)
+            {
+                // give up and use the hex code..
+                auto hexCode = desc.fromFirstOccurrenceOf("#", false, false)
+                                   .retainCharacters("0123456789abcdefABCDEF")
+                                   .getHexValue32();
+
+                if (hexCode > 0)
+                {
+                    key = hexCode;
+                }
+                else
+                {
+                    key = (int)CharacterFunctions::toUpperCase(desc.getLastCharacter());
+                }
+            }
+        }
+
+        return KeyPress(key, ModifierKeys(modifiers), 0);
+    }
+};
+
 bool operator==(const HotkeyScheme::Hotkey &lhs, const HotkeyScheme::Hotkey &rhs)
 {
     return lhs.keyPress == rhs.keyPress &&
@@ -62,14 +221,20 @@ bool HotkeyScheme::dispatchKeyPress(KeyPress keyPress,
     WeakReference<Component> keyPressReceivedFrom,
     WeakReference<Component> componentToSendMessageTo)
 {
+    // a hack to allow using spacebar as a modifier, see the comments in KeyPressReader
+    static KeyPress spaceKey(KeyPress::spaceKey);
+    const auto modifiedKeyPress = (spaceKey.isCurrentlyDown() && keyPress != spaceKey) ?
+        KeyPress(keyPress.getKeyCode(), ModifierKeys(ModifierKeys::middleButtonModifier), 0) :
+        keyPress;
+
     for (const auto &key : this->keyPresses)
     {
-        if (key.first.keyPress == keyPress)
+        if (key.first.keyPress == modifiedKeyPress)
         {
             if (this->sendHotkeyCommand(key.first.componentId,
                 key.second, keyPressReceivedFrom, componentToSendMessageTo))
             {
-                this->lastKeyPress = keyPress;
+                this->lastKeyPress = modifiedKeyPress;
                 return true;
             }
         }
@@ -193,7 +358,7 @@ static inline HotkeyScheme::Hotkey deserializeHotkey(const SerializedData &e, co
     const auto keyPressDesc =
         e.getProperty(Serialization::UI::Hotkeys::hotkeyDescription);
 
-    result.keyPress = KeyPress::createFromDescription(keyPressDesc);
+    result.keyPress = KeyPressReader::createFromDescription(keyPressDesc);
     result.componentId = receiver.isNotEmpty() ?
         receiver :
         e.getProperty(Serialization::UI::Hotkeys::hotkeyReceiver).toString();

@@ -35,6 +35,7 @@
 #include "RollHeader.h"
 #include "KnifeToolHelper.h"
 #include "MergingEventsConnector.h"
+#include "SmoothPanController.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
 #include "SelectionComponent.h"
@@ -1306,7 +1307,7 @@ void PianoRoll::mouseUp(const MouseEvent &e)
 // Keyboard shortcuts
 //===----------------------------------------------------------------------===//
 
-// Handle all hot-key commands here:
+// Handle all hotkey commands here:
 void PianoRoll::handleCommandMessage(int commandId)
 {
     // some refactoring operations will use getLassoOrEntireSequence() to affect
@@ -1316,6 +1317,12 @@ void PianoRoll::handleCommandMessage(int commandId)
 
     switch (commandId)
     {
+    case CommandIDs::ViewportPanUp:
+        this->smoothPanController->panByOffset({ 0.f, -float(this->rowHeight * 3) });
+        break;
+    case CommandIDs::ViewportPanDown:
+        this->smoothPanController->panByOffset({ 0.f, float(this->rowHeight * 3) });
+        break;
     case CommandIDs::SelectAllEvents:
         this->selectAll();
         break;

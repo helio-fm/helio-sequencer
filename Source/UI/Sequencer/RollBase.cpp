@@ -1321,6 +1321,12 @@ void RollBase::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
+    case CommandIDs::ViewportPanLeft:
+        this->smoothPanController->panByOffset({ -this->beatWidth * Globals::beatsPerBar, 0.f });
+        break;
+    case CommandIDs::ViewportPanRight:
+        this->smoothPanController->panByOffset({ this->beatWidth * Globals::beatsPerBar, 0.f });
+        break;
     case CommandIDs::EditModeDefault:
         this->project.getEditMode().setMode(RollEditMode::defaultMode);
         break;

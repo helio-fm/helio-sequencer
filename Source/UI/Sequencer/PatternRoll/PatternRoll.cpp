@@ -28,6 +28,7 @@
 #include "PianoTrackNode.h"
 #include "AutomationTrackNode.h"
 #include "LassoListeners.h"
+#include "SmoothPanController.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
 #include "SelectionComponent.h"
@@ -705,6 +706,12 @@ void PatternRoll::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
+    case CommandIDs::ViewportPanUp:
+        this->smoothPanController->panByOffset({ 0.f, -float(PatternRoll::rowHeight) });
+        break;
+    case CommandIDs::ViewportPanDown:
+        this->smoothPanController->panByOffset({ 0.f, float(PatternRoll::rowHeight) });
+        break;
     case CommandIDs::SelectAllClips:
         this->selectAll();
         break;

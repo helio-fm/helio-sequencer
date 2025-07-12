@@ -414,15 +414,17 @@ void MainLayout::lookAndFeelChanged()
 
 bool MainLayout::keyPressed(const KeyPress &key)
 {
+#if PLATFORM_MOBILE
+
     // under Android, it sends here the ';' key, 
     // when you type a capital letter or a char like @, !, ?
-    // a piece of juce.
-#if PLATFORM_MOBILE
     return false;
+
 #elif PLATFORM_DESKTOP
 
     if (Component::getNumCurrentlyModalComponents() > 0)
     {
+        jassertfalse;
         return false;
     }
 
@@ -431,30 +433,9 @@ bool MainLayout::keyPressed(const KeyPress &key)
     {
         return true;
     }
-
-#if JUCE_ENABLE_LIVE_CONSTANT_EDITOR
-
-    if (key == KeyPress::createFromDescription("f1"))
-    {
-        if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
-        {
-            auto scheme = App::Config().getColourSchemes()->getCurrent();
-            ht->initColours(scheme);
-            this->repaint();
-
-            scheme->syncWithLiveConstantEditor();
-            const auto schemeNode(scheme->serialize());
-            String schemeNodeString;
-            JsonSerializer serializer;
-            serializer.saveToString(schemeNodeString, schemeNode);
-            SystemClipboard::copyTextToClipboard(schemeNodeString);
-            return true;
-        }
-    }
-
-#endif
     
     return false;
+
 #endif
 }
 
@@ -462,6 +443,7 @@ bool MainLayout::keyStateChanged(bool isKeyDown)
 {
     if (Component::getNumCurrentlyModalComponents() > 0)
     {
+        jassertfalse;
         return false;
     }
 

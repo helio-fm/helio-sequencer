@@ -182,6 +182,11 @@ namespace CommandIDs
         TransposeFifthDown              = 0x401b,
         AlignToScale                    = 0x401c,
 
+        ViewportPanLeft                 = 0x4020,
+        ViewportPanRight                = 0x4021,
+        ViewportPanUp                   = 0x4022,
+        ViewportPanDown                 = 0x4023,
+
         CleanupOverlaps                 = 0x4030,
         InvertChordUp                   = 0x4031,
         InvertChordDown                 = 0x4032,

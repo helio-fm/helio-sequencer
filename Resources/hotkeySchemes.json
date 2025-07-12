@@ -1,17 +1,26 @@
 {
   "hotkeySchemes": { "hotkeyScheme": { "name": "Default", "group": [
 
-  // Hotkeys are grouped by "receiver" attribute, which is a component id,
-  // and by keypress type, which is one of "keyPress", "keyDown" and "keyUp".
-  // Each record contains "command" attribute (see CommandIDs.h for available commands),
-  // and "key" attribute, which is case-insensitive textual combination of keys
-  // (letters or specific) and modifiers (if any).
-  // Modifier names are: "alt", "shift", "control", "command".
-  // Non-letter hotkey names are: "spacebar", "return", "escape", "backspace",
-  // "cursor left", "cursor right", "cursor up", "cursor down",
-  // "page up", "page down", "home", "end", "delete", "insert",
-  // "tab", "play", "stop", "fast forward", "rewind".
-  // ANCHORs are here only for the docs generator.
+  /*
+    The app groups hotkeys by "receiver" attribute (component id) and keypress,
+    so you can have several keys for one command within a component,
+    but cannot have several commands assigned to the same keypress.
+
+    For the "command" attribute see CommandIDs.h for available commands,
+    and the "key" attribute is the case-insensitive textual combination
+    of keys (letters or specific) and modifiers (if any).
+
+    Non-letter key names are: "return", "escape", "backspace",
+    "cursor left", "cursor right", "cursor up", "cursor down",
+    "page up", "page down", "home", "end", "delete", "insert",
+    "tab", "play", "stop", "fast forward", "rewind",
+    and "spacebar" (can be used as both keypress and modifier).
+
+    Modifier names are: "alt", "shift", "control", "command", "spacebar"
+    (spacebar is mostly used as a modifier for the panning mode commands).
+
+    ANCHORs are here only for the docs generator.
+  */
 
   { // ANCHOR: MainLayout
     "receiver": "MainLayout",
@@ -166,6 +175,18 @@
       { "command": "TimelineJumpPrevious", "key": "," },
       { "command": "TimelineJumpHome", "key": "Home" },
       { "command": "TimelineJumpEnd", "key": "End" },
+      { "command": "ViewportPanLeft", "key": "Spacebar + Cursor Left" },
+      { "command": "ViewportPanRight", "key": "Spacebar + Cursor Right" },
+      { "command": "ViewportPanUp", "key": "Spacebar + Cursor Up" },
+      { "command": "ViewportPanDown", "key": "Spacebar + Cursor Down" },
+      { "command": "ViewportPanLeft", "key": "Spacebar + H" },
+      { "command": "ViewportPanRight", "key": "Spacebar + L" },
+      { "command": "ViewportPanUp", "key": "Spacebar + K" },
+      { "command": "ViewportPanDown", "key": "Spacebar + J" },
+      { "command": "ViewportPanLeft", "key": "Spacebar + Numpad 4" },
+      { "command": "ViewportPanRight", "key": "Spacebar + Numpad 6" },
+      { "command": "ViewportPanUp", "key": "Spacebar + Numpad 8" },
+      { "command": "ViewportPanDown", "key": "Spacebar + Numpad 2" },
 
       // Selection
       { "command": "SelectAllEvents", "key": "Command + A" },
@@ -243,7 +264,6 @@
       { "command": "ShowChordPanel", "key": "C" },
 
       // Other toggles
-      { "command": "ToggleScalesHighlighting", "key": "H" },
       { "command": "ToggleNoteNameGuides", "key": "G" },
       { "command": "ToggleBottomMiniMap", "key": "B" },
       { "command": "ToggleVolumePanel", "key": "V" },
@@ -300,6 +320,18 @@
       { "command": "TimelineJumpPrevious", "key": "," },
       { "command": "TimelineJumpHome", "key": "Home" },
       { "command": "TimelineJumpEnd", "key": "End" },
+      { "command": "ViewportPanLeft", "key": "Spacebar + Cursor Left" },
+      { "command": "ViewportPanRight", "key": "Spacebar + Cursor Right" },
+      { "command": "ViewportPanUp", "key": "Spacebar + Cursor Up" },
+      { "command": "ViewportPanDown", "key": "Spacebar + Cursor Down" },
+      { "command": "ViewportPanLeft", "key": "Spacebar + H" },
+      { "command": "ViewportPanRight", "key": "Spacebar + L" },
+      { "command": "ViewportPanUp", "key": "Spacebar + K" },
+      { "command": "ViewportPanDown", "key": "Spacebar + J" },
+      { "command": "ViewportPanLeft", "key": "Spacebar + Numpad 4" },
+      { "command": "ViewportPanRight", "key": "Spacebar + Numpad 6" },
+      { "command": "ViewportPanUp", "key": "Spacebar + Numpad 8" },
+      { "command": "ViewportPanDown", "key": "Spacebar + Numpad 2" },
 
       // Selection
       { "command": "SelectAllClips", "key": "Command + A" },

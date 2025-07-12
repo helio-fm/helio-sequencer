@@ -69,9 +69,8 @@ private:
 
     bool animationsEnabled = true;
 
-    static constexpr auto stopDistance = 5;
-    static constexpr auto slowdownFactor = 0.5f;
-    static constexpr auto initialPanSpeed = 155.f;
+    static constexpr auto slowdownFactor = 0.4f;
+    static constexpr auto initialPanSpeed = 140.f;
 
     void timerCallback() override
     {
@@ -81,13 +80,14 @@ private:
     inline void process()
     {
         const auto diff = this->target - this->origin;
-        this->origin += (diff * SmoothPanController::slowdownFactor);
+        const auto delta = (diff * SmoothPanController::slowdownFactor).roundToInt();
+        this->origin += delta.toFloat();
 
         const bool hitTheBorder = 
             this->listener.panByOffset(int(this->origin.getX()),
                 int(this->origin.getY()));
 
-        if (hitTheBorder || diff.getDistanceFromOrigin() < SmoothPanController::stopDistance)
+        if (hitTheBorder || delta.isOrigin())
         {
             this->stopTimer();
         }

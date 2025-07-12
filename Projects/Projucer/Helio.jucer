@@ -1414,17 +1414,17 @@
                        enablePluginBinaryCopyStep="0"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_opengl"/>
-        <MODULEPATH id="juce_gui_extra"/>
-        <MODULEPATH id="juce_gui_basics"/>
-        <MODULEPATH id="juce_graphics"/>
-        <MODULEPATH id="juce_events"/>
-        <MODULEPATH id="juce_data_structures"/>
-        <MODULEPATH id="juce_core"/>
-        <MODULEPATH id="juce_audio_processors"/>
-        <MODULEPATH id="juce_audio_formats"/>
-        <MODULEPATH id="juce_audio_devices"/>
-        <MODULEPATH id="juce_audio_basics"/>
+        <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </VS2019>
     <LINUX_MAKE targetFolder="../../Projects/LinuxMakefile" bigIcon="DQTpOG"
