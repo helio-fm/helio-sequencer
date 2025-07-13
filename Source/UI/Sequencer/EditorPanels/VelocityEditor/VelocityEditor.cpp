@@ -150,7 +150,7 @@ public:
 
     bool hitTest(int x, int y) noexcept override
     {
-        return this->isEditable;
+        return this->isEditable && this->isEnabled();
     }
 
     void mouseDown(const MouseEvent &e) override
@@ -671,8 +671,16 @@ RollEditMode VelocityEditor::getEditMode() const noexcept
 void VelocityEditor::onChangeEditMode(const RollEditMode &mode)
 {
     this->setMouseCursor(this->getSupportedEditMode(mode).getCursor());
-    // todo fix children interaction someday as well
-    // (not straighforward because it shouldn't break setEditable stuff)
+
+    const auto areChildrenEnabled = !mode.isMode(RollEditMode::drawMode);
+    for (const auto &c : this->patternMap)
+    {
+        const auto &componentsMap = *c.second.get();
+        for (const auto &e : componentsMap)
+        {
+            e.second->setEnabled(areChildrenEnabled);
+        }
+    }
 }
 
 bool VelocityEditor::isDraggingEvent(const MouseEvent &e) const
