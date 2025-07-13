@@ -33,6 +33,18 @@
 #include "PointReduction.h"
 #include "ColourIDs.h"
 
+// this defines if the entire panel is sensitive to up/down dragging,
+// or if only the velocity components can be dragged:
+// on mobile platforms, editing velocity is inconvenient
+// when low velocities are close to the screen's edge;
+// on desktop platforms, stick to the classic approach so that
+// the UpDownResizeCursor only appears over velocities, not the panel
+#if PLATFORM_DESKTOP
+#define VELOCITY_DRAGGING_FULL_HEIGHT 0
+#elif PLATFORM_MOBILE
+#define VELOCITY_DRAGGING_FULL_HEIGHT 1
+#endif
+
 //===----------------------------------------------------------------------===//
 // Single note velocity component
 //===----------------------------------------------------------------------===//
@@ -102,11 +114,25 @@ public:
             .withMultipliedAlpha(this->isHighlighted ? 0.25f : 0.1f);
     }
 
-    void setFloatBounds(float x, int y, float w, int h) noexcept
+    // the parameters are bounds within the parent panel with its full height
+    void syncWithNote(float x, int y, float w, int h) noexcept
     {
         this->dx = x - floorf(x);
         this->dw = w - ceilf(w);
+
+#if VELOCITY_DRAGGING_FULL_HEIGHT
+
         this->setBounds(int(floorf(x)), y, int(ceilf(w)), h);
+        // in case the bounds are the same, but the velocity changed
+        this->repaint();
+
+#else
+
+        // at least 4 pixels are visible for 0 volume events:
+        const int noteHeight = jmax(4, int(h * this->getFullVelocity()));
+        this->setBounds(int(floorf(x)), y + h - noteHeight, int(ceilf(w)), noteHeight);
+
+#endif
     }
 
     void setEditable(bool shouldBeEditable, bool shouldBeHighlighted = false)
@@ -135,17 +161,35 @@ public:
 
     void paint(Graphics &g) noexcept override
     {
+#if VELOCITY_DRAGGING_FULL_HEIGHT
+
+        if (this->isDragging)
+        {
+            g.setColour(this->paleColour.withMultipliedLightness(1.25f).withAlpha(0.025f));
+            g.fillRect(this->getLocalBounds());
+        }
+
+        const auto h = jmax(4.f, float(this->getHeight()) * this->getFullVelocity());
+        const auto y = float(this->getHeight()) - h;
+
+#else
+
+        const auto h = float(this->getHeight());
+        const auto y = 0.f;
+
+#endif
+
         g.setColour(this->mainColour);
-        g.fillRect(this->dx, 1.f, 1.f, float(this->getHeight() - 1));
+        g.fillRect(this->dx, y + 1.f, 1.f, h - 1.f);
 
         if (this->getWidth() > 2)
         {
-            g.fillRect(this->dx + 1.f, 0.f, float(this->getWidth() - 2) + this->dw, 1.f);
-            g.fillRect(this->dx, 1.f, float(this->getWidth()) + this->dw, 2.f);
+            g.fillRect(this->dx + 1.f, y, float(this->getWidth() - 2) + this->dw, 1.f);
+            g.fillRect(this->dx, y + 1.f, float(this->getWidth()) + this->dw, 2.f);
         }
 
         g.setColour(this->paleColour);
-        g.fillRect(this->dx, 0.f, float(this->getWidth()) + this->dw, float(this->getHeight()));
+        g.fillRect(this->dx, y, float(this->getWidth()) + this->dw, h);
     }
 
     bool hitTest(int x, int y) noexcept override
@@ -162,6 +206,9 @@ public:
         }
 
         this->getEditor()->startFineTuning(this, e);
+
+        this->isDragging = true;
+        this->repaint();
     }
 
     void mouseDrag(const MouseEvent &e) override
@@ -170,6 +217,10 @@ public:
         if (this->getEditor()->isMultiTouchEvent(e))
         {
             this->getEditor()->endFineTuning(this, e);
+
+            this->isDragging = false;
+            this->repaint();
+
             return;
         }
 
@@ -180,6 +231,9 @@ public:
     {
         jassert(this->isEditable);
         this->getEditor()->endFineTuning(this, e);
+
+        this->isDragging = false;
+        this->repaint();
     }
 
 private:
@@ -203,6 +257,7 @@ private:
 
     bool isEditable = true;
     bool isHighlighted = true;
+    bool isDragging = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VelocityEditorNoteComponent)
 };
@@ -377,7 +432,7 @@ void VelocityEditor::resized()
         for (const auto &e : *sequenceMap)
         {
             jassert(e.second.get());
-            this->applyNoteBounds(e.second.get());
+            this->updateNoteComponent(e.second.get());
         }
     }
 
@@ -813,7 +868,7 @@ void VelocityEditor::onAddClip(const Clip &clip)
 
         (*sequenceMap)[note] = UniquePointer<VelocityEditorNoteComponent>(noteComponent);
         this->addAndMakeVisible(noteComponent);
-        this->applyNoteBounds(noteComponent);
+        this->updateNoteComponent(noteComponent);
     }
 
     VELOCITY_MAP_BATCH_REPAINT_END
@@ -1004,7 +1059,7 @@ void VelocityEditor::continueFineTuning(VelocityEditorNoteComponent *target, con
 
         if (velocityDelta == 0.f)
         {
-            this->applyNoteBounds(target);
+            this->updateNoteComponent(target);
             return;
         }
 
@@ -1067,7 +1122,9 @@ void VelocityEditor::endFineTuning(VelocityEditorNoteComponent *target, const Mo
             SequencerOperations::endTuning(*this->selection);
         }
 
-        this->applyNoteBounds(target);
+        this->updateNoteComponent(target);
+
+        this->editingHadChanges = false;
     }
 }
 
@@ -1224,13 +1281,13 @@ void VelocityEditor::loadTrack(const MidiTrack *const track)
                 noteComponent->setEditable(isEditable);
                 (*sequenceMap)[*note] = UniquePointer<VelocityEditorNoteComponent>(noteComponent);
                 this->addAndMakeVisible(noteComponent);
-                this->applyNoteBounds(noteComponent);
+                this->updateNoteComponent(noteComponent);
             }
         }
     }
 }
 
-void VelocityEditor::applyNoteBounds(VelocityEditorNoteComponent *nc)
+void VelocityEditor::updateNoteComponent(VelocityEditorNoteComponent *nc)
 {
     const float rollLengthInBeats = this->rollLastBeat - this->rollFirstBeat;
     const float projectLengthInBeats = this->projectLastBeat - this->projectFirstBeat;
@@ -1241,9 +1298,7 @@ void VelocityEditor::applyNoteBounds(VelocityEditorNoteComponent *nc)
     const float x = mapWidth * (beat / projectLengthInBeats);
     const float w = mapWidth * (nc->getLength() / projectLengthInBeats);
 
-    // at least 4 pixels are visible for 0 volume events:
-    const int h = jmax(4, int(this->getHeight() * nc->getFullVelocity()));
-    nc->setFloatBounds(x, this->getHeight() - h, jmax(1.f, w), h);
+    nc->syncWithNote(x, 1, jmax(1.f, w), this->getHeight() - 1);
 }
 
 void VelocityEditor::triggerBatchRepaintFor(VelocityEditorNoteComponent *target)
@@ -1265,7 +1320,7 @@ void VelocityEditor::handleAsyncUpdate()
             // scheduled for repainting/repositioning is deleted at this time:
             if (Component *component = this->batchRepaintList.getUnchecked(i))
             {
-                this->applyNoteBounds(static_cast<VelocityEditorNoteComponent *>(component));
+                this->updateNoteComponent(static_cast<VelocityEditorNoteComponent *>(component));
             }
         }
 

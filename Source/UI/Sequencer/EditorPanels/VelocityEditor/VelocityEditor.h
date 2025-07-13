@@ -113,7 +113,7 @@ public:
 
 private:
 
-    void applyNoteBounds(VelocityEditorNoteComponent *nc);
+    void updateNoteComponent(VelocityEditorNoteComponent *nc);
     void reloadAllTracks();
     void loadTrack(const MidiTrack *const track);
 
