@@ -209,6 +209,11 @@ public:
 
         this->isDragging = true;
         this->repaint();
+
+#if !VELOCITY_DRAGGING_FULL_HEIGHT
+        // a hack to allow panning the roll:
+        this->getEditor()->mouseDown(e);
+#endif
     }
 
     void mouseDrag(const MouseEvent &e) override
@@ -225,6 +230,11 @@ public:
         }
 
         this->getEditor()->continueFineTuning(this, e);
+
+#if !VELOCITY_DRAGGING_FULL_HEIGHT
+        // a hack to allow panning the roll:
+        this->getEditor()->mouseDrag(e);
+#endif
     }
 
     void mouseUp(const MouseEvent &e) override
@@ -234,6 +244,11 @@ public:
 
         this->isDragging = false;
         this->repaint();
+
+#if !VELOCITY_DRAGGING_FULL_HEIGHT
+        // a hack to allow panning the roll:
+        this->getEditor()->mouseUp(e);
+#endif
     }
 
 private:
@@ -709,10 +724,15 @@ bool VelocityEditor::isMultiTouchEvent(const MouseEvent &e) const noexcept
 
 RollEditMode VelocityEditor::getSupportedEditMode(const RollEditMode &rollMode) const noexcept
 {
-    if (rollMode.isMode(RollEditMode::dragMode) ||
-        rollMode.isMode(RollEditMode::drawMode))
+    if (rollMode.isMode(RollEditMode::dragMode))
     {
         return rollMode;
+    }
+
+    if (rollMode.isMode(RollEditMode::drawMode) ||
+        rollMode.isMode(RollEditMode::eraseMode))
+    {
+        return RollEditMode::drawMode;
     }
 
     return RollEditMode::defaultMode;
@@ -725,9 +745,11 @@ RollEditMode VelocityEditor::getEditMode() const noexcept
 
 void VelocityEditor::onChangeEditMode(const RollEditMode &mode)
 {
-    this->setMouseCursor(this->getSupportedEditMode(mode).getCursor());
+    const auto velocityEditMode = this->getSupportedEditMode(mode);
+    const auto areChildrenEnabled = !velocityEditMode.isMode(RollEditMode::drawMode);
 
-    const auto areChildrenEnabled = !mode.isMode(RollEditMode::drawMode);
+    this->setMouseCursor(velocityEditMode.getCursor());
+
     for (const auto &c : this->patternMap)
     {
         const auto &componentsMap = *c.second.get();
