@@ -1300,7 +1300,7 @@
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="../../Projects/macOS" bigIcon="WtPnG2" smallIcon="WtPnG2"
                customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;    &lt;string&gt;public.app-category.music&lt;/string&gt;&#10; &#9;&lt;key&gt;LSUIElement&lt;/key&gt;&#10; &#9;&lt;true/&gt;&#10;    &lt;key&gt;NSAppTransportSecurity&lt;/key&gt;&#10;    &lt;dict&gt;&#10;      &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;&#10;      &lt;true/&gt;&#10;    &lt;/dict&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;&#10;"
-               documentExtensions=".helio" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations"
+               documentExtensions=".helio" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wno-unqualified-std-cast-call -Wdeprecated-declarations"
                postbuildCommand="" extraDefs="" iosDevelopmentTeamID="EQL633LLC8"
                useHeaderMap="0" unityBuild="1" hardenedRuntime="1" hardenedRuntimeOptions="com.apple.security.cs.disable-library-validation,com.apple.security.device.audio-input"
                extraLinkerFlags="-weak_framework Metal -weak_framework MetalKit">
@@ -1329,7 +1329,7 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <XCODE_IPHONE targetFolder="../../Projects/iOS" bigIcon="DQTpOG" UIFileSharingEnabled="1"
-                  UIStatusBarHidden="1" smallIcon="DQTpOG" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wdeprecated-declarations"
+                  UIStatusBarHidden="1" smallIcon="DQTpOG" extraCompilerFlags="-Wno-reorder -Wno-inconsistent-missing-override -Wno-unqualified-std-cast-call -Wdeprecated-declarations"
                   extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0&#10;JUCE_SUPPORT_CARBON=0"
                   customPList="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;&#10;&lt;plist&gt;&#10;  &lt;dict&gt;&#10;    &lt;key&gt;LSApplicationCategoryType&lt;/key&gt;&#10;    &lt;string&gt;public.app-category.music&lt;/string&gt;&#10;    &lt;key&gt;NSHumanReadableCopyright&lt;/key&gt;&#10;    &lt;string&gt;Peter Rudenko&lt;/string&gt;&#10;    &lt;key&gt;UIFileSharingEnabled&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIInterfaceOrientation&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIInterfaceOrientation~ipad&lt;/key&gt;&#10;    &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;    &lt;key&gt;UIStatusBarHidden&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UIStatusBarHidden~ipad&lt;/key&gt;&#10;    &lt;true/&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UISupportedInterfaceOrientations~ipad&lt;/key&gt;&#10;    &lt;array&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeLeft&lt;/string&gt;&#10;        &lt;string&gt;UIInterfaceOrientationLandscapeRight&lt;/string&gt;&#10;    &lt;/array&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance&lt;/key&gt;&#10;    &lt;false/&gt;&#10;    &lt;key&gt;UIViewControllerBasedStatusBarAppearance~ipad&lt;/key&gt;&#10;    &lt;false/&gt;&#10;  &lt;/dict&gt;&#10;&lt;/plist&gt;"
                   iosScreenOrientation="UIInterfaceOrientationLandscapeLeft,UIInterfaceOrientationLandscapeRight"
@@ -1465,7 +1465,7 @@
                    microphonePermissionNeeded="0" androidBluetoothNeeded="1" androidInAppBilling="0"
                    androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
                    androidEnableRemoteNotifications="0" buildToolsVersion="28.0.0"
-                   gradleVersion="6.1.1" extraCompilerFlags="-Wno-unused-command-line-argument"
+                   gradleVersion="6.1.1" extraCompilerFlags="-Wno-unused-command-line-argument -Wno-unqualified-std-cast-call"
                    androidTargetSDK="28" androidMinimumSDK="21" androidKeyStore="${user.home}/helio.keystore"
                    androidKeyStorePass="android" androidKeyAliasPass="android" androidKeyAlias="release"
                    unityBuild="1" androidPushNotifications="0" androidCustomAppBuildGradleContent="ndkVersion &quot;21.3.6528147&quot;"

@@ -194,7 +194,7 @@ set_source_files_properties("../../Projucer/JuceLibraryCode/AppConfig.h" PROPERT
 set_source_files_properties("../../Projucer/JuceLibraryCode/BinaryData.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../Projucer/JuceLibraryCode/JuceHeader.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 
-target_compile_options( ${BINARY_NAME} PRIVATE "-fsigned-char" "-Wno-unused-command-line-argument" )
+target_compile_options( ${BINARY_NAME} PRIVATE "-fsigned-char" "-Wno-unused-command-line-argument" "-Wno-unqualified-std-cast-call" )
 
 if( JUCE_BUILD_CONFIGURATION MATCHES "DEBUG" )
     target_compile_options( ${BINARY_NAME} PRIVATE)
