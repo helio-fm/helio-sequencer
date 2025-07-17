@@ -1468,7 +1468,7 @@
                    gradleVersion="6.1.1" extraCompilerFlags="-Wno-unused-command-line-argument -Wno-unqualified-std-cast-call"
                    androidTargetSDK="28" androidMinimumSDK="21" androidKeyStore="${user.home}/helio.keystore"
                    androidKeyStorePass="android" androidKeyAliasPass="android" androidKeyAlias="release"
-                   unityBuild="1" androidPushNotifications="0" androidCustomAppBuildGradleContent="ndkVersion &quot;21.3.6528147&quot;"
+                   unityBuild="1" androidPushNotifications="0" androidCustomAppBuildGradleContent="ndkVersion &quot;28.2.13676358&quot;"
                    gradleWrapperVersion="4.0.0">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="helio"
