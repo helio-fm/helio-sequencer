@@ -14,6 +14,4 @@ else
 
 fi
 
-# NDK is not included in Travis initial setup:
-echo y | sdkmanager 'ndk;28.2.13676358'
-echo y | sdkmanager 'cmake;3.6.4111459'
+echo y | sdkmanager 'cmake;3.22.1'

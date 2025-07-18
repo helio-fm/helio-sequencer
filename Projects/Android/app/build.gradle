@@ -5,6 +5,7 @@ android {
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"
+            version "3.19.0+"
         }
     }
     signingConfigs {
@@ -20,6 +21,7 @@ android {
     defaultConfig {
         applicationId "fm.helio"
         minSdkVersion    21
+        //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 28
         externalNativeBuild {
             cmake {

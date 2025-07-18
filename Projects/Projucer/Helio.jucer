@@ -1465,11 +1465,11 @@
                    microphonePermissionNeeded="0" androidBluetoothNeeded="1" androidInAppBilling="0"
                    androidVibratePermissionNeeded="0" androidEnableContentSharing="0"
                    androidEnableRemoteNotifications="0" buildToolsVersion="28.0.0"
-                   gradleVersion="6.1.1" extraCompilerFlags="-Wno-unused-command-line-argument -Wno-unqualified-std-cast-call"
+                   extraCompilerFlags="-Wno-unused-command-line-argument -Wno-unqualified-std-cast-call"
                    androidTargetSDK="28" androidMinimumSDK="21" androidKeyStore="${user.home}/helio.keystore"
                    androidKeyStorePass="android" androidKeyAliasPass="android" androidKeyAlias="release"
                    unityBuild="1" androidPushNotifications="0" androidCustomAppBuildGradleContent="ndkVersion &quot;28.2.13676358&quot;"
-                   gradleWrapperVersion="4.0.0">
+                   gradleVersion="7.3.3" gradleWrapperVersion="7.2.0">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="helio"
                        androidArchitectures="armeabi-v7a arm64-v8a"/>

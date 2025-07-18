@@ -1,7 +1,9 @@
 # Automatically generated makefile, created by the Projucer
 # Don't edit this file! Your changes will be overwritten when you re-save the Projucer project!
 
-cmake_minimum_required(VERSION 3.4.1)
+cmake_minimum_required(VERSION 3.19)
+
+project(Helio)
 
 set(BINARY_NAME "juce_jni")
 
