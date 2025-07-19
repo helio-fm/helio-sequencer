@@ -147,10 +147,8 @@ MainLayout::MainLayout()
     }
     else
     {
-#if PLATFORM_DESKTOP
         this->initScreen = make<InitScreen>();
         this->addAndMakeVisible(this->initScreen.get());
-#endif
     }
 }
 

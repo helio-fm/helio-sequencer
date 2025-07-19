@@ -90,7 +90,6 @@ public:
 #endif
 
 #if JUCE_ANDROID
-        this->setFullScreen(true);
         Desktop::getInstance().setKioskModeComponent(this);
 #endif
 
@@ -699,14 +698,6 @@ void App::initialise(const String &commandLine)
         this->window->initialise(shouldEnableOpenGL, shouldUseNativeTitleBar);
 
         this->config->getUiFlags()->addListener(this);
-        
-#   if PLATFORM_MOBILE
-
-        // desktop versions will be initialised by InitScreen component.
-        App::Workspace().init();
-        App::Layout().setVisible(true);
-
-#   endif
 
 #endif
     }
