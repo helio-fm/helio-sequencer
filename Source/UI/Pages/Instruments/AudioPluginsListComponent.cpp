@@ -67,27 +67,23 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
 
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
+    this->initialScanButton1 = make<MenuItemComponent>(this, nullptr,
+        MenuItem::item(Icons::instrument, CommandIDs::ScanAllPlugins,
+            TRANS(I18n::Menu::instrumentsReload)));
+    this->initialScanButton1->setMouseCursor(MouseCursor::PointingHandCursor);
+    this->addChildComponent(this->initialScanButton1.get());
+
 #if PLATFORM_DESKTOP
 
-    this->initialScanButton = make<MenuItemComponent>(this,
-        nullptr, MenuItem::item(Icons::empty,
-            CommandIDs::ScanPluginsFolder, TRANS(I18n::Menu::instrumentsScanFolder)));
-    this->addAndMakeVisible(this->initialScanButton.get());
-    this->initialScanButton->setMouseCursor(MouseCursor::PointingHandCursor);
-    this->showScanButtonIf(this->filteredDescriptions.isEmpty());
-
-#elif PLATFORM_MOBILE
-
-    // on mobile, there's no such thing as `scan folder`:
-    this->initialScanButton = make<MenuItemComponent>(this, nullptr,
-        MenuItem::item(Icons::instrument,
-            CommandIDs::ScanAllPlugins,
-            TRANS(I18n::Menu::instrumentsReload)));
-
-    this->addAndMakeVisible(this->initialScanButton.get());
-    this->showScanButtonIf(this->filteredDescriptions.isEmpty());
+    this->initialScanButton2 = make<MenuItemComponent>(this, nullptr,
+        MenuItem::item(Icons::browse, CommandIDs::ScanPluginsFolder,
+            TRANS(I18n::Menu::instrumentsScanFolder)));
+    this->initialScanButton2->setMouseCursor(MouseCursor::PointingHandCursor);
+    this->addChildComponent(this->initialScanButton2.get());
 
 #endif
+
+    this->showDefaultScanButtonsIf(this->filteredDescriptions.isEmpty());
 
     this->pluginsList->setRowHeight(AudioPluginsListComponent::rowHeight);
     this->pluginsList->setHeaderHeight(AudioPluginsListComponent::tableHeaderHeight);
@@ -143,10 +139,18 @@ void AudioPluginsListComponent::resized()
     pluginsListArea.removeFromTop(2);
     this->pluginsList->setBounds(pluginsListArea);
 
-    constexpr auto scanButtonWidth = 150;
-    constexpr auto scanButtonHeight = 96;
-    const auto scanButtonBounds = this->getLocalBounds().withSizeKeepingCentre(scanButtonWidth, scanButtonHeight);
-    this->initialScanButton->setBounds(scanButtonBounds);
+    constexpr auto scanButtonsWidth = 135;
+    constexpr auto scanButtonsHeight = 165;
+    const auto scanButtonBounds = this->getLocalBounds().
+        withSizeKeepingCentre(scanButtonsWidth, scanButtonsHeight);
+
+    jassert(this->initialScanButton1 != nullptr);
+    this->initialScanButton1->setBounds(scanButtonBounds.withTrimmedBottom(scanButtonsHeight / 2));
+
+    if (this->initialScanButton2 != nullptr)
+    {
+        this->initialScanButton2->setBounds(scanButtonBounds.withTrimmedTop(scanButtonsHeight / 2));
+    }
 
     this->pluginsList->autoSizeAllColumns();
 }
@@ -159,11 +163,18 @@ void AudioPluginsListComponent::parentHierarchyChanged()
     }
 }
 
-void AudioPluginsListComponent::showScanButtonIf(bool hasNoPlugins)
+void AudioPluginsListComponent::showDefaultScanButtonsIf(bool hasNoPlugins)
 {
     this->pluginsList->setVisible(!hasNoPlugins);
     this->searchTextEditor->setVisible(!hasNoPlugins);
-    this->initialScanButton->setVisible(hasNoPlugins);
+    if (this->initialScanButton1 != nullptr)
+    {
+        this->initialScanButton1->setVisible(hasNoPlugins);
+    }
+    if (this->initialScanButton2 != nullptr)
+    {
+        this->initialScanButton2->setVisible(hasNoPlugins);
+    }
 }
 
 void AudioPluginsListComponent::clearSelection()
@@ -181,7 +192,7 @@ void AudioPluginsListComponent::updateListContent()
     {
         this->searchTextEditor->setText({}, false);
     }
-    this->showScanButtonIf(this->pluginDescriptions.isEmpty());
+    this->showDefaultScanButtonsIf(this->pluginDescriptions.isEmpty());
     this->updateFilteredDescriptions();
     this->pluginsList->updateContent();
 }

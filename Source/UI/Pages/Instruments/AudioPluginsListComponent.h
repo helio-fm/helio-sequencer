@@ -38,7 +38,6 @@ public:
 
     void clearSelection();
     void updateListContent();
-    void showScanButtonIf(bool hasNoPlugins);
 
     //===------------------------------------------------------------------===//
     // TableListBoxModel
@@ -96,9 +95,12 @@ private:
 
     UniquePointer<TextEditor> searchTextEditor;
     UniquePointer<TableListBox> pluginsList;
-    UniquePointer<MenuItemComponent> initialScanButton;
     UniquePointer<Label> titleLabel;
     UniquePointer<SeparatorHorizontalFadingReversed> titleSeparator;
+
+    UniquePointer<MenuItemComponent> initialScanButton1;
+    UniquePointer<MenuItemComponent> initialScanButton2;
+    void showDefaultScanButtonsIf(bool shouldBeVisible);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginsListComponent)
 };

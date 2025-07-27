@@ -289,6 +289,7 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver,
     DraggingListBoxComponent(parentViewport, false),
     parent(parentCommandReceiver)
 {
+    this->setAccessible(false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
@@ -580,6 +581,8 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
     {
         this->textLabel->setText(desc->commandText, dontSendNotification);
         this->textLabel->setVisible(true);
+        this->textLabel->setMinimumHorizontalScale(desc->commandText.containsChar(' ') ? 1.f : 0.5f);
+
         this->subLabel->setText(desc->hotkeyText, dontSendNotification);
         this->subLabel->setVisible(true);
     }
