@@ -160,10 +160,11 @@ namespace I18n
             static constexpr auto importMidi = constexprHash("menu::project::import::midi");
             static constexpr auto refactor = constexprHash("menu::project::refactor");
             static constexpr auto render = constexprHash("menu::project::render");
+            static constexpr auto renderWav = constexprHash("menu::project::render::wav");
             static constexpr auto renderFlac = constexprHash("menu::project::render::flac");
+            static constexpr auto renderOgg = constexprHash("menu::project::render::ogg");
             static constexpr auto renderMidi = constexprHash("menu::project::render::midi");
             static constexpr auto renderSavedTo = constexprHash("menu::project::render::savedto");
-            static constexpr auto renderWav = constexprHash("menu::project::render::wav");
             static constexpr auto transposeDown = constexprHash("menu::project::transpose::down");
             static constexpr auto transposeUp = constexprHash("menu::project::transpose::up");
             static constexpr auto unload = constexprHash("menu::project::unload");

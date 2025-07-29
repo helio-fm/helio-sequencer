@@ -20,7 +20,8 @@
 enum class RenderFormat : int8
 {
     FLAC,
-    WAV
+    WAV,
+    OGG
 };
 
 inline String getExtensionForRenderFormat(RenderFormat format) noexcept
@@ -29,6 +30,7 @@ inline String getExtensionForRenderFormat(RenderFormat format) noexcept
     {
     case RenderFormat::FLAC: return "flac";
     case RenderFormat::WAV:  return "wav";
+    case RenderFormat::OGG:  return "ogg";
     }
 
     return {};

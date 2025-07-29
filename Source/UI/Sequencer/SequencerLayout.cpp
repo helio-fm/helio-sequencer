@@ -722,6 +722,9 @@ void SequencerLayout::handleCommandMessage(int commandId)
     case CommandIDs::RenderToWAV:
         this->proceedToRenderDialog(RenderFormat::WAV);
         return;
+    case CommandIDs::RenderToOGG:
+        this->proceedToRenderDialog(RenderFormat::OGG);
+        return;
     case CommandIDs::SwitchBetweenRolls:
         if (!this->rollContainer->canAnimate(RollsSwitchingProxy::Timers::rolls))
         {

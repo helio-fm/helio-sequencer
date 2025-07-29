@@ -91,6 +91,13 @@ bool RendererThread::startRendering(const URL &target, RenderFormat format,
             this->writer.reset(flacFormat.createWriterFor(outStream.release(),
                 this->context->sampleRate, this->context->numOutputChannels, bitDepth, {}, 0));
         }
+        else if (this->format == RenderFormat::OGG)
+        {
+            OggVorbisAudioFormat oggFormat;
+            const ScopedLock sl(this->writerLock);
+            this->writer.reset(oggFormat.createWriterFor(outStream.release(),
+                this->context->sampleRate, this->context->numOutputChannels, bitDepth, {}, 0));
+        }
 
         if (writer != nullptr)
         {

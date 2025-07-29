@@ -279,6 +279,9 @@ void ProjectMenu::showRenderMenu()
 
     menu.add(MenuItem::item(Icons::render, CommandIDs::RenderToFLAC,
         TRANS(I18n::Menu::Project::renderFlac))->closesMenu());
+    
+    menu.add(MenuItem::item(Icons::render, CommandIDs::RenderToOGG,
+        TRANS(/*I18n::Menu::Project::renderOgg*/ "Render to OGG"))->closesMenu());
 
     menu.add(MenuItem::item(Icons::commit, CommandIDs::ExportMidi,
         TRANS(I18n::Menu::Project::renderMidi))->closesMenu());

@@ -120,6 +120,7 @@ namespace CommandIDs
 
         RenderToFLAC                    = 0x2030,
         RenderToWAV                     = 0x2031,
+        RenderToOGG                     = 0x2032,
 
         ImportMidi                      = 0x2050,
         ExportMidi                      = 0x2051,
