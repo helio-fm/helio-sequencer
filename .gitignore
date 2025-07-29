@@ -64,3 +64,5 @@ ThirdParty/ASIO/driver
 ThirdParty/ASIO/host
 ThirdParty/ASIO/*.pdf
 ThirdParty/ASIO/*.txt
+
+.vscode/
