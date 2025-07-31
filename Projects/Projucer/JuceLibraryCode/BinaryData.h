@@ -149,9 +149,6 @@ namespace BinaryData
     extern const char*   orchestraPit_svg;
     const int            orchestraPit_svgSize = 1617;
 
-    extern const char*   paint_svg;
-    const int            paint_svgSize = 288;
-
     extern const char*   paste_svg;
     const int            paste_svgSize = 1578;
 
@@ -266,9 +263,6 @@ namespace BinaryData
     extern const char*   toggleOn_svg;
     const int            toggleOn_svgSize = 441;
 
-    extern const char*   trackGroup_svg;
-    const int            trackGroup_svgSize = 227;
-
     extern const char*   undo_svg;
     const int            undo_svgSize = 252;
 
@@ -360,10 +354,10 @@ namespace BinaryData
     const int            temperaments_jsonSize = 2856;
 
     extern const char*   translations_json;
-    const int            translations_jsonSize = 241588;
+    const int            translations_jsonSize = 221593;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 118;
+    const int namedResourceListSize = 116;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

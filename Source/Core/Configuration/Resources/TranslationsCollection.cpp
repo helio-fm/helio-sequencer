@@ -154,6 +154,8 @@ String TranslationsCollection::translate(const String &baseLiteral, int64 target
 // Serializable
 //===----------------------------------------------------------------------===//
 
+const static String fallbackTranslationId = "en";
+
 void TranslationsCollection::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
     const auto root = tree.hasType(Serialization::Resources::translations) ?
@@ -162,6 +164,8 @@ void TranslationsCollection::deserializeResources(const SerializedData &tree, Re
     if (!root.isValid()) { return; }
 
     const String selectedLocaleId = this->getSelectedLocaleId();
+
+    Translation::Ptr fallbackTranslation;
 
     forEachChildWithType(root, translationRoot, Serialization::Translations::locale)
     {
@@ -174,10 +178,11 @@ void TranslationsCollection::deserializeResources(const SerializedData &tree, Re
         Translation::Ptr translation(existingTranslation != nullptr ?
             static_cast<Translation *>(existingTranslation.get()) : new Translation());
 
-        const auto isCurrentTranslation = translationId == selectedLocaleId;
+        const auto isCurrentOrFallbackTranslation =
+            (translationId == selectedLocaleId) || (translationId == fallbackTranslationId);
 
         //DBG(translationId + "/" + translation->getResourceId());
-        translation->deserialize(translationRoot, !isCurrentTranslation);
+        translation->deserialize(translationRoot, !isCurrentOrFallbackTranslation);
 
         outResources[translation->getResourceId()] = translation;
 
@@ -185,6 +190,15 @@ void TranslationsCollection::deserializeResources(const SerializedData &tree, Re
         {
             this->currentTranslation = translation;
         }
+        else if (translation->id == fallbackTranslationId)
+        {
+            fallbackTranslation = translation;
+        }
+    }
+
+    if (this->currentTranslation == nullptr)
+    {
+        this->currentTranslation = fallbackTranslation;
     }
 
     jassert(this->currentTranslation != nullptr);
@@ -200,8 +214,6 @@ void TranslationsCollection::reset()
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
-
-const static String fallbackTranslationId = "en";
 
 String TranslationsCollection::getSelectedLocaleId() const
 {
