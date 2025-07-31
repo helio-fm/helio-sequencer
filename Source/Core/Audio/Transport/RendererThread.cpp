@@ -94,9 +94,14 @@ bool RendererThread::startRendering(const URL &target, RenderFormat format,
         else if (this->format == RenderFormat::OGG)
         {
             OggVorbisAudioFormat oggFormat;
+            const auto qualityOptions = oggFormat.getQualityOptions();
+            jassert(qualityOptions.size() > 1);
+            const auto qualityOptionIndex = qualityOptions.size() - 2;
+            // 320 kbps should be enough for anybody
+            DBG("Rendering with quality ~" + qualityOptions[qualityOptionIndex]);
             const ScopedLock sl(this->writerLock);
             this->writer.reset(oggFormat.createWriterFor(outStream.release(),
-                this->context->sampleRate, this->context->numOutputChannels, bitDepth, {}, 0));
+                this->context->sampleRate, this->context->numOutputChannels, bitDepth, {}, qualityOptionIndex));
         }
 
         if (writer != nullptr)
