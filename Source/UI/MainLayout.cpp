@@ -361,12 +361,12 @@ Rectangle<int> MainLayout::getBoundsForPopups() const
 #if PLATFORM_DESKTOP
     r.removeFromLeft(Globals::UI::sidebarWidth);
     r.removeFromRight(Globals::UI::sidebarWidth);
-#endif
 
     if (App::isUsingNativeTitleBar())
     {
         r.removeFromTop(Globals::UI::headlineHeight);
     }
+#endif
 
     return r;
 }
@@ -412,14 +412,6 @@ void MainLayout::lookAndFeelChanged()
 
 bool MainLayout::keyPressed(const KeyPress &key)
 {
-#if PLATFORM_MOBILE
-
-    // under Android, it sends here the ';' key, 
-    // when you type a capital letter or a char like @, !, ?
-    return false;
-
-#elif PLATFORM_DESKTOP
-
     if (Component::getNumCurrentlyModalComponents() > 0)
     {
         jassertfalse;
@@ -433,8 +425,6 @@ bool MainLayout::keyPressed(const KeyPress &key)
     }
     
     return false;
-
-#endif
 }
 
 bool MainLayout::keyStateChanged(bool isKeyDown)

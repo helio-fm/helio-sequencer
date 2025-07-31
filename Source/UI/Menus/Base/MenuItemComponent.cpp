@@ -467,12 +467,10 @@ void MenuItemComponent::mouseUp(const MouseEvent &e)
         {
             DraggingListBoxComponent::mouseUp(e);
         }
-        else
+        else if (this->contains(e.getPosition()) &&
+            !e.source.hasMovedSignificantlySincePressed())
         {
-            if (this->contains(e.getPosition()))
-            {
-                this->setSelected(true);
-            }
+            this->setSelected(true);
         }
     }
 
