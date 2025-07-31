@@ -81,7 +81,6 @@
 		0A6E1C63B55EE90AB06FCF53 /* MenuPanel.h */ /* MenuPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MenuPanel.h; path = ../../Source/UI/Menus/Base/MenuPanel.h; sourceTree = SOURCE_ROOT; };
 		0AD31DC053E94ECEB01FE5F8 /* juce_gui_extra */ /* juce_gui_extra */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_extra; path = ../../ThirdParty/JUCE/modules/juce_gui_extra; sourceTree = SOURCE_ROOT; };
 		0B2A9FFEE1E8C7B196102E03 /* scales.json */ /* scales.json */ = {isa = PBXFileReference; lastKnownFileType = file.json; name = scales.json; path = ../../Resources/scales.json; sourceTree = SOURCE_ROOT; };
-		0B38C83FD3A4EC8B16B38961 /* trackGroup.svg */ /* trackGroup.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = trackGroup.svg; path = ../../Resources/Icons/trackGroup.svg; sourceTree = SOURCE_ROOT; };
 		0BE63981714AB23DFA6EE9A2 /* DiffLogic.h */ /* DiffLogic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DiffLogic.h; path = ../../Source/Core/VCS/DiffLogic/DiffLogic.h; sourceTree = SOURCE_ROOT; };
 		0BF9BF67158674EE3A450914 /* ProjectMenu.cpp */ /* ProjectMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProjectMenu.cpp; path = ../../Source/UI/Menus/ProjectMenu.cpp; sourceTree = SOURCE_ROOT; };
 		0C1B415A13E9814A8D7CEB55 /* RollHeader.cpp */ /* RollHeader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RollHeader.cpp; path = ../../Source/UI/Sequencer/Header/RollHeader.cpp; sourceTree = SOURCE_ROOT; };
@@ -781,7 +780,6 @@
 		F7592AE1B33480544ABB069F /* SoundFont2Sound.h */ /* SoundFont2Sound.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SoundFont2Sound.h; path = ../../Source/Core/Audio/BuiltIn/SoundFont/SoundFont2Sound.h; sourceTree = SOURCE_ROOT; };
 		F7B5FD13BD39A67CFC20FDA4 /* UndoStack.cpp */ /* UndoStack.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = UndoStack.cpp; path = ../../Source/Core/Undo/UndoStack.cpp; sourceTree = SOURCE_ROOT; };
 		F7DF3350FE908254C39FC653 /* HeadlineNavigationPanel.h */ /* HeadlineNavigationPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HeadlineNavigationPanel.h; path = ../../Source/UI/Headline/HeadlineNavigationPanel.h; sourceTree = SOURCE_ROOT; };
-		F91C8DFB4DC445BA20315BE3 /* paint.svg */ /* paint.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = paint.svg; path = ../../Resources/Icons/paint.svg; sourceTree = SOURCE_ROOT; };
 		F9A580A94CF8B322D3E915DF /* microtoneUp.svg */ /* microtoneUp.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = microtoneUp.svg; path = ../../Resources/Icons/microtoneUp.svg; sourceTree = SOURCE_ROOT; };
 		F9CE211DEEE1E9F878A2D024 /* AnnotationDialog.h */ /* AnnotationDialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnnotationDialog.h; path = ../../Source/UI/Dialogs/AnnotationDialog.h; sourceTree = SOURCE_ROOT; };
 		FA43F862B8383A9B131B8579 /* cleanup.svg */ /* cleanup.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = cleanup.svg; path = ../../Resources/Icons/cleanup.svg; sourceTree = SOURCE_ROOT; };
@@ -955,7 +953,6 @@
 				862881518BACE5B8BE894F87,
 				38F77D254EEDB3C3C286D7B0,
 				7320F2DA76039762ED764BDA,
-				F91C8DFB4DC445BA20315BE3,
 				C3F0F6FA0ECF6EB4DAD589AF,
 				AF30E0C21EDB351EA71A892C,
 				44F7CB213970E0330D5288C6,
@@ -994,7 +991,6 @@
 				5DD8150F11BD610045A26615,
 				6B48E3B924CE29815DE0C148,
 				F675E5A69BA0218D4A42C8DB,
-				0B38C83FD3A4EC8B16B38961,
 				025FA4F850CE0AE10E836CF7,
 				8FC072442021BF4B5512CA1E,
 				1EF41096D5EF3E5A0E1954E4,

@@ -325,17 +325,6 @@ void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
             }));
     }
 
-    // todo better icons
-    if (App::Config().getUiFlags()->areExperimentalFeaturesEnabled())
-    {
-        // hide this option by default, it seems to be rather confusing compared to the next one
-        menu.add(MenuItem::item(Icons::arpeggiate,
-            TRANS(I18n::Menu::Project::changeTemperament))->withSubmenu()->withAction([this]()
-        {
-            this->showTemperamentsMenu(false);
-        }));
-    }
-
     menu.add(MenuItem::item(Icons::arpeggiate,
         TRANS(I18n::Menu::Project::convertTemperament))->withSubmenu()->withAction([this]()
     {

@@ -3961,7 +3961,6 @@
     <None Include="..\..\Resources\Icons\microtoneUp2.svg"/>
     <None Include="..\..\Resources\Icons\mute.svg"/>
     <None Include="..\..\Resources\Icons\orchestraPit.svg"/>
-    <None Include="..\..\Resources\Icons\paint.svg"/>
     <None Include="..\..\Resources\Icons\paste.svg"/>
     <None Include="..\..\Resources\Icons\patterns.svg"/>
     <None Include="..\..\Resources\Icons\pause.svg"/>
@@ -4000,7 +3999,6 @@
     <None Include="..\..\Resources\Icons\timelinePrevious.svg"/>
     <None Include="..\..\Resources\Icons\toggleOff.svg"/>
     <None Include="..\..\Resources\Icons\toggleOn.svg"/>
-    <None Include="..\..\Resources\Icons\trackGroup.svg"/>
     <None Include="..\..\Resources\Icons\undo.svg"/>
     <None Include="..\..\Resources\Icons\up.svg"/>
     <None Include="..\..\Resources\Icons\versionControl.svg"/>

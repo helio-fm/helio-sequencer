@@ -64,7 +64,6 @@
         <FILE id="GtzvG7" name="mute.svg" compile="0" resource="1" file="../../Resources/Icons/mute.svg"/>
         <FILE id="TWchuX" name="orchestraPit.svg" compile="0" resource="1"
               file="../../Resources/Icons/orchestraPit.svg"/>
-        <FILE id="GLwMk5" name="paint.svg" compile="0" resource="1" file="../../Resources/Icons/paint.svg"/>
         <FILE id="VDY34K" name="paste.svg" compile="0" resource="1" file="../../Resources/Icons/paste.svg"/>
         <FILE id="kykHC8" name="patterns.svg" compile="0" resource="1" file="../../Resources/Icons/patterns.svg"/>
         <FILE id="cC5z70" name="pause.svg" compile="0" resource="1" file="../../Resources/Icons/pause.svg"/>
@@ -108,7 +107,6 @@
               file="../../Resources/Icons/timelinePrevious.svg"/>
         <FILE id="Qc9pV4" name="toggleOff.svg" compile="0" resource="1" file="../../Resources/Icons/toggleOff.svg"/>
         <FILE id="PwfEJV" name="toggleOn.svg" compile="0" resource="1" file="../../Resources/Icons/toggleOn.svg"/>
-        <FILE id="BBNAVx" name="trackGroup.svg" compile="0" resource="1" file="../../Resources/Icons/trackGroup.svg"/>
         <FILE id="jMjNbd" name="undo.svg" compile="0" resource="1" file="../../Resources/Icons/undo.svg"/>
         <FILE id="b3kVn6" name="up.svg" compile="0" resource="1" file="../../Resources/Icons/up.svg"/>
         <FILE id="gFGVNu" name="versionControl.svg" compile="0" resource="1"

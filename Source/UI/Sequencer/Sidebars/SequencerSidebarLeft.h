@@ -67,11 +67,9 @@ private:
     void onLockZoomLevelFlagChanged(bool zoomLocked) override;
     void onProjectMapLargeModeFlagChanged(bool showFullMap) override;
     void onEditorPanelVisibilityFlagChanged(bool visible) override;
-    void onScalesHighlightingFlagChanged(bool enabled) override;
     void onNoteNameGuidesFlagChanged(bool enabled) override;
 
     bool zoomLevelLocked = false;
-    bool scalesHighlightingEnabled = true;
     bool noteNameGuidesEnabled = false;
     bool velocityMapVisible = false;
     bool miniMapVisible = false;

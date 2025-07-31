@@ -48,7 +48,6 @@ public:
 
         helio,
         project,
-        trackGroup,
         pianoTrack,
         automationTrack,
         versionControl,
@@ -106,6 +105,9 @@ public:
         zoomOut,
         zoomToFit,
         lockZoom,
+        timelineNext,
+        timelinePrevious,
+        tag,
 
         cursorTool,
         drawTool,
@@ -133,11 +135,6 @@ public:
         back,
         forward,
         reprise,
-
-        timelineNext,
-        timelinePrevious,
-        paint,
-        tag,
 
         commit,
         reset,

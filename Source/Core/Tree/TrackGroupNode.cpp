@@ -27,7 +27,7 @@ TrackGroupNode::TrackGroupNode(const String &name) :
 
 Image TrackGroupNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::trackGroup, Globals::UI::headlineIconSize);
+    return Icons::findByName(Icons::pianoTrack, Globals::UI::headlineIconSize);
 }
 
 void TrackGroupNode::removeAllEmptyGroupsInProject(ProjectNode *project)

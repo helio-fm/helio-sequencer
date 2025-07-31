@@ -70,7 +70,6 @@ void Icons::initBuiltInImages()
 {
     setIconForKey(helio);
     setIconForKey(project);
-    setIconForKey(trackGroup);
     setIconForKey(pianoTrack);
     setIconForKey(automationTrack);
     setIconForKey(versionControl);
@@ -128,6 +127,9 @@ void Icons::initBuiltInImages()
     setIconForKey(zoomOut);
     setIconForKey(zoomToFit);
     setIconForKey(lockZoom);
+    setIconForKey(timelineNext);
+    setIconForKey(timelinePrevious);
+    setIconForKey(tag);
 
     setIconForKey(cursorTool);
     setIconForKey(drawTool);
@@ -155,11 +157,6 @@ void Icons::initBuiltInImages()
     setIconForKey(back);
     setIconForKey(forward);
     setIconForKey(reprise);
-
-    setIconForKey(timelineNext);
-    setIconForKey(timelinePrevious);
-    setIconForKey(paint);
-    setIconForKey(tag);
 
     setIconForKey(commit);
     setIconForKey(reset);

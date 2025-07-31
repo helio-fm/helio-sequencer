@@ -82,7 +82,6 @@ SequencerSidebarLeft::SequencerSidebarLeft()
     this->miniMapVisible = uiFlags->isProjectMapInLargeMode();
     this->velocityMapVisible = uiFlags->isEditorPanelVisible();
     this->noteNameGuidesEnabled = uiFlags->areNoteNameGuidesEnabled();
-    this->scalesHighlightingEnabled = uiFlags->isScalesHighlightingEnabled();
 
     this->switchLinearModeButton->setVisible(false);
     this->switchPatternModeButton->setVisible(false);
@@ -240,13 +239,6 @@ void SequencerSidebarLeft::onEditorPanelVisibilityFlagChanged(bool visible)
     this->listBox->updateContent();
 }
 
-void SequencerSidebarLeft::onScalesHighlightingFlagChanged(bool enabled)
-{
-    this->scalesHighlightingEnabled = enabled;
-    this->recreateMenu();
-    this->listBox->updateContent();
-}
-
 void SequencerSidebarLeft::onNoteNameGuidesFlagChanged(bool enabled)
 {
     this->noteNameGuidesEnabled = enabled;
@@ -311,10 +303,6 @@ void SequencerSidebarLeft::recreateMenu()
 
     if (this->menuMode == MenuMode::PianoRollTools)
     {
-        this->menu.add(MenuItem::item(Icons::paint, CommandIDs::ToggleScalesHighlighting)->
-            toggledIf(this->scalesHighlightingEnabled)->
-            withTooltip(TRANS(I18n::Tooltips::toggleScalesHighlighting)));
-
         this->menu.add(MenuItem::item(Icons::tag, CommandIDs::ToggleNoteNameGuides)->
             toggledIf(this->noteNameGuidesEnabled)->
             withTooltip(TRANS(I18n::Tooltips::toggleNoteGuides)));

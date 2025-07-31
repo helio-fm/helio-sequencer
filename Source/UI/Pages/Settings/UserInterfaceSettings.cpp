@@ -159,6 +159,14 @@ UserInterfaceSettings::UserInterfaceSettings()
         this->updateButtons();
     };
 
+    this->highlightScalesButton = make<ToggleButton>(TRANS(I18n::Settings::scalesHighlighting));
+    this->addAndMakeVisible(this->highlightScalesButton.get());
+    this->highlightScalesButton->onClick = [this]()
+    {
+        App::Config().getUiFlags()->setScalesHighlightingEnabled(this->highlightScalesButton->getToggleState());
+        this->updateButtons();
+    };
+
     this->animationsEnabledButton = make<ToggleButton>(TRANS(I18n::Settings::uiAnimations));
     this->addAndMakeVisible(this->animationsEnabledButton.get());
     this->animationsEnabledButton->onClick = [this]()
@@ -267,9 +275,9 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->scaleUi2->setRadioGroupId(2);
 
 #if SIMPLIFIED_UI_SETTINGS
-    this->setSize(100, 365);
+    this->setSize(100, 395);
 #else
-    this->setSize(100, 580);
+    this->setSize(100, 610);
 #endif
 }
 
@@ -344,8 +352,11 @@ void UserInterfaceSettings::resized()
     this->followPlayheadButton->setBounds(margin2,
         bottomSectionStart, this->getWidth() - margin2 * 2, rowSize);
 
-    this->animationsEnabledButton->setBounds(margin2,
+    this->highlightScalesButton->setBounds(margin2,
         this->followPlayheadButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
+
+    this->animationsEnabledButton->setBounds(margin2,
+        this->highlightScalesButton->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
 
     this->noteNamesSeparator->setBounds(margin2,
         this->animationsEnabledButton->getBottom() + rowSpacing + separatorMargin,
@@ -438,6 +449,7 @@ void UserInterfaceSettings::updateButtons()
 #endif
 
     this->followPlayheadButton->setToggleState(uiFlags->isFollowingPlayhead(), dontSendNotification);
+    this->highlightScalesButton->setToggleState(uiFlags->isScalesHighlightingEnabled(), dontSendNotification);
     this->animationsEnabledButton->setToggleState(uiFlags->areUiAnimationsEnabled(), dontSendNotification);
 
     this->scaleUi1->setToggleState(uiFlags->getUiScaleFactor() == 1.f, dontSendNotification);

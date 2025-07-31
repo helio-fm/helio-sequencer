@@ -151,7 +151,6 @@ namespace I18n
             static constexpr auto addTrack = constexprHash("menu::project::addlayer");
             static constexpr auto addTempo = constexprHash("menu::project::addtempo");
             static constexpr auto changeInstrument = constexprHash("menu::project::change::instrument");
-            static constexpr auto changeTemperament = constexprHash("menu::project::change::tmpr");
             static constexpr auto convertTemperament = constexprHash("menu::project::convert::tmpr");
             static constexpr auto deleteConfirm = constexprHash("menu::project::delete");
             static constexpr auto editorLinear = constexprHash("menu::project::editor::linear");
@@ -303,6 +302,7 @@ namespace I18n
         static constexpr auto nativeTitleBar = constexprHash("settings::ui::nativebar");
         static constexpr auto followPlayhead = constexprHash("settings::ui::catchplayhead");
         static constexpr auto uiAnimations = constexprHash("settings::ui::animations");
+        static constexpr auto scalesHighlighting = constexprHash("settings::ui::highlightscales");
         static constexpr auto mouseWheelPanningByDefault = constexprHash("settings::ui::wheel::panning");
         static constexpr auto mouseWheelVerticalPanningByDefault = constexprHash("settings::ui::wheel::verticalpan");
         static constexpr auto mouseWheelVerticalZoomingByDefault = constexprHash("settings::ui::wheel::verticalzoom");
@@ -361,7 +361,6 @@ namespace I18n
         static constexpr auto toggleMute = constexprHash("toggle::mute");
         static constexpr auto toggleSolo = constexprHash("toggle::solo");
 
-        static constexpr auto toggleScalesHighlighting = constexprHash("toggle::scaleshl");
         static constexpr auto toggleNoteNameGuides = constexprHash("toggle::noteguides");
         static constexpr auto toggleLoopOverSelection = constexprHash("toggle::loopselection");
     }
@@ -378,7 +377,6 @@ namespace I18n
         static constexpr auto lockZoom = constexprHash("tooltip::lockzoom");
         static constexpr auto jumpToNextAnchor = constexprHash("tooltip::jumpnext");
         static constexpr auto jumpToPrevAnchor = constexprHash("tooltip::jumpprev");
-        static constexpr auto toggleScalesHighlighting = constexprHash("tooltip::scaleshl");
         static constexpr auto toggleNoteGuides = constexprHash("tooltip::noteguides");
         static constexpr auto toggleVolumePanel = constexprHash("tooltip::volumepanel");
         static constexpr auto toggleMiniMap = constexprHash("tooltip::minimap");
