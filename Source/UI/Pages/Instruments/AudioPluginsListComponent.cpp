@@ -87,13 +87,8 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
 
     this->pluginsList->setRowHeight(AudioPluginsListComponent::rowHeight);
     this->pluginsList->setHeaderHeight(AudioPluginsListComponent::tableHeaderHeight);
-    this->pluginsList->getViewport()->setScrollBarsShown(true, false);
-
-#if PLATFORM_DESKTOP
-    this->pluginsList->getViewport()->setScrollBarThickness(2);
-#elif PLATFORM_MOBILE
-    this->pluginsList->getViewport()->setScrollBarThickness(32);
-#endif
+    this->pluginsList->getViewport()->setScrollBarsShown(true, false, true, false);
+    this->pluginsList->getViewport()->setScrollBarThickness(AudioPluginsListComponent::viewportScrollBarWidth);
 
     const auto uiFlags = App::Config().getUiFlags();
     const auto pluginSorting = uiFlags->getPluginSorting();

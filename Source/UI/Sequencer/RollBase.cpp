@@ -76,8 +76,6 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     this->setPaintingIsUnclipped(true);
     this->setAccessible(false);
 
-    this->setSize(this->viewport.getWidth(), this->viewport.getHeight());
-
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setWantsKeyboardFocus(false);
     this->setFocusContainerType(Component::FocusContainerType::none);

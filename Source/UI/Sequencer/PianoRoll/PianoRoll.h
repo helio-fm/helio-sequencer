@@ -314,7 +314,7 @@ private:
     static constexpr auto maxRowHeight = 30;
 #elif PLATFORM_MOBILE
     static constexpr auto minRowHeight = 6;
-    static constexpr auto defaultRowHeight = 16;
+    static constexpr auto defaultRowHeight = 11;
     static constexpr auto maxRowHeight = 45;
 #endif
 

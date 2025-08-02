@@ -940,7 +940,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Common::borderLineDark,
         Colours::black.withAlpha(this->isDarkTheme ? 0.3f : 0.25f));
     this->setColour(ColourIDs::Common::separatorLineLight,
-        Colours::white.withAlpha(this->isDarkTheme ? 0.075f : 0.3f));
+        Colours::white.withAlpha(this->isDarkTheme ? 0.075f : 0.25f));
     this->setColour(ColourIDs::Common::separatorLineDark,
         Colours::black.withAlpha(this->isDarkTheme ? 0.55f : 0.2f));
 

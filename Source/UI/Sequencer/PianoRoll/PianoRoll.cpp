@@ -322,7 +322,6 @@ void PianoRoll::showGhostNoteFor(NoteComponent *target)
 {
     auto *component = new NoteComponent(*this, target->getNote(), target->getClip(), false);
     component->setDisplayAsGhost(true);
-    component->toBack();
 
     this->addAndMakeVisible(component);
     this->ghostNotes.add(component);
@@ -930,7 +929,25 @@ void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks, const P
     // if this happens to be a new project, focus somewhere in the centre:
     if (this->getViewport().getViewPositionY() == 0)
     {
-        const int defaultY = (this->getHeight() / 2 - this->getViewport().getViewHeight() / 2);
+        int focusMinKey = INT_MAX;
+        int focusMaxKey = 0;
+        for (const auto &sequenceMap : this->patternMap)
+        {
+            const bool isActive = sequenceMap.first == this->activeClip; // same id
+            if (isActive)
+            {
+                for (const auto &component : *sequenceMap.second)
+                {
+                    focusMinKey = jmin(focusMinKey, component.second->getKey());
+                    focusMaxKey = jmax(focusMaxKey, component.second->getKey());
+                }
+            }
+        }
+        const auto viewHeightOffset =
+            (this->getViewport().getViewHeight() / 3) + Globals::UI::rollHeaderHeight;
+        const int defaultY = (focusMaxKey == 0) ?
+            ((this->getHeight() / 2) - viewHeightOffset) :
+            (this->getHeight() - (this->getRowHeight() * ((focusMaxKey + focusMinKey) / 2)) - viewHeightOffset);
         this->getViewport().setViewPosition(this->getViewport().getViewPositionX(), defaultY);
     }
 }
@@ -1146,7 +1163,7 @@ void PianoRoll::onPlay()
         {
             for (const auto &it : *sequenceMap)
             {
-                it.second->setDisplayAsGenerated(true);
+                it.second->setDisplayAsReplacedByModifiers(true);
             }
         }
 
@@ -1170,7 +1187,7 @@ void PianoRoll::onStop()
         {
             for (const auto &it : *sequenceMap)
             {
-                it.second->setDisplayAsGenerated(false);
+                it.second->setDisplayAsReplacedByModifiers(false);
             }
         }
 

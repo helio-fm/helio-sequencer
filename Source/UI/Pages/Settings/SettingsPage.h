@@ -30,7 +30,7 @@ public:
 
         this->viewport = make<Viewport>();
         this->addAndMakeVisible(this->viewport.get());
-        this->viewport->setScrollBarsShown(true, false);
+        this->viewport->setScrollBarsShown(true, false, true, false);
         this->viewport->setScrollBarThickness(SettingsPage::viewportScrollBarWidth);
         this->viewport->setViewedComponent(settingsList, false);
 
@@ -42,9 +42,9 @@ public:
     void resized() override
     {
         this->background->setBounds(this->getLocalBounds());
-        this->viewport->setBounds(this->getLocalBounds().reduced(6));
+        this->viewport->setBounds(this->getLocalBounds().reduced(6, 0));
         this->viewport->getViewedComponent()->
-            setSize(this->viewport->getMaximumVisibleWidth(),
+            setSize(this->viewport->getWidth() - SettingsPage::viewportScrollBarWidth,
                 this->viewport->getViewedComponent()->getHeight());
     }
 

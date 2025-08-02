@@ -61,9 +61,9 @@ void SettingsNode::recreatePage()
     this->audioSettings = nullptr;
     this->settingsList = nullptr;
 
-    constexpr auto listPadding = 10;
-    this->settingsList = make<ComponentsList>(listPadding,
-        jmax(0, listPadding - SettingsPage::viewportScrollBarWidth));
+    this->settingsList = make<ComponentsList>(6,
+        jmax(0, 6 - SettingsPage::viewportScrollBarWidth),
+        2, 12);
 
     this->themeSettings = make<ThemeSettings>();
     this->themeSettingsWrapper = make<SettingsFrameWrapper>(this->themeSettings.get(), TRANS(I18n::Settings::ui));

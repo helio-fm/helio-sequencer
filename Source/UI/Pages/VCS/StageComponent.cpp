@@ -40,7 +40,7 @@ StageComponent::StageComponent(VersionControl &versionControl) : vcs(versionCont
     this->addAndMakeVisible(this->changesList.get());
     this->changesList->setWantsKeyboardFocus(false);
     this->changesList->getViewport()->setScrollBarThickness(2);
-    this->changesList->getViewport()->setScrollBarsShown(true, false);
+    this->changesList->getViewport()->setScrollBarsShown(true, false, true, false);
     this->changesList->setMultipleSelectionEnabled(true);
     this->changesList->setRowHeight(48);
 

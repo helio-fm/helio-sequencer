@@ -71,7 +71,8 @@ public:
         ProjectMapsScroller *bottomMapsScroller,
         EditorPanelsScroller *bottomEditorsScroller,
         EditorPanelsSwitcher *bottomEditorsSwitcher,
-        Component *scrollerShadow) :
+        Component *scrollerShadow,
+        Point<int> defaultSize) :
         pianoRoll(targetRoll1),
         pianoViewport(targetViewport1),
         patternRoll(targetRoll2),
@@ -117,7 +118,8 @@ public:
             this->bottomEditorsSwitcher->setVisible(true);
         }
 
-        this->setSize(256, 256); // not 0
+        jassert(!defaultSize.isOrigin());
+        this->setSize(jmax(256, defaultSize.getX()), jmax(256, defaultSize.getY())); // not 0
     }
 
     inline bool canAnimate(Timers timer) const noexcept
@@ -500,7 +502,7 @@ private:
 // SequencerLayout
 //===----------------------------------------------------------------------===//
 
-SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
+SequencerLayout::SequencerLayout(ProjectNode &parentProject, Point<int> defaultSize) :
     project(parentProject)
 {
     this->setComponentID(ComponentIDs::sequencerLayoutId);
@@ -564,7 +566,8 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject) :
     this->rollContainer = make<RollsSwitchingProxy>(this->pianoRoll.get(), this->patternRoll.get(),
         this->pianoViewport.get(), this->patternViewport.get(),
         this->bottomMapsScroller.get(), this->bottomEditorsScroller.get(),
-        this->bottomEditorsSwitcher.get(), this->scrollerShadow.get());
+        this->bottomEditorsSwitcher.get(), this->scrollerShadow.get(),
+        defaultSize);
     
     const auto hasAnimations = App::Config().getUiFlags()->areUiAnimationsEnabled();
     this->rollContainer->setAnimationsEnabled(hasAnimations);

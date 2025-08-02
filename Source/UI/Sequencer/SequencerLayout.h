@@ -39,7 +39,7 @@ class SequencerLayout final :
 {
 public:
 
-    explicit SequencerLayout(ProjectNode &parentProject);
+    SequencerLayout(ProjectNode &parentProject, Point<int> defaultSize);
     ~SequencerLayout() override;
 
     void showPatternEditor();

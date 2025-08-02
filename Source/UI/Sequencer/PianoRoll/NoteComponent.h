@@ -31,8 +31,9 @@ public:
     NoteComponent(PianoRoll &gridRef, const Note &note,
         const Clip &clip, bool enabled = true) noexcept;
 
-    void setDisplayAsGhost(bool shouldBeGhost);
-    void setDisplayAsGenerated(bool shouldBeGenerated);
+    void setDisplayAsGhost(bool shouldBeDisplayedAsGhost);
+    void setDisplayAsGenerated(bool shouldBeDisplayedAsGenerated);
+    void setDisplayAsReplacedByModifiers(bool shouldBeDisplayedAsReplaced);
 
     enum class State : uint8
     {

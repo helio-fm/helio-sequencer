@@ -21,10 +21,8 @@ class ComponentsList final : public Component
 {
 public:
 
-    explicit ComponentsList(int paddingLeft = 0, int paddingRight = 0);
-
-    void showChild(Component *child);
-    void hideChild(Component *child);
+    ComponentsList(int paddingLeft = 0, int paddingRight = 0,
+        int paddingTop = 0, int paddingBottom = 0);
 
     void resized() override;
 
@@ -32,8 +30,8 @@ private:
 
     const int paddingLeft;
     const int paddingRight;
-
-    Component *findContainerOf(Component *content);
+    const int paddingTop;
+    const int paddingBottom;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ComponentsList)
 };

@@ -392,8 +392,8 @@ protected:
     virtual void continueMergingEvents(const Point<float> &mousePosition) = 0;
     virtual void endMergingEvents() = 0;
 
-    float firstBeat = 0.f;
-    float lastBeat = Globals::Defaults::projectLength;
+    float firstBeat = -Globals::beatsPerBar * 4;
+    float lastBeat = Globals::Defaults::projectLength + (Globals::beatsPerBar * 4);
 
     float projectFirstBeat = 0.f;
     float projectLastBeat = Globals::Defaults::projectLength;

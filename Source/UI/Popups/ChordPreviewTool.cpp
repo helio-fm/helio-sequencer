@@ -164,13 +164,13 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
     {
         const auto chord = this->defaultChords.getUnchecked(i);
         const auto radians = float(i) * (MathConstants<float>::twoPi / float(numChordsToDisplay));
-        const auto defaultRadius = App::isRunningOnPhone() ? 100 : 140;
+        const auto defaultRadius = App::isRunningOnPhone() ? 95 : 130;
         // the more chords there are, the larger the raduis should be:
         const auto radius = defaultRadius + jlimit(0, 8, numChordsToDisplay - 10) * 10;
         const auto centreOffset = Point<int>(0, -radius).transformedBy(AffineTransform::rotation(radians, 0, 0));
         const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.675f, 1.f, 1.f).interpolatedWith(bgColour, 0.4f);
         auto *button = this->chordButtons.add(new ChordButton(createPopupButtonLabel(chord->getName()), PopupButton::Shape::Hex, colour));
-        const int buttonSize = App::isRunningOnPhone() ? 60 : 67;
+        const int buttonSize = App::isRunningOnPhone() ? 57 : 67;
         button->setSize(buttonSize, buttonSize);
         button->setUserData(chord->getResourceId());
         const auto buttonSizeOffset = button->getLocalBounds().getCentre();

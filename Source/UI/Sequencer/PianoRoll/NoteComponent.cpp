@@ -48,26 +48,55 @@ NoteComponent::NoteComponent(PianoRoll &editor,
     this->setFloatBounds(this->getRoll().getEventBounds(this));
 }
 
-void NoteComponent::setDisplayAsGhost(bool shouldBeGhost)
+void NoteComponent::setDisplayAsGhost(bool shouldBeDisplayedAsGhost)
 {
-    if (this->flags.isGhost == shouldBeGhost)
+    if (this->flags.isGhost == shouldBeDisplayedAsGhost)
     {
         return;
     }
 
-    this->flags.isGhost = shouldBeGhost;
+    this->flags.isGhost = shouldBeDisplayedAsGhost;
+    this->updateColours();
+
+    if (shouldBeDisplayedAsGhost)
+    {
+        this->toBack();
+    }
+    else
+    {
+        this->toFront(false);
+    }
+}
+
+void NoteComponent::setDisplayAsGenerated(bool shouldBeDisplayedAsGenerated)
+{
+    if (this->flags.isGenerated == shouldBeDisplayedAsGenerated)
+    {
+        return;
+    }
+
+    this->flags.isGenerated = shouldBeDisplayedAsGenerated;
     this->updateColours();
 }
 
-void NoteComponent::setDisplayAsGenerated(bool shouldBeGenerated)
+void NoteComponent::setDisplayAsReplacedByModifiers(bool shouldBeDisplayedAsReplaced)
 {
-    if (this->flags.isGenerated == shouldBeGenerated)
+    if (this->flags.isReplacedByModifiers == shouldBeDisplayedAsReplaced)
     {
         return;
     }
 
-    this->flags.isGenerated = shouldBeGenerated;
+    this->flags.isReplacedByModifiers = shouldBeDisplayedAsReplaced;
     this->updateColours();
+
+    if (shouldBeDisplayedAsReplaced)
+    {
+        this->toBack();
+    }
+    else
+    {
+        this->toFront(false);
+    }
 }
 
 PianoRoll &NoteComponent::getRoll() const noexcept
@@ -81,26 +110,26 @@ PianoRoll &NoteComponent::getRoll() const noexcept
 
 void NoteComponent::updateColours()
 {
-    const bool generated = this->flags.isGenerated;
-    const bool ghost = this->flags.isGhost || !this->flags.isActive;
-    const bool darkTheme = HelioTheme::getCurrentTheme().isDark();
-    const auto base = findDefaultColour(ColourIDs::Roll::noteFill);
+    const bool isDarkTheme = HelioTheme::getCurrentTheme().isDark();
+    const bool isGhostOrInactive = this->flags.isGhost || !this->flags.isActive;
 
     this->colour = this->getNote().getTrackColour()
-        .interpolatedWith(base, ghost ? 0.2f : (generated ? 0.3f : 0.4f))
+        .interpolatedWith(findDefaultColour(ColourIDs::Roll::noteFill),
+            isGhostOrInactive ? 0.2f : (this->flags.isGenerated ? 0.3f : 0.4f))
         .brighter(this->flags.isSelected ? 1.15f : 0.f)
-        .withMultipliedSaturationHSL(ghost || generated ? 1.5f : 1.f)
-        .withAlpha(ghost ? 0.275f : (generated ? 0.45f : 0.95f));
+        .withMultipliedSaturationHSL(isGhostOrInactive || this->flags.isGenerated ? 1.33f : 1.f)
+        .withAlpha(isGhostOrInactive ? 0.275f :
+            (this->flags.isGenerated ? 0.5f : (this->flags.isReplacedByModifiers ? 0.15f : 0.95f)));
 
-    if (ghost)
+    if (isGhostOrInactive)
     {
-        this->colour = darkTheme ?
+        this->colour = isDarkTheme ?
             this->colour.brighter(0.55f) : this->colour.darker(0.45f);
     }
 
-    this->colourLighter = this->colour.brighter(darkTheme ? 0.125f : 0.2f);
-    this->colourDarker = this->colour.darker(darkTheme ? 0.25f : 0.15f).withMultipliedAlpha(1.25f);
-    this->colourVolume = this->colour.darker(0.75f).withAlpha(0.5f);
+    this->colourLighter = this->colour.brighter(isDarkTheme ? 0.125f : 0.2f);
+    this->colourDarker = this->colour.darker(isDarkTheme ? 0.25f : 0.15f).withMultipliedAlpha(1.25f);
+    this->colourVolume = this->colour.darker(0.75f).withMultipliedAlpha(0.5f);
 }
 
 bool NoteComponent::shouldGoQuickSelectTrackMode(const ModifierKeys &modifiers) const
@@ -682,7 +711,7 @@ void NoteComponent::paint(Graphics &g) noexcept
         // fill
         g.fillRect(x + 0.25f, y + 0.5f, w - 0.5f, h - 1.f);
 
-        if (this->flags.isGenerated)
+        if (this->flags.isGenerated || this->flags.isReplacedByModifiers)
         {
             HelioTheme::drawStripes({ x + 0.25f, y + 0.5f, w - 0.5f, h - 1.f }, g);
         }
@@ -698,7 +727,8 @@ void NoteComponent::paint(Graphics &g) noexcept
         g.fillRect(x + 0.75f, roundf(h - 1.f), w - 1.5f, 1.f);
     }
 
-    if (!this->flags.isActive || this->flags.isGenerated || this->flags.isGhost)
+    if (!this->flags.isActive || this->flags.isGenerated ||
+        this->flags.isReplacedByModifiers || this->flags.isGhost)
     {
         return;
     }

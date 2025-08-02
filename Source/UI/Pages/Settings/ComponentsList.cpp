@@ -18,22 +18,25 @@
 #include "Common.h"
 #include "ComponentsList.h"
 
-ComponentsList::ComponentsList(int paddingLeft, int paddingRight) :
+ComponentsList::ComponentsList(int paddingLeft,
+    int paddingRight, int paddingTop, int paddingBottom) :
     paddingLeft(paddingLeft),
-    paddingRight(paddingRight)
+    paddingRight(paddingRight),
+    paddingTop(paddingTop),
+    paddingBottom(paddingBottom)
 {
-    this->setSize(800, 600);
+    this->setAccessible(false);
     this->setPaintingIsUnclipped(true);
 }
 
 void ComponentsList::resized()
 {
-    if (nullptr == this->getParentComponent())
+    if (this->getParentComponent() == nullptr)
     {
         return;
     }
     
-    int h = 0;
+    int y = this->paddingTop;
 
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
@@ -42,53 +45,10 @@ void ComponentsList::resized()
         if (item->isEnabled())
         {
             item->setSize(this->getWidth() - this->paddingLeft - this->paddingRight, item->getHeight());
-            item->setTopLeftPosition(this->paddingLeft, h);
-            h += item->getHeight();
+            item->setTopLeftPosition(this->paddingLeft, y);
+            y += item->getHeight();
         }
     }
 
-    this->setSize(this->getWidth(), h);
-}
-
-void ComponentsList::showChild(Component *child)
-{
-    auto *container = this->findContainerOf(child);
-    if (container != nullptr && !container->isEnabled())
-    {
-        container->setEnabled(true);
-        this->resized();
-    }
-}
-
-void ComponentsList::hideChild(Component *child)
-{
-    auto *container = this->findContainerOf(child);
-    if (container != nullptr && container->isEnabled())
-    {
-        container->setEnabled(false);
-        this->resized();
-    }
-}
-
-Component *ComponentsList::findContainerOf(Component *content)
-{
-    for (int i = 0; i < this->getNumChildComponents(); ++i)
-    {
-        auto *container = this->getChildComponent(i);
-        if (container == content)
-        {
-            return container;
-        }
-
-        for (int j = 0; j < container->getNumChildComponents(); ++j)
-        {
-            auto *child = container->getChildComponent(j);
-            if (child == content)
-            {
-                return container;
-            }
-        }
-    }
-
-    return nullptr;
+    this->setSize(this->getWidth(), y + this->paddingBottom);
 }

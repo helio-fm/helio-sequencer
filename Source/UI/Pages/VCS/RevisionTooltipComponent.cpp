@@ -38,7 +38,7 @@ RevisionTooltipComponent::RevisionTooltipComponent(const VCS::Revision::Ptr revi
     this->changesList->setClickingTogglesRowSelection(false);
 
     this->changesList->setRowHeight(RevisionTooltipComponent::rowHeight);
-    this->changesList->getViewport()->setScrollBarsShown(true, false);
+    this->changesList->getViewport()->setScrollBarsShown(true, false, true, false);
 
     const int maxHeight = int(RevisionTooltipComponent::rowHeight * RevisionTooltipComponent::numRowsOnScreen);
     const int newHeight = jmin(maxHeight, this->getNumRows() * RevisionTooltipComponent::rowHeight);
