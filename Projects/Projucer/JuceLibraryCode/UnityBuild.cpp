@@ -176,7 +176,6 @@
 #include "../../Source/UI/Pages/Instruments/OrchestraPitPage.cpp"
 #include "../../Source/UI/Pages/Project/ProjectPage.cpp"
 #include "../../Source/UI/Pages/Settings/AudioSettings.cpp"
-#include "../../Source/UI/Pages/Settings/ComponentsList.cpp"
 #include "../../Source/UI/Pages/Settings/SettingsFrameWrapper.cpp"
 #include "../../Source/UI/Pages/Settings/ThemeSettings.cpp"
 #include "../../Source/UI/Pages/Settings/ThemeSettingsItem.cpp"

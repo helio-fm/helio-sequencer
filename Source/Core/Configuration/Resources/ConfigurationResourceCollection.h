@@ -107,9 +107,7 @@ public:
         return foundUserResource != this->userResources.end();
     }
 
-    virtual ConfigurationResource::Ptr createResource() const = 0;
-
-    void updateUserResource(const ConfigurationResource::Ptr resource);
+    virtual void updateUserResource(const ConfigurationResource::Ptr resource);
 
 protected:
 

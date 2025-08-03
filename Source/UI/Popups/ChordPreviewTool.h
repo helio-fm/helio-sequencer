@@ -28,10 +28,9 @@ class TimeSignaturesAggregator;
 #include "Clip.h"
 #include "Chord.h"
 #include "Scale.h"
-#include "PopupMenuComponent.h"
 #include "PopupButton.h"
 
-class ChordPreviewTool final : public PopupMenuComponent,
+class ChordPreviewTool final : public Component,
                                public PopupButtonOwner
 {
 public:
@@ -93,6 +92,7 @@ private:
     void buildNewNote(bool shouldSendMidiMessage);
 
     void stopSound();
+    void dismiss();
 
     UniquePointer<PopupButton> centreButton;
 

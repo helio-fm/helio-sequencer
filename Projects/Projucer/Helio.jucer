@@ -907,10 +907,6 @@
             <FILE id="zErgDe" name="AudioSettings.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/AudioSettings.cpp"/>
             <FILE id="qPsjoy" name="AudioSettings.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/AudioSettings.h"/>
-            <FILE id="V92mWI" name="ComponentsList.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/ComponentsList.cpp"/>
-            <FILE id="cSvomJ" name="ComponentsList.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Settings/ComponentsList.h"/>
             <FILE id="cjGFIF" name="SettingsFrameWrapper.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/SettingsFrameWrapper.cpp"/>
             <FILE id="f3JYry" name="SettingsFrameWrapper.h" compile="0" resource="0"
@@ -987,8 +983,6 @@
           <FILE id="cL1fC7" name="PopupButton.h" compile="0" resource="0" file="../../Source/UI/Popups/PopupButton.h"/>
           <FILE id="oCbbhn" name="PopupButtonOwner.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/PopupButtonOwner.h"/>
-          <FILE id="Z8rbjQ" name="PopupMenuComponent.h" compile="0" resource="0"
-                file="../../Source/UI/Popups/PopupMenuComponent.h"/>
           <FILE id="yq7LlT" name="CenteredTooltipComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/CenteredTooltipComponent.h"/>
           <FILE id="a8yoZt" name="FailTooltip.h" compile="0" resource="0" file="../../Source/UI/Popups/FailTooltip.h"/>

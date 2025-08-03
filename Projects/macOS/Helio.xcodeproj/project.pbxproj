@@ -434,7 +434,6 @@
 		81B7A84085F384406DA80623 /* CommandPalette.cpp */ /* CommandPalette.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CommandPalette.cpp; path = ../../Source/UI/Popups/CommandPalette.cpp; sourceTree = SOURCE_ROOT; };
 		81D36278F0028B0649509527 /* NoteResizerRight.h */ /* NoteResizerRight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NoteResizerRight.h; path = ../../Source/UI/Sequencer/PianoRoll/NoteResizerRight.h; sourceTree = SOURCE_ROOT; };
 		827AAD5C6900DDCDB38378D9 /* logo-v2.png */ /* logo-v2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "logo-v2.png"; path = "../../Resources/logo-v2.png"; sourceTree = SOURCE_ROOT; };
-		8295B0B7CD954B1984A97530 /* PopupMenuComponent.h */ /* PopupMenuComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PopupMenuComponent.h; path = ../../Source/UI/Popups/PopupMenuComponent.h; sourceTree = SOURCE_ROOT; };
 		82CDD136587B74E7384A2691 /* CommandPaletteProjectsList.cpp */ /* CommandPaletteProjectsList.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CommandPaletteProjectsList.cpp; path = ../../Source/Core/CommandPalette/CommandPaletteProjectsList.cpp; sourceTree = SOURCE_ROOT; };
 		837D0D544F28E207D32C8997 /* Transport.h */ /* Transport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Transport.h; path = ../../Source/Core/Audio/Transport/Transport.h; sourceTree = SOURCE_ROOT; };
 		838290D5373D0512F75F212E /* KeyboardMappingPage.cpp */ /* KeyboardMappingPage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = KeyboardMappingPage.cpp; path = ../../Source/UI/Pages/Instruments/Editor/KeyboardMappingPage.cpp; sourceTree = SOURCE_ROOT; };
@@ -465,7 +464,6 @@
 		8C7D1515483F4788ADB6D0F0 /* pull.svg */ /* pull.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = pull.svg; path = ../../Resources/Icons/pull.svg; sourceTree = SOURCE_ROOT; };
 		8CD7A5104E4395EEF49A4267 /* cutterTool.svg */ /* cutterTool.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = cutterTool.svg; path = ../../Resources/Icons/cutterTool.svg; sourceTree = SOURCE_ROOT; };
 		8D489A2D2C212906DCBC731A /* AnnotationsProjectMap.h */ /* AnnotationsProjectMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnnotationsProjectMap.h; path = ../../Source/UI/Sequencer/MiniMaps/AnnotationsMap/AnnotationsProjectMap.h; sourceTree = SOURCE_ROOT; };
-		8D5E4B7612CD7AA5C3880C31 /* ComponentsList.cpp */ /* ComponentsList.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ComponentsList.cpp; path = ../../Source/UI/Pages/Settings/ComponentsList.cpp; sourceTree = SOURCE_ROOT; };
 		8D9D6EF0537A519368A14AB2 /* VersionControlNode.cpp */ /* VersionControlNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VersionControlNode.cpp; path = ../../Source/Core/Tree/VersionControlNode.cpp; sourceTree = SOURCE_ROOT; };
 		8DCF0356AB61183B653D0B40 /* retrograde.svg */ /* retrograde.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = retrograde.svg; path = ../../Resources/Icons/retrograde.svg; sourceTree = SOURCE_ROOT; };
 		8E7E3506C82E656F0F8652E0 /* timelineNext.svg */ /* timelineNext.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = timelineNext.svg; path = ../../Resources/Icons/timelineNext.svg; sourceTree = SOURCE_ROOT; };
@@ -703,7 +701,6 @@
 		DFF1741E434F98A023CEF061 /* JsonSerializer.h */ /* JsonSerializer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JsonSerializer.h; path = ../../Source/Core/Serialization/JsonSerializer.h; sourceTree = SOURCE_ROOT; };
 		E060F26127649098C35B36E8 /* juce_audio_formats */ /* juce_audio_formats */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_formats; path = ../../ThirdParty/JUCE/modules/juce_audio_formats; sourceTree = SOURCE_ROOT; };
 		E09C11D4F4D9254228CCCA95 /* TimelineMenu.h */ /* TimelineMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimelineMenu.h; path = ../../Source/UI/Menus/TimelineMenu.h; sourceTree = SOURCE_ROOT; };
-		E126076F062300172614B713 /* ComponentsList.h */ /* ComponentsList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ComponentsList.h; path = ../../Source/UI/Pages/Settings/ComponentsList.h; sourceTree = SOURCE_ROOT; };
 		E1714B7BE059F5B254FFB8DE /* ProjectTimelineDiffLogic.cpp */ /* ProjectTimelineDiffLogic.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProjectTimelineDiffLogic.cpp; path = ../../Source/Core/VCS/DiffLogic/ProjectTimelineDiffLogic.cpp; sourceTree = SOURCE_ROOT; };
 		E1B39FA834A6F0BE327B3541 /* copy.svg */ /* copy.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = copy.svg; path = ../../Resources/Icons/copy.svg; sourceTree = SOURCE_ROOT; };
 		E233FC91B8D6046DE1BBBBB9 /* VersionControlNode.h */ /* VersionControlNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VersionControlNode.h; path = ../../Source/Core/Tree/VersionControlNode.h; sourceTree = SOURCE_ROOT; };
@@ -1030,7 +1027,6 @@
 				1478052BE0DD3ECD0740B29A,
 				F5CD02A25BB21968413316D4,
 				B27E1695E139652172101A3C,
-				8295B0B7CD954B1984A97530,
 				20B6428E18D4A70CD01112C7,
 				169FDFCB1D90AD42F80B7463,
 				3465D068E86A733A315E09CE,
@@ -1728,8 +1724,6 @@
 			children = (
 				8036860876900AF36E06FF02,
 				3274EE0D7653072660EED41E,
-				8D5E4B7612CD7AA5C3880C31,
-				E126076F062300172614B713,
 				F58E7088E21EEE373267FE8A,
 				BC8B2AE81DB7ACAEA0B34D32,
 				461B0A47DEBB557C063F731C,

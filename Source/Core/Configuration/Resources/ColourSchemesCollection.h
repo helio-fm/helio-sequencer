@@ -26,11 +26,6 @@ public:
 
     ColourSchemesCollection();
 
-    ConfigurationResource::Ptr createResource() const override
-    {
-        return { new ColourScheme() };
-    }
-
     inline const Array<ColourScheme::Ptr> getAll() const
     {
         return this->getAllResources<ColourScheme>();

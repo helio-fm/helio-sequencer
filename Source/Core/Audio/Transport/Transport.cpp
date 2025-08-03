@@ -499,16 +499,16 @@ void Transport::NotePreviewTimer::previewNote(WeakReference<Instrument> instrume
     }
 }
 
-void Transport::NotePreviewTimer::timerCallback()
+void Transport::NotePreviewTimer::hiResTimerCallback()
 {
+    const CriticalSection::ScopedLockType lock(this->previews.getLock());
+
 #if PLATFORM_MOBILE
     // iSEM tends to hang >_< if too many messages are send simultaniously
     const auto time = TIME_NOW + float(rand() % 50) * 0.01;
 #elif PLATFORM_DESKTOP
     const auto time = TIME_NOW;
 #endif
-
-    const CriticalSection::ScopedLockType lock(this->previews.getLock());
 
     bool canStop = true;
     for (auto &preview : this->previews)

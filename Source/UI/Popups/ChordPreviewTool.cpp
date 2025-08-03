@@ -143,7 +143,6 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
     WeakReference<PianoSequence> sequence, const Clip &clip,
     WeakReference<KeySignaturesSequence> harmonicContext,
     WeakReference<TimeSignaturesAggregator> timeContext) :
-    PopupMenuComponent(&roll),
     roll(roll),
     sequence(sequence),
     clip(clip),
@@ -218,10 +217,7 @@ void ChordPreviewTool::parentHierarchyChanged()
 
 void ChordPreviewTool::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::PopupMenuDismiss)
-    {
-        this->exitModalState(0);
-    }
+    // todo hotkeys
 }
 
 bool ChordPreviewTool::keyPressed(const KeyPress &key)
@@ -231,7 +227,7 @@ bool ChordPreviewTool::keyPressed(const KeyPress &key)
         this->undoChangesIfAny();
     }
 
-    this->dismissAsDone();
+    this->dismiss();
     return true;
 }
 
@@ -240,7 +236,7 @@ void ChordPreviewTool::inputAttemptWhenModal()
     // a hack, see the same in CommandPalette, DialogBase and ModalCallout:
     this->roll.resetDraggingAnchors();
 
-    this->dismissAsCancelled();
+    this->dismiss();
 }
 
 void ChordPreviewTool::onPopupsResetState(PopupButton *button)
@@ -270,8 +266,7 @@ void ChordPreviewTool::onPopupButtonFirstAction(PopupButton *button)
 
 void ChordPreviewTool::onPopupButtonSecondAction(PopupButton *button)
 {
-    // TODO alt chords?
-    this->dismissAsDone();
+    this->dismiss();
 }
 
 bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
@@ -497,4 +492,10 @@ bool ChordPreviewTool::detectKeyBeatAndContext()
 void ChordPreviewTool::stopSound()
 {
     this->roll.getTransport().stopSound(this->sequence->getTrackId());
+}
+
+void ChordPreviewTool::dismiss()
+{
+    App::Layout().hideTooltipIfAny();
+    this->exitModalState(0);
 }

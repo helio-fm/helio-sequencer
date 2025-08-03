@@ -26,11 +26,6 @@ public:
 
     ChordsCollection();
 
-    ConfigurationResource::Ptr createResource() const override
-    {
-        return { new Chord() };
-    }
-
     inline const Array<Chord::Ptr> getAll() const
     {
         return this->getAllResources<Chord>();

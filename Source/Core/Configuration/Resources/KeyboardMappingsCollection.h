@@ -26,11 +26,6 @@ public:
 
     KeyboardMappingsCollection();
 
-    ConfigurationResource::Ptr createResource() const override
-    {
-        return { new KeyboardMapping() };
-    }
-
     inline const Array<KeyboardMapping::Ptr> getAll() const
     {
         return this->getAllResources<KeyboardMapping>();

@@ -60,29 +60,19 @@ public:
 
         while (!this->threadShouldExit())
         {
-            for (int i = 0; i < metronome.getSize(); ++i)
+            for (int i = 0; i < this->metronome.getSize(); ++i)
             {
-                if (this->threadShouldExit())
-                {
-                    break;
-                }
-
-                const auto syllable = metronome.getSyllableAt(i);
+                const auto syllable = this->metronome.getSyllableAt(i);
                 const auto key = MetronomeSynth::getKeyForSyllable(syllable);
-
-                // todo someday: tempo to depend on time signature's denominator
-                const auto endTime = Time::getMillisecondCounter() + 300;
 
                 this->transport.previewKey(this->instrument, 1, key, 1.f, float(Globals::beatsPerBar));
 
-                while (Time::getMillisecondCounter() < endTime)
-                {
-                    if (this->threadShouldExit())
-                    {
-                        break;
-                    }
+                // todo someday: tempo to depend on time signature's denominator
+                Thread::wait(300);
 
-                    Thread::wait(25);
+                if (this->threadShouldExit())
+                {
+                    break;
                 }
             }
         }
@@ -172,26 +162,31 @@ public:
         this->resized();
     }
 
-    Rectangle<int> getSyllableButtonsArea() const noexcept
+    // using minNumButtons to keep the buttons area the same for the most common meters;
+    // otherwise, switching meters will resize the control, which feels a bit annoying;
+    // for larger meters (6/4 and up) it will be resized to fit the number of buttons
+    Rectangle<int> getSyllableButtonsArea(int minNumButtons = 5) const noexcept
     {
-        const auto syllablesWidth = this->buttons.size() * (buttonWidth + buttonMargin) - buttonMargin;
+        const auto syllablesWidth = jmax(minNumButtons, this->buttons.size()) * (buttonWidth + buttonMargin) - buttonMargin;
         return this->getLocalBounds().withSizeKeepingCentre(syllablesWidth, this->getHeight() - buttonMargin * 2);
     }
 
     Rectangle<int> getAllButtonsArea() const noexcept
     {
-        constexpr auto helpersMargin = 45;
+        constexpr auto helpersMargin = (buttonWidth + 2) * 2;
         return getSyllableButtonsArea().expanded(helpersMargin, 0);
     }
 
     void resized() override
     {
-        auto syllableButtonsArea = getSyllableButtonsArea();
         auto helperButtonsArea = getAllButtonsArea();
 
         this->playButton->setBounds(helperButtonsArea.removeFromRight(buttonWidth).expanded(5));
         this->metronomeUiButton->setBounds(helperButtonsArea.removeFromLeft(buttonWidth));
 
+        auto syllableButtonsArea = getSyllableButtonsArea();
+        const auto usedSyllableButtonsArea = getSyllableButtonsArea(0);
+        syllableButtonsArea.removeFromLeft((syllableButtonsArea.getWidth() - usedSyllableButtonsArea.getWidth()) / 2);
         for (const auto &button : this->buttons)
         {
             button->setBounds(syllableButtonsArea.removeFromLeft(buttonWidth));

@@ -25,15 +25,21 @@ class ScalesCollection final : public ConfigurationResourceCollection
 public:
   
     ScalesCollection();
-    
-    ConfigurationResource::Ptr createResource() const override
-    {
-        return { new Scale() };
-    }
 
     inline const Array<Scale::Ptr> getAll() const
     {
-        return this->getAllResources<Scale>();
+        if (this->orderedScalesCache.isEmpty())
+        {
+            this->orderedScalesCache = this->getAllResources<Scale>();
+        }
+
+        return this->orderedScalesCache;
+    }
+
+    void updateUserResource(const ConfigurationResource::Ptr resource) override
+    {
+        this->orderedScalesCache.clearQuick();
+        ConfigurationResourceCollection::updateUserResource(resource);
     }
 
 private:
@@ -53,6 +59,8 @@ private:
     ScalesComparator scalesComparator;
     const ConfigurationResource &getResourceComparator() const override;
     FlatHashMap<String, int, StringHash> order;
+
+    mutable Array<Scale::Ptr> orderedScalesCache;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScalesCollection)
 };

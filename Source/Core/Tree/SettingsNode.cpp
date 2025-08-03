@@ -22,10 +22,58 @@
 #include "ThemeSettings.h"
 #include "UserInterfaceSettings.h"
 #include "SettingsFrameWrapper.h"
-#include "ComponentsList.h"
 #include "SettingsPage.h"
 #include "MainLayout.h"
 #include "Workspace.h"
+
+class SettingsSectionsList final : public Component
+{
+public:
+
+    SettingsSectionsList(int paddingLeft = 0, int paddingRight = 0,
+        int paddingTop = 0, int paddingBottom = 0) :
+        paddingLeft(paddingLeft),
+        paddingRight(paddingRight),
+        paddingTop(paddingTop),
+        paddingBottom(paddingBottom)
+    {
+        this->setAccessible(false);
+        this->setPaintingIsUnclipped(true);
+    }
+
+    void resized() override
+    {
+        if (this->getParentComponent() == nullptr)
+        {
+            return;
+        }
+    
+        int y = this->paddingTop;
+
+        for (int i = 0; i < this->getNumChildComponents(); ++i)
+        {
+            auto *item = this->getChildComponent(i);
+            item->setVisible(item->isEnabled());
+            if (item->isEnabled())
+            {
+                item->setSize(this->getWidth() - this->paddingLeft - this->paddingRight, item->getHeight());
+                item->setTopLeftPosition(this->paddingLeft, y);
+                y += item->getHeight();
+            }
+        }
+
+        this->setSize(this->getWidth(), y + this->paddingBottom);
+    }
+
+private:
+
+    const int paddingLeft;
+    const int paddingRight;
+    const int paddingTop;
+    const int paddingBottom;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingsSectionsList)
+};
 
 SettingsNode::SettingsNode() :
     TreeNode("Settings", Serialization::Core::settings) {}
@@ -59,25 +107,25 @@ void SettingsNode::recreatePage()
     this->themeSettings = nullptr;
     this->audioSettingsWrapper = nullptr;
     this->audioSettings = nullptr;
-    this->settingsList = nullptr;
+    this->sectionsList = nullptr;
 
-    this->settingsList = make<ComponentsList>(6,
+    this->sectionsList = make<SettingsSectionsList>(6,
         jmax(0, 6 - SettingsPage::viewportScrollBarWidth),
         2, 12);
 
     this->themeSettings = make<ThemeSettings>();
     this->themeSettingsWrapper = make<SettingsFrameWrapper>(this->themeSettings.get(), TRANS(I18n::Settings::ui));
-    this->settingsList->addAndMakeVisible(this->themeSettingsWrapper.get());
+    this->sectionsList->addAndMakeVisible(this->themeSettingsWrapper.get());
 
     this->uiSettings = make<UserInterfaceSettings>();
     this->uiSettingsWrapper = make<SettingsFrameWrapper>(this->uiSettings.get(), TRANS(I18n::Settings::uiFlags));
-    this->settingsList->addAndMakeVisible(this->uiSettingsWrapper.get());
+    this->sectionsList->addAndMakeVisible(this->uiSettingsWrapper.get());
 
     this->audioSettings = make<AudioSettings>(App::Workspace().getAudioCore());
     this->audioSettingsWrapper = make<SettingsFrameWrapper>(this->audioSettings.get(), TRANS(I18n::Settings::audio));
-    this->settingsList->addAndMakeVisible(this->audioSettingsWrapper.get());
+    this->sectionsList->addAndMakeVisible(this->audioSettingsWrapper.get());
 
-    this->settingsPage = make<SettingsPage>(this->settingsList.get());
+    this->settingsPage = make<SettingsPage>(this->sectionsList.get());
 }
 
 bool SettingsNode::hasMenu() const noexcept

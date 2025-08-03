@@ -71,6 +71,8 @@ SerializedData ScalesCollection::serializeResources(const Resources &resources)
 
 void ScalesCollection::deserializeResources(const SerializedData &tree, Resources &outResources)
 {
+    this->orderedScalesCache.clearQuick();
+
     const auto root = tree.hasType(Serialization::Resources::scales) ?
         tree : tree.getChildWithName(Serialization::Resources::scales);
 
@@ -89,5 +91,6 @@ void ScalesCollection::deserializeResources(const SerializedData &tree, Resource
 void ScalesCollection::reset()
 {
     this->order.clear();
+    this->orderedScalesCache.clearQuick();
     ConfigurationResourceCollection::reset();
 }

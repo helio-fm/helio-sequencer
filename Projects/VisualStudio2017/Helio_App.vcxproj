@@ -444,7 +444,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\OrchestraPitPage.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Project\ProjectPage.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\AudioSettings.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\ComponentsList.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsFrameWrapper.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ThemeSettings.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ThemeSettingsItem.cpp"/>
@@ -2895,7 +2894,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\OrchestraPitPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\AudioSettings.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\ComponentsList.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsFrameWrapper.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ThemeSettings.h"/>
@@ -2916,7 +2914,6 @@
     <ClInclude Include="..\..\Source\UI\Popups\ModalCallout.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\PopupButton.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\PopupButtonOwner.h"/>
-    <ClInclude Include="..\..\Source\UI\Popups\PopupMenuComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\CenteredTooltipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\FailTooltip.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\GenericTooltip.h"/>

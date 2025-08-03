@@ -272,7 +272,7 @@ private:
 
 private:
 
-    class NotePreviewTimer final : private Timer
+    class NotePreviewTimer final : private HighResolutionTimer
     {
     public:
 
@@ -285,7 +285,7 @@ private:
 
     private:
 
-        void timerCallback() override;
+        void hiResTimerCallback() override;
 
         struct KeyPreviewState final
         {

@@ -27,11 +27,6 @@ public:
 
     TemperamentsCollection();
 
-    ConfigurationResource::Ptr createResource() const override
-    {
-        return { new Temperament() };
-    }
-
     inline const Array<Temperament::Ptr> getAll() const
     {
         return this->getAllResources<Temperament>();

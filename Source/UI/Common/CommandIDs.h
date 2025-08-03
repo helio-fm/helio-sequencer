@@ -116,8 +116,6 @@ namespace CommandIDs
         TransportPlaybackStart          = 0x2017,
         TransportStop                   = 0x2018,
 
-        PopupMenuDismiss                = 0x2020,
-
         RenderToFLAC                    = 0x2030,
         RenderToWAV                     = 0x2031,
         RenderToOGG                     = 0x2032,

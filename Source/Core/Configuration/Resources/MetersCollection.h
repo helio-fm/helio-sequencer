@@ -25,11 +25,6 @@ class MetersCollection final : public ConfigurationResourceCollection
 public:
   
     MetersCollection();
-    
-    ConfigurationResource::Ptr createResource() const override
-    {
-        return { new Meter() };
-    }
 
     inline const Array<Meter::Ptr> getAll() const
     {

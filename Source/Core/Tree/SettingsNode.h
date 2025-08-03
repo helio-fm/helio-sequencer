@@ -18,7 +18,6 @@
 #pragma once
 
 #include "TreeNode.h"
-#include "ComponentsList.h"
 
 class SettingsNode final : public TreeNode
 {
@@ -37,7 +36,7 @@ public:
 
 private:
 
-    UniquePointer<ComponentsList> settingsList;
+    UniquePointer<Component> sectionsList;
     UniquePointer<Component> audioSettings;
     UniquePointer<Component> audioSettingsWrapper;
     UniquePointer<Component> uiSettings;

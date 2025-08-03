@@ -240,6 +240,8 @@ void PopupButton::mouseDrag(const MouseEvent &e)
 
 void PopupButton::mouseUp(const MouseEvent &e)
 {
+    BailOutChecker checker(this);
+
     if (auto *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
     {
         this->dragger.dragComponent(this, e, nullptr);
@@ -248,6 +250,11 @@ void PopupButton::mouseUp(const MouseEvent &e)
         {
             this->setTopLeftPosition(this->anchor);
         }
+    }
+
+    if (checker.shouldBailOut())
+    {
+        return;
     }
 
     if (this->hitTest(e.getPosition().getX(), e.getPosition().getY()))
@@ -265,8 +272,18 @@ void PopupButton::mouseUp(const MouseEvent &e)
                 owner->onPopupButtonFirstAction(this);
             }
 
+            if (checker.shouldBailOut())
+            {
+                return;
+            }
+
             owner->onPopupsResetState(this);
         }
+    }
+
+    if (checker.shouldBailOut())
+    {
+        return;
     }
 
     this->fader.fadeOut(this->mouseDownHighlighter.get(), Globals::UI::fadeOutShort);

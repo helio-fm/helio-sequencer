@@ -26,11 +26,6 @@ public:
 
     ArpeggiatorsCollection();
 
-    ConfigurationResource::Ptr createResource() const override
-    {
-        return { new Arpeggiator() };
-    }
-
     inline Array<Arpeggiator::Ptr> getAll() const
     {
         return this->getAllResources<Arpeggiator>();

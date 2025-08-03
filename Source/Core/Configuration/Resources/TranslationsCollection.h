@@ -27,11 +27,6 @@ public:
     TranslationsCollection();
     ~TranslationsCollection() override;
 
-    ConfigurationResource::Ptr createResource() const override
-    {
-        return { new Translation() };
-    }
-
     inline const Array<Translation::Ptr> getAll() const
     {
         return this->getAllResources<Translation>();
