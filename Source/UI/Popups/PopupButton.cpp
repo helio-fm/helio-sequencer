@@ -23,133 +23,59 @@
 #   define CONFIRMATION_MODE 1
 #endif
 
-PopupButtonHighlighter::PopupButtonHighlighter(const PopupButton &parent) : button(parent)
-{
-    this->setInterceptsMouseClicks(false, false);
-}
-
-void PopupButtonHighlighter::paint(Graphics &g)
-{
-    const float r = this->button.getRadiusDelta();
-    static const float d = 6.f;
-
-    g.setColour(this->button.colour);
-
-    switch (this->button.shapeType)
-    {
-    case PopupButton::Shape::Circle:
-        g.fillEllipse(d + r, d + r,
-            float(getWidth()) - (d * 2.f) - (r * 2.f),
-            float(getHeight()) - (d * 2.f) - (r * 2.f));
-    case PopupButton::Shape::Hex:
-        g.fillPath(this->button.shape);
-    default:
-        break;
-    }
-}
-
-
-PopupButtonConfirmation::PopupButtonConfirmation(const PopupButton &parent) :
-    button(parent)
-{
-    this->setAlwaysOnTop(true);
-    this->setInterceptsMouseClicks(false, false);
-    this->clickConfirmImage = Icons::getPathByName(Icons::apply);
-}
-
-void PopupButtonConfirmation::paint(Graphics &g)
-{
-    const float r = this->button.getRadiusDelta();
-    const float d = 3.f;
-
-    g.setColour(this->button.colour.brighter(0.3f));
-
-    switch (this->button.shapeType)
-    {
-    case PopupButton::Shape::Circle:
-        g.fillEllipse(d + r, d + r,
-            float(getWidth()) - (d * 2.f) - (r * 2.f),
-            float(getHeight()) - (d * 2.f) - (r * 2.f));
-    case PopupButton::Shape::Hex:
-        g.fillPath(this->button.shape);
-    default:
-        break;
-    }
-
-    AffineTransform pathScaleTransform =
-        this->clickConfirmImage.getTransformToScaleToFit(this->getLocalBounds().toFloat().reduced(20), true);
-
-    g.setColour(Colours::white.withAlpha(0.3f));
-    g.fillPath(this->clickConfirmImage, pathScaleTransform);
-
-    g.setColour(Colours::black.withAlpha(0.65f));
-    g.strokePath(this->clickConfirmImage,
-        PathStrokeType(1.5f),
-        pathScaleTransform);
-}
-
-PopupButton::PopupButton(bool shouldShowConfirmImage, Shape shapeType, Colour colour) :
-    showConfirmImage(shouldShowConfirmImage),
+PopupButton::PopupButton(Shape shapeType, Colour colour) :
     colour(colour),
     shapeType(shapeType)
 {
+    this->setAccessible(false);
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
-
-    this->mouseOverHighlighter = make<PopupButtonHighlighter>(*this);
-    this->addAndMakeVisible(this->mouseOverHighlighter.get());
-    this->mouseOverHighlighter->setAlpha(0.f);
-
-    this->mouseDownHighlighter = make<PopupButtonHighlighter>(*this);
-    this->addAndMakeVisible(this->mouseDownHighlighter.get());
-    this->mouseDownHighlighter->setAlpha(0.f);
-
-    this->confirmationMark = make<PopupButtonConfirmation>(*this);
-    this->addAndMakeVisible(this->confirmationMark.get());
-    this->confirmationMark->setAlpha(0.f);
-
-    this->setSize(48, 48);
-
-    if (this->shapeType == Shape::Circle)
-    {
-        this->startTimerHz(60);
-    }
 }
 
 void PopupButton::paint(Graphics &g)
 {
-    const float r = this->getRadiusDelta();
-    static constexpr float outline1 = 4.5f;
-    static constexpr float outline2 = 2.f;
+    static constexpr float outline1 = 4.f;
+    static constexpr float outline2 = 1.5f;
+
+    const float a = this->isSelected ? PopupButton::selectedAlpha : this->alpha;
+    const auto fillColour = this->colour.withMultipliedAlpha(a);
+    const auto outlineColour = Colours::black.withAlpha(a);
 
     switch (this->shapeType)
     {
     case Shape::Circle:
-        g.setColour(Colours::white.withAlpha(0.085f));
-        g.drawEllipse(outline1 + r, outline1 + r,
-            float(this->getWidth()) - (outline1 + r) * 2.f,
-            float(this->getHeight()) - (outline1 + r) * 2.f,
+        g.setColour(outlineColour.contrasting().withMultipliedAlpha(0.1f));
+        g.drawEllipse(outline1, outline1,
+            float(this->getWidth()) - (outline1 * 2.f),
+            float(this->getHeight()) - (outline1 * 2.f),
             outline1);
 
-        g.setColour(Colours::black.withAlpha(0.9f));
-        g.drawEllipse(outline1 + outline2 + r,
-            outline1 + outline2 + r,
-            float(this->getWidth()) - (outline1 + outline2 + r) * 2.f,
-            float(this->getHeight()) - (outline1 + outline2 + r) * 2.f,
+        g.setColour(outlineColour);
+        g.drawEllipse(outline1 + outline2,
+            outline1 + outline2,
+            float(this->getWidth()) - (outline1 + outline2) * 2.f,
+            float(this->getHeight()) - (outline1 + outline2) * 2.f,
             outline2);
 
-        g.setColour(this->colour);
-        g.fillEllipse(outline1 + outline2 + r,
-            outline1 + outline2 + r,
-            float(this->getWidth()) - (outline1 + outline2 + r) * 2.f,
-            float(this->getHeight()) - (outline1 + outline2 + r) * 2.f);
+        g.setColour(fillColour);
+        g.fillEllipse(outline1 + outline2,
+            outline1 + outline2,
+            float(this->getWidth()) - (outline1 + outline2) * 2.f,
+            float(this->getHeight()) - (outline1 + outline2) * 2.f);
         break;
     case Shape::Hex:
-        g.setColour(Colours::black.withAlpha(0.85f));
+        g.setColour(outlineColour);
         g.strokePath(this->shape, PathStrokeType(1.f));
 
-        g.setColour(this->colour);
+        g.setColour(fillColour);
         g.fillPath(this->shape);
+
+        if (this->isSelected)
+        {
+            g.setColour(fillColour.darker(0.65f));
+            g.strokePath(this->selectionShape, PathStrokeType(1.f));
+        }
+
         break;
     default:
         break;
@@ -158,24 +84,25 @@ void PopupButton::paint(Graphics &g)
 
 void PopupButton::resized()
 {
-    const int w = this->getWidth();
-    const int h = this->getHeight();
-
-    this->mouseOverHighlighter->setBounds(this->getLocalBounds());
-    this->mouseDownHighlighter->setBounds(this->getLocalBounds());
-    this->confirmationMark->setBounds(this->getLocalBounds());
-
     if (this->shapeType == Shape::Hex)
     {
+        const int w = this->getWidth();
+        const int h = this->getHeight();
         const auto q = float((h - 4) / 4);
+
         this->shape.clear();
-        this->shape.startNewSubPath(float(w / 2), 2.0f);
+        this->shape.startNewSubPath(float(w / 2), 2.f);
         this->shape.lineTo(float(w - 6), float(h / 2) - q);
         this->shape.lineTo(float(w - 6), float(h / 2) + q);
         this->shape.lineTo(float((w / 2)), float(h - 2));
-        this->shape.lineTo(6.0f, float(h / 2) + q);
-        this->shape.lineTo(6.0f, float(h / 2) - q);
+        this->shape.lineTo(6.f, float(h / 2) + q);
+        this->shape.lineTo(6.f, float(h / 2) - q);
         this->shape.closeSubPath();
+
+        const auto localBounds = this->getLocalBounds().toFloat();
+        this->selectionShape = shape;
+        this->selectionShape.applyTransform(this->shape.
+            getTransformToScaleToFit(localBounds.reduced(5.f), true));
     }
 }
 
@@ -189,13 +116,11 @@ bool PopupButton::hitTest(int x, int y)
 
 void PopupButton::mouseEnter(const MouseEvent &e)
 {
-    this->fader.fadeIn(this->mouseOverHighlighter.get(), Globals::UI::fadeInShort);
-
-#if ! CONFIRMATION_MODE
+#if !CONFIRMATION_MODE
 
     if (auto *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
     {
-        if (! this->firstClickDone)
+        if (!this->isSelected)
         {
             owner->onPopupButtonFirstAction(this);
         }
@@ -203,12 +128,16 @@ void PopupButton::mouseEnter(const MouseEvent &e)
         owner->onPopupsResetState(this);
     }
 
+    this->alpha = PopupButton::highlightedAlpha;
+    this->repaint();
+
 #endif
 }
 
 void PopupButton::mouseExit(const MouseEvent &e)
 {
-    this->fader.fadeOut(this->mouseOverHighlighter.get(), Globals::UI::fadeOutShort);
+    this->alpha = PopupButton::defaultAlpha;
+    this->repaint();
 }
 
 void PopupButton::mouseDown(const MouseEvent &e)
@@ -216,8 +145,8 @@ void PopupButton::mouseDown(const MouseEvent &e)
     this->anchor = this->getPosition();
     this->dragger.startDraggingComponent(this, e);
 
-    this->mouseDownHighlighter->repaint();
-    this->fader.fadeIn(this->mouseDownHighlighter.get(), Globals::UI::fadeInShort);
+    this->alpha = PopupButton::selectedAlpha;
+    this->repaint();
 
     if (auto *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
     {
@@ -231,7 +160,7 @@ void PopupButton::mouseDrag(const MouseEvent &e)
     {
         this->dragger.dragComponent(this, e, nullptr);
 
-        if (! owner->onPopupButtonDrag(this))
+        if (!owner->onPopupButtonDrag(this))
         {
             this->setTopLeftPosition(this->anchor);
         }
@@ -240,13 +169,16 @@ void PopupButton::mouseDrag(const MouseEvent &e)
 
 void PopupButton::mouseUp(const MouseEvent &e)
 {
+    this->alpha = PopupButton::defaultAlpha;
+    this->repaint();
+
     BailOutChecker checker(this);
 
     if (auto *owner = dynamic_cast<PopupButtonOwner *>(this->getParentComponent()))
     {
         this->dragger.dragComponent(this, e, nullptr);
 
-        if (! owner->onPopupButtonDrag(this))
+        if (!owner->onPopupButtonDrag(this))
         {
             this->setTopLeftPosition(this->anchor);
         }
@@ -263,7 +195,7 @@ void PopupButton::mouseUp(const MouseEvent &e)
         {
             owner->onPopupButtonEndDragging(this);
 
-            if (this->firstClickDone)
+            if (this->isSelected)
             {
                 owner->onPopupButtonSecondAction(this);
             }
@@ -285,56 +217,12 @@ void PopupButton::mouseUp(const MouseEvent &e)
     {
         return;
     }
-
-    this->fader.fadeOut(this->mouseDownHighlighter.get(), Globals::UI::fadeOutShort);
-}
-
-void PopupButton::timerCallback()
-{
-    this->raduisAnimation += PopupButton::radiusAnimationStep;
-
-    if (this->raduisAnimation >= PopupButton::radiusAnimationEnd)
-    {
-        this->raduisAnimation = PopupButton::radiusAnimationEnd;
-        this->stopTimer();
-    }
-
-    this->repaint();
 }
 
 void PopupButton::setState(bool clicked)
 {
-    this->firstClickDone = clicked;
-
-#if CONFIRMATION_MODE
-
-    for (int i = 0; i < this->getNumChildComponents(); ++i)
-    {
-        if (! dynamic_cast<PopupButtonHighlighter *>(this->getChildComponent(i)) &&
-            ! dynamic_cast<PopupButtonConfirmation *>(this->getChildComponent(i)))
-        {
-            if (clicked)
-            {
-                this->fader.fadeOut(this->getChildComponent(i), Globals::UI::fadeOutShort);
-            }
-            else
-            {
-                this->fader.fadeIn(this->getChildComponent(i), Globals::UI::fadeInShort);
-            }
-        }
-    }
-
-    if (this->showConfirmImage && !this->firstClickDone)
-    {
-        this->fader.fadeOut(this->confirmationMark.get(), Globals::UI::fadeOutShort);
-    }
-
-    if (this->showConfirmImage && this->firstClickDone)
-    {
-        this->fader.fadeIn(this->confirmationMark.get(), Globals::UI::fadeInShort);
-    }
-
-#endif
+    this->isSelected = clicked;
+    this->repaint();
 }
 
 void PopupButton::setUserData(const String &data)
@@ -345,11 +233,6 @@ void PopupButton::setUserData(const String &data)
 const String &PopupButton::getUserData() const noexcept
 {
     return this->userData;
-}
-
-float PopupButton::getRadiusDelta() const noexcept
-{
-    return PopupButton::radiusAnimationEnd - this->raduisAnimation;
 }
 
 Point<int> PopupButton::getDragDelta() const noexcept

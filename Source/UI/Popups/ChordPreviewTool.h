@@ -29,6 +29,7 @@ class TimeSignaturesAggregator;
 #include "Chord.h"
 #include "Scale.h"
 #include "PopupButton.h"
+#include "Config.h"
 
 class ChordPreviewTool final : public Component,
                                public PopupButtonOwner
@@ -51,7 +52,6 @@ public:
     bool onPopupButtonDrag(PopupButton *button) override;
     void onPopupButtonEndDragging(PopupButton *) override {}
 
-    void resized() override;
     void parentHierarchyChanged() override;
     void handleCommandMessage(int commandId) override;
     bool keyPressed(const KeyPress &key) override;
@@ -83,8 +83,8 @@ private:
 
     bool detectKeyBeatAndContext();
 
-    Array<Chord::Ptr> defaultChords;
-
+    Chord::Ptr lastBuiltChord;
+    const Array<Chord::Ptr> chords = App::Config().getChords()->getAll();
     OwnedArray<PopupButton> chordButtons;
 
     Chord::Ptr findChordFor(PopupButton *button) const;

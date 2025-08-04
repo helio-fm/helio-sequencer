@@ -25,7 +25,6 @@
 #include "TimeSignaturesAggregator.h"
 #include "NoteNameComponent.h"
 #include "MidiTrack.h"
-#include "Config.h"
 #include "ColourIDs.h"
 #include "UndoActionIDs.h"
 
@@ -44,14 +43,12 @@ class ChordButton final : public PopupButton
 public:
 
     ChordButton(Component *newOwnedComponent,
-        PopupButton::Shape shapeType = PopupButton::Shape::Circle,
-        Colour colour = Colours::black.withAlpha(0.45f)) :
-        PopupButton(true, shapeType, colour),
+        PopupButton::Shape shapeType, Colour colour) :
+        PopupButton(shapeType, colour),
         ownedComponent(newOwnedComponent)
     {
         this->ownedComponent->setInterceptsMouseClicks(false, false);
         this->addAndMakeVisible(this->ownedComponent.get());
-        this->setSize(48, 48);
     }
 
     void resized() override
@@ -147,29 +144,35 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
     sequence(sequence),
     clip(clip),
     harmonicContext(harmonicContext),
-    timeContext(timeContext),
-    defaultChords(App::Config().getChords()->getAll())
+    timeContext(timeContext)
 {
-    const auto bgColour = findDefaultColour(ColourIDs::Roll::blackKey).withMultipliedAlpha(0.65f);
+    this->setAccessible(false);
+    this->setInterceptsMouseClicks(false, true);
+    this->setWantsKeyboardFocus(true);
+    this->setFocusContainerType(Component::FocusContainerType::focusContainer);
+    this->setSize(420, 420);
 
+    const auto bgColour = findDefaultColour(ColourIDs::Roll::blackKey);
+
+    const int buttonSize = App::isRunningOnPhone() ? 57 : 67;
     this->centreButton = make<ChordButton>(createPopupButtonLabel("+"),
-        PopupButton::Shape::Circle, bgColour.withMultipliedAlpha(0.5f));
+        PopupButton::Shape::Circle, bgColour.withMultipliedAlpha(0.35f));
+    this->centreButton->setSize(buttonSize, buttonSize);
+    this->centreButton->setMouseCursor(MouseCursor::DraggingHandCursor);
     this->addAndMakeVisible(this->centreButton.get());
+    this->centreButton->setCentreRelative(0.5f, 0.5f);
 
-    this->setSize(500, 500);
-
-    const int numChordsToDisplay = jmin(16, this->defaultChords.size());
+    const int numChordsToDisplay = jmin(16, this->chords.size());
     for (int i = 0; i < numChordsToDisplay; ++i)
     {
-        const auto chord = this->defaultChords.getUnchecked(i);
+        const auto chord = this->chords.getUnchecked(i);
         const auto radians = float(i) * (MathConstants<float>::twoPi / float(numChordsToDisplay));
         const auto defaultRadius = App::isRunningOnPhone() ? 95 : 130;
         // the more chords there are, the larger the raduis should be:
         const auto radius = defaultRadius + jlimit(0, 8, numChordsToDisplay - 10) * 10;
         const auto centreOffset = Point<int>(0, -radius).transformedBy(AffineTransform::rotation(radians, 0, 0));
-        const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.675f, 1.f, 1.f).interpolatedWith(bgColour, 0.4f);
+        const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.69f, 1.f, 1.f).interpolatedWith(bgColour, 0.3f);
         auto *button = this->chordButtons.add(new ChordButton(createPopupButtonLabel(chord->getName()), PopupButton::Shape::Hex, colour));
-        const int buttonSize = App::isRunningOnPhone() ? 57 : 67;
         button->setSize(buttonSize, buttonSize);
         button->setUserData(chord->getResourceId());
         const auto buttonSizeOffset = button->getLocalBounds().getCentre();
@@ -177,12 +180,6 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
         button->setTopLeftPosition(buttonPosition);
         this->addAndMakeVisible(button);
     }
-
-    this->setFocusContainerType(Component::FocusContainerType::focusContainer);
-    this->setInterceptsMouseClicks(false, true);
-    this->enterModalState(false, nullptr, true); // deleted when dismissed
-
-    this->centreButton->setMouseCursor(MouseCursor::DraggingHandCursor);
 }
 
 ChordPreviewTool::~ChordPreviewTool()
@@ -198,21 +195,14 @@ ChordPreviewTool::~ChordPreviewTool()
 #endif
 
     this->stopSound();
-}
 
-void ChordPreviewTool::resized()
-{
-    static constexpr auto yOffset = 0.14f;
-    this->centreButton->setBounds((this->getWidth() / 2) - (this->proportionOfWidth(yOffset) / 2),
-        (this->getHeight() / 2) - (this->proportionOfHeight(yOffset) / 2),
-        this->proportionOfWidth(yOffset), this->proportionOfHeight(yOffset));
+    App::fadeOutComponent(this, Globals::UI::fadeOutShort);
 }
 
 void ChordPreviewTool::parentHierarchyChanged()
 {
     this->detectKeyBeatAndContext();
     this->buildNewNote(true);
-    this->centreButton->setState(true);
 }
 
 void ChordPreviewTool::handleCommandMessage(int commandId)
@@ -241,6 +231,11 @@ void ChordPreviewTool::inputAttemptWhenModal()
 
 void ChordPreviewTool::onPopupsResetState(PopupButton *button)
 {
+    if (button == this->centreButton.get())
+    {
+        return;
+    }
+
     // reset all buttons except for the clicked one:
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
@@ -254,13 +249,15 @@ void ChordPreviewTool::onPopupsResetState(PopupButton *button)
 
 void ChordPreviewTool::onPopupButtonFirstAction(PopupButton *button)
 {
-    if (button != this->centreButton.get())
+    if (button == this->centreButton.get())
     {
-        App::Layout().hideTooltipIfAny();
-        if (auto chord = this->findChordFor(button))
-        {
-            this->buildChord(chord);
-        }
+        return;
+    }
+
+    App::Layout().hideTooltipIfAny();
+    if (auto chord = this->findChordFor(button))
+    {
+        this->buildChord(chord);
     }
 }
 
@@ -275,11 +272,10 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
     {
         const auto dragDelta = this->centreButton->getDragDelta();
         this->setTopLeftPosition(this->getPosition() + dragDelta);
+
         const bool hasChanges = this->detectKeyBeatAndContext();
         if (hasChanges)
         {
-            this->buildNewNote(true);
-
             const auto absKey = this->targetKey + this->clip.getKey();
             const auto targetKeyOffset = absKey % this->scale->getBasePeriod();
             const auto chromaticOffset = targetKeyOffset - this->scaleRootKey;
@@ -288,25 +284,37 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
             if (scaleDegree >= 0)
             {
                 const auto degreeName = this->degreeNames[scaleDegree];
-
                 int periodNumber = 0;
                 auto keyName = this->roll.getTemperament()->
                     getMidiNoteName(absKey, this->scaleRootKey, this->scaleRootKeyName, periodNumber);
 
-                auto tooltip = make<ChordTooltip>(String(), degreeName, keyName);
-                App::Layout().showTooltip(move(tooltip));
+                if (this->lastBuiltChord != nullptr)
+                {
+                    this->buildChord(this->lastBuiltChord);
+                    auto tooltip = make<ChordTooltip>(this->lastBuiltChord->getName(), degreeName, keyName);
+                    App::Layout().showTooltip(move(tooltip));
+                }
+                else
+                {
+                    this->buildNewNote(true);
+                    auto tooltip = make<ChordTooltip>(String(), degreeName, keyName);
+                    App::Layout().showTooltip(move(tooltip));
+                }
             }
             else
             {
+                this->buildNewNote(true);
                 App::Layout().hideTooltipIfAny();
             }
         }
 
         // reset click state:
-        this->centreButton->setState(false);
         for (auto *b : this->chordButtons)
         {
-            b->setState(false);
+            const auto isActive =
+                (this->lastBuiltChord != nullptr) &&
+                (b->getUserData() == this->lastBuiltChord->getResourceId());
+            b->setState(isActive);
         }
     }
 
@@ -315,7 +323,7 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
 
 Chord::Ptr ChordPreviewTool::findChordFor(PopupButton *button) const
 {
-    for (const auto &chord : this->defaultChords)
+    for (const auto &chord : this->chords)
     {
         if (chord->getResourceId() == button->getUserData())
         {
@@ -328,7 +336,13 @@ Chord::Ptr ChordPreviewTool::findChordFor(PopupButton *button) const
 
 void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 {
-    if (!chord->isValid()) { return; }
+    if (!chord->isValid())
+    {
+        jassertfalse;
+        return;
+    }
+
+    this->lastBuiltChord = chord;
 
     const auto absKey = this->targetKey + this->clip.getKey();
     const auto period = (absKey - this->scaleRootKey) / this->scale->getBasePeriod();
@@ -336,54 +350,56 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
     const auto targetKeyOffset = absKey % this->scale->getBasePeriod();
     const auto chromaticOffset = targetKeyOffset - this->scaleRootKey;
     const auto scaleDegree = this->scale->getScaleKey(chromaticOffset);
-
-    if (scaleDegree >= 0) // todo some indication that the key is not in scale?
+    if (scaleDegree < 0) // todo some indication that the key is not in scale?
     {
-        this->undoChangesIfAny();
-        this->stopSound();
-
-        if (!this->hasMadeChanges)
-        {
-            this->sequence->checkpoint(UndoActionIDs::MakeChord);
-        }
-
-        const auto temperament = this->roll.getTemperament();
-
-        int periodNumber = 0;
-        const auto keyName =
-            temperament->getMidiNoteName(absKey,
-                this->scaleRootKey, this->scaleRootKeyName, periodNumber);
-
-        const auto degreeName = this->degreeNames[scaleDegree];
-
-        auto tooltip = make<ChordTooltip>(chord->getName(), degreeName, keyName);
-        App::Layout().showTooltip(move(tooltip));
-
-        for (const auto &chordKey : chord->getScaleKeys())
-        {
-            const auto inScaleKey = scaleDegree + chordKey.getInScaleKey();
-            const auto finalRootOffset = periodOffset + this->scaleRootKey;
-            const auto key = jlimit(0, temperament->getNumKeys(), finalRootOffset +
-                this->scale->getChromaticKey(inScaleKey, chordKey.getChromaticOffset(), false));
-
-            const Note note(this->sequence.get(),
-                key - this->clip.getKey(),
-                this->targetBeat,
-                this->barLengthInBeats,
-                this->roll.getDefaultNoteVolume());
-
-            this->sequence->insert(note, true);
-
-            const auto *track = this->sequence->getTrack();
-            this->roll.getTransport().previewKey(track->getTrackId(),
-                track->getTrackChannel(),
-                key,
-                note.getVelocity(),
-                note.getLength());
-        }
-
-        this->hasMadeChanges = true;
+        jassertfalse;
+        return;
     }
+
+    this->undoChangesIfAny();
+    this->stopSound();
+
+    if (!this->hasMadeChanges)
+    {
+        this->sequence->checkpoint(UndoActionIDs::MakeChord);
+    }
+
+    const auto temperament = this->roll.getTemperament();
+
+    int periodNumber = 0;
+    const auto keyName =
+        temperament->getMidiNoteName(absKey,
+            this->scaleRootKey, this->scaleRootKeyName, periodNumber);
+
+    const auto degreeName = this->degreeNames[scaleDegree];
+
+    auto tooltip = make<ChordTooltip>(chord->getName(), degreeName, keyName);
+    App::Layout().showTooltip(move(tooltip));
+
+    for (const auto &chordKey : chord->getScaleKeys())
+    {
+        const auto inScaleKey = scaleDegree + chordKey.getInScaleKey();
+        const auto finalRootOffset = periodOffset + this->scaleRootKey;
+        const auto key = jlimit(0, temperament->getNumKeys(), finalRootOffset +
+            this->scale->getChromaticKey(inScaleKey, chordKey.getChromaticOffset(), false));
+
+        const Note note(this->sequence.get(),
+            key - this->clip.getKey(),
+            this->targetBeat,
+            this->barLengthInBeats,
+            this->roll.getDefaultNoteVolume());
+
+        this->sequence->insert(note, true);
+
+        const auto *track = this->sequence->getTrack();
+        this->roll.getTransport().previewKey(track->getTrackId(),
+            track->getTrackChannel(),
+            key,
+            note.getVelocity(),
+            note.getLength());
+    }
+
+    this->hasMadeChanges = true;
 }
 
 void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)

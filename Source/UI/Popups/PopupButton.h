@@ -18,28 +18,8 @@
 #pragma once
 
 #include "PopupButtonOwner.h"
-#include "ComponentFader.h"
 
-class PopupButtonHighlighter final : public Component
-{
-public:
-    PopupButtonHighlighter(const PopupButton &parent);
-    void paint(Graphics &g) override;
-private:
-    const PopupButton &button;
-};
-
-class PopupButtonConfirmation final : public Component
-{
-public:
-    explicit PopupButtonConfirmation(const PopupButton &parent);
-    void paint(Graphics &g) override;
-private:
-    const PopupButton &button;
-    Path clickConfirmImage;
-};
-
-class PopupButton : public Component, private Timer
+class PopupButton : public Component
 {
 public:
 
@@ -49,11 +29,9 @@ public:
         Hex
     };
 
-    PopupButton(bool shouldShowConfirmImage,
-        Shape shapeType = Shape::Circle,
+    explicit PopupButton(Shape shapeType = Shape::Circle,
         Colour colour = Colours::black.withAlpha(0.5f));
 
-    float getRadiusDelta() const noexcept;
     Point<int> getDragDelta() const noexcept;
     void setState(bool clicked);
     void setUserData(const String &data);
@@ -70,32 +48,23 @@ public:
 
 private:
 
-    void timerCallback() override;
-
-    float raduisAnimation = 0.f;
-    static constexpr auto radiusAnimationEnd = 1.f;
-    static constexpr auto radiusAnimationStep = 0.075f;
-
-    bool firstClickDone = false;
-    const bool showConfirmImage = false;
+    bool isSelected = false;
 
     const Colour colour;
+    
+    static constexpr float defaultAlpha = 0.85f;
+    static constexpr float highlightedAlpha = 0.925f;
+    static constexpr float selectedAlpha = 1.f;
+    float alpha = defaultAlpha;
+
     String userData;
 
     ComponentDragger dragger;
     Point<int> anchor;
 
-    ComponentFader fader;
-
-    friend class PopupButtonHighlighter;
-    friend class PopupButtonConfirmation;
-
-    UniquePointer<PopupButtonHighlighter> mouseOverHighlighter;
-    UniquePointer<PopupButtonHighlighter> mouseDownHighlighter;
-    UniquePointer<PopupButtonConfirmation> confirmationMark;
-
     Shape shapeType;
     Path shape;
+    Path selectionShape;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PopupButton)
 };

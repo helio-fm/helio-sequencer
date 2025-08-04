@@ -2311,16 +2311,18 @@ int PianoRoll::binarySearchForHighlightingScheme(const KeySignatureEvent *const 
 
 void PianoRoll::showChordTool(Point<int> position)
 {
-    auto *pianoSequence = dynamic_cast<PianoSequence *>(this->activeTrack->getSequence());
-    jassert(pianoSequence);
-
     this->deselectAll();
-
     auto *timeContext = this->project.getTimeline()->getTimeSignaturesAggregator();
     auto *harmonicContext = this->project.getTimeline()->getKeySignaturesSequence();
-    auto *popup = new ChordPreviewTool(*this, pianoSequence, this->activeClip, harmonicContext, timeContext);
+    auto *pianoSequence = dynamic_cast<PianoSequence *>(this->activeTrack->getSequence());
+    jassert(pianoSequence);
+    auto popup = make<ChordPreviewTool>(*this, pianoSequence, this->activeClip, harmonicContext, timeContext);
     popup->setTopLeftPosition(position - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
-    App::Layout().addAndMakeVisible(popup);
+    popup->setAlpha(0.f);
+    App::Layout().addAndMakeVisible(popup.get());
+    popup->enterModalState(true, nullptr, true);
+    App::fadeInComponent(popup.get(), Globals::UI::fadeInShort);
+    popup.release(); // deleted when dismissed
 }
 
 //===----------------------------------------------------------------------===//
