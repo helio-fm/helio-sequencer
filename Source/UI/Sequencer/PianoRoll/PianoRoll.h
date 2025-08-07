@@ -57,6 +57,8 @@ public:
 
     Point<int> getDefaultPositionForChordTool() const;
 
+    int getRowHeight() const noexcept;
+
     //===------------------------------------------------------------------===//
     // Ghost notes
     //===------------------------------------------------------------------===//
@@ -259,10 +261,6 @@ private:
 
     int rowHeight = PianoRoll::defaultRowHeight;
     void setRowHeight(int newRowHeight);
-    inline int getRowHeight() const noexcept
-    {
-        return this->rowHeight;
-    }
 
 private:
 

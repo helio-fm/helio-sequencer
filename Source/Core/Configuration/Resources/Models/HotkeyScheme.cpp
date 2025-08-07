@@ -298,7 +298,7 @@ static Component *findMessageReceiver(Component *root, const String &id)
     return nullptr;
 }
 
-bool HotkeyScheme::sendHotkeyCommand(const String &componentId,
+bool HotkeyScheme::sendHotkeyCommand(const String &keyPressComponentId,
     CommandIDs::Id commandId,
     WeakReference<Component> keyPressReceivedFrom,
     WeakReference<Component> componentToSendMessageTo)
@@ -309,31 +309,37 @@ bool HotkeyScheme::sendHotkeyCommand(const String &componentId,
         this->receiversById.clear();
     }
 
-    auto receiver = this->receiversById[componentId];
+    auto receiver = this->receiversById[keyPressComponentId];
     if (receiver == nullptr)
     {
-        if (keyPressReceivedFrom != nullptr &&
-            keyPressReceivedFrom->getComponentID() == componentId)
+        // if there's a modal component that dispatched the keypress, ignore everyone else;
+        // otherwise, either the keypress receiver is a target or one of the children it specified
+        auto *modalComponent = Component::getCurrentlyModalComponent();
+        if (modalComponent != nullptr &&
+            modalComponent == keyPressReceivedFrom)
         {
-            // the main layout itself
+            if (modalComponent->getComponentID() == keyPressComponentId)
+            {
+                receiver = modalComponent;
+            }
+        }
+        else if (keyPressReceivedFrom != nullptr &&
+            keyPressReceivedFrom->getComponentID() == keyPressComponentId)
+        {
             receiver = keyPressReceivedFrom;
         }
         else if (componentToSendMessageTo != nullptr)
         {
-            // child of the showing page or the page itself
-            receiver = findMessageReceiver(componentToSendMessageTo, componentId);
+            receiver = findMessageReceiver(componentToSendMessageTo, keyPressComponentId);
         }
 
-        this->receiversById[componentId] = receiver;
+        this->receiversById[keyPressComponentId] = receiver;
     }
 
-    if (receiver != nullptr)
+    if (receiver != nullptr && receiver->isEnabled() && receiver->isShowing())
     {
-        if (receiver->isEnabled() && receiver->isShowing())
-        {
-            receiver->postCommandMessage(commandId);
-            return true;
-        }
+        receiver->postCommandMessage(commandId);
+        return true;
     }
 
     return false;

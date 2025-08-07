@@ -2495,6 +2495,41 @@ static const unsigned char temp_binary_data_110[] =
 "      { \"command\": \"EndDragViewport\", \"key\": \"Spacebar\" }\n"
 "    ]\n"
 "  }, // ANCHOR_END: PianoRoll\n"
+"  {  // ANCHOR: ChordTool\n"
+"    \"receiver\": \"ChordTool\",\n"
+"    \"keyPress\": [\n"
+"      { \"command\": \"ChordToolDismissApply\", \"key\": \"Return\" },\n"
+"      { \"command\": \"ChordToolDismissCancel\", \"key\": \"Escape\" },\n"
+"      { \"command\": \"ChordToolRootKeyUp\", \"key\": \"Cursor Up\" },\n"
+"      { \"command\": \"ChordToolRootKeyDown\", \"key\": \"Cursor Down\" },\n"
+"      { \"command\": \"ChordToolBeatShiftLeft\", \"key\": \"Cursor Left\" },\n"
+"      { \"command\": \"ChordToolBeatShiftRight\", \"key\": \"Cursor Right\" },\n"
+"      { \"command\": \"ChordToolNextPreset\", \"key\": \".\" },\n"
+"      { \"command\": \"ChordToolPreviousPreset\", \"key\": \",\" },\n"
+"      { \"command\": \"ChordToolPreset1\", \"key\": \"1\" },\n"
+"      { \"command\": \"ChordToolPreset2\", \"key\": \"2\" },\n"
+"      { \"command\": \"ChordToolPreset3\", \"key\": \"3\" },\n"
+"      { \"command\": \"ChordToolPreset4\", \"key\": \"4\" },\n"
+"      { \"command\": \"ChordToolPreset5\", \"key\": \"5\" },\n"
+"      { \"command\": \"ChordToolPreset6\", \"key\": \"6\" },\n"
+"      { \"command\": \"ChordToolPreset7\", \"key\": \"7\" },\n"
+"      { \"command\": \"ChordToolPreset8\", \"key\": \"8\" },\n"
+"      { \"command\": \"ChordToolPreset9\", \"key\": \"9\" },\n"
+"      { \"command\": \"ChordToolPreset10\", \"key\": \"0\" },\n"
+"      { \"command\": \"ChordToolPreset11\", \"key\": \"-\" },\n"
+"      { \"command\": \"ChordToolPreset12\", \"key\": \"=\" },\n"
+"      { \"command\": \"ChordToolPreset1\", \"key\": \"Numpad 1\" },\n"
+"      { \"command\": \"ChordToolPreset2\", \"key\": \"Numpad 2\" },\n"
+"      { \"command\": \"ChordToolPreset3\", \"key\": \"Numpad 3\" },\n"
+"      { \"command\": \"ChordToolPreset4\", \"key\": \"Numpad 4\" },\n"
+"      { \"command\": \"ChordToolPreset5\", \"key\": \"Numpad 5\" },\n"
+"      { \"command\": \"ChordToolPreset6\", \"key\": \"Numpad 6\" },\n"
+"      { \"command\": \"ChordToolPreset7\", \"key\": \"Numpad 7\" },\n"
+"      { \"command\": \"ChordToolPreset8\", \"key\": \"Numpad 8\" },\n"
+"      { \"command\": \"ChordToolPreset9\", \"key\": \"Numpad 9\" },\n"
+"      { \"command\": \"ChordToolPreset10\", \"key\": \"Numpad 0\" }\n"
+"    ]\n"
+"  }, // ANCHOR_END: ChordTool\n"
 "  {  // ANCHOR: PatternRoll\n"
 "    \"receiver\": \"PatternRoll\",\n"
 "    \"keyPress\": [\n"
@@ -6178,7 +6213,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 4550; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 18402; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 20263; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 13262; return scales_json;

@@ -25,13 +25,15 @@
 #include "TimeSignaturesAggregator.h"
 #include "NoteNameComponent.h"
 #include "MidiTrack.h"
+#include "HotkeyScheme.h"
 #include "ColourIDs.h"
 #include "UndoActionIDs.h"
+#include "ComponentIDs.h"
 
-static Label *createPopupButtonLabel(const String &text)
+static UniquePointer<Label> makePopupButtonLabel(const String &text)
 {
     constexpr int size = 50;
-    auto *newLabel = new Label(text, text);
+    auto newLabel = make<Label>(text, text);
     newLabel->setJustificationType(Justification::centred);
     newLabel->setBounds(0, 0, size, size);
     newLabel->setFont(App::isRunningOnPhone() ? Globals::UI::Fonts::XS : Globals::UI::Fonts::S);
@@ -42,10 +44,10 @@ class ChordButton final : public PopupButton
 {
 public:
 
-    ChordButton(Component *newOwnedComponent,
+    ChordButton(UniquePointer<Component> &&newOwnedComponent,
         PopupButton::Shape shapeType, Colour colour) :
         PopupButton(shapeType, colour),
-        ownedComponent(newOwnedComponent)
+        ownedComponent(move(newOwnedComponent))
     {
         this->ownedComponent->setInterceptsMouseClicks(false, false);
         this->addAndMakeVisible(this->ownedComponent.get());
@@ -67,6 +69,44 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChordButton)
 };
 
+class ChordRootKeyAimMark final : public Component
+{
+public:
+
+    ChordRootKeyAimMark()
+    {
+        this->setAccessible(false);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+
+        constexpr int size = 9;
+        this->setBounds(0, 0, size, size);
+    }
+
+    void paint(Graphics &g) override
+    {
+        const auto w = float(this->getWidth());
+        const auto h = float(this->getHeight());
+
+        g.setColour(this->outlineColour);
+        g.fillRect(0.f, h / 2.f - 1.5f, w, 3.f);
+        g.fillRect(w / 2.f - 1.5f, 0.f, 3.f, h);
+
+        g.setColour(this->fillColour);
+        g.fillRect(1.f, h / 2.f - 0.5f, w - 2.f, 1.f);
+        g.fillRect(w / 2.f - 0.5f, 1.f, 1.f, h - 2.f);
+    }
+
+private:
+
+    const Colour fillColour =
+        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.75f);
+
+    const Colour outlineColour =
+        findDefaultColour(ColourIDs::Roll::blackKey).withMultipliedAlpha(0.5f);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ChordRootKeyAimMark)
+};
 
 class ChordTooltip final : public Component
 {
@@ -146,6 +186,8 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
     harmonicContext(harmonicContext),
     timeContext(timeContext)
 {
+    this->setComponentID(ComponentIDs::chordTool);
+
     this->setAccessible(false);
     this->setInterceptsMouseClicks(false, true);
     this->setWantsKeyboardFocus(true);
@@ -155,8 +197,8 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
     const auto bgColour = findDefaultColour(ColourIDs::Roll::blackKey);
 
     const int buttonSize = App::isRunningOnPhone() ? 57 : 67;
-    this->centreButton = make<ChordButton>(createPopupButtonLabel("+"),
-        PopupButton::Shape::Circle, bgColour.withMultipliedAlpha(0.35f));
+    this->centreButton = make<ChordButton>(make<ChordRootKeyAimMark>(),
+        PopupButton::Shape::Circle, bgColour.withMultipliedAlpha(0.2f));
     this->centreButton->setSize(buttonSize, buttonSize);
     this->centreButton->setMouseCursor(MouseCursor::DraggingHandCursor);
     this->addAndMakeVisible(this->centreButton.get());
@@ -172,7 +214,7 @@ ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
         const auto radius = defaultRadius + jlimit(0, 8, numChordsToDisplay - 10) * 10;
         const auto centreOffset = Point<int>(0, -radius).transformedBy(AffineTransform::rotation(radians, 0, 0));
         const auto colour = Colour(float(i) / float(numChordsToDisplay), 0.69f, 1.f, 1.f).interpolatedWith(bgColour, 0.3f);
-        auto *button = this->chordButtons.add(new ChordButton(createPopupButtonLabel(chord->getName()), PopupButton::Shape::Hex, colour));
+        auto *button = this->chordButtons.add(new ChordButton(makePopupButtonLabel(chord->getName()), PopupButton::Shape::Hex, colour));
         button->setSize(buttonSize, buttonSize);
         button->setUserData(chord->getResourceId());
         const auto buttonSizeOffset = button->getLocalBounds().getCentre();
@@ -201,23 +243,164 @@ ChordPreviewTool::~ChordPreviewTool()
 
 void ChordPreviewTool::parentHierarchyChanged()
 {
-    this->detectKeyBeatAndContext();
-    this->buildNewNote(true);
+    this->detectContextAndRebuild();
 }
 
 void ChordPreviewTool::handleCommandMessage(int commandId)
 {
-    // todo hotkeys
+    switch (commandId)
+    {
+    case CommandIDs::ChordToolDismissApply:
+        this->dismiss();
+        break;
+    case CommandIDs::ChordToolDismissCancel:
+        this->undoChangesIfAny();
+        this->dismiss();
+        break;
+    case CommandIDs::ChordToolRootKeyUp:
+        this->setBounds(this->getBounds().translated(0, -this->roll.getRowHeight()));
+        this->detectContextAndRebuild();
+        break;
+    case CommandIDs::ChordToolRootKeyDown:
+        this->setBounds(this->getBounds().translated(0, this->roll.getRowHeight()));
+        this->detectContextAndRebuild();
+        break;
+    case CommandIDs::ChordToolBeatShiftLeft:
+        this->setBounds(this->getBounds().translated(
+            roundToIntAccurate(-this->roll.getMinVisibleBeatForCurrentZoomLevel() * this->roll.getBeatWidth()), 0));
+        this->detectContextAndRebuild();
+        break;
+    case CommandIDs::ChordToolBeatShiftRight:
+        this->setBounds(this->getBounds().translated(
+            roundToIntAccurate(this->roll.getMinVisibleBeatForCurrentZoomLevel() * this->roll.getBeatWidth()), 0));
+        this->detectContextAndRebuild();
+        break;
+    case CommandIDs::ChordToolNextPreset:
+        if (this->lastBuiltChord != nullptr)
+        {
+            this->selectPreset((this->chords.indexOf(this->lastBuiltChord) + 1) % this->chords.size());
+        }
+        else
+        {
+            this->selectPreset(0);
+        }
+        break;
+    case CommandIDs::ChordToolPreviousPreset:
+        if (this->lastBuiltChord != nullptr)
+        {
+            this->selectPreset((this->chords.indexOf(this->lastBuiltChord) +
+                this->chords.size() - 1) % this->chords.size());
+        }
+        else
+        {
+            this->selectPreset(0);
+        }
+        break;
+    case CommandIDs::ChordToolPreset1:
+        this->selectPreset(0);
+        break;
+    case CommandIDs::ChordToolPreset2:
+        this->selectPreset(1);
+        break;
+    case CommandIDs::ChordToolPreset3:
+        this->selectPreset(2);
+        break;
+    case CommandIDs::ChordToolPreset4:
+        this->selectPreset(3);
+        break;
+    case CommandIDs::ChordToolPreset5:
+        this->selectPreset(4);
+        break;
+    case CommandIDs::ChordToolPreset6:
+        this->selectPreset(5);
+        break;
+    case CommandIDs::ChordToolPreset7:
+        this->selectPreset(6);
+        break;
+    case CommandIDs::ChordToolPreset8:
+        this->selectPreset(7);
+        break;
+    case CommandIDs::ChordToolPreset9:
+        this->selectPreset(8);
+        break;
+    case CommandIDs::ChordToolPreset10:
+        this->selectPreset(9);
+        break;
+    case CommandIDs::ChordToolPreset11:
+        this->selectPreset(10);
+        break;
+    case CommandIDs::ChordToolPreset12:
+        this->selectPreset(11);
+        break;
+    default:
+        break;
+    }
+}
+
+void ChordPreviewTool::selectPreset(int presetIndex)
+{
+    App::Layout().hideTooltipIfAny();
+
+    if (auto chord = this->chords[presetIndex])
+    {
+        this->buildChord(chord);
+    }
+
+    if (auto *button = this->chordButtons[presetIndex])
+    {
+        this->onPopupsResetState(button);
+    }
+}
+
+void ChordPreviewTool::detectContextAndRebuild()
+{
+    const bool hasChanges = this->detectKeyBeatAndContext();
+    if (!hasChanges)
+    {
+        return;
+    }
+
+    const auto absKey = this->targetKey + this->clip.getKey();
+    const auto targetKeyOffset = absKey % this->scale->getBasePeriod();
+    const auto chromaticOffset = targetKeyOffset - this->scaleRootKey;
+    const auto scaleDegree = this->scale->getScaleKey(chromaticOffset);
+
+    if (scaleDegree >= 0)
+    {
+        const auto degreeName = this->degreeNames[scaleDegree];
+        int periodNumber = 0;
+        auto keyName = this->roll.getTemperament()->
+            getMidiNoteName(absKey, this->scaleRootKey, this->scaleRootKeyName, periodNumber);
+
+        if (this->lastBuiltChord != nullptr)
+        {
+            this->buildChord(this->lastBuiltChord);
+            auto tooltip = make<ChordTooltip>(this->lastBuiltChord->getName(), degreeName, keyName);
+            App::Layout().showTooltip(move(tooltip));
+        }
+        else
+        {
+            this->buildNewNote(true);
+            auto tooltip = make<ChordTooltip>(String(), degreeName, keyName);
+            App::Layout().showTooltip(move(tooltip));
+        }
+    }
+    else
+    {
+        this->buildNewNote(true);
+        App::Layout().hideTooltipIfAny();
+    }
 }
 
 bool ChordPreviewTool::keyPressed(const KeyPress &key)
 {
-    if (key.isKeyCode(KeyPress::escapeKey))
-    {
-        this->undoChangesIfAny();
-    }
+    // all modal components have to process hotkeys like this:
+    App::Config().getHotkeySchemes()->getCurrent()->dispatchKeyPress(key, this, this);
+    return true;
+}
 
-    this->dismiss();
+bool ChordPreviewTool::keyStateChanged(bool isKeyDown)
+{
     return true;
 }
 
@@ -255,6 +438,7 @@ void ChordPreviewTool::onPopupButtonFirstAction(PopupButton *button)
     }
 
     App::Layout().hideTooltipIfAny();
+
     if (auto chord = this->findChordFor(button))
     {
         this->buildChord(chord);
@@ -272,53 +456,10 @@ bool ChordPreviewTool::onPopupButtonDrag(PopupButton *button)
     {
         const auto dragDelta = this->centreButton->getDragDelta();
         this->setTopLeftPosition(this->getPosition() + dragDelta);
-
-        const bool hasChanges = this->detectKeyBeatAndContext();
-        if (hasChanges)
-        {
-            const auto absKey = this->targetKey + this->clip.getKey();
-            const auto targetKeyOffset = absKey % this->scale->getBasePeriod();
-            const auto chromaticOffset = targetKeyOffset - this->scaleRootKey;
-            const auto scaleDegree = this->scale->getScaleKey(chromaticOffset);
-
-            if (scaleDegree >= 0)
-            {
-                const auto degreeName = this->degreeNames[scaleDegree];
-                int periodNumber = 0;
-                auto keyName = this->roll.getTemperament()->
-                    getMidiNoteName(absKey, this->scaleRootKey, this->scaleRootKeyName, periodNumber);
-
-                if (this->lastBuiltChord != nullptr)
-                {
-                    this->buildChord(this->lastBuiltChord);
-                    auto tooltip = make<ChordTooltip>(this->lastBuiltChord->getName(), degreeName, keyName);
-                    App::Layout().showTooltip(move(tooltip));
-                }
-                else
-                {
-                    this->buildNewNote(true);
-                    auto tooltip = make<ChordTooltip>(String(), degreeName, keyName);
-                    App::Layout().showTooltip(move(tooltip));
-                }
-            }
-            else
-            {
-                this->buildNewNote(true);
-                App::Layout().hideTooltipIfAny();
-            }
-        }
-
-        // reset click state:
-        for (auto *b : this->chordButtons)
-        {
-            const auto isActive =
-                (this->lastBuiltChord != nullptr) &&
-                (b->getUserData() == this->lastBuiltChord->getResourceId());
-            b->setState(isActive);
-        }
+        this->detectContextAndRebuild();
     }
 
-    return false;
+    return false; // let the button return to anchor
 }
 
 Chord::Ptr ChordPreviewTool::findChordFor(PopupButton *button) const
@@ -352,7 +493,6 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
     const auto scaleDegree = this->scale->getScaleKey(chromaticOffset);
     if (scaleDegree < 0) // todo some indication that the key is not in scale?
     {
-        jassertfalse;
         return;
     }
 

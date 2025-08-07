@@ -34,8 +34,8 @@ PopupButton::PopupButton(Shape shapeType, Colour colour) :
 
 void PopupButton::paint(Graphics &g)
 {
-    static constexpr float outline1 = 4.f;
-    static constexpr float outline2 = 1.5f;
+    static constexpr float outline1 = 1.5f;
+    static constexpr float outline2 = 1.f;
 
     const float a = this->isSelected ? PopupButton::selectedAlpha : this->alpha;
     const auto fillColour = this->colour.withMultipliedAlpha(a);

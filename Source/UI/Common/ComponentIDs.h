@@ -30,4 +30,5 @@ namespace ComponentIDs
     static const String versionControlHistory = "VersionControlHistory";
     static const String orchestraPit = "OrchestraPit";
     static const String keyboardMapping = "KeyboardMapping";
+    static const String chordTool = "ChordTool";
 } // namespace ComponentIDs

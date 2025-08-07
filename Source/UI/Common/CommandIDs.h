@@ -242,9 +242,29 @@ namespace CommandIDs
         MakeStaccatissimo               = 0x4602, // make notes very short
         MakeLegato                      = 0x4603, // connect notes in time
         MakeLegatoOverlapping           = 0x4604, // connect notes together, but with a slight overlap for use in certain VSTs
-        Glue                            = 0x4605, // glue overlapping notes
 
-        YourNextCommandId               = 0x4700
+        ChordToolDismissApply           = 0x4710,
+        ChordToolDismissCancel          = 0x4711,
+        ChordToolRootKeyUp              = 0x4712,
+        ChordToolRootKeyDown            = 0x4713,
+        ChordToolBeatShiftLeft          = 0x4714,
+        ChordToolBeatShiftRight         = 0x4715,
+        ChordToolNextPreset             = 0x4716,
+        ChordToolPreviousPreset         = 0x4717,
+        ChordToolPreset1                = 0x4718,
+        ChordToolPreset2                = 0x4719,
+        ChordToolPreset3                = 0x471a,
+        ChordToolPreset4                = 0x471b,
+        ChordToolPreset5                = 0x471c,
+        ChordToolPreset6                = 0x471d,
+        ChordToolPreset7                = 0x471e,
+        ChordToolPreset8                = 0x471f,
+        ChordToolPreset9                = 0x4720,
+        ChordToolPreset10               = 0x4721,
+        ChordToolPreset11               = 0x4722,
+        ChordToolPreset12               = 0x4723,
+
+        YourNextCommandId               = 0x4800
     };
 
     CommandIDs::Id getIdForName(const String &command);

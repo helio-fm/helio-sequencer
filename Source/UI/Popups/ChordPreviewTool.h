@@ -55,6 +55,7 @@ public:
     void parentHierarchyChanged() override;
     void handleCommandMessage(int commandId) override;
     bool keyPressed(const KeyPress &key) override;
+    bool keyStateChanged(bool isKeyDown) override;
     void inputAttemptWhenModal() override;
 
 private:
@@ -90,6 +91,9 @@ private:
     Chord::Ptr findChordFor(PopupButton *button) const;
     void buildChord(const Chord::Ptr chord);
     void buildNewNote(bool shouldSendMidiMessage);
+
+    void selectPreset(int presetIndex);
+    void detectContextAndRebuild();
 
     void stopSound();
     void dismiss();

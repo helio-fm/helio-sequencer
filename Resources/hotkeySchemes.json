@@ -282,6 +282,41 @@
       { "command": "EndDragViewport", "key": "Spacebar" }
     ]
   }, // ANCHOR_END: PianoRoll
+  {  // ANCHOR: ChordTool
+    "receiver": "ChordTool",
+    "keyPress": [
+      { "command": "ChordToolDismissApply", "key": "Return" },
+      { "command": "ChordToolDismissCancel", "key": "Escape" },
+      { "command": "ChordToolRootKeyUp", "key": "Cursor Up" },
+      { "command": "ChordToolRootKeyDown", "key": "Cursor Down" },
+      { "command": "ChordToolBeatShiftLeft", "key": "Cursor Left" },
+      { "command": "ChordToolBeatShiftRight", "key": "Cursor Right" },
+      { "command": "ChordToolNextPreset", "key": "." },
+      { "command": "ChordToolPreviousPreset", "key": "," },
+      { "command": "ChordToolPreset1", "key": "1" },
+      { "command": "ChordToolPreset2", "key": "2" },
+      { "command": "ChordToolPreset3", "key": "3" },
+      { "command": "ChordToolPreset4", "key": "4" },
+      { "command": "ChordToolPreset5", "key": "5" },
+      { "command": "ChordToolPreset6", "key": "6" },
+      { "command": "ChordToolPreset7", "key": "7" },
+      { "command": "ChordToolPreset8", "key": "8" },
+      { "command": "ChordToolPreset9", "key": "9" },
+      { "command": "ChordToolPreset10", "key": "0" },
+      { "command": "ChordToolPreset11", "key": "-" },
+      { "command": "ChordToolPreset12", "key": "=" },
+      { "command": "ChordToolPreset1", "key": "Numpad 1" },
+      { "command": "ChordToolPreset2", "key": "Numpad 2" },
+      { "command": "ChordToolPreset3", "key": "Numpad 3" },
+      { "command": "ChordToolPreset4", "key": "Numpad 4" },
+      { "command": "ChordToolPreset5", "key": "Numpad 5" },
+      { "command": "ChordToolPreset6", "key": "Numpad 6" },
+      { "command": "ChordToolPreset7", "key": "Numpad 7" },
+      { "command": "ChordToolPreset8", "key": "Numpad 8" },
+      { "command": "ChordToolPreset9", "key": "Numpad 9" },
+      { "command": "ChordToolPreset10", "key": "Numpad 0" }
+    ]
+  }, // ANCHOR_END: ChordTool
   {  // ANCHOR: PatternRoll
     "receiver": "PatternRoll",
     "keyPress": [

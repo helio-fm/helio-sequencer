@@ -187,6 +187,11 @@ void PianoRoll::setRowHeight(int newRowHeight)
     this->updateHeight();
 }
 
+int PianoRoll::getRowHeight() const noexcept
+{
+    return this->rowHeight;
+}
+
 Point<int> PianoRoll::getDefaultPositionForChordTool() const
 {
     auto centre = this->viewport.getViewArea().getCentre();
