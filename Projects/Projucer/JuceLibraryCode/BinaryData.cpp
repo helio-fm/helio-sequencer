@@ -2101,7 +2101,7 @@ static const unsigned char temp_binary_data_109[] =
 "          \"headlineFill\": \"ffecedff\",\n"
 "          \"pageFill\": \"ffeeefff\",\n"
 "          \"sidebarFill\": \"ffeeefff\",\n"
-"          \"dialogFill\": \"ffdfe2f4\",\n"
+"          \"dialogFill\": \"ffecedff\",\n"
 "          \"lassoFill\": \"17ffffff\",\n"
 "          \"lassoBorder\": \"ff260058\",\n"
 "          \"buttonFill\": \"6fffffff\",\n"

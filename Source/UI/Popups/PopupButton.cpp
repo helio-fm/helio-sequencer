@@ -108,10 +108,19 @@ void PopupButton::resized()
 
 bool PopupButton::hitTest(int x, int y)
 {
-    const int cX = (this->getWidth() / 2) - x;
-    const int cY = (this->getHeight() / 2) - y;
-    const int r = (this->getWidth() + this->getHeight()) / 2;
-    return (cX * cX + cY * cY) <= (r * r);
+    if (this->shapeType == Shape::Hex)
+    {
+        return this->shape.contains(float(x), float(y));
+    }
+    else if (this->shapeType == Shape::Circle)
+    {
+        const int cx = (this->getWidth() / 2) - x;
+        const int cy = (this->getHeight() / 2) - y;
+        const int r = (this->getWidth() + this->getHeight()) / 2;
+        return (cx * cx + cy * cy) <= (r * r);
+    }
+
+    return Component::hitTest(x, y);
 }
 
 void PopupButton::mouseEnter(const MouseEvent &e)

@@ -21,30 +21,22 @@
 #include "SequencerLayout.h"
 #include "RollBase.h"
 #include "ComponentIDs.h"
-#include "ColourIDs.h"
-
-static int kClickCounterOnPopupClose = 0;
-static int kClickCounterOnPopupStart = 0;
 
 ModalCallout::ModalCallout(Component *newComponent, SafePointer<Component> pointAtComponent, bool shouldAlignToMouse) :
     contentComponent(newComponent),
     targetComponent(pointAtComponent),
     alignsToMouse(shouldAlignToMouse)
 {
+    this->setAccessible(false);
     this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
 
-    kClickCounterOnPopupStart = Desktop::getInstance().getMouseButtonClickCounter();
-        
     this->addAndMakeVisible(this->contentComponent.get());
 }
 
-ModalCallout::~ModalCallout()
-{
-    kClickCounterOnPopupClose = Desktop::getInstance().getMouseButtonClickCounter();
-}
+ModalCallout::~ModalCallout() = default;
 
 int ModalCallout::getBorderSize() const noexcept
 {
@@ -54,7 +46,7 @@ int ModalCallout::getBorderSize() const noexcept
 void ModalCallout::fadeIn()
 {
     App::animateComponent(this,
-        this->getBounds(), 1.f, Globals::UI::fadeInLong, false, 0.0, 0.0);
+        this->getBounds(), 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
 }
 
 void ModalCallout::fadeOut()
@@ -65,7 +57,7 @@ void ModalCallout::fadeOut()
     
     App::animateComponent(this,
         this->getBounds().reduced(reduceBy).translated(offsetNormalized.getX(), offsetNormalized.getY()),
-        0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
+        0.f, Globals::UI::fadeOutShort, true, 0.0, 1.0);
 }
 
 //===----------------------------------------------------------------------===//
@@ -77,27 +69,17 @@ void ModalCallout::emit(Component *newComponent, Component *pointAtComponent, bo
     App::showModalComponent(make<ModalCallout>(newComponent, pointAtComponent, alignsToMousePosition));
 }
 
-int ModalCallout::numClicksSinceLastStartedPopup()
-{
-    return Desktop::getInstance().getMouseButtonClickCounter() - kClickCounterOnPopupStart;
-}
-
-int ModalCallout::numClicksSinceLastClosedPopup()
-{
-    return Desktop::getInstance().getMouseButtonClickCounter() - kClickCounterOnPopupClose;
-}
-
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
 
-void ModalCallout::paint(Graphics& g)
+void ModalCallout::paint(Graphics &g)
 {
-    g.setColour(findDefaultColour(ColourIDs::Callout::fill));
-    g.fillPath(this->outline);
-
-    g.setColour(findDefaultColour(ColourIDs::Callout::frame));
+    g.setColour(this->frameColour);
     g.strokePath(this->outline, PathStrokeType(1.f));
+
+    g.setColour(this->fillColour);
+    g.fillPath(this->outline);
 }
 
 void ModalCallout::resized()
@@ -124,8 +106,11 @@ void ModalCallout::parentHierarchyChanged()
         const auto p = Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition() - b.getPosition();
 #endif
 
-        this->clickPointAbs = Point<float>(p.getX() / b.getWidth(), p.getY() / b.getHeight())
-            .transformedBy(this->getTransform().inverted());
+        constexpr auto xOffset = ModalCallout::arrowSize;
+        constexpr auto yOffset = 1.f;
+        this->clickPointAbs = Point<float>((p.getX() + xOffset) / b.getWidth(),
+            (p.getY() + yOffset) / b.getHeight()).
+                transformedBy(this->getTransform().inverted());
         
         this->findTargetPointAndUpdateBounds();
     }
@@ -229,7 +214,7 @@ void ModalCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo, const R
     const float hhReduced = float(hh - borderSpace * 2);
     const float arrowIndent = borderSpace - arrowSize;
     
-    Point<float> targets[4] =
+    const Point<float> targets[4] =
     {
         Point<float>(float(newAreaToPointTo.getCentreX()), float(newAreaToPointTo.getBottom())),
         Point<float>(float(newAreaToPointTo.getRight()), float(newAreaToPointTo.getCentreY())),
@@ -237,7 +222,7 @@ void ModalCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo, const R
         Point<float>(float(newAreaToPointTo.getCentreX()), float(newAreaToPointTo.getY()))
     };
     
-    Line<float> lines[4] =
+    const Line<float> lines[4] =
     {
         Line<float>(targets[0].translated(-hwReduced, hh - arrowIndent), targets[0].translated(hwReduced, hh - arrowIndent)),
         Line<float>(targets[1].translated(hw - arrowIndent, -hhReduced), targets[1].translated(hw - arrowIndent, hhReduced)),
@@ -252,7 +237,7 @@ void ModalCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo, const R
     
     for (int i = 0; i < 4; ++i)
     {
-        Line<float> constrainedLine(centrePointArea.getConstrainedPoint(lines[i].getStart()),
+        const Line<float> constrainedLine(centrePointArea.getConstrainedPoint(lines[i].getStart()),
             centrePointArea.getConstrainedPoint(lines[i].getEnd()));
         
         const auto centre = constrainedLine.findNearestPointTo(targetCentre);
@@ -279,9 +264,7 @@ void ModalCallout::updateShape()
     this->repaint();
     this->outline.clear();
     
-    constexpr auto innerBorderPadding = 1.f;
-    const auto bodyArea = this->contentComponent->getBounds()
-        .toFloat().expanded(innerBorderPadding);
+    const auto bodyArea = this->contentComponent->getBounds().toFloat();
     const auto maximumArea = this->getLocalBounds().toFloat();
     const auto arrowTip = this->targetPoint - this->getPosition().toFloat();
     

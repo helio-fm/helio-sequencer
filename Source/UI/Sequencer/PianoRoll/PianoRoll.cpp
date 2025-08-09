@@ -687,7 +687,7 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
             if (sequenceMap.contains(note))
             {
                 NoteComponent *deletedComponent = sequenceMap[note].get();
-                this->fader.fadeOut(deletedComponent, Globals::UI::fadeOutLong);
+                this->fader.fadeOut(deletedComponent, Globals::UI::fadeOutShort);
                 this->selection.deselect(deletedComponent);
                 sequenceMap.erase(note);
             }
@@ -2334,22 +2334,23 @@ void PianoRoll::showChordTool(Point<int> position)
 // UserInterfaceFlags::Listener
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::onScalesHighlightingFlagChanged(bool enabled)
+void PianoRoll::onScalesHighlightingFlagChanged(bool isFlagEnabled)
 {
-    this->scalesHighlightingEnabled = enabled;
+    this->scalesHighlightingEnabled = isFlagEnabled;
     this->repaint();
 }
 
-void PianoRoll::onNoteNameGuidesFlagChanged(bool enabled)
+void PianoRoll::onNoteNameGuidesFlagChanged(bool isFlagEnabled)
 {
-    if (enabled && !this->noteNameGuides->isVisible())
+    if (isFlagEnabled && !this->noteNameGuides->isVisible())
     {
         this->fader.fadeIn(this->noteNameGuides.get(), Globals::UI::fadeInShort);
     }
-    else
+    else if (!isFlagEnabled && this->noteNameGuides->isVisible())
     {
-        this->noteNameGuides->setVisible(enabled);
+        this->fader.fadeOut(this->noteNameGuides.get(), Globals::UI::fadeOutShort, false);
     }
 
+    this->noteNameGuides->toFront(false);
     this->repaint();
 }

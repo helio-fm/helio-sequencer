@@ -18,6 +18,7 @@
 #pragma once
 
 #include "ComponentFader.h"
+#include "ColourIDs.h"
 
 class ModalCallout final : public Component
 {
@@ -36,11 +37,7 @@ public:
     static void emit(Component *newComponent,
                      Component *pointAtComponent,
                      bool alignsToMousePosition = false);
-    
-    static int numClicksSinceLastStartedPopup();
-    static int numClicksSinceLastClosedPopup();
-    
-    
+
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
@@ -76,6 +73,9 @@ private:
     Point<float> clickPointAbs;
     const bool alignsToMouse;
     
+    const Colour fillColour = findDefaultColour(ColourIDs::Callout::fill);
+    const Colour frameColour = findDefaultColour(ColourIDs::Callout::frame);
+
     void fadeIn();
     void fadeOut();
     void dismiss();

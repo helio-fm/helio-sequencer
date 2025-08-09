@@ -27,7 +27,8 @@ public:
 
     ComponentFader() = default;
 
-    void fadeOut(Component *component, int millisecondsToTake)
+    void fadeOut(Component *component,
+        int millisecondsToTake, bool useProxyComponent = true)
     {
         if (component == nullptr)
         {
@@ -39,7 +40,7 @@ public:
             App::Config().getUiFlags()->areUiAnimationsEnabled())
         {
             ComponentAnimator::animateComponent(component,
-                component->getBounds(), 0.f, millisecondsToTake, true, 0.0, 1.0);
+                component->getBounds(), 0.f, millisecondsToTake, useProxyComponent, 0.0, 1.0);
         }
 
         component->setVisible(false);

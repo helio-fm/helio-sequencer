@@ -31,6 +31,7 @@ public:
     {
         this->setOpaque(true);
         this->setPaintingIsUnclipped(true);
+        this->setAccessible(false);
     }
 
     ~ContextMenuComponent() override
@@ -80,15 +81,14 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(findDefaultColour(ColourIDs::Menu::fill));
+        g.setColour(this->fillColour);
         g.fillRect(1, 1, this->getWidth() - 2, this->getHeight() - 2);
-
         HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.25f, 1.f);
 
-        g.setColour(findDefaultColour(ColourIDs::Menu::header));
+        g.setColour(this->headerColour);
         g.fillRect(1, 1, this->getWidth() - 2, 2);
 
-        g.setColour(findDefaultColour(ColourIDs::Menu::selectionMarker));
+        g.setColour(this->selectionMarkerColour);
         HelioTheme::drawDashedHorizontalLine2(g, 4.f, 1.f, float(this->getWidth() - 3), 8.f);
     }
 
@@ -113,6 +113,11 @@ private:
 
     UniquePointer<Component> content;
 
+    const Colour fillColour = findDefaultColour(ColourIDs::Menu::fill);
+    const Colour headerColour = findDefaultColour(ColourIDs::Menu::header);
+    const Colour selectionMarkerColour = findDefaultColour(ColourIDs::Menu::selectionMarker);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ContextMenuComponent)
 };
 
 HeadlineContextMenuController::HeadlineContextMenuController(Component &owner) :

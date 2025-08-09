@@ -95,13 +95,12 @@ void NoteNameGuidesBar::updateContent()
     // and hide root notes if the selection is larger than a four-note chord:
     const bool shouldShowsRootKeys = this->selectedKeys.size() <= 4;
 
-    int periodNumber = 0;
     int guidesWidth = 0;
-
+    int periodNumber = 0;
     for (auto *c : this->guides)
     {
-        const auto shouldBeVisible = shouldShowsRootKeys &&
-            c->isRootKey(this->scaleRootKey, this->roll.getPeriodSize());
+        const auto shouldBeVisible = this->selectedKeys.contains(c->getNoteNumber()) ||
+            (shouldShowsRootKeys && c->isRootKey(this->scaleRootKey, this->roll.getPeriodSize()));
 
         if (shouldBeVisible)
         {
@@ -112,20 +111,6 @@ void NoteNameGuidesBar::updateContent()
         }
 
         c->setVisible(shouldBeVisible);
-    }
-
-    for (const auto &key : this->selectedKeys)
-    {
-        const auto noteName = this->temperament->getMidiNoteName(key,
-            this->scaleRootKey, this->scaleRootKeyName, periodNumber);
-
-        if (key <= this->guides.size() - 1)
-        {
-            auto *guide = this->guides.getUnchecked(key);
-            const auto width = guide->setNoteName(noteName, periodNumber, this->useFixedDoNotation);
-            guidesWidth = jmax(guidesWidth, width);
-            guide->setVisible(true);
-        }
     }
 
     guidesWidth += int(NoteNameGuidesBar::borderWidth + NoteNameGuidesBar::arrowWidth +

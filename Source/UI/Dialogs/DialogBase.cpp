@@ -200,8 +200,8 @@ Rectangle<int> DialogBase::getButton2Bounds() const noexcept
     const auto isPhoneLayout = App::isRunningOnPhone();
     const auto buttonsBounds = this->getButtonsBounds();
     return isPhoneLayout ?
-        buttonsBounds.withTrimmedTop(buttonsBounds.getHeight() / 2 + 1) :
-        buttonsBounds.withTrimmedRight(buttonsBounds.getWidth() / 2 + 1);
+        buttonsBounds.withTrimmedTop(int(ceilf(float(buttonsBounds.getHeight()) / 2.f)) + 1) :
+        buttonsBounds.withTrimmedRight(int(ceilf(float(buttonsBounds.getWidth()) / 2.f)) + 1);
 }
 
 Rectangle<int> DialogBase::getContentWithoutCaptionBounds() const noexcept

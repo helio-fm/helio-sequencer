@@ -840,9 +840,11 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ScrollBar::backgroundColourId, Colours::transparentBlack);
     this->setColour(ScrollBar::thumbColourId, s->getPanelFillColour().withAlpha(1.f));
 
-    this->setColour(TextButton::buttonColourId, s->getPanelFillColour());
-    this->setColour(TextButton::buttonOnColourId, s->getFrameBorderColour());
-    this->setColour(TextButton::textColourOnId, textColour.withMultipliedAlpha(0.75f));
+    this->setColour(TextButton::buttonColourId,
+        s->getDialogFillColour().brighter(2.5f).withMultipliedAlpha(this->isDarkTheme ? 0.0625f : 0.375f));
+    this->setColour(TextButton::buttonOnColourId,
+        s->getDialogFillColour().brighter(2.5f).withMultipliedAlpha(this->isDarkTheme ? 0.025f : 0.25f));
+    this->setColour(TextButton::textColourOnId, textColour.withMultipliedAlpha(0.8f));
     this->setColour(TextButton::textColourOffId, textColour.withMultipliedAlpha(0.5f));
 
     this->setColour(TextEditor::textColourId, textColour);
@@ -916,10 +918,10 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPageFillColour().darker(0.4f));
     this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.055f));
     const auto screenRangeFill = this->isDarkTheme ? s->getIconBaseColour() :
-        s->getIconBaseColour().interpolatedWith(s->getWhiteKeyColour(), 0.6f);
-    this->setColour(ColourIDs::TrackScroller::viewBeatRangeFill, screenRangeFill.withMultipliedAlpha(0.25f));
+        s->getIconBaseColour().interpolatedWith(s->getBlackKeyColour(), 0.65f);
+    this->setColour(ColourIDs::TrackScroller::viewBeatRangeFill, screenRangeFill.withMultipliedAlpha(0.225f));
     this->setColour(ColourIDs::TrackScroller::viewBeatRangeBorder, screenRangeFill.withMultipliedAlpha(0.125f));
-    this->setColour(ColourIDs::TrackScroller::viewRangeFill, screenRangeFill.withMultipliedAlpha(0.35f));
+    this->setColour(ColourIDs::TrackScroller::viewRangeFill, screenRangeFill.withMultipliedAlpha(0.325f));
     this->setColour(ColourIDs::TrackScroller::projectOutRangeFill,
         Colours::black.withAlpha(this->isDarkTheme ? 0.125f : 0.05f));
 
@@ -948,8 +950,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::ColourButton::highlight, textColour.withAlpha(0.025f));
     this->setColour(ColourIDs::ColourButton::pressed, textColour.withAlpha(0.05f));
 
-    this->setColour(ColourIDs::Callout::fill, s->getDialogFillColour().darker(0.025f));
-    this->setColour(ColourIDs::Callout::frame, Colours::black.withAlpha(0.5f));
+    this->setColour(ColourIDs::Callout::fill, s->getDialogFillColour());
+    this->setColour(ColourIDs::Callout::frame, Colours::black.withAlpha(0.75f));
 
     this->setColour(ColourIDs::Roll::blackKey, s->getBlackKeyColour());
     this->setColour(ColourIDs::Roll::whiteKey, s->getWhiteKeyColour());
@@ -970,7 +972,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::headerSnaps,
         headerFill.contrasting().interpolatedWith(headerFill, 0.625f));
     this->setColour(ColourIDs::Roll::headerReprise,
-        headerFill.contrasting().interpolatedWith(headerFill, this->isDarkTheme ? 0.55f : 0.4f));
+        headerFill.contrasting().interpolatedWith(headerFill, this->isDarkTheme ? 0.45f : 0.3f));
     this->setColour(ColourIDs::Roll::headerRecording,
         headerFill.interpolatedWith(Colours::red, 0.55f));
 
