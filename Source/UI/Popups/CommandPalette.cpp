@@ -29,19 +29,22 @@
 #include "HelioTheme.h"
 #include "Config.h"
 #include "SerializationKeys.h"
+#include "ComponentIDs.h"
 #include "CommandIDs.h"
 
 CommandPalette::CommandPalette(ProjectNode *project, RollBase *roll, const String &defaultText) :
     roll(roll)
 {
-    this->shadowDn = make<ShadowDownwards>(ShadowType::Hard);
-    this->addAndMakeVisible(this->shadowDn.get());
-    this->bg = make<PanelBackground>();
-    this->addAndMakeVisible(this->bg.get());
-    this->shadowL = make<ShadowLeftwards>(ShadowType::Normal);
-    this->addAndMakeVisible(this->shadowL.get());
-    this->shadowR = make<ShadowRightwards>(ShadowType::Normal);
-    this->addAndMakeVisible(this->shadowR.get());
+    this->setComponentID(ComponentIDs::commandPalette);
+
+    this->background = make<PanelBackground>();
+    this->addAndMakeVisible(this->background.get());
+    this->shadowDown = make<ShadowDownwards>(ShadowType::Normal);
+    this->addAndMakeVisible(this->shadowDown.get());
+    this->shadowLeft = make<ShadowLeftwards>(ShadowType::Light);
+    this->addAndMakeVisible(this->shadowLeft.get());
+    this->shadowRight = make<ShadowRightwards>(ShadowType::Light);
+    this->addAndMakeVisible(this->shadowRight.get());
     this->textEditor = make<CommandPaletteTextEditor>();
     this->addAndMakeVisible(this->textEditor.get());
 
@@ -122,19 +125,19 @@ void CommandPalette::resized()
     constexpr auto marginX = 8;
     constexpr auto marginBottom = 10; // top margin is 0
 
-    this->bg->setBounds(marginX, 0,
+    this->background->setBounds(marginX, 0,
         this->getWidth() - marginX * 2,
         this->getHeight() - marginBottom);
 
-    this->shadowDn->setBounds(marginX - 1,
+    this->shadowDown->setBounds(marginX - 1,
         this->getHeight() - marginBottom,
         this->getWidth() - marginX * 2 + 2,
         marginBottom);
 
-    this->shadowL->setBounds(0, 0, marginX,
+    this->shadowLeft->setBounds(0, 0, marginX,
         this->getHeight() - marginBottom);
 
-    this->shadowR->setBounds(this->getWidth() - marginX,
+    this->shadowRight->setBounds(this->getWidth() - marginX,
         0, marginX, this->getHeight() - marginBottom);
 
     constexpr auto editorHeight = 32;
@@ -156,73 +159,48 @@ void CommandPalette::parentHierarchyChanged()
 
 void CommandPalette::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissDialog)
+    switch (commandId)
     {
+    case CommandIDs::CommandPaletteClear:
+        // on escape keypress first try to erase the text, if any:
+        if (!this->textEditor->isEmpty())
+        {
+            this->textEditor->setText({});
+        }
+        else
+        {
+            this->dismiss();
+        }
+        break;
+    case CommandIDs::CommandPaletteDismiss:
         this->dismiss();
+        break;
+    case CommandIDs::CommandPaletteCursorUp:
+        this->moveRowSelectionBy(-1);
+        break;
+    case CommandIDs::CommandPaletteCursorDown:
+        this->moveRowSelectionBy(1);
+        break;
+    case CommandIDs::CommandPaletteCursorPageUp:
+        this->moveRowSelectionBy(-this->getNumVisibleRows());
+        break;
+    case CommandIDs::CommandPaletteCursorPageDown:
+        this->moveRowSelectionBy(this->getNumVisibleRows());
+        break;
+    default:
+        break;
     }
 }
 
 bool CommandPalette::keyPressed(const KeyPress &key)
 {
-    for (const auto &dismissKey : CommandPalette::getAllDismissHotkeys())
-    {
-        if (key == dismissKey)
-        {
-            this->dismiss();
-            return true;
-        }
-    }
-
-    if (key.isKeyCode(KeyPress::escapeKey))
-    {
-        // on escape keypress first try to erase the text, if any:
-        if (this->textEditor->isEmpty())
-        {
-            this->dismiss();
-        }
-        else
-        {
-            this->textEditor->setText({});
-        }
-        return true;
-    }
-    else if (key.isKeyCode(KeyPress::downKey))
-    {
-        this->moveRowSelectionBy(1);
-        return true;
-    }
-    else if (key.isKeyCode(KeyPress::upKey))
-    {
-        this->moveRowSelectionBy(-1);
-        return true;
-    }
-    else if (key.isKeyCode(KeyPress::pageDownKey))
-    {
-        this->moveRowSelectionBy(this->getNumVisibleRows());
-        return true;
-    }
-    else if (key.isKeyCode(KeyPress::pageUpKey))
-    {
-        this->moveRowSelectionBy(-this->getNumVisibleRows());
-        return true;
-    }
-
-    return false;
+    App::Config().getHotkeySchemes()->getCurrent()->dispatchKeyPress(key, this, this);
+    return true;
 }
 
 void CommandPalette::inputAttemptWhenModal()
 {
-    // hack warning:
-    // when you rclick/tap outside of the palette to hide it and start dragging the roll immediately,
-    // JUCE never sends the mouseDown event to the roll because the command palette is still showing,
-    // and after the palette is dismissed, dragging continues with incorrect anchor
-    // and the viewport position jumps away unpredictably; this check compensates for that:
-    if (this->roll != nullptr)
-    {
-        this->roll->resetDraggingAnchors();
-    }
-
-    this->postCommandMessage(CommandIDs::DismissDialog);
+    this->dismiss();
 }
 
 //===----------------------------------------------------------------------===//
@@ -397,27 +375,21 @@ void CommandPalette::updatePosition()
     this->setTopLeftPosition(centered.getX(), top);
 }
 
-Array<KeyPress> CommandPalette::getAllDismissHotkeys()
+Array<KeyPress> CommandPalette::getAllCommandPaletteHotkeys()
 {
-    return App::Config().getHotkeySchemes()->getCurrent()->
-        findAllKeyPressesFor(CommandIDs::CommandPalette);
+    static Array<KeyPress> commandPaletteKeyPresses =
+        App::Config().getHotkeySchemes()->getCurrent()->
+            findKeyPressesForReceiver(ComponentIDs::commandPalette);
+
+    return commandPaletteKeyPresses;
 }
 
 bool CommandPaletteTextEditor::keyPressed(const KeyPress &key)
 {
-    // pass the keypress up, if needed
-    if (key.isKeyCode(KeyPress::escapeKey) ||
-        key.isKeyCode(KeyPress::downKey) ||
-        key.isKeyCode(KeyPress::upKey) ||
-        key.isKeyCode(KeyPress::pageDownKey) ||
-        key.isKeyCode(KeyPress::pageUpKey))
+    // pass the hotkey keypresses up
+    for (const auto &usedAsHotkey : CommandPalette::getAllCommandPaletteHotkeys())
     {
-        return false;
-    }
-
-    for (const auto &dismissKey : CommandPalette::getAllDismissHotkeys())
-    {
-        if (key == dismissKey)
+        if (key == usedAsHotkey)
         {
             return false;
         }

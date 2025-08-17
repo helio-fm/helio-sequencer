@@ -243,6 +243,13 @@ namespace CommandIDs
         MakeLegato                      = 0x4603, // connect notes in time
         MakeLegatoOverlapping           = 0x4604, // connect notes together, but with a slight overlap for use in certain VSTs
 
+        CommandPaletteClear             = 0x4700,
+        CommandPaletteDismiss           = 0x4701,
+        CommandPaletteCursorUp          = 0x4702,
+        CommandPaletteCursorDown        = 0x4703,
+        CommandPaletteCursorPageUp      = 0x4704,
+        CommandPaletteCursorPageDown    = 0x4705,
+
         ChordToolDismissApply           = 0x4710,
         ChordToolDismissCancel          = 0x4711,
         ChordToolRootKeyUp              = 0x4712,

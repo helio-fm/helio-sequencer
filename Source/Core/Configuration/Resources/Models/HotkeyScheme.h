@@ -45,7 +45,7 @@ public:
     };
 
     String findHotkeyDescription(int commandId) const noexcept;
-    Array<KeyPress> findAllKeyPressesFor(int commandId) const noexcept;
+    Array<KeyPress> findKeyPressesForReceiver(const String &componentId) const noexcept;
 
     // To be used by command palette:
     using HotkeyMap = FlatHashMap<Hotkey, CommandIDs::Id, HotkeyHash>;

@@ -2504,8 +2504,14 @@ static const unsigned char temp_binary_data_110[] =
 "      { \"command\": \"ChordToolRootKeyDown\", \"key\": \"Cursor Down\" },\n"
 "      { \"command\": \"ChordToolBeatShiftLeft\", \"key\": \"Cursor Left\" },\n"
 "      { \"command\": \"ChordToolBeatShiftRight\", \"key\": \"Cursor Right\" },\n"
+"      { \"command\": \"ChordToolRootKeyUp\", \"key\": \"K\" },\n"
+"      { \"command\": \"ChordToolRootKeyDown\", \"key\": \"J\" },\n"
+"      { \"command\": \"ChordToolBeatShiftLeft\", \"key\": \"H\" },\n"
+"      { \"command\": \"ChordToolBeatShiftRight\", \"key\": \"L\" },\n"
 "      { \"command\": \"ChordToolNextPreset\", \"key\": \".\" },\n"
 "      { \"command\": \"ChordToolPreviousPreset\", \"key\": \",\" },\n"
+"      { \"command\": \"ChordToolNextPreset\", \"key\": \"Page Down\" },\n"
+"      { \"command\": \"ChordToolPreviousPreset\", \"key\": \"Page Up\" },\n"
 "      { \"command\": \"ChordToolPreset1\", \"key\": \"1\" },\n"
 "      { \"command\": \"ChordToolPreset2\", \"key\": \"2\" },\n"
 "      { \"command\": \"ChordToolPreset3\", \"key\": \"3\" },\n"
@@ -2642,7 +2648,22 @@ static const unsigned char temp_binary_data_110[] =
 "    \"keyUp\": [\n"
 "      { \"command\": \"EndDragViewport\", \"key\": \"Spacebar\" }\n"
 "    ]\n"
-"  } // ANCHOR_END: PatternRoll\n"
+"  }, // ANCHOR_END: PatternRoll\n"
+"  {  // ANCHOR: CommandPalette\n"
+"    \"receiver\": \"CommandPalette\",\n"
+"    \"keyPress\": [\n"
+"      { \"command\": \"CommandPaletteClear\", \"key\": \"Escape\" },\n"
+"      { \"command\": \"CommandPaletteDismiss\", \"key\": \"`\" },\n"
+"      { \"command\": \"CommandPaletteDismiss\", \"key\": \"Control + P\" },\n"
+"      { \"command\": \"CommandPaletteDismiss\", \"key\": \"Command + P\" },\n"
+"      { \"command\": \"CommandPaletteDismiss\", \"key\": \"Control + G\" },\n"
+"      { \"command\": \"CommandPaletteDismiss\", \"key\": \"Command + G\" },\n"
+"      { \"command\": \"CommandPaletteCursorUp\", \"key\": \"Cursor Up\" },\n"
+"      { \"command\": \"CommandPaletteCursorDown\", \"key\": \"Cursor Down\" },\n"
+"      { \"command\": \"CommandPaletteCursorPageUp\", \"key\": \"Page Up\" },\n"
+"      { \"command\": \"CommandPaletteCursorPageDown\", \"key\": \"Page Down\" }\n"
+"    ]\n"
+"  } // ANCHOR_END: CommandPalette\n"
 "]}}}\n";
 
 const char* hotkeySchemes_json = (const char*) temp_binary_data_110;
@@ -6213,7 +6234,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 4550; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 20263; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 21418; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 13262; return scales_json;

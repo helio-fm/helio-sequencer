@@ -46,7 +46,7 @@ public:
     bool keyPressed(const KeyPress &key) override;
     void inputAttemptWhenModal() override;
 
-    static Array<KeyPress> getAllDismissHotkeys();
+    static Array<KeyPress> getAllCommandPaletteHotkeys();
 
 private:
 
@@ -85,10 +85,10 @@ private:
     WeakReference<CommandPaletteActionsProvider> currentActionsProvider;
     WeakReference<CommandPaletteActionsProvider> rootActionsProvider;
 
-    UniquePointer<Component> shadowDn;
-    UniquePointer<Component> bg;
-    UniquePointer<Component> shadowL;
-    UniquePointer<Component> shadowR;
+    UniquePointer<Component> background;
+    UniquePointer<Component> shadowDown;
+    UniquePointer<Component> shadowLeft;
+    UniquePointer<Component> shadowRight;
     UniquePointer<CommandPaletteTextEditor> textEditor;
     UniquePointer<ListBox> actionsList;
 

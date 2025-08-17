@@ -406,9 +406,6 @@ bool ChordPreviewTool::keyStateChanged(bool isKeyDown)
 
 void ChordPreviewTool::inputAttemptWhenModal()
 {
-    // a hack, see the same in CommandPalette, DialogBase and ModalCallout:
-    this->roll.resetDraggingAnchors();
-
     this->dismiss();
 }
 

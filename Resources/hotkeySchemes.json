@@ -291,8 +291,14 @@
       { "command": "ChordToolRootKeyDown", "key": "Cursor Down" },
       { "command": "ChordToolBeatShiftLeft", "key": "Cursor Left" },
       { "command": "ChordToolBeatShiftRight", "key": "Cursor Right" },
+      { "command": "ChordToolRootKeyUp", "key": "K" },
+      { "command": "ChordToolRootKeyDown", "key": "J" },
+      { "command": "ChordToolBeatShiftLeft", "key": "H" },
+      { "command": "ChordToolBeatShiftRight", "key": "L" },
       { "command": "ChordToolNextPreset", "key": "." },
       { "command": "ChordToolPreviousPreset", "key": "," },
+      { "command": "ChordToolNextPreset", "key": "Page Down" },
+      { "command": "ChordToolPreviousPreset", "key": "Page Up" },
       { "command": "ChordToolPreset1", "key": "1" },
       { "command": "ChordToolPreset2", "key": "2" },
       { "command": "ChordToolPreset3", "key": "3" },
@@ -429,5 +435,20 @@
     "keyUp": [
       { "command": "EndDragViewport", "key": "Spacebar" }
     ]
-  } // ANCHOR_END: PatternRoll
+  }, // ANCHOR_END: PatternRoll
+  {  // ANCHOR: CommandPalette
+    "receiver": "CommandPalette",
+    "keyPress": [
+      { "command": "CommandPaletteClear", "key": "Escape" },
+      { "command": "CommandPaletteDismiss", "key": "`" },
+      { "command": "CommandPaletteDismiss", "key": "Control + P" },
+      { "command": "CommandPaletteDismiss", "key": "Command + P" },
+      { "command": "CommandPaletteDismiss", "key": "Control + G" },
+      { "command": "CommandPaletteDismiss", "key": "Command + G" },
+      { "command": "CommandPaletteCursorUp", "key": "Cursor Up" },
+      { "command": "CommandPaletteCursorDown", "key": "Cursor Down" },
+      { "command": "CommandPaletteCursorPageUp", "key": "Page Up" },
+      { "command": "CommandPaletteCursorPageDown", "key": "Page Down" }
+    ]
+  } // ANCHOR_END: CommandPalette
 ]}}}

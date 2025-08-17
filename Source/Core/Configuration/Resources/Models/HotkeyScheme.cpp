@@ -202,13 +202,13 @@ String HotkeyScheme::findHotkeyDescription(int commandId) const noexcept
     return {};
 }
 
-Array<KeyPress> HotkeyScheme::findAllKeyPressesFor(int commandId) const noexcept
+Array<KeyPress> HotkeyScheme::findKeyPressesForReceiver(const String &componentId) const noexcept
 {
     Array<KeyPress> result;
 
     for (const auto &key : this->keyPresses)
     {
-        if (key.second == commandId)
+        if (key.first.componentId == componentId)
         {
             result.add(key.first.keyPress);
         }
