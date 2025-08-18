@@ -21,6 +21,7 @@ class PluginWindow final : public DocumentWindow
 {
 public:
 
+    explicit PluginWindow(AudioProcessorGraph::Node::Ptr owner);
     ~PluginWindow() override;
 
     static bool showWindowFor(const String &instrumentId);
@@ -33,7 +34,6 @@ public:
 
 private:
 
-    PluginWindow(AudioProcessorGraph::Node::Ptr owner);
     static PluginWindow *getWindowFor(AudioProcessorGraph::Node::Ptr node);
 
     float getDesktopScaleFactor() const override { return 1.f; }

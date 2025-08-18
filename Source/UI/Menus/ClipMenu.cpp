@@ -121,6 +121,7 @@ MenuPanel::Menu ClipMenu::makeDefaultMenu()
         {
             if (auto mainNode = instrument->findFirstMidiReceiver())
             {
+                // not checking mainNode->getProcessor()->hasEditor() because it may hang for a few seconds
                 const auto editInstrumentCaption = instrument->getName() + ": " + TRANS(I18n::Menu::instrumentShowWindow);
                 menu.add(MenuItem::item(Icons::instrument, CommandIDs::EditCurrentInstrument, editInstrumentCaption)->
                     disabledIf(!instrument->isValid())->

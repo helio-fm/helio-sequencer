@@ -55,13 +55,13 @@ PluginWindow::PluginWindow(AudioProcessorGraph::Node::Ptr owner) :
     if (auto *editor = createProcessorEditor(*owner->getProcessor()))
     {
         this->setContentOwned(editor, true);
+
+        this->setResizable(true, false);
+        this->setTopLeftPosition(100 + Random::getSystemRandom().nextInt(500),
+            100 + Random::getSystemRandom().nextInt(500));
+
+        this->setVisible(true);
     }
-
-    this->setResizable(true, false);
-    this->setTopLeftPosition(100 + Random::getSystemRandom().nextInt(500),
-                             100 + Random::getSystemRandom().nextInt(500));
-
-    this->setVisible(true);
 
     activePluginWindows.add(this);
 }
@@ -108,7 +108,11 @@ PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node)
     if (auto *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor()))
     {
         scopedDpiDisabler = Instrument::makeDPIAwarenessDisabler(plugin->getPluginDescription());
-        return new PluginWindow(node);
+        auto window = make<PluginWindow>(node);
+        if (window->isVisible()) // if created an editor successfully
+        {
+            return window.release();
+        }
     }
     
     return nullptr;
