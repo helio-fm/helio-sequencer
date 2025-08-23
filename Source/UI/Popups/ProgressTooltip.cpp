@@ -50,7 +50,7 @@ void ProgressTooltip::parentHierarchyChanged()
 
 void ProgressTooltip::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissDialog)
+    if (commandId == CommandIDs::DismissModalComponentAsync)
     {
         this->cancel();
     }
@@ -69,7 +69,7 @@ bool ProgressTooltip::keyPressed(const KeyPress& key)
 
 void ProgressTooltip::inputAttemptWhenModal()
 {
-    this->postCommandMessage(CommandIDs::DismissDialog);
+    this->postCommandMessage(CommandIDs::DismissModalComponentAsync);
 }
 
 void ProgressTooltip::cancel()

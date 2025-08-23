@@ -159,9 +159,15 @@ void ArpPreviewTool::previewArp(Arpeggiator::Ptr arp, const Options options, boo
 
 void ArpPreviewTool::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::Cancel)
+    switch (commandId)
     {
+    case CommandIDs::MenuDismiss:
         this->undoIfNeeded();
+        this->dismissAsync();
+        break;
+    default:
+        MenuPanel::handleCommandMessage(commandId);
+        break;
     }
 }
 
@@ -169,7 +175,7 @@ void ArpPreviewTool::dismissAsync()
 {
     if (auto *parent = this->getParentComponent())
     {
-        parent->postCommandMessage(CommandIDs::DismissCallout);
+        parent->postCommandMessage(CommandIDs::DismissModalComponentAsync);
     }
 }
 

@@ -55,6 +55,9 @@ namespace ColourIDs
         static const int playheadRecording      = 0x2000115;
         static const int playheadShade          = 0x2000116;
 
+        static const int cursorFill             = 0x2000117;
+        static const int cursorShade            = 0x2000118;
+
         static const int patternRowFill         = 0x2000120;
         static const int trackHeaderFill        = 0x2000121;
         static const int trackHeaderShadow      = 0x2000122;
@@ -167,7 +170,10 @@ namespace ColourIDs
     {
         static const int fill                   = 0x2000820;
         static const int header                 = 0x2000821;
-        static const int selectionMarker        = 0x2000822;
+        static const int cursorFill             = 0x2000822;
+        static const int cursorShade            = 0x2000823;
+        static const int highlight              = 0x2000824;
+        static const int selectionMarker        = 0x2000825;
     }
 
     namespace Tooltip

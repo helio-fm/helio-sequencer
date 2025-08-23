@@ -20,11 +20,11 @@
 #include "HeadlineItem.h"
 #include "HelioTheme.h"
 #include "MainLayout.h"
-#include "ColourIDs.h"
 #include "Config.h"
 
 Headline::Headline()
 {
+    this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
     this->setAccessible(false);
@@ -63,9 +63,9 @@ void Headline::paint(Graphics &g)
     g.setFillType({ theme.getHeadlineBackground(), {} });
     g.fillRect(this->getLocalBounds());
 
-    g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
+    g.setColour(this->borderLightColour);
     g.fillRect(0, this->getHeight() - 2, this->getWidth(), 1);
-    g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
+    g.setColour(this->borderDarkColour);
     g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
 }
 
@@ -219,6 +219,39 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
     this->navPanel->toFront(false);
 
     return lastPosX;
+}
+
+void Headline::showNeighbourMenu(WeakReference<HeadlineItemDataSource> origin, int delta)
+{
+    jassert(delta != 0);
+
+    Array<HeadlineItem *> fullChain;
+    for (auto *item : this->chain)
+    {
+        fullChain.add(item);
+    }
+    if (this->selectionItem != nullptr)
+    {
+        fullChain.add(this->selectionItem.get());
+    }
+
+    for (int i = 0; i < fullChain.size(); ++i)
+    {
+        if (fullChain.getUnchecked(i)->getDataSource() == origin)
+        {
+            int newIndex = jlimit(0, fullChain.size() - 1, i + delta);
+            if (!fullChain.getUnchecked(newIndex)->hasMenu())
+            {
+                newIndex = jlimit(0, fullChain.size() - 1, newIndex + delta);
+            }
+            //jassert(fullChain.getUnchecked(newIndex)->hasMenu());
+            if (newIndex != i)
+            {
+                fullChain.getUnchecked(newIndex)->showMenuIfAny(true);
+            }
+            return;
+        }
+    }
 }
 
 void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource)

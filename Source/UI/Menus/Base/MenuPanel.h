@@ -69,10 +69,13 @@ public:
     void applyFilter(const String &text);
 
     void resized() override;
+
+    // when overriding this, put MenuPanel::handleCommandMessage(commandId)
+    // in the default switch case to handle menu navigation commands:
     void handleCommandMessage(int commandId) override;
 
     int indexOfItemNamed(const String &name);
-    const MenuItem::Ptr getMenuItem(int index) const;
+    const MenuItem::Ptr getMenuItem(int index);
 
     void scrollToItem(int index);
 
@@ -104,6 +107,13 @@ private:
 
     Menu menu;
     Menu filteredMenu;
+    inline Menu &getMenuOrFiltered();
+
+    bool moveCursor(int delta);
+    void doActionAtCursor();
+    Optional<int> cursorPosition;
+    FlatHashMap<String, int, StringHash> recentCursorPositions;
+    void postCommandMessageToParent(int commandId);
 
     //===------------------------------------------------------------------===//
     // ListBoxModel

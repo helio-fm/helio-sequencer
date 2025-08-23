@@ -93,6 +93,9 @@ struct MenuItem final : public ReferenceCountedObject
     MenuItem::Ptr disabledIf(bool condition);
     MenuItem::Ptr closesMenu();
 
+    bool hasSubmenu() const noexcept;
+    const String &getText() const noexcept;
+
     // Lambdas are handy way of processing menu action,
     // however, they should only be used for menu items that don't have hotkey shortcuts:
     // for example, `back` button , or dynamic lists (like a list of colours or instruments).
@@ -123,13 +126,19 @@ public:
     ~MenuItemComponent();
 
     void setSelected(bool shouldBeSelected) override;
-
+    void setCursorShown(bool shouldBeShown);
     void setChecked(bool shouldBeChecked);
+
     void update(MenuItem::Ptr description);
 
     Font getFont() const noexcept
     {
         return this->textLabel->getFont();
+    }
+
+    const String &getText() const noexcept
+    {
+        return this->description->getText();
     }
 
     void paint(Graphics &g) override;
@@ -147,6 +156,8 @@ public:
     static constexpr auto iconSize = 20;
     static constexpr auto fontSize = Globals::UI::Fonts::M;
 
+    void doAction();
+
 private:
 
     Image icon;
@@ -156,6 +167,7 @@ private:
 
     UniquePointer<Component> clickMarker;
     UniquePointer<Component> checkMarker;
+    UniquePointer<Component> cursorMarker;
 
     Array<UniquePointer<IconButton>> buttons;
 
@@ -175,8 +187,6 @@ private:
     // workaround странного поведения juce
     // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает
     bool mouseDownWasTriggered = false;
-
-    void doAction();
 
     UniquePointer<Label> subLabel;
     UniquePointer<Label> textLabel;

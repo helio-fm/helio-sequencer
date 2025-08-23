@@ -19,15 +19,18 @@
 
 #include "TreeNode.h"
 #include "HighlightedComponent.h"
+#include "HotkeyScheme.h"
+#include "ColourIDs.h"
 
-class HeadlineItemHighlighter;
 class HeadlineItemDataSource;
+class HeadlineDropdownHeader;
 
 class HeadlineDropdown final : public Component, private Timer
 {
 public:
 
-    HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem, const Point<int> &position);
+    HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem,
+        const Point<int> &position, bool shouldShowCursor);
     ~HeadlineDropdown();
 
     void childBoundsChanged(Component *) override;
@@ -37,21 +40,38 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
+    void handleCommandMessage(int commandId) override;
+    bool keyPressed(const KeyPress &key) override;
+    bool keyStateChanged(bool isKeyDown) override;
     void inputAttemptWhenModal() override;
 
 private:
 
+    static HotkeyScheme::Ptr getHotkeyScheme();
+
     static constexpr auto padding = 7;
+
+    bool shouldDismissOnMouseExit = true;
 
     WeakReference<HeadlineItemDataSource> item;
 
     void timerCallback() override;
     void syncWidthWithContent();
+    void dismiss();
+    void showCursor();
 
     Path backgroundShape;
 
+    const Colour fillColour =
+        findDefaultColour(ColourIDs::Breadcrumbs::fill).brighter(0.02f);
+    const Colour borderLightColour =
+        findDefaultColour(ColourIDs::Common::borderLineLight);
+    const Colour borderDarkColour =
+        findDefaultColour(ColourIDs::Common::borderLineDark);
+
     UniquePointer<Component> content;
-    UniquePointer<HeadlineItemHighlighter> header;
+    UniquePointer<Component> cursor;
+    UniquePointer<HeadlineDropdownHeader> header;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineDropdown)
 };

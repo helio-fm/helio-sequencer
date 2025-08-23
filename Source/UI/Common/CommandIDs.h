@@ -23,12 +23,9 @@ namespace CommandIDs
     {
         None                            = 0x0000,
 
-        Back                            = 0x0001,
-        Cancel                          = 0x0002,
-        Browse                          = 0x0003,
-        IconButtonPressed               = 0x0004,
-        DismissCallout                  = 0x0005,
-        DismissDialog                   = 0x0006,
+        Browse                          = 0x0001,
+        IconButtonPressed               = 0x0002,
+        DismissModalComponentAsync      = 0x0003,
 
         AddAnnotation                   = 0x0101,
         AddTimeSignature                = 0x0103,
@@ -104,7 +101,6 @@ namespace CommandIDs
 
         Undo                            = 0x1900,
         Redo                            = 0x1901,
-        ResetPreviewChanges             = 0x1902,
 
         TimelineJumpNext                = 0x2000,
         TimelineJumpPrevious            = 0x2001,
@@ -134,10 +130,8 @@ namespace CommandIDs
         TempoUp1Bpm                     = 0x2076,
         TempoDown1Bpm                   = 0x2077,
 
-        SelectScaleDegree               = 0x2120, // more ids reserved for sub-items
-        SelectScale                     = 0x2200, // more ids reserved for sub-items
-        SelectTimeSignature             = 0x2300, // more ids reserved for sub-items
-        SelectVersion                   = 0x2400, // more ids reserved for sub-items
+        SelectScale                     = 0x2100, // more ids reserved for sub-items
+        SelectTimeSignature             = 0x2200, // more ids reserved for sub-items
 
         SwitchBetweenRolls              = 0x2500,
         SwitchToEditMode                = 0x2501,
@@ -220,6 +214,7 @@ namespace CommandIDs
 
         CommandPalette                  = 0x4200,
         CommandPaletteWithMode          = 0x4201,
+        BreadcrumbsMenu                 = 0x4202,
 
         KeyMapReset                     = 0x4210,
         KeyMapLoadScala                 = 0x4211,
@@ -270,6 +265,18 @@ namespace CommandIDs
         ChordToolPreset10               = 0x4721,
         ChordToolPreset11               = 0x4722,
         ChordToolPreset12               = 0x4723,
+
+        MenuDismiss                     = 0x4730,
+        MenuSelect                      = 0x4731,
+        MenuCursorUp                    = 0x4732,
+        MenuCursorDown                  = 0x4733,
+        MenuCursorPageUp                = 0x4734,
+        MenuCursorPageDown              = 0x4735,
+        MenuForward                     = 0x4736,
+        MenuBack                        = 0x4737,
+        MenuCursorHide                  = 0x4738,
+        MenuCursorTryExitUp             = 0x4739,
+        MenuCursorTryExitDown           = 0x473a,
 
         YourNextCommandId               = 0x4800
     };

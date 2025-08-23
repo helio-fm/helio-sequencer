@@ -50,12 +50,12 @@ public:
     void childBoundsChanged(Component *) override;
     bool hitTest(int x, int y) override;
     void inputAttemptWhenModal() override;
+    void handleCommandMessage(int commandId) override;
     bool keyPressed(const KeyPress &) override;
-    void handleCommandMessage(int) override;
-    int getBorderSize() const noexcept;
     
 private:
 
+    int getBorderSize() const noexcept;
     void findTargetPointAndUpdateBounds();
     void pointToAndFit(const Rectangle<int>& newAreaToPointTo,
         const Rectangle<int>& newAreaToFitIn);

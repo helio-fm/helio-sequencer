@@ -98,7 +98,7 @@ void ModalDialogInput::parentSizeChanged()
 
 void ModalDialogInput::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissDialog)
+    if (commandId == CommandIDs::DismissModalComponentAsync)
     {
         this->cancel();
     }

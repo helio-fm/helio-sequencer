@@ -37,6 +37,7 @@ public:
     {
         if (this->highlighter != nullptr)
         {
+            this->highlightAnimator.cancelAnimation(this->highlighter.get(), false);
             this->highlighter->setBounds(this->getLocalBounds());
         }
     }
@@ -57,14 +58,14 @@ public:
 
     virtual void setHighlighted(bool shouldBeHighlighted)
     {
-        if (this->highlighted == shouldBeHighlighted)
+        if (this->isHighlighted == shouldBeHighlighted)
         {
             return;
         }
 
-        this->highlighted = shouldBeHighlighted;
+        this->isHighlighted = shouldBeHighlighted;
         
-        if (this->highlighted)
+        if (this->isHighlighted)
         {
             if (this->highlighter == nullptr)
             {
@@ -79,21 +80,15 @@ public:
             }
 
             this->highlighter->setBounds(this->getLocalBounds());
-            this->addAndMakeVisible(this->highlighter.get());
-
-            if (this->fadingHighlights)
-            {
-                this->highlighter->setAlpha(0.f);
-                this->highlightAnimator.animateComponent(this->highlighter.get(),
-                    this->highlighter->getBounds(), 1.f, Globals::UI::fadeInShort, false, 1.0, 0.0);
-            }
+            this->highlighter->setAlpha(1.f);
+            this->addAndMakeVisible(this->highlighter.get(), 0);
         }
         else
         {
             if (this->highlighter != nullptr)
             {
                 this->highlightAnimator.animateComponent(this->highlighter.get(),
-                    this->highlighter->getBounds(), 0.f, Globals::UI::fadeOutShort, true, 1.0, 0.0);
+                    this->highlighter->getBounds(), 0.f, Globals::UI::fadeOutShort / 2, true, 1.0, 0.0);
 
                 this->removeChildComponent(this->highlighter.get());
             }
@@ -120,10 +115,10 @@ protected:
     
 private:
 
-    bool fadingHighlights = false;
-    bool highlighted = false;
+    bool isHighlighted = false;
     
     UniquePointer<Component> highlighter;
+
     ComponentFader highlightAnimator;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighlightedComponent)

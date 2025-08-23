@@ -167,7 +167,7 @@ void TrackPropertiesDialog::parentSizeChanged()
 
 void TrackPropertiesDialog::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissDialog)
+    if (commandId == CommandIDs::DismissModalComponentAsync)
     {
         this->doCancel();
     }

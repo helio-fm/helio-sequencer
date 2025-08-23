@@ -162,7 +162,7 @@ void RenderDialog::parentSizeChanged()
 
 void RenderDialog::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissDialog)
+    if (commandId == CommandIDs::DismissModalComponentAsync)
     {
         if (!this->project.getTransport().isRendering())
         {
@@ -199,7 +199,7 @@ bool RenderDialog::keyPressed(const KeyPress &key)
 {
     if (key == KeyPress::escapeKey)
     {
-        this->postCommandMessage(CommandIDs::DismissDialog);
+        this->postCommandMessage(CommandIDs::DismissModalComponentAsync);
         return true;
     }
 

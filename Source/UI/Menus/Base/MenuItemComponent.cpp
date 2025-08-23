@@ -23,7 +23,7 @@
 #include "HotkeyScheme.h"
 #include "MainLayout.h"
 #include "Config.h"
-
+#include "ColourIDs.h"
 #include <utility>
 
 #if JUCE_MAC
@@ -31,8 +31,62 @@
 #endif
 
 //===----------------------------------------------------------------------===//
-// Check mark
+// Markers
 //===----------------------------------------------------------------------===//
+
+class MenuItemCursorComponent final : public Component
+{
+public:
+
+    MenuItemCursorComponent()
+    {
+        this->setAccessible(false);
+        this->setPaintingIsUnclipped(true);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+    }
+
+    void paint(Graphics &g)
+    {
+        const auto bounds = this->getLocalBounds().reduced(5, 4);
+
+        const auto x = bounds.getX();
+        const auto y = bounds.getY();
+        const auto r = bounds.getRight();
+        const auto b = bounds.getBottom();
+
+        // the corner's size
+        constexpr auto lh = 7;
+        constexpr auto lv = 3;
+
+        g.setColour(this->shadowColour);
+        g.fillRect(x, y, lh, 2);
+        g.fillRect(x, y, 2, lv);
+        g.fillRect(x, b - 2, lh, 2);
+        g.fillRect(x, b - lv, 2, lv);
+        g.fillRect(r - lh, y, lh, 2);
+        g.fillRect(r - 2, y, 2, lv);
+        g.fillRect(r - lh, b - 2, lh, 2);
+        g.fillRect(r - 2, b - lv, 2, lv);
+
+        g.setColour(this->fillColour);
+        g.fillRect(x, y, lh, 1);
+        g.fillRect(x, y, 1, lv);
+        g.fillRect(x, b - 1, lh, 1);
+        g.fillRect(x, b - lv, 1, lv);
+        g.fillRect(r - lh, y, lh, 1);
+        g.fillRect(r - 1, y, 1, lv);
+        g.fillRect(r - lh, b - 1, lh, 1);
+        g.fillRect(r - 1, b - lv, 1, lv);
+    }
+
+private:
+
+    const Colour fillColour = findDefaultColour(ColourIDs::Menu::cursorFill);
+    const Colour shadowColour = findDefaultColour(ColourIDs::Menu::cursorShade);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemCursorComponent)
+};
 
 class MenuItemComponentCheckMark final : public Component
 {
@@ -40,6 +94,7 @@ public:
 
     MenuItemComponentCheckMark()
     {
+        this->setAccessible(false);
         this->setPaintingIsUnclipped(true);
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
@@ -67,7 +122,7 @@ public:
 
 private:
 
-    const Colour colour = findDefaultColour(Label::textColourId).withAlpha(0.125f);
+    const Colour colour = findDefaultColour(ColourIDs::Menu::selectionMarker);
 
     int x = 0;
     int y = 0;
@@ -75,6 +130,61 @@ private:
     int h = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemComponentCheckMark)
+};
+
+class MenuItemComponentClickMark final : public Component
+{
+public:
+
+    MenuItemComponentClickMark()
+    {
+        this->setInterceptsMouseClicks(false, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
+        this->setPaintingIsUnclipped(true);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->fillColour);
+        g.fillRect(this->getLocalBounds());
+    }
+
+    const Colour fillColour = findDefaultColour(ColourIDs::Menu::highlight);
+};
+
+class MenuItemHighlighter final : public Component
+{
+public:
+
+    MenuItemHighlighter(Icons::Id iconId, bool iconIsCentered) :
+        iconIsCentered(iconIsCentered)
+    {
+        this->setInterceptsMouseClicks(false, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
+        this->setPaintingIsUnclipped(true);
+
+        this->icon = Icons::findByName(iconId, MenuItemComponent::iconSize);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->fillColour);
+        g.fillRoundedRectangle(this->getLocalBounds().reduced(0, 1).toFloat(), 1.f);
+
+        const int iconX = iconIsCentered ? this->getWidth() / 2 :
+            MenuItemComponent::iconSize / 2 + MenuItemComponent::iconMargin;
+
+        jassert(this->icon.isValid());
+        g.setOpacity(0.7f);
+        Icons::drawImageRetinaAware(this->icon, g, iconX, this->getHeight() / 2);
+    }
+
+    Image icon;
+    const bool iconIsCentered;
+
+    const Colour fillColour = findDefaultColour(ColourIDs::Menu::highlight);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemHighlighter)
 };
 
 
@@ -141,6 +251,16 @@ MenuItem::Ptr MenuItem::withSubmenuIf(bool condition)
     }
 
     return this;
+}
+
+bool MenuItem::hasSubmenu() const noexcept
+{
+    return this->flags.hasSubmenu;
+}
+
+const String &MenuItem::getText() const noexcept
+{
+    return this->commandText;
 }
 
 MenuItem::Ptr MenuItem::toggledIf(bool shouldBeToggled)
@@ -241,49 +361,6 @@ MenuItem::Ptr MenuItem::withButton(bool isEnabled, Icons::Id icon, const Callbac
     return description;
 }
 
-//===----------------------------------------------------------------------===//
-// Highlighters
-//===----------------------------------------------------------------------===//
-
-class CommandDragHighlighter final : public Component
-{
-public:
-
-    CommandDragHighlighter()
-    {
-        this->setInterceptsMouseClicks(false, false);
-        this->setMouseClickGrabsKeyboardFocus(false);
-        this->setPaintingIsUnclipped(true);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(this->fgColour);
-        g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 2.f);
-    }
-
-    const Colour fgColour = findDefaultColour(Label::textColourId).withAlpha(0.0175f);
-};
-
-class CommandItemSelector final : public Component
-{
-public:
-
-    CommandItemSelector()
-    {
-        this->setInterceptsMouseClicks(false, false);
-        this->setMouseClickGrabsKeyboardFocus(false);
-        this->setPaintingIsUnclipped(true);
-    }
-
-    void paint(Graphics &g) override
-    {
-        const auto fgColour = findDefaultColour(Label::textColourId);
-        g.setColour(fgColour.withAlpha(0.075f));
-        g.fillRect(this->getLocalBounds());
-    }
-};
-
 MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver,
     Viewport *parentViewport, const MenuItem::Ptr desc) :
     DraggingListBoxComponent(parentViewport, false),
@@ -366,6 +443,13 @@ void MenuItemComponent::resized()
             this->getLocalBounds().withWidth(iconSize + MenuItemComponent::iconMargin * 2));
     }
 
+    if (this->cursorMarker != nullptr &&
+        this->cursorMarker->getBounds() != this->getLocalBounds())
+    {
+        this->animator.cancelAnimation(this->cursorMarker.get(), true);
+        this->cursorMarker->setBounds(this->getLocalBounds());
+    }
+
     this->icon = Icons::findByName(this->description->iconId, iconSize);
 
     this->textLabel->setBounds(iconSize + MenuItemComponent::iconMargin - 1, 0,
@@ -378,8 +462,11 @@ void MenuItemComponent::resized()
         button->setBounds(this->getWidth() - buttonRightMargin - MenuItemComponent::iconSize * (i + 1),
             0, iconSize, this->getHeight());
     }
+
+    HighlightedComponent::resized();
 }
 
+// receives commands from IconButton's, if has any
 void MenuItemComponent::handleCommandMessage(int commandId)
 {
     jassert(commandId >= 0 && commandId < this->buttons.size());
@@ -415,16 +502,15 @@ void MenuItemComponent::mouseDown(const MouseEvent &e)
         if (!this->description->flags.isDisabled &&
             (this->description->commandId > 0 || this->description->callback != nullptr))
         {
-            this->clickMarker = make<CommandDragHighlighter>();
-            this->addChildComponent(this->clickMarker.get());
+            this->clickMarker = make<MenuItemComponentClickMark>();
+            this->addChildComponent(this->clickMarker.get(), 0);
             this->clickMarker->setBounds(this->getLocalBounds());
-            this->clickMarker->toBack();
 
 #if HAS_OPENGL_BUG
             this->clickMarker->setVisible(true);
 #else
             this->animator.animateComponent(this->clickMarker.get(),
-                this->getLocalBounds(), 1.f, Globals::UI::fadeInShort, true, 0.0, 1.0);
+                this->getLocalBounds(), 1.f, Globals::UI::fadeInShort, true, 1.0, 0.0);
 #endif
         }
 
@@ -518,16 +604,39 @@ void MenuItemComponent::setSelected(bool shouldBeSelected)
             (this->description->commandId > 0 || this->description->callback != nullptr))
         {
             // possible glDeleteTexture bug here?
-            auto highlighter = make<CommandItemSelector>();
-            this->addAndMakeVisible(highlighter.get());
+            auto highlighter = make<MenuItemComponentClickMark>();
+            this->addAndMakeVisible(highlighter.get(), 0);
             highlighter->setBounds(this->getLocalBounds());
             this->animator.animateComponent(highlighter.get(),
-                this->getLocalBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
+                this->getLocalBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 1.0);
             this->removeChildComponent(highlighter.get());
         }
 #endif
 
         this->doAction();
+    }
+}
+
+void MenuItemComponent::setCursorShown(bool shouldBeShown)
+{
+    if ((this->cursorMarker != nullptr) == shouldBeShown)
+    {
+        return;
+    }
+
+    if (shouldBeShown && this->cursorMarker == nullptr)
+    {
+        this->cursorMarker = make<MenuItemCursorComponent>();
+        this->cursorMarker->setBounds(this->getLocalBounds());
+        this->addAndMakeVisible(this->cursorMarker.get());
+        //this->animator.fadeIn(this->cursorMarker.get(), Globals::UI::fadeInShort);
+        this->setHighlighted(true);
+    }
+    else if (!shouldBeShown && this->cursorMarker != nullptr)
+    {
+        this->animator.fadeOut(this->cursorMarker.get(), Globals::UI::fadeOutShort / 2);
+        this->cursorMarker = nullptr;
+        this->setHighlighted(false);
     }
 }
 
@@ -597,42 +706,6 @@ bool MenuItemComponent::hasText() const noexcept
 {
     return this->description->commandText.isNotEmpty();
 }
-
-class MenuItemHighlighter final : public Component
-{
-public:
-
-    MenuItemHighlighter(Icons::Id iconId, bool iconIsCentered) :
-        iconIsCentered(iconIsCentered)
-    {
-        this->setInterceptsMouseClicks(false, false);
-        this->setMouseClickGrabsKeyboardFocus(false);
-        this->setPaintingIsUnclipped(true);
-
-        this->icon = Icons::findByName(iconId, MenuItemComponent::iconSize);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(this->fgColour);
-        g.fillRoundedRectangle(this->getLocalBounds().reduced(0, 1).toFloat(), 1.f);
-
-        const int iconX = iconIsCentered ? this->getWidth() / 2 :
-            MenuItemComponent::iconSize / 2 + MenuItemComponent::iconMargin;
-
-        jassert(this->icon.isValid());
-        g.setOpacity(0.7f);
-        Icons::drawImageRetinaAware(this->icon, g, iconX, this->getHeight() / 2);
-    }
-
-    Image icon;
-    const bool iconIsCentered;
-
-    const Colour fgColour =
-        findDefaultColour(Label::textColourId).withAlpha(0.0125f);
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemHighlighter)
-};
 
 Component *MenuItemComponent::createHighlighterComponent()
 {

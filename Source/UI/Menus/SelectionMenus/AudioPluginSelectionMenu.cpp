@@ -28,7 +28,7 @@ AudioPluginSelectionMenu::AudioPluginSelectionMenu(const PluginDescription pd,
     orchestraNode(orchestraNode),
     pluginScanner(scanner)
 {
-    this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+    this->updateContent(this->createDefaultMenu(), MenuPanel::Fading);
 }
 
 MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()

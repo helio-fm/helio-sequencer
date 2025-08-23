@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "KeySelector.h"
-#include "ColourIDs.h"
 #include "Config.h"
 
 KeySelector::KeySelector(const Temperament::Period &period)

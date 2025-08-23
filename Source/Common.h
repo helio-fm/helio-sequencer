@@ -221,17 +221,15 @@ namespace Globals
         static constexpr auto menuPanelRowHeight = 32;
 
         #if PLATFORM_MOBILE
-        static constexpr auto sidebarWidth = 42;
-        static constexpr auto sidebarFooterHeight = 70;
-        static constexpr auto projectMapHeight = 70;
+        static constexpr auto sidebarWidth = 44;
         static constexpr auto editorPanelHeight = 108;
         #elif PLATFORM_DESKTOP
         static constexpr auto sidebarWidth = 38;
-        static constexpr auto sidebarFooterHeight = 76;
-        static constexpr auto projectMapHeight = 76;
         static constexpr auto editorPanelHeight = 128;
         #endif
 
+        static constexpr auto sidebarFooterHeight = 72;
+        static constexpr auto projectMapHeight = 72;
         static constexpr auto defaultBeatWidth = 48;
         static constexpr auto rollShadowSize = 12;
         static constexpr auto rollHeaderHeight = 35;
@@ -240,10 +238,9 @@ namespace Globals
         static constexpr auto sidebarRowHeight = 36;
         static constexpr auto textEditorHeight = 32;
 
-        static constexpr auto fadeInShort = 70;
+        static constexpr auto fadeInShort = 60;
         static constexpr auto fadeOutShort = 90;
-
-        static constexpr auto fadeInLong = 130;
+        static constexpr auto fadeInLong = 120;
         static constexpr auto fadeOutLong = 150;
 
         static constexpr auto tooltipDelayMs = 650;

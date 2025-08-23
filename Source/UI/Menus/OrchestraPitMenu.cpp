@@ -45,5 +45,5 @@ OrchestraPitMenu::OrchestraPitMenu(OrchestraPitNode &parentOrchestra) :
 
 #endif
 
-    this->updateContent(menu, MenuPanel::SlideRight);
+    this->updateContent(menu, MenuPanel::Fading);
 }

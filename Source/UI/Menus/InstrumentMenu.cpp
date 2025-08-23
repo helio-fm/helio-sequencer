@@ -30,7 +30,7 @@ InstrumentMenu::InstrumentMenu(InstrumentNode &instrumentNode,
     pluginScanner(scanner),
     pit(pit)
 {
-    this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+    this->updateContent(this->createDefaultMenu(), MenuPanel::Fading);
 }
 
 MenuPanel::Menu InstrumentMenu::createDefaultMenu()

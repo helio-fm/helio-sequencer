@@ -230,7 +230,7 @@ public:
         {
             if (auto *parent = this->getParentComponent())
             {
-                parent->postCommandMessage(CommandIDs::DismissDialog);
+                parent->postCommandMessage(CommandIDs::DismissModalComponentAsync);
             }
 
             PluginWindow::showWindowFor(App::Workspace().getAudioCore().getMetronomeInstrumentId());

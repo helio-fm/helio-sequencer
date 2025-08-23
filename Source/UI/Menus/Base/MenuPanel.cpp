@@ -19,9 +19,13 @@
 #include "MenuPanel.h"
 #include "MainLayout.h"
 #include "Config.h"
+#include "ComponentIDs.h"
 
 MenuPanel::MenuPanel()
 {
+    this->setComponentID(ComponentIDs::menu);
+
+    this->setAccessible(false);
     this->setFocusContainerType(Component::FocusContainerType::none);
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(false);
@@ -48,21 +52,74 @@ void MenuPanel::resized()
 
 void MenuPanel::handleCommandMessage(int commandId)
 {
-    if (this->getParentComponent() != nullptr)
+    switch (commandId)
     {
-        // The default behavior is to pass command up the hierarchy,
-        // but subclasses may override handleCommandMessage to process the command instead.
-        this->getParentComponent()->postCommandMessage(commandId);
+    case CommandIDs::MenuDismiss:
+        this->postCommandMessageToParent(CommandIDs::DismissModalComponentAsync);
+        break;
+    case CommandIDs::MenuSelect:
+        this->doActionAtCursor();
+        break;
+    case CommandIDs::MenuCursorHide:
+        this->cursorPosition.reset();
+        this->listBox->updateContent();
+        break;
+    case CommandIDs::MenuCursorUp:
+        if (!this->moveCursor(-1))
+        {
+            this->postCommandMessageToParent(CommandIDs::MenuCursorTryExitUp);
+        }
+        break;
+    case CommandIDs::MenuCursorDown:
+        if (!this->moveCursor(1))
+        {
+            this->postCommandMessageToParent(CommandIDs::MenuCursorTryExitDown);
+        }
+        break;
+    case CommandIDs::MenuCursorPageUp:
+        if (!this->moveCursor(-this->listBox->getNumRowsOnScreen()))
+        {
+            this->postCommandMessageToParent(CommandIDs::MenuCursorTryExitUp);
+        }
+        break;
+    case CommandIDs::MenuCursorPageDown:
+        if (!this->moveCursor(this->listBox->getNumRowsOnScreen()))
+        {
+            this->postCommandMessageToParent(CommandIDs::MenuCursorTryExitDown);
+        }
+        break;
+    case CommandIDs::MenuForward:
+        if (this->cursorPosition.hasValue() &&
+            *this->cursorPosition > 0 &&
+            this->getMenuOrFiltered()[*this->cursorPosition]->hasSubmenu())
+        {
+            this->doActionAtCursor();
+        }
+        break;
+    case CommandIDs::MenuBack:
+        // a hack: assume that the back button is the first,
+        // and it is always a lambda, never a command id:
+        if (!this->menu.isEmpty() &&
+            this->menu.getFirst()->iconId == Icons::back &&
+            this->menu.getFirst()->callback != nullptr)
+        {
+            this->menu.getFirst()->callback();
+        }
+        break;
+    default:
+        // the default behavior is to pass the command from the menu item up the hierarchy,
+        // but subclasses may override handleCommandMessage to process the command instead:
+        this->postCommandMessageToParent(commandId);
+        break;
     }
 }
 
 int MenuPanel::indexOfItemNamed(const String &nameToLookFor)
 {
-    jassert(this->filteredMenu.isEmpty()); // pls only use it with full menu
-
-    for (int i = 0; i < this->menu.size(); ++i)
+    auto &menuOrFiltered = this->getMenuOrFiltered();
+    for (int i = 0; i < menuOrFiltered.size(); ++i)
     {
-        if (this->menu.getUnchecked(i)->commandText == nameToLookFor)
+        if (menuOrFiltered.getUnchecked(i)->commandText == nameToLookFor)
         {
             return i;
         }
@@ -71,17 +128,16 @@ int MenuPanel::indexOfItemNamed(const String &nameToLookFor)
     return -1;
 }
 
-const MenuItem::Ptr MenuPanel::getMenuItem(int index) const
+const MenuItem::Ptr MenuPanel::getMenuItem(int index)
 {
-    jassert(this->filteredMenu.isEmpty()); // not supposed to be used with filters
-    jassert(index >= 0 && index < this->menu.size());
-    return this->menu[index];
+    auto &menuOrFiltered = this->getMenuOrFiltered();
+    jassert(index >= 0 && index < menuOrFiltered.size());
+    return menuOrFiltered[index];
 }
 
 void MenuPanel::scrollToItem(int index)
 {
-    jassert(this->filteredMenu.isEmpty()); // not supposed to be used with filters
-    jassert(index >= 0 && index < this->menu.size());
+    jassert(index >= 0 && index < this->getMenuOrFiltered().size());
     this->listBox->scrollToEnsureRowIsOnscreen(index);
 }
 
@@ -100,6 +156,21 @@ void MenuPanel::updateContent(const Menu &commands,
     {
         this->menu = commands;
         this->filteredMenu.clearQuick();
+
+        if (this->cursorPosition.hasValue())
+        {
+            this->cursorPosition = 0;
+            // reverse order to check the back button last:
+            for (int i = this->menu.size(); i --> 0 ;)
+            {
+                const auto menuItem = this->menu.getUnchecked(i);
+                if (this->recentCursorPositions.contains(String(i) + menuItem->getText()))
+                {
+                    this->cursorPosition = i;
+                    break;
+                }
+            }
+        }
 
         if (animationType == Fading)
         {
@@ -148,7 +219,7 @@ void MenuPanel::updateContent(const Menu &commands,
         this->addAndMakeVisible(this->customFooter.get());
     }
 
-    // If no new command received, just update animation:
+    // If no new commands received, just update the animation:
     if (animationType == Fading)
     {
         this->listBox->setBounds(this->getMenuBounds());
@@ -277,17 +348,80 @@ void MenuPanel::applyFilter(const String &text)
 // ListBoxModel
 //===----------------------------------------------------------------------===//
 
+bool MenuPanel::moveCursor(int delta)
+{
+    jassert(delta != 0);
+    if (!this->cursorPosition.hasValue())
+    {
+        this->cursorPosition = 0;
+    }
+    else
+    {
+        if ((delta < 0 && this->cursorPosition == 0) ||
+            (delta > 0 && this->cursorPosition == this->getNumRows() - 1))
+        {
+            return false;
+        }
+
+        this->cursorPosition =
+            jlimit(0, this->getNumRows() - 1, (*this->cursorPosition + delta));
+    }
+
+    this->listBox->scrollToEnsureRowIsOnscreen(*this->cursorPosition);
+    this->listBox->updateContent();
+    return true;
+}
+
+void MenuPanel::doActionAtCursor()
+{
+    if (!this->cursorPosition.hasValue())
+    {
+        jassertfalse;
+        return;
+    }
+
+    const auto cursorRowIndex = *this->cursorPosition;
+    this->listBox->scrollToEnsureRowIsOnscreen(cursorRowIndex);
+    auto *rowComponent = this->listBox->getComponentForRowNumber(cursorRowIndex);
+    auto *menuItemComponent = dynamic_cast<MenuItemComponent *>(rowComponent);
+    if (menuItemComponent == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    for (int i = this->menu.size(); i --> 0 ;)
+    {
+        const auto menuItem = this->menu.getUnchecked(i);
+        this->recentCursorPositions.erase(String(i) + menuItem->getText());
+    }
+    this->recentCursorPositions[String(cursorRowIndex) + menuItemComponent->getText()] = cursorRowIndex;
+
+    menuItemComponent->doAction();
+}
+
+void MenuPanel::postCommandMessageToParent(int commandId)
+{
+    if (this->getParentComponent() != nullptr)
+    {
+        this->getParentComponent()->postCommandMessage(commandId);
+    }
+}
+
+inline MenuPanel::Menu &MenuPanel::getMenuOrFiltered()
+{
+    return this->filteredMenu.isEmpty() ? this->menu : this->filteredMenu;
+}
+
 int MenuPanel::getNumRows()
 {
-    return this->filteredMenu.isEmpty() ?
-        this->menu.size() : this->filteredMenu.size();
+    return this->getMenuOrFiltered().size();
 }
 
 Component *MenuPanel::refreshComponentForRow(int rowNumber,
     bool isRowSelected, Component *existingComponentToUpdate)
 {
-    auto &menuToShow = this->filteredMenu.isEmpty() ?
-        this->menu : this->filteredMenu;
+    auto &menuToShow = this->getMenuOrFiltered();
 
     if (rowNumber >= menuToShow.size())
     {
@@ -296,11 +430,15 @@ Component *MenuPanel::refreshComponentForRow(int rowNumber,
 
     const auto itemDescription = menuToShow[rowNumber];
 
+    const auto isCursorShown =
+        this->cursorPosition.hasValue() && *this->cursorPosition == rowNumber;
+
     if (existingComponentToUpdate != nullptr)
     {
         if (auto *row = dynamic_cast<MenuItemComponent *>(existingComponentToUpdate))
         {
             row->setSelected(isRowSelected);
+            row->setCursorShown(isCursorShown);
             row->update(itemDescription);
         }
     }
@@ -308,6 +446,7 @@ Component *MenuPanel::refreshComponentForRow(int rowNumber,
     {
         auto *row = new MenuItemComponent(this, this->listBox->getViewport(), itemDescription);
         row->setSelected(isRowSelected);
+        row->setCursorShown(isCursorShown);
         return row;
     }
 

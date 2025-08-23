@@ -28,7 +28,7 @@
 WorkspaceMenu::WorkspaceMenu(Workspace &workspace) :
     workspace(workspace)
 {
-    this->showMainMenu(MenuPanel::SlideRight);
+    this->showMainMenu(MenuPanel::Fading);
 }
 
 void WorkspaceMenu::showMainMenu(AnimationType animationType)

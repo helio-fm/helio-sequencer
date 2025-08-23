@@ -47,7 +47,7 @@ PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
     lasso(lasso)
 {
     jassert(lasso->getNumSelected() > 0);
-    this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
+    this->updateContent(this->makeDefaultMenu(), MenuPanel::Fading);
 }
 
 static bool canRenamePatternSelection(WeakReference<Lasso> lasso)

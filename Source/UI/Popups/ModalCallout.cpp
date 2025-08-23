@@ -20,7 +20,8 @@
 #include "MainLayout.h"
 #include "SequencerLayout.h"
 #include "RollBase.h"
-#include "ComponentIDs.h"
+#include "HotkeyScheme.h"
+#include "Config.h"
 
 ModalCallout::ModalCallout(Component *newComponent, SafePointer<Component> pointAtComponent, bool shouldAlignToMouse) :
     contentComponent(newComponent),
@@ -133,26 +134,14 @@ bool ModalCallout::hitTest(int x, int y)
 
 void ModalCallout::inputAttemptWhenModal()
 {
-    // hack warning:
-    // when you rclick/tap outside of the callout to hide it and start dragging the roll immediately,
-    // JUCE never sends the mouseDown event to the roll because the modal callout is still showing,
-    // and after the callout is dismissed, dragging continues with incorrect anchor
-    // and the viewport position jumps away unpredictably; this check compensates for that:
-    if (auto *sequencer = dynamic_cast<SequencerLayout *>(App::Layout().findChildWithID(ComponentIDs::sequencerLayoutId)))
-    {
-        if (auto *roll = sequencer->getRoll())
-        {
-            roll->resetDraggingAnchors();
-        }
-    }
-
-    this->postCommandMessage(CommandIDs::DismissCallout);
+    this->dismiss();
 }
 
 void ModalCallout::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissCallout)
+    if (commandId == CommandIDs::DismissModalComponentAsync)
     {
+        // exit triggered asynchronously by some child:
         this->dismiss();
     }
 }
@@ -160,19 +149,12 @@ void ModalCallout::handleCommandMessage(int commandId)
 void ModalCallout::dismiss()
 {
     this->fadeOut();
-    delete this;
+    UniquePointer<Component> deleter(this);
 }
 
 bool ModalCallout::keyPressed(const KeyPress &key)
 {
-    if (key.isKeyCode(KeyPress::escapeKey))
-    {
-        // give a chance to hosted component to react to escape key:
-        this->contentComponent->postCommandMessage(CommandIDs::Cancel);
-        this->inputAttemptWhenModal();
-        return true;
-    }
-    
+    App::Config().getHotkeySchemes()->getCurrent()->dispatchKeyPress(key, this, this->contentComponent.get());
     return true;
 }
 

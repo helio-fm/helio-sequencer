@@ -17,11 +17,13 @@
 
 #include "Common.h"
 #include "HeadlineContextMenuController.h"
-
 #include "HeadlineItem.h"
 #include "ColourIDs.h"
 #include "MainLayout.h"
 #include "HelioTheme.h"
+#include "HotkeyScheme.h"
+#include "Config.h"
+#include "CommandIDs.h"
 
 class ContextMenuComponent final : public Component
 {
@@ -52,14 +54,19 @@ public:
             this->syncBoundsWithContent();
         }
     }
+    
+    void handleCommandMessage(int commandId) override
+    {
+        if (commandId == CommandIDs::DismissModalComponentAsync)
+        {
+            // exit triggered asynchronously by the content component:
+            this->dismiss();
+        }
+    }
 
     bool keyPressed(const KeyPress &key) override
     {
-        if (key.isKeyCode(KeyPress::escapeKey))
-        {
-            this->dismiss();
-        }
-
+        App::Config().getHotkeySchemes()->getCurrent()->dispatchKeyPress(key, this, this->content.get());
         return true;
     }
 
@@ -86,15 +93,12 @@ public:
         HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.25f, 1.f);
 
         g.setColour(this->headerColour);
-        g.fillRect(1, 1, this->getWidth() - 2, 2);
-
-        g.setColour(this->selectionMarkerColour);
         HelioTheme::drawDashedHorizontalLine2(g, 4.f, 1.f, float(this->getWidth() - 3), 8.f);
     }
 
 private:
 
-    static constexpr auto padding = 3;
+    static constexpr auto padding = 2;
 
     void syncBoundsWithContent()
     {
@@ -115,7 +119,6 @@ private:
 
     const Colour fillColour = findDefaultColour(ColourIDs::Menu::fill);
     const Colour headerColour = findDefaultColour(ColourIDs::Menu::header);
-    const Colour selectionMarkerColour = findDefaultColour(ColourIDs::Menu::selectionMarker);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ContextMenuComponent)
 };

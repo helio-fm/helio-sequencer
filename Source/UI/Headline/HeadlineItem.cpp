@@ -59,7 +59,6 @@ HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> dataSource, Asy
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
-    this->setOpaque(false);
     this->setAccessible(false);
 
     this->titleLabel = make<Label>();
@@ -211,12 +210,20 @@ void HeadlineItem::changeListenerCallback(ChangeBroadcaster *source)
     this->parentHeadline.triggerAsyncUpdate();
 }
 
-void HeadlineItem::showMenuIfAny()
+bool HeadlineItem::hasMenu() const
 {
-    if (this->dataSource != nullptr && this->dataSource->hasMenu())
+    return this->dataSource != nullptr && this->dataSource->hasMenu();
+}
+
+bool HeadlineItem::showMenuIfAny(bool shouldShowCursor)
+{
+    if (this->hasMenu())
     {
-        App::showModalComponent(make<HeadlineDropdown>(this->dataSource, this->getPosition()));
+        App::showModalComponent(make<HeadlineDropdown>(this->dataSource, this->getPosition(), shouldShowCursor));
+        return true;
     }
+
+    return false;
 }
 
 void HeadlineItem::showContextMenuMarker()

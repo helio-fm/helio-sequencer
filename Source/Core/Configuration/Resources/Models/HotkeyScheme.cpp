@@ -322,6 +322,12 @@ bool HotkeyScheme::sendHotkeyCommand(const String &keyPressComponentId,
             {
                 receiver = modalComponent;
             }
+            else if (componentToSendMessageTo != nullptr &&
+                modalComponent->isParentOf(componentToSendMessageTo) &&
+                componentToSendMessageTo->getComponentID() == keyPressComponentId)
+            {
+                receiver = componentToSendMessageTo;
+            }
         }
         else if (keyPressReceivedFrom != nullptr &&
             keyPressReceivedFrom->getComponentID() == keyPressComponentId)
@@ -336,7 +342,9 @@ bool HotkeyScheme::sendHotkeyCommand(const String &keyPressComponentId,
         this->receiversById[keyPressComponentId] = receiver;
     }
 
-    if (receiver != nullptr && receiver->isEnabled() && receiver->isShowing())
+    if (receiver != nullptr &&
+        receiver->isEnabled() &&
+        receiver->isShowing())
     {
         receiver->postCommandMessage(commandId);
         return true;

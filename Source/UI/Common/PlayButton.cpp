@@ -79,6 +79,8 @@ void PlayButton::resized()
 
     this->stopIcon->setBounds(this->getLocalBounds()
         .withSizeKeepingCentre(buttonSize, buttonSize));
+
+    HighlightedComponent::resized();
 }
 
 void PlayButton::mouseDown(const MouseEvent &e)

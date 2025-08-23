@@ -165,6 +165,8 @@ public:
             this->backgroundShape.lineTo(float(this->getWidth()), float(this->getHeight()));
             this->backgroundShape.lineTo(0.f, float(this->getHeight()));
             this->backgroundShape.closeSubPath();
+
+            HighlightedComponent::resized();
         }
 
     private:

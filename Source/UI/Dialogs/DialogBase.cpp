@@ -114,7 +114,7 @@ void DialogBase::inputAttemptWhenModal()
         }
     }
 
-    this->postCommandMessage(CommandIDs::DismissDialog);
+    this->postCommandMessage(CommandIDs::DismissModalComponentAsync);
 }
 
 void DialogBase::dismiss()

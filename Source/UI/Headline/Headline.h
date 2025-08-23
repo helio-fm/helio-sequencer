@@ -21,6 +21,7 @@
 #include "NavigationHistory.h"
 #include "HeadlineNavigationPanel.h"
 #include "ComponentFader.h"
+#include "ColourIDs.h"
 
 class IconButton;
 class HeadlineItem;
@@ -37,7 +38,8 @@ public:
     static constexpr auto itemsOverlapOffset = 11;
 
     void syncWithTree(NavigationHistory &history, WeakReference<TreeNode> leaf);
-    
+
+    void showNeighbourMenu(WeakReference<HeadlineItemDataSource> origin, int delta);
     void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);
     void hideSelectionMenu();
 
@@ -68,6 +70,11 @@ private:
     float getAlphaForAnimation() const noexcept;
 
     static constexpr auto rootNodeOffset = Globals::UI::sidebarWidth;
+
+    const Colour borderLightColour =
+        findDefaultColour(ColourIDs::Common::borderLineLight);
+    const Colour borderDarkColour =
+        findDefaultColour(ColourIDs::Common::borderLineDark);
 
     UniquePointer<HeadlineNavigationPanel> navPanel;
     UniquePointer<IconButton> consoleButton;

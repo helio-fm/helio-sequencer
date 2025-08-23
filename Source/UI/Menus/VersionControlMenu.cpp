@@ -46,5 +46,5 @@ VersionControlMenu::VersionControlMenu(VersionControl &vcs)
     //menu.add(MenuItem::item(Icons::stash, CommandIDs::VersionControlPopStash,
     //    TRANS(I18n::Menu::vcsStash))->withSubmenu());
 
-    this->updateContent(menu, MenuPanel::SlideRight);
+    this->updateContent(menu, MenuPanel::Fading);
 }

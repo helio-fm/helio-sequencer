@@ -85,7 +85,7 @@ RadioButton::RadioButton(const String &text,
 
     this->content = move(label);
 
-    this->checkMark = make<RadioButtonFrame>(0.8f);
+    this->checkMark = make<RadioButtonFrame>(0.85f);
     this->addChildComponent(this->checkMark.get());
 }
 
@@ -107,7 +107,7 @@ RadioButton::RadioButton(const String &noteName, bool shouldUseFixedDo, Listener
 
     this->content = move(noteNameComponent);
     
-    this->checkMark = make<RadioButtonFrame>(0.8f);
+    this->checkMark = make<RadioButtonFrame>(0.85f);
     this->addChildComponent(this->checkMark.get());
 }
 
@@ -198,7 +198,7 @@ void RadioButton::mouseUp(const MouseEvent &e)
 
 Component *RadioButton::createHighlighterComponent()
 {
-    return new RadioButtonFrame(0.35f);
+    return new RadioButtonFrame(0.25f);
 }
 
 void RadioButton::select()

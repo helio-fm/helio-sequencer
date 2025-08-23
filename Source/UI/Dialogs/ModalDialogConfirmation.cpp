@@ -75,7 +75,7 @@ void ModalDialogConfirmation::parentSizeChanged()
 
 void ModalDialogConfirmation::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissDialog)
+    if (commandId == CommandIDs::DismissModalComponentAsync)
     {
         this->cancel();
     }

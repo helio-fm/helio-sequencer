@@ -49,6 +49,7 @@ public:
     bool isShowingPage(Component *page) const noexcept;
 
     HeadlineItem *getMenuTail() const;
+    void showNeighbourMenu(WeakReference<HeadlineItemDataSource> origin, int delta);
     void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);
     void hideSelectionMenu();
 

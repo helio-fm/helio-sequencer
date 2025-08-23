@@ -313,7 +313,7 @@ bool ProjectNode::hasMenu() const noexcept
 
 UniquePointer<Component> ProjectNode::createMenu()
 {
-    return make<ProjectMenu>(*this, MenuPanel::SlideRight);
+    return make<ProjectMenu>(*this, MenuPanel::Fading);
 }
 
 //===----------------------------------------------------------------------===//

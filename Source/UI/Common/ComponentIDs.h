@@ -32,4 +32,5 @@ namespace ComponentIDs
     static const String keyboardMapping = "KeyboardMapping";
     static const String commandPalette = "CommandPalette";
     static const String chordTool = "ChordTool";
+    static const String menu = "Menu";
 } // namespace ComponentIDs

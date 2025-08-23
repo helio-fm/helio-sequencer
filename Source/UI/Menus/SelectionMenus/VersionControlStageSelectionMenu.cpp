@@ -44,5 +44,5 @@ VersionControlStageSelectionMenu::VersionControlStageSelectionMenu()
         CommandIDs::VersionControlSelectNone,
         TRANS(I18n::Menu::Selection::vcsSelectNone))->closesMenu());
 
-    this->updateContent(menu, MenuPanel::SlideRight);
+    this->updateContent(menu, MenuPanel::Fading);
 }

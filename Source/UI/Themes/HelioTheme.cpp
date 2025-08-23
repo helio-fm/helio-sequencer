@@ -893,9 +893,14 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ColourIDs::Menu::fill, s->getHeadlineFillColour());
     this->setColour(ColourIDs::Menu::header,
-        s->getHeadlineFillColour().brighter(this->isDarkTheme ? 0.05f : 0.2f));
-    this->setColour(ColourIDs::Menu::selectionMarker, this->isDarkTheme ?
-        Colours::white.withAlpha(0.05f) : Colours::black.withAlpha(0.1f));
+        s->getHeadlineFillColour().brighter(this->isDarkTheme ? 0.1f : 0.5f));
+    this->setColour(ColourIDs::Menu::cursorFill, s->getLassoBorderColour().withAlpha(0.75f));
+    this->setColour(ColourIDs::Menu::cursorShade, this->isDarkTheme ?
+        s->getBlackKeyColour().darker(1.f).withAlpha(0.4f) :
+        s->getWhiteKeyColour().brighter(1.f).withAlpha(0.4f));
+    this->setColour(ColourIDs::Menu::highlight, this->isDarkTheme ?
+        Colours::white.withAlpha(0.025f) : Colours::white.withAlpha(0.125f));
+    this->setColour(ColourIDs::Menu::selectionMarker, s->getIconBaseColour());
 
     this->setColour(ColourIDs::Arrow::lineStart, this->isDarkTheme ? Colour(0x33ffffff) : Colour(0x44ffffff));
     this->setColour(ColourIDs::Arrow::lineEnd, this->isDarkTheme ? Colour(0x17ffffff) : Colour(0x27ffffff));
@@ -980,6 +985,11 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::playheadPlayback, s->getLassoBorderColour().withAlpha(0.7f));
     this->setColour(ColourIDs::Roll::playheadRecording,
         s->getLassoBorderColour().interpolatedWith(Colours::red, 0.75f).withAlpha(0.55f));
+
+    this->setColour(ColourIDs::Roll::cursorFill, s->getLassoBorderColour().withAlpha(0.9f));
+    this->setColour(ColourIDs::Roll::cursorShade, this->isDarkTheme ?
+        s->getBlackKeyColour().darker(1.f).withAlpha(0.4f) :
+        s->getWhiteKeyColour().brighter(0.25f).withAlpha(0.5f));
 
     this->setColour(ColourIDs::Roll::patternRowFill, s->getBlackKeyColour().brighter(0.02f));
     this->setColour(ColourIDs::Roll::trackHeaderFill, s->getWhiteKeyColour());

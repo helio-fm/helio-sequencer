@@ -337,7 +337,7 @@ PianoRollSelectionMenu::PianoRollSelectionMenu(PianoRoll &roll, WeakReference<La
     roll(roll),
     lasso(lasso)
 {
-    this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
+    this->updateContent(this->makeDefaultMenu(), MenuPanel::Fading);
 }
 
 ProjectNode &PianoRollSelectionMenu::getProject()

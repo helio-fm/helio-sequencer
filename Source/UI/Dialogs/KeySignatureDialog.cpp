@@ -389,7 +389,7 @@ void KeySignatureDialog::parentSizeChanged()
 
 void KeySignatureDialog::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissDialog)
+    if (commandId == CommandIDs::DismissModalComponentAsync)
     {
         this->cancelAndDisappear();
     }

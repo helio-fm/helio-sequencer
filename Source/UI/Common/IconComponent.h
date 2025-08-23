@@ -38,6 +38,7 @@ public:
     explicit IconComponent(Image targetImage) :
         image(targetImage)
     {
+        this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
         this->setAccessible(false);
     }

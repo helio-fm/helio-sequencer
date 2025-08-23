@@ -91,9 +91,15 @@ RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
 
 void RescalePreviewTool::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::Cancel)
+    switch (commandId)
     {
+    case CommandIDs::MenuDismiss:
         this->undoIfNeeded();
+        this->dismissCalloutAsync();
+        break;
+    default:
+        MenuPanel::handleCommandMessage(commandId);
+        break;
     }
 }
 
@@ -101,7 +107,7 @@ void RescalePreviewTool::dismissCalloutAsync()
 {
     if (auto *parent = this->getParentComponent())
     {
-        parent->postCommandMessage(CommandIDs::DismissCallout);
+        parent->postCommandMessage(CommandIDs::DismissModalComponentAsync);
     }
 }
 
@@ -180,6 +186,6 @@ void QuickRescaleMenu::dismissCalloutAsync()
 {
     if (auto *parent = this->getParentComponent())
     {
-        parent->postCommandMessage(CommandIDs::DismissCallout);
+        parent->postCommandMessage(CommandIDs::DismissModalComponentAsync);
     }
 }

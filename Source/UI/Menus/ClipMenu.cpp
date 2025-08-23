@@ -33,7 +33,7 @@ ClipMenu::ClipMenu(const Clip &clip, WeakReference<UndoStack> undoStack) :
     undoStack(undoStack)
 {
     jassert(clip.isValid());
-    this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
+    this->updateContent(this->makeDefaultMenu(), MenuPanel::Fading);
 }
 
 MenuPanel::Menu ClipMenu::makeDefaultMenu()

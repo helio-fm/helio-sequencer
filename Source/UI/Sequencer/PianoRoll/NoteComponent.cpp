@@ -150,16 +150,6 @@ const String &NoteComponent::getSelectionGroupId() const noexcept
 // Component
 //===----------------------------------------------------------------------===//
 
-bool NoteComponent::keyStateChanged(bool isKeyDown)
-{
-    return this->roll.keyStateChanged(isKeyDown);
-}
-
-void NoteComponent::modifierKeysChanged(const ModifierKeys &modifiers)
-{
-    this->roll.modifierKeysChanged(modifiers);
-}
-
 void NoteComponent::mouseMove(const MouseEvent &e)
 {
     //if (this->shouldGoQuickSelectTrackMode(e.mods))

@@ -55,5 +55,5 @@ PatternsMenu::PatternsMenu(PatternEditorNode &parentNode)
         disabledIf(grouping == MidiTrack::Grouping::GroupByNameId)->
         closesMenu());
 
-    this->updateContent(menu, MenuPanel::SlideRight);
+    this->updateContent(menu, MenuPanel::Fading);
 }

@@ -628,8 +628,8 @@ void SequencerLayout::showPatternEditor()
     this->rollNavigationSidebar->setPatternMode();
 
     // sync the pattern roll's selection with the piano roll's editable scope:
-    this->patternRoll->selectClip(this->pianoRoll->getActiveClip());
     this->pianoRoll->deselectAll();
+    this->patternRoll->selectClip(this->pianoRoll->getActiveClip());
 }
 
 void SequencerLayout::showLinearEditor(const Clip &activeClip)
@@ -644,8 +644,8 @@ void SequencerLayout::showLinearEditor(const Clip &activeClip)
     this->rollToolsSidebar->setLinearMode();
     this->rollNavigationSidebar->setLinearMode();
 
-    //this->patternRoll->selectClip(activeClip);
     this->pianoRoll->deselectAll();
+    //this->patternRoll->selectClip(activeClip);
 
     this->project.setEditableScope(activeClip, false);
 }

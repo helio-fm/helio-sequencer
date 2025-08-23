@@ -25,7 +25,7 @@ InstrumentNodeSelectionMenu::InstrumentNodeSelectionMenu(Instrument &instrument,
     instrument(instrument),
     node(node)
 {
-    this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+    this->updateContent(this->createDefaultMenu(), MenuPanel::Fading);
 }
 
 MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()

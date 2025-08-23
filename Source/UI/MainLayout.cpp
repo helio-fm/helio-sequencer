@@ -280,6 +280,12 @@ HeadlineItem *MainLayout::getMenuTail() const
     return this->headline->getTailItem();
 }
 
+void MainLayout::showNeighbourMenu(WeakReference<HeadlineItemDataSource> origin, int delta)
+{
+    jassert(delta != 0);
+    this->headline->showNeighbourMenu(origin, delta);
+}
+
 void MainLayout::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource)
 {
     this->headline->showSelectionMenu(menuSource);
@@ -522,6 +528,12 @@ void MainLayout::handleCommandMessage(int commandId)
         emitCommandPalette(String::charToString(modeKey));
         break;
     }
+    case CommandIDs::BreadcrumbsMenu:
+        if (!this->headline->getTailItem()->showMenuIfAny(true))
+        {
+            this->headline->showNeighbourMenu(this->headline->getTailItem()->getDataSource(), -1);
+        }
+        break;
     default:
         break;
     }

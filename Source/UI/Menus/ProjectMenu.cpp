@@ -77,6 +77,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
             return;
         }
         default:
+            MenuPanel::handleCommandMessage(commandId);
             break;
     }
 }

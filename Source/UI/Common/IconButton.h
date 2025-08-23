@@ -93,19 +93,26 @@ public:
         this->setAlpha(this->isEnabled() ? 1.0f : 0.4f);
     }
 
-    // Silence the useless VC C4250 warnings:
-
     void resized() override
-    { IconComponent::resized(); }
+    {
+        IconComponent::resized();
+        HighlightedComponent::resized();
+    }
 
     void paint(Graphics &g) override
-    { IconComponent::paint(g); }
+    {
+        IconComponent::paint(g);
+    }
 
     void mouseEnter(const MouseEvent &event) override
-    { HighlightedComponent::mouseEnter(event); }
+    {
+        HighlightedComponent::mouseEnter(event);
+    }
 
     void mouseExit(const MouseEvent &event) override
-    { HighlightedComponent::mouseExit(event); }
+    {
+        HighlightedComponent::mouseExit(event);
+    }
 
 protected:
 

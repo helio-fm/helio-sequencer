@@ -38,6 +38,9 @@ public:
     void showContextMenuMarker();
     void hideContextMenuMarker();
 
+    bool hasMenu() const;
+    bool showMenuIfAny(bool shouldShowCursor = false);
+
     void paint(Graphics &g) override;
     void resized() override;
     bool hitTest(int x, int y) override;
@@ -49,7 +52,6 @@ private:
     static constexpr auto maxWidth = 256;
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
-    void showMenuIfAny();
 
     UniquePointer<HeadlineContextMenuMarker> menuMarker;
 

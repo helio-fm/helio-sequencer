@@ -24,7 +24,6 @@ class DraggingListBoxComponent : public HighlightedComponent
 public:
     
     explicit DraggingListBoxComponent(Viewport *parent, bool disablesAllChildren = true);
-
     
     //===------------------------------------------------------------------===//
     // Component

@@ -2252,6 +2252,9 @@ static const unsigned char temp_binary_data_110[] =
 "      { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + 2\" },\n"
 "      { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + ;\" },\n"
 "\n"
+"      { \"command\": \"BreadcrumbsMenu\", \"key\": \"F10\" },\n"
+"      { \"command\": \"BreadcrumbsMenu\", \"key\": \"Shift + /\" },\n"
+"\n"
 "      { \"command\": \"ShowPreviousPage\", \"key\": \"Command + Cursor Left\" },\n"
 "      { \"command\": \"ShowPreviousPage\", \"key\": \"Control + Cursor Left\" },\n"
 "      { \"command\": \"ShowPreviousPage\", \"key\": \"Alt + Cursor Left\" },\n"
@@ -2283,7 +2286,6 @@ static const unsigned char temp_binary_data_110[] =
 "  {  // ANCHOR: VersionControlStage\n"
 "    \"receiver\": \"VersionControlStage\",\n"
 "    \"keyPress\": [\n"
-"      \n"
 "      { \"command\": \"VersionControlSelectAll\", \"key\": \"Control + A\" },\n"
 "      { \"command\": \"VersionControlSelectNone\", \"key\": \"Escape\" },\n"
 "      { \"command\": \"VersionControlCommitSelected\", \"key\": \"Return\" },\n"
@@ -2293,21 +2295,10 @@ static const unsigned char temp_binary_data_110[] =
 "      { \"command\": \"VersionControlCommitAll\", \"key\": \"Shift + Return\" },\n"
 "      { \"command\": \"VersionControlResetAll\", \"key\": \"Shift + Backspace\" },\n"
 "      { \"command\": \"VersionControlResetAll\", \"key\": \"Shift + Delete\" },\n"
-"\n"
-"      // Sync all revisions - only works when logged in\n"
-"      { \"command\": \"VersionControlSyncAll\", \"key\": \"F5\" },\n"
-"\n"
 "      // Stash all changes or apply stashed changes\n"
 "      { \"command\": \"VersionControlToggleQuickStash\", \"key\": \"Tab\" }\n"
 "    ]\n"
 "  }, // ANCHOR_END: VersionControlStage\n"
-"  /*{\n"
-"    \"receiver\": \"VersionControlHistory\",\n"
-"    \"keyPress\": [\n"
-"      { \"command\": \"VersionControlPushSelected\", \"key\": \"?\" },\n"
-"      { \"command\": \"VersionControlPullSelected\", \"key\": \"?\" },\n"
-"    ]\n"
-"  },*/\n"
 "  {  // ANCHOR: KeyboardMapping\n"
 "    \"receiver\": \"KeyboardMapping\",\n"
 "    \"keyPress\": [\n"
@@ -2663,7 +2654,28 @@ static const unsigned char temp_binary_data_110[] =
 "      { \"command\": \"CommandPaletteCursorPageUp\", \"key\": \"Page Up\" },\n"
 "      { \"command\": \"CommandPaletteCursorPageDown\", \"key\": \"Page Down\" }\n"
 "    ]\n"
-"  } // ANCHOR_END: CommandPalette\n"
+"  }, // ANCHOR_END: CommandPalette\n"
+"  {  // ANCHOR: Menu\n"
+"    \"receiver\": \"Menu\",\n"
+"    \"keyPress\": [\n"
+"      { \"command\": \"MenuDismiss\", \"key\": \"Escape\" },\n"
+"      { \"command\": \"MenuDismiss\", \"key\": \"F10\" },\n"
+"      { \"command\": \"MenuDismiss\", \"key\": \"Shift + /\" },\n"
+"      { \"command\": \"MenuSelect\", \"key\": \"Return\" },\n"
+"      { \"command\": \"MenuSelect\", \"key\": \"Spacebar\" },\n"
+"      { \"command\": \"MenuCursorUp\", \"key\": \"Cursor Up\" },\n"
+"      { \"command\": \"MenuCursorDown\", \"key\": \"Cursor Down\" },\n"
+"      { \"command\": \"MenuCursorPageUp\", \"key\": \"Page Up\" },\n"
+"      { \"command\": \"MenuCursorPageDown\", \"key\": \"Page Down\" },\n"
+"      { \"command\": \"MenuForward\", \"key\": \"Cursor Right\" },\n"
+"      { \"command\": \"MenuBack\", \"key\": \"Cursor Left\" },\n"
+"      { \"command\": \"MenuCursorUp\", \"key\": \"K\" },\n"
+"      { \"command\": \"MenuCursorDown\", \"key\": \"J\" },\n"
+"      { \"command\": \"MenuForward\", \"key\": \"L\" },\n"
+"      { \"command\": \"MenuBack\", \"key\": \"H\" },\n"
+"      { \"command\": \"MenuBack\", \"key\": \"Backspace\" }\n"
+"    ]\n"
+"  } // ANCHOR_END: Menu\n"
 "]}}}\n";
 
 const char* hotkeySchemes_json = (const char*) temp_binary_data_110;
@@ -6234,7 +6246,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 4550; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 21418; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 22163; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 13262; return scales_json;

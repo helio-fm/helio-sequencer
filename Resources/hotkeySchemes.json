@@ -39,6 +39,9 @@
       { "command": "CommandPaletteWithMode", "key": "Shift + 2" },
       { "command": "CommandPaletteWithMode", "key": "Shift + ;" },
 
+      { "command": "BreadcrumbsMenu", "key": "F10" },
+      { "command": "BreadcrumbsMenu", "key": "Shift + /" },
+
       { "command": "ShowPreviousPage", "key": "Command + Cursor Left" },
       { "command": "ShowPreviousPage", "key": "Control + Cursor Left" },
       { "command": "ShowPreviousPage", "key": "Alt + Cursor Left" },
@@ -70,7 +73,6 @@
   {  // ANCHOR: VersionControlStage
     "receiver": "VersionControlStage",
     "keyPress": [
-      
       { "command": "VersionControlSelectAll", "key": "Control + A" },
       { "command": "VersionControlSelectNone", "key": "Escape" },
       { "command": "VersionControlCommitSelected", "key": "Return" },
@@ -80,21 +82,10 @@
       { "command": "VersionControlCommitAll", "key": "Shift + Return" },
       { "command": "VersionControlResetAll", "key": "Shift + Backspace" },
       { "command": "VersionControlResetAll", "key": "Shift + Delete" },
-
-      // Sync all revisions - only works when logged in
-      { "command": "VersionControlSyncAll", "key": "F5" },
-
       // Stash all changes or apply stashed changes
       { "command": "VersionControlToggleQuickStash", "key": "Tab" }
     ]
   }, // ANCHOR_END: VersionControlStage
-  /*{
-    "receiver": "VersionControlHistory",
-    "keyPress": [
-      { "command": "VersionControlPushSelected", "key": "?" },
-      { "command": "VersionControlPullSelected", "key": "?" },
-    ]
-  },*/
   {  // ANCHOR: KeyboardMapping
     "receiver": "KeyboardMapping",
     "keyPress": [
@@ -450,5 +441,26 @@
       { "command": "CommandPaletteCursorPageUp", "key": "Page Up" },
       { "command": "CommandPaletteCursorPageDown", "key": "Page Down" }
     ]
-  } // ANCHOR_END: CommandPalette
+  }, // ANCHOR_END: CommandPalette
+  {  // ANCHOR: Menu
+    "receiver": "Menu",
+    "keyPress": [
+      { "command": "MenuDismiss", "key": "Escape" },
+      { "command": "MenuDismiss", "key": "F10" },
+      { "command": "MenuDismiss", "key": "Shift + /" },
+      { "command": "MenuSelect", "key": "Return" },
+      { "command": "MenuSelect", "key": "Spacebar" },
+      { "command": "MenuCursorUp", "key": "Cursor Up" },
+      { "command": "MenuCursorDown", "key": "Cursor Down" },
+      { "command": "MenuCursorPageUp", "key": "Page Up" },
+      { "command": "MenuCursorPageDown", "key": "Page Down" },
+      { "command": "MenuForward", "key": "Cursor Right" },
+      { "command": "MenuBack", "key": "Cursor Left" },
+      { "command": "MenuCursorUp", "key": "K" },
+      { "command": "MenuCursorDown", "key": "J" },
+      { "command": "MenuForward", "key": "L" },
+      { "command": "MenuBack", "key": "H" },
+      { "command": "MenuBack", "key": "Backspace" }
+    ]
+  } // ANCHOR_END: Menu
 ]}}}

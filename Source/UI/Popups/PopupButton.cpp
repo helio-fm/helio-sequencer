@@ -44,7 +44,7 @@ void PopupButton::paint(Graphics &g)
     switch (this->shapeType)
     {
     case Shape::Circle:
-        g.setColour(outlineColour.contrasting().withMultipliedAlpha(0.1f));
+        g.setColour(outlineColour.contrasting().withMultipliedAlpha(0.2f));
         g.drawEllipse(outline1, outline1,
             float(this->getWidth()) - (outline1 * 2.f),
             float(this->getHeight()) - (outline1 * 2.f),
@@ -72,7 +72,7 @@ void PopupButton::paint(Graphics &g)
 
         if (this->isSelected)
         {
-            g.setColour(fillColour.darker(0.65f));
+            g.setColour(fillColour.darker(0.7f));
             g.strokePath(this->selectionShape, PathStrokeType(1.f));
         }
 
