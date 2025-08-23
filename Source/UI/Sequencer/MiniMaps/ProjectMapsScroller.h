@@ -159,14 +159,15 @@ private:
     {
     public:
 
-        explicit ScreenRangeRectangle(ProjectMapsScroller &scroller) : scroller(scroller)
+        // this is a smol rectangle indicating the beat&key screen range,
+        // shown inside a larger rectangle indicating the beat range
+        ScreenRangeRectangle() :
+            currentColour(fillColour)
         {
             this->setPaintingIsUnclipped(true);
             this->setMouseClickGrabsKeyboardFocus(false);
             this->setAccessible(false);
-
-            this->moveConstrainer.setMinimumSize(4, 4);
-            this->moveConstrainer.setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
+            this->setInterceptsMouseClicks(false, false);
         }
 
         Rectangle<float> getRealBounds() const noexcept
@@ -193,52 +194,15 @@ private:
             }
 
             this->brightness = newBrightness;
-            this->colour = findDefaultColour(ColourIDs::TrackScroller::viewRangeFill)
-                .withMultipliedAlpha(this->brightness);
+            this->currentColour = this->fillColour.withMultipliedAlpha(this->brightness);
 
             this->setVisible(this->brightness != 0.f);
             this->repaint();
         }
 
-        void disableDraggingUntilTap()
-        {
-            this->draggingDisabledUntilTap = true;
-        }
-
-        //===------------------------------------------------------------------===//
-        // Component
-        //===------------------------------------------------------------------===//
-
-        void mouseDown(const MouseEvent &e) override
-        {
-            if (!this->scroller.isMultiTouchEvent(e))
-            {
-                this->dragger.startDraggingComponent(this, e);
-                this->draggingDisabledUntilTap = false;
-            }
-        }
-
-        void mouseDrag(const MouseEvent &e) override
-        {
-            if (!this->scroller.isMultiTouchEvent(e) && !this->draggingDisabledUntilTap)
-            {
-                this->setMouseCursor(MouseCursor::DraggingHandCursor);
-                const auto lastPosition = this->getPosition().toFloat();
-                this->dragger.dragComponent(this, e, &this->moveConstrainer);
-                const auto moveDelta = this->getPosition().toFloat() - lastPosition;
-                this->realBounds.translate(moveDelta.getX(), moveDelta.getY());
-                this->scroller.xyMoveByUser();
-            }
-        }
-
-        void mouseUp(const MouseEvent &e) override
-        {
-            this->setMouseCursor(MouseCursor::NormalCursor);
-        }
-
         void paint(Graphics &g) override
         {
-            g.setColour(this->colour);
+            g.setColour(this->currentColour);
             g.fillRect(this->getLocalBounds());
         }
 
@@ -246,15 +210,10 @@ private:
 
         Rectangle<float> realBounds;
 
-        Colour colour = findDefaultColour(ColourIDs::TrackScroller::viewRangeFill);
+        const Colour fillColour = findDefaultColour(ColourIDs::TrackScroller::viewRangeFill);
+
+        Colour currentColour;
         float brightness = 1.f;
-
-        ProjectMapsScroller &scroller;
-
-        ComponentDragger dragger;
-        bool draggingDisabledUntilTap = false;
-
-        ComponentBoundsConstrainer moveConstrainer;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScreenRangeRectangle)
     };

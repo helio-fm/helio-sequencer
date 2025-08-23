@@ -40,7 +40,7 @@ ProjectMapsScroller::ProjectMapsScroller(ProjectNode &project, SafePointer<RollB
     this->horizontalRangeRectangle = make<HorizontalRangeRectangle>(*this);
     this->addAndMakeVisible(this->horizontalRangeRectangle.get());
 
-    this->screenRangeRectangle = make<ScreenRangeRectangle>(*this);
+    this->screenRangeRectangle = make<ScreenRangeRectangle>();
     this->addAndMakeVisible(this->screenRangeRectangle.get());
 
     this->projectStartIndicator = make<TrackStartIndicator>();
@@ -292,7 +292,6 @@ void ProjectMapsScroller::multiTouchEndZooming(const MouseEvent &anchorEvent)
     this->rollViewportPositionAtDragStart = this->roll->getViewport().getViewPosition();
     // a hack to avoid the screen range jumping away instantly after multi-touch:
     this->horizontalRangeRectangle->disableDraggingUntilTap();
-    this->screenRangeRectangle->disableDraggingUntilTap();
 }
 
 Point<float> ProjectMapsScroller::getMultiTouchRelativeAnchor(const MouseEvent &event)
@@ -573,9 +572,6 @@ void ProjectMapsScroller::setScrollerMode(ScrollerMode mode)
             map->setVisible(isFullMap);
         }
     }
-
-    this->screenRangeRectangle->setEnabled(isFullMap);
-    this->screenRangeRectangle->setInterceptsMouseClicks(isFullMap, isFullMap);
 
     this->updateAllChildrenBounds();
 }

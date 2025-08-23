@@ -56,39 +56,37 @@ void PianoProjectMap::setBrightness(float brighness)
 
 void PianoProjectMap::resized()
 {
-    this->componentHeight =
-        static_cast<float>(this->getHeight()) /
-        static_cast<float>(this->keyboardSize);
+    this->componentHeight = float(this->getHeight()) / float(this->keyboardSize);
 }
 
 void PianoProjectMap::paint(Graphics &g)
 {
-    const float rollLengthInBeats = this->rollLastBeat - this->rollFirstBeat;
-    const float projectLengthInBeats = this->projectLastBeat - this->projectFirstBeat;
-    const float mapWidth = float(this->getWidth()) * (projectLengthInBeats / rollLengthInBeats);
+    const auto rollLengthInBeats = this->rollLastBeat - this->rollFirstBeat;
+    const auto projectLengthInBeats = this->projectLastBeat - this->projectFirstBeat;
+    const auto mapWidth = float(this->getWidth()) * (projectLengthInBeats / rollLengthInBeats);
     const auto h = float(this->getHeight());
 
     for (const auto &c : this->patternMap)
     {
-        const auto sequenceMap = c.second.get();
+        const auto *sequenceMap = c.second.get();
         const bool isActiveClip = this->activeClip == c.first;
 
         g.setColour(c.first.getTrackColour()
-            .interpolatedWith(this->baseColour, 0.45f)
-            .withAlpha(isActiveClip ? this->brightnessFactor : this->brightnessFactor * 0.65f));
+            .interpolatedWith(this->baseColour, 0.420f)
+            .withAlpha(isActiveClip ?
+                this->brightnessFactor : this->brightnessFactor * 0.69f));
 
         for (const auto &n : *sequenceMap)
         {
-            const auto key = jlimit(0, this->keyboardSize, n.getKey() + c.first.getKey());
-            const auto beat = n.getBeat() + c.first.getBeat() - this->rollFirstBeat;
-            const auto length = n.getLength();
+            const auto fullKey = jlimit(0, this->keyboardSize, n.getKey() + c.first.getKey());
+            const auto fullBeat = n.getBeat() + c.first.getBeat() - this->rollFirstBeat;
 
-            const float x = (mapWidth * (beat / projectLengthInBeats));
-            const float w = (mapWidth * (length / projectLengthInBeats));
+            const float x = mapWidth * (fullBeat / projectLengthInBeats);
+            const float w = mapWidth * (n.getLength() / projectLengthInBeats);
 
-            // with rounding it just looks better:
-            const float y = roundf(h - (key * this->componentHeight));
-            g.fillRect(x, y, jmax(0.25f, w), 1.f);
+            // with rounded y it just looks better:
+            const float y = roundf(h - (fullKey * this->componentHeight));
+            g.fillRect(x, y, jmax(0.5f, w), 1.f);
         }
     }
 }
