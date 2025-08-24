@@ -46,7 +46,7 @@ void MenuPanel::resized()
     {
         this->updateContent(this->menu,
             this->lastAnimationType, this->shouldResizeToFitContent,
-            this->customFooter.get());
+            this->defaultItemIndex, this->customFooter.get());
     }
 }
 
@@ -142,10 +142,12 @@ void MenuPanel::scrollToItem(int index)
 }
 
 void MenuPanel::updateContent(const Menu &commands,
-    AnimationType animationType, bool adjustsWidth, Component *newFooter)
+    AnimationType animationType, bool resizeToFitContent,
+    int newDefaultItem, Component *newFooter)
 {
     this->lastAnimationType = animationType;
-    this->shouldResizeToFitContent = adjustsWidth;
+    this->shouldResizeToFitContent = resizeToFitContent;
+    this->defaultItemIndex = newDefaultItem;
 
     constexpr auto fadeInTime = Globals::UI::fadeInShort;
     constexpr auto fadeOutTime = Globals::UI::fadeOutShort;
@@ -159,8 +161,8 @@ void MenuPanel::updateContent(const Menu &commands,
 
         if (this->cursorPosition.hasValue())
         {
-            this->cursorPosition = 0;
-            // reverse order to check the back button last:
+            this->cursorPosition = jmax(0, this->defaultItemIndex);
+            // reversed order to check the back button last:
             for (int i = this->menu.size(); i --> 0 ;)
             {
                 const auto menuItem = this->menu.getUnchecked(i);
@@ -224,6 +226,7 @@ void MenuPanel::updateContent(const Menu &commands,
     {
         this->listBox->setBounds(this->getMenuBounds());
         this->animator.fadeIn(this->listBox.get(), fadeInTime);
+
         if (this->customFooter.get() != nullptr)
         {
             this->customFooter->setBounds(this->getFooterBounds());
@@ -285,10 +288,25 @@ void MenuPanel::updateContent(const Menu &commands,
     else
     {
         this->listBox->setBounds(this->getMenuBounds());
+
         if (this->customFooter.get() != nullptr)
         {
             this->customFooter->setBounds(this->getFooterBounds());
         }
+    }
+
+    if (this->defaultItemIndex >= 0 &&
+        this->defaultItemIndex < this->menu.size())
+    {
+        // instead of using this
+        //this->listBox->scrollToEnsureRowIsOnscreen(this->defaultItemIndex);
+        // center the view on the default item:
+        auto *listViewport = this->listBox->getViewport();
+        const auto rowHeight = this->listBox->getRowHeight();
+        listViewport->setViewPosition(listViewport->getViewPositionX(),
+            jmax(0, (this->defaultItemIndex * rowHeight) -
+                (listViewport->getViewHeight() / 2) +
+                rowHeight / 2));
     }
 
     if (this->shouldResizeToFitContent && receivedNewCommands)
@@ -323,6 +341,23 @@ void MenuPanel::updateContent(const Menu &commands,
     MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
 }
 
+void MenuPanel::setDefaultItem(int newDefaultItem)
+{
+    if (this->defaultItemIndex == newDefaultItem)
+    {
+        return;
+    }
+
+    this->defaultItemIndex = newDefaultItem;
+
+    // also make sure that the cursor appears at defaultItemIndex
+    this->cursorPosition.reset();
+
+    this->updateContent(this->menu,
+        this->lastAnimationType, this->shouldResizeToFitContent,
+        this->defaultItemIndex, this->customFooter.get());
+}
+
 void MenuPanel::applyFilter(const String &text)
 {
     this->filteredMenu.clearQuick();
@@ -353,7 +388,7 @@ bool MenuPanel::moveCursor(int delta)
     jassert(delta != 0);
     if (!this->cursorPosition.hasValue())
     {
-        this->cursorPosition = 0;
+        this->cursorPosition = jmax(0, this->defaultItemIndex);
     }
     else
     {
@@ -429,7 +464,7 @@ Component *MenuPanel::refreshComponentForRow(int rowNumber,
     }
 
     const auto itemDescription = menuToShow[rowNumber];
-
+    const auto isDisplayedAsCurrent = rowNumber == this->defaultItemIndex;
     const auto isCursorShown =
         this->cursorPosition.hasValue() && *this->cursorPosition == rowNumber;
 
@@ -439,6 +474,7 @@ Component *MenuPanel::refreshComponentForRow(int rowNumber,
         {
             row->setSelected(isRowSelected);
             row->setCursorShown(isCursorShown);
+            row->setDisplayedAsCurrent(isDisplayedAsCurrent);
             row->update(itemDescription);
         }
     }
@@ -447,6 +483,7 @@ Component *MenuPanel::refreshComponentForRow(int rowNumber,
         auto *row = new MenuItemComponent(this, this->listBox->getViewport(), itemDescription);
         row->setSelected(isRowSelected);
         row->setCursorShown(isCursorShown);
+        row->setDisplayedAsCurrent(isDisplayedAsCurrent);
         return row;
     }
 

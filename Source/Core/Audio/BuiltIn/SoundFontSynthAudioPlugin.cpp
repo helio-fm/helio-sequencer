@@ -76,7 +76,16 @@ public:
             programsMenu.add(MenuItem::item(Icons::empty, CommandIDs::SelectPreset + i, programName));
         }
 
-        this->programsComboBox->initWith(this->programNameLabel.get(), programsMenu, true);
+        const auto programsMenuCurrentItem = [this]()
+        {
+            jassert(this->audioPlugin->getNumPrograms() > 0);
+            return jmax(0,
+                jmin(this->audioPlugin->getNumPrograms(),
+                    this->audioPlugin->getSynthParameters().programIndex));
+        };
+
+        this->programsComboBox->initWith(this->programNameLabel.get(),
+            programsMenu, move(programsMenuCurrentItem), true);
 
         const auto synthParams = this->audioPlugin->getSynthParameters();
         if (synthParams.filePath.isNotEmpty())

@@ -88,11 +88,65 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemCursorComponent)
 };
 
-class MenuItemComponentCheckMark final : public Component
+class MenuItemCurrentMarkComponent final : public Component
 {
 public:
 
-    MenuItemComponentCheckMark()
+    MenuItemCurrentMarkComponent()
+    {
+        this->setAccessible(false);
+        this->setPaintingIsUnclipped(true);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+    }
+
+    void paint(Graphics &g)
+    {
+        const auto bounds = this->getLocalBounds().reduced(3, 2);
+
+        const auto x = bounds.getX();
+        const auto y = bounds.getY();
+        const auto r = bounds.getRight();
+        const auto b = bounds.getBottom();
+
+        // the corner's size
+        constexpr auto lh = 9;
+        constexpr auto lv = 3;
+
+        g.setColour(this->shadowColour);
+        g.fillRect(x, y, lh, 2);
+        g.fillRect(x, y, 2, lv);
+        g.fillRect(x, b - 2, lh, 2);
+        g.fillRect(x, b - lv, 2, lv);
+        g.fillRect(r - lh, y, lh, 2);
+        g.fillRect(r - 2, y, 2, lv);
+        g.fillRect(r - lh, b - 2, lh, 2);
+        g.fillRect(r - 2, b - lv, 2, lv);
+
+        g.setColour(this->fillColour);
+        g.fillRect(x, y, lh, 1);
+        g.fillRect(x, y, 1, lv);
+        g.fillRect(x, b - 1, lh, 1);
+        g.fillRect(x, b - lv, 1, lv);
+        g.fillRect(r - lh, y, lh, 1);
+        g.fillRect(r - 1, y, 1, lv);
+        g.fillRect(r - lh, b - 1, lh, 1);
+        g.fillRect(r - 1, b - lv, 1, lv);
+    }
+
+private:
+
+    const Colour fillColour = findDefaultColour(ColourIDs::Menu::currentItemMarker);
+    const Colour shadowColour = findDefaultColour(ColourIDs::Menu::cursorShade);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemCurrentMarkComponent)
+};
+
+class MenuItemToggleMarkComponent final : public Component
+{
+public:
+
+    MenuItemToggleMarkComponent()
     {
         this->setAccessible(false);
         this->setPaintingIsUnclipped(true);
@@ -122,21 +176,21 @@ public:
 
 private:
 
-    const Colour colour = findDefaultColour(ColourIDs::Menu::selectionMarker);
+    const Colour colour = findDefaultColour(ColourIDs::Menu::toggleMarker);
 
     int x = 0;
     int y = 0;
     int w = 0;
     int h = 0;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemComponentCheckMark)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemToggleMarkComponent)
 };
 
-class MenuItemComponentClickMark final : public Component
+class MenuItemClickMarkComponent final : public Component
 {
 public:
 
-    MenuItemComponentClickMark()
+    MenuItemClickMarkComponent()
     {
         this->setInterceptsMouseClicks(false, false);
         this->setMouseClickGrabsKeyboardFocus(false);
@@ -263,6 +317,11 @@ const String &MenuItem::getText() const noexcept
     return this->commandText;
 }
 
+const MenuItem::MenuItemFlags MenuItem::getFlags() const noexcept
+{
+    return this->flags;
+}
+
 MenuItem::Ptr MenuItem::toggledIf(bool shouldBeToggled)
 {
     MenuItem::Ptr description(this);
@@ -361,6 +420,10 @@ MenuItem::Ptr MenuItem::withButton(bool isEnabled, Icons::Id icon, const Callbac
     return description;
 }
 
+//===----------------------------------------------------------------------===//
+// MenuItemComponent
+//===----------------------------------------------------------------------===//
+
 MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver,
     Viewport *parentViewport, const MenuItem::Ptr desc) :
     DraggingListBoxComponent(parentViewport, false),
@@ -437,9 +500,9 @@ void MenuItemComponent::resized()
     this->submenuMarker->setBounds(this->getWidth() - iconSize - rightMargin,
         (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
 
-    if (this->checkMarker != nullptr)
+    if (this->toggleMarker != nullptr)
     {
-        this->checkMarker->setBounds(this->isIconCentered() ? this->getLocalBounds() :
+        this->toggleMarker->setBounds(this->isIconCentered() ? this->getLocalBounds() :
             this->getLocalBounds().withWidth(iconSize + MenuItemComponent::iconMargin * 2));
     }
 
@@ -448,6 +511,11 @@ void MenuItemComponent::resized()
     {
         this->animator.cancelAnimation(this->cursorMarker.get(), true);
         this->cursorMarker->setBounds(this->getLocalBounds());
+    }
+
+    if (this->currentItemMarker != nullptr)
+    {
+        this->currentItemMarker->setBounds(this->getLocalBounds());
     }
 
     this->icon = Icons::findByName(this->description->iconId, iconSize);
@@ -502,7 +570,7 @@ void MenuItemComponent::mouseDown(const MouseEvent &e)
         if (!this->description->flags.isDisabled &&
             (this->description->commandId > 0 || this->description->callback != nullptr))
         {
-            this->clickMarker = make<MenuItemComponentClickMark>();
+            this->clickMarker = make<MenuItemClickMarkComponent>();
             this->addChildComponent(this->clickMarker.get(), 0);
             this->clickMarker->setBounds(this->getLocalBounds());
 
@@ -582,7 +650,11 @@ void MenuItemComponent::mouseEnter(const MouseEvent &e)
 
 void MenuItemComponent::mouseExit(const MouseEvent &e)
 {
-    HighlightedComponent::mouseExit(e);
+    // shouldn't unhighlight if highlighted by cursor
+    if (this->cursorMarker == nullptr)
+    {
+        HighlightedComponent::mouseExit(e);
+    }
 
 #if PLATFORM_DESKTOP
     if (this->description->tooltipText.isEmpty())
@@ -604,7 +676,7 @@ void MenuItemComponent::setSelected(bool shouldBeSelected)
             (this->description->commandId > 0 || this->description->callback != nullptr))
         {
             // possible glDeleteTexture bug here?
-            auto highlighter = make<MenuItemComponentClickMark>();
+            auto highlighter = make<MenuItemClickMarkComponent>();
             this->addAndMakeVisible(highlighter.get(), 0);
             highlighter->setBounds(this->getLocalBounds());
             this->animator.animateComponent(highlighter.get(),
@@ -640,22 +712,22 @@ void MenuItemComponent::setCursorShown(bool shouldBeShown)
     }
 }
 
-void MenuItemComponent::setChecked(bool shouldBeChecked)
+void MenuItemComponent::setDisplayedAsCurrent(bool shouldBeDisplayedAsCurrent)
 {
-    if (this->description->flags.isToggled == shouldBeChecked)
+    if ((this->currentItemMarker != nullptr) == shouldBeDisplayedAsCurrent)
     {
         return;
     }
 
-    this->description->flags.isToggled = shouldBeChecked;
-
-    if (shouldBeChecked)
+    if (shouldBeDisplayedAsCurrent && this->currentItemMarker == nullptr)
     {
-        this->showCheckMark();
+        this->currentItemMarker = make<MenuItemCurrentMarkComponent>();
+        this->currentItemMarker->setBounds(this->getLocalBounds());
+        this->addAndMakeVisible(this->currentItemMarker.get());
     }
-    else
+    else if (!shouldBeDisplayedAsCurrent && this->currentItemMarker != nullptr)
     {
-        this->hideCheckMark();
+        this->currentItemMarker = nullptr;
     }
 }
 
@@ -670,7 +742,7 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
     {
         this->showCheckMark();
     }
-    else if (!desc->flags.isToggled && (this->checkMarker != nullptr))
+    else if (!desc->flags.isToggled && (this->toggleMarker != nullptr))
     {
         this->hideCheckMark();
     }
@@ -762,12 +834,12 @@ void MenuItemComponent::doAction()
 
 void MenuItemComponent::showCheckMark()
 {
-    this->checkMarker = make<MenuItemComponentCheckMark>();
-    this->addAndMakeVisible(this->checkMarker.get());
+    this->toggleMarker = make<MenuItemToggleMarkComponent>();
+    this->addAndMakeVisible(this->toggleMarker.get());
     this->resized();
 }
 
 void MenuItemComponent::hideCheckMark()
 {
-    this->checkMarker = nullptr;
+    this->toggleMarker = nullptr;
 }

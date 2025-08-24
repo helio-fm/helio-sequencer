@@ -30,8 +30,8 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setAccessible(false);
 
-    this->menu = make<MenuPanel>();
-    this->addAndMakeVisible(this->menu.get());
+    this->menuPanel = make<MenuPanel>();
+    this->addAndMakeVisible(this->menuPanel.get());
 
     this->separator = make<SeparatorHorizontalReversed>();
     this->addAndMakeVisible(this->separator.get());
@@ -54,7 +54,7 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     
     this->searchTextBox->onTextChange = [this]()
     {
-        this->menu->applyFilter(this->searchTextBox->getText());
+        this->menuPanel->applyFilter(this->searchTextBox->getText());
     };
 }
 
@@ -72,7 +72,7 @@ void MobileComboBox::resized()
     this->separator->setBounds(1, menuY - 2, this->getWidth() - 2, 2);
     this->currentNameLabel->setBounds(0, 0, this->getWidth() - 0, menuY - 2);
 
-    this->menu->setBounds(2, menuY, this->getWidth() - 4, this->getHeight() - menuY);
+    this->menuPanel->setBounds(2, menuY, this->getWidth() - 4, this->getHeight() - menuY);
     this->searchTextBox->setBounds(1, 1, this->getWidth() - 2, Globals::UI::textEditorHeight);
 
     // a hack to prevent sending `resized` message to menu
@@ -81,7 +81,7 @@ void MobileComboBox::resized()
     if (this->container == nullptr ||
         this->getLocalBounds() != this->container->getLocalBounds())
     {
-        this->menu->setBounds(0, 0, 0, 0);
+        this->menuPanel->setBounds(0, 0, 0, 0);
     }
 }
 
@@ -121,9 +121,10 @@ void MobileComboBox::handleCommandMessage(int commandId)
     }
 }
 
-void MobileComboBox::initMenu(MenuPanel::Menu menu)
+void MobileComboBox::updateMenu(MenuPanel::Menu menu, int defaultItemIndex)
 {
-    this->menu->updateContent(menu);
+    this->menuPanel->updateContent(menu,
+        MenuPanel::AnimationType::SlideDown, true, defaultItemIndex);
 }
 
 void MobileComboBox::initHeader(TextEditor *editor, bool hasSearch, bool hasCaption)
@@ -190,12 +191,16 @@ MobileComboBox::Container::Container()
 MobileComboBox::Container::~Container() = default;
 
 void MobileComboBox::Container::initWith(WeakReference<Component> editor,
-    MenuPanel::Menu menu, bool shouldShowNextPreviousButtons)
+    MenuPanel::Menu menu,
+    Function<int(void)> defaultItemIndexSelector,
+    bool shouldShowNextPreviousButtons)
 {
+    this->defaultItemIndexSelector = defaultItemIndexSelector;
+
     this->toFront(false);
     this->textEditor = editor;
     this->combo = make<MobileComboBox>(editor, this);
-    this->combo->initMenu(menu);
+    this->combo->updateMenu(menu);
 
     this->comboTrigger = HelperButton::makeComboTriggerButton(this);
     if (this->textEditor != nullptr)
@@ -227,15 +232,16 @@ void MobileComboBox::Container::initWith(WeakReference<Component> editor,
 }
 
 void MobileComboBox::Container::initWith(WeakReference<Component> textEditor,
-    Function<MenuPanel::Menu(void)> menuInitializer)
+    Function<MenuPanel::Menu(void)> menuInitializer,
+    Function<int(void)> defaultItemIndexSelector)
 {
     this->menuInitializer = menuInitializer;
-    this->initWith(textEditor, MenuPanel::Menu(), false);
+    this->initWith(textEditor, MenuPanel::Menu(), defaultItemIndexSelector, false);
 }
 
-void MobileComboBox::Container::updateMenu(MenuPanel::Menu menu)
+void MobileComboBox::Container::updateMenu(MenuPanel::Menu menu, int defaultItemIndex)
 {
-    this->combo->initMenu(menu);
+    this->combo->updateMenu(menu, defaultItemIndex);
 }
 
 void MobileComboBox::Container::handleCommandMessage(int commandId)
@@ -244,16 +250,29 @@ void MobileComboBox::Container::handleCommandMessage(int commandId)
         this->getParentComponent() != nullptr &&
         this->combo != nullptr)
     {
-        // Deferred menu initialization, if needed
         if (this->menuInitializer != nullptr)
         {
-            this->combo->initMenu(this->menuInitializer());
+            this->combo->updateMenu(this->menuInitializer());
+            // reset to avoid re-initializing the menu later:
             this->menuInitializer = nullptr;
         }
 
+        int defaultValueIndex = -1;
+        if (this->defaultItemIndexSelector != nullptr)
+        {
+            defaultValueIndex = this->defaultItemIndexSelector();
+            // don't reset this getter, the default value may change every time the menu shows:
+            //this->defaultItemIndexSelector = nullptr;
+        }
+
+        if (defaultValueIndex >= 0)
+        {
+            this->combo->menuPanel->setDefaultItem(defaultValueIndex);
+        }
+
         const bool hasSearchBox =
-            this->combo->menu->getMenuSize() > 16 ||
-            this->combo->menu->getMenuHeight() > this->getHeight();
+            this->combo->menuPanel->getMenuSize() > 16 ||
+            this->combo->menuPanel->getMenuHeight() > this->getHeight();
 
         const bool hasCaptionLabel = !hasSearchBox;
 
@@ -287,14 +306,14 @@ void MobileComboBox::Container::handleCommandMessage(int commandId)
         if (auto *ed = dynamic_cast<TextEditor *>(this->textEditor.get()))
         {
             jassert(this->previousPresetButton != nullptr);
-            const int index = this->combo->menu->indexOfItemNamed(ed->getText());
+            const int index = this->combo->menuPanel->indexOfItemNamed(ed->getText());
             if (index < 0)
             {
                 this->previousPresetButton->setHighlighted(false);
                 return;
             }
-            const int previous = jlimit(0, this->combo->menu->getMenuSize(), index - 1);
-            if (auto menuItem = this->combo->menu->getMenuItem(previous))
+            const int previous = jlimit(0, this->combo->menuPanel->getMenuSize(), index - 1);
+            if (auto menuItem = this->combo->menuPanel->getMenuItem(previous))
             {
                 jassert(menuItem->callback == nullptr); // not supported for now
                 this->getParentComponent()->postCommandMessage(menuItem->commandId);
@@ -312,14 +331,14 @@ void MobileComboBox::Container::handleCommandMessage(int commandId)
         if (auto *ed = dynamic_cast<TextEditor *>(this->textEditor.get()))
         {
             jassert(this->nextPresetButton != nullptr);
-            const int index = this->combo->menu->indexOfItemNamed(ed->getText());
+            const int index = this->combo->menuPanel->indexOfItemNamed(ed->getText());
             if (index < 0)
             {
                 this->nextPresetButton->setHighlighted(false);
                 return;
             }
-            const int next = jlimit(0, this->combo->menu->getMenuSize(), index + 1);
-            if (auto menuItem = this->combo->menu->getMenuItem(next))
+            const int next = jlimit(0, this->combo->menuPanel->getMenuSize() - 1, index + 1);
+            if (auto menuItem = this->combo->menuPanel->getMenuItem(next))
             {
                 jassert(menuItem->callback == nullptr); // not supported for now
                 this->getParentComponent()->postCommandMessage(menuItem->commandId);

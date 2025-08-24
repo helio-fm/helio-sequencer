@@ -64,9 +64,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) : project(pare
     this->addAndMakeVisible(this->headShadow.get());
 
     this->repriseButton = make<MenuItemComponent>(this, nullptr,
-        MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection)->
-        withTooltip(TRANS(I18n::Tooltips::togglePlaybackLoop)));
-    this->repriseButton->setChecked(this->project.getTransport().hasPlaybackLoop());
+        makeRepriseMenuItem(this->project.getTransport().hasPlaybackLoop()));
     this->addAndMakeVisible(this->repriseButton.get());
 
     this->transportControl = make<TransportControlComponent>(nullptr);
@@ -290,7 +288,17 @@ int SequencerSidebarRight::getNumRows()
 
 void SequencerSidebarRight::onLoopModeChanged(bool hasLoop, float startBeat, float endBeat)
 {
-    this->repriseButton->setChecked(hasLoop);
+    if (hasLoop != this->repriseButton->getFlags().isToggled)
+    {
+        this->repriseButton->update(makeRepriseMenuItem(hasLoop));
+    }
+}
+
+MenuItem::Ptr SequencerSidebarRight::makeRepriseMenuItem(bool isToggled)
+{
+    return MenuItem::item(Icons::reprise, CommandIDs::ToggleLoopOverSelection)->
+        withTooltip(TRANS(I18n::Tooltips::togglePlaybackLoop))->
+        toggledIf(isToggled);
 }
 
 void SequencerSidebarRight::onPlay()

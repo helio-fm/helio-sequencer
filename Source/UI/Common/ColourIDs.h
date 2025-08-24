@@ -173,7 +173,8 @@ namespace ColourIDs
         static const int cursorFill             = 0x2000822;
         static const int cursorShade            = 0x2000823;
         static const int highlight              = 0x2000824;
-        static const int selectionMarker        = 0x2000825;
+        static const int toggleMarker           = 0x2000825;
+        static const int currentItemMarker      = 0x2000826;
     }
 
     namespace Tooltip

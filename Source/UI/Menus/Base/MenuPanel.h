@@ -63,9 +63,12 @@ public:
 
     void updateContent(const Menu &commands,
         AnimationType animationType = SlideDown,
-        bool adjustsWidth = true,
+        bool resizeToFitContent = true,
+        int newDefaultItem = -1,
         Component *customFooter = nullptr);
-    
+
+    void setDefaultItem(int newDefaultItem);
+
     void applyFilter(const String &text);
 
     void resized() override;
@@ -104,6 +107,7 @@ private:
 
     bool shouldResizeToFitContent = false;
     AnimationType lastAnimationType = AnimationType::None;
+    int defaultItemIndex = -1;
 
     Menu menu;
     Menu filteredMenu;

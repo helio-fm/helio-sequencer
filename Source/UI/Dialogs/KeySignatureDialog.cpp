@@ -495,7 +495,23 @@ void KeySignatureDialog::reloadScalesList()
         menu.add(MenuItem::item(Icons::empty, CommandIDs::SelectScale + i, s->getLocalizedName()));
     }
 
-    this->presetsCombo->initWith(this->scaleNameEditor.get(), menu, true);
+    auto defaultMenuItemSelector = [this]()
+    {
+        for (int i = 0; i < this->scales.size(); ++i)
+        {
+            if (this->scales.getUnchecked(i)->isEquivalentTo(this->scale) &&
+                this->scaleNameEditor->getText() ==
+                    this->scales.getUnchecked(i)->getLocalizedName())
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    };
+
+    this->presetsCombo->initWith(this->scaleNameEditor.get(),
+        menu, move(defaultMenuItemSelector), true);
 }
 
 void KeySignatureDialog::updateButtonsState()

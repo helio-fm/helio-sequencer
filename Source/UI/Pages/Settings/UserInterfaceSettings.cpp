@@ -46,12 +46,27 @@ UserInterfaceSettings::UserInterfaceSettings()
         {
             const auto translation = this->translations.getUnchecked(i);
             const bool isSelected = translation == this->currentTranslation;
-            languageMenu.add(MenuItem::item(isSelected ? Icons::apply : Icons::empty,
+            languageMenu.add(MenuItem::item(Icons::empty,
                 CommandIDs::SelectLanguage + i, translation->getName())->
                     withSubtitle(translation->getId()));
         }
 
         return languageMenu;
+    };
+
+    const auto languageMenuCurrentItem = [this]()
+    {
+        jassert(!this->translations.isEmpty());
+        for (int i = 0; i < this->translations.size(); ++i)
+        {
+            const auto translation = this->translations.getUnchecked(i);
+            if (translation == this->currentTranslation)
+            {
+                return i;
+            }
+        }
+
+        return -1;
     };
 
     const String untranslatedLanguageCaption(CharPointer_UTF8("Language / \xe8\xaf\xad\xe8\xa8\x80 / Sprache / \xd0\xaf\xd0\xb7\xd1\x8b\xd0\xba"));
@@ -62,15 +77,15 @@ UserInterfaceSettings::UserInterfaceSettings()
 
     this->languageCombo = make<MobileComboBox::Container>();
     this->addAndMakeVisible(this->languageCombo.get());
-    this->languageCombo->initWith(this->languageEditor.get(), languageMenuProvider);
+    this->languageCombo->initWith(this->languageEditor.get(),
+        move(languageMenuProvider), move(languageMenuCurrentItem));
 
 #if !SIMPLIFIED_UI_SETTINGS
 
-    const String lastUsedFontName =
+    const String currentFontName =
         App::Config().getProperty(Serialization::Config::lastUsedFont);
 
-    // deferred menu initialization:
-    const auto fontsMenuProvider = [this, lastUsedFontName]()
+    const auto fontsMenuProvider = [this, currentFontName]()
     {
         MenuPanel::Menu fontsMenu;
 
@@ -78,21 +93,35 @@ UserInterfaceSettings::UserInterfaceSettings()
         for (int i = 0; i < this->systemFonts.size(); ++i)
         {
             const auto &typefaceName = this->systemFonts.getReference(i);
-            const bool isSelected = typefaceName == lastUsedFontName;
-            fontsMenu.add(MenuItem::item(isSelected ? Icons::apply : Icons::empty,
+            fontsMenu.add(MenuItem::item(Icons::empty,
                 CommandIDs::SelectFont + i, typefaceName));
         }
 
         return fontsMenu;
     };
 
+    const auto fontsMenuCurrentItem = [this, currentFontName]()
+    {
+        jassert(!this->systemFonts.isEmpty());
+        for (int i = 0; i < this->systemFonts.size(); ++i)
+        {
+            const auto &typefaceName = this->systemFonts.getReference(i);
+            if (typefaceName == currentFontName)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    };
+
     this->fontEditor = HelioTheme::makeSingleLineTextEditor(false);
     this->addAndMakeVisible(this->fontEditor.get());
-    this->fontEditor->setText(TRANS(I18n::Settings::uiFont) + ": " + lastUsedFontName);
+    this->fontEditor->setText(TRANS(I18n::Settings::uiFont) + ": " + currentFontName);
 
     this->fontsCombo = make<MobileComboBox::Container>();
     this->addAndMakeVisible(this->fontsCombo.get());
-    this->fontsCombo->initWith(this->fontEditor.get(), fontsMenuProvider);
+    this->fontsCombo->initWith(this->fontEditor.get(), move(fontsMenuProvider), move(fontsMenuCurrentItem));
     
     this->openGLRendererButton = make<ToggleButton>(TRANS(I18n::Settings::rendererOpengl));
     this->addAndMakeVisible(this->openGLRendererButton.get());

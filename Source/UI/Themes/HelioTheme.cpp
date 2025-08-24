@@ -896,11 +896,13 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
         s->getHeadlineFillColour().brighter(this->isDarkTheme ? 0.1f : 0.5f));
     this->setColour(ColourIDs::Menu::cursorFill, s->getLassoBorderColour().withAlpha(0.75f));
     this->setColour(ColourIDs::Menu::cursorShade, this->isDarkTheme ?
-        s->getBlackKeyColour().darker(1.f).withAlpha(0.4f) :
-        s->getWhiteKeyColour().brighter(1.f).withAlpha(0.4f));
+        s->getBlackKeyColour().darker(1.f).withAlpha(0.5f) :
+        s->getWhiteKeyColour().brighter(1.f).withAlpha(0.5f));
     this->setColour(ColourIDs::Menu::highlight, this->isDarkTheme ?
         Colours::white.withAlpha(0.025f) : Colours::white.withAlpha(0.125f));
-    this->setColour(ColourIDs::Menu::selectionMarker, s->getIconBaseColour());
+    this->setColour(ColourIDs::Menu::toggleMarker, s->getIconBaseColour());
+    this->setColour(ColourIDs::Menu::currentItemMarker,
+        s->getLassoBorderColour().withAlpha(0.85f));
 
     this->setColour(ColourIDs::Arrow::lineStart, this->isDarkTheme ? Colour(0x33ffffff) : Colour(0x44ffffff));
     this->setColour(ColourIDs::Arrow::lineEnd, this->isDarkTheme ? Colour(0x17ffffff) : Colour(0x27ffffff));

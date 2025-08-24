@@ -28,7 +28,7 @@ public:
     MobileComboBox(WeakReference<Component> editor,
         WeakReference<Component> area);
 
-    void initMenu(MenuPanel::Menu menu);
+    void updateMenu(MenuPanel::Menu menu, int defaultItemIndex = -1);
 
     class HelperButton final : public IconButton
     {
@@ -70,12 +70,15 @@ public:
         void handleCommandMessage(int commandId) override;
 
         void initWith(WeakReference<Component> textEditor,
-            MenuPanel::Menu menu, bool shouldShowNextPreviousButtons = false);
+            MenuPanel::Menu menu,
+            Function<int(void)> defaultItemIndexSelector = nullptr,
+            bool shouldShowNextPreviousButtons = false);
 
         void initWith(WeakReference<Component> textEditor,
-            Function<MenuPanel::Menu(void)> menuInitializer);
+            Function<MenuPanel::Menu(void)> menuInitializer,
+            Function<int(void)> defaultItemIndexSelector = nullptr);
 
-        void updateMenu(MenuPanel::Menu menu);
+        void updateMenu(MenuPanel::Menu menu, int defaultItemIndex = -1);
 
     private:
 
@@ -89,6 +92,7 @@ public:
         WeakReference<Component> textEditor;
 
         Function<MenuPanel::Menu(void)> menuInitializer;
+        Function<int(void)> defaultItemIndexSelector;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Container)
     };
@@ -119,7 +123,7 @@ private:
     UniquePointer<SeparatorHorizontalReversed> separator;
     UniquePointer<Label> currentNameLabel;
 
-    UniquePointer<MenuPanel> menu;
+    UniquePointer<MenuPanel> menuPanel;
 
     UniquePointer<MobileComboBox::HelperButton> triggerButton;
 

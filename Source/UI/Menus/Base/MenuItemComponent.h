@@ -95,6 +95,7 @@ struct MenuItem final : public ReferenceCountedObject
 
     bool hasSubmenu() const noexcept;
     const String &getText() const noexcept;
+    const MenuItemFlags getFlags() const noexcept;
 
     // Lambdas are handy way of processing menu action,
     // however, they should only be used for menu items that don't have hotkey shortcuts:
@@ -127,7 +128,7 @@ public:
 
     void setSelected(bool shouldBeSelected) override;
     void setCursorShown(bool shouldBeShown);
-    void setChecked(bool shouldBeChecked);
+    void setDisplayedAsCurrent(bool shouldBeDisplayedAsCurrent);
 
     void update(MenuItem::Ptr description);
 
@@ -139,6 +140,11 @@ public:
     const String &getText() const noexcept
     {
         return this->description->getText();
+    }
+
+    const MenuItem::MenuItemFlags getFlags() const noexcept
+    {
+        return this->description->getFlags();
     }
 
     void paint(Graphics &g) override;
@@ -166,8 +172,9 @@ private:
     SafePointer<Component> parent;
 
     UniquePointer<Component> clickMarker;
-    UniquePointer<Component> checkMarker;
+    UniquePointer<Component> toggleMarker;
     UniquePointer<Component> cursorMarker;
+    UniquePointer<Component> currentItemMarker;
 
     Array<UniquePointer<IconButton>> buttons;
 

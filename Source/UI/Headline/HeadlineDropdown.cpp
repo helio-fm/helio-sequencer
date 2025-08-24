@@ -260,10 +260,7 @@ void HeadlineDropdown::mouseEnter(const MouseEvent &e)
 void HeadlineDropdown::mouseExit(const MouseEvent &e)
 {
 #if PLATFORM_DESKTOP
-    if (this->shouldDismissOnMouseExit)
-    {
-        this->startTimer(50);
-    }
+    this->startTimer(50);
 #endif
 }
 
@@ -370,7 +367,7 @@ void HeadlineDropdown::showCursor()
 }
 
 template<typename T>
-T *findParent(Component *target)
+T *getComponentOrParentAs(Component *target)
 {
     Component *c = target;
 
@@ -395,11 +392,22 @@ void HeadlineDropdown::childBoundsChanged(Component *child)
 void HeadlineDropdown::timerCallback()
 {
 #if PLATFORM_DESKTOP
-    auto *componentUnderMouse = Desktop::getInstance().
-        getMainMouseSource().getComponentUnderMouse();
 
-    if (componentUnderMouse != nullptr &&
-        this != findParent<HeadlineDropdown>(componentUnderMouse))
+    auto *componentUnderMouse =
+        Desktop::getInstance().getMainMouseSource().getComponentUnderMouse();
+
+    const auto notHoveringSelf =
+        getComponentOrParentAs<HeadlineDropdown>(componentUnderMouse) != this;
+
+    const auto hoveringOtherMenu =
+        getComponentOrParentAs<HeadlineItem>(componentUnderMouse) != nullptr;
+
+    const auto shouldDismiss =
+        this->shouldDismissOnMouseExit ?
+        notHoveringSelf :
+        notHoveringSelf && hoveringOtherMenu;
+
+    if (shouldDismiss)
     {
         this->stopTimer();
         this->exitModalState(0);
@@ -409,6 +417,7 @@ void HeadlineDropdown::timerCallback()
 
         UniquePointer<Component> deleter(this);
     }
+
 #endif
 }
 

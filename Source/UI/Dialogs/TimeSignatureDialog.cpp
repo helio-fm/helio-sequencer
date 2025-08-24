@@ -160,9 +160,24 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
             CommandIDs::SelectTimeSignature + i, meter->getTimeAsString()));
     }
 
+    const auto metersMenuCurrentItem = [this]()
+    {
+        jassert(!this->defaultMeters.isEmpty());
+        for (int i = 0; i < this->defaultMeters.size(); ++i)
+        {
+            const auto &meter = this->defaultMeters.getReference(i);
+            if (meter->isEquivalentTo(this->editedEvent.getMeter()))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    };
+
     this->presetsCombo = make<MobileComboBox::Container>();
     this->addAndMakeVisible(this->presetsCombo.get());
-    this->presetsCombo->initWith(this->textEditor.get(), menu, true);
+    this->presetsCombo->initWith(this->textEditor.get(), menu, move(metersMenuCurrentItem), true);
 
     this->metronomeEditor = make<MetronomeEditor>(project.getTransport(),
         App::Workspace().getAudioCore().getMetronomeInstrument());
