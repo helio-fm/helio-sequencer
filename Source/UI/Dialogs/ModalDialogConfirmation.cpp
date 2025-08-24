@@ -33,7 +33,7 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
     this->cancelButton->setWantsKeyboardFocus(false);
     this->cancelButton->onClick = [this]()
     {
-        this->cancel();
+        this->dialogCancelAction();
     };
 
     this->okButton = make<TextButton>();
@@ -41,7 +41,7 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
     this->okButton->setWantsKeyboardFocus(false);
     this->okButton->onClick = [this]()
     {
-        this->okay();
+        this->dialogApplyAction();
     };
     
     this->messageLabel->setText(message, dontSendNotification);
@@ -73,31 +73,7 @@ void ModalDialogConfirmation::parentSizeChanged()
     this->updatePosition();
 }
 
-void ModalDialogConfirmation::handleCommandMessage(int commandId)
-{
-    if (commandId == CommandIDs::DismissModalComponentAsync)
-    {
-        this->cancel();
-    }
-}
-
-bool ModalDialogConfirmation::keyPressed(const KeyPress &key)
-{
-    if (key.isKeyCode(KeyPress::escapeKey))
-    {
-        this->cancel();
-        return true;
-    }
-    else if (key.isKeyCode(KeyPress::returnKey))
-    {
-        this->okay();
-        return true;
-    }
-
-    return false;
-}
-
-void ModalDialogConfirmation::cancel()
+void ModalDialogConfirmation::dialogCancelAction()
 {
     const BailOutChecker checker(this);
 
@@ -112,7 +88,7 @@ void ModalDialogConfirmation::cancel()
     }
 }
 
-void ModalDialogConfirmation::okay()
+void ModalDialogConfirmation::dialogApplyAction()
 {
     const BailOutChecker checker(this);
 

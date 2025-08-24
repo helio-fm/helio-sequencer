@@ -41,8 +41,7 @@ AnnotationSmallComponent::~AnnotationSmallComponent() = default;
 
 void AnnotationSmallComponent::paint(Graphics &g)
 {
-    const Colour baseColour(findDefaultColour(Label::textColourId));
-    g.setColour(this->event.getColour().interpolatedWith(baseColour, 0.55f).withAlpha(0.2f));
+    g.setColour(this->event.getColour().interpolatedWith(this->baseColour, 0.55f).withAlpha(0.2f));
     g.fillRect(0, this->getHeight() - 2, this->getWidth() - 4, 2);
 }
 

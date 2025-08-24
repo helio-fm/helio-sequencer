@@ -28,7 +28,6 @@
 #include "KeySelector.h"
 #include "ShadowLeftwards.h"
 #include "ShadowRightwards.h"
-#include "HelioTheme.h"
 #include "CommandIDs.h"
 #include "Config.h"
 #include "App.h"
@@ -135,25 +134,14 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
     this->addAndMakeVisible(this->removeEventButton.get());
     this->removeEventButton->onClick = [this]()
     {
-        if (this->addsNewEvent)
-        {
-            this->cancelAndDisappear();
-        }
-        else
-        {
-            this->removeEvent();
-            this->dismiss();
-        }
+        this->dialogDeleteAction();
     };
 
     this->okButton = make<TextButton>();
     this->addAndMakeVisible(this->okButton.get());
     this->okButton->onClick = [this]()
     {
-        if (this->scaleNameEditor->getText().isNotEmpty())
-        {
-            this->dismiss();
-        }
+        this->dialogApplyAction();
     };
 
     const auto &period = getPeriod(project);
@@ -248,9 +236,32 @@ KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
     this->playButton = make<PlayButton>(this);
     this->addAndMakeVisible(this->playButton.get());
 
-    this->scaleNameEditor = HelioTheme::makeSingleLineTextEditor(true, DialogBase::Defaults::textEditorFont);
+    this->scaleNameEditor = DialogBase::makeSingleLineTextEditor();
     this->addAndMakeVisible(this->scaleNameEditor.get());
-    this->scaleNameEditor->addListener(this);
+
+    this->scaleNameEditor->onTextChange = [this]()
+    {
+        this->scale = this->scale->withName(this->scaleNameEditor->getText());
+        this->scaleEditor->setScale(this->scale);
+        const auto newEvent = this->originalEvent
+            .withRootKey(this->rootKey, this->rootKeyName)
+            .withScale(scale);
+
+        this->sendEventChange(newEvent);
+        this->updateButtonsState();
+    };
+
+    this->scaleNameEditor->onFocusLost = [this]()
+    {
+        this->updateButtonsState();
+
+        if (nullptr != dynamic_cast<TextEditor *>(Component::getCurrentlyFocusedComponent()))
+        {
+            return; // some other editor is focused?
+        }
+
+        this->resetKeyboardFocus();
+    };
 
     this->reloadScalesList();
 
@@ -329,7 +340,6 @@ KeySignatureDialog::~KeySignatureDialog()
     }
 
     this->transport.stopPlayback();
-    this->scaleNameEditor->removeListener(this);
 }
 
 void KeySignatureDialog::resized()
@@ -389,72 +399,155 @@ void KeySignatureDialog::parentSizeChanged()
 
 void KeySignatureDialog::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissModalComponentAsync)
+    switch (commandId)
     {
-        this->cancelAndDisappear();
-    }
-    else if (commandId == CommandIDs::SavePreset)
-    {
+    // sent by savePresetButton:
+    case CommandIDs::SavePreset:
         this->savePreset();
-    }
-    else if (commandId == CommandIDs::TransportPlaybackStart)
-    {
-        const auto temperament =
-            this->project.getProjectInfo()->getTemperament();
-
-        // ascending and descending scale preview
-        auto scaleKeys = this->scale->getUpScale();
-        scaleKeys.addArray(this->scale->getDownScale());
-        for (int i = 0; i < scaleKeys.size(); ++i)
+        break;
+    // sent by hotkeys:
+    case CommandIDs::DialogNextPreset:
+        this->presetsCombo->postCommandMessage(CommandIDs::SelectNextPreset);
+        break;
+    case CommandIDs::DialogPreviousPreset:
+        this->presetsCombo->postCommandMessage(CommandIDs::SelectPreviousPreset);
+        break;
+    case CommandIDs::DialogShowPresetsList:
+        this->presetsCombo->postCommandMessage(CommandIDs::ToggleShowHideCombo);
+        break;
+    case CommandIDs::TransportPlaybackStart:
+    case CommandIDs::DialogPreviewPreset:
         {
-            const auto key = scaleKeys.getUnchecked(i);
-            scaleKeys.getReference(i) = temperament->getMiddleC() + this->rootKey + key;
+            const auto temperament =
+                this->project.getProjectInfo()->getTemperament();
+
+            // ascending and descending scale preview
+            auto scaleKeys = this->scale->getUpScale();
+            scaleKeys.addArray(this->scale->getDownScale());
+            for (int i = 0; i < scaleKeys.size(); ++i)
+            {
+                const auto key = scaleKeys.getUnchecked(i);
+                scaleKeys.getReference(i) = temperament->getMiddleC() + this->rootKey + key;
+            }
+
+            if (this->scalePreviewThread != nullptr)
+            {
+                this->scalePreviewThread->stopThread(500);
+            }
+
+            this->scalePreviewThread = make<ScalePreviewThread>(this->transport, move(scaleKeys));
+
+            this->scalePreviewThread->onStartPlayback = [this]()
+            {
+                this->playButton->setPlaying(true);
+            };
+
+            this->scalePreviewThread->onStopPlayback = [this]()
+            {
+                this->playButton->setPlaying(false);
+            };
+
+            this->scalePreviewThread->startThread(5);
         }
-        
+        break;
+    case CommandIDs::TransportStop:
+    case CommandIDs::DialogStopPreviewPreset:
         if (this->scalePreviewThread != nullptr)
         {
             this->scalePreviewThread->stopThread(500);
-        }
-
-        this->scalePreviewThread = make<ScalePreviewThread>(this->transport, move(scaleKeys));
-
-        this->scalePreviewThread->onStartPlayback = [this]()
-        {
-            this->playButton->setPlaying(true);
-        };
-
-        this->scalePreviewThread->onStopPlayback = [this]()
-        {
             this->playButton->setPlaying(false);
-        };
+        }
+        break;
+    default:
+        {
+            const int scaleIndex = commandId - CommandIDs::SelectPreset;
+            // sent by the presets menu:
+            if (scaleIndex >= 0 && scaleIndex < this->scales.size())
+            {
+                this->scale = this->scales[scaleIndex];
+                this->scaleEditor->setScale(this->scale);
 
-        this->scalePreviewThread->startThread(5);
+                this->scaleNameEditor->setText(this->scale->getLocalizedName(), false);
+                const auto newEvent = this->originalEvent
+                    .withRootKey(this->rootKey, this->rootKeyName)
+                    .withScale(this->scale);
+
+                this->sendEventChange(newEvent);
+                this->updateButtonsState();
+                this->resetKeyboardFocus();
+            }
+            else
+            {
+                DialogBase::handleCommandMessage(commandId);
+            }
+        }
+        break;
     }
-    else if (commandId == CommandIDs::TransportStop)
+}
+
+bool KeySignatureDialog::keyPressed(const KeyPress &key)
+{
+    if (this->presetsCombo->isShowingMenu())
     {
-        if (this->scalePreviewThread != nullptr)
-        {
-            this->scalePreviewThread->stopThread(500);
-            this->playButton->setPlaying(false);
-        }
+        getHotkeyScheme()->dispatchKeyPress(key,
+            this->presetsCombo.get(), this->presetsCombo.get());
     }
     else
     {
-        const int scaleIndex = commandId - CommandIDs::SelectScale;
-        if (scaleIndex >= 0 && scaleIndex < this->scales.size())
-        {
-            this->scale = this->scales[scaleIndex];
-            this->scaleEditor->setScale(this->scale);
+        getHotkeyScheme()->dispatchKeyPress(key, this, this);
+    }
 
-            this->scaleNameEditor->setText(this->scale->getLocalizedName(), false);
-            const auto newEvent = this->originalEvent
-                .withRootKey(this->rootKey, this->rootKeyName)
-                .withScale(this->scale);
+    return true;
+}
 
-            this->sendEventChange(newEvent);
-            this->updateButtonsState();
-            this->resetKeyboardFocus();
-        }
+bool KeySignatureDialog::keyStateChanged(bool isKeyDown)
+{
+    if (this->presetsCombo->isShowingMenu())
+    {
+        getHotkeyScheme()->dispatchKeyStateChange(isKeyDown,
+            this->presetsCombo.get(), this->presetsCombo.get());
+    }
+    else
+    {
+        getHotkeyScheme()->dispatchKeyStateChange(isKeyDown, this, this);
+    }
+
+    return true;
+}
+
+void KeySignatureDialog::dialogCancelAction()
+{
+    jassert(this->originalSequence != nullptr);
+
+    if (this->addsNewEvent || this->hasMadeChanges)
+    {
+        this->originalSequence->undo();
+    }
+
+    this->dismiss();
+}
+
+void KeySignatureDialog::dialogApplyAction()
+{
+    if (this->scaleNameEditor->getText().isNotEmpty())
+    {
+        this->dismiss();
+        return;
+    }
+    
+    this->resetKeyboardFocus();
+}
+
+void KeySignatureDialog::dialogDeleteAction()
+{
+    if (this->addsNewEvent)
+    {
+        this->dialogCancelAction();
+    }
+    else
+    {
+        this->removeEvent();
+        this->dismiss();
     }
 }
 
@@ -492,7 +585,8 @@ void KeySignatureDialog::reloadScalesList()
     for (int i = 0; i < this->scales.size(); ++i)
     {
         const auto &s = this->scales.getUnchecked(i);
-        menu.add(MenuItem::item(Icons::empty, CommandIDs::SelectScale + i, s->getLocalizedName()));
+        menu.add(MenuItem::item(Icons::empty,
+            CommandIDs::SelectPreset + i, s->getLocalizedName()));
     }
 
     auto defaultMenuItemSelector = [this]()
@@ -599,18 +693,6 @@ void KeySignatureDialog::removeEvent()
     }
 }
 
-void KeySignatureDialog::cancelAndDisappear()
-{
-    jassert(this->originalSequence != nullptr);
-
-    if (this->addsNewEvent || this->hasMadeChanges)
-    {
-        this->originalSequence->undo();
-    }
-
-    this->dismiss();
-}
-
 void KeySignatureDialog::previewNote(int keyRelative) const
 {
     const auto temperament = this->project.getProjectInfo()->getTemperament();
@@ -619,50 +701,6 @@ void KeySignatureDialog::previewNote(int keyRelative) const
     this->transport.previewKey(String(), 1, key,
         Globals::Defaults::previewNoteVelocity,
         Globals::Defaults::previewNoteLength);
-}
-
-//===----------------------------------------------------------------------===//
-// TextEditor::Listener
-//===----------------------------------------------------------------------===//
-
-void KeySignatureDialog::textEditorTextChanged(TextEditor &ed)
-{
-    this->scale = this->scale->withName(this->scaleNameEditor->getText());
-    this->scaleEditor->setScale(this->scale);
-    const auto newEvent = this->originalEvent
-        .withRootKey(this->rootKey, this->rootKeyName)
-        .withScale(scale);
-
-    this->sendEventChange(newEvent);
-    this->updateButtonsState();
-}
-
-void KeySignatureDialog::textEditorReturnKeyPressed(TextEditor &ed)
-{
-    if (this->scaleNameEditor->getText().isNotEmpty())
-    {
-        this->dismiss(); // apply on return key
-        return;
-    }
-
-    this->resetKeyboardFocus();
-}
-
-void KeySignatureDialog::textEditorEscapeKeyPressed(TextEditor &)
-{
-    this->cancelAndDisappear();
-}
-
-void KeySignatureDialog::textEditorFocusLost(TextEditor &)
-{
-    this->updateButtonsState();
-
-    if (nullptr != dynamic_cast<TextEditor *>(Component::getCurrentlyFocusedComponent()))
-    {
-        return; // some other editor is focused
-    }
-
-    this->resetKeyboardFocus();
 }
 
 Component *KeySignatureDialog::getPrimaryFocusTarget()

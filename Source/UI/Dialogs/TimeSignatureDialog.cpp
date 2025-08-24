@@ -22,7 +22,6 @@
 #include "CommandIDs.h"
 #include "MetronomeEditor.h"
 #include "ProjectNode.h"
-
 #include "App.h"
 #include "AudioCore.h"
 #include "Workspace.h"
@@ -58,27 +57,14 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     this->addAndMakeVisible(this->removeEventButton.get());
     this->removeEventButton->onClick = [this]()
     {
-        switch (this->mode)
-        {
-        case Mode::EditTrackTimeSignature:
-        case Mode::EditTimelineTimeSignature:
-            this->removeTimeSignature();
-            this->dismiss();
-            break;
-        case Mode::AddTimelineTimeSignature:
-            this->undoAndDismiss();
-            break;
-        }
+        this->dialogDeleteAction();
     };
 
     this->okButton = make<TextButton>();
     this->addAndMakeVisible(this->okButton.get());
     this->okButton->onClick = [this]()
     {
-        if (this->textEditor->getText().isNotEmpty())
-        {
-            this->dismiss();
-        }
+        this->dialogApplyAction();
     };
 
     if (!this->originalEvent.isValid() || this->mode == Mode::AddTimelineTimeSignature)
@@ -94,19 +80,8 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
         this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
     }
 
-    this->textEditor = HelioTheme::makeSingleLineTextEditor(true, DialogBase::Defaults::textEditorFont);
+    this->textEditor = DialogBase::makeSingleLineTextEditor();
     this->addAndMakeVisible(this->textEditor.get());
-
-    this->textEditor->onReturnKey = [this]()
-    {
-        if (this->textEditor->getText().isNotEmpty())
-        {
-            this->dismiss(); // apply on return key
-            return;
-        }
-
-        this->resetKeyboardFocus();
-    };
 
     this->textEditor->onFocusLost = [this]()
     {
@@ -147,17 +122,12 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
         this->sendEventChange(newEvent);
     };
 
-    this->textEditor->onEscapeKey = [this]()
-    {
-        this->undoAndDismiss();
-    };
-
     MenuPanel::Menu menu;
     for (int i = 0; i < this->defaultMeters.size(); ++i)
     {
         const auto meter = this->defaultMeters[i];
         menu.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectTimeSignature + i, meter->getTimeAsString()));
+            CommandIDs::SelectPreset + i, meter->getTimeAsString()));
     }
 
     const auto metersMenuCurrentItem = [this]()
@@ -274,20 +244,115 @@ void TimeSignatureDialog::handleCommandMessage(int commandId)
 {
     this->metronomeEditor->postCommandMessage(CommandIDs::TransportStop);
 
-    if (commandId == CommandIDs::DismissModalComponentAsync)
+    const int meterIndex = commandId - CommandIDs::SelectPreset;
+    if (meterIndex >= 0 && meterIndex < this->defaultMeters.size())
     {
-        this->undoAndDismiss();
+        const auto meter = this->defaultMeters[meterIndex];
+        this->textEditor->setText(meter->getTimeAsString(), false);
+        this->resetKeyboardFocus();
+        this->sendEventChange(this->editedEvent.withMeter(*meter));
+    }
+    else if (commandId == CommandIDs::DialogNextPreset)
+    {
+        this->presetsCombo->postCommandMessage(CommandIDs::SelectNextPreset);
+    }
+    else if (commandId == CommandIDs::DialogPreviousPreset)
+    {
+        this->presetsCombo->postCommandMessage(CommandIDs::SelectPreviousPreset);
+    }
+    else if (commandId == CommandIDs::DialogShowPresetsList)
+    {
+        this->presetsCombo->postCommandMessage(CommandIDs::ToggleShowHideCombo);
+    }
+    else if (commandId == CommandIDs::TransportPlaybackStart ||
+        commandId == CommandIDs::DialogPreviewPreset)
+    {
+        this->metronomeEditor->postCommandMessage(CommandIDs::TransportPlaybackStart);
+    }
+    else if (commandId == CommandIDs::TransportStop ||
+        commandId == CommandIDs::DialogStopPreviewPreset)
+    {
+        this->metronomeEditor->postCommandMessage(CommandIDs::TransportStop);
     }
     else
     {
-        const int targetIndex = commandId - CommandIDs::SelectTimeSignature;
-        if (targetIndex >= 0 && targetIndex < this->defaultMeters.size())
+        DialogBase::handleCommandMessage(commandId);
+    }
+}
+
+bool TimeSignatureDialog::keyPressed(const KeyPress &key)
+{
+    if (this->presetsCombo->isShowingMenu())
+    {
+        getHotkeyScheme()->dispatchKeyPress(key,
+            this->presetsCombo.get(), this->presetsCombo.get());
+    }
+    else
+    {
+        getHotkeyScheme()->dispatchKeyPress(key, this, this);
+    }
+
+    return true;
+}
+
+bool TimeSignatureDialog::keyStateChanged(bool isKeyDown)
+{
+    if (this->presetsCombo->isShowingMenu())
+    {
+        getHotkeyScheme()->dispatchKeyStateChange(isKeyDown,
+            this->presetsCombo.get(), this->presetsCombo.get());
+    }
+    else
+    {
+        getHotkeyScheme()->dispatchKeyStateChange(isKeyDown, this, this);
+    }
+
+    return true;
+}
+
+void TimeSignatureDialog::dialogCancelAction()
+{
+    switch (this->mode)
+    {
+    case Mode::EditTrackTimeSignature:
+    case Mode::EditTimelineTimeSignature:
+        if (this->hasMadeChanges)
         {
-            const auto meter = this->defaultMeters[targetIndex];
-            this->textEditor->setText(meter->getTimeAsString(), false);
-            this->resetKeyboardFocus();
-            this->sendEventChange(this->editedEvent.withMeter(*meter));
+            this->undoStack->undo();
         }
+        break;
+    case Mode::AddTimelineTimeSignature:
+        // undo anyway to cancel new event insertion at the start:
+        this->undoStack->undo();
+        break;
+    }
+
+    this->dismiss();
+}
+
+void TimeSignatureDialog::dialogApplyAction()
+{
+    if (this->textEditor->getText().isNotEmpty())
+    {
+        this->dismiss();
+        return;
+    }
+
+    this->resetKeyboardFocus();
+}
+
+void TimeSignatureDialog::dialogDeleteAction()
+{
+    switch (this->mode)
+    {
+    case Mode::EditTrackTimeSignature:
+    case Mode::EditTimelineTimeSignature:
+        this->removeTimeSignature();
+        this->dismiss();
+        break;
+    case Mode::AddTimelineTimeSignature:
+        this->dialogCancelAction();
+        break;
     }
 }
 
@@ -367,26 +432,6 @@ void TimeSignatureDialog::removeTimeSignature()
         this->undoStack->undo();
         break;
     }
-}
-
-void TimeSignatureDialog::undoAndDismiss()
-{
-    switch (this->mode)
-    {
-    case Mode::EditTrackTimeSignature:
-    case Mode::EditTimelineTimeSignature:
-        if (this->hasMadeChanges)
-        {
-            this->undoStack->undo();
-        }
-        break;
-    case Mode::AddTimelineTimeSignature:
-        // undo anyway to cancel new event insertion at the start:
-        this->undoStack->undo();
-        break;
-    }
-
-    this->dismiss();
 }
 
 Component *TimeSignatureDialog::getPrimaryFocusTarget()

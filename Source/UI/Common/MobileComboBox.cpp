@@ -19,6 +19,26 @@
 #include "MobileComboBox.h"
 #include "PanelBackground.h"
 #include "HelioTheme.h"
+#include "DialogBase.h"
+#include "HotkeyScheme.h"
+#include "ComponentIDs.h"
+
+bool MobileComboBox::SearchTextEditor::keyPressed(const KeyPress &key)
+{
+    static Array<KeyPress> keyPresses =
+        App::Config().getHotkeySchemes()->getCurrent()->
+            findKeyPressesForReceiver(ComponentIDs::comboBox);
+
+    for (const auto &usedAsHotkey : keyPresses)
+    {
+        if (key == usedAsHotkey)
+        {
+            return false;
+        }
+    }
+
+    return TextEditor::keyPressed(key);
+}
 
 MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Component> container) :
     editor(editor),
@@ -26,7 +46,7 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
 {
     this->setOpaque(true);
     this->setWantsKeyboardFocus(false);
-    this->setInterceptsMouseClicks(false, true);
+    this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setAccessible(false);
 
@@ -36,21 +56,11 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     this->separator = make<SeparatorHorizontalReversed>();
     this->addAndMakeVisible(this->separator.get());
 
-    this->currentNameLabel = make<Label>();
-    this->addAndMakeVisible(this->currentNameLabel.get());
-    this->currentNameLabel->setFont(Globals::UI::Fonts::M);
-    this->currentNameLabel->setJustificationType(Justification::centredLeft);
-
-    this->searchTextBox = HelioTheme::makeSingleLineTextEditor(true);
+    this->searchTextBox = HelioTheme::makeSingleLineTextEditor<MobileComboBox::SearchTextEditor>(true);
     this->searchTextBox->setPopupMenuEnabled(false);
     this->addAndMakeVisible(this->searchTextBox.get());
 
     this->triggerButton = MobileComboBox::HelperButton::makeComboTriggerButton(this);
-
-    this->searchTextBox->onEscapeKey = [this]()
-    {
-        this->postCommandMessage(CommandIDs::ToggleShowHideCombo);
-    };
     
     this->searchTextBox->onTextChange = [this]()
     {
@@ -70,8 +80,6 @@ void MobileComboBox::resized()
     static constexpr auto menuY = Globals::UI::textEditorHeight + 2;
 
     this->separator->setBounds(1, menuY - 2, this->getWidth() - 2, 2);
-    this->currentNameLabel->setBounds(0, 0, this->getWidth() - 0, menuY - 2);
-
     this->menuPanel->setBounds(2, menuY, this->getWidth() - 4, this->getHeight() - menuY);
     this->searchTextBox->setBounds(1, 1, this->getWidth() - 2, Globals::UI::textEditorHeight);
 
@@ -106,6 +114,12 @@ void MobileComboBox::handleCommandMessage(int commandId)
     jassert(commandId != CommandIDs::SelectPreviousPreset &&
             commandId != CommandIDs::SelectNextPreset);
 
+    if (commandId == CommandIDs::MenuCursorTryExitUp ||
+        commandId == CommandIDs::MenuCursorTryExitDown)
+    {
+        return;
+    }
+
     if (this->getParentComponent() != nullptr && this->editor != nullptr)
     {
         if (commandId != CommandIDs::ToggleShowHideCombo)
@@ -114,8 +128,7 @@ void MobileComboBox::handleCommandMessage(int commandId)
         }
 
         this->animator.animateComponent(this,
-            this->isSimpleDropdown() ? this->getBounds() : this->editor->getBounds(),
-            0.f, Globals::UI::fadeOutLong, true, 0.0, 1.0);
+            this->editor->getBounds(), 0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
 
         this->getParentComponent()->removeChildComponent(this);
     }
@@ -127,53 +140,40 @@ void MobileComboBox::updateMenu(MenuPanel::Menu menu, int defaultItemIndex)
         MenuPanel::AnimationType::SlideDown, true, defaultItemIndex);
 }
 
-void MobileComboBox::initHeader(TextEditor *editor, bool hasSearch, bool hasCaption)
+void MobileComboBox::initHeader(TextEditor *editor, bool hasSearch)
 {
     this->searchTextBox->setFont(editor->getFont());
     this->searchTextBox->setIndents(editor->getLeftIndent(), editor->getTopIndent());
-    this->currentNameLabel->setFont(editor->getFont());
-
-    this->initHeader(editor->getText(), hasSearch, hasCaption);
+    this->initHeader(editor->getText(), hasSearch);
 }
 
-void MobileComboBox::initHeader(Label *label, bool hasSearch, bool hasCaption)
+void MobileComboBox::initHeader(Label *label, bool hasSearch)
 {
     this->searchTextBox->setFont(label->getFont());
-    this->currentNameLabel->setFont(label->getFont());
-
-    this->initHeader(label->getText(), hasSearch, hasCaption);
+    this->initHeader(label->getText(), hasSearch);
 }
 
-void MobileComboBox::initHeader(const String &text, bool hasSearch, bool hasCaption)
+void MobileComboBox::initHeader(const String &text, bool hasSearch)
 {
-    this->setInterceptsMouseClicks(hasSearch || hasCaption, true);
-
-    this->searchTextBox->setText({}, dontSendNotification);
-    this->currentNameLabel->setText(text, dontSendNotification);
-    this->currentNameLabel->setInterceptsMouseClicks(false, true);
-
-    // on mobile, just show the label: search box is not very convenient
+    // on mobile platforms, just show the caption, search box is not very convenient
 #if PLATFORM_DESKTOP
-    this->searchTextBox->setVisible(hasSearch);
-    this->currentNameLabel->setVisible(hasCaption);
-    if (hasCaption)
+    if (hasSearch)
     {
-        this->currentNameLabel->addAndMakeVisible(this->triggerButton.get());
-    }
-    else
-    {
+        this->searchTextBox->setReadOnly(false);
+        this->searchTextBox->setText({}, dontSendNotification);
+        this->searchTextBox->setInterceptsMouseClicks(true, true);
         this->searchTextBox->addAndMakeVisible(this->triggerButton.get());
     }
-#elif PLATFORM_MOBILE
-    this->searchTextBox->setVisible(false);
-    this->currentNameLabel->setVisible(hasSearch || hasCaption);
-    this->currentNameLabel->addAndMakeVisible(this->triggerButton.get());
+    else
 #endif
-
-    if (this->searchTextBox->isVisible())
     {
-        this->searchTextBox->grabKeyboardFocus();
+        this->searchTextBox->setReadOnly(true);
+        this->searchTextBox->setText(text, dontSendNotification);
+        this->searchTextBox->setInterceptsMouseClicks(false, true);
+        this->searchTextBox->addAndMakeVisible(this->triggerButton.get());
     }
+
+    this->searchTextBox->grabKeyboardFocus();
 }
 
 // todo remove this when migrating to C++17
@@ -182,6 +182,8 @@ constexpr int MobileComboBox::HelperButton::triggerButtonSize;
 
 MobileComboBox::Container::Container()
 {
+    this->setComponentID(ComponentIDs::comboBox);
+
     this->setAccessible(false);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
@@ -189,6 +191,11 @@ MobileComboBox::Container::Container()
 }
 
 MobileComboBox::Container::~Container() = default;
+
+bool MobileComboBox::Container::isShowingMenu() const
+{
+    return this->combo != nullptr && this->combo->isVisible();
+}
 
 void MobileComboBox::Container::initWith(WeakReference<Component> editor,
     MenuPanel::Menu menu,
@@ -244,65 +251,114 @@ void MobileComboBox::Container::updateMenu(MenuPanel::Menu menu, int defaultItem
     this->combo->updateMenu(menu, defaultItemIndex);
 }
 
+// events are sent here either by child buttons, by the parent dialog, or by menu hotkey scheme
 void MobileComboBox::Container::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::ToggleShowHideCombo &&
-        this->getParentComponent() != nullptr &&
-        this->combo != nullptr)
+    switch (commandId)
     {
-        if (this->menuInitializer != nullptr)
+    case CommandIDs::ComboDismissCancel:
+        jassert(this->isShowingMenu());
+        if (this->isShowingMenu())
         {
-            this->combo->updateMenu(this->menuInitializer());
-            // reset to avoid re-initializing the menu later:
-            this->menuInitializer = nullptr;
+            this->combo->postCommandMessage(CommandIDs::ToggleShowHideCombo);
         }
-
-        int defaultValueIndex = -1;
-        if (this->defaultItemIndexSelector != nullptr)
+        break;
+    case CommandIDs::ComboDismissApply:
+        jassert(this->isShowingMenu());
+        if (this->isShowingMenu())
         {
-            defaultValueIndex = this->defaultItemIndexSelector();
-            // don't reset this getter, the default value may change every time the menu shows:
-            //this->defaultItemIndexSelector = nullptr;
+            this->combo->menuPanel->postCommandMessage(CommandIDs::MenuSelect);
         }
-
-        if (defaultValueIndex >= 0)
+        break;
+    case CommandIDs::ComboCursorUp:
+        jassert(this->isShowingMenu());
+        if (this->isShowingMenu())
         {
-            this->combo->menuPanel->setDefaultItem(defaultValueIndex);
+            this->combo->menuPanel->postCommandMessage(CommandIDs::MenuCursorUp);
         }
-
-        const bool hasSearchBox =
-            this->combo->menuPanel->getMenuSize() > 16 ||
-            this->combo->menuPanel->getMenuHeight() > this->getHeight();
-
-        const bool hasCaptionLabel = !hasSearchBox;
-
-        this->getParentComponent()->addAndMakeVisible(this->combo.get());
-
-        if (auto *ed = dynamic_cast<TextEditor *>(this->textEditor.get()))
+        break;
+    case CommandIDs::ComboCursorDown:
+        jassert(this->isShowingMenu());
+        if (this->isShowingMenu())
         {
-            this->combo->initHeader(ed, hasSearchBox, hasCaptionLabel);
+            this->combo->menuPanel->postCommandMessage(CommandIDs::MenuCursorDown);
         }
-        else if (auto *label = dynamic_cast<Label *>(this->textEditor.get()))
+        break;
+    case CommandIDs::ComboCursorPageUp:
+        jassert(this->isShowingMenu());
+        if (this->isShowingMenu())
         {
-            this->combo->initHeader(label, hasSearchBox, hasCaptionLabel);
+            this->combo->menuPanel->postCommandMessage(CommandIDs::MenuCursorPageUp);
         }
-        else
+        break;
+    case CommandIDs::ComboCursorPageDown:
+        jassert(this->isShowingMenu());
+        if (this->isShowingMenu())
         {
-            this->combo->initHeader(String(), false, false);
+            this->combo->menuPanel->postCommandMessage(CommandIDs::MenuCursorPageDown);
         }
+        break;
+    case CommandIDs::ToggleShowHideCombo:
+        if (this->getParentComponent() != nullptr && this->combo != nullptr)
+        {
+            if (this->isShowingMenu())
+            {
+                this->combo->postCommandMessage(commandId);
+                return;
+            }
 
-        this->combo->setAlpha(1.f);
-        this->combo->setBounds(this->textEditor->getBounds());
-        this->animator.animateComponent(this->combo.get(),
-            this->getBounds(), 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
-    }
-    else if (commandId == CommandIDs::SelectPreviousPreset)
-    {
+            if (this->menuInitializer != nullptr)
+            {
+                this->combo->updateMenu(this->menuInitializer());
+                // reset to avoid re-initializing the menu later:
+                this->menuInitializer = nullptr;
+            }
+
+            int defaultValueIndex = -1;
+            if (this->defaultItemIndexSelector != nullptr)
+            {
+                defaultValueIndex = this->defaultItemIndexSelector();
+                // don't reset this getter, the default value may change every time the menu shows:
+                //this->defaultItemIndexSelector = nullptr;
+            }
+
+            if (defaultValueIndex >= 0)
+            {
+                this->combo->menuPanel->setDefaultItem(defaultValueIndex);
+            }
+
+            const bool hasSearchBox =
+                this->combo->menuPanel->getMenuSize() > 16 &&
+                this->combo->menuPanel->getMenuHeight() > this->getHeight();
+
+            this->getParentComponent()->addAndMakeVisible(this->combo.get());
+
+            if (auto *ed = dynamic_cast<TextEditor *>(this->textEditor.get()))
+            {
+                this->combo->initHeader(ed, hasSearchBox);
+            }
+            else if (auto *label = dynamic_cast<Label *>(this->textEditor.get()))
+            {
+                jassertfalse; // it this used anywhere yet?
+                this->combo->initHeader(label, hasSearchBox);
+            }
+            else
+            {
+                this->combo->initHeader(String(), false);
+            }
+
+            this->combo->setAlpha(1.f);
+            this->combo->setBounds(this->textEditor->getBounds());
+            this->animator.animateComponent(this->combo.get(),
+                this->getBounds(), 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
+        }
+        break;
+    case CommandIDs::SelectPreviousPreset:
         // the next/previous preset buttons were added as a quick hack,
         // so certain menu options are not supported here
+        jassert(!this->isShowingMenu());
         jassert(this->menuInitializer == nullptr);
         jassert(dynamic_cast<TextEditor *>(this->textEditor.get()));
-
         if (auto *ed = dynamic_cast<TextEditor *>(this->textEditor.get()))
         {
             jassert(this->previousPresetButton != nullptr);
@@ -317,17 +373,16 @@ void MobileComboBox::Container::handleCommandMessage(int commandId)
             {
                 jassert(menuItem->callback == nullptr); // not supported for now
                 this->getParentComponent()->postCommandMessage(menuItem->commandId);
-                #if PLATFORM_DESKTOP
-                this->previousPresetButton->setHighlighted(true);
-                #endif
+                //#if PLATFORM_DESKTOP
+                //this->previousPresetButton->setHighlighted(true);
+                //#endif
             }
         }
-    }
-    else if (commandId == CommandIDs::SelectNextPreset)
-    {
+        break;
+    case CommandIDs::SelectNextPreset:
+        jassert(!this->isShowingMenu());
         jassert(this->menuInitializer == nullptr);
         jassert(dynamic_cast<TextEditor *>(this->textEditor.get()));
-
         if (auto *ed = dynamic_cast<TextEditor *>(this->textEditor.get()))
         {
             jassert(this->nextPresetButton != nullptr);
@@ -342,11 +397,14 @@ void MobileComboBox::Container::handleCommandMessage(int commandId)
             {
                 jassert(menuItem->callback == nullptr); // not supported for now
                 this->getParentComponent()->postCommandMessage(menuItem->commandId);
-                #if PLATFORM_DESKTOP
-                this->nextPresetButton->setHighlighted(true);
-                #endif
+                //#if PLATFORM_DESKTOP
+                //this->nextPresetButton->setHighlighted(true);
+                //#endif
             }
         }
+        break;
+    default:
+        break;
     }
 }
 

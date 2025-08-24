@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "ModalDialogInput.h"
-#include "HelioTheme.h"
 #include "CommandIDs.h"
 
 ModalDialogInput::ModalDialogInput(const String &text, const String &message,
@@ -38,21 +37,32 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message,
     this->addAndMakeVisible(this->cancelButton.get());
     this->cancelButton->onClick = [this]()
     {
-        this->cancel();
+        this->dialogCancelAction();
     };
 
     this->okButton = make<TextButton>();
     this->addAndMakeVisible(this->okButton.get());
     this->okButton->onClick = [this]()
     {
-        this->okay();
+        this->dialogApplyAction();
     };
 
-    this->textEditor = HelioTheme::makeSingleLineTextEditor(true, DialogBase::Defaults::textEditorFont);
+    this->textEditor = DialogBase::makeSingleLineTextEditor();
     this->addAndMakeVisible(this->textEditor.get());
     this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
     this->textEditor->setText(this->input, dontSendNotification);
-    this->textEditor->addListener(this);
+    
+    this->textEditor->onTextChange = [this]()
+    {
+        this->input = this->textEditor->getText();
+        this->updateOkButtonState();
+    };
+
+    this->textEditor->onFocusLost = [this]()
+    {
+        this->updateOkButtonState();
+        this->resetKeyboardFocus();
+    };
 
     // instead of selectAll(), which puts the caret at the start:
     this->textEditor->setCaretPosition(0);
@@ -67,10 +77,7 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message,
     this->updateOkButtonState();
 }
 
-ModalDialogInput::~ModalDialogInput()
-{
-    this->textEditor->removeListener(this);
-}
+ModalDialogInput::~ModalDialogInput() = default;
 
 void ModalDialogInput::resized()
 {
@@ -96,44 +103,7 @@ void ModalDialogInput::parentSizeChanged()
     this->updatePosition();
 }
 
-void ModalDialogInput::handleCommandMessage(int commandId)
-{
-    if (commandId == CommandIDs::DismissModalComponentAsync)
-    {
-        this->cancel();
-    }
-}
-
-void ModalDialogInput::textEditorTextChanged(TextEditor &editor)
-{
-    this->input = editor.getText();
-    this->updateOkButtonState();
-}
-
-void ModalDialogInput::textEditorReturnKeyPressed(TextEditor &editor)
-{
-    if (this->input.isNotEmpty() &&
-        (this->inputToRequire.isEmpty() || this->input == this->inputToRequire))
-    {
-        this->okay(); // apply on return key
-        return;
-    }
-
-    this->resetKeyboardFocus();
-}
-
-void ModalDialogInput::textEditorEscapeKeyPressed(TextEditor &)
-{
-    this->cancel();
-}
-
-void ModalDialogInput::textEditorFocusLost(TextEditor &ed)
-{
-    this->updateOkButtonState();
-    this->resetKeyboardFocus();
-}
-
-void ModalDialogInput::cancel()
+void ModalDialogInput::dialogCancelAction()
 {
     const BailOutChecker checker(this);
 
@@ -148,23 +118,26 @@ void ModalDialogInput::cancel()
     }
 }
 
-void ModalDialogInput::okay()
+void ModalDialogInput::dialogApplyAction()
 {
-    if (this->textEditor->getText().isEmpty())
+    if (this->input.isNotEmpty() &&
+        (this->inputToRequire.isEmpty() || this->input == this->inputToRequire))
     {
-        return;
+        const BailOutChecker checker(this);
+
+        if (this->onOk != nullptr)
+        {
+            this->onOk(this->input);
+        }
+
+        if (!checker.shouldBailOut())
+        {
+            this->dismiss();
+        }
     }
-
-    const BailOutChecker checker(this);
-
-    if (this->onOk != nullptr)
+    else
     {
-        this->onOk(this->input);
-    }
-
-    if (!checker.shouldBailOut())
-    {
-        this->dismiss();
+        this->resetKeyboardFocus();
     }
 }
 

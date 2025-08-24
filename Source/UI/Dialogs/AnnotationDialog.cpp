@@ -18,10 +18,9 @@
 #include "Common.h"
 #include "AnnotationDialog.h"
 #include "AnnotationsSequence.h"
-#include "HelioTheme.h"
 #include "ColourIDs.h"
 
-static Array<String> getDynamics()
+static Array<String> getAnnotationExamples()
 {
     return
     {
@@ -70,46 +69,35 @@ AnnotationDialog::AnnotationDialog(Component &owner,
     this->addAndMakeVisible(this->removeEventButton.get());
     this->removeEventButton->onClick = [this]()
     {
-        if (this->addsNewEvent)
-        {
-            this->cancelAndDisappear();
-        }
-        else
-        {
-            this->removeEvent();
-            this->dismiss();
-        }
+        this->dialogDeleteAction();
     };
 
     this->okButton = make<TextButton>();
     this->addAndMakeVisible(this->okButton.get());
     this->okButton->onClick = [this]()
     {
-        if (this->textEditor->getText().isNotEmpty())
-        {
-            this->dismiss();
-        }
+        this->dialogApplyAction();
     };
 
     const auto colourButtonSizeWithMargin = isPhoneLayout ? 25 : 29;
     this->colourSwatches = make<ColourSwatches>(colourButtonSizeWithMargin);
     this->addAndMakeVisible(this->colourSwatches.get());
 
-    this->textEditor = HelioTheme::makeSingleLineTextEditor(true, DialogBase::Defaults::textEditorFont);
+    this->textEditor = DialogBase::makeSingleLineTextEditor();
     this->addAndMakeVisible(this->textEditor.get());
 
     jassert(this->originalSequence != nullptr);
     jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
 
-    const auto dynamics(getDynamics());
-    const auto colours(ColourIDs::getColoursList());
+    const auto annotationExamples = getAnnotationExamples();
+    const auto colours = ColourIDs::getColoursList();
 
     if (this->addsNewEvent)
     {
         Random r;
-        const int i = r.nextInt(dynamics.size());
+        const int i = r.nextInt(jmin(colours.size(), annotationExamples.size()));
         this->originalEvent = AnnotationEvent(this->originalSequence,
-            targetBeat, dynamics[i], colours[i]);
+            targetBeat, annotationExamples[i], colours[i]);
 
         this->originalSequence->checkpoint();
         this->originalSequence->insert(this->originalEvent, true);
@@ -127,7 +115,24 @@ AnnotationDialog::AnnotationDialog(Component &owner,
 
     this->colourSwatches->setSelectedColour(this->originalEvent.getColour());
 
-    this->textEditor->addListener(this);
+    this->textEditor->onTextChange = [this]()
+    {
+        this->updateOkButtonState();
+        this->updateEvent();
+    };
+
+    this->textEditor->onFocusLost = [this]()
+    {
+        this->updateOkButtonState();
+
+        if (nullptr != dynamic_cast<TextEditor *>(Component::getCurrentlyFocusedComponent()))
+        {
+            return; // some other editor is focused
+        }
+
+        this->resetKeyboardFocus();
+    };
+
     this->textEditor->setText(this->originalEvent.getDescription(), dontSendNotification);
     // instead of selectAll(), which puts the caret at the start:
     this->textEditor->setCaretPosition(0);
@@ -136,12 +141,10 @@ AnnotationDialog::AnnotationDialog(Component &owner,
     this->messageLabel->setInterceptsMouseClicks(false, false);
 
     MenuPanel::Menu menu;
-    for (int i = 0; i < getDynamics().size(); ++i)
+    for (int i = 0; i < annotationExamples.size(); ++i)
     {
-        const auto cmd = MenuItem::item(Icons::annotation,
-            CommandIDs::JumpToAnnotation + i, dynamics[i])->
-            withColour(colours[i]);
-        menu.add(cmd);
+        menu.add(MenuItem::item(Icons::annotation,
+            CommandIDs::SelectPreset + i, annotationExamples[i])->withColour(colours[i]));
     }
 
     this->presetsCombo->initWith(this->textEditor.get(), menu);
@@ -155,10 +158,7 @@ AnnotationDialog::AnnotationDialog(Component &owner,
     this->updateOkButtonState();
 }
 
-AnnotationDialog::~AnnotationDialog()
-{
-    this->textEditor->removeListener(this);
-}
+AnnotationDialog::~AnnotationDialog() = default;
 
 void AnnotationDialog::resized()
 {
@@ -185,22 +185,105 @@ void AnnotationDialog::parentSizeChanged()
 
 void AnnotationDialog::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissModalComponentAsync)
+    const auto annotationExamples = getAnnotationExamples();
+    const int targetIndex = commandId - CommandIDs::SelectPreset;
+    if (targetIndex >= 0 && targetIndex < annotationExamples.size())
     {
-        this->cancelAndDisappear();
+        const auto colours = ColourIDs::getColoursList();
+        this->colourSwatches->setSelectedColour(colours[targetIndex]);
+        this->textEditor->setText(annotationExamples[targetIndex], true);
+        this->updateEvent();
+        this->resetKeyboardFocus();
+    }
+    else if (commandId == CommandIDs::DialogNextPreset)
+    {
+        if (const auto colour = this->colourSwatches->selectNextColour())
+        {
+            this->sendEventChanges(this->originalEvent.
+                withDescription(this->textEditor->getText()).withColour(*colour));
+        }
+    }
+    else if (commandId == CommandIDs::DialogPreviousPreset)
+    {
+        if (const auto colour = this->colourSwatches->selectPreviousColour())
+        {
+            this->sendEventChanges(this->originalEvent.
+                withDescription(this->textEditor->getText()).withColour(*colour));
+        }
+    }
+    else if (commandId == CommandIDs::DialogShowPresetsList)
+    {
+        this->presetsCombo->postCommandMessage(CommandIDs::ToggleShowHideCombo);
     }
     else
     {
-        const auto dynamics(getDynamics());
-        const auto colours(ColourIDs::getColoursList());
-        const int targetIndex = commandId - CommandIDs::JumpToAnnotation;
-        if (targetIndex >= 0 && targetIndex < dynamics.size())
-        {
-            const String text = dynamics[targetIndex];
-            this->colourSwatches->setSelectedColour(colours[targetIndex]);
-            this->textEditor->setText(text, true);
-            this->resetKeyboardFocus();
-        }
+        DialogBase::handleCommandMessage(commandId);
+    }
+}
+
+bool AnnotationDialog::keyPressed(const KeyPress &key)
+{
+    if (this->presetsCombo->isShowingMenu())
+    {
+        getHotkeyScheme()->dispatchKeyPress(key,
+            this->presetsCombo.get(), this->presetsCombo.get());
+    }
+    else
+    {
+        getHotkeyScheme()->dispatchKeyPress(key, this, this);
+    }
+
+    return true;
+}
+
+bool AnnotationDialog::keyStateChanged(bool isKeyDown)
+{
+    if (this->presetsCombo->isShowingMenu())
+    {
+        getHotkeyScheme()->dispatchKeyStateChange(isKeyDown,
+            this->presetsCombo.get(), this->presetsCombo.get());
+    }
+    else
+    {
+        getHotkeyScheme()->dispatchKeyStateChange(isKeyDown, this, this);
+    }
+
+    return true;
+}
+
+void AnnotationDialog::dialogCancelAction()
+{
+    jassert(this->originalSequence != nullptr);
+
+    if (this->addsNewEvent || this->hasMadeChanges)
+    {
+        this->originalSequence->undo();
+    }
+
+    this->dismiss();
+}
+
+void AnnotationDialog::dialogApplyAction()
+{
+    if (this->textEditor->getText().isNotEmpty())
+    {
+        this->dismiss();
+        return;
+    }
+
+    this->resetKeyboardFocus();
+}
+
+void AnnotationDialog::dialogDeleteAction()
+{
+    if (this->addsNewEvent)
+    {
+        this->dialogCancelAction();
+    }
+    else
+    {
+        this->removeEvent();
+        this->dismiss();
     }
 }
 
@@ -225,15 +308,13 @@ void AnnotationDialog::updateOkButtonState()
     this->okButton->setEnabled(!textIsEmpty);
 }
 
-void AnnotationDialog::onColourButtonClicked(ColourButton *clickedButton)
+void AnnotationDialog::onColourButtonClicked(ColourButton *button)
 {
-    const Colour c(clickedButton->getColour());
-    const AnnotationEvent newEvent =
-        this->originalEvent.withDescription(this->textEditor->getText()).withColour(c);
-    this->sendEventChange(newEvent);
+    this->sendEventChanges(this->originalEvent.
+        withDescription(this->textEditor->getText()).withColour(button->getColour()));
 }
 
-void AnnotationDialog::sendEventChange(const AnnotationEvent &newEvent)
+void AnnotationDialog::sendEventChanges(const AnnotationEvent &newEvent)
 {
     jassert(this->originalSequence != nullptr);
 
@@ -257,6 +338,13 @@ void AnnotationDialog::sendEventChange(const AnnotationEvent &newEvent)
     }
 }
 
+void AnnotationDialog::updateEvent()
+{
+    const auto text = this->textEditor->getText();
+    const auto colour = this->colourSwatches->getColour();
+    this->sendEventChanges(this->originalEvent.withDescription(text).withColour(colour));
+}
+
 void AnnotationDialog::removeEvent()
 {
     jassert(this->originalSequence != nullptr);
@@ -277,58 +365,6 @@ void AnnotationDialog::removeEvent()
         this->originalSequence->remove(this->originalEvent, true);
         this->hasMadeChanges = true;
     }
-}
-
-void AnnotationDialog::textEditorTextChanged(TextEditor&)
-{
-    this->updateOkButtonState();
-
-    const String text(this->textEditor->getText());
-    AnnotationEvent newEvent = this->originalEvent.withDescription(text);
-    const Colour c(this->colourSwatches->getColour());
-    this->colourSwatches->setSelectedColour(c);
-    newEvent = newEvent.withColour(c);
-    this->sendEventChange(newEvent);
-}
-
-void AnnotationDialog::textEditorReturnKeyPressed(TextEditor &ed)
-{
-    if (this->textEditor->getText().isNotEmpty())
-    {
-        this->dismiss(); // apply on return key
-        return;
-    }
-
-    this->resetKeyboardFocus();
-}
-
-void AnnotationDialog::textEditorEscapeKeyPressed(TextEditor&)
-{
-    this->cancelAndDisappear();
-}
-
-void AnnotationDialog::textEditorFocusLost(TextEditor&)
-{
-    this->updateOkButtonState();
-
-    if (nullptr != dynamic_cast<TextEditor *>(Component::getCurrentlyFocusedComponent()))
-    {
-        return; // some other editor is focused
-    }
-
-    this->resetKeyboardFocus();
-}
-
-void AnnotationDialog::cancelAndDisappear()
-{
-    jassert(this->originalSequence != nullptr);
-
-    if (this->addsNewEvent || this->hasMadeChanges)
-    {
-        this->originalSequence->undo();
-    }
-
-    this->dismiss();
 }
 
 Component *AnnotationDialog::getPrimaryFocusTarget()

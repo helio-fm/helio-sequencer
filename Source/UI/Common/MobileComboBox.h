@@ -67,6 +67,8 @@ public:
         Container();
         ~Container() override;
 
+        bool isShowingMenu() const;
+
         void handleCommandMessage(int commandId) override;
 
         void initWith(WeakReference<Component> textEditor,
@@ -97,6 +99,12 @@ public:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Container)
     };
 
+    class SearchTextEditor : public TextEditor
+    {
+    public:
+        bool keyPressed(const KeyPress &key) override;
+    };
+
     void paint(Graphics &g) override;
     void resized() override;
     void parentHierarchyChanged() override;
@@ -105,15 +113,9 @@ public:
 
 private:
 
-    void initHeader(TextEditor *editor, bool hasSearch, bool hasCaption);
-    void initHeader(Label *label, bool hasSearch, bool hasCaption);
-    void initHeader(const String &text, bool hasSearch, bool hasCaption);
-
-    bool isSimpleDropdown() const noexcept
-    {
-        return !this->searchTextBox->isVisible() &&
-            !this->currentNameLabel->isVisible();
-    }
+    void initHeader(TextEditor *editor, bool hasSearch);
+    void initHeader(Label *label, bool hasSearch);
+    void initHeader(const String &text, bool hasSearch);
 
     WeakReference<Component> container;
     WeakReference<Component> editor;
@@ -121,7 +123,6 @@ private:
 
     UniquePointer<TextEditor> searchTextBox;
     UniquePointer<SeparatorHorizontalReversed> separator;
-    UniquePointer<Label> currentNameLabel;
 
     UniquePointer<MenuPanel> menuPanel;
 

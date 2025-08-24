@@ -96,8 +96,16 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     this->addAndMakeVisible(this->renderButton.get());
     this->renderButton->setButtonText(TRANS(I18n::Dialog::renderProceed));
     this->renderButton->setWantsKeyboardFocus(false);
-    this->renderButton->onClick = [this]() {
-        this->startOrAbortRender();
+    this->renderButton->onClick = [this]()
+    {
+        if (this->project.getTransport().isRendering())
+        {
+            this->dialogCancelAction();
+        }
+        else
+        {
+            this->dialogApplyAction();
+        }
     };
 
     this->captionLabel = make<Label>();
@@ -162,16 +170,49 @@ void RenderDialog::parentSizeChanged()
 
 void RenderDialog::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissModalComponentAsync)
-    {
-        if (!this->project.getTransport().isRendering())
-        {
-            this->dismiss();
-        }
-    }
-    else if (commandId == CommandIDs::Browse)
+    if (commandId == CommandIDs::Browse) // sent by this->browseButton
     {
         this->launchFileChooser();
+    }
+    else
+    {
+        DialogBase::handleCommandMessage(commandId);
+    }
+}
+
+void RenderDialog::dialogCancelAction()
+{
+    auto &transport = this->project.getTransport();
+    if (transport.isRendering())
+    {
+        transport.stopRender();
+        this->stopTrackingProgress();
+        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure); // will dismiss the dialog
+    }
+}
+
+void RenderDialog::dialogApplyAction()
+{
+    auto &transport = this->project.getTransport();
+    if (transport.isRendering())
+    {
+        jassertfalse;
+        return;
+    }
+
+#if PLATFORM_DESKTOP
+    App::Config().setProperty(Serialization::UI::lastRenderPath,
+        this->renderTarget.getParentURL().getLocalFile().getFullPathName());
+#endif
+
+    if (transport.startRender(this->renderTarget, this->format,
+        this->progressBar->getThumbnailResolution()))
+    {
+        this->startTrackingProgress();
+    }
+    else
+    {
+        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure); // will dismiss the dialog
     }
 }
 
@@ -184,7 +225,8 @@ void RenderDialog::launchFileChooser()
 
     DocumentHelpers::showFileChooser(this->renderFileChooser,
         Globals::UI::FileChooser::forFileToSave,
-        [this](URL &url) {
+        [this](URL &url)
+        {
             this->renderTarget = url;
             this->updateRenderTargetLabels();
         });
@@ -193,55 +235,6 @@ void RenderDialog::launchFileChooser()
 void RenderDialog::updateRenderTargetLabels()
 {
     this->pathLabel->setText(this->renderTarget.getLocalFile().getFullPathName(), dontSendNotification);
-}
-
-bool RenderDialog::keyPressed(const KeyPress &key)
-{
-    if (key == KeyPress::escapeKey)
-    {
-        this->postCommandMessage(CommandIDs::DismissModalComponentAsync);
-        return true;
-    }
-
-    return false;
-}
-
-void RenderDialog::startOrAbortRender()
-{
-    auto &transport = this->project.getTransport();
-    if (!transport.isRendering())
-    {
-#if PLATFORM_DESKTOP
-        App::Config().setProperty(Serialization::UI::lastRenderPath,
-            this->renderTarget.getParentURL().getLocalFile().getFullPathName());
-#endif
-
-        if (transport.startRender(this->renderTarget, this->format,
-                this->progressBar->getThumbnailResolution()))
-        {
-            this->startTrackingProgress();
-        }
-        else
-        {
-            App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
-        }
-    }
-    else
-    {
-        transport.stopRender();
-        this->stopTrackingProgress();
-        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
-    }
-}
-
-void RenderDialog::stopRender()
-{
-    auto &transport = this->project.getTransport();
-    if (transport.isRendering())
-    {
-        transport.stopRender();
-        this->stopTrackingProgress();
-    }
 }
 
 void RenderDialog::timerCallback()
@@ -256,7 +249,7 @@ void RenderDialog::timerCallback()
     {
         this->stopTrackingProgress();
         transport.stopRender();
-        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Success);
+        App::Layout().showTooltip({}, MainLayout::TooltipIcon::Success); // will dismiss the dialog
     }
 }
 

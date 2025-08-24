@@ -2675,7 +2675,36 @@ static const unsigned char temp_binary_data_110[] =
 "      { \"command\": \"MenuBack\", \"key\": \"H\" },\n"
 "      { \"command\": \"MenuBack\", \"key\": \"Backspace\" }\n"
 "    ]\n"
-"  } // ANCHOR_END: Menu\n"
+"  }, // ANCHOR_END: Menu\n"
+"  {  // ANCHOR: Dialog\n"
+"    \"receiver\": \"Dialog\",\n"
+"    \"keyPress\": [\n"
+"      { \"command\": \"DialogDismissCancel\", \"key\": \"Escape\" },\n"
+"      { \"command\": \"DialogDismissApply\", \"key\": \"Return\" },\n"
+"      { \"command\": \"DialogDismissDelete\", \"key\": \"Shift + Delete\" },\n"
+"      { \"command\": \"DialogNextPreset\", \"key\": \"Page Down\" },\n"
+"      { \"command\": \"DialogPreviousPreset\", \"key\": \"Page Up\" },\n"
+"      { \"command\": \"DialogPreviewPreset\", \"key\": \"Alt + Return\" },\n"
+"      { \"command\": \"DialogPreviewPreset\", \"key\": \"Control + Return\" },\n"
+"      { \"command\": \"DialogPreviewPreset\", \"key\": \"Command + Return\" },\n"
+"      { \"command\": \"DialogPreviewPreset\", \"key\": \"Shift + Return\" },\n"
+"      { \"command\": \"DialogPreviewPreset\", \"key\": \"Play\" },\n"
+"      { \"command\": \"DialogStopPreviewPreset\", \"key\": \"Stop\" },\n"
+"      { \"command\": \"DialogShowPresetsList\", \"key\": \"Tab\" }\n"
+"    ]\n"
+"  }, // ANCHOR_END: Dialog\n"
+"  {  // ANCHOR: ComboBox\n"
+"    \"receiver\": \"ComboBox\",\n"
+"    \"keyPress\": [\n"
+"      { \"command\": \"ComboDismissCancel\", \"key\": \"Tab\" },\n"
+"      { \"command\": \"ComboDismissCancel\", \"key\": \"Escape\" },\n"
+"      { \"command\": \"ComboDismissApply\", \"key\": \"Return\" },\n"
+"      { \"command\": \"ComboCursorUp\", \"key\": \"Cursor Up\" },\n"
+"      { \"command\": \"ComboCursorDown\", \"key\": \"Cursor Down\" },\n"
+"      { \"command\": \"ComboCursorPageUp\", \"key\": \"Page Up\" },\n"
+"      { \"command\": \"ComboCursorPageDown\", \"key\": \"Page Down\" }\n"
+"    ]\n"
+"  } // ANCHOR_END: ComboBox\n"
 "]}}}\n";
 
 const char* hotkeySchemes_json = (const char*) temp_binary_data_110;
@@ -6246,7 +6275,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 4550; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 22163; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 23561; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 13262; return scales_json;

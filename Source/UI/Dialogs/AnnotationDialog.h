@@ -25,9 +25,7 @@
 
 class AnnotationsSequence;
 
-class AnnotationDialog final : public DialogBase,
-    public TextEditor::Listener,
-    public ColourButton::Listener
+class AnnotationDialog final : public DialogBase, public ColourButton::Listener
 {
 public:
 
@@ -49,29 +47,29 @@ public:
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage(int commandId) override;
+    bool keyPressed(const KeyPress &key) override;
+    bool keyStateChanged(bool isKeyDown) override;
 
 private:
+
+    void dialogCancelAction() override;
+    void dialogApplyAction() override;
+    void dialogDeleteAction() override;
 
     AnnotationEvent originalEvent;
     AnnotationsSequence *const originalSequence;
     Component &ownerComponent;
 
-    void textEditorTextChanged(TextEditor&) override;
-    void textEditorReturnKeyPressed(TextEditor&) override;
-    void textEditorEscapeKeyPressed(TextEditor&) override;
-    void textEditorFocusLost(TextEditor&) override;
-
     Component *getPrimaryFocusTarget() override;
-
-    inline void cancelAndDisappear();
-    inline void updateOkButtonState();
+    void updateOkButtonState();
 
     const bool addsNewEvent = false;
     bool hasMadeChanges = false;
 
     static constexpr auto colourSwatchesMargin = 4;
 
-    void sendEventChange(const AnnotationEvent &newEvent);
+    void sendEventChanges(const AnnotationEvent &newEvent);
+    void updateEvent();
     void removeEvent();
 
     UniquePointer<MobileComboBox::Container> presetsCombo;

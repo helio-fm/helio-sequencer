@@ -23,20 +23,43 @@ class SettingsPage final : public Component
 {
 public:
 
+    class SettingsViewport final : public Viewport
+    {
+    public:
+
+        SettingsViewport() : Viewport()
+        {
+            this->setPaintingIsUnclipped(true);
+            this->setScrollBarsShown(true, false, true, false);
+            this->setInterceptsMouseClicks(false, true);
+            this->setWantsKeyboardFocus(false);
+            this->setFocusContainerType(Component::FocusContainerType::none);
+            this->setScrollBarThickness(SettingsViewport::scrollBarWidth);
+        }
+
+        bool keyPressed(const KeyPress &) override { return false; }
+
+        #if PLATFORM_DESKTOP
+        static constexpr auto scrollBarWidth = 2;
+        #elif PLATFORM_MOBILE
+        static constexpr auto scrollBarWidth = 32;
+        #endif
+    };
+
     explicit SettingsPage(Component *settingsList)
     {
+        this->setPaintingIsUnclipped(true);
+        this->setWantsKeyboardFocus(false);
+        this->setMouseClickGrabsKeyboardFocus(false);
+        this->setFocusContainerType(Component::FocusContainerType::none);
+
         this->background = make<PageBackgroundB>();
         this->addAndMakeVisible(this->background.get());
 
-        this->viewport = make<Viewport>();
-        this->addAndMakeVisible(this->viewport.get());
-        this->viewport->setScrollBarsShown(true, false, true, false);
-        this->viewport->setScrollBarThickness(SettingsPage::viewportScrollBarWidth);
+        this->viewport = make<SettingsViewport>();
         this->viewport->setViewedComponent(settingsList, false);
 
-        this->setFocusContainerType(Component::FocusContainerType::keyboardFocusContainer);
-        this->setWantsKeyboardFocus(true);
-        this->setPaintingIsUnclipped(true);
+        this->addAndMakeVisible(this->viewport.get());
     }
 
     void resized() override
@@ -44,15 +67,9 @@ public:
         this->background->setBounds(this->getLocalBounds());
         this->viewport->setBounds(this->getLocalBounds().reduced(6, 0));
         this->viewport->getViewedComponent()->
-            setSize(this->viewport->getWidth() - SettingsPage::viewportScrollBarWidth,
+            setSize(this->viewport->getWidth() - SettingsViewport::scrollBarWidth,
                 this->viewport->getViewedComponent()->getHeight());
     }
-
-#if PLATFORM_DESKTOP
-    static constexpr auto viewportScrollBarWidth = 2;
-#elif PLATFORM_MOBILE
-    static constexpr auto viewportScrollBarWidth = 32;
-#endif
 
 private:
 

@@ -35,7 +35,6 @@ public:
     void resized() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
-    void handleCommandMessage(int commandId) override;
 
 private:
 
@@ -45,8 +44,10 @@ private:
     Component *getPrimaryFocusTarget() override;
 
     void updateOkButtonState();
-    void doCancel();
-    void doOk();
+
+    void dialogCancelAction() override;
+    void dialogApplyAction() override;
+    void dialogDeleteAction() override {};
 
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> cancelButton;

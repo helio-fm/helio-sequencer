@@ -21,7 +21,7 @@
 
 using InputDialogCallback = Function<void(const String &result)>;
 
-class ModalDialogInput final : public DialogBase, public TextEditor::Listener
+class ModalDialogInput final : public DialogBase
 {
 public:
 
@@ -52,7 +52,6 @@ public:
     void parentHierarchyChanged() override;
     void visibilityChanged() override;
     void parentSizeChanged() override;
-    void handleCommandMessage(int commandId) override;
 
 private:
 
@@ -60,15 +59,11 @@ private:
 
     const String inputToRequire;
 
-    void cancel();
-    void okay();
+    void dialogCancelAction() override;
+    void dialogApplyAction() override;
+    void dialogDeleteAction() override {};
 
     void updateOkButtonState();
-
-    void textEditorTextChanged(TextEditor &editor) override;
-    void textEditorReturnKeyPressed(TextEditor&) override;
-    void textEditorEscapeKeyPressed(TextEditor&) override;
-    void textEditorFocusLost(TextEditor&) override;
 
     Component *getPrimaryFocusTarget() override;
 

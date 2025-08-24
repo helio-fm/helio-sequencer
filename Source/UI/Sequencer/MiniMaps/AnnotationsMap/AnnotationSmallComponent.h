@@ -44,6 +44,8 @@ private:
 
     UniquePointer<Label> annotationLabel;
 
+    const Colour baseColour = findDefaultColour(Label::textColourId);
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AnnotationSmallComponent)
 };
 

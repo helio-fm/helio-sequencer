@@ -39,6 +39,8 @@ public:
     {
         this->setAccessible(false);
         this->setPaintingIsUnclipped(true);
+        this->setFocusContainerType(Component::FocusContainerType::none);
+        this->setWantsKeyboardFocus(false);
     }
 
     void resized() override
@@ -110,7 +112,7 @@ void SettingsNode::recreatePage()
     this->sectionsList = nullptr;
 
     this->sectionsList = make<SettingsSectionsList>(6,
-        jmax(0, 6 - SettingsPage::viewportScrollBarWidth),
+        jmax(0, 6 - SettingsPage::SettingsViewport::scrollBarWidth),
         2, 12);
 
     this->themeSettings = make<ThemeSettings>();

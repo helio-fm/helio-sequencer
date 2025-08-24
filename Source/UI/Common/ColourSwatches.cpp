@@ -52,14 +52,14 @@ void ColourSwatches::onColourButtonClicked(ColourButton *clickedButton)
 
     if (auto *parentListener = dynamic_cast<ColourButton::Listener *>(this->getParentComponent()))
     {
-        this->lastSelectedColour = clickedButton->getColour();
+        this->selectedColour = clickedButton->getColour();
         parentListener->onColourButtonClicked(clickedButton);
     }
 }
 
 Colour ColourSwatches::getColour() const noexcept
 {
-    return this->lastSelectedColour;
+    return this->selectedColour;
 }
 
 int ColourSwatches::getNumButtons() const noexcept
@@ -69,7 +69,8 @@ int ColourSwatches::getNumButtons() const noexcept
 
 void ColourSwatches::setSelectedColour(Colour colour)
 {
-    this->lastSelectedColour = colour;
+    this->selectedColour = colour;
+
     for (const auto &button : this->buttons)
     {
         if (button->getColour() == colour)
@@ -81,4 +82,36 @@ void ColourSwatches::setSelectedColour(Colour colour)
             button->deselect();
         }
     }
+}
+
+Optional<Colour> ColourSwatches::selectNextColour()
+{
+    for (int i = 0; i < this->buttons.size(); ++i)
+    {
+        if (this->buttons.getUnchecked(i)->getColour() == this->selectedColour)
+        {
+            const int nextIndex = jmin(i + 1, this->buttons.size() - 1);
+            const auto newColour = this->buttons.getUnchecked(nextIndex)->getColour();
+            this->setSelectedColour(newColour);
+            return newColour;
+        }
+    }
+
+    return {};
+}
+
+Optional<Colour> ColourSwatches::selectPreviousColour()
+{
+    for (int i = 0; i < this->buttons.size(); ++i)
+    {
+        if (this->buttons.getUnchecked(i)->getColour() == this->selectedColour)
+        {
+            const int previousIndex = jmax(i - 1, 0);
+            const auto newColour = this->buttons.getUnchecked(previousIndex)->getColour();
+            this->setSelectedColour(newColour);
+            return newColour;
+        }
+    }
+
+    return {};
 }

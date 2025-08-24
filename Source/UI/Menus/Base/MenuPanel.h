@@ -107,15 +107,18 @@ private:
 
     bool shouldResizeToFitContent = false;
     AnimationType lastAnimationType = AnimationType::None;
+
     int defaultItemIndex = -1;
+    void scrollToDefaultItemIfAny();
 
     Menu menu;
     Menu filteredMenu;
     inline Menu &getMenuOrFiltered();
 
-    bool moveCursor(int delta);
-    void doActionAtCursor();
     Optional<int> cursorPosition;
+    bool moveCursor(int delta);
+    int getDefaultCursorPosition() const;
+    void doActionAtCursor();
     FlatHashMap<String, int, StringHash> recentCursorPositions;
     void postCommandMessageToParent(int commandId);
 

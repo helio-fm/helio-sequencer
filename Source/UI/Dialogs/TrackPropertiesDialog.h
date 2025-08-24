@@ -72,8 +72,9 @@ private:
     void cancelChangesIfAny();
     bool hasChanges() const;
 
-    void doCancel();
-    void doOk();
+    void dialogCancelAction() override;
+    void dialogApplyAction() override;
+    void dialogDeleteAction() override {};
 
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> cancelButton;

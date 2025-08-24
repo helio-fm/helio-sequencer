@@ -23,7 +23,7 @@
 
 // a hack to pass the TextEditor's mousewheel to the dialog,
 // which needs it for adjusting the tempo with mouse wheel:
-class TempoTextEditor final : public TextEditor, private AsyncUpdater
+class TempoTextEditor final : public DialogTextEditor, private AsyncUpdater
 {
 public:
 
@@ -53,7 +53,7 @@ private:
         }
     }
 
-    MouseWheelDetails details;
+    MouseWheelDetails details = {};
 };
 
 class TapTempoComponent final : public Component, private Timer
@@ -192,14 +192,14 @@ TempoDialog::TempoDialog(int bpmValue)
     this->addAndMakeVisible(this->cancelButton.get());
     this->cancelButton->onClick = [this]()
     {
-        this->doCancel();
+        this->dialogCancelAction();
     };
 
     this->okButton = make<TextButton>();
     this->addAndMakeVisible(this->okButton.get());
     this->okButton->onClick = [this]()
     {
-        this->doOk();
+        this->dialogApplyAction();
     };
 
     this->tapTempo = make<TapTempoComponent>();
@@ -210,17 +210,9 @@ TempoDialog::TempoDialog(int bpmValue)
         this->textEditor->setText(String(newTempoBpm), sendNotification);
     };
 
-    this->textEditor = make<TempoTextEditor>();
+    this->textEditor = HelioTheme::makeSingleLineTextEditor<TempoTextEditor>(true,
+        DialogBase::Defaults::textEditorFont);
     this->addAndMakeVisible(this->textEditor.get());
-    this->textEditor->setMultiLine(false);
-    this->textEditor->setReturnKeyStartsNewLine(false);
-    this->textEditor->setReadOnly(false);
-    this->textEditor->setScrollbarsShown(true);
-    this->textEditor->setCaretVisible(true);
-    this->textEditor->setPopupMenuEnabled(true);
-    this->textEditor->setFont(DialogBase::Defaults::textEditorFont);
-    this->textEditor->setJustification(Justification::centredLeft);
-    this->textEditor->setIndents(4, 0);
 
     this->textEditor->onWheelMove = [this](const MouseWheelDetails &wheel)
     {
@@ -245,22 +237,6 @@ TempoDialog::TempoDialog(int bpmValue)
     {
         this->updateOkButtonState();
         this->resetKeyboardFocus();
-    };
-
-    this->textEditor->onReturnKey = [this]()
-    {
-        if (this->textEditor->getText().isNotEmpty())
-        {
-            this->doOk();
-            return;
-        }
-
-        this->resetKeyboardFocus();
-    };
-
-    this->textEditor->onEscapeKey = [this]()
-    {
-        this->doCancel();
     };
 
     this->textEditor->setText(String(bpmValue), dontSendNotification);
@@ -306,14 +282,6 @@ void TempoDialog::parentSizeChanged()
     this->updatePosition();
 }
 
-void TempoDialog::handleCommandMessage(int commandId)
-{
-    if (commandId == CommandIDs::DismissModalComponentAsync)
-    {
-        this->doCancel();
-    }
-}
-
 void TempoDialog::updateOkButtonState()
 {
     const bool textIsEmpty = this->textEditor->getText().isEmpty();
@@ -331,44 +299,40 @@ void TempoDialog::updateOkButtonState()
     }
 }
 
-void TempoDialog::doCancel()
+void TempoDialog::dialogCancelAction()
 {
+    const BailOutChecker checker(this);
+
     if (this->onCancel != nullptr)
     {
-        BailOutChecker checker(this);
-
         this->onCancel();
-
-        if (checker.shouldBailOut())
-        {
-            jassertfalse; // not expected
-            return;
-        }
     }
 
-    this->dismiss();
+    jassert(!checker.shouldBailOut());
+    if (!checker.shouldBailOut())
+    {
+        this->dismiss();
+    }
 }
 
-void TempoDialog::doOk()
+void TempoDialog::dialogApplyAction()
 {
-    if (this->textEditor->getText().isNotEmpty())
+    if (this->textEditor->getText().isEmpty())
     {
-        if (this->onOk != nullptr)
-        {
-            BailOutChecker checker(this);
+        this->resetKeyboardFocus();
+        return;
+    }
 
-            const auto newValue =
-                this->textEditor->getText().getIntValue();
+    const BailOutChecker checker(this);
 
-            this->onOk(newValue);
+    if (this->onOk != nullptr)
+    {
+        this->onOk(this->textEditor->getText().getIntValue());
+    }
 
-            if (checker.shouldBailOut())
-            {
-                jassertfalse; // not expected
-                return;
-            }
-        }
-
+    jassert(!checker.shouldBailOut());
+    if (!checker.shouldBailOut())
+    {
         this->dismiss();
     }
 }

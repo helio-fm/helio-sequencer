@@ -19,10 +19,9 @@
 #include "DialogBase.h"
 #include "HelioTheme.h"
 #include "MainLayout.h"
-#include "SequencerLayout.h"
-#include "RollBase.h"
 #include "ComponentIDs.h"
 #include "App.h"
+#include "Config.h"
 
 struct DialogDragConstrainer final : public ComponentBoundsConstrainer
 {
@@ -42,8 +41,27 @@ struct DialogDragConstrainer final : public ComponentBoundsConstrainer
     }
 };
 
+bool DialogTextEditor::keyPressed(const KeyPress &key)
+{
+    static Array<KeyPress> dialogKeyPresses =
+        App::Config().getHotkeySchemes()->getCurrent()->
+            findKeyPressesForReceiver(ComponentIDs::dialog);
+
+    for (const auto &usedAsHotkey : dialogKeyPresses)
+    {
+        if (key == usedAsHotkey)
+        {
+            return false;
+        }
+    }
+
+    return TextEditor::keyPressed(key);
+}
+
 DialogBase::DialogBase()
 {
+    this->setComponentID(ComponentIDs::dialog);
+
     this->toFront(true);
     this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(true, true);
@@ -100,41 +118,67 @@ void DialogBase::inputAttemptWhenModal()
         return;
     }
 #endif
-    
-    // hack warning:
-    // when you rclick/tap outside of the dialog to hide it and start dragging the roll immediately,
-    // JUCE never sends the mouseDown event to the roll because the modal dialog is still showing,
-    // and after the dialog is dismissed, dragging continues with incorrect anchor
-    // and the viewport position jumps away unpredictably; this check compensates for that:
-    if (auto *sequencer = dynamic_cast<SequencerLayout *>(App::Layout().findChildWithID(ComponentIDs::sequencerLayoutId)))
-    {
-        if (auto *roll = sequencer->getRoll())
-        {
-            roll->resetDraggingAnchors();
-        }
-    }
 
-    this->postCommandMessage(CommandIDs::DismissModalComponentAsync);
+    this->dialogCancelAction();
+}
+
+void DialogBase::handleCommandMessage(int commandId)
+{
+    switch (commandId)
+    {
+    case CommandIDs::DismissModalComponentAsync:
+    case CommandIDs::DialogDismissCancel:
+        this->dialogCancelAction();
+        break;
+    case CommandIDs::DialogDismissApply:
+        this->dialogApplyAction();
+        break;
+    case CommandIDs::DialogDismissDelete:
+        this->dialogDeleteAction();
+        break;
+    default:
+        break;
+    }
+}
+
+HotkeyScheme::Ptr DialogBase::getHotkeyScheme()
+{
+    return App::Config().getHotkeySchemes()->getCurrent();
+}
+
+UniquePointer<TextEditor> DialogBase::makeSingleLineTextEditor()
+{
+    return HelioTheme::makeSingleLineTextEditor<DialogTextEditor>(true,
+        DialogBase::Defaults::textEditorFont);
+}
+
+bool DialogBase::keyPressed(const KeyPress &key)
+{
+    getHotkeyScheme()->dispatchKeyPress(key, this, this);
+    return true;
+}
+
+bool DialogBase::keyStateChanged(bool isKeyDown)
+{
+    getHotkeyScheme()->dispatchKeyStateChange(isKeyDown, this, this);
+    return true;
 }
 
 void DialogBase::dismiss()
 {
-    this->fadeOut();
-    UniquePointer<Component> deleter(this);
-}
-
-void DialogBase::fadeOut()
-{
-    if (App::isOpenGLRendererEnabled())
-    {
-        App::animateComponent(this, this->getBounds().reduced(10),
-            0.f, Globals::UI::fadeOutShort, true, 0.0, 1.0);
-    }
-    else
-    {
+    //if (App::isOpenGLRendererEnabled())
+    //{
+    //    App::animateComponent(this,
+    //        this->getBounds().reduced(4).translated(0, -4),
+    //            0.f, Globals::UI::fadeOutShort, true, 1.0, 0.0);
+    //}
+    //else
+    //{
         App::animateComponent(this, this->getBounds(),
-            0.f, Globals::UI::fadeOutShort, true, 0.0, 1.0);
-    }
+            0.f, Globals::UI::fadeOutShort, true, 1.0, 0.0);
+    //}
+
+    UniquePointer<Component> deleter(this);
 }
 
 void DialogBase::updatePosition()

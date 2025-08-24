@@ -37,9 +37,12 @@ public:
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage(int commandId) override;
-    bool keyPressed(const KeyPress& key) override;
 
 private:
+
+    void dialogCancelAction() override;
+    void dialogApplyAction() override;
+    void dialogDeleteAction() override {}
 
     void timerCallback() override;
 
@@ -55,9 +58,6 @@ private:
 
     UniquePointer<FileChooser> renderFileChooser;
     void launchFileChooser();
-
-    void startOrAbortRender();
-    void stopRender();
 
 private:
 

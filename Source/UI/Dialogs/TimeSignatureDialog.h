@@ -50,8 +50,14 @@ public:
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage(int commandId) override;
+    bool keyPressed(const KeyPress &key) override;
+    bool keyStateChanged(bool isKeyDown) override;
 
 private:
+
+    void dialogCancelAction() override;
+    void dialogApplyAction() override;
+    void dialogDeleteAction() override;
 
     const WeakReference<UndoStack> undoStack;
 
@@ -70,7 +76,6 @@ private:
 
     Component *getPrimaryFocusTarget() override;
 
-    void undoAndDismiss();
     void updateOkButtonState();
     void updateSize();
 

@@ -462,5 +462,34 @@
       { "command": "MenuBack", "key": "H" },
       { "command": "MenuBack", "key": "Backspace" }
     ]
-  } // ANCHOR_END: Menu
+  }, // ANCHOR_END: Menu
+  {  // ANCHOR: Dialog
+    "receiver": "Dialog",
+    "keyPress": [
+      { "command": "DialogDismissCancel", "key": "Escape" },
+      { "command": "DialogDismissApply", "key": "Return" },
+      { "command": "DialogDismissDelete", "key": "Shift + Delete" },
+      { "command": "DialogNextPreset", "key": "Page Down" },
+      { "command": "DialogPreviousPreset", "key": "Page Up" },
+      { "command": "DialogPreviewPreset", "key": "Alt + Return" },
+      { "command": "DialogPreviewPreset", "key": "Control + Return" },
+      { "command": "DialogPreviewPreset", "key": "Command + Return" },
+      { "command": "DialogPreviewPreset", "key": "Shift + Return" },
+      { "command": "DialogPreviewPreset", "key": "Play" },
+      { "command": "DialogStopPreviewPreset", "key": "Stop" },
+      { "command": "DialogShowPresetsList", "key": "Tab" }
+    ]
+  }, // ANCHOR_END: Dialog
+  {  // ANCHOR: ComboBox
+    "receiver": "ComboBox",
+    "keyPress": [
+      { "command": "ComboDismissCancel", "key": "Tab" },
+      { "command": "ComboDismissCancel", "key": "Escape" },
+      { "command": "ComboDismissApply", "key": "Return" },
+      { "command": "ComboCursorUp", "key": "Cursor Up" },
+      { "command": "ComboCursorDown", "key": "Cursor Down" },
+      { "command": "ComboCursorPageUp", "key": "Page Up" },
+      { "command": "ComboCursorPageDown", "key": "Page Down" }
+    ]
+  } // ANCHOR_END: ComboBox
 ]}}}

@@ -75,9 +75,26 @@ public:
 
     void fillTextEditorBackground(Graphics&, int w, int h, TextEditor&) override;
     void drawTextEditorOutline(Graphics&, int w, int h, TextEditor&) override {}
-    static UniquePointer<TextEditor> makeSingleLineTextEditor(bool isEditable,
-        float font = Globals::UI::Fonts::M);
-        
+
+    template <typename TextEditorType = TextEditor>
+    static UniquePointer<TextEditorType> makeSingleLineTextEditor(bool isEditable,
+        float fontSize = Globals::UI::Fonts::M)
+    {
+        jassert(fontSize >= Globals::UI::Fonts::M && fontSize <= Globals::UI::Fonts::L);
+        auto editor = make<TextEditorType>();
+        editor->setMultiLine(false);
+        editor->setReturnKeyStartsNewLine(false);
+        editor->setReadOnly(!isEditable);
+        editor->setScrollbarsShown(isEditable);
+        editor->setCaretVisible(isEditable);
+        editor->setPopupMenuEnabled(isEditable);
+        editor->setInterceptsMouseClicks(isEditable, true);
+        editor->setJustification(Justification::centredLeft);
+        editor->setFont(fontSize);
+        editor->setIndents(4, 0);
+        return editor;
+    }
+
     //===------------------------------------------------------------------===//
     // Labels
     //===------------------------------------------------------------------===//

@@ -76,7 +76,6 @@ private:
     int getNumVisibleRows() const noexcept;
 
     void dismiss();
-    void fadeOut();
     void updatePosition();
 
     SafePointer<RollBase> roll;

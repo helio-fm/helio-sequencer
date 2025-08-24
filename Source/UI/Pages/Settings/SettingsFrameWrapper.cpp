@@ -20,17 +20,20 @@
 
 SettingsFrameWrapper::SettingsFrameWrapper(Component *targetComponent, const String &title)
 {
+    this->setPaintingIsUnclipped(true);
+    this->setWantsKeyboardFocus(false);
+    this->setMouseClickGrabsKeyboardFocus(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
+
     jassert(targetComponent != nullptr);
 
     this->panel = make<FramePanel>();
     this->addAndMakeVisible(this->panel.get());
 
     this->titleLabel = make<Label>();
-    this->addAndMakeVisible(this->titleLabel.get());
     this->titleLabel->setFont(Globals::UI::Fonts::L);
     this->titleLabel->setJustificationType(Justification::centredLeft);
-
-    this->setPaintingIsUnclipped(true);
+    this->addAndMakeVisible(this->titleLabel.get());
 
     this->setEnabled(targetComponent->isEnabled() && targetComponent->getHeight() > 0);
     this->showNonOwned(targetComponent, title);

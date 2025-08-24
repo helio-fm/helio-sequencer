@@ -345,12 +345,6 @@ void CommandPalette::textEditorFocusLost(TextEditor &)
 
 void CommandPalette::dismiss()
 {
-    this->fadeOut();
-    UniquePointer<Component> deleter(this);
-}
-
-void CommandPalette::fadeOut()
-{
     if (App::isOpenGLRendererEnabled())
     {
         App::animateComponent(this,
@@ -362,6 +356,8 @@ void CommandPalette::fadeOut()
         App::animateComponent(this, this->getBounds(),
             0.f, Globals::UI::fadeOutShort, true, 1.0, 0.0);
     }
+
+    UniquePointer<Component> deleter(this);
 }
 
 void CommandPalette::updatePosition()

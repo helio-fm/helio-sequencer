@@ -20,7 +20,6 @@
 #include "UndoStack.h"
 #include "ProjectNode.h"
 #include "IconComponent.h"
-#include "HelioTheme.h"
 #include "CommandIDs.h"
 
 TrackPropertiesDialog::TrackPropertiesDialog(ProjectNode &project,
@@ -54,38 +53,22 @@ void TrackPropertiesDialog::init(const String &title, const String &confirmation
     this->addAndMakeVisible(this->cancelButton.get());
     this->cancelButton->onClick = [this]()
     {
-        this->doCancel();
+        this->dialogCancelAction();
     };
 
     this->okButton = make<TextButton>();
     this->addAndMakeVisible(this->okButton.get());
     this->okButton->onClick = [this]()
     {
-        this->doOk();
+        this->dialogApplyAction();
     };
 
     const auto colourButtonSizeWithMargin = isPhoneLayout ? 25 : 29;
     this->colourSwatches = make<ColourSwatches>(colourButtonSizeWithMargin);
     this->addAndMakeVisible(this->colourSwatches.get());
 
-    this->textEditor = HelioTheme::makeSingleLineTextEditor(true, DialogBase::Defaults::textEditorFont);
+    this->textEditor = DialogBase::makeSingleLineTextEditor();
     this->addAndMakeVisible(this->textEditor.get());
-
-    this->textEditor->onEscapeKey = [this]()
-    {
-        this->doCancel();
-    };
-
-    this->textEditor->onReturnKey = [this]()
-    {
-        if (this->textEditor->getText().isNotEmpty())
-        {
-            this->doOk(); // apply on return key
-            return;
-        }
-
-        this->resetKeyboardFocus();
-    };
 
     this->textEditor->onFocusLost = [this]()
     {
@@ -167,9 +150,27 @@ void TrackPropertiesDialog::parentSizeChanged()
 
 void TrackPropertiesDialog::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::DismissModalComponentAsync)
+    if (commandId == CommandIDs::DialogNextPreset)
     {
-        this->doCancel();
+        if (const auto colour = this->colourSwatches->selectNextColour())
+        {
+            this->newColour = *colour;
+            this->updateControls();
+            this->applyChangesIfAny();
+        }
+    }
+    else if (commandId == CommandIDs::DialogPreviousPreset)
+    {
+        if (const auto colour = this->colourSwatches->selectPreviousColour())
+        {
+            this->newColour = *colour;
+            this->updateControls();
+            this->applyChangesIfAny();
+        }
+    }
+    else
+    {
+        DialogBase::handleCommandMessage(commandId);
     }
 }
 
@@ -232,13 +233,13 @@ void TrackPropertiesDialog::applyChangesIfAny()
     this->hasMadeChanges = true;
 }
 
-void TrackPropertiesDialog::doCancel()
+void TrackPropertiesDialog::dialogCancelAction()
 {
     this->cancelChangesIfAny();
 
     if (this->onCancel != nullptr)
     {
-        BailOutChecker checker(this);
+        const BailOutChecker checker(this);
 
         this->onCancel();
 
@@ -252,11 +253,17 @@ void TrackPropertiesDialog::doCancel()
     this->dismiss();
 }
 
-void TrackPropertiesDialog::doOk()
+void TrackPropertiesDialog::dialogApplyAction()
 {
+    if (this->textEditor->getText().isEmpty())
+    {
+        this->resetKeyboardFocus();
+        return;
+    }
+
     if (this->onOk != nullptr)
     {
-        BailOutChecker checker(this);
+        const BailOutChecker checker(this);
 
         this->onOk();
 

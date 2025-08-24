@@ -30,8 +30,7 @@ class ScalePreviewThread;
 class ScaleEditor;
 class KeySelector;
 
-class KeySignatureDialog final : public DialogBase,
-    public TextEditor::Listener
+class KeySignatureDialog final : public DialogBase
 {
 public:
 
@@ -50,13 +49,14 @@ public:
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage(int commandId) override;
+    bool keyPressed(const KeyPress &key) override;
+    bool keyStateChanged(bool isKeyDown) override;
 
 private:
 
-    void textEditorTextChanged(TextEditor&) override;
-    void textEditorReturnKeyPressed(TextEditor&) override;
-    void textEditorEscapeKeyPressed(TextEditor&) override;
-    void textEditorFocusLost(TextEditor&) override;
+    void dialogCancelAction() override;
+    void dialogApplyAction() override;
+    void dialogDeleteAction() override;
 
     Component *getPrimaryFocusTarget() override;
 
@@ -68,8 +68,6 @@ private:
     Array<Scale::Ptr> scales;
 
     void reloadScalesList();
-
-    void cancelAndDisappear();
     void updateButtonsState();
 
     bool addsNewEvent = false;

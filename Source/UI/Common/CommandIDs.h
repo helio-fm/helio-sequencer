@@ -28,9 +28,8 @@ namespace CommandIDs
         DismissModalComponentAsync      = 0x0003,
 
         AddAnnotation                   = 0x0101,
-        AddTimeSignature                = 0x0103,
-        AddKeySignature                 = 0x0105,
-        JumpToAnnotation                = 0x0107, // more ids reserved for annotations
+        AddTimeSignature                = 0x0102,
+        AddKeySignature                 = 0x0103,
 
         CreateArpeggiatorFromSelection  = 0x0200,
 
@@ -129,9 +128,6 @@ namespace CommandIDs
         ProjectTempoDown1Bpm            = 0x2075,
         TempoUp1Bpm                     = 0x2076,
         TempoDown1Bpm                   = 0x2077,
-
-        SelectScale                     = 0x2100, // more ids reserved for sub-items
-        SelectTimeSignature             = 0x2200, // more ids reserved for sub-items
 
         SwitchBetweenRolls              = 0x2500,
         SwitchToEditMode                = 0x2501,
@@ -277,6 +273,22 @@ namespace CommandIDs
         MenuCursorHide                  = 0x4738,
         MenuCursorTryExitUp             = 0x4739,
         MenuCursorTryExitDown           = 0x473a,
+
+        DialogDismissCancel             = 0x4740,
+        DialogDismissApply              = 0x4741,
+        DialogDismissDelete             = 0x4742,
+        DialogNextPreset                = 0x4743,
+        DialogPreviousPreset            = 0x4744,
+        DialogPreviewPreset             = 0x4745,
+        DialogStopPreviewPreset         = 0x4746,
+        DialogShowPresetsList           = 0x4747,
+
+        ComboDismissCancel              = 0x4750,
+        ComboDismissApply               = 0x4751,
+        ComboCursorUp                   = 0x4752,
+        ComboCursorDown                 = 0x4753,
+        ComboCursorPageUp               = 0x4754,
+        ComboCursorPageDown             = 0x4755,
 
         YourNextCommandId               = 0x4800
     };

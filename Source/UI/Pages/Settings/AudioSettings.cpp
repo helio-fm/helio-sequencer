@@ -23,6 +23,9 @@
 
 AudioSettings::AudioSettings(AudioCore &core) : audioCore(core)
 {
+    this->setFocusContainerType(Component::FocusContainerType::none);
+    this->setWantsKeyboardFocus(false);
+
     this->deviceTypeEditor = HelioTheme::makeSingleLineTextEditor(false);
     this->addAndMakeVisible(this->deviceTypeEditor.get());
 

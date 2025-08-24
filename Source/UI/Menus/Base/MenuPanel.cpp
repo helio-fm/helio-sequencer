@@ -58,7 +58,10 @@ void MenuPanel::handleCommandMessage(int commandId)
         this->postCommandMessageToParent(CommandIDs::DismissModalComponentAsync);
         break;
     case CommandIDs::MenuSelect:
-        this->doActionAtCursor();
+        if (this->cursorPosition.hasValue())
+        {
+            this->doActionAtCursor();
+        }
         break;
     case CommandIDs::MenuCursorHide:
         this->cursorPosition.reset();
@@ -161,7 +164,7 @@ void MenuPanel::updateContent(const Menu &commands,
 
         if (this->cursorPosition.hasValue())
         {
-            this->cursorPosition = jmax(0, this->defaultItemIndex);
+            this->cursorPosition = this->getDefaultCursorPosition();
             // reversed order to check the back button last:
             for (int i = this->menu.size(); i --> 0 ;)
             {
@@ -295,19 +298,7 @@ void MenuPanel::updateContent(const Menu &commands,
         }
     }
 
-    if (this->defaultItemIndex >= 0 &&
-        this->defaultItemIndex < this->menu.size())
-    {
-        // instead of using this
-        //this->listBox->scrollToEnsureRowIsOnscreen(this->defaultItemIndex);
-        // center the view on the default item:
-        auto *listViewport = this->listBox->getViewport();
-        const auto rowHeight = this->listBox->getRowHeight();
-        listViewport->setViewPosition(listViewport->getViewPositionX(),
-            jmax(0, (this->defaultItemIndex * rowHeight) -
-                (listViewport->getViewHeight() / 2) +
-                rowHeight / 2));
-    }
+    this->scrollToDefaultItemIfAny();
 
     if (this->shouldResizeToFitContent && receivedNewCommands)
     {
@@ -343,11 +334,6 @@ void MenuPanel::updateContent(const Menu &commands,
 
 void MenuPanel::setDefaultItem(int newDefaultItem)
 {
-    if (this->defaultItemIndex == newDefaultItem)
-    {
-        return;
-    }
-
     this->defaultItemIndex = newDefaultItem;
 
     // also make sure that the cursor appears at defaultItemIndex
@@ -360,27 +346,36 @@ void MenuPanel::setDefaultItem(int newDefaultItem)
 
 void MenuPanel::applyFilter(const String &text)
 {
+    this->cursorPosition.reset();
+
     this->filteredMenu.clearQuick();
 
-    if (text.isEmpty())
+    if (text.isNotEmpty())
     {
-        this->listBox->updateContent();
-        return;
-    }
-
-    for (const auto item : this->menu)
-    {
-        if (item->commandText.containsIgnoreCase(text))
+        for (const auto item : this->menu)
         {
-            this->filteredMenu.add(item);
+            if (item->commandText.containsIgnoreCase(text))
+            {
+                this->filteredMenu.add(item);
+            }
         }
     }
 
     this->listBox->updateContent();
+
+    if (this->filteredMenu.isEmpty())
+    {
+        this->scrollToDefaultItemIfAny();
+    }
+    else
+    {
+        this->listBox->getViewport()->setViewPosition(
+            this->listBox->getViewport()->getViewPositionX(), 0);
+    }
 }
 
 //===----------------------------------------------------------------------===//
-// ListBoxModel
+// Helpers
 //===----------------------------------------------------------------------===//
 
 bool MenuPanel::moveCursor(int delta)
@@ -388,7 +383,7 @@ bool MenuPanel::moveCursor(int delta)
     jassert(delta != 0);
     if (!this->cursorPosition.hasValue())
     {
-        this->cursorPosition = jmax(0, this->defaultItemIndex);
+        this->cursorPosition = this->getDefaultCursorPosition();
     }
     else
     {
@@ -435,6 +430,16 @@ void MenuPanel::doActionAtCursor()
     menuItemComponent->doAction();
 }
 
+int MenuPanel::getDefaultCursorPosition() const
+{
+    if (!this->filteredMenu.isEmpty())
+    {
+        return 0;
+    }
+
+    return jlimit(0, this->menu.size() - 1, this->defaultItemIndex);
+}
+
 void MenuPanel::postCommandMessageToParent(int commandId)
 {
     if (this->getParentComponent() != nullptr)
@@ -443,10 +448,31 @@ void MenuPanel::postCommandMessageToParent(int commandId)
     }
 }
 
+void MenuPanel::scrollToDefaultItemIfAny()
+{
+    if (this->defaultItemIndex >= 0 &&
+        this->defaultItemIndex < this->menu.size())
+    {
+        // instead of using this
+        //this->listBox->scrollToEnsureRowIsOnscreen(this->defaultItemIndex);
+        // center the view on the default item:
+        auto *listViewport = this->listBox->getViewport();
+        const auto rowHeight = this->listBox->getRowHeight();
+        listViewport->setViewPosition(listViewport->getViewPositionX(),
+            jmax(0, (this->defaultItemIndex * rowHeight) -
+            (listViewport->getViewHeight() / 2) +
+                rowHeight / 2));
+    }
+}
+
 inline MenuPanel::Menu &MenuPanel::getMenuOrFiltered()
 {
     return this->filteredMenu.isEmpty() ? this->menu : this->filteredMenu;
 }
+
+//===----------------------------------------------------------------------===//
+// ListBoxModel
+//===----------------------------------------------------------------------===//
 
 int MenuPanel::getNumRows()
 {
@@ -464,7 +490,8 @@ Component *MenuPanel::refreshComponentForRow(int rowNumber,
     }
 
     const auto itemDescription = menuToShow[rowNumber];
-    const auto isDisplayedAsCurrent = rowNumber == this->defaultItemIndex;
+    const auto isDisplayedAsCurrent =
+        this->filteredMenu.isEmpty() && (rowNumber == this->defaultItemIndex);
     const auto isCursorShown =
         this->cursorPosition.hasValue() && *this->cursorPosition == rowNumber;
 

@@ -18,6 +18,13 @@
 #pragma once
 
 #include "ColourIDs.h"
+#include "HotkeyScheme.h"
+
+class DialogTextEditor : public TextEditor
+{
+public:
+    bool keyPressed(const KeyPress &key) override;
+};
 
 class DialogBase : public Component
 {
@@ -31,11 +38,22 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void inputAttemptWhenModal() override;
+    void handleCommandMessage(int commandId) override;
+    bool keyPressed(const KeyPress &key) override;
+    bool keyStateChanged(bool isKeyDown) override;
+
+    static UniquePointer<TextEditor> makeSingleLineTextEditor();
 
 protected:
     
+    virtual void dialogCancelAction() = 0;
+    virtual void dialogApplyAction() = 0;
+    virtual void dialogDeleteAction() = 0;
+
     void dismiss();
-    virtual void updatePosition();
+    void updatePosition();
+
+    static HotkeyScheme::Ptr getHotkeyScheme();
 
     Rectangle<int> getContentBounds(bool noPadding = false) const noexcept;
     Rectangle<int> getCaptionBounds() const noexcept;
@@ -92,8 +110,6 @@ protected:
     };
 
 private:
-
-    void fadeOut();
 
     ComponentDragger dragger;
     UniquePointer<ComponentBoundsConstrainer> moveConstrainer;

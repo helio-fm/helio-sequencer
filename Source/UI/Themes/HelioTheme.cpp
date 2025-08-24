@@ -212,23 +212,6 @@ void HelioTheme::fillTextEditorBackground(Graphics &g, int w, int h, TextEditor 
     g.drawHorizontalLine(h - 1, 1.f, w - 1.f);
 }
 
-UniquePointer<TextEditor> HelioTheme::makeSingleLineTextEditor(bool isEditable, float font)
-{
-    jassert(font >= Globals::UI::Fonts::M && font <= Globals::UI::Fonts::L);
-    auto editor = make<TextEditor>();
-    editor->setMultiLine(false);
-    editor->setReturnKeyStartsNewLine(false);
-    editor->setReadOnly(!isEditable);
-    editor->setScrollbarsShown(isEditable);
-    editor->setCaretVisible(isEditable);
-    editor->setPopupMenuEnabled(isEditable);
-    editor->setInterceptsMouseClicks(isEditable, true);
-    editor->setJustification(Justification::centredLeft);
-    editor->setFont(font);
-    editor->setIndents(4, 0);
-    return editor;
-}
-
 //===----------------------------------------------------------------------===//
 // Labels
 //===----------------------------------------------------------------------===//

@@ -41,13 +41,12 @@ public:
     void resized() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
-    void handleCommandMessage(int commandId) override;
-    bool keyPressed(const KeyPress &key) override;
 
 private:
 
-    void cancel();
-    void okay();
+    void dialogCancelAction() override;
+    void dialogApplyAction() override;
+    void dialogDeleteAction() override {};
 
     UniquePointer<Label> messageLabel;
     UniquePointer<TextButton> cancelButton;
