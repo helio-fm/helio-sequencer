@@ -19,6 +19,7 @@
 
 #include "IconComponent.h"
 #include "HighlightedComponent.h"
+#include "ComponentFader.h"
 #include "CommandIDs.h"
 
 class IconButton : public IconComponent, public HighlightedComponent
@@ -53,6 +54,7 @@ public:
     // on desktop platforms buttons react on mouse down (feels a bit more responsive I guess),
     // but on mobile platforms they react on mouse up to be able to check if this was a tap, not dragging
 #if PLATFORM_DESKTOP
+
     void mouseDown(const MouseEvent &e) override
     {
         if (this->isEnabled())
@@ -65,11 +67,13 @@ public:
             {
                 this->getParentComponent()->postCommandMessage(this->commandId);
             }
-        }
 
-        HighlightedComponent::mouseExit(e);
+            this->animateClick();
+        }
     }
+
 #elif PLATFORM_MOBILE
+
     void mouseUp(const MouseEvent &e) override
     {
         if (this->isEnabled() && e.getDistanceFromDragStart() < IconButton::dragStartThreshold)
@@ -82,15 +86,16 @@ public:
             {
                 this->getParentComponent()->postCommandMessage(this->commandId);
             }
-        }
 
-        HighlightedComponent::mouseExit(e);
+            this->animateClick();
+        }
     }
+
 #endif
 
     void enablementChanged() override
     {
-        this->setAlpha(this->isEnabled() ? 1.0f : 0.4f);
+        this->setIconAlphaMultiplier(this->isEnabled() ? 1.f : 0.33f);
     }
 
     void resized() override
@@ -128,6 +133,16 @@ protected:
     }
 
     static constexpr auto dragStartThreshold = 5;
-    
+
+    ComponentFader clickAnimator;
+
+    void animateClick()
+    {
+        auto clickMarker = UniquePointer<Component>(this->createHighlighterComponent());
+        clickMarker->setBounds(this->getLocalBounds());
+        this->addAndMakeVisible(clickMarker.get());
+        this->clickAnimator.fadeOut(clickMarker.get(), Globals::UI::fadeOutLong, true);
+    }
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(IconButton)
 };

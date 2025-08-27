@@ -32,11 +32,11 @@ public:
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, true);
 
-        this->navigatePrevious = make<IconButton>(Icons::findByName(Icons::back, 20), CommandIDs::ShowPreviousPage);
-        this->addAndMakeVisible(this->navigatePrevious.get());
-
         this->navigateNext = make<IconButton>(Icons::findByName(Icons::forward, 20), CommandIDs::ShowNextPage);
         this->addAndMakeVisible(this->navigateNext.get());
+
+        this->navigatePrevious = make<IconButton>(Icons::findByName(Icons::back, 20), CommandIDs::ShowPreviousPage);
+        this->addAndMakeVisible(this->navigatePrevious.get());
 
         this->arrow = make<HeadlineItemArrow>();
         this->addAndMakeVisible(this->arrow.get());
@@ -48,10 +48,19 @@ public:
 
     void updateState(bool canGoPrevious, bool canGoNext)
     {
-        this->navigatePrevious->setInterceptsMouseClicks(canGoPrevious, false);
-        this->navigatePrevious->setIconAlphaMultiplier(canGoPrevious ? 0.45f : 0.2f);
-        this->navigateNext->setInterceptsMouseClicks(canGoNext, false);
-        this->navigateNext->setIconAlphaMultiplier(canGoNext ? 0.45f : 0.2f);
+        this->navigatePrevious->setEnabled(canGoPrevious);
+        this->navigatePrevious->setIconAlphaMultiplier(canGoPrevious ? 0.5f : 0.2f);
+        if (!canGoPrevious)
+        {
+            this->navigatePrevious->setHighlighted(false);
+        }
+
+        this->navigateNext->setEnabled(canGoNext);
+        this->navigateNext->setIconAlphaMultiplier(canGoNext ? 0.5f : 0.2f);
+        if (!canGoNext)
+        {
+            this->navigateNext->setHighlighted(false);
+        }
     }
 
     void paint(Graphics &g) override

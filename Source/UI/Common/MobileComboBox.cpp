@@ -373,9 +373,6 @@ void MobileComboBox::Container::handleCommandMessage(int commandId)
             {
                 jassert(menuItem->callback == nullptr); // not supported for now
                 this->getParentComponent()->postCommandMessage(menuItem->commandId);
-                //#if PLATFORM_DESKTOP
-                //this->previousPresetButton->setHighlighted(true);
-                //#endif
             }
         }
         break;
@@ -397,9 +394,6 @@ void MobileComboBox::Container::handleCommandMessage(int commandId)
             {
                 jassert(menuItem->callback == nullptr); // not supported for now
                 this->getParentComponent()->postCommandMessage(menuItem->commandId);
-                //#if PLATFORM_DESKTOP
-                //this->nextPresetButton->setHighlighted(true);
-                //#endif
             }
         }
         break;

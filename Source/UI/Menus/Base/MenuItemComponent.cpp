@@ -700,13 +700,13 @@ void MenuItemComponent::setCursorShown(bool shouldBeShown)
     {
         this->cursorMarker = make<MenuItemCursorComponent>();
         this->cursorMarker->setBounds(this->getLocalBounds());
-        this->addAndMakeVisible(this->cursorMarker.get());
-        //this->animator.fadeIn(this->cursorMarker.get(), Globals::UI::fadeInShort);
+        this->addChildComponent(this->cursorMarker.get());
+        this->animator.fadeIn(this->cursorMarker.get(), Globals::UI::fadeInShort);
         this->setHighlighted(true);
     }
     else if (!shouldBeShown && this->cursorMarker != nullptr)
     {
-        this->animator.fadeOut(this->cursorMarker.get(), Globals::UI::fadeOutShort / 2);
+        //this->animator.fadeOut(this->cursorMarker.get(), Globals::UI::fadeOutShort / 2);
         this->cursorMarker = nullptr;
         this->setHighlighted(false);
     }
