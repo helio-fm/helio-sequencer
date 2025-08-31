@@ -29,6 +29,11 @@ String Translation::getId() const noexcept
     return this->id;
 }
 
+bool Translation::isEmpty() const noexcept
+{
+    return this->singulars.empty();
+}
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -40,25 +45,15 @@ SerializedData Translation::serialize() const
     return emptyXml;
 }
 
-void Translation::deserialize(const SerializedData &data, bool needsDescriptionOnly)
+void Translation::deserialize(const SerializedData &root)
 {
     // don't reset so that user's translation appends the built-in one instead of replacing it
     // this->reset();
 
     using namespace Serialization;
 
-    const auto root = data.hasType(Translations::locale) ?
-        data : data.getChildWithName(Translations::locale);
-
-    if (!root.isValid()) { return; }
-
-    this->id = root.getProperty(Translations::localeId).toString().toLowerCase();
-    this->name = root.getProperty(Translations::localeName);
-
-    if (needsDescriptionOnly)
-    {
-        return;
-    }
+    this->id = root.getProperty(Translations::localeId, String()).toString().toLowerCase();
+    this->name = root.getProperty(Translations::localeName, String());
 
     this->pluralEquation = Translations::wrapperClassName + "." +
         Translations::wrapperMethodName + "(" +

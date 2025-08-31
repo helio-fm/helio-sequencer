@@ -178,11 +178,8 @@ void TranslationsCollection::deserializeResources(const SerializedData &tree, Re
         Translation::Ptr translation(existingTranslation != nullptr ?
             static_cast<Translation *>(existingTranslation.get()) : new Translation());
 
-        const auto isCurrentOrFallbackTranslation =
-            (translationId == selectedLocaleId) || (translationId == fallbackTranslationId);
-
         //DBG(translationId + "/" + translation->getResourceId());
-        translation->deserialize(translationRoot, !isCurrentOrFallbackTranslation);
+        translation->deserialize(translationRoot);
 
         outResources[translation->getResourceId()] = translation;
 
@@ -201,7 +198,23 @@ void TranslationsCollection::deserializeResources(const SerializedData &tree, Re
         this->currentTranslation = fallbackTranslation;
     }
 
-    jassert(this->currentTranslation != nullptr);
+    if (this->currentTranslation->isEmpty()) // only found the description?
+    {
+        int dataSize;
+        const String builtInTranslationName = this->currentTranslation->getId() + "_json";
+        if (const auto *data = BinaryData::getNamedResource(builtInTranslationName.toUTF8(), dataSize))
+        {
+            const String translationDataString(String::fromUTF8(data, dataSize));
+            if (translationDataString.isNotEmpty())
+            {
+                const auto translationData(DocumentHelpers::load(translationDataString));
+                jassert(translationData.isValid());
+                this->currentTranslation->deserialize(translationData);
+            }
+        }
+    }
+
+    jassert(this->currentTranslation != nullptr && !this->currentTranslation->isEmpty());
 }
 
 void TranslationsCollection::reset()

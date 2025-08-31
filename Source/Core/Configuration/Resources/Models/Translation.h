@@ -27,14 +27,14 @@ public:
 
     String getId() const noexcept;
     String getName() const noexcept;
+    bool isEmpty() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
     SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override { jassertfalse; }
-    void deserialize(const SerializedData &data, bool needsDescriptionOnly);
+    void deserialize(const SerializedData &data) override;
     void reset() override;
 
     //===------------------------------------------------------------------===//

@@ -323,6 +323,39 @@ namespace BinaryData
     extern const char*   exampleProject_json;
     const int            exampleProject_jsonSize = 3285;
 
+    extern const char*   de_json;
+    const int            de_jsonSize = 18673;
+
+    extern const char*   el_json;
+    const int            el_jsonSize = 25047;
+
+    extern const char*   en_json;
+    const int            en_jsonSize = 17396;
+
+    extern const char*   fr_json;
+    const int            fr_jsonSize = 18973;
+
+    extern const char*   it_json;
+    const int            it_jsonSize = 18882;
+
+    extern const char*   ja_json;
+    const int            ja_jsonSize = 19226;
+
+    extern const char*   ko_json;
+    const int            ko_jsonSize = 18754;
+
+    extern const char*   pt_json;
+    const int            pt_jsonSize = 18610;
+
+    extern const char*   ru_json;
+    const int            ru_jsonSize = 25410;
+
+    extern const char*   uk_json;
+    const int            uk_jsonSize = 24773;
+
+    extern const char*   zh_json;
+    const int            zh_jsonSize = 15797;
+
     extern const char*   logov2_png;
     const int            logov2_pngSize = 7326;
 
@@ -354,10 +387,10 @@ namespace BinaryData
     const int            temperaments_jsonSize = 2856;
 
     extern const char*   translations_json;
-    const int            translations_jsonSize = 221593;
+    const int            translations_jsonSize = 623;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 116;
+    const int namedResourceListSize = 127;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

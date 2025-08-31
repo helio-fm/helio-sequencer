@@ -4016,6 +4016,17 @@
     <None Include="..\..\Resources\Samples\builtInMetronome4.wav"/>
     <None Include="..\..\Resources\Templates\emptyProject.json"/>
     <None Include="..\..\Resources\Templates\exampleProject.json"/>
+    <None Include="..\..\Resources\Translations\de.json"/>
+    <None Include="..\..\Resources\Translations\el.json"/>
+    <None Include="..\..\Resources\Translations\en.json"/>
+    <None Include="..\..\Resources\Translations\fr.json"/>
+    <None Include="..\..\Resources\Translations\it.json"/>
+    <None Include="..\..\Resources\Translations\ja.json"/>
+    <None Include="..\..\Resources\Translations\ko.json"/>
+    <None Include="..\..\Resources\Translations\pt.json"/>
+    <None Include="..\..\Resources\Translations\ru.json"/>
+    <None Include="..\..\Resources\Translations\uk.json"/>
+    <None Include="..\..\Resources\Translations\zh.json"/>
     <None Include="..\..\Resources\logo-v2.png"/>
     <None Include="..\..\Resources\logo-v2-mac.png"/>
     <None Include="..\..\Resources\arpeggiators.json"/>

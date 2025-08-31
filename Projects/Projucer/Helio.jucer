@@ -141,6 +141,19 @@
         <FILE id="QrZS1b" name="exampleProject.json" compile="0" resource="1"
               file="../../Resources/Templates/exampleProject.json"/>
       </GROUP>
+      <GROUP id="{BEC0EF34-1856-1A47-699A-EA299AE2365E}" name="Translations">
+        <FILE id="raHo2T" name="de.json" compile="0" resource="1" file="../../Resources/Translations/de.json"/>
+        <FILE id="TJjeaC" name="el.json" compile="0" resource="1" file="../../Resources/Translations/el.json"/>
+        <FILE id="wdkUzL" name="en.json" compile="0" resource="1" file="../../Resources/Translations/en.json"/>
+        <FILE id="y4pz5U" name="fr.json" compile="0" resource="1" file="../../Resources/Translations/fr.json"/>
+        <FILE id="lvk80X" name="it.json" compile="0" resource="1" file="../../Resources/Translations/it.json"/>
+        <FILE id="bKsszi" name="ja.json" compile="0" resource="1" file="../../Resources/Translations/ja.json"/>
+        <FILE id="mLFE6Q" name="ko.json" compile="0" resource="1" file="../../Resources/Translations/ko.json"/>
+        <FILE id="tyq15z" name="pt.json" compile="0" resource="1" file="../../Resources/Translations/pt.json"/>
+        <FILE id="ASL0C1" name="ru.json" compile="0" resource="1" file="../../Resources/Translations/ru.json"/>
+        <FILE id="LDZDYs" name="uk.json" compile="0" resource="1" file="../../Resources/Translations/uk.json"/>
+        <FILE id="CabQSK" name="zh.json" compile="0" resource="1" file="../../Resources/Translations/zh.json"/>
+      </GROUP>
       <FILE id="DQTpOG" name="logo-v2.png" compile="0" resource="1" file="../../Resources/logo-v2.png"/>
       <FILE id="WtPnG2" name="logo-v2-mac.png" compile="0" resource="1" file="../../Resources/logo-v2-mac.png"/>
       <FILE id="so7ZdZ" name="arpeggiators.json" compile="0" resource="1"
