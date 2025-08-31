@@ -284,6 +284,17 @@ UserInterfaceSettings::UserInterfaceSettings()
         }
     };
 
+    this->scaleUi175 = make<ToggleButton>("x1.75");
+    this->addAndMakeVisible(this->scaleUi175.get());
+    this->scaleUi175->onClick = [this]() {
+        BailOutChecker checker(this);
+        App::Config().getUiFlags()->setUiScaleFactor(1.75f);
+        if (!checker.shouldBailOut())
+        {
+            this->updateButtons();
+        }
+    };
+
     this->scaleUi2 = make<ToggleButton>("x2");
     this->addAndMakeVisible(this->scaleUi2.get());
     this->scaleUi2->onClick = [this]() {
@@ -301,12 +312,13 @@ UserInterfaceSettings::UserInterfaceSettings()
     this->scaleUi1->setRadioGroupId(2);
     this->scaleUi125->setRadioGroupId(2);
     this->scaleUi15->setRadioGroupId(2);
+    this->scaleUi175->setRadioGroupId(2);
     this->scaleUi2->setRadioGroupId(2);
 
 #if SIMPLIFIED_UI_SETTINGS
-    this->setSize(100, 395);
+    this->setSize(100, 430);
 #else
-    this->setSize(100, 610);
+    this->setSize(100, 645);
 #endif
 }
 
@@ -317,7 +329,7 @@ void UserInterfaceSettings::resized()
     constexpr auto margin1 = 4;
     constexpr auto margin2 = margin1 + 12;
     constexpr auto separatorSize = 2;
-    constexpr auto separatorMargin = 3;
+    constexpr auto separatorMargin = 4;
     constexpr auto titleSize = 18;
     constexpr auto rowSize = 26;
     constexpr auto rowSpacing = 4;
@@ -416,8 +428,11 @@ void UserInterfaceSettings::resized()
     this->scaleUi15->setBounds(margin2,
         this->scaleUi125->getBottom(), this->getWidth() - margin2 * 2, rowSize);
 
-    this->scaleUi2->setBounds(margin2,
+    this->scaleUi175->setBounds(margin2,
         this->scaleUi15->getBottom(), this->getWidth() - margin2 * 2, rowSize);
+
+    this->scaleUi2->setBounds(margin2,
+        this->scaleUi175->getBottom(), this->getWidth() - margin2 * 2, rowSize);
 }
 
 void UserInterfaceSettings::visibilityChanged()
@@ -484,6 +499,7 @@ void UserInterfaceSettings::updateButtons()
     this->scaleUi1->setToggleState(uiFlags->getUiScaleFactor() == 1.f, dontSendNotification);
     this->scaleUi125->setToggleState(uiFlags->getUiScaleFactor() == 1.25f, dontSendNotification);
     this->scaleUi15->setToggleState(uiFlags->getUiScaleFactor() == 1.5f, dontSendNotification);
+    this->scaleUi175->setToggleState(uiFlags->getUiScaleFactor() == 1.75f, dontSendNotification);
     this->scaleUi2->setToggleState(uiFlags->getUiScaleFactor() == 2.f, dontSendNotification);
 
     this->germanNotation->setToggleState(!uiFlags->isUsingFixedDoNotation(), dontSendNotification);
