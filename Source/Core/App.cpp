@@ -92,7 +92,6 @@ public:
 #endif
 
         this->recreateLayoutComponent();
-        this->setVisible(true);
 
 #if PLATFORM_DESKTOP
         if (App::Config().isWindowMaximised())
@@ -100,6 +99,8 @@ public:
             this->setFullScreen(true);
         }
 #endif
+
+        this->setVisible(true);
 
         if (enableOpenGl)
         {
@@ -190,7 +191,13 @@ private:
 
     void attachOpenGLContext()
     {
-        DBG("Attaching OpenGL context.");
+        if (this->openGLContext != nullptr &&
+            this->openGLContext->isAttached())
+        {
+            return;
+        }
+
+        DBG("Attaching OpenGL context");
         this->openGLContext = make<OpenGLContext>();
         this->openGLContext->setPixelFormat(OpenGLPixelFormat(8, 8, 0, 0));
         this->openGLContext->setMultisamplingEnabled(false);
@@ -202,7 +209,7 @@ private:
     {
         if (this->openGLContext != nullptr)
         {
-            DBG("Detaching OpenGL context.");
+            DBG("Detaching OpenGL context");
             this->openGLContext->detach();
             this->openGLContext = nullptr;
         }
