@@ -189,6 +189,10 @@ void RenderDialog::dialogCancelAction()
         this->stopTrackingProgress();
         App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure); // will dismiss the dialog
     }
+    else
+    {
+        this->dismiss();
+    }
 }
 
 void RenderDialog::dialogApplyAction()

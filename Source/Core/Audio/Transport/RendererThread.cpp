@@ -50,28 +50,11 @@ bool RendererThread::startRendering(const URL &target, RenderFormat format,
     // since on iOS it contains a security bookmark:
     this->renderTarget = target;
 
-#if PLATFORM_DESKTOP
-    // on some mobile systems we won't be able to write to the file after deleting it
     try
     {
-        if (this->renderTarget.isLocalFile() &&
-            this->renderTarget.getLocalFile().exists())
-        {
-            if (!this->renderTarget.getLocalFile().deleteFile()) {
-                // the file exists but is probably inaccessible:
-                return false;
-            }
-        }
-    }
-    catch (...)
-    {
-        return false;
-    }
-#endif
-
-    if (auto outStream = this->renderTarget.createOutputStream())
-    {
         this->percentsDone = 0.f;
+        this->renderBlock.reset();
+        auto outStream = make<MemoryOutputStream>(this->renderBlock, false);
         
         // 16 bits per sample should be enough for anybody :)
         // ..wanna fight about it? https://people.xiph.org/~xiphmont/demo/neil-young.html
@@ -112,6 +95,7 @@ bool RendererThread::startRendering(const URL &target, RenderFormat format,
 
         return true;
     }
+    catch (...) {}
 
     return false;
 }
@@ -317,17 +301,10 @@ void RendererThread::run()
             }
         }
 
-        // write the resulting buffer to disk
-        // (make a few attempts and bail out if failed)
         {
             const ScopedLock lock(this->writerLock);
-            
-            bool writtenSuccessfully = false;
-            for (int i = 0; i < 10 && !writtenSuccessfully; ++i)
-            {
-                writtenSuccessfully =
-                    this->writer->writeFromAudioSampleBuffer(mixingBuffer, 0, mixingBuffer.getNumSamples());
-            }
+            const bool writtenSuccessfully =
+                this->writer->writeFromAudioSampleBuffer(mixingBuffer, 0, mixingBuffer.getNumSamples());
 
             if (!writtenSuccessfully)
             {
@@ -344,14 +321,48 @@ void RendererThread::run()
         this->percentsDone = float((currentFrame - firstFrame) / totalFrames);
 
         jassert(this->waveformThumbnail.size() > 0);
-        const auto waveformFrameIndex = int(float(this->waveformThumbnail.size() - 1) * this->percentsDone.get());
+        const auto waveformFrameIndex =
+            int(float(this->waveformThumbnail.size() - 1) * this->percentsDone.get());
+
         if (waveformFrameIndex >= 0 && waveformFrameIndex < this->waveformThumbnail.size())
         {
-            this->waveformThumbnail.set(waveformFrameIndex, jmax(this->waveformThumbnail[waveformFrameIndex], peakLevel));
+            this->waveformThumbnail.set(waveformFrameIndex,
+                jmax(this->waveformThumbnail[waveformFrameIndex], peakLevel));
         }
     }
 
     Thread::sleep(100);
+
+    // the writer will here append all metadata if needed
+    {
+        const ScopedLock sl(this->writerLock);
+        this->writer = nullptr;
+    }
+
+    // finally, write to file if rendering was not cancelled
+    if (!this->threadShouldExit())
+    {
+        try
+        {
+#if PLATFORM_DESKTOP
+            // on some mobile platforms we won't be able
+            // to write to file after deleting it
+            if (this->renderTarget.isLocalFile() &&
+                this->renderTarget.getLocalFile().exists())
+            {
+                this->renderTarget.getLocalFile().deleteFile();
+            }
+#endif
+
+            if (auto outputFileStream = this->renderTarget.createOutputStream())
+            {
+                *(outputFileStream.get()) << this->renderBlock;
+            }
+        }
+        catch (...) {}
+    }
+
+    this->renderBlock.reset();
 
     // setNonRealtime false
     for (auto *subBuffer : subBuffers)
@@ -379,12 +390,7 @@ void RendererThread::run()
     // some plugins tend to make a weird post-rendering "tail" sound,
     // and here is an attempt to fix that by giving them time to do
     // whatever processing they need to do after resetting
-    Thread::sleep(200);
-    
-    {
-        const ScopedLock sl(this->writerLock);
-        this->writer = nullptr;
-    }
+    Thread::sleep(300);
 
     // dispose the URL object, so that its security bookmark can be released by iOS
     this->renderTarget = {};

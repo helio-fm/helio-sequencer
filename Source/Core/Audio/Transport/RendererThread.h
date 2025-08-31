@@ -57,6 +57,11 @@ private:
     CriticalSection writerLock;
     UniquePointer<AudioFormatWriter> writer;
 
+    // some platforms (looking at you, Android) don't support seekable file output streams,
+    // which some audio formats need to write metadata, so we have to render to memory first;
+    // todo in future: optionally normalize all rendered data before writing to file
+    MemoryBlock renderBlock;
+
     Atomic<float> percentsDone = 0.f;
 
     // the all-channels peaks-only low-resolution waveform preview,
