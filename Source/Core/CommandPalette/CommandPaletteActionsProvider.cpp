@@ -18,6 +18,8 @@
 #include "Common.h"
 #include "CommandPaletteActionsProvider.h"
 
+#include <locale>
+
 struct CommandPaletteActionSortByMatch final
 {
     static int compareElements(const CommandPaletteAction::Ptr first, const CommandPaletteAction::Ptr second)
@@ -163,7 +165,16 @@ static bool fuzzyMatch(String::CharPointerType pattern, String::CharPointerType 
 static bool fuzzyMatch(String::CharPointerType pattern, String::CharPointerType str, int &outScore, uint8 *matches)
 {
     int recursionCount = 0;
-    return fuzzyMatch(pattern, str, outScore, str, nullptr, matches, 0, recursionCount);
+
+    // use the environment locale for toLowerCase() to work properly
+    const auto defaultLocale = ::setlocale(LC_ALL, nullptr);
+    ::setlocale(LC_ALL, "");
+
+    const auto result = fuzzyMatch(pattern, str, outScore, str, nullptr, matches, 0, recursionCount);
+
+    ::setlocale(LC_ALL, defaultLocale);
+
+    return result;
 }
 
 void CommandPaletteActionsProvider::updateFilter(const String &pattern, bool skipPrefix)
