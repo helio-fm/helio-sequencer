@@ -12,7 +12,8 @@
       { "id": "el", "name": "Ελληνικά" },
       { "id": "it", "name": "Italiano" },
       { "id": "pt", "name": "Português" },
-      { "id": "uk", "name": "Українська" }
+      { "id": "uk", "name": "Українська" },
+      { "id": "tr", "name": "Türkçe"}
     ]
   }
 }

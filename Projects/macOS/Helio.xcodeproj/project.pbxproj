@@ -449,6 +449,7 @@
 		84C12F26EDC96F3770764153 /* ComponentFader.h */ /* ComponentFader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ComponentFader.h; path = ../../Source/UI/Themes/ComponentFader.h; sourceTree = SOURCE_ROOT; };
 		84D97333B50601A875395FB4 /* ConfigurationResourceCollection.cpp */ /* ConfigurationResourceCollection.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ConfigurationResourceCollection.cpp; path = ../../Source/Core/Configuration/Resources/ConfigurationResourceCollection.cpp; sourceTree = SOURCE_ROOT; };
 		8595F5B6143C4355B21C1149 /* TimeSignaturesSequence.cpp */ /* TimeSignaturesSequence.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TimeSignaturesSequence.cpp; path = ../../Source/Core/Midi/Sequences/TimeSignaturesSequence.cpp; sourceTree = SOURCE_ROOT; };
+		85F4AF23D8AE4175EF15CD2E /* tr.json */ /* tr.json */ = {isa = PBXFileReference; lastKnownFileType = file.json; name = tr.json; path = ../../Resources/Translations/tr.json; sourceTree = SOURCE_ROOT; };
 		860977B5FFAFE20BC609AC63 /* include_juce_core.mm */ /* include_juce_core.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_core.mm; path = ../Projucer/JuceLibraryCode/include_juce_core.mm; sourceTree = SOURCE_ROOT; };
 		860CF7E487D7C85AB2F20730 /* lockZoom.svg */ /* lockZoom.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = lockZoom.svg; path = ../../Resources/Icons/lockZoom.svg; sourceTree = SOURCE_ROOT; };
 		8611A29AB9757D44B75A36FF /* IOKit.framework */ /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
@@ -1360,6 +1361,7 @@
 				58753DE13B6715081100C90A,
 				549B7167F5AC7B28E32A3B11,
 				3BB3C5F712F25839C639AE00,
+				85F4AF23D8AE4175EF15CD2E,
 				9044E5FF9054A142C05DB67A,
 				97FF94AC390D5E1542A59A7D,
 			);

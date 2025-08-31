@@ -350,6 +350,9 @@ namespace BinaryData
     extern const char*   ru_json;
     const int            ru_jsonSize = 25410;
 
+    extern const char*   tr_json;
+    const int            tr_jsonSize = 18805;
+
     extern const char*   uk_json;
     const int            uk_jsonSize = 24773;
 
@@ -387,10 +390,10 @@ namespace BinaryData
     const int            temperaments_jsonSize = 2856;
 
     extern const char*   translations_json;
-    const int            translations_jsonSize = 623;
+    const int            translations_jsonSize = 664;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 127;
+    const int namedResourceListSize = 128;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

@@ -3388,8 +3388,115 @@ static const unsigned char temp_binary_data_113[] =
 
 const char* ru_json = (const char*) temp_binary_data_113;
 
-//================== uk.json ==================
+//================== tr.json ==================
 static const unsigned char temp_binary_data_114[] =
+"{\"id\":\"tr\",\"name\":\"T\xc3\xbcrk\xc3\xa7""e\",\"pluralEquation\":\"(({x}==0 || {x}==1) ? 1 : 2)\",\"literal\":[{\"id\":590543227,\"tr\":\"Projeye ba\xc5\x9fla\"},{\"id\":242354915,\"tr\":\"Yeni proje\"},{\"id\":973370257,\"tr\":\"Yeni par\xc3\xa7"
+"a\"},{\"id\":3682062690,\"tr\":\"Tempo\"},{\"id\":3475921130,\"tr\":\"Ses\"},{\"id\":3279548549,\"tr\":\"St\xc3\xbc""dyo\"},{\"id\":3086290873,\"tr\":\"Enstr\xc3\xbcman\"},{\"id\":3686062664,\"tr\":\"Ayarlar\"},{\"id\":1113353303,\"tr\":\"S\xc3\xbcr\xc3"
+"\xbcm\"},{\"id\":3324938734,\"tr\":\"Modeller\"},{\"id\":1791647634,\"tr\":\"Klavye haritaland\xc4\xb1rmas\xc4\xb1\"},{\"id\":855043400,\"tr\":\"Enstr\xc3\xbcman\xc4\xb1 yeniden adland\xc4\xb1r\"},{\"id\":1662581644,\"tr\":\"Yeniden adland\xc4\xb1r\""
+"},{\"id\":3826312522,\"tr\":\"Nota ekle\"},{\"id\":726307987,\"tr\":\"Nota yaz\xc4\xb1s\xc4\xb1 gir\"},{\"id\":2359576018,\"tr\":\"Notay\xc4\xb1 d\xc3\xbczenle\"},{\"id\":3364643503,\"tr\":\"\xc3\x96l\xc3\xa7\xc3\xbcm\xc3\xbc de\xc4\x9fi\xc5\x9ftir\""
+"},{\"id\":2076234654,\"tr\":\"\xc3\x96l\xc3\xa7\xc3\xbcm ekle\"},{\"id\":1619543104,\"tr\":\"\xc3\x96l\xc3\xa7\xc3\xbcm\xc3\xbc de\xc4\x9fi\xc5\x9ftir\"},{\"id\":2990388381,\"tr\":\"Yeni \xc3\xb6l\xc3\xa7\xc3\xbcm gir\"},{\"id\":286708268,\"tr\":\"No"
+"ta anahtar\xc4\xb1 ekle\"},{\"id\":1824141856,\"tr\":\"Nota anahtar\xc4\xb1n\xc4\xb1 de\xc4\x9fi\xc5\x9ftir\"},{\"id\":697122941,\"tr\":\"Yeni anahtar ve \xc3\xb6l\xc3\xa7""e\xc4\x9fi ekle\"},{\"id\":3602788084,\"tr\":\"Par\xc3\xa7""ay\xc4\xb1 yenide"
+"n adland\xc4\xb1r\"},{\"id\":1527112919,\"tr\":\"Par\xc3\xa7""a ekle\"},{\"id\":3176377209,\"tr\":\"Arpejit\xc3\xb6r olu\xc5\x9ftur\"},{\"id\":2763713241,\"tr\":\"Olu\xc5\x9ftur\"},{\"id\":790055919,\"tr\":\"Projeyi tamamen sil (geri d\xc3\xb6n\xc3\xbc"
+"\xc5\x9f yok) ?\"},{\"id\":2639456521,\"tr\":\"Silmeyi onaylamak i\xc3\xa7in proje ad\xc4\xb1n\xc4\xb1 yaz\xc4\xb1n\xc4\xb1z:\"},{\"id\":3271309150,\"tr\":\"\xc4\xb0ptal\"},{\"id\":1485521680,\"tr\":\"Onayla\"},{\"id\":4193497783,\"tr\":\"Sil\"},{\"i"
+"d\":254241575,\"tr\":\"Ekle\"},{\"id\":1879653305,\"tr\":\"Kaydet\"},{\"id\":771855172,\"tr\":\"\xc4\xb0ptal\"},{\"id\":2039478499,\"tr\":\"Kopyala\"},{\"id\":2036717174,\"tr\":\"Kes\"},{\"id\":3581851673,\"tr\":\"Yap\xc4\xb1\xc5\x9ft\xc4\xb1r\"},{\""
+"id\":456433817,\"tr\":\"Sil\"},{\"id\":2484662410,\"tr\":\"\xc3\x96n Ayarlar\"},{\"id\":1574835372,\"tr\":\"\xc3\x96n Ayarlar\xc4\xb1 kaydet\"},{\"id\":1795357495,\"tr\":\"\xc4\xb0sme g\xc3\xb6re grupla\"},{\"id\":1304913776,\"tr\":\"Renge g\xc3\xb6r"
+"e grupla\"},{\"id\":667352373,\"tr\":\"Enstr\xc3\xbcmana g\xc3\xb6re grupla\"},{\"id\":1209781982,\"tr\":\"Gruplama yok\"},{\"id\":1170600044,\"tr\":\"Se\xc3\xa7ilen eklentiler\"},{\"id\":550512201,\"tr\":\"Se\xc3\xa7im\"},{\"id\":1799687443,\"tr\":\""
+"Se\xc3\xa7im\"},{\"id\":2965047838,\"tr\":\"Se\xc3\xa7ilen de\xc4\x9fi\xc5\x9fiklikler\"},{\"id\":481992152,\"tr\":\"Se\xc3\xa7ilen s\xc3\xbcr\xc3\xbcm\"},{\"id\":3378394717,\"tr\":\"\xc4\xb0\xc5\x9fle\"},{\"id\":3356001695,\"tr\":\"S\xc4\xb1""f\xc4\xb1"
+"rla\"},{\"id\":213486763,\"tr\":\"Hepsini se\xc3\xa7\"},{\"id\":2097945642,\"tr\":\"Hi\xc3\xa7""birini se\xc3\xa7meyin\"},{\"id\":1591962748,\"tr\":\"Revizyona g\xc3\xb6z at\"},{\"id\":318608129,\"tr\":\"Yeni enstr\xc3\xbcman olu\xc5\x9ftur\"},{\"id\""
+":3763751911,\"tr\":\"Yeni enstr\xc3\xbcman ekle\"},{\"id\":1725194459,\"tr\":\"Listeden \xc3\xa7\xc4\xb1kar\"},{\"id\":1571929583,\"tr\":\"T\xc3\xbcm ba\xc4\x9flant\xc4\xb1lar\xc4\xb1 kes\"},{\"id\":1277706921,\"tr\":\"Enstr\xc3\xbcmandan \xc3\xa7\xc4"
+"\xb1kar\"},{\"id\":801106519,\"tr\":\"Sesi \xc5\x9furadan al\"},{\"id\":186143671,\"tr\":\"Sesi \xc5\x9furaya g\xc3\xb6nder\"},{\"id\":2211432018,\"tr\":\"MIDI'yi \xc5\x9furadan al\"},{\"id\":3414815026,\"tr\":\"MIDI'yi \xc5\x9furaya g\xc3\xb6nder\"}"
+",{\"id\":2937191410,\"tr\":\"Arpej\"},{\"id\":1675985063,\"tr\":\"Yeniden fakt\xc3\xb6rle\"},{\"id\":4102578342,\"tr\":\"Yeniden \xc3\xb6l\xc3\xa7""eklendir\"},{\"id\":2665682,\"tr\":\"Say\xc4\xb1mlama\"},{\"id\":1022157835,\"tr\":\"Zaman b\xc3\xb6l\xc3"
+"\xbcmleri\"},{\"id\":4252892904,\"tr\":\"Par\xc3\xa7""aya aktar\"},{\"id\":867845023,\"tr\":\"Yeni par\xc3\xa7""a olarak \xc3\xa7\xc4\xb1kart\"},{\"id\":3841194431,\"tr\":\"D\xc3\xbczenle\"},{\"id\":2617617342,\"tr\":\"Transpozu artt\xc4\xb1r\"},{\"i"
+"d\":190430727,\"tr\":\"Transpozu azalt\"},{\"id\":826057408,\"tr\":\"Tempoyu 1 BPM artt\xc4\xb1r\"},{\"id\":835550789,\"tr\":\"Tempoyu 1 BPM azalt\"},{\"id\":2972173159,\"tr\":\"De\xc4\x9fi\xc5\x9fiklikleri sakla\"},{\"id\":1834413546,\"tr\":\"De\xc4"
+"\x9fi\xc5\x9fiklikleri geri y\xc3\xbckle\"},{\"id\":2478565035,\"tr\":\"De\xc4\x9fi\xc5\x9fiklikleri de\xc4\x9fi\xc5\x9ftir\"},{\"id\":3235320386,\"tr\":\"Hepsini i\xc5\x9fle\"},{\"id\":1710985244,\"tr\":\"Hepsini s\xc4\xb1""f\xc4\xb1rla\"},{\"id\":1"
+"688770220,\"tr\":\"Se\xc3\xa7imden arp olu\xc5\x9ftur\"},{\"id\":1190757224,\"tr\":\"Modifiyeler\"},{\"id\":3028225703,\"tr\":\"Modifiye ekle\"},{\"id\":879252112,\"tr\":\"Hepsini onayla\"},{\"id\":4180138779,\"tr\":\"Hepsini etkinle\xc5\x9ftir\"},{\""
+"id\":1885708168,\"tr\":\"Hepsini devre d\xc4\xb1\xc5\x9f\xc4\xb1 b\xc4\xb1rak\"},{\"id\":2532514103,\"tr\":\"Hepsini sil\"},{\"id\":1028168276,\"tr\":\"\xc3\x96rt\xc3\xbc\xc5\x9fmeleri temizle\"},{\"id\":846647849,\"tr\":\"Tersli\xc4\x9fi artt\xc4\xb1"
+"r\"},{\"id\":1220787472,\"tr\":\"Tersli\xc4\x9fi azalt\"},{\"id\":2012105039,\"tr\":\"Retrograde\"},{\"id\":822935817,\"tr\":\"Melodik inversiyon\"},{\"id\":507958643,\"tr\":\"\xc3\x96l\xc3\xa7""ekli transpozu artt\xc4\xb1r\"},{\"id\":1007904678,\"tr"
+"\":\"\xc3\x96l\xc3\xa7""ekli transpozu azalt\"},{\"id\":2869155537,\"tr\":\"\xc3\x96l\xc3\xa7""ek ile hizala\"},{\"id\":1528798874,\"tr\":\"Legato\"},{\"id\":2794105238,\"tr\":\"Staccato\"},{\"id\":3083511528,\"tr\":\"1'e nicele\"},{\"id\":3133844385"
+",\"tr\":\"1/2'ye nicele\"},{\"id\":3167399623,\"tr\":\"1/4'e nicele\"},{\"id\":2966068195,\"tr\":\"1/8'e nicele\"},{\"id\":839167866,\"tr\":\"1/16'ya nicele\"},{\"id\":3054107764,\"tr\":\"1/32'ye nicele\"},{\"id\":1651351091,\"tr\":\"\xc3\x87oklu not"
+"alar\xc4\xb1 birle\xc5\x9ftir\"},{\"id\":1668128710,\"tr\":\"\xc3\x87oklu nota (genel terim)\"},{\"id\":1684906329,\"tr\":\"\xc3\x9c\xc3\xa7leme\"},{\"id\":1701683948,\"tr\":\"D\xc3\xb6rtleme\"},{\"id\":1718461567,\"tr\":\"Be\xc5\x9fleme\"},{\"id\":1"
+"735239186,\"tr\":\"Alt\xc4\xb1lama\"},{\"id\":1752016805,\"tr\":\"Yedilime\"},{\"id\":1768794424,\"tr\":\"Sekizleme\"},{\"id\":1785572043,\"tr\":\"Dokuzlama\"},{\"id\":1964787372,\"tr\":\"Projeyi sil\"},{\"id\":1290661052,\"tr\":\"Projeyi kapat\"},{\""
+"id\":928399350,\"tr\":\"Ekle\"},{\"id\":3317557735,\"tr\":\"Par\xc3\xa7""a ekle\"},{\"id\":645576901,\"tr\":\"Otomasyon ekle\"},{\"id\":2074424237,\"tr\":\"Tempo'yu ayarla\"},{\"id\":3181537267,\"tr\":\"MIDI i\xc3\xa7""eri aktar\"},{\"id\":286266083,"
+"\"tr\":\"\xc4\xb0\xc5\x9fle\"},{\"id\":283934353,\"tr\":\"FLAC format\xc4\xb1na i\xc5\x9fle\"},{\"id\":3770425203,\"tr\":\"WAV format\xc4\xb1na i\xc5\x9fle\"},{\"id\":378937898,\"tr\":\"OGG format\xc4\xb1na i\xc5\x9fle\"},{\"id\":2784651386,\"tr\":\""
+"MIDI d\xc4\xb1\xc5\x9f""ar\xc4\xb1 aktar\"},{\"id\":2111085155,\"tr\":\"e kaydedildi\"},{\"id\":1960742513,\"tr\":\"Yeniden fakt\xc3\xb6rle\"},{\"id\":1072522987,\"tr\":\"Transpose artt\xc4\xb1r\"},{\"id\":1534443262,\"tr\":\"Transpose azalt\"},{\"id"
+"\":3619405988,\"tr\":\"Organize et\"},{\"id\":3628117647,\"tr\":\"D\xc3\xbczenle\"},{\"id\":4050824030,\"tr\":\"S\xc3\xbcr\xc3\xbcmler\"},{\"id\":1534016342,\"tr\":\"Enstr\xc3\xbcman de\xc4\x9fi\xc5\x9ftir\"},{\"id\":964249579,\"tr\":\"Temperemanta d"
+"\xc3\xb6n\xc3\xbc\xc5\x9ft\xc3\xbcr\"},{\"id\":68408789,\"tr\":\"Yeniden adland\xc4\xb1r\"},{\"id\":322545603,\"tr\":\"Y\xc3\xb6nlendirmeyi d\xc3\xbczenle\"},{\"id\":1071720068,\"tr\":\"Kullan\xc4\xb1""c\xc4\xb1 aray\xc3\xbcz\xc3\xbcn\xc3\xbc g\xc3\xb6"
+"ster\"},{\"id\":3040463687,\"tr\":\"Efekt nodu ekle\"},{\"id\":4272673891,\"tr\":\"Enstr\xc3\xbcman nodu ekle\"},{\"id\":3491839653,\"tr\":\"Ortak eklenti klas\xc3\xb6rlerini taray\xc4\xb1n\"},{\"id\":2053497241,\"tr\":\"\xc3\x96zel eklenti klas\xc3\xb6"
+"r\xc3\xbcn\xc3\xbc tara\"},{\"id\":1417743331,\"tr\":\"Ekle\"},{\"id\":4103869326,\"tr\":\"Klavye haritaland\xc4\xb1rmas\xc4\xb1n\xc4\xb1 d\xc3\xbczenle\"},{\"id\":2912552282,\"tr\":\"Scala haritaland\xc4\xb1rmas\xc4\xb1 y\xc3\xbckle\"},{\"id\":33331"
+"04885,\"tr\":\"Klavye haritaland\xc4\xb1rmas\xc4\xb1n\xc4\xb1 s\xc4\xb1""f\xc4\xb1rla\"},{\"id\":4045853540,\"tr\":\"T\xc3\xbcm\xc3\xbcn\xc3\xbc se\xc3\xa7\"},{\"id\":3311753376,\"tr\":\"Enstr\xc3\xbcman belirle\"},{\"id\":2444332244,\"tr\":\"Kanal\xc4"
+"\xb1 belirle\"},{\"id\":3446786075,\"tr\":\"Yeniden adland\xc4\xb1r\"},{\"id\":1771713166,\"tr\":\"Kopyala\"},{\"id\":41000532,\"tr\":\"\xc3\x96zg\xc3\xbcnle\xc5\x9ftir\"},{\"id\":3026643362,\"tr\":\"Par\xc3\xa7""ay\xc4\xb1 sil\"},{\"id\":2210761276,"
+"\"tr\":\"Yeni bir proje ba\xc5\x9flat\xc4\xb1n\"},{\"id\":482801920,\"tr\":\"Bir proje a\xc3\xa7\xc4\xb1n\"},{\"id\":3206888047,\"tr\":\"Sesi kapat\"},{\"id\":2577061788,\"tr\":\"Sesi a\xc3\xa7\"},{\"id\":2776333865,\"tr\":\"Solo aktif\"},{\"id\":360"
+"7741458,\"tr\":\"Solo deaktif\"},{\"id\":3644054957,\"tr\":\"Geri\"},{\"id\":2706383387,\"tr\":\"Ba\xc5\x9fl\xc4\xb1k\"},{\"id\":2173071876,\"tr\":\"Yazar\"},{\"id\":468920255,\"tr\":\"A\xc3\xa7\xc4\xb1klama\"},{\"id\":3297839210,\"tr\":\"Lisans\"},{"
+"\"id\":156268671,\"tr\":\"Uzunluk\"},{\"id\":361606965,\"tr\":\"Ba\xc5\x9flad\xc4\xb1\"},{\"id\":221412530,\"tr\":\"S\xc3\xbcr\xc3\xbcm kontrol\xc3\xbc\"},{\"id\":2925408387,\"tr\":\"\xc5\x9eunlardan olu\xc5\x9fur:\"},{\"id\":407797718,\"tr\":\"Dosya"
+" konumu\"},{\"id\":3440049797,\"tr\":\"Temperament\"},{\"id\":3745011691,\"tr\":\"Telif hakk\xc4\xb1\"},{\"id\":2795589943,\"tr\":\"Mevcut ses eklentileri\"},{\"id\":845927021,\"tr\":\"Sahnedeki enstr\xc3\xbcmanlar\"},{\"id\":4038033467,\"tr\":\"Ekle"
+"nti sat\xc4\xb1""c\xc4\xb1s\xc4\xb1 ve ad\xc4\xb1\"},{\"id\":2705752965,\"tr\":\"Kategori\"},{\"id\":888072614,\"tr\":\"Format\"},{\"id\":4126219390,\"tr\":\"Taranacak bir klas\xc3\xb6r se\xc3\xa7in\"},{\"id\":683562187,\"tr\":\"Yeni proje olu\xc5\x9f"
+"tur\"},{\"id\":2481288298,\"tr\":\"D\xc4\xb1\xc5\x9f""a aktar\xc4\xb1lacak bir dosya se\xc3\xa7in\"},{\"id\":850836736,\"tr\":\"Y\xc3\xbcklenecek bir dosya se\xc3\xa7in\"},{\"id\":2322273969,\"tr\":\"\xc4\xb0\xc3\xa7""e aktar\xc4\xb1lacak bir dosya s"
+"e\xc3\xa7in\"},{\"id\":91911233,\"tr\":\"\xc5\x9euraya i\xc5\x9fle:\"},{\"id\":4017198753,\"tr\":\"\xc4\xb0\xc5\x9fle\"},{\"id\":2419280861,\"tr\":\"\xc4\xb0\xc5\x9flemeyi iptal et\"},{\"id\":3291361058,\"tr\":\"Tempoyu ayarla, BPM:\"},{\"id\":976005"
+"237,\"tr\":\"T\xc4\xb1k tempo\"},{\"id\":3060852065,\"tr\":\"Bir tempo ayarla\"},{\"id\":3297203332,\"tr\":\"Proje listesi\"},{\"id\":2380319525,\"tr\":\"Zaman \xc3\xa7izelgesi ve par\xc3\xa7""alar\"},{\"id\":776915199,\"tr\":\"Akor derleyicis\"},{\""
+"id\":2253285864,\"tr\":\"Notalar\xc4\xb1 hareket ettir\"},{\"id\":2262892612,\"tr\":\"Sessiz yap/ma\"},{\"id\":241328026,\"tr\":\"Solo yap/ma\"},{\"id\":4143889728,\"tr\":\"Nota isimlerini g\xc3\xb6ster/me\"},{\"id\":102780623,\"tr\":\"Se\xc3\xa7ilen"
+"i tekrar et/me\"},{\"id\":2550848205,\"tr\":\"\xc3\x96neri\"},{\"id\":778957150,\"tr\":\"Akor olu\xc5\x9ftur\"},{\"id\":276323220,\"tr\":\"Ana anahtar\"},{\"id\":2235749264,\"tr\":\"Tonik\"},{\"id\":2286082121,\"tr\":\"S\xc3\xbcpertonik\"},{\"id\":22"
+"69304502,\"tr\":\"Ortanca\"},{\"id\":2319637359,\"tr\":\"Alt bask\xc4\xb1n\"},{\"id\":2302859740,\"tr\":\"Bask\xc4\xb1n\"},{\"id\":2353192597,\"tr\":\"Altmedyan\"},{\"id\":2336414978,\"tr\":\"Subtonik\"},{\"id\":564697854,\"tr\":\"Ses\"},{\"id\":3438"
+"46724,\"tr\":\"Cihaz\"},{\"id\":3423243260,\"tr\":\"S\xc3\xbcr\xc3\xbc""c\xc3\xbc\"},{\"id\":3486057338,\"tr\":\"\xc3\x96rnek h\xc4\xb1z\xc4\xb1\"},{\"id\":1105659109,\"tr\":\"Buffer boyutu\"},{\"id\":3767285732,\"tr\":\"MIDI Kaydet \"},{\"id\":69618"
+"2972,\"tr\":\"MIDI G\xc3\xb6nder\"},{\"id\":676628538,\"tr\":\"MIDI \xc3\xa7\xc4\xb1k\xc4\xb1\xc5\x9f yok\"},{\"id\":3059666133,\"tr\":\"MIDI giri\xc5\x9f yok\"},{\"id\":3794477833,\"tr\":\"Mikrotonal temperamentler i\xc3\xa7in 12 tonlu klavyeden MID"
+"I verilerini yeniden ayarlay\xc4\xb1n\"},{\"id\":975670367,\"tr\":\"Yeniden ba\xc5\x9flatma gerekli\"},{\"id\":2262216348,\"tr\":\"OpenGL i\xc5\x9fleyicisini kullan\"},{\"id\":2410691230,\"tr\":\"Kullan\xc4\xb1""c\xc4\xb1 aray\xc3\xbcz\xc3\xbc renk t"
+"emas\xc4\xb1\"},{\"id\":1427725309,\"tr\":\"Kullan\xc4\xb1""c\xc4\xb1 aray\xc3\xbcz\xc3\xbc ayarlar\xc4\xb1\"},{\"id\":3875839795,\"tr\":\"Font\"},{\"id\":823412658,\"tr\":\"Yerli ba\xc5\x9fl\xc4\xb1k bar\xc4\xb1n\xc4\xb1 kullan\"},{\"id\":1246372377"
+",\"tr\":\"Kullan\xc4\xb1""c\xc4\xb1 aray\xc3\xbcz\xc3\xbc animasyonlar\xc4\xb1n\xc4\xb1 a\xc3\xa7\"},{\"id\":1920727158,\"tr\":\"Fare tekerle\xc4\x9fini varsay\xc4\xb1lan olarak kullan\"},{\"id\":748298622,\"tr\":\"Varsay\xc4\xb1lan olarak dikey hare"
+"ket\"},{\"id\":2561004784,\"tr\":\"Varsay\xc4\xb1lan olarak dikey yak\xc4\xb1nla\xc5\x9ft\xc4\xb1rma \"},{\"id\":4135240189,\"tr\":\"\xc3\x96l\xc3\xa7""ekli tu\xc5\x9flar\xc4\xb1 vurgula\"},{\"id\":3294950313,\"tr\":\"Oynatma ba\xc5\x9fl\xc4\xb1\xc4\x9f"
+"\xc4\xb1n\xc4\xb1 yakala\"},{\"id\":2442524659,\"tr\":\"Kullan\xc4\xb1""c\xc4\xb1 aray\xc3\xbcz\xc3\xbc boyut fakt\xc3\xb6r:\"},{\"id\":1084200218,\"tr\":\"Nota adlar\xc4\xb1\"},{\"id\":192764448,\"tr\":\"Teslim mesaj\xc4\xb1n\xc4\xb1 gir\"},{\"id\":"
+"3667121828,\"tr\":\"Teslim \"},{\"id\":323214936,\"tr\":\"Se\xc3\xa7ilen de\xc4\x9fi\xc5\x9fiklikler s\xc4\xb1""f\xc4\xb1rlans\xc4\xb1n m\xc4\xb1?\"},{\"id\":2486920796,\"tr\":\"S\xc4\xb1""f\xc4\xb1rla\"},{\"id\":2688976833,\"tr\":\"Projede g\xc3\xb6"
+"z gezdirmeniz gereken de\xc4\x9fi\xc5\x9fiklikler var!\"},{\"id\":2748830343,\"tr\":\"Revizyona g\xc3\xb6z gezdir\"},{\"id\":1832656470,\"tr\":\"Helio varsay\xc4\xb1lan\xc4\xb1\"},{\"id\":2150192494,\"tr\":\"MIDI \xc3\x87\xc4\xb1k\xc4\xb1\xc5\x9f\"},"
+"{\"id\":2148771953,\"tr\":\"SoundFont Oynat\xc4\xb1""c\xc4\xb1s\xc4\xb1\"},{\"id\":1498241359,\"tr\":\"Metronom\"},{\"id\":8750358,\"tr\":\"Yerle\xc5\x9fik metronom sesi\"},{\"id\":507341059,\"tr\":\"Eklendi\"},{\"id\":988340957,\"tr\":\"Kald\xc4\xb1"
+"r\xc4\xb1ld\xc4\xb1\"},{\"id\":3044129637,\"tr\":\"De\xc4\x9fi\xc5\x9ftirildi\"},{\"id\":3966830291,\"tr\":\"Kaydetmek istedi\xc4\x9finiz de\xc4\x9fi\xc5\x9fiklikleri se\xc3\xa7in.\"},{\"id\":361657737,\"tr\":\"S\xc4\xb1""f\xc4\xb1rlanacak de\xc4\x9f"
+"i\xc5\x9fiklikleri se\xc3\xa7in.\"},{\"id\":2239706952,\"tr\":\"Saklanan de\xc4\x9fi\xc5\x9fiklikler geri al\xc4\xb1namaz, sahne bo\xc5\x9f de\xc4\x9fil!\"},{\"id\":2092556627,\"tr\":\"Proje de\xc4\x9fi\xc5\x9fiklikleri\"},{\"id\":755494729,\"tr\":\""
+"Revizyon a\xc4\x9f""ac\xc4\xb1\"},{\"id\":1466807325,\"tr\":\"T\xc3\xbcm de\xc4\x9fi\xc5\x9fiklikler sakland\xc4\xb1\"},{\"id\":740600380,\"tr\":\"T\xc3\xbcm de\xc4\x9fi\xc5\x9fiklikler geri y\xc3\xbcklendi\"},{\"id\":3204423818,\"tr\":\"Proje zaman "
+"\xc3\xa7izelgesi\"},{\"id\":2510909962,\"tr\":\"Proje bilgisi\"},{\"id\":775338957,\"tr\":\"Do\"},{\"id\":490958077,\"tr\":\"Re\"},{\"id\":290171102,\"tr\":\"Mi\"},{\"id\":560040029,\"tr\":\"Fa\"},{\"id\":283367342,\"tr\":\"Sol\"},{\"id\":625473219,\""
+"tr\":\"La\"},{\"id\":893768028,\"tr\":\"Si\"},{\"id\":4000436521,\"tr\":\"ve\"},{\"id\":1242033084,\"tr\":\"D\xc3\xbcn\"},{\"id\":1606577149,\"tr\":\"ba\xc5\x9flat\xc4\xb1ld\xc4\xb1\"},{\"id\":18555880,\"tr\":\"lisans de\xc4\x9fi\xc5\x9fti\"},{\"id\""
+":31830545,\"tr\":\"ba\xc5\x9fl\xc4\xb1k de\xc4\x9fi\xc5\x9ftirildi\"},{\"id\":4021598998,\"tr\":\"yazar de\xc4\x9fi\xc5\x9fti\"},{\"id\":472988657,\"tr\":\"a\xc3\xa7\xc4\xb1klama de\xc4\x9fi\xc5\x9ftirildi\"},{\"id\":2880036239,\"tr\":\"temperament d"
+"e\xc4\x9fi\xc5\x9ftirildi\"},{\"id\":2182619756,\"tr\":\"renk de\xc4\x9fi\xc5\x9fti\"},{\"id\":4253760835,\"tr\":\"bo\xc5\x9f dizi\"},{\"id\":2602248368,\"tr\":\"bo\xc5\x9f desen\"},{\"id\":2109934724,\"tr\":\"enstr\xc3\xbcman de\xc4\x9fi\xc5\x9ftiri"
+"ldi\"},{\"id\":3243932809,\"tr\":\"kontrol\xc3\xb6r de\xc4\x9fi\xc5\x9fti\"},{\"id\":3210663368,\"tr\":\"Kanal de\xc4\x9fi\xc5\x9fti\"},{\"id\":2141501166,\"tr\":\"K\xc4\xb1sayol\"},{\"id\":815908432,\"tr\":\"Piano roll ve Desen roll aras\xc4\xb1nda "
+"de\xc4\x9fi\xc5\x9f\"},{\"id\":1988206468,\"tr\":\"Yak\xc4\xb1nla\xc5\x9ft\xc4\xb1r\"},{\"id\":108079057,\"tr\":\"Uzakla\xc5\x9ft\xc4\xb1r\"},{\"id\":3920505673,\"tr\":\"Par\xc3\xa7""aya uyacak \xc5\x9f""ekilde yak\xc4\xb1nla\xc5\x9ft\xc4\xb1r\"},{\""
+"id\":2650851948,\"tr\":\"Mevcut yak\xc4\xb1nla\xc5\x9ft\xc4\xb1rmay\xc4\xb1 kilitle\"},{\"id\":1764544841,\"tr\":\"Sonraki \xc3\xa7""apaya atla\"},{\"id\":1561095669,\"tr\":\"\xc3\x96nceki \xc3\xa7""apaya atla\"},{\"id\":2823305337,\"tr\":\"Nota ad\xc4"
+"\xb1 k\xc4\xb1lavuzlar\xc4\xb1n\xc4\xb1 a\xc3\xa7/kapat\"},{\"id\":3951169083,\"tr\":\"Proje mini haritas\xc4\xb1n\xc4\xb1 a\xc3\xa7/kapat\"},{\"id\":127431244,\"tr\":\"Ses seviyesi ve otomasyon d\xc3\xbczenleyicilerini a\xc3\xa7/kapat\"},{\"id\":158"
+"9663718,\"tr\":\"Se\xc3\xa7im \xc3\xbczerindeki d\xc3\xb6ng\xc3\xbcy\xc3\xbc a\xc3\xa7/kapat\"},{\"id\":2079190982,\"tr\":\"D\xc3\xbczenleme modu: varsay\xc4\xb1lan\"},{\"id\":251736895,\"tr\":\"D\xc3\xbczenleme modu: kalem (nota ve klip \xc3\xa7iz)\""
+"},{\"id\":649474182,\"tr\":\"D\xc3\xbczenleme modu: s\xc3\xbcr\xc3\xbckleme (mod de\xc4\x9fi\xc5\x9ftirmek i\xc3\xa7in bo\xc5\x9flu\xc4\x9f""a bas\xc4\xb1l\xc4\xb1 tutunuz)\"},{\"id\":639175196,\"tr\":\"D\xc3\xbczenleme modu: b\xc4\xb1\xc3\xa7""ak (n"
+"ota ve klipleri kes/birle\xc5\x9ftir )\"},{\"id\":2896458336,\"tr\":\"Armoni ve progresyonlarla \xc3\xa7""almak i\xc3\xa7in akor arac\xc4\xb1\"},{\"id\":3209268458,\"tr\":\"Arpejler\"},{\"id\":1719740774,\"tr\":\"Yeni par\xc3\xa7""a ekle\"},{\"id\":9"
+"61840392,\"tr\":\"Metronom klikini ayarla\"},{\"id\":2265199415,\"tr\":\"Kay\xc4\xb1t modunu de\xc4\x9fi\xc5\x9ftir (kayd\xc4\xb1 ba\xc5\x9flatmak i\xc3\xa7in ilk giri\xc5\x9fi bekler)\"},{\"id\":3144845477,\"tr\":\"Playback'i ba\xc5\x9fla ya da durd"
+"ur\"},{\"id\":2361001723,\"tr\":\"\xc4\xb0yon\"},{\"id\":1921553488,\"tr\":\"Eol\"},{\"id\":2382045982,\"tr\":\"Lidya\"},{\"id\":994442821,\"tr\":\"Miksolidya\"},{\"id\":4042978826,\"tr\":\"Dor\"},{\"id\":2049980375,\"tr\":\"Frigya\"},{\"id\":1360799"
+"947,\"tr\":\"Lokriya\"},{\"id\":4047078079,\"tr\":\"Melodik Maj\xc3\xb6r\"},{\"id\":2619486323,\"tr\":\"Melodik Min\xc3\xb6r\"},{\"id\":215598663,\"tr\":\"Harmonik Maj\xc3\xb6r\"},{\"id\":3945887243,\"tr\":\"Harmonik Min\xc3\xb6r\"},{\"id\":108915948"
+"3,\"tr\":\"Macar Maj\xc3\xb6r\"},{\"id\":827147463,\"tr\":\"Macar Min\xc3\xb6r\"},{\"id\":2453297237,\"tr\":\"Napoli Maj\xc3\xb6r\"},{\"id\":417732145,\"tr\":\"Napoli Min\xc3\xb6r\"},{\"id\":232492715,\"tr\":\"Romen Maj\xc3\xb6r\"},{\"id\":3308214711"
+",\"tr\":\"Romen Min\xc3\xb6r\"},{\"id\":1298743296,\"tr\":\"Enigmatik\"},{\"id\":892084257,\"tr\":\"Enigmatik Min\xc3\xb6r\"},{\"id\":2284927933,\"tr\":\"Art\xc4\xb1r\xc4\xb1lm\xc4\xb1\xc5\x9f \xc4\xb0yon\"},{\"id\":2272612354,\"tr\":\"Lidya Dominant"
+"\"},{\"id\":4136500064,\"tr\":\"Art\xc4\xb1r\xc4\xb1lm\xc4\xb1\xc5\x9f Lidya\"},{\"id\":1416518516,\"tr\":\"Eksiltilmi\xc5\x9f Lidya\"},{\"id\":4231080975,\"tr\":\"Art\xc4\xb1r\xc4\xb1lm\xc4\xb1\xc5\x9f Miksolidya\"},{\"id\":3914030977,\"tr\":\"Frigy"
+"a Dominant\"},{\"id\":805807533,\"tr\":\"Lokriya Dominant\"},{\"id\":3160581502,\"tr\":\"Maj\xc3\xb6r Lokriya\"},{\"id\":2202579943,\"tr\":\"Ultrafrigya\"},{\"id\":2837056976,\"tr\":\"S\xc3\xbcperlokriya\"},{\"id\":2605108987,\"tr\":\"Ultralokriya\"}"
+",{\"id\":1965071581,\"tr\":\"Y\xc3\xb6nlendirici Tam Ton\"},{\"id\":1367319047,\"tr\":\"\xc3\x87ift Harmonik\"},{\"id\":626733046,\"tr\":\"Yar\xc4\xb1m Eksiltilmi\xc5\x9f\"},{\"id\":2141989878,\"tr\":\"De\xc4\x9fi\xc5\x9ftirilmi\xc5\x9f Dominant\"},{"
+"\"id\":2402117461,\"tr\":\"Yedi Tonlu Blues\"},{\"id\":860101336,\"tr\":\"Frigya Blues\"},{\"id\":3745452021,\"tr\":\"De\xc4\x9fi\xc5\x9ftirilmi\xc5\x9f Blues\"},{\"id\":553375353,\"tr\":\"Kar\xc4\xb1\xc5\x9f\xc4\xb1k Blues\"},{\"id\":32797868,\"tr\""
+":\"Y\xc3\xb6nlendirici Ton Blues\"},{\"id\":3801549673,\"tr\":\"Rock'n'Roll\"},{\"id\":1931755849,\"tr\":\"Ses Giri\xc5\x9fi\"},{\"id\":4200658534,\"tr\":\"Ses \xc3\x87\xc4\xb1k\xc4\xb1\xc5\x9f\xc4\xb1\"},{\"id\":3154594048,\"tr\":\"MIDI Giri\xc5\x9f"
+"i\"},{\"id\":2483423585,\"tr\":\"MIDI \xc3\x87\xc4\xb1k\xc4\xb1\xc5\x9f\xc4\xb1\"}],\"pluralLiteral\":[{\"id\":1853236155,\"tr\":[{\"name\":\"{x} giri\xc5\x9f kanal\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} giri\xc5\x9f kanallar\xc4\xb1\",\"plu"
+"ralForm\":\"2\"}]},{\"id\":4237797194,\"tr\":[{\"name\":\"{x} \xc3\xa7\xc4\xb1k\xc4\xb1\xc5\x9f kanal\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} \xc3\xa7\xc4\xb1k\xc4\xb1\xc5\x9f kanallar\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":4187362806,\"tr"
+"\":[{\"name\":\"{x} not eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} notalar eklendi\",\"pluralForm\":\"2\"}]},{\"id\":2677001308,\"tr\":[{\"name\":\"{x} not kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} notalar kald\xc4\xb1"
+"r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":1115369500,\"tr\":[{\"name\":\"{x} not de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} notalar de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]},{\"id\":1670191088,\"tr\":[{\""
+"name\":\"{x} etkinlik eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} etkinlikler eklendi\",\"pluralForm\":\"2\"}]},{\"id\":4188356498,\"tr\":[{\"name\":\"{x} etkinli\xc4\x9fi kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} et"
+"kinlikler kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":1822865234,\"tr\":[{\"name\":\"{x} etkinlik de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} etkinlikler de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]"
+"},{\"id\":2539740572,\"tr\":[{\"name\":\"{x} klip eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} klipler eklendi\",\"pluralForm\":\"2\"}]},{\"id\":1838846406,\"tr\":[{\"name\":\"{x} klip kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"nam"
+"e\":\"{x} klipler kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":3829748102,\"tr\":[{\"name\":\"{x} klip de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} klipler de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]"
+"},{\"id\":159801621,\"tr\":[{\"name\":\"{x} ek a\xc3\xa7\xc4\xb1klama eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} ek a\xc3\xa7\xc4\xb1klamalar eklendi\",\"pluralForm\":\"2\"}]},{\"id\":335767671,\"tr\":[{\"name\":\"{x} ek a\xc3\xa7\xc4\xb1klama s"
+"ilindi\",\"pluralForm\":\"1\"},{\"name\":\"{x} ek a\xc3\xa7\xc4\xb1klamalar silindi\",\"pluralForm\":\"2\"}]},{\"id\":1776240695,\"tr\":[{\"name\":\"{x} a\xc3\xa7\xc4\xb1klamas\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x"
+"} a\xc3\xa7\xc4\xb1klamalar de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]},{\"id\":2264722107,\"tr\":[{\"name\":\"{x} zaman i\xc5\x9f""areti eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} zaman i\xc5\x9f""aretileri eklendi\",\"pluralForm\":\"2"
+"\"}]},{\"id\":755875505,\"tr\":[{\"name\":\"{x} zaman imzas\xc4\xb1 kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} zaman imzalar\xc4\xb1 kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":1775129073,\"tr\":[{\""
+"name\":\"{x} zaman imzas\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} zaman imzalar\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]},{\"id\":3133606715,\"tr\":[{\"name\":\"{x} nota anahtar\xc4\xb1 eklendi\",\""
+"pluralForm\":\"1\"},{\"name\":\"{x} nota anahtarlar\xc4\xb1 eklendi\",\"pluralForm\":\"2\"}]},{\"id\":1992957705,\"tr\":[{\"name\":\"{x} nota anahtar\xc4\xb1 kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} nota anahtarlar\xc4\xb1"
+" kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":4237699145,\"tr\":[{\"name\":\"{x} nota anahtar\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} nota anahtarlar\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"plura"
+"lForm\":\"2\"}]},{\"id\":2895268064,\"tr\":[{\"name\":\"{x} nota\",\"pluralForm\":\"1\"},{\"name\":\"{x} notalar\",\"pluralForm\":\"2\"}]},{\"id\":3458549142,\"tr\":[{\"name\":\"{x} olay\",\"pluralForm\":\"1\"},{\"name\":\"{x} olaylar\",\"pluralForm\""
+":\"2\"}]},{\"id\":1029569651,\"tr\":[{\"name\":\"{x} a\xc3\xa7\xc4\xb1klama\",\"pluralForm\":\"1\"},{\"name\":\"{x} a\xc3\xa7\xc4\xb1klamalar\",\"pluralForm\":\"2\"}]},{\"id\":2984658661,\"tr\":[{\"name\":\"{x} zaman imzas\xc4\xb1\",\"pluralForm\":\""
+"1\"},{\"name\":\"{x} zaman imzas\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":3241281125,\"tr\":[{\"name\":\"{x} zaman imzas\xc4\xb1 \",\"pluralForm\":\"1\"},{\"name\":\"{x} zaman imzalar\xc4\xb1 \",\"pluralForm\":\"2\"}]},{\"id\":3319356210,\"tr\":[{\""
+"name\":\"{x} klip\",\"pluralForm\":\"1\"},{\"name\":\"{x} klipler\",\"pluralForm\":\"2\"}]},{\"id\":3631037336,\"tr\":[{\"name\":\"{x} desen\",\"pluralForm\":\"1\"},{\"name\":\"{x} desenler\",\"pluralForm\":\"2\"}]},{\"id\":2452992563,\"tr\":[{\"name"
+"\":\"{x} par\xc3\xa7""a\",\"pluralForm\":\"1\"},{\"name\":\"{x} par\xc3\xa7""alar\",\"pluralForm\":\"2\"}]},{\"id\":1323194979,\"tr\":[{\"name\":\"{x} revizyon\",\"pluralForm\":\"1\"},{\"name\":\"{x} revizyonar\",\"pluralForm\":\"2\"}]},{\"id\":36104"
+"22080,\"tr\":[{\"name\":\"{x} delta\",\"pluralForm\":\"1\"},{\"name\":\"{x} deltalar\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} dakika\",\"pluralForm\":\"1\"},{\"name\":\"{x} dakika\",\"pluralForm\":\"2\"}]},{\"id\":41222232"
+"88,\"tr\":[{\"name\":\"{x} saniye\",\"pluralForm\":\"1\"},{\"name\":\"{x} saniye\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"{x} konumundan ta\xc5\x9f\xc4\xb1nd\xc4\xb1\",\"pluralForm\":\"1\"}}]}";
+
+const char* tr_json = (const char*) temp_binary_data_114;
+
+//================== uk.json ==================
+static const unsigned char temp_binary_data_115[] =
 { 123,34,105,100,34,58,34,117,107,34,44,34,110,97,109,101,34,58,34,208,163,208,186,209,128,208,176,209,151,208,189,209,129,209,140,208,186,208,176,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,40,123,120,125,37,49,48,61,61,49,32,
 38,38,32,123,120,125,37,49,48,48,33,61,49,49,32,63,32,49,32,58,32,123,120,125,37,49,48,62,61,50,32,38,38,32,123,120,125,37,49,48,60,61,52,32,38,38,32,40,123,120,125,37,49,48,48,60,49,48,32,124,124,32,123,120,125,37,49,48,48,62,61,50,48,41,32,63,32,50,
 32,58,32,51,41,34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,208,159,209,128,208,190,209,148,208,186,209,130,32,209,129,209,130,208,178,208,190,209,128,208,181,208,189,208,190,34,125,
@@ -3748,10 +3855,10 @@ static const unsigned char temp_binary_data_114[] =
 55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,208,191,208,181,209,128,208,181,208,185,208,188,208,181,208,189,208,190,208,178,208,176,208,189,208,190,32,208,183,32,123,120,125,34,44,34,112,108,117,114,97,108,70,111,114,109,34,
 58,34,49,34,125,125,93,125,0,0 };
 
-const char* uk_json = (const char*) temp_binary_data_114;
+const char* uk_json = (const char*) temp_binary_data_115;
 
 //================== zh.json ==================
-static const unsigned char temp_binary_data_115[] =
+static const unsigned char temp_binary_data_116[] =
 { 123,34,105,100,34,58,34,122,104,34,44,34,110,97,109,101,34,58,34,231,174,128,228,189,147,228,184,173,230,150,135,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,49,34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,
 58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,229,183,165,231,168,139,229,183,178,229,144,175,229,138,168,34,125,44,123,34,105,100,34,58,50,52,50,51,53,52,57,49,53,44,34,116,114,34,58,34,230,150,176,229,187,186,229,183,165,231,168,139,34,125,44,
 123,34,105,100,34,58,57,55,51,51,55,48,50,53,55,44,34,116,114,34,58,34,230,150,176,229,187,186,232,189,168,233,129,147,34,125,44,123,34,105,100,34,58,51,54,56,50,48,54,50,54,57,48,44,34,116,114,34,58,34,233,128,159,229,186,166,34,125,44,123,34,105,100,
@@ -3973,10 +4080,10 @@ static const unsigned char temp_binary_data_115[] =
 123,34,105,100,34,58,52,49,50,50,50,50,51,50,56,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,231,167,146,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,
 44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,229,183,178,228,187,142,123,120,125,228,184,173,231,167,187,229,138,168,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,0,0 };
 
-const char* zh_json = (const char*) temp_binary_data_115;
+const char* zh_json = (const char*) temp_binary_data_116;
 
 //================== logo-v2.png ==================
-static const unsigned char temp_binary_data_116[] =
+static const unsigned char temp_binary_data_117[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,0,0,0,2,0,8,3,0,0,0,195,166,36,200,0,0,0,90,80,76,84,69,0,0,0,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,220,225,
 250,66,68,109,210,215,241,87,89,128,190,194,222,159,163,194,118,121,156,77,79,119,200,205,232,97,100,138,138,142,175,179,184,213,169,173,204,128,131,166,107,110,147,149,152,185,217,6,198,72,0,0,0,13,116,82,78,83,0,240,16,187,112,208,160,128,64,144,96,
 48,32,151,204,52,208,0,0,27,230,73,68,65,84,120,218,236,218,91,82,133,48,16,0,209,201,3,8,143,217,255,118,213,210,143,171,85,94,209,63,211,125,182,144,134,132,9,241,76,29,91,107,37,245,111,149,214,182,81,227,79,206,190,164,166,176,244,51,126,169,186,
@@ -4080,10 +4187,10 @@ static const unsigned char temp_binary_data_116[] =
 194,171,131,102,141,39,176,25,218,225,116,34,144,78,12,194,139,35,181,197,115,108,87,185,93,5,210,137,64,46,49,8,175,14,154,213,22,207,99,139,172,118,133,51,18,129,65,115,117,176,44,44,72,54,25,157,129,116,34,144,78,12,138,95,5,40,139,13,102,97,155,218,
 185,12,238,6,187,116,34,144,75,12,114,171,131,198,185,186,177,152,224,19,237,49,4,137,135,37,128,151,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* logov2_png = (const char*) temp_binary_data_116;
+const char* logov2_png = (const char*) temp_binary_data_117;
 
 //================== logo-v2-mac.png ==================
-static const unsigned char temp_binary_data_117[] =
+static const unsigned char temp_binary_data_118[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,0,0,0,2,0,8,3,0,0,0,195,166,36,200,0,0,2,64,80,76,84,69,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,5,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,55,57,
 100,0,0,0,0,0,0,55,57,99,0,0,0,0,0,0,0,0,0,1,1,2,55,57,99,55,57,99,1,1,3,0,0,0,55,57,98,0,0,0,55,57,99,55,57,99,55,57,99,56,58,99,0,0,0,0,0,1,2,2,4,53,55,95,0,0,0,56,57,99,55,58,100,55,57,100,54,55,96,53,55,96,53,55,94,51,53,92,54,56,97,53,55,95,52,54,
 93,53,55,96,46,47,82,53,55,95,52,54,93,52,54,93,36,37,65,54,56,97,41,43,73,28,29,49,23,24,41,48,50,86,13,14,24,52,55,94,48,50,87,45,47,80,53,56,96,54,56,98,52,54,94,46,47,81,55,57,99,39,40,69,36,36,62,34,34,60,42,43,75,39,42,71,33,35,60,51,54,91,47,49,
@@ -4344,10 +4451,10 @@ static const unsigned char temp_binary_data_117[] =
 242,41,21,128,12,136,14,176,18,136,22,64,13,20,10,105,28,200,29,20,210,56,72,161,164,4,88,39,188,19,230,129,250,111,149,251,68,29,196,149,64,212,176,151,241,61,6,225,125,159,249,100,106,216,219,248,110,31,251,216,199,62,246,177,143,125,236,99,31,255,
 181,7,7,2,0,0,0,0,130,252,173,23,24,161,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,4,142,154,195,12,195,63,131,3,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* logov2mac_png = (const char*) temp_binary_data_117;
+const char* logov2mac_png = (const char*) temp_binary_data_118;
 
 //================== arpeggiators.json ==================
-static const unsigned char temp_binary_data_118[] =
+static const unsigned char temp_binary_data_119[] =
 "{\n"
 "  // TODO\n"
 "  \"arpeggiators\": {\n"
@@ -4356,10 +4463,10 @@ static const unsigned char temp_binary_data_118[] =
 "  }\n"
 "}";
 
-const char* arpeggiators_json = (const char*) temp_binary_data_118;
+const char* arpeggiators_json = (const char*) temp_binary_data_119;
 
 //================== chords.json ==================
-static const unsigned char temp_binary_data_119[] =
+static const unsigned char temp_binary_data_120[] =
 "{\n"
 "  /*\n"
 "    A number of chords that are easy to define with in-scale keys.\n"
@@ -4384,10 +4491,10 @@ static const unsigned char temp_binary_data_119[] =
 "  }\n"
 "}";
 
-const char* chords_json = (const char*) temp_binary_data_119;
+const char* chords_json = (const char*) temp_binary_data_120;
 
 //================== colourSchemes.json ==================
-static const unsigned char temp_binary_data_120[] =
+static const unsigned char temp_binary_data_121[] =
 "{\n"
 "  \"colourSchemes\": {\n"
 "    \"colourScheme\": [\n"
@@ -4549,10 +4656,10 @@ static const unsigned char temp_binary_data_120[] =
 "  }\n"
 "}";
 
-const char* colourSchemes_json = (const char*) temp_binary_data_120;
+const char* colourSchemes_json = (const char*) temp_binary_data_121;
 
 //================== hotkeySchemes.json ==================
-static const unsigned char temp_binary_data_121[] =
+static const unsigned char temp_binary_data_122[] =
 "{\n"
 "  \"hotkeySchemes\": { \"hotkeyScheme\": { \"name\": \"Default\", \"group\": [\n"
 "\n"
@@ -5049,10 +5156,10 @@ static const unsigned char temp_binary_data_121[] =
 "  } // ANCHOR_END: ComboBox\n"
 "]}}}\n";
 
-const char* hotkeySchemes_json = (const char*) temp_binary_data_121;
+const char* hotkeySchemes_json = (const char*) temp_binary_data_122;
 
 //================== keyboardMappings.json ==================
-static const unsigned char temp_binary_data_122[] =
+static const unsigned char temp_binary_data_123[] =
 "{\n"
 "  \"keyboardMappings\": {\n"
 "    \"keyboardMapping\": [\n"
@@ -5076,10 +5183,10 @@ static const unsigned char temp_binary_data_122[] =
 "  }\n"
 "}";
 
-const char* keyboardMappings_json = (const char*) temp_binary_data_122;
+const char* keyboardMappings_json = (const char*) temp_binary_data_123;
 
 //================== meters.json ==================
-static const unsigned char temp_binary_data_123[] =
+static const unsigned char temp_binary_data_124[] =
 "{\n"
 "  \"meters\": {\n"
 "    \"meter\": [\n"
@@ -5130,10 +5237,10 @@ static const unsigned char temp_binary_data_123[] =
 "  }\n"
 "}";
 
-const char* meters_json = (const char*) temp_binary_data_123;
+const char* meters_json = (const char*) temp_binary_data_124;
 
 //================== scales.json ==================
-static const unsigned char temp_binary_data_124[] =
+static const unsigned char temp_binary_data_125[] =
 "{\n"
 "  \"scales\": {\n"
 "    \"scale\": [\n"
@@ -5308,10 +5415,10 @@ static const unsigned char temp_binary_data_124[] =
 "  }\n"
 "}";
 
-const char* scales_json = (const char*) temp_binary_data_124;
+const char* scales_json = (const char*) temp_binary_data_125;
 
 //================== temperaments.json ==================
-static const unsigned char temp_binary_data_125[] =
+static const unsigned char temp_binary_data_126[] =
 "{\n"
 "  \"temperaments\": {\n"
 "    \"temperament\": [\n"
@@ -5377,10 +5484,10 @@ static const unsigned char temp_binary_data_125[] =
 "  }\n"
 "}\n";
 
-const char* temperaments_json = (const char*) temp_binary_data_125;
+const char* temperaments_json = (const char*) temp_binary_data_126;
 
 //================== translations.json ==================
-static const unsigned char temp_binary_data_126[] =
+static const unsigned char temp_binary_data_127[] =
 "{\n"
 "  // This file only lists ids and names to avoid parsing all the data on start:\n"
 "  \"translations\": {\n"
@@ -5395,12 +5502,13 @@ static const unsigned char temp_binary_data_126[] =
 "      { \"id\": \"el\", \"name\": \"\xce\x95\xce\xbb\xce\xbb\xce\xb7\xce\xbd\xce\xb9\xce\xba\xce\xac\" },\n"
 "      { \"id\": \"it\", \"name\": \"Italiano\" },\n"
 "      { \"id\": \"pt\", \"name\": \"Portugu\xc3\xaas\" },\n"
-"      { \"id\": \"uk\", \"name\": \"\xd0\xa3\xd0\xba\xd1\x80\xd0\xb0\xd1\x97\xd0\xbd\xd1\x81\xd1\x8c\xd0\xba\xd0\xb0\" }\n"
+"      { \"id\": \"uk\", \"name\": \"\xd0\xa3\xd0\xba\xd1\x80\xd0\xb0\xd1\x97\xd0\xbd\xd1\x81\xd1\x8c\xd0\xba\xd0\xb0\" },\n"
+"      { \"id\": \"tr\", \"name\": \"T\xc3\xbcrk\xc3\xa7""e\"}\n"
 "    ]\n"
 "  }\n"
 "}";
 
-const char* translations_json = (const char*) temp_binary_data_126;
+const char* translations_json = (const char*) temp_binary_data_127;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
@@ -5527,6 +5635,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xdf1156e3:  numBytes = 18754; return ko_json;
         case 0xf018ba43:  numBytes = 18610; return pt_json;
         case 0x5b9a0964:  numBytes = 25410; return ru_json;
+        case 0xc047f609:  numBytes = 18805; return tr_json;
         case 0xe93c44f1:  numBytes = 24773; return uk_json;
         case 0xec9ce359:  numBytes = 15797; return zh_json;
         case 0xe05deb51:  numBytes = 7326; return logov2_png;
@@ -5539,7 +5648,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 13262; return scales_json;
         case 0x77719112:  numBytes = 2856; return temperaments_json;
-        case 0xf8655f25:  numBytes = 623; return translations_json;
+        case 0xf8655f25:  numBytes = 664; return translations_json;
         default: break;
     }
 
@@ -5663,6 +5772,7 @@ const char* namedResourceList[] =
     "ko_json",
     "pt_json",
     "ru_json",
+    "tr_json",
     "uk_json",
     "zh_json",
     "logov2_png",
@@ -5794,6 +5904,7 @@ const char* originalFilenames[] =
     "ko.json",
     "pt.json",
     "ru.json",
+    "tr.json",
     "uk.json",
     "zh.json",
     "logo-v2.png",

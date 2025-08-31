@@ -4369,6 +4369,7 @@
     <None Include="..\..\Resources\Translations\ko.json"/>
     <None Include="..\..\Resources\Translations\pt.json"/>
     <None Include="..\..\Resources\Translations\ru.json"/>
+    <None Include="..\..\Resources\Translations\tr.json"/>
     <None Include="..\..\Resources\Translations\uk.json"/>
     <None Include="..\..\Resources\Translations\zh.json"/>
     <None Include="..\..\Resources\logo-v2.png"/>

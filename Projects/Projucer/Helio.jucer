@@ -151,6 +151,7 @@
         <FILE id="mLFE6Q" name="ko.json" compile="0" resource="1" file="../../Resources/Translations/ko.json"/>
         <FILE id="tyq15z" name="pt.json" compile="0" resource="1" file="../../Resources/Translations/pt.json"/>
         <FILE id="ASL0C1" name="ru.json" compile="0" resource="1" file="../../Resources/Translations/ru.json"/>
+        <FILE id="wiISYr" name="tr.json" compile="0" resource="1" file="../../Resources/Translations/tr.json"/>
         <FILE id="LDZDYs" name="uk.json" compile="0" resource="1" file="../../Resources/Translations/uk.json"/>
         <FILE id="CabQSK" name="zh.json" compile="0" resource="1" file="../../Resources/Translations/zh.json"/>
       </GROUP>
