@@ -107,6 +107,8 @@ void Config::initResources()
         this->uiFlags->setUseFixedDoNotation(userLanguage == "ru" || userLanguage == "uk" ||
             userLanguage == "fr" || userLanguage == "it" || userLanguage == "es" ||
             userLanguage == "el" || userLanguage == "nl" || userLanguage == "pt");
+        
+        this->uiFlags->setProjectMapLargeMode(!App::isRunningOnPhone());
     }
 
     for (auto &manager : this->resources)

@@ -61,9 +61,8 @@ public:
 
     static bool isRunningOnPhone();
     static bool isRunningOnTablet();
-    static bool isRunningOnDesktop();
+    static bool mayHaveDisplayNotch();
 
-    static String getDeviceId();
     static String getAppReadableVersion();
     static String getHumanReadableDate(const Time &date);
     static Rectangle<int> getWindowBounds();

@@ -83,11 +83,7 @@ public:
 
 #endif
 
-#if JUCE_IOS
-        this->setVisible(false);
-#endif
-
-#if JUCE_ANDROID
+#if PLATFORM_MOBILE
         Desktop::getInstance().setKioskModeComponent(this);
 #endif
 
@@ -106,10 +102,6 @@ public:
         {
             this->attachOpenGLContext();
         }
-
-#if JUCE_IOS
-        Desktop::getInstance().setKioskModeComponent(this);
-#endif
     }
 
     ~MainWindow() override
@@ -331,18 +323,31 @@ class Clipboard &App::Clipboard() noexcept
 
 static Point<double> getScreenInCm()
 {
+#if JUCE_UNIT_TESTS
+    return { 30.0, 20.0 };
+#else
     const auto *mainDisplay = Desktop::getInstance().getDisplays().getPrimaryDisplay();
     jassert(mainDisplay != nullptr);
     const auto screenArea = mainDisplay->userArea;
     const auto cmWidth = (screenArea.getWidth() / mainDisplay->dpi) * mainDisplay->scale * 2.54;
     const auto cmHeight = (screenArea.getHeight() / mainDisplay->dpi) * mainDisplay->scale * 2.54;
     return { cmWidth, cmHeight };
+#endif
 }
 
 bool App::isRunningOnPhone()
 {
+#if JUCE_IOS
+    static const bool isPhone =
+        SystemStats::getDeviceDescription().containsIgnoreCase("iphone");
+    return isPhone;
+#else
     static const auto cmScreenSize = getScreenInCm();
-    return cmScreenSize.x < 16.0 || cmScreenSize.y < 8.0;
+    static const bool isPhone =
+        jmax(cmScreenSize.x, cmScreenSize.y) < 13.0 ||
+        jmin(cmScreenSize.x, cmScreenSize.y) < 8.0;
+    return isPhone;
+#endif
 }
 
 bool App::isRunningOnTablet()
@@ -354,39 +359,18 @@ bool App::isRunningOnTablet()
 #endif
 }
 
-bool App::isRunningOnDesktop()
+bool App::mayHaveDisplayNotch()
 {
-#if PLATFORM_MOBILE
+#if PLATFORM_DESKTOP
     return false;
-#elif PLATFORM_DESKTOP
+#elif PLATFORM_MOBILE
+#if JUCE_IOS
+    // iPads don't have the display notch:
+    return App::isRunningOnPhone();
+#else
     return true;
 #endif
-}
-
-String App::getDeviceId()
-{
-    static String kDeviceId;
-
-    if (kDeviceId.isEmpty())
-    {
-        const auto &id = SystemStats::getUniqueDeviceID();
-        if (!id.isEmpty())
-        {
-            kDeviceId = String(constexprHash(id.toUTF8()));
-        }
-        else
-        {
-            const auto systemStats =
-                SystemStats::getLogonName() +
-                SystemStats::getComputerName() +
-                SystemStats::getOperatingSystemName() +
-                SystemStats::getCpuVendor();
-
-            kDeviceId = String(constexprHash(systemStats.toUTF8()));
-        }
-    }
-
-    return kDeviceId;
+#endif
 }
 
 String App::translate(I18n::Key singular)
@@ -644,8 +628,10 @@ void App::initialise(const String &commandLine)
 
         DBG("Helio v" + App::getAppReadableVersion());
 
+#if !JUCE_IOS
         const auto album = Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise;
         Desktop::getInstance().setOrientationsEnabled(album);
+#endif
         
         this->config = make<class Config>();
         this->config->initResources();

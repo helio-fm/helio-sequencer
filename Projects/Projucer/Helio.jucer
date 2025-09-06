@@ -1342,7 +1342,7 @@
                   customXcodeResourceFolders="" iosDevelopmentTeamID="EQL633LLC8"
                   userNotes="" extraLinkerFlags="-weak_framework Metal -weak_framework MetalKit -weak_framework UserNotifications"
                   externalLibraries="" extraFrameworks="" iosDeviceFamily="1,2"
-                  iPadScreenOrientation="UIInterfaceOrientationLandscapeLeft,UIInterfaceOrientationLandscapeRight"
+                  iPadScreenOrientation="UIInterfaceOrientationLandscapeLeft,UIInterfaceOrientationLandscapeRight,UIInterfaceOrientationPortrait,UIInterfaceOrientationPortraitUpsideDown"
                   useHeaderMap="0" unityBuild="1" iCloudPermissions="1" iosContentSharing="1"
                   iosBackgroundAudio="1" cameraPermissionNeeded="0" microphonePermissionNeeded="0"
                   UISupportsDocumentBrowser="1" UIRequiresFullScreen="1">

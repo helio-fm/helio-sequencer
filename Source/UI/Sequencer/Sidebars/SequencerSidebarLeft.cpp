@@ -37,13 +37,16 @@ SequencerSidebarLeft::SequencerSidebarLeft()
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
 
-#if PLATFORM_DESKTOP
-    this->setInterceptsMouseClicks(false, true);
-#elif PLATFORM_MOBILE
-    this->setInterceptsMouseClicks(true, true);
-    this->swipeController = make<SwipeController>(*this);
-    this->addMouseListener(this->swipeController.get(), true);
-#endif
+    if (App::mayHaveDisplayNotch())
+    {
+        this->setInterceptsMouseClicks(true, true);
+        this->swipeController = make<SwipeController>(*this);
+        this->addMouseListener(this->swipeController.get(), true);
+    }
+    else
+    {
+        this->setInterceptsMouseClicks(false, true);
+    }
 
     this->footShadow = make<ShadowUpwards>(ShadowType::Light);
     this->addAndMakeVisible(this->footShadow.get());

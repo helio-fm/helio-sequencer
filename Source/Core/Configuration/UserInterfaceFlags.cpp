@@ -415,8 +415,11 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->uiScaleFactor = root.getProperty(UI::Flags::uiScaleFactor, this->uiScaleFactor);
     this->uiScaleFactor = jlimit(UserInterfaceFlags::minUiScaleFactor, UserInterfaceFlags::maxUiScaleFactor, this->uiScaleFactor);
 
-    this->leftSidebarWidth = root.getProperty(UI::Flags::leftSidebarWidth, this->leftSidebarWidth);
-    this->rightSidebarWidth = root.getProperty(UI::Flags::rightSidebarWidth, this->rightSidebarWidth);
+    if (App::mayHaveDisplayNotch())
+    {
+        this->leftSidebarWidth = root.getProperty(UI::Flags::leftSidebarWidth, this->leftSidebarWidth);
+        this->rightSidebarWidth = root.getProperty(UI::Flags::rightSidebarWidth, this->rightSidebarWidth);
+    }
 
     this->mouseWheelFlags.usePanningByDefault =
         root.getProperty(UI::Flags::mouseWheelAltMode, this->mouseWheelFlags.usePanningByDefault);

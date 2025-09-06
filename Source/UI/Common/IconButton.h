@@ -132,7 +132,7 @@ protected:
             new IconButton(this->image);
     }
 
-    static constexpr auto dragStartThreshold = 5;
+    static constexpr auto dragStartThreshold = 10;
 
     ComponentFader clickAnimator;
 
