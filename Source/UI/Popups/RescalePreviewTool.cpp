@@ -128,7 +128,6 @@ QuickRescaleMenu::QuickRescaleMenu(const ProjectNode &project,
 {
     MenuPanel::Menu menu;
 
-    int currentScaleIndex = -1;
     const auto scales = App::Config().getScales()->getAll();
     for (int i = 0; i < scales.size(); ++i)
     {
@@ -144,14 +143,10 @@ QuickRescaleMenu::QuickRescaleMenu(const ProjectNode &project,
         const auto isCurrentScale = isEquivalentToCurrent &&
             scale->getUnlocalizedName() == this->event.getScale()->getUnlocalizedName();
 
-        if (isCurrentScale)
-        {
-            currentScaleIndex = menu.size();
-        }
-
         menu.add(MenuItem::item(Icons::arpeggiate,
             scales.getUnchecked(i)->getLocalizedName())->
             disabledIf(isEquivalentToCurrent)->
+            markedAsCurrentIf(isCurrentScale)->
             withAction([this, i]()
         {
             const auto scales = App::Config().getScales()->getAll();
@@ -174,7 +169,7 @@ QuickRescaleMenu::QuickRescaleMenu(const ProjectNode &project,
         }));
     }
 
-    this->updateContent(menu, MenuPanel::SlideDown, true, currentScaleIndex);
+    this->updateContent(menu, MenuPanel::SlideDown, true);
 }
 
 void QuickRescaleMenu::dismissCalloutAsync()

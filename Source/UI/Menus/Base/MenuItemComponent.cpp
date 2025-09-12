@@ -71,13 +71,13 @@ public:
 
         g.setColour(this->fillColour);
         g.fillRect(x, y, lh, 1);
-        g.fillRect(x, y, 1, lv);
+        g.fillRect(x, y + 1, 1, lv - 1);
         g.fillRect(x, b - 1, lh, 1);
-        g.fillRect(x, b - lv, 1, lv);
+        g.fillRect(x, b - lv, 1, lv - 1);
         g.fillRect(r - lh, y, lh, 1);
-        g.fillRect(r - 1, y, 1, lv);
+        g.fillRect(r - 1, y + 1, 1, lv - 1);
         g.fillRect(r - lh, b - 1, lh, 1);
-        g.fillRect(r - 1, b - lv, 1, lv);
+        g.fillRect(r - 1, b - lv, 1, lv - 1);
     }
 
 private:
@@ -102,7 +102,7 @@ public:
 
     void paint(Graphics &g)
     {
-        const auto bounds = this->getLocalBounds().reduced(3, 2);
+        const auto bounds = this->getLocalBounds().reduced(2);
 
         const auto x = bounds.getX();
         const auto y = bounds.getY();
@@ -110,8 +110,11 @@ public:
         const auto b = bounds.getBottom();
 
         // the corner's size
-        constexpr auto lh = 9;
+        constexpr auto lh = 8;
         constexpr auto lv = 3;
+
+        g.setColour(this->fillColour);
+        g.fillRect(this->getLocalBounds().reduced(0, 1));
 
         g.setColour(this->shadowColour);
         g.fillRect(x, y, lh, 2);
@@ -123,20 +126,21 @@ public:
         g.fillRect(r - lh, b - 2, lh, 2);
         g.fillRect(r - 2, b - lv, 2, lv);
 
-        g.setColour(this->fillColour);
+        g.setColour(this->markerColour);
         g.fillRect(x, y, lh, 1);
-        g.fillRect(x, y, 1, lv);
+        g.fillRect(x, y + 1, 1, lv - 1);
         g.fillRect(x, b - 1, lh, 1);
-        g.fillRect(x, b - lv, 1, lv);
+        g.fillRect(x, b - lv, 1, lv - 1);
         g.fillRect(r - lh, y, lh, 1);
-        g.fillRect(r - 1, y, 1, lv);
+        g.fillRect(r - 1, y + 1, 1, lv - 1);
         g.fillRect(r - lh, b - 1, lh, 1);
-        g.fillRect(r - 1, b - lv, 1, lv);
+        g.fillRect(r - 1, b - lv, 1, lv - 1);
     }
 
 private:
 
-    const Colour fillColour = findDefaultColour(ColourIDs::Menu::currentItemMarker);
+    const Colour fillColour = findDefaultColour(ColourIDs::Menu::currentItemFill);
+    const Colour markerColour = findDefaultColour(ColourIDs::Menu::currentItemMarker);
     const Colour shadowColour = findDefaultColour(ColourIDs::Menu::cursorShade);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemCurrentMarkComponent)
@@ -272,6 +276,7 @@ MenuItem::Ptr MenuItem::item(Icons::Id iconId, int commandId, String text /*= ""
     description->hotkeyText = findHotkeyText(commandId);
     description->flags.isToggled = false;
     description->flags.isDisabled = false;
+    description->flags.isCurrentItem = false;
     description->flags.shouldCloseMenu = false;
     description->flags.hasSubmenu = false;
     description->colour = findDefaultColour(Label::textColourId);
@@ -386,6 +391,13 @@ MenuItem::Ptr MenuItem::disabledIf(bool condition)
     return description;
 }
 
+MenuItem::Ptr MenuItem::markedAsCurrentIf(bool condition)
+{
+    MenuItem::Ptr description(this);
+    description->flags.isCurrentItem = condition;
+    return description;
+}
+
 MenuItem::Ptr MenuItem::withAction(const Callback &lambda)
 {
     MenuItem::Ptr description(this);
@@ -480,7 +492,7 @@ void MenuItemComponent::paint(Graphics &g)
         g.fillRect(0, this->getHeight() - 1, this->getWidth(), 1);
     }
 
-    g.setOpacity(this->description->flags.isDisabled ? 0.5f : 1.f);
+    g.setOpacity(this->description->flags.isDisabled ? 0.75f : 1.f);
 
     const int iconX = this->isIconCentered() ? this->getWidth() / 2 :
         MenuItemComponent::iconSize / 2 + MenuItemComponent::iconMargin;
@@ -722,7 +734,7 @@ void MenuItemComponent::setDisplayedAsCurrent(bool shouldBeDisplayedAsCurrent)
     {
         this->currentItemMarker = make<MenuItemCurrentMarkComponent>();
         this->currentItemMarker->setBounds(this->getLocalBounds());
-        this->addAndMakeVisible(this->currentItemMarker.get());
+        this->addAndMakeVisible(this->currentItemMarker.get(), 0);
     }
     else if (!shouldBeDisplayedAsCurrent && this->currentItemMarker != nullptr)
     {

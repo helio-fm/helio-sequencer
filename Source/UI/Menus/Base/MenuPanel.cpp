@@ -45,8 +45,9 @@ void MenuPanel::resized()
     if (this->menu.size() != 0)
     {
         this->updateContent(this->menu,
-            this->lastAnimationType, this->shouldResizeToFitContent,
-            this->defaultItemIndex, this->customFooter.get());
+            this->lastAnimationType,
+            this->shouldResizeToFitContent,
+            this->customFooter.get());
     }
 }
 
@@ -146,11 +147,10 @@ void MenuPanel::scrollToItem(int index)
 
 void MenuPanel::updateContent(const Menu &commands,
     AnimationType animationType, bool resizeToFitContent,
-    int newDefaultItem, Component *newFooter)
+    Component *newFooter)
 {
     this->lastAnimationType = animationType;
     this->shouldResizeToFitContent = resizeToFitContent;
-    this->defaultItemIndex = newDefaultItem;
 
     constexpr auto fadeInTime = Globals::UI::fadeInShort;
     constexpr auto fadeOutTime = Globals::UI::fadeOutShort;
@@ -161,6 +161,18 @@ void MenuPanel::updateContent(const Menu &commands,
     {
         this->menu = commands;
         this->filteredMenu.clearQuick();
+
+        // this assumes that the menu may have only one item marked as current
+        this->defaultItemIndex.reset();
+        for (int i = 0; i < this->menu.size(); ++i)
+        {
+            const auto menuItem = this->menu.getUnchecked(i);
+            if (menuItem->getFlags().isCurrentItem)
+            {
+                this->defaultItemIndex = i;
+                break;
+            }
+        }
 
         if (this->cursorPosition.hasValue())
         {
@@ -340,8 +352,9 @@ void MenuPanel::setDefaultItem(int newDefaultItem)
     this->cursorPosition.reset();
 
     this->updateContent(this->menu,
-        this->lastAnimationType, this->shouldResizeToFitContent,
-        this->defaultItemIndex, this->customFooter.get());
+        this->lastAnimationType,
+        this->shouldResizeToFitContent,
+        this->customFooter.get());
 }
 
 void MenuPanel::applyFilter(const String &text)
@@ -437,7 +450,8 @@ int MenuPanel::getDefaultCursorPosition() const
         return 0;
     }
 
-    return jlimit(0, this->menu.size() - 1, this->defaultItemIndex);
+    return jlimit(0, this->menu.size() - 1,
+        this->defaultItemIndex.orFallback(0));
 }
 
 void MenuPanel::postCommandMessageToParent(int commandId)
@@ -450,8 +464,8 @@ void MenuPanel::postCommandMessageToParent(int commandId)
 
 void MenuPanel::scrollToDefaultItemIfAny()
 {
-    if (this->defaultItemIndex >= 0 &&
-        this->defaultItemIndex < this->menu.size())
+    if (this->defaultItemIndex.hasValue() &&
+        *this->defaultItemIndex < this->menu.size())
     {
         // instead of using this
         //this->listBox->scrollToEnsureRowIsOnscreen(this->defaultItemIndex);
@@ -459,9 +473,8 @@ void MenuPanel::scrollToDefaultItemIfAny()
         auto *listViewport = this->listBox->getViewport();
         const auto rowHeight = this->listBox->getRowHeight();
         listViewport->setViewPosition(listViewport->getViewPositionX(),
-            jmax(0, (this->defaultItemIndex * rowHeight) -
-            (listViewport->getViewHeight() / 2) +
-                rowHeight / 2));
+            jmax(0, (this->defaultItemIndex.orFallback(0) * rowHeight) -
+                (listViewport->getViewHeight() / 2) + (rowHeight / 2)));
     }
 }
 
@@ -491,9 +504,12 @@ Component *MenuPanel::refreshComponentForRow(int rowNumber,
 
     const auto itemDescription = menuToShow[rowNumber];
     const auto isDisplayedAsCurrent =
-        this->filteredMenu.isEmpty() && (rowNumber == this->defaultItemIndex);
+        this->filteredMenu.isEmpty() &&
+        this->defaultItemIndex.hasValue() &&
+        rowNumber == *this->defaultItemIndex;
     const auto isCursorShown =
-        this->cursorPosition.hasValue() && *this->cursorPosition == rowNumber;
+        this->cursorPosition.hasValue() &&
+        *this->cursorPosition == rowNumber;
 
     if (existingComponentToUpdate != nullptr)
     {

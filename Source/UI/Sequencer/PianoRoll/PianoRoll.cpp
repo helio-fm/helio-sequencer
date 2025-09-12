@@ -2233,9 +2233,16 @@ void PianoRoll::updateBackgroundCachesAndRepaint()
 {
     ROLL_BATCH_REPAINT_START
 
-    const auto highlightingScale = App::Config().getTemperaments()->findHighlightingFor(this->temperament);
-    this->defaultHighlighting = make<HighlightingScheme>(0, highlightingScale);
-    this->defaultHighlighting->renderBackgroundCache(this->temperament);
+    const auto defaultHighlightingScale =
+        App::Config().getTemperaments()->findHighlightingFor(this->temperament);
+
+    if (this->defaultHighlighting == nullptr ||
+        this->defaultHighlighting->getScale() == nullptr ||
+        !this->defaultHighlighting->getScale()->isEquivalentTo(defaultHighlightingScale))
+    {
+        this->defaultHighlighting = make<HighlightingScheme>(0, defaultHighlightingScale);
+        this->defaultHighlighting->renderBackgroundCache(this->temperament);
+    }
 
     this->backgroundsCache.clear();
 

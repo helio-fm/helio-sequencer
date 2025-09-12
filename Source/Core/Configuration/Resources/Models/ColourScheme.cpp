@@ -85,15 +85,6 @@ Colour ColourScheme::getDialogFillColour() const
     return JUCE_LIVE_CONSTANT(c);
 }
 
-Colour ColourScheme::getPanelFillColour() const
-{
-    using namespace Serialization;
-    const auto c = this->colours.contains(UI::Colours::panelFill) ?
-        this->colours.at(UI::Colours::panelFill) :
-        this->colours.at(UI::Colours::buttonFill);
-    return JUCE_LIVE_CONSTANT(c);
-}
-
 Colour ColourScheme::getFrameBorderColour() const
 {
     using namespace Serialization;
@@ -182,7 +173,6 @@ void ColourScheme::syncWithLiveConstantEditor()
     this->colours[UI::Colours::sidebarFill] = this->getSidebarFillColour();
     this->colours[UI::Colours::headlineFill] = this->getHeadlineFillColour();
     this->colours[UI::Colours::dialogFill] = this->getDialogFillColour();
-    this->colours[UI::Colours::buttonFill] = this->getPanelFillColour();
     this->colours[UI::Colours::frameBorder] = this->getFrameBorderColour();
     this->colours[UI::Colours::lassoFill] = this->getLassoFillColour();
     this->colours[UI::Colours::lassoBorder] = this->getLassoBorderColour();

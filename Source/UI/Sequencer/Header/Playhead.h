@@ -20,6 +20,7 @@
 class Transport;
 class RollBase;
 
+#include "ColourIDs.h"
 #include "TransportListener.h"
 
 class Playhead :
@@ -38,13 +39,12 @@ public:
     };
 
     Playhead(RollBase &parentRoll, Transport &owner,
-        Playhead::Listener *movementListener = nullptr,
-        float alpha = 1.f);
+        Playhead::Listener *movementListener = nullptr);
 
     ~Playhead() override;
 
     void updatePosition();
-    void updatePosition(float position);
+    virtual void updatePosition(float position);
 
     //===------------------------------------------------------------------===//
     // TransportListener
@@ -90,7 +90,7 @@ protected:
 
     // it's meant to lock these 4 fields:
     float beatAnchor = 0.f;
-    double timeAnchor = 0.0;
+    uint32 timeAnchor = 0;
     double msPerQuarterNote = Globals::Defaults::msPerBeat;
     float lastCorrectBeat = 0.f;
 
@@ -99,9 +99,12 @@ protected:
 
     Colour currentColour;
 
-    const Colour shadeColour;
-    const Colour playbackColour;
-    const Colour recordingColour;
+    const Colour shadeColour =
+        findDefaultColour(ColourIDs::Roll::playheadShade);
+    const Colour playbackColour =
+        findDefaultColour(ColourIDs::Roll::playheadPlayback);
+    const Colour recordingColour =
+        findDefaultColour(ColourIDs::Roll::playheadRecording);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Playhead)
 };
@@ -111,5 +114,17 @@ class PlayheadSmall final : public Playhead
 public:
 
     PlayheadSmall(RollBase &parentRoll, Transport &owner);
+
+    void parentSizeChanged() override;
     void paint(Graphics &g) override;
+
+    void updatePosition(float position) override;
+    void onStop() override;
+
+protected:
+
+    const Colour playbackColour =
+        findDefaultColour(ColourIDs::Roll::playheadSmallPlayback);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayheadSmall)
 };

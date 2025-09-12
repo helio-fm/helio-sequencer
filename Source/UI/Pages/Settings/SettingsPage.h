@@ -42,7 +42,7 @@ public:
         #if PLATFORM_DESKTOP
         static constexpr auto scrollBarWidth = 2;
         #elif PLATFORM_MOBILE
-        static constexpr auto scrollBarWidth = 32;
+        static constexpr auto scrollBarWidth = 20;
         #endif
     };
 

@@ -34,10 +34,14 @@ public:
 
     void paint(Graphics &g) override
     {
+        const float gridStartX = 218.f;
         const float paintStartY = 4.f;
         const float paintEndY = float(this->getHeight()) - 10.f;
         const float lineStartY = paintStartY;
         const float lineEndY = paintEndY + paintStartY;
+
+        g.setColour(Colours::white.withAlpha(0.025f));
+        g.fillRect(0.f, paintStartY, gridStartX, paintEndY);
 
         g.setColour(Colours::black.withAlpha(0.4f));
         g.drawVerticalLine(1, lineStartY + 1, lineEndY - 1);
@@ -74,6 +78,7 @@ void ThemeSettingsItem::paint(Graphics &g)
         return;
     }
 
+    const int gridStartX = 218;
     const int paintStartY = 4;
     const int paintEndY = this->getHeight() - 10;
     const int lineStartY = paintStartY;
@@ -114,10 +119,10 @@ void ThemeSettingsItem::paint(Graphics &g)
     }
 
     g.setColour(this->colours->getPageFillColour());
-    g.fillRect(0, paintStartY, 218, paintEndY);
+    g.fillRect(0, paintStartY, gridStartX, paintEndY);
 
     // Outer glow
-    g.setColour(this->colours->getPageFillColour().brighter(0.2f));
+    g.setColour(this->colours->getPageFillColour().brighter(0.25f));
     g.drawVerticalLine(0, float(lineStartY), float(lineEndY));
     g.drawVerticalLine(this->getWidth() - 1, float(lineStartY), float(lineEndY));
     g.drawHorizontalLine(lineStartY - 1, 1.f, float(this->getWidth()) - 1.f);
@@ -131,13 +136,13 @@ void ThemeSettingsItem::paint(Graphics &g)
     g.drawHorizontalLine(lineEndY - 1, 1.f, float(this->getWidth()) - 1.f);
 
     // Roll shadow left
-    g.setGradientFill(ColourGradient(Colour(0x0c000000), 218.f, 0.f,
-        Colours::transparentBlack, 238.f, 0.f, false));
-    g.fillRect(218, paintStartY, 20, paintEndY);
+    g.setGradientFill(ColourGradient(Colour(0x0c000000), float(gridStartX), 0.f,
+        Colours::transparentBlack, float(gridStartX) + 20.f, 0.f, false));
+    g.fillRect(gridStartX, paintStartY, 20, paintEndY);
 
-    g.setGradientFill(ColourGradient(Colour(0x0c000000), 218.f, 0.f,
-        Colours::transparentBlack, 230.0f, 0.f, false));
-    g.fillRect(218, paintStartY, 12, paintEndY);
+    g.setGradientFill(ColourGradient(Colour(0x0c000000), float(gridStartX), 0.f,
+        Colours::transparentBlack, float(gridStartX) + 10.f, 0.f, false));
+    g.fillRect(gridStartX, paintStartY, 10, paintEndY);
 
     // Roll shadow right
     g.setGradientFill(ColourGradient(Colour(0x0c000000), float(this->getWidth()), 0.f,
@@ -145,15 +150,15 @@ void ThemeSettingsItem::paint(Graphics &g)
     g.fillRect(this->getWidth() - 20, paintStartY, 20, paintEndY);
 
     g.setGradientFill(ColourGradient(Colour(0x0c000000), float(this->getWidth()), 0.f,
-        Colours::transparentBlack, float(this->getWidth()) - 12.f, 0.f, false));
-    g.fillRect(this->getWidth() - 12, paintStartY, 12, paintEndY);
+        Colours::transparentBlack, float(this->getWidth()) - 10.f, 0.f, false));
+    g.fillRect(this->getWidth() - 10, paintStartY, 12, paintEndY);
 
     // Separators
     g.setColour(Colour(0x0f000000));
-    g.drawVerticalLine(218, float(lineStartY), float(lineEndY));
+    g.drawVerticalLine(gridStartX, float(lineStartY), float(lineEndY));
 
     g.setColour(Colour(0x0bffffff));
-    g.drawVerticalLine(217, float(lineStartY), float(lineEndY));
+    g.drawVerticalLine(gridStartX - 1, float(lineStartY), float(lineEndY));
 
     g.setColour(Colours::black);
     Icons::drawImageRetinaAware(this->icon1, g, 17, (this->getHeight() / 2) - 1);
@@ -219,5 +224,5 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList, bool isCurrent, 
 
 Component *ThemeSettingsItem::createHighlighterComponent()
 {
-    return this->isCurrentTheme ? nullptr : new ThemeSettingsItemHighlighter();
+    return new ThemeSettingsItemHighlighter();
 }

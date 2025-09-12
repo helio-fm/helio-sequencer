@@ -4509,7 +4509,6 @@ static const unsigned char temp_binary_data_121[] =
 "          \"dialogFill\": \"ff27262f\",\n"
 "          \"lassoFill\": \"17000000\",\n"
 "          \"lassoBorder\": \"ffad7fff\",\n"
-"          \"buttonFill\": \"4557565f\",\n"
 "          \"frameBorder\": \"afffffff\",\n"
 "          \"whiteKey\": \"ff34323d\",\n"
 "          \"blackKey\": \"ff1b1a1f\",\n"
@@ -4531,7 +4530,6 @@ static const unsigned char temp_binary_data_121[] =
 "          \"dialogFill\": \"ff3d4277\",\n"
 "          \"lassoFill\": \"70000000\",\n"
 "          \"lassoBorder\": \"9ff0087\",\n"
-"          \"buttonFill\": \"20ffffff\",\n"
 "          \"frameBorder\": \"18ffffff\",\n"
 "          \"whiteKey\": \"ff333875\",\n"
 "          \"blackKey\": \"ff1e1d51\",\n"
@@ -4553,7 +4551,6 @@ static const unsigned char temp_binary_data_121[] =
 "          \"dialogFill\": \"ffecedff\",\n"
 "          \"lassoFill\": \"17ffffff\",\n"
 "          \"lassoBorder\": \"ff260058\",\n"
-"          \"buttonFill\": \"6fffffff\",\n"
 "          \"frameBorder\": \"ca000000\",\n"
 "          \"whiteKey\": \"ffe2ebfb\",\n"
 "          \"blackKey\": \"ffd1dff9\",\n"
@@ -4575,7 +4572,6 @@ static const unsigned char temp_binary_data_121[] =
 "          \"dialogFill\": \"ff242424\",\n"
 "          \"lassoFill\": \"25000000\",\n"
 "          \"lassoBorder\": \"ffd4d4d4\",\n"
-"          \"buttonFill\": \"45454546\",\n"
 "          \"frameBorder\": \"ff585858\",\n"
 "          \"whiteKey\": \"ff1a1a1a\",\n"
 "          \"blackKey\": \"ff141414\",\n"
@@ -4597,7 +4593,6 @@ static const unsigned char temp_binary_data_121[] =
 "          \"dialogFill\": \"ff27262f\",\n"
 "          \"lassoFill\": \"17000000\",\n"
 "          \"lassoBorder\": \"ffad7fff\",\n"
-"          \"buttonFill\": \"0cffffff\",\n"
 "          \"frameBorder\": \"afffffff\",\n"
 "          \"whiteKey\": \"ff2e2e36\",\n"
 "          \"blackKey\": \"ff23232b\",\n"
@@ -4619,7 +4614,6 @@ static const unsigned char temp_binary_data_121[] =
 "          \"dialogFill\": \"ff15141e\",\n"
 "          \"lassoFill\": \"051a1a1a\",\n"
 "          \"lassoBorder\": \"ffcccccc\",\n"
-"          \"buttonFill\": \"4545444e\",\n"
 "          \"frameBorder\": \"dfffffff\",\n"
 "          \"whiteKey\": \"ff2c2a35\",\n"
 "          \"blackKey\": \"ff090b0f\",\n"
@@ -4641,7 +4635,6 @@ static const unsigned char temp_binary_data_121[] =
 "          \"dialogFill\": \"fffddb29\",\n"
 "          \"lassoFill\": \"aaf9b579\",\n"
 "          \"lassoBorder\": \"55000000\",\n"
-"          \"buttonFill\": \"3fffffdd\",\n"
 "          \"frameBorder\": \"58000000\",\n"
 "          \"whiteKey\": \"fffddb49\",\n"
 "          \"blackKey\": \"fffdce29\",\n"
@@ -5642,7 +5635,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x9bdc9ff2:  numBytes = 18403; return logov2mac_png;
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
-        case 0x41b35b05:  numBytes = 4550; return colourSchemes_json;
+        case 0x41b35b05:  numBytes = 4298; return colourSchemes_json;
         case 0x25669f2b:  numBytes = 23561; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;

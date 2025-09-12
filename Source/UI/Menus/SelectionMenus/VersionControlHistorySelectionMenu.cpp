@@ -37,5 +37,5 @@ VersionControlHistorySelectionMenu::VersionControlHistorySelectionMenu(VCS::Revi
 {
     auto content = make<RevisionTooltipComponent>(revision);
     this->updateContent(createDefaultPanel(revision, vcs),
-        MenuPanel::SlideRight, true, -1, content.release());
+        MenuPanel::SlideRight, true, content.release());
 }

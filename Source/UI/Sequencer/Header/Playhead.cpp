@@ -24,32 +24,28 @@
 
 Playhead::Playhead(RollBase &parentRoll,
     Transport &owner,
-    Playhead::Listener *movementListener /*= nullptr*/,
-    float alpha /*= 1.f*/) :
+    Playhead::Listener *movementListener /*= nullptr*/) :
     roll(parentRoll),
     transport(owner),
-    listener(movementListener),
-    shadeColour(findDefaultColour(ColourIDs::Roll::playheadShade).withMultipliedAlpha(alpha)),
-    playbackColour(findDefaultColour(ColourIDs::Roll::playheadPlayback).withMultipliedAlpha(alpha)),
-    recordingColour(findDefaultColour(ColourIDs::Roll::playheadRecording).withMultipliedAlpha(alpha))
+    listener(movementListener)
 {
-    this->currentColour = this->playbackColour;
-
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
     this->setAccessible(false);
 
-    this->setSize(3, 1);
-
+    this->currentColour = this->playbackColour;
     this->lastCorrectBeat = this->transport.getSeekBeat();
     this->beatAnchor = this->lastCorrectBeat;
     this->timeAnchor = Time::getMillisecondCounter();
+
+    this->setSize(3, 1);
 
     this->transport.addTransportListener(this);
 }
 
 Playhead::~Playhead()
 {
+    this->stopTimer();
     this->transport.removeTransportListener(this);
 }
 
@@ -111,14 +107,14 @@ void Playhead::onRecord()
 
 void Playhead::onStop()
 {
-    this->currentColour = this->playbackColour;
-    this->repaint();
-
     this->stopTimer();
 
-    this->timeAnchor = 0.0;
+    this->timeAnchor = 0;
     this->beatAnchor = 0.0;
     this->msPerQuarterNote = Globals::Defaults::msPerBeat;
+
+    this->currentColour = this->playbackColour;
+    this->repaint();
 }
 
 //===----------------------------------------------------------------------===//
@@ -154,10 +150,10 @@ void Playhead::timerCallback()
 
 void Playhead::paint(Graphics &g)
 {
-    g.setColour(this->currentColour);
-    g.fillRect(0, 0, 1, this->getHeight());
-
     g.setColour(this->shadeColour);
+    g.fillRect(0, 0, 3, this->getHeight());
+
+    g.setColour(this->currentColour);
     g.fillRect(1, 0, 1, this->getHeight());
 }
 
@@ -175,14 +171,13 @@ void Playhead::parentHierarchyChanged()
     }
 
     this->setAlwaysOnTop(true);
-    this->setSize(this->getWidth(), this->getParentHeight());
-    this->updatePosition();
+    this->parentSizeChanged();
 }
 
 void Playhead::updatePosition(float position)
 {
     const auto oldX = this->getX();
-    const int newX = this->roll.getXPositionByBeat(position, float(this->getParentWidth()));
+    const int newX = this->roll.getXPositionByBeat(position) - 1;
 
     if (oldX != newX)
     {
@@ -215,13 +210,46 @@ float Playhead::calculateEstimatedBeat() const noexcept
 }
 
 PlayheadSmall::PlayheadSmall(RollBase &parentRoll, Transport &owner) :
-    Playhead(parentRoll, owner, nullptr, 0.75f)
+    Playhead(parentRoll, owner, nullptr)
 {
     this->setSize(1, 1);
+    this->setOpaque(true);
+
+    this->currentColour = this->playbackColour;
+}
+
+void PlayheadSmall::parentSizeChanged()
+{
+    this->setSize(this->getWidth(), this->getParentHeight() - 1);
+    Playhead::updatePosition();
 }
 
 void PlayheadSmall::paint(Graphics &g)
 {
     g.setColour(this->currentColour);
-    g.fillRect(0, 1, 1, this->getHeight() - 1);
+    g.fillRect(0, 0, 1, this->getHeight());
+}
+
+void PlayheadSmall::updatePosition(float position)
+{
+    const auto oldX = this->getX();
+    const int newX = this->roll.getXPositionByBeat(position, float(this->getParentWidth()));
+
+    if (oldX != newX)
+    {
+        if (this->listener != nullptr)
+        {
+            this->listener->onMovePlayhead(oldX, newX);
+        }
+
+        this->setTopLeftPosition(newX, 1);
+    }
+}
+
+void PlayheadSmall::onStop()
+{
+    Playhead::onStop();
+
+    this->currentColour = this->playbackColour;
+    this->repaint();
 }

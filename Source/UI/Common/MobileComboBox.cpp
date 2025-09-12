@@ -134,10 +134,10 @@ void MobileComboBox::handleCommandMessage(int commandId)
     }
 }
 
-void MobileComboBox::updateMenu(MenuPanel::Menu menu, int defaultItemIndex)
+void MobileComboBox::updateMenu(MenuPanel::Menu menu)
 {
     this->menuPanel->updateContent(menu,
-        MenuPanel::AnimationType::SlideDown, true, defaultItemIndex);
+        MenuPanel::AnimationType::SlideDown, true);
 }
 
 void MobileComboBox::initHeader(TextEditor *editor, bool hasSearch)
@@ -246,9 +246,9 @@ void MobileComboBox::Container::initWith(WeakReference<Component> textEditor,
     this->initWith(textEditor, MenuPanel::Menu(), defaultItemIndexSelector, false);
 }
 
-void MobileComboBox::Container::updateMenu(MenuPanel::Menu menu, int defaultItemIndex)
+void MobileComboBox::Container::updateMenu(MenuPanel::Menu menu)
 {
-    this->combo->updateMenu(menu, defaultItemIndex);
+    this->combo->updateMenu(menu);
 }
 
 // events are sent here either by child buttons, by the parent dialog, or by menu hotkey scheme

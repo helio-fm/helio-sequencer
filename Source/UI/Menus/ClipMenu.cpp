@@ -226,9 +226,10 @@ MenuPanel::Menu ClipMenu::makeChannelSelectionMenu()
 
     for (int channel = 1; channel <= Globals::numChannels; ++channel)
     {
-        const bool isTicked = track->getTrackChannel() == channel;
-        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::list, String(channel))->
-            disabledIf(isTicked)->
+        const bool isCurrent = track->getTrackChannel() == channel;
+        menu.add(MenuItem::item(Icons::list, String(channel))->
+            disabledIf(isCurrent)->
+            markedAsCurrentIf(isCurrent)->
             withAction([this, track, channel]()
             {
                 this->undoStack->beginNewTransaction();
@@ -256,10 +257,11 @@ MenuPanel::Menu ClipMenu::makeInstrumentSelectionMenu()
 
     for (const auto *instrument : audioCore.getInstrumentsExceptInternal())
     {
-        const bool isTicked = instrument == selectedInstrument;
+        const bool isCurrent = instrument == selectedInstrument;
         const String instrumentId = instrument->getIdAndHash();
-        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument, instrument->getName())->
-            disabledIf(!instrument->isValid() || isTicked)->
+        menu.add(MenuItem::item(Icons::instrument, instrument->getName())->
+            disabledIf(!instrument->isValid() || isCurrent)->
+            markedAsCurrentIf(isCurrent)->
             withAction([this, track, instrumentId]()
             {
                 this->undoStack->beginNewTransaction();

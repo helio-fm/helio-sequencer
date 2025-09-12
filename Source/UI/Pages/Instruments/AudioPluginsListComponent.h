@@ -79,7 +79,7 @@ private:
     static constexpr auto viewportScrollBarWidth = 2;
 #elif PLATFORM_MOBILE
     static constexpr auto rowHeight = 64;
-    static constexpr auto viewportScrollBarWidth = 32;
+    static constexpr auto viewportScrollBarWidth = 20;
 #endif
 
     static constexpr auto tableHeaderHeight = 40;

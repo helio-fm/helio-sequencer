@@ -294,23 +294,21 @@ void AudioSettings::syncDeviceTypesList(AudioDeviceManager &deviceManager)
     const auto &types = deviceManager.getAvailableDeviceTypes();
 
     MenuPanel::Menu menu;
-    int selectedItemIndex = -1;
     for (int i = 0; i < types.size(); ++i)
     {
         const String &typeName = types[i]->getTypeName();
         const bool isSelected = typeName == currentTypeName;
         menu.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectAudioDeviceType + i, typeName));
+            CommandIDs::SelectAudioDeviceType + i, typeName)->markedAsCurrentIf(isSelected));
 
         if (isSelected)
         {
-            selectedItemIndex = i;
             this->deviceTypeEditor->setText(TRANS(I18n::Settings::audioDevice) +
                 ": " + typeName, dontSendNotification);
         }
     }
 
-    this->deviceTypeCombo->updateMenu(menu, selectedItemIndex);
+    this->deviceTypeCombo->updateMenu(menu);
 }
 
 void AudioSettings::syncDevicesList(AudioDeviceManager &deviceManager)
@@ -328,23 +326,21 @@ void AudioSettings::syncDevicesList(AudioDeviceManager &deviceManager)
     const auto &devices = currentType->getDeviceNames();
     const auto *currentDevice = deviceManager.getCurrentAudioDevice();
 
-    int selectedItemIndex = -1;
     for (int i = 0; i < devices.size(); ++i)
     {
         const auto &deviceName = devices[i];
         const bool isSelected = (currentDevice != nullptr) && (deviceName == currentDevice->getName());
         menu.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectAudioDevice + i, deviceName));
+            CommandIDs::SelectAudioDevice + i, deviceName)->markedAsCurrentIf(isSelected));
 
         if (isSelected)
         {
-            selectedItemIndex = i;
             this->deviceEditor->setText(TRANS(I18n::Settings::audioDriver) +
                 ": " + deviceName, dontSendNotification);
         }
     }
 
-    this->deviceCombo->updateMenu(menu, selectedItemIndex);
+    this->deviceCombo->updateMenu(menu);
 }
 
 void AudioSettings::syncSampleRatesList(AudioDeviceManager &deviceManager)
@@ -359,7 +355,6 @@ void AudioSettings::syncSampleRatesList(AudioDeviceManager &deviceManager)
         return;
     }
 
-    int selectedItemIndex = -1;
     const auto sampleRates = currentDevice->getAvailableSampleRates();
 
     for (int i = 0; i < sampleRates.size(); ++i)
@@ -367,17 +362,16 @@ void AudioSettings::syncSampleRatesList(AudioDeviceManager &deviceManager)
         const double sampleRate = sampleRates[i];
         const bool isSelected = sampleRate == currentDevice->getCurrentSampleRate();
         menu.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectSampleRate + i, String(sampleRate)));
+            CommandIDs::SelectSampleRate + i, String(sampleRate))->markedAsCurrentIf(isSelected));
 
         if (isSelected)
         {
-            selectedItemIndex = i;
             this->sampleRateEditor->setText(TRANS(I18n::Settings::audioSampleRate) +
                 ": " + String(sampleRate), dontSendNotification);
         }
     }
 
-    this->sampleRateCombo->updateMenu(menu, selectedItemIndex);
+    this->sampleRateCombo->updateMenu(menu);
 }
 
 void AudioSettings::syncBufferSizesList(AudioDeviceManager &deviceManager)
@@ -392,7 +386,6 @@ void AudioSettings::syncBufferSizesList(AudioDeviceManager &deviceManager)
         return;
     }
 
-    int selectedItemIndex = -1;
     const auto bufferSizes = currentDevice->getAvailableBufferSizes();
     const int currentBufferSize = currentDevice->getCurrentBufferSizeSamples();
 
@@ -401,17 +394,16 @@ void AudioSettings::syncBufferSizesList(AudioDeviceManager &deviceManager)
         const int &bufferSize = bufferSizes[i];
         const bool isSelected = bufferSize == currentBufferSize;
         menu.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectBufferSize + i, String(bufferSize)));
+            CommandIDs::SelectBufferSize + i, String(bufferSize))->markedAsCurrentIf(isSelected));
 
         if (isSelected)
         {
-            selectedItemIndex = i;
             this->bufferSizeEditor->setText(TRANS(I18n::Settings::audioBufferSize) +
                 ": " + String(bufferSize), dontSendNotification);
         }
     }
 
-    this->bufferSizeCombo->updateMenu(menu, selectedItemIndex);
+    this->bufferSizeCombo->updateMenu(menu);
 }
 
 static bool areNoMidiInputsSelected(AudioDeviceManager &deviceManager,
@@ -447,21 +439,14 @@ void AudioSettings::syncMidiInputsList(AudioDeviceManager &deviceManager)
 {
     MenuPanel::Menu menu;
 
-    int selectedItemIndex = -1;
     const auto devices = MidiInput::getAvailableDevices();
 
     for (int i = 0; i < devices.size(); ++i)
     {
         const bool isEnabled =
             deviceManager.isMidiInputDeviceEnabled(devices[i].identifier);
-
         menu.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectMidiInputDevice + i, devices[i].name));
-
-        if (isEnabled)
-        {
-            selectedItemIndex = i;
-        }
+            CommandIDs::SelectMidiInputDevice + i, devices[i].name)->markedAsCurrentIf(isEnabled));
     }
 
     const auto selectedDeviceName = areNoMidiInputsSelected(deviceManager, devices) ?
@@ -471,25 +456,20 @@ void AudioSettings::syncMidiInputsList(AudioDeviceManager &deviceManager)
     this->midiInputEditor->setText(TRANS(I18n::Settings::midiRecord) +
         ": " + selectedDeviceName, dontSendNotification);
 
-    this->midiInputsCombo->updateMenu(menu, selectedItemIndex);
+    this->midiInputsCombo->updateMenu(menu);
 }
 
 void AudioSettings::syncMidiOutputsList(AudioDeviceManager &deviceManager)
 {
     MenuPanel::Menu menu;
 
-    int selectedItemIndex = -1;
     const auto devices = MidiOutput::getAvailableDevices();
     const auto defaultOutputDeviceId = deviceManager.getDefaultMidiOutputIdentifier();
 
     // "don't send midi" option
     menu.add(MenuItem::item(Icons::empty,
-        CommandIDs::SelectMidiNoOutputDevice, TRANS(I18n::Settings::midiOutputNone)));
-
-    if (defaultOutputDeviceId.isEmpty())
-    {
-        selectedItemIndex = 0;
-    }
+        CommandIDs::SelectMidiNoOutputDevice, TRANS(I18n::Settings::midiOutputNone))->
+            markedAsCurrentIf(defaultOutputDeviceId.isEmpty()));
 
     auto defaultOutputDeviceName = MidiOutput::getDefaultDevice().name;
 
@@ -498,11 +478,10 @@ void AudioSettings::syncMidiOutputsList(AudioDeviceManager &deviceManager)
         const bool isSelected = defaultOutputDeviceId == devices[i].identifier;
 
         menu.add(MenuItem::item(Icons::empty,
-            CommandIDs::SelectMidiOutputDevice + i, devices[i].name));
+            CommandIDs::SelectMidiOutputDevice + i, devices[i].name)->markedAsCurrentIf(isSelected));
 
         if (isSelected)
         {
-            selectedItemIndex = i + 1;
             defaultOutputDeviceName = devices[i].name;
         }
     }
@@ -513,5 +492,5 @@ void AudioSettings::syncMidiOutputsList(AudioDeviceManager &deviceManager)
     this->midiOutputEditor->setText(TRANS(I18n::Settings::midiOutput) +
         ": " + selectedDeviceName, dontSendNotification);
 
-    this->midiOutputsCombo->updateMenu(menu, selectedItemIndex);
+    this->midiOutputsCombo->updateMenu(menu);
 }

@@ -60,6 +60,7 @@ struct MenuItem final : public ReferenceCountedObject
     {
         bool isToggled : 1;
         bool isDisabled : 1;
+        bool isCurrentItem : 1;
         bool shouldCloseMenu : 1;
         bool hasSubmenu : 1;
     };
@@ -91,6 +92,7 @@ struct MenuItem final : public ReferenceCountedObject
     MenuItem::Ptr withWeight(float weight);
     MenuItem::Ptr toggledIf(bool shouldBeToggled);
     MenuItem::Ptr disabledIf(bool condition);
+    MenuItem::Ptr markedAsCurrentIf(bool condition);
     MenuItem::Ptr closesMenu();
 
     bool hasSubmenu() const noexcept;

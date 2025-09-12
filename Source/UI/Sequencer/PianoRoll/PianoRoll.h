@@ -309,7 +309,7 @@ private:
 #if PLATFORM_DESKTOP
     static constexpr auto minRowHeight = 6;
     static constexpr auto defaultRowHeight = 12;
-    static constexpr auto maxRowHeight = 30;
+    static constexpr auto maxRowHeight = 32;
 #elif PLATFORM_MOBILE
     static constexpr auto minRowHeight = 6;
     static constexpr auto defaultRowHeight = 11;

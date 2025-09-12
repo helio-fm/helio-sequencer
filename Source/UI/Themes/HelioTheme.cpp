@@ -454,16 +454,16 @@ void HelioTheme::drawTableHeaderColumn(Graphics &g,
 int HelioTheme::getDefaultScrollbarWidth()
 {
 #if PLATFORM_DESKTOP
-    return 16;
+    return 2;
 #elif PLATFORM_MOBILE
-    return 50;
+    return 20;
 #endif
 }
 
 void HelioTheme::drawScrollbar(Graphics &g, ScrollBar &scrollbar,
-                               int x, int y, int width, int height,
-                               bool isScrollbarVertical, int thumbStartPosition, int thumbSize,
-                               bool isMouseOver, bool isMouseDown)
+    int x, int y, int width, int height,
+    bool isScrollbarVertical, int thumbStartPosition, int thumbSize,
+    bool isMouseOver, bool isMouseDown)
 {
     Path thumbPath;
 
@@ -475,29 +475,24 @@ void HelioTheme::drawScrollbar(Graphics &g, ScrollBar &scrollbar,
         if (isScrollbarVertical)
         {
             thumbPath.addRoundedRectangle(x + thumbIndent, thumbStartPosition + thumbIndent,
-                                          width - thumbIndentx2, thumbSize - thumbIndentx2,
-                                          (width - thumbIndentx2) * 0.5f);
+                width - thumbIndentx2, thumbSize - thumbIndentx2, 1.f);
         }
         else
         {
             thumbPath.addRoundedRectangle(thumbStartPosition + thumbIndent, y + thumbIndent,
-                                          thumbSize - thumbIndentx2, height - thumbIndentx2,
-                                          (height - thumbIndentx2) * 0.5f);
+                thumbSize - thumbIndentx2, height - thumbIndentx2, 1.f);
         }
     }
 
-    if (width > 2)
-    {
-        const auto thumbCol = this->findColour(ScrollBar::thumbColourId).
-            withMultipliedAlpha((isMouseOver || isMouseDown) ? 0.4f : 0.2f);
+#if PLATFORM_DESKTOP
+    const auto thumbCol = this->findColour(ScrollBar::thumbColourId);
+#elif PLATFORM_MOBILE
+    const auto thumbCol = this->findColour(ScrollBar::thumbColourId).
+        withMultipliedAlpha((isMouseOver || isMouseDown) ? 0.69f : 0.420f);
+#endif
 
-        g.setColour(thumbCol);
-        g.fillPath(thumbPath);
-    }
-
-    g.setColour(this->findColour(ColourIDs::Panel::border).
-        withMultipliedAlpha((isMouseOver || isMouseDown) ? 1.5f : 0.5f));
-    g.strokePath(thumbPath, PathStrokeType(1.f));
+    g.setColour(thumbCol);
+    g.fillPath(thumbPath);
 }
 
 //===----------------------------------------------------------------------===//
@@ -821,7 +816,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ResizableWindow::backgroundColourId, s->getPageFillColour().brighter(0.045f));
     this->setColour(ScrollBar::backgroundColourId, Colours::transparentBlack);
-    this->setColour(ScrollBar::thumbColourId, s->getPanelFillColour().withAlpha(1.f));
+    this->setColour(ScrollBar::thumbColourId,
+        s->getFrameBorderColour().withAlpha(this->isDarkTheme ? 0.25f : 0.35f));
 
     this->setColour(TextButton::buttonColourId,
         s->getDialogFillColour().brighter(2.5f).withMultipliedAlpha(this->isDarkTheme ? 0.0625f : 0.375f));
@@ -877,15 +873,16 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Menu::fill, s->getHeadlineFillColour());
     this->setColour(ColourIDs::Menu::header,
         s->getHeadlineFillColour().brighter(this->isDarkTheme ? 0.1f : 0.5f));
-    this->setColour(ColourIDs::Menu::cursorFill, s->getLassoBorderColour().withAlpha(0.75f));
+    this->setColour(ColourIDs::Menu::cursorFill, s->getTextColour().withAlpha(0.55f));
     this->setColour(ColourIDs::Menu::cursorShade, this->isDarkTheme ?
-        s->getBlackKeyColour().darker(1.f).withAlpha(0.5f) :
-        s->getWhiteKeyColour().brighter(1.f).withAlpha(0.5f));
-    this->setColour(ColourIDs::Menu::highlight, this->isDarkTheme ?
-        Colours::white.withAlpha(0.025f) : Colours::white.withAlpha(0.125f));
-    this->setColour(ColourIDs::Menu::toggleMarker, s->getIconBaseColour());
-    this->setColour(ColourIDs::Menu::currentItemMarker,
-        s->getLassoBorderColour().withAlpha(0.85f));
+        s->getBlackKeyColour().darker(0.420f).withAlpha(0.69f) :
+        s->getWhiteKeyColour().brighter(0.420f).withAlpha(0.69f));
+    const auto cursorHighlight =
+        s->getHeadlineFillColour().brighter(2.f).withAlpha(this->isDarkTheme ? 0.025f : 0.2f);
+    this->setColour(ColourIDs::Menu::highlight, cursorHighlight);
+    this->setColour(ColourIDs::Menu::toggleMarker, s->getIconBaseColour().withMultipliedAlpha(0.9f));
+    this->setColour(ColourIDs::Menu::currentItemMarker, s->getTextColour().withAlpha(0.55f));
+    this->setColour(ColourIDs::Menu::currentItemFill, cursorHighlight);
 
     this->setColour(ColourIDs::Arrow::lineStart, this->isDarkTheme ? Colour(0x33ffffff) : Colour(0x44ffffff));
     this->setColour(ColourIDs::Arrow::lineEnd, this->isDarkTheme ? Colour(0x17ffffff) : Colour(0x27ffffff));
@@ -966,10 +963,14 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::headerRecording,
         headerFill.interpolatedWith(Colours::red, 0.55f));
 
-    this->setColour(ColourIDs::Roll::playheadShade, Colours::black.withAlpha(0.075f));
-    this->setColour(ColourIDs::Roll::playheadPlayback, s->getLassoBorderColour().withAlpha(0.7f));
+    this->setColour(ColourIDs::Roll::playheadShade,
+        s->getBlackKeyColour().darker(1.f).withAlpha(0.075f));
+    this->setColour(ColourIDs::Roll::playheadPlayback, s->getLassoBorderColour().
+        interpolatedWith(s->getBlackKeyColour(), this->isDarkTheme ? 0.2f : 0.1f).withAlpha(1.f));
+    this->setColour(ColourIDs::Roll::playheadSmallPlayback, s->getLassoBorderColour().
+        interpolatedWith(s->getWhiteKeyColour(), this->isDarkTheme ? 0.5f : 0.25f).withAlpha(1.f));
     this->setColour(ColourIDs::Roll::playheadRecording,
-        s->getLassoBorderColour().interpolatedWith(Colours::red, 0.75f).withAlpha(0.55f));
+        s->getLassoBorderColour().interpolatedWith(Colours::red, 0.5f).withAlpha(1.f));
 
     this->setColour(ColourIDs::Roll::cursorFill, s->getLassoBorderColour().withAlpha(0.9f));
     this->setColour(ColourIDs::Roll::cursorShade, this->isDarkTheme ?

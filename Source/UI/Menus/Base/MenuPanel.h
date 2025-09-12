@@ -64,9 +64,11 @@ public:
     void updateContent(const Menu &commands,
         AnimationType animationType = SlideDown,
         bool resizeToFitContent = true,
-        int newDefaultItem = -1,
         Component *customFooter = nullptr);
 
+    // updates the default/current item for the existing menu;
+    // for menus which are rebuilt every time they are shown,
+    // using MenuItem::markedAsCurrentIf is a more convenient option
     void setDefaultItem(int newDefaultItem);
 
     void applyFilter(const String &text);
@@ -108,7 +110,7 @@ private:
     bool shouldResizeToFitContent = false;
     AnimationType lastAnimationType = AnimationType::None;
 
-    int defaultItemIndex = -1;
+    Optional<int> defaultItemIndex;
     void scrollToDefaultItemIfAny();
 
     Menu menu;

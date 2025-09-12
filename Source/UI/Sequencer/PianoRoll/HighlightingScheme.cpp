@@ -71,7 +71,7 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
     const auto numRowsToRender =
         periodSize * (HighlightingScheme::periodsInTile + 1);
 
-    Image patternImage(Image::RGB, 8, height * numRowsToRender, false);
+    Image patternImage(Image::RGB, 4, height * numRowsToRender, false);
     Graphics g(patternImage);
 
     g.setImageResamplingQuality(Graphics::lowResamplingQuality);
@@ -92,7 +92,7 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
     g.setColour(blackKeyColour);
     g.fillAll();
 
-    HelioTheme::drawNoise(theme, g, 0.75f);
+    HelioTheme::drawNoise(theme, g);
 
     for (int i = lastPeriodRemainder;
         (i < numRowsToRender + lastPeriodRemainder) && ((posY + previousHeight) >= 0.0f);

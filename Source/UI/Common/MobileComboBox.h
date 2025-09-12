@@ -28,7 +28,7 @@ public:
     MobileComboBox(WeakReference<Component> editor,
         WeakReference<Component> area);
 
-    void updateMenu(MenuPanel::Menu menu, int defaultItemIndex = -1);
+    void updateMenu(MenuPanel::Menu menu);
 
     class HelperButton final : public IconButton
     {
@@ -80,7 +80,7 @@ public:
             Function<MenuPanel::Menu(void)> menuInitializer,
             Function<int(void)> defaultItemIndexSelector = nullptr);
 
-        void updateMenu(MenuPanel::Menu menu, int defaultItemIndex = -1);
+        void updateMenu(MenuPanel::Menu menu);
 
     private:
 

@@ -281,9 +281,10 @@ MenuPanel::Menu PatternRollSelectionMenu::makeChannelSelectionMenu()
 
     for (int channel = 1; channel <= Globals::numChannels; ++channel)
     {
-        const bool isTicked = uniqueChannels.size() == 1 && uniqueChannels.contains(channel);
-        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::list, String(channel))->
-            disabledIf(isTicked)->
+        const bool isCurrent = uniqueChannels.size() == 1 && uniqueChannels.contains(channel);
+        menu.add(MenuItem::item(Icons::list, String(channel))->
+            disabledIf(isCurrent)->
+            markedAsCurrentIf(isCurrent)->
             withAction([this, channel, uniqueTracks]()
             {
                 bool haveCheckpoint = false;
@@ -345,10 +346,11 @@ MenuPanel::Menu PatternRollSelectionMenu::makeInstrumentSelectionMenu()
 
     for (const auto *instrument : instruments)
     {
-        const bool isTicked = (instrument == singleInstrumentIfAny);
+        const bool isCurrent = (instrument == singleInstrumentIfAny);
         const auto instrumentId = instrument->getIdAndHash();
-        menu.add(MenuItem::item(isTicked ? Icons::apply : Icons::instrument,
-            instrument->getName())->disabledIf(isTicked)->
+        menu.add(MenuItem::item(Icons::instrument, instrument->getName())->
+            disabledIf(isCurrent)->
+            markedAsCurrentIf(isCurrent)->
             withAction([this, instrumentId, uniqueTracks]()
             {
                 //DBG(instrumentId);

@@ -40,8 +40,6 @@ public:
     Colour getHeadlineFillColour() const;
     Colour getSidebarFillColour() const;
     Colour getDialogFillColour() const;
-
-    Colour getPanelFillColour() const;
     Colour getFrameBorderColour() const;
 
     Colour getLassoFillColour() const;

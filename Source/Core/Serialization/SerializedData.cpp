@@ -394,21 +394,23 @@ inline static Identifier readIdentifier(InputStream &input)
 {
     // avoid re-allocating a buffer *every* time we read an object or property type
     // (using JUCE's readString() on deserialization sucks really hard);
-    // also preallocated size of 32 should be enough for all identifiers I ever use,
+    // also preallocated size of 64 should be enough for all identifiers I ever use,
     // and for all string values var::readFromStream() will be called, but far less frequently 
-    static MemoryOutputStream buffer(32);
-    buffer.reset();
+    constexpr int maxIdentifierLength = 64;
+    static char buffer[maxIdentifierLength];
+    std::memset(buffer, 0, maxIdentifierLength);
 
-    for (;;)
+    for (int i = 0; i < maxIdentifierLength; ++i)
     {
-        auto c = input.readByte();
-        buffer.writeByte(c);
-
+        const auto c = input.readByte();
+        buffer[i] = c;
         if (c == 0)
         {
-            return Identifier((const char *)buffer.getData());
+            break;
         }
     }
+
+    return Identifier(buffer);
 }
 
 SerializedData SerializedData::readFromStream(InputStream &input)
