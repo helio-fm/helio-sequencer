@@ -244,20 +244,27 @@ private:
 
         void mouseDown(const MouseEvent &e) override
         {
-            if (!this->scroller.isMultiTouchEvent(e))
+            if (this->scroller.isMultiTouchEvent(e) ||
+                e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
             {
-                this->dragger.startDraggingComponent(this, e);
-                this->draggingDisabledUntilTap = false;
+                return;
             }
+
+            this->dragger.startDraggingComponent(this, e);
+            this->draggingDisabledUntilTap = false;
         }
 
         void mouseDrag(const MouseEvent &e) override
         {
-            if (!this->scroller.isMultiTouchEvent(e) && !this->draggingDisabledUntilTap)
+            if (this->draggingDisabledUntilTap ||
+                this->scroller.isMultiTouchEvent(e) ||
+                e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
             {
-                this->setMouseCursor(MouseCursor::DraggingHandCursor);
-                this->dragger.dragComponent(this, e, &this->moveConstrainer);
+                return;
             }
+
+            this->setMouseCursor(MouseCursor::DraggingHandCursor);
+            this->dragger.dragComponent(this, e, &this->moveConstrainer);
         }
 
         void mouseUp(const MouseEvent &e) override

@@ -40,6 +40,7 @@
 #include "ColourIDs.h"
 #include "ColourSchemesCollection.h"
 #include "CommandPaletteCommonActions.h"
+#include "BackForwardButtonsListener.h"
 
 class InitScreen final : public Component, private Timer
 {
@@ -140,6 +141,11 @@ MainLayout::MainLayout()
 
     this->consoleCommonActions = make<CommandPaletteCommonActions>();
 
+    this->backForwardButtonsListener =
+        make<BackForwardButtonsListener>(this,
+            CommandIDs::ShowPreviousPage, CommandIDs::ShowNextPage);
+    this->addMouseListener(this->backForwardButtonsListener.get(), true);
+
     if (const bool quickStartMode = App::Workspace().isInitialized())
     {
         this->setVisible(true);
@@ -154,6 +160,8 @@ MainLayout::MainLayout()
 
 MainLayout::~MainLayout()
 {
+    this->removeMouseListener(this->backForwardButtonsListener.get());
+    this->backForwardButtonsListener = nullptr;
     this->removeAllChildren();
     this->consoleCommonActions = nullptr;
     this->hotkeyScheme = nullptr;
@@ -437,7 +445,7 @@ bool MainLayout::keyStateChanged(bool isKeyDown)
 {
     if (Component::getNumCurrentlyModalComponents() > 0)
     {
-        jassertfalse;
+        //jassertfalse;
         return false;
     }
 

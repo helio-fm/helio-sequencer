@@ -564,7 +564,8 @@ void MenuItemComponent::handleCommandMessage(int commandId)
 
 void MenuItemComponent::mouseDown(const MouseEvent &e)
 {
-    if (!this->isEnabled())
+    if (!this->isEnabled() ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }

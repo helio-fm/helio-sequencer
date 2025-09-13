@@ -100,7 +100,8 @@ bool AutomationStepsClipComponent::isMultiTouchEvent(const MouseEvent &e) const 
 
 void AutomationStepsClipComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->roll.isMultiTouchEvent(e))
+    if (this->roll.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }

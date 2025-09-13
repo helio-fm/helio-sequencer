@@ -68,7 +68,8 @@ void KeySignatureLargeComponent::resized()
 
 void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->editor.isMultiTouchEvent(e))
+    if (this->editor.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -91,7 +92,8 @@ void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)
 
 void KeySignatureLargeComponent::mouseDrag(const MouseEvent &e)
 {
-    if (this->editor.isMultiTouchEvent(e))
+    if (this->editor.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }

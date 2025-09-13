@@ -125,7 +125,9 @@ void AutomationStepEventComponent::parentHierarchyChanged()
 
 void AutomationStepEventComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->editor.isMultiTouchEvent(e))
+    if (this->editor.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() ||
+        e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -187,7 +189,8 @@ void AutomationStepEventComponent::mouseUp(const MouseEvent &e)
 
 void AutomationStepEventComponent::mouseEnter(const MouseEvent &e)
 {
-    if (this->editor.isMultiTouchEvent(e))
+    if (this->editor.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }

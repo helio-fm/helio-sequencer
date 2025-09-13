@@ -18,8 +18,10 @@
 #include "Common.h"
 #include "MenuPanel.h"
 #include "MainLayout.h"
+#include "BackForwardButtonsListener.h"
 #include "Config.h"
 #include "ComponentIDs.h"
+#include "CommandIDs.h"
 
 MenuPanel::MenuPanel()
 {
@@ -33,7 +35,16 @@ MenuPanel::MenuPanel()
     this->listBox = make<ListBox>();
     this->addAndMakeVisible(this->listBox.get());
 
+    this->backForwardButtonsListener =
+        make<BackForwardButtonsListener>(this, CommandIDs::MenuBack, CommandIDs::None);
+    this->addMouseListener(this->backForwardButtonsListener.get(), true);
+
     MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
+}
+
+MenuPanel::~MenuPanel()
+{
+    this->removeMouseListener(this->backForwardButtonsListener.get());
 }
 
 void MenuPanel::resized()

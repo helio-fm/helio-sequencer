@@ -181,7 +181,8 @@ void NoteComponent::mouseMove(const MouseEvent &e)
 
 void NoteComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->roll.isMultiTouchEvent(e))
+    if (this->roll.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -317,7 +318,8 @@ static int lastDeltaKey = 0;
 
 void NoteComponent::mouseDrag(const MouseEvent &e)
 {
-    if (this->roll.isMultiTouchEvent(e))
+    if (this->roll.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }

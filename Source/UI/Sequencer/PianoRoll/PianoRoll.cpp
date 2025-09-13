@@ -1213,7 +1213,8 @@ void PianoRoll::onStop()
 
 void PianoRoll::mouseDown(const MouseEvent &e)
 {
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -1239,7 +1240,8 @@ void PianoRoll::mouseDown(const MouseEvent &e)
 
 void PianoRoll::mouseDoubleClick(const MouseEvent &e)
 {
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -1253,7 +1255,8 @@ void PianoRoll::mouseDoubleClick(const MouseEvent &e)
 void PianoRoll::mouseDrag(const MouseEvent &e)
 {
     // can show menus
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -1289,7 +1292,8 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
 
 void PianoRoll::mouseUp(const MouseEvent &e)
 {
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }

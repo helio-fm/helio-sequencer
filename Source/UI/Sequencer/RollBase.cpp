@@ -1106,7 +1106,8 @@ void RollBase::onBeforeReloadProjectContent()
 
 void RollBase::mouseDown(const MouseEvent &e)
 {
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         this->contextMenuController->cancelIfPending();
         this->lassoComponent->endLasso();
@@ -1154,7 +1155,8 @@ void RollBase::mouseDrag(const MouseEvent &e)
 {
     this->contextMenuController->cancelIfPending();
 
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -1190,7 +1192,8 @@ void RollBase::mouseUp(const MouseEvent &e)
     // so instead:
     this->contextMenuController->cancelIfPending();
 
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }

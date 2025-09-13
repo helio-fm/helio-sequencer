@@ -172,6 +172,11 @@ void RadioButton::handleClick(const MouseEvent &e)
 
 void RadioButton::mouseDown(const MouseEvent &e)
 {
+    if (e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
+    {
+        return;
+    }
+
 #if RADIO_BUTTON_TRIGGERED_ON_MOUSE_UP
     this->setHighlighted(true);
 #else
@@ -190,6 +195,11 @@ void RadioButton::mouseEnter(const MouseEvent &e)
 
 void RadioButton::mouseUp(const MouseEvent &e)
 {
+    if (e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
+    {
+        return;
+    }
+
 #if RADIO_BUTTON_TRIGGERED_ON_MOUSE_UP
     this->setHighlighted(false);
     this->handleClick(e);

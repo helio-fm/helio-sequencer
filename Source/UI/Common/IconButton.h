@@ -57,7 +57,8 @@ public:
 
     void mouseDown(const MouseEvent &e) override
     {
-        if (this->isEnabled())
+        if (this->isEnabled() &&
+            !e.mods.isBackButtonDown() && !e.mods.isForwardButtonDown())
         {
             if (this->listener != nullptr)
             {

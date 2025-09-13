@@ -112,7 +112,8 @@ void AutomationCurveClipComponent::mouseDoubleClick(const MouseEvent &e)
 
 void AutomationCurveClipComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->roll.isMultiTouchEvent(e))
+    if (this->roll.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -131,7 +132,8 @@ void AutomationCurveClipComponent::mouseDown(const MouseEvent &e)
 
 void AutomationCurveClipComponent::mouseDrag(const MouseEvent &e)
 {
-    if (this->roll.isMultiTouchEvent(e))
+    if (this->roll.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }

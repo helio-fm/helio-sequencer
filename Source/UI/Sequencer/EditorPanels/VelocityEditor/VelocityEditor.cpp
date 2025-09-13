@@ -200,7 +200,8 @@ public:
     void mouseDown(const MouseEvent &e) override
     {
         jassert(this->isEditable);
-        if (this->getEditor()->isMultiTouchEvent(e))
+        if (this->getEditor()->isMultiTouchEvent(e) ||
+            e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
         {
             return;
         }
@@ -219,7 +220,8 @@ public:
     void mouseDrag(const MouseEvent &e) override
     {
         jassert(this->isEditable);
-        if (this->getEditor()->isMultiTouchEvent(e))
+        if (this->getEditor()->isMultiTouchEvent(e) ||
+            e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
         {
             this->getEditor()->endFineTuning(this, e);
 
@@ -462,7 +464,8 @@ void VelocityEditor::resized()
 
 void VelocityEditor::mouseDown(const MouseEvent &e)
 {
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -488,7 +491,8 @@ void VelocityEditor::mouseDown(const MouseEvent &e)
 
 void VelocityEditor::mouseDrag(const MouseEvent &e)
 {
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -524,7 +528,8 @@ void VelocityEditor::mouseUp(const MouseEvent &e)
         this->editingHadChanges = false;
     }
 
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -650,7 +655,7 @@ void VelocityEditor::setEditableSelection(WeakReference<Lasso> selection)
 #if DEBUG
                 else
                 {
-                    jassertfalse; // wrong activeClip?
+                    jassertfalse; // wrong activeClip? or maybe trying to select a generated note?
                 }
 #endif
             }

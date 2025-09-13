@@ -21,6 +21,7 @@
 #include "HelioTheme.h"
 #include "DialogBase.h"
 #include "HotkeyScheme.h"
+#include "BackForwardButtonsListener.h"
 #include "ComponentIDs.h"
 
 bool MobileComboBox::SearchTextEditor::keyPressed(const KeyPress &key)
@@ -60,12 +61,21 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor, WeakReference<Co
     this->searchTextBox->setPopupMenuEnabled(false);
     this->addAndMakeVisible(this->searchTextBox.get());
 
-    this->triggerButton = MobileComboBox::HelperButton::makeComboTriggerButton(this);
-    
     this->searchTextBox->onTextChange = [this]()
     {
         this->menuPanel->applyFilter(this->searchTextBox->getText());
     };
+
+    this->triggerButton = MobileComboBox::HelperButton::makeComboTriggerButton(this);
+
+    this->backForwardButtonsListener =
+        make<BackForwardButtonsListener>(this, CommandIDs::ToggleShowHideCombo, CommandIDs::None);
+    this->addMouseListener(this->backForwardButtonsListener.get(), true);
+}
+
+MobileComboBox::~MobileComboBox()
+{
+    this->removeMouseListener(this->backForwardButtonsListener.get());
 }
 
 void MobileComboBox::paint(Graphics &g)

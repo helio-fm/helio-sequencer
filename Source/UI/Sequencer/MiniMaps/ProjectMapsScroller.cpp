@@ -166,34 +166,36 @@ void ProjectMapsScroller::paint(Graphics &g)
     }
 }
 
-void ProjectMapsScroller::mouseDown(const MouseEvent &event)
+void ProjectMapsScroller::mouseDown(const MouseEvent &e)
 {
-    if (this->isMultiTouchEvent(event))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
 
-    this->panningStart = event.getPosition();
+    this->panningStart = e.getPosition();
     this->rollViewportPositionAtDragStart = this->roll->getViewport().getViewPosition();
 
     // this thing feels weird on mobile: panning as the default behaviour is more natural there,
     // while on desktop panning is done via right mouse button everywhere:
-    if (!event.source.isTouch() &&
+    if (!e.source.isTouch() &&
         this->isInStretchedMode() &&
-        event.mods.isLeftButtonDown())
+        e.mods.isLeftButtonDown())
     {
         const auto mapBounds = this->getMapBounds();
         this->drawingNewScreenRange = {
-            (event.position.x - mapBounds.getX()) / float(mapBounds.getWidth()),
-            (event.position.y - mapBounds.getY()) / float(mapBounds.getHeight()), 0, 0 };
+            (e.position.x - mapBounds.getX()) / float(mapBounds.getWidth()),
+            (e.position.y - mapBounds.getY()) / float(mapBounds.getHeight()), 0, 0 };
 
         this->repaint();
     }
 }
 
-void ProjectMapsScroller::mouseDrag(const MouseEvent &event)
+void ProjectMapsScroller::mouseDrag(const MouseEvent &e)
 {
-    if (this->isMultiTouchEvent(event))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -201,8 +203,8 @@ void ProjectMapsScroller::mouseDrag(const MouseEvent &event)
     if (this->drawingNewScreenRange.hasValue())
     {
         const auto mapBounds = this->getMapBounds();
-        const auto r = (event.position.x - mapBounds.getX()) / float(mapBounds.getWidth());
-        const auto b = (event.position.y - mapBounds.getY()) / float(mapBounds.getHeight());
+        const auto r = (e.position.x - mapBounds.getX()) / float(mapBounds.getWidth());
+        const auto b = (e.position.y - mapBounds.getY()) / float(mapBounds.getHeight());
         this->drawingNewScreenRange->setRight(r);
         this->drawingNewScreenRange->setBottom(b);
         this->repaint();
@@ -210,13 +212,13 @@ void ProjectMapsScroller::mouseDrag(const MouseEvent &event)
     else
     {
         // simple dragging on mobile platforms to make it less awkward:
-        const bool simplePanning = event.source.isTouch();
+        const bool simplePanning = e.source.isTouch();
         const auto mapWidth = this->getMapBounds().getWidth();
         if (simplePanning || mapWidth > this->getWidth())
         {
             this->setMouseCursor(MouseCursor::DraggingHandCursor);
             const auto viewWidth = this->roll->getViewport().getViewWidth();
-            const auto dragDistance = float(event.getPosition().getX() - this->panningStart.getX());
+            const auto dragDistance = float(e.getPosition().getX() - this->panningStart.getX());
             const auto dragSpeed = simplePanning ? 1.f :
                 float(this->roll->getWidth() - viewWidth) / float(mapWidth - this->getWidth());
             const auto xOffset = jlimit(1, this->roll->getWidth() - viewWidth - 1,
@@ -226,11 +228,12 @@ void ProjectMapsScroller::mouseDrag(const MouseEvent &event)
     }
 }
 
-void ProjectMapsScroller::mouseUp(const MouseEvent &event)
+void ProjectMapsScroller::mouseUp(const MouseEvent &e)
 {
     this->setMouseCursor(MouseCursor::NormalCursor);
 
-    if (this->isMultiTouchEvent(event))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -253,7 +256,7 @@ void ProjectMapsScroller::mouseUp(const MouseEvent &event)
 
     this->drawingNewScreenRange = {};
 
-    if (event.getOffsetFromDragStart().isOrigin())
+    if (e.getOffsetFromDragStart().isOrigin())
     {
         App::Layout().broadcastCommandMessage(CommandIDs::ToggleBottomMiniMap);
     }

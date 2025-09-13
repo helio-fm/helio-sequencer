@@ -98,6 +98,7 @@
 		105DE5CA7C1785C86CFAE561 /* AutomationStepEventComponent.h */ /* AutomationStepEventComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutomationStepEventComponent.h; path = ../../Source/UI/Sequencer/EditorPanels/AutomationEditor/AutomationStepEventComponent.h; sourceTree = SOURCE_ROOT; };
 		108BC62D0CC3CAFBDFE53887 /* DialogBase.cpp */ /* DialogBase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DialogBase.cpp; path = ../../Source/UI/Dialogs/DialogBase.cpp; sourceTree = SOURCE_ROOT; };
 		11361C4E63D5B6E6FE82E917 /* PatternRoll.cpp */ /* PatternRoll.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PatternRoll.cpp; path = ../../Source/UI/Sequencer/PatternRoll/PatternRoll.cpp; sourceTree = SOURCE_ROOT; };
+		12269F04C4603402F6C20C02 /* BackForwardButtonsListener.h */ /* BackForwardButtonsListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BackForwardButtonsListener.h; path = ../../Source/UI/Input/BackForwardButtonsListener.h; sourceTree = SOURCE_ROOT; };
 		124064B0C1702745C600DB6B /* KeySelector.cpp */ /* KeySelector.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = KeySelector.cpp; path = ../../Source/UI/Common/KeySelector.cpp; sourceTree = SOURCE_ROOT; };
 		12E15D689DC7EBC44BBE1CA8 /* selectAll.svg */ /* selectAll.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = selectAll.svg; path = ../../Resources/Icons/selectAll.svg; sourceTree = SOURCE_ROOT; };
 		139B98CFAA0F1E9F10D2F31E /* SpectralLogo.cpp */ /* SpectralLogo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SpectralLogo.cpp; path = ../../Source/UI/Common/SpectralLogo.cpp; sourceTree = SOURCE_ROOT; };
@@ -1141,6 +1142,7 @@
 		30DA5737ACCA1834DA455B94 /* Input */ = {
 			isa = PBXGroup;
 			children = (
+				12269F04C4603402F6C20C02,
 				794BD85600A90DE865E6703D,
 				9065B72CD8BCC0BF5D163B35,
 				A096DE246A4074630A7CCD25,

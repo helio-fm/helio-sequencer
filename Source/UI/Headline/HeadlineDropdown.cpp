@@ -396,6 +396,13 @@ void HeadlineDropdown::timerCallback()
     auto *componentUnderMouse =
         Desktop::getInstance().getMainMouseSource().getComponentUnderMouse();
 
+    if (componentUnderMouse == nullptr &&
+        this->content->getScreenBounds().contains(
+            Desktop::getInstance().getMainMouseSource().getScreenPosition().toInt()))
+    {
+        return; // wtf, componentUnderMouse shouldn't be null, but hasn't updated yet?
+    }
+
     const auto notHoveringSelf =
         getComponentOrParentAs<HeadlineDropdown>(componentUnderMouse) != this;
 

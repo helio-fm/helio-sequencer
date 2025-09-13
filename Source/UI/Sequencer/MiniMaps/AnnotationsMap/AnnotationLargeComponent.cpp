@@ -94,7 +94,8 @@ void AnnotationLargeComponent::mouseMove(const MouseEvent &e)
 
 void AnnotationLargeComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->editor.isMultiTouchEvent(e))
+    if (this->editor.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -122,7 +123,8 @@ void AnnotationLargeComponent::mouseDown(const MouseEvent &e)
 
 void AnnotationLargeComponent::mouseDrag(const MouseEvent &e)
 {
-    if (this->editor.isMultiTouchEvent(e))
+    if (this->editor.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }

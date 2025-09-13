@@ -619,7 +619,8 @@ void PatternRoll::onLongTap(const Point<float> &position, const WeakReference<Co
 
 void PatternRoll::mouseDown(const MouseEvent &e)
 {
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -643,7 +644,8 @@ void PatternRoll::mouseDown(const MouseEvent &e)
 
 void PatternRoll::mouseDrag(const MouseEvent &e)
 {
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -674,7 +676,8 @@ void PatternRoll::mouseDrag(const MouseEvent &e)
 
 void PatternRoll::mouseUp(const MouseEvent &e)
 {
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }

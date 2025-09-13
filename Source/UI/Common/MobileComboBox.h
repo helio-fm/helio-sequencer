@@ -21,12 +21,16 @@
 #include "MenuPanel.h"
 #include "SeparatorHorizontalReversed.h"
 
+class BackForwardButtonsListener;
+
 class MobileComboBox final : public Component
 {
 public:
 
     MobileComboBox(WeakReference<Component> editor,
         WeakReference<Component> area);
+
+    ~MobileComboBox() override;
 
     void updateMenu(MenuPanel::Menu menu);
 
@@ -127,6 +131,8 @@ private:
     UniquePointer<MenuPanel> menuPanel;
 
     UniquePointer<MobileComboBox::HelperButton> triggerButton;
+
+    UniquePointer<BackForwardButtonsListener> backForwardButtonsListener;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MobileComboBox)
 };

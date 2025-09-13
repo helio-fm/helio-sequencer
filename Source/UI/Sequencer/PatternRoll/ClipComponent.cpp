@@ -114,7 +114,8 @@ void ClipComponent::mouseDoubleClick(const MouseEvent &e)
 
 void ClipComponent::mouseDown(const MouseEvent &e)
 {
-    if (this->roll.isMultiTouchEvent(e))
+    if (this->roll.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -153,7 +154,8 @@ void ClipComponent::mouseDown(const MouseEvent &e)
 
 void ClipComponent::mouseDrag(const MouseEvent &e)
 {
-    if (this->roll.isMultiTouchEvent(e))
+    if (this->roll.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }

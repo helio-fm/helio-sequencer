@@ -521,7 +521,9 @@ void AutomationEditor::resized()
 
 void AutomationEditor::mouseDown(const MouseEvent &e)
 {
-    if (this->isMultiTouchEvent(e))
+    if (this->isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() ||
+        e.mods.isForwardButtonDown())
     {
         return;
     }

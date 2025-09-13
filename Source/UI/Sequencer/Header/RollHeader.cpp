@@ -404,7 +404,8 @@ void RollHeader::updateSelectionRangeIndicatorPosition()
 
 void RollHeader::mouseDown(const MouseEvent &e)
 {
-    if (this->roll.isMultiTouchEvent(e))
+    if (this->roll.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -453,7 +454,8 @@ void RollHeader::mouseDown(const MouseEvent &e)
 
 void RollHeader::mouseDrag(const MouseEvent &e)
 {
-    if (this->roll.isMultiTouchEvent(e))
+    if (this->roll.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }
@@ -522,7 +524,8 @@ void RollHeader::mouseDrag(const MouseEvent &e)
 
 void RollHeader::mouseUp(const MouseEvent &e)
 {
-    if (this->roll.isMultiTouchEvent(e))
+    if (this->roll.isMultiTouchEvent(e) ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown())
     {
         return;
     }

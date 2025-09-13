@@ -3197,6 +3197,7 @@
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemDataSource.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.h"/>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineContextMenuController.h"/>
+    <ClInclude Include="..\..\Source\UI\Input\BackForwardButtonsListener.h"/>
     <ClInclude Include="..\..\Source\UI\Input\LongTapController.h"/>
     <ClInclude Include="..\..\Source\UI\Input\LongTapListener.h"/>
     <ClInclude Include="..\..\Source\UI\Input\MultiTouchController.h"/>

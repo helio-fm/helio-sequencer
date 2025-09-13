@@ -777,6 +777,8 @@
                 resource="0" file="../../Source/UI/Headline/HeadlineContextMenuController.h"/>
         </GROUP>
         <GROUP id="{89960E92-2826-B73B-FFA4-CFBFD275D8BA}" name="Input">
+          <FILE id="xzz3lC" name="BackForwardButtonsListener.h" compile="0" resource="0"
+                file="../../Source/UI/Input/BackForwardButtonsListener.h"/>
           <FILE id="OaiUE3" name="LongTapController.h" compile="0" resource="0"
                 file="../../Source/UI/Input/LongTapController.h"/>
           <FILE id="lS3KK2" name="LongTapListener.h" compile="0" resource="0"

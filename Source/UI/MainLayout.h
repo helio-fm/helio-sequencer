@@ -23,6 +23,7 @@ class HeadlineItemDataSource;
 class CommandPaletteCommonActions;
 class TooltipContainer;
 class InitScreen;
+class BackForwardButtonsListener;
 
 #include "CommandPaletteModel.h"
 #include "HotkeyScheme.h"
@@ -111,6 +112,8 @@ private:
     Array<Component *> visibleCommandReceivers;
 
     UniquePointer<CommandPaletteCommonActions> consoleCommonActions;
+
+    UniquePointer<BackForwardButtonsListener> backForwardButtonsListener;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainLayout)
 };

@@ -17,6 +17,8 @@
 
 #pragma once
 
+class BackForwardButtonsListener;
+
 #include "MenuItemComponent.h"
 #include "ComponentFader.h"
 
@@ -38,6 +40,7 @@ class MenuPanel : public Component, private ListBoxModel
 public:
 
     MenuPanel();
+    ~MenuPanel() override;
 
     enum AnimationType
     {
@@ -106,6 +109,8 @@ private:
 private:
 
     ComponentFader animator;
+
+    UniquePointer<BackForwardButtonsListener> backForwardButtonsListener;
 
     bool shouldResizeToFitContent = false;
     AnimationType lastAnimationType = AnimationType::None;
