@@ -54,9 +54,6 @@ void HighlightingScheme::renderBackgroundCache(Temperament::Ptr temperament)
     this->rows.swapWith(result);
 }
 
-// todo remove this when migrating to C++17
-constexpr int HighlightingScheme::periodsInTile;
-
 Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
     const Temperament::Ptr temperament,
     const Scale::Ptr scale, Note::Key root, int height)

@@ -186,10 +186,6 @@ void MobileComboBox::initHeader(const String &text, bool hasSearch)
     this->searchTextBox->grabKeyboardFocus();
 }
 
-// todo remove this when migrating to C++17
-constexpr int MobileComboBox::HelperButton::iconSize;
-constexpr int MobileComboBox::HelperButton::triggerButtonSize;
-
 MobileComboBox::Container::Container()
 {
     this->setComponentID(ComponentIDs::comboBox);

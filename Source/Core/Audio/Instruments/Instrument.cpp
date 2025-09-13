@@ -48,9 +48,6 @@ Instrument::~Instrument()
     this->processorGraph = nullptr;
 }
 
-// todo remove this when migrating to C++17
-constexpr int Instrument::midiChannelNumber;
-
 String Instrument::getName() const noexcept
 {
     return this->instrumentName;
