@@ -373,8 +373,9 @@ void PianoRoll::zoomRelative(const Point<float> &origin,
         return;
     }
 
-    static const float yZoomThreshold = 0.035f;
-
+    ROLL_BATCH_REPAINT_START
+    
+    constexpr float yZoomThreshold = 0.035f;
     if (fabs(factor.getY()) > yZoomThreshold)
     {
         const auto oldViewPosition = this->viewport.getViewPosition().toFloat();
@@ -402,12 +403,16 @@ void PianoRoll::zoomRelative(const Point<float> &origin,
     }
 
     RollBase::zoomRelative(origin, factor, isInertial);
+
+    ROLL_BATCH_REPAINT_END
 }
 
 void PianoRoll::zoomAbsolute(const Rectangle<float> &proportion)
 {
     jassert(!proportion.isEmpty());
     jassert(proportion.isFinite());
+
+    ROLL_BATCH_REPAINT_START
 
     const auto keysTotal = this->getNumKeys();
 
@@ -424,12 +429,16 @@ void PianoRoll::zoomAbsolute(const Rectangle<float> &proportion)
         Globals::UI::rollHeaderHeight, firstKeyY);
 
     RollBase::zoomAbsolute(proportion);
+
+    ROLL_BATCH_REPAINT_END
 }
 
 void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
 {
     jassert(minKey >= 0);
     jassert(maxKey >= minKey);
+
+    ROLL_BATCH_REPAINT_START
 
     if (!this->zoomLevelLocked)
     {
@@ -445,6 +454,8 @@ void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
         centerY - Globals::UI::rollHeaderHeight - (this->viewport.getViewHeight() / 2));
 
     RollBase::zoomToArea(minBeat, maxBeat);
+
+    ROLL_BATCH_REPAINT_END
 }
 
 //===----------------------------------------------------------------------===//

@@ -613,6 +613,24 @@ void PatternRoll::onLongTap(const Point<float> &position, const WeakReference<Co
     RollBase::onLongTap(position, target);
 }
 
+void PatternRoll::zoomRelative(const Point<float> &origin,
+    const Point<float> &factor, bool isInertial)
+{
+    ROLL_BATCH_REPAINT_START
+    RollBase::zoomRelative(origin, factor, isInertial);
+    ROLL_BATCH_REPAINT_END
+}
+
+void PatternRoll::zoomAbsolute(const Rectangle<float> &proportion)
+{
+    jassert(!proportion.isEmpty());
+    jassert(proportion.isFinite());
+
+    ROLL_BATCH_REPAINT_START
+    RollBase::zoomAbsolute(proportion);
+    ROLL_BATCH_REPAINT_END
+}
+
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//

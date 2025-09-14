@@ -126,6 +126,10 @@ protected:
 
     void updateAllSnapLines() override;
 
+    void zoomRelative(const Point<float> &origin,
+        const Point<float> &factor, bool isInertial) override;
+    void zoomAbsolute(const Rectangle<float> &proportion) override;
+
 private:
 
 #if PLATFORM_DESKTOP

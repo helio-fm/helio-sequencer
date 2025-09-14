@@ -52,6 +52,34 @@ NoteNameGuidesBar::~NoteNameGuidesBar()
 
 void NoteNameGuidesBar::updateBounds()
 {
+    if (this->noteShapeWidth != this->getWidth() ||
+        this->noteShapeHeight != this->roll.getRowHeight())
+    {
+        this->noteShapeWidth = this->getWidth();
+        this->noteShapeHeight = this->roll.getRowHeight();
+
+        const auto w = float(this->noteShapeWidth);
+        const auto h = float(this->noteShapeHeight);
+
+        this->noteShapeOutlinePath.clear();
+        this->noteShapeOutlinePath.preallocateSpace(16);
+        this->noteShapeOutlinePath.startNewSubPath(NoteNameGuidesBar::borderWidth + 1, 1.f);
+        this->noteShapeOutlinePath.lineTo(w - NoteNameGuidesBar::arrowWidth, 1.f);
+        this->noteShapeOutlinePath.lineTo(w, (h / 2.f) + 0.5f);
+        this->noteShapeOutlinePath.lineTo(w - NoteNameGuidesBar::arrowWidth, h);
+        this->noteShapeOutlinePath.lineTo(NoteNameGuidesBar::borderWidth + 1.f, h);
+        this->noteShapeOutlinePath.closeSubPath();
+
+        this->noteShapeFillPath.clear();
+        this->noteShapeFillPath.preallocateSpace(16);
+        this->noteShapeFillPath.startNewSubPath(0.f, 1.f);
+        this->noteShapeFillPath.lineTo(w - NoteNameGuidesBar::arrowWidth - 1.f, 1.f);
+        this->noteShapeFillPath.lineTo(w - 1.f, (h / 2.f) + 0.5f);
+        this->noteShapeFillPath.lineTo(w - NoteNameGuidesBar::arrowWidth - 1.f, h);
+        this->noteShapeFillPath.lineTo(0.f, h);
+        this->noteShapeFillPath.closeSubPath();
+    }
+
     this->setBounds(this->roll.getViewport().getViewPositionX(),
         0, this->getWidth(), this->roll.getHeight());
 
@@ -166,7 +194,7 @@ void NoteNameGuidesBar::syncWithTemperament(Temperament::Ptr newTemperament)
     this->guides.clearQuick(true);
     for (int i = 0; i < temperament->getNumKeys(); ++i)
     {
-        auto *guide = this->guides.add(new NoteNameGuide(i));
+        auto *guide = this->guides.add(new NoteNameGuide(*this, i));
         this->addChildComponent(guide);
     }
 

@@ -139,13 +139,13 @@ void NoteNameComponent::setNoteName(const String &newNoteName,
     this->suffix = nullptr;
     this->prefixBounds = {};
     this->suffixBounds = {};
-    this->nameLabel->setText({}, dontSendNotification);
 
     juce_wchar c;
     int numFlats = 0;
     int numSharps = 0;
     int numUps = 0;
     int numDowns = 0;
+    bool hasText = false;
     auto ptr = newNoteName.getCharPointer();
     do
     {
@@ -168,25 +168,32 @@ void NoteNameComponent::setNoteName(const String &newNoteName,
             numSharps += 2;
             break;
         case 'A':
+            hasText = true;
             this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::la) : "A", dontSendNotification);
             break;
         case 'B':
         case 'H':
+            hasText = true;
             this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::si) : "B", dontSendNotification);
             break;
         case 'C':
+            hasText = true;
             this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::ut) : "C", dontSendNotification);
             break;
         case 'D':
+            hasText = true;
             this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::re) : "D", dontSendNotification);
             break;
         case 'E':
+            hasText = true;
             this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::mi) : "E", dontSendNotification);
             break;
         case 'F':
+            hasText = true;
             this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::fa) : "F", dontSendNotification);
             break;
         case 'G':
+            hasText = true;
             this->nameLabel->setText(useFixedDoNotation ? TRANS(I18n::Solfege::sol) : "G", dontSendNotification);
             break;
         default:
@@ -248,7 +255,7 @@ void NoteNameComponent::setNoteName(const String &newNoteName,
             prefixAlignment, iconColour, Colours::transparentBlack, this->prefixBounds));
     }
 
-    if (this->nameLabel->getText().isEmpty())
+    if (!hasText)
     {
         jassertfalse;
         this->nameLabel->setText(this->noteName, dontSendNotification);

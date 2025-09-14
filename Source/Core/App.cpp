@@ -83,7 +83,7 @@ public:
 
 #endif
 
-#if PLATFORM_MOBILE
+#if JUCE_ANDROID
         Desktop::getInstance().setKioskModeComponent(this);
 #endif
 
@@ -102,6 +102,10 @@ public:
         {
             this->attachOpenGLContext();
         }
+
+#if JUCE_IOS
+        Desktop::getInstance().setKioskModeComponent(this);
+#endif
     }
 
     ~MainWindow() override

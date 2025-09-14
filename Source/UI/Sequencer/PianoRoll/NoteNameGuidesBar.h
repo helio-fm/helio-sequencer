@@ -44,6 +44,16 @@ public:
     static constexpr float nameMarginLeft = 4.f;
     static constexpr float nameMarginRight = 5.f;
 
+    const Path &getNoteShapeFillPath() const noexcept
+    {
+        return this->noteShapeFillPath;
+    }
+
+    const Path &getNoteShapeOutlinePath() const noexcept
+    {
+        return this->noteShapeOutlinePath;
+    }
+
     void syncWithTemperament(Temperament::Ptr temperament);
     void syncWithSelection(const Lasso *selection);
 
@@ -81,6 +91,11 @@ private:
     String scaleRootKeyName;
     int scaleRootKey = 0;
     bool useFixedDoNotation = false;
+
+    Path noteShapeFillPath;
+    Path noteShapeOutlinePath;
+    int noteShapeWidth = 0;
+    int noteShapeHeight = 0;
 
     Optional<float> selectionStartBeat;
     FlatHashSet<Note::Key> selectedKeys;

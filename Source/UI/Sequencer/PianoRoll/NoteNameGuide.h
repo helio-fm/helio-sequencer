@@ -26,7 +26,9 @@ class NoteNameGuide final : public Component
 {
 public:
 
-    explicit NoteNameGuide(int noteNumber) : noteNumber(noteNumber)
+    NoteNameGuide(NoteNameGuidesBar &parentGuidesBar, int noteNumber) :
+        guidesBar(parentGuidesBar),
+        noteNumber(noteNumber)
     {
         this->setPaintingIsUnclipped(true);
         this->setWantsKeyboardFocus(false);
@@ -56,10 +58,10 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(this->shadowColour);
-        g.fillPath(this->internalPath1);
+        g.fillPath(this->guidesBar.getNoteShapeOutlinePath());
 
         g.setColour(this->fillColour);
-        g.fillPath(this->internalPath2);
+        g.fillPath(this->guidesBar.getNoteShapeFillPath());
 
         g.setColour(this->borderColour);
         g.fillRect(0.f, 0.5f, NoteNameGuidesBar::borderWidth, float(this->getHeight()) - 0.5f);
@@ -74,30 +76,11 @@ public:
             roundToIntAccurate(float(this->getHeight() - nameHeight) / 2.f),
             this->getWidth(),
             nameHeight);
-
-        const auto w = float(this->getWidth());
-        const auto h = float(this->getHeight());
-
-        this->internalPath1.clear();
-        this->internalPath1.preallocateSpace(16);
-        this->internalPath1.startNewSubPath(NoteNameGuidesBar::borderWidth + 1, 1.f);
-        this->internalPath1.lineTo(w - NoteNameGuidesBar::arrowWidth, 1.f);
-        this->internalPath1.lineTo(w, (h / 2.f) + 0.5f);
-        this->internalPath1.lineTo(w - NoteNameGuidesBar::arrowWidth, h);
-        this->internalPath1.lineTo(NoteNameGuidesBar::borderWidth + 1.f, h);
-        this->internalPath1.closeSubPath();
-
-        this->internalPath2.clear();
-        this->internalPath2.preallocateSpace(16);
-        this->internalPath2.startNewSubPath(0.f, 1.f);
-        this->internalPath2.lineTo(w - NoteNameGuidesBar::arrowWidth - 1.f, 1.f);
-        this->internalPath2.lineTo(w - 1.f, (h / 2.f) + 0.5f);
-        this->internalPath2.lineTo(w - NoteNameGuidesBar::arrowWidth - 1.f, h);
-        this->internalPath2.lineTo(0.f, h);
-        this->internalPath2.closeSubPath();
     }
 
 private:
+
+    NoteNameGuidesBar &guidesBar;
 
     const int noteNumber;
 
@@ -106,9 +89,6 @@ private:
     const Colour shadowColour = findDefaultColour(ColourIDs::Roll::noteNameShadow);
 
     UniquePointer<NoteNameComponent> noteName;
-
-    Path internalPath1;
-    Path internalPath2;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteNameGuide)
 };
