@@ -17,19 +17,18 @@
 
 #pragma once
 
-#include "Config.h"
-
 // A simple CachedComponentImage for labels.
 // This cache assumes that label's size is fixed,
 // so it doesn't have to re-cache it on every setBounds.
 
+template <typename LabelType = Label>
 struct CachedLabelImage final : public CachedComponentImage
 {
-    explicit CachedLabelImage(Label &c) noexcept : owner(c) {}
+    explicit CachedLabelImage(LabelType &c) noexcept : owner(c) {}
 
     void paint(Graphics &g) override
     {
-        const auto scale = this->uiScaleFactor * g.getInternalContext().getPhysicalPixelScaleFactor();
+        const auto scale = g.getInternalContext().getPhysicalPixelScaleFactor();
         auto compBounds = this->owner.getLocalBounds();
         auto imageBounds = compBounds * scale;
 
@@ -49,18 +48,16 @@ struct CachedLabelImage final : public CachedComponentImage
             auto &lg = imG.getInternalContext();
             lg.addTransform(AffineTransform::scale(scale));
 
-            lg.setFill(Colours::transparentBlack);
-            lg.fillRect(compBounds, true);
             lg.setFill(Colours::black);
-
             this->owner.paintEntireComponent(imG, true);
             this->text = this->owner.getText();
         }
 
         g.setOpacity(this->owner.getAlpha());
+        g.setImageResamplingQuality(Graphics::lowResamplingQuality);
         g.drawImageTransformed(this->image,
-            AffineTransform::scale(compBounds.getWidth() / (float)imageBounds.getWidth(),
-                compBounds.getHeight() / (float)imageBounds.getHeight()), false);
+            AffineTransform::scale(float(compBounds.getWidth()) / float(imageBounds.getWidth()),
+                float(compBounds.getHeight()) / float(imageBounds.getHeight())), false);
     }
 
     // will be called on setBounds(), but we don't need to invalidate:
@@ -84,9 +81,7 @@ private:
 
     Image image;
     String text;
-    Label &owner;
-
-    const float uiScaleFactor = App::Config().getUiFlags()->getUiScaleFactor();
+    LabelType &owner;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CachedLabelImage)
 };

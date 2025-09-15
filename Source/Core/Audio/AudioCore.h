@@ -99,38 +99,6 @@ public:
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-
-    //===------------------------------------------------------------------===//
-    // Helpers
-    //===------------------------------------------------------------------===//
-
-    inline static float fastLog2(float val)
-    {
-        int *const exp_ptr = reinterpret_cast<int *>(&val);
-        int x = *exp_ptr;
-        const int log_2 = ((x >> 23) & 255) - 128;
-        x &= ~(255 << 23);
-        x += 127 << 23;
-        *exp_ptr = x;
-        return (val + log_2);
-    }
-    
-    inline static float fastLog10(float val)
-    {
-        return fastLog2(val) / fastLog2(10.f);
-    }
-
-    inline static float iecLevel(float db)
-    {
-        if (db < -70.f) { return 0.f; }
-        else if (db < -60.f) { return (db + 70.f) * 0.0025f; }
-        else if (db < -50.f) { return (db + 60.f) * 0.005f + 0.025f; }
-        else if (db < -40.f) { return (db + 50.f) * 0.0075f + 0.075f; }
-        else if (db < -30.f) { return (db + 40.f) * 0.015f + 0.15f; }
-        else if (db < -20.f) { return (db + 30.f) * 0.02f + 0.3f; }
-        /* else if (dB < 0.f) */
-        return (db + 20.f) * 0.025f + 0.5f;
-    }
     
 private:
 

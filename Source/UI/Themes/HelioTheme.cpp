@@ -860,7 +860,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Panel::pageFillB, s->getPageFillColour().darker(0.01f));
     this->setColour(ColourIDs::Panel::sidebarFill, s->getSidebarFillColour());
     this->setColour(ColourIDs::Panel::bottomPanelFill,
-        s->getSidebarFillColour().withMultipliedSaturationHSL(0.95f));
+        s->getSidebarFillColour().withMultipliedLightness(1.025f));
 
     this->setColour(ColourIDs::Breadcrumbs::fill, s->getHeadlineFillColour());
     this->setColour(ColourIDs::Breadcrumbs::selectionMarker, this->isDarkTheme ?
@@ -964,7 +964,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
         headerFill.interpolatedWith(Colours::red, 0.55f));
 
     this->setColour(ColourIDs::Roll::playheadShade,
-        s->getBlackKeyColour().darker(1.f).withAlpha(0.075f));
+        s->getBlackKeyColour().darker(1.f).withAlpha(0.069f));
     this->setColour(ColourIDs::Roll::playheadPlayback, s->getLassoBorderColour().
         interpolatedWith(s->getBlackKeyColour(), this->isDarkTheme ? 0.2f : 0.1f).withAlpha(1.f));
     this->setColour(ColourIDs::Roll::playheadSmallPlayback, s->getLassoBorderColour().
@@ -1057,7 +1057,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
         Graphics g(this->pageBackgroundA);
         g.setColour(this->findColour(ColourIDs::Panel::pageFillA));
         g.fillAll();
-        this->drawNoise(g, 0.35f);
+        this->drawNoise(g, 0.25f);
     }
 
     {
@@ -1065,7 +1065,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
         Graphics g(this->pageBackgroundB);
         g.setColour(this->findColour(ColourIDs::Panel::pageFillB));
         g.fillAll();
-        this->drawNoise(g, 0.35f);
+        this->drawNoise(g, 0.25f);
     }
 
     {
@@ -1097,7 +1097,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
         Graphics g(this->dialogBackground);
         g.setColour(this->findColour(ColourIDs::Dialog::fill));
         g.fillAll();
-        this->drawNoise(g, 0.5f);
+        this->drawNoise(g, 0.25f);
     }
 
     Icons::clearPrerenderedCache();

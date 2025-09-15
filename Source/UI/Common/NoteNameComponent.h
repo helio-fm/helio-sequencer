@@ -20,6 +20,7 @@
 class IconComponent;
 
 #include "ColourIDs.h"
+#include "CachedLabelImage.h"
 
 // This uses a mix of labels and svg icons to display note names,
 // because even the Noto typeface lacks double-sharp and double-flat signs
@@ -41,6 +42,10 @@ public:
     int getRequiredWidth() const noexcept;
     float getContentWidthFloat() const noexcept;
 
+    // a fallback string which can be used as a label
+    const String &getText() const noexcept;
+    using CachedNoteImage = CachedLabelImage<NoteNameComponent>;
+
 private:
 
     const bool isCentered;
@@ -50,6 +55,8 @@ private:
 
     Optional<String> detailsText;
     float detailsWidth = 0.f;
+
+    String fallbackLabelText;
 
     UniquePointer<Label> nameLabel;
     UniquePointer<Label> detailsLabel;

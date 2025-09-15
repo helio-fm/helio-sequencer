@@ -41,6 +41,8 @@ NoteNameComponent::NoteNameComponent(bool isCentered, float fontSize) :
     this->detailsLabel->setJustificationType(Justification::centred);
     this->detailsLabel->setAccessible(false);
     this->detailsLabel->setColour(Label::textColourId, this->textColour.withMultipliedAlpha(0.9f));
+
+    this->setCachedComponentImage(new CachedNoteImage(*this));
 }
 
 NoteNameComponent::~NoteNameComponent() = default;
@@ -123,11 +125,33 @@ float NoteNameComponent::getContentWidthFloat() const noexcept
     return result;
 }
 
+const String &NoteNameComponent::getText() const noexcept
+{
+    return this->fallbackLabelText;
+}
+
 void NoteNameComponent::setNoteName(const String &newNoteName,
     Optional<String> newDetailsText, bool useFixedDoNotation)
 {
+    if (this->noteName == newNoteName &&
+        this->detailsText == newDetailsText)
+    {
+        //jassertfalse;
+        return;
+    }
+
     this->noteName = newNoteName;
     this->detailsText = newDetailsText;
+
+    this->fallbackLabelText = this->noteName;
+    if (this->detailsText.hasValue())
+    {
+        this->fallbackLabelText += (" " + *this->detailsText);
+    }
+
+    auto *cachedImage = static_cast<CachedNoteImage *>(this->getCachedComponentImage());
+    jassert(cachedImage != nullptr);
+    cachedImage->forceInvalidate();
 
     if (newNoteName.isEmpty())
     {

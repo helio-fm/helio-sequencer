@@ -80,6 +80,9 @@ SequencerSidebarLeft::SequencerSidebarLeft()
     this->listBox->getViewport()->setScrollOnDragMode(Viewport::ScrollOnDragMode::never);
     this->addAndMakeVisible(this->listBox.get());
 
+    this->waveformMonitor = make<WaveformAudioMonitorComponent>(nullptr);
+    this->addAndMakeVisible(this->waveformMonitor.get());
+
     const auto *uiFlags = App::Config().getUiFlags();
     this->zoomLevelLocked = uiFlags->isZoomLevelLocked();
     this->miniMapVisible = uiFlags->isProjectMapInLargeMode();
@@ -88,12 +91,6 @@ SequencerSidebarLeft::SequencerSidebarLeft()
 
     this->switchLinearModeButton->setVisible(false);
     this->switchPatternModeButton->setVisible(false);
-
-    this->waveformMonitor = make<WaveformAudioMonitorComponent>(nullptr);
-
-    this->addChildComponent(this->waveformMonitor.get());
-
-    this->waveformMonitor->setVisible(true);
 
     MenuPanelUtils::disableKeyboardFocusForAllChildren(this);
 

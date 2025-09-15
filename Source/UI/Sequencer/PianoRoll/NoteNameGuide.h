@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "CachedLabelImage.h"
 #include "NoteNameComponent.h"
 #include "NoteNameGuidesBar.h"
 #include "ColourIDs.h"
@@ -70,8 +69,7 @@ public:
     void resized() override
     {
         // even if the height is too small, the name shouldn't be cut
-        constexpr auto minHeight = int(Globals::UI::Fonts::M);
-        const auto nameHeight = jmax(this->getHeight(), minHeight);
+        constexpr auto nameHeight = int(Globals::UI::Fonts::M);
         this->noteName->setBounds(int(NoteNameGuidesBar::borderWidth + NoteNameGuidesBar::nameMarginLeft),
             roundToIntAccurate(float(this->getHeight() - nameHeight) / 2.f),
             this->getWidth(),

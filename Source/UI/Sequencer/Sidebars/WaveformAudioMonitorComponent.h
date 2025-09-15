@@ -42,24 +42,26 @@ public:
 private:
 
     void timerCallback() override;
-    
+
     const Colour peaksColour =
         findDefaultColour(ColourIDs::AudioMonitor::foreground)
-            .withMultipliedAlpha(0.5f);
+            .withMultipliedAlpha(0.420f);
 
     const Colour rmsColour =
         findDefaultColour(ColourIDs::AudioMonitor::foreground)
-            .withMultipliedAlpha(0.65f);
+            .withMultipliedAlpha(0.69f);
 
     WeakReference<AudioMonitor> audioMonitor;
     
     static constexpr auto bufferSize = Globals::UI::sidebarWidth / 2;
 
-    float lPeakBuffer[bufferSize] = {};
-    float rPeakBuffer[bufferSize] = {};
+    float peakBufferLeft[bufferSize] = {};
+    float peakBufferRight[bufferSize] = {};
 
-    float lRmsBuffer[bufferSize] = {};
-    float rRmsBuffer[bufferSize] = {};
+    float rmsBufferLeft[bufferSize] = {};
+    float rmsBufferRight[bufferSize] = {};
+
+    int emptyFramesCounter = bufferSize;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveformAudioMonitorComponent)
 

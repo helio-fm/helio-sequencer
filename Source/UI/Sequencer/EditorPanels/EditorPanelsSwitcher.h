@@ -110,7 +110,7 @@ public:
             this->titleLabel->setColour(Label::textColourId,
                 labelColour.withMultipliedAlpha(this->isSelected ? 1.f : 0.4f));
 
-            auto *cachedImage = static_cast<CachedLabelImage *>(this->titleLabel->getCachedComponentImage());
+            auto *cachedImage = static_cast<CachedLabelImage<Label> *>(this->titleLabel->getCachedComponentImage());
             jassert(cachedImage != nullptr);
             cachedImage->forceInvalidate();
 

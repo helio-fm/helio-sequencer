@@ -197,7 +197,7 @@ void HeadlineItem::updateContent()
 
         this->titleLabel->setText(this->dataSource->getName(), dontSendNotification);
 
-        auto *cachedImage = static_cast<CachedLabelImage *>(this->titleLabel->getCachedComponentImage());
+        auto *cachedImage = static_cast<CachedLabelImage<Label> *>(this->titleLabel->getCachedComponentImage());
         jassert(cachedImage != nullptr);
         cachedImage->forceInvalidate();
 

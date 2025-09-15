@@ -74,7 +74,7 @@ void AnnotationSmallComponent::updateContent()
         this->lastColour = this->event.getColour();
         const auto fgColour = findDefaultColour(Label::textColourId);
         this->annotationLabel->setColour(Label::textColourId, this->lastColour.interpolatedWith(fgColour, 0.55f));
-        auto *cachedImage = static_cast<CachedLabelImage *>(this->annotationLabel->getCachedComponentImage());
+        auto *cachedImage = static_cast<CachedLabelImage<Label> *>(this->annotationLabel->getCachedComponentImage());
         jassert(cachedImage != nullptr);
         cachedImage->forceInvalidate();
     }

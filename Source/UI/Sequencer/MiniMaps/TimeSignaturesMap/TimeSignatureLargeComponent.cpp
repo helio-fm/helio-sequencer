@@ -202,7 +202,7 @@ void TimeSignatureLargeComponent::updateContent(const TimeSignatureEvent &newEve
 
     this->signatureLabel->setColour(Label::textColourId, textColour);
 
-    auto *cachedImage = static_cast<CachedLabelImage *>(this->signatureLabel->getCachedComponentImage());
+    auto *cachedImage = static_cast<CachedLabelImage<Label> *>(this->signatureLabel->getCachedComponentImage());
     jassert(cachedImage != nullptr);
     cachedImage->forceInvalidate();
 

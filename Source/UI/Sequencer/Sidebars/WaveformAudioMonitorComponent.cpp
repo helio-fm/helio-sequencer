@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "WaveformAudioMonitorComponent.h"
 #include "AudioMonitor.h"
-#include "AudioCore.h"
 
 WaveformAudioMonitorComponent::WaveformAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer) :
     audioMonitor(targetAnalyzer)
@@ -48,38 +47,78 @@ void WaveformAudioMonitorComponent::setTargetAnalyzer(WeakReference<AudioMonitor
 
 void WaveformAudioMonitorComponent::timerCallback()
 {
-    constexpr auto bufferLastIndex = WaveformAudioMonitorComponent::bufferSize - 1;
+    constexpr auto lastFrameIndex = WaveformAudioMonitorComponent::bufferSize - 1;
 
     // Shift buffers:
-    for (int i = 0; i < bufferLastIndex; ++i)
+    for (int i = 0; i < lastFrameIndex; ++i)
     {
-        this->lPeakBuffer[i] = this->lPeakBuffer[i + 1];
-        this->rPeakBuffer[i] = this->rPeakBuffer[i + 1];
-        this->lRmsBuffer[i] = this->lRmsBuffer[i + 1];
-        this->rRmsBuffer[i] = this->rRmsBuffer[i + 1];
+        this->peakBufferLeft[i] = this->peakBufferLeft[i + 1];
+        this->peakBufferRight[i] = this->peakBufferRight[i + 1];
+        this->rmsBufferLeft[i] = this->rmsBufferLeft[i + 1];
+        this->rmsBufferRight[i] = this->rmsBufferRight[i + 1];
     }
 
     // Push next values:
-    this->lPeakBuffer[bufferLastIndex] = this->audioMonitor->getPeak(0);
-    this->rPeakBuffer[bufferLastIndex] = this->audioMonitor->getPeak(1);
-    this->lRmsBuffer[bufferLastIndex] = this->audioMonitor->getRootMeanSquare(0);
-    this->rRmsBuffer[bufferLastIndex] = this->audioMonitor->getRootMeanSquare(1);
+    this->peakBufferLeft[lastFrameIndex] = this->audioMonitor->getPeak(0);
+    this->peakBufferRight[lastFrameIndex] = this->audioMonitor->getPeak(1);
+    this->rmsBufferLeft[lastFrameIndex] = this->audioMonitor->getRootMeanSquare(0);
+    this->rmsBufferRight[lastFrameIndex] = this->audioMonitor->getRootMeanSquare(1);
 
-    this->repaint();
+    if (this->peakBufferLeft[lastFrameIndex] > 0.f ||
+        this->peakBufferRight[lastFrameIndex] > 0.f)
+    {
+        this->emptyFramesCounter = 0;
+    }
+    else if (this->emptyFramesCounter <= WaveformAudioMonitorComponent::bufferSize)
+    {
+        this->emptyFramesCounter++;
+    }
+
+    if (this->emptyFramesCounter <= WaveformAudioMonitorComponent::bufferSize)
+    {
+        this->repaint();
+    }
+}
+
+//===----------------------------------------------------------------------===//
+// Helpers
+//===----------------------------------------------------------------------===//
+
+static inline float fastLog2(float value) noexcept
+{
+    auto x = float(bitCast<uint32_t, float>(value));
+    x *= 1.1920928955078125e-7f;
+    return x - 126.94269504f;
+}
+
+static inline float fastLog10(float val) noexcept
+{
+    return fastLog2(val) / 3.32192809488f;
+}
+
+static inline float iecLevel(float db) noexcept
+{
+    if (db < -70.f) { return 0.f; }
+    else if (db < -60.f) { return (db + 70.f) * 0.0025f; }
+    else if (db < -50.f) { return (db + 60.f) * 0.005f + 0.025f; }
+    else if (db < -40.f) { return (db + 50.f) * 0.0075f + 0.075f; }
+    else if (db < -30.f) { return (db + 40.f) * 0.015f + 0.15f; }
+    else if (db < -20.f) { return (db + 30.f) * 0.02f + 0.3f; }
+    return (db + 20.f) * 0.025f + 0.5f;
+}
+
+static inline float waveformIecLevel(float peak) noexcept
+{
+    // -69 instead of -70 to have that nearly invisible horizontal line:
+    constexpr auto minDb = -69.f;
+    constexpr auto maxDb = +4.f;
+    const auto vauleInDb = jlimit(minDb, maxDb, 20.f * fastLog10(peak));
+    return iecLevel(vauleInDb);
 }
 
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
-
-inline static float waveformIecLevel(float peak)
-{
-    // -69 instead of -70 to have that nearly invisible horizontal line:
-    static constexpr auto maxDb = +4.f;
-    static constexpr auto minDb = -69.f;
-    const auto vauleInDb = jlimit(minDb, maxDb, 20.f * AudioCore::fastLog10(peak));
-    return AudioCore::iecLevel(vauleInDb);
-}
 
 void WaveformAudioMonitorComponent::paint(Graphics &g)
 {
@@ -105,8 +144,8 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
     for (int i = 0; i < w - 1; ++i)
     {
         const float fancyFade = (i == 0 || i == (w - 2)) ? 0.75f : ((i == 1 || i == (w - 3)) ? 0.9f : 1.f);
-        const float peakL = waveformIecLevel(this->lPeakBuffer[i]) * midH * fancyFade;
-        const float peakR = waveformIecLevel(this->rPeakBuffer[i]) * midH * fancyFade;
+        const float peakL = waveformIecLevel(this->peakBufferLeft[i]) * midH * fancyFade;
+        const float peakR = waveformIecLevel(this->peakBufferRight[i]) * midH * fancyFade;
         g.fillRect(((i * 2.f) * peakStretch) + peakStretch, midH - peakL, 1.f, peakR + peakL);
     }
 
@@ -115,8 +154,8 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
     for (int i = 0; i < w; ++i)
     {
         const float fancyFade = (i == 0 || i == (w - 1)) ? 0.85f : ((i == 1 || i == (w - 2)) ? 0.95f : 1.f);
-        const float rmsL = waveformIecLevel(this->lRmsBuffer[i]) * midH * fancyFade;
-        const float rmsR = waveformIecLevel(this->rRmsBuffer[i]) * midH * fancyFade;
+        const float rmsL = waveformIecLevel(this->rmsBufferLeft[i]) * midH * fancyFade;
+        const float rmsR = waveformIecLevel(this->rmsBufferRight[i]) * midH * fancyFade;
         g.fillRect((i * 2.f) * peakStretch, midH - rmsL, 1.f, rmsR + rmsL);
     }
 }
