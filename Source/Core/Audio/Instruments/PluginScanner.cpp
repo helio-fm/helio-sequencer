@@ -335,11 +335,10 @@ void PluginScanner::run()
 
 FileSearchPath PluginScanner::getCommonFolders()
 {
-    FileSearchPath folders;
-
     StringArray possibleSubfolders;
     possibleSubfolders.add("Audio");
     possibleSubfolders.add("Steinberg");
+    possibleSubfolders.add("Cakewalk");
     possibleSubfolders.add("VST Plugins");
     possibleSubfolders.add("VSTPlugins");
     possibleSubfolders.add("VST");
@@ -349,49 +348,70 @@ FileSearchPath PluginScanner::getCommonFolders()
     possibleSubfolders.add("VST 3");
     possibleSubfolders.add("ladspa");
     possibleSubfolders.add(".ladspa");
+    if (File::areFileNamesCaseSensitive())
+    {
+        possibleSubfolders.add("VstPlugins");
+        possibleSubfolders.add("vstplugins");
+        possibleSubfolders.add("Vst");
+        possibleSubfolders.add("vst");
+        possibleSubfolders.add("Vst2");
+        possibleSubfolders.add("vst2");
+        possibleSubfolders.add("Vst 2");
+        possibleSubfolders.add("vst 2");
+        possibleSubfolders.add("Vst3");
+        possibleSubfolders.add("vst3");
+        possibleSubfolders.add("Vst 3");
+        possibleSubfolders.add("vst 3");
+    }
 
     Array<File> systemFolders;
-
+    File::findFileSystemRoots(systemFolders);
     systemFolders.add(File::getCurrentWorkingDirectory());
-    systemFolders.add(File::getSpecialLocation(File::currentExecutableFile).getParentDirectory());
     systemFolders.add(File::getSpecialLocation(File::currentApplicationFile).getParentDirectory());
     systemFolders.add(File::getSpecialLocation(File::userHomeDirectory));
     systemFolders.add(File::getSpecialLocation(File::userDocumentsDirectory));
     systemFolders.add(File::getSpecialLocation(File::userDesktopDirectory));
     systemFolders.add(File::getSpecialLocation(File::userApplicationDataDirectory));
+    systemFolders.add(File::getSpecialLocation(File::userMusicDirectory));
     systemFolders.add(File::getSpecialLocation(File::commonApplicationDataDirectory));
     systemFolders.add(File::getSpecialLocation(File::globalApplicationsDirectory));
-    systemFolders.add(File::getSpecialLocation(File::userMusicDirectory));
+#if JUCE_WINDOWS
+    systemFolders.add(File::getSpecialLocation(File::globalApplicationsDirectoryX86));
+    systemFolders.add(File::getSpecialLocation(File::windowsLocalAppData));
+#endif
 
-    // здесь создаем все комбинации системных папок с возможными подпапками
+    FileSearchPath fileSearchPath;
+
     for (auto &systemFolder : systemFolders)
     {
-        // здесь проходим по первому уровню системных папок и ищем еще и в них
         Array<File> subPaths;
         systemFolder.findChildFiles(subPaths, File::findDirectories, false);
 
         for (auto &subPath : subPaths)
         {
-            this->scanPossibleSubfolders(possibleSubfolders, subPath, folders);
+            this->scanPossibleSubfolders(possibleSubfolders, subPath, fileSearchPath);
         }
 
-        this->scanPossibleSubfolders(possibleSubfolders, systemFolder, folders);
+        this->scanPossibleSubfolders(possibleSubfolders, systemFolder, fileSearchPath);
     }
 
-    return folders;
+    return fileSearchPath;
 }
 
 void PluginScanner::scanPossibleSubfolders(const StringArray &possibleSubfolders,
-        const File &currentSystemFolder, FileSearchPath &foldersOut)
+    const File &currentParentFolder, FileSearchPath &outSearchPath)
 {
     for (const auto &possibleSubfolder : possibleSubfolders)
     {
-        File f(currentSystemFolder.getChildFile(possibleSubfolder));
+        File f(currentParentFolder.getChildFile(possibleSubfolder));
 
-        if (f.exists())
+        if (f.exists() && f.isDirectory())
         {
-            DBG("Adding folder to scan: " + f.getFullPathName());
-            foldersOut.add(f);
+            if (outSearchPath.addIfNotAlreadyThere(f))
+            {
+                DBG("Added folder to scan: " + f.getFullPathName());
+                this->scanPossibleSubfolders(possibleSubfolders, f, outSearchPath);
+            }
         }
     }
 }
