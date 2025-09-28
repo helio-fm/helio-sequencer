@@ -24,7 +24,9 @@ class KeyboardCursor::BlinkAnimator final : private Timer
 {
 public:
 
-    explicit KeyboardCursor::BlinkAnimator(WeakReference<KeyboardCursor> cursor) :
+    BlinkAnimator() = delete;
+
+    explicit BlinkAnimator(WeakReference<KeyboardCursor> cursor) :
         cursor(cursor) {}
 
     void fadeIn()
@@ -76,7 +78,7 @@ private:
 
     WeakReference<KeyboardCursor> cursor;
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeyboardCursor::BlinkAnimator)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BlinkAnimator)
 };
 
 KeyboardCursor::KeyboardCursor(Transport &transport) :
