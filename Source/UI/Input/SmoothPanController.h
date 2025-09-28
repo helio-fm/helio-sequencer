@@ -69,8 +69,7 @@ private:
 
     bool animationsEnabled = true;
 
-    static constexpr auto slowdownFactor = 0.4f;
-    static constexpr auto initialPanSpeed = 140.f;
+    static constexpr auto initialPanSpeed = 150.f;
 
     void timerCallback() override
     {
@@ -80,7 +79,7 @@ private:
     inline void process()
     {
         const auto diff = this->target - this->origin;
-        const auto delta = (diff * SmoothPanController::slowdownFactor).roundToInt();
+        const auto delta = (diff * 0.5f).roundToInt();
         this->origin += delta.toFloat();
 
         const bool hitTheBorder = 

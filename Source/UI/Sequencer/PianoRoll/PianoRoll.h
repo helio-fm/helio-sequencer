@@ -203,8 +203,9 @@ protected:
     //===------------------------------------------------------------------===//
 
     void selectAll() override;
-    float findNextAnchorBeat(float beat) const override;
-    float findPreviousAnchorBeat(float beat) const override;
+    float findNextPlayheadAnchorBeat(float beat) const override;
+    float findPreviousPlayheadAnchorBeat(float beat) const override;
+    Range<float> findPlayheadHomeEndRange() const override;
 
     //===------------------------------------------------------------------===//
     // MultiTouchListener

@@ -259,36 +259,59 @@ void PianoRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor cursor)
     }
 }
 
-float PianoRoll::findNextAnchorBeat(float beat) const
+float PianoRoll::findNextPlayheadAnchorBeat(float beat) const
 {
     const auto nearestTimelineAnchor =
-        this->project.getTimeline()->findNextAnchorBeat(beat);
+        this->project.getTimeline()->findNextPlayheadAnchorBeat(beat);
 
     const auto activeTrackStart = this->activeClip.getBeat() +
         this->activeTrack->getSequence()->getFirstBeat();
-
     if (activeTrackStart > beat)
     {
         return jmin(nearestTimelineAnchor, activeTrackStart);
     }
 
+    const auto activeTrackEnd = this->activeClip.getBeat() +
+        this->activeTrack->getSequence()->getLastBeat();
+    if (activeTrackEnd > beat)
+    {
+        return jmin(nearestTimelineAnchor, activeTrackEnd);
+    }
+
     return nearestTimelineAnchor;
 }
 
-float PianoRoll::findPreviousAnchorBeat(float beat) const
+float PianoRoll::findPreviousPlayheadAnchorBeat(float beat) const
 {
     const auto nearestTimelineAnchor =
-        this->project.getTimeline()->findPreviousAnchorBeat(beat);
+        this->project.getTimeline()->findPreviousPlayheadAnchorBeat(beat);
+
+    const auto activeTrackEnd = this->activeClip.getBeat() +
+        this->activeTrack->getSequence()->getLastBeat();
+    if (activeTrackEnd < beat)
+    {
+        return jmax(nearestTimelineAnchor, activeTrackEnd);
+    }
 
     const auto activeTrackStart = this->activeClip.getBeat() +
         this->activeTrack->getSequence()->getFirstBeat();
-
     if (activeTrackStart < beat)
     {
         return jmax(nearestTimelineAnchor, activeTrackStart);
     }
 
     return nearestTimelineAnchor;
+}
+
+Range<float> PianoRoll::findPlayheadHomeEndRange() const
+{
+    const auto activeTrackStart = this->activeClip.getBeat() +
+        this->activeTrack->getSequence()->getFirstBeat();
+
+    const auto activeTrackEnd = this->activeClip.getBeat() +
+        this->activeTrack->getSequence()->getLastBeat();
+
+    return { activeTrackStart, activeTrackEnd };
 }
 
 //===----------------------------------------------------------------------===//

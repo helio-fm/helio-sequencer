@@ -48,8 +48,8 @@ public:
     // Navigation helpers
     //===------------------------------------------------------------------===//
 
-    float findNextAnchorBeat(float beat) const;
-    float findPreviousAnchorBeat(float beat) const;
+    float findNextPlayheadAnchorBeat(float beat) const;
+    float findPreviousPlayheadAnchorBeat(float beat) const;
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem

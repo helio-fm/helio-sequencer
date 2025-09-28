@@ -180,7 +180,7 @@ static float findPreviousTrackAnchor(MidiTrack *track, float beat)
 }
 
 // finds the nearest timeline event, like key or time signature, or annotation
-float ProjectTimeline::findNextAnchorBeat(float beat) const
+float ProjectTimeline::findNextPlayheadAnchorBeat(float beat) const
 {
     const auto keyEvent = findNextTrackAnchor(this->keySignaturesTrack.get(), beat);
     const auto timeEvent = findNextTrackAnchor(this->timeSignaturesTrack.get(), beat);
@@ -188,7 +188,7 @@ float ProjectTimeline::findNextAnchorBeat(float beat) const
     return jmin(keyEvent, timeEvent, annotation);
 }
 
-float ProjectTimeline::findPreviousAnchorBeat(float beat) const
+float ProjectTimeline::findPreviousPlayheadAnchorBeat(float beat) const
 {
     const auto keyEvent = findPreviousTrackAnchor(this->keySignaturesTrack.get(), beat);
     const auto timeEvent = findPreviousTrackAnchor(this->timeSignaturesTrack.get(), beat);

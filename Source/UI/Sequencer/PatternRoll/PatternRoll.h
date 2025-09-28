@@ -121,8 +121,9 @@ protected:
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
     void updateRollSize();
 
-    float findNextAnchorBeat(float beat) const override;
-    float findPreviousAnchorBeat(float beat) const override;
+    float findNextPlayheadAnchorBeat(float beat) const override;
+    float findPreviousPlayheadAnchorBeat(float beat) const override;
+    Range<float> findPlayheadHomeEndRange() const override;
 
     void updateAllSnapLines() override;
 

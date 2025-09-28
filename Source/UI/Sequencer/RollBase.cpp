@@ -1386,7 +1386,7 @@ void RollBase::handleCommandMessage(int commandId)
         }
         {
             this->stopFollowingPlayhead();
-            const auto nextJumpSeek = this->findNextAnchorBeat(this->getTransport().getSeekBeat());
+            const auto nextJumpSeek = this->findNextPlayheadAnchorBeat(this->getTransport().getSeekBeat());
             const auto nextJumpSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, nextJumpSeek);
             this->getTransport().seekToBeat(nextJumpSafe);
             this->scrollToPlayheadPositionIfNeeded();
@@ -1400,7 +1400,7 @@ void RollBase::handleCommandMessage(int commandId)
         }
         {
             this->stopFollowingPlayhead();
-            const auto prevJumpSeek = this->findPreviousAnchorBeat(this->getTransport().getSeekBeat());
+            const auto prevJumpSeek = this->findPreviousPlayheadAnchorBeat(this->getTransport().getSeekBeat());
             const auto prevJumpSafe = jlimit(this->projectFirstBeat, this->projectLastBeat, prevJumpSeek);
             this->getTransport().seekToBeat(prevJumpSafe);
             this->scrollToPlayheadPositionIfNeeded();
@@ -1412,10 +1412,20 @@ void RollBase::handleCommandMessage(int commandId)
             this->getTransport().stopPlaybackAndRecording();
             this->getTransport().stopSound();
         }
-
-        this->stopFollowingPlayhead();
-        this->getTransport().seekToBeat(this->projectFirstBeat);
-        this->scrollToPlayheadPositionIfNeeded();
+        {
+            this->stopFollowingPlayhead();
+            const auto seekBeat = this->getTransport().getSeekBeat();
+            const auto localHomeEndRange = this->findPlayheadHomeEndRange();
+            if (seekBeat > localHomeEndRange.getStart() || seekBeat == this->projectFirstBeat)
+            {
+                this->getTransport().seekToBeat(localHomeEndRange.getStart());
+            }
+            else
+            {
+                this->getTransport().seekToBeat(this->projectFirstBeat);
+            }
+            this->scrollToPlayheadPositionIfNeeded();
+        }
         break;
     case CommandIDs::TimelineJumpEnd:
         if (this->getTransport().isPlaying())
@@ -1423,10 +1433,20 @@ void RollBase::handleCommandMessage(int commandId)
             this->getTransport().stopPlaybackAndRecording();
             this->getTransport().stopSound();
         }
-
-        this->stopFollowingPlayhead();
-        this->getTransport().seekToBeat(this->projectLastBeat);
-        this->scrollToPlayheadPositionIfNeeded();
+        {
+            this->stopFollowingPlayhead();
+            const auto seekBeat = this->getTransport().getSeekBeat();
+            const auto localHomeEndRange = this->findPlayheadHomeEndRange();
+            if (seekBeat < localHomeEndRange.getEnd() || seekBeat == this->projectLastBeat)
+            {
+                this->getTransport().seekToBeat(localHomeEndRange.getEnd());
+            }
+            else
+            {
+                this->getTransport().seekToBeat(this->projectLastBeat);
+            }
+            this->scrollToPlayheadPositionIfNeeded();
+        }
         break;
     case CommandIDs::StartDragViewport:
         this->header->setSoundProbeMode(true);
@@ -1634,7 +1654,7 @@ void RollBase::onMovePlayhead(int oldPlayheadX, int newPlayheadX)
     if (this->playheadFollowMode == PlayheadFollowMode::CatchWhenOffscreen &&
         this->getTransport().isPlaying() &&
         (newPlayheadX < this->viewport.getViewPositionX() ||
-            newPlayheadX > this->viewport.getViewPositionX() + int(this->viewport.getViewWidth() * 0.85f)))
+            newPlayheadX > this->viewport.getViewPositionX() + int(this->viewport.getViewWidth() * 0.75f)))
     {
         this->playheadFollowMode = PlayheadFollowMode::Follow;
     }
@@ -1785,6 +1805,7 @@ void RollBase::onStop()
     this->stopFollowingPlayhead();
     if (shouldCatchPlayhead)
     {
+        this->catchPlayheadTimerStartedAt = Time::getMillisecondCounter();
         this->startTimerHz(60);
     }
 }
@@ -1803,6 +1824,7 @@ bool RollBase::scrollToPlayheadPositionIfNeeded(int edgeMargin)
 
     if (App::Config().getUiFlags()->areUiAnimationsEnabled())
     {
+        this->catchPlayheadTimerStartedAt = Time::getMillisecondCounter();
         this->startTimerHz(60);
     }
     else
@@ -1901,14 +1923,17 @@ void RollBase::triggerBatchRepaintFor(FloatBoundsComponent *target)
 
 void RollBase::timerCallback()
 {
-    const auto viewportCentreX = this->viewport.getViewPositionX() + this->viewport.getViewWidth() / 2;
+    const auto viewportCentreX = this->viewport.getViewArea().getCentreX();
     const auto playheadOffset = (this->playhead->getX() - viewportCentreX);
-    const auto newX = this->playhead->getX() - int(playheadOffset * 0.75) - (this->viewport.getViewWidth() / 2);
+    const auto newX = this->playhead->getX() -
+        roundToIntAccurate(playheadOffset * 0.5) - (this->viewport.getViewWidth() / 2);
 
     const bool doneFollowingPlayhead =
         fabs(playheadOffset) < (this->getTransport().isPlaying() ? this->beatWidth : 2.f);
-    const bool stuckFollowingPlayhead = newX == this->viewport.getViewPositionX() ||
-        newX < 0 || newX > (this->getWidth() - this->viewport.getViewWidth());
+    const bool stuckFollowingPlayhead =
+        (newX == this->viewport.getViewPositionX()) ||
+        (newX < 0 || newX > (this->getWidth() - this->viewport.getViewWidth())) ||
+        (Time::getMillisecondCounter() - this->catchPlayheadTimerStartedAt > Globals::UI::fadeOutLong);
 
     this->viewport.setViewPosition(newX, this->viewport.getViewPositionY());
     this->updateChildrenPositions();

@@ -1069,12 +1069,13 @@ void PatternRoll::parentSizeChanged()
     this->updateRollSize();
 }
 
-float PatternRoll::findNextAnchorBeat(float beat) const
+float PatternRoll::findNextPlayheadAnchorBeat(float beat) const
 {
     float result = this->getLastBeat();
     for (const auto *track : this->tracks)
     {
         const float sequenceStart = track->getSequence()->getFirstBeat();
+        const float sequenceEnd = track->getSequence()->getLastBeat();
         for (const auto *clip : track->getPattern()->getClips())
         {
             const auto clipStart = clip->getBeat() + sequenceStart;
@@ -1082,18 +1083,24 @@ float PatternRoll::findNextAnchorBeat(float beat) const
             {
                 result = jmin(clipStart, result);
             }
+            const auto clipEnd = clip->getBeat() + sequenceEnd;
+            if (clipEnd > beat)
+            {
+                result = jmin(clipEnd, result);
+            }
         }
     }
 
     return result;
 }
 
-float PatternRoll::findPreviousAnchorBeat(float beat) const
+float PatternRoll::findPreviousPlayheadAnchorBeat(float beat) const
 {
     float result = this->getFirstBeat();
     for (const auto *track : this->tracks)
     {
         const float sequenceStart = track->getSequence()->getFirstBeat();
+        const float sequenceEnd = track->getSequence()->getLastBeat();
         for (const auto *clip : track->getPattern()->getClips())
         {
             const auto clipStart = clip->getBeat() + sequenceStart;
@@ -1101,10 +1108,29 @@ float PatternRoll::findPreviousAnchorBeat(float beat) const
             {
                 result = jmax(clipStart, result);
             }
+            const auto clipEnd = clip->getBeat() + sequenceEnd;
+            if (clipEnd < beat)
+            {
+                result = jmax(clipEnd, result);
+            }
         }
     }
 
     return result;
+}
+
+Range<float> PatternRoll::findPlayheadHomeEndRange() const
+{
+    if (this->selection.getNumSelected() == 1)
+    {
+        auto *cc = this->selection.getFirstAs<ClipComponent>();
+        auto *sequence = cc->getClip().getPattern()->getTrack()->getSequence();
+        const float sequenceStart = sequence->getFirstBeat();
+        return { cc->getBeat() + sequence->getFirstBeat(),
+            cc->getBeat() + sequence->getLastBeat() };
+    }
+
+    return { this->projectFirstBeat, this->projectLastBeat };
 }
 
 void PatternRoll::updateAllSnapLines()

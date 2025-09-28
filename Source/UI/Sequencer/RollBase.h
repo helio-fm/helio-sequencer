@@ -364,8 +364,9 @@ protected:
 
     virtual void setChildrenInteraction(bool interceptMouse, MouseCursor c) = 0;
 
-    virtual float findNextAnchorBeat(float beat) const = 0;
-    virtual float findPreviousAnchorBeat(float beat) const = 0;
+    virtual float findNextPlayheadAnchorBeat(float beat) const = 0;
+    virtual float findPreviousPlayheadAnchorBeat(float beat) const = 0;
+    virtual Range<float> findPlayheadHomeEndRange() const = 0;
 
     void updateWidth();
     
