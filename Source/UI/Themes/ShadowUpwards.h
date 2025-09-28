@@ -33,7 +33,8 @@ public:
 
     void resized() override
     {
-        if (this->cachedImage.getHeight() != this->getHeight())
+        if (this->cachedImage.getHeight() !=
+            this->getHeight() + ShadowComponent::cachedImageMargin)
         {
             const auto h = float(this->getHeight());
 

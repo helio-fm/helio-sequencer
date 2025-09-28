@@ -22,6 +22,7 @@
 #include "IconComponent.h"
 #include "HotkeyScheme.h"
 #include "MainLayout.h"
+#include "HelioTheme.h"
 #include "Config.h"
 #include "ColourIDs.h"
 #include <utility>
@@ -50,34 +51,11 @@ public:
     {
         const auto bounds = this->getLocalBounds().reduced(5, 4);
 
-        const auto x = bounds.getX();
-        const auto y = bounds.getY();
-        const auto r = bounds.getRight();
-        const auto b = bounds.getBottom();
-
-        // the corner's size
-        constexpr auto lh = 7;
-        constexpr auto lv = 3;
-
         g.setColour(this->shadowColour);
-        g.fillRect(x, y, lh, 2);
-        g.fillRect(x, y, 2, lv);
-        g.fillRect(x, b - 2, lh, 2);
-        g.fillRect(x, b - lv, 2, lv);
-        g.fillRect(r - lh, y, lh, 2);
-        g.fillRect(r - 2, y, 2, lv);
-        g.fillRect(r - lh, b - 2, lh, 2);
-        g.fillRect(r - 2, b - lv, 2, lv);
+        HelioTheme::drawBrackets(g, bounds, 7, 3, 2);
 
         g.setColour(this->fillColour);
-        g.fillRect(x, y, lh, 1);
-        g.fillRect(x, y + 1, 1, lv - 1);
-        g.fillRect(x, b - 1, lh, 1);
-        g.fillRect(x, b - lv, 1, lv - 1);
-        g.fillRect(r - lh, y, lh, 1);
-        g.fillRect(r - 1, y + 1, 1, lv - 1);
-        g.fillRect(r - lh, b - 1, lh, 1);
-        g.fillRect(r - 1, b - lv, 1, lv - 1);
+        HelioTheme::drawBrackets(g, bounds, 7, 3, 1);
     }
 
 private:
@@ -104,37 +82,14 @@ public:
     {
         const auto bounds = this->getLocalBounds().reduced(2);
 
-        const auto x = bounds.getX();
-        const auto y = bounds.getY();
-        const auto r = bounds.getRight();
-        const auto b = bounds.getBottom();
-
-        // the corner's size
-        constexpr auto lh = 8;
-        constexpr auto lv = 3;
-
         g.setColour(this->fillColour);
         g.fillRect(this->getLocalBounds().reduced(0, 1));
 
         g.setColour(this->shadowColour);
-        g.fillRect(x, y, lh, 2);
-        g.fillRect(x, y, 2, lv);
-        g.fillRect(x, b - 2, lh, 2);
-        g.fillRect(x, b - lv, 2, lv);
-        g.fillRect(r - lh, y, lh, 2);
-        g.fillRect(r - 2, y, 2, lv);
-        g.fillRect(r - lh, b - 2, lh, 2);
-        g.fillRect(r - 2, b - lv, 2, lv);
+        HelioTheme::drawBrackets(g, bounds, 8, 3, 2);
 
         g.setColour(this->markerColour);
-        g.fillRect(x, y, lh, 1);
-        g.fillRect(x, y + 1, 1, lv - 1);
-        g.fillRect(x, b - 1, lh, 1);
-        g.fillRect(x, b - lv, 1, lv - 1);
-        g.fillRect(r - lh, y, lh, 1);
-        g.fillRect(r - 1, y + 1, 1, lv - 1);
-        g.fillRect(r - lh, b - 1, lh, 1);
-        g.fillRect(r - 1, b - lv, 1, lv - 1);
+        HelioTheme::drawBrackets(g, bounds, 8, 3, 1);
     }
 
 private:

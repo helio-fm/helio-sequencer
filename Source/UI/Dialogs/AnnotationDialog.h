@@ -29,17 +29,17 @@ class AnnotationDialog final : public DialogBase, public ColourButton::Listener
 {
 public:
 
-    AnnotationDialog(Component &owner,
-        AnnotationsSequence *sequence, const AnnotationEvent &editedEvent,
+    AnnotationDialog(AnnotationsSequence *sequence,
+        const AnnotationEvent &editedEvent,
         bool shouldAddNewEvent, float targetBeat);
 
     ~AnnotationDialog();
 
-    static UniquePointer<Component> editingDialog(Component &owner,
-        const AnnotationEvent &event);
+    static UniquePointer<Component>
+        editingDialog(const AnnotationEvent &event);
 
-    static UniquePointer<Component> addingDialog(Component &owner,
-        AnnotationsSequence *annotationsLayer, float targetBeat);
+    static UniquePointer<Component>
+        addingDialog(AnnotationsSequence *annotations, float targetBeat);
 
     void onColourButtonClicked(ColourButton *button) override;
 
@@ -58,7 +58,6 @@ private:
 
     AnnotationEvent originalEvent;
     AnnotationsSequence *const originalSequence;
-    Component &ownerComponent;
 
     Component *getPrimaryFocusTarget() override;
     void updateOkButtonState();

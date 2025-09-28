@@ -46,12 +46,11 @@ static Array<String> getAnnotationExamples()
     };
 }
 
-AnnotationDialog::AnnotationDialog(Component &owner,
-    AnnotationsSequence *sequence, const AnnotationEvent &editedEvent,
+AnnotationDialog::AnnotationDialog(AnnotationsSequence *sequence,
+    const AnnotationEvent &editedEvent,
     bool shouldAddNewEvent, float targetBeat) :
     originalEvent(editedEvent),
     originalSequence(sequence),
-    ownerComponent(owner),
     addsNewEvent(shouldAddNewEvent)
 {
     const auto isPhoneLayout = App::isRunningOnPhone();
@@ -287,18 +286,16 @@ void AnnotationDialog::dialogDeleteAction()
     }
 }
 
-UniquePointer<Component> AnnotationDialog::editingDialog(Component &owner,
-    const AnnotationEvent &event)
+UniquePointer<Component> AnnotationDialog::editingDialog(const AnnotationEvent &event)
 {
-    return make<AnnotationDialog>(owner,
-        static_cast<AnnotationsSequence *>(event.getSequence()), event, false, 0.f);
+    return make<AnnotationDialog>
+        (static_cast<AnnotationsSequence *>(event.getSequence()), event, false, 0.f);
 }
 
-UniquePointer<Component> AnnotationDialog::addingDialog(Component &owner,
-    AnnotationsSequence *annotationsLayer, float targetBeat)
+UniquePointer<Component> AnnotationDialog::addingDialog(AnnotationsSequence *annotationsSequence, float targetBeat)
 {
-    return make<AnnotationDialog>(owner,
-        annotationsLayer, AnnotationEvent(), true, targetBeat);
+    return make<AnnotationDialog>
+        (annotationsSequence, AnnotationEvent(), true, targetBeat);
 }
 
 void AnnotationDialog::updateOkButtonState()

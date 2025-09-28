@@ -209,12 +209,6 @@ static void findVisibleCommandReceivers(Component *root, Array<Component *> &out
     }
 }
 
-bool MainLayout::isShowingPage(Component *page) const noexcept
-{
-    jassert(page != nullptr);
-    return (this->currentContent == page);
-}
-
 static ProjectNode *findProjectForSelectedNode(TreeNode *source)
 {
     jassert(source != nullptr);

@@ -96,6 +96,24 @@ void HelioTheme::drawDashedFrame(Graphics &g, const Rectangle<int> &area, int da
     }
 }
 
+void HelioTheme::drawBrackets(Graphics &g,
+    const Rectangle<int> &bounds, int lh, int lv, int t)
+{
+    const auto x = bounds.getX();
+    const auto y = bounds.getY();
+    const auto r = bounds.getRight();
+    const auto b = bounds.getBottom();
+
+    g.fillRect(x, y, lh, t);
+    g.fillRect(x, y + t, t, lv - t);
+    g.fillRect(x, b - t, lh, t);
+    g.fillRect(x, b - lv, t, lv - t);
+    g.fillRect(r - lh, y, lh, t);
+    g.fillRect(r - t, y + t, t, lv - t);
+    g.fillRect(r - lh, b - t, lh, t);
+    g.fillRect(r - t, b - lv, t, lv - t);
+}
+
 void HelioTheme::drawDashedHorizontalLine(Graphics &g, float x, float y, float width, float dashLength)
 {
     for (; x < width - dashLength; x += dashLength * 2.f)
@@ -868,14 +886,14 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ColourIDs::Dialog::fill, s->getDialogFillColour());
     this->setColour(ColourIDs::Dialog::header,
-        textColour.withAlpha(this->isDarkTheme ? 0.35f : 0.65f));
+        textColour.withAlpha(this->isDarkTheme ? 0.420f : 0.69f));
 
     this->setColour(ColourIDs::Menu::fill, s->getHeadlineFillColour());
     this->setColour(ColourIDs::Menu::header,
         s->getHeadlineFillColour().brighter(this->isDarkTheme ? 0.1f : 0.5f));
     this->setColour(ColourIDs::Menu::cursorFill, s->getTextColour().withAlpha(0.55f));
     this->setColour(ColourIDs::Menu::cursorShade, this->isDarkTheme ?
-        s->getBlackKeyColour().darker(0.420f).withAlpha(0.69f) :
+        s->getWhiteKeyColour().darker(0.420f).withAlpha(0.69f) :
         s->getWhiteKeyColour().brighter(0.420f).withAlpha(0.69f));
     const auto cursorHighlight =
         s->getHeadlineFillColour().brighter(2.f).withAlpha(this->isDarkTheme ? 0.025f : 0.2f);
@@ -902,8 +920,10 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Panel::border,
         s->getFrameBorderColour().withAlpha(this->isDarkTheme ? 0.225f : 0.3f));
 
-    this->setColour(ColourIDs::TrackScroller::borderLineDark, s->getPageFillColour().darker(0.4f));
-    this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.055f));
+    this->setColour(ColourIDs::TrackScroller::borderLineDark,
+        s->getPageFillColour().darker(this->isDarkTheme ? 0.5f : 0.3f));
+    this->setColour(ColourIDs::TrackScroller::borderLineLight,
+        Colours::white.withAlpha(this->isDarkTheme ? 0.055f : 0.1f));
     const auto screenRangeFill = this->isDarkTheme ? s->getIconBaseColour() :
         s->getIconBaseColour().interpolatedWith(s->getBlackKeyColour(), 0.65f);
     this->setColour(ColourIDs::TrackScroller::viewBeatRangeFill, screenRangeFill.withMultipliedAlpha(0.225f));
@@ -925,11 +945,11 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Instrument::connectorShadow, Colours::black.withAlpha(0.3f));
 
     this->setColour(ColourIDs::Common::borderLineLight,
-        Colours::white.withAlpha(this->isDarkTheme ? 0.0675f : 0.25f));
+        Colours::white.withAlpha(this->isDarkTheme ? 0.066f : 0.2f));
     this->setColour(ColourIDs::Common::borderLineDark,
-        Colours::black.withAlpha(this->isDarkTheme ? 0.3f : 0.25f));
+        Colours::black.withAlpha(this->isDarkTheme ? 0.33f : 0.25f));
     this->setColour(ColourIDs::Common::separatorLineLight,
-        Colours::white.withAlpha(this->isDarkTheme ? 0.075f : 0.25f));
+        Colours::white.withAlpha(this->isDarkTheme ? 0.077f : 0.25f));
     this->setColour(ColourIDs::Common::separatorLineDark,
         Colours::black.withAlpha(this->isDarkTheme ? 0.55f : 0.2f));
 
@@ -972,10 +992,10 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::playheadRecording,
         s->getLassoBorderColour().interpolatedWith(Colours::red, 0.5f).withAlpha(1.f));
 
-    this->setColour(ColourIDs::Roll::cursorFill, s->getLassoBorderColour().withAlpha(0.9f));
+    this->setColour(ColourIDs::Roll::cursorFill, s->getLassoBorderColour().withAlpha(1.f));
     this->setColour(ColourIDs::Roll::cursorShade, this->isDarkTheme ?
-        s->getBlackKeyColour().darker(1.f).withAlpha(0.4f) :
-        s->getWhiteKeyColour().brighter(0.25f).withAlpha(0.5f));
+        s->getBlackKeyColour().darker(1.f).withAlpha(0.35f) :
+        s->getWhiteKeyColour().brighter(0.5f).withAlpha(0.35f));
 
     this->setColour(ColourIDs::Roll::patternRowFill, s->getBlackKeyColour().brighter(0.02f));
     this->setColour(ColourIDs::Roll::trackHeaderFill, s->getWhiteKeyColour());
@@ -987,14 +1007,15 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
         Colours::black.withAlpha(this->isDarkTheme ? 0.1f : 0.07f));
 
     this->setColour(ColourIDs::Roll::clipFill, this->isDarkTheme ?
-        s->getBlackKeyColour().darker(1.f).withAlpha(0.7f) :
-        s->getWhiteKeyColour().brighter(0.11f).withAlpha(0.85f));
+        s->getBlackKeyColour().darker(1.f).withAlpha(0.77f) :
+        s->getWhiteKeyColour().brighter(0.11f).withAlpha(0.88f));
     this->setColour(ColourIDs::Roll::clipForeground, textColour);
 
     this->setColour(ColourIDs::Roll::noteFill, textColour.interpolatedWith(Colours::white, 0.5f));
     this->setColour(ColourIDs::Roll::noteNameFill, this->isDarkTheme ?
         s->getBlackKeyColour().darker(0.4f) : s->getWhiteKeyColour().brighter(0.15f));
-    this->setColour(ColourIDs::Roll::noteNameBorder, textColour.withAlpha(this->isDarkTheme ? 0.5f : 0.25f));
+    this->setColour(ColourIDs::Roll::noteNameBorder,
+        textColour.withAlpha(this->isDarkTheme ? 0.4f : 0.2f));
     this->setColour(ColourIDs::Roll::noteNameShadow, textColour.withAlpha(0.1f));
 
     this->setColour(ColourIDs::Roll::noteCutMark, s->getBlackKeyColour().darker(this->isDarkTheme ? 1.f : 0.05f));
@@ -1005,7 +1026,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::draggingGuideShadow, s->getBlackKeyColour().withMultipliedAlpha(0.55f));
     this->setColour(ColourIDs::Roll::resizingGuideFill, s->getSidebarFillColour());
     this->setColour(ColourIDs::Roll::resizingGuideOutline, s->getLassoBorderColour().withAlpha(0.55f));
-    this->setColour(ColourIDs::Roll::resizingGuideShadow, s->getBlackKeyColour().withMultipliedAlpha(0.65f));
+    this->setColour(ColourIDs::Roll::resizingGuideShadow,
+        s->getBlackKeyColour().withMultipliedAlpha(this->isDarkTheme ? 0.420f : 0.69f));
 
     this->setColour(ColourIDs::TransportControl::recordInactive, Colours::transparentBlack);
     this->setColour(ColourIDs::TransportControl::recordHighlight, Colours::red.withAlpha(0.35f));
@@ -1040,13 +1062,13 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::TapTempoControl::fillHighlighted, textColour.withAlpha(0.05f));
     this->setColour(ColourIDs::TapTempoControl::outline, textColour.withAlpha(0.25f));
 
-    const auto shadowIntensity = this->isDarkTheme ? 1.f : 0.35f;
+    const auto shadowIntensity = this->isDarkTheme ? 0.88f : 0.420f;
     this->setColour(ColourIDs::Shadows::fillLight, Colours::black.withAlpha(shadowIntensity * 0.05f));
-    this->setColour(ColourIDs::Shadows::borderLight, Colours::black.withAlpha(shadowIntensity * 0.125f));
-    this->setColour(ColourIDs::Shadows::fillNormal, Colours::black.withAlpha(shadowIntensity * 0.09f));
-    this->setColour(ColourIDs::Shadows::borderNormal, Colours::black.withAlpha(shadowIntensity * 0.15f));
-    this->setColour(ColourIDs::Shadows::fillHard, Colours::black.withAlpha(shadowIntensity * 0.13f));
-    this->setColour(ColourIDs::Shadows::borderHard, Colours::black.withAlpha(shadowIntensity * 0.2f));
+    this->setColour(ColourIDs::Shadows::borderLight, Colours::black.withAlpha(shadowIntensity * 0.15f));
+    this->setColour(ColourIDs::Shadows::fillNormal, Colours::black.withAlpha(shadowIntensity * 0.075f));
+    this->setColour(ColourIDs::Shadows::borderNormal, Colours::black.withAlpha(shadowIntensity * 0.2f));
+    this->setColour(ColourIDs::Shadows::fillHard, Colours::black.withAlpha(shadowIntensity * 0.125f));
+    this->setColour(ColourIDs::Shadows::borderHard, Colours::black.withAlpha(shadowIntensity * 0.25f));
 
     // Pre-rendered image backgrounds:
     constexpr int w = 256;

@@ -679,9 +679,8 @@ void SequencerLayout::resized()
     
     this->rollContainer->setBounds(localBounds);
     
-    constexpr auto sidebarShadowSize = Globals::UI::rollShadowSize * 2;
-    this->leftSidebarShadow->setBounds(localBounds.removeFromLeft(sidebarShadowSize));
-    this->rightSidebarShadow->setBounds(localBounds.removeFromRight(sidebarShadowSize));
+    this->leftSidebarShadow->setBounds(localBounds.removeFromLeft(Globals::UI::sidebarShadowSize));
+    this->rightSidebarShadow->setBounds(localBounds.removeFromRight(Globals::UI::sidebarShadowSize));
 }
 
 void SequencerLayout::proceedToRenderDialog(RenderFormat format)

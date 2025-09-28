@@ -25,9 +25,10 @@ public:
 
     explicit ShadowLeftwards(ShadowType type) : ShadowComponent(type) {}
 
-    void resized()
+    void resized() override
     {
-        if (this->cachedImage.getWidth() != this->getWidth())
+        if (this->cachedImage.getWidth() !=
+            this->getWidth() + ShadowComponent::cachedImageMargin)
         {
             const auto w = float(this->getWidth());
 
@@ -47,7 +48,7 @@ public:
         }
     }
 
-    void paint(Graphics &g)
+    void paint(Graphics &g) override
     {
         g.setTiledImageFill(this->cachedImage, 0, 0, 1.f);
         g.fillRect(this->getLocalBounds());

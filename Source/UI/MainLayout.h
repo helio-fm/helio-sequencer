@@ -47,7 +47,6 @@ public:
     //===------------------------------------------------------------------===//
 
     void showPage(Component *page, TreeNode *source);
-    bool isShowingPage(Component *page) const noexcept;
 
     HeadlineItem *getMenuTail() const;
     void showNeighbourMenu(WeakReference<HeadlineItemDataSource> origin, int delta);

@@ -32,7 +32,7 @@ class TimeSignatureDialog final : public DialogBase
 {
 public:
 
-    TimeSignatureDialog(Component &owner, ProjectNode &project,
+    TimeSignatureDialog(ProjectNode &project,
         WeakReference<MidiTrack> targetTrack,
         WeakReference<TimeSignaturesSequence> targetSequence,
         const TimeSignatureEvent &editedEvent,
@@ -40,11 +40,12 @@ public:
 
     ~TimeSignatureDialog();
 
-    static UniquePointer<Component> editingDialog(Component &owner,
-        ProjectNode &project, const TimeSignatureEvent &event);
+    static UniquePointer<Component> editingDialog(ProjectNode &project,
+        const TimeSignatureEvent &event);
 
-    static UniquePointer<Component> addingDialog(Component &owner,
-        ProjectNode &project, WeakReference<TimeSignaturesSequence> tsSequence, float targetBeat);
+    static UniquePointer<Component> addingDialog(ProjectNode &project,
+        WeakReference<TimeSignaturesSequence> tsSequence,
+        float targetBeat);
 
     void resized() override;
     void parentHierarchyChanged() override;
@@ -69,8 +70,6 @@ private:
     TimeSignatureEvent originalEvent;
     // all current edits are here so callbacks can just modify them:
     TimeSignatureEvent editedEvent;
-
-    Component &ownerComponent;
 
     const Array<Meter::Ptr> defaultMeters;
 

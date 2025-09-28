@@ -66,9 +66,8 @@ public:
 
 protected:
 
-    static constexpr auto cachedImageSize = 32;
-    // a way to fix OpenGL non-pow-of-2 texture artifacts
-    static constexpr auto cachedImageMargin = 4;
+    static constexpr auto cachedImageSize = 16;
+    static constexpr auto cachedImageMargin = 2;
 
     Colour lineColour;
     Colour shadowColour;

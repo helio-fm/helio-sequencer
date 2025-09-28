@@ -57,6 +57,8 @@ public:
     static void drawFrame(Graphics &g, int width, int height,
         float lightAlphaMultiplier = 1.f, float darkAlphaMultiplier = 1.f);
     static void drawDashedFrame(Graphics &g, const Rectangle<int> &area, int dashLength = 4);
+    static void drawBrackets(Graphics &g, const Rectangle<int> &bounds,
+        int hLength, int vLength, int thickness = 1);
 
     // dashed lines of various thinckness, with a shape like this:
     //  ---   ---   ---   ---   --

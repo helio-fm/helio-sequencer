@@ -71,8 +71,9 @@ void Config::initResources()
                 const auto key(doc.getPropertyName(i));
 
                 // cleanup deprecated properties, todo remove this in future versions
+                static const Identifier sessionToken = "sessionToken";
                 static const Identifier checkForUpdates = "checkForUpdates";
-                if (key == checkForUpdates)
+                if (key == checkForUpdates || key == sessionToken)
                 {
                     continue;
                 }

@@ -206,11 +206,11 @@ void TimeSignaturesProjectMap::showDialogFor(TimeSignatureComponent *c)
         // can't use c->getEvent() here, because is's auto-generated and has absolute beat,
         // so we take the track's time signature template instead
         jassert(track->getTimeSignatureOverride() != nullptr);
-        App::showModalComponent(TimeSignatureDialog::editingDialog(*this, this->project, *track->getTimeSignatureOverride()));
+        App::showModalComponent(TimeSignatureDialog::editingDialog(this->project, *track->getTimeSignatureOverride()));
     }
     else
     {
-        App::showModalComponent(TimeSignatureDialog::editingDialog(*this, this->project, c->getEvent()));
+        App::showModalComponent(TimeSignatureDialog::editingDialog(this->project, c->getEvent()));
     }
 }
 

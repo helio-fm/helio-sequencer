@@ -19,18 +19,14 @@
 
 class RollBase;
 
-#include "IconComponent.h"
-
 class RollExpandMark final : public Component, private Timer
 {
 public:
 
-    RollExpandMark(RollBase &parentRoll,
-        float targetBeat, float numBeatsToTake, bool showPlusIcon = true);
+    RollExpandMark(RollBase &parentRoll, float targetBeat, float numBeatsToTake);
     ~RollExpandMark();
 
     void paint(Graphics &g) override;
-    void resized() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
 
@@ -45,8 +41,6 @@ private:
     const float numBeats = 0.f;
 
     float alpha = 1.f;
-
-    //UniquePointer<IconComponent> plusImage;
 
     const Colour colour = findDefaultColour(Label::textColourId);
 

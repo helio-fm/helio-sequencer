@@ -251,6 +251,7 @@ namespace Globals
         static constexpr auto rollScrollerHeight = 30;
         static constexpr auto headlineIconSize = 16;
         static constexpr auto sidebarRowHeight = 36;
+        static constexpr auto sidebarShadowSize = 22;
         static constexpr auto textEditorHeight = 32;
 
         static constexpr auto fadeInShort = 60;

@@ -26,8 +26,8 @@
 #include "AudioCore.h"
 #include "Workspace.h"
 
-TimeSignatureDialog::TimeSignatureDialog(Component &owner,
-    ProjectNode &project, WeakReference<MidiTrack> targetTrack,
+TimeSignatureDialog::TimeSignatureDialog(ProjectNode &project,
+    WeakReference<MidiTrack> targetTrack,
     WeakReference<TimeSignaturesSequence> targetSequence,
     const TimeSignatureEvent &editedTimeSignature, bool shouldAddNewEvent) :
     undoStack(project.getUndoStack()),
@@ -35,7 +35,6 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner,
     targetSequence(targetSequence),
     originalEvent(editedTimeSignature),
     editedEvent(editedTimeSignature),
-    ownerComponent(owner),
     defaultMeters(App::Config().getMeters()->getAll()),
     mode(shouldAddNewEvent ? Mode::AddTimelineTimeSignature :
         (targetTrack != nullptr ? Mode::EditTrackTimeSignature : Mode::EditTimelineTimeSignature))
@@ -443,24 +442,24 @@ Component *TimeSignatureDialog::getPrimaryFocusTarget()
 #endif
 }
 
-UniquePointer<Component> TimeSignatureDialog::editingDialog(Component &owner,
-    ProjectNode &project, const TimeSignatureEvent &event)
+UniquePointer<Component> TimeSignatureDialog::editingDialog(ProjectNode &project,
+    const TimeSignatureEvent &event)
 {
     if (event.getTrack() != nullptr)
     {
-        return make<TimeSignatureDialog>(owner, project, event.getTrack(), nullptr, event, false);
+        return make<TimeSignatureDialog>(project, event.getTrack(), nullptr, event, false);
     }
     else
     {
         auto *sequence = static_cast<TimeSignaturesSequence *>(event.getSequence());
         jassert(sequence != nullptr);
-        return make<TimeSignatureDialog>(owner, project, nullptr, sequence, event, false);
+        return make<TimeSignatureDialog>(project, nullptr, sequence, event, false);
     }
 }
 
-UniquePointer<Component> TimeSignatureDialog::addingDialog(Component &owner,
-    ProjectNode &project, WeakReference<TimeSignaturesSequence> targetSequence, float targetBeat)
+UniquePointer<Component> TimeSignatureDialog::addingDialog(ProjectNode &project,
+    WeakReference<TimeSignaturesSequence> targetSequence, float targetBeat)
 {
-    return make<TimeSignatureDialog>(owner, project, nullptr,
+    return make<TimeSignatureDialog>(project, nullptr,
         targetSequence, TimeSignatureEvent(targetSequence.get(), targetBeat), true);
 }

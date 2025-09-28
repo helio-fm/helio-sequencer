@@ -25,15 +25,16 @@ public:
 
     explicit ShadowDownwards(ShadowType type) : ShadowComponent(type) {}
 
-    void paint(Graphics &g)
+    void paint(Graphics &g) override
     {
         g.setTiledImageFill(this->cachedImage, 0, 0, 1.f);
         g.fillRect(this->getLocalBounds());
     }
 
-    void resized()
+    void resized() override
     {
-        if (this->cachedImage.getHeight() != this->getHeight())
+        if (this->cachedImage.getHeight() !=
+            this->getHeight() + ShadowComponent::cachedImageMargin)
         {
             const auto h = float(this->getHeight());
 

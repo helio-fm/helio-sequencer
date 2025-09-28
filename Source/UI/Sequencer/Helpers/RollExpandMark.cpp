@@ -19,15 +19,11 @@
 #include "RollExpandMark.h"
 #include "RollBase.h"
 
-RollExpandMark::RollExpandMark(RollBase &parentRoll, float targetBeat, float numBeatsToTake, bool showPlusIcon) :
+RollExpandMark::RollExpandMark(RollBase &parentRoll, float targetBeat, float numBeatsToTake) :
     roll(parentRoll),
     beat(targetBeat),
     numBeats(numBeatsToTake)
 {
-    //this->plusImage = make<IconComponent>(Icons::expand);
-    //this->addChildComponent(this->plusImage.get());
-    //this->plusImage->setVisible(showPlusIcon);
-
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
     this->startTimerHz(60);
@@ -42,13 +38,6 @@ void RollExpandMark::paint(Graphics &g)
 {
     g.setColour(this->colour.withAlpha(0.2f * this->alpha));
     g.fillRect(this->getLocalBounds());
-}
-
-void RollExpandMark::resized()
-{
-    //constexpr auto iconSize = 16;
-    //this->plusImage->setBounds((this->getWidth() / 2) - (iconSize / 2),
-    //    (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
 }
 
 void RollExpandMark::parentHierarchyChanged()
@@ -80,7 +69,6 @@ void RollExpandMark::timerCallback()
     }
     else
     {
-        //this->plusImage->setIconAlphaMultiplier(this->alpha);
         this->repaint();
     }
 }

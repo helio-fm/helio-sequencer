@@ -755,7 +755,7 @@ void PatternRoll::handleCommandMessage(int commandId)
             const auto clip = this->selection.getFirstAs<ClipComponent>()->getClip();
             if (auto *track = this->project.findTrackById<MidiTrackNode>(clip.getTrackId()))
             {
-                App::showModalComponent(TimeSignatureDialog::editingDialog(*this,
+                App::showModalComponent(TimeSignatureDialog::editingDialog(
                     this->project, *track->getTimeSignatureOverride()));
             }
         }

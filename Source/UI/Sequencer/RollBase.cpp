@@ -19,7 +19,6 @@
 #include "RollBase.h"
 #include "RollHeader.h"
 
-#include "RollExpandMark.h"
 #include "MidiEvent.h"
 #include "SelectionComponent.h"
 #include "AnnotationLargeComponent.h"
@@ -31,6 +30,7 @@
 
 #include "ShadowDownwards.h"
 #include "TimelineWarningMarker.h"
+#include "RollExpandMark.h"
 
 #include "LongTapController.h"
 #include "SmoothPanController.h"
@@ -75,10 +75,11 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
     this->setAccessible(false);
-
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setWantsKeyboardFocus(false);
     this->setFocusContainerType(Component::FocusContainerType::none);
+
+    this->setSize(this->viewport.getWidth(), this->viewport.getHeight());
 
     this->temperament = this->project.getProjectInfo()->getTemperament();
 
@@ -86,8 +87,10 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     this->header = make<RollHeader>(transport, *this, this->viewport);
     this->header->showLoopMode(transport.hasPlaybackLoop(),
         transport.getPlaybackLoopStart(), transport.getPlaybackLoopEnd());
+    this->addAndMakeVisible(this->header.get());
 
     this->headerShadow = make<ShadowDownwards>(ShadowType::Normal);
+    this->addAndMakeVisible(this->headerShadow.get());
 
     if (hasAnnotationsTrack)
     {
@@ -105,13 +108,10 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     }
 
     this->playhead = make<Playhead>(*this, this->project.getTransport(), this);
+    this->addAndMakeVisible(this->playhead.get());
 
     this->lassoComponent = make<SelectionComponent>();
-    this->lassoComponent->setWantsKeyboardFocus(false);
-    this->lassoComponent->setFocusContainerType(Component::FocusContainerType::none);
-
-    this->addAndMakeVisible(this->header.get());
-    this->addAndMakeVisible(this->headerShadow.get());
+    this->addAndMakeVisible(this->lassoComponent.get());
 
     if (this->annotationsMap)
     {
@@ -127,10 +127,6 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     {
         this->addAndMakeVisible(this->keySignaturesMap.get());
     }
-
-    this->addAndMakeVisible(this->playhead.get());
-
-    this->addAndMakeVisible(this->lassoComponent.get());
 
 #if ROLL_LISTENS_LONG_TAP
     this->longTapController = make<LongTapController>(*this);
@@ -529,7 +525,7 @@ void RollBase::zoomRelative(const Point<float> &origin,
         newBeatWidth = float(this->viewport.getWidth() + 1) / this->getNumBeats();
     }
 
-    this->setBeatWidth(newBeatWidth); // will updateBounds() -> setSize() -> resized() -> updateChildrenBounds()
+    this->setBeatWidth(newBeatWidth); // will updateWidth() -> setSize() -> resized() -> updateChildrenBounds()
 
     const float newWidth = float(this->getWidth());
     const float newViewPositionX = (absoluteOrigin.getX() * newWidth / oldWidth) - origin.getX();
@@ -556,13 +552,13 @@ void RollBase::zoomRelative(const Point<float> &origin,
             if (affectsLeftSide)
             {
                 this->viewport.addAndMakeVisible(new RollExpandMark(*this,
-                    newFirstBeat, markWidthInBeats, false));
+                    newFirstBeat, markWidthInBeats));
             }
 
             if (affectsRightSide)
             {
                 this->viewport.addAndMakeVisible(new RollExpandMark(*this,
-                    newLastBeat - markWidthInBeats, markWidthInBeats, false));
+                    newLastBeat - markWidthInBeats, markWidthInBeats));
             }
         }
     }
@@ -1377,10 +1373,10 @@ void RollBase::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::ZoomIn:
-        this->zoomInImpulse(0.75f);
+        this->zoomInImpulse(0.69f);
         break;
     case CommandIDs::ZoomOut:
-        this->zoomOutImpulse(0.75f);
+        this->zoomOutImpulse(0.69f);
         break;
     case CommandIDs::TimelineJumpNext:
         if (this->getTransport().isPlaying())
@@ -1514,9 +1510,10 @@ void RollBase::handleCommandMessage(int commandId)
     case CommandIDs::TransportStop:
         if (!this->getTransport().isPlaying())
         {
-            // escape keypress when not playing also resets some stuff:
+            // escape keypress when not playing also resets indicators and selection:
             this->resetAllClippingIndicators();
             this->resetAllOversaturationIndicators();
+            this->deselectAll();
 
             if (!this->getTransport().isRecording())
             {
@@ -1549,7 +1546,7 @@ void RollBase::handleCommandMessage(int commandId)
             (this->project.getTimeline()->getAnnotations()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
-            App::showModalComponent(AnnotationDialog::addingDialog(*this, sequence, targetBeat));
+            App::showModalComponent(AnnotationDialog::addingDialog(sequence, targetBeat));
         }
         break;
     case CommandIDs::AddTimeSignature:
@@ -1557,7 +1554,7 @@ void RollBase::handleCommandMessage(int commandId)
             (this->project.getTimeline()->getTimeSignatures()->getSequence()))
         {
             const float targetBeat = this->getPositionForNewTimelineEvent();
-            App::showModalComponent(TimeSignatureDialog::addingDialog(*this, this->project, sequence, targetBeat));
+            App::showModalComponent(TimeSignatureDialog::addingDialog(this->project, sequence, targetBeat));
         }
         break;
     case CommandIDs::AddKeySignature:

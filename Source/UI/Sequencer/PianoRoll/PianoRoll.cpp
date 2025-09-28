@@ -1378,7 +1378,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::SetTrackTimeSignature:
         jassert(dynamic_cast<PianoTrackNode *>(this->activeTrack.get()));
-        App::showModalComponent(TimeSignatureDialog::editingDialog(*this,
+        App::showModalComponent(TimeSignatureDialog::editingDialog(
             this->project, *this->activeTrack->getTimeSignatureOverride()));
         break;
     case CommandIDs::EditCurrentInstrument:
