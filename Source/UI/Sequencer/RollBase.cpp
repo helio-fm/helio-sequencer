@@ -407,6 +407,11 @@ inline float getNumBeatsToExpand(float beatWidth)
     //DBG(numBeatsToExpand);
 }
 
+void RollBase::startPanning(Point<float> offset)
+{
+    this->smoothPanController->panByOffset(offset);
+}
+
 bool RollBase::panByOffset(int offsetX, int offsetY)
 {
     this->stopFollowingPlayhead();
@@ -610,6 +615,23 @@ void RollBase::onTimeSignaturesUpdated()
 //===----------------------------------------------------------------------===//
 // Accessors
 //===----------------------------------------------------------------------===//
+
+float RollBase::getCeilBeatSnapByXPosition(int x) const noexcept
+{
+    float d = FLT_MAX;
+    float targetX = float(x);
+    for (const float &snapX : this->allSnaps)
+    {
+        const float distance = fabs(x - snapX);
+        if (distance < d && snapX > x)
+        {
+            d = distance;
+            targetX = snapX;
+        }
+    }
+
+    return this->getBeatByXPosition(targetX);
+}
 
 float RollBase::getFloorBeatSnapByXPosition(int x) const noexcept
 {
@@ -964,6 +986,16 @@ void RollBase::deselectAll()
     this->selection.deselectAll();
 }
 
+inline Point<float> RollBase::getLassoAnchor(const Point<float> &position) const
+{
+    return { position.x / this->beatWidth + this->firstBeat, position.y };
+}
+
+inline Point<int> RollBase::getLassoPosition(const Point<float> &anchorPoint) const
+{
+    return { this->getXPositionByBeat(anchorPoint.x), int(anchorPoint.y) };
+}
+
 SelectionComponent *RollBase::getSelectionComponent() const noexcept
 {
     return this->lassoComponent.get();
@@ -1124,6 +1156,12 @@ void RollBase::mouseDown(const MouseEvent &e)
         {
             this->contextMenuController->showMenu(e, 350);
         }
+    }
+
+    if (this->lassoComponent->isDragging())
+    {
+        //jassertfalse; // still have lasso managed by the cursor component?
+        this->lassoComponent->endLasso();
     }
 
     if (this->isErasingEvent(e))
@@ -1316,13 +1354,56 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
 
 void RollBase::handleCommandMessage(int commandId)
 {
+    if (this->lassoComponent->isDragging() &&
+        commandId != CommandIDs::CursorSelectLeft &&
+        commandId != CommandIDs::CursorSelectRight &&
+        commandId != CommandIDs::CursorSelectUp &&
+        commandId != CommandIDs::CursorSelectDown)
+    {
+        this->lassoComponent->endLasso();
+    }
+
     switch (commandId)
     {
+    case CommandIDs::CursorEditHarmonicContext:
+        if (auto *sequence = dynamic_cast<KeySignaturesSequence *>
+            (this->project.getTimeline()->getKeySignatures()->getSequence()))
+        {
+            if (auto *context =
+                SequencerOperations::findHarmonicContext(this->getTransport().getSeekBeat(),
+                    this->getTransport().getSeekBeat(), sequence))
+            {
+                App::showModalComponent(KeySignatureDialog::editingDialog(this->project, *context));
+            }
+            else
+            {
+                const float targetBeat = this->getPositionForNewTimelineEvent();
+                App::showModalComponent(KeySignatureDialog::addingDialog(this->project,
+                    sequence, targetBeat));
+            }
+        }
+        break;
+    case CommandIDs::CursorEditTimeContext:
+        if (auto *context =
+            SequencerOperations::findTimeContext(this->getTransport().getSeekBeat(),
+                this->getTransport().getSeekBeat(), this->project.getTimeline()->getTimeSignaturesAggregator()))
+        {
+            App::showModalComponent(TimeSignatureDialog::editingDialog(this->project, *context));
+        }
+        else if (auto *sequence = dynamic_cast<TimeSignaturesSequence *>
+            (this->project.getTimeline()->getTimeSignatures()->getSequence()))
+        {
+            const float targetBeat = this->getPositionForNewTimelineEvent();
+            App::showModalComponent(TimeSignatureDialog::addingDialog(this->project, sequence, targetBeat));
+        }
+        break;
     case CommandIDs::ViewportPanLeft:
-        this->smoothPanController->panByOffset({ -this->beatWidth * Globals::beatsPerBar, 0.f });
+        this->smoothPanController->panByOffset({
+            -this->beatWidth * this->getMinVisibleBeatForCurrentZoomLevel() * Globals::beatsPerBar, 0.f });
         break;
     case CommandIDs::ViewportPanRight:
-        this->smoothPanController->panByOffset({ this->beatWidth * Globals::beatsPerBar, 0.f });
+        this->smoothPanController->panByOffset({
+            this->beatWidth * this->getMinVisibleBeatForCurrentZoomLevel() * Globals::beatsPerBar, 0.f });
         break;
     case CommandIDs::EditModeDefault:
         this->project.getEditMode().setMode(RollEditMode::defaultMode);

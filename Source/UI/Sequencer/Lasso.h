@@ -31,6 +31,10 @@ public:
     virtual void findLassoItemsInPolygon(Array<SelectableItemType> &itemsFound,
         const Rectangle<int> &bounds, const Array<Point<float>> &polygonInPixels) = 0;
 
+    // converting pixels to zoom-independent positions and back:
+    virtual Point<float> getLassoAnchor(const Point<float> &position) const = 0;
+    virtual Point<int> getLassoPosition(const Point<float> &anchorPoint) const = 0;
+
     static bool polygonContainsPoint(const Point<float> &point,
         const Array<Point<float>> &polygon)
     {
@@ -159,10 +163,9 @@ public:
         return static_cast<T *>(this->getSelectedItem(index));
     }
     
-    // I want selection listeners to observe changes in position
-    // of the selected events, hence this hack. For speed we don't
-    // even check if the changed item is in the selection or not
-    // (see also the comment in LassoListeners.h)
+    // selection listeners are notified when selected events change positions;
+    // for performance reasons it we doesn't check if the changed item
+    // is in the selection or not (see the comment in LassoListeners.h)
     void onSelectableItemChanged()
     {
         if (this->getNumSelected() > 0)

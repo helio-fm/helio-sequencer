@@ -535,9 +535,6 @@
     <ClCompile Include="..\..\Source\UI\Common\SpectralLogo.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\TransportControlComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\ViewportFitProxyComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -760,9 +757,6 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\Header\RollHeader.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\Header\Playhead.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\CutPointMark.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -799,6 +793,9 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRoll.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRollCursor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\HighlightingScheme.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -817,10 +814,16 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRoll.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRollCursor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarLeft.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarRight.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Sidebars\TransportControlComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Sidebars\WaveformAudioMonitorComponent.cpp">
@@ -865,7 +868,13 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\RollEditMode.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\KeyboardCursor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\LassoListeners.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Playhead.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\RollChildComponentBase.cpp">
@@ -3179,7 +3188,6 @@
     <ClInclude Include="..\..\Source\UI\Common\RadioButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ScaleEditor.h"/>
     <ClInclude Include="..\..\Source\UI\Common\SpectralLogo.h"/>
-    <ClInclude Include="..\..\Source\UI\Common\TransportControlComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ViewportFitProxyComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\DialogBase.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\AnnotationDialog.h"/>
@@ -3280,7 +3288,6 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\ClipRangeIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\HeaderSelectionIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\RollHeader.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\Header\Playhead.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\SoundProbeIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\TimeDistanceIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\TrackEndIndicator.h"/>
@@ -3298,6 +3305,7 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\PianoClipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRoll.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRollCursor.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\HighlightingScheme.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteNameGuide.h"/>
@@ -3306,8 +3314,10 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerRight.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NotesDraggingGuide.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRoll.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRollCursor.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarLeft.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarRight.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\TransportControlComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\WaveformAudioMonitorComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\AnnotationsMap\AnnotationComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\MiniMaps\AnnotationsMap\AnnotationLargeComponent.h"/>
@@ -3326,8 +3336,10 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\RollBase.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\RollEditMode.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\RollListener.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\KeyboardCursor.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Lasso.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\LassoListeners.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Playhead.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\RollChildComponentBase.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\SelectableComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\SelectionComponent.h"/>

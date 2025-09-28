@@ -1622,7 +1622,7 @@ void CommandPaletteChordConstructor::previewIfNeeded()
                 pianoSequence->insert(note, true);
 
                 atLeastOneNoteShowsInViewport = atLeastOneNoteShowsInViewport ||
-                    this->roll.isNoteVisible(clipKey + key, clipBeat + targetBeat,
+                    this->roll.isNotePositionVisible(clipKey + key, clipBeat + targetBeat,
                         CommandPaletteChordConstructor::noteLength);
 
                 const auto *track = pianoSequence->getTrack();

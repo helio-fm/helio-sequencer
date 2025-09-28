@@ -35,6 +35,7 @@
 #include "RollHeader.h"
 #include "CutPointMark.h"
 #include "MergingEventsConnector.h"
+#include "PatternRollCursor.h"
 
 #include "UndoStack.h"
 #include "PatternOperations.h"
@@ -105,6 +106,9 @@ PatternRoll::PatternRoll(ProjectNode &parentProject,
             }
         }
     };
+
+    this->cursor = make<PatternRollCursor>(*this);
+    this->addChildComponent(this->cursor.get());
 
     this->repaintBackgroundsCache();
     this->reloadRollContent();
@@ -269,11 +273,65 @@ void PatternRoll::updateRollSize()
 // Clip management
 //===----------------------------------------------------------------------===//
 
-void PatternRoll::addClip(Pattern *pattern, float beat)
+void PatternRoll::addNewClip(const MouseEvent &e)
 {
-    pattern->checkpoint();
-    Clip clip(pattern, beat);
-    pattern->insert(clip, true);
+    const auto beat = this->getFloorBeatSnapByXPosition(e.x);
+    const int rowNumber = jmax(0,
+        (e.y - Globals::UI::rollHeaderHeight) / PatternRoll::rowHeight);
+
+    if (rowNumber >= this->getNumRows())
+    {
+        this->deselectAll(); // just in case
+        this->showNewTrackMenu(beat);
+        return;
+    }
+
+    return this->addNewClip(rowNumber, beat);
+}
+
+void PatternRoll::addNewClip(int rowNumber, float beat)
+{
+    if (rowNumber >= this->getNumRows())
+    {
+        this->deselectAll(); // just in case
+        this->showNewTrackMenu(beat);
+        return;
+    }
+
+    const auto &rowKey = this->rows.getReference(rowNumber);
+    const auto grouping = this->project.getTrackGroupingMode();
+
+    float nearestClipdistance = FLT_MAX;
+    Pattern *targetPattern = nullptr;
+    for (const auto *track : this->tracks)
+    {
+        const auto &trackKey = track->getTrackGroupKey(grouping);
+        if (trackKey == rowKey)
+        {
+            const float relativeClickBeat =
+                beat - track->getSequence()->getFirstBeat();
+
+            for (const auto *clip : track->getPattern()->getClips())
+            {
+                const auto clipStartDistance = fabs(relativeClickBeat - clip->getBeat());
+                if (nearestClipdistance > clipStartDistance)
+                {
+                    nearestClipdistance = clipStartDistance;
+                    targetPattern = track->getPattern();
+                }
+            }
+        }
+    }
+
+    if (targetPattern != nullptr)
+    {
+        const float targetClipBeat =
+            beat - targetPattern->getTrack()->getSequence()->getFirstBeat();
+        this->addNewClipMode = true;
+        targetPattern->checkpoint();
+        Clip clip(targetPattern, targetClipBeat);
+        targetPattern->insert(clip, true);
+    }
 }
 
 Rectangle<float> PatternRoll::getEventBounds(FloatBoundsComponent *mc) const
@@ -293,17 +351,26 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip) const
     const auto trackGroupKey = track->getTrackGroupKey(grouping);
     const int trackIndex = this->rows.indexOfSorted(kStringSort, trackGroupKey);
 
-    const float x = this->beatWidth * (sequence->getFirstBeat() + clip.getBeat() - this->firstBeat);
-    const float y = float(trackIndex * PatternRoll::rowHeight);
+    const float length = sequence->isEmpty() ?
+        Globals::Defaults::emptyClipLength :
+        jmax(Globals::minClipLength, sequence->getLengthInBeats());
+
+    return this->getEventBounds(trackIndex,
+        sequence->getFirstBeat() + clip.getBeat(), length);
+}
+
+Rectangle<float> PatternRoll::getEventBounds(int row, float beat, float length) const
+{
+    const float x = this->beatWidth * (beat - this->firstBeat);
+    const float y = float(row * PatternRoll::rowHeight);
 
     // - in case there are no events, still display an empty clip of some default length,
     // also make sure that the clip isn't too short even if the sequence is (e.g. first moments when recording);
     // - calculating the width like (lastBeat - floor(firstBeat)) instead of (beatWidth * sequenceLength)
     // to place clip edges precisely on bar lines on higher zoom levels and avoid nasty fluttering:
-    const float w = sequence->isEmpty() ?
-        (this->beatWidth * Globals::Defaults::emptyClipLength) :
+    const float w =
         jmax(this->beatWidth * Globals::minClipLength,
-            this->beatWidth * (sequence->getLastBeat() + clip.getBeat() - this->firstBeat) - floorf(x));
+            this->beatWidth * (beat + length - this->firstBeat) - floorf(x));
 
     constexpr auto verticalMargin = 1;
     return Rectangle<float>(x,
@@ -312,17 +379,11 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip) const
         float(PatternRoll::clipHeight - (verticalMargin * 2)));
 }
 
-float PatternRoll::getBeatForClipByXPosition(const Clip &clip, float x) const
+float PatternRoll::getClipBeatByXPosition(const Clip &clip, float x) const
 {
     // One trick here is that displayed clip position depends on a sequence's first beat as well:
     const auto *sequence = clip.getPattern()->getTrack()->getSequence();
     return this->getRoundBeatSnapByXPosition(int(x)) - sequence->getFirstBeat();
-}
-
-float PatternRoll::getBeatByMousePosition(const Pattern *pattern, int x) const
-{
-    const auto *sequence = pattern->getTrack()->getSequence();
-    return this->getFloorBeatSnapByXPosition(x) - sequence->getFirstBeat();
 }
 
 //===----------------------------------------------------------------------===//
@@ -515,6 +576,20 @@ void PatternRoll::selectEventsInRange(float startBeat, float endBeat, bool shoul
     }
 }
 
+ClipComponent *PatternRoll::findClipComponentAt(const Point<int> &point) const
+{
+    for (const auto &e : this->clipComponents)
+    {
+        auto *component = e.second.get();
+        if (component->getBounds().contains(point))
+        {
+            return component;
+        }
+    }
+
+    return nullptr;
+}
+
 void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
     const Rectangle<int> &rectangle)
 {
@@ -649,7 +724,7 @@ void PatternRoll::mouseDown(const MouseEvent &e)
 
         if (this->isAddEvent(e))
         {
-            this->insertNewClipAt(e);
+            this->addNewClip(e);
         }
         else if (this->isKnifeToolEvent(e))
         {
@@ -725,6 +800,8 @@ void PatternRoll::mouseUp(const MouseEvent &e)
 
 void PatternRoll::handleCommandMessage(int commandId)
 {
+    RollBase::handleCommandMessage(commandId);
+
     switch (commandId)
     {
     case CommandIDs::ViewportPanUp:
@@ -732,6 +809,33 @@ void PatternRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::ViewportPanDown:
         this->smoothPanController->panByOffset({ 0.f, float(PatternRoll::rowHeight) });
+        break;
+    case CommandIDs::CursorMoveLeft:
+        this->cursor->moveLeft();
+        break;
+    case CommandIDs::CursorMoveRight:
+        this->cursor->moveRight();
+        break;
+    case CommandIDs::CursorMoveUp:
+        this->cursor->moveUp();
+        break;
+    case CommandIDs::CursorMoveDown:
+        this->cursor->moveDown();
+        break;
+    case CommandIDs::CursorSelectLeft:
+        this->cursor->selectLeft();
+        break;
+    case CommandIDs::CursorSelectRight:
+        this->cursor->selectRight();
+        break;
+    case CommandIDs::CursorSelectUp:
+        this->cursor->selectUp();
+        break;
+    case CommandIDs::CursorSelectDown:
+        this->cursor->selectDown();
+        break;
+    case CommandIDs::CursorInteract:
+        this->cursor->interact(this->project.getEditMode());
         break;
     case CommandIDs::SelectAllClips:
         this->selectAll();
@@ -1016,8 +1120,6 @@ void PatternRoll::handleCommandMessage(int commandId)
     default:
         break;
     }
-
-    RollBase::handleCommandMessage(commandId);
 }
 
 void PatternRoll::resized()
@@ -1155,47 +1257,6 @@ void PatternRoll::updateAllSnapLines()
             this->allSnaps.add(roundBeat(this->beatWidth *
                 (clip.getPattern()->getTrack()->getSequence()->getLastBeat() + clip.getBeat() - this->firstBeat)));
         }
-    }
-}
-
-void PatternRoll::insertNewClipAt(const MouseEvent &e)
-{
-    const int rowNumber = jmax(0, (e.y - Globals::UI::rollHeaderHeight) / PatternRoll::rowHeight);
-    if (rowNumber >= this->getNumRows())
-    {
-        this->deselectAll(); // just in case
-        this->showNewTrackMenu(this->getBeatByXPosition(float(e.x)));
-        return;
-    }
-
-    const auto &rowKey = this->rows.getReference(rowNumber);
-    const auto grouping = this->project.getTrackGroupingMode();
-
-    float nearestClipdistance = FLT_MAX;
-    Pattern *targetPattern = nullptr;
-    for (const auto *track : this->tracks)
-    {
-        const auto &trackKey = track->getTrackGroupKey(grouping);
-        if (trackKey == rowKey)
-        {
-            const float clickBeat = this->getBeatByMousePosition(track->getPattern(), e.x);
-            for (const auto *clip : track->getPattern()->getClips())
-            {
-                const auto clipStartDistance = fabs(clickBeat - clip->getBeat());
-                if (nearestClipdistance > clipStartDistance)
-                {
-                    nearestClipdistance = clipStartDistance;
-                    targetPattern = track->getPattern();
-                }
-            }
-        }
-    }
-
-    if (targetPattern != nullptr)
-    {
-        const float draggingBeat = this->getBeatByMousePosition(targetPattern, e.x);
-        this->addNewClipMode = true;
-        this->addClip(targetPattern, draggingBeat);
     }
 }
 

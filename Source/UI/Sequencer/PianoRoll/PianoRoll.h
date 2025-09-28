@@ -25,6 +25,7 @@ class KnifeToolHelper;
 class MergingNotesConnector;
 class NoteNameGuidesBar;
 class NotesDraggingGuide;
+class PianoRollCursor;
 
 #include "Note.h"
 #include "Clip.h"
@@ -83,15 +84,25 @@ public:
     // Note management
     //===------------------------------------------------------------------===//
 
+    inline int getAbsKeyByYPosition(int y) const noexcept
+    {
+        const auto noteNumber = (this->getHeight() - y) / this->rowHeight;
+        return jlimit(0, this->getNumKeys(), noteNumber);
+    }
+
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
     Rectangle<float> getEventBounds(int key, float beat, float length) const;
-    bool isNoteVisible(int key, float beat, float length) const;
+    bool isNotePositionVisible(int key, float beat, float length) const;
 
-    // the beat is returned relative to active clip's beat offset:
+    // the beat and key are returned relative to the active clip's offsets:
     void getRowsColsByComponentPosition(float x, float y,
         int &noteNumber, float &beatNumber, bool snap = true) const;
     void getRowsColsByMousePosition(int x, int y,
         int &noteNumber, float &beatNumber, bool snap = true) const;
+
+    // expects beat and key relative to the active clip's offsets:
+    void addNewNote(int key, float beat);
+    void startDrawingNewNote(const MouseEvent &e, bool snap = true);
 
     //===------------------------------------------------------------------===//
     // Drag helpers
@@ -143,10 +154,14 @@ public:
     void selectEventsInRange(float startBeat,
         float endBeat, bool shouldClearAllOthers) override;
 
+    NoteComponent *findNoteComponentAt(const Point<int> &point) const;
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const Rectangle<int> &bounds) override;
     void findLassoItemsInPolygon(Array<SelectableComponent *> &itemsFound,
         const Rectangle<int> &bounds, const Array<Point<float>> &polygon) override;
+
+    Point<float> getLassoAnchor(const Point<float> &position) const override;
+    Point<int> getLassoPosition(const Point<float> &anchorPoint) const override;
 
     void selectEvents(const Array<Note> &notes, bool shouldDeselectAllOthers);
     float getLassoStartBeat() const;
@@ -237,7 +252,6 @@ private:
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     void switchToClipInViewport() const;
-    void insertNewNoteAt(const MouseEvent &e, bool snap = true);
     int getYPositionByKey(int targetKey) const;
 
     UniquePointer<KnifeToolHelper> knifeToolHelper;
@@ -256,7 +270,7 @@ private:
     void endErasingEvents() override;
 
     SafePointer<NoteComponent> newNoteDragging;
-    bool addNewNoteMode = false;
+    bool addedNewNoteWithMouse = false;
     float newNoteVolume = Globals::Defaults::newNoteVelocity;
     float newNoteLength = Globals::Defaults::newNoteLength;
 
@@ -283,7 +297,7 @@ private:
     friend class NoteNameGuidesBar;
     UniquePointer<NoteNameGuidesBar> noteNameGuides;
 
-private:
+    UniquePointer<PianoRollCursor> cursor;
 
     OwnedArray<NoteComponent> ghostNotes;
 

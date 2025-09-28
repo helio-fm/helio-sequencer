@@ -51,6 +51,11 @@ void RollChildComponentBase::setEditable(bool val)
     this->flags.isEditable = val;
 }
 
+bool RollChildComponentBase::isEditable() const noexcept
+{
+    return this->flags.isEditable;
+}
+
 void RollChildComponentBase::setActive(bool val, bool force)
 {
     if (!force && this->flags.isActive == val)
@@ -66,6 +71,11 @@ void RollChildComponentBase::setActive(bool val, bool force)
     {
         this->toFront(false);
     }
+}
+
+bool RollChildComponentBase::isActive() const noexcept
+{
+    return this->flags.isActive;
 }
 
 //===----------------------------------------------------------------------===//

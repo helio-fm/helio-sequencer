@@ -110,7 +110,7 @@ inline float roundf(float x)
 }
 #endif
 
-// todo this remove when migrating to C++20
+// todo replace this with std::bit_cast when migrating to C++20
 template <class To, class From>
 inline std::enable_if_t<
     sizeof(To) == sizeof(From) &&
@@ -253,6 +253,8 @@ namespace Globals
         static constexpr auto sidebarRowHeight = 36;
         static constexpr auto sidebarShadowSize = 22;
         static constexpr auto textEditorHeight = 32;
+
+        static constexpr auto cursorBlinkDelayMs = 530;
 
         static constexpr auto fadeInShort = 60;
         static constexpr auto fadeOutShort = 90;

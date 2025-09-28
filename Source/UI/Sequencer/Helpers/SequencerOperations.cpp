@@ -722,21 +722,8 @@ void SequencerOperations::melodicInversion(const NoteListBase &notes,
 bool SequencerOperations::isBarStart(float absBeat,
     WeakReference<TimeSignaturesAggregator> timeContext)
 {
-    const TimeSignatureEvent *currentTimeSignature = nullptr;
-    for (int i = 0; i < timeContext->getSequence()->size(); ++i)
-    {
-        const auto *ts = static_cast<const TimeSignatureEvent *>
-            (timeContext->getSequence()->getUnchecked(i));
-
-        if (currentTimeSignature == nullptr || ts->getBeat() <= absBeat)
-        {
-            currentTimeSignature = ts;
-        }
-        else if (ts->getBeat() > absBeat)
-        {
-            break;
-        }
-    }
+    const TimeSignatureEvent *currentTimeSignature =
+        SequencerOperations::findTimeContext(absBeat, absBeat, timeContext);
 
     const float barLengthInBeats = currentTimeSignature != nullptr ?
         currentTimeSignature->getBarLengthInBeats() :
@@ -2084,19 +2071,55 @@ bool SequencerOperations::remapKeySignaturesToTemperament(KeySignaturesSequence 
     return hasMadeChanges;
 }
 
-// Tries to detect if there's one key signature that affects the whole sequence.
-// If there's none, of if there's more than one, returns false.
-bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
-    WeakReference<KeySignaturesSequence> keySignatures, Scale::Ptr &outScale,
-    Note::Key &outRootKey, String &outKeyName)
+// These methods try to detect if there's a single key/time signature that affects
+// the whole beat range; if there's none, of if there's more than one, returns nullptr
+TimeSignatureEvent *SequencerOperations::findTimeContext(float startBeat,
+    float endBeat, WeakReference<TimeSignaturesAggregator> timeSignatures)
+{
+    if (timeSignatures == nullptr ||
+        timeSignatures->getSequence() == nullptr ||
+        timeSignatures->getSequence()->size() == 0)
+    {
+        jassertfalse;
+        return nullptr;
+    }
+
+    TimeSignatureEvent *context = nullptr;
+
+    for (int i = 0; i < timeSignatures->getSequence()->size(); ++i)
+    {
+        auto *ts = static_cast<TimeSignatureEvent *>
+            (timeSignatures->getSequence()->getUnchecked(i));
+
+        if (context == nullptr || ts->getBeat() <= startBeat)
+        {
+            context = ts;
+        }
+        else if (ts->getBeat() > startBeat && ts->getBeat() < endBeat)
+        {
+            // Harmonic context is already here and changes within a sequence:
+            return nullptr;
+        }
+        else if (ts->getBeat() >= endBeat)
+        {
+            break;
+        }
+    }
+
+    return context;
+}
+
+KeySignatureEvent *SequencerOperations::findHarmonicContext(float startBeat,
+    float endBeat, WeakReference<KeySignaturesSequence> keySignatures)
 {
     if (keySignatures == nullptr ||
         keySignatures->size() == 0)
     {
-        return false;
+        jassertfalse;
+        return nullptr;
     }
 
-    const KeySignatureEvent *context = nullptr;
+    KeySignatureEvent *context = nullptr;
 
     for (int i = 0; i < keySignatures->size(); ++i)
     {
@@ -2110,7 +2133,7 @@ bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
         else if (event->getBeat() > startBeat && event->getBeat() < endBeat)
         {
             // Harmonic context is already here and changes within a sequence:
-            return false;
+            return nullptr;
         }
         else if (event->getBeat() >= endBeat)
         {
@@ -2119,9 +2142,16 @@ bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
         }
     }
 
-    if (context != nullptr)
+    return context;
+}
+
+bool SequencerOperations::findHarmonicContext(float startBeat, float endBeat,
+    WeakReference<KeySignaturesSequence> keySignatures, Scale::Ptr &outScale,
+    Note::Key &outRootKey, String &outKeyName)
+{
+    if (auto *context =
+        SequencerOperations::findHarmonicContext(startBeat, endBeat, keySignatures))
     {
-        // We've found the only context that doesn't change within a sequence:
         outScale = context->getScale();
         outRootKey = context->getRootKey();
         outKeyName = context->getRootKeyName();

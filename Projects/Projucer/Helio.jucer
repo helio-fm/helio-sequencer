@@ -713,10 +713,6 @@
           <FILE id="XuVuyC" name="SpectralLogo.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/SpectralLogo.cpp"/>
           <FILE id="c1jtLI" name="SpectralLogo.h" compile="0" resource="0" file="../../Source/UI/Common/SpectralLogo.h"/>
-          <FILE id="lrOLoW" name="TransportControlComponent.cpp" compile="1"
-                resource="0" file="../../Source/UI/Common/TransportControlComponent.cpp"/>
-          <FILE id="BWaZbL" name="TransportControlComponent.h" compile="0" resource="0"
-                file="../../Source/UI/Common/TransportControlComponent.h"/>
           <FILE id="C7fvvc" name="ViewportFitProxyComponent.cpp" compile="1"
                 resource="0" file="../../Source/UI/Common/ViewportFitProxyComponent.cpp"/>
           <FILE id="zidg8Y" name="ViewportFitProxyComponent.h" compile="0" resource="0"
@@ -1071,8 +1067,6 @@
                   file="../../Source/UI/Sequencer/Header/HeaderSelectionIndicator.h"/>
             <FILE id="zW2Hty" name="RollHeader.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/Header/RollHeader.cpp"/>
             <FILE id="Z44WkV" name="RollHeader.h" compile="0" resource="0" file="../../Source/UI/Sequencer/Header/RollHeader.h"/>
-            <FILE id="Lh8JqJ" name="Playhead.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/Header/Playhead.cpp"/>
-            <FILE id="HTYKGw" name="Playhead.h" compile="0" resource="0" file="../../Source/UI/Sequencer/Header/Playhead.h"/>
             <FILE id="fSWSdO" name="SoundProbeIndicator.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Header/SoundProbeIndicator.h"/>
             <FILE id="VbhZPg" name="TimeDistanceIndicator.h" compile="0" resource="0"
@@ -1131,6 +1125,10 @@
             <FILE id="mNhiKM" name="ClipComponent.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponent.h"/>
             <FILE id="Fq4aoW" name="PatternRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.cpp"/>
             <FILE id="MXsdDW" name="PatternRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.h"/>
+            <FILE id="OkMPz0" name="PatternRollCursor.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/PatternRollCursor.cpp"/>
+            <FILE id="LtHgNV" name="PatternRollCursor.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/PatternRollCursor.h"/>
           </GROUP>
           <GROUP id="{EFEF1060-46EA-01AF-80DB-F6245A003904}" name="PianoRoll">
             <FILE id="zlH1X9" name="HighlightingScheme.cpp" compile="1" resource="0"
@@ -1157,6 +1155,10 @@
                   file="../../Source/UI/Sequencer/PianoRoll/NotesDraggingGuide.h"/>
             <FILE id="XGD7Q7" name="PianoRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/PianoRoll/PianoRoll.cpp"/>
             <FILE id="xgYNf4" name="PianoRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PianoRoll/PianoRoll.h"/>
+            <FILE id="kBpKDb" name="PianoRollCursor.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/PianoRollCursor.cpp"/>
+            <FILE id="akyg79" name="PianoRollCursor.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/PianoRollCursor.h"/>
           </GROUP>
           <GROUP id="{A8F2C659-68CA-69D7-0682-C41B83B0219F}" name="Sidebars">
             <FILE id="RYa2Vo" name="SequencerSidebarLeft.cpp" compile="1" resource="0"
@@ -1167,6 +1169,10 @@
                   file="../../Source/UI/Sequencer/Sidebars/SequencerSidebarRight.cpp"/>
             <FILE id="OmLktD" name="SequencerSidebarRight.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Sidebars/SequencerSidebarRight.h"/>
+            <FILE id="lrOLoW" name="TransportControlComponent.cpp" compile="1"
+                  resource="0" file="../../Source/UI/Sequencer/Sidebars/TransportControlComponent.cpp"/>
+            <FILE id="BWaZbL" name="TransportControlComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Sidebars/TransportControlComponent.h"/>
             <FILE id="iqjS16" name="WaveformAudioMonitorComponent.cpp" compile="1"
                   resource="0" file="../../Source/UI/Sequencer/Sidebars/WaveformAudioMonitorComponent.cpp"/>
             <FILE id="B9bXgc" name="WaveformAudioMonitorComponent.h" compile="0"
@@ -1238,11 +1244,17 @@
                 file="../../Source/UI/Sequencer/RollEditMode.cpp"/>
           <FILE id="MWqxz4" name="RollEditMode.h" compile="0" resource="0" file="../../Source/UI/Sequencer/RollEditMode.h"/>
           <FILE id="kc1423" name="RollListener.h" compile="0" resource="0" file="../../Source/UI/Sequencer/RollListener.h"/>
+          <FILE id="spdQwC" name="KeyboardCursor.cpp" compile="1" resource="0"
+                file="../../Source/UI/Sequencer/KeyboardCursor.cpp"/>
+          <FILE id="rBihjJ" name="KeyboardCursor.h" compile="0" resource="0"
+                file="../../Source/UI/Sequencer/KeyboardCursor.h"/>
           <FILE id="OL6lfl" name="Lasso.h" compile="0" resource="0" file="../../Source/UI/Sequencer/Lasso.h"/>
           <FILE id="RRwpoK" name="LassoListeners.cpp" compile="1" resource="0"
                 file="../../Source/UI/Sequencer/LassoListeners.cpp"/>
           <FILE id="H3NU49" name="LassoListeners.h" compile="0" resource="0"
                 file="../../Source/UI/Sequencer/LassoListeners.h"/>
+          <FILE id="Lh8JqJ" name="Playhead.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/Playhead.cpp"/>
+          <FILE id="HTYKGw" name="Playhead.h" compile="0" resource="0" file="../../Source/UI/Sequencer/Playhead.h"/>
           <FILE id="zE33Ca" name="RollChildComponentBase.cpp" compile="1" resource="0"
                 file="../../Source/UI/Sequencer/RollChildComponentBase.cpp"/>
           <FILE id="tTAM6N" name="RollChildComponentBase.h" compile="0" resource="0"

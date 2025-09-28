@@ -20,7 +20,10 @@
 #include "Lasso.h"
 #include "SelectableComponent.h"
 
-class SelectionComponent final : public Component, private Timer
+class SelectionComponent final :
+    public Component,
+    public ChangeBroadcaster,
+    private Timer
 {
 public:
 
@@ -32,9 +35,11 @@ public:
         DrawableLassoSource<SelectableComponent *> *lassoSource,
         LassoType lassoType = LassoType::Rectangle);
     void dragLasso(const MouseEvent &e);
+    void dragLasso(const Point<float> &cursorPosition, ModifierKeys mods = {});
     void endLasso();
     bool isDragging() const;
-    void updateBounds();
+
+    bool updateBounds();
 
     void paint(Graphics &g) override;
 
@@ -45,19 +50,19 @@ private:
     Array<SelectableComponent *> originalSelection;
     DrawableLassoSource<SelectableComponent *> *source = nullptr;
 
+    bool dragging = false;
+
     // rectangle mode, the start and the end
     // in absolute values, as a fraction of the parent size:
-    Point<double> startPosition;
-    Point<double> endPosition;
+    Point<float> startPosition;
+    Point<float> endPosition;
 
     // drawing mode, the raw positions in absolute values,
     // the reduced points in pixels, and paths for painting:
-    Array<Point<double>> drawnAreaRaw;
+    Array<Point<float>> drawnAreaRaw;
     Array<Point<float>> drawnArea;
     Path drawnPathFill;
     Path drawnPathOutline;
-
-    const Point<double> getParentSize() const;
 
 private:
 

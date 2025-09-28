@@ -35,6 +35,7 @@
 #include "RollHeader.h"
 #include "KnifeToolHelper.h"
 #include "MergingEventsConnector.h"
+#include "PianoRollCursor.h"
 #include "SmoothPanController.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
@@ -93,6 +94,9 @@ PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<Aud
     this->noteNameGuides = make<NoteNameGuidesBar>(*this, project.getTimeline()->getKeySignatures());
     this->addChildComponent(this->noteNameGuides.get());
     this->noteNameGuides->setVisible(uiFlags->areNoteNameGuidesEnabled());
+
+    this->cursor = make<PianoRollCursor>(*this);
+    this->addChildComponent(this->cursor.get());
 }
 
 PianoRoll::~PianoRoll() = default;
@@ -194,7 +198,11 @@ int PianoRoll::getRowHeight() const noexcept
 
 Point<int> PianoRoll::getDefaultPositionForChordTool() const
 {
-    auto centre = this->viewport.getViewArea().getCentre();
+    if (this->cursor->isVisible() &&
+        this->viewport.getViewArea().contains(this->cursor->getTargetPoint()))
+    {
+        return App::Layout().getLocalPoint(this, this->cursor->getTargetPoint());
+    }
 
     // a hack: try to place the chord tool on the closest in-scale key by default;
     // instead we could just return App::Layout().getBoundsForPopups().getCentre()
@@ -203,6 +211,8 @@ Point<int> PianoRoll::getDefaultPositionForChordTool() const
     int scaleRootKey = 0;
     String scaleRootKeyName;
     auto scale = Scale::makeNaturalMajorScale();
+    auto centre = this->viewport.getViewArea().getCentre();
+
     for (int i = 0; i < 7; ++i)
     {
         this->getRowsColsByMousePosition(centre.x, centre.y, targetKey, targetBeat);
@@ -505,7 +515,7 @@ Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) co
     return { x, yPosition + 1.f, w, float(this->rowHeight - 1) };
 }
 
-bool PianoRoll::isNoteVisible(int key, float beat, float length) const
+bool PianoRoll::isNotePositionVisible(int key, float beat, float length) const
 {
     const auto view = this->viewport.getViewArea().toFloat();
     const auto firstViewportBeat = this->getBeatByXPosition(view.getX());
@@ -686,10 +696,10 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
                 this->selectEvent(component, false);
             }
 
-            if (this->addNewNoteMode && isActive)
+            if (this->addedNewNoteWithMouse && isActive)
             {
                 this->newNoteDragging = component;
-                this->addNewNoteMode = false;
+                this->addedNewNoteWithMouse = false;
                 this->selectEvent(this->newNoteDragging, true); // clear prev selection
             }
         }
@@ -1108,6 +1118,20 @@ void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldC
     }
 }
 
+NoteComponent *PianoRoll::findNoteComponentAt(const Point<int> &point) const
+{
+    forEachEventComponent(this->patternMap, e)
+    {
+        auto *component = e.second.get();
+        if (component->getBounds().contains(point))
+        {
+            return component;
+        }
+    }
+
+    return nullptr;
+}
+
 void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
     const Rectangle<int> &rectangle)
 {
@@ -1141,6 +1165,18 @@ void PianoRoll::findLassoItemsInPolygon(Array<SelectableComponent *> &itemsFound
             itemsFound.add(component);
         }
     }
+}
+
+inline Point<float> PianoRoll::getLassoAnchor(const Point<float> &position) const
+{
+    return { position.x / this->beatWidth + this->firstBeat,
+        -float(this->getHeight() - position.y) / float(this->rowHeight) };
+}
+
+inline Point<int> PianoRoll::getLassoPosition(const Point<float> &anchorPoint) const
+{
+    return { this->getXPositionByBeat(anchorPoint.x),
+        this->getHeight() - int(-anchorPoint.y * this->rowHeight) };
 }
 
 void PianoRoll::selectEvents(const Array<Note> &notes, bool shouldDeselectAllOthers)
@@ -1261,7 +1297,7 @@ void PianoRoll::mouseDown(const MouseEvent &e)
 
         if (this->isAddEvent(e))
         {
-            this->insertNewNoteAt(e, snap);
+            this->startDrawingNewNote(e, snap);
         }
         else if (this->isKnifeToolEvent(e))
         {
@@ -1370,6 +1406,8 @@ void PianoRoll::mouseUp(const MouseEvent &e)
 // Handle all hotkey commands here:
 void PianoRoll::handleCommandMessage(int commandId)
 {
+    RollBase::handleCommandMessage(commandId);
+
     // some refactoring operations will use getLassoOrEntireSequence() to affect
     // either the selection or the entire sequence when nothing is selected;
     // the simplest transformations will still work on selection only
@@ -1378,10 +1416,37 @@ void PianoRoll::handleCommandMessage(int commandId)
     switch (commandId)
     {
     case CommandIDs::ViewportPanUp:
-        this->smoothPanController->panByOffset({ 0.f, -float(this->rowHeight * 3) });
+        this->smoothPanController->panByOffset({ 0.f, -float(this->rowHeight) });
         break;
     case CommandIDs::ViewportPanDown:
-        this->smoothPanController->panByOffset({ 0.f, float(this->rowHeight * 3) });
+        this->smoothPanController->panByOffset({ 0.f, float(this->rowHeight) });
+        break;
+    case CommandIDs::CursorMoveLeft:
+        this->cursor->moveLeft();
+        break;
+    case CommandIDs::CursorMoveRight:
+        this->cursor->moveRight();
+        break;
+    case CommandIDs::CursorMoveUp:
+        this->cursor->moveUp();
+        break;
+    case CommandIDs::CursorMoveDown:
+        this->cursor->moveDown();
+        break;
+    case CommandIDs::CursorSelectLeft:
+        this->cursor->selectLeft();
+        break;
+    case CommandIDs::CursorSelectRight:
+        this->cursor->selectRight();
+        break;
+    case CommandIDs::CursorSelectUp:
+        this->cursor->selectUp();
+        break;
+    case CommandIDs::CursorSelectDown:
+        this->cursor->selectDown();
+        break;
+    case CommandIDs::CursorInteract:
+        this->cursor->interact(this->project.getEditMode());
         break;
     case CommandIDs::SelectAllEvents:
         this->selectAll();
@@ -1715,8 +1780,6 @@ void PianoRoll::handleCommandMessage(int commandId)
     default:
         break;
     }
-
-    RollBase::handleCommandMessage(commandId);
 }
 
 void PianoRoll::resized()
@@ -1837,22 +1900,11 @@ void PianoRoll::paint(Graphics &g) noexcept
     }
 }
 
-void PianoRoll::insertNewNoteAt(const MouseEvent &e, bool snap)
+void PianoRoll::addNewNote(int key, float beat)
 {
-    int key = 0;
-    float beat = 0.f;
-    constexpr int xOffset = 5;
-    this->getRowsColsByMousePosition(e.x + xOffset, e.y, key, beat, snap); // Pretend the mouse is a little to the right of where it actually is. Boosts accuracy when placing notes - RPM
-
     auto *activeSequence = static_cast<PianoSequence *>(this->activeTrack->getSequence());
     activeSequence->checkpoint();
 
-    // thing is, we can't have a pointer to this note's component,
-    // since it is not created yet at this point; so we set a flag,
-    // and in onAddMidiEvent/1 callback we store that pointer,
-    // so that the new note can be dragged, or resized, or whatever
-
-    this->addNewNoteMode = true;
     activeSequence->insert(Note(activeSequence, key, beat,
         this->newNoteLength, this->newNoteVolume), true);
 
@@ -1861,6 +1913,21 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e, bool snap)
         key + this->activeClip.getKey(),
         this->newNoteVolume * this->activeClip.getVelocity(),
         this->newNoteLength);
+}
+
+void PianoRoll::startDrawingNewNote(const MouseEvent &e, bool snap)
+{
+    int key = 0;
+    float beat = 0.f;
+    constexpr int xOffset = 5;
+    this->getRowsColsByMousePosition(e.x + xOffset, e.y, key, beat, snap); // Pretend the mouse is a little to the right of where it actually is. Boosts accuracy when placing notes - RPM
+
+    // since we can't have a pointer to the new note's component (it's not created yet)
+    // we set this flag, and in onAddMidiEvent/1 callback we store that pointer,
+    // so that the new note can be immediately dragged, or resized, or whatever:
+    this->addedNewNoteWithMouse = true;
+
+    this->addNewNote(key, beat);
 }
 
 void PianoRoll::switchToClipInViewport() const

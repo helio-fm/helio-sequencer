@@ -147,6 +147,8 @@ public:
     // SmoothPanListener
     //===------------------------------------------------------------------===//
 
+    void startPanning(Point<float> offset);
+
     bool panByOffset(int offsetX, int offsetY) override;
     void panProportionally(float absX, float absY) override;
     Point<int> getPanOffset() const override;
@@ -194,6 +196,7 @@ public:
         return jlimit(this->firstBeat, this->lastBeat, beatNumber);
     }
 
+    float getCeilBeatSnapByXPosition(int x) const noexcept;
     float getFloorBeatSnapByXPosition(int x) const noexcept;
     float getRoundBeatSnapByXPosition(int x) const noexcept;
 
@@ -237,7 +240,10 @@ public:
     void selectEvent(SelectableComponent *event, bool shouldClearAllOthers);
     void deselectEvent(SelectableComponent *event);
     void deselectAll();
-    
+
+    Point<float> getLassoAnchor(const Point<float> &position) const override;
+    Point<int> getLassoPosition(const Point<float> &anchorPoint) const override;
+
     SelectionComponent *getSelectionComponent() const noexcept;
     RollHeader *getHeaderComponent() const noexcept;
 
@@ -355,6 +361,7 @@ protected:
     //===------------------------------------------------------------------===//
 
     void timerCallback() override;
+    uint32 catchPlayheadTimerStartedAt = 0;
     
 protected:
     
@@ -414,7 +421,7 @@ protected:
     UniquePointer<RollHeader> header;
     UniquePointer<Component> headerShadow;
     UniquePointer<Playhead> playhead;
-    
+
     UniquePointer<AnnotationsProjectMap> annotationsMap;
     UniquePointer<TimeSignaturesProjectMap> timeSignaturesMap;
     UniquePointer<KeySignaturesProjectMap> keySignaturesMap;

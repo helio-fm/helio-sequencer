@@ -20,6 +20,7 @@
 class ClipComponent;
 class ClipCutPointMark;
 class MergingClipsConnector;
+class PatternRollCursor;
 
 #include "HelioTheme.h"
 #include "RollBase.h"
@@ -43,11 +44,20 @@ public:
     // Clip management
     //===------------------------------------------------------------------===//
 
-    void addClip(Pattern *pattern, float beat);
+    inline int getRowByYPosition(int y) const noexcept
+    {
+        const auto rowNumber = (this->getHeight() - y +
+            Globals::UI::rollHeaderHeight) / this->rowHeight;
+        return jlimit(0, this->getNumRows(), rowNumber);
+    }
+
+    void addNewClip(int row, float beat);
+    void addNewClip(const MouseEvent &e);
+
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
     Rectangle<float> getEventBounds(const Clip &clip) const;
-    float getBeatForClipByXPosition(const Clip &clip, float x) const;
-    float getBeatByMousePosition(const Pattern *pattern, int x) const;
+    Rectangle<float> getEventBounds(int row, float beat, float length) const;
+    float getClipBeatByXPosition(const Clip &clip, float x) const;
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -71,6 +81,7 @@ public:
     void selectEventsInRange(float startBeat,
         float endBeat, bool shouldClearAllOthers) override;
 
+    ClipComponent *findClipComponentAt(const Point<int> &point) const;
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const Rectangle<int> &bounds) override;
     void findLassoItemsInPolygon(Array<SelectableComponent *> &itemsFound,
@@ -150,12 +161,13 @@ private:
     void repaintBackgroundsCache();
 
     void reloadRollContent();
-    void insertNewClipAt(const MouseEvent &e);
 
     void showNewTrackMenu(float beatToInsertAt);
     void showNewTrackDialog(const String &instrumentId, float beatToInsertAt);
 
 private:
+
+    UniquePointer<PatternRollCursor> cursor;
 
     bool addNewClipMode = false;
     SafePointer<ClipComponent> newClipDragging = nullptr;

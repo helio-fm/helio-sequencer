@@ -446,7 +446,7 @@ bool ClipComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat)
 {
     this->dragger.dragComponent(this, e);
     const float newBeat =
-        this->getRoll().getBeatForClipByXPosition(this->clip,
+        this->getRoll().getClipBeatByXPosition(this->clip,
             this->getX() + this->floatLocalBounds.getX() + 1);
     deltaBeat = (newBeat - this->anchor.getBeat());
     return this->getBeat() != newBeat;

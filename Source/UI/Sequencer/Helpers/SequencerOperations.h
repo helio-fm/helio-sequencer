@@ -26,7 +26,9 @@ class Pattern;
 class Clipboard;
 class AutomationSequence;
 class KeySignaturesSequence;
+class KeySignatureEvent;
 class TimeSignaturesAggregator;
+class TimeSignatureEvent;
 
 #include "Note.h"
 #include "Lasso.h"
@@ -154,6 +156,10 @@ struct SequencerOperations final
     static bool findHarmonicContext(float startBeat, float endBeat,
         WeakReference<KeySignaturesSequence> keySignatures, Scale::Ptr &outScale,
         Note::Key &outRootKey, String &outKeyName);
+    static KeySignatureEvent *findHarmonicContext(float startBeat, float endBeat,
+        WeakReference<KeySignaturesSequence> keySignatures);
+    static TimeSignatureEvent *findTimeContext(float startBeat, float endBeat,
+        WeakReference<TimeSignaturesAggregator> timeSignatures);
 
     static Array<Note> cutNotes(const Array<Note> &notes,
         const Array<float> &relativeCutBeats, bool shouldCheckpoint = true);

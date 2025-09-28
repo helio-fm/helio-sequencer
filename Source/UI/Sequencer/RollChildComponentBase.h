@@ -28,12 +28,15 @@ public:
 
     explicit RollChildComponentBase(RollBase &editor) noexcept;
 
+    void setEditable(bool val); // e.g. a generated note isn't editable
+    bool isEditable() const noexcept;
+
+    void setActive(bool val, bool force = false);
+    bool isActive() const noexcept; // if belongs to the active scope
+
     // non-editable events may still be enabled and intercept mouse events,
     // for example, for activating their clip on rclick mouse down or long-tap:
     bool isActiveAndEditable() const noexcept;
-
-    void setEditable(bool val);
-    void setActive(bool val, bool force = false);
 
     virtual float getBeat() const noexcept = 0;
     virtual void updateColours() = 0;

@@ -29,8 +29,10 @@ SelectionComponent::SelectionComponent() :
     currentOutline(outline)
 {
     this->setSize(0, 0);
+    this->setAccessible(false);
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
 }
 
 void SelectionComponent::beginLasso(const Point<float> &position,
@@ -50,8 +52,7 @@ void SelectionComponent::beginLasso(const Point<float> &position,
 
     this->source = lassoSource;
     this->originalSelection = lassoSource->getLassoSelection().getItemArray();
-    const auto absPosition = position.toDouble() / this->getParentSize();
-    this->startPosition = absPosition;
+    this->startPosition = lassoSource->getLassoAnchor(position);
     this->endPosition = this->startPosition;
 
     if (this->lassoType == LassoType::Path)
@@ -60,15 +61,24 @@ void SelectionComponent::beginLasso(const Point<float> &position,
         this->drawnArea.clearQuick();
         this->drawnPathFill.clear();
         this->drawnPathOutline.clear();
-        this->drawnAreaRaw.add(absPosition);
+        this->drawnAreaRaw.add(this->startPosition);
     }
+
+    this->dragging = true;
 
     this->setSize(0, 0);
     this->toFront(false);
     this->fadeIn();
+
+    this->sendChangeMessage();
 }
 
 void SelectionComponent::dragLasso(const MouseEvent &e)
+{
+    this->dragLasso(e.position, e.mods);
+}
+
+void SelectionComponent::dragLasso(const Point<float> &cursorPosition, ModifierKeys mods)
 {
     if (this->source == nullptr)
     {
@@ -77,13 +87,14 @@ void SelectionComponent::dragLasso(const MouseEvent &e)
     }
 
     this->itemsInLasso.clearQuick();
-    const auto parentSize = this->getParentSize();
-    const auto absPosition = e.position.toDouble() / parentSize;
+    const auto anchoredPosition = this->source->getLassoAnchor(cursorPosition);
+
+    bool boundsChanged = false;
 
     if (this->lassoType == LassoType::Rectangle)
     {
-        this->endPosition = absPosition;
-        this->updateBounds();
+        this->endPosition = anchoredPosition;
+        boundsChanged = this->updateBounds();
         this->source->findLassoItemsInArea(this->itemsInLasso, this->getBounds());
     }
     else if (this->lassoType == LassoType::Path)
@@ -91,11 +102,11 @@ void SelectionComponent::dragLasso(const MouseEvent &e)
         jassert(!this->drawnAreaRaw.isEmpty());
 
         constexpr auto prefilterThreshold = 1;
-        const auto lastPositionInPixels = this->drawnAreaRaw.getLast() * parentSize;
-        const auto d = lastPositionInPixels.getDistanceFrom(e.position.toDouble());
+        const auto lastPositionInPixels = this->source->getLassoPosition(this->drawnAreaRaw.getLast());
+        const auto d = lastPositionInPixels.getDistanceFrom(cursorPosition.toInt());
         if (d > prefilterThreshold)
         {
-            this->drawnAreaRaw.add(absPosition);
+            this->drawnAreaRaw.add(anchoredPosition);
         }
 
         // mapping this from the absolute values all the time
@@ -111,7 +122,7 @@ void SelectionComponent::dragLasso(const MouseEvent &e)
                 jmax(this->endPosition.x, absPos.x),
                 jmax(this->endPosition.y, absPos.y));
 
-            this->drawnArea.add((absPos * parentSize).toFloat());
+            this->drawnArea.add(this->source->getLassoPosition(absPos).toFloat());
         }
 
         // noise filtering
@@ -120,10 +131,10 @@ void SelectionComponent::dragLasso(const MouseEvent &e)
 
         if (this->drawnArea.size() >= 2)
         {
-            this->drawnArea[this->drawnArea.size() - 1] = e.position;
+            this->drawnArea[this->drawnArea.size() - 1] = cursorPosition;
             this->drawnArea.add(this->drawnArea.getFirst());
 
-            const auto startPoint = (this->startPosition * parentSize).toFloat();
+            const auto startPoint = this->source->getLassoPosition(this->startPosition).toFloat();
 
             this->drawnPathFill.clear();
             this->drawnPathFill.preallocateSpace(this->drawnArea.size());
@@ -139,7 +150,7 @@ void SelectionComponent::dragLasso(const MouseEvent &e)
             PathStrokeType(1.25f).createDashedStroke(this->drawnPathOutline, this->drawnPathOutline,
                 dashes.getRawDataPointer(), dashes.size());
 
-            this->updateBounds();
+            boundsChanged = this->updateBounds();
             this->repaint();
 
             this->source->findLassoItemsInPolygon(this->itemsInLasso,
@@ -147,29 +158,41 @@ void SelectionComponent::dragLasso(const MouseEvent &e)
         }
     }
 
-    if (e.mods.isShiftDown())
+    if (mods.isShiftDown())
     {
         this->itemsInLasso.removeValuesIn(this->originalSelection);
         this->itemsInLasso.addArray(this->originalSelection);
     }
-    else if (e.mods.isAltDown())
+    else if (mods.isAltDown())
     {
         this->originalSelection.removeValuesIn(this->itemsInLasso);
         this->itemsInLasso = this->originalSelection;
     }
 
     this->source->getLassoSelection() = Lasso(this->itemsInLasso);
+
+    if (boundsChanged)
+    {
+        this->sendChangeMessage();
+    }
 }
 
-void SelectionComponent::updateBounds()
+bool SelectionComponent::updateBounds()
 {
-    const auto parentSize = this->getParentSize();
-    const auto start = (this->startPosition * parentSize).roundToInt();
-    const auto end = (this->endPosition * parentSize).roundToInt();
+    if (this->source == nullptr)
+    {
+        jassertfalse;
+        return false;
+    }
+
+    const auto start = this->source->getLassoPosition(this->startPosition);
+    const auto end = this->source->getLassoPosition(this->endPosition);
     Rectangle<int> bounds(start, end);
     bounds.setWidth(jmax(1, bounds.getWidth()));
     bounds.setHeight(jmax(1, bounds.getHeight()));
+    const auto boundsChanged = this->getBounds() != bounds;
     this->setBounds(bounds);
+    return boundsChanged;
 }
 
 void SelectionComponent::endLasso()
@@ -180,14 +203,16 @@ void SelectionComponent::endLasso()
         return;
     }
 
-    this->source = nullptr;
+    this->dragging = false;
     this->originalSelection.clear();
     this->fadeOut();
+
+    this->sendChangeMessage();
 }
 
 bool SelectionComponent::isDragging() const
 {
-    return this->source != nullptr;
+    return this->dragging;
 }
 
 void SelectionComponent::paint(Graphics &g)
@@ -214,16 +239,6 @@ void SelectionComponent::paint(Graphics &g)
     }
 }
 
-const Point<double> SelectionComponent::getParentSize() const
-{
-    if (const auto *p = this->getParentComponent())
-    {
-        return { double(p->getWidth()), double(p->getHeight()) };
-    }
-
-    return { 1.0, 1.0 };
-}
-
 void SelectionComponent::timerCallback()
 {
     const auto newOutline = this->currentOutline.interpolatedWith(this->targetOutline, 0.5f);
@@ -231,12 +246,11 @@ void SelectionComponent::timerCallback()
 
     if (this->currentOutline == newOutline && this->currentFill == newFill)
     {
-        //DBG("--- stop timer");
         this->stopTimer();
 
         if (newOutline.getAlpha() == 0)
         {
-            //DBG("--- set visible = false");
+            //this->source = nullptr;
             this->setVisible(false);
         }
     }
