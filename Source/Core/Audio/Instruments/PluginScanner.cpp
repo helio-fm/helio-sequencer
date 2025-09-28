@@ -111,7 +111,8 @@ void PluginScanner::runInitialScan()
 
     if (!this->isThreadRunning())
     {
-        this->startThread(0);
+        this->startThread(5);
+        Thread::sleep(50);
     }
 
     // prepare search paths, prepare specific files to scan,
@@ -161,7 +162,8 @@ void PluginScanner::scanFolderAndAddResults(const File &dir)
 
     if (!this->isThreadRunning())
     {
-        this->startThread(0);
+        this->startThread(5);
+        Thread::sleep(50);
     }
 
     // prepare search paths and resume search thread
@@ -251,7 +253,14 @@ void PluginScanner::run()
                 ChildProcess checkerProcess;
                 const auto myPath = File::getSpecialLocation(File::currentExecutableFile).getFullPathName();
                 const String commandLine(myPath + " " + tempFileName.toString());
-                checkerProcess.start(commandLine);
+                const auto started = checkerProcess.start(commandLine);
+                if (!started)
+                {
+                    // todo better indication in the UI
+                    DBG("Couldn't run the plugin checking process");
+                    tempFile.deleteFile();
+                    break;
+                }
 
                 if (!checkerProcess.waitForProcessToFinish(60000))
                 {
