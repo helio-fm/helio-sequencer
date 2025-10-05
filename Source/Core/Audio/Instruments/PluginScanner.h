@@ -66,6 +66,9 @@ private:
     Atomic<bool> working = false;
     Atomic<bool> cancelled = false;
 
+    Atomic<KnownPluginList::SortMethod> pluginSorting;
+    Atomic<bool> pluginSortingForwards;
+
     // paths and files to be checked in a search thread:
     FileSearchPath searchPath;
     StringArray filesToScan;

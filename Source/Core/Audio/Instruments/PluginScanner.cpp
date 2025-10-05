@@ -112,11 +112,13 @@ void PluginScanner::runInitialScan()
     if (!this->isThreadRunning())
     {
         this->startThread(5);
-        Thread::sleep(50);
     }
 
     // prepare search paths, prepare specific files to scan,
     // clear the existing list and resume search thread
+
+    this->pluginSorting = App::Config().getUiFlags()->getPluginSorting();
+    this->pluginSortingForwards = App::Config().getUiFlags()->isPluginSortingForwards();
 
     this->filesToScan.clearQuick();
     this->searchPath = this->getCommonFolders();
@@ -163,10 +165,12 @@ void PluginScanner::scanFolderAndAddResults(const File &dir)
     if (!this->isThreadRunning())
     {
         this->startThread(5);
-        Thread::sleep(50);
     }
 
     // prepare search paths and resume search thread
+
+    this->pluginSorting = App::Config().getUiFlags()->getPluginSorting();
+    this->pluginSortingForwards = App::Config().getUiFlags()->isPluginSortingForwards();
 
     this->filesToScan.clearQuick();
     this->searchPath = dir.getFullPathName();
@@ -186,6 +190,18 @@ void PluginScanner::scanFolderAndAddResults(const File &dir)
 //===----------------------------------------------------------------------===//
 // Thread
 //===----------------------------------------------------------------------===//
+
+#if JUCE_PLUGINHOST_LV2 && (JUCE_MAC || JUCE_LINUX || JUCE_BSD || JUCE_WINDOWS)
+#define HAS_LV2 1
+#else
+#define HAS_LV2 0
+#endif
+
+#if JUCE_PLUGINHOST_AU && (JUCE_MAC || JUCE_IOS)
+#define HAS_AU 1
+#else
+#define HAS_AU 0
+#endif
 
 void PluginScanner::run()
 {
@@ -210,11 +226,19 @@ void PluginScanner::run()
         {
             auto *format = formatManager.getFormat(i);
 
-#if JUCE_MAC
+#if HAS_AU
             if (!this->isGlobalScan.get() &&
                 dynamic_cast<AudioUnitPluginFormat *>(format) != nullptr)
             {
                 continue; // skip AudioUnitPluginFormat when scanning a specific folder
+            }
+#endif
+
+#if HAS_LV2
+            if (!this->isGlobalScan.get() &&
+                dynamic_cast<LV2PluginFormat *>(format) != nullptr)
+            {
+                continue; // LV2PluginFormat is also very special, skip
             }
 #endif
 
@@ -227,9 +251,6 @@ void PluginScanner::run()
                 break;
             }
         }
-
-        const auto pluginSorting = App::Config().getUiFlags()->getPluginSorting();
-        const auto pluginSortingForwards = App::Config().getUiFlags()->isPluginSortingForwards();
 
         try
         {
@@ -262,7 +283,17 @@ void PluginScanner::run()
                     break;
                 }
 
-                if (!checkerProcess.waitForProcessToFinish(60000))
+                constexpr uint32 timeoutMs = 69420;
+                const auto timeoutTime = Time::getMillisecondCounter() + timeoutMs;
+                do
+                {
+                    Thread::sleep(2);
+                }
+                while (!this->cancelled.get()
+                    && checkerProcess.isRunning()
+                    && Time::getMillisecondCounter() < timeoutTime);
+
+                if (checkerProcess.isRunning())
                 {
                     checkerProcess.kill();
                 }
@@ -291,7 +322,8 @@ void PluginScanner::run()
                                     this->pluginsList.addType(pluginDescription);
                                 }
 
-                                this->sortList(pluginSorting, pluginSortingForwards); // will also sendChangeMessage();
+                                // will also sendChangeMessage():
+                                this->sortList(this->pluginSorting.get(), this->pluginSortingForwards.get());
                             }
                         }
                         catch (...) {}
