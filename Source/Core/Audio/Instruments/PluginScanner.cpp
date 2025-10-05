@@ -353,7 +353,8 @@ void PluginScanner::run()
                         this->pluginsList.addType(*type);
                     }
 
-                    this->sortList(pluginSorting, pluginSortingForwards); // will also sendChangeMessage();
+                    // will also sendChangeMessage():
+                    this->sortList(this->pluginSorting.get(), this->pluginSortingForwards.get());
                 }
                 
                 Thread::sleep(150);
