@@ -28,6 +28,9 @@ public:
     void onColourButtonClicked(ColourButton *button) override;
 
     void setSelectedColour(Colour colour);
+
+    Colour selectFirstColour();
+    Colour selectLastColour();
     Optional<Colour> selectNextColour();
     Optional<Colour> selectPreviousColour();
 

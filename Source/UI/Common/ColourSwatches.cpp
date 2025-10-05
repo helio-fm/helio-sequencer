@@ -84,6 +84,30 @@ void ColourSwatches::setSelectedColour(Colour colour)
     }
 }
 
+Colour ColourSwatches::selectFirstColour()
+{
+    if (this->buttons.isEmpty())
+    {
+        return {};
+    }
+
+    const auto colour = this->buttons.getFirst()->getColour();
+    this->setSelectedColour(colour);
+    return colour;
+}
+
+Colour ColourSwatches::selectLastColour()
+{
+    if (this->buttons.isEmpty())
+    {
+        return {};
+    }
+
+    const auto colour = this->buttons.getLast()->getColour();
+    this->setSelectedColour(colour);
+    return colour;
+}
+
 Optional<Colour> ColourSwatches::selectNextColour()
 {
     for (int i = 0; i < this->buttons.size(); ++i)

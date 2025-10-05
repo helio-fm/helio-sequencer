@@ -155,18 +155,28 @@ void TrackPropertiesDialog::handleCommandMessage(int commandId)
         if (const auto colour = this->colourSwatches->selectNextColour())
         {
             this->newColour = *colour;
-            this->updateControls();
-            this->applyChangesIfAny();
         }
+        else
+        {
+            this->newColour = this->colourSwatches->selectFirstColour();
+        }
+
+        this->updateControls();
+        this->applyChangesIfAny();
     }
     else if (commandId == CommandIDs::DialogPreviousPreset)
     {
         if (const auto colour = this->colourSwatches->selectPreviousColour())
         {
             this->newColour = *colour;
-            this->updateControls();
-            this->applyChangesIfAny();
         }
+        else
+        {
+            this->newColour = this->colourSwatches->selectLastColour();
+        }
+
+        this->updateControls();
+        this->applyChangesIfAny();
     }
     else
     {
@@ -178,10 +188,7 @@ void TrackPropertiesDialog::updateControls()
 {
     const auto hasManyTracks = this->tracks.size() > 1;
     this->multipleNamesIcon->setVisible(hasManyTracks && this->newName.isEmpty());
-
-    const auto colourIsOk = hasManyTracks || this->newColour != Colours::transparentBlack;
-    const auto textIsOk = hasManyTracks || this->newName.trim().isNotEmpty();
-    this->okButton->setEnabled(colourIsOk && textIsOk);
+    this->okButton->setEnabled(this->canApply());
 }
 
 void TrackPropertiesDialog::onColourButtonClicked(ColourButton *clickedButton)
@@ -195,6 +202,14 @@ bool TrackPropertiesDialog::hasChanges() const
 {
     return this->newColour != this->originalColour ||
         (this->newName != this->originalName && this->newName.isNotEmpty());
+}
+
+bool TrackPropertiesDialog::canApply() const
+{
+    const auto hasManyTracks = this->tracks.size() > 1;
+    const auto colourIsOk = hasManyTracks || this->newColour != Colours::transparentBlack;
+    const auto textIsOk = hasManyTracks || this->newName.trim().isNotEmpty();
+    return colourIsOk && textIsOk;
 }
 
 void TrackPropertiesDialog::cancelChangesIfAny()
@@ -255,7 +270,7 @@ void TrackPropertiesDialog::dialogCancelAction()
 
 void TrackPropertiesDialog::dialogApplyAction()
 {
-    if (this->textEditor->getText().isEmpty())
+    if (!this->canApply())
     {
         this->resetKeyboardFocus();
         return;

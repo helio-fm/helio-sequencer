@@ -71,6 +71,7 @@ private:
     void applyChangesIfAny();
     void cancelChangesIfAny();
     bool hasChanges() const;
+    bool canApply() const;
 
     void dialogCancelAction() override;
     void dialogApplyAction() override;
