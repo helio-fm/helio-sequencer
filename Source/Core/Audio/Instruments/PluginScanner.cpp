@@ -222,6 +222,8 @@ void PluginScanner::run()
         // plugins list might have changed while waiting:
         this->sendChangeMessage();
 
+        StringArray pluginsListDraft;
+
         for (int i = 0; i < formatManager.getNumFormats(); ++i)
         {
             auto *format = formatManager.getFormat(i);
@@ -243,13 +245,32 @@ void PluginScanner::run()
 #endif
 
             const auto foundPlugins = format->searchPathsForPlugins(this->searchPath, true, true);
-            this->filesToScan.addArray(foundPlugins);
+            pluginsListDraft.addArray(foundPlugins);
 
             if (this->cancelled.get())
             {
                 DBG("Plugin scanning canceled");
                 break;
             }
+        }
+
+        pluginsListDraft.removeDuplicates(false);
+
+        // a hack to filter out libraries which are certainly not plugins,
+        // on which we may waste a lot of time while scanning,
+        // e.g. Carla has lots of Python-related DLLs on Windows
+        // (todo add more exceptions like these as problems arise)
+        for (const auto &pluginPath : pluginsListDraft)
+        {
+            const auto pluginFileName = File(pluginPath).getFileName();
+            if (pluginFileName.startsWith("Qt5") ||
+                pluginFileName.startsWith("libpython") ||
+                pluginFileName.contains("-cpython"))
+            {
+                continue;
+            }
+
+            this->filesToScan.add(pluginPath);
         }
 
         try
