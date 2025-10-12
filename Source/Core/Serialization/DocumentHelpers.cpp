@@ -86,47 +86,48 @@ String DocumentHelpers::getTemporaryFolder()
 static File getFirstSlot(String location1, String location2, const String &fileName)
 {
     File result;
-    bool slotExists = false;
 
 #if PLATFORM_DESKTOP
 
     const String helioSubfolder = "Helio";
-    File file1(File(location1).getChildFile(helioSubfolder));
-    File file2(File(location2).getChildFile(helioSubfolder));
+    File folder1(File(location1).getChildFile(helioSubfolder));
+    File folder2(File(location2).getChildFile(helioSubfolder));
 
-    // 1й вариант: какой-то из слотов существует - выбираем его.
-    if (file1.getChildFile(fileName).existsAsFile())
+    if (fileName.isEmpty() && folder1.isDirectory())
     {
-        slotExists = true;
-        result = file1.getChildFile(fileName);
+        result = folder1;
     }
-    else if (file2.getChildFile(fileName).existsAsFile())
+    else if (fileName.isEmpty() && folder2.isDirectory())
     {
-        slotExists = true;
-        result = file2.getChildFile(fileName);
+        result = folder2;
+    }
+    else if (folder1.getChildFile(fileName).existsAsFile())
+    {
+        result = folder1.getChildFile(fileName);
+    }
+    else if (folder2.getChildFile(fileName).existsAsFile())
+    {
+        result = folder2.getChildFile(fileName);
     }
     else
     {
-        // 2й вариант: не существует ни одного из файлов:
-        // выбираем первый доступный для записи слот
-        // если подпапок еще нет, пробуем создать
-        if (!file1.isDirectory())
+        if (!folder1.isDirectory())
         {
-            file1.createDirectory();
+            folder1.createDirectory();
         }
-        const File slot1(file1.getChildFile(fileName));
+        const File slot1(folder1.getChildFile(fileName));
         if (slot1.create())
         {
-            slot1.deleteFile(); // пустой файл раньше времени нам не нужен.
+            slot1.deleteFile();
             result = slot1;
         }
         else
         {
-            if (!file2.isDirectory())
+            if (!folder2.isDirectory())
             {
-                file2.createDirectory();
+                folder2.createDirectory();
             }
-            const File slot2(file2.getChildFile(fileName));
+            const File slot2(folder2.getChildFile(fileName));
             if (slot2.create())
             {
                 slot2.deleteFile();
@@ -140,24 +141,19 @@ static File getFirstSlot(String location1, String location2, const String &fileN
     const File slot1(File(location1).getChildFile(fileName));
     const File slot2(File(location2).getChildFile(fileName));
 
-    // 1й вариант: какой-то из слотов существует - выбираем его.
     if (slot1.existsAsFile())
     {
-        slotExists = true;
         result = slot1;
     }
     else if (slot2.existsAsFile())
     {
-        slotExists = true;
         result = slot2;
     }
     else
     {
-        // 2й вариант: не существует ни одного из файлов:
-        // выбираем первый доступный для записи слот
         if (slot1.create())
         {
-            slot1.deleteFile(); // пустой файл раньше времени нам не нужен.
+            slot1.deleteFile();
             result = slot1;
         }
         else if (slot2.create())
@@ -169,10 +165,12 @@ static File getFirstSlot(String location1, String location2, const String &fileN
 
 #endif
 
-    if (slotExists)
+#if DEBUG
+    if (result.exists())
     {
-        DBG("Opening file: " + result.getFullPathName());
+        DBG("Opening " + result.getFullPathName());
     }
+#endif
 
     return result;
 }

@@ -370,8 +370,14 @@ void Workspace::importProject(const String &filePattern)
     const auto filter = filePattern;
 #endif
 
+#if PLATFORM_DESKTOP
+    const auto defaultFolder = DocumentHelpers::getDocumentSlot("");
+#elif PLATFORM_MOBILE
+    const auto defaultFolder = File::getCurrentWorkingDirectory();
+#endif
+
     this->importFileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentImport),
-        File::getCurrentWorkingDirectory(), filter, true);
+        defaultFolder, filter, true);
 
     DocumentHelpers::showFileChooser(this->importFileChooser,
         Globals::UI::FileChooser::forFileToOpen,
