@@ -86,7 +86,7 @@ public:
     {
         g.setColour(this->currentFillColour);
         g.fillRect(this->getLocalBounds());
-        HelioTheme::drawStripes(this->getLocalBounds().toFloat().reduced(2.5f), g, 0.2f);
+        HelioTheme::drawStripes(this->getLocalBounds().toFloat().reduced(1.5f), g, 0.2f);
         g.setColour(this->outlineColour);
         HelioTheme::drawDashedFrame(g, this->getLocalBounds());
     }
@@ -250,7 +250,7 @@ TempoDialog::TempoDialog(int bpmValue)
     this->okButton->setButtonText(TRANS(I18n::Dialog::apply));
     this->cancelButton->setButtonText(TRANS(I18n::Dialog::cancel));
 
-    this->setSize(460, isPhoneLayout ? DialogBase::Defaults::Phone::maxDialogHeight : 210);
+    this->setSize(460, isPhoneLayout ? DialogBase::Defaults::Phone::maxDialogHeight : 200);
 
     this->updatePosition();
     this->updateOkButtonState();
@@ -268,7 +268,7 @@ void TempoDialog::resized()
     this->cancelButton->setBounds(this->getButton2Bounds());
 
     this->textEditor->setBounds(this->getRowBounds(0.2f, Globals::UI::textEditorHeight));
-    this->tapTempo->setBounds(this->getRowBounds(0.65f,
+    this->tapTempo->setBounds(this->getRowBounds(0.69f,
         TempoDialog::tapTempoHeight, TempoDialog::tapTempoMargin));
 }
 

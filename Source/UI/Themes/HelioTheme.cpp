@@ -83,17 +83,11 @@ void HelioTheme::drawFrame(Graphics &g, int width, int height,
 
 void HelioTheme::drawDashedFrame(Graphics &g, const Rectangle<int> &area, int dashLength /*= 4*/)
 {
-    for (int i = area.getX() + 1; i < area.getWidth() - 1; i += (dashLength * 2))
-    {
-        g.fillRect(i, area.getY(), dashLength, 1);
-        g.fillRect(i, area.getHeight() - 1, dashLength, 1);
-    }
-
-    for (int i = area.getY() + 1; i < area.getHeight() - 1; i += (dashLength * 2))
-    {
-        g.fillRect(area.getX(), i, 1, dashLength);
-        g.fillRect(area.getWidth() - 1, i, 1, dashLength);
-    }
+    const auto a = area.toFloat();
+    HelioTheme::drawDashedHorizontalLine(g, a.getX() + 1.f, a.getY(), a.getWidth() - 2.f, float(dashLength));
+    HelioTheme::drawDashedHorizontalLine(g, a.getX() + 1.f, a.getHeight() - 1.f, a.getWidth() - 2.f, float(dashLength));
+    HelioTheme::drawDashedVerticalLine(g, a.getX(), a.getY() + 1.f, a.getHeight() - 2.f, float(dashLength));
+    HelioTheme::drawDashedVerticalLine(g, a.getWidth() - 1.f, a.getY() + 1.f, a.getHeight() - 2.f, float(dashLength));
 }
 
 void HelioTheme::drawBrackets(Graphics &g,
@@ -116,7 +110,8 @@ void HelioTheme::drawBrackets(Graphics &g,
 
 void HelioTheme::drawDashedHorizontalLine(Graphics &g, float x, float y, float width, float dashLength)
 {
-    for (; x < width - dashLength; x += dashLength * 2.f)
+    // dash spaces are 1 pixel shorter than strokes because it looks nicer:
+    for (; x < width - dashLength; x += ((dashLength * 2.f) - 1.f))
     {
         g.fillRect(x, y, dashLength, 1.f);
     }
@@ -129,7 +124,7 @@ void HelioTheme::drawDashedHorizontalLine(Graphics &g, float x, float y, float w
 
 void HelioTheme::drawDashedHorizontalLine2(Graphics &g, float x, float y, float width, float dashLength)
 {
-    for (; x < width - dashLength; x += dashLength * 2.f)
+    for (; x < width - dashLength; x += ((dashLength * 2.f) - 1.f))
     {
         g.fillRect(x + 1.f, y, dashLength, 1.f);
         g.fillRect(x, y + 1.f, dashLength, 1.f);
@@ -144,7 +139,7 @@ void HelioTheme::drawDashedHorizontalLine2(Graphics &g, float x, float y, float 
 
 void HelioTheme::drawDashedVerticalLine(Graphics &g, float x, float y, float height, float dashLength)
 {
-    for (; y < height - dashLength; y += dashLength * 2.f)
+    for (; y < height - dashLength; y += ((dashLength * 2.f) - 1.f))
     {
         g.fillRect(x, y, 1.f, dashLength);
     }
@@ -869,7 +864,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
 
     this->setColour(ColourIDs::RollHeader::selection, s->getLassoBorderColour().withAlpha(0.8f));
     this->setColour(ColourIDs::RollHeader::soundProbe, s->getLassoBorderColour().withMultipliedBrightness(1.1f).withAlpha(0.75f));
-    this->setColour(ColourIDs::RollHeader::timeDistance, textColour.withAlpha(0.4f));
+    this->setColour(ColourIDs::RollHeader::timeDistance, textColour.withAlpha(0.420f));
 
     this->setColour(ColourIDs::Icons::fill, s->getIconBaseColour());
     this->setColour(ColourIDs::Icons::shadow, s->getIconShadowColour());
@@ -1022,8 +1017,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::noteCutMarkOutline, Colours::white.withAlpha(0.2f));
     this->setColour(ColourIDs::Roll::cuttingGuide, s->getLassoBorderColour().withAlpha(0.9f));
     this->setColour(ColourIDs::Roll::cuttingGuideOutline, s->getLassoBorderColour().contrasting().withAlpha(0.1f));
-    this->setColour(ColourIDs::Roll::draggingGuide, s->getLassoBorderColour().withAlpha(0.45f));
-    this->setColour(ColourIDs::Roll::draggingGuideShadow, s->getBlackKeyColour().withMultipliedAlpha(0.55f));
+    this->setColour(ColourIDs::Roll::draggingGuide, s->getLassoBorderColour().withAlpha(0.420f));
+    this->setColour(ColourIDs::Roll::draggingGuideShadow, s->getBlackKeyColour().withMultipliedAlpha(0.69f));
     this->setColour(ColourIDs::Roll::resizingGuideFill, s->getSidebarFillColour());
     this->setColour(ColourIDs::Roll::resizingGuideOutline, s->getLassoBorderColour().withAlpha(0.55f));
     this->setColour(ColourIDs::Roll::resizingGuideShadow,

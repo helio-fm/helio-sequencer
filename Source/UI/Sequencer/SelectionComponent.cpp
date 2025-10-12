@@ -146,7 +146,7 @@ void SelectionComponent::dragLasso(const Point<float> &cursorPosition, ModifierK
             }
 
             this->drawnPathOutline = this->drawnPathFill;
-            static Array<float> dashes(4.f, 4.f);
+            static Array<float> dashes(4.f, 3.f);
             PathStrokeType(1.25f).createDashedStroke(this->drawnPathOutline, this->drawnPathOutline,
                 dashes.getRawDataPointer(), dashes.size());
 

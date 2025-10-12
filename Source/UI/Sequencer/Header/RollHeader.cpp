@@ -395,7 +395,7 @@ void RollHeader::updateSelectionRangeIndicatorPosition()
     const bool hasClipRangesDisplayed = !this->clipRangeIndicators.isEmpty();
     const int x1 = this->roll.getXPositionByBeat(this->selectionRangeIndicator->getFirstBeat());
     const int x2 = this->roll.getXPositionByBeat(this->selectionRangeIndicator->getLastBeat());
-    this->selectionRangeIndicator->setBounds(x1, hasClipRangesDisplayed ? 2 : 0, x2 - x1 + 1, 1);
+    this->selectionRangeIndicator->setBounds(x1, hasClipRangesDisplayed ? 2 : 0, jmax(x2 - x1, 3), 1);
 }
 
 //===----------------------------------------------------------------------===//

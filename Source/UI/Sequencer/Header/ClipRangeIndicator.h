@@ -97,7 +97,8 @@ public:
 
     void paint(Graphics &g) override
     {
+        constexpr auto margin = 1.f;
         g.setColour(this->paintColour);
-        HelioTheme::drawDashedHorizontalLine(g, 1.f, 0.f, float(this->getWidth() - 1));
+        HelioTheme::drawDashedHorizontalLine(g, margin, 0.f, float(this->getWidth()) - (margin * 2.f));
     }
 };

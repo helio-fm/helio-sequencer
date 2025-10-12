@@ -153,7 +153,7 @@ void RenderDialog::resized()
     this->pathLabel->setBounds(this->getRowBounds(0.2f, browseButtonSize)
         .withTrimmedLeft(browseButtonSize));
 
-    this->progressBar->setBounds(this->getRowBounds(0.7f, 38).reduced(5, 0));
+    this->progressBar->setBounds(this->getRowBounds(0.69f, 41).reduced(5, 0));
 
     this->renderButton->setBounds(this->getButtonsBounds());
 }

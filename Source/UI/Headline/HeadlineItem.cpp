@@ -46,7 +46,7 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(this->dashColour);
-        HelioTheme::drawDashedHorizontalLine2(g, 0.f, 1.f, float(this->getWidth() - 3), 8.f);
+        HelioTheme::drawDashedHorizontalLine2(g, 0.f, 1.f, float(this->getWidth() - 3), 6.f);
     }
 
     const Colour dashColour = findDefaultColour(ColourIDs::Breadcrumbs::selectionMarker);
