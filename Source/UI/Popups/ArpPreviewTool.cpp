@@ -61,7 +61,7 @@ ArpPreviewTool::ArpPreviewTool(PianoRoll &roll,
     this->updateContent(this->mainMenu, MenuPanel::SlideUp);
 }
 
-MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp)
+MenuPanel::Menu ArpPreviewTool::createOptionsMenu(Arpeggiator::Ptr arp) noexcept
 {
     MenuPanel::Menu menu;
 

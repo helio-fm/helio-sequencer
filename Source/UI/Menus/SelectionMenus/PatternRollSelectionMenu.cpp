@@ -50,7 +50,7 @@ PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
     this->updateContent(this->makeDefaultMenu(), MenuPanel::Fading);
 }
 
-static bool canRenamePatternSelection(WeakReference<Lasso> lasso)
+static bool canRenamePatternSelection(WeakReference<Lasso> lasso) noexcept
 {
     const auto trackId = lasso->getFirstAs<ClipComponent>()->getClip().getTrackId();
     for (int i = 0; i < lasso->getNumSelected(); ++i)
@@ -63,7 +63,7 @@ static bool canRenamePatternSelection(WeakReference<Lasso> lasso)
     return true;
 }
 
-static bool canTriggerSoloForPatternSelection(WeakReference<Lasso> lasso)
+static bool canTriggerSoloForPatternSelection(WeakReference<Lasso> lasso) noexcept
 {
     for (int i = 0; i < lasso->getNumSelected(); ++i)
     {
@@ -76,7 +76,7 @@ static bool canTriggerSoloForPatternSelection(WeakReference<Lasso> lasso)
     return false;
 }
 
-static bool canMakeUnique(WeakReference<Lasso> lasso)
+static bool canMakeUnique(WeakReference<Lasso> lasso) noexcept
 {
     if (lasso->getNumSelected() != 1)
     {
@@ -86,7 +86,7 @@ static bool canMakeUnique(WeakReference<Lasso> lasso)
     return lasso->getFirstAs<ClipComponent>()->getClip().getPattern()->size() > 1;
 }
 
-MenuPanel::Menu PatternRollSelectionMenu::makeDefaultMenu()
+MenuPanel::Menu PatternRollSelectionMenu::makeDefaultMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -235,7 +235,7 @@ MenuPanel::Menu PatternRollSelectionMenu::makeDefaultMenu()
     return menu;
 }
 
-MenuPanel::Menu PatternRollSelectionMenu::makeQuantizationMenu()
+MenuPanel::Menu PatternRollSelectionMenu::makeQuantizationMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -262,7 +262,7 @@ MenuPanel::Menu PatternRollSelectionMenu::makeQuantizationMenu()
     return menu;
 }
 
-MenuPanel::Menu PatternRollSelectionMenu::makeChannelSelectionMenu()
+MenuPanel::Menu PatternRollSelectionMenu::makeChannelSelectionMenu() noexcept
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
@@ -314,7 +314,7 @@ MenuPanel::Menu PatternRollSelectionMenu::makeChannelSelectionMenu()
     return menu;
 }
 
-MenuPanel::Menu PatternRollSelectionMenu::makeInstrumentSelectionMenu()
+MenuPanel::Menu PatternRollSelectionMenu::makeInstrumentSelectionMenu() noexcept
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()

@@ -31,25 +31,25 @@ public:
 
     // either falls back to "add modifiers" menu if no modifiers found,
     // or displays an "edit modifiers" menu with "add modifiers" submenu
-    MenuPanel::Menu makeModifiersMenu(const MenuItem::Callback &goBack);
-    MenuPanel::Menu makeEditModifiersMenu(const MenuItem::Callback &goBack);
-    MenuPanel::Menu makeAddModifiersMenu(const MenuItem::Callback &goBack);
+    MenuPanel::Menu makeModifiersMenu(const MenuItem::Callback &goBack) noexcept;
+    MenuPanel::Menu makeEditModifiersMenu(const MenuItem::Callback &goBack) noexcept;
+    MenuPanel::Menu makeAddModifiersMenu(const MenuItem::Callback &goBack) noexcept;
 
     // adds new modifiers or updates existing ones
     MenuPanel::Menu makeModifiersArpsMenu(const MenuItem::Callback &goBack,
         const MenuItem::Callback &onAdd,
-        SequenceModifier::Ptr updatedModifier);
+        SequenceModifier::Ptr updatedModifier) noexcept;
 
     MenuPanel::Menu makeModifiersArpsSpeedMenu(const MenuItem::Callback &goBack,
         const MenuItem::Callback &onAdd,
         SequenceModifier::Ptr updatedModifier,
         const Arpeggiator::Ptr arp,
-        const Array<float> &speedValues);
+        const Array<float> &speedValues) noexcept;
 
     MenuPanel::Menu makeModifiersRefactoringStepsMenu(const MenuItem::Callback &goBack,
         const MenuItem::Callback &onAdd, SequenceModifier::Ptr updatedModifier,
         RefactoringSequenceModifier::Type type, Icons::Id iconId,
-        const Array<RefactoringSequenceModifier::Parameter> &parameters);
+        const Array<RefactoringSequenceModifier::Parameter> &parameters) noexcept;
 
 private:
 
@@ -67,11 +67,11 @@ public:
 
 private:
     
-    MenuPanel::Menu makeDefaultMenu();
-    MenuPanel::Menu makeRefactoringMenu();
-    MenuPanel::Menu makeQuantizationMenu();
-    MenuPanel::Menu makeChannelSelectionMenu();
-    MenuPanel::Menu makeInstrumentSelectionMenu();
+    MenuPanel::Menu makeDefaultMenu() noexcept;
+    MenuPanel::Menu makeRefactoringMenu() noexcept;
+    MenuPanel::Menu makeQuantizationMenu() noexcept;
+    MenuPanel::Menu makeChannelSelectionMenu() noexcept;
+    MenuPanel::Menu makeInstrumentSelectionMenu() noexcept;
 
     const Clip &clip;
 

@@ -86,7 +86,5 @@ public:
 
             return first->getEvent().getId() - second->getEvent().getId();
         }
-
-        JUCE_DECLARE_WEAK_REFERENCEABLE(EventComponentBase)
     };
 };

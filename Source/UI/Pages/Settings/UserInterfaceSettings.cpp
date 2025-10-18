@@ -28,7 +28,7 @@
 #define SIMPLIFIED_UI_SETTINGS 1
 #endif
 
-UserInterfaceSettings::UserInterfaceSettings()
+UserInterfaceSettings::UserInterfaceSettings() noexcept
 {
     this->setFocusContainerType(Component::FocusContainerType::none);
     this->setWantsKeyboardFocus(false);

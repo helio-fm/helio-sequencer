@@ -30,10 +30,10 @@ public:
     
 private:
 
-    MenuPanel::Menu makeDefaultMenu();
-    MenuPanel::Menu makeQuantizationMenu();
-    MenuPanel::Menu makeChannelSelectionMenu();
-    MenuPanel::Menu makeInstrumentSelectionMenu();
+    MenuPanel::Menu makeDefaultMenu() noexcept;
+    MenuPanel::Menu makeQuantizationMenu() noexcept;
+    MenuPanel::Menu makeChannelSelectionMenu() noexcept;
+    MenuPanel::Menu makeInstrumentSelectionMenu() noexcept;
 
     WeakReference<Lasso> lasso;
 

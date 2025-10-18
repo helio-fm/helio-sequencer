@@ -35,7 +35,7 @@ class KeySignatureDialog final : public DialogBase
 public:
 
     KeySignatureDialog(ProjectNode &project, KeySignaturesSequence *keySequence,
-        const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+        const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat) noexcept;
 
     ~KeySignatureDialog();
 

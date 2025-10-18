@@ -25,7 +25,6 @@ class TranslationsCollection final : public ConfigurationResourceCollection
 public:
 
     TranslationsCollection();
-    ~TranslationsCollection() override;
 
     inline const Array<Translation::Ptr> getAll() const
     {
@@ -48,9 +47,6 @@ private:
 
     void deserializeResources(const SerializedData &tree, Resources &outResources) override;
     void reset() override;
-
-    UniquePointer<JavascriptEngine> engine;
-    String equationResult;
 
     SpinLock currentTranslationLock;
     Translation::Ptr currentTranslation;

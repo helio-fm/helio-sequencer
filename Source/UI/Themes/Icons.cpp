@@ -40,10 +40,11 @@ struct BuiltInImageData final
         data(other.data),
         numBytes(other.numBytes) {}
 
-    BuiltInImageData(const String &name)
+    explicit BuiltInImageData(const String &name)
     {
         const auto assumedFileName = getIconFileName(name) + "_svg";
         this->data = BinaryData::getNamedResource(assumedFileName.toRawUTF8(), this->numBytes);
+        jassert(this->data != nullptr);
     }
     
     BuiltInImageData &operator= (const BuiltInImageData &other)
@@ -59,14 +60,14 @@ struct BuiltInImageData final
 
 static FlatHashMap<Icons::Id, BuiltInImageData> builtInImages;
 
-void Icons::clearBuiltInImages()
+void Icons::clearBuiltInImages() noexcept
 {
     builtInImages.clear();
 }
 
 #define setIconForKey(x) builtInImages[Icons::x] = BuiltInImageData(#x);
 
-void Icons::initBuiltInImages()
+void Icons::initBuiltInImages() noexcept
 {
     setIconForKey(helio);
     setIconForKey(project);
@@ -281,7 +282,7 @@ Path Icons::getPathByName(Icons::Id id)
 static FlatHashMap<uint32, Image> prerenderedSVGs;
 static FlatHashMap<uint32, Rectangle<float>> prerenderedBounds;
 
-void Icons::clearPrerenderedCache()
+void Icons::clearPrerenderedCache() noexcept
 {
     prerenderedSVGs.clear();
 }

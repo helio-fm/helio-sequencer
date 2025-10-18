@@ -34,10 +34,6 @@
 // JUCE
 //===----------------------------------------------------------------------===//
 
-#if JUCE_LINUX
-#   define JUCE_USE_FREETYPE_AMALGAMATED 1
-#endif
-
 #include "JuceHeader.h"
 
 #include <climits>
@@ -48,6 +44,8 @@
 //===----------------------------------------------------------------------===//
 // A better hash map
 //===----------------------------------------------------------------------===//
+
+#define TSL_NO_EXCEPTIONS 1
 
 #include "../../ThirdParty/HopscotchMap/include/tsl/hopscotch_map.h"
 
@@ -71,12 +69,12 @@ struct StringHash
 
 struct IdentifierHash
 {
-    inline HashCode operator()(const juce::Identifier &key) const noexcept
+    inline HashCode operator()(const Identifier &key) const noexcept
     {
         return static_cast<HashCode>(key.toString().hashCode());
     }
 
-    static int generateHash(const Identifier& key, int upperLimit) noexcept
+    static int generateHash(const Identifier &key, int upperLimit) noexcept
     {
         return uint32(key.toString().hashCode()) % (uint32)upperLimit;
     }
@@ -112,12 +110,11 @@ inline float roundf(float x)
 
 // todo replace this with std::bit_cast when migrating to C++20
 template <class To, class From>
-inline std::enable_if_t<
-    sizeof(To) == sizeof(From) &&
-    std::is_trivially_copyable_v<From> &&
-    std::is_trivially_copyable_v<To>, To>
-    bitCast(const From &src) noexcept
+inline To bitCast(const From &src) noexcept
 {
+    static_assert(sizeof(To) == sizeof(From));
+    static_assert(std::is_trivially_copyable_v<From>);
+    static_assert(std::is_trivially_copyable_v<To>);
     static_assert(std::is_trivially_constructible_v<To>);
     To dst;
     std::memcpy(&dst, &src, sizeof(To));

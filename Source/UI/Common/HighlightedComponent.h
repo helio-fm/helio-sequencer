@@ -56,7 +56,7 @@ public:
         this->clearHighlighterComponentCache();
     }
 
-    virtual void setHighlighted(bool shouldBeHighlighted)
+    void setHighlighted(bool shouldBeHighlighted)
     {
         if (this->isHighlighted == shouldBeHighlighted)
         {

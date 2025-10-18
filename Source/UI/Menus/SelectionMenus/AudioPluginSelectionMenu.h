@@ -35,7 +35,7 @@ private:
     OrchestraPitNode &orchestraNode;
     PluginScanner &pluginScanner;
 
-    MenuPanel::Menu createDefaultMenu();
-    MenuPanel::Menu createInstrumentsMenu();
+    MenuPanel::Menu createDefaultMenu() noexcept;
+    MenuPanel::Menu createInstrumentsMenu() noexcept;
 
 };

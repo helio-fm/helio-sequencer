@@ -112,7 +112,7 @@ static inline const Temperament::Period &getPeriod(ProjectNode &project)
 KeySignatureDialog::KeySignatureDialog(ProjectNode &project,
     KeySignaturesSequence *keySequence,
     const KeySignatureEvent &editedEvent,
-    bool shouldAddNewEvent, float targetBeat) :
+    bool shouldAddNewEvent, float targetBeat) noexcept :
     transport(project.getTransport()),
     originalEvent(editedEvent),
     originalSequence(keySequence),

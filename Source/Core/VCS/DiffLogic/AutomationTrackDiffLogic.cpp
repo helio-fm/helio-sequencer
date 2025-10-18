@@ -60,12 +60,12 @@ static bool checkIfDeltaIsEventsType(const Delta *delta);
 AutomationTrackDiffLogic::AutomationTrackDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
 
-const Identifier VCS::AutomationTrackDiffLogic::getType() const
+const Identifier VCS::AutomationTrackDiffLogic::getType() const noexcept
 {
     return Serialization::Core::automationTrack;
 }
 
-Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) const
+Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) const noexcept
 {
     using namespace Serialization::VCS;
 
@@ -135,7 +135,7 @@ Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) cons
     return diff;
 }
 
-Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState) const
+Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState) const noexcept
 {
     using namespace Serialization::VCS;
 

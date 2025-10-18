@@ -37,7 +37,7 @@ public:
 
     void setNoteName(const String &noteName,
         Optional<String> detailsText,
-        bool useFixedDoNotation);
+        bool useFixedDoNotation) noexcept;
 
     int getRequiredWidth() const noexcept;
     float getContentWidthFloat() const noexcept;

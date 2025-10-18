@@ -55,12 +55,12 @@ static bool checkIfDeltaIsNotesType(const Delta *delta);
 PianoTrackDiffLogic::PianoTrackDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
 
-const Identifier PianoTrackDiffLogic::getType() const
+const Identifier PianoTrackDiffLogic::getType() const noexcept
 {
     return Serialization::Core::pianoTrack;
 }
 
-Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
+Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const noexcept
 {
     using namespace Serialization::VCS;
 
@@ -128,7 +128,7 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
     return diff;
 }
 
-Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) const
+Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) const noexcept
 {
     using namespace Serialization::VCS;
 

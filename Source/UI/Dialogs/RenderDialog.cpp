@@ -85,7 +85,7 @@ void RenderDialog::SimpleWaveformProgressBar::update(float newProgress,
 //===----------------------------------------------------------------------===//
 
 RenderDialog::RenderDialog(ProjectNode &parentProject,
-    const URL &target, RenderFormat format) :
+    const URL &target, RenderFormat format) noexcept :
     project(parentProject),
     renderTarget(target),
     format(format)

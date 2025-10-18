@@ -19,7 +19,7 @@
 
 #include "ColourScheme.h"
 
-class HelioTheme final : public LookAndFeel_V4
+class HelioTheme final : public LookAndFeel_V2
 {
 public:
 
@@ -27,9 +27,9 @@ public:
 
     static HelioTheme &getCurrentTheme() noexcept;
 
-    void initResources();
-    void initColours(const ::ColourScheme::Ptr colours);
-    void updateFont(const Font &font);
+    void initResources() noexcept;
+    void initColours(const ::ColourScheme::Ptr colours) noexcept;
+    void updateFont(const Font &font) noexcept;
     
     Typeface::Ptr getTypefaceForFont(const Font &) override;
 
@@ -97,6 +97,9 @@ public:
         return editor;
     }
 
+    int getPopupMenuBorderSize() override { return 0; }
+    void drawPopupMenuBackground(Graphics &g, int width, int height) override;
+    
     //===------------------------------------------------------------------===//
     // Labels
     //===------------------------------------------------------------------===//
@@ -116,6 +119,7 @@ public:
         bool isMouseOverButton, bool isButtonDown) override;
     void drawToggleButton(Graphics &g, ToggleButton &button,
         bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
+    Path getTickShape(float height) override;
 
     //===------------------------------------------------------------------===//
     // Tables

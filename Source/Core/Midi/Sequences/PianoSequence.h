@@ -90,6 +90,6 @@ private:
 
     float findLastBeat() const noexcept override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoSequence);
-    JUCE_DECLARE_WEAK_REFERENCEABLE(PianoSequence);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoSequence)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(PianoSequence)
 };

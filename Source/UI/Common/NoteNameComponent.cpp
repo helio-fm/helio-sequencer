@@ -131,7 +131,7 @@ const String &NoteNameComponent::getText() const noexcept
 }
 
 void NoteNameComponent::setNoteName(const String &newNoteName,
-    Optional<String> newDetailsText, bool useFixedDoNotation)
+    Optional<String> newDetailsText, bool useFixedDoNotation) noexcept
 {
     if (this->noteName == newNoteName &&
         this->detailsText == newDetailsText)

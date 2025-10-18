@@ -28,7 +28,7 @@ class KeyboardMappingPage final :
 {
 public:
 
-    explicit KeyboardMappingPage(WeakReference<Instrument> instrument);
+    explicit KeyboardMappingPage(WeakReference<Instrument> instrument) noexcept;
     ~KeyboardMappingPage() override;
 
     //===------------------------------------------------------------------===//

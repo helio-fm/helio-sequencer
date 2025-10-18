@@ -30,7 +30,8 @@ class RenderDialog final : public DialogBase, public Timer
 public:
 
     RenderDialog(ProjectNode &parentProject,
-        const URL &target, RenderFormat format);
+        const URL &target, RenderFormat format) noexcept;
+
     ~RenderDialog();
 
     void resized() override;

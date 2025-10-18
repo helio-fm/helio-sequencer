@@ -33,7 +33,7 @@ InstrumentMenu::InstrumentMenu(InstrumentNode &instrumentNode,
     this->updateContent(this->createDefaultMenu(), MenuPanel::Fading);
 }
 
-MenuPanel::Menu InstrumentMenu::createDefaultMenu()
+MenuPanel::Menu InstrumentMenu::createDefaultMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -129,7 +129,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
     return menu;
 }
 
-MenuPanel::Menu InstrumentMenu::createEffectsMenu()
+MenuPanel::Menu InstrumentMenu::createEffectsMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -167,7 +167,7 @@ MenuPanel::Menu InstrumentMenu::createEffectsMenu()
     return menu;
 }
 
-MenuPanel::Menu InstrumentMenu::createInstrumentsMenu()
+MenuPanel::Menu InstrumentMenu::createInstrumentsMenu() noexcept
 {
     MenuPanel::Menu menu;
 

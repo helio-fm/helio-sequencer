@@ -111,8 +111,9 @@ public:
 
 protected:
 
-    virtual File getUsersResourceFile() const;
-    virtual String getBuiltInResourceString() const;
+    File getUsersResourceFile() const;
+    String getBuiltInResourceString() const;
+
     virtual const ConfigurationResource &getResourceComparator() const;
 
     using Resources = FlatHashMap<String, ConfigurationResource::Ptr, StringHash>;

@@ -25,7 +25,7 @@ class UserInterfaceSettings final : public Component
 {
 public:
 
-    UserInterfaceSettings();
+    UserInterfaceSettings() noexcept;
     ~UserInterfaceSettings();
 
     void resized() override;

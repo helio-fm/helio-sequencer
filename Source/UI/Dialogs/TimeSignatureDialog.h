@@ -36,7 +36,7 @@ public:
         WeakReference<MidiTrack> targetTrack,
         WeakReference<TimeSignaturesSequence> targetSequence,
         const TimeSignatureEvent &editedEvent,
-        bool shouldAddNewEvent);
+        bool shouldAddNewEvent) noexcept;
 
     ~TimeSignatureDialog();
 

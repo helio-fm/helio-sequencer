@@ -39,12 +39,12 @@ private:
 
     ProjectNode &getProject();
 
-    MenuPanel::Menu makeDefaultMenu();
-    MenuPanel::Menu makeQuantizationMenu();
-    MenuPanel::Menu makeRefactoringMenu();
-    MenuPanel::Menu makeMoveToTrackMenu();
-    MenuPanel::Menu makeTupletsMenu();
-    MenuPanel::Menu makeRescalingMenu();
-    MenuPanel::Menu makeArpsMenu();
+    MenuPanel::Menu makeDefaultMenu() noexcept;
+    MenuPanel::Menu makeQuantizationMenu() noexcept;
+    MenuPanel::Menu makeRefactoringMenu() noexcept;
+    MenuPanel::Menu makeMoveToTrackMenu() noexcept;
+    MenuPanel::Menu makeTupletsMenu() noexcept;
+    MenuPanel::Menu makeRescalingMenu() noexcept;
+    MenuPanel::Menu makeArpsMenu() noexcept;
 
 };

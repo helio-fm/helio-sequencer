@@ -38,7 +38,8 @@ namespace VCS
             const Uuid &id, const VCS::TrackedItem &newState) { return nullptr; }
 
         virtual bool deleteTrackedItem(TrackedItem *item) { return false; }
-        virtual void clearAllTrackedItems()
+
+        void clearAllTrackedItems()
         {
             Array<TrackedItem *> itemsToClear;
 

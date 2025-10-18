@@ -20,50 +20,8 @@
 #include "SerializationKeys.h"
 #include "Config.h"
 
-struct PluralEquationWrapper final : public DynamicObject
-{
-    explicit PluralEquationWrapper(TranslationsCollection &owner) : translator(owner)
-    {
-        this->setMethod(Serialization::Translations::wrapperMethodName, PluralEquationWrapper::detect);
-    }
-    
-    static Identifier getClassName()
-    {
-        return Serialization::Translations::wrapperClassName;
-    }
-    
-    static var detect(const var::NativeFunctionArgs &args)
-    {
-        if (args.numArguments > 0)
-        {
-            if (auto *thisObject = dynamic_cast<PluralEquationWrapper *>(args.thisObject.getObject()))
-            {
-                thisObject->translator.equationResult = args.arguments[0].toString();
-            }
-        }
-        
-        return var::undefined();
-    }
-    
-    TranslationsCollection &translator;
-    
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluralEquationWrapper)
-};
-
 TranslationsCollection::TranslationsCollection() :
-    ConfigurationResourceCollection(Serialization::Resources::translations)
-{
-    this->engine = make<JavascriptEngine>();
-    this->engine->maximumExecutionTime = RelativeTime::milliseconds(200);
-
-    PluralEquationWrapper::Ptr pluralEquationWrapper(new PluralEquationWrapper(*this));
-    this->engine->registerNativeObject(Serialization::Translations::wrapperClassName, pluralEquationWrapper.get());
-}
-
-TranslationsCollection::~TranslationsCollection()
-{
-    this->engine = nullptr;
-}
+    ConfigurationResourceCollection(Serialization::Resources::translations) {}
 
 //===----------------------------------------------------------------------===//
 // Translations
@@ -115,6 +73,39 @@ String TranslationsCollection::translate(I18n::Key key)
     return {};
 }
 
+// in previous versions, translation updates were downloaded in the runtime,
+// and each translation had a plurals formula as text, evaluated by JUCE's JS engine;
+// nowadays, the app is offline and all translations are built-in,
+// and using the JS engine seems like an overkill, let's just hard-code it all
+static int getPluralForm(const String &locale, int64 x) noexcept
+{
+    if (locale == "en" || locale == "de" || locale == "el" || locale == "es" ||
+        locale == "it" || locale == "ko" || locale == "af" || locale == "nl")
+    {
+        return x == 1 ? 1 : 2;
+    }
+    else if (locale == "zh" || locale == "ja")
+    {
+        return 1;
+    }
+    else if (locale == "fr" || locale == "pt" || locale == "tr")
+    {
+        return (x == 0 || x == 1) ? 1 : 2;
+    }
+    else if (locale == "ru" || locale == "uk")
+    {
+        return x % 10 == 1 && x % 100 != 11 ? 1 :
+            x % 10 >= 2 && x % 10 <= 4 && (x % 100 < 10 || x % 100 >= 20) ? 2 : 3;
+    }
+    else if (locale == "pl")
+    {
+        return x == 1 ? 1 :
+            x % 10 >= 2 && x % 10 <= 4 && (x % 100 < 10 || x % 100 >= 20) ? 2 : 3;
+    }
+
+    return 1;
+}
+
 String TranslationsCollection::translate(const String &baseLiteral, int64 targetNumber)
 {
     if (baseLiteral.isEmpty())
@@ -132,19 +123,11 @@ String TranslationsCollection::translate(const String &baseLiteral, int64 target
         return baseLiteral.replace(Translations::metaSymbol, String(targetNumber));
     }
 
-    const String expressionToEvaluate =
-        this->currentTranslation->pluralEquation.replace(Translations::metaSymbol,
-            String(targetNumber > 0 ? targetNumber : -targetNumber));
-
-    const Result result = this->engine->execute(expressionToEvaluate);
-    if (!result.failed())
+    const String pluralForm(getPluralForm(this->currentTranslation->id, targetNumber));
+    const auto foundTranslation = foundPlural->second->find(pluralForm);
+    if (foundTranslation != foundPlural->second->end())
     {
-        const String pluralForm = this->equationResult;
-        const auto foundTranslation = foundPlural->second->find(pluralForm);
-        if (foundTranslation != foundPlural->second->end())
-        {
-            return foundTranslation->second.replace(Translations::metaSymbol, String(targetNumber));
-        }
+        return foundTranslation->second.replace(Translations::metaSymbol, String(targetNumber));
     }
 
     return baseLiteral.replace(Translations::metaSymbol, String(targetNumber));
@@ -221,7 +204,6 @@ void TranslationsCollection::reset()
 {
     ConfigurationResourceCollection::reset();
     this->currentTranslation = nullptr;
-    this->equationResult.clear();
 }
 
 //===----------------------------------------------------------------------===//

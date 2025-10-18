@@ -36,7 +36,7 @@ ClipMenu::ClipMenu(const Clip &clip, WeakReference<UndoStack> undoStack) :
     this->updateContent(this->makeDefaultMenu(), MenuPanel::Fading);
 }
 
-MenuPanel::Menu ClipMenu::makeDefaultMenu()
+MenuPanel::Menu ClipMenu::makeDefaultMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -136,7 +136,7 @@ MenuPanel::Menu ClipMenu::makeDefaultMenu()
 }
 
 // tech debt warning: mostly duplicates PianoRollSelectionMenu::makeRefactoringMenu
-MenuPanel::Menu ClipMenu::makeRefactoringMenu()
+MenuPanel::Menu ClipMenu::makeRefactoringMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -186,7 +186,7 @@ MenuPanel::Menu ClipMenu::makeRefactoringMenu()
     return menu;
 }
 
-MenuPanel::Menu ClipMenu::makeQuantizationMenu()
+MenuPanel::Menu ClipMenu::makeQuantizationMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -213,7 +213,7 @@ MenuPanel::Menu ClipMenu::makeQuantizationMenu()
     return menu;
 }
 
-MenuPanel::Menu ClipMenu::makeChannelSelectionMenu()
+MenuPanel::Menu ClipMenu::makeChannelSelectionMenu() noexcept
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
@@ -241,7 +241,7 @@ MenuPanel::Menu ClipMenu::makeChannelSelectionMenu()
     return menu;
 }
 
-MenuPanel::Menu ClipMenu::makeInstrumentSelectionMenu()
+MenuPanel::Menu ClipMenu::makeInstrumentSelectionMenu() noexcept
 {
     MenuPanel::Menu menu;
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
@@ -282,7 +282,7 @@ ClipModifiersMenu::ClipModifiersMenu(const Clip &clip, WeakReference<UndoStack> 
     clip(clip),
     undoStack(undoStack) {}
 
-MenuPanel::Menu ClipModifiersMenu::makeModifiersMenu(const MenuItem::Callback &goBackToParent)
+MenuPanel::Menu ClipModifiersMenu::makeModifiersMenu(const MenuItem::Callback &goBackToParent) noexcept
 {
     if (this->clip.hasModifiers())
     {
@@ -292,7 +292,7 @@ MenuPanel::Menu ClipModifiersMenu::makeModifiersMenu(const MenuItem::Callback &g
     return this->makeAddModifiersMenu(goBackToParent);
 }
 
-MenuPanel::Menu ClipModifiersMenu::makeEditModifiersMenu(const MenuItem::Callback &goBackToParent)
+MenuPanel::Menu ClipModifiersMenu::makeEditModifiersMenu(const MenuItem::Callback &goBackToParent) noexcept
 {
     MenuPanel::Menu menu;
     if (goBackToParent)
@@ -399,7 +399,7 @@ MenuPanel::Menu ClipModifiersMenu::makeEditModifiersMenu(const MenuItem::Callbac
     return menu;
 }
 
-MenuPanel::Menu ClipModifiersMenu::makeAddModifiersMenu(const MenuItem::Callback &goBackToParent)
+MenuPanel::Menu ClipModifiersMenu::makeAddModifiersMenu(const MenuItem::Callback &goBackToParent) noexcept
 {
     MenuPanel::Menu menu;
     if (goBackToParent)
@@ -451,7 +451,7 @@ MenuPanel::Menu ClipModifiersMenu::makeAddModifiersMenu(const MenuItem::Callback
 }
 
 MenuPanel::Menu ClipModifiersMenu::makeModifiersArpsMenu(const MenuItem::Callback &goBackToParent,
-    const MenuItem::Callback &onAdd, SequenceModifier::Ptr updatedModifier)
+    const MenuItem::Callback &onAdd, SequenceModifier::Ptr updatedModifier) noexcept
 {
     MenuPanel::Menu menu;
     if (goBackToParent)
@@ -484,7 +484,7 @@ MenuPanel::Menu ClipModifiersMenu::makeModifiersArpsMenu(const MenuItem::Callbac
 MenuPanel::Menu ClipModifiersMenu::makeModifiersArpsSpeedMenu(
     const MenuItem::Callback &goBackToParent, const MenuItem::Callback &onAdd,
     SequenceModifier::Ptr updatedModifier,
-    const Arpeggiator::Ptr arp, const Array<float> &speedValues)
+    const Arpeggiator::Ptr arp, const Array<float> &speedValues) noexcept
 {
     MenuPanel::Menu menu;
     if (goBackToParent)
@@ -526,7 +526,7 @@ MenuPanel::Menu ClipModifiersMenu::makeModifiersArpsSpeedMenu(
 MenuPanel::Menu ClipModifiersMenu::makeModifiersRefactoringStepsMenu(
     const MenuItem::Callback &goBackToParent, const MenuItem::Callback &onAdd,
     SequenceModifier::Ptr updatedModifier, RefactoringSequenceModifier::Type type,
-    Icons::Id iconId, const Array<RefactoringSequenceModifier::Parameter> &parameters)
+    Icons::Id iconId, const Array<RefactoringSequenceModifier::Parameter> &parameters) noexcept
 {
     MenuPanel::Menu menu;
     if (goBackToParent)

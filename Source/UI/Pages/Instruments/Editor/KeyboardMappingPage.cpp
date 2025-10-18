@@ -27,7 +27,7 @@
 #include "ComponentIDs.h"
 #include "Config.h"
 
-KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) :
+KeyboardMappingPage::KeyboardMappingPage(WeakReference<Instrument> instrument) noexcept :
     instrument(instrument)
 {
     this->setFocusContainerType(Component::FocusContainerType::none);

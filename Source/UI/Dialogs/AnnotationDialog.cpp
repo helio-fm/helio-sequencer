@@ -48,7 +48,7 @@ static Array<String> getAnnotationExamples()
 
 AnnotationDialog::AnnotationDialog(AnnotationsSequence *sequence,
     const AnnotationEvent &editedEvent,
-    bool shouldAddNewEvent, float targetBeat) :
+    bool shouldAddNewEvent, float targetBeat) noexcept :
     originalEvent(editedEvent),
     originalSequence(sequence),
     addsNewEvent(shouldAddNewEvent)

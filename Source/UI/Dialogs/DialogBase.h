@@ -30,7 +30,7 @@ class DialogBase : public Component
 {
 public:
     
-    DialogBase();
+    DialogBase() noexcept;
     ~DialogBase() override;
 
     void paint(Graphics &g) override;

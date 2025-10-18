@@ -50,5 +50,4 @@ private:
     ProjectsList projects;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UserProfile)
-    JUCE_DECLARE_WEAK_REFERENCEABLE(UserProfile)
 };

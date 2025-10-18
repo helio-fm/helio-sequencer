@@ -37,8 +37,8 @@ namespace VCS
         // DiffLogic
         //===--------------------------------------------------------------===//
 
-        const Identifier getType() const override;
-        Diff *createDiff(const TrackedItem &initialState) const override;
-        Diff *createMergedItem(const TrackedItem &initialState) const override;
+        const Identifier getType() const noexcept override;
+        Diff *createDiff(const TrackedItem &initialState) const noexcept override;
+        Diff *createMergedItem(const TrackedItem &initialState) const noexcept override;
     };
 } // namespace VCS

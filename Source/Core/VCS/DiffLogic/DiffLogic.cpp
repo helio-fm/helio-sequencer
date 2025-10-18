@@ -34,7 +34,7 @@ public:
     explicit DummyDiffLogic(TrackedItem &targetItem) :
         AutomationTrackDiffLogic(targetItem) {}
     
-    const Identifier getType() const override
+    const Identifier getType() const noexcept override
     {
         return "none";
     }

@@ -30,7 +30,7 @@
 #include "CommandIDs.h"
 #include "Config.h"
 
-MenuPanel::Menu PianoRollSelectionMenu::makeDefaultMenu()
+MenuPanel::Menu PianoRollSelectionMenu::makeDefaultMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -78,7 +78,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeDefaultMenu()
     return menu;
 }
 
-MenuPanel::Menu PianoRollSelectionMenu::makeMoveToTrackMenu()
+MenuPanel::Menu PianoRollSelectionMenu::makeMoveToTrackMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -127,7 +127,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeMoveToTrackMenu()
     return menu;
 }
 
-MenuPanel::Menu PianoRollSelectionMenu::makeRefactoringMenu()
+MenuPanel::Menu PianoRollSelectionMenu::makeRefactoringMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -202,7 +202,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeRefactoringMenu()
     return menu;
 }
 
-MenuPanel::Menu PianoRollSelectionMenu::makeRescalingMenu()
+MenuPanel::Menu PianoRollSelectionMenu::makeRescalingMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -243,7 +243,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeRescalingMenu()
     return menu;
 }
 
-MenuPanel::Menu PianoRollSelectionMenu::makeQuantizationMenu()
+MenuPanel::Menu PianoRollSelectionMenu::makeQuantizationMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -270,7 +270,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeQuantizationMenu()
     return menu;
 }
 
-MenuPanel::Menu PianoRollSelectionMenu::makeTupletsMenu()
+MenuPanel::Menu PianoRollSelectionMenu::makeTupletsMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -292,7 +292,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeTupletsMenu()
     return menu;
 }
 
-MenuPanel::Menu PianoRollSelectionMenu::makeArpsMenu()
+MenuPanel::Menu PianoRollSelectionMenu::makeArpsMenu() noexcept
 {
     MenuPanel::Menu menu;
 

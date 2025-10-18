@@ -84,7 +84,7 @@ public:
     // Hard-coded defaults
     //===------------------------------------------------------------------===//
 
-    static Temperament::Ptr makeTwelveToneEqualTemperament();
+    static Temperament::Ptr makeTwelveToneEqualTemperament() noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable

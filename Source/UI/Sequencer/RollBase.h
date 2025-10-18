@@ -206,7 +206,7 @@ public:
     void setBeatRange(float first, float last);
     inline float getNumBeats() const noexcept { return this->lastBeat - this->firstBeat; }
 
-    virtual void setBeatWidth(float newBeatWidth);
+    void setBeatWidth(float newBeatWidth);
     inline float getBeatWidth() const noexcept { return this->beatWidth; }
 
     float getMinVisibleBeatForCurrentZoomLevel() const;

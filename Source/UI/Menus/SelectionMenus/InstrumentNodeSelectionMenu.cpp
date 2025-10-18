@@ -28,7 +28,7 @@ InstrumentNodeSelectionMenu::InstrumentNodeSelectionMenu(Instrument &instrument,
     this->updateContent(this->createDefaultMenu(), MenuPanel::Fading);
 }
 
-MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()
+MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -107,7 +107,7 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()
     return menu;
 }
 
-MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioSourcesMenu()
+MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioSourcesMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -133,7 +133,7 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioSourcesMenu()
     return menu;
 }
 
-MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioDestinationsMenu()
+MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioDestinationsMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -159,8 +159,9 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioDestinationsMenu()
     return menu;
 }
 
-MenuPanel::Menu InstrumentNodeSelectionMenu::createMidiSourcesMenu()
-{    MenuPanel::Menu menu;
+MenuPanel::Menu InstrumentNodeSelectionMenu::createMidiSourcesMenu() noexcept
+{
+    MenuPanel::Menu menu;
 
     menu.add(MenuItem::item(Icons::back, TRANS(I18n::Menu::back))->withAction([this]()
     {
@@ -184,7 +185,7 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createMidiSourcesMenu()
     return menu;
 }
 
-MenuPanel::Menu InstrumentNodeSelectionMenu::createMidiDestinationsMenu()
+MenuPanel::Menu InstrumentNodeSelectionMenu::createMidiDestinationsMenu() noexcept
 {
     MenuPanel::Menu menu;
 

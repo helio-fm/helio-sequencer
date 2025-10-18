@@ -31,7 +31,7 @@ AudioPluginSelectionMenu::AudioPluginSelectionMenu(const PluginDescription pd,
     this->updateContent(this->createDefaultMenu(), MenuPanel::Fading);
 }
 
-MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
+MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu() noexcept
 {
     MenuPanel::Menu menu;
 
@@ -61,7 +61,7 @@ MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
     return menu;
 }
 
-MenuPanel::Menu AudioPluginSelectionMenu::createInstrumentsMenu()
+MenuPanel::Menu AudioPluginSelectionMenu::createInstrumentsMenu() noexcept
 {
     MenuPanel::Menu menu;
 

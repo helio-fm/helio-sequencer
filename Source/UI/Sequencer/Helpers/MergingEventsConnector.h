@@ -34,7 +34,7 @@ public:
 
     Point<float> getStartPosition() const noexcept;
     Point<float> getEndPosition() const noexcept;
-    virtual void setEndPosition(Point<float> position);
+    void setEndPosition(Point<float> position);
 
     void parentSizeChanged() override;
 

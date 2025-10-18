@@ -23,9 +23,9 @@ public:
 
     using Id = uint32;
 
-    static void initBuiltInImages();
-    static void clearBuiltInImages();
-    static void clearPrerenderedCache();
+    static void initBuiltInImages() noexcept;
+    static void clearBuiltInImages() noexcept;
+    static void clearPrerenderedCache() noexcept;
 
     static Image findByName(Icons::Id id, int maxSize);
     static Image findByName(Icons::Id id, int exactSize,

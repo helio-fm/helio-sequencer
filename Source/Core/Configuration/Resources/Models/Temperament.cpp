@@ -107,7 +107,7 @@ Identifier Temperament::getResourceType() const noexcept
 
 static const String defaultTemperamentId = "12edo";
 
-Temperament::Ptr Temperament::makeTwelveToneEqualTemperament()
+Temperament::Ptr Temperament::makeTwelveToneEqualTemperament() noexcept
 {
     Temperament::Ptr t(new Temperament());
     t->id = defaultTemperamentId;

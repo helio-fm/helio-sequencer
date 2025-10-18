@@ -980,8 +980,8 @@ bool ProjectNode::exportMidi(OutputStream &stream) const
     static const double midiClock = 960.0;
     tempFile.setTicksPerQuarterNote(int(midiClock));
 
-    static Clip noTransform;
-    static KeyboardMapping simpleMapping;
+    Clip noTransform;
+    KeyboardMapping simpleMapping;
 
     // Solo flags won't be taken into account
     // in MIDI export, as I believe they shouldn't:

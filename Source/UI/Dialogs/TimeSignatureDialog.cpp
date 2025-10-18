@@ -29,7 +29,7 @@
 TimeSignatureDialog::TimeSignatureDialog(ProjectNode &project,
     WeakReference<MidiTrack> targetTrack,
     WeakReference<TimeSignaturesSequence> targetSequence,
-    const TimeSignatureEvent &editedTimeSignature, bool shouldAddNewEvent) :
+    const TimeSignatureEvent &editedTimeSignature, bool shouldAddNewEvent) noexcept :
     undoStack(project.getUndoStack()),
     targetTrack(targetTrack),
     targetSequence(targetSequence),

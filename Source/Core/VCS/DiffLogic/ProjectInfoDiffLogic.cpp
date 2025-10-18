@@ -41,12 +41,12 @@ ProjectInfoDiffLogic::ProjectInfoDiffLogic(TrackedItem &targetItem) :
 // DiffLogic
 //===----------------------------------------------------------------------===//
 
-const Identifier ProjectInfoDiffLogic::getType() const
+const Identifier ProjectInfoDiffLogic::getType() const noexcept
 {
     return Serialization::Core::projectInfo;
 }
 
-Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
+Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const noexcept
 {
     using namespace Serialization::VCS;
 
@@ -104,7 +104,7 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
     return diff;
 }
 
-Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) const
+Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) const noexcept
 {
     using namespace Serialization::VCS;
 

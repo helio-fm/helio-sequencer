@@ -58,7 +58,7 @@ bool DialogTextEditor::keyPressed(const KeyPress &key)
     return TextEditor::keyPressed(key);
 }
 
-DialogBase::DialogBase()
+DialogBase::DialogBase() noexcept
 {
     this->setComponentID(ComponentIDs::dialog);
 

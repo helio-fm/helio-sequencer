@@ -31,7 +31,7 @@ public:
 
     AnnotationDialog(AnnotationsSequence *sequence,
         const AnnotationEvent &editedEvent,
-        bool shouldAddNewEvent, float targetBeat);
+        bool shouldAddNewEvent, float targetBeat) noexcept;
 
     ~AnnotationDialog();
 

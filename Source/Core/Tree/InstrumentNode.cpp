@@ -346,7 +346,7 @@ public:
         this->updateContent(this->createDefaultMenu(), MenuPanel::Fading);
     }
 
-    MenuPanel::Menu createDefaultMenu()
+    MenuPanel::Menu createDefaultMenu() noexcept
     {
         MenuPanel::Menu menu;
 
@@ -370,7 +370,7 @@ public:
         return menu;
     }
 
-    MenuPanel::Menu createPresetsMenu()
+    MenuPanel::Menu createPresetsMenu() noexcept
     {
         MenuPanel::Menu menu;
 

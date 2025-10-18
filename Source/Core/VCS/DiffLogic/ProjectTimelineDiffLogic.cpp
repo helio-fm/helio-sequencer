@@ -57,12 +57,12 @@ static bool checkIfDeltaIsKeySignatureType(const Delta *delta);
 ProjectTimelineDiffLogic::ProjectTimelineDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
 
-const Identifier ProjectTimelineDiffLogic::getType() const
+const Identifier ProjectTimelineDiffLogic::getType() const noexcept
 {
     return Serialization::Core::projectTimeline;
 }
 
-Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) const
+Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) const noexcept
 {
     using namespace Serialization::VCS;
     
@@ -111,7 +111,7 @@ Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) cons
     return diff;
 }
 
-Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState) const
+Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState) const noexcept
 {
     using namespace Serialization::VCS;
     auto *diff = new Diff(this->target);

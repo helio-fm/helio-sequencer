@@ -45,7 +45,7 @@ private:
     void undoIfNeeded();
 
     MenuPanel::Menu mainMenu;
-    MenuPanel::Menu createOptionsMenu(Arpeggiator::Ptr arp);
+    MenuPanel::Menu createOptionsMenu(Arpeggiator::Ptr arp) noexcept;
 
     struct Options final
     {

@@ -32,10 +32,9 @@ namespace VCS
         explicit DiffLogic(TrackedItem &targetItem) : target(targetItem) {}
         virtual ~DiffLogic() = default;
 
-        virtual const Identifier getType() const = 0;
-
-        virtual Diff *createDiff(const TrackedItem &initialState) const = 0;
-        virtual Diff *createMergedItem(const TrackedItem &initialState) const = 0;
+        virtual const Identifier getType() const noexcept = 0;
+        virtual Diff *createDiff(const TrackedItem &initialState) const noexcept = 0;
+        virtual Diff *createMergedItem(const TrackedItem &initialState) const noexcept = 0;
 
     protected:
 

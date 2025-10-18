@@ -33,10 +33,10 @@ private:
     Instrument &instrument;
     AudioProcessorGraph::Node::Ptr node;
 
-    MenuPanel::Menu createDefaultMenu();
-    MenuPanel::Menu createAudioSourcesMenu();
-    MenuPanel::Menu createAudioDestinationsMenu();
-    MenuPanel::Menu createMidiSourcesMenu();
-    MenuPanel::Menu createMidiDestinationsMenu();
+    MenuPanel::Menu createDefaultMenu() noexcept;
+    MenuPanel::Menu createAudioSourcesMenu() noexcept;
+    MenuPanel::Menu createAudioDestinationsMenu() noexcept;
+    MenuPanel::Menu createMidiSourcesMenu() noexcept;
+    MenuPanel::Menu createMidiDestinationsMenu() noexcept;
 
 };

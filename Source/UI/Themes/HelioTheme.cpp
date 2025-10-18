@@ -225,6 +225,11 @@ void HelioTheme::fillTextEditorBackground(Graphics &g, int w, int h, TextEditor 
     g.drawHorizontalLine(h - 1, 1.f, w - 1.f);
 }
 
+void HelioTheme::drawPopupMenuBackground(Graphics& g, int width, int height)
+{
+    g.fillAll(findColour(PopupMenu::backgroundColourId));
+}
+
 //===----------------------------------------------------------------------===//
 // Labels
 //===----------------------------------------------------------------------===//
@@ -353,6 +358,19 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
 
     g.setColour(baseColour.withMultipliedAlpha(1.1f));
     g.strokePath(outline, PathStrokeType(1.f));
+}
+
+Path HelioTheme::getTickShape(float height)
+{
+    static const unsigned char pathData[] = {
+        110,109,32,210,202,64,126,183,148,64,108,39,244,247,64,245,76,124,64,108,178,131,27,65,246,76,252,64,108,175,242,4,65,246,76,252,
+        64,108,236,5,68,65,0,0,160,180,108,240,150,90,65,21,136,52,63,108,48,59,16,65,0,0,32,65,108,32,210,202,64,126,183,148,64, 99,101,0,0
+    };
+
+    Path path;
+    path.loadPathFromData(pathData, sizeof(pathData));
+    path.scaleToFit(0, 0, height * 2.0f, height, true);
+    return path;
 }
 
 void HelioTheme::drawToggleButton(Graphics &g, ToggleButton &button,
@@ -729,7 +747,7 @@ void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
     }
 }
 
-void HelioTheme::initResources()
+void HelioTheme::initResources() noexcept
 {
     Icons::initBuiltInImages();
 
@@ -801,7 +819,7 @@ void HelioTheme::initResources()
 #endif
 }
 
-void HelioTheme::updateFont(const Font &font)
+void HelioTheme::updateFont(const Font &font) noexcept
 {
 #if PLATFORM_DESKTOP
 
@@ -812,7 +830,7 @@ void HelioTheme::updateFont(const Font &font)
 #endif
 }
 
-void HelioTheme::initColours(const ::ColourScheme::Ptr s)
+void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
 {
     const auto textColour = s->getTextColour();
     
@@ -833,7 +851,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
         s->getFrameBorderColour().withAlpha(this->isDarkTheme ? 0.25f : 0.35f));
 
     this->setColour(TextButton::buttonColourId,
-        s->getDialogFillColour().brighter(2.5f).withMultipliedAlpha(this->isDarkTheme ? 0.0625f : 0.375f));
+        s->getDialogFillColour().brighter(2.5f).withMultipliedAlpha(this->isDarkTheme ? 0.0625f : 0.35f));
     this->setColour(TextButton::buttonOnColourId,
         s->getDialogFillColour().brighter(2.5f).withMultipliedAlpha(this->isDarkTheme ? 0.025f : 0.25f));
     this->setColour(TextButton::textColourOnId, textColour.withMultipliedAlpha(0.8f));
@@ -847,6 +865,12 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(TextEditor::shadowColourId, s->getPageFillColour().darker(0.05f));
     this->setColour(TextEditor::highlightColourId, textColour.withAlpha(this->isDarkTheme ? 0.035f : 0.07f));
     this->setColour(CaretComponent::caretColourId, textColour.withAlpha(0.35f));
+
+    this->setColour(PopupMenu::backgroundColourId, s->getPageFillColour());
+    this->setColour(PopupMenu::textColourId, textColour);
+    this->setColour(PopupMenu::headerTextColourId, textColour);
+    this->setColour(PopupMenu::highlightedBackgroundColourId, s->getPageFillColour().brighter(0.069f));
+    this->setColour(PopupMenu::highlightedTextColourId, textColour);
 
     this->setColour(ListBox::textColourId, textColour);
     this->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
