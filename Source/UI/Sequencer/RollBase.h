@@ -328,6 +328,7 @@ protected:
     void onUiAnimationsFlagChanged(bool enabled) override;
     void onMouseWheelFlagsChanged(UserInterfaceFlags::MouseWheelFlags flags) override;
     void onLockZoomLevelFlagChanged(bool zoomLocked) override;
+    void onUiScaleChanged(float scale) override;
 
     //===------------------------------------------------------------------===//
     // TransportListener
@@ -384,8 +385,8 @@ protected:
     Temperament::Ptr temperament;
 
     Point<int> viewportAnchor = { 0, 0 };
-    Point<float> clickAnchor = { 0, 0 };
-    float beatWidthAnchor = 0;
+    Point<float> clickAnchor = { 0.f, 0.f };
+    float beatWidthAnchor = 0.f;
 
     void continueDragging(const MouseEvent &e);
     Point<int> getMouseOffset(Point<int> mouseScreenPosition) const;
@@ -415,6 +416,7 @@ protected:
 
     UserInterfaceFlags::MouseWheelFlags mouseWheelFlags;
     bool zoomLevelLocked = false;
+    float uiScaleFactor = 1.f;
 
     ComponentFader fader;
 

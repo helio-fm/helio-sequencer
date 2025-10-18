@@ -156,6 +156,7 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     this->onUiAnimationsFlagChanged(uiFlags->areUiAnimationsEnabled());
     this->onMouseWheelFlagsChanged(uiFlags->getMouseWheelFlags());
     this->onLockZoomLevelFlagChanged(uiFlags->isZoomLevelLocked());
+    this->onUiScaleChanged(uiFlags->getUiScaleFactor());
     uiFlags->addListener(this);
 
     this->updateWidth();
@@ -1852,6 +1853,11 @@ void RollBase::onLockZoomLevelFlagChanged(bool zoomLocked)
     this->zoomLevelLocked = zoomLocked;
 }
 
+void RollBase::onUiScaleChanged(float scaleFactor)
+{
+    this->uiScaleFactor = scaleFactor;
+}
+
 //===----------------------------------------------------------------------===//
 // TransportListener
 //===----------------------------------------------------------------------===//
@@ -2099,17 +2105,18 @@ void RollBase::continueDragging(const MouseEvent &e)
 
 Point<int> RollBase::getMouseOffset(Point<int> mouseScreenPosition) const
 {
-    const auto distanceFromDragStart = mouseScreenPosition - this->clickAnchor.toInt();
+    const auto distanceFromDragStart =
+        (mouseScreenPosition.toFloat() - this->clickAnchor) / this->uiScaleFactor;
 
     const auto w = this->getWidth() - this->viewport.getWidth();
     const auto x = jmax(0, jmin(w,
-        this->viewportAnchor.getX() - distanceFromDragStart.getX()));
+        this->viewportAnchor.getX() - int(distanceFromDragStart.getX())));
 
     const auto h = this->getHeight() - this->viewport.getHeight();
     const auto y = jmax(0, jmin(h,
-        this->viewportAnchor.getY() - distanceFromDragStart.getY()));
+        this->viewportAnchor.getY() - int(distanceFromDragStart.getY())));
 
-    return {x, y};
+    return { x, y };
 }
 
 void RollBase::updateWidth()

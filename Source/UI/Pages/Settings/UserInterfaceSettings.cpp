@@ -251,7 +251,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
     this->uiScaleTitle->setBorderSize({ 0, 2, 0, 2 });
     this->uiScaleTitle->setInterceptsMouseClicks(false, false);
 
-    this->scaleUi1 = make<ToggleButton>("x1");
+    this->scaleUi1 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97"" 1"));
     this->addAndMakeVisible(this->scaleUi1.get());
     this->scaleUi1->onClick = [this]() {
         BailOutChecker checker(this);
@@ -262,7 +262,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
         }
     };
 
-    this->scaleUi125 = make<ToggleButton>("x1.25");
+    this->scaleUi125 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97"" 1.25"));
     this->addAndMakeVisible(this->scaleUi125.get());
     this->scaleUi125->onClick = [this]() {
         BailOutChecker checker(this);
@@ -273,7 +273,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
         }
     };
 
-    this->scaleUi15 = make<ToggleButton>("x1.5");
+    this->scaleUi15 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97"" 1.5"));
     this->addAndMakeVisible(this->scaleUi15.get());
     this->scaleUi15->onClick = [this]() {
         BailOutChecker checker(this);
@@ -284,7 +284,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
         }
     };
 
-    this->scaleUi175 = make<ToggleButton>("x1.75");
+    this->scaleUi175 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97"" 1.75"));
     this->addAndMakeVisible(this->scaleUi175.get());
     this->scaleUi175->onClick = [this]() {
         BailOutChecker checker(this);
@@ -295,7 +295,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
         }
     };
 
-    this->scaleUi2 = make<ToggleButton>("x2");
+    this->scaleUi2 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97"" 2"));
     this->addAndMakeVisible(this->scaleUi2.get());
     this->scaleUi2->onClick = [this]() {
         BailOutChecker checker(this);
