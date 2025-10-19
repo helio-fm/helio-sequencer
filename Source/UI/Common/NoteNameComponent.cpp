@@ -134,7 +134,8 @@ void NoteNameComponent::setNoteName(const String &newNoteName,
     Optional<String> newDetailsText, bool useFixedDoNotation) noexcept
 {
     if (this->noteName == newNoteName &&
-        this->detailsText == newDetailsText)
+        this->detailsText == newDetailsText &&
+        this->useFixedDoNotation == useFixedDoNotation)
     {
         //jassertfalse;
         return;
@@ -142,6 +143,7 @@ void NoteNameComponent::setNoteName(const String &newNoteName,
 
     this->noteName = newNoteName;
     this->detailsText = newDetailsText;
+    this->useFixedDoNotation = useFixedDoNotation;
 
     this->fallbackLabelText = this->noteName;
     if (this->detailsText.hasValue())

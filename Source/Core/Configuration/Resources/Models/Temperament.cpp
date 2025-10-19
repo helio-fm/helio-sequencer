@@ -47,16 +47,16 @@ String Temperament::getMidiNoteName(Note::Key note, int scaleRootKey,
 {
     if (isPositiveAndBelow(note, this->getNumKeys()))
     {
-        const auto defaultScaleKey = note % this->getPeriodSize();
-        const auto defaultNoteName = this->period[defaultScaleKey][0];
-
+        const auto rootKeyNameFallback = this->period[scaleRootKey % this->getPeriodSize()][0];
         const auto foundUserScale = this->chromaticScales.find(
-            rootKeyEnharmonic.isEmpty() ? defaultNoteName : rootKeyEnharmonic);
+            rootKeyEnharmonic.isEmpty() ? rootKeyNameFallback : rootKeyEnharmonic);
 
         const auto inScaleKey = Scale::wrapKey(note - scaleRootKey, 0, this->getPeriodSize());
+
+        const auto noteNameFallback = this->period[note % this->getPeriodSize()][0];
         const String result = foundUserScale != this->chromaticScales.end() ?
             foundUserScale->second[inScaleKey] :
-            defaultNoteName;
+            noteNameFallback;
 
         outPeriodNumber = note / this->getPeriodSize() +
             (Temperament::displayedPeriodNumForMiddleC - Temperament::periodNumForMiddleC);

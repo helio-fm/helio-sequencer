@@ -56,6 +56,8 @@ private:
     Optional<String> detailsText;
     float detailsWidth = 0.f;
 
+    bool useFixedDoNotation = false;
+
     String fallbackLabelText;
 
     UniquePointer<Label> nameLabel;
