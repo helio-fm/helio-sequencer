@@ -35,3 +35,17 @@ If you don't see any hotkeys here, you're reading the markdown source of this pa
 ```json
 {{#include ../Resources/hotkeySchemes.json:VersionControlStage}}
 ```
+
+## Menus and modal components
+
+```json
+{{#include ../Resources/hotkeySchemes.json:Menu}}
+```
+
+```json
+{{#include ../Resources/hotkeySchemes.json:Dialog}}
+```
+
+```json
+{{#include ../Resources/hotkeySchemes.json:CommandPalette}}
+```

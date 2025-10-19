@@ -1,18 +1,17 @@
 # Configs
 
-Helio uses several configuration files, such as: scales, in-scale chords, temperaments, hotkeys, colour schemes and translations.
+Helio has several built-in configuration files for [scales](#built-in-scales), [temperaments](#built-in-temperaments), in-scale [chords](#built-in-chords), [meters](#built-in-meters), [hotkeys](hotkeys.md), and colour schemes.
 
-Each configuration type can have up to three versions, which are loaded and merged in this order:
- * built-in into the executable,
- * latest updates fetched from helio.fm, which extend and override the built-in ones,
-   * for example, translations, which is now the only resource updated in the runtime,
- * [user's configs](#user-configs), which extend and override the previous step
-   * for example, arpeggiators that you create in the app,
-   * or any other configuration you might add and fill by hand.
+You can extend them by creating any of these files in your [projects directory](index.md#the-projects-directory):
+ * `meters.json`
+ * `chords.json`
+ * [`scales.json`](#custom-scales)
+ * [`temperaments.json`](#custom-temperaments)
+ * [`colourSchemes.json`](#custom-colour-schemes)
 
-## Built-in configs
+This page lists built-in defaults and examples of how to extend them:
 
-### Chords
+### Built-in chords
 
 This config lists all chords displayed in the [chord tool](tips-and-tricks.md#chord-tool):
 
@@ -20,19 +19,17 @@ This config lists all chords displayed in the [chord tool](tips-and-tricks.md#ch
 {{#include ../Resources/chords.json}}
 ```
 
-### Temperaments
+### Built-in temperaments
 
-This file lists all available temperaments, to which you can [switch](getting-microtonal.md#switching-temperaments) your project:
+Temperaments define how highlighting works in the piano roll, including octave size and key names, and which scales are available to choose from. Temperament description also provides a chromatic approximation, which is used when [converting a piece](getting-microtonal.md#switching-temperaments) from one temperament to another:
 
 ```json
 {{#include ../Resources/temperaments.json}}
 ```
 
-Temperaments define how highlighting works in the piano roll, including octave size and key names, and which scales are available to choose from. Temperament description also provides a chromatic approximation, which is used as the "least common denominator" to be able to convert a piece from one temperament to another.
-
 Temperaments allow to specify up to 3 enharmonic equivalents per key, and custom chromatic scale note namings for each enharmonic equivalent. This is to make note names more consistent with traditional notation language, although not ideal, because it only uses names from chromatic scales; in the context of diatonic scales, note names will still differ from traditional notation because the sequencer displays both the chromatic scale (the grid itself) and whatever scales within it (the highlighted rows) at the same time.
 
-### Scales
+### Built-in scales
 
 Scales listed here are available to choose from in the key signature dialog, and in the rescale [tool](tips-and-tricks.md#quick-rescale-tool). Scales with octave size mismatching the current temperament's octave size are ignored.
 
@@ -40,7 +37,7 @@ Scales listed here are available to choose from in the key signature dialog, and
 {{#include ../Resources/scales.json}}
 ```
 
-### Meters
+### Built-in meters
 
 Meters listed here are available to choose from in the time signature dialog.
 
@@ -51,27 +48,6 @@ Metronome schemes listed here are just the default ones, and they can be edited 
 ```json
 {{#include ../Resources/meters.json}}
 ```
-
-### Hotkeys
-
-See the [hotkeys page](hotkeys.md).
-
-### Translations
-
-The translations file is too big to be included here; if you want to help proofread and improve the translation for your native language, please follow this [link](https://helio.fm/translations).
-
-The translations are updated in the runtime, if there are any changes: the latest translations are saved in the `translations.helio` file in the app's [config directory](index.md#the-configuration-directory).
-
-
-## User configs
-
-To override or extend the built-in data, you can create a file with one of these names in your [projects directory](index.md#the-projects-directory):
-
- * `chords.json`
- * `scales.json`
- * `meters.json`
- * `temperaments.json`
- * etc.
 
 ### Custom scales
 

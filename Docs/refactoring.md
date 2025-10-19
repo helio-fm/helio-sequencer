@@ -52,9 +52,7 @@ Use the `Alt + Up` and `Alt + Down` hotkeys to transpose the selected notes usin
 
 ![inscale-transposition]
 
-The notes which are out of scale will be aligned up or down to the nearest in-scale keys.
-
-More generally, you can think of it as "transposition using highlighted rows only". For example, when the scales highlighting [flag](tips-and-tricks.md#scales-highlighting) is turned off, it can be useful in microtonal temperaments to transpose notes using only those keys which [approximate](configs.md#temperaments) the 12-tone scale.
+The notes which are out of scale will be aligned up or down to the nearest in-scale keys. You can think of it as "transposition using highlighted rows only".
 
 #### Align to scale
 
@@ -106,7 +104,7 @@ Arpeggiators also rely on time signatures to remember bar starts. When you apply
 
 Because the creation and use of arpeggiators is tied to harmonic context, arpeggiators rely on valid key signatures at the timeline.
 
- * First, create any sequence in the current key and scale (enable [scales highlighting](tips-and-tricks.md#scales-highlighting) to avoid confusion). Any out-of-scale keys will be ignored.
+ * First, create any sequence in the current key and scale. Any out-of-scale keys will be ignored. Also make sure you haven't disabled scales highlighting on the setting page to avoid confusion.
  * To create a named arpeggiator from that sequence, select it and press the `Shift + A` hotkey or select a submenu item.
  * After that, in any other place, apply that arpeggiator to any selection, presumably some chords.
 

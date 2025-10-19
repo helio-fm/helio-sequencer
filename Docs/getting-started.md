@@ -176,7 +176,7 @@ If you need to manage complex rhythms, see [this page](getting-polymetric.md).
 
 #### Key signatures
 
-Key signatures affect the way the rows are highlighted in the piano roll (but this effect can be [disabled](tips-and-tricks.md#scales-highlighting)).
+Key signatures affect the way the rows are highlighted in the piano roll (this effect can be disabled on the setting page):
 
 ![timeline-key-signatures]
 
@@ -206,10 +206,11 @@ Most buttons on the sidebars have keyboard shortcuts, which makes them kinda red
 
  * ![sidebar-left-1] — switch the editor view between the piano roll and the pattern roll (`Tab`),
  * ![sidebar-left-2] — zoom out (`Shift + Z`), zoom in (`Z`), and zoom selection (`Control + Tab`),
- * ![sidebar-left-3] — jump over the timeline events (`,` and `.`),
- * ![sidebar-left-4] — toggle the [volume/automation editors](#volume-and-automation-editors) (`V`),
- * ![sidebar-left-5] — UI [flags](tips-and-tricks.md#ui-flags) that toggle scales highlighting and the note guides (`H` and `G`),
- * ![sidebar-left-6] — a simple waveform or spectrogram view.
+ * ![sidebar-left-3] — lock the current zoom level(`Alt + Z`),
+ * ![sidebar-left-4] — jump over the timeline events (`,` and `.`),
+ * ![sidebar-left-5] — toggle the [volume/automation editors](#volume-and-automation-editors) (`V`),
+ * ![sidebar-left-6] — toggle displaying [note name guides](tips-and-tricks.md#note-name-guides) for a visual cue,
+ * ![sidebar-left-7] — a simple audio output view.
 
 ### Right sidebar
 
@@ -217,15 +218,15 @@ This sidebar is responsible for editing tools and playback control:
 
  * ![sidebar-right-1] — toggle the playback loop over the selection (`F11`),
  * ![sidebar-right-2] — edit [modes](#edit-modes) (`1`, `2`, `3`),
- * ![sidebar-right-3] — some other tools - the chord tool and arpeggiators, if available,
- * ![sidebar-right-4] — copy and paste, undo and redo,
+ * ![sidebar-right-3] — undo/redo,
+ * ![sidebar-right-4] — other tools - the chord tool, arpeggiators(if available), and metronome,
  * ![sidebar-right-5] — playback (`Space` or `Enter`) and recording (`F12`) control.
 
 ## Piano roll
 
 The piano roll always limits the editable scope to a single track. You will see all other tracks in a semi-transparent ghost mode. Most common interactions with the piano roll canvas are:
 
- * right-click on the inactive note to focus the editor to another track,
+ * right-click (or long-tap) on the inactive note to focus the editor to another track,
  * right-drag the empty space to pan the canvas:
 
 ![piano-roll]
@@ -373,18 +374,19 @@ The right side shows the tree of all revisions that you have saved. Note a coupl
 [timeline-reprise]: images/timeline-reprise.png "Timeline: repeat signs"
 [key-signature-dialog]: images/key-signature-dialog.png "Key signature dialog"
 
-[sidebar-left-1]: images/sidebar-left-1.png "Navigation sidebar 1"
-[sidebar-left-2]: images/sidebar-left-2.png "Navigation sidebar 2"
-[sidebar-left-3]: images/sidebar-left-3.png "Navigation sidebar 3"
-[sidebar-left-4]: images/sidebar-left-4.png "Navigation sidebar 4"
-[sidebar-left-5]: images/sidebar-left-5.png "Navigation sidebar 5"
-[sidebar-left-6]: images/sidebar-left-6.png "Navigation sidebar 6"
+[sidebar-left-1]: images/sidebar-l1.png "Navigation sidebar 1"
+[sidebar-left-2]: images/sidebar-l2.png "Navigation sidebar 2"
+[sidebar-left-3]: images/sidebar-l3.png "Navigation sidebar 3"
+[sidebar-left-4]: images/sidebar-l4.png "Navigation sidebar 4"
+[sidebar-left-5]: images/sidebar-l5.png "Navigation sidebar 5"
+[sidebar-left-6]: images/sidebar-l6.png "Navigation sidebar 6"
+[sidebar-left-7]: images/sidebar-l7.png "Navigation sidebar 7"
 
-[sidebar-right-1]: images/sidebar-right-1.png "Tooling sidebar 1"
-[sidebar-right-2]: images/sidebar-right-2.png "Tooling sidebar 2"
-[sidebar-right-3]: images/sidebar-right-3.png "Tooling sidebar 3"
-[sidebar-right-4]: images/sidebar-right-4.png "Tooling sidebar 4"
-[sidebar-right-5]: images/sidebar-right-5.png "Tooling sidebar 5"
+[sidebar-right-1]: images/sidebar-r1.png "Tooling sidebar 1"
+[sidebar-right-2]: images/sidebar-r2.png "Tooling sidebar 2"
+[sidebar-right-3]: images/sidebar-r3.png "Tooling sidebar 3"
+[sidebar-right-4]: images/sidebar-r4.png "Tooling sidebar 4"
+[sidebar-right-5]: images/sidebar-r5.png "Tooling sidebar 5"
 
 [recording-start]: images/recording-start.png "Start MIDI recording"
 [recording-piano-roll]: images/recording-piano-roll.png "MIDI recording in the piano roll"

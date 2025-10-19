@@ -86,11 +86,7 @@ Holding `Shift` while dragging will shape-shift group's velocities into a sine (
 
 You can also adjust notes volume linearly just by middle-button dragging the note components in the piano roll directly.
 
-### UI flags
-
-A couple of display options are available to provide a visual cue. They can be toggled using the navigation panel or hotkeys (`G` and `H` by default).
-
-#### Note name guides
+### Note name guides
 
 The `G` hotkey toggles the note name guides:
 
@@ -100,13 +96,7 @@ Note names depend on the root key of a key signature found at the start of the v
 
 Depending on your settings, note names can be displayed in either German or Fixed Do notation (C-D-E or Do-Re-Mi, where Do is always C, Re is always D, and so on).
 
-#### Scales highlighting
-
-Another flag highlights the in-scale keys of the key signatures that have been added to the timeline. If you prefer C Major coloring in the piano roll, turn it off:
-
-![scales-highlighting]
-
-#### Mini-maps
+### Mini-maps
 
 The mini-map mode can be toggled with `B` hotkey, or by clicking at any area except the screen range rectangle.
 
@@ -124,11 +114,15 @@ By double-clicking on a row in the piano roll you invoke the chord tool:
 
 ![chord-tool]
 
-It picks the current key signature from the timeline to determine which scale and root key to use to generate chords. Hence the main limitation of this tool: it can only generate chords that are easy to define with in-scale keys.
+It picks the current key signature from the timeline to determine which scale and root key to use to generate chords. Hence the main limitation of this tool: it can only generate chords that are easy to define with in-scale keys, and it will not generate chords when placed on an out-of-scale key (darker rows).
 
-It can be dragged around by the center node, which is helpful if you clicked the wrong row or position.
+It can be dragged around by the center node, or controlled via hotkeys:
+ * `1`, `2`, `3`, `4`, `5`, etc or `Page Up` / `Page Down` to switch to another chord,
+ * cursor keys or `HJKL` to move it around,
+ * `Enter` and `Escape` to apply or cancel.
 
-Since it depends on the harmonic context, it will do nothing when placed on an out-of-scale note (darker rows). To avoid confusion, make sure the [scales highlighting](#scales-highlighting) option is enabled.
+*Tip: on desktop platforms, you can extend it by [adding your own chords](configs.md).*
+
 
 ### Knife tool
 
@@ -170,7 +164,6 @@ Track grouping also affects MIDI export: all segments on a single row are export
 
 [toggle-minimap]: images/toggle-minimap.png "Mini-map view modes"
 [zoom-to-region]: images/zoom-to-region.png "Mini-map zoom-to-region"
-[scales-highlighting]: images/scales-highlighting.png "Scales highlighting"
 [note-names]: images/note-names.png "Note name guides"
 
 [chord-tool]: images/chord-tool.png "The chord tool"

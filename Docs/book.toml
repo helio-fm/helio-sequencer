@@ -1,6 +1,6 @@
 [book]
 title = "Helio 101"
-description = "Helio project reference manual"
+description = "Helio sequencer reference manual"
 authors = ["Peter Rudenko"]
 multilingual = false
 language = "en"
@@ -9,8 +9,9 @@ src = "."
 [output.html]
 git-repository-url = "https://github.com/helio-fm/helio-sequencer/tree/develop/Docs"
 default-theme = "navy"
-curly-quotes = true
+smart-punctuation = true
 
 [output.html.playpen]
 editable = false
+runnable = false
 copy-js = false
