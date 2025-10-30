@@ -219,10 +219,11 @@ bool TimeSignaturesSequence::change(const TimeSignatureEvent &oldParams,
         if (index >= 0)
         {
             auto *changedEvent = static_cast<TimeSignatureEvent *>(this->midiEvents.getUnchecked(index));
+            const TimeSignatureEvent oldEvent(*changedEvent);
             changedEvent->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedEvent, changedEvent);
-            this->eventDispatcher.dispatchChangeEvent(oldParams, *changedEvent);
+            this->eventDispatcher.dispatchChangeEvent(oldEvent, *changedEvent);
             this->updateBeatRange(true);
             return true;
         }

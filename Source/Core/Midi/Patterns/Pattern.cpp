@@ -228,10 +228,11 @@ bool Pattern::change(const Clip &oldParams, const Clip &newParams, bool undoable
         if (index >= 0)
         {
             auto *changedClip = this->clips.getUnchecked(index);
+            const Clip oldClip(*changedClip);
             changedClip->applyChanges(newParams);
             this->clips.remove(index, false);
             this->clips.addSorted(*changedClip, changedClip);
-            this->notifyClipChanged(oldParams, *changedClip);
+            this->notifyClipChanged(oldClip, *changedClip);
             this->updateBeatRange(true);
             return true;
         }
@@ -322,10 +323,11 @@ bool Pattern::changeGroup(Array<Clip> &groupBefore, Array<Clip> &groupAfter, boo
             if (index >= 0)
             {
                 auto *changedClip = this->clips.getUnchecked(index);
+                const Clip oldClip(*changedClip);
                 changedClip->applyChanges(newParams);
                 this->clips.remove(index, false);
                 this->clips.addSorted(*changedClip, changedClip);
-                this->notifyClipChanged(oldParams, *changedClip);
+                this->notifyClipChanged(oldClip, *changedClip);
             }
         }
 

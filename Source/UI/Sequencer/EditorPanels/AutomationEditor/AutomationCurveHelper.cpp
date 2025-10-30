@@ -67,7 +67,10 @@ void AutomationCurveHelper::paint(Graphics &g)
 
 bool AutomationCurveHelper::hitTest(int x, int y)
 {
-    if (!this->isEditable)
+    const auto parentCanInteract =
+        this->component1 != nullptr && this->component1->hitTest(x, y);
+
+    if (!this->isEditable || !Component::hitTest(x, y) || !parentCanInteract)
     {
         return false;
     }

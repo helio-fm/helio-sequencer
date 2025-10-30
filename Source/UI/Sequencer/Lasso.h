@@ -129,14 +129,22 @@ public:
 
     void itemSelected(SelectableComponent *item) override
     {
-        this->resetSelectionId();
-        item->setSelected(true);
+        jassert(item != nullptr);
+        if (item != nullptr)
+        {
+            this->resetSelectionId();
+            item->setSelected(true);
+        }
     }
 
     void itemDeselected(SelectableComponent *item) override
     {
-        this->resetSelectionId();
-        item->setSelected(false);
+        jassert(item != nullptr);
+        if (item != nullptr)
+        {
+            this->resetSelectionId();
+            item->setSelected(false);
+        }
     }
 
     int64 getId() const noexcept

@@ -131,6 +131,12 @@ public:
 
     UniquePointer<Component> createMenu() override
     {
+        if (this->lasso->getNumSelected() == 0)
+        {
+            jassertfalse;
+            return nullptr;
+        }
+
         return make<PatternRollSelectionMenu>(this->lasso);
     }
 

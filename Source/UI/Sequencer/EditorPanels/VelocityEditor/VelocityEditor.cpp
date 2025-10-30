@@ -194,7 +194,7 @@ public:
 
     bool hitTest(int x, int y) noexcept override
     {
-        return this->isEditable && this->isEnabled();
+        return this->isEditable && Component::hitTest(x, y);
     }
 
     void mouseDown(const MouseEvent &e) override
@@ -751,7 +751,7 @@ RollEditMode VelocityEditor::getEditMode() const noexcept
 void VelocityEditor::onChangeEditMode(const RollEditMode &mode)
 {
     const auto velocityEditMode = this->getSupportedEditMode(mode);
-    const auto areChildrenEnabled = !velocityEditMode.isMode(RollEditMode::drawMode);
+    const auto areChildrenEnabled = velocityEditMode.isMode(RollEditMode::defaultMode);
 
     this->setMouseCursor(velocityEditMode.getCursor());
 
@@ -760,7 +760,7 @@ void VelocityEditor::onChangeEditMode(const RollEditMode &mode)
         const auto &componentsMap = *c.second.get();
         for (const auto &e : componentsMap)
         {
-            e.second->setEnabled(areChildrenEnabled);
+            e.second->setInterceptsMouseClicks(areChildrenEnabled, false);
         }
     }
 }

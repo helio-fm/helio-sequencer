@@ -820,9 +820,18 @@ RollEditMode AutomationEditor::getEditMode() const noexcept
 
 void AutomationEditor::onChangeEditMode(const RollEditMode &mode)
 {
-    this->setMouseCursor(this->getSupportedEditMode(mode).getCursor());
-    // todo fix children interaction someday as well
-    // (not straighforward because it shouldn't break setEditable stuff)
+    const auto automationEditMode = this->getSupportedEditMode(mode);
+    const auto areChildrenEnabled = automationEditMode.isMode(RollEditMode::defaultMode);
+
+    this->setMouseCursor(automationEditMode.getCursor());
+
+    for (const auto &map : this->patternMap)
+    {
+        for (auto *component : map.second->sortedComponents)
+        {
+            component->setInterceptsMouseClicks(areChildrenEnabled, false);
+        }
+    }
 }
 
 bool AutomationEditor::isDraggingEvent(const MouseEvent &e) const
@@ -842,7 +851,7 @@ bool AutomationEditor::isDrawingEvent(const MouseEvent &e) const
 
 bool AutomationEditor::isKnifeToolEvent(const MouseEvent &e) const
 {
-    if (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown()) { return false; } // todo check rmb dragging
+    if (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown()) { return false; }
     if (this->getEditMode().forbidsCuttingEvents(e.mods)) { return false; }
     if (this->getEditMode().forcesCuttingEvents(e.mods)) { return true; }
     return false;

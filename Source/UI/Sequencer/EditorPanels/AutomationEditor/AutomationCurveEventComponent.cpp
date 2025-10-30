@@ -107,7 +107,7 @@ void AutomationCurveEventComponent::paint(Graphics &g)
 
 bool AutomationCurveEventComponent::hitTest(int x, int y)
 {
-    if (!this->isEditable)
+    if (!this->isEditable || !Component::hitTest(x, y))
     {
         return false;
     }

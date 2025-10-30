@@ -124,6 +124,7 @@ public:
     void onAddClip(const Clip &clip) override;
     void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
     void onRemoveClip(const Clip &clip) override;
+    void onPostRemoveClip(Pattern *const pattern) override;
     void onReloadGeneratedSequence(const Clip &clip,
         MidiSequence *const generatedSequence) override;
 

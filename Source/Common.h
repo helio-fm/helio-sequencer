@@ -50,12 +50,12 @@
 #include "../../ThirdParty/HopscotchMap/include/tsl/hopscotch_map.h"
 
 template <class Key, class T, class HashFn = std::hash<Key>, class EqualKey = std::equal_to<Key>>
-using FlatHashMap = tsl::hopscotch_map<Key, T, HashFn, EqualKey>;
+using FlatHashMap = tsl::hopscotch_pg_map<Key, T, HashFn, EqualKey>;
 
 #include "../../ThirdParty/HopscotchMap/include/tsl/hopscotch_set.h"
 
 template <class Value, class HashFn = std::hash<Value>, class EqualKey = std::equal_to<Value>>
-using FlatHashSet = tsl::hopscotch_set<Value, HashFn, EqualKey>;
+using FlatHashSet = tsl::hopscotch_pg_set<Value, HashFn, EqualKey>;
 
 using HashCode = size_t;
 

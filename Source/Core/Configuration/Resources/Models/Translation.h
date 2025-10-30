@@ -48,7 +48,6 @@ private:
 
     String id;
     String name;
-    String pluralEquation;
 
     using SingularsMap = FlatHashMap<I18n::Key, String>;
     SingularsMap singulars;

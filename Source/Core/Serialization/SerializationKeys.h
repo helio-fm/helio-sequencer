@@ -364,9 +364,6 @@ namespace Serialization
     {
         static const Identifier metaSymbol = "{x}";
 
-        static const Identifier wrapperClassName = "pluralForm";
-        static const Identifier wrapperMethodName = "detect";
-
         // old keys
         static const Identifier translationIdOld = "name";
         static const Identifier translationValueOld = "translation";

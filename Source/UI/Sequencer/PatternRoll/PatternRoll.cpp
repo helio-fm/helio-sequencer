@@ -510,6 +510,7 @@ void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 {
     if (const auto component = this->clipComponents[clip].release())
     {
+        jassert(component->getClip().getPattern() == newClip.getPattern());
         this->clipComponents.erase(clip);
         this->clipComponents[newClip] = UniquePointer<ClipComponent>(component);
         this->triggerBatchRepaintFor(component);

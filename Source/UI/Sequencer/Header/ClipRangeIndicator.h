@@ -19,7 +19,7 @@
 
 #include "HelioTheme.h"
 
-class ClipRangeIndicator : public Component
+class ClipRangeIndicator final : public Component
 {
 public:
 
@@ -89,16 +89,4 @@ protected:
     bool isActive = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClipRangeIndicator)
-};
-
-class SelectionRangeIndicator final : public ClipRangeIndicator
-{
-public:
-
-    void paint(Graphics &g) override
-    {
-        constexpr auto margin = 1.f;
-        g.setColour(this->paintColour);
-        HelioTheme::drawDashedHorizontalLine(g, margin, 0.f, float(this->getWidth()) - (margin * 2.f));
-    }
 };

@@ -123,7 +123,7 @@ void AutomationStepEventsConnector::paint(Graphics &g)
 
 bool AutomationStepEventsConnector::hitTest(int x, int y)
 {
-    if (!this->isEditable)
+    if (!this->isEditable || !Component::hitTest(x, y))
     {
         return false;
     }

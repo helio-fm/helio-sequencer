@@ -285,18 +285,6 @@ void RollHeader::updateClipRangeIndicators(const Clip &activeClip)
         return;
     }
 
-    if (this->clipRangeIndicators.size() != pattern->size())
-    {
-        this->clipRangeIndicators.clearQuick(true);
-
-        for (int i = 0; i < pattern->size(); ++i)
-        {
-            auto indicator = make<ClipRangeIndicator>();
-            this->addAndMakeVisible(indicator.get());
-            this->clipRangeIndicators.add(move(indicator));
-        }
-    }
-
     const auto colour = pattern->getTrack()->getTrackColour();
     const auto *sequence = pattern->getTrack()->getSequence();
     const auto sequenceFirstBeat = sequence->getFirstBeat();
@@ -304,15 +292,54 @@ void RollHeader::updateClipRangeIndicators(const Clip &activeClip)
         sequenceFirstBeat + Globals::Defaults::emptyClipLength :
         sequence->getLastBeat();
 
-    bool hasUpdates = false;
+    struct IndicatorRange final
+    {
+        float firstBeat;
+        float lastBeat;
+        bool isActive;
+    };
+
+    // coalesce neighbour clip ranges for nicer looks
+    Array<IndicatorRange> ranges;
     for (int i = 0; i < pattern->size(); ++i)
     {
         const auto *clip = pattern->getUnchecked(i);
-        const auto clipBeat = clip->getBeat();
+        const auto firstBeat = clip->getBeat() + sequenceFirstBeat;
+        const auto lastBeat = clip->getBeat() + sequenceLastBeat;
         const bool isActive = *clip == activeClip;
 
+        // clips are sorted by beat here
+        if (ranges.isEmpty() ||
+            ranges.getLast().lastBeat < firstBeat ||
+            ranges.getLast().isActive != isActive)
+        {
+            ranges.add({ firstBeat, lastBeat, isActive });
+        }
+        else
+        {
+            const auto newLastBeat = jmax(lastBeat, ranges.getLast().lastBeat);
+            ranges.getReference(ranges.size() - 1).lastBeat = newLastBeat;
+        }
+    }
+
+    if (this->clipRangeIndicators.size() != ranges.size())
+    {
+        this->clipRangeIndicators.clearQuick(true);
+
+        for (int i = 0; i < ranges.size(); ++i)
+        {
+            auto indicator = make<ClipRangeIndicator>();
+            this->addAndMakeVisible(indicator.get());
+            this->clipRangeIndicators.add(move(indicator));
+        }
+    }
+
+    bool hasUpdates = false;
+    for (int i = 0; i < ranges.size(); ++i)
+    {
+        const auto beatRange = ranges.getUnchecked(i);
         if (this->clipRangeIndicators.getUnchecked(i)->updateWith(colour,
-            clipBeat + sequenceFirstBeat, clipBeat + sequenceLastBeat, isActive))
+            beatRange.firstBeat, beatRange.lastBeat, beatRange.isActive))
         {
             hasUpdates = true;
         }
@@ -328,11 +355,11 @@ void RollHeader::updateSelectionRangeIndicator(const Colour &colour, float first
 {
     if (this->selectionRangeIndicator == nullptr)
     {
-        this->selectionRangeIndicator = make<SelectionRangeIndicator>();
+        this->selectionRangeIndicator = make<ClipRangeIndicator>();
         this->addAndMakeVisible(this->selectionRangeIndicator.get());
     }
 
-    if (this->selectionRangeIndicator->updateWith(colour, firstBeat, lastBeat, true))
+    if (this->selectionRangeIndicator->updateWith(colour, firstBeat, lastBeat, false))
     {
         this->updateSelectionRangeIndicatorPosition();
     }
@@ -395,7 +422,9 @@ void RollHeader::updateSelectionRangeIndicatorPosition()
     const bool hasClipRangesDisplayed = !this->clipRangeIndicators.isEmpty();
     const int x1 = this->roll.getXPositionByBeat(this->selectionRangeIndicator->getFirstBeat());
     const int x2 = this->roll.getXPositionByBeat(this->selectionRangeIndicator->getLastBeat());
-    this->selectionRangeIndicator->setBounds(x1, hasClipRangesDisplayed ? 2 : 0, jmax(x2 - x1, 3), 1);
+    const auto margin = hasClipRangesDisplayed ? 1 : 0;
+    this->selectionRangeIndicator->setBounds(x1 + margin,
+        hasClipRangesDisplayed ? 2 : 0, jmax(x2 - x1 - (margin * 2), 3), 1);
 }
 
 //===----------------------------------------------------------------------===//

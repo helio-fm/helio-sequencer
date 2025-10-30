@@ -110,43 +110,46 @@ void HelioTheme::drawBrackets(Graphics &g,
 
 void HelioTheme::drawDashedHorizontalLine(Graphics &g, float x, float y, float width, float dashLength)
 {
+    const auto r = x + width;
     // dash spaces are 1 pixel shorter than strokes because it looks nicer:
     for (; x < width - dashLength; x += ((dashLength * 2.f) - 1.f))
     {
         g.fillRect(x, y, dashLength, 1.f);
     }
 
-    if (width > dashLength)
+    if (x < r)
     {
-        g.fillRect(x, y, jmax(0.f, 1.f + width - x), 1.f);
+        g.fillRect(x, y, r - x, 1.f);
     }
 }
 
 void HelioTheme::drawDashedHorizontalLine2(Graphics &g, float x, float y, float width, float dashLength)
 {
+    const auto r = x + width;
     for (; x < width - dashLength; x += ((dashLength * 2.f) - 1.f))
     {
         g.fillRect(x + 1.f, y, dashLength, 1.f);
         g.fillRect(x, y + 1.f, dashLength, 1.f);
     }
 
-    if (width > dashLength)
+    if (x < r)
     {
-        g.fillRect(x + 1.f, y, jmax(0.f, 1.f + width - x - 2.f), 1.f);
-        g.fillRect(x, y + 1.f, jmax(0.f, 1.f + width - x), 1.f);
+        g.fillRect(x + 1.f, y, jmax(0.f, r - x - 1.f), 1.f);
+        g.fillRect(x, y + 1.f, r - x, 1.f);
     }
 }
 
 void HelioTheme::drawDashedVerticalLine(Graphics &g, float x, float y, float height, float dashLength)
 {
+    const auto b = y + height;
     for (; y < height - dashLength; y += ((dashLength * 2.f) - 1.f))
     {
         g.fillRect(x, y, 1.f, dashLength);
     }
 
-    if (height > dashLength)
+    if (y < b)
     {
-        g.fillRect(x, y, 1.f, jmax(0.f, 1.f + height - y));
+        g.fillRect(x, y, 1.f, b - y);
     }
 }
 

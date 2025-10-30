@@ -55,10 +55,6 @@ void Translation::deserialize(const SerializedData &root)
     this->id = root.getProperty(Translations::localeId, String()).toString().toLowerCase();
     this->name = root.getProperty(Translations::localeName, String());
 
-    this->pluralEquation = Translations::wrapperClassName + "." +
-        Translations::wrapperMethodName + "(" +
-        root.getProperty(Translations::pluralEquation, "1").toString() + ")";
-
     forEachChildWithType(root, pluralLiteral, Translations::pluralLiteral)
     {
         I18n::Key literalKey = I18n::Key(int64(pluralLiteral.getProperty(Translations::translationId)));

@@ -776,11 +776,12 @@ void PianoRoll::onAddClip(const Clip &clip)
         auto *component = new NoteComponent(*this, note, clip);
         (*sequenceMap)[note] = UniquePointer<NoteComponent>(component);
         this->addAndMakeVisible(component);
-
         const bool isActive = component->belongsTo(this->activeClip);
         component->setActive(isActive);
+        this->batchRepaintList.add(component);
     }
 
+    this->updateClipRangeIndicator();
     this->triggerAsyncUpdate();
 }
 
@@ -819,12 +820,33 @@ void PianoRoll::onRemoveClip(const Clip &clip)
 {
     ROLL_BATCH_REPAINT_START
 
+    if (this->isEnabled())
+    {
+        this->selection.deselectAll();
+        this->selection.onSelectableItemChanged(); // sends fake "selection changed" message
+    }
+
     if (this->patternMap.contains(clip))
     {
         this->patternMap.erase(clip);
     }
 
+    if (this->isEnabled() && this->activeClip == clip)
+    {
+        this->activeClip = {};
+    }
+
     ROLL_BATCH_REPAINT_END
+}
+
+void PianoRoll::onPostRemoveClip(Pattern *const pattern)
+{
+    this->updateClipRangeIndicator();
+
+    if (this->isEnabled() && !this->activeClip.isValid())
+    {
+        this->project.setEditableScope(*pattern->getClips().getFirst(), false);
+    }
 }
 
 void PianoRoll::onReloadGeneratedSequence(const Clip &clip,

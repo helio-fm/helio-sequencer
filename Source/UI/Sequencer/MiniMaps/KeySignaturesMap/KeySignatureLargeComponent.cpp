@@ -35,7 +35,7 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &
 
     this->nameComponent = make<NoteNameComponent>();
     this->addAndMakeVisible(this->nameComponent.get());
-    this->nameComponent->setBounds(4, 1, 256, KeySignatureLargeComponent::keySignatureHeight - 1);
+    this->nameComponent->setBounds(4, 1, 300, KeySignatureLargeComponent::keySignatureHeight - 1);
 
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 }

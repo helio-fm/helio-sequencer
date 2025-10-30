@@ -1603,10 +1603,10 @@ const char* builtInMetronome4_wav = (const char*) temp_binary_data_102;
 
 //================== emptyProject.json ==================
 static const unsigned char temp_binary_data_103[] =
-"{\"project\":{\"name\":\"Empty\",\"projectTimeline\":{\"annotations\":{},\"timeSignatures\":{\"timeSignature\":{\"id\":\"00\",\"numerator\":4,\"denominator\":4,\"ts\":0}},\"keySignatures\":{\"keySignature\":{\"id\":\"00\",\"key\":0,\"ts\":0,\"scale\""
+"{\"project\":{\"name\":\"Empty\",\"projectTimeline\":{\"annotations\":{},\"timeSignatures\":{\"timeSignature\":{\"id\":\"00\",\"numerator\":4,\"denominator\":4,\"ts\":0}},\"keySignatures\":{\"keySignature\":{\"id\":\"01\",\"key\":0,\"ts\":0,\"scale\""
 ":{\"name\":\"Ionian\",\"period\":12,\"intervals\":\"2 2 1 2 2 2 1\"}}}},\"node\":[{\"type\":\"pianoTrack\",\"name\":\"Track 1\",\"colour\":\"ff0049ff\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"v"
-"ol\":1024,\"id\":\"00\"}},\"track\":{}},{\"type\":\"automationTrack\",\"name\":\"Tempo\",\"colour\":\"fffffaf0\",\"channel\":1,\"instrumentId\":\"\",\"controller\":81,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"00\"}},\"automation"
-"\":{\"event\":[{\"id\":\"00\",\"value\":0.5,\"curve\":0.5,\"ts\":0},{\"id\":\"01\",\"value\":0.5,\"curve\":0.5,\"ts\":512}]}},{\"type\":\"patternSet\",\"name\":\"Patterns\"}],\"projectInfo\":{\"projectTimeStamp\":\"1591603725382\",\"license\":\"Publi"
+"ol\":1024,\"id\":\"02\"}},\"track\":{}},{\"type\":\"automationTrack\",\"name\":\"Tempo\",\"colour\":\"fffffaf0\",\"channel\":1,\"instrumentId\":\"\",\"controller\":81,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"03\"}},\"automation"
+"\":{\"event\":[{\"id\":\"04\",\"value\":0.5,\"curve\":0.5,\"ts\":0},{\"id\":\"01\",\"value\":0.5,\"curve\":0.5,\"ts\":512}]}},{\"type\":\"patternSet\",\"name\":\"Patterns\"}],\"projectInfo\":{\"projectTimeStamp\":\"1591603725382\",\"license\":\"Publi"
 "c Domain\",\"author\":\"Helio\",\"description\":\"\"}}}";
 
 const char* emptyProject_json = (const char*) temp_binary_data_103;

@@ -52,14 +52,21 @@ PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
 
 static bool canRenamePatternSelection(WeakReference<Lasso> lasso) noexcept
 {
-    const auto trackId = lasso->getFirstAs<ClipComponent>()->getClip().getTrackId();
+    if (lasso->getNumSelected() == 0)
+    {
+        jassertfalse;
+        return false;
+    }
+
+    const auto firstTrackId = lasso->getFirstAs<ClipComponent>()->getClip().getTrackId();
     for (int i = 0; i < lasso->getNumSelected(); ++i)
     {
-        if (lasso->getItemAs<ClipComponent>(i)->getClip().getTrackId() != trackId)
+        if (lasso->getItemAs<ClipComponent>(i)->getClip().getTrackId() != firstTrackId)
         {
-            return false;
+            return false; // selection has multiple tracks
         }
     }
+
     return true;
 }
 
@@ -127,6 +134,8 @@ MenuPanel::Menu PatternRollSelectionMenu::makeDefaultMenu() noexcept
 
 #if PLATFORM_DESKTOP
     if (this->lasso->getNumSelected() > 1)
+#elif PLATFORM_MOBILE
+    if (this->lasso->getNumSelected() > 0)
 #endif
     {
         bool hasAtLeastOnePianoTrack = false;

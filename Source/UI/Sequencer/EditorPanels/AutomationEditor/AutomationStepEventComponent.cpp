@@ -107,7 +107,7 @@ void AutomationStepEventComponent::moved()
 
 bool AutomationStepEventComponent::hitTest(int x, int y)
 {
-    if (!this->isEditable)
+    if (!this->isEditable || !Component::hitTest(x, y))
     {
         return false;
     }

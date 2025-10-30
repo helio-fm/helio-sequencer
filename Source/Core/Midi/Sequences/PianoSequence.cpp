@@ -154,10 +154,11 @@ bool PianoSequence::change(const Note &oldParams,
         if (index >= 0)
         {
             auto *changedNote = static_cast<Note *>(this->midiEvents.getUnchecked(index));
+            const Note oldNote(*changedNote);
             changedNote->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedNote, changedNote);
-            this->eventDispatcher.dispatchChangeEvent(oldParams, *changedNote);
+            this->eventDispatcher.dispatchChangeEvent(oldNote, *changedNote);
             this->updateBeatRange(true);
             return true;
         }
@@ -262,10 +263,11 @@ bool PianoSequence::changeGroup(Array<Note> &groupBefore,
             if (index >= 0)
             {
                 auto *changedNote = static_cast<Note *>(this->midiEvents.getUnchecked(index));
+                const Note oldNote(*changedNote);
                 changedNote->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedNote, changedNote);
-                this->eventDispatcher.dispatchChangeEvent(oldParams, *changedNote);
+                this->eventDispatcher.dispatchChangeEvent(oldNote, *changedNote);
             }
         }
 
