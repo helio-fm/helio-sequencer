@@ -11,13 +11,13 @@ Besides just commands, it supports special modes, triggered by typing a certain 
 * `/` is for the project list,
 * `:` is for moving selected notes into another track (target tracks are ordered "closest first"),
 * `@` is for the timeline events list + tracks list,
-* `!` is for the chord compiler, which deserves a separate description:
+* `!` is for the chord compiler:
 
 ## Chord compiler
 
-One of the modes of that command palette allows to generate chords based on the chord name [decoding rules](https://en.wikipedia.org/wiki/Chord_letters). This tool is not aware of any of the key signatures present at the timeline, all the chord's notes are inferred from the given description.
+One of the modes of that command palette allows to generate chords based on the chord name [decoding rules](https://wikipedia.org/wiki/Chord_notation). This tool is not aware of any of the key signatures present at the timeline, all the chord's notes are inferred from the given description.
 
-Just hit `!` and start typing a chord description, or pick some of the suggestions it provides:
+Hit `!` and start typing a chord description, or pick some of the suggestions it provides:
 
 ![chord-compiler]
 

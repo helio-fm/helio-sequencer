@@ -8,3 +8,9 @@ https://github.com/altalogix/SFZero
 
 Extended for multi-timbral operation (C) 2017 Cognitone
 https://github.com/cognitone/SFZeroMT
+
+The additions on top of that are:
+ * support arbitrary (microtonal) equal temperaments by readjusting sample pitches
+ * support SF3/SF4 format with OGG/FLAC-compressed samples
+ * fixed voices not playing all regions while playing some of them twice sometimes
+ * fixed min/max envelope values according to specs

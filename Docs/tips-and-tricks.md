@@ -16,7 +16,7 @@ During playback, the sequencer may sometimes draw red or yellow vertical warning
 
 These are the clipping and over-saturation warning markers:
 
- - red lines indicate problematic regions with [clipping sound](https://en.wikipedia.org/wiki/Clipping_(audio)),
+ - red lines indicate problematic regions with [clipping sound](https://wikipedia.org/wiki/Clipping_(audio)),
 
  - yellow warning lines will appear in the areas where the perceived loudness (a.k.a. the root mean square loudness) is way lower than the peak loudness, which is considered ~~harmful~~ unhealthy: in my setup it typically means that I have some redundant duplicate notes in the same place.
 

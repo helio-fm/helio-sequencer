@@ -1,4 +1,4 @@
-# Getting microtonal
+# Microtonal setup
 
 The piano roll comes with a number of built-in microtonal temperaments and 7-tone scales for each of them, but you can also add your own if necessary.
 

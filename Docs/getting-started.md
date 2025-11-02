@@ -332,7 +332,7 @@ All clips that are explicitly or implicitly muted (muted by others) are displaye
 
 ## Version control
 
-The concept of [version control](https://en.wikipedia.org/wiki/Version_control) comes from the software development world. If you're not familiar with it, you can think of it as of creating "save points" in your project, and tracking changes made since the last time you saved.
+The concept of [version control](https://wikipedia.org/wiki/Version_control) comes from the software development world. If you're not familiar with it, you can think of it as of creating "save points" in your project, and tracking changes made since the last time you saved.
 
 The point of having a version control is lowering the friction of committing changes: any changes can be reset if you don't like them, any saved revision can be restored later. Helio was started as a prototyping tool, a playground for ideas, where you'd want to have several variations of your sketch — hence the idea of having a built-in version control.
 

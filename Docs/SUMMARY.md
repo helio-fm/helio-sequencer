@@ -3,8 +3,8 @@
   - [Release Notes](changelog.md)
 ---
 - [Getting Started](getting-started.md)
-  - [Getting Microtonal](getting-microtonal.md)
-  - [Getting Polymetric](getting-polymetric.md)
+  - [Microtonal Setup](getting-microtonal.md)
+  - [Polymetric Setup](getting-polymetric.md)
 ---
 - [Tips and Tricks](tips-and-tricks.md)
   - [Refactoring](refactoring.md)

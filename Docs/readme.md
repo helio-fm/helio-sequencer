@@ -51,14 +51,6 @@ All configuration files are created on the first start under the user applicatio
 * macOS: ~/Library/Application Support/Helio
 * Linux: ~/.config/Helio
 
-#### *settings.helio*
-
-This file basically contains all the settings, so deleting or renaming it will cause the app to run as if it were the first time. The settings are intended to be human-readable and are stored in XML format.
-
-#### *translations.helio* and maybe others
-
-If the update checks are enabled, some additional [resources](configs.md) are updated in the runtime. At the moment of writing, only translations are being updated in this manner.
-
 ### The projects directory
 
 The project files are saved to the user's default documents folder in the `Helio` subfolder. This directory's location is also platform-dependent: 

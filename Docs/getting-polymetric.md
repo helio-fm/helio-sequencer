@@ -1,4 +1,4 @@
-# Getting polymetric
+# Polymetric setup
 
 Sometimes you might want to have several voices playing in different meters simultaneously. For example, a simple trick to make a piece more entertaining would be to write the drums part in 5/4, and all other voices in 4/4.
 
@@ -14,11 +14,11 @@ Each time signature also defines how the [metronome/click track](#metronome) wil
 
 There are two kinds of time signatures:
 
- * "Global" time signatures, which can be added to the [timeline](getting-started.md#timeline):
+ * Global time signatures, which can be added to the [timeline](getting-started.md#timeline):
 
     ![timeline-time-signatures]
 
- * "Per-track" time signatures, which can be assigned to any track via menu or `Alt + F2` hotkey:
+ * Per-track time signatures, which can be assigned to any track via menu or `Alt + F2` hotkey:
 
     ![track-time-signatures]
 
@@ -46,9 +46,9 @@ In the piano roll, timeline will simply switch to time signature(s) of the edite
 
 ### Limitations
 
-Note that making [polytempo](https://en.wikipedia.org/wiki/Polytempo) is not currently possible: the beat length is the same for all tracks. Time signatures make different bar sizes (and different snaps arrangements within a bar), but the [global tempo](getting-started.md#global-tempo) track(s) affect the project as a whole.
+Note that making [polytempo](https://ikipedia.org/wiki/Polytempo) is not currently possible: the beat length is the same for all tracks. Time signatures make different bar sizes (and different snaps arrangements within a bar), but the [global tempo](getting-started.md#global-tempo) track(s) affect the project as a whole.
 
-[Polyrhythm](https://en.wikipedia.org/wiki/Polyrhythm) support is also poor; although you can think of polyrhythms as of polymeters on a smaller scale, that's not very practical. There is basic support for tuplets (hotkeys `Alt + 1` to `Alt + 9`):
+[Polyrhythm](https://wikipedia.org/wiki/Polyrhythm) support is also poor; although you can think of polyrhythms as of polymeters on a smaller scale, that's not very practical. There is basic support for tuplets (hotkeys `Alt + 1` to `Alt + 9`):
 
 ![tuplets-6-to-9]
 
