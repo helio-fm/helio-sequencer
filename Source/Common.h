@@ -100,13 +100,7 @@ template <typename T>
 using Function = std::function<T>;
 
 using std::move;
-
-#if _MSC_VER
-inline float roundf(float x)
-{
-    return (x >= 0.0f) ? floorf(x + 0.5f) : ceilf(x - 0.5f);
-}
-#endif
+using std::roundf;
 
 // todo replace this with std::bit_cast when migrating to C++20
 template <class To, class From>
