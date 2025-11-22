@@ -61,6 +61,9 @@ private:
 
     void run() override;
 
+    Optional<Array<SerializablePluginDescription>>
+        runScannerProcess(const String &pathOrId, int timeOutMs = 69420) const;
+
     KnownPluginList pluginsList;
     
     Atomic<bool> working = false;

@@ -28,12 +28,6 @@
 #include "SoundFontSynthAudioPlugin.h"
 #include "SerializablePluginDescription.h"
 
-#if PLATFORM_MOBILE
-#   define SAFE_SCAN 0
-#else
-#   define SAFE_SCAN 1
-#endif
-
 PluginScanner::PluginScanner() : Thread("Plugin Scanner") {}
 
 PluginScanner::~PluginScanner()
@@ -105,7 +99,7 @@ void PluginScanner::runInitialScan()
     if (this->isWorking())
     {
         App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
-        DBG("PluginScanner scan thread is already running!");
+        DBG("Plugin scanner thread is already running!");
         return;
     }
 
@@ -158,7 +152,7 @@ void PluginScanner::scanFolderAndAddResults(const File &dir)
     if (this->isWorking())
     {
         App::Layout().showTooltip({}, MainLayout::TooltipIcon::Failure);
-        DBG("PluginScanner scan thread is already running!");
+        DBG("Plugin scanner thread is already running!");
         return;
     }
 
@@ -273,6 +267,21 @@ void PluginScanner::run()
             this->filesToScan.add(pluginPath);
         }
 
+        bool useChildProcessScanning = false;
+#if PLATFORM_DESKTOP
+        // check if we can use a separate process for scanning
+        if (const auto scanned =
+            this->runScannerProcess(DefaultSynthAudioPlugin::instrumentId, 3000))
+        {
+            if (scanned->size() == 1 &&
+                scanned->getFirst().name == DefaultSynthAudioPlugin::instrumentName)
+            {
+                DBG("Scanning using a child process");
+                useChildProcessScanning = true;
+            }
+        }
+#endif
+
         try
         {
             for (const auto &pluginPath : this->filesToScan)
@@ -285,101 +294,53 @@ void PluginScanner::run()
 
                 DBG("Found: " + pluginPath);
 
-#if SAFE_SCAN
-                const Uuid tempFileName;
-                const File tempFile(DocumentHelpers::getTempSlot(tempFileName.toString()));
-                tempFile.appendText(pluginPath, false, false);
-
-                Thread::sleep(50);
-
-                ChildProcess checkerProcess;
-                const auto myPath = File::getSpecialLocation(File::currentExecutableFile).getFullPathName();
-                const String commandLine(myPath + " " + tempFileName.toString());
-                const auto started = checkerProcess.start(commandLine);
-                if (!started)
+                if (useChildProcessScanning)
                 {
-                    // todo better indication in the UI
-                    DBG("Couldn't run the plugin checking process");
-                    tempFile.deleteFile();
-                    break;
-                }
+                    if (const auto scanned = this->runScannerProcess(pluginPath))
+                    {
+                        for (const auto &pluginDescription : *scanned)
+                        {
+                            this->pluginsList.addType(pluginDescription);
+                        }
 
-                constexpr uint32 timeoutMs = 69420;
-                const auto timeoutTime = Time::getMillisecondCounter() + timeoutMs;
-                do
-                {
-                    Thread::sleep(2);
-                }
-                while (!this->cancelled.get()
-                    && checkerProcess.isRunning()
-                    && Time::getMillisecondCounter() < timeoutTime);
-
-                if (checkerProcess.isRunning())
-                {
-                    checkerProcess.kill();
+                        // will also sendChangeMessage():
+                        this->sortList(this->pluginSorting.get(), this->pluginSortingForwards.get());
+                    }
+                    else
+                    {
+                        DBG("Fallback to in-process scanning");
+                        useChildProcessScanning = false;
+                    }
                 }
                 else
                 {
-                    if (this->cancelled.get())
-                    {
-                        DBG("Plugin scanning canceled");
-                        tempFile.deleteFile();
-                        break;
-                    }
+                    KnownPluginList knownPluginList;
+                    OwnedArray<PluginDescription> typesFound;
 
-                    Thread::sleep(50);
-
-                    if (tempFile.existsAsFile())
+                    try
                     {
-                        try
+                        for (int j = 0; j < formatManager.getNumFormats(); ++j)
                         {
-                            const auto tree(DocumentHelpers::load<XmlSerializer>(tempFile));
-                            if (tree.isValid())
-                            {
-                                forEachChildWithType(tree, e, Serialization::Audio::plugin)
-                                {
-                                    SerializablePluginDescription pluginDescription;
-                                    pluginDescription.deserialize(e);
-                                    this->pluginsList.addType(pluginDescription);
-                                }
-
-                                // will also sendChangeMessage():
-                                this->sortList(this->pluginSorting.get(), this->pluginSortingForwards.get());
-                            }
+                            auto *format = formatManager.getFormat(j);
+                            knownPluginList.scanAndAddFile(pluginPath, false, typesFound, *format);
                         }
-                        catch (...) {}
                     }
-                }
+                    catch (...) {}
 
-                tempFile.deleteFile();
-#else
-                KnownPluginList knownPluginList;
-                OwnedArray<PluginDescription> typesFound;
-
-                try
-                {
-                    for (int j = 0; j < formatManager.getNumFormats(); ++j)
+                    // at this point we are still alive and the plugin hasn't crashed the app
+                    if (typesFound.size() != 0)
                     {
-                        auto *format = formatManager.getFormat(j);
-                        knownPluginList.scanAndAddFile(pluginPath, false, typesFound, *format);
-                    }
-                }
-                catch (...) {}
+                        for (auto *type : typesFound)
+                        {
+                            this->pluginsList.addType(*type);
+                        }
 
-                // at this point we are still alive and the plugin hasn't crashed the app
-                if (typesFound.size() != 0)
-                {
-                    for (auto *type : typesFound)
-                    {
-                        this->pluginsList.addType(*type);
+                        // will also sendChangeMessage():
+                        this->sortList(this->pluginSorting.get(), this->pluginSortingForwards.get());
                     }
-
-                    // will also sendChangeMessage():
-                    this->sortList(this->pluginSorting.get(), this->pluginSortingForwards.get());
-                }
                 
-                Thread::sleep(150);
-#endif
+                    Thread::sleep(150);
+                }
             }
         }
         catch (...) {}
@@ -394,6 +355,82 @@ void PluginScanner::run()
 
         WaitableEvent::wait();
     }
+}
+
+Optional<Array<SerializablePluginDescription>>
+PluginScanner::runScannerProcess(const String &pathOrId, int timeOutMs) const
+{
+    const Uuid tempFileName;
+    const File tempFile(DocumentHelpers::getTempSlot(tempFileName.toString()));
+    if (tempFile.existsAsFile())
+    {
+        jassertfalse;
+        tempFile.deleteFile();
+    }
+
+    tempFile.appendText(pathOrId, false, false);
+
+    Thread::sleep(50);
+
+    ChildProcess checkerProcess;
+    const auto myPath = File::getSpecialLocation(File::currentExecutableFile).getFullPathName();
+    const String commandLine(myPath + " " + tempFileName.toString());
+    const auto started = checkerProcess.start(commandLine);
+    if (!started)
+    {
+        // todo better indication in the UI
+        DBG("Couldn't run the plugin checking process");
+        tempFile.deleteFile();
+        return {};
+    }
+
+    const auto timeoutTime = Time::getMillisecondCounter() + timeOutMs;
+    do
+    {
+        Thread::sleep(2);
+    }
+    while (!this->cancelled.get()
+        && checkerProcess.isRunning()
+        && Time::getMillisecondCounter() < timeoutTime);
+
+    if (checkerProcess.isRunning())
+    {
+        checkerProcess.kill();
+        return {};
+    }
+
+    if (this->cancelled.get())
+    {
+        DBG("Plugin scanning canceled");
+        tempFile.deleteFile();
+        return {};
+    }
+
+    Thread::sleep(50);
+
+    Array<SerializablePluginDescription> result;
+
+    if (tempFile.existsAsFile())
+    {
+        try
+        {
+            const auto tree(DocumentHelpers::load<XmlSerializer>(tempFile));
+            if (tree.isValid())
+            {
+                forEachChildWithType(tree, e, Serialization::Audio::plugin)
+                {
+                    SerializablePluginDescription pluginDescription;
+                    pluginDescription.deserialize(e);
+                    result.add(move(pluginDescription));
+                }
+            }
+
+            tempFile.deleteFile();
+        }
+        catch (...) {}
+    }
+
+    return result;
 }
 
 FileSearchPath PluginScanner::getCommonFolders()
