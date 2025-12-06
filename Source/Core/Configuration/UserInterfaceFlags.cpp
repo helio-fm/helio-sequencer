@@ -227,6 +227,8 @@ void UserInterfaceFlags::setLeftSidebarWidth(int width)
     }
 
     this->leftSidebarWidth = width;
+    this->listeners.call(&Listener::onSidebarWidthChanged,
+        this->leftSidebarWidth, this->rightSidebarWidth);
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
@@ -243,6 +245,8 @@ void UserInterfaceFlags::setRightSidebarWidth(int width)
     }
 
     this->rightSidebarWidth = width;
+    this->listeners.call(&Listener::onSidebarWidthChanged,
+        this->leftSidebarWidth, this->rightSidebarWidth);
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 

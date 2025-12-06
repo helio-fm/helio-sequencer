@@ -59,6 +59,7 @@ public:
         virtual void onUiScaleChanged(float scale) {}
 
         virtual void onMetronomeFlagChanged(bool enabled) {}
+        virtual void onSidebarWidthChanged(int left, int right) {}
     };
 
     //===------------------------------------------------------------------===//

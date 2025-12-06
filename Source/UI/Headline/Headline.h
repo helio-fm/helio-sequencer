@@ -22,13 +22,15 @@
 #include "HeadlineNavigationPanel.h"
 #include "ComponentFader.h"
 #include "ColourIDs.h"
+#include "Config.h"
 
 class IconButton;
 class HeadlineItem;
 class HeadlineItemDataSource;
 
 class Headline final : public Component,
-    public AsyncUpdater // called when any child needs to be updated
+    public AsyncUpdater, // called when any child needs to be updated
+    UserInterfaceFlags::Listener
 {
 public:
 
@@ -55,6 +57,8 @@ public:
 
 private:
 
+    void onSidebarWidthChanged(int left, int right) override;
+
     // A way to receive a single coalesced update from multiple signaling sub-items:
     void handleAsyncUpdate() override;
     int rebuildChain(WeakReference<TreeNode> leaf);
@@ -68,6 +72,8 @@ private:
     UniquePointer<HeadlineItem> selectionItem;
 
     float getAlphaForAnimation() const noexcept;
+
+    int sidebarOffset = 0;
 
     static constexpr auto rootNodeOffset = Globals::UI::sidebarWidth;
 

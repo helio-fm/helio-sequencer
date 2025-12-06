@@ -29,6 +29,7 @@ public:
     HeadlineNavigationPanel()
     {
         this->setOpaque(false);
+        this->setAccessible(false);
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, true);
 
@@ -42,8 +43,6 @@ public:
         this->addAndMakeVisible(this->arrow.get());
 
         this->updateState(false, false);
-
-        this->setSize(64, Globals::UI::headlineHeight);
     }
 
     void updateState(bool canGoPrevious, bool canGoNext)

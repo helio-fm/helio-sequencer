@@ -20,7 +20,6 @@
 #include "HeadlineItem.h"
 #include "HelioTheme.h"
 #include "MainLayout.h"
-#include "Config.h"
 
 Headline::Headline()
 {
@@ -40,11 +39,15 @@ Headline::Headline()
     this->consoleButton->setVisible(App::isUsingNativeTitleBar());
 #endif
 
+    App::Config().getUiFlags()->addListener(this);
+    this->onSidebarWidthChanged(App::Config().getUiFlags()->getLeftSidebarWidth(), 0);
+
     this->setSize(100, Globals::UI::headlineHeight);
 }
 
 Headline::~Headline()
 {
+    App::Config().getUiFlags()->removeListener(this);
     this->chain.clearQuick(true);
 }
 
@@ -74,8 +77,9 @@ void Headline::resized()
     constexpr auto consoleButtonSize = 45;
     constexpr auto navPanelSize =
         Globals::UI::sidebarWidth + Headline::itemsOverlapOffset;
-    
-    this->navPanel->setBounds(0, 0, navPanelSize, this->getHeight());
+
+    this->navPanel->setBounds(this->sidebarOffset, 0, navPanelSize, this->getHeight());
+
     this->consoleButton->setBounds(this->getWidth() - consoleButtonSize, 1,
         consoleButtonSize, this->getHeight() - 2);
 }
@@ -85,9 +89,16 @@ void Headline::handleCommandMessage(int commandId)
     App::Layout().broadcastCommandMessage(commandId);
 }
 
+void Headline::onSidebarWidthChanged(int leftWidth, int rightWidth)
+{
+    this->sidebarOffset = leftWidth - Globals::UI::sidebarWidth;
+    this->resized();
+    this->triggerAsyncUpdate();
+}
+
 void Headline::handleAsyncUpdate()
 {
-    int posX = Headline::itemsOverlapOffset + Headline::rootNodeOffset;
+    int posX = this->sidebarOffset + Headline::itemsOverlapOffset + Headline::rootNodeOffset;
     TreeNode *previousItem = nullptr;
 
     const bool hasSelectionItem = this->selectionItem != nullptr &&
