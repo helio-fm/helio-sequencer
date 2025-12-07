@@ -4,6 +4,16 @@ Helio features and updates
 All notable changes to this project will be documented in this file.
 For more detailed info, please see the git log.
 
+## Version 3.17
+ - Removed update checks and project sync features from desktop builds, the app is now offline on both desktop and mobile platforms
+ - Added initial support for keyboard-only editing in the sequencer, more hotkeys for menus, pop-ups, and dialogs
+ - More UI performance improvements
+ - Added more translations
+ - Desktop platforms: added support for back/forward mouse buttons, fixed VST3 plugin windowing issues, misc fixes in plugin scanning
+ - Mobile platforms: enabled an option to render to OGG format, QoL fixes for the velocity editor panel
+ - Android: fixed layout flickering on app start
+ - iOS: enabled all screen orientations on iPads
+
 ## Version 3.16
  - Improved UI performance in the piano roll, fixed glitches, added x1.25 UI scaling option
  - Tidied up the built-in scales list and added more microtonal scales
