@@ -98,7 +98,7 @@ void Headline::onSidebarWidthChanged(int leftWidth, int rightWidth)
 
 void Headline::handleAsyncUpdate()
 {
-    int posX = this->sidebarOffset + Headline::itemsOverlapOffset + Headline::rootNodeOffset;
+    int posX = this->getTotalRootNodeOffset() + Headline::itemsOverlapOffset;
     TreeNode *previousItem = nullptr;
 
     const bool hasSelectionItem = this->selectionItem != nullptr &&
@@ -123,7 +123,7 @@ void Headline::handleAsyncUpdate()
             if (hasSelectionItem)
             {
                 this->animator.cancelAnimation(this->selectionItem.get(), true);
-                this->selectionItem->setTopLeftPosition(Headline::rootNodeOffset, this->selectionItem->getY());
+                this->selectionItem->setTopLeftPosition(this->getTotalRootNodeOffset(), this->selectionItem->getY());
             }
 
             break;
@@ -189,7 +189,7 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
 
     // Finds the first inconsistency point in the chain
     int firstInvalidUnitIndex = 0;
-    int fadePositionX = Headline::itemsOverlapOffset + Headline::rootNodeOffset;
+    int fadePositionX = this->getTotalRootNodeOffset() + Headline::itemsOverlapOffset;
     for (; firstInvalidUnitIndex < this->chain.size(); firstInvalidUnitIndex++)
     {
         if (this->chain[firstInvalidUnitIndex]->getDataSource().wasObjectDeleted() ||
@@ -283,7 +283,7 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
 
     this->hideSelectionMenu();
 
-    const auto x = this->getChainWidth() + Headline::rootNodeOffset;
+    const auto x = this->getChainWidth() + this->getTotalRootNodeOffset();
     this->selectionItem = make<HeadlineItem>(menuSource, *this);
     this->selectionItem->updateContent();
     this->addAndMakeVisible(this->selectionItem.get());
@@ -303,7 +303,7 @@ void Headline::hideSelectionMenu()
     {
         //const auto w = this->selectionItem->getBounds().getWidth();
         //const auto finalPos = this->selectionItem->getBounds().translated(-w, 0);
-        const auto finalPos = this->selectionItem->getBounds().withX(Headline::rootNodeOffset);
+        const auto finalPos = this->selectionItem->getBounds().withX(this->getTotalRootNodeOffset());
         this->animator.cancelAnimation(this->selectionItem.get(), false);
         this->animator.animateComponent(this->selectionItem.get(), finalPos,
             this->getAlphaForAnimation(), Globals::UI::fadeOutShort, true, 0.0, 1.0);
@@ -314,6 +314,11 @@ void Headline::hideSelectionMenu()
 float Headline::getAlphaForAnimation() const noexcept
 {
     return App::isOpenGLRendererEnabled() ? 0.f : 1.f;
+}
+
+int Headline::getTotalRootNodeOffset() const noexcept
+{
+    return this->sidebarOffset + Headline::rootNodeOffset;
 }
 
 int Headline::getChainWidth() const noexcept

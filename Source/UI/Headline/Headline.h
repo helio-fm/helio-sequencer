@@ -74,8 +74,8 @@ private:
     float getAlphaForAnimation() const noexcept;
 
     int sidebarOffset = 0;
-
     static constexpr auto rootNodeOffset = Globals::UI::sidebarWidth;
+    int getTotalRootNodeOffset() const noexcept;
 
     const Colour borderLightColour =
         findDefaultColour(ColourIDs::Common::borderLineLight);
