@@ -76,7 +76,7 @@ public:
             programsMenu.add(MenuItem::item(Icons::empty, CommandIDs::SelectPreset + i, programName));
         }
 
-        const auto programsMenuCurrentItem = [this]()
+        auto programsMenuCurrentItem = [this]()
         {
             jassert(this->audioPlugin->getNumPrograms() > 0);
             return jmax(0,

@@ -130,7 +130,7 @@ bool RendererThread::isRendering() const
 
 struct RenderBuffer final
 {
-    Instrument *instrument;
+    Instrument *instrument = nullptr;
     AudioBuffer<float> sampleBuffer;
     MidiBuffer midiBuffer;
 };

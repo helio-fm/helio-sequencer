@@ -265,7 +265,7 @@ void PlayerThread::run()
                 {
                     const auto beatsPassed = beatDelta * float(deltaTimePassed / nextEventTimeDelta);
                     broadcastSeekAndTempo(previousEventBeat.get() + beatsPassed);
-                    nextEventTimeDelta = deltaTimePassed + ((beatDelta - beatsPassed) *
+                    nextEventTimeDelta = deltaTimePassed + (double(beatDelta - beatsPassed) *
                         (this->currentTempo.get() / this->speedMultiplier.get()));
                 }
             }

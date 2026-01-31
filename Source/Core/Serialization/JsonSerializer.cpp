@@ -556,13 +556,13 @@ struct JsonFormatter final
                 {
                     if (CharPointer_UTF16::getBytesRequiredFor(c) > 2)
                     {
-                        CharPointer_UTF16::CharType chars[2];
-                        CharPointer_UTF16 utf16(chars);
+                        CharPointer_UTF16::CharType unescapedEhars[2];
+                        CharPointer_UTF16 utf16(unescapedEhars);
                         utf16.write(c);
 
                         for (int i = 0; i < 2; ++i)
                         {
-                            writeEscapedChar(out, (unsigned short)chars[i]);
+                            writeEscapedChar(out, (unsigned short)unescapedEhars[i]);
                         }
                     }
                     else

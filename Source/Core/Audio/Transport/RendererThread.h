@@ -49,7 +49,7 @@ private:
 
     Transport &transport;
     Transport::PlaybackContext::Ptr context;
-    RenderFormat format;
+    RenderFormat format = RenderFormat::WAV;
 
     // this needs to be kept alive while rendering (why - because iOS)
     URL renderTarget;

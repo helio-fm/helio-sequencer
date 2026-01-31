@@ -57,7 +57,7 @@ private:
     {
         File path;
         String title;
-        int64 lastModifiedMs;
+        int64 lastModifiedMs = 0;
     };
 
     LocalInfo localInfo;

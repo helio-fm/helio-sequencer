@@ -66,7 +66,8 @@ void RevisionConnectorComponent::resized()
 {
     if (!this->component1 || !this->component2)
     {
-        delete this;
+        UniquePointer<Component> deleter(this);
+        return;
     }
 
     float x1, y1, x2, y2;

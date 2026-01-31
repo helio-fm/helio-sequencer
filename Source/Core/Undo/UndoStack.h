@@ -120,7 +120,7 @@ private:
 
     void setCurrentUndoActionId(UndoActionId transactionId) noexcept;
     OwnedArray<Transaction> transactions;
-    UndoActionId newUndoActionId;
+    UndoActionId newUndoActionId = UndoActionIDs::None;
 
     int totalUnitsStored = 0;
     int maxNumUnitsToKeep = 0;

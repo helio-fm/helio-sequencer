@@ -48,7 +48,7 @@ public:
     {
         if (this->onStartPlayback)
         {
-            MessageManagerLock lock(Thread::getCurrentThread());
+            const MessageManagerLock lock(Thread::getCurrentThread());
             if (lock.lockWasGained())
             {
                 this->onStartPlayback();
@@ -81,7 +81,7 @@ public:
 
         if (this->onStopPlayback)
         {
-            MessageManagerLock lock(Thread::getCurrentThread());
+            const MessageManagerLock lock(Thread::getCurrentThread());
             if (lock.lockWasGained())
             {
                 this->onStopPlayback();

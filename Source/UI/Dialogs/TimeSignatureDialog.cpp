@@ -129,7 +129,7 @@ TimeSignatureDialog::TimeSignatureDialog(ProjectNode &project,
             CommandIDs::SelectPreset + i, meter->getTimeAsString()));
     }
 
-    const auto metersMenuCurrentItem = [this]()
+    auto metersMenuCurrentItem = [this]()
     {
         jassert(!this->defaultMeters.isEmpty());
         for (int i = 0; i < this->defaultMeters.size(); ++i)

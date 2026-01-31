@@ -17,25 +17,15 @@
 
 #pragma once
 
-//===----------------------------------------------------------------------===//
-// Pragmas
-//===----------------------------------------------------------------------===//
-
-// unreferenced formal parameter
-#pragma warning(disable: 4100)
-// hides class member
-#pragma warning(disable: 4458)
-// decorated name length exceeded, name was truncated
-#pragma warning(disable: 4503)
-// conditional expression is constant
-#pragma warning(disable: 4127)
+#pragma warning(disable: 4100) // unreferenced formal parameter
+#pragma warning(disable: 4127) // conditional expression is constant
+#pragma warning(disable: 4458) // hides class member
 
 //===----------------------------------------------------------------------===//
 // JUCE
 //===----------------------------------------------------------------------===//
 
 #include "JuceHeader.h"
-
 #include <climits>
 #include <cstring>
 #include <cfloat>
@@ -49,21 +39,21 @@
 
 #include "../../ThirdParty/HopscotchMap/include/tsl/hopscotch_map.h"
 
-template <class Key, class T, class HashFn = std::hash<Key>, class EqualKey = std::equal_to<Key>>
-using FlatHashMap = tsl::hopscotch_pg_map<Key, T, HashFn, EqualKey>;
+template <class Key, class T, class HashFn = std::hash<Key>>
+using FlatHashMap = tsl::hopscotch_pg_map<Key, T, HashFn>;
 
 #include "../../ThirdParty/HopscotchMap/include/tsl/hopscotch_set.h"
 
-template <class Value, class HashFn = std::hash<Value>, class EqualKey = std::equal_to<Value>>
-using FlatHashSet = tsl::hopscotch_pg_set<Value, HashFn, EqualKey>;
+template <class Value, class HashFn = std::hash<Value>>
+using FlatHashSet = tsl::hopscotch_pg_set<Value, HashFn>;
 
 using HashCode = size_t;
 
 struct StringHash
 {
-    inline HashCode operator()(const juce::String &key) const noexcept
+    inline HashCode operator()(const String &key) const noexcept
     {
-        return static_cast<HashCode>(key.hashCode());
+        return HashCode(key.hashCode());
     }
 };
 
@@ -71,7 +61,7 @@ struct IdentifierHash
 {
     inline HashCode operator()(const Identifier &key) const noexcept
     {
-        return static_cast<HashCode>(key.toString().hashCode());
+        return HashCode(key.toString().hashCode());
     }
 
     static int generateHash(const Identifier &key, int upperLimit) noexcept

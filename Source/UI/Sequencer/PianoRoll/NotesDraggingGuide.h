@@ -85,8 +85,8 @@ private:
     const Colour dashColour = findDefaultColour(ColourIDs::Roll::draggingGuide);
     const Colour shadowColour = findDefaultColour(ColourIDs::Roll::draggingGuideShadow);
 
-    Note::Key lowestKey;
-    Note::Key highestKey;
+    Note::Key lowestKey = std::numeric_limits<Note::Key>::max();
+    Note::Key highestKey = std::numeric_limits<Note::Key>::lowest();
     Note::Key draggingDelta = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NotesDraggingGuide)

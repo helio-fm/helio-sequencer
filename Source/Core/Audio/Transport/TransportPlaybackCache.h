@@ -24,10 +24,10 @@ class MidiSequence;
 struct CachedMidiSequence final : public ReferenceCountedObject
 {
     MidiMessageSequence midiMessages;
-    int currentIndex;
-    MidiMessageCollector *listener;
-    Instrument *instrument;
-    const MidiSequence *sequence;
+    int currentIndex = 0;
+    MidiMessageCollector *listener = nullptr;
+    Instrument *instrument = nullptr;
+    const MidiSequence *sequence = nullptr;
 
     using Ptr = ReferenceCountedObjectPtr<CachedMidiSequence>;
 

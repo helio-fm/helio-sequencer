@@ -181,7 +181,7 @@ struct SoundFontRegion final
         int mappedNote = note;
         if (periodSize != Globals::twelveTonePeriodSize)
         {
-            mappedNote = int(double(note * Globals::twelveTonePeriodSize) / double(periodSize));
+            mappedNote = int((double(note) * Globals::twelveTonePeriodSize) / double(periodSize));
         }
 
         return (mappedNote >= this->lokey && mappedNote <= this->hikey &&

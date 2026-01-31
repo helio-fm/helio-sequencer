@@ -38,7 +38,7 @@ public:
 
     struct Filters final
     {
-        int editorPanelIndex;
+        int editorPanelIndex = 0;
         Array<EditorPanelBase::EventFilter> eventFilters;
 
         bool operator== (const Filters &other) const noexcept

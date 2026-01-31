@@ -54,7 +54,7 @@ struct BuiltInImageData final
         return *this;
     }
     
-    const void *data;
+    const void *data = nullptr;
     int numBytes = 0;
 };
 

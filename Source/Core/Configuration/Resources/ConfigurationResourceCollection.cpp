@@ -21,7 +21,7 @@
 #include "BinarySerializer.h"
 #include "DocumentHelpers.h"
 
-// TODO: monitor user's file changes?
+// TODO: reload all user scripts (maybe all configs) when the app is resumed
 
 ConfigurationResourceCollection::ConfigurationResourceCollection(const Identifier &resourceType) :
     resourceType(resourceType) {}

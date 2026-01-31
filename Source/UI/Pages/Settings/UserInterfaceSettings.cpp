@@ -37,7 +37,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
     this->currentTranslation =
         App::Config().getTranslations()->getCurrent();
 
-    const auto languageMenuProvider = [this]()
+    auto languageMenuProvider = [this]()
     {
         MenuPanel::Menu languageMenu;
 
@@ -54,7 +54,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
         return languageMenu;
     };
 
-    const auto languageMenuCurrentItem = [this]()
+    auto languageMenuCurrentItem = [this]()
     {
         jassert(!this->translations.isEmpty());
         for (int i = 0; i < this->translations.size(); ++i)
@@ -85,7 +85,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
     const String currentFontName =
         App::Config().getProperty(Serialization::Config::lastUsedFont);
 
-    const auto fontsMenuProvider = [this, currentFontName]()
+    auto fontsMenuProvider = [this, currentFontName]()
     {
         MenuPanel::Menu fontsMenu;
 
@@ -100,7 +100,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
         return fontsMenu;
     };
 
-    const auto fontsMenuCurrentItem = [this, currentFontName]()
+    auto fontsMenuCurrentItem = [this, currentFontName]()
     {
         jassert(!this->systemFonts.isEmpty());
         for (int i = 0; i < this->systemFonts.size(); ++i)
@@ -121,7 +121,8 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
 
     this->fontsCombo = make<MobileComboBox::Container>();
     this->addAndMakeVisible(this->fontsCombo.get());
-    this->fontsCombo->initWith(this->fontEditor.get(), move(fontsMenuProvider), move(fontsMenuCurrentItem));
+    this->fontsCombo->initWith(this->fontEditor.get(),
+        move(fontsMenuProvider), move(fontsMenuCurrentItem));
     
     this->openGLRendererButton = make<ToggleButton>(TRANS(I18n::Settings::rendererOpengl));
     this->addAndMakeVisible(this->openGLRendererButton.get());

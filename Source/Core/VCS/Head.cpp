@@ -210,9 +210,13 @@ bool Head::resetChangedItemToState(const RevisionItem::Ptr diffItem)
     }
     else if (diffItem->getType() == RevisionItem::Type::Removed)
     {
-        const Identifier logicType(sourceItem->getDiffLogic()->getType());
-        const Uuid id(sourceItem->getUuid());
-        this->targetVcsItemsSource.initTrackedItem(logicType, id, *sourceItem);
+        jassert(sourceItem != nullptr);
+        if (sourceItem != nullptr)
+        {
+            const Identifier logicType(sourceItem->getDiffLogic()->getType());
+            const Uuid id(sourceItem->getUuid());
+            this->targetVcsItemsSource.initTrackedItem(logicType, id, *sourceItem);
+        }
         return true;
     }
 

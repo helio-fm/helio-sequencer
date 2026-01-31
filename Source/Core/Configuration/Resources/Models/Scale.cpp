@@ -255,7 +255,6 @@ bool Scale::isEquivalentTo(const Scale *other) const
     return false;
 }
 
-
 int Scale::getDifferenceFrom(const Scale::Ptr other) const
 {
     if (other == nullptr)
