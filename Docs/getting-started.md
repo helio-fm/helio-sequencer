@@ -287,13 +287,15 @@ In the pattern roll, it either records to the selected track/clip, or if no pian
 
 ## Pattern roll
 
-You don't necessarily need that editor. Helio was designed to be a hybrid linear-based/pattern-based sequencer, so you could just stay in the piano roll mode and treat your project as one big canvas.
+You don't necessarily need that editor, Helio was designed to be a hybrid linear-based/pattern-based sequencer, so you could just stay in the piano roll mode and treat your project as one big canvas.
 
 However, the pattern roll is helpful for rearranging experiments:
 
 ![patterns]
 
-Pattern roll also allows you to tweak some track parameters, like key offset of velocity multiplier. In future, it may shift towards more parametric sequencer features.
+Pattern roll allows you to tweak individual clip parameters: change key offsets and velocity multipliers, or apply [parametric modifiers](parametric-modifiers.md) to different instances of the same track.
+
+*A hack: I often shift the key offset for all clips as a trick to reset my mental state to notice nuances I wasn't noticing while working on the piece.*
 
 #### See also: [track grouping](tips-and-tricks.md#clips-and-track-grouping)
 

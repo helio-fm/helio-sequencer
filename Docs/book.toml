@@ -9,6 +9,7 @@ src = "."
 git-repository-url = "https://github.com/helio-fm/helio-sequencer/tree/develop/Docs"
 default-theme = "navy"
 smart-punctuation = true
+sidebar-header-nav = false
 
 [output.html.playpen]
 editable = false

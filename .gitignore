@@ -59,6 +59,7 @@ build/
 cmake-build-*/
 .vs/
 .vscode/
+Docs/theme/
 ThirdParty/ASIO/asio
 ThirdParty/ASIO/common
 ThirdParty/ASIO/driver

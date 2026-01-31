@@ -8,19 +8,17 @@
 
 ## Why another sequencer?
 
-Most of the DAW interfaces often seem [overcomplicated](https://mashable.com/archive/german-u-boat), and they only tend to get more and more bloated over time. Many of them are commercial, proprietary-licensed and almost none of them support all major operating systems at the same time.
+Most of the DAW interfaces often seem overcomplicated, and they only tend to get more and more bloated over time. Many of them are commercial, proprietary-licensed and almost none of them support all major operating systems at the same time.
 
 Helio is an attempt to rethink a music sequencer to create a tool that **feels right**.
 
 It aims to be a modern music creation software, featuring linear-based/pattern-based sequencer with clean UI, integrated version control, microtonal temperaments support, small portable builds and more; mainly targeted at hobbyist composers, game developers and indie artists. Check out this [YouTube channel](https://www.youtube.com/channel/UCO3K8iCd1k2FTqSocoE-WXw/) for some showcases.
-
 
 ## Getting started
 
 The latest builds can be found at [helio.fm](https://helio.fm).
 
 Check out the documentation to get started: [docs.helio.fm](https://docs.helio.fm).
-
 
 ## Building
 
@@ -35,13 +33,11 @@ Check out the documentation to get started: [docs.helio.fm](https://docs.helio.f
 
 [![Packaging status](https://repology.org/badge/vertical-allrepos/helio.svg?header=helio-sequencer)](https://repology.org/project/helio/versions)
 
-
 ## Support the project
 
 * [Become a backer on Patreon](https://www.patreon.com/peterrudenko)
 * [Become a backer on OpenCollective](https://opencollective.com/helio-workstation#sponsor)
 * [DigitalOcean referral link](https://m.do.co/c/eff5010788f0)
-
 
 ## License and credits
 

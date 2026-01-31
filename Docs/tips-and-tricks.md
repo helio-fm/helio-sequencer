@@ -26,7 +26,9 @@ One quick way to switch between the current editing mode and the canvas panning 
 
 ![space-drag]
 
-Dragging with the right mouse button does the same thing, but it also switches to another track when clicked on any semi-transparent note.
+Dragging the canvas with the right mouse button does the same thing.
+
+Holding spacebar also works as a hotkey modifier: use `Spacebar + Cursor Keys` or `Spacebar + HJKL` to pan the viewport.
 
 ### Time measure tool
 
@@ -123,7 +125,6 @@ It can be dragged around by the center node, or controlled via hotkeys:
 
 *Tip: on desktop platforms, you can extend it by [adding your own chords](configs.md).*
 
-
 ### Knife tool
 
 In my workflow, I'm often adding new tracks with a knife tool: even though there's a normal way to add an empty track via project menu, or duplicate a track, I often end up having added some sketches in different places of a single sequence, and then seeing that they represent different parts, and can be cut into different tracks after switching to the pattern mode:
@@ -140,9 +141,9 @@ The knife tool has an alternative mode: right-click and drag (or long-tap and dr
 
 ### Clips and track grouping
 
-In the example above, two split tracks remain on the same row because the tracks are grouped by name, and the knife tool keeps the track name the same. Pattern roll can also group tracks by color, instrument, or track id — yet grouping by name works better for me.
+In the example above, two split tracks remain on the same row because the tracks are grouped by name, and the knife tool keeps the track name the same. Pattern roll can also group tracks by color, instrument, or track id.
 
-So, the segments on one row could be either different tracks or multiple instances (or "clips") of the same track. Instances always share the same notes, and have the same name and color, but they can be slightly modified: have different position, key shift or volume multiplier, which is mainly meant for prototyping:
+The segments on one row could be either different tracks or multiple instances (or "clips") of the same track. Instances always share the same notes, and have the same name and color, but they can be slightly modified: have different position, key shift or volume multiplier, which is mainly meant for prototyping:
 
 ![patterns-clips]
 
