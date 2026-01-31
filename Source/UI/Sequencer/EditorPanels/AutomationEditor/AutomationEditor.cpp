@@ -813,6 +813,11 @@ RollEditMode AutomationEditor::getSupportedEditMode(const RollEditMode &rollMode
     return RollEditMode::defaultMode;
 }
 
+bool AutomationEditor::shouldInteractWithChildren() const
+{
+    return this->getEditMode().isMode(RollEditMode::defaultMode);
+}
+
 RollEditMode AutomationEditor::getEditMode() const noexcept
 {
     return this->getSupportedEditMode(this->project.getEditMode());
@@ -820,9 +825,9 @@ RollEditMode AutomationEditor::getEditMode() const noexcept
 
 void AutomationEditor::onChangeEditMode(const RollEditMode &mode)
 {
-    const auto automationEditMode = this->getSupportedEditMode(mode);
-    const auto areChildrenEnabled = automationEditMode.isMode(RollEditMode::defaultMode);
+    const auto areChildrenEnabled = this->shouldInteractWithChildren();
 
+    const auto automationEditMode = this->getSupportedEditMode(mode);
     this->setMouseCursor(automationEditMode.getCursor());
 
     for (const auto &map : this->patternMap)
@@ -1285,14 +1290,19 @@ void AutomationEditor::loadTrack(const MidiTrack *const track)
 
 void AutomationEditor::applyEventBounds(EventComponentBase *c)
 {
+    const auto areChildrenEnabled = this->shouldInteractWithChildren();
+    c->setInterceptsMouseClicks(areChildrenEnabled, areChildrenEnabled);
     c->setFloatBounds(this->getEventBounds(c->getEvent(), c->getClip()));
     c->updateChildrenBounds();
 }
 
 void AutomationEditor::applyEventsBounds(SequenceMap *map)
 {
+    const auto areChildrenEnabled = this->shouldInteractWithChildren();
+
     for (auto *component : map->sortedComponents)
     {
+        component->setInterceptsMouseClicks(areChildrenEnabled, areChildrenEnabled);
         component->setFloatBounds(this->getEventBounds(component->getEvent(), component->getClip()));
     }
 
@@ -1300,6 +1310,7 @@ void AutomationEditor::applyEventsBounds(SequenceMap *map)
     // so update them after repositioning all event components
     for (auto *component : map->sortedComponents)
     {
+        component->setInterceptsMouseClicks(areChildrenEnabled, areChildrenEnabled);
         component->updateChildrenBounds();
     }
 }

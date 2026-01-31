@@ -743,6 +743,11 @@ RollEditMode VelocityEditor::getSupportedEditMode(const RollEditMode &rollMode) 
     return RollEditMode::defaultMode;
 }
 
+bool VelocityEditor::shouldInteractWithChildren() const
+{
+    return this->getEditMode().isMode(RollEditMode::defaultMode);
+}
+
 RollEditMode VelocityEditor::getEditMode() const noexcept
 {
     return this->getSupportedEditMode(this->project.getEditMode());
@@ -750,9 +755,9 @@ RollEditMode VelocityEditor::getEditMode() const noexcept
 
 void VelocityEditor::onChangeEditMode(const RollEditMode &mode)
 {
-    const auto velocityEditMode = this->getSupportedEditMode(mode);
-    const auto areChildrenEnabled = velocityEditMode.isMode(RollEditMode::defaultMode);
+    const auto areChildrenEnabled = this->shouldInteractWithChildren();
 
+    const auto velocityEditMode = this->getSupportedEditMode(mode);
     this->setMouseCursor(velocityEditMode.getCursor());
 
     for (const auto &c : this->patternMap)
@@ -1341,12 +1346,15 @@ void VelocityEditor::handleAsyncUpdate()
     {
         VELOCITY_MAP_BATCH_REPAINT_START
 
+        const auto areChildrenEnabled = this->shouldInteractWithChildren();
+
         for (int i = 0; i < this->batchRepaintList.size(); ++i)
         {
             // There are still many cases when a component
             // scheduled for repainting/repositioning is deleted at this time:
             if (Component *component = this->batchRepaintList.getUnchecked(i))
             {
+                component->setInterceptsMouseClicks(areChildrenEnabled, areChildrenEnabled);
                 this->updateNoteComponent(static_cast<VelocityEditorNoteComponent *>(component));
             }
         }

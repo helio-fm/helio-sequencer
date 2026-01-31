@@ -165,6 +165,7 @@ private:
 
     RollEditMode getEditMode() const noexcept;
     RollEditMode getSupportedEditMode(const RollEditMode &rollMode) const noexcept;
+    bool shouldInteractWithChildren() const;
     bool isDraggingEvent(const MouseEvent &e) const;
     bool isDrawingEvent(const MouseEvent &e) const;
     bool isKnifeToolEvent(const MouseEvent &e) const;
