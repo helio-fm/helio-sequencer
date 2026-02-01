@@ -104,9 +104,6 @@ namespace BinaryData
     extern const char*   instrument_svg;
     const int            instrument_svgSize = 1617;
 
-    extern const char*   instrumentNode_svg;
-    const int            instrumentNode_svgSize = 601;
-
     extern const char*   inverseDown_svg;
     const int            inverseDown_svgSize = 307;
 
@@ -155,9 +152,6 @@ namespace BinaryData
     extern const char*   patterns_svg;
     const int            patterns_svgSize = 134;
 
-    extern const char*   pause_svg;
-    const int            pause_svgSize = 297;
-
     extern const char*   piano_svg;
     const int            piano_svgSize = 321;
 
@@ -172,12 +166,6 @@ namespace BinaryData
 
     extern const char*   project_svg;
     const int            project_svgSize = 1390;
-
-    extern const char*   pull_svg;
-    const int            pull_svgSize = 334;
-
-    extern const char*   push_svg;
-    const int            push_svgSize = 199;
 
     extern const char*   record_svg;
     const int            record_svgSize = 143;
@@ -271,9 +259,6 @@ namespace BinaryData
 
     extern const char*   versionControl_svg;
     const int            versionControl_svgSize = 847;
-
-    extern const char*   volume_svg;
-    const int            volume_svgSize = 179;
 
     extern const char*   volumeUp_svg;
     const int            volumeUp_svgSize = 1401;
@@ -375,7 +360,7 @@ namespace BinaryData
     const int            colourSchemes_jsonSize = 4298;
 
     extern const char*   hotkeySchemes_json;
-    const int            hotkeySchemes_jsonSize = 26422;
+    const int            hotkeySchemes_jsonSize = 24628;
 
     extern const char*   keyboardMappings_json;
     const int            keyboardMappings_jsonSize = 792;
@@ -393,7 +378,7 @@ namespace BinaryData
     const int            translations_jsonSize = 664;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 128;
+    const int namedResourceListSize = 123;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

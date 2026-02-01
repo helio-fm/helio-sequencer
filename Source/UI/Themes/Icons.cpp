@@ -78,7 +78,6 @@ void Icons::initBuiltInImages() noexcept
     setIconForKey(patterns);
     setIconForKey(orchestraPit);
     setIconForKey(instrument);
-    setIconForKey(instrumentNode);
     setIconForKey(audioPlugin);
     setIconForKey(annotation);
     setIconForKey(colour);
@@ -91,7 +90,6 @@ void Icons::initBuiltInImages() noexcept
     setIconForKey(mute);
     setIconForKey(volumeUp);
     setIconForKey(volumeDown);
-    setIconForKey(volume);
     setIconForKey(volumePanel);
 
     setIconForKey(list);
@@ -106,7 +104,6 @@ void Icons::initBuiltInImages() noexcept
     setIconForKey(toggleOff);
 
     setIconForKey(play);
-    setIconForKey(pause);
     setIconForKey(stop);
     setIconForKey(record);
 
@@ -161,8 +158,6 @@ void Icons::initBuiltInImages() noexcept
 
     setIconForKey(commit);
     setIconForKey(reset);
-    setIconForKey(push);
-    setIconForKey(pull);
 
     setIconForKey(arpeggiate);
     setIconForKey(refactor);

@@ -3950,7 +3950,6 @@
     <None Include="..\..\Resources\Icons\forward.svg"/>
     <None Include="..\..\Resources\Icons\helio.svg"/>
     <None Include="..\..\Resources\Icons\instrument.svg"/>
-    <None Include="..\..\Resources\Icons\instrumentNode.svg"/>
     <None Include="..\..\Resources\Icons\inverseDown.svg"/>
     <None Include="..\..\Resources\Icons\inverseUp.svg"/>
     <None Include="..\..\Resources\Icons\inversion.svg"/>
@@ -3967,14 +3966,11 @@
     <None Include="..\..\Resources\Icons\orchestraPit.svg"/>
     <None Include="..\..\Resources\Icons\paste.svg"/>
     <None Include="..\..\Resources\Icons\patterns.svg"/>
-    <None Include="..\..\Resources\Icons\pause.svg"/>
     <None Include="..\..\Resources\Icons\piano.svg"/>
     <None Include="..\..\Resources\Icons\pianoTrack.svg"/>
     <None Include="..\..\Resources\Icons\play.svg"/>
     <None Include="..\..\Resources\Icons\progressIndicator.svg"/>
     <None Include="..\..\Resources\Icons\project.svg"/>
-    <None Include="..\..\Resources\Icons\pull.svg"/>
-    <None Include="..\..\Resources\Icons\push.svg"/>
     <None Include="..\..\Resources\Icons\record.svg"/>
     <None Include="..\..\Resources\Icons\redo.svg"/>
     <None Include="..\..\Resources\Icons\refactor.svg"/>
@@ -4006,7 +4002,6 @@
     <None Include="..\..\Resources\Icons\undo.svg"/>
     <None Include="..\..\Resources\Icons\up.svg"/>
     <None Include="..\..\Resources\Icons\versionControl.svg"/>
-    <None Include="..\..\Resources\Icons\volume.svg"/>
     <None Include="..\..\Resources\Icons\volumeUp.svg"/>
     <None Include="..\..\Resources\Icons\volumeDown.svg"/>
     <None Include="..\..\Resources\Icons\volumePanel.svg"/>

@@ -250,112 +250,104 @@ static const unsigned char temp_binary_data_31[] =
 
 const char* instrument_svg = (const char*) temp_binary_data_31;
 
-//================== instrumentNode.svg ==================
-static const unsigned char temp_binary_data_32[] =
-"<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14.18 13.32v-1.641h5v1.641c0 1.094-.703 1.992-1.68 2.344v3.516h-1.68v-3.516a2.456 2.456 0 0 1-1.641-2.344zM10.82 1.68V5h1.68v5h-5V5h1.68V1.68c0-.469.352-.859.82-.859s.82.391.82.859zM17.5 5h1.68v5h-"
-"5V5h1.641V1.68c0-.469.391-.859.859-.859s.82.391.82.859V5zM.82 13.32v-1.641h5v1.641a2.456 2.456 0 0 1-1.641 2.344v3.516h-1.68v-3.516c-.977-.352-1.68-1.25-1.68-2.344zm6.68 0v-1.641h5v1.641c0 1.094-.703 1.992-1.68 2.344v3.516H9.179v-3.516c-.977-.352-1.6"
-"8-1.25-1.68-2.344zM4.18 1.68V5h1.641v5h-5V5h1.68V1.68c0-.469.352-.859.82-.859s.859.391.859.859z\"/></svg>";
-
-const char* instrumentNode_svg = (const char*) temp_binary_data_32;
-
 //================== inverseDown.svg ==================
-static const unsigned char temp_binary_data_33[] =
+static const unsigned char temp_binary_data_32[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2.016 11.484c0-3.563 2.906-6.47 6.47-6.47H12v1.97H8.485c-2.484 0-4.5 2.016-4.5 4.5s2.016 4.5 4.5 4.5H9v-1.97l3 3-3 3V18h-.516c-3.563 0-6.47-2.953-6.47-6.516zm12 4.5h7.97V18h-7.97v-2.016zm0-5.484h7."
 "97v2.016h-7.97V10.5zm0-5.484h7.97v1.97h-7.97v-1.97z\"/></svg>";
 
-const char* inverseDown_svg = (const char*) temp_binary_data_33;
+const char* inverseDown_svg = (const char*) temp_binary_data_32;
 
 //================== inverseUp.svg ==================
-static const unsigned char temp_binary_data_34[] =
+static const unsigned char temp_binary_data_33[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2.016 12.516c0 3.563 2.906 6.47 6.47 6.47H12v-1.97H8.485c-2.484 0-4.5-2.016-4.5-4.5s2.016-4.5 4.5-4.5H9v1.97l3-3-3-3V6h-.516c-3.563 0-6.47 2.953-6.47 6.516zm12-4.5h7.97V6h-7.97v2.016zm0 5.484h7.97v"
 "-2.016h-7.97V13.5zm0 5.484h7.97v-1.97h-7.97v1.97z\"/></svg>";
 
-const char* inverseUp_svg = (const char*) temp_binary_data_34;
+const char* inverseUp_svg = (const char*) temp_binary_data_33;
 
 //================== inversion.svg ==================
-static const unsigned char temp_binary_data_35[] =
+static const unsigned char temp_binary_data_34[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9.58 6.13A26.78 26.78 0 0 1 24.32 0v4.91a21.82 21.82 0 0 0-11.27 4.7zm19.63-1.22V0a26.6 26.6 0 0 1 14.74 6.13l-3.48 3.48a21.82 21.82 0 0 0-11.26-4.7m14.71 8.14 3.47-3.47a26.78 26.78 0 0 1 6.14 14.7"
 "4H48.6a21.82 21.82 0 0 0-4.69-11.27m-39 11.27H0A26.78 26.78 0 0 1 6.13 9.58l3.48 3.47a21.82 21.82 0 0 0-4.7 11.27m21.85 24.44c7.6 0 14.3-3.89 18.24-9.78h-6.02V34.1h14.67v14.66h-4.89v-6.6a26.8 26.8 0 0 1-22 11.49c-11.9 0-22-7.75-25.51-18.48l4.79-1.1a2"
 "2 22 0 0 0 20.72 14.7\"/></svg>";
 
-const char* inversion_svg = (const char*) temp_binary_data_35;
+const char* inversion_svg = (const char*) temp_binary_data_34;
 
 //================== legato.svg ==================
-static const unsigned char temp_binary_data_36[] =
+static const unsigned char temp_binary_data_35[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M19.5 9.5c-1.03 0-1.9.62-2.29 1.5h-2.92c-.39-.88-1.26-1.5-2.29-1.5s-1.9.62-2.29 1.5H6.79c-.39-.88-1.26-1.5-2.29-1.5C3.12 9.5 2 10.62 2 12s1.12 2.5 2.5 2.5c1.03 0 1.9-.62 2.29-1.5h2.92c.39.88 1.26 1."
 "5 2.29 1.5s1.9-.62 2.29-1.5h2.92c.39.88 1.26 1.5 2.29 1.5 1.38 0 2.5-1.12 2.5-2.5s-1.12-2.5-2.5-2.5\"></path></svg>";
 
-const char* legato_svg = (const char*) temp_binary_data_36;
+const char* legato_svg = (const char*) temp_binary_data_35;
 
 //================== list.svg ==================
-static const unsigned char temp_binary_data_37[] =
+static const unsigned char temp_binary_data_36[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14.4 9H8.6c-.552 0-.6.447-.6 1s.048 1 .6 1h5.8c.552 0 .6-.447.6-1s-.048-1-.6-1zm2 5H8.6c-.552 0-.6.447-.6 1s.048 1 .6 1h7.8c.552 0 .6-.447.6-1s-.048-1-.6-1zM8.6 6h7.8c.552 0 .6-.447.6-1s-.048-1-.6-"
 "1H8.6c-.552 0-.6.447-.6 1s.048 1 .6 1zM5.4 9H3.6c-.552 0-.6.447-.6 1s.048 1 .6 1h1.8c.552 0 .6-.447.6-1s-.048-1-.6-1zm0 5H3.6c-.552 0-.6.447-.6 1s.048 1 .6 1h1.8c.552 0 .6-.447.6-1s-.048-1-.6-1zm0-10H3.6c-.552 0-.6.447-.6 1s.048 1 .6 1h1.8c.552 0 .6-"
 ".447.6-1s-.048-1-.6-1z\"/></svg>";
 
-const char* list_svg = (const char*) temp_binary_data_37;
+const char* list_svg = (const char*) temp_binary_data_36;
 
 //================== lockZoom.svg ==================
-static const unsigned char temp_binary_data_38[] =
+static const unsigned char temp_binary_data_37[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4m-7 7H3v4c0 1.1.9 2 2 2h4v-2H5zM5 5h4V3H5c-1.1 0-2 .9-2 2v4h2zm14-2h-4v2h4v4h2V5c0-1.1-.9-2-2-2m0 16h-4v2h4c1.1 0 2-.9 2-2v-4h-2z\"></path></"
 "svg>";
 
-const char* lockZoom_svg = (const char*) temp_binary_data_38;
+const char* lockZoom_svg = (const char*) temp_binary_data_37;
 
 //================== meter.svg ==================
-static const unsigned char temp_binary_data_39[] =
+static const unsigned char temp_binary_data_38[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M5.82 5.53H4.68v2.16h-1V5.53H0V4.34L3.73 0h.95v4.7h1.14ZM3.68 4.7V1.23L.7 4.7ZM5.82 16.11H4.68v2.17h-1V16.1H0v-1.19l3.73-4.34h.95v4.7h1.14Zm-2.14-.82V11.8L.7 15.3Z\"/></svg>";
 
-const char* meter_svg = (const char*) temp_binary_data_39;
+const char* meter_svg = (const char*) temp_binary_data_38;
 
 //================== metronome.svg ==================
-static const unsigned char temp_binary_data_40[] =
+static const unsigned char temp_binary_data_39[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M173.46 47.75a8.47 8.47 0 0 0-11.96-.37l-7.14 6.67-2.25-2.25a8.47 8.47 0 1 0-11.96 11.96l1.85 1.88-9.31 8.73-6.09-47.28a8.6 8.6 0 0 0-8.63-7.4H81.14a8.6 8.6 0 0 0-8.62 7.4L57.3 145.62a8.55 8.55 0 0 "
 "0 8.62 9.53h67.23a8.56 8.56 0 0 0 8.63-9.53L135.3 95.1l18.65-17.47 3.1 3.07a8.44 8.44 0 0 0 11.95 0 8.47 8.47 0 0 0 0-11.96l-2.7-2.7 6.75-6.32a8.47 8.47 0 0 0 .37-11.96zm-97.18 56.6h-2.12l8.47-67.74h33.86l5.93 47.4-14.4 13.49V62a8.47 8.47 0 0 0-16.93"
 " 0v42.34H76.3z\"/><path d=\"M32.0 55.0h.01v.01h-.01z\"/></svg>";
 
-const char* metronome_svg = (const char*) temp_binary_data_40;
+const char* metronome_svg = (const char*) temp_binary_data_39;
 
 //================== microtoneDown.svg ==================
-static const unsigned char temp_binary_data_41[] =
+static const unsigned char temp_binary_data_40[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0,126.52a2.83,2.83,0,0,1,.89-2L5.36,120a2.78,2.78,0,0,1,4.1,0l35.07,35.06L79.59,120a2.8,2.8,0,0,1,4.11,0l4.46,4.46a2.8,2.8,0,0,1,.9,2,2.84,2.84,0,0,1-.9,2.06L46.59,170.15a2.8,2.8,0,0,1-4.11,0L.9,12"
 "8.58A2.87,2.87,0,0,1,0,126.52Z\"/><path d=\"M0,188.5V0M.5.5V188\"/></svg>";
 
-const char* microtoneDown_svg = (const char*) temp_binary_data_41;
+const char* microtoneDown_svg = (const char*) temp_binary_data_40;
 
 //================== microtoneDown2.svg ==================
-static const unsigned char temp_binary_data_42[] =
+static const unsigned char temp_binary_data_41[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0,126.52a2.83,2.83,0,0,1,.89-2L5.36,120a2.78,2.78,0,0,1,4.1,0l35.07,35.06L79.59,120a2.8,2.8,0,0,1,4.11,0l4.46,4.46a2.8,2.8,0,0,1,.9,2,2.84,2.84,0,0,1-.9,2.06L46.59,170.15a2.8,2.8,0,0,1-4.11,0L.9,12"
 "8.58A2.87,2.87,0,0,1,0,126.52Z\"/><path d=\"M0,89.52a2.83,2.83,0,0,1,.89-2L5.36,83a2.78,2.78,0,0,1,4.1,0l35.07,35.06L79.59,83a2.8,2.8,0,0,1,4.11,0l4.46,4.46a2.8,2.8,0,0,1,.9,2,2.84,2.84,0,0,1-.9,2.06L46.59,133.15a2.8,2.8,0,0,1-4.11,0L.9,91.58A2.87,2."
 "87,0,0,1,0,89.52Z\"/><path d=\"M0,188.5V0M.5.5V188\"/></svg>";
 
-const char* microtoneDown2_svg = (const char*) temp_binary_data_42;
+const char* microtoneDown2_svg = (const char*) temp_binary_data_41;
 
 //================== microtoneUp.svg ==================
-static const unsigned char temp_binary_data_43[] =
+static const unsigned char temp_binary_data_42[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M89.56,71.38a2.85,2.85,0,0,1-.9,2.07l-4.49,4.49a2.84,2.84,0,0,1-4.13,0L44.78,42.67,9.52,77.94a2.84,2.84,0,0,1-4.13,0L.9,73.45A2.85,2.85,0,0,1,0,71.38H0a2.84,2.84,0,0,1,.9-2.06L42.72,27.51a2.82,2.82,"
 "0,0,1,4.13,0L88.66,69.32A2.84,2.84,0,0,1,89.56,71.38Z\"/><path d=\"M0,188.5V0M.5.5V188\"/></svg>";
 
-const char* microtoneUp_svg = (const char*) temp_binary_data_43;
+const char* microtoneUp_svg = (const char*) temp_binary_data_42;
 
 //================== microtoneUp2.svg ==================
-static const unsigned char temp_binary_data_44[] =
+static const unsigned char temp_binary_data_43[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0,108.38a2.82,2.82,0,0,1,.9-2.06L42.72,64.51a2.82,2.82,0,0,1,4.13,0l41.81,41.81a2.82,2.82,0,0,1,0,4.13l-4.49,4.48a2.82,2.82,0,0,1-4.13,0L44.78,79.67,9.52,114.93a2.82,2.82,0,0,1-4.13,0L.9,110.45a2.8"
 "5,2.85,0,0,1-.9-2.07Z\"/><path d=\"M89.56,71.38a2.85,2.85,0,0,1-.9,2.07l-4.49,4.49a2.84,2.84,0,0,1-4.13,0L44.78,42.67,9.52,77.94a2.84,2.84,0,0,1-4.13,0L.9,73.45A2.85,2.85,0,0,1,0,71.38H0a2.84,2.84,0,0,1,.9-2.06L42.72,27.51a2.82,2.82,0,0,1,4.13,0L88.6"
 "6,69.32A2.84,2.84,0,0,1,89.56,71.38Z\"/><path d=\"M0,188.5V0M.5.5V188\"/></svg>";
 
-const char* microtoneUp2_svg = (const char*) temp_binary_data_44;
+const char* microtoneUp2_svg = (const char*) temp_binary_data_43;
 
 //================== mute.svg ==================
-static const unsigned char temp_binary_data_45[] =
+static const unsigned char temp_binary_data_44[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12.563 5.156c-.31 0-.556.087-.782.313l-5.969 5.968H1.157c-.31 0-.586.118-.812.344-.226.227-.344.472-.344.781v6.876c0 .31.117.586.344.812.226.226.503.313.812.313h4.657l5.968 5.968c.226.226.471.312.7"
 "81.313.31 0 .587-.086.813-.313.226-.226.344-.503.344-.812V6.28c0-.31-.118-.586-.344-.812-.226-.226-.502-.313-.813-.313zm4.374 5.188a.673.673 0 0 0-.468.187L15.25 11.75a.677.677 0 0 0 0 .938l3.5 3.5-3.5 3.468a.639.639 0 0 0 0 .907l1.219 1.25a.639.639 "
 "0 0 0 .906 0l3.5-3.5 3.5 3.5a.639.639 0 0 0 .906 0l1.219-1.25a.639.639 0 0 0 0-.907L23 16.188l3.5-3.5a.677.677 0 0 0 0-.938l-1.219-1.219a.639.639 0 0 0-.906 0l-3.5 3.5-3.5-3.5a.602.602 0 0 0-.438-.187z\"/></svg>";
 
-const char* mute_svg = (const char*) temp_binary_data_45;
+const char* mute_svg = (const char*) temp_binary_data_44;
 
 //================== orchestraPit.svg ==================
-static const unsigned char temp_binary_data_46[] =
+static const unsigned char temp_binary_data_45[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M371.906 383.875c-.97.013-1.975.064-3.031.125-20.234 1.171-22.304 6.342-39.469 99.281-13.591 73.593-14.501 77.495-18.344 78.969-5.052 1.939-5.377-5.869-1.125-26.25 6.11-29.28 6.056-32.669-.562-43.21"
 "9-9.231-14.716-9-14.245-9.094-20.469-.088-5.8-3.191-11.654-6.062-11.468-.476.03-14.825 9.15-31.875 20.281l-31 20.25v9.75l5.781 1.313c15.725 3.57 17.483 7.484 14.219 31.343-5.444 39.786 5.186 61.658 33.281 68.469 31.869 7.725 57.672-6.957 65.688-37.34"
 "4l1.375-5.187-3.938-1.594c-12.977-5.192-10.036-22.617 4.094-24.313 4.96-.595 4.665.003 6.406-13.78.572-4.527.442-5.35-1.094-5.845-5.733-1.85-7.473-2.95-9.281-5.875-5.252-8.497 1.163-19.53 11.375-19.53 2.71 0 3.106-.814 4.063-8.5.342-2.75.87-6.198 1.1"
@@ -364,10 +356,10 @@ static const unsigned char temp_binary_data_46[] =
 "7.469-11.626zm-7.375 44.781c-.407.038-.656.327-.656.907 0 1.171-1.822 15.486-2.531 19.812-.459 2.796-.26 3.25 1.53 3.25 8.976 0 13.42-13.799 6.626-20.593-2.286-2.286-4.073-3.459-4.969-3.375zm-164.656 43.25h21.437-21.437zm159.906 1.844c-.3.05-.56.223-"
 ".813.5-.858.945-4.093 17.735-4.093 21.282 0 5.492 10.421-1.222 11.594-7.47.999-5.327-3.783-14.789-6.688-14.312z\"/></svg>";
 
-const char* orchestraPit_svg = (const char*) temp_binary_data_46;
+const char* orchestraPit_svg = (const char*) temp_binary_data_45;
 
 //================== paste.svg ==================
-static const unsigned char temp_binary_data_47[] =
+static const unsigned char temp_binary_data_46[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M324.469 544.063c-4.351-.093-8.826 1.02-13.094 3.343-9.027 4.913-12.034 10.608-12.875 24.375l-.563 9.5-11 .563c-11.67.592-16.033 2.01-18.937 6.156-1.547 2.21-2.195 10.836-.906 12.125.366.367 25.996."
 "656 56.969.656h56.312l.656-2.5c2.68-10.674-5.264-16.42-22.719-16.468l-8.593-.032-.563-9.312c-.665-11.144-3.087-17.095-9-22.157-4.681-4.007-10.093-6.13-15.687-6.25zm-.906 16.687c4.733 0 8.593 3.829 8.593 8.563 0 4.733-3.86 8.593-8.594 8.593-4.733 0-8."
 "562-3.86-8.562-8.593a8.556 8.556 0 0 1 8.563-8.563zm-73.344 9l-3.281 2.031c-1.813 1.12-4.023 3.576-4.907 5.438l-1.594 3.375V743.28l1.75 3.438c.962 1.886 3.011 4.36 4.563 5.5l2.813 2.062 33.687.5 33.688.5.25 8c.148 4.4.47 8.59.718 9.282.358.995 12.348"
@@ -376,44 +368,37 @@ static const unsigned char temp_binary_data_47[] =
 ".222-.856 3.667-1.563 5.437-1.563 1.77 0 3.53-.486 3.906-1.093 1.636-2.647 9.052-4.839 16.438-4.875 8.28-.042 10.353-.844 9.812-3.657l-.344-1.875-20.344-.25-20.343-.281zm85.156 72.094h79.813v14.031h-79.813v-14.031zm0 32h79.813v14.031h-79.813v-14.031z"
 "m0 32.031h79.813v14.031h-79.813v-14.031zm0 32.031h79.813v14h-79.813v-14z\"/></svg>";
 
-const char* paste_svg = (const char*) temp_binary_data_47;
+const char* paste_svg = (const char*) temp_binary_data_46;
 
 //================== patterns.svg ==================
-static const unsigned char temp_binary_data_48[] =
+static const unsigned char temp_binary_data_47[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M3 5.016h18.984v6H3v-6zm6.984 13.968V12h12v6.984h-12zm-6.984 0V12h6v6.984H3z\"/></svg>";
 
-const char* patterns_svg = (const char*) temp_binary_data_48;
-
-//================== pause.svg ==================
-static const unsigned char temp_binary_data_49[] =
-"<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M21.6 4.8c-1.59 0-2.88.49-2.88 2.08v18.24c0 1.59 1.29 2.08 2.88 2.08s2.88-.49 2.88-2.08V6.88c0-1.59-1.29-2.08-2.88-2.08zm-11.2 0c-1.59 0-2.88.49-2.88 2.08v18.24c0 1.59 1.29 2.08 2.88 2.08s2.88-.49 2"
-".88-2.08V6.88c0-1.59-1.29-2.08-2.88-2.08z\"/></svg>";
-
-const char* pause_svg = (const char*) temp_binary_data_49;
+const char* patterns_svg = (const char*) temp_binary_data_47;
 
 //================== piano.svg ==================
-static const unsigned char temp_binary_data_50[] =
+static const unsigned char temp_binary_data_48[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 17.5V3.125h19.375V17.5H0zm3.75-6.25h-.625v-7.5h-2.5v13.125H3.75V11.25zm3.75 0h-.625v-7.5H5v7.5h-.625v5.625H7.5V11.25zm3.75 0h-.625v-7.5H8.75v7.5h-.625v5.625h3.125V11.25zm1.25-7.5v7.5h-.625v5.625H"
 "15V11.25h-.625v-7.5H12.5zm6.25 0h-2.5v7.5h-.625v5.625h3.125V3.75z\"/></svg>";
 
-const char* piano_svg = (const char*) temp_binary_data_50;
+const char* piano_svg = (const char*) temp_binary_data_48;
 
 //================== pianoTrack.svg ==================
-static const unsigned char temp_binary_data_51[] =
+static const unsigned char temp_binary_data_49[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M303.656 339c-1.343-.066-3.37.627-6.562 1.781-10.625 3.843-9.656-3.661-9.656 76 0 38.67-.266 70.281-.563 70.281-.297 0-2.34-.928-4.563-2.062-19.988-10.197-51.947-7.156-72.562 6.875-39.896 27.153-27."
 "828 75.879 20.313 82.063 28.745 3.692 59.562-10.461 71.812-32.97 5.197-9.547 5.512-13.645 5.531-73.655.01-30.388.216-55.25.469-55.25s2.615 2.335 5.25 5.156c3.98 4.261 7.434 6.376 20.313 12.594 27.67 13.358 34.534 21.755 36.906 45.062 1.045 10.27.947 "
 "10.18 7.687 6.875 5.545-2.72 5.541-2.712 5.219-29.438-.488-40.43-3.905-45.733-42-65.312-22.79-11.712-32.866-23.409-34.469-39.938-.557-5.75-.886-7.951-3.125-8.062zm-165.781 27.594v.125h.563v-.125h-.563zM432.813 544.28v.032h.437v-.032h-.438z\"/></svg>";
 
-const char* pianoTrack_svg = (const char*) temp_binary_data_51;
+const char* pianoTrack_svg = (const char*) temp_binary_data_49;
 
 //================== play.svg ==================
-static const unsigned char temp_binary_data_52[] =
+static const unsigned char temp_binary_data_50[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M26.717 15.179L13.019 6.693c-.998-.654-1.814-.171-1.814 1.072v16.474c0 1.243.818 1.725 1.814 1.07l13.699-8.486s.486-.342.486-.822c-.002-.478-.488-.821-.488-.821z\"/></svg>";
 
-const char* play_svg = (const char*) temp_binary_data_52;
+const char* play_svg = (const char*) temp_binary_data_50;
 
 //================== progressIndicator.svg ==================
-static const unsigned char temp_binary_data_53[] =
+static const unsigned char temp_binary_data_51[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<g id=\"Indicator\">\n"
 "<g id=\"7\" transform=\"translate(15.158879, 27.380952)\"><path d=\"M2.95666586,-0.149156118 C0.486484747,-1.38700301 -0.159803025,-0.620861235 1.52669605,1.57975571 L23.7087119,30.5238095 L25.4437424,22.6485183 C25.7992623,21.0348161 27.2920895,19.1"
@@ -434,10 +419,10 @@ static const unsigned char temp_binary_data_53[] =
 "</g>\n"
 "</svg>";
 
-const char* progressIndicator_svg = (const char*) temp_binary_data_53;
+const char* progressIndicator_svg = (const char*) temp_binary_data_51;
 
 //================== project.svg ==================
-static const unsigned char temp_binary_data_54[] =
+static const unsigned char temp_binary_data_52[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M351.607 621.429c-22.548-4.826-28.859-29.892-8.585-34.1 14.935-3.101 23.462 10.415 12.44 19.719-4.728 3.99-2.516 5.72 6.511 5.09 17.707-1.234 26.919-11.295 26.03-28.427l-.302-5.816-13.203-.652c-44.9"
 "66-2.22-64.454-15.418-68.285-46.247-2.556-20.573 6.545-35.444 31.853-52.047l10.365-6.8-.568-3.627c-.313-1.995-1.263-7.677-2.112-12.627-3.828-22.325-.387-38.428 10.545-49.36 17.025-17.025 39.477-14.908 49.266 4.643 13.26 26.482 5.22 43.491-30.571 64.6"
 "7-12.552 7.427-12.411 7.233-9.727 13.472 2.477 5.759 2.19 5.66 9.783 3.37 22.51-6.784 48.722 2.08 57.526 19.452 12.566 24.8.535 51.444-27.872 61.725l-6 2.171.25 6.429c1.117 28.782-18.702 45.092-47.344 38.962zm33.636-55.586c2.846-3.429-16.41-51.948-20"
@@ -445,52 +430,39 @@ static const unsigned char temp_binary_data_54[] =
 "27 3.538zm18.57-6.658c8.087-7.455 9.891-12.263 9.866-26.29-.042-22.793-10.624-34.213-29.705-32.054-12.843 1.453-12.943 1.929-4.397 20.899 5.897 13.089 10.649 25.32 13.66 35.155 2.409 7.87 4.12 8.24 10.575 2.29zm-34.543-99.89c21.27-13.965 29.196-27.55"
 "2 24.437-41.882-3.559-10.714-9.422-14.347-18.767-11.63-16.075 4.672-23.465 22.543-19.771 47.806 2.037 13.933 1.75 13.817 14.101 5.707z\"/></svg>";
 
-const char* project_svg = (const char*) temp_binary_data_54;
-
-//================== pull.svg ==================
-static const unsigned char temp_binary_data_55[] =
-"<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M27.844 11.252A7.438 7.438 0 0 0 20.411 4a7.42 7.42 0 0 0-5.839 2.835 4.168 4.168 0 0 0-3.303-1.624 4.177 4.177 0 0 0-4.133 4.771 6.056 6.056 0 0 0-7.134 5.96A6.056 6.056 0 0 0 6.056 22h3.118l6.828 "
-"6.828L22.83 22h3.734a5.45 5.45 0 0 0 1.282-10.747zM16 26l-6-6h4v-6h4v6h4l-6 6z\"/></svg>";
-
-const char* pull_svg = (const char*) temp_binary_data_55;
-
-//================== push.svg ==================
-static const unsigned char temp_binary_data_56[] =
-"<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M27.883 12.078a5 5 0 0 0-6.168-5.911 6.003 6.003 0 0 0-11.475.151A8 8 0 1 0 8 22h4v6h8v-6h7a5 5 0 0 0 .883-9.922zM18 20v6h-4v-6H9l7-7 7 7h-5z\"/></svg>";
-
-const char* push_svg = (const char*) temp_binary_data_56;
+const char* project_svg = (const char*) temp_binary_data_52;
 
 //================== record.svg ==================
-static const unsigned char temp_binary_data_57[] =
+static const unsigned char temp_binary_data_53[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M10 3c-3.866 0-7 3.133-7 7 0 3.865 3.134 7 7 7s7-3.135 7-7c0-3.867-3.134-7-7-7z\"></path></svg>";
 
-const char* record_svg = (const char*) temp_binary_data_57;
+const char* record_svg = (const char*) temp_binary_data_53;
 
 //================== redo.svg ==================
-static const unsigned char temp_binary_data_58[] =
+static const unsigned char temp_binary_data_54[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17.333 7.332a1.33 1.33 0 0 0-1.334 1.333v3.412c-6 .664-10.667 5.745-10.667 11.921v1.333c2.993-4.564 7-5.227 10.667-5.319v3.319a1.333 1.333 0 0 0 2.277.943l8.391-8.276-8.391-8.277a1.328 1.328 0 0 0-"
 ".943-.389z\"/></svg>";
 
-const char* redo_svg = (const char*) temp_binary_data_58;
+const char* redo_svg = (const char*) temp_binary_data_54;
 
 //================== refactor.svg ==================
-static const unsigned char temp_binary_data_59[] =
+static const unsigned char temp_binary_data_55[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M8.214 6.429c0 .19-.167.357-.357.357S7.5 6.619 7.5 6.429c0-.77-1.194-1.071-1.786-1.071-.19 0-.357-.167-.357-.357s.167-.357.357-.357c1.038 0 2.5.547 2.5 1.786zm1.786 0c0-2.232-2.266-3.571-4.286-3.571"
 "S1.428 4.197 1.428 6.429c0 .714.29 1.462.759 2.009.212.246.458.48.681.737.792.949 1.462 2.065 1.574 3.326h2.545c.112-1.261.781-2.377 1.574-3.326.223-.257.469-.491.681-.737a3.182 3.182 0 0 0 .759-2.009zm1.429 0c0 1.15-.379 2.143-1.15 2.991s-1.786 2.04"
 "2-1.875 3.237c.324.19.525.547.525.915 0 .268-.1.525-.279.714.179.19.279.446.279.714 0 .368-.19.703-.502.904.089.156.145.346.145.525 0 .725-.569 1.071-1.217 1.071-.29.647-.938 1.071-1.641 1.071s-1.35-.424-1.641-1.071c-.647 0-1.217-.346-1.217-1.071 0-."
 "179.056-.368.145-.525A1.071 1.071 0 0 1 2.499 15c0-.268.1-.525.279-.714a1.04 1.04 0 0 1-.279-.714c0-.368.201-.725.525-.915-.089-1.194-1.105-2.388-1.875-3.237s-1.15-1.842-1.15-2.991c0-3.036 2.891-5 5.714-5s5.714 1.964 5.714 5z\"/></svg>";
 
-const char* refactor_svg = (const char*) temp_binary_data_59;
+const char* refactor_svg = (const char*) temp_binary_data_55;
 
 //================== remove.svg ==================
-static const unsigned char temp_binary_data_60[] =
+static const unsigned char temp_binary_data_56[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16 2.88c-6.846 0-11.101 2.256-10.87 4.086l2.307 18.987c.091.739 3.554 3.162 8.563 3.166 5.011-.005 8.472-2.429 8.565-3.166l2.306-18.987c.23-1.83-4.022-4.086-10.87-4.086zm0 6.866c-5.01-.005-8.565-1."
 "789-8.565-2.456C7.433 6.628 10.99 4.839 16 4.842c5.01-.002 8.566 1.786 8.565 2.448 0 .667-3.554 2.451-8.565 2.456z\"/></svg>";
 
-const char* remove_svg = (const char*) temp_binary_data_60;
+const char* remove_svg = (const char*) temp_binary_data_56;
 
 //================== render.svg ==================
-static const unsigned char temp_binary_data_61[] =
+static const unsigned char temp_binary_data_57[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M264.566 444.154c-1.913-1.548-2.512-4.275-4.943-22.499-1.522-11.405-3.017-20.986-3.323-21.292-.539-.539-1.337 3.562-3.862 19.853-1.472 9.497-3.613 12.7-8.49 12.7-5.05 0-7.013-2.594-8.433-11.141a3482"
 ".716 3482.716 0 0 0-2.858-16.859l-1.637-9.5-9.5-.249c-13.312-.348-14-.578-14-4.663 0-3.724 1.21-4.588 6.43-4.588h3.267l3.348-19.615c3.62-21.209 4.897-24.385 9.805-24.385 6.374 0 7.73 2.67 10.673 21 .926 5.775 2.006 10.845 2.398 11.267.392.422 1.935-7"
 ".228 3.429-17 2.976-19.465 3.93-21.6 9.65-21.6 6.54 0 7.185 1.837 11.085 31.583 1.208 9.213 2.506 16.75 2.885 16.75.38 0 1.525-5.445 2.545-12.101 2.128-13.87 3.72-16.899 8.883-16.899 5.243 0 7.096 3.006 10.675 17.311 3.518 14.063 3.701 14.183 6.86 4."
@@ -501,46 +473,46 @@ static const unsigned char temp_binary_data_61[] =
 ".636-2.765 10.268-11.9 10.367-16.495.178-2.517-5.581-2.979-5.264-6.072 4.177-1.486 4.538-3.355 9.671-4.152 11.408-3.312 7.216-12.237 6.175-14.272-1.664l-2.103-8.095c-1.54-5.923-1.863-4.967-5.467 16.147-2.696 15.79-3.657 19.528-5.539 21.53-2.703 2.877"
 "-6.807 3.152-9.882.662z\"/></svg>";
 
-const char* render_svg = (const char*) temp_binary_data_61;
+const char* render_svg = (const char*) temp_binary_data_57;
 
 //================== reprise.svg ==================
-static const unsigned char temp_binary_data_62[] =
+static const unsigned char temp_binary_data_58[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><g><rect x=\"165\" width=\"60\" height=\"270\"/><rect x=\"105\" width=\"30\" height=\"270\"/><circle cx=\"60\" cy=\"170\" r=\"15\"/><circle cx=\"60\" cy=\"110\" r=\"15\"/></g></svg>\r\n";
 
-const char* reprise_svg = (const char*) temp_binary_data_62;
+const char* reprise_svg = (const char*) temp_binary_data_58;
 
 //================== reset.svg ==================
-static const unsigned char temp_binary_data_63[] =
+static const unsigned char temp_binary_data_59[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17.963 2.88c-7.114 0-12.898 5.699-13.07 12.792H.96l5.886 6.562 5.885-6.562h-4.57c.173-5.282 4.493-9.512 9.802-9.512 5.418 0 9.808 4.405 9.808 9.84s-4.39 9.84-9.808 9.84a9.746 9.746 0 0 1-5.805-1.90"
 "9l-2.25 2.406a13.004 13.004 0 0 0 8.054 2.782c7.222 0 13.078-5.874 13.078-13.12-.002-7.246-5.858-13.12-13.078-13.12zM16.8 8.96v7.504l4.808 4.808 1.584-1.584-4.152-4.152V8.96H16.8z\"/></svg>";
 
-const char* reset_svg = (const char*) temp_binary_data_63;
+const char* reset_svg = (const char*) temp_binary_data_59;
 
 //================== retrograde.svg ==================
-static const unsigned char temp_binary_data_64[] =
+static const unsigned char temp_binary_data_60[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m17 4 4 4-4 4V9h-4V7h4zm-7 3c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1M6 7c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1m1 10h4v-2H7v-3l-4 4 4 4zm7 0c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1"
 " 1 1m4 0c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1\"></path></svg>";
 
-const char* retrograde_svg = (const char*) temp_binary_data_64;
+const char* retrograde_svg = (const char*) temp_binary_data_60;
 
 //================== revision.svg ==================
-static const unsigned char temp_binary_data_65[] =
+static const unsigned char temp_binary_data_61[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16.4 4a2.4 2.4 0 1 0-4.8 0c0 .961.568 1.784 1.384 2.167-.082 1.584-1.27 2.122-3.335 2.896-.87.327-1.829.689-2.649 1.234V6.176A2.396 2.396 0 0 0 6 1.6a2.397 2.397 0 1 0-1 4.576v7.649A2.393 2.393 0 0"
 " 0 3.6 16a2.4 2.4 0 1 0 4.8 0c0-.961-.568-1.784-1.384-2.167.082-1.583 1.271-2.122 3.335-2.896 2.03-.762 4.541-1.711 4.64-4.756A2.398 2.398 0 0 0 16.4 4zM6 2.615a1.384 1.384 0 1 1 0 2.768 1.384 1.384 0 0 1 0-2.768zm0 14.77a1.385 1.385 0 1 1 0-2.77 1.3"
 "85 1.385 0 0 1 0 2.77zm8-12a1.385 1.385 0 1 1 0-2.77 1.385 1.385 0 0 1 0 2.77z\"/></svg>";
 
-const char* revision_svg = (const char*) temp_binary_data_65;
+const char* revision_svg = (const char*) temp_binary_data_61;
 
 //================== routing.svg ==================
-static const unsigned char temp_binary_data_66[] =
+static const unsigned char temp_binary_data_62[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14.18 13.32v-1.641h5v1.641c0 1.094-.703 1.992-1.68 2.344v3.516h-1.68v-3.516a2.456 2.456 0 0 1-1.641-2.344zM10.82 1.68V5h1.68v5h-5V5h1.68V1.68c0-.469.352-.859.82-.859s.82.391.82.859zM17.5 5h1.68v5h-"
 "5V5h1.641V1.68c0-.469.391-.859.859-.859s.82.391.82.859V5zM.82 13.32v-1.641h5v1.641a2.456 2.456 0 0 1-1.641 2.344v3.516h-1.68v-3.516c-.977-.352-1.68-1.25-1.68-2.344zm6.68 0v-1.641h5v1.641c0 1.094-.703 1.992-1.68 2.344v3.516H9.179v-3.516c-.977-.352-1.6"
 "8-1.25-1.68-2.344zM4.18 1.68V5h1.641v5h-5V5h1.68V1.68c0-.469.352-.859.82-.859s.859.391.859.859z\"/></svg>";
 
-const char* routing_svg = (const char*) temp_binary_data_66;
+const char* routing_svg = (const char*) temp_binary_data_62;
 
 //================== selectionTool.svg ==================
-static const unsigned char temp_binary_data_67[] =
+static const unsigned char temp_binary_data_63[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M24 1.333h2.667q1.656 0 2.828 1.172t1.172 2.828V8q0 .552-.391.943t-.943.391-.943-.391T27.999 8V5.333q0-.552-.391-.943t-.943-.391h-2.667q-.552 0-.943-.391t-.391-.943.391-.943.943-.391zM2.667 22.667q."
 "552 0 .943.391t.391.943v2.667q0 .552.391.943t.943.391h2.667q.552 0 .943.391t.391.943-.391.943-.943.391H5.335q-1.656 0-2.828-1.172T1.335 26.67v-2.667q0-.552.391-.943t.943-.391zm0-10.667q.552 0 .943.391t.391.943v5.333q0 .552-.391.943t-.943.391-.943-.39"
 "1-.391-.943v-5.333q0-.552.391-.943T2.667 12zm10.666 16h5.333q.552 0 .943.391t.391.943-.391.943-.943.391h-5.333q-.552 0-.943-.391t-.391-.943.391-.943.943-.391zm-8-26.667H8q.552 0 .943.391t.391.943-.391.943T8 4.001H5.333q-.552 0-.943.391t-.391.943v2.66"
@@ -548,20 +520,20 @@ static const unsigned char temp_binary_data_67[] =
 ".552.391-.943t.943-.391zm0-10.667q.552 0 .943.391t.391.943v5.333q0 .552-.391.943t-.943.391-.943-.391-.391-.943v-5.333q0-.552.391-.943t.943-.391zm-16-10.667h5.333q.552 0 .943.391t.391.943-.391.943-.943.391h-5.333q-.552 0-.943-.391t-.391-.943.391-.943."
 "943-.391z\"/></svg>";
 
-const char* selectionTool_svg = (const char*) temp_binary_data_67;
+const char* selectionTool_svg = (const char*) temp_binary_data_63;
 
 //================== selection.svg ==================
-static const unsigned char temp_binary_data_68[] =
+static const unsigned char temp_binary_data_64[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16.563 16.875h-1.875a.313.313 0 0 1 0-.626h1.563v-1.563a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.313zm0-3.75a.313.313 0 0 1-.313-.313v-1.875a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.3"
 "13zm0-3.75a.313.313 0 0 1-.313-.313V7.187a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.313zm0-3.75a.313.313 0 0 1-.313-.313V3.749h-1.563a.313.313 0 0 1 0-.626h1.875c.172 0 .313.14.313.313v1.875a.314.314 0 0 1-.313.313zm-3.75 11.25h-1.875a.313.313 "
 "0 0 1 0-.626h1.875a.313.313 0 0 1 0 .626zm0-13.125h-1.875a.313.313 0 0 1 0-.626h1.875a.313.313 0 0 1 0 .626zm-3.75 0H7.188a.313.313 0 0 1 0-.626h1.875a.313.313 0 0 1 0 .626zm-3.75 13.125H3.438a.313.313 0 0 1-.313-.313v-1.875a.313.313 0 0 1 .626 0v1.5"
 "63h1.563a.313.313 0 0 1 0 .626zm0-13.125H3.75v1.563a.313.313 0 0 1-.626 0V3.438c0-.172.14-.313.313-.313h1.875a.313.313 0 0 1 0 .626zM3.438 6.875c.172 0 .313.14.313.313v1.875a.313.313 0 0 1-.626 0V7.188c0-.172.14-.313.313-.313zm0 3.75c.172 0 .313.14.3"
 "13.313v1.875a.313.313 0 0 1-.626 0v-1.875c0-.172.14-.313.313-.313zm3.75 5.625h1.875a.313.313 0 0 1 0 .626H7.188a.313.313 0 0 1 0-.626z\"/></svg>";
 
-const char* selection_svg = (const char*) temp_binary_data_68;
+const char* selection_svg = (const char*) temp_binary_data_64;
 
 //================== selectAll.svg ==================
-static const unsigned char temp_binary_data_69[] =
+static const unsigned char temp_binary_data_65[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16.563 16.875h-1.875a.313.313 0 0 1 0-.626h1.563v-1.563a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.313zm0-3.75a.313.313 0 0 1-.313-.313v-1.875a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.3"
 "13zm0-3.75a.313.313 0 0 1-.313-.313V7.187a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.313zm0-3.75a.313.313 0 0 1-.313-.313V3.749h-1.563a.313.313 0 0 1 0-.626h1.875c.172 0 .313.14.313.313v1.875a.314.314 0 0 1-.313.313zm-7.397 7.533a.293.293 0 0 1-"
 ".417 0l-.626-.626-.002-.006-1.993-2.008a.293.293 0 0 1 0-.417l.626-.627a.295.295 0 0 1 .418 0l1.788 1.801 3.759-3.758a.295.295 0 0 1 .418 0l.626.627a.295.295 0 0 1 0 .418l-4.596 4.596zm3.647-9.408h-1.875a.313.313 0 0 1 0-.626h1.875a.313.313 0 0 1 0 ."
@@ -569,10 +541,10 @@ static const unsigned char temp_binary_data_69[] =
 "1.875a.313.313 0 0 1 0 .626zM3.438 6.875c.172 0 .313.14.313.313v1.875a.313.313 0 0 1-.626 0V7.188c0-.172.14-.313.313-.313zm0 3.75c.172 0 .313.14.313.313v1.875a.313.313 0 0 1-.626 0v-1.875c0-.172.14-.313.313-.313zm3.75 5.625h1.875a.313.313 0 0 1 0 .62"
 "6H7.188a.313.313 0 0 1 0-.626zm3.75 0h1.875a.313.313 0 0 1 0 .626h-1.875a.313.313 0 0 1 0-.626z\"/></svg>";
 
-const char* selectAll_svg = (const char*) temp_binary_data_69;
+const char* selectAll_svg = (const char*) temp_binary_data_65;
 
 //================== selectNone.svg ==================
-static const unsigned char temp_binary_data_70[] =
+static const unsigned char temp_binary_data_66[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16.563 16.875h-1.875a.313.313 0 0 1 0-.626h1.563v-1.563a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.313zm0-3.75a.313.313 0 0 1-.313-.313v-1.875a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.3"
 "13zm0-3.75a.313.313 0 0 1-.313-.313V7.187a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.313zm0-3.75a.313.313 0 0 1-.313-.313V3.749h-1.563a.313.313 0 0 1 0-.626h1.875c.172 0 .313.14.313.313v1.875a.314.314 0 0 1-.313.313zm-3.75 11.25h-1.875a.313.313 "
 "0 0 1 0-.626h1.875a.313.313 0 0 1 0 .626zm0-13.125h-1.875a.313.313 0 0 1 0-.626h1.875a.313.313 0 0 1 0 .626zm-3.75 0H7.188a.313.313 0 0 1 0-.626h1.875a.313.313 0 0 1 0 .626zm-3.75 13.125H3.438a.313.313 0 0 1-.313-.313v-1.875a.313.313 0 0 1 .626 0v1.5"
@@ -580,140 +552,134 @@ static const unsigned char temp_binary_data_70[] =
 "13.313v1.875a.313.313 0 0 1-.626 0v-1.875c0-.172.14-.313.313-.313zm9.522 1.702l-.634.634a.298.298 0 0 1-.422 0l-1.794-1.794-1.794 1.794a.298.298 0 0 1-.422 0l-.633-.634a.298.298 0 0 1 0-.422l1.794-1.794-1.794-1.794a.298.298 0 0 1 0-.422l.633-.633a.29"
 "8.298 0 0 1 .422 0l1.794 1.794 1.794-1.794a.298.298 0 0 1 .422 0l.634.633a.3.3 0 0 1 0 .422l-1.794 1.794 1.794 1.794a.3.3 0 0 1 0 .422zM7.188 16.25h1.875a.313.313 0 0 1 0 .626H7.188a.313.313 0 0 1 0-.626z\"/></svg>";
 
-const char* selectNone_svg = (const char*) temp_binary_data_70;
+const char* selectNone_svg = (const char*) temp_binary_data_66;
 
 //================== settings.svg ==================
-static const unsigned char temp_binary_data_71[] =
+static const unsigned char temp_binary_data_67[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M51.025 162.898l.26-41.25h24l.262 41.25.26 41.25H50.765l.26-41.25zm70.22 40.004c-.276-.72-.38-10.52-.23-21.781l.27-20.473h25v43l-12.269.28c-9.387.216-12.387-.025-12.771-1.026zm70.54-52.754v-54h25v10"
 "8h-25v-54zm-81.138 1.09l-2.361-1.909-.32-14.366-.32-14.367 2.142-2.724 2.143-2.724h43.71l2.072 2.635 2.073 2.635v27.82l-2.455 2.455-2.454 2.455h-41.87l-2.36-1.91zm-67.861-36.763c-.825-.323-2.288-1.274-3.25-2.113l-1.75-1.524v-30.38l2.105-1.905 2.105-1"
 ".905h42.58l2.105 1.905 2.105 1.905v15.154c0 11.5-.342 15.622-1.418 17.095l-1.418 1.94-20.832.209c-11.458.114-21.507-.057-22.332-.38zm78.47-7.546c-.27-.705-.373-24.906-.23-53.781l.26-52.5h25v107l-12.27.28c-9.26.213-12.39-.032-12.76-1zm59.752-19.338l-2"
 ".222-1.556V54.26l2.222-1.556 2.223-1.557h42.555l2 2 2 2v30l-2 2-2 2H183.23l-2.223-1.557zM51.482 69.511c-.383-.383-.696-16.146-.696-35.03V.148h25.026l-.263 34.75-.263 34.75-11.554.28c-6.354.154-11.866-.034-12.25-.417zm140.304-47.363v-22h25v44h-25v-22z"
 "m86.15-21.5v-.5h1v1h-1v-.5zm-277 201v-.5h1v1h-1v-.5z\"/></svg>";
 
-const char* settings_svg = (const char*) temp_binary_data_71;
+const char* settings_svg = (const char*) temp_binary_data_67;
 
 //================== sharp.svg ==================
-static const unsigned char temp_binary_data_72[] =
+static const unsigned char temp_binary_data_68[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M47.75,124V79.63L76,74v44.39Zm55.34-11.34-19.67,3.78V72.08l19.67-3.78V50.35L83.42,54.13V8.79H76V55.07L47.75,60.74V17.29H40.37V62.63L20.7,66.41v18l19.67-3.78V125L20.7,128.75v17.94l19.67-3.77v45.33h7."
 "38V142L76,136.3v43.45h7.38V134.41l19.67-2.83Z\"/></svg>";
 
-const char* sharp_svg = (const char*) temp_binary_data_72;
+const char* sharp_svg = (const char*) temp_binary_data_68;
 
 //================== snap.svg ==================
-static const unsigned char temp_binary_data_73[] =
+static const unsigned char temp_binary_data_69[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12.165 17.86c-.028.309.217.584.545.611l3.985.326c.329.027.621-.203.65-.512l.311-3.287-5.18-.426-.311 3.288zm-9.821-2.861.312 3.287c.028.309.321.539.65.512l3.985-.326c.328-.027.573-.303.546-.611l-.3"
 "12-3.287-5.181.425zm-.513-5.416.321 3.391 5.181-.426-.322-3.387A2.949 2.949 0 0 1 7 8.911c0-1.555 1.346-2.82 3-2.82s3 1.266 3 2.82c0 .084-.004.168-.012.25l-.321 3.387 5.181.426.321-3.391c.021-.225.03-.449.03-.672C18.2 4.659 14.522 1.2 10 1.2S1.8 4.65"
 "9 1.8 8.911c0 .223.011.447.031.672z\"/></svg>";
 
-const char* snap_svg = (const char*) temp_binary_data_73;
+const char* snap_svg = (const char*) temp_binary_data_69;
 
 //================== staccato.svg ==================
-static const unsigned char temp_binary_data_74[] =
+static const unsigned char temp_binary_data_70[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2\"></path></svg>";
 
-const char* staccato_svg = (const char*) temp_binary_data_74;
+const char* staccato_svg = (const char*) temp_binary_data_70;
 
 //================== stop.svg ==================
-static const unsigned char temp_binary_data_75[] =
+static const unsigned char temp_binary_data_71[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16 4.995v9.808c0 0.661-0.536 1.197-1.196 1.197h-9.807c-0.551 0-0.997-0.446-0.997-0.997v-9.807c0-0.66 0.536-1.196 1.196-1.196h9.808c0.55 0 0.996 0.446 0.996 0.995z\"></path></svg>";
 
-const char* stop_svg = (const char*) temp_binary_data_75;
+const char* stop_svg = (const char*) temp_binary_data_71;
 
 //================== stretchLeft.svg ==================
-static const unsigned char temp_binary_data_76[] =
+static const unsigned char temp_binary_data_72[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2.75 14.857q0-.464.339-.804L16.339.803q.339-.339.804-.339t.804.339l2.964 2.964q.339.339.339.804t-.339.804l-9.482 9.482 9.482 9.482q.339.339.339.804t-.339.804l-2.964 2.964q-.339.339-.804.339t-.804-."
 "339l-13.25-13.25q-.339-.339-.339-.804z\"/></svg>";
 
-const char* stretchLeft_svg = (const char*) temp_binary_data_76;
+const char* stretchLeft_svg = (const char*) temp_binary_data_72;
 
 //================== stretchRight.svg ==================
-static const unsigned char temp_binary_data_77[] =
+static const unsigned char temp_binary_data_73[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M1.607 25.143q0-.464.339-.804l9.482-9.482-9.482-9.482q-.339-.339-.339-.804t.339-.804L4.91.803q.339-.339.804-.339t.804.339l13.25 13.25q.339.339.339.804t-.339.804l-13.25 13.25q-.339.339-.804.339t-.804"
 "-.339l-2.964-2.964q-.339-.339-.339-.804z\"/></svg>";
 
-const char* stretchRight_svg = (const char*) temp_binary_data_77;
+const char* stretchRight_svg = (const char*) temp_binary_data_73;
 
 //================== submenu.svg ==================
-static const unsigned char temp_binary_data_78[] =
+static const unsigned char temp_binary_data_74[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M1.607 25.143q0-.464.339-.804l9.482-9.482-9.482-9.482q-.339-.339-.339-.804t.339-.804L4.91.803q.339-.339.804-.339t.804.339l13.25 13.25q.339.339.339.804t-.339.804l-13.25 13.25q-.339.339-.804.339t-.804"
 "-.339l-2.964-2.964q-.339-.339-.339-.804z\"/></svg>";
 
-const char* submenu_svg = (const char*) temp_binary_data_78;
+const char* submenu_svg = (const char*) temp_binary_data_74;
 
 //================== success.svg ==================
-static const unsigned char temp_binary_data_79[] =
+static const unsigned char temp_binary_data_75[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2.161 16.571q0-.714.5-1.214l2.429-2.429q.5-.5 1.214-.5t1.214.5l5.25 5.268L24.482 6.464q.5-.5 1.214-.5t1.214.5l2.429 2.429q.5.5.5 1.214t-.5 1.214L13.982 26.678q-.5.5-1.214.5t-1.214-.5l-8.893-8.893q-"
 ".5-.5-.5-1.214z\"/></svg>";
 
-const char* success_svg = (const char*) temp_binary_data_79;
+const char* success_svg = (const char*) temp_binary_data_75;
 
 //================== tag.svg ==================
-static const unsigned char temp_binary_data_80[] =
+static const unsigned char temp_binary_data_76[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 7c0-1.109-0.891-2-2-2s-2 0.891-2 2 0.891 2 2 2 2-0.891 2-2zM23.672 16c0 0.531-0.219 1.047-0.578 1.406l-7.672 7.688c-0.375 0.359-0.891 0.578-1.422 0.578s-1.047-0.219-1.406-0.578l-11.172-11.188c-0."
 "797-0.781-1.422-2.297-1.422-3.406v-6.5c0-1.094 0.906-2 2-2h6.5c1.109 0 2.625 0.625 3.422 1.422l11.172 11.156c0.359 0.375 0.578 0.891 0.578 1.422z\"></path></svg>";
 
-const char* tag_svg = (const char*) temp_binary_data_80;
+const char* tag_svg = (const char*) temp_binary_data_76;
 
 //================== timelineNext.svg ==================
-static const unsigned char temp_binary_data_81[] =
+static const unsigned char temp_binary_data_77[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M15.053 6.912c-.324-.314-.765-.512-1.253-.512A1.8 1.8 0 0 0 12 8.201v9A1.8 1.8 0 0 0 13.8 19a1.78 1.78 0 0 0 1.253-.512L21 12.7l-5.947-5.8zm-9 0C5.73 6.598 5.288 6.4 4.8 6.4A1.8 1.8 0 0 0 3 8.201v9A"
 "1.8 1.8 0 0 0 4.8 19a1.78 1.78 0 0 0 1.253-.512L12 12.7 6.053 6.9z\"/></svg>";
 
-const char* timelineNext_svg = (const char*) temp_binary_data_81;
+const char* timelineNext_svg = (const char*) temp_binary_data_77;
 
 //================== timelinePrevious.svg ==================
-static const unsigned char temp_binary_data_82[] =
+static const unsigned char temp_binary_data_78[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M10.2 6.4a1.79 1.79 0 0 0-1.253.512L3 12.7l5.944 5.8A1.8 1.8 0 0 0 12 17.201v-9A1.8 1.8 0 0 0 10.2 6.4zm9 0a1.79 1.79 0 0 0-1.253.512L12 12.7l5.944 5.8A1.8 1.8 0 0 0 21 17.201v-9A1.8 1.8 0 0 0 19.2 "
 "6.4z\"/></svg>";
 
-const char* timelinePrevious_svg = (const char*) temp_binary_data_82;
+const char* timelinePrevious_svg = (const char*) temp_binary_data_78;
 
 //================== toggleOff.svg ==================
-static const unsigned char temp_binary_data_83[] =
+static const unsigned char temp_binary_data_79[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9 7q0-.813-.316-1.551t-.855-1.277-1.277-.855-1.551-.316-1.551.316-1.277.855-.855 1.277T1.002 7t.316 1.551.855 1.277 1.277.855 1.551.316 1.551-.316 1.277-.855.855-1.277T9 7zm6 0q0-.813-.316-1.551t-."
 "855-1.277-1.277-.855-1.551-.316H7.985q.93.703 1.473 1.75t.543 2.25-.543 2.25-1.473 1.75h3.016q.813 0 1.551-.316t1.277-.855.855-1.277T15 7.002zm1 0q0 1.016-.398 1.941t-1.066 1.594-1.594 1.066-1.941.398h-6q-1.016 0-1.941-.398t-1.594-1.066T.4 8.941.002 "
 "7 .4 5.059t1.066-1.594T3.06 2.399t1.941-.398h6q1.016 0 1.941.398t1.594 1.066 1.066 1.594T16 7z\"/></svg>";
 
-const char* toggleOff_svg = (const char*) temp_binary_data_83;
+const char* toggleOff_svg = (const char*) temp_binary_data_79;
 
 //================== toggleOn.svg ==================
-static const unsigned char temp_binary_data_84[] =
+static const unsigned char temp_binary_data_80[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 7q0-1.016.398-1.941t1.066-1.594 1.594-1.066 1.941-.398h6q1.016 0 1.941.398t1.594 1.066T15.6 5.059 15.998 7 15.6 8.941t-1.066 1.594-1.594 1.066-1.941.398h-6q-1.016 0-1.941-.398t-1.594-1.066T.398 8"
 ".941 0 7zm11 4q.813 0 1.551-.316t1.277-.855.855-1.277.316-1.551-.316-1.551-.855-1.277-1.277-.855T11 3.002t-1.551.316-1.277.855-.855 1.277-.316 1.551.316 1.551.855 1.277 1.277.855T11 11z\"/></svg>";
 
-const char* toggleOn_svg = (const char*) temp_binary_data_84;
+const char* toggleOn_svg = (const char*) temp_binary_data_80;
 
 //================== undo.svg ==================
-static const unsigned char temp_binary_data_85[] =
+static const unsigned char temp_binary_data_81[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16 12.079V8.667a1.335 1.335 0 0 0-2.277-.944L5.332 16l8.391 8.276a1.33 1.33 0 0 0 1.886 0c.26-.26.391-.603.391-.943v-3.319c3.667.091 7.673.755 10.667 5.319V24C26.667 17.823 22 12.743 16 12.079z\"/>"
 "</svg>";
 
-const char* undo_svg = (const char*) temp_binary_data_85;
+const char* undo_svg = (const char*) temp_binary_data_81;
 
 //================== up.svg ==================
-static const unsigned char temp_binary_data_86[] =
+static const unsigned char temp_binary_data_82[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M1.375 21.143q0-.232.179-.411l8.321-8.321q.179-.179.411-.179t.411.179l8.321 8.321q.179.179.179.411t-.179.411l-.893.893q-.179.179-.411.179t-.411-.179l-7.018-7.018-7.018 7.018q-.179.179-.411.179t-.411"
 "-.179l-.893-.893q-.179-.179-.179-.411z\"/></svg>";
 
-const char* up_svg = (const char*) temp_binary_data_86;
+const char* up_svg = (const char*) temp_binary_data_82;
 
 //================== versionControl.svg ==================
-static const unsigned char temp_binary_data_87[] =
+static const unsigned char temp_binary_data_83[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M269.857 625.72v-9.5h12.714l.673-9.763c2.24-32.525 11.248-49.243 35.915-66.653 20.34-14.356 20.34-24.813 0-39.17-24.667-17.41-33.675-34.128-35.915-66.652l-.673-9.763h-12.714v-19h159v18.905l-6.25.298"
 "-6.25.297-.654 11c-1.829 30.743-11.201 47.844-35.55 64.867-20.986 14.671-20.667 24.656 1.285 40.217 22.999 16.302 34.366 37.86 34.433 65.297.023 9.687.327 10.12 7.103 10.12h5.883v19h-159v-9.5zm134.9-12.75c-.218-7.123-.189-7.1-26.4-21.657l-25-13.886.0"
 "1-32.354c.014-41.155-.061-40.944 19.557-54.95 9.933-7.092 18.865-15.852 22.332-21.902 2.256-3.938 4.481-4.351-18.004 3.347-28.065 9.607-28.104 9.606-59.809-1.486-16.187-5.664-15.916-5.706-10.984 1.725 3.792 5.712 8.44 9.858 24.292 21.662 14.603 10.87"
 "4 14.556 10.712 14.865 50.75l.26 33.5-25.497 14-25.495 14-.014 5.25-.013 5.25h110l-.1-3.25z\"/></svg>";
 
-const char* versionControl_svg = (const char*) temp_binary_data_87;
-
-//================== volume.svg ==================
-static const unsigned char temp_binary_data_88[] =
-"<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M19 13.805c0 .657-.538 1.195-1.195 1.195H1.533c-.88 0-.982-.371-.229-.822l16.323-9.055C18.382 4.67 19 5.019 19 5.9v7.905z\"/></svg>";
-
-const char* volume_svg = (const char*) temp_binary_data_88;
+const char* versionControl_svg = (const char*) temp_binary_data_83;
 
 //================== volumeUp.svg ==================
-static const unsigned char temp_binary_data_89[] =
+static const unsigned char temp_binary_data_84[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 19.429v-6.857c0-.31.113-.577.339-.804.226-.227.494-.34.804-.339h4.679l5.946-5.946c.226-.226.494-.339.804-.339.31 0 .578.113.804.339.226.226.339.494.339.804v19.429a1.1 1.1 0 0 1-.339.804c-.226.227"
 "-.494.34-.804.339-.31 0-.578-.114-.804-.339l-5.946-5.946H1.143a1.1 1.1 0 0 1-.804-.339A1.094 1.094 0 0 1 0 19.431v-.002m16.214-.286c0-.25.071-.461.214-.634.143-.173.315-.321.518-.446a8.63 8.63 0 0 0 .607-.411c.202-.15.375-.36.518-.634.143-.273.215-.6"
 "13.214-1.018 0-.405-.072-.745-.214-1.018a1.793 1.793 0 0 0-.518-.634 9.307 9.307 0 0 0-.607-.411 2.125 2.125 0 0 1-.518-.446.949.949 0 0 1-.214-.634c0-.321.113-.592.339-.813.226-.22.494-.33.804-.33.179 0 .327.03.446.089.833.321 1.503.875 2.009 1.661a"
@@ -721,78 +687,78 @@ static const unsigned char temp_binary_data_89[] =
 "4 6.754 0 0 0-.741-3.098 6.723 6.723 0 0 0-2.063-2.42c-.238-.179-.69-.44-1.357-.786-.464-.238-.696-.59-.696-1.054 0-.31.113-.577.339-.804.226-.227.494-.34.804-.339.155 0 .31.03.464.089 1.667.703 3.006 1.825 4.018 3.366 1.012 1.541 1.518 3.223 1.518 5"
 ".045s-.506 3.504-1.518 5.045-2.351 2.663-4.018 3.366c-.155.06-.303.089-.446.089-.321 0-.595-.113-.821-.339a1.099 1.099 0 0 1-.339-.804l-.001.002z\"/></svg>";
 
-const char* volumeUp_svg = (const char*) temp_binary_data_89;
+const char* volumeUp_svg = (const char*) temp_binary_data_84;
 
 //================== volumeDown.svg ==================
-static const unsigned char temp_binary_data_90[] =
+static const unsigned char temp_binary_data_85[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 19.429v-6.857c0-.31.113-.577.339-.804.226-.227.494-.34.804-.339h4.679l5.946-5.946c.226-.226.494-.339.804-.339.31 0 .578.113.804.339.226.226.339.494.339.804v19.429a1.1 1.1 0 0 1-.339.804c-.226.227"
 "-.494.34-.804.339-.31 0-.578-.114-.804-.339l-5.946-5.946H1.143a1.1 1.1 0 0 1-.804-.339A1.094 1.094 0 0 1 0 19.431v-.002m16.214-.286c0-.25.071-.461.214-.634.143-.173.315-.321.518-.446a8.63 8.63 0 0 0 .607-.411c.202-.15.375-.36.518-.634.143-.273.215-.6"
 "13.214-1.018 0-.405-.072-.745-.214-1.018a1.793 1.793 0 0 0-.518-.634 9.307 9.307 0 0 0-.607-.411 2.125 2.125 0 0 1-.518-.446.949.949 0 0 1-.214-.634c0-.321.113-.592.339-.813.226-.22.494-.33.804-.33.179 0 .327.03.446.089.833.321 1.503.875 2.009 1.661a"
 "4.6 4.6 0 0 1 0 5.063 4.22 4.22 0 0 1-2.009 1.67.998.998 0 0 1-.446.089c-.31 0-.577-.11-.804-.33a1.085 1.085 0 0 1-.339-.813z\"/></svg>";
 
-const char* volumeDown_svg = (const char*) temp_binary_data_90;
+const char* volumeDown_svg = (const char*) temp_binary_data_85;
 
 //================== volumePanel.svg ==================
-static const unsigned char temp_binary_data_91[] =
+static const unsigned char temp_binary_data_86[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M20.3 0h-4c-.7 0-1.3.6-1.3 1.3v21.2h6.6V1.3C21.6.6 21 0 20.3 0zm-7.5 3.8h-4c-.7 0-1.3.6-1.3 1.2v17.5h6.6V5c0-.6-.6-1.2-1.3-1.2zM5.3 15h-4c-.7 0-1.3.6-1.3 1.3v6.2h6.6v-6.2c0-.7-.6-1.3-1.3-1.3z\"/></s"
 "vg>\n";
 
-const char* volumePanel_svg = (const char*) temp_binary_data_91;
+const char* volumePanel_svg = (const char*) temp_binary_data_86;
 
 //================== zoomIn.svg ==================
-static const unsigned char temp_binary_data_92[] =
+static const unsigned char temp_binary_data_87[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17.333 14.667h-2.667V12a.667.667 0 0 0-1.334 0v2.667h-2.667a.667.667 0 0 0 0 1.334h2.667v2.667a.667.667 0 0 0 1.334 0v-2.667h2.667a.667.667 0 0 0 0-1.334z\"/><path d=\"M24.576 19.96l-1.713-1.716a9."
 "253 9.253 0 0 0 .472-2.911c0-5.145-4.188-9.333-9.333-9.333s-9.333 4.188-9.333 9.333 4.188 9.333 9.333 9.333a9.264 9.264 0 0 0 2.912-.472l3.097 3.093.085.073a4.37 4.37 0 0 0 2.805 1.045 4.178 4.178 0 0 0 4.173-4.175c0-1.12-.437-2.171-1.232-2.957l-1.26"
 "7-1.315zM7.333 15.333c0-3.676 2.991-6.667 6.667-6.667s6.667 2.991 6.667 6.667S17.676 22 14 22s-6.667-2.991-6.667-6.667z\"/></svg>";
 
-const char* zoomIn_svg = (const char*) temp_binary_data_92;
+const char* zoomIn_svg = (const char*) temp_binary_data_87;
 
 //================== zoomOut.svg ==================
-static const unsigned char temp_binary_data_93[] =
+static const unsigned char temp_binary_data_88[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17.333 14.667h-6.667a.667.667 0 0 0 0 1.334h6.667a.667.667 0 0 0 0-1.334z\"/><path d=\"M25.841 21.275l-1.265-1.315-1.715-1.716a9.253 9.253 0 0 0 .472-2.911C23.333 10.188 19.146 6 14 6s-9.333 4.188-"
 "9.333 9.333S8.854 24.666 14 24.666a9.264 9.264 0 0 0 2.912-.472l3.096 3.093.087.073a4.37 4.37 0 0 0 2.805 1.045 4.178 4.178 0 0 0 4.173-4.175c0-1.12-.437-2.171-1.232-2.957zM7.333 15.333c0-3.676 2.991-6.667 6.667-6.667s6.667 2.991 6.667 6.667S17.676 2"
 "2 14 22s-6.667-2.991-6.667-6.667z\"/></svg>";
 
-const char* zoomOut_svg = (const char*) temp_binary_data_93;
+const char* zoomOut_svg = (const char*) temp_binary_data_88;
 
 //================== zoomToFit.svg ==================
-static const unsigned char temp_binary_data_94[] =
+static const unsigned char temp_binary_data_89[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M13 4c-3.859 0-7 3.141-7 7 0 .763.127 1.495.354 2.183l-1.26 1.262-1.008 1.045a3.076 3.076 0 0 0-.891 2.185 3.134 3.134 0 0 0 3.13 3.131c.757 0 1.504-.278 2.104-.784l.064-.055.061-.061 2.262-2.259A6."
 "983 6.983 0 0 0 13 18c3.859 0 7-3.141 7-7s-3.141-7-7-7zm0 12c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z\"/><path d=\"M13 7c-2.205 0-4 1.794-4 4s1.795 4 4 4 4-1.794 4-4-1.795-4-4-4zm0 7a3.001 3.001 0 0 1 0-6 3.001 3.001 0 0 1 0 6z\"/></"
 "svg>";
 
-const char* zoomToFit_svg = (const char*) temp_binary_data_94;
+const char* zoomToFit_svg = (const char*) temp_binary_data_89;
 
 //================== noise.png ==================
-static const unsigned char temp_binary_data_95[] =
+static const unsigned char temp_binary_data_90[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,128,0,0,0,128,2,3,0,0,0,190,80,137,88,0,0,0,12,80,76,84,69,0,0,0,125,125,125,208,208,208,19,19,19,200,65,225,52,0,0,0,1,116,82,78,83,0,64,230,216,102,0,0,0,55,73,68,65,84,88,195,237,207,49,13,0,48,12,
 3,176,104,72,198,102,132,198,95,133,144,183,135,205,192,121,69,78,145,234,23,185,69,26,11,11,11,11,11,11,11,11,11,11,11,11,11,11,139,205,139,1,240,8,77,95,251,215,241,198,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* noise_png = (const char*) temp_binary_data_95;
+const char* noise_png = (const char*) temp_binary_data_90;
 
 //================== stripes.png ==================
-static const unsigned char temp_binary_data_96[] =
+static const unsigned char temp_binary_data_91[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,1,0,0,0,0,64,2,3,0,0,0,136,51,65,45,0,0,0,9,80,76,84,69,0,0,0,255,255,255,0,0,0,115,198,131,113,0,0,0,2,116,82,78,83,0,51,201,67,172,46,0,0,0,70,73,68,65,84,88,195,237,210,49,17,0,32,12,197,208,28,99,
 157,224,162,18,43,2,161,56,96,249,3,75,46,14,114,143,53,89,84,103,177,195,56,97,204,202,162,43,139,255,19,116,160,3,29,232,64,7,58,208,129,14,116,160,3,29,232,64,7,58,120,116,1,143,170,82,46,104,73,233,37,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* stripes_png = (const char*) temp_binary_data_96;
+const char* stripes_png = (const char*) temp_binary_data_91;
 
 //================== copyingCursor.gif ==================
-static const unsigned char temp_binary_data_97[] =
+static const unsigned char temp_binary_data_92[] =
 { 71,73,70,56,57,97,21,0,21,0,161,0,0,0,0,0,255,255,255,0,0,0,0,0,0,33,249,4,1,10,0,2,0,44,0,0,0,0,21,0,21,0,0,2,72,4,132,169,171,16,199,98,11,79,90,71,161,93,56,111,78,133,218,215,137,31,82,154,100,200,86,91,202,142,12,108,212,87,235,174,15,54,214,126,
 237,226,37,96,59,141,16,37,18,201,142,157,230,204,35,112,252,114,147,74,83,5,50,68,147,208,217,16,71,149,252,124,5,0,59,0,0 };
 
-const char* copyingCursor_gif = (const char*) temp_binary_data_97;
+const char* copyingCursor_gif = (const char*) temp_binary_data_92;
 
 //================== erasingCursor.gif ==================
-static const unsigned char temp_binary_data_98[] =
+static const unsigned char temp_binary_data_93[] =
 { 71,73,70,56,57,97,21,0,21,0,161,0,0,0,0,0,255,255,255,0,0,0,0,0,0,33,249,4,1,10,0,2,0,44,0,0,0,0,21,0,21,0,0,2,69,4,132,169,171,16,199,98,11,79,90,71,161,93,56,111,78,133,218,215,137,31,82,154,100,200,86,91,202,142,12,108,212,87,235,174,15,54,214,126,
 237,226,37,96,59,141,16,133,219,129,130,73,153,224,232,248,229,38,21,162,243,169,180,74,140,205,211,207,87,0,0,59,0,0 };
 
-const char* erasingCursor_gif = (const char*) temp_binary_data_98;
+const char* erasingCursor_gif = (const char*) temp_binary_data_93;
 
 //================== builtInMetronome1.wav ==================
-static const unsigned char temp_binary_data_99[] =
+static const unsigned char temp_binary_data_94[] =
 { 82,73,70,70,104,60,0,0,87,65,86,69,102,109,116,32,16,0,0,0,1,0,2,0,128,187,0,0,0,238,2,0,4,0,16,0,100,97,116,97,68,60,0,0,255,255,255,255,5,0,9,0,5,255,71,255,91,251,143,251,192,247,194,247,33,246,62,246,167,244,145,244,88,243,64,243,101,243,49,243,19,
 246,157,245,122,250,29,250,84,255,79,255,47,5,123,5,185,11,183,11,12,18,154,17,3,23,226,22,211,23,200,23,189,20,81,20,46,16,105,15,254,10,85,10,59,5,5,5,232,255,205,255,247,252,157,252,132,252,71,252,102,252,25,253,64,251,12,253,181,249,188,251,253,247,
 44,249,225,245,35,246,190,244,125,244,208,244,237,243,233,245,219,243,6,248,188,245,244,250,169,249,133,254,173,254,163,1,129,2,94,4,35,5,214,7,111,8,78,11,103,11,87,14,244,13,98,16,124,15,79,15,248,13,105,11,117,10,24,7,17,7,92,3,26,4,223,255,215,0,
@@ -993,10 +959,10 @@ static const unsigned char temp_binary_data_99[] =
 255,4,0,2,0,255,255,2,0,3,0,254,255,3,0,4,0,0,0,253,255,6,0,5,0,253,255,253,255,7,0,4,0,255,255,254,255,0,0,3,0,2,0,254,255,252,255,1,0,1,0,1,0,254,255,253,255,254,255,2,0,255,255,252,255,254,255,2,0,254,255,254,255,0,0,1,0,254,255,254,255,0,0,0,0,0,
 0,0,0,254,255,1,0,2,0,255,255,255,255,1,0,0,0,0,0,2,0,0,0,254,255,0,0,3,0,2,0,254,255,253,255,3,0,4,0,254,255,253,255,2,0,1,0,255,255,0,0,2,0,255,255,254,255,2,0,1,0,254,255,255,255,2,0,0,0,253,255,2,0,3,0,0,0 };
 
-const char* builtInMetronome1_wav = (const char*) temp_binary_data_99;
+const char* builtInMetronome1_wav = (const char*) temp_binary_data_94;
 
 //================== builtInMetronome2.wav ==================
-static const unsigned char temp_binary_data_100[] =
+static const unsigned char temp_binary_data_95[] =
 { 82,73,70,70,52,60,0,0,87,65,86,69,102,109,116,32,16,0,0,0,1,0,2,0,128,187,0,0,0,238,2,0,4,0,16,0,100,97,116,97,16,60,0,0,255,255,1,0,9,0,2,0,96,255,153,255,14,252,81,252,45,248,59,248,84,246,108,246,232,244,225,244,124,243,93,243,62,243,17,243,123,245,
 243,244,194,249,69,249,142,254,94,254,68,4,112,4,199,10,198,10,42,17,159,16,124,22,59,22,15,24,10,24,93,21,26,21,243,16,69,16,212,11,45,11,41,6,237,5,164,0,161,0,71,253,234,252,136,252,44,252,139,252,238,252,135,251,47,253,37,250,20,252,22,250,40,251,
 68,251,96,251,78,252,209,251,171,253,153,252,10,0,2,254,210,2,82,0,177,4,89,3,72,5,145,5,191,4,234,5,87,3,49,4,34,1,231,1,100,254,74,255,210,250,183,251,198,245,10,246,251,240,100,240,31,238,230,237,45,236,130,236,157,235,13,236,81,237,141,237,42,241,
@@ -1196,10 +1162,10 @@ static const unsigned char temp_binary_data_100[] =
 255,253,255,2,0,0,0,253,255,255,255,1,0,255,255,254,255,1,0,255,255,255,255,1,0,1,0,253,255,255,255,1,0,3,0,0,0,254,255,254,255,1,0,2,0,0,0,253,255,255,255,1,0,1,0,0,0,255,255,254,255,0,0,2,0,1,0,253,255,255,255,2,0,1,0,254,255,255,255,1,0,1,0,254,255,
 0,0,3,0,1,0,252,255,255,255,4,0,1,0,253,255,0,0,2,0,0,0 };
 
-const char* builtInMetronome2_wav = (const char*) temp_binary_data_100;
+const char* builtInMetronome2_wav = (const char*) temp_binary_data_95;
 
 //================== builtInMetronome3.wav ==================
-static const unsigned char temp_binary_data_101[] =
+static const unsigned char temp_binary_data_96[] =
 { 82,73,70,70,52,60,0,0,87,65,86,69,102,109,116,32,16,0,0,0,1,0,2,0,128,187,0,0,0,238,2,0,4,0,16,0,100,97,116,97,16,60,0,0,255,255,1,0,8,0,2,0,119,255,168,255,167,252,223,252,88,249,100,249,201,247,222,247,144,246,137,246,94,245,70,245,39,245,255,244,15,
 247,156,246,179,250,72,250,196,254,156,254,160,3,198,3,43,9,41,9,148,14,31,14,32,19,231,18,113,20,110,20,41,18,241,17,104,14,211,13,14,10,128,9,60,5,10,5,141,0,137,0,174,253,95,253,14,253,194,252,14,253,96,253,54,252,159,253,2,251,168,252,253,250,226,
 251,247,251,20,252,221,252,110,252,5,254,32,253,7,0,74,254,104,2,73,0,251,3,215,2,126,4,188,4,9,4,6,5,214,2,145,3,247,0,157,1,162,254,102,255,153,251,92,252,78,247,135,247,61,243,189,242,204,240,156,240,39,239,111,239,172,238,12,239,31,240,80,240,99,
@@ -1398,10 +1364,10 @@ static const unsigned char temp_binary_data_101[] =
 0,251,255,0,0,7,0,254,255,252,255,3,0,5,0,251,255,254,255,1,0,2,0,255,255,254,255,253,255,3,0,0,0,255,255,253,255,1,0,0,0,255,255,254,255,0,0,0,0,255,255,255,255,0,0,254,255,255,255,3,0,255,255,253,255,0,0,3,0,254,255,254,255,0,0,2,0,2,0,255,255,252,
 255,1,0,4,0,255,255,251,255,1,0,3,0,255,255,254,255,1,0,0,0,254,255,1,0,2,0,253,255,0,0,3,0,255,255,252,255,2,0,3,0,254,255,253,255,0,0,3,0,3,0,252,255,253,255,4,0,4,0,253,255,252,255,3,0,0,0 };
 
-const char* builtInMetronome3_wav = (const char*) temp_binary_data_101;
+const char* builtInMetronome3_wav = (const char*) temp_binary_data_96;
 
 //================== builtInMetronome4.wav ==================
-static const unsigned char temp_binary_data_102[] =
+static const unsigned char temp_binary_data_97[] =
 { 82,73,70,70,52,60,0,0,87,65,86,69,102,109,116,32,16,0,0,0,1,0,2,0,128,187,0,0,0,238,2,0,4,0,16,0,100,97,116,97,16,60,0,0,255,255,1,0,6,0,0,0,159,255,195,255,163,253,202,253,78,251,87,251,50,250,65,250,88,249,83,249,125,248,108,248,89,248,60,248,177,249,
 96,249,64,252,246,251,35,255,5,255,142,2,169,2,120,6,120,6,77,10,248,9,124,13,88,13,114,14,106,14,207,12,171,12,44,10,194,9,25,7,182,6,178,3,142,3,98,0,94,0,96,254,42,254,232,253,176,253,239,253,44,254,80,253,77,254,125,252,166,253,116,252,24,253,40,
 253,58,253,201,253,124,253,153,254,247,253,8,0,205,254,175,1,49,0,210,2,3,2,42,3,86,3,218,2,141,3,1,2,132,2,173,0,35,1,11,255,149,255,225,252,108,253,224,249,7,250,252,246,162,246,70,245,35,245,27,244,80,244,196,243,5,244,203,244,242,244,24,247,22,247,
@@ -1599,20 +1565,20 @@ static const unsigned char temp_binary_data_102[] =
 255,252,255,2,0,255,255,254,255,0,0,2,0,255,255,254,255,255,255,1,0,1,0,254,255,253,255,2,0,3,0,252,255,253,255,4,0,3,0,251,255,253,255,3,0,4,0,254,255,253,255,1,0,2,0,255,255,255,255,0,0,0,0,255,255,1,0,2,0,254,255,252,255,2,0,5,0,254,255,249,255,2,
 0,7,0,255,255,249,255,1,0,5,0,255,255,253,255,0,0,2,0,2,0,254,255,253,255,2,0,4,0,254,255,253,255,2,0,0,0 };
 
-const char* builtInMetronome4_wav = (const char*) temp_binary_data_102;
+const char* builtInMetronome4_wav = (const char*) temp_binary_data_97;
 
 //================== emptyProject.json ==================
-static const unsigned char temp_binary_data_103[] =
+static const unsigned char temp_binary_data_98[] =
 "{\"project\":{\"name\":\"Empty\",\"projectTimeline\":{\"annotations\":{},\"timeSignatures\":{\"timeSignature\":{\"id\":\"00\",\"numerator\":4,\"denominator\":4,\"ts\":0}},\"keySignatures\":{\"keySignature\":{\"id\":\"01\",\"key\":0,\"ts\":0,\"scale\""
 ":{\"name\":\"Ionian\",\"period\":12,\"intervals\":\"2 2 1 2 2 2 1\"}}}},\"node\":[{\"type\":\"pianoTrack\",\"name\":\"Track 1\",\"colour\":\"ff0049ff\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"v"
 "ol\":1024,\"id\":\"02\"}},\"track\":{}},{\"type\":\"automationTrack\",\"name\":\"Tempo\",\"colour\":\"fffffaf0\",\"channel\":1,\"instrumentId\":\"\",\"controller\":81,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"03\"}},\"automation"
 "\":{\"event\":[{\"id\":\"04\",\"value\":0.5,\"curve\":0.5,\"ts\":0},{\"id\":\"01\",\"value\":0.5,\"curve\":0.5,\"ts\":512}]}},{\"type\":\"patternSet\",\"name\":\"Patterns\"}],\"projectInfo\":{\"projectTimeStamp\":\"1591603725382\",\"license\":\"Publi"
 "c Domain\",\"author\":\"Helio\",\"description\":\"\"}}}";
 
-const char* emptyProject_json = (const char*) temp_binary_data_103;
+const char* emptyProject_json = (const char*) temp_binary_data_98;
 
 //================== exampleProject.json ==================
-static const unsigned char temp_binary_data_104[] =
+static const unsigned char temp_binary_data_99[] =
 "{\"project\":{\"name\":\"Example Project\",\"projectInfo\":{\"description\":\"The Lick Reigns Supreme\",\"license\":\"Public Domain\",\"author\":\"Helio Example\",\"projectTimeStamp\":\"1591432978939\"},\"projectTimeline\":{\"annotations\":{},\"timeS"
 "ignatures\":{\"timeSignature\":{\"id\":\"uZ\",\"numerator\":4,\"denominator\":4,\"ts\":0}},\"keySignatures\":{\"keySignature\":[{\"id\":\"Uw\",\"key\":9,\"ts\":0,\"scale\":{\"name\":\"Dorian\",\"period\":12,\"intervals\":\"2 1 2 2 2 1 2\"}},{\"id\":\""
 "x3\",\"key\":9,\"ts\":128,\"scale\":{\"name\":\"Ionian\",\"period\":12,\"intervals\":\"2 2 1 2 2 2 1\"}}]}},\"node\":[{\"type\":\"pianoTrack\",\"name\":\"Alt\",\"colour\":\"ff00ff49\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{"
@@ -1631,10 +1597,10 @@ static const unsigned char temp_binary_data_104[] =
 "\":0},{\"id\":\"Yf\",\"value\":0.244512,\"curve\":1.000000,\"ts\":64},{\"id\":\"Qe\",\"value\":0.424625,\"curve\":0.000000,\"ts\":128},{\"id\":\"Sk\",\"value\":0.244914,\"curve\":0.500000,\"ts\":256}]}},{\"type\":\"patternSet\",\"name\":\"Patterns\"}"
 "]}}";
 
-const char* exampleProject_json = (const char*) temp_binary_data_104;
+const char* exampleProject_json = (const char*) temp_binary_data_99;
 
 //================== de.json ==================
-static const unsigned char temp_binary_data_105[] =
+static const unsigned char temp_binary_data_100[] =
 "{\"id\":\"de\",\"name\":\"Deutsch\",\"pluralEquation\":\"({x}==1 ? 1 : 2)\",\"literal\":[{\"id\":590543227,\"tr\":\"Projekt erstellt\"},{\"id\":242354915,\"tr\":\"Neues Projekt\"},{\"id\":973370257,\"tr\":\"Neue Spur\"},{\"id\":3682062690,\"tr\":\"Te"
 "mpo\"},{\"id\":3475921130,\"tr\":\"Lautst\xc3\xa4rke\"},{\"id\":3279548549,\"tr\":\"Studio\"},{\"id\":3086290873,\"tr\":\"Instrumente\"},{\"id\":3686062664,\"tr\":\"Einstellungen\"},{\"id\":1113353303,\"tr\":\"Versionen\"},{\"id\":3324938734,\"tr\":\""
 "Patterns\"},{\"id\":1791647634,\"tr\":\"Tastaturbelegung\"},{\"id\":855043400,\"tr\":\"Instrument umbenennen\"},{\"id\":1662581644,\"tr\":\"Umbenennen\"},{\"id\":3826312522,\"tr\":\"Marker hinzuf\xc3\xbcgen\"},{\"id\":726307987,\"tr\":\"Text eingeben"
@@ -1726,10 +1692,10 @@ static const unsigned char temp_binary_data_105[] =
 "\":\"1\"},{\"name\":\"{x} Minuten\",\"pluralForm\":\"2\"}]},{\"id\":4122223288,\"tr\":[{\"name\":\"{x} Sekunde\",\"pluralForm\":\"1\"},{\"name\":\"{x} Sekunden\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"verschoben von {x}\",\"plu"
 "ralForm\":\"1\"}}]}";
 
-const char* de_json = (const char*) temp_binary_data_105;
+const char* de_json = (const char*) temp_binary_data_100;
 
 //================== el.json ==================
-static const unsigned char temp_binary_data_106[] =
+static const unsigned char temp_binary_data_101[] =
 { 123,34,105,100,34,58,34,101,108,34,44,34,110,97,109,101,34,58,34,206,149,206,187,206,187,206,183,206,189,206,185,206,186,206,172,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,40,123,120,125,61,61,49,32,63,32,49,32,58,32,50,41,
 34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,206,136,206,189,206,177,207,129,206,190,206,183,32,206,173,207,129,206,179,206,191,207,133,34,125,44,123,34,105,100,34,58,50,52,50,51,
 53,52,57,49,53,44,34,116,114,34,58,34,206,157,206,173,206,191,32,206,173,207,129,206,179,206,191,34,125,44,123,34,105,100,34,58,57,55,51,51,55,48,50,53,55,44,34,116,114,34,58,34,206,157,206,173,206,191,32,206,186,206,191,206,188,206,188,206,172,207,132,
@@ -2094,10 +2060,10 @@ static const unsigned char temp_binary_data_106[] =
 100,34,58,49,56,48,55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,206,188,206,181,207,132,206,177,206,186,206,185,206,189,206,174,206,184,206,183,206,186,206,181,32,206,177,207,128,207,140,32,123,120,125,34,44,34,112,108,117,
 114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,0,0 };
 
-const char* el_json = (const char*) temp_binary_data_106;
+const char* el_json = (const char*) temp_binary_data_101;
 
 //================== en.json ==================
-static const unsigned char temp_binary_data_107[] =
+static const unsigned char temp_binary_data_102[] =
 "{\"id\":\"en\",\"name\":\"English\",\"pluralEquation\":\"({x}==1 ? 1 : 2)\",\"literal\":[{\"id\":590543227,\"tr\":\"Project start\"},{\"id\":242354915,\"tr\":\"New project\"},{\"id\":973370257,\"tr\":\"New track\"},{\"id\":3682062690,\"tr\":\"Tempo\""
 "},{\"id\":3475921130,\"tr\":\"Volume\"},{\"id\":3279548549,\"tr\":\"Studio\"},{\"id\":3086290873,\"tr\":\"Orchestra pit\"},{\"id\":3686062664,\"tr\":\"Settings\"},{\"id\":1113353303,\"tr\":\"Versions\"},{\"id\":3324938734,\"tr\":\"Patterns\"},{\"id\""
 ":1791647634,\"tr\":\"Keyboard mapping\"},{\"id\":855043400,\"tr\":\"Rename instrument\"},{\"id\":1662581644,\"tr\":\"Rename\"},{\"id\":3826312522,\"tr\":\"Add annotation\"},{\"id\":726307987,\"tr\":\"Enter annotation text:\"},{\"id\":2359576018,\"tr\""
@@ -2180,10 +2146,10 @@ static const unsigned char temp_binary_data_107[] =
 "2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} minute\",\"pluralForm\":\"1\"},{\"name\":\"{x} minutes\",\"pluralForm\":\"2\"}]},{\"id\":4122223288,\"tr\":[{\"name\":\"{x} second\",\"pluralForm\":\"1\"},{\"name\":\"{x} seconds\",\"pluralForm\":\"2\""
 "}]},{\"id\":1807553330,\"tr\":{\"name\":\"moved from {x}\",\"pluralForm\":\"1\"}}]}";
 
-const char* en_json = (const char*) temp_binary_data_107;
+const char* en_json = (const char*) temp_binary_data_102;
 
 //================== fr.json ==================
-static const unsigned char temp_binary_data_108[] =
+static const unsigned char temp_binary_data_103[] =
 "{\"id\":\"fr\",\"name\":\"Fran\xc3\xa7""ais\",\"pluralEquation\":\"(({x}==0 || {x}==1) ? 1 : 2)\",\"literal\":[{\"id\":590543227,\"tr\":\"Projet d\xc3\xa9marr\xc3\xa9\"},{\"id\":242354915,\"tr\":\"Nouveau projet\"},{\"id\":973370257,\"tr\":\"Nouvelle"
 " piste\"},{\"id\":3682062690,\"tr\":\"Tempo\"},{\"id\":3475921130,\"tr\":\"Volume\"},{\"id\":3279548549,\"tr\":\"Studio\"},{\"id\":3086290873,\"tr\":\"Instruments\"},{\"id\":3686062664,\"tr\":\"Param\xc3\xa8tres\"},{\"id\":1113353303,\"tr\":\"Version"
 "s\"},{\"id\":3324938734,\"tr\":\"Mod\xc3\xa8les\"},{\"id\":1791647634,\"tr\":\"Mappage du clavier\"},{\"id\":855043400,\"tr\":\"Renommer l'instrument\"},{\"id\":1662581644,\"tr\":\"Renommer\"},{\"id\":3826312522,\"tr\":\"Ajouter une annotation\"},{\""
@@ -2278,10 +2244,10 @@ static const unsigned char temp_binary_data_108[] =
 "ns\",\"pluralForm\":\"2\"}]},{\"id\":3610422080,\"tr\":[{\"name\":\"{x} delta\",\"pluralForm\":\"1\"},{\"name\":\"{x} deltas\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} minute\",\"pluralForm\":\"1\"},{\"name\":\"{x} minutes\""
 ",\"pluralForm\":\"2\"}]},{\"id\":4122223288,\"tr\":[{\"name\":\"{x} seconde\",\"pluralForm\":\"1\"},{\"name\":\"{x} secondes\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"d\xc3\xa9plac\xc3\xa9 de {x}\",\"pluralForm\":\"1\"}}]}";
 
-const char* fr_json = (const char*) temp_binary_data_108;
+const char* fr_json = (const char*) temp_binary_data_103;
 
 //================== it.json ==================
-static const unsigned char temp_binary_data_109[] =
+static const unsigned char temp_binary_data_104[] =
 "{\"id\":\"it\",\"name\":\"Italiano\",\"pluralEquation\":\"({x}==1 ? 1 : 2)\",\"literal\":[{\"id\":590543227,\"tr\":\"Il progetto \xc3\xa8 iniziato\"},{\"id\":242354915,\"tr\":\"Nuovo progetto\"},{\"id\":973370257,\"tr\":\"Nuovo layer\"},{\"id\":36820"
 "62690,\"tr\":\"Tempo\"},{\"id\":3475921130,\"tr\":\"Volume\"},{\"id\":3279548549,\"tr\":\"Studio\"},{\"id\":3086290873,\"tr\":\"Strumenti\"},{\"id\":3686062664,\"tr\":\"Impostazioni\"},{\"id\":1113353303,\"tr\":\"Versioni\"},{\"id\":3324938734,\"tr\""
 ":\"Modelli\"},{\"id\":1791647634,\"tr\":\"Mappatura della tastiera\"},{\"id\":855043400,\"tr\":\"Rinomina Strumento\"},{\"id\":1662581644,\"tr\":\"Rinomina\"},{\"id\":3826312522,\"tr\":\"Aggiungi un'annotazione\"},{\"id\":726307987,\"tr\":\"Inserisci"
@@ -2370,10 +2336,10 @@ static const unsigned char temp_binary_data_109[] =
 "22080,\"tr\":[{\"name\":\"{x} modifica\",\"pluralForm\":\"1\"},{\"name\":\"{x} modifiche\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} minuto\",\"pluralForm\":\"1\"},{\"name\":\"{x} minuti\",\"pluralForm\":\"2\"}]},{\"id\":4122"
 "223288,\"tr\":[{\"name\":\"{x} secondo\",\"pluralForm\":\"1\"},{\"name\":\"{x} secondi\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"rinominato da {x}\",\"pluralForm\":\"1\"}}]}";
 
-const char* it_json = (const char*) temp_binary_data_109;
+const char* it_json = (const char*) temp_binary_data_104;
 
 //================== ja.json ==================
-static const unsigned char temp_binary_data_110[] =
+static const unsigned char temp_binary_data_105[] =
 { 123,34,105,100,34,58,34,106,97,34,44,34,110,97,109,101,34,58,34,230,151,165,230,156,172,232,170,158,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,49,34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,53,57,48,53,
 52,51,50,50,55,44,34,116,114,34,58,34,227,131,151,227,131,173,227,130,184,227,130,167,227,130,175,227,131,136,233,150,139,229,167,139,34,125,44,123,34,105,100,34,58,50,52,50,51,53,52,57,49,53,44,34,116,114,34,58,34,230,150,176,232,166,143,227,131,151,
 227,131,173,227,130,184,227,130,167,227,130,175,227,131,136,34,125,44,123,34,105,100,34,58,57,55,51,51,55,48,50,53,55,44,34,116,114,34,58,34,230,150,176,232,166,143,227,131,172,227,130,164,227,131,164,227,131,188,34,125,44,123,34,105,100,34,58,51,54,
@@ -2650,10 +2616,10 @@ static const unsigned char temp_binary_data_110[] =
 111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,32,227,129,139,227,130,137,231,167,187,229,139,149,34,44,34,112,108,117,114,97,108,70,111,114,109,
 34,58,34,49,34,125,125,93,125,0,0 };
 
-const char* ja_json = (const char*) temp_binary_data_110;
+const char* ja_json = (const char*) temp_binary_data_105;
 
 //================== ko.json ==================
-static const unsigned char temp_binary_data_111[] =
+static const unsigned char temp_binary_data_106[] =
 { 123,34,105,100,34,58,34,107,111,34,44,34,110,97,109,101,34,58,34,237,149,156,234,181,173,236,150,180,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,40,123,120,125,61,61,49,32,63,32,49,32,58,32,50,41,34,44,34,108,105,116,101,114,
 97,108,34,58,91,123,34,105,100,34,58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,237,148,132,235,161,156,236,160,157,237,138,184,32,236,139,156,236,158,145,34,125,44,123,34,105,100,34,58,50,52,50,51,53,52,57,49,53,44,34,116,114,34,58,34,236,131,
 136,32,237,148,132,235,161,156,236,160,157,237,138,184,34,125,44,123,34,105,100,34,58,57,55,51,51,55,48,50,53,55,44,34,116,114,34,58,34,236,131,136,32,237,138,184,235,158,153,34,125,44,123,34,105,100,34,58,51,54,56,50,48,54,50,54,57,48,44,34,116,114,
@@ -2918,10 +2884,10 @@ static const unsigned char temp_binary_data_111[] =
 109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,236,180,136,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,
 34,58,34,123,120,125,32,236,151,144,236,132,156,32,236,152,174,234,178,168,236,167,144,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,0,0 };
 
-const char* ko_json = (const char*) temp_binary_data_111;
+const char* ko_json = (const char*) temp_binary_data_106;
 
 //================== pt.json ==================
-static const unsigned char temp_binary_data_112[] =
+static const unsigned char temp_binary_data_107[] =
 "{\"id\":\"pt\",\"name\":\"Portugu\xc3\xaas\",\"pluralEquation\":\"(({x}==0 || {x}==1) ? 1 : 2)\",\"literal\":[{\"id\":590543227,\"tr\":\"In\xc3\xad""cio do projeto\"},{\"id\":242354915,\"tr\":\"Novo projeto\"},{\"id\":973370257,\"tr\":\"Nova camada\""
 "},{\"id\":3682062690,\"tr\":\"Tempo\"},{\"id\":3475921130,\"tr\":\"Volume\"},{\"id\":3279548549,\"tr\":\"Est\xc3\xba""dio\"},{\"id\":3086290873,\"tr\":\"Instrumentos\"},{\"id\":3686062664,\"tr\":\"Ajustes\"},{\"id\":1113353303,\"tr\":\"Vers\xc3\xb5""e"
 "s\"},{\"id\":3324938734,\"tr\":\"Padr\xc3\xb5""es\"},{\"id\":1791647634,\"tr\":\"Mapeamento de teclado\"},{\"id\":855043400,\"tr\":\"Renomear instrumento\"},{\"id\":1662581644,\"tr\":\"Renomear\"},{\"id\":3826312522,\"tr\":\"Adicionar anota\xc3\xa7\xc3"
@@ -3014,10 +2980,10 @@ static const unsigned char temp_binary_data_112[] =
 "\"2\"}]},{\"id\":3610422080,\"tr\":[{\"name\":\"{x} delta\",\"pluralForm\":\"1\"},{\"name\":\"{x} deltas\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} minuto\",\"pluralForm\":\"1\"},{\"name\":\"{x} minutos\",\"pluralForm\":\"2\""
 "}]},{\"id\":4122223288,\"tr\":[{\"name\":\"{x} segundo\",\"pluralForm\":\"1\"},{\"name\":\"{x} segundos\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"movido de {x}\",\"pluralForm\":\"1\"}}]}";
 
-const char* pt_json = (const char*) temp_binary_data_112;
+const char* pt_json = (const char*) temp_binary_data_107;
 
 //================== ru.json ==================
-static const unsigned char temp_binary_data_113[] =
+static const unsigned char temp_binary_data_108[] =
 { 123,34,105,100,34,58,34,114,117,34,44,34,110,97,109,101,34,58,34,208,160,209,131,209,129,209,129,208,186,208,184,208,185,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,40,123,120,125,37,49,48,61,61,49,32,38,38,32,123,120,125,37,
 49,48,48,33,61,49,49,32,63,32,49,32,58,32,123,120,125,37,49,48,62,61,50,32,38,38,32,123,120,125,37,49,48,60,61,52,32,38,38,32,40,123,120,125,37,49,48,48,60,49,48,32,124,124,32,123,120,125,37,49,48,48,62,61,50,48,41,32,63,32,50,32,58,32,51,41,34,44,34,
 108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,208,159,209,128,208,190,208,181,208,186,209,130,32,209,129,208,190,208,183,208,180,208,176,208,189,34,125,44,123,34,105,100,34,58,50,52,50,51,53,
@@ -3386,10 +3352,10 @@ static const unsigned char temp_binary_data_113[] =
 109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,208,191,208,181,209,128,208,181,208,184,208,188,208,181,208,189,208,190,208,178,208,176,208,189,32,208,184,208,183,
 32,123,120,125,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,0,0 };
 
-const char* ru_json = (const char*) temp_binary_data_113;
+const char* ru_json = (const char*) temp_binary_data_108;
 
 //================== tr.json ==================
-static const unsigned char temp_binary_data_114[] =
+static const unsigned char temp_binary_data_109[] =
 "{\"id\":\"tr\",\"name\":\"T\xc3\xbcrk\xc3\xa7""e\",\"pluralEquation\":\"(({x}==0 || {x}==1) ? 1 : 2)\",\"literal\":[{\"id\":590543227,\"tr\":\"Projeye ba\xc5\x9fla\"},{\"id\":242354915,\"tr\":\"Yeni proje\"},{\"id\":973370257,\"tr\":\"Yeni par\xc3\xa7"
 "a\"},{\"id\":3682062690,\"tr\":\"Tempo\"},{\"id\":3475921130,\"tr\":\"Ses\"},{\"id\":3279548549,\"tr\":\"St\xc3\xbc""dyo\"},{\"id\":3086290873,\"tr\":\"Enstr\xc3\xbcman\"},{\"id\":3686062664,\"tr\":\"Ayarlar\"},{\"id\":1113353303,\"tr\":\"S\xc3\xbcr\xc3"
 "\xbcm\"},{\"id\":3324938734,\"tr\":\"Modeller\"},{\"id\":1791647634,\"tr\":\"Klavye haritaland\xc4\xb1rmas\xc4\xb1\"},{\"id\":855043400,\"tr\":\"Enstr\xc3\xbcman\xc4\xb1 yeniden adland\xc4\xb1r\"},{\"id\":1662581644,\"tr\":\"Yeniden adland\xc4\xb1r\""
@@ -3493,10 +3459,10 @@ static const unsigned char temp_binary_data_114[] =
 "22080,\"tr\":[{\"name\":\"{x} delta\",\"pluralForm\":\"1\"},{\"name\":\"{x} deltalar\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} dakika\",\"pluralForm\":\"1\"},{\"name\":\"{x} dakika\",\"pluralForm\":\"2\"}]},{\"id\":41222232"
 "88,\"tr\":[{\"name\":\"{x} saniye\",\"pluralForm\":\"1\"},{\"name\":\"{x} saniye\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"{x} konumundan ta\xc5\x9f\xc4\xb1nd\xc4\xb1\",\"pluralForm\":\"1\"}}]}";
 
-const char* tr_json = (const char*) temp_binary_data_114;
+const char* tr_json = (const char*) temp_binary_data_109;
 
 //================== uk.json ==================
-static const unsigned char temp_binary_data_115[] =
+static const unsigned char temp_binary_data_110[] =
 { 123,34,105,100,34,58,34,117,107,34,44,34,110,97,109,101,34,58,34,208,163,208,186,209,128,208,176,209,151,208,189,209,129,209,140,208,186,208,176,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,40,123,120,125,37,49,48,61,61,49,32,
 38,38,32,123,120,125,37,49,48,48,33,61,49,49,32,63,32,49,32,58,32,123,120,125,37,49,48,62,61,50,32,38,38,32,123,120,125,37,49,48,60,61,52,32,38,38,32,40,123,120,125,37,49,48,48,60,49,48,32,124,124,32,123,120,125,37,49,48,48,62,61,50,48,41,32,63,32,50,
 32,58,32,51,41,34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,208,159,209,128,208,190,209,148,208,186,209,130,32,209,129,209,130,208,178,208,190,209,128,208,181,208,189,208,190,34,125,
@@ -3855,10 +3821,10 @@ static const unsigned char temp_binary_data_115[] =
 55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,208,191,208,181,209,128,208,181,208,185,208,188,208,181,208,189,208,190,208,178,208,176,208,189,208,190,32,208,183,32,123,120,125,34,44,34,112,108,117,114,97,108,70,111,114,109,34,
 58,34,49,34,125,125,93,125,0,0 };
 
-const char* uk_json = (const char*) temp_binary_data_115;
+const char* uk_json = (const char*) temp_binary_data_110;
 
 //================== zh.json ==================
-static const unsigned char temp_binary_data_116[] =
+static const unsigned char temp_binary_data_111[] =
 { 123,34,105,100,34,58,34,122,104,34,44,34,110,97,109,101,34,58,34,231,174,128,228,189,147,228,184,173,230,150,135,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,49,34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,
 58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,229,183,165,231,168,139,229,183,178,229,144,175,229,138,168,34,125,44,123,34,105,100,34,58,50,52,50,51,53,52,57,49,53,44,34,116,114,34,58,34,230,150,176,229,187,186,229,183,165,231,168,139,34,125,44,
 123,34,105,100,34,58,57,55,51,51,55,48,50,53,55,44,34,116,114,34,58,34,230,150,176,229,187,186,232,189,168,233,129,147,34,125,44,123,34,105,100,34,58,51,54,56,50,48,54,50,54,57,48,44,34,116,114,34,58,34,233,128,159,229,186,166,34,125,44,123,34,105,100,
@@ -4080,10 +4046,10 @@ static const unsigned char temp_binary_data_116[] =
 123,34,105,100,34,58,52,49,50,50,50,50,51,50,56,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,231,167,146,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,
 44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,229,183,178,228,187,142,123,120,125,228,184,173,231,167,187,229,138,168,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,0,0 };
 
-const char* zh_json = (const char*) temp_binary_data_116;
+const char* zh_json = (const char*) temp_binary_data_111;
 
 //================== logo-v2.png ==================
-static const unsigned char temp_binary_data_117[] =
+static const unsigned char temp_binary_data_112[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,0,0,0,2,0,8,3,0,0,0,195,166,36,200,0,0,0,90,80,76,84,69,0,0,0,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,220,225,
 250,66,68,109,210,215,241,87,89,128,190,194,222,159,163,194,118,121,156,77,79,119,200,205,232,97,100,138,138,142,175,179,184,213,169,173,204,128,131,166,107,110,147,149,152,185,217,6,198,72,0,0,0,13,116,82,78,83,0,240,16,187,112,208,160,128,64,144,96,
 48,32,151,204,52,208,0,0,27,230,73,68,65,84,120,218,236,218,91,82,133,48,16,0,209,201,3,8,143,217,255,118,213,210,143,171,85,94,209,63,211,125,182,144,134,132,9,241,76,29,91,107,37,245,111,149,214,182,81,227,79,206,190,164,166,176,244,51,126,169,186,
@@ -4187,10 +4153,10 @@ static const unsigned char temp_binary_data_117[] =
 194,171,131,102,141,39,176,25,218,225,116,34,144,78,12,194,139,35,181,197,115,108,87,185,93,5,210,137,64,46,49,8,175,14,154,213,22,207,99,139,172,118,133,51,18,129,65,115,117,176,44,44,72,54,25,157,129,116,34,144,78,12,138,95,5,40,139,13,102,97,155,218,
 185,12,238,6,187,116,34,144,75,12,114,171,131,198,185,186,177,152,224,19,237,49,4,137,135,37,128,151,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* logov2_png = (const char*) temp_binary_data_117;
+const char* logov2_png = (const char*) temp_binary_data_112;
 
 //================== logo-v2-mac.png ==================
-static const unsigned char temp_binary_data_118[] =
+static const unsigned char temp_binary_data_113[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,0,0,0,2,0,8,3,0,0,0,195,166,36,200,0,0,2,64,80,76,84,69,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,5,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,55,57,
 100,0,0,0,0,0,0,55,57,99,0,0,0,0,0,0,0,0,0,1,1,2,55,57,99,55,57,99,1,1,3,0,0,0,55,57,98,0,0,0,55,57,99,55,57,99,55,57,99,56,58,99,0,0,0,0,0,1,2,2,4,53,55,95,0,0,0,56,57,99,55,58,100,55,57,100,54,55,96,53,55,96,53,55,94,51,53,92,54,56,97,53,55,95,52,54,
 93,53,55,96,46,47,82,53,55,95,52,54,93,52,54,93,36,37,65,54,56,97,41,43,73,28,29,49,23,24,41,48,50,86,13,14,24,52,55,94,48,50,87,45,47,80,53,56,96,54,56,98,52,54,94,46,47,81,55,57,99,39,40,69,36,36,62,34,34,60,42,43,75,39,42,71,33,35,60,51,54,91,47,49,
@@ -4451,10 +4417,10 @@ static const unsigned char temp_binary_data_118[] =
 242,41,21,128,12,136,14,176,18,136,22,64,13,20,10,105,28,200,29,20,210,56,72,161,164,4,88,39,188,19,230,129,250,111,149,251,68,29,196,149,64,212,176,151,241,61,6,225,125,159,249,100,106,216,219,248,110,31,251,216,199,62,246,177,143,125,236,99,31,255,
 181,7,7,2,0,0,0,0,130,252,173,23,24,161,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,4,142,154,195,12,195,63,131,3,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* logov2mac_png = (const char*) temp_binary_data_118;
+const char* logov2mac_png = (const char*) temp_binary_data_113;
 
 //================== arpeggiators.json ==================
-static const unsigned char temp_binary_data_119[] =
+static const unsigned char temp_binary_data_114[] =
 "{\n"
 "  // TODO\n"
 "  \"arpeggiators\": {\n"
@@ -4463,10 +4429,10 @@ static const unsigned char temp_binary_data_119[] =
 "  }\n"
 "}";
 
-const char* arpeggiators_json = (const char*) temp_binary_data_119;
+const char* arpeggiators_json = (const char*) temp_binary_data_114;
 
 //================== chords.json ==================
-static const unsigned char temp_binary_data_120[] =
+static const unsigned char temp_binary_data_115[] =
 "{\n"
 "  /*\n"
 "    A number of chords that are easy to define with in-scale keys.\n"
@@ -4491,10 +4457,10 @@ static const unsigned char temp_binary_data_120[] =
 "  }\n"
 "}";
 
-const char* chords_json = (const char*) temp_binary_data_120;
+const char* chords_json = (const char*) temp_binary_data_115;
 
 //================== colourSchemes.json ==================
-static const unsigned char temp_binary_data_121[] =
+static const unsigned char temp_binary_data_116[] =
 "{\n"
 "  \"colourSchemes\": {\n"
 "    \"colourScheme\": [\n"
@@ -4649,561 +4615,575 @@ static const unsigned char temp_binary_data_121[] =
 "  }\n"
 "}";
 
-const char* colourSchemes_json = (const char*) temp_binary_data_121;
+const char* colourSchemes_json = (const char*) temp_binary_data_116;
 
 //================== hotkeySchemes.json ==================
-static const unsigned char temp_binary_data_122[] =
+static const unsigned char temp_binary_data_117[] =
+"{ \"hotkeySchemes\": { \"hotkeyScheme\": { \"name\": \"Default\", \"group\": [\n"
+"/*\n"
+"  The app groups hotkeys by \"receiver\" attribute (component id) and keypress,\n"
+"  so you can have several keys for one command within a component,\n"
+"  but cannot have several commands assigned to the same keypress.\n"
+"\n"
+"  For the \"command\" attribute see CommandIDs.h for available commands,\n"
+"  and the \"key\" attribute is the case-insensitive textual combination\n"
+"  of keys (letters or specific) and modifiers (if any).\n"
+"\n"
+"  Non-letter key names are: \"return\", \"escape\", \"backspace\",\n"
+"  \"cursor left\", \"cursor right\", \"cursor up\", \"cursor down\",\n"
+"  \"page up\", \"page down\", \"home\", \"end\", \"delete\", \"insert\",\n"
+"  \"tab\", \"play\", \"stop\", \"fast forward\", \"rewind\",\n"
+"  and \"spacebar\" (can be used as both keypress and modifier).\n"
+"\n"
+"  Modifier names are: \"alt\", \"shift\", \"control\", \"command\", \"spacebar\"\n"
+"  (spacebar is mostly used as a modifier for the panning mode commands).\n"
+"\n"
+"  ANCHORs are here only for the docs generator.\n"
+"*/\n"
 "{\n"
-"  \"hotkeySchemes\": { \"hotkeyScheme\": { \"name\": \"Default\", \"group\": [\n"
+"  \"receiver\": \"MainLayout\",\n"
+"  \"keyPress\": [\n"
+"  // ANCHOR: MainLayout\n"
+"  // Command Palette aka Spotlight Search aka Goto Anything:\n"
+"  { \"command\": \"CommandPalette\", \"key\": \"`\" },\n"
+"  { \"command\": \"CommandPalette\", \"key\": \"Control + P\" },\n"
+"  { \"command\": \"CommandPalette\", \"key\": \"Command + P\" },\n"
+"  { \"command\": \"CommandPalette\", \"key\": \"Control + G\" },\n"
+"  { \"command\": \"CommandPalette\", \"key\": \"Command + G\" },\n"
 "\n"
-"  /*\n"
-"    The app groups hotkeys by \"receiver\" attribute (component id) and keypress,\n"
-"    so you can have several keys for one command within a component,\n"
-"    but cannot have several commands assigned to the same keypress.\n"
+"  // Quick access to command palette modes - /, :, !, @\n"
+"  { \"command\": \"CommandPaletteWithMode\", \"key\": \"/\" },\n"
+"  { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + 1\" },\n"
+"  { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + 2\" },\n"
+"  { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + ;\" },\n"
 "\n"
-"    For the \"command\" attribute see CommandIDs.h for available commands,\n"
-"    and the \"key\" attribute is the case-insensitive textual combination\n"
-"    of keys (letters or specific) and modifiers (if any).\n"
+"  { \"command\": \"BreadcrumbsMenu\", \"key\": \"F10\" },\n"
+"  { \"command\": \"BreadcrumbsMenu\", \"key\": \"Shift + /\" },\n"
 "\n"
-"    Non-letter key names are: \"return\", \"escape\", \"backspace\",\n"
-"    \"cursor left\", \"cursor right\", \"cursor up\", \"cursor down\",\n"
-"    \"page up\", \"page down\", \"home\", \"end\", \"delete\", \"insert\",\n"
-"    \"tab\", \"play\", \"stop\", \"fast forward\", \"rewind\",\n"
-"    and \"spacebar\" (can be used as both keypress and modifier).\n"
+"  { \"command\": \"ShowPreviousPage\", \"key\": \"Command + Cursor Left\" },\n"
+"  { \"command\": \"ShowPreviousPage\", \"key\": \"Control + Cursor Left\" },\n"
+"  { \"command\": \"ShowPreviousPage\", \"key\": \"Alt + Cursor Left\" },\n"
+"  { \"command\": \"ShowNextPage\", \"key\": \"Command + Cursor Right\" },\n"
+"  { \"command\": \"ShowNextPage\", \"key\": \"Control + Cursor Right\" },\n"
+"  { \"command\": \"ShowNextPage\", \"key\": \"Alt + Cursor Right\" },\n"
 "\n"
-"    Modifier names are: \"alt\", \"shift\", \"control\", \"command\", \"spacebar\"\n"
-"    (spacebar is mostly used as a modifier for the panning mode commands).\n"
+"  { \"command\": \"SwitchToEditMode\", \"key\": \"Page Up\" },\n"
+"  { \"command\": \"SwitchToArrangeMode\", \"key\": \"Page Down\" },\n"
+"  { \"command\": \"SwitchToVersioningMode\", \"key\": \"Control + S\" },\n"
+"  { \"command\": \"SwitchToVersioningMode\", \"key\": \"Command + S\" }\n"
+"  // ANCHOR_END: MainLayout\n"
+"  ]\n"
+"},\n"
+"{\n"
+"  \"receiver\": \"SequencerLayout\",\n"
+"  \"keyPress\": [\n"
+"  // ANCHOR: SequencerLayout\n"
+"  { \"command\": \"SwitchBetweenRolls\", \"key\": \"Tab\" },\n"
 "\n"
-"    ANCHORs are here only for the docs generator.\n"
-"  */\n"
+"  { \"command\": \"ExportMidi\", \"key\": \"Control + E\" },\n"
+"  { \"command\": \"ExportMidi\", \"key\": \"Command + E\" },\n"
 "\n"
-"  { // ANCHOR: MainLayout\n"
-"    \"receiver\": \"MainLayout\",\n"
-"    \"keyPress\": [\n"
+"  { \"command\": \"RenderToWAV\", \"key\": \"Control + R\" },\n"
+"  { \"command\": \"RenderToWAV\", \"key\": \"Command + R\" },\n"
+"  { \"command\": \"RenderToFLAC\", \"key\": \"Control + Shift + R\" },\n"
+"  { \"command\": \"RenderToFLAC\", \"key\": \"Command + Shift + R\" }\n"
+"  // ANCHOR_END: SequencerLayout\n"
+"  ]\n"
+"},\n"
+"{\n"
+"  \"receiver\": \"VersionControlStage\",\n"
+"  \"keyPress\": [\n"
+"  // ANCHOR: VersionControlStage\n"
+"  { \"command\": \"VersionControlSelectAll\", \"key\": \"Control + A\" },\n"
+"  { \"command\": \"VersionControlSelectNone\", \"key\": \"Escape\" },\n"
+"  { \"command\": \"VersionControlCommitSelected\", \"key\": \"Return\" },\n"
+"  { \"command\": \"VersionControlResetSelected\", \"key\": \"Backspace\" },\n"
+"  { \"command\": \"VersionControlResetSelected\", \"key\": \"Delete\" },\n"
+"  { \"command\": \"VersionControlCommitAll\", \"key\": \"Shift + Return\" },\n"
+"  { \"command\": \"VersionControlCommitAll\", \"key\": \"Shift + Return\" },\n"
+"  { \"command\": \"VersionControlResetAll\", \"key\": \"Shift + Backspace\" },\n"
+"  { \"command\": \"VersionControlResetAll\", \"key\": \"Shift + Delete\" },\n"
+"  // Stash all changes or apply stashed changes\n"
+"  { \"command\": \"VersionControlToggleQuickStash\", \"key\": \"Tab\" }\n"
+"  // ANCHOR_END: VersionControlStage\n"
+"  ]\n"
+"},\n"
+"{\n"
+"  \"receiver\": \"KeyboardMapping\",\n"
+"  \"keyPress\": [\n"
+"  // ANCHOR: KeyboardMapping\n"
+"  { \"command\": \"KeyMapPreviousPage\", \"key\": \"Cursor Left\" },\n"
+"  { \"command\": \"KeyMapNextPage\", \"key\": \"Cursor Right\" },\n"
 "\n"
-"      // Command Palette aka Spotlight Search aka Goto Anything:\n"
-"      { \"command\": \"CommandPalette\", \"key\": \"`\" },\n"
-"      { \"command\": \"CommandPalette\", \"key\": \"Control + P\" },\n"
-"      { \"command\": \"CommandPalette\", \"key\": \"Command + P\" },\n"
-"      { \"command\": \"CommandPalette\", \"key\": \"Control + G\" },\n"
-"      { \"command\": \"CommandPalette\", \"key\": \"Command + G\" },\n"
+"  { \"command\": \"KeyMapReset\", \"key\": \"Command + R\" },\n"
+"  { \"command\": \"KeyMapReset\", \"key\": \"Control + R\" },\n"
+"  { \"command\": \"KeyMapLoadScala\", \"key\": \"Command + O\" },\n"
+"  { \"command\": \"KeyMapLoadScala\", \"key\": \"Control + O\" },\n"
 "\n"
-"      // Quick access to command palette modes - /, :, !, @\n"
-"      { \"command\": \"CommandPaletteWithMode\", \"key\": \"/\" },\n"
-"      { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + 1\" },\n"
-"      { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + 2\" },\n"
-"      { \"command\": \"CommandPaletteWithMode\", \"key\": \"Shift + ;\" },\n"
+"  { \"command\": \"KeyMapCopyToClipboard\", \"key\": \"Command + C\" },\n"
+"  { \"command\": \"KeyMapCopyToClipboard\", \"key\": \"Control + C\" },\n"
+"  { \"command\": \"KeyMapCopyToClipboard\", \"key\": \"Command + Insert\" },\n"
+"  { \"command\": \"KeyMapCopyToClipboard\", \"key\": \"Control + Insert\" },\n"
 "\n"
-"      { \"command\": \"BreadcrumbsMenu\", \"key\": \"F10\" },\n"
-"      { \"command\": \"BreadcrumbsMenu\", \"key\": \"Shift + /\" },\n"
+"  { \"command\": \"KeyMapPasteFromClipboard\", \"key\": \"Command + V\" },\n"
+"  { \"command\": \"KeyMapPasteFromClipboard\", \"key\": \"Control + V\" },\n"
+"  { \"command\": \"KeyMapPasteFromClipboard\", \"key\": \"Shift + Insert\" }\n"
+"  // ANCHOR_END: KeyboardMapping  \n"
+"  ]\n"
+"},\n"
+"{\n"
+"  \"receiver\": \"PianoRoll\",\n"
+"  \"keyPress\": [\n"
+"  // ANCHOR: PianoRoll\n"
+"  // Undo/redo:\n"
+"  { \"command\": \"Undo\", \"key\": \"Command + Z\" },\n"
+"  { \"command\": \"Undo\", \"key\": \"Control + Z\" },\n"
+"  { \"command\": \"Redo\", \"key\": \"Command + Shift + Z\" },\n"
+"  { \"command\": \"Redo\", \"key\": \"Control + Shift + Z\" },\n"
+"  { \"command\": \"Redo\", \"key\": \"Command + Y\" },\n"
+"  { \"command\": \"Redo\", \"key\": \"Control + Y\" },\n"
 "\n"
-"      { \"command\": \"ShowPreviousPage\", \"key\": \"Command + Cursor Left\" },\n"
-"      { \"command\": \"ShowPreviousPage\", \"key\": \"Control + Cursor Left\" },\n"
-"      { \"command\": \"ShowPreviousPage\", \"key\": \"Alt + Cursor Left\" },\n"
-"      { \"command\": \"ShowNextPage\", \"key\": \"Command + Cursor Right\" },\n"
-"      { \"command\": \"ShowNextPage\", \"key\": \"Control + Cursor Right\" },\n"
-"      { \"command\": \"ShowNextPage\", \"key\": \"Alt + Cursor Right\" },\n"
+"  // Copy\n"
+"  { \"command\": \"CopyEvents\", \"key\": \"Command + C\" },\n"
+"  { \"command\": \"CopyEvents\", \"key\": \"Control + C\" },\n"
+"  { \"command\": \"CopyEvents\", \"key\": \"Command + Insert\" },\n"
+"  { \"command\": \"CopyEvents\", \"key\": \"Control + Insert\" },\n"
 "\n"
-"      { \"command\": \"SwitchToEditMode\", \"key\": \"Page Up\" },\n"
-"      { \"command\": \"SwitchToArrangeMode\", \"key\": \"Page Down\" },\n"
-"      { \"command\": \"SwitchToVersioningMode\", \"key\": \"Control + S\" },\n"
-"      { \"command\": \"SwitchToVersioningMode\", \"key\": \"Command + S\" },\n"
-"    ]\n"
-"  }, // ANCHOR_END: MainLayout\n"
-"  {  // ANCHOR: SequencerLayout\n"
-"    \"receiver\": \"SequencerLayout\",\n"
-"    \"keyPress\": [\n"
+"  // Cut\n"
+"  { \"command\": \"CutEvents\", \"key\": \"Command + X\" },\n"
+"  { \"command\": \"CutEvents\", \"key\": \"Control + X\" },\n"
+"  { \"command\": \"CutEvents\", \"key\": \"Shift + Delete\" },\n"
 "\n"
-"      { \"command\": \"SwitchBetweenRolls\", \"key\": \"Tab\" },\n"
+"  // Cut selection to the new track\n"
+"  { \"command\": \"NewTrackFromSelection\", \"key\": \"Control + Shift + X\" },\n"
+"  { \"command\": \"NewTrackFromSelection\", \"key\": \"Command + Shift + X\" },\n"
 "\n"
-"      { \"command\": \"ExportMidi\", \"key\": \"Control + E\" },\n"
-"      { \"command\": \"ExportMidi\", \"key\": \"Command + E\" },\n"
+"  // Delete\n"
+"  { \"command\": \"DeleteEvents\", \"key\": \"X\" },\n"
+"  { \"command\": \"DeleteEvents\", \"key\": \"Delete\" },\n"
+"  { \"command\": \"DeleteEvents\", \"key\": \"Backspace\" },\n"
 "\n"
-"      { \"command\": \"RenderToWAV\", \"key\": \"Control + R\" },\n"
-"      { \"command\": \"RenderToWAV\", \"key\": \"Command + R\" },\n"
-"      { \"command\": \"RenderToFLAC\", \"key\": \"Control + Shift + R\" },\n"
-"      { \"command\": \"RenderToFLAC\", \"key\": \"Command + Shift + R\" }\n"
-"    ]\n"
-"  }, // ANCHOR_END: SequencerLayout\n"
-"  {  // ANCHOR: VersionControlStage\n"
-"    \"receiver\": \"VersionControlStage\",\n"
-"    \"keyPress\": [\n"
-"      { \"command\": \"VersionControlSelectAll\", \"key\": \"Control + A\" },\n"
-"      { \"command\": \"VersionControlSelectNone\", \"key\": \"Escape\" },\n"
-"      { \"command\": \"VersionControlCommitSelected\", \"key\": \"Return\" },\n"
-"      { \"command\": \"VersionControlResetSelected\", \"key\": \"Backspace\" },\n"
-"      { \"command\": \"VersionControlResetSelected\", \"key\": \"Delete\" },\n"
-"      { \"command\": \"VersionControlCommitAll\", \"key\": \"Shift + Return\" },\n"
-"      { \"command\": \"VersionControlCommitAll\", \"key\": \"Shift + Return\" },\n"
-"      { \"command\": \"VersionControlResetAll\", \"key\": \"Shift + Backspace\" },\n"
-"      { \"command\": \"VersionControlResetAll\", \"key\": \"Shift + Delete\" },\n"
-"      // Stash all changes or apply stashed changes\n"
-"      { \"command\": \"VersionControlToggleQuickStash\", \"key\": \"Tab\" }\n"
-"    ]\n"
-"  }, // ANCHOR_END: VersionControlStage\n"
-"  {  // ANCHOR: KeyboardMapping\n"
-"    \"receiver\": \"KeyboardMapping\",\n"
-"    \"keyPress\": [\n"
+"  // Paste\n"
+"  { \"command\": \"PasteEvents\", \"key\": \"Command + V\" },\n"
+"  { \"command\": \"PasteEvents\", \"key\": \"Control + V\" },\n"
+"  { \"command\": \"PasteEvents\", \"key\": \"Shift + Insert\" },\n"
 "\n"
-"      { \"command\": \"KeyMapPreviousPage\", \"key\": \"Cursor Left\" },\n"
-"      { \"command\": \"KeyMapNextPage\", \"key\": \"Cursor Right\" },\n"
+"  // Playback/record control\n"
+"  { \"command\": \"TransportStop\", \"key\": \"Stop\" },\n"
+"  { \"command\": \"TransportStop\", \"key\": \"Escape\" },\n"
+"  { \"command\": \"TransportPlaybackStart\", \"key\": \"Play\" },\n"
+"  { \"command\": \"TransportPlaybackStart\", \"key\": \"Return\" },\n"
+"  { \"command\": \"TransportRecordingAwait\", \"key\": \"F12\" },\n"
+"  { \"command\": \"TransportRecordingAwait\", \"key\": \"Control + Return\" },\n"
+"  { \"command\": \"TransportRecordingAwait\", \"key\": \"Command + Return\" },\n"
+"  { \"command\": \"TransportRecordingStart\", \"key\": \"Shift + Return\" },\n"
+"  { \"command\": \"ToggleLoopOverSelection\", \"key\": \"F11\" },\n"
 "\n"
-"      { \"command\": \"KeyMapReset\", \"key\": \"Command + R\" },\n"
-"      { \"command\": \"KeyMapReset\", \"key\": \"Control + R\" },\n"
-"      { \"command\": \"KeyMapLoadScala\", \"key\": \"Command + O\" },\n"
-"      { \"command\": \"KeyMapLoadScala\", \"key\": \"Control + O\" },\n"
+"  // Navigation\n"
+"  { \"command\": \"ZoomIn\", \"key\": \"Z\" },\n"
+"  { \"command\": \"ZoomOut\", \"key\": \"Shift + Z\" },\n"
+"  { \"command\": \"ZoomEntireClip\", \"key\": \"Command + Tab\" },\n"
+"  { \"command\": \"ZoomEntireClip\", \"key\": \"Control + Tab\" },\n"
+"  { \"command\": \"ToggleLockZoomLevel\", \"key\": \"Alt + Z\" },\n"
+"  { \"command\": \"TimelineJumpNext\", \"key\": \".\" },\n"
+"  { \"command\": \"TimelineJumpPrevious\", \"key\": \",\" },\n"
+"  { \"command\": \"TimelineJumpHome\", \"key\": \"Home\" },\n"
+"  { \"command\": \"TimelineJumpEnd\", \"key\": \"End\" },\n"
+"  { \"command\": \"ViewportPanLeft\", \"key\": \"Spacebar + Cursor Left\" },\n"
+"  { \"command\": \"ViewportPanRight\", \"key\": \"Spacebar + Cursor Right\" },\n"
+"  { \"command\": \"ViewportPanUp\", \"key\": \"Spacebar + Cursor Up\" },\n"
+"  { \"command\": \"ViewportPanDown\", \"key\": \"Spacebar + Cursor Down\" },\n"
+"  { \"command\": \"ViewportPanLeft\", \"key\": \"Spacebar + Numpad 4\" },\n"
+"  { \"command\": \"ViewportPanRight\", \"key\": \"Spacebar + Numpad 6\" },\n"
+"  { \"command\": \"ViewportPanUp\", \"key\": \"Spacebar + Numpad 8\" },\n"
+"  { \"command\": \"ViewportPanDown\", \"key\": \"Spacebar + Numpad 2\" },\n"
+"  { \"command\": \"ViewportPanLeft\", \"key\": \"Spacebar + H\" },\n"
+"  { \"command\": \"ViewportPanRight\", \"key\": \"Spacebar + L\" },\n"
+"  { \"command\": \"ViewportPanUp\", \"key\": \"Spacebar + K\" },\n"
+"  { \"command\": \"ViewportPanDown\", \"key\": \"Spacebar + J\" },\n"
+"  { \"command\": \"ViewportPanLeft\", \"key\": \"Control + H\" },\n"
+"  { \"command\": \"ViewportPanRight\", \"key\": \"Control + L\" },\n"
+"  { \"command\": \"ViewportPanUp\", \"key\": \"Control + K\" },\n"
+"  { \"command\": \"ViewportPanDown\", \"key\": \"Control + J\" },\n"
 "\n"
-"      { \"command\": \"KeyMapCopyToClipboard\", \"key\": \"Command + C\" },\n"
-"      { \"command\": \"KeyMapCopyToClipboard\", \"key\": \"Control + C\" },\n"
-"      { \"command\": \"KeyMapCopyToClipboard\", \"key\": \"Command + Insert\" },\n"
-"      { \"command\": \"KeyMapCopyToClipboard\", \"key\": \"Control + Insert\" },\n"
+"  // Keyboard control\n"
+"  { \"command\": \"CursorMoveLeft\", \"key\": \"H\" },\n"
+"  { \"command\": \"CursorMoveRight\", \"key\": \"L\" },\n"
+"  { \"command\": \"CursorMoveUp\", \"key\": \"K\" },\n"
+"  { \"command\": \"CursorMoveDown\", \"key\": \"J\" },\n"
+"  { \"command\": \"CursorMoveLeft\", \"key\": \"Numpad 4\" },\n"
+"  { \"command\": \"CursorMoveRight\", \"key\": \"Numpad 6\" },\n"
+"  { \"command\": \"CursorMoveUp\", \"key\": \"Numpad 8\" },\n"
+"  { \"command\": \"CursorMoveDown\", \"key\": \"Numpad 2\" },\n"
+"  { \"command\": \"CursorSelectLeft\", \"key\": \"Shift + H\" },\n"
+"  { \"command\": \"CursorSelectRight\", \"key\": \"Shift + L\" },\n"
+"  { \"command\": \"CursorSelectUp\", \"key\": \"Shift + K\" },\n"
+"  { \"command\": \"CursorSelectDown\", \"key\": \"Shift + J\" },\n"
+"  { \"command\": \"CursorSelectLeft\", \"key\": \"Shift + Numpad 4\" },\n"
+"  { \"command\": \"CursorSelectRight\", \"key\": \"Shift + Numpad 6\" },\n"
+"  { \"command\": \"CursorSelectUp\", \"key\": \"Shift + Numpad 8\" },\n"
+"  { \"command\": \"CursorSelectDown\", \"key\": \"Shift + Numpad 2\" },\n"
+"  { \"command\": \"CursorEditHarmonicContext\", \"key\": \"F9\" },\n"
+"  { \"command\": \"CursorEditTimeContext\", \"key\": \"Alt + F9\" },\n"
+"  { \"command\": \"CursorInteract\", \"key\": \"I\" },\n"
 "\n"
-"      { \"command\": \"KeyMapPasteFromClipboard\", \"key\": \"Command + V\" },\n"
-"      { \"command\": \"KeyMapPasteFromClipboard\", \"key\": \"Control + V\" },\n"
-"      { \"command\": \"KeyMapPasteFromClipboard\", \"key\": \"Shift + Insert\" }\n"
-"    ]\n"
-"  }, // ANCHOR_END: KeyboardMapping  \n"
-"  {  // ANCHOR: PianoRoll\n"
-"    \"receiver\": \"PianoRoll\",\n"
-"    \"keyPress\": [\n"
+"  // Selection\n"
+"  { \"command\": \"SelectAllEvents\", \"key\": \"Command + A\" },\n"
+"  { \"command\": \"SelectAllEvents\", \"key\": \"Control + A\" },\n"
 "\n"
-"      // Undo/redo:\n"
-"      { \"command\": \"Undo\", \"key\": \"Command + Z\" },\n"
-"      { \"command\": \"Undo\", \"key\": \"Control + Z\" },\n"
-"      { \"command\": \"Redo\", \"key\": \"Command + Shift + Z\" },\n"
-"      { \"command\": \"Redo\", \"key\": \"Control + Shift + Z\" },\n"
-"      { \"command\": \"Redo\", \"key\": \"Command + Y\" },\n"
-"      { \"command\": \"Redo\", \"key\": \"Control + Y\" },\n"
+"  // Edit selection\n"
+"  { \"command\": \"ToggleMuteClips\", \"key\": \"M\" },\n"
+"  { \"command\": \"ToggleSoloClips\", \"key\": \"S\" },\n"
+"  { \"command\": \"ToggleMuteModifiers\", \"key\": \"Alt + M\" },\n"
+"  { \"command\": \"RenameTrack\", \"key\": \"F2\" },\n"
+"  { \"command\": \"SetTrackTimeSignature\", \"key\": \"Alt + F2\" },\n"
+"  { \"command\": \"TempoUp1Bpm\", \"key\": \"Shift + +\" },\n"
+"  { \"command\": \"TempoDown1Bpm\", \"key\": \"Shift + -\" },\n"
+"  { \"command\": \"BeatShiftLeft\", \"key\": \"Cursor Left\" },\n"
+"  { \"command\": \"BeatShiftRight\", \"key\": \"Cursor Right\" },\n"
+"  { \"command\": \"LengthDecrease\", \"key\": \"Shift + Cursor Left\" },\n"
+"  { \"command\": \"LengthIncrease\", \"key\": \"Shift + Cursor Right\" },\n"
+"  { \"command\": \"TransposeUp\", \"key\": \"Cursor Up\" },\n"
+"  { \"command\": \"TransposeDown\", \"key\": \"Cursor Down\" },\n"
+"  { \"command\": \"TransposeScaleKeyUp\", \"key\": \"Alt + Cursor Up\" },\n"
+"  { \"command\": \"TransposeScaleKeyDown\", \"key\": \"Alt + Cursor Down\" },\n"
+"  { \"command\": \"TransposeOctaveUp\", \"key\": \"Shift + Cursor Up\" },\n"
+"  { \"command\": \"TransposeOctaveDown\", \"key\": \"Shift + Cursor Down\" },\n"
+"  { \"command\": \"TransposeFifthUp\", \"key\": \"Shift + Alt + Cursor Up\" },\n"
+"  { \"command\": \"TransposeFifthDown\", \"key\": \"Shift + Alt + Cursor Down\" },\n"
+"  { \"command\": \"MakeStaccato\", \"key\": \"Alt + S\" },\n"
+"  { \"command\": \"MakeStaccatissimo\", \"key\": \"Shift + Alt + S\" },\n"
+"  { \"command\": \"MakeLegato\", \"key\": \"Alt + L\" },\n"
 "\n"
-"      // Copy\n"
-"      { \"command\": \"CopyEvents\", \"key\": \"Command + C\" },\n"
-"      { \"command\": \"CopyEvents\", \"key\": \"Control + C\" },\n"
-"      { \"command\": \"CopyEvents\", \"key\": \"Command + Insert\" },\n"
-"      { \"command\": \"CopyEvents\", \"key\": \"Control + Insert\" },\n"
+"  // Refactor selection\n"
+"  { \"command\": \"Retrograde\", \"key\": \"Alt + R\" },\n"
+"  { \"command\": \"MelodicInversion\", \"key\": \"Alt + I\" },\n"
+"  { \"command\": \"CleanupOverlaps\", \"key\": \"Alt + O\" },\n"
+"  { \"command\": \"AlignToScale\", \"key\": \"Alt + A\" },\n"
+"  { \"command\": \"NotesVolumeUp\", \"key\": \"+\" },\n"
+"  { \"command\": \"NotesVolumeDown\", \"key\": \"-\" },\n"
+"  { \"command\": \"NotesVolumeRandom\", \"key\": \"Alt + +\" },\n"
+"  { \"command\": \"NotesVolumeFadeOut\", \"key\": \"Alt + -\" },\n"
+"  { \"command\": \"InvertChordUp\", \"key\": \"Control + Cursor Up\" },\n"
+"  { \"command\": \"InvertChordUp\", \"key\": \"Command + Cursor Up\" },\n"
+"  { \"command\": \"InvertChordDown\", \"key\": \"Control + Cursor Down\" },\n"
+"  { \"command\": \"InvertChordDown\", \"key\": \"Command + Cursor Down\" },\n"
 "\n"
-"      // Cut\n"
-"      { \"command\": \"CutEvents\", \"key\": \"Command + X\" },\n"
-"      { \"command\": \"CutEvents\", \"key\": \"Control + X\" },\n"
-"      { \"command\": \"CutEvents\", \"key\": \"Shift + Delete\" },\n"
+"  // Multiplets\n"
+"  { \"command\": \"Tuplet1\", \"key\": \"Alt + 1\" },\n"
+"  { \"command\": \"Tuplet2\", \"key\": \"Alt + 2\" },\n"
+"  { \"command\": \"Tuplet3\", \"key\": \"Alt + 3\" },\n"
+"  { \"command\": \"Tuplet4\", \"key\": \"Alt + 4\" },\n"
+"  { \"command\": \"Tuplet5\", \"key\": \"Alt + 5\" },\n"
+"  { \"command\": \"Tuplet6\", \"key\": \"Alt + 6\" },\n"
+"  { \"command\": \"Tuplet7\", \"key\": \"Alt + 7\" },\n"
+"  { \"command\": \"Tuplet8\", \"key\": \"Alt + 8\" },\n"
+"  { \"command\": \"Tuplet9\", \"key\": \"Alt + 9\" },\n"
 "\n"
-"      // Cut selection to the new track\n"
-"      { \"command\": \"NewTrackFromSelection\", \"key\": \"Control + Shift + X\" },\n"
-"      { \"command\": \"NewTrackFromSelection\", \"key\": \"Command + Shift + X\" },\n"
+"  // Quantization\n"
+"  { \"command\": \"QuantizeTo1_1\", \"key\": \"Control + 1\" },\n"
+"  { \"command\": \"QuantizeTo1_2\", \"key\": \"Control + 2\" },\n"
+"  { \"command\": \"QuantizeTo1_4\", \"key\": \"Control + 3\" },\n"
+"  { \"command\": \"QuantizeTo1_8\", \"key\": \"Control + 4\" },\n"
+"  { \"command\": \"QuantizeTo1_16\", \"key\": \"Control + 5\" },\n"
+"  { \"command\": \"QuantizeTo1_32\", \"key\": \"Control + 6\" },\n"
 "\n"
-"      // Delete\n"
-"      { \"command\": \"DeleteEvents\", \"key\": \"X\" },\n"
-"      { \"command\": \"DeleteEvents\", \"key\": \"Delete\" },\n"
-"      { \"command\": \"DeleteEvents\", \"key\": \"Backspace\" },\n"
+"  // Edit modes\n"
+"  { \"command\": \"EditModeDefault\", \"key\": \"1\" },\n"
+"  { \"command\": \"EditModeDraw\", \"key\": \"2\" },\n"
+"  { \"command\": \"EditModeKnife\", \"key\": \"3\" },\n"
 "\n"
-"      // Paste\n"
-"      { \"command\": \"PasteEvents\", \"key\": \"Command + V\" },\n"
-"      { \"command\": \"PasteEvents\", \"key\": \"Control + V\" },\n"
-"      { \"command\": \"PasteEvents\", \"key\": \"Shift + Insert\" },\n"
+"  // Version control\n"
+"  { \"command\": \"VersionControlToggleQuickStash\", \"key\": \"Shift + Backspace\" },\n"
 "\n"
-"      // Playback/record control\n"
-"      { \"command\": \"TransportStop\", \"key\": \"Stop\" },\n"
-"      { \"command\": \"TransportStop\", \"key\": \"Escape\" },\n"
-"      { \"command\": \"TransportPlaybackStart\", \"key\": \"Play\" },\n"
-"      { \"command\": \"TransportPlaybackStart\", \"key\": \"Return\" },\n"
-"      { \"command\": \"TransportRecordingAwait\", \"key\": \"F12\" },\n"
-"      { \"command\": \"TransportRecordingAwait\", \"key\": \"Control + Return\" },\n"
-"      { \"command\": \"TransportRecordingAwait\", \"key\": \"Command + Return\" },\n"
-"      { \"command\": \"TransportRecordingStart\", \"key\": \"Shift + Return\" },\n"
-"      { \"command\": \"ToggleLoopOverSelection\", \"key\": \"F11\" },\n"
+"  // Panels\n"
+"  { \"command\": \"ShowArpeggiatorsPanel\", \"key\": \"A\" },\n"
+"  { \"command\": \"CreateArpeggiatorFromSelection\", \"key\": \"Shift + A\" },\n"
+"  { \"command\": \"ShowRescalePanel\", \"key\": \"R\" },\n"
+"  { \"command\": \"ShowChordPanel\", \"key\": \"C\" },\n"
 "\n"
-"      // Navigation\n"
-"      { \"command\": \"ZoomIn\", \"key\": \"Z\" },\n"
-"      { \"command\": \"ZoomOut\", \"key\": \"Shift + Z\" },\n"
-"      { \"command\": \"ZoomEntireClip\", \"key\": \"Command + Tab\" },\n"
-"      { \"command\": \"ZoomEntireClip\", \"key\": \"Control + Tab\" },\n"
-"      { \"command\": \"ToggleLockZoomLevel\", \"key\": \"Alt + Z\" },\n"
-"      { \"command\": \"TimelineJumpNext\", \"key\": \".\" },\n"
-"      { \"command\": \"TimelineJumpPrevious\", \"key\": \",\" },\n"
-"      { \"command\": \"TimelineJumpHome\", \"key\": \"Home\" },\n"
-"      { \"command\": \"TimelineJumpEnd\", \"key\": \"End\" },\n"
-"      { \"command\": \"ViewportPanLeft\", \"key\": \"Spacebar + Cursor Left\" },\n"
-"      { \"command\": \"ViewportPanRight\", \"key\": \"Spacebar + Cursor Right\" },\n"
-"      { \"command\": \"ViewportPanUp\", \"key\": \"Spacebar + Cursor Up\" },\n"
-"      { \"command\": \"ViewportPanDown\", \"key\": \"Spacebar + Cursor Down\" },\n"
-"      { \"command\": \"ViewportPanLeft\", \"key\": \"Spacebar + Numpad 4\" },\n"
-"      { \"command\": \"ViewportPanRight\", \"key\": \"Spacebar + Numpad 6\" },\n"
-"      { \"command\": \"ViewportPanUp\", \"key\": \"Spacebar + Numpad 8\" },\n"
-"      { \"command\": \"ViewportPanDown\", \"key\": \"Spacebar + Numpad 2\" },\n"
-"      { \"command\": \"ViewportPanLeft\", \"key\": \"Spacebar + H\" },\n"
-"      { \"command\": \"ViewportPanRight\", \"key\": \"Spacebar + L\" },\n"
-"      { \"command\": \"ViewportPanUp\", \"key\": \"Spacebar + K\" },\n"
-"      { \"command\": \"ViewportPanDown\", \"key\": \"Spacebar + J\" },\n"
-"      { \"command\": \"ViewportPanLeft\", \"key\": \"Control + H\" },\n"
-"      { \"command\": \"ViewportPanRight\", \"key\": \"Control + L\" },\n"
-"      { \"command\": \"ViewportPanUp\", \"key\": \"Control + K\" },\n"
-"      { \"command\": \"ViewportPanDown\", \"key\": \"Control + J\" },\n"
+"  // Other toggles\n"
+"  { \"command\": \"ToggleNoteNameGuides\", \"key\": \"G\" },\n"
+"  { \"command\": \"ToggleBottomMiniMap\", \"key\": \"B\" },\n"
+"  { \"command\": \"ToggleVolumePanel\", \"key\": \"V\" },\n"
+"  { \"command\": \"ToggleMetronome\", \"key\": \"Control + M\" },\n"
+"  { \"command\": \"ToggleMetronome\", \"key\": \"Command + M\" },\n"
 "\n"
-"      // Keyboard control\n"
-"      { \"command\": \"CursorMoveLeft\", \"key\": \"H\" },\n"
-"      { \"command\": \"CursorMoveRight\", \"key\": \"L\" },\n"
-"      { \"command\": \"CursorMoveUp\", \"key\": \"K\" },\n"
-"      { \"command\": \"CursorMoveDown\", \"key\": \"J\" },\n"
-"      { \"command\": \"CursorMoveLeft\", \"key\": \"Numpad 4\" },\n"
-"      { \"command\": \"CursorMoveRight\", \"key\": \"Numpad 6\" },\n"
-"      { \"command\": \"CursorMoveUp\", \"key\": \"Numpad 8\" },\n"
-"      { \"command\": \"CursorMoveDown\", \"key\": \"Numpad 2\" },\n"
-"      { \"command\": \"CursorSelectLeft\", \"key\": \"Shift + H\" },\n"
-"      { \"command\": \"CursorSelectRight\", \"key\": \"Shift + L\" },\n"
-"      { \"command\": \"CursorSelectUp\", \"key\": \"Shift + K\" },\n"
-"      { \"command\": \"CursorSelectDown\", \"key\": \"Shift + J\" },\n"
-"      { \"command\": \"CursorSelectLeft\", \"key\": \"Shift + Numpad 4\" },\n"
-"      { \"command\": \"CursorSelectRight\", \"key\": \"Shift + Numpad 6\" },\n"
-"      { \"command\": \"CursorSelectUp\", \"key\": \"Shift + Numpad 8\" },\n"
-"      { \"command\": \"CursorSelectDown\", \"key\": \"Shift + Numpad 2\" },\n"
-"      { \"command\": \"CursorEditHarmonicContext\", \"key\": \"F9\" },\n"
-"      { \"command\": \"CursorEditTimeContext\", \"key\": \"Alt + F9\" },\n"
-"      { \"command\": \"CursorInteract\", \"key\": \"I\" },\n"
+"  // Various\n"
+"  { \"command\": \"DuplicateTrack\", \"key\": \"F5\" },\n"
+"  { \"command\": \"SwitchToClipInViewport\", \"key\": \"F3\" },\n"
+"  { \"command\": \"EditCurrentInstrument\", \"key\": \"F4\" }\n"
+"  // ANCHOR_END: PianoRoll\n"
+"  ],\n"
+"  \"keyDown\": [\n"
+"  { \"command\": \"StartDragViewport\", \"key\": \"Spacebar\" }\n"
+"  ],\n"
+"  \"keyUp\": [\n"
+"  { \"command\": \"EndDragViewport\", \"key\": \"Spacebar\" }\n"
+"  ]\n"
+"},\n"
+"{\n"
+"  \"receiver\": \"ChordTool\",\n"
+"  \"keyPress\": [\n"
+"  // ANCHOR: ChordTool\n"
+"  { \"command\": \"ChordToolDismissApply\", \"key\": \"Return\" },\n"
+"  { \"command\": \"ChordToolDismissCancel\", \"key\": \"Escape\" },\n"
+"  { \"command\": \"ChordToolRootKeyUp\", \"key\": \"Cursor Up\" },\n"
+"  { \"command\": \"ChordToolRootKeyDown\", \"key\": \"Cursor Down\" },\n"
+"  { \"command\": \"ChordToolBeatShiftLeft\", \"key\": \"Cursor Left\" },\n"
+"  { \"command\": \"ChordToolBeatShiftRight\", \"key\": \"Cursor Right\" },\n"
+"  { \"command\": \"ChordToolRootKeyUp\", \"key\": \"K\" },\n"
+"  { \"command\": \"ChordToolRootKeyDown\", \"key\": \"J\" },\n"
+"  { \"command\": \"ChordToolBeatShiftLeft\", \"key\": \"H\" },\n"
+"  { \"command\": \"ChordToolBeatShiftRight\", \"key\": \"L\" },\n"
+"  { \"command\": \"ChordToolNextPreset\", \"key\": \".\" },\n"
+"  { \"command\": \"ChordToolPreviousPreset\", \"key\": \",\" },\n"
+"  { \"command\": \"ChordToolNextPreset\", \"key\": \"Page Down\" },\n"
+"  { \"command\": \"ChordToolPreviousPreset\", \"key\": \"Page Up\" },\n"
+"  { \"command\": \"ChordToolPreset1\", \"key\": \"1\" },\n"
+"  { \"command\": \"ChordToolPreset2\", \"key\": \"2\" },\n"
+"  { \"command\": \"ChordToolPreset3\", \"key\": \"3\" },\n"
+"  { \"command\": \"ChordToolPreset4\", \"key\": \"4\" },\n"
+"  { \"command\": \"ChordToolPreset5\", \"key\": \"5\" },\n"
+"  { \"command\": \"ChordToolPreset6\", \"key\": \"6\" },\n"
+"  { \"command\": \"ChordToolPreset7\", \"key\": \"7\" },\n"
+"  { \"command\": \"ChordToolPreset8\", \"key\": \"8\" },\n"
+"  { \"command\": \"ChordToolPreset9\", \"key\": \"9\" },\n"
+"  { \"command\": \"ChordToolPreset10\", \"key\": \"0\" },\n"
+"  { \"command\": \"ChordToolPreset11\", \"key\": \"-\" },\n"
+"  { \"command\": \"ChordToolPreset12\", \"key\": \"=\" },\n"
+"  { \"command\": \"ChordToolPreset1\", \"key\": \"Numpad 1\" },\n"
+"  { \"command\": \"ChordToolPreset2\", \"key\": \"Numpad 2\" },\n"
+"  { \"command\": \"ChordToolPreset3\", \"key\": \"Numpad 3\" },\n"
+"  { \"command\": \"ChordToolPreset4\", \"key\": \"Numpad 4\" },\n"
+"  { \"command\": \"ChordToolPreset5\", \"key\": \"Numpad 5\" },\n"
+"  { \"command\": \"ChordToolPreset6\", \"key\": \"Numpad 6\" },\n"
+"  { \"command\": \"ChordToolPreset7\", \"key\": \"Numpad 7\" },\n"
+"  { \"command\": \"ChordToolPreset8\", \"key\": \"Numpad 8\" },\n"
+"  { \"command\": \"ChordToolPreset9\", \"key\": \"Numpad 9\" },\n"
+"  { \"command\": \"ChordToolPreset10\", \"key\": \"Numpad 0\" }\n"
+"  // ANCHOR_END: ChordTool\n"
+"  ]\n"
+"},\n"
+"{\n"
+"  \"receiver\": \"PatternRoll\",\n"
+"  \"keyPress\": [\n"
+"  // ANCHOR: PatternRoll\n"
+"  // Undo/redo\n"
+"  { \"command\": \"Undo\", \"key\": \"Command + Z\" },\n"
+"  { \"command\": \"Undo\", \"key\": \"Control + Z\" },\n"
+"  { \"command\": \"Redo\", \"key\": \"Command + Shift + Z\" },\n"
+"  { \"command\": \"Redo\", \"key\": \"Control + Shift + Z\" },\n"
+"  { \"command\": \"Redo\", \"key\": \"Command + Y\" },\n"
+"  { \"command\": \"Redo\", \"key\": \"Control + Y\" },\n"
 "\n"
-"      // Selection\n"
-"      { \"command\": \"SelectAllEvents\", \"key\": \"Command + A\" },\n"
-"      { \"command\": \"SelectAllEvents\", \"key\": \"Control + A\" },\n"
+"  // Delete clips\n"
+"  { \"command\": \"DeleteClips\", \"key\": \"X\" },\n"
+"  { \"command\": \"DeleteClips\", \"key\": \"Delete\" },\n"
+"  { \"command\": \"DeleteClips\", \"key\": \"Backspace\" },\n"
 "\n"
-"      // Edit selection\n"
-"      { \"command\": \"ToggleMuteClips\", \"key\": \"M\" },\n"
-"      { \"command\": \"ToggleSoloClips\", \"key\": \"S\" },\n"
-"      { \"command\": \"ToggleMuteModifiers\", \"key\": \"Alt + M\" },\n"
-"      { \"command\": \"RenameTrack\", \"key\": \"F2\" },\n"
-"      { \"command\": \"SetTrackTimeSignature\", \"key\": \"Alt + F2\" },\n"
-"      { \"command\": \"TempoUp1Bpm\", \"key\": \"Shift + +\" },\n"
-"      { \"command\": \"TempoDown1Bpm\", \"key\": \"Shift + -\" },\n"
-"      { \"command\": \"BeatShiftLeft\", \"key\": \"Cursor Left\" },\n"
-"      { \"command\": \"BeatShiftRight\", \"key\": \"Cursor Right\" },\n"
-"      { \"command\": \"LengthDecrease\", \"key\": \"Shift + Cursor Left\" },\n"
-"      { \"command\": \"LengthIncrease\", \"key\": \"Shift + Cursor Right\" },\n"
-"      { \"command\": \"TransposeUp\", \"key\": \"Cursor Up\" },\n"
-"      { \"command\": \"TransposeDown\", \"key\": \"Cursor Down\" },\n"
-"      { \"command\": \"TransposeScaleKeyUp\", \"key\": \"Alt + Cursor Up\" },\n"
-"      { \"command\": \"TransposeScaleKeyDown\", \"key\": \"Alt + Cursor Down\" },\n"
-"      { \"command\": \"TransposeOctaveUp\", \"key\": \"Shift + Cursor Up\" },\n"
-"      { \"command\": \"TransposeOctaveDown\", \"key\": \"Shift + Cursor Down\" },\n"
-"      { \"command\": \"TransposeFifthUp\", \"key\": \"Shift + Alt + Cursor Up\" },\n"
-"      { \"command\": \"TransposeFifthDown\", \"key\": \"Shift + Alt + Cursor Down\" },\n"
-"      { \"command\": \"MakeStaccato\", \"key\": \"Alt + S\" },\n"
-"      { \"command\": \"MakeStaccatissimo\", \"key\": \"Shift + Alt + S\" },\n"
-"      { \"command\": \"MakeLegato\", \"key\": \"Alt + L\" },\n"
+"  // Playback control\n"
+"  { \"command\": \"TransportStop\", \"key\": \"Stop\" },\n"
+"  { \"command\": \"TransportStop\", \"key\": \"Escape\" },\n"
+"  { \"command\": \"TransportPlaybackStart\", \"key\": \"Play\" },\n"
+"  { \"command\": \"TransportPlaybackStart\", \"key\": \"Return\" },\n"
+"  { \"command\": \"TransportRecordingStart\", \"key\": \"Shift + Return\" },\n"
+"  { \"command\": \"TransportRecordingAwait\", \"key\": \"Control + Return\" },\n"
+"  { \"command\": \"TransportRecordingAwait\", \"key\": \"Command + Return\" },\n"
+"  { \"command\": \"TransportRecordingAwait\", \"key\": \"F12\" },\n"
+"  { \"command\": \"ToggleLoopOverSelection\", \"key\": \"F11\" },\n"
 "\n"
-"      // Refactor selection\n"
-"      { \"command\": \"Retrograde\", \"key\": \"Alt + R\" },\n"
-"      { \"command\": \"MelodicInversion\", \"key\": \"Alt + I\" },\n"
-"      { \"command\": \"CleanupOverlaps\", \"key\": \"Alt + O\" },\n"
-"      { \"command\": \"AlignToScale\", \"key\": \"Alt + A\" },\n"
-"      { \"command\": \"NotesVolumeUp\", \"key\": \"+\" },\n"
-"      { \"command\": \"NotesVolumeDown\", \"key\": \"-\" },\n"
-"      { \"command\": \"NotesVolumeRandom\", \"key\": \"Alt + +\" },\n"
-"      { \"command\": \"NotesVolumeFadeOut\", \"key\": \"Alt + -\" },\n"
-"      { \"command\": \"InvertChordUp\", \"key\": \"Control + Cursor Up\" },\n"
-"      { \"command\": \"InvertChordUp\", \"key\": \"Command + Cursor Up\" },\n"
-"      { \"command\": \"InvertChordDown\", \"key\": \"Control + Cursor Down\" },\n"
-"      { \"command\": \"InvertChordDown\", \"key\": \"Command + Cursor Down\" },\n"
+"  // Navigation\n"
+"  { \"command\": \"ZoomIn\", \"key\": \"Z\" },\n"
+"  { \"command\": \"ZoomOut\", \"key\": \"Shift + Z\" },\n"
+"  { \"command\": \"ZoomEntireClip\", \"key\": \"Command + Tab\" },\n"
+"  { \"command\": \"ZoomEntireClip\", \"key\": \"Control + Tab\" },\n"
+"  { \"command\": \"ToggleLockZoomLevel\", \"key\": \"Alt + Z\" },\n"
+"  { \"command\": \"TimelineJumpNext\", \"key\": \".\" },\n"
+"  { \"command\": \"TimelineJumpPrevious\", \"key\": \",\" },\n"
+"  { \"command\": \"TimelineJumpHome\", \"key\": \"Home\" },\n"
+"  { \"command\": \"TimelineJumpEnd\", \"key\": \"End\" },\n"
+"  { \"command\": \"ViewportPanLeft\", \"key\": \"Spacebar + Cursor Left\" },\n"
+"  { \"command\": \"ViewportPanRight\", \"key\": \"Spacebar + Cursor Right\" },\n"
+"  { \"command\": \"ViewportPanUp\", \"key\": \"Spacebar + Cursor Up\" },\n"
+"  { \"command\": \"ViewportPanDown\", \"key\": \"Spacebar + Cursor Down\" },\n"
+"  { \"command\": \"ViewportPanLeft\", \"key\": \"Spacebar + Numpad 4\" },\n"
+"  { \"command\": \"ViewportPanRight\", \"key\": \"Spacebar + Numpad 6\" },\n"
+"  { \"command\": \"ViewportPanUp\", \"key\": \"Spacebar + Numpad 8\" },\n"
+"  { \"command\": \"ViewportPanDown\", \"key\": \"Spacebar + Numpad 2\" },\n"
+"  { \"command\": \"ViewportPanLeft\", \"key\": \"Spacebar + H\" },\n"
+"  { \"command\": \"ViewportPanRight\", \"key\": \"Spacebar + L\" },\n"
+"  { \"command\": \"ViewportPanUp\", \"key\": \"Spacebar + K\" },\n"
+"  { \"command\": \"ViewportPanDown\", \"key\": \"Spacebar + J\" },\n"
+"  { \"command\": \"ViewportPanLeft\", \"key\": \"Control + H\" },\n"
+"  { \"command\": \"ViewportPanRight\", \"key\": \"Control + L\" },\n"
+"  { \"command\": \"ViewportPanUp\", \"key\": \"Control + K\" },\n"
+"  { \"command\": \"ViewportPanDown\", \"key\": \"Control + J\" },\n"
 "\n"
-"      // Multiplets\n"
-"      { \"command\": \"Tuplet1\", \"key\": \"Alt + 1\" },\n"
-"      { \"command\": \"Tuplet2\", \"key\": \"Alt + 2\" },\n"
-"      { \"command\": \"Tuplet3\", \"key\": \"Alt + 3\" },\n"
-"      { \"command\": \"Tuplet4\", \"key\": \"Alt + 4\" },\n"
-"      { \"command\": \"Tuplet5\", \"key\": \"Alt + 5\" },\n"
-"      { \"command\": \"Tuplet6\", \"key\": \"Alt + 6\" },\n"
-"      { \"command\": \"Tuplet7\", \"key\": \"Alt + 7\" },\n"
-"      { \"command\": \"Tuplet8\", \"key\": \"Alt + 8\" },\n"
-"      { \"command\": \"Tuplet9\", \"key\": \"Alt + 9\" },\n"
+"  // Keyboard control\n"
+"  { \"command\": \"CursorMoveLeft\", \"key\": \"H\" },\n"
+"  { \"command\": \"CursorMoveRight\", \"key\": \"L\" },\n"
+"  { \"command\": \"CursorMoveUp\", \"key\": \"K\" },\n"
+"  { \"command\": \"CursorMoveDown\", \"key\": \"J\" },\n"
+"  { \"command\": \"CursorMoveLeft\", \"key\": \"Numpad 4\" },\n"
+"  { \"command\": \"CursorMoveRight\", \"key\": \"Numpad 6\" },\n"
+"  { \"command\": \"CursorMoveUp\", \"key\": \"Numpad 8\" },\n"
+"  { \"command\": \"CursorMoveDown\", \"key\": \"Numpad 2\" },\n"
+"  { \"command\": \"CursorSelectLeft\", \"key\": \"Shift + H\" },\n"
+"  { \"command\": \"CursorSelectRight\", \"key\": \"Shift + L\" },\n"
+"  { \"command\": \"CursorSelectUp\", \"key\": \"Shift + K\" },\n"
+"  { \"command\": \"CursorSelectDown\", \"key\": \"Shift + J\" },\n"
+"  { \"command\": \"CursorSelectLeft\", \"key\": \"Shift + Numpad 4\" },\n"
+"  { \"command\": \"CursorSelectRight\", \"key\": \"Shift + Numpad 6\" },\n"
+"  { \"command\": \"CursorSelectUp\", \"key\": \"Shift + Numpad 8\" },\n"
+"  { \"command\": \"CursorSelectDown\", \"key\": \"Shift + Numpad 2\" },\n"
+"  { \"command\": \"CursorEditHarmonicContext\", \"key\": \"F9\" },\n"
+"  { \"command\": \"CursorEditTimeContext\", \"key\": \"Alt + F9\" },\n"
+"  { \"command\": \"CursorInteract\", \"key\": \"I\" },\n"
 "\n"
-"      // Quantization\n"
-"      { \"command\": \"QuantizeTo1_1\", \"key\": \"Control + 1\" },\n"
-"      { \"command\": \"QuantizeTo1_2\", \"key\": \"Control + 2\" },\n"
-"      { \"command\": \"QuantizeTo1_4\", \"key\": \"Control + 3\" },\n"
-"      { \"command\": \"QuantizeTo1_8\", \"key\": \"Control + 4\" },\n"
-"      { \"command\": \"QuantizeTo1_16\", \"key\": \"Control + 5\" },\n"
-"      { \"command\": \"QuantizeTo1_32\", \"key\": \"Control + 6\" },\n"
+"  // Selection\n"
+"  { \"command\": \"SelectAllClips\", \"key\": \"Command + A\" },\n"
+"  { \"command\": \"SelectAllClips\", \"key\": \"Control + A\" },\n"
 "\n"
-"      // Edit modes\n"
-"      { \"command\": \"EditModeDefault\", \"key\": \"1\" },\n"
-"      { \"command\": \"EditModeDraw\", \"key\": \"2\" },\n"
-"      { \"command\": \"EditModeKnife\", \"key\": \"3\" },\n"
+"  // Quantization\n"
+"  { \"command\": \"QuantizeTo1_1\", \"key\": \"Control + 1\" },\n"
+"  { \"command\": \"QuantizeTo1_2\", \"key\": \"Control + 2\" },\n"
+"  { \"command\": \"QuantizeTo1_4\", \"key\": \"Control + 3\" },\n"
+"  { \"command\": \"QuantizeTo1_8\", \"key\": \"Control + 4\" },\n"
+"  { \"command\": \"QuantizeTo1_16\", \"key\": \"Control + 5\" },\n"
+"  { \"command\": \"QuantizeTo1_32\", \"key\": \"Control + 6\" },\n"
 "\n"
-"      // Version control\n"
-"      { \"command\": \"VersionControlToggleQuickStash\", \"key\": \"Shift + Backspace\" },\n"
+"  // Edit modes\n"
+"  { \"command\": \"EditModeDefault\", \"key\": \"1\" },\n"
+"  { \"command\": \"EditModeDraw\", \"key\": \"2\" },\n"
+"  { \"command\": \"EditModeKnife\", \"key\": \"3\" },\n"
 "\n"
-"      // Panels\n"
-"      { \"command\": \"ShowArpeggiatorsPanel\", \"key\": \"A\" },\n"
-"      { \"command\": \"CreateArpeggiatorFromSelection\", \"key\": \"Shift + A\" },\n"
-"      { \"command\": \"ShowRescalePanel\", \"key\": \"R\" },\n"
-"      { \"command\": \"ShowChordPanel\", \"key\": \"C\" },\n"
+"  // Grouping\n"
+"  { \"command\": \"PatternsGroupByName\", \"key\": \"Q\" },\n"
+"  { \"command\": \"PatternsGroupByColour\", \"key\": \"W\" },\n"
+"  { \"command\": \"PatternsGroupByInstrument\", \"key\": \"E\" },\n"
+"  { \"command\": \"PatternsGroupById\", \"key\": \"R\" },\n"
 "\n"
-"      // Other toggles\n"
-"      { \"command\": \"ToggleNoteNameGuides\", \"key\": \"G\" },\n"
-"      { \"command\": \"ToggleBottomMiniMap\", \"key\": \"B\" },\n"
-"      { \"command\": \"ToggleVolumePanel\", \"key\": \"V\" },\n"
-"      { \"command\": \"ToggleMetronome\", \"key\": \"Control + M\" },\n"
-"      { \"command\": \"ToggleMetronome\", \"key\": \"Command + M\" },\n"
+"  // Version control\n"
+"  { \"command\": \"VersionControlToggleQuickStash\", \"key\": \"Shift + Backspace\" },\n"
 "\n"
-"      // Various\n"
-"      { \"command\": \"DuplicateTrack\", \"key\": \"F5\" },\n"
-"      { \"command\": \"SwitchToClipInViewport\", \"key\": \"F3\" },\n"
-"      { \"command\": \"EditCurrentInstrument\", \"key\": \"F4\" }\n"
-"    ],\n"
-"    \"keyDown\": [\n"
-"      { \"command\": \"StartDragViewport\", \"key\": \"Spacebar\" }\n"
-"    ],\n"
-"    \"keyUp\": [\n"
-"      { \"command\": \"EndDragViewport\", \"key\": \"Spacebar\" }\n"
-"    ]\n"
-"  }, // ANCHOR_END: PianoRoll\n"
-"  {  // ANCHOR: ChordTool\n"
-"    \"receiver\": \"ChordTool\",\n"
-"    \"keyPress\": [\n"
-"      { \"command\": \"ChordToolDismissApply\", \"key\": \"Return\" },\n"
-"      { \"command\": \"ChordToolDismissCancel\", \"key\": \"Escape\" },\n"
-"      { \"command\": \"ChordToolRootKeyUp\", \"key\": \"Cursor Up\" },\n"
-"      { \"command\": \"ChordToolRootKeyDown\", \"key\": \"Cursor Down\" },\n"
-"      { \"command\": \"ChordToolBeatShiftLeft\", \"key\": \"Cursor Left\" },\n"
-"      { \"command\": \"ChordToolBeatShiftRight\", \"key\": \"Cursor Right\" },\n"
-"      { \"command\": \"ChordToolRootKeyUp\", \"key\": \"K\" },\n"
-"      { \"command\": \"ChordToolRootKeyDown\", \"key\": \"J\" },\n"
-"      { \"command\": \"ChordToolBeatShiftLeft\", \"key\": \"H\" },\n"
-"      { \"command\": \"ChordToolBeatShiftRight\", \"key\": \"L\" },\n"
-"      { \"command\": \"ChordToolNextPreset\", \"key\": \".\" },\n"
-"      { \"command\": \"ChordToolPreviousPreset\", \"key\": \",\" },\n"
-"      { \"command\": \"ChordToolNextPreset\", \"key\": \"Page Down\" },\n"
-"      { \"command\": \"ChordToolPreviousPreset\", \"key\": \"Page Up\" },\n"
-"      { \"command\": \"ChordToolPreset1\", \"key\": \"1\" },\n"
-"      { \"command\": \"ChordToolPreset2\", \"key\": \"2\" },\n"
-"      { \"command\": \"ChordToolPreset3\", \"key\": \"3\" },\n"
-"      { \"command\": \"ChordToolPreset4\", \"key\": \"4\" },\n"
-"      { \"command\": \"ChordToolPreset5\", \"key\": \"5\" },\n"
-"      { \"command\": \"ChordToolPreset6\", \"key\": \"6\" },\n"
-"      { \"command\": \"ChordToolPreset7\", \"key\": \"7\" },\n"
-"      { \"command\": \"ChordToolPreset8\", \"key\": \"8\" },\n"
-"      { \"command\": \"ChordToolPreset9\", \"key\": \"9\" },\n"
-"      { \"command\": \"ChordToolPreset10\", \"key\": \"0\" },\n"
-"      { \"command\": \"ChordToolPreset11\", \"key\": \"-\" },\n"
-"      { \"command\": \"ChordToolPreset12\", \"key\": \"=\" },\n"
-"      { \"command\": \"ChordToolPreset1\", \"key\": \"Numpad 1\" },\n"
-"      { \"command\": \"ChordToolPreset2\", \"key\": \"Numpad 2\" },\n"
-"      { \"command\": \"ChordToolPreset3\", \"key\": \"Numpad 3\" },\n"
-"      { \"command\": \"ChordToolPreset4\", \"key\": \"Numpad 4\" },\n"
-"      { \"command\": \"ChordToolPreset5\", \"key\": \"Numpad 5\" },\n"
-"      { \"command\": \"ChordToolPreset6\", \"key\": \"Numpad 6\" },\n"
-"      { \"command\": \"ChordToolPreset7\", \"key\": \"Numpad 7\" },\n"
-"      { \"command\": \"ChordToolPreset8\", \"key\": \"Numpad 8\" },\n"
-"      { \"command\": \"ChordToolPreset9\", \"key\": \"Numpad 9\" },\n"
-"      { \"command\": \"ChordToolPreset10\", \"key\": \"Numpad 0\" }\n"
-"    ]\n"
-"  }, // ANCHOR_END: ChordTool\n"
-"  {  // ANCHOR: PatternRoll\n"
-"    \"receiver\": \"PatternRoll\",\n"
-"    \"keyPress\": [\n"
+"  // Edit selection\n"
+"  { \"command\": \"ToggleMuteClips\", \"key\": \"M\" },\n"
+"  { \"command\": \"ToggleSoloClips\", \"key\": \"S\" },\n"
+"  { \"command\": \"ToggleMuteModifiers\", \"key\": \"Alt + M\" },\n"
+"  { \"command\": \"RenameTrack\", \"key\": \"F2\" },\n"
+"  { \"command\": \"SetTrackTimeSignature\", \"key\": \"Alt + F2\" },\n"
+"  { \"command\": \"TempoUp1Bpm\", \"key\": \"Shift + +\" },\n"
+"  { \"command\": \"TempoDown1Bpm\", \"key\": \"Shift + -\" },\n"
+"  { \"command\": \"ClipVolumeUp\", \"key\": \"+\" },\n"
+"  { \"command\": \"ClipVolumeDown\", \"key\": \"-\" },\n"
+"  { \"command\": \"ClipTransposeUp\", \"key\": \"Cursor Up\" },\n"
+"  { \"command\": \"ClipTransposeDown\", \"key\": \"Cursor Down\" },\n"
+"  { \"command\": \"ClipTransposeOctaveUp\", \"key\": \"Shift + Cursor Up\" },\n"
+"  { \"command\": \"ClipTransposeOctaveDown\", \"key\": \"Shift + Cursor Down\" },\n"
+"  { \"command\": \"ClipTransposeFifthUp\", \"key\": \"Shift + Alt + Cursor Up\" },\n"
+"  { \"command\": \"ClipTransposeFifthDown\", \"key\": \"Shift + Alt + Cursor Down\" },\n"
+"  { \"command\": \"BeatShiftLeft\", \"key\": \"Cursor Left\" },\n"
+"  { \"command\": \"BeatShiftRight\", \"key\": \"Cursor Right\" },\n"
+"  { \"command\": \"Retrograde\", \"key\": \"Alt + R\" },\n"
 "\n"
-"      // Undo/redo\n"
-"      { \"command\": \"Undo\", \"key\": \"Command + Z\" },\n"
-"      { \"command\": \"Undo\", \"key\": \"Control + Z\" },\n"
-"      { \"command\": \"Redo\", \"key\": \"Command + Shift + Z\" },\n"
-"      { \"command\": \"Redo\", \"key\": \"Control + Shift + Z\" },\n"
-"      { \"command\": \"Redo\", \"key\": \"Command + Y\" },\n"
-"      { \"command\": \"Redo\", \"key\": \"Control + Y\" },\n"
-"\n"
-"      // Delete clips\n"
-"      { \"command\": \"DeleteClips\", \"key\": \"X\" },\n"
-"      { \"command\": \"DeleteClips\", \"key\": \"Delete\" },\n"
-"      { \"command\": \"DeleteClips\", \"key\": \"Backspace\" },\n"
-"\n"
-"      // Playback control\n"
-"      { \"command\": \"TransportStop\", \"key\": \"Stop\" },\n"
-"      { \"command\": \"TransportStop\", \"key\": \"Escape\" },\n"
-"      { \"command\": \"TransportPlaybackStart\", \"key\": \"Play\" },\n"
-"      { \"command\": \"TransportPlaybackStart\", \"key\": \"Return\" },\n"
-"      { \"command\": \"TransportRecordingStart\", \"key\": \"Shift + Return\" },\n"
-"      { \"command\": \"TransportRecordingAwait\", \"key\": \"Control + Return\" },\n"
-"      { \"command\": \"TransportRecordingAwait\", \"key\": \"Command + Return\" },\n"
-"      { \"command\": \"TransportRecordingAwait\", \"key\": \"F12\" },\n"
-"      { \"command\": \"ToggleLoopOverSelection\", \"key\": \"F11\" },\n"
-"\n"
-"      // Navigation\n"
-"      { \"command\": \"ZoomIn\", \"key\": \"Z\" },\n"
-"      { \"command\": \"ZoomOut\", \"key\": \"Shift + Z\" },\n"
-"      { \"command\": \"ZoomEntireClip\", \"key\": \"Command + Tab\" },\n"
-"      { \"command\": \"ZoomEntireClip\", \"key\": \"Control + Tab\" },\n"
-"      { \"command\": \"ToggleLockZoomLevel\", \"key\": \"Alt + Z\" },\n"
-"      { \"command\": \"TimelineJumpNext\", \"key\": \".\" },\n"
-"      { \"command\": \"TimelineJumpPrevious\", \"key\": \",\" },\n"
-"      { \"command\": \"TimelineJumpHome\", \"key\": \"Home\" },\n"
-"      { \"command\": \"TimelineJumpEnd\", \"key\": \"End\" },\n"
-"      { \"command\": \"ViewportPanLeft\", \"key\": \"Spacebar + Cursor Left\" },\n"
-"      { \"command\": \"ViewportPanRight\", \"key\": \"Spacebar + Cursor Right\" },\n"
-"      { \"command\": \"ViewportPanUp\", \"key\": \"Spacebar + Cursor Up\" },\n"
-"      { \"command\": \"ViewportPanDown\", \"key\": \"Spacebar + Cursor Down\" },\n"
-"      { \"command\": \"ViewportPanLeft\", \"key\": \"Spacebar + Numpad 4\" },\n"
-"      { \"command\": \"ViewportPanRight\", \"key\": \"Spacebar + Numpad 6\" },\n"
-"      { \"command\": \"ViewportPanUp\", \"key\": \"Spacebar + Numpad 8\" },\n"
-"      { \"command\": \"ViewportPanDown\", \"key\": \"Spacebar + Numpad 2\" },\n"
-"      { \"command\": \"ViewportPanLeft\", \"key\": \"Spacebar + H\" },\n"
-"      { \"command\": \"ViewportPanRight\", \"key\": \"Spacebar + L\" },\n"
-"      { \"command\": \"ViewportPanUp\", \"key\": \"Spacebar + K\" },\n"
-"      { \"command\": \"ViewportPanDown\", \"key\": \"Spacebar + J\" },\n"
-"      { \"command\": \"ViewportPanLeft\", \"key\": \"Control + H\" },\n"
-"      { \"command\": \"ViewportPanRight\", \"key\": \"Control + L\" },\n"
-"      { \"command\": \"ViewportPanUp\", \"key\": \"Control + K\" },\n"
-"      { \"command\": \"ViewportPanDown\", \"key\": \"Control + J\" },\n"
-"\n"
-"      // Keyboard control\n"
-"      { \"command\": \"CursorMoveLeft\", \"key\": \"H\" },\n"
-"      { \"command\": \"CursorMoveRight\", \"key\": \"L\" },\n"
-"      { \"command\": \"CursorMoveUp\", \"key\": \"K\" },\n"
-"      { \"command\": \"CursorMoveDown\", \"key\": \"J\" },\n"
-"      { \"command\": \"CursorMoveLeft\", \"key\": \"Numpad 4\" },\n"
-"      { \"command\": \"CursorMoveRight\", \"key\": \"Numpad 6\" },\n"
-"      { \"command\": \"CursorMoveUp\", \"key\": \"Numpad 8\" },\n"
-"      { \"command\": \"CursorMoveDown\", \"key\": \"Numpad 2\" },\n"
-"      { \"command\": \"CursorSelectLeft\", \"key\": \"Shift + H\" },\n"
-"      { \"command\": \"CursorSelectRight\", \"key\": \"Shift + L\" },\n"
-"      { \"command\": \"CursorSelectUp\", \"key\": \"Shift + K\" },\n"
-"      { \"command\": \"CursorSelectDown\", \"key\": \"Shift + J\" },\n"
-"      { \"command\": \"CursorSelectLeft\", \"key\": \"Shift + Numpad 4\" },\n"
-"      { \"command\": \"CursorSelectRight\", \"key\": \"Shift + Numpad 6\" },\n"
-"      { \"command\": \"CursorSelectUp\", \"key\": \"Shift + Numpad 8\" },\n"
-"      { \"command\": \"CursorSelectDown\", \"key\": \"Shift + Numpad 2\" },\n"
-"      { \"command\": \"CursorEditHarmonicContext\", \"key\": \"F9\" },\n"
-"      { \"command\": \"CursorEditTimeContext\", \"key\": \"Alt + F9\" },\n"
-"      { \"command\": \"CursorInteract\", \"key\": \"I\" },\n"
-"\n"
-"      // Selection\n"
-"      { \"command\": \"SelectAllClips\", \"key\": \"Command + A\" },\n"
-"      { \"command\": \"SelectAllClips\", \"key\": \"Control + A\" },\n"
-"\n"
-"      // Quantization\n"
-"      { \"command\": \"QuantizeTo1_1\", \"key\": \"Control + 1\" },\n"
-"      { \"command\": \"QuantizeTo1_2\", \"key\": \"Control + 2\" },\n"
-"      { \"command\": \"QuantizeTo1_4\", \"key\": \"Control + 3\" },\n"
-"      { \"command\": \"QuantizeTo1_8\", \"key\": \"Control + 4\" },\n"
-"      { \"command\": \"QuantizeTo1_16\", \"key\": \"Control + 5\" },\n"
-"      { \"command\": \"QuantizeTo1_32\", \"key\": \"Control + 6\" },\n"
-"\n"
-"      // Edit modes\n"
-"      { \"command\": \"EditModeDefault\", \"key\": \"1\" },\n"
-"      { \"command\": \"EditModeDraw\", \"key\": \"2\" },\n"
-"      { \"command\": \"EditModeKnife\", \"key\": \"3\" },\n"
-"\n"
-"      // Grouping\n"
-"      { \"command\": \"PatternsGroupByName\", \"key\": \"Q\" },\n"
-"      { \"command\": \"PatternsGroupByColour\", \"key\": \"W\" },\n"
-"      { \"command\": \"PatternsGroupByInstrument\", \"key\": \"E\" },\n"
-"      { \"command\": \"PatternsGroupById\", \"key\": \"R\" },\n"
-"\n"
-"      // Version control\n"
-"      { \"command\": \"VersionControlToggleQuickStash\", \"key\": \"Shift + Backspace\" },\n"
-"\n"
-"      // Edit selection\n"
-"      { \"command\": \"ToggleMuteClips\", \"key\": \"M\" },\n"
-"      { \"command\": \"ToggleSoloClips\", \"key\": \"S\" },\n"
-"      { \"command\": \"ToggleMuteModifiers\", \"key\": \"Alt + M\" },\n"
-"      { \"command\": \"RenameTrack\", \"key\": \"F2\" },\n"
-"      { \"command\": \"SetTrackTimeSignature\", \"key\": \"Alt + F2\" },\n"
-"      { \"command\": \"TempoUp1Bpm\", \"key\": \"Shift + +\" },\n"
-"      { \"command\": \"TempoDown1Bpm\", \"key\": \"Shift + -\" },\n"
-"      { \"command\": \"ClipVolumeUp\", \"key\": \"+\" },\n"
-"      { \"command\": \"ClipVolumeDown\", \"key\": \"-\" },\n"
-"      { \"command\": \"ClipTransposeUp\", \"key\": \"Cursor Up\" },\n"
-"      { \"command\": \"ClipTransposeDown\", \"key\": \"Cursor Down\" },\n"
-"      { \"command\": \"ClipTransposeOctaveUp\", \"key\": \"Shift + Cursor Up\" },\n"
-"      { \"command\": \"ClipTransposeOctaveDown\", \"key\": \"Shift + Cursor Down\" },\n"
-"      { \"command\": \"ClipTransposeFifthUp\", \"key\": \"Shift + Alt + Cursor Up\" },\n"
-"      { \"command\": \"ClipTransposeFifthDown\", \"key\": \"Shift + Alt + Cursor Down\" },\n"
-"      { \"command\": \"BeatShiftLeft\", \"key\": \"Cursor Left\" },\n"
-"      { \"command\": \"BeatShiftRight\", \"key\": \"Cursor Right\" },\n"
-"      { \"command\": \"Retrograde\", \"key\": \"Alt + R\" },\n"
-"\n"
-"      // Various\n"
-"      { \"command\": \"ToggleBottomMiniMap\", \"key\": \"B\" },\n"
-"      { \"command\": \"ToggleVolumePanel\", \"key\": \"V\" },\n"
-"      { \"command\": \"ToggleMetronome\", \"key\": \"Control + M\" },\n"
-"      { \"command\": \"ToggleMetronome\", \"key\": \"Command + M\" },\n"
-"      { \"command\": \"DuplicateTrack\", \"key\": \"F5\" },\n"
-"      { \"command\": \"InstanceToUniqueTrack\", \"key\": \"F6\" },\n"
-"      { \"command\": \"EditCurrentInstrument\", \"key\": \"F4\" }\n"
-"    ],\n"
-"    \"keyDown\": [\n"
-"      { \"command\": \"StartDragViewport\", \"key\": \"Spacebar\" }\n"
-"    ],\n"
-"    \"keyUp\": [\n"
-"      { \"command\": \"EndDragViewport\", \"key\": \"Spacebar\" }\n"
-"    ]\n"
-"  }, // ANCHOR_END: PatternRoll\n"
-"  {  // ANCHOR: CommandPalette\n"
-"    \"receiver\": \"CommandPalette\",\n"
-"    \"keyPress\": [\n"
-"      { \"command\": \"CommandPaletteClear\", \"key\": \"Escape\" },\n"
-"      { \"command\": \"CommandPaletteDismiss\", \"key\": \"`\" },\n"
-"      { \"command\": \"CommandPaletteDismiss\", \"key\": \"Control + P\" },\n"
-"      { \"command\": \"CommandPaletteDismiss\", \"key\": \"Command + P\" },\n"
-"      { \"command\": \"CommandPaletteDismiss\", \"key\": \"Control + G\" },\n"
-"      { \"command\": \"CommandPaletteDismiss\", \"key\": \"Command + G\" },\n"
-"      { \"command\": \"CommandPaletteCursorUp\", \"key\": \"Cursor Up\" },\n"
-"      { \"command\": \"CommandPaletteCursorDown\", \"key\": \"Cursor Down\" },\n"
-"      { \"command\": \"CommandPaletteCursorPageUp\", \"key\": \"Page Up\" },\n"
-"      { \"command\": \"CommandPaletteCursorPageDown\", \"key\": \"Page Down\" }\n"
-"    ]\n"
-"  }, // ANCHOR_END: CommandPalette\n"
-"  {  // ANCHOR: Menu\n"
-"    \"receiver\": \"Menu\",\n"
-"    \"keyPress\": [\n"
-"      { \"command\": \"MenuDismiss\", \"key\": \"Escape\" },\n"
-"      { \"command\": \"MenuDismiss\", \"key\": \"F10\" },\n"
-"      { \"command\": \"MenuDismiss\", \"key\": \"Shift + /\" },\n"
-"      { \"command\": \"MenuSelect\", \"key\": \"Return\" },\n"
-"      { \"command\": \"MenuSelect\", \"key\": \"Spacebar\" },\n"
-"      { \"command\": \"MenuSelect\", \"key\": \"I\" },\n"
-"      { \"command\": \"MenuCursorUp\", \"key\": \"Cursor Up\" },\n"
-"      { \"command\": \"MenuCursorDown\", \"key\": \"Cursor Down\" },\n"
-"      { \"command\": \"MenuCursorPageUp\", \"key\": \"Page Up\" },\n"
-"      { \"command\": \"MenuCursorPageDown\", \"key\": \"Page Down\" },\n"
-"      { \"command\": \"MenuForward\", \"key\": \"Cursor Right\" },\n"
-"      { \"command\": \"MenuBack\", \"key\": \"Cursor Left\" },\n"
-"      { \"command\": \"MenuCursorUp\", \"key\": \"K\" },\n"
-"      { \"command\": \"MenuCursorDown\", \"key\": \"J\" },\n"
-"      { \"command\": \"MenuForward\", \"key\": \"L\" },\n"
-"      { \"command\": \"MenuBack\", \"key\": \"H\" },\n"
-"      { \"command\": \"MenuBack\", \"key\": \"Backspace\" }\n"
-"    ]\n"
-"  }, // ANCHOR_END: Menu\n"
-"  {  // ANCHOR: Dialog\n"
-"    \"receiver\": \"Dialog\",\n"
-"    \"keyPress\": [\n"
-"      { \"command\": \"DialogDismissCancel\", \"key\": \"Escape\" },\n"
-"      { \"command\": \"DialogDismissApply\", \"key\": \"Return\" },\n"
-"      { \"command\": \"DialogDismissDelete\", \"key\": \"Shift + Delete\" },\n"
-"      { \"command\": \"DialogNextPreset\", \"key\": \"Page Down\" },\n"
-"      { \"command\": \"DialogPreviousPreset\", \"key\": \"Page Up\" },\n"
-"      { \"command\": \"DialogPreviewPreset\", \"key\": \"Alt + Return\" },\n"
-"      { \"command\": \"DialogPreviewPreset\", \"key\": \"Control + Return\" },\n"
-"      { \"command\": \"DialogPreviewPreset\", \"key\": \"Command + Return\" },\n"
-"      { \"command\": \"DialogPreviewPreset\", \"key\": \"Shift + Return\" },\n"
-"      { \"command\": \"DialogPreviewPreset\", \"key\": \"Play\" },\n"
-"      { \"command\": \"DialogStopPreviewPreset\", \"key\": \"Stop\" },\n"
-"      { \"command\": \"DialogShowPresetsList\", \"key\": \"Tab\" }\n"
-"    ]\n"
-"  }, // ANCHOR_END: Dialog\n"
-"  {  // ANCHOR: ComboBox\n"
-"    \"receiver\": \"ComboBox\",\n"
-"    \"keyPress\": [\n"
-"      { \"command\": \"ComboDismissCancel\", \"key\": \"Tab\" },\n"
-"      { \"command\": \"ComboDismissCancel\", \"key\": \"Escape\" },\n"
-"      { \"command\": \"ComboDismissApply\", \"key\": \"Return\" },\n"
-"      { \"command\": \"ComboCursorUp\", \"key\": \"Cursor Up\" },\n"
-"      { \"command\": \"ComboCursorDown\", \"key\": \"Cursor Down\" },\n"
-"      { \"command\": \"ComboCursorPageUp\", \"key\": \"Page Up\" },\n"
-"      { \"command\": \"ComboCursorPageDown\", \"key\": \"Page Down\" }\n"
-"    ]\n"
-"  } // ANCHOR_END: ComboBox\n"
+"  // Various\n"
+"  { \"command\": \"ToggleBottomMiniMap\", \"key\": \"B\" },\n"
+"  { \"command\": \"ToggleVolumePanel\", \"key\": \"V\" },\n"
+"  { \"command\": \"ToggleMetronome\", \"key\": \"Control + M\" },\n"
+"  { \"command\": \"ToggleMetronome\", \"key\": \"Command + M\" },\n"
+"  { \"command\": \"DuplicateTrack\", \"key\": \"F5\" },\n"
+"  { \"command\": \"InstanceToUniqueTrack\", \"key\": \"F6\" },\n"
+"  { \"command\": \"EditCurrentInstrument\", \"key\": \"F4\" }\n"
+"  // ANCHOR_END: PatternRoll\n"
+"  ],\n"
+"  \"keyDown\": [\n"
+"  { \"command\": \"StartDragViewport\", \"key\": \"Spacebar\" }\n"
+"  ],\n"
+"  \"keyUp\": [\n"
+"  { \"command\": \"EndDragViewport\", \"key\": \"Spacebar\" }\n"
+"  ]\n"
+"},\n"
+"{\n"
+"  \"receiver\": \"CommandPalette\",\n"
+"  \"keyPress\": [\n"
+"  // ANCHOR: CommandPalette\n"
+"  { \"command\": \"CommandPaletteClear\", \"key\": \"Escape\" },\n"
+"  { \"command\": \"CommandPaletteDismiss\", \"key\": \"`\" },\n"
+"  { \"command\": \"CommandPaletteDismiss\", \"key\": \"Control + P\" },\n"
+"  { \"command\": \"CommandPaletteDismiss\", \"key\": \"Command + P\" },\n"
+"  { \"command\": \"CommandPaletteDismiss\", \"key\": \"Control + G\" },\n"
+"  { \"command\": \"CommandPaletteDismiss\", \"key\": \"Command + G\" },\n"
+"  { \"command\": \"CommandPaletteCursorUp\", \"key\": \"Cursor Up\" },\n"
+"  { \"command\": \"CommandPaletteCursorDown\", \"key\": \"Cursor Down\" },\n"
+"  { \"command\": \"CommandPaletteCursorPageUp\", \"key\": \"Page Up\" },\n"
+"  { \"command\": \"CommandPaletteCursorPageDown\", \"key\": \"Page Down\" }\n"
+"  // ANCHOR_END: CommandPalette\n"
+"  ]\n"
+"},\n"
+"{\n"
+"  \"receiver\": \"Menu\",\n"
+"  \"keyPress\": [\n"
+"  // ANCHOR: Menu\n"
+"  { \"command\": \"MenuDismiss\", \"key\": \"Escape\" },\n"
+"  { \"command\": \"MenuDismiss\", \"key\": \"F10\" },\n"
+"  { \"command\": \"MenuDismiss\", \"key\": \"Shift + /\" },\n"
+"  { \"command\": \"MenuSelect\", \"key\": \"Return\" },\n"
+"  { \"command\": \"MenuSelect\", \"key\": \"Spacebar\" },\n"
+"  { \"command\": \"MenuSelect\", \"key\": \"I\" },\n"
+"  { \"command\": \"MenuCursorUp\", \"key\": \"Cursor Up\" },\n"
+"  { \"command\": \"MenuCursorDown\", \"key\": \"Cursor Down\" },\n"
+"  { \"command\": \"MenuCursorPageUp\", \"key\": \"Page Up\" },\n"
+"  { \"command\": \"MenuCursorPageDown\", \"key\": \"Page Down\" },\n"
+"  { \"command\": \"MenuForward\", \"key\": \"Cursor Right\" },\n"
+"  { \"command\": \"MenuBack\", \"key\": \"Cursor Left\" },\n"
+"  { \"command\": \"MenuCursorUp\", \"key\": \"K\" },\n"
+"  { \"command\": \"MenuCursorDown\", \"key\": \"J\" },\n"
+"  { \"command\": \"MenuForward\", \"key\": \"L\" },\n"
+"  { \"command\": \"MenuBack\", \"key\": \"H\" },\n"
+"  { \"command\": \"MenuBack\", \"key\": \"Backspace\" }\n"
+"  // ANCHOR_END: Menu\n"
+"  ]\n"
+"},\n"
+"{\n"
+"  \"receiver\": \"Dialog\",\n"
+"  \"keyPress\": [\n"
+"  // ANCHOR: Dialog\n"
+"  { \"command\": \"DialogDismissCancel\", \"key\": \"Escape\" },\n"
+"  { \"command\": \"DialogDismissApply\", \"key\": \"Return\" },\n"
+"  { \"command\": \"DialogDismissDelete\", \"key\": \"Shift + Delete\" },\n"
+"  { \"command\": \"DialogNextPreset\", \"key\": \"Page Down\" },\n"
+"  { \"command\": \"DialogPreviousPreset\", \"key\": \"Page Up\" },\n"
+"  { \"command\": \"DialogPreviewPreset\", \"key\": \"Alt + Return\" },\n"
+"  { \"command\": \"DialogPreviewPreset\", \"key\": \"Control + Return\" },\n"
+"  { \"command\": \"DialogPreviewPreset\", \"key\": \"Command + Return\" },\n"
+"  { \"command\": \"DialogPreviewPreset\", \"key\": \"Shift + Return\" },\n"
+"  { \"command\": \"DialogPreviewPreset\", \"key\": \"Play\" },\n"
+"  { \"command\": \"DialogStopPreviewPreset\", \"key\": \"Stop\" },\n"
+"  { \"command\": \"DialogShowPresetsList\", \"key\": \"Tab\" }\n"
+"  // ANCHOR_END: Dialog\n"
+"  ]\n"
+"},\n"
+"{\n"
+"  \"receiver\": \"ComboBox\",\n"
+"  \"keyPress\": [\n"
+"  // ANCHOR: ComboBox\n"
+"  { \"command\": \"ComboDismissCancel\", \"key\": \"Tab\" },\n"
+"  { \"command\": \"ComboDismissCancel\", \"key\": \"Escape\" },\n"
+"  { \"command\": \"ComboDismissApply\", \"key\": \"Return\" },\n"
+"  { \"command\": \"ComboCursorUp\", \"key\": \"Cursor Up\" },\n"
+"  { \"command\": \"ComboCursorDown\", \"key\": \"Cursor Down\" },\n"
+"  { \"command\": \"ComboCursorPageUp\", \"key\": \"Page Up\" },\n"
+"  { \"command\": \"ComboCursorPageDown\", \"key\": \"Page Down\" }\n"
+"  // ANCHOR_END: ComboBox\n"
+"  ]\n"
+"}\n"
 "]}}}\n";
 
-const char* hotkeySchemes_json = (const char*) temp_binary_data_122;
+const char* hotkeySchemes_json = (const char*) temp_binary_data_117;
 
 //================== keyboardMappings.json ==================
-static const unsigned char temp_binary_data_123[] =
+static const unsigned char temp_binary_data_118[] =
 "{\n"
 "  \"keyboardMappings\": {\n"
 "    \"keyboardMapping\": [\n"
@@ -5227,10 +5207,10 @@ static const unsigned char temp_binary_data_123[] =
 "  }\n"
 "}";
 
-const char* keyboardMappings_json = (const char*) temp_binary_data_123;
+const char* keyboardMappings_json = (const char*) temp_binary_data_118;
 
 //================== meters.json ==================
-static const unsigned char temp_binary_data_124[] =
+static const unsigned char temp_binary_data_119[] =
 "{\n"
 "  \"meters\": {\n"
 "    \"meter\": [\n"
@@ -5281,10 +5261,10 @@ static const unsigned char temp_binary_data_124[] =
 "  }\n"
 "}";
 
-const char* meters_json = (const char*) temp_binary_data_124;
+const char* meters_json = (const char*) temp_binary_data_119;
 
 //================== scales.json ==================
-static const unsigned char temp_binary_data_125[] =
+static const unsigned char temp_binary_data_120[] =
 "{\n"
 "  \"scales\": {\n"
 "    \"scale\": [\n"
@@ -5459,10 +5439,10 @@ static const unsigned char temp_binary_data_125[] =
 "  }\n"
 "}";
 
-const char* scales_json = (const char*) temp_binary_data_125;
+const char* scales_json = (const char*) temp_binary_data_120;
 
 //================== temperaments.json ==================
-static const unsigned char temp_binary_data_126[] =
+static const unsigned char temp_binary_data_121[] =
 "{\n"
 "  \"temperaments\": {\n"
 "    \"temperament\": [\n"
@@ -5528,10 +5508,10 @@ static const unsigned char temp_binary_data_126[] =
 "  }\n"
 "}\n";
 
-const char* temperaments_json = (const char*) temp_binary_data_126;
+const char* temperaments_json = (const char*) temp_binary_data_121;
 
 //================== translations.json ==================
-static const unsigned char temp_binary_data_127[] =
+static const unsigned char temp_binary_data_122[] =
 "{\n"
 "  // This file only lists ids and names to avoid parsing all the data on start:\n"
 "  \"translations\": {\n"
@@ -5552,7 +5532,7 @@ static const unsigned char temp_binary_data_127[] =
 "  }\n"
 "}";
 
-const char* translations_json = (const char*) temp_binary_data_127;
+const char* translations_json = (const char*) temp_binary_data_122;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
@@ -5597,7 +5577,6 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x628f95ea:  numBytes = 296; return forward_svg;
         case 0x423ac39a:  numBytes = 950; return helio_svg;
         case 0x74a8060c:  numBytes = 1617; return instrument_svg;
-        case 0x5daabbae:  numBytes = 601; return instrumentNode_svg;
         case 0xc48b0097:  numBytes = 307; return inverseDown_svg;
         case 0x4b4fda10:  numBytes = 305; return inverseUp_svg;
         case 0x4b2a9838:  numBytes = 527; return inversion_svg;
@@ -5614,14 +5593,11 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x51884f53:  numBytes = 1617; return orchestraPit_svg;
         case 0xc95d8ab8:  numBytes = 1578; return paste_svg;
         case 0xf53d4b08:  numBytes = 134; return patterns_svg;
-        case 0x3175289b:  numBytes = 297; return pause_svg;
         case 0x46869e6e:  numBytes = 321; return piano_svg;
         case 0x1829c627:  numBytes = 745; return pianoTrack_svg;
         case 0x7000bed9:  numBytes = 219; return play_svg;
         case 0xc7132b07:  numBytes = 2388; return progressIndicator_svg;
         case 0xc800043e:  numBytes = 1390; return project_svg;
-        case 0x5e26f16a:  numBytes = 334; return pull_svg;
-        case 0x69e07fbf:  numBytes = 199; return push_svg;
         case 0x2bd2c976:  numBytes = 143; return record_svg;
         case 0xd20918a3:  numBytes = 266; return redo_svg;
         case 0x96cbd1e7:  numBytes = 981; return refactor_svg;
@@ -5653,7 +5629,6 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xe5c4b489:  numBytes = 252; return undo_svg;
         case 0xcdfe36c0:  numBytes = 294; return up_svg;
         case 0x9916f08a:  numBytes = 847; return versionControl_svg;
-        case 0xa37ab7bf:  numBytes = 179; return volume_svg;
         case 0x9e66ce7a:  numBytes = 1401; return volumeUp_svg;
         case 0xadb68281:  numBytes = 881; return volumeDown_svg;
         case 0x6338ebaf:  numBytes = 250; return volumePanel_svg;
@@ -5687,7 +5662,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 4298; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 26422; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 24628; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 13262; return scales_json;
@@ -5734,7 +5709,6 @@ const char* namedResourceList[] =
     "forward_svg",
     "helio_svg",
     "instrument_svg",
-    "instrumentNode_svg",
     "inverseDown_svg",
     "inverseUp_svg",
     "inversion_svg",
@@ -5751,14 +5725,11 @@ const char* namedResourceList[] =
     "orchestraPit_svg",
     "paste_svg",
     "patterns_svg",
-    "pause_svg",
     "piano_svg",
     "pianoTrack_svg",
     "play_svg",
     "progressIndicator_svg",
     "project_svg",
-    "pull_svg",
-    "push_svg",
     "record_svg",
     "redo_svg",
     "refactor_svg",
@@ -5790,7 +5761,6 @@ const char* namedResourceList[] =
     "undo_svg",
     "up_svg",
     "versionControl_svg",
-    "volume_svg",
     "volumeUp_svg",
     "volumeDown_svg",
     "volumePanel_svg",
@@ -5866,7 +5836,6 @@ const char* originalFilenames[] =
     "forward.svg",
     "helio.svg",
     "instrument.svg",
-    "instrumentNode.svg",
     "inverseDown.svg",
     "inverseUp.svg",
     "inversion.svg",
@@ -5883,14 +5852,11 @@ const char* originalFilenames[] =
     "orchestraPit.svg",
     "paste.svg",
     "patterns.svg",
-    "pause.svg",
     "piano.svg",
     "pianoTrack.svg",
     "play.svg",
     "progressIndicator.svg",
     "project.svg",
-    "pull.svg",
-    "push.svg",
     "record.svg",
     "redo.svg",
     "refactor.svg",
@@ -5922,7 +5888,6 @@ const char* originalFilenames[] =
     "undo.svg",
     "up.svg",
     "versionControl.svg",
-    "volume.svg",
     "volumeUp.svg",
     "volumeDown.svg",
     "volumePanel.svg",

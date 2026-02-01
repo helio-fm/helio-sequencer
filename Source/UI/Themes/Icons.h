@@ -55,7 +55,6 @@ public:
         patterns,
         orchestraPit,
         instrument,
-        instrumentNode,
         audioPlugin,
         annotation,
         colour,
@@ -68,7 +67,6 @@ public:
         mute,
         volumeUp,
         volumeDown,
-        volume,
         volumePanel,
 
         list,
@@ -83,7 +81,6 @@ public:
         toggleOff,
 
         play,
-        pause,
         stop,
         record,
 
@@ -138,8 +135,6 @@ public:
 
         commit,
         reset,
-        push,
-        pull,
 
         arpeggiate,
         refactor,
