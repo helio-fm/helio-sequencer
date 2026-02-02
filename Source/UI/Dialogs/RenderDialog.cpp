@@ -29,12 +29,6 @@
 // Progress bar
 //===----------------------------------------------------------------------===//
 
-RenderDialog::SimpleWaveformProgressBar::SimpleWaveformProgressBar() :
-    fillColour(findDefaultColour(ColourIDs::RenderProgressBar::fill)),
-    outlineColour(findDefaultColour(ColourIDs::RenderProgressBar::outline)),
-    progressColour(findDefaultColour(ColourIDs::RenderProgressBar::progress)),
-    waveformColour(findDefaultColour(ColourIDs::RenderProgressBar::waveform)) {}
-
 void RenderDialog::SimpleWaveformProgressBar::paint(Graphics &g)
 {
     g.setColour(this->fillColour);
@@ -78,7 +72,6 @@ void RenderDialog::SimpleWaveformProgressBar::update(float newProgress,
     this->waveformThumbnail.addArray(newThumbnail);
     this->repaint();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Render dialog
@@ -134,7 +127,7 @@ RenderDialog::RenderDialog(ProjectNode &parentProject,
     // just in case..
     this->project.getTransport().stopPlaybackAndRecording();
 
-    this->setSize(562, isPhoneLayout? 120 : 185);
+    this->setSize(562, isPhoneLayout ? 120 : 185);
     this->updatePosition();
     this->updateRenderTargetLabels();
 }
@@ -233,6 +226,7 @@ void RenderDialog::launchFileChooser()
         {
             this->renderTarget = url;
             this->updateRenderTargetLabels();
+            this->getPrimaryFocusTarget()->grabKeyboardFocus();
         });
 }
 

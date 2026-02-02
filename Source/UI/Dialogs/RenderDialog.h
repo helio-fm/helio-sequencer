@@ -66,7 +66,8 @@ private:
     {
     public:
 
-        SimpleWaveformProgressBar();
+        SimpleWaveformProgressBar() = default;
+
         void paint(Graphics &g) override;
         int getThumbnailResolution() const noexcept;
         void update(float newProgress, const Array<float, CriticalSection> &newThumbnail);
@@ -76,11 +77,12 @@ private:
         float progress = 0.f;
         Array<float> waveformThumbnail;
 
-        const Colour fillColour;
-        const Colour outlineColour;
-        const Colour progressColour;
-        const Colour waveformColour;
+        const Colour fillColour = findDefaultColour(ColourIDs::RenderProgressBar::fill);
+        const Colour outlineColour = findDefaultColour(ColourIDs::RenderProgressBar::outline);
+        const Colour progressColour = findDefaultColour(ColourIDs::RenderProgressBar::progress);
+        const Colour waveformColour = findDefaultColour(ColourIDs::RenderProgressBar::waveform);
 
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SimpleWaveformProgressBar)
     };
 
 private:
@@ -91,5 +93,5 @@ private:
     UniquePointer<SimpleWaveformProgressBar> progressBar;
     UniquePointer<TextButton> renderButton;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RenderDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RenderDialog)
 };

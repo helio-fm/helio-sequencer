@@ -138,7 +138,17 @@ struct RenderBuffer final
 void RendererThread::run()
 {
     auto sequences = this->transport.buildPlaybackCache(false);
-    sequences.seekToStart();
+
+    const auto hasLoop = this->context->playbackLoopMode;
+    const auto loopEnd = this->context->endBeat;
+    if (hasLoop)
+    {
+        sequences.seekToTime(this->context->startBeat);
+    }
+    else
+    {
+        sequences.seekToStart();
+    }
 
     CachedMidiMessage nextMessage;
     bool hasNextMessage = sequences.getNextMessage(nextMessage);
@@ -236,7 +246,7 @@ void RendererThread::run()
         {
             break;
         }
-        
+
         // fill up the midi buffers
         while (hasNextMessage &&
             (nextEventTick * sampleRate) >= currentFrame &&
@@ -272,6 +282,11 @@ void RendererThread::run()
             hasNextMessage = sequences.getNextMessage(nextMessage);
             nextEventTickDelta = (nextMessage.message.getTimeStamp() - prevEventTimeStamp) * secPerQuarter;
             nextEventTick = prevEventTick + nextEventTickDelta;
+        }
+
+        if (hasLoop && (prevEventTimeStamp >= loopEnd || !hasNextMessage))
+        {
+            break;
         }
 
         // call processBlock for every instrument

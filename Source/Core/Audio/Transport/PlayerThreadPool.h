@@ -52,6 +52,7 @@ public:
         }
 
         auto playbackContext = this->transport.fillPlaybackContextAt(startBeat);
+        // override some playback settings for custom loops, like scale preview
         playbackContext->endBeat = endBeat;
         playbackContext->rewindBeat = rewindBeat;
         playbackContext->playbackLoopMode = loopMode;

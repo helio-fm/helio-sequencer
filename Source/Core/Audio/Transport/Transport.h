@@ -130,7 +130,7 @@ public:
 
     PlaybackContext::Ptr fillPlaybackContextAt(float beat) const;
 
-    TransportPlaybackCache getPlaybackCache();
+    const TransportPlaybackCache &getPlaybackCache() const;
 
     float getProjectFirstBeat() const noexcept
     {

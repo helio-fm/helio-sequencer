@@ -368,8 +368,11 @@ bool Transport::startRender(const URL &renderTarget,
         return false;
     }
     
+    const auto renderStartBeat = this->loopMode.get() ?
+        this->loopStartBeat.get() : this->getProjectFirstBeat();
+
     return this->renderer->startRendering(renderTarget, format,
-        this->fillPlaybackContextAt(this->getProjectFirstBeat()),
+        this->fillPlaybackContextAt(renderStartBeat),
         thumbnailResolution);
 }
 
@@ -960,7 +963,10 @@ Transport::PlaybackContext::Ptr Transport::fillPlaybackContextAt(float targetBea
     }
 
     Transport::PlaybackContext::Ptr context(new Transport::PlaybackContext());
+    context->playbackLoopMode = this->loopMode.get();
     context->startBeat = targetBeat;
+    context->endBeat = context->playbackLoopMode ?
+        this->loopEndBeat.get() : this->projectLastBeat.get();
 
     context->totalTimeMs = 0.0;
     context->startBeatTimeMs = 0.0;
@@ -1086,11 +1092,9 @@ TransportPlaybackCache Transport::buildPlaybackCache(bool withMetronome) const
     return result;
 }
 
-// returning by value, because it will be used by (possibly many) player threads,
-// so we'd rather play safe and just let them deal with their own copy of it;
-// internally, the data is refcounted anyway and protected by critical sections
-TransportPlaybackCache Transport::getPlaybackCache()
+const TransportPlaybackCache &Transport::getPlaybackCache() const
 {
+    JUCE_ASSERT_MESSAGE_THREAD
     return this->playbackCache;
 }
 

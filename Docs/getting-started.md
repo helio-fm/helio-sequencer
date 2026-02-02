@@ -198,6 +198,8 @@ If you have enabled the playback loop over the selected scope, timeline will dis
 
 ![timeline-reprise]
 
+The reprise also affects rendering to audio, it can be used as a hack to render a few bars of the project.
+
 ### Left sidebar
 
 This sidebar is responsible for track navigation and UI control.
