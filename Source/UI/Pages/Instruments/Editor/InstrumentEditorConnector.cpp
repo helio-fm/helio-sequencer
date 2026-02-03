@@ -210,14 +210,13 @@ void InstrumentEditorConnector::resized()
 
     const auto parentWidth = float(this->getParentWidth());
     const auto parentHeight = float(this->getParentHeight());
-    const float gravity = parentHeight == 0.f ? 0.f : 0.6f + jlimit(-1.f, 1.f, dy / parentHeight) / 3.f;
+    const float gravity = parentHeight == 0.f ? 0.f : 0.5f + jlimit(-1.f, 1.f, dy / parentHeight) / 3.f;
     const float curveX = parentWidth == 0.f ? 0.f : (1.f - (fabsf(dx) / parentWidth)) * 1.5f;
     const float curveY = parentHeight == 0.f ? 0.f : (fabsf(dy) / parentHeight) * 1.5f;
     const float curve = (curveX + curveY) / 2.f;
 
     this->linePath.cubicTo(x1 + dx * (curve * (1.f - gravity)), y1,
-        x1 + dx * (1.f - (curve * gravity)), y2,
-                     x2, y2);
+        x1 + dx * (1.f - (curve * gravity)), y2, x2, y2);
 
     PathStrokeType wideStroke(8.0f);
     wideStroke.createStrokedPath(hitPath, linePath);

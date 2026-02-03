@@ -128,7 +128,7 @@ void InstrumentComponent::resized()
 {
     const int xCenter = this->getWidth() / 2;
     const int yCenter = this->getHeight() / 2;
-    const int r = (this->getWidth() + this->getHeight()) / 4 - pinSize;
+    const int r = (this->getWidth() + this->getHeight()) / 4 - (this->pinSize - 2);
 
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
@@ -146,7 +146,8 @@ void InstrumentComponent::resized()
             const float dx = cosf(rAngle) * r;
             const float dy = sinf(rAngle) * r;
 
-            pin->setBounds(xCenter + int(dx) - pinSize2, yCenter + int(dy) - pinSize2, pinSize, pinSize);
+            pin->setBounds(xCenter + roundToIntAccurate(dx) - pinSize2,
+                yCenter + roundToIntAccurate(dy) - pinSize2, pinSize, pinSize);
         }
     }
 }
@@ -155,7 +156,7 @@ void InstrumentComponent::getPinPos(const int index, const bool isInput, float &
 {
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
-        if (auto pc = dynamic_cast<InstrumentEditorPin *>(this->getChildComponent(i)))
+        if (const auto *pc = dynamic_cast<InstrumentEditorPin *>(this->getChildComponent(i)))
         {
             if (pc->index == index && isInput == pc->isInput)
             {
@@ -182,29 +183,25 @@ void InstrumentComponent::update()
         return;
     }
 
-#if PLATFORM_DESKTOP
-    constexpr auto maxChannels = 12;
-#elif PLATFORM_MOBILE
-    constexpr auto maxChannels = 6;
-#endif
-
     const int newNumInputs =
-        jmin(node->getProcessor()->getTotalNumInputChannels(), maxChannels) +
+        node->getProcessor()->getTotalNumInputChannels() +
         (node->getProcessor()->acceptsMidi() ? 1 : 0);
 
     const int newNumOutputs =
-        jmin(node->getProcessor()->getTotalNumOutputChannels(), maxChannels) +
+        node->getProcessor()->getTotalNumOutputChannels() +
         (node->getProcessor()->producesMidi() ? 1 : 0);
 
     // a hack needed for "Audio Input", "Audio Output" etc nodes:
     const String translatedName = TRANS(node->getProcessor()->getName());
     this->setName(translatedName);
 
-    const int textWidth = this->font.getStringWidth(translatedName);
+    const auto textWidth = this->font.getStringWidth(translatedName);
+    const auto minSideLength = jmax(newNumInputs, newNumOutputs) * (this->pinSize + 2);
+    const auto minDiameter = int((minSideLength * 2.f) / MathConstants<float>::pi) + this->pinSize;
     const auto smallScreenMode = App::isRunningOnPhone();
     const auto minSize = smallScreenMode ? 130 : 180;
-    const auto maxSize = smallScreenMode ? 170 : 300;
-    const auto size = jlimit(minSize, maxSize, textWidth);
+    const auto maxSize = smallScreenMode ? 150 : 420;
+    const auto size = jlimit(minSize, maxSize, jmax(textWidth, minDiameter));
     this->setSize(size, size);
 
     {
