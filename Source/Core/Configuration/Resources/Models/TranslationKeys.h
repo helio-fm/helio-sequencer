@@ -127,6 +127,7 @@ namespace I18n
             static constexpr auto melodicInversion = constexprHash("menu::refactoring::inversion");
             static constexpr auto retrograde = constexprHash("menu::refactoring::retrograde");
             static constexpr auto cleanup = constexprHash("menu::refactoring::cleanup");
+            static constexpr auto joinAdjacent = constexprHash("menu::refactoring::join");
             static constexpr auto legato = constexprHash("menu::refactoring::legato");
             static constexpr auto staccato = constexprHash("menu::refactoring::staccato");
             static constexpr auto inScaleTransposeUp = constexprHash("menu::refactoring::inscalekeyup");
@@ -380,6 +381,7 @@ namespace I18n
         static constexpr auto toggleNoteGuides = constexprHash("tooltip::noteguides");
         static constexpr auto toggleVolumePanel = constexprHash("tooltip::volumepanel");
         static constexpr auto toggleMiniMap = constexprHash("tooltip::minimap");
+        static constexpr auto scriptingPlayground = constexprHash("tooltip::scripting");
 
         static constexpr auto togglePlaybackLoop = constexprHash("tooltip::toggleloop");
 

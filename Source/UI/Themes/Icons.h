@@ -126,6 +126,7 @@ public:
         staccato,
         snap,
         cleanup,
+        join,
 
         up,
         down,
@@ -151,6 +152,7 @@ public:
         microtoneUp,
         microtoneUp2,
         microtoneDown,
-        microtoneDown2
+        microtoneDown2,
+        brackets
     };
 };

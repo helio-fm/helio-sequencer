@@ -149,6 +149,7 @@ void Icons::initBuiltInImages() noexcept
     setIconForKey(staccato);
     setIconForKey(snap);
     setIconForKey(cleanup);
+    setIconForKey(join);
 
     setIconForKey(up);
     setIconForKey(down);
@@ -175,6 +176,8 @@ void Icons::initBuiltInImages() noexcept
     setIconForKey(microtoneUp2);
     setIconForKey(microtoneDown);
     setIconForKey(microtoneDown2);
+
+    setIconForKey(brackets);
 }
 
 static const Path extractPathFromDrawable(const Drawable *d)

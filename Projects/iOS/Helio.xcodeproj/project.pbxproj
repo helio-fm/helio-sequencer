@@ -339,6 +339,7 @@
 		5EB631A033A543A343A0A138 /* ProjectTimeline.cpp */ /* ProjectTimeline.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProjectTimeline.cpp; path = ../../Source/Core/Tree/ProjectTimeline.cpp; sourceTree = SOURCE_ROOT; };
 		5F021C5479877AD68BF1F7B1 /* RollExpandMark.cpp */ /* RollExpandMark.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RollExpandMark.cpp; path = ../../Source/UI/Sequencer/Helpers/RollExpandMark.cpp; sourceTree = SOURCE_ROOT; };
 		5F58550F8C045EC23CDEE415 /* MenuItemComponent.cpp */ /* MenuItemComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MenuItemComponent.cpp; path = ../../Source/UI/Menus/Base/MenuItemComponent.cpp; sourceTree = SOURCE_ROOT; };
+		5FB5A0AF87FA1DA267419C98 /* join.svg */ /* join.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = join.svg; path = ../../Resources/Icons/join.svg; sourceTree = SOURCE_ROOT; };
 		60F9682086FC3D0E1AFA8860 /* AudioCore.cpp */ /* AudioCore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AudioCore.cpp; path = ../../Source/Core/Audio/AudioCore.cpp; sourceTree = SOURCE_ROOT; };
 		616489BC0B3C1B9A6A6E18FC /* legato.svg */ /* legato.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = legato.svg; path = ../../Resources/Icons/legato.svg; sourceTree = SOURCE_ROOT; };
 		617761CA23B28352AD72BE99 /* UndoActionIDs.h */ /* UndoActionIDs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UndoActionIDs.h; path = ../../Source/Core/Undo/UndoActionIDs.h; sourceTree = SOURCE_ROOT; };
@@ -553,6 +554,7 @@
 		A58BDD5BBD35395EE5FF620B /* SequencerSidebarLeft.h */ /* SequencerSidebarLeft.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SequencerSidebarLeft.h; path = ../../Source/UI/Sequencer/Sidebars/SequencerSidebarLeft.h; sourceTree = SOURCE_ROOT; };
 		A5D197875DD31390C83588C4 /* SequenceModifier.h */ /* SequenceModifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SequenceModifier.h; path = ../../Source/Core/Midi/Patterns/Modifiers/SequenceModifier.h; sourceTree = SOURCE_ROOT; };
 		A60CCAC6696362BF85CE208C /* PluginWindow.cpp */ /* PluginWindow.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PluginWindow.cpp; path = ../../Source/UI/Common/PluginWindow.cpp; sourceTree = SOURCE_ROOT; };
+		A614B5B0D1E866B35BF69352 /* brackets.svg */ /* brackets.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = brackets.svg; path = ../../Resources/Icons/brackets.svg; sourceTree = SOURCE_ROOT; };
 		A682764A69379288AD63B612 /* inversion.svg */ /* inversion.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = inversion.svg; path = ../../Resources/Icons/inversion.svg; sourceTree = SOURCE_ROOT; };
 		A6B4C3AD920E2F946E19ACA5 /* Scale.cpp */ /* Scale.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Scale.cpp; path = ../../Source/Core/Configuration/Resources/Models/Scale.cpp; sourceTree = SOURCE_ROOT; };
 		A786517ECDC3A3DD0DCF6F95 /* UIKit.framework */ /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -924,6 +926,7 @@
 				ECB3C5E32881D13E11E21F8A,
 				0078A4CF1B0498BB9D9F36D6,
 				E87D050150AECE26828A193F,
+				A614B5B0D1E866B35BF69352,
 				1D1D9574714B1D5BF6E173DF,
 				E7994F69C1E98A7AFC41D20B,
 				FA43F862B8383A9B131B8579,
@@ -952,6 +955,7 @@
 				2A034F224EBF4BA9B3352E86,
 				2DA06104F65305C09877EA73,
 				A682764A69379288AD63B612,
+				5FB5A0AF87FA1DA267419C98,
 				616489BC0B3C1B9A6A6E18FC,
 				35CE31907AAAF6A87836E985,
 				860CF7E487D7C85AB2F20730,

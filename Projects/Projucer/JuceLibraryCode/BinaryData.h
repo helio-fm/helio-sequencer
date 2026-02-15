@@ -29,6 +29,9 @@ namespace BinaryData
     extern const char*   bottomBar_svg;
     const int            bottomBar_svgSize = 198;
 
+    extern const char*   brackets_svg;
+    const int            brackets_svgSize = 344;
+
     extern const char*   browse_svg;
     const int            browse_svgSize = 252;
 
@@ -112,6 +115,9 @@ namespace BinaryData
 
     extern const char*   inversion_svg;
     const int            inversion_svgSize = 527;
+
+    extern const char*   join_svg;
+    const int            join_svgSize = 133;
 
     extern const char*   legato_svg;
     const int            legato_svgSize = 361;
@@ -309,40 +315,40 @@ namespace BinaryData
     const int            exampleProject_jsonSize = 3285;
 
     extern const char*   de_json;
-    const int            de_jsonSize = 18673;
+    const int            de_jsonSize = 18810;
 
     extern const char*   el_json;
-    const int            el_jsonSize = 25047;
+    const int            el_jsonSize = 25250;
 
     extern const char*   en_json;
-    const int            en_jsonSize = 17396;
+    const int            en_jsonSize = 17525;
 
     extern const char*   fr_json;
-    const int            fr_jsonSize = 18973;
+    const int            fr_jsonSize = 19112;
 
     extern const char*   it_json;
-    const int            it_jsonSize = 18882;
+    const int            it_jsonSize = 19017;
 
     extern const char*   ja_json;
-    const int            ja_jsonSize = 19226;
+    const int            ja_jsonSize = 19406;
 
     extern const char*   ko_json;
-    const int            ko_jsonSize = 18754;
+    const int            ko_jsonSize = 18926;
 
     extern const char*   pt_json;
-    const int            pt_jsonSize = 18610;
+    const int            pt_jsonSize = 18741;
 
     extern const char*   ru_json;
-    const int            ru_jsonSize = 25410;
+    const int            ru_jsonSize = 25601;
 
     extern const char*   tr_json;
-    const int            tr_jsonSize = 18805;
+    const int            tr_jsonSize = 18973;
 
     extern const char*   uk_json;
-    const int            uk_jsonSize = 24773;
+    const int            uk_jsonSize = 24956;
 
     extern const char*   zh_json;
-    const int            zh_jsonSize = 15797;
+    const int            zh_jsonSize = 15926;
 
     extern const char*   logov2_png;
     const int            logov2_pngSize = 7326;
@@ -378,7 +384,7 @@ namespace BinaryData
     const int            translations_jsonSize = 664;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 123;
+    const int namedResourceListSize = 125;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

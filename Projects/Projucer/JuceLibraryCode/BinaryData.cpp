@@ -57,58 +57,65 @@ static const unsigned char temp_binary_data_6[] =
 
 const char* bottomBar_svg = (const char*) temp_binary_data_6;
 
-//================== browse.svg ==================
+//================== brackets.svg ==================
 static const unsigned char temp_binary_data_7[] =
+"<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M82,222A12,12,0,0,1,65.8,226.3C63.9,225,20,198,20,128S63.9,31,65.8,30a12,12,0,0,1,12.5,20.5C77,51,44,72,44,128c0,56,33,77,34,78A12,12,0,0,1,82,222ZM190.2,30a12,12,0,1,0-12.5,20.5C179,51,212,72,212,1"
+"28s-33,77-34.17383,77.7A12,12,0,1,0,190.2,226.3C192,225,236,198,236,128S192,31,190.2,30Z\"/></svg>";
+
+const char* brackets_svg = (const char*) temp_binary_data_7;
+
+//================== browse.svg ==================
+static const unsigned char temp_binary_data_8[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 23.429V6.286q0-1.643 1.179-2.821T4 2.286h5.714q1.643 0 2.821 1.179t1.179 2.821v.571h12q1.643 0 2.821 1.179t1.179 2.821v12.571q0 1.643-1.179 2.821t-2.821 1.179H4q-1.643 0-2.821-1.179T0 23.428z\"/>"
 "</svg>";
 
-const char* browse_svg = (const char*) temp_binary_data_7;
+const char* browse_svg = (const char*) temp_binary_data_8;
 
 //================== chordBuilder.svg ==================
-static const unsigned char temp_binary_data_8[] =
+static const unsigned char temp_binary_data_9[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M5.672 19.734l1.406-1.406a8.36 8.36 0 0 0 3.938 1.594v2.016a9.9 9.9 0 0 1-5.344-2.203zm7.312.188c1.453-.188 2.813-.75 3.89-1.594l1.453 1.406c-1.5 1.22-3.328 2.016-5.344 2.203V19.92zm5.344-3c.844-1.1"
 "25 1.406-2.438 1.594-3.89h2.016c-.188 2.016-.984 3.797-2.203 5.297zM15 12c0 1.64-1.36 3-3 3s-3-1.36-3-3 1.36-3 3-3 3 1.36 3 3zm-10.922.984c.188 1.453.75 2.813 1.594 3.89l-1.406 1.453c-1.22-1.5-2.016-3.328-2.203-5.344H4.08zm1.594-5.906a8.36 8.36 0 0 0"
 "-1.594 3.938H2.062a9.9 9.9 0 0 1 2.203-5.344zm14.25 3.938c-.188-1.453-.75-2.813-1.594-3.938l1.406-1.406c1.22 1.5 2.016 3.328 2.203 5.344H19.92zm-1.594-6.75l-1.406 1.406a8.36 8.36 0 0 0-3.938-1.594V2.062a9.9 9.9 0 0 1 5.344 2.203zm-7.312-.188c-1.453.1"
 "88-2.813.75-3.938 1.594L5.672 4.266C7.172 3.047 9 2.25 11.016 2.063V4.08z\"/></svg>";
 
-const char* chordBuilder_svg = (const char*) temp_binary_data_8;
+const char* chordBuilder_svg = (const char*) temp_binary_data_9;
 
 //================== cleanup.svg ==================
-static const unsigned char temp_binary_data_9[] =
+static const unsigned char temp_binary_data_10[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m17 4.18-3.16-2.42a2 2 0 0 0-2.8.36l-8.4 10.9a2 2 0 0 0 .36 2.8l3.16 2.42a2 2 0 0 0 2.8-.36l8.4-10.9a2 2 0 0 0-.36-2.8zM8.55 16.47l-.54.68a.8.8 0 0 1-1.12.14l-3.16-2.42c-.16-.13-.27-.32-.3-.53s.03-."
 "42.16-.59l.53-.68a.8.8 0 0 1 1.13-.15l3.15 2.43a.8.8 0 0 1 .14 1.12z\"/></svg>";
 
-const char* cleanup_svg = (const char*) temp_binary_data_9;
+const char* cleanup_svg = (const char*) temp_binary_data_10;
 
 //================== close.svg ==================
-static const unsigned char temp_binary_data_10[] =
+static const unsigned char temp_binary_data_11[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M1.964 23.607q0-.714.5-1.214l5.25-5.25-5.25-5.25q-.5-.5-.5-1.214t.5-1.214l2.429-2.429q.5-.5 1.214-.5t1.214.5l5.25 5.25 5.25-5.25q.5-.5 1.214-.5t1.214.5l2.429 2.429q.5.5.5 1.214t-.5 1.214l-5.25 5.25 "
 "5.25 5.25q.5.5.5 1.214t-.5 1.214l-2.429 2.429q-.5.5-1.214.5t-1.214-.5L12.571 22l-5.25 5.25q-.5.5-1.214.5t-1.214-.5l-2.429-2.429q-.5-.5-.5-1.214z\"/></svg>";
 
-const char* close_svg = (const char*) temp_binary_data_10;
+const char* close_svg = (const char*) temp_binary_data_11;
 
 //================== colour.svg ==================
-static const unsigned char temp_binary_data_11[] =
+static const unsigned char temp_binary_data_12[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M4.421 21.699c-2.422 2.381-.376 4.826-3.595 8.45-1.453 1.635 5.981 1.136 9.664-2.485 1.562-1.534 1.122-3.773-.554-5.421-1.675-1.646-3.954-2.078-5.515-.544zM31.266 1.053C30.023-.168 16.26 10.861 12.1"
 "62 14.888c-2.034 1.998-2.712 3.07-3.336 3.872-.27.349.088.456.248.539.805.41 1.368.79 2.098 1.507.73.715 1.118 1.269 1.534 2.061.083.158.194.51.547.243.816-.613 1.906-1.28 3.938-3.278 4.098-4.027 15.315-17.557 14.075-18.779z\"/></svg>";
 
-const char* colour_svg = (const char*) temp_binary_data_11;
+const char* colour_svg = (const char*) temp_binary_data_12;
 
 //================== commit.svg ==================
-static const unsigned char temp_binary_data_12[] =
+static const unsigned char temp_binary_data_13[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M15.173 2h-11.173c-1.101 0-2 0.9-2 2v12c0 1.1 0.899 2 2 2h12c1.101 0 2-0.9 2-2v-10.873l-2.827-3.127zM14 8c0 0.549-0.45 1-1 1h-6c-0.55 0-1-0.451-1-1v-5h8v5zM13 4h-2v4h2v-4z\"></path></svg>";
 
-const char* commit_svg = (const char*) temp_binary_data_12;
+const char* commit_svg = (const char*) temp_binary_data_13;
 
 //================== console.svg ==================
-static const unsigned char temp_binary_data_13[] =
+static const unsigned char temp_binary_data_14[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9.141 15.359l-7.281 7.281c-0.203 0.203-0.516 0.203-0.719 0l-0.781-0.781c-0.203-0.203-0.203-0.516 0-0.719l6.141-6.141-6.141-6.141c-0.203-0.203-0.203-0.516 0-0.719l0.781-0.781c0.203-0.203 0.516-0.203"
 " 0.719 0l7.281 7.281c0.203 0.203 0.203 0.516 0 0.719zM26 22.5v1c0 0.281-0.219 0.5-0.5 0.5h-15c-0.281 0-0.5-0.219-0.5-0.5v-1c0-0.281 0.219-0.5 0.5-0.5h15c0.281 0 0.5 0.219 0.5 0.5z\"></path></svg>";
 
-const char* console_svg = (const char*) temp_binary_data_13;
+const char* console_svg = (const char*) temp_binary_data_14;
 
 //================== copy.svg ==================
-static const unsigned char temp_binary_data_14[] =
+static const unsigned char temp_binary_data_15[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M189.32 702.976c-.263-.691-.362-44.682-.22-97.757l.257-96.5 45-.295c47.02-.309 51.807.035 52.79 3.795.804 3.076-3.747 11.119-10.4 18.38-3.905 4.26-5.92 7.269-5.712 8.525.204 1.228 12.09 10.475 32.32"
 "2 25.147 17.6 12.764 33.016 24.13 34.258 25.26l2.259 2.052-.259 56.068-.258 56.068-74.779.257c-59.293.203-74.878-.004-75.258-1zm160.217-31.41c-.374-.374-.68-21.897-.68-47.83v-47.149l-8.074-13.81c-13.688-23.411-33.942-55.922-36.548-58.664-3.704-3.898-"
 "8.645-4.894-24.277-4.894h-14.166l.282-11.25.283-11.25h47.097c38.45 0 47.4.252 48.75 1.373 3.906 3.243.827 10.203-9.697 21.915-3.107 3.458-5.65 6.68-5.65 7.16 0 .48 14.738 11.558 32.75 24.618 18.013 13.06 33.766 24.658 35.008 25.772l2.259 2.026-.259 5"
@@ -116,130 +123,130 @@ static const unsigned char temp_binary_data_14[] =
 "4 7.386 12.725-.404-.013-10.635-7.46-22.735-16.55zm76.262-32.36c-25.861-19.413-24.497-18.028-21.417-21.73 3.571-4.292 7.497-10.858 8.224-13.752.356-1.42.999-2.583 1.428-2.583.988 0 35.381 53.956 34.778 54.56-.246.245-10.601-7.177-23.013-16.494z\"/></"
 "svg>";
 
-const char* copy_svg = (const char*) temp_binary_data_14;
+const char* copy_svg = (const char*) temp_binary_data_15;
 
 //================== create.svg ==================
-static const unsigned char temp_binary_data_15[] =
+static const unsigned char temp_binary_data_16[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 16.571v-3.429q0-.714.5-1.214t1.214-.5h7.429V3.999q0-.714.5-1.214t1.214-.5h3.429q.714 0 1.214.5t.5 1.214v7.429h7.429q.714 0 1.214.5t.5 1.214v3.429q0 .714-.5 1.214t-1.214.5H16v7.429q0 .714-.5 1.214"
 "t-1.214.5h-3.429q-.714 0-1.214-.5t-.5-1.214v-7.429H1.714q-.714 0-1.214-.5T0 16.571z\"/></svg>";
 
-const char* create_svg = (const char*) temp_binary_data_15;
+const char* create_svg = (const char*) temp_binary_data_16;
 
 //================== cropTool.svg ==================
-static const unsigned char temp_binary_data_16[] =
+static const unsigned char temp_binary_data_17[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17 15h2V7a2 2 0 0 0-2-2H9v2h8v8zM7 17V1H5v4H1v2h4v10a2 2 0 0 0 2 2h10v4h2v-4h4v-2H7z\"/></svg>";
 
-const char* cropTool_svg = (const char*) temp_binary_data_16;
+const char* cropTool_svg = (const char*) temp_binary_data_17;
 
 //================== cursorTool.svg ==================
-static const unsigned char temp_binary_data_17[] =
+static const unsigned char temp_binary_data_18[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12.259 28.885C8.929 21.79 1.559 2.809 2.162 2.165c.624-.62 19.678 6.93 27.04 10.193.754.43.814 1.467.308 1.973-2.526 2.526-9.583.6-12.117 3.134-2.533 2.534-.514 9.498-3.04 12.023-.72.719-1.758.225-"
 "2.094-.603z\"/></svg>";
 
-const char* cursorTool_svg = (const char*) temp_binary_data_17;
+const char* cursorTool_svg = (const char*) temp_binary_data_18;
 
 //================== cut.svg ==================
-static const unsigned char temp_binary_data_18[] =
+static const unsigned char temp_binary_data_19[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M8.38 5.59a3.69 3.69 0 1 0-3.69 3.69 3.67 3.67 0 0 0 2.483-.976L9 9.991l.012.009-.004.003-1.836 1.693a3.665 3.665 0 0 0-2.482-.976 3.69 3.69 0 1 0 3.69 3.69c0-.297-.044-.582-.111-.858l2.844-1.991 4."
 "127 3.065c2.212 1.549 3.76-.663 3.76-.663L8.269 6.448c.066-.276.111-.561.111-.858zm-3.69 1.8a1.8 1.8 0 1 1 0-3.6 1.8 1.8 0 0 1 0 3.6zm0 8.82a1.8 1.8 0 1 1 0-3.6 1.8 1.8 0 0 1 0 3.6zM19 6.038s-1.548-2.212-3.76-.663L12.035 7.61l2.354 1.648L19 6.038z\"/"
 "></svg>";
 
-const char* cut_svg = (const char*) temp_binary_data_18;
+const char* cut_svg = (const char*) temp_binary_data_19;
 
 //================== cutterTool.svg ==================
-static const unsigned char temp_binary_data_19[] =
+static const unsigned char temp_binary_data_20[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18.984 21v-2.016H21C21 20.062 20.062 21 18.984 21zm0-8.016v-1.969H21v1.969h-2.016zM15 5.016V3h2.016v2.016H15zm3.984 12V15H21v2.016h-2.016zm-7.968 6V.985h1.969v22.031h-1.969zM18.984 3C20.062 3 21 3."
 "938 21 5.016h-2.016V3zM3 5.016C3 3.938 3.938 3 5.016 3H9v2.016H5.016v13.969H9v2.016H5.016C3.938 21.001 3 20.063 3 18.985V5.016zM18.984 9V6.984H21V9h-2.016zM15 21v-2.016h2.016V21H15z\"/></svg>";
 
-const char* cutterTool_svg = (const char*) temp_binary_data_19;
+const char* cutterTool_svg = (const char*) temp_binary_data_20;
 
 //================== doubleFlat.svg ==================
-static const unsigned char temp_binary_data_20[] =
+static const unsigned char temp_binary_data_21[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M150,117a30.17,30.17,0,0,0-7.55-19.1c-5.49-6.2-12-9.2-19.66-9.2-12.31.2-23.28,4.7-33.21,13.4V.25H81.07v93.1a24.47,24.47,0,0,0-14.59-4.6c-12.21.2-23.28,4.7-33.11,13.4V.25H24.79v188q24.21-17.4,48.52-3"
 "4.6l7.76-7v41.6c16.14-11.7,32.39-23.2,48.53-34.7l8.9-8c3.72-3.4,6.1-6.6,7.24-9.5C148.74,128.85,150.19,122.55,150,117Zm-85.46,18.5a40.41,40.41,0,0,1-12.83,21c-12,11.3-18.11,16.4-18.42,15.6v-27.4c0-16.5,1.24-27,3.62-31.5,3.21-5.7,7.56-8.6,12.73-8.6a12."
 "63,12.63,0,0,1,10.14,4.5h.1c3.93,4.2,5.9,9.9,5.9,16.9a29.78,29.78,0,0,1-1.24,9.5Zm56.28,0a40.47,40.47,0,0,1-12.83,21c-12,11.3-18.21,16.4-18.41,15.6v-27.4c0-16.5,1.24-27,3.62-31.5,3.31-5.7,7.55-8.6,12.83-8.6a12.64,12.64,0,0,1,10.14,4.5c3.93,4.2,5.89,9"
 ".9,5.89,16.9a29.5,29.5,0,0,1-1.24,9.5Z\"/></svg>";
 
-const char* doubleFlat_svg = (const char*) temp_binary_data_20;
+const char* doubleFlat_svg = (const char*) temp_binary_data_21;
 
 //================== doubleSharp.svg ==================
-static const unsigned char temp_binary_data_21[] =
+static const unsigned char temp_binary_data_22[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M98.58,152.53c-10.62-2.65-23.64-2.65-34.26-2.65.68-7.31.94-15.47-1.71-23.43C60.43,120.66,56.21,115.21,51,110,45.3,115.35,40.82,121,38.17,129c-1.88,9-.8,13.92-.41,20.92-10.62,0-23.9,0-34.53,2.65A106,"
 "106,0,0,0,5.89,118c11.55.78,19.36.65,26.56-2.66,5.31-2.66,8-4.78,13.28-10.62-6.5-6.5-12.79-9.21-21.25-10.63a82.7,82.7,0,0,0-18.59-.94c.67-13.7,0-23-2.66-33.59,10.63,2.66,23.66,3.33,34.53,2.66,0,8,0,15.94,2.66,23.9,2.65,5.32,4.21,7.81,10.62,13.28,6.74"
 "-6,9.79-10.66,10.62-18.59a81.8,81.8,0,0,0,.12-18.59c11.78.67,25.73-.3,36.35-2.95-2.59,14.92-2.78,22.48-1.94,33.88-8.62-.55-16.37-.46-23.9.94a33.3,33.3,0,0,0-15.94,10.63c5.8,6.69,9.35,9.76,16.31,12.41,8.73,2.24,14.45,1.88,23.53.87C95.48,130.76,95.93,1"
 "41.91,98.58,152.53Z\"/><path d=\"M0,188.5V0M.5.5V188\"/></svg>";
 
-const char* doubleSharp_svg = (const char*) temp_binary_data_21;
+const char* doubleSharp_svg = (const char*) temp_binary_data_22;
 
 //================== down.svg ==================
-static const unsigned char temp_binary_data_22[] =
+static const unsigned char temp_binary_data_23[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M1.375 13.143q0-.232.179-.411l.893-.893q.179-.179.411-.179t.411.179l7.018 7.018 7.018-7.018q.179-.179.411-.179t.411.179l.893.893q.179.179.179.411t-.179.411l-8.321 8.321q-.179.179-.411.179t-.411-.179"
 "l-8.321-8.321q-.179-.179-.179-.411z\"/></svg>";
 
-const char* down_svg = (const char*) temp_binary_data_22;
+const char* down_svg = (const char*) temp_binary_data_23;
 
 //================== dragTool.svg ==================
-static const unsigned char temp_binary_data_23[] =
+static const unsigned char temp_binary_data_24[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 16q0-.464.339-.804l4.571-4.571q.339-.339.804-.339t.804.339.339.804v2.286h6.857V6.858h-2.286q-.464 0-.804-.339t-.339-.804.339-.804L15.195.34q.339-.339.804-.339t.804.339l4.571 4.571q.339.339.339.80"
 "4t-.339.804-.804.339h-2.286v6.857h6.857v-2.286q0-.464.339-.804t.804-.339.804.339l4.571 4.571q.339.339.339.804t-.339.804l-4.571 4.571q-.339.339-.804.339t-.804-.339-.339-.804v-2.286h-6.857v6.857h2.286q.464 0 .804.339t.339.804-.339.804l-4.571 4.571q-.33"
 "9.339-.804.339t-.804-.339l-4.571-4.571q-.339-.339-.339-.804t.339-.804.804-.339h2.286v-6.857H6.857v2.286q0 .464-.339.804t-.804.339-.804-.339L.339 16.804Q0 16.465 0 16z\"/></svg>";
 
-const char* dragTool_svg = (const char*) temp_binary_data_23;
+const char* dragTool_svg = (const char*) temp_binary_data_24;
 
 //================== drawTool.svg ==================
-static const unsigned char temp_binary_data_24[] =
+static const unsigned char temp_binary_data_25[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M19.563 245.304c-5.514-5.083-5.57-4.462 2.154-24.126 6.312-16.075 18.52-40.915 26.722-54.38 5.078-8.334 5.633-9.843 6.733-18.307 2.196-16.897 5.9-24.999 23.086-50.483 37.439-55.516 70.11-77.57 114.9"
 "11-77.57 25.783.001 41.275 7.508 48.625 23.561 7.389 16.14.63 23.344-18.866 20.112-27.808-4.61-49.155 17.32-86.468 88.828-9.996 19.157-12.125 20.322-43.332 23.707-13.733 1.49-12.4-.206-21.485 27.332l-6.64 20.127-19.752 12.702c-22.939 14.75-19.97 13.7"
 "68-25.688 8.497zm22.268-18.436c12.15-8.855 11.685-8.234 17.855-23.86 22.56-57.13 60.693-114.946 98.855-149.88 14.34-13.127 10.417-12.519-7.23 1.12-40.66 31.427-90.11 100.711-117.068 164.024-8.762 20.578-8.798 20.537 7.588 8.596z\"/></svg>";
 
-const char* drawTool_svg = (const char*) temp_binary_data_24;
+const char* drawTool_svg = (const char*) temp_binary_data_25;
 
 //================== ellipsis.svg ==================
-static const unsigned char temp_binary_data_25[] =
+static const unsigned char temp_binary_data_26[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 16.571v-3.429q0-.714.5-1.214t1.214-.5h3.429q.714 0 1.214.5t.5 1.214v3.429q0 .714-.5 1.214t-1.214.5H1.714q-.714 0-1.214-.5T0 16.571zm9.143 0v-3.429q0-.714.5-1.214t1.214-.5h3.429q.714 0 1.214.5t.5 "
 "1.214v3.429q0 .714-.5 1.214t-1.214.5h-3.429q-.714 0-1.214-.5t-.5-1.214zm9.143 0v-3.429q0-.714.5-1.214t1.214-.5h3.429q.714 0 1.214.5t.5 1.214v3.429q0 .714-.5 1.214t-1.214.5H20q-.714 0-1.214-.5t-.5-1.214z\"/></svg>";
 
-const char* ellipsis_svg = (const char*) temp_binary_data_25;
+const char* ellipsis_svg = (const char*) temp_binary_data_26;
 
 //================== expand.svg ==================
-static const unsigned char temp_binary_data_26[] =
+static const unsigned char temp_binary_data_27[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 16.571v-3.429q0-.714.5-1.214t1.214-.5h7.429V3.999q0-.714.5-1.214t1.214-.5h3.429q.714 0 1.214.5t.5 1.214v7.429h7.429q.714 0 1.214.5t.5 1.214v3.429q0 .714-.5 1.214t-1.214.5H16v7.429q0 .714-.5 1.214"
 "t-1.214.5h-3.429q-.714 0-1.214-.5t-.5-1.214v-7.429H1.714q-.714 0-1.214-.5T0 16.571z\"/></svg>";
 
-const char* expand_svg = (const char*) temp_binary_data_26;
+const char* expand_svg = (const char*) temp_binary_data_27;
 
 //================== fail.svg ==================
-static const unsigned char temp_binary_data_27[] =
+static const unsigned char temp_binary_data_28[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M1.964 23.607q0-.714.5-1.214l5.25-5.25-5.25-5.25q-.5-.5-.5-1.214t.5-1.214l2.429-2.429q.5-.5 1.214-.5t1.214.5l5.25 5.25 5.25-5.25q.5-.5 1.214-.5t1.214.5l2.429 2.429q.5.5.5 1.214t-.5 1.214l-5.25 5.25 "
 "5.25 5.25q.5.5.5 1.214t-.5 1.214l-2.429 2.429q-.5.5-1.214.5t-1.214-.5L12.571 22l-5.25 5.25q-.5.5-1.214.5t-1.214-.5l-2.429-2.429q-.5-.5-.5-1.214z\"/></svg>";
 
-const char* fail_svg = (const char*) temp_binary_data_27;
+const char* fail_svg = (const char*) temp_binary_data_28;
 
 //================== flat.svg ==================
-static const unsigned char temp_binary_data_28[] =
+static const unsigned char temp_binary_data_29[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M33.19.5V102.38Q47.86,89.32,66.08,89q11.39,0,19.52,9.23a30.58,30.58,0,0,1,7.49,19.1q.31,8.28-4.23,19.11c-1.08,3-3.48,6.15-7.16,9.54l-8.79,8c-16,11.46-32.12,23-48.12,34.69V.5h8.46M59.62,109.38a12.72,"
 "12.72,0,0,0-10.08-4.46q-7.8,0-12.69,8.61-3.57,6.66-3.59,31.5v27.38q.35,1.26,18.25-15.61a41.09,41.09,0,0,0,12.7-21,36.29,36.29,0,0,0,1.3-9.53q0-10.52-5.85-16.88Z\"/></svg>";
 
-const char* flat_svg = (const char*) temp_binary_data_28;
+const char* flat_svg = (const char*) temp_binary_data_29;
 
 //================== forward.svg ==================
-static const unsigned char temp_binary_data_29[] =
+static const unsigned char temp_binary_data_30[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M1.607 25.143q0-.464.339-.804l9.482-9.482-9.482-9.482q-.339-.339-.339-.804t.339-.804L4.91.803q.339-.339.804-.339t.804.339l13.25 13.25q.339.339.339.804t-.339.804l-13.25 13.25q-.339.339-.804.339t-.804"
 "-.339l-2.964-2.964q-.339-.339-.339-.804z\"/></svg>";
 
-const char* forward_svg = (const char*) temp_binary_data_29;
+const char* forward_svg = (const char*) temp_binary_data_30;
 
 //================== helio.svg ==================
-static const unsigned char temp_binary_data_30[] =
+static const unsigned char temp_binary_data_31[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18.116 27.232c-2.47-1.238-3.117-.472-1.43 1.729l22.182 28.944 1.735-7.876c.355-1.613 1.848-3.522 3.333-4.263l5.595-2.792-31.415-15.742zM5.022 78.965c-2.506 1.16-2.302 2.102.47 2.102h36.861l-5.141-6"
 ".172c-1.06-1.273-1.61-3.61-1.224-5.226L37.339 64 5.022 78.965zM37.464 122.514c-.603 2.693.286 3.116 1.991.937L62.69 93.768H54.81c-1.658 0-3.831-1.055-4.856-2.358l-4.298-5.467-8.193 36.571zM90.053 123.397c1.695 2.175 2.583 1.757 1.982-.936l-8.27-37.08"
 "6-4.342 5.549c-1.021 1.305-3.195 2.363-4.85 2.363h-7.979l23.46 30.11zM123.475 81.067c2.766 0 2.975-.942.472-2.102L91.632 64l1.35 5.667c.385 1.612-.163 3.95-1.224 5.225l-5.143 6.175h36.86zM113.417 28.912c1.714-2.166 1.084-2.942-1.387-1.743L79.437 42.9"
 "8l5.87 2.834c1.49.72 2.995 2.604 3.363 4.223l1.791 7.869 22.956-28.993zM63.398 4.263c.6-2.691 1.575-2.681 2.173 0l7.885 35.35-6.275-3.08c-1.486-.729-3.9-.725-5.384.002l-6.285 3.084 7.886-35.356z\"/></svg>";
 
-const char* helio_svg = (const char*) temp_binary_data_30;
+const char* helio_svg = (const char*) temp_binary_data_31;
 
 //================== instrument.svg ==================
-static const unsigned char temp_binary_data_31[] =
+static const unsigned char temp_binary_data_32[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M371.906 383.875c-.97.013-1.975.064-3.031.125-20.234 1.171-22.304 6.342-39.469 99.281-13.591 73.593-14.501 77.495-18.344 78.969-5.052 1.939-5.377-5.869-1.125-26.25 6.11-29.28 6.056-32.669-.562-43.21"
 "9-9.231-14.716-9-14.245-9.094-20.469-.088-5.8-3.191-11.654-6.062-11.468-.476.03-14.825 9.15-31.875 20.281l-31 20.25v9.75l5.781 1.313c15.725 3.57 17.483 7.484 14.219 31.343-5.444 39.786 5.186 61.658 33.281 68.469 31.869 7.725 57.672-6.957 65.688-37.34"
 "4l1.375-5.187-3.938-1.594c-12.977-5.192-10.036-22.617 4.094-24.313 4.96-.595 4.665.003 6.406-13.78.572-4.527.442-5.35-1.094-5.845-5.733-1.85-7.473-2.95-9.281-5.875-5.252-8.497 1.163-19.53 11.375-19.53 2.71 0 3.106-.814 4.063-8.5.342-2.75.87-6.198 1.1"
@@ -248,106 +255,112 @@ static const unsigned char temp_binary_data_31[] =
 "7.469-11.626zm-7.375 44.781c-.407.038-.656.327-.656.907 0 1.171-1.822 15.486-2.531 19.812-.459 2.796-.26 3.25 1.53 3.25 8.976 0 13.42-13.799 6.626-20.593-2.286-2.286-4.073-3.459-4.969-3.375zm-164.656 43.25h21.437-21.437zm159.906 1.844c-.3.05-.56.223-"
 ".813.5-.858.945-4.093 17.735-4.093 21.282 0 5.492 10.421-1.222 11.594-7.47.999-5.327-3.783-14.789-6.688-14.312z\"/></svg>";
 
-const char* instrument_svg = (const char*) temp_binary_data_31;
+const char* instrument_svg = (const char*) temp_binary_data_32;
 
 //================== inverseDown.svg ==================
-static const unsigned char temp_binary_data_32[] =
+static const unsigned char temp_binary_data_33[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2.016 11.484c0-3.563 2.906-6.47 6.47-6.47H12v1.97H8.485c-2.484 0-4.5 2.016-4.5 4.5s2.016 4.5 4.5 4.5H9v-1.97l3 3-3 3V18h-.516c-3.563 0-6.47-2.953-6.47-6.516zm12 4.5h7.97V18h-7.97v-2.016zm0-5.484h7."
 "97v2.016h-7.97V10.5zm0-5.484h7.97v1.97h-7.97v-1.97z\"/></svg>";
 
-const char* inverseDown_svg = (const char*) temp_binary_data_32;
+const char* inverseDown_svg = (const char*) temp_binary_data_33;
 
 //================== inverseUp.svg ==================
-static const unsigned char temp_binary_data_33[] =
+static const unsigned char temp_binary_data_34[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2.016 12.516c0 3.563 2.906 6.47 6.47 6.47H12v-1.97H8.485c-2.484 0-4.5-2.016-4.5-4.5s2.016-4.5 4.5-4.5H9v1.97l3-3-3-3V6h-.516c-3.563 0-6.47 2.953-6.47 6.516zm12-4.5h7.97V6h-7.97v2.016zm0 5.484h7.97v"
 "-2.016h-7.97V13.5zm0 5.484h7.97v-1.97h-7.97v1.97z\"/></svg>";
 
-const char* inverseUp_svg = (const char*) temp_binary_data_33;
+const char* inverseUp_svg = (const char*) temp_binary_data_34;
 
 //================== inversion.svg ==================
-static const unsigned char temp_binary_data_34[] =
+static const unsigned char temp_binary_data_35[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9.58 6.13A26.78 26.78 0 0 1 24.32 0v4.91a21.82 21.82 0 0 0-11.27 4.7zm19.63-1.22V0a26.6 26.6 0 0 1 14.74 6.13l-3.48 3.48a21.82 21.82 0 0 0-11.26-4.7m14.71 8.14 3.47-3.47a26.78 26.78 0 0 1 6.14 14.7"
 "4H48.6a21.82 21.82 0 0 0-4.69-11.27m-39 11.27H0A26.78 26.78 0 0 1 6.13 9.58l3.48 3.47a21.82 21.82 0 0 0-4.7 11.27m21.85 24.44c7.6 0 14.3-3.89 18.24-9.78h-6.02V34.1h14.67v14.66h-4.89v-6.6a26.8 26.8 0 0 1-22 11.49c-11.9 0-22-7.75-25.51-18.48l4.79-1.1a2"
 "2 22 0 0 0 20.72 14.7\"/></svg>";
 
-const char* inversion_svg = (const char*) temp_binary_data_34;
+const char* inversion_svg = (const char*) temp_binary_data_35;
+
+//================== join.svg ==================
+static const unsigned char temp_binary_data_36[] =
+"<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M512 323v-65h160v65zm-224 0v-65h161v65zm-223 0v-65h159v65zm0 123h607v64H65z\"/></svg>";
+
+const char* join_svg = (const char*) temp_binary_data_36;
 
 //================== legato.svg ==================
-static const unsigned char temp_binary_data_35[] =
+static const unsigned char temp_binary_data_37[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M19.5 9.5c-1.03 0-1.9.62-2.29 1.5h-2.92c-.39-.88-1.26-1.5-2.29-1.5s-1.9.62-2.29 1.5H6.79c-.39-.88-1.26-1.5-2.29-1.5C3.12 9.5 2 10.62 2 12s1.12 2.5 2.5 2.5c1.03 0 1.9-.62 2.29-1.5h2.92c.39.88 1.26 1."
 "5 2.29 1.5s1.9-.62 2.29-1.5h2.92c.39.88 1.26 1.5 2.29 1.5 1.38 0 2.5-1.12 2.5-2.5s-1.12-2.5-2.5-2.5\"></path></svg>";
 
-const char* legato_svg = (const char*) temp_binary_data_35;
+const char* legato_svg = (const char*) temp_binary_data_37;
 
 //================== list.svg ==================
-static const unsigned char temp_binary_data_36[] =
+static const unsigned char temp_binary_data_38[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14.4 9H8.6c-.552 0-.6.447-.6 1s.048 1 .6 1h5.8c.552 0 .6-.447.6-1s-.048-1-.6-1zm2 5H8.6c-.552 0-.6.447-.6 1s.048 1 .6 1h7.8c.552 0 .6-.447.6-1s-.048-1-.6-1zM8.6 6h7.8c.552 0 .6-.447.6-1s-.048-1-.6-"
 "1H8.6c-.552 0-.6.447-.6 1s.048 1 .6 1zM5.4 9H3.6c-.552 0-.6.447-.6 1s.048 1 .6 1h1.8c.552 0 .6-.447.6-1s-.048-1-.6-1zm0 5H3.6c-.552 0-.6.447-.6 1s.048 1 .6 1h1.8c.552 0 .6-.447.6-1s-.048-1-.6-1zm0-10H3.6c-.552 0-.6.447-.6 1s.048 1 .6 1h1.8c.552 0 .6-"
 ".447.6-1s-.048-1-.6-1z\"/></svg>";
 
-const char* list_svg = (const char*) temp_binary_data_36;
+const char* list_svg = (const char*) temp_binary_data_38;
 
 //================== lockZoom.svg ==================
-static const unsigned char temp_binary_data_37[] =
+static const unsigned char temp_binary_data_39[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4m-7 7H3v4c0 1.1.9 2 2 2h4v-2H5zM5 5h4V3H5c-1.1 0-2 .9-2 2v4h2zm14-2h-4v2h4v4h2V5c0-1.1-.9-2-2-2m0 16h-4v2h4c1.1 0 2-.9 2-2v-4h-2z\"></path></"
 "svg>";
 
-const char* lockZoom_svg = (const char*) temp_binary_data_37;
+const char* lockZoom_svg = (const char*) temp_binary_data_39;
 
 //================== meter.svg ==================
-static const unsigned char temp_binary_data_38[] =
+static const unsigned char temp_binary_data_40[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M5.82 5.53H4.68v2.16h-1V5.53H0V4.34L3.73 0h.95v4.7h1.14ZM3.68 4.7V1.23L.7 4.7ZM5.82 16.11H4.68v2.17h-1V16.1H0v-1.19l3.73-4.34h.95v4.7h1.14Zm-2.14-.82V11.8L.7 15.3Z\"/></svg>";
 
-const char* meter_svg = (const char*) temp_binary_data_38;
+const char* meter_svg = (const char*) temp_binary_data_40;
 
 //================== metronome.svg ==================
-static const unsigned char temp_binary_data_39[] =
+static const unsigned char temp_binary_data_41[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M173.46 47.75a8.47 8.47 0 0 0-11.96-.37l-7.14 6.67-2.25-2.25a8.47 8.47 0 1 0-11.96 11.96l1.85 1.88-9.31 8.73-6.09-47.28a8.6 8.6 0 0 0-8.63-7.4H81.14a8.6 8.6 0 0 0-8.62 7.4L57.3 145.62a8.55 8.55 0 0 "
 "0 8.62 9.53h67.23a8.56 8.56 0 0 0 8.63-9.53L135.3 95.1l18.65-17.47 3.1 3.07a8.44 8.44 0 0 0 11.95 0 8.47 8.47 0 0 0 0-11.96l-2.7-2.7 6.75-6.32a8.47 8.47 0 0 0 .37-11.96zm-97.18 56.6h-2.12l8.47-67.74h33.86l5.93 47.4-14.4 13.49V62a8.47 8.47 0 0 0-16.93"
 " 0v42.34H76.3z\"/><path d=\"M32.0 55.0h.01v.01h-.01z\"/></svg>";
 
-const char* metronome_svg = (const char*) temp_binary_data_39;
+const char* metronome_svg = (const char*) temp_binary_data_41;
 
 //================== microtoneDown.svg ==================
-static const unsigned char temp_binary_data_40[] =
+static const unsigned char temp_binary_data_42[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0,126.52a2.83,2.83,0,0,1,.89-2L5.36,120a2.78,2.78,0,0,1,4.1,0l35.07,35.06L79.59,120a2.8,2.8,0,0,1,4.11,0l4.46,4.46a2.8,2.8,0,0,1,.9,2,2.84,2.84,0,0,1-.9,2.06L46.59,170.15a2.8,2.8,0,0,1-4.11,0L.9,12"
 "8.58A2.87,2.87,0,0,1,0,126.52Z\"/><path d=\"M0,188.5V0M.5.5V188\"/></svg>";
 
-const char* microtoneDown_svg = (const char*) temp_binary_data_40;
+const char* microtoneDown_svg = (const char*) temp_binary_data_42;
 
 //================== microtoneDown2.svg ==================
-static const unsigned char temp_binary_data_41[] =
+static const unsigned char temp_binary_data_43[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0,126.52a2.83,2.83,0,0,1,.89-2L5.36,120a2.78,2.78,0,0,1,4.1,0l35.07,35.06L79.59,120a2.8,2.8,0,0,1,4.11,0l4.46,4.46a2.8,2.8,0,0,1,.9,2,2.84,2.84,0,0,1-.9,2.06L46.59,170.15a2.8,2.8,0,0,1-4.11,0L.9,12"
 "8.58A2.87,2.87,0,0,1,0,126.52Z\"/><path d=\"M0,89.52a2.83,2.83,0,0,1,.89-2L5.36,83a2.78,2.78,0,0,1,4.1,0l35.07,35.06L79.59,83a2.8,2.8,0,0,1,4.11,0l4.46,4.46a2.8,2.8,0,0,1,.9,2,2.84,2.84,0,0,1-.9,2.06L46.59,133.15a2.8,2.8,0,0,1-4.11,0L.9,91.58A2.87,2."
 "87,0,0,1,0,89.52Z\"/><path d=\"M0,188.5V0M.5.5V188\"/></svg>";
 
-const char* microtoneDown2_svg = (const char*) temp_binary_data_41;
+const char* microtoneDown2_svg = (const char*) temp_binary_data_43;
 
 //================== microtoneUp.svg ==================
-static const unsigned char temp_binary_data_42[] =
+static const unsigned char temp_binary_data_44[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M89.56,71.38a2.85,2.85,0,0,1-.9,2.07l-4.49,4.49a2.84,2.84,0,0,1-4.13,0L44.78,42.67,9.52,77.94a2.84,2.84,0,0,1-4.13,0L.9,73.45A2.85,2.85,0,0,1,0,71.38H0a2.84,2.84,0,0,1,.9-2.06L42.72,27.51a2.82,2.82,"
 "0,0,1,4.13,0L88.66,69.32A2.84,2.84,0,0,1,89.56,71.38Z\"/><path d=\"M0,188.5V0M.5.5V188\"/></svg>";
 
-const char* microtoneUp_svg = (const char*) temp_binary_data_42;
+const char* microtoneUp_svg = (const char*) temp_binary_data_44;
 
 //================== microtoneUp2.svg ==================
-static const unsigned char temp_binary_data_43[] =
+static const unsigned char temp_binary_data_45[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0,108.38a2.82,2.82,0,0,1,.9-2.06L42.72,64.51a2.82,2.82,0,0,1,4.13,0l41.81,41.81a2.82,2.82,0,0,1,0,4.13l-4.49,4.48a2.82,2.82,0,0,1-4.13,0L44.78,79.67,9.52,114.93a2.82,2.82,0,0,1-4.13,0L.9,110.45a2.8"
 "5,2.85,0,0,1-.9-2.07Z\"/><path d=\"M89.56,71.38a2.85,2.85,0,0,1-.9,2.07l-4.49,4.49a2.84,2.84,0,0,1-4.13,0L44.78,42.67,9.52,77.94a2.84,2.84,0,0,1-4.13,0L.9,73.45A2.85,2.85,0,0,1,0,71.38H0a2.84,2.84,0,0,1,.9-2.06L42.72,27.51a2.82,2.82,0,0,1,4.13,0L88.6"
 "6,69.32A2.84,2.84,0,0,1,89.56,71.38Z\"/><path d=\"M0,188.5V0M.5.5V188\"/></svg>";
 
-const char* microtoneUp2_svg = (const char*) temp_binary_data_43;
+const char* microtoneUp2_svg = (const char*) temp_binary_data_45;
 
 //================== mute.svg ==================
-static const unsigned char temp_binary_data_44[] =
+static const unsigned char temp_binary_data_46[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12.563 5.156c-.31 0-.556.087-.782.313l-5.969 5.968H1.157c-.31 0-.586.118-.812.344-.226.227-.344.472-.344.781v6.876c0 .31.117.586.344.812.226.226.503.313.812.313h4.657l5.968 5.968c.226.226.471.312.7"
 "81.313.31 0 .587-.086.813-.313.226-.226.344-.503.344-.812V6.28c0-.31-.118-.586-.344-.812-.226-.226-.502-.313-.813-.313zm4.374 5.188a.673.673 0 0 0-.468.187L15.25 11.75a.677.677 0 0 0 0 .938l3.5 3.5-3.5 3.468a.639.639 0 0 0 0 .907l1.219 1.25a.639.639 "
 "0 0 0 .906 0l3.5-3.5 3.5 3.5a.639.639 0 0 0 .906 0l1.219-1.25a.639.639 0 0 0 0-.907L23 16.188l3.5-3.5a.677.677 0 0 0 0-.938l-1.219-1.219a.639.639 0 0 0-.906 0l-3.5 3.5-3.5-3.5a.602.602 0 0 0-.438-.187z\"/></svg>";
 
-const char* mute_svg = (const char*) temp_binary_data_44;
+const char* mute_svg = (const char*) temp_binary_data_46;
 
 //================== orchestraPit.svg ==================
-static const unsigned char temp_binary_data_45[] =
+static const unsigned char temp_binary_data_47[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M371.906 383.875c-.97.013-1.975.064-3.031.125-20.234 1.171-22.304 6.342-39.469 99.281-13.591 73.593-14.501 77.495-18.344 78.969-5.052 1.939-5.377-5.869-1.125-26.25 6.11-29.28 6.056-32.669-.562-43.21"
 "9-9.231-14.716-9-14.245-9.094-20.469-.088-5.8-3.191-11.654-6.062-11.468-.476.03-14.825 9.15-31.875 20.281l-31 20.25v9.75l5.781 1.313c15.725 3.57 17.483 7.484 14.219 31.343-5.444 39.786 5.186 61.658 33.281 68.469 31.869 7.725 57.672-6.957 65.688-37.34"
 "4l1.375-5.187-3.938-1.594c-12.977-5.192-10.036-22.617 4.094-24.313 4.96-.595 4.665.003 6.406-13.78.572-4.527.442-5.35-1.094-5.845-5.733-1.85-7.473-2.95-9.281-5.875-5.252-8.497 1.163-19.53 11.375-19.53 2.71 0 3.106-.814 4.063-8.5.342-2.75.87-6.198 1.1"
@@ -356,10 +369,10 @@ static const unsigned char temp_binary_data_45[] =
 "7.469-11.626zm-7.375 44.781c-.407.038-.656.327-.656.907 0 1.171-1.822 15.486-2.531 19.812-.459 2.796-.26 3.25 1.53 3.25 8.976 0 13.42-13.799 6.626-20.593-2.286-2.286-4.073-3.459-4.969-3.375zm-164.656 43.25h21.437-21.437zm159.906 1.844c-.3.05-.56.223-"
 ".813.5-.858.945-4.093 17.735-4.093 21.282 0 5.492 10.421-1.222 11.594-7.47.999-5.327-3.783-14.789-6.688-14.312z\"/></svg>";
 
-const char* orchestraPit_svg = (const char*) temp_binary_data_45;
+const char* orchestraPit_svg = (const char*) temp_binary_data_47;
 
 //================== paste.svg ==================
-static const unsigned char temp_binary_data_46[] =
+static const unsigned char temp_binary_data_48[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M324.469 544.063c-4.351-.093-8.826 1.02-13.094 3.343-9.027 4.913-12.034 10.608-12.875 24.375l-.563 9.5-11 .563c-11.67.592-16.033 2.01-18.937 6.156-1.547 2.21-2.195 10.836-.906 12.125.366.367 25.996."
 "656 56.969.656h56.312l.656-2.5c2.68-10.674-5.264-16.42-22.719-16.468l-8.593-.032-.563-9.312c-.665-11.144-3.087-17.095-9-22.157-4.681-4.007-10.093-6.13-15.687-6.25zm-.906 16.687c4.733 0 8.593 3.829 8.593 8.563 0 4.733-3.86 8.593-8.594 8.593-4.733 0-8."
 "562-3.86-8.562-8.593a8.556 8.556 0 0 1 8.563-8.563zm-73.344 9l-3.281 2.031c-1.813 1.12-4.023 3.576-4.907 5.438l-1.594 3.375V743.28l1.75 3.438c.962 1.886 3.011 4.36 4.563 5.5l2.813 2.062 33.687.5 33.688.5.25 8c.148 4.4.47 8.59.718 9.282.358.995 12.348"
@@ -368,37 +381,37 @@ static const unsigned char temp_binary_data_46[] =
 ".222-.856 3.667-1.563 5.437-1.563 1.77 0 3.53-.486 3.906-1.093 1.636-2.647 9.052-4.839 16.438-4.875 8.28-.042 10.353-.844 9.812-3.657l-.344-1.875-20.344-.25-20.343-.281zm85.156 72.094h79.813v14.031h-79.813v-14.031zm0 32h79.813v14.031h-79.813v-14.031z"
 "m0 32.031h79.813v14.031h-79.813v-14.031zm0 32.031h79.813v14h-79.813v-14z\"/></svg>";
 
-const char* paste_svg = (const char*) temp_binary_data_46;
+const char* paste_svg = (const char*) temp_binary_data_48;
 
 //================== patterns.svg ==================
-static const unsigned char temp_binary_data_47[] =
+static const unsigned char temp_binary_data_49[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M3 5.016h18.984v6H3v-6zm6.984 13.968V12h12v6.984h-12zm-6.984 0V12h6v6.984H3z\"/></svg>";
 
-const char* patterns_svg = (const char*) temp_binary_data_47;
+const char* patterns_svg = (const char*) temp_binary_data_49;
 
 //================== piano.svg ==================
-static const unsigned char temp_binary_data_48[] =
+static const unsigned char temp_binary_data_50[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 17.5V3.125h19.375V17.5H0zm3.75-6.25h-.625v-7.5h-2.5v13.125H3.75V11.25zm3.75 0h-.625v-7.5H5v7.5h-.625v5.625H7.5V11.25zm3.75 0h-.625v-7.5H8.75v7.5h-.625v5.625h3.125V11.25zm1.25-7.5v7.5h-.625v5.625H"
 "15V11.25h-.625v-7.5H12.5zm6.25 0h-2.5v7.5h-.625v5.625h3.125V3.75z\"/></svg>";
 
-const char* piano_svg = (const char*) temp_binary_data_48;
+const char* piano_svg = (const char*) temp_binary_data_50;
 
 //================== pianoTrack.svg ==================
-static const unsigned char temp_binary_data_49[] =
+static const unsigned char temp_binary_data_51[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M303.656 339c-1.343-.066-3.37.627-6.562 1.781-10.625 3.843-9.656-3.661-9.656 76 0 38.67-.266 70.281-.563 70.281-.297 0-2.34-.928-4.563-2.062-19.988-10.197-51.947-7.156-72.562 6.875-39.896 27.153-27."
 "828 75.879 20.313 82.063 28.745 3.692 59.562-10.461 71.812-32.97 5.197-9.547 5.512-13.645 5.531-73.655.01-30.388.216-55.25.469-55.25s2.615 2.335 5.25 5.156c3.98 4.261 7.434 6.376 20.313 12.594 27.67 13.358 34.534 21.755 36.906 45.062 1.045 10.27.947 "
 "10.18 7.687 6.875 5.545-2.72 5.541-2.712 5.219-29.438-.488-40.43-3.905-45.733-42-65.312-22.79-11.712-32.866-23.409-34.469-39.938-.557-5.75-.886-7.951-3.125-8.062zm-165.781 27.594v.125h.563v-.125h-.563zM432.813 544.28v.032h.437v-.032h-.438z\"/></svg>";
 
-const char* pianoTrack_svg = (const char*) temp_binary_data_49;
+const char* pianoTrack_svg = (const char*) temp_binary_data_51;
 
 //================== play.svg ==================
-static const unsigned char temp_binary_data_50[] =
+static const unsigned char temp_binary_data_52[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M26.717 15.179L13.019 6.693c-.998-.654-1.814-.171-1.814 1.072v16.474c0 1.243.818 1.725 1.814 1.07l13.699-8.486s.486-.342.486-.822c-.002-.478-.488-.821-.488-.821z\"/></svg>";
 
-const char* play_svg = (const char*) temp_binary_data_50;
+const char* play_svg = (const char*) temp_binary_data_52;
 
 //================== progressIndicator.svg ==================
-static const unsigned char temp_binary_data_51[] =
+static const unsigned char temp_binary_data_53[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\">\n"
 "<g id=\"Indicator\">\n"
 "<g id=\"7\" transform=\"translate(15.158879, 27.380952)\"><path d=\"M2.95666586,-0.149156118 C0.486484747,-1.38700301 -0.159803025,-0.620861235 1.52669605,1.57975571 L23.7087119,30.5238095 L25.4437424,22.6485183 C25.7992623,21.0348161 27.2920895,19.1"
@@ -419,10 +432,10 @@ static const unsigned char temp_binary_data_51[] =
 "</g>\n"
 "</svg>";
 
-const char* progressIndicator_svg = (const char*) temp_binary_data_51;
+const char* progressIndicator_svg = (const char*) temp_binary_data_53;
 
 //================== project.svg ==================
-static const unsigned char temp_binary_data_52[] =
+static const unsigned char temp_binary_data_54[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M351.607 621.429c-22.548-4.826-28.859-29.892-8.585-34.1 14.935-3.101 23.462 10.415 12.44 19.719-4.728 3.99-2.516 5.72 6.511 5.09 17.707-1.234 26.919-11.295 26.03-28.427l-.302-5.816-13.203-.652c-44.9"
 "66-2.22-64.454-15.418-68.285-46.247-2.556-20.573 6.545-35.444 31.853-52.047l10.365-6.8-.568-3.627c-.313-1.995-1.263-7.677-2.112-12.627-3.828-22.325-.387-38.428 10.545-49.36 17.025-17.025 39.477-14.908 49.266 4.643 13.26 26.482 5.22 43.491-30.571 64.6"
 "7-12.552 7.427-12.411 7.233-9.727 13.472 2.477 5.759 2.19 5.66 9.783 3.37 22.51-6.784 48.722 2.08 57.526 19.452 12.566 24.8.535 51.444-27.872 61.725l-6 2.171.25 6.429c1.117 28.782-18.702 45.092-47.344 38.962zm33.636-55.586c2.846-3.429-16.41-51.948-20"
@@ -430,39 +443,39 @@ static const unsigned char temp_binary_data_52[] =
 "27 3.538zm18.57-6.658c8.087-7.455 9.891-12.263 9.866-26.29-.042-22.793-10.624-34.213-29.705-32.054-12.843 1.453-12.943 1.929-4.397 20.899 5.897 13.089 10.649 25.32 13.66 35.155 2.409 7.87 4.12 8.24 10.575 2.29zm-34.543-99.89c21.27-13.965 29.196-27.55"
 "2 24.437-41.882-3.559-10.714-9.422-14.347-18.767-11.63-16.075 4.672-23.465 22.543-19.771 47.806 2.037 13.933 1.75 13.817 14.101 5.707z\"/></svg>";
 
-const char* project_svg = (const char*) temp_binary_data_52;
+const char* project_svg = (const char*) temp_binary_data_54;
 
 //================== record.svg ==================
-static const unsigned char temp_binary_data_53[] =
+static const unsigned char temp_binary_data_55[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M10 3c-3.866 0-7 3.133-7 7 0 3.865 3.134 7 7 7s7-3.135 7-7c0-3.867-3.134-7-7-7z\"></path></svg>";
 
-const char* record_svg = (const char*) temp_binary_data_53;
+const char* record_svg = (const char*) temp_binary_data_55;
 
 //================== redo.svg ==================
-static const unsigned char temp_binary_data_54[] =
+static const unsigned char temp_binary_data_56[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17.333 7.332a1.33 1.33 0 0 0-1.334 1.333v3.412c-6 .664-10.667 5.745-10.667 11.921v1.333c2.993-4.564 7-5.227 10.667-5.319v3.319a1.333 1.333 0 0 0 2.277.943l8.391-8.276-8.391-8.277a1.328 1.328 0 0 0-"
 ".943-.389z\"/></svg>";
 
-const char* redo_svg = (const char*) temp_binary_data_54;
+const char* redo_svg = (const char*) temp_binary_data_56;
 
 //================== refactor.svg ==================
-static const unsigned char temp_binary_data_55[] =
+static const unsigned char temp_binary_data_57[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M8.214 6.429c0 .19-.167.357-.357.357S7.5 6.619 7.5 6.429c0-.77-1.194-1.071-1.786-1.071-.19 0-.357-.167-.357-.357s.167-.357.357-.357c1.038 0 2.5.547 2.5 1.786zm1.786 0c0-2.232-2.266-3.571-4.286-3.571"
 "S1.428 4.197 1.428 6.429c0 .714.29 1.462.759 2.009.212.246.458.48.681.737.792.949 1.462 2.065 1.574 3.326h2.545c.112-1.261.781-2.377 1.574-3.326.223-.257.469-.491.681-.737a3.182 3.182 0 0 0 .759-2.009zm1.429 0c0 1.15-.379 2.143-1.15 2.991s-1.786 2.04"
 "2-1.875 3.237c.324.19.525.547.525.915 0 .268-.1.525-.279.714.179.19.279.446.279.714 0 .368-.19.703-.502.904.089.156.145.346.145.525 0 .725-.569 1.071-1.217 1.071-.29.647-.938 1.071-1.641 1.071s-1.35-.424-1.641-1.071c-.647 0-1.217-.346-1.217-1.071 0-."
 "179.056-.368.145-.525A1.071 1.071 0 0 1 2.499 15c0-.268.1-.525.279-.714a1.04 1.04 0 0 1-.279-.714c0-.368.201-.725.525-.915-.089-1.194-1.105-2.388-1.875-3.237s-1.15-1.842-1.15-2.991c0-3.036 2.891-5 5.714-5s5.714 1.964 5.714 5z\"/></svg>";
 
-const char* refactor_svg = (const char*) temp_binary_data_55;
+const char* refactor_svg = (const char*) temp_binary_data_57;
 
 //================== remove.svg ==================
-static const unsigned char temp_binary_data_56[] =
+static const unsigned char temp_binary_data_58[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16 2.88c-6.846 0-11.101 2.256-10.87 4.086l2.307 18.987c.091.739 3.554 3.162 8.563 3.166 5.011-.005 8.472-2.429 8.565-3.166l2.306-18.987c.23-1.83-4.022-4.086-10.87-4.086zm0 6.866c-5.01-.005-8.565-1."
 "789-8.565-2.456C7.433 6.628 10.99 4.839 16 4.842c5.01-.002 8.566 1.786 8.565 2.448 0 .667-3.554 2.451-8.565 2.456z\"/></svg>";
 
-const char* remove_svg = (const char*) temp_binary_data_56;
+const char* remove_svg = (const char*) temp_binary_data_58;
 
 //================== render.svg ==================
-static const unsigned char temp_binary_data_57[] =
+static const unsigned char temp_binary_data_59[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M264.566 444.154c-1.913-1.548-2.512-4.275-4.943-22.499-1.522-11.405-3.017-20.986-3.323-21.292-.539-.539-1.337 3.562-3.862 19.853-1.472 9.497-3.613 12.7-8.49 12.7-5.05 0-7.013-2.594-8.433-11.141a3482"
 ".716 3482.716 0 0 0-2.858-16.859l-1.637-9.5-9.5-.249c-13.312-.348-14-.578-14-4.663 0-3.724 1.21-4.588 6.43-4.588h3.267l3.348-19.615c3.62-21.209 4.897-24.385 9.805-24.385 6.374 0 7.73 2.67 10.673 21 .926 5.775 2.006 10.845 2.398 11.267.392.422 1.935-7"
 ".228 3.429-17 2.976-19.465 3.93-21.6 9.65-21.6 6.54 0 7.185 1.837 11.085 31.583 1.208 9.213 2.506 16.75 2.885 16.75.38 0 1.525-5.445 2.545-12.101 2.128-13.87 3.72-16.899 8.883-16.899 5.243 0 7.096 3.006 10.675 17.311 3.518 14.063 3.701 14.183 6.86 4."
@@ -473,46 +486,46 @@ static const unsigned char temp_binary_data_57[] =
 ".636-2.765 10.268-11.9 10.367-16.495.178-2.517-5.581-2.979-5.264-6.072 4.177-1.486 4.538-3.355 9.671-4.152 11.408-3.312 7.216-12.237 6.175-14.272-1.664l-2.103-8.095c-1.54-5.923-1.863-4.967-5.467 16.147-2.696 15.79-3.657 19.528-5.539 21.53-2.703 2.877"
 "-6.807 3.152-9.882.662z\"/></svg>";
 
-const char* render_svg = (const char*) temp_binary_data_57;
+const char* render_svg = (const char*) temp_binary_data_59;
 
 //================== reprise.svg ==================
-static const unsigned char temp_binary_data_58[] =
+static const unsigned char temp_binary_data_60[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><g><rect x=\"165\" width=\"60\" height=\"270\"/><rect x=\"105\" width=\"30\" height=\"270\"/><circle cx=\"60\" cy=\"170\" r=\"15\"/><circle cx=\"60\" cy=\"110\" r=\"15\"/></g></svg>\r\n";
 
-const char* reprise_svg = (const char*) temp_binary_data_58;
+const char* reprise_svg = (const char*) temp_binary_data_60;
 
 //================== reset.svg ==================
-static const unsigned char temp_binary_data_59[] =
+static const unsigned char temp_binary_data_61[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17.963 2.88c-7.114 0-12.898 5.699-13.07 12.792H.96l5.886 6.562 5.885-6.562h-4.57c.173-5.282 4.493-9.512 9.802-9.512 5.418 0 9.808 4.405 9.808 9.84s-4.39 9.84-9.808 9.84a9.746 9.746 0 0 1-5.805-1.90"
 "9l-2.25 2.406a13.004 13.004 0 0 0 8.054 2.782c7.222 0 13.078-5.874 13.078-13.12-.002-7.246-5.858-13.12-13.078-13.12zM16.8 8.96v7.504l4.808 4.808 1.584-1.584-4.152-4.152V8.96H16.8z\"/></svg>";
 
-const char* reset_svg = (const char*) temp_binary_data_59;
+const char* reset_svg = (const char*) temp_binary_data_61;
 
 //================== retrograde.svg ==================
-static const unsigned char temp_binary_data_60[] =
+static const unsigned char temp_binary_data_62[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m17 4 4 4-4 4V9h-4V7h4zm-7 3c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1M6 7c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1m1 10h4v-2H7v-3l-4 4 4 4zm7 0c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1"
 " 1 1m4 0c.55 0 1-.45 1-1s-.45-1-1-1-1 .45-1 1 .45 1 1 1\"></path></svg>";
 
-const char* retrograde_svg = (const char*) temp_binary_data_60;
+const char* retrograde_svg = (const char*) temp_binary_data_62;
 
 //================== revision.svg ==================
-static const unsigned char temp_binary_data_61[] =
+static const unsigned char temp_binary_data_63[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16.4 4a2.4 2.4 0 1 0-4.8 0c0 .961.568 1.784 1.384 2.167-.082 1.584-1.27 2.122-3.335 2.896-.87.327-1.829.689-2.649 1.234V6.176A2.396 2.396 0 0 0 6 1.6a2.397 2.397 0 1 0-1 4.576v7.649A2.393 2.393 0 0"
 " 0 3.6 16a2.4 2.4 0 1 0 4.8 0c0-.961-.568-1.784-1.384-2.167.082-1.583 1.271-2.122 3.335-2.896 2.03-.762 4.541-1.711 4.64-4.756A2.398 2.398 0 0 0 16.4 4zM6 2.615a1.384 1.384 0 1 1 0 2.768 1.384 1.384 0 0 1 0-2.768zm0 14.77a1.385 1.385 0 1 1 0-2.77 1.3"
 "85 1.385 0 0 1 0 2.77zm8-12a1.385 1.385 0 1 1 0-2.77 1.385 1.385 0 0 1 0 2.77z\"/></svg>";
 
-const char* revision_svg = (const char*) temp_binary_data_61;
+const char* revision_svg = (const char*) temp_binary_data_63;
 
 //================== routing.svg ==================
-static const unsigned char temp_binary_data_62[] =
+static const unsigned char temp_binary_data_64[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14.18 13.32v-1.641h5v1.641c0 1.094-.703 1.992-1.68 2.344v3.516h-1.68v-3.516a2.456 2.456 0 0 1-1.641-2.344zM10.82 1.68V5h1.68v5h-5V5h1.68V1.68c0-.469.352-.859.82-.859s.82.391.82.859zM17.5 5h1.68v5h-"
 "5V5h1.641V1.68c0-.469.391-.859.859-.859s.82.391.82.859V5zM.82 13.32v-1.641h5v1.641a2.456 2.456 0 0 1-1.641 2.344v3.516h-1.68v-3.516c-.977-.352-1.68-1.25-1.68-2.344zm6.68 0v-1.641h5v1.641c0 1.094-.703 1.992-1.68 2.344v3.516H9.179v-3.516c-.977-.352-1.6"
 "8-1.25-1.68-2.344zM4.18 1.68V5h1.641v5h-5V5h1.68V1.68c0-.469.352-.859.82-.859s.859.391.859.859z\"/></svg>";
 
-const char* routing_svg = (const char*) temp_binary_data_62;
+const char* routing_svg = (const char*) temp_binary_data_64;
 
 //================== selectionTool.svg ==================
-static const unsigned char temp_binary_data_63[] =
+static const unsigned char temp_binary_data_65[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M24 1.333h2.667q1.656 0 2.828 1.172t1.172 2.828V8q0 .552-.391.943t-.943.391-.943-.391T27.999 8V5.333q0-.552-.391-.943t-.943-.391h-2.667q-.552 0-.943-.391t-.391-.943.391-.943.943-.391zM2.667 22.667q."
 "552 0 .943.391t.391.943v2.667q0 .552.391.943t.943.391h2.667q.552 0 .943.391t.391.943-.391.943-.943.391H5.335q-1.656 0-2.828-1.172T1.335 26.67v-2.667q0-.552.391-.943t.943-.391zm0-10.667q.552 0 .943.391t.391.943v5.333q0 .552-.391.943t-.943.391-.943-.39"
 "1-.391-.943v-5.333q0-.552.391-.943T2.667 12zm10.666 16h5.333q.552 0 .943.391t.391.943-.391.943-.943.391h-5.333q-.552 0-.943-.391t-.391-.943.391-.943.943-.391zm-8-26.667H8q.552 0 .943.391t.391.943-.391.943T8 4.001H5.333q-.552 0-.943.391t-.391.943v2.66"
@@ -520,20 +533,20 @@ static const unsigned char temp_binary_data_63[] =
 ".552.391-.943t.943-.391zm0-10.667q.552 0 .943.391t.391.943v5.333q0 .552-.391.943t-.943.391-.943-.391-.391-.943v-5.333q0-.552.391-.943t.943-.391zm-16-10.667h5.333q.552 0 .943.391t.391.943-.391.943-.943.391h-5.333q-.552 0-.943-.391t-.391-.943.391-.943."
 "943-.391z\"/></svg>";
 
-const char* selectionTool_svg = (const char*) temp_binary_data_63;
+const char* selectionTool_svg = (const char*) temp_binary_data_65;
 
 //================== selection.svg ==================
-static const unsigned char temp_binary_data_64[] =
+static const unsigned char temp_binary_data_66[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16.563 16.875h-1.875a.313.313 0 0 1 0-.626h1.563v-1.563a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.313zm0-3.75a.313.313 0 0 1-.313-.313v-1.875a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.3"
 "13zm0-3.75a.313.313 0 0 1-.313-.313V7.187a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.313zm0-3.75a.313.313 0 0 1-.313-.313V3.749h-1.563a.313.313 0 0 1 0-.626h1.875c.172 0 .313.14.313.313v1.875a.314.314 0 0 1-.313.313zm-3.75 11.25h-1.875a.313.313 "
 "0 0 1 0-.626h1.875a.313.313 0 0 1 0 .626zm0-13.125h-1.875a.313.313 0 0 1 0-.626h1.875a.313.313 0 0 1 0 .626zm-3.75 0H7.188a.313.313 0 0 1 0-.626h1.875a.313.313 0 0 1 0 .626zm-3.75 13.125H3.438a.313.313 0 0 1-.313-.313v-1.875a.313.313 0 0 1 .626 0v1.5"
 "63h1.563a.313.313 0 0 1 0 .626zm0-13.125H3.75v1.563a.313.313 0 0 1-.626 0V3.438c0-.172.14-.313.313-.313h1.875a.313.313 0 0 1 0 .626zM3.438 6.875c.172 0 .313.14.313.313v1.875a.313.313 0 0 1-.626 0V7.188c0-.172.14-.313.313-.313zm0 3.75c.172 0 .313.14.3"
 "13.313v1.875a.313.313 0 0 1-.626 0v-1.875c0-.172.14-.313.313-.313zm3.75 5.625h1.875a.313.313 0 0 1 0 .626H7.188a.313.313 0 0 1 0-.626z\"/></svg>";
 
-const char* selection_svg = (const char*) temp_binary_data_64;
+const char* selection_svg = (const char*) temp_binary_data_66;
 
 //================== selectAll.svg ==================
-static const unsigned char temp_binary_data_65[] =
+static const unsigned char temp_binary_data_67[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16.563 16.875h-1.875a.313.313 0 0 1 0-.626h1.563v-1.563a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.313zm0-3.75a.313.313 0 0 1-.313-.313v-1.875a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.3"
 "13zm0-3.75a.313.313 0 0 1-.313-.313V7.187a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.313zm0-3.75a.313.313 0 0 1-.313-.313V3.749h-1.563a.313.313 0 0 1 0-.626h1.875c.172 0 .313.14.313.313v1.875a.314.314 0 0 1-.313.313zm-7.397 7.533a.293.293 0 0 1-"
 ".417 0l-.626-.626-.002-.006-1.993-2.008a.293.293 0 0 1 0-.417l.626-.627a.295.295 0 0 1 .418 0l1.788 1.801 3.759-3.758a.295.295 0 0 1 .418 0l.626.627a.295.295 0 0 1 0 .418l-4.596 4.596zm3.647-9.408h-1.875a.313.313 0 0 1 0-.626h1.875a.313.313 0 0 1 0 ."
@@ -541,10 +554,10 @@ static const unsigned char temp_binary_data_65[] =
 "1.875a.313.313 0 0 1 0 .626zM3.438 6.875c.172 0 .313.14.313.313v1.875a.313.313 0 0 1-.626 0V7.188c0-.172.14-.313.313-.313zm0 3.75c.172 0 .313.14.313.313v1.875a.313.313 0 0 1-.626 0v-1.875c0-.172.14-.313.313-.313zm3.75 5.625h1.875a.313.313 0 0 1 0 .62"
 "6H7.188a.313.313 0 0 1 0-.626zm3.75 0h1.875a.313.313 0 0 1 0 .626h-1.875a.313.313 0 0 1 0-.626z\"/></svg>";
 
-const char* selectAll_svg = (const char*) temp_binary_data_65;
+const char* selectAll_svg = (const char*) temp_binary_data_67;
 
 //================== selectNone.svg ==================
-static const unsigned char temp_binary_data_66[] =
+static const unsigned char temp_binary_data_68[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16.563 16.875h-1.875a.313.313 0 0 1 0-.626h1.563v-1.563a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.313zm0-3.75a.313.313 0 0 1-.313-.313v-1.875a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.3"
 "13zm0-3.75a.313.313 0 0 1-.313-.313V7.187a.313.313 0 0 1 .626 0v1.875a.314.314 0 0 1-.313.313zm0-3.75a.313.313 0 0 1-.313-.313V3.749h-1.563a.313.313 0 0 1 0-.626h1.875c.172 0 .313.14.313.313v1.875a.314.314 0 0 1-.313.313zm-3.75 11.25h-1.875a.313.313 "
 "0 0 1 0-.626h1.875a.313.313 0 0 1 0 .626zm0-13.125h-1.875a.313.313 0 0 1 0-.626h1.875a.313.313 0 0 1 0 .626zm-3.75 0H7.188a.313.313 0 0 1 0-.626h1.875a.313.313 0 0 1 0 .626zm-3.75 13.125H3.438a.313.313 0 0 1-.313-.313v-1.875a.313.313 0 0 1 .626 0v1.5"
@@ -552,134 +565,134 @@ static const unsigned char temp_binary_data_66[] =
 "13.313v1.875a.313.313 0 0 1-.626 0v-1.875c0-.172.14-.313.313-.313zm9.522 1.702l-.634.634a.298.298 0 0 1-.422 0l-1.794-1.794-1.794 1.794a.298.298 0 0 1-.422 0l-.633-.634a.298.298 0 0 1 0-.422l1.794-1.794-1.794-1.794a.298.298 0 0 1 0-.422l.633-.633a.29"
 "8.298 0 0 1 .422 0l1.794 1.794 1.794-1.794a.298.298 0 0 1 .422 0l.634.633a.3.3 0 0 1 0 .422l-1.794 1.794 1.794 1.794a.3.3 0 0 1 0 .422zM7.188 16.25h1.875a.313.313 0 0 1 0 .626H7.188a.313.313 0 0 1 0-.626z\"/></svg>";
 
-const char* selectNone_svg = (const char*) temp_binary_data_66;
+const char* selectNone_svg = (const char*) temp_binary_data_68;
 
 //================== settings.svg ==================
-static const unsigned char temp_binary_data_67[] =
+static const unsigned char temp_binary_data_69[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M51.025 162.898l.26-41.25h24l.262 41.25.26 41.25H50.765l.26-41.25zm70.22 40.004c-.276-.72-.38-10.52-.23-21.781l.27-20.473h25v43l-12.269.28c-9.387.216-12.387-.025-12.771-1.026zm70.54-52.754v-54h25v10"
 "8h-25v-54zm-81.138 1.09l-2.361-1.909-.32-14.366-.32-14.367 2.142-2.724 2.143-2.724h43.71l2.072 2.635 2.073 2.635v27.82l-2.455 2.455-2.454 2.455h-41.87l-2.36-1.91zm-67.861-36.763c-.825-.323-2.288-1.274-3.25-2.113l-1.75-1.524v-30.38l2.105-1.905 2.105-1"
 ".905h42.58l2.105 1.905 2.105 1.905v15.154c0 11.5-.342 15.622-1.418 17.095l-1.418 1.94-20.832.209c-11.458.114-21.507-.057-22.332-.38zm78.47-7.546c-.27-.705-.373-24.906-.23-53.781l.26-52.5h25v107l-12.27.28c-9.26.213-12.39-.032-12.76-1zm59.752-19.338l-2"
 ".222-1.556V54.26l2.222-1.556 2.223-1.557h42.555l2 2 2 2v30l-2 2-2 2H183.23l-2.223-1.557zM51.482 69.511c-.383-.383-.696-16.146-.696-35.03V.148h25.026l-.263 34.75-.263 34.75-11.554.28c-6.354.154-11.866-.034-12.25-.417zm140.304-47.363v-22h25v44h-25v-22z"
 "m86.15-21.5v-.5h1v1h-1v-.5zm-277 201v-.5h1v1h-1v-.5z\"/></svg>";
 
-const char* settings_svg = (const char*) temp_binary_data_67;
+const char* settings_svg = (const char*) temp_binary_data_69;
 
 //================== sharp.svg ==================
-static const unsigned char temp_binary_data_68[] =
+static const unsigned char temp_binary_data_70[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M47.75,124V79.63L76,74v44.39Zm55.34-11.34-19.67,3.78V72.08l19.67-3.78V50.35L83.42,54.13V8.79H76V55.07L47.75,60.74V17.29H40.37V62.63L20.7,66.41v18l19.67-3.78V125L20.7,128.75v17.94l19.67-3.77v45.33h7."
 "38V142L76,136.3v43.45h7.38V134.41l19.67-2.83Z\"/></svg>";
 
-const char* sharp_svg = (const char*) temp_binary_data_68;
+const char* sharp_svg = (const char*) temp_binary_data_70;
 
 //================== snap.svg ==================
-static const unsigned char temp_binary_data_69[] =
+static const unsigned char temp_binary_data_71[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12.165 17.86c-.028.309.217.584.545.611l3.985.326c.329.027.621-.203.65-.512l.311-3.287-5.18-.426-.311 3.288zm-9.821-2.861.312 3.287c.028.309.321.539.65.512l3.985-.326c.328-.027.573-.303.546-.611l-.3"
 "12-3.287-5.181.425zm-.513-5.416.321 3.391 5.181-.426-.322-3.387A2.949 2.949 0 0 1 7 8.911c0-1.555 1.346-2.82 3-2.82s3 1.266 3 2.82c0 .084-.004.168-.012.25l-.321 3.387 5.181.426.321-3.391c.021-.225.03-.449.03-.672C18.2 4.659 14.522 1.2 10 1.2S1.8 4.65"
 "9 1.8 8.911c0 .223.011.447.031.672z\"/></svg>";
 
-const char* snap_svg = (const char*) temp_binary_data_69;
+const char* snap_svg = (const char*) temp_binary_data_71;
 
 //================== staccato.svg ==================
-static const unsigned char temp_binary_data_70[] =
+static const unsigned char temp_binary_data_72[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2m-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2\"></path></svg>";
 
-const char* staccato_svg = (const char*) temp_binary_data_70;
+const char* staccato_svg = (const char*) temp_binary_data_72;
 
 //================== stop.svg ==================
-static const unsigned char temp_binary_data_71[] =
+static const unsigned char temp_binary_data_73[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16 4.995v9.808c0 0.661-0.536 1.197-1.196 1.197h-9.807c-0.551 0-0.997-0.446-0.997-0.997v-9.807c0-0.66 0.536-1.196 1.196-1.196h9.808c0.55 0 0.996 0.446 0.996 0.995z\"></path></svg>";
 
-const char* stop_svg = (const char*) temp_binary_data_71;
+const char* stop_svg = (const char*) temp_binary_data_73;
 
 //================== stretchLeft.svg ==================
-static const unsigned char temp_binary_data_72[] =
+static const unsigned char temp_binary_data_74[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2.75 14.857q0-.464.339-.804L16.339.803q.339-.339.804-.339t.804.339l2.964 2.964q.339.339.339.804t-.339.804l-9.482 9.482 9.482 9.482q.339.339.339.804t-.339.804l-2.964 2.964q-.339.339-.804.339t-.804-."
 "339l-13.25-13.25q-.339-.339-.339-.804z\"/></svg>";
 
-const char* stretchLeft_svg = (const char*) temp_binary_data_72;
+const char* stretchLeft_svg = (const char*) temp_binary_data_74;
 
 //================== stretchRight.svg ==================
-static const unsigned char temp_binary_data_73[] =
+static const unsigned char temp_binary_data_75[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M1.607 25.143q0-.464.339-.804l9.482-9.482-9.482-9.482q-.339-.339-.339-.804t.339-.804L4.91.803q.339-.339.804-.339t.804.339l13.25 13.25q.339.339.339.804t-.339.804l-13.25 13.25q-.339.339-.804.339t-.804"
 "-.339l-2.964-2.964q-.339-.339-.339-.804z\"/></svg>";
 
-const char* stretchRight_svg = (const char*) temp_binary_data_73;
+const char* stretchRight_svg = (const char*) temp_binary_data_75;
 
 //================== submenu.svg ==================
-static const unsigned char temp_binary_data_74[] =
+static const unsigned char temp_binary_data_76[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M1.607 25.143q0-.464.339-.804l9.482-9.482-9.482-9.482q-.339-.339-.339-.804t.339-.804L4.91.803q.339-.339.804-.339t.804.339l13.25 13.25q.339.339.339.804t-.339.804l-13.25 13.25q-.339.339-.804.339t-.804"
 "-.339l-2.964-2.964q-.339-.339-.339-.804z\"/></svg>";
 
-const char* submenu_svg = (const char*) temp_binary_data_74;
+const char* submenu_svg = (const char*) temp_binary_data_76;
 
 //================== success.svg ==================
-static const unsigned char temp_binary_data_75[] =
+static const unsigned char temp_binary_data_77[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2.161 16.571q0-.714.5-1.214l2.429-2.429q.5-.5 1.214-.5t1.214.5l5.25 5.268L24.482 6.464q.5-.5 1.214-.5t1.214.5l2.429 2.429q.5.5.5 1.214t-.5 1.214L13.982 26.678q-.5.5-1.214.5t-1.214-.5l-8.893-8.893q-"
 ".5-.5-.5-1.214z\"/></svg>";
 
-const char* success_svg = (const char*) temp_binary_data_75;
+const char* success_svg = (const char*) temp_binary_data_77;
 
 //================== tag.svg ==================
-static const unsigned char temp_binary_data_76[] =
+static const unsigned char temp_binary_data_78[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 7c0-1.109-0.891-2-2-2s-2 0.891-2 2 0.891 2 2 2 2-0.891 2-2zM23.672 16c0 0.531-0.219 1.047-0.578 1.406l-7.672 7.688c-0.375 0.359-0.891 0.578-1.422 0.578s-1.047-0.219-1.406-0.578l-11.172-11.188c-0."
 "797-0.781-1.422-2.297-1.422-3.406v-6.5c0-1.094 0.906-2 2-2h6.5c1.109 0 2.625 0.625 3.422 1.422l11.172 11.156c0.359 0.375 0.578 0.891 0.578 1.422z\"></path></svg>";
 
-const char* tag_svg = (const char*) temp_binary_data_76;
+const char* tag_svg = (const char*) temp_binary_data_78;
 
 //================== timelineNext.svg ==================
-static const unsigned char temp_binary_data_77[] =
+static const unsigned char temp_binary_data_79[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M15.053 6.912c-.324-.314-.765-.512-1.253-.512A1.8 1.8 0 0 0 12 8.201v9A1.8 1.8 0 0 0 13.8 19a1.78 1.78 0 0 0 1.253-.512L21 12.7l-5.947-5.8zm-9 0C5.73 6.598 5.288 6.4 4.8 6.4A1.8 1.8 0 0 0 3 8.201v9A"
 "1.8 1.8 0 0 0 4.8 19a1.78 1.78 0 0 0 1.253-.512L12 12.7 6.053 6.9z\"/></svg>";
 
-const char* timelineNext_svg = (const char*) temp_binary_data_77;
+const char* timelineNext_svg = (const char*) temp_binary_data_79;
 
 //================== timelinePrevious.svg ==================
-static const unsigned char temp_binary_data_78[] =
+static const unsigned char temp_binary_data_80[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M10.2 6.4a1.79 1.79 0 0 0-1.253.512L3 12.7l5.944 5.8A1.8 1.8 0 0 0 12 17.201v-9A1.8 1.8 0 0 0 10.2 6.4zm9 0a1.79 1.79 0 0 0-1.253.512L12 12.7l5.944 5.8A1.8 1.8 0 0 0 21 17.201v-9A1.8 1.8 0 0 0 19.2 "
 "6.4z\"/></svg>";
 
-const char* timelinePrevious_svg = (const char*) temp_binary_data_78;
+const char* timelinePrevious_svg = (const char*) temp_binary_data_80;
 
 //================== toggleOff.svg ==================
-static const unsigned char temp_binary_data_79[] =
+static const unsigned char temp_binary_data_81[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9 7q0-.813-.316-1.551t-.855-1.277-1.277-.855-1.551-.316-1.551.316-1.277.855-.855 1.277T1.002 7t.316 1.551.855 1.277 1.277.855 1.551.316 1.551-.316 1.277-.855.855-1.277T9 7zm6 0q0-.813-.316-1.551t-."
 "855-1.277-1.277-.855-1.551-.316H7.985q.93.703 1.473 1.75t.543 2.25-.543 2.25-1.473 1.75h3.016q.813 0 1.551-.316t1.277-.855.855-1.277T15 7.002zm1 0q0 1.016-.398 1.941t-1.066 1.594-1.594 1.066-1.941.398h-6q-1.016 0-1.941-.398t-1.594-1.066T.4 8.941.002 "
 "7 .4 5.059t1.066-1.594T3.06 2.399t1.941-.398h6q1.016 0 1.941.398t1.594 1.066 1.066 1.594T16 7z\"/></svg>";
 
-const char* toggleOff_svg = (const char*) temp_binary_data_79;
+const char* toggleOff_svg = (const char*) temp_binary_data_81;
 
 //================== toggleOn.svg ==================
-static const unsigned char temp_binary_data_80[] =
+static const unsigned char temp_binary_data_82[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 7q0-1.016.398-1.941t1.066-1.594 1.594-1.066 1.941-.398h6q1.016 0 1.941.398t1.594 1.066T15.6 5.059 15.998 7 15.6 8.941t-1.066 1.594-1.594 1.066-1.941.398h-6q-1.016 0-1.941-.398t-1.594-1.066T.398 8"
 ".941 0 7zm11 4q.813 0 1.551-.316t1.277-.855.855-1.277.316-1.551-.316-1.551-.855-1.277-1.277-.855T11 3.002t-1.551.316-1.277.855-.855 1.277-.316 1.551.316 1.551.855 1.277 1.277.855T11 11z\"/></svg>";
 
-const char* toggleOn_svg = (const char*) temp_binary_data_80;
+const char* toggleOn_svg = (const char*) temp_binary_data_82;
 
 //================== undo.svg ==================
-static const unsigned char temp_binary_data_81[] =
+static const unsigned char temp_binary_data_83[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16 12.079V8.667a1.335 1.335 0 0 0-2.277-.944L5.332 16l8.391 8.276a1.33 1.33 0 0 0 1.886 0c.26-.26.391-.603.391-.943v-3.319c3.667.091 7.673.755 10.667 5.319V24C26.667 17.823 22 12.743 16 12.079z\"/>"
 "</svg>";
 
-const char* undo_svg = (const char*) temp_binary_data_81;
+const char* undo_svg = (const char*) temp_binary_data_83;
 
 //================== up.svg ==================
-static const unsigned char temp_binary_data_82[] =
+static const unsigned char temp_binary_data_84[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M1.375 21.143q0-.232.179-.411l8.321-8.321q.179-.179.411-.179t.411.179l8.321 8.321q.179.179.179.411t-.179.411l-.893.893q-.179.179-.411.179t-.411-.179l-7.018-7.018-7.018 7.018q-.179.179-.411.179t-.411"
 "-.179l-.893-.893q-.179-.179-.179-.411z\"/></svg>";
 
-const char* up_svg = (const char*) temp_binary_data_82;
+const char* up_svg = (const char*) temp_binary_data_84;
 
 //================== versionControl.svg ==================
-static const unsigned char temp_binary_data_83[] =
+static const unsigned char temp_binary_data_85[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M269.857 625.72v-9.5h12.714l.673-9.763c2.24-32.525 11.248-49.243 35.915-66.653 20.34-14.356 20.34-24.813 0-39.17-24.667-17.41-33.675-34.128-35.915-66.652l-.673-9.763h-12.714v-19h159v18.905l-6.25.298"
 "-6.25.297-.654 11c-1.829 30.743-11.201 47.844-35.55 64.867-20.986 14.671-20.667 24.656 1.285 40.217 22.999 16.302 34.366 37.86 34.433 65.297.023 9.687.327 10.12 7.103 10.12h5.883v19h-159v-9.5zm134.9-12.75c-.218-7.123-.189-7.1-26.4-21.657l-25-13.886.0"
 "1-32.354c.014-41.155-.061-40.944 19.557-54.95 9.933-7.092 18.865-15.852 22.332-21.902 2.256-3.938 4.481-4.351-18.004 3.347-28.065 9.607-28.104 9.606-59.809-1.486-16.187-5.664-15.916-5.706-10.984 1.725 3.792 5.712 8.44 9.858 24.292 21.662 14.603 10.87"
 "4 14.556 10.712 14.865 50.75l.26 33.5-25.497 14-25.495 14-.014 5.25-.013 5.25h110l-.1-3.25z\"/></svg>";
 
-const char* versionControl_svg = (const char*) temp_binary_data_83;
+const char* versionControl_svg = (const char*) temp_binary_data_85;
 
 //================== volumeUp.svg ==================
-static const unsigned char temp_binary_data_84[] =
+static const unsigned char temp_binary_data_86[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 19.429v-6.857c0-.31.113-.577.339-.804.226-.227.494-.34.804-.339h4.679l5.946-5.946c.226-.226.494-.339.804-.339.31 0 .578.113.804.339.226.226.339.494.339.804v19.429a1.1 1.1 0 0 1-.339.804c-.226.227"
 "-.494.34-.804.339-.31 0-.578-.114-.804-.339l-5.946-5.946H1.143a1.1 1.1 0 0 1-.804-.339A1.094 1.094 0 0 1 0 19.431v-.002m16.214-.286c0-.25.071-.461.214-.634.143-.173.315-.321.518-.446a8.63 8.63 0 0 0 .607-.411c.202-.15.375-.36.518-.634.143-.273.215-.6"
 "13.214-1.018 0-.405-.072-.745-.214-1.018a1.793 1.793 0 0 0-.518-.634 9.307 9.307 0 0 0-.607-.411 2.125 2.125 0 0 1-.518-.446.949.949 0 0 1-.214-.634c0-.321.113-.592.339-.813.226-.22.494-.33.804-.33.179 0 .327.03.446.089.833.321 1.503.875 2.009 1.661a"
@@ -687,78 +700,78 @@ static const unsigned char temp_binary_data_84[] =
 "4 6.754 0 0 0-.741-3.098 6.723 6.723 0 0 0-2.063-2.42c-.238-.179-.69-.44-1.357-.786-.464-.238-.696-.59-.696-1.054 0-.31.113-.577.339-.804.226-.227.494-.34.804-.339.155 0 .31.03.464.089 1.667.703 3.006 1.825 4.018 3.366 1.012 1.541 1.518 3.223 1.518 5"
 ".045s-.506 3.504-1.518 5.045-2.351 2.663-4.018 3.366c-.155.06-.303.089-.446.089-.321 0-.595-.113-.821-.339a1.099 1.099 0 0 1-.339-.804l-.001.002z\"/></svg>";
 
-const char* volumeUp_svg = (const char*) temp_binary_data_84;
+const char* volumeUp_svg = (const char*) temp_binary_data_86;
 
 //================== volumeDown.svg ==================
-static const unsigned char temp_binary_data_85[] =
+static const unsigned char temp_binary_data_87[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 19.429v-6.857c0-.31.113-.577.339-.804.226-.227.494-.34.804-.339h4.679l5.946-5.946c.226-.226.494-.339.804-.339.31 0 .578.113.804.339.226.226.339.494.339.804v19.429a1.1 1.1 0 0 1-.339.804c-.226.227"
 "-.494.34-.804.339-.31 0-.578-.114-.804-.339l-5.946-5.946H1.143a1.1 1.1 0 0 1-.804-.339A1.094 1.094 0 0 1 0 19.431v-.002m16.214-.286c0-.25.071-.461.214-.634.143-.173.315-.321.518-.446a8.63 8.63 0 0 0 .607-.411c.202-.15.375-.36.518-.634.143-.273.215-.6"
 "13.214-1.018 0-.405-.072-.745-.214-1.018a1.793 1.793 0 0 0-.518-.634 9.307 9.307 0 0 0-.607-.411 2.125 2.125 0 0 1-.518-.446.949.949 0 0 1-.214-.634c0-.321.113-.592.339-.813.226-.22.494-.33.804-.33.179 0 .327.03.446.089.833.321 1.503.875 2.009 1.661a"
 "4.6 4.6 0 0 1 0 5.063 4.22 4.22 0 0 1-2.009 1.67.998.998 0 0 1-.446.089c-.31 0-.577-.11-.804-.33a1.085 1.085 0 0 1-.339-.813z\"/></svg>";
 
-const char* volumeDown_svg = (const char*) temp_binary_data_85;
+const char* volumeDown_svg = (const char*) temp_binary_data_87;
 
 //================== volumePanel.svg ==================
-static const unsigned char temp_binary_data_86[] =
+static const unsigned char temp_binary_data_88[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M20.3 0h-4c-.7 0-1.3.6-1.3 1.3v21.2h6.6V1.3C21.6.6 21 0 20.3 0zm-7.5 3.8h-4c-.7 0-1.3.6-1.3 1.2v17.5h6.6V5c0-.6-.6-1.2-1.3-1.2zM5.3 15h-4c-.7 0-1.3.6-1.3 1.3v6.2h6.6v-6.2c0-.7-.6-1.3-1.3-1.3z\"/></s"
 "vg>\n";
 
-const char* volumePanel_svg = (const char*) temp_binary_data_86;
+const char* volumePanel_svg = (const char*) temp_binary_data_88;
 
 //================== zoomIn.svg ==================
-static const unsigned char temp_binary_data_87[] =
+static const unsigned char temp_binary_data_89[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17.333 14.667h-2.667V12a.667.667 0 0 0-1.334 0v2.667h-2.667a.667.667 0 0 0 0 1.334h2.667v2.667a.667.667 0 0 0 1.334 0v-2.667h2.667a.667.667 0 0 0 0-1.334z\"/><path d=\"M24.576 19.96l-1.713-1.716a9."
 "253 9.253 0 0 0 .472-2.911c0-5.145-4.188-9.333-9.333-9.333s-9.333 4.188-9.333 9.333 4.188 9.333 9.333 9.333a9.264 9.264 0 0 0 2.912-.472l3.097 3.093.085.073a4.37 4.37 0 0 0 2.805 1.045 4.178 4.178 0 0 0 4.173-4.175c0-1.12-.437-2.171-1.232-2.957l-1.26"
 "7-1.315zM7.333 15.333c0-3.676 2.991-6.667 6.667-6.667s6.667 2.991 6.667 6.667S17.676 22 14 22s-6.667-2.991-6.667-6.667z\"/></svg>";
 
-const char* zoomIn_svg = (const char*) temp_binary_data_87;
+const char* zoomIn_svg = (const char*) temp_binary_data_89;
 
 //================== zoomOut.svg ==================
-static const unsigned char temp_binary_data_88[] =
+static const unsigned char temp_binary_data_90[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17.333 14.667h-6.667a.667.667 0 0 0 0 1.334h6.667a.667.667 0 0 0 0-1.334z\"/><path d=\"M25.841 21.275l-1.265-1.315-1.715-1.716a9.253 9.253 0 0 0 .472-2.911C23.333 10.188 19.146 6 14 6s-9.333 4.188-"
 "9.333 9.333S8.854 24.666 14 24.666a9.264 9.264 0 0 0 2.912-.472l3.096 3.093.087.073a4.37 4.37 0 0 0 2.805 1.045 4.178 4.178 0 0 0 4.173-4.175c0-1.12-.437-2.171-1.232-2.957zM7.333 15.333c0-3.676 2.991-6.667 6.667-6.667s6.667 2.991 6.667 6.667S17.676 2"
 "2 14 22s-6.667-2.991-6.667-6.667z\"/></svg>";
 
-const char* zoomOut_svg = (const char*) temp_binary_data_88;
+const char* zoomOut_svg = (const char*) temp_binary_data_90;
 
 //================== zoomToFit.svg ==================
-static const unsigned char temp_binary_data_89[] =
+static const unsigned char temp_binary_data_91[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M13 4c-3.859 0-7 3.141-7 7 0 .763.127 1.495.354 2.183l-1.26 1.262-1.008 1.045a3.076 3.076 0 0 0-.891 2.185 3.134 3.134 0 0 0 3.13 3.131c.757 0 1.504-.278 2.104-.784l.064-.055.061-.061 2.262-2.259A6."
 "983 6.983 0 0 0 13 18c3.859 0 7-3.141 7-7s-3.141-7-7-7zm0 12c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.243 5-5 5z\"/><path d=\"M13 7c-2.205 0-4 1.794-4 4s1.795 4 4 4 4-1.794 4-4-1.795-4-4-4zm0 7a3.001 3.001 0 0 1 0-6 3.001 3.001 0 0 1 0 6z\"/></"
 "svg>";
 
-const char* zoomToFit_svg = (const char*) temp_binary_data_89;
+const char* zoomToFit_svg = (const char*) temp_binary_data_91;
 
 //================== noise.png ==================
-static const unsigned char temp_binary_data_90[] =
+static const unsigned char temp_binary_data_92[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,128,0,0,0,128,2,3,0,0,0,190,80,137,88,0,0,0,12,80,76,84,69,0,0,0,125,125,125,208,208,208,19,19,19,200,65,225,52,0,0,0,1,116,82,78,83,0,64,230,216,102,0,0,0,55,73,68,65,84,88,195,237,207,49,13,0,48,12,
 3,176,104,72,198,102,132,198,95,133,144,183,135,205,192,121,69,78,145,234,23,185,69,26,11,11,11,11,11,11,11,11,11,11,11,11,11,11,139,205,139,1,240,8,77,95,251,215,241,198,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* noise_png = (const char*) temp_binary_data_90;
+const char* noise_png = (const char*) temp_binary_data_92;
 
 //================== stripes.png ==================
-static const unsigned char temp_binary_data_91[] =
+static const unsigned char temp_binary_data_93[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,1,0,0,0,0,64,2,3,0,0,0,136,51,65,45,0,0,0,9,80,76,84,69,0,0,0,255,255,255,0,0,0,115,198,131,113,0,0,0,2,116,82,78,83,0,51,201,67,172,46,0,0,0,70,73,68,65,84,88,195,237,210,49,17,0,32,12,197,208,28,99,
 157,224,162,18,43,2,161,56,96,249,3,75,46,14,114,143,53,89,84,103,177,195,56,97,204,202,162,43,139,255,19,116,160,3,29,232,64,7,58,208,129,14,116,160,3,29,232,64,7,58,120,116,1,143,170,82,46,104,73,233,37,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* stripes_png = (const char*) temp_binary_data_91;
+const char* stripes_png = (const char*) temp_binary_data_93;
 
 //================== copyingCursor.gif ==================
-static const unsigned char temp_binary_data_92[] =
+static const unsigned char temp_binary_data_94[] =
 { 71,73,70,56,57,97,21,0,21,0,161,0,0,0,0,0,255,255,255,0,0,0,0,0,0,33,249,4,1,10,0,2,0,44,0,0,0,0,21,0,21,0,0,2,72,4,132,169,171,16,199,98,11,79,90,71,161,93,56,111,78,133,218,215,137,31,82,154,100,200,86,91,202,142,12,108,212,87,235,174,15,54,214,126,
 237,226,37,96,59,141,16,37,18,201,142,157,230,204,35,112,252,114,147,74,83,5,50,68,147,208,217,16,71,149,252,124,5,0,59,0,0 };
 
-const char* copyingCursor_gif = (const char*) temp_binary_data_92;
+const char* copyingCursor_gif = (const char*) temp_binary_data_94;
 
 //================== erasingCursor.gif ==================
-static const unsigned char temp_binary_data_93[] =
+static const unsigned char temp_binary_data_95[] =
 { 71,73,70,56,57,97,21,0,21,0,161,0,0,0,0,0,255,255,255,0,0,0,0,0,0,33,249,4,1,10,0,2,0,44,0,0,0,0,21,0,21,0,0,2,69,4,132,169,171,16,199,98,11,79,90,71,161,93,56,111,78,133,218,215,137,31,82,154,100,200,86,91,202,142,12,108,212,87,235,174,15,54,214,126,
 237,226,37,96,59,141,16,133,219,129,130,73,153,224,232,248,229,38,21,162,243,169,180,74,140,205,211,207,87,0,0,59,0,0 };
 
-const char* erasingCursor_gif = (const char*) temp_binary_data_93;
+const char* erasingCursor_gif = (const char*) temp_binary_data_95;
 
 //================== builtInMetronome1.wav ==================
-static const unsigned char temp_binary_data_94[] =
+static const unsigned char temp_binary_data_96[] =
 { 82,73,70,70,104,60,0,0,87,65,86,69,102,109,116,32,16,0,0,0,1,0,2,0,128,187,0,0,0,238,2,0,4,0,16,0,100,97,116,97,68,60,0,0,255,255,255,255,5,0,9,0,5,255,71,255,91,251,143,251,192,247,194,247,33,246,62,246,167,244,145,244,88,243,64,243,101,243,49,243,19,
 246,157,245,122,250,29,250,84,255,79,255,47,5,123,5,185,11,183,11,12,18,154,17,3,23,226,22,211,23,200,23,189,20,81,20,46,16,105,15,254,10,85,10,59,5,5,5,232,255,205,255,247,252,157,252,132,252,71,252,102,252,25,253,64,251,12,253,181,249,188,251,253,247,
 44,249,225,245,35,246,190,244,125,244,208,244,237,243,233,245,219,243,6,248,188,245,244,250,169,249,133,254,173,254,163,1,129,2,94,4,35,5,214,7,111,8,78,11,103,11,87,14,244,13,98,16,124,15,79,15,248,13,105,11,117,10,24,7,17,7,92,3,26,4,223,255,215,0,
@@ -959,10 +972,10 @@ static const unsigned char temp_binary_data_94[] =
 255,4,0,2,0,255,255,2,0,3,0,254,255,3,0,4,0,0,0,253,255,6,0,5,0,253,255,253,255,7,0,4,0,255,255,254,255,0,0,3,0,2,0,254,255,252,255,1,0,1,0,1,0,254,255,253,255,254,255,2,0,255,255,252,255,254,255,2,0,254,255,254,255,0,0,1,0,254,255,254,255,0,0,0,0,0,
 0,0,0,254,255,1,0,2,0,255,255,255,255,1,0,0,0,0,0,2,0,0,0,254,255,0,0,3,0,2,0,254,255,253,255,3,0,4,0,254,255,253,255,2,0,1,0,255,255,0,0,2,0,255,255,254,255,2,0,1,0,254,255,255,255,2,0,0,0,253,255,2,0,3,0,0,0 };
 
-const char* builtInMetronome1_wav = (const char*) temp_binary_data_94;
+const char* builtInMetronome1_wav = (const char*) temp_binary_data_96;
 
 //================== builtInMetronome2.wav ==================
-static const unsigned char temp_binary_data_95[] =
+static const unsigned char temp_binary_data_97[] =
 { 82,73,70,70,52,60,0,0,87,65,86,69,102,109,116,32,16,0,0,0,1,0,2,0,128,187,0,0,0,238,2,0,4,0,16,0,100,97,116,97,16,60,0,0,255,255,1,0,9,0,2,0,96,255,153,255,14,252,81,252,45,248,59,248,84,246,108,246,232,244,225,244,124,243,93,243,62,243,17,243,123,245,
 243,244,194,249,69,249,142,254,94,254,68,4,112,4,199,10,198,10,42,17,159,16,124,22,59,22,15,24,10,24,93,21,26,21,243,16,69,16,212,11,45,11,41,6,237,5,164,0,161,0,71,253,234,252,136,252,44,252,139,252,238,252,135,251,47,253,37,250,20,252,22,250,40,251,
 68,251,96,251,78,252,209,251,171,253,153,252,10,0,2,254,210,2,82,0,177,4,89,3,72,5,145,5,191,4,234,5,87,3,49,4,34,1,231,1,100,254,74,255,210,250,183,251,198,245,10,246,251,240,100,240,31,238,230,237,45,236,130,236,157,235,13,236,81,237,141,237,42,241,
@@ -1162,10 +1175,10 @@ static const unsigned char temp_binary_data_95[] =
 255,253,255,2,0,0,0,253,255,255,255,1,0,255,255,254,255,1,0,255,255,255,255,1,0,1,0,253,255,255,255,1,0,3,0,0,0,254,255,254,255,1,0,2,0,0,0,253,255,255,255,1,0,1,0,0,0,255,255,254,255,0,0,2,0,1,0,253,255,255,255,2,0,1,0,254,255,255,255,1,0,1,0,254,255,
 0,0,3,0,1,0,252,255,255,255,4,0,1,0,253,255,0,0,2,0,0,0 };
 
-const char* builtInMetronome2_wav = (const char*) temp_binary_data_95;
+const char* builtInMetronome2_wav = (const char*) temp_binary_data_97;
 
 //================== builtInMetronome3.wav ==================
-static const unsigned char temp_binary_data_96[] =
+static const unsigned char temp_binary_data_98[] =
 { 82,73,70,70,52,60,0,0,87,65,86,69,102,109,116,32,16,0,0,0,1,0,2,0,128,187,0,0,0,238,2,0,4,0,16,0,100,97,116,97,16,60,0,0,255,255,1,0,8,0,2,0,119,255,168,255,167,252,223,252,88,249,100,249,201,247,222,247,144,246,137,246,94,245,70,245,39,245,255,244,15,
 247,156,246,179,250,72,250,196,254,156,254,160,3,198,3,43,9,41,9,148,14,31,14,32,19,231,18,113,20,110,20,41,18,241,17,104,14,211,13,14,10,128,9,60,5,10,5,141,0,137,0,174,253,95,253,14,253,194,252,14,253,96,253,54,252,159,253,2,251,168,252,253,250,226,
 251,247,251,20,252,221,252,110,252,5,254,32,253,7,0,74,254,104,2,73,0,251,3,215,2,126,4,188,4,9,4,6,5,214,2,145,3,247,0,157,1,162,254,102,255,153,251,92,252,78,247,135,247,61,243,189,242,204,240,156,240,39,239,111,239,172,238,12,239,31,240,80,240,99,
@@ -1364,10 +1377,10 @@ static const unsigned char temp_binary_data_96[] =
 0,251,255,0,0,7,0,254,255,252,255,3,0,5,0,251,255,254,255,1,0,2,0,255,255,254,255,253,255,3,0,0,0,255,255,253,255,1,0,0,0,255,255,254,255,0,0,0,0,255,255,255,255,0,0,254,255,255,255,3,0,255,255,253,255,0,0,3,0,254,255,254,255,0,0,2,0,2,0,255,255,252,
 255,1,0,4,0,255,255,251,255,1,0,3,0,255,255,254,255,1,0,0,0,254,255,1,0,2,0,253,255,0,0,3,0,255,255,252,255,2,0,3,0,254,255,253,255,0,0,3,0,3,0,252,255,253,255,4,0,4,0,253,255,252,255,3,0,0,0 };
 
-const char* builtInMetronome3_wav = (const char*) temp_binary_data_96;
+const char* builtInMetronome3_wav = (const char*) temp_binary_data_98;
 
 //================== builtInMetronome4.wav ==================
-static const unsigned char temp_binary_data_97[] =
+static const unsigned char temp_binary_data_99[] =
 { 82,73,70,70,52,60,0,0,87,65,86,69,102,109,116,32,16,0,0,0,1,0,2,0,128,187,0,0,0,238,2,0,4,0,16,0,100,97,116,97,16,60,0,0,255,255,1,0,6,0,0,0,159,255,195,255,163,253,202,253,78,251,87,251,50,250,65,250,88,249,83,249,125,248,108,248,89,248,60,248,177,249,
 96,249,64,252,246,251,35,255,5,255,142,2,169,2,120,6,120,6,77,10,248,9,124,13,88,13,114,14,106,14,207,12,171,12,44,10,194,9,25,7,182,6,178,3,142,3,98,0,94,0,96,254,42,254,232,253,176,253,239,253,44,254,80,253,77,254,125,252,166,253,116,252,24,253,40,
 253,58,253,201,253,124,253,153,254,247,253,8,0,205,254,175,1,49,0,210,2,3,2,42,3,86,3,218,2,141,3,1,2,132,2,173,0,35,1,11,255,149,255,225,252,108,253,224,249,7,250,252,246,162,246,70,245,35,245,27,244,80,244,196,243,5,244,203,244,242,244,24,247,22,247,
@@ -1565,20 +1578,20 @@ static const unsigned char temp_binary_data_97[] =
 255,252,255,2,0,255,255,254,255,0,0,2,0,255,255,254,255,255,255,1,0,1,0,254,255,253,255,2,0,3,0,252,255,253,255,4,0,3,0,251,255,253,255,3,0,4,0,254,255,253,255,1,0,2,0,255,255,255,255,0,0,0,0,255,255,1,0,2,0,254,255,252,255,2,0,5,0,254,255,249,255,2,
 0,7,0,255,255,249,255,1,0,5,0,255,255,253,255,0,0,2,0,2,0,254,255,253,255,2,0,4,0,254,255,253,255,2,0,0,0 };
 
-const char* builtInMetronome4_wav = (const char*) temp_binary_data_97;
+const char* builtInMetronome4_wav = (const char*) temp_binary_data_99;
 
 //================== emptyProject.json ==================
-static const unsigned char temp_binary_data_98[] =
+static const unsigned char temp_binary_data_100[] =
 "{\"project\":{\"name\":\"Empty\",\"projectTimeline\":{\"annotations\":{},\"timeSignatures\":{\"timeSignature\":{\"id\":\"00\",\"numerator\":4,\"denominator\":4,\"ts\":0}},\"keySignatures\":{\"keySignature\":{\"id\":\"01\",\"key\":0,\"ts\":0,\"scale\""
 ":{\"name\":\"Ionian\",\"period\":12,\"intervals\":\"2 2 1 2 2 2 1\"}}}},\"node\":[{\"type\":\"pianoTrack\",\"name\":\"Track 1\",\"colour\":\"ff0049ff\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"v"
 "ol\":1024,\"id\":\"02\"}},\"track\":{}},{\"type\":\"automationTrack\",\"name\":\"Tempo\",\"colour\":\"fffffaf0\",\"channel\":1,\"instrumentId\":\"\",\"controller\":81,\"pattern\":{\"clip\":{\"key\":0,\"ts\":0,\"vol\":1024,\"id\":\"03\"}},\"automation"
 "\":{\"event\":[{\"id\":\"04\",\"value\":0.5,\"curve\":0.5,\"ts\":0},{\"id\":\"01\",\"value\":0.5,\"curve\":0.5,\"ts\":512}]}},{\"type\":\"patternSet\",\"name\":\"Patterns\"}],\"projectInfo\":{\"projectTimeStamp\":\"1591603725382\",\"license\":\"Publi"
 "c Domain\",\"author\":\"Helio\",\"description\":\"\"}}}";
 
-const char* emptyProject_json = (const char*) temp_binary_data_98;
+const char* emptyProject_json = (const char*) temp_binary_data_100;
 
 //================== exampleProject.json ==================
-static const unsigned char temp_binary_data_99[] =
+static const unsigned char temp_binary_data_101[] =
 "{\"project\":{\"name\":\"Example Project\",\"projectInfo\":{\"description\":\"The Lick Reigns Supreme\",\"license\":\"Public Domain\",\"author\":\"Helio Example\",\"projectTimeStamp\":\"1591432978939\"},\"projectTimeline\":{\"annotations\":{},\"timeS"
 "ignatures\":{\"timeSignature\":{\"id\":\"uZ\",\"numerator\":4,\"denominator\":4,\"ts\":0}},\"keySignatures\":{\"keySignature\":[{\"id\":\"Uw\",\"key\":9,\"ts\":0,\"scale\":{\"name\":\"Dorian\",\"period\":12,\"intervals\":\"2 1 2 2 2 1 2\"}},{\"id\":\""
 "x3\",\"key\":9,\"ts\":128,\"scale\":{\"name\":\"Ionian\",\"period\":12,\"intervals\":\"2 2 1 2 2 2 1\"}}]}},\"node\":[{\"type\":\"pianoTrack\",\"name\":\"Alt\",\"colour\":\"ff00ff49\",\"channel\":1,\"instrumentId\":\"\",\"controller\":0,\"pattern\":{"
@@ -1597,10 +1610,10 @@ static const unsigned char temp_binary_data_99[] =
 "\":0},{\"id\":\"Yf\",\"value\":0.244512,\"curve\":1.000000,\"ts\":64},{\"id\":\"Qe\",\"value\":0.424625,\"curve\":0.000000,\"ts\":128},{\"id\":\"Sk\",\"value\":0.244914,\"curve\":0.500000,\"ts\":256}]}},{\"type\":\"patternSet\",\"name\":\"Patterns\"}"
 "]}}";
 
-const char* exampleProject_json = (const char*) temp_binary_data_99;
+const char* exampleProject_json = (const char*) temp_binary_data_101;
 
 //================== de.json ==================
-static const unsigned char temp_binary_data_100[] =
+static const unsigned char temp_binary_data_102[] =
 "{\"id\":\"de\",\"name\":\"Deutsch\",\"pluralEquation\":\"({x}==1 ? 1 : 2)\",\"literal\":[{\"id\":590543227,\"tr\":\"Projekt erstellt\"},{\"id\":242354915,\"tr\":\"Neues Projekt\"},{\"id\":973370257,\"tr\":\"Neue Spur\"},{\"id\":3682062690,\"tr\":\"Te"
 "mpo\"},{\"id\":3475921130,\"tr\":\"Lautst\xc3\xa4rke\"},{\"id\":3279548549,\"tr\":\"Studio\"},{\"id\":3086290873,\"tr\":\"Instrumente\"},{\"id\":3686062664,\"tr\":\"Einstellungen\"},{\"id\":1113353303,\"tr\":\"Versionen\"},{\"id\":3324938734,\"tr\":\""
 "Patterns\"},{\"id\":1791647634,\"tr\":\"Tastaturbelegung\"},{\"id\":855043400,\"tr\":\"Instrument umbenennen\"},{\"id\":1662581644,\"tr\":\"Umbenennen\"},{\"id\":3826312522,\"tr\":\"Marker hinzuf\xc3\xbcgen\"},{\"id\":726307987,\"tr\":\"Text eingeben"
@@ -1671,31 +1684,31 @@ static const unsigned char temp_binary_data_100[] =
 "60581502,\"tr\":\"Dur Lokrisch\"},{\"id\":2202579943,\"tr\":\"Ultraphrygisch\"},{\"id\":2837056976,\"tr\":\"Superlokrisch\"},{\"id\":2605108987,\"tr\":\"Ultralokrisch\"},{\"id\":1965071581,\"tr\":\"Leitende Ganzt\xc3\xb6ne\"},{\"id\":1367319047,\"tr\""
 ":\"Doppelharmonisch\"},{\"id\":626733046,\"tr\":\"Halbvermindert\"},{\"id\":2141989878,\"tr\":\"Alterierte Dominante\"},{\"id\":2402117461,\"tr\":\"Blues Heptatonisch\"},{\"id\":860101336,\"tr\":\"Blues Phrygisch\"},{\"id\":3745452021,\"tr\":\"Blues "
 "Alteriert\"},{\"id\":553375353,\"tr\":\"Blues Gemischt\"},{\"id\":32797868,\"tr\":\"Blues mit Leitton\"},{\"id\":3801549673,\"tr\":\"Rock'n'Roll\"},{\"id\":1931755849,\"tr\":\"Audioeingang\"},{\"id\":4200658534,\"tr\":\"Audioausgang\"},{\"id\":315459"
-"4048,\"tr\":\"MIDI-Eingang\"},{\"id\":2483423585,\"tr\":\"MIDI-Ausgang\"}],\"pluralLiteral\":[{\"id\":1853236155,\"tr\":[{\"name\":\"{x} Eingangskanal\",\"pluralForm\":\"1\"},{\"name\":\"{x} Eingangskan\xc3\xa4le\",\"pluralForm\":\"2\"}]},{\"id\":423"
-"7797194,\"tr\":[{\"name\":\"{x} Ausgabekanal\",\"pluralForm\":\"1\"},{\"name\":\"{x} Ausgabekan\xc3\xa4le\",\"pluralForm\":\"2\"}]},{\"id\":4187362806,\"tr\":[{\"name\":\"{x} Note hinzugef\xc3\xbcgt\",\"pluralForm\":\"1\"},{\"name\":\"{x} Noten hinzu"
-"gef\xc3\xbcgt\",\"pluralForm\":\"2\"}]},{\"id\":2677001308,\"tr\":[{\"name\":\"{x} Note gel\xc3\xb6scht\",\"pluralForm\":\"1\"},{\"name\":\"{x} Noten gel\xc3\xb6scht\",\"pluralForm\":\"2\"}]},{\"id\":1115369500,\"tr\":[{\"name\":\"{x} Note ge\xc3\xa4"
-"ndert\",\"pluralForm\":\"1\"},{\"name\":\"{x} Noten ge\xc3\xa4ndert\",\"pluralForm\":\"2\"}]},{\"id\":1670191088,\"tr\":[{\"name\":\"{x} Ereignis hinzugef\xc3\xbcgt\",\"pluralForm\":\"1\"},{\"name\":\"{x} Ereignisse hinzugef\xc3\xbcgt\",\"pluralForm\""
-":\"2\"}]},{\"id\":4188356498,\"tr\":[{\"name\":\"{x} Ereignis gel\xc3\xb6scht\",\"pluralForm\":\"1\"},{\"name\":\"{x} Ereignisse gel\xc3\xb6scht\",\"pluralForm\":\"2\"}]},{\"id\":1822865234,\"tr\":[{\"name\":\"{x} Ereignis ge\xc3\xa4ndert\",\"pluralF"
-"orm\":\"1\"},{\"name\":\"{x} Ereignisse ge\xc3\xa4ndert\",\"pluralForm\":\"2\"}]},{\"id\":2539740572,\"tr\":[{\"name\":\"{x} Clip hinzugef\xc3\xbcgt\",\"pluralForm\":\"1\"},{\"name\":\"{x} Clips hinzugef\xc3\xbcgt\",\"pluralForm\":\"2\"}]},{\"id\":18"
-"38846406,\"tr\":[{\"name\":\"{x} Clip entfernt\",\"pluralForm\":\"1\"},{\"name\":\"{x} Clips entfernt\",\"pluralForm\":\"2\"}]},{\"id\":3829748102,\"tr\":[{\"name\":\"{x} Clip bearbeitet\",\"pluralForm\":\"1\"},{\"name\":\"{x} Clips bearbeitet\",\"pl"
-"uralForm\":\"2\"}]},{\"id\":159801621,\"tr\":[{\"name\":\"{x} Marker hinzugef\xc3\xbcgt\",\"pluralForm\":\"1\"},{\"name\":\"{x} Marker hinzugef\xc3\xbcgt\",\"pluralForm\":\"2\"}]},{\"id\":335767671,\"tr\":[{\"name\":\"{x} Marker gel\xc3\xb6scht\",\"p"
-"luralForm\":\"1\"},{\"name\":\"{x} Marker gel\xc3\xb6scht\",\"pluralForm\":\"2\"}]},{\"id\":1776240695,\"tr\":[{\"name\":\"{x} Marker ge\xc3\xa4ndert\",\"pluralForm\":\"1\"},{\"name\":\"{x} Marker ge\xc3\xa4ndert\",\"pluralForm\":\"2\"}]},{\"id\":226"
-"4722107,\"tr\":[{\"name\":\"{x} Taktangabe hinzugef\xc3\xbcgt\",\"pluralForm\":\"1\"},{\"name\":\"{x} Taktangaben hinzugef\xc3\xbcgt\",\"pluralForm\":\"2\"}]},{\"id\":755875505,\"tr\":[{\"name\":\"{x} Taktangabe gel\xc3\xb6scht\",\"pluralForm\":\"1\""
-"},{\"name\":\"{x} Taktangaben gel\xc3\xb6scht\",\"pluralForm\":\"2\"}]},{\"id\":1775129073,\"tr\":[{\"name\":\"{x} Taktangabe ge\xc3\xa4ndert\",\"pluralForm\":\"1\"},{\"name\":\"{x} Taktangaben ge\xc3\xa4ndert\",\"pluralForm\":\"2\"}]},{\"id\":313360"
-"6715,\"tr\":[{\"name\":\"{x} Tonart hinzugef\xc3\xbcgt\",\"pluralForm\":\"1\"},{\"name\":\"{x} Tonarten hinzugef\xc3\xbcgt\",\"pluralForm\":\"2\"}]},{\"id\":1992957705,\"tr\":[{\"name\":\"{x} Tonart entfernt\",\"pluralForm\":\"1\"},{\"name\":\"{x} To"
-"narten entfernt\",\"pluralForm\":\"2\"}]},{\"id\":4237699145,\"tr\":[{\"name\":\"{x} Tonart bearbeitet\",\"pluralForm\":\"1\"},{\"name\":\"{x} Tonarten bearbeitet\",\"pluralForm\":\"2\"}]},{\"id\":2895268064,\"tr\":[{\"name\":\"{x} Note\",\"pluralFor"
-"m\":\"1\"},{\"name\":\"{x} Noten\",\"pluralForm\":\"2\"}]},{\"id\":3458549142,\"tr\":[{\"name\":\"{x} Ereignis\",\"pluralForm\":\"1\"},{\"name\":\"{x} Ereignisse\",\"pluralForm\":\"2\"}]},{\"id\":1029569651,\"tr\":[{\"name\":\"{x} Marker\",\"pluralFo"
-"rm\":\"1\"},{\"name\":\"{x} Marker\",\"pluralForm\":\"2\"}]},{\"id\":2984658661,\"tr\":[{\"name\":\"{x} Taktangabe\",\"pluralForm\":\"1\"},{\"name\":\"{x} Taktangaben\",\"pluralForm\":\"2\"}]},{\"id\":3241281125,\"tr\":[{\"name\":\"{x} Tonart\",\"plu"
-"ralForm\":\"1\"},{\"name\":\"{x} Tonarten\",\"pluralForm\":\"2\"}]},{\"id\":3319356210,\"tr\":[{\"name\":\"{x} Clip\",\"pluralForm\":\"1\"},{\"name\":\"{x} Clips\",\"pluralForm\":\"2\"}]},{\"id\":3631037336,\"tr\":[{\"name\":\"{x} Pattern\",\"pluralF"
-"orm\":\"1\"},{\"name\":\"{x} Patterns\",\"pluralForm\":\"2\"}]},{\"id\":2452992563,\"tr\":[{\"name\":\"{x} Spur\",\"pluralForm\":\"1\"},{\"name\":\"{x} Spuren\",\"pluralForm\":\"2\"}]},{\"id\":1323194979,\"tr\":[{\"name\":\"{x} Revision\",\"pluralFor"
-"m\":\"1\"},{\"name\":\"{x} Revisionen\",\"pluralForm\":\"2\"}]},{\"id\":3610422080,\"tr\":[{\"name\":\"{x} Delta\",\"pluralForm\":\"1\"},{\"name\":\"{x} Deltas\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} Minute\",\"pluralForm"
-"\":\"1\"},{\"name\":\"{x} Minuten\",\"pluralForm\":\"2\"}]},{\"id\":4122223288,\"tr\":[{\"name\":\"{x} Sekunde\",\"pluralForm\":\"1\"},{\"name\":\"{x} Sekunden\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"verschoben von {x}\",\"plu"
-"ralForm\":\"1\"}}]}";
+"4048,\"tr\":\"MIDI-Eingang\"},{\"id\":2483423585,\"tr\":\"MIDI-Ausgang\"},{\"id\":3017079000,\"tr\":\"Verbinde benachbarte Noten\"},{\"id\":1055066721,\"tr\":\"Skript-Spielplatz\"},{\"id\":2811733930,\"tr\":\"Skript ge\xc3\xa4ndert\"}],\"pluralLitera"
+"l\":[{\"id\":1853236155,\"tr\":[{\"name\":\"{x} Eingangskanal\",\"pluralForm\":\"1\"},{\"name\":\"{x} Eingangskan\xc3\xa4le\",\"pluralForm\":\"2\"}]},{\"id\":4237797194,\"tr\":[{\"name\":\"{x} Ausgabekanal\",\"pluralForm\":\"1\"},{\"name\":\"{x} Ausg"
+"abekan\xc3\xa4le\",\"pluralForm\":\"2\"}]},{\"id\":4187362806,\"tr\":[{\"name\":\"{x} Note hinzugef\xc3\xbcgt\",\"pluralForm\":\"1\"},{\"name\":\"{x} Noten hinzugef\xc3\xbcgt\",\"pluralForm\":\"2\"}]},{\"id\":2677001308,\"tr\":[{\"name\":\"{x} Note g"
+"el\xc3\xb6scht\",\"pluralForm\":\"1\"},{\"name\":\"{x} Noten gel\xc3\xb6scht\",\"pluralForm\":\"2\"}]},{\"id\":1115369500,\"tr\":[{\"name\":\"{x} Note ge\xc3\xa4ndert\",\"pluralForm\":\"1\"},{\"name\":\"{x} Noten ge\xc3\xa4ndert\",\"pluralForm\":\"2\""
+"}]},{\"id\":1670191088,\"tr\":[{\"name\":\"{x} Ereignis hinzugef\xc3\xbcgt\",\"pluralForm\":\"1\"},{\"name\":\"{x} Ereignisse hinzugef\xc3\xbcgt\",\"pluralForm\":\"2\"}]},{\"id\":4188356498,\"tr\":[{\"name\":\"{x} Ereignis gel\xc3\xb6scht\",\"pluralF"
+"orm\":\"1\"},{\"name\":\"{x} Ereignisse gel\xc3\xb6scht\",\"pluralForm\":\"2\"}]},{\"id\":1822865234,\"tr\":[{\"name\":\"{x} Ereignis ge\xc3\xa4ndert\",\"pluralForm\":\"1\"},{\"name\":\"{x} Ereignisse ge\xc3\xa4ndert\",\"pluralForm\":\"2\"}]},{\"id\""
+":2539740572,\"tr\":[{\"name\":\"{x} Clip hinzugef\xc3\xbcgt\",\"pluralForm\":\"1\"},{\"name\":\"{x} Clips hinzugef\xc3\xbcgt\",\"pluralForm\":\"2\"}]},{\"id\":1838846406,\"tr\":[{\"name\":\"{x} Clip entfernt\",\"pluralForm\":\"1\"},{\"name\":\"{x} Cl"
+"ips entfernt\",\"pluralForm\":\"2\"}]},{\"id\":3829748102,\"tr\":[{\"name\":\"{x} Clip bearbeitet\",\"pluralForm\":\"1\"},{\"name\":\"{x} Clips bearbeitet\",\"pluralForm\":\"2\"}]},{\"id\":159801621,\"tr\":[{\"name\":\"{x} Marker hinzugef\xc3\xbcgt\""
+",\"pluralForm\":\"1\"},{\"name\":\"{x} Marker hinzugef\xc3\xbcgt\",\"pluralForm\":\"2\"}]},{\"id\":335767671,\"tr\":[{\"name\":\"{x} Marker gel\xc3\xb6scht\",\"pluralForm\":\"1\"},{\"name\":\"{x} Marker gel\xc3\xb6scht\",\"pluralForm\":\"2\"}]},{\"id"
+"\":1776240695,\"tr\":[{\"name\":\"{x} Marker ge\xc3\xa4ndert\",\"pluralForm\":\"1\"},{\"name\":\"{x} Marker ge\xc3\xa4ndert\",\"pluralForm\":\"2\"}]},{\"id\":2264722107,\"tr\":[{\"name\":\"{x} Taktangabe hinzugef\xc3\xbcgt\",\"pluralForm\":\"1\"},{\""
+"name\":\"{x} Taktangaben hinzugef\xc3\xbcgt\",\"pluralForm\":\"2\"}]},{\"id\":755875505,\"tr\":[{\"name\":\"{x} Taktangabe gel\xc3\xb6scht\",\"pluralForm\":\"1\"},{\"name\":\"{x} Taktangaben gel\xc3\xb6scht\",\"pluralForm\":\"2\"}]},{\"id\":177512907"
+"3,\"tr\":[{\"name\":\"{x} Taktangabe ge\xc3\xa4ndert\",\"pluralForm\":\"1\"},{\"name\":\"{x} Taktangaben ge\xc3\xa4ndert\",\"pluralForm\":\"2\"}]},{\"id\":3133606715,\"tr\":[{\"name\":\"{x} Tonart hinzugef\xc3\xbcgt\",\"pluralForm\":\"1\"},{\"name\":"
+"\"{x} Tonarten hinzugef\xc3\xbcgt\",\"pluralForm\":\"2\"}]},{\"id\":1992957705,\"tr\":[{\"name\":\"{x} Tonart entfernt\",\"pluralForm\":\"1\"},{\"name\":\"{x} Tonarten entfernt\",\"pluralForm\":\"2\"}]},{\"id\":4237699145,\"tr\":[{\"name\":\"{x} Tona"
+"rt bearbeitet\",\"pluralForm\":\"1\"},{\"name\":\"{x} Tonarten bearbeitet\",\"pluralForm\":\"2\"}]},{\"id\":2895268064,\"tr\":[{\"name\":\"{x} Note\",\"pluralForm\":\"1\"},{\"name\":\"{x} Noten\",\"pluralForm\":\"2\"}]},{\"id\":3458549142,\"tr\":[{\""
+"name\":\"{x} Ereignis\",\"pluralForm\":\"1\"},{\"name\":\"{x} Ereignisse\",\"pluralForm\":\"2\"}]},{\"id\":1029569651,\"tr\":[{\"name\":\"{x} Marker\",\"pluralForm\":\"1\"},{\"name\":\"{x} Marker\",\"pluralForm\":\"2\"}]},{\"id\":2984658661,\"tr\":[{"
+"\"name\":\"{x} Taktangabe\",\"pluralForm\":\"1\"},{\"name\":\"{x} Taktangaben\",\"pluralForm\":\"2\"}]},{\"id\":3241281125,\"tr\":[{\"name\":\"{x} Tonart\",\"pluralForm\":\"1\"},{\"name\":\"{x} Tonarten\",\"pluralForm\":\"2\"}]},{\"id\":3319356210,\""
+"tr\":[{\"name\":\"{x} Clip\",\"pluralForm\":\"1\"},{\"name\":\"{x} Clips\",\"pluralForm\":\"2\"}]},{\"id\":3631037336,\"tr\":[{\"name\":\"{x} Pattern\",\"pluralForm\":\"1\"},{\"name\":\"{x} Patterns\",\"pluralForm\":\"2\"}]},{\"id\":2452992563,\"tr\""
+":[{\"name\":\"{x} Spur\",\"pluralForm\":\"1\"},{\"name\":\"{x} Spuren\",\"pluralForm\":\"2\"}]},{\"id\":1323194979,\"tr\":[{\"name\":\"{x} Revision\",\"pluralForm\":\"1\"},{\"name\":\"{x} Revisionen\",\"pluralForm\":\"2\"}]},{\"id\":3610422080,\"tr\""
+":[{\"name\":\"{x} Delta\",\"pluralForm\":\"1\"},{\"name\":\"{x} Deltas\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} Minute\",\"pluralForm\":\"1\"},{\"name\":\"{x} Minuten\",\"pluralForm\":\"2\"}]},{\"id\":4122223288,\"tr\":[{\""
+"name\":\"{x} Sekunde\",\"pluralForm\":\"1\"},{\"name\":\"{x} Sekunden\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"verschoben von {x}\",\"pluralForm\":\"1\"}}]}";
 
-const char* de_json = (const char*) temp_binary_data_100;
+const char* de_json = (const char*) temp_binary_data_102;
 
 //================== el.json ==================
-static const unsigned char temp_binary_data_101[] =
+static const unsigned char temp_binary_data_103[] =
 { 123,34,105,100,34,58,34,101,108,34,44,34,110,97,109,101,34,58,34,206,149,206,187,206,187,206,183,206,189,206,185,206,186,206,172,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,40,123,120,125,61,61,49,32,63,32,49,32,58,32,50,41,
 34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,206,136,206,189,206,177,207,129,206,190,206,183,32,206,173,207,129,206,179,206,191,207,133,34,125,44,123,34,105,100,34,58,50,52,50,51,
 53,52,57,49,53,44,34,116,114,34,58,34,206,157,206,173,206,191,32,206,173,207,129,206,179,206,191,34,125,44,123,34,105,100,34,58,57,55,51,51,55,48,50,53,55,44,34,116,114,34,58,34,206,157,206,173,206,191,32,206,186,206,191,206,188,206,188,206,172,207,132,
@@ -1990,14 +2003,17 @@ static const unsigned char temp_binary_data_101[] =
 32,84,111,110,101,34,125,44,123,34,105,100,34,58,51,56,48,49,53,52,57,54,55,51,44,34,116,114,34,58,34,206,161,206,191,206,186,39,206,189,39,207,129,206,191,206,187,34,125,44,123,34,105,100,34,58,49,57,51,49,55,53,53,56,52,57,44,34,116,114,34,58,34,206,
 149,206,175,207,131,206,191,206,180,206,191,207,130,32,206,137,207,135,206,191,207,133,34,125,44,123,34,105,100,34,58,52,50,48,48,54,53,56,53,51,52,44,34,116,114,34,58,34,206,149,206,190,206,191,206,180,206,191,207,130,32,206,137,207,135,206,191,207,
 133,34,125,44,123,34,105,100,34,58,51,49,53,52,53,57,52,48,52,56,44,34,116,114,34,58,34,206,149,206,175,207,131,206,191,206,180,206,191,207,130,32,77,73,68,73,34,125,44,123,34,105,100,34,58,50,52,56,51,52,50,51,53,56,53,44,34,116,114,34,58,34,206,136,
-206,190,206,191,206,180,206,191,207,130,32,77,73,68,73,34,125,93,44,34,112,108,117,114,97,108,76,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,49,56,53,51,50,51,54,49,53,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,206,
-186,206,177,206,189,206,172,206,187,206,185,32,206,181,206,185,207,131,207,140,206,180,206,191,207,133,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,206,186,206,177,206,189,206,172,
-206,187,206,185,206,177,32,206,181,206,185,207,131,207,140,206,180,206,191,207,133,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,52,50,51,55,55,57,55,49,57,52,44,34,116,114,34,58,91,123,34,110,97,109,
-101,34,58,34,123,120,125,32,206,186,206,177,206,189,206,172,206,187,206,185,32,206,181,206,190,207,140,206,180,206,191,207,133,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,206,186,
-206,177,206,189,206,172,206,187,206,185,206,177,32,206,181,206,190,207,140,206,180,206,191,207,133,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,52,49,56,55,51,54,50,56,48,54,44,34,116,114,34,58,91,123,
-34,110,97,109,101,34,58,34,207,128,207,129,206,191,207,131,207,132,206,173,206,184,206,183,206,186,206,181,32,123,120,125,32,206,189,207,140,207,132,206,177,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,
-58,34,207,128,207,129,207,140,207,131,206,184,206,181,207,131,206,181,32,123,120,125,32,206,189,207,140,207,132,206,181,207,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,50,54,55,55,48,48,49,51,48,
-56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,206,177,207,134,206,177,206,185,207,129,206,173,206,184,206,183,206,186,206,181,32,123,120,125,32,206,189,207,140,207,132,206,177,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,
+206,190,206,191,206,180,206,191,207,130,32,77,73,68,73,34,125,44,123,34,105,100,34,58,51,48,49,55,48,55,57,48,48,48,44,34,116,114,34,58,34,206,136,206,189,207,137,207,131,206,183,32,206,179,206,181,206,185,207,132,206,191,206,189,206,185,206,186,207,
+142,206,189,32,207,131,206,183,206,188,206,181,206,185,207,142,207,131,206,181,207,137,206,189,34,125,44,123,34,105,100,34,58,49,48,53,53,48,54,54,55,50,49,44,34,116,114,34,58,34,206,149,207,128,206,181,206,190,206,181,207,129,206,179,206,177,207,131,
+207,132,206,174,207,130,32,207,131,206,181,206,189,206,177,207,129,206,175,206,191,207,133,34,125,44,123,34,105,100,34,58,50,56,49,49,55,51,51,57,51,48,44,34,116,114,34,58,34,207,132,206,191,32,207,131,206,181,206,189,206,172,207,129,206,185,206,191,
+32,206,172,206,187,206,187,206,177,206,190,206,181,34,125,93,44,34,112,108,117,114,97,108,76,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,49,56,53,51,50,51,54,49,53,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,206,186,
+206,177,206,189,206,172,206,187,206,185,32,206,181,206,185,207,131,207,140,206,180,206,191,207,133,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,206,186,206,177,206,189,206,172,206,
+187,206,185,206,177,32,206,181,206,185,207,131,207,140,206,180,206,191,207,133,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,52,50,51,55,55,57,55,49,57,52,44,34,116,114,34,58,91,123,34,110,97,109,101,
+34,58,34,123,120,125,32,206,186,206,177,206,189,206,172,206,187,206,185,32,206,181,206,190,207,140,206,180,206,191,207,133,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,206,186,206,
+177,206,189,206,172,206,187,206,185,206,177,32,206,181,206,190,207,140,206,180,206,191,207,133,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,52,49,56,55,51,54,50,56,48,54,44,34,116,114,34,58,91,123,34,
+110,97,109,101,34,58,34,207,128,207,129,206,191,207,131,207,132,206,173,206,184,206,183,206,186,206,181,32,123,120,125,32,206,189,207,140,207,132,206,177,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,
+34,207,128,207,129,207,140,207,131,206,184,206,181,207,131,206,181,32,123,120,125,32,206,189,207,140,207,132,206,181,207,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,50,54,55,55,48,48,49,51,48,56,
+44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,206,177,207,134,206,177,206,185,207,129,206,173,206,184,206,183,206,186,206,181,32,123,120,125,32,206,189,207,140,207,132,206,177,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,
 44,123,34,110,97,109,101,34,58,34,206,177,207,134,206,177,206,185,207,129,206,173,206,184,206,183,206,186,206,177,206,189,32,123,120,125,32,206,189,207,140,207,132,206,181,207,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,
 44,123,34,105,100,34,58,49,49,49,53,51,54,57,53,48,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,206,172,206,187,206,187,206,177,206,190,206,181,32,123,120,125,32,206,189,207,140,207,132,206,177,34,44,34,112,108,117,114,97,108,70,111,114,109,
 34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,206,172,206,187,206,187,206,177,206,190,206,181,32,123,120,125,32,206,189,207,140,207,132,206,181,207,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,
@@ -2060,10 +2076,10 @@ static const unsigned char temp_binary_data_101[] =
 100,34,58,49,56,48,55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,206,188,206,181,207,132,206,177,206,186,206,185,206,189,206,174,206,184,206,183,206,186,206,181,32,206,177,207,128,207,140,32,123,120,125,34,44,34,112,108,117,
 114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,0,0 };
 
-const char* el_json = (const char*) temp_binary_data_101;
+const char* el_json = (const char*) temp_binary_data_103;
 
 //================== en.json ==================
-static const unsigned char temp_binary_data_102[] =
+static const unsigned char temp_binary_data_104[] =
 "{\"id\":\"en\",\"name\":\"English\",\"pluralEquation\":\"({x}==1 ? 1 : 2)\",\"literal\":[{\"id\":590543227,\"tr\":\"Project start\"},{\"id\":242354915,\"tr\":\"New project\"},{\"id\":973370257,\"tr\":\"New track\"},{\"id\":3682062690,\"tr\":\"Tempo\""
 "},{\"id\":3475921130,\"tr\":\"Volume\"},{\"id\":3279548549,\"tr\":\"Studio\"},{\"id\":3086290873,\"tr\":\"Orchestra pit\"},{\"id\":3686062664,\"tr\":\"Settings\"},{\"id\":1113353303,\"tr\":\"Versions\"},{\"id\":3324938734,\"tr\":\"Patterns\"},{\"id\""
 ":1791647634,\"tr\":\"Keyboard mapping\"},{\"id\":855043400,\"tr\":\"Rename instrument\"},{\"id\":1662581644,\"tr\":\"Rename\"},{\"id\":3826312522,\"tr\":\"Add annotation\"},{\"id\":726307987,\"tr\":\"Enter annotation text:\"},{\"id\":2359576018,\"tr\""
@@ -2080,10 +2096,10 @@ static const unsigned char temp_binary_data_102[] =
 "{\"id\":3841194431,\"tr\":\"Edit\"},{\"id\":2617617342,\"tr\":\"Transpose up\"},{\"id\":190430727,\"tr\":\"Transpose down\"},{\"id\":826057408,\"tr\":\"Increase tempo by 1 BPM\"},{\"id\":835550789,\"tr\":\"Decrease tempo by 1 BPM\"},{\"id\":297217315"
 "9,\"tr\":\"Hide changes\"},{\"id\":1834413546,\"tr\":\"Restore changes\"},{\"id\":2478565035,\"tr\":\"Toggle changes\"},{\"id\":3235320386,\"tr\":\"Commit all\"},{\"id\":1710985244,\"tr\":\"Reset all\"},{\"id\":1688770220,\"tr\":\"Create arp from sel"
 "ection\"},{\"id\":1190757224,\"tr\":\"Modifiers\"},{\"id\":3028225703,\"tr\":\"Add modifiers\"},{\"id\":879252112,\"tr\":\"Apply all\"},{\"id\":4180138779,\"tr\":\"Enable all\"},{\"id\":1885708168,\"tr\":\"Disable all\"},{\"id\":2532514103,\"tr\":\"D"
-"elete all\"},{\"id\":1028168276,\"tr\":\"Cleanup overlaps\"},{\"id\":846647849,\"tr\":\"Inverse up\"},{\"id\":1220787472,\"tr\":\"Inverse down\"},{\"id\":2012105039,\"tr\":\"Retrograde\"},{\"id\":822935817,\"tr\":\"Melodic inversion\"},{\"id\":507958"
-"643,\"tr\":\"In-scale transpose up\"},{\"id\":1007904678,\"tr\":\"In-scale transpose down\"},{\"id\":2869155537,\"tr\":\"Align to scale\"},{\"id\":1528798874,\"tr\":\"Legato\"},{\"id\":2794105238,\"tr\":\"Staccato\"},{\"id\":3083511528,\"tr\":\"Quant"
-"ize to 1\"},{\"id\":3133844385,\"tr\":\"Quantize to 1/2\"},{\"id\":3167399623,\"tr\":\"Quantize to 1/4\"},{\"id\":2966068195,\"tr\":\"Quantize to 1/8\"},{\"id\":839167866,\"tr\":\"Quantize to 1/16\"},{\"id\":3054107764,\"tr\":\"Quantize to 1/32\"},{\""
-"id\":1651351091,\"tr\":\"Merge tuplets\"},{\"id\":1668128710,\"tr\":\"Tuplet\"},{\"id\":1684906329,\"tr\":\"Triplet\"},{\"id\":1701683948,\"tr\":\"Quadruplet\"},{\"id\":1718461567,\"tr\":\"Quintuplet\"},{\"id\":1735239186,\"tr\":\"Sextuplet\"},{\"id\""
+"elete all\"},{\"id\":1028168276,\"tr\":\"Cleanup overlaps\"},{\"id\":846647849,\"tr\":\"Invert up\"},{\"id\":1220787472,\"tr\":\"Invert down\"},{\"id\":2012105039,\"tr\":\"Retrograde\"},{\"id\":822935817,\"tr\":\"Melodic inversion\"},{\"id\":50795864"
+"3,\"tr\":\"In-scale transpose up\"},{\"id\":1007904678,\"tr\":\"In-scale transpose down\"},{\"id\":2869155537,\"tr\":\"Align to scale\"},{\"id\":1528798874,\"tr\":\"Legato\"},{\"id\":2794105238,\"tr\":\"Staccato\"},{\"id\":3083511528,\"tr\":\"Quantiz"
+"e to 1\"},{\"id\":3133844385,\"tr\":\"Quantize to 1/2\"},{\"id\":3167399623,\"tr\":\"Quantize to 1/4\"},{\"id\":2966068195,\"tr\":\"Quantize to 1/8\"},{\"id\":839167866,\"tr\":\"Quantize to 1/16\"},{\"id\":3054107764,\"tr\":\"Quantize to 1/32\"},{\"i"
+"d\":1651351091,\"tr\":\"Merge tuplets\"},{\"id\":1668128710,\"tr\":\"Tuplet\"},{\"id\":1684906329,\"tr\":\"Triplet\"},{\"id\":1701683948,\"tr\":\"Quadruplet\"},{\"id\":1718461567,\"tr\":\"Quintuplet\"},{\"id\":1735239186,\"tr\":\"Sextuplet\"},{\"id\""
 ":1752016805,\"tr\":\"Septuplet\"},{\"id\":1768794424,\"tr\":\"Octuplet\"},{\"id\":1785572043,\"tr\":\"Nonuplet\"},{\"id\":1964787372,\"tr\":\"Delete project\"},{\"id\":1290661052,\"tr\":\"Unload project\"},{\"id\":928399350,\"tr\":\"Add\"},{\"id\":33"
 "17557735,\"tr\":\"Add track\"},{\"id\":645576901,\"tr\":\"Add automation\"},{\"id\":2074424237,\"tr\":\"Master tempo\"},{\"id\":3181537267,\"tr\":\"Import MIDI\"},{\"id\":286266083,\"tr\":\"Render\"},{\"id\":283934353,\"tr\":\"Render to FLAC\"},{\"id"
 "\":3770425203,\"tr\":\"Render to WAV\"},{\"id\":378937898,\"tr\":\"Render to OGG\"},{\"id\":2784651386,\"tr\":\"Export to MIDI\"},{\"id\":2111085155,\"tr\":\"Saved to\"},{\"id\":1960742513,\"tr\":\"Refactor\"},{\"id\":1072522987,\"tr\":\"Transpose up"
@@ -2126,30 +2142,30 @@ static const unsigned char temp_binary_data_102[] =
 "t\"},{\"id\":805807533,\"tr\":\"Locrian Dominant\"},{\"id\":3160581502,\"tr\":\"Major Locrian\"},{\"id\":2202579943,\"tr\":\"Ultraphrygian\"},{\"id\":2837056976,\"tr\":\"Superlocrian\"},{\"id\":2605108987,\"tr\":\"Ultralocrian\"},{\"id\":1965071581,\""
 "tr\":\"Leading Whole-Tone\"},{\"id\":1367319047,\"tr\":\"Double Harmonic\"},{\"id\":626733046,\"tr\":\"Half Diminished\"},{\"id\":2141989878,\"tr\":\"Altered Dominant\"},{\"id\":2402117461,\"tr\":\"Blues Heptatonic\"},{\"id\":860101336,\"tr\":\"Blues"
 " Phrygian\"},{\"id\":3745452021,\"tr\":\"Blues Modified\"},{\"id\":553375353,\"tr\":\"Blues Mixed\"},{\"id\":32797868,\"tr\":\"Blues Leading Tone\"},{\"id\":3801549673,\"tr\":\"Rock'n'Roll\"},{\"id\":1931755849,\"tr\":\"Audio Input\"},{\"id\":4200658"
-"534,\"tr\":\"Audio Output\"},{\"id\":3154594048,\"tr\":\"MIDI Input\"},{\"id\":2483423585,\"tr\":\"MIDI Output\"}],\"pluralLiteral\":[{\"id\":1853236155,\"tr\":[{\"name\":\"{x} input channel\",\"pluralForm\":\"1\"},{\"name\":\"{x} input channels\",\""
-"pluralForm\":\"2\"}]},{\"id\":4237797194,\"tr\":[{\"name\":\"{x} output channel\",\"pluralForm\":\"1\"},{\"name\":\"{x} output channels\",\"pluralForm\":\"2\"}]},{\"id\":4187362806,\"tr\":[{\"name\":\"added {x} note\",\"pluralForm\":\"1\"},{\"name\":"
-"\"added {x} notes\",\"pluralForm\":\"2\"}]},{\"id\":2677001308,\"tr\":[{\"name\":\"removed {x} note\",\"pluralForm\":\"1\"},{\"name\":\"removed {x} notes\",\"pluralForm\":\"2\"}]},{\"id\":1115369500,\"tr\":[{\"name\":\"changed {x} note\",\"pluralForm"
-"\":\"1\"},{\"name\":\"changed {x} notes\",\"pluralForm\":\"2\"}]},{\"id\":1670191088,\"tr\":[{\"name\":\"added {x} event\",\"pluralForm\":\"1\"},{\"name\":\"added {x} events\",\"pluralForm\":\"2\"}]},{\"id\":4188356498,\"tr\":[{\"name\":\"removed {x}"
-" event\",\"pluralForm\":\"1\"},{\"name\":\"removed {x} events\",\"pluralForm\":\"2\"}]},{\"id\":1822865234,\"tr\":[{\"name\":\"changed {x} event\",\"pluralForm\":\"1\"},{\"name\":\"changed {x} events\",\"pluralForm\":\"2\"}]},{\"id\":2539740572,\"tr\""
-":[{\"name\":\"added {x} clip\",\"pluralForm\":\"1\"},{\"name\":\"added {x} clips\",\"pluralForm\":\"2\"}]},{\"id\":1838846406,\"tr\":[{\"name\":\"removed {x} clip\",\"pluralForm\":\"1\"},{\"name\":\"removed {x} clips\",\"pluralForm\":\"2\"}]},{\"id\""
-":3829748102,\"tr\":[{\"name\":\"changed {x} clip\",\"pluralForm\":\"1\"},{\"name\":\"changed {x} clips\",\"pluralForm\":\"2\"}]},{\"id\":159801621,\"tr\":[{\"name\":\"added {x} annotation\",\"pluralForm\":\"1\"},{\"name\":\"added {x} annotations\",\""
-"pluralForm\":\"2\"}]},{\"id\":335767671,\"tr\":[{\"name\":\"removed {x} annotation\",\"pluralForm\":\"1\"},{\"name\":\"removed {x} annotations\",\"pluralForm\":\"2\"}]},{\"id\":1776240695,\"tr\":[{\"name\":\"changed {x} annotation\",\"pluralForm\":\""
-"1\"},{\"name\":\"changed {x} annotations\",\"pluralForm\":\"2\"}]},{\"id\":2264722107,\"tr\":[{\"name\":\"added {x} time signature\",\"pluralForm\":\"1\"},{\"name\":\"added {x} time signatures\",\"pluralForm\":\"2\"}]},{\"id\":755875505,\"tr\":[{\"na"
-"me\":\"removed {x} time signature\",\"pluralForm\":\"1\"},{\"name\":\"removed {x} time signatures\",\"pluralForm\":\"2\"}]},{\"id\":1775129073,\"tr\":[{\"name\":\"changed {x} time signature\",\"pluralForm\":\"1\"},{\"name\":\"changed {x} time signatu"
-"res\",\"pluralForm\":\"2\"}]},{\"id\":3133606715,\"tr\":[{\"name\":\"added {x} key signature\",\"pluralForm\":\"1\"},{\"name\":\"added {x} key signatures\",\"pluralForm\":\"2\"}]},{\"id\":1992957705,\"tr\":[{\"name\":\"removed {x} key signature\",\"p"
-"luralForm\":\"1\"},{\"name\":\"removed {x} key signatures\",\"pluralForm\":\"2\"}]},{\"id\":4237699145,\"tr\":[{\"name\":\"changed {x} key signature\",\"pluralForm\":\"1\"},{\"name\":\"changed {x} key signatures\",\"pluralForm\":\"2\"}]},{\"id\":2895"
-"268064,\"tr\":[{\"name\":\"{x} note\",\"pluralForm\":\"1\"},{\"name\":\"{x} notes\",\"pluralForm\":\"2\"}]},{\"id\":3458549142,\"tr\":[{\"name\":\"{x} event\",\"pluralForm\":\"1\"},{\"name\":\"{x} events\",\"pluralForm\":\"2\"}]},{\"id\":1029569651,\""
-"tr\":[{\"name\":\"{x} annotation\",\"pluralForm\":\"1\"},{\"name\":\"{x} annotations\",\"pluralForm\":\"2\"}]},{\"id\":2984658661,\"tr\":[{\"name\":\"{x} time signature\",\"pluralForm\":\"1\"},{\"name\":\"{x} time signatures\",\"pluralForm\":\"2\"}]}"
-",{\"id\":3241281125,\"tr\":[{\"name\":\"{x} key signature\",\"pluralForm\":\"1\"},{\"name\":\"{x} key signatures\",\"pluralForm\":\"2\"}]},{\"id\":3319356210,\"tr\":[{\"name\":\"{x} clip\",\"pluralForm\":\"1\"},{\"name\":\"{x} clips\",\"pluralForm\":"
-"\"2\"}]},{\"id\":3631037336,\"tr\":[{\"name\":\"{x} pattern\",\"pluralForm\":\"1\"},{\"name\":\"{x} patterns\",\"pluralForm\":\"2\"}]},{\"id\":2452992563,\"tr\":[{\"name\":\"{x} track\",\"pluralForm\":\"1\"},{\"name\":\"{x} tracks\",\"pluralForm\":\""
-"2\"}]},{\"id\":1323194979,\"tr\":[{\"name\":\"{x} revision\",\"pluralForm\":\"1\"},{\"name\":\"{x} revisions\",\"pluralForm\":\"2\"}]},{\"id\":3610422080,\"tr\":[{\"name\":\"{x} delta\",\"pluralForm\":\"1\"},{\"name\":\"{x} deltas\",\"pluralForm\":\""
-"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} minute\",\"pluralForm\":\"1\"},{\"name\":\"{x} minutes\",\"pluralForm\":\"2\"}]},{\"id\":4122223288,\"tr\":[{\"name\":\"{x} second\",\"pluralForm\":\"1\"},{\"name\":\"{x} seconds\",\"pluralForm\":\"2\""
-"}]},{\"id\":1807553330,\"tr\":{\"name\":\"moved from {x}\",\"pluralForm\":\"1\"}}]}";
+"534,\"tr\":\"Audio Output\"},{\"id\":3154594048,\"tr\":\"MIDI Input\"},{\"id\":2483423585,\"tr\":\"MIDI Output\"},{\"id\":3017079000,\"tr\":\"Join adjacent notes\"},{\"id\":1055066721,\"tr\":\"Scripting playground\"},{\"id\":2811733930,\"tr\":\"scrip"
+"t changed\"}],\"pluralLiteral\":[{\"id\":1853236155,\"tr\":[{\"name\":\"{x} input channel\",\"pluralForm\":\"1\"},{\"name\":\"{x} input channels\",\"pluralForm\":\"2\"}]},{\"id\":4237797194,\"tr\":[{\"name\":\"{x} output channel\",\"pluralForm\":\"1\""
+"},{\"name\":\"{x} output channels\",\"pluralForm\":\"2\"}]},{\"id\":4187362806,\"tr\":[{\"name\":\"added {x} note\",\"pluralForm\":\"1\"},{\"name\":\"added {x} notes\",\"pluralForm\":\"2\"}]},{\"id\":2677001308,\"tr\":[{\"name\":\"removed {x} note\","
+"\"pluralForm\":\"1\"},{\"name\":\"removed {x} notes\",\"pluralForm\":\"2\"}]},{\"id\":1115369500,\"tr\":[{\"name\":\"changed {x} note\",\"pluralForm\":\"1\"},{\"name\":\"changed {x} notes\",\"pluralForm\":\"2\"}]},{\"id\":1670191088,\"tr\":[{\"name\""
+":\"added {x} event\",\"pluralForm\":\"1\"},{\"name\":\"added {x} events\",\"pluralForm\":\"2\"}]},{\"id\":4188356498,\"tr\":[{\"name\":\"removed {x} event\",\"pluralForm\":\"1\"},{\"name\":\"removed {x} events\",\"pluralForm\":\"2\"}]},{\"id\":182286"
+"5234,\"tr\":[{\"name\":\"changed {x} event\",\"pluralForm\":\"1\"},{\"name\":\"changed {x} events\",\"pluralForm\":\"2\"}]},{\"id\":2539740572,\"tr\":[{\"name\":\"added {x} clip\",\"pluralForm\":\"1\"},{\"name\":\"added {x} clips\",\"pluralForm\":\"2"
+"\"}]},{\"id\":1838846406,\"tr\":[{\"name\":\"removed {x} clip\",\"pluralForm\":\"1\"},{\"name\":\"removed {x} clips\",\"pluralForm\":\"2\"}]},{\"id\":3829748102,\"tr\":[{\"name\":\"changed {x} clip\",\"pluralForm\":\"1\"},{\"name\":\"changed {x} clip"
+"s\",\"pluralForm\":\"2\"}]},{\"id\":159801621,\"tr\":[{\"name\":\"added {x} annotation\",\"pluralForm\":\"1\"},{\"name\":\"added {x} annotations\",\"pluralForm\":\"2\"}]},{\"id\":335767671,\"tr\":[{\"name\":\"removed {x} annotation\",\"pluralForm\":\""
+"1\"},{\"name\":\"removed {x} annotations\",\"pluralForm\":\"2\"}]},{\"id\":1776240695,\"tr\":[{\"name\":\"changed {x} annotation\",\"pluralForm\":\"1\"},{\"name\":\"changed {x} annotations\",\"pluralForm\":\"2\"}]},{\"id\":2264722107,\"tr\":[{\"name\""
+":\"added {x} time signature\",\"pluralForm\":\"1\"},{\"name\":\"added {x} time signatures\",\"pluralForm\":\"2\"}]},{\"id\":755875505,\"tr\":[{\"name\":\"removed {x} time signature\",\"pluralForm\":\"1\"},{\"name\":\"removed {x} time signatures\",\"p"
+"luralForm\":\"2\"}]},{\"id\":1775129073,\"tr\":[{\"name\":\"changed {x} time signature\",\"pluralForm\":\"1\"},{\"name\":\"changed {x} time signatures\",\"pluralForm\":\"2\"}]},{\"id\":3133606715,\"tr\":[{\"name\":\"added {x} key signature\",\"plural"
+"Form\":\"1\"},{\"name\":\"added {x} key signatures\",\"pluralForm\":\"2\"}]},{\"id\":1992957705,\"tr\":[{\"name\":\"removed {x} key signature\",\"pluralForm\":\"1\"},{\"name\":\"removed {x} key signatures\",\"pluralForm\":\"2\"}]},{\"id\":4237699145,"
+"\"tr\":[{\"name\":\"changed {x} key signature\",\"pluralForm\":\"1\"},{\"name\":\"changed {x} key signatures\",\"pluralForm\":\"2\"}]},{\"id\":2895268064,\"tr\":[{\"name\":\"{x} note\",\"pluralForm\":\"1\"},{\"name\":\"{x} notes\",\"pluralForm\":\"2\""
+"}]},{\"id\":3458549142,\"tr\":[{\"name\":\"{x} event\",\"pluralForm\":\"1\"},{\"name\":\"{x} events\",\"pluralForm\":\"2\"}]},{\"id\":1029569651,\"tr\":[{\"name\":\"{x} annotation\",\"pluralForm\":\"1\"},{\"name\":\"{x} annotations\",\"pluralForm\":\""
+"2\"}]},{\"id\":2984658661,\"tr\":[{\"name\":\"{x} time signature\",\"pluralForm\":\"1\"},{\"name\":\"{x} time signatures\",\"pluralForm\":\"2\"}]},{\"id\":3241281125,\"tr\":[{\"name\":\"{x} key signature\",\"pluralForm\":\"1\"},{\"name\":\"{x} key si"
+"gnatures\",\"pluralForm\":\"2\"}]},{\"id\":3319356210,\"tr\":[{\"name\":\"{x} clip\",\"pluralForm\":\"1\"},{\"name\":\"{x} clips\",\"pluralForm\":\"2\"}]},{\"id\":3631037336,\"tr\":[{\"name\":\"{x} pattern\",\"pluralForm\":\"1\"},{\"name\":\"{x} patt"
+"erns\",\"pluralForm\":\"2\"}]},{\"id\":2452992563,\"tr\":[{\"name\":\"{x} track\",\"pluralForm\":\"1\"},{\"name\":\"{x} tracks\",\"pluralForm\":\"2\"}]},{\"id\":1323194979,\"tr\":[{\"name\":\"{x} revision\",\"pluralForm\":\"1\"},{\"name\":\"{x} revis"
+"ions\",\"pluralForm\":\"2\"}]},{\"id\":3610422080,\"tr\":[{\"name\":\"{x} delta\",\"pluralForm\":\"1\"},{\"name\":\"{x} deltas\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} minute\",\"pluralForm\":\"1\"},{\"name\":\"{x} minutes"
+"\",\"pluralForm\":\"2\"}]},{\"id\":4122223288,\"tr\":[{\"name\":\"{x} second\",\"pluralForm\":\"1\"},{\"name\":\"{x} seconds\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"moved from {x}\",\"pluralForm\":\"1\"}}]}";
 
-const char* en_json = (const char*) temp_binary_data_102;
+const char* en_json = (const char*) temp_binary_data_104;
 
 //================== fr.json ==================
-static const unsigned char temp_binary_data_103[] =
+static const unsigned char temp_binary_data_105[] =
 "{\"id\":\"fr\",\"name\":\"Fran\xc3\xa7""ais\",\"pluralEquation\":\"(({x}==0 || {x}==1) ? 1 : 2)\",\"literal\":[{\"id\":590543227,\"tr\":\"Projet d\xc3\xa9marr\xc3\xa9\"},{\"id\":242354915,\"tr\":\"Nouveau projet\"},{\"id\":973370257,\"tr\":\"Nouvelle"
 " piste\"},{\"id\":3682062690,\"tr\":\"Tempo\"},{\"id\":3475921130,\"tr\":\"Volume\"},{\"id\":3279548549,\"tr\":\"Studio\"},{\"id\":3086290873,\"tr\":\"Instruments\"},{\"id\":3686062664,\"tr\":\"Param\xc3\xa8tres\"},{\"id\":1113353303,\"tr\":\"Version"
 "s\"},{\"id\":3324938734,\"tr\":\"Mod\xc3\xa8les\"},{\"id\":1791647634,\"tr\":\"Mappage du clavier\"},{\"id\":855043400,\"tr\":\"Renommer l'instrument\"},{\"id\":1662581644,\"tr\":\"Renommer\"},{\"id\":3826312522,\"tr\":\"Ajouter une annotation\"},{\""
@@ -2223,31 +2239,32 @@ static const unsigned char temp_binary_data_103[] =
 "2579943,\"tr\":\"Ultraphrygien\"},{\"id\":2837056976,\"tr\":\"Superlocrien\"},{\"id\":2605108987,\"tr\":\"Ultralocrien\"},{\"id\":1965071581,\"tr\":\"Ton entier leader\"},{\"id\":1367319047,\"tr\":\"Double harmonique\"},{\"id\":626733046,\"tr\":\"Moi"
 "ti\xc3\xa9 diminu\xc3\xa9\"},{\"id\":2141989878,\"tr\":\"Dominante modifi\xc3\xa9""e\"},{\"id\":2402117461,\"tr\":\"Blues heptatonique\"},{\"id\":860101336,\"tr\":\"Blues phrygien\"},{\"id\":3745452021,\"tr\":\"Blues modifi\xc3\xa9\"},{\"id\":5533753"
 "53,\"tr\":\"Blues mix\xc3\xa9\"},{\"id\":32797868,\"tr\":\"Ton principal du blues\"},{\"id\":3801549673,\"tr\":\"Rock'n'Roll\"},{\"id\":1931755849,\"tr\":\"Entr\xc3\xa9""e audio\"},{\"id\":4200658534,\"tr\":\"Sortie audio\"},{\"id\":3154594048,\"tr\""
-":\"Entr\xc3\xa9""e MIDI\"},{\"id\":2483423585,\"tr\":\"Sortie MIDI\"}],\"pluralLiteral\":[{\"id\":1853236155,\"tr\":[{\"name\":\"{x} canal d'entr\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} canaux d'entr\xc3\xa9""e\",\"pluralForm\":\"2\"}]},{\""
-"id\":4237797194,\"tr\":[{\"name\":\"{x} canal de sortie\",\"pluralForm\":\"1\"},{\"name\":\"{x} canaux de sortie\",\"pluralForm\":\"2\"}]},{\"id\":4187362806,\"tr\":[{\"name\":\"{x} note ajout\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} notes "
-"ajout\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":2677001308,\"tr\":[{\"name\":\"{x} note supprim\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} notes supprim\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":1115369500,\"tr\":[{\"name\":\"{x} note"
-" chang\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} notes chang\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":1670191088,\"tr\":[{\"name\":\"{x} \xc3\xa9v\xc3\xa9nement ajout\xc3\xa9\",\"pluralForm\":\"1\"},{\"name\":\"{x} \xc3\xa9v\xc3\xa9neme"
-"nts ajout\xc3\xa9s\",\"pluralForm\":\"2\"}]},{\"id\":4188356498,\"tr\":[{\"name\":\"{x} \xc3\xa9v\xc3\xa9nement supprim\xc3\xa9\",\"pluralForm\":\"1\"},{\"name\":\"{x} les \xc3\xa9v\xc3\xa9nements supprim\xc3\xa9s\",\"pluralForm\":\"2\"}]},{\"id\":18"
-"22865234,\"tr\":[{\"name\":\"{x} \xc3\xa9v\xc3\xa8nement modifi\xc3\xa9\",\"pluralForm\":\"1\"},{\"name\":\"{x} \xc3\xa9v\xc3\xa9nements modifi\xc3\xa9s\",\"pluralForm\":\"2\"}]},{\"id\":2539740572,\"tr\":[{\"name\":\"{x} clip ajout\xc3\xa9\",\"plura"
-"lForm\":\"1\"},{\"name\":\"{x} clips ajout\xc3\xa9s\",\"pluralForm\":\"2\"}]},{\"id\":1838846406,\"tr\":[{\"name\":\"{x} clip supprim\xc3\xa9\",\"pluralForm\":\"1\"},{\"name\":\"{x} clips supprim\xc3\xa9s\",\"pluralForm\":\"2\"}]},{\"id\":3829748102,"
-"\"tr\":[{\"name\":\"{x} clip modifi\xc3\xa9\",\"pluralForm\":\"1\"},{\"name\":\"{x} clips modifi\xc3\xa9s\",\"pluralForm\":\"2\"}]},{\"id\":159801621,\"tr\":[{\"name\":\"{x} annotation ajout\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} annotati"
-"ons ajout\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":335767671,\"tr\":[{\"name\":\"{x} annotation supprim\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} annotations supprim\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":1776240695,\"tr\":[{\"na"
-"me\":\"{x} annotation modifi\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} annotations modifi\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":2264722107,\"tr\":[{\"name\":\"{x} mesure ajout\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} mesure"
-"s ajout\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":755875505,\"tr\":[{\"name\":\"{x} mesure supprim\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} mesures supprim\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":1775129073,\"tr\":[{\"name\":\"{x}"
-" mesure modifi\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} mesures modifi\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":3133606715,\"tr\":[{\"name\":\"{x} armure ajout\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} armures ajout\xc3\xa9""e"
-"s\",\"pluralForm\":\"2\"}]},{\"id\":1992957705,\"tr\":[{\"name\":\"{x} armure supprim\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} armures supprim\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":4237699145,\"tr\":[{\"name\":\"{x} armure modifi\xc3"
-"\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} armures modifi\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":2895268064,\"tr\":[{\"name\":\"{x} note\",\"pluralForm\":\"1\"},{\"name\":\"{x} notes\",\"pluralForm\":\"2\"}]},{\"id\":3458549142,\"tr\":[{\""
-"name\":\"{x} \xc3\xa9v\xc3\xa9nement\",\"pluralForm\":\"1\"},{\"name\":\"{x} \xc3\xa9v\xc3\xa9nements\",\"pluralForm\":\"2\"}]},{\"id\":1029569651,\"tr\":[{\"name\":\"{x} annotation\",\"pluralForm\":\"1\"},{\"name\":\"{x} annotations\",\"pluralForm\""
-":\"2\"}]},{\"id\":2984658661,\"tr\":[{\"name\":\"{x} mesure\",\"pluralForm\":\"1\"},{\"name\":\"{x} mesures\",\"pluralForm\":\"2\"}]},{\"id\":3241281125,\"tr\":[{\"name\":\"{x} armure\",\"pluralForm\":\"1\"},{\"name\":\"{x} armures\",\"pluralForm\":\""
-"2\"}]},{\"id\":3319356210,\"tr\":[{\"name\":\"{x} clip\",\"pluralForm\":\"1\"},{\"name\":\"{x} clips\",\"pluralForm\":\"2\"}]},{\"id\":3631037336,\"tr\":[{\"name\":\"{x} mod\xc3\xa8le\",\"pluralForm\":\"1\"},{\"name\":\"{x} mod\xc3\xa8les\",\"pluralF"
-"orm\":\"2\"}]},{\"id\":2452992563,\"tr\":[{\"name\":\"{x} piste\",\"pluralForm\":\"1\"},{\"name\":\"{x} pistes\",\"pluralForm\":\"2\"}]},{\"id\":1323194979,\"tr\":[{\"name\":\"{x} r\xc3\xa9vision\",\"pluralForm\":\"1\"},{\"name\":\"{x} r\xc3\xa9visio"
-"ns\",\"pluralForm\":\"2\"}]},{\"id\":3610422080,\"tr\":[{\"name\":\"{x} delta\",\"pluralForm\":\"1\"},{\"name\":\"{x} deltas\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} minute\",\"pluralForm\":\"1\"},{\"name\":\"{x} minutes\""
-",\"pluralForm\":\"2\"}]},{\"id\":4122223288,\"tr\":[{\"name\":\"{x} seconde\",\"pluralForm\":\"1\"},{\"name\":\"{x} secondes\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"d\xc3\xa9plac\xc3\xa9 de {x}\",\"pluralForm\":\"1\"}}]}";
+":\"Entr\xc3\xa9""e MIDI\"},{\"id\":2483423585,\"tr\":\"Sortie MIDI\"},{\"id\":3017079000,\"tr\":\"Joindre les notes adjacentes\"},{\"id\":1055066721,\"tr\":\"\xc3\x89""diteur de script\"},{\"id\":2811733930,\"tr\":\"script modifi\xc3\xa9\"}],\"plural"
+"Literal\":[{\"id\":1853236155,\"tr\":[{\"name\":\"{x} canal d'entr\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} canaux d'entr\xc3\xa9""e\",\"pluralForm\":\"2\"}]},{\"id\":4237797194,\"tr\":[{\"name\":\"{x} canal de sortie\",\"pluralForm\":\"1\""
+"},{\"name\":\"{x} canaux de sortie\",\"pluralForm\":\"2\"}]},{\"id\":4187362806,\"tr\":[{\"name\":\"{x} note ajout\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} notes ajout\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":2677001308,\"tr\":[{\"name"
+"\":\"{x} note supprim\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} notes supprim\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":1115369500,\"tr\":[{\"name\":\"{x} note chang\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} notes chang\xc3\xa9""e"
+"s\",\"pluralForm\":\"2\"}]},{\"id\":1670191088,\"tr\":[{\"name\":\"{x} \xc3\xa9v\xc3\xa9nement ajout\xc3\xa9\",\"pluralForm\":\"1\"},{\"name\":\"{x} \xc3\xa9v\xc3\xa9nements ajout\xc3\xa9s\",\"pluralForm\":\"2\"}]},{\"id\":4188356498,\"tr\":[{\"name\""
+":\"{x} \xc3\xa9v\xc3\xa9nement supprim\xc3\xa9\",\"pluralForm\":\"1\"},{\"name\":\"{x} les \xc3\xa9v\xc3\xa9nements supprim\xc3\xa9s\",\"pluralForm\":\"2\"}]},{\"id\":1822865234,\"tr\":[{\"name\":\"{x} \xc3\xa9v\xc3\xa8nement modifi\xc3\xa9\",\"plura"
+"lForm\":\"1\"},{\"name\":\"{x} \xc3\xa9v\xc3\xa9nements modifi\xc3\xa9s\",\"pluralForm\":\"2\"}]},{\"id\":2539740572,\"tr\":[{\"name\":\"{x} clip ajout\xc3\xa9\",\"pluralForm\":\"1\"},{\"name\":\"{x} clips ajout\xc3\xa9s\",\"pluralForm\":\"2\"}]},{\""
+"id\":1838846406,\"tr\":[{\"name\":\"{x} clip supprim\xc3\xa9\",\"pluralForm\":\"1\"},{\"name\":\"{x} clips supprim\xc3\xa9s\",\"pluralForm\":\"2\"}]},{\"id\":3829748102,\"tr\":[{\"name\":\"{x} clip modifi\xc3\xa9\",\"pluralForm\":\"1\"},{\"name\":\"{"
+"x} clips modifi\xc3\xa9s\",\"pluralForm\":\"2\"}]},{\"id\":159801621,\"tr\":[{\"name\":\"{x} annotation ajout\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} annotations ajout\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":335767671,\"tr\":[{\"name"
+"\":\"{x} annotation supprim\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} annotations supprim\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":1776240695,\"tr\":[{\"name\":\"{x} annotation modifi\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} a"
+"nnotations modifi\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":2264722107,\"tr\":[{\"name\":\"{x} mesure ajout\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} mesures ajout\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":755875505,\"tr\":[{\"name\""
+":\"{x} mesure supprim\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} mesures supprim\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":1775129073,\"tr\":[{\"name\":\"{x} mesure modifi\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} mesures modifi\xc3"
+"\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":3133606715,\"tr\":[{\"name\":\"{x} armure ajout\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} armures ajout\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":1992957705,\"tr\":[{\"name\":\"{x} armure suppri"
+"m\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} armures supprim\xc3\xa9""es\",\"pluralForm\":\"2\"}]},{\"id\":4237699145,\"tr\":[{\"name\":\"{x} armure modifi\xc3\xa9""e\",\"pluralForm\":\"1\"},{\"name\":\"{x} armures modifi\xc3\xa9""es\",\"plur"
+"alForm\":\"2\"}]},{\"id\":2895268064,\"tr\":[{\"name\":\"{x} note\",\"pluralForm\":\"1\"},{\"name\":\"{x} notes\",\"pluralForm\":\"2\"}]},{\"id\":3458549142,\"tr\":[{\"name\":\"{x} \xc3\xa9v\xc3\xa9nement\",\"pluralForm\":\"1\"},{\"name\":\"{x} \xc3\xa9"
+"v\xc3\xa9nements\",\"pluralForm\":\"2\"}]},{\"id\":1029569651,\"tr\":[{\"name\":\"{x} annotation\",\"pluralForm\":\"1\"},{\"name\":\"{x} annotations\",\"pluralForm\":\"2\"}]},{\"id\":2984658661,\"tr\":[{\"name\":\"{x} mesure\",\"pluralForm\":\"1\"},{"
+"\"name\":\"{x} mesures\",\"pluralForm\":\"2\"}]},{\"id\":3241281125,\"tr\":[{\"name\":\"{x} armure\",\"pluralForm\":\"1\"},{\"name\":\"{x} armures\",\"pluralForm\":\"2\"}]},{\"id\":3319356210,\"tr\":[{\"name\":\"{x} clip\",\"pluralForm\":\"1\"},{\"na"
+"me\":\"{x} clips\",\"pluralForm\":\"2\"}]},{\"id\":3631037336,\"tr\":[{\"name\":\"{x} mod\xc3\xa8le\",\"pluralForm\":\"1\"},{\"name\":\"{x} mod\xc3\xa8les\",\"pluralForm\":\"2\"}]},{\"id\":2452992563,\"tr\":[{\"name\":\"{x} piste\",\"pluralForm\":\"1"
+"\"},{\"name\":\"{x} pistes\",\"pluralForm\":\"2\"}]},{\"id\":1323194979,\"tr\":[{\"name\":\"{x} r\xc3\xa9vision\",\"pluralForm\":\"1\"},{\"name\":\"{x} r\xc3\xa9visions\",\"pluralForm\":\"2\"}]},{\"id\":3610422080,\"tr\":[{\"name\":\"{x} delta\",\"pl"
+"uralForm\":\"1\"},{\"name\":\"{x} deltas\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} minute\",\"pluralForm\":\"1\"},{\"name\":\"{x} minutes\",\"pluralForm\":\"2\"}]},{\"id\":4122223288,\"tr\":[{\"name\":\"{x} seconde\",\"plur"
+"alForm\":\"1\"},{\"name\":\"{x} secondes\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"d\xc3\xa9plac\xc3\xa9 de {x}\",\"pluralForm\":\"1\"}}]}";
 
-const char* fr_json = (const char*) temp_binary_data_103;
+const char* fr_json = (const char*) temp_binary_data_105;
 
 //================== it.json ==================
-static const unsigned char temp_binary_data_104[] =
+static const unsigned char temp_binary_data_106[] =
 "{\"id\":\"it\",\"name\":\"Italiano\",\"pluralEquation\":\"({x}==1 ? 1 : 2)\",\"literal\":[{\"id\":590543227,\"tr\":\"Il progetto \xc3\xa8 iniziato\"},{\"id\":242354915,\"tr\":\"Nuovo progetto\"},{\"id\":973370257,\"tr\":\"Nuovo layer\"},{\"id\":36820"
 "62690,\"tr\":\"Tempo\"},{\"id\":3475921130,\"tr\":\"Volume\"},{\"id\":3279548549,\"tr\":\"Studio\"},{\"id\":3086290873,\"tr\":\"Strumenti\"},{\"id\":3686062664,\"tr\":\"Impostazioni\"},{\"id\":1113353303,\"tr\":\"Versioni\"},{\"id\":3324938734,\"tr\""
 ":\"Modelli\"},{\"id\":1791647634,\"tr\":\"Mappatura della tastiera\"},{\"id\":855043400,\"tr\":\"Rinomina Strumento\"},{\"id\":1662581644,\"tr\":\"Rinomina\"},{\"id\":3826312522,\"tr\":\"Aggiungi un'annotazione\"},{\"id\":726307987,\"tr\":\"Inserisci"
@@ -2316,30 +2333,31 @@ static const unsigned char temp_binary_data_104[] =
 ",\"tr\":\"Mixolidio aumentato\"},{\"id\":3914030977,\"tr\":\"Frigio dominante\"},{\"id\":805807533,\"tr\":\"Dominante Locrese\"},{\"id\":3160581502,\"tr\":\"Maggiore Locrese\"},{\"id\":2202579943,\"tr\":\"Ultrafrigio\"},{\"id\":2837056976,\"tr\":\"Su"
 "perlocriano\"},{\"id\":2605108987,\"tr\":\"Ultralocria\"},{\"id\":1965071581,\"tr\":\"Tono intero guida\"},{\"id\":1367319047,\"tr\":\"Doppio Armonico\"},{\"id\":626733046,\"tr\":\"Mezzo diminuito\"},{\"id\":2141989878,\"tr\":\"Dominante alterato\"},"
 "{\"id\":2402117461,\"tr\":\"Blues Eptatonico\"},{\"id\":860101336,\"tr\":\"Blues Frigio\"},{\"id\":3745452021,\"tr\":\"Blues modificato\"},{\"id\":553375353,\"tr\":\"Blues misto\"},{\"id\":32797868,\"tr\":\"Tono guida blues\"},{\"id\":3801549673,\"tr"
-"\":\"Rock'n'Roll\"},{\"id\":1931755849,\"tr\":\"Ingresso audio\"},{\"id\":4200658534,\"tr\":\"Uscita audio\"},{\"id\":3154594048,\"tr\":\"Ingresso MIDI\"},{\"id\":2483423585,\"tr\":\"Uscita MIDI\"}],\"pluralLiteral\":[{\"id\":1853236155,\"tr\":[{\"na"
-"me\":\"{x} canale di ingresso\",\"pluralForm\":\"1\"},{\"name\":\"{x} canali di ingresso\",\"pluralForm\":\"2\"}]},{\"id\":4237797194,\"tr\":[{\"name\":\"{x} canale di uscita\",\"pluralForm\":\"1\"},{\"name\":\"{x} canali di uscita\",\"pluralForm\":\""
-"2\"}]},{\"id\":4187362806,\"tr\":[{\"name\":\"aggiunta {x} nota\",\"pluralForm\":\"1\"},{\"name\":\"aggiunte {x} note\",\"pluralForm\":\"2\"}]},{\"id\":2677001308,\"tr\":[{\"name\":\"rimossa {x} nota\",\"pluralForm\":\"1\"},{\"name\":\"rimosse {x} no"
-"te\",\"pluralForm\":\"2\"}]},{\"id\":1115369500,\"tr\":[{\"name\":\"cambiata {x} nota\",\"pluralForm\":\"1\"},{\"name\":\"cambiate {x} note\",\"pluralForm\":\"2\"}]},{\"id\":1670191088,\"tr\":[{\"name\":\"aggiunto {x} evento\",\"pluralForm\":\"1\"},{"
-"\"name\":\"aggiunti {x} eventi\",\"pluralForm\":\"2\"}]},{\"id\":4188356498,\"tr\":[{\"name\":\"eliminato {x} evento\",\"pluralForm\":\"1\"},{\"name\":\"eliminati {x} eventi\",\"pluralForm\":\"2\"}]},{\"id\":1822865234,\"tr\":[{\"name\":\"cambiato {x"
-"} evento\",\"pluralForm\":\"1\"},{\"name\":\"cambiati {x} eventi\",\"pluralForm\":\"2\"}]},{\"id\":2539740572,\"tr\":[{\"name\":\"aggiunto {x} clip\",\"pluralForm\":\"1\"},{\"name\":\"aggiunti {x} clip\",\"pluralForm\":\"2\"}]},{\"id\":1838846406,\"t"
-"r\":[{\"name\":\"eliminato {x} clip\",\"pluralForm\":\"1\"},{\"name\":\"eliminato {x} clip\",\"pluralForm\":\"2\"}]},{\"id\":3829748102,\"tr\":[{\"name\":\"cambiato {x} clip\",\"pluralForm\":\"1\"},{\"name\":\"cambiato {x} clip\",\"pluralForm\":\"2\""
-"}]},{\"id\":159801621,\"tr\":[{\"name\":\"aggiunta {x} annotazione\",\"pluralForm\":\"1\"},{\"name\":\"aggiunte {x} annotazioni\",\"pluralForm\":\"2\"}]},{\"id\":335767671,\"tr\":[{\"name\":\"eliminata {x} annotazione\",\"pluralForm\":\"1\"},{\"name\""
-":\"eliminate {x} annotazioni\",\"pluralForm\":\"2\"}]},{\"id\":1776240695,\"tr\":[{\"name\":\"cambiata {x} annotazione\",\"pluralForm\":\"1\"},{\"name\":\"cambiate {x} annotazioni\",\"pluralForm\":\"2\"}]},{\"id\":2264722107,\"tr\":[{\"name\":\"aggiu"
-"nta {x} metro\",\"pluralForm\":\"1\"},{\"name\":\"aggiunte {x} metri\",\"pluralForm\":\"2\"}]},{\"id\":755875505,\"tr\":[{\"name\":\"eliminata {x} metro\",\"pluralForm\":\"1\"},{\"name\":\"eliminate {x} metri\",\"pluralForm\":\"2\"}]},{\"id\":1775129"
-"073,\"tr\":[{\"name\":\"cambiata {x} metro\",\"pluralForm\":\"1\"},{\"name\":\"cambiate {x} metri\",\"pluralForm\":\"2\"}]},{\"id\":3133606715,\"tr\":[{\"name\":\"aggiunta {x} armatura di chiave\",\"pluralForm\":\"1\"},{\"name\":\"aggiunte {x} armatu"
-"re di chiave\",\"pluralForm\":\"2\"}]},{\"id\":1992957705,\"tr\":[{\"name\":\"rimossa {x} armatura di chiave\",\"pluralForm\":\"1\"},{\"name\":\"rimossa {x} armature di chiave\",\"pluralForm\":\"2\"}]},{\"id\":4237699145,\"tr\":[{\"name\":\"modificat"
-"a {x} armatura di chiave\",\"pluralForm\":\"1\"},{\"name\":\"modificate {x} armature di chiave\",\"pluralForm\":\"2\"}]},{\"id\":2895268064,\"tr\":[{\"name\":\"{x} nota\",\"pluralForm\":\"1\"},{\"name\":\"{x} note\",\"pluralForm\":\"2\"}]},{\"id\":34"
-"58549142,\"tr\":[{\"name\":\"{x} evento\",\"pluralForm\":\"1\"},{\"name\":\"{x} eventi\",\"pluralForm\":\"2\"}]},{\"id\":1029569651,\"tr\":[{\"name\":\"{x} annotazione\",\"pluralForm\":\"1\"},{\"name\":\"{x} annotazioni\",\"pluralForm\":\"2\"}]},{\"i"
-"d\":2984658661,\"tr\":[{\"name\":\"{x} metro\",\"pluralForm\":\"1\"},{\"name\":\"{x} metri\",\"pluralForm\":\"2\"}]},{\"id\":3241281125,\"tr\":[{\"name\":\"{x} chiave\",\"pluralForm\":\"1\"},{\"name\":\"{x} chiavi\",\"pluralForm\":\"2\"}]},{\"id\":33"
-"19356210,\"tr\":[{\"name\":\"{x} clip\",\"pluralForm\":\"1\"},{\"name\":\"{x} clip\",\"pluralForm\":\"2\"}]},{\"id\":3631037336,\"tr\":[{\"name\":\"{x} pattern\",\"pluralForm\":\"1\"},{\"name\":\"{x} pattern\",\"pluralForm\":\"2\"}]},{\"id\":24529925"
-"63,\"tr\":[{\"name\":\"{x} traccia\",\"pluralForm\":\"1\"},{\"name\":\"{x} tracce\",\"pluralForm\":\"2\"}]},{\"id\":1323194979,\"tr\":[{\"name\":\"{x} revisione\",\"pluralForm\":\"1\"},{\"name\":\"{x} revisioni\",\"pluralForm\":\"2\"}]},{\"id\":36104"
-"22080,\"tr\":[{\"name\":\"{x} modifica\",\"pluralForm\":\"1\"},{\"name\":\"{x} modifiche\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} minuto\",\"pluralForm\":\"1\"},{\"name\":\"{x} minuti\",\"pluralForm\":\"2\"}]},{\"id\":4122"
-"223288,\"tr\":[{\"name\":\"{x} secondo\",\"pluralForm\":\"1\"},{\"name\":\"{x} secondi\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"rinominato da {x}\",\"pluralForm\":\"1\"}}]}";
+"\":\"Rock'n'Roll\"},{\"id\":1931755849,\"tr\":\"Ingresso audio\"},{\"id\":4200658534,\"tr\":\"Uscita audio\"},{\"id\":3154594048,\"tr\":\"Ingresso MIDI\"},{\"id\":2483423585,\"tr\":\"Uscita MIDI\"},{\"id\":3017079000,\"tr\":\"Unisci note adiacenti\"}"
+",{\"id\":1055066721,\"tr\":\"Editor di scripting\"},{\"id\":2811733930,\"tr\":\"script modificato\"}],\"pluralLiteral\":[{\"id\":1853236155,\"tr\":[{\"name\":\"{x} canale di ingresso\",\"pluralForm\":\"1\"},{\"name\":\"{x} canali di ingresso\",\"plur"
+"alForm\":\"2\"}]},{\"id\":4237797194,\"tr\":[{\"name\":\"{x} canale di uscita\",\"pluralForm\":\"1\"},{\"name\":\"{x} canali di uscita\",\"pluralForm\":\"2\"}]},{\"id\":4187362806,\"tr\":[{\"name\":\"aggiunta {x} nota\",\"pluralForm\":\"1\"},{\"name\""
+":\"aggiunte {x} note\",\"pluralForm\":\"2\"}]},{\"id\":2677001308,\"tr\":[{\"name\":\"rimossa {x} nota\",\"pluralForm\":\"1\"},{\"name\":\"rimosse {x} note\",\"pluralForm\":\"2\"}]},{\"id\":1115369500,\"tr\":[{\"name\":\"cambiata {x} nota\",\"pluralF"
+"orm\":\"1\"},{\"name\":\"cambiate {x} note\",\"pluralForm\":\"2\"}]},{\"id\":1670191088,\"tr\":[{\"name\":\"aggiunto {x} evento\",\"pluralForm\":\"1\"},{\"name\":\"aggiunti {x} eventi\",\"pluralForm\":\"2\"}]},{\"id\":4188356498,\"tr\":[{\"name\":\"e"
+"liminato {x} evento\",\"pluralForm\":\"1\"},{\"name\":\"eliminati {x} eventi\",\"pluralForm\":\"2\"}]},{\"id\":1822865234,\"tr\":[{\"name\":\"cambiato {x} evento\",\"pluralForm\":\"1\"},{\"name\":\"cambiati {x} eventi\",\"pluralForm\":\"2\"}]},{\"id\""
+":2539740572,\"tr\":[{\"name\":\"aggiunto {x} clip\",\"pluralForm\":\"1\"},{\"name\":\"aggiunti {x} clip\",\"pluralForm\":\"2\"}]},{\"id\":1838846406,\"tr\":[{\"name\":\"eliminato {x} clip\",\"pluralForm\":\"1\"},{\"name\":\"eliminato {x} clip\",\"plu"
+"ralForm\":\"2\"}]},{\"id\":3829748102,\"tr\":[{\"name\":\"cambiato {x} clip\",\"pluralForm\":\"1\"},{\"name\":\"cambiato {x} clip\",\"pluralForm\":\"2\"}]},{\"id\":159801621,\"tr\":[{\"name\":\"aggiunta {x} annotazione\",\"pluralForm\":\"1\"},{\"name"
+"\":\"aggiunte {x} annotazioni\",\"pluralForm\":\"2\"}]},{\"id\":335767671,\"tr\":[{\"name\":\"eliminata {x} annotazione\",\"pluralForm\":\"1\"},{\"name\":\"eliminate {x} annotazioni\",\"pluralForm\":\"2\"}]},{\"id\":1776240695,\"tr\":[{\"name\":\"cam"
+"biata {x} annotazione\",\"pluralForm\":\"1\"},{\"name\":\"cambiate {x} annotazioni\",\"pluralForm\":\"2\"}]},{\"id\":2264722107,\"tr\":[{\"name\":\"aggiunta {x} metro\",\"pluralForm\":\"1\"},{\"name\":\"aggiunte {x} metri\",\"pluralForm\":\"2\"}]},{\""
+"id\":755875505,\"tr\":[{\"name\":\"eliminata {x} metro\",\"pluralForm\":\"1\"},{\"name\":\"eliminate {x} metri\",\"pluralForm\":\"2\"}]},{\"id\":1775129073,\"tr\":[{\"name\":\"cambiata {x} metro\",\"pluralForm\":\"1\"},{\"name\":\"cambiate {x} metri\""
+",\"pluralForm\":\"2\"}]},{\"id\":3133606715,\"tr\":[{\"name\":\"aggiunta {x} armatura di chiave\",\"pluralForm\":\"1\"},{\"name\":\"aggiunte {x} armature di chiave\",\"pluralForm\":\"2\"}]},{\"id\":1992957705,\"tr\":[{\"name\":\"rimossa {x} armatura "
+"di chiave\",\"pluralForm\":\"1\"},{\"name\":\"rimossa {x} armature di chiave\",\"pluralForm\":\"2\"}]},{\"id\":4237699145,\"tr\":[{\"name\":\"modificata {x} armatura di chiave\",\"pluralForm\":\"1\"},{\"name\":\"modificate {x} armature di chiave\",\""
+"pluralForm\":\"2\"}]},{\"id\":2895268064,\"tr\":[{\"name\":\"{x} nota\",\"pluralForm\":\"1\"},{\"name\":\"{x} note\",\"pluralForm\":\"2\"}]},{\"id\":3458549142,\"tr\":[{\"name\":\"{x} evento\",\"pluralForm\":\"1\"},{\"name\":\"{x} eventi\",\"pluralFo"
+"rm\":\"2\"}]},{\"id\":1029569651,\"tr\":[{\"name\":\"{x} annotazione\",\"pluralForm\":\"1\"},{\"name\":\"{x} annotazioni\",\"pluralForm\":\"2\"}]},{\"id\":2984658661,\"tr\":[{\"name\":\"{x} metro\",\"pluralForm\":\"1\"},{\"name\":\"{x} metri\",\"plur"
+"alForm\":\"2\"}]},{\"id\":3241281125,\"tr\":[{\"name\":\"{x} chiave\",\"pluralForm\":\"1\"},{\"name\":\"{x} chiavi\",\"pluralForm\":\"2\"}]},{\"id\":3319356210,\"tr\":[{\"name\":\"{x} clip\",\"pluralForm\":\"1\"},{\"name\":\"{x} clip\",\"pluralForm\""
+":\"2\"}]},{\"id\":3631037336,\"tr\":[{\"name\":\"{x} pattern\",\"pluralForm\":\"1\"},{\"name\":\"{x} pattern\",\"pluralForm\":\"2\"}]},{\"id\":2452992563,\"tr\":[{\"name\":\"{x} traccia\",\"pluralForm\":\"1\"},{\"name\":\"{x} tracce\",\"pluralForm\":"
+"\"2\"}]},{\"id\":1323194979,\"tr\":[{\"name\":\"{x} revisione\",\"pluralForm\":\"1\"},{\"name\":\"{x} revisioni\",\"pluralForm\":\"2\"}]},{\"id\":3610422080,\"tr\":[{\"name\":\"{x} modifica\",\"pluralForm\":\"1\"},{\"name\":\"{x} modifiche\",\"plural"
+"Form\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} minuto\",\"pluralForm\":\"1\"},{\"name\":\"{x} minuti\",\"pluralForm\":\"2\"}]},{\"id\":4122223288,\"tr\":[{\"name\":\"{x} secondo\",\"pluralForm\":\"1\"},{\"name\":\"{x} secondi\",\"pluralFo"
+"rm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"rinominato da {x}\",\"pluralForm\":\"1\"}}]}";
 
-const char* it_json = (const char*) temp_binary_data_104;
+const char* it_json = (const char*) temp_binary_data_106;
 
 //================== ja.json ==================
-static const unsigned char temp_binary_data_105[] =
+static const unsigned char temp_binary_data_107[] =
 { 123,34,105,100,34,58,34,106,97,34,44,34,110,97,109,101,34,58,34,230,151,165,230,156,172,232,170,158,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,49,34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,53,57,48,53,
 52,51,50,50,55,44,34,116,114,34,58,34,227,131,151,227,131,173,227,130,184,227,130,167,227,130,175,227,131,136,233,150,139,229,167,139,34,125,44,123,34,105,100,34,58,50,52,50,51,53,52,57,49,53,44,34,116,114,34,58,34,230,150,176,232,166,143,227,131,151,
 227,131,173,227,130,184,227,130,167,227,130,175,227,131,136,34,125,44,123,34,105,100,34,58,57,55,51,51,55,48,50,53,55,44,34,116,114,34,58,34,230,150,176,232,166,143,227,131,172,227,130,164,227,131,164,227,131,188,34,125,44,123,34,105,100,34,58,51,54,
@@ -2575,51 +2593,53 @@ static const unsigned char temp_binary_data_105[] =
 100,34,58,51,50,55,57,55,56,54,56,44,34,116,114,34,58,34,227,131,150,227,131,171,227,131,188,227,130,185,227,129,174,227,131,170,227,131,188,227,131,135,227,130,163,227,131,179,227,130,176,227,131,136,227,131,188,227,131,179,34,125,44,123,34,105,100,
 34,58,51,56,48,49,53,52,57,54,55,51,44,34,116,114,34,58,34,227,131,173,227,131,131,227,130,175,227,131,179,227,131,173,227,131,188,227,131,171,34,125,44,123,34,105,100,34,58,49,57,51,49,55,53,53,56,52,57,44,34,116,114,34,58,34,227,130,170,227,131,188,
 227,131,135,227,130,163,227,130,170,229,133,165,229,138,155,34,125,44,123,34,105,100,34,58,52,50,48,48,54,53,56,53,51,52,44,34,116,114,34,58,34,227,130,170,227,131,188,227,131,135,227,130,163,227,130,170,229,135,186,229,138,155,34,125,44,123,34,105,100,
-34,58,51,49,53,52,53,57,52,48,52,56,44,34,116,114,34,58,34,77,73,68,73,229,133,165,229,138,155,34,125,44,123,34,105,100,34,58,50,52,56,51,52,50,51,53,56,53,44,34,116,114,34,58,34,77,73,68,73,229,135,186,229,138,155,34,125,93,44,34,112,108,117,114,97,
-108,76,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,49,56,53,51,50,51,54,49,53,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,32,229,133,165,229,138,155,227,131,129,227,131,163,227,131,179,227,131,141,227,131,171,34,44,34,112,
-108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,52,50,51,55,55,57,55,49,57,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,32,229,135,186,229,138,155,227,131,129,227,131,163,227,131,179,227,131,141,227,
-131,171,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,52,49,56,55,51,54,50,56,48,54,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,131,142,227,131,188,227,131,136,32,123,120,125,32,227,130,146,232,
-191,189,229,138,160,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,54,55,55,48,48,49,51,48,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,131,
-142,227,131,188,227,131,136,32,123,120,125,32,227,130,146,229,137,138,233,153,164,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,49,49,53,51,54,57,53,48,
-48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,131,142,227,131,188,227,131,136,32,123,120,125,32,227,130,146,229,164,137,230,155,180,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,
-34,125,125,44,123,34,105,100,34,58,49,54,55,48,49,57,49,48,56,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,164,227,131,153,227,131,179,227,131,136,32,123,120,125,32,227,130,146,232,191,189,229,138,160,227,129,151,227,129,190,227,129,
-151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,52,49,56,56,51,53,54,52,57,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,164,227,131,153,227,131,179,227,131,136,32,123,120,
-125,32,227,130,146,229,137,138,233,153,164,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,56,50,50,56,54,53,50,51,52,44,34,116,114,34,58,123,34,110,97,109,
-101,34,58,34,227,130,164,227,131,153,227,131,179,227,131,136,32,123,120,125,32,227,130,146,229,164,137,230,155,180,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,
-34,58,50,53,51,57,55,52,48,53,55,50,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,175,227,131,170,227,131,131,227,131,151,32,123,120,125,32,227,130,146,232,191,189,229,138,160,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,
-108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,56,51,56,56,52,54,52,48,54,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,175,227,131,170,227,131,131,227,131,151,32,123,120,125,32,227,130,146,229,137,138,
-233,153,164,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,56,50,57,55,52,56,49,48,50,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,175,227,
-131,170,227,131,131,227,131,151,32,123,120,125,32,227,130,146,229,164,137,230,155,180,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,53,57,56,48,49,54,50,
-49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,162,227,131,142,227,131,134,227,131,188,227,130,183,227,131,167,227,131,179,32,123,120,125,32,227,130,146,232,191,189,229,138,160,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,
-108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,51,53,55,54,55,54,55,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,162,227,131,142,227,131,134,227,131,188,227,130,183,227,131,167,227,131,179,32,123,
-120,125,32,227,130,146,229,137,138,233,153,164,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,55,55,54,50,52,48,54,57,53,44,34,116,114,34,58,123,34,110,
-97,109,101,34,58,34,227,130,162,227,131,142,227,131,134,227,131,188,227,130,183,227,131,167,227,131,179,32,123,120,125,32,227,130,146,229,164,137,230,155,180,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,
-34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,50,54,52,55,50,50,49,48,55,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,139,141,229,173,144,232,168,152,229,143,183,32,123,120,125,32,227,130,146,232,191,189,229,138,160,227,129,151,227,129,
-190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,55,53,53,56,55,53,53,48,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,139,141,229,173,144,232,168,152,229,143,183,32,
-123,120,125,32,227,130,146,229,137,138,233,153,164,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,55,55,53,49,50,57,48,55,51,44,34,116,114,34,58,123,34,
-110,97,109,101,34,58,34,230,139,141,229,173,144,232,168,152,229,143,183,32,123,120,125,32,227,130,146,229,164,137,230,155,180,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,
-34,105,100,34,58,51,49,51,51,54,48,54,55,49,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,232,170,191,229,143,183,32,123,120,125,32,227,130,146,232,191,189,229,138,160,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,
-108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,57,57,50,57,53,55,55,48,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,232,170,191,229,143,183,32,123,120,125,32,227,130,146,229,137,138,233,153,164,227,129,151,227,129,190,227,
-129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,52,50,51,55,54,57,57,49,52,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,232,170,191,229,143,183,32,123,120,125,32,227,130,146,229,
-164,137,230,155,180,227,129,151,227,129,190,227,129,151,227,129,159,227,128,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,56,57,53,50,54,56,48,54,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,
-34,227,131,142,227,131,188,227,131,136,32,123,120,125,227,129,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,52,53,56,53,52,57,49,52,50,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,164,
-227,131,153,227,131,179,227,131,136,32,123,120,125,227,129,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,48,50,57,53,54,57,54,53,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,162,
-227,131,142,227,131,134,227,131,188,227,130,183,227,131,167,227,131,179,32,123,120,125,227,129,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,57,56,52,54,53,56,54,54,49,44,34,116,114,34,58,123,34,
-110,97,109,101,34,58,34,230,139,141,229,173,144,232,168,152,229,143,183,32,123,120,125,227,129,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,50,52,49,50,56,49,49,50,53,44,34,116,114,34,58,123,34,
-110,97,109,101,34,58,34,232,170,191,229,143,183,32,123,120,125,227,129,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,51,49,57,51,53,54,50,49,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,
-227,130,175,227,131,170,227,131,131,227,131,151,32,123,120,125,227,129,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,54,51,49,48,51,55,51,51,54,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,
-227,131,145,227,130,191,227,131,188,227,131,179,123,120,125,227,129,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,52,53,50,57,57,50,53,54,51,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,
-131,172,227,130,164,227,131,164,227,131,188,32,123,120,125,227,129,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,51,50,51,49,57,52,57,55,57,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,
-131,172,227,131,147,227,130,184,227,131,167,227,131,179,32,123,120,125,227,129,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,54,49,48,52,50,50,48,56,48,44,34,116,114,34,58,123,34,110,97,109,101,34,
-58,34,227,131,135,227,131,171,227,130,191,32,123,120,125,227,129,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,56,53,53,52,51,51,55,48,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,
-125,229,136,134,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,52,49,50,50,50,50,51,50,56,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,231,167,146,34,44,34,112,108,117,114,97,108,70,
-111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,32,227,129,139,227,130,137,231,167,187,229,139,149,34,44,34,112,108,117,114,97,108,70,111,114,109,
-34,58,34,49,34,125,125,93,125,0,0 };
+34,58,51,49,53,52,53,57,52,48,52,56,44,34,116,114,34,58,34,77,73,68,73,229,133,165,229,138,155,34,125,44,123,34,105,100,34,58,50,52,56,51,52,50,51,53,56,53,44,34,116,114,34,58,34,77,73,68,73,229,135,186,229,138,155,34,125,44,123,34,105,100,34,58,51,48,
+49,55,48,55,57,48,48,48,44,34,116,114,34,58,34,233,154,163,230,142,165,227,129,153,227,130,139,227,131,142,227,131,188,227,131,136,227,130,146,231,181,144,229,144,136,227,129,153,227,130,139,34,125,44,123,34,105,100,34,58,49,48,53,53,48,54,54,55,50,49,
+44,34,116,114,34,58,34,227,130,185,227,130,175,227,131,170,227,131,151,227,131,136,227,130,168,227,131,135,227,130,163,227,130,191,34,125,44,123,34,105,100,34,58,50,56,49,49,55,51,51,57,51,48,44,34,116,114,34,58,34,227,130,185,227,130,175,227,131,170,
+227,131,151,227,131,136,227,129,140,229,164,137,230,155,180,227,129,149,227,130,140,227,129,190,227,129,151,227,129,159,34,125,93,44,34,112,108,117,114,97,108,76,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,49,56,53,51,50,51,54,49,53,53,44,34,
+116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,32,229,133,165,229,138,155,227,131,129,227,131,163,227,131,179,227,131,141,227,131,171,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,52,50,51,55,
+55,57,55,49,57,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,32,229,135,186,229,138,155,227,131,129,227,131,163,227,131,179,227,131,141,227,131,171,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,
+100,34,58,52,49,56,55,51,54,50,56,48,54,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,131,142,227,131,188,227,131,136,32,123,120,125,32,227,130,146,232,191,189,229,138,160,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,
+114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,54,55,55,48,48,49,51,48,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,131,142,227,131,188,227,131,136,32,123,120,125,32,227,130,146,229,137,138,233,153,164,227,129,
+151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,49,49,53,51,54,57,53,48,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,131,142,227,131,188,227,131,136,
+32,123,120,125,32,227,130,146,229,164,137,230,155,180,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,54,55,48,49,57,49,48,56,56,44,34,116,114,34,58,123,
+34,110,97,109,101,34,58,34,227,130,164,227,131,153,227,131,179,227,131,136,32,123,120,125,32,227,130,146,232,191,189,229,138,160,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,
+123,34,105,100,34,58,52,49,56,56,51,53,54,52,57,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,164,227,131,153,227,131,179,227,131,136,32,123,120,125,32,227,130,146,229,137,138,233,153,164,227,129,151,227,129,190,227,129,151,227,129,159,
+34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,56,50,50,56,54,53,50,51,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,164,227,131,153,227,131,179,227,131,136,32,123,120,125,32,227,130,146,
+229,164,137,230,155,180,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,53,51,57,55,52,48,53,55,50,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,
+130,175,227,131,170,227,131,131,227,131,151,32,123,120,125,32,227,130,146,232,191,189,229,138,160,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,56,51,56,
+56,52,54,52,48,54,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,175,227,131,170,227,131,131,227,131,151,32,123,120,125,32,227,130,146,229,137,138,233,153,164,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,
+70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,56,50,57,55,52,56,49,48,50,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,175,227,131,170,227,131,131,227,131,151,32,123,120,125,32,227,130,146,229,164,137,230,155,180,227,129,
+151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,53,57,56,48,49,54,50,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,162,227,131,142,227,131,134,227,
+131,188,227,130,183,227,131,167,227,131,179,32,123,120,125,32,227,130,146,232,191,189,229,138,160,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,51,53,55,
+54,55,54,55,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,162,227,131,142,227,131,134,227,131,188,227,130,183,227,131,167,227,131,179,32,123,120,125,32,227,130,146,229,137,138,233,153,164,227,129,151,227,129,190,227,129,151,227,129,159,
+34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,55,55,54,50,52,48,54,57,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,162,227,131,142,227,131,134,227,131,188,227,130,183,227,131,167,227,
+131,179,32,123,120,125,32,227,130,146,229,164,137,230,155,180,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,50,54,52,55,50,50,49,48,55,44,34,116,114,34,
+58,123,34,110,97,109,101,34,58,34,230,139,141,229,173,144,232,168,152,229,143,183,32,123,120,125,32,227,130,146,232,191,189,229,138,160,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,
+125,44,123,34,105,100,34,58,55,53,53,56,55,53,53,48,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,139,141,229,173,144,232,168,152,229,143,183,32,123,120,125,32,227,130,146,229,137,138,233,153,164,227,129,151,227,129,190,227,129,151,227,129,
+159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,55,55,53,49,50,57,48,55,51,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,139,141,229,173,144,232,168,152,229,143,183,32,123,120,125,32,227,130,
+146,229,164,137,230,155,180,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,49,51,51,54,48,54,55,49,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,
+232,170,191,229,143,183,32,123,120,125,32,227,130,146,232,191,189,229,138,160,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,57,57,50,57,53,55,55,48,53,
+44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,232,170,191,229,143,183,32,123,120,125,32,227,130,146,229,137,138,233,153,164,227,129,151,227,129,190,227,129,151,227,129,159,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,
+123,34,105,100,34,58,52,50,51,55,54,57,57,49,52,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,232,170,191,229,143,183,32,123,120,125,32,227,130,146,229,164,137,230,155,180,227,129,151,227,129,190,227,129,151,227,129,159,227,128,130,34,44,34,112,
+108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,56,57,53,50,54,56,48,54,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,131,142,227,131,188,227,131,136,32,123,120,125,227,129,164,34,44,34,112,108,117,114,
+97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,52,53,56,53,52,57,49,52,50,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,164,227,131,153,227,131,179,227,131,136,32,123,120,125,227,129,164,34,44,34,112,108,117,114,
+97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,48,50,57,53,54,57,54,53,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,162,227,131,142,227,131,134,227,131,188,227,130,183,227,131,167,227,131,179,32,123,120,125,227,
+129,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,57,56,52,54,53,56,54,54,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,139,141,229,173,144,232,168,152,229,143,183,32,123,120,125,227,
+129,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,50,52,49,50,56,49,49,50,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,232,170,191,229,143,183,32,123,120,125,227,129,164,34,44,34,112,108,
+117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,51,49,57,51,53,54,50,49,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,130,175,227,131,170,227,131,131,227,131,151,32,123,120,125,227,129,164,34,44,34,112,108,
+117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,54,51,49,48,51,55,51,51,54,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,131,145,227,130,191,227,131,188,227,131,179,123,120,125,227,129,164,34,44,34,112,108,117,
+114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,52,53,50,57,57,50,53,54,51,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,131,172,227,130,164,227,131,164,227,131,188,32,123,120,125,227,129,164,34,44,34,112,108,117,
+114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,51,50,51,49,57,52,57,55,57,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,131,172,227,131,147,227,130,184,227,131,167,227,131,179,32,123,120,125,227,129,164,34,44,34,
+112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,54,49,48,52,50,50,48,56,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,227,131,135,227,131,171,227,130,191,32,123,120,125,227,129,164,34,44,34,112,108,117,
+114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,56,53,53,52,51,51,55,48,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,229,136,134,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,
+123,34,105,100,34,58,52,49,50,50,50,50,51,50,56,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,231,167,146,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,
+44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,32,227,129,139,227,130,137,231,167,187,229,139,149,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,0,0 };
 
-const char* ja_json = (const char*) temp_binary_data_105;
+const char* ja_json = (const char*) temp_binary_data_107;
 
 //================== ko.json ==================
-static const unsigned char temp_binary_data_106[] =
+static const unsigned char temp_binary_data_108[] =
 { 123,34,105,100,34,58,34,107,111,34,44,34,110,97,109,101,34,58,34,237,149,156,234,181,173,236,150,180,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,40,123,120,125,61,61,49,32,63,32,49,32,58,32,50,41,34,44,34,108,105,116,101,114,
 97,108,34,58,91,123,34,105,100,34,58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,237,148,132,235,161,156,236,160,157,237,138,184,32,236,139,156,236,158,145,34,125,44,123,34,105,100,34,58,50,52,50,51,53,52,57,49,53,44,34,116,114,34,58,34,236,131,
 136,32,237,148,132,235,161,156,236,160,157,237,138,184,34,125,44,123,34,105,100,34,58,57,55,51,51,55,48,50,53,55,44,34,116,114,34,58,34,236,131,136,32,237,138,184,235,158,153,34,125,44,123,34,105,100,34,58,51,54,56,50,48,54,50,54,57,48,44,34,116,114,
@@ -2827,67 +2847,70 @@ static const unsigned char temp_binary_data_106[] =
 58,34,235,184,148,235,163,168,236,138,164,32,235,175,185,236,138,164,235,147,156,34,125,44,123,34,105,100,34,58,51,50,55,57,55,56,54,56,44,34,116,114,34,58,34,235,184,148,235,163,168,236,138,164,32,235,166,172,235,148,169,32,237,134,164,34,125,44,123,
 34,105,100,34,58,51,56,48,49,53,52,57,54,55,51,44,34,116,114,34,58,34,235,161,185,236,149,164,235,164,140,34,125,44,123,34,105,100,34,58,49,57,51,49,55,53,53,56,52,57,44,34,116,114,34,58,34,236,152,164,235,148,148,236,152,164,32,236,158,133,235,160,165,
 34,125,44,123,34,105,100,34,58,52,50,48,48,54,53,56,53,51,52,44,34,116,114,34,58,34,236,152,164,235,148,148,236,152,164,32,236,182,156,235,160,165,34,125,44,123,34,105,100,34,58,51,49,53,52,53,57,52,48,52,56,44,34,116,114,34,58,34,77,73,68,73,32,236,
-158,133,235,160,165,34,125,44,123,34,105,100,34,58,50,52,56,51,52,50,51,53,56,53,44,34,116,114,34,58,34,77,73,68,73,32,236,182,156,235,160,165,34,125,93,44,34,112,108,117,114,97,108,76,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,49,56,53,51,
-50,51,54,49,53,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,236,177,132,235,132,144,32,236,158,133,235,160,165,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,
-32,236,177,132,235,132,144,235,147,164,32,236,158,133,235,160,165,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,52,50,51,55,55,57,55,49,57,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,
-120,125,32,236,177,132,235,132,144,32,236,182,156,235,160,165,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,236,177,132,235,132,144,235,147,164,32,236,182,156,235,160,165,34,44,34,112,
-108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,52,49,56,55,51,54,50,56,48,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,235,133,184,237,138,184,34,44,
-34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,235,133,184,237,138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,
-93,125,44,123,34,105,100,34,58,50,54,55,55,48,48,49,51,48,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,235,133,184,237,138,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,
-34,125,44,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,235,133,184,237,138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,49,49,53,51,54,57,53,
-48,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,235,133,184,237,138,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,235,179,128,
-234,178,189,235,144,156,32,123,120,125,32,235,133,184,237,138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,54,55,48,49,57,49,48,56,56,44,34,116,114,34,58,91,123,34,110,97,109,101,
-34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,236,157,180,235,178,164,237,138,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,
-32,236,157,180,235,178,164,237,138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,52,49,56,56,51,53,54,52,57,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,160,156,234,177,
-176,235,144,156,32,123,120,125,32,236,157,180,235,178,164,237,138,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,236,157,180,235,178,164,237,
-138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,56,50,50,56,54,53,50,51,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,
-32,236,157,180,235,178,164,237,138,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,236,157,180,235,178,164,237,138,184,235,147,164,34,44,34,
-112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,50,53,51,57,55,52,48,53,55,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,237,129,180,235,166,189,
-34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,237,129,180,235,166,189,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,
-125,93,125,44,123,34,105,100,34,58,49,56,51,56,56,52,54,52,48,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,237,129,180,235,166,189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,
-34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,237,129,180,235,166,189,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,51,56,50,57,55,52,
-56,49,48,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,237,129,180,235,166,189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,235,179,
-128,234,178,189,235,144,156,32,123,120,125,32,237,129,180,235,166,189,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,53,57,56,48,49,54,50,49,44,34,116,114,34,58,91,123,34,110,97,109,101,
-34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,236,163,188,236,132,157,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,236,163,188,
-236,132,157,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,51,51,53,55,54,55,54,55,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,
-32,236,163,188,236,132,157,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,236,163,188,236,132,157,235,147,164,34,44,34,112,108,117,114,97,108,70,
-111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,55,55,54,50,52,48,54,57,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,236,163,188,236,132,157,34,44,34,112,108,117,114,97,
-108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,236,163,188,236,132,157,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,
-34,58,50,50,54,52,55,50,50,49,48,55,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,235,176,149,236,158,144,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,
-34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,235,176,149,236,158,144,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,55,53,53,56,55,53,53,48,
-53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,235,176,149,236,158,144,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,
-160,156,234,177,176,235,144,156,32,123,120,125,32,235,176,149,236,158,144,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,55,55,53,49,50,57,48,55,51,44,34,116,114,34,58,91,123,
-34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,235,176,149,236,158,144,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,
-32,123,120,125,32,235,176,149,236,158,144,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,51,49,51,51,54,48,54,55,49,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,
-182,148,234,176,128,235,144,156,32,123,120,125,32,236,161,176,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,236,161,176,237,145,156,
-235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,57,57,50,57,53,55,55,48,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,236,
-161,176,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,236,161,176,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,
-109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,52,50,51,55,54,57,57,49,52,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,236,161,176,237,145,156,34,44,34,112,108,117,114,97,108,70,
-111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,236,161,176,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,
-50,56,57,53,50,54,56,48,54,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,235,133,184,237,138,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,235,133,184,
-237,138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,51,52,53,56,53,52,57,49,52,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,236,157,180,235,178,164,237,138,
-184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,236,157,180,235,178,164,237,138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,
-105,100,34,58,49,48,50,57,53,54,57,54,53,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,236,163,188,236,132,157,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,
-236,163,188,236,132,157,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,50,57,56,52,54,53,56,54,54,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,235,176,149,236,158,
-144,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,235,176,149,236,158,144,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,
-44,123,34,105,100,34,58,51,50,52,49,50,56,49,49,50,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,236,161,176,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,
-120,125,32,236,161,176,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,51,51,49,57,51,53,54,50,49,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,237,129,
-180,235,166,189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,237,129,180,235,166,189,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,
-105,100,34,58,51,54,51,49,48,51,55,51,51,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,237,140,168,237,132,180,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,
-237,140,168,237,132,180,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,50,52,53,50,57,57,50,53,54,51,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,235,160,136,236,157,
-180,236,150,180,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,235,160,136,236,157,180,236,150,180,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,
-44,123,34,105,100,34,58,49,51,50,51,49,57,52,57,55,57,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,235,179,128,234,178,189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,
-120,125,32,235,179,128,234,178,189,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,51,54,49,48,52,50,50,48,56,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,235,141,
-184,237,131,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,235,141,184,237,131,128,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,
-105,100,34,58,50,56,53,53,52,51,51,55,48,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,235,182,132,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,235,182,132,
-34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,52,49,50,50,50,50,51,50,56,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,236,180,136,34,44,34,112,108,117,114,97,108,70,111,114,
-109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,236,180,136,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,
-34,58,34,123,120,125,32,236,151,144,236,132,156,32,236,152,174,234,178,168,236,167,144,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,0,0 };
+158,133,235,160,165,34,125,44,123,34,105,100,34,58,50,52,56,51,52,50,51,53,56,53,44,34,116,114,34,58,34,77,73,68,73,32,236,182,156,235,160,165,34,125,44,123,34,105,100,34,58,51,48,49,55,48,55,57,48,48,48,44,34,116,114,34,58,34,236,157,184,236,160,145,
+237,149,156,32,235,133,184,237,138,184,235,165,188,32,236,151,176,234,178,176,237,149,169,235,139,136,235,139,164,34,125,44,123,34,105,100,34,58,49,48,53,53,48,54,54,55,50,49,44,34,116,114,34,58,34,236,138,164,237,129,172,235,166,189,237,138,184,32,237,
+142,184,236,167,145,234,184,176,34,125,44,123,34,105,100,34,58,50,56,49,49,55,51,51,57,51,48,44,34,116,114,34,58,34,236,138,164,237,129,172,235,166,189,237,138,184,234,176,128,32,235,179,128,234,178,189,235,144,152,236,151,136,236,138,181,235,139,136,
+235,139,164,34,125,93,44,34,112,108,117,114,97,108,76,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,49,56,53,51,50,51,54,49,53,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,236,177,132,235,132,144,32,236,158,133,235,160,
+165,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,236,177,132,235,132,144,235,147,164,32,236,158,133,235,160,165,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,
+125,44,123,34,105,100,34,58,52,50,51,55,55,57,55,49,57,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,236,177,132,235,132,144,32,236,182,156,235,160,165,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,
+34,110,97,109,101,34,58,34,123,120,125,32,236,177,132,235,132,144,235,147,164,32,236,182,156,235,160,165,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,52,49,56,55,51,54,50,56,48,54,44,34,116,114,34,58,
+91,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,235,133,184,237,138,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,
+123,120,125,32,235,133,184,237,138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,50,54,55,55,48,48,49,51,48,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,160,156,234,177,
+176,235,144,156,32,123,120,125,32,235,133,184,237,138,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,235,133,184,237,138,184,235,147,164,34,
+44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,49,49,53,51,54,57,53,48,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,235,133,184,237,138,
+184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,235,133,184,237,138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,
+50,34,125,93,125,44,123,34,105,100,34,58,49,54,55,48,49,57,49,48,56,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,236,157,180,235,178,164,237,138,184,34,44,34,112,108,117,114,97,108,70,
+111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,236,157,180,235,178,164,237,138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,
+105,100,34,58,52,49,56,56,51,53,54,52,57,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,236,157,180,235,178,164,237,138,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,
+125,44,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,236,157,180,235,178,164,237,138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,56,50,50,56,
+54,53,50,51,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,236,157,180,235,178,164,237,138,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,
+34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,236,157,180,235,178,164,237,138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,50,53,51,57,55,52,48,53,55,50,44,34,116,114,
+34,58,91,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,237,129,180,235,166,189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,
+156,32,123,120,125,32,237,129,180,235,166,189,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,56,51,56,56,52,54,52,48,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,160,156,
+234,177,176,235,144,156,32,123,120,125,32,237,129,180,235,166,189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,237,129,180,235,166,189,235,147,
+164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,51,56,50,57,55,52,56,49,48,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,237,129,180,
+235,166,189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,237,129,180,235,166,189,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,
+58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,53,57,56,48,49,54,50,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,236,163,188,236,132,157,34,44,34,112,108,117,114,97,108,70,111,114,109,
+34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,236,163,188,236,132,157,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,51,51,53,55,
+54,55,54,55,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,236,163,188,236,132,157,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,
+160,156,234,177,176,235,144,156,32,123,120,125,32,236,163,188,236,132,157,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,55,55,54,50,52,48,54,57,53,44,34,116,114,34,58,91,123,34,110,97,
+109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,236,163,188,236,132,157,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,236,
+163,188,236,132,157,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,50,50,54,52,55,50,50,49,48,55,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,
+123,120,125,32,235,176,149,236,158,144,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,235,176,149,236,158,144,237,145,156,235,147,164,
+34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,55,53,53,56,55,53,53,48,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,235,176,149,236,158,
+144,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,235,176,149,236,158,144,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,
+70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,55,55,53,49,50,57,48,55,51,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,235,176,149,236,158,144,237,145,156,34,44,34,112,
+108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,235,176,149,236,158,144,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,
+125,93,125,44,123,34,105,100,34,58,51,49,51,51,54,48,54,55,49,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,236,161,176,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,
+34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,182,148,234,176,128,235,144,156,32,123,120,125,32,236,161,176,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,57,57,50,57,53,
+55,55,48,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,236,160,156,234,177,176,235,144,156,32,123,120,125,32,236,161,176,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,236,160,
+156,234,177,176,235,144,156,32,123,120,125,32,236,161,176,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,52,50,51,55,54,57,57,49,52,53,44,34,116,114,34,58,91,123,34,110,97,109,
+101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,236,161,176,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,235,179,128,234,178,189,235,144,156,32,123,120,125,32,236,161,
+176,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,50,56,57,53,50,54,56,48,54,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,235,133,184,237,138,184,34,
+44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,235,133,184,237,138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,51,52,
+53,56,53,52,57,49,52,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,236,157,180,235,178,164,237,138,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,236,157,
+180,235,178,164,237,138,184,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,48,50,57,53,54,57,54,53,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,236,163,188,236,
+132,157,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,236,163,188,236,132,157,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,
+34,58,50,57,56,52,54,53,56,54,54,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,235,176,149,236,158,144,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,
+32,235,176,149,236,158,144,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,51,50,52,49,50,56,49,49,50,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,236,
+161,176,237,145,156,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,236,161,176,237,145,156,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,
+34,105,100,34,58,51,51,49,57,51,53,54,50,49,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,237,129,180,235,166,189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,
+32,237,129,180,235,166,189,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,51,54,51,49,48,51,55,51,51,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,237,140,168,237,
+132,180,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,237,140,168,237,132,180,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,
+34,58,50,52,53,50,57,57,50,53,54,51,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,235,160,136,236,157,180,236,150,180,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,
+32,235,160,136,236,157,180,236,150,180,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,51,50,51,49,57,52,57,55,57,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,235,
+179,128,234,178,189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,235,179,128,234,178,189,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,
+34,105,100,34,58,51,54,49,48,52,50,50,48,56,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,235,141,184,237,131,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,
+32,235,141,184,237,131,128,235,147,164,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,50,56,53,53,52,51,51,55,48,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,235,182,132,34,
+44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,235,182,132,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,52,49,50,50,50,50,51,50,56,56,
+44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,236,180,136,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,236,180,136,34,44,34,112,108,117,114,97,108,70,111,114,
+109,34,58,34,50,34,125,93,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,32,236,151,144,236,132,156,32,236,152,174,234,178,168,236,167,144,34,44,34,112,108,117,114,97,108,70,111,
+114,109,34,58,34,49,34,125,125,93,125,0,0 };
 
-const char* ko_json = (const char*) temp_binary_data_106;
+const char* ko_json = (const char*) temp_binary_data_108;
 
 //================== pt.json ==================
-static const unsigned char temp_binary_data_107[] =
+static const unsigned char temp_binary_data_109[] =
 "{\"id\":\"pt\",\"name\":\"Portugu\xc3\xaas\",\"pluralEquation\":\"(({x}==0 || {x}==1) ? 1 : 2)\",\"literal\":[{\"id\":590543227,\"tr\":\"In\xc3\xad""cio do projeto\"},{\"id\":242354915,\"tr\":\"Novo projeto\"},{\"id\":973370257,\"tr\":\"Nova camada\""
 "},{\"id\":3682062690,\"tr\":\"Tempo\"},{\"id\":3475921130,\"tr\":\"Volume\"},{\"id\":3279548549,\"tr\":\"Est\xc3\xba""dio\"},{\"id\":3086290873,\"tr\":\"Instrumentos\"},{\"id\":3686062664,\"tr\":\"Ajustes\"},{\"id\":1113353303,\"tr\":\"Vers\xc3\xb5""e"
 "s\"},{\"id\":3324938734,\"tr\":\"Padr\xc3\xb5""es\"},{\"id\":1791647634,\"tr\":\"Mapeamento de teclado\"},{\"id\":855043400,\"tr\":\"Renomear instrumento\"},{\"id\":1662581644,\"tr\":\"Renomear\"},{\"id\":3826312522,\"tr\":\"Adicionar anota\xc3\xa7\xc3"
@@ -2959,31 +2982,32 @@ static const unsigned char temp_binary_data_107[] =
 "7533,\"tr\":\"Dominante L\xc3\xb3""crio\"},{\"id\":3160581502,\"tr\":\"Locriano Maior\"},{\"id\":2202579943,\"tr\":\"Ultrafr\xc3\xadgio\"},{\"id\":2837056976,\"tr\":\"Superl\xc3\xb3""crio\"},{\"id\":2605108987,\"tr\":\"Ultralocrian\"},{\"id\":1965071"
 "581,\"tr\":\"Tom inteiro principal\"},{\"id\":1367319047,\"tr\":\"Harm\xc3\xb4nico Duplo\"},{\"id\":626733046,\"tr\":\"Meio Diminuto\"},{\"id\":2141989878,\"tr\":\"Dominante Alterado\"},{\"id\":2402117461,\"tr\":\"Blues Heptat\xc3\xb4nico\"},{\"id\":"
 "860101336,\"tr\":\"Blues Fr\xc3\xadgio\"},{\"id\":3745452021,\"tr\":\"Blues modificado\"},{\"id\":553375353,\"tr\":\"Blues Misto\"},{\"id\":32797868,\"tr\":\"Tom principal do blues\"},{\"id\":3801549673,\"tr\":\"Rock'n'Roll\"},{\"id\":1931755849,\"tr"
-"\":\"Entrada de \xc3\x81udio\"},{\"id\":4200658534,\"tr\":\"Sa\xc3\xad""da de \xc3\x81udio\"},{\"id\":3154594048,\"tr\":\"Entrada MIDI\"},{\"id\":2483423585,\"tr\":\"Sa\xc3\xad""da MIDI\"}],\"pluralLiteral\":[{\"id\":1853236155,\"tr\":[{\"name\":\"{x"
-"} canal de entrada\",\"pluralForm\":\"1\"},{\"name\":\"{x} canais de entrada\",\"pluralForm\":\"2\"}]},{\"id\":4237797194,\"tr\":[{\"name\":\"{x} canal de sa\xc3\xad""da\",\"pluralForm\":\"1\"},{\"name\":\"{x} canais de sa\xc3\xad""da\",\"pluralForm\""
-":\"2\"}]},{\"id\":4187362806,\"tr\":[{\"name\":\"{x} nota adicionada\",\"pluralForm\":\"1\"},{\"name\":\"{x} notas adicionadas\",\"pluralForm\":\"2\"}]},{\"id\":2677001308,\"tr\":[{\"name\":\"{x} nota removida\",\"pluralForm\":\"1\"},{\"name\":\"{x} "
-"notas removidas\",\"pluralForm\":\"2\"}]},{\"id\":1115369500,\"tr\":[{\"name\":\"{x} nota alterada\",\"pluralForm\":\"1\"},{\"name\":\"{x} notas alteradas\",\"pluralForm\":\"2\"}]},{\"id\":1670191088,\"tr\":[{\"name\":\"{x} evento adicionado\",\"plur"
-"alForm\":\"1\"},{\"name\":\"{x} eventos adicionados\",\"pluralForm\":\"2\"}]},{\"id\":4188356498,\"tr\":[{\"name\":\"{x} evento removido\",\"pluralForm\":\"1\"},{\"name\":\"{x} eventos removidos\",\"pluralForm\":\"2\"}]},{\"id\":1822865234,\"tr\":[{\""
-"name\":\"{x} evento alterado\",\"pluralForm\":\"1\"},{\"name\":\"{x} eventos alterados\",\"pluralForm\":\"2\"}]},{\"id\":2539740572,\"tr\":[{\"name\":\"{x} clipe adicionou\",\"pluralForm\":\"1\"},{\"name\":\"{x} clipes adicionou\",\"pluralForm\":\"2\""
-"}]},{\"id\":1838846406,\"tr\":[{\"name\":\"{x} clipe removido\",\"pluralForm\":\"1\"},{\"name\":\"{x} clipes removidos\",\"pluralForm\":\"2\"}]},{\"id\":3829748102,\"tr\":[{\"name\":\"{x} clipe alterado\",\"pluralForm\":\"1\"},{\"name\":\"{x} clipes "
-"alterados\",\"pluralForm\":\"2\"}]},{\"id\":159801621,\"tr\":[{\"name\":\"{x} anota\xc3\xa7\xc3\xa3o adicionada\",\"pluralForm\":\"1\"},{\"name\":\"{x} anota\xc3\xa7\xc3\xb5""es adicionadas\",\"pluralForm\":\"2\"}]},{\"id\":335767671,\"tr\":[{\"name\""
-":\"{x} anota\xc3\xa7\xc3\xa3o removida\",\"pluralForm\":\"1\"},{\"name\":\"{x} anota\xc3\xa7\xc3\xb5""es removidas\",\"pluralForm\":\"2\"}]},{\"id\":1776240695,\"tr\":[{\"name\":\"{x} anota\xc3\xa7\xc3\xa3o alterada\",\"pluralForm\":\"1\"},{\"name\":"
-"\"{x} anota\xc3\xa7\xc3\xb5""es alteradas\",\"pluralForm\":\"2\"}]},{\"id\":2264722107,\"tr\":[{\"name\":\"{x} m\xc3\xa9trica adicionada\",\"pluralForm\":\"1\"},{\"name\":\"{x} m\xc3\xa9tricas adicionadas\",\"pluralForm\":\"2\"}]},{\"id\":755875505,\""
-"tr\":[{\"name\":\"{x} m\xc3\xa9trica removida\",\"pluralForm\":\"1\"},{\"name\":\"{x} m\xc3\xa9tricas removidas\",\"pluralForm\":\"2\"}]},{\"id\":1775129073,\"tr\":[{\"name\":\"{x} m\xc3\xa9trica alterada\",\"pluralForm\":\"1\"},{\"name\":\"{x} m\xc3"
-"\xa9tricas alteradas\",\"pluralForm\":\"2\"}]},{\"id\":3133606715,\"tr\":[{\"name\":\"adicionou {x} armadura de clave\",\"pluralForm\":\"1\"},{\"name\":\"adicionou {x} armaduras de clave\",\"pluralForm\":\"2\"}]},{\"id\":1992957705,\"tr\":[{\"name\":"
-"\"{x} armadura de clave removida\",\"pluralForm\":\"1\"},{\"name\":\"{x} armaduras de clave removidas\",\"pluralForm\":\"2\"}]},{\"id\":4237699145,\"tr\":[{\"name\":\"{x} armadura de clave alterada\",\"pluralForm\":\"1\"},{\"name\":\"{x} armaduras de"
-" clave alteradas\",\"pluralForm\":\"2\"}]},{\"id\":2895268064,\"tr\":[{\"name\":\"{x} notas\",\"pluralForm\":\"1\"},{\"name\":\"{x} notas\",\"pluralForm\":\"2\"}]},{\"id\":3458549142,\"tr\":[{\"name\":\"{x} evento\",\"pluralForm\":\"1\"},{\"name\":\""
-"{x} eventos\",\"pluralForm\":\"2\"}]},{\"id\":1029569651,\"tr\":[{\"name\":\"{x} anota\xc3\xa7\xc3\xa3o\",\"pluralForm\":\"1\"},{\"name\":\"{x} anota\xc3\xa7\xc3\xb5""es\",\"pluralForm\":\"2\"}]},{\"id\":2984658661,\"tr\":[{\"name\":\"{x} m\xc3\xa9tr"
-"ica\",\"pluralForm\":\"1\"},{\"name\":\"{x} m\xc3\xa9tricas\",\"pluralForm\":\"2\"}]},{\"id\":3241281125,\"tr\":[{\"name\":\"{x} armadura de clave\",\"pluralForm\":\"1\"},{\"name\":\"{x} armaduras de clave\",\"pluralForm\":\"2\"}]},{\"id\":3319356210"
-",\"tr\":[{\"name\":\"{x} clipe\",\"pluralForm\":\"1\"},{\"name\":\"{x} clipes\",\"pluralForm\":\"2\"}]},{\"id\":3631037336,\"tr\":[{\"name\":\"{x} padr\xc3\xa3o\",\"pluralForm\":\"1\"},{\"name\":\"{x} padr\xc3\xb5""es\",\"pluralForm\":\"2\"}]},{\"id\""
-":2452992563,\"tr\":[{\"name\":\"{x} camada\",\"pluralForm\":\"1\"},{\"name\":\"{x} camadas\",\"pluralForm\":\"2\"}]},{\"id\":1323194979,\"tr\":[{\"name\":\"{x} revis\xc3\xa3o\",\"pluralForm\":\"1\"},{\"name\":\"{x} revis\xc3\xb5""es\",\"pluralForm\":"
-"\"2\"}]},{\"id\":3610422080,\"tr\":[{\"name\":\"{x} delta\",\"pluralForm\":\"1\"},{\"name\":\"{x} deltas\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} minuto\",\"pluralForm\":\"1\"},{\"name\":\"{x} minutos\",\"pluralForm\":\"2\""
-"}]},{\"id\":4122223288,\"tr\":[{\"name\":\"{x} segundo\",\"pluralForm\":\"1\"},{\"name\":\"{x} segundos\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"movido de {x}\",\"pluralForm\":\"1\"}}]}";
+"\":\"Entrada de \xc3\x81udio\"},{\"id\":4200658534,\"tr\":\"Sa\xc3\xad""da de \xc3\x81udio\"},{\"id\":3154594048,\"tr\":\"Entrada MIDI\"},{\"id\":2483423585,\"tr\":\"Sa\xc3\xad""da MIDI\"},{\"id\":3017079000,\"tr\":\"Una notas adjacentes\"},{\"id\":1"
+"055066721,\"tr\":\"Editor de scripts\"},{\"id\":2811733930,\"tr\":\"roteiro alterado\"}],\"pluralLiteral\":[{\"id\":1853236155,\"tr\":[{\"name\":\"{x} canal de entrada\",\"pluralForm\":\"1\"},{\"name\":\"{x} canais de entrada\",\"pluralForm\":\"2\"}]"
+"},{\"id\":4237797194,\"tr\":[{\"name\":\"{x} canal de sa\xc3\xad""da\",\"pluralForm\":\"1\"},{\"name\":\"{x} canais de sa\xc3\xad""da\",\"pluralForm\":\"2\"}]},{\"id\":4187362806,\"tr\":[{\"name\":\"{x} nota adicionada\",\"pluralForm\":\"1\"},{\"name"
+"\":\"{x} notas adicionadas\",\"pluralForm\":\"2\"}]},{\"id\":2677001308,\"tr\":[{\"name\":\"{x} nota removida\",\"pluralForm\":\"1\"},{\"name\":\"{x} notas removidas\",\"pluralForm\":\"2\"}]},{\"id\":1115369500,\"tr\":[{\"name\":\"{x} nota alterada\""
+",\"pluralForm\":\"1\"},{\"name\":\"{x} notas alteradas\",\"pluralForm\":\"2\"}]},{\"id\":1670191088,\"tr\":[{\"name\":\"{x} evento adicionado\",\"pluralForm\":\"1\"},{\"name\":\"{x} eventos adicionados\",\"pluralForm\":\"2\"}]},{\"id\":4188356498,\"t"
+"r\":[{\"name\":\"{x} evento removido\",\"pluralForm\":\"1\"},{\"name\":\"{x} eventos removidos\",\"pluralForm\":\"2\"}]},{\"id\":1822865234,\"tr\":[{\"name\":\"{x} evento alterado\",\"pluralForm\":\"1\"},{\"name\":\"{x} eventos alterados\",\"pluralFo"
+"rm\":\"2\"}]},{\"id\":2539740572,\"tr\":[{\"name\":\"{x} clipe adicionou\",\"pluralForm\":\"1\"},{\"name\":\"{x} clipes adicionou\",\"pluralForm\":\"2\"}]},{\"id\":1838846406,\"tr\":[{\"name\":\"{x} clipe removido\",\"pluralForm\":\"1\"},{\"name\":\""
+"{x} clipes removidos\",\"pluralForm\":\"2\"}]},{\"id\":3829748102,\"tr\":[{\"name\":\"{x} clipe alterado\",\"pluralForm\":\"1\"},{\"name\":\"{x} clipes alterados\",\"pluralForm\":\"2\"}]},{\"id\":159801621,\"tr\":[{\"name\":\"{x} anota\xc3\xa7\xc3\xa3"
+"o adicionada\",\"pluralForm\":\"1\"},{\"name\":\"{x} anota\xc3\xa7\xc3\xb5""es adicionadas\",\"pluralForm\":\"2\"}]},{\"id\":335767671,\"tr\":[{\"name\":\"{x} anota\xc3\xa7\xc3\xa3o removida\",\"pluralForm\":\"1\"},{\"name\":\"{x} anota\xc3\xa7\xc3\xb5"
+"es removidas\",\"pluralForm\":\"2\"}]},{\"id\":1776240695,\"tr\":[{\"name\":\"{x} anota\xc3\xa7\xc3\xa3o alterada\",\"pluralForm\":\"1\"},{\"name\":\"{x} anota\xc3\xa7\xc3\xb5""es alteradas\",\"pluralForm\":\"2\"}]},{\"id\":2264722107,\"tr\":[{\"name"
+"\":\"{x} m\xc3\xa9trica adicionada\",\"pluralForm\":\"1\"},{\"name\":\"{x} m\xc3\xa9tricas adicionadas\",\"pluralForm\":\"2\"}]},{\"id\":755875505,\"tr\":[{\"name\":\"{x} m\xc3\xa9trica removida\",\"pluralForm\":\"1\"},{\"name\":\"{x} m\xc3\xa9tricas"
+" removidas\",\"pluralForm\":\"2\"}]},{\"id\":1775129073,\"tr\":[{\"name\":\"{x} m\xc3\xa9trica alterada\",\"pluralForm\":\"1\"},{\"name\":\"{x} m\xc3\xa9tricas alteradas\",\"pluralForm\":\"2\"}]},{\"id\":3133606715,\"tr\":[{\"name\":\"adicionou {x} a"
+"rmadura de clave\",\"pluralForm\":\"1\"},{\"name\":\"adicionou {x} armaduras de clave\",\"pluralForm\":\"2\"}]},{\"id\":1992957705,\"tr\":[{\"name\":\"{x} armadura de clave removida\",\"pluralForm\":\"1\"},{\"name\":\"{x} armaduras de clave removidas"
+"\",\"pluralForm\":\"2\"}]},{\"id\":4237699145,\"tr\":[{\"name\":\"{x} armadura de clave alterada\",\"pluralForm\":\"1\"},{\"name\":\"{x} armaduras de clave alteradas\",\"pluralForm\":\"2\"}]},{\"id\":2895268064,\"tr\":[{\"name\":\"{x} notas\",\"plura"
+"lForm\":\"1\"},{\"name\":\"{x} notas\",\"pluralForm\":\"2\"}]},{\"id\":3458549142,\"tr\":[{\"name\":\"{x} evento\",\"pluralForm\":\"1\"},{\"name\":\"{x} eventos\",\"pluralForm\":\"2\"}]},{\"id\":1029569651,\"tr\":[{\"name\":\"{x} anota\xc3\xa7\xc3\xa3"
+"o\",\"pluralForm\":\"1\"},{\"name\":\"{x} anota\xc3\xa7\xc3\xb5""es\",\"pluralForm\":\"2\"}]},{\"id\":2984658661,\"tr\":[{\"name\":\"{x} m\xc3\xa9trica\",\"pluralForm\":\"1\"},{\"name\":\"{x} m\xc3\xa9tricas\",\"pluralForm\":\"2\"}]},{\"id\":32412811"
+"25,\"tr\":[{\"name\":\"{x} armadura de clave\",\"pluralForm\":\"1\"},{\"name\":\"{x} armaduras de clave\",\"pluralForm\":\"2\"}]},{\"id\":3319356210,\"tr\":[{\"name\":\"{x} clipe\",\"pluralForm\":\"1\"},{\"name\":\"{x} clipes\",\"pluralForm\":\"2\"}]"
+"},{\"id\":3631037336,\"tr\":[{\"name\":\"{x} padr\xc3\xa3o\",\"pluralForm\":\"1\"},{\"name\":\"{x} padr\xc3\xb5""es\",\"pluralForm\":\"2\"}]},{\"id\":2452992563,\"tr\":[{\"name\":\"{x} camada\",\"pluralForm\":\"1\"},{\"name\":\"{x} camadas\",\"plural"
+"Form\":\"2\"}]},{\"id\":1323194979,\"tr\":[{\"name\":\"{x} revis\xc3\xa3o\",\"pluralForm\":\"1\"},{\"name\":\"{x} revis\xc3\xb5""es\",\"pluralForm\":\"2\"}]},{\"id\":3610422080,\"tr\":[{\"name\":\"{x} delta\",\"pluralForm\":\"1\"},{\"name\":\"{x} del"
+"tas\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} minuto\",\"pluralForm\":\"1\"},{\"name\":\"{x} minutos\",\"pluralForm\":\"2\"}]},{\"id\":4122223288,\"tr\":[{\"name\":\"{x} segundo\",\"pluralForm\":\"1\"},{\"name\":\"{x} segun"
+"dos\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"movido de {x}\",\"pluralForm\":\"1\"}}]}";
 
-const char* pt_json = (const char*) temp_binary_data_107;
+const char* pt_json = (const char*) temp_binary_data_109;
 
 //================== ru.json ==================
-static const unsigned char temp_binary_data_108[] =
+static const unsigned char temp_binary_data_110[] =
 { 123,34,105,100,34,58,34,114,117,34,44,34,110,97,109,101,34,58,34,208,160,209,131,209,129,209,129,208,186,208,184,208,185,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,40,123,120,125,37,49,48,61,61,49,32,38,38,32,123,120,125,37,
 49,48,48,33,61,49,49,32,63,32,49,32,58,32,123,120,125,37,49,48,62,61,50,32,38,38,32,123,120,125,37,49,48,60,61,52,32,38,38,32,40,123,120,125,37,49,48,48,60,49,48,32,124,124,32,123,120,125,37,49,48,48,62,61,50,48,41,32,63,32,50,32,58,32,51,41,34,44,34,
 108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,208,159,209,128,208,190,208,181,208,186,209,130,32,209,129,208,190,208,183,208,180,208,176,208,189,34,125,44,123,34,105,100,34,58,50,52,50,51,53,
@@ -3261,101 +3285,104 @@ static const unsigned char temp_binary_data_108[] =
 58,34,208,145,208,187,209,142,208,183,208,190,208,178,209,139,208,185,32,209,129,32,208,178,208,178,208,190,208,180,208,189,209,139,208,188,32,209,130,208,190,208,189,208,190,208,188,34,125,44,123,34,105,100,34,58,51,56,48,49,53,52,57,54,55,51,44,34,
 116,114,34,58,34,208,160,208,190,208,186,39,208,189,39,209,128,208,190,208,187,208,187,34,125,44,123,34,105,100,34,58,49,57,51,49,55,53,53,56,52,57,44,34,116,114,34,58,34,208,144,209,131,208,180,208,184,208,190,208,178,209,133,208,190,208,180,34,125,
 44,123,34,105,100,34,58,52,50,48,48,54,53,56,53,51,52,44,34,116,114,34,58,34,208,144,209,131,208,180,208,184,208,190,208,178,209,139,209,133,208,190,208,180,34,125,44,123,34,105,100,34,58,51,49,53,52,53,57,52,48,52,56,44,34,116,114,34,58,34,77,73,68,
-73,45,208,178,209,133,208,190,208,180,34,125,44,123,34,105,100,34,58,50,52,56,51,52,50,51,53,56,53,44,34,116,114,34,58,34,77,73,68,73,45,208,178,209,139,209,133,208,190,208,180,34,125,93,44,34,112,108,117,114,97,108,76,105,116,101,114,97,108,34,58,91,
-123,34,105,100,34,58,49,56,53,51,50,51,54,49,53,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,209,133,208,190,208,180,208,189,208,190,208,185,32,208,186,208,176,208,189,208,176,208,187,34,44,34,112,108,117,114,97,108,
-70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,209,133,208,190,208,180,208,189,209,139,209,133,32,208,186,208,176,208,189,208,176,208,187,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,
-125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,209,133,208,190,208,180,208,189,209,139,209,133,32,208,186,208,176,208,189,208,176,208,187,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,
-105,100,34,58,52,50,51,55,55,57,55,49,57,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,209,139,209,133,208,190,208,180,208,189,208,190,208,185,32,208,186,208,176,208,189,208,176,208,187,34,44,34,112,108,117,114,97,108,
-70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,209,139,209,133,208,190,208,180,208,189,209,139,209,133,32,208,186,208,176,208,189,208,176,208,187,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,
-34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,209,139,209,133,208,190,208,180,208,189,209,139,209,133,32,208,186,208,176,208,189,208,176,208,187,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,
-93,125,44,123,34,105,100,34,58,52,49,56,55,51,54,50,56,48,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,176,32,123,120,125,32,208,189,208,190,209,130,208,176,34,44,34,112,
-108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,209,139,32,123,120,125,32,208,189,208,190,209,130,209,139,34,44,34,112,108,117,114,97,108,70,111,114,
-109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,
-34,105,100,34,58,50,54,55,55,48,48,49,51,48,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,208,176,32,123,120,125,32,208,189,208,190,209,130,208,176,34,44,34,112,108,117,114,97,108,70,111,114,
-109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,209,139,32,123,120,125,32,208,189,208,190,209,130,209,139,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,
-101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,49,49,53,51,54,57,53,48,48,44,34,116,114,
-34,58,91,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,208,176,32,123,120,125,32,208,189,208,190,209,130,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,
-34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,209,139,32,123,120,125,32,208,189,208,190,209,130,209,139,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,
-189,208,181,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,54,55,48,49,57,49,48,56,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,
-208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,190,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,181,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,
-180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,209,139,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,209,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,
-208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,190,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,49,56,56,51,
-53,54,52,57,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,208,190,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,181,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,
-34,49,34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,209,139,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,209,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,
-34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,208,190,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,
-58,49,56,50,50,56,54,53,50,51,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,208,190,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,181,34,44,34,112,108,117,114,
-97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,209,139,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,209,143,34,44,34,112,108,117,114,97,108,70,111,
-114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,208,190,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,
-34,51,34,125,93,125,44,123,34,105,100,34,58,50,53,51,57,55,52,48,53,55,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,32,123,120,125,32,208,186,208,187,208,184,208,191,34,44,34,
-112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,209,139,32,123,120,125,32,208,186,208,187,208,184,208,191,208,176,34,44,34,112,108,117,114,97,108,
-70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,208,184,208,191,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,
-34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,56,51,56,56,52,54,52,48,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,32,123,120,125,32,208,186,208,187,208,184,208,191,34,44,34,112,108,117,
-114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,209,139,32,123,120,125,32,208,186,208,187,208,184,208,191,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,
-34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,208,184,208,191,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,
-100,34,58,51,56,50,57,55,52,56,49,48,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,32,123,120,125,32,208,186,208,187,208,184,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,
-58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,209,139,32,123,120,125,32,208,186,208,187,208,184,208,191,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,
-97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,208,184,208,191,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,
-53,57,56,48,49,54,50,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,176,32,123,120,125,32,208,188,208,181,209,130,208,186,208,176,34,44,34,112,108,117,114,97,108,70,111,114,
-109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,209,139,32,123,120,125,32,208,188,208,181,209,130,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,
-44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,190,32,123,120,125,32,208,188,208,181,209,130,208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,
-100,34,58,51,51,53,55,54,55,54,55,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,208,176,32,123,120,125,32,208,188,208,181,209,130,208,186,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,
-34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,209,139,32,123,120,125,32,208,188,208,181,209,130,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,
-109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,208,190,32,123,120,125,32,208,188,208,181,209,130,208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,55,55,54,50,52,48,54,
-57,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,208,176,32,123,120,125,32,208,188,208,181,209,130,208,186,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,
-123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,209,139,32,123,120,125,32,208,188,208,181,209,130,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,
-34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,208,190,32,123,120,125,32,208,188,208,181,209,130,208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,50,54,52,55,50,50,49,48,55,
-44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,
-44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,209,139,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,
-34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,190,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,
-125,44,123,34,105,100,34,58,55,53,53,56,55,53,53,48,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,34,44,34,112,108,117,114,97,
-108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,209,139,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,
-58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,208,190,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,
-125,93,125,44,123,34,105,100,34,58,49,55,55,53,49,50,57,48,55,51,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,34,44,34,
-112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,209,139,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,176,34,44,34,112,108,117,
-114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,208,190,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,190,208,178,34,44,34,112,108,117,114,
-97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,49,51,51,54,48,54,55,49,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,32,123,120,125,32,208,186,208,
-187,209,142,209,135,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,209,139,32,123,120,125,32,208,186,208,187,209,142,209,135,208,176,
-34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,208,181,208,185,34,44,34,112,
-108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,57,57,50,57,53,55,55,48,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,32,123,120,125,32,208,186,208,187,
-209,142,209,135,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,209,139,32,123,120,125,32,208,186,208,187,209,142,209,135,208,176,34,44,34,112,108,117,
-114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,208,181,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,
-58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,50,51,55,54,57,57,49,52,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,32,123,120,125,32,208,186,208,187,209,142,209,135,34,44,34,112,
-108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,209,139,32,123,120,125,32,208,186,208,187,209,142,209,135,208,176,34,44,34,112,108,117,114,97,108,70,111,114,
-109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,208,181,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,
-93,125,44,123,34,105,100,34,58,50,56,57,53,50,54,56,48,54,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,189,208,190,209,130,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,
-34,58,34,123,120,125,32,208,189,208,190,209,130,209,139,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,189,208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,
-51,34,125,93,125,44,123,34,105,100,34,58,51,52,53,56,53,52,57,49,52,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,181,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,
-49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,209,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,190,208,
-177,209,139,209,130,208,184,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,48,50,57,53,54,57,54,53,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,208,181,209,
-130,208,186,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,208,181,209,130,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,
-110,97,109,101,34,58,34,123,120,125,32,208,188,208,181,209,130,208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,57,56,52,54,53,56,54,54,49,44,34,116,114,34,58,91,123,34,110,97,109,101,
-34,58,34,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,176,34,44,34,
-112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,
-34,105,100,34,58,51,50,52,49,50,56,49,49,50,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,142,209,135,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,
-120,125,32,208,186,208,187,209,142,209,135,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,142,209,135,208,181,208,185,34,44,34,112,108,117,114,97,108,70,111,
-114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,51,49,57,51,53,54,50,49,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,208,184,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,
-125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,208,184,208,191,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,208,184,208,191,208,190,208,
-178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,54,51,49,48,51,55,51,51,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,176,209,130,209,130,208,181,209,128,208,
-189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,176,209,130,209,130,208,181,209,128,208,189,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,
-123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,176,209,130,209,130,208,181,209,128,208,189,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,52,53,50,57,57,50,53,54,51,44,34,
-116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,130,209,128,208,181,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,130,209,128,208,181,208,186,208,176,
-34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,130,209,128,208,181,208,186,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,
-100,34,58,49,51,50,51,49,57,52,57,55,57,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,181,208,178,208,184,208,183,208,184,209,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,
-101,34,58,34,123,120,125,32,209,128,208,181,208,178,208,184,208,183,208,184,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,181,208,178,208,184,208,183,208,184,208,
-185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,54,49,48,52,50,50,48,56,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,180,208,181,208,187,209,140,209,130,208,176,34,
-44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,180,208,181,208,187,209,140,209,130,209,139,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,
-34,58,34,123,120,125,32,208,180,208,181,208,187,209,140,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,56,53,53,52,51,51,55,48,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,
-125,32,208,188,208,184,208,189,209,131,209,130,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,208,184,208,189,209,131,209,130,209,139,34,44,34,112,108,117,114,97,108,
-70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,208,184,208,189,209,131,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,49,50,50,50,50,51,50,56,56,
-44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,181,208,186,209,131,208,189,208,180,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,
-181,208,186,209,131,208,189,208,180,209,139,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,181,208,186,209,131,208,189,208,180,34,44,34,112,108,117,114,97,108,70,111,114,
-109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,208,191,208,181,209,128,208,181,208,184,208,188,208,181,208,189,208,190,208,178,208,176,208,189,32,208,184,208,183,
-32,123,120,125,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,0,0 };
+73,45,208,178,209,133,208,190,208,180,34,125,44,123,34,105,100,34,58,50,52,56,51,52,50,51,53,56,53,44,34,116,114,34,58,34,77,73,68,73,45,208,178,209,139,209,133,208,190,208,180,34,125,44,123,34,105,100,34,58,51,48,49,55,48,55,57,48,48,48,44,34,116,114,
+34,58,34,208,158,208,177,209,138,208,181,208,180,208,184,208,189,208,184,209,130,209,140,32,209,129,208,188,208,181,208,182,208,189,209,139,208,181,32,208,189,208,190,209,130,209,139,34,125,44,123,34,105,100,34,58,49,48,53,53,48,54,54,55,50,49,44,34,
+116,114,34,58,34,208,159,208,181,209,129,208,190,209,135,208,189,208,184,209,134,208,176,32,208,180,208,187,209,143,32,209,129,208,186,209,128,208,184,208,191,209,130,208,190,208,178,34,125,44,123,34,105,100,34,58,50,56,49,49,55,51,51,57,51,48,44,34,
+116,114,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,32,209,129,208,186,209,128,208,184,208,191,209,130,34,125,93,44,34,112,108,117,114,97,108,76,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,49,56,53,51,50,51,54,49,53,53,44,
+34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,209,133,208,190,208,180,208,189,208,190,208,185,32,208,186,208,176,208,189,208,176,208,187,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,
+101,34,58,34,123,120,125,32,208,178,209,133,208,190,208,180,208,189,209,139,209,133,32,208,186,208,176,208,189,208,176,208,187,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,
+208,178,209,133,208,190,208,180,208,189,209,139,209,133,32,208,186,208,176,208,189,208,176,208,187,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,50,51,55,55,57,55,49,57,52,44,34,116,
+114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,209,139,209,133,208,190,208,180,208,189,208,190,208,185,32,208,186,208,176,208,189,208,176,208,187,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,
+101,34,58,34,123,120,125,32,208,178,209,139,209,133,208,190,208,180,208,189,209,139,209,133,32,208,186,208,176,208,189,208,176,208,187,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,
+125,32,208,178,209,139,209,133,208,190,208,180,208,189,209,139,209,133,32,208,186,208,176,208,189,208,176,208,187,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,49,56,55,51,54,50,56,
+48,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,176,32,123,120,125,32,208,189,208,190,209,130,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,
+123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,209,139,32,123,120,125,32,208,189,208,190,209,130,209,139,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,
+34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,54,55,55,48,48,49,51,48,56,44,34,
+116,114,34,58,91,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,208,176,32,123,120,125,32,208,189,208,190,209,130,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,
+34,209,131,208,180,208,176,208,187,208,181,208,189,209,139,32,123,120,125,32,208,189,208,190,209,130,209,139,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,
+189,208,190,32,123,120,125,32,208,189,208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,49,49,53,51,54,57,53,48,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,184,208,183,
+208,188,208,181,208,189,208,181,208,189,208,176,32,123,120,125,32,208,189,208,190,209,130,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,
+189,209,139,32,123,120,125,32,208,189,208,190,209,130,209,139,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,208,190,32,123,120,125,32,208,189,
+208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,54,55,48,49,57,49,48,56,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,
+208,189,208,190,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,181,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,
+189,209,139,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,209,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,
+208,190,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,49,56,56,51,53,54,52,57,56,44,34,116,114,34,58,91,123,34,110,97,109,
+101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,208,190,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,181,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,209,131,
+208,180,208,176,208,187,208,181,208,189,209,139,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,209,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,
+187,208,181,208,189,208,190,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,56,50,50,56,54,53,50,51,52,44,34,116,114,34,58,91,
+123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,208,190,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,181,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,
+109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,209,139,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,209,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,
+34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,208,190,32,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,53,51,57,
+55,52,48,53,55,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,32,123,120,125,32,208,186,208,187,208,184,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,
+44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,209,139,32,123,120,125,32,208,186,208,187,208,184,208,191,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,
+101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,208,184,208,191,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,
+56,51,56,56,52,54,52,48,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,32,123,120,125,32,208,186,208,187,208,184,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,
+34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,209,139,32,123,120,125,32,208,186,208,187,208,184,208,191,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,
+180,208,176,208,187,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,208,184,208,191,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,56,50,57,55,52,56,49,48,50,44,34,116,114,
+34,58,91,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,32,123,120,125,32,208,186,208,187,208,184,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,
+184,208,183,208,188,208,181,208,189,208,181,208,189,209,139,32,123,120,125,32,208,186,208,187,208,184,208,191,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,
+208,189,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,208,184,208,191,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,53,57,56,48,49,54,50,49,44,34,116,114,34,58,91,123,34,
+110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,176,32,123,120,125,32,208,188,208,181,209,130,208,186,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,
+34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,209,139,32,123,120,125,32,208,188,208,181,209,130,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,
+177,208,176,208,178,208,187,208,181,208,189,208,190,32,123,120,125,32,208,188,208,181,209,130,208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,51,53,55,54,55,54,55,49,44,34,116,114,34,
+58,91,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,208,176,32,123,120,125,32,208,188,208,181,209,130,208,186,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,
+209,131,208,180,208,176,208,187,208,181,208,189,209,139,32,123,120,125,32,208,188,208,181,209,130,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,
+181,208,189,208,190,32,123,120,125,32,208,188,208,181,209,130,208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,55,55,54,50,52,48,54,57,53,44,34,116,114,34,58,91,123,34,110,97,109,101,
+34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,208,176,32,123,120,125,32,208,188,208,181,209,130,208,186,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,
+188,208,181,208,189,208,181,208,189,209,139,32,123,120,125,32,208,188,208,181,209,130,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,
+208,189,208,190,32,123,120,125,32,208,188,208,181,209,130,208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,50,54,52,55,50,50,49,48,55,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,
+34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,
+177,208,176,208,178,208,187,208,181,208,189,209,139,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,
+208,176,208,178,208,187,208,181,208,189,208,190,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,55,53,53,56,55,53,53,48,
+53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,
+97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,209,139,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,
+209,131,208,180,208,176,208,187,208,181,208,189,208,190,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,55,55,53,49,
+50,57,48,55,51,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,
+34,125,44,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,209,139,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,
+34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,208,190,32,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,
+34,105,100,34,58,51,49,51,51,54,48,54,55,49,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,32,123,120,125,32,208,186,208,187,209,142,209,135,34,44,34,112,108,117,114,97,108,70,
+111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,209,139,32,123,120,125,32,208,186,208,187,209,142,209,135,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,
+50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,177,208,176,208,178,208,187,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,208,181,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,
+125,44,123,34,105,100,34,58,49,57,57,50,57,53,55,55,48,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,32,123,120,125,32,208,186,208,187,209,142,209,135,34,44,34,112,108,117,114,97,108,70,111,114,
+109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,209,139,32,123,120,125,32,208,186,208,187,209,142,209,135,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,
+97,109,101,34,58,34,209,131,208,180,208,176,208,187,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,208,181,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,50,51,55,
+54,57,57,49,52,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,32,123,120,125,32,208,186,208,187,209,142,209,135,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,
+34,110,97,109,101,34,58,34,208,184,208,183,208,188,208,181,208,189,208,181,208,189,209,139,32,123,120,125,32,208,186,208,187,209,142,209,135,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,
+184,208,183,208,188,208,181,208,189,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,208,181,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,56,57,53,50,54,56,48,54,
+52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,189,208,190,209,130,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,189,208,190,209,130,209,139,
+34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,189,208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,52,53,56,53,
+52,57,49,52,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,181,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,
+32,209,129,208,190,208,177,209,139,209,130,208,184,209,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,190,208,177,209,139,209,130,208,184,208,185,34,44,34,112,108,117,
+114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,48,50,57,53,54,57,54,53,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,208,181,209,130,208,186,208,176,34,44,34,112,108,117,114,97,108,70,
+111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,208,181,209,130,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,208,181,
+209,130,208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,57,56,52,54,53,56,54,54,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,176,208,183,208,188,
+208,181,209,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,
+44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,176,208,183,208,188,208,181,209,128,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,50,52,49,50,56,49,49,50,53,44,34,116,
+114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,142,209,135,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,142,209,135,208,176,34,44,
+34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,142,209,135,208,181,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,
+58,51,51,49,57,51,53,54,50,49,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,208,184,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,
+186,208,187,208,184,208,191,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,208,184,208,191,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,
+34,51,34,125,93,125,44,123,34,105,100,34,58,51,54,51,49,48,51,55,51,51,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,176,209,130,209,130,208,181,209,128,208,189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,
+34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,176,209,130,209,130,208,181,209,128,208,189,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,
+176,209,130,209,130,208,181,209,128,208,189,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,52,53,50,57,57,50,53,54,51,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,
+32,209,130,209,128,208,181,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,130,209,128,208,181,208,186,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,
+125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,130,209,128,208,181,208,186,208,190,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,51,50,51,49,57,52,57,55,57,44,34,116,114,34,58,91,
+123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,181,208,178,208,184,208,183,208,184,209,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,181,208,178,208,184,208,
+183,208,184,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,181,208,178,208,184,208,183,208,184,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,
+34,125,93,125,44,123,34,105,100,34,58,51,54,49,48,52,50,50,48,56,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,180,208,181,208,187,209,140,209,130,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,
+44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,180,208,181,208,187,209,140,209,130,209,139,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,180,208,181,208,187,209,140,209,130,
+34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,56,53,53,52,51,51,55,48,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,208,184,208,189,209,131,209,130,208,176,34,44,
+34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,208,184,208,189,209,131,209,130,209,139,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,
+58,34,123,120,125,32,208,188,208,184,208,189,209,131,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,49,50,50,50,50,51,50,56,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,
+125,32,209,129,208,181,208,186,209,131,208,189,208,180,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,181,208,186,209,131,208,189,208,180,209,139,34,44,34,112,108,
+117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,181,208,186,209,131,208,189,208,180,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,56,48,
+55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,208,191,208,181,209,128,208,181,208,184,208,188,208,181,208,189,208,190,208,178,208,176,208,189,32,208,184,208,183,32,123,120,125,34,44,34,112,108,117,114,97,108,70,111,114,109,34,
+58,34,49,34,125,125,93,125,0,0 };
 
-const char* ru_json = (const char*) temp_binary_data_108;
+const char* ru_json = (const char*) temp_binary_data_110;
 
 //================== tr.json ==================
-static const unsigned char temp_binary_data_109[] =
+static const unsigned char temp_binary_data_111[] =
 "{\"id\":\"tr\",\"name\":\"T\xc3\xbcrk\xc3\xa7""e\",\"pluralEquation\":\"(({x}==0 || {x}==1) ? 1 : 2)\",\"literal\":[{\"id\":590543227,\"tr\":\"Projeye ba\xc5\x9fla\"},{\"id\":242354915,\"tr\":\"Yeni proje\"},{\"id\":973370257,\"tr\":\"Yeni par\xc3\xa7"
 "a\"},{\"id\":3682062690,\"tr\":\"Tempo\"},{\"id\":3475921130,\"tr\":\"Ses\"},{\"id\":3279548549,\"tr\":\"St\xc3\xbc""dyo\"},{\"id\":3086290873,\"tr\":\"Enstr\xc3\xbcman\"},{\"id\":3686062664,\"tr\":\"Ayarlar\"},{\"id\":1113353303,\"tr\":\"S\xc3\xbcr\xc3"
 "\xbcm\"},{\"id\":3324938734,\"tr\":\"Modeller\"},{\"id\":1791647634,\"tr\":\"Klavye haritaland\xc4\xb1rmas\xc4\xb1\"},{\"id\":855043400,\"tr\":\"Enstr\xc3\xbcman\xc4\xb1 yeniden adland\xc4\xb1r\"},{\"id\":1662581644,\"tr\":\"Yeniden adland\xc4\xb1r\""
@@ -3436,33 +3463,34 @@ static const unsigned char temp_binary_data_109[] =
 ",{\"id\":1965071581,\"tr\":\"Y\xc3\xb6nlendirici Tam Ton\"},{\"id\":1367319047,\"tr\":\"\xc3\x87ift Harmonik\"},{\"id\":626733046,\"tr\":\"Yar\xc4\xb1m Eksiltilmi\xc5\x9f\"},{\"id\":2141989878,\"tr\":\"De\xc4\x9fi\xc5\x9ftirilmi\xc5\x9f Dominant\"},{"
 "\"id\":2402117461,\"tr\":\"Yedi Tonlu Blues\"},{\"id\":860101336,\"tr\":\"Frigya Blues\"},{\"id\":3745452021,\"tr\":\"De\xc4\x9fi\xc5\x9ftirilmi\xc5\x9f Blues\"},{\"id\":553375353,\"tr\":\"Kar\xc4\xb1\xc5\x9f\xc4\xb1k Blues\"},{\"id\":32797868,\"tr\""
 ":\"Y\xc3\xb6nlendirici Ton Blues\"},{\"id\":3801549673,\"tr\":\"Rock'n'Roll\"},{\"id\":1931755849,\"tr\":\"Ses Giri\xc5\x9fi\"},{\"id\":4200658534,\"tr\":\"Ses \xc3\x87\xc4\xb1k\xc4\xb1\xc5\x9f\xc4\xb1\"},{\"id\":3154594048,\"tr\":\"MIDI Giri\xc5\x9f"
-"i\"},{\"id\":2483423585,\"tr\":\"MIDI \xc3\x87\xc4\xb1k\xc4\xb1\xc5\x9f\xc4\xb1\"}],\"pluralLiteral\":[{\"id\":1853236155,\"tr\":[{\"name\":\"{x} giri\xc5\x9f kanal\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} giri\xc5\x9f kanallar\xc4\xb1\",\"plu"
-"ralForm\":\"2\"}]},{\"id\":4237797194,\"tr\":[{\"name\":\"{x} \xc3\xa7\xc4\xb1k\xc4\xb1\xc5\x9f kanal\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} \xc3\xa7\xc4\xb1k\xc4\xb1\xc5\x9f kanallar\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":4187362806,\"tr"
-"\":[{\"name\":\"{x} not eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} notalar eklendi\",\"pluralForm\":\"2\"}]},{\"id\":2677001308,\"tr\":[{\"name\":\"{x} not kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} notalar kald\xc4\xb1"
-"r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":1115369500,\"tr\":[{\"name\":\"{x} not de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} notalar de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]},{\"id\":1670191088,\"tr\":[{\""
-"name\":\"{x} etkinlik eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} etkinlikler eklendi\",\"pluralForm\":\"2\"}]},{\"id\":4188356498,\"tr\":[{\"name\":\"{x} etkinli\xc4\x9fi kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} et"
-"kinlikler kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":1822865234,\"tr\":[{\"name\":\"{x} etkinlik de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} etkinlikler de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]"
-"},{\"id\":2539740572,\"tr\":[{\"name\":\"{x} klip eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} klipler eklendi\",\"pluralForm\":\"2\"}]},{\"id\":1838846406,\"tr\":[{\"name\":\"{x} klip kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"nam"
-"e\":\"{x} klipler kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":3829748102,\"tr\":[{\"name\":\"{x} klip de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} klipler de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]"
-"},{\"id\":159801621,\"tr\":[{\"name\":\"{x} ek a\xc3\xa7\xc4\xb1klama eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} ek a\xc3\xa7\xc4\xb1klamalar eklendi\",\"pluralForm\":\"2\"}]},{\"id\":335767671,\"tr\":[{\"name\":\"{x} ek a\xc3\xa7\xc4\xb1klama s"
-"ilindi\",\"pluralForm\":\"1\"},{\"name\":\"{x} ek a\xc3\xa7\xc4\xb1klamalar silindi\",\"pluralForm\":\"2\"}]},{\"id\":1776240695,\"tr\":[{\"name\":\"{x} a\xc3\xa7\xc4\xb1klamas\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x"
-"} a\xc3\xa7\xc4\xb1klamalar de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]},{\"id\":2264722107,\"tr\":[{\"name\":\"{x} zaman i\xc5\x9f""areti eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} zaman i\xc5\x9f""aretileri eklendi\",\"pluralForm\":\"2"
-"\"}]},{\"id\":755875505,\"tr\":[{\"name\":\"{x} zaman imzas\xc4\xb1 kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} zaman imzalar\xc4\xb1 kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":1775129073,\"tr\":[{\""
-"name\":\"{x} zaman imzas\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} zaman imzalar\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]},{\"id\":3133606715,\"tr\":[{\"name\":\"{x} nota anahtar\xc4\xb1 eklendi\",\""
-"pluralForm\":\"1\"},{\"name\":\"{x} nota anahtarlar\xc4\xb1 eklendi\",\"pluralForm\":\"2\"}]},{\"id\":1992957705,\"tr\":[{\"name\":\"{x} nota anahtar\xc4\xb1 kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} nota anahtarlar\xc4\xb1"
-" kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":4237699145,\"tr\":[{\"name\":\"{x} nota anahtar\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} nota anahtarlar\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"plura"
-"lForm\":\"2\"}]},{\"id\":2895268064,\"tr\":[{\"name\":\"{x} nota\",\"pluralForm\":\"1\"},{\"name\":\"{x} notalar\",\"pluralForm\":\"2\"}]},{\"id\":3458549142,\"tr\":[{\"name\":\"{x} olay\",\"pluralForm\":\"1\"},{\"name\":\"{x} olaylar\",\"pluralForm\""
-":\"2\"}]},{\"id\":1029569651,\"tr\":[{\"name\":\"{x} a\xc3\xa7\xc4\xb1klama\",\"pluralForm\":\"1\"},{\"name\":\"{x} a\xc3\xa7\xc4\xb1klamalar\",\"pluralForm\":\"2\"}]},{\"id\":2984658661,\"tr\":[{\"name\":\"{x} zaman imzas\xc4\xb1\",\"pluralForm\":\""
-"1\"},{\"name\":\"{x} zaman imzas\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":3241281125,\"tr\":[{\"name\":\"{x} zaman imzas\xc4\xb1 \",\"pluralForm\":\"1\"},{\"name\":\"{x} zaman imzalar\xc4\xb1 \",\"pluralForm\":\"2\"}]},{\"id\":3319356210,\"tr\":[{\""
-"name\":\"{x} klip\",\"pluralForm\":\"1\"},{\"name\":\"{x} klipler\",\"pluralForm\":\"2\"}]},{\"id\":3631037336,\"tr\":[{\"name\":\"{x} desen\",\"pluralForm\":\"1\"},{\"name\":\"{x} desenler\",\"pluralForm\":\"2\"}]},{\"id\":2452992563,\"tr\":[{\"name"
-"\":\"{x} par\xc3\xa7""a\",\"pluralForm\":\"1\"},{\"name\":\"{x} par\xc3\xa7""alar\",\"pluralForm\":\"2\"}]},{\"id\":1323194979,\"tr\":[{\"name\":\"{x} revizyon\",\"pluralForm\":\"1\"},{\"name\":\"{x} revizyonar\",\"pluralForm\":\"2\"}]},{\"id\":36104"
-"22080,\"tr\":[{\"name\":\"{x} delta\",\"pluralForm\":\"1\"},{\"name\":\"{x} deltalar\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} dakika\",\"pluralForm\":\"1\"},{\"name\":\"{x} dakika\",\"pluralForm\":\"2\"}]},{\"id\":41222232"
-"88,\"tr\":[{\"name\":\"{x} saniye\",\"pluralForm\":\"1\"},{\"name\":\"{x} saniye\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"{x} konumundan ta\xc5\x9f\xc4\xb1nd\xc4\xb1\",\"pluralForm\":\"1\"}}]}";
+"i\"},{\"id\":2483423585,\"tr\":\"MIDI \xc3\x87\xc4\xb1k\xc4\xb1\xc5\x9f\xc4\xb1\"},{\"id\":3017079000,\"tr\":\"Biti\xc5\x9fik notalar\xc4\xb1n\xc4\xb1 birle\xc5\x9ftirin\"},{\"id\":1055066721,\"tr\":\"Komut dosyas\xc4\xb1 d\xc3\xbczenleyici\"},{\"id\""
+":2811733930,\"tr\":\"komut dosyas\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\"}],\"pluralLiteral\":[{\"id\":1853236155,\"tr\":[{\"name\":\"{x} giri\xc5\x9f kanal\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} giri\xc5\x9f kanallar\xc4\xb1\",\"pluralForm\":\""
+"2\"}]},{\"id\":4237797194,\"tr\":[{\"name\":\"{x} \xc3\xa7\xc4\xb1k\xc4\xb1\xc5\x9f kanal\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} \xc3\xa7\xc4\xb1k\xc4\xb1\xc5\x9f kanallar\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":4187362806,\"tr\":[{\"name\""
+":\"{x} not eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} notalar eklendi\",\"pluralForm\":\"2\"}]},{\"id\":2677001308,\"tr\":[{\"name\":\"{x} not kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} notalar kald\xc4\xb1r\xc4\xb1l"
+"d\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":1115369500,\"tr\":[{\"name\":\"{x} not de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} notalar de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]},{\"id\":1670191088,\"tr\":[{\"name\":\""
+"{x} etkinlik eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} etkinlikler eklendi\",\"pluralForm\":\"2\"}]},{\"id\":4188356498,\"tr\":[{\"name\":\"{x} etkinli\xc4\x9fi kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} etkinlikler"
+" kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":1822865234,\"tr\":[{\"name\":\"{x} etkinlik de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} etkinlikler de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]},{\"id\""
+":2539740572,\"tr\":[{\"name\":\"{x} klip eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} klipler eklendi\",\"pluralForm\":\"2\"}]},{\"id\":1838846406,\"tr\":[{\"name\":\"{x} klip kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x}"
+" klipler kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":3829748102,\"tr\":[{\"name\":\"{x} klip de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} klipler de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]},{\"id\""
+":159801621,\"tr\":[{\"name\":\"{x} ek a\xc3\xa7\xc4\xb1klama eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} ek a\xc3\xa7\xc4\xb1klamalar eklendi\",\"pluralForm\":\"2\"}]},{\"id\":335767671,\"tr\":[{\"name\":\"{x} ek a\xc3\xa7\xc4\xb1klama silindi\","
+"\"pluralForm\":\"1\"},{\"name\":\"{x} ek a\xc3\xa7\xc4\xb1klamalar silindi\",\"pluralForm\":\"2\"}]},{\"id\":1776240695,\"tr\":[{\"name\":\"{x} a\xc3\xa7\xc4\xb1klamas\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} a\xc3\xa7"
+"\xc4\xb1klamalar de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]},{\"id\":2264722107,\"tr\":[{\"name\":\"{x} zaman i\xc5\x9f""areti eklendi\",\"pluralForm\":\"1\"},{\"name\":\"{x} zaman i\xc5\x9f""aretileri eklendi\",\"pluralForm\":\"2\"}]},{\"id"
+"\":755875505,\"tr\":[{\"name\":\"{x} zaman imzas\xc4\xb1 kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} zaman imzalar\xc4\xb1 kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":1775129073,\"tr\":[{\"name\":\"{x"
+"} zaman imzas\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} zaman imzalar\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"2\"}]},{\"id\":3133606715,\"tr\":[{\"name\":\"{x} nota anahtar\xc4\xb1 eklendi\",\"pluralForm"
+"\":\"1\"},{\"name\":\"{x} nota anahtarlar\xc4\xb1 eklendi\",\"pluralForm\":\"2\"}]},{\"id\":1992957705,\"tr\":[{\"name\":\"{x} nota anahtar\xc4\xb1 kald\xc4\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"1\"},{\"name\":\"{x} nota anahtarlar\xc4\xb1 kald\xc4"
+"\xb1r\xc4\xb1ld\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":4237699145,\"tr\":[{\"name\":\"{x} nota anahtar\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\"1\"},{\"name\":\"{x} nota anahtarlar\xc4\xb1 de\xc4\x9fi\xc5\x9ftirildi\",\"pluralForm\":\""
+"2\"}]},{\"id\":2895268064,\"tr\":[{\"name\":\"{x} nota\",\"pluralForm\":\"1\"},{\"name\":\"{x} notalar\",\"pluralForm\":\"2\"}]},{\"id\":3458549142,\"tr\":[{\"name\":\"{x} olay\",\"pluralForm\":\"1\"},{\"name\":\"{x} olaylar\",\"pluralForm\":\"2\"}]}"
+",{\"id\":1029569651,\"tr\":[{\"name\":\"{x} a\xc3\xa7\xc4\xb1klama\",\"pluralForm\":\"1\"},{\"name\":\"{x} a\xc3\xa7\xc4\xb1klamalar\",\"pluralForm\":\"2\"}]},{\"id\":2984658661,\"tr\":[{\"name\":\"{x} zaman imzas\xc4\xb1\",\"pluralForm\":\"1\"},{\"n"
+"ame\":\"{x} zaman imzas\xc4\xb1\",\"pluralForm\":\"2\"}]},{\"id\":3241281125,\"tr\":[{\"name\":\"{x} zaman imzas\xc4\xb1 \",\"pluralForm\":\"1\"},{\"name\":\"{x} zaman imzalar\xc4\xb1 \",\"pluralForm\":\"2\"}]},{\"id\":3319356210,\"tr\":[{\"name\":\""
+"{x} klip\",\"pluralForm\":\"1\"},{\"name\":\"{x} klipler\",\"pluralForm\":\"2\"}]},{\"id\":3631037336,\"tr\":[{\"name\":\"{x} desen\",\"pluralForm\":\"1\"},{\"name\":\"{x} desenler\",\"pluralForm\":\"2\"}]},{\"id\":2452992563,\"tr\":[{\"name\":\"{x} "
+"par\xc3\xa7""a\",\"pluralForm\":\"1\"},{\"name\":\"{x} par\xc3\xa7""alar\",\"pluralForm\":\"2\"}]},{\"id\":1323194979,\"tr\":[{\"name\":\"{x} revizyon\",\"pluralForm\":\"1\"},{\"name\":\"{x} revizyonar\",\"pluralForm\":\"2\"}]},{\"id\":3610422080,\"t"
+"r\":[{\"name\":\"{x} delta\",\"pluralForm\":\"1\"},{\"name\":\"{x} deltalar\",\"pluralForm\":\"2\"}]},{\"id\":2855433704,\"tr\":[{\"name\":\"{x} dakika\",\"pluralForm\":\"1\"},{\"name\":\"{x} dakika\",\"pluralForm\":\"2\"}]},{\"id\":4122223288,\"tr\""
+":[{\"name\":\"{x} saniye\",\"pluralForm\":\"1\"},{\"name\":\"{x} saniye\",\"pluralForm\":\"2\"}]},{\"id\":1807553330,\"tr\":{\"name\":\"{x} konumundan ta\xc5\x9f\xc4\xb1nd\xc4\xb1\",\"pluralForm\":\"1\"}}]}";
 
-const char* tr_json = (const char*) temp_binary_data_109;
+const char* tr_json = (const char*) temp_binary_data_111;
 
 //================== uk.json ==================
-static const unsigned char temp_binary_data_110[] =
+static const unsigned char temp_binary_data_112[] =
 { 123,34,105,100,34,58,34,117,107,34,44,34,110,97,109,101,34,58,34,208,163,208,186,209,128,208,176,209,151,208,189,209,129,209,140,208,186,208,176,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,40,123,120,125,37,49,48,61,61,49,32,
 38,38,32,123,120,125,37,49,48,48,33,61,49,49,32,63,32,49,32,58,32,123,120,125,37,49,48,62,61,50,32,38,38,32,123,120,125,37,49,48,60,61,52,32,38,38,32,40,123,120,125,37,49,48,48,60,49,48,32,124,124,32,123,120,125,37,49,48,48,62,61,50,48,41,32,63,32,50,
 32,58,32,51,41,34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,208,159,209,128,208,190,209,148,208,186,209,130,32,209,129,209,130,208,178,208,190,209,128,208,181,208,189,208,190,34,125,
@@ -3732,99 +3760,101 @@ static const unsigned char temp_binary_data_110[] =
 116,114,34,58,34,208,145,208,187,209,142,208,183,208,190,208,178,208,184,208,185,32,208,183,209,150,32,208,178,208,178,209,150,208,180,208,189,208,184,208,188,32,209,130,208,190,208,189,208,190,208,188,34,125,44,123,34,105,100,34,58,51,56,48,49,53,52,
 57,54,55,51,44,34,116,114,34,58,34,208,160,208,190,208,186,45,208,189,45,209,128,208,190,208,187,34,125,44,123,34,105,100,34,58,49,57,51,49,55,53,53,56,52,57,44,34,116,114,34,58,34,208,144,209,131,208,180,209,150,208,190,208,178,209,133,209,150,208,180,
 34,125,44,123,34,105,100,34,58,52,50,48,48,54,53,56,53,51,52,44,34,116,114,34,58,34,208,144,209,131,208,180,209,150,208,190,208,178,208,184,209,133,209,150,208,180,34,125,44,123,34,105,100,34,58,51,49,53,52,53,57,52,48,52,56,44,34,116,114,34,58,34,77,
-73,68,73,45,208,178,209,133,209,150,208,180,34,125,44,123,34,105,100,34,58,50,52,56,51,52,50,51,53,56,53,44,34,116,114,34,58,34,77,73,68,73,45,208,178,208,184,209,133,209,150,208,180,34,125,93,44,34,112,108,117,114,97,108,76,105,116,101,114,97,108,34,
-58,91,123,34,105,100,34,58,49,56,53,51,50,51,54,49,53,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,209,133,209,150,208,180,208,189,208,184,208,185,32,208,186,208,176,208,189,208,176,208,187,34,44,34,112,108,117,114,
-97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,209,133,209,150,208,180,208,189,209,150,32,208,186,208,176,208,189,208,176,208,187,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,
-125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,209,133,209,150,208,180,208,189,208,184,209,133,32,208,186,208,176,208,189,208,176,208,187,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,
-105,100,34,58,52,50,51,55,55,57,55,49,57,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,208,184,209,133,209,150,208,180,208,189,208,184,208,185,32,208,186,208,176,208,189,208,176,208,187,34,44,34,112,108,117,114,97,108,
-70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,208,184,209,133,209,150,208,180,208,189,209,150,32,208,186,208,176,208,189,208,176,208,187,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,
-125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,208,184,209,133,209,150,208,180,208,189,208,184,209,133,32,208,186,208,176,208,189,208,176,208,187,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,
-123,34,105,100,34,58,52,49,56,55,51,54,50,56,48,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,209,131,34,44,34,112,108,117,114,97,108,70,111,114,109,
-34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,
-208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,54,55,55,48,48,49,51,48,56,44,34,116,114,34,58,91,123,34,110,
-97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,209,131,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,
-208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,
-189,208,190,32,123,120,125,32,208,189,208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,49,49,53,51,54,57,53,48,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,183,208,188,
-209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,209,131,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,
-120,125,32,208,189,208,190,209,130,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,34,44,34,
-112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,54,55,48,49,57,49,48,56,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,191,208,
-190,208,180,209,150,209,142,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,209,151,34,44,34,112,108,
-117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,
-125,93,125,44,123,34,105,100,34,58,52,49,56,56,51,53,54,52,57,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,209,142,34,44,34,
-112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,209,151,34,44,34,112,108,117,114,97,108,70,111,
-114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,
-125,44,123,34,105,100,34,58,49,56,50,50,56,54,53,50,51,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,209,142,34,44,34,112,108,117,114,
-97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,209,151,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,
-125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,
-53,51,57,55,52,48,53,55,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,
-34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,208,191,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,
-180,208,176,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,208,191,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,56,51,56,56,52,54,52,48,54,44,34,116,114,34,58,91,123,34,
-110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,
-184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,208,191,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,
-208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,208,191,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,56,50,57,55,52,56,49,48,50,44,34,116,114,34,58,91,123,34,110,
-97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,
-208,189,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,208,191,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,
-120,125,32,208,186,208,187,209,150,208,191,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,53,57,56,48,49,54,50,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,
-208,180,208,176,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,186,209,131,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,
-32,208,188,209,150,209,130,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,190,208,186,34,
-44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,51,53,55,54,55,54,55,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,
-125,32,208,188,209,150,209,130,208,186,209,131,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,
-208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,190,208,186,34,44,34,112,
-108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,55,55,54,50,52,48,54,57,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,188,
-209,150,209,130,208,186,209,131,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,186,208,184,34,44,
-34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,
-109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,50,54,52,55,50,50,49,48,55,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,
-34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,208,184,34,44,34,112,108,117,114,97,
-108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,
-58,34,51,34,125,93,125,44,123,34,105,100,34,58,55,53,53,56,55,53,53,48,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,
-209,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,208,184,34,44,
-34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,209,150,208,178,34,44,34,112,
-108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,55,55,53,49,50,57,48,55,51,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,209,128,
-208,190,208,183,208,188,209,150,209,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,
-150,209,128,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,209,150,
-208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,49,51,51,54,48,54,55,49,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,
-32,208,186,208,187,209,142,209,135,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,209,150,34,44,34,
-112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,
-34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,57,57,50,57,53,55,55,48,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,34,
-44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,209,150,34,44,34,112,108,117,114,97,108,
-70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,
-34,51,34,125,93,125,44,123,34,105,100,34,58,52,50,51,55,54,57,57,49,52,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,34,44,34,112,108,
-117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,209,150,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,
-34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,
-105,100,34,58,50,56,57,53,50,54,56,48,54,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,189,208,190,209,130,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,
-125,32,208,189,208,190,209,130,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,189,208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,
-44,123,34,105,100,34,58,51,52,53,56,53,52,57,49,52,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,190,208,180,209,150,209,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,
-101,34,58,34,123,120,125,32,208,191,208,190,208,180,209,150,209,151,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,190,208,180,209,150,208,185,34,44,34,112,108,117,114,97,
-108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,48,50,57,53,54,57,54,53,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,209,150,209,130,208,186,208,176,34,44,34,112,108,117,114,97,108,70,111,114,
-109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,209,150,209,130,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,209,150,209,130,
-208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,57,56,52,54,53,56,54,54,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,190,208,183,208,188,209,150,
-209,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,
-34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,50,52,49,50,56,49,49,50,53,44,34,116,114,34,
-58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,142,209,135,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,142,209,135,209,150,34,44,34,112,
-108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,142,209,135,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,
-51,49,57,51,53,54,50,49,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,150,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,
-208,187,209,150,208,191,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,150,208,191,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,
-51,34,125,93,125,44,123,34,105,100,34,58,51,54,51,49,48,51,55,51,51,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,176,209,130,208,181,209,128,208,189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,
-125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,176,209,130,208,181,209,128,208,189,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,176,209,130,208,
-181,209,128,208,189,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,52,53,50,57,57,50,53,54,51,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,130,209,128,208,
-181,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,130,209,128,208,181,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,
-109,101,34,58,34,123,120,125,32,209,130,209,128,208,181,208,186,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,51,50,51,49,57,52,57,55,57,44,34,116,114,34,58,91,123,34,110,97,109,101,
-34,58,34,123,120,125,32,209,128,208,181,208,178,209,150,208,183,209,150,209,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,181,208,178,209,150,208,183,209,150,209,151,
-34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,181,208,178,209,150,208,183,209,150,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,
-34,105,100,34,58,51,54,49,48,52,50,50,48,56,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,180,208,181,208,187,209,140,209,130,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,
-101,34,58,34,123,120,125,32,208,180,208,181,208,187,209,140,209,130,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,180,208,181,208,187,209,140,209,130,34,44,34,112,108,117,
-114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,56,53,53,52,51,51,55,48,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,133,208,178,208,184,208,187,208,184,208,189,208,176,34,44,34,112,108,117,
-114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,133,208,178,208,184,208,187,208,184,208,189,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,
-123,120,125,32,209,133,208,178,208,184,208,187,208,184,208,189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,49,50,50,50,50,51,50,56,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,
-125,32,209,129,208,181,208,186,209,131,208,189,208,180,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,181,208,186,209,131,208,189,208,180,208,184,34,44,34,112,108,
-117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,181,208,186,209,131,208,189,208,180,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,56,48,
-55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,208,191,208,181,209,128,208,181,208,185,208,188,208,181,208,189,208,190,208,178,208,176,208,189,208,190,32,208,183,32,123,120,125,34,44,34,112,108,117,114,97,108,70,111,114,109,34,
-58,34,49,34,125,125,93,125,0,0 };
+73,68,73,45,208,178,209,133,209,150,208,180,34,125,44,123,34,105,100,34,58,50,52,56,51,52,50,51,53,56,53,44,34,116,114,34,58,34,77,73,68,73,45,208,178,208,184,209,133,209,150,208,180,34,125,44,123,34,105,100,34,58,51,48,49,55,48,55,57,48,48,48,44,34,
+116,114,34,58,34,208,158,208,177,39,209,148,208,180,208,189,208,176,208,189,208,189,209,143,32,209,129,209,131,208,188,209,150,208,182,208,189,208,184,209,133,32,208,189,208,190,209,130,34,125,44,123,34,105,100,34,58,49,48,53,53,48,54,54,55,50,49,44,
+34,116,114,34,58,34,208,160,208,181,208,180,208,176,208,186,209,130,208,190,209,128,32,209,129,209,134,208,181,208,189,208,176,209,128,209,150,209,151,208,178,34,125,44,123,34,105,100,34,58,50,56,49,49,55,51,51,57,51,48,44,34,116,114,34,58,34,209,129,
+208,186,209,128,208,184,208,191,209,130,32,208,183,208,188,209,150,208,189,208,181,208,189,208,190,34,125,93,44,34,112,108,117,114,97,108,76,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,49,56,53,51,50,51,54,49,53,53,44,34,116,114,34,58,91,123,
+34,110,97,109,101,34,58,34,123,120,125,32,208,178,209,133,209,150,208,180,208,189,208,184,208,185,32,208,186,208,176,208,189,208,176,208,187,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,
+32,208,178,209,133,209,150,208,180,208,189,209,150,32,208,186,208,176,208,189,208,176,208,187,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,209,133,209,150,208,180,208,
+189,208,184,209,133,32,208,186,208,176,208,189,208,176,208,187,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,50,51,55,55,57,55,49,57,52,44,34,116,114,34,58,91,123,34,110,97,109,101,
+34,58,34,123,120,125,32,208,178,208,184,209,133,209,150,208,180,208,189,208,184,208,185,32,208,186,208,176,208,189,208,176,208,187,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,
+178,208,184,209,133,209,150,208,180,208,189,209,150,32,208,186,208,176,208,189,208,176,208,187,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,178,208,184,209,133,209,150,
+208,180,208,189,208,184,209,133,32,208,186,208,176,208,189,208,176,208,187,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,49,56,55,51,54,50,56,48,54,44,34,116,114,34,58,91,123,34,110,
+97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,209,131,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,
+208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,189,208,190,209,
+130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,54,55,55,48,48,49,51,48,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,
+123,120,125,32,208,189,208,190,209,130,209,131,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,
+208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,
+114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,49,49,53,51,54,57,53,48,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,209,131,34,
+44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,
+34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,189,208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,
+54,55,48,49,57,49,48,56,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,209,142,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,
+44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,209,151,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,
+190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,49,56,56,51,53,54,52,57,56,44,34,116,114,34,58,91,123,34,
+110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,209,142,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,
+178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,209,151,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,
+209,135,208,181,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,56,50,50,56,54,53,50,51,52,44,34,116,114,34,58,91,123,34,110,
+97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,209,142,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,
+209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,191,208,190,208,180,209,150,209,151,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,
+190,32,123,120,125,32,208,191,208,190,208,180,209,150,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,53,51,57,55,52,48,53,55,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,
+208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,
+32,208,186,208,187,209,150,208,191,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,208,191,209,150,208,
+178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,56,51,56,56,52,54,52,48,54,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,
+123,120,125,32,208,186,208,187,209,150,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,
+208,191,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,208,191,209,150,208,178,34,44,
+34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,56,50,57,55,52,56,49,48,50,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,
+186,208,187,209,150,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,208,191,208,184,34,44,34,
+112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,150,208,191,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,
+114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,53,57,56,48,49,54,50,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,186,209,131,34,44,
+34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,
+58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,
+58,51,51,53,55,54,55,54,55,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,186,209,131,34,44,34,112,108,117,114,97,108,70,111,114,109,
+34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,
+110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,55,55,
+54,50,52,48,54,57,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,186,209,131,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,
+125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,
+208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,188,209,150,209,130,208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,50,54,52,55,50,50,49,48,55,44,34,116,
+114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,
+58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,
+208,176,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,55,53,53,56,55,53,53,48,53,44,34,116,114,34,58,
+91,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,
+101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,
+208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,55,55,
+53,49,50,57,48,55,51,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,
+34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,
+34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,
+100,34,58,51,49,51,51,54,48,54,55,49,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,
+34,125,44,123,34,110,97,109,101,34,58,34,208,180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,209,150,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,
+180,208,190,208,180,208,176,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,57,57,50,57,53,55,55,48,53,44,34,116,114,
+34,58,91,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,
+34,208,178,208,184,208,187,209,131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,209,150,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,178,208,184,208,187,209,
+131,209,135,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,50,51,55,54,57,57,49,52,53,44,34,116,114,34,58,91,
+123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,
+209,150,208,189,208,181,208,189,208,190,32,123,120,125,32,208,186,208,187,209,142,209,135,209,150,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,208,183,208,188,209,150,208,189,208,181,208,189,208,
+190,32,123,120,125,32,208,186,208,187,209,142,209,135,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,56,57,53,50,54,56,48,54,52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,
+123,120,125,32,208,189,208,190,209,130,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,189,208,190,209,130,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,
+50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,189,208,190,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,52,53,56,53,52,57,49,52,50,44,34,116,114,34,58,91,123,34,110,97,109,
+101,34,58,34,123,120,125,32,208,191,208,190,208,180,209,150,209,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,190,208,180,209,150,209,151,34,44,34,112,108,117,114,97,
+108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,190,208,180,209,150,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,48,50,57,53,54,57,54,53,
+49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,209,150,209,130,208,186,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,209,150,209,130,
+208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,188,209,150,209,130,208,190,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,
+34,105,100,34,58,50,57,56,52,54,53,56,54,54,49,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,
+101,34,58,34,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,190,208,183,208,188,209,150,209,128,209,
+150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,50,52,49,50,56,49,49,50,53,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,142,209,135,34,44,34,112,
+108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,142,209,135,209,150,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,
+125,32,208,186,208,187,209,142,209,135,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,51,49,57,51,53,54,50,49,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,
+208,186,208,187,209,150,208,191,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,150,208,191,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,
+44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,186,208,187,209,150,208,191,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,54,51,49,48,51,55,51,51,54,44,34,116,114,34,58,91,123,
+34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,176,209,130,208,181,209,128,208,189,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,176,209,130,208,181,209,128,208,189,
+208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,191,208,176,209,130,208,181,209,128,208,189,209,150,208,178,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,
+93,125,44,123,34,105,100,34,58,50,52,53,50,57,57,50,53,54,51,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,130,209,128,208,181,208,186,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,
+34,58,34,123,120,125,32,209,130,209,128,208,181,208,186,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,130,209,128,208,181,208,186,209,150,208,178,34,44,34,112,108,117,114,
+97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,51,50,51,49,57,52,57,55,57,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,181,208,178,209,150,208,183,209,150,209,143,34,44,34,112,108,117,114,
+97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,128,208,181,208,178,209,150,208,183,209,150,209,151,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,
+120,125,32,209,128,208,181,208,178,209,150,208,183,209,150,208,185,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,51,54,49,48,52,50,50,48,56,48,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,
+120,125,32,208,180,208,181,208,187,209,140,209,130,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,180,208,181,208,187,209,140,209,130,208,184,34,44,34,112,108,117,114,97,
+108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,208,180,208,181,208,187,209,140,209,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,50,56,53,53,52,51,51,55,48,
+52,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,133,208,178,208,184,208,187,208,184,208,189,208,176,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,133,
+208,178,208,184,208,187,208,184,208,189,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,133,208,178,208,184,208,187,208,184,208,189,34,44,34,112,108,117,114,97,108,70,111,
+114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,52,49,50,50,50,50,51,50,56,56,44,34,116,114,34,58,91,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,181,208,186,209,131,208,189,208,180,208,176,34,44,34,112,108,117,114,97,108,70,111,
+114,109,34,58,34,49,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,129,208,181,208,186,209,131,208,189,208,180,208,184,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,50,34,125,44,123,34,110,97,109,101,34,58,34,123,120,125,32,209,
+129,208,181,208,186,209,131,208,189,208,180,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,51,34,125,93,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,208,191,208,181,209,128,208,
+181,208,185,208,188,208,181,208,189,208,190,208,178,208,176,208,189,208,190,32,208,183,32,123,120,125,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,0,0 };
 
-const char* uk_json = (const char*) temp_binary_data_110;
+const char* uk_json = (const char*) temp_binary_data_112;
 
 //================== zh.json ==================
-static const unsigned char temp_binary_data_111[] =
+static const unsigned char temp_binary_data_113[] =
 { 123,34,105,100,34,58,34,122,104,34,44,34,110,97,109,101,34,58,34,231,174,128,228,189,147,228,184,173,230,150,135,34,44,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,34,49,34,44,34,108,105,116,101,114,97,108,34,58,91,123,34,105,100,34,
 58,53,57,48,53,52,51,50,50,55,44,34,116,114,34,58,34,229,183,165,231,168,139,229,183,178,229,144,175,229,138,168,34,125,44,123,34,105,100,34,58,50,52,50,51,53,52,57,49,53,44,34,116,114,34,58,34,230,150,176,229,187,186,229,183,165,231,168,139,34,125,44,
 123,34,105,100,34,58,57,55,51,51,55,48,50,53,55,44,34,116,114,34,58,34,230,150,176,229,187,186,232,189,168,233,129,147,34,125,44,123,34,105,100,34,58,51,54,56,50,48,54,50,54,57,48,44,34,116,114,34,58,34,233,128,159,229,186,166,34,125,44,123,34,105,100,
@@ -4012,44 +4042,46 @@ static const unsigned char temp_binary_data_111[] =
 131,233,178,129,230,150,175,34,125,44,123,34,105,100,34,58,53,53,51,51,55,53,51,53,51,44,34,116,114,34,58,34,230,183,183,229,144,136,229,184,131,233,178,129,230,150,175,34,125,44,123,34,105,100,34,58,51,50,55,57,55,56,54,56,44,34,116,114,34,58,34,228,
 184,187,233,159,179,229,184,131,233,178,129,230,150,175,34,125,44,123,34,105,100,34,58,51,56,48,49,53,52,57,54,55,51,44,34,116,114,34,58,34,230,145,135,230,187,154,34,125,44,123,34,105,100,34,58,49,57,51,49,55,53,53,56,52,57,44,34,116,114,34,58,34,233,
 159,179,233,162,145,232,190,147,229,133,165,34,125,44,123,34,105,100,34,58,52,50,48,48,54,53,56,53,51,52,44,34,116,114,34,58,34,233,159,179,233,162,145,232,190,147,229,135,186,34,125,44,123,34,105,100,34,58,51,49,53,52,53,57,52,48,52,56,44,34,116,114,
-34,58,34,77,73,68,73,32,232,190,147,229,133,165,34,125,44,123,34,105,100,34,58,50,52,56,51,52,50,51,53,56,53,44,34,116,114,34,58,34,77,73,68,73,32,232,190,147,229,135,186,34,125,93,44,34,112,108,117,114,97,108,76,105,116,101,114,97,108,34,58,91,123,34,
-105,100,34,58,49,56,53,51,50,51,54,49,53,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,232,190,147,229,133,165,233,128,154,233,129,147,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,
-100,34,58,52,50,51,55,55,57,55,49,57,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,232,190,147,229,135,186,233,128,154,233,129,147,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,
-34,58,52,49,56,55,51,54,50,56,48,54,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,183,187,229,138,160,228,186,134,123,120,125,228,184,170,233,159,179,231,172,166,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,
-105,100,34,58,50,54,55,55,48,48,49,51,48,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,231,167,187,233,153,164,228,186,134,123,120,125,228,184,170,233,159,179,231,172,166,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,
-123,34,105,100,34,58,49,49,49,53,51,54,57,53,48,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,155,180,230,148,185,228,186,134,123,120,125,228,184,170,233,159,179,231,172,166,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,
-125,44,123,34,105,100,34,58,49,54,55,48,49,57,49,48,56,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,183,187,229,138,160,228,186,134,123,120,125,228,184,170,228,186,139,228,187,182,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,
-34,125,125,44,123,34,105,100,34,58,52,49,56,56,51,53,54,52,57,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,231,167,187,233,153,164,228,186,134,123,120,125,228,184,170,228,186,139,228,187,182,34,44,34,112,108,117,114,97,108,70,111,114,109,34,
-58,34,49,34,125,125,44,123,34,105,100,34,58,49,56,50,50,56,54,53,50,51,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,155,180,230,148,185,228,186,134,123,120,125,228,184,170,228,186,139,228,187,182,34,44,34,112,108,117,114,97,108,70,111,114,
-109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,53,51,57,55,52,48,53,55,50,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,183,187,229,138,160,228,186,134,123,120,125,228,184,170,231,137,135,230,174,181,34,44,34,112,108,117,114,97,108,70,
-111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,56,51,56,56,52,54,52,48,54,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,231,167,187,233,153,164,228,186,134,123,120,125,228,184,170,231,137,135,230,174,181,34,44,34,112,108,117,114,97,
-108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,56,50,57,55,52,56,49,48,50,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,155,180,230,148,185,228,186,134,123,120,125,228,184,170,231,137,135,230,174,181,34,44,34,112,108,117,
-114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,53,57,56,48,49,54,50,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,183,187,229,138,160,228,186,134,123,120,125,228,184,170,230,179,168,233,135,138,34,44,34,112,108,
-117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,51,53,55,54,55,54,55,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,231,167,187,233,153,164,228,186,134,123,120,125,228,184,170,230,179,168,233,135,138,34,44,34,112,
-108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,55,55,54,50,52,48,54,57,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,155,180,230,148,185,228,186,134,123,120,125,228,184,170,230,179,168,233,135,138,34,44,
-34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,50,54,52,55,50,50,49,48,55,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,183,187,229,138,160,228,186,134,123,120,125,228,184,170,230,139,141,229,143,183,
-34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,55,53,53,56,55,53,53,48,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,231,167,187,233,153,164,228,186,134,123,120,125,228,184,170,230,139,141,229,143,
-183,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,55,55,53,49,50,57,48,55,51,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,155,180,230,148,185,228,186,134,123,120,125,228,184,170,230,139,141,
-229,143,183,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,49,51,51,54,48,54,55,49,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,183,187,229,138,160,228,186,134,123,120,125,228,184,170,232,
-176,131,229,143,183,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,57,57,50,57,53,55,55,48,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,231,167,187,233,153,164,228,186,134,123,120,125,228,184,
-170,232,176,131,229,143,183,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,52,50,51,55,54,57,57,49,52,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,155,180,230,148,185,228,186,134,123,120,125,
-228,184,170,232,176,131,229,143,183,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,56,57,53,50,54,56,48,54,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,233,159,179,231,
-172,166,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,52,53,56,53,52,57,49,52,50,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,228,186,139,228,187,182,34,44,34,112,108,117,
-114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,48,50,57,53,54,57,54,53,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,230,179,168,233,135,138,34,44,34,112,108,117,114,97,108,70,111,114,109,34,
-58,34,49,34,125,125,44,123,34,105,100,34,58,50,57,56,52,54,53,56,54,54,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,230,139,141,229,143,183,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,
-34,105,100,34,58,51,50,52,49,50,56,49,49,50,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,232,176,131,229,143,183,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,51,49,57,
-51,53,54,50,49,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,231,137,135,230,174,181,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,54,51,49,48,51,55,51,51,54,44,34,116,
-114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,230,160,183,229,188,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,52,53,50,57,57,50,53,54,51,44,34,116,114,34,58,123,34,110,97,109,
-101,34,58,34,123,120,125,229,177,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,51,50,51,49,57,52,57,55,57,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,231,137,136,230,
-156,172,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,54,49,48,52,50,50,48,56,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,229,183,174,229,188,130,34,44,34,112,108,117,
-114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,56,53,53,52,51,51,55,48,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,229,136,134,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,
-123,34,105,100,34,58,52,49,50,50,50,50,51,50,56,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,231,167,146,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,
-44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,229,183,178,228,187,142,123,120,125,228,184,173,231,167,187,229,138,168,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,0,0 };
+34,58,34,77,73,68,73,32,232,190,147,229,133,165,34,125,44,123,34,105,100,34,58,50,52,56,51,52,50,51,53,56,53,44,34,116,114,34,58,34,77,73,68,73,32,232,190,147,229,135,186,34,125,44,123,34,105,100,34,58,51,48,49,55,48,55,57,48,48,48,44,34,116,114,34,58,
+34,232,191,158,230,142,165,231,155,184,233,130,187,231,154,132,233,159,179,231,172,166,34,125,44,123,34,105,100,34,58,49,48,53,53,48,54,54,55,50,49,44,34,116,114,34,58,34,232,132,154,230,156,172,231,188,150,232,190,145,229,153,168,34,125,44,123,34,105,
+100,34,58,50,56,49,49,55,51,51,57,51,48,44,34,116,114,34,58,34,232,132,154,230,156,172,229,183,178,230,155,180,230,148,185,34,125,93,44,34,112,108,117,114,97,108,76,105,116,101,114,97,108,34,58,91,123,34,105,100,34,58,49,56,53,51,50,51,54,49,53,53,44,
+34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,232,190,147,229,133,165,233,128,154,233,129,147,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,52,50,51,55,55,57,55,49,57,52,44,34,
+116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,232,190,147,229,135,186,233,128,154,233,129,147,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,52,49,56,55,51,54,50,56,48,54,44,34,116,
+114,34,58,123,34,110,97,109,101,34,58,34,230,183,187,229,138,160,228,186,134,123,120,125,228,184,170,233,159,179,231,172,166,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,54,55,55,48,48,49,51,48,56,44,
+34,116,114,34,58,123,34,110,97,109,101,34,58,34,231,167,187,233,153,164,228,186,134,123,120,125,228,184,170,233,159,179,231,172,166,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,49,49,53,51,54,57,53,
+48,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,155,180,230,148,185,228,186,134,123,120,125,228,184,170,233,159,179,231,172,166,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,54,55,48,49,
+57,49,48,56,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,183,187,229,138,160,228,186,134,123,120,125,228,184,170,228,186,139,228,187,182,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,52,49,
+56,56,51,53,54,52,57,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,231,167,187,233,153,164,228,186,134,123,120,125,228,184,170,228,186,139,228,187,182,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,
+58,49,56,50,50,56,54,53,50,51,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,155,180,230,148,185,228,186,134,123,120,125,228,184,170,228,186,139,228,187,182,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,
+100,34,58,50,53,51,57,55,52,48,53,55,50,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,183,187,229,138,160,228,186,134,123,120,125,228,184,170,231,137,135,230,174,181,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,
+34,105,100,34,58,49,56,51,56,56,52,54,52,48,54,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,231,167,187,233,153,164,228,186,134,123,120,125,228,184,170,231,137,135,230,174,181,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,
+44,123,34,105,100,34,58,51,56,50,57,55,52,56,49,48,50,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,155,180,230,148,185,228,186,134,123,120,125,228,184,170,231,137,135,230,174,181,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,
+125,125,44,123,34,105,100,34,58,49,53,57,56,48,49,54,50,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,183,187,229,138,160,228,186,134,123,120,125,228,184,170,230,179,168,233,135,138,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,
+49,34,125,125,44,123,34,105,100,34,58,51,51,53,55,54,55,54,55,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,231,167,187,233,153,164,228,186,134,123,120,125,228,184,170,230,179,168,233,135,138,34,44,34,112,108,117,114,97,108,70,111,114,109,34,
+58,34,49,34,125,125,44,123,34,105,100,34,58,49,55,55,54,50,52,48,54,57,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,155,180,230,148,185,228,186,134,123,120,125,228,184,170,230,179,168,233,135,138,34,44,34,112,108,117,114,97,108,70,111,114,
+109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,50,54,52,55,50,50,49,48,55,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,183,187,229,138,160,228,186,134,123,120,125,228,184,170,230,139,141,229,143,183,34,44,34,112,108,117,114,97,108,70,
+111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,55,53,53,56,55,53,53,48,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,231,167,187,233,153,164,228,186,134,123,120,125,228,184,170,230,139,141,229,143,183,34,44,34,112,108,117,114,97,108,
+70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,55,55,53,49,50,57,48,55,51,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,155,180,230,148,185,228,186,134,123,120,125,228,184,170,230,139,141,229,143,183,34,44,34,112,108,117,114,
+97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,49,51,51,54,48,54,55,49,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,183,187,229,138,160,228,186,134,123,120,125,228,184,170,232,176,131,229,143,183,34,44,34,112,108,
+117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,57,57,50,57,53,55,55,48,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,231,167,187,233,153,164,228,186,134,123,120,125,228,184,170,232,176,131,229,143,183,34,44,34,
+112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,52,50,51,55,54,57,57,49,52,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,230,155,180,230,148,185,228,186,134,123,120,125,228,184,170,232,176,131,229,143,183,
+34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,56,57,53,50,54,56,48,54,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,233,159,179,231,172,166,34,44,34,112,108,117,114,97,
+108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,52,53,56,53,52,57,49,52,50,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,228,186,139,228,187,182,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,
+49,34,125,125,44,123,34,105,100,34,58,49,48,50,57,53,54,57,54,53,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,230,179,168,233,135,138,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,
+100,34,58,50,57,56,52,54,53,56,54,54,49,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,230,139,141,229,143,183,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,50,52,49,50,56,
+49,49,50,53,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,232,176,131,229,143,183,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,51,49,57,51,53,54,50,49,48,44,34,116,114,34,
+58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,231,137,135,230,174,181,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,54,51,49,48,51,55,51,51,54,44,34,116,114,34,58,123,34,110,97,109,101,34,
+58,34,123,120,125,228,184,170,230,160,183,229,188,143,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,50,52,53,50,57,57,50,53,54,51,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,229,177,130,
+34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,51,50,51,49,57,52,57,55,57,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,231,137,136,230,156,172,34,44,34,112,108,117,114,97,
+108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,51,54,49,48,52,50,50,48,56,48,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,228,184,170,229,183,174,229,188,130,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,
+49,34,125,125,44,123,34,105,100,34,58,50,56,53,53,52,51,51,55,48,52,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,229,136,134,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,52,49,50,50,50,
+50,51,50,56,56,44,34,116,114,34,58,123,34,110,97,109,101,34,58,34,123,120,125,231,167,146,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,44,123,34,105,100,34,58,49,56,48,55,53,53,51,51,51,48,44,34,116,114,34,58,123,34,110,97,109,
+101,34,58,34,229,183,178,228,187,142,123,120,125,228,184,173,231,167,187,229,138,168,34,44,34,112,108,117,114,97,108,70,111,114,109,34,58,34,49,34,125,125,93,125,0,0 };
 
-const char* zh_json = (const char*) temp_binary_data_111;
+const char* zh_json = (const char*) temp_binary_data_113;
 
 //================== logo-v2.png ==================
-static const unsigned char temp_binary_data_112[] =
+static const unsigned char temp_binary_data_114[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,0,0,0,2,0,8,3,0,0,0,195,166,36,200,0,0,0,90,80,76,84,69,0,0,0,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,56,58,100,220,225,
 250,66,68,109,210,215,241,87,89,128,190,194,222,159,163,194,118,121,156,77,79,119,200,205,232,97,100,138,138,142,175,179,184,213,169,173,204,128,131,166,107,110,147,149,152,185,217,6,198,72,0,0,0,13,116,82,78,83,0,240,16,187,112,208,160,128,64,144,96,
 48,32,151,204,52,208,0,0,27,230,73,68,65,84,120,218,236,218,91,82,133,48,16,0,209,201,3,8,143,217,255,118,213,210,143,171,85,94,209,63,211,125,182,144,134,132,9,241,76,29,91,107,37,245,111,149,214,182,81,227,79,206,190,164,166,176,244,51,126,169,186,
@@ -4153,10 +4185,10 @@ static const unsigned char temp_binary_data_112[] =
 194,171,131,102,141,39,176,25,218,225,116,34,144,78,12,194,139,35,181,197,115,108,87,185,93,5,210,137,64,46,49,8,175,14,154,213,22,207,99,139,172,118,133,51,18,129,65,115,117,176,44,44,72,54,25,157,129,116,34,144,78,12,138,95,5,40,139,13,102,97,155,218,
 185,12,238,6,187,116,34,144,75,12,114,171,131,198,185,186,177,152,224,19,237,49,4,137,135,37,128,151,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* logov2_png = (const char*) temp_binary_data_112;
+const char* logov2_png = (const char*) temp_binary_data_114;
 
 //================== logo-v2-mac.png ==================
-static const unsigned char temp_binary_data_113[] =
+static const unsigned char temp_binary_data_115[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,0,0,0,2,0,8,3,0,0,0,195,166,36,200,0,0,2,64,80,76,84,69,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,5,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,55,57,
 100,0,0,0,0,0,0,55,57,99,0,0,0,0,0,0,0,0,0,1,1,2,55,57,99,55,57,99,1,1,3,0,0,0,55,57,98,0,0,0,55,57,99,55,57,99,55,57,99,56,58,99,0,0,0,0,0,1,2,2,4,53,55,95,0,0,0,56,57,99,55,58,100,55,57,100,54,55,96,53,55,96,53,55,94,51,53,92,54,56,97,53,55,95,52,54,
 93,53,55,96,46,47,82,53,55,95,52,54,93,52,54,93,36,37,65,54,56,97,41,43,73,28,29,49,23,24,41,48,50,86,13,14,24,52,55,94,48,50,87,45,47,80,53,56,96,54,56,98,52,54,94,46,47,81,55,57,99,39,40,69,36,36,62,34,34,60,42,43,75,39,42,71,33,35,60,51,54,91,47,49,
@@ -4417,10 +4449,10 @@ static const unsigned char temp_binary_data_113[] =
 242,41,21,128,12,136,14,176,18,136,22,64,13,20,10,105,28,200,29,20,210,56,72,161,164,4,88,39,188,19,230,129,250,111,149,251,68,29,196,149,64,212,176,151,241,61,6,225,125,159,249,100,106,216,219,248,110,31,251,216,199,62,246,177,143,125,236,99,31,255,
 181,7,7,2,0,0,0,0,130,252,173,23,24,161,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,224,4,142,154,195,12,195,63,131,3,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* logov2mac_png = (const char*) temp_binary_data_113;
+const char* logov2mac_png = (const char*) temp_binary_data_115;
 
 //================== arpeggiators.json ==================
-static const unsigned char temp_binary_data_114[] =
+static const unsigned char temp_binary_data_116[] =
 "{\n"
 "  // TODO\n"
 "  \"arpeggiators\": {\n"
@@ -4429,10 +4461,10 @@ static const unsigned char temp_binary_data_114[] =
 "  }\n"
 "}";
 
-const char* arpeggiators_json = (const char*) temp_binary_data_114;
+const char* arpeggiators_json = (const char*) temp_binary_data_116;
 
 //================== chords.json ==================
-static const unsigned char temp_binary_data_115[] =
+static const unsigned char temp_binary_data_117[] =
 "{\n"
 "  /*\n"
 "    A number of chords that are easy to define with in-scale keys.\n"
@@ -4457,10 +4489,10 @@ static const unsigned char temp_binary_data_115[] =
 "  }\n"
 "}";
 
-const char* chords_json = (const char*) temp_binary_data_115;
+const char* chords_json = (const char*) temp_binary_data_117;
 
 //================== colourSchemes.json ==================
-static const unsigned char temp_binary_data_116[] =
+static const unsigned char temp_binary_data_118[] =
 "{\n"
 "  \"colourSchemes\": {\n"
 "    \"colourScheme\": [\n"
@@ -4615,10 +4647,10 @@ static const unsigned char temp_binary_data_116[] =
 "  }\n"
 "}";
 
-const char* colourSchemes_json = (const char*) temp_binary_data_116;
+const char* colourSchemes_json = (const char*) temp_binary_data_118;
 
 //================== hotkeySchemes.json ==================
-static const unsigned char temp_binary_data_117[] =
+static const unsigned char temp_binary_data_119[] =
 "{ \"hotkeySchemes\": { \"hotkeyScheme\": { \"name\": \"Default\", \"group\": [\n"
 "/*\n"
 "  The app groups hotkeys by \"receiver\" attribute (component id) and keypress,\n"
@@ -5180,10 +5212,10 @@ static const unsigned char temp_binary_data_117[] =
 "}\n"
 "]}}}\n";
 
-const char* hotkeySchemes_json = (const char*) temp_binary_data_117;
+const char* hotkeySchemes_json = (const char*) temp_binary_data_119;
 
 //================== keyboardMappings.json ==================
-static const unsigned char temp_binary_data_118[] =
+static const unsigned char temp_binary_data_120[] =
 "{\n"
 "  \"keyboardMappings\": {\n"
 "    \"keyboardMapping\": [\n"
@@ -5207,10 +5239,10 @@ static const unsigned char temp_binary_data_118[] =
 "  }\n"
 "}";
 
-const char* keyboardMappings_json = (const char*) temp_binary_data_118;
+const char* keyboardMappings_json = (const char*) temp_binary_data_120;
 
 //================== meters.json ==================
-static const unsigned char temp_binary_data_119[] =
+static const unsigned char temp_binary_data_121[] =
 "{\n"
 "  \"meters\": {\n"
 "    \"meter\": [\n"
@@ -5261,10 +5293,10 @@ static const unsigned char temp_binary_data_119[] =
 "  }\n"
 "}";
 
-const char* meters_json = (const char*) temp_binary_data_119;
+const char* meters_json = (const char*) temp_binary_data_121;
 
 //================== scales.json ==================
-static const unsigned char temp_binary_data_120[] =
+static const unsigned char temp_binary_data_122[] =
 "{\n"
 "  \"scales\": {\n"
 "    \"scale\": [\n"
@@ -5439,10 +5471,10 @@ static const unsigned char temp_binary_data_120[] =
 "  }\n"
 "}";
 
-const char* scales_json = (const char*) temp_binary_data_120;
+const char* scales_json = (const char*) temp_binary_data_122;
 
 //================== temperaments.json ==================
-static const unsigned char temp_binary_data_121[] =
+static const unsigned char temp_binary_data_123[] =
 "{\n"
 "  \"temperaments\": {\n"
 "    \"temperament\": [\n"
@@ -5508,10 +5540,10 @@ static const unsigned char temp_binary_data_121[] =
 "  }\n"
 "}\n";
 
-const char* temperaments_json = (const char*) temp_binary_data_121;
+const char* temperaments_json = (const char*) temp_binary_data_123;
 
 //================== translations.json ==================
-static const unsigned char temp_binary_data_122[] =
+static const unsigned char temp_binary_data_124[] =
 "{\n"
 "  // This file only lists ids and names to avoid parsing all the data on start:\n"
 "  \"translations\": {\n"
@@ -5532,7 +5564,7 @@ static const unsigned char temp_binary_data_122[] =
 "  }\n"
 "}";
 
-const char* translations_json = (const char*) temp_binary_data_122;
+const char* translations_json = (const char*) temp_binary_data_124;
 
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
@@ -5552,6 +5584,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x5bd41619:  numBytes = 916; return automationTrack_svg;
         case 0x7e70270c:  numBytes = 294; return back_svg;
         case 0xa0f86f8d:  numBytes = 198; return bottomBar_svg;
+        case 0x3c8a78f0:  numBytes = 344; return brackets_svg;
         case 0xf6383f2f:  numBytes = 252; return browse_svg;
         case 0xebc721c4:  numBytes = 829; return chordBuilder_svg;
         case 0x07aa5249:  numBytes = 324; return cleanup_svg;
@@ -5580,6 +5613,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xc48b0097:  numBytes = 307; return inverseDown_svg;
         case 0x4b4fda10:  numBytes = 305; return inverseUp_svg;
         case 0x4b2a9838:  numBytes = 527; return inversion_svg;
+        case 0xac7825cf:  numBytes = 133; return join_svg;
         case 0x310c4c73:  numBytes = 361; return legato_svg;
         case 0x503a1f43:  numBytes = 528; return list_svg;
         case 0x77b0be43:  numBytes = 250; return lockZoom_svg;
@@ -5645,18 +5679,18 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x28d55b12:  numBytes = 15420; return builtInMetronome4_wav;
         case 0x8453b03b:  numBytes = 885; return emptyProject_json;
         case 0xd91bf8d8:  numBytes = 3285; return exampleProject_json;
-        case 0x5bb541e6:  numBytes = 18673; return de_json;
-        case 0x9c8d6980:  numBytes = 25047; return el_json;
-        case 0x9ff71abe:  numBytes = 17396; return en_json;
-        case 0xdbb0b87b:  numBytes = 18973; return fr_json;
-        case 0x7dcd1b7c:  numBytes = 18882; return it_json;
-        case 0x924742f0:  numBytes = 19226; return ja_json;
-        case 0xdf1156e3:  numBytes = 18754; return ko_json;
-        case 0xf018ba43:  numBytes = 18610; return pt_json;
-        case 0x5b9a0964:  numBytes = 25410; return ru_json;
-        case 0xc047f609:  numBytes = 18805; return tr_json;
-        case 0xe93c44f1:  numBytes = 24773; return uk_json;
-        case 0xec9ce359:  numBytes = 15797; return zh_json;
+        case 0x5bb541e6:  numBytes = 18810; return de_json;
+        case 0x9c8d6980:  numBytes = 25250; return el_json;
+        case 0x9ff71abe:  numBytes = 17525; return en_json;
+        case 0xdbb0b87b:  numBytes = 19112; return fr_json;
+        case 0x7dcd1b7c:  numBytes = 19017; return it_json;
+        case 0x924742f0:  numBytes = 19406; return ja_json;
+        case 0xdf1156e3:  numBytes = 18926; return ko_json;
+        case 0xf018ba43:  numBytes = 18741; return pt_json;
+        case 0x5b9a0964:  numBytes = 25601; return ru_json;
+        case 0xc047f609:  numBytes = 18973; return tr_json;
+        case 0xe93c44f1:  numBytes = 24956; return uk_json;
+        case 0xec9ce359:  numBytes = 15926; return zh_json;
         case 0xe05deb51:  numBytes = 7326; return logov2_png;
         case 0x9bdc9ff2:  numBytes = 18403; return logov2mac_png;
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
@@ -5684,6 +5718,7 @@ const char* namedResourceList[] =
     "automationTrack_svg",
     "back_svg",
     "bottomBar_svg",
+    "brackets_svg",
     "browse_svg",
     "chordBuilder_svg",
     "cleanup_svg",
@@ -5712,6 +5747,7 @@ const char* namedResourceList[] =
     "inverseDown_svg",
     "inverseUp_svg",
     "inversion_svg",
+    "join_svg",
     "legato_svg",
     "list_svg",
     "lockZoom_svg",
@@ -5811,6 +5847,7 @@ const char* originalFilenames[] =
     "automationTrack.svg",
     "back.svg",
     "bottomBar.svg",
+    "brackets.svg",
     "browse.svg",
     "chordBuilder.svg",
     "cleanup.svg",
@@ -5839,6 +5876,7 @@ const char* originalFilenames[] =
     "inverseDown.svg",
     "inverseUp.svg",
     "inversion.svg",
+    "join.svg",
     "legato.svg",
     "list.svg",
     "lockZoom.svg",

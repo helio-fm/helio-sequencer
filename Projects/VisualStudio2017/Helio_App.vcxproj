@@ -3925,6 +3925,7 @@
     <None Include="..\..\Resources\Icons\automationTrack.svg"/>
     <None Include="..\..\Resources\Icons\back.svg"/>
     <None Include="..\..\Resources\Icons\bottomBar.svg"/>
+    <None Include="..\..\Resources\Icons\brackets.svg"/>
     <None Include="..\..\Resources\Icons\browse.svg"/>
     <None Include="..\..\Resources\Icons\chordBuilder.svg"/>
     <None Include="..\..\Resources\Icons\cleanup.svg"/>
@@ -3953,6 +3954,7 @@
     <None Include="..\..\Resources\Icons\inverseDown.svg"/>
     <None Include="..\..\Resources\Icons\inverseUp.svg"/>
     <None Include="..\..\Resources\Icons\inversion.svg"/>
+    <None Include="..\..\Resources\Icons\join.svg"/>
     <None Include="..\..\Resources\Icons\legato.svg"/>
     <None Include="..\..\Resources\Icons\list.svg"/>
     <None Include="..\..\Resources\Icons\lockZoom.svg"/>

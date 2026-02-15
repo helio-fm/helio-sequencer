@@ -18,6 +18,7 @@
               file="../../Resources/Icons/automationTrack.svg"/>
         <FILE id="pQYljb" name="back.svg" compile="0" resource="1" file="../../Resources/Icons/back.svg"/>
         <FILE id="hxV5R3" name="bottomBar.svg" compile="0" resource="1" file="../../Resources/Icons/bottomBar.svg"/>
+        <FILE id="tUYyIg" name="brackets.svg" compile="0" resource="1" file="../../Resources/Icons/brackets.svg"/>
         <FILE id="Z7oHFa" name="browse.svg" compile="0" resource="1" file="../../Resources/Icons/browse.svg"/>
         <FILE id="X70Jbq" name="chordBuilder.svg" compile="0" resource="1"
               file="../../Resources/Icons/chordBuilder.svg"/>
@@ -47,6 +48,7 @@
         <FILE id="vN18jv" name="inverseDown.svg" compile="0" resource="1" file="../../Resources/Icons/inverseDown.svg"/>
         <FILE id="yctt0l" name="inverseUp.svg" compile="0" resource="1" file="../../Resources/Icons/inverseUp.svg"/>
         <FILE id="JuTOqg" name="inversion.svg" compile="0" resource="1" file="../../Resources/Icons/inversion.svg"/>
+        <FILE id="JaZI6A" name="join.svg" compile="0" resource="1" file="../../Resources/Icons/join.svg"/>
         <FILE id="xO4mOF" name="legato.svg" compile="0" resource="1" file="../../Resources/Icons/legato.svg"/>
         <FILE id="Tp3StV" name="list.svg" compile="0" resource="1" file="../../Resources/Icons/list.svg"/>
         <FILE id="hOrAvo" name="lockZoom.svg" compile="0" resource="1" file="../../Resources/Icons/lockZoom.svg"/>
