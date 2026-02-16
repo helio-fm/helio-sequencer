@@ -93,7 +93,7 @@ void NoteComponent::setDisplayAsReplacedByModifiers(bool shouldBeDisplayedAsRepl
     {
         this->toBack();
     }
-    else
+    else if (this->flags.isActive)
     {
         this->toFront(false);
     }
