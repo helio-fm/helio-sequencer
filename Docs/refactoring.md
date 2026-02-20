@@ -92,7 +92,9 @@ On mobile platforms, long-tap on the key signature:
 
 ## Arpeggiators
 
-Arpeggiators submenu is available in the notes selection menu. If you have created any arpeggiators, you will also find a button on the right sidebar to apply one of them to a selection.
+Arpeggiators are available in the notes selection menu. If you have created any arpeggiators, you will also find a button on the right sidebar to apply one of them to a selection.
+
+Alternatively, the `A` hotkey brings up a menu for testing arpeggiators interactively. Alternatively, you can apply them in a [non-destructive](parametric-modifiers.md) way.
 
 ### How arpeggiators work
 

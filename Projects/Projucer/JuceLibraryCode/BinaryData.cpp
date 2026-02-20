@@ -4892,8 +4892,12 @@ static const unsigned char temp_binary_data_119[] =
 "  { \"command\": \"MelodicInversion\", \"key\": \"Alt + I\" },\n"
 "  { \"command\": \"CleanupOverlaps\", \"key\": \"Alt + O\" },\n"
 "  { \"command\": \"AlignToScale\", \"key\": \"Alt + A\" },\n"
+"  { \"command\": \"NotesVolumeUp\", \"key\": \"=\" },\n"
+"  { \"command\": \"NotesVolumeUp\", \"key\": \"Shift + =\" },\n"
 "  { \"command\": \"NotesVolumeUp\", \"key\": \"+\" },\n"
 "  { \"command\": \"NotesVolumeDown\", \"key\": \"-\" },\n"
+"  { \"command\": \"NotesVolumeRandom\", \"key\": \"Alt + =\" },\n"
+"  { \"command\": \"NotesVolumeRandom\", \"key\": \"Alt + Shift + =\" },\n"
 "  { \"command\": \"NotesVolumeRandom\", \"key\": \"Alt + +\" },\n"
 "  { \"command\": \"NotesVolumeFadeOut\", \"key\": \"Alt + -\" },\n"
 "  { \"command\": \"InvertChordUp\", \"key\": \"Control + Cursor Up\" },\n"
@@ -5107,6 +5111,8 @@ static const unsigned char temp_binary_data_119[] =
 "  { \"command\": \"SetTrackTimeSignature\", \"key\": \"Alt + F2\" },\n"
 "  { \"command\": \"TempoUp1Bpm\", \"key\": \"Shift + +\" },\n"
 "  { \"command\": \"TempoDown1Bpm\", \"key\": \"Shift + -\" },\n"
+"  { \"command\": \"ClipVolumeUp\", \"key\": \"=\" },\n"
+"  { \"command\": \"ClipVolumeUp\", \"key\": \"Shift + =\" },\n"
 "  { \"command\": \"ClipVolumeUp\", \"key\": \"+\" },\n"
 "  { \"command\": \"ClipVolumeDown\", \"key\": \"-\" },\n"
 "  { \"command\": \"ClipTransposeUp\", \"key\": \"Cursor Up\" },\n"
@@ -5696,7 +5702,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 4298; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 24628; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 24946; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 13262; return scales_json;

@@ -463,7 +463,8 @@ void MenuItemComponent::resized()
     constexpr auto subLabelWidth = 128;
     const auto iconSize = (this->description->iconId == Icons::empty) ? 0 : MenuItemComponent::iconSize;
 
-    this->subLabel->setBounds(this->getWidth() - subLabelWidth - rightMargin, 0, subLabelWidth, this->getHeight());
+    this->subLabel->setBounds(this->getWidth() - subLabelWidth - rightMargin -
+        (this->description->hasSubmenu() ? iconSize : 0), 0, subLabelWidth, this->getHeight());
     this->submenuMarker->setBounds(this->getWidth() - iconSize - rightMargin,
         (this->getHeight() / 2) - (iconSize / 2), iconSize, iconSize);
 

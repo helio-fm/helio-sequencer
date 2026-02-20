@@ -61,6 +61,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeDefaultMenu() noexcept
     menu.add(MenuItem::item(Icons::arpeggiate,
         TRANS(I18n::Menu::Selection::notesArpeggiate))->
         disabledIf(hasSingleNote)->
+        withHotkeyText(CommandIDs::ShowArpeggiatorsPanel)->
         withSubmenu()->
         withAction([this]()
         {
