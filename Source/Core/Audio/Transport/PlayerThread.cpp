@@ -220,7 +220,6 @@ void PlayerThread::run()
                     return; // the transport has already stopped
                 }
 
-                this->transport.allNotesControllersAndSoundOff();
                 this->transport.stopRecording();
                 this->transport.stopPlayback();
                 return;

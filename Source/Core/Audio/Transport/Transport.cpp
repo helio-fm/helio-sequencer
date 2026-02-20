@@ -130,7 +130,7 @@ void Transport::seekToBeat(float beatPosition)
 {
     if (this->isPlaying())
     {
-        jassertfalse;
+        // jassertfalse;
         this->stopPlaybackAndRecording();
         this->stopSound();
     }
@@ -587,11 +587,12 @@ static void stopSoundForInstrument(Instrument *instrument)
 {
     auto &collector = instrument->getProcessorPlayer().getMidiMessageCollector();
 
+    const auto timeNow = TIME_NOW;
     for (int i = 1; i <= Globals::numChannels; ++i)
     {
-        collector.addMessageToQueue(MidiMessage::allControllersOff(i).withTimeStamp(TIME_NOW));
-        collector.addMessageToQueue(MidiMessage::allNotesOff(i).withTimeStamp(TIME_NOW));
-        collector.addMessageToQueue(MidiMessage::allSoundOff(i).withTimeStamp(TIME_NOW));
+        collector.addMessageToQueue(MidiMessage::allControllersOff(i).withTimeStamp(timeNow));
+        collector.addMessageToQueue(MidiMessage::allNotesOff(i).withTimeStamp(timeNow));
+        collector.addMessageToQueue(MidiMessage::allSoundOff(i).withTimeStamp(timeNow));
     }
 }
 
@@ -613,26 +614,31 @@ void Transport::allNotesControllersAndSoundOff() const
 {
     this->notePreviewTimer.cancelAllPendingPreviews(true);
 
+    Array<MidiMessageCollector *> uniqueMessageCollectors;
+    for (const auto *track : this->tracksCache)
+    {
+        auto *collector =
+            &this->instrumentLinks[track->getTrackId()]->
+                getProcessorPlayer().getMidiMessageCollector();
+
+        if (!uniqueMessageCollectors.contains(collector))
+        {
+            uniqueMessageCollectors.add(collector);
+        }
+    }
+
+    const auto timeNow = TIME_NOW;
     for (int i = 1; i <= Globals::numChannels; ++i)
     {
-        const MidiMessage notesOff(MidiMessage::allNotesOff(i).withTimeStamp(TIME_NOW));
-        const MidiMessage soundOff(MidiMessage::allSoundOff(i).withTimeStamp(TIME_NOW));
-        const MidiMessage controllersOff(MidiMessage::allControllersOff(i).withTimeStamp(TIME_NOW));
-        
-        Array<const MidiMessageCollector *> uniqueMessageCollectors;
-        
-        for (int l = 0; l < this->tracksCache.size(); ++l)
+        const auto notesOff = MidiMessage::allNotesOff(i).withTimeStamp(timeNow);
+        const auto soundOff = MidiMessage::allSoundOff(i).withTimeStamp(timeNow);
+        const auto controllersOff = MidiMessage::allControllersOff(i).withTimeStamp(timeNow);
+
+        for (auto *collector : uniqueMessageCollectors)
         {
-            const auto &trackId = this->tracksCache.getUnchecked(l)->getTrackId();
-            auto *collector = &this->instrumentLinks[trackId]->getProcessorPlayer().getMidiMessageCollector();
-            
-            if (! uniqueMessageCollectors.contains(collector))
-            {
-                collector->addMessageToQueue(notesOff);
-                collector->addMessageToQueue(controllersOff);
-                collector->addMessageToQueue(soundOff);
-                uniqueMessageCollectors.add(collector);
-            }
+            collector->addMessageToQueue(notesOff);
+            collector->addMessageToQueue(controllersOff);
+            collector->addMessageToQueue(soundOff);
         }
     }
 }

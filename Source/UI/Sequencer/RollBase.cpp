@@ -1464,7 +1464,6 @@ void RollBase::handleCommandMessage(int commandId)
         if (this->getTransport().isPlaying())
         {
             this->getTransport().stopPlaybackAndRecording();
-            this->getTransport().stopSound();
         }
         {
             this->stopFollowingPlayhead();
@@ -1478,7 +1477,6 @@ void RollBase::handleCommandMessage(int commandId)
         if (this->getTransport().isPlaying())
         {
             this->getTransport().stopPlaybackAndRecording();
-            this->getTransport().stopSound();
         }
         {
             this->stopFollowingPlayhead();
@@ -1492,7 +1490,6 @@ void RollBase::handleCommandMessage(int commandId)
         if (this->getTransport().isPlaying())
         {
             this->getTransport().stopPlaybackAndRecording();
-            this->getTransport().stopSound();
         }
         {
             this->stopFollowingPlayhead();
@@ -1513,7 +1510,6 @@ void RollBase::handleCommandMessage(int commandId)
         if (this->getTransport().isPlaying())
         {
             this->getTransport().stopPlaybackAndRecording();
-            this->getTransport().stopSound();
         }
         {
             this->stopFollowingPlayhead();
@@ -1612,7 +1608,10 @@ void RollBase::handleCommandMessage(int commandId)
     case CommandIDs::TransportStop:
         if (!this->getTransport().isPlaying())
         {
-            // escape keypress when not playing also resets indicators and selection:
+            // when not playing, escape works as a panic button:
+            this->getTransport().stopSound();
+
+            // escape also resets indicators and selection:
             this->resetAllClippingIndicators();
             this->resetAllOversaturationIndicators();
             this->deselectAll();
@@ -1624,7 +1623,6 @@ void RollBase::handleCommandMessage(int commandId)
         }
 
         this->getTransport().stopPlaybackAndRecording();
-        this->getTransport().stopSound();
         break;
     case CommandIDs::ToggleBottomMiniMap:
         App::Config().getUiFlags()->toggleProjectMapLargeMode();
