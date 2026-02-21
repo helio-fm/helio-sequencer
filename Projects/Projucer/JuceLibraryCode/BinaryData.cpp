@@ -4883,14 +4883,15 @@ static const unsigned char temp_binary_data_119[] =
 "  { \"command\": \"TransposeOctaveDown\", \"key\": \"Shift + Cursor Down\" },\n"
 "  { \"command\": \"TransposeFifthUp\", \"key\": \"Shift + Alt + Cursor Up\" },\n"
 "  { \"command\": \"TransposeFifthDown\", \"key\": \"Shift + Alt + Cursor Down\" },\n"
-"  { \"command\": \"MakeStaccato\", \"key\": \"Alt + S\" },\n"
-"  { \"command\": \"MakeStaccatissimo\", \"key\": \"Shift + Alt + S\" },\n"
-"  { \"command\": \"MakeLegato\", \"key\": \"Alt + L\" },\n"
 "\n"
 "  // Refactor selection\n"
 "  { \"command\": \"Retrograde\", \"key\": \"Alt + R\" },\n"
 "  { \"command\": \"MelodicInversion\", \"key\": \"Alt + I\" },\n"
 "  { \"command\": \"CleanupOverlaps\", \"key\": \"Alt + O\" },\n"
+"  { \"command\": \"JoinAdjacent\", \"key\": \"Alt + J\" },\n"
+"  { \"command\": \"MakeLegato\", \"key\": \"Alt + L\" },\n"
+"  { \"command\": \"MakeStaccato\", \"key\": \"Alt + S\" },\n"
+"  { \"command\": \"MakeStaccatissimo\", \"key\": \"Shift + Alt + S\" },\n"
 "  { \"command\": \"AlignToScale\", \"key\": \"Alt + A\" },\n"
 "  { \"command\": \"NotesVolumeUp\", \"key\": \"=\" },\n"
 "  { \"command\": \"NotesVolumeUp\", \"key\": \"Shift + =\" },\n"
@@ -5702,7 +5703,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 4298; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 24946; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 24997; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 13262; return scales_json;

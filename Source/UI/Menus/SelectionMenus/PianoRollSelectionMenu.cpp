@@ -150,6 +150,9 @@ MenuPanel::Menu PianoRollSelectionMenu::makeRefactoringMenu() noexcept
     menu.add(MenuItem::item(Icons::cleanup, CommandIDs::CleanupOverlaps,
         TRANS(I18n::Menu::Refactor::cleanup))->disabledIf(hasSingleNote)->closesMenu());
 
+    menu.add(MenuItem::item(Icons::join, CommandIDs::JoinAdjacent,
+        TRANS(I18n::Menu::Refactor::joinAdjacent))->disabledIf(hasSingleNote)->closesMenu());
+
     menu.add(MenuItem::item(Icons::inverseUp, CommandIDs::InvertChordUp,
         TRANS(I18n::Menu::Refactor::inverseUp))->closesMenu());
 

@@ -161,6 +161,7 @@ namespace Serialization
         static const Identifier refactoringLegato = "legato";
         static const Identifier refactoringStaccato = "staccato";
         static const Identifier refactoringCleanupOverlaps = "cleanup";
+        static const Identifier refactoringJoinAdjacent = "joinAdjacent";
 
         static const Identifier arpeggiationSpeed = "speed";
     } // namespace Modifiers

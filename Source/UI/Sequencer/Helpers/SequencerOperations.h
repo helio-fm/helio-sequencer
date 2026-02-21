@@ -124,6 +124,8 @@ struct SequencerOperations final
         float newLength, bool undoable = true, bool shouldCheckpoint = true);
     static bool makeLegato(const NoteListBase &notes,
         float overlap, bool undoable = true, bool shouldCheckpoint = true);
+    static bool joinAdjacent(const NoteListBase &notes,
+        bool undoable = true, bool shouldCheckpoint = true);
 
     static bool quantize(const NoteListBase &notes, float bar,
         bool undoable = true, bool shouldCheckpoint = true);

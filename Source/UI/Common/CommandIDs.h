@@ -244,6 +244,7 @@ namespace CommandIDs
         MakeStaccatissimo               = 0x4602, // make notes very short
         MakeLegato                      = 0x4603, // connect notes in time
         MakeLegatoOverlapping           = 0x4604, // connect notes together, but with a slight overlap for use in certain VSTs
+        JoinAdjacent                    = 0x4605,
 
         CommandPaletteClear             = 0x4700,
         CommandPaletteDismiss           = 0x4701,

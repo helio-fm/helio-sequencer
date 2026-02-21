@@ -1639,6 +1639,9 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::MakeLegatoOverlapping:
         SequencerOperations::makeLegato(this->getLassoOrEntireSequence(), Globals::minNoteLength);
         break;
+    case CommandIDs::JoinAdjacent:
+        SequencerOperations::joinAdjacent(this->getLassoOrEntireSequence());
+        break;
     case CommandIDs::CleanupOverlaps:
         SequencerOperations::cleanupOverlaps(this->getLassoOrEntireSequence());
         break;

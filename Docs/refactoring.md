@@ -30,6 +30,14 @@ The retrograde hotkey also works in the pattern roll, re-ordering all selected c
 
 The `Alt + O` hotkey removes duplicate notes and corrects lengths in a way that notes do not overlap.
 
+### Join adjacent notes
+
+The `Alt + J` hotkey merges adjacent and overlapping notes.
+
+My typical use case is connecting several neighbour chords:
+
+![join-adjacent-notes]
+
 ## Transposition and inversion
 
 Not listed in the menu, but also handy: the `Shift + Up` and `Shift + Down` hotkeys transpose the selected notes one octave up or down.
@@ -125,3 +133,4 @@ To delete an arpeggiator, manually edit your [arpeggiators.json](configs.md#user
 [quick-rescale-mobile]: images/quick-rescale-mobile.png "The quick rescale tool on mobile"
 [quick-rescale-desktop]: images/quick-rescale-desktop.png "The quick rescale tool on desktop"
 [staccato-legato]: images/staccato-legato.png "Staccato and legato shortcuts"
+[join-adjacent-notes]: images/join-adjacent-notes.png "Joining adjacent notes"

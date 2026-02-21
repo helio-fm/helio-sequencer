@@ -230,14 +230,15 @@
   { "command": "TransposeOctaveDown", "key": "Shift + Cursor Down" },
   { "command": "TransposeFifthUp", "key": "Shift + Alt + Cursor Up" },
   { "command": "TransposeFifthDown", "key": "Shift + Alt + Cursor Down" },
-  { "command": "MakeStaccato", "key": "Alt + S" },
-  { "command": "MakeStaccatissimo", "key": "Shift + Alt + S" },
-  { "command": "MakeLegato", "key": "Alt + L" },
 
   // Refactor selection
   { "command": "Retrograde", "key": "Alt + R" },
   { "command": "MelodicInversion", "key": "Alt + I" },
   { "command": "CleanupOverlaps", "key": "Alt + O" },
+  { "command": "JoinAdjacent", "key": "Alt + J" },
+  { "command": "MakeLegato", "key": "Alt + L" },
+  { "command": "MakeStaccato", "key": "Alt + S" },
+  { "command": "MakeStaccatissimo", "key": "Shift + Alt + S" },
   { "command": "AlignToScale", "key": "Alt + A" },
   { "command": "NotesVolumeUp", "key": "=" },
   { "command": "NotesVolumeUp", "key": "Shift + =" },

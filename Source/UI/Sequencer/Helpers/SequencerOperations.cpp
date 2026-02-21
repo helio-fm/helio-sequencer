@@ -625,6 +625,85 @@ bool SequencerOperations::makeLegato(const NoteListBase &notes,
     return true;
 }
 
+bool SequencerOperations::joinAdjacent(const NoteListBase &notes,
+    bool undoable, bool shouldCheckpoint)
+{
+    jassert(undoable || !shouldCheckpoint);
+    if (notes.size() == 0)
+    {
+        return false;
+    }
+
+    auto *sequence = getPianoSequence(notes);
+    jassert(sequence);
+
+    constexpr auto threshold = Globals::minNoteLength;
+
+    Array<Note> removals;
+    Array<Note> changesBefore, changesAfter;
+    for (int i = 0; i < notes.size(); ++i)
+    {
+        const auto &note = notes.getNoteUnchecked(i);
+        if (removals.contains(note))
+        {
+            continue;
+        }
+
+        float newLength = note.getLength();
+        for (int j = i + 1; j < notes.size(); ++j)
+        {
+            const auto &other = notes.getNoteUnchecked(j);
+            if (other.getKey() != note.getKey() ||
+                other.getBeat() < note.getBeat())
+            {
+                continue;
+            }
+            
+            const auto noteEndBeat = note.getBeat() + newLength;
+            const auto distance = other.getBeat() - noteEndBeat;
+            if (distance < threshold && !removals.contains(other))
+            {
+                removals.add(other);
+
+                const auto otherEndBeat = other.getBeat() + other.getLength();
+                const auto possibleLength = otherEndBeat - note.getBeat();
+                if (possibleLength > newLength)
+                {
+                    newLength = possibleLength;
+                }
+            }
+        }
+
+        if (newLength > note.getLength())
+        {
+            changesBefore.add(note);
+            changesAfter.add(note.withLength(newLength));
+        }
+    }
+
+    if (changesBefore.isEmpty() && removals.isEmpty())
+    {
+        return false;
+    }
+
+    if (shouldCheckpoint)
+    {
+        sequence->checkpoint();
+    }
+
+    if (!changesBefore.isEmpty())
+    {
+        sequence->changeGroup(changesBefore, changesAfter, undoable);
+    }
+
+    if (!removals.isEmpty())
+    {
+        sequence->removeGroup(removals, undoable);
+    }
+
+    return true;
+}
+
 void SequencerOperations::retrograde(const NoteListBase &notes,
     bool undoable /*= true*/, bool shouldCheckpoint /*= true*/)
 {
@@ -2115,7 +2194,7 @@ KeySignatureEvent *SequencerOperations::findHarmonicContext(float startBeat,
     if (keySignatures == nullptr ||
         keySignatures->size() == 0)
     {
-        jassertfalse;
+        //jassertfalse;
         return nullptr;
     }
 
@@ -2123,7 +2202,7 @@ KeySignatureEvent *SequencerOperations::findHarmonicContext(float startBeat,
 
     for (int i = 0; i < keySignatures->size(); ++i)
     {
-        const auto event = keySignatures->getUnchecked(i);
+        auto *event = keySignatures->getUnchecked(i);
         if (context == nullptr || event->getBeat() <= startBeat)
         {
             // Take the first one no matter where it resides;

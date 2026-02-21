@@ -35,6 +35,7 @@ public:
         MelodicInversion,
         Retrograde,
         CleanupOverlaps,
+        JoinAdjacent,
         ChordInversionUp,
         ChordInversionDown,
         InScaleTranspositionUp,
@@ -49,6 +50,7 @@ public:
         Type::MelodicInversion,
         Type::Retrograde,
         Type::CleanupOverlaps,
+        Type::JoinAdjacent,
         Type::ChordInversionUp,
         Type::ChordInversionDown,
         Type::InScaleTranspositionUp,
@@ -83,6 +85,9 @@ public:
             break;
         case Type::CleanupOverlaps:
             SequencerOperations::cleanupOverlaps(sequence, false, false);
+            break;
+        case Type::JoinAdjacent:
+            SequencerOperations::joinAdjacent(sequence, false, false);
             break;
         case Type::ChordInversionUp:
         case Type::ChordInversionDown:
@@ -130,6 +135,7 @@ public:
         switch (type)
         {
         case Type::CleanupOverlaps:
+        case Type::JoinAdjacent:
         case Type::MelodicInversion:
         case Type::Retrograde:
         case Type::Legato:
@@ -179,6 +185,8 @@ public:
             return TRANS(I18n::Menu::Refactor::retrograde);
         case Type::CleanupOverlaps:
             return TRANS(I18n::Menu::Refactor::cleanup);
+        case Type::JoinAdjacent:
+            return TRANS(I18n::Menu::Refactor::joinAdjacent);
         case Type::ChordInversionUp:
             return TRANS(I18n::Menu::Refactor::inverseUp) + stepsString;
         case Type::ChordInversionDown:
@@ -226,6 +234,8 @@ public:
             return Icons::retrograde;
         case Type::CleanupOverlaps:
             return Icons::cleanup;
+        case Type::JoinAdjacent:
+            return Icons::join;
         case Type::ChordInversionUp:
             return Icons::inverseUp;
         case Type::ChordInversionDown:
@@ -293,6 +303,7 @@ public:
         case Type::MelodicInversion:
         case Type::Retrograde:
         case Type::CleanupOverlaps:
+        case Type::JoinAdjacent:
         case Type::Legato:
         case Type::SnapToScale:
             return {};
@@ -371,6 +382,9 @@ public:
         case Type::CleanupOverlaps:
             tree.setProperty(Modifiers::refactoringType, Modifiers::refactoringCleanupOverlaps.toString());
             break;
+        case Type::JoinAdjacent:
+            tree.setProperty(Modifiers::refactoringType, Modifiers::refactoringJoinAdjacent.toString());
+            break;
         case Type::ChordInversionUp:
         case Type::ChordInversionDown:
             tree.setProperty(Modifiers::refactoringType, Modifiers::refactoringChordInversion.toString());
@@ -423,6 +437,10 @@ public:
         else if (typeId == Modifiers::refactoringCleanupOverlaps)
         {
             this->type = Type::CleanupOverlaps;
+        }
+        else if (typeId == Modifiers::refactoringJoinAdjacent)
+        {
+            this->type = Type::JoinAdjacent;
         }
         else if (typeId == Modifiers::refactoringChordInversion)
         {
