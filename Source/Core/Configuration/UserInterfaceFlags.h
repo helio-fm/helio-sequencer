@@ -52,6 +52,7 @@ public:
         virtual void onProjectMapLargeModeFlagChanged(bool showFullMap) {}
 
         virtual void onFollowPlayheadFlagChanged(bool following) {}
+        virtual void onFollowPlayheadPositionChanged(float position) {}
         virtual void onUiAnimationsFlagChanged(bool enabled) {}
         virtual void onLockZoomLevelFlagChanged(bool zoomLocked) {}
         virtual void onMouseWheelFlagsChanged(MouseWheelFlags flags) {}
@@ -101,6 +102,8 @@ public:
 
     bool isFollowingPlayhead() const noexcept;
     void setFollowingPlayhead(bool following);
+    float getFollowingPlayheadPosition() const noexcept;
+    void setFollowingPlayheadPosition(float position);
 
     bool areUiAnimationsEnabled() const noexcept;
     void setUiAnimationsEnabled(bool enabled);
@@ -178,6 +181,7 @@ private:
 
     bool experimentalFeaturesOn = false;
     bool followPlayhead = false;
+    float followPlayheadPosition = 0.5f;
     bool rollAnimationsEnabled = true;
     bool zoomLevelLocked = false;
 

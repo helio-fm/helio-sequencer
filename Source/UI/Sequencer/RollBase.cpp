@@ -153,6 +153,7 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
 
     auto *uiFlags = App::Config().getUiFlags();
     this->onFollowPlayheadFlagChanged(uiFlags->isFollowingPlayhead());
+    this->onFollowPlayheadPositionChanged(uiFlags->getFollowingPlayheadPosition());
     this->onUiAnimationsFlagChanged(uiFlags->areUiAnimationsEnabled());
     this->onMouseWheelFlagsChanged(uiFlags->getMouseWheelFlags());
     this->onLockZoomLevelFlagChanged(uiFlags->isZoomLevelLocked());
@@ -1741,12 +1742,12 @@ void RollBase::onMovePlayhead(int oldPlayheadX, int newPlayheadX)
 
     if (this->playheadFollowMode == PlayheadFollowMode::Follow)
     {
-        const auto viewHalfWidth = this->viewport.getViewWidth() / 2;
-        const auto viewportCentreX = this->viewport.getViewPositionX() + viewHalfWidth;
-        const auto offset = float(newPlayheadX) - float(viewportCentreX);
+        const auto playheadViewportX = this->viewport.getViewWidth() * this->playheadFollowPosition;
+        const auto viewportCentreX = this->viewport.getViewPositionX() + playheadViewportX;
+        const auto offset = float(newPlayheadX) - viewportCentreX;
         const auto playheadDelta = float(newPlayheadX - oldPlayheadX);
-        const auto newViewPosX = newPlayheadX - viewHalfWidth -
-            roundToIntAccurate((fabs(offset) <= playheadDelta * 2.f) ? 0.f : offset * 0.5f);
+        const auto newViewPosX = roundToIntAccurate(newPlayheadX - playheadViewportX -
+            ((fabs(offset) <= playheadDelta * 2.f) ? 0.f : offset * 0.5f));
         this->viewport.setViewPosition(newViewPosX, this->viewport.getViewPositionY());
         this->updateChildrenPositions();
     }
@@ -1828,6 +1829,11 @@ void RollBase::onFollowPlayheadFlagChanged(bool following)
 {
     this->playheadFollowMode = following ?
         PlayheadFollowMode::Free : PlayheadFollowMode::Disabled;
+}
+
+void RollBase::onFollowPlayheadPositionChanged(float position)
+{
+    this->playheadFollowPosition = jlimit(0.1f, 0.9f, position);
 }
 
 void RollBase::onUiAnimationsFlagChanged(bool enabled)
@@ -1914,8 +1920,8 @@ bool RollBase::scrollToPlayheadPositionIfNeeded(int edgeMargin)
     }
     else
     {
-        this->viewport.setViewPosition(
-            playheadX - (this->viewport.getViewWidth() / 3),
+        this->viewport.setViewPosition(playheadX -
+            roundToIntAccurate(this->viewport.getViewWidth() * this->playheadFollowPosition),
             this->viewport.getViewPositionY());
 
         this->updateChildrenBounds();
@@ -1937,7 +1943,7 @@ void RollBase::startFollowingPlayhead(bool forceScrollToPlayhead)
     // to force focusing on it once, e.g. by hitting Enter:
     else if (forceScrollToPlayhead)
     {
-        this->scrollToPlayheadPositionIfNeeded(this->viewport.getViewWidth() / 5);
+        this->scrollToPlayheadPositionIfNeeded(this->viewport.getViewWidth());
     }
 }
 
@@ -2008,10 +2014,12 @@ void RollBase::triggerBatchRepaintFor(FloatBoundsComponent *target)
 
 void RollBase::timerCallback()
 {
-    const auto viewportCentreX = this->viewport.getViewArea().getCentreX();
-    const auto playheadOffset = (this->playhead->getX() - viewportCentreX);
+    const auto playheadViewportX = this->viewport.getViewWidth() * this->playheadFollowPosition;
+    const auto viewportCentreX = this->viewport.getViewPositionX() + playheadViewportX;
+    const auto playheadOffset = this->playhead->getX() - viewportCentreX;
     const auto newX = this->playhead->getX() -
-        roundToIntAccurate(playheadOffset * 0.5) - (this->viewport.getViewWidth() / 2);
+        roundToIntAccurate(playheadOffset * 0.5) -
+        roundToIntAccurate(playheadViewportX);
 
     const bool doneFollowingPlayhead =
         fabs(playheadOffset) < (this->getTransport().isPlaying() ? this->beatWidth : 2.f);

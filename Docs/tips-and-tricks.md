@@ -110,6 +110,12 @@ When in full mode, the mini-map allows you to draw a region to zoom in on:
 
 ![zoom-to-region]
 
+### Following playhead
+
+During playback, press the `Play` or `Enter` hotkey the second time to focus the viewport on the playhead.
+
+If you enabled following the playhead automatically ("Catch playhead" on the settings page, off by default), use the `Cursor Left` and `Cursor Right` hotkeys during playback to adjust how the playhead aligns in the viewport.
+
 ### Chord tool
 
 By double-clicking on a row in the piano roll you invoke the chord tool:

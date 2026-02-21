@@ -325,6 +325,7 @@ protected:
     //===------------------------------------------------------------------===//
 
     void onFollowPlayheadFlagChanged(bool following) override;
+    void onFollowPlayheadPositionChanged(float position) override;
     void onUiAnimationsFlagChanged(bool enabled) override;
     void onMouseWheelFlagsChanged(UserInterfaceFlags::MouseWheelFlags flags) override;
     void onLockZoomLevelFlagChanged(bool zoomLocked) override;
@@ -347,6 +348,7 @@ protected:
 
     enum class PlayheadFollowMode { Disabled, Free, CatchWhenOffscreen, Follow };
     PlayheadFollowMode playheadFollowMode = PlayheadFollowMode::Free;
+    float playheadFollowPosition = 0.5f;
 
     //===------------------------------------------------------------------===//
     // AsyncUpdater

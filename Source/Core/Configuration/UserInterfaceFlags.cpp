@@ -175,6 +175,23 @@ void UserInterfaceFlags::setFollowingPlayhead(bool following)
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
+float UserInterfaceFlags::getFollowingPlayheadPosition() const noexcept
+{
+    return this->followPlayheadPosition;
+}
+
+void UserInterfaceFlags::setFollowingPlayheadPosition(float position)
+{
+    if (this->followPlayheadPosition == position)
+    {
+        return;
+    }
+
+    this->followPlayheadPosition = position;
+    this->listeners.call(&Listener::onFollowPlayheadPositionChanged, this->followPlayheadPosition);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
 bool UserInterfaceFlags::areUiAnimationsEnabled() const noexcept
 {
     return this->rollAnimationsEnabled;
@@ -364,6 +381,7 @@ SerializedData UserInterfaceFlags::serialize() const
     tree.setProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     tree.setProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     tree.setProperty(UI::Flags::followPlayhead, this->followPlayhead);
+    tree.setProperty(UI::Flags::followPlayheadPosition, this->followPlayheadPosition);
     tree.setProperty(UI::Flags::animations, this->rollAnimationsEnabled);
     tree.setProperty(UI::Flags::lockZoomLevel, this->zoomLevelLocked);
     tree.setProperty(UI::Flags::showFullProjectMap, this->projectMapLargeMode);
@@ -412,6 +430,8 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->useOpenGLRenderer = root.getProperty(UI::Flags::openGlRenderer, this->useOpenGLRenderer);
     this->useNativeTitleBar = root.getProperty(UI::Flags::nativeTitleBar, this->useNativeTitleBar);
     this->followPlayhead = root.getProperty(UI::Flags::followPlayhead, this->followPlayhead);
+    this->followPlayheadPosition = jlimit(0.1f, 0.9f,
+        float(root.getProperty(UI::Flags::followPlayheadPosition, this->followPlayheadPosition)));
     this->rollAnimationsEnabled = root.getProperty(UI::Flags::animations, this->rollAnimationsEnabled);
     this->zoomLevelLocked = root.getProperty(UI::Flags::lockZoomLevel, this->zoomLevelLocked);
     this->projectMapLargeMode = root.getProperty(UI::Flags::showFullProjectMap, this->projectMapLargeMode);

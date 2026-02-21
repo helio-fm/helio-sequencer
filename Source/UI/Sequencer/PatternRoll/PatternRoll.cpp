@@ -1035,9 +1035,24 @@ void PatternRoll::handleCommandMessage(int commandId)
         PatternOperations::tuneClips(this->selection, -1.f / 32.f);
         break;
     case CommandIDs::BeatShiftLeft:
+        if (this->getTransport().isPlaying() &&
+            this->playheadFollowMode == PlayheadFollowMode::Follow)
+        {
+            // a hack to control the playhead position when following playhead:
+            App::Config().getUiFlags()->setFollowingPlayheadPosition(
+                jlimit(0.1f, 0.9f, this->playheadFollowPosition - 0.025f));
+            return;
+        }
         PatternOperations::shiftBeatRelative(this->selection, -this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::BeatShiftRight:
+        if (this->getTransport().isPlaying() &&
+            this->playheadFollowMode == PlayheadFollowMode::Follow)
+        {
+            App::Config().getUiFlags()->setFollowingPlayheadPosition(
+                jlimit(0.1f, 0.9f, this->playheadFollowPosition + 0.025f));
+            return;
+        }
         PatternOperations::shiftBeatRelative(this->selection, this->getMinVisibleBeatForCurrentZoomLevel());
         break;
     case CommandIDs::Retrograde:
