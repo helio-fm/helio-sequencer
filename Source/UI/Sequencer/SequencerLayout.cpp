@@ -502,7 +502,7 @@ private:
 // SequencerLayout
 //===----------------------------------------------------------------------===//
 
-SequencerLayout::SequencerLayout(ProjectNode &parentProject, Point<int> defaultSize) :
+SequencerLayout::SequencerLayout(ProjectNode &parentProject, Point<int> defaultSize) noexcept :
     project(parentProject)
 {
     this->setComponentID(ComponentIDs::sequencerLayoutId);

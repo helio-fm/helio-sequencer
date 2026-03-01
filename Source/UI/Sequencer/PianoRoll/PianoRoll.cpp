@@ -683,12 +683,12 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
             const auto *clip = track->getPattern()->getUnchecked(i);
             auto *component = new NoteComponent(*this, note, *clip);
             sequenceMap[note] = UniquePointer<NoteComponent>(component);
-            this->addAndMakeVisible(component);
-
-            this->fader.fadeIn(component, Globals::UI::fadeInLong);
 
             const bool isActive = component->belongsTo(this->activeClip);
             component->setActive(isActive, true);
+
+            this->addAndMakeVisible(component, isActive ? -1 : 0);
+            this->fader.fadeIn(component, Globals::UI::fadeInLong);
 
             if (isActive && !this->isDraggingAnyNotes)
             {
@@ -775,9 +775,9 @@ void PianoRoll::onAddClip(const Clip &clip)
         const auto &note = e.second.get()->getNote();
         auto *component = new NoteComponent(*this, note, clip);
         (*sequenceMap)[note] = UniquePointer<NoteComponent>(component);
-        this->addAndMakeVisible(component);
         const bool isActive = component->belongsTo(this->activeClip);
         component->setActive(isActive);
+        this->addAndMakeVisible(component, isActive ? -1 : 0);
         this->batchRepaintList.add(component);
     }
 
@@ -1338,7 +1338,8 @@ void PianoRoll::mouseDoubleClick(const MouseEvent &e)
         return;
     }
 
-    if (!this->project.getEditMode().forbidsAddingEvents({}))
+    if (!e.mods.isRightButtonDown() &&
+        !this->project.getEditMode().forbidsAddingEvents({}))
     {
         this->showChordTool(e.getEventRelativeTo(&App::Layout()).getPosition());
     }

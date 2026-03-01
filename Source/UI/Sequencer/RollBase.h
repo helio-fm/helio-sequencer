@@ -85,7 +85,7 @@ public:
         WeakReference<AudioMonitor> audioMonitor,
         bool hasAnnotationsTrack = true,
         bool hasKeySignaturesTrack = true,
-        bool hasTimeSignaturesTrack = true);
+        bool hasTimeSignaturesTrack = true) noexcept;
 
     ~RollBase() override;
 

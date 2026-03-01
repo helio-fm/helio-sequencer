@@ -67,7 +67,7 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     WeakReference<AudioMonitor> audioMonitor,
     bool hasAnnotationsTrack,
     bool hasKeySignaturesTrack,
-    bool hasTimeSignaturesTrack) :
+    bool hasTimeSignaturesTrack) noexcept :
     clippingDetector(audioMonitor),
     project(parentProject),
     viewport(viewportRef)

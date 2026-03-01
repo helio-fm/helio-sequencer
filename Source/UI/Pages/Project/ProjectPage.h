@@ -30,7 +30,7 @@ class ProjectPage final : public Component,
 {
 public:
 
-    explicit ProjectPage(ProjectNode &parentProject);
+    explicit ProjectPage(ProjectNode &parentProject) noexcept;
     ~ProjectPage() override;
 
     void updateContent();

@@ -41,7 +41,7 @@ static String getTimeString(const RelativeTime &time)
     return res;
 }
 
-ProjectPage::ProjectPage(ProjectNode &parentProject) :
+ProjectPage::ProjectPage(ProjectNode &parentProject) noexcept :
     project(parentProject)
 {
     this->setFocusContainerType(Component::FocusContainerType::keyboardFocusContainer);

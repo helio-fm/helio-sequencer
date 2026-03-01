@@ -32,15 +32,21 @@ static String getIconFileName(const String &string)
     return string;
 }
 
+#if JUCE_WINDOWS && !JUCE_MINGW
+  #define NO_INLINE __declspec(noinline)
+#else
+  #define NO_INLINE __attribute__((noinline))
+#endif
+
 struct BuiltInImageData final
 {
-    BuiltInImageData() = default;
+    NO_INLINE BuiltInImageData() = default;
 
-    BuiltInImageData(const BuiltInImageData &other) :
+    NO_INLINE BuiltInImageData(const BuiltInImageData &other) :
         data(other.data),
         numBytes(other.numBytes) {}
 
-    explicit BuiltInImageData(const String &name)
+    NO_INLINE explicit BuiltInImageData(const String &name)
     {
         const auto assumedFileName = getIconFileName(name) + "_svg";
         this->data = BinaryData::getNamedResource(assumedFileName.toRawUTF8(), this->numBytes);

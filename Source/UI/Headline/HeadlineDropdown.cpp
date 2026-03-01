@@ -73,6 +73,7 @@ public:
     explicit HeadlineDropdownHeader(WeakReference<HeadlineItemDataSource> targetItem) :
         item(targetItem)
     {
+        this->setAccessible(false);
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
 
@@ -155,6 +156,7 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
 
     this->setAlpha(0.f);
     this->setTopLeftPosition(position);
+    this->setAccessible(false);
     this->setInterceptsMouseClicks(true, true);
     this->setMouseClickGrabsKeyboardFocus(false);
 
