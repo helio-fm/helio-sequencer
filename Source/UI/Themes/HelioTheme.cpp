@@ -1035,10 +1035,12 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
 
     this->setColour(ColourIDs::Roll::noteFill, textColour.interpolatedWith(Colours::white, 0.5f));
     this->setColour(ColourIDs::Roll::noteNameFill, this->isDarkTheme ?
-        s->getBlackKeyColour().darker(0.4f) : s->getWhiteKeyColour().brighter(0.15f));
+        s->getBlackKeyColour().darker(0.35f) : s->getWhiteKeyColour().brighter(0.25f));
     this->setColour(ColourIDs::Roll::noteNameBorder,
         textColour.withAlpha(this->isDarkTheme ? 0.4f : 0.2f));
-    this->setColour(ColourIDs::Roll::noteNameShadow, textColour.withAlpha(0.1f));
+    this->setColour(ColourIDs::Roll::noteNameShadow, textColour.withAlpha(0.075f));
+    this->setColour(ColourIDs::Roll::noteNameNumber,
+        textColour.withMultipliedAlpha(this->isDarkTheme ? 0.625f : 0.675f));
 
     this->setColour(ColourIDs::Roll::noteCutMark, s->getBlackKeyColour().darker(this->isDarkTheme ? 1.f : 0.05f));
     this->setColour(ColourIDs::Roll::noteCutMarkOutline, Colours::white.withAlpha(0.2f));

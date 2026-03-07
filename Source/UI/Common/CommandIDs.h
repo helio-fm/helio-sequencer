@@ -89,9 +89,10 @@ namespace CommandIDs
         ToggleSoloClips                 = 0x1631,
         ToggleScalesHighlighting        = 0x1632,
         ToggleNoteNameGuides            = 0x1633,
-        ToggleLoopOverSelection         = 0x1634,
-        ToggleMetronome                 = 0x1635,
-        ToggleMuteModifiers             = 0x1636,
+        ToggleShowMidiNumbers           = 0x1634,
+        ToggleLoopOverSelection         = 0x1635,
+        ToggleMetronome                 = 0x1636,
+        ToggleMuteModifiers             = 0x1637,
 
         ZoomIn                          = 0x1800,
         ZoomOut                         = 0x1801,

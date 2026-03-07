@@ -22,6 +22,8 @@
 #include "NoteNameGuide.h"
 #include "NoteComponent.h"
 #include "PianoRoll.h"
+#include "Workspace.h"
+#include "AudioCore.h"
 #include "Config.h"
 
 NoteNameGuidesBar::NoteNameGuidesBar(PianoRoll &roll, WeakReference<MidiTrack> keySignatures) :
@@ -33,7 +35,9 @@ NoteNameGuidesBar::NoteNameGuidesBar(PianoRoll &roll, WeakReference<MidiTrack> k
     this->setInterceptsMouseClicks(false, false);
     this->setAccessible(false);
 
-    this->useFixedDoNotation = App::Config().getUiFlags()->isUsingFixedDoNotation();
+    const auto *uiFlags = App::Config().getUiFlags();
+    this->useFixedDoNotation = uiFlags->isUsingFixedDoNotation();
+    this->showMidiNumbers = uiFlags->isShowingMidiNumbers();
 
     this->roll.addRollListener(this);
     this->roll.getLassoSelection().addChangeListener(this);
@@ -108,16 +112,40 @@ void NoteNameGuidesBar::updateContent()
         return;
     }
 
+    const auto track = this->roll.getActiveTrack();
+    if (track == nullptr)
+    {
+        //jassertfalse;
+        return;
+    }
+
+    const auto instrumentId = track->getTrackInstrumentId();
+    if (instrumentId != this->lastUsedInstrumentId)
+    {
+        this->lastUsedInstrumentId = instrumentId;
+        if (auto *instrument =
+            App::Workspace().getAudioCore().findInstrumentById(instrumentId))
+        {
+            this->keyMap.loadMapFromPreset(instrument->getKeyboardMapping());
+        }
+        else
+        {
+            this->keyMap.reset();
+        }
+    }
+
     const auto absBeat = this->selectionStartBeat.orFallback(
         this->roll.getBeatByXPosition(float(this->roll.getViewport().getViewPositionX())));
 
-    if (!SequencerOperations::findHarmonicContext(absBeat, absBeat, this->keySignatures,
-        this->scale, this->scaleRootKey, this->scaleRootKeyName))
+    if (!SequencerOperations::findHarmonicContext(absBeat, absBeat,
+        this->keySignatures, this->scale, this->scaleRootKey, this->scaleRootKeyName))
     {
         this->scale = this->defaultScale;
         this->scaleRootKey = 0;
         this->scaleRootKeyName = {};
     }
+
+    const auto sequenceChannel = track->getSequence()->getChannel();
 
     // show all selected notes and root notes, but also try not to clutter the view
     // and hide root notes if the selection is larger than a four-note chord:
@@ -132,17 +160,36 @@ void NoteNameGuidesBar::updateContent()
 
         if (shouldBeVisible)
         {
+            String detailsText;
+            if (this->showMidiNumbers)
+            {
+                const auto mapped = this->keyMap.map(c->getNoteNumber(), sequenceChannel);
+                detailsText = mapped.channel > 1 ?
+                    String(mapped.key) + ":" + String(mapped.channel) :
+                    String(mapped.key);
+            }
+
             const auto noteName = this->temperament->getMidiNoteName(c->getNoteNumber(),
                 this->scaleRootKey, this->scaleRootKeyName, periodNumber);
-            const auto width = c->setNoteName(noteName, periodNumber, this->useFixedDoNotation);
-            guidesWidth = jmax(guidesWidth, width);
+            const auto width = c->setNoteName(noteName,
+                periodNumber, this->useFixedDoNotation, detailsText);
+
+            const auto viewY = this->roll.getViewport().getViewPositionY();
+            const auto cY = this->roll.getYPositionByKey(c->getNoteNumber());
+            const auto cBottom = cY + this->roll.getRowHeight();
+            if (cBottom > viewY &&
+                cY < (viewY + this->roll.getViewport().getViewHeight()))
+            {
+                guidesWidth = jmax(guidesWidth, width);
+            }
         }
 
         c->setVisible(shouldBeVisible);
     }
 
-    guidesWidth += int(NoteNameGuidesBar::borderWidth + NoteNameGuidesBar::arrowWidth +
-        NoteNameGuidesBar::nameMarginLeft + NoteNameGuidesBar::nameMarginRight);
+    guidesWidth +=
+        int(NoteNameGuidesBar::borderWidth + NoteNameGuidesBar::arrowWidth +
+            NoteNameGuidesBar::nameMarginLeft + NoteNameGuidesBar::nameMarginRight);
 
     this->setSize(guidesWidth, this->getHeight());
     this->updateBounds();
@@ -205,6 +252,17 @@ void NoteNameGuidesBar::syncWithTemperament(Temperament::Ptr newTemperament)
 //===----------------------------------------------------------------------===//
 // UserInterfaceFlags::Listener
 //===----------------------------------------------------------------------===//
+
+void NoteNameGuidesBar::onNoteNameMidiNumbersFlagChanged(bool enabled)
+{
+    if (this->showMidiNumbers == enabled)
+    {
+        return;
+    }
+
+    this->showMidiNumbers = enabled;
+    this->updateContent();
+}
 
 void NoteNameGuidesBar::onUseFixedDoFlagChanged(bool shouldUseFixedDo)
 {

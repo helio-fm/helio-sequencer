@@ -218,12 +218,8 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
     this->germanNotation = make<ToggleButton>("C, D, E, F, G, A, B");
     this->addAndMakeVisible(this->germanNotation.get());
     this->germanNotation->onClick = [this]() {
-        BailOutChecker checker(this);
         App::Config().getUiFlags()->setUseFixedDoNotation(false);
-        if (!checker.shouldBailOut())
-        {
-            this->updateButtons();
-        }
+        this->updateButtons();
     };
 
     const StringArray fixedDoNames(TRANS(I18n::Solfege::ut),
@@ -234,12 +230,15 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
     this->fixedDoNotation = make<ToggleButton>(fixedDoNames.joinIntoString(", "));
     this->addAndMakeVisible(this->fixedDoNotation.get());
     this->fixedDoNotation->onClick = [this]() {
-        BailOutChecker checker(this);
         App::Config().getUiFlags()->setUseFixedDoNotation(true);
-        if (!checker.shouldBailOut())
-        {
-            this->updateButtons();
-        }
+        this->updateButtons();
+    };
+
+    this->showMidiNumbers = make<ToggleButton>(TRANS(I18n::Settings::showMidiNumbers));
+    this->addAndMakeVisible(this->showMidiNumbers.get());
+    this->showMidiNumbers->onClick = [this]() {
+        App::Config().getUiFlags()->setShowMidiNumbers(this->showMidiNumbers->getToggleState());
+        this->updateButtons();
     };
 
     this->uiScaleSeparator = make<SeparatorHorizontal>();
@@ -252,7 +251,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
     this->uiScaleTitle->setBorderSize({ 0, 2, 0, 2 });
     this->uiScaleTitle->setInterceptsMouseClicks(false, false);
 
-    this->scaleUi1 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97"" 1"));
+    this->scaleUi1 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97 1"));
     this->addAndMakeVisible(this->scaleUi1.get());
     this->scaleUi1->onClick = [this]() {
         BailOutChecker checker(this);
@@ -263,7 +262,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
         }
     };
 
-    this->scaleUi125 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97"" 1.25"));
+    this->scaleUi125 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97 1.25"));
     this->addAndMakeVisible(this->scaleUi125.get());
     this->scaleUi125->onClick = [this]() {
         BailOutChecker checker(this);
@@ -274,7 +273,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
         }
     };
 
-    this->scaleUi15 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97"" 1.5"));
+    this->scaleUi15 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97 1.5"));
     this->addAndMakeVisible(this->scaleUi15.get());
     this->scaleUi15->onClick = [this]() {
         BailOutChecker checker(this);
@@ -285,7 +284,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
         }
     };
 
-    this->scaleUi175 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97"" 1.75"));
+    this->scaleUi175 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97 1.75"));
     this->addAndMakeVisible(this->scaleUi175.get());
     this->scaleUi175->onClick = [this]() {
         BailOutChecker checker(this);
@@ -296,7 +295,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
         }
     };
 
-    this->scaleUi2 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97"" 2"));
+    this->scaleUi2 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97 2"));
     this->addAndMakeVisible(this->scaleUi2.get());
     this->scaleUi2->onClick = [this]() {
         BailOutChecker checker(this);
@@ -317,9 +316,9 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
     this->scaleUi2->setRadioGroupId(2);
 
 #if SIMPLIFIED_UI_SETTINGS
-    this->setSize(100, 430);
+    this->setSize(100, 460);
 #else
-    this->setSize(100, 645);
+    this->setSize(100, 675);
 #endif
 }
 
@@ -405,7 +404,8 @@ void UserInterfaceSettings::resized()
         this->getWidth() - margin2 * 2, separatorSize);
 
     this->noteNamesTitle->setBounds(margin2,
-        this->noteNamesSeparator->getBottom() + separatorMargin + rowSpacing, this->getWidth() - margin2 * 2, titleSize);
+        this->noteNamesSeparator->getBottom() + separatorMargin + rowSpacing,
+        this->getWidth() - margin2 * 2, titleSize);
 
     this->germanNotation->setBounds(margin2,
         this->noteNamesTitle->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
@@ -413,12 +413,16 @@ void UserInterfaceSettings::resized()
     this->fixedDoNotation->setBounds(margin2,
         this->germanNotation->getBottom(), this->getWidth() - margin2 * 2, rowSize);
 
+    this->showMidiNumbers->setBounds(margin2,
+        this->fixedDoNotation->getBottom() + rowSpacing / 2, this->getWidth() - margin2 * 2, rowSize);
+
     this->uiScaleSeparator->setBounds(margin2,
-        this->fixedDoNotation->getBottom() + rowSpacing + separatorMargin,
+        this->showMidiNumbers->getBottom() + rowSpacing + separatorMargin,
         this->getWidth() - margin2 * 2, separatorSize);
 
     this->uiScaleTitle->setBounds(margin2,
-        this->uiScaleSeparator->getBottom() + separatorMargin + rowSpacing, this->getWidth() - margin2 * 2, titleSize);
+        this->uiScaleSeparator->getBottom() + separatorMargin + rowSpacing,
+        this->getWidth() - margin2 * 2, titleSize);
 
     this->scaleUi1->setBounds(margin2,
         this->uiScaleTitle->getBottom() + rowSpacing, this->getWidth() - margin2 * 2, rowSize);
@@ -505,4 +509,5 @@ void UserInterfaceSettings::updateButtons()
 
     this->germanNotation->setToggleState(!uiFlags->isUsingFixedDoNotation(), dontSendNotification);
     this->fixedDoNotation->setToggleState(uiFlags->isUsingFixedDoNotation(), dontSendNotification);
+    this->showMidiNumbers->setToggleState(uiFlags->isShowingMidiNumbers(), dontSendNotification);
 }

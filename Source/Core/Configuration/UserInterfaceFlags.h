@@ -43,6 +43,7 @@ public:
 
         virtual void onScalesHighlightingFlagChanged(bool enabled) {}
         virtual void onNoteNameGuidesFlagChanged(bool enabled) {}
+        virtual void onNoteNameMidiNumbersFlagChanged(bool enabled) {}
         virtual void onUseFixedDoFlagChanged(bool enabled) {}
 
         virtual void onOpenGlRendererFlagChanged(bool enabled) {}
@@ -80,6 +81,9 @@ public:
 
     bool areNoteNameGuidesEnabled() const noexcept;
     void setNoteNameGuidesEnabled(bool enabled);
+    bool isShowingMidiNumbers() const noexcept;
+    void setShowMidiNumbers(bool showing);
+    void toggleShowMidiNumbers();
 
     bool isUsingFixedDoNotation() const noexcept;
     void setUseFixedDoNotation(bool enabled);
@@ -145,6 +149,7 @@ public:
 private:
 
     bool noteNameGuides = true;
+    bool noteNameMidiNumbers = false;
     bool scalesHighlighting = true;
     bool useFixedDoNotation = false;
 

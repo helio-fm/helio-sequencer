@@ -34,8 +34,17 @@ public:
         this->setInterceptsMouseClicks(false, false);
         this->setAccessible(false);
 
-        this->noteName = make<NoteNameComponent>();
-        this->addAndMakeVisible(this->noteName.get());
+        this->noteNameLabel = make<NoteNameComponent>();
+        this->addAndMakeVisible(this->noteNameLabel.get());
+
+        this->detailsLabel = make<Label>();
+        this->addChildComponent(this->detailsLabel.get());
+        this->detailsLabel->setAccessible(false);
+        this->detailsLabel->setFont(this->noteNameLabel->getFont());
+        this->detailsLabel->setBorderSize({ 0, 1, 0, 1 });
+        this->detailsLabel->setJustificationType(Justification::centredRight);
+        this->detailsLabel->setColour(Label::textColourId,
+            findDefaultColour(ColourIDs::Roll::noteNameNumber));
     }
     
     inline int getNoteNumber() const noexcept
@@ -48,10 +57,32 @@ public:
         return (this->noteNumber - scaleRootKey) % period == 0;
     }
 
-    int setNoteName(const String &name, int periodNumber, bool useFixedDo)
+    int setNoteName(const String &name, int periodNumber,
+        bool useFixedDo, const String &detailsText)
     {
-        this->noteName->setNoteName(name, String(periodNumber), useFixedDo);
-        return this->noteName->getRequiredWidth();
+        this->noteNameLabel->setNoteName(name, String(periodNumber), useFixedDo);
+        const auto noteNameWidth = this->noteNameLabel->getRequiredWidth();
+
+        if (detailsText.isNotEmpty())
+        {
+            if (this->detailsLabel->getText() != detailsText)
+            {
+                this->detailsLabel->setVisible(true);
+                this->detailsLabel->setText(detailsText, dontSendNotification);
+                this->detailsWidth = this->detailsLabel->getFont().
+                    getStringWidthFloat(this->detailsLabel->getText()) +
+                        this->detailsLabel->getBorderSize().getLeftAndRight();
+            }
+        }
+        else if (this->detailsLabel->isVisible())
+        {
+            this->detailsLabel->setVisible(false);
+            this->detailsLabel->setText({}, dontSendNotification);
+            this->detailsWidth = 0.f;
+        }
+
+        const auto result = noteNameWidth + this->detailsWidth;
+        return int(ceilf(float(result) / 2.f) * 2.f);
     }
 
     void paint(Graphics &g) override
@@ -70,10 +101,11 @@ public:
     {
         // even if the height is too small, the name shouldn't be cut
         constexpr auto nameHeight = int(Globals::UI::Fonts::M);
-        this->noteName->setBounds(int(NoteNameGuidesBar::borderWidth + NoteNameGuidesBar::nameMarginLeft),
-            roundToIntAccurate(float(this->getHeight() - nameHeight) / 2.f),
-            this->getWidth(),
-            nameHeight);
+        const auto x = int(NoteNameGuidesBar::borderWidth + NoteNameGuidesBar::nameMarginLeft);
+        const auto y = roundToIntAccurate(float(this->getHeight() - nameHeight) / 2.f);
+        this->noteNameLabel->setBounds(x, y, this->getWidth(), nameHeight);
+        this->detailsLabel->setBounds(x, y,
+            this->getWidth() - x - int(NoteNameGuidesBar::nameMarginRight), nameHeight);
     }
 
 private:
@@ -86,7 +118,9 @@ private:
     const Colour borderColour = findDefaultColour(ColourIDs::Roll::noteNameBorder);
     const Colour shadowColour = findDefaultColour(ColourIDs::Roll::noteNameShadow);
 
-    UniquePointer<NoteNameComponent> noteName;
+    UniquePointer<NoteNameComponent> noteNameLabel;
+    UniquePointer<Label> detailsLabel;
+    float detailsWidth = 0.f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteNameGuide)
 };

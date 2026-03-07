@@ -309,6 +309,7 @@ namespace I18n
         static constexpr auto mouseWheelVerticalZoomingByDefault = constexprHash("settings::ui::wheel::verticalzoom");
         static constexpr auto uiScaling = constexprHash("settings::ui::scaling");
         static constexpr auto noteNames = constexprHash("settings::ui::notenames");
+        static constexpr auto showMidiNumbers = constexprHash("settings::ui::midinumbers");
     }
 
     namespace Tree

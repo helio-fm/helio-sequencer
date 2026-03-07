@@ -67,6 +67,7 @@ private:
     UniquePointer<Label> noteNamesTitle;
     UniquePointer<ToggleButton> germanNotation;
     UniquePointer<ToggleButton> fixedDoNotation;
+    UniquePointer<ToggleButton> showMidiNumbers;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UserInterfaceSettings)
 };

@@ -903,6 +903,12 @@ void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
             }
         }
 
+        if (track == this->activeTrack)
+        {
+            // channel or instrument's keymap might have changed:
+            this->noteNameGuides->updateContent();
+        }
+
         this->updateClipRangeIndicator(); // colour might have changed
         this->repaint();
     }
@@ -984,6 +990,8 @@ void PianoRoll::onChangeProjectInfo(const ProjectMetadata *info)
 
         this->getViewport().setViewPosition(this->getViewport().getViewPositionX(),
             int(float(this->getHeight()) * viewCentreY - this->getViewport().getViewHeight() / 2));
+
+        this->noteNameGuides->updateContent();
 
         this->updateChildrenPositions();
     }
@@ -1674,6 +1682,14 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::ToggleNoteNameGuides:
         App::Config().getUiFlags()->setNoteNameGuidesEnabled(!this->noteNameGuides->isVisible());
+        break;
+    case CommandIDs::ToggleShowMidiNumbers:
+        if (!this->noteNameGuides->isVisible() &&
+            !App::Config().getUiFlags()->isShowingMidiNumbers())
+        {
+            App::Config().getUiFlags()->setNoteNameGuidesEnabled(true);
+        }
+        App::Config().getUiFlags()->toggleShowMidiNumbers();
         break;
     case CommandIDs::ToggleLoopOverSelection:
         if (this->selection.size() > 0)

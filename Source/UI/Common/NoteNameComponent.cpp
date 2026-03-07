@@ -125,6 +125,11 @@ float NoteNameComponent::getContentWidthFloat() const noexcept
     return result;
 }
 
+Font NoteNameComponent::getFont() const noexcept
+{
+    return this->nameLabel->getFont();
+}
+
 const String &NoteNameComponent::getText() const noexcept
 {
     return this->fallbackLabelText;

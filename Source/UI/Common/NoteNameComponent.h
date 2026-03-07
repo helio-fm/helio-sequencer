@@ -41,6 +41,7 @@ public:
 
     int getRequiredWidth() const noexcept;
     float getContentWidthFloat() const noexcept;
+    Font getFont() const noexcept;
 
     // a fallback string which can be used as a label
     const String &getText() const noexcept;

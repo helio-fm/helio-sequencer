@@ -57,10 +57,13 @@ public:
     void syncWithTemperament(Temperament::Ptr temperament);
     void syncWithSelection(const Lasso *selection);
 
+    void updateContent();
+
     //===------------------------------------------------------------------===//
     // UserInterfaceFlags::Listener
     //===------------------------------------------------------------------===//
 
+    void onNoteNameMidiNumbersFlagChanged(bool enabled) override;
     void onUseFixedDoFlagChanged(bool shouldUseFixedDo) override;
 
     //===------------------------------------------------------------------===//
@@ -90,6 +93,8 @@ private:
     Scale::Ptr scale;
     String scaleRootKeyName;
     int scaleRootKey = 0;
+
+    bool showMidiNumbers = false;
     bool useFixedDoNotation = false;
 
     Path noteShapeFillPath;
@@ -100,13 +105,15 @@ private:
     Optional<float> selectionStartBeat;
     FlatHashSet<Note::Key> selectedKeys;
 
+    KeyboardMapping keyMap;
+    String lastUsedInstrumentId;
+
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
     void handleAsyncUpdate() override;
 
     void updatePosition();
     void updateBounds();
-    void updateContent();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteNameGuidesBar)
 };

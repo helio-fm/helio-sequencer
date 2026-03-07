@@ -57,6 +57,28 @@ void UserInterfaceFlags::setNoteNameGuidesEnabled(bool enabled)
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
+bool UserInterfaceFlags::isShowingMidiNumbers() const noexcept
+{
+    return this->noteNameMidiNumbers;
+}
+
+void UserInterfaceFlags::setShowMidiNumbers(bool enabled)
+{
+    if (this->noteNameMidiNumbers == enabled)
+    {
+        return;
+    }
+
+    this->noteNameMidiNumbers = enabled;
+    this->listeners.call(&Listener::onNoteNameMidiNumbersFlagChanged, this->noteNameMidiNumbers);
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
+void UserInterfaceFlags::toggleShowMidiNumbers()
+{
+    this->setShowMidiNumbers(!this->noteNameMidiNumbers);
+}
+
 bool UserInterfaceFlags::isUsingFixedDoNotation() const noexcept
 {
     return this->useFixedDoNotation;
@@ -375,6 +397,7 @@ SerializedData UserInterfaceFlags::serialize() const
     SerializedData tree(UI::Flags::uiFlags);
     
     tree.setProperty(UI::Flags::noteNameGuides, this->noteNameGuides);
+    tree.setProperty(UI::Flags::noteNameMidiNumbers, this->noteNameMidiNumbers);
     tree.setProperty(UI::Flags::scalesHighlighting, this->scalesHighlighting);
     tree.setProperty(UI::Flags::useFixedDoNotation, this->useFixedDoNotation);
 
@@ -424,6 +447,8 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     }
 
     this->noteNameGuides = root.getProperty(UI::Flags::noteNameGuides, this->noteNameGuides);
+    this->noteNameMidiNumbers = root.getProperty(UI::Flags::noteNameMidiNumbers, this->noteNameMidiNumbers);
+
     this->scalesHighlighting = root.getProperty(UI::Flags::scalesHighlighting, this->scalesHighlighting);
     this->useFixedDoNotation = root.getProperty(UI::Flags::useFixedDoNotation, this->useFixedDoNotation);
 

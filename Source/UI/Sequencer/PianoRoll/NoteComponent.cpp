@@ -685,7 +685,7 @@ void NoteComponent::mouseDoubleClick(const MouseEvent &e)
 
 // Always use only either drawHorizontalLine/drawVerticalLine,
 // or fillRect - these are the ones with minimal overhead:
-void NoteComponent::paint(Graphics &g) noexcept
+inline void NoteComponent::paint(Graphics &g)
 {
     const float x = this->floatLocalBounds.getX() + 0.5f; // a small gap
     const float w = this->floatLocalBounds.getWidth() - 1.f; // between notes

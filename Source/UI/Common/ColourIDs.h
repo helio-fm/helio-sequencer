@@ -69,8 +69,9 @@ namespace ColourIDs
         static const int noteNameFill           = 0x2000131;
         static const int noteNameBorder         = 0x2000132;
         static const int noteNameShadow         = 0x2000133;
-        static const int clipFill               = 0x2000134;
-        static const int clipForeground         = 0x2000135;
+        static const int noteNameNumber         = 0x2000134;
+        static const int clipFill               = 0x2000135;
+        static const int clipForeground         = 0x2000136;
 
         static const int noteCutMark            = 0x2000140;
         static const int noteCutMarkOutline     = 0x2000141;

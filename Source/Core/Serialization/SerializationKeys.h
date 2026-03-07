@@ -295,6 +295,7 @@ namespace Serialization
             static const Identifier nativeTitleBar = "nativeTitleBar";
             static const Identifier openGlRenderer = "openGlRenderer";
             static const Identifier noteNameGuides = "noteNameGuides";
+            static const Identifier noteNameMidiNumbers = "showMidiNumbers";
             static const Identifier scalesHighlighting = "scalesHighlighting";
             static const Identifier useFixedDoNotation = "useFixedDoNotation";
             static const Identifier experimentalFeaturesOn = "experimentalFeatures";

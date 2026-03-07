@@ -315,40 +315,40 @@ namespace BinaryData
     const int            exampleProject_jsonSize = 3285;
 
     extern const char*   de_json;
-    const int            de_jsonSize = 18810;
+    const int            de_jsonSize = 18857;
 
     extern const char*   el_json;
-    const int            el_jsonSize = 25250;
+    const int            el_jsonSize = 25312;
 
     extern const char*   en_json;
-    const int            en_jsonSize = 17525;
+    const int            en_jsonSize = 17568;
 
     extern const char*   fr_json;
-    const int            fr_jsonSize = 19112;
+    const int            fr_jsonSize = 19162;
 
     extern const char*   it_json;
-    const int            it_jsonSize = 19017;
+    const int            it_jsonSize = 19061;
 
     extern const char*   ja_json;
-    const int            ja_jsonSize = 19406;
+    const int            ja_jsonSize = 19451;
 
     extern const char*   ko_json;
-    const int            ko_jsonSize = 18926;
+    const int            ko_jsonSize = 18982;
 
     extern const char*   pt_json;
-    const int            pt_jsonSize = 18741;
+    const int            pt_jsonSize = 18788;
 
     extern const char*   ru_json;
-    const int            ru_jsonSize = 25601;
+    const int            ru_jsonSize = 25672;
 
     extern const char*   tr_json;
-    const int            tr_jsonSize = 18973;
+    const int            tr_jsonSize = 19026;
 
     extern const char*   uk_json;
-    const int            uk_jsonSize = 24956;
+    const int            uk_jsonSize = 25027;
 
     extern const char*   zh_json;
-    const int            zh_jsonSize = 15926;
+    const int            zh_jsonSize = 15970;
 
     extern const char*   logov2_png;
     const int            logov2_pngSize = 7326;
