@@ -81,7 +81,7 @@ void NoteNameComponent::resized()
         translated(NoteNameComponent::detailsMargin, 0));
 }
 
-int NoteNameComponent::getRequiredWidth() const noexcept
+inline int NoteNameComponent::getRequiredWidth() const noexcept
 {
     float result = ceilf(this->textWidth);
 
@@ -103,7 +103,7 @@ int NoteNameComponent::getRequiredWidth() const noexcept
     return int(ceilf(result));
 }
 
-float NoteNameComponent::getContentWidthFloat() const noexcept
+inline float NoteNameComponent::getContentWidthFloat() const noexcept
 {
     float result = this->textWidth;
 
@@ -125,14 +125,26 @@ float NoteNameComponent::getContentWidthFloat() const noexcept
     return result;
 }
 
-Font NoteNameComponent::getFont() const noexcept
+inline float NoteNameComponent::getDetailsWidthFloat() const noexcept
+{
+    return this->detailsWidth;
+}
+
+inline Font NoteNameComponent::getFont() const noexcept
 {
     return this->nameLabel->getFont();
 }
 
-const String &NoteNameComponent::getText() const noexcept
+inline const String &NoteNameComponent::getText() const noexcept
 {
     return this->fallbackLabelText;
+}
+
+void NoteNameComponent::forceInvalidateCacheImage()
+{
+    auto *cachedImage = static_cast<CachedNoteImage *>(this->getCachedComponentImage());
+    jassert(cachedImage != nullptr);
+    cachedImage->forceInvalidate();
 }
 
 void NoteNameComponent::setNoteName(const String &newNoteName,

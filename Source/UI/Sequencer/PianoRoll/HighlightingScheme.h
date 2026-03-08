@@ -30,21 +30,18 @@ public:
     HighlightingScheme(Note::Key rootKey, const Scale::Ptr scale) noexcept;
 
     template<typename T1, typename T2>
-    static int compareElements(const T1 *const l, const T2 *const r)
+    static inline int compareElements(const T1 *const l, const T2 *const r)
     {
         const int keyDiff = l->getRootKey() - r->getRootKey();
         const int keyResult = (keyDiff > 0) - (keyDiff < 0);
         if (keyResult != 0) { return keyDiff; }
 
-        if (l->getScale()->isEquivalentTo(r->getScale())) { return 0; }
-
-        const int scaleDiff = l->getScale()->hashCode() - r->getScale()->hashCode();
-        return (scaleDiff > 0) - (scaleDiff < 0);
+        return l->getScale()->compare(r->getScale());
     }
 
-    const Scale::Ptr getScale() const noexcept { return this->scale; }
-    const Note::Key getRootKey() const noexcept { return this->rootKey; }
-    const Image getUnchecked(int i) const noexcept { return this->rows.getUnchecked(i); }
+    inline const Scale::Ptr getScale() const noexcept { return this->scale; }
+    inline const Note::Key getRootKey() const noexcept { return this->rootKey; }
+    inline const Image getUnchecked(int i) const noexcept { return this->rows.getUnchecked(i); }
     
     void renderBackgroundCache(Temperament::Ptr temperament);
 

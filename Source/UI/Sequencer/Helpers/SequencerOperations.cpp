@@ -2121,7 +2121,7 @@ bool SequencerOperations::remapKeySignaturesToTemperament(KeySignaturesSequence 
                 continue;
             }
 
-            const auto diff = s->getDifferenceFrom(convertedScale);
+            const auto diff = s->getDistanceFrom(convertedScale);
             if (diff < minDifference)
             {
                 minDifference = diff;

@@ -101,7 +101,7 @@ String Scale::getLocalizedName() const
     return TRANS(this->name);
 }
 
-String Scale::getUnlocalizedName() const noexcept
+const String &Scale::getUnlocalizedName() const noexcept
 {
     return this->name;
 }
@@ -222,22 +222,12 @@ int Scale::getBasePeriod() const noexcept
     return this->basePeriod;
 }
 
-Scale &Scale::operator=(const Scale &other)
+Scale &Scale::operator = (const Scale &other)
 {
     this->name = other.name;
     this->basePeriod = other.basePeriod;
     this->keys = other.keys;
     return *this;
-}
-
-bool operator==(const Scale &l, const Scale &r)
-{
-    return &l == &r || (l.name == r.name && l.keys == r.keys);
-}
-
-bool operator!=(const Scale &l, const Scale &r)
-{
-    return !operator== (l, r);
 }
 
 bool Scale::isEquivalentTo(const Scale::Ptr other) const
@@ -247,15 +237,17 @@ bool Scale::isEquivalentTo(const Scale::Ptr other) const
 
 bool Scale::isEquivalentTo(const Scale *other) const
 {
-    if (other != nullptr)
+    if (other == nullptr)
     {
-        return this->keys == other->keys;
+        jassertfalse;
+        return false;
     }
 
-    return false;
+    return this == other ||
+        this->keys == other->keys;
 }
 
-int Scale::getDifferenceFrom(const Scale::Ptr other) const
+int Scale::getDistanceFrom(const Scale::Ptr other) const
 {
     if (other == nullptr)
     {
@@ -267,7 +259,40 @@ int Scale::getDifferenceFrom(const Scale::Ptr other) const
     {
         diff += abs(this->keys[i] - other->keys[i]);
     }
+
     return diff;
+}
+
+int Scale::compare(const Scale::Ptr other) const
+{
+    if (other == nullptr)
+    {
+        jassertfalse;
+        return -1;
+    }
+
+    if (other.get() == this)
+    {
+        return 0;
+    }
+
+    jassert(this->basePeriod == other->basePeriod);
+
+    if (auto diff = this->keys.size() - other->keys.size())
+    {
+        jassertfalse;
+        return diff < 0 ? -1 : 1;
+    }
+
+    for (int i = 0; i < this->keys.size(); ++i)
+    {
+        if (auto diff = this->keys.getUnchecked(i) - other->keys.getUnchecked(i))
+        {
+            return diff < 0 ? -1 : 1;
+        }
+    }
+
+    return 0;
 }
 
 //===----------------------------------------------------------------------===//

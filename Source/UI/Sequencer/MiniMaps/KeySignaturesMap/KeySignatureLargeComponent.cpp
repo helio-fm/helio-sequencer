@@ -35,7 +35,9 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &
 
     this->nameComponent = make<NoteNameComponent>();
     this->addAndMakeVisible(this->nameComponent.get());
-    this->nameComponent->setBounds(4, 1, 300, KeySignatureLargeComponent::keySignatureHeight - 1);
+    this->nameComponent->setBounds(4, 1,
+        KeySignatureLargeComponent::defaultLabelWidth,
+        KeySignatureLargeComponent::keySignatureHeight - 1);
 
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 }
@@ -180,6 +182,19 @@ void KeySignatureLargeComponent::setRealBounds(const Rectangle<float> bounds)
         bounds.getY(),
         bounds.getWidth() - float(intBounds.getWidth()),
         bounds.getHeight());
+
+    // if the component is too small for the note name label,
+    // cut the label size in a way that only the key name is displayed;
+    // truncated parts scale names often looks like a visual noise:
+    const int newWidth = bounds.getWidth() <= (this->textWidth / 2.f) ?
+        int(this->textWidth - this->nameComponent->getDetailsWidthFloat()) :
+        KeySignatureLargeComponent::defaultLabelWidth;
+
+    if (this->nameComponent->getWidth() != newWidth)
+    {
+        this->nameComponent->setSize(newWidth, KeySignatureLargeComponent::keySignatureHeight - 1);
+        this->nameComponent->forceInvalidateCacheImage();
+    }
 
     this->setBounds(intBounds);
 }

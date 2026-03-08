@@ -1911,9 +1911,6 @@ void PianoRoll::paint(Graphics &g) noexcept
             return;
         }
 
-        const auto *s = (prevScheme == nullptr) ? this->backgroundsCache.getUnchecked(index) : prevScheme;
-        const auto fillImage = s->getUnchecked(this->rowHeight);
-
         const int beatX = int((key->getBeat() - this->firstBeat)  * this->beatWidth);
         if (beatX >= paintStartX)
         {
@@ -1929,6 +1926,9 @@ void PianoRoll::paint(Graphics &g) noexcept
                 sequencer rows are messed up, so we have to say explicitly where to fill each period.
             */
 
+            const auto *prevSchemeOrDefault = (prevScheme == nullptr) ?
+                this->backgroundsCache.getUnchecked(index) : prevScheme;
+            const auto fillImage = prevSchemeOrDefault->getUnchecked(this->rowHeight);
             const auto tileHeight = periodHeight * HighlightingScheme::periodsInTile;
             for (int i = paintStartY; i < y + h; i += tileHeight)
             {
@@ -1949,9 +1949,9 @@ void PianoRoll::paint(Graphics &g) noexcept
 
     if (prevBeatX < paintEndX)
     {
-        const auto *s = (prevScheme == nullptr) ? this->defaultHighlighting.get() : prevScheme;
-        const auto fillImage = s->getUnchecked(this->rowHeight);
-
+        const auto *prevSchemeOrDefault = (prevScheme == nullptr) ?
+            this->defaultHighlighting.get() : prevScheme;
+        const auto fillImage = prevSchemeOrDefault->getUnchecked(this->rowHeight);
         const auto tileHeight = periodHeight * HighlightingScheme::periodsInTile;
         for (int i = paintStartY; i < y + h; i += tileHeight)
         {

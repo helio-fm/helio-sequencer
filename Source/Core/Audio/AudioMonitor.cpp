@@ -69,13 +69,6 @@ AudioMonitor::AudioMonitor()
 // AudioIODeviceCallback
 //===----------------------------------------------------------------------===//
 
-static inline float sqrtBithack(float value) noexcept
-{
-    auto x = bitCast<uint32_t, float>(value);
-    x = ((1 << 29) - (1 << 22)) + (x >> 1);
-    return bitCast<float, uint32_t>(x);
-}
-
 void AudioMonitor::audioDeviceAboutToStart(AudioIODevice *device)
 {
     this->sampleRate = device->getCurrentSampleRate();

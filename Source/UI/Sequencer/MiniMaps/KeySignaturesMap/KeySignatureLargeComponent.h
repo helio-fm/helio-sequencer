@@ -49,6 +49,8 @@ private:
     ComponentDragger dragger;
     KeySignatureEvent anchor;
 
+    static constexpr int defaultLabelWidth = 300;
+
     float textWidth = 0.f;
 
     Rectangle<float> boundsOffset;

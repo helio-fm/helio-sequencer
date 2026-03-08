@@ -134,6 +134,13 @@ inline constexpr uint32 constexprHash(const char *const str, const uint32 value 
     return (str[0] == '\0') ? value : constexprHash(&str[1], uint32(value ^ uint32(str[0])) * fnv1a32prime);
 }
 
+inline float sqrtBithack(float value) noexcept
+{
+    auto x = bitCast<uint32_t, float>(value);
+    x = ((1 << 29) - (1 << 22)) + (x >> 1);
+    return bitCast<float, uint32_t>(x);
+}
+
 #if JUCE_UNIT_TESTS
 namespace juce
 {

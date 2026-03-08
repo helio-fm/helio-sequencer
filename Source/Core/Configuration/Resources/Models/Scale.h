@@ -58,7 +58,7 @@ public:
     bool isValid() const noexcept;
     int getSize() const noexcept;
     String getLocalizedName() const;
-    String getUnlocalizedName() const noexcept;
+    const String &getUnlocalizedName() const noexcept;
     const Array<int> &getKeys() const noexcept;
 
     // Render target chord into chromatic scale (tonic = 0)
@@ -117,9 +117,7 @@ public:
     // Operators
     //===------------------------------------------------------------------===//
 
-    Scale &operator=(const Scale &other);
-    friend bool operator==(const Scale &l, const Scale &r);
-    friend bool operator!=(const Scale &l, const Scale &r);
+    Scale &operator = (const Scale &other);
 
     // Used to compare scale keys
     // (there may be lots of synonyms for the same sets of notes,
@@ -130,7 +128,10 @@ public:
     // Also used to determine similarity between two scales:
     // simply returns the sum of abs(key1-key2) for all keys;
     // the more the value, the bigger the difference
-    int getDifferenceFrom(const Scale::Ptr other) const;
+    int getDistanceFrom(const Scale::Ptr other) const;
+
+    // This can be used in ordering functions
+    int compare(const Scale::Ptr other) const;
 
     int hashCode() const noexcept;
 

@@ -39,13 +39,16 @@ public:
         Optional<String> detailsText,
         bool useFixedDoNotation) noexcept;
 
-    int getRequiredWidth() const noexcept;
-    float getContentWidthFloat() const noexcept;
-    Font getFont() const noexcept;
+    inline int getRequiredWidth() const noexcept;
+    inline float getContentWidthFloat() const noexcept;
+    inline float getDetailsWidthFloat() const noexcept;
+    inline Font getFont() const noexcept;
 
     // a fallback string which can be used as a label
-    const String &getText() const noexcept;
+    inline const String &getText() const noexcept;
     using CachedNoteImage = CachedLabelImage<NoteNameComponent>;
+
+    void forceInvalidateCacheImage();
 
 private:
 

@@ -917,10 +917,10 @@ void RollBase::updateAllSnapLines()
 
     // a nice fade-in/fade-out effect for the grid inspired by Miro
     this->beatLineAlpha = 0.2f + 0.8f *
-        sqrtf(jmin(1.f, jmax(0.f, this->beatWidth - minBeatWidth) / (minBeatWidth * 8.f)));
+        sqrtBithack(jlimit(0.f, 1.f, (this->beatWidth - minBeatWidth) / (minBeatWidth * 8.f)));
 
     this->snapLineAlpha = 0.1f + 0.9f *
-        sqrtf(jmin(1.f, jmax(0.f, this->beatWidth - minBeatWidth) / (minBeatWidth * 32.f)));
+        sqrtBithack(jlimit(0.f, 1.f, (this->beatWidth - minBeatWidth) / (minBeatWidth * 32.f)));
 
     this->header->updateColours();
 }
