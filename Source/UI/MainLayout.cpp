@@ -186,7 +186,7 @@ void MainLayout::restoreLastOpenedPage()
 // Pages
 //===----------------------------------------------------------------------===//
 
-static void findVisibleCommandReceivers(Component *root, Array<Component *> &outArray)
+static void findVisibleCommandReceivers(Component *root, Array<WeakReference<Component>> &outArray)
 {
     if (root == nullptr)
     {
@@ -550,7 +550,7 @@ void MainLayout::broadcastCommandMessage(int commandId)
     findVisibleCommandReceivers(this->currentContent.getComponent(),
         this->visibleCommandReceivers);
 
-    for (auto *receiver : this->visibleCommandReceivers)
+    for (auto &receiver : this->visibleCommandReceivers)
     {
         receiver->postCommandMessage(commandId);
     }

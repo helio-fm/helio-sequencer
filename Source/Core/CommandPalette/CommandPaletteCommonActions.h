@@ -25,17 +25,18 @@ public:
 
     CommandPaletteCommonActions() = default;
 
-    void setActiveCommandReceivers(const Array<Component *> &receivers);
+    void setActiveCommandReceivers(const Array<WeakReference<Component>> &receivers);
 
 protected:
 
-    const Actions &getActions() const override
-    {
-        return this->actions;
-    }
+    const Actions &getActions() const override;
 
-    Actions actions;
+    mutable Actions actions;
+    mutable FlatHashMap<String, Actions, StringHash> actionsCache;
 
-    FlatHashMap<String, Actions, StringHash> commandsCache;
+    Array<WeakReference<Component>> currentReceivers;
+
+    const Colour actionColour =
+        findDefaultColour(Label::textColourId).withMultipliedAlpha(0.8f);
 
 };

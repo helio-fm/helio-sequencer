@@ -799,6 +799,89 @@ void PatternRoll::mouseUp(const MouseEvent &e)
 // Keyboard shortcuts
 //===----------------------------------------------------------------------===//
 
+String PatternRoll::getCurrentInstrumentIdOrDefault() const
+{
+    auto currentInstrumentId = PatternOperations::getSelectedInstrumentId(this->selection);
+
+    if (currentInstrumentId.isEmpty())
+    {
+        currentInstrumentId = this->lastShownInstrumentId;
+    }
+
+    if (currentInstrumentId.isEmpty() && !this->tracks.isEmpty())
+    {
+        currentInstrumentId = this->tracks.getFirst()->getTrackInstrumentId();
+    }
+
+    return currentInstrumentId;
+}
+
+bool PatternRoll::canHandleCommand(int commandId) const
+{
+    switch (commandId)
+    {
+    case CommandIDs::DeleteClips:
+    case CommandIDs::ToggleMuteClips:
+    case CommandIDs::ToggleSoloClips:
+    case CommandIDs::ToggleMuteModifiers:
+    case CommandIDs::QuantizeTo1_1:
+    case CommandIDs::QuantizeTo1_2:
+    case CommandIDs::QuantizeTo1_4:
+    case CommandIDs::QuantizeTo1_8:
+    case CommandIDs::QuantizeTo1_16:
+    case CommandIDs::QuantizeTo1_32:
+    case CommandIDs::RenameTrack: return this->selection.getNumSelected() > 0;
+    case CommandIDs::DeleteTrack: return false; // available only in the piano roll
+    case CommandIDs::DuplicateTrack:
+    case CommandIDs::InstanceToUniqueTrack:
+    case CommandIDs::TrackSetOneTempo:
+    case CommandIDs::SetTrackTimeSignature:
+    case CommandIDs::ZoomEntireClip:
+    case CommandIDs::ClipTransposeUp:
+    case CommandIDs::ClipTransposeDown:
+    case CommandIDs::ClipTransposeOctaveUp:
+    case CommandIDs::ClipTransposeOctaveDown:
+    case CommandIDs::ClipTransposeFifthUp:
+    case CommandIDs::ClipTransposeFifthDown:
+    case CommandIDs::ClipVolumeUp:
+    case CommandIDs::ClipVolumeDown: return this->selection.getNumSelected() == 1;
+    case CommandIDs::Retrograde: return this->selection.getNumSelected() >= 2;
+    case CommandIDs::VersionControlToggleQuickStash: return false;
+    default: break;
+    }
+
+    return true;
+}
+
+String PatternRoll::getTranslatedCommandWithContext(int commandId, int i18nKey) const
+{
+    switch (commandId)
+    {
+    case CommandIDs::RenameTrack:
+    case CommandIDs::DuplicateTrack:
+    case CommandIDs::InstanceToUniqueTrack:
+        if (this->selection.getNumSelected() == 1)
+        {
+            const auto clip = this->selection.getFirstAs<ClipComponent>()->getClip();
+            auto *track = this->project.findTrackById<MidiTrackNode>(clip.getTrackId());
+            return track->getTrackName() + ": " + TRANS(i18nKey);
+        }
+        break;
+    case CommandIDs::EditCurrentInstrument:
+        if (auto *instrument =
+            App::Workspace().getAudioCore().
+                findInstrumentById(this->getCurrentInstrumentIdOrDefault()))
+        {
+            return instrument->getName() + ": " + TRANS(i18nKey);
+        }
+        break;
+    default:
+        break;
+    }
+
+    return TRANS(i18nKey);
+}
+
 void PatternRoll::handleCommandMessage(int commandId)
 {
     RollBase::handleCommandMessage(commandId);

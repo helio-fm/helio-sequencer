@@ -97,6 +97,13 @@ public:
         const WeakReference<Component> &target) override;
 
     //===------------------------------------------------------------------===//
+    // Command Palette
+    //===------------------------------------------------------------------===//
+
+    bool canHandleCommand(int commandId) const override;
+    String getTranslatedCommandWithContext(int commandId, int i18nKey) const override;
+
+    //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
@@ -197,6 +204,7 @@ private:
     Array<const MidiTrack *> tracks;
 
     String lastShownInstrumentId;
+    String getCurrentInstrumentIdOrDefault() const;
 
     OwnedArray<ChangeListener> selectionListeners;
 

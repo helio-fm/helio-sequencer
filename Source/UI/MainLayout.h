@@ -108,7 +108,7 @@ private:
     WeakReference<TreeNode> currentProject;
 
     HotkeyScheme::Ptr hotkeyScheme;
-    Array<Component *> visibleCommandReceivers;
+    Array<WeakReference<Component>> visibleCommandReceivers;
 
     UniquePointer<CommandPaletteCommonActions> consoleCommonActions;
 

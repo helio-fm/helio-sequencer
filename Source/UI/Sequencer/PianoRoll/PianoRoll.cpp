@@ -1899,16 +1899,22 @@ void PianoRoll::paint(Graphics &g) noexcept
 
     g.setImageResamplingQuality(Graphics::lowResamplingQuality);
 
-    for (int nextKeyIdx = 0; this->scalesHighlightingEnabled && nextKeyIdx < keysSequence->size(); ++nextKeyIdx)
+    for (int nextKeyIdx = 0;
+        this->scalesHighlightingEnabled && nextKeyIdx < keysSequence->size();
+        ++nextKeyIdx)
     {
         const auto *key = static_cast<KeySignatureEvent *>(keysSequence->getUnchecked(nextKeyIdx));
-        const int beatX = int((key->getBeat() - this->firstBeat)  * this->beatWidth);
         const int index = this->binarySearchForHighlightingScheme(key);
-        jassert(index >= 0);
+        if (index < 0)
+        {
+            jassertfalse;
+            return;
+        }
 
         const auto *s = (prevScheme == nullptr) ? this->backgroundsCache.getUnchecked(index) : prevScheme;
         const auto fillImage = s->getUnchecked(this->rowHeight);
 
+        const int beatX = int((key->getBeat() - this->firstBeat)  * this->beatWidth);
         if (beatX >= paintStartX)
         {
             /*
@@ -2331,6 +2337,51 @@ Array<CommandPaletteActionsProvider *> PianoRoll::getCommandPaletteActionProvide
     }
 
     return result;
+}
+
+bool PianoRoll::canHandleCommand(int commandId) const
+{
+    switch (commandId)
+    {
+    case CommandIDs::InstanceToUniqueTrack: return false; // only available in the pattern roll
+    case CommandIDs::CopyEvents:
+    case CommandIDs::CutEvents:
+    case CommandIDs::DeleteEvents:
+    case CommandIDs::NewTrackFromSelection:
+    case CommandIDs::NotesVolumeUp:
+    case CommandIDs::NotesVolumeDown:
+        return this->selection.getNumSelected() > 0;
+    case CommandIDs::CreateArpeggiatorFromSelection:
+        return this->selection.getNumSelected() >= 3;
+    case CommandIDs::VersionControlToggleQuickStash: return false;
+    default: break;
+    }
+
+    return true;
+}
+
+String PianoRoll::getTranslatedCommandWithContext(int commandId, int i18nKey) const
+{
+    switch (commandId)
+    {
+    case CommandIDs::RenameTrack:
+    case CommandIDs::DeleteTrack:
+    case CommandIDs::DuplicateTrack:
+    case CommandIDs::InstanceToUniqueTrack:
+            return this->activeTrack->getTrackName() + ": " + TRANS(i18nKey);
+    case CommandIDs::EditCurrentInstrument:
+        if (auto *instrument =
+            App::Workspace().getAudioCore().
+                findInstrumentById(this->activeTrack->getTrackInstrumentId()))
+        {
+            return instrument->getName() + ": " + TRANS(i18nKey);
+        }
+        break;
+    default:
+        break;
+    }
+
+    return TRANS(i18nKey);
 }
 
 //===----------------------------------------------------------------------===//

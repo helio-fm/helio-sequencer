@@ -229,6 +229,10 @@ public:
     void resetDraggingAnchors();
     void resetDraggingAnchors(const MouseEvent &e);
     
+    // helpers for the command palette:
+    virtual bool canHandleCommand(int commandId) const = 0;
+    virtual String getTranslatedCommandWithContext(int commandId, int i18nKey) const = 0;
+
     //===------------------------------------------------------------------===//
     // LassoSource
     //===------------------------------------------------------------------===//

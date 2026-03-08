@@ -202,6 +202,8 @@ public:
     // Command Palette
     //===------------------------------------------------------------------===//
 
+    bool canHandleCommand(int commandId) const override;
+    String getTranslatedCommandWithContext(int commandId, int i18nKey) const override;
     Array<CommandPaletteActionsProvider *> getCommandPaletteActionProviders() override;
 
     //===------------------------------------------------------------------===//

@@ -19,60 +19,94 @@
 #include "CommandPaletteCommonActions.h"
 #include "HotkeySchemesCollection.h"
 #include "MainLayout.h"
+#include "RollBase.h"
 #include "Config.h"
 
-static CommandPaletteActionsProvider::Actions buildCommandsListFor(const Component *target)
+void CommandPaletteCommonActions::setActiveCommandReceivers(const Array<WeakReference<Component>> &receivers)
 {
-    //DBG("Building command palette actions for " + target->getComponentID());
-    CommandPaletteActionsProvider::Actions actions;
-    FlatHashSet<I18n::Key> duplicateLookup;
-
-    const auto hotkeys = App::Config().getHotkeySchemes()->getCurrent();
-    const auto actionColor = findDefaultColour(Label::textColourId).withMultipliedAlpha(0.8f);
-
-    for (const auto &keyPress : hotkeys->getKeyPresses())
-    {
-        const auto commandId = keyPress.second;
-        const auto i18nKey = CommandIDs::getTranslationKeyFor(commandId);
-        if (i18nKey != 0 && keyPress.first.componentId == target->getComponentID())
-        {
-            const auto action = [commandId](TextEditor &ed)
-            {
-                App::Layout().broadcastCommandMessage(commandId);
-                return true;
-            };
-
-            // don't include duplicate commands (may have some due to similar hotkeys, i.e. ctrl+x/cmd+x)
-            if (!duplicateLookup.contains(i18nKey))
-            {
-                duplicateLookup.insert(i18nKey);
-                actions.add(CommandPaletteAction::action(TRANS(i18nKey),
-                    keyPress.first.keyPress.getTextDescription(), 0.f)->
-                    withColour(actionColor)->withCallback(action));
-            }
-        }
-    }
-
-    return actions;
+    this->currentReceivers = receivers;
 }
 
-void CommandPaletteCommonActions::setActiveCommandReceivers(const Array<Component *> &receivers)
+const CommandPaletteActionsProvider::Actions &CommandPaletteCommonActions::getActions() const
 {
     this->actions.clearQuick();
 
-    for (const auto *receiver : receivers)
+    for (auto &receiver : this->currentReceivers)
     {
-        const auto commands = this->commandsCache.find(receiver->getComponentID());
-        if (commands != this->commandsCache.end())
+        if (receiver.get() == nullptr)
         {
+            jassertfalse;
+            continue;
+        }
+
+        const auto *roll = dynamic_cast<RollBase *>(receiver.get());
+        const auto canUseCache = roll == nullptr;
+
+        float order = 10.f;
+        const auto commands = this->actionsCache.find(receiver->getComponentID());
+        if (commands != this->actionsCache.end() && canUseCache)
+        {
+            // fill it up once for receivers who never update the commands list
             this->actions.addArray(commands->second);
         }
         else
         {
-            // fill it up once - commands and hotkeys are never updated in the runtime
-            const auto cachedCommandsList = buildCommandsListFor(receiver);
-            this->commandsCache[receiver->getComponentID()] = cachedCommandsList;
-            this->actions.addArray(cachedCommandsList);
+            //DBG("Building command palette actions for " + target->getComponentID());
+            CommandPaletteActionsProvider::Actions commandsList;
+            FlatHashSet<I18n::Key> duplicatesLookup;
+
+            const auto hotkeys = App::Config().getHotkeySchemes()->getCurrent();
+
+            for (const auto &keyPress : hotkeys->getKeyPresses())
+            {
+                if (keyPress.first.componentId != receiver->getComponentID())
+                {
+                    continue;
+                }
+
+                const auto commandId = keyPress.second;
+                const auto i18nKey = CommandIDs::getTranslationKeyFor(commandId);
+                // don't include duplicate commands (may have some due to similar hotkeys, i.e. ctrl+x/cmd+x)
+                if (i18nKey <= 0 || duplicatesLookup.contains(i18nKey))
+                {
+                    continue;
+                }
+
+                duplicatesLookup.insert(i18nKey);
+
+                String actionName;
+                if (roll != nullptr)
+                {
+                    if (!roll->canHandleCommand(commandId))
+                    {
+                        continue;
+                    }
+
+                    actionName = roll->getTranslatedCommandWithContext(commandId, i18nKey);
+                }
+                else
+                {
+                    actionName = TRANS(i18nKey);
+                }
+
+                actions.add(CommandPaletteAction::action(actionName,
+                    keyPress.first.keyPress.getTextDescription(), order++)->
+                    withColour(this->actionColour)->
+                    withCallback([commandId](TextEditor &ed)
+                {
+                    App::Layout().broadcastCommandMessage(commandId);
+                    return true;
+                }));
+            }
+
+            if (canUseCache)
+            {
+                this->actionsCache[receiver->getComponentID()] = commandsList;
+            }
+
+            this->actions.addArray(commandsList);
         }
     }
+
+    return this->actions;
 }
