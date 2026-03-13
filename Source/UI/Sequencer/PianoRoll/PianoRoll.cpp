@@ -19,6 +19,7 @@
 #include "PianoRoll.h"
 #include "AudioCore.h"
 #include "PluginWindow.h"
+#include "InstrumentNode.h"
 #include "Pattern.h"
 #include "PianoSequence.h"
 #include "KeySignaturesSequence.h"
@@ -1503,6 +1504,28 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::EditCurrentInstrument:
         PluginWindow::showWindowFor(this->activeTrack->getTrackInstrumentId());
         break;
+    case CommandIDs::EditCurrentInstrumentRouting:
+    case CommandIDs::EditCurrentInstrumentKeymap:
+        for (auto *instrumentNode :
+            App::Workspace().getTreeRoot()->findChildrenOfType<InstrumentNode>())
+        {
+            if (instrumentNode->getInstrument()->getIdAndHash() ==
+                this->activeTrack->getTrackInstrumentId())
+            {
+                instrumentNode->recreateChildrenEditors();
+                if (commandId == CommandIDs::EditCurrentInstrumentRouting)
+                {
+                    instrumentNode->setSelected();
+                }
+                else if (commandId == CommandIDs::EditCurrentInstrumentKeymap)
+                {
+                    auto *kbmNode = instrumentNode->findChildOfType<KeyboardMappingNode>();
+                    jassert(kbmNode != nullptr);
+                    kbmNode->setSelected();
+                }
+            }
+        }
+        break;
     case CommandIDs::CopyEvents:
         SequencerOperations::copyToClipboard(App::Clipboard(), this->selection);
         break;
@@ -2370,6 +2393,8 @@ String PianoRoll::getTranslatedCommandWithContext(int commandId, int i18nKey) co
     case CommandIDs::InstanceToUniqueTrack:
             return this->activeTrack->getTrackName() + ": " + TRANS(i18nKey);
     case CommandIDs::EditCurrentInstrument:
+    case CommandIDs::EditCurrentInstrumentRouting:
+    case CommandIDs::EditCurrentInstrumentKeymap:
         if (auto *instrument =
             App::Workspace().getAudioCore().
                 findInstrumentById(this->activeTrack->getTrackInstrumentId()))

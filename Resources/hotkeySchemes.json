@@ -288,6 +288,7 @@
 
   // Other toggles
   { "command": "ToggleNoteNameGuides", "key": "G" },
+  { "command": "ToggleShowMidiNumbers", "key": "Shift + G" },
   { "command": "ToggleBottomMiniMap", "key": "B" },
   { "command": "ToggleVolumePanel", "key": "V" },
   { "command": "ToggleMetronome", "key": "Control + M" },
@@ -296,7 +297,9 @@
   // Various
   { "command": "DuplicateTrack", "key": "F5" },
   { "command": "SwitchToClipInViewport", "key": "F3" },
-  { "command": "EditCurrentInstrument", "key": "F4" }
+  { "command": "EditCurrentInstrument", "key": "F4" },
+  { "command": "EditCurrentInstrumentRouting", "key": "Shift + F4" },
+  { "command": "EditCurrentInstrumentKeymap", "key": "Control + Shift + F4" }
   // ANCHOR_END: PianoRoll
   ],
   "keyDown": [
@@ -480,7 +483,9 @@
   { "command": "ToggleMetronome", "key": "Command + M" },
   { "command": "DuplicateTrack", "key": "F5" },
   { "command": "InstanceToUniqueTrack", "key": "F6" },
-  { "command": "EditCurrentInstrument", "key": "F4" }
+  { "command": "EditCurrentInstrument", "key": "F4" },
+  { "command": "EditCurrentInstrumentRouting", "key": "Shift + F4" },
+  { "command": "EditCurrentInstrumentKeymap", "key": "Control + Shift + F4" }
   // ANCHOR_END: PatternRoll
   ],
   "keyDown": [

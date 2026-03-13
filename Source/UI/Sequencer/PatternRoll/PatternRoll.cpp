@@ -21,6 +21,7 @@
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "PluginWindow.h"
+#include "InstrumentNode.h"
 #include "ModalCallout.h"
 #include "MenuPanel.h"
 
@@ -868,6 +869,8 @@ String PatternRoll::getTranslatedCommandWithContext(int commandId, int i18nKey) 
         }
         break;
     case CommandIDs::EditCurrentInstrument:
+    case CommandIDs::EditCurrentInstrumentRouting:
+    case CommandIDs::EditCurrentInstrumentKeymap:
         if (auto *instrument =
             App::Workspace().getAudioCore().
                 findInstrumentById(this->getCurrentInstrumentIdOrDefault()))
@@ -1055,24 +1058,35 @@ void PatternRoll::handleCommandMessage(int commandId)
         }
         break;
     case CommandIDs::EditCurrentInstrument:
-    {
-        auto currentInstrumentId = PatternOperations::getSelectedInstrumentId(this->selection);
-
-        if (currentInstrumentId.isEmpty())
         {
-            currentInstrumentId = this->lastShownInstrumentId;
+            const auto currentInstrumentId = this->getCurrentInstrumentIdOrDefault();
+            if (PluginWindow::showWindowFor(currentInstrumentId))
+            {
+                this->lastShownInstrumentId = currentInstrumentId;
+            }
         }
-
-        if (currentInstrumentId.isEmpty() && !this->tracks.isEmpty())
+        break;
+    case CommandIDs::EditCurrentInstrumentRouting:
+    case CommandIDs::EditCurrentInstrumentKeymap:
+        for (auto *instrumentNode :
+            App::Workspace().getTreeRoot()->findChildrenOfType<InstrumentNode>())
         {
-            currentInstrumentId = this->tracks.getFirst()->getTrackInstrumentId();
+            if (instrumentNode->getInstrument()->getIdAndHash() ==
+                this->getCurrentInstrumentIdOrDefault())
+            {
+                instrumentNode->recreateChildrenEditors();
+                if (commandId == CommandIDs::EditCurrentInstrumentRouting)
+                {
+                    instrumentNode->setSelected();
+                }
+                else if (commandId == CommandIDs::EditCurrentInstrumentKeymap)
+                {
+                    auto *kbmNode = instrumentNode->findChildOfType<KeyboardMappingNode>();
+                    jassert(kbmNode != nullptr);
+                    kbmNode->setSelected();
+                }
+            }
         }
-
-        if (PluginWindow::showWindowFor(currentInstrumentId))
-        {
-            this->lastShownInstrumentId = currentInstrumentId;
-        }
-    }
         break;
     case CommandIDs::DeleteClips:
         PatternOperations::deleteSelection(this->selection, this->project);

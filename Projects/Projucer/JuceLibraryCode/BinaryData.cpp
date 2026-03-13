@@ -4948,6 +4948,7 @@ static const unsigned char temp_binary_data_119[] =
 "\n"
 "  // Other toggles\n"
 "  { \"command\": \"ToggleNoteNameGuides\", \"key\": \"G\" },\n"
+"  { \"command\": \"ToggleShowMidiNumbers\", \"key\": \"Shift + G\" },\n"
 "  { \"command\": \"ToggleBottomMiniMap\", \"key\": \"B\" },\n"
 "  { \"command\": \"ToggleVolumePanel\", \"key\": \"V\" },\n"
 "  { \"command\": \"ToggleMetronome\", \"key\": \"Control + M\" },\n"
@@ -4956,7 +4957,9 @@ static const unsigned char temp_binary_data_119[] =
 "  // Various\n"
 "  { \"command\": \"DuplicateTrack\", \"key\": \"F5\" },\n"
 "  { \"command\": \"SwitchToClipInViewport\", \"key\": \"F3\" },\n"
-"  { \"command\": \"EditCurrentInstrument\", \"key\": \"F4\" }\n"
+"  { \"command\": \"EditCurrentInstrument\", \"key\": \"F4\" },\n"
+"  { \"command\": \"EditCurrentInstrumentRouting\", \"key\": \"Shift + F4\" },\n"
+"  { \"command\": \"EditCurrentInstrumentKeymap\", \"key\": \"Control + Shift + F4\" }\n"
 "  // ANCHOR_END: PianoRoll\n"
 "  ],\n"
 "  \"keyDown\": [\n"
@@ -5140,7 +5143,9 @@ static const unsigned char temp_binary_data_119[] =
 "  { \"command\": \"ToggleMetronome\", \"key\": \"Command + M\" },\n"
 "  { \"command\": \"DuplicateTrack\", \"key\": \"F5\" },\n"
 "  { \"command\": \"InstanceToUniqueTrack\", \"key\": \"F6\" },\n"
-"  { \"command\": \"EditCurrentInstrument\", \"key\": \"F4\" }\n"
+"  { \"command\": \"EditCurrentInstrument\", \"key\": \"F4\" },\n"
+"  { \"command\": \"EditCurrentInstrumentRouting\", \"key\": \"Shift + F4\" },\n"
+"  { \"command\": \"EditCurrentInstrumentKeymap\", \"key\": \"Control + Shift + F4\" }\n"
 "  // ANCHOR_END: PatternRoll\n"
 "  ],\n"
 "  \"keyDown\": [\n"
@@ -5710,7 +5715,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0xb278622d:  numBytes = 64; return arpeggiators_json;
         case 0xd1d24c90:  numBytes = 768; return chords_json;
         case 0x41b35b05:  numBytes = 4298; return colourSchemes_json;
-        case 0x25669f2b:  numBytes = 24997; return hotkeySchemes_json;
+        case 0x25669f2b:  numBytes = 25357; return hotkeySchemes_json;
         case 0xfd7446db:  numBytes = 792; return keyboardMappings_json;
         case 0x496315fd:  numBytes = 933; return meters_json;
         case 0x048f5efe:  numBytes = 13262; return scales_json;

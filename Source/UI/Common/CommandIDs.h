@@ -47,7 +47,9 @@ namespace CommandIDs
         DuplicateTrack                  = 0x1021,
         InstanceToUniqueTrack           = 0x1022,
         EditCurrentInstrument           = 0x1023,
-        SwitchToClipInViewport          = 0x1024,
+        EditCurrentInstrumentRouting    = 0x1024,
+        EditCurrentInstrumentKeymap     = 0x1025,
+        SwitchToClipInViewport          = 0x1026,
 
         Tuplet1                         = 0x1500,
         Tuplet2                         = 0x1501,
