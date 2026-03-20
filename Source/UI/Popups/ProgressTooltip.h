@@ -26,7 +26,7 @@ class ProgressTooltip final : public CenteredTooltipComponent
 {
 public:
 
-    ProgressTooltip(bool cancellable);
+    explicit ProgressTooltip(bool cancellable);
 
     static UniquePointer<ProgressTooltip> cancellable(SimpleCloseCallback callback)
     {
@@ -44,8 +44,8 @@ public:
 
 private:
 
-    static constexpr auto tooltipSize = 96;
-    static constexpr auto imageSize = 64;
+    static constexpr auto tooltipSize = 60;
+    static constexpr auto imageSize = 42;
 
     SimpleCloseCallback onCancel;
     const bool isCancellable;

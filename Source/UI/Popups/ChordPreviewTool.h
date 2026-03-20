@@ -83,15 +83,15 @@ private:
     String scaleRootKeyName;
     int scaleRootKey = 0;
 
-    bool detectKeyBeatAndContext();
+    void detectKeyBeatAndContext(bool &outKeyChanged, bool &outBeatChanged);
 
     Chord::Ptr lastBuiltChord;
     const Array<Chord::Ptr> chords = App::Config().getChords()->getAll();
     OwnedArray<PopupButton> chordButtons;
 
     Chord::Ptr findChordFor(PopupButton *button) const;
-    void buildChord(const Chord::Ptr chord);
-    void buildNewNote(bool shouldSendMidiMessage);
+    void buildChord(const Chord::Ptr chord, bool shouldPreviewMidiMessage);
+    void buildNewNote(bool shouldPreviewMidiMessage);
 
     void selectPreset(int presetIndex);
     void detectContextAndRebuild();

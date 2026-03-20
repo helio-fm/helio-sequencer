@@ -71,20 +71,20 @@ public:
                     const Point<float> currentPartPosition(radius * cosf(currentPartRadian), radius * sinf(currentPartRadian));
 
                     const float distance = currentPartPosition.getDistanceFrom(indicatorPosition);
-                    const float partAlpha = jmax(0.1f, 1.f - (distance / (radius * 2)));
+                    const float partAlpha = jlimit(0.15f, 0.85f,
+                        float(int((1.f - (distance / (radius * 2))) * 4.f)) / 4.f);
 
                     const Rectangle<float> drawableBounds(dc->getDrawableBounds());
                     const Rectangle<float> subArea(dc->getContentArea());
 
                     if (auto *dp = dynamic_cast<DrawablePath *>(dc->getChildComponent(0)))
                     {
-                        Path p(dp->getPath());
                         AffineTransform a(RectanglePlacement(RectanglePlacement::onlyReduceInSize).
-                                          getTransformToFit(drawableBounds, subArea.transformedBy(fitTransform)));
+                            getTransformToFit(drawableBounds, subArea.transformedBy(fitTransform)));
                         g.setColour(Colours::black.withAlpha(0.15f));
-                        g.strokePath(p, PathStrokeType(1.f), a);
+                        g.strokePath(dp->getPath(), PathStrokeType(1.f), a);
                         g.setColour(Colours::white.withAlpha(partAlpha));
-                        g.fillPath(p, a);
+                        g.fillPath(dp->getPath(), a);
                     }
                 }
             }

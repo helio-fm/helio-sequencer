@@ -60,7 +60,7 @@ private:
 
     UniquePointer<Component> tooltipComponent;
 
-    static constexpr auto timerMs = 200;
+    static constexpr auto timerMs = 100;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TooltipContainer)
 };

@@ -343,7 +343,7 @@ void ChordPreviewTool::selectPreset(int presetIndex)
 
     if (auto chord = this->chords[presetIndex])
     {
-        this->buildChord(chord);
+        this->buildChord(chord, true);
     }
 
     if (auto *button = this->chordButtons[presetIndex])
@@ -354,11 +354,20 @@ void ChordPreviewTool::selectPreset(int presetIndex)
 
 void ChordPreviewTool::detectContextAndRebuild()
 {
-    const bool hasChanges = this->detectKeyBeatAndContext();
-    if (!hasChanges)
+    const auto oldScale = this->scale;
+    const auto oldScaleRoot = this->scaleRootKey;
+
+    bool keyChanged = false;
+    bool beatChanged = false;
+    this->detectKeyBeatAndContext(keyChanged, beatChanged);
+    if (!keyChanged && !beatChanged)
     {
         return;
     }
+
+    const auto shouldPreviewMidiMessage = keyChanged ||
+        (this->scaleRootKey != oldScaleRoot) ||
+        !this->scale->isEquivalentTo(oldScale);
 
     const auto absKey = this->targetKey + this->clip.getKey();
     const auto targetKeyOffset = absKey % this->scale->getBasePeriod();
@@ -374,20 +383,20 @@ void ChordPreviewTool::detectContextAndRebuild()
 
         if (this->lastBuiltChord != nullptr)
         {
-            this->buildChord(this->lastBuiltChord);
+            this->buildChord(this->lastBuiltChord, shouldPreviewMidiMessage);
             auto tooltip = make<ChordTooltip>(this->lastBuiltChord->getName(), degreeName, keyName);
             App::Layout().showTooltip(move(tooltip));
         }
         else
         {
-            this->buildNewNote(true);
+            this->buildNewNote(shouldPreviewMidiMessage);
             auto tooltip = make<ChordTooltip>(String(), degreeName, keyName);
             App::Layout().showTooltip(move(tooltip));
         }
     }
     else
     {
-        this->buildNewNote(true);
+        this->buildNewNote(shouldPreviewMidiMessage);
         App::Layout().hideTooltipIfAny();
     }
 }
@@ -438,7 +447,7 @@ void ChordPreviewTool::onPopupButtonFirstAction(PopupButton *button)
 
     if (auto chord = this->findChordFor(button))
     {
-        this->buildChord(chord);
+        this->buildChord(chord, true);
     }
 }
 
@@ -472,7 +481,7 @@ Chord::Ptr ChordPreviewTool::findChordFor(PopupButton *button) const
     return nullptr;
 }
 
-void ChordPreviewTool::buildChord(const Chord::Ptr chord)
+void ChordPreviewTool::buildChord(const Chord::Ptr chord, bool shouldPreviewMidiMessage)
 {
     if (!chord->isValid())
     {
@@ -494,7 +503,11 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
     }
 
     this->undoChangesIfAny();
-    this->stopSound();
+
+    if (shouldPreviewMidiMessage)
+    {
+        this->stopSound();
+    }
 
     if (!this->hasMadeChanges)
     {
@@ -528,22 +541,25 @@ void ChordPreviewTool::buildChord(const Chord::Ptr chord)
 
         this->sequence->insert(note, true);
 
-        const auto *track = this->sequence->getTrack();
-        this->roll.getTransport().previewKey(track->getTrackId(),
-            track->getTrackChannel(),
-            key,
-            note.getVelocity(),
-            note.getLength());
+        if (shouldPreviewMidiMessage)
+        {
+            const auto *track = this->sequence->getTrack();
+            this->roll.getTransport().previewKey(track->getTrackId(),
+                track->getTrackChannel(),
+                key,
+                note.getVelocity(),
+                note.getLength());
+        }
     }
 
     this->hasMadeChanges = true;
 }
 
-void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
+void ChordPreviewTool::buildNewNote(bool shouldPreviewMidiMessage)
 {
     this->undoChangesIfAny();
 
-    if (shouldSendMidiMessage)
+    if (shouldPreviewMidiMessage)
     {
         this->stopSound();
     }
@@ -560,7 +576,7 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
 
     this->sequence->insert(note, true);
 
-    if (shouldSendMidiMessage)
+    if (shouldPreviewMidiMessage)
     {
         const auto *track = this->sequence->getTrack();
         this->roll.getTransport().previewKey(track->getTrackId(),
@@ -582,7 +598,7 @@ void ChordPreviewTool::undoChangesIfAny()
     }
 }
 
-bool ChordPreviewTool::detectKeyBeatAndContext()
+void ChordPreviewTool::detectKeyBeatAndContext(bool &outKeyChanged, bool &outBeatChanged)
 {
     int newKey = 0;
     float newBeat = 0.f;
@@ -593,7 +609,9 @@ bool ChordPreviewTool::detectKeyBeatAndContext()
     this->roll.getRowsColsByMousePosition(myCentreRelativeToRoll.x,
         myCentreRelativeToRoll.y, newKey, newBeat);
 
-    const bool hasChanges = (newKey != this->targetKey) || (newBeat != this->targetBeat);
+    outKeyChanged = newKey != this->targetKey;
+    outBeatChanged = newBeat != this->targetBeat;
+    const bool hasChanges = outKeyChanged || outBeatChanged;
     this->targetKey = newKey;
     this->targetBeat = newBeat;
 
@@ -634,8 +652,6 @@ bool ChordPreviewTool::detectKeyBeatAndContext()
     {
         this->barLengthInBeats = Globals::beatsPerBar;
     }
-
-    return hasChanges;
 }
 
 //===----------------------------------------------------------------------===//

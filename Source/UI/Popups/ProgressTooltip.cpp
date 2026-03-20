@@ -34,7 +34,7 @@ ProgressTooltip::ProgressTooltip(bool cancellable) : isCancellable(cancellable)
 void ProgressTooltip::paint(Graphics &g)
 {
     g.setColour(Colours::black.withAlpha(0.5f));
-    g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 15.000f);
+    g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 12.f);
 }
 
 void ProgressTooltip::resized()

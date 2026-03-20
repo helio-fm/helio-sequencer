@@ -130,7 +130,16 @@ void ClipComponent::mouseDown(const MouseEvent &e)
         return;
     }
 
+    const bool wasSelected = this->isSelected();
     RollChildComponentBase::mouseDown(e);
+
+    // bring to front only when selected by clicking or tapping on the component
+    // (is the same is done in setSelected, z-ordering flickers way too much)
+    const bool shoudBringToFront = !wasSelected && this->isSelected();
+    if (shoudBringToFront)
+    {
+        this->toFront(false);
+    }
 
     const auto &selection = this->roll.getLassoSelection();
     if (e.mods.isLeftButtonDown())
@@ -361,10 +370,10 @@ void ClipComponent::paint(Graphics &g)
 // SelectableComponent
 //===----------------------------------------------------------------------===//
 
-void ClipComponent::setSelected(bool selected)
+void ClipComponent::setSelected(bool shouldBeSelected)
 {
-    const bool stateIsChanging = selected != this->isSelected();
-    RollChildComponentBase::setSelected(selected);
+    const bool stateIsChanging = shouldBeSelected != this->isSelected();
+    RollChildComponentBase::setSelected(shouldBeSelected);
     if (stateIsChanging)
     {
         // this is not super effective (nested loops etc),

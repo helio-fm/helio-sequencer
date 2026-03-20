@@ -190,7 +190,7 @@ public:
         this->patternViewport->setVisible(true);
         this->pianoViewport->setVisible(true);
 
-        if (this->areAnimationsEnabled())
+        if (this->areAnimationsEnabled() && this->isShowing())
         {
             this->resized();
             this->startTimer(Timers::rolls, this->animationsTimerInterval);

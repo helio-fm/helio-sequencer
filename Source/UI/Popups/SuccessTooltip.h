@@ -36,7 +36,7 @@ public:
     void paint(Graphics &g) override
     {
         g.setColour(this->backgroundColour);
-        g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 15.f);
+        g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 12.f);
 
         g.setColour(this->textColour);
         Rectangle<int> imageBounds(0, 0, SuccessTooltip::imageSize, SuccessTooltip::imageSize);
@@ -53,8 +53,8 @@ public:
 private:
 
     static constexpr auto onScreenTimeMs = 1000;
-    static constexpr auto tooltipSize = 96;
-    static constexpr auto imageSize = 40;
+    static constexpr auto tooltipSize = 60;
+    static constexpr auto imageSize = 25;
 
     const Colour backgroundColour =
         findDefaultColour(ColourIDs::Tooltip::okIconFill);

@@ -178,8 +178,10 @@ void MainLayout::clearInitScreen()
 
 void MainLayout::restoreLastOpenedPage()
 {
+    this->setVisible(false);
     const String lastPageId = App::Config().getProperty(Serialization::Config::lastShownPageId);
     App::Workspace().selectTreeNodeWithId(lastPageId);
+    this->setVisible(true);
 }
 
 //===----------------------------------------------------------------------===//
@@ -348,11 +350,25 @@ void MainLayout::showTooltipNow()
 
     if (this->tooltipIcon == TooltipIcon::Success)
     {
-        App::showModalComponent(make<SuccessTooltip>());
+        App::dismissAllModalComponents();
+        auto tooltip = make<SuccessTooltip>();
+        this->addChildComponent(tooltip.get());
+        tooltip->setAlpha(0.f);
+        tooltip->toFront(false);
+        App::animateComponent(tooltip.get(), tooltip->getBounds(), 1.f,
+            Globals::UI::fadeInShort, false, 1.0, 0.0);
+        tooltip.release(); // deletes itself
     }
     else if (this->tooltipIcon == TooltipIcon::Failure)
     {
-        App::showModalComponent(make<FailTooltip>());
+        App::dismissAllModalComponents();
+        auto tooltip = make<FailTooltip>();
+        this->addChildComponent(tooltip.get());
+        tooltip->setAlpha(0.f);
+        tooltip->toFront(false);
+        App::animateComponent(tooltip.get(), tooltip->getBounds(), 1.f,
+            Globals::UI::fadeInShort, false, 1.0, 0.0);
+        tooltip.release(); // deletes itself
     }
 }
 

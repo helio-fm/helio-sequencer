@@ -149,8 +149,9 @@ void KeySignaturesProjectMap::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Type::KeySignature))
     {
-        const KeySignatureEvent &keySignature = static_cast<const KeySignatureEvent &>(event);
+        this->animator.cancelAllAnimations(true);
 
+        const auto &keySignature = static_cast<const KeySignatureEvent &>(event);
         auto *component = this->createComponent(keySignature);
         this->addChildComponent(component);
 

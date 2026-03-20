@@ -23,8 +23,11 @@ public:
 
     CenteredTooltipComponent()
     {
+        this->setAccessible(false);
         this->setAlwaysOnTop(true);
         this->setPaintingIsUnclipped(true);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
         this->reposition();
     }
 
@@ -44,13 +47,13 @@ protected:
     {
         if (App::isOpenGLRendererEnabled())
         {
-            App::animateComponent(this, this->getBounds().reduced(20),
-                0.f, Globals::UI::fadeOutLong, true, 0.0, 1.0);
+            App::animateComponent(this, this->getBounds().reduced(4),
+                0.f, Globals::UI::fadeOutShort, true, 0.0, 1.0);
         }
         else
         {
             App::animateComponent(this, this->getBounds(),
-                0.f, Globals::UI::fadeOutLong, true, 0.0, 1.0);
+                0.f, Globals::UI::fadeOutShort, true, 0.0, 1.0);
         }
 
         UniquePointer<Component> deleter(this);
