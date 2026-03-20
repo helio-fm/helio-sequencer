@@ -299,8 +299,8 @@ namespace Serialization
             static const Identifier scalesHighlighting = "scalesHighlighting";
             static const Identifier useFixedDoNotation = "useFixedDoNotation";
             static const Identifier experimentalFeaturesOn = "experimentalFeatures";
-            static const Identifier followPlayhead ="catchPlayhead";
-            static const Identifier followPlayheadPosition ="catchPlayheadPosition";
+            static const Identifier followPlayhead = "catchPlayhead";
+            static const Identifier followPlayheadPosition = "catchPlayheadPosition";
             static const Identifier animations = "animations";
             static const Identifier lockZoomLevel = "lockZoom";
             static const Identifier showFullProjectMap = "miniMap";
@@ -332,7 +332,7 @@ namespace Serialization
             static const Identifier scheme = "colourScheme";
             static const Identifier colourMap = "colourMap";
             static const Identifier name = "name";
-            
+
             // legacy ids, to be removed in future versions:
             static const Identifier primaryGradientA = "primaryGradientA";
             static const Identifier primaryGradientB = "primaryGradientB";
@@ -360,7 +360,6 @@ namespace Serialization
             static const Identifier iconBase = "iconBase";
             static const Identifier iconShadow = "iconShadow";
         } // namespace Colours
-        
     } // namespace UI
 
     namespace Translations
@@ -540,7 +539,7 @@ namespace Serialization
         static const Identifier instrumentIdAfter = "instrumentIdAfter";
         static const Identifier muteStateBefore = "muteStateBefore";
         static const Identifier muteStateAfter = "muteStateAfter";
-        
+
         static const Identifier annotationBefore = "annotationBefore";
         static const Identifier annotationAfter = "annotationAfter";
         static const Identifier timeSignatureBefore = "timeSignatureBefore";
@@ -558,17 +557,17 @@ namespace Serialization
 
         static const Identifier pianoTrackInsertAction = "pianoTrackInsert";
         static const Identifier pianoTrackRemoveAction = "pianoTrackRemove";
-        
+
         static const Identifier automationTrackInsertAction = "automationTrackInsert";
         static const Identifier automationTrackRemoveAction = "automationTrackRemove";
-        
+
         static const Identifier midiTrackRenameAction = "midiTrackRename";
-        
+
         static const Identifier midiTrackChangeColourAction = "midiTrackChangeColour";
         static const Identifier midiTrackChangeChannelAction = "midiTrackChangeChannel";
         static const Identifier midiTrackChangeInstrumentAction = "midiTrackChangeInstrument";
         static const Identifier midiTrackChangeTimeSignatureAction = "midiTrackChangeTimeSignature";
-        
+
         static const Identifier clipInsertAction = "patternClipInsert";
         static const Identifier clipRemoveAction = "patternClipRemove";
         static const Identifier clipChangeAction = "patternClipChange";
@@ -589,7 +588,7 @@ namespace Serialization
         static const Identifier automationEventsGroupInsertAction = "automationEventsInsert";
         static const Identifier automationEventsGroupRemoveAction = "automationEventsRemove";
         static const Identifier automationEventsGroupChangeAction = "automationEventsChange";
-        
+
         static const Identifier annotationEventInsertAction = "annotationInsert";
         static const Identifier annotationEventRemoveAction = "annotationRemove";
         static const Identifier annotationEventChangeAction = "annotationChange";

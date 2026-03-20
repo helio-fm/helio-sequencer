@@ -62,7 +62,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteMoveNotesMenu::getAc
 
         // this will sort tracks by "distance" from the selection to the closest clip
         // of the target track, so that "closest" targets will be listed first,
-        // and it's more convenient to move notes - pressing ':' and 'down' one or two times 
+        // and it's more convenient to move notes - pressing ':' and 'down' one or two times
 
         float closestClipDistance = 0.f;
         auto &closestClip = SequencerOperations::findClosestClip(this->roll.getLassoSelection(),

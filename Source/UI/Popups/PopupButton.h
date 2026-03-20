@@ -51,7 +51,7 @@ private:
     bool isSelected = false;
 
     const Colour colour;
-    
+
     static constexpr float defaultAlpha = 0.85f;
     static constexpr float highlightedAlpha = 0.925f;
     static constexpr float selectedAlpha = 1.f;
@@ -66,5 +66,5 @@ private:
     Path shape;
     Path selectionShape;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PopupButton)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PopupButton)
 };

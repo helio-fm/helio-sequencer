@@ -408,7 +408,7 @@ void PianoRoll::zoomRelative(const Point<float> &origin,
     }
 
     ROLL_BATCH_REPAINT_START
-    
+
     constexpr float yZoomThreshold = 0.035f;
     if (fabs(factor.getY()) > yZoomThreshold)
     {
@@ -554,7 +554,7 @@ void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float 
     {
         beatNumber = this->getBeatByXPosition(float(x)) - this->activeClip.getBeat();
     }
-    
+
     noteNumber = int((this->getHeight() - y) / this->rowHeight) - this->activeClip.getKey();
     noteNumber = jlimit(0, this->getNumKeys(), noteNumber);
 }
@@ -680,7 +680,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
             const auto *targetClipId = &c.first;
             const int i = track->getPattern()->indexOfSorted(targetClipId);
             jassert(i >= 0);
-            
+
             const auto *clip = track->getPattern()->getUnchecked(i);
             auto *component = new NoteComponent(*this, note, *clip);
             sequenceMap[note] = UniquePointer<NoteComponent>(component);
@@ -1322,7 +1322,7 @@ void PianoRoll::mouseDown(const MouseEvent &e)
 
     const bool snap = !e.mods.isAltDown(); // holding alt disables snapping to barlines
 
-    if (! this->isUsingSpaceDraggingMode())
+    if (!this->isUsingSpaceDraggingMode())
     {
         this->setInterceptsMouseClicks(true, false);
 
@@ -1399,7 +1399,7 @@ void PianoRoll::mouseUp(const MouseEvent &e)
     {
         return;
     }
-    
+
     if (this->newNoteDragging != nullptr)
     {
         if (this->selection.size() != 1)
@@ -1422,7 +1422,7 @@ void PianoRoll::mouseUp(const MouseEvent &e)
 
     this->endCuttingEventsIfNeeded();
 
-    if (! this->isUsingSpaceDraggingMode())
+    if (!this->isUsingSpaceDraggingMode())
     {
         this->setInterceptsMouseClicks(true, true);
 
@@ -1540,7 +1540,7 @@ void PianoRoll::handleCommandMessage(int commandId)
         const float playheadBeat = playheadPos - this->activeClip.getBeat();
         SequencerOperations::pasteFromClipboard(App::Clipboard(), this->project, this->getActiveTrack(), playheadBeat);
     }
-        break;
+    break;
     case CommandIDs::DeleteEvents:
         SequencerOperations::deleteSelection(this->selection);
         break;
@@ -1934,7 +1934,7 @@ void PianoRoll::paint(Graphics &g) noexcept
             return;
         }
 
-        const int beatX = int((key->getBeat() - this->firstBeat)  * this->beatWidth);
+        const int beatX = int((key->getBeat() - this->firstBeat) * this->beatWidth);
         if (beatX >= paintStartX)
         {
             /*
@@ -2391,7 +2391,7 @@ String PianoRoll::getTranslatedCommandWithContext(int commandId, int i18nKey) co
     case CommandIDs::DeleteTrack:
     case CommandIDs::DuplicateTrack:
     case CommandIDs::InstanceToUniqueTrack:
-            return this->activeTrack->getTrackName() + ": " + TRANS(i18nKey);
+        return this->activeTrack->getTrackName() + ": " + TRANS(i18nKey);
     case CommandIDs::EditCurrentInstrument:
     case CommandIDs::EditCurrentInstrumentRouting:
     case CommandIDs::EditCurrentInstrumentKeymap:
@@ -2417,7 +2417,7 @@ SerializedData PianoRoll::serialize() const
 {
     using namespace Serialization;
     SerializedData data(UI::pianoRoll);
-    
+
     data.setProperty(UI::beatWidth, roundf(this->beatWidth));
     data.setProperty(UI::rowHeight, this->getRowHeight());
 
@@ -2448,7 +2448,7 @@ void PianoRoll::deserialize(const SerializedData &data)
     {
         return;
     }
-    
+
     this->setBeatWidth(float(root.getProperty(UI::beatWidth, this->beatWidth)));
     this->setRowHeight(root.getProperty(UI::rowHeight, this->getRowHeight()));
 

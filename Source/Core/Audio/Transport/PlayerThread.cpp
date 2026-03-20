@@ -86,7 +86,7 @@ void PlayerThread::run()
     };
     // (some plugins just don't understand allNotesOff message)
     Array<HoldingNote> holdingNotes;
-    
+
     // Some shorthands:
     auto sendMidiStart = [&uniqueInstruments]()
     {
@@ -128,20 +128,20 @@ void PlayerThread::run()
             noteOff.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
             holding.listener->addMessageToQueue(noteOff);
         }
-        
+
         MidiMessage stopPlayback(MidiMessage::midiStop());
         stopPlayback.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
-        
+
         for (auto *instrument : uniqueInstruments)
         {
             instrument->getProcessorPlayer()
                 .getMidiMessageCollector().addMessageToQueue(stopPlayback);
         }
-        
+
         // Wait until all plugins process the messages in their queues
         Thread::sleep(50);
     };
-    
+
     auto sendTempoChangeToEverybody =
         [&uniqueInstruments](const MidiMessage &tempoEvent)
     {
@@ -279,7 +279,7 @@ void PlayerThread::run()
 
             broadcastSeekAndTempo(nextEventBeat);
         }
-        
+
         if (shouldRewind)
         {
             this->sequences.seekToTime(this->context->rewindBeat);
@@ -289,11 +289,11 @@ void PlayerThread::run()
         else
         {
             previousEventBeat = nextEventBeat;
-     
+
             const int key = wrapper.message.getNoteNumber();
             const int channel = wrapper.message.getChannel();
             wrapper.message.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
-            
+
             // Master tempo event is sent to everybody
             if (wrapper.message.isTempoMetaEvent())
             {
@@ -307,7 +307,7 @@ void PlayerThread::run()
             {
                 wrapper.listener->addMessageToQueue(wrapper.message);
             }
-            
+
             // todo automating individual plugin node parameters
             //wrapper.instrument->getNodeForId(node id)->getProcessor()->getParameters()[param index]->setValue()
 
@@ -315,7 +315,7 @@ void PlayerThread::run()
             {
                 holdingNotes.add({ key, channel, wrapper.listener });
             }
-            
+
             if (wrapper.message.isNoteOff())
             {
                 for (int i = 0; i < holdingNotes.size(); ++i)
@@ -331,6 +331,6 @@ void PlayerThread::run()
             }
         }
     }
-    
+
     jassertfalse;
 }

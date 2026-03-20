@@ -349,7 +349,7 @@ int AudioPluginsListComponent::getColumnAutoSizeWidth(int columnId)
     const auto smallScreenMode = App::isRunningOnPhone();
     const auto formatColumnWidth = smallScreenMode ? 64 : 96;
     const auto categoryColumnWidth = smallScreenMode ? 64 : 112;
-    
+
     switch (columnId)
     {
     case ColumnIds::vendorAndName:

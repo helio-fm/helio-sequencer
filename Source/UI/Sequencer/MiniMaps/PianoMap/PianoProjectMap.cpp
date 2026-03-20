@@ -179,7 +179,7 @@ void PianoProjectMap::onAddClip(const Clip &clip)
 
     auto *sequenceMap = new SequenceSet();
     this->patternMap[clip] = UniquePointer<SequenceSet>(sequenceMap);
-        
+
     for (const auto &note : *referenceMap)
     {
         sequenceMap->insert(note);

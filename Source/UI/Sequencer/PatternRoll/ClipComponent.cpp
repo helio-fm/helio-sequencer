@@ -122,7 +122,7 @@ void ClipComponent::mouseDown(const MouseEvent &e)
 
     if (e.mods.isRightButtonDown() &&
         (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
-         this->roll.getEditMode().isMode(RollEditMode::drawMode)))
+            this->roll.getEditMode().isMode(RollEditMode::drawMode)))
     {
         // see the comment above PatternRoll::startErasingEvents for
         // the explanation of how erasing events works and why:
@@ -240,7 +240,7 @@ void ClipComponent::mouseUp(const MouseEvent &e)
 
     if (e.mods.isRightButtonDown() &&
         (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
-         this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
+            this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
     {
         this->setMouseCursor(MouseCursor::NormalCursor);
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));
@@ -341,7 +341,7 @@ void ClipComponent::paint(Graphics &g)
         g.fillRect(this->getWidth() - 1, 1, 1, this->getHeight() - 2);
         g.setColour(this->frameCornerColour);
     }
-    
+
     if (!this->flags.isSelected) // add little corners for the [  ] look
     {
         constexpr auto cornerSize = 3;

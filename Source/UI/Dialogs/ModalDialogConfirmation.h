@@ -52,5 +52,5 @@ private:
     UniquePointer<TextButton> cancelButton;
     UniquePointer<TextButton> okButton;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModalDialogConfirmation)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModalDialogConfirmation)
 };

@@ -123,7 +123,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
     this->addAndMakeVisible(this->fontsCombo.get());
     this->fontsCombo->initWith(this->fontEditor.get(),
         move(fontsMenuProvider), move(fontsMenuCurrentItem));
-    
+
     this->openGLRendererButton = make<ToggleButton>(TRANS(I18n::Settings::rendererOpengl));
     this->addAndMakeVisible(this->openGLRendererButton.get());
     this->openGLRendererButton->onClick = [this]()
@@ -132,7 +132,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
         App::Config().getUiFlags()->setOpenGlRendererEnabled(newState);
         this->updateButtons();
     };
-    
+
     this->nativeTitleBarButton = make<ToggleButton>(TRANS(I18n::Settings::nativeTitleBar));
     this->addAndMakeVisible(this->nativeTitleBarButton.get());
     this->nativeTitleBarButton->setToggleState(App::isUsingNativeTitleBar(), dontSendNotification);
@@ -164,7 +164,7 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
         App::Config().getUiFlags()->setMouseWheelUseVerticalPanningByDefault(this->wheelVerticalPanningButton->getToggleState());
         this->updateButtons();
     };
-    
+
     this->wheelVerticalZoomingButton = make<ToggleButton>(TRANS(I18n::Settings::mouseWheelVerticalZoomingByDefault));
     this->addAndMakeVisible(this->wheelVerticalZoomingButton.get());
     this->wheelVerticalZoomingButton->onClick = [this]()
@@ -217,7 +217,8 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
 
     this->germanNotation = make<ToggleButton>("C, D, E, F, G, A, B");
     this->addAndMakeVisible(this->germanNotation.get());
-    this->germanNotation->onClick = [this]() {
+    this->germanNotation->onClick = [this]()
+    {
         App::Config().getUiFlags()->setUseFixedDoNotation(false);
         this->updateButtons();
     };
@@ -229,14 +230,16 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
 
     this->fixedDoNotation = make<ToggleButton>(fixedDoNames.joinIntoString(", "));
     this->addAndMakeVisible(this->fixedDoNotation.get());
-    this->fixedDoNotation->onClick = [this]() {
+    this->fixedDoNotation->onClick = [this]()
+    {
         App::Config().getUiFlags()->setUseFixedDoNotation(true);
         this->updateButtons();
     };
 
     this->showMidiNumbers = make<ToggleButton>(TRANS(I18n::Settings::showMidiNumbers));
     this->addAndMakeVisible(this->showMidiNumbers.get());
-    this->showMidiNumbers->onClick = [this]() {
+    this->showMidiNumbers->onClick = [this]()
+    {
         App::Config().getUiFlags()->setShowMidiNumbers(this->showMidiNumbers->getToggleState());
         this->updateButtons();
     };
@@ -253,7 +256,8 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
 
     this->scaleUi1 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97 1"));
     this->addAndMakeVisible(this->scaleUi1.get());
-    this->scaleUi1->onClick = [this]() {
+    this->scaleUi1->onClick = [this]()
+    {
         BailOutChecker checker(this);
         App::Config().getUiFlags()->setUiScaleFactor(1.f);
         if (!checker.shouldBailOut())
@@ -264,7 +268,8 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
 
     this->scaleUi125 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97 1.25"));
     this->addAndMakeVisible(this->scaleUi125.get());
-    this->scaleUi125->onClick = [this]() {
+    this->scaleUi125->onClick = [this]()
+    {
         BailOutChecker checker(this);
         App::Config().getUiFlags()->setUiScaleFactor(1.25f);
         if (!checker.shouldBailOut())
@@ -275,7 +280,8 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
 
     this->scaleUi15 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97 1.5"));
     this->addAndMakeVisible(this->scaleUi15.get());
-    this->scaleUi15->onClick = [this]() {
+    this->scaleUi15->onClick = [this]()
+    {
         BailOutChecker checker(this);
         App::Config().getUiFlags()->setUiScaleFactor(1.5f);
         if (!checker.shouldBailOut())
@@ -286,7 +292,8 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
 
     this->scaleUi175 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97 1.75"));
     this->addAndMakeVisible(this->scaleUi175.get());
-    this->scaleUi175->onClick = [this]() {
+    this->scaleUi175->onClick = [this]()
+    {
         BailOutChecker checker(this);
         App::Config().getUiFlags()->setUiScaleFactor(1.75f);
         if (!checker.shouldBailOut())
@@ -297,7 +304,8 @@ UserInterfaceSettings::UserInterfaceSettings() noexcept
 
     this->scaleUi2 = make<ToggleButton>(CharPointer_UTF8("\xc3\x97 2"));
     this->addAndMakeVisible(this->scaleUi2.get());
-    this->scaleUi2->onClick = [this]() {
+    this->scaleUi2->onClick = [this]()
+    {
         BailOutChecker checker(this);
         App::Config().getUiFlags()->setUiScaleFactor(2.f);
         if (!checker.shouldBailOut())

@@ -42,11 +42,11 @@ public:
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 private:
 
     WeakReference<TreeNode> parentTreeItem;
@@ -69,7 +69,7 @@ public:
 
     PianoTrackRemoveAction(MidiTrackSource &source,
         WeakReference<TreeNode> parentTreeItem) noexcept;
-    
+
     PianoTrackRemoveAction(MidiTrackSource &source,
         WeakReference<TreeNode> parentTreeItem,
         const String &trackId) noexcept;
@@ -77,18 +77,18 @@ public:
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 private:
 
     WeakReference<TreeNode> parentTreeItem;
 
     String trackId;
     int numEvents = 0;
-    
+
     SerializedData serializedTreeItem;
     String trackName;
 

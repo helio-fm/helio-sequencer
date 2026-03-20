@@ -62,7 +62,7 @@ public:
         int8 key = -1;
         int8 channel = -1;
     };
-    
+
     KeyChannel map(Note::Key key, int channel) const noexcept
     {
         jassert(key < KeyboardMapping::numMappedKeys);

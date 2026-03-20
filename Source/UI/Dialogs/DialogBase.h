@@ -23,13 +23,14 @@
 class DialogTextEditor : public TextEditor
 {
 public:
+
     bool keyPressed(const KeyPress &key) override;
 };
 
 class DialogBase : public Component
 {
 public:
-    
+
     DialogBase() noexcept;
     ~DialogBase() override;
 
@@ -45,7 +46,7 @@ public:
     static UniquePointer<TextEditor> makeSingleLineTextEditor();
 
 protected:
-    
+
     virtual void dialogCancelAction() = 0;
     virtual void dialogApplyAction() = 0;
     virtual void dialogDeleteAction() = 0;

@@ -60,5 +60,4 @@ protected:
 
     const KeySignatureEvent &event;
     KeySignaturesProjectMap &editor;
-
 };

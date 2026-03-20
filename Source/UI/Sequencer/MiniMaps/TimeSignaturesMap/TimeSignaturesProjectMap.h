@@ -73,9 +73,9 @@ public:
     void resized() override;
 
 private:
-    
+
     void reloadTrackMap();
-    
+
     float projectFirstBeat = 0.f;
     float projectLastBeat = Globals::Defaults::projectLength;
 
@@ -83,7 +83,7 @@ private:
     float rollLastBeat = Globals::Defaults::projectLength;
 
     ProjectNode &project;
-    
+
     ComponentFader animator;
 
     const Type type;

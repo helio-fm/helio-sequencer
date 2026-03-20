@@ -36,7 +36,7 @@ public:
 
     RollHeader(Transport &transport, RollBase &roll, Viewport &viewport);
     ~RollHeader() override;
-    
+
     void setSoundProbeMode(bool shouldProbeOnClick);
 
     void showPopupMenu();
@@ -45,7 +45,7 @@ public:
 
     void updateProjectBeatRange(float projectFirstBeat, float projectLastBeat);
     void updateRollBeatRange(float viewFirstBeat, float viewLastBeat);
-    
+
     void updateClipRangeIndicators(const Clip &activeClip);
     void updateSelectionRangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
 
@@ -67,7 +67,7 @@ public:
     void resized() override;
 
 protected:
-    
+
     Transport &transport;
     RollBase &roll;
     Viewport &viewport;

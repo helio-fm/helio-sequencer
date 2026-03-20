@@ -119,20 +119,20 @@ void AutomationStepsClipComponent::mouseDown(const MouseEvent &e)
 void AutomationStepsClipComponent::resized()
 {
     this->setVisible(false);
-    
+
     // connectors depend on these bounds, so they are updated later
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
         auto *c = this->eventComponents.getUnchecked(i);
         c->setFloatBounds(this->getEventBounds(c->getEvent(), this->clip));
     }
-    
+
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
         auto *c = this->eventComponents.getUnchecked(i);
         c->updateChildrenBounds();
     }
-    
+
     this->setVisible(true);
 }
 
@@ -160,7 +160,7 @@ void AutomationStepsClipComponent::insertNewEventAt(const MouseEvent &e, bool sh
         {
             const auto *nextEvent = static_cast<AutomationEvent *>(sequence->getUnchecked(i));
             nextBeat = nextEvent->getBeat();
-            
+
             if (prevBeat < draggingBeat && nextBeat > draggingBeat)
             {
                 break;
@@ -169,13 +169,13 @@ void AutomationStepsClipComponent::insertNewEventAt(const MouseEvent &e, bool sh
             prevCV = nextEvent->getControllerValue();
             prevBeat = nextBeat;
         }
-        
+
         const float invertedCV = 1.f - prevCV;
         const float alignedBeat = jmin((nextBeat - minLength), jmax((prevBeat + minLength), draggingBeat));
-        
+
         sequence->checkpoint();
         sequence->insert(AutomationEvent(sequence, alignedBeat, invertedCV), true);
-        
+
         if (shouldAddPairedEvents)
         {
             sequence->insert(AutomationEvent(sequence, alignedBeat + minLength, (1.f - invertedCV)), true);
@@ -196,7 +196,7 @@ void AutomationStepsClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
 
     const auto &autoEvent = static_cast<const AutomationEvent &>(oldEvent);
     const auto &newAutoEvent = static_cast<const AutomationEvent &>(newEvent);
-        
+
     if (auto *component = this->eventsMap[autoEvent])
     {
         // update links and connectors
@@ -204,7 +204,7 @@ void AutomationStepsClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
         const int indexOfSorted = this->eventComponents.indexOfSorted(*component, component);
         auto *previousEventComponent = this->eventComponents[indexOfSorted - 1];
         auto *nextEventComponent = this->eventComponents[indexOfSorted + 1];
-            
+
         // if the neighbourhood has changed,
         // connect the most recent neighbours to each other:
         if (nextEventComponent != component->getNextNeighbour() ||
@@ -226,20 +226,20 @@ void AutomationStepsClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
         component->setFloatBounds(this->getEventBounds(newAutoEvent, this->clip));
         component->updateChildrenBounds();
         component->repaint();
-            
+
         if (previousEventComponent)
         {
             previousEventComponent->setNextNeighbour(component);
         }
-            
+
         if (nextEventComponent)
         {
             nextEventComponent->setPreviousNeighbour(component);
         }
-            
+
         this->eventsMap.erase(autoEvent);
         this->eventsMap[newAutoEvent] = component;
-            
+
         this->roll.triggerBatchRepaintFor(this);
     }
 }
@@ -252,10 +252,10 @@ void AutomationStepsClipComponent::onAddMidiEvent(const MidiEvent &event)
     }
 
     const auto &autoEvent = static_cast<const AutomationEvent &>(event);
-        
+
     auto *component = new AutomationStepEventComponent(*this, autoEvent, this->clip);
     this->addAndMakeVisible(component);
-        
+
     // update links and connectors
     const int indexOfSorted = this->eventComponents.addSorted(*component, component);
     auto *previousEventComponent = this->eventComponents[indexOfSorted - 1];
@@ -265,7 +265,7 @@ void AutomationStepsClipComponent::onAddMidiEvent(const MidiEvent &event)
     component->setPreviousNeighbour(previousEventComponent);
     component->setFloatBounds(this->getEventBounds(autoEvent, this->clip));
     component->updateChildrenBounds();
-        
+
     if (previousEventComponent)
     {
         previousEventComponent->setNextNeighbour(component);
@@ -277,7 +277,7 @@ void AutomationStepsClipComponent::onAddMidiEvent(const MidiEvent &event)
     }
 
     this->eventsMap[autoEvent] = component;
-        
+
     this->roll.triggerBatchRepaintFor(this);
 }
 
@@ -289,12 +289,12 @@ void AutomationStepsClipComponent::onRemoveMidiEvent(const MidiEvent &event)
     }
 
     const auto &autoEvent = static_cast<const AutomationEvent &>(event);
-        
+
     if (auto *component = this->eventsMap[autoEvent])
     {
         this->removeChildComponent(component);
         this->eventsMap.erase(autoEvent);
-            
+
         // update links and connectors for neighbors
         const int indexOfSorted = this->eventComponents.indexOfSorted(*component, component);
         auto *previousEventComponent = this->eventComponents[indexOfSorted - 1];
@@ -304,14 +304,14 @@ void AutomationStepsClipComponent::onRemoveMidiEvent(const MidiEvent &event)
         {
             previousEventComponent->setNextNeighbour(nextEventComponent);
         }
-            
+
         if (nextEventComponent)
         {
             nextEventComponent->setPreviousNeighbour(previousEventComponent);
         }
-            
+
         this->eventComponents.removeObject(component, true);
-            
+
         this->roll.triggerBatchRepaintFor(this);
     }
 }
@@ -366,12 +366,12 @@ void AutomationStepsClipComponent::reloadTrack()
     {
         this->removeChildComponent(component);
     }
-    
+
     this->eventComponents.clear();
     this->eventsMap.clear();
-    
+
     this->setVisible(false);
-    
+
     for (int i = 0; i < this->sequence->size(); ++i)
     {
         if (this->sequence->getUnchecked(i)->isTypeOf(MidiEvent::Type::Auto))
@@ -406,7 +406,7 @@ void AutomationStepsClipComponent::reloadTrack()
             nextEventComponent->setPreviousNeighbour(component);
         }
     }
-    
+
     this->resized(); // Re-calculates children bounds
     this->roll.triggerBatchRepaintFor(this);
     this->setVisible(true);

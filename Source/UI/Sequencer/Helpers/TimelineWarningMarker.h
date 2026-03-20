@@ -28,7 +28,7 @@ public:
         Red = 0,
         Yellow = 1,
     };
-    
+
     TimelineWarningMarker(WarningLevel warningLevel,
         RollBase &parentRoll, float initialBeatPosition);
 

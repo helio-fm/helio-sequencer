@@ -60,11 +60,10 @@ public:
     void deserialize(const SerializedData &data) override;
 
 private:
-    
+
     OrchestraPit &orchestra;
 
     UniquePointer<OrchestraPitPage> instrumentsPage;
 
     void syncAllInstruments();
-
 };

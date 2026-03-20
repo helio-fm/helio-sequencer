@@ -24,7 +24,7 @@ class SettingsNode final : public TreeNode
 public:
 
     SettingsNode();
-    
+
     String getName() const noexcept override;
     Image getIcon() const noexcept override;
 
@@ -44,5 +44,4 @@ private:
     UniquePointer<Component> themeSettings;
     UniquePointer<Component> themeSettingsWrapper;
     UniquePointer<Component> settingsPage;
-
 };

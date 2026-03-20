@@ -49,7 +49,7 @@ public:
     const Id getId() const noexcept;
     const String &getKeyAsString() const noexcept;
     const Array<SequenceModifier::Ptr> &getModifiers() const noexcept;
-    
+
     bool isValid() const noexcept;
     bool isMuted() const noexcept;
     bool isSoloed() const noexcept;

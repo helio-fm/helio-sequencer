@@ -202,7 +202,7 @@ int Scale::getNearestScaleKey(int chromaticKey, ScaleKeyAlignment alignment) con
             }
         }
     }
-    
+
     return result;
 }
 

@@ -69,7 +69,6 @@ public:
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,
         const ProjectMetadata *meta) override;
 
-
     //===------------------------------------------------------------------===//
     // Stuff for children
     //===------------------------------------------------------------------===//
@@ -80,17 +79,17 @@ public:
     void alternateActionFor(AnnotationComponent *nc);
 
     float getBeatByXPosition(int x) const;
-    
+
 private:
-    
+
     void reloadTrackMap();
     void applyAnnotationBounds(AnnotationComponent *nc, AnnotationComponent *nextOne = nullptr);
-    
+
     AnnotationComponent *getPreviousEventComponent(int indexOfSorted) const;
     AnnotationComponent *getNextEventComponent(int indexOfSorted) const;
-    
+
 private:
-    
+
     float projectFirstBeat = 0.f;
     float projectLastBeat = Globals::Defaults::projectLength;
 
@@ -106,5 +105,4 @@ private:
 
     OwnedArray<AnnotationComponent> annotationComponents;
     FlatHashMap<AnnotationEvent, AnnotationComponent *, MidiEventHash> annotationsHash;
-    
 };

@@ -125,7 +125,7 @@ void NoteResizerRight::mouseDrag(const MouseEvent &e)
     {
         return;
     }
-    
+
     this->dragger.dragComponent(this, e, nullptr);
 
     const auto &selection = this->roll.getLassoSelection();

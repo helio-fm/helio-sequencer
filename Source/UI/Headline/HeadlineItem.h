@@ -24,7 +24,8 @@
 class HeadlineContextMenuMarker;
 class IconComponent;
 
-class HeadlineItem final : public Component,
+class HeadlineItem final :
+    public Component,
     private ChangeListener
 {
 public:

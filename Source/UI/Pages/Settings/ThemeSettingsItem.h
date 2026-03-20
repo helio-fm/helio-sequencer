@@ -59,5 +59,5 @@ private:
 
     UniquePointer<Label> schemeNameLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThemeSettingsItem)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ThemeSettingsItem)
 };

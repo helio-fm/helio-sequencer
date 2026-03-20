@@ -1,14 +1,22 @@
 # Requires clang-format of version 13 at least
 BasedOnStyle: Microsoft
+BreakInheritanceList: AfterColon
 AccessModifierOffset: -4
-AlignAfterOpenBracket: DontAlign
+AlignOperands: false
+AlignAfterOpenBracket: false
+AlignTrailingComments: false
 AllowShortCaseLabelsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: true
 BraceWrapping:
+  AfterCaseLabel: true
+  AfterUnion: true
+  BeforeLambdaBody: true
   SplitEmptyFunction: false
 BreakConstructorInitializers: AfterColon
 ColumnLimit: 0
 EmptyLineAfterAccessModifier: Always
 EmptyLineBeforeAccessModifier: Leave
-IndentCaseLabels: true
+IndentCaseLabels: false
+IndentWrappedFunctionNames: false
 SortIncludes: false
+Standard: c++17

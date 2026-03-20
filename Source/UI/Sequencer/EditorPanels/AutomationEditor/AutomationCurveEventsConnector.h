@@ -38,7 +38,7 @@ public:
 
     void paint(Graphics &g) override;
     void resized() override;
-    
+
 private:
 
     AutomationEditorBase &editor;

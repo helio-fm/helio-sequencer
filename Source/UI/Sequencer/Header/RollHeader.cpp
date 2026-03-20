@@ -143,7 +143,7 @@ public:
             break;
         }
     }
-    
+
 private:
 
     const Type type;
@@ -245,9 +245,9 @@ void RollHeader::setSoundProbeMode(bool shouldPreviewOnClick)
     {
         return;
     }
-    
+
     this->soundProbeMode = shouldPreviewOnClick;
-    
+
     if (this->soundProbeMode.get())
     {
         this->setMouseCursor(MouseCursor::PointingHandCursor);
@@ -389,10 +389,10 @@ void RollHeader::updateTimeDistanceIndicator()
     {
         return;
     }
-    
+
     const double anchor1 = this->pointingIndicator->getAnchor();
     const double anchor2 = this->probeIndicator->getAnchor();
-    
+
     const auto seek1 = this->roll.getBeatByXPosition(float(this->pointingIndicator->getX()));
     const auto seek2 = this->roll.getBeatByXPosition(float(this->probeIndicator->getX()));
 
@@ -400,7 +400,7 @@ void RollHeader::updateTimeDistanceIndicator()
 
     const auto timeMs1 = this->transport.findTimeAt(seek1);
     const auto timeMs2 = this->transport.findTimeAt(seek2);
-    
+
     const double timeDelta = fabs(timeMs2 - timeMs1);
     const auto timeDeltaText = Transport::getTimeString(timeDelta);
     this->timeDistanceIndicator->getTimeLabel()->setText(timeDeltaText, dontSendNotification);
@@ -451,7 +451,7 @@ void RollHeader::mouseDown(const MouseEvent &e)
     {
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x);
         this->transport.probeSoundAtBeat(roundBeat, nullptr);
-        
+
         this->probeIndicator = make<SoundProbeIndicator>();
         this->roll.addAndMakeVisible(this->probeIndicator.get());
         this->updateSoundProbeIndicatorPosition(this->probeIndicator.get(), e);
@@ -571,13 +571,13 @@ void RollHeader::mouseUp(const MouseEvent &e)
     this->timeDistanceIndicator = nullptr;
 
     this->selectionIndicator->fadeOut();
-    
+
     if (this->soundProbeMode.get())
     {
         this->transport.allNotesControllersAndSoundOff();
         return;
     }
-    
+
     if (this->roll.getSelectionComponent()->isDragging())
     {
         this->roll.getSelectionComponent()->endLasso();
@@ -587,7 +587,7 @@ void RollHeader::mouseUp(const MouseEvent &e)
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
         this->transport.stopPlayback();
         this->transport.seekToBeat(roundBeat);
-        
+
         if (e.mods.isRightButtonDown())
         {
             this->showPopupMenu();
@@ -624,7 +624,7 @@ void RollHeader::mouseExit(const MouseEvent &e)
     {
         this->pointingIndicator = nullptr;
     }
-    
+
     if (this->timeDistanceIndicator != nullptr)
     {
         this->timeDistanceIndicator = nullptr;

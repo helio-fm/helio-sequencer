@@ -467,7 +467,7 @@ Clip::Id Pattern::createUniqueClipId() const noexcept
         length = jmin(4, length + 1);
         clipId = ClipIdGenerator::generateId(length);
     }
-    
+
     this->usedClipIds.insert(clipId);
     return clipId;
 }

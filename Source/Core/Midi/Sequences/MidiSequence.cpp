@@ -183,10 +183,10 @@ void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
     {
         return;
     }
-    
+
     this->sequenceStartBeat = newStart;
     this->sequenceEndBeat = newEnd;
-    
+
     if (shouldNotifyIfChanged)
     {
         this->eventDispatcher.dispatchChangeTrackBeatRange();
@@ -203,7 +203,7 @@ MidiEvent::Id MidiSequence::createUniqueEventId() const noexcept
         length = jmin(4, length + 1);
         eventId = EventIdGenerator::generateId(length);
     }
-    
+
     this->usedEventIds.insert(eventId);
     return eventId;
 }

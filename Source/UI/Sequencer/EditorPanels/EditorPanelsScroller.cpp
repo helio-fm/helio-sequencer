@@ -424,7 +424,7 @@ void EditorPanelsScroller::updateSwitcher()
         jassert(!filters.getFirst().eventFilters.isEmpty());
         this->selectedEventFilter = filters.getFirst().eventFilters.getFirst();
     }
- 
+
     this->editorPanelsSwitcher->reload(filters);
     this->editorPanelsSwitcher->updateSelection(this->selectedEditorPanelIndex, this->selectedEventFilter);
 }

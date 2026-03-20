@@ -368,7 +368,7 @@ SerializedData HotkeyScheme::serialize() const
 static inline HotkeyScheme::Hotkey deserializeHotkey(const SerializedData &e, const String &receiver = "")
 {
     HotkeyScheme::Hotkey result;
-    
+
     const auto keyPressDesc =
         e.getProperty(Serialization::UI::Hotkeys::hotkeyDescription);
 

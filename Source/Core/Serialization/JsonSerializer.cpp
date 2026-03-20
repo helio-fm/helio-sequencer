@@ -226,6 +226,7 @@ struct JsonParser final
     }
 
 private:
+
     static Result createFail(const char *const message, const String::CharPointerType *location = nullptr)
     {
         String m(message);
@@ -487,7 +488,7 @@ struct JsonFormatter final
         out << '}';
     }
 
-    static void writeProperty(OutputStream& out, const var &v, int maximumDecimalPlaces = 6)
+    static void writeProperty(OutputStream &out, const var &v, int maximumDecimalPlaces = 6)
     {
         if (v.isString())
         {
@@ -505,7 +506,7 @@ struct JsonFormatter final
         }
         else if (v.isBool())
         {
-            out << (static_cast<bool> (v) ? "true" : "false");
+            out << (static_cast<bool>(v) ? "true" : "false");
         }
         else if (v.isInt() || v.isInt64())
         {
@@ -513,7 +514,7 @@ struct JsonFormatter final
         }
         else if (v.isDouble())
         {
-            out << String(static_cast<double> (v), maximumDecimalPlaces);
+            out << String(static_cast<double>(v), maximumDecimalPlaces);
         }
         else
         {

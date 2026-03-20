@@ -49,7 +49,7 @@ void AutomationSequence::importMidi(const MidiMessageSequence &sequence,
 {
     this->clearUndoHistory();
     this->checkpoint();
-    
+
     for (int i = 0; i < sequence.getNumEvents(); ++i)
     {
         const auto &message = sequence.getEventPointer(i)->message;
@@ -74,7 +74,7 @@ void AutomationSequence::importMidi(const MidiMessageSequence &sequence,
             this->importMidiEvent<AutomationEvent>(event);
         }
     }
-    
+
     this->updateBeatRange(false);
 }
 
@@ -178,10 +178,10 @@ bool AutomationSequence::insertGroup(Array<AutomationEvent> &group, bool undoabl
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
             this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         }
-        
+
         this->updateBeatRange(true);
     }
-    
+
     return true;
 }
 
@@ -211,11 +211,11 @@ bool AutomationSequence::removeGroup(Array<AutomationEvent> &group, bool undoabl
                 this->midiEvents.remove(index, true);
             }
         }
-        
+
         this->updateBeatRange(true);
         this->eventDispatcher.dispatchPostRemoveEvent(this);
     }
-    
+
     return true;
 }
 
@@ -247,7 +247,7 @@ bool AutomationSequence::changeGroup(const Array<AutomationEvent> groupBefore,
                 this->eventDispatcher.dispatchChangeEvent(oldEvent, *changedEvent);
             }
         }
-        
+
         this->updateBeatRange(true);
     }
 
@@ -267,7 +267,7 @@ SerializedData AutomationSequence::serialize() const
         MidiEvent *event = this->midiEvents.getUnchecked(i);
         tree.appendChild(event->serialize());
     }
-    
+
     return tree;
 }
 
@@ -280,7 +280,9 @@ void AutomationSequence::deserialize(const SerializedData &data)
         data : data.getChildWithName(Serialization::Midi::automation);
 
     if (!root.isValid())
-    { return; }
+    {
+        return;
+    }
 
     float firstBeat = 0;
     float lastBeat = 0;
@@ -289,9 +291,9 @@ void AutomationSequence::deserialize(const SerializedData &data)
     {
         auto *event = new AutomationEvent(this, 0, 0);
         event->deserialize(e);
-        
+
         this->midiEvents.add(event); // sorted later
-        
+
         lastBeat = jmax(lastBeat, event->getBeat());
         firstBeat = jmin(firstBeat, event->getBeat());
 

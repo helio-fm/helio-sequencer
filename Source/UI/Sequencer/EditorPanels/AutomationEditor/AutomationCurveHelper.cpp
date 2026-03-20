@@ -92,7 +92,7 @@ void AutomationCurveHelper::mouseDown(const MouseEvent &e)
         return;
     }
 
-    jassert (this->isEditable);
+    jassert(this->isEditable);
 
     if (e.mods.isLeftButtonDown())
     {

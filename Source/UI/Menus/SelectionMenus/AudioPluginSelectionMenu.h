@@ -25,7 +25,7 @@ class OrchestraPitNode;
 class AudioPluginSelectionMenu final : public MenuPanel
 {
 public:
-    
+
     AudioPluginSelectionMenu(const PluginDescription pluginDescription,
         OrchestraPitNode &orchestraNode, PluginScanner &scanner);
 
@@ -37,5 +37,4 @@ private:
 
     MenuPanel::Menu createDefaultMenu() noexcept;
     MenuPanel::Menu createInstrumentsMenu() noexcept;
-
 };

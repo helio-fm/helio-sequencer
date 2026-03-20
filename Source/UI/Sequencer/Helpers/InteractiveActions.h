@@ -77,7 +77,7 @@ struct InteractiveActions final
         }
     }
 
-    template<typename TAction>
+    template <typename TAction>
     static void addNewTrack(ProjectNode &project,
         const SerializedData &trackTemplate,
         const String &trackId,

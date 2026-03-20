@@ -77,7 +77,7 @@ private:
     float targetAlpha = 1.f;
 
     WeakReference<KeyboardCursor> cursor;
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BlinkAnimator)
 };
 
@@ -145,7 +145,8 @@ void KeyboardCursor::showAndRestartBlinking()
 
 #define SELECTION_MARKER_SIZE (5.f)
 
-static const auto makeTopLeftMarker = [](const Rectangle<float> &b) {
+static const auto makeTopLeftMarker = [](const Rectangle<float> &b)
+{
     Path p;
     const auto minSide = jmin(b.getWidth(), b.getHeight());
     const auto markerSize = jlimit(1.f, SELECTION_MARKER_SIZE, minSide / 2);
@@ -155,7 +156,8 @@ static const auto makeTopLeftMarker = [](const Rectangle<float> &b) {
     return p;
 };
 
-static const auto makeTopRightMarker = [](const Rectangle<float> &b) {
+static const auto makeTopRightMarker = [](const Rectangle<float> &b)
+{
     Path p;
     const auto minSide = jmin(b.getWidth(), b.getHeight());
     const auto markerSize = jlimit(1.f, SELECTION_MARKER_SIZE, minSide / 2);
@@ -165,7 +167,8 @@ static const auto makeTopRightMarker = [](const Rectangle<float> &b) {
     return p;
 };
 
-static const auto makeBottomLeftMarker = [](const Rectangle<float> &b) {
+static const auto makeBottomLeftMarker = [](const Rectangle<float> &b)
+{
     Path p;
     const auto minSide = jmin(b.getWidth(), b.getHeight());
     const auto markerSize = jlimit(1.f, SELECTION_MARKER_SIZE, minSide / 2);
@@ -175,7 +178,8 @@ static const auto makeBottomLeftMarker = [](const Rectangle<float> &b) {
     return p;
 };
 
-static const auto makeBottomRightMarker = [](const Rectangle<float> &b) {
+static const auto makeBottomRightMarker = [](const Rectangle<float> &b)
+{
     Path p;
     const auto minSide = jmin(b.getWidth(), b.getHeight());
     const auto markerSize = jlimit(1.f, SELECTION_MARKER_SIZE, minSide / 2);

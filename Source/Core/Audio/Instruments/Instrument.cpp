@@ -41,7 +41,7 @@ Instrument::Instrument(AudioPluginFormatManager &formatManager, const String &na
 Instrument::~Instrument()
 {
     this->audioCallback.setProcessor(nullptr);
-    
+
     PluginWindow::closeAllCurrentlyOpenWindows();
 
     this->processorGraph->clear();
@@ -67,13 +67,13 @@ String Instrument::getInstrumentHash() const
 {
     String idAndHash;
     const int numNodes = this->processorGraph->getNumNodes();
-    
+
     for (int i = 0; i < numNodes; ++i)
     {
         idAndHash += this->processorGraph->getNode(i)->
             properties[Serialization::Audio::nodeHash].toString();
     }
-    
+
     return String(constexprHash(idAndHash.toUTF8()));
 }
 
@@ -167,7 +167,7 @@ void Instrument::initializeBuiltInInstrument(const PluginDescription &pluginDesc
 void Instrument::initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback)
 {
     this->processorGraph->clear();
-    this->addNodeAsync(pluginDescription, 0.5f, 0.5f, 
+    this->addNodeAsync(pluginDescription, 0.5f, 0.5f,
         [initCallback, this](AudioProcessorGraph::Node::Ptr mainNode)
         {
             if (mainNode == nullptr)
@@ -256,7 +256,6 @@ UniquePointer<ScopedDPIAwarenessDisabler> Instrument::makeDPIAwarenessDisabler(c
 
     return isAutoScaleAvailable ? make<ScopedDPIAwarenessDisabler>() : nullptr;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Nodes
@@ -402,8 +401,8 @@ void Instrument::getNodePosition(AudioProcessorGraph::NodeID id, double &x, doub
     const AudioProcessorGraph::Node::Ptr n(this->processorGraph->getNodeForId(id));
     if (n != nullptr)
     {
-        x = (double) n->properties[Serialization::UI::positionX];
-        y = (double) n->properties[Serialization::UI::positionY];
+        x = (double)n->properties[Serialization::UI::positionX];
+        y = (double)n->properties[Serialization::UI::positionY];
     }
 }
 
@@ -589,7 +588,6 @@ void Instrument::reset()
     this->sendChangeMessage();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -668,7 +666,10 @@ void Instrument::deserialize(const SerializedData &data)
     const auto root = data.hasType(Audio::instrument) ?
         data : data.getChildWithName(Audio::instrument);
 
-    if (!root.isValid() || root.getNumChildren() == 0) { return; }
+    if (!root.isValid() || root.getNumChildren() == 0)
+    {
+        return;
+    }
 
     this->lastValidStateFallback = root.createCopy();
 
@@ -685,9 +686,9 @@ void Instrument::deserialize(const SerializedData &data)
         const int sourceChannel;
         const int destinationChannel;
     };
-    
+
     Array<ConnectionDescription> connectionDescriptions;
-    
+
     forEachChildWithType(root, e, Audio::connection)
     {
         const uint32 sourceNodeId = int(e.getProperty(Audio::sourceNodeId));
@@ -810,20 +811,20 @@ AudioProcessorGraph::Node::Ptr Instrument::addNode(const PluginDescription &desc
         errorMessage);
 
     AudioProcessorGraph::Node::Ptr node = nullptr;
-    
+
     if (instance != nullptr)
     {
         const ScopedLock initLock(instance->getCallbackLock());
         node = this->processorGraph->addNode(move(instance));
     }
-    
+
     if (node != nullptr)
     {
         this->configureNode(node, desc, x, y);
         this->sendChangeMessage();
         return node;
     }
-    
+
     return nullptr;
 }
 
@@ -883,16 +884,17 @@ void Instrument::configureNode(AudioProcessorGraph::Node::Ptr node,
     const PluginDescription &desc, double x, double y)
 {
     // make a hash from a general instrument description
-    const String descriptionString = (desc.name +
-                                      desc.category +
-                                      desc.descriptiveName +
-                                      desc.manufacturerName +
-                                      desc.pluginFormatName +
-                                      String(desc.numInputChannels) +
-                                      String(desc.numOutputChannels));
-    
+    const String descriptionString =
+        (desc.name +
+        desc.category +
+        desc.descriptiveName +
+        desc.manufacturerName +
+        desc.pluginFormatName +
+        String(desc.numInputChannels) +
+        String(desc.numOutputChannels));
+
     const String nodeHash = String(constexprHash(descriptionString.toUTF8()));
-    
+
     node->properties.set(Serialization::Audio::nodeHash, nodeHash);
     node->properties.set(Serialization::UI::positionX, x);
     node->properties.set(Serialization::UI::positionY, y);
@@ -925,7 +927,7 @@ void Instrument::AudioCallback::setProcessor(AudioProcessor *const newOne)
     }
 }
 
-void Instrument::AudioCallback::audioDeviceIOCallback(const float** const inputChannelData,
+void Instrument::AudioCallback::audioDeviceIOCallback(const float **const inputChannelData,
     const int numInputChannels, float **const outputChannelData,
     const int numOutputChannels, const int numSamples)
 {

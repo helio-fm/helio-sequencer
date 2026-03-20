@@ -34,17 +34,17 @@ public:
     {
         this->stopAnimating();
     }
-    
+
     void startAnimating()
     {
         this->startTimerHz(60);
     }
-    
+
     void stopAnimating()
     {
         this->stopTimer();
     }
-    
+
     void paint(Graphics &g) override
     {
         auto *shapePiece = this->indicatorShape->getChildComponent(0);
@@ -103,5 +103,5 @@ private:
 
     UniquePointer<Drawable> indicatorShape;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProgressIndicator)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProgressIndicator)
 };

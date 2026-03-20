@@ -60,7 +60,7 @@ public:
     inline const String &getName() const noexcept { return this->name; }
     inline const Period &getPeriod() const noexcept { return this->period; }
     inline int getPeriodSize() const noexcept { return this->period.size(); }
-    inline double getPeriodRange() const noexcept{ return this->periodRange; }
+    inline double getPeriodRange() const noexcept { return this->periodRange; }
     inline int getNumKeys() const noexcept { return this->keysTotal; }
     inline Note::Key getMiddleC() const noexcept { return this->middleC; }
 
@@ -101,7 +101,7 @@ public:
     Temperament &operator=(const Temperament &other);
     friend bool operator==(const Temperament &l, const Temperament &r);
     friend bool operator!=(const Temperament &l, const Temperament &r);
-    
+
     int hashCode() const noexcept;
 
     static constexpr auto periodNumForMiddleC = 5;

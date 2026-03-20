@@ -336,10 +336,10 @@ public:
         // the epsilon is picked to cut ~50% of all points at any zoom level,
         // which is a small reduction so that the curve shape barely changes;
         // the point of doing it is that it filters out the noise nicely:
-        const auto epsilon  = jmax(0.000001f, viewWidth / float(mySize.getX()) * 0.001f);
+        const auto epsilon = jmax(0.000001f, viewWidth / float(mySize.getX()) * 0.001f);
         this->simplifiedPositions =
             PointReduction<double>::simplify(this->rawPositions, epsilon);
-        
+
         if (this->simplifiedPositions.size() >= 2)
         {
             this->simplifiedPositions[this->simplifiedPositions.size() - 1] = newPosition;
@@ -482,7 +482,7 @@ void VelocityEditor::mouseDown(const MouseEvent &e)
         this->handDrawingHelper->setBounds(this->getLocalBounds());
         this->handDrawingHelper->setStartMousePosition(e.position);
     }
-    else  if (this->isDraggingEvent(e))
+    else if (this->isDraggingEvent(e))
     {
         // roll panning hack
         this->roll->mouseDown(e.getEventRelativeTo(this->roll));

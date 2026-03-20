@@ -168,7 +168,7 @@ void AutomationTrackNode::resetStateTo(const VCS::TrackedItem &newState)
     {
         const VCS::Delta *newDelta = newState.getDelta(i);
         const auto newDeltaData(newState.getDeltaData(i));
-        
+
         if (newDelta->hasType(MidiTrackDeltas::trackPath))
         {
             this->resetPathDelta(newDeltaData);

@@ -24,10 +24,10 @@ class OrchestraPitNode;
 class OrchestraPitMenu final : public MenuPanel
 {
 public:
-    
+
     explicit OrchestraPitMenu(OrchestraPitNode &parentOrchestra);
-    
+
 private:
-  
+
     OrchestraPitNode &instrumentsRoot;
 };

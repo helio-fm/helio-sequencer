@@ -81,7 +81,7 @@ private:
 
     InterProcessLock fileLock;
     File propertiesFile;
-    
+
     FlatHashMap<Identifier, var, IdentifierHash> properties;
     FlatHashMap<Identifier, SerializedData, IdentifierHash> children;
 

@@ -28,7 +28,6 @@ public:
 
     void centerTargetToViewport();
 
-
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
@@ -50,5 +49,4 @@ private:
     Point<int> viewportDragStart;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ViewportFitProxyComponent)
-
 };

@@ -49,7 +49,7 @@ public:
     bool doesPluginStillExist(const PluginDescription &) override { return true; }
     String getNameOfPluginFromIdentifier(const String &fileOrIdentifier) override { return fileOrIdentifier; }
     StringArray searchPathsForPlugins(const FileSearchPath &, bool, bool) override { return {}; }
-    bool requiresUnblockedMessageThreadDuringCreation(const PluginDescription&) const noexcept override { return false; }
+    bool requiresUnblockedMessageThreadDuringCreation(const PluginDescription &) const noexcept override { return false; }
     bool isTrivialToScan() const noexcept override { return true; };
 
     void createPluginInstance(const PluginDescription &desc,

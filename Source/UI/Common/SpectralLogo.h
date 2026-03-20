@@ -25,7 +25,7 @@ public:
 
     SpectralLogo();
     ~SpectralLogo() override;
-    
+
     void paint(Graphics &g) override;
     void resized() override;
     void parentHierarchyChanged() override;
@@ -35,11 +35,11 @@ public:
     float getLineWidth() const noexcept;
 
 private:
-    
+
     class Band final
     {
     public:
-        
+
         explicit Band(SpectralLogo *parent);
         void reset();
 
@@ -47,7 +47,7 @@ private:
             float radians, int numSkippedSegments, uint32 timeNow);
 
     private:
-        
+
         SpectralLogo *parent;
 
         float value = 0.f;
@@ -65,11 +65,11 @@ private:
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Band)
     };
-    
+
 private:
-    
+
     void timerCallback() override;
-    
+
     static float timeToDistance(float time, float startSpeed = 0.f,
         float midSpeed = 2.f, float endSpeed = 0.f) noexcept
     {
@@ -83,15 +83,15 @@ private:
 
     OwnedArray<SpectralLogo::Band> bands;
     Path wave;
-    
+
     static constexpr auto bandCount = 70;
 
     float pulse = 0.f;
-    
+
     float randomnessRange = 0;
     float lineThickness = 0;
     float lineStepSize = 0;
     float lineWidth = 0;
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectralLogo)
 };

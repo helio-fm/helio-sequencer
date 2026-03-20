@@ -29,7 +29,7 @@ public:
     explicit TrackGroupNode(const String &name);
 
     static void removeAllEmptyGroupsInProject(ProjectNode *project); // sanitize the tree
-    
+
     void sortByNameAmongSiblings();
 
     Image getIcon() const noexcept override;
@@ -43,5 +43,4 @@ public:
 
     bool hasMenu() const noexcept override;
     UniquePointer<Component> createMenu() override;
-
 };

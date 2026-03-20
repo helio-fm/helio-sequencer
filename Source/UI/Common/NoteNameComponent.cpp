@@ -97,7 +97,7 @@ inline int NoteNameComponent::getRequiredWidth() const noexcept
 
     if (this->detailsText.hasValue())
     {
-         result += ceilf(this->detailsWidth) + NoteNameComponent::detailsMargin;
+        result += ceilf(this->detailsWidth) + NoteNameComponent::detailsMargin;
     }
 
     return int(ceilf(result));
@@ -119,7 +119,7 @@ inline float NoteNameComponent::getContentWidthFloat() const noexcept
 
     if (this->detailsText.hasValue())
     {
-         result += this->detailsWidth + NoteNameComponent::detailsMargin;
+        result += this->detailsWidth + NoteNameComponent::detailsMargin;
     }
 
     return result;

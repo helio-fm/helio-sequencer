@@ -64,7 +64,7 @@ public:
     uint64 getSampleLength() const noexcept { return this->sampleLength; }
     uint64 getLoopStart() const noexcept { return this->loopStart; }
     uint64 getLoopEnd() const noexcept { return this->loopEnd; }
-    
+
     bool load(AudioFormatManager &formatManager)
     {
         UniquePointer<AudioFormatReader> reader(formatManager.createReaderFor(this->file));

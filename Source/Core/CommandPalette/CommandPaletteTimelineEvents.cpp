@@ -48,7 +48,7 @@ const CommandPaletteActionsProvider::Actions &CommandPaletteTimelineEvents::getA
     }
 
     const auto *timeline = this->project.getTimeline();
-    
+
     if (this->annotationActionsOutdated)
     {
         this->annotationActionsCache.clearQuick();

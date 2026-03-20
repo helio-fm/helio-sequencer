@@ -32,7 +32,7 @@ public:
         this->setInterceptsMouseClicks(false, false);
         this->setPaintingIsUnclipped(true);
     }
-    
+
     explicit GenericTooltip(UniquePointer<Component> &&content) :
         content(move(content))
     {
@@ -78,7 +78,7 @@ public:
                 withSizeKeepingCentre(this->content->getWidth(), this->content->getHeight()));
         }
     }
-    
+
 private:
 
     String message;

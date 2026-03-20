@@ -32,7 +32,8 @@ class TransportControlComponent;
 #include "MenuPanel.h"
 #include "ColourIDs.h"
 
-class SequencerSidebarRight final : public Component,
+class SequencerSidebarRight final :
+    public Component,
     public SwipeController::Listener,
     private UserInterfaceFlags::Listener,
     private RollEditMode::Listener,
@@ -64,7 +65,7 @@ private:
     //===------------------------------------------------------------------===//
 
     ProjectNode &project;
-    
+
     enum class MenuMode : int8
     {
         None,
@@ -130,5 +131,5 @@ private:
     UniquePointer<MenuItemComponent> repriseButton;
     UniquePointer<TransportControlComponent> transportControl;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerSidebarRight)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SequencerSidebarRight)
 };

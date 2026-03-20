@@ -46,5 +46,4 @@ protected:
 private:
 
     const UniquePointer<Document> document;
-
 };

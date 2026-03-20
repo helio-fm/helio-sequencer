@@ -39,7 +39,8 @@ public:
 
         this->clickHandler = make<OverlayButton>();
         this->addAndMakeVisible(this->clickHandler.get());
-        this->clickHandler->onClick = []() {
+        this->clickHandler->onClick = []()
+        {
             App::Workspace().createEmptyProject();
         };
 

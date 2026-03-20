@@ -28,7 +28,7 @@ SpectralLogo::SpectralLogo()
 }
 
 SpectralLogo::~SpectralLogo()
-{ 
+{
     this->stopTimer();
 }
 
@@ -107,12 +107,12 @@ void SpectralLogo::paint(Graphics &g)
             
             const float pulseScale = 1.4f;
             const float pulseMultiplier = pulseScale * (0.5f + (sinf(this->pulse) / 2.f));
-            
+
             const float v =
                 (heptagramShape * bandSize) -
                 (r.nextFloat() * this->randomnessRange) -
                 (pulseMultiplier * pulseMultiplier * this->randomnessRange * (0.5f - heptagramShape) * 0.5f);
-            
+
             const float radians = float(i) * (MathConstants<float>::twoPi / float(SpectralLogo::bandCount));
             g.fillPath(this->bands[i]->buildPath(v, cx, cy, bandSize, radians, coreCircleSize, timeNow));
         }
@@ -192,15 +192,15 @@ inline Path SpectralLogo::Band::buildPath(float valueInY,
             this->peak = 0.f;
         }
     }
-    
+
     const float lineStepSize = this->parent->getLineStepSize();
     const float lineThickness = this->parent->getLineThickness();
     const float lineWidth = this->parent->getLineWidth();
 
     this->peak = jmax(this->peak, lineStepSize * (numSkippedSegments + 1));
-    
+
     Path path;
-    
+
     int segmentIndex = 0;
     for (float i = 0.f; i < this->value; i += lineStepSize)
     {
@@ -210,12 +210,12 @@ inline Path SpectralLogo::Band::buildPath(float valueInY,
             path.addLineSegment(Line<float>(-w, i, w, i), lineThickness);
         }
     }
-    
+
     const float alignedPeak = roundf(this->peak / lineStepSize) * lineStepSize;
     const float peakH = jmax(this->peak, alignedPeak);
     const float w = lineWidth * (peakH / h);
     path.addLineSegment(Line<float>(-w, peakH, w, peakH), lineThickness / 4.f);
-    
+
     AffineTransform transform = AffineTransform::translation(cx, cy).rotated(radians, cx, cy);
     path.applyTransform(transform);
     return path;

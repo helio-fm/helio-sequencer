@@ -68,7 +68,7 @@ public:
     bool stash(SparseSet<int> selectedItems, const String &message, bool shouldKeepChanges = false);
     bool applyStash(const VCS::Revision::Ptr stash, bool shouldKeepStash = false);
     bool applyStash(const String &stashId, bool shouldKeepStash = false);
-    
+
     bool hasQuickStash() const;
     bool quickStashAll();
     bool restoreQuickStash();
@@ -86,7 +86,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
-    
+
 protected:
 
     VCS::Revision::Ptr getRevisionById(const VCS::Revision::Ptr startFrom, const String &id) const;

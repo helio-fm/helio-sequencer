@@ -20,7 +20,7 @@
 class TransportListener
 {
 public:
-    
+
     virtual ~TransportListener() = default;
 
     // these methods will be called with message manager locked
@@ -35,5 +35,4 @@ public:
     // these 2 methods could be called from a separate thread
     virtual void onSeek(float beatPosition) = 0;
     virtual void onCurrentTempoChanged(double msPerQuarterNote) = 0;
-
 };

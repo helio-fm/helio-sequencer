@@ -23,7 +23,7 @@
 class MetersCollection final : public ConfigurationResourceCollection
 {
 public:
-  
+
     MetersCollection();
 
     inline const Array<Meter::Ptr> getAll() const

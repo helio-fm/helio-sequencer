@@ -148,7 +148,7 @@ protected:
 
     UniquePointer<MidiSequence> sequence;
     UniquePointer<Pattern> pattern;
-    
+
     // this is set when the track is selected, but it's
     // not updated if the corresponding clip's params change
     // (would require a subscription to project events)
@@ -171,5 +171,4 @@ protected:
 
     // used as a template by TimeSignaturesAggregator:
     TimeSignatureEvent timeSignatureOverride;
-
 };

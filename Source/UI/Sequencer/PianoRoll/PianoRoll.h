@@ -63,10 +63,10 @@ public:
     //===------------------------------------------------------------------===//
     // Ghost notes
     //===------------------------------------------------------------------===//
-    
+
     void showGhostNoteFor(NoteComponent *targetNoteComponent);
     void hideAllGhostNotes();
-    
+
     //===------------------------------------------------------------------===//
     // Input Listeners
     //===------------------------------------------------------------------===//
@@ -190,11 +190,11 @@ public:
     void handleCommandMessage(int commandId) override;
     void resized() override;
     void paint(Graphics &g) noexcept override;
-    
+
     //===------------------------------------------------------------------===//
     // RollBase
     //===------------------------------------------------------------------===//
-    
+
     void handleAsyncUpdate() override;
     void onChangeEditMode(const RollEditMode &mode) override;
 
@@ -213,7 +213,7 @@ public:
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 protected:
 
     //===------------------------------------------------------------------===//
@@ -292,7 +292,7 @@ private:
     UniquePointer<HighlightingScheme> defaultHighlighting;
     int binarySearchForHighlightingScheme(const KeySignatureEvent *const e) const noexcept;
     friend class ThemeSettingsItem; // to be able to call renderRowsPattern
-    
+
     bool scalesHighlightingEnabled = true;
 
 private:

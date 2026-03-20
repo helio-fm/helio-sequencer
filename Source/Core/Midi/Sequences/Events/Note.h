@@ -41,7 +41,7 @@ public:
 
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         const KeyboardMapping &keyMap, double timeFactor) const noexcept override;
-    
+
     // use these methods to perform undo/redo actions
     Note withKey(Key newKey) const noexcept;
     Note withBeat(float newBeat) const noexcept;
@@ -79,11 +79,11 @@ public:
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
-    
+
     void applyChanges(const Note &parameters) noexcept;
 
     static int compareElements(const Note *const first, const Note *const second) noexcept;
-    
+
     static inline int compareElements(const Note &first, const Note &second) noexcept
     {
         return Note::compareElements(&first, &second);

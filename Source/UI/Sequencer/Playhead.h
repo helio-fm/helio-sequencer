@@ -34,6 +34,7 @@ public:
     class Listener
     {
     public:
+
         virtual ~Listener() = default;
         virtual void onMovePlayhead(int oldX, int newX) = 0;
     };

@@ -41,7 +41,7 @@ Workspace::~Workspace()
 
 void Workspace::init()
 {
-    if (! this->wasInitialized)
+    if (!this->wasInitialized)
     {
         this->audioCore = make<AudioCore>();
         this->pluginManager = make<PluginScanner>();
@@ -49,7 +49,7 @@ void Workspace::init()
 
         this->consoleProjectsList = make<CommandPaletteProjectsList>(*this);
 
-        if (! this->autoload())
+        if (!this->autoload())
         {
             DBG("Workspace autoload failed, creating the empty workspace");
             this->failedDeserializationFallback();
@@ -218,7 +218,7 @@ void Workspace::unloadProject(const String &projectId, bool deleteLocally)
     TreeNode *currentShowingItem = this->navigationHistory.getCurrentItem();
     ProjectNode *projectToDelete = nullptr;
     ProjectNode *projectToSwitchTo = nullptr;
-    
+
     for (auto *project : projects)
     {
         if (project->getId() == projectId)
@@ -230,17 +230,17 @@ void Workspace::unloadProject(const String &projectId, bool deleteLocally)
             projectToSwitchTo = project;
         }
     }
-    
+
     bool isShowingAnyOfDeletedChildren = false;
     bool isShowingAnyProjectToDelete = false;
     Array<TreeNode *> childrenToDelete;
-    
+
     if (projectToDelete != nullptr)
     {
         childrenToDelete = projectToDelete->findChildrenOfType<TreeNode>();
         isShowingAnyProjectToDelete = (currentShowingItem == projectToDelete);
     }
-    
+
     for (auto *treeItem : childrenToDelete)
     {
         if (currentShowingItem == treeItem)
@@ -249,9 +249,9 @@ void Workspace::unloadProject(const String &projectId, bool deleteLocally)
             break;
         }
     }
-    
+
     const bool shouldSwitchToOtherPage = isShowingAnyProjectToDelete || isShowingAnyOfDeletedChildren;
-    
+
     if (projectToDelete != nullptr)
     {
         const File localFile(projectToDelete->getDocument()->getFullPath());
@@ -262,7 +262,7 @@ void Workspace::unloadProject(const String &projectId, bool deleteLocally)
             this->userProfile.deleteProjectLocally(projectId);
         }
     }
-    
+
     if (shouldSwitchToOtherPage)
     {
         if (projectToSwitchTo != nullptr)
@@ -315,11 +315,11 @@ void Workspace::stopPlaybackForAllProjects()
 
 void Workspace::autosave()
 {
-    if (! this->wasInitialized)
+    if (!this->wasInitialized)
     {
         return;
     }
-    
+
     App::Config().save(this, Serialization::Config::activeWorkspace);
 }
 
@@ -343,16 +343,16 @@ void Workspace::failedDeserializationFallback()
 
     TreeNode *settings = new SettingsNode();
     this->treeRoot->addChildNode(settings);
-    
+
     TreeNode *instruments = new OrchestraPitNode();
     this->treeRoot->addChildNode(instruments);
-    
+
     if (auto *p = this->treeRoot->addExampleProject())
     {
         this->userProfile.onProjectLocalInfoUpdated(p->getId(),
             p->getName(), p->getDocument()->getFullPath());
     }
-    
+
     this->wasInitialized = true;
     this->autosave();
 }
@@ -452,7 +452,7 @@ static void addAllActiveItemIds(TreeNodeBase *item, SerializedData &parent)
             child.setProperty(Serialization::Core::treeNodeId, item->getNodeIdentifier());
             parent.appendChild(child);
         }
-        
+
         for (int i = 0; i < item->getNumChildren(); ++i)
         {
             addAllActiveItemIds(item->getChild(i), parent);
@@ -470,7 +470,7 @@ static TreeNode *selectActiveSubItemWithId(TreeNodeBase *item, const String &id)
             treeItem->showPage();
             return treeItem;
         }
-        
+
         for (int i = 0; i < item->getNumChildren(); ++i)
         {
             if (auto *subItem = selectActiveSubItemWithId(item->getChild(i), id))
@@ -502,12 +502,12 @@ SerializedData Workspace::serialize() const
     SerializedData treeRootNode(Core::treeRoot);
     treeRootNode.appendChild(this->treeRoot->serialize());
     tree.appendChild(treeRootNode);
-    
+
     // TODO serialize tree openness state?
     SerializedData treeStateNode(Core::treeState);
     addAllActiveItemIds(this->treeRoot.get(), treeStateNode);
     tree.appendChild(treeStateNode);
-    
+
     return tree;
 }
 
@@ -515,10 +515,10 @@ void Workspace::deserialize(const SerializedData &data)
 {
     this->reset();
     using namespace Serialization;
-    
+
     auto root = data.hasType(Core::workspace) ?
         data : data.getChildWithName(Core::workspace);
-    
+
     if (!root.isValid())
     {
         // Always fallback to default workspace
@@ -534,7 +534,7 @@ void Workspace::deserialize(const SerializedData &data)
     jassert(treeRootNode.isValid());
 
     this->treeRoot->deserialize(treeRootNode);
-    
+
     bool foundActiveNode = false;
     const auto treeStateNode = root.getChildWithName(Core::treeState);
     if (treeStateNode.isValid())
@@ -545,7 +545,7 @@ void Workspace::deserialize(const SerializedData &data)
             foundActiveNode = (nullptr != selectActiveSubItemWithId(this->treeRoot.get(), id));
         }
     }
-    
+
     // TODO pass all opened projects to user profile?
 
     // If no instruments root item is found for whatever reason
@@ -555,7 +555,7 @@ void Workspace::deserialize(const SerializedData &data)
         auto orchestraPitNode = make<OrchestraPitNode>();
         this->treeRoot->addChildNode(orchestraPitNode.release(), 0);
     }
-    
+
     // The same hack for settings root:
     if (nullptr == this->treeRoot->findChildOfType<SettingsNode>())
     {
@@ -563,7 +563,7 @@ void Workspace::deserialize(const SerializedData &data)
         this->treeRoot->addChildNode(settingsNode.release(), 0);
     }
 
-    if (! foundActiveNode)
+    if (!foundActiveNode)
     {
         // Fallback to the main page
         selectActiveSubItemWithId(this->treeRoot.get(), this->treeRoot->getNodeIdentifier());

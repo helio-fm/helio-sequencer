@@ -26,8 +26,8 @@ class MidiTrackNode;
 class ProjectMenu final : public MenuPanel
 {
 public:
-    
-    ProjectMenu(ProjectNode &parentProject, AnimationType animationType);    
+
+    ProjectMenu(ProjectNode &parentProject, AnimationType animationType);
     void handleCommandMessage(int commandId) override;
 
     static void showNewTrackDialog(ProjectNode &project,
@@ -50,5 +50,4 @@ private:
     void showNewTrackMenu(AnimationType animationType);
     void showNewAutomationMenu(AnimationType animationType);
     void showControllersMenuForInstrument(const WeakReference<Instrument> instrument);
-
 };

@@ -147,7 +147,9 @@ void Head::pointTo(const Revision::Ptr revision)
 bool Head::resetChangedItemToState(const RevisionItem::Ptr diffItem)
 {
     if (this->state == nullptr)
-    { return false; }
+    {
+        return false;
+    }
 
     // на входе - один из айтемов диффа
     TrackedItem *sourceItem = nullptr;
@@ -327,7 +329,7 @@ bool Head::resetChanges(const Array<RevisionItem::Ptr> &changes)
 void Head::checkoutItem(RevisionItem::Ptr stateItem)
 {
     TrackedItem *targetItem = nullptr;
-    
+
     for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
     {
         auto *item = this->targetVcsItemsSource.getTrackedItem(i);
@@ -350,7 +352,7 @@ void Head::checkoutItem(RevisionItem::Ptr stateItem)
     {
         if (!targetItem)
         {
-            
+
             const Identifier logicType(stateItem->getDiffLogic()->getType());
             const Uuid id(stateItem->getUuid());
             this->targetVcsItemsSource.initTrackedItem(logicType, id, *stateItem);
@@ -380,7 +382,7 @@ SerializedData Head::serialize() const
 
     {
         const ScopedReadLock lock(this->stateLock);
-        
+
         for (int i = 0; i < this->state->getNumTrackedItems(); ++i)
         {
             const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
@@ -388,7 +390,7 @@ SerializedData Head::serialize() const
             snapshotNode.appendChild(serializedItem);
         }
     }
-    
+
     tree.appendChild(snapshotNode);
     return tree;
 }
@@ -396,7 +398,7 @@ SerializedData Head::serialize() const
 void Head::deserialize(const SerializedData &data)
 {
     this->reset();
-    
+
     const auto root = data.hasType(Serialization::VCS::head) ?
         data : data.getChildWithName(Serialization::VCS::head);
 
@@ -448,74 +450,77 @@ void Head::rebuildDiffIfNeeded()
 
     const ScopedWriteLock scopedDiffLock(this->diffLock);
     this->diff->reset();
-    
+
     const ScopedReadLock scopedStateLock(this->stateLock);
     for (int i = 0; i < this->state->getNumTrackedItems(); ++i)
     {
         bool foundItemInTarget = false;
         const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
-        
+
         // will check `removed` records later
         if (stateItem->getType() == RevisionItem::Type::Removed) { continue; }
-        
+
         for (int j = 0; j < this->targetVcsItemsSource.getNumTrackedItems(); ++j)
         {
             auto *targetItem = this->targetVcsItemsSource.getTrackedItem(j); // i.e. MidiTrckNode
-            
+
             // state item exists in project, adding `changed` record, if needed
             if (stateItem->getUuid() == targetItem->getUuid())
             {
                 foundItemInTarget = true;
-                
+
                 UniquePointer<Diff> itemDiff(targetItem->getDiffLogic()->createDiff(*stateItem));
-                
+
                 if (itemDiff->hasAnyChanges())
                 {
                     RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Changed, itemDiff.get()));
                     this->diff->addItem(revisionRecord);
                 }
-                
+
                 break;
             }
         }
-        
+
         // state item was not found in project, adding `removed` record
-        if (! foundItemInTarget)
+        if (!foundItemInTarget)
         {
             auto emptyDiff = make<Diff>(*stateItem);
             RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Removed, emptyDiff.get()));
             this->diff->addItem(revisionRecord);
         }
     }
-    
+
     // search for project item that are missing (or deleted) in the state
     for (int i = 0; i < this->targetVcsItemsSource.getNumTrackedItems(); ++i)
     {
         bool foundItemInState = false;
         TrackedItem *targetItem = this->targetVcsItemsSource.getTrackedItem(i);
-        
+
         for (int j = 0; j < this->state->getNumTrackedItems(); ++j)
         {
             const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(j));
-            
-            if (stateItem->getType() == RevisionItem::Type::Removed) { continue; }
-            
+
+            if (stateItem->getType() == RevisionItem::Type::Removed)
+            {
+                continue;
+            }
+
             if (stateItem->getUuid() == targetItem->getUuid())
             {
                 foundItemInState = true;
                 break;
             }
         }
-        
+
         // copy deltas from targetItem and add `added` record
-        if (! foundItemInState)
+        if (!foundItemInState)
         {
             RevisionItem::Ptr revisionRecord(new RevisionItem(RevisionItem::Type::Added, targetItem));
             this->diff->addItem(revisionRecord);
         }
     }
-    
+
     this->setDiffOutdated(false);
 }
 
-}
+} // namespace VCS

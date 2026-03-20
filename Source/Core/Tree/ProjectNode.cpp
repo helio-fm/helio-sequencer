@@ -136,7 +136,7 @@ String ProjectNode::getId() const noexcept
 String ProjectNode::getStats() const
 {
     const auto tracks = this->findChildrenOfType<MidiTrackNode>();
-    
+
     int numEvents = 0;
     int numTracks = tracks.size();
     for (int i = 0; i < numTracks; ++i)
@@ -144,7 +144,7 @@ String ProjectNode::getStats() const
         numEvents += tracks[i]->getSequence()->size();
     }
 
-    return String(TRANS_PLURAL("{x} tracks", numTracks) + " " + 
+    return String(TRANS_PLURAL("{x} tracks", numTracks) + " " +
         TRANS(I18n::Common::conjunction) + " " +
         TRANS_PLURAL("{x} events", numEvents));
 }
@@ -199,9 +199,9 @@ void ProjectNode::safeRename(const String &newName, bool sendNotifications)
     {
         return;
     }
-    
+
     this->name = newName;
-    
+
     this->getDocument()->renameFile(newName);
 
     if (sendNotifications)
@@ -223,7 +223,7 @@ void ProjectNode::recreatePage()
     {
         layoutState = this->sequencerLayout->serialize();
     }
-    
+
     const auto defaultSize = App::Layout().getLocalBounds().getBottomRight();
     this->sequencerLayout = make<SequencerLayout>(*this, defaultSize);
     this->projectPage = make<ProjectPage>(*this);
@@ -386,7 +386,7 @@ Array<MidiTrack *> ProjectNode::getTracks() const
 
     // now get all layers inside a tree hierarchy
     this->collectTracks(tracks);
-    
+
     // and explicitly add the only non-tree-owned tracks
     tracks.add(this->timeline->getAnnotations());
     tracks.add(this->timeline->getKeySignatures());
@@ -398,7 +398,7 @@ Array<MidiTrack *> ProjectNode::getTracks() const
 void ProjectNode::collectTracks(Array<MidiTrack *> &resultArray, bool onlySelected /*= false*/) const
 {
     const auto trackNodes = this->findChildrenOfType<MidiTrackNode>();
-    
+
     for (int i = 0; i < trackNodes.size(); ++i)
     {
         if (trackNodes.getUnchecked(i)->isSelected() || !onlySelected)
@@ -454,7 +454,7 @@ Range<float> ProjectNode::calculateProjectBeatRange() const
         firstBeat = jmin(firstBeat, sequenceFirstBeat + patternFirstBeat);
         lastBeat = jmax(lastBeat, sequenceLastBeat + patternLastBeat);
     }
-    
+
     if (firstBeat == FLT_MAX)
     {
         firstBeat = 0;
@@ -463,7 +463,7 @@ Range<float> ProjectNode::calculateProjectBeatRange() const
     {
         firstBeat = lastBeat - Globals::Defaults::projectLength;
     }
-    
+
     if ((lastBeat - firstBeat) < Globals::Defaults::projectLength)
     {
         lastBeat = firstBeat + Globals::Defaults::projectLength;
@@ -518,7 +518,7 @@ void ProjectNode::deserialize(const SerializedData &data)
 
     // iOS hack: the `documents` path will change between launches
     const File relativePathFile = DocumentHelpers::getDocumentSlot(fullPathFile.getFileName());
-    
+
     if (fullPathFile.existsAsFile())
     {
         this->getDocument()->load(fullPathFile);
@@ -572,10 +572,13 @@ void ProjectNode::load(const SerializedData &tree)
     const auto root = tree.hasType(Serialization::Core::project) ?
         tree : tree.getChildWithName(Serialization::Core::project);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     this->id = root.getProperty(Serialization::Core::projectId, Uuid().toString());
-    
+
     const auto grouping = root.getProperty(Serialization::UI::trackGrouping, int(this->trackGroupingMode));
     this->trackGroupingMode = MidiTrack::Grouping(int(grouping));
 
@@ -634,7 +637,7 @@ void ProjectNode::importMidi(InputStream &stream)
         // so let's group all found notes in each track by channel
         // (a different channel often means a different instrument):
         FlatHashSet<int> pianoChannels;
-        
+
         // and group automation events by controller number, picking the last
         // found channel for it, which is not ideal but should be ok in practice:
         FlatHashMap<int, int> automationControllers;
@@ -718,7 +721,7 @@ void ProjectNode::importMidi(InputStream &stream)
         this->timeline->getKeySignatures()->getSequence()->importMidi(*importedTrack, timeFormat, {});
         this->timeline->getTimeSignatures()->getSequence()->importMidi(*importedTrack, timeFormat, {});
     }
-    
+
     this->isTracksCacheOutdated = true;
     this->broadcastReloadProjectContent();
     auto range = this->broadcastChangeProjectBeatRange();
@@ -862,7 +865,7 @@ void ProjectNode::broadcastChangeProjectInfo(const ProjectMetadata *info)
 Range<float> ProjectNode::broadcastChangeProjectBeatRange()
 {
     const auto newBeatRange = this->calculateProjectBeatRange();
-    
+
     if (this->beatRange != newBeatRange)
     {
         this->beatRange = newBeatRange;
@@ -1132,7 +1135,7 @@ VCS::TrackedItem *ProjectNode::initTrackedItem(const Identifier &type,
         this->timeline->resetStateTo(newState);
         return this->timeline.get();
     }
-    
+
     return nullptr;
 }
 
@@ -1209,15 +1212,15 @@ void ProjectNode::rebuildTracksRefsCacheIfNeeded() const
 
         this->tracksRefsCache[this->timeline->getTimeSignatures()->getTrackId()] =
             this->timeline->getTimeSignatures();
-        
+
         const auto children = this->findChildrenOfType<MidiTrack>();
-        
+
         for (int i = 0; i < children.size(); ++i)
         {
             MidiTrack *const track = children.getUnchecked(i);
             this->tracksRefsCache[track->getTrackId()] = track;
         }
-        
+
         this->isTracksCacheOutdated = false;
     }
 }

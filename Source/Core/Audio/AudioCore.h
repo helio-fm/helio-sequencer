@@ -99,7 +99,7 @@ public:
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 private:
 
     Instrument *addMidiOutputInstrument(const String &name);

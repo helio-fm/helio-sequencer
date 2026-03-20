@@ -346,7 +346,7 @@ void HeadlineDropdown::showCursor()
     this->addAndMakeVisible(this->cursor.get());
 }
 
-template<typename T>
+template <typename T>
 T *getComponentOrParentAs(Component *target)
 {
     Component *c = target;

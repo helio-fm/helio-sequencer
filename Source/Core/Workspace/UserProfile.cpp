@@ -107,7 +107,10 @@ void UserProfile::deserialize(const SerializedData &data)
     const auto root = data.hasType(User::profile) ?
         data : data.getChildWithName(User::profile);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     forEachChildWithType(root, child, User::RecentProjects::recentProject)
     {

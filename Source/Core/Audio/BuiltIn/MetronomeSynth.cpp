@@ -186,7 +186,7 @@ void MetronomeSynth::SamplerParameters::deserialize(const SerializedData &data)
         return;
     }
 
-    for (int i = 0 ; i < root.getNumChildren(); ++i)
+    for (int i = 0; i < root.getNumChildren(); ++i)
     {
         const String syllableString = root.getChild(i).getProperty(Metronome::syllableName);
         const String sampleFilePath = root.getChild(i).getProperty(Metronome::filePath);

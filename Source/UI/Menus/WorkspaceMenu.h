@@ -25,13 +25,12 @@ class Workspace;
 class WorkspaceMenu final : public MenuPanel
 {
 public:
-    
+
     explicit WorkspaceMenu(Workspace &workspace);
-    
+
 private:
 
     Workspace &workspace;
 
     void showMainMenu(AnimationType animationType);
-
 };

@@ -68,7 +68,6 @@ const ConfigurationResource &ConfigurationResourceCollection::getResourceCompara
     return this->comparator;
 }
 
-
 SerializedData ConfigurationResourceCollection::serializeResources(const Resources &resources)
 {
     SerializedData tree(this->resourceType);

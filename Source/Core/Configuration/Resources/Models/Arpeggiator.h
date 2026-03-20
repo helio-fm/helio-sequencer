@@ -61,7 +61,7 @@ public:
 
     Arpeggiator &operator=(const Arpeggiator &other);
     friend bool operator==(const Arpeggiator &l, const Arpeggiator &r);
-    
+
     //===------------------------------------------------------------------===//
     // Internal
     //===------------------------------------------------------------------===//

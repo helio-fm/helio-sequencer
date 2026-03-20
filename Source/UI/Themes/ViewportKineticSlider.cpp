@@ -24,7 +24,7 @@ void ViewportKineticSlider::stopAnimationForViewport(Viewport *targetViewport)
     {
         return;
     }
-    
+
     for (int i = 0; i < this->animators.size(); ++i)
     {
         if (this->animators[i]->viewport == targetViewport)
@@ -33,7 +33,7 @@ void ViewportKineticSlider::stopAnimationForViewport(Viewport *targetViewport)
             break;
         }
     }
-    
+
     for (int i = 0; i < this->dragStates.size(); ++i)
     {
         if (this->dragStates[i]->viewport == targetViewport)
@@ -47,7 +47,7 @@ void ViewportKineticSlider::stopAnimationForViewport(Viewport *targetViewport)
 void ViewportKineticSlider::calculateDragSpeedForViewport(Viewport *targetViewport, Point<float> absDragOffset)
 {
     DragState::Ptr targetState;
-    
+
     for (auto &s : this->dragStates)
     {
         if (s->viewport == targetViewport)
@@ -56,7 +56,7 @@ void ViewportKineticSlider::calculateDragSpeedForViewport(Viewport *targetViewpo
             break;
         }
     }
-    
+
     if (!targetState)
     {
         targetState = new DragState();
@@ -66,10 +66,10 @@ void ViewportKineticSlider::calculateDragSpeedForViewport(Viewport *targetViewpo
         targetState->lastCheckTime = Time::getMillisecondCounterHiRes();
         this->dragStates.add(targetState);
     }
-    
+
     targetState->currentOffset = absDragOffset;
-    
-    if (! this->isTimerRunning())
+
+    if (!this->isTimerRunning())
     {
         this->startTimerHz(60);
     }
@@ -81,9 +81,9 @@ void ViewportKineticSlider::startAnimationForViewport(Viewport *targetViewport, 
     {
         return;
     }
-    
+
     auto newForce = force;
-    
+
     // picks up the precomputed force
     for (auto &s : this->dragStates)
     {
@@ -93,7 +93,7 @@ void ViewportKineticSlider::startAnimationForViewport(Viewport *targetViewport, 
             break;
         }
     }
-    
+
     // cleans up
     this->stopAnimationForViewport(targetViewport);
 
@@ -103,14 +103,14 @@ void ViewportKineticSlider::startAnimationForViewport(Viewport *targetViewport, 
     const float newLimitedForceX = jmax(-maxForce, jmin(maxForce, newForce.getX()));
     const float newLimitedForceY = jmax(-maxForce, jmin(maxForce, newForce.getY()));
     newForce = Point<float>(newLimitedForceX, newLimitedForceY);
-    
+
     Animator::Ptr animator(new Animator());
     animator->viewport = targetViewport;
     animator->force = newForce * startingForceMultiplier;
     animator->anchor = targetViewport->getViewPosition();
     this->animators.add(animator);
-    
-    if (! this->isTimerRunning())
+
+    if (!this->isTimerRunning())
     {
         this->startTimerHz(60);
     }
@@ -122,38 +122,38 @@ void ViewportKineticSlider::timerCallback()
     {
         this->stopTimer();
     }
-    
+
     // updates animators
     for (int i = 0; i < this->animators.size(); ++i)
     {
         auto animator = this->animators.getUnchecked(i);
-        
+
         if (animator->viewport == nullptr)
         {
             this->animators.remove(i);
             break;
         }
-        
+
         if (animator->force.getDistanceFromOrigin() < 1.0f)
         {
             this->animators.remove(i);
             break;
         }
-        
+
         animator->force *= 0.85f;
         animator->anchor += animator->force.toInt();
         animator->viewport->setViewPosition(animator->anchor);
     }
-    
+
     // calculates the speed
     for (auto &state : this->dragStates)
     {
         const auto timeDelta = Time::getMillisecondCounterHiRes() - state->lastCheckTime;
         state->lastCheckTime = Time::getMillisecondCounterHiRes();
-        
+
         const auto dragDelta = state->currentOffset - state->offsetAnchor;
         state->offsetAnchor = state->currentOffset;
-        
+
         const auto newForce = dragDelta / timeDelta;
         state->force = (state->force * 0.75f) + (newForce * 0.25f);
     }

@@ -55,7 +55,7 @@ void ModalCallout::fadeOut()
     const int reduceBy = 20;
     const auto offset = this->targetPoint - this->getBounds().getCentre().toFloat();
     const auto offsetNormalized = (offset / offset.getDistanceFromOrigin() * reduceBy).toInt();
-    
+
     App::animateComponent(this,
         this->getBounds().reduced(reduceBy).translated(offsetNormalized.getX(), offsetNormalized.getY()),
         0.f, Globals::UI::fadeOutShort, true, 0.0, 1.0);
@@ -112,7 +112,7 @@ void ModalCallout::parentHierarchyChanged()
         this->clickPointAbs = Point<float>((p.getX() + xOffset) / b.getWidth(),
             (p.getY() + yOffset) / b.getHeight()).
                 transformedBy(this->getTransform().inverted());
-        
+
         this->findTargetPointAndUpdateBounds();
     }
 }
@@ -184,7 +184,7 @@ void ModalCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo, const R
 {
     this->areaToPointTo = newAreaToPointTo;
     this->areaToFitIn = newAreaToFitIn;
-    
+
     const int borderSpace = this->getBorderSize();
 
     Rectangle<int> newBounds(this->contentComponent->getWidth() + borderSpace * 2,
@@ -195,7 +195,7 @@ void ModalCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo, const R
     const float hwReduced = float(hw - borderSpace * 2);
     const float hhReduced = float(hh - borderSpace * 2);
     const float arrowIndent = borderSpace - arrowSize;
-    
+
     const Point<float> targets[4] =
     {
         Point<float>(float(newAreaToPointTo.getCentreX()), float(newAreaToPointTo.getBottom())),
@@ -203,7 +203,7 @@ void ModalCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo, const R
         Point<float>(float(newAreaToPointTo.getX()), float(newAreaToPointTo.getCentreY())),
         Point<float>(float(newAreaToPointTo.getCentreX()), float(newAreaToPointTo.getY()))
     };
-    
+
     const Line<float> lines[4] =
     {
         Line<float>(targets[0].translated(-hwReduced, hh - arrowIndent), targets[0].translated(hwReduced, hh - arrowIndent)),
@@ -211,25 +211,25 @@ void ModalCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo, const R
         Line<float>(targets[2].translated(-(hw - arrowIndent), -hhReduced), targets[2].translated(-(hw - arrowIndent), hhReduced)),
         Line<float>(targets[3].translated(-hwReduced, -(hh - arrowIndent)), targets[3].translated(hwReduced, -(hh - arrowIndent)))
     };
-    
+
     const auto centrePointArea = newAreaToFitIn.reduced(hw, hh).toFloat();
     const auto targetCentre = newAreaToPointTo.getCentre().toFloat();
-    
+
     float nearest = 1.0e9f;
-    
+
     for (int i = 0; i < 4; ++i)
     {
         const Line<float> constrainedLine(centrePointArea.getConstrainedPoint(lines[i].getStart()),
             centrePointArea.getConstrainedPoint(lines[i].getEnd()));
-        
+
         const auto centre = constrainedLine.findNearestPointTo(targetCentre);
         auto distanceFromCentre = centre.getDistanceFrom(targets[i]);
-        
+
         if (!centrePointArea.intersects(lines[i]))
         {
             distanceFromCentre += 1000.f;
         }
-        
+
         if (distanceFromCentre < nearest)
         {
             nearest = distanceFromCentre;
@@ -237,7 +237,7 @@ void ModalCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo, const R
             newBounds.setPosition(int(centre.x - hw), int(centre.y - hh));
         }
     }
-    
+
     this->setBounds(newBounds);
 }
 
@@ -245,11 +245,11 @@ void ModalCallout::updateShape()
 {
     this->repaint();
     this->outline.clear();
-    
+
     const auto bodyArea = this->contentComponent->getBounds().toFloat();
     const auto maximumArea = this->getLocalBounds().toFloat();
     const auto arrowTip = this->targetPoint - this->getPosition().toFloat();
-    
+
     this->outline.addBubble(bodyArea,
         maximumArea, arrowTip, 1.f, ModalCallout::arrowSize);
 }

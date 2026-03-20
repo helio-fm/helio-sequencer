@@ -29,7 +29,7 @@ class RadioButtonFrame final : public Component
 {
 public:
 
-    explicit RadioButtonFrame(float alpha) : 
+    explicit RadioButtonFrame(float alpha) :
         fillColour(findDefaultColour(Label::textColourId).withAlpha(alpha)),
         outlineColour(findDefaultColour(Label::textColourId).withAlpha(alpha * 0.5f))
     {
@@ -106,7 +106,7 @@ RadioButton::RadioButton(const String &noteName, bool shouldUseFixedDo, Listener
     this->minWidth = noteNameComponent->getRequiredWidth();
 
     this->content = move(noteNameComponent);
-    
+
     this->checkMark = make<RadioButtonFrame>(0.85f);
     this->addChildComponent(this->checkMark.get());
 }

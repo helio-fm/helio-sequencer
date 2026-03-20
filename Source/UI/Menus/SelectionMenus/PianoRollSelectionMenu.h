@@ -29,7 +29,7 @@ class PianoRoll;
 class PianoRollSelectionMenu final : public MenuPanel
 {
 public:
-    
+
     PianoRollSelectionMenu(PianoRoll &roll, WeakReference<Lasso> lasso);
 
 private:
@@ -46,5 +46,4 @@ private:
     MenuPanel::Menu makeTupletsMenu() noexcept;
     MenuPanel::Menu makeRescalingMenu() noexcept;
     MenuPanel::Menu makeArpsMenu() noexcept;
-
 };

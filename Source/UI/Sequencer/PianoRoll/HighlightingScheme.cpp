@@ -41,7 +41,7 @@ void HighlightingScheme::renderBackgroundCache(Temperament::Ptr temperament)
     for (int j = PianoRoll::minRowHeight; j <= PianoRoll::maxRowHeight; ++j)
     {
         Image img(HighlightingScheme::renderRowsPattern(theme,
-            temperament,this->getScale(), this->getRootKey(), j));
+            temperament, this->getScale(), this->getRootKey(), j));
 
         //File f("test" + String(j) + ".png");
         //FileOutputStream outStream(f);

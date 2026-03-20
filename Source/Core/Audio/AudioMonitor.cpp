@@ -22,10 +22,10 @@
 class ClippingWarningAsyncCallback final : public AsyncUpdater
 {
 public:
-    
+
     explicit ClippingWarningAsyncCallback(AudioMonitor &parentSpectrumCallback) :
         audioMonitor(parentSpectrumCallback) {}
-    
+
     void handleAsyncUpdate() override
     {
         this->audioMonitor.getListeners().
@@ -33,27 +33,27 @@ public:
     }
 
 private:
-    
+
     AudioMonitor &audioMonitor;
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClippingWarningAsyncCallback)
 };
 
 class OversaturationWarningAsyncCallback final : public AsyncUpdater
 {
 public:
-    
+
     explicit OversaturationWarningAsyncCallback(AudioMonitor &parentSpectrumCallback) :
         audioMonitor(parentSpectrumCallback) {}
-    
+
     void handleAsyncUpdate() override
     {
         this->audioMonitor.getListeners().
             call(&AudioMonitor::ClippingListener::onOversaturationWarning);
     }
-    
+
 private:
-    
+
     AudioMonitor &audioMonitor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OversaturationWarningAsyncCallback)
@@ -78,7 +78,7 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData, int num
     float **outputChannelData, int numOutputChannels, int numSamples)
 {
     const int minNumChannels = jmin(AudioMonitor::numChannels, numOutputChannels);
-    
+
     for (int channel = 0; channel < minNumChannels; ++channel)
     {
         float pcmSquaresSum = 0.f;
@@ -89,16 +89,16 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData, int num
             pcmSquaresSum += (pcmData * pcmData);
             pcmPeak = jmax(pcmPeak, pcmData);
         }
-        
+
         const float rootMeanSquare = sqrtBithack(pcmSquaresSum / numSamples);
         this->rms[channel] = rootMeanSquare;
         this->peak[channel] = pcmPeak;
-        
+
         if (pcmPeak > AudioMonitor::clipThreshold)
         {
             this->asyncClippingWarning->triggerAsyncUpdate();
         }
-        
+
         if (pcmPeak > AudioMonitor::oversaturationThreshold &&
             (pcmPeak / rootMeanSquare) > AudioMonitor::oversaturationRate)
         {

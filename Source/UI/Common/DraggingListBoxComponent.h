@@ -22,26 +22,26 @@
 class DraggingListBoxComponent : public HighlightedComponent
 {
 public:
-    
+
     explicit DraggingListBoxComponent(Viewport *parent, bool disablesAllChildren = true);
-    
+
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
-    
+
     void childrenChanged() override;
     void mouseDown(const MouseEvent &event) override;
     void mouseUp(const MouseEvent &event) override;
     void mouseDrag(const MouseEvent &event) override;
     void mouseWheelMove(const MouseEvent &event,
         const MouseWheelDetails &wheel) override;
-    
+
 protected:
-    
+
     bool listCanBeScrolled() const;
-    
+
     virtual void setSelected(bool shouldBeSelected) = 0;
-    
+
     SafePointer<Viewport> parentViewport;
 
 private:
@@ -49,12 +49,11 @@ private:
     int maxDragDistance = 0;
     int viewportStartPosY = 0;
     const bool shouldDisableAllChildren = false;
-    
+
 private:
 
     double dragStartMilliseconds = 0.0;
 
     static constexpr auto dragStartThreshold = 5;
     static constexpr auto dragSpeed = 2.f;
-    
 };

@@ -64,7 +64,7 @@ public:
         m->enabled = shouldBeEnabled;
         return SequenceModifier::Ptr(m.release());
     }
-    
+
     bool isEquivalentTo(SequenceModifier::Ptr other) const override
     {
         jassert(other != nullptr);
@@ -89,7 +89,7 @@ public:
         using namespace Serialization;
 
         SerializedData tree(Modifiers::tuningModifier);
-        
+
         if (!this->enabled)
         {
             tree.setProperty(Modifiers::isEnabled, false);

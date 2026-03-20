@@ -27,7 +27,10 @@ void ArpeggiatorsCollection::deserializeResources(const SerializedData &tree, Re
     const auto root = tree.hasType(Serialization::Resources::arpeggiators) ?
         tree : tree.getChildWithName(Serialization::Resources::arpeggiators);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     forEachChildWithType(root, arpNode, Serialization::Arps::arpeggiator)
     {

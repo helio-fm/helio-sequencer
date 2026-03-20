@@ -32,12 +32,12 @@ namespace VCS
 
         const Uuid &getUuid() const { return this->vcsUuid; }
         void setVCSUuid(Uuid value) { this->vcsUuid = value; }
-        
+
         virtual int getNumDeltas() const = 0;
         virtual Delta *getDelta(int index) const = 0;
         virtual SerializedData getDeltaData(int deltaIndex) const = 0;
         virtual bool deltaHasDefaultData(int deltaIndex) const { return false; }
-        
+
         // optional, not persistent
         virtual Colour getRevisionDisplayColour() const { return {}; }
 

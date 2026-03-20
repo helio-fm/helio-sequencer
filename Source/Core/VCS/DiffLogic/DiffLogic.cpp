@@ -30,10 +30,10 @@ namespace VCS
 class DummyDiffLogic final : public AutomationTrackDiffLogic
 {
 public:
-    
+
     explicit DummyDiffLogic(TrackedItem &targetItem) :
         AutomationTrackDiffLogic(targetItem) {}
-    
+
     const Identifier getType() const noexcept override
     {
         return "none";
@@ -69,4 +69,4 @@ DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const Identifier &
     return new DummyDiffLogic(targetItem);
 }
 
-}
+} // namespace VCS

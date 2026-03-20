@@ -73,5 +73,4 @@ public:
     // Called when the project is switched to or opened, and vice versa
     virtual void onActivateProjectSubtree(const ProjectMetadata *info) {}
     virtual void onDeactivateProjectSubtree(const ProjectMetadata *info) {}
-
 };

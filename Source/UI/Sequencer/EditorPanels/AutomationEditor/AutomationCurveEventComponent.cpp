@@ -267,7 +267,7 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
 
     // either deleting this event or showing the edit dialog
     const auto isPenMode = this->editor.hasEditMode(RollEditMode::drawMode);
-        
+
     if (e.mods.isRightButtonDown() ||
         (e.source.isTouch() && isPenMode && !this->anyChangeDone))
     {
@@ -279,7 +279,7 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
         }
         return;
     }
-    
+
     if (!this->anyChangeDone && this->isTempoCurve())
     {
         this->isHighlighted = false;

@@ -32,7 +32,7 @@ public:
 
     virtual ~ProjectEventDispatcher() = default;
 
-    // Notes/events and sequences 
+    // Notes/events and sequences
     virtual void dispatchAddEvent(const MidiEvent &event) = 0;
     virtual void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;
     virtual void dispatchRemoveEvent(const MidiEvent &event) = 0;

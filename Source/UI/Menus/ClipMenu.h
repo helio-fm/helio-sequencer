@@ -56,17 +56,16 @@ private:
     const Clip &clip;
 
     WeakReference<UndoStack> undoStack;
-
 };
 
 class ClipMenu final : public ClipModifiersMenu
 {
 public:
-    
+
     ClipMenu(const Clip &clip, WeakReference<UndoStack> undoStack);
 
 private:
-    
+
     MenuPanel::Menu makeDefaultMenu() noexcept;
     MenuPanel::Menu makeRefactoringMenu() noexcept;
     MenuPanel::Menu makeQuantizationMenu() noexcept;

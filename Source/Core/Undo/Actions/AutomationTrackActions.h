@@ -33,7 +33,7 @@ public:
 
     AutomationTrackInsertAction(MidiTrackSource &source,
         WeakReference<TreeNode> parentTreeItem) noexcept;
-    
+
     AutomationTrackInsertAction(MidiTrackSource &source,
         WeakReference<TreeNode> parentTreeItem,
         SerializedData serializedState,
@@ -42,11 +42,11 @@ public:
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 private:
 
     WeakReference<TreeNode> parentTreeItem;
@@ -55,10 +55,9 @@ private:
     String trackName;
 
     SerializedData trackState;
-    
+
     JUCE_DECLARE_NON_COPYABLE(AutomationTrackInsertAction)
 };
-
 
 //===----------------------------------------------------------------------===//
 // Remove
@@ -70,7 +69,7 @@ public:
 
     AutomationTrackRemoveAction(MidiTrackSource &source,
         WeakReference<TreeNode> parentTreeItem) noexcept;
-    
+
     AutomationTrackRemoveAction(MidiTrackSource &source,
         WeakReference<TreeNode> parentTreeItem,
         const String &trackId) noexcept;
@@ -82,16 +81,16 @@ public:
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 private:
 
     WeakReference<TreeNode> parentTreeItem;
 
     String trackId;
     int numEvents = 0;
-    
+
     SerializedData serializedTreeItem;
     String trackName;
-    
+
     JUCE_DECLARE_NON_COPYABLE(AutomationTrackRemoveAction)
 };

@@ -40,7 +40,8 @@ class MainWindow final : public DocumentWindow
 {
 public:
 
-    MainWindow() : DocumentWindow("Helio", Colours::darkgrey, DocumentWindow::allButtons) {}
+    MainWindow() :
+        DocumentWindow("Helio", Colours::darkgrey, DocumentWindow::allButtons) {}
 
     void initialise(bool enableOpenGl, bool useNativeTitleBar)
     {
@@ -73,7 +74,7 @@ public:
 
         // 568, 320 for small phone size test
         constexpr auto minWidth = 1024;
-        constexpr auto minHeight= 650;
+        constexpr auto minHeight = 650;
 
         this->setBounds(windowBounds.withSize(
             jmax(windowBounds.getWidth(), minWidth),
@@ -261,12 +262,11 @@ private:
 
     UniquePointer<MainLayout> layout;
     UniquePointer<OpenGLContext> openGLContext;
-    
+
     friend class App;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
 };
-
 
 //===----------------------------------------------------------------------===//
 // Clipboard
@@ -299,7 +299,6 @@ void Clipboard::copy(const SerializedData &data, bool mirrorToSystemClipboard /*
         SystemClipboard::copyTextToClipboard(this->getCurrentContentAsString());
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // App
@@ -357,7 +356,7 @@ bool App::isRunningOnPhone()
 bool App::isRunningOnTablet()
 {
 #if PLATFORM_MOBILE
-    return ! App::isRunningOnPhone();
+    return !App::isRunningOnPhone();
 #elif PLATFORM_DESKTOP
     return false;
 #endif
@@ -404,7 +403,7 @@ String App::translate(const String &plural, int64 number)
 String App::getAppReadableVersion()
 {
     static String v;
-    
+
     if (v.isEmpty())
     {
         v << ProjectInfo::versionString;
@@ -607,7 +606,7 @@ bool App::isUsingNativeTitleBar() noexcept
 
 void App::setTitleBarComponent(WeakReference<Component> component)
 {
-    jassert(! isUsingNativeTitleBar());
+    jassert(!isUsingNativeTitleBar());
     auto *window = static_cast<App *>(getInstance())->window.get();
     window->setTitleComponent(component);
 }
@@ -636,7 +635,7 @@ void App::initialise(const String &commandLine)
         const auto album = Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise;
         Desktop::getInstance().setOrientationsEnabled(album);
 #endif
-        
+
         this->config = make<class Config>();
         this->config->initResources();
 
@@ -681,7 +680,7 @@ void App::initialise(const String &commandLine)
         // if this is not a unit test runner, proceed as normal:
 
         this->workspace = make<class Workspace>();
-        
+
         const auto shouldEnableOpenGL = this->config->getUiFlags()->isOpenGlRendererEnabled();
         const auto shouldUseNativeTitleBar = this->config->getUiFlags()->isNativeTitleBarEnabled();
 
@@ -714,7 +713,7 @@ void App::shutdown()
         DBG("Shutting down");
 
         this->window = nullptr;
-        
+
         if (this->workspace != nullptr)
         {
             this->workspace->shutdown();
@@ -729,7 +728,7 @@ void App::shutdown()
         {
             tempFolder.deleteRecursively();
         }
-        
+
         Icons::clearPrerenderedCache();
         Icons::clearBuiltInImages();
     }
@@ -782,7 +781,7 @@ void App::suspended()
         this->workspace->autosave();
     }
 #endif
-    
+
 #if JUCE_ANDROID
     this->window->detachOpenGLContextIfAny();
 #endif
@@ -931,7 +930,7 @@ void App::onUiScaleChanged(float scale)
     const bool hasNativeTitleBar = App::isUsingNativeTitleBar();
 
     auto *self = static_cast<App *>(getInstance());
-    
+
 #if JUCE_IOS
     // iOS will crash without this:
     Desktop::getInstance().setKioskModeComponent(nullptr);

@@ -33,11 +33,10 @@ DraggingListBoxComponent::DraggingListBoxComponent(Viewport *parent, bool disabl
 #endif
         this->parentViewport->setScrollOnDragMode(Viewport::ScrollOnDragMode::never);
     }
-    
+
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component
@@ -60,7 +59,7 @@ void DraggingListBoxComponent::mouseDown(const MouseEvent &event)
     {
         return;
     }
-    
+
     if (this->parentViewport == nullptr)
     {
         this->setSelected(true);
@@ -118,7 +117,7 @@ void DraggingListBoxComponent::mouseDrag(const MouseEvent &event)
     }
 
     this->maxDragDistance = jmax(abs(event.getDistanceFromDragStartY()), this->maxDragDistance);
-    
+
     if (this->listCanBeScrolled())
     {
         jassert(this->parentViewport != nullptr);
@@ -131,23 +130,23 @@ void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event, const Mou
 {
     const float forwardWheel = wheel.deltaY *
         (wheel.isReversed ? -DraggingListBoxComponent::dragSpeed : DraggingListBoxComponent::dragSpeed);
-    
+
     if (this->parentViewport != nullptr)
     {
         const BailOutChecker checker(this);
         this->parentViewport->setViewPosition(0, this->parentViewport->getViewPosition().getY() - int(forwardWheel));
-        
+
         // If viewport is owned by Listbox,
         // the Listbox has just updated its contents here,
         // and the component may be deleted:
         if (!checker.shouldBailOut())
         {
             ViewportKineticSlider::instance().startAnimationForViewport(this->parentViewport, Point<float>(0.f, forwardWheel));
-            
+
             const bool eventWasUsed =
                 (wheel.deltaX != 0 && this->parentViewport->getHorizontalScrollBar().isVisible()) ||
                 (wheel.deltaY != 0 && this->parentViewport->getVerticalScrollBar().isVisible());
-            
+
             if (!eventWasUsed)
             {
                 Component::mouseWheelMove(event, wheel);
@@ -162,12 +161,12 @@ bool DraggingListBoxComponent::listCanBeScrolled() const
     {
         return false;
     }
-    
+
     if (this->parentViewport->getViewedComponent() == nullptr)
     {
         return false;
     }
-    
+
     return this->parentViewport->getViewHeight() <
         this->parentViewport->getViewedComponent()->getHeight();
 }

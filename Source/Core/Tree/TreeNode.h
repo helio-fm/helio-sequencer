@@ -56,22 +56,23 @@ private:
     OwnedArray<TreeNodeBase> children;
 };
 
-class TreeNode : public TreeNodeBase,
-                 public Serializable,
-                 public HeadlineItemDataSource
+class TreeNode :
+    public TreeNodeBase,
+    public Serializable,
+    public HeadlineItemDataSource
 {
 public:
 
     TreeNode(const String &name, const Identifier &type);
     ~TreeNode() override;
-    
+
     String getName() const noexcept override;
     virtual void safeRename(const String &newName, bool sendNotifications);
 
     static const String xPathSeparator;
     static String createSafeName(const String &nameStr);
-    
-    template<typename T>
+
+    template <typename T>
     T *findParentOfType() const
     {
         const TreeNodeBase *rootNode = this;
@@ -89,7 +90,7 @@ public:
         return nullptr;
     }
 
-    template<typename T>
+    template <typename T>
     T *findChildOfType() const
     {
         const TreeNodeBase *rootNode = this;
@@ -105,7 +106,7 @@ public:
         return nullptr;
     }
 
-    template<typename T>
+    template <typename T>
     bool selectFirstChildOfType() const
     {
         if (T *child = this->findChildOfType<T>())
@@ -117,7 +118,7 @@ public:
         return false;
     }
 
-    template<typename T1, typename T2>
+    template <typename T1, typename T2>
     bool selectFirstChildOfType() const
     {
         if (T1 *child = this->findChildOfType<T1>())
@@ -135,7 +136,7 @@ public:
         return false;
     }
 
-    template<typename T>
+    template <typename T>
     Array<T *> findChildrenOfType(bool pickOnlySelectedOnes = false) const
     {
         Array<T *> children;
@@ -143,7 +144,7 @@ public:
         return children;
     }
 
-    template<typename T>
+    template <typename T>
     Array<WeakReference<T>> findChildrenRefsOfType(bool pickOnlySelectedOnes = false) const
     {
         Array<WeakReference<T>> children;
@@ -155,13 +156,13 @@ public:
     {
         Array<TreeNode *> activeNodes;
         TreeNode::collectActiveSubNodes(this, activeNodes);
-        
+
         jassert(activeNodes.size() > 0);
         if (activeNodes.size() > 0)
         {
             return activeNodes.getFirst();
         }
-        
+
         return const_cast<TreeNode *>(this); // root
     }
 
@@ -172,7 +173,7 @@ public:
 
     bool isSelectedOrHasSelectedChild() const;
 
-    template<typename T>
+    template <typename T>
     bool hasSelectedChildOfType() const
     {
         Array<TreeNode *> children;
@@ -183,7 +184,7 @@ public:
     //===------------------------------------------------------------------===//
     // Page stuff
     //===------------------------------------------------------------------===//
-    
+
     virtual void showPage() = 0;
     virtual void recreatePage() {}
     void recreateSubtreePages();
@@ -218,7 +219,7 @@ protected:
     void dispatchChangeTreeNodeViews();
     void nodeSelectionChanged(bool isNowSelected) override;
 
-    template<typename T, typename ArrayType>
+    template <typename T, typename ArrayType>
     static void collectChildrenOfType(const TreeNode *rootNode, ArrayType &resultArray, bool pickOnlySelectedOnes)
     {
         for (int i = 0; i < rootNode->getNumChildren(); ++i)
@@ -245,12 +246,12 @@ protected:
         for (int i = 0; i < rootNode->getNumChildren(); ++i)
         {
             TreeNode *child = static_cast<TreeNode *>(rootNode->getChild(i));
-        
+
             if (child->isSelected())
             {
                 resultArray.add(child);
             }
-        
+
             if (child->getNumChildren() > 0)
             {
                 TreeNode::collectActiveSubNodes(child, resultArray);

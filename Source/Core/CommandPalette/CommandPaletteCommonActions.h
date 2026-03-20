@@ -38,5 +38,4 @@ protected:
 
     const Colour actionColour =
         findDefaultColour(Label::textColourId).withMultipliedAlpha(0.8f);
-
 };

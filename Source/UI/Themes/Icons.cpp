@@ -52,14 +52,14 @@ struct BuiltInImageData final
         this->data = BinaryData::getNamedResource(assumedFileName.toRawUTF8(), this->numBytes);
         jassert(this->data != nullptr);
     }
-    
+
     BuiltInImageData &operator= (const BuiltInImageData &other)
     {
         this->data = other.data;
         this->numBytes = other.numBytes;
         return *this;
     }
-    
+
     const void *data = nullptr;
     int numBytes = 0;
 };
@@ -191,18 +191,18 @@ static const Path extractPathFromDrawable(const Drawable *d)
     for (int i = 0; i < d->getNumChildComponents(); ++i)
     {
         auto *child = d->getChildComponent(i);
-        
+
         if (auto *drawablePath = dynamic_cast<DrawablePath *>(child))
         {
             return drawablePath->getPath();
         }
-        
+
         if (auto *drawableComposite = dynamic_cast<DrawableComposite *>(child))
         {
             for (int j = 0; j < drawableComposite->getNumChildComponents(); ++j)
             {
                 auto *compositeChild = drawableComposite->getChildComponent(i);
-                
+
                 if (auto *drawablePath = dynamic_cast<DrawablePath *>(compositeChild))
                 {
                     return drawablePath->getPath();
@@ -210,7 +210,7 @@ static const Path extractPathFromDrawable(const Drawable *d)
             }
         }
     }
-    
+
     return Path();
 }
 
@@ -224,10 +224,10 @@ static Image renderVector(Icons::Id id, int maxSize,
     {
         return Image(Image::ARGB, 1, 1, true);
     }
-    
+
     Image resultImage(Image::ARGB, maxSize, maxSize, true);
     Graphics g(resultImage);
-    
+
     UniquePointer<Drawable> drawable(Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes));
     auto *drawableSvg = dynamic_cast<DrawableComposite *>(drawable.get());
     if (drawableSvg == nullptr)
@@ -245,7 +245,7 @@ static Image renderVector(Icons::Id id, int maxSize,
     outContentBounds = drawableBounds.transformedBy(transformToFit);
 
     drawableSvg->draw(g, 1.f, transformToFit);
-    
+
 #if PLATFORM_DESKTOP
     if (iconShadowColour.getAlpha() > 0)
     {
@@ -267,7 +267,7 @@ UniquePointer<Drawable> Icons::getDrawableByName(Icons::Id id)
     {
         return nullptr;
     }
-    
+
     return Drawable::createFromImageData(foundImage->second.data, foundImage->second.numBytes);
 }
 
@@ -346,7 +346,7 @@ Image Icons::findByName(Icons::Id id, int maxSize)
     {
         return prerenderedSVGs[iconKey];
     }
-    
+
     Rectangle<float> contentBounds;
     const Colour iconBaseColour(findDefaultColour(ColourIDs::Icons::fill));
     const Colour iconShadeColour(findDefaultColour(ColourIDs::Icons::shadow));
@@ -372,7 +372,7 @@ Image Icons::findByName(Icons::Id id, int exactSize,
         outContentBounds = prerenderedBounds[iconKey];
         return prerenderedSVGs[iconKey];
     }
-    
+
     const Image prerenderedImage(renderVector(id, scaledSize,
         fillColour, shadowColour, outContentBounds, alignment));
 

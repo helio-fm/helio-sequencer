@@ -26,12 +26,14 @@ class ProjectNode;
 class CommandPaletteTextEditor final : public TextEditor
 {
 public:
+
     bool keyPressed(const KeyPress &key) override;
 };
 
-class CommandPalette final : public Component,
-                             public TextEditor::Listener,
-                             public ListBoxModel
+class CommandPalette final :
+    public Component,
+    public TextEditor::Listener,
+    public ListBoxModel
 {
 public:
 

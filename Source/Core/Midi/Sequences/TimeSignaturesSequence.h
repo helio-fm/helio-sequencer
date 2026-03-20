@@ -43,7 +43,7 @@ public:
     //===------------------------------------------------------------------===//
     // Undoable track editing
     //===------------------------------------------------------------------===//
-    
+
     MidiEvent *insert(const TimeSignatureEvent &signatureToCopy, bool undoable);
     bool remove(const TimeSignatureEvent &signature, bool undoable);
     bool change(const TimeSignatureEvent &signature,

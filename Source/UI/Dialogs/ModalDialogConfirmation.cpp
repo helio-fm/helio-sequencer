@@ -43,7 +43,7 @@ ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const St
     {
         this->dialogApplyAction();
     };
-    
+
     this->messageLabel->setText(message, dontSendNotification);
     this->okButton->setButtonText(okText);
     this->cancelButton->setButtonText(cancelText);

@@ -38,7 +38,7 @@ bool AutomationEventInsertAction::perform()
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
-    
+
     return false;
 }
 
@@ -49,7 +49,7 @@ bool AutomationEventInsertAction::undo()
     {
         return sequence->remove(this->event, false);
     }
-    
+
     return false;
 }
 
@@ -95,7 +95,7 @@ bool AutomationEventRemoveAction::perform()
     {
         return sequence->remove(this->event, false);
     }
-    
+
     return false;
 }
 
@@ -106,7 +106,7 @@ bool AutomationEventRemoveAction::undo()
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
-    
+
     return false;
 }
 
@@ -154,7 +154,7 @@ bool AutomationEventChangeAction::perform()
     {
         return sequence->change(this->eventBefore, this->eventAfter, false);
     }
-    
+
     return false;
 }
 
@@ -165,7 +165,7 @@ bool AutomationEventChangeAction::undo()
     {
         return sequence->change(this->eventAfter, this->eventBefore, false);
     }
-    
+
     return false;
 }
 
@@ -189,7 +189,7 @@ UndoAction *AutomationEventChangeAction::createCoalescedAction(UndoAction *nextA
         }
     }
 
-    (void) nextAction;
+    (void)nextAction;
     return nullptr;
 }
 
@@ -197,25 +197,25 @@ SerializedData AutomationEventChangeAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::automationEventChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
+
     SerializedData eventBeforeChild(Serialization::Undo::eventBefore);
     eventBeforeChild.appendChild(this->eventBefore.serialize());
     tree.appendChild(eventBeforeChild);
-    
+
     SerializedData eventAfterChild(Serialization::Undo::eventAfter);
     eventAfterChild.appendChild(this->eventAfter.serialize());
     tree.appendChild(eventAfterChild);
-    
+
     return tree;
 }
 
 void AutomationEventChangeAction::deserialize(const SerializedData &data)
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
+
     const auto eventBeforeChild = data.getChildWithName(Serialization::Undo::eventBefore);
     const auto eventAfterChild = data.getChildWithName(Serialization::Undo::eventAfter);
-    
+
     this->eventBefore.deserialize(eventBeforeChild.getChild(0));
     this->eventAfter.deserialize(eventAfterChild.getChild(0));
 }
@@ -246,7 +246,7 @@ bool AutomationEventsGroupInsertAction::perform()
     {
         return sequence->insertGroup(this->events, false);
     }
-    
+
     return false;
 }
 
@@ -257,7 +257,7 @@ bool AutomationEventsGroupInsertAction::undo()
     {
         return sequence->removeGroup(this->events, false);
     }
-    
+
     return false;
 }
 
@@ -270,12 +270,12 @@ SerializedData AutomationEventsGroupInsertAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::automationEventsGroupInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
+
     for (int i = 0; i < this->events.size(); ++i)
     {
         tree.appendChild(this->events.getUnchecked(i).serialize());
     }
-    
+
     return tree;
 }
 
@@ -283,7 +283,7 @@ void AutomationEventsGroupInsertAction::deserialize(const SerializedData &data)
 {
     this->reset();
     this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
+
     for (const auto &params : data)
     {
         AutomationEvent ae;
@@ -317,7 +317,7 @@ bool AutomationEventsGroupRemoveAction::perform()
     {
         return sequence->removeGroup(this->events, false);
     }
-    
+
     return false;
 }
 
@@ -328,7 +328,7 @@ bool AutomationEventsGroupRemoveAction::undo()
     {
         return sequence->insertGroup(this->events, false);
     }
-    
+
     return false;
 }
 
@@ -341,12 +341,12 @@ SerializedData AutomationEventsGroupRemoveAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::automationEventsGroupRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
+
     for (int i = 0; i < this->events.size(); ++i)
     {
         tree.appendChild(this->events.getUnchecked(i).serialize());
     }
-    
+
     return tree;
 }
 
@@ -354,7 +354,7 @@ void AutomationEventsGroupRemoveAction::deserialize(const SerializedData &data)
 {
     this->reset();
     this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
+
     for (const auto &params : data)
     {
         AutomationEvent ae;
@@ -390,7 +390,7 @@ bool AutomationEventsGroupChangeAction::perform()
     {
         return sequence->changeGroup(this->eventsBefore, this->eventsAfter, false);
     }
-    
+
     return false;
 }
 
@@ -401,7 +401,7 @@ bool AutomationEventsGroupChangeAction::undo()
     {
         return sequence->changeGroup(this->eventsAfter, this->eventsBefore, false);
     }
-    
+
     return false;
 }
 
@@ -431,7 +431,7 @@ UndoAction *AutomationEventsGroupChangeAction::createCoalescedAction(UndoAction 
         }
     }
 
-    (void) nextAction;
+    (void)nextAction;
     return nullptr;
 }
 
@@ -443,42 +443,42 @@ SerializedData AutomationEventsGroupChangeAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::automationEventsGroupChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
+
     SerializedData groupBeforeChild(Serialization::Undo::groupBefore);
     SerializedData groupAfterChild(Serialization::Undo::groupAfter);
-    
+
     for (int i = 0; i < this->eventsBefore.size(); ++i)
     {
         groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize());
     }
-    
+
     for (int i = 0; i < this->eventsAfter.size(); ++i)
     {
         groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize());
     }
-    
+
     tree.appendChild(groupBeforeChild);
     tree.appendChild(groupAfterChild);
-    
+
     return tree;
 }
 
 void AutomationEventsGroupChangeAction::deserialize(const SerializedData &data)
 {
     this->reset();
-    
+
     this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
+
     const auto groupBeforeChild = data.getChildWithName(Serialization::Undo::groupBefore);
     const auto groupAfterChild = data.getChildWithName(Serialization::Undo::groupAfter);
-    
+
     for (const auto &params : groupBeforeChild)
     {
         AutomationEvent ae;
         ae.deserialize(params);
         this->eventsBefore.add(ae);
     }
-    
+
     for (const auto &params : groupAfterChild)
     {
         AutomationEvent ae;

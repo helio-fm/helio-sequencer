@@ -36,7 +36,7 @@ public:
         g.setColour(this->lightColour);
         g.fillRect(0, 1, this->getWidth(), 1);
     }
-    
+
 private:
 
     const Colour lightColour =

@@ -113,4 +113,4 @@ RevisionItem::Ptr Snapshot::getItemWithUuid(const Uuid &uuid) const
     return nullptr;
 }
 
-}
+} // namespace VCS

@@ -1287,7 +1287,7 @@ void RollBase::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
     if (panningMode)
     {
         this->smoothZoomController->cancelZoom();
-        
+
         // holding shift means using vertical direction instead of horizontal
         // (or horizontal instead of vertical, depending on ui settings/defaults)
         const bool verticalPanning =

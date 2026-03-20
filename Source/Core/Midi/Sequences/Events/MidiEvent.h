@@ -28,7 +28,7 @@ public:
     using Id = int32;
 
     // Non-serialized field to be used instead of expensive dynamic casts:
-    enum class Type : uint8 
+    enum class Type : uint8
     {
         Note = 1,
         Auto = 2,
@@ -103,7 +103,6 @@ protected:
 
     friend struct MidiEventHash;
     friend class LegacyEventFormatSupportTests;
-
 };
 
 struct MidiEventHash

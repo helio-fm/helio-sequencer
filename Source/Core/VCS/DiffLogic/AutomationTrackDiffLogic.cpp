@@ -90,7 +90,7 @@ Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) cons
             {
                 deltaFoundInState = true;
                 stateDeltaData = initialState.getDeltaData(j);
-                dataHasChanged = (! myDeltaData.isEquivalentTo(stateDeltaData));
+                dataHasChanged = (!myDeltaData.isEquivalentTo(stateDeltaData));
                 break;
             }
         }
@@ -151,7 +151,7 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
 
         bool deltaFoundInChanges = false;
 
-        // for every supported type we need to spit out 
+        // for every supported type we need to spit out
         // a delta of type eventsAdded with all events merged in there
 
         auto eventsDelta = make<Delta>(
@@ -217,7 +217,7 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
             }
 
             const bool bothDeltasAreNotesType =
-                checkIfDeltaIsEventsType(stateDelta) && 
+                checkIfDeltaIsEventsType(stateDelta) &&
                 checkIfDeltaIsEventsType(targetDelta);
 
             if (bothDeltasAreNotesType)
@@ -273,7 +273,7 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
             diff->applyDelta(clipsDelta.release(), clipsDeltaData);
         }
 
-        if (! deltaFoundInChanges)
+        if (!deltaFoundInChanges)
         {
             diff->applyDelta(stateDelta->createCopy(), stateDeltaData);
         }
@@ -406,7 +406,6 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
     return diff;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Merge
 //===----------------------------------------------------------------------===//
@@ -444,7 +443,7 @@ SerializedData mergeAutoEventsAdded(const SerializedData &state, const Serialize
             }
         }
 
-        if (! foundNoteInState)
+        if (!foundNoteInState)
         {
             result.add(changesNote);
         }
@@ -480,7 +479,7 @@ SerializedData mergeAutoEventsRemoved(const SerializedData &state, const Seriali
             }
         }
 
-        if (! foundNoteInChanges)
+        if (!foundNoteInChanges)
         {
             result.add(stateNote);
         }
@@ -525,7 +524,6 @@ SerializedData mergeAutoEventsChanged(const SerializedData &state, const Seriali
 
     return serializeAutoSequence(result, AutoSequenceDeltas::eventsAdded);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Diff
@@ -586,7 +584,7 @@ Array<DeltaDiff> createAutoEventsDiffs(const SerializedData &state, const Serial
         }
 
         // нота из состояния - в изменениях не найдена. добавляем запись removed.
-        if (! foundNoteInChanges)
+        if (!foundNoteInChanges)
         {
             removedEvents.add(stateEvent);
         }
@@ -610,7 +608,7 @@ Array<DeltaDiff> createAutoEventsDiffs(const SerializedData &state, const Serial
         }
 
         // и пишем ее в список добавленных
-        if (! foundNoteInState)
+        if (!foundNoteInState)
         {
             addedEvents.add(changesNote);
         }
@@ -699,4 +697,4 @@ bool checkIfDeltaIsEventsType(const Delta *d)
             d->hasType(AutoSequenceDeltas::eventsRemoved));
 }
 
-}
+} // namespace VCS

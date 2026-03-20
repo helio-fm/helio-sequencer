@@ -113,7 +113,7 @@ private:
         void paint(Graphics &g) override
         {
             g.setColour(this->fillColour);
-            g.fillRoundedRectangle (5.f, 1.0f,
+            g.fillRoundedRectangle(5.f, 1.0f,
                 float(this->getWidth() - 10), float(this->getHeight() - 9), 2.f);
         }
 

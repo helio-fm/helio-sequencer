@@ -34,7 +34,6 @@ RollChildComponentBase::RollChildComponentBase(RollBase &editor) noexcept :
     this->setWantsKeyboardFocus(false);
 }
 
-
 bool RollChildComponentBase::isActiveAndEditable() const noexcept
 {
     jassert(!this->flags.isGhost);

@@ -24,6 +24,7 @@ public:
     class Listener
     {
     public:
+
         virtual ~Listener() = default;
         virtual int getVerticalSwipeAnchor() { return 0; }
         virtual void onVerticalSwipe(int anchor, int distance) {}
@@ -83,5 +84,4 @@ public:
 
     Direction direction = Direction::Undecided;
     int anchor = 0;
-
 };

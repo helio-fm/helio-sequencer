@@ -50,7 +50,7 @@ CommandPalette::CommandPalette(ProjectNode *project, RollBase *roll, const Strin
 
     this->actionsList = make<ListBox>();
     this->addAndMakeVisible(this->actionsList.get());
-    
+
     // some help and hotkey commands list (depending on the current page):
     this->actionsProviders.addArray(App::Layout().getCommandPaletteActionProviders());
 

@@ -40,5 +40,4 @@ private:
     UniquePointer<Viewport> viewport;
 
     UniquePointer<DocumentWindow> ownedWindow;
-
 };

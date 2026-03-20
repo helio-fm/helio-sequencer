@@ -44,7 +44,7 @@ bool PluginScanner::hasEffects() const
 {
     for (const auto &description : this->getPlugins())
     {
-        if (! description.isInstrument)
+        if (!description.isInstrument)
         {
             return true;
         }
@@ -208,7 +208,7 @@ void PluginScanner::run()
 
     AudioPluginFormatManager formatManager;
     AudioCore::initAudioFormats(formatManager);
-    
+
     while (!this->threadShouldExit())
     {
         this->working = true;
@@ -338,7 +338,7 @@ void PluginScanner::run()
                         // will also sendChangeMessage():
                         this->sortList(this->pluginSorting.get(), this->pluginSortingForwards.get());
                     }
-                
+
                     Thread::sleep(150);
                 }
             }
@@ -348,7 +348,7 @@ void PluginScanner::run()
         {
             this->cancelled = false;
             this->working = false;
-            
+
             DBG("Done scanning audio plugins");
             this->sendChangeMessage();
         }
@@ -516,7 +516,6 @@ void PluginScanner::scanPossibleSubfolders(const StringArray &possibleSubfolders
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -542,7 +541,7 @@ void PluginScanner::deserialize(const SerializedData &data)
         data : data.getChildWithName(Serialization::Audio::pluginsList);
 
     if (!root.isValid()) { return; }
-    
+
     Array<SerializablePluginDescription> descriptions;
     for (const auto &child : root)
     {

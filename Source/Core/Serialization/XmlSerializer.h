@@ -31,5 +31,4 @@ public:
 
     bool supportsFileWithExtension(const String &extension) const override;
     bool supportsFileWithHeader(const String &header) const override;
-
 };

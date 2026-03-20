@@ -37,7 +37,7 @@ public:
     //===------------------------------------------------------------------===//
     // Undoable track editing
     //===------------------------------------------------------------------===//
-    
+
     MidiEvent *insert(const AnnotationEvent &annotationToCopy, bool undoable);
     bool remove(const AnnotationEvent &annotation, bool undoable);
     bool change(const AnnotationEvent &annotation,

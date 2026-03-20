@@ -216,15 +216,15 @@ String TranslationsCollection::getSelectedLocaleId() const
     {
         return App::Config().getProperty(Serialization::Config::currentLocale, fallbackTranslationId);
     }
-    
+
     const String systemLocale =
         SystemStats::getUserLanguage().toLowerCase().substring(0, 2);
-    
+
     if (this->userResources.contains(systemLocale) ||
         this->baseResources.contains(systemLocale))
     {
         return systemLocale;
     }
-    
+
     return fallbackTranslationId;
 }

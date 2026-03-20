@@ -71,7 +71,7 @@ void TreeNodeBase::addChild(TreeNodeBase *newNode, int insertPosition /*= -1*/)
 
 bool TreeNodeBase::removeChild(int index, bool deleteNode /*= true*/)
 {
-    if (auto* child = this->children[index])
+    if (auto *child = this->children[index])
     {
         child->parent = nullptr;
         this->children.remove(index, deleteNode);
@@ -161,7 +161,7 @@ void TreeNode::safeRename(const String &newName, bool sendNotifications)
     }
 }
 
-String TreeNode::getName() const noexcept 
+String TreeNode::getName() const noexcept
 {
     return this->name;
 }
@@ -191,7 +191,7 @@ bool TreeNode::deleteNode(TreeNode *nodeToDelete, bool sendNotifications)
     }
 
     const bool shouldRefocus = nodeToDelete->isSelected();
-    
+
     WeakReference<TreeNode> root = nodeToDelete->getRootNode();
     WeakReference<TreeNode> parentProject = nodeToDelete->findParentOfType<ProjectNode>();
 

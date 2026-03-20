@@ -30,7 +30,7 @@ class MidiTrackSource;
 class KeySignatureEventInsertAction final : public UndoAction
 {
 public:
-    
+
     explicit KeySignatureEventInsertAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
@@ -40,7 +40,7 @@ public:
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
@@ -60,7 +60,7 @@ private:
 class KeySignatureEventRemoveAction final : public UndoAction
 {
 public:
-    
+
     explicit KeySignatureEventRemoveAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
@@ -70,7 +70,7 @@ public:
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
@@ -90,7 +90,7 @@ private:
 class KeySignatureEventChangeAction final : public UndoAction
 {
 public:
-    
+
     explicit KeySignatureEventChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
@@ -101,7 +101,7 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
@@ -109,7 +109,7 @@ public:
 private:
 
     String trackId;
-    
+
     KeySignatureEvent eventBefore;
     KeySignatureEvent eventAfter;
 

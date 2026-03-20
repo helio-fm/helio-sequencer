@@ -32,13 +32,13 @@ public:
         return this->getPatternByTrackId(trackId);
     }
 
-    template<typename T>
+    template <typename T>
     T *findSequenceByTrackId(const String &trackId)
     {
         return dynamic_cast<T *>(this->getSequenceByTrackId(trackId));
     }
 
-    template<typename T>
+    template <typename T>
     T *findTrackById(const String &trackId)
     {
         return dynamic_cast<T *>(this->getTrackById(trackId));
@@ -49,5 +49,4 @@ protected:
     virtual MidiTrack *getTrackById(const String &trackId) = 0;
     virtual Pattern *getPatternByTrackId(const String &trackId) = 0;
     virtual MidiSequence *getSequenceByTrackId(const String &trackId) = 0;
-
 };

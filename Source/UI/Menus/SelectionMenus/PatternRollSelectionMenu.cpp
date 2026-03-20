@@ -101,7 +101,7 @@ MenuPanel::Menu PatternRollSelectionMenu::makeDefaultMenu() noexcept
         TRANS(I18n::Menu::Selection::clipsEdit))->
         disabledIf(lasso->getNumSelected() == 0)->
         closesMenu());
-    
+
     menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
         TRANS(I18n::Menu::trackRename))->
         disabledIf(!canRenamePatternSelection(this->lasso))->

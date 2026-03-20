@@ -100,7 +100,7 @@ namespace ColourIDs
         static const int fill                   = 0x2000200;
         static const int frame                  = 0x2000201;
     }
-    
+
     namespace Shadows
     {
         static const int fillLight              = 0x2000300;

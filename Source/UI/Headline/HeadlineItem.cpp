@@ -135,7 +135,7 @@ bool HeadlineItem::hitTest(int x, int y)
     return this->backgroundShape.contains({ float(x), float(y) });
 }
 
-void HeadlineItem::mouseEnter(const MouseEvent& e)
+void HeadlineItem::mouseEnter(const MouseEvent &e)
 {
 #if PLATFORM_DESKTOP
     // A hacky way to prevent re-opening the menu again after the new page is shown.

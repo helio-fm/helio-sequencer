@@ -23,7 +23,6 @@ class MidiTrackSource;
 #include "AnnotationEvent.h"
 #include "UndoAction.h"
 
-
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
@@ -31,7 +30,7 @@ class MidiTrackSource;
 class AnnotationEventInsertAction final : public UndoAction
 {
 public:
-    
+
     explicit AnnotationEventInsertAction(MidiTrackSource &source) :
         UndoAction(source) {}
 
@@ -41,7 +40,7 @@ public:
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
@@ -61,7 +60,7 @@ private:
 class AnnotationEventRemoveAction final : public UndoAction
 {
 public:
-    
+
     explicit AnnotationEventRemoveAction(MidiTrackSource &source) :
         UndoAction(source) {}
 
@@ -71,7 +70,7 @@ public:
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
@@ -91,7 +90,7 @@ private:
 class AnnotationEventChangeAction final : public UndoAction
 {
 public:
-    
+
     explicit AnnotationEventChangeAction(MidiTrackSource &source) :
         UndoAction(source) {}
 
@@ -102,7 +101,7 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
@@ -110,10 +109,9 @@ public:
 private:
 
     String trackId;
-    
+
     AnnotationEvent eventBefore;
     AnnotationEvent eventAfter;
 
     JUCE_DECLARE_NON_COPYABLE(AnnotationEventChangeAction)
-
 };

@@ -228,7 +228,7 @@ void HelioTheme::fillTextEditorBackground(Graphics &g, int w, int h, TextEditor 
     g.drawHorizontalLine(h - 1, 1.f, w - 1.f);
 }
 
-void HelioTheme::drawPopupMenuBackground(Graphics& g, int width, int height)
+void HelioTheme::drawPopupMenuBackground(Graphics &g, int width, int height)
 {
     g.fillAll(findColour(PopupMenu::backgroundColourId));
 }
@@ -308,7 +308,7 @@ void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
 {
     const auto font = this->getTextButtonFont(button, button.getHeight());
     g.setFont(font);
-    
+
     const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
     const int yHeight = (button.getHeight() - (yIndent * 2));
     const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
@@ -538,7 +538,7 @@ void HelioTheme::drawRotarySlider(Graphics &g, int x, int y, int width, int heig
 {
     const auto fill = findDefaultColour(Slider::rotarySliderFillColourId);
     const auto outline = findDefaultColour(Slider::rotarySliderOutlineColourId);
-    
+
     const auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(8);
     const auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
     const auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
@@ -567,7 +567,7 @@ void HelioTheme::drawRotarySlider(Graphics &g, int x, int y, int width, int heig
 // Window
 //===----------------------------------------------------------------------===//
 
-void HelioTheme::drawCornerResizer(Graphics& g, int w, int h,
+void HelioTheme::drawCornerResizer(Graphics &g, int w, int h,
     bool /*isMouseOver*/, bool /*isMouseDragging*/)
 {
     const float lineThickness = jmin(w, h) * 0.05f;
@@ -836,7 +836,7 @@ void HelioTheme::updateFont(const Font &font) noexcept
 void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
 {
     const auto textColour = s->getTextColour();
-    
+
     // bright text probably means dark theme:
     this->isDarkTheme = textColour.getPerceivedBrightness() > 0.5f;
 

@@ -24,11 +24,11 @@ class Document : public ChangeListener
 public:
 
     Document(DocumentOwner &documentOwner,
-             const String &defaultName,
-             const String &defaultExtension);
+        const String &defaultName,
+        const String &defaultExtension);
 
     Document(DocumentOwner &documentOwner,
-             const File &existingFile);
+        const File &existingFile);
 
     ~Document() override;
 
@@ -52,7 +52,7 @@ public:
     bool load(const File &file);
     void import(const String &filePattern);
 
-    void changeListenerCallback(ChangeBroadcaster* source) override;
+    void changeListenerCallback(ChangeBroadcaster *source) override;
 
 private:
 

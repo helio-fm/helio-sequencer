@@ -20,7 +20,7 @@
 #include "CommandIDs.h"
 
 ViewportFitProxyComponent::ViewportFitProxyComponent(Viewport &parentViewport,
-        Component *child, bool deleteChildOnRelease /*= true*/) :
+    Component *child, bool deleteChildOnRelease /*= true*/) :
     viewport(parentViewport),
     shouldDeleteChild(deleteChildOnRelease),
     target(child),
@@ -31,7 +31,7 @@ ViewportFitProxyComponent::ViewportFitProxyComponent(Viewport &parentViewport,
     this->addAndMakeVisible(this->target);
     this->setSize(this->target->getWidth(), this->target->getHeight());
     this->centerTargetToViewport();
-    
+
 #if PLATFORM_MOBILE
     this->viewport.setScrollBarThickness(2);
 #endif

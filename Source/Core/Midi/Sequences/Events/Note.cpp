@@ -87,7 +87,7 @@ Note Note::withNewId(WeakReference<MidiSequence> owner) const noexcept
     {
         n.sequence = owner;
     }
-    
+
     n.id = n.createId();
     return n;
 }

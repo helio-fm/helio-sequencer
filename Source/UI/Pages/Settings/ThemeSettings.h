@@ -19,7 +19,8 @@
 
 #include "ColourScheme.h"
 
-class ThemeSettings final : public Component,
+class ThemeSettings final :
+    public Component,
     public ListBoxModel,
     private ChangeListener
 {
@@ -33,8 +34,8 @@ public:
     //===------------------------------------------------------------------===//
 
     int getNumRows() override;
-    Component *refreshComponentForRow(int, bool, Component*) override;
-    void paintListBoxItem(int, Graphics&, int, int, bool) override {}
+    Component *refreshComponentForRow(int, bool, Component *) override;
+    void paintListBoxItem(int, Graphics &, int, int, bool) override {}
     void listBoxItemClicked(int, const MouseEvent &) override {}
 
     //===------------------------------------------------------------------===//
@@ -65,5 +66,5 @@ private:
 
     UniquePointer<ListBox> themesList;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThemeSettings)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ThemeSettings)
 };

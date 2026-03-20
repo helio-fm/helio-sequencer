@@ -37,7 +37,6 @@ public:
 
     // see the comment in Lasso class
     virtual UndoActionId generateTransactionId(int actionId) const = 0;
-
 };
 
 class PianoSequence final : public MidiSequence, public NoteListBase
@@ -60,7 +59,7 @@ public:
     //===------------------------------------------------------------------===//
     // Undoable track editing
     //===------------------------------------------------------------------===//
-    
+
     MidiEvent *insert(const Note &note, const bool undoable);
     bool remove(const Note &note, const bool undoable);
     bool change(const Note &note, const Note &newNote, bool undoable);

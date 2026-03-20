@@ -29,7 +29,8 @@ class BackForwardButtonsListener;
 #include "HotkeyScheme.h"
 #include "TreeNode.h"
 
-class MainLayout final : public Component,
+class MainLayout final :
+    public Component,
     public CommandPaletteModel,
     private Timer // shows tooltips after a timeout
 {
@@ -41,7 +42,7 @@ public:
     void restoreLastOpenedPage();
 
     Rectangle<int> getBoundsForPopups() const;
-    
+
     //===------------------------------------------------------------------===//
     // Pages and headline
     //===------------------------------------------------------------------===//
@@ -103,7 +104,7 @@ private:
 
     UniquePointer<Headline> headline;
     UniquePointer<TooltipContainer> tooltipContainer;
-    
+
     SafePointer<Component> currentContent;
     WeakReference<TreeNode> currentProject;
 

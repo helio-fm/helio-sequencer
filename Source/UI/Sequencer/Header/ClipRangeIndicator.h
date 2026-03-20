@@ -57,7 +57,7 @@ public:
 
             this->repaint();
         }
-        
+
         this->firstBeat = start;
         this->lastBeat = end;
 

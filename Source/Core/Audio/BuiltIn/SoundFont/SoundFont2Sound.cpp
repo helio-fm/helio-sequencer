@@ -106,6 +106,7 @@ struct RIFFChunk final
         //    next += 1;
         //}
 
+        //jassert(next % 2 == 0);
         file.setPosition(next);
     }
 
@@ -1143,7 +1144,7 @@ String SoundFont2Sound::getPresetName(int whichSubsound) const
         jassertfalse;
         return result;
     }
-    
+
     Preset *preset = this->presets[whichSubsound];
     if (this->presets.size() > 1)
     {

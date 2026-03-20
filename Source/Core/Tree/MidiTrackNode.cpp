@@ -264,7 +264,7 @@ void MidiTrackNode::setTrackControllerNumber(int val, NotificationType notificat
     {
         return;
     }
-    
+
     // not undoable because it is only set once when the track is created
     this->controllerNumber = val;
 

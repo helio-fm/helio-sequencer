@@ -111,7 +111,6 @@ void UserInterfaceFlags::setOpenGlRendererEnabled(bool enabled)
     this->useOpenGLRenderer = enabled;
     this->listeners.call(&Listener::onOpenGlRendererFlagChanged, this->useOpenGLRenderer);
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
-
 }
 
 bool UserInterfaceFlags::isNativeTitleBarEnabled() const noexcept
@@ -395,7 +394,7 @@ SerializedData UserInterfaceFlags::serialize() const
 {
     using namespace Serialization;
     SerializedData tree(UI::Flags::uiFlags);
-    
+
     tree.setProperty(UI::Flags::noteNameGuides, this->noteNameGuides);
     tree.setProperty(UI::Flags::noteNameMidiNumbers, this->noteNameMidiNumbers);
     tree.setProperty(UI::Flags::scalesHighlighting, this->scalesHighlighting);

@@ -34,7 +34,7 @@ public:
 
     explicit MidiSequence(MidiTrack &track,
         ProjectEventDispatcher &eventDispatcher) noexcept;
-    
+
     //===------------------------------------------------------------------===//
     // Undoing
     //===------------------------------------------------------------------===//
@@ -138,7 +138,7 @@ public:
 
     inline MidiEvent *const *begin() const noexcept
     { return this->midiEvents.begin(); }
-    
+
     inline MidiEvent **end() noexcept
     { return this->midiEvents.end(); }
 

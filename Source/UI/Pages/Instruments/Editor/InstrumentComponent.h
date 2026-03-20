@@ -29,7 +29,7 @@ public:
 
     InstrumentComponent(WeakReference<Instrument> instrument,
         AudioProcessorGraph::NodeID nodeId);
-    
+
     ~InstrumentComponent() override;
 
     //===------------------------------------------------------------------===//

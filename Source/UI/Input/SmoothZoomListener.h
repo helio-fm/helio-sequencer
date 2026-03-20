@@ -29,5 +29,4 @@ public:
 
     virtual float getZoomFactorX() const = 0;
     virtual float getZoomFactorY() const = 0;
-
 };

@@ -109,7 +109,7 @@ public:
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
     void onReloadProjectContent(const Array<MidiTrack *> &tracks,
         const ProjectMetadata *meta) override;
-    
+
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//

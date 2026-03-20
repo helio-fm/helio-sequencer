@@ -26,7 +26,7 @@ public:
 
     explicit RendererThread(Transport &parentTransport);
     ~RendererThread() override;
-    
+
     float getPercentsComplete() const noexcept;
     const Array<float, CriticalSection> &getWaveformThumbnail() const;
 

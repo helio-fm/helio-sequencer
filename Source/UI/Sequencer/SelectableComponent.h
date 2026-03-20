@@ -24,5 +24,4 @@ public:
     virtual void setSelected(bool selected) = 0;
     virtual bool isSelected() const noexcept = 0;
     virtual const String &getSelectionGroupId() const noexcept = 0;
-
 };

@@ -534,7 +534,7 @@ void KeySignatureDialog::dialogApplyAction()
         this->dismiss();
         return;
     }
-    
+
     this->resetKeyboardFocus();
 }
 

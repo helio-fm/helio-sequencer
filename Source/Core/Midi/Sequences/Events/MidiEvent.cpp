@@ -105,7 +105,7 @@ String MidiEvent::packId(Id id)
     const char c4 = static_cast<char>(id >> (3 * CHAR_BIT));
 
     String s;
-    s = s + c1 + c2 +c3 + c4;
+    s = s + c1 + c2 + c3 + c4;
     return s;
 }
 

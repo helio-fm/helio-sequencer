@@ -32,7 +32,7 @@ static AudioProcessorEditor *createProcessorEditor(AudioProcessor &processor)
             return ui;
         }
     }
-    
+
     if (!processor.getParameters().isEmpty())
     {
         return new GenericAudioProcessorEditor(processor);
@@ -44,7 +44,7 @@ static AudioProcessorEditor *createProcessorEditor(AudioProcessor &processor)
 
 static OwnedArray<PluginWindow> activePluginWindows;
 
-PluginWindow::PluginWindow(AudioProcessorGraph::Node::Ptr owner) : 
+PluginWindow::PluginWindow(AudioProcessorGraph::Node::Ptr owner) :
     DocumentWindow(owner->getProcessor()->getName(), Colours::darkgrey, DocumentWindow::closeButton),
     owner(owner)
 {
@@ -114,7 +114,7 @@ PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node)
             return window.release();
         }
     }
-    
+
     return nullptr;
 }
 

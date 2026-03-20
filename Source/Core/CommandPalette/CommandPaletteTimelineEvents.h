@@ -66,7 +66,6 @@ protected:
     mutable bool clipActionsOutdated = true;
 
 private:
-    
-    ProjectNode &project;
 
+    ProjectNode &project;
 };

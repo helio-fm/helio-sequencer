@@ -61,5 +61,4 @@ private:
 
     UniquePointer<VCS::AutomationTrackDiffLogic> vcsDiffLogic;
     OwnedArray<VCS::Delta> deltas;
-
 };

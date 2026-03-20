@@ -44,7 +44,7 @@ public:
 
     const var &getProperty(const Identifier &name) const noexcept;
     var getProperty(const Identifier &name, const var &defaultValue) const;
-    
+
     SerializedData &setProperty(const Identifier &name, const var &newValue);
     bool hasProperty(const Identifier &name) const noexcept;
     int getNumProperties() const noexcept;
@@ -81,6 +81,7 @@ public:
         using iterator_category = std::forward_iterator_tag;
 
     private:
+
         void *internal;
     };
 
@@ -91,7 +92,7 @@ private:
 
     class SharedData;
     ReferenceCountedObjectPtr<SharedData> data;
-    
+
     friend class SharedData;
     explicit SerializedData(ReferenceCountedObjectPtr<SharedData>) noexcept;
     explicit SerializedData(SharedData &) noexcept;

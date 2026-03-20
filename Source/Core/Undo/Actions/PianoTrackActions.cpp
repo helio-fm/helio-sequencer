@@ -59,7 +59,7 @@ bool PianoTrackInsertAction::undo()
         // so don't serialize anything again
         return this->parentTreeItem->deleteNode(treeItem, true);
     }
-    
+
     return false;
 }
 
@@ -117,7 +117,7 @@ bool PianoTrackRemoveAction::perform()
         this->trackName = treeItem->getTrackName();
         return this->parentTreeItem->deleteNode(treeItem, true);
     }
-    
+
     return false;
 }
 
@@ -132,7 +132,7 @@ bool PianoTrackRemoveAction::undo()
         track->dispatchChangeProjectBeatRange();
         return true;
     }
-    
+
     return false;
 }
 
@@ -142,7 +142,7 @@ int PianoTrackRemoveAction::getSizeInUnits()
     {
         return (this->numEvents * sizeof(MidiEvent));
     }
-    
+
     return 1;
 }
 

@@ -29,8 +29,9 @@ class SeparatorVerticalSkew;
 
 #include "MobileComboBox.h"
 
-class Dashboard final : public Component,
-                        public ChangeListener
+class Dashboard final :
+    public Component,
+    public ChangeListener
 {
 public:
 

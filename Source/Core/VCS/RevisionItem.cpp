@@ -146,7 +146,10 @@ void RevisionItem::deserialize(const SerializedData &data)
     const auto root = data.hasType(Serialization::VCS::revisionItem) ?
         data : data.getChildWithName(Serialization::VCS::revisionItem);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     this->deserializeVCSUuid(root);
 
@@ -184,4 +187,4 @@ void RevisionItem::reset()
     this->vcsItemType = Type::Undefined;
 }
 
-}
+} // namespace VCS

@@ -20,35 +20,35 @@
 class ViewportKineticSlider final : private Timer
 {
 public:
-    
+
     static ViewportKineticSlider &instance()
     {
         static ViewportKineticSlider s;
         return s;
     }
-    
+
     void stopAnimationForViewport(Viewport *targetViewport);
     void calculateDragSpeedForViewport(Viewport *targetViewport, Point<float> absDragOffset);
     void startAnimationForViewport(Viewport *targetViewport, Point<float> force);
-    
+
 private:
-    
+
     void timerCallback() override;
-    
+
     struct Animator final : ReferenceCountedObject
     {
         using Ptr = ReferenceCountedObjectPtr<Animator>;
-        
+
         Component::SafePointer<Viewport> viewport;
-        
+
         Point<float> force;
         Point<int> anchor;
     };
-    
+
     struct DragState final : ReferenceCountedObject
     {
         using Ptr = ReferenceCountedObjectPtr<DragState>;
-        
+
         Component::SafePointer<Viewport> viewport;
         Point<float> force;
 
@@ -57,8 +57,7 @@ private:
 
         double lastCheckTime = 0.0;
     };
-    
+
     ReferenceCountedArray<Animator> animators;
     ReferenceCountedArray<DragState> dragStates;
-
 };

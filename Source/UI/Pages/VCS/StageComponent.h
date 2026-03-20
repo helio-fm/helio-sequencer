@@ -24,7 +24,8 @@ class VersionControl;
 #include "HeadlineItemDataSource.h"
 #include "SeparatorHorizontalFadingReversed.h"
 
-class StageComponent final : public Component,
+class StageComponent final :
+    public Component,
     public ListBoxModel,
     public HeadlineItemDataSource
 {

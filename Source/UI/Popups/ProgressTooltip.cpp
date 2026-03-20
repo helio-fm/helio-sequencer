@@ -31,7 +31,7 @@ ProgressTooltip::ProgressTooltip(bool cancellable) : isCancellable(cancellable)
     this->setSize(ProgressTooltip::tooltipSize, ProgressTooltip::tooltipSize);
 }
 
-void ProgressTooltip::paint(Graphics& g)
+void ProgressTooltip::paint(Graphics &g)
 {
     g.setColour(Colours::black.withAlpha(0.5f));
     g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 15.000f);
@@ -56,7 +56,7 @@ void ProgressTooltip::handleCommandMessage(int commandId)
     }
 }
 
-bool ProgressTooltip::keyPressed(const KeyPress& key)
+bool ProgressTooltip::keyPressed(const KeyPress &key)
 {
     if (key.isKeyCode(KeyPress::escapeKey))
     {

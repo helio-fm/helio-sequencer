@@ -24,7 +24,7 @@ class ModeIndicatorBar;
 class ModeIndicatorComponent final : public Component
 {
 public:
-    
+
     explicit ModeIndicatorComponent(int numModes = 0);
     ~ModeIndicatorComponent();
 
@@ -44,5 +44,5 @@ private:
 
     void updateBarsHighlighting();
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModeIndicatorComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModeIndicatorComponent)
 };

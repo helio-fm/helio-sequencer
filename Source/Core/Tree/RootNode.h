@@ -47,7 +47,7 @@ public:
     ProjectNode *addExampleProject();
     ProjectNode *addEmptyProject(const File &projectLocation, const String &templateName);
     ProjectNode *addEmptyProject(const String &projectName, const String &templateName);
-    
+
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
@@ -64,5 +64,4 @@ public:
 private:
 
     UniquePointer<Dashboard> dashboard;
-
 };

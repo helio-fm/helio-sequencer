@@ -53,7 +53,7 @@ void DocumentHelpers::showFileChooser(UniquePointer<FileChooser> &chooser,
             fileChooser->launchAsync(flags,
                 [successCallback](const FileChooser &fc) {
                     App::Layout().setEnabled(true);
-                
+
                     auto results = fc.getURLResults();
                     if (results.isEmpty())
                     {

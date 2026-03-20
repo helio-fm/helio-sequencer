@@ -200,7 +200,6 @@ public:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MenuItemHighlighter)
 };
 
-
 //===----------------------------------------------------------------------===//
 // MenuItem
 //===----------------------------------------------------------------------===//
@@ -577,7 +576,7 @@ void MenuItemComponent::mouseUp(const MouseEvent &e)
     {
         if (this->clickMarker)
         {
-#if ! HAS_OPENGL_BUG
+#if !HAS_OPENGL_BUG
             this->animator.animateComponent(this->clickMarker.get(),
                 this->getLocalBounds(), 0.f, Globals::UI::fadeOutLong, true, 0.0, 1.0);
 #endif
@@ -596,7 +595,10 @@ void MenuItemComponent::mouseUp(const MouseEvent &e)
         }
     }
 
-    if (checker.shouldBailOut()) { return; }
+    if (checker.shouldBailOut())
+    {
+        return;
+    }
 
     this->mouseDownWasTriggered = false;
 }

@@ -114,7 +114,7 @@ public:
     void resized() override;
     void paint(Graphics &g) noexcept override;
     void parentSizeChanged() override;
-    
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
@@ -195,7 +195,7 @@ private:
     Array<Clip> clipsToEraseOnMouseUp;
 
 private:
-    
+
     // needed for grouping:
     Array<String> rows;
     void reloadRowsGrouping();

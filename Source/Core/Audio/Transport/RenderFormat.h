@@ -29,8 +29,8 @@ inline String getExtensionForRenderFormat(RenderFormat format) noexcept
     switch (format)
     {
     case RenderFormat::FLAC: return "flac";
-    case RenderFormat::WAV:  return "wav";
-    case RenderFormat::OGG:  return "ogg";
+    case RenderFormat::WAV: return "wav";
+    case RenderFormat::OGG: return "ogg";
     }
 
     return {};

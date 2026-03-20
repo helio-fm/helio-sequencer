@@ -53,7 +53,7 @@ public:
         this->setInterceptsMouseClicks(false, false);
         this->setAccessible(false);
     }
-    
+
     template <typename T>
     struct LineWithEasing final : public Line<T>
     {
@@ -123,7 +123,7 @@ public:
         // ~1-2 orders of magnitude reduction for actual curve fitting
         this->simplifiedPositionsL2 =
             PointReduction<double>::simplifyExtended(this->rawPositions, epsilon2);
-        
+
         if (this->simplifiedPositionsL1.size() >= 2)
         {
             this->simplifiedPositionsL1[this->simplifiedPositionsL1.size() - 1] = newPosition;
@@ -345,7 +345,7 @@ void AutomationEditor::applyHandDrawnCurve(bool isAnyModifierKeyDown)
         jassertfalse;
         return;
     }
-    
+
     bool didCheckpoint = false;
 
     {
@@ -934,7 +934,7 @@ void AutomationEditor::onAddMidiEvent(const MidiEvent &event)
     {
         return;
     }
-    
+
     const auto &autoEvent = static_cast<const AutomationEvent &>(event);
     const auto *track = autoEvent.getSequence()->getTrack();
     const bool isOnOffTrack = track->isOnOffAutomationTrack();

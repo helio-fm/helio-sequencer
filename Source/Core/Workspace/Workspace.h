@@ -31,7 +31,7 @@ class CommandPaletteProjectsList;
 class Workspace final : public CommandPaletteModel, private Serializable
 {
 public:
-    
+
     Workspace();
     ~Workspace() override;
 
@@ -79,20 +79,20 @@ public:
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 private:
 
     bool wasInitialized = false;
 
     UserProfile userProfile;
-    
+
     UniquePointer<AudioCore> audioCore;
     UniquePointer<PluginScanner> pluginManager;
-    
+
     UniquePointer<RootNode> treeRoot;
     NavigationHistory navigationHistory;
 

@@ -23,7 +23,7 @@
 class ScalesCollection final : public ConfigurationResourceCollection
 {
 public:
-  
+
     ScalesCollection();
 
     inline const Array<Scale::Ptr> getAll() const

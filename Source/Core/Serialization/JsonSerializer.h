@@ -40,5 +40,4 @@ private:
 
     bool allOnOneLine;
     StringArray headerComments;
-
 };

@@ -552,7 +552,7 @@ void ChordPreviewTool::buildNewNote(bool shouldSendMidiMessage)
     {
         this->sequence->checkpoint(UndoActionIDs::MakeChord);
     }
-    
+
     const int key = jlimit(0, this->roll.getNumKeys(), this->targetKey);
     const Note note(this->sequence.get(), key, this->targetBeat,
         this->barLengthInBeats,

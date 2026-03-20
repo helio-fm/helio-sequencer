@@ -304,7 +304,6 @@ private:
     int blinks = 0;
     bool state = false;
     WeakReference<TransportControlButton> button;
-
 };
 
 TransportControlComponent::TransportControlComponent(WeakReference<Component> eventReceiver) :

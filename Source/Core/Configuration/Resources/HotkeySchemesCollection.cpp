@@ -59,7 +59,10 @@ void HotkeySchemesCollection::deserializeResources(const SerializedData &tree, R
     const auto root = tree.hasType(Serialization::Resources::hotkeySchemes) ?
         tree : tree.getChildWithName(Serialization::Resources::hotkeySchemes);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     forEachChildWithType(root, schemeNode, Serialization::UI::Hotkeys::scheme)
     {

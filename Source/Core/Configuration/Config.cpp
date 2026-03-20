@@ -108,7 +108,7 @@ void Config::initResources()
         this->uiFlags->setUseFixedDoNotation(userLanguage == "ru" || userLanguage == "uk" ||
             userLanguage == "fr" || userLanguage == "it" || userLanguage == "es" ||
             userLanguage == "el" || userLanguage == "nl" || userLanguage == "pt");
-        
+
         this->uiFlags->setProjectMapLargeMode(!App::isRunningOnPhone());
     }
 
@@ -246,7 +246,6 @@ int Config::getMaxSavedUndoActions() const noexcept
     const int maxActions = this->getProperty(Serialization::Config::maxSavedUndoActions, defaultMaxActions);
     return jlimit(0, 256, maxActions);
 }
-
 
 void Config::setWindowBounds(const Rectangle<int> &bounds)
 {

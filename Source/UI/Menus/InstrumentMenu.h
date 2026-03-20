@@ -26,18 +26,17 @@ class OrchestraPit;
 class InstrumentMenu final : public MenuPanel
 {
 public:
-    
+
     InstrumentMenu(InstrumentNode &parentInstrument,
         PluginScanner &scanner, OrchestraPit &pit);
-    
+
 private:
-    
+
     InstrumentNode &instrumentNode;
     PluginScanner &pluginScanner;
     OrchestraPit &pit;
-    
+
     MenuPanel::Menu createDefaultMenu() noexcept;
     MenuPanel::Menu createEffectsMenu() noexcept;
     MenuPanel::Menu createInstrumentsMenu() noexcept;
-
 };

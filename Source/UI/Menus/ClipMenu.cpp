@@ -144,7 +144,7 @@ MenuPanel::Menu ClipMenu::makeRefactoringMenu() noexcept
     {
         this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
     }));
-    
+
     menu.add(MenuItem::item(Icons::inversion, CommandIDs::MelodicInversion,
         TRANS(I18n::Menu::Refactor::melodicInversion))->closesMenu());
 
@@ -251,7 +251,7 @@ MenuPanel::Menu ClipMenu::makeInstrumentSelectionMenu() noexcept
     {
         this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
     }));
-    
+
     jassert(clip.isValid());
     auto *track = this->clip.getPattern()->getTrack();
 
@@ -272,10 +272,9 @@ MenuPanel::Menu ClipMenu::makeInstrumentSelectionMenu() noexcept
                 this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
             }));
     }
-    
+
     return menu;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Parametric modifiers menus
@@ -381,7 +380,7 @@ MenuPanel::Menu ClipModifiersMenu::makeEditModifiersMenu(const MenuItem::Callbac
             PatternOperations::toggleMuteModifiersStack(clip, true);
             this->updateContent(this->makeEditModifiersMenu(goBackToParent), MenuPanel::None);
         }));
-    
+
     menu.add(MenuItem::item(Icons::apply, TRANS(I18n::Menu::Modifiers::applyAll))->
         disabledIf(!this->clip.hasEnabledModifiers())->
         closesMenu()->

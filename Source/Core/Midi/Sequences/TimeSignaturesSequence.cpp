@@ -80,7 +80,7 @@ void TimeSignaturesSequence::exportMidi(MidiMessageSequence &outSequence,
 
             syllableIndex = ++syllableIndex % scheme.getSize();
 
-            constexpr auto metronomeChannel = 1;    // doesn't matter which one
+            constexpr auto metronomeChannel = 1; // doesn't matter which one
             constexpr auto metronomeVelocity = 1.f; // also will be ignored
 
             MidiMessage mentonomeNoteOn(MidiMessage::noteOn(metronomeChannel, key, metronomeVelocity));
@@ -227,7 +227,7 @@ bool TimeSignaturesSequence::change(const TimeSignatureEvent &oldParams,
             this->updateBeatRange(true);
             return true;
         }
-        
+
         return false;
     }
 
@@ -240,14 +240,13 @@ bool TimeSignaturesSequence::change(const TimeSignatureEvent &oldParams,
 
 Function<void(const String &text)> TimeSignaturesSequence::getEventChangeCallback(const TimeSignatureEvent &event)
 {
-    return[this, event](const String &text)
+    return [this, event](const String &text)
     {
         int numerator;
         int denominator;
         Meter::parseString(text, numerator, denominator);
         this->checkpoint();
         this->change(event, event.withNumerator(numerator).withDenominator(denominator), true);
-
     };
 }
 
@@ -289,7 +288,7 @@ void TimeSignaturesSequence::deserialize(const SerializedData &data)
     {
         TimeSignatureEvent *signature = new TimeSignatureEvent(this);
         signature->deserialize(e);
-        
+
         this->midiEvents.add(signature); // sorted later
 
         lastBeat = jmax(lastBeat, signature->getBeat());

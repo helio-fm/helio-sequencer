@@ -25,23 +25,23 @@ class ModalCallout final : public Component
 public:
 
     ModalCallout(Component *newComponent,
-                 SafePointer<Component> pointAtComponent,
-                 bool shouldAlignToMouse);
-    
+        SafePointer<Component> pointAtComponent,
+        bool shouldAlignToMouse);
+
     ~ModalCallout() override;
-    
+
     //===------------------------------------------------------------------===//
     // Static
     //===------------------------------------------------------------------===//
-    
+
     static void emit(Component *newComponent,
-                     Component *pointAtComponent,
-                     bool alignsToMousePosition = false);
+        Component *pointAtComponent,
+        bool alignsToMousePosition = false);
 
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
-    
+
     void paint(Graphics &) override;
     void resized() override;
     void moved() override;
@@ -52,13 +52,13 @@ public:
     void inputAttemptWhenModal() override;
     void handleCommandMessage(int commandId) override;
     bool keyPressed(const KeyPress &) override;
-    
+
 private:
 
     int getBorderSize() const noexcept;
     void findTargetPointAndUpdateBounds();
-    void pointToAndFit(const Rectangle<int>& newAreaToPointTo,
-        const Rectangle<int>& newAreaToFitIn);
+    void pointToAndFit(const Rectangle<int> &newAreaToPointTo,
+        const Rectangle<int> &newAreaToFitIn);
 
     static constexpr float arrowSize = 5.f;
 
@@ -72,7 +72,7 @@ private:
 
     Point<float> clickPointAbs;
     const bool alignsToMouse;
-    
+
     const Colour fillColour = findDefaultColour(ColourIDs::Callout::fill);
     const Colour frameColour = findDefaultColour(ColourIDs::Callout::frame);
 
@@ -80,6 +80,6 @@ private:
     void fadeOut();
     void dismiss();
     void updateShape();
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModalCallout)
 };

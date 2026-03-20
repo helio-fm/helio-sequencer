@@ -107,7 +107,10 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
     for (int i = 0; i < selectedItems.size(); ++i)
     {
         const int index = selectedItems[i];
-        if (index >= allChanges->getItems().size()) { return false; }
+        if (index >= allChanges->getItems().size())
+        {
+            return false;
+        }
         if (auto *item = allChanges->getItems()[index].get())
         {
             changesToReset.add(item);
@@ -128,7 +131,7 @@ void VersionControl::resetAllChanges()
     {
         changesToReset.add(item);
     }
-    
+
     this->head.resetChanges(changesToReset);
     this->sendChangeMessage();
 }
@@ -146,7 +149,10 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
     for (int i = 0; i < selectedItems.size(); ++i)
     {
         const int index = selectedItems[i];
-        if (index >= allChanges->getItems().size()) { return false; }
+        if (index >= allChanges->getItems().size())
+        {
+            return false;
+        }
         if (auto *item = allChanges->getItems()[index].get())
         {
             newRevision->addItem(item);
@@ -154,7 +160,10 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
     }
 
     VCS::Revision::Ptr headingRevision(this->head.getHeadingRevision());
-    if (headingRevision == nullptr) { return false; }
+    if (headingRevision == nullptr)
+    {
+        return false;
+    }
 
     headingRevision->addChild(newRevision);
     this->head.moveTo(newRevision);
@@ -162,7 +171,6 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
     this->sendChangeMessage();
     return true;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Stashes
@@ -175,24 +183,27 @@ bool VersionControl::stash(SparseSet<int> selectedItems,
     {
         return false;
     }
-    
+
     VCS::Revision::Ptr newRevision(new VCS::Revision(message));
     VCS::Revision::Ptr allChanges(this->head.getDiff());
-    
+
     for (int i = 0; i < selectedItems.size(); ++i)
     {
         const int index = selectedItems[i];
-        if (index >= allChanges->getItems().size()) { return false; }
+        if (index >= allChanges->getItems().size())
+        {
+            return false;
+        }
         newRevision->addItem(allChanges->getItems()[index]);
     }
-    
+
     this->stashes->addStash(newRevision);
 
-    if (! shouldKeepChanges)
+    if (!shouldKeepChanges)
     {
         this->resetChanges(selectedItems);
     }
-    
+
     this->sendChangeMessage();
     return true;
 }
@@ -203,7 +214,7 @@ bool VersionControl::applyStash(const VCS::Revision::Ptr stash, bool shouldKeepS
     {
         return false;
     }
-    
+
     VCS::Revision::Ptr headRevision(this->head.getHeadingRevision());
     this->head.moveTo(stash);
     this->head.cherryPickAll();
@@ -249,12 +260,12 @@ bool VersionControl::restoreQuickStash()
     {
         return false;
     }
-    
+
     VCS::Head tempHead(this->head);
     tempHead.mergeStateWith(this->stashes->getQuickStash());
     tempHead.cherryPickAll();
     this->stashes->resetQuickStash();
-    
+
     this->sendChangeMessage();
     return true;
 }
@@ -293,7 +304,10 @@ void VersionControl::deserialize(const SerializedData &data)
     const auto root = data.hasType(Serialization::Core::versionControl) ?
         data : data.getChildWithName(Serialization::Core::versionControl);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     const String headId = root.getProperty(Serialization::VCS::headRevisionId);
 
@@ -308,7 +322,7 @@ void VersionControl::deserialize(const SerializedData &data)
         DBG("Loading VCS snapshot done in " +
             String(Time::getMillisecondCounterHiRes() - headLoadStart) + "ms");
     }
-    
+
     if (auto headRevision = this->getRevisionById(this->rootRevision, headId))
     {
         // head keeps a snapshot node, which is the result of applying all deltas

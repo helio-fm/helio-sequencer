@@ -84,7 +84,7 @@ public:
     void mouseUp(const MouseEvent &e) override;
     void mouseEnter(const MouseEvent &e) override;
     void mouseExit(const MouseEvent &e) override;
-    
+
     static constexpr auto minLengthInBeats = 1.f / 8.f;
 
 #if PLATFORM_DESKTOP
@@ -126,5 +126,5 @@ private:
     SafePointer<EventComponentBase> nextEventHolder;
     SafePointer<EventComponentBase> prevEventHolder;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationStepEventComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationStepEventComponent)
 };

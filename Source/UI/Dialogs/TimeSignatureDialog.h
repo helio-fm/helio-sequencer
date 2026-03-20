@@ -99,5 +99,5 @@ private:
     UniquePointer<TextEditor> textEditor;
     UniquePointer<MetronomeEditor> metronomeEditor;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeSignatureDialog)
 };

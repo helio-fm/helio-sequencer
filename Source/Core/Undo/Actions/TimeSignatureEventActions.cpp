@@ -37,7 +37,7 @@ bool TimeSignatureEventInsertAction::perform()
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
-    
+
     return false;
 }
 
@@ -47,7 +47,7 @@ bool TimeSignatureEventInsertAction::undo()
     {
         return sequence->remove(this->event, false);
     }
-    
+
     return false;
 }
 
@@ -92,7 +92,7 @@ bool TimeSignatureEventRemoveAction::perform()
     {
         return sequence->remove(this->event, false);
     }
-    
+
     return false;
 }
 
@@ -102,7 +102,7 @@ bool TimeSignatureEventRemoveAction::undo()
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
-    
+
     return false;
 }
 
@@ -149,7 +149,7 @@ bool TimeSignatureEventChangeAction::perform()
     {
         return sequence->change(this->eventBefore, this->eventAfter, false);
     }
-    
+
     return false;
 }
 
@@ -159,7 +159,7 @@ bool TimeSignatureEventChangeAction::undo()
     {
         return sequence->change(this->eventAfter, this->eventBefore, false);
     }
-    
+
     return false;
 }
 
@@ -183,7 +183,7 @@ UndoAction *TimeSignatureEventChangeAction::createCoalescedAction(UndoAction *ne
         }
     }
 
-    (void) nextAction;
+    (void)nextAction;
     return nullptr;
 }
 
@@ -191,25 +191,25 @@ SerializedData TimeSignatureEventChangeAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::timeSignatureEventChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
+
     SerializedData timeSignatureBeforeChild(Serialization::Undo::timeSignatureBefore);
     timeSignatureBeforeChild.appendChild(this->eventBefore.serialize());
     tree.appendChild(timeSignatureBeforeChild);
-    
+
     SerializedData timeSignatureAfterChild(Serialization::Undo::timeSignatureAfter);
     timeSignatureAfterChild.appendChild(this->eventAfter.serialize());
     tree.appendChild(timeSignatureAfterChild);
-    
+
     return tree;
 }
 
 void TimeSignatureEventChangeAction::deserialize(const SerializedData &data)
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
+
     const auto timeSignatureBeforeChild = data.getChildWithName(Serialization::Undo::timeSignatureBefore);
     const auto timeSignatureAfterChild = data.getChildWithName(Serialization::Undo::timeSignatureAfter);
-    
+
     this->eventBefore.deserialize(timeSignatureBeforeChild.getChild(0));
     this->eventAfter.deserialize(timeSignatureAfterChild.getChild(0));
 }

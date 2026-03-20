@@ -22,10 +22,9 @@ class RollBase;
 class RollListener
 {
 public:
-    
+
     virtual ~RollListener() = default;
-    
+
     virtual void onMidiRollMoved(RollBase *targetRoll) = 0;
     virtual void onMidiRollResized(RollBase *targetRoll) = 0;
-
 };

@@ -32,7 +32,7 @@ public:
 
         this->setSize(64, 64);
     }
- 
+
     ~FineTuningValueIndicator() = default;
 
     void setValue(float newValue)

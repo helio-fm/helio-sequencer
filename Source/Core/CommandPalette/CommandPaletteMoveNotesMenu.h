@@ -63,5 +63,4 @@ private:
 
     mutable Actions actionsCache;
     mutable bool actionsCacheOutdated = true;
-
 };

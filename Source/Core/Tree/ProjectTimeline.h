@@ -61,11 +61,11 @@ public:
     SerializedData getDeltaData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
     void resetStateTo(const VCS::TrackedItem &newState) override;
-        
+
     //===------------------------------------------------------------------===//
     // ProjectEventDispatcher
     //===------------------------------------------------------------------===//
-    
+
     void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
     void dispatchAddEvent(const MidiEvent &event) override;
     void dispatchRemoveEvent(const MidiEvent &event) override;
@@ -89,7 +89,7 @@ public:
     void reset() override;
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
-    
+
     //===------------------------------------------------------------------===//
     // Deltas
     //===------------------------------------------------------------------===//
@@ -99,7 +99,7 @@ public:
 
     SerializedData serializeTimeSignaturesDelta() const;
     void resetTimeSignaturesDelta(const SerializedData &state);
-    
+
     SerializedData serializeKeySignaturesDelta() const;
     void resetKeySignaturesDelta(const SerializedData &state);
 
@@ -108,9 +108,9 @@ private:
     UniquePointer<VCS::DiffLogic> vcsDiffLogic;
 
     OwnedArray<VCS::Delta> deltas;
-    
+
     ProjectNode &project;
-    
+
     String annotationsTrackId = Uuid().toString();
     String timeSignaturesTrackId = Uuid().toString();
     String keySignaturesTrackId = Uuid().toString();

@@ -22,13 +22,13 @@
 class HighlightedComponent : virtual public Component
 {
 public:
-    
+
     HighlightedComponent()
     {
         this->setInterceptsMouseClicks(true, false);
         this->setMouseClickGrabsKeyboardFocus(false);
     }
-    
+
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
@@ -49,7 +49,7 @@ public:
             this->setHighlighted(true);
         }
     }
-    
+
     void mouseExit(const MouseEvent &) override
     {
         this->setHighlighted(false);
@@ -64,7 +64,7 @@ public:
         }
 
         this->isHighlighted = shouldBeHighlighted;
-        
+
         if (this->isHighlighted)
         {
             if (this->highlighter == nullptr)
@@ -96,30 +96,30 @@ public:
     }
 
 protected:
-    
+
     virtual Component *createHighlighterComponent()
     {
         return new Component();
     }
-    
+
     void clearHighlighterComponentCache()
     {
         this->highlighter = nullptr;
     }
-    
+
     void clearHighlighterAndStopAnimations()
     {
         this->highlightAnimator.cancelAllAnimations(true);
         this->highlighter = nullptr;
     }
-    
+
 private:
 
     bool isHighlighted = false;
-    
+
     UniquePointer<Component> highlighter;
 
     ComponentFader highlightAnimator;
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighlightedComponent)
 };

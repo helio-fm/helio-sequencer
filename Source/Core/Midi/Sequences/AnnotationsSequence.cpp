@@ -22,7 +22,7 @@
 #include "ProjectNode.h"
 #include "UndoStack.h"
 
-AnnotationsSequence::AnnotationsSequence(MidiTrack &track, 
+AnnotationsSequence::AnnotationsSequence(MidiTrack &track,
     ProjectEventDispatcher &dispatcher) noexcept :
     MidiSequence(track, dispatcher) {}
 
@@ -65,7 +65,7 @@ MidiEvent *AnnotationsSequence::insert(const AnnotationEvent &eventParams, bool 
     }
     else
     {
-        auto* ownedEvent = new AnnotationEvent(this, eventParams);
+        auto *ownedEvent = new AnnotationEvent(this, eventParams);
         this->midiEvents.addSorted(*ownedEvent, ownedEvent);
         this->eventDispatcher.dispatchAddEvent(*ownedEvent);
         this->updateBeatRange(true);
@@ -96,7 +96,7 @@ bool AnnotationsSequence::remove(const AnnotationEvent &eventParams, bool undoab
             this->eventDispatcher.dispatchPostRemoveEvent(this);
             return true;
         }
-        
+
         return false;
     }
 
@@ -126,7 +126,7 @@ bool AnnotationsSequence::change(const AnnotationEvent &oldParams,
             this->updateBeatRange(true);
             return true;
         }
-        
+
         return false;
     }
 
@@ -183,7 +183,7 @@ void AnnotationsSequence::deserialize(const SerializedData &data)
     {
         AnnotationEvent *annotation = new AnnotationEvent(this);
         annotation->deserialize(e);
-        
+
         this->midiEvents.add(annotation); // sorted later
 
         lastBeat = jmax(lastBeat, annotation->getBeat());

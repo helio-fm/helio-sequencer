@@ -81,9 +81,9 @@ void AutomationStepEventsConnector::resizeToFit(float newControllerValue)
     const float y = r + marginTop + (h * this->eventControllerValue);
 
     this->realBounds = { jmin(x1, x2) + r, y, fabsf(x1 - x2), y2 - y };
-    
+
     this->setBounds(this->realBounds.toNearestInt());
-    
+
     if (shouldRepaint)
     {
         this->repaint();

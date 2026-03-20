@@ -103,7 +103,7 @@ TimeSignatureDialog::TimeSignatureDialog(ProjectNode &project,
         {
             return;
         }
-        
+
         int numerator;
         int denominator;
         Meter::parseString(meterString, numerator, denominator);

@@ -41,7 +41,7 @@ public:
 
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         const KeyboardMapping &keyMap, double timeFactor) const noexcept override;
-    
+
     KeySignatureEvent withDeltaBeat(float beatOffset) const noexcept;
     KeySignatureEvent withBeat(float newBeat) const noexcept;
     KeySignatureEvent withRootKey(Note::Key key, const String &keyName) const noexcept;
@@ -55,7 +55,7 @@ public:
     //===------------------------------------------------------------------===//
 
     Note::Key getRootKey() const noexcept;
-    
+
     // this is optional and can be empty;
     // if empty, indicates the default key name:
     const String &getRootKeyName() const noexcept;

@@ -126,10 +126,10 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
     {
         return;
     }
-    
+
     const float midH = float(this->getHeight()) / 2.f;
     constexpr int w = WaveformAudioMonitorComponent::bufferSize;
-    
+
 #if PLATFORM_DESKTOP
     // the audio monitor is not supposed to be stretched on desktop platforms
     constexpr float peakStretch = 1.f;

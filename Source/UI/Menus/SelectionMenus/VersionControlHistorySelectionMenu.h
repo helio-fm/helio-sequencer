@@ -25,12 +25,11 @@ class VersionControl;
 class VersionControlHistorySelectionMenu final : public MenuPanel
 {
 public:
-    
+
     VersionControlHistorySelectionMenu(VCS::Revision::Ptr revision, VersionControl &vcs);
-    
+
 private:
 
     VCS::Revision::Ptr revision;
     VersionControl &vcs;
-
 };

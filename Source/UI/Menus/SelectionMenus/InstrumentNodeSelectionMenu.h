@@ -24,7 +24,7 @@ class Instrument;
 class InstrumentNodeSelectionMenu final : public MenuPanel
 {
 public:
-    
+
     InstrumentNodeSelectionMenu(Instrument &instrument,
         AudioProcessorGraph::Node::Ptr node);
 
@@ -38,5 +38,4 @@ private:
     MenuPanel::Menu createAudioDestinationsMenu() noexcept;
     MenuPanel::Menu createMidiSourcesMenu() noexcept;
     MenuPanel::Menu createMidiDestinationsMenu() noexcept;
-
 };

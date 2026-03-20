@@ -51,5 +51,4 @@ private:
 
     const int backCommandId;
     const int forwardCommandId;
-
 };

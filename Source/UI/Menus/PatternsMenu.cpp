@@ -36,7 +36,7 @@ PatternsMenu::PatternsMenu(PatternEditorNode &parentNode)
         TRANS(I18n::Menu::groupByName))->
         disabledIf(grouping == MidiTrack::Grouping::GroupByName)->
         closesMenu());
-    
+
     menu.add(MenuItem::item(Icons::colour,
         CommandIDs::PatternsGroupByColour,
         TRANS(I18n::Menu::groupByColour))->

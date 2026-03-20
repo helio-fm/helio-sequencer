@@ -35,13 +35,19 @@ public:
         timeline(owner) {}
 
     const String &getTrackId() const noexcept override
-    { return this->timeline.annotationsTrackId; }
+    {
+        return this->timeline.annotationsTrackId;
+    }
 
     MidiSequence *getSequence() const noexcept override
-    { return this->timeline.annotationsSequence.get(); }
+    {
+        return this->timeline.annotationsSequence.get();
+    }
 
     Colour getTrackColour() const noexcept override
-    { return findDefaultColour(Label::textColourId); }
+    {
+        return findDefaultColour(Label::textColourId);
+    }
 
     ProjectTimeline &timeline;
 };
@@ -54,13 +60,19 @@ public:
         timeline(owner) {}
 
     const String &getTrackId() const noexcept override
-    { return this->timeline.timeSignaturesTrackId; }
+    {
+        return this->timeline.timeSignaturesTrackId;
+    }
 
     MidiSequence *getSequence() const noexcept override
-    { return this->timeline.timeSignaturesSequence.get(); }
+    {
+        return this->timeline.timeSignaturesSequence.get();
+    }
 
     Colour getTrackColour() const noexcept override
-    { return findDefaultColour(Label::textColourId); }
+    {
+        return findDefaultColour(Label::textColourId);
+    }
 
     String getTrackInstrumentId() const noexcept override
     {
@@ -79,13 +91,19 @@ public:
         timeline(owner) {}
 
     const String &getTrackId() const noexcept override
-    { return this->timeline.keySignaturesTrackId; }
+    {
+        return this->timeline.keySignaturesTrackId;
+    }
 
     MidiSequence *getSequence() const noexcept override
-    { return this->timeline.keySignaturesSequence.get(); }
+    {
+        return this->timeline.keySignaturesSequence.get();
+    }
 
     Colour getTrackColour() const noexcept override
-    { return findDefaultColour(Label::textColourId); }
+    {
+        return findDefaultColour(Label::textColourId);
+    }
 
     ProjectTimeline &timeline;
 };
@@ -265,7 +283,7 @@ void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
     {
         const VCS::Delta *newDelta = newState.getDelta(i);
         const auto newDeltaData(newState.getDeltaData(i));
-        
+
         if (newDelta->hasType(AnnotationDeltas::annotationsAdded))
         {
             this->resetAnnotationsDelta(newDeltaData);
@@ -369,10 +387,10 @@ SerializedData ProjectTimeline::serialize() const
 void ProjectTimeline::deserialize(const SerializedData &data)
 {
     this->reset();
-    
+
     const auto root = data.hasType(this->vcsDiffLogic->getType()) ?
         data : data.getChildWithName(this->vcsDiffLogic->getType());
-    
+
     if (!root.isValid())
     {
         return;
@@ -453,7 +471,7 @@ SerializedData ProjectTimeline::serializeTimeSignaturesDelta() const
         const MidiEvent *event = this->timeSignaturesSequence->getUnchecked(i);
         tree.appendChild(event->serialize());
     }
-    
+
     return tree;
 }
 
@@ -461,7 +479,7 @@ void ProjectTimeline::resetTimeSignaturesDelta(const SerializedData &state)
 {
     jassert(state.hasType(Serialization::VCS::TimeSignatureDeltas::timeSignaturesAdded));
     this->timeSignaturesSequence->reset();
-    
+
     forEachChildWithType(state, e, Serialization::Midi::timeSignature)
     {
         this->timeSignaturesSequence->checkoutEvent<TimeSignatureEvent>(e);

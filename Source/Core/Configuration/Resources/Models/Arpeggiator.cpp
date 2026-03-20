@@ -222,7 +222,7 @@ Note Arpeggiator::mapArpKeyIntoChordSpace(const Temperament::Ptr temperament,
 
     const auto arpKey = this->keys.getUnchecked(safeKeyIndex);
     const auto arpKeyOrReversed = this->keys.getUnchecked(safeKeyIndexOrReversed);
-    
+
     // randomly add -1/0/1 scale offset with a random chance:
     static Random rng;
     const auto randomScaleOffset =
@@ -288,7 +288,10 @@ void Arpeggiator::deserialize(const SerializedData &data)
     const auto root = data.hasType(Arps::arpeggiator) ?
         data : data.getChildWithName(Arps::arpeggiator);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     this->reset();
 
@@ -360,7 +363,10 @@ int Arpeggiator::Key::compareElements(const Key &first, const Key &second) noexc
 {
     const float beatDiff = first.beat - second.beat;
     const int beatResult = (beatDiff > 0.f) - (beatDiff < 0.f);
-    if (beatResult != 0) { return beatResult; }
+    if (beatResult != 0)
+    {
+        return beatResult;
+    }
 
     const int keyDiff = first.key - second.key;
     const int keyResult = (keyDiff > 0) - (keyDiff < 0);

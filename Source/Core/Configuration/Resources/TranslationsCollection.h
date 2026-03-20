@@ -38,11 +38,11 @@ public:
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
-    
+
     String translate(I18n::Key singular);
     String translate(const String &text);
     String translate(const String &baseLiteral, int64 targetNumber);
-    
+
 private:
 
     void deserializeResources(const SerializedData &tree, Resources &outResources) override;

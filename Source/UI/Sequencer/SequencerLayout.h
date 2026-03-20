@@ -46,7 +46,7 @@ public:
     void showLinearEditor(const Clip &activeClip);
 
     RollBase *getRoll() const noexcept;
-    
+
     //===------------------------------------------------------------------===//
     // UserInterfaceFlags::Listener
     //===------------------------------------------------------------------===//
@@ -74,7 +74,7 @@ public:
 private:
 
     ProjectNode &project;
-    
+
     UniquePointer<Viewport> pianoViewport;
     UniquePointer<Viewport> patternViewport;
 

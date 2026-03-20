@@ -30,12 +30,11 @@ public:
 
     void showPage() override;
     void recreatePage() override;
-    
+
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
 
     bool hasMenu() const noexcept override;
     UniquePointer<Component> createMenu() override;
-
 };

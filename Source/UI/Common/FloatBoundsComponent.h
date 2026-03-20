@@ -44,5 +44,4 @@ public:
 protected:
 
     Rectangle<float> floatLocalBounds;
-
 };

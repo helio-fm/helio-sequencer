@@ -85,5 +85,4 @@ public:
 protected:
 
     ListenerList<Listener> listeners;
-
 };

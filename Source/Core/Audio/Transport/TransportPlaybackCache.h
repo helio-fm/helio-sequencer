@@ -54,12 +54,12 @@ struct CachedMidiMessage final : public ReferenceCountedObject
 class TransportPlaybackCache final
 {
 private:
-    
+
     Array<Instrument *, CriticalSection> uniqueInstruments;
     ReferenceCountedArray<CachedMidiSequence, CriticalSection> sequences;
 
 public:
-    
+
     TransportPlaybackCache() = default;
     TransportPlaybackCache(const TransportPlaybackCache &other) = default;
     TransportPlaybackCache &operator= (const TransportPlaybackCache &other) = default;
@@ -68,7 +68,7 @@ public:
     {
         return this->uniqueInstruments;
     }
-    
+
     void addWrapper(CachedMidiSequence::Ptr newWrapper) noexcept
     {
         if (newWrapper->midiMessages.getNumEvents() > 0)
@@ -77,18 +77,18 @@ public:
             this->sequences.add(newWrapper);
         }
     }
-    
+
     inline void clear()
     {
         this->uniqueInstruments.clearQuick();
         this->sequences.clearQuick();
     }
-    
+
     inline bool isEmpty() const
     {
         return this->sequences.isEmpty();
     }
-    
+
     double getSampleRate() const
     {
         if (this->isEmpty())
@@ -133,7 +133,7 @@ public:
                 result.add(cached);
             }
         }
-        
+
         return result;
     }
 
@@ -144,7 +144,7 @@ public:
             wrapper->currentIndex = this->getNextIndexAtTime(wrapper->midiMessages, (position - DBL_MIN));
         }
     }
-    
+
     void seekToStart()
     {
         for (auto *wrapper : this->sequences)
@@ -152,7 +152,7 @@ public:
             wrapper->currentIndex = 0;
         }
     }
-    
+
     bool getNextMessage(CachedMidiMessage &target)
     {
         double minTimeStamp = DBL_MAX;
@@ -194,9 +194,9 @@ public:
 
         return true;
     }
-    
+
 private:
-    
+
     int getNextIndexAtTime(const MidiMessageSequence &sequence, double timeStamp) const
     {
         int i = 0;
@@ -208,7 +208,7 @@ private:
                 break;
             }
         }
-        
+
         return i;
     }
 

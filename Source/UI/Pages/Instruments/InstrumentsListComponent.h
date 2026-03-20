@@ -25,9 +25,10 @@ class HeadlineContextMenuController;
 #include "InstrumentNode.h"
 #include "SeparatorHorizontalFadingReversed.h"
 
-class InstrumentsListComponent final : public Component,
-                                       public ListBoxModel,
-                                       public HeadlineItemDataSource
+class InstrumentsListComponent final :
+    public Component,
+    public ListBoxModel,
+    public HeadlineItemDataSource
 {
 public:
 
@@ -44,8 +45,8 @@ public:
     int getNumRows() override;
     void paintListBoxItem(int rowNumber, Graphics &g, int w, int h, bool rowIsSelected) override;
     void selectedRowsChanged(int lastRowSelected) override;
-    void listBoxItemClicked(int row, const MouseEvent&) override;
-    void listBoxItemDoubleClicked(int row, const MouseEvent&) override;
+    void listBoxItemClicked(int row, const MouseEvent &) override;
+    void listBoxItemDoubleClicked(int row, const MouseEvent &) override;
 
     //===------------------------------------------------------------------===//
     // HeadlineItemDataSource
@@ -86,5 +87,5 @@ private:
     UniquePointer<Label> titleLabel;
     UniquePointer<SeparatorHorizontalFadingReversed> separator;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InstrumentsListComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentsListComponent)
 };

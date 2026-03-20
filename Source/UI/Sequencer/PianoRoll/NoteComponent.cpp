@@ -193,19 +193,19 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         this->switchActiveTrackToSelected(e.mods.isAnyModifierKeyDown());
         return;
     }
-    
+
     if (!this->isActiveAndEditable())
     {
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
         return;
     }
-    
+
     // rclick and drag in the default mode means dragging the canvas;
     // rclick and drag in the pen mode means switching to note deletion mode;
     // both are implemented in the roll, so we'll pass the event:
     if (e.mods.isRightButtonDown() &&
         (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
-         this->roll.getEditMode().isMode(RollEditMode::drawMode)))
+            this->roll.getEditMode().isMode(RollEditMode::drawMode)))
     {
         // see the comment above PianoRoll::startErasingEvents for
         // the explanation of how erasing events works and why:
@@ -221,13 +221,13 @@ void NoteComponent::mouseDown(const MouseEvent &e)
     {
         const bool shouldSendMidi =
             selection.getNumSelected() <= NoteComponent::maxDragPolyphony;
-        
+
         if (shouldSendMidi)
         {
             this->stopSound();
         }
 
-        if (selection.getNumSelected() == 1)    //trying to do this with multiple notes selected would lead to confusing behavior - RPM
+        if (selection.getNumSelected() == 1) // trying to do this with multiple notes selected would lead to confusing behavior - RPM
         {
             this->getRoll().setDefaultNoteLength(this->getLength());
             this->getRoll().setDefaultNoteVolume(this->getVelocity());
@@ -419,12 +419,12 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     {
         float deltaLength = 0.f;
         const bool lengthChanged = this->getResizingLeftDelta(e, deltaLength, snap);
-        
+
         if (lengthChanged)
         {
             this->checkpointIfNeeded();
             Array<Note> groupBefore, groupAfter;
-                
+
             forEachSelectedNote(selection, noteComponent)
             {
                 groupBefore.add(noteComponent->getNote());
@@ -444,12 +444,12 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     {
         float groupScaleFactor = 1.f;
         const bool scaleFactorChanged = this->getGroupScaleRightFactor(e, groupScaleFactor, snap);
-        
+
         if (scaleFactorChanged)
         {
             this->checkpointIfNeeded();
             Array<Note> groupBefore, groupAfter;
-                
+
             forEachSelectedNote(selection, noteComponent)
             {
                 groupBefore.add(noteComponent->getNote());
@@ -469,12 +469,12 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     {
         float groupScaleFactor = 1.f;
         const bool scaleFactorChanged = this->getGroupScaleLeftFactor(e, groupScaleFactor, snap);
-        
+
         if (scaleFactorChanged)
         {
             this->checkpointIfNeeded();
             Array<Note> groupBefore, groupAfter;
-                
+
             forEachSelectedNote(selection, noteComponent)
             {
                 groupBefore.add(noteComponent->getNote());
@@ -495,14 +495,14 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         int deltaKey = 0;
         float deltaBeat = 0.f;
         const bool eventChanged = this->getDraggingDelta(e, deltaBeat, deltaKey, snap);
-        
+
         const bool shouldSendMidi = (lastDeltaKey != deltaKey) &&
             (selection.getNumSelected() <= NoteComponent::maxDragPolyphony);
 
         lastDeltaKey = deltaKey;
-        
+
         this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
-        
+
         if (eventChanged)
         {
             const bool firstChangeIsToCome = !this->firstChangeDone;
@@ -537,26 +537,26 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             }
 
             this->getRoll().updateDragHelpers(deltaKey);
-            
+
             if (shouldSendMidi)
             {
                 this->stopSound();
             }
-            
+
             Array<Note> groupBefore, groupAfter;
             forEachSelectedNote(selection, noteComponent)
             {
                 groupBefore.add(noteComponent->getNote());
                 groupAfter.add(noteComponent->continueDragging(deltaBeat, deltaKey, shouldSendMidi, snap));
             }
-                
+
             SequencerOperations::getPianoSequence(selection)->changeGroup(groupBefore, groupAfter, true);
         }
     }
     else if (this->state == State::Tuning)
     {
         this->checkpointIfNeeded();
-        
+
         Array<Note> groupBefore, groupAfter;
         forEachSelectedNote(selection, noteComponent)
         {
@@ -592,14 +592,14 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     // deleting the note on desktop platforms
     if (e.mods.isRightButtonDown() &&
         (this->roll.getEditMode().isMode(RollEditMode::defaultMode) ||
-         this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
+            this->roll.getEditMode().isMode(RollEditMode::eraseMode)))
     {
         this->stopSound();
         this->setMouseCursor(MouseCursor::NormalCursor);
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));
         return;
     }
-    
+
     // deleting the note on mobile platforms is done by
     // tapping on the note in the pen mode without editing it
     if (!this->firstChangeDone && e.source.isTouch() &&
@@ -653,7 +653,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     {
         this->getRoll().hideDragHelpers();
         this->setFloatBounds(this->getRoll().getEventBounds(this));
-        
+
         forEachSelectedNote(selection, noteComponent)
         {
             noteComponent->endDragging(shouldSendMidi);
@@ -691,7 +691,7 @@ inline void NoteComponent::paint(Graphics &g)
     const float w = this->floatLocalBounds.getWidth() - 1.f; // between notes
     const float y = this->floatLocalBounds.getY();
     const float h = this->floatLocalBounds.getHeight();
-    
+
     g.setColour(this->colour);
 
     // left/right vertical lines
@@ -793,7 +793,7 @@ void NoteComponent::startDragging(const bool sendMidiMessage)
     this->firstChangeDone = false;
     this->state = State::Dragging;
     this->anchor = this->getNote();
-    
+
     if (sendMidiMessage)
     {
         this->sendNoteOn(this->getKey(), this->getVelocity());
@@ -849,7 +849,7 @@ void NoteComponent::endDragging(bool sendStopSoundMessage)
     {
         this->stopSound();
     }
-    
+
     this->state = State::None;
 }
 
@@ -970,7 +970,7 @@ void NoteComponent::startResizingRight(bool sendMidiMessage)
     this->firstChangeDone = false;
     this->state = State::ResizingRight;
     this->anchor = this->getNote();
-    
+
     if (sendMidiMessage)
     {
         this->sendNoteOn(this->getKey(), this->getVelocity());
@@ -1017,7 +1017,7 @@ void NoteComponent::startResizingLeft(bool sendMidiMessage)
     this->firstChangeDone = false;
     this->state = State::ResizingLeft;
     this->anchor = this->getNote();
-    
+
     if (sendMidiMessage)
     {
         this->sendNoteOn(this->getKey(), this->getVelocity());
@@ -1028,12 +1028,12 @@ bool NoteComponent::getResizingLeftDelta(const MouseEvent &e, float &deltaLength
 {
     int newNote = -1;
     float newBeat = -1;
-    
+
     this->getRoll().getRowsColsByComponentPosition(
         this->getX() + this->floatLocalBounds.getX() + e.x,
         this->getY() + this->floatLocalBounds.getY() + e.y,
         newNote, newBeat, snap);
-    
+
     deltaLength = this->anchor.getBeat() - newBeat;
     const bool lengthChanged = (this->getBeat() != newBeat);
     return lengthChanged;
@@ -1071,18 +1071,18 @@ bool NoteComponent::getGroupScaleRightFactor(const MouseEvent &e, float &absScal
 {
     int newNote = -1;
     float newBeat = -1;
-    
+
     this->getRoll().getRowsColsByComponentPosition(
         this->getX() + this->floatLocalBounds.getX() + e.x,
         this->getY() + this->floatLocalBounds.getY() + e.y,
         newNote, newBeat, snap);
-    
+
     const float minGroupLength = Globals::minNoteLength;
     const float myEndBeat = this->getBeat() + this->getLength();
     const float newGroupLength = jmax(minGroupLength, newBeat - this->groupScalingAnchor.getBeat());
 
     absScaleFactor = newGroupLength / this->groupScalingAnchor.getLength();
-    
+
     const bool endBeatChanged = (newBeat != myEndBeat);
     return endBeatChanged;
 }
@@ -1117,18 +1117,18 @@ bool NoteComponent::getGroupScaleLeftFactor(const MouseEvent &e, float &absScale
 {
     int newNote = -1;
     float newBeat = -1;
-    
+
     this->getRoll().getRowsColsByComponentPosition(
         this->getX() + this->floatLocalBounds.getX() + e.x,
         this->getY() + this->floatLocalBounds.getY() + e.y,
         newNote, newBeat, snap);
-    
+
     const float minGroupLength = Globals::minNoteLength;
     const float groupAnchorEndBeat = this->groupScalingAnchor.getBeat() + this->groupScalingAnchor.getLength();
 
     const float newGroupLength = jmax(minGroupLength, (groupAnchorEndBeat - newBeat));
     absScaleFactor = newGroupLength / this->groupScalingAnchor.getLength();
-    
+
     const bool endBeatChanged = (newBeat != this->getBeat());
     return endBeatChanged;
 }

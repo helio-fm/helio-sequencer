@@ -56,7 +56,7 @@
 class RollsSwitchingProxy final : public Component, private MultiTimer
 {
 public:
-    
+
     enum Timers
     {
         rolls = 0,
@@ -523,7 +523,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject, Point<int> defaultS
     this->pianoViewport->setWantsKeyboardFocus(false);
     this->pianoViewport->setFocusContainerType(Component::FocusContainerType::none);
     this->pianoViewport->setPaintingIsUnclipped(true);
-    
+
     this->pianoRoll = make<PianoRoll>(this->project, *this->pianoViewport, clippingDetector);
     this->pianoViewport->setViewedComponent(this->pianoRoll.get(), false);
 
@@ -560,7 +560,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject, Point<int> defaultS
     this->patternRoll->addRollListener(this->bottomEditorsScroller.get());
 
     this->scrollerShadow = make<ShadowUpwards>(ShadowType::Light);
-    
+
     // a container with 2 rolls and 2 types of bottom scroller panel
 
     this->rollContainer = make<RollsSwitchingProxy>(this->pianoRoll.get(), this->patternRoll.get(),
@@ -568,7 +568,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject, Point<int> defaultS
         this->bottomMapsScroller.get(), this->bottomEditorsScroller.get(),
         this->bottomEditorsSwitcher.get(), this->scrollerShadow.get(),
         defaultSize);
-    
+
     const auto hasAnimations = App::Config().getUiFlags()->areUiAnimationsEnabled();
     this->rollContainer->setAnimationsEnabled(hasAnimations);
     this->addAndMakeVisible(this->rollContainer.get());
@@ -593,7 +593,7 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject, Point<int> defaultS
 SequencerLayout::~SequencerLayout()
 {
     App::Config().getUiFlags()->removeListener(this);
-    
+
     this->leftSidebarShadow = nullptr;
     this->rightSidebarShadow = nullptr;
     this->rollToolsSidebar = nullptr;
@@ -604,7 +604,7 @@ SequencerLayout::~SequencerLayout()
     this->patternRoll->removeRollListener(this->bottomMapsScroller.get());
     this->pianoRoll->removeRollListener(this->bottomEditorsScroller.get());
     this->pianoRoll->removeRollListener(this->bottomMapsScroller.get());
-    
+
     this->scrollerShadow = nullptr;
     this->bottomEditorsScroller = nullptr;
     this->bottomEditorsSwitcher = nullptr;
@@ -676,9 +676,9 @@ void SequencerLayout::resized()
     this->rollToolsSidebar->setBounds(localBounds.removeFromRight(rightSidebarWidth));
     // a hack for themes changing
     this->rollToolsSidebar->resized();
-    
+
     this->rollContainer->setBounds(localBounds);
-    
+
     this->leftSidebarShadow->setBounds(localBounds.removeFromLeft(Globals::UI::sidebarShadowSize));
     this->rightSidebarShadow->setBounds(localBounds.removeFromRight(Globals::UI::sidebarShadowSize));
 }
@@ -805,8 +805,10 @@ void SequencerLayout::deserialize(const SerializedData &data)
         data : data.getChildWithName(Serialization::UI::sequencer);
 
     if (!root.isValid())
-    { return; }
-    
+    {
+        return;
+    }
+
     this->pianoRoll->deserialize(root);
     this->patternRoll->deserialize(root);
 }

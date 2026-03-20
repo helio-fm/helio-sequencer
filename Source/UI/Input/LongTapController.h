@@ -85,5 +85,4 @@ private:
 
     Point<float> position;
     WeakReference<Component> component;
-
 };

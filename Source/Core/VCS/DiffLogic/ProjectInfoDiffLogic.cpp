@@ -71,7 +71,7 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const no
             {
                 deltaFoundInState = true;
                 stateDeltaData = initialState.getDeltaData(j);
-                dataHasChanged = (! myDeltaData.isEquivalentTo(stateDeltaData));
+                dataHasChanged = (!myDeltaData.isEquivalentTo(stateDeltaData));
                 break;
             }
         }
@@ -164,7 +164,7 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
         }
 
         // не нашли ни одного изменения? копируем оригинальную дельту.
-        if (! deltaFoundInChanges)
+        if (!deltaFoundInChanges)
         {
             diff->applyDelta(stateDelta->createCopy(), stateDeltaData);
         }
@@ -287,4 +287,4 @@ DeltaDiff createTemperamentDiff(const SerializedData &state, const SerializedDat
     return res;
 }
 
-}
+} // namespace VCS

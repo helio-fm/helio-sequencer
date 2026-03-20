@@ -107,9 +107,9 @@ public:
 
     void multiTouchStartZooming() override;
     void multiTouchContinueZooming(
-            const Rectangle<float> &relativePosition,
-            const Rectangle<float> &relativePositionAnchor,
-            const Rectangle<float> &absolutePositionAnchor) override;
+        const Rectangle<float> &relativePosition,
+        const Rectangle<float> &relativePositionAnchor,
+        const Rectangle<float> &absolutePositionAnchor) override;
     void multiTouchEndZooming(const MouseEvent &anchorEvent) override;
 
     Point<float> getMultiTouchRelativeAnchor(const MouseEvent &e) override;

@@ -132,7 +132,7 @@ void KeyboardMappingPage::resized()
     this->prevPageArrow->setBounds(rangeControlsBounds.removeFromLeft(64));
     this->nextPageArrow->setBounds(rangeControlsBounds.removeFromRight(64));
     this->rangeLabel->setBounds(rangeControlsBounds);
-    
+
     static constexpr auto numRows = 16;
     static constexpr auto numColumns = Globals::twelveToneKeyboardSize / numRows;
     static constexpr auto editorHeight = 22;
@@ -334,7 +334,7 @@ void KeyboardMappingPage::onKeyMappingUpdated(int i)
     const int key = this->currentPageBase + i;
     auto *editor = this->mappingLabels.getUnchecked(i);
     auto *keyMap = this->instrument->getKeyboardMapping();
-    
+
     const auto mapped = KeyboardMapping::KeyChannel::fromString(editor->getText());
 
     if (mapped.isValid())
@@ -378,7 +378,7 @@ void KeyboardMappingPage::loadScalaMappings()
 
     this->importFileChooser = make<FileChooser>(TRANS(I18n::Menu::keyboardMappingLoadScala),
         File::getSpecialLocation(File::userDocumentsDirectory), filter, true);
-    
+
     DocumentHelpers::showFileChooser(this->importFileChooser,
         Globals::UI::FileChooser::forFileToOpen,
         [this](URL &url)
@@ -390,7 +390,7 @@ void KeyboardMappingPage::loadScalaMappings()
 
         const auto file = url.getLocalFile();
         const auto nameWithoutExtension = file.getFileNameWithoutExtension();
-        
+
         Array<File> allFilesToImport;
 
         StringArray nameComponents;

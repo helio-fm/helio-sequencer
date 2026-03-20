@@ -51,7 +51,7 @@ ModalDialogInput::ModalDialogInput(const String &text, const String &message,
     this->addAndMakeVisible(this->textEditor.get());
     this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
     this->textEditor->setText(this->input, dontSendNotification);
-    
+
     this->textEditor->onTextChange = [this]()
     {
         this->input = this->textEditor->getText();

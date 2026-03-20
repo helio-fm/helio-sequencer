@@ -78,5 +78,5 @@ private:
     UniquePointer<ColourSwatches> colourSwatches;
     UniquePointer<TextEditor> textEditor;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AnnotationDialog)
 };

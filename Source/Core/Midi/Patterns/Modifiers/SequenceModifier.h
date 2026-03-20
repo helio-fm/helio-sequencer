@@ -38,7 +38,7 @@ public:
     using Ptr = ReferenceCountedObjectPtr<SequenceModifier>;
 
     // for now it will only support transforming notes:
-    virtual void processSequence(const ProjectNode &project, 
+    virtual void processSequence(const ProjectNode &project,
         const Clip &clip, const PianoSequence &sequence) = 0;
 
     virtual bool hasParameters() const = 0;
@@ -58,5 +58,4 @@ public:
 protected:
 
     bool enabled = true;
-
 };

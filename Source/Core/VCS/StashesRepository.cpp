@@ -49,7 +49,7 @@ Revision::Ptr StashesRepository::getUserStashWithName(const String &stashName) c
             return child;
         }
     }
-    
+
     return { new Revision() };
 }
 
@@ -92,17 +92,17 @@ void StashesRepository::resetQuickStash()
 SerializedData StashesRepository::serialize() const
 {
     SerializedData tree(Serialization::VCS::stashesRepository);
-    
+
     SerializedData userStashesXml(Serialization::VCS::userStashes);
     tree.appendChild(userStashesXml);
-    
+
     userStashesXml.appendChild(this->userStashes->serialize());
 
     SerializedData quickStashXml(Serialization::VCS::quickStash);
     tree.appendChild(quickStashXml);
 
     quickStashXml.appendChild(this->quickStash->serialize());
-    
+
     return tree;
 }
 
@@ -113,7 +113,10 @@ void StashesRepository::deserialize(const SerializedData &data)
     const auto root = data.hasType(Serialization::VCS::stashesRepository) ?
         data : data.getChildWithName(Serialization::VCS::stashesRepository);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     const auto userStashesParams = root.getChildWithName(Serialization::VCS::userStashes);
     if (userStashesParams.isValid())
@@ -134,4 +137,4 @@ void StashesRepository::reset()
     this->quickStash->reset();
 }
 
-}
+} // namespace VCS

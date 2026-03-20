@@ -142,5 +142,5 @@ private:
     SafePointer<EventComponentBase> nextEventHolder;
     SafePointer<EventComponentBase> prevEventHolder;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationCurveEventComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationCurveEventComponent)
 };

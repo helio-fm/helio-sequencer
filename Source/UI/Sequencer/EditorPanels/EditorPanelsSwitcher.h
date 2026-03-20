@@ -142,7 +142,7 @@ public:
                 this->onClick(this->panelId, this->filter);
             }
         }
-        
+
         void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel) override
         {
             if (this->onWheelMove)

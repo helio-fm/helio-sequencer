@@ -267,7 +267,7 @@ int SoundFontSynthAudioPlugin::getCurrentProgram()
     return this->synth.getCurrentProgram();
 }
 
-void SoundFontSynthAudioPlugin::setCurrentProgram(int index) 
+void SoundFontSynthAudioPlugin::setCurrentProgram(int index)
 {
     this->synth.setCurrentProgram(index);
 }

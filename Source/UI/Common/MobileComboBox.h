@@ -106,6 +106,7 @@ public:
     class SearchTextEditor : public TextEditor
     {
     public:
+
         bool keyPressed(const KeyPress &key) override;
     };
 

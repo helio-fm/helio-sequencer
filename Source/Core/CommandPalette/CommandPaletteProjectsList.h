@@ -41,5 +41,4 @@ protected:
 private:
 
     Workspace &workspace;
-
 };

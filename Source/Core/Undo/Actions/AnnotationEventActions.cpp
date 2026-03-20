@@ -37,7 +37,7 @@ bool AnnotationEventInsertAction::perform()
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
-    
+
     return false;
 }
 
@@ -47,7 +47,7 @@ bool AnnotationEventInsertAction::undo()
     {
         return sequence->remove(this->event, false);
     }
-    
+
     return false;
 }
 
@@ -92,7 +92,7 @@ bool AnnotationEventRemoveAction::perform()
     {
         return sequence->remove(this->event, false);
     }
-    
+
     return false;
 }
 
@@ -102,7 +102,7 @@ bool AnnotationEventRemoveAction::undo()
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
-    
+
     return false;
 }
 
@@ -149,7 +149,7 @@ bool AnnotationEventChangeAction::perform()
     {
         return sequence->change(this->eventBefore, this->eventAfter, false);
     }
-    
+
     return false;
 }
 
@@ -159,7 +159,7 @@ bool AnnotationEventChangeAction::undo()
     {
         return sequence->change(this->eventAfter, this->eventBefore, false);
     }
-    
+
     return false;
 }
 
@@ -183,7 +183,7 @@ UndoAction *AnnotationEventChangeAction::createCoalescedAction(UndoAction *nextA
         }
     }
 
-    (void) nextAction;
+    (void)nextAction;
     return nullptr;
 }
 
@@ -191,25 +191,25 @@ SerializedData AnnotationEventChangeAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::annotationEventChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
+
     SerializedData annotationBeforeChild(Serialization::Undo::annotationBefore);
     annotationBeforeChild.appendChild(this->eventBefore.serialize());
     tree.appendChild(annotationBeforeChild);
-    
+
     SerializedData annotationAfterChild(Serialization::Undo::annotationAfter);
     annotationAfterChild.appendChild(this->eventAfter.serialize());
     tree.appendChild(annotationAfterChild);
-    
+
     return tree;
 }
 
 void AnnotationEventChangeAction::deserialize(const SerializedData &data)
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
+
     const auto annotationBeforeChild = data.getChildWithName(Serialization::Undo::annotationBefore);
     const auto annotationAfterChild = data.getChildWithName(Serialization::Undo::annotationAfter);
-    
+
     this->eventBefore.deserialize(annotationBeforeChild.getChild(0));
     this->eventAfter.deserialize(annotationAfterChild.getChild(0));
 }

@@ -63,5 +63,5 @@ private:
         this->setCentrePosition(this->getParentWidth() / 2, this->getParentHeight() / 2);
     }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CenteredTooltipComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CenteredTooltipComponent)
 };

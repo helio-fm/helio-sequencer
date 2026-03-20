@@ -51,12 +51,12 @@ void VersionControlNode::showPage()
     {
         this->initVCS();
     }
-    
+
     if (this->editor == nullptr)
     {
         this->initEditor();
     }
-    
+
     if (this->editor != nullptr)
     {
         this->editor->updateState();
@@ -135,7 +135,7 @@ void VersionControlNode::toggleQuickStash()
     }
 
     this->vcs->getHead().rebuildDiffIfNeeded();
-    
+
     if (this->vcs->hasQuickStash())
     {
         if (this->vcs->getHead().diffHasChanges())
@@ -144,7 +144,7 @@ void VersionControlNode::toggleQuickStash()
                 MainLayout::TooltipIcon::Failure);
             return;
         }
-        
+
         this->vcs->restoreQuickStash();
         App::Layout().showTooltip(TRANS(I18n::VCS::allChangesRestored));
     }
@@ -154,7 +154,7 @@ void VersionControlNode::toggleQuickStash()
         {
             return; // nothing to do
         }
-        
+
         this->vcs->quickStashAll();
         App::Layout().showTooltip(TRANS(I18n::VCS::allChangesStashed));
     }
@@ -196,7 +196,6 @@ UniquePointer<Component> VersionControlNode::createMenu()
         jassertfalse;
         return nullptr;
     }
-
 
     return make<VersionControlMenu>(*this->vcs);
 }
@@ -245,7 +244,6 @@ void VersionControlNode::reset()
     TreeNode::reset();
 }
 
-
 void VersionControlNode::initVCS()
 {
     auto *parentProject = this->findParentOfType<ProjectNode>();
@@ -270,7 +268,7 @@ void VersionControlNode::shutdownVCS()
 void VersionControlNode::initEditor()
 {
     this->shutdownEditor();
-    
+
     auto *parentProject = this->findParentOfType<ProjectNode>();
     if (parentProject != nullptr && this->vcs != nullptr)
     {

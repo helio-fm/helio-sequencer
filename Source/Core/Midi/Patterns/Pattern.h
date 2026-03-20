@@ -30,7 +30,7 @@ class Pattern final : public Serializable
 public:
 
     Pattern(MidiTrack &track, ProjectEventDispatcher &eventDispatcher);
-    
+
     //===------------------------------------------------------------------===//
     // Accessors
     //===------------------------------------------------------------------===//
@@ -80,10 +80,10 @@ public:
 
     inline int size() const noexcept
     { return this->clips.size(); }
-    
+
     inline Clip *getUnchecked(int index) const noexcept
     { return this->clips.getUnchecked(index); }
-    
+
     inline const OwnedArray<Clip> &getClips() const noexcept
     { return this->clips; }
 
@@ -132,12 +132,12 @@ protected:
     mutable FlatHashSet<Clip::Id> usedClipIds;
 
 private:
-    
+
     MidiTrack &track;
     ProjectEventDispatcher &eventDispatcher;
 
 private:
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Pattern)
     JUCE_DECLARE_WEAK_REFERENCEABLE(Pattern)
 };

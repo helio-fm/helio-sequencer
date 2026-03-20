@@ -56,7 +56,7 @@ public:
     void parentSizeChanged() override;
 
 private:
-    
+
     void updateBounds() override;
 
     PianoRoll &roll;

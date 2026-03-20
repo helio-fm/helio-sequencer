@@ -49,7 +49,7 @@ class ProjectNode final :
     public DocumentOwner,
     public MidiTrackSource,
     public CommandPaletteModel,
-    public VCS::TrackedItemsSource,  // vcs stuff
+    public VCS::TrackedItemsSource, // vcs stuff
     public ChangeListener // subscribed to VersionControl
 {
 public:
@@ -58,7 +58,7 @@ public:
     explicit ProjectNode(const String &name, const String &id = {});
     explicit ProjectNode(const File &existingFile);
     ~ProjectNode() override;
-    
+
     String getId() const noexcept;
     String getStats() const;
 
@@ -68,7 +68,7 @@ public:
     RollEditMode &getEditMode() noexcept;
     RollBase *getLastFocusedRoll() const;
     GeneratedSequenceBuilder *getGeneratedSequences() const;
-    
+
     void importMidi(InputStream &stream);
     bool exportMidi(OutputStream &stream) const;
 
@@ -263,5 +263,4 @@ private:
     mutable bool isTracksCacheOutdated = true;
     mutable FlatHashMap<String, WeakReference<MidiTrack>, StringHash> tracksRefsCache;
     void rebuildTracksRefsCacheIfNeeded() const;
-
 };

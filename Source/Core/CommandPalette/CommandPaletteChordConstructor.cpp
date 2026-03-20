@@ -385,7 +385,7 @@ private:
         t.getAndAdvance();
         return {};
     }
-    
+
     String::CharPointerType input;
 };
 
@@ -638,7 +638,7 @@ struct AdditionExpression final : Expression
     void fillDescription(String &out) const override
     {
         out << " add";
-        
+
         if (this->sharp)
         {
             out << "#";
@@ -1066,7 +1066,7 @@ public:
         {
             if (description.chordQuality->interval % 2 == 0)
             {
-                // a major added tone chord 
+                // a major added tone chord
             }
             else
             {
@@ -1117,7 +1117,7 @@ public:
 
 private:
 
-    template<typename T>
+    template <typename T>
     UniquePointer<T> removeAndReturnFirstAs()
     {
         return UniquePointer<T>(static_cast<T *>(this->expressions.removeAndReturn(0)));
@@ -1126,7 +1126,7 @@ private:
     OwnedArray<Expression> expressions;
 };
 
-}
+} // namespace ChordParsing
 
 //===----------------------------------------------------------------------===//
 // Chord and helpers
@@ -1146,7 +1146,7 @@ struct RenderedChord final
     {
         this->reset();
     }
-    
+
     void reset()
     {
         this->keys.clearQuick();
@@ -1269,7 +1269,7 @@ public:
                     return KeyInfo::Flat;
                 }
             }
-            
+
             // if the interval quality is the same as the chord quality, it's up to scale to decide:
             if (quality->intervalQuality != quality->chordQuality)
             {
@@ -1298,7 +1298,7 @@ public:
         {
             chord[i] = getKey(quality, i);
         }
-        
+
         const auto *sus = this->chord.suspension.get();
         if (sus != nullptr)
         {
@@ -1306,7 +1306,7 @@ public:
             chord[3] = KeyInfo::None;
             chord[sus->suspension] = KeyInfo::Default;
         }
-        
+
         const auto *add = this->chord.addition.get();
         if (add != nullptr)
         {
@@ -1646,7 +1646,6 @@ void CommandPaletteChordConstructor::previewIfNeeded()
         }
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // Tests

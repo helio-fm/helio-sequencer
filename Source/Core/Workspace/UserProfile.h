@@ -20,8 +20,9 @@
 #include "Serializable.h"
 #include "RecentProjectInfo.h"
 
-class UserProfile final : public Serializable,
-                          public ChangeBroadcaster
+class UserProfile final :
+    public Serializable,
+    public ChangeBroadcaster
 {
 public:
 

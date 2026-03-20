@@ -38,7 +38,7 @@ bool NoteInsertAction::perform()
     {
         return (sequence->insert(this->note, false) != nullptr);
     }
-    
+
     return false;
 }
 
@@ -48,7 +48,7 @@ bool NoteInsertAction::undo()
     {
         return sequence->remove(this->note, false);
     }
-    
+
     return false;
 }
 
@@ -115,7 +115,7 @@ bool NoteRemoveAction::perform()
     {
         return sequence->remove(this->note, false);
     }
-    
+
     return false;
 }
 
@@ -125,7 +125,7 @@ bool NoteRemoveAction::undo()
     {
         return (sequence->insert(this->note, false) != nullptr);
     }
-    
+
     return false;
 }
 
@@ -174,7 +174,7 @@ bool NoteChangeAction::perform()
     {
         return sequence->change(this->noteBefore, this->noteAfter, false);
     }
-    
+
     return false;
 }
 
@@ -184,7 +184,7 @@ bool NoteChangeAction::undo()
     {
         return sequence->change(this->noteAfter, this->noteBefore, false);
     }
-    
+
     return false;
 }
 
@@ -200,15 +200,15 @@ UndoAction *NoteChangeAction::createCoalescedAction(UndoAction *nextAction)
         const bool idsAreEqual =
             (this->noteBefore.getId() == nextChanger->noteAfter.getId() &&
                 this->trackId == nextChanger->trackId);
-            
+
         if (idsAreEqual)
         {
             return new NoteChangeAction(this->source,
                 this->trackId, this->noteBefore, nextChanger->noteAfter);
         }
     }
-    
-    (void) nextAction;
+
+    (void)nextAction;
     return nullptr;
 }
 
@@ -216,7 +216,7 @@ SerializedData NoteChangeAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::noteChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
+
     SerializedData noteBeforeChild(Serialization::Undo::noteBefore);
     noteBeforeChild.appendChild(this->noteBefore.serialize());
     tree.appendChild(noteBeforeChild);
@@ -231,10 +231,10 @@ SerializedData NoteChangeAction::serialize() const
 void NoteChangeAction::deserialize(const SerializedData &data)
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
+
     const auto noteBeforeChild = data.getChildWithName(Serialization::Undo::noteBefore);
     const auto noteAfterChild = data.getChildWithName(Serialization::Undo::noteAfter);
-    
+
     this->noteBefore.deserialize(noteBeforeChild.getChild(0));
     this->noteAfter.deserialize(noteAfterChild.getChild(0));
 }
@@ -272,7 +272,7 @@ bool NotesGroupInsertAction::perform()
     {
         return sequence->insertGroup(this->notes, false);
     }
-    
+
     return false;
 }
 
@@ -282,7 +282,7 @@ bool NotesGroupInsertAction::undo()
     {
         return sequence->removeGroup(this->notes, false);
     }
-    
+
     return false;
 }
 
@@ -295,12 +295,12 @@ SerializedData NotesGroupInsertAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::notesGroupInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
+
     for (int i = 0; i < this->notes.size(); ++i)
     {
         tree.appendChild(this->notes.getUnchecked(i).serialize());
     }
-    
+
     return tree;
 }
 
@@ -308,7 +308,7 @@ void NotesGroupInsertAction::deserialize(const SerializedData &data)
 {
     this->reset();
     this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
+
     for (const auto &props : data)
     {
         Note n;
@@ -370,7 +370,7 @@ bool NotesGroupRemoveAction::perform()
     {
         return sequence->removeGroup(this->notes, false);
     }
-    
+
     return false;
 }
 
@@ -380,7 +380,7 @@ bool NotesGroupRemoveAction::undo()
     {
         return sequence->insertGroup(this->notes, false);
     }
-    
+
     return false;
 }
 
@@ -393,12 +393,12 @@ SerializedData NotesGroupRemoveAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::notesGroupRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
+
     for (int i = 0; i < this->notes.size(); ++i)
     {
         tree.appendChild(this->notes.getUnchecked(i).serialize());
     }
-    
+
     return tree;
 }
 
@@ -406,7 +406,7 @@ void NotesGroupRemoveAction::deserialize(const SerializedData &data)
 {
     this->reset();
     this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
+
     for (const auto &props : data)
     {
         Note n;
@@ -440,7 +440,7 @@ bool NotesGroupChangeAction::perform()
     {
         return sequence->changeGroup(this->notesBefore, this->notesAfter, false);
     }
-    
+
     return false;
 }
 
@@ -450,7 +450,7 @@ bool NotesGroupChangeAction::undo()
     {
         return sequence->changeGroup(this->notesAfter, this->notesBefore, false);
     }
-    
+
     return false;
 }
 
@@ -468,12 +468,12 @@ UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction
         {
             return nullptr;
         }
-            
+
         if (this->notesBefore.size() != nextChanger->notesAfter.size())
         {
             return nullptr;
         }
-            
+
         for (int i = 0; i < this->notesBefore.size(); ++i)
         {
             if (this->notesBefore.getUnchecked(i).getId() !=
@@ -482,12 +482,12 @@ UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction
                 return nullptr;
             }
         }
-            
+
         return new NotesGroupChangeAction(this->source,
             this->trackId, this->notesBefore, nextChanger->notesAfter);
     }
 
-    (void) nextAction;
+    (void)nextAction;
     return nullptr;
 }
 
@@ -499,32 +499,32 @@ SerializedData NotesGroupChangeAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::notesGroupChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
+
     SerializedData groupBeforeChild(Serialization::Undo::groupBefore);
     SerializedData groupAfterChild(Serialization::Undo::groupAfter);
-    
+
     for (int i = 0; i < this->notesBefore.size(); ++i)
     {
         groupBeforeChild.appendChild(this->notesBefore.getUnchecked(i).serialize());
     }
-    
+
     for (int i = 0; i < this->notesAfter.size(); ++i)
     {
         groupAfterChild.appendChild(this->notesAfter.getUnchecked(i).serialize());
     }
-    
+
     tree.appendChild(groupBeforeChild);
     tree.appendChild(groupAfterChild);
-    
+
     return tree;
 }
 
 void NotesGroupChangeAction::deserialize(const SerializedData &data)
 {
     this->reset();
-    
+
     this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
+
     const auto groupBeforeChild = data.getChildWithName(Serialization::Undo::groupBefore);
     const auto groupAfterChild = data.getChildWithName(Serialization::Undo::groupAfter);
 

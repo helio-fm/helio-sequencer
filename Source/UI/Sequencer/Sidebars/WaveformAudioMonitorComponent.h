@@ -52,7 +52,7 @@ private:
             .withMultipliedAlpha(0.69f);
 
     WeakReference<AudioMonitor> audioMonitor;
-    
+
     static constexpr auto bufferSize = Globals::UI::sidebarWidth / 2;
 
     float peakBufferLeft[bufferSize] = {};
@@ -64,5 +64,4 @@ private:
     int emptyFramesCounter = bufferSize;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveformAudioMonitorComponent)
-
 };

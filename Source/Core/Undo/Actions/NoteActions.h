@@ -33,7 +33,7 @@ public:
 
     explicit NoteInsertAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
-    
+
     NoteInsertAction(MidiTrackSource &source,
         const String &trackId, const Note &target) noexcept;
 
@@ -45,7 +45,7 @@ public:
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 private:
 
     String trackId;
@@ -63,7 +63,7 @@ private:
 class NoteRemoveAction final : public UndoAction
 {
 public:
-    
+
     explicit NoteRemoveAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
@@ -73,7 +73,7 @@ public:
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
@@ -93,7 +93,7 @@ private:
 class NoteChangeAction final : public UndoAction
 {
 public:
-    
+
     explicit NoteChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
@@ -104,7 +104,7 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
@@ -126,7 +126,7 @@ private:
 class NotesGroupInsertAction final : public UndoAction
 {
 public:
-    
+
     explicit NotesGroupInsertAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
@@ -135,22 +135,22 @@ public:
 
     NotesGroupInsertAction(MidiTrackSource &source,
         const String &trackId, Array<Note> &target) noexcept;
-    
+
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
 
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 private:
-    
+
     String trackId;
     Array<Note> notes;
-    
+
     JUCE_DECLARE_NON_COPYABLE(NotesGroupInsertAction)
 };
 
@@ -161,26 +161,26 @@ private:
 class NotesGroupRemoveAction final : public UndoAction
 {
 public:
-    
+
     explicit NotesGroupRemoveAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
-    
+
     NotesGroupRemoveAction(MidiTrackSource &source,
         const String &trackId, Array<Note> &target) noexcept;
-    
+
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 private:
-    
+
     String trackId;
     Array<Note> notes;
-    
+
     JUCE_DECLARE_NON_COPYABLE(NotesGroupRemoveAction)
 };
 
@@ -191,7 +191,7 @@ private:
 class NotesGroupChangeAction final : public UndoAction
 {
 public:
-    
+
     explicit NotesGroupChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
@@ -202,7 +202,7 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;

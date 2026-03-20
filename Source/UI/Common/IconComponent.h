@@ -23,7 +23,7 @@
 class IconComponent : virtual public Component
 {
 public:
-    
+
     explicit IconComponent(Icons::Id iconId,
         float alpha = 1.f, Optional<int> iconSize = {}) :
         iconId(iconId),
@@ -66,7 +66,7 @@ public:
     {
         this->repaint();
     }
-    
+
     void paint(Graphics &g) override
     {
         g.setColour(this->colour.withMultipliedAlpha(this->alpha));
@@ -83,14 +83,13 @@ public:
             Icons::drawImageRetinaAware(this->image, g, this->getWidth() / 2, this->getHeight() / 2);
         }
     }
-    
+
 protected:
-    
+
     float alpha = 1.f;
     Icons::Id iconId = Icons::empty;
     Image image;
     Optional<int> iconSize;
-    
-    const Colour colour = findDefaultColour(Label::textColourId);
 
+    const Colour colour = findDefaultColour(Label::textColourId);
 };

@@ -92,7 +92,7 @@ void InstrumentNode::showPage()
 void InstrumentNode::safeRename(const String &newName, bool sendNotifications)
 {
     if (this->instrument == nullptr)
-    { 
+    {
         jassertfalse;
         return;
     }

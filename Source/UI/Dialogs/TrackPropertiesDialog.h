@@ -84,5 +84,5 @@ private:
     UniquePointer<TextEditor> textEditor;
     UniquePointer<IconComponent> multipleNamesIcon;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackPropertiesDialog)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackPropertiesDialog)
 };

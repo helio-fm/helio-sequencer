@@ -21,8 +21,9 @@
 #include "ColourIDs.h"
 #include "Icons.h"
 
-class SuccessTooltip final : public CenteredTooltipComponent,
-                             private Timer
+class SuccessTooltip final :
+    public CenteredTooltipComponent,
+    private Timer
 {
 public:
 
@@ -69,5 +70,5 @@ private:
 
     Path iconShape;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SuccessTooltip)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SuccessTooltip)
 };

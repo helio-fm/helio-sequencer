@@ -55,7 +55,7 @@ bool RendererThread::startRendering(const URL &target, RenderFormat format,
         this->percentsDone = 0.f;
         this->renderBlock.reset();
         auto outStream = make<MemoryOutputStream>(this->renderBlock, false);
-        
+
         // 16 bits per sample should be enough for anybody :)
         // ..wanna fight about it? https://people.xiph.org/~xiphmont/demo/neil-young.html
         constexpr int bitDepth = 16;
@@ -205,10 +205,10 @@ void RendererThread::run()
     Thread::sleep(200);
 
     // the render loop itself
-    
+
     // TODO: add double precision rendering someday (for processor graphs who support it)
     AudioBuffer<float> mixingBuffer(numOutChannels, bufferSize);
-    
+
     const auto firstEventTimestamp = nextMessage.message.getTimeStamp();
 
     double prevEventTimeStamp = firstEventTimestamp;
@@ -278,7 +278,7 @@ void RendererThread::run()
 
             prevEventTick += nextEventTickDelta;
             prevEventTimeStamp = nextMessage.message.getTimeStamp();
-            
+
             hasNextMessage = sequences.getNextMessage(nextMessage);
             nextEventTickDelta = (nextMessage.message.getTimeStamp() - prevEventTimeStamp) * secPerQuarter;
             nextEventTick = prevEventTick + nextEventTickDelta;

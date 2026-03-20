@@ -201,7 +201,7 @@ void ProjectMetadata::resetStateTo(const TrackedItem &newState)
     {
         const auto *newDelta = newState.getDelta(i);
         const auto newDeltaData(newState.getDeltaData(i));
-        
+
         if (newDelta->hasType(ProjectInfoDeltas::projectLicense))
         {
             this->resetLicenseDelta(newDeltaData);
@@ -258,7 +258,10 @@ void ProjectMetadata::deserialize(const SerializedData &data)
     const auto root = data.hasType(Serialization::Core::projectInfo) ?
         data : data.getChildWithName(Serialization::Core::projectInfo);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     this->deserializeVCSUuid(root);
 

@@ -23,7 +23,6 @@
 class PatternsMenu final : public MenuPanel
 {
 public:
-    
+
     explicit PatternsMenu(PatternEditorNode &parentNode);
-    
 };

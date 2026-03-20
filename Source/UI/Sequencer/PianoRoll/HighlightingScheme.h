@@ -29,7 +29,7 @@ public:
 
     HighlightingScheme(Note::Key rootKey, const Scale::Ptr scale) noexcept;
 
-    template<typename T1, typename T2>
+    template <typename T1, typename T2>
     static inline int compareElements(const T1 *const l, const T2 *const r)
     {
         const int keyDiff = l->getRootKey() - r->getRootKey();
@@ -42,7 +42,7 @@ public:
     inline const Scale::Ptr getScale() const noexcept { return this->scale; }
     inline const Note::Key getRootKey() const noexcept { return this->rootKey; }
     inline const Image getUnchecked(int i) const noexcept { return this->rows.getUnchecked(i); }
-    
+
     void renderBackgroundCache(Temperament::Ptr temperament);
 
     static Image renderRowsPattern(const HelioTheme &theme,

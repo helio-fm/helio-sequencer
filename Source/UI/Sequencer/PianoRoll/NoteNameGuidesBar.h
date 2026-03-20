@@ -28,7 +28,8 @@ class MidiTrack;
 #include "Scale.h"
 #include "Note.h"
 
-class NoteNameGuidesBar final : public Component,
+class NoteNameGuidesBar final :
+    public Component,
     public RollListener,
     public UserInterfaceFlags::Listener,
     public AsyncUpdater,

@@ -46,7 +46,7 @@ public:
         this->detailsLabel->setColour(Label::textColourId,
             findDefaultColour(ColourIDs::Roll::noteNameNumber));
     }
-    
+
     inline int getNoteNumber() const noexcept
     {
         return this->noteNumber;

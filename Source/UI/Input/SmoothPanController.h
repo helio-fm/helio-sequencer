@@ -82,7 +82,7 @@ private:
         const auto delta = (diff * 0.5f).roundToInt();
         this->origin += delta.toFloat();
 
-        const bool hitTheBorder = 
+        const bool hitTheBorder =
             this->listener.panByOffset(int(this->origin.getX()),
                 int(this->origin.getY()));
 

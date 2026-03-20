@@ -258,8 +258,8 @@ void MainLayout::showPage(Component *page, TreeNode *source)
         this->currentContent->setVisible(false);
         this->removeChildComponent(this->currentContent);
     }
-    
-    this->currentContent = page;    
+
+    this->currentContent = page;
 
     this->addAndMakeVisible(this->currentContent);
     this->resized();
@@ -431,7 +431,7 @@ bool MainLayout::keyPressed(const KeyPress &key)
     {
         return true;
     }
-    
+
     return false;
 }
 

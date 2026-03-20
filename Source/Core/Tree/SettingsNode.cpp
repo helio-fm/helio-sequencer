@@ -49,7 +49,7 @@ public:
         {
             return;
         }
-    
+
         int y = this->paddingTop;
 
         for (int i = 0; i < this->getNumChildComponents(); ++i)
@@ -96,7 +96,7 @@ void SettingsNode::showPage()
     {
         this->recreatePage();
     }
-    
+
     App::Layout().showPage(this->settingsPage.get(), this);
 }
 

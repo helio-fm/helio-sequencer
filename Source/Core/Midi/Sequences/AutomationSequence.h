@@ -38,7 +38,7 @@ public:
     bool change(const AutomationEvent &autoEvent,
         const AutomationEvent &newAutoEvent,
         bool undoable);
-    
+
     bool insertGroup(Array<AutomationEvent> &events, bool undoable);
     bool removeGroup(Array<AutomationEvent> &events, bool undoable);
     bool changeGroup(Array<AutomationEvent> eventsBefore,
@@ -66,7 +66,7 @@ public:
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationSequence);

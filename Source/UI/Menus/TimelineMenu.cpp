@@ -23,7 +23,7 @@
 #include "PianoTrackNode.h"
 #include "ProjectTimeline.h"
 
-template<typename T>
+template <typename T>
 const T *findSelectedEventOfType(MidiSequence *const sequence, float seekBeat)
 {
     const T *selectedEvent = nullptr;
@@ -97,7 +97,7 @@ TimelineMenu::TimelineMenu(ProjectNode &parentProject) :
                 //double outTempo = 0.0;
                 //const double seekPos = roll->getTransportPositionByBeat(annotation->getBeat());
                 //this->project.getTransport().calcTimeAndTempoAt(seekPos, outTimeMs, outTempo);
-                
+
                 menu.add(MenuItem::item(Icons::annotation,
                     annotation->getDescription())->
                     //withSubLabel(Transport::getTimeString(outTimeMs))->
@@ -122,6 +122,6 @@ TimelineMenu::TimelineMenu(ProjectNode &parentProject) :
     {
         jassertfalse;
     }
-    
+
     this->updateContent(menu, SlideDown);
 }

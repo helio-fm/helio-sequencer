@@ -70,7 +70,6 @@ void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence,
     this->updateBeatRange(false);
 }
 
-
 //===----------------------------------------------------------------------===//
 // Undoable track editing
 //===----------------------------------------------------------------------===//
@@ -115,7 +114,7 @@ bool KeySignaturesSequence::remove(const KeySignatureEvent &signature, bool undo
             this->eventDispatcher.dispatchPostRemoveEvent(this);
             return true;
         }
-        
+
         return false;
     }
 
@@ -145,7 +144,7 @@ bool KeySignaturesSequence::change(const KeySignatureEvent &oldParams,
             this->updateBeatRange(true);
             return true;
         }
-        
+
         return false;
     }
 
@@ -229,7 +228,7 @@ void KeySignaturesSequence::deserialize(const SerializedData &data)
     {
         auto *signature = new KeySignatureEvent(this);
         signature->deserialize(e);
-        
+
         this->midiEvents.add(signature); // sorted later
 
         lastBeat = jmax(lastBeat, signature->getBeat());

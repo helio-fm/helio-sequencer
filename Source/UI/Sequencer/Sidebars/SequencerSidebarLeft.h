@@ -33,7 +33,8 @@ class SeparatorHorizontalReversed;
 #include "MenuPanel.h"
 #include "ColourIDs.h"
 
-class SequencerSidebarLeft final : public Component,
+class SequencerSidebarLeft final :
+    public Component,
     public SwipeController::Listener,
     private UserInterfaceFlags::Listener,
     private ListBoxModel

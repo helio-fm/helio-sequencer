@@ -36,7 +36,7 @@ public:
     void showPage() override;
     void recreatePage() override;
     String getStatsString() const;
-    
+
     void commitProjectInfo();
     void toggleQuickStash();
 
@@ -68,11 +68,10 @@ protected:
     UniquePointer<VersionControlEditor> editor;
 
 private:
-        
+
     void initVCS();
     void shutdownVCS();
-    
+
     void initEditor();
     void shutdownEditor();
-
 };

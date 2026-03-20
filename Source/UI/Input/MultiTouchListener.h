@@ -20,7 +20,7 @@
 class MultiTouchListener
 {
 public:
-    
+
     virtual ~MultiTouchListener() = default;
 
     virtual void multiTouchStartZooming() = 0;

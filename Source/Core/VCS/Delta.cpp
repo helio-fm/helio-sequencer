@@ -62,7 +62,7 @@ bool Delta::hasType(const Identifier &id) const noexcept
 SerializedData Delta::serialize() const
 {
     SerializedData tree(Serialization::VCS::delta);
-    
+
     if (this->description.stringToTranslate.isNotEmpty())
     {
         tree.setProperty(Serialization::VCS::deltaName, this->description.stringToTranslate);
@@ -88,7 +88,10 @@ void Delta::deserialize(const SerializedData &data)
     const auto root = data.hasType(Serialization::VCS::delta) ?
         data : data.getChildWithName(Serialization::VCS::delta);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     if (root.getNumChildren() == 1)
     {
@@ -102,10 +105,10 @@ void Delta::deserialize(const SerializedData &data)
     const String descriptionName = root.getProperty(Serialization::VCS::deltaName, {});
     const String descriptionStringParam = root.getProperty(Serialization::VCS::deltaStringParam, {});
     const int64 descriptionIntParam = root.getProperty(Serialization::VCS::deltaIntParam, String(DeltaDescription::defaultNumChanges));
-    
+
     this->description = { descriptionName, descriptionIntParam, descriptionStringParam };
 }
 
 void Delta::reset() {}
 
-}
+} // namespace VCS

@@ -38,21 +38,21 @@ namespace VCS
             stringToTranslate(text),
             intParameter(numChanges),
             stringParameter() {}
-        
+
         DeltaDescription(const String &text, const String &parameter) :
             stringToTranslate(text),
             intParameter(defaultNumChanges),
             stringParameter(parameter) {}
-        
+
         DeltaDescription(const DeltaDescription &other) :
             stringToTranslate(other.stringToTranslate),
             intParameter(other.intParameter),
             stringParameter(other.stringParameter) {}
 
     private:
-        
+
         static int64 defaultNumChanges;
-        
+
         DeltaDescription(const String &text, int64 numChanges, const String &parameter) :
             stringToTranslate(text),
             intParameter(numChanges),
@@ -64,25 +64,25 @@ namespace VCS
             {
                 return TRANS_PLURAL(this->stringToTranslate, this->intParameter);
             }
-            
+
             if (this->stringParameter.isNotEmpty())
             {
                 return TRANS(this->stringToTranslate)
                     .replace(Serialization::Translations::metaSymbol,
                         this->stringParameter);
             }
-            
+
             return TRANS(this->stringToTranslate);
         }
-        
+
         String stringToTranslate;
-        
+
         int64 intParameter;
         String stringParameter;
-        
+
         friend class Delta;
     };
-    
+
     class Delta final : public Serializable
     {
     public:
@@ -91,7 +91,7 @@ namespace VCS
         Delta(const DeltaDescription &deltaDescription, Identifier deltaType) :
             description(deltaDescription),
             type(deltaType) {}
-        
+
         Delta *createCopy() const;
 
         // i.e. "added 45 notes" or "layer color changed"

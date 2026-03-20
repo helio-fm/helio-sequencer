@@ -60,7 +60,7 @@ const ReferenceCountedArray<RevisionItem> &Revision::getItems() const noexcept
     return this->deltas;
 }
 
-const ReferenceCountedArray<Revision> &Revision::getChildren() const  noexcept
+const ReferenceCountedArray<Revision> &Revision::getChildren() const noexcept
 {
     return this->children;
 }
@@ -129,7 +129,10 @@ void Revision::deserializeDeltas(SerializedData data)
         data.hasType(Serialization::VCS::revision) ?
         data : data.getChildWithName(Serialization::VCS::revision);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     this->deltas.clearQuick();
 
@@ -170,7 +173,10 @@ void Revision::deserialize(const SerializedData &data)
         data.hasType(Serialization::VCS::revision) ?
         data : data.getChildWithName(Serialization::VCS::revision);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     this->id = root.getProperty(Serialization::VCS::commitId);
     this->message = root.getProperty(Serialization::VCS::commitMessage);
@@ -202,4 +208,4 @@ void Revision::reset()
     this->children.clearQuick();
 }
 
-}
+} // namespace VCS

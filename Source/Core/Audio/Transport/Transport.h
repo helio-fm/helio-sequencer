@@ -34,7 +34,8 @@ class RendererThread;
 #include "UserInterfaceFlags.h"
 #include "Config.h"
 
-class Transport final : public Serializable,
+class Transport final :
+    public Serializable,
     public ProjectListener,
     public OrchestraListener,
     public TimeSignaturesAggregator::Listener,
@@ -44,7 +45,7 @@ public:
 
     Transport(ProjectNode &project, OrchestraPit &orchestraPit);
     ~Transport() override;
-    
+
     static String getTimeString(double timeMs, bool includeMilliseconds = false);
     static String getTimeString(const RelativeTime &relTime, bool includeMilliseconds = false);
 
@@ -55,10 +56,10 @@ public:
     //===------------------------------------------------------------------===//
     // Transport
     //===------------------------------------------------------------------===//
-    
+
     float getSeekBeat() const noexcept;
     void seekToBeat(float beatPosition);
-    
+
     void probeSoundAtBeat(float beatPosition,
         const MidiSequence *limitedTo = nullptr);
 
@@ -81,7 +82,7 @@ public:
     bool startRender(const URL &renderTarget, RenderFormat format, int thumbnailResolution);
     bool isRendering() const;
     void stopRender();
-    
+
     void togglePlaybackLoop(float startBeat, float endBeat);
     void setPlaybackLoop(float startBeat, float endBeat);
     void disablePlaybackLoop();
@@ -150,7 +151,7 @@ public:
     //===------------------------------------------------------------------===//
     // Sending messages in real-time
     //===------------------------------------------------------------------===//
-    
+
     void previewKey(const String &trackId, int channel,
         int key, float volume, float lengthInBeats) const;
     void previewKey(WeakReference<Instrument> instrument, int channel,
@@ -182,7 +183,7 @@ public:
     //===------------------------------------------------------------------===//
     // ProjectListener
     //===------------------------------------------------------------------===//
-    
+
     void onChangeMidiEvent(const MidiEvent &oldEvent,
         const MidiEvent &newEvent) override;
     void onAddMidiEvent(const MidiEvent &event) override;
@@ -241,7 +242,7 @@ private:
     friend class RendererThread;
 
 private:
-    
+
     ProjectNode &project;
     OrchestraPit &orchestra;
 
@@ -261,10 +262,10 @@ private:
     // <track id : instrument>
     mutable Array<const MidiTrack *> tracksCache;
     mutable FlatHashMap<String, WeakReference<Instrument>, StringHash> instrumentLinks;
-    
+
     void updateInstrumentLinkForTrack(const MidiTrack *track);
     void clearInstrumentLinkForTrack(const MidiTrack *track);
-    
+
     // a nasty hack, see the description in DefaultSynth.h:
     void updateTemperamentForBuiltInSynths(Temperament::Ptr temperament) const;
 

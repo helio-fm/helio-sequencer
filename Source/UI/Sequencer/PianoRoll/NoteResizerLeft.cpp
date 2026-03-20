@@ -125,7 +125,7 @@ void NoteResizerLeft::mouseDrag(const MouseEvent &e)
     {
         return;
     }
-    
+
     this->dragger.dragComponent(this, e, nullptr);
 
     const auto &selection = this->roll.getLassoSelection();
@@ -216,6 +216,7 @@ void NoteResizerLeft::updateBounds()
     }
 
     auto *groupStartNoteComponent = this->findLeftmostTopmostEvent(selection);
+    jassert(groupStartNoteComponent != nullptr);
     const auto anchor = this->roll.getEventBounds(groupStartNoteComponent);
 
     const auto &viewport = this->roll.getViewport();

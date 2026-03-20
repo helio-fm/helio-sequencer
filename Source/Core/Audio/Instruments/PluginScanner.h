@@ -27,7 +27,7 @@ public:
 
     PluginScanner();
     ~PluginScanner() override;
-    
+
     bool isWorking() const;
     bool hasEffects() const;
     bool hasInstruments() const;
@@ -65,7 +65,7 @@ private:
         runScannerProcess(const String &pathOrId, int timeOutMs = 69420) const;
 
     KnownPluginList pluginsList;
-    
+
     Atomic<bool> working = false;
     Atomic<bool> cancelled = false;
 

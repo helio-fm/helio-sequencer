@@ -46,7 +46,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeDefaultMenu() noexcept
     menu.add(MenuItem::item(Icons::reprise,
         CommandIDs::ToggleLoopOverSelection,
         TRANS(I18n::CommandPalette::toggleLoopOverSelection))->closesMenu());
-    
+
     menu.add(MenuItem::item(Icons::ellipsis,
         TRANS(I18n::Menu::Selection::notesDivisions))->
         withSubmenu()->
@@ -67,7 +67,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeDefaultMenu() noexcept
         {
             this->updateContent(this->makeArpsMenu(), MenuPanel::SlideLeft);
         }));
-    
+
     menu.add(MenuItem::item(Icons::refactor,
         TRANS(I18n::Menu::Selection::notesRefactor))->
         withSubmenu()->
@@ -136,7 +136,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeRefactoringMenu() noexcept
     {
         this->updateContent(this->makeDefaultMenu(), MenuPanel::SlideRight);
     }));
-    
+
     // in some cases transforming a single note makes no sense
     jassert(this->lasso->getNumSelected() > 0);
     const bool hasSingleNote = this->lasso->getNumSelected() == 1;
@@ -261,7 +261,7 @@ MenuPanel::Menu PianoRollSelectionMenu::makeQuantizationMenu() noexcept
 #define EVENTS_QUANTIZE_ITEM(cmd) \
     MenuItem::item(Icons::ellipsis, cmd, \
         TRANS(CommandIDs::getTranslationKeyFor(cmd)))->closesMenu()
-    
+
     menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_1));
     menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_2));
     menu.add(EVENTS_QUANTIZE_ITEM(CommandIDs::QuantizeTo1_4));

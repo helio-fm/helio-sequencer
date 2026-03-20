@@ -25,9 +25,9 @@ class Lasso;
 class PatternRollSelectionMenu final : public ClipModifiersMenu
 {
 public:
-    
+
     PatternRollSelectionMenu(WeakReference<Lasso> lasso);
-    
+
 private:
 
     MenuPanel::Menu makeDefaultMenu() noexcept;
@@ -36,5 +36,4 @@ private:
     MenuPanel::Menu makeInstrumentSelectionMenu() noexcept;
 
     WeakReference<Lasso> lasso;
-
 };

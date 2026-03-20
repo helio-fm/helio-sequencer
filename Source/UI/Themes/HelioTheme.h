@@ -30,7 +30,7 @@ public:
     void initResources() noexcept;
     void initColours(const ::ColourScheme::Ptr colours) noexcept;
     void updateFont(const Font &font) noexcept;
-    
+
     Typeface::Ptr getTypefaceForFont(const Font &) override;
 
     void drawNoise(Graphics &g, float alphaMultiply = 1.f) const;
@@ -68,15 +68,15 @@ public:
     static void drawDashedVerticalLine(Graphics &g, float x, float y, float height, float dashLength = 4);
 
     void drawStretchableLayoutResizerBar(Graphics &g,
-            int /*w*/, int /*h*/, bool /*isVerticalBar*/,
-            bool isMouseOver, bool isMouseDragging) override;
+        int /*w*/, int /*h*/, bool /*isVerticalBar*/,
+        bool isMouseOver, bool isMouseDragging) override;
 
     //===------------------------------------------------------------------===//
     // Text Editor
     //===------------------------------------------------------------------===//
 
-    void fillTextEditorBackground(Graphics&, int w, int h, TextEditor&) override;
-    void drawTextEditorOutline(Graphics&, int w, int h, TextEditor&) override {}
+    void fillTextEditorBackground(Graphics &, int w, int h, TextEditor &) override;
+    void drawTextEditorOutline(Graphics &, int w, int h, TextEditor &) override {}
 
     template <typename TextEditorType = TextEditor>
     static UniquePointer<TextEditorType> makeSingleLineTextEditor(bool isEditable,
@@ -99,7 +99,7 @@ public:
 
     int getPopupMenuBorderSize() override { return 0; }
     void drawPopupMenuBackground(Graphics &g, int width, int height) override;
-    
+
     //===------------------------------------------------------------------===//
     // Labels
     //===------------------------------------------------------------------===//
@@ -111,7 +111,7 @@ public:
     // Buttons
     //===------------------------------------------------------------------===//
 
-    Font getTextButtonFont(TextButton&, int buttonHeight) override;
+    Font getTextButtonFont(TextButton &, int buttonHeight) override;
     void drawButtonText(Graphics &, TextButton &button,
         bool isMouseOverButton, bool isButtonDown) override;
     void drawButtonBackground(Graphics &g, Button &button,
@@ -125,8 +125,8 @@ public:
     // Tables
     //===------------------------------------------------------------------===//
 
-    void drawTableHeaderBackground(Graphics&, TableHeaderComponent&) override;
-    void drawTableHeaderColumn(Graphics&, TableHeaderComponent&,
+    void drawTableHeaderBackground(Graphics &, TableHeaderComponent &) override;
+    void drawTableHeaderColumn(Graphics &, TableHeaderComponent &,
         const String &columnName, int columnId, int width, int height,
         bool isMouseOver, bool isMouseDown, int columnFlags) override;
 
@@ -149,15 +149,15 @@ public:
     // Sliders
     //===------------------------------------------------------------------===//
 
-    void drawRotarySlider(Graphics&, int x, int y, int width, int height,
+    void drawRotarySlider(Graphics &, int x, int y, int width, int height,
         float sliderPosProportional, float rotaryStartAngle,
-        float rotaryEndAngle, Slider&) override;
-        
+        float rotaryEndAngle, Slider &) override;
+
     //===------------------------------------------------------------------===//
     // Window
     //===------------------------------------------------------------------===//
 
-    void drawCornerResizer(Graphics& g, int w, int h,
+    void drawCornerResizer(Graphics &g, int w, int h,
         bool /*isMouseOver*/, bool /*isMouseDragging*/) override;
 
     void drawResizableFrame(Graphics &g, int w, int h,
@@ -171,13 +171,13 @@ public:
 
     Button *createDocumentWindowButton(int buttonType) override;
     void positionDocumentWindowButtons(DocumentWindow &window,
-            int titleBarX, int titleBarY,
-            int titleBarW, int titleBarH,
-            Button *minimiseButton,
-            Button *maximiseButton,
-            Button *closeButton,
-            bool positionTitleBarButtonsOnLeft) override;
-    
+        int titleBarX, int titleBarY,
+        int titleBarW, int titleBarH,
+        Button *minimiseButton,
+        Button *maximiseButton,
+        Button *closeButton,
+        bool positionTitleBarButtonsOnLeft) override;
+
     inline const Image &getPageBackgroundA() const noexcept { return this->pageBackgroundA; }
     inline const Image &getPageBackgroundB() const noexcept { return this->pageBackgroundB; }
     inline const Image &getSidebarBackground() const noexcept { return this->sidebarBackground; }
@@ -191,15 +191,15 @@ public:
     }
 
 protected:
-    
+
     const Image backgroundNoise;
     const Image backgroundStripes;
 
     Colour backgroundTextureBaseColour;
     Image cachedBackground;
-    
+
     Typeface::Ptr textTypefaceCache;
-    
+
     Image pageBackgroundA;
     Image pageBackgroundB;
     Image sidebarBackground;
@@ -210,5 +210,4 @@ protected:
     bool isDarkTheme = false;
 
     JUCE_LEAK_DETECTOR(HelioTheme);
-
 };

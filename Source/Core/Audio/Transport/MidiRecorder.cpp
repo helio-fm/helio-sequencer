@@ -232,7 +232,7 @@ void MidiRecorder::handleAsyncUpdate()
         this->activeClip = this->activeTrack->getPattern()->getUnchecked(0);
         this->shouldCheckpoint = false;
     }
-    
+
     // handle note offs and fill unhandledNoteOffs
     while (!this->noteOffsBuffer.isEmpty())
     {
@@ -340,7 +340,7 @@ void MidiRecorder::startHoldingNote(const MidiMessage &message)
     jassert(this->activeTrack != nullptr);
 
     const auto key = this->getMappedKey(message.getNoteNumber());
-    
+
     if (this->holdingNotes.contains(key))
     {
         DBG("Found weird note-on/note-off order");

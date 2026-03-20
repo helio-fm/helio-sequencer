@@ -56,7 +56,6 @@ private:
 
     const Colour markColour = findDefaultColour(ColourIDs::Roll::noteCutMark);
     const Colour outlineColour = findDefaultColour(ColourIDs::Roll::noteCutMarkOutline);
-
 };
 
 class Clip;
@@ -75,7 +74,6 @@ private:
 
     const Colour markColour;
     const Colour outlineColour = findDefaultColour(ColourIDs::Roll::cuttingGuideOutline);
-
 };
 
 class AutomationEditorCutPointMark final : public ClipCutPointMark
@@ -86,5 +84,4 @@ public:
 
     void updateBounds(bool forceNoAnimation = false) override;
     void updatePositionFromMouseEvent(int mouseX, int mouseY) override;
-
 };

@@ -32,22 +32,22 @@ public:
 
     explicit MidiTrackRenameAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
-    
+
     MidiTrackRenameAction(MidiTrackSource &source,
         const String &trackId, const String &path) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 private:
 
     String trackId;
-    
+
     String pathBefore;
     String pathAfter;
 

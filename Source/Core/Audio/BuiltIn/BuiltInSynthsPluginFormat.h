@@ -52,7 +52,7 @@ public:
         return fileOrIdentifier;
     }
 
-    bool pluginNeedsRescanning(const PluginDescription&) override
+    bool pluginNeedsRescanning(const PluginDescription &) override
     {
         return false;
     }
@@ -65,7 +65,7 @@ public:
     void createPluginInstance(const PluginDescription &, double initialSampleRate,
         int initialBufferSize, PluginCreationCallback) override;
 
-    bool requiresUnblockedMessageThreadDuringCreation(const PluginDescription&) const noexcept override
+    bool requiresUnblockedMessageThreadDuringCreation(const PluginDescription &) const noexcept override
     {
         return false;
     }
@@ -80,5 +80,4 @@ private:
     PluginDescription defaultInstrument;
     PluginDescription metronomeInstrument;
     PluginDescription soundFontPlayerInstrument;
-
 };

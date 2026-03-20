@@ -45,7 +45,7 @@ bool AutomationTrackInsertAction::perform()
 
     this->trackId = track->getTrackId();
     track->setTrackName(this->trackName, false, sendNotification);
-    
+
     return true;
 }
 
@@ -58,7 +58,7 @@ bool AutomationTrackInsertAction::undo()
         // so don't serialize anything again
         return this->parentTreeItem->deleteNode(treeItem, true);
     }
-    
+
     return false;
 }
 
@@ -114,7 +114,7 @@ bool AutomationTrackRemoveAction::perform()
         this->trackName = treeItem->getTrackName();
         return this->parentTreeItem->deleteNode(treeItem, true);
     }
-    
+
     return false;
 }
 
@@ -128,7 +128,7 @@ bool AutomationTrackRemoveAction::undo()
         track->setTrackName(this->trackName, false, sendNotification);
         return true;
     }
-    
+
     return false;
 }
 
@@ -138,7 +138,7 @@ int AutomationTrackRemoveAction::getSizeInUnits()
     {
         return (this->numEvents * sizeof(MidiEvent));
     }
-    
+
     return 1;
 }
 

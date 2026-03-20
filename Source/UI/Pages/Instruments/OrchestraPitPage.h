@@ -26,7 +26,7 @@ class OrchestraPitNode;
 #include "PageBackgroundA.h"
 #include "PageBackgroundB.h"
 
-class OrchestraPitPage final : public Component,  public ChangeListener
+class OrchestraPitPage final : public Component, public ChangeListener
 {
 public:
 

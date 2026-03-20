@@ -88,7 +88,7 @@ public:
 
         return false;
     }
-    
+
     static bool boundsIntersectPolygon(const Rectangle<float> &bounds,
         const Array<Point<float>> &polygon)
     {
@@ -156,21 +156,21 @@ public:
     {
         return this->getNumSelected() <= 32; // just a sane limit
     }
-    
-    template<typename T>
+
+    template <typename T>
     T *getFirstAs() const
     {
         jassert(dynamic_cast<T *>(this->getSelectedItem(0)) != nullptr);
         return static_cast<T *>(this->getSelectedItem(0));
     }
 
-    template<typename T>
+    template <typename T>
     T *getItemAs(int index) const
     {
         jassert(dynamic_cast<T *>(this->getSelectedItem(index)) != nullptr);
         return static_cast<T *>(this->getSelectedItem(index));
     }
-    
+
     // selection listeners are notified when selected events change positions;
     // for performance reasons it we doesn't check if the changed item
     // is in the selection or not (see the comment in LassoListeners.h)
@@ -195,7 +195,7 @@ public:
     {
         return this->getItemAs<NoteComponent>(i)->getNote();
     }
-    
+
     // Transaction identifier, and why is it needed:
     // some actions, like dragging notes around, are performed in a single undo transaction,
     // but, unlike mouse dragging (where it's clear when to start and when to end a transaction),

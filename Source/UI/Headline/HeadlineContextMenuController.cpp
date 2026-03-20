@@ -54,7 +54,7 @@ public:
             this->syncBoundsWithContent();
         }
     }
-    
+
     void handleCommandMessage(int commandId) override
     {
         if (commandId == CommandIDs::DismissModalComponentAsync)

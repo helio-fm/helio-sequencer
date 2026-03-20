@@ -31,12 +31,12 @@ namespace VCS
         String getUserStashDescription(int index) const;
         Revision::Ptr getUserStash(int index) const;
         Revision::Ptr getUserStashWithName(const String &stashName) const;
-        
+
         Revision::Ptr getQuickStash() const noexcept;
         bool hasQuickStash() const noexcept;
         void storeQuickStash(Revision::Ptr newStash);
         void resetQuickStash();
-        
+
         void addStash(Revision::Ptr newStash);
         void removeStash(Revision::Ptr stashToRemove);
 
@@ -57,7 +57,7 @@ namespace VCS
 
         // root node for quick-toggled changes
         Revision::Ptr quickStash;
-        
+
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StashesRepository)
     };
 } // namespace VCS

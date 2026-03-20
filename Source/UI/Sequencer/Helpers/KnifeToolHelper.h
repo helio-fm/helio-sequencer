@@ -65,5 +65,5 @@ private:
     const Colour fillColour = findDefaultColour(ColourIDs::Roll::cuttingGuide);
     const Colour outlineColour = findDefaultColour(ColourIDs::Roll::cuttingGuideOutline);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KnifeToolHelper)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KnifeToolHelper)
 };

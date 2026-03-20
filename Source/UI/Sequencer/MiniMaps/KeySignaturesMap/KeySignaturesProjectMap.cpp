@@ -122,25 +122,25 @@ void KeySignaturesProjectMap::alignKeySignatureComponent(KeySignatureComponent *
     const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*component, component);
     auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
     auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
-    
+
     if (previousEventComponent)
     {
         this->applyKeySignatureBounds(previousEventComponent, component);
-        
-       auto *oneMorePrevious = this->getPreviousEventComponent(indexOfSorted - 1);
-        
+
+        auto *oneMorePrevious = this->getPreviousEventComponent(indexOfSorted - 1);
+
         if (oneMorePrevious)
         {
             this->applyKeySignatureBounds(oneMorePrevious, previousEventComponent);
         }
     }
-    
+
     if (nextEventComponent)
     {
         auto *oneMoreNext = this->getNextEventComponent(indexOfSorted + 1);
         this->applyKeySignatureBounds(nextEventComponent, oneMoreNext);
     }
-    
+
     component->updateContent(this->getProjectKeyNames(), this->useFixedDoNotation);
     this->applyKeySignatureBounds(component, nextEventComponent);
 }
@@ -194,7 +194,9 @@ void KeySignaturesProjectMap::onRemoveMidiEvent(const MidiEvent &event)
             KeySignatureComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
 
             if (previousEventComponent)
-            { this->applyKeySignatureBounds(previousEventComponent, nextEventComponent); }
+            {
+                this->applyKeySignatureBounds(previousEventComponent, nextEventComponent);
+            }
 
             this->keySignatureComponents.removeObject(component, true);
         }

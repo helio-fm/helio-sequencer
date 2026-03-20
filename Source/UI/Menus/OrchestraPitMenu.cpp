@@ -36,7 +36,7 @@ OrchestraPitMenu::OrchestraPitMenu(OrchestraPitNode &parentOrchestra) :
             CommandIDs::ScanAllPlugins,
             TRANS(I18n::Menu::instrumentsReload))->closesMenu());
     }
-    
+
 #if PLATFORM_DESKTOP
 
     menu.add(MenuItem::item(Icons::browse,

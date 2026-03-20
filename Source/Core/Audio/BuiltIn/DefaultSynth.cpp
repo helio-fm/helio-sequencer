@@ -71,7 +71,7 @@ void DefaultSynth::Voice::startNote(int midiNoteNumber, float velocity, Synthesi
 
     this->currentAngle = 0.f;
     this->level = velocity * 0.2f; // hopefully not too loud
-    
+
     const auto cyclesPerSecond = this->temperament->getNoteInHertz(actualNoteNumber);
     const auto cyclesPerSample = cyclesPerSecond / this->getSampleRate();
 

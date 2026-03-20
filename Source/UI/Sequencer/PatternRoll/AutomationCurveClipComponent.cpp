@@ -182,19 +182,19 @@ void AutomationCurveClipComponent::mouseUp(const MouseEvent &e)
 void AutomationCurveClipComponent::resized()
 {
     this->setVisible(false);
-    
+
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
         auto *c = this->eventComponents.getUnchecked(i);
         c->setFloatBounds(this->getEventBounds(c->getEvent(), this->clip));
     }
-    
+
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
         auto *c = this->eventComponents.getUnchecked(i);
         c->updateChildrenBounds();
     }
-    
+
     this->setVisible(true);
 }
 
@@ -213,7 +213,7 @@ void AutomationCurveClipComponent::insertNewEventAt(const MouseEvent &e)
     float draggingBeat = 0.f;
     constexpr auto cursorOffset = 3;
     this->getBeatValueByPosition(e.x + cursorOffset, e.y, this->clip, draggingValue, draggingBeat);
-    
+
     const auto shouldShowEditingDialog =
         sequence->getTrack()->isTempoTrack() && e.mods.isAnyModifierKeyDown();
     this->dragNewEventMode = !shouldShowEditingDialog;
@@ -282,7 +282,7 @@ void AutomationCurveClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
         const int indexOfSorted = this->eventComponents.indexOfSorted(*component, component);
         auto *previousEventComponent = this->eventComponents[indexOfSorted - 1];
         auto *nextEventComponent = this->eventComponents[indexOfSorted + 1];
-            
+
         // if the neighbourhood has changed,
         // connect the most recent neighbours to each other:
         if (nextEventComponent != component->getNextNeighbour() ||
@@ -303,20 +303,20 @@ void AutomationCurveClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
         component->setPreviousNeighbour(previousEventComponent);
         component->setFloatBounds(this->getEventBounds(newAutoEvent, this->clip));
         component->updateChildrenBounds();
-            
+
         if (previousEventComponent)
         {
             previousEventComponent->setNextNeighbour(component);
         }
-            
+
         if (nextEventComponent)
         {
             nextEventComponent->setPreviousNeighbour(component);
         }
-            
+
         this->eventsMap.erase(autoEvent);
         this->eventsMap[newAutoEvent] = component;
-            
+
         this->roll.triggerBatchRepaintFor(this);
     }
 }
@@ -342,7 +342,7 @@ void AutomationCurveClipComponent::onAddMidiEvent(const MidiEvent &event)
     component->setPreviousNeighbour(previousEventComponent);
     component->setFloatBounds(this->getEventBounds(autoEvent, this->clip));
     component->updateChildrenBounds();
-        
+
     if (previousEventComponent)
     {
         previousEventComponent->setNextNeighbour(component);
@@ -372,18 +372,18 @@ void AutomationCurveClipComponent::onRemoveMidiEvent(const MidiEvent &event)
     }
 
     const auto &autoEvent = static_cast<const AutomationEvent &>(event);
-        
+
     if (auto *component = this->eventsMap[autoEvent])
     {
         //this->eventAnimator.fadeOut(component, Globals::UI::fadeOutShort);
         this->removeChildComponent(component);
         this->eventsMap.erase(autoEvent);
-            
+
         // update links and connectors for neighbors
         const int indexOfSorted = this->eventComponents.indexOfSorted(*component, component);
         auto *previousEventComponent = this->eventComponents[indexOfSorted - 1];
         auto *nextEventComponent = this->eventComponents[indexOfSorted + 1];
-            
+
         if (previousEventComponent)
         {
             previousEventComponent->setNextNeighbour(nextEventComponent);
@@ -395,7 +395,7 @@ void AutomationCurveClipComponent::onRemoveMidiEvent(const MidiEvent &event)
         }
 
         this->eventComponents.removeObject(component, true);
-            
+
         this->roll.triggerBatchRepaintFor(this);
     }
 }
@@ -450,12 +450,12 @@ void AutomationCurveClipComponent::reloadTrack()
     {
         this->removeChildComponent(component);
     }
-    
+
     this->eventComponents.clear();
     this->eventsMap.clear();
-    
+
     this->setVisible(false);
-    
+
     for (int i = 0; i < this->sequence->size(); ++i)
     {
         jassert(this->sequence->getUnchecked(i)->isTypeOf(MidiEvent::Type::Auto));

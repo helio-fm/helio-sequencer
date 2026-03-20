@@ -65,7 +65,7 @@ const Identifier ProjectTimelineDiffLogic::getType() const noexcept
 Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) const noexcept
 {
     using namespace Serialization::VCS;
-    
+
     auto *diff = new Diff(this->target);
 
     for (int i = 0; i < this->target.getNumDeltas(); ++i)
@@ -86,7 +86,7 @@ Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) cons
             {
                 stateDeltaData = initialState.getDeltaData(j);
                 deltaFoundInState = (stateDeltaData.isValid());
-                dataHasChanged = (! myDeltaData.isEquivalentTo(stateDeltaData));
+                dataHasChanged = (!myDeltaData.isEquivalentTo(stateDeltaData));
                 break;
             }
         }
@@ -124,7 +124,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
         const Delta *stateDelta = initialState.getDelta(i);
         const auto stateDeltaData(initialState.getDeltaData(i));
 
-        // for every supported type we need to spit out 
+        // for every supported type we need to spit out
         // a delta of type eventsAdded with all events merged in there
         auto annotationsDelta = make<Delta>(
             DeltaDescription(Serialization::VCS::headStateDelta),
@@ -183,7 +183,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             {
                 deltaFoundInChanges = true;
                 const bool incrementalMerge = timeSignaturesDeltaData.isValid();
-                
+
                 if (targetDelta->hasType(TimeSignatureDeltas::timeSignaturesAdded))
                 {
                     timeSignaturesDeltaData = mergeTimeSignaturesAdded(
@@ -227,18 +227,18 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
         {
             diff->applyDelta(annotationsDelta.release(), annotationsDeltaData);
         }
-        
+
         if (timeSignaturesDeltaData.isValid())
         {
             diff->applyDelta(timeSignaturesDelta.release(), timeSignaturesDeltaData);
         }
-        
+
         if (keySignaturesDeltaData.isValid())
         {
             diff->applyDelta(keySignaturesDelta.release(), keySignaturesDeltaData);
         }
 
-        if (! deltaFoundInChanges)
+        if (!deltaFoundInChanges)
         {
             diff->applyDelta(stateDelta->createCopy(), stateDeltaData);
         }
@@ -406,7 +406,7 @@ SerializedData mergeAnnotationsAdded(const SerializedData &state, const Serializ
             }
         }
 
-        if (! foundEventInState)
+        if (!foundEventInState)
         {
             result.add(changesEvent);
         }
@@ -443,7 +443,7 @@ SerializedData mergeAnnotationsRemoved(const SerializedData &state, const Serial
             }
         }
 
-        if (! foundEventInChanges)
+        if (!foundEventInChanges)
         {
             result.add(stateEvent);
         }
@@ -502,36 +502,36 @@ SerializedData mergeTimeSignaturesAdded(const SerializedData &state, const Seria
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
     deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
-    
+
     Array<const MidiEvent *> result;
-    
+
     result.addArray(stateEvents);
-    
+
     // check if state doesn't already have events with the same ids, then add
     for (int i = 0; i < changesEvents.size(); ++i)
     {
         bool foundEventInState = false;
         const TimeSignatureEvent *changesEvent =
             static_cast<TimeSignatureEvent *>(changesEvents.getUnchecked(i));
-        
+
         for (int j = 0; j < stateEvents.size(); ++j)
         {
             const TimeSignatureEvent *stateEvent =
                 static_cast<TimeSignatureEvent *>(stateEvents.getUnchecked(j));
-            
+
             if (stateEvent->getId() == changesEvent->getId())
             {
                 foundEventInState = true;
                 break;
             }
         }
-        
-        if (! foundEventInState)
+
+        if (!foundEventInState)
         {
             result.add(changesEvent);
         }
     }
-    
+
     return serializeTimelineSequence(result, TimeSignatureDeltas::timeSignaturesAdded);
 }
 
@@ -542,34 +542,34 @@ SerializedData mergeTimeSignaturesRemoved(const SerializedData &state, const Ser
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
     deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
-    
+
     Array<const MidiEvent *> result;
-    
+
     // add all events that are missing in changes
     for (int i = 0; i < stateEvents.size(); ++i)
     {
         bool foundEventInChanges = false;
         const TimeSignatureEvent *stateEvent =
             static_cast<TimeSignatureEvent *>(stateEvents.getUnchecked(i));
-        
+
         for (int j = 0; j < changesEvents.size(); ++j)
         {
             const TimeSignatureEvent *changesEvent =
                 static_cast<TimeSignatureEvent *>(changesEvents.getUnchecked(j));
-            
+
             if (stateEvent->getId() == changesEvent->getId())
             {
                 foundEventInChanges = true;
                 break;
             }
         }
-        
-        if (! foundEventInChanges)
+
+        if (!foundEventInChanges)
         {
             result.add(stateEvent);
         }
     }
-    
+
     return serializeTimelineSequence(result, TimeSignatureDeltas::timeSignaturesAdded);
 }
 
@@ -580,27 +580,27 @@ SerializedData mergeTimeSignaturesChanged(const SerializedData &state, const Ser
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
     deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
-    
+
     Array<const MidiEvent *> result;
     result.addArray(stateEvents);
-    
+
     for (int i = 0; i < stateEvents.size(); ++i)
     {
         bool foundEventInChanges = false;
         const TimeSignatureEvent *stateEvent =
             static_cast<TimeSignatureEvent *>(stateEvents.getUnchecked(i));
-        
+
         for (int j = 0; j < changesEvents.size(); ++j)
         {
             const TimeSignatureEvent *changesEvent =
                 static_cast<TimeSignatureEvent *>(changesEvents.getUnchecked(j));
-            
+
             if (stateEvent->getId() == changesEvent->getId())
             {
                 foundEventInChanges = true;
                 result.removeAllInstancesOf(stateEvent);
                 result.addIfNotAlreadyThere(changesEvent);
-                
+
                 break;
             }
         }
@@ -731,7 +731,6 @@ SerializedData mergeKeySignaturesChanged(const SerializedData &state, const Seri
     return serializeTimelineSequence(result, KeySignatureDeltas::keySignaturesAdded);
 }
 
-
 //===----------------------------------------------------------------------===//
 // Diff
 //===----------------------------------------------------------------------===//
@@ -781,7 +780,7 @@ Array<DeltaDiff> createAnnotationsDiffs(const SerializedData &state, const Seria
         }
 
         // state event was not found in changes, add `removed` record
-        if (! foundEventInChanges)
+        if (!foundEventInChanges)
         {
             removedEvents.add(stateEvent);
         }
@@ -806,7 +805,7 @@ Array<DeltaDiff> createAnnotationsDiffs(const SerializedData &state, const Seria
             }
         }
 
-        if (! foundEventInState)
+        if (!foundEventInState)
         {
             addedEvents.add(changesEvent);
         }
@@ -846,73 +845,73 @@ Array<DeltaDiff> createTimeSignaturesDiffs(const SerializedData &state, const Se
 
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
-    
+
     deserializeTimelineChanges(state, changes, stateEvents, changesEvents);
-    
+
     Array<DeltaDiff> res;
     Array<const MidiEvent *> addedEvents;
     Array<const MidiEvent *> removedEvents;
     Array<const MidiEvent *> changedEvents;
-    
+
     for (int i = 0; i < stateEvents.size(); ++i)
     {
         bool foundEventInChanges = false;
         const auto *stateEvent = static_cast<TimeSignatureEvent *>(stateEvents.getUnchecked(i));
-        
+
         for (int j = 0; j < changesEvents.size(); ++j)
         {
             const auto *changesEvent = static_cast<TimeSignatureEvent *>(changesEvents.getUnchecked(j));
-            
+
             // state event was found in changes, add `changed` records
             if (stateEvent->getId() == changesEvent->getId())
             {
                 foundEventInChanges = true;
-                
+
                 const bool eventHasChanged =
                     stateEvent->getBeat() != changesEvent->getBeat() ||
                     !stateEvent->getMeter().isEquivalentTo(changesEvent->getMeter());
-                
+
                 if (eventHasChanged)
                 {
                     changedEvents.add(changesEvent);
                 }
-                
+
                 break;
             }
         }
-        
+
         // state event was not found in changes, add `removed` record
-        if (! foundEventInChanges)
+        if (!foundEventInChanges)
         {
             removedEvents.add(stateEvent);
         }
     }
-    
+
     // search for the new events missing in state
     for (int i = 0; i < changesEvents.size(); ++i)
     {
         bool foundEventInState = false;
         const TimeSignatureEvent *changesEvent =
             static_cast<TimeSignatureEvent *>(changesEvents.getUnchecked(i));
-        
+
         for (int j = 0; j < stateEvents.size(); ++j)
         {
             const TimeSignatureEvent *stateEvent =
                 static_cast<TimeSignatureEvent *>(stateEvents.getUnchecked(j));
-            
+
             if (stateEvent->getId() == changesEvent->getId())
             {
                 foundEventInState = true;
                 break;
             }
         }
-        
-        if (! foundEventInState)
+
+        if (!foundEventInState)
         {
             addedEvents.add(changesEvent);
         }
     }
-    
+
     // serialize deltas, if any
     if (addedEvents.size() > 0)
     {
@@ -921,7 +920,7 @@ Array<DeltaDiff> createTimeSignaturesDiffs(const SerializedData &state, const Se
             addedEvents.size(),
             TimeSignatureDeltas::timeSignaturesAdded));
     }
-    
+
     if (removedEvents.size() > 0)
     {
         res.add(serializeTimelineChanges(removedEvents,
@@ -929,7 +928,7 @@ Array<DeltaDiff> createTimeSignaturesDiffs(const SerializedData &state, const Se
             removedEvents.size(),
             TimeSignatureDeltas::timeSignaturesRemoved));
     }
-    
+
     if (changedEvents.size() > 0)
     {
         res.add(serializeTimelineChanges(changedEvents,
@@ -937,7 +936,7 @@ Array<DeltaDiff> createTimeSignaturesDiffs(const SerializedData &state, const Se
             changedEvents.size(),
             TimeSignatureDeltas::timeSignaturesChanged));
     }
-    
+
     return res;
 }
 
@@ -1050,7 +1049,6 @@ Array<DeltaDiff> createKeySignaturesDiffs(const SerializedData &state, const Ser
     return res;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Serialization
 //===----------------------------------------------------------------------===//
@@ -1092,7 +1090,7 @@ void deserializeTimelineChanges(const SerializedData &state, const SerializedDat
             event->deserialize(e);
             changesEvents.addSorted(*event, event);
         }
-        
+
         forEachChildWithType(changes, e, Midi::timeSignature)
         {
             TimeSignatureEvent *event = new TimeSignatureEvent();
@@ -1110,7 +1108,7 @@ void deserializeTimelineChanges(const SerializedData &state, const SerializedDat
 }
 
 DeltaDiff serializeTimelineChanges(Array<const MidiEvent *> changes,
-        const String &description, int64 numChanges, const Identifier &deltaType)
+    const String &description, int64 numChanges, const Identifier &deltaType)
 {
     DeltaDiff changesFullDelta;
     changesFullDelta.delta = make<Delta>(DeltaDescription(description, numChanges), deltaType);
@@ -1155,4 +1153,4 @@ bool checkIfDeltaIsKeySignatureType(const Delta *d)
         d->hasType(KeySignatureDeltas::keySignaturesChanged));
 }
 
-}
+} // namespace VCS

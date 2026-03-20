@@ -31,8 +31,9 @@ class TimeSignaturesAggregator;
 #include "PopupButton.h"
 #include "Config.h"
 
-class ChordPreviewTool final : public Component,
-                               public PopupButtonOwner
+class ChordPreviewTool final :
+    public Component,
+    public PopupButtonOwner
 {
 public:
 

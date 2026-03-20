@@ -67,5 +67,4 @@ protected:
     TimeSignatureEvent event;
 
     TimeSignaturesProjectMap &editor;
-
 };

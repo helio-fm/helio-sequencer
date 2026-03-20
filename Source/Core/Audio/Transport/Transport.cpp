@@ -78,20 +78,20 @@ String Transport::getTimeString(const RelativeTime &relTime, bool includeMillise
 
     int n = std::abs(int(relTime.inMinutes())) /*% 60*/;
     res = res + String(n);
-    
+
     n = std::abs(int(relTime.inSeconds())) % 60;
     res = res + (res.isEmpty() ? "" : ":") + String(n);
-    
+
     if (includeMilliseconds)
     {
         n = std::abs(int(relTime.inMilliseconds())) % 1000;
-        
+
         if (n > 0)
         {
             res = res + (res.isEmpty() ? "" : ":") + String(n);
         }
     }
-    
+
     return res;
 }
 
@@ -142,20 +142,20 @@ void Transport::seekToBeat(float beatPosition)
 void Transport::probeSoundAtBeat(float targetBeat, const MidiSequence *limitToSequence)
 {
     this->rebuildPlaybackCacheIfNeeded();
-    
+
     const auto sequencesToProbe = this->playbackCache.getAllFor(limitToSequence);
-    
+
     for (const auto &seq : sequencesToProbe)
     {
         for (int j = 0; j < seq->midiMessages.getNumEvents(); ++j)
         {
             auto *noteOnHolder = seq->midiMessages.getEventPointer(j);
-            
+
             if (auto *noteOffHolder = noteOnHolder->noteOffObject)
             {
                 const auto noteOnBeat = noteOnHolder->message.getTimeStamp();
                 const auto noteOffBeat = noteOffHolder->message.getTimeStamp();
-                
+
                 if (noteOnBeat <= targetBeat && noteOffBeat > targetBeat)
                 {
                     MidiMessage messageTimestampedAsNow(noteOnHolder->message);
@@ -202,7 +202,7 @@ void Transport::startPlayback(float start)
 void Transport::startPlaybackFragment(float startBeat, float endBeat, bool looped)
 {
     this->rebuildPlaybackCacheIfNeeded();
-    
+
     this->stopPlayback();
 
     this->broadcastPlay();
@@ -367,7 +367,7 @@ bool Transport::startRender(const URL &renderTarget,
     {
         return false;
     }
-    
+
     const auto renderStartBeat = this->loopMode.get() ?
         this->loopStartBeat.get() : this->getProjectFirstBeat();
 
@@ -378,11 +378,11 @@ bool Transport::startRender(const URL &renderTarget,
 
 void Transport::stopRender()
 {
-    if (! this->renderer->isRendering())
+    if (!this->renderer->isRendering())
     {
         return;
     }
-    
+
     this->renderer->stop();
 }
 
@@ -462,7 +462,7 @@ void Transport::NotePreviewTimer::previewNote(WeakReference<Instrument> instrume
         {
             jassert(preview.instrument == instrument);
 
-            if (preview.noteOnTimeoutMs <= 0 && 
+            if (preview.noteOnTimeoutMs <= 0 &&
                 preview.noteOffTimeoutMs > 0 &&
                 preview.instrument != nullptr)
             {
@@ -888,7 +888,7 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
-    
+
     // real track total time changed
     const auto realLengthMs = this->findTimeAt(lastBeat);
     this->broadcastTotalTimeChanged(realLengthMs);
@@ -1061,7 +1061,7 @@ void Transport::rebuildPlaybackCacheIfNeeded() const
 TransportPlaybackCache Transport::buildPlaybackCache(bool withMetronome) const
 {
     TransportPlaybackCache result;
-    
+
     this->hasSoloClipsCache = this->findSoloClipFlagIfAny();
     auto &generatedSequences = *this->project.getGeneratedSequences();
 
@@ -1107,7 +1107,7 @@ const TransportPlaybackCache &Transport::getPlaybackCache() const
 void Transport::updateInstrumentLinkForTrack(const MidiTrack *track)
 {
     const auto instruments = this->orchestra.getInstruments();
-    
+
     // check by ids
     for (int i = 0; i < instruments.size(); ++i)
     {
@@ -1119,7 +1119,7 @@ void Transport::updateInstrumentLinkForTrack(const MidiTrack *track)
             return;
         }
     }
-    
+
     // check by hashes
     for (int i = 0; i < instruments.size(); ++i)
     {
@@ -1130,7 +1130,7 @@ void Transport::updateInstrumentLinkForTrack(const MidiTrack *track)
             return;
         }
     }
-    
+
     // set default instrument, if none found
     this->instrumentLinks[track->getTrackId()] = this->orchestra.getDefaultInstrument();
 }

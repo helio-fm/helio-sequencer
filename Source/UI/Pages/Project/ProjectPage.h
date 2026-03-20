@@ -24,7 +24,8 @@ class ProjectNode;
 #include "PageBackgroundB.h"
 #include "SeparatorVerticalSkew.h"
 
-class ProjectPage final : public Component,
+class ProjectPage final :
+    public Component,
     protected TransportListener,
     protected ChangeListener
 {

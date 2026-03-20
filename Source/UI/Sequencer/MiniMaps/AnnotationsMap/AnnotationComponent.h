@@ -53,13 +53,19 @@ public:
     virtual void setRealBounds(const Rectangle<float> bounds) = 0;
 
     static int compareElements(const AnnotationComponent *first,
-                               const AnnotationComponent *second)
+        const AnnotationComponent *second)
     {
-        if (first == second) { return 0; }
+        if (first == second)
+        {
+            return 0;
+        }
 
         const float diff = first->event.getBeat() - second->event.getBeat();
         const int diffResult = (diff > 0.f) - (diff < 0.f);
-        if (diffResult != 0) { return diffResult; }
+        if (diffResult != 0)
+        {
+            return diffResult;
+        }
 
         return first->event.getId() - second->event.getId();
     }
@@ -68,5 +74,4 @@ protected:
 
     const AnnotationEvent &event;
     AnnotationsProjectMap &editor;
-
 };

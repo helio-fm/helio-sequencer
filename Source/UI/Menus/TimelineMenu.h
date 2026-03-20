@@ -24,11 +24,10 @@ class ProjectNode;
 class TimelineMenu final : public MenuPanel
 {
 public:
-    
+
     explicit TimelineMenu(ProjectNode &parentProject);
-    
+
 private:
-    
+
     ProjectNode &project;
-    
 };

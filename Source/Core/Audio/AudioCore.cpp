@@ -588,7 +588,7 @@ void AudioCore::deserializeDeviceManager(const SerializedData &tree)
 
     this->isReadjustingMidiInput = root.getProperty(Audio::midiInputReadjusting,
         this->isReadjustingMidiInput.get());
-    
+
     // first, try to match by device id; if failed, search by name
     bool hasFoundMidiInById = false;
     const auto allMidiInputs = MidiInput::getAvailableDevices();

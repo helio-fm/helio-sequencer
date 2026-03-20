@@ -31,7 +31,7 @@ RevisionTreeComponent::RevisionTreeComponent(VersionControl &owner) :
 
     auto *root = this->initComponents(1, this->vcs.getRoot(), nullptr);
     auto *dt = this->firstWalk(root);
-    
+
     float min = -1;
     min = this->secondWalk(dt, min);
 
@@ -114,7 +114,7 @@ RevisionComponent *RevisionTreeComponent::initComponents(int depth,
     const VCS::Revision::Ptr revision, RevisionComponent *parentRevisionComponent)
 {
     const bool isHead = (this->vcs.getHead().getHeadingRevision() == revision);
-    
+
     auto *revisionComponent = new RevisionComponent(this->vcs, revision, isHead);
     revisionComponent->parent = parentRevisionComponent;
     revisionComponent->y = float(depth);

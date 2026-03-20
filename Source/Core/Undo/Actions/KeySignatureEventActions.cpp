@@ -37,7 +37,7 @@ bool KeySignatureEventInsertAction::perform()
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
-    
+
     return false;
 }
 
@@ -47,7 +47,7 @@ bool KeySignatureEventInsertAction::undo()
     {
         return sequence->remove(this->event, false);
     }
-    
+
     return false;
 }
 
@@ -92,7 +92,7 @@ bool KeySignatureEventRemoveAction::perform()
     {
         return sequence->remove(this->event, false);
     }
-    
+
     return false;
 }
 
@@ -102,7 +102,7 @@ bool KeySignatureEventRemoveAction::undo()
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
-    
+
     return false;
 }
 
@@ -149,7 +149,7 @@ bool KeySignatureEventChangeAction::perform()
     {
         return sequence->change(this->eventBefore, this->eventAfter, false);
     }
-    
+
     return false;
 }
 
@@ -159,7 +159,7 @@ bool KeySignatureEventChangeAction::undo()
     {
         return sequence->change(this->eventAfter, this->eventBefore, false);
     }
-    
+
     return false;
 }
 
@@ -183,7 +183,7 @@ UndoAction *KeySignatureEventChangeAction::createCoalescedAction(UndoAction *nex
         }
     }
 
-    (void) nextAction;
+    (void)nextAction;
     return nullptr;
 }
 
@@ -191,25 +191,25 @@ SerializedData KeySignatureEventChangeAction::serialize() const
 {
     SerializedData tree(Serialization::Undo::keySignatureEventChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    
+
     SerializedData keySignatureBeforeChild(Serialization::Undo::keySignatureBefore);
     keySignatureBeforeChild.appendChild(this->eventBefore.serialize());
     tree.appendChild(keySignatureBeforeChild);
-    
+
     SerializedData keySignatureAfterChild(Serialization::Undo::keySignatureAfter);
     keySignatureAfterChild.appendChild(this->eventAfter.serialize());
     tree.appendChild(keySignatureAfterChild);
-    
+
     return tree;
 }
 
 void KeySignatureEventChangeAction::deserialize(const SerializedData &data)
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
-    
+
     const auto keySignatureBeforeChild = data.getChildWithName(Serialization::Undo::keySignatureBefore);
     const auto keySignatureAfterChild = data.getChildWithName(Serialization::Undo::keySignatureAfter);
-    
+
     this->eventBefore.deserialize(keySignatureBeforeChild.getChild(0));
     this->eventAfter.deserialize(keySignatureAfterChild.getChild(0));
 }

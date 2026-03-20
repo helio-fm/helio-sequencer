@@ -38,13 +38,13 @@ public:
     //===------------------------------------------------------------------===//
     // Undoable track editing
     //===------------------------------------------------------------------===//
-    
+
     MidiEvent *insert(const KeySignatureEvent &signatureToCopy, bool undoable);
     bool remove(const KeySignatureEvent &signature, bool undoable);
     bool change(const KeySignatureEvent &signature,
         const KeySignatureEvent &newSignature,
         bool undoable);
-    
+
     // Batch actions:
     void transposeAll(int keyDelta, Temperament::Ptr temperament, bool checkpoint);
 

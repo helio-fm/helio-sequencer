@@ -26,7 +26,8 @@ class Transport;
 #include "Note.h"
 #include "TransportListener.h"
 
-class MidiRecorder final : public MidiInputCallback,
+class MidiRecorder final :
+    public MidiInputCallback,
     public TransportListener,
     private AsyncUpdater,
     private Timer

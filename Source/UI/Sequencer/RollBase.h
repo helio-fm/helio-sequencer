@@ -80,7 +80,7 @@ class RollBase :
     protected AudioMonitor::ClippingListener // for displaying clipping indicator components
 {
 public:
-    
+
     RollBase(ProjectNode &project, Viewport &viewport,
         WeakReference<AudioMonitor> audioMonitor,
         bool hasAnnotationsTrack = true,
@@ -96,7 +96,7 @@ public:
 
     virtual void selectAll() = 0;
     virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
-    
+
     float getPositionForNewTimelineEvent() const;
 
     //===------------------------------------------------------------------===//
@@ -119,11 +119,11 @@ public:
     //===------------------------------------------------------------------===//
     // RollListeners management
     //===------------------------------------------------------------------===//
-    
+
     void addRollListener(RollListener *listener);
     void removeRollListener(RollListener *listener);
     void removeAllRollListeners();
-    
+
     //===------------------------------------------------------------------===//
     // MultiTouchListener
     //===------------------------------------------------------------------===//
@@ -202,7 +202,7 @@ public:
 
     inline float getLastBeat() const noexcept { return this->lastBeat; }
     inline float getFirstBeat() const noexcept { return this->firstBeat; }
-    
+
     void setBeatRange(float first, float last);
     inline float getNumBeats() const noexcept { return this->lastBeat - this->firstBeat; }
 
@@ -211,15 +211,15 @@ public:
 
     float getMinVisibleBeatForCurrentZoomLevel() const;
 
-    inline const Array<float> &getVisibleBars() const noexcept  { return this->visibleBars; }
+    inline const Array<float> &getVisibleBars() const noexcept { return this->visibleBars; }
     inline const Array<float> &getVisibleBeats() const noexcept { return this->visibleBeats; }
     inline const Array<float> &getVisibleSnaps() const noexcept { return this->visibleSnaps; }
     inline float getBeatLineAlpha() const noexcept { return this->beatLineAlpha; }
     inline float getSnapLineAlpha() const noexcept { return this->snapLineAlpha; }
-    
+
     void setSpaceDraggingMode(bool dragMode);
     bool isUsingSpaceDraggingMode() const;
-    
+
     void triggerBatchRepaintFor(FloatBoundsComponent *target);
 
     bool scrollToPlayheadPositionIfNeeded(int edgeMargin = 50);
@@ -228,7 +228,7 @@ public:
 
     void resetDraggingAnchors();
     void resetDraggingAnchors(const MouseEvent &e);
-    
+
     // helpers for the command palette:
     virtual bool canHandleCommand(int commandId) const = 0;
     virtual String getTranslatedCommandWithContext(int commandId, int i18nKey) const = 0;
@@ -291,12 +291,12 @@ public:
     bool isErasingEvent(const MouseEvent &e) const;
 
 protected:
-    
+
     ListenerList<RollListener> listeners;
-    
+
     void broadcastRollMoved();
     void broadcastRollResized();
-    
+
 protected:
 
     //===------------------------------------------------------------------===//
@@ -305,21 +305,21 @@ protected:
 
     void onChangeEditMode(const RollEditMode &mode) override;
     void applyEditModeUpdates();
-    
+
     //===------------------------------------------------------------------===//
     // Playhead::Listener
     //===------------------------------------------------------------------===//
-    
+
     void onMovePlayhead(int oldX, int newX) override;
-    
+
     //===------------------------------------------------------------------===//
     // VolumeCallback::ClippingListener
     //===------------------------------------------------------------------===//
-    
+
     void onClippingWarning() override;
     void resetAllClippingIndicators();
     OwnedArray<TimelineWarningMarker> clippingIndicators;
-    
+
     void onOversaturationWarning() override;
     void resetAllOversaturationIndicators();
     OwnedArray<TimelineWarningMarker> oversaturationIndicators;
@@ -338,7 +338,7 @@ protected:
     //===------------------------------------------------------------------===//
     // TransportListener
     //===------------------------------------------------------------------===//
-    
+
     void onSeek(float beatPosition) override;
     void onCurrentTempoChanged(double msPerQuarter) override {}
     void onTotalTimeChanged(double timeMs) override {}
@@ -357,21 +357,21 @@ protected:
     //===------------------------------------------------------------------===//
     // AsyncUpdater
     //===------------------------------------------------------------------===//
-    
+
     void handleAsyncUpdate() override;
 
     double findPlayheadOffsetFromViewCentre() const;
     friend class RollHeader;
-    
+
     //===------------------------------------------------------------------===//
     // Timer
     //===------------------------------------------------------------------===//
 
     void timerCallback() override;
     uint32 catchPlayheadTimerStartedAt = 0;
-    
+
 protected:
-    
+
     // These two methods are supposed to layout non-midi-event children
     virtual void updateChildrenBounds();
     virtual void updateChildrenPositions();
@@ -383,11 +383,11 @@ protected:
     virtual Range<float> findPlayheadHomeEndRange() const = 0;
 
     void updateWidth();
-    
+
     WeakReference<AudioMonitor> clippingDetector;
     ProjectNode &project;
     Viewport &viewport;
-    
+
     Temperament::Ptr temperament;
 
     Point<int> viewportAnchor = { 0, 0 };
@@ -414,7 +414,7 @@ protected:
     float projectLastBeat = Globals::Defaults::projectLength;
 
     float beatWidth = Globals::UI::defaultBeatWidth;
-    
+
     bool spaceDragMode = false;
     int draggedDistance = 0;
     uint32 timeEnteredDragMode = 0;
@@ -437,7 +437,7 @@ protected:
     UniquePointer<SelectionComponent> lassoComponent;
 
 protected:
-    
+
     Array<float> visibleBars;
     Array<float> visibleBeats;
     Array<float> visibleSnaps;
@@ -463,5 +463,4 @@ protected:
     UniquePointer<HeadlineContextMenuController> contextMenuController;
 
     Array<SafePointer<FloatBoundsComponent>> batchRepaintList;
-
 };

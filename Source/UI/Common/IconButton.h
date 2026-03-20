@@ -25,7 +25,7 @@
 class IconButton : public IconComponent, public HighlightedComponent
 {
 public:
-    
+
     explicit IconButton(Icons::Id iconId,
         int commandId = CommandIDs::IconButtonPressed,
         WeakReference<Component> listener = nullptr,
@@ -38,7 +38,7 @@ public:
         this->setInterceptsMouseClicks(true, false);
         this->setMouseClickGrabsKeyboardFocus(false);
     }
-    
+
     explicit IconButton(Image targetImage,
         int commandId = CommandIDs::IconButtonPressed,
         WeakReference<Component> listener = nullptr) :
@@ -123,7 +123,7 @@ public:
 protected:
 
     const int commandId = 0;
-    
+
     WeakReference<Component> listener;
 
     Component *createHighlighterComponent() override

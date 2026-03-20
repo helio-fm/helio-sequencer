@@ -22,8 +22,10 @@
 class NavigationHistoryLock final
 {
 public:
+
     NavigationHistoryLock() {}
 private:
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NavigationHistoryLock)
     JUCE_DECLARE_WEAK_REFERENCEABLE(NavigationHistoryLock)
 };
@@ -31,27 +33,27 @@ private:
 class NavigationHistory final : public ChangeBroadcaster
 {
 public:
-    
+
     NavigationHistory() = default;
 
     UniquePointer<NavigationHistoryLock> lock();
-        
+
     bool canGoForward() const;
     bool canGoBackward() const;
-    
+
     WeakReference<TreeNode> goBack();
     WeakReference<TreeNode> goForward();
-    
+
     WeakReference<TreeNode> getCurrentItem() const;
     bool addItemIfNeeded(TreeNode *item);
-    
+
 private:
-    
+
     Array<WeakReference<TreeNode>> list;
-    
+
     // A way to prevent new items from being added when navigating back/forward
     WeakReference<NavigationHistoryLock> historyLock = nullptr;
-    
+
     int currentPageIndex = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NavigationHistory)

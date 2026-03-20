@@ -35,7 +35,7 @@
 UndoStack::Transaction::Transaction(ProjectNode &project, UndoActionId transactionId) :
     project(project),
     id(transactionId) {}
-    
+
 bool UndoStack::Transaction::perform() const
 {
     for (int i = 0; i < this->actions.size(); ++i)
@@ -45,10 +45,10 @@ bool UndoStack::Transaction::perform() const
             return false;
         }
     }
-        
+
     return true;
 }
-    
+
 bool UndoStack::Transaction::undo() const
 {
     for (int i = this->actions.size(); --i >= 0;)
@@ -58,10 +58,10 @@ bool UndoStack::Transaction::undo() const
             return false;
         }
     }
-        
+
     return true;
 }
-    
+
 int UndoStack::Transaction::getTotalSize() const
 {
     int total = 0;
@@ -69,10 +69,10 @@ int UndoStack::Transaction::getTotalSize() const
     {
         total += this->actions.getUnchecked(i)->getSizeInUnits();
     }
-        
+
     return total;
 }
-    
+
 SerializedData UndoStack::Transaction::serialize() const
 {
     SerializedData tree(Serialization::Undo::transaction);
@@ -81,10 +81,10 @@ SerializedData UndoStack::Transaction::serialize() const
     {
         tree.appendChild(this->actions.getUnchecked(i)->serialize());
     }
-        
+
     return tree;
 }
-    
+
 void UndoStack::Transaction::deserialize(const SerializedData &data)
 {
     this->reset();
@@ -98,7 +98,7 @@ void UndoStack::Transaction::deserialize(const SerializedData &data)
         }
     }
 }
-    
+
 void UndoStack::Transaction::reset()
 {
     this->actions.clear();
@@ -171,10 +171,10 @@ bool UndoStack::perform(UndoAction *const newAction, UndoActionId transactionId)
         {
             this->setCurrentUndoActionId(transactionId);
         }
-        
+
         return true;
     }
-    
+
     return false;
 }
 
@@ -183,7 +183,7 @@ bool UndoStack::perform(UndoAction *const newAction)
     if (newAction != nullptr)
     {
         UniquePointer<UndoAction> action(newAction);
-        
+
         if (this->reentrancyCheck)
         {
             jassertfalse;
@@ -193,7 +193,7 @@ bool UndoStack::perform(UndoAction *const newAction)
         if (action->perform())
         {
             auto *actionSet = this->getCurrentSet();
-            
+
             if (actionSet != nullptr && !this->hasNewEmptyTransaction)
             {
                 if (auto *lastAction = actionSet->actions.getLast())
@@ -212,16 +212,16 @@ bool UndoStack::perform(UndoAction *const newAction)
                 this->transactions.insert(nextIndex, actionSet);
                 this->nextIndex++;
             }
-            
+
             this->totalUnitsStored += action->getSizeInUnits();
             actionSet->actions.add(move(action));
             this->hasNewEmptyTransaction = false;
-            
+
             this->clearFutureTransactions();
             return true;
         }
     }
-    
+
     return false;
 }
 
@@ -232,7 +232,7 @@ void UndoStack::clearFutureTransactions()
         this->totalUnitsStored -= transactions.getLast()->getTotalSize();
         this->transactions.removeLast();
     }
-    
+
     while (this->nextIndex > 0
            && this->totalUnitsStored > this->maxNumUnitsToKeep
            && this->transactions.size() > this->minimumTransactionsToKeep)
@@ -240,7 +240,7 @@ void UndoStack::clearFutureTransactions()
         this->totalUnitsStored -= this->transactions.getFirst()->getTotalSize();
         this->transactions.remove(0);
         --this->nextIndex;
-        
+
         // if this fails, then some actions may not be returning
         // consistent results from their getSizeInUnits() method
         jassert(this->totalUnitsStored >= 0);
@@ -295,7 +295,7 @@ bool UndoStack::undo()
     if (const auto *s = this->getCurrentSet())
     {
         const ScopedValueSetter<bool> setter(this->reentrancyCheck, true);
-        
+
         if (s->undo())
         {
             --nextIndex;
@@ -304,11 +304,11 @@ bool UndoStack::undo()
         {
             this->clearUndoHistory();
         }
-        
+
         this->beginNewTransaction();
         return true;
     }
-    
+
     return false;
 }
 
@@ -317,7 +317,7 @@ bool UndoStack::redo()
     if (const auto *s = this->getNextSet())
     {
         const ScopedValueSetter<bool> setter(this->reentrancyCheck, true);
-        
+
         if (s->perform())
         {
             ++nextIndex;
@@ -326,11 +326,11 @@ bool UndoStack::redo()
         {
             this->clearUndoHistory();
         }
-        
+
         this->beginNewTransaction();
         return true;
     }
-    
+
     return false;
 }
 
@@ -340,7 +340,7 @@ UndoActionId UndoStack::getUndoActionId() const
     {
         return s->id;
     }
-    
+
     return 0;
 }
 
@@ -350,7 +350,7 @@ UndoActionId UndoStack::getRedoActionId() const
     {
         return s->id;
     }
-    
+
     return 0;
 }
 
@@ -382,7 +382,7 @@ int UndoStack::getNumActionsInCurrentTransaction() const
             return s->actions.size();
         }
     }
-    
+
     return 0;
 }
 
@@ -393,10 +393,10 @@ int UndoStack::getNumActionsInCurrentTransaction() const
 SerializedData UndoStack::serialize() const
 {
     SerializedData tree(Serialization::Undo::undoStack);
-    
+
     int currentIndex = (this->nextIndex - 1);
     int numStoredTransactions = 0;
-    
+
     while (currentIndex >= 0 &&
            numStoredTransactions < App::Config().getMaxSavedUndoActions())
     {
@@ -404,11 +404,11 @@ SerializedData UndoStack::serialize() const
         {
             tree.addChild(action->serialize(), 0);
         }
-        
+
         --currentIndex;
         ++numStoredTransactions;
     }
-    
+
     return tree;
 }
 
@@ -416,12 +416,14 @@ void UndoStack::deserialize(const SerializedData &data)
 {
     const auto root = data.hasType(Serialization::Undo::undoStack) ?
         data : data.getChildWithName(Serialization::Undo::undoStack);
-    
+
     if (!root.isValid())
-    { return; }
-    
+    {
+        return;
+    }
+
     this->reset();
-    
+
     for (const auto &childTransaction : root)
     {
         auto *actionSet = new Transaction(this->project, {});

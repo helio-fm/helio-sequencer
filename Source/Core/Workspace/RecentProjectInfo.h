@@ -19,8 +19,9 @@
 
 #include "Serializable.h"
 
-class RecentProjectInfo final : public Serializable,
-                                public ReferenceCountedObject
+class RecentProjectInfo final :
+    public Serializable,
+    public ReferenceCountedObject
 {
 public:
 

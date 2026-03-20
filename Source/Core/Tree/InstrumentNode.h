@@ -48,7 +48,7 @@ public:
     WeakReference<Instrument> getInstrument() const noexcept;
     TreeNode *findAudioPluginEditorForNodeId(AudioProcessorGraph::NodeID nodeId) const;
     String getInstrumentIdAndHash() const;
-    
+
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
@@ -106,7 +106,6 @@ private:
 
     WeakReference<Instrument> instrument;
     UniquePointer<Component> keyboardMappingPage;
-
 };
 
 class AudioPluginNode final : public TreeNode
@@ -127,5 +126,4 @@ private:
 
     UniquePointer<Component> audioPluginEditor;
     const AudioProcessorGraph::NodeID nodeId;
-
 };

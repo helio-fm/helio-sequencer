@@ -119,7 +119,7 @@ void InstrumentEditorConnector::paint(Graphics &g)
 {
     g.setColour(findDefaultColour(ColourIDs::Instrument::connectorShadow));
     g.fillPath(linePath, AffineTransform::translation(0, 0.5));
-    
+
     const bool isMidiConnector =
         (this->connection.source.channelIndex == Instrument::midiChannelNumber ||
         this->connection.destination.channelIndex == Instrument::midiChannelNumber);
@@ -154,7 +154,7 @@ void InstrumentEditorConnector::mouseDown(const MouseEvent &)
 
 void InstrumentEditorConnector::mouseDrag(const MouseEvent &e)
 {
-    if ((!this->dragging) && ! e.mouseWasClicked())
+    if ((!this->dragging) && !e.mouseWasClicked())
     {
         this->dragging = true;
         this->instrument->removeConnection(this->connection);

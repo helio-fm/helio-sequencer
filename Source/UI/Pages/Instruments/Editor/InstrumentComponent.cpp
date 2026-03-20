@@ -253,4 +253,3 @@ InstrumentEditor *InstrumentComponent::getParentEditor() const noexcept
 {
     return this->findParentComponentOfClass<InstrumentEditor>();
 }
-

@@ -153,7 +153,7 @@ public:
 
     // The special channel index used to refer to a filter's midi channel
     static constexpr int midiChannelNumber = 0x1000;
-    
+
 protected:
 
     using AddNodeCallback = Function<void(AudioProcessorGraph::Node::Ptr)>;
@@ -163,19 +163,19 @@ protected:
 
     Uuid instrumentId;
     String instrumentName;
-    
+
 private:
 
     String getInstrumentId() const noexcept; // will differ between platforms
     String getInstrumentHash() const; // should be the same on all platforms
-    
+
     AudioProcessorGraph::Node::Ptr addNode(const PluginDescription &, double x, double y);
     AudioProcessorGraph::Node::Ptr addNode(UniquePointer<AudioPluginInstance> instance, const SerializedData &data);
     void configureNode(AudioProcessorGraph::Node::Ptr, const PluginDescription &, double x, double y);
 
     friend class Transport;
     friend class AudioCore;
-    
+
 private:
 
     AudioPluginFormatManager &formatManager;

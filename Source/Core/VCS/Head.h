@@ -35,7 +35,7 @@ namespace VCS
         explicit Head(TrackedItemsSource &targetProject);
 
         Revision::Ptr getHeadingRevision() const;
-        
+
         Revision::Ptr getDiff() const;
         void setDiffOutdated(bool isOutdated);
         bool diffHasChanges() const;
@@ -50,7 +50,7 @@ namespace VCS
         bool resetChanges(const Array<RevisionItem::Ptr> &changes);
 
         void rebuildDiffIfNeeded();
-        
+
         //===--------------------------------------------------------------===//
         // Serializable
         //===--------------------------------------------------------------===//
@@ -58,7 +58,7 @@ namespace VCS
         SerializedData serialize() const override;
         void deserialize(const SerializedData &data) override;
         void reset() override;
-        
+
         //===--------------------------------------------------------------===//
         // ChangeListener
         //===--------------------------------------------------------------===//

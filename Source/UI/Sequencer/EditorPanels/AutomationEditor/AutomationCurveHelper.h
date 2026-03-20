@@ -40,7 +40,7 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
-    
+
 private:
 
     const AutomationEvent &event;
@@ -58,5 +58,5 @@ private:
     SafePointer<AutomationEditorBase::EventComponentBase> component1;
     SafePointer<AutomationEditorBase::EventComponentBase> component2;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationCurveHelper)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationCurveHelper)
 };

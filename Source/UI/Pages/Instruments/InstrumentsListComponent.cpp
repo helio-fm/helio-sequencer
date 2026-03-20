@@ -97,7 +97,10 @@ int InstrumentsListComponent::getNumRows()
 void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, bool rowIsSelected)
 {
     const auto instrumentNode = this->instruments[rowNumber];
-    if (instrumentNode == nullptr) { return; }
+    if (instrumentNode == nullptr)
+    {
+        return;
+    }
 
     if (rowIsSelected)
     {

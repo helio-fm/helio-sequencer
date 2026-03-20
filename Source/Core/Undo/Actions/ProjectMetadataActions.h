@@ -50,7 +50,7 @@ public:
     void reset() override;
 
 private:
-    
+
     ProjectNode &getProject() const noexcept;
 
     Temperament temperamentBefore;

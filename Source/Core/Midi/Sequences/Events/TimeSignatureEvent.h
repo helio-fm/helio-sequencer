@@ -48,7 +48,7 @@ public:
         float newBeat = 0.f,
         int newNumerator = Globals::Defaults::timeSignatureNumerator,
         int newDenominator = Globals::Defaults::timeSignatureDenominator) noexcept;
-    
+
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         const KeyboardMapping &keyMap, double timeFactor) const noexcept override;
 
@@ -74,7 +74,7 @@ public:
     int getTrackControllerNumber() const noexcept override;
     int getTrackChannel() const noexcept override;
     Colour getTrackColour() const noexcept override;
-    
+
     int getNumerator() const noexcept;
     int getDenominator() const noexcept;
     float getBarLengthInBeats() const noexcept;

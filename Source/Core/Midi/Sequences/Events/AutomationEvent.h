@@ -65,11 +65,11 @@ public:
     int getControllerValueAsBPM() const noexcept;
     float getControllerValue() const noexcept;
     float getCurvature() const noexcept;
-    
+
     //===------------------------------------------------------------------===//
     // Pedal helpers
     //===------------------------------------------------------------------===//
-    
+
     bool isPedalDownEvent() const noexcept;
     bool isPedalUpEvent() const noexcept;
 

@@ -95,4 +95,4 @@ Colour Diff::getRevisionDisplayColour() const
     return this->displayColur;
 }
 
-}
+} // namespace VCS

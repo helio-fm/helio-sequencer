@@ -46,7 +46,7 @@ public:
     MetronomeScheme resized(int size) const;
 
     static Syllable getNextSyllable(Syllable syllable) noexcept;
-    
+
     // ordered by "loudness" descending:
     static Array<Syllable> getAllOrdered();
 

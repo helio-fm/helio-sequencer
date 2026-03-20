@@ -60,5 +60,4 @@ protected:
 private:
 
     ListenerList<OrchestraListener> orchestraListeners;
-
 };

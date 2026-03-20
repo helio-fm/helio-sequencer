@@ -59,12 +59,14 @@ private:
 class PianoRollSelectionMenuManager final : public SelectionMenuManager
 {
 public:
+
     PianoRollSelectionMenuManager(WeakReference<Lasso> lasso, PianoRoll &roll);
 };
 
 class PatternRollSelectionMenuManager final : public SelectionMenuManager
 {
 public:
+
     explicit PatternRollSelectionMenuManager(WeakReference<Lasso> lasso);
 };
 

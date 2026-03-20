@@ -39,7 +39,7 @@ private:
 
     void changeListenerCallback(ChangeBroadcaster *source) override
     {
-        // add some randomness to the delay, so that 
+        // add some randomness to the delay, so that
         // several open projects are not saved at once:
         static Random r;
         this->startTimer(this->delay + r.nextInt(1000));
@@ -51,11 +51,9 @@ private:
         this->documentOwner.getDocument()->save();
     }
 
-
     DocumentOwner &documentOwner;
 
     const int delay;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Autosaver)
-
 };

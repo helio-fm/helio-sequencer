@@ -116,7 +116,7 @@ void ProjectMenu::showMainMenu(AnimationType animationType)
         {
             this->showBatchActionsMenu(MenuPanel::SlideLeft);
         }));
-    
+
     menu.add(MenuItem::item(Icons::close,
         TRANS(I18n::Menu::Project::unload))->
         closesMenu()->
@@ -255,7 +255,7 @@ void ProjectMenu::showControllersMenuForInstrument(const WeakReference<Instrumen
                 }));
         }
     }
-    
+
     this->updateContent(menu, MenuPanel::SlideLeft);
 }
 
@@ -274,7 +274,7 @@ void ProjectMenu::showRenderMenu()
 
     menu.add(MenuItem::item(Icons::render, CommandIDs::RenderToFLAC,
         TRANS(I18n::Menu::Project::renderFlac))->closesMenu());
-    
+
     menu.add(MenuItem::item(Icons::render, CommandIDs::RenderToOGG,
         TRANS(I18n::Menu::Project::renderOgg))->closesMenu());
 
@@ -418,7 +418,7 @@ void ProjectMenu::showSetInstrumentMenu()
                 }
             }));
     }
-    
+
     this->updateContent(menu, MenuPanel::SlideLeft);
 }
 

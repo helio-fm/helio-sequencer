@@ -66,7 +66,7 @@ public:
             " (" + String(this->arpeggiator->getName()) + 
                 (this->speedMultiplier != 1.f ? (" x" + String(this->speedMultiplier)) : "") + ")";
     }
-    
+
     Icons::Id getIconId() const override
     {
         return Icons::Ids::arpeggiate;

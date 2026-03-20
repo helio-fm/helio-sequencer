@@ -265,4 +265,4 @@ Array<VCS::DeltaDiff> PatternDiffHelpers::createClipsDiffs(const SerializedData 
     return res;
 }
 
-}
+} // namespace VCS

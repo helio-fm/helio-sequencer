@@ -66,14 +66,14 @@ float SequencerOperations::findStartBeat(const NoteListBase &notes)
     {
         return 0.f;
     }
-    
+
     float startBeat = FLT_MAX;
     for (int i = 0; i < notes.size(); ++i)
     {
         const auto &note = notes.getNoteUnchecked(i);
         startBeat = jmin(startBeat, note.getBeat());
     }
-    
+
     return startBeat;
 }
 
@@ -83,14 +83,14 @@ float SequencerOperations::findEndBeat(const NoteListBase &notes)
     {
         return 0.f;
     }
-    
+
     float endBeat = -FLT_MAX;
     for (int i = 0; i < notes.size(); ++i)
     {
         const auto &note = notes.getNoteUnchecked(i);
         endBeat = jmax(endBeat, note.getBeat() + note.getLength());
     }
-    
+
     return endBeat;
 }
 
@@ -100,13 +100,13 @@ float SequencerOperations::findStartBeat(const Array<Note> &selection)
     {
         return 0.f;
     }
-    
+
     float startBeat = FLT_MAX;
     for (const auto &note : selection)
     {
         startBeat = jmin(startBeat, note.getBeat());
     }
-    
+
     return startBeat;
 }
 
@@ -126,13 +126,13 @@ float SequencerOperations::findEndBeat(const Array<Note> &selection)
     {
         return 0.f;
     }
-    
+
     float endBeat = -FLT_MAX;
     for (const auto &note : selection)
     {
         endBeat = jmax(endBeat, note.getBeat() + note.getLength());
     }
-    
+
     return endBeat;
 }
 
@@ -189,9 +189,9 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
     // into this
     //    ---------
     // ------------
-    
+
     bool step1HasChanges = false;
-    
+
     do
     {
         Array<Note> group1Before, group1After;
@@ -199,23 +199,23 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
         for (int i = 0; i < notes.size(); ++i)
         {
             const auto &note = notes.getNoteUnchecked(i);
-            
+
             // для каждой ноты найти ноту, которая полностью перекрывает ее на максимальную длину
-            
+
             float deltaLength = -FLT_MAX;
             const Note *overlappingNote = nullptr;
-            
+
             for (int j = 0; j < notes.size(); ++j)
             {
                 const auto &otherNote = notes.getNoteUnchecked(j);
-                
+
                 if (note.getKey() == otherNote.getKey() &&
                     note.getBeat() > otherNote.getBeat() &&
                     (note.getBeat() + note.getLength()) < (otherNote.getBeat() + otherNote.getLength()))
                 {
                     const float currentDelta =
                         (otherNote.getBeat() + otherNote.getLength()) - (note.getBeat() + note.getLength());
-                    
+
                     if (deltaLength < currentDelta)
                     {
                         deltaLength = currentDelta;
@@ -223,14 +223,14 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
                     }
                 }
             }
-            
+
             if (overlappingNote != nullptr)
             {
                 group1Before.add(note);
                 group1After.add(note.withDeltaLength(deltaLength));
             }
         }
-        
+
         step1HasChanges = !group1Before.isEmpty();
 
         if (step1HasChanges)
@@ -243,9 +243,7 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
 
             pianoSequence->changeGroup(group1Before, group1After, undoable);
         }
-    }
-    while (step1HasChanges);
-    
+    } while (step1HasChanges);
 
     // convert this
     //    -------------
@@ -253,26 +251,26 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
     // into this
     //    -------------
     // ----------------
-    
+
     bool step2HasChanges = false;
 
     do
     {
         Array<Note> group2Before, group2After;
-        
+
         for (int i = 0; i < notes.size(); ++i)
         {
             const auto &note = notes.getNoteUnchecked(i);
-            
+
             // для каждой ноты найти ноту, которая полностью перекрывает ее на максимальную длину
-            
+
             float deltaLength = -FLT_MAX;
             const Note *overlappingNote = nullptr;
-            
+
             for (int j = 0; j < notes.size(); ++j)
             {
                 const auto &otherNote = notes.getNoteUnchecked(j);
-                
+
                 if (note.getKey() == otherNote.getKey() &&
                     note.getBeat() > otherNote.getBeat() &&
                     note.getBeat() < (otherNote.getBeat() + otherNote.getLength()) &&
@@ -280,7 +278,7 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
                 {
                     const float currentDelta =
                         (note.getBeat() + note.getLength()) - (otherNote.getBeat() + otherNote.getLength());
-                    
+
                     if (deltaLength < currentDelta)
                     {
                         deltaLength = currentDelta;
@@ -288,7 +286,7 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
                     }
                 }
             }
-            
+
             if (overlappingNote != nullptr)
             {
                 group2Before.add(*overlappingNote);
@@ -308,43 +306,41 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
 
             pianoSequence->changeGroup(group2Before, group2After, undoable);
         }
-    }
-    while (step2HasChanges);
-    
-    
+    } while (step2HasChanges);
+
     // convert this
     // ------------       ---------
     //    ---------    ------------
     // into this
     // ---                ---------
-    //    ---------    ---         
-    
+    //    ---------    ---
+
     bool step3HasChanges = false;
 
     do
     {
         Array<Note> group3Before, group3After;
-        
+
         for (int i = 0; i < notes.size(); ++i)
         {
             const auto &note = notes.getNoteUnchecked(i);
-            
+
             // для каждой ноты найти ноту, которая перекрывает ее максимально
-            
+
             float overlappingBeats = -FLT_MAX;
             const Note *overlappingNote = nullptr;
-            
+
             for (int j = 0; j < notes.size(); ++j)
             {
                 const auto &otherNote = notes.getNoteUnchecked(j);
-                
+
                 if (note.getKey() == otherNote.getKey() &&
                     note.getBeat() < otherNote.getBeat() &&
                     (note.getBeat() + note.getLength()) >= (otherNote.getBeat() + otherNote.getLength()))
                 {
                     // >0 : has overlap
                     const float overlapsWith = (note.getBeat() + note.getLength()) - otherNote.getBeat();
-                    
+
                     if (overlapsWith > overlappingBeats)
                     {
                         overlappingBeats = overlapsWith;
@@ -352,7 +348,7 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
                     }
                 }
             }
-            
+
             if (overlappingNote != nullptr)
             {
                 group3Before.add(note);
@@ -372,27 +368,26 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
 
             pianoSequence->changeGroup(group3Before, group3After, undoable);
         }
-    }
-    while (step3HasChanges);
-    
+    } while (step3HasChanges);
+
     // remove duplicates
-    
+
     FlatHashMap<MidiEvent::Id, Note> deferredRemoval;
     FlatHashMap<MidiEvent::Id, Note> unremovableNotes;
-    
+
     for (int i = 0; i < notes.size(); ++i)
     {
         const auto &note = notes.getNoteUnchecked(i);
-        
+
         for (int j = 0; j < notes.size(); ++j)
         {
             if (i == j)
             {
                 continue;
             }
-            
+
             const auto &otherNote = notes.getNoteUnchecked(j);
-            
+
             // full overlap (shouldn't happen at this point)
             //const bool isOverlappingNote = (note.getKey() == otherNote.getKey() &&
             //    note.getBeat() >= otherNote.getBeat() &&
@@ -403,13 +398,13 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
                 (note.getKey() == otherNote.getKey() &&
                     note.getBeat() >= otherNote.getBeat() &&
                     note.getBeat() < (otherNote.getBeat() + otherNote.getLength()));
-            
+
             const bool startsFromTheSameBeat =
                 (note.getKey() == otherNote.getKey() &&
                     note.getBeat() == otherNote.getBeat());
-            
+
             const bool isOriginalNote = unremovableNotes.contains(otherNote.getId());
-            
+
             if (!isOriginalNote &&
                 (isOverlappingNote || startsFromTheSameBeat))
             {
@@ -418,7 +413,7 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
             }
         }
     }
-    
+
     Array<Note> removalGroup;
     for (const auto &deferredRemovalIterator : deferredRemoval)
     {
@@ -658,7 +653,7 @@ bool SequencerOperations::joinAdjacent(const NoteListBase &notes,
             {
                 continue;
             }
-            
+
             const auto noteEndBeat = note.getBeat() + newLength;
             const auto distance = other.getBeat() - noteEndBeat;
             if (distance < threshold && !removals.contains(other))
@@ -741,8 +736,7 @@ void SequencerOperations::retrograde(const NoteListBase &notes,
 
         start++;
         end--;
-    }
-    while (start < end);
+    } while (start < end);
 
     auto *sequence = getPianoSequence(notes);
     if (shouldCheckpoint)
@@ -1042,11 +1036,11 @@ void SequencerOperations::randomizeVolume(const Lasso &selection, float factor, 
 
     auto *sequence = getPianoSequence(selection);
     jassert(sequence);
-    
+
     Random random(Time::currentTimeMillis());
 
     Array<Note> groupBefore, groupAfter;
-    
+
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         if (auto *nc = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
@@ -1055,7 +1049,7 @@ void SequencerOperations::randomizeVolume(const Lasso &selection, float factor, 
             const float v = nc->getNote().getVelocity();
             const float deltaV = (r < 0) ? (v * r) : ((1.f - v) * r);
             const float newVelocity = nc->getNote().getVelocity() + deltaV;
-            
+
             groupBefore.add(nc->getNote());
             groupAfter.add(nc->getNote().withVelocity(newVelocity));
         }
@@ -1076,7 +1070,7 @@ void SequencerOperations::fadeOutVolume(const Lasso &selection, float factor, bo
 {
     // Smooth fade out like
     // 1 - ((x / sqrt(x)) * factor)
-    
+
     if (selection.getNumSelected() == 0)
     {
         return;
@@ -1088,7 +1082,7 @@ void SequencerOperations::fadeOutVolume(const Lasso &selection, float factor, bo
     float minBeat = FLT_MAX;
     float maxBeat = -FLT_MAX;
     Array<Note> groupBefore, groupAfter;
-    
+
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         if (NoteComponent *nc = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
@@ -1097,14 +1091,14 @@ void SequencerOperations::fadeOutVolume(const Lasso &selection, float factor, bo
             maxBeat = jmax(maxBeat, nc->getBeat());
         }
     }
-    
+
     const float selectionBeatLength = maxBeat - minBeat;
-    
+
     if (selectionBeatLength <= 0)
     {
         return;
     }
-    
+
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         if (auto *nc = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
@@ -1113,12 +1107,12 @@ void SequencerOperations::fadeOutVolume(const Lasso &selection, float factor, bo
             const float localX = (localBeat / selectionBeatLength) + 0.0001f; // not 0
             const float velocityMultiplier = 1.f - ((localX / sqrtf(localX)) * factor);
             const float newVelocity = nc->getNote().getVelocity() * velocityMultiplier;
-            
+
             groupBefore.add(nc->getNote());
             groupAfter.add(nc->getNote().withVelocity(newVelocity));
         }
     }
-    
+
     if (!groupBefore.isEmpty())
     {
         if (shouldCheckpoint)
@@ -1167,7 +1161,7 @@ void SequencerOperations::startTuning(const Lasso &selection)
     {
         return;
     }
-    
+
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
@@ -1209,14 +1203,14 @@ void SequencerOperations::changeVolumeMultiplied(const Lasso &selection, float v
     jassert(pianoSequence);
 
     Array<Note> groupBefore, groupAfter;
-        
+
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         auto *nc = selection.getItemAs<NoteComponent>(i);
         groupBefore.add(nc->getNote());
         groupAfter.add(nc->continueTuningMultiplied(factor));
     }
-        
+
     pianoSequence->changeGroup(groupBefore, groupAfter, true);
 }
 
@@ -1226,7 +1220,7 @@ void SequencerOperations::changeVolumeSine(const Lasso &selection, float volumeF
     {
         return;
     }
-    
+
     const auto factor = jlimit(-1.f, 1.f, volumeFactor);
 
     const float numSines = 2;
@@ -1237,15 +1231,15 @@ void SequencerOperations::changeVolumeSine(const Lasso &selection, float volumeF
         midline += nc->anchor.getVelocity();
     }
     midline = midline / float(selection.getNumSelected());
-    
+
     const float startBeat = SequencerOperations::findStartBeat(selection);
     const float endBeat = SequencerOperations::findEndBeat(selection);
-    
+
     auto *pianoSequence = getPianoSequence(selection);
     jassert(pianoSequence);
 
     Array<Note> groupBefore, groupAfter;
-        
+
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         auto *nc = selection.getItemAs<NoteComponent>(i);
@@ -1260,7 +1254,7 @@ void SequencerOperations::changeVolumeSine(const Lasso &selection, float volumeF
 void SequencerOperations::endTuning(const Lasso &selection)
 {
     jassert(selection.getNumSelected() > 0);
-    
+
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
@@ -1397,7 +1391,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
                         .withDeltaBeat(deltaBeat)
                         .withNewId());
                 }
-        
+
                 if (pastedClips.size() > 0)
                 {
                     if (!didCheckpoint)
@@ -1405,7 +1399,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectNode &
                         targetPattern->checkpoint();
                         didCheckpoint = true;
                     }
-        
+
                     for (auto &c : pastedClips)
                     {
                         targetPattern->insert(c, true);
@@ -1434,14 +1428,14 @@ void SequencerOperations::shiftKeyRelative(const NoteListBase &notes,
     const bool repeatsLastAction = pianoSequence->getLastUndoActionId() == transactionId;
 
     Array<Note> groupBefore, groupAfter;
-        
+
     for (int i = 0; i < notes.size(); ++i)
     {
         const auto &note = notes.getNoteUnchecked(i);
         groupBefore.add(note);
         groupAfter.add(note.withDeltaKey(deltaKey));
     }
-        
+
     if (!groupBefore.isEmpty())
     {
         if (shouldCheckpoint && (!repeatsLastAction || forceCheckpoint))
@@ -1541,20 +1535,20 @@ void SequencerOperations::shiftBeatRelative(const NoteListBase &notes,
     const bool repeatsLastAction = pianoSequence->getLastUndoActionId() == transactionId;
 
     Array<Note> groupBefore, groupAfter;
-        
+
     for (int i = 0; i < notes.size(); ++i)
     {
         const auto &note = notes.getNoteUnchecked(i);
         groupBefore.add(note);
         groupAfter.add(note.withDeltaBeat(deltaBeat));
     }
-        
+
     if (groupBefore.size() > 0 &&
         shouldCheckpoint && !repeatsLastAction)
     {
         pianoSequence->checkpoint(transactionId);
     }
-        
+
     pianoSequence->changeGroup(groupBefore, groupAfter, undoable);
 }
 
@@ -1603,25 +1597,25 @@ void SequencerOperations::invertChord(const NoteListBase &notes,
 
     auto *pianoSequence = getPianoSequence(notes);
     jassert(pianoSequence);
-        
+
     // sort selection
     Array<Note> selectedNotes;
-        
+
     for (int i = 0; i < notes.size(); ++i)
     {
         const auto &note = notes.getNoteUnchecked(i);
         selectedNotes.addSorted(note, note);
     }
-        
+
     // detect target keys (upper or lower)
     Array<Note> targetNotes;
-        
+
     float prevBeat = 0.f;
     int prevKey = (deltaKey > 0) ? std::numeric_limits<int>::max() : 0;
-        
+
     float nextBeat = 0.f;
     int nextKey = std::numeric_limits<int>::max();
-        
+
     for (int i = 0; i < selectedNotes.size(); ++i)
     {
         if (i != (selectedNotes.size() - 1))
@@ -1634,7 +1628,7 @@ void SequencerOperations::invertChord(const NoteListBase &notes,
             nextKey = selectedNotes[i].getKey() + deltaKey;
             nextBeat = selectedNotes[i].getBeat() + deltaKey;
         }
-            
+
         const bool isRootKey =
             (deltaKey > 0) ?
             (selectedNotes[i].getKey() < prevKey &&
@@ -1647,7 +1641,7 @@ void SequencerOperations::invertChord(const NoteListBase &notes,
         {
             targetNotes.add(selectedNotes[i]);
         }
-            
+
         prevKey = selectedNotes[i].getKey();
         prevBeat = selectedNotes[i].getBeat();
     }
@@ -1660,7 +1654,7 @@ void SequencerOperations::invertChord(const NoteListBase &notes,
     // octave shift
     Array<Note> groupBefore, groupAfter;
 
-    for (auto && targetNote : targetNotes)
+    for (auto &&targetNote : targetNotes)
     {
         groupBefore.add(targetNote);
         groupAfter.add(targetNote.withDeltaKey(deltaKey));
@@ -1984,7 +1978,7 @@ bool SequencerOperations::remapNotesToTemperament(const ProjectNode &project,
         for (int n = 0; n < sequence->size(); ++n)
         {
             const auto *note = static_cast<Note *>(sequence->getUnchecked(n));
-            
+
             // simply using the first clip's position to determine harmonic context,
             // (there could be several clips, in which case I have no idea what to do)
             const auto rootKeyBefore = findRootKey(note->getBeat() + pattern->getFirstBeat());
@@ -2002,7 +1996,7 @@ bool SequencerOperations::remapNotesToTemperament(const ProjectNode &project,
             int newKey = 0;
             if (shouldUseChromaticMaps)
             {
-                // round the relative key to the nearest one in chromaticMapFrom 
+                // round the relative key to the nearest one in chromaticMapFrom
                 const auto keyIndexInChromaticMap = chromaticMapFrom->getNearestScaleKey(relativeKey);
                 const auto newRelativeKey = chromaticMapTo->getChromaticKey(keyIndexInChromaticMap, rootKeyAfter, false);
                 newKey = periodNum * periodSizeAfter + newRelativeKey;

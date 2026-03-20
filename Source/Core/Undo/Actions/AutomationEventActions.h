@@ -30,7 +30,7 @@ class MidiTrackSource;
 class AutomationEventInsertAction final : public UndoAction
 {
 public:
-    
+
     explicit AutomationEventInsertAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
@@ -40,7 +40,7 @@ public:
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
@@ -60,7 +60,7 @@ private:
 class AutomationEventRemoveAction final : public UndoAction
 {
 public:
-    
+
     explicit AutomationEventRemoveAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
@@ -70,7 +70,7 @@ public:
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
@@ -90,7 +90,7 @@ private:
 class AutomationEventChangeAction final : public UndoAction
 {
 public:
-    
+
     explicit AutomationEventChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
@@ -101,7 +101,7 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
@@ -114,7 +114,6 @@ private:
     AutomationEvent eventAfter;
 
     JUCE_DECLARE_NON_COPYABLE(AutomationEventChangeAction)
-
 };
 
 //===----------------------------------------------------------------------===//
@@ -124,28 +123,27 @@ private:
 class AutomationEventsGroupInsertAction final : public UndoAction
 {
 public:
-    
+
     explicit AutomationEventsGroupInsertAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
-    
+
     AutomationEventsGroupInsertAction(MidiTrackSource &source,
         const String &trackId, Array<AutomationEvent> &target) noexcept;
-    
+
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 private:
-    
+
     String trackId;
     Array<AutomationEvent> events;
-    
+
     JUCE_DECLARE_NON_COPYABLE(AutomationEventsGroupInsertAction)
-    
 };
 
 //===----------------------------------------------------------------------===//
@@ -155,28 +153,27 @@ private:
 class AutomationEventsGroupRemoveAction final : public UndoAction
 {
 public:
-    
+
     explicit AutomationEventsGroupRemoveAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
-    
+
     AutomationEventsGroupRemoveAction(MidiTrackSource &source,
         const String &trackId, Array<AutomationEvent> &target) noexcept;
-    
+
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
-    
+
 private:
-    
+
     String trackId;
     Array<AutomationEvent> events;
-    
+
     JUCE_DECLARE_NON_COPYABLE(AutomationEventsGroupRemoveAction)
-    
 };
 
 //===----------------------------------------------------------------------===//
@@ -186,7 +183,7 @@ private:
 class AutomationEventsGroupChangeAction final : public UndoAction
 {
 public:
-    
+
     explicit AutomationEventsGroupChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
@@ -197,7 +194,7 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
-    
+
     SerializedData serialize() const override;
     void deserialize(const SerializedData &data) override;
     void reset() override;
@@ -210,5 +207,4 @@ private:
     Array<AutomationEvent> eventsAfter;
 
     JUCE_DECLARE_NON_COPYABLE(AutomationEventsGroupChangeAction)
-
 };

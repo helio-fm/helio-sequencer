@@ -65,7 +65,6 @@ public:
 private:
 
     Colour colour = Colours::white;
-
 };
 
 class MergingClipsConnector final : public MergingEventsConnector
@@ -84,5 +83,4 @@ private:
 
     Colour startColour = Colours::white;
     Colour endColour = Colours::white;
-
 };

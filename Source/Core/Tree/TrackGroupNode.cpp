@@ -35,31 +35,30 @@ void TrackGroupNode::removeAllEmptyGroupsInProject(ProjectNode *project)
     if (project != nullptr)
     {
         int numGroupsDeleted = 0;
-        
+
         do
         {
             Array<TrackGroupNode *> groupsToDelete;
             Array<TrackGroupNode *> groups(project->findChildrenOfType<TrackGroupNode>());
-            
+
             for (int i = 0; i < groups.size(); ++i)
             {
                 TrackGroupNode *group = groups.getUnchecked(i);
                 Array<TreeNode *> groupChildren(group->findChildrenOfType<TreeNode>());
-                
+
                 if (groupChildren.size() == 0)
                 {
                     groupsToDelete.add(group);
                 }
             }
-            
+
             numGroupsDeleted = groupsToDelete.size();
-            
+
             for (int i = 0; i < groupsToDelete.size(); ++i)
             {
                 TreeNode::deleteNode(groupsToDelete.getUnchecked(i), true);
             }
-        }
-        while (numGroupsDeleted > 0);
+        } while (numGroupsDeleted > 0);
     }
 }
 
@@ -68,18 +67,18 @@ void TrackGroupNode::sortByNameAmongSiblings()
     if (TreeNode *parentItem = dynamic_cast<TreeNode *>(this->getParent()))
     {
         parentItem->removeChild(this->getIndexInParent(), false);
-        
+
         // пройти по всем чайлдам группы
         // и вставить в нужное место, глядя на имена.
-        
+
         bool foundRightPlace = false;
         int insertIndex = 0;
         String previousChildName = "";
-        
+
         for (int i = 0; i < parentItem->getNumChildren(); ++i)
         {
             String currentChildName;
-            
+
             if (auto *layerGroupItem = dynamic_cast<TrackGroupNode *>(parentItem->getChild(i)))
             {
                 currentChildName = layerGroupItem->getName();
@@ -92,21 +91,24 @@ void TrackGroupNode::sortByNameAmongSiblings()
             {
                 continue;
             }
-            
+
             insertIndex = i;
-            
+
             if ((this->getName().compareIgnoreCase(previousChildName) > 0) &&
                 (this->getName().compareIgnoreCase(currentChildName) <= 0))
             {
                 foundRightPlace = true;
                 break;
             }
-            
+
             previousChildName = currentChildName;
         }
 
-        if (!foundRightPlace) { ++insertIndex; }
-        
+        if (!foundRightPlace)
+        {
+            ++insertIndex;
+        }
+
         parentItem->addChildNode(this, insertIndex);
     }
 }

@@ -77,4 +77,4 @@ namespace VCS
         JUCE_DECLARE_WEAK_REFERENCEABLE(Revision)
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Revision)
     };
-}  // namespace VCS
+} // namespace VCS

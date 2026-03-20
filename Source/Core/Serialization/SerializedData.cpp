@@ -51,7 +51,7 @@ public:
             this->children.remove(i);
         }
     }
-    
+
     SerializedData getChildWithName(const Identifier &typeToMatch) const
     {
         for (auto *s : this->children)
@@ -64,7 +64,7 @@ public:
 
         return {};
     }
-    
+
     bool isAChildOf(const SharedData *possibleParent) const noexcept
     {
         for (auto *p = parent; p != nullptr; p = p->parent)
@@ -332,7 +332,7 @@ SerializedData::Iterator::Iterator(const SerializedData &v, bool isEnd)
 
 SerializedData::Iterator &SerializedData::Iterator::operator++()
 {
-    this->internal = static_cast<SharedData**> (this->internal) + 1;
+    this->internal = static_cast<SharedData **>(this->internal) + 1;
     return *this;
 }
 
@@ -348,7 +348,7 @@ bool SerializedData::Iterator::operator!= (const Iterator &other) const
 
 SerializedData SerializedData::Iterator::operator*() const
 {
-    return SerializedData(SharedData::Ptr(*static_cast<SharedData**>(internal)));
+    return SerializedData(SharedData::Ptr(*static_cast<SharedData **>(internal)));
 }
 
 SerializedData::Iterator SerializedData::begin() const noexcept
@@ -395,7 +395,7 @@ inline static Identifier readIdentifier(InputStream &input)
     // avoid re-allocating a buffer *every* time we read an object or property type
     // (using JUCE's readString() on deserialization sucks really hard);
     // also preallocated size of 64 should be enough for all identifiers I ever use,
-    // and for all string values var::readFromStream() will be called, but far less frequently 
+    // and for all string values var::readFromStream() will be called, but far less frequently
     constexpr int maxIdentifierLength = 64;
     static char buffer[maxIdentifierLength];
     std::memset(buffer, 0, maxIdentifierLength);

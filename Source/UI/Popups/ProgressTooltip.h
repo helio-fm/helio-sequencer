@@ -38,8 +38,8 @@ public:
     void paint(Graphics &g) override;
     void resized() override;
     void parentHierarchyChanged() override;
-    void handleCommandMessage (int commandId) override;
-    bool keyPressed (const KeyPress& key) override;
+    void handleCommandMessage(int commandId) override;
+    bool keyPressed(const KeyPress &key) override;
     void inputAttemptWhenModal() override;
 
 private:
@@ -53,5 +53,5 @@ private:
 
     UniquePointer<ProgressIndicator> progressIndicator;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProgressTooltip)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProgressTooltip)
 };

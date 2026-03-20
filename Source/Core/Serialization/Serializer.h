@@ -34,5 +34,4 @@ public:
 
     virtual bool supportsFileWithExtension(const String &extension) const = 0;
     virtual bool supportsFileWithHeader(const String &header) const = 0;
-
 };

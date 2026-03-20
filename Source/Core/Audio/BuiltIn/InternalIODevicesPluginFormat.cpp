@@ -60,7 +60,7 @@ InternalIODevicesPluginFormat::InternalIODevicesPluginFormat()
 bool InternalIODevicesPluginFormat::fileMightContainThisPluginType(const String &fileOrIdentifier)
 {
     return (fileOrIdentifier.isEmpty() ||
-            fileOrIdentifier == InternalIODevicesPluginFormat::formatName);
+        fileOrIdentifier == InternalIODevicesPluginFormat::formatName);
 }
 
 void InternalIODevicesPluginFormat::createPluginInstance(const PluginDescription &desc,
@@ -86,7 +86,7 @@ void InternalIODevicesPluginFormat::createPluginInstance(const PluginDescription
         callback(make<AudioProcessorGraph::AudioGraphIOProcessor>(AudioProcessorGraph::AudioGraphIOProcessor::midiOutputNode), {});
         return;
     }
-    
+
     callback(nullptr, {});
 }
 

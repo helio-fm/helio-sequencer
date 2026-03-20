@@ -27,9 +27,10 @@ class HeadlineContextMenuController;
 #include "SeparatorHorizontalFading.h"
 #include "SeparatorHorizontalFadingReversed.h"
 
-class AudioPluginsListComponent final : public Component,
-                                        public TableListBoxModel,
-                                        public HeadlineItemDataSource
+class AudioPluginsListComponent final :
+    public Component,
+    public TableListBoxModel,
+    public HeadlineItemDataSource
 {
 public:
 

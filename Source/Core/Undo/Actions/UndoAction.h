@@ -34,14 +34,14 @@ public:
         return 10;
     }
 
-    virtual UndoAction *createCoalescedAction(UndoAction* nextAction)
+    virtual UndoAction *createCoalescedAction(UndoAction *nextAction)
     {
-        (void) nextAction;
+        (void)nextAction;
         return nullptr;
     }
-    
+
 protected:
-    
+
     MidiTrackSource &source;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UndoAction)

@@ -46,7 +46,7 @@ public:
         GroupScalingLeft,
         Tuning
     };
-    
+
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
@@ -113,6 +113,7 @@ private:
         inline float getVelocity() const noexcept { return this->velocity; }
 
     private:
+
         int key = 0;
         float beat = 0.f;
         float length = 0.f;
@@ -126,6 +127,7 @@ private:
         inline float getBeat() const noexcept { return this->beat; }
         inline float getLength() const noexcept { return this->length; }
     private:
+
         float beat = 0.f;
         float length = 0.f;
     };
@@ -154,35 +156,35 @@ private:
     bool getResizingRightDelta(const MouseEvent &e, float &deltaLength, bool snap = true) const;
     Note continueResizingRight(float deltaLength, bool snap = true) const noexcept;
     void endResizingRight();
-    
+
     void startResizingLeft(bool sendMidiMessage);
     bool getResizingLeftDelta(const MouseEvent &e, float &deltaLength, bool snap = true) const;
     Note continueResizingLeft(float deltaLength, bool snap = true) const noexcept;
     void endResizingLeft();
-    
+
     void startTuning();
     Note continueTuning(const MouseEvent &e) const noexcept;
     Note continueTuningLinear(float delta) const noexcept;
     Note continueTuningMultiplied(float factor) const noexcept;
     Note continueTuningSine(float factor, float midline, float phase) const noexcept;
     void endTuning();
-    
+
     void startGroupScalingRight(float groupStartBeat);
     bool getGroupScaleRightFactor(const MouseEvent &e, float &absScaleFactor, bool snap = true) const;
     Note continueGroupScalingRight(float absScaleFactor, bool snap = true) const noexcept;
     void endGroupScalingRight();
-    
+
     void startGroupScalingLeft(float groupEndBeat);
     bool getGroupScaleLeftFactor(const MouseEvent &e, float &absScaleFactor, bool snap = true) const;
     Note continueGroupScalingLeft(float absScaleFactor, bool snap = true) const noexcept;
     void endGroupScalingLeft();
-    
+
 #if PLATFORM_DESKTOP
     static constexpr auto maxDragPolyphony = 6;
 #elif PLATFORM_MOBILE
     static constexpr auto maxDragPolyphony = 1;
 #endif
-    
+
     static constexpr auto minResizableEdge = 1;
     static constexpr auto maxResizableEdge = 12;
 
@@ -193,7 +195,7 @@ private:
 
     inline bool canResize() const noexcept
     {
-        return this->getWidth() >= (NoteComponent::minResizableEdge * 2);   //changed to 'max' to 'min' because it makes more sense
+        return this->getWidth() >= (NoteComponent::minResizableEdge * 2);
     }
 
     inline bool isResizingOrScaling() const noexcept
@@ -228,7 +230,6 @@ private:
 
     void stopSound();
     void sendNoteOn(int noteKey, float velocity) const;
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteComponent)
-    
 };

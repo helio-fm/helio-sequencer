@@ -33,7 +33,7 @@ public:
         return this->baseResources.size() == 0 && this->userResources.size() == 0;
     }
 
-    template<typename T = ConfigurationResource>
+    template <typename T = ConfigurationResource>
     const Array<typename T::Ptr> getAllResources() const
     {
         Array<typename T::Ptr> result;
@@ -56,7 +56,7 @@ public:
         return result;
     }
 
-    template<typename T = ConfigurationResource>
+    template <typename T = ConfigurationResource>
     const Array<typename T::Ptr> getUserResources() const
     {
         Array<typename T::Ptr> result;
@@ -70,7 +70,7 @@ public:
         return result;
     }
 
-    template<typename T = ConfigurationResource>
+    template <typename T = ConfigurationResource>
     const typename T::Ptr getResourceById(const String &resourceId) const
     {
         const auto foundUserResource = this->userResources.find(resourceId);
@@ -88,7 +88,7 @@ public:
         return nullptr;
     }
 
-    template<typename T = ConfigurationResource>
+    template <typename T = ConfigurationResource>
     const typename T::Ptr getUserResourceById(const String &resourceId) const
     {
         const auto foundUserResource = this->userResources.find(resourceId);
@@ -96,11 +96,11 @@ public:
         {
             return typename T::Ptr(static_cast<T *>(foundUserResource->second.get()));
         }
-        
+
         return nullptr;
     }
 
-    template<typename T = ConfigurationResource>
+    template <typename T = ConfigurationResource>
     const bool containsUserResourceWithId(const String &resourceId) const
     {
         const auto foundUserResource = this->userResources.find(resourceId);
@@ -124,7 +124,7 @@ protected:
     virtual void deserializeResources(const SerializedData &tree, Resources &outResources) = 0;
     virtual void reset();
 
-private: 
+private:
 
     const Identifier resourceType;
     const DummyConfigurationResource comparator;

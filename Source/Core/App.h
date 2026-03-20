@@ -44,9 +44,10 @@ private:
     JUCE_PREVENT_HEAP_ALLOCATION
 };
 
-class App final : public JUCEApplication,
-                  private UserInterfaceFlags::Listener,
-                  private AsyncUpdater
+class App final :
+    public JUCEApplication,
+    private UserInterfaceFlags::Listener,
+    private AsyncUpdater
 {
 public:
 

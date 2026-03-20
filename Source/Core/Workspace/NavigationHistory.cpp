@@ -69,7 +69,7 @@ WeakReference<TreeNode> NavigationHistory::goBack()
 
 WeakReference<TreeNode> NavigationHistory::goForward()
 {
-    if (! this->canGoForward())
+    if (!this->canGoForward())
     {
         return nullptr;
     }

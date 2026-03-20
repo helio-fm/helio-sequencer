@@ -24,7 +24,6 @@ class VersionControl;
 class VersionControlStageSelectionMenu final : public MenuPanel
 {
 public:
-    
-    VersionControlStageSelectionMenu();
 
+    VersionControlStageSelectionMenu();
 };

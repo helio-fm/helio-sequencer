@@ -44,13 +44,12 @@ DeltaDiff createTimeSignatureDiff(const SerializedData &state, const SerializedD
 static Array<DeltaDiff> createEventsDiffs(const SerializedData &state, const SerializedData &changes);
 
 static DeltaDiff serializePianoTrackChanges(Array<const MidiEvent *> changes,
-    const String &description, int64 numChanges,  const Identifier &deltaType);
+    const String &description, int64 numChanges, const Identifier &deltaType);
 
 static SerializedData serializePianoSequence(Array<const MidiEvent *> changes, const Identifier &tag);
 static void deserializePianoSequence(const SerializedData &state, const SerializedData &changes,
     OwnedArray<Note> &stateNotes, OwnedArray<Note> &changesNotes);
 static bool checkIfDeltaIsNotesType(const Delta *delta);
-
 
 PianoTrackDiffLogic::PianoTrackDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
@@ -85,7 +84,7 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const noe
             {
                 deltaFoundInState = true;
                 stateDeltaData = initialState.getDeltaData(j);
-                dataHasChanged = (! myDeltaData.isEquivalentTo(stateDeltaData));
+                dataHasChanged = (!myDeltaData.isEquivalentTo(stateDeltaData));
                 break;
             }
         }
@@ -144,7 +143,7 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
 
         bool deltaFoundInChanges = false;
 
-        // for every supported type we need to spit out 
+        // for every supported type we need to spit out
         // a delta of type eventsAdded with all events merged in there
 
         auto notesDelta = make<Delta>(
@@ -260,7 +259,7 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
             diff->applyDelta(clipsDelta.release(), clipsDeltaData);
         }
 
-        if (! deltaFoundInChanges)
+        if (!deltaFoundInChanges)
         {
             diff->applyDelta(stateDelta->createCopy(), stateDeltaData);
         }
@@ -433,7 +432,7 @@ SerializedData mergeNotesAdded(const SerializedData &state, const SerializedData
 
     // на всякий пожарный, ищем, нет ли в состоянии нот с теми же id, где нет - добавляем
     FlatHashSet<MidiEvent::Id> stateIDs;
-    
+
     for (int j = 0; j < stateNotes.size(); ++j)
     {
         const Note *stateNote = stateNotes.getUnchecked(j);
@@ -445,7 +444,7 @@ SerializedData mergeNotesAdded(const SerializedData &state, const SerializedData
         const Note *changesNote = changesNotes.getUnchecked(i);
         const bool foundNoteInState = stateIDs.contains(changesNote->getId());
 
-        if (! foundNoteInState)
+        if (!foundNoteInState)
         {
             result.add(changesNote);
         }
@@ -472,12 +471,12 @@ SerializedData mergeNotesRemoved(const SerializedData &state, const SerializedDa
         const Note *changesNote = changesNotes.getUnchecked(j);
         changesIDs.insert(changesNote->getId());
     }
-    
+
     for (int i = 0; i < stateNotes.size(); ++i)
     {
-        const Note *stateNote =stateNotes.getUnchecked(i);
+        const Note *stateNote = stateNotes.getUnchecked(i);
         const bool foundNoteInChanges = changesIDs.contains(stateNote->getId());
-        if (! foundNoteInChanges)
+        if (!foundNoteInChanges)
         {
             result.add(stateNote);
         }
@@ -500,7 +499,7 @@ SerializedData mergeNotesChanged(const SerializedData &state, const SerializedDa
 
     // снова ищем по id и заменяем
     FlatHashMap<MidiEvent::Id, const Note *> changesIDs;
-    
+
     for (int j = 0; j < changesNotes.size(); ++j)
     {
         const Note *changesNote = changesNotes.getUnchecked(j);
@@ -520,7 +519,6 @@ SerializedData mergeNotesChanged(const SerializedData &state, const SerializedDa
 
     return serializePianoSequence(result, PianoSequenceDeltas::notesAdded);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Diff
@@ -628,7 +626,7 @@ Array<DeltaDiff> createEventsDiffs(const SerializedData &state, const Serialized
         }
 
         // нота из состояния - в изменениях не найдена. добавляем запись removed.
-        if (! foundNoteInChanges)
+        if (!foundNoteInChanges)
         {
             removedNotes.add(stateNote);
         }
@@ -652,7 +650,7 @@ Array<DeltaDiff> createEventsDiffs(const SerializedData &state, const Serialized
         }
 
         // и пишем ее в список добавленных
-        if (! foundNoteInState)
+        if (!foundNoteInState)
         {
             addedNotes.add(changesNote);
         }
@@ -687,9 +685,8 @@ Array<DeltaDiff> createEventsDiffs(const SerializedData &state, const Serialized
     return res;
 }
 
-
 void deserializePianoSequence(const SerializedData &state, const SerializedData &changes,
-        OwnedArray<Note> &stateNotes, OwnedArray<Note> &changesNotes)
+    OwnedArray<Note> &stateNotes, OwnedArray<Note> &changesNotes)
 {
     if (state.isValid())
     {
@@ -742,4 +739,4 @@ bool checkIfDeltaIsNotesType(const Delta *d)
             d->hasType(PianoSequenceDeltas::notesChanged));
 }
 
-}
+} // namespace VCS

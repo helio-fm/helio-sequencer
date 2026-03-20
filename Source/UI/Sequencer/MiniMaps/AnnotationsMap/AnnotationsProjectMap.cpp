@@ -37,7 +37,7 @@ AnnotationsProjectMap::AnnotationsProjectMap(ProjectNode &parentProject,
     this->setAccessible(false);
 
     this->reloadTrackMap();
-    
+
     this->project.addListener(this);
 }
 
@@ -72,7 +72,6 @@ void AnnotationsProjectMap::resized()
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
@@ -97,24 +96,24 @@ void AnnotationsProjectMap::alignAnnotationComponent(AnnotationComponent *compon
 {
     this->annotationComponents.sort(*component);
     const int indexOfSorted = this->annotationComponents.indexOfSorted(*component, component);
-    
+
     if (auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted))
     {
         this->applyAnnotationBounds(previousEventComponent, component);
-        
+
         if (auto *oneMorePrevious = this->getPreviousEventComponent(indexOfSorted - 1))
         {
             this->applyAnnotationBounds(oneMorePrevious, previousEventComponent);
         }
     }
-    
+
     auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
     if (nextEventComponent != nullptr)
     {
         auto *oneMoreNext = this->getNextEventComponent(indexOfSorted + 1);
         this->applyAnnotationBounds(nextEventComponent, oneMoreNext);
     }
-    
+
     component->updateContent();
     this->applyAnnotationBounds(component, nextEventComponent);
 }
@@ -158,7 +157,7 @@ void AnnotationsProjectMap::onRemoveMidiEvent(const MidiEvent &event)
         if (auto *component = this->annotationsHash[annotation])
         {
             this->animator.animateComponent(component,
-                component->getBounds(),0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
+                component->getBounds(), 0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
 
             this->removeChildComponent(component);
             this->annotationsHash.erase(annotation);
@@ -204,7 +203,7 @@ void AnnotationsProjectMap::onRemoveTrack(MidiTrack *const track)
     {
         for (int i = 0; i < track->getSequence()->size(); ++i)
         {
-            const auto &annotation = 
+            const auto &annotation =
                 static_cast<const AnnotationEvent &>(*track->getSequence()->getUnchecked(i));
 
             if (auto *component = this->annotationsHash[annotation])
@@ -270,7 +269,7 @@ void AnnotationsProjectMap::onAnnotationTapped(AnnotationComponent *c)
 
 void AnnotationsProjectMap::showContextMenuFor(AnnotationComponent *nc)
 {
-    if (! this->project.getTransport().isPlaying())
+    if (!this->project.getTransport().isPlaying())
     {
         App::showModalComponent(AnnotationDialog::editingDialog(nc->getEvent()));
     }
@@ -282,12 +281,12 @@ void AnnotationsProjectMap::alternateActionFor(AnnotationComponent *nc)
     this->annotationComponents.sort(*nc);
     const int indexOfSorted = this->annotationComponents.indexOfSorted(*nc, nc);
     auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
-    
+
     const float startBeat = nc->getBeat();
     const float endBeat = (nextEventComponent != nullptr) ? nextEventComponent->getBeat() : FLT_MAX;
     const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
     const bool shouldClearSelection = !isShiftPressed;
-    
+
     this->roll->selectEventsInRange(startBeat, endBeat, shouldClearSelection);
 }
 

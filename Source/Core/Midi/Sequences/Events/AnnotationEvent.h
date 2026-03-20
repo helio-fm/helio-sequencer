@@ -31,7 +31,7 @@ public:
         float newBeat = 0.f,
         const String &description = "",
         const Colour &newColour = Colours::white) noexcept;
-    
+
     void exportMessages(MidiMessageSequence &outSequence, const Clip &clip,
         const KeyboardMapping &keyMap, double timeFactor) const noexcept override;
 

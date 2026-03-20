@@ -48,7 +48,7 @@ struct SequencerOperations final
     static float findEndBeat(const Array<Note> &selection);
 
     static void previewSelection(const Lasso &selection, Transport &transport, int maxSize = 7);
-    
+
     static Clip &findClosestClip(const Lasso &selection,
         WeakReference<MidiTrack> track, float &outDistance);
 
@@ -61,7 +61,7 @@ struct SequencerOperations final
     static Arpeggiator::Ptr makeArpeggiator(const String &name,
         const Lasso &selection,
         const Temperament::Ptr temperament,
-        const Scale::Ptr scale, Note::Key scaleRootKey, 
+        const Scale::Ptr scale, Note::Key scaleRootKey,
         WeakReference<TimeSignaturesAggregator> timeContext);
 
     static bool arpeggiate(const NoteListBase &notes, const Clip &clip,
@@ -173,7 +173,7 @@ struct SequencerOperations final
         float startBeat, float endBeat, int bpmValue, bool shouldCheckpoint = true);
 
     static SerializedData createPianoTrackTemplate(ProjectNode &project,
-       const String &name, float beatPosition, const String &instrumentId, String &outTrackId);
+        const String &name, float beatPosition, const String &instrumentId, String &outTrackId);
     static SerializedData createAutoTrackTemplate(ProjectNode &project,
         const String &name, int controllerNumber, const String &instrumentId, String &outTrackId);
 
@@ -187,5 +187,4 @@ struct SequencerOperations final
     static UniquePointer<MidiTrackNode> createAutomationTrack(const Array<AutomationEvent> &events, const Array<Clip> &clips);
 
     static String generateNextNameForNewTrack(const String &name, const StringArray &allNames);
-
 };

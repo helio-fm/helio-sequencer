@@ -46,7 +46,9 @@ public:
 
     void updateColours() override;
     inline const Colour &getEventColour() const noexcept
-    { return this->eventColour; }
+    {
+        return this->eventColour;
+    }
 
     Rectangle<float> getTextArea() const noexcept;
 

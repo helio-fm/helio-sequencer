@@ -20,7 +20,7 @@
 class AudioMonitor final : public AudioIODeviceCallback
 {
 public:
-    
+
     AudioMonitor();
 
     //===------------------------------------------------------------------===//
@@ -31,19 +31,20 @@ public:
     void audioDeviceIOCallback(const float **inputChannelData, int numInputChannels,
         float **outputChannelData, int numOutputChannels, int numSamples) override;
     void audioDeviceStopped() override {}
-    
+
     //===------------------------------------------------------------------===//
     // Clipping warnings
     //===------------------------------------------------------------------===//
-    
+
     class ClippingListener
     {
     public:
+
         virtual ~ClippingListener() = default;
         virtual void onClippingWarning() = 0;
         virtual void onOversaturationWarning() = 0;
     };
-    
+
     void addClippingListener(ClippingListener *const listener);
     void removeClippingListener(ClippingListener *const listener);
 
@@ -52,10 +53,10 @@ public:
     //===------------------------------------------------------------------===//
     // Volume data
     //===------------------------------------------------------------------===//
-    
+
     float getPeak(int channel) const;
     float getRootMeanSquare(int channel) const;
-        
+
 private:
 
     static constexpr auto numChannels = 2;

@@ -33,7 +33,7 @@ public:
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
-    
+
     void paint(Graphics &g) override;
     bool hitTest(int x, int y) override;
     void mouseDown(const MouseEvent &e) override;
@@ -48,7 +48,7 @@ private:
 
     SafePointer<AutomationEditorBase::EventComponentBase> component1;
     SafePointer<AutomationEditorBase::EventComponentBase> component2;
-    
+
     AutomationEditorBase::EventComponentBase *firstAliveEventComponent() const;
 
     float eventControllerValue = Globals::Defaults::onOffControllerState;
@@ -58,5 +58,5 @@ private:
 
     Rectangle<float> realBounds;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationStepEventsConnector)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationStepEventsConnector)
 };

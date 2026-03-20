@@ -37,7 +37,6 @@ private:
     static PluginWindow *getWindowFor(AudioProcessorGraph::Node::Ptr node);
 
     float getDesktopScaleFactor() const override { return 1.f; }
-   
-    const AudioProcessorGraph::Node::Ptr owner;
 
+    const AudioProcessorGraph::Node::Ptr owner;
 };

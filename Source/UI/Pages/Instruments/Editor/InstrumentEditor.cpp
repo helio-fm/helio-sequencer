@@ -43,9 +43,9 @@ InstrumentEditor::InstrumentEditor(WeakReference<Instrument> instrument,
 
     this->instrument->addChangeListener(this);
     this->audioCore->getDevice().addChangeListener(this);
-    
+
     this->setOpaque(true);
-    
+
     this->setWantsKeyboardFocus(false);
     this->setFocusContainerType(Component::FocusContainerType::none);
 }
@@ -58,7 +58,7 @@ InstrumentEditor::~InstrumentEditor()
     {
         this->instrument->removeChangeListener(this);
     }
-    
+
     this->draggingConnector = nullptr;
     this->background = nullptr;
     this->deleteAllChildren();
@@ -92,9 +92,9 @@ InstrumentComponent *InstrumentEditor::getComponentForNode(AudioProcessorGraph::
             }
         }
     }
-    
+
     return nullptr;
-} 
+}
 
 InstrumentEditorConnector *InstrumentEditor::getComponentForConnection(AudioProcessorGraph::Connection conn) const
 {
@@ -108,7 +108,7 @@ InstrumentEditorConnector *InstrumentEditor::getComponentForConnection(AudioProc
             }
         }
     }
-    
+
     return nullptr;
 }
 
@@ -124,14 +124,14 @@ InstrumentEditorPin *InstrumentEditor::findPinAt(const int x, const int y) const
             }
         }
     }
-    
+
     return nullptr;
 }
 
 void InstrumentEditor::deselectAllNodes()
 {
     this->selectedNode = idZero;
-    
+
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
         if (auto *node = dynamic_cast<InstrumentComponent *>(this->getChildComponent(i)))
@@ -187,13 +187,13 @@ void InstrumentEditor::updateComponents()
             fc->update();
         }
     }
-    
+
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
         auto *cc = dynamic_cast<InstrumentEditorConnector *>(getChildComponent(i));
         if (cc != nullptr && cc != this->draggingConnector.get())
         {
-            if (! instrument->isConnected(cc->connection))
+            if (!instrument->isConnected(cc->connection))
             {
                 delete cc;
             }
@@ -203,7 +203,7 @@ void InstrumentEditor::updateComponents()
             }
         }
     }
-    
+
     for (int i = instrument->getNumNodes(); --i >= 0;)
     {
         const AudioProcessorGraph::Node::Ptr f(instrument->getNode(i));
@@ -214,7 +214,7 @@ void InstrumentEditor::updateComponents()
             comp->update();
         }
     }
-    
+
     const auto &connections = instrument->getConnections();
     const int numConnections = int(connections.size());
     for (int i = numConnections; --i >= 0;)
@@ -244,7 +244,7 @@ void InstrumentEditor::beginConnectorDrag(
     {
         this->draggingConnector = make<InstrumentEditorConnector>(instrument);
     }
-    
+
     AudioProcessorGraph::NodeAndChannel source;
     source.nodeID = sourceID;
     source.channelIndex = sourceChannel;
@@ -255,10 +255,10 @@ void InstrumentEditor::beginConnectorDrag(
 
     this->draggingConnector->setInput(source);
     this->draggingConnector->setOutput(destination);
-    
+
     this->addAndMakeVisible(this->draggingConnector.get());
     this->draggingConnector->toFront(false);
-    
+
     this->dragConnector(e);
 }
 
@@ -268,14 +268,14 @@ void InstrumentEditor::dragConnector(const MouseEvent &e)
     if (this->draggingConnector != nullptr)
     {
         this->draggingConnector->setTooltip({});
-        
+
         int x = e2.x;
         int y = e2.y;
-        
+
         if (auto pin = this->findPinAt(x, y))
         {
             auto c = this->draggingConnector->connection;
-            
+
             if (c.source.nodeID == idZero && !pin->isInput)
             {
                 c.source.nodeID = pin->nodeId;
@@ -286,16 +286,16 @@ void InstrumentEditor::dragConnector(const MouseEvent &e)
                 c.destination.nodeID = pin->nodeId;
                 c.destination.channelIndex = pin->index;
             }
-            
+
             if (instrument->canConnect(c))
             {
                 x = pin->getParentComponent()->getX() + pin->getX() + pin->getWidth() / 2;
                 y = pin->getParentComponent()->getY() + pin->getY() + pin->getHeight() / 2;
-                
+
                 this->draggingConnector->setTooltip(pin->getTooltip());
             }
         }
-        
+
         if (this->draggingConnector->connection.source.nodeID == idZero)
         {
             this->draggingConnector->dragStart(x, y);
@@ -313,39 +313,43 @@ void InstrumentEditor::endDraggingConnector(const MouseEvent &e)
     {
         return;
     }
-    
+
     this->draggingConnector->setTooltip({});
-    
+
     const auto e2 = e.getEventRelativeTo(this);
-    
+
     const auto c = this->draggingConnector->connection;
     auto srcNode = c.source.nodeID;
     auto srcChannel = c.source.channelIndex;
     auto dstNode = c.destination.nodeID;
     auto dstChannel = c.destination.channelIndex;
-    
+
     this->fader.fadeOut(this->draggingConnector.get(), Globals::UI::fadeOutLong);
     this->draggingConnector = nullptr;
-    
+
     if (auto pin = findPinAt(e2.x, e2.y))
     {
         if (srcNode == idZero)
         {
             if (pin->isInput)
-            { return; }
-            
+            {
+                return;
+            }
+
             srcNode = pin->nodeId;
             srcChannel = pin->index;
         }
         else
         {
-            if (! pin->isInput)
-            { return; }
-            
+            if (!pin->isInput)
+            {
+                return;
+            }
+
             dstNode = pin->nodeId;
             dstChannel = pin->index;
         }
-        
+
         instrument->addConnection(srcNode, srcChannel, dstNode, dstChannel);
     }
 }

@@ -22,7 +22,7 @@
 class Serializable
 {
 public:
-    
+
     virtual ~Serializable() = default;
     virtual SerializedData serialize() const = 0;
     virtual void deserialize(const SerializedData &data) = 0;

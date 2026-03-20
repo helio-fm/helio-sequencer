@@ -84,7 +84,7 @@ public:
     void onKeySignatureMainAction(KeySignatureComponent *nc);
     void onKeySignatureAltAction(KeySignatureComponent *nc);
     float getBeatByXPosition(int x) const;
-    
+
 private:
 
     void reloadTrackMap();
@@ -95,7 +95,7 @@ private:
     KeySignatureComponent *getNextEventComponent(int indexOfSorted) const;
 
     const Temperament::Period &getProjectKeyNames() const noexcept;
-    
+
 private:
 
     float projectFirstBeat = 0.f;
@@ -103,7 +103,7 @@ private:
 
     float rollFirstBeat = 0.f;
     float rollLastBeat = Globals::Defaults::projectLength;
-    
+
     int keyboardSize = Globals::twelveToneKeyboardSize;
 
     bool useFixedDoNotation = false;

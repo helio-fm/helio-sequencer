@@ -106,7 +106,10 @@ void RecentProjectInfo::deserialize(const SerializedData &data)
     const auto root = data.hasType(RecentProjects::recentProject) ?
         data : data.getChildWithName(RecentProjects::recentProject);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
 
     this->projectId = root.getProperty(RecentProjects::projectId);
 

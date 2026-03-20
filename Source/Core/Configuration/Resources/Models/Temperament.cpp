@@ -28,7 +28,7 @@ Temperament::Temperament(const Temperament &other) noexcept :
 
 Temperament::Temperament(Temperament &&other) noexcept :
     id(other.id), name(other.name), keysTotal(other.keysTotal),
-    middleC(other.middleC),  middleA(other.middleA),
+    middleC(other.middleC), middleA(other.middleA),
     highlighting(other.highlighting), chromaticMap(other.chromaticMap),
     chromaticScales(other.chromaticScales)
 {
@@ -232,7 +232,7 @@ void Temperament::deserialize(const SerializedData &data)
             this->chromaticScales[keyName] = move(chromaticScale);
         }
     }
-    
+
     this->keysTotal = int(Globals::numPeriodsInKeyboard * float(this->getPeriodSize()));
     this->middleC = Temperament::periodNumForMiddleC * this->getPeriodSize();
     this->middleA = this->middleC + this->getEquivalentOfTwelveToneInterval(Semitones::MajorSixth);

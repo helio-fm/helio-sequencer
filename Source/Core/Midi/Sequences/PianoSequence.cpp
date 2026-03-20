@@ -131,7 +131,7 @@ bool PianoSequence::remove(const Note &eventParams, const bool undoable)
             this->eventDispatcher.dispatchPostRemoveEvent(this);
             return true;
         }
-        
+
         return false;
     }
 
@@ -162,7 +162,7 @@ bool PianoSequence::change(const Note &oldParams,
             this->updateBeatRange(true);
             return true;
         }
-        
+
         return false;
     }
 
@@ -337,7 +337,7 @@ SerializedData PianoSequence::serialize() const
         const auto *event = this->midiEvents.getUnchecked(i);
         tree.appendChild(event->serialize());
     }
-    
+
     return tree;
 }
 
@@ -362,7 +362,7 @@ void PianoSequence::deserialize(const SerializedData &data)
     forEachChildWithType(root, e, Serialization::Midi::note)
     {
         parameters.deserialize(e);
-        
+
         if (this->usedEventIds.contains(parameters.getId()))
         {
             // this should not happen, since all notes should have unique ids, but
