@@ -195,6 +195,20 @@ File DocumentHelpers::getTempSlot(const String &fileName)
     return getFirstSlot(tempPath, tempPath, fileName);
 }
 
+File DocumentHelpers::findFileInLocationOrDocuments(const String &fullFilePath)
+{
+    File file(fullFilePath);
+
+    if (!file.existsAsFile())
+    {
+        // iOS hack: the `documents` path will change between launches
+        file = DocumentHelpers::getDocumentSlot(file.getFileName());
+        jassert(file.existsAsFile());
+    }
+
+    return file;
+}
+
 static const OwnedArray<Serializer> &getSerializers()
 {
     static OwnedArray<Serializer> serializers;

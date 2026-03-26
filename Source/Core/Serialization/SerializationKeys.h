@@ -288,6 +288,7 @@ namespace Serialization
         static const Identifier defaultNoteVolume = "defaultNoteVolume";
 
         static const Identifier lastRenderPath = "lastRenderPath";
+        static const Identifier lastSoundFontsPath = "lastSoundFontsPath";
 
         namespace Flags
         {

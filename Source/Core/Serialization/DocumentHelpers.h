@@ -26,6 +26,11 @@ public:
     static File getConfigSlot(const String &fileName);
     static File getTempSlot(const String &fileName);
 
+    // on some platforms, like iOS, we're not supposed to use full paths,
+    // because paths will change every time the app relaunches,
+    // this falls back to looking in the app's documents, if not found at fullFilePath:
+    static File findFileInLocationOrDocuments(const String &fullFilePath);
+
     // asks required permissions, if needed,
     // then displays the async file chooser,
     // then filters out the invalid results:

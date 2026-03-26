@@ -514,19 +514,12 @@ void ProjectNode::deserialize(const SerializedData &data)
 {
     this->reset();
 
-    const File fullPathFile = File(data.getProperty(Serialization::Core::filePath));
-
-    // iOS hack: the `documents` path will change between launches
-    const File relativePathFile = DocumentHelpers::getDocumentSlot(fullPathFile.getFileName());
+    const auto fullPath = data.getProperty(Serialization::Core::filePath, "");
+    const auto fullPathFile = DocumentHelpers::findFileInLocationOrDocuments(fullPath);
 
     if (fullPathFile.existsAsFile())
     {
         this->getDocument()->load(fullPathFile);
-        return;
-    }
-    else if (relativePathFile.existsAsFile())
-    {
-        this->getDocument()->load(relativePathFile);
         return;
     }
 

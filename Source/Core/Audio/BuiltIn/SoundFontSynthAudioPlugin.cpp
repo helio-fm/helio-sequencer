@@ -26,6 +26,7 @@
 #include "SerializationKeys.h"
 #include "Workspace.h"
 #include "HelioTheme.h"
+#include "Config.h"
 
 const String SoundFontSynthAudioPlugin::instrumentId = "<soundfont-player>";
 const String SoundFontSynthAudioPlugin::instrumentName = "SoundFont Player";
@@ -142,8 +143,28 @@ public:
 
         if (commandId == CommandIDs::Browse)
         {
+            String defaultDirectory;
+
+            if (!synthParams.filePath.isEmpty())
+            {
+                const auto currentFile =
+                    DocumentHelpers::findFileInLocationOrDocuments(synthParams.filePath);
+
+                if (currentFile.existsAsFile())
+                {
+                    defaultDirectory = currentFile.getParentDirectory().getFullPathName();
+                }
+            }
+
+            if (defaultDirectory.isEmpty())
+            {
+                defaultDirectory =
+                    App::Config().getProperty(Serialization::UI::lastSoundFontsPath,
+                        File::getCurrentWorkingDirectory().getFullPathName());
+            }
+
             this->fileChooser = make<FileChooser>(TRANS(I18n::Dialog::documentLoad),
-                this->lastUsedDirectory, ("*.sf2;*.sf3;*.sf4;*.sbk;*.SF2;*.SF3;*.SF4;*.SBK"), true);
+                defaultDirectory, ("*.sf2;*.sf3;*.sf4;*.sbk;*.SF2;*.SF3;*.SF4;*.SBK"), true);
 
             DocumentHelpers::showFileChooser(this->fileChooser,
                 Globals::UI::FileChooser::forFileToOpen,
@@ -155,7 +176,8 @@ public:
                     }
 
                     const auto file = url.getLocalFile();
-                    this->lastUsedDirectory = file.getParentDirectory().getFullPathName();
+                    App::Config().setProperty(Serialization::UI::lastSoundFontsPath,
+                        file.getParentDirectory().getFullPathName());
 
                     const auto newParams = this->audioPlugin->getSynthParameters()
                         .withSoundFontFile(file.getFullPathName());
@@ -187,7 +209,6 @@ private:
     UniquePointer<IconButton> browseButton;
 
     UniquePointer<FileChooser> fileChooser;
-    String lastUsedDirectory = File::getCurrentWorkingDirectory().getFullPathName();
 
     // preset selection
     UniquePointer<TextEditor> programNameLabel;

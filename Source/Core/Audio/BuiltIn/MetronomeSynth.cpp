@@ -51,17 +51,11 @@ AudioFormatReader *MetronomeSynth::TickSample::createReader()
         return wavReader.createReaderFor(new MemoryInputStream(this->sourceData, this->sourceDataSize, false), true);
     }
 
-    File sampleFile(this->customSamplePath);
+    const File sampleFile = DocumentHelpers::findFileInLocationOrDocuments(this->customSamplePath);
     if (!sampleFile.existsAsFile())
     {
-        // iOS hack: the `documents` path will change between launches
-        sampleFile = DocumentHelpers::getDocumentSlot(sampleFile.getFileName());
-
-        if (!sampleFile.existsAsFile())
-        {
-            jassertfalse;
-            return nullptr;
-        }
+        jassertfalse;
+        return nullptr;
     }
 
     if (this->customSamplePath.endsWithIgnoreCase(".wav"))

@@ -682,15 +682,10 @@ void SoundFontVoice::killNote()
 
 void SoundFontSynth::initSynth(const Parameters &parameters)
 {
-    File file(parameters.filePath);
+    const auto file = DocumentHelpers::findFileInLocationOrDocuments(parameters.filePath);
     if (!file.existsAsFile())
     {
-        // iOS hack: the `documents` path will change between launches
-        file = DocumentHelpers::getDocumentSlot(file.getFileName());
-        if (!file.existsAsFile())
-        {
-            return;
-        }
+        return;
     }
 
     const ScopedLock locker(this->lock);
