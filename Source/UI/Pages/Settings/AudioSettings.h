@@ -29,7 +29,7 @@ public:
     ~AudioSettings() override;
 
     void resized() override;
-    void parentHierarchyChanged() override;
+    void visibilityChanged() override;
     void handleCommandMessage(int commandId) override;
 
 private:

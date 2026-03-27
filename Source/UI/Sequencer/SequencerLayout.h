@@ -17,10 +17,9 @@
 
 #pragma once
 
+class RollBase;
 class PianoRoll;
 class PatternRoll;
-class RollBase;
-class RollsSwitchingProxy;
 class ProjectNode;
 class MidiTrack;
 class ProjectMapsScroller;
@@ -34,12 +33,13 @@ class Clip;
 
 class SequencerLayout final :
     public Component,
-    public Serializable,
-    public UserInterfaceFlags::Listener
+    public MultiTimer,
+    public UserInterfaceFlags::Listener,
+    public Serializable
 {
 public:
 
-    SequencerLayout(ProjectNode &parentProject, Point<int> defaultSize) noexcept;
+    explicit SequencerLayout(ProjectNode &parentProject) noexcept;
     ~SequencerLayout() override;
 
     void showPatternEditor();
@@ -62,6 +62,7 @@ public:
     void paint(Graphics &g) override {}
     void resized() override;
     void handleCommandMessage(int commandId) override;
+    void visibilityChanged() override;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -85,7 +86,6 @@ private:
 
     UniquePointer<PianoRoll> pianoRoll;
     UniquePointer<PatternRoll> patternRoll;
-    UniquePointer<RollsSwitchingProxy> rollContainer;
 
     UniquePointer<SequencerSidebarLeft> rollNavigationSidebar;
     UniquePointer<SequencerSidebarRight> rollToolsSidebar;
@@ -94,6 +94,146 @@ private:
 
     void proceedToRenderDialog(RenderFormat format);
     UniquePointer<FileChooser> renderTargetFileChooser;
+
+private:
+
+    void switchRolls();
+    void switchEditorPanels();
+    void switchScrollerMode();
+    void updateAnimatedRollsBounds();
+    void updateAnimatedRollsPositions();
+    void updateAnimatedMapsBounds();
+    void updateAnimatedMapsPositions();
+    Rectangle<int> getRollsBounds();
+
+    //===------------------------------------------------------------------===//
+    // MultiTimer
+    //===------------------------------------------------------------------===//
+
+    void timerCallback(int timerId) override;
+
+    enum AnimationTimers
+    {
+        rolls = 0,
+        maps = 1,
+        scrollerMode = 2
+    };
+
+    class ToggleAnimation final
+    {
+    public:
+
+        inline void start(float startSpeed)
+        {
+            this->direction *= -1.0;
+            this->speed = startSpeed;
+            this->deceleration = 1.0 - this->speed;
+        }
+
+        inline bool tickAndCheckIfDone()
+        {
+            this->position = this->position + (this->direction * this->speed);
+            this->speed *= this->deceleration;
+            return this->position < 0.0005 ||
+                this->position > 0.9995 ||
+                this->speed < 0.0005;
+        }
+
+        inline void finish()
+        {
+            // push to either 0 or 1:
+            this->position = jlimit(0.0, 1.0, this->position + this->direction);
+        }
+
+        inline bool canRestart() const
+        {
+            // only allow restarting the animation when the previous animation
+            // is close to be done so it doesn't feel glitchy but still responsive
+            return (this->direction > 0.0 && this->position > 0.85) ||
+                (this->direction < 0.0 && this->position < 0.15);
+        }
+
+        inline double isInDefaultState() const noexcept { return this->direction < 0.0; }
+        inline double getPosition() const noexcept { return this->position; }
+
+        inline void resetToStart() noexcept
+        {
+            this->position = 0.0;
+            this->direction = -1.0;
+        }
+
+        inline void resetToEnd() noexcept
+        {
+            this->position = 1.f;
+            this->direction = 1.f;
+        }
+
+    private:
+
+        // 0 to 1, animates the switching between piano and pattern roll
+        double position = 0.0;
+        double direction = -1.0;
+        double speed = 0.0;
+        double deceleration = 1.0;
+    };
+
+    ToggleAnimation rollsAnimation;
+    ToggleAnimation mapsAnimation;
+    ToggleAnimation scrollerModeAnimation;
+
+    int animationsTimerInterval = 1000 / 60;
+
+    static constexpr auto scrollerShadowSize = 12;
+    static constexpr auto rollsAnimationStartSpeed = 0.5f;
+    static constexpr auto mapsAnimationStartSpeed = 0.420f;
+    static constexpr auto scrollerModeAnimationStartSpeed = 0.69f;
+
+    inline bool canAnimate(AnimationTimers timer) const noexcept
+    {
+        switch (timer)
+        {
+        case AnimationTimers::rolls:
+            return this->rollsAnimation.canRestart();
+        case AnimationTimers::maps:
+            return this->mapsAnimation.canRestart();
+        case AnimationTimers::scrollerMode:
+            return this->scrollerModeAnimation.canRestart();
+        }
+        return false;
+    }
+
+    inline bool isPianoRollMode() const noexcept
+    {
+        return this->rollsAnimation.isInDefaultState();
+    }
+
+    inline bool isPatternRollMode() const noexcept
+    {
+        return !this->isPianoRollMode();
+    }
+
+    inline bool isProjectMapVisible() const
+    {
+        return this->mapsAnimation.isInDefaultState();
+    }
+
+    inline bool isEditorPanelVisible() const
+    {
+        return !this->isProjectMapVisible();
+    }
+
+    inline bool isFullProjectMapMode() const
+    {
+        return this->bottomMapsScroller->getScrollerMode() ==
+            ProjectMapsScroller::ScrollerMode::Map;
+    }
+
+    inline void setAnimationsEnabled(bool shouldBeEnabled);
+
+    inline bool areAnimationsEnabled() const noexcept
+    {
+        return this->animationsTimerInterval > 0;
+    }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SequencerLayout);
 };

@@ -224,8 +224,7 @@ void ProjectNode::recreatePage()
         layoutState = this->sequencerLayout->serialize();
     }
 
-    const auto defaultSize = App::Layout().getLocalBounds().getBottomRight();
-    this->sequencerLayout = make<SequencerLayout>(*this, defaultSize);
+    this->sequencerLayout = make<SequencerLayout>(*this);
     this->projectPage = make<ProjectPage>(*this);
 
     // reset caches and let rolls update view ranges:

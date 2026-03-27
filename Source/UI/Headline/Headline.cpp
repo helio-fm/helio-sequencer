@@ -144,7 +144,7 @@ void Headline::handleAsyncUpdate()
     {
         const auto finalPos = this->selectionItem->getBounds().withX(posX - Headline::itemsOverlapOffset);
         this->animator.cancelAnimation(this->selectionItem.get(), false);
-        this->animator.animateComponent(this->selectionItem.get(), finalPos, 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
+        this->animator.animateComponent(this->selectionItem.get(), finalPos, 1.f, Globals::UI::fadeInShort, false, 1.0, 0.0);
         this->selectionItem->toBack();
         this->navPanel->toFront(false);
     }
@@ -224,7 +224,7 @@ int Headline::rebuildChain(WeakReference<TreeNode> leaf)
         child->toBack();
         const auto finalPos = child->getBounds().withX(lastPosX - Headline::itemsOverlapOffset);
         lastPosX += child->getWidth() - Headline::itemsOverlapOffset;
-        this->animator.animateComponent(child, finalPos, 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
+        this->animator.animateComponent(child, finalPos, 1.f, Globals::UI::fadeInShort, false, 1.0, 0.0);
     }
 
     this->navPanel->toFront(false);
@@ -292,7 +292,7 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
     this->selectionItem->toBack();
     const auto finalPos = this->selectionItem->getBounds().withX(x);
     this->animator.animateComponent(this->selectionItem.get(), finalPos,
-        1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
+        1.f, Globals::UI::fadeInShort, false, 1.0, 0.0);
 
     this->navPanel->toFront(false);
 }

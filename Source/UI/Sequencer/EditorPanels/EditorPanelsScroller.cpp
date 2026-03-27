@@ -113,7 +113,7 @@ void EditorPanelsScroller::switchToRoll(SafePointer<RollBase> roll)
         editor->setEditableClip(this->activeClip, this->selectedEventFilter);
     }
 
-    if (this->animationsEnabled)
+    if (this->animationsEnabled && this->isShowing())
     {
         this->startTimerHz(60);
     }

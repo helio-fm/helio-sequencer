@@ -164,8 +164,19 @@ void SequencerSidebarLeft::setAudioMonitor(AudioMonitor *audioMonitor)
 void SequencerSidebarLeft::setLinearMode()
 {
     this->buttonFader.cancelAllAnimations(false);
-    this->buttonFader.fadeIn(this->switchPatternModeButton.get(), Globals::UI::fadeInLong);
-    this->buttonFader.fadeOut(this->switchLinearModeButton.get(), Globals::UI::fadeOutLong);
+
+    if (this->isShowing())
+    {
+        this->buttonFader.fadeIn(this->switchPatternModeButton.get(), Globals::UI::fadeInShort);
+        this->buttonFader.fadeOut(this->switchLinearModeButton.get(), Globals::UI::fadeOutShort);
+    }
+    else
+    {
+        this->switchPatternModeButton->setAlpha(1.f);
+        this->switchLinearModeButton->setAlpha(1.f);
+        this->switchPatternModeButton->setVisible(true);
+        this->switchLinearModeButton->setVisible(false);
+    }
 
     if (this->menuMode != MenuMode::PianoRollTools)
     {
@@ -178,8 +189,19 @@ void SequencerSidebarLeft::setLinearMode()
 void SequencerSidebarLeft::setPatternMode()
 {
     this->buttonFader.cancelAllAnimations(false);
-    this->buttonFader.fadeIn(this->switchLinearModeButton.get(), Globals::UI::fadeInLong);
-    this->buttonFader.fadeOut(this->switchPatternModeButton.get(), Globals::UI::fadeOutLong);
+
+    if (this->isShowing())
+    {
+        this->buttonFader.fadeIn(this->switchLinearModeButton.get(), Globals::UI::fadeInShort);
+        this->buttonFader.fadeOut(this->switchPatternModeButton.get(), Globals::UI::fadeOutShort);
+    }
+    else
+    {
+        this->switchLinearModeButton->setAlpha(1.f);
+        this->switchPatternModeButton->setAlpha(1.f);
+        this->switchLinearModeButton->setVisible(true);
+        this->switchPatternModeButton->setVisible(false);
+    }
 
     if (this->menuMode != MenuMode::PatternRollTools)
     {

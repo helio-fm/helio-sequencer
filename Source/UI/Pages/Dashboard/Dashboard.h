@@ -38,6 +38,7 @@ public:
     explicit Dashboard(Workspace &workspace);
     ~Dashboard();
 
+    void parentHierarchyChanged() override;
     void resized() override;
 
 private:

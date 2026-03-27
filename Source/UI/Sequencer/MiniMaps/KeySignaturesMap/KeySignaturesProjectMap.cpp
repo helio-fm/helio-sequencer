@@ -406,7 +406,7 @@ void KeySignaturesProjectMap::applyKeySignatureBounds(KeySignatureComponent *nc,
     const float nextX = mapWidth * (nextBeat / projectLengthInBeats);
 
     const float minWidth = 10.f;
-    const float widthMargin = 15.f;
+    const float widthMargin = 12.f;
     const float componentsPadding = 10.f;
     const float maxWidth = nextX - x;
     const float w = jmax(minWidth,

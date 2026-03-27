@@ -213,7 +213,7 @@ private:
 
     // all these options are expected to be toggled by hotkeys,
     // so let's have a sensible delay before we serialize anything:
-    static constexpr auto saveTimeoutMs = 2000;
+    static constexpr auto saveTimeoutMs = 500;
 
     void timerCallback() override;
     ListenerList<Listener> listeners;

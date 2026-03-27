@@ -1007,10 +1007,10 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
 
     this->setColour(ColourIDs::Roll::playheadShade,
         s->getBlackKeyColour().darker(1.f).withAlpha(0.069f));
-    this->setColour(ColourIDs::Roll::playheadPlayback, s->getLassoBorderColour().
-        interpolatedWith(s->getBlackKeyColour(), this->isDarkTheme ? 0.2f : 0.1f).withAlpha(1.f));
-    this->setColour(ColourIDs::Roll::playheadSmallPlayback, s->getLassoBorderColour().
-        interpolatedWith(s->getWhiteKeyColour(), this->isDarkTheme ? 0.5f : 0.25f).withAlpha(1.f));
+    this->setColour(ColourIDs::Roll::playheadPlayback, s->getLassoBorderColour().withAlpha(1.f).
+        interpolatedWith(s->getBlackKeyColour(), this->isDarkTheme ? 0.2f : 0.1f));
+    this->setColour(ColourIDs::Roll::playheadSmallPlayback, s->getLassoBorderColour().withAlpha(1.f).
+        interpolatedWith(s->getWhiteKeyColour(), this->isDarkTheme ? 0.5f : 0.25f));
     this->setColour(ColourIDs::Roll::playheadRecording,
         s->getLassoBorderColour().interpolatedWith(Colours::red, 0.5f).withAlpha(1.f));
 
@@ -1029,8 +1029,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
         Colours::black.withAlpha(this->isDarkTheme ? 0.1f : 0.07f));
 
     this->setColour(ColourIDs::Roll::clipFill, this->isDarkTheme ?
-        s->getBlackKeyColour().darker(1.f).withAlpha(0.77f) :
-        s->getWhiteKeyColour().brighter(0.11f).withAlpha(0.88f));
+        s->getBlackKeyColour().darker(1.f).withAlpha(0.8f) :
+        s->getWhiteKeyColour().brighter(0.11f).withAlpha(0.9f));
     this->setColour(ColourIDs::Roll::clipForeground, textColour);
 
     this->setColour(ColourIDs::Roll::noteFill, textColour.interpolatedWith(Colours::white, 0.5f));

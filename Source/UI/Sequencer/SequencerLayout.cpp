@@ -49,465 +49,14 @@
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 
-//===----------------------------------------------------------------------===//
-// Rolls container responsible for switching between piano and pattern roll
-//===----------------------------------------------------------------------===//
-
-class RollsSwitchingProxy final : public Component, private MultiTimer
-{
-public:
-
-    enum Timers
-    {
-        rolls = 0,
-        maps = 1,
-        scrollerMode = 2
-    };
-
-    RollsSwitchingProxy(RollBase *targetRoll1,
-        RollBase *targetRoll2,
-        Viewport *targetViewport1,
-        Viewport *targetViewport2,
-        ProjectMapsScroller *bottomMapsScroller,
-        EditorPanelsScroller *bottomEditorsScroller,
-        EditorPanelsSwitcher *bottomEditorsSwitcher,
-        Component *scrollerShadow,
-        Point<int> defaultSize) :
-        pianoRoll(targetRoll1),
-        pianoViewport(targetViewport1),
-        patternRoll(targetRoll2),
-        patternViewport(targetViewport2),
-        bottomMapsScroller(bottomMapsScroller),
-        bottomEditorsScroller(bottomEditorsScroller),
-        bottomEditorsSwitcher(bottomEditorsSwitcher),
-        scrollerShadow(scrollerShadow)
-    {
-        this->setFocusContainerType(Component::FocusContainerType::none);
-        this->setWantsKeyboardFocus(false);
-        this->setMouseClickGrabsKeyboardFocus(false);
-        this->setPaintingIsUnclipped(false);
-        this->setInterceptsMouseClicks(false, true);
-        this->setAccessible(false);
-
-        this->addAndMakeVisible(this->pianoViewport);
-        this->addChildComponent(this->patternViewport); // invisible by default
-        this->addAndMakeVisible(this->scrollerShadow);
-        this->addChildComponent(this->bottomEditorsSwitcher); // invisible by default, behind the scroller
-        this->addChildComponent(this->bottomEditorsScroller); // invisible by default, behind the piano map
-        this->addAndMakeVisible(this->bottomMapsScroller);
-
-        this->patternRoll->setEnabled(false);
-        this->patternRoll->setVisible(false);
-
-        const auto shouldShowFullMiniMap = App::Config().getUiFlags()->isProjectMapInLargeMode();
-        this->bottomMapsScroller->setScrollerMode(shouldShowFullMiniMap ?
-            ProjectMapsScroller::ScrollerMode::Map : ProjectMapsScroller::ScrollerMode::Scroller);
-
-        // the way I'm working with animations here is kinda frustrating,
-        // but I'm out of ideas and time, todo refactor that someday
-        if (!shouldShowFullMiniMap)
-        {
-            this->scrollerModeAnimation.resetToEnd();
-        }
-
-        if (App::Config().getUiFlags()->isEditorPanelVisible())
-        {
-            this->mapsAnimation.resetToEnd();
-            this->bottomMapsScroller->setVisible(false);
-            this->bottomEditorsScroller->setVisible(true);
-            this->bottomEditorsSwitcher->setVisible(true);
-        }
-
-        jassert(!defaultSize.isOrigin());
-        this->setSize(jmax(256, defaultSize.getX()), jmax(256, defaultSize.getY())); // not 0
-    }
-
-    inline bool canAnimate(Timers timer) const noexcept
-    {
-        switch (timer)
-        {
-        case Timers::rolls:
-            return this->rollsAnimation.canRestart();
-        case Timers::maps:
-            return this->mapsAnimation.canRestart();
-        case Timers::scrollerMode:
-            return this->scrollerModeAnimation.canRestart();
-        }
-        return false;
-    }
-
-    inline bool isPianoRollMode() const noexcept
-    {
-        return this->rollsAnimation.isInDefaultState();
-    }
-
-    inline bool isPatternRollMode() const noexcept
-    {
-        return !this->isPianoRollMode();
-    }
-
-    inline bool isProjectMapVisible() const
-    {
-        return this->mapsAnimation.isInDefaultState();
-    }
-
-    inline bool isEditorPanelVisible() const
-    {
-        return !this->isProjectMapVisible();
-    }
-
-    inline bool isFullProjectMapMode() const
-    {
-        return this->bottomMapsScroller->getScrollerMode() ==
-            ProjectMapsScroller::ScrollerMode::Map;
-    }
-
-    void setAnimationsEnabled(bool shouldBeEnabled)
-    {
-        this->animationsTimerInterval = shouldBeEnabled ? 1000 / 60 : 0;
-        this->bottomMapsScroller->setAnimationsEnabled(shouldBeEnabled);
-        this->bottomEditorsScroller->setAnimationsEnabled(shouldBeEnabled);
-    }
-
-    bool areAnimationsEnabled() const noexcept
-    {
-        return this->animationsTimerInterval > 0;
-    }
-
-    void startRollSwitchAnimation()
-    {
-        this->rollsAnimation.start(RollsSwitchingProxy::rollsAnimationStartSpeed);
-
-        const bool patternRollMode = this->isPatternRollMode();
-        this->bottomMapsScroller->switchToRoll(patternRollMode ? this->patternRoll : this->pianoRoll);
-        this->bottomEditorsScroller->switchToRoll(patternRollMode ? this->patternRoll : this->pianoRoll);
-
-        // Disabling the rolls prevents them from receiving keyboard events:
-        this->patternRoll->setEnabled(patternRollMode);
-        this->pianoRoll->setEnabled(!patternRollMode);
-        this->patternRoll->setVisible(true);
-        this->pianoRoll->setVisible(true);
-        this->patternViewport->setVisible(true);
-        this->pianoViewport->setVisible(true);
-
-        if (this->areAnimationsEnabled() && this->isShowing())
-        {
-            this->resized();
-            this->startTimer(Timers::rolls, this->animationsTimerInterval);
-        }
-        else
-        {
-            this->rollsAnimation.finish();
-            this->timerCallback(Timers::rolls);
-        }
-    }
-
-    void startMapSwitchAnimation()
-    {
-        this->mapsAnimation.start(RollsSwitchingProxy::mapsAnimationStartSpeed);
-
-        // Disabling the panels prevents them from receiving keyboard events:
-        const bool editorPanelMode = this->isEditorPanelVisible();
-        this->bottomEditorsScroller->setEnabled(editorPanelMode);
-        this->bottomEditorsSwitcher->setEnabled(editorPanelMode);
-        this->bottomMapsScroller->setEnabled(!editorPanelMode);
-        this->bottomEditorsScroller->setVisible(true);
-        this->bottomEditorsSwitcher->setVisible(true);
-        this->bottomMapsScroller->setVisible(true);
-
-        this->resized();
-        this->startTimer(Timers::maps, this->animationsTimerInterval);
-    }
-
-    void startScrollerModeSwitchAnimation()
-    {
-        this->scrollerModeAnimation.start(RollsSwitchingProxy::scrollerModeAnimationStartSpeed);
-        if (this->isFullProjectMapMode())
-        {
-            this->bottomMapsScroller->setScrollerMode(ProjectMapsScroller::ScrollerMode::Scroller);
-        }
-        else
-        {
-            this->bottomMapsScroller->setScrollerMode(ProjectMapsScroller::ScrollerMode::Map);
-        }
-
-        this->startTimer(Timers::scrollerMode, this->animationsTimerInterval);
-    }
-
-    void resized() override
-    {
-        this->updateAnimatedRollsBounds();
-        this->updateAnimatedMapsBounds();
-
-        if ((this->pianoRoll->getBeatWidth() * this->pianoRoll->getNumBeats()) < this->getWidth())
-        {
-            this->pianoRoll->setBeatWidth(float(this->getWidth()) / float(this->pianoRoll->getNumBeats()));
-        }
-
-        if ((this->patternRoll->getBeatWidth() * this->patternRoll->getNumBeats()) < this->getWidth())
-        {
-            this->patternRoll->setBeatWidth(float(this->getWidth()) / float(this->patternRoll->getNumBeats()));
-        }
-
-        // Force update children bounds, even if they have just moved
-        this->pianoRoll->resized();
-        this->patternRoll->resized();
-    }
-
-private:
-
-    int animationsTimerInterval = 1000 / 60;
-
-    void updateAnimatedRollsBounds()
-    {
-        const auto scrollerHeight = Globals::UI::projectMapHeight -
-            int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
-                this->scrollerModeAnimation.getPosition());
-
-        const auto editorPanelHeight =
-            int(Globals::UI::editorPanelHeight * this->mapsAnimation.getPosition());
-
-        const auto maxBottomPanelHeight = jmax(scrollerHeight, editorPanelHeight);
-
-        const auto r = this->getLocalBounds();
-        const int rollViewportHeight = r.getHeight() - maxBottomPanelHeight + 1;
-        const Rectangle<int> rollSize(r.withBottom(r.getBottom() - maxBottomPanelHeight));
-        const int viewport1Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight);
-        const int viewport2Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight + rollViewportHeight);
-        this->pianoViewport->setBounds(rollSize.withY(viewport1Pos));
-        this->patternViewport->setBounds(rollSize.withY(viewport2Pos));
-    }
-
-    void updateAnimatedRollsPositions()
-    {
-        const auto scrollerHeight = Globals::UI::projectMapHeight -
-            int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
-                this->scrollerModeAnimation.getPosition());
-
-        const auto editorPanelHeight =
-            int(Globals::UI::editorPanelHeight * this->mapsAnimation.getPosition());
-
-        const auto maxBottomPanelHeight = jmax(scrollerHeight, editorPanelHeight);
-
-        const int rollViewportHeight = this->getHeight() - maxBottomPanelHeight + 1;
-        const int viewport1Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight);
-        const int viewport2Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight + rollViewportHeight);
-        this->pianoViewport->setTopLeftPosition(0, viewport1Pos);
-        this->patternViewport->setTopLeftPosition(0, viewport2Pos);
-    }
-
-    void updateAnimatedMapsBounds()
-    {
-        const auto projectMapHeight = Globals::UI::projectMapHeight -
-            int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
-                this->scrollerModeAnimation.getPosition());
-
-        const auto mapsBounds = this->getLocalBounds().removeFromBottom(projectMapHeight);
-        const auto panelsBounds = this->getLocalBounds().removeFromBottom(Globals::UI::editorPanelHeight);
-        const auto switcherBounds = panelsBounds
-            .translated(0, -EditorPanelsSwitcher::switcherHeight)
-            .withHeight(EditorPanelsSwitcher::switcherHeight);
-
-        const auto panelsToMapsOffset = Globals::UI::editorPanelHeight - projectMapHeight;
-        const auto switcherToMapsOffset = panelsToMapsOffset + EditorPanelsSwitcher::switcherHeight;
-
-        const int mapsPosition = roundToInt(this->mapsAnimation.getPosition() * projectMapHeight);
-        const int panelsPosition = roundToInt(this->mapsAnimation.getPosition() * panelsToMapsOffset);
-        const int switcherPosition = roundToInt(this->mapsAnimation.getPosition() * switcherToMapsOffset);
-
-        this->bottomMapsScroller->setBounds(mapsBounds.translated(0, mapsPosition));
-        this->bottomEditorsScroller->setBounds(panelsBounds.translated(0, panelsToMapsOffset - panelsPosition));
-
-        const auto switcherHidingOffset = roundToInt(this->rollsAnimation.getPosition() * this->bottomEditorsSwitcher->getHeight());
-        this->bottomEditorsSwitcher->setBounds(switcherBounds.translated(0, switcherToMapsOffset - switcherPosition + switcherHidingOffset));
-
-        this->scrollerShadow->setBounds(this->bottomEditorsScroller->getBounds()
-            .translated(0, -RollsSwitchingProxy::scrollerShadowSize)
-            .withHeight(RollsSwitchingProxy::scrollerShadowSize));
-    }
-
-    void updateAnimatedMapsPositions()
-    {
-        const auto projectMapHeight = Globals::UI::projectMapHeight -
-            int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
-                this->scrollerModeAnimation.getPosition());
-
-        const auto mapsY = this->getHeight() - projectMapHeight;
-        const auto panelsToMapsOffset = Globals::UI::editorPanelHeight - projectMapHeight;
-        const auto switcherToMapsOffset = panelsToMapsOffset + EditorPanelsSwitcher::switcherHeight;
-
-        const int mapsPosition = roundToInt(this->mapsAnimation.getPosition() * projectMapHeight);
-        const int panelsPosition = roundToInt(this->mapsAnimation.getPosition() * panelsToMapsOffset);
-        const int switcherPosition = roundToInt(this->mapsAnimation.getPosition() * switcherToMapsOffset);
-
-        this->bottomMapsScroller->setTopLeftPosition(0, mapsY + mapsPosition);
-        this->bottomEditorsScroller->setTopLeftPosition(0, mapsY - panelsPosition);
-
-        const auto switcherHidingOffset = roundToInt(this->rollsAnimation.getPosition() * this->bottomEditorsSwitcher->getHeight());
-        this->bottomEditorsSwitcher->setTopLeftPosition(0, mapsY - switcherPosition + switcherHidingOffset);
-
-        this->scrollerShadow->setTopLeftPosition(0,
-            this->bottomEditorsScroller->getY() - this->scrollerShadow->getHeight());
-    }
-
-    void timerCallback(int timerId) override
-    {
-        switch (timerId)
-        {
-        case Timers::rolls:
-            if (this->rollsAnimation.tickAndCheckIfDone())
-            {
-                this->stopTimer(Timers::rolls);
-
-                if (this->isPatternRollMode())
-                {
-                    this->pianoRoll->setVisible(false);
-                    this->pianoViewport->setVisible(false);
-                }
-                else
-                {
-                    this->patternRoll->setVisible(false);
-                    this->patternViewport->setVisible(false);
-                }
-
-                this->rollsAnimation.finish();
-                this->resized();
-            }
-
-            this->updateAnimatedMapsPositions();
-            this->updateAnimatedRollsPositions();
-            break;
-
-        case Timers::maps:
-
-            if (this->mapsAnimation.tickAndCheckIfDone())
-            {
-                this->stopTimer(Timers::maps);
-
-                if (this->isEditorPanelVisible())
-                {
-                    this->bottomMapsScroller->setVisible(false);
-                }
-                else
-                {
-                    this->bottomEditorsScroller->setVisible(false);
-                    this->bottomEditorsSwitcher->setVisible(false);
-                }
-
-                this->mapsAnimation.finish();
-            }
-
-            this->updateAnimatedMapsPositions();
-            this->updateAnimatedRollsBounds();
-            break;
-
-        case Timers::scrollerMode:
-            if (this->scrollerModeAnimation.tickAndCheckIfDone())
-            {
-                this->stopTimer(Timers::scrollerMode);
-                this->scrollerModeAnimation.finish();
-            }
-
-            this->updateAnimatedMapsBounds();
-            this->updateAnimatedRollsBounds();
-            break;
-
-        default:
-            break;
-        }
-    }
-
-    SafePointer<RollBase> pianoRoll;
-    SafePointer<Viewport> pianoViewport;
-
-    SafePointer<RollBase> patternRoll;
-    SafePointer<Viewport> patternViewport;
-
-    SafePointer<ProjectMapsScroller> bottomMapsScroller;
-    SafePointer<EditorPanelsScroller> bottomEditorsScroller;
-    SafePointer<EditorPanelsSwitcher> bottomEditorsSwitcher;
-    SafePointer<Component> scrollerShadow;
-
-    static constexpr auto scrollerShadowSize = 12;
-    static constexpr auto rollsAnimationStartSpeed = 0.4f;
-    static constexpr auto mapsAnimationStartSpeed = 0.35f;
-    static constexpr auto scrollerModeAnimationStartSpeed = 0.5f;
-
-    class ToggleAnimation final
-    {
-    public:
-
-        void start(float startSpeed)
-        {
-            this->direction *= -1.0;
-            this->speed = startSpeed;
-            this->deceleration = 1.0 - this->speed;
-        }
-
-        bool tickAndCheckIfDone()
-        {
-            this->position = this->position + (this->direction * this->speed);
-            this->speed *= this->deceleration;
-            return this->position < 0.0005 ||
-                this->position > 0.9995 ||
-                this->speed < 0.0005;
-        }
-
-        void finish()
-        {
-            // push to either 0 or 1:
-            this->position = jlimit(0.0, 1.0, this->position + this->direction);
-        }
-
-        bool canRestart() const
-        {
-            // only allow restarting the animation when the previous animation
-            // is close to be done so it doesn't feel glitchy but still responsive
-            return (this->direction > 0.0 && this->position > 0.85) ||
-                (this->direction < 0.0 && this->position < 0.15);
-        }
-
-        double isInDefaultState() const noexcept { return this->direction < 0.0; }
-        double getPosition() const noexcept { return this->position; }
-
-        void resetToStart() noexcept
-        {
-            this->position = 0.0;
-            this->direction = -1.0;
-        }
-
-        void resetToEnd() noexcept
-        {
-            this->position = 1.f;
-            this->direction = 1.f;
-        }
-
-    private:
-
-        // 0 to 1, animates the switching between piano and pattern roll
-        double position = 0.0;
-        double direction = -1.0;
-        double speed = 0.0;
-        double deceleration = 1.0;
-    };
-
-    ToggleAnimation rollsAnimation;
-    ToggleAnimation mapsAnimation;
-    ToggleAnimation scrollerModeAnimation;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RollsSwitchingProxy)
-};
-
-//===----------------------------------------------------------------------===//
-// SequencerLayout
-//===----------------------------------------------------------------------===//
-
-SequencerLayout::SequencerLayout(ProjectNode &parentProject, Point<int> defaultSize) noexcept :
+SequencerLayout::SequencerLayout(ProjectNode &parentProject) noexcept :
     project(parentProject)
 {
     this->setComponentID(ComponentIDs::sequencerLayoutId);
+    this->setFocusContainerType(Component::FocusContainerType::none);
+    this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, true);
-    this->setPaintingIsUnclipped(true);
+    this->setPaintingIsUnclipped(false);
     this->setAccessible(false);
     this->setOpaque(true);
 
@@ -561,17 +110,17 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject, Point<int> defaultS
 
     this->scrollerShadow = make<ShadowUpwards>(ShadowType::Light);
 
-    // a container with 2 rolls and 2 types of bottom scroller panel
+    // layout for rolls and bottom maps/panels
 
-    this->rollContainer = make<RollsSwitchingProxy>(this->pianoRoll.get(), this->patternRoll.get(),
-        this->pianoViewport.get(), this->patternViewport.get(),
-        this->bottomMapsScroller.get(), this->bottomEditorsScroller.get(),
-        this->bottomEditorsSwitcher.get(), this->scrollerShadow.get(),
-        defaultSize);
-
-    const auto hasAnimations = App::Config().getUiFlags()->areUiAnimationsEnabled();
-    this->rollContainer->setAnimationsEnabled(hasAnimations);
-    this->addAndMakeVisible(this->rollContainer.get());
+    // visibility defaults to the piano roll and the mini-map:
+    this->addAndMakeVisible(this->pianoViewport.get());
+    this->addChildComponent(this->patternViewport.get()); // invisible by default
+    this->addAndMakeVisible(this->scrollerShadow.get());
+    this->addChildComponent(this->bottomEditorsSwitcher.get()); // invisible by default, behind the scroller
+    this->addChildComponent(this->bottomEditorsScroller.get()); // invisible by default, behind the piano map
+    this->addAndMakeVisible(this->bottomMapsScroller.get());
+    this->patternRoll->setEnabled(false);
+    this->patternRoll->setVisible(false);
 
     // sidebars
 
@@ -587,7 +136,30 @@ SequencerLayout::SequencerLayout(ProjectNode &parentProject, Point<int> defaultS
     this->rightSidebarShadow = make<ShadowLeftwards>(ShadowType::Light);
     this->addAndMakeVisible(this->rightSidebarShadow.get());
 
-    App::Config().getUiFlags()->addListener(this);
+    // ui flags
+
+    auto *uiFlags = App::Config().getUiFlags();
+    this->setAnimationsEnabled(uiFlags->areUiAnimationsEnabled());
+
+    if (uiFlags->isProjectMapInLargeMode())
+    {
+        this->bottomMapsScroller->setScrollerMode(ProjectMapsScroller::ScrollerMode::Map);
+    }
+    else
+    {
+        this->scrollerModeAnimation.resetToEnd();
+        this->bottomMapsScroller->setScrollerMode(ProjectMapsScroller::ScrollerMode::Scroller);
+    }
+
+    if (uiFlags->isEditorPanelVisible())
+    {
+        this->mapsAnimation.resetToEnd();
+        this->bottomMapsScroller->setVisible(false);
+        this->bottomEditorsScroller->setVisible(true);
+        this->bottomEditorsSwitcher->setVisible(true);
+    }
+
+    uiFlags->addListener(this);
 }
 
 SequencerLayout::~SequencerLayout()
@@ -598,7 +170,6 @@ SequencerLayout::~SequencerLayout()
     this->rightSidebarShadow = nullptr;
     this->rollToolsSidebar = nullptr;
     this->rollNavigationSidebar = nullptr;
-    this->rollContainer = nullptr;
 
     this->patternRoll->removeRollListener(this->bottomEditorsScroller.get());
     this->patternRoll->removeRollListener(this->bottomMapsScroller.get());
@@ -619,9 +190,9 @@ SequencerLayout::~SequencerLayout()
 
 void SequencerLayout::showPatternEditor()
 {
-    if (!this->rollContainer->isPatternRollMode())
+    if (!this->isPatternRollMode())
     {
-        this->rollContainer->startRollSwitchAnimation();
+        this->switchRolls();
     }
 
     this->rollToolsSidebar->setPatternMode();
@@ -636,9 +207,9 @@ void SequencerLayout::showLinearEditor(const Clip &activeClip)
 {
     jassert(activeClip.isValid());
 
-    if (this->rollContainer->isPatternRollMode())
+    if (this->isPatternRollMode())
     {
-        this->rollContainer->startRollSwitchAnimation();
+        this->switchRolls();
     }
 
     this->rollToolsSidebar->setLinearMode();
@@ -652,7 +223,7 @@ void SequencerLayout::showLinearEditor(const Clip &activeClip)
 
 RollBase *SequencerLayout::getRoll() const noexcept
 {
-    if (this->rollContainer->isPatternRollMode())
+    if (this->isPatternRollMode())
     {
         return this->patternRoll.get();
     }
@@ -663,21 +234,316 @@ RollBase *SequencerLayout::getRoll() const noexcept
 }
 
 //===----------------------------------------------------------------------===//
+// MultiTimer
+//===----------------------------------------------------------------------===//
+
+void SequencerLayout::timerCallback(int timerId)
+{
+    switch (timerId)
+    {
+    case AnimationTimers::rolls:
+        if (this->rollsAnimation.tickAndCheckIfDone())
+        {
+            this->stopTimer(AnimationTimers::rolls);
+
+            if (this->isPatternRollMode())
+            {
+                this->pianoRoll->setVisible(false);
+                this->pianoViewport->setVisible(false);
+            }
+            else
+            {
+                this->patternRoll->setVisible(false);
+                this->patternViewport->setVisible(false);
+            }
+
+            this->rollsAnimation.finish();
+
+            if (this->isShowing())
+            {
+                this->resized();
+            }
+        }
+        else if (this->isShowing())
+        {
+            this->updateAnimatedMapsPositions();
+            this->updateAnimatedRollsPositions();
+        }
+        break;
+    case AnimationTimers::maps:
+        if (this->mapsAnimation.tickAndCheckIfDone())
+        {
+            this->stopTimer(AnimationTimers::maps);
+
+            if (this->isEditorPanelVisible())
+            {
+                this->bottomMapsScroller->setVisible(false);
+            }
+            else
+            {
+                this->bottomEditorsScroller->setVisible(false);
+                this->bottomEditorsSwitcher->setVisible(false);
+            }
+
+            this->mapsAnimation.finish();
+        }
+        if (this->isShowing())
+        {
+            this->updateAnimatedMapsPositions();
+            this->updateAnimatedRollsBounds();
+        }
+        break;
+    case AnimationTimers::scrollerMode:
+        if (this->scrollerModeAnimation.tickAndCheckIfDone())
+        {
+            this->stopTimer(AnimationTimers::scrollerMode);
+            this->scrollerModeAnimation.finish();
+        }
+        if (this->isShowing())
+        {
+            this->updateAnimatedMapsBounds();
+            this->updateAnimatedRollsBounds();
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+void SequencerLayout::switchRolls()
+{
+    this->rollsAnimation.start(SequencerLayout::rollsAnimationStartSpeed);
+
+    const bool patternRollMode = this->isPatternRollMode();
+    const SafePointer<RollBase> switchTo = patternRollMode ?
+        (RollBase *)this->patternRoll.get() : (RollBase *)this->pianoRoll.get();
+
+    this->bottomMapsScroller->switchToRoll(switchTo);
+    this->bottomEditorsScroller->switchToRoll(switchTo);
+
+    // disabling the rolls prevents them from receiving keyboard events:
+    this->patternRoll->setEnabled(patternRollMode);
+    this->pianoRoll->setEnabled(!patternRollMode);
+    this->patternRoll->setVisible(true);
+    this->pianoRoll->setVisible(true);
+    this->patternViewport->setVisible(true);
+    this->pianoViewport->setVisible(true);
+
+    if (this->areAnimationsEnabled() && this->isShowing())
+    {
+        this->resized();
+        this->startTimer(AnimationTimers::rolls, this->animationsTimerInterval);
+    }
+    else
+    {
+        this->rollsAnimation.finish();
+        this->timerCallback(AnimationTimers::rolls);
+    }
+}
+
+void SequencerLayout::switchEditorPanels()
+{
+    this->mapsAnimation.start(SequencerLayout::mapsAnimationStartSpeed);
+
+    // disabling the panels prevents them from receiving keyboard events:
+    const bool editorPanelMode = this->isEditorPanelVisible();
+    this->bottomEditorsScroller->setEnabled(editorPanelMode);
+    this->bottomEditorsSwitcher->setEnabled(editorPanelMode);
+    this->bottomMapsScroller->setEnabled(!editorPanelMode);
+    this->bottomEditorsScroller->setVisible(true);
+    this->bottomEditorsSwitcher->setVisible(true);
+    this->bottomMapsScroller->setVisible(true);
+
+    if (this->areAnimationsEnabled() && this->isShowing())
+    {
+        this->resized();
+        this->startTimer(AnimationTimers::maps, this->animationsTimerInterval);
+    }
+    else
+    {
+        this->mapsAnimation.finish();
+        this->timerCallback(AnimationTimers::maps);
+    }
+}
+
+void SequencerLayout::switchScrollerMode()
+{
+    this->scrollerModeAnimation.start(SequencerLayout::scrollerModeAnimationStartSpeed);
+
+    if (this->isFullProjectMapMode())
+    {
+        this->bottomMapsScroller->setScrollerMode(ProjectMapsScroller::ScrollerMode::Scroller);
+    }
+    else
+    {
+        this->bottomMapsScroller->setScrollerMode(ProjectMapsScroller::ScrollerMode::Map);
+    }
+
+    if (this->areAnimationsEnabled() && this->isShowing())
+    {
+        this->resized();
+        this->startTimer(AnimationTimers::scrollerMode, this->animationsTimerInterval);
+    }
+    else
+    {
+        this->scrollerModeAnimation.finish();
+        this->timerCallback(AnimationTimers::scrollerMode);
+    }
+}
+
+void SequencerLayout::updateAnimatedRollsBounds()
+{
+    const auto rollsBounds = this->getRollsBounds();
+
+    const auto scrollerHeight = Globals::UI::projectMapHeight -
+        int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
+            this->scrollerModeAnimation.getPosition());
+
+    const auto editorPanelHeight =
+        int(Globals::UI::editorPanelHeight * this->mapsAnimation.getPosition());
+
+    const auto maxBottomPanelHeight = jmax(scrollerHeight, editorPanelHeight);
+
+    const int rollViewportHeight = rollsBounds.getHeight() - maxBottomPanelHeight + 1;
+    const Rectangle<int> rollSize(rollsBounds.withBottom(rollsBounds.getBottom() - maxBottomPanelHeight));
+    const int viewport1Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight);
+    const int viewport2Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight + rollViewportHeight);
+
+    this->pianoViewport->setBounds(rollSize.withY(viewport1Pos));
+    this->patternViewport->setBounds(rollSize.withY(viewport2Pos));
+}
+
+void SequencerLayout::updateAnimatedRollsPositions()
+{
+    const auto rollsBounds = this->getRollsBounds();
+
+    const auto scrollerHeight = Globals::UI::projectMapHeight -
+        int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
+            this->scrollerModeAnimation.getPosition());
+
+    const auto editorPanelHeight =
+        int(Globals::UI::editorPanelHeight * this->mapsAnimation.getPosition());
+
+    const auto maxBottomPanelHeight = jmax(scrollerHeight, editorPanelHeight);
+
+    const int rollViewportHeight = rollsBounds.getHeight() - maxBottomPanelHeight + 1;
+    const int viewport1Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight);
+    const int viewport2Pos = int(-this->rollsAnimation.getPosition() * rollViewportHeight + rollViewportHeight);
+
+    this->pianoViewport->setTopLeftPosition(rollsBounds.getX(), viewport1Pos);
+    this->patternViewport->setTopLeftPosition(rollsBounds.getX(), viewport2Pos);
+}
+
+void SequencerLayout::updateAnimatedMapsBounds()
+{
+    const auto projectMapHeight = Globals::UI::projectMapHeight -
+        int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
+            this->scrollerModeAnimation.getPosition());
+
+    const auto mapsBounds = this->getRollsBounds().removeFromBottom(projectMapHeight);
+    const auto panelsBounds = this->getRollsBounds().removeFromBottom(Globals::UI::editorPanelHeight);
+    const auto switcherBounds = panelsBounds
+        .translated(0, -EditorPanelsSwitcher::switcherHeight)
+        .withHeight(EditorPanelsSwitcher::switcherHeight);
+
+    const auto panelsToMapsOffset = Globals::UI::editorPanelHeight - projectMapHeight;
+    const auto switcherToMapsOffset = panelsToMapsOffset + EditorPanelsSwitcher::switcherHeight;
+
+    const int mapsPosition = roundToInt(this->mapsAnimation.getPosition() * projectMapHeight);
+    const int panelsPosition = roundToInt(this->mapsAnimation.getPosition() * panelsToMapsOffset);
+    const int switcherPosition = roundToInt(this->mapsAnimation.getPosition() * switcherToMapsOffset);
+
+    this->bottomMapsScroller->setBounds(mapsBounds.translated(0, mapsPosition));
+    this->bottomEditorsScroller->setBounds(panelsBounds.translated(0, panelsToMapsOffset - panelsPosition));
+
+    const auto switcherHidingOffset = roundToInt(this->rollsAnimation.getPosition() * this->bottomEditorsSwitcher->getHeight());
+    this->bottomEditorsSwitcher->setBounds(switcherBounds.translated(0, switcherToMapsOffset - switcherPosition + switcherHidingOffset));
+
+    this->scrollerShadow->setBounds(this->bottomEditorsScroller->getBounds()
+        .translated(0, -SequencerLayout::scrollerShadowSize)
+        .withHeight(SequencerLayout::scrollerShadowSize));
+}
+
+void SequencerLayout::updateAnimatedMapsPositions()
+{
+    const auto rollsBounds = this->getRollsBounds();
+
+    const auto projectMapHeight = Globals::UI::projectMapHeight -
+        int((Globals::UI::projectMapHeight - Globals::UI::rollScrollerHeight) *
+            this->scrollerModeAnimation.getPosition());
+
+    const auto mapsY = rollsBounds.getHeight() - projectMapHeight;
+    const auto panelsToMapsOffset = Globals::UI::editorPanelHeight - projectMapHeight;
+    const auto switcherToMapsOffset = panelsToMapsOffset + EditorPanelsSwitcher::switcherHeight;
+
+    const int mapsPosition = roundToInt(this->mapsAnimation.getPosition() * projectMapHeight);
+    const int panelsPosition = roundToInt(this->mapsAnimation.getPosition() * panelsToMapsOffset);
+    const int switcherPosition = roundToInt(this->mapsAnimation.getPosition() * switcherToMapsOffset);
+
+    this->bottomMapsScroller->setTopLeftPosition(rollsBounds.getX(), mapsY + mapsPosition);
+    this->bottomEditorsScroller->setTopLeftPosition(rollsBounds.getX(), mapsY - panelsPosition);
+
+    const auto switcherHidingOffset = roundToInt(this->rollsAnimation.getPosition() * this->bottomEditorsSwitcher->getHeight());
+    this->bottomEditorsSwitcher->setTopLeftPosition(rollsBounds.getX(), mapsY - switcherPosition + switcherHidingOffset);
+
+    this->scrollerShadow->setTopLeftPosition(rollsBounds.getX(),
+        this->bottomEditorsScroller->getY() - this->scrollerShadow->getHeight());
+}
+
+inline void SequencerLayout::setAnimationsEnabled(bool shouldBeEnabled)
+{
+    this->animationsTimerInterval = shouldBeEnabled ? 1000 / 60 : 0;
+    this->bottomMapsScroller->setAnimationsEnabled(shouldBeEnabled);
+    this->bottomEditorsScroller->setAnimationsEnabled(shouldBeEnabled);
+}
+
+//===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
+
+Rectangle<int> SequencerLayout::getRollsBounds()
+{
+    auto localBounds = this->getLocalBounds();
+    jassert(localBounds.getWidth() > 0 && localBounds.getHeight() > 0);
+    localBounds.removeFromLeft(this->rollNavigationSidebar->getWidth());
+    localBounds.removeFromRight(this->rollToolsSidebar->getWidth());
+    return localBounds;
+}
+
+void SequencerLayout::visibilityChanged()
+{
+    if (this->isVisible() && !this->getLocalBounds().isEmpty())
+    {
+        this->resized();
+    }
+}
 
 void SequencerLayout::resized()
 {
     auto localBounds = this->getLocalBounds();
+    jassert(localBounds.getWidth() > 0 && localBounds.getHeight() > 0);
 
     const auto leftSidebarWidth = this->rollNavigationSidebar->getWidth();
     const auto rightSidebarWidth = this->rollToolsSidebar->getWidth();
     this->rollNavigationSidebar->setBounds(localBounds.removeFromLeft(leftSidebarWidth));
     this->rollToolsSidebar->setBounds(localBounds.removeFromRight(rightSidebarWidth));
-    // a hack for themes changing
-    this->rollToolsSidebar->resized();
 
-    this->rollContainer->setBounds(localBounds);
+    this->updateAnimatedRollsBounds();
+    this->updateAnimatedMapsBounds();
+
+    if ((this->pianoRoll->getBeatWidth() * this->pianoRoll->getNumBeats()) < localBounds.getWidth())
+    {
+        this->pianoRoll->setBeatWidth(float(localBounds.getWidth()) / float(this->pianoRoll->getNumBeats()));
+    }
+
+    if ((this->patternRoll->getBeatWidth() * this->patternRoll->getNumBeats()) < localBounds.getWidth())
+    {
+        this->patternRoll->setBeatWidth(float(localBounds.getWidth()) / float(this->patternRoll->getNumBeats()));
+    }
+
+    // force update children bounds, even if the rolls have just moved
+    this->pianoRoll->resized();
+    this->patternRoll->resized();
 
     this->leftSidebarShadow->setBounds(localBounds.removeFromLeft(Globals::UI::sidebarShadowSize));
     this->rightSidebarShadow->setBounds(localBounds.removeFromRight(Globals::UI::sidebarShadowSize));
@@ -728,12 +594,12 @@ void SequencerLayout::handleCommandMessage(int commandId)
         this->proceedToRenderDialog(RenderFormat::OGG);
         return;
     case CommandIDs::SwitchBetweenRolls:
-        if (!this->rollContainer->canAnimate(RollsSwitchingProxy::Timers::rolls))
+        if (!this->canAnimate(AnimationTimers::rolls))
         {
             break;
         }
 
-        if (this->rollContainer->isPatternRollMode())
+        if (this->isPatternRollMode())
         {
             if (this->project.getLastShownTrack() != nullptr)
             {
@@ -760,29 +626,27 @@ void SequencerLayout::handleCommandMessage(int commandId)
 
 void SequencerLayout::onEditorPanelVisibilityFlagChanged(bool shoudShow)
 {
-    const bool alreadyShowing = this->rollContainer->isEditorPanelVisible();
-    if ((alreadyShowing && shoudShow) || (!alreadyShowing && !shoudShow))
+    if (this->isEditorPanelVisible() == shoudShow)
     {
         return;
     }
 
-    this->rollContainer->startMapSwitchAnimation();
+    this->switchEditorPanels();
 }
 
 void SequencerLayout::onProjectMapLargeModeFlagChanged(bool showFullMap)
 {
-    const bool alreadyShowing = this->rollContainer->isFullProjectMapMode();
-    if ((alreadyShowing && showFullMap) || (!alreadyShowing && !showFullMap))
+    if (this->isFullProjectMapMode() == showFullMap)
     {
         return;
     }
 
-    this->rollContainer->startScrollerModeSwitchAnimation();
+    this->switchScrollerMode();
 }
 
 void SequencerLayout::onUiAnimationsFlagChanged(bool enabled)
 {
-    this->rollContainer->setAnimationsEnabled(enabled);
+    this->setAnimationsEnabled(enabled);
 }
 
 //===----------------------------------------------------------------------===//

@@ -96,7 +96,13 @@ HeadlineItem::~HeadlineItem()
 void HeadlineItem::paint(Graphics &g)
 {
     g.setColour(this->bgColour);
-    g.fillPath(this->backgroundShape);
+
+    // painting paths is very slow unfortunately:
+    //g.fillPath(this->backgroundShape);
+    const auto h23 = this->getHeight() * 2 / 3;
+    const auto w13 = this->arrow->getWidth() / 3;
+    g.fillRect(0, 0, this->getWidth() - w13, h23);
+    g.fillRect(0, h23, this->getWidth(), this->getHeight() - h23 - 1);
 }
 
 void HeadlineItem::resized()
@@ -124,9 +130,8 @@ void HeadlineItem::resized()
     this->backgroundShape.clear();
     this->backgroundShape.startNewSubPath(2.f, 1.f);
     this->backgroundShape.lineTo(float(this->getWidth() - this->arrow->getWidth()), 1.f);
-    this->backgroundShape.lineTo(float(this->getWidth() - 2), float(this->getHeight() - 2));
-    this->backgroundShape.lineTo(1.f, float(this->getHeight() - 1));
-    this->backgroundShape.lineTo(2.f, float(this->getHeight() - 2));
+    this->backgroundShape.lineTo(float(this->getWidth() - 2), float(this->getHeight() - 1));
+    this->backgroundShape.lineTo(2.f, float(this->getHeight() - 1));
     this->backgroundShape.closeSubPath();
 }
 

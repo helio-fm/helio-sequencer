@@ -42,31 +42,29 @@ void SpectralLogo::timerCallback()
     this->repaint();
 }
 
-float SpectralLogo::getLineThickness() const noexcept
+inline float SpectralLogo::getLineThickness() const noexcept
 {
     return this->lineThickness;
 }
 
-float SpectralLogo::getLineStepSize() const noexcept
+inline float SpectralLogo::getLineStepSize() const noexcept
 {
     return this->lineStepSize;
 }
 
-float SpectralLogo::getLineWidth() const noexcept
+inline float SpectralLogo::getLineWidth() const noexcept
 {
     return this->lineWidth;
 }
 
-void SpectralLogo::parentHierarchyChanged()
+inline void SpectralLogo::startAnimation() noexcept
 {
-    if (this->isShowing())
-    {
-        this->startTimer(70);
-    }
-    else
-    {
-        this->stopTimer();
-    }
+    this->startTimer(70);
+}
+
+inline void SpectralLogo::stopAnimation() noexcept
+{
+    this->stopTimer();
 }
 
 void SpectralLogo::resized()

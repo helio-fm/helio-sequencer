@@ -40,7 +40,7 @@ public:
     bool isInitialized() const noexcept;
     void stopPlaybackForAllProjects(); // on app suspend / shutdown
 
-    void selectTreeNodeWithId(const String &id);
+    void selectTreeNodeOrDefault(const String &nodeId);
 
     NavigationHistory &getNavigationHistory();
     void navigateBackwardIfPossible();

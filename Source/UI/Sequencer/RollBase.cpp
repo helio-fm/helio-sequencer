@@ -107,9 +107,6 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
         this->keySignaturesMap = make<KeySignaturesProjectMap>(this->project, this, KeySignaturesProjectMap::Type::Large);
     }
 
-    this->playhead = make<Playhead>(*this, this->project.getTransport(), this);
-    this->addAndMakeVisible(this->playhead.get());
-
     this->lassoComponent = make<SelectionComponent>();
     this->addAndMakeVisible(this->lassoComponent.get());
 
@@ -127,6 +124,9 @@ RollBase::RollBase(ProjectNode &parentProject, Viewport &viewportRef,
     {
         this->addAndMakeVisible(this->keySignaturesMap.get());
     }
+
+    this->playhead = make<Playhead>(*this, this->project.getTransport(), this);
+    this->addAndMakeVisible(this->playhead.get());
 
 #if ROLL_LISTENS_LONG_TAP
     this->longTapController = make<LongTapController>(*this);
@@ -490,18 +490,21 @@ void RollBase::zoomToArea(float minBeat, float maxBeat)
     jassert(maxBeat <= this->getLastBeat());
 
     // leave some spacing on the sides:
-    const auto marginBeats = (this->viewport.getWidth() / 10) / this->beatWidth;
+    const auto marginBeats = ceilf((this->viewport.getWidth() / 10) / this->beatWidth);
+    // clamp to roll's edges:
+    const auto marginBeatL = jlimit(0.f, marginBeats, minBeat - this->getFirstBeat());
+    const auto marginBeatR = jlimit(0.f, marginBeats, this->getLastBeat() - maxBeat);
 
     if (!this->zoomLevelLocked)
     {
         this->stopFollowingPlayhead();
 
-        const float widthToFit = float(this->viewport.getViewWidth());
-        const float numBeatsToFit = maxBeat - minBeat + (marginBeats * 2.f);
+        const float widthToFit = float(this->viewport.getWidth());
+        const float numBeatsToFit = maxBeat - minBeat + marginBeatL + marginBeatR;
         this->setBeatWidth(widthToFit / numBeatsToFit);
     }
 
-    const int minBeatX = this->getXPositionByBeat(minBeat - marginBeats);
+    const int minBeatX = this->getXPositionByBeat(minBeat - marginBeatL);
     this->viewport.setViewPosition(minBeatX, this->viewport.getViewPositionY());
 
     this->updateChildrenPositions();

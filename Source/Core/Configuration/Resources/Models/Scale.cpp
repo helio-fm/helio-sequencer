@@ -278,7 +278,7 @@ int Scale::compare(const Scale::Ptr other) const
 
     jassert(this->basePeriod == other->basePeriod);
 
-    if (auto diff = this->keys.size() - other->keys.size())
+    if (const auto diff = this->keys.size() - other->keys.size())
     {
         jassertfalse;
         return diff < 0 ? -1 : 1;
@@ -286,7 +286,7 @@ int Scale::compare(const Scale::Ptr other) const
 
     for (int i = 0; i < this->keys.size(); ++i)
     {
-        if (auto diff = this->keys.getUnchecked(i) - other->keys.getUnchecked(i))
+        if (const auto diff = this->keys.getUnchecked(i) - other->keys.getUnchecked(i))
         {
             return diff < 0 ? -1 : 1;
         }

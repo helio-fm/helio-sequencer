@@ -425,18 +425,13 @@ SerializedData SerializedData::readFromStream(InputStream &input)
     SerializedData v(type);
 
     const auto numProps = input.readCompressedInt();
-
     for (int i = 0; i < numProps; ++i)
     {
         const auto propertyType = readIdentifier(input);
-
+        jassert(propertyType.isValid());
         if (propertyType.isValid())
         {
             v.data->properties.set(propertyType, var::readFromStream(input));
-        }
-        else
-        {
-            jassertfalse;
         }
     }
 
@@ -446,9 +441,9 @@ SerializedData SerializedData::readFromStream(InputStream &input)
     for (int i = 0; i < numChildren; ++i)
     {
         const auto child = readFromStream(input);
-
         if (!child.isValid())
         {
+            jassertfalse;
             return v;
         }
 

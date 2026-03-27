@@ -1009,25 +1009,19 @@ void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks, const P
     // if this happens to be a new project, focus somewhere in the centre:
     if (this->getViewport().getViewPositionY() == 0)
     {
-        int focusMinKey = INT_MAX;
         int focusMaxKey = 0;
         for (const auto &sequenceMap : this->patternMap)
         {
-            const bool isActive = sequenceMap.first == this->activeClip; // same id
-            if (isActive)
+            for (const auto &component : *sequenceMap.second)
             {
-                for (const auto &component : *sequenceMap.second)
-                {
-                    focusMinKey = jmin(focusMinKey, component.second->getKey());
-                    focusMaxKey = jmax(focusMaxKey, component.second->getKey());
-                }
+                focusMaxKey = jmax(focusMaxKey, component.second->getKey());
             }
         }
-        const auto viewHeightOffset =
-            (this->getViewport().getViewHeight() / 3) + Globals::UI::rollHeaderHeight;
-        const int defaultY = (focusMaxKey == 0) ?
-            ((this->getHeight() / 2) - viewHeightOffset) :
-            (this->getHeight() - (this->getRowHeight() * ((focusMaxKey + focusMinKey) / 2)) - viewHeightOffset);
+
+        constexpr auto keysSpacing = Globals::twelveTonePeriodSize / 2;
+        const int defaultY = (focusMaxKey == 0) ? (this->getHeight() / 2) :
+            ((this->getRowHeight() * (this->getNumKeys() - focusMaxKey - keysSpacing)));
+
         this->getViewport().setViewPosition(this->getViewport().getViewPositionX(), defaultY);
     }
 }
@@ -2484,18 +2478,14 @@ void PianoRoll::updateBackgroundCachesAndRepaint()
 
     this->backgroundsCache.clear();
 
-    for (const auto *track : this->project.getTracks())
+    // Re-render backgrounds for all key signatures:
+    const auto *ksSequence = this->project.getTimeline()->getKeySignaturesSequence();
+    for (int i = 0; i < ksSequence->size(); ++i)
     {
-        // Re-render backgrounds for all key signatures:
-        for (int i = 0; i < track->getSequence()->size(); ++i)
-        {
-            const auto *event = track->getSequence()->getUnchecked(i);
-            if (event->isTypeOf(MidiEvent::Type::KeySignature))
-            {
-                const auto &key = static_cast<const KeySignatureEvent &>(*event);
-                this->updateBackgroundCacheFor(key);
-            }
-        }
+        const auto *event = ksSequence->getUnchecked(i);
+        jassert(event->isTypeOf(MidiEvent::Type::KeySignature));
+        const auto &key = static_cast<const KeySignatureEvent &>(*event);
+        this->updateBackgroundCacheFor(key);
     }
 
     this->repaint(this->viewport.getViewArea());

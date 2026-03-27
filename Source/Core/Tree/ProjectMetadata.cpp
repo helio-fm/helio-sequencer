@@ -280,8 +280,6 @@ void ProjectMetadata::deserialize(const SerializedData &data)
         // do we really need to fallback to the default one here?
         this->temperament = Temperament::makeTwelveToneEqualTemperament();
     }
-
-    this->project.broadcastChangeProjectInfo(this);
 }
 
 void ProjectMetadata::reset()

@@ -41,11 +41,7 @@ ColourScheme::Ptr ColourSchemesCollection::getCurrent() const
     }
 
     // the config file is missing here (the app runs for the first time), use default theme
-#if PLATFORM_DESKTOP
     constexpr auto defaultSchemeName = "Helio Theme v2";
-#elif PLATFORM_MOBILE
-    constexpr auto defaultSchemeName = "High Contrast";
-#endif
     if (const auto defaultScheme = this->getResourceById<ColourScheme>(defaultSchemeName))
     {
         return defaultScheme;

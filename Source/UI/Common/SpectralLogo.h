@@ -28,11 +28,13 @@ public:
 
     void paint(Graphics &g) override;
     void resized() override;
-    void parentHierarchyChanged() override;
 
-    float getLineThickness() const noexcept;
-    float getLineStepSize() const noexcept;
-    float getLineWidth() const noexcept;
+    inline float getLineThickness() const noexcept;
+    inline float getLineStepSize() const noexcept;
+    inline float getLineWidth() const noexcept;
+
+    inline void startAnimation() noexcept;
+    inline void stopAnimation() noexcept;
 
 private:
 

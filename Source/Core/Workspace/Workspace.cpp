@@ -442,24 +442,6 @@ void Workspace::recreateCommandPaletteActions()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-static void addAllActiveItemIds(TreeNodeBase *item, SerializedData &parent)
-{
-    if (auto *treeItem = dynamic_cast<TreeNode *>(item))
-    {
-        if (treeItem->isSelected())
-        {
-            SerializedData child(Serialization::Core::selectedTreeNode);
-            child.setProperty(Serialization::Core::treeNodeId, item->getNodeIdentifier());
-            parent.appendChild(child);
-        }
-
-        for (int i = 0; i < item->getNumChildren(); ++i)
-        {
-            addAllActiveItemIds(item->getChild(i), parent);
-        }
-    }
-}
-
 static TreeNode *selectActiveSubItemWithId(TreeNodeBase *item, const String &id)
 {
     if (auto *treeItem = dynamic_cast<TreeNode *>(item))
@@ -483,17 +465,24 @@ static TreeNode *selectActiveSubItemWithId(TreeNodeBase *item, const String &id)
     return nullptr;
 }
 
-void Workspace::selectTreeNodeWithId(const String &id)
+void Workspace::selectTreeNodeOrDefault(const String &nodeId)
 {
-    selectActiveSubItemWithId(this->treeRoot.get(), id);
+    if (this->treeRoot == nullptr)
+    {
+        return;
+    }
+
+    if (!selectActiveSubItemWithId(this->treeRoot.get(), nodeId))
+    {
+        selectActiveSubItemWithId(this->treeRoot.get(),
+            this->treeRoot->getNodeIdentifier());
+    }
 }
 
 SerializedData Workspace::serialize() const
 {
     using namespace Serialization;
     SerializedData tree(Core::workspace);
-
-    // TODO serialize window size and position
 
     tree.appendChild(this->userProfile.serialize());
     tree.appendChild(this->audioCore->serialize());
@@ -502,11 +491,6 @@ SerializedData Workspace::serialize() const
     SerializedData treeRootNode(Core::treeRoot);
     treeRootNode.appendChild(this->treeRoot->serialize());
     tree.appendChild(treeRootNode);
-
-    // TODO serialize tree openness state?
-    SerializedData treeStateNode(Core::treeState);
-    addAllActiveItemIds(this->treeRoot.get(), treeStateNode);
-    tree.appendChild(treeStateNode);
 
     return tree;
 }
@@ -535,19 +519,6 @@ void Workspace::deserialize(const SerializedData &data)
 
     this->treeRoot->deserialize(treeRootNode);
 
-    bool foundActiveNode = false;
-    const auto treeStateNode = root.getChildWithName(Core::treeState);
-    if (treeStateNode.isValid())
-    {
-        forEachChildWithType(treeStateNode, e, Core::selectedTreeNode)
-        {
-            const String id = e.getProperty(Core::treeNodeId);
-            foundActiveNode = (nullptr != selectActiveSubItemWithId(this->treeRoot.get(), id));
-        }
-    }
-
-    // TODO pass all opened projects to user profile?
-
     // If no instruments root item is found for whatever reason
     // (i.e. malformed tree), make sure to add one:
     if (nullptr == this->treeRoot->findChildOfType<OrchestraPitNode>())
@@ -561,12 +532,6 @@ void Workspace::deserialize(const SerializedData &data)
     {
         auto settingsNode = make<SettingsNode>();
         this->treeRoot->addChildNode(settingsNode.release(), 0);
-    }
-
-    if (!foundActiveNode)
-    {
-        // Fallback to the main page
-        selectActiveSubItemWithId(this->treeRoot.get(), this->treeRoot->getNodeIdentifier());
     }
 }
 

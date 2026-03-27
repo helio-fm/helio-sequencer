@@ -376,7 +376,7 @@ void ProjectMapsScroller::switchToRoll(SafePointer<RollBase> roll)
     this->screenRangeTargetBrightness =
         (nullptr != dynamic_cast<PianoRoll *>(roll.getComponent())) ? 1.f : 0.f;
 
-    if (this->animationsEnabled)
+    if (this->animationsEnabled && this->isShowing())
     {
         this->startTimerHz(60);
     }

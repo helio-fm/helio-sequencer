@@ -34,8 +34,6 @@ public:
     void setRealBounds(const Rectangle<float> bounds) override;
 
     void paint(Graphics &g) override;
-    void resized() override;
-
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
@@ -49,17 +47,13 @@ private:
     ComponentDragger dragger;
     KeySignatureEvent anchor;
 
-    static constexpr int defaultLabelWidth = 300;
+    static constexpr int labelX = 4;
+    static constexpr int labelWidth = 300;
 
     float textWidth = 0.f;
 
-    Rectangle<float> boundsOffset;
-    Point<int> clickOffset;
-
     bool draggingState = false;
     bool draggingHadCheckpoint = false;
-
-    Path internalPath;
 
     UniquePointer<NoteNameComponent> nameComponent;
 
@@ -67,9 +61,9 @@ private:
     const Colour borderColour = findDefaultColour(Label::textColourId);
 
     static constexpr float fillUnfocusedAlpha = 0.2f;
-    static constexpr float borderUnfocusedAlpha = 0.6f;
+    static constexpr float borderUnfocusedAlpha = 0.65f;
     static constexpr float fillFocusedAlpha = 0.4f;
-    static constexpr float borderFocusedAlpha = 0.7f;
+    static constexpr float borderFocusedAlpha = 0.75f;
 
     float fillAlpha = fillUnfocusedAlpha;
     float borderAlpha = borderUnfocusedAlpha;

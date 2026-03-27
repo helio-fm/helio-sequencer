@@ -35,8 +35,8 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &
 
     this->nameComponent = make<NoteNameComponent>();
     this->addAndMakeVisible(this->nameComponent.get());
-    this->nameComponent->setBounds(4, 1,
-        KeySignatureLargeComponent::defaultLabelWidth,
+    this->nameComponent->setBounds(KeySignatureLargeComponent::labelX, 1,
+        KeySignatureLargeComponent::labelWidth,
         KeySignatureLargeComponent::keySignatureHeight - 1);
 
     this->setMouseCursor(MouseCursor::PointingHandCursor);
@@ -47,25 +47,12 @@ KeySignatureLargeComponent::~KeySignatureLargeComponent() = default;
 void KeySignatureLargeComponent::paint(Graphics &g)
 {
     g.setColour(this->fillColour.withMultipliedAlpha(this->fillAlpha));
-    g.fillPath(this->internalPath);
+    g.fillRect(1, 0, this->getWidth() - 1, this->getHeight() - 1);
+    g.fillRect(1.5f, float(this->getHeight() - 1), float(this->getWidth() - 2), 1.f);
 
     g.setColour(this->borderColour.withMultipliedAlpha(this->borderAlpha));
-    g.fillRect(1.f, 0.f, float(this->getWidth() - 1), 2.f);
-    g.fillRect(1.5f, 2.f, float(this->getWidth() - 2), 1.f);
-}
-
-void KeySignatureLargeComponent::resized()
-{
-    const auto w = float(this->getWidth());
-    const auto h = float(this->getHeight());
-
-    constexpr auto skewWidth = 4;
-    this->internalPath.clear();
-    this->internalPath.startNewSubPath(1.f, 0.f);
-    this->internalPath.lineTo(1.f, h);
-    this->internalPath.lineTo(w - skewWidth, h);
-    this->internalPath.lineTo(w, 0.f);
-    this->internalPath.closeSubPath();
+    g.fillRect(1, 0, this->getWidth() - 1, 1);
+    g.fillRect(1.5f, 1.f, float(this->getWidth() - 2), 1.f);
 }
 
 void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)
@@ -177,22 +164,24 @@ void KeySignatureLargeComponent::mouseExit(const MouseEvent &e)
 
 void KeySignatureLargeComponent::setRealBounds(const Rectangle<float> bounds)
 {
-    Rectangle<int> intBounds(bounds.toType<int>());
-    this->boundsOffset = Rectangle<float>(bounds.getX() - float(intBounds.getX()),
-        bounds.getY(),
-        bounds.getWidth() - float(intBounds.getWidth()),
-        bounds.getHeight());
+    const auto intBounds = bounds.toType<int>();
+    if (this->getBounds() == intBounds)
+    {
+        return;
+    }
 
     // if the component is too small for the note name label,
     // cut the label size in a way that only the key name is displayed;
-    // truncated parts scale names often looks like a visual noise:
-    const int newWidth = bounds.getWidth() <= (this->textWidth / 2.f) ?
-        int(this->textWidth - this->nameComponent->getDetailsWidthFloat()) :
-        KeySignatureLargeComponent::defaultLabelWidth;
+    // truncated parts of scale names often looks like a visual noise:
+    const auto keyNameWidth =
+        this->textWidth - this->nameComponent->getDetailsWidthFloat();
+    const auto newWidth = bounds.getWidth() <=
+        (KeySignatureLargeComponent::labelX + (ceilf(keyNameWidth / 4.f) * 8.f)) ?
+            int(keyNameWidth) : KeySignatureLargeComponent::labelWidth;
 
     if (this->nameComponent->getWidth() != newWidth)
     {
-        this->nameComponent->setSize(newWidth, KeySignatureLargeComponent::keySignatureHeight - 1);
+        this->nameComponent->setSize(newWidth, this->nameComponent->getHeight());
         this->nameComponent->forceInvalidateCacheImage();
     }
 

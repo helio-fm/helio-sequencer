@@ -70,6 +70,19 @@ Dashboard::~Dashboard()
     this->workspace.getUserProfile().removeChangeListener(this);
 }
 
+void Dashboard::parentHierarchyChanged()
+{
+    jassert(this->logo != nullptr);
+    if (this->isVisible() && this->getParentComponent() != nullptr)
+    {
+        this->logo->startAnimation();
+    }
+    else
+    {
+        this->logo->stopAnimation();
+    }
+}
+
 void Dashboard::resized()
 {
     // background stuff:

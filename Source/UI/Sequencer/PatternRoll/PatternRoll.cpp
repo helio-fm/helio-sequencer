@@ -1269,7 +1269,7 @@ void PatternRoll::paint(Graphics &g) noexcept
     // just because we cannot rely on OpenGL tiling:
     for (int i = Globals::UI::rollHeaderHeight;
         i < viewArea.getBottom();
-        i += (PatternRoll::rowPatternHeight / 2))
+        i += (PatternRoll::rowPatternHeight - PatternRoll::rowHeight))
     {
         g.setFillType({ this->rowPattern, AffineTransform::translation(0.f, float(i)) });
         g.fillRect(viewArea.getX(), i, viewArea.getWidth(), PatternRoll::rowPatternHeight);

@@ -25,8 +25,6 @@ namespace Serialization
         static const Identifier treeNode = "node";
         static const Identifier treeNodeType = "type";
         static const Identifier treeNodeName = "name";
-        static const Identifier treeState = "treeState";
-        static const Identifier selectedTreeNode = "selectedNode";
         static const Identifier treeNodeId = "nodeId";
 
         static const Identifier workspace = "workspace";

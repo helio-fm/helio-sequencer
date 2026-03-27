@@ -124,9 +124,9 @@ void AudioSettings::resized()
     this->midiOutputEditor->setBounds(editorBounds.removeFromTop(Globals::UI::textEditorHeight));
 }
 
-void AudioSettings::parentHierarchyChanged()
+void AudioSettings::visibilityChanged()
 {
-    if (this->isShowing())
+    if (this->isVisible())
     {
         auto &deviceManager = this->audioCore.getDevice();
         this->syncDeviceTypesList(deviceManager);

@@ -75,7 +75,7 @@ public:
         if (commandId == CommandIDs::InitWorkspace)
         {
             App::Workspace().init();
-            App::Layout().setVisible(true);
+            App::Layout().restoreLastOpenedPage();
             this->startFadeOut();
         }
     }
@@ -84,7 +84,7 @@ private:
 
     void timerCallback() override
     {
-        const auto newFill = this->fillColour.interpolatedWith(Colours::transparentBlack, 0.5f);
+        const auto newFill = this->fillColour.interpolatedWith(Colours::transparentBlack, 0.69f);
 
         if (this->fillColour == newFill)
         {
@@ -180,8 +180,13 @@ void MainLayout::restoreLastOpenedPage()
 {
     this->setVisible(false);
     const String lastPageId = App::Config().getProperty(Serialization::Config::lastShownPageId);
-    App::Workspace().selectTreeNodeWithId(lastPageId);
+    App::Workspace().selectTreeNodeOrDefault(lastPageId);
     this->setVisible(true);
+
+    if (this->isShowing())
+    {
+        this->grabKeyboardFocus();
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -268,11 +273,6 @@ void MainLayout::showPage(Component *page, TreeNode *source)
 
     this->currentContent->setExplicitFocusOrder(1);
     this->currentContent->toFront(false);
-
-    // fill up console commands for visible command targets
-    this->visibleCommandReceivers.clearQuick();
-    findVisibleCommandReceivers(this->currentContent.getComponent(), this->visibleCommandReceivers);
-    this->consoleCommonActions->setActiveCommandReceivers(this->visibleCommandReceivers);
 }
 
 //===----------------------------------------------------------------------===//
@@ -579,5 +579,8 @@ void MainLayout::broadcastCommandMessage(int commandId)
 Array<CommandPaletteActionsProvider *>
 MainLayout::getCommandPaletteActionProviders()
 {
+    this->visibleCommandReceivers.clearQuick();
+    findVisibleCommandReceivers(this->currentContent.getComponent(), this->visibleCommandReceivers);
+    this->consoleCommonActions->setActiveCommandReceivers(this->visibleCommandReceivers);
     return { this->consoleCommonActions.get() };
 }
