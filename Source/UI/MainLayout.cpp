@@ -228,7 +228,6 @@ static ProjectNode *findProjectForSelectedNode(TreeNode *source)
     return source->findParentOfType<ProjectNode>();
 }
 
-
 void MainLayout::showPage(Component *page, TreeNode *source)
 {
     jassert(page != nullptr);
@@ -494,8 +493,27 @@ static void emitCommandPalette(const String &defaultText = {})
         }
 
         // activeRoll is ok to be null
-        // (project is too, but there'll be no useful content shown):
         App::showModalComponent(make<CommandPalette>(project, activeRoll, defaultText));
+    }
+}
+
+static void emitScriptingPlayground()
+{
+    if (auto *project = findParentProjectOfSelectedNode())
+    {
+        project->getTransport().stopPlaybackAndRecording();
+
+        RollBase *activeRoll = nullptr;
+        auto *activeNode = App::Workspace().getTreeRoot()->findActiveNode();
+        if (nullptr != dynamic_cast<PianoTrackNode *>(activeNode))
+        {
+            activeRoll = project->getLastFocusedRoll();
+        }
+
+        // the scripting playground will manage its modal state
+        // to avoid being deleted automatically while updating the project
+        const bool autoDelete = false;
+        App::showModalComponent(make<ScriptingPlayground>(*project, activeRoll), false);
     }
 }
 
@@ -546,6 +564,9 @@ void MainLayout::handleCommandMessage(int commandId)
         emitCommandPalette(String::charToString(modeKey));
         break;
     }
+    case CommandIDs::ScriptingPlayground:
+        emitScriptingPlayground();
+        break;
     case CommandIDs::BreadcrumbsMenu:
         if (!this->headline->getTailItem()->showMenuIfAny(true))
         {

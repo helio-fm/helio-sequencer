@@ -32,6 +32,7 @@ class GeneratedSequenceBuilder;
 class UndoStack;
 class Pattern;
 class Clip;
+class ScriptEngine;
 
 #include "TreeNode.h"
 #include "DocumentOwner.h"
@@ -68,6 +69,8 @@ public:
     RollEditMode &getEditMode() noexcept;
     RollBase *getLastFocusedRoll() const;
     GeneratedSequenceBuilder *getGeneratedSequences() const;
+
+    CodeDocument &getScriptCodeDocument();
 
     void importMidi(InputStream &stream);
     bool exportMidi(OutputStream &stream) const;
@@ -256,6 +259,8 @@ private:
     UniquePointer<UndoStack> undoStack;
 
     MidiTrack::Grouping trackGroupingMode = MidiTrack::Grouping::GroupByName;
+
+    CodeDocument scripts;
 
     mutable Range<float> beatRange = { 0.f, Globals::Defaults::projectLength };
     Range<float> calculateProjectBeatRange() const;

@@ -17,3 +17,104 @@
 
 #pragma once
 
+class RollBase;
+class ProjectNode;
+class ScriptTokeniser;
+
+#include "ScriptEngine.h"
+#include "ColourIDs.h"
+
+class ScriptingPlaygroundEditor final :
+    public CodeEditorComponent,
+    private CodeDocument::Listener
+{
+public:
+
+    ScriptingPlaygroundEditor(CodeDocument &document, CodeTokeniser *codeTokeniser);
+    ~ScriptingPlaygroundEditor() override;
+
+    bool keyPressed(const KeyPress &key) override;
+    void caretPositionMoved() override;
+
+    const Optional<ScriptEngine::Breakpoint> &getBreakpoint() const;
+
+private:
+
+    void codeDocumentTextInserted(const String &, int) override;
+    void codeDocumentTextDeleted(int, int) override;
+
+    int numFastClicks = 0;
+    Time lastMouseDownTime;
+    CodeDocument::Position lastMouseDownPosition;
+
+    CodeDocument::Position selectionAnchorStart;
+    CodeDocument::Position selectionAnchorEnd;
+
+    Optional<ScriptEngine::Breakpoint> breakpoint;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlaygroundEditor)
+};
+
+// todo TransportListener
+class ScriptingPlayground final :
+    public Component,
+    public TextEditor::Listener,
+    public ScriptEngine::SideEffects
+{
+public:
+
+    ScriptingPlayground(ProjectNode &project, RollBase *roll);
+    ~ScriptingPlayground() override;
+
+    static Array<KeyPress> getAllScriptingPlaygroundHotkeys();
+
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
+    void paint(Graphics &g) override;
+    void resized() override;
+    void parentHierarchyChanged() override;
+    void handleCommandMessage(int commandId) override;
+    bool keyPressed(const KeyPress &key) override;
+    void inputAttemptWhenModal() override;
+
+    //===------------------------------------------------------------------===//
+    // ScriptEngine::SideEffects
+    //===------------------------------------------------------------------===//
+
+    void print(const String &output) override;
+
+private:
+
+    void dismiss();
+    void updatePosition();
+
+    void updateOnParse();
+    void updateOnEvaluate();
+
+    static constexpr int marginH = 8;
+    static constexpr int marginTop = 10; // bottom margin is 0
+
+    const Colour frameColour =
+        findDefaultColour(ColourIDs::Shadows::borderNormal);
+
+private:
+
+    ProjectNode &project;
+
+    SafePointer<RollBase> roll;
+
+    UniquePointer<ScriptEngine> scriptEngine;
+
+    UniquePointer<ScriptTokeniser> tokeniser;
+
+    UniquePointer<Component> shadowUp;
+    UniquePointer<Component> shadowLeft;
+    UniquePointer<Component> shadowRight;
+
+    UniquePointer<ScriptingPlaygroundEditor> codeEditor;
+    UniquePointer<TextEditor> outputText;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlayground)
+};

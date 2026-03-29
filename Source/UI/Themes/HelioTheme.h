@@ -75,6 +75,7 @@ public:
     // Text Editor
     //===------------------------------------------------------------------===//
 
+    CaretComponent *createCaretComponent(Component *keyFocusOwner) override;
     void fillTextEditorBackground(Graphics &, int w, int h, TextEditor &) override;
     void drawTextEditorOutline(Graphics &, int w, int h, TextEditor &) override {}
 
@@ -94,6 +95,16 @@ public:
         editor->setJustification(Justification::centredLeft);
         editor->setFont(fontSize);
         editor->setIndents(4, 0);
+        return editor;
+    }
+
+    template <typename TextEditorType = TextEditor>
+    static UniquePointer<TextEditorType> makeMultiLineTextEditor(bool isEditable,
+        float fontSize = Globals::UI::Fonts::M)
+    {
+        auto editor = HelioTheme::makeSingleLineTextEditor<TextEditorType>(false);
+        editor->setMultiLine(true);
+        editor->setJustification(Justification::topLeft);
         return editor;
     }
 

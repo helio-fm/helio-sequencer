@@ -245,4 +245,19 @@ namespace ColourIDs
         static const int fillHighlighted        = 0x2001901;
         static const int outline                = 0x2001902;
     }
+
+    namespace CodeEditor
+    {
+        static const int error                  = 0x2002000;
+        static const int comment                = 0x2002001;
+        static const int keyword                = 0x2002002;
+        static const int function               = 0x2002003;
+        static const int identifier             = 0x2002004;
+        static const int integer                = 0x2002005;
+        static const int real                   = 0x2002006;
+        static const int string                 = 0x2002007;
+        static const int bracket                = 0x2002008;
+        static const int bracketMatch           = 0x2002009;
+        static const int punctuation            = 0x200200a;
+    }
 } // namespace ColourIDs

@@ -488,7 +488,7 @@ void App::recreateLayout()
 // Modal components
 //===----------------------------------------------------------------------===//
 
-void App::showModalComponent(UniquePointer<Component> target)
+void App::showModalComponent(UniquePointer<Component> target, bool autoDelete)
 {
     App::dismissAllModalComponents();
 
@@ -507,7 +507,7 @@ void App::showModalComponent(UniquePointer<Component> target)
         Globals::UI::fadeInShort, false, 1.0, 0.0);
 
     target->toFront(false);
-    target->enterModalState(true, nullptr, true);
+    target->enterModalState(true, nullptr, autoDelete);
 
     // modal components are unowned (which sucks, but we still need
     // to let modal dialogs delete themselves when they want to):

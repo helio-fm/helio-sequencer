@@ -41,6 +41,7 @@
 #include "KeyboardMapping.h"
 #include "GeneratedSequenceBuilder.h"
 #include "CommandPaletteTimelineEvents.h"
+#include "ScriptEngine.h"
 
 #include "ProjectMetadata.h"
 #include "ProjectTimeline.h"
@@ -180,6 +181,11 @@ RollBase *ProjectNode::getLastFocusedRoll() const
 GeneratedSequenceBuilder *ProjectNode::getGeneratedSequences() const
 {
     return this->generatedSequenceBuilder.get();
+}
+
+CodeDocument &ProjectNode::getScriptCodeDocument()
+{
+    return this->scripts;
 }
 
 Image ProjectNode::getIcon() const noexcept

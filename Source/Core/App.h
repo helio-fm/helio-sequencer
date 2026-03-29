@@ -79,7 +79,7 @@ public:
     static bool isUsingNativeTitleBar() noexcept;
     static void setTitleBarComponent(WeakReference<Component> titleComponent);
 
-    static void showModalComponent(UniquePointer<Component> target);
+    static void showModalComponent(UniquePointer<Component> target, bool autoDelete = true);
     static void dismissAllModalComponents();
 
     static void animateComponent(Component *component,

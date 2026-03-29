@@ -217,11 +217,34 @@ void HelioTheme::drawStretchableLayoutResizerBar(Graphics &g,
 // Text Editor
 //===----------------------------------------------------------------------===//
 
+class CodeEditorCaretComponent final : public CaretComponent
+{
+public:
+
+    CodeEditorCaretComponent(Component *keyFocusOwner) :
+        CaretComponent(keyFocusOwner) {}
+
+    void setCaretPosition(const Rectangle<int> &area) override
+    {
+        CaretComponent::setCaretPosition(area.expanded(0, 2));
+    }
+};
+
+CaretComponent *HelioTheme::createCaretComponent(Component *keyFocusOwner)
+{
+    if (dynamic_cast<CodeEditorComponent *>(keyFocusOwner))
+    {
+        return new CodeEditorCaretComponent(keyFocusOwner);
+    }
+
+    return new CaretComponent(keyFocusOwner);
+}
+
 void HelioTheme::fillTextEditorBackground(Graphics &g, int w, int h, TextEditor &ed)
 {
-    g.setColour(this->findColour(TextEditor::backgroundColourId));
+    g.setColour(ed.findColour(TextEditor::backgroundColourId));
     g.fillRect(1, 1, w - 2, h - 2);
-    g.setColour(this->findColour(TextEditor::outlineColourId));
+    g.setColour(ed.findColour(TextEditor::outlineColourId));
     g.drawVerticalLine(0, 1.f, h - 1.f);
     g.drawVerticalLine(w - 1, 1.f, h - 1.f);
     g.drawHorizontalLine(0, 1.f, w - 1.f);
@@ -850,6 +873,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
 
     this->setColour(ResizableWindow::backgroundColourId, s->getPageFillColour().brighter(0.045f));
     this->setColour(ScrollBar::backgroundColourId, Colours::transparentBlack);
+    this->setColour(ScrollBar::trackColourId, Colours::transparentBlack);
     this->setColour(ScrollBar::thumbColourId,
         s->getFrameBorderColour().withAlpha(this->isDarkTheme ? 0.25f : 0.35f));
 
@@ -867,7 +891,16 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
     this->setColour(TextEditor::focusedOutlineColourId, textColour.contrasting().withAlpha(0.2f));
     this->setColour(TextEditor::shadowColourId, s->getPageFillColour().darker(0.05f));
     this->setColour(TextEditor::highlightColourId, textColour.withAlpha(this->isDarkTheme ? 0.035f : 0.07f));
-    this->setColour(CaretComponent::caretColourId, textColour.withAlpha(0.35f));
+
+    const auto codeEditorFill = this->isDarkTheme ?
+        s->getPageFillColour().darker(0.420f) : s->getPageFillColour().darker(0.01f);
+    this->setColour(CodeEditorComponent::backgroundColourId, codeEditorFill);
+    this->setColour(CodeEditorComponent::highlightColourId,
+        codeEditorFill.withMultipliedLightness(this->isDarkTheme ? 1.75f : 2.5f));
+    this->setColour(CodeEditorComponent::defaultTextColourId, textColour);
+    this->setColour(CodeEditorComponent::lineNumberBackgroundId, codeEditorFill);
+    this->setColour(CodeEditorComponent::lineNumberTextId, textColour.withMultipliedAlpha(0.1f));
+    this->setColour(CaretComponent::caretColourId, textColour.withAlpha(0.55f));
 
     this->setColour(PopupMenu::backgroundColourId, s->getPageFillColour());
     this->setColour(PopupMenu::textColourId, textColour);
@@ -1093,6 +1126,19 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
     this->setColour(ColourIDs::Shadows::borderNormal, Colours::black.withAlpha(shadowIntensity * 0.2f));
     this->setColour(ColourIDs::Shadows::fillHard, Colours::black.withAlpha(shadowIntensity * 0.125f));
     this->setColour(ColourIDs::Shadows::borderHard, Colours::black.withAlpha(shadowIntensity * 0.25f));
+
+    // fixme add these to colour schemes:
+    this->setColour(ColourIDs::CodeEditor::error, Colour(0xfff92672));
+    this->setColour(ColourIDs::CodeEditor::comment, Colour(0xff768390));
+    this->setColour(ColourIDs::CodeEditor::keyword, Colour(0xff4ec9b0));
+    this->setColour(ColourIDs::CodeEditor::function, Colour(0xff4ec9b0));
+    this->setColour(ColourIDs::CodeEditor::identifier, Colour(0xffadbad7));
+    this->setColour(ColourIDs::CodeEditor::integer, Colour(0xff6cb6ff));
+    this->setColour(ColourIDs::CodeEditor::real, Colour(0xff6cb6ff));
+    this->setColour(ColourIDs::CodeEditor::string, Colour(0xff6cb6ff));
+    this->setColour(ColourIDs::CodeEditor::bracket, Colour(0x37adbad7));
+    this->setColour(ColourIDs::CodeEditor::bracketMatch, Colour(0xeeadbad7));
+    this->setColour(ColourIDs::CodeEditor::punctuation, Colour(0xccadbad7));
 
     // Pre-rendered image backgrounds:
     constexpr int w = 256;
