@@ -288,6 +288,22 @@ void UserInterfaceFlags::setRightSidebarWidth(int width)
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
+Point<int> UserInterfaceFlags::getScriptEditorSize() const noexcept
+{
+    return this->scriptEditorSize;
+}
+
+void UserInterfaceFlags::setScriptEditorSize(Point<int> size)
+{
+    if (this->scriptEditorSize == size)
+    {
+        return;
+    }
+
+    this->scriptEditorSize = size;
+    this->startTimer(UserInterfaceFlags::saveTimeoutMs);
+}
+
 void UserInterfaceFlags::setMouseWheelUsePanningByDefault(bool usePanning)
 {
     if (this->mouseWheelFlags.usePanningByDefault == usePanning)
@@ -419,6 +435,12 @@ SerializedData UserInterfaceFlags::serialize() const
         tree.setProperty(UI::Flags::rightSidebarWidth, this->rightSidebarWidth);
     }
 
+    if (this->scriptEditorSize != UserInterfaceFlags::defaultScriptEditorSize)
+    {
+        tree.setProperty(UI::Flags::scriptEditorSize,
+            String(this->scriptEditorSize.getX()) + " " + String(this->scriptEditorSize.getY()));
+    }
+
     tree.setProperty(UI::Flags::mouseWheelAltMode, this->mouseWheelFlags.usePanningByDefault);
     tree.setProperty(UI::Flags::mouseWheelVerticalPanningByDefault, this->mouseWheelFlags.useVerticalPanningByDefault);
     tree.setProperty(UI::Flags::mouseWheelVerticalZoomingByDefault, this->mouseWheelFlags.useVerticalZoomingByDefault);
@@ -467,6 +489,16 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     {
         this->leftSidebarWidth = root.getProperty(UI::Flags::leftSidebarWidth, this->leftSidebarWidth);
         this->rightSidebarWidth = root.getProperty(UI::Flags::rightSidebarWidth, this->rightSidebarWidth);
+    }
+
+    if (root.hasProperty(UI::Flags::scriptEditorSize))
+    {
+        StringArray tokens;
+        const String scriptEditorSizeString = root.getProperty(UI::Flags::scriptEditorSize, "");
+        tokens.addTokens(scriptEditorSizeString, " ", "");
+        const auto width = jmax(tokens[0].getIntValue(), defaultScriptEditorSize.getX());
+        const auto height = jmax(tokens[1].getIntValue(), defaultScriptEditorSize.getY());
+        this->scriptEditorSize = { width, height };
     }
 
     this->mouseWheelFlags.usePanningByDefault =

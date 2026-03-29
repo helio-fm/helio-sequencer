@@ -47,7 +47,7 @@ public:
                 source.getPosition() == this->caretBracketRange.getEnd() - 1))
         {
             source.skip();
-            return TokenType::tokenTypeBracketHighlighted;
+            return TokenType::tokenTypeBracketMatch;
         }
 
         switch (firstChar)
@@ -115,7 +115,8 @@ public:
             { "Identifier",     findDefaultColour(ColourIDs::CodeEditor::identifier) },
             { "Literal",        findDefaultColour(ColourIDs::CodeEditor::literal) },
             { "Bracket",        findDefaultColour(ColourIDs::CodeEditor::bracket) },
-            { "BracketMatch",   findDefaultColour(ColourIDs::CodeEditor::bracketMatch) }
+            { "BracketMatch",   findDefaultColour(ColourIDs::CodeEditor::bracketMatch) },
+            { "Highlight",      findDefaultColour(ColourIDs::CodeEditor::highlight) }
         };
 
         CodeEditorComponent::ColourScheme cs;
@@ -164,9 +165,66 @@ public:
         }
     }
 
+    void setHighlightedToken(const String &token)
+    {
+        String::CharPointerType writer(this->highlightedToken);
+        writer.writeAll(token.getCharPointer());
+    }
+
     void setErrorRange(Range<int> range)
     {
         this->errorRange = range;
+    }
+
+    void onTextInserted(int startIndex, int length)
+    {
+        // update these two ranges only to avoid flickering while editing
+        // (bracketRanges will update after parsing, that's fine)
+        if (this->errorRange.contains(startIndex))
+        {
+            this->errorRange.setLength(this->errorRange.getLength() + length);
+        }
+        else if (this->errorRange.getStart() > startIndex)
+        {
+            this->errorRange += length;
+        }
+
+        if (this->caretBracketRange.contains(startIndex))
+        {
+            this->caretBracketRange.setLength(this->caretBracketRange.getLength() + length);
+        }
+    }
+
+    void onTextDeleted(int startIndex, int endIndex)
+    {
+        if (this->errorRange.contains(startIndex) ||
+            this->errorRange.contains(endIndex))
+        {
+            const auto deletedLength =
+                jmin(endIndex, this->errorRange.getEnd()) -
+                jmax(startIndex, this->errorRange.getStart());
+            this->errorRange.setLength(this->errorRange.getLength() - deletedLength);
+        }
+        else if (this->errorRange.getStart() > startIndex)
+        {
+            if (this->errorRange.getEnd() < endIndex)
+            {
+                this->errorRange = {};
+            }
+            else
+            {
+                this->errorRange -= (endIndex - startIndex);
+            }
+        }
+
+        if (this->caretBracketRange.contains(startIndex) ||
+            this->caretBracketRange.contains(endIndex))
+        {
+            const auto deletedLength =
+                jmin(endIndex, this->caretBracketRange.getEnd()) -
+                jmax(startIndex, this->caretBracketRange.getStart());
+            this->caretBracketRange.setLength(this->caretBracketRange.getLength() - deletedLength);
+        }
     }
 
     enum TokenType
@@ -178,8 +236,11 @@ public:
         tokenTypeIdentifier,
         tokenTypeLiteral,
         tokenTypeBracket,
-        tokenTypeBracketHighlighted
+        tokenTypeBracketMatch,
+        tokenTypeHighlight
     };
+
+    static constexpr auto maxTokenLength = 69;
 
 private:
 
@@ -188,7 +249,7 @@ private:
         static const char *const keywords1Char[] =
             { "\xce\xbb", nullptr };
         static const char *const keywords2Char[] =
-            { "if", "or", nullptr };
+            { "if", "or", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", nullptr };
         static const char *const keywords3Char[] =
             { "and", "not", "map", "let", "nil", nullptr };
         static const char *const keywords4Char[] =
@@ -201,14 +262,13 @@ private:
         const char *const *k;
         switch (tokenLength)
         {
-            case 1: k = keywords1Char; break;
-            case 2: k = keywords2Char; break;
-            case 3: k = keywords3Char; break;
-            case 4: k = keywords4Char; break;
-            case 5: k = keywords5Char; break;
-            case 6: k = keywords6Char; break;
-            default:
-                return false;
+        case 1: k = keywords1Char; break;
+        case 2: k = keywords2Char; break;
+        case 3: k = keywords3Char; break;
+        case 4: k = keywords4Char; break;
+        case 5: k = keywords5Char; break;
+        case 6: k = keywords6Char; break;
+        default: return false;
         }
 
         for (int i = 0; k[i] != nullptr; ++i)
@@ -222,38 +282,45 @@ private:
         return false;
     }
 
-    static bool isBuiltInFunction(String::CharPointerType token, const int tokenLength) noexcept
+    static bool isBuiltInSymbol(String::CharPointerType token, const int tokenLength) noexcept
     {
         static const char *const keywords3Char[] =
-            { "abs", "min", "max", "int", "nth", nullptr };
+            { "abs", "min", "max", "sin", "cos", "int", "nth", nullptr };
         static const char *const keywords4Char[] =
             { "list", "head", "tail", "last", "push", "type", nullptr };
         static const char *const keywords5Char[] =
-            { "empty", "first", "float", "print", "debug",
-              "range", "scope", "while" "round", "floor", nullptr };
+            { "empty", "first", "float", "debug", "range",
+              "scope", "while", "round", "floor", "tonic", nullptr };
         static const char *const keywords6Char[] =
             { "append", "length", "random", "remove", nullptr };
         static const char *const keywordsOther[] =
-            { "newline",
-              "project:reset", "project:period-size",
+            { "project:reset", "project:period-size",
               "timeline:reset", "timeline:add-key",
               "track:make", "track:add-notes",
-              "scale:find", "scale:render-key", nullptr };
+              "scale:find", "scale:render-key",
+              "refactor:join-adjacent", 
+              "refactor:arpeggiate", 
+              "refactor:align-to-scale",
+              "supertonic", "mediant", "subdominant",
+              "dominant", "submediant", "subtonic",
+              "chord:triad", "chord:seventh", "chord:supertonic",
+              "chord:mediant", "chord:subdominant", "chord:dominant",
+              "chord:submediant", "chord:subtonic", nullptr };
 
         const char *const *k;
         switch (tokenLength)
         {
-            case 3: k = keywords3Char; break;
-            case 4: k = keywords4Char; break;
-            case 5: k = keywords5Char; break;
-            case 6: k = keywords6Char; break;
-            default:
-                if (tokenLength < 3 || tokenLength > 20)
-                {
-                    return false;
-                }
-                k = keywordsOther;
-                break;
+        case 3: k = keywords3Char; break;
+        case 4: k = keywords4Char; break;
+        case 5: k = keywords5Char; break;
+        case 6: k = keywords6Char; break;
+        default:
+            if (tokenLength < 3 || tokenLength > 25)
+            {
+                return false;
+            }
+            k = keywordsOther;
+            break;
         }
 
         for (int i = 0; k[i] != nullptr; ++i)
@@ -271,14 +338,13 @@ private:
     int parseIdentifier(Iterator &source) noexcept
     {
         int tokenLength = 0;
-        String::CharPointerType::CharType possibleIdentifier[200] = {};
-        String::CharPointerType possible(possibleIdentifier);
+        String::CharPointerType possible(this->possibleIdentifier);
 
         while (script::isSymbolBody(source.peekNextChar()))
         {
             const auto c = source.nextChar();
 
-            if (tokenLength < 40)
+            if (tokenLength < ScriptTokeniser::maxTokenLength)
             {
                 possible.write(c);
             }
@@ -288,25 +354,35 @@ private:
 
         possible.writeNull();
 
+        const auto tokenCharPointer = String::CharPointerType(possibleIdentifier);
+
         if (tokenLength <= 6 &&
-            isReservedKeyword(String::CharPointerType(possibleIdentifier), tokenLength))
+            isReservedKeyword(tokenCharPointer, tokenLength))
         {
             return TokenType::tokenTypeReservedKeyword;
         }
 
-        if (tokenLength <= 20 &&
-            isBuiltInFunction(String::CharPointerType(possibleIdentifier), tokenLength))
+        if (tokenLength <= 25 &&
+            isBuiltInSymbol(tokenCharPointer, tokenLength))
         {
             return TokenType::tokenTypeFunction;
         }
 
-        if (this->userFunctions.contains(String(String::CharPointerType(possibleIdentifier), tokenLength)))
+        if (this->userFunctions.contains(String(tokenCharPointer, tokenLength)))
         {
             return TokenType::tokenTypeFunction;
+        }
+
+        if (tokenCharPointer.compare(String::CharPointerType(this->highlightedToken)) == 0)
+        {
+            return TokenType::tokenTypeHighlight;
         }
 
         return TokenType::tokenTypeIdentifier;
     }
+
+    String::CharPointerType::CharType highlightedToken[420] = {};
+    String::CharPointerType::CharType possibleIdentifier[420] = {};
 
     FlatHashSet<String, StringHash> userFunctions;
 

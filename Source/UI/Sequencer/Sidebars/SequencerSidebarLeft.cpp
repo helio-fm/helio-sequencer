@@ -323,6 +323,13 @@ void SequencerSidebarLeft::recreateMenu()
         toggledIf(this->velocityMapVisible)->
         withTooltip(TRANS(I18n::Tooltips::toggleVolumePanel)));
 
+    if (!App::isRunningOnPhone() &&
+        App::Config().getUiFlags()->areExperimentalFeaturesEnabled())
+    {
+        this->menu.add(MenuItem::item(Icons::brackets, CommandIDs::ScriptingPlayground)->
+            withTooltip(TRANS(I18n::Tooltips::scriptingPlayground)));
+    }
+
     if (this->menuMode == MenuMode::PianoRollTools)
     {
         this->menu.add(MenuItem::item(Icons::tag, CommandIDs::ToggleNoteNameGuides)->

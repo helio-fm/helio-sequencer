@@ -121,6 +121,9 @@ public:
     int getRightSidebarWidth() const noexcept;
     void setRightSidebarWidth(int width);
 
+    Point<int> getScriptEditorSize() const noexcept;
+    void setScriptEditorSize(Point<int> size);
+
     void setMouseWheelUsePanningByDefault(bool usePanning);
     void setMouseWheelUseVerticalPanningByDefault(bool useVerticalPanning);
     void setMouseWheelUseVerticalZoomingByDefault(bool useVerticalZooming);
@@ -192,6 +195,9 @@ private:
 
     int leftSidebarWidth = Globals::UI::sidebarWidth;
     int rightSidebarWidth = Globals::UI::sidebarWidth;
+
+    static constexpr Point<int> defaultScriptEditorSize = { 900, 960 };
+    Point<int> scriptEditorSize = defaultScriptEditorSize;
 
     MouseWheelFlags mouseWheelFlags;
 

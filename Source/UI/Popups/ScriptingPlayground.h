@@ -17,16 +17,21 @@
 
 #pragma once
 
+class IconButton;
 class RollBase;
 class ProjectNode;
 class ScriptTokeniser;
+class ScriptingPlaygroundPopup;
+class ScriptingPlaygroundErrorMark;
 
 #include "ScriptEngine.h"
+#include "ComponentFader.h"
 #include "ColourIDs.h"
 
 class ScriptingPlaygroundEditor final :
     public CodeEditorComponent,
-    private CodeDocument::Listener
+    private CodeDocument::Listener,
+    private Timer // popups on a timeout
 {
 public:
 
@@ -41,14 +46,30 @@ public:
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void mouseDoubleClick(const MouseEvent &e) override;
+    void mouseMove(const MouseEvent &event) override;
+    void mouseWheelMove(const MouseEvent &event,
+        const MouseWheelDetails &wheel) override;
 
     void handleReturnKey() override;
     bool keyPressed(const KeyPress &key) override;
+    void editorViewportPositionChanged() override;
     void caretPositionMoved() override;
 
+    const String &getHighlightedToken() const noexcept;
     const Optional<ScriptEngine::Breakpoint> &getBreakpoint() const;
+    void setBreakpointInfo(const String &info);
+    void setError(const Range<int> &charRange, const String &text);
 
 private:
+
+    UniquePointer<ScriptingPlaygroundPopup> popup;
+
+    UniquePointer<ScriptingPlaygroundErrorMark> errorMark;
+    Range<int> errorRange;
+    void updateErrorRangeBounds();
+
+    void timerCallback() override;
+    Point<int> lastMouseMovePosition;
 
     void codeDocumentTextInserted(const String &, int) override;
     void codeDocumentTextDeleted(int, int) override;
@@ -62,6 +83,10 @@ private:
     CodeDocument::Position selectionAnchorEnd;
 
     Optional<ScriptEngine::Breakpoint> breakpoint;
+    Rectangle<int> breakpointTokenBounds;
+    void resetBreakpointPopup();
+
+    String highlightedToken;
 
     void dragSelection(CodeDocument::Position position, bool fullLines = false);
 
@@ -110,6 +135,8 @@ public:
 
     ScriptEngine::SideEffects::HostContext fillHostContext() const override;
 
+    void updateBounds();
+
 private:
 
     void dismiss();
@@ -131,16 +158,18 @@ private:
     SafePointer<RollBase> roll;
 
     UniquePointer<ScriptEngine> scriptEngine;
-
     UniquePointer<ScriptTokeniser> tokeniser;
 
     UniquePointer<Component> shadowUp;
     UniquePointer<Component> shadowBottom;
     UniquePointer<Component> shadowLeft;
     UniquePointer<Component> shadowRight;
+    UniquePointer<Component> cornerResizer;
 
     UniquePointer<ScriptingPlaygroundEditor> codeEditor;
     UniquePointer<TextEditor> outputText;
+    UniquePointer<IconButton> runButton;
+    ComponentFader fader;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlayground)
 };

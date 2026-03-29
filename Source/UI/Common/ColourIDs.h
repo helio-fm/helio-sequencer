@@ -256,5 +256,7 @@ namespace ColourIDs
         static const int literal                = 0x2002005;
         static const int bracket                = 0x2002006;
         static const int bracketMatch           = 0x2002007;
+        static const int highlight              = 0x2002008;
+        static const int popup                  = 0x2002009;
     }
 } // namespace ColourIDs

@@ -894,8 +894,10 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
 
     const auto codeEditorFill = s->getScriptBackgroundColour();
     this->setColour(CodeEditorComponent::backgroundColourId, codeEditorFill);
-    this->setColour(CodeEditorComponent::highlightColourId,
-        codeEditorFill.withMultipliedLightness(this->isDarkTheme ? 1.5f : 2.5f));
+    this->setColour(CodeEditorComponent::highlightColourId, codeEditorFill.
+        interpolatedWith(s->getScriptFunctionColour(), 0.0420f).
+        withMultipliedLightness(1.337f));
+    
     this->setColour(CodeEditorComponent::defaultTextColourId, s->getScriptTextColour());
     this->setColour(CodeEditorComponent::lineNumberBackgroundId, codeEditorFill);
     this->setColour(CodeEditorComponent::lineNumberTextId,
@@ -1134,8 +1136,13 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
     this->setColour(ColourIDs::CodeEditor::identifier, s->getScriptTextColour());
     this->setColour(ColourIDs::CodeEditor::literal, s->getScriptLiteralColour());
     this->setColour(ColourIDs::CodeEditor::bracket,
-        s->getScriptBracketColour().withMultipliedAlpha(0.25f));
+        s->getScriptBracketColour().withMultipliedAlpha(0.3f));
     this->setColour(ColourIDs::CodeEditor::bracketMatch, s->getScriptBracketColour());
+    this->setColour(ColourIDs::CodeEditor::highlight, this->isDarkTheme ?
+        s->getScriptTextColour().brighter(0.69f) : s->getScriptTextColour().darker(0.420f));
+    this->setColour(ColourIDs::CodeEditor::popup, this->isDarkTheme ?
+        s->getScriptBackgroundColour().darker(0.069f) :
+        s->getScriptBackgroundColour().brighter(0.420f));
 
     // Pre-rendered image backgrounds:
     constexpr int w = 256;

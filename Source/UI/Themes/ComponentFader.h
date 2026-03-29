@@ -28,7 +28,8 @@ public:
     ComponentFader() = default;
 
     void fadeOut(Component *component,
-        int millisecondsToTake, bool useProxyComponent = true)
+        int millisecondsToTake = Globals::UI::fadeOutShort,
+        bool useProxyComponent = true)
     {
         if (component == nullptr)
         {
@@ -46,7 +47,8 @@ public:
         component->setVisible(false);
     }
 
-    void fadeIn(Component *component, int millisecondsToTake)
+    void fadeIn(Component *component,
+        int millisecondsToTake = Globals::UI::fadeInShort)
     {
         if (component == nullptr)
         {

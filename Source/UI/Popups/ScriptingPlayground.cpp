@@ -16,12 +16,10 @@
 */
 
 #include "Common.h"
-
 #include "ScriptingPlayground.h"
 #include "ShadowUpwards.h"
 #include "ShadowLeftwards.h"
 #include "ShadowRightwards.h"
-
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "MainLayout.h"
@@ -36,24 +34,143 @@
 #include "ScriptEngine.h"
 #include "ScriptTokeniser.h"
 #include "PianoRoll.h"
+#include "IconButton.h"
 #include "HotkeyScheme.h"
 #include "HelioTheme.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
+#include "ColourIDs.h"
 
 //===----------------------------------------------------------------------===//
 // Custom CodeEditorComponent
 //===----------------------------------------------------------------------===//
 
+#pragma region ScriptingPlaygroundEditor
+
+class ScriptingPlaygroundErrorMark final : public Component
+{
+public:
+
+    ScriptingPlaygroundErrorMark()
+    {
+        this->setOpaque(true);
+        this->setAccessible(false);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->fillColour);
+        g.fillRect(this->getLocalBounds());
+    }
+
+private:
+
+    const Colour fillColour = findDefaultColour(ColourIDs::CodeEditor::error);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlaygroundErrorMark)
+};
+
+class ScriptingPlaygroundPopup final : public Component
+{
+public:
+
+    static constexpr auto font = Globals::UI::Fonts::XS - 1.f;
+
+    ScriptingPlaygroundPopup()
+    {
+        this->setOpaque(false);
+        this->setAccessible(false);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+
+        this->label = make<Label>();
+        this->addAndMakeVisible(this->label.get());
+        Font f2(ScriptingPlaygroundPopup::font);
+        f2.setTypefaceName(Font::getDefaultMonospacedFontName());
+        this->label->setFont(f2);
+        this->label->setJustificationType(Justification::topLeft);
+        this->label->setBorderSize({ 7, 6, 7, 6 });
+        this->label->setMinimumHorizontalScale(0.995f);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(this->fillColour);
+        const auto labelBounds = this->getLabelBounds();
+        g.fillRect(labelBounds.reduced(0, 1));
+        g.fillRect(labelBounds.reduced(1, 0));
+
+        g.setColour(this->frameColour);
+        HelioTheme::drawDashedHorizontalLine(g,
+            1.f, 0.f, jmax(0.f, this->underlineWidth - 2.f));
+
+        //HelioTheme::drawBrackets(g, labelBounds, 7, 3, 1);
+    }
+
+    void show(const String &text, const Rectangle<int> &pointAtBounds)
+    {
+        jassert(this->getParentComponent() != nullptr);
+
+        this->underlineWidth = float(pointAtBounds.getWidth());
+
+        const auto textWidth = this->label->getFont().getStringWidth(text);
+        const auto width = textWidth + this->label->getBorderSize().getLeftAndRight();
+        const auto position = pointAtBounds.getBottomLeft().translated(0, -1);
+        const auto margin = 3;
+        this->setBounds(Rectangle<int>(position.x, position.y,
+            jmax(width, pointAtBounds.getWidth()), labelHeight + margin));
+
+        this->label->setBounds(this->getLabelBounds());
+        this->label->setText(text, dontSendNotification);
+
+        this->setVisible(true);
+    }
+
+    void hide()
+    {
+        this->setVisible(false);
+    }
+
+private:
+
+    float underlineWidth = 0.f;
+
+    UniquePointer<Label> label;
+    static constexpr int labelHeight = 26;
+    Rectangle<int> getLabelBounds() const
+    {
+        return this->getLocalBounds().removeFromBottom(labelHeight);
+    }
+
+    const Colour frameColour =
+        findDefaultColour(CaretComponent::caretColourId)
+            .withMultipliedAlpha(0.420f);
+
+    const Colour fillColour =
+        findDefaultColour(ColourIDs::CodeEditor::popup);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlaygroundPopup)
+};
+
 ScriptingPlaygroundEditor::ScriptingPlaygroundEditor(CodeDocument &document, CodeTokeniser *codeTokeniser) :
     CodeEditorComponent(document, codeTokeniser)
 {
     this->setScrollbarThickness(2);
+    this->horizontalScrollBar.setVisible(false);
     this->verticalScrollBar.setColour(ScrollBar::thumbColourId,
         findDefaultColour(CodeEditorComponent::highlightColourId));
     this->setTabSize(2, false); // todo configurable
+
+    this->popup = make<ScriptingPlaygroundPopup>();
+    this->addChildComponent(this->popup.get());
+
+    this->errorMark = make<ScriptingPlaygroundErrorMark>();
+    this->addChildComponent(this->errorMark.get());
+
     this->document.addListener(this);
 }
 
@@ -62,9 +179,52 @@ ScriptingPlaygroundEditor::~ScriptingPlaygroundEditor()
     this->document.removeListener(this);
 }
 
+const String &ScriptingPlaygroundEditor::getHighlightedToken() const noexcept
+{
+    return this->highlightedToken;
+}
+
 const Optional<ScriptEngine::Breakpoint> &ScriptingPlaygroundEditor::getBreakpoint() const
 {
     return this->breakpoint;
+}
+
+void ScriptingPlaygroundEditor::setBreakpointInfo(const String &info)
+{
+    if (!this->breakpointTokenBounds.isEmpty())
+    {
+        this->popup->show(info, this->breakpointTokenBounds);
+    }
+}
+
+void ScriptingPlaygroundEditor::setError(const Range<int> &range, const String &text)
+{
+    this->errorRange = range;
+
+    if (range.isEmpty())
+    {
+        this->errorMark->setVisible(false);
+    }
+    else
+    {
+        this->updateErrorRangeBounds();
+        this->errorMark->setVisible(true);
+    }
+}
+
+void ScriptingPlaygroundEditor::updateErrorRangeBounds()
+{
+    if (this->errorRange.isEmpty())
+    {
+        return;
+    }
+
+    const CodeDocument::Position start(this->document, this->errorRange.getStart());
+    const CodeDocument::Position end(this->document, this->errorRange.getEnd());
+    const auto bounds = this->getCharacterBounds(start).
+        getUnion(this->getCharacterBounds(end)).
+        withWidth(3).withX(0);
+    this->errorMark->setBounds(bounds);
 }
 
 // more conventional multiple-click-and-drag behaviour
@@ -101,6 +261,8 @@ void ScriptingPlaygroundEditor::dragSelection(CodeDocument::Position position, b
 
 void ScriptingPlaygroundEditor::mouseDown(const MouseEvent &e)
 {
+    this->resetBreakpointPopup();
+
     const auto timeSinceLastMouseDown =
         Time::getCurrentTime() - this->lastMouseDownTime;
 
@@ -178,35 +340,117 @@ void ScriptingPlaygroundEditor::mouseUp(const MouseEvent &e)
 {
     CodeEditorComponent::mouseUp(e);
 
+    this->resetBreakpointPopup();
+
     const auto selectionStart = this->getSelectionStart();
     const auto selectionEnd = this->getSelectionEnd();
     if (selectionStart != selectionEnd &&
+        (selectionEnd.getPosition() - selectionStart.getPosition() < ScriptTokeniser::maxTokenLength) &&
         selectionStart.getLineNumber() == selectionEnd.getLineNumber())
     {
-        const auto selectionText =
+        this->highlightedToken =
             this->document.getTextBetween(selectionStart, selectionEnd);
-
-        this->breakpoint = { selectionText,
-            Range<int>(selectionStart.getPosition(), selectionEnd.getPosition()) };
 
         if (auto *parent = this->getParentComponent())
         {
-            parent->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
+            parent->postCommandMessage(CommandIDs::ScriptingPlaygroundRetokenise);
         }
     }
-    else if (this->breakpoint.hasValue())
+    else if (this->highlightedToken.isNotEmpty())
     {
-        this->breakpoint = {};
-        //if (auto *parent = this->getParentComponent())
-        //{
-        //    parent->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
-        //}
+        this->highlightedToken.clear();
+        if (auto *parent = this->getParentComponent())
+        {
+            parent->postCommandMessage(CommandIDs::ScriptingPlaygroundRetokenise);
+        }
     }
 }
 
 void ScriptingPlaygroundEditor::mouseDoubleClick(const MouseEvent &e)
 {
     dragType = notDragging;
+}
+
+// displaying symbol info on mouse hover
+void ScriptingPlaygroundEditor::mouseMove(const MouseEvent &e)
+{
+    if (!this->breakpointTokenBounds.isEmpty() &&
+        !this->breakpointTokenBounds.contains(e.getPosition()))
+    {
+        this->resetBreakpointPopup();
+    }
+    else
+    {
+        this->lastMouseMovePosition = e.getPosition();
+        this->startTimer(250);
+    }
+}
+
+void ScriptingPlaygroundEditor::mouseWheelMove(const MouseEvent &event,
+    const MouseWheelDetails &wheel)
+{
+    this->resetBreakpointPopup();
+
+    CodeEditorComponent::mouseWheelMove(event, wheel);
+}
+
+static void findNonWhitespaceToken(const CodeDocument::Position &pos,
+    CodeDocument::Position &outStart, CodeDocument::Position &outEnd) noexcept
+{
+    outEnd = pos;
+    while (script::isSymbolBody(outEnd.getCharacter()))
+    {
+        outEnd.moveBy(1);
+    }
+
+    outStart = outEnd;
+    while (outStart.getIndexInLine() > 0 &&
+        script::isSymbolBody(outStart.movedBy(-1).getCharacter()))
+    {
+        outStart.moveBy(-1);
+    }
+}
+
+void ScriptingPlaygroundEditor::timerCallback()
+{
+    this->stopTimer();
+
+    const auto positionUnderMouse =
+        this->getPositionAt(this->lastMouseMovePosition.x,
+            this->lastMouseMovePosition.y);
+
+    auto tokenStart = positionUnderMouse;
+    auto tokenEnd = positionUnderMouse;
+    findNonWhitespaceToken(positionUnderMouse, tokenStart, tokenEnd);
+
+    const auto tokenRange = Range<int>(tokenStart.getPosition(), tokenEnd.getPosition());
+    const auto tokenBounds = this->getTextBounds(tokenRange).getBounds();
+    if (!tokenBounds.contains(this->lastMouseMovePosition))
+    {
+        this->resetBreakpointPopup();
+        return; // mouse position is far off to the right
+    }
+
+    if (tokenStart == tokenEnd ||
+        tokenBounds != this->breakpointTokenBounds)
+    {
+        this->popup->hide();
+    }
+
+    if (tokenStart != tokenEnd &&
+        tokenBounds != this->breakpointTokenBounds)
+    {
+        this->breakpointTokenBounds = tokenBounds;
+
+        this->breakpoint = {
+            this->document.getTextBetween(tokenStart, tokenEnd),
+            Range<int>(tokenStart.getPosition(), tokenEnd.getPosition()) };
+
+        if (auto *parent = this->getParentComponent())
+        {
+            parent->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
+        }
+    }
 }
 
 // better indentation for return keys
@@ -399,8 +643,16 @@ void ScriptingPlaygroundEditor::toggleCommentSelection()
     this->setSelection(oldSelectionStart, oldSelectionEnd);
 }
 
+void ScriptingPlaygroundEditor::editorViewportPositionChanged()
+{
+    this->updateErrorRangeBounds();
+}
+
 void ScriptingPlaygroundEditor::caretPositionMoved()
 {
+    this->resetBreakpointPopup();
+    this->highlightedToken.clear();
+
     if (auto *parent = this->getParentComponent())
     {
         parent->postCommandMessage(CommandIDs::ScriptingPlaygroundRetokenise);
@@ -409,6 +661,13 @@ void ScriptingPlaygroundEditor::caretPositionMoved()
 
 void ScriptingPlaygroundEditor::codeDocumentTextInserted(const String &s, int startIndex)
 {
+    this->resetBreakpointPopup();
+    this->highlightedToken.clear();
+
+    jassert(dynamic_cast<ScriptTokeniser *>(this->codeTokeniser));
+    auto *tokeniser = static_cast<ScriptTokeniser *>(this->codeTokeniser);
+    tokeniser->onTextInserted(startIndex, s.length());
+
     if (auto *parent = this->getParentComponent())
     {
         parent->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
@@ -417,15 +676,97 @@ void ScriptingPlaygroundEditor::codeDocumentTextInserted(const String &s, int st
 
 void ScriptingPlaygroundEditor::codeDocumentTextDeleted(int startIndex, int endIndex)
 {
+    this->resetBreakpointPopup();
+    this->highlightedToken.clear();
+
+    jassert(dynamic_cast<ScriptTokeniser *>(this->codeTokeniser));
+    auto *tokeniser = static_cast<ScriptTokeniser *>(this->codeTokeniser);
+    tokeniser->onTextDeleted(startIndex, endIndex);
+
     if (auto *parent = this->getParentComponent())
     {
         parent->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
     }
 }
 
+void ScriptingPlaygroundEditor::resetBreakpointPopup()
+{
+    this->stopTimer();
+    this->popup->hide();
+    this->breakpoint = {};
+    this->breakpointTokenBounds = {};
+}
+
+#pragma endregion
+
 //===----------------------------------------------------------------------===//
 // ScriptingPlayground
 //===----------------------------------------------------------------------===//
+
+class ScriptingPlaygroundCornerResizer final : public Component
+{
+public:
+
+    ScriptingPlaygroundCornerResizer()
+    {
+        this->setOpaque(false);
+        this->setAccessible(false);
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(true, false);
+        this->setMouseCursor(MouseCursor::TopRightCornerResizeCursor);
+    }
+
+    void paint(Graphics &g) override
+    {
+        const auto w = this->getWidth();
+        const auto h = this->getHeight();
+        constexpr auto lineThickness = 0.75f;
+
+        for (float i = 0.2f; i < 0.8f; i += 0.25f)
+        {
+            g.setColour(this->colourDark);
+            g.drawLine(w * i, lineThickness,
+                w - lineThickness, h * (1.f - i), lineThickness);
+
+            g.setColour(this->colourLight);
+            g.drawLine((w * i) + lineThickness, lineThickness,
+                w - lineThickness, (h * (1.f - i)) - lineThickness, lineThickness);
+        }
+    }
+
+    void mouseDown(const MouseEvent &e) override
+    {
+        this->dragger.startDraggingComponent(this, e);
+    }
+
+    void mouseDrag(const MouseEvent &e) override
+    {
+        this->dragger.dragComponent(this, e, nullptr);
+
+        if (auto *parent = dynamic_cast<ScriptingPlayground *>(this->getParentComponent()))
+        {
+            parent->updateBounds();
+            parent->resized();
+        }
+    }
+
+    void mouseUp(const MouseEvent &e) override
+    {
+        if (auto *parent = dynamic_cast<ScriptingPlayground *>(this->getParentComponent()))
+        {
+            parent->resized();
+        }
+    }
+
+private:
+
+    ComponentDragger dragger;
+
+    const Colour colourDark = findDefaultColour(ColourIDs::Common::borderLineDark);
+    const Colour colourLight = findDefaultColour(ColourIDs::Common::borderLineLight);
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlaygroundCornerResizer)
+};
 
 ScriptingPlayground::ScriptingPlayground(ProjectNode &project, RollBase *roll) :
     project(project),
@@ -433,16 +774,15 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project, RollBase *roll) :
 {
     this->setComponentID(ComponentIDs::scriptingPlayground);
 
+    this->scriptEngine = make<ScriptEngine>(*this);
+    this->tokeniser = make<ScriptTokeniser>();
+
     this->shadowUp = make<ShadowUpwards>(ShadowType::Light);
     this->addAndMakeVisible(this->shadowUp.get());
     this->shadowLeft = make<ShadowLeftwards>(ShadowType::Light);
     this->addAndMakeVisible(this->shadowLeft.get());
     this->shadowRight = make<ShadowRightwards>(ShadowType::Light);
     this->addAndMakeVisible(this->shadowRight.get());
-
-    this->scriptEngine = make<ScriptEngine>(*this);
-
-    this->tokeniser = make<ScriptTokeniser>();
 
     this->codeEditor =
         make<ScriptingPlaygroundEditor>(project.getScriptCodeDocument(),
@@ -452,37 +792,41 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project, RollBase *roll) :
     this->codeEditor->setFont(f);
     this->addAndMakeVisible(this->codeEditor.get());
 
+    this->cornerResizer = make<ScriptingPlaygroundCornerResizer>();
+    this->addAndMakeVisible(this->cornerResizer.get());
+
     this->outputText = HelioTheme::makeMultiLineTextEditor(false);
     this->addAndMakeVisible(this->outputText.get());
+    this->outputText->setMultiLine(false, false);
     this->outputText->setColour(TextEditor::textColourId,
-        findDefaultColour(TextEditor::textColourId).withMultipliedAlpha(0.5f));
+        findDefaultColour(TextEditor::textColourId).withMultipliedAlpha(0.69f));
     const auto codeBg =
         findDefaultColour(CodeEditorComponent::backgroundColourId);
-    const auto outputBg = codeBg.brighter(0.015f);
+    const auto outputBg = codeBg.brighter(0.025f);
     this->outputText->setColour(TextEditor::backgroundColourId, outputBg);
     this->outputText->setColour(TextEditor::outlineColourId, outputBg);
-    this->outputText->setIndents(8, 6);
-    Font f2(Globals::UI::Fonts::XS - 1.f); // fixme configurable fonts
+    this->outputText->setIndents(10, 0);
+    this->outputText->setJustification(Justification::centredLeft);
+    Font f2(ScriptingPlaygroundPopup::font);
     f2.setTypefaceName(Font::getDefaultMonospacedFontName());
     this->outputText->setFont(f2);
-    //this->outputText->setText(""); // todo previous results?
+
+    constexpr auto iconSize = 20;
+    this->runButton = make<IconButton>(Icons::play,
+        CommandIDs::ScriptingPlaygroundRunScript, this, iconSize);
+    this->addChildComponent(this->runButton.get());
 
     this->shadowBottom = make<ShadowUpwards>(ShadowType::Light);
     this->addAndMakeVisible(this->shadowBottom.get());
 
-    // fixme width not more than parent width
-    this->setSize(960, 770); // todo configurable or resizable
+    const auto size = App::Config().getUiFlags()->getScriptEditorSize();
+    this->setSize(size.getX(), size.getY());
 
     // fixme should restore the last state instead of this:
     this->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
-
-    // todo transport addListener(this);
 }
 
-ScriptingPlayground::~ScriptingPlayground()
-{
-    // todo transport removeListener(this);
-}
+ScriptingPlayground::~ScriptingPlayground() = default;
 
 void ScriptingPlayground::paint(Graphics &g)
 {
@@ -504,18 +848,24 @@ void ScriptingPlayground::resized()
     this->shadowRight->setBounds(this->getWidth() - marginH, marginTop,
         marginH, this->getHeight() - marginTop);
 
-    constexpr auto outputTextHeight =
-        Globals::UI::projectMapHeight - 1; // fixme constant naming
+    constexpr auto statusPanelSize = Globals::UI::sidebarFooterHeight / 2;
 
     this->codeEditor->setBounds(marginH,
         marginTop,
         this->getWidth() - marginH * 2,
-        this->getHeight() - marginTop - outputTextHeight);
+        this->getHeight() - marginTop - statusPanelSize);
+
+    constexpr auto resizerSize = 16;
+    this->cornerResizer->setBounds(this->codeEditor->getBounds().
+        removeFromRight(resizerSize).removeFromTop(resizerSize));
 
     this->outputText->setBounds(marginH - 1,
         this->codeEditor->getBottom(),
         this->getWidth() - marginH * 2 + 2,
-        outputTextHeight);
+        statusPanelSize);
+
+    this->runButton->setBounds(
+        this->outputText->getBounds().removeFromRight(statusPanelSize));
 
     this->shadowBottom->setBounds(marginH,
         this->codeEditor->getBottom() - 8,
@@ -525,20 +875,24 @@ void ScriptingPlayground::resized()
 
 void ScriptingPlayground::parentHierarchyChanged()
 {
+    if (auto *parent = this->getParentComponent())
+    {
+        const auto parentRelative =
+            parent->getBounds().transformedBy(this->getTransform().inverted());
+        this->setSize(jmin(this->getWidth(), parentRelative.getWidth()),
+            jmin(this->getHeight(), parentRelative.getHeight()));
+    }
+
     this->updatePosition();
 }
 
-Optional<ScriptEngine::Breakpoint> findClosestParens(const Array<Range<int>> &ranges,
-    const Optional<ScriptEngine::Breakpoint> &from)
+Optional<ScriptEngine::Breakpoint> findBreakpointMinScope(
+    const Optional<ScriptEngine::Breakpoint> &from, const Array<Range<int>> &ranges)
 {
     if (!from.hasValue())
     {
         return from;
     }
-
-    //DBG("From: " +
-    //    String(from->codeBlockRange.getStart()) + ", " +
-    //    String(from->codeBlockRange.getEnd()));
 
     ScriptEngine::Breakpoint result = *from;
     result.parentListRange = {};
@@ -549,21 +903,15 @@ Optional<ScriptEngine::Breakpoint> findClosestParens(const Array<Range<int>> &ra
         if (range.contains(from->parentListRange.getStart()) &&
             range.contains(from->parentListRange.getEnd()))
         {
-            if (range.getLength() < minRange)
-            {
-                minRange = range.getLength();
-                result.parentListRange = range;
-            }
-            else
+            if (range.getLength() >= minRange)
             {
                 break;
             }
+
+            minRange = range.getLength();
+            result.parentListRange = range;
         }
     }
-
-    //DBG("To: " +
-    //    String(result.codeBlockRange.getStart()) + ", " +
-    //    String(result.codeBlockRange.getEnd()));
 
     return result;
 }
@@ -587,12 +935,13 @@ void ScriptingPlayground::handleCommandMessage(int commandId)
         break;
     case CommandIDs::ScriptingPlaygroundReevaluate:
         this->scriptEngine->evaluate(this->codeEditor->getDocument().getAllContent(), true,
-            findClosestParens(this->scriptEngine->getBlockRanges(),
-                this->codeEditor->getBreakpoint()));
-        this->updateOnParse(); // update immediately with the latest parsing data
+            findBreakpointMinScope(this->codeEditor->getBreakpoint(),
+                this->scriptEngine->getBlockRanges()));
+        this->updateOnParse();
         break;
     case CommandIDs::ScriptingPlaygroundRetokenise:
         this->tokeniser->setCaretPosition(this->codeEditor->getCaretPosition());
+        this->tokeniser->setHighlightedToken(this->codeEditor->getHighlightedToken());
         this->codeEditor->retokenise(0, 0);
         break;
     case CommandIDs::ScriptEditorToggleComment:
@@ -646,16 +995,37 @@ Array<KeyPress> ScriptingPlayground::getAllScriptingPlaygroundHotkeys()
     return scriptingPlaygroundKeyPresses;
 }
 
+void ScriptingPlayground::updateBounds()
+{
+    if (auto *parent = this->getParentComponent())
+    {
+        const auto parentRelative =
+            parent->getBounds().transformedBy(this->getTransform().inverted());
+        const auto minSize =
+            Point<int>(690, 690).transformedBy(this->getTransform().inverted());
+        const auto newWidth =
+            jmin(parent->getWidth(),
+                2 * jmax(minSize.getX() / 2, this->getX() + this->cornerResizer->getX() +
+                    this->cornerResizer->getWidth() + marginH - (parentRelative.getWidth() / 2)));
+        const auto newHeight =
+            jmin(parentRelative.getHeight(),
+                jmax(minSize.getY(), parentRelative.getHeight() - this->getY() -
+                    this->cornerResizer->getY() + marginTop));
+        this->setSize(newWidth, newHeight);
+        App::Config().getUiFlags()->setScriptEditorSize({ newWidth, newHeight });
+        this->updatePosition();
+    }
+}
+
 void ScriptingPlayground::updatePosition()
 {
     if (auto *parent = this->getParentComponent())
     {
-        const auto centered = this->getBounds()
-            .withCentre(Point<int>(this->getParentWidth() / 2, 0)
-            .transformedBy(this->getTransform().inverted()));
-
-        this->setTopLeftPosition(centered.getX(),
-            parent->getHeight() - this->getHeight());
+        const auto parentRelative =
+            parent->getBounds().transformedBy(this->getTransform().inverted());
+        this->setTopLeftPosition(Point<int>(
+            (parentRelative.getWidth() / 2) - (this->getWidth() / 2),
+            parentRelative.getHeight() - this->getHeight()));
     }
 }
 
@@ -663,12 +1033,17 @@ void ScriptingPlayground::updateOnParse()
 {
     if (this->scriptEngine->getParsingError().hasValue())
     {
+        const auto errorRange = this->scriptEngine->getParsingError()->sourceCodeRange;
+
+        this->fader.fadeOut(this->runButton.get());
         this->outputText->setText(this->scriptEngine->getParsingError()->getDescription());
-        this->tokeniser->setErrorRange(this->scriptEngine->getParsingError()->sourceCodeRange);
+        this->tokeniser->setErrorRange(errorRange);
+        this->codeEditor->setError(errorRange, {});
     }
-    else
+    else if (!this->scriptEngine->getEvaluationError().hasValue())
     {
         this->tokeniser->setErrorRange({});
+        this->codeEditor->setError({}, {});
     }
 
     this->tokeniser->updateParsingData(this->scriptEngine->getBlockRanges(),
@@ -681,24 +1056,45 @@ void ScriptingPlayground::updateOnEvaluate()
 {
     if (this->scriptEngine->getParsingError().hasValue())
     {
-        this->outputText->setText(this->scriptEngine->getParsingError()->getDescription());
-        this->tokeniser->setErrorRange(this->scriptEngine->getParsingError()->sourceCodeRange);
+        const auto errorText = this->scriptEngine->getParsingError()->getDescription();
+        const auto errorRange = this->scriptEngine->getParsingError()->sourceCodeRange;
+
+        this->fader.fadeOut(this->runButton.get());
+        this->outputText->setText(errorText);
+        this->tokeniser->setErrorRange(errorRange);
+        this->codeEditor->setError(errorRange, errorText);
     }
     else if (this->scriptEngine->getEvaluationError().hasValue())
     {
-        this->outputText->setText(this->scriptEngine->getEvaluationError()->getDescription());
-        if (this->scriptEngine->getEvaluationError()->type !=
-            script::EvaluationError::Type::BreakpointHit)
+        const auto errorType = this->scriptEngine->getEvaluationError()->type;
+        if (errorType == script::EvaluationError::Type::Aborted)
         {
-            this->tokeniser->setErrorRange(this->scriptEngine->getEvaluationError()->sourceCodeRange);
+            return;
+        }
+
+        const auto errorText = this->scriptEngine->getEvaluationError()->getDescription();
+        const auto errorRange = this->scriptEngine->getEvaluationError()->sourceCodeRange;
+
+        if (errorType == script::EvaluationError::Type::BreakpointHit)
+        {
+            this->codeEditor->setBreakpointInfo(errorText);
+        }
+        else
+        {
+            this->fader.fadeOut(this->runButton.get());
+            this->outputText->setText(errorText);
+            this->tokeniser->setErrorRange(errorRange);
+            this->codeEditor->setError(errorRange, errorText);
         }
     }
     else
     {
+        this->fader.fadeIn(this->runButton.get());
         const auto &result = this->scriptEngine->getEvaluationResult();
         this->outputText->setText(result.isNil() ? "" : result.toString());
         this->tokeniser->updateEvaluationData(this->scriptEngine->getTopLevelFunctionNames());
         this->tokeniser->setErrorRange({});
+        this->codeEditor->setError({}, {});
     }
 
     this->codeEditor->retokenise(0, 0);
