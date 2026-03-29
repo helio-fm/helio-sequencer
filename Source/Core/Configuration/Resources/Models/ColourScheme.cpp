@@ -43,120 +43,168 @@ String ColourScheme::getName() const noexcept
 Colour ColourScheme::getPageFillColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.contains(UI::Colours::primaryGradientA) ?
+    return this->colours.contains(UI::Colours::primaryGradientA) ?
         this->colours.at(UI::Colours::primaryGradientA) :
         this->colours.at(UI::Colours::pageFill);
-    return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getTimelineColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.contains(UI::Colours::primaryGradientB) ?
+    return this->colours.contains(UI::Colours::primaryGradientB) ?
         this->colours.at(UI::Colours::primaryGradientB) :
         this->colours.at(UI::Colours::timeline);
-    return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getHeadlineFillColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.contains(UI::Colours::primaryGradientA) ?
+    return this->colours.contains(UI::Colours::primaryGradientA) ?
         this->colours.at(UI::Colours::primaryGradientA) :
         this->colours.at(UI::Colours::headlineFill);
-    return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getSidebarFillColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.contains(UI::Colours::secondaryGradientA) ?
+    return this->colours.contains(UI::Colours::secondaryGradientA) ?
         this->colours.at(UI::Colours::secondaryGradientA) :
         this->colours.at(UI::Colours::sidebarFill);
-    return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getDialogFillColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.contains(UI::Colours::secondaryGradientA) ?
+    return this->colours.contains(UI::Colours::secondaryGradientA) ?
         this->colours.at(UI::Colours::secondaryGradientA) :
         this->colours.at(UI::Colours::dialogFill);
-    return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getFrameBorderColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.contains(UI::Colours::panelBorder) ?
+    return this->colours.contains(UI::Colours::panelBorder) ?
         this->colours.at(UI::Colours::panelBorder) :
         this->colours.at(UI::Colours::frameBorder);
-    return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getLassoFillColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::lassoFill);
-    return JUCE_LIVE_CONSTANT(c);
+    return this->colours.at(UI::Colours::lassoFill);
 }
 
 Colour ColourScheme::getLassoBorderColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::lassoBorder);
-    return JUCE_LIVE_CONSTANT(c);
+    return this->colours.at(UI::Colours::lassoBorder);
 }
 
 Colour ColourScheme::getBlackKeyColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::blackKey);
-    return JUCE_LIVE_CONSTANT(c);
+    return this->colours.at(UI::Colours::blackKey);
 }
 
 Colour ColourScheme::getWhiteKeyColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::whiteKey);
-    return JUCE_LIVE_CONSTANT(c);
+    return this->colours.at(UI::Colours::whiteKey);
 }
 
 Colour ColourScheme::getRowColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::row);
-    return JUCE_LIVE_CONSTANT(c);
+    return this->colours.at(UI::Colours::row);
 }
 
 Colour ColourScheme::getBarColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::bar);
-    return JUCE_LIVE_CONSTANT(c);
+    return this->colours.at(UI::Colours::bar);
 }
 
 Colour ColourScheme::getTextColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::text);
-    return JUCE_LIVE_CONSTANT(c);
+    return this->colours.at(UI::Colours::text);
 }
 
 Colour ColourScheme::getIconBaseColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::iconBase);
-    return JUCE_LIVE_CONSTANT(c);
+    return this->colours.at(UI::Colours::iconBase);
 }
 
 Colour ColourScheme::getIconShadowColour() const
 {
     using namespace Serialization;
-    const auto c = this->colours.at(UI::Colours::iconShadow);
-    return JUCE_LIVE_CONSTANT(c);
+    return this->colours.at(UI::Colours::iconShadow);
 }
 
+Colour ColourScheme::getScriptBackgroundColour() const
+{
+    using namespace Serialization;
+    return this->colours.contains(UI::Colours::scriptBackground) ?
+        this->colours.at(UI::Colours::scriptBackground) :
+        this->getPageFillColour();
+}
+
+Colour ColourScheme::getScriptTextColour() const
+{
+    using namespace Serialization;
+    return this->colours.contains(UI::Colours::scriptText) ?
+        this->colours.at(UI::Colours::scriptText) :
+        this->getTextColour();
+}
+
+Colour ColourScheme::getScriptKeywordColour() const
+{
+    using namespace Serialization;
+    return this->colours.contains(UI::Colours::scriptKeyword) ?
+        this->colours.at(UI::Colours::scriptKeyword) :
+        this->getScriptTextColour();
+}
+
+Colour ColourScheme::getScriptFunctionColour() const
+{
+    using namespace Serialization;
+    return this->colours.contains(UI::Colours::scriptFunction) ?
+        this->colours.at(UI::Colours::scriptFunction) :
+        this->getScriptTextColour();
+}
+
+Colour ColourScheme::getScriptLiteralColour() const
+{
+    using namespace Serialization;
+    return this->colours.contains(UI::Colours::scriptLiteral) ?
+        this->colours.at(UI::Colours::scriptLiteral) :
+        this->getScriptTextColour();
+}
+
+Colour ColourScheme::getScriptBracketColour() const
+{
+    using namespace Serialization;
+    return this->colours.contains(UI::Colours::scriptBracket) ?
+        this->colours.at(UI::Colours::scriptBracket) :
+        this->getScriptTextColour();
+}
+
+Colour ColourScheme::getScriptErrorColour() const
+{
+    using namespace Serialization;
+    return this->colours.contains(UI::Colours::scriptError) ?
+        this->colours.at(UI::Colours::scriptError) :
+        this->getScriptTextColour();
+}
+
+Colour ColourScheme::getScriptCommentColour() const
+{
+    using namespace Serialization;
+    return this->colours.contains(UI::Colours::scriptComment) ?
+        this->colours.at(UI::Colours::scriptComment) :
+        this->getScriptTextColour();
+}
 
 //===----------------------------------------------------------------------===//
 // Serialization

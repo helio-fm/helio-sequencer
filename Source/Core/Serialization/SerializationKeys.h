@@ -358,6 +358,15 @@ namespace Serialization
 
             static const Identifier iconBase = "iconBase";
             static const Identifier iconShadow = "iconShadow";
+
+            static const Identifier scriptBackground = "scriptBackground";
+            static const Identifier scriptText = "scriptText";
+            static const Identifier scriptKeyword = "scriptKeyword";
+            static const Identifier scriptFunction = "scriptFunction";
+            static const Identifier scriptLiteral = "scriptLiteral";
+            static const Identifier scriptBracket = "scriptBracket";
+            static const Identifier scriptError = "scriptError";
+            static const Identifier scriptComment = "scriptComment";
         } // namespace Colours
     } // namespace UI
 

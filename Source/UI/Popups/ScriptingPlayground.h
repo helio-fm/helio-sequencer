@@ -122,7 +122,7 @@ private:
     static constexpr int marginTop = 10; // bottom margin is 0
 
     const Colour frameColour =
-        findDefaultColour(ColourIDs::Shadows::borderNormal);
+        findDefaultColour(ColourIDs::Shadows::borderLight);
 
 private:
 
@@ -135,6 +135,7 @@ private:
     UniquePointer<ScriptTokeniser> tokeniser;
 
     UniquePointer<Component> shadowUp;
+    UniquePointer<Component> shadowBottom;
     UniquePointer<Component> shadowLeft;
     UniquePointer<Component> shadowRight;
 

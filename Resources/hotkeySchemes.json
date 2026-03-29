@@ -39,6 +39,9 @@
   { "command": "BreadcrumbsMenu", "key": "F10" },
   { "command": "BreadcrumbsMenu", "key": "Shift + /" },
 
+  { "command": "ScriptingPlayground", "key": "Control + `" },
+  { "command": "ScriptingPlayground", "key": "Command + `" },
+
   { "command": "ShowPreviousPage", "key": "Command + Cursor Left" },
   { "command": "ShowPreviousPage", "key": "Control + Cursor Left" },
   { "command": "ShowPreviousPage", "key": "Alt + Cursor Left" },
@@ -567,6 +570,21 @@
   { "command": "ComboCursorPageUp", "key": "Page Up" },
   { "command": "ComboCursorPageDown", "key": "Page Down" }
   // ANCHOR_END: ComboBox
+  ]
+},
+{
+  "receiver": "ScriptingPlayground",
+  "keyPress": [
+  // ANCHOR: ScriptingPlayground
+  { "command": "ScriptingPlaygroundDismiss", "key": "Escape" },
+  { "command": "ScriptingPlaygroundDismiss", "key": "Control + `" },
+  { "command": "ScriptingPlaygroundDismiss", "key": "Command + `" },
+  { "command": "ScriptingPlaygroundRunScript", "key": "F5" },
+  { "command": "ScriptEditorToggleComment", "key": "Control + /" },
+  { "command": "ScriptEditorToggleComment", "key": "Command + /" },
+  { "command": "ScriptEditorSelectNext", "key": "F3" },
+  { "command": "ScriptEditorSelectPrevious", "key": "Shift + F3" }
+  // ANCHOR_END: ScriptingPlayground
   ]
 }
 ]}}}

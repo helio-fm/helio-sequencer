@@ -47,5 +47,13 @@ If you don't see any hotkeys here, you're reading the markdown source of this pa
 ```
 
 ```json
+{{#include ../Resources/hotkeySchemes.json:ComboBox}}
+```
+
+```json
 {{#include ../Resources/hotkeySchemes.json:CommandPalette}}
+```
+
+```json
+{{#include ../Resources/hotkeySchemes.json:ScriptingPlayground}}
 ```

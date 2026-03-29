@@ -433,7 +433,7 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project, RollBase *roll) :
 {
     this->setComponentID(ComponentIDs::scriptingPlayground);
 
-    this->shadowUp = make<ShadowUpwards>(ShadowType::Normal);
+    this->shadowUp = make<ShadowUpwards>(ShadowType::Light);
     this->addAndMakeVisible(this->shadowUp.get());
     this->shadowLeft = make<ShadowLeftwards>(ShadowType::Light);
     this->addAndMakeVisible(this->shadowLeft.get());
@@ -467,6 +467,9 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project, RollBase *roll) :
     this->outputText->setFont(f2);
     //this->outputText->setText(""); // todo previous results?
 
+    this->shadowBottom = make<ShadowUpwards>(ShadowType::Light);
+    this->addAndMakeVisible(this->shadowBottom.get());
+
     // fixme width not more than parent width
     this->setSize(960, 770); // todo configurable or resizable
 
@@ -484,8 +487,8 @@ ScriptingPlayground::~ScriptingPlayground()
 void ScriptingPlayground::paint(Graphics &g)
 {
     g.setColour(this->frameColour);
-    g.fillRect(marginH - 1, marginTop - 1,
-        this->getWidth() - marginH * 2 + 2,
+    g.fillRect(marginH, marginTop - 1,
+        this->getWidth() - marginH * 2,
         this->getHeight() - marginTop + 1);
 }
 
@@ -513,6 +516,11 @@ void ScriptingPlayground::resized()
         this->codeEditor->getBottom(),
         this->getWidth() - marginH * 2 + 2,
         outputTextHeight);
+
+    this->shadowBottom->setBounds(marginH,
+        this->codeEditor->getBottom() - 8,
+        this->getWidth() - marginH * 2,
+        8);
 }
 
 void ScriptingPlayground::parentHierarchyChanged()

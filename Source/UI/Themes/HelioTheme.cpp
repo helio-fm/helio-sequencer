@@ -542,9 +542,9 @@ void HelioTheme::drawScrollbar(Graphics &g, ScrollBar &scrollbar,
     }
 
 #if PLATFORM_DESKTOP
-    const auto thumbCol = this->findColour(ScrollBar::thumbColourId);
+    const auto thumbCol = scrollbar.findColour(ScrollBar::thumbColourId);
 #elif PLATFORM_MOBILE
-    const auto thumbCol = this->findColour(ScrollBar::thumbColourId).
+    const auto thumbCol = scrollbar.findColour(ScrollBar::thumbColourId).
         withMultipliedAlpha((isMouseOver || isMouseDown) ? 0.69f : 0.420f);
 #endif
 
@@ -892,15 +892,15 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
     this->setColour(TextEditor::shadowColourId, s->getPageFillColour().darker(0.05f));
     this->setColour(TextEditor::highlightColourId, textColour.withAlpha(this->isDarkTheme ? 0.035f : 0.07f));
 
-    const auto codeEditorFill = this->isDarkTheme ?
-        s->getPageFillColour().darker(0.420f) : s->getPageFillColour().darker(0.01f);
+    const auto codeEditorFill = s->getScriptBackgroundColour();
     this->setColour(CodeEditorComponent::backgroundColourId, codeEditorFill);
     this->setColour(CodeEditorComponent::highlightColourId,
-        codeEditorFill.withMultipliedLightness(this->isDarkTheme ? 1.75f : 2.5f));
-    this->setColour(CodeEditorComponent::defaultTextColourId, textColour);
+        codeEditorFill.withMultipliedLightness(this->isDarkTheme ? 1.5f : 2.5f));
+    this->setColour(CodeEditorComponent::defaultTextColourId, s->getScriptTextColour());
     this->setColour(CodeEditorComponent::lineNumberBackgroundId, codeEditorFill);
-    this->setColour(CodeEditorComponent::lineNumberTextId, textColour.withMultipliedAlpha(0.1f));
-    this->setColour(CaretComponent::caretColourId, textColour.withAlpha(0.55f));
+    this->setColour(CodeEditorComponent::lineNumberTextId,
+        s->getScriptTextColour().withMultipliedAlpha(0.25f));
+    this->setColour(CaretComponent::caretColourId, s->getScriptTextColour());
 
     this->setColour(PopupMenu::backgroundColourId, s->getPageFillColour());
     this->setColour(PopupMenu::textColourId, textColour);
@@ -1127,18 +1127,15 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
     this->setColour(ColourIDs::Shadows::fillHard, Colours::black.withAlpha(shadowIntensity * 0.125f));
     this->setColour(ColourIDs::Shadows::borderHard, Colours::black.withAlpha(shadowIntensity * 0.25f));
 
-    // fixme add these to colour schemes:
-    this->setColour(ColourIDs::CodeEditor::error, Colour(0xfff92672));
-    this->setColour(ColourIDs::CodeEditor::comment, Colour(0xff768390));
-    this->setColour(ColourIDs::CodeEditor::keyword, Colour(0xff4ec9b0));
-    this->setColour(ColourIDs::CodeEditor::function, Colour(0xff4ec9b0));
-    this->setColour(ColourIDs::CodeEditor::identifier, Colour(0xffadbad7));
-    this->setColour(ColourIDs::CodeEditor::integer, Colour(0xff6cb6ff));
-    this->setColour(ColourIDs::CodeEditor::real, Colour(0xff6cb6ff));
-    this->setColour(ColourIDs::CodeEditor::string, Colour(0xff6cb6ff));
-    this->setColour(ColourIDs::CodeEditor::bracket, Colour(0x37adbad7));
-    this->setColour(ColourIDs::CodeEditor::bracketMatch, Colour(0xeeadbad7));
-    this->setColour(ColourIDs::CodeEditor::punctuation, Colour(0xccadbad7));
+    this->setColour(ColourIDs::CodeEditor::error, s->getScriptErrorColour());
+    this->setColour(ColourIDs::CodeEditor::comment, s->getScriptCommentColour());
+    this->setColour(ColourIDs::CodeEditor::keyword, s->getScriptKeywordColour());
+    this->setColour(ColourIDs::CodeEditor::function, s->getScriptFunctionColour());
+    this->setColour(ColourIDs::CodeEditor::identifier, s->getScriptTextColour());
+    this->setColour(ColourIDs::CodeEditor::literal, s->getScriptLiteralColour());
+    this->setColour(ColourIDs::CodeEditor::bracket,
+        s->getScriptBracketColour().withMultipliedAlpha(0.25f));
+    this->setColour(ColourIDs::CodeEditor::bracketMatch, s->getScriptBracketColour());
 
     // Pre-rendered image backgrounds:
     constexpr int w = 256;

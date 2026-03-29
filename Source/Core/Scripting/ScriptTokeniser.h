@@ -56,29 +56,26 @@ public:
             break;
         case '0': case '1': case '2': case '3': case '4':
         case '5': case '6': case '7': case '8': case '9':
-        case '.':
+        case '.': case '-':
         {
-            const auto result = CppTokeniserFunctions::parseNumber(source);
-            if (result == TokenType::tokenTypeError)
+            if (CppTokeniserFunctions::parseNumber(source) == TokenType::tokenTypeError)
             {
                 source.skip();
+
+                if (firstChar == '-')
+                {
+                    return TokenType::tokenTypeReservedKeyword;
+                }
             }
-            return result;
+            return TokenType::tokenTypeLiteral;
         }
         case '(': case ')':
             source.skip();
             return TokenType::tokenTypeBracket;
         case '"':
             CppTokeniserFunctions::skipQuotedString(source);
-            return TokenType::tokenTypeString;
-        // todo:
-        //case '\'':
-        //    skipQuote(source);
-        //    return TokenType::tokenTypeQuote;
-        case '\'':
-        case '=': case '%':
-        case '+': case '-':
-        case '*': case '/':
+            return TokenType::tokenTypeLiteral;
+        case '\'': case '=': case '%': case '+': case '*': case '/':
             source.skip();
             return TokenType::tokenTypeReservedKeyword;
         case '<': case '>': case '!':
@@ -116,19 +113,15 @@ public:
             { "Keyword",        findDefaultColour(ColourIDs::CodeEditor::keyword) },
             { "Function",       findDefaultColour(ColourIDs::CodeEditor::function) },
             { "Identifier",     findDefaultColour(ColourIDs::CodeEditor::identifier) },
-            { "Integer",        findDefaultColour(ColourIDs::CodeEditor::integer) },
-            { "Float",          findDefaultColour(ColourIDs::CodeEditor::real) },
-            { "String",         findDefaultColour(ColourIDs::CodeEditor::string) },
-            { "Punctuation",    findDefaultColour(ColourIDs::CodeEditor::punctuation) },
+            { "Literal",        findDefaultColour(ColourIDs::CodeEditor::literal) },
             { "Bracket",        findDefaultColour(ColourIDs::CodeEditor::bracket) },
             { "BracketMatch",   findDefaultColour(ColourIDs::CodeEditor::bracketMatch) }
         };
 
-        //const auto textColour = findDefaultColour(Label::textColourId);
         CodeEditorComponent::ColourScheme cs;
         for (auto &t : types)
         {
-            cs.set(t.name, t.colour); // t.colour.interpolatedWith(textColour, 0.25f));
+            cs.set(t.name, t.colour);
         }
 
         return cs;
@@ -181,12 +174,9 @@ public:
         tokenTypeError = 0,
         tokenTypeComment,
         tokenTypeReservedKeyword,
-        tokenTypeUserFunction,
+        tokenTypeFunction,
         tokenTypeIdentifier,
-        tokenTypeInteger,
-        tokenTypeFloat,
-        tokenTypeString,
-        tokenTypePunctuation,
+        tokenTypeLiteral,
         tokenTypeBracket,
         tokenTypeBracketHighlighted
     };
@@ -200,18 +190,13 @@ private:
         static const char *const keywords2Char[] =
             { "if", "or", nullptr };
         static const char *const keywords3Char[] =
-            { "and", "not", "exp", "map", "abs", "let", "min", "max",
-              "sin", "cos", "tan", "log", "int", "pop", "nil", "nth", nullptr };
+            { "and", "not", "map", "let", "nil", nullptr };
         static const char *const keywords4Char[] =
-            { "eval", "push", "head", "tail", "type", "true", "last", "list", nullptr };
+            { "eval", "true", nullptr };
         static const char *const keywords5Char[] =
-            { "begin", "empty", "false", "first", "float", "parse",
-              "print", "quote", "range", "scope", "while" "round", "floor", nullptr };
+            { "begin", "quote", "parse", "false", nullptr };
         static const char *const keywords6Char[] =
-            { "filter", "insert", "append", "lambda", "define",
-              "length", "random", "reduce", "remove", nullptr };
-        static const char *const keywordsOther[] =
-            { "newline", "reverse", nullptr }; // todo all the interop stuff
+            { "define", "lambda", "filter", "reduce", nullptr };
 
         const char *const *k;
         switch (tokenLength)
@@ -223,7 +208,47 @@ private:
             case 5: k = keywords5Char; break;
             case 6: k = keywords6Char; break;
             default:
-                if (tokenLength > 13)
+                return false;
+        }
+
+        for (int i = 0; k[i] != nullptr; ++i)
+        {
+            if (token.compare(CharPointer_UTF8(k[i])) == 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    static bool isBuiltInFunction(String::CharPointerType token, const int tokenLength) noexcept
+    {
+        static const char *const keywords3Char[] =
+            { "abs", "min", "max", "int", "nth", nullptr };
+        static const char *const keywords4Char[] =
+            { "list", "head", "tail", "last", "push", "type", nullptr };
+        static const char *const keywords5Char[] =
+            { "empty", "first", "float", "print", "debug",
+              "range", "scope", "while" "round", "floor", nullptr };
+        static const char *const keywords6Char[] =
+            { "append", "length", "random", "remove", nullptr };
+        static const char *const keywordsOther[] =
+            { "newline",
+              "project:reset", "project:period-size",
+              "timeline:reset", "timeline:add-key",
+              "track:make", "track:add-notes",
+              "scale:find", "scale:render-key", nullptr };
+
+        const char *const *k;
+        switch (tokenLength)
+        {
+            case 3: k = keywords3Char; break;
+            case 4: k = keywords4Char; break;
+            case 5: k = keywords5Char; break;
+            case 6: k = keywords6Char; break;
+            default:
+                if (tokenLength < 3 || tokenLength > 20)
                 {
                     return false;
                 }
@@ -233,7 +258,7 @@ private:
 
         for (int i = 0; k[i] != nullptr; ++i)
         {
-            if (token.compare(CharPointer_UTF8(k[i])) == 0)
+            if (token.compare(CharPointer_ASCII(k[i])) == 0)
             {
                 return true;
             }
@@ -261,19 +286,23 @@ private:
             ++tokenLength;
         }
 
-        if (this->userFunctions.contains(String(String::CharPointerType(possibleIdentifier), tokenLength)))
+        possible.writeNull();
+
+        if (tokenLength <= 6 &&
+            isReservedKeyword(String::CharPointerType(possibleIdentifier), tokenLength))
         {
-            return TokenType::tokenTypeUserFunction;
+            return TokenType::tokenTypeReservedKeyword;
         }
 
-        if (tokenLength <= 10)
+        if (tokenLength <= 20 &&
+            isBuiltInFunction(String::CharPointerType(possibleIdentifier), tokenLength))
         {
-            possible.writeNull();
+            return TokenType::tokenTypeFunction;
+        }
 
-            if (isReservedKeyword(String::CharPointerType(possibleIdentifier), tokenLength))
-            {
-                return TokenType::tokenTypeReservedKeyword;
-            }
+        if (this->userFunctions.contains(String(String::CharPointerType(possibleIdentifier), tokenLength)))
+        {
+            return TokenType::tokenTypeFunction;
         }
 
         return TokenType::tokenTypeIdentifier;
