@@ -96,7 +96,19 @@ public:
     // ScriptEngine::SideEffects
     //===------------------------------------------------------------------===//
 
-    void print(const String &output) override;
+    void onProgramTerminated(bool success) override;
+
+    void resetProject() override;
+    void resetTimeline() override;
+    void addKeySignature(const KeySignatureEvent &event) override;
+    String makePianoTrack(const String &trackName) override;
+    MidiTrack *findPianoTrackById(const String &trackId) override;
+    void addNotes(MidiTrack *track, Array<Note> &notes) override;
+    void joinAdjacent(MidiTrack *track) override;
+    void arpeggiate(MidiTrack *track, Arpeggiator::Ptr arp) override;
+    void alignToScale(MidiTrack *track) override;
+
+    ScriptEngine::SideEffects::HostContext fillHostContext() const override;
 
 private:
 

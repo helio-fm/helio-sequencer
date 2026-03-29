@@ -17,11 +17,12 @@
 
 #pragma once
 
-#include "Interpreter.h"
-
 class Note;
 class MidiTrack;
 class KeySignatureEvent;
+
+#include "Interpreter.h"
+#include "Arpeggiator.h"
 
 class ScriptEngine final :
     public script::EvaluationContext,
@@ -30,12 +31,38 @@ class ScriptEngine final :
 {
 public:
 
+    //===------------------------------------------------------------------===//
+    // Interop with project
+    //===------------------------------------------------------------------===//
+
     struct SideEffects
     {
         virtual ~SideEffects() = default;
 
+        // called with the message thread locked:
+        virtual void onProgramTerminated(bool success) = 0;
+
         // may be called from a separate thread, do locks when needed:
-        virtual void print(const String &output) = 0;
+        virtual void resetProject() = 0;
+        virtual void resetTimeline() = 0;
+        virtual void addKeySignature(const KeySignatureEvent &event) = 0;
+        virtual String makePianoTrack(const String &trackName) = 0;
+        virtual MidiTrack *findPianoTrackById(const String &trackId) = 0;
+        virtual void addNotes(MidiTrack *track, Array<Note> &notes) = 0;
+        virtual void joinAdjacent(MidiTrack *track) = 0;
+        virtual void arpeggiate(MidiTrack *track, Arpeggiator::Ptr arp) = 0;
+        virtual void alignToScale(MidiTrack *track) = 0;
+
+        struct HostContext final
+        {
+            // todo key and time signatures here
+            Array<Scale::Ptr> allScales;
+            int projectPeriodSize;
+        };
+        virtual HostContext fillHostContext() const = 0;
+
+        // todo all refactorings
+        //virtual void refactorJoinAdjacent(MidiTrack *track) = 0;
     };
 
     struct Breakpoint final
@@ -43,6 +70,11 @@ public:
         String symbolName;
         Range<int> parentListRange;
     };
+
+    SideEffects &sideEffects;
+
+    SideEffects::HostContext hostContext;
+    ReadWriteLock hostContextLock;
 
     explicit ScriptEngine(SideEffects &sideEffects);
 
@@ -77,8 +109,6 @@ public:
 
     int getMaxCallStackSize() const override;
     int getMaxEvaluationTimeMs() const override;
-
-    SideEffects &sideEffects;
 
 private:
 

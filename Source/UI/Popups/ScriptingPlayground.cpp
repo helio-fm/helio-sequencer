@@ -32,6 +32,7 @@
 #include "TimeSignaturesSequence.h"
 #include "AnnotationsSequence.h"
 #include "PianoSequence.h"
+#include "SequencerOperations.h"
 #include "ScriptEngine.h"
 #include "ScriptTokeniser.h"
 #include "PianoRoll.h"
@@ -50,6 +51,8 @@ ScriptingPlaygroundEditor::ScriptingPlaygroundEditor(CodeDocument &document, Cod
     CodeEditorComponent(document, codeTokeniser)
 {
     this->setScrollbarThickness(2);
+    this->verticalScrollBar.setColour(ScrollBar::thumbColourId,
+        findDefaultColour(CodeEditorComponent::highlightColourId));
     this->setTabSize(2, false); // todo configurable
     this->document.addListener(this);
 }
@@ -104,7 +107,7 @@ void ScriptingPlaygroundEditor::mouseDown(const MouseEvent &e)
     const auto currentPosition = this->getPositionAt(e.x, e.y);
 
     if ((timeSinceLastMouseDown.inMilliseconds() > MouseEvent::getDoubleClickTimeout()) ||
-         currentPosition != this->lastMouseDownPosition)
+        currentPosition != this->lastMouseDownPosition)
     {
         this->numFastClicks = 1;
     }
@@ -213,7 +216,10 @@ static int findFirstNonWhitespaceChar(StringRef line) noexcept
     auto t = line.text;
     while (!t.isEmpty())
     {
-        if (!t.isWhitespace()) { return i; }
+        if (!t.isWhitespace())
+        {
+            return i;
+        }
         ++t;
         ++i;
     }
@@ -250,7 +256,7 @@ bool ScriptingPlaygroundEditor::keyPressed(const KeyPress &key)
             return false;
         }
     }
-    
+
     // more conventional tab / shift-tab behaviour
     if (key == KeyPress::tabKey || key.getTextCharacter() == '\t')
     {
@@ -694,7 +700,191 @@ void ScriptingPlayground::updateOnEvaluate()
 // ScriptEngine::SideEffects
 //===----------------------------------------------------------------------===//
 
-void ScriptingPlayground::print(const String &output)
+void ScriptingPlayground::resetProject()
 {
-    // todo
+    // let's reset in an undoable way
+    while (this->project.findChildOfType<MidiTrackNode>() != nullptr)
+    {
+        auto *track = this->project.findChildOfType<MidiTrackNode>();
+        this->project.removeTrack(*track);
+    }
+
+    this->resetTimeline();
+}
+
+void ScriptingPlayground::resetTimeline()
+{
+    auto *ks = this->project.getTimeline()->getKeySignaturesSequence();
+    while (ks->size() > 0)
+    {
+        auto *event = dynamic_cast<KeySignatureEvent *>(ks->getUnchecked(0));
+        ks->remove(*event, true);
+    }
+
+    // fixme time signatures and annotations
+}
+
+void ScriptingPlayground::addKeySignature(const KeySignatureEvent &parameters)
+{
+    auto *sequence = this->project.getTimeline()->getKeySignaturesSequence();
+
+    // maybe this is a mistake, but I want this method to be smarter:
+    // don't add a key if it's the same as the key at the given point:
+    int outKey = -1;
+    String outKeyName;
+    Scale::Ptr outScale;
+    const auto beat = parameters.getBeat();
+    const auto foundKey =
+        SequencerOperations::findHarmonicContext(beat, beat,
+            sequence, outScale, outKey, outKeyName);
+    if (foundKey &&
+        outKey == parameters.getRootKey() &&
+        outKeyName == parameters.getRootKeyName() &&
+        outScale->isEquivalentTo(parameters.getScale()))
+    {
+        //DBG("Skipped adding a key signature");
+        return;
+    }
+
+    const auto ownedEvent = KeySignatureEvent(sequence, parameters).withNewId();
+    sequence->insert(ownedEvent, true);
+}
+
+static SerializedData makePianoTrackTemplate(const String &name,
+    const String &instrumentId, String &outTrackId)
+{
+    auto newNode = make<PianoTrackNode>(name);
+
+    const Clip clip(newNode->getPattern(), 0, 0);
+    newNode->getPattern()->insert(clip, false);
+
+    Random r;
+    const auto colours = ColourIDs::getColoursList();
+    const int ci = r.nextInt(colours.size());
+    newNode->setTrackColour(colours[ci], false, dontSendNotification);
+    newNode->setTrackInstrumentId(instrumentId, false, dontSendNotification);
+
+    outTrackId = newNode->getTrackId();
+    return newNode->serialize();
+}
+
+String ScriptingPlayground::makePianoTrack(const String &trackName)
+{
+    // if a track of the same name exists, replace it
+    for (auto *track : this->project.getTracks())
+    {
+        if (track->getTrackName() == trackName)
+        {
+            this->project.removeTrack(*track);
+            break;
+        }
+    }
+
+    String instrumentId;
+    for (auto *instrument : App::Workspace().getAudioCore().getInstrumentsExceptInternal())
+    {
+        if (trackName.startsWithIgnoreCase(instrument->getName()))
+        {
+            instrumentId = instrument->getIdAndHash();
+            break;
+        }
+    }
+
+    String trackId;
+    const auto trackTemplate =
+        makePianoTrackTemplate(trackName, instrumentId, trackId);
+
+    this->project.getUndoStack()->perform(
+        new PianoTrackInsertAction(this->project,
+            &this->project, trackTemplate, trackName));
+
+    return trackId;
+}
+
+MidiTrack *ScriptingPlayground::findPianoTrackById(const String &trackId)
+{
+    return this->project.findTrackById<PianoTrackNode>(trackId);
+}
+
+void ScriptingPlayground::addNotes(MidiTrack *track, Array<Note> &notes)
+{
+    auto *sequence = dynamic_cast<PianoSequence *>(track->getSequence());
+    if (sequence == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    Array<Note> ownedNotes;
+    for (const auto &noteParams : notes)
+    {
+        ownedNotes.add(Note(sequence, noteParams).withNewId());
+    }
+
+    sequence->insertGroup(ownedNotes, true);
+}
+
+void ScriptingPlayground::joinAdjacent(MidiTrack *track)
+{
+    auto *sequence = dynamic_cast<PianoSequence *>(track->getSequence());
+    if (sequence == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    SequencerOperations::joinAdjacent(*sequence, true, false);
+}
+
+void ScriptingPlayground::arpeggiate(MidiTrack *track, Arpeggiator::Ptr arp)
+{
+    auto *sequence = dynamic_cast<PianoSequence *>(track->getSequence());
+    if (sequence == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    SequencerOperations::arpeggiate(*sequence,
+        *track->getPattern()->getClips().getFirst(),
+        arp,
+        this->project.getProjectInfo()->getTemperament(),
+        this->project.getTimeline()->getKeySignaturesSequence(),
+        this->project.getTimeline()->getTimeSignaturesAggregator(),
+        1.f,    // speed, todo custom
+        0.f,    // randomness
+        false,  // reversed
+        true,   // chord-bound
+        true,   // undoable
+        false); // shouldCheckpoint
+}
+
+void ScriptingPlayground::alignToScale(MidiTrack *track)
+{
+    auto *sequence = dynamic_cast<PianoSequence *>(track->getSequence());
+    if (sequence == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    SequencerOperations::shiftInScaleKeyRelative(*sequence,
+        *track->getPattern()->getClips().getFirst(),
+        this->project.getTimeline()->getKeySignaturesSequence(),
+        this->project.getProjectInfo()->getTemperament()->getHighlighting(), 0,
+        true, // undoable
+        false); // shouldCheckpoint
+}
+
+void ScriptingPlayground::onProgramTerminated(bool success)
+{
+    this->updateOnEvaluate();
+}
+
+ScriptEngine::SideEffects::HostContext ScriptingPlayground::fillHostContext() const
+{
+    return {
+        App::Config().getScales()->getAll(),
+        this->project.getProjectInfo()->getTemperament()->getPeriodSize()
+    };
 }
