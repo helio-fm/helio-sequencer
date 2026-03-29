@@ -33,6 +33,16 @@ public:
     ScriptingPlaygroundEditor(CodeDocument &document, CodeTokeniser *codeTokeniser);
     ~ScriptingPlaygroundEditor() override;
 
+    void selectNext();
+    void selectPrevious();
+    void toggleCommentSelection();
+
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
+    void mouseDoubleClick(const MouseEvent &e) override;
+
+    void handleReturnKey() override;
     bool keyPressed(const KeyPress &key) override;
     void caretPositionMoved() override;
 
@@ -46,11 +56,14 @@ private:
     int numFastClicks = 0;
     Time lastMouseDownTime;
     CodeDocument::Position lastMouseDownPosition;
+    int lastMouseWheelCounter = 0;
 
     CodeDocument::Position selectionAnchorStart;
     CodeDocument::Position selectionAnchorEnd;
 
     Optional<ScriptEngine::Breakpoint> breakpoint;
+
+    void dragSelection(CodeDocument::Position position, bool fullLines = false);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlaygroundEditor)
 };

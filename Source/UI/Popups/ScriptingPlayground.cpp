@@ -64,6 +64,181 @@ const Optional<ScriptEngine::Breakpoint> &ScriptingPlaygroundEditor::getBreakpoi
     return this->breakpoint;
 }
 
+// more conventional multiple-click-and-drag behaviour
+void ScriptingPlaygroundEditor::dragSelection(CodeDocument::Position position, bool fullLines)
+{
+    auto tokenStart = position;
+    auto tokenEnd = position;
+
+    if (fullLines)
+    {
+        document.findLineContaining(position, tokenStart, tokenEnd);
+    }
+    else
+    {
+        document.findTokenContaining(position, tokenStart, tokenEnd);
+    }
+
+    if (this->selectionAnchorStart.getPosition() < tokenStart.getPosition())
+    {
+        tokenStart = this->selectionAnchorStart;
+    }
+    else if (this->selectionAnchorEnd.getPosition() > tokenEnd.getPosition())
+    {
+        tokenEnd = this->selectionAnchorEnd;
+    }
+
+    // a few more hacks to avoid glitches with selectRegion and mouse wheel
+    this->setVisible(false);
+    this->selectRegion(tokenStart, tokenEnd);
+    this->setVisible(true);
+    this->grabKeyboardFocus();
+    this->updateCaretPosition();
+}
+
+void ScriptingPlaygroundEditor::mouseDown(const MouseEvent &e)
+{
+    const auto timeSinceLastMouseDown =
+        Time::getCurrentTime() - this->lastMouseDownTime;
+
+    const auto currentPosition = this->getPositionAt(e.x, e.y);
+
+    if ((timeSinceLastMouseDown.inMilliseconds() > MouseEvent::getDoubleClickTimeout()) ||
+         currentPosition != this->lastMouseDownPosition)
+    {
+        this->numFastClicks = 1;
+    }
+    else
+    {
+        this->numFastClicks++;
+
+        if (this->numFastClicks == 2) // selects words
+        {
+            document.findTokenContaining(currentPosition,
+                this->selectionAnchorStart, this->selectionAnchorEnd);
+        }
+        else // selects lines
+        {
+            document.findLineContaining(currentPosition,
+                this->selectionAnchorStart, this->selectionAnchorEnd);
+        }
+    }
+
+    //DBG(this->numFastClicks);
+    if (this->numFastClicks < 2) // selects letters
+    {
+        CodeEditorComponent::mouseDown(e);
+    }
+    else if (this->numFastClicks == 2) // selects words
+    {
+        this->dragSelection(currentPosition, false);
+    }
+    else // selects lines
+    {
+        this->dragSelection(currentPosition, true);
+    }
+
+    this->lastMouseDownTime = Time::getCurrentTime();
+    this->lastMouseDownPosition = currentPosition;
+    this->lastMouseWheelCounter =
+        Desktop::getInstance().getMouseWheelMoveCounter();
+}
+
+void ScriptingPlaygroundEditor::mouseDrag(const MouseEvent &e)
+{
+    // a workaround for how JUCE updates scrollbars
+    // (without this, wheel won't work while dragging)
+    const auto wheelCounter =
+        Desktop::getInstance().getMouseWheelMoveCounter();
+    if (this->lastMouseWheelCounter != wheelCounter)
+    {
+        this->lastMouseWheelCounter = wheelCounter;
+        e.source.triggerFakeMove(); // schedule later update
+        return;
+    }
+
+    if (this->numFastClicks < 2) // selects letters
+    {
+        CodeEditorComponent::mouseDrag(e);
+    }
+    else if (this->numFastClicks == 2) // selects words
+    {
+        this->dragSelection(this->getPositionAt(e.x, e.y), false);
+    }
+    else // selects lines
+    {
+        this->dragSelection(this->getPositionAt(e.x, e.y), true);
+    }
+}
+
+void ScriptingPlaygroundEditor::mouseUp(const MouseEvent &e)
+{
+    CodeEditorComponent::mouseUp(e);
+
+    const auto selectionStart = this->getSelectionStart();
+    const auto selectionEnd = this->getSelectionEnd();
+    if (selectionStart != selectionEnd &&
+        selectionStart.getLineNumber() == selectionEnd.getLineNumber())
+    {
+        const auto selectionText =
+            this->document.getTextBetween(selectionStart, selectionEnd);
+
+        this->breakpoint = { selectionText,
+            Range<int>(selectionStart.getPosition(), selectionEnd.getPosition()) };
+
+        if (auto *parent = this->getParentComponent())
+        {
+            parent->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
+        }
+    }
+    else if (this->breakpoint.hasValue())
+    {
+        this->breakpoint = {};
+        //if (auto *parent = this->getParentComponent())
+        //{
+        //    parent->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
+        //}
+    }
+}
+
+void ScriptingPlaygroundEditor::mouseDoubleClick(const MouseEvent &e)
+{
+    dragType = notDragging;
+}
+
+// better indentation for return keys
+static int findFirstNonWhitespaceChar(StringRef line) noexcept
+{
+    int i = 0;
+    auto t = line.text;
+    while (!t.isEmpty())
+    {
+        if (!t.isWhitespace()) { return i; }
+        ++t;
+        ++i;
+    }
+
+    return 0;
+}
+
+void ScriptingPlaygroundEditor::handleReturnKey()
+{
+    const int myIndentLevel =
+        findFirstNonWhitespaceChar(this->caretPos.getLineText());
+
+    this->newTransaction();
+    this->insertTextAtCaret(document.getNewLineCharacters());
+
+    if (!CharacterFunctions::isWhitespace(this->caretPos.getCharacter()))
+    {
+        const auto numTabs = myIndentLevel / this->getTabSize();
+        for (int i = 0; i < numTabs; ++i)
+        {
+            this->insertTabAtCaret();
+        }
+    }
+}
+
 bool ScriptingPlaygroundEditor::keyPressed(const KeyPress &key)
 {
     // pass the hotkey keypresses up
@@ -75,8 +250,147 @@ bool ScriptingPlaygroundEditor::keyPressed(const KeyPress &key)
             return false;
         }
     }
+    
+    // more conventional tab / shift-tab behaviour
+    if (key == KeyPress::tabKey || key.getTextCharacter() == '\t')
+    {
+        if (key.getModifiers().isShiftDown())
+        {
+            this->unindentSelection();
+        }
+        else
+        {
+            if (this->selectionStart.getLineNumber() !=
+                this->selectionEnd.getLineNumber())
+            {
+                this->indentSelection();
+            }
+            else
+            {
+                this->handleTabKey();
+            }
+        }
+
+        return true;
+    }
+
+    // more conventional shift-delete behaviour
+    if (this->getHighlightedRegion().isEmpty() &&
+        key == KeyPress(KeyPress::deleteKey, ModifierKeys::shiftModifier, 0))
+    {
+        this->newTransaction();
+        this->moveCaretToStartOfLine(false);
+        this->moveCaretTo(CodeDocument::Position(this->document,
+            this->caretPos.getLineNumber(), 0), false);
+        this->moveCaretToEndOfLine(true);
+        this->moveCaretRight(false, true);
+        this->cutToClipboard();
+        return true;
+    }
 
     return CodeEditorComponent::keyPressed(key);
+}
+
+void ScriptingPlaygroundEditor::selectNext()
+{
+    if (this->getHighlightedRegion().isEmpty())
+    {
+        return;
+    }
+
+    const auto selectedText = this->getTextInRange(this->getHighlightedRegion());
+    const auto searchIn = this->document.getTextBetween(
+        { this->document, this->getHighlightedRegion().getEnd() },
+        { this->document, std::numeric_limits<int>::max(), std::numeric_limits<int>::max() });
+    const auto nextDelta = searchIn.indexOf(selectedText);
+    if (nextDelta >= 0)
+    {
+        const auto newStart = this->getHighlightedRegion().getEnd() + nextDelta;
+        this->selectRegion({ this->document, newStart },
+            { this->document, newStart + selectedText.length() });
+        this->highlightedToken = selectedText;
+    }
+}
+
+void ScriptingPlaygroundEditor::selectPrevious()
+{
+    if (this->getHighlightedRegion().isEmpty())
+    {
+        return;
+    }
+
+    const auto selectedText = this->getTextInRange(this->getHighlightedRegion());
+    const auto searchIn = this->document.getTextBetween({},
+        { this->document, this->getHighlightedRegion().getStart() });
+    const auto previous = searchIn.lastIndexOf(selectedText);
+    if (previous >= 0)
+    {
+        this->selectRegion({ this->document, previous },
+            { this->document, previous + selectedText.length() });
+        this->highlightedToken = selectedText;
+    }
+}
+
+void ScriptingPlaygroundEditor::toggleCommentSelection()
+{
+    this->newTransaction();
+
+    CodeDocument::Position oldSelectionStart(this->selectionStart),
+        oldSelectionEnd(this->selectionEnd), oldCaret(this->caretPos);
+    oldSelectionStart.setPositionMaintained(true);
+    oldSelectionEnd.setPositionMaintained(true);
+    oldCaret.setPositionMaintained(true);
+
+    bool hasUncommentedLines = false;
+    int minLineStartIndex = INT_MAX;
+    const int lineFrom = this->selectionStart.getLineNumber();
+    const int lineTo = this->selectionEnd.getLineNumber();
+    for (int i = lineFrom; i <= lineTo; ++i)
+    {
+        this->moveCaretTo(CodeDocument::Position(this->document, i, 0), false);
+        this->moveCaretToStartOfLine(false);
+
+        const auto lineText = this->caretPos.getLineText();
+        if (lineText.isEmpty() || lineText.startsWith(newLine))
+        {
+            continue;
+        }
+
+        hasUncommentedLines = hasUncommentedLines || (this->caretPos.getCharacter() != ';');
+
+        if (this->caretPos.getIndexInLine() < minLineStartIndex)
+        {
+            minLineStartIndex = this->caretPos.getIndexInLine();
+        }
+    }
+
+    for (int i = lineFrom; i <= lineTo; ++i)
+    {
+        this->moveCaretTo(CodeDocument::Position(this->document, i, minLineStartIndex), false);
+        if (hasUncommentedLines)
+        {
+            const auto lineText = this->caretPos.getLineText();
+            if (!lineText.isEmpty() && !lineText.startsWith(newLine))
+            {
+                this->insertTextAtCaret("; ");
+            }
+        }
+        else if (this->caretPos.getCharacter() == ';')
+        {
+            this->deleteForwards(false);
+            if (this->caretPos.getCharacter() == ' ')
+            {
+                this->deleteForwards(false);
+            }
+        }
+    }
+
+    if (this->caretPos != oldCaret)
+    {
+        this->moveCaretTo(oldCaret, false);
+    }
+
+    this->setSelection(oldSelectionStart, oldSelectionEnd);
 }
 
 void ScriptingPlaygroundEditor::caretPositionMoved()
@@ -85,8 +399,6 @@ void ScriptingPlaygroundEditor::caretPositionMoved()
     {
         parent->postCommandMessage(CommandIDs::ScriptingPlaygroundRetokenise);
     }
-
-    CodeEditorComponent::caretPositionMoved();
 }
 
 void ScriptingPlaygroundEditor::codeDocumentTextInserted(const String &s, int startIndex)
@@ -151,6 +463,9 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project, RollBase *roll) :
 
     // fixme width not more than parent width
     this->setSize(960, 770); // todo configurable or resizable
+
+    // fixme should restore the last state instead of this:
+    this->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
 
     // todo transport addListener(this);
 }
@@ -265,6 +580,15 @@ void ScriptingPlayground::handleCommandMessage(int commandId)
     case CommandIDs::ScriptingPlaygroundRetokenise:
         this->tokeniser->setCaretPosition(this->codeEditor->getCaretPosition());
         this->codeEditor->retokenise(0, 0);
+        break;
+    case CommandIDs::ScriptEditorToggleComment:
+        this->codeEditor->toggleCommentSelection();
+        break;
+    case CommandIDs::ScriptEditorSelectNext:
+        this->codeEditor->selectNext();
+        break;
+    case CommandIDs::ScriptEditorSelectPrevious:
+        this->codeEditor->selectPrevious();
         break;
     default:
         break;

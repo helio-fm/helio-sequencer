@@ -269,6 +269,9 @@ CommandIDs::Id CommandIDs::getIdForName(const String &command)
         CASE_FOR(ScriptingPlaygroundRunScript)
         CASE_FOR(ScriptingPlaygroundRetokenise)
         CASE_FOR(ScriptingPlaygroundReevaluate)
+        CASE_FOR(ScriptEditorToggleComment)
+        CASE_FOR(ScriptEditorSelectNext)
+        CASE_FOR(ScriptEditorSelectPrevious)
         default: return None;
     }
 }
@@ -531,6 +534,9 @@ I18n::Key CommandIDs::getTranslationKeyFor(CommandIDs::Id id)
         //TRANS_NONE(ScriptingPlaygroundRunScript)
         //TRANS_NONE(ScriptingPlaygroundRetokenise)
         //TRANS_NONE(ScriptingPlaygroundReevaluate)
+        //TRANS_NONE(ScriptEditorToggleComment)
+        //TRANS_NONE(ScriptEditorSelectNext)
+        //TRANS_NONE(ScriptEditorSelectPrevious)
         default: return 0;
     }
 }

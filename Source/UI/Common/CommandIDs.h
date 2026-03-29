@@ -310,6 +310,9 @@ namespace CommandIDs
         ScriptingPlaygroundRunScript    = 0x4761,
         ScriptingPlaygroundRetokenise   = 0x4762,
         ScriptingPlaygroundReevaluate   = 0x4763,
+        ScriptEditorToggleComment       = 0x4764,
+        ScriptEditorSelectNext          = 0x4765,
+        ScriptEditorSelectPrevious      = 0x4766,
 
         YourNextCommandId               = 0x4800
     };
