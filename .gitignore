@@ -41,6 +41,7 @@
 *.xcscheme
 *.xcscmblueprint
 *.xcworkspacedata
+*.sublime-workspace
 *_i.c
 *_p.c
 *.FileListAbsolute.txt
