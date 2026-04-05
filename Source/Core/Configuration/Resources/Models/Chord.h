@@ -28,7 +28,6 @@ public:
     explicit Chord(const String &name) noexcept;
 
     String getResourceId() const noexcept override;
-    Identifier getResourceType() const noexcept override;
     using Ptr = ReferenceCountedObjectPtr<Chord>;
 
     struct Key final

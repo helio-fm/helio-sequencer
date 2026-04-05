@@ -59,9 +59,9 @@ namespace VCS
         SerializedData serializeDeltas() const;
         void deserializeDeltas(SerializedData data);
 
-        SerializedData serialize() const;
-        void deserialize(const SerializedData &data);
-        void reset();
+        SerializedData serialize() const override;
+        void deserialize(const SerializedData &data) override;
+        void reset() override;
 
     private:
 

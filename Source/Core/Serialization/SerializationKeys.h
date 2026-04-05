@@ -25,7 +25,6 @@ namespace Serialization
         static const Identifier treeNode = "node";
         static const Identifier treeNodeType = "type";
         static const Identifier treeNodeName = "name";
-        static const Identifier treeNodeId = "nodeId";
 
         static const Identifier workspace = "workspace";
         static const Identifier root = "root";
@@ -59,7 +58,6 @@ namespace Serialization
         static const Identifier timeSignaturesTrackId = "timeSignaturesTrackId";
 
         static const Identifier globalConfig = "config";
-        static const Identifier clipboard = "helioClipboard";
     } // namespace Core
 
     namespace Midi
@@ -111,8 +109,7 @@ namespace Serialization
 
         // Properties
 
-        // notes are the most common records in the savefile
-        // therefore their properties are shortened
+        // notes are the most common records in the savefile, so shorter ids for them:
         static const Identifier id = "id";
         static const Identifier key = "key";
         static const Identifier timestamp = "ts";
@@ -245,11 +242,9 @@ namespace Serialization
         static const Identifier windowBounds = "windowBounds";
         static const Identifier windowIsMaximised = "windowIsMaximised";
         static const Identifier lastShownPageId = "lastShownPageId";
-        static const Identifier lastUsedScale = "lastUsedScale";
         static const Identifier lastUsedFont = "lastUsedFont";
     } // namespace Config
 
-    // Available types of dynamically fetched resources/configs
     namespace Resources
     {
         static const Identifier scales = "scales";
@@ -261,7 +256,7 @@ namespace Serialization
         static const Identifier colourSchemes = "colourSchemes";
         static const Identifier hotkeySchemes = "hotkeySchemes";
         static const Identifier keyboardMappings = "keyboardMappings";
-    }
+    } // namespace Resources
 
     namespace UI
     {
@@ -333,12 +328,6 @@ namespace Serialization
             static const Identifier colourMap = "colourMap";
             static const Identifier name = "name";
 
-            // legacy ids, to be removed in future versions:
-            static const Identifier primaryGradientA = "primaryGradientA";
-            static const Identifier primaryGradientB = "primaryGradientB";
-            static const Identifier secondaryGradientA = "secondaryGradientA";
-            static const Identifier panelBorder = "panelBorder";
-            // new ones instead of ^^:
             static const Identifier pageFill = "pageFill";
             static const Identifier headlineFill = "headlineFill";
             static const Identifier sidebarFill = "sidebarFill";
@@ -375,10 +364,6 @@ namespace Serialization
     {
         static const Identifier metaSymbol = "{x}";
 
-        // old keys
-        static const Identifier translationIdOld = "name";
-        static const Identifier translationValueOld = "translation";
-        // new keys
         static const Identifier translationId = "id";
         static const Identifier translationValue = "tr";
 
@@ -459,7 +444,6 @@ namespace Serialization
         static const Identifier revisionItemDiffLogic = "diffLogic";
 
         static const Identifier delta = "delta";
-        static const Identifier deltaId = "id";
         static const Identifier deltaName = "name";
         static const Identifier deltaIntParam = "intParam";
         static const Identifier deltaStringParam = "stringParam";
@@ -546,8 +530,6 @@ namespace Serialization
         static const Identifier channelAfter = "channelAfter";
         static const Identifier instrumentIdBefore = "instrumentIdBefore";
         static const Identifier instrumentIdAfter = "instrumentIdAfter";
-        static const Identifier muteStateBefore = "muteStateBefore";
-        static const Identifier muteStateAfter = "muteStateAfter";
 
         static const Identifier annotationBefore = "annotationBefore";
         static const Identifier annotationAfter = "annotationAfter";

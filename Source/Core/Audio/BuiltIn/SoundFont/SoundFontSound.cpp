@@ -710,17 +710,16 @@ WeakReference<SoundFontSample> SoundFontSound::addSample(String path, String def
     return this->samples[samplePath].get();
 }
 
-void SoundFontSound::addError(const String &message) { this->errors.add(message); }
+void SoundFontSound::addError(const String &message)
+{
+    jassertfalse;
+    DBG("SoundFont error: " + message);
+}
 
 void SoundFontSound::addUnsupportedOpcode(const String &opcode)
 {
-    if (!this->unsupportedOpcodes.contains(opcode))
-    {
-        this->unsupportedOpcodes[opcode] = opcode;
-        String warning = "unsupported opcode: ";
-        warning << opcode;
-        this->warnings.add(warning);
-    }
+    //jassertfalse;
+    //DBG("SoundFont: unsupported opcode " + opcode);
 }
 
 void SoundFontSound::loadRegions()

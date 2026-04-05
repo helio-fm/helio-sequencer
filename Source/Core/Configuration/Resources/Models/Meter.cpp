@@ -160,18 +160,13 @@ bool Meter::isEquivalentTo(const Meter &other) const
 }
 
 //===----------------------------------------------------------------------===//
-// BaseResource
+// ConfigurationResource
 //===----------------------------------------------------------------------===//
 
 String Meter::getResourceId() const noexcept
 {
     // Assumed to be unique:
     return this->name;
-}
-
-Identifier Meter::getResourceType() const noexcept
-{
-    return Serialization::Resources::meters;
 }
 
 //===----------------------------------------------------------------------===//

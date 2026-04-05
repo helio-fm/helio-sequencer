@@ -40,7 +40,7 @@ private:
     const float beat = 0.f;
     const float numBeats = 0.f;
 
-    float alpha = 1.f;
+    float alpha = 0.420f;
 
     const Colour colour = findDefaultColour(Label::textColourId);
 

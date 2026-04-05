@@ -23,8 +23,6 @@ public:
 
     virtual String getResourceId() const = 0;
 
-    virtual Identifier getResourceType() const = 0;
-
     using Ptr = ReferenceCountedObjectPtr<ConfigurationResource>;
 
     virtual int compareElements(const ConfigurationResource::Ptr first,
@@ -39,7 +37,6 @@ class DummyConfigurationResource : public ConfigurationResource
 public:
 
     String getResourceId() const override { return {}; }
-    Identifier getResourceType() const override { return {}; }
     SerializedData serialize() const override { return {}; }
     void deserialize(const SerializedData &data) override {}
     void reset() override {}

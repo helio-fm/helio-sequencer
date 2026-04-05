@@ -72,11 +72,10 @@ public:
     void reset() override;
 
     //===------------------------------------------------------------------===//
-    // BaseResource
+    // ConfigurationResource
     //===------------------------------------------------------------------===//
 
     String getResourceId() const noexcept override;
-    Identifier getResourceType() const noexcept override;
 
 private:
 

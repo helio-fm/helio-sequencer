@@ -469,17 +469,12 @@ HotkeyScheme &HotkeyScheme::operator=(const HotkeyScheme &other)
 }
 
 //===----------------------------------------------------------------------===//
-// BaseResource
+// ConfigurationResource
 //===----------------------------------------------------------------------===//
 
 String HotkeyScheme::getResourceId() const noexcept
 {
     return this->name;
-}
-
-Identifier HotkeyScheme::getResourceType() const noexcept
-{
-    return Serialization::Resources::hotkeySchemes;
 }
 
 KeyPress HotkeyScheme::getLastKeyPress() const noexcept

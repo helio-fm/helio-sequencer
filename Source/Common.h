@@ -63,11 +63,6 @@ struct IdentifierHash
     {
         return HashCode(key.toString().hashCode());
     }
-
-    static int generateHash(const Identifier &key, int upperLimit) noexcept
-    {
-        return uint32(key.toString().hashCode()) % (uint32)upperLimit;
-    }
 };
 
 //===----------------------------------------------------------------------===//
@@ -114,17 +109,6 @@ inline To bitCast(const From &src) noexcept
 #define forEachChildWithType(parentElement, child, requiredType) \
     for (const auto &(child) : (parentElement)) if ((child).hasType(requiredType))
 
-#define callbackOnMessageThread(cls, function, ...) \
-    MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void* \
-        { \
-            const auto *self = static_cast<cls *>(ptr); \
-            if (self->function != nullptr) \
-            { \
-                self->function(__VA_ARGS__); \
-            } \
-            return nullptr; \
-        }, this)
-
 #define findDefaultColour(x) LookAndFeel::getDefaultLookAndFeel().findColour(x)
 
 constexpr uint32 fnv1a32val = 0x811c9dc5;
@@ -150,6 +134,12 @@ namespace juce
         static const String helio { "Helio" };
     }
 }
+#endif
+
+#if JUCE_WINDOWS && !JUCE_MINGW
+#   define NO_INLINE __declspec(noinline)
+#else
+#   define NO_INLINE __attribute__((noinline))
 #endif
 
 // Catch floating point exceptions like division by zero

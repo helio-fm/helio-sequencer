@@ -38,54 +38,40 @@ String ColourScheme::getName() const noexcept
     return this->name;
 }
 
-// the next 7 methods check for legacy ids, if present:
-
 Colour ColourScheme::getPageFillColour() const
 {
     using namespace Serialization;
-    return this->colours.contains(UI::Colours::primaryGradientA) ?
-        this->colours.at(UI::Colours::primaryGradientA) :
-        this->colours.at(UI::Colours::pageFill);
+    return this->colours.at(UI::Colours::pageFill);
 }
 
 Colour ColourScheme::getTimelineColour() const
 {
     using namespace Serialization;
-    return this->colours.contains(UI::Colours::primaryGradientB) ?
-        this->colours.at(UI::Colours::primaryGradientB) :
-        this->colours.at(UI::Colours::timeline);
+    return this->colours.at(UI::Colours::timeline);
 }
 
 Colour ColourScheme::getHeadlineFillColour() const
 {
     using namespace Serialization;
-    return this->colours.contains(UI::Colours::primaryGradientA) ?
-        this->colours.at(UI::Colours::primaryGradientA) :
-        this->colours.at(UI::Colours::headlineFill);
+    return this->colours.at(UI::Colours::headlineFill);
 }
 
 Colour ColourScheme::getSidebarFillColour() const
 {
     using namespace Serialization;
-    return this->colours.contains(UI::Colours::secondaryGradientA) ?
-        this->colours.at(UI::Colours::secondaryGradientA) :
-        this->colours.at(UI::Colours::sidebarFill);
+    return this->colours.at(UI::Colours::sidebarFill);
 }
 
 Colour ColourScheme::getDialogFillColour() const
 {
     using namespace Serialization;
-    return this->colours.contains(UI::Colours::secondaryGradientA) ?
-        this->colours.at(UI::Colours::secondaryGradientA) :
-        this->colours.at(UI::Colours::dialogFill);
+    return this->colours.at(UI::Colours::dialogFill);
 }
 
 Colour ColourScheme::getFrameBorderColour() const
 {
     using namespace Serialization;
-    return this->colours.contains(UI::Colours::panelBorder) ?
-        this->colours.at(UI::Colours::panelBorder) :
-        this->colours.at(UI::Colours::frameBorder);
+    return this->colours.at(UI::Colours::frameBorder);
 }
 
 Colour ColourScheme::getLassoFillColour() const
@@ -291,9 +277,4 @@ bool ColourScheme::isEquivalentTo(const ColourScheme::Ptr other) const
 {
     jassert(other != nullptr);
     return this->name == other->name;
-}
-
-Identifier ColourScheme::getResourceType() const noexcept
-{
-    return Serialization::Resources::colourSchemes;
 }

@@ -34,7 +34,7 @@ class InstrumentEditor final :
 {
 public:
 
-    InstrumentEditor(WeakReference<Instrument> instrument, WeakReference<AudioCore> audioCoreRef);
+    explicit InstrumentEditor(WeakReference<Instrument> instrument);
     ~InstrumentEditor() override;
 
     void deselectAllNodes();
@@ -80,7 +80,6 @@ private:
     WeakReference<Instrument> instrument;
     UniquePointer<Component> background;
     UniquePointer<InstrumentEditorConnector> draggingConnector;
-    WeakReference<AudioCore> audioCore;
 
     AudioProcessorGraph::NodeID selectedNode;
 

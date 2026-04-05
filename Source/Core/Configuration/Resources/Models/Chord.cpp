@@ -28,18 +28,13 @@ Chord::Chord(const String &name) noexcept :
     name(name) {}
 
 //===----------------------------------------------------------------------===//
-// BaseResource
+// ConfigurationResource
 //===----------------------------------------------------------------------===//
 
 String Chord::getResourceId() const noexcept
 {
     // Assumed to be unique:
     return this->name;
-}
-
-Identifier Chord::getResourceType() const noexcept
-{
-    return Serialization::Resources::chords;
 }
 
 const bool Chord::isValid() const noexcept

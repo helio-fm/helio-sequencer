@@ -32,7 +32,6 @@ protected:
     const Actions &getActions() const override;
 
     mutable Actions actions;
-    mutable FlatHashMap<String, Actions, StringHash> actionsCache;
 
     Array<WeakReference<Component>> currentReceivers;
 

@@ -222,8 +222,7 @@ void InstrumentNode::initInstrumentEditor()
 {
     if (this->instrumentEditor == nullptr)
     {
-        auto *audioCore = &App::Workspace().getAudioCore();
-        this->instrumentEditor = make<InstrumentEditor>(this->instrument, audioCore);
+        this->instrumentEditor = make<InstrumentEditor>(this->instrument);
         this->instrumentEditor->updateComponents();
     }
 }

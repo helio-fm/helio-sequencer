@@ -79,7 +79,6 @@ public:
         int numerator, int denominator) noexcept;
 
     String getResourceId() const noexcept override;
-    Identifier getResourceType() const noexcept override;
     using Ptr = ReferenceCountedObjectPtr<Meter>;
 
     Meter withNumerator(const int newNumerator) const noexcept;

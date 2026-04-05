@@ -453,17 +453,12 @@ void KeyboardMapping::updateKey(int sourceKey, int sourceChannel, int8 targetKey
 }
 
 //===----------------------------------------------------------------------===//
-// BaseResource
+// ConfigurationResource
 //===----------------------------------------------------------------------===//
 
 String KeyboardMapping::getResourceId() const noexcept
 {
     return this->name; // assumed to be unique
-}
-
-Identifier KeyboardMapping::getResourceType() const noexcept
-{
-    return Serialization::Resources::keyboardMappings;
 }
 
 //===----------------------------------------------------------------------===//

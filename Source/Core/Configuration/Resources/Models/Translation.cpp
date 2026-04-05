@@ -57,12 +57,11 @@ void Translation::deserialize(const SerializedData &root)
 
     forEachChildWithType(root, pluralLiteral, Translations::pluralLiteral)
     {
-        I18n::Key literalKey = I18n::Key(int64(pluralLiteral.getProperty(Translations::translationId)));
+        const auto literalKey = I18n::Key(int64(pluralLiteral.getProperty(Translations::translationId)));
         if (literalKey == 0)
         {
-            // deprecated format support
-            const String literalName = pluralLiteral.getProperty(Translations::translationIdOld);
-            literalKey = constexprHash(literalName.getCharPointer());
+            jassertfalse; // unsupported deprecated format 
+            continue;
         }
 
         auto *formsAndTranslations = new Plurals();
@@ -74,34 +73,24 @@ void Translation::deserialize(const SerializedData &root)
             const String pluralForm = pluralTranslation.getProperty(Translations::pluralForm);
             (*formsAndTranslations)[pluralForm] = translatedLiteral;
         }
-
-        // deprecated format support
-        forEachChildWithType(pluralLiteral, pluralTranslation, Translations::translationValueOld)
-        {
-            const String translatedLiteral = pluralTranslation.getProperty(Translations::translationIdOld);
-            const String pluralForm = pluralTranslation.getProperty(Translations::pluralForm);
-            (*formsAndTranslations)[pluralForm] = translatedLiteral;
-        }
     }
 
     forEachChildWithType(root, literal, Translations::literal)
     {
-        auto literalKey = I18n::Key(int64(literal.getProperty(Translations::translationId)));
+        const auto literalKey = I18n::Key(int64(literal.getProperty(Translations::translationId)));
         if (literalKey == 0)
         {
-            // deprecated format support
-            const String literalName = literal.getProperty(Translations::translationIdOld);
-            literalKey = constexprHash(literalName.getCharPointer());
+            jassertfalse; // unsupported deprecated format 
+            continue;
         }
 
-        String translatedLiteral = literal.getProperty(Translations::translationValue);
+        const String translatedLiteral = literal.getProperty(Translations::translationValue);
         if (translatedLiteral.isEmpty())
         {
-            // deprecated format support
-            translatedLiteral = literal.getProperty(Translations::translationValueOld);
+            jassertfalse; // unsupported deprecated format 
+            continue;
         }
 
-        jassert(translatedLiteral.isNotEmpty());
         this->singulars[literalKey] = translatedLiteral;
     }
 
@@ -113,14 +102,7 @@ void Translation::deserialize(const SerializedData &root)
     // if any assertion is hit, consider renaming the newly added key
     forEachChildWithType(root, literal, Translations::literal)
     {
-        I18n::Key literalKey = I18n::Key(int64(literal.getProperty(Translations::translationId)));
-        if (literalKey == 0)
-        {
-            // deprecated format support
-            const String literalName = literal.getProperty(Translations::translationIdOld);
-            literalKey = constexprHash(literalName.getCharPointer());
-        }
-
+        const auto literalKey = I18n::Key(int64(literal.getProperty(Translations::translationId)));
         jassert(literalKey != 0);
         jassert(!usedKeys.contains(literalKey));
         usedKeys.insert(literalKey);
@@ -128,14 +110,7 @@ void Translation::deserialize(const SerializedData &root)
 
     forEachChildWithType(root, pluralLiteral, Translations::pluralLiteral)
     {
-        I18n::Key literalKey = I18n::Key(int64(pluralLiteral.getProperty(Translations::translationId)));
-        if (literalKey == 0)
-        {
-            // deprecated format support
-            const String literalName = pluralLiteral.getProperty(Translations::translationIdOld);
-            literalKey = constexprHash(literalName.getCharPointer());
-        }
-
+        const auto literalKey = I18n::Key(int64(pluralLiteral.getProperty(Translations::translationId)));
         jassert(literalKey != 0);
         jassert(!usedKeys.contains(literalKey));
         usedKeys.insert(literalKey);
@@ -150,15 +125,10 @@ void Translation::reset()
 }
 
 //===----------------------------------------------------------------------===//
-// BaseResource
+// ConfigurationResource
 //===----------------------------------------------------------------------===//
 
 String Translation::getResourceId() const noexcept
 {
     return this->id; // i.e. "en", "ru" - should be unique
-}
-
-Identifier Translation::getResourceType() const noexcept
-{
-    return Serialization::Resources::translations;
 }

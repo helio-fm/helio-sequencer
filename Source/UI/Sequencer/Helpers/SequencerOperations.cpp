@@ -373,7 +373,7 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
     // remove duplicates
 
     FlatHashMap<MidiEvent::Id, Note> deferredRemoval;
-    FlatHashMap<MidiEvent::Id, Note> unremovableNotes;
+    FlatHashSet<MidiEvent::Id> unremovableNotes;
 
     for (int i = 0; i < notes.size(); ++i)
     {
@@ -408,7 +408,7 @@ void SequencerOperations::cleanupOverlaps(const NoteListBase &notes, bool undoab
             if (!isOriginalNote &&
                 (isOverlappingNote || startsFromTheSameBeat))
             {
-                unremovableNotes[note.getId()] = note;
+                unremovableNotes.insert(note.getId());
                 deferredRemoval[otherNote.getId()] = otherNote;
             }
         }

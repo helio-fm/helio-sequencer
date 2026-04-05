@@ -35,17 +35,6 @@ Config::Config() :
     this->chordsCollection = make<ChordsCollection>();
     this->metersCollection = make<MetersCollection>();
 
-    using namespace Serialization::Resources;
-    this->resources[translations] = this->translationsCollection.get();
-    this->resources[arpeggiators] = this->arpeggiatorsCollection.get();
-    this->resources[colourSchemes] = this->colourSchemesCollection.get();
-    this->resources[hotkeySchemes] = this->hotkeySchemesCollection.get();
-    this->resources[temperaments] = this->temperamentsCollection.get();
-    this->resources[keyboardMappings] = this->keyboardMappingsCollection.get();
-    this->resources[scales] = this->scalesCollection.get();
-    this->resources[chords] = this->chordsCollection.get();
-    this->resources[meters] = this->metersCollection.get();
-
     this->uiFlags = make<UserInterfaceFlags>();
 }
 
@@ -69,29 +58,12 @@ void Config::initResources()
             for (int i = 0; i < doc.getNumProperties(); ++i)
             {
                 const auto key(doc.getPropertyName(i));
-
-                // cleanup deprecated properties, todo remove this in future versions
-                static const Identifier sessionToken = "sessionToken";
-                static const Identifier checkForUpdates = "checkForUpdates";
-                if (key == checkForUpdates || key == sessionToken)
-                {
-                    continue;
-                }
-
                 this->properties[key] = doc.getProperty(key);
             }
 
             for (int i = 0; i < doc.getNumChildren(); ++i)
             {
                 const auto child(doc.getChild(i));
-
-                // cleanup deprecated children, todo remove this in future versions
-                static const Identifier lastUpdatesInfo = "lastUpdatesInfo";
-                if (child.getType() == lastUpdatesInfo)
-                {
-                    continue;
-                }
-
                 this->children[child.getType()] = child;
             }
 
@@ -112,10 +84,15 @@ void Config::initResources()
         this->uiFlags->setProjectMapLargeMode(!App::isRunningOnPhone());
     }
 
-    for (auto &manager : this->resources)
-    {
-        manager.second->reloadResources();
-    }
+    this->translationsCollection->reloadResources();
+    this->arpeggiatorsCollection->reloadResources();
+    this->colourSchemesCollection->reloadResources();
+    this->hotkeySchemesCollection->reloadResources();
+    this->temperamentsCollection->reloadResources();
+    this->keyboardMappingsCollection->reloadResources();
+    this->scalesCollection->reloadResources();
+    this->chordsCollection->reloadResources();
+    this->metersCollection->reloadResources();
 
     this->load(this->uiFlags.get(), Serialization::Config::activeUiFlags);
 }
@@ -273,11 +250,6 @@ bool Config::isWindowMaximised() const noexcept
 //===----------------------------------------------------------------------===//
 // Resource collections
 //===----------------------------------------------------------------------===//
-
-ResourceCollectionsLookup &Config::getAllResources() noexcept
-{
-    return this->resources;
-}
 
 ChordsCollection *Config::getChords() const noexcept
 {

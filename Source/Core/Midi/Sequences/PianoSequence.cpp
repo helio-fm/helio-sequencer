@@ -362,18 +362,7 @@ void PianoSequence::deserialize(const SerializedData &data)
     forEachChildWithType(root, e, Serialization::Midi::note)
     {
         parameters.deserialize(e);
-
-        if (this->usedEventIds.contains(parameters.getId()))
-        {
-            // this should not happen, since all notes should have unique ids, but
-            jassertfalse;
-            // due to bugs in older versions and a more recent bug in moving notes between tracks,
-            // there's a chance for hitting a duplicate id in some projects,
-            // so the best thing we can do here is to fix the note's id right away
-            // (todo remove this workaround in future versions)
-            parameters = parameters.withNewId(this);
-        }
-
+        jassert(!this->usedEventIds.contains(parameters.getId()));
         this->midiEvents.add(new Note(this, parameters));
         this->usedEventIds.insert(parameters.getId());
     }

@@ -296,17 +296,12 @@ int Scale::compare(const Scale::Ptr other) const
 }
 
 //===----------------------------------------------------------------------===//
-// BaseResource
+// ConfigurationResource
 //===----------------------------------------------------------------------===//
 
 String Scale::getResourceId() const noexcept
 {
     return this->name + String(this->basePeriod);
-}
-
-Identifier Scale::getResourceType() const noexcept
-{
-    return Serialization::Resources::scales;
 }
 
 //===----------------------------------------------------------------------===//

@@ -128,9 +128,5 @@ private:
 
     const Identifier resourceType;
     const DummyConfigurationResource comparator;
-
-    JUCE_DECLARE_WEAK_REFERENCEABLE(ConfigurationResourceCollection)
 };
 
-using ResourceCollectionsLookup = FlatHashMap<Identifier,
-    WeakReference<ConfigurationResourceCollection>, IdentifierHash>;

@@ -17,42 +17,38 @@
 
 #include "Common.h"
 #include "InstrumentEditor.h"
-
 #include "PageBackgroundA.h"
-
 #include "InstrumentEditorPin.h"
 #include "InstrumentComponent.h"
 #include "InstrumentEditorConnector.h"
 #include "InstrumentNodeSelectionMenu.h"
 #include "HeadlineContextMenuController.h"
-
+#include "Workspace.h"
 #include "AudioCore.h"
 #include "MainLayout.h"
 
 static const AudioProcessorGraph::NodeID idZero;
 
-InstrumentEditor::InstrumentEditor(WeakReference<Instrument> instrument,
-    WeakReference<AudioCore> audioCore) :
-    instrument(instrument),
-    audioCore(audioCore)
+InstrumentEditor::InstrumentEditor(WeakReference<Instrument> instrument) :
+    instrument(instrument)
 {
+    this->setOpaque(true);
+    this->setWantsKeyboardFocus(false);
+    this->setFocusContainerType(Component::FocusContainerType::none);
+
     this->background = make<PageBackgroundA>();
     this->addAndMakeVisible(this->background.get());
 
     this->contextMenuController = make<HeadlineContextMenuController>(*this);
 
     this->instrument->addChangeListener(this);
-    this->audioCore->getDevice().addChangeListener(this);
 
-    this->setOpaque(true);
-
-    this->setWantsKeyboardFocus(false);
-    this->setFocusContainerType(Component::FocusContainerType::none);
+    App::Workspace().getAudioCore().getDevice().addChangeListener(this);
 }
 
 InstrumentEditor::~InstrumentEditor()
 {
-    this->audioCore->getDevice().removeChangeListener(this);
+    App::Workspace().getAudioCore().getDevice().removeChangeListener(this);
 
     if (this->instrument != nullptr)
     {

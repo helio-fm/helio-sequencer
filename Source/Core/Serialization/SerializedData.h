@@ -21,14 +21,12 @@ class SerializedData final
 {
 public:
 
-    SerializedData() noexcept;
-    explicit SerializedData(const Identifier &type);
-
-    SerializedData(const SerializedData &) noexcept;
-    SerializedData(SerializedData &&) noexcept;
-    SerializedData &operator= (const SerializedData &);
-
-    ~SerializedData();
+    NO_INLINE SerializedData() noexcept;
+    NO_INLINE explicit SerializedData(const Identifier &type);
+    NO_INLINE SerializedData(const SerializedData &) noexcept;
+    NO_INLINE SerializedData(SerializedData &&) noexcept;
+    NO_INLINE SerializedData &operator= (const SerializedData &);
+    NO_INLINE ~SerializedData();
 
     bool operator== (const SerializedData &) const noexcept;
     bool operator!= (const SerializedData &) const noexcept;

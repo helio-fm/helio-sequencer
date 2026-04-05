@@ -717,18 +717,15 @@ void HelioTheme::drawDocumentWindowTitleBar(DocumentWindow &window,
 Button *HelioTheme::createDocumentWindowButton(int buttonType)
 {
     Path shape;
-
     if (buttonType == DocumentWindow::closeButton)
     {
         shape.addLineSegment(Line<float>(0.0f, 0.0f, 1.0f, 1.0f), 0.05f);
         shape.addLineSegment(Line<float>(1.0f, 0.0f, 0.0f, 1.0f), 0.05f);
-        return new HelioWindowButton(shape);
     }
-    if (buttonType == DocumentWindow::minimiseButton)
+    else if (buttonType == DocumentWindow::minimiseButton)
     {
         shape.addLineSegment(Line<float>(0.0f, 0.0f, 0.00001f, 0.0f), 0.00001f);
         shape.addLineSegment(Line<float>(0.0f, 0.55f, 1.0f, 0.55f), 0.05f);
-        return new HelioWindowButton(shape);
     }
     else if (buttonType == DocumentWindow::maximiseButton)
     {
@@ -736,20 +733,18 @@ Button *HelioTheme::createDocumentWindowButton(int buttonType)
         shape.addLineSegment(Line<float>(0.0f, 0.8f, 1.0f, 0.8f), 0.05f);
         shape.addLineSegment(Line<float>(1.0f, 0.8f, 1.0f, 0.0f), 0.05f);
         shape.addLineSegment(Line<float>(1.0f, 0.0f, 0.0f, 0.0f), 0.05f);
-        return new HelioWindowButton(shape);
     }
 
-    jassertfalse;
-    return nullptr;
+    return new HelioWindowButton(shape);
 }
 
 void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
-        int titleBarX, int titleBarY,
-        int titleBarW, int titleBarH,
-        Button *minimiseButton,
-        Button *maximiseButton,
-        Button *closeButton,
-        bool positionTitleBarButtonsOnLeft)
+    int titleBarX, int titleBarY,
+    int titleBarW, int titleBarH,
+    Button *minimiseButton,
+    Button *maximiseButton,
+    Button *closeButton,
+    bool positionTitleBarButtonsOnLeft)
 {
     const int buttonSize = int(23 * App::Config().getUiFlags()->getUiScaleFactor());
     const int y = ((titleBarH - titleBarY) / 2) - (buttonSize / 2) - 1;

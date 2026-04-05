@@ -47,9 +47,6 @@ public:
     int getNumRegions() const;
     SoundFontRegion *regionAt(int index);
 
-    const StringArray &getErrors() const { return this->errors; }
-    const StringArray &getWarnings() const { return this->warnings; }
-
     virtual int getNumPresets() const;
     virtual String getPresetName(int whichSubsound) const;
     virtual void setSelectedPreset(int whichSubsound);
@@ -98,10 +95,6 @@ private:
     UniquePointer<Preset> preset; // a single virtual "preset" to own the regions
 
     FlatHashMap<String, UniquePointer<SoundFontSample>> samples;
-
-    StringArray errors;
-    StringArray warnings;
-    FlatHashMap<String, String> unsupportedOpcodes;
 
     Temperament::Ptr temperament;
 

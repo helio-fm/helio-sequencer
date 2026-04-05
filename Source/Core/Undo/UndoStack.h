@@ -104,9 +104,9 @@ private:
         bool undo() const;
         int getTotalSize() const;
 
-        SerializedData serialize() const;
-        void deserialize(const SerializedData &data);
-        void reset();
+        SerializedData serialize() const override;
+        void deserialize(const SerializedData &data) override;
+        void reset() override;
 
         UndoAction *createUndoActionByTag(const Identifier &tagName) const;
 

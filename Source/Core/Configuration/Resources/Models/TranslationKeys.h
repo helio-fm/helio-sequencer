@@ -164,7 +164,7 @@ namespace I18n
             static constexpr auto renderFlac = constexprHash("menu::project::render::flac");
             static constexpr auto renderOgg = constexprHash("menu::project::render::ogg");
             static constexpr auto renderMidi = constexprHash("menu::project::render::midi");
-            static constexpr auto renderSavedTo = constexprHash("menu::project::render::savedto");
+            //static constexpr auto renderSavedTo = constexprHash("menu::project::render::savedto");
             static constexpr auto transposeDown = constexprHash("menu::project::transpose::down");
             static constexpr auto transposeUp = constexprHash("menu::project::transpose::up");
             static constexpr auto unload = constexprHash("menu::project::unload");
@@ -388,7 +388,7 @@ namespace I18n
 
         static constexpr auto editModeCursor = constexprHash("tooltip::edit::cursor");
         static constexpr auto editModePen = constexprHash("tooltip::edit::pen");
-        static constexpr auto editModeDrag = constexprHash("tooltip::edit::drag");
+        //static constexpr auto editModeDrag = constexprHash("tooltip::edit::drag");
         static constexpr auto editModeKnife = constexprHash("tooltip::edit::cut");
         static constexpr auto chordTool = constexprHash("tooltip::chordtool");
         static constexpr auto arpeggiators = constexprHash("tooltip::arps");

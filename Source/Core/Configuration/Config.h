@@ -68,8 +68,6 @@ public:
     HotkeySchemesCollection *getHotkeySchemes() const noexcept;
     KeyboardMappingsCollection *getKeyboardMappings() const noexcept;
 
-    ResourceCollectionsLookup &getAllResources() noexcept;
-
     UserInterfaceFlags *getUiFlags() const noexcept;
 
 private:
@@ -94,8 +92,6 @@ private:
     UniquePointer<ScalesCollection> scalesCollection;
     UniquePointer<ChordsCollection> chordsCollection;
     UniquePointer<MetersCollection> metersCollection;
-
-    ResourceCollectionsLookup resources;
 
     UniquePointer<UserInterfaceFlags> uiFlags;
 

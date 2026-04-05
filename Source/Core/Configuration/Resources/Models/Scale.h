@@ -29,7 +29,6 @@ public:
     Scale(const String &name, const Array<int> &keys, int basePeriod) noexcept;
 
     String getResourceId() const noexcept override;
-    Identifier getResourceType() const noexcept override;
     using Ptr = ReferenceCountedObjectPtr<Scale>;
 
     Scale::Ptr withName(const String &name) const noexcept;

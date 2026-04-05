@@ -254,11 +254,6 @@ String Arpeggiator::getResourceId() const noexcept
     return this->name;
 }
 
-Identifier Arpeggiator::getResourceType() const noexcept
-{
-    return Serialization::Resources::arpeggiators;
-}
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//

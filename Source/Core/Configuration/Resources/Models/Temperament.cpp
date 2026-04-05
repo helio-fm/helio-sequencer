@@ -88,17 +88,12 @@ Note::Key Temperament::getEquivalentOfTwelveToneInterval(Semitones interval) con
 }
 
 //===----------------------------------------------------------------------===//
-// BaseResource
+// ConfigurationResource
 //===----------------------------------------------------------------------===//
 
 String Temperament::getResourceId() const noexcept
 {
     return this->id;
-}
-
-Identifier Temperament::getResourceType() const noexcept
-{
-    return Serialization::Resources::temperaments;
 }
 
 //===----------------------------------------------------------------------===//

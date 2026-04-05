@@ -48,7 +48,6 @@ public:
     Temperament(const Temperament &other) noexcept;
 
     String getResourceId() const noexcept override;
-    Identifier getResourceType() const noexcept override;
 
     using Ptr = ReferenceCountedObjectPtr<Temperament>;
 

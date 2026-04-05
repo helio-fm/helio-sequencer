@@ -32,12 +32,6 @@ static String getIconFileName(const String &string)
     return string;
 }
 
-#if JUCE_WINDOWS && !JUCE_MINGW
-  #define NO_INLINE __declspec(noinline)
-#else
-  #define NO_INLINE __attribute__((noinline))
-#endif
-
 struct BuiltInImageData final
 {
     NO_INLINE BuiltInImageData() = default;
