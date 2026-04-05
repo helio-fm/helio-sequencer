@@ -479,7 +479,7 @@ void Workspace::selectTreeNodeOrDefault(const String &nodeId)
     }
 }
 
-SerializedData Workspace::serialize() const
+SerializedData Workspace::serialize() const noexcept
 {
     using namespace Serialization;
     SerializedData tree(Core::workspace);
@@ -495,7 +495,7 @@ SerializedData Workspace::serialize() const
     return tree;
 }
 
-void Workspace::deserialize(const SerializedData &data)
+void Workspace::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization;
@@ -535,7 +535,7 @@ void Workspace::deserialize(const SerializedData &data)
     }
 }
 
-void Workspace::reset()
+void Workspace::reset() noexcept
 {
     this->userProfile.reset();
     this->audioCore->reset();

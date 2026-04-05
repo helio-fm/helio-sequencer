@@ -55,9 +55,9 @@ class ProjectNode final :
 {
 public:
 
-    ProjectNode();
-    explicit ProjectNode(const String &name, const String &id = {});
-    explicit ProjectNode(const File &existingFile);
+    ProjectNode() noexcept;
+    explicit ProjectNode(const String &name, const String &id = {}) noexcept;
+    explicit ProjectNode(const File &existingFile) noexcept;
     ~ProjectNode() override;
 
     String getId() const noexcept;
@@ -128,9 +128,9 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
-    void reset() override;
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
+    void reset() noexcept override;
 
     //===------------------------------------------------------------------===//
     // Project listeners

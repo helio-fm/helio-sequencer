@@ -89,7 +89,7 @@ void StashesRepository::resetQuickStash()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData StashesRepository::serialize() const
+SerializedData StashesRepository::serialize() const noexcept
 {
     SerializedData tree(Serialization::VCS::stashesRepository);
 
@@ -106,7 +106,7 @@ SerializedData StashesRepository::serialize() const
     return tree;
 }
 
-void StashesRepository::deserialize(const SerializedData &data)
+void StashesRepository::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -131,7 +131,7 @@ void StashesRepository::deserialize(const SerializedData &data)
     }
 }
 
-void StashesRepository::reset()
+void StashesRepository::reset() noexcept
 {
     this->userStashes->reset();
     this->quickStash->reset();

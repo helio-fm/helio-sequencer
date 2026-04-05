@@ -204,7 +204,7 @@ UniquePointer<Component> VersionControlNode::createMenu()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData VersionControlNode::serialize() const
+SerializedData VersionControlNode::serialize() const noexcept
 {
     SerializedData tree(Serialization::Core::treeNode);
     tree.setProperty(Serialization::Core::treeNodeType, this->type);
@@ -218,7 +218,7 @@ SerializedData VersionControlNode::serialize() const
     return tree;
 }
 
-void VersionControlNode::deserialize(const SerializedData &data)
+void VersionControlNode::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -234,7 +234,7 @@ void VersionControlNode::deserialize(const SerializedData &data)
     TreeNode::deserialize(data);
 }
 
-void VersionControlNode::reset()
+void VersionControlNode::reset() noexcept
 {
     if (this->vcs != nullptr)
     {

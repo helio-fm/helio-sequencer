@@ -141,7 +141,7 @@ private:
 };
 
 HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem,
-    const Point<int> &position, bool shouldShowCursor) :
+    const Point<int> &position, bool shouldShowCursor) noexcept :
     item(targetItem)
 {
     this->setComponentID(ComponentIDs::menu);

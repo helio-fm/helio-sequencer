@@ -109,7 +109,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InitScreen)
 };
 
-MainLayout::MainLayout()
+MainLayout::MainLayout() noexcept
 {
     this->setComponentID(ComponentIDs::mainLayoutId);
 

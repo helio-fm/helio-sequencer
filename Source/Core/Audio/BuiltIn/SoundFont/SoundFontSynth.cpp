@@ -973,7 +973,7 @@ SoundFontSynth::Parameters SoundFontSynth::Parameters::withProgramIndex(int newP
     return other;
 }
 
-SerializedData SoundFontSynth::Parameters::serialize() const
+SerializedData SoundFontSynth::Parameters::serialize() const noexcept
 {
     using namespace Serialization::Audio;
 
@@ -984,7 +984,7 @@ SerializedData SoundFontSynth::Parameters::serialize() const
     return data;
 }
 
-void SoundFontSynth::Parameters::deserialize(const SerializedData &data)
+void SoundFontSynth::Parameters::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization::Audio;
@@ -1001,7 +1001,7 @@ void SoundFontSynth::Parameters::deserialize(const SerializedData &data)
     this->programIndex = root.getProperty(SoundFont::programIndex);
 }
 
-void SoundFontSynth::Parameters::reset()
+void SoundFontSynth::Parameters::reset() noexcept
 {
     this->filePath.clear();
     this->programIndex = 0;

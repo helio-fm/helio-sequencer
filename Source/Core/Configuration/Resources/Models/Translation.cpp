@@ -38,14 +38,14 @@ bool Translation::isEmpty() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData Translation::serialize() const
+SerializedData Translation::serialize() const noexcept
 {
     SerializedData emptyXml(Serialization::Translations::locale);
     jassertfalse; // translations are meant to be read-only
     return emptyXml;
 }
 
-void Translation::deserialize(const SerializedData &root)
+void Translation::deserialize(const SerializedData &root) noexcept
 {
     // don't reset so that user's translation appends the built-in one instead of replacing it
     // this->reset();
@@ -118,7 +118,7 @@ void Translation::deserialize(const SerializedData &root)
 #endif
 }
 
-void Translation::reset()
+void Translation::reset() noexcept
 {
     this->singulars.clear();
     this->plurals.clear();

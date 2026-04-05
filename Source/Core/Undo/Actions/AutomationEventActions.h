@@ -41,9 +41,9 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
 
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
-    void reset() override;
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
+    void reset() noexcept override;
 
 private:
 
@@ -71,9 +71,9 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
 
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
-    void reset() override;
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
+    void reset() noexcept override;
 
 private:
 
@@ -102,9 +102,9 @@ public:
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
 
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
-    void reset() override;
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
+    void reset() noexcept override;
 
 private:
 
@@ -134,9 +134,9 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
 
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
-    void reset() override;
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
+    void reset() noexcept override;
 
 private:
 
@@ -164,9 +164,9 @@ public:
     bool undo() override;
     int getSizeInUnits() override;
 
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
-    void reset() override;
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
+    void reset() noexcept override;
 
 private:
 
@@ -195,9 +195,9 @@ public:
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
 
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
-    void reset() override;
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
+    void reset() noexcept override;
 
 private:
 

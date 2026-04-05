@@ -124,7 +124,7 @@ float AnnotationEvent::getLength() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData AnnotationEvent::serialize() const
+SerializedData AnnotationEvent::serialize() const noexcept
 {
     using namespace Serialization;
     SerializedData tree(Midi::annotation);
@@ -136,7 +136,7 @@ SerializedData AnnotationEvent::serialize() const
     return tree;
 }
 
-void AnnotationEvent::deserialize(const SerializedData &data)
+void AnnotationEvent::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization;

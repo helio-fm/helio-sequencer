@@ -67,7 +67,7 @@ int AutomationTrackInsertAction::getSizeInUnits()
     return this->trackName.length();
 }
 
-SerializedData AutomationTrackInsertAction::serialize() const
+SerializedData AutomationTrackInsertAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::automationTrackInsertAction);
     tree.setProperty(Serialization::Undo::path, this->trackName);
@@ -76,14 +76,14 @@ SerializedData AutomationTrackInsertAction::serialize() const
     return tree;
 }
 
-void AutomationTrackInsertAction::deserialize(const SerializedData &data)
+void AutomationTrackInsertAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackName = data.getProperty(Serialization::Undo::path);
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->trackState = data.getChild(0).createCopy();
 }
 
-void AutomationTrackInsertAction::reset()
+void AutomationTrackInsertAction::reset() noexcept
 {
     this->trackName.clear();
     this->trackId.clear();
@@ -142,7 +142,7 @@ int AutomationTrackRemoveAction::getSizeInUnits()
     return 1;
 }
 
-SerializedData AutomationTrackRemoveAction::serialize() const
+SerializedData AutomationTrackRemoveAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::automationTrackRemoveAction);
     tree.setProperty(Serialization::Undo::path, this->trackName);
@@ -151,14 +151,14 @@ SerializedData AutomationTrackRemoveAction::serialize() const
     return tree;
 }
 
-void AutomationTrackRemoveAction::deserialize(const SerializedData &data)
+void AutomationTrackRemoveAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackName = data.getProperty(Serialization::Undo::path);
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->serializedTreeItem = data.getChild(0).createCopy();
 }
 
-void AutomationTrackRemoveAction::reset()
+void AutomationTrackRemoveAction::reset() noexcept
 {
     this->trackName.clear();
     this->trackId.clear();

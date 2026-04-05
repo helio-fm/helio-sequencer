@@ -30,7 +30,7 @@ class HeadlineDropdown final : public Component, private Timer
 public:
 
     HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem,
-        const Point<int> &position, bool shouldShowCursor);
+        const Point<int> &position, bool shouldShowCursor) noexcept;
     ~HeadlineDropdown();
 
     void childBoundsChanged(Component *) override;

@@ -20,7 +20,7 @@
 #include "KeySignatureSmallComponent.h"
 
 KeySignatureSmallComponent::KeySignatureSmallComponent(KeySignaturesProjectMap &parent,
-    const KeySignatureEvent &targetEvent) :
+    const KeySignatureEvent &targetEvent) noexcept :
     KeySignatureComponent(parent, targetEvent)
 {
     this->signatureLabel = make<Label>();

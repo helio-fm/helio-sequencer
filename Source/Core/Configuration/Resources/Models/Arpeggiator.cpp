@@ -258,7 +258,7 @@ String Arpeggiator::getResourceId() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData Arpeggiator::serialize() const
+SerializedData Arpeggiator::serialize() const noexcept
 {
     using namespace Serialization;
     SerializedData tree(Arps::arpeggiator);
@@ -276,7 +276,7 @@ SerializedData Arpeggiator::serialize() const
     return tree;
 }
 
-void Arpeggiator::deserialize(const SerializedData &data)
+void Arpeggiator::deserialize(const SerializedData &data) noexcept
 {
     using namespace Serialization;
 
@@ -316,13 +316,13 @@ void Arpeggiator::deserialize(const SerializedData &data)
     }
 }
 
-void Arpeggiator::reset()
+void Arpeggiator::reset() noexcept
 {
     this->name.clear();
     this->keys.clearQuick();
 }
 
-SerializedData Arpeggiator::Key::serialize() const
+SerializedData Arpeggiator::Key::serialize() const noexcept
 {
     using namespace Serialization;
 
@@ -340,7 +340,7 @@ SerializedData Arpeggiator::Key::serialize() const
     return tree;
 }
 
-void Arpeggiator::Key::deserialize(const SerializedData &data)
+void Arpeggiator::Key::deserialize(const SerializedData &data) noexcept
 {
     using namespace Serialization;
     this->key = data.getProperty(Arps::Keys::key);
@@ -352,7 +352,7 @@ void Arpeggiator::Key::deserialize(const SerializedData &data)
     this->isBarStart = data.getProperty(Arps::Keys::isBarStart, false);
 }
 
-void Arpeggiator::Key::reset() {}
+void Arpeggiator::Key::reset() noexcept {}
 
 int Arpeggiator::Key::compareElements(const Key &first, const Key &second) noexcept
 {

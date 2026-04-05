@@ -54,14 +54,14 @@
 #include "ColourIDs.h"
 #include "Config.h"
 
-ProjectNode::ProjectNode() :
+ProjectNode::ProjectNode() noexcept :
     DocumentOwner({}, "helio"),
     TreeNode({}, Serialization::Core::project)
 {
     this->initialize();
 }
 
-ProjectNode::ProjectNode(const String &name, const String &id) :
+ProjectNode::ProjectNode(const String &name, const String &id) noexcept :
     DocumentOwner(name, "helio"),
     TreeNode(name, Serialization::Core::project),
     id(id.isEmpty() ? Uuid().toString() : id)
@@ -69,7 +69,7 @@ ProjectNode::ProjectNode(const String &name, const String &id) :
     this->initialize();
 }
 
-ProjectNode::ProjectNode(const File &existingFile) :
+ProjectNode::ProjectNode(const File &existingFile) noexcept :
     DocumentOwner(existingFile),
     TreeNode(existingFile.getFileNameWithoutExtension(), Serialization::Core::project),
     id(Uuid().toString())
@@ -505,7 +505,7 @@ void ProjectNode::setTrackGroupingMode(MidiTrack::Grouping mode)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData ProjectNode::serialize() const
+SerializedData ProjectNode::serialize() const noexcept
 {
     this->getDocument()->save();
 
@@ -515,7 +515,7 @@ SerializedData ProjectNode::serialize() const
     return tree;
 }
 
-void ProjectNode::deserialize(const SerializedData &data)
+void ProjectNode::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -532,7 +532,7 @@ void ProjectNode::deserialize(const SerializedData &data)
     delete this;
 }
 
-void ProjectNode::reset()
+void ProjectNode::reset() noexcept
 {
     this->transport->seekToBeat(this->beatRange.getStart());
     this->vcsItems.clear();

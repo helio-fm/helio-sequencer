@@ -173,7 +173,7 @@ String Meter::getResourceId() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData Meter::serialize() const
+SerializedData Meter::serialize() const noexcept
 {
     SerializedData tree(Serialization::Midi::meter);
     tree.setProperty(Serialization::Midi::meterName, this->name);
@@ -182,7 +182,7 @@ SerializedData Meter::serialize() const
     return tree;
 }
 
-void Meter::deserialize(const SerializedData &data)
+void Meter::deserialize(const SerializedData &data) noexcept
 {
     using namespace Serialization;
     const auto root = data.hasType(Midi::meter) ?
@@ -202,7 +202,7 @@ void Meter::deserialize(const SerializedData &data)
     this->metronome.loadString(metronomeString);
 }
 
-void Meter::reset()
+void Meter::reset() noexcept
 {
     this->name = {};
     this->numerator = 0;

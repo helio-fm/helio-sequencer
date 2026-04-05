@@ -37,7 +37,7 @@ public:
     enum class Type { LoopStart, LoopEnd };
 
     PlaybackLoopMarker(Transport &transport,
-        RollHeader &header, RollBase &roll, Type type) :
+        RollHeader &header, RollBase &roll, Type type) noexcept :
         transport(transport),
         header(header),
         roll(roll),
@@ -157,7 +157,7 @@ private:
     const Colour shadowColour = findDefaultColour(ColourIDs::Roll::trackHeaderShadow);
 };
 
-RollHeader::RollHeader(Transport &transport, RollBase &roll, Viewport &viewport) :
+RollHeader::RollHeader(Transport &transport, RollBase &roll, Viewport &viewport) noexcept :
     transport(transport),
     roll(roll),
     viewport(viewport)

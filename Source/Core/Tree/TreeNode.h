@@ -210,9 +210,9 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    void reset() override;
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
+    void reset() noexcept override;
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
 
 protected:
 

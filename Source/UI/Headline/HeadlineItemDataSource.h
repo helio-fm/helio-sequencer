@@ -21,7 +21,7 @@ class HeadlineItemDataSource : public virtual ChangeBroadcaster
 {
 public:
 
-    HeadlineItemDataSource() = default;
+    HeadlineItemDataSource() noexcept = default;
 
     virtual bool hasMenu() const = 0;
     virtual UniquePointer<Component> createMenu() = 0;

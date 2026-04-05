@@ -23,7 +23,7 @@ class HeadlineItemArrow final : public Component
 {
 public:
 
-    HeadlineItemArrow(int arrowWidth = 11, bool hasGradient = true) :
+    HeadlineItemArrow(int arrowWidth = 11, bool hasGradient = true) noexcept :
         arrowWidth(arrowWidth),
         hasGradient(hasGradient)
     {

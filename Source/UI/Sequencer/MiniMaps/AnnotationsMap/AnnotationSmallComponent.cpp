@@ -22,7 +22,7 @@
 #include "AnnotationSmallComponent.h"
 
 AnnotationSmallComponent::AnnotationSmallComponent(AnnotationsProjectMap &parent,
-    const AnnotationEvent &targetEvent) :
+    const AnnotationEvent &targetEvent) noexcept :
     AnnotationComponent(parent, targetEvent)
 {
     this->annotationLabel = make<Label>();

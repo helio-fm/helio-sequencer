@@ -201,7 +201,7 @@ void PianoTrackNode::resetStateTo(const VCS::TrackedItem &newState)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData PianoTrackNode::serialize() const
+SerializedData PianoTrackNode::serialize() const noexcept
 {
     SerializedData tree(Serialization::Core::treeNode);
 
@@ -225,7 +225,7 @@ SerializedData PianoTrackNode::serialize() const
     return tree;
 }
 
-void PianoTrackNode::deserialize(const SerializedData &data)
+void PianoTrackNode::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 

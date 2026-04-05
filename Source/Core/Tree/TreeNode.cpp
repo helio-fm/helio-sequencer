@@ -285,12 +285,12 @@ void TreeNode::dispatchChangeTreeNodeViews()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-void TreeNode::reset()
+void TreeNode::reset() noexcept
 {
     this->deleteAllChildren();
 }
 
-SerializedData TreeNode::serialize() const
+SerializedData TreeNode::serialize() const noexcept
 {
     SerializedData tree(Serialization::Core::treeNode);
     tree.setProperty(Serialization::Core::treeNodeType, this->type);
@@ -299,7 +299,7 @@ SerializedData TreeNode::serialize() const
     return tree;
 }
 
-void TreeNode::deserialize(const SerializedData &data)
+void TreeNode::deserialize(const SerializedData &data) noexcept
 {
     // Do not reset here, subclasses may rely
     // on this method in their deserialization

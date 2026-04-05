@@ -649,7 +649,7 @@ void AudioCore::deserializeDeviceManager(const SerializedData &tree)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData AudioCore::serialize() const
+SerializedData AudioCore::serialize() const noexcept
 {
     using namespace Serialization;
 
@@ -669,7 +669,7 @@ SerializedData AudioCore::serialize() const
     return root;
 }
 
-void AudioCore::deserialize(const SerializedData &data)
+void AudioCore::deserialize(const SerializedData &data) noexcept
 {
     using namespace Serialization;
 
@@ -731,7 +731,7 @@ void AudioCore::deserialize(const SerializedData &data)
     this->initRequiredInstruments();
 }
 
-void AudioCore::reset()
+void AudioCore::reset() noexcept
 {
     this->defaultInstrument = nullptr;
     this->metronomeInstrument = nullptr;

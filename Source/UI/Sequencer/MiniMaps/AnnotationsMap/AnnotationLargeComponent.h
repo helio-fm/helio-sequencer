@@ -23,7 +23,9 @@ class AnnotationLargeComponent final : public AnnotationComponent
 {
 public:
 
-    AnnotationLargeComponent(AnnotationsProjectMap &parent, const AnnotationEvent &targetEvent);
+    AnnotationLargeComponent(AnnotationsProjectMap &parent,
+        const AnnotationEvent &targetEvent) noexcept;
+
     ~AnnotationLargeComponent();
 
     enum class State : uint8

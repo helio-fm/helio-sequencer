@@ -29,7 +29,7 @@ public:
     explicit IconButton(Icons::Id iconId,
         int commandId = CommandIDs::IconButtonPressed,
         WeakReference<Component> listener = nullptr,
-        Optional<int> iconSize = {}) :
+        Optional<int> iconSize = {}) noexcept :
         IconComponent(iconId, 1.f, iconSize),
         commandId(commandId),
         listener(listener)

@@ -24,7 +24,7 @@ SerializablePluginDescription::SerializablePluginDescription() {}
 SerializablePluginDescription::SerializablePluginDescription(const PluginDescription &other) :
     PluginDescription(other) {}
 
-SerializedData SerializablePluginDescription::serialize() const
+SerializedData SerializablePluginDescription::serialize() const noexcept
 {
     using namespace Serialization;
 
@@ -50,7 +50,7 @@ SerializedData SerializablePluginDescription::serialize() const
     return tree;
 }
 
-void SerializablePluginDescription::deserialize(const SerializedData &data)
+void SerializablePluginDescription::deserialize(const SerializedData &data) noexcept
 {
     using namespace Serialization;
 
@@ -76,7 +76,7 @@ void SerializablePluginDescription::deserialize(const SerializedData &data)
     }
 }
 
-void SerializablePluginDescription::reset()
+void SerializablePluginDescription::reset() noexcept
 {
     this->name = {};
     this->uniqueId = {};

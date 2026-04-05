@@ -34,7 +34,7 @@ class RollHeader final : public Component
 {
 public:
 
-    RollHeader(Transport &transport, RollBase &roll, Viewport &viewport);
+    RollHeader(Transport &transport, RollBase &roll, Viewport &viewport) noexcept;
     ~RollHeader() override;
 
     void setSoundProbeMode(bool shouldProbeOnClick);

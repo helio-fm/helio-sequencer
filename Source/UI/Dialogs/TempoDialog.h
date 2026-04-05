@@ -26,7 +26,7 @@ class TempoDialog final : public DialogBase
 {
 public:
 
-    explicit TempoDialog(int bpmValue);
+    explicit TempoDialog(int bpmValue) noexcept;
     ~TempoDialog() override;
 
     Function<void(int newBpmValue)> onOk;

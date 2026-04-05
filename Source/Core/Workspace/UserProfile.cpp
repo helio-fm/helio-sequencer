@@ -86,7 +86,7 @@ RecentProjectInfo *UserProfile::findProject(const String &id) const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData UserProfile::serialize() const
+SerializedData UserProfile::serialize() const noexcept
 {
     using namespace Serialization;
 
@@ -100,7 +100,7 @@ SerializedData UserProfile::serialize() const
     return tree;
 }
 
-void UserProfile::deserialize(const SerializedData &data)
+void UserProfile::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization;
@@ -130,7 +130,7 @@ void UserProfile::deserialize(const SerializedData &data)
     this->sendChangeMessage();
 }
 
-void UserProfile::reset()
+void UserProfile::reset() noexcept
 {
     this->projects.clearQuick();
     this->sendChangeMessage();

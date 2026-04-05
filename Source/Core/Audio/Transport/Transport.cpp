@@ -1226,7 +1226,7 @@ void Transport::broadcastStop()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData Transport::serialize() const
+SerializedData Transport::serialize() const noexcept
 {
     using namespace Serialization;
     SerializedData tree(Audio::transport);
@@ -1234,7 +1234,7 @@ SerializedData Transport::serialize() const
     return tree;
 }
 
-void Transport::deserialize(const SerializedData &data)
+void Transport::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -1246,4 +1246,4 @@ void Transport::deserialize(const SerializedData &data)
     this->seekToBeat(seek);
 }
 
-void Transport::reset() {}
+void Transport::reset() noexcept {}

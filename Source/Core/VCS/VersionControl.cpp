@@ -19,7 +19,7 @@
 #include "VersionControl.h"
 #include "VersionControlEditor.h"
 
-VersionControl::VersionControl(VCS::TrackedItemsSource &parent) :
+VersionControl::VersionControl(VCS::TrackedItemsSource &parent) noexcept :
     parent(parent),
     head(parent),
     stashes(new VCS::StashesRepository()),
@@ -283,7 +283,7 @@ void VersionControl::changeListenerCallback(ChangeBroadcaster *source)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData VersionControl::serialize() const
+SerializedData VersionControl::serialize() const noexcept
 {
     SerializedData tree(Serialization::Core::versionControl);
 
@@ -297,7 +297,7 @@ SerializedData VersionControl::serialize() const
     return tree;
 }
 
-void VersionControl::deserialize(const SerializedData &data)
+void VersionControl::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -351,7 +351,7 @@ void VersionControl::deserialize(const SerializedData &data)
     }
 }
 
-void VersionControl::reset()
+void VersionControl::reset() noexcept
 {
     this->rootRevision->reset();
     this->head.reset();

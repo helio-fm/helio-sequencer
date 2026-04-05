@@ -83,8 +83,7 @@ static void updateTrackRowPosition(Array<String> &rows,
 }
 
 PatternRoll::PatternRoll(ProjectNode &parentProject,
-    Viewport &viewportRef,
-    WeakReference<AudioMonitor> clippingDetector) :
+    Viewport &viewportRef, WeakReference<AudioMonitor> clippingDetector) noexcept :
     RollBase(parentProject, viewportRef, clippingDetector, false, false, true)
 {
     this->setComponentID(ComponentIDs::patternRollId);
@@ -1578,7 +1577,7 @@ void PatternRoll::endMergingEvents()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData PatternRoll::serialize() const
+SerializedData PatternRoll::serialize() const noexcept
 {
     using namespace Serialization;
     SerializedData tree(UI::patternRoll);
@@ -1597,7 +1596,7 @@ SerializedData PatternRoll::serialize() const
     return tree;
 }
 
-void PatternRoll::deserialize(const SerializedData &data)
+void PatternRoll::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization;
@@ -1619,7 +1618,7 @@ void PatternRoll::deserialize(const SerializedData &data)
     this->getViewport().setViewPosition(x, y);
 }
 
-void PatternRoll::reset() {}
+void PatternRoll::reset() noexcept {}
 
 //===----------------------------------------------------------------------===//
 // Background image cache

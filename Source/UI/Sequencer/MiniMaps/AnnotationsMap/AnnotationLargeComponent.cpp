@@ -21,7 +21,7 @@
 #include "AnnotationLargeComponent.h"
 
 AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsProjectMap &parent,
-    const AnnotationEvent &targetEvent) :
+    const AnnotationEvent &targetEvent) noexcept :
     AnnotationComponent(parent, targetEvent)
 {
     this->setPaintingIsUnclipped(true);

@@ -111,7 +111,7 @@ DiffLogic *RevisionItem::getDiffLogic() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData RevisionItem::serialize() const
+SerializedData RevisionItem::serialize() const noexcept
 {
     SerializedData tree(Serialization::VCS::revisionItem);
 
@@ -139,7 +139,7 @@ SerializedData RevisionItem::serialize() const
     return tree;
 }
 
-void RevisionItem::deserialize(const SerializedData &data)
+void RevisionItem::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -180,7 +180,7 @@ void RevisionItem::deserialize(const SerializedData &data)
     }
 }
 
-void RevisionItem::reset()
+void RevisionItem::reset() noexcept
 {
     this->deltas.clear();
     this->description.clear();

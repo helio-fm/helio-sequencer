@@ -38,7 +38,7 @@ class ProjectMapsScroller final :
 {
 public:
 
-    ProjectMapsScroller(ProjectNode &project, SafePointer<RollBase> roll);
+    ProjectMapsScroller(ProjectNode &project, SafePointer<RollBase> roll) noexcept;
     ~ProjectMapsScroller() override;
 
     class ScrolledComponent : public Component

@@ -62,7 +62,7 @@ void ChordsCollection::deserializeResources(const SerializedData &tree, Resource
     }
 }
 
-void ChordsCollection::reset()
+void ChordsCollection::reset() noexcept
 {
     this->order.clearQuick();
     ConfigurationResourceCollection::reset();

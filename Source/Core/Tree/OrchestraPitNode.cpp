@@ -118,7 +118,7 @@ void OrchestraPitNode::onRemoveInstrument(Instrument *instrument)
 // Serialization
 //===----------------------------------------------------------------------===//
 
-SerializedData OrchestraPitNode::serialize() const
+SerializedData OrchestraPitNode::serialize() const noexcept
 {
     // in future we shouldn't serialize children here, but for now we will,
     // just to maintain compatibility of the main config file with previous versions
@@ -129,7 +129,7 @@ SerializedData OrchestraPitNode::serialize() const
 // all instrument nodes will be created on the fly,
 // since this is all the presentation of OrchestraPit model;
 // see the comment for InstrumentNode::serialize
-void OrchestraPitNode::deserialize(const SerializedData &data) {}
+void OrchestraPitNode::deserialize(const SerializedData &data) noexcept {}
 
 void OrchestraPitNode::syncAllInstruments()
 {

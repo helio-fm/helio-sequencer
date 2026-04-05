@@ -30,7 +30,7 @@ public:
     };
 
     explicit PopupButton(Shape shapeType = Shape::Circle,
-        Colour colour = Colours::black.withAlpha(0.5f));
+        Colour colour = Colours::black.withAlpha(0.5f)) noexcept;
 
     Point<int> getDragDelta() const noexcept;
     void setState(bool clicked);

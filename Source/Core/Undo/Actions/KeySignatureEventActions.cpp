@@ -56,7 +56,7 @@ int KeySignatureEventInsertAction::getSizeInUnits()
     return sizeof(KeySignatureEvent);
 }
 
-SerializedData KeySignatureEventInsertAction::serialize() const
+SerializedData KeySignatureEventInsertAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::keySignatureEventInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -64,13 +64,13 @@ SerializedData KeySignatureEventInsertAction::serialize() const
     return tree;
 }
 
-void KeySignatureEventInsertAction::deserialize(const SerializedData &data)
+void KeySignatureEventInsertAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->event.deserialize(data.getChild(0));
 }
 
-void KeySignatureEventInsertAction::reset()
+void KeySignatureEventInsertAction::reset() noexcept
 {
     this->event.reset();
     this->trackId.clear();
@@ -111,7 +111,7 @@ int KeySignatureEventRemoveAction::getSizeInUnits()
     return sizeof(KeySignatureEvent);
 }
 
-SerializedData KeySignatureEventRemoveAction::serialize() const
+SerializedData KeySignatureEventRemoveAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::keySignatureEventRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -119,13 +119,13 @@ SerializedData KeySignatureEventRemoveAction::serialize() const
     return tree;
 }
 
-void KeySignatureEventRemoveAction::deserialize(const SerializedData &data)
+void KeySignatureEventRemoveAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->event.deserialize(data.getChild(0));
 }
 
-void KeySignatureEventRemoveAction::reset()
+void KeySignatureEventRemoveAction::reset() noexcept
 {
     this->event.reset();
     this->trackId.clear();
@@ -187,7 +187,7 @@ UndoAction *KeySignatureEventChangeAction::createCoalescedAction(UndoAction *nex
     return nullptr;
 }
 
-SerializedData KeySignatureEventChangeAction::serialize() const
+SerializedData KeySignatureEventChangeAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::keySignatureEventChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -203,7 +203,7 @@ SerializedData KeySignatureEventChangeAction::serialize() const
     return tree;
 }
 
-void KeySignatureEventChangeAction::deserialize(const SerializedData &data)
+void KeySignatureEventChangeAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
 
@@ -214,7 +214,7 @@ void KeySignatureEventChangeAction::deserialize(const SerializedData &data)
     this->eventAfter.deserialize(keySignatureAfterChild.getChild(0));
 }
 
-void KeySignatureEventChangeAction::reset()
+void KeySignatureEventChangeAction::reset() noexcept
 {
     this->eventBefore.reset();
     this->eventAfter.reset();

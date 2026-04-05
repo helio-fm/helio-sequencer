@@ -144,7 +144,7 @@ void Revision::deserializeDeltas(SerializedData data)
     }
 }
 
-SerializedData Revision::serialize() const
+SerializedData Revision::serialize() const noexcept
 {
     SerializedData tree(Serialization::VCS::revision);
 
@@ -165,7 +165,7 @@ SerializedData Revision::serialize() const
     return tree;
 }
 
-void Revision::deserialize(const SerializedData &data)
+void Revision::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -199,7 +199,7 @@ void Revision::deserialize(const SerializedData &data)
     }
 }
 
-void Revision::reset()
+void Revision::reset() noexcept
 {
     this->id = {};
     this->message = {};

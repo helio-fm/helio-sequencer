@@ -263,13 +263,13 @@ const var &SerializedData::getProperty(const Identifier &name) const noexcept
     return this->data->properties[name];
 }
 
-var SerializedData::getProperty(const Identifier &name, const var &defaultValue) const
+var SerializedData::getProperty(const Identifier &name, const var &defaultValue) const noexcept
 {
     jassert(this->data != nullptr);
     return this->data->properties.getWithDefault(name, defaultValue);
 }
 
-SerializedData &SerializedData::setProperty(const Identifier &name, const var &newValue)
+SerializedData &SerializedData::setProperty(const Identifier &name, const var &newValue) noexcept
 {
     jassert(this->data != nullptr);
     jassert(name.toString().isNotEmpty());

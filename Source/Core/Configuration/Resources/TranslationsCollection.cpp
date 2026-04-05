@@ -200,7 +200,7 @@ void TranslationsCollection::deserializeResources(const SerializedData &tree, Re
     jassert(this->currentTranslation != nullptr && !this->currentTranslation->isEmpty());
 }
 
-void TranslationsCollection::reset()
+void TranslationsCollection::reset() noexcept
 {
     ConfigurationResourceCollection::reset();
     this->currentTranslation = nullptr;

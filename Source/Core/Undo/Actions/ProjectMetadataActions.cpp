@@ -73,7 +73,7 @@ UndoAction *ProjectTemperamentChangeAction::createCoalescedAction(UndoAction *ne
     return nullptr;
 }
 
-SerializedData ProjectTemperamentChangeAction::serialize() const
+SerializedData ProjectTemperamentChangeAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::projectTemperamentChangeAction);
 
@@ -88,7 +88,7 @@ SerializedData ProjectTemperamentChangeAction::serialize() const
     return tree;
 }
 
-void ProjectTemperamentChangeAction::deserialize(const SerializedData &data)
+void ProjectTemperamentChangeAction::deserialize(const SerializedData &data) noexcept
 {
     auto instanceBeforeChild = data.getChildWithName(Serialization::Undo::instanceBefore);
     auto instanceAfterChild = data.getChildWithName(Serialization::Undo::instanceAfter);
@@ -97,7 +97,7 @@ void ProjectTemperamentChangeAction::deserialize(const SerializedData &data)
     this->temperamentAfter.deserialize(instanceAfterChild.getChild(0));
 }
 
-void ProjectTemperamentChangeAction::reset()
+void ProjectTemperamentChangeAction::reset() noexcept
 {
     this->temperamentBefore.reset();
     this->temperamentAfter.reset();

@@ -58,7 +58,7 @@ void DefaultSynthAudioPlugin::prepareToPlay(double sampleRate, int estimatedSamp
     this->synth.setCurrentPlaybackSampleRate(sampleRate);
 }
 
-void DefaultSynthAudioPlugin::reset()
+void DefaultSynthAudioPlugin::reset() noexcept
 {
     this->synth.allNotesOff(0, true);
 }

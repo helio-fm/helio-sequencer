@@ -43,7 +43,7 @@ public:
 
     PianoRoll(ProjectNode &parentProject,
         Viewport &viewportRef,
-        WeakReference<AudioMonitor> clippingDetector);
+        WeakReference<AudioMonitor> clippingDetector) noexcept;
 
     ~PianoRoll() override;
 
@@ -210,9 +210,9 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
-    void reset() override;
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
+    void reset() noexcept override;
 
 protected:
 

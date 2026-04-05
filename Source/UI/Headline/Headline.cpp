@@ -21,7 +21,7 @@
 #include "HelioTheme.h"
 #include "MainLayout.h"
 
-Headline::Headline()
+Headline::Headline() noexcept
 {
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);

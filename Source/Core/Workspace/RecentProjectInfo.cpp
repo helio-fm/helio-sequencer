@@ -82,7 +82,7 @@ int RecentProjectInfo::compareElements(RecentProjectInfo *first, RecentProjectIn
     return (firstLocalTime < secondLocalTime) - (firstLocalTime > secondLocalTime);
 }
 
-SerializedData RecentProjectInfo::serialize() const
+SerializedData RecentProjectInfo::serialize() const noexcept
 {
     using namespace Serialization::User;
     SerializedData root(RecentProjects::recentProject);
@@ -98,7 +98,7 @@ SerializedData RecentProjectInfo::serialize() const
     return root;
 }
 
-void RecentProjectInfo::deserialize(const SerializedData &data)
+void RecentProjectInfo::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization::User;
@@ -122,7 +122,7 @@ void RecentProjectInfo::deserialize(const SerializedData &data)
     }
 }
 
-void RecentProjectInfo::reset()
+void RecentProjectInfo::reset() noexcept
 {
     this->localInfo.path = File();
     this->localInfo.title = {};

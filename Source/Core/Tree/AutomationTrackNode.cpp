@@ -208,7 +208,7 @@ void AutomationTrackNode::resetStateTo(const VCS::TrackedItem &newState)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData AutomationTrackNode::serialize() const
+SerializedData AutomationTrackNode::serialize() const noexcept
 {
     SerializedData tree(Serialization::Core::treeNode);
 
@@ -232,7 +232,7 @@ SerializedData AutomationTrackNode::serialize() const
     return tree;
 }
 
-void AutomationTrackNode::deserialize(const SerializedData &data)
+void AutomationTrackNode::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 

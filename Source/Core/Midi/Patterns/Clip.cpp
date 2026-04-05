@@ -287,7 +287,7 @@ Clip Clip::withShiftedModifier(SequenceModifier::Ptr mod, int delta) const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData Clip::serialize() const
+SerializedData Clip::serialize() const noexcept
 {
     using namespace Serialization;
 
@@ -315,7 +315,7 @@ SerializedData Clip::serialize() const
     return tree;
 }
 
-void Clip::deserialize(const SerializedData &data)
+void Clip::deserialize(const SerializedData &data) noexcept
 {
     using namespace Serialization;
     this->key = data.getProperty(Midi::key, 0);
@@ -356,7 +356,7 @@ SequenceModifier::Ptr Clip::makeSequenceModifierByTag(const Identifier &tagName)
     return nullptr;
 }
 
-void Clip::reset()
+void Clip::reset() noexcept
 {
     this->key = 0;
     this->beat = 0.f;

@@ -41,7 +41,7 @@ class SequencerSidebarLeft final :
 {
 public:
 
-    SequencerSidebarLeft();
+    SequencerSidebarLeft() noexcept;
     ~SequencerSidebarLeft();
 
     void setAudioMonitor(AudioMonitor *audioMonitor);

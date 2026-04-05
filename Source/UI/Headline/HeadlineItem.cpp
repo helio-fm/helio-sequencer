@@ -52,7 +52,8 @@ public:
     const Colour dashColour = findDefaultColour(ColourIDs::Breadcrumbs::selectionMarker);
 };
 
-HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> dataSource, AsyncUpdater &parent) :
+HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> dataSource,
+    AsyncUpdater &parent) noexcept :
     dataSource(dataSource),
     parentHeadline(parent)
 {

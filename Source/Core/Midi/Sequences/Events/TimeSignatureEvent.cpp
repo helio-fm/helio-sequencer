@@ -192,7 +192,7 @@ String TimeSignatureEvent::toString() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData TimeSignatureEvent::serialize() const
+SerializedData TimeSignatureEvent::serialize() const noexcept
 {
     using namespace Serialization;
     SerializedData tree(Midi::timeSignature);
@@ -209,7 +209,7 @@ SerializedData TimeSignatureEvent::serialize() const
     return tree;
 }
 
-void TimeSignatureEvent::deserialize(const SerializedData &data)
+void TimeSignatureEvent::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization;

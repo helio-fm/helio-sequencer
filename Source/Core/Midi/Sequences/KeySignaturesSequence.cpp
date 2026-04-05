@@ -195,7 +195,7 @@ void KeySignaturesSequence::transposeAll(int keyDelta,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData KeySignaturesSequence::serialize() const
+SerializedData KeySignaturesSequence::serialize() const noexcept
 {
     SerializedData tree(Serialization::Midi::keySignatures);
 
@@ -208,7 +208,7 @@ SerializedData KeySignaturesSequence::serialize() const
     return tree;
 }
 
-void KeySignaturesSequence::deserialize(const SerializedData &data)
+void KeySignaturesSequence::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -241,7 +241,7 @@ void KeySignaturesSequence::deserialize(const SerializedData &data)
     this->updateBeatRange(false);
 }
 
-void KeySignaturesSequence::reset()
+void KeySignaturesSequence::reset() noexcept
 {
     this->midiEvents.clear();
     this->usedEventIds.clear();

@@ -88,7 +88,7 @@ void ScalesCollection::deserializeResources(const SerializedData &tree, Resource
     }
 }
 
-void ScalesCollection::reset()
+void ScalesCollection::reset() noexcept
 {
     this->order.clear();
     this->orderedScalesCache.clearQuick();

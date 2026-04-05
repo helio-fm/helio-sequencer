@@ -25,8 +25,8 @@ class AnnotationComponent : public Component
 {
 public:
 
-    AnnotationComponent(AnnotationsProjectMap &parent, const AnnotationEvent &event) :
-        editor(parent), event(event) {}
+    AnnotationComponent(AnnotationsProjectMap &parent,
+        const AnnotationEvent &event) noexcept : editor(parent), event(event) {}
 
     const AnnotationEvent &getEvent() const noexcept
     {

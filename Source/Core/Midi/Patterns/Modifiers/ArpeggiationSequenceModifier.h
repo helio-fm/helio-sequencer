@@ -104,7 +104,7 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    SerializedData serialize() const override
+    SerializedData serialize() const noexcept override
     {
         using namespace Serialization;
 
@@ -129,7 +129,7 @@ public:
         return tree;
     }
 
-    void deserialize(const SerializedData &data) override
+    void deserialize(const SerializedData &data) noexcept override
     {
         using namespace Serialization;
         jassert(data.hasType(Modifiers::arpeggiationModifier));
@@ -147,7 +147,7 @@ public:
             float(data.getProperty(Modifiers::arpeggiationSpeed, 1.f)));
     }
 
-    void reset() override
+    void reset() noexcept override
     {
         this->arpeggiator = nullptr;
         this->speedMultiplier = 1.f;

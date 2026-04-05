@@ -84,7 +84,7 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    SerializedData serialize() const override
+    SerializedData serialize() const noexcept override
     {
         using namespace Serialization;
 
@@ -100,7 +100,7 @@ public:
         return tree;
     }
 
-    void deserialize(const SerializedData &data) override
+    void deserialize(const SerializedData &data) noexcept override
     {
         using namespace Serialization;
         jassert(data.hasType(Modifiers::tuningModifier));
@@ -110,7 +110,7 @@ public:
         jassertfalse; // not implemented
     }
 
-    void reset() override {}
+    void reset() noexcept override {}
 
 private:
 

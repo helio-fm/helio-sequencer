@@ -25,7 +25,7 @@ class TimeSignatureComponent : public Component
 {
 public:
 
-    explicit TimeSignatureComponent(TimeSignaturesProjectMap &parent) :
+    explicit TimeSignatureComponent(TimeSignaturesProjectMap &parent) noexcept :
         editor(parent) {}
 
     const TimeSignatureEvent &getEvent() const noexcept

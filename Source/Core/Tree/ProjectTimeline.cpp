@@ -355,14 +355,14 @@ ProjectNode *ProjectTimeline::getProject() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-void ProjectTimeline::reset()
+void ProjectTimeline::reset() noexcept
 {
     this->annotationsSequence->reset();
     this->keySignaturesSequence->reset();
     this->timeSignaturesSequence->reset();
 }
 
-SerializedData ProjectTimeline::serialize() const
+SerializedData ProjectTimeline::serialize() const noexcept
 {
     SerializedData tree(this->vcsDiffLogic->getType());
 
@@ -384,7 +384,7 @@ SerializedData ProjectTimeline::serialize() const
     return tree;
 }
 
-void ProjectTimeline::deserialize(const SerializedData &data)
+void ProjectTimeline::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 

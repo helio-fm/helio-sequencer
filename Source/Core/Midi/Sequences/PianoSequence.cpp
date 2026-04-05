@@ -328,7 +328,7 @@ UndoActionId PianoSequence::generateTransactionId(int actionId) const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData PianoSequence::serialize() const
+SerializedData PianoSequence::serialize() const noexcept
 {
     SerializedData tree(Serialization::Midi::track);
 
@@ -341,7 +341,7 @@ SerializedData PianoSequence::serialize() const
     return tree;
 }
 
-void PianoSequence::deserialize(const SerializedData &data)
+void PianoSequence::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -371,7 +371,7 @@ void PianoSequence::deserialize(const SerializedData &data)
     this->updateBeatRange(false);
 }
 
-void PianoSequence::reset()
+void PianoSequence::reset() noexcept
 {
     this->midiEvents.clear();
     this->usedEventIds.clear();

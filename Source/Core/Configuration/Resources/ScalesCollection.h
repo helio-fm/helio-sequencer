@@ -46,7 +46,7 @@ private:
 
     SerializedData serializeResources(const Resources &resources) override;
     void deserializeResources(const SerializedData &tree, Resources &outResources) override;
-    void reset() override;
+    void reset() noexcept override;
 
     struct ScalesComparator final : public DummyConfigurationResource
     {

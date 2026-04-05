@@ -40,7 +40,7 @@ public:
     ChordPreviewTool(PianoRoll &caller,
         WeakReference<PianoSequence> target, const Clip &clip,
         WeakReference<KeySignaturesSequence> harmonicContext,
-        WeakReference<TimeSignaturesAggregator> timeContext);
+        WeakReference<TimeSignaturesAggregator> timeContext) noexcept;
 
     ~ChordPreviewTool();
 

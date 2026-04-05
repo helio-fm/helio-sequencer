@@ -38,7 +38,7 @@ class CommandPalette final :
 public:
 
     CommandPalette(ProjectNode *project,
-        RollBase *roll, const String &defaultText = {});
+        RollBase *roll, const String &defaultText = {}) noexcept;
 
     ~CommandPalette();
 

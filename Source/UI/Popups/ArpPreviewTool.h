@@ -35,7 +35,7 @@ public:
     ArpPreviewTool(PianoRoll &roll,
         WeakReference<KeySignaturesSequence> harmonicContext,
         WeakReference<TimeSignaturesAggregator> timeContext,
-        bool advancedMode = true);
+        bool advancedMode = true) noexcept;
 
     void handleCommandMessage(int commandId) override;
 

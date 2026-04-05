@@ -27,7 +27,7 @@
 ArpPreviewTool::ArpPreviewTool(PianoRoll &roll,
     WeakReference<KeySignaturesSequence> harmonicContext,
     WeakReference<TimeSignaturesAggregator> timeContext,
-    bool advancedMode) :
+    bool advancedMode) noexcept :
     roll(roll),
     harmonicContext(harmonicContext),
     timeContext(timeContext),

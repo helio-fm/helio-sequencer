@@ -86,9 +86,9 @@ public:
         float beat;
         bool isBarStart = false;
 
-        SerializedData serialize() const override;
-        void deserialize(const SerializedData &data) override;
-        void reset() override;
+        SerializedData serialize() const noexcept override;
+        void deserialize(const SerializedData &data) noexcept override;
+        void reset() noexcept override;
 
         static int compareElements(const Key &first, const Key &second) noexcept;
     };
@@ -117,9 +117,9 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
-    void reset() override;
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
+    void reset() noexcept override;
 
     //===------------------------------------------------------------------===//
     // ConfigurationResource

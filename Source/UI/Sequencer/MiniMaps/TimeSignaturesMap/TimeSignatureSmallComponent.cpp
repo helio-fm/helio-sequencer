@@ -22,7 +22,7 @@
 #include "CachedLabelImage.h"
 #include "TimeSignatureSmallComponent.h"
 
-TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent) :
+TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent) noexcept :
     TimeSignatureComponent(parent)
 {
     this->setPaintingIsUnclipped(true);

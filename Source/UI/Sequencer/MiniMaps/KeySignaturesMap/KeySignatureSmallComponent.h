@@ -23,7 +23,9 @@ class KeySignatureSmallComponent final : public KeySignatureComponent
 {
 public:
 
-    KeySignatureSmallComponent(KeySignaturesProjectMap &parent, const KeySignatureEvent &targetEvent);
+    KeySignatureSmallComponent(KeySignaturesProjectMap &parent,
+        const KeySignatureEvent &targetEvent) noexcept;
+
     ~KeySignatureSmallComponent();
 
     float getTextWidth() const override;

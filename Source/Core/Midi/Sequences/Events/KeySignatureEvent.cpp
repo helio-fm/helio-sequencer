@@ -159,7 +159,7 @@ int KeySignatureEvent::getNumFlatsSharps() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData KeySignatureEvent::serialize() const
+SerializedData KeySignatureEvent::serialize() const noexcept
 {
     using namespace Serialization;
     SerializedData tree(Midi::keySignature);
@@ -174,7 +174,7 @@ SerializedData KeySignatureEvent::serialize() const
     return tree;
 }
 
-void KeySignatureEvent::deserialize(const SerializedData &data)
+void KeySignatureEvent::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization;

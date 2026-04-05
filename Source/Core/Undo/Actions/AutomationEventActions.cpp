@@ -58,7 +58,7 @@ int AutomationEventInsertAction::getSizeInUnits()
     return sizeof(AutomationEvent);
 }
 
-SerializedData AutomationEventInsertAction::serialize() const
+SerializedData AutomationEventInsertAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::automationEventInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -66,13 +66,13 @@ SerializedData AutomationEventInsertAction::serialize() const
     return tree;
 }
 
-void AutomationEventInsertAction::deserialize(const SerializedData &data)
+void AutomationEventInsertAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->event.deserialize(data.getChild(0));
 }
 
-void AutomationEventInsertAction::reset()
+void AutomationEventInsertAction::reset() noexcept
 {
     this->event.reset();
     this->trackId.clear();
@@ -115,7 +115,7 @@ int AutomationEventRemoveAction::getSizeInUnits()
     return sizeof(AutomationEvent);
 }
 
-SerializedData AutomationEventRemoveAction::serialize() const
+SerializedData AutomationEventRemoveAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::automationEventRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -123,13 +123,13 @@ SerializedData AutomationEventRemoveAction::serialize() const
     return tree;
 }
 
-void AutomationEventRemoveAction::deserialize(const SerializedData &data)
+void AutomationEventRemoveAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->event.deserialize(data.getChild(0));
 }
 
-void AutomationEventRemoveAction::reset()
+void AutomationEventRemoveAction::reset() noexcept
 {
     this->event.reset();
     this->trackId.clear();
@@ -193,7 +193,7 @@ UndoAction *AutomationEventChangeAction::createCoalescedAction(UndoAction *nextA
     return nullptr;
 }
 
-SerializedData AutomationEventChangeAction::serialize() const
+SerializedData AutomationEventChangeAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::automationEventChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -209,7 +209,7 @@ SerializedData AutomationEventChangeAction::serialize() const
     return tree;
 }
 
-void AutomationEventChangeAction::deserialize(const SerializedData &data)
+void AutomationEventChangeAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
 
@@ -220,7 +220,7 @@ void AutomationEventChangeAction::deserialize(const SerializedData &data)
     this->eventAfter.deserialize(eventAfterChild.getChild(0));
 }
 
-void AutomationEventChangeAction::reset()
+void AutomationEventChangeAction::reset() noexcept
 {
     this->eventBefore.reset();
     this->eventAfter.reset();
@@ -266,7 +266,7 @@ int AutomationEventsGroupInsertAction::getSizeInUnits()
     return (sizeof(AutomationEvent) * this->events.size());
 }
 
-SerializedData AutomationEventsGroupInsertAction::serialize() const
+SerializedData AutomationEventsGroupInsertAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::automationEventsGroupInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -279,7 +279,7 @@ SerializedData AutomationEventsGroupInsertAction::serialize() const
     return tree;
 }
 
-void AutomationEventsGroupInsertAction::deserialize(const SerializedData &data)
+void AutomationEventsGroupInsertAction::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     this->trackId = data.getProperty(Serialization::Undo::trackId);
@@ -292,7 +292,7 @@ void AutomationEventsGroupInsertAction::deserialize(const SerializedData &data)
     }
 }
 
-void AutomationEventsGroupInsertAction::reset()
+void AutomationEventsGroupInsertAction::reset() noexcept
 {
     this->events.clear();
     this->trackId.clear();
@@ -337,7 +337,7 @@ int AutomationEventsGroupRemoveAction::getSizeInUnits()
     return (sizeof(AutomationEvent) * this->events.size());
 }
 
-SerializedData AutomationEventsGroupRemoveAction::serialize() const
+SerializedData AutomationEventsGroupRemoveAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::automationEventsGroupRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -350,7 +350,7 @@ SerializedData AutomationEventsGroupRemoveAction::serialize() const
     return tree;
 }
 
-void AutomationEventsGroupRemoveAction::deserialize(const SerializedData &data)
+void AutomationEventsGroupRemoveAction::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     this->trackId = data.getProperty(Serialization::Undo::trackId);
@@ -363,7 +363,7 @@ void AutomationEventsGroupRemoveAction::deserialize(const SerializedData &data)
     }
 }
 
-void AutomationEventsGroupRemoveAction::reset()
+void AutomationEventsGroupRemoveAction::reset() noexcept
 {
     this->events.clear();
     this->trackId.clear();
@@ -439,7 +439,7 @@ UndoAction *AutomationEventsGroupChangeAction::createCoalescedAction(UndoAction 
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData AutomationEventsGroupChangeAction::serialize() const
+SerializedData AutomationEventsGroupChangeAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::automationEventsGroupChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -463,7 +463,7 @@ SerializedData AutomationEventsGroupChangeAction::serialize() const
     return tree;
 }
 
-void AutomationEventsGroupChangeAction::deserialize(const SerializedData &data)
+void AutomationEventsGroupChangeAction::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -487,7 +487,7 @@ void AutomationEventsGroupChangeAction::deserialize(const SerializedData &data)
     }
 }
 
-void AutomationEventsGroupChangeAction::reset()
+void AutomationEventsGroupChangeAction::reset() noexcept
 {
     this->eventsBefore.clear();
     this->eventsAfter.clear();

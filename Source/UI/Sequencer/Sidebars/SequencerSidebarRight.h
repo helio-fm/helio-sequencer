@@ -42,7 +42,7 @@ class SequencerSidebarRight final :
 {
 public:
 
-    explicit SequencerSidebarRight(ProjectNode &parent);
+    explicit SequencerSidebarRight(ProjectNode &parent) noexcept;
     ~SequencerSidebarRight();
 
     void setLinearMode();

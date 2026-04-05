@@ -19,7 +19,7 @@
 #include "NoteNameComponent.h"
 #include "IconComponent.h"
 
-NoteNameComponent::NoteNameComponent(bool isCentered, float fontSize) :
+NoteNameComponent::NoteNameComponent(bool isCentered, float fontSize) noexcept :
     isCentered(isCentered),
     iconSize(int(fontSize) - 5)
 {

@@ -653,7 +653,7 @@ void SequencerLayout::onUiAnimationsFlagChanged(bool enabled)
 // UI State Serialization
 //===----------------------------------------------------------------------===//
 
-SerializedData SequencerLayout::serialize() const
+SerializedData SequencerLayout::serialize() const noexcept
 {
     SerializedData tree(Serialization::UI::sequencer);
     tree.appendChild(this->pianoRoll->serialize());
@@ -661,7 +661,7 @@ SerializedData SequencerLayout::serialize() const
     return tree;
 }
 
-void SequencerLayout::deserialize(const SerializedData &data)
+void SequencerLayout::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -677,7 +677,7 @@ void SequencerLayout::deserialize(const SerializedData &data)
     this->patternRoll->deserialize(root);
 }
 
-void SequencerLayout::reset()
+void SequencerLayout::reset() noexcept
 {
     // no need for this yet
 }

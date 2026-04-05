@@ -23,9 +23,9 @@ public:
 
     SerializablePluginDescription();
     explicit SerializablePluginDescription(const PluginDescription &other);
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
-    void reset() override;
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
+    void reset() noexcept override;
 
     bool isValid() const;
 

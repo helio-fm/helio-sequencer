@@ -26,7 +26,7 @@ class KeySignatureComponent : public Component
 {
 public:
 
-    KeySignatureComponent(KeySignaturesProjectMap &parent, const KeySignatureEvent &event) :
+    KeySignatureComponent(KeySignaturesProjectMap &parent, const KeySignatureEvent &event) noexcept :
         editor(parent), event(event) {}
 
     const KeySignatureEvent &getEvent() const noexcept

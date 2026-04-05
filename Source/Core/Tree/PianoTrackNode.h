@@ -45,8 +45,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
 
     //===------------------------------------------------------------------===//
     // Deltas

@@ -53,7 +53,7 @@ class ScriptingPlaygroundErrorMark final : public Component
 {
 public:
 
-    ScriptingPlaygroundErrorMark()
+    ScriptingPlaygroundErrorMark() noexcept
     {
         this->setOpaque(true);
         this->setAccessible(false);
@@ -80,7 +80,7 @@ public:
 
     static constexpr auto font = Globals::UI::Fonts::XS - 1.f;
 
-    ScriptingPlaygroundPopup()
+    ScriptingPlaygroundPopup() noexcept
     {
         this->setOpaque(false);
         this->setAccessible(false);
@@ -156,7 +156,8 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlaygroundPopup)
 };
 
-ScriptingPlaygroundEditor::ScriptingPlaygroundEditor(CodeDocument &document, CodeTokeniser *codeTokeniser) :
+ScriptingPlaygroundEditor::ScriptingPlaygroundEditor(CodeDocument &document,
+    CodeTokeniser *codeTokeniser) noexcept :
     CodeEditorComponent(document, codeTokeniser)
 {
     this->setScrollbarThickness(2);
@@ -768,7 +769,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlaygroundCornerResizer)
 };
 
-ScriptingPlayground::ScriptingPlayground(ProjectNode &project, RollBase *roll) :
+ScriptingPlayground::ScriptingPlayground(ProjectNode &project, RollBase *roll) noexcept :
     project(project),
     roll(roll)
 {

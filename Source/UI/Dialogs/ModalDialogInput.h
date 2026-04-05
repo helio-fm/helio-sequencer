@@ -27,7 +27,7 @@ public:
 
     ModalDialogInput(const String &text, const String &message,
         const String &okText, const String &cancelText,
-        const String &inputToRequire = {});
+        const String &inputToRequire = {}) noexcept;
 
     ~ModalDialogInput();
 

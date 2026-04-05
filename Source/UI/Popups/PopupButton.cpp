@@ -23,7 +23,7 @@
 #   define CONFIRMATION_MODE 1
 #endif
 
-PopupButton::PopupButton(Shape shapeType, Colour colour) :
+PopupButton::PopupButton(Shape shapeType, Colour colour) noexcept :
     colour(colour),
     shapeType(shapeType)
 {

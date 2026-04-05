@@ -40,9 +40,9 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    virtual SerializedData serialize() const override;
-    virtual void deserialize(const SerializedData &data) override;
-    virtual void reset() override;
+    virtual SerializedData serialize() const noexcept override;
+    virtual void deserialize(const SerializedData &data) noexcept override;
+    virtual void reset() noexcept override;
 
 private:
 

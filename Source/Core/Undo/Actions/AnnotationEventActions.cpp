@@ -56,7 +56,7 @@ int AnnotationEventInsertAction::getSizeInUnits()
     return sizeof(AnnotationEvent);
 }
 
-SerializedData AnnotationEventInsertAction::serialize() const
+SerializedData AnnotationEventInsertAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::annotationEventInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -64,13 +64,13 @@ SerializedData AnnotationEventInsertAction::serialize() const
     return tree;
 }
 
-void AnnotationEventInsertAction::deserialize(const SerializedData &data)
+void AnnotationEventInsertAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->event.deserialize(data.getChild(0));
 }
 
-void AnnotationEventInsertAction::reset()
+void AnnotationEventInsertAction::reset() noexcept
 {
     this->event.reset();
     this->trackId.clear();
@@ -111,7 +111,7 @@ int AnnotationEventRemoveAction::getSizeInUnits()
     return sizeof(AnnotationEvent);
 }
 
-SerializedData AnnotationEventRemoveAction::serialize() const
+SerializedData AnnotationEventRemoveAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::annotationEventRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -119,13 +119,13 @@ SerializedData AnnotationEventRemoveAction::serialize() const
     return tree;
 }
 
-void AnnotationEventRemoveAction::deserialize(const SerializedData &data)
+void AnnotationEventRemoveAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->event.deserialize(data.getChild(0));
 }
 
-void AnnotationEventRemoveAction::reset()
+void AnnotationEventRemoveAction::reset() noexcept
 {
     this->event.reset();
     this->trackId.clear();
@@ -187,7 +187,7 @@ UndoAction *AnnotationEventChangeAction::createCoalescedAction(UndoAction *nextA
     return nullptr;
 }
 
-SerializedData AnnotationEventChangeAction::serialize() const
+SerializedData AnnotationEventChangeAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::annotationEventChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -203,7 +203,7 @@ SerializedData AnnotationEventChangeAction::serialize() const
     return tree;
 }
 
-void AnnotationEventChangeAction::deserialize(const SerializedData &data)
+void AnnotationEventChangeAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
 
@@ -214,7 +214,7 @@ void AnnotationEventChangeAction::deserialize(const SerializedData &data)
     this->eventAfter.deserialize(annotationAfterChild.getChild(0));
 }
 
-void AnnotationEventChangeAction::reset()
+void AnnotationEventChangeAction::reset() noexcept
 {
     this->eventBefore.reset();
     this->eventAfter.reset();

@@ -68,7 +68,7 @@ int PianoTrackInsertAction::getSizeInUnits()
     return this->trackName.length();
 }
 
-SerializedData PianoTrackInsertAction::serialize() const
+SerializedData PianoTrackInsertAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::pianoTrackInsertAction);
     tree.setProperty(Serialization::Undo::path, this->trackName);
@@ -77,14 +77,14 @@ SerializedData PianoTrackInsertAction::serialize() const
     return tree;
 }
 
-void PianoTrackInsertAction::deserialize(const SerializedData &data)
+void PianoTrackInsertAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackName = data.getProperty(Serialization::Undo::path);
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->trackState = data.getChild(0).createCopy();
 }
 
-void PianoTrackInsertAction::reset()
+void PianoTrackInsertAction::reset() noexcept
 {
     this->trackName.clear();
     this->trackId.clear();
@@ -146,7 +146,7 @@ int PianoTrackRemoveAction::getSizeInUnits()
     return 1;
 }
 
-SerializedData PianoTrackRemoveAction::serialize() const
+SerializedData PianoTrackRemoveAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::pianoTrackRemoveAction);
     tree.setProperty(Serialization::Undo::path, this->trackName);
@@ -155,14 +155,14 @@ SerializedData PianoTrackRemoveAction::serialize() const
     return tree;
 }
 
-void PianoTrackRemoveAction::deserialize(const SerializedData &data)
+void PianoTrackRemoveAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackName = data.getProperty(Serialization::Undo::path);
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->serializedTreeItem = data.getChild(0).createCopy();
 }
 
-void PianoTrackRemoveAction::reset()
+void PianoTrackRemoveAction::reset() noexcept
 {
     this->trackName.clear();
     this->trackId.clear();

@@ -24,7 +24,7 @@ class TrackEndIndicator final : public Component
 {
 public:
 
-    TrackEndIndicator()
+    TrackEndIndicator() noexcept
     {
         this->shadow = make<ShadowRightwards>(ShadowType::Light);
         this->addAndMakeVisible(this->shadow.get());

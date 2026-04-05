@@ -124,7 +124,7 @@ class MenuItemComponent final : public DraggingListBoxComponent
 public:
 
     MenuItemComponent(Component *parentCommandReceiver,
-        Viewport *parentViewport, const MenuItem::Ptr desc);
+        Viewport *parentViewport, const MenuItem::Ptr desc) noexcept;
 
     ~MenuItemComponent();
 

@@ -150,7 +150,7 @@ void MetronomeSynth::initSampler(const SamplerParameters &params)
 void MetronomeSynth::handleSustainPedal(int midiChannel, bool isDown) {}
 void MetronomeSynth::handleSostenutoPedal(int midiChannel, bool isDown) {}
 
-SerializedData MetronomeSynth::SamplerParameters::serialize() const
+SerializedData MetronomeSynth::SamplerParameters::serialize() const noexcept
 {
     using namespace Serialization::Audio;
 
@@ -167,7 +167,7 @@ SerializedData MetronomeSynth::SamplerParameters::serialize() const
     return data;
 }
 
-void MetronomeSynth::SamplerParameters::deserialize(const SerializedData &data)
+void MetronomeSynth::SamplerParameters::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization::Audio;
@@ -189,7 +189,7 @@ void MetronomeSynth::SamplerParameters::deserialize(const SerializedData &data)
     }
 }
 
-void MetronomeSynth::SamplerParameters::reset()
+void MetronomeSynth::SamplerParameters::reset() noexcept
 {
     this->customSamples.clear();
 }

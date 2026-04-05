@@ -32,7 +32,8 @@
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 
-CommandPalette::CommandPalette(ProjectNode *project, RollBase *roll, const String &defaultText) :
+CommandPalette::CommandPalette(ProjectNode *project,
+    RollBase *roll, const String &defaultText) noexcept :
     roll(roll)
 {
     this->setComponentID(ComponentIDs::commandPalette);

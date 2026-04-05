@@ -43,7 +43,7 @@ class VelocityEditor final :
 {
 public:
 
-    VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll);
+    VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll) noexcept;
     ~VelocityEditor() override;
 
     //===------------------------------------------------------------------===//

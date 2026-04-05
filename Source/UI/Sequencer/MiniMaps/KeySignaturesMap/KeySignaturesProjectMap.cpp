@@ -31,7 +31,7 @@
 #include "Config.h"
 
 KeySignaturesProjectMap::KeySignaturesProjectMap(ProjectNode &project,
-    SafePointer<RollBase> roll, Type type) :
+    SafePointer<RollBase> roll, Type type) noexcept :
     ScrolledComponent(roll),
     project(project),
     type(type)

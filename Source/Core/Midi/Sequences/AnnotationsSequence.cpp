@@ -150,7 +150,7 @@ Function<void(const String &text)> AnnotationsSequence::getEventRenameCallback(c
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData AnnotationsSequence::serialize() const
+SerializedData AnnotationsSequence::serialize() const noexcept
 {
     SerializedData tree(Serialization::Midi::annotations);
 
@@ -163,7 +163,7 @@ SerializedData AnnotationsSequence::serialize() const
     return tree;
 }
 
-void AnnotationsSequence::deserialize(const SerializedData &data)
+void AnnotationsSequence::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -196,7 +196,7 @@ void AnnotationsSequence::deserialize(const SerializedData &data)
     this->updateBeatRange(false);
 }
 
-void AnnotationsSequence::reset()
+void AnnotationsSequence::reset() noexcept
 {
     this->midiEvents.clear();
     this->usedEventIds.clear();

@@ -409,7 +409,7 @@ void Pattern::updateBeatRange(bool shouldNotifyIfChanged)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData Pattern::serialize() const
+SerializedData Pattern::serialize() const noexcept
 {
     SerializedData tree(Serialization::Midi::pattern);
 
@@ -421,7 +421,7 @@ SerializedData Pattern::serialize() const
     return tree;
 }
 
-void Pattern::deserialize(const SerializedData &data)
+void Pattern::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -452,7 +452,7 @@ void Pattern::deserialize(const SerializedData &data)
     this->updateBeatRange(false);
 }
 
-void Pattern::reset()
+void Pattern::reset() noexcept
 {
     this->clips.clear(true);
     this->usedClipIds.clear();

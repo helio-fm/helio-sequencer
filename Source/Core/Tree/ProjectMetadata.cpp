@@ -229,7 +229,7 @@ void ProjectMetadata::resetStateTo(const TrackedItem &newState)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData ProjectMetadata::serialize() const
+SerializedData ProjectMetadata::serialize() const noexcept
 {
     using namespace Serialization::VCS;
 
@@ -249,7 +249,7 @@ SerializedData ProjectMetadata::serialize() const
     return tree;
 }
 
-void ProjectMetadata::deserialize(const SerializedData &data)
+void ProjectMetadata::deserialize(const SerializedData &data) noexcept
 {
     using namespace Serialization::VCS;
 
@@ -282,7 +282,7 @@ void ProjectMetadata::deserialize(const SerializedData &data)
     }
 }
 
-void ProjectMetadata::reset()
+void ProjectMetadata::reset() noexcept
 {
     this->author.clear();
     this->description.clear();

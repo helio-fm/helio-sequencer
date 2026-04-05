@@ -20,7 +20,7 @@
 #include "CommandIDs.h"
 
 ModalDialogInput::ModalDialogInput(const String &text, const String &message,
-    const String &okText, const String &cancelText, const String &inputToRequire) :
+    const String &okText, const String &cancelText, const String &inputToRequire) noexcept :
     input(text),
     inputToRequire(inputToRequire)
 {

@@ -27,7 +27,7 @@
 #include "HelioTheme.h"
 #include "MainLayout.h"
 
-ProjectMapsScroller::ProjectMapsScroller(ProjectNode &project, SafePointer<RollBase> roll) :
+ProjectMapsScroller::ProjectMapsScroller(ProjectNode &project, SafePointer<RollBase> roll) noexcept :
     project(project),
     roll(roll)
 {

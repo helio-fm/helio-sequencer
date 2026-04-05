@@ -23,7 +23,7 @@ class TimeSignatureSmallComponent final : public TimeSignatureComponent
 {
 public:
 
-    explicit TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent);
+    explicit TimeSignatureSmallComponent(TimeSignaturesProjectMap &parent) noexcept;
     ~TimeSignatureSmallComponent();
 
     void updateContent(const TimeSignatureEvent &newEvent) override;

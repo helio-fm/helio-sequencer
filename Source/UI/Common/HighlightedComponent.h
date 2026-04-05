@@ -23,7 +23,7 @@ class HighlightedComponent : virtual public Component
 {
 public:
 
-    HighlightedComponent()
+    HighlightedComponent() noexcept
     {
         this->setInterceptsMouseClicks(true, false);
         this->setMouseClickGrabsKeyboardFocus(false);

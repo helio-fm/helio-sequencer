@@ -520,7 +520,7 @@ void PluginScanner::scanPossibleSubfolders(const StringArray &possibleSubfolders
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData PluginScanner::serialize() const
+SerializedData PluginScanner::serialize() const noexcept
 {
     SerializedData tree(Serialization::Audio::pluginsList);
 
@@ -533,7 +533,7 @@ SerializedData PluginScanner::serialize() const
     return tree;
 }
 
-void PluginScanner::deserialize(const SerializedData &data)
+void PluginScanner::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -563,7 +563,7 @@ void PluginScanner::deserialize(const SerializedData &data)
     this->sendChangeMessage();
 }
 
-void PluginScanner::reset()
+void PluginScanner::reset() noexcept
 {
     this->pluginsList.clear();
     this->sendChangeMessage();

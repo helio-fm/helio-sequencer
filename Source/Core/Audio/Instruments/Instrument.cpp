@@ -580,7 +580,7 @@ void Instrument::removeConnection(AudioProcessorGraph::Connection connection)
     this->sendChangeMessage();
 }
 
-void Instrument::reset()
+void Instrument::reset() noexcept
 {
     PluginWindow::closeAllCurrentlyOpenWindows();
     this->processorGraph->clear();
@@ -592,7 +592,7 @@ void Instrument::reset()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData Instrument::serialize() const
+SerializedData Instrument::serialize() const noexcept
 {
     using namespace Serialization;
 
@@ -658,7 +658,7 @@ SerializedData Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) co
     return {};
 }
 
-void Instrument::deserialize(const SerializedData &data)
+void Instrument::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization;

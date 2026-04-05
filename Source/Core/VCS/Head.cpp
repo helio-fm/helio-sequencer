@@ -375,7 +375,7 @@ void Head::checkoutItem(RevisionItem::Ptr stateItem)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData Head::serialize() const
+SerializedData Head::serialize() const noexcept
 {
     SerializedData tree(Serialization::VCS::head);
     SerializedData snapshotNode(Serialization::VCS::snapshot);
@@ -395,7 +395,7 @@ SerializedData Head::serialize() const
     return tree;
 }
 
-void Head::deserialize(const SerializedData &data)
+void Head::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -415,7 +415,7 @@ void Head::deserialize(const SerializedData &data)
     }
 }
 
-void Head::reset()
+void Head::reset() noexcept
 {
     this->state = make<Snapshot>();
     this->setDiffOutdated(true);

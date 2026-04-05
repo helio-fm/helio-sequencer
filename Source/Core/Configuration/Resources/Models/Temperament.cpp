@@ -140,7 +140,7 @@ bool Temperament::isDefault() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData Temperament::serialize() const
+SerializedData Temperament::serialize() const noexcept
 {
     using namespace Serialization;
 
@@ -170,7 +170,7 @@ SerializedData Temperament::serialize() const
     return data;
 }
 
-void Temperament::deserialize(const SerializedData &data)
+void Temperament::deserialize(const SerializedData &data) noexcept
 {
     using namespace Serialization;
 
@@ -233,7 +233,7 @@ void Temperament::deserialize(const SerializedData &data)
     this->middleA = this->middleC + this->getEquivalentOfTwelveToneInterval(Semitones::MajorSixth);
 }
 
-void Temperament::reset()
+void Temperament::reset() noexcept
 {
     this->id = {};
     this->period = {};

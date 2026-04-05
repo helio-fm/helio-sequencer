@@ -26,7 +26,7 @@
 #include "ColourIDs.h"
 #include "Icons.h"
 
-ClipComponent::ClipComponent(RollBase &editor, const Clip &clip) :
+ClipComponent::ClipComponent(RollBase &editor, const Clip &clip) noexcept :
     RollChildComponentBase(editor),
     clip(clip),
     anchor(clip)

@@ -33,7 +33,7 @@ class PianoProjectMap final :
 {
 public:
 
-    explicit PianoProjectMap(ProjectNode &parentProject);
+    explicit PianoProjectMap(ProjectNode &parentProject) noexcept;
     ~PianoProjectMap() override;
 
     void setBrightness(float brighness);

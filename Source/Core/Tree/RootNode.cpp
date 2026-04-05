@@ -224,7 +224,7 @@ UniquePointer<Component> RootNode::createMenu()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-void RootNode::deserialize(const SerializedData &data)
+void RootNode::deserialize(const SerializedData &data) noexcept
 {
     const auto root = data.hasType(Serialization::Core::treeNode) ?
         data : data.getChildWithName(Serialization::Core::treeNode);

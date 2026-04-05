@@ -32,7 +32,7 @@
 #include "Config.h"
 #include "Icons.h"
 
-SequencerSidebarLeft::SequencerSidebarLeft()
+SequencerSidebarLeft::SequencerSidebarLeft() noexcept
 {
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);

@@ -406,7 +406,7 @@ void UserInterfaceFlags::setPluginSorting(KnownPluginList::SortMethod sorting, b
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData UserInterfaceFlags::serialize() const
+SerializedData UserInterfaceFlags::serialize() const noexcept
 {
     using namespace Serialization;
     SerializedData tree(UI::Flags::uiFlags);
@@ -455,7 +455,7 @@ SerializedData UserInterfaceFlags::serialize() const
     return tree;
 }
 
-void UserInterfaceFlags::deserialize(const SerializedData &data)
+void UserInterfaceFlags::deserialize(const SerializedData &data) noexcept
 {
     using namespace Serialization;
 
@@ -520,7 +520,7 @@ void UserInterfaceFlags::deserialize(const SerializedData &data)
     this->experimentalFeaturesOn = root.getProperty(UI::Flags::experimentalFeaturesOn, this->experimentalFeaturesOn);
 }
 
-void UserInterfaceFlags::reset() {}
+void UserInterfaceFlags::reset() noexcept {}
 
 //===----------------------------------------------------------------------===//
 // Delayed save callback

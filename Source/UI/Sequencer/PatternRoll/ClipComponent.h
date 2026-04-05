@@ -28,7 +28,7 @@ class ClipComponent : public RollChildComponentBase
 {
 public:
 
-    ClipComponent(RollBase &editor, const Clip &clip);
+    ClipComponent(RollBase &editor, const Clip &clip) noexcept;
 
     enum class State : uint8
     {

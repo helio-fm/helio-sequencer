@@ -34,7 +34,7 @@ public:
 private:
 
     void deserializeResources(const SerializedData &tree, Resources &outResources) override;
-    void reset() override;
+    void reset() noexcept override;
 
     struct ChordsComparator final : public DummyConfigurationResource
     {

@@ -45,7 +45,7 @@ class ChordButton final : public PopupButton
 public:
 
     ChordButton(UniquePointer<Component> &&newOwnedComponent,
-        PopupButton::Shape shapeType, Colour colour) :
+        PopupButton::Shape shapeType, Colour colour) noexcept :
         PopupButton(shapeType, colour),
         ownedComponent(move(newOwnedComponent))
     {
@@ -73,7 +73,7 @@ class ChordRootKeyAimMark final : public Component
 {
 public:
 
-    ChordRootKeyAimMark()
+    ChordRootKeyAimMark() noexcept
     {
         this->setAccessible(false);
         this->setWantsKeyboardFocus(false);
@@ -112,7 +112,7 @@ class ChordTooltip final : public Component
 {
 public:
 
-    ChordTooltip(const String &chordName, const String &keyDegree, const String &keyName)
+    ChordTooltip(const String &chordName, const String &keyDegree, const String &keyName) noexcept
     {
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
@@ -179,7 +179,7 @@ private:
 ChordPreviewTool::ChordPreviewTool(PianoRoll &roll,
     WeakReference<PianoSequence> sequence, const Clip &clip,
     WeakReference<KeySignaturesSequence> harmonicContext,
-    WeakReference<TimeSignaturesAggregator> timeContext) :
+    WeakReference<TimeSignaturesAggregator> timeContext) noexcept :
     roll(roll),
     sequence(sequence),
     clip(clip),

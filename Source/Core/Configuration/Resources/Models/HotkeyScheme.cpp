@@ -357,7 +357,7 @@ bool HotkeyScheme::sendHotkeyCommand(const String &keyPressComponentId,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData HotkeyScheme::serialize() const
+SerializedData HotkeyScheme::serialize() const noexcept
 {
     SerializedData tree(Serialization::UI::Hotkeys::scheme);
     tree.setProperty(Serialization::UI::Hotkeys::schemeName, this->name);
@@ -386,7 +386,7 @@ static inline CommandIDs::Id deserializeCommand(const SerializedData &e)
     return CommandIDs::getIdForName(command);
 }
 
-void HotkeyScheme::deserialize(const SerializedData &data)
+void HotkeyScheme::deserialize(const SerializedData &data) noexcept
 {
     // don't reset so that user's scheme appends
     // the built-in one instead of replacing it
@@ -445,7 +445,7 @@ void HotkeyScheme::deserialize(const SerializedData &data)
     }
 }
 
-void HotkeyScheme::reset()
+void HotkeyScheme::reset() noexcept
 {
     this->name.clear();
     this->keyPresses.clear();

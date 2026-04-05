@@ -323,7 +323,7 @@ Array<int> getKeysFromIntervals(const String &intervals, int periodSize)
     return keys;
 }
 
-SerializedData Scale::serialize() const
+SerializedData Scale::serialize() const noexcept
 {
     SerializedData tree(Serialization::Midi::scale);
     tree.setProperty(Serialization::Midi::scaleName, this->name);
@@ -332,7 +332,7 @@ SerializedData Scale::serialize() const
     return tree;
 }
 
-void Scale::deserialize(const SerializedData &data)
+void Scale::deserialize(const SerializedData &data) noexcept
 {
     using namespace Serialization;
     const auto root = data.hasType(Midi::scale) ?
@@ -349,7 +349,7 @@ void Scale::deserialize(const SerializedData &data)
     this->keys = getKeysFromIntervals(intervals, this->basePeriod);
 }
 
-void Scale::reset()
+void Scale::reset() noexcept
 {
     this->keys.clearQuick();
     this->name = {};

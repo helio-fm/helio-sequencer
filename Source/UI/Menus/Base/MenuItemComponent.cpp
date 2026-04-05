@@ -391,7 +391,7 @@ MenuItem::Ptr MenuItem::withButton(bool isEnabled, Icons::Id icon, const Callbac
 //===----------------------------------------------------------------------===//
 
 MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver,
-    Viewport *parentViewport, const MenuItem::Ptr desc) :
+    Viewport *parentViewport, const MenuItem::Ptr desc) noexcept :
     DraggingListBoxComponent(parentViewport, false),
     parent(parentCommandReceiver)
 {

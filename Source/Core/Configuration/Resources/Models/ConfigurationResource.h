@@ -37,7 +37,7 @@ class DummyConfigurationResource : public ConfigurationResource
 public:
 
     String getResourceId() const override { return {}; }
-    SerializedData serialize() const override { return {}; }
-    void deserialize(const SerializedData &data) override {}
-    void reset() override {}
+    SerializedData serialize() const noexcept override { return {}; }
+    void deserialize(const SerializedData &data) noexcept override {}
+    void reset() noexcept override {}
 };

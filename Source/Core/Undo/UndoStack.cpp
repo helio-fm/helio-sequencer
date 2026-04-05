@@ -73,7 +73,7 @@ int UndoStack::Transaction::getTotalSize() const
     return total;
 }
 
-SerializedData UndoStack::Transaction::serialize() const
+SerializedData UndoStack::Transaction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::transaction);
 
@@ -85,7 +85,7 @@ SerializedData UndoStack::Transaction::serialize() const
     return tree;
 }
 
-void UndoStack::Transaction::deserialize(const SerializedData &data)
+void UndoStack::Transaction::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -99,7 +99,7 @@ void UndoStack::Transaction::deserialize(const SerializedData &data)
     }
 }
 
-void UndoStack::Transaction::reset()
+void UndoStack::Transaction::reset() noexcept
 {
     this->actions.clear();
 }
@@ -390,7 +390,7 @@ int UndoStack::getNumActionsInCurrentTransaction() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData UndoStack::serialize() const
+SerializedData UndoStack::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::undoStack);
 
@@ -412,7 +412,7 @@ SerializedData UndoStack::serialize() const
     return tree;
 }
 
-void UndoStack::deserialize(const SerializedData &data)
+void UndoStack::deserialize(const SerializedData &data) noexcept
 {
     const auto root = data.hasType(Serialization::Undo::undoStack) ?
         data : data.getChildWithName(Serialization::Undo::undoStack);
@@ -433,7 +433,7 @@ void UndoStack::deserialize(const SerializedData &data)
     }
 }
 
-void UndoStack::reset()
+void UndoStack::reset() noexcept
 {
     this->clearUndoHistory();
 }

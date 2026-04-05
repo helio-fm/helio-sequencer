@@ -59,7 +59,7 @@ bool Delta::hasType(const Identifier &id) const noexcept
     return (this->type == id);
 }
 
-SerializedData Delta::serialize() const
+SerializedData Delta::serialize() const noexcept
 {
     SerializedData tree(Serialization::VCS::delta);
 
@@ -81,7 +81,7 @@ SerializedData Delta::serialize() const
     return tree;
 }
 
-void Delta::deserialize(const SerializedData &data)
+void Delta::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -109,6 +109,6 @@ void Delta::deserialize(const SerializedData &data)
     this->description = { descriptionName, descriptionIntParam, descriptionStringParam };
 }
 
-void Delta::reset() {}
+void Delta::reset() noexcept {}
 
 } // namespace VCS

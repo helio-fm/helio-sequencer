@@ -24,7 +24,7 @@
 #include "CachedLabelImage.h"
 #include "TimeSignatureLargeComponent.h"
 
-TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMap &parent) :
+TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesProjectMap &parent) noexcept :
     TimeSignatureComponent(parent)
 {
     this->setInterceptsMouseClicks(true, false);

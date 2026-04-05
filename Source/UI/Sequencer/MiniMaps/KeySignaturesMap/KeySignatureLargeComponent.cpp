@@ -25,7 +25,7 @@
 #include "ColourIDs.h"
 
 KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &parent,
-    const KeySignatureEvent &targetEvent) :
+    const KeySignatureEvent &targetEvent) noexcept :
     KeySignatureComponent(parent, targetEvent),
     anchor(targetEvent)
 {

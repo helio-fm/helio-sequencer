@@ -24,7 +24,7 @@ class TrackStartIndicator final : public Component
 {
 public:
 
-    TrackStartIndicator()
+    TrackStartIndicator() noexcept
     {
         this->shadow = make<ShadowLeftwards>(ShadowType::Light);
         this->addAndMakeVisible(this->shadow.get());

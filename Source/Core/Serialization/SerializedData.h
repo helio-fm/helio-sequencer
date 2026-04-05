@@ -41,9 +41,9 @@ public:
     bool hasType(const Identifier &type) const noexcept;
 
     const var &getProperty(const Identifier &name) const noexcept;
-    var getProperty(const Identifier &name, const var &defaultValue) const;
+    var getProperty(const Identifier &name, const var &defaultValue) const noexcept;
 
-    SerializedData &setProperty(const Identifier &name, const var &newValue);
+    SerializedData &setProperty(const Identifier &name, const var &newValue) noexcept;
     bool hasProperty(const Identifier &name) const noexcept;
     int getNumProperties() const noexcept;
     Identifier getPropertyName(int index) const noexcept;

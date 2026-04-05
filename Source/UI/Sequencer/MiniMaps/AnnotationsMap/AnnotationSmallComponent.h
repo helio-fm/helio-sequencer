@@ -24,7 +24,7 @@ class AnnotationSmallComponent final : public AnnotationComponent
 public:
 
     AnnotationSmallComponent(AnnotationsProjectMap &parent,
-        const AnnotationEvent &targetEvent);
+        const AnnotationEvent &targetEvent) noexcept;
 
     ~AnnotationSmallComponent();
 

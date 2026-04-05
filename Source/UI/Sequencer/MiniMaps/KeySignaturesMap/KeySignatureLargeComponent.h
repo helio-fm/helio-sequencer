@@ -26,7 +26,9 @@ class KeySignatureLargeComponent final : public KeySignatureComponent
 {
 public:
 
-    KeySignatureLargeComponent(KeySignaturesProjectMap &parent, const KeySignatureEvent &targetEvent);
+    KeySignatureLargeComponent(KeySignaturesProjectMap &parent,
+        const KeySignatureEvent &targetEvent) noexcept;
+
     ~KeySignatureLargeComponent();
 
     float getTextWidth() const override;

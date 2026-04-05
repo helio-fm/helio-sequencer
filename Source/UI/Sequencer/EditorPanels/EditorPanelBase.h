@@ -26,7 +26,7 @@ class EditorPanelBase : public Component
 {
 public:
 
-    EditorPanelBase() = default;
+    EditorPanelBase() noexcept = default;
     virtual ~EditorPanelBase() = default;
 
     virtual void switchToRoll(SafePointer<RollBase> roll) = 0;

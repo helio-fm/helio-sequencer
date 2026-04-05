@@ -36,7 +36,7 @@ class MainLayout final :
 {
 public:
 
-    MainLayout();
+    MainLayout() noexcept;
     ~MainLayout() override;
 
     void restoreLastOpenedPage();

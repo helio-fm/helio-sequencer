@@ -30,7 +30,7 @@ class HeadlineItem final :
 {
 public:
 
-    HeadlineItem(WeakReference<HeadlineItemDataSource> dataSource, AsyncUpdater &parent);
+    HeadlineItem(WeakReference<HeadlineItemDataSource> dataSource, AsyncUpdater &parent) noexcept;
     ~HeadlineItem();
 
     WeakReference<HeadlineItemDataSource> getDataSource() const noexcept;

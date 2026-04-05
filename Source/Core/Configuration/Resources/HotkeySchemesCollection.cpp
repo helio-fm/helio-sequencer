@@ -81,7 +81,7 @@ void HotkeySchemesCollection::deserializeResources(const SerializedData &tree, R
     jassert(this->activeScheme != nullptr);
 }
 
-void HotkeySchemesCollection::reset()
+void HotkeySchemesCollection::reset() noexcept
 {
     ConfigurationResourceCollection::reset();
     this->activeScheme = nullptr;

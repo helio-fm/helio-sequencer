@@ -245,7 +245,7 @@ void MetronomeSynthAudioPlugin::prepareToPlay(double sampleRate, int estimatedSa
     this->synth.setCurrentPlaybackSampleRate(sampleRate);
 }
 
-void MetronomeSynthAudioPlugin::reset()
+void MetronomeSynthAudioPlugin::reset() noexcept
 {
     this->synth.allNotesOff(0, true);
 }

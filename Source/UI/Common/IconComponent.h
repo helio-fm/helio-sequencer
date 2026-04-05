@@ -25,7 +25,7 @@ class IconComponent : virtual public Component
 public:
 
     explicit IconComponent(Icons::Id iconId,
-        float alpha = 1.f, Optional<int> iconSize = {}) :
+        float alpha = 1.f, Optional<int> iconSize = {}) noexcept :
         iconId(iconId),
         alpha(alpha),
         iconSize(iconSize)
@@ -35,7 +35,7 @@ public:
         this->setAccessible(false);
     }
 
-    explicit IconComponent(Image targetImage) :
+    explicit IconComponent(Image targetImage) noexcept :
         image(targetImage)
     {
         this->setPaintingIsUnclipped(true);

@@ -38,7 +38,7 @@ public:
     enum class Type : int8 { Large, Small };
 
     KeySignaturesProjectMap(ProjectNode &parentProject,
-        SafePointer<RollBase> roll, Type type);
+        SafePointer<RollBase> roll, Type type) noexcept;
 
     ~KeySignaturesProjectMap() override;
 

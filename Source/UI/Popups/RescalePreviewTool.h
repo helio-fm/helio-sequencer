@@ -32,7 +32,7 @@ class RescalePreviewTool final : public MenuPanel
 public:
 
     RescalePreviewTool(PianoRoll &roll,
-        WeakReference<KeySignaturesSequence> harmonicContext);
+        WeakReference<KeySignaturesSequence> harmonicContext) noexcept;
 
     void handleCommandMessage(int commandId) override;
 

@@ -35,7 +35,7 @@ public:
     enum class Type : int8 { Large, Small };
 
     AnnotationsProjectMap(ProjectNode &project,
-        SafePointer<RollBase> roll, Type type);
+        SafePointer<RollBase> roll, Type type) noexcept;
 
     ~AnnotationsProjectMap() override;
 

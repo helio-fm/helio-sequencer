@@ -53,7 +53,7 @@ class VelocityEditorNoteComponent final : public Component
 {
 public:
 
-    VelocityEditorNoteComponent(const Note &note, const Clip &clip) :
+    VelocityEditorNoteComponent(const Note &note, const Clip &clip) noexcept :
         note(note),
         clip(clip)
     {
@@ -287,7 +287,7 @@ class VelocityHandDrawingHelper final : public Component
 {
 public:
 
-    VelocityHandDrawingHelper(VelocityEditor &editor) : editor(editor)
+    VelocityHandDrawingHelper(VelocityEditor &editor) noexcept : editor(editor)
     {
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, false);
@@ -406,7 +406,7 @@ private:
 #define VELOCITY_MAP_BATCH_REPAINT_END \
     if (this->isEnabled()) { this->setVisible(true); }
 
-VelocityEditor::VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll) :
+VelocityEditor::VelocityEditor(ProjectNode &project, SafePointer<RollBase> roll) noexcept :
     project(project),
     roll(roll)
 {

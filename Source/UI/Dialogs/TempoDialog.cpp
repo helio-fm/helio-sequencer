@@ -178,7 +178,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TapTempoComponent)
 };
 
-TempoDialog::TempoDialog(int bpmValue)
+TempoDialog::TempoDialog(int bpmValue) noexcept
 {
     const auto isPhoneLayout = App::isRunningOnPhone();
 

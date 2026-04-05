@@ -56,7 +56,7 @@ int TimeSignatureEventInsertAction::getSizeInUnits()
     return sizeof(TimeSignatureEvent);
 }
 
-SerializedData TimeSignatureEventInsertAction::serialize() const
+SerializedData TimeSignatureEventInsertAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::timeSignatureEventInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -64,13 +64,13 @@ SerializedData TimeSignatureEventInsertAction::serialize() const
     return tree;
 }
 
-void TimeSignatureEventInsertAction::deserialize(const SerializedData &data)
+void TimeSignatureEventInsertAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->event.deserialize(data.getChild(0));
 }
 
-void TimeSignatureEventInsertAction::reset()
+void TimeSignatureEventInsertAction::reset() noexcept
 {
     this->event.reset();
     this->trackId.clear();
@@ -111,7 +111,7 @@ int TimeSignatureEventRemoveAction::getSizeInUnits()
     return sizeof(TimeSignatureEvent);
 }
 
-SerializedData TimeSignatureEventRemoveAction::serialize() const
+SerializedData TimeSignatureEventRemoveAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::timeSignatureEventRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -119,13 +119,13 @@ SerializedData TimeSignatureEventRemoveAction::serialize() const
     return tree;
 }
 
-void TimeSignatureEventRemoveAction::deserialize(const SerializedData &data)
+void TimeSignatureEventRemoveAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->event.deserialize(data.getChild(0));
 }
 
-void TimeSignatureEventRemoveAction::reset()
+void TimeSignatureEventRemoveAction::reset() noexcept
 {
     this->event.reset();
     this->trackId.clear();
@@ -187,7 +187,7 @@ UndoAction *TimeSignatureEventChangeAction::createCoalescedAction(UndoAction *ne
     return nullptr;
 }
 
-SerializedData TimeSignatureEventChangeAction::serialize() const
+SerializedData TimeSignatureEventChangeAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::timeSignatureEventChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -203,7 +203,7 @@ SerializedData TimeSignatureEventChangeAction::serialize() const
     return tree;
 }
 
-void TimeSignatureEventChangeAction::deserialize(const SerializedData &data)
+void TimeSignatureEventChangeAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
 
@@ -214,7 +214,7 @@ void TimeSignatureEventChangeAction::deserialize(const SerializedData &data)
     this->eventAfter.deserialize(timeSignatureAfterChild.getChild(0));
 }
 
-void TimeSignatureEventChangeAction::reset()
+void TimeSignatureEventChangeAction::reset() noexcept
 {
     this->eventBefore.reset();
     this->eventAfter.reset();

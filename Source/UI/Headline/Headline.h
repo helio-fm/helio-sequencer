@@ -35,7 +35,7 @@ class Headline final :
 {
 public:
 
-    Headline();
+    Headline() noexcept;
     ~Headline();
 
     static constexpr auto itemsOverlapOffset = 11;

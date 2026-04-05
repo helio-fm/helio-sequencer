@@ -28,7 +28,7 @@
 #include "Config.h"
 
 RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
-    WeakReference<KeySignaturesSequence> harmonicContext) :
+    WeakReference<KeySignaturesSequence> harmonicContext) noexcept :
     roll(roll),
     harmonicContext(harmonicContext)
 {

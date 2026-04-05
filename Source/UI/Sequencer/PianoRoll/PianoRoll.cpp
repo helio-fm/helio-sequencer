@@ -78,7 +78,8 @@
 #   define PIANOROLL_HAS_NOTE_RESIZERS 1
 #endif
 
-PianoRoll::PianoRoll(ProjectNode &project, Viewport &viewport, WeakReference<AudioMonitor> clippingDetector) :
+PianoRoll::PianoRoll(ProjectNode &project,
+    Viewport &viewport, WeakReference<AudioMonitor> clippingDetector) noexcept :
     RollBase(project, viewport, clippingDetector)
 {
     this->setComponentID(ComponentIDs::pianoRollId);
@@ -2407,7 +2408,7 @@ String PianoRoll::getTranslatedCommandWithContext(int commandId, int i18nKey) co
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData PianoRoll::serialize() const
+SerializedData PianoRoll::serialize() const noexcept
 {
     using namespace Serialization;
     SerializedData data(UI::pianoRoll);
@@ -2430,7 +2431,7 @@ SerializedData PianoRoll::serialize() const
     return data;
 }
 
-void PianoRoll::deserialize(const SerializedData &data)
+void PianoRoll::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization;
@@ -2455,7 +2456,7 @@ void PianoRoll::deserialize(const SerializedData &data)
     this->getViewport().setViewPosition(x, y);
 }
 
-void PianoRoll::reset() {}
+void PianoRoll::reset() noexcept {}
 
 //===----------------------------------------------------------------------===//
 // Background pattern images cache

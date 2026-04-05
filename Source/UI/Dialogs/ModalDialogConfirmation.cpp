@@ -19,7 +19,8 @@
 #include "ModalDialogConfirmation.h"
 #include "CommandIDs.h"
 
-ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const String &okText, const String &cancelText)
+ModalDialogConfirmation::ModalDialogConfirmation(const String &message,
+    const String &okText, const String &cancelText) noexcept
 {
     const auto isPhoneLayout = App::isRunningOnPhone();
 

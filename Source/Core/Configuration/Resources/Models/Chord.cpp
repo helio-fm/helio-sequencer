@@ -56,7 +56,7 @@ const Array<Chord::Key> &Chord::getScaleKeys() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData Chord::serialize() const
+SerializedData Chord::serialize() const noexcept
 {
     using namespace Serialization;
     SerializedData tree(Midi::chord);
@@ -72,7 +72,7 @@ SerializedData Chord::serialize() const
     return tree;
 }
 
-void Chord::deserialize(const SerializedData &data)
+void Chord::deserialize(const SerializedData &data) noexcept
 {
     using namespace Serialization;
     const auto root = data.hasType(Midi::chord) ?
@@ -97,7 +97,7 @@ void Chord::deserialize(const SerializedData &data)
     }
 }
 
-void Chord::reset()
+void Chord::reset() noexcept
 {
     this->scaleKeys.clearQuick();
     this->name = {};

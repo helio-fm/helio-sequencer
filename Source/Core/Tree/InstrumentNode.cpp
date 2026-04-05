@@ -204,7 +204,7 @@ void InstrumentNode::recreateChildrenEditors()
 // this serialize() method here, so that previous versions don't break
 // when loading the main config file modified by this version:
 
-SerializedData InstrumentNode::serialize() const
+SerializedData InstrumentNode::serialize() const noexcept
 {
     SerializedData tree(Serialization::Core::treeNode);
     tree.setProperty(Serialization::Core::treeNodeType, this->type);
@@ -216,7 +216,7 @@ SerializedData InstrumentNode::serialize() const
 
 // doing nothing here, it's a temporary node
 // (in future versions serialize() will also be removed)
-void InstrumentNode::deserialize(const SerializedData &data) {}
+void InstrumentNode::deserialize(const SerializedData &data) noexcept {}
 
 void InstrumentNode::initInstrumentEditor()
 {

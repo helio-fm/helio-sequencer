@@ -38,7 +38,7 @@
 #include "CommandIDs.h"
 #include "Icons.h"
 
-SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) : project(parent)
+SequencerSidebarRight::SequencerSidebarRight(ProjectNode &parent) noexcept : project(parent)
 {
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);

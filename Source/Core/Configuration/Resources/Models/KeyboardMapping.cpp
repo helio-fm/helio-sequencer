@@ -24,7 +24,7 @@ KeyboardMapping::KeyboardMapping()
     this->reset();
 }
 
-SerializedData KeyboardMapping::serialize() const
+SerializedData KeyboardMapping::serialize() const noexcept
 {
     using namespace Serialization::Midi;
     SerializedData data(KeyboardMappings::keyboardMapping);
@@ -33,7 +33,7 @@ SerializedData KeyboardMapping::serialize() const
     return data;
 }
 
-void KeyboardMapping::deserialize(const SerializedData &data)
+void KeyboardMapping::deserialize(const SerializedData &data) noexcept
 {
     using namespace Serialization::Midi;
 
@@ -281,7 +281,7 @@ KeyboardMapping::KeyChannel KeyboardMapping::getDefaultMappingFor(int key, int c
     return basedOnPrevChannel;
 }
 
-void KeyboardMapping::reset()
+void KeyboardMapping::reset() noexcept
 {
     for (int channel = 0; channel < KeyboardMapping::numMappedChannels; ++channel)
     {

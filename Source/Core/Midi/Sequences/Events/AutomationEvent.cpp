@@ -242,7 +242,7 @@ AutomationEvent AutomationEvent::pedalDownEvent(MidiSequence *owner, float beatV
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData AutomationEvent::serialize() const
+SerializedData AutomationEvent::serialize() const noexcept
 {
     using namespace Serialization;
     SerializedData tree(Midi::automationEvent);
@@ -253,7 +253,7 @@ SerializedData AutomationEvent::serialize() const
     return tree;
 }
 
-void AutomationEvent::deserialize(const SerializedData &data)
+void AutomationEvent::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization;

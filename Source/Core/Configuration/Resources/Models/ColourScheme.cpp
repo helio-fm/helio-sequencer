@@ -219,7 +219,7 @@ void ColourScheme::syncWithLiveConstantEditor()
     this->colours[UI::Colours::iconShadow] = this->getIconShadowColour();
 }
 
-SerializedData ColourScheme::serialize() const
+SerializedData ColourScheme::serialize() const noexcept
 {
     using namespace Serialization;
 
@@ -237,7 +237,7 @@ SerializedData ColourScheme::serialize() const
     return tree;
 }
 
-void ColourScheme::deserialize(const SerializedData &data)
+void ColourScheme::deserialize(const SerializedData &data) noexcept
 {
     using namespace Serialization;
 
@@ -260,7 +260,7 @@ void ColourScheme::deserialize(const SerializedData &data)
     }
 }
 
-void ColourScheme::reset()
+void ColourScheme::reset() noexcept
 {
     using namespace Serialization;
 

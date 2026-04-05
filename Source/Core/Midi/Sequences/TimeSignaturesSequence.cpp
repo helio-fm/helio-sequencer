@@ -254,7 +254,7 @@ Function<void(const String &text)> TimeSignaturesSequence::getEventChangeCallbac
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData TimeSignaturesSequence::serialize() const
+SerializedData TimeSignaturesSequence::serialize() const noexcept
 {
     SerializedData tree(Serialization::Midi::timeSignatures);
 
@@ -267,7 +267,7 @@ SerializedData TimeSignaturesSequence::serialize() const
     return tree;
 }
 
-void TimeSignaturesSequence::deserialize(const SerializedData &data)
+void TimeSignaturesSequence::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization;
@@ -301,7 +301,7 @@ void TimeSignaturesSequence::deserialize(const SerializedData &data)
     this->updateBeatRange(false);
 }
 
-void TimeSignaturesSequence::reset()
+void TimeSignaturesSequence::reset() noexcept
 {
     this->midiEvents.clear();
     this->usedEventIds.clear();

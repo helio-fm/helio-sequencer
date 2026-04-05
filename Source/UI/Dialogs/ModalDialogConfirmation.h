@@ -25,7 +25,9 @@ class ModalDialogConfirmation final : public DialogBase
 {
 public:
 
-    ModalDialogConfirmation(const String &message, const String &okText, const String &cancelText);
+    ModalDialogConfirmation(const String &message,
+        const String &okText, const String &cancelText) noexcept;
+
     ~ModalDialogConfirmation();
 
     SimpleDialogCallback onOk;

@@ -26,7 +26,7 @@
 #include "RollBase.h"
 #include "AnnotationEvent.h"
 
-PianoProjectMap::PianoProjectMap(ProjectNode &parentProject) :
+PianoProjectMap::PianoProjectMap(ProjectNode &parentProject) noexcept :
     ScrolledComponent({}), // doesn't switch between rolls
     project(parentProject)
 {

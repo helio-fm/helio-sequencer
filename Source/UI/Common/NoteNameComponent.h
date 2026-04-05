@@ -29,7 +29,7 @@ class NoteNameComponent final : public Component
 public:
 
     explicit NoteNameComponent(bool isCentered = false,
-        float fontSize = Globals::UI::Fonts::S);
+        float fontSize = Globals::UI::Fonts::S) noexcept;
 
     ~NoteNameComponent();
 

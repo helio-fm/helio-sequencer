@@ -26,7 +26,7 @@
 #include "AnnotationSmallComponent.h"
 
 AnnotationsProjectMap::AnnotationsProjectMap(ProjectNode &parentProject,
-    SafePointer<RollBase> roll, Type type) :
+    SafePointer<RollBase> roll, Type type) noexcept :
     ScrolledComponent(roll),
     project(parentProject),
     type(type)

@@ -59,7 +59,7 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    void deserialize(const SerializedData &data) override;
+    void deserialize(const SerializedData &data) noexcept override;
 
 private:
 

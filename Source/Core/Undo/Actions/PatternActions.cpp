@@ -56,7 +56,7 @@ int ClipInsertAction::getSizeInUnits()
     return sizeof(Clip);
 }
 
-SerializedData ClipInsertAction::serialize() const
+SerializedData ClipInsertAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::clipInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -64,13 +64,13 @@ SerializedData ClipInsertAction::serialize() const
     return tree;
 }
 
-void ClipInsertAction::deserialize(const SerializedData &data)
+void ClipInsertAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->clip.deserialize(data.getChild(0));
 }
 
-void ClipInsertAction::reset()
+void ClipInsertAction::reset() noexcept
 {
     this->clip.reset();
     this->trackId.clear();
@@ -111,7 +111,7 @@ int ClipRemoveAction::getSizeInUnits()
     return sizeof(Clip);
 }
 
-SerializedData ClipRemoveAction::serialize() const
+SerializedData ClipRemoveAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::clipRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -119,13 +119,13 @@ SerializedData ClipRemoveAction::serialize() const
     return tree;
 }
 
-void ClipRemoveAction::deserialize(const SerializedData &data)
+void ClipRemoveAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->clip.deserialize(data.getChild(0));
 }
 
-void ClipRemoveAction::reset()
+void ClipRemoveAction::reset() noexcept
 {
     this->clip.reset();
     this->trackId.clear();
@@ -189,7 +189,7 @@ UndoAction *ClipChangeAction::createCoalescedAction(UndoAction *nextAction)
     return nullptr;
 }
 
-SerializedData ClipChangeAction::serialize() const
+SerializedData ClipChangeAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::clipChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -205,7 +205,7 @@ SerializedData ClipChangeAction::serialize() const
     return tree;
 }
 
-void ClipChangeAction::deserialize(const SerializedData &data)
+void ClipChangeAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
 
@@ -216,7 +216,7 @@ void ClipChangeAction::deserialize(const SerializedData &data)
     this->clipAfter.deserialize(instanceAfterChild.getChild(0));
 }
 
-void ClipChangeAction::reset()
+void ClipChangeAction::reset() noexcept
 {
     this->clipBefore.reset();
     this->clipAfter.reset();
@@ -260,7 +260,7 @@ int ClipsGroupInsertAction::getSizeInUnits()
     return sizeof(Clip) * this->clips.size();
 }
 
-SerializedData ClipsGroupInsertAction::serialize() const
+SerializedData ClipsGroupInsertAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::clipsGroupInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -273,7 +273,7 @@ SerializedData ClipsGroupInsertAction::serialize() const
     return tree;
 }
 
-void ClipsGroupInsertAction::deserialize(const SerializedData &data)
+void ClipsGroupInsertAction::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     this->trackId = data.getProperty(Serialization::Undo::trackId);
@@ -286,7 +286,7 @@ void ClipsGroupInsertAction::deserialize(const SerializedData &data)
     }
 }
 
-void ClipsGroupInsertAction::reset()
+void ClipsGroupInsertAction::reset() noexcept
 {
     this->clips.clear();
     this->trackId.clear();
@@ -329,7 +329,7 @@ int ClipsGroupRemoveAction::getSizeInUnits()
     return (sizeof(Clip) * this->clips.size());
 }
 
-SerializedData ClipsGroupRemoveAction::serialize() const
+SerializedData ClipsGroupRemoveAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::clipsGroupRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -342,7 +342,7 @@ SerializedData ClipsGroupRemoveAction::serialize() const
     return tree;
 }
 
-void ClipsGroupRemoveAction::deserialize(const SerializedData &data)
+void ClipsGroupRemoveAction::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     this->trackId = data.getProperty(Serialization::Undo::trackId);
@@ -355,7 +355,7 @@ void ClipsGroupRemoveAction::deserialize(const SerializedData &data)
     }
 }
 
-void ClipsGroupRemoveAction::reset()
+void ClipsGroupRemoveAction::reset() noexcept
 {
     this->clips.clear();
     this->trackId.clear();
@@ -441,7 +441,7 @@ const Array<Clip> &ClipsGroupChangeAction::getClipsAfter() const noexcept
     return this->clipsAfter;
 }
 
-SerializedData ClipsGroupChangeAction::serialize() const
+SerializedData ClipsGroupChangeAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::clipsGroupChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -465,7 +465,7 @@ SerializedData ClipsGroupChangeAction::serialize() const
     return tree;
 }
 
-void ClipsGroupChangeAction::deserialize(const SerializedData &data)
+void ClipsGroupChangeAction::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -489,7 +489,7 @@ void ClipsGroupChangeAction::deserialize(const SerializedData &data)
     }
 }
 
-void ClipsGroupChangeAction::reset()
+void ClipsGroupChangeAction::reset() noexcept
 {
     this->clipsBefore.clear();
     this->clipsAfter.clear();

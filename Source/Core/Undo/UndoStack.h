@@ -51,9 +51,9 @@ public:
     UndoActionId getRedoActionId() const;
     bool redo();
 
-    SerializedData serialize() const override;
-    void deserialize(const SerializedData &data) override;
-    void reset() override;
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
+    void reset() noexcept override;
 
     template <typename T>
     bool undoHas() const
@@ -104,9 +104,9 @@ private:
         bool undo() const;
         int getTotalSize() const;
 
-        SerializedData serialize() const override;
-        void deserialize(const SerializedData &data) override;
-        void reset() override;
+        SerializedData serialize() const noexcept override;
+        void deserialize(const SerializedData &data) noexcept override;
+        void reset() noexcept override;
 
         UndoAction *createUndoActionByTag(const Identifier &tagName) const;
 

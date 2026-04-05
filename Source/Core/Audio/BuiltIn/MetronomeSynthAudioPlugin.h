@@ -38,7 +38,7 @@ public:
 
     void processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages) override;
     void prepareToPlay(double sampleRate, int estimatedSamplesPerBlock) override;
-    void reset() override;
+    void reset() noexcept override;
 
     //===------------------------------------------------------------------===//
     // AudioProcessor

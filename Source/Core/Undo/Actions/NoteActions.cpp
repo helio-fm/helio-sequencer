@@ -57,7 +57,7 @@ int NoteInsertAction::getSizeInUnits()
     return sizeof(Note);
 }
 
-SerializedData NoteInsertAction::serialize() const
+SerializedData NoteInsertAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::noteInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -65,13 +65,13 @@ SerializedData NoteInsertAction::serialize() const
     return tree;
 }
 
-void NoteInsertAction::deserialize(const SerializedData &data)
+void NoteInsertAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->note.deserialize(data.getChild(0));
 }
 
-void NoteInsertAction::reset()
+void NoteInsertAction::reset() noexcept
 {
     this->note.reset();
     this->trackId.clear();
@@ -134,7 +134,7 @@ int NoteRemoveAction::getSizeInUnits()
     return sizeof(Note);
 }
 
-SerializedData NoteRemoveAction::serialize() const
+SerializedData NoteRemoveAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::noteRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -142,13 +142,13 @@ SerializedData NoteRemoveAction::serialize() const
     return tree;
 }
 
-void NoteRemoveAction::deserialize(const SerializedData &data)
+void NoteRemoveAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
     this->note.deserialize(data.getChild(0));
 }
 
-void NoteRemoveAction::reset()
+void NoteRemoveAction::reset() noexcept
 {
     this->note.reset();
     this->trackId.clear();
@@ -212,7 +212,7 @@ UndoAction *NoteChangeAction::createCoalescedAction(UndoAction *nextAction)
     return nullptr;
 }
 
-SerializedData NoteChangeAction::serialize() const
+SerializedData NoteChangeAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::noteChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -228,7 +228,7 @@ SerializedData NoteChangeAction::serialize() const
     return tree;
 }
 
-void NoteChangeAction::deserialize(const SerializedData &data)
+void NoteChangeAction::deserialize(const SerializedData &data) noexcept
 {
     this->trackId = data.getProperty(Serialization::Undo::trackId);
 
@@ -239,7 +239,7 @@ void NoteChangeAction::deserialize(const SerializedData &data)
     this->noteAfter.deserialize(noteAfterChild.getChild(0));
 }
 
-void NoteChangeAction::reset()
+void NoteChangeAction::reset() noexcept
 {
     this->noteBefore.reset();
     this->noteAfter.reset();
@@ -291,7 +291,7 @@ int NotesGroupInsertAction::getSizeInUnits()
     return (sizeof(Note) * this->notes.size());
 }
 
-SerializedData NotesGroupInsertAction::serialize() const
+SerializedData NotesGroupInsertAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::notesGroupInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -304,7 +304,7 @@ SerializedData NotesGroupInsertAction::serialize() const
     return tree;
 }
 
-void NotesGroupInsertAction::deserialize(const SerializedData &data)
+void NotesGroupInsertAction::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     this->trackId = data.getProperty(Serialization::Undo::trackId);
@@ -317,7 +317,7 @@ void NotesGroupInsertAction::deserialize(const SerializedData &data)
     }
 }
 
-void NotesGroupInsertAction::reset()
+void NotesGroupInsertAction::reset() noexcept
 {
     this->notes.clear();
     this->trackId.clear();
@@ -389,7 +389,7 @@ int NotesGroupRemoveAction::getSizeInUnits()
     return (sizeof(Note) * this->notes.size());
 }
 
-SerializedData NotesGroupRemoveAction::serialize() const
+SerializedData NotesGroupRemoveAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::notesGroupRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -402,7 +402,7 @@ SerializedData NotesGroupRemoveAction::serialize() const
     return tree;
 }
 
-void NotesGroupRemoveAction::deserialize(const SerializedData &data)
+void NotesGroupRemoveAction::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     this->trackId = data.getProperty(Serialization::Undo::trackId);
@@ -415,7 +415,7 @@ void NotesGroupRemoveAction::deserialize(const SerializedData &data)
     }
 }
 
-void NotesGroupRemoveAction::reset()
+void NotesGroupRemoveAction::reset() noexcept
 {
     this->notes.clear();
     this->trackId.clear();
@@ -495,7 +495,7 @@ UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData NotesGroupChangeAction::serialize() const
+SerializedData NotesGroupChangeAction::serialize() const noexcept
 {
     SerializedData tree(Serialization::Undo::notesGroupChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
@@ -519,7 +519,7 @@ SerializedData NotesGroupChangeAction::serialize() const
     return tree;
 }
 
-void NotesGroupChangeAction::deserialize(const SerializedData &data)
+void NotesGroupChangeAction::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -543,7 +543,7 @@ void NotesGroupChangeAction::deserialize(const SerializedData &data)
     }
 }
 
-void NotesGroupChangeAction::reset()
+void NotesGroupChangeAction::reset() noexcept
 {
     this->notesBefore.clear();
     this->notesAfter.clear();

@@ -207,7 +207,7 @@ Note::Tuplet Note::getTuplet() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData Note::serialize() const
+SerializedData Note::serialize() const noexcept
 {
     using namespace Serialization;
     SerializedData tree(Midi::note);
@@ -223,7 +223,7 @@ SerializedData Note::serialize() const
     return tree;
 }
 
-void Note::deserialize(const SerializedData &data)
+void Note::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
     using namespace Serialization;

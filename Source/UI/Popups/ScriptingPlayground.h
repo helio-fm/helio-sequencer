@@ -35,7 +35,7 @@ class ScriptingPlaygroundEditor final :
 {
 public:
 
-    ScriptingPlaygroundEditor(CodeDocument &document, CodeTokeniser *codeTokeniser);
+    ScriptingPlaygroundEditor(CodeDocument &document, CodeTokeniser *codeTokeniser) noexcept;
     ~ScriptingPlaygroundEditor() override;
 
     void selectNext();
@@ -93,7 +93,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScriptingPlaygroundEditor)
 };
 
-// todo TransportListener
 class ScriptingPlayground final :
     public Component,
     public TextEditor::Listener,
@@ -101,7 +100,8 @@ class ScriptingPlayground final :
 {
 public:
 
-    ScriptingPlayground(ProjectNode &project, RollBase *roll);
+    ScriptingPlayground(ProjectNode &project, RollBase *roll) noexcept;
+
     ~ScriptingPlayground() override;
 
     static Array<KeyPress> getAllScriptingPlaygroundHotkeys();

@@ -258,7 +258,7 @@ bool AutomationSequence::changeGroup(const Array<AutomationEvent> groupBefore,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-SerializedData AutomationSequence::serialize() const
+SerializedData AutomationSequence::serialize() const noexcept
 {
     SerializedData tree(Serialization::Midi::automation);
 
@@ -271,7 +271,7 @@ SerializedData AutomationSequence::serialize() const
     return tree;
 }
 
-void AutomationSequence::deserialize(const SerializedData &data)
+void AutomationSequence::deserialize(const SerializedData &data) noexcept
 {
     this->reset();
 
@@ -304,7 +304,7 @@ void AutomationSequence::deserialize(const SerializedData &data)
     this->updateBeatRange(false);
 }
 
-void AutomationSequence::reset()
+void AutomationSequence::reset() noexcept
 {
     this->midiEvents.clear();
     this->usedEventIds.clear();
