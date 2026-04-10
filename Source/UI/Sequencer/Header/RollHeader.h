@@ -28,9 +28,13 @@ class PlaybackLoopMarker;
 class TrackStartIndicator;
 class TrackEndIndicator;
 
+#include "Lasso.h"
+#include "SelectionComponent.h"
 #include "ColourIDs.h"
 
-class RollHeader final : public Component
+class RollHeader final :
+    public Component,
+    public DrawableLassoSource<SelectableComponent *> // selecting timeline events
 {
 public:
 
@@ -54,6 +58,18 @@ public:
     Colour getRepriseColour() const noexcept;
 
     //===------------------------------------------------------------------===//
+    // DrawableLassoSource
+    //===------------------------------------------------------------------===//
+
+    Lasso &getLassoSelection() override;
+    Point<float> getLassoAnchor(const Point<float> &position) const override;
+    Point<int> getLassoPosition(const Point<float> &anchorPoint) const override;
+    void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
+        const Rectangle<int> &bounds) override;
+    void findLassoItemsInPolygon(Array<SelectableComponent *> &itemsFound,
+        const Rectangle<int> &bounds, const Array<Point<float>> &polygon) override;
+
+    //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
@@ -66,7 +82,7 @@ public:
     void paint(Graphics &g) override;
     void resized() override;
 
-protected:
+private:
 
     Transport &transport;
     RollBase &roll;
@@ -75,26 +91,18 @@ protected:
     Atomic<bool> soundProbeMode = false;
     Atomic<bool> recordingMode = false;
 
-    const Colour fillColour = findDefaultColour(ColourIDs::Roll::headerFill);
-    const Colour bevelDarkColour = findDefaultColour(ColourIDs::Common::borderLineDark);
-    const Colour bevelLightColour = findDefaultColour(ColourIDs::Roll::headerBorder);
-    const Colour snapsPlaybackColour = findDefaultColour(ColourIDs::Roll::headerSnaps);
-    const Colour reprisePlaybackColour = findDefaultColour(ColourIDs::Roll::headerReprise);
-    const Colour recordingColour = findDefaultColour(ColourIDs::Roll::headerRecording);
-
-    Colour barColour;
-    Colour beatColour;
-    Colour snapColour;
-    Colour repriseColour;
+    void updateSoundProbeIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e);
+    double getUnalignedAnchorForEvent(const MouseEvent &e) const;
+    void updateTimeDistanceIndicator();
+    void updateClipRangeIndicatorPositions();
+    void updateSelectionRangeIndicatorPosition();
 
     OwnedArray<ClipRangeIndicator> clipRangeIndicators;
-
     UniquePointer<ClipRangeIndicator> selectionRangeIndicator;
 
     UniquePointer<SoundProbeIndicator> probeIndicator;
     UniquePointer<SoundProbeIndicator> pointingIndicator;
     UniquePointer<TimeDistanceIndicator> timeDistanceIndicator;
-    UniquePointer<HeaderSelectionIndicator> selectionIndicator;
 
     UniquePointer<PlaybackLoopMarker> loopMarkerStart;
     UniquePointer<PlaybackLoopMarker> loopMarkerEnd;
@@ -102,11 +110,32 @@ protected:
     UniquePointer<TrackStartIndicator> projectStartIndicator;
     UniquePointer<TrackEndIndicator> projectEndIndicator;
 
-    static constexpr auto minTimeDistanceIndicatorSize = 40;
+    struct HeaderSelectionComponent final : public SelectionComponent
+    {
+        void paint(Graphics &g) override
+        {
+            g.setColour(this->fillColour);
+            g.fillRect(0, this->getHeight() - 2, this->getWidth(), 2);
+            g.fillRect(1, this->getHeight() - 3, jmax(0, this->getWidth() - 2), 1);
+        }
 
-    void updateSoundProbeIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e);
-    double getUnalignedAnchorForEvent(const MouseEvent &e) const;
-    void updateTimeDistanceIndicator();
-    void updateClipRangeIndicatorPositions();
-    void updateSelectionRangeIndicatorPosition();
+        const Colour fillColour = findDefaultColour(ColourIDs::RollHeader::selection);
+    };
+
+    UniquePointer<HeaderSelectionIndicator> headerSelectionIndicator;
+    UniquePointer<HeaderSelectionComponent> keysSelectionComponent;
+
+    Colour barColour;
+    Colour beatColour;
+    Colour snapColour;
+    Colour repriseColour;
+
+    const Colour fillColour = findDefaultColour(ColourIDs::Roll::headerFill);
+    const Colour bevelDarkColour = findDefaultColour(ColourIDs::Common::borderLineDark);
+    const Colour bevelLightColour = findDefaultColour(ColourIDs::Roll::headerBorder);
+    const Colour snapsPlaybackColour = findDefaultColour(ColourIDs::Roll::headerSnaps);
+    const Colour reprisePlaybackColour = findDefaultColour(ColourIDs::Roll::headerReprise);
+    const Colour recordingColour = findDefaultColour(ColourIDs::Roll::headerRecording);
+
+    static constexpr auto minTimeDistanceIndicatorSize = 40;
 };

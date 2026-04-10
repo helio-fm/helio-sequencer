@@ -44,6 +44,65 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap &
 
 KeySignatureLargeComponent::~KeySignatureLargeComponent() = default;
 
+//===----------------------------------------------------------------------===//
+// SelectableComponent
+//===----------------------------------------------------------------------===//
+
+void KeySignatureLargeComponent::setSelected(bool selected)
+{
+    if (this->selectedState != selected)
+    {
+        this->selectedState = selected;
+        this->repaint();
+    }
+}
+
+bool KeySignatureLargeComponent::isSelected() const noexcept
+{
+    return this->selectedState;
+}
+
+const String &KeySignatureLargeComponent::getSelectionGroupId() const noexcept
+{
+    return this->event.getSequence()->getTrackId();
+}
+
+//===----------------------------------------------------------------------===//
+// Dragging
+//===----------------------------------------------------------------------===//
+
+void KeySignatureLargeComponent::startDragging()
+{
+    this->draggingHadCheckpoint = false;
+    this->draggingState = true;
+    this->anchor = this->event;
+}
+
+bool KeySignatureLargeComponent::getDraggingDelta(const MouseEvent &e, float &outDelta)
+{
+    this->dragger.dragComponent(this, e, nullptr);
+    const auto newBeat = this->editor.getBeatByXPosition(this->getX());
+    outDelta = newBeat - this->anchor.getBeat();
+    const bool beatChanged = newBeat != this->getBeat();
+    return beatChanged;
+}
+
+KeySignatureEvent KeySignatureLargeComponent::continueDragging(float deltaBeat) const noexcept
+{
+    jassert(this->draggingState);
+    const float newBeat = this->anchor.getBeat() + deltaBeat;
+    return this->event.withBeat(newBeat);
+}
+
+void KeySignatureLargeComponent::endDragging()
+{
+    this->draggingState = false;
+}
+
+//===----------------------------------------------------------------------===//
+// Component
+//===----------------------------------------------------------------------===//
+
 void KeySignatureLargeComponent::paint(Graphics &g)
 {
     g.setColour(this->fillColour.withMultipliedAlpha(this->fillAlpha));
@@ -53,7 +112,18 @@ void KeySignatureLargeComponent::paint(Graphics &g)
     g.setColour(this->borderColour.withMultipliedAlpha(this->borderAlpha));
     g.fillRect(1, 0, this->getWidth() - 1, 1);
     g.fillRect(1.5f, 1.f, float(this->getWidth() - 2), 1.f);
+
+    if (this->selectedState)
+    {
+        HelioTheme::drawDashedHorizontalLine(g, 1.f,
+            float(this->getHeight() - 1), float(this->getWidth() - 2));
+    }
 }
+
+// "if ... static_cast" is here only so the macro can use the if's scope
+#define forEachSelectedKeySignature(lasso, child) \
+    for (int _i = 0; _i < lasso.getNumSelected(); _i++) \
+        if (auto *child = static_cast<KeySignatureLargeComponent *>(lasso.getSelectedItem(_i)))
 
 void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)
 {
@@ -65,17 +135,24 @@ void KeySignatureLargeComponent::mouseDown(const MouseEvent &e)
 
     if (e.mods.isLeftButtonDown())
     {
-        // don't checkpoint right here, but only before the actual change
-        //this->event.getSequence()->checkpoint();
-
         this->dragger.startDraggingComponent(this, e);
-        this->draggingHadCheckpoint = false;
-        this->draggingState = true;
-        this->anchor = this->event;
+
+        const auto &selection = this->editor.getLassoSelection();
+        if (!selection.isSelected(this))
+        {
+            this->startDragging();
+        }
+        else
+        {
+            forEachSelectedKeySignature(selection, selectedComponent)
+            {
+                selectedComponent->startDragging();
+            }
+        }
     }
     else
     {
-        this->editor.onKeySignatureAltAction(this);
+        this->editor.onKeySignatureAction(this, e.mods);
     }
 }
 
@@ -87,64 +164,82 @@ void KeySignatureLargeComponent::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isLeftButtonDown() && e.getDistanceFromDragStart() > 4)
+    if (this->draggingState &&
+        e.mods.isLeftButtonDown() && e.getDistanceFromDragStart() > 4)
     {
-        if (this->draggingState)
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
+
+        float deltaBeat = 0.f;
+        const bool eventChanged = this->getDraggingDelta(e, deltaBeat);
+        if (!eventChanged)
         {
-            this->setMouseCursor(MouseCursor::DraggingHandCursor);
-            this->dragger.dragComponent(this, e, nullptr);
-            const float newBeat = this->editor.getBeatByXPosition(this->getX());
-            const bool beatHasChanged = (this->event.getBeat() != newBeat);
+            this->editor.alignKeySignatureComponent(this);
+            return;
+        }
 
-            if (beatHasChanged)
+        const auto &selection = this->editor.getLassoSelection();
+        const auto dragThisOnly = !selection.isSelected(this);
+
+        auto *sequence = static_cast<KeySignaturesSequence *>(this->event.getSequence());
+
+        if (!this->draggingHadCheckpoint)
+        {
+            sequence->checkpoint();
+            this->draggingHadCheckpoint = true;
+
+            // drag-and-copy:
+            if (e.mods.isShiftDown())
             {
-                auto *sequence = static_cast<KeySignaturesSequence *>(this->event.getSequence());
-
-                if (!this->draggingHadCheckpoint)
+                if (dragThisOnly)
                 {
-                    sequence->checkpoint();
-                    this->draggingHadCheckpoint = true;
-
-                    // drag-and-copy:
-                    if (e.mods.isShiftDown())
+                    sequence->insert(this->getEvent().withNewId(), true);
+                    this->toFront(false);
+                }
+                else
+                {
+                    forEachSelectedKeySignature(selection, component)
                     {
-                        sequence->insert(this->event.withNewId(), true);
+                        sequence->insert(component->getEvent().withNewId(), true);
+                    }
+
+                    forEachSelectedKeySignature(selection, component)
+                    {
+                        component->toFront(false);
                     }
                 }
+            }
+        }
 
-                sequence->change(this->event, this->event.withBeat(newBeat), true);
-            }
-            else
+        if (dragThisOnly)
+        {
+            sequence->change(this->getEvent(), this->continueDragging(deltaBeat), true);
+        }
+        else
+        {
+            Array<KeySignatureEvent> groupBefore, groupAfter;
+            forEachSelectedKeySignature(selection, selectedComponent)
             {
-                this->editor.alignKeySignatureComponent(this);
+                groupBefore.add(selectedComponent->getEvent());
+                groupAfter.add(selectedComponent->continueDragging(deltaBeat));
             }
+            sequence->changeGroup(groupBefore, groupAfter, true);
         }
     }
 }
 
 void KeySignatureLargeComponent::mouseUp(const MouseEvent &e)
 {
-    if (e.mods.isLeftButtonDown())
+    if (this->draggingState)
     {
-        if (this->draggingState)
-        {
-            this->setMouseCursor(MouseCursor::PointingHandCursor);
-            this->draggingState = false;
-        }
+        this->setMouseCursor(MouseCursor::PointingHandCursor);
+        this->endDragging();
+    }
 
-        if (e.getDistanceFromDragStart() < 10 &&
-            !this->draggingHadCheckpoint &&
-            Component::getCurrentlyModalComponent() == nullptr)
-        {
-            if (e.mods.isAnyModifierKeyDown())
-            {
-                this->editor.onKeySignatureAltAction(this);
-            }
-            else
-            {
-                this->editor.onKeySignatureMainAction(this);
-            }
-        }
+    if (e.getDistanceFromDragStart() < 10 &&
+        !this->draggingHadCheckpoint &&
+        Component::getCurrentlyModalComponent() == nullptr)
+    {
+        this->editor.onKeySignatureAction(this, e.mods);
     }
 }
 
@@ -176,7 +271,7 @@ void KeySignatureLargeComponent::setRealBounds(const Rectangle<float> bounds)
     const auto keyNameWidth =
         this->textWidth - this->nameComponent->getDetailsWidthFloat();
     const auto newWidth = bounds.getWidth() <=
-        (KeySignatureLargeComponent::labelX + (ceilf(keyNameWidth / 4.f) * 8.f)) ?
+        (KeySignatureLargeComponent::labelX + (ceilf(keyNameWidth / 8.f) * 16.f)) ?
             int(keyNameWidth) : KeySignatureLargeComponent::labelWidth;
 
     if (this->nameComponent->getWidth() != newWidth)

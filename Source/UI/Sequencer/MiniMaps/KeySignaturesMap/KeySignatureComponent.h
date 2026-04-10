@@ -17,24 +17,25 @@
 
 #pragma once
 
+#include "SelectableComponent.h"
 #include "KeySignatureEvent.h"
 #include "Temperament.h"
 
 class KeySignaturesProjectMap;
 
-class KeySignatureComponent : public Component
+class KeySignatureComponent : public SelectableComponent
 {
 public:
 
     KeySignatureComponent(KeySignaturesProjectMap &parent, const KeySignatureEvent &event) noexcept :
         editor(parent), event(event) {}
 
-    const KeySignatureEvent &getEvent() const noexcept
+    inline const KeySignatureEvent &getEvent() const noexcept
     {
         return this->event;
     }
 
-    float getBeat() const noexcept
+    inline float getBeat() const noexcept
     {
         return this->event.getBeat();
     }

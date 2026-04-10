@@ -66,6 +66,7 @@ void SelectionComponent::beginLasso(const Point<float> &position,
 
     this->dragging = true;
 
+    this->updateBounds();
     this->setSize(0, 0);
     this->toFront(false);
     this->fadeIn();

@@ -35,6 +35,10 @@ public:
     void updateContent(const Temperament::Period &keyNames, bool useFixedDo) override;
     void setRealBounds(const Rectangle<float> bounds) override;
 
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
     void paint(Graphics &g) override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
@@ -44,10 +48,23 @@ public:
 
     static constexpr auto keySignatureHeight = 25;
 
+    //===------------------------------------------------------------------===//
+    // SelectableComponent
+    //===------------------------------------------------------------------===//
+
+    void setSelected(bool selected) override;
+    bool isSelected() const noexcept override;
+    const String &getSelectionGroupId() const noexcept override;
+
 private:
 
     ComponentDragger dragger;
     KeySignatureEvent anchor;
+
+    void startDragging();
+    bool getDraggingDelta(const MouseEvent &e, float &outDelta);
+    KeySignatureEvent continueDragging(float deltaBeat) const noexcept;
+    void endDragging();
 
     static constexpr int labelX = 4;
     static constexpr int labelWidth = 300;
@@ -56,6 +73,7 @@ private:
 
     bool draggingState = false;
     bool draggingHadCheckpoint = false;
+    bool selectedState = false;
 
     UniquePointer<NoteNameComponent> nameComponent;
 

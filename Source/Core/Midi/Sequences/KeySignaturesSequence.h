@@ -42,10 +42,11 @@ public:
     MidiEvent *insert(const KeySignatureEvent &signatureToCopy, bool undoable);
     bool remove(const KeySignatureEvent &signature, bool undoable);
     bool change(const KeySignatureEvent &signature,
-        const KeySignatureEvent &newSignature,
-        bool undoable);
+        const KeySignatureEvent &newSignature, bool undoable);
 
-    // Batch actions:
+    bool changeGroup(Array<KeySignatureEvent> &eventsBefore,
+        Array<KeySignatureEvent> &eventsAfter, bool undoable);
+
     void transposeAll(int keyDelta, Temperament::Ptr temperament, bool checkpoint);
 
     //===------------------------------------------------------------------===//

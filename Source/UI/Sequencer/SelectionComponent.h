@@ -20,7 +20,7 @@
 #include "Lasso.h"
 #include "SelectableComponent.h"
 
-class SelectionComponent final :
+class SelectionComponent :
     public Component,
     public ChangeBroadcaster,
     private Timer

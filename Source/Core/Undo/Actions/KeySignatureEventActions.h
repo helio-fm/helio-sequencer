@@ -115,3 +115,36 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE(KeySignatureEventChangeAction)
 };
+
+//===----------------------------------------------------------------------===//
+// Change Group
+//===----------------------------------------------------------------------===//
+
+class KeySignaturesGroupChangeAction final : public UndoAction
+{
+public:
+
+    explicit KeySignaturesGroupChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
+
+    KeySignaturesGroupChangeAction(MidiTrackSource &source, const String &trackId,
+        Array<KeySignatureEvent> &state1, Array<KeySignatureEvent> &state2) noexcept;
+
+    bool perform() override;
+    bool undo() override;
+    int getSizeInUnits() override;
+    UndoAction *createCoalescedAction(UndoAction *nextAction) override;
+
+    SerializedData serialize() const noexcept override;
+    void deserialize(const SerializedData &data) noexcept override;
+    void reset() noexcept override;
+
+private:
+
+    String trackId;
+
+    Array<KeySignatureEvent> groupBefore;
+    Array<KeySignatureEvent> groupAfter;
+
+    JUCE_DECLARE_NON_COPYABLE(KeySignaturesGroupChangeAction)
+};

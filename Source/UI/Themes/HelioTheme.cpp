@@ -919,7 +919,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
     this->setColour(ColourIDs::SelectionComponent::fill, s->getLassoFillColour().withAlpha(0.2f));
     this->setColour(ColourIDs::SelectionComponent::outline, s->getLassoBorderColour().withAlpha(0.75f));
 
-    this->setColour(ColourIDs::RollHeader::selection, s->getLassoBorderColour().withAlpha(0.8f));
+    this->setColour(ColourIDs::RollHeader::selection, s->getLassoBorderColour());
     this->setColour(ColourIDs::RollHeader::soundProbe, s->getLassoBorderColour().withMultipliedBrightness(1.1f).withAlpha(0.75f));
     this->setColour(ColourIDs::RollHeader::timeDistance, textColour.withAlpha(0.420f));
 
@@ -941,8 +941,6 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
         textColour.withAlpha(this->isDarkTheme ? 0.420f : 0.69f));
 
     this->setColour(ColourIDs::Menu::fill, s->getHeadlineFillColour());
-    this->setColour(ColourIDs::Menu::header,
-        s->getHeadlineFillColour().brighter(this->isDarkTheme ? 0.1f : 0.5f));
     this->setColour(ColourIDs::Menu::cursorFill, s->getTextColour().withAlpha(0.55f));
     this->setColour(ColourIDs::Menu::cursorShade, this->isDarkTheme ?
         s->getWhiteKeyColour().darker(0.420f).withAlpha(0.69f) :

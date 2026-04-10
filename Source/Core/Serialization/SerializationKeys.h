@@ -591,6 +591,7 @@ namespace Serialization
         static const Identifier keySignatureEventInsertAction = "keySignatureInsert";
         static const Identifier keySignatureEventRemoveAction = "keySignatureRemove";
         static const Identifier keySignatureEventChangeAction = "keySignatureChange";
+        static const Identifier keySignaturesGroupChangeAction = "keySignaturesChange";
 
         static const Identifier projectTemperamentChangeAction = "temperamentChange";
     } // namespace Undo

@@ -34,7 +34,7 @@ class KeySignaturesProjectMap final :
     public ProjectListener
 {
 public:
-    
+
     enum class Type : int8 { Large, Small };
 
     KeySignaturesProjectMap(ProjectNode &parentProject,
@@ -80,10 +80,16 @@ public:
     // Stuff for children
     //===------------------------------------------------------------------===//
 
-    void onKeySignatureSelected(KeySignatureComponent *nc);
-    void onKeySignatureMainAction(KeySignatureComponent *nc);
-    void onKeySignatureAltAction(KeySignatureComponent *nc);
+    void onKeySignatureAction(KeySignatureComponent *nc, ModifierKeys modKeys);
     float getBeatByXPosition(int x) const;
+
+    //===------------------------------------------------------------------===//
+    // For lasso
+    //===------------------------------------------------------------------===//
+
+    Lasso &getLassoSelection();
+    void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
+        const Rectangle<int> &rectangle);
 
 private:
 
@@ -109,6 +115,8 @@ private:
     bool useFixedDoNotation = false;
 
     ProjectNode &project;
+
+    Lasso lasso;
 
     ComponentFader animator;
 

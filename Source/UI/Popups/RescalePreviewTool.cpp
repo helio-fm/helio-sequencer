@@ -50,7 +50,7 @@ RescalePreviewTool::RescalePreviewTool(PianoRoll &roll,
             continue;
         }
 
-        menu.add(MenuItem::item(Icons::arpeggiate,
+        menu.add(MenuItem::item(Icons::empty,
             scales.getUnchecked(i)->getLocalizedName())->withAction([this, i]()
         {
             auto &transport = this->roll.getTransport();
@@ -143,7 +143,7 @@ QuickRescaleMenu::QuickRescaleMenu(const ProjectNode &project,
         const auto isCurrentScale = isEquivalentToCurrent &&
             scale->getUnlocalizedName() == this->event.getScale()->getUnlocalizedName();
 
-        menu.add(MenuItem::item(Icons::arpeggiate,
+        menu.add(MenuItem::item(Icons::empty,
             scales.getUnchecked(i)->getLocalizedName())->
             disabledIf(isEquivalentToCurrent)->
             markedAsCurrentIf(isCurrentScale)->

@@ -64,3 +64,24 @@ void KeySignatureSmallComponent::updateContent(const Temperament::Period &keyNam
     this->signatureLabel->setText(newName, dontSendNotification);
     this->repaint();
 }
+
+//===----------------------------------------------------------------------===//
+// SelectableComponent
+//===----------------------------------------------------------------------===//
+
+void KeySignatureSmallComponent::setSelected(bool selected)
+{
+    jassertfalse; // shouldn't be selectable
+}
+
+bool KeySignatureSmallComponent::isSelected() const noexcept
+{
+    jassertfalse; // shouldn't be selectable
+    return false;
+}
+
+const String &KeySignatureSmallComponent::getSelectionGroupId() const noexcept
+{
+    jassertfalse; // shouldn't be selectable
+    return this->event.getSequence()->getTrackId();
+}

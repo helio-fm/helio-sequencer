@@ -191,6 +191,11 @@ public:
         return this->getNumSelected();
     }
 
+    bool isEmpty() const noexcept
+    {
+        return this->getNumSelected() == 0;
+    }
+
     const Note &getNoteUnchecked(int i) const override
     {
         return this->getItemAs<NoteComponent>(i)->getNote();

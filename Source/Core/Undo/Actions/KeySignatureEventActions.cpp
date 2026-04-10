@@ -220,3 +220,132 @@ void KeySignatureEventChangeAction::reset() noexcept
     this->eventAfter.reset();
     this->trackId.clear();
 }
+
+//===----------------------------------------------------------------------===//
+// Change Group
+//===----------------------------------------------------------------------===//
+
+KeySignaturesGroupChangeAction::KeySignaturesGroupChangeAction(MidiTrackSource &source,
+    const String &trackId, Array<KeySignatureEvent> &state1, Array<KeySignatureEvent> &state2) noexcept :
+    UndoAction(source),
+    trackId(trackId)
+{
+    this->groupBefore.swapWith(state1);
+    this->groupAfter.swapWith(state2);
+}
+
+bool KeySignaturesGroupChangeAction::perform()
+{
+    if (auto *sequence = this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+    {
+        return sequence->changeGroup(this->groupBefore, this->groupAfter, false);
+    }
+
+    return false;
+}
+
+bool KeySignaturesGroupChangeAction::undo()
+{
+    if (auto *sequence = this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+    {
+        return sequence->changeGroup(this->groupAfter, this->groupBefore, false);
+    }
+
+    return false;
+}
+
+int KeySignaturesGroupChangeAction::getSizeInUnits()
+{
+    return (sizeof(KeySignatureEvent) * this->groupBefore.size()) +
+        (sizeof(KeySignatureEvent) * this->groupAfter.size());
+}
+
+UndoAction *KeySignaturesGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
+{
+    if (auto *nextChanger = dynamic_cast<KeySignaturesGroupChangeAction *>(nextAction))
+    {
+        if (nextChanger->trackId != this->trackId)
+        {
+            return nullptr;
+        }
+
+        if (this->groupBefore.size() != nextChanger->groupAfter.size())
+        {
+            return nullptr;
+        }
+
+        for (int i = 0; i < this->groupBefore.size(); ++i)
+        {
+            if (this->groupBefore.getUnchecked(i).getId() !=
+                nextChanger->groupAfter.getUnchecked(i).getId())
+            {
+                return nullptr;
+            }
+        }
+
+        return new KeySignaturesGroupChangeAction(this->source,
+            this->trackId, this->groupBefore, nextChanger->groupAfter);
+    }
+
+    (void)nextAction;
+    return nullptr;
+}
+
+//===----------------------------------------------------------------------===//
+// Serializable
+//===----------------------------------------------------------------------===//
+
+SerializedData KeySignaturesGroupChangeAction::serialize() const noexcept
+{
+    SerializedData tree(Serialization::Undo::keySignaturesGroupChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+
+    SerializedData groupBeforeChild(Serialization::Undo::groupBefore);
+    SerializedData groupAfterChild(Serialization::Undo::groupAfter);
+
+    for (int i = 0; i < this->groupBefore.size(); ++i)
+    {
+        groupBeforeChild.appendChild(this->groupBefore.getUnchecked(i).serialize());
+    }
+
+    for (int i = 0; i < this->groupAfter.size(); ++i)
+    {
+        groupAfterChild.appendChild(this->groupAfter.getUnchecked(i).serialize());
+    }
+
+    tree.appendChild(groupBeforeChild);
+    tree.appendChild(groupAfterChild);
+
+    return tree;
+}
+
+void KeySignaturesGroupChangeAction::deserialize(const SerializedData &data) noexcept
+{
+    this->reset();
+
+    this->trackId = data.getProperty(Serialization::Undo::trackId);
+
+    const auto groupBeforeChild = data.getChildWithName(Serialization::Undo::groupBefore);
+    const auto groupAfterChild = data.getChildWithName(Serialization::Undo::groupAfter);
+
+    for (const auto &props : groupBeforeChild)
+    {
+        KeySignatureEvent ks;
+        ks.deserialize(props);
+        this->groupBefore.add(ks);
+    }
+
+    for (const auto &props : groupAfterChild)
+    {
+        KeySignatureEvent ks;
+        ks.deserialize(props);
+        this->groupAfter.add(ks);
+    }
+}
+
+void KeySignaturesGroupChangeAction::reset() noexcept
+{
+    this->groupBefore.clear();
+    this->groupAfter.clear();
+    this->trackId.clear();
+}

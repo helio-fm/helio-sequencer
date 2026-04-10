@@ -44,11 +44,9 @@ Holding `Space` and clicking on the timeline is what I call a "sound probe", and
 
 ### Range selection
 
-Click-and-drag on the timeline while holding any modifier key (`Control`/`Alt`/`Shift`) to select all notes or clips in a time range:
+Click-and-drag on the timeline while holding `Control` or `Command` to select all notes or clips in a time range:
 
 ![range-select]
-
-Holding `Shift` adds the items to the selection, holding `Alt` removes them.
 
 ### Freeform selection
 

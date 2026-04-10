@@ -149,11 +149,9 @@ void KeySignaturesProjectMap::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Type::KeySignature))
     {
-        this->animator.cancelAllAnimations(true);
-
         const auto &keySignature = static_cast<const KeySignatureEvent &>(event);
         auto *component = this->createComponent(keySignature);
-        this->addChildComponent(component);
+        this->addAndMakeVisible(component);
 
         const int indexOfSorted = this->keySignatureComponents.addSorted(*component, component);
         auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
@@ -169,10 +167,6 @@ void KeySignaturesProjectMap::onAddMidiEvent(const MidiEvent &event)
         }
 
         this->keySignaturesMap[keySignature] = component;
-
-        component->setAlpha(0.f);
-        this->animator.animateComponent(component,
-            component->getBounds(), 1.f, Globals::UI::fadeInLong, false, 0.0, 0.0);
     }
 }
 
@@ -185,9 +179,10 @@ void KeySignaturesProjectMap::onRemoveMidiEvent(const MidiEvent &event)
         if (auto *component = this->keySignaturesMap[keySignature])
         {
             this->animator.animateComponent(component,
-                component->getBounds(), 0.f, Globals::UI::fadeOutLong, true, 0.0, 0.0);
+                component->getBounds(), 0.f, Globals::UI::fadeOutShort, true, 0.0, 0.0);
 
             this->removeChildComponent(component);
+            this->lasso.deselect(component);
             this->keySignaturesMap.erase(keySignature);
 
             const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*component, component);
@@ -216,12 +211,10 @@ void KeySignaturesProjectMap::onChangeTrackProperties(MidiTrack *const track)
 void KeySignaturesProjectMap::onAddTrack(MidiTrack *const track)
 {
     if (this->project.getTimeline() != nullptr &&
-        track == this->project.getTimeline()->getKeySignatures())
+        track == this->project.getTimeline()->getKeySignatures() &&
+        track->getSequence()->size() > 0)
     {
-        if (track->getSequence()->size() > 0)
-        {
-            this->reloadTrackMap();
-        }
+        this->reloadTrackMap();
     }
 }
 
@@ -283,6 +276,7 @@ void KeySignaturesProjectMap::onChangeViewBeatRange(float firstBeat, float lastB
 
 void KeySignaturesProjectMap::onBeforeReloadProjectContent()
 {
+    this->lasso.deselectAll();
     this->keySignatureComponents.clear();
 }
 
@@ -297,29 +291,31 @@ void KeySignaturesProjectMap::onReloadProjectContent(const Array<MidiTrack *> &t
 // Stuff for children
 //===----------------------------------------------------------------------===//
 
-void KeySignaturesProjectMap::onKeySignatureSelected(KeySignatureComponent *nc)
+void KeySignaturesProjectMap::onKeySignatureAction(KeySignatureComponent *ksc, ModifierKeys mods)
 {
-    // Selects everything within the range of this keySignature
-    this->keySignatureComponents.sort(*nc);
-    const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*nc, nc);
-    KeySignatureComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+    if (mods.isShiftDown() && !mods.isAltDown() && !mods.isCommandDown())
+    {
+        const auto fromBeat = this->project.getTransport().getSeekBeat();
+        const auto toBeat = ksc->getBeat();
 
-    const float startBeat = nc->getBeat();
-    const float endBeat = (nextEventComponent != nullptr) ? nextEventComponent->getBeat() : FLT_MAX;
-    const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
-    const bool shouldClearSelection = !isShiftPressed;
-
-    this->roll->selectEventsInRange(startBeat, endBeat, shouldClearSelection);
-}
-
-void KeySignaturesProjectMap::onKeySignatureMainAction(KeySignatureComponent *ksc)
-{
-    this->keySignatureTapAction(ksc, false);
-}
-
-void KeySignaturesProjectMap::onKeySignatureAltAction(KeySignatureComponent *ksc)
-{
-    this->keySignatureTapAction(ksc, true);
+        this->lasso.deselectAll();
+        for (auto *component : this->keySignatureComponents)
+        {
+            if (component->getBeat() >= jmin(fromBeat, toBeat) &&
+                component->getBeat() <= jmax(fromBeat, toBeat))
+            {
+                this->lasso.addToSelection(component);
+            }
+        }
+    }
+    else if (mods.isAnyModifierKeyDown() || mods.isRightButtonDown())
+    {
+        this->keySignatureTapAction(ksc, true);
+    }
+    else
+    {
+        this->keySignatureTapAction(ksc, false);
+    }
 }
 
 float KeySignaturesProjectMap::getBeatByXPosition(int x) const
@@ -327,6 +323,28 @@ float KeySignaturesProjectMap::getBeatByXPosition(int x) const
     const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll->getWidth()));
     const float targetBeat = this->roll->getRoundBeatSnapByXPosition(xRoll);
     return jlimit(this->rollFirstBeat, this->rollLastBeat, targetBeat);
+}
+
+//===----------------------------------------------------------------------===//
+// For lasso
+//===----------------------------------------------------------------------===//
+
+Lasso &KeySignaturesProjectMap::getLassoSelection()
+{
+    return this->lasso;
+}
+
+void KeySignaturesProjectMap::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
+    const Rectangle<int> &rectangle)
+{
+    for (auto *component : this->keySignatureComponents)
+    {
+        if (rectangle.intersects(component->getBounds()))
+        {
+            jassert(!itemsFound.contains(component));
+            itemsFound.add(component);
+        }
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -341,7 +359,7 @@ void KeySignaturesProjectMap::keySignatureTapAction(KeySignatureComponent *ksc, 
         const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*ksc, ksc);
         const auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
         const float endBeat = (nextEventComponent != nullptr) ? nextEventComponent->getBeat() : FLT_MAX;
-        ModalCallout::emit(new QuickRescaleMenu(this->project, ksc->getEvent(), endBeat), this, true);
+        ModalCallout::emit(new QuickRescaleMenu(this->project, ksc->getEvent(), endBeat), ksc, false);
         return;
     }
 
@@ -405,20 +423,19 @@ void KeySignaturesProjectMap::applyKeySignatureBounds(KeySignatureComponent *nc,
     const float nextBeat = ((nextOne ? nextOne->getBeat() : this->rollLastBeat) - this->rollFirstBeat);
     const float nextX = mapWidth * (nextBeat / projectLengthInBeats);
 
-    const float minWidth = 10.f;
-    const float widthMargin = 12.f;
-    const float componentsPadding = 10.f;
-    const float maxWidth = nextX - x;
-    const float w = jmax(minWidth,
-        jmin((maxWidth - componentsPadding), (nc->getTextWidth() + widthMargin)));
+    constexpr float minWidth = 10.f;
+    constexpr float widthMargin = 12.f;
+    constexpr float componentsPadding = 8.f;
+    const float newWidth = nc->getTextWidth() + widthMargin;
+    const float maxWidth = (beat == nextBeat) ? newWidth : nextX - x - componentsPadding;
+    const float finalWidth = jmax(minWidth, jmin(maxWidth, newWidth));
 
-    nc->setRealBounds(Rectangle<float>(x, 0.f, w, float(this->getHeight())));
+    nc->setRealBounds(Rectangle<float>(x, 0.f, finalWidth, float(this->getHeight())));
 }
 
 KeySignatureComponent *KeySignaturesProjectMap::getPreviousEventComponent(int indexOfSorted) const
 {
     const int indexOfPrevious = indexOfSorted - 1;
-
     return
         isPositiveAndBelow(indexOfPrevious, this->keySignatureComponents.size()) ?
         this->keySignatureComponents.getUnchecked(indexOfPrevious) :
@@ -428,7 +445,6 @@ KeySignatureComponent *KeySignaturesProjectMap::getPreviousEventComponent(int in
 KeySignatureComponent *KeySignaturesProjectMap::getNextEventComponent(int indexOfSorted) const
 {
     const int indexOfNext = indexOfSorted + 1;
-
     return
         isPositiveAndBelow(indexOfNext, this->keySignatureComponents.size()) ?
         this->keySignatureComponents.getUnchecked(indexOfNext) :

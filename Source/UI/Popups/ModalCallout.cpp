@@ -52,7 +52,7 @@ void ModalCallout::fadeIn()
 
 void ModalCallout::fadeOut()
 {
-    const int reduceBy = 20;
+    const int reduceBy = 10;
     const auto offset = this->targetPoint - this->getBounds().getCentre().toFloat();
     const auto offsetNormalized = (offset / offset.getDistanceFromOrigin() * reduceBy).toInt();
 
@@ -107,11 +107,8 @@ void ModalCallout::parentHierarchyChanged()
         const auto p = Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition() - b.getPosition();
 #endif
 
-        constexpr auto xOffset = ModalCallout::arrowSize;
-        constexpr auto yOffset = 1.f;
-        this->clickPointAbs = Point<float>((p.getX() + xOffset) / b.getWidth(),
-            (p.getY() + yOffset) / b.getHeight()).
-                transformedBy(this->getTransform().inverted());
+        this->clickPointAbs = Point<float>(p.getX() / b.getWidth(), p.getY() / b.getHeight()).
+            transformedBy(this->getTransform().inverted());
 
         this->findTargetPointAndUpdateBounds();
     }
@@ -160,23 +157,23 @@ bool ModalCallout::keyPressed(const KeyPress &key)
 
 void ModalCallout::findTargetPointAndUpdateBounds()
 {
+    jassert(this->getParentComponent() != nullptr);
     const auto pageBounds = App::Layout().getBoundsForPopups();
 
     if (this->alignsToMouse)
     {
-        jassert(this->getParentComponent() != nullptr);
         const auto b = this->getParentComponent()->getBounds();
-        Rectangle<int> clickBounds(int(b.getWidth() * this->clickPointAbs.getX()),
-            int(b.getHeight() * this->clickPointAbs.getY()), 0, 0);
+        const Rectangle<int> clickBounds(int(b.getWidth() * this->clickPointAbs.getX()),
+            int((b.getHeight() * this->clickPointAbs.getY()) - arrowSize), 0, 0);
         const auto pointBounds = clickBounds.constrainedWithin(pageBounds);
         this->pointToAndFit(pointBounds, pageBounds);
     }
     else
     {
-        auto positionInWorkspace = App::Layout().getLocalPoint(this->targetComponent, Point<int>(0, 0));
-        Rectangle<int> topLevelBounds(positionInWorkspace.x, positionInWorkspace.y,
-            this->targetComponent->getWidth(), this->targetComponent->getHeight());
-        this->pointToAndFit(topLevelBounds, pageBounds);
+        const auto areaInWorkspace =
+            this->getParentComponent()->getLocalArea(this->targetComponent,
+                this->targetComponent->getLocalBounds());
+        this->pointToAndFit(areaInWorkspace, pageBounds);
     }
 }
 
@@ -190,11 +187,10 @@ void ModalCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo, const R
     Rectangle<int> newBounds(this->contentComponent->getWidth() + borderSpace * 2,
         this->contentComponent->getHeight() + borderSpace * 2);
 
-    const int hw = (newBounds.getWidth() / 2);
-    const int hh = (newBounds.getHeight() / 2);
+    const float hw = float(newBounds.getWidth() / 2);
+    const float hh = float(newBounds.getHeight() / 2);
     const float hwReduced = float(hw - borderSpace * 2);
     const float hhReduced = float(hh - borderSpace * 2);
-    const float arrowIndent = borderSpace - arrowSize;
 
     const Point<float> targets[4] =
     {
@@ -204,15 +200,16 @@ void ModalCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo, const R
         Point<float>(float(newAreaToPointTo.getCentreX()), float(newAreaToPointTo.getY()))
     };
 
+    const auto margin = 1;
     const Line<float> lines[4] =
     {
-        Line<float>(targets[0].translated(-hwReduced, hh - arrowIndent), targets[0].translated(hwReduced, hh - arrowIndent)),
-        Line<float>(targets[1].translated(hw - arrowIndent, -hhReduced), targets[1].translated(hw - arrowIndent, hhReduced)),
-        Line<float>(targets[2].translated(-(hw - arrowIndent), -hhReduced), targets[2].translated(-(hw - arrowIndent), hhReduced)),
-        Line<float>(targets[3].translated(-hwReduced, -(hh - arrowIndent)), targets[3].translated(hwReduced, -(hh - arrowIndent)))
+        Line<float>(targets[0].translated(-hwReduced, hh + margin), targets[0].translated(hwReduced, hh + margin)),
+        Line<float>(targets[1].translated(hw + margin, -hhReduced), targets[1].translated(hw + margin, hhReduced)),
+        Line<float>(targets[2].translated(-(hw + margin), -hhReduced), targets[2].translated(-(hw + margin), hhReduced)),
+        Line<float>(targets[3].translated(-hwReduced, -(hh + margin)), targets[3].translated(hwReduced, -(hh + margin)))
     };
 
-    const auto centrePointArea = newAreaToFitIn.reduced(hw, hh).toFloat();
+    const auto centrePointArea = newAreaToFitIn.toFloat().reduced(hw, hh);
     const auto targetCentre = newAreaToPointTo.getCentre().toFloat();
 
     float nearest = 1.0e9f;
@@ -223,18 +220,28 @@ void ModalCallout::pointToAndFit(const Rectangle<int> &newAreaToPointTo, const R
             centrePointArea.getConstrainedPoint(lines[i].getEnd()));
 
         const auto centre = constrainedLine.findNearestPointTo(targetCentre);
-        auto distanceFromCentre = centre.getDistanceFrom(targets[i]);
+        auto distanceFromTarget = centre.getDistanceFrom(targets[i]);
 
-        if (!centrePointArea.intersects(lines[i]))
+        if (!centrePointArea.intersects(lines[i]) &&
+            !centrePointArea.contains(lines[i].getStart()) &&
+            !centrePointArea.contains(lines[i].getEnd()))
         {
-            distanceFromCentre += 1000.f;
+            distanceFromTarget += 1000.f;
         }
 
-        if (distanceFromCentre < nearest)
+        const auto priorityPenalty = i * 100.f;
+        distanceFromTarget += priorityPenalty;
+
+        if (distanceFromTarget < nearest)
         {
-            nearest = distanceFromCentre;
+            nearest = distanceFromTarget;
             this->targetPoint = targets[i];
-            newBounds.setPosition(int(centre.x - hw), int(centre.y - hh));
+            Point<int> position(int(centre.x - hw), int(centre.y - hh));
+            if (i == 0 || i == 3) // if aligned vertically
+            {
+                position.x = jmax(position.x, newAreaToPointTo.getX() - borderSpace + margin);
+            }
+            newBounds.setPosition(position);
         }
     }
 

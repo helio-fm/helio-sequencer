@@ -50,7 +50,7 @@ public:
         if (this->content.get())
         {
             this->addAndMakeVisible(this->content.get());
-            this->content->setTopLeftPosition(padding / 2, padding / 2 + 1);
+            this->content->setTopLeftPosition(padding / 2, padding / 2);
             this->syncBoundsWithContent();
         }
     }
@@ -90,10 +90,7 @@ public:
     {
         g.setColour(this->fillColour);
         g.fillRect(1, 1, this->getWidth() - 2, this->getHeight() - 2);
-        HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.25f, 1.f);
-
-        g.setColour(this->headerColour);
-        HelioTheme::drawDashedHorizontalLine2(g, 4.f, 1.f, float(this->getWidth() - 3), 8.f);
+        HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 0.420f, 1.f);
     }
 
 private:
@@ -118,7 +115,6 @@ private:
     UniquePointer<Component> content;
 
     const Colour fillColour = findDefaultColour(ColourIDs::Menu::fill);
-    const Colour headerColour = findDefaultColour(ColourIDs::Menu::header);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ContextMenuComponent)
 };

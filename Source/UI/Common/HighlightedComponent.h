@@ -37,7 +37,6 @@ public:
     {
         if (this->highlighter != nullptr)
         {
-            this->highlightAnimator.cancelAnimation(this->highlighter.get(), false);
             this->highlighter->setBounds(this->getLocalBounds());
         }
     }
@@ -87,9 +86,6 @@ public:
         {
             if (this->highlighter != nullptr)
             {
-                this->highlightAnimator.animateComponent(this->highlighter.get(),
-                    this->highlighter->getBounds(), 0.f, Globals::UI::fadeOutShort / 2, true, 1.0, 0.0);
-
                 this->removeChildComponent(this->highlighter.get());
             }
         }
@@ -109,7 +105,6 @@ protected:
 
     void clearHighlighterAndStopAnimations()
     {
-        this->highlightAnimator.cancelAllAnimations(true);
         this->highlighter = nullptr;
     }
 
@@ -118,8 +113,6 @@ private:
     bool isHighlighted = false;
 
     UniquePointer<Component> highlighter;
-
-    ComponentFader highlightAnimator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighlightedComponent)
 };

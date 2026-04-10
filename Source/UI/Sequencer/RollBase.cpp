@@ -318,7 +318,8 @@ void RollBase::onLongTap(const Point<float> &position,
 
     if (auto *ksc = dynamic_cast<KeySignatureLargeComponent *>(target.get()))
     {
-        this->keySignaturesMap->onKeySignatureAltAction(ksc); // re-scaling menu
+        this->keySignaturesMap->onKeySignatureAction(ksc,
+            ModifierKeys(ModifierKeys::altModifier)); // the re-scaling menu
         return;
     }
 
@@ -326,7 +327,7 @@ void RollBase::onLongTap(const Point<float> &position,
     {
         const auto lassoType =
             this->project.getEditMode().isMode(RollEditMode::selectionMode) ?
-            SelectionComponent::LassoType::Path : SelectionComponent::LassoType::Rectangle;
+                SelectionComponent::LassoType::Path : SelectionComponent::LassoType::Rectangle;
         this->project.getEditMode().setTemporaryMode(RollEditMode::selectionMode);
         this->lassoComponent->beginLasso(position, this, lassoType);
         return;

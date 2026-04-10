@@ -171,7 +171,6 @@ namespace ColourIDs
     namespace Menu
     {
         static const int fill                   = 0x2000820;
-        static const int header                 = 0x2000821;
         static const int cursorFill             = 0x2000822;
         static const int cursorShade            = 0x2000823;
         static const int highlight              = 0x2000824;

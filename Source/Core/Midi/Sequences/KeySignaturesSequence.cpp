@@ -151,6 +151,51 @@ bool KeySignaturesSequence::change(const KeySignatureEvent &oldParams,
     return true;
 }
 
+bool KeySignaturesSequence::changeGroup(Array<KeySignatureEvent> &groupBefore,
+    Array<KeySignatureEvent> &groupAfter, bool undoable)
+{
+    jassert(groupBefore.size() == groupAfter.size());
+
+    if (undoable)
+    {
+        if (groupBefore.size() == 1)
+        {
+            this->getUndoStack()->
+                perform(new KeySignatureEventChangeAction(*this->getProject(),
+                    this->getTrackId(), groupBefore.getFirst(), groupAfter.getFirst()));
+        }
+        else
+        {
+            this->getUndoStack()->
+                perform(new KeySignaturesGroupChangeAction(*this->getProject(),
+                    this->getTrackId(), groupBefore, groupAfter));
+        }
+    }
+    else
+    {
+        for (int i = 0; i < groupBefore.size(); ++i)
+        {
+            const KeySignatureEvent &oldParams = groupBefore.getReference(i);
+            const KeySignatureEvent &newParams = groupAfter.getReference(i);
+            const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
+            jassert(index >= 0);
+            if (index >= 0)
+            {
+                auto *changedEvent = static_cast<KeySignatureEvent *>(this->midiEvents.getUnchecked(index));
+                const KeySignatureEvent oldEvent(*changedEvent);
+                changedEvent->applyChanges(newParams);
+                this->midiEvents.remove(index, false);
+                this->midiEvents.addSorted(*changedEvent, changedEvent);
+                this->eventDispatcher.dispatchChangeEvent(oldEvent, *changedEvent);
+            }
+        }
+
+        this->updateBeatRange(true);
+    }
+
+    return true;
+}
+
 //===----------------------------------------------------------------------===//
 // Batch actions
 //===----------------------------------------------------------------------===//

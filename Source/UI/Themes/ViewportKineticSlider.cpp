@@ -25,21 +25,19 @@ void ViewportKineticSlider::stopAnimationForViewport(Viewport *targetViewport)
         return;
     }
 
-    for (int i = 0; i < this->animators.size(); ++i)
+    for (int i = this->animators.size(); --i >= 0;)
     {
         if (this->animators[i]->viewport == targetViewport)
         {
             this->animators.remove(i);
-            break;
         }
     }
 
-    for (int i = 0; i < this->dragStates.size(); ++i)
+    for (int i = this->dragStates.size(); --i >= 0;)
     {
         if (this->dragStates[i]->viewport == targetViewport)
         {
             this->dragStates.remove(i);
-            break;
         }
     }
 }
@@ -82,31 +80,39 @@ void ViewportKineticSlider::startAnimationForViewport(Viewport *targetViewport, 
         return;
     }
 
+    static constexpr auto globalSpeed = 100.f;
+    force *= globalSpeed;
+
     auto newForce = force;
 
     // picks up the precomputed force
+    for (auto &a : this->animators)
+    {
+        if (a->viewport == targetViewport)
+        {
+            newForce = a->force + force;
+            break;
+        }
+    }
     for (auto &s : this->dragStates)
     {
         if (s->viewport == targetViewport)
         {
-            newForce = s->force;
+            newForce = s->force + force;
             break;
         }
     }
 
-    // cleans up
     this->stopAnimationForViewport(targetViewport);
 
-    static constexpr auto maxForce = 0.75f;
-    static constexpr auto startingForceMultiplier = -50.f;
-
-    const float newLimitedForceX = jmax(-maxForce, jmin(maxForce, newForce.getX()));
-    const float newLimitedForceY = jmax(-maxForce, jmin(maxForce, newForce.getY()));
+    static constexpr auto maxForce = 10000.f;
+    const float newLimitedForceX = jlimit(-maxForce, maxForce, newForce.getX());
+    const float newLimitedForceY = jlimit(-maxForce, maxForce, newForce.getY());
     newForce = Point<float>(newLimitedForceX, newLimitedForceY);
 
     Animator::Ptr animator(new Animator());
     animator->viewport = targetViewport;
-    animator->force = newForce * startingForceMultiplier;
+    animator->force = newForce;
     animator->anchor = targetViewport->getViewPosition();
     this->animators.add(animator);
 
@@ -123,38 +129,39 @@ void ViewportKineticSlider::timerCallback()
         this->stopTimer();
     }
 
-    // updates animators
-    for (int i = 0; i < this->animators.size(); ++i)
+    for (int i = this->animators.size(); --i >= 0;)
     {
         auto animator = this->animators.getUnchecked(i);
-
-        if (animator->viewport == nullptr)
+        if (animator->viewport == nullptr ||
+            animator->force.getDistanceSquaredFromOrigin() < 1.f)
         {
             this->animators.remove(i);
-            break;
+            continue;
         }
 
-        if (animator->force.getDistanceFromOrigin() < 1.0f)
-        {
-            this->animators.remove(i);
-            break;
-        }
-
-        animator->force *= 0.85f;
-        animator->anchor += animator->force.toInt();
+        animator->force *= 0.69f;
+        animator->anchor -= animator->force.toInt();
         animator->viewport->setViewPosition(animator->anchor);
     }
 
-    // calculates the speed
-    for (auto &state : this->dragStates)
+    for (int i = this->dragStates.size(); --i >= 0;)
     {
-        const auto timeDelta = Time::getMillisecondCounterHiRes() - state->lastCheckTime;
-        state->lastCheckTime = Time::getMillisecondCounterHiRes();
+        auto state = this->dragStates.getUnchecked(i);
+
+        const auto now = Time::getMillisecondCounterHiRes();
+        const auto timeDelta = now - state->lastCheckTime;
+        state->lastCheckTime = now;
 
         const auto dragDelta = state->currentOffset - state->offsetAnchor;
         state->offsetAnchor = state->currentOffset;
 
         const auto newForce = dragDelta / timeDelta;
         state->force = (state->force * 0.75f) + (newForce * 0.25f);
+
+        if (state->viewport == nullptr ||
+            state->force.getDistanceSquaredFromOrigin() <= 0.01f)
+        {
+            this->dragStates.remove(i);
+        }
     }
 }

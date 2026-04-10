@@ -452,7 +452,7 @@ void TransportControlComponent::onLongTap(const Point<float> &position,
     {
         if (this->isPlaying.get())
         {
-            // wil speed up playback:
+            // will speed up playback:
             this->broadcastCommandMessage(CommandIDs::TransportPlaybackStart);
         }
     }

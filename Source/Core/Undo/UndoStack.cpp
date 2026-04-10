@@ -137,6 +137,7 @@ UndoAction *UndoStack::Transaction::createUndoActionByTag(const Identifier &tagN
     else if (tagName == Undo::keySignatureEventInsertAction)         { return new KeySignatureEventInsertAction(this->project); }
     else if (tagName == Undo::keySignatureEventRemoveAction)         { return new KeySignatureEventRemoveAction(this->project); }
     else if (tagName == Undo::keySignatureEventChangeAction)         { return new KeySignatureEventChangeAction(this->project); }
+    else if (tagName == Undo::keySignaturesGroupChangeAction)        { return new KeySignaturesGroupChangeAction(this->project); }
     else if (tagName == Undo::automationEventInsertAction)           { return new AutomationEventInsertAction(this->project); }
     else if (tagName == Undo::automationEventRemoveAction)           { return new AutomationEventRemoveAction(this->project); }
     else if (tagName == Undo::automationEventChangeAction)           { return new AutomationEventChangeAction(this->project); }

@@ -24,7 +24,7 @@ HeaderSelectionIndicator::HeaderSelectionIndicator() :
     this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);
-    this->setSize(128, 10);
+    this->setSize(10, 10);
 }
 
 void HeaderSelectionIndicator::paint(Graphics &g)

@@ -27,6 +27,9 @@
 #include "ClipRangeIndicator.h"
 #include "TrackStartIndicator.h"
 #include "TrackEndIndicator.h"
+#include "KeySignaturesProjectMap.h"
+#include "TimeSignaturesProjectMap.h"
+#include "AnnotationsProjectMap.h"
 #include "ModalCallout.h"
 #include "TimelineMenu.h"
 
@@ -180,8 +183,8 @@ RollHeader::RollHeader(Transport &transport, RollBase &roll, Viewport &viewport)
         *this, roll, PlaybackLoopMarker::Type::LoopEnd);
     this->addChildComponent(this->loopMarkerEnd.get());
 
-    this->selectionIndicator = make<HeaderSelectionIndicator>();
-    this->addChildComponent(this->selectionIndicator.get());
+    this->headerSelectionIndicator = make<HeaderSelectionIndicator>();
+    this->addChildComponent(this->headerSelectionIndicator.get());
 
     this->projectStartIndicator = make<TrackStartIndicator>();
     this->addAndMakeVisible(this->projectStartIndicator.get());
@@ -189,9 +192,8 @@ RollHeader::RollHeader(Transport &transport, RollBase &roll, Viewport &viewport)
     this->projectEndIndicator = make<TrackEndIndicator>();
     this->addAndMakeVisible(this->projectEndIndicator.get());
 
-    this->setSize(this->getParentWidth(), Globals::UI::rollHeaderHeight);
-    this->selectionIndicator->setTopLeftPosition(0,
-        this->getHeight() - this->selectionIndicator->getHeight());
+    this->keysSelectionComponent = make<HeaderSelectionComponent>();
+    this->addAndMakeVisible(this->keysSelectionComponent.get());
 }
 
 RollHeader::~RollHeader() = default;
@@ -436,6 +438,42 @@ void RollHeader::updateSelectionRangeIndicatorPosition()
 }
 
 //===----------------------------------------------------------------------===//
+// DrawableLassoSource
+//===----------------------------------------------------------------------===//
+
+Lasso &RollHeader::getLassoSelection()
+{
+    // maybe someday this should select all timeline events,
+    // but for now I only care about key signatures, and it's easier to do:
+    jassert(this->roll.keySignaturesMap != nullptr);
+    return this->roll.keySignaturesMap->getLassoSelection();
+}
+
+inline Point<float> RollHeader::getLassoAnchor(const Point<float> &position) const
+{
+    return { position.x / this->roll.getBeatWidth() + this->roll.getFirstBeat(), position.y };
+}
+
+inline Point<int> RollHeader::getLassoPosition(const Point<float> &anchorPoint) const
+{
+    return { this->roll.getXPositionByBeat(anchorPoint.x), int(anchorPoint.y) };
+}
+
+void RollHeader::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
+    const Rectangle<int> &rectangle)
+{
+    const auto fullHeight = rectangle.withY(0).withHeight(INT_MAX);
+    jassert(this->roll.keySignaturesMap != nullptr);
+    this->roll.keySignaturesMap->findLassoItemsInArea(itemsFound, fullHeight);
+}
+
+void RollHeader::findLassoItemsInPolygon(Array<SelectableComponent *> &itemsFound,
+    const Rectangle<int> &bounds, const Array<Point<float>> &polygon)
+{
+    jassertfalse; // not expecting polygon selection here
+}
+
+//===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
 
@@ -447,6 +485,12 @@ void RollHeader::mouseDown(const MouseEvent &e)
         return;
     }
 
+    const bool rollCanSelectKeys = this->roll.keySignaturesMap != nullptr;
+    if (rollCanSelectKeys)
+    {
+        this->getLassoSelection().deselectAll();
+    }
+
     if (this->soundProbeMode.get())
     {
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x);
@@ -456,36 +500,40 @@ void RollHeader::mouseDown(const MouseEvent &e)
         this->roll.addAndMakeVisible(this->probeIndicator.get());
         this->updateSoundProbeIndicatorPosition(this->probeIndicator.get(), e);
     }
-    else
+    else if (this->roll.isInSelectionMode() ||
+        (e.mods.isShiftDown() && !e.mods.isCommandDown()))
+    {
+        if (rollCanSelectKeys)
+        {
+            this->keysSelectionComponent->beginLasso({ e.position.x, 0.f }, this);
+        }
+    }
+    else if (e.mods.isAnyModifierKeyDown()) // fixme which conditions?
     {
         const auto parentEvent = e.getEventRelativeTo(&this->roll);
+        this->roll.getSelectionComponent()->beginLasso({ parentEvent.position.x, 0.f }, &this->roll);
+        this->headerSelectionIndicator->setStartAnchor(this->getUnalignedAnchorForEvent(e));
+    }
+    else if (!this->transport.isPlayingAndRecording())
+    {
+        this->transport.stopPlayback();
+        this->roll.cancelPendingUpdate(); // why is it here?
         const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
 
-        if ((e.mods.isAnyModifierKeyDown() || this->roll.isInSelectionMode()))
-        {
-            this->roll.getSelectionComponent()->beginLasso({ parentEvent.position.x, 0.f }, &this->roll);
-            this->selectionIndicator->setStartAnchor(this->getUnalignedAnchorForEvent(e));
-        }
-        else if (!this->transport.isPlayingAndRecording())
-        {
-            this->transport.stopPlayback();
-            this->roll.cancelPendingUpdate(); // why is it here?
-
-            // two presses on mobile will emit the timeline menu,
-            // on the desktop it is available via right click
+        // two presses on mobile will emit the timeline menu,
+        // on the desktop it is available via right click
 #if PLATFORM_MOBILE
-            if (this->transport.getSeekBeat() == roundBeat)
-            {
-                this->showPopupMenu();
-            }
-            else
-            {
-                this->transport.seekToBeat(roundBeat);
-            }
-#elif PLATFORM_DESKTOP
-            this->transport.seekToBeat(roundBeat);
-#endif
+        if (this->transport.getSeekBeat() == roundBeat)
+        {
+            this->showPopupMenu();
         }
+        else
+        {
+            this->transport.seekToBeat(roundBeat);
+        }
+#elif PLATFORM_DESKTOP
+        this->transport.seekToBeat(roundBeat);
+#endif
     }
 }
 
@@ -535,27 +583,28 @@ void RollHeader::mouseDrag(const MouseEvent &e)
             }
         }
     }
-    else
+    else if (this->roll.getSelectionComponent()->isDragging())
     {
-        if (this->roll.getSelectionComponent()->isDragging())
+        if (!this->headerSelectionIndicator->isVisible())
         {
-            if (!this->selectionIndicator->isVisible())
-            {
-                this->selectionIndicator->fadeIn();
-            }
+            this->headerSelectionIndicator->fadeIn();
+        }
 
-            const auto parentEvent = e.getEventRelativeTo(&this->roll);
-            const auto parentGlobalSelection = parentEvent.withNewPosition(Point<int>(parentEvent.x, this->roll.getHeight()));
-            this->roll.getSelectionComponent()->dragLasso(parentGlobalSelection);
-            this->selectionIndicator->setEndAnchor(this->getUnalignedAnchorForEvent(e));
-        }
-        else if (!this->transport.isPlayingAndRecording())
-        {
-            const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
-            this->transport.stopPlayback();
-            this->roll.cancelPendingUpdate();
-            this->transport.seekToBeat(roundBeat);
-        }
+        const auto parentEvent = e.getEventRelativeTo(&this->roll);
+        const auto parentGlobalSelection = parentEvent.withNewPosition(Point<int>(parentEvent.x, this->roll.getHeight()));
+        this->roll.getSelectionComponent()->dragLasso(parentGlobalSelection);
+        this->headerSelectionIndicator->setEndAnchor(this->getUnalignedAnchorForEvent(e));
+    }
+    else if (this->keysSelectionComponent->isDragging())
+    {
+        this->keysSelectionComponent->dragLasso(Point<float>(e.position.x, float(this->getHeight() - 1)));
+    }
+    else if (!this->transport.isPlayingAndRecording())
+    {
+        const float roundBeat = this->roll.getRoundBeatSnapByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
+        this->transport.stopPlayback();
+        this->roll.cancelPendingUpdate();
+        this->transport.seekToBeat(roundBeat);
     }
 }
 
@@ -569,18 +618,19 @@ void RollHeader::mouseUp(const MouseEvent &e)
 
     this->probeIndicator = nullptr;
     this->timeDistanceIndicator = nullptr;
-
-    this->selectionIndicator->fadeOut();
+    this->headerSelectionIndicator->fadeOut();
 
     if (this->soundProbeMode.get())
     {
         this->transport.allNotesControllersAndSoundOff();
-        return;
     }
-
-    if (this->roll.getSelectionComponent()->isDragging())
+    else if (this->roll.getSelectionComponent()->isDragging())
     {
         this->roll.getSelectionComponent()->endLasso();
+    }
+    else if (this->keysSelectionComponent->isDragging())
+    {
+        this->keysSelectionComponent->endLasso();
     }
     else if (!this->transport.isPlayingAndRecording())
     {
@@ -634,7 +684,8 @@ void RollHeader::mouseExit(const MouseEvent &e)
 void RollHeader::mouseDoubleClick(const MouseEvent &e)
 {
 #if PLATFORM_DESKTOP
-    if (this->soundProbeMode.get())
+    if (this->soundProbeMode.get() ||
+        e.mods.isBackButtonDown() || e.mods.isForwardButtonDown() || e.mods.isRightButtonDown())
     {
         return;
     }
@@ -704,6 +755,9 @@ void RollHeader::resized()
 
     this->projectStartIndicator->updateBounds();
     this->projectEndIndicator->updateBounds();
+
+    this->headerSelectionIndicator->setTopLeftPosition(0,
+        this->getHeight() - this->headerSelectionIndicator->getHeight());
 }
 
 void RollHeader::showPopupMenu()

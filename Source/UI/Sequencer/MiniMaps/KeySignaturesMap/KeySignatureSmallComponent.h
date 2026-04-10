@@ -34,6 +34,14 @@ public:
 
     void parentHierarchyChanged() override;
 
+    //===------------------------------------------------------------------===//
+    // SelectableComponent
+    //===------------------------------------------------------------------===//
+
+    void setSelected(bool selected) override;
+    bool isSelected() const noexcept override;
+    const String &getSelectionGroupId() const noexcept override;
+
 private:
 
     float textWidth = 0.f;

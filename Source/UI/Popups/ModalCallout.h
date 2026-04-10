@@ -60,7 +60,7 @@ private:
     void pointToAndFit(const Rectangle<int> &newAreaToPointTo,
         const Rectangle<int> &newAreaToFitIn);
 
-    static constexpr float arrowSize = 5.f;
+    static constexpr float arrowSize = 1.f;
 
     UniquePointer<Component> contentComponent;
     SafePointer<Component> targetComponent;
