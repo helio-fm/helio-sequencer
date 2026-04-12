@@ -32,7 +32,7 @@ class MidiSequence : public Serializable
 {
 public:
 
-    explicit MidiSequence(MidiTrack &track,
+    MidiSequence(MidiTrack &track,
         ProjectEventDispatcher &eventDispatcher) noexcept;
 
     //===------------------------------------------------------------------===//

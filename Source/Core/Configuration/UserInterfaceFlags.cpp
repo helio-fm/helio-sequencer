@@ -288,6 +288,11 @@ void UserInterfaceFlags::setRightSidebarWidth(int width)
     this->startTimer(UserInterfaceFlags::saveTimeoutMs);
 }
 
+Point<int> UserInterfaceFlags::getMinScriptEditorSize() const noexcept
+{
+    return this->minScriptEditorSize;
+}
+
 Point<int> UserInterfaceFlags::getScriptEditorSize() const noexcept
 {
     return this->scriptEditorSize;
@@ -496,8 +501,8 @@ void UserInterfaceFlags::deserialize(const SerializedData &data) noexcept
         StringArray tokens;
         const String scriptEditorSizeString = root.getProperty(UI::Flags::scriptEditorSize, "");
         tokens.addTokens(scriptEditorSizeString, " ", "");
-        const auto width = jmax(tokens[0].getIntValue(), defaultScriptEditorSize.getX());
-        const auto height = jmax(tokens[1].getIntValue(), defaultScriptEditorSize.getY());
+        const auto width = jmax(tokens[0].getIntValue(), minScriptEditorSize.getX());
+        const auto height = jmax(tokens[1].getIntValue(), minScriptEditorSize.getY());
         this->scriptEditorSize = { width, height };
     }
 

@@ -249,7 +249,7 @@ private:
         static const char *const keywords1Char[] =
             { "\xce\xbb", nullptr };
         static const char *const keywords2Char[] =
-            { "if", "or", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", nullptr };
+            { "if", "or", "pi", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", nullptr };
         static const char *const keywords3Char[] =
             { "and", "not", "map", "let", "nil", nullptr };
         static const char *const keywords4Char[] =

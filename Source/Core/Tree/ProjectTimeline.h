@@ -20,6 +20,8 @@
 class MidiEvent;
 class ProjectNode;
 class KeySignaturesSequence;
+class TimeSignaturesSequence;
+class AnnotationsSequence;
 
 #include "MidiTrack.h"
 #include "ProjectTimelineDiffLogic.h"
@@ -37,11 +39,13 @@ public:
     ~ProjectTimeline() override;
 
     MidiTrack *getAnnotations() const noexcept;
+    AnnotationsSequence *getAnnotationsSequence() const noexcept;
 
     MidiTrack *getKeySignatures() const noexcept;
     KeySignaturesSequence *getKeySignaturesSequence() const noexcept;
 
     MidiTrack *getTimeSignatures() const noexcept;
+    TimeSignaturesSequence *getTimeSignaturesSequence() const noexcept;
     TimeSignaturesAggregator *getTimeSignaturesAggregator() const noexcept;
 
     //===------------------------------------------------------------------===//

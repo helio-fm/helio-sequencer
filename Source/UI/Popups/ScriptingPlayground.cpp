@@ -823,7 +823,6 @@ ScriptingPlayground::ScriptingPlayground(ProjectNode &project, RollBase *roll) n
     const auto size = App::Config().getUiFlags()->getScriptEditorSize();
     this->setSize(size.getX(), size.getY());
 
-    // fixme should restore the last state instead of this:
     this->postCommandMessage(CommandIDs::ScriptingPlaygroundReevaluate);
 }
 
@@ -1003,7 +1002,8 @@ void ScriptingPlayground::updateBounds()
         const auto parentRelative =
             parent->getBounds().transformedBy(this->getTransform().inverted());
         const auto minSize =
-            Point<int>(690, 690).transformedBy(this->getTransform().inverted());
+            App::Config().getUiFlags()->getMinScriptEditorSize().
+                transformedBy(this->getTransform().inverted());
         const auto newWidth =
             jmin(parent->getWidth(),
                 2 * jmax(minSize.getX() / 2, this->getX() + this->cornerResizer->getX() +
@@ -1123,10 +1123,25 @@ void ScriptingPlayground::resetTimeline()
     while (ks->size() > 0)
     {
         auto *event = dynamic_cast<KeySignatureEvent *>(ks->getUnchecked(0));
+        jassert(event != nullptr);
         ks->remove(*event, true);
     }
 
-    // fixme time signatures and annotations
+    auto *ts = this->project.getTimeline()->getTimeSignaturesSequence();
+    while (ts->size() > 0)
+    {
+        auto *event = dynamic_cast<TimeSignatureEvent *>(ts->getUnchecked(0));
+        jassert(event != nullptr);
+        ts->remove(*event, true);
+    }
+
+    auto *as = this->project.getTimeline()->getAnnotationsSequence();
+    while (as->size() > 0)
+    {
+        auto *event = dynamic_cast<AnnotationEvent *>(as->getUnchecked(0));
+        jassert(event != nullptr);
+        as->remove(*event, true);
+    }
 }
 
 void ScriptingPlayground::addKeySignature(const KeySignatureEvent &parameters)
@@ -1211,7 +1226,7 @@ MidiTrack *ScriptingPlayground::findPianoTrackById(const String &trackId)
     return this->project.findTrackById<PianoTrackNode>(trackId);
 }
 
-void ScriptingPlayground::addNotes(MidiTrack *track, Array<Note> &notes)
+void ScriptingPlayground::addNotes(MidiTrack *track, Array<Note> &notes, bool undoable)
 {
     auto *sequence = dynamic_cast<PianoSequence *>(track->getSequence());
     if (sequence == nullptr)
@@ -1226,59 +1241,7 @@ void ScriptingPlayground::addNotes(MidiTrack *track, Array<Note> &notes)
         ownedNotes.add(Note(sequence, noteParams).withNewId());
     }
 
-    sequence->insertGroup(ownedNotes, true);
-}
-
-void ScriptingPlayground::joinAdjacent(MidiTrack *track)
-{
-    auto *sequence = dynamic_cast<PianoSequence *>(track->getSequence());
-    if (sequence == nullptr)
-    {
-        jassertfalse;
-        return;
-    }
-
-    SequencerOperations::joinAdjacent(*sequence, true, false);
-}
-
-void ScriptingPlayground::arpeggiate(MidiTrack *track, Arpeggiator::Ptr arp)
-{
-    auto *sequence = dynamic_cast<PianoSequence *>(track->getSequence());
-    if (sequence == nullptr)
-    {
-        jassertfalse;
-        return;
-    }
-
-    SequencerOperations::arpeggiate(*sequence,
-        *track->getPattern()->getClips().getFirst(),
-        arp,
-        this->project.getProjectInfo()->getTemperament(),
-        this->project.getTimeline()->getKeySignaturesSequence(),
-        this->project.getTimeline()->getTimeSignaturesAggregator(),
-        1.f,    // speed, todo custom
-        0.f,    // randomness
-        false,  // reversed
-        true,   // chord-bound
-        true,   // undoable
-        false); // shouldCheckpoint
-}
-
-void ScriptingPlayground::alignToScale(MidiTrack *track)
-{
-    auto *sequence = dynamic_cast<PianoSequence *>(track->getSequence());
-    if (sequence == nullptr)
-    {
-        jassertfalse;
-        return;
-    }
-
-    SequencerOperations::shiftInScaleKeyRelative(*sequence,
-        *track->getPattern()->getClips().getFirst(),
-        this->project.getTimeline()->getKeySignaturesSequence(),
-        this->project.getProjectInfo()->getTemperament()->getHighlighting(), 0,
-        true, // undoable
-        false); // shouldCheckpoint
+    sequence->insertGroup(ownedNotes, undoable);
 }
 
 void ScriptingPlayground::onProgramTerminated(bool success)
@@ -1289,7 +1252,9 @@ void ScriptingPlayground::onProgramTerminated(bool success)
 ScriptEngine::SideEffects::HostContext ScriptingPlayground::fillHostContext() const
 {
     return {
-        App::Config().getScales()->getAll(),
-        this->project.getProjectInfo()->getTemperament()->getPeriodSize()
+        this->project.getProjectInfo()->getTemperament(),
+        this->project.getTimeline()->getKeySignaturesSequence(),
+        this->project.getTimeline()->getTimeSignaturesAggregator(),
+        App::Config().getScales()->getAll()
     };
 }

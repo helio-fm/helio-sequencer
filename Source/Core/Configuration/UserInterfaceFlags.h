@@ -121,6 +121,7 @@ public:
     int getRightSidebarWidth() const noexcept;
     void setRightSidebarWidth(int width);
 
+    Point<int> getMinScriptEditorSize() const noexcept;
     Point<int> getScriptEditorSize() const noexcept;
     void setScriptEditorSize(Point<int> size);
 
@@ -196,6 +197,7 @@ private:
     int leftSidebarWidth = Globals::UI::sidebarWidth;
     int rightSidebarWidth = Globals::UI::sidebarWidth;
 
+    static constexpr Point<int> minScriptEditorSize = { 690, 690 };
     static constexpr Point<int> defaultScriptEditorSize = { 900, 960 };
     Point<int> scriptEditorSize = defaultScriptEditorSize;
 

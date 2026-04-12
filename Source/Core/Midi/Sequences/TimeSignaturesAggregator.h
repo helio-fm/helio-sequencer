@@ -21,10 +21,10 @@ class ProjectNode;
 class MidiSequence;
 class TimeSignatureEvent;
 class TimeSignaturesSequence;
-class DummyProjectEventDispatcher;
 
 #include "MidiTrack.h"
 #include "ProjectListener.h"
+#include "ProjectEventDispatcher.h"
 
 // A class responsible for maintaining an ordered list of
 // all currently used time signatures: the ones that are coming
@@ -108,7 +108,12 @@ private:
     void rebuildAll();
     bool isAggregatingTimeSignatureOverrides() const noexcept;
 
-    UniquePointer<DummyProjectEventDispatcher> dummyEventDispatcher;
+    // TimeSignaturesAggregator acts like a virtual midi track,
+    // so it can be used in MIDI export and for building the playback data;
+    // and for that it maintains a virtual midi sequence, rebuilding it on the fly;
+    // dummyEventDispatcher is here to help to avoid that sequence sending
+    // ProjectListener events, listeners instead will subscribe on onTimeSignaturesUpdated
+    DummyProjectEventDispatcher dummyEventDispatcher;
     UniquePointer<TimeSignaturesSequence> orderedEvents;
 
     // time signature aggregator may decide that the default grid

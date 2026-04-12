@@ -19,10 +19,13 @@
 
 class Note;
 class MidiTrack;
-class KeySignatureEvent;
 
 #include "Interpreter.h"
+#include "Scale.h"
 #include "Arpeggiator.h"
+#include "Temperament.h"
+#include "KeySignaturesSequence.h"
+#include "TimeSignaturesAggregator.h"
 
 class ScriptEngine final :
     public script::EvaluationContext,
@@ -48,21 +51,17 @@ public:
         virtual void addKeySignature(const KeySignatureEvent &event) = 0;
         virtual String makePianoTrack(const String &trackName) = 0;
         virtual MidiTrack *findPianoTrackById(const String &trackId) = 0;
-        virtual void addNotes(MidiTrack *track, Array<Note> &notes) = 0;
-        virtual void joinAdjacent(MidiTrack *track) = 0;
-        virtual void arpeggiate(MidiTrack *track, Arpeggiator::Ptr arp) = 0;
-        virtual void alignToScale(MidiTrack *track) = 0;
+        virtual void addNotes(MidiTrack *track, Array<Note> &notes, bool undoable) = 0;
 
         struct HostContext final
         {
-            // todo key and time signatures here
+            Temperament::Ptr temperament;
+            WeakReference<KeySignaturesSequence> keySignatures;
+            WeakReference<TimeSignaturesAggregator> timeSignatures;
             Array<Scale::Ptr> allScales;
-            int projectPeriodSize;
         };
-        virtual HostContext fillHostContext() const = 0;
 
-        // todo all refactorings
-        //virtual void refactorJoinAdjacent(MidiTrack *track) = 0;
+        virtual HostContext fillHostContext() const = 0;
     };
 
     struct Breakpoint final
@@ -112,7 +111,7 @@ public:
 
 private:
 
-    // when on, disables all side effects and only validates things,
+    // when on, disables all mutating side effects,
     // plus has lower limits on execution time and max call stack depth:
     Atomic<bool> playgroundMode = false;
 
@@ -184,8 +183,8 @@ private:
                 this->rootScope = move(scope);
             }
 
-            DBG("Evaluated in " +
-                String(Time::getMillisecondCounter() - this->startTime.get()) + " ms");
+            // DBG("Evaluated in " +
+            //     String(Time::getMillisecondCounter() - this->startTime.get()) + " ms");
 
             if (this->threadShouldExit())
             {

@@ -100,7 +100,7 @@ public:
     using Symbol = String;
     using List = Array<Value>;
     using BuiltInFunction =
-        Value (*)(const List &arguments,
+        Value (*)(const List &unevaluatedArguments,
             Scope &scope, EvaluationContext &context);
 
     enum class Type
@@ -119,13 +119,13 @@ public:
                  // it's either a main program body or a body of a closure
     };
 
-    Value() = default;
-    explicit Value(Type type) : type(type) {}
-    explicit Value(bool b) : type(Type::Bool), boolValue(b) {}
-    explicit Value(Integer i) : type(Type::Int), intValue(i) {}
-    explicit Value(Float f) : type(Type::Float), floatValue(f) {}
-    explicit Value(List &&list) : type(Type::List), list(move(list)) {}
-    Value(List &&list, Range<int> sourceCodeRange) :
+    inline Value() = default;
+    explicit inline Value(Type type) : type(type) {}
+    explicit inline Value(bool b) : type(Type::Bool), boolValue(b) {}
+    explicit inline Value(Integer i) : type(Type::Int), intValue(i) {}
+    explicit inline Value(Float f) : type(Type::Float), floatValue(f) {}
+    explicit inline Value(List &&list) : type(Type::List), list(move(list)) {}
+    inline Value(List &&list, Range<int> sourceCodeRange) :
         type(Type::List), list(move(list)), sourceCodeRange(sourceCodeRange) {}
 
     EvaluationError makeError(const EvaluationError::Type type) const
@@ -778,16 +778,13 @@ class Scope final
 {
 public:
 
-    Scope() = default;
+    inline Scope() = default;
 
-    bool hasValue(const String &name) const noexcept;
-
-    Optional<Value> findValue(const String &name) const noexcept;
-
+    bool hasValue(const String &name) const;
+    const Value &findValue(const String &name) const;
     Value makeValue(EvaluationContext &context, const String &name) const;
-
     void setValue(const String &name, const Value &value) noexcept;
-
+    void setValue(const String &name, Value &&value) noexcept;
     void include(const Scope &other);
 
     void setParent(Scope *parent)

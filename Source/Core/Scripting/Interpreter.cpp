@@ -85,6 +85,7 @@ inline void checkNumArgs(const Value::List &args, int number)
 inline Value::List evaluateArgs(const Value::List &args, Scope &scope, EvaluationContext &context)
 {
     Value::List result;
+    result.ensureStorageAllocated(args.size());
 
     for (const auto &value : args)
     {
@@ -126,8 +127,6 @@ Value ifThenElse(const Value::List &unevaluatedArgs, Scope &scope, EvaluationCon
     }
 }
 
-// name binding returns the evaluated argument,
-// function definition returns the function name
 Value define(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
     if (unevaluatedArgs.size() < 2)
@@ -135,8 +134,10 @@ Value define(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
         throw EvaluationError(EvaluationError::Type::TooFewArguments);
     }
 
+    const auto &firstArgument = unevaluatedArgs.getReference(0);
+
     // it's a name binding?
-    if (!unevaluatedArgs.getReference(0).isList())
+    if (firstArgument.isSymbol())
     {
         if (unevaluatedArgs.size() > 2)
         {
@@ -144,30 +145,33 @@ Value define(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
         }
 
         Value result = unevaluatedArgs.getReference(1).evaluate(scope, context);
-        scope.setValue(unevaluatedArgs.getReference(0).toString(), result);
-        return result;
+        scope.setValue(firstArgument.toString(), move(result));
+        return firstArgument;
     }
 
     // it's a function definition?
-    const auto declaration = unevaluatedArgs.getReference(0).asList();
+    const auto &declaration = firstArgument.asList();
     if (declaration.isEmpty())
     {
-        throw EvaluationError(EvaluationError::Type::TooFewArguments);
+        throw firstArgument.makeError(EvaluationError::Type::TooFewArguments);
+    }
+    else if (!declaration.getReference(0).isSymbol())
+    {
+        throw firstArgument.makeError(EvaluationError::Type::ExpectedSymbol);
     }
 
-    Range<int> parametersRange =
-        unevaluatedArgs.getReference(0).getSourceCodeRange();
+    auto parametersRange = firstArgument.getSourceCodeRange();
 
     Value::List parameters;
     for (int i = 1; i < declaration.size(); i++)
     {
-        parameters.add(declaration[i]);
+        parameters.add(declaration.getUnchecked(i));
     }
 
     Value::List body;
     for (int i = 1; i < unevaluatedArgs.size(); i++)
     {
-        body.add(unevaluatedArgs[i]);
+        body.add(unevaluatedArgs.getUnchecked(i));
     }
 
     const auto functionName = declaration.getReference(0).toString();
@@ -186,15 +190,10 @@ Value lambda(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
         throw EvaluationError(EvaluationError::Type::TooFewArguments);
     }
 
-    if (!unevaluatedArgs.getReference(0).isList())
-    {
-        throw EvaluationError(EvaluationError::Type::InvalidArgument);
-    }
-
     auto parameters = unevaluatedArgs.getReference(0).asList();
     if (parameters.isEmpty())
     {
-        throw EvaluationError(EvaluationError::Type::TooFewArguments);
+        throw unevaluatedArgs.getReference(0).makeError(EvaluationError::Type::TooFewArguments);
     }
 
     Range<int> parametersRange =
@@ -203,7 +202,7 @@ Value lambda(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
     Value::List body;
     for (int i = 1; i < unevaluatedArgs.size(); i++)
     {
-        body.add(unevaluatedArgs[i]);
+        body.add(unevaluatedArgs.getUnchecked(i));
     }
 
     return Value::makeClosure(context, {},
@@ -553,7 +552,7 @@ Value index(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext 
         throw args.getReference(0).makeError(EvaluationError::Type::IndexOutOfRange);
     }
 
-    return list[i];
+    return list.getUnchecked(i);
 }
 
 Value insert(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
@@ -624,7 +623,7 @@ Value head(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
     checkNumArgs(args, 1);
 
-    const auto list = args.getReference(0).asList();
+    const auto &list = args.getReference(0).asList();
     if (list.isEmpty())
     {
         throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
@@ -639,10 +638,10 @@ Value tail(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &
     checkNumArgs(args, 1);
 
     Value::List result;
-    const auto list = args.getReference(0).asList();
+    const auto &list = args.getReference(0).asList();
     for (int i = 1; i < list.size(); i++)
     {
-        result.add(list[i]);
+        result.add(list.getUnchecked(i));
     }
 
     return Value(move(result));
@@ -653,7 +652,7 @@ Value first(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext 
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
     if (args.size() == 1)
     {
-        const auto list = args.getReference(0).asList();
+        const auto &list = args.getReference(0).asList();
         if (list.isEmpty())
         {
             throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
@@ -664,7 +663,7 @@ Value first(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext 
     else if (args.size() == 2)
     {
         const auto numElements = args.getReference(0).castToInt();
-        const auto list = args.getReference(1).asList();
+        const auto &list = args.getReference(1).asList();
         if (numElements <= 0 || numElements > list.size())
         {
             throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
@@ -673,7 +672,7 @@ Value first(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext 
         Value::List result;
         for (int i = 0; i < numElements; i++)
         {
-            result.add(list[i]);
+            result.add(list.getUnchecked(i));
         }
 
         return Value(move(result));
@@ -689,7 +688,7 @@ Value last(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
     if (args.size() == 1)
     {
-        const auto list = args.getReference(0).asList();
+        const auto &list = args.getReference(0).asList();
         if (list.isEmpty())
         {
             throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
@@ -700,7 +699,7 @@ Value last(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &
     else if (args.size() == 2)
     {
         const auto numElements = args.getReference(0).castToInt();
-        const auto list = args.getReference(1).asList();
+        const auto &list = args.getReference(1).asList();
         if (numElements <= 0 || numElements > list.size())
         {
             throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
@@ -709,7 +708,7 @@ Value last(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &
         Value::List result;
         for (int i = list.size() - numElements; i < list.size(); i++)
         {
-            result.add(list[i]);
+            result.add(list.getUnchecked(i));
         }
 
         return Value(move(result));
@@ -762,10 +761,10 @@ Value map(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &c
     checkNumArgs(args, 2);
 
     Value::List result, tmp;
-    const auto l = args.getReference(1).asList();
-    for (int i = 0; i < l.size(); i++)
+    const auto &list = args.getReference(1).asList();
+    for (int i = 0; i < list.size(); i++)
     {
-        tmp.add(l[i]);
+        tmp.add(list.getUnchecked(i));
         result.add(args.getReference(0).apply(tmp, scope, context));
         tmp.clear();
     }
@@ -779,13 +778,14 @@ Value filter(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
     checkNumArgs(args, 2);
 
     Value::List result, tmp;
-    const auto l = args.getReference(1).asList();
-    for (int i = 0; i < l.size(); i++)
+    const auto &list = args.getReference(1).asList();
+    for (int i = 0; i < list.size(); i++)
     {
-        tmp.add(l[i]);
+        const auto &current = list.getReference(i);
+        tmp.add(current);
         if (args.getReference(0).apply(tmp, scope, context).castToBool())
         {
-            result.add(l[i]);
+            result.add(current);
         }
         tmp.clear();
     }
@@ -800,12 +800,12 @@ Value reduce(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
 
     Value::List tmp;
     auto acc = args[1];
-    const auto l = args.getReference(2).asList();
+    const auto &list = args.getReference(2).asList();
     jassert(args.getReference(0).isClosure());
-    for (int i = 0; i < l.size(); i++)
+    for (int i = 0; i < list.size(); i++)
     {
         tmp.add(acc);
-        tmp.add(l[i]);
+        tmp.add(list.getUnchecked(i));
         acc = args.getReference(0).apply(tmp, scope, context);
         tmp.clear();
     }
@@ -843,7 +843,7 @@ Value debug(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext 
 
 } // namespace builtin
 
-bool Scope::hasValue(const String &name) const noexcept
+bool Scope::hasValue(const String &name) const
 {
     if (this->symbols.find(name) != this->symbols.end())
     {
@@ -857,7 +857,7 @@ bool Scope::hasValue(const String &name) const noexcept
     return false;
 }
 
-Optional<Value> Scope::findValue(const String &name) const noexcept
+const Value &Scope::findValue(const String &name) const
 {
     const auto foundSymbol = this->symbols.find(name);
     if (foundSymbol != this->symbols.end())
@@ -869,7 +869,8 @@ Optional<Value> Scope::findValue(const String &name) const noexcept
         return this->parentScope->findValue(name);
     }
 
-    return {};
+    jassertfalse; // please check hasValue before calling this
+    throw EvaluationError(EvaluationError::Type::UndefinedSymbol, name);
 }
 
 Value Scope::makeValue(EvaluationContext &context, const String &name) const
@@ -881,10 +882,9 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
     }
 
     // the user can locally shadow any function name, except context-specific
-    const auto foundSymbol = this->findValue(name);
-    if (foundSymbol.hasValue())
+    if (this->hasValue(name))
     {
-        return *foundSymbol;
+        return this->findValue(name);
     }
 
     using namespace builtin;
@@ -949,10 +949,10 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
 
     if (name == "debug") return Value::makeBuiltInFunction(name, builtin::debug);
 
-    if (name == "newline") return Value::makeString("\n");
-
     if (name == "true" || name == "#t") return Value(true);
     if (name == "false" || name == "#f") return Value(false);
+
+    if (name == "pi") return Value(MathConstants<float>::pi);
 
     if (name == "nil") return {};
 
@@ -962,6 +962,11 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
 void Scope::setValue(const String &name, const Value &value) noexcept
 {
     this->symbols[name] = value;
+}
+
+void Scope::setValue(const String &name, Value &&value) noexcept
+{
+    this->symbols[name] = move(value);
 }
 
 void Scope::include(const Scope &other)
@@ -1092,18 +1097,15 @@ Value Value::apply(const List &args, Scope &scope, EvaluationContext &context) c
                 }
 
                 //DBG("Set " + parameterName + " to " + args.getReference(i).toString());
-                evaluationScope.setValue(parameterName, args[i]);
+                evaluationScope.setValue(parameterName, args.getReference(i));
             }
-            else
+            else if (context.shouldBreakAt(params.list.getReference(i), params.sourceCodeRange))
             {
-                if (context.shouldBreakAt(params.list.getReference(i), params.sourceCodeRange))
-                {
-                    const auto capturedValue = captures.findValue(parameterName);
-                    throw EvaluationError(EvaluationError::Type::BreakpointHit,
-                        capturedValue->getTypeName(),
-                        //parameterName + ", " + capturedValue->getTypeName(),
-                        capturedValue->debug());
-                }
+                const auto &capturedValue = captures.findValue(parameterName);
+                throw EvaluationError(EvaluationError::Type::BreakpointHit,
+                    capturedValue.getTypeName(),
+                    //parameterName + ", " + capturedValue.getTypeName(),
+                    capturedValue.debug());
             }
         }
 
@@ -1192,7 +1194,7 @@ Value Value::evaluate(Scope &scope, EvaluationContext &context) const
             {
                 if (evaluatedHead.isBuiltInFunction())
                 {
-                    arguments.add(this->list[i]);
+                    arguments.add(this->list.getUnchecked(i));
                 }
                 else
                 {

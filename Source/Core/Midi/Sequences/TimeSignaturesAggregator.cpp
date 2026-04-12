@@ -25,53 +25,11 @@
 #include "Workspace.h"
 #include "AudioCore.h"
 
-// TimeSignaturesAggregator acts like a virtual midi track
-// (so it can be used in the export and for building the playback midi data),
-// and for that it maintains a "virtual" midi sequence, which it rebuilds
-// on the fly, depending on user selection; and for that reason
-// it uses its own listener interface instead of ProjectListener;
-// so this class is here to help to avoid its virtual sequence sending
-// ProjectListener events (hopefully someday I'll come up with a cleaner approach,
-// but for now let's just send sequence's change events nowhere)
-class DummyProjectEventDispatcher final : public ProjectEventDispatcher
-{
-public:
-
-    explicit DummyProjectEventDispatcher(ProjectNode &project) :
-        project(project) {}
-
-    void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override {}
-    void dispatchAddEvent(const MidiEvent &event) override {}
-    void dispatchRemoveEvent(const MidiEvent &event) override {}
-    void dispatchPostRemoveEvent(MidiSequence *const layer) override {}
-
-    void dispatchAddClip(const Clip &clip) override {}
-    void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override {}
-    void dispatchRemoveClip(const Clip &clip) override {}
-    void dispatchPostRemoveClip(Pattern *const pattern) override {}
-
-    void dispatchChangeTrackProperties() override {}
-    void dispatchChangeTrackBeatRange() override {}
-    void dispatchChangeProjectBeatRange() override {}
-
-    ProjectNode *getProject() const noexcept override
-    {
-        return &this->project;
-    }
-
-private:
-
-    ProjectNode &project;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyProjectEventDispatcher)
-};
-
 TimeSignaturesAggregator::TimeSignaturesAggregator(ProjectNode &parentProject,
     MidiSequence &timelineSignatures) :
     project(parentProject),
     timelineSignatures(timelineSignatures)
 {
-    this->dummyEventDispatcher = make<DummyProjectEventDispatcher>(this->project);
     this->project.addListener(this);
 }
 
@@ -313,7 +271,7 @@ void TimeSignaturesAggregator::rebuildAll()
     }
 
     // clear all
-    this->orderedEvents = make<TimeSignaturesSequence>(*this, *this->dummyEventDispatcher.get());
+    this->orderedEvents = make<TimeSignaturesSequence>(*this, this->dummyEventDispatcher);
 
     // todo: multiple time signatures per track? now there can be only one
 

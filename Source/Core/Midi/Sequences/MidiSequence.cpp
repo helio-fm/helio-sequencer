@@ -162,11 +162,13 @@ MidiTrack *MidiSequence::getTrack() const noexcept
 
 ProjectNode *MidiSequence::getProject() const noexcept
 {
+    jassert(this->eventDispatcher.getProject() != nullptr);
     return this->eventDispatcher.getProject();
 }
 
 UndoStack *MidiSequence::getUndoStack() const noexcept
 {
+    jassert(this->eventDispatcher.getProject() != nullptr);
     return this->eventDispatcher.getProject()->getUndoStack();
 }
 

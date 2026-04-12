@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ScriptEngine.h"
+#include "SequencerOperations.h"
 #include "Config.h"
 
 ScriptEngine::ScriptEngine(SideEffects &sideEffects) :
@@ -172,10 +173,11 @@ script::Value random(const script::Value::List &unevaluatedArgs,
 {
     static Random random;
 
-    if (unevaluatedArgs.size() == 1 &&
-        unevaluatedArgs.getReference(0).isSymbol())
+    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
+
+    if (args.size() == 1 && args.getReference(0).isSymbol())
     {
-        const auto &arg = unevaluatedArgs.getReference(0).asSymbol();
+        const auto &arg = args.getReference(0).asSymbol();
         if (arg.startsWithChar('d'))
         {
             const auto x = arg.substring(1).getIntValue();
@@ -186,11 +188,7 @@ script::Value random(const script::Value::List &unevaluatedArgs,
             }
         }
     }
-
-    const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
-
-    if (args.size() == 1 &&
-        args.getReference(0).isList())
+    else if (args.size() == 1 && args.getReference(0).isList())
     {
         const auto &list = args.getReference(0).asList();
         if (list.isEmpty())
@@ -267,7 +265,7 @@ script::Value addKeySignature(const script::Value::List &unevaluatedArgs,
     const ScopedReadLock lock(self->hostContextLock);
     const auto keySignature =
         script::interop::makeKeySignature(script::Value(move(args)),
-            self->hostContext.allScales, self->hostContext.projectPeriodSize);
+            self->hostContext.allScales, self->hostContext.temperament->getPeriodSize());
 
     if (isPlaygroundMode(context))
     {
@@ -333,7 +331,7 @@ script::Value make(const script::Value::List &unevaluatedArgs,
                 trackId, "track not found");
         }
 
-        castToSelf(context)->sideEffects.addNotes(track, notes);
+        castToSelf(context)->sideEffects.addNotes(track, notes, true);
     }
 
     return script::Value::makeString(trackId);
@@ -380,7 +378,7 @@ script::Value addNotes(const script::Value::List &unevaluatedArgs,
             trackId, "track not found");
     }
 
-    castToSelf(context)->sideEffects.addNotes(track, notes);
+    castToSelf(context)->sideEffects.addNotes(track, notes, true);
     return {};
 }
 
@@ -407,7 +405,7 @@ script::Value find(const script::Value::List &unevaluatedArgs,
     const auto &targetName = args.getReference(0).asString();
     for (const auto &scale : self->hostContext.allScales)
     {
-        if (self->hostContext.projectPeriodSize == scale->getBasePeriod() &&
+        if (self->hostContext.temperament->getPeriodSize() == scale->getBasePeriod() &&
             scale->getUnlocalizedName().startsWithIgnoreCase(targetName))
         {
             return script::interop::makeScaleValue(scale);
@@ -416,7 +414,7 @@ script::Value find(const script::Value::List &unevaluatedArgs,
 
     for (const auto &scale : self->hostContext.allScales)
     {
-        if (self->hostContext.projectPeriodSize == scale->getBasePeriod() &&
+        if (self->hostContext.temperament->getPeriodSize() == scale->getBasePeriod() &&
             scale->getUnlocalizedName().containsWholeWordIgnoreCase(targetName))
         {
             return script::interop::makeScaleValue(scale);
@@ -459,7 +457,7 @@ script::Value renderKey(const script::Value::List &unevaluatedArgs,
     const ScopedReadLock lock(self->hostContextLock);
     const auto scale =
         script::interop::makeScale(args.getReference(0),
-            {}, self->hostContext.projectPeriodSize);
+            {}, self->hostContext.temperament->getPeriodSize());
     const auto row = scale->getChromaticKey(args.getReference(1).castToInt() - 1, 0, true);
     return script::Value(row);
 }
@@ -469,36 +467,67 @@ script::Value renderKey(const script::Value::List &unevaluatedArgs,
 namespace refactor
 {
 
+// a glue to perform in-place refactorings without adding a track to the project:
+struct TemporaryPianoTrack final : public VirtualMidiTrack
+{
+    explicit TemporaryPianoTrack(const Array<Note> &notes)
+    {
+        this->sequence = make<PianoSequence>(*this, this->dummyEventDispatcher);
+
+        Array<Note> ownedNotes;
+        for (const auto &noteParams : notes)
+        {
+            ownedNotes.add(Note(this->sequence.get(), noteParams).withNewId());
+        }
+
+        this->sequence->insertGroup(ownedNotes, false);
+    }
+
+    String getTrackInstrumentId() const noexcept override { return {}; }
+    MidiSequence *getSequence() const noexcept override { return this->sequence.get(); }
+
+    DummyProjectEventDispatcher dummyEventDispatcher;
+    UniquePointer<PianoSequence> sequence;
+};
+
+static Array<Note> parseNotesList(const script::Value &value, const String &symbolName)
+{
+    if (!value.isList())
+    {
+        throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
+            symbolName,
+            "expected a list of notes, got " + value.debug());
+    }
+
+    Array<Note> notes;
+    for (const auto &noteValue : value.asList())
+    {
+        notes.add(script::interop::makeNote(noteValue));
+    }
+
+    return notes;
+}
+
 script::Value joinAdjacent(const script::Value::List &unevaluatedArgs,
     script::Scope &scope, script::EvaluationContext &context)
 {
     const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
     script::checkNumArgs(args, 1);
 
-    if (!args.getReference(0).isString())
+    const auto notes = parseNotesList(args.getReference(0),
+        "(refactor:join-adjacent ((note1) (note2) ...))");
+
+    TemporaryPianoTrack tempTrack(notes);
+    SequencerOperations::joinAdjacent(*tempTrack.sequence, false, false);
+
+    script::Value::List result;
+    for (int i = 0; i < tempTrack.sequence->size(); ++i)
     {
-        throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
-            "(refactor:join-adjacent track-id)",
-            "expected a track id, got " + args.getReference(0).debug());
+        const Note &note = tempTrack.sequence->getNoteUnchecked(i);
+        result.add(script::Value(script::interop::makeNoteValue(note)));
     }
 
-    if (isPlaygroundMode(context))
-    {
-        return {};
-    }
-
-    JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
-
-    const auto trackId = args.getReference(0).asString();
-    auto *track = castToSelf(context)->sideEffects.findPianoTrackById(trackId);
-    if (track == nullptr)
-    {
-        throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
-            trackId, "track not found");
-    }
-
-    castToSelf(context)->sideEffects.joinAdjacent(track);
-    return {};
+    return script::Value(move(result));
 }
 
 script::Value arpeggiate(const script::Value::List &unevaluatedArgs,
@@ -507,40 +536,46 @@ script::Value arpeggiate(const script::Value::List &unevaluatedArgs,
     const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
     script::checkNumArgs(args, 2);
 
-    if (!args.getReference(0).isString())
-    {
-        throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
-            "(refactor:arpeggiate track-id (arp-notes ...))",
-            "expected a track id, got " + args.getReference(0).debug());
-    }
+    const auto notes = parseNotesList(args.getReference(0),
+        "(refactor:arpeggiate (notes ...) (arpeggiator-notes ...))");
 
     if (!args.getReference(1).isList())
     {
         throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
-            "(refactor:arpeggiate track-id (arp-notes ...))",
+            "(refactor:arpeggiate (notes ...) (arpeggiator-notes ...))",
             "expected a list of in-scale notes, got " + args.getReference(1).debug());
     }
 
     const auto arpeggiator =
         script::interop::makeArpeggiator(args.getReference(1));
 
-    if (isPlaygroundMode(context))
+    TemporaryPianoTrack tempTrack(notes);
+
+    auto *self = castToSelf(context);
+    const ScopedReadLock lock(self->hostContextLock);
+
+    const Clip noTransform;
+    SequencerOperations::arpeggiate(*tempTrack.sequence,
+        noTransform,
+        arpeggiator,
+        self->hostContext.temperament,
+        self->hostContext.keySignatures,
+        self->hostContext.timeSignatures,
+        1.f,    // speed, todo custom
+        0.f,    // randomness
+        false,  // reversed
+        true,   // chord-bound
+        false,  // undoable
+        false); // shouldCheckpoint
+
+    script::Value::List result;
+    for (int i = 0; i < tempTrack.sequence->size(); ++i)
     {
-        return {};
+        const Note &note = tempTrack.sequence->getNoteUnchecked(i);
+        result.add(script::Value(script::interop::makeNoteValue(note)));
     }
 
-    JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
-
-    const auto trackId = args.getReference(0).asString();
-    auto *track = castToSelf(context)->sideEffects.findPianoTrackById(trackId);
-    if (track == nullptr)
-    {
-        throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
-            trackId, "track not found");
-    }
-
-    castToSelf(context)->sideEffects.arpeggiate(track, arpeggiator);
-    return {};
+    return script::Value(move(result));
 }
 
 script::Value alignToScale(const script::Value::List &unevaluatedArgs,
@@ -549,30 +584,31 @@ script::Value alignToScale(const script::Value::List &unevaluatedArgs,
     const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
     script::checkNumArgs(args, 1);
 
-    if (!args.getReference(0).isString())
+    const auto notes = parseNotesList(args.getReference(0),
+        "(refactor:align-to-scale ((note1) (note2) ...))");
+
+    TemporaryPianoTrack tempTrack(notes);
+
+    auto *self = castToSelf(context);
+    const ScopedReadLock lock(self->hostContextLock);
+
+    const Clip noTransform;
+    SequencerOperations::shiftInScaleKeyRelative(*tempTrack.sequence,
+        noTransform,
+        self->hostContext.keySignatures,
+        self->hostContext.temperament->getHighlighting(),
+        0,      // just align, don't shift
+        false,  // undoable
+        false); // shouldCheckpoint
+
+    script::Value::List result;
+    for (int i = 0; i < tempTrack.sequence->size(); ++i)
     {
-        throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
-            "(refactor:align-to-scale track-id)",
-            "expected a track id, got " + args.getReference(0).debug());
+        const Note &note = tempTrack.sequence->getNoteUnchecked(i);
+        result.add(script::Value(script::interop::makeNoteValue(note)));
     }
 
-    if (isPlaygroundMode(context))
-    {
-        return {};
-    }
-
-    JUCE_ASSERT_MESSAGE_MANAGER_IS_LOCKED
-
-    const auto trackId = args.getReference(0).asString();
-    auto *track = castToSelf(context)->sideEffects.findPianoTrackById(trackId);
-    if (track == nullptr)
-    {
-        throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
-            trackId, "track not found");
-    }
-
-    castToSelf(context)->sideEffects.alignToScale(track);
-    return {};
+    return script::Value(move(result));
 }
 
 } // namespace refactor
@@ -582,7 +618,13 @@ script::Value alignToScale(const script::Value::List &unevaluatedArgs,
 Optional<script::Value> ScriptEngine::makeLanguageExtension(const String &name) const
 {
     using Value = script::Value;
+
     if (name == "random") return Value::makeBuiltInFunction(name, extensions::random);
+    if (name.startsWithChar('d') && name.substring(1).getIntValue() > 0)
+    {
+        // RPG dice notation symbols are self-evaluating:
+        return script::Value::makeSymbol(name);
+    }
 
     if (name == "tonic") return Value(1);
     if (name == "supertonic") return Value(2);
@@ -615,7 +657,7 @@ Optional<script::Value> ScriptEngine::makeLanguageExtension(const String &name) 
     if (name == "project:period-size")
     {
         const ScopedReadLock lock(this->hostContextLock);
-        return Value(this->hostContext.projectPeriodSize);
+        return Value(this->hostContext.temperament->getPeriodSize());
     }
 
     // todo more refactorings here

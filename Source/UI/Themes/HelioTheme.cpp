@@ -1129,7 +1129,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
     this->setColour(ColourIDs::CodeEditor::identifier, s->getScriptTextColour());
     this->setColour(ColourIDs::CodeEditor::literal, s->getScriptLiteralColour());
     this->setColour(ColourIDs::CodeEditor::bracket,
-        s->getScriptBracketColour().withMultipliedAlpha(0.3f));
+        s->getScriptBracketColour().withMultipliedAlpha(0.420f));
     this->setColour(ColourIDs::CodeEditor::bracketMatch, s->getScriptBracketColour());
     this->setColour(ColourIDs::CodeEditor::highlight, this->isDarkTheme ?
         s->getScriptTextColour().brighter(0.69f) : s->getScriptTextColour().darker(0.420f));

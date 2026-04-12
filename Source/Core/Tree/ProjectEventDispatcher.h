@@ -53,3 +53,30 @@ public:
 
     virtual ProjectNode *getProject() const noexcept { return nullptr; }
 };
+
+class DummyProjectEventDispatcher final : public ProjectEventDispatcher
+{
+public:
+
+    DummyProjectEventDispatcher() = default;
+
+    void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override {}
+    void dispatchAddEvent(const MidiEvent &event) override {}
+    void dispatchRemoveEvent(const MidiEvent &event) override {}
+    void dispatchPostRemoveEvent(MidiSequence *const layer) override {}
+
+    void dispatchAddClip(const Clip &clip) override {}
+    void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override {}
+    void dispatchRemoveClip(const Clip &clip) override {}
+    void dispatchPostRemoveClip(Pattern *const pattern) override {}
+
+    void dispatchChangeTrackProperties() override {}
+    void dispatchChangeTrackBeatRange() override {}
+    void dispatchChangeProjectBeatRange() override {}
+
+    ProjectNode *getProject() const noexcept override
+    {
+        jassertfalse;
+        return nullptr;
+    }
+};

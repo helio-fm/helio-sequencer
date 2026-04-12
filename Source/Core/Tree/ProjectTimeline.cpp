@@ -145,6 +145,11 @@ MidiTrack *ProjectTimeline::getAnnotations() const noexcept
     return this->annotationsTrack.get();
 }
 
+AnnotationsSequence *ProjectTimeline::getAnnotationsSequence() const noexcept
+{
+    return static_cast<AnnotationsSequence *>(this->annotationsSequence.get());
+}
+
 MidiTrack *ProjectTimeline::getKeySignatures() const noexcept
 {
     return this->keySignaturesTrack.get();
@@ -158,6 +163,11 @@ KeySignaturesSequence *ProjectTimeline::getKeySignaturesSequence() const noexcep
 MidiTrack *ProjectTimeline::getTimeSignatures() const noexcept
 {
     return this->timeSignaturesTrack.get();
+}
+
+TimeSignaturesSequence *ProjectTimeline::getTimeSignaturesSequence() const noexcept
+{
+    return static_cast<TimeSignaturesSequence *>(this->timeSignaturesSequence.get());
 }
 
 TimeSignaturesAggregator *ProjectTimeline::getTimeSignaturesAggregator() const noexcept
