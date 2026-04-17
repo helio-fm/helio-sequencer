@@ -176,7 +176,6 @@
 		279C806F3EFFBE92A9ED05D1 /* ModalDialogConfirmation.cpp */ /* ModalDialogConfirmation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ModalDialogConfirmation.cpp; path = ../../Source/UI/Dialogs/ModalDialogConfirmation.cpp; sourceTree = SOURCE_ROOT; };
 		28262B2984B2A6E1C85FE299 /* InstrumentNodeSelectionMenu.cpp */ /* InstrumentNodeSelectionMenu.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InstrumentNodeSelectionMenu.cpp; path = ../../Source/UI/Menus/SelectionMenus/InstrumentNodeSelectionMenu.cpp; sourceTree = SOURCE_ROOT; };
 		28D58C2309395A0151BF8EBB /* piano.svg */ /* piano.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = piano.svg; path = ../../Resources/Icons/piano.svg; sourceTree = SOURCE_ROOT; };
-		28F1C77296DC1646565D53EE /* noise.png */ /* noise.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = noise.png; path = ../../Resources/Icons/noise.png; sourceTree = SOURCE_ROOT; };
 		293A5E74B9C16A2E88ABB0AF /* ProgressTooltip.cpp */ /* ProgressTooltip.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProgressTooltip.cpp; path = ../../Source/UI/Popups/ProgressTooltip.cpp; sourceTree = SOURCE_ROOT; };
 		29A3339CC715D3A778B63D8B /* PianoRoll.cpp */ /* PianoRoll.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PianoRoll.cpp; path = ../../Source/UI/Sequencer/PianoRoll/PianoRoll.cpp; sourceTree = SOURCE_ROOT; };
 		2A034F224EBF4BA9B3352E86 /* inverseDown.svg */ /* inverseDown.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = inverseDown.svg; path = ../../Resources/Icons/inverseDown.svg; sourceTree = SOURCE_ROOT; };
@@ -398,7 +397,6 @@
 		7205D55A474E172A43DD7F6D /* TimeSignatureEventActions.cpp */ /* TimeSignatureEventActions.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TimeSignatureEventActions.cpp; path = ../../Source/Core/Undo/Actions/TimeSignatureEventActions.cpp; sourceTree = SOURCE_ROOT; };
 		725BFDECFDEBB76548EB44F0 /* SequencerSidebarRight.cpp */ /* SequencerSidebarRight.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SequencerSidebarRight.cpp; path = ../../Source/UI/Sequencer/Sidebars/SequencerSidebarRight.cpp; sourceTree = SOURCE_ROOT; };
 		72FE6333BB3CC616E34D0D29 /* CommandPaletteChordConstructor.cpp */ /* CommandPaletteChordConstructor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CommandPaletteChordConstructor.cpp; path = ../../Source/Core/CommandPalette/CommandPaletteChordConstructor.cpp; sourceTree = SOURCE_ROOT; };
-		7320F2DA76039762ED764BDA /* orchestraPit.svg */ /* orchestraPit.svg */ = {isa = PBXFileReference; lastKnownFileType = file.svg; name = orchestraPit.svg; path = ../../Resources/Icons/orchestraPit.svg; sourceTree = SOURCE_ROOT; };
 		7329E7316F309C48D4E6E8C0 /* KeySignatureComponent.h */ /* KeySignatureComponent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeySignatureComponent.h; path = ../../Source/UI/Sequencer/MiniMaps/KeySignaturesMap/KeySignatureComponent.h; sourceTree = SOURCE_ROOT; };
 		73BDC50FF6F7B6A7A692D3BB /* CutPointMark.cpp */ /* CutPointMark.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CutPointMark.cpp; path = ../../Source/UI/Sequencer/Helpers/CutPointMark.cpp; sourceTree = SOURCE_ROOT; };
 		74BB7217B62957723AB0F2CE /* PianoTrackDiffLogic.cpp */ /* PianoTrackDiffLogic.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PianoTrackDiffLogic.cpp; path = ../../Source/Core/VCS/DiffLogic/PianoTrackDiffLogic.cpp; sourceTree = SOURCE_ROOT; };
@@ -960,7 +958,6 @@
 				F9A580A94CF8B322D3E915DF,
 				862881518BACE5B8BE894F87,
 				38F77D254EEDB3C3C286D7B0,
-				7320F2DA76039762ED764BDA,
 				C3F0F6FA0ECF6EB4DAD589AF,
 				AF30E0C21EDB351EA71A892C,
 				28D58C2309395A0151BF8EBB,
@@ -1005,7 +1002,6 @@
 				8A0E341272CD3A83C9C22DE6,
 				B235731CCB550DF1E2BDDF28,
 				698A56770E267538984CCC74,
-				28F1C77296DC1646565D53EE,
 				DC109490913F82A611D4B5EE,
 				E5077C0A869E48EA27DBE103,
 				78CEF9C0F6D9CAB020FDC238,

@@ -119,8 +119,7 @@ public:
 
         void paint(Graphics &g) override
         {
-            const auto &theme = HelioTheme::getCurrentTheme();
-            g.setFillType({ theme.getBottomPanelBackground(), {} });
+            g.setColour(this->fillColour);
             g.fillPath(this->backgroundShape);
 
             g.setColour(this->borderColourDark);
@@ -206,10 +205,11 @@ public:
         UniquePointer<Label> titleLabel;
         UniquePointer<Component> arrow;
 
+        const Colour fillColour =
+            findDefaultColour(ColourIDs::Panel::bottomPanelFill);
         const Colour borderColourLight =
             findDefaultColour(ColourIDs::TrackScroller::borderLineLight)
                 .withMultipliedAlpha(0.75f);
-
         const Colour borderColourDark =
             findDefaultColour(ColourIDs::TrackScroller::borderLineDark)
                 .withMultipliedAlpha(0.5f);

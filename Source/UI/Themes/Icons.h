@@ -29,8 +29,7 @@ public:
 
     static Image findByName(Icons::Id id, int maxSize);
     static Image findByName(Icons::Id id, int exactSize,
-        RectanglePlacement alignment,
-        const Colour &fillColour, const Colour &shadowColour,
+        RectanglePlacement alignment, const Colour &fillColour,
         Rectangle<float> &outContentBounds);
 
     static Image renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize);
@@ -53,7 +52,6 @@ public:
         versionControl,
         settings,
         patterns,
-        orchestraPit,
         instrument,
         audioPlugin,
         annotation,

@@ -134,8 +134,7 @@ void EditorPanelsScroller::resized()
 
 void EditorPanelsScroller::paint(Graphics &g)
 {
-    const auto &theme = HelioTheme::getCurrentTheme();
-    g.setFillType({ theme.getBottomPanelBackground(), {} });
+    g.setColour(this->fillColour);
     g.fillRect(this->getLocalBounds());
 
     g.setColour(this->borderColourDark);

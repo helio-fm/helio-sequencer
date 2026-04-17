@@ -100,9 +100,9 @@ SequencerSidebarRight::~SequencerSidebarRight()
 void SequencerSidebarRight::paint(Graphics &g)
 {
     auto localBounds = this->getLocalBounds();
-    const auto &theme = HelioTheme::getCurrentTheme();
-    g.setFillType({ theme.getSidebarBackground(), {} });
-    g.fillRect(this->getLocalBounds());
+
+    g.setColour(this->fillColour);
+    g.fillRect(localBounds);
 
     g.setColour(this->borderColour);
     g.fillRect(0, 0, 1, this->getHeight());
@@ -111,7 +111,7 @@ void SequencerSidebarRight::paint(Graphics &g)
     {
         localBounds.removeFromLeft(Globals::UI::sidebarWidth);
         localBounds.removeFromBottom(Globals::UI::sidebarFooterHeight);
-        theme.drawStripes(localBounds.toFloat(), g, 0.5f);
+        HelioTheme::getCurrentTheme().drawStripes(localBounds.toFloat(), g, 0.5f);
     }
 }
 

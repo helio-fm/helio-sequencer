@@ -119,6 +119,7 @@ private:
 
     static MenuItem::Ptr makeRepriseMenuItem(bool isToggled);
 
+    const Colour fillColour = findDefaultColour(ColourIDs::Panel::sidebarFill);
     const Colour borderColour = findDefaultColour(ColourIDs::Common::borderLineLight);
 
     UniquePointer<SwipeController> swipeController;

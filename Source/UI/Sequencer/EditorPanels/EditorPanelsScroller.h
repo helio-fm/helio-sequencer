@@ -111,9 +111,10 @@ private:
 
     OwnedArray<EditorPanelBase> editorPanels;
 
+    const Colour fillColour =
+        findDefaultColour(ColourIDs::Panel::bottomPanelFill);
     const Colour borderColourLight =
         findDefaultColour(ColourIDs::TrackScroller::borderLineLight);
-
     const Colour borderColourDark =
         findDefaultColour(ColourIDs::TrackScroller::borderLineDark);
 

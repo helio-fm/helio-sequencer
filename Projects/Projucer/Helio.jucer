@@ -62,8 +62,6 @@
         <FILE id="Ppd3BU" name="microtoneUp2.svg" compile="0" resource="1"
               file="../../Resources/Icons/microtoneUp2.svg"/>
         <FILE id="GtzvG7" name="mute.svg" compile="0" resource="1" file="../../Resources/Icons/mute.svg"/>
-        <FILE id="TWchuX" name="orchestraPit.svg" compile="0" resource="1"
-              file="../../Resources/Icons/orchestraPit.svg"/>
         <FILE id="VDY34K" name="paste.svg" compile="0" resource="1" file="../../Resources/Icons/paste.svg"/>
         <FILE id="kykHC8" name="patterns.svg" compile="0" resource="1" file="../../Resources/Icons/patterns.svg"/>
         <FILE id="Ocp36i" name="piano.svg" compile="0" resource="1" file="../../Resources/Icons/piano.svg"/>
@@ -114,7 +112,6 @@
         <FILE id="jm0Ajr" name="zoomIn.svg" compile="0" resource="1" file="../../Resources/Icons/zoomIn.svg"/>
         <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>
         <FILE id="KPqaBe" name="zoomToFit.svg" compile="0" resource="1" file="../../Resources/Icons/zoomToFit.svg"/>
-        <FILE id="aMBPbX" name="noise.png" compile="0" resource="1" file="../../Resources/Icons/noise.png"/>
         <FILE id="o2O2gw" name="stripes.png" compile="0" resource="1" file="../../Resources/Icons/stripes.png"/>
         <FILE id="oCmMjk" name="copyingCursor.gif" compile="0" resource="1"
               file="../../Resources/Icons/copyingCursor.gif"/>

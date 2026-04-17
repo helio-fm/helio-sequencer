@@ -78,6 +78,8 @@ private:
     static constexpr auto rootNodeOffset = Globals::UI::sidebarWidth;
     int getTotalRootNodeOffset() const noexcept;
 
+    const Colour fillColour =
+        findDefaultColour(ColourIDs::Breadcrumbs::fill);
     const Colour borderLightColour =
         findDefaultColour(ColourIDs::Common::borderLineLight);
     const Colour borderDarkColour =

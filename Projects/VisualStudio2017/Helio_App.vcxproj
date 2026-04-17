@@ -3973,7 +3973,6 @@
     <None Include="..\..\Resources\Icons\microtoneUp.svg"/>
     <None Include="..\..\Resources\Icons\microtoneUp2.svg"/>
     <None Include="..\..\Resources\Icons\mute.svg"/>
-    <None Include="..\..\Resources\Icons\orchestraPit.svg"/>
     <None Include="..\..\Resources\Icons\paste.svg"/>
     <None Include="..\..\Resources\Icons\patterns.svg"/>
     <None Include="..\..\Resources\Icons\piano.svg"/>
@@ -4018,7 +4017,6 @@
     <None Include="..\..\Resources\Icons\zoomIn.svg"/>
     <None Include="..\..\Resources\Icons\zoomOut.svg"/>
     <None Include="..\..\Resources\Icons\zoomToFit.svg"/>
-    <None Include="..\..\Resources\Icons\noise.png"/>
     <None Include="..\..\Resources\Icons\stripes.png"/>
     <None Include="..\..\Resources\Icons\copyingCursor.gif"/>
     <None Include="..\..\Resources\Icons\erasingCursor.gif"/>

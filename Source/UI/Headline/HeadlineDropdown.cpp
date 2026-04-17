@@ -196,8 +196,10 @@ void HeadlineDropdown::paint(Graphics &g)
 
     g.setColour(this->borderLightColour);
     g.drawHorizontalLine(this->getHeight() - 2, 1.f, float(this->getWidth() - 2));
-    g.fillRect(1.f, 1.f, 4.f, float(this->getHeight() - 3));
     g.drawVerticalLine(this->getWidth() - 2, float(Globals::UI::headlineHeight), float(this->getHeight() - 1));
+
+    g.setColour(this->borderLightColour.withMultipliedAlpha(0.9f));
+    g.fillRect(1.f, 1.f, 4.f, float(this->getHeight() - 3));
 }
 
 void HeadlineDropdown::resized()

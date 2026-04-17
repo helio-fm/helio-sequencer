@@ -116,16 +116,10 @@ Colour ColourScheme::getTextColour() const
     return this->colours.at(UI::Colours::text);
 }
 
-Colour ColourScheme::getIconBaseColour() const
+Colour ColourScheme::getIconColour() const
 {
     using namespace Serialization;
     return this->colours.at(UI::Colours::iconBase);
-}
-
-Colour ColourScheme::getIconShadowColour() const
-{
-    using namespace Serialization;
-    return this->colours.at(UI::Colours::iconShadow);
 }
 
 Colour ColourScheme::getScriptBackgroundColour() const
@@ -195,29 +189,6 @@ Colour ColourScheme::getScriptCommentColour() const
 //===----------------------------------------------------------------------===//
 // Serialization
 //===----------------------------------------------------------------------===//
-
-void ColourScheme::syncWithLiveConstantEditor()
-{
-    using namespace Serialization;
-
-    this->reset();
-
-    this->colours[UI::Colours::pageFill] = this->getPageFillColour();
-    this->colours[UI::Colours::timeline] = this->getTimelineColour();
-    this->colours[UI::Colours::sidebarFill] = this->getSidebarFillColour();
-    this->colours[UI::Colours::headlineFill] = this->getHeadlineFillColour();
-    this->colours[UI::Colours::dialogFill] = this->getDialogFillColour();
-    this->colours[UI::Colours::frameBorder] = this->getFrameBorderColour();
-    this->colours[UI::Colours::lassoFill] = this->getLassoFillColour();
-    this->colours[UI::Colours::lassoBorder] = this->getLassoBorderColour();
-    this->colours[UI::Colours::blackKey] = this->getBlackKeyColour();
-    this->colours[UI::Colours::whiteKey] = this->getWhiteKeyColour();
-    this->colours[UI::Colours::row] = this->getRowColour();
-    this->colours[UI::Colours::bar] = this->getBarColour();
-    this->colours[UI::Colours::text] = this->getTextColour();
-    this->colours[UI::Colours::iconBase] = this->getIconBaseColour();
-    this->colours[UI::Colours::iconShadow] = this->getIconShadowColour();
-}
 
 SerializedData ColourScheme::serialize() const noexcept
 {

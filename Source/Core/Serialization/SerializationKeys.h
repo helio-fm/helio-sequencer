@@ -345,9 +345,7 @@ namespace Serialization
             static const Identifier bar = "bar";
 
             static const Identifier text = "text";
-
             static const Identifier iconBase = "iconBase";
-            static const Identifier iconShadow = "iconShadow";
 
             static const Identifier scriptBackground = "scriptBackground";
             static const Identifier scriptText = "scriptText";

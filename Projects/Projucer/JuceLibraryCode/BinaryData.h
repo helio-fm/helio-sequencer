@@ -54,7 +54,7 @@ namespace BinaryData
     const int            console_svgSize = 441;
 
     extern const char*   copy_svg;
-    const int            copy_svgSize = 1250;
+    const int            copy_svgSize = 340;
 
     extern const char*   create_svg;
     const int            create_svgSize = 339;
@@ -105,7 +105,7 @@ namespace BinaryData
     const int            helio_svgSize = 950;
 
     extern const char*   instrument_svg;
-    const int            instrument_svgSize = 1617;
+    const int            instrument_svgSize = 1033;
 
     extern const char*   inverseDown_svg;
     const int            inverseDown_svgSize = 307;
@@ -149,11 +149,8 @@ namespace BinaryData
     extern const char*   mute_svg;
     const int            mute_svgSize = 707;
 
-    extern const char*   orchestraPit_svg;
-    const int            orchestraPit_svgSize = 1617;
-
     extern const char*   paste_svg;
-    const int            paste_svgSize = 1578;
+    const int            paste_svgSize = 971;
 
     extern const char*   patterns_svg;
     const int            patterns_svgSize = 134;
@@ -168,10 +165,10 @@ namespace BinaryData
     const int            play_svgSize = 219;
 
     extern const char*   progressIndicator_svg;
-    const int            progressIndicator_svgSize = 2388;
+    const int            progressIndicator_svgSize = 1314;
 
     extern const char*   project_svg;
-    const int            project_svgSize = 1390;
+    const int            project_svgSize = 555;
 
     extern const char*   record_svg;
     const int            record_svgSize = 143;
@@ -180,13 +177,13 @@ namespace BinaryData
     const int            redo_svgSize = 266;
 
     extern const char*   refactor_svg;
-    const int            refactor_svgSize = 981;
+    const int            refactor_svgSize = 707;
 
     extern const char*   remove_svg;
     const int            remove_svgSize = 370;
 
     extern const char*   render_svg;
-    const int            render_svgSize = 2029;
+    const int            render_svgSize = 658;
 
     extern const char*   reprise_svg;
     const int            reprise_svgSize = 199;
@@ -264,10 +261,10 @@ namespace BinaryData
     const int            up_svgSize = 294;
 
     extern const char*   versionControl_svg;
-    const int            versionControl_svgSize = 847;
+    const int            versionControl_svgSize = 579;
 
     extern const char*   volumeUp_svg;
-    const int            volumeUp_svgSize = 1401;
+    const int            volumeUp_svgSize = 550;
 
     extern const char*   volumeDown_svg;
     const int            volumeDown_svgSize = 881;
@@ -283,9 +280,6 @@ namespace BinaryData
 
     extern const char*   zoomToFit_svg;
     const int            zoomToFit_svgSize = 498;
-
-    extern const char*   noise_png;
-    const int            noise_pngSize = 149;
 
     extern const char*   stripes_png;
     const int            stripes_pngSize = 162;
@@ -363,7 +357,7 @@ namespace BinaryData
     const int            chords_jsonSize = 768;
 
     extern const char*   colourSchemes_json;
-    const int            colourSchemes_jsonSize = 6182;
+    const int            colourSchemes_jsonSize = 5930;
 
     extern const char*   hotkeySchemes_json;
     const int            hotkeySchemes_jsonSize = 26137;
@@ -384,7 +378,7 @@ namespace BinaryData
     const int            translations_jsonSize = 664;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 125;
+    const int namedResourceListSize = 123;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

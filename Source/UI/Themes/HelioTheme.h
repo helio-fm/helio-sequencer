@@ -33,8 +33,6 @@ public:
 
     Typeface::Ptr getTypefaceForFont(const Font &) override;
 
-    void drawNoise(Graphics &g, float alphaMultiply = 1.f) const;
-    static void drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply = 1.f);
     static void drawStripes(Rectangle<float> bounds, Graphics &g, float alphaMultiply = 1.f);
 
     inline static void drawText(Graphics &g,
@@ -189,13 +187,6 @@ public:
         Button *closeButton,
         bool positionTitleBarButtonsOnLeft) override;
 
-    inline const Image &getPageBackgroundA() const noexcept { return this->pageBackgroundA; }
-    inline const Image &getPageBackgroundB() const noexcept { return this->pageBackgroundB; }
-    inline const Image &getSidebarBackground() const noexcept { return this->sidebarBackground; }
-    inline const Image &getBottomPanelBackground() const noexcept { return this->bottomPanelBackground; }
-    inline const Image &getHeadlineBackground() const noexcept { return this->headlineBackground; }
-    inline const Image &getDialogBackground() const noexcept { return this->dialogBackground; }
-
     inline bool isDark() const noexcept
     {
         return this->isDarkTheme;
@@ -203,20 +194,9 @@ public:
 
 protected:
 
-    const Image backgroundNoise;
     const Image backgroundStripes;
 
-    Colour backgroundTextureBaseColour;
-    Image cachedBackground;
-
     Typeface::Ptr textTypefaceCache;
-
-    Image pageBackgroundA;
-    Image pageBackgroundB;
-    Image sidebarBackground;
-    Image bottomPanelBackground;
-    Image headlineBackground;
-    Image dialogBackground;
 
     bool isDarkTheme = false;
 

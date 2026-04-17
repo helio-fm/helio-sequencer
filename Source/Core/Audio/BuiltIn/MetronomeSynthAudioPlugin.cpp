@@ -25,6 +25,7 @@
 #include "PlayButton.h"
 #include "IconButton.h"
 #include "HelioTheme.h"
+#include "ColourIDs.h"
 
 const String MetronomeSynthAudioPlugin::instrumentId = "<metronome>";
 const String MetronomeSynthAudioPlugin::instrumentName = "Metronome";
@@ -136,8 +137,7 @@ public:
 
     void paint(Graphics &g) override
     {
-        const auto &theme = HelioTheme::getCurrentTheme();
-        g.setFillType({ theme.getPageBackgroundA(), {} });
+        g.setFillType(findDefaultColour(ColourIDs::Panel::pageFillA));
         g.fillRect(this->getLocalBounds());
     }
 

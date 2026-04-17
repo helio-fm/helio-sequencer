@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "HelioTheme.h"
 #include "ColourIDs.h"
 
 class PanelBackground final : public Component
@@ -29,16 +28,19 @@ public:
         this->setOpaque(true);
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
+        this->setAccessible(false);
     }
 
     void paint(Graphics &g) override
     {
-        const auto &theme = HelioTheme::getCurrentTheme();
-        g.setTiledImageFill(theme.getSidebarBackground(), 0, 0, 1.f);
+        g.setColour(this->fillColour);
         g.fillRect(this->getLocalBounds());
     }
 
 private:
+
+    const Colour fillColour =
+        findDefaultColour(ColourIDs::Panel::sidebarFill);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PanelBackground)
 };

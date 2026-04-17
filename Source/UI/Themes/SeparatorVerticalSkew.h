@@ -26,24 +26,18 @@ public:
 
     SeparatorVerticalSkew()
     {
+        this->setOpaque(true);
         this->setInterceptsMouseClicks(false, false);
+        this->setAccessible(false);
     }
 
     void paint(Graphics &g) override
     {
-        const auto &theme = HelioTheme::getCurrentTheme();
+        g.setColour(this->fillColourB);
+        g.fillRect(this->getLocalBounds());
 
-        if (theme.getPageBackgroundA().isValid())
-        {
-            g.setTiledImageFill(theme.getPageBackgroundA(), 0, 0, 1.f);
-            g.fillPath(this->shape2, {});
-        }
-
-        if (theme.getPageBackgroundB().isValid())
-        {
-            g.setTiledImageFill(theme.getPageBackgroundB(), 0, 0, 1.f);
-            g.fillPath(this->shape1, {});
-        }
+        g.setColour(this->fillColourA);
+        g.fillPath(this->skewShape, {});
 
         g.setColour(this->darkColour);
         g.fillPath(this->line1, {});
@@ -63,30 +57,25 @@ public:
         this->line2.clear();
         this->line2.addLineSegment({ w - 1.f, 0.f, 0.f, h }, 0.75f);
 
-        this->shape1.clear();
-        this->shape1.startNewSubPath(float(this->getWidth()), 0.f);
-        this->shape1.lineTo(float(this->getWidth()), float(this->getHeight()));
-        this->shape1.lineTo(-1.f, float(this->getHeight()));
-        this->shape1.closeSubPath();
-
-        this->shape2.clear();
-        this->shape2.startNewSubPath(float(this->getWidth() + 1), 0.f);
-        this->shape2.lineTo(0.f, 0.f);
-        this->shape2.lineTo(0.f, float(this->getHeight()));
-        this->shape2.closeSubPath();
+        this->skewShape.clear();
+        this->skewShape.startNewSubPath(0.f, 0.f);
+        this->skewShape.lineTo(w, 0.f);
+        this->skewShape.lineTo(0.f, h);
+        this->skewShape.closeSubPath();
     }
 
 private:
 
     Path line1;
     Path line2;
+    Path skewShape;
 
-    Path shape1;
-    Path shape2;
-
+    const Colour fillColourA =
+        findDefaultColour(ColourIDs::Panel::pageFillA);
+    const Colour fillColourB =
+        findDefaultColour(ColourIDs::Panel::pageFillB);
     const Colour lightColour =
         findDefaultColour(ColourIDs::Common::separatorLineLight);
-
     const Colour darkColour =
         findDefaultColour(ColourIDs::Common::separatorLineDark);
 

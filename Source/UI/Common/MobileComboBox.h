@@ -20,6 +20,7 @@
 #include "IconButton.h"
 #include "MenuPanel.h"
 #include "SeparatorHorizontalReversed.h"
+#include "ColourIDs.h"
 
 class BackForwardButtonsListener;
 
@@ -134,6 +135,8 @@ private:
     UniquePointer<MobileComboBox::HelperButton> triggerButton;
 
     UniquePointer<BackForwardButtonsListener> backForwardButtonsListener;
+
+    const Colour fillColour = findDefaultColour(ColourIDs::Panel::sidebarFill);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MobileComboBox)
 };

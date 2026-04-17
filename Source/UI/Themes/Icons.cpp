@@ -76,7 +76,6 @@ void Icons::initBuiltInImages() noexcept
     setIconForKey(versionControl);
     setIconForKey(settings);
     setIconForKey(patterns);
-    setIconForKey(orchestraPit);
     setIconForKey(instrument);
     setIconForKey(audioPlugin);
     setIconForKey(annotation);
@@ -209,7 +208,7 @@ static const Path extractPathFromDrawable(const Drawable *d)
 }
 
 static Image renderVector(Icons::Id id, int maxSize,
-    const Colour &iconBaseColour, const Colour &iconShadowColour,
+    const Colour &iconColour,
     Rectangle<float> &outContentBounds,
     RectanglePlacement placement = RectanglePlacement::centred)
 {
@@ -230,24 +229,13 @@ static Image renderVector(Icons::Id id, int maxSize,
         return {};
     }
 
-    drawableSvg->replaceColour(Colours::black, iconBaseColour);
+    drawableSvg->replaceColour(Colours::black, iconColour);
 
     const auto drawableBounds = drawableSvg->getDrawableBounds();
     const auto area = Rectangle<float>(0.f, 0.f, float(maxSize), float(maxSize));
     const auto transformToFit = placement.getTransformToFit(drawableBounds, area);
 
     outContentBounds = drawableBounds.transformedBy(transformToFit);
-
-    drawableSvg->draw(g, 1.f, transformToFit);
-
-#if PLATFORM_DESKTOP
-    if (iconShadowColour.getAlpha() > 0)
-    {
-        GlowEffect glow;
-        glow.setGlowProperties(1.25f, iconShadowColour);
-        glow.applyEffect(resultImage, g, 1.f, 0.75f);
-    }
-#endif
 
     drawableSvg->draw(g, 1.f, transformToFit);
 
@@ -343,9 +331,8 @@ Image Icons::findByName(Icons::Id id, int maxSize)
 
     Rectangle<float> contentBounds;
     const Colour iconBaseColour(findDefaultColour(ColourIDs::Icons::fill));
-    const Colour iconShadeColour(findDefaultColour(ColourIDs::Icons::shadow));
     const Image prerenderedImage(renderVector(id, fixedSize,
-        iconBaseColour, iconShadeColour, contentBounds));
+        iconBaseColour, contentBounds));
 
     prerenderedSVGs[iconKey] = prerenderedImage;
 
@@ -354,7 +341,7 @@ Image Icons::findByName(Icons::Id id, int maxSize)
 
 Image Icons::findByName(Icons::Id id, int exactSize,
     RectanglePlacement alignment,
-    const Colour &fillColour, const Colour &shadowColour,
+    const Colour &fillColour,
     Rectangle<float> &outContentBounds)
 {
     const auto retinaFactor = getScaleFactor();
@@ -368,7 +355,7 @@ Image Icons::findByName(Icons::Id id, int exactSize,
     }
 
     const Image prerenderedImage(renderVector(id, scaledSize,
-        fillColour, shadowColour, outContentBounds, alignment));
+        fillColour, outContentBounds, alignment));
 
     outContentBounds /= retinaFactor;
     //DBG(outContentBounds.toString());
@@ -388,8 +375,7 @@ Image Icons::renderForTheme(const LookAndFeel &lf, Icons::Id id, int maxSize)
 
     Rectangle<float> contentBounds;
     const Colour iconBaseColour(lf.findColour(ColourIDs::Icons::fill));
-    const Colour iconShadeColour(lf.findColour(ColourIDs::Icons::shadow));
-    const Image prerenderedImage(renderVector(id, fixedSize, iconBaseColour, iconShadeColour, contentBounds));
+    const Image prerenderedImage(renderVector(id, fixedSize, iconBaseColour, contentBounds));
     return prerenderedImage;
 }
 

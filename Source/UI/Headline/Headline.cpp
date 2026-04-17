@@ -62,10 +62,8 @@ void Headline::paint(Graphics &g)
         return;
     }
 
-    const auto &theme = HelioTheme::getCurrentTheme();
-    g.setFillType({ theme.getHeadlineBackground(), {} });
+    g.setColour(this->fillColour);
     g.fillRect(this->getLocalBounds());
-
     g.setColour(this->borderLightColour);
     g.fillRect(0, this->getHeight() - 2, this->getWidth(), 1);
     g.setColour(this->borderDarkColour);

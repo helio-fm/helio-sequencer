@@ -80,8 +80,7 @@ DialogBase::~DialogBase() = default;
 
 void DialogBase::paint(Graphics &g)
 {
-    const auto &theme = HelioTheme::getCurrentTheme();
-    g.setFillType({ theme.getDialogBackground(), {} });
+    g.setColour(this->fillColour);
     g.fillRect(1, 2, this->getWidth() - 2, this->getHeight() - 3);
 
     HelioTheme::drawFrame(g, this->getWidth(), this->getHeight(), 1.5f);
@@ -166,17 +165,8 @@ bool DialogBase::keyStateChanged(bool isKeyDown)
 
 void DialogBase::dismiss()
 {
-    //if (App::isOpenGLRendererEnabled())
-    //{
-    //    App::animateComponent(this,
-    //        this->getBounds().reduced(4).translated(0, -4),
-    //            0.f, Globals::UI::fadeOutShort, true, 1.0, 0.0);
-    //}
-    //else
-    //{
-        App::animateComponent(this, this->getBounds(),
-            0.f, Globals::UI::fadeOutShort, true, 1.0, 0.0);
-    //}
+    App::animateComponent(this, this->getBounds(),
+        0.f, Globals::UI::fadeOutShort, true, 1.0, 0.0);
 
     UniquePointer<Component> deleter(this);
 }

@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "HelioTheme.h"
 #include "ColourIDs.h"
 
 class PageBackgroundA final : public Component
@@ -29,24 +28,19 @@ public:
         this->setOpaque(true);
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
+        this->setAccessible(false);
     }
 
     void paint(Graphics &g) override
     {
-        const auto &theme = HelioTheme::getCurrentTheme();
-        if (theme.getPageBackgroundA().isValid())
-        {
-            g.setTiledImageFill(theme.getPageBackgroundA(), 0, 0, 1.f);
-            g.fillRect(this->getLocalBounds());
-        }
-        else
-        {
-            g.setColour(findDefaultColour(ColourIDs::Panel::pageFillA));
-            g.fillRect(this->getLocalBounds());
-        }
+        g.setColour(this->fillColour);
+        g.fillRect(this->getLocalBounds());
     }
 
 private:
+
+    const Colour fillColour =
+        findDefaultColour(ColourIDs::Panel::pageFillA);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PageBackgroundA)
 };

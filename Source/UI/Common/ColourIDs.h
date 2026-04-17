@@ -114,7 +114,6 @@ namespace ColourIDs
     namespace Icons
     {
         static const int fill                   = 0x2000500;
-        static const int shadow                 = 0x2000501;
     }
 
     namespace Instrument

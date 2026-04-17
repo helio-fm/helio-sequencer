@@ -347,6 +347,8 @@ private:
 
     UniquePointer<MultiTouchController> multiTouchController;
 
+    const Colour fillColour =
+        findDefaultColour(ColourIDs::Panel::bottomPanelFill);
     const Colour borderLineDark =
         findDefaultColour(ColourIDs::TrackScroller::borderLineDark);
     const Colour borderLineLight =

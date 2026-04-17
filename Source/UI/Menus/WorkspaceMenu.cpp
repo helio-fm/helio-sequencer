@@ -50,7 +50,7 @@ void WorkspaceMenu::showMainMenu(AnimationType animationType)
 
     if (auto *instruments = root->findChildOfType<OrchestraPitNode>())
     {
-        menu.add(MenuItem::item(Icons::orchestraPit, TRANS(I18n::Tree::instruments))->
+        menu.add(MenuItem::item(Icons::instrument, TRANS(I18n::Tree::instruments))->
             disabledIf(instruments->isSelected())->
             closesMenu()->
             withAction([this, instruments]()

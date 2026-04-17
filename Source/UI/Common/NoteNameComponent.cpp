@@ -252,50 +252,48 @@ void NoteNameComponent::setNoteName(const String &newNoteName,
     constexpr auto suffixAlignment = RectanglePlacement::xLeft | RectanglePlacement::yMid;
     constexpr auto prefixAlignment = RectanglePlacement::xRight | RectanglePlacement::yMid;
 
-    const auto iconColour = this->textColour.withMultipliedAlpha(0.7f);
-
     if (numSharps == 1)
     {
-        this->suffix = make<IconComponent>(Icons::findByName(Icons::sharp, this->iconSize,
-            suffixAlignment, iconColour, Colours::transparentBlack, this->suffixBounds));
+        this->suffix = make<IconComponent>(Icons::findByName(Icons::sharp,
+            this->iconSize, suffixAlignment, this->textColour, this->suffixBounds));
     }
     else if (numSharps > 1)
     {
-        this->suffix = make<IconComponent>(Icons::findByName(Icons::doubleSharp, this->iconSize,
-            suffixAlignment, iconColour, Colours::transparentBlack, this->suffixBounds));
+        this->suffix = make<IconComponent>(Icons::findByName(Icons::doubleSharp,
+            this->iconSize, suffixAlignment, this->textColour, this->suffixBounds));
     }
 
     if (numFlats == 1)
     {
-        this->suffix = make<IconComponent>(Icons::findByName(Icons::flat, this->iconSize,
-            suffixAlignment, iconColour, Colours::transparentBlack, this->suffixBounds));
+        this->suffix = make<IconComponent>(Icons::findByName(Icons::flat,
+            this->iconSize, suffixAlignment, this->textColour, this->suffixBounds));
     }
     else if (numFlats > 1)
     {
-        this->suffix = make<IconComponent>(Icons::findByName(Icons::doubleFlat, this->iconSize,
-            suffixAlignment, iconColour, Colours::transparentBlack, this->suffixBounds));
+        this->suffix = make<IconComponent>(Icons::findByName(Icons::doubleFlat,
+            this->iconSize, suffixAlignment, this->textColour, this->suffixBounds));
     }
 
     if (numUps == 1)
     {
-        this->prefix = make<IconComponent>(Icons::findByName(Icons::microtoneUp, this->iconSize,
-            prefixAlignment, iconColour, Colours::transparentBlack, this->prefixBounds));
+        this->prefix = make<IconComponent>(Icons::findByName(Icons::microtoneUp,
+            this->iconSize, prefixAlignment, this->textColour, this->prefixBounds));
     }
     else if (numUps > 1)
     {
-        this->prefix = make<IconComponent>(Icons::findByName(Icons::microtoneUp2, this->iconSize,
-            prefixAlignment, iconColour, Colours::transparentBlack, this->prefixBounds));
+        this->prefix = make<IconComponent>(Icons::findByName(Icons::microtoneUp2,
+            this->iconSize, prefixAlignment, this->textColour, this->prefixBounds));
     }
 
     if (numDowns == 1)
     {
-        this->prefix = make<IconComponent>(Icons::findByName(Icons::microtoneDown, this->iconSize,
-            prefixAlignment, iconColour, Colours::transparentBlack, this->prefixBounds));
+        this->prefix = make<IconComponent>(Icons::findByName(Icons::microtoneDown,
+            this->iconSize, prefixAlignment, this->textColour, this->prefixBounds));
     }
     else if (numDowns > 1)
     {
-        this->prefix = make<IconComponent>(Icons::findByName(Icons::microtoneDown2, this->iconSize,
-            prefixAlignment, iconColour, Colours::transparentBlack, this->prefixBounds));
+        this->prefix = make<IconComponent>(Icons::findByName(Icons::microtoneDown2,
+            this->iconSize, prefixAlignment, this->textColour, this->prefixBounds));
     }
 
     if (!hasText)

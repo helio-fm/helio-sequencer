@@ -115,6 +115,7 @@ private:
     ComponentDragger dragger;
     UniquePointer<ComponentBoundsConstrainer> moveConstrainer;
 
+    const Colour fillColour = findDefaultColour(ColourIDs::Dialog::fill);
     const Colour headerColour = findDefaultColour(ColourIDs::Dialog::header);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DialogBase)

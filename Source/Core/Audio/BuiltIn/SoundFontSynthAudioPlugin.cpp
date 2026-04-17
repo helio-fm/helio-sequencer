@@ -26,6 +26,7 @@
 #include "SerializationKeys.h"
 #include "Workspace.h"
 #include "HelioTheme.h"
+#include "ColourIDs.h"
 #include "Config.h"
 
 const String SoundFontSynthAudioPlugin::instrumentId = "<soundfont-player>";
@@ -132,8 +133,7 @@ public:
 
     void paint(Graphics &g) override
     {
-        const auto &theme = HelioTheme::getCurrentTheme();
-        g.setFillType({ theme.getPageBackgroundA(), {} });
+        g.setFillType(findDefaultColour(ColourIDs::Panel::pageFillA));
         g.fillRect(this->getLocalBounds());
     }
 

@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "PageBackgroundB.h"
+#include "PageBackgroundA.h"
 
 class SettingsPage final : public Component
 {
@@ -53,7 +53,7 @@ public:
         this->setMouseClickGrabsKeyboardFocus(false);
         this->setFocusContainerType(Component::FocusContainerType::none);
 
-        this->background = make<PageBackgroundB>();
+        this->background = make<PageBackgroundA>();
         this->addAndMakeVisible(this->background.get());
 
         this->viewport = make<SettingsViewport>();
@@ -73,7 +73,7 @@ public:
 
 private:
 
-    UniquePointer<PageBackgroundB> background;
+    UniquePointer<Component> background;
     UniquePointer<Viewport> viewport;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SettingsPage)

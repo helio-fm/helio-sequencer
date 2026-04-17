@@ -43,7 +43,7 @@ OrchestraPitNode::~OrchestraPitNode()
 
 Image OrchestraPitNode::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::orchestraPit, Globals::UI::headlineIconSize);
+    return Icons::findByName(Icons::instrument, Globals::UI::headlineIconSize);
 }
 
 String OrchestraPitNode::getName() const noexcept

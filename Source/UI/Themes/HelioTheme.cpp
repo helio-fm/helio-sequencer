@@ -27,26 +27,12 @@
 #include "PanelBackground.h"
 
 HelioTheme::HelioTheme() :
-    backgroundNoise(ImageCache::getFromMemory(BinaryData::noise_png, BinaryData::noise_pngSize)),
     backgroundStripes(ImageCache::getFromMemory(BinaryData::stripes_png, BinaryData::stripes_pngSize)) {}
 
 HelioTheme &HelioTheme::getCurrentTheme() noexcept
 {
-    // This assumes the app have set an instance of HelioTheme as default look-and-feel
+    // jassert(dynamic_cast<HelioTheme *>(&LookAndFeel::getDefaultLookAndFeel()));
     return static_cast<HelioTheme &>(LookAndFeel::getDefaultLookAndFeel());
-}
-
-static constexpr auto noiseAlpha = 0.01f;
-
-void HelioTheme::drawNoise(Graphics &g, float alphaMultiply /*= 1.f*/) const
-{
-    g.setTiledImageFill(this->backgroundNoise, 0, 0, noiseAlpha * alphaMultiply);
-    g.fillAll();
-}
-
-void HelioTheme::drawNoise(const HelioTheme &theme, Graphics &g, float alphaMultiply /*= 1.f*/)
-{
-    theme.drawNoise(g, alphaMultiply);
 }
 
 void HelioTheme::drawStripes(Rectangle<float> bounds, Graphics &g, float alphaMultiply /*= 1.f*/)
@@ -692,10 +678,8 @@ void HelioTheme::drawDocumentWindowTitleBar(DocumentWindow &window,
         return;
     }
 
-    const auto &theme = HelioTheme::getCurrentTheme();
-    g.setFillType({ theme.getPageBackgroundA(), {} });
+    g.setFillType(findDefaultColour(ColourIDs::Panel::pageFillA));
     g.fillRect(0, 0, w, h);
-
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineLight));
     g.fillRect(0, h - 2, w, 1);
     g.setColour(findDefaultColour(ColourIDs::Common::borderLineDark));
@@ -801,7 +785,7 @@ void HelioTheme::initResources() noexcept
     }
     else if (userLanguage == "zh" || userLanguage == "ja")
     {
-        preferredFontNames.addArray({ "YeHei", "Hei", "Heiti SC" });
+        preferredFontNames.addArray({ "YeHei", "Hei", "Heiti SC", "Noto Sans SC" });
     }
 
 #if JUCE_LINUX
@@ -923,8 +907,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
     this->setColour(ColourIDs::RollHeader::soundProbe, s->getLassoBorderColour().withMultipliedBrightness(1.1f).withAlpha(0.75f));
     this->setColour(ColourIDs::RollHeader::timeDistance, textColour.withAlpha(0.420f));
 
-    this->setColour(ColourIDs::Icons::fill, s->getIconBaseColour());
-    this->setColour(ColourIDs::Icons::shadow, s->getIconShadowColour());
+    this->setColour(ColourIDs::Icons::fill, s->getIconColour());
 
     this->setColour(ColourIDs::Panel::pageFillA, s->getPageFillColour());
     this->setColour(ColourIDs::Panel::pageFillB, s->getPageFillColour().darker(0.01f));
@@ -948,7 +931,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
     const auto cursorHighlight =
         s->getHeadlineFillColour().brighter(2.f).withAlpha(this->isDarkTheme ? 0.025f : 0.2f);
     this->setColour(ColourIDs::Menu::highlight, cursorHighlight);
-    this->setColour(ColourIDs::Menu::toggleMarker, s->getIconBaseColour().withMultipliedAlpha(0.9f));
+    this->setColour(ColourIDs::Menu::toggleMarker, s->getIconColour().withMultipliedAlpha(0.420f));
     this->setColour(ColourIDs::Menu::currentItemMarker, s->getTextColour().withAlpha(0.55f));
     this->setColour(ColourIDs::Menu::currentItemFill, cursorHighlight);
 
@@ -974,8 +957,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
         s->getPageFillColour().darker(this->isDarkTheme ? 0.5f : 0.3f));
     this->setColour(ColourIDs::TrackScroller::borderLineLight,
         Colours::white.withAlpha(this->isDarkTheme ? 0.055f : 0.1f));
-    const auto screenRangeFill = this->isDarkTheme ? s->getIconBaseColour() :
-        s->getIconBaseColour().interpolatedWith(s->getBlackKeyColour(), 0.65f);
+    const auto screenRangeFill = this->isDarkTheme ? s->getIconColour().withMultipliedAlpha(0.5f) :
+        s->getIconColour().withMultipliedAlpha(0.5f).interpolatedWith(s->getBlackKeyColour(), 0.65f);
     this->setColour(ColourIDs::TrackScroller::viewBeatRangeFill, screenRangeFill.withMultipliedAlpha(0.225f));
     this->setColour(ColourIDs::TrackScroller::viewBeatRangeBorder, screenRangeFill.withMultipliedAlpha(0.125f));
     this->setColour(ColourIDs::TrackScroller::viewRangeFill, screenRangeFill.withMultipliedAlpha(0.325f));
@@ -1136,58 +1119,6 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s) noexcept
     this->setColour(ColourIDs::CodeEditor::popup, this->isDarkTheme ?
         s->getScriptBackgroundColour().darker(0.069f) :
         s->getScriptBackgroundColour().brighter(0.420f));
-
-    // Pre-rendered image backgrounds:
-    constexpr int w = 256;
-    constexpr int h = 256;
-
-    {
-        this->pageBackgroundA = Image(Image::ARGB, w, h, true);
-        Graphics g(this->pageBackgroundA);
-        g.setColour(this->findColour(ColourIDs::Panel::pageFillA));
-        g.fillAll();
-        this->drawNoise(g, 0.25f);
-    }
-
-    {
-        this->pageBackgroundB = Image(Image::ARGB, w, h, true);
-        Graphics g(this->pageBackgroundB);
-        g.setColour(this->findColour(ColourIDs::Panel::pageFillB));
-        g.fillAll();
-        this->drawNoise(g, 0.25f);
-    }
-
-    {
-        this->sidebarBackground = Image(Image::ARGB, w, h, true);
-        Graphics g(this->sidebarBackground);
-        g.setColour(this->findColour(ColourIDs::Panel::sidebarFill));
-        g.fillAll();
-        this->drawNoise(g);
-    }
-
-    {
-        this->bottomPanelBackground = Image(Image::ARGB, w, h, true);
-        Graphics g(this->bottomPanelBackground);
-        g.setColour(this->findColour(ColourIDs::Panel::bottomPanelFill));
-        g.fillAll();
-        this->drawNoise(g);
-    }
-
-    {
-        this->headlineBackground = Image(Image::ARGB, w, h, true);
-        Graphics g(this->headlineBackground);
-        g.setColour(this->findColour(ColourIDs::Breadcrumbs::fill));
-        g.fillAll();
-        this->drawNoise(g);
-    }
-
-    {
-        this->dialogBackground = Image(Image::ARGB, w, h, true);
-        Graphics g(this->dialogBackground);
-        g.setColour(this->findColour(ColourIDs::Dialog::fill));
-        g.fillAll();
-        this->drawNoise(g, 0.25f);
-    }
 
     Icons::clearPrerenderedCache();
 }

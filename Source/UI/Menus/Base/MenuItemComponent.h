@@ -81,7 +81,13 @@ struct MenuItem final : public ReferenceCountedObject
         }
     };
 
-    MenuItem() = default;
+    NO_INLINE MenuItem() = default;
+    NO_INLINE ~MenuItem() = default;
+
+    NO_INLINE static MenuItem::Ptr empty();
+    NO_INLINE static MenuItem::Ptr item(Icons::Id iconId, String text);
+    NO_INLINE static MenuItem::Ptr item(Icons::Id iconId, int commandId, String text = {});
+
     MenuItem::Ptr withAlignment(Alignment alignment);
     MenuItem::Ptr withSubmenu();
     MenuItem::Ptr withSubmenuIf(bool condition);
@@ -105,15 +111,11 @@ struct MenuItem final : public ReferenceCountedObject
 
     // All other menu items should use command ids,
     // which are passed to the component the same way that hotkeys pass their command id's.
-    MenuItem::Ptr withAction(const Callback &lambda);
-    MenuItem::Ptr withActionIf(bool condition, const Callback &lambda);
+    NO_INLINE MenuItem::Ptr withAction(const Callback &lambda);
+    NO_INLINE MenuItem::Ptr withActionIf(bool condition, const Callback &lambda);
 
     // Each menu item can have several helper buttons
-    MenuItem::Ptr withButton(bool isEnabled, Icons::Id icon, const Callback &lambda);
-
-    static MenuItem::Ptr empty();
-    static MenuItem::Ptr item(Icons::Id iconId, String text);
-    static MenuItem::Ptr item(Icons::Id iconId, int commandId, String text = {});
+    NO_INLINE MenuItem::Ptr withButton(bool isEnabled, Icons::Id icon, const Callback &lambda);
 
     static String createTooltip(String message, int command);
     static String createTooltip(String message, KeyPress keyPress);

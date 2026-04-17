@@ -80,8 +80,7 @@ MobileComboBox::~MobileComboBox()
 
 void MobileComboBox::paint(Graphics &g)
 {
-    const auto &theme = HelioTheme::getCurrentTheme();
-    g.setTiledImageFill(theme.getSidebarBackground(), 0, 0, 1.f);
+    g.setColour(this->fillColour);
     g.fillRect(this->getLocalBounds());
 }
 

@@ -52,9 +52,7 @@ public:
     Colour getBarColour() const;
 
     Colour getTextColour() const;
-
-    Colour getIconBaseColour() const;
-    Colour getIconShadowColour() const;
+    Colour getIconColour() const;
 
     Colour getScriptBackgroundColour() const;
     Colour getScriptTextColour() const;
@@ -64,8 +62,6 @@ public:
     Colour getScriptBracketColour() const;
     Colour getScriptErrorColour() const;
     Colour getScriptCommentColour() const;
-
-    void syncWithLiveConstantEditor();
 
     bool isEquivalentTo(const ColourScheme::Ptr other) const;
 

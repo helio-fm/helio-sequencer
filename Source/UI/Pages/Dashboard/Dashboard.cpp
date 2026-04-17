@@ -50,6 +50,7 @@ Dashboard::Dashboard(Workspace &workspace) : workspace(workspace)
 
     this->skew = make<SeparatorVerticalSkew>();
     this->addAndMakeVisible(this->skew.get());
+
     this->logo = make<SpectralLogo>();
     this->addAndMakeVisible(this->logo.get());
 

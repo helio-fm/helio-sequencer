@@ -1634,8 +1634,6 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme)
     g.setColour(theme.findColour(ColourIDs::Roll::patternRowFill));
     g.fillRect(patternImage.getBounds());
 
-    HelioTheme::drawNoise(theme, g);
-
     const auto shadowColour = theme.findColour(ColourIDs::Roll::trackHeaderShadow);
     const auto shadowColourLight = shadowColour.withMultipliedAlpha(0.25f);
 
@@ -1646,6 +1644,7 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme)
         g.fillRect(0, yBase, width, PatternRoll::trackHeaderHeight);
 
         g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorderLight));
+        // g.fillRect(0, yBase, width, PatternRoll::trackHeaderHeight);
         g.drawHorizontalLine(yBase, 0.f, float(width));
         g.drawHorizontalLine(yBase + PatternRoll::trackHeaderHeight - 1, 0.f, float(width));
 

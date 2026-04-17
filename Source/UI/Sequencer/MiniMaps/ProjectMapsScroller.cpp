@@ -142,8 +142,7 @@ void ProjectMapsScroller::resized()
 
 void ProjectMapsScroller::paint(Graphics &g)
 {
-    const auto &theme = HelioTheme::getCurrentTheme();
-    g.setFillType({ theme.getBottomPanelBackground(), {} });
+    g.setColour(this->fillColour);
     g.fillRect(this->getLocalBounds());
 
     g.setColour(this->borderLineDark);

@@ -89,8 +89,6 @@ Image HighlightingScheme::renderRowsPattern(const HelioTheme &theme,
     g.setColour(blackKeyColour);
     g.fillAll();
 
-    //HelioTheme::drawNoise(theme, g);
-
     for (int i = lastPeriodRemainder;
         (i < numRowsToRender + lastPeriodRemainder) && ((posY + previousHeight) >= 0.0f);
         i++)

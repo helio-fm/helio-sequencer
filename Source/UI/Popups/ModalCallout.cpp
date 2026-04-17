@@ -47,18 +47,13 @@ int ModalCallout::getBorderSize() const noexcept
 void ModalCallout::fadeIn()
 {
     App::animateComponent(this,
-        this->getBounds(), 1.f, Globals::UI::fadeInLong, false, 1.0, 0.0);
+        this->getBounds(), 1.f, Globals::UI::fadeInShort, false, 1.0, 0.0);
 }
 
 void ModalCallout::fadeOut()
 {
-    const int reduceBy = 10;
-    const auto offset = this->targetPoint - this->getBounds().getCentre().toFloat();
-    const auto offsetNormalized = (offset / offset.getDistanceFromOrigin() * reduceBy).toInt();
-
     App::animateComponent(this,
-        this->getBounds().reduced(reduceBy).translated(offsetNormalized.getX(), offsetNormalized.getY()),
-        0.f, Globals::UI::fadeOutShort, true, 0.0, 1.0);
+        this->getBounds(), 0.f, Globals::UI::fadeOutShort, true, 1.0, 0.0);
 }
 
 //===----------------------------------------------------------------------===//
