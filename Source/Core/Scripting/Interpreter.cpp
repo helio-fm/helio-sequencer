@@ -610,12 +610,17 @@ Value append(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
         throw EvaluationError(EvaluationError::Type::TooFewArguments);
     }
 
+    auto &result = args.getReference(0);
     for (int i = 1; i < args.size(); i++)
     {
-        args.getReference(0).push(args.getReference(i));
+        const auto &otherList = args.getReference(i).asList();
+        for (int j = 0; j < otherList.size(); j++)
+        {
+            result.push(otherList.getUnchecked(j));
+        }
     }
 
-    return args[0];
+    return result;
 }
 
 Value head(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
@@ -952,7 +957,8 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
     if (name == "true" || name == "#t") return Value(true);
     if (name == "false" || name == "#f") return Value(false);
 
-    if (name == "pi") return Value(MathConstants<float>::pi);
+    if (name == "pi" || name == CharPointer_UTF8("\xcf\x80"))
+        return Value(MathConstants<Value::Float>::pi);
 
     if (name == "nil") return {};
 
@@ -1059,17 +1065,14 @@ Value Value::apply(const List &args, Scope &scope, EvaluationContext &context) c
         }
 
         const auto &params = this->list.getReference(0);
-
-        //DBG("Applying " + this->toString());
-        //DBG("Params " + params.toString());
-        //DBG("Args " + Value(List(args)).toString());
-
-        if (params.list.size() != args.size())
+        if (params.list.size() < args.size())
         {
-            throw this->makeError(args.size() > params.list.size() ?
-                EvaluationError::Type::TooManyArguments :
-                EvaluationError::Type::TooFewArguments);
+            throw this->makeError(EvaluationError::Type::TooManyArguments);
         }
+
+        // DBG("Applying " + this->toString());
+        // DBG("Params " + params.toString());
+        // DBG("Args " + Value(List(args)).toString());
 
         jassert(!this->closureCaptures.isEmpty());
         const auto &captures = this->closureCaptures.getReference(0);
@@ -1080,31 +1083,81 @@ Value Value::apply(const List &args, Scope &scope, EvaluationContext &context) c
         // insert the arguments into the scope
         for (int i = 0; i < params.list.size(); i++)
         {
-            if (!params.list.getReference(i).isSymbol())
+            const auto &parameterValue = params.list.getReference(i);
+
+            // symbol = parameter name, list = optional parameter with default value
+            if (!parameterValue.isSymbol() && !parameterValue.isList())
             {
                 throw this->makeError(EvaluationError::Type::InvalidArgument);
             }
 
-            const auto parameterName = params.list.getReference(i).string;
-            if (!captures.hasValue(parameterName))
+            String parameterName;
+            Range<int> parameterListRange;
+            Optional<Value> defaultValue;
+
+            if (parameterValue.isSymbol())
             {
-                if (context.shouldBreakAt(params.list.getReference(i), params.sourceCodeRange))
+                parameterName = parameterValue.asSymbol();
+                parameterListRange = params.sourceCodeRange;
+            }
+            else if (parameterValue.isList())
+            {
+                const auto &optionalParameter = parameterValue.asList();
+                if (optionalParameter.size() != 2 ||
+                    !optionalParameter.getReference(0).isSymbol())
                 {
-                    throw EvaluationError(EvaluationError::Type::BreakpointHit,
-                        args.getReference(i).getTypeName(),
-                        //parameterName + ", " + args.getReference(i).getTypeName(),
-                        args.getReference(i).debug());
+                    parameterValue.makeError(EvaluationError::Type::InvalidArgument);
                 }
 
-                //DBG("Set " + parameterName + " to " + args.getReference(i).toString());
-                evaluationScope.setValue(parameterName, args.getReference(i));
+                parameterName = optionalParameter.getReference(0).asSymbol();
+                parameterListRange = parameterValue.sourceCodeRange;
+                defaultValue = optionalParameter.getReference(1);
             }
-            else if (context.shouldBreakAt(params.list.getReference(i), params.sourceCodeRange))
+
+            jassert(parameterName.isNotEmpty());
+            if (!captures.hasValue(parameterName))
+            {
+                if (args.size() > i)
+                {
+                    if (context.shouldBreakAt(parameterValue, parameterListRange))
+                    {
+                        throw EvaluationError(EvaluationError::Type::BreakpointHit,
+                            args.getReference(i).getTypeName(),
+                            // parameterName + ", " + args.getReference(i).getTypeName(),
+                            args.getReference(i).debug());
+                    }
+
+                    // DBG("Set " + parameterName + " to " + args.getReference(i).toString());
+                    evaluationScope.setValue(parameterName, args.getReference(i));
+                }
+                else if (defaultValue.hasValue())
+                {
+                    Scope defaultScope;
+                    defaultScope.setParent(&evaluationScope);
+                    const auto evaluatedDefault = defaultValue->evaluate(defaultScope, context);
+
+                    jassert(parameterValue.isList());
+                    if (context.shouldBreakAt(parameterValue.asList().getReference(0), parameterListRange))
+                    {
+                        throw EvaluationError(EvaluationError::Type::BreakpointHit,
+                            evaluatedDefault.getTypeName(),
+                            // parameterName + ", " + evaluatedDefault.getTypeName(),
+                            evaluatedDefault.debug());
+                    }
+
+                    evaluationScope.setValue(parameterName, evaluatedDefault);
+                }
+                else
+                {
+                    throw this->makeError(EvaluationError::Type::TooFewArguments);
+                }
+            }
+            else if (context.shouldBreakAt(parameterValue, params.sourceCodeRange))
             {
                 const auto &capturedValue = captures.findValue(parameterName);
                 throw EvaluationError(EvaluationError::Type::BreakpointHit,
                     capturedValue.getTypeName(),
-                    //parameterName + ", " + capturedValue.getTypeName(),
+                    // parameterName + ", " + capturedValue.getTypeName(),
                     capturedValue.debug());
             }
         }
@@ -1261,12 +1314,28 @@ Value Value::makeClosure(EvaluationContext &context,
     Value &&body, Scope &scope)
 {
     Scope captures;
+
     for (const auto &usedSymbol : body.getUsedSymbols())
     {
         if (scope.hasValue(usedSymbol))
         {
             captures.setValue(usedSymbol,
                 scope.makeValue(context, usedSymbol));
+        }
+    }
+
+    for (const auto &param : params)
+    {
+        if (param.isList() && param.asList().size() == 2)
+        {
+            for (const auto &usedSymbol : param.asList().getReference(1).getUsedSymbols())
+            {
+                if (scope.hasValue(usedSymbol))
+                {
+                    captures.setValue(usedSymbol,
+                        scope.makeValue(context, usedSymbol));
+                }
+            }
         }
     }
 
@@ -1677,6 +1746,33 @@ public:
                 scope);
             expect(result.isNumber());
             expect(result.castToInt() == 3);
+        }
+
+        beginTest("Optional arguments test");
+
+        {
+            Scope scope;
+            auto result = evaluate("\
+                (define n 3)                    \
+                (define                         \
+                  (x a (b 69) (c (list 1 2 n))) \
+                  (list a b c))                 \
+                (define n 0)                    \
+                (list                           \
+                  (x 1)                         \
+                  (x 1 2)                       \
+                  (x 1 2 3))",
+                scope);
+            expect(result.isList());
+            expect(result.toString() == "((1 69 (1 2 3)) (1 2 (1 2 3)) (1 2 3))");
+            result = evaluate("\
+                ((lambda                        \
+                  (a (b 69) (c (list 1 2 3)))   \
+                  (list a b c))                 \
+                  1)",
+                scope);
+            expect(result.isList());
+            expect(result.toString() == "(1 69 (1 2 3))");
         }
     }
 };

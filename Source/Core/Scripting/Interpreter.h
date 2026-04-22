@@ -487,8 +487,7 @@ public:
         }
 
         if ((this->isNumber() != other.isNumber()) ||
-            (this->isString() != other.isString()) ||
-            (this->isList() != other.isList()))
+            (this->isString() != other.isString()))
         {
             throw EvaluationError(EvaluationError::Type::InvalidBinaryOperation,
                 (this->debug() + " + " + other.debug()));
@@ -509,10 +508,7 @@ public:
         case Type::List:
         {
             Value result = *this;
-            for (int i = 0; i < other.list.size(); i++)
-            {
-                result.push(other.list[i]);
-            }
+            result.push(other);
             return result;
         }
         case Type::Nil:
@@ -757,7 +753,11 @@ public:
             {
                 return this->string; // prefer the name, if any
             }
-            return this->toString();
+            constexpr auto maxLen = 64;
+            const auto asString = this->toString();
+            const auto numDroppedChars = asString.length() - maxLen;
+            return (numDroppedChars > 0) ?
+                (asString.dropLastCharacters(numDroppedChars) + "...") : asString;
         }
     }
 

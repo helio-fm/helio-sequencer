@@ -247,7 +247,7 @@ private:
     static bool isReservedKeyword(String::CharPointerType token, const int tokenLength) noexcept
     {
         static const char *const keywords1Char[] =
-            { "\xce\xbb", nullptr };
+            { "\xce\xbb", "\xcf\x80", nullptr }; // lambda and pi
         static const char *const keywords2Char[] =
             { "if", "or", "pi", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", nullptr };
         static const char *const keywords3Char[] =
