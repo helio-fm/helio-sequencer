@@ -75,6 +75,7 @@ Note::Key Arpeggiator::DiatonicMapper::mapArpKeyIntoChord(const Arpeggiator::Key
     const Array<Note> &chord, const Scale::Ptr chordScale, Note::Key scaleRootKey,
     int scaleOffset) const
 {
+    jassert(chord.size() >= 2);
     const auto periodOffset = arpKey.period * chordScale->getBasePeriod();
     switch (arpKey.key)
     {
@@ -93,17 +94,18 @@ Note::Key Arpeggiator::DiatonicMapper::mapArpKeyIntoChord(const Arpeggiator::Key
 
 float Arpeggiator::DiatonicMapper::mapArpVelocityIntoChord(const Arpeggiator::Key &arpKey, const Array<Note> &chord) const
 {
+    jassert(chord.size() >= 2); // hit a single note? shouldn't happen
     switch (arpKey.key)
     {
-    case 0: return arpKey.velocity * 0.75f + this->getChordVelocity(chord, 0) * 0.25f;
-    case 1: return arpKey.velocity * 0.75f + this->getChordVelocity(chord, 0) * 0.25f;
-    case 2: return arpKey.velocity * 0.75f + this->getChordVelocity(chord, 1) * 0.25f;
-    case 3: return arpKey.velocity * 0.75f + this->getChordVelocity(chord, 1) * 0.25f;
-    case 4: return arpKey.velocity * 0.75f + this->getChordVelocity(chord, 2) * 0.25f;
-    case 5: return arpKey.velocity * 0.75f + this->getChordVelocity(chord, 2) * 0.25f;
+    case 0: return (arpKey.velocity + this->getChordVelocity(chord, 0)) / 2.f;
+    case 1: return (arpKey.velocity + this->getChordVelocity(chord, 0)) / 2.f;
+    case 2: return (arpKey.velocity + this->getChordVelocity(chord, 1)) / 2.f;
+    case 3: return (arpKey.velocity + this->getChordVelocity(chord, 1)) / 2.f;
+    case 4: return (arpKey.velocity + this->getChordVelocity(chord, 2)) / 2.f;
+    case 5: return (arpKey.velocity + this->getChordVelocity(chord, 2)) / 2.f;
     case 6: return (chord.size() <= 3) ? 
-        arpKey.velocity * 0.75f + this->getChordVelocity(chord, 2) * 0.25f :
-        arpKey.velocity * 0.75f + this->getChordVelocity(chord, 3) * 0.25f;
+        (arpKey.velocity + this->getChordVelocity(chord, 2)) / 2.f :
+        (arpKey.velocity + this->getChordVelocity(chord, 3)) / 2.f;
     default: jassertfalse; return arpKey.velocity;
     }
 }
