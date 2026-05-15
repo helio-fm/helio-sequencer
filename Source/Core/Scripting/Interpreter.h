@@ -107,8 +107,8 @@ public:
     {
         Nil,     // casts to false, like an empty list
         Symbol,  // a named identifier
-        Bool,    // some self-evaluating values
-        Int,     // for primitive data types
+        Boolean, // some self-evaluating values
+        Integer, // for primitive data types
         Float,
         String,
         Quote,   // keeps an unevaluated value
@@ -121,8 +121,8 @@ public:
 
     inline Value() = default;
     explicit inline Value(Type type) : type(type) {}
-    explicit inline Value(bool b) : type(Type::Bool), boolValue(b) {}
-    explicit inline Value(Integer i) : type(Type::Int), intValue(i) {}
+    explicit inline Value(bool b) : type(Type::Boolean), boolValue(b) {}
+    explicit inline Value(Integer i) : type(Type::Integer), intValue(i) {}
     explicit inline Value(Float f) : type(Type::Float), floatValue(f) {}
     explicit inline Value(List &&list) : type(Type::List), list(move(list)) {}
     inline Value(List &&list, Range<int> sourceCodeRange) :
@@ -130,7 +130,9 @@ public:
 
     EvaluationError makeError(const EvaluationError::Type type) const
     {
-        return EvaluationError(type, this->debug());
+        EvaluationError error(type, this->debug());
+        error.sourceCodeRange = this->sourceCodeRange;
+        return error;
     }
 
     static Value makeQuote(Value &&quoted)
@@ -219,9 +221,14 @@ public:
         return this->type == Type::Closure;
     }
 
+    bool isBoolean() const noexcept
+    {
+        return this->type == Type::Boolean;
+    }
+
     bool isInteger() const noexcept
     {
-        return this->type == Type::Int;
+        return this->type == Type::Integer;
     }
 
     bool isFloat() const noexcept
@@ -231,7 +238,7 @@ public:
 
     bool isNumber() const noexcept
     {
-        return this->type == Type::Int || this->type == Type::Float;
+        return this->type == Type::Integer || this->type == Type::Float;
     }
 
     bool isList() const noexcept
@@ -299,18 +306,18 @@ public:
     // Typecasting
     //===------------------------------------------------------------------===//
 
-    bool castToBool() const noexcept
+    bool castToBoolean() const noexcept
     {
         return this->type != Type::Nil &&
-            (this->type != Type::Bool || this->boolValue) &&
+            (this->type != Type::Boolean || this->boolValue) &&
             (this->type != Type::List || !this->list.isEmpty());
     }
 
-    Integer castToInt() const
+    Integer castToInteger() const
     {
         switch (this->type)
         {
-        case Type::Int: return this->intValue;
+        case Type::Integer: return this->intValue;
         case Type::Float: return Integer(this->floatValue);
         default:
             throw this->makeError(EvaluationError::Type::CannotCastToInt);
@@ -322,7 +329,7 @@ public:
         switch (this->type)
         {
         case Type::Float: return this->floatValue;
-        case Type::Int: return Float(this->intValue);
+        case Type::Integer: return Float(this->intValue);
         default:
             throw this->makeError(EvaluationError::Type::CannotCastToFloat);
         }
@@ -393,11 +400,11 @@ public:
 
     bool operator==(const Value &other) const
     {
-        if (this->type == Type::Float && other.type == Type::Int)
+        if (this->type == Type::Float && other.type == Type::Integer)
         {
             return this->floatValue == other.castToFloat();
         }
-        else if (this->type == Type::Int && other.type == Type::Float)
+        else if (this->type == Type::Integer && other.type == Type::Float)
         {
             return this->castToFloat() == other.floatValue;
         }
@@ -408,9 +415,9 @@ public:
 
         switch (this->type)
         {
-        case Type::Bool:
+        case Type::Boolean:
             return this->boolValue == other.boolValue;
-        case Type::Int:
+        case Type::Integer:
             return this->intValue == other.intValue;
         case Type::Float:
             return this->floatValue == other.floatValue;
@@ -461,7 +468,7 @@ public:
         {
         case Type::Float:
             return this->floatValue < other.castToFloat();
-        case Type::Int:
+        case Type::Integer:
             if (other.type == Type::Float)
             {
                 return this->castToFloat() < other.floatValue;
@@ -497,7 +504,7 @@ public:
         {
         case Type::Float:
             return Value(this->floatValue + other.castToFloat());
-        case Type::Int:
+        case Type::Integer:
             if (other.type == Type::Float)
             {
                 return Value(this->castToFloat() + other.floatValue);
@@ -525,7 +532,7 @@ public:
             return other;
         }
 
-        if (other.type != Type::Float && other.type != Type::Int)
+        if (other.type != Type::Float && other.type != Type::Integer)
         {
             throw EvaluationError(EvaluationError::Type::InvalidBinaryOperation,
                 (this->debug() + " - " + other.debug()));
@@ -535,7 +542,7 @@ public:
         {
         case Type::Float:
             return Value(this->floatValue - other.castToFloat());
-        case Type::Int:
+        case Type::Integer:
             if (other.type == Type::Float)
             {
                 return Value(this->castToFloat() - other.floatValue);
@@ -558,7 +565,7 @@ public:
             return other;
         }
 
-        if (other.type != Type::Float && other.type != Type::Int)
+        if (other.type != Type::Float && other.type != Type::Integer)
         {
             throw EvaluationError(EvaluationError::Type::InvalidBinaryOperation,
                 (this->debug() + " * " + other.debug()));
@@ -568,7 +575,7 @@ public:
         {
         case Type::Float:
             return Value(this->floatValue * other.castToFloat());
-        case Type::Int:
+        case Type::Integer:
             if (other.type == Type::Float)
             {
                 return Value(this->castToFloat() * other.floatValue);
@@ -591,7 +598,7 @@ public:
             return other;
         }
 
-        if (other.type != Type::Float && other.type != Type::Int)
+        if (other.type != Type::Float && other.type != Type::Integer)
         {
             throw EvaluationError(EvaluationError::Type::InvalidBinaryOperation,
                 (this->debug() + " / " + other.debug()));
@@ -601,7 +608,7 @@ public:
         {
         case Type::Float:
             return Value(this->floatValue / other.castToFloat());
-        case Type::Int:
+        case Type::Integer:
             if (other.type == Type::Float)
             {
                 return Value(this->castToFloat() / other.floatValue);
@@ -624,7 +631,7 @@ public:
             return other;
         }
 
-        if (other.type != Type::Float && other.type != Type::Int)
+        if (other.type != Type::Float && other.type != Type::Integer)
         {
             throw EvaluationError(EvaluationError::Type::InvalidBinaryOperation,
                 (this->debug() + " % " + other.debug()));
@@ -634,7 +641,7 @@ public:
         {
         case Type::Float:
             return Value(fmodf(this->floatValue, other.castToFloat()));
-        case Type::Int:
+        case Type::Integer:
             if (other.type == Type::Float)
             {
                 return Value(fmodf(this->castToFloat(), other.floatValue));
@@ -656,8 +663,8 @@ public:
         {
         case Type::Quote: return "quote";
         case Type::Symbol: return "symbol";
-        case Type::Bool: return "boolean";
-        case Type::Int: return "integer";
+        case Type::Boolean: return "boolean";
+        case Type::Integer: return "integer";
         case Type::Float: return "float";
         case Type::Program:
         case Type::List: return "list";
@@ -681,9 +688,9 @@ public:
             return "'" + this->list.getReference(0).toString();
         case Type::Symbol:
             return this->string;
-        case Type::Bool:
+        case Type::Boolean:
             return String(this->boolValue ? "true" : "false");
-        case Type::Int:
+        case Type::Integer:
             return String(this->intValue);
         case Type::Float:
             return String(this->floatValue);

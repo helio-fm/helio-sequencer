@@ -101,6 +101,69 @@ namespace builtin
 namespace specialForms // no argument evaluation
 {
 
+// Clojure-like -> and ->> arrows:
+// the initial form is inserted as first or last argument,
+// e.g. (->> (list 1 2 3) (map (lambda (x) (* 2 x))) first)
+// is equal to (first (map (lambda (x) (* 2 x)) (list 1 2 3)))
+Value arrow(const Value::List &unevaluatedArgs,
+    Scope &scope, EvaluationContext &context, bool insertAsFirstArgument)
+{
+    if (unevaluatedArgs.size() < 2)
+    {
+        throw EvaluationError(EvaluationError::Type::TooFewArguments);
+    }
+
+    const auto &initialForm = unevaluatedArgs.getReference(0);
+    Value acc = initialForm;
+
+    for (int i = 1; i < unevaluatedArgs.size(); i++)
+    {
+        // if it's a symbol, expect a function name
+        // if it's a list, expect a function, maybe with arguments
+        auto &form = unevaluatedArgs.getReference(i);
+        const auto formCodeRange = form.getSourceCodeRange();
+
+        if (form.isSymbol())
+        {
+            Value::List list;
+            list.add(form);
+            list.add(move(acc));
+            acc = Value(move(list), formCodeRange);
+            continue;
+        }
+
+        Value::List modifiedForm = form.asList();
+        if (modifiedForm.isEmpty())
+        {
+            throw form.makeError(EvaluationError::Type::TooFewArguments);
+        }
+
+        if (insertAsFirstArgument)
+        {
+            modifiedForm.insert(1, move(acc));
+        }
+        else
+        {
+            modifiedForm.add(move(acc));
+        }
+
+        acc = Value(move(modifiedForm), formCodeRange);
+    }
+
+    // DBG(acc.debug());
+    return acc.evaluate(scope, context);
+}
+
+Value arrowFirst(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
+{
+    return arrow(unevaluatedArgs, scope, context, true);
+}
+
+Value arrowLast(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
+{
+    return arrow(unevaluatedArgs, scope, context, false);
+}
+
 Value beginBlock(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
     Value acc;
@@ -117,7 +180,7 @@ Value ifThenElse(const Value::List &unevaluatedArgs, Scope &scope, EvaluationCon
 {
     checkNumArgs(unevaluatedArgs, 3);
 
-    if (unevaluatedArgs.getReference(0).evaluate(scope, context).castToBool())
+    if (unevaluatedArgs.getReference(0).evaluate(scope, context).castToBoolean())
     {
         return unevaluatedArgs.getReference(1).evaluate(scope, context);
     }
@@ -125,6 +188,37 @@ Value ifThenElse(const Value::List &unevaluatedArgs, Scope &scope, EvaluationCon
     {
         return unevaluatedArgs.getReference(2).evaluate(scope, context);
     }
+}
+
+Value cond(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
+{
+    if (unevaluatedArgs.size() < 1)
+    {
+        throw EvaluationError(EvaluationError::Type::TooFewArguments);
+    }
+
+    for (const auto &value : unevaluatedArgs)
+    {
+        const auto &testAndActions = value.asList();
+        if (testAndActions.size() < 2)
+        {
+            throw value.makeError(EvaluationError::Type::TooFewArguments);
+        }
+
+        const auto tested = testAndActions.getReference(0).evaluate(scope, context);
+        if (tested.castToBoolean() || (tested.isSymbol() && tested.asSymbol() == "else"))
+        {
+            Value::List body;
+            for (int i = 1; i < testAndActions.size(); i++)
+            {
+                body.add(testAndActions.getUnchecked(i));
+            }
+
+            return Value::makeProgram(move(body)).evaluate(scope, context);
+        }
+    }
+
+    return {};
 }
 
 Value define(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
@@ -183,6 +277,41 @@ Value define(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
     return Value::makeSymbol(functionName);
 }
 
+Value let(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
+{
+    if (unevaluatedArgs.size() < 2)
+    {
+        throw EvaluationError(EvaluationError::Type::TooFewArguments);
+    }
+
+    const auto &bindings = unevaluatedArgs.getReference(0).asList();
+    if (bindings.isEmpty())
+    {
+        throw unevaluatedArgs.getReference(0).makeError(EvaluationError::Type::TooFewArguments);
+    }
+
+    Scope localScope;
+    localScope.setParent(&scope);
+    for (const auto &binding : bindings)
+    {
+        const auto &list = binding.asList();
+        checkNumArgs(list, 2);
+        localScope.setValue(list.getReference(0).asSymbol(),
+            list.getReference(1).evaluate(localScope, context));
+    }
+
+    Value::List body;
+    for (int i = 1; i < unevaluatedArgs.size(); i++)
+    {
+        body.add(unevaluatedArgs.getUnchecked(i));
+    }
+
+    const auto lambda = Value::makeClosure(context, {}, {}, {},
+        Value::makeProgram(move(body)), localScope);
+
+    return lambda.apply({}, localScope, context);
+}
+
 Value lambda(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
 {
     if (unevaluatedArgs.size() < 2)
@@ -219,7 +348,7 @@ Value whileLoop(const Value::List &unevaluatedArgs, Scope &scope, EvaluationCont
 
     Value acc;
 
-    while (unevaluatedArgs.getReference(0).evaluate(scope, context).castToBool())
+    while (unevaluatedArgs.getReference(0).evaluate(scope, context).castToBoolean())
     {
         for (int i = 1; i < unevaluatedArgs.size() - 1; i++)
         {
@@ -368,7 +497,7 @@ Value abs(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &c
         return Value(std::abs(args.getReference(0).castToFloat()));
     }
 
-    return Value(std::abs(args.getReference(0).castToInt()));
+    return Value(std::abs(args.getReference(0).castToInteger()));
 }
 
 Value min(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
@@ -421,7 +550,7 @@ Value logicalAnd(const Value::List &unevaluatedArgs, Scope &scope, EvaluationCon
     // short-circuit, evaluating from left to right
     for (const auto &value : unevaluatedArgs)
     {
-        if (!value.evaluate(scope, context).castToBool())
+        if (!value.evaluate(scope, context).castToBoolean())
         {
             return Value(false);
         }
@@ -439,7 +568,7 @@ Value logicalOr(const Value::List &unevaluatedArgs, Scope &scope, EvaluationCont
 
     for (const auto &value : unevaluatedArgs)
     {
-        if (value.evaluate(scope, context).castToBool())
+        if (value.evaluate(scope, context).castToBoolean())
         {
             return Value(true);
         }
@@ -452,7 +581,7 @@ Value logicalNot(const Value::List &unevaluatedArgs, Scope &scope, EvaluationCon
 {
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
     checkNumArgs(args, 1);
-    return Value(!args.getReference(0).castToBool());
+    return Value(!args.getReference(0).castToBoolean());
 }
 
 Value sin(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
@@ -545,7 +674,7 @@ Value index(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext 
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
     checkNumArgs(args, 2);
 
-    const auto i = args.getReference(0).castToInt();
+    const auto i = args.getReference(0).castToInteger();
     const auto &list = args.getReference(1).asList();
     if (list.isEmpty() || i >= list.size())
     {
@@ -561,13 +690,13 @@ Value insert(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
     checkNumArgs(args, 3);
 
     auto list = args.getReference(0).asList();
-    const auto i = args.getReference(1).castToInt();
+    const auto i = args.getReference(1).castToInteger();
     if (i > list.size())
     {
         throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
     }
 
-    list.insert(args.getReference(1).castToInt(), args.getReference(2));
+    list.insert(args.getReference(1).castToInteger(), args.getReference(2));
     return Value(move(list));
 }
 
@@ -577,7 +706,7 @@ Value remove(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
     checkNumArgs(args, 2);
 
     auto list = args.getReference(0).asList();
-    const auto i = args.getReference(1).castToInt();
+    const auto i = args.getReference(1).castToInteger();
     if (list.isEmpty() || i >= list.size())
     {
         throw EvaluationError(EvaluationError::Type::IndexOutOfRange);
@@ -621,6 +750,21 @@ Value append(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
     }
 
     return result;
+}
+
+Value reverse(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
+{
+    auto args = evaluateArgs(unevaluatedArgs, scope, context);
+    checkNumArgs(args, 1);
+
+    const auto &list = args.getReference(0).asList();
+    Value::List result;
+    for (int i = list.size(); i --> 0 ;)
+    {
+        result.add(list.getUnchecked(i));
+    }
+
+    return Value(move(result));
 }
 
 Value head(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &context)
@@ -667,7 +811,7 @@ Value first(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext 
     }
     else if (args.size() == 2)
     {
-        const auto numElements = args.getReference(0).castToInt();
+        const auto numElements = args.getReference(0).castToInteger();
         const auto &list = args.getReference(1).asList();
         if (numElements <= 0 || numElements > list.size())
         {
@@ -703,7 +847,7 @@ Value last(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext &
     }
     else if (args.size() == 2)
     {
-        const auto numElements = args.getReference(0).castToInt();
+        const auto numElements = args.getReference(0).castToInteger();
         const auto &list = args.getReference(1).asList();
         if (numElements <= 0 || numElements > list.size())
         {
@@ -788,7 +932,7 @@ Value filter(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext
     {
         const auto &current = list.getReference(i);
         tmp.add(current);
-        if (args.getReference(0).apply(tmp, scope, context).castToBool())
+        if (args.getReference(0).apply(tmp, scope, context).castToBoolean())
         {
             result.add(current);
         }
@@ -834,7 +978,7 @@ Value toInt(const Value::List &unevaluatedArgs, Scope &scope, EvaluationContext 
 {
     const auto args = evaluateArgs(unevaluatedArgs, scope, context);
     checkNumArgs(args, 1);
-    return Value(args.getReference(0).castToInt());
+    return Value(args.getReference(0).castToInteger());
 }
 
 } // namespace cast
@@ -898,14 +1042,17 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
     if (name == "eval") return Value::makeBuiltInFunction(name, meta::evaluate);
     if (name == "type") return Value::makeBuiltInFunction(name, meta::getTypeName);
 
+    if (name == "->") return Value::makeBuiltInFunction(name, specialForms::arrowFirst);
+    if (name == "->>") return Value::makeBuiltInFunction(name, specialForms::arrowLast);
     if (name == "begin") return Value::makeBuiltInFunction(name, specialForms::beginBlock);
-    // todo cond
     if (name == "if") return Value::makeBuiltInFunction(name, specialForms::ifThenElse);
+    if (name == "cond") return Value::makeBuiltInFunction(name, specialForms::cond);
+    if (name == "else") return Value::makeSymbol(name); // a self-evaluating symbol only used in "cond"
     if (name == "while") return Value::makeBuiltInFunction(name, specialForms::whileLoop);
     if (name == "scope") return Value::makeBuiltInFunction(name, specialForms::scope);
     if (name == "quote") return Value::makeBuiltInFunction(name, specialForms::quote);
     if (name == "define") return Value::makeBuiltInFunction(name, specialForms::define);
-    // todo let
+    if (name == "let") return Value::makeBuiltInFunction(name, specialForms::let);
     if (name == "lambda" || name == CharPointer_UTF8("\xce\xbb"))
         return Value::makeBuiltInFunction(name, specialForms::lambda);
 
@@ -939,6 +1086,7 @@ Value Scope::makeValue(EvaluationContext &context, const String &name) const
     if (name == "length") return Value::makeBuiltInFunction(name, list::length);
     if (name == "empty") return Value::makeBuiltInFunction(name, list::empty);
     if (name == "append") return Value::makeBuiltInFunction(name, list::append);
+    if (name == "reverse") return Value::makeBuiltInFunction(name, list::reverse);
     if (name == "head") return Value::makeBuiltInFunction(name, list::head);
     if (name == "tail") return Value::makeBuiltInFunction(name, list::tail);
     if (name == "first") return Value::makeBuiltInFunction(name, list::first);
@@ -1551,7 +1699,7 @@ static Value parseNumber(CharPointer &t, bool isNegative)
 
 bool isSymbolBody(juce_wchar ch) noexcept
 {
-    return CharacterFunctions::isLetterOrDigit(ch) || ch == '_' ||
+    return CharacterFunctions::isLetterOrDigit(ch) || ch == '_' || ch == '~' ||
         (ch >= 35 && ch <= 38) || (ch >= 42 && ch <= 47) || (ch >= 58 && ch <= 64);
         //(ch >= '#' && ch <= '&') || (ch >= '*' && ch <= '/') || (ch >= ':' && ch <= '@');
 };
@@ -1714,7 +1862,7 @@ public:
                 ) \n\n ; comment",
                 scope);
             expect(result.isNumber());
-            expect(result.castToInt() == 56);
+            expect(result.castToInteger() == 56);
         }
 
         beginTest("Lexical scoping test");
@@ -1732,7 +1880,7 @@ public:
                 (test 420)",
                 scope);
             expect(result.isNumber());
-            expect(result.castToInt() == 489);
+            expect(result.castToInteger() == 489);
         }
 
         beginTest("Short circuit test");
@@ -1745,7 +1893,7 @@ public:
                 (+ x y)",
                 scope);
             expect(result.isNumber());
-            expect(result.castToInt() == 3);
+            expect(result.castToInteger() == 3);
         }
 
         beginTest("Optional arguments test");
@@ -1773,6 +1921,38 @@ public:
                 scope);
             expect(result.isList());
             expect(result.toString() == "(1 69 (1 2 3))");
+        }
+
+        beginTest("Local bindings test");
+
+        {
+            Scope scope;
+            auto result = evaluate("\
+                (define a 1)        \
+                (define b 1)        \
+                (define c 1)        \
+                (let ((a 69) (b 420) (x (* a b c))) x)",
+                scope);
+            expect(result.isInteger());
+            expect(result.castToInteger() == 28980);
+        }
+
+        beginTest("Arrows test");
+
+        {
+            Scope scope;
+            auto result = evaluate("\
+                (define a (-> (list 69 420 1337) reverse (last)))\
+                (define b (last (reverse (list 69 420 1337))))\
+                (= a b)",
+                scope);
+            expect(result.isBoolean());
+            expect(result.castToBoolean());
+            result = evaluate("\
+                (->> (list 1 2 3) (map (lambda (x) (* 2 x))))",
+                scope);
+            expect(result.isList());
+            expect(result.toString() == "(2 4 6)");
         }
     }
 };

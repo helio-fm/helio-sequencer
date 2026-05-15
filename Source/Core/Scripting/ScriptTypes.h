@@ -39,7 +39,7 @@ Value::List makeNoteValue(const Note &note)
 
 void validateNoteValue(const Value &value)
 {
-    if (!value.isListOf(Value::Type::Int, Value::Type::Float) ||
+    if (!value.isListOf(Value::Type::Integer, Value::Type::Float) ||
         value.asList().size() < 2)
     {
         throw EvaluationError(EvaluationError::Type::InvalidArgument, "",
@@ -53,7 +53,7 @@ Note makeNote(const Value &value)
 
     const auto &args = value.asList();
     const auto beat = args[0].castToFloat();
-    const auto key = args[1].castToInt();
+    const auto key = args[1].castToInteger();
     const auto length = (args.size() > 2) ?
         args[2].castToFloat() : Globals::Defaults::newNoteLength;
     const auto velocity = (args.size() > 3) ?
@@ -85,7 +85,7 @@ Value makeScaleValue(const Scale::Ptr scale)
 
 void validateScaleValue(const Value &value)
 {
-    if (!value.isListOf(Value::Type::Int))
+    if (!value.isListOf(Value::Type::Integer))
     {
         throw EvaluationError(EvaluationError::Type::InvalidArgument, "",
             "expected a scale: (intervals), e.g. (2 2 1 2 2 2 1)");
@@ -102,7 +102,7 @@ Scale::Ptr makeScale(const Value &value,
     for (const auto &intervalValue : value.asList())
     {
         keys.add(key);
-        key = jlimit(0, basePeriodSize, key + intervalValue.castToInt());
+        key = jlimit(0, basePeriodSize, key + intervalValue.castToInteger());
     }
 
     for (auto &scale : allScales)
@@ -117,7 +117,7 @@ Scale::Ptr makeScale(const Value &value,
     StringArray defaultName;
     for (const auto &intervalValue : value.asList())
     {
-        defaultName.add(String(intervalValue.castToInt()));
+        defaultName.add(String(intervalValue.castToInteger()));
     }
 
     return Scale::Ptr(new Scale(defaultName.joinIntoString(" "), keys, basePeriodSize));
@@ -158,7 +158,7 @@ KeySignatureEvent makeKeySignature(const Value &value,
 
     const auto &args = value.asList();
     const auto beat = args[0].castToFloat();
-    const auto rootKey = Scale::wrapKey(args[1].castToInt(), 0, basePeriodSize);
+    const auto rootKey = Scale::wrapKey(args[1].castToInteger(), 0, basePeriodSize);
     const auto scale = makeScale(args[2], allScales, basePeriodSize);
 
     return KeySignatureEvent(nullptr, scale, beat, rootKey);
@@ -177,7 +177,7 @@ Value::List makeArpeggiatorKeyValue(const Arpeggiator::Key key)
 
 void validateArpeggiatorKeyValue(const Value &value)
 {
-    if (!value.isListOf(Value::Type::Int, Value::Type::Float) ||
+    if (!value.isListOf(Value::Type::Integer, Value::Type::Float) ||
         value.asList().size() < 3)
     {
         throw EvaluationError(EvaluationError::Type::InvalidArgument, "",
@@ -191,7 +191,7 @@ Arpeggiator::Key makeArpeggiatorKey(const Value &value)
 
     const auto &args = value.asList();
     const auto beat = args[0].castToFloat();
-    const auto inScaleKey = args[1].castToInt();
+    const auto inScaleKey = args[1].castToInteger();
     const auto length = (args.size() > 2) ?
         args[2].castToFloat() : Globals::Defaults::newNoteLength;
     const auto velocity = (args.size() > 3) ?

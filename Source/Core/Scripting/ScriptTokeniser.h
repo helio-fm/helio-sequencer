@@ -92,7 +92,7 @@ public:
             return TokenType::tokenTypeComment;
         }
         default:
-            if (CppTokeniserFunctions::isIdentifierStart(firstChar))
+            if (script::isSymbolBody(firstChar))
             {
                 return this->parseIdentifier(source);
             }
@@ -249,11 +249,11 @@ private:
         static const char *const keywords1Char[] =
             { "\xce\xbb", "\xcf\x80", nullptr }; // lambda and pi
         static const char *const keywords2Char[] =
-            { "if", "or", "pi", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", nullptr };
+            { "if", "or", "pi", "->", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", nullptr };
         static const char *const keywords3Char[] =
-            { "and", "not", "map", "let", "nil", nullptr };
+            { "and", "not", "map", "let", "nil", "->>", nullptr };
         static const char *const keywords4Char[] =
-            { "eval", "true", nullptr };
+            { "eval", "cond", "true", "else", nullptr };
         static const char *const keywords5Char[] =
             { "begin", "quote", "parse", "false", nullptr };
         static const char *const keywords6Char[] =
@@ -292,9 +292,10 @@ private:
             { "empty", "first", "float", "debug", "range",
               "scope", "while", "round", "floor", "tonic", nullptr };
         static const char *const keywords6Char[] =
-            { "append", "length", "random", "remove", nullptr };
+            { "append", "insert", "length", "random", "remove", nullptr };
         static const char *const keywordsOther[] =
-            { "project:reset", "project:period-size",
+            { "reverse",
+              "project:reset", "project:period-size",
               "timeline:reset", "timeline:add-key",
               "track:make", "track:add-notes",
               "scale:find", "scale:render-key",

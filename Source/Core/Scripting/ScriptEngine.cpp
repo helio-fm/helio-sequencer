@@ -205,7 +205,7 @@ script::Value random(const script::Value::List &unevaluatedArgs,
         const auto &high = args.getReference(1);
         if (low.isInteger() && high.isInteger())
         {
-            return script::Value(random.nextInt(Range<int>(low.castToInt(), high.castToInt())));
+            return script::Value(random.nextInt(Range<int>(low.castToInteger(), high.castToInteger())));
         }
         else if (low.isFloat() || high.isFloat())
         {
@@ -446,7 +446,7 @@ script::Value renderKey(const script::Value::List &unevaluatedArgs,
             "expected a scale degree, got " + args.getReference(1).debug());
     }
 
-    if (args.getReference(1).castToInt() <= 0)
+    if (args.getReference(1).castToInteger() <= 0)
     {
         throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
             "(scale:render-key scale degree)",
@@ -458,7 +458,7 @@ script::Value renderKey(const script::Value::List &unevaluatedArgs,
     const auto scale =
         script::interop::makeScale(args.getReference(0),
             {}, self->hostContext.temperament->getPeriodSize());
-    const auto row = scale->getChromaticKey(args.getReference(1).castToInt() - 1, 0, true);
+    const auto row = scale->getChromaticKey(args.getReference(1).castToInteger() - 1, 0, true);
     return script::Value(row);
 }
 
@@ -536,18 +536,18 @@ script::Value arpeggiate(const script::Value::List &unevaluatedArgs,
     const auto args = script::evaluateArgs(unevaluatedArgs, scope, context);
     script::checkNumArgs(args, 2);
 
-    const auto notes = parseNotesList(args.getReference(0),
-        "(refactor:arpeggiate (notes ...) (arpeggiator-notes ...))");
-
-    if (!args.getReference(1).isList())
+    if (!args.getReference(0).isList() || !args.getReference(1).isList())
     {
         throw script::EvaluationError(script::EvaluationError::Type::InvalidArgument,
-            "(refactor:arpeggiate (notes ...) (arpeggiator-notes ...))",
-            "expected a list of in-scale notes, got " + args.getReference(1).debug());
+            "(refactor:arpeggiate (arpeggiator-notes ...) (notes ...))",
+            "expected a list of in-scale notes, got " + args.getReference(0).debug());
     }
 
     const auto arpeggiator =
-        script::interop::makeArpeggiator(args.getReference(1));
+        script::interop::makeArpeggiator(args.getReference(0));
+
+    const auto notes = parseNotesList(args.getReference(1),
+        "(refactor:arpeggiate (arpeggiator-notes ...) (notes ...))");
 
     TemporaryPianoTrack tempTrack(notes);
 
