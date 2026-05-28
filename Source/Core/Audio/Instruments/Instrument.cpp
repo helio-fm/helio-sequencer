@@ -655,6 +655,7 @@ SerializedData Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) co
         return tree;
     }
 
+    jassertfalse; // why tho, did the plugin fail to initialize?
     return {};
 }
 
@@ -709,7 +710,10 @@ void Instrument::deserialize(const SerializedData &data) noexcept
     forEachChildWithType(root, nodeState, Serialization::Audio::node)
     {
         SerializablePluginDescription desc;
-        desc.deserialize(nodeState.getChild(0)); // "node"/"plugin"
+        if (nodeState.getNumChildren() > 0)
+        {
+            desc.deserialize(nodeState.getChild(0)); // "node"/"plugin"
+        }
 
         numNodesInDescription++;
 
@@ -783,7 +787,10 @@ void Instrument::deserializeNodesAsync(Array<SerializedData> nodesToDeserialize,
     const auto tree = nodesToDeserialize.removeAndReturn(0);
 
     SerializablePluginDescription desc;
-    desc.deserialize(tree.getChild(0)); // "node"/"plugin"
+    if (tree.getNumChildren() > 0)
+    {
+        desc.deserialize(tree.getChild(0)); // "node"/"plugin"
+    }
 
     std::shared_ptr<ScopedDPIAwarenessDisabler> dpiDisabler =
         Instrument::makeDPIAwarenessDisabler(desc);

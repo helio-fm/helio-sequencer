@@ -26,6 +26,7 @@ static XmlElement::TextFormat getXmlFormat()
     format.dtd = {};
     format.lineWrapLength = 120;
     format.customEncoding = xmlEncoding;
+    format.newLineChars = "\n";
     return format;
 }
 

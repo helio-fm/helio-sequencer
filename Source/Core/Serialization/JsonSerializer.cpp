@@ -651,7 +651,7 @@ SerializedData JsonSerializer::loadFromFile(const File &file) const
     const String text(file.loadFileAsString());
     SerializedData root(fakeRoot);
     const auto result = JsonParser::parseObjectOrArray(text.getCharPointer(), root);
-    if (result.wasOk())
+    if (result.wasOk() && root.isValid())
     {
         return root.getChild(0);
     }

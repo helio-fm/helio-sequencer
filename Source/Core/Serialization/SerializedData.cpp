@@ -300,7 +300,12 @@ int SerializedData::getNumChildren() const noexcept
 
 SerializedData SerializedData::getChild(int index) const
 {
-    jassert(this->data != nullptr);
+    if (this->data == nullptr)
+    {
+        jassertfalse;
+        return {};
+    }
+
     if (auto *c = this->data->children.getObjectPointer(index))
     {
         return SerializedData(*c);
@@ -311,7 +316,12 @@ SerializedData SerializedData::getChild(int index) const
 
 SerializedData SerializedData::getChildWithName(const Identifier &type) const
 {
-    jassert(this->data != nullptr);
+    if (this->data == nullptr)
+    {
+        jassertfalse;
+        return {};
+    }
+
     return this->data->getChildWithName(type);
 }
 
@@ -419,6 +429,7 @@ SerializedData SerializedData::readFromStream(InputStream &input)
 
     if (!type.isValid())
     {
+        jassertfalse;
         return {};
     }
 

@@ -50,6 +50,12 @@ void Translation::deserialize(const SerializedData &root) noexcept
     // don't reset so that user's translation appends the built-in one instead of replacing it
     // this->reset();
 
+    if (!root.isValid())
+    {
+        jassertfalse;
+        return;
+    }
+
     using namespace Serialization;
 
     this->id = root.getProperty(Translations::localeId, String()).toString().toLowerCase();

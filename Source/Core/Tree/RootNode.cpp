@@ -125,6 +125,7 @@ static ProjectNode *createProjectContentFromTemplate(ProjectNode *project, const
     static JsonSerializer js;
     const auto exampleData = String(templatePtr, numBytes);
     const auto exampleProject = js.loadFromString(exampleData);
+    jassert(exampleProject.isValid());
 
     // only load the content, i.e. tracks, the timeline, and the temperament:
     TreeNodeSerializer::deserializeChildren(*project, exampleProject);
